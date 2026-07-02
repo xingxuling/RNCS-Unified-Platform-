@@ -1,0 +1,20 @@
+{
+  "name": "@taowind/reality-network-runtime",
+  "version": "0.1.0-alpha.1",
+  "type": "module",
+  "description": "RNCS authoritative multiplayer synchronization runtime with deterministic loopback fault injection.",
+  "license": "Apache-2.0",
+  "exports": { ".": "./src/index.mjs" },
+  "files": ["src", "schemas", "README.md", "rncs.module.json"],
+  "scripts": {
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs",
+    "benchmark": "node scripts/benchmark.mjs"
+  },
+  "dependencies": {
+    "@taowind/agent-authority-fabric": "0.1.0",
+    "@taowind/reality-branch-fabric": "0.2.0-alpha.1",
+    "@taowind/reality-simulation-runtime": "0.6.0-alpha.1",
+    "@taowind/rfe-core-sdk": "0.1.0"
+  },
+  "engines": { "node": ">=20" }
+}
