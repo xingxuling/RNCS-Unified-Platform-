@@ -1,0 +1,9 @@
+{
+  "id": "network-runtime",
+  "name": "Reality Network Runtime",
+  "version": "0.1.0-alpha.1",
+  "runtime": "rncs.network",
+  "protocol": "rncs.network-runtime.v0.1",
+  "layer": "network",
+  "dependsOn": ["rsr", "aaf", "rbf", "rfe-sdk"]
+}
