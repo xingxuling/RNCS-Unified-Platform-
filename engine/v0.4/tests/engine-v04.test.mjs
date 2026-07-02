@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { rotationAxes, collideOBB } from '../rsr/oriented-box-sat.js';
-import { distributionGGX, geometrySmith, fresnelSchlick } from '../vsr/ggx.js';
-import { evaluatePBRLighting } from '../vsr/pbr-lighting.js';
+import { rotationAxes, collideOBB } from '../dist/rsr/oriented-box-sat.js';
+import { distributionGGX, geometrySmith, fresnelSchlick } from '../dist/vsr/ggx.js';
+import { evaluatePBRLighting } from '../dist/vsr/pbr-lighting.js';
 
 test('OBB SAT rejects false AABB overlap',()=>{const axes=rotationAxes({x:0,y:45,z:0});const a={center:{x:0,y:1000,z:0},axes,halfExtents:{x:1000,y:100,z:100}};const b={center:{x:200,y:1000,z:200},axes,halfExtents:{x:1000,y:100,z:100}};assert.equal(collideOBB(a,b),undefined);});
 test('GGX terms stay finite',()=>{for(const r of [.04,.2,.5,1]){assert.ok(Number.isFinite(distributionGGX(.75,r)));assert.ok(geometrySmith(.8,.65,r)>=0);}});
