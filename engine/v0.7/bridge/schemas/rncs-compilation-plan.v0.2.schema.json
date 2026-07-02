@@ -1,0 +1,12 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://taowind.dev/schemas/rncs-compilation-plan.v0.2.schema.json",
+  "title":"RNCS Executable Compilation Plan v0.2",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["format","version","plan_id","subject","artifacts","behaviors","candidate_branch","authority_requirements","world_state_changes","simulation_requirements","projection_targets","evidence_requirements","rollback_policy","acceptance_rules"],
+  "properties":{
+    "format":{"const":"rncs.compilation-plan.v0.2"},"version":{"const":"0.2.0"},"plan_id":{"type":"string","minLength":1},"source":{"type":"object"},"subject":{"type":"object","required":["subject_id"]},
+    "artifacts":{"type":"array"},"behaviors":{"type":"array"},"candidate_branch":{"type":"object","required":["branch_id","baseline_generation"]},"authority_requirements":{"type":"array"},"world_state_changes":{"type":"array"},"simulation_requirements":{"type":"array"},"projection_targets":{"type":"array"},"evidence_requirements":{"type":"array"},"rollback_policy":{"type":"object"},"acceptance_rules":{"type":"array"}
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "format": "rncs.version-manifest.v0.7",
+  "motherProject": "0.7.0-alpha.1",
+  "aetherworldNativeBridge": "0.2.0-alpha.1",
+  "aetherworld": "0.2.0-alpha.1",
+  "rsr": "0.7.0-alpha.1",
+  "vsr": "0.6.0-alpha.1",
+  "network": "0.2.0-alpha.1",
+  "gateway": "0.3.1-unified.1",
+  "compilationPlan": "rncs.compilation-plan.v0.2",
+  "nativeProtocol": "rncs.aetherworld-native-runtime.v0.2",
+  "directTests": "1267/1267",
+  "e2eEvidenceRoot": "c1ae167c6f5db4561595105256756bb36d53d0d85ff631eb9b15868d28762a29",
+  "baselineCommit": "a340a2839786f0409616645fe0aa5cd612e9892c"
+}
