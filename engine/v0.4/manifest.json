@@ -1,0 +1,28 @@
+{
+  "format": "rncs.engine-release.v0.4",
+  "suiteVersion": "0.4.0-alpha.1",
+  "rsr": {
+    "version": "0.6.0-alpha.1",
+    "features": ["rotated-fixture-offsets", "oriented-box-world-aabb", "sphere-vs-obb", "obb-vs-obb-15-axis-sat"],
+    "tests": "164/164",
+    "releaseAudit": "PASS"
+  },
+  "vsr": {
+    "version": "0.5.0-alpha.1",
+    "features": ["cook-torrance-ggx", "metallic-energy-conservation", "clearcoat", "material-ao", "ior"],
+    "tests": "159/159",
+    "releaseAudit": "PASS"
+  },
+  "downstream": {
+    "realityStudio": "188/188",
+    "realityBuild": "113/113",
+    "gateway": "10/10",
+    "unifiedIntegration": "11/11",
+    "runtimeHealth": "12/12"
+  },
+  "totalTests": "645/645",
+  "archives": {
+    "fullSha256": "103cb45d1e561bb006be67517a37a904cda15f89f0e090d11eb7dbcf1da601f9",
+    "engineSha256": "144cc413d5dc31d4f41e3846bcda462f3f7dc157d3732486003b59fe03ab2f48"
+  }
+}
