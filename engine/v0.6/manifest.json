@@ -1,0 +1,41 @@
+{
+  "format": "rncs.engine-release.v0.6",
+  "suiteVersion": "0.6.0-alpha.1",
+  "rsr": {
+    "version": "0.7.0-alpha.1",
+    "protocol": "rsr.authoritative-state.v0.7",
+    "features": ["authoritative-state-frame", "verifiable-state-delta", "bounded-history", "prediction-replay"],
+    "tests": "170/170",
+    "releaseAudit": "PASS"
+  },
+  "vsr": {
+    "version": "0.6.0-alpha.1",
+    "protocol": "vsr.temporal-presentation.v0.6",
+    "features": ["hermite-interpolation", "shortest-angle-rotation", "bounded-extrapolation", "teleport-snap", "correction-plan"],
+    "tests": "167/167",
+    "releaseAudit": "PASS"
+  },
+  "network": {
+    "version": "0.2.0-alpha.1",
+    "protocol": "rncs.network-runtime.v0.2",
+    "features": ["rsr-protocol-reuse", "delta-base-isolation", "full-snapshot-recovery", "client-reconciliation"],
+    "tests": "22/22",
+    "releaseAudit": "PASS"
+  },
+  "gateway": {"version": "0.3.1-unified.1", "tests": "10/10"},
+  "downstream": {
+    "realityStudio": "188/188",
+    "realityBuild": "113/113",
+    "hnafHnac": "54/54",
+    "cslStudio": "162/162",
+    "aetherFusion": "344/344",
+    "unifiedIntegration": "12/12",
+    "e2e": "4/4",
+    "aetherworldHealth": "PASS",
+    "autorag": "PASS",
+    "releaseVerification": "PASS"
+  },
+  "directTestTotal": "1246/1246",
+  "speedBenchmark": {"measurement": "observational-not-randomized-ab", "activeMinutes": 36.87, "historicalMinutes": 52.91, "rawSpeedupX": 1.435},
+  "fullArchiveSha256": "bea02112ae9835e853dc697684b1bb6fefd075f2ad1884900f4f3a9760069494"
+}
