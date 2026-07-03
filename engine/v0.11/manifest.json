@@ -1,0 +1,8 @@
+{
+  "format":"rncs.engine-release.v0.11",
+  "suiteVersion":"0.11.0-alpha.1",
+  "behavior":{"version":"0.2.0-alpha.1","features":["quest-runtime","objective-progress","rewards","snapshot-restore","deterministic-replay"]},
+  "realityStudio":{"version":"1.6.0-alpha.1","features":["multitrack-sequencer","camera-keyframes","behavior-events","branches","dialogue-audio-effect-light-tracks","behavior-trace-recording"]},
+  "roots":{"sequenceState":"383837e2f759baf71b2f3a262e5d4c96f50ee45740047273ea16b8b98a712a25","behaviorState":"f99460c0c6a4ed66349765d34e381634a96818f2f0d2035688a6f0e47aff4179","authority":"0defbb7225a51a1fe4a10c9bbb92a9194f26dfaa0b6b37d82425f100bf117608","presentation":"3af4bc0380c511d32b79fb56171b644fdab42a80347ee55916b96df3c4dd8c96","pixel":"fnv1a64:ea9e325579d734e0"},
+  "acceptance":{"cooperativeQuestCompleted":true,"successBranchSelected":true,"snapshotReplayDeterministic":true,"replicaConvergence":true,"authorityPresentationSeparated":true,"multitrackPresentation":true,"behaviorTraceRecorded":true,"spatialProjectionProduced":true}
+}
