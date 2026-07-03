@@ -17,9 +17,17 @@ TaoWind Reality MCP 是 ChatGPT 到 RNCS + Aetherworld 的远程 MCP 入口。�
 
 候选组合工作流会校验执行前后的正式 `revision` 与 `state_root`；任一发生变化即失败。
 
+## 安全加固
+
+- Origin 与公网 Host 白名单；
+- 私有 MCP 路径令牌与可选静态 Bearer；
+- 默认不信任伪造的 `X-Forwarded-For`；
+- Artifact 与 Manifest 均位于受保护的私有 MCP 路径；
+- 会话 TTL、限流、不透明 Artifact ID 与敏感文件名排除。
+
 ## 验收
 
-- MCP：12/12 PASS
+- MCP：13/13 PASS
 - Smoke：PASS
 - Gateway：12/12 PASS
 - Native Bridge：14/14 PASS
@@ -33,8 +41,9 @@ TaoWind Reality MCP 是 ChatGPT 到 RNCS + Aetherworld 的远程 MCP 入口。�
 ## 运行
 
 ```bash
-npm install
+npm ci --ignore-scripts
 npm run test:mcp
+npm run smoke:mcp
 npm run serve:mcp
 ```
 
