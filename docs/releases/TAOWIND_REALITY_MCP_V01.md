@@ -13,23 +13,25 @@
 - Origin 与 Host 白名单；
 - 私有 MCP 路径令牌；
 - 可选静态 Bearer；
+- 默认不信任伪造的 `X-Forwarded-For`；
 - 限流与会话 TTL；
 - 不透明 Artifact ID；
 - 敏感文件名排除；
-- HTTP Artifact 位于受保护 MCP 路径；
+- HTTP Artifact 与 Manifest 位于受保护 MCP 路径；
 - 不注册授权、合并、回滚、发布、Shell 或任意文件工具。
 
 ## 验收
 
 | 项目 | 结果 |
 |---|---:|
-| MCP 专项 | 12/12 PASS |
+| MCP 专项 | 13/13 PASS |
 | MCP Smoke | PASS |
 | Gateway | 12/12 PASS |
 | Native Bridge | 14/14 PASS |
 | 根级统一集成 | 19/19 PASS |
 | 运行时健康 | 14/14 healthy |
 | 发布结构 | PASS，29 个模块 |
+| 清洁安装 | PASS |
 | npm audit | 0 vulnerabilities |
 
 候选现实 Smoke 完成了编译、分支、模拟和差异，结果 `simulation_status=completed`，且 `authority_unchanged=true`。
