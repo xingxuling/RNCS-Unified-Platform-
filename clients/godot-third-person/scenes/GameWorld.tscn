@@ -1,0 +1,39 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
+[ext_resource type="Script" path="res://scripts/hud.gd" id="2_hud"]
+
+[sub_resource type="ProceduralSkyMaterial" id="SkyMaterial_main"]
+sky_top_color = Color(0.08, 0.13, 0.2, 1)
+sky_horizon_color = Color(0.42, 0.34, 0.29, 1)
+ground_bottom_color = Color(0.08, 0.08, 0.09, 1)
+ground_horizon_color = Color(0.3, 0.27, 0.23, 1)
+
+[sub_resource type="Sky" id="Sky_main"]
+sky_material = SubResource("SkyMaterial_main")
+
+[sub_resource type="Environment" id="Environment_main"]
+background_mode = 2
+sky = SubResource("Sky_main")
+ambient_light_source = 3
+ambient_light_color = Color(0.55, 0.62, 0.72, 1)
+ambient_light_energy = 0.55
+fog_enabled = true
+fog_light_color = Color(0.2, 0.25, 0.28, 1)
+fog_density = 0.006
+fog_sky_affect = 0.55
+
+[node name="GameWorld" type="Node3D"]
+script = ExtResource("1_main")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_main")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-48, -28, 0)
+light_color = Color(1, 0.82, 0.68, 1)
+light_energy = 1.25
+shadow_enabled = true
+
+[node name="HUD" type="CanvasLayer" parent="."]
+script = ExtResource("2_hud")
