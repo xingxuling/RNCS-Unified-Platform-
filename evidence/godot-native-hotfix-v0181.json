@@ -1,0 +1,37 @@
+{
+  "format": "rncs.godot-native-hotfix-evidence.v0.1",
+  "suite_version": "0.18.1-alpha.1",
+  "godot_target": "4.7-stable",
+  "root_cause": [
+    "base-class typed variables accessed custom script members",
+    "runtime set_script injection prevented reliable static typing",
+    "no safe bootstrap scene to retain startup errors"
+  ],
+  "fixes": [
+    "preloaded script instances",
+    "dynamic-safe custom member calls",
+    "Bootstrap.tscn diagnostic loader",
+    "startup_diagnostics.log",
+    "scene subresource order repair",
+    "invalid transparency tween removal"
+  ],
+  "continued_development": [
+    "jump",
+    "three-step sword combo",
+    "knockback",
+    "enemy nameplates",
+    "NPC guild labels",
+    "lock-on HUD",
+    "day cycle",
+    "startup self-test"
+  ],
+  "verification": {
+    "open_world_runtime": "14/14 PASS",
+    "third_person_integration": "2/2 PASS",
+    "mother_project_integration": "31/31 PASS",
+    "godot_static_regression": "64/64 PASS",
+    "release_verify": "34 modules, 0 errors, 0 duplicates, 0 banned",
+    "runtime_health": "healthy",
+    "godot_binary_run": "NOT RUN: Godot binary unavailable in container"
+  }
+}

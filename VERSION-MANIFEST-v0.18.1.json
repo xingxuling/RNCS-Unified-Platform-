@@ -1,0 +1,33 @@
+{
+  "suite": "RNCS_Aetherworld_Unified",
+  "version": "0.18.1-alpha.1",
+  "codename": "Godot Native Startup & Combat Feel Hotfix",
+  "based_on": "0.18.0-alpha.1",
+  "deliverables": {
+    "webgl_client": "灰烬边境_第三人称3D_直接打开.html",
+    "godot_project": "clients/godot-third-person/project.godot",
+    "runtime": "packages/world/open-world-rpg-runtime",
+    "diagnostic_launcher": "clients/godot-third-person/运行游戏并保留错误窗口.bat"
+  },
+  "fixes": {
+    "base_typed_custom_member_compile_failure": true,
+    "bootstrap_diagnostic_scene": true,
+    "startup_log": true,
+    "scene_subresource_order": true,
+    "invalid_transparency_tween": true
+  },
+  "continued_development": {
+    "jump": true,
+    "three_step_sword_combo": true,
+    "knockback": true,
+    "enemy_nameplates": true,
+    "npc_player_guild_nameplates": true,
+    "lock_hud": true,
+    "day_cycle": true
+  },
+  "verification": {
+    "runtime_tests": "14/14 PASS",
+    "godot_static_checks": "64/64 PASS",
+    "godot_binary_execution": "NOT RUN - BINARY UNAVAILABLE IN CONTAINER"
+  }
+}
