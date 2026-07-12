@@ -1,0 +1,440 @@
+{
+  "format": "rfe.conformance.constitutional-reality.v1.0",
+  "scenario": "old-and-new-quorums-authorize-key-rotation-membership-change-crash-recovery-and-new-epoch-confirmation",
+  "parentCertificateHash": "4ace71ecb9dd5c80301ee4e77c686c3e8cf30b0a7dd283e7d19d9d8d9bcf7566",
+  "initialFederationRoot": "4fedf79abaa3f4031f0d3bf146cb887750093711957b693e87c3736954435e54",
+  "oldConfiguration": {
+    "epoch": 1,
+    "quorumWeight": 7,
+    "byzantineBudgetWeight": 3,
+    "members": [
+      {
+        "clusterId": "cluster:aurora",
+        "weight": 4,
+        "verifierKey": "fixture-key-aurora-v090",
+        "origin": "rfe-v0.9"
+      },
+      {
+        "clusterId": "cluster:forge",
+        "weight": 3,
+        "verifierKey": "fixture-key-forge-v090",
+        "origin": "rfe-v0.9"
+      },
+      {
+        "clusterId": "cluster:harbor",
+        "weight": 2,
+        "verifierKey": "fixture-key-harbor-v090",
+        "origin": "rfe-v0.9"
+      },
+      {
+        "clusterId": "cluster:mirror",
+        "weight": 1,
+        "verifierKey": "fixture-key-mirror-v090",
+        "origin": "rfe-v0.9"
+      }
+    ]
+  },
+  "newConfiguration": {
+    "epoch": 2,
+    "quorumWeight": 7,
+    "byzantineBudgetWeight": 3,
+    "members": [
+      {
+        "clusterId": "cluster:aurora",
+        "weight": 4,
+        "verifierKey": "fixture-key-aurora-v100-rotated",
+        "origin": "rfe-v0.9"
+      },
+      {
+        "clusterId": "cluster:forge",
+        "weight": 1,
+        "verifierKey": "fixture-key-forge-v090",
+        "origin": "rfe-v0.9"
+      },
+      {
+        "clusterId": "cluster:harbor",
+        "weight": 1,
+        "verifierKey": "fixture-key-harbor-v090",
+        "origin": "rfe-v0.9"
+      },
+      {
+        "clusterId": "cluster:nova",
+        "weight": 4,
+        "verifierKey": "fixture-key-nova-v100",
+        "origin": "rfe-v1.0"
+      }
+    ]
+  },
+  "transitionPlan": {
+    "transitionId": "constitution:c12:epoch1-to-epoch2",
+    "purpose": {
+      "type": "authority-topology-evolution",
+      "reason": "rotate-aurora-add-nova-retire-mirror-rebalance-weights"
+    }
+  },
+  "oldAuthorizationVoters": [
+    "cluster:aurora",
+    "cluster:forge"
+  ],
+  "newAcceptanceVoters": [
+    "cluster:aurora",
+    "cluster:nova"
+  ],
+  "crashAfterAppliedMembers": 2,
+  "removedMemberProbe": "cluster:mirror",
+  "rotatedMemberProbe": "cluster:aurora",
+  "confirmationVoters": [
+    "cluster:aurora",
+    "cluster:nova"
+  ],
+  "confirmationId": "confirmation:c12:new-constitution-live",
+  "confirmationMessage": "epoch-2-authority-topology-is-live-and-exclusive",
+  "expected": {
+    "format": "rfe.constitutional-reality-result.v1.0",
+    "safetyModel": "byzantine-weighted-dual-quorum-constitutional-continuity",
+    "livenessModel": "joint-old-authorization-and-new-acceptance-with-durable-recovery",
+    "initialFederationRoot": "4fedf79abaa3f4031f0d3bf146cb887750093711957b693e87c3736954435e54",
+    "initialParentCertificateHash": "4ace71ecb9dd5c80301ee4e77c686c3e8cf30b0a7dd283e7d19d9d8d9bcf7566",
+    "oldConfiguration": {
+      "format": "rfe.constitution.v1.0",
+      "epoch": 1,
+      "members": [
+        {
+          "clusterId": "cluster:aurora",
+          "weight": 4,
+          "identityCommitment": "725b09c2251a3d789185a601681ec8f0546f02d9ed2c1ba4f38f194ecb6a75f5",
+          "verifierKeyCommitment": "090ab8dbfc24508ca36591ca34a683ec38f737376594b9e036c31ff2784f333f"
+        },
+        {
+          "clusterId": "cluster:forge",
+          "weight": 3,
+          "identityCommitment": "965af085a1697ba7871044ea0b51ee80ab9879a0f0aadd850ce6e7c74b6f643b",
+          "verifierKeyCommitment": "7b167a9cea09ed95bd00005ca8786d3f7d764e411762a94e4fc1b20078556ad1"
+        },
+        {
+          "clusterId": "cluster:harbor",
+          "weight": 2,
+          "identityCommitment": "d0560d3ef1e31103b88eb126763af5ada37a9f18110cc5985215bb5b64cc5432",
+          "verifierKeyCommitment": "5badae1f845c8a5e4504e300f7e765e077d733db9562a1689e941d78e5bf2d7b"
+        },
+        {
+          "clusterId": "cluster:mirror",
+          "weight": 1,
+          "identityCommitment": "23a785ace6409b75e7ade98b99de0e93bde6ab17735b055229f68d2de2687a2a",
+          "verifierKeyCommitment": "c1d185b0888761a439953ed604b732b504cb388ece1705bf6a5184d1ac425348"
+        }
+      ],
+      "totalWeight": 10,
+      "quorumWeight": 7,
+      "byzantineBudgetWeight": 3,
+      "configurationHash": "e15627cf94dc07f03f144ebeb66b41c9516af78234b11591ab8b8003c8bc578a"
+    },
+    "newConfiguration": {
+      "byzantineBudgetWeight": 3,
+      "configurationHash": "f776ce8d39bf01e952f1e1966c4139489d99728d276a2a09de2866c4634830fe",
+      "epoch": 2,
+      "format": "rfe.constitution.v1.0",
+      "members": [
+        {
+          "clusterId": "cluster:aurora",
+          "identityCommitment": "725b09c2251a3d789185a601681ec8f0546f02d9ed2c1ba4f38f194ecb6a75f5",
+          "verifierKeyCommitment": "025815692b6167287e5e2d5e55d7e6b5e8824dee92beaaf70589c8347a6ad1aa",
+          "weight": 4
+        },
+        {
+          "clusterId": "cluster:forge",
+          "identityCommitment": "965af085a1697ba7871044ea0b51ee80ab9879a0f0aadd850ce6e7c74b6f643b",
+          "verifierKeyCommitment": "7b167a9cea09ed95bd00005ca8786d3f7d764e411762a94e4fc1b20078556ad1",
+          "weight": 1
+        },
+        {
+          "clusterId": "cluster:harbor",
+          "identityCommitment": "d0560d3ef1e31103b88eb126763af5ada37a9f18110cc5985215bb5b64cc5432",
+          "verifierKeyCommitment": "5badae1f845c8a5e4504e300f7e765e077d733db9562a1689e941d78e5bf2d7b",
+          "weight": 1
+        },
+        {
+          "clusterId": "cluster:nova",
+          "identityCommitment": "f45cff4583be2a0e4e212aca52dd6be2d03b8ff149a2e4f6d6394c520520e44b",
+          "verifierKeyCommitment": "05ffbeca2748a05b424ba106119735c818ac39172645f8107aedac6054551e97",
+          "weight": 4
+        }
+      ],
+      "quorumWeight": 7,
+      "totalWeight": 10
+    },
+    "transition": {
+      "changes": {
+        "added": [
+          "cluster:nova"
+        ],
+        "keyRotated": [
+          {
+            "clusterId": "cluster:aurora",
+            "from": "090ab8dbfc24508ca36591ca34a683ec38f737376594b9e036c31ff2784f333f",
+            "to": "025815692b6167287e5e2d5e55d7e6b5e8824dee92beaaf70589c8347a6ad1aa"
+          }
+        ],
+        "removed": [
+          "cluster:mirror"
+        ],
+        "weightChanged": [
+          {
+            "clusterId": "cluster:forge",
+            "from": 3,
+            "to": 1
+          },
+          {
+            "clusterId": "cluster:harbor",
+            "from": 2,
+            "to": 1
+          }
+        ]
+      },
+      "format": "rfe.constitutional-transition.v1.0",
+      "fromEpoch": 1,
+      "newConfigurationHash": "f776ce8d39bf01e952f1e1966c4139489d99728d276a2a09de2866c4634830fe",
+      "oldConfigurationHash": "e15627cf94dc07f03f144ebeb66b41c9516af78234b11591ab8b8003c8bc578a",
+      "parentCertificateHash": "4ace71ecb9dd5c80301ee4e77c686c3e8cf30b0a7dd283e7d19d9d8d9bcf7566",
+      "parentFederationRoot": "4fedf79abaa3f4031f0d3bf146cb887750093711957b693e87c3736954435e54",
+      "purposeHash": "e06f7228e9ce3bdeede30b76d0511fb1bad9822b53c666abe7fe5bbcc987b6fa",
+      "toEpoch": 2,
+      "transitionHash": "a037c1cd01d91462263c73cb30713e96b66679c48cd062685edc0e44539a40e2",
+      "transitionId": "constitution:c12:epoch1-to-epoch2"
+    },
+    "rotationProofs": [
+      {
+        "clusterId": "cluster:aurora",
+        "format": "rfe.constitutional-rotation-continuity.v1.0",
+        "fromEpoch": 1,
+        "newConfigurationHash": "f776ce8d39bf01e952f1e1966c4139489d99728d276a2a09de2866c4634830fe",
+        "newKeyedProof": "021004dbe3e4f82dba587c2433638a8c1c51e5a29fff2989fe4e7e0562cd6506",
+        "newVerifierKeyCommitment": "025815692b6167287e5e2d5e55d7e6b5e8824dee92beaaf70589c8347a6ad1aa",
+        "oldConfigurationHash": "e15627cf94dc07f03f144ebeb66b41c9516af78234b11591ab8b8003c8bc578a",
+        "oldKeyedProof": "2789e82f7ad4dbe9ce94396e07d0b742334ed1bfb7181e02b5029ef72c9bd8cc",
+        "oldVerifierKeyCommitment": "090ab8dbfc24508ca36591ca34a683ec38f737376594b9e036c31ff2784f333f",
+        "rotationProofHash": "853e7a86e2404f66b782edd36c2914c403f60371c752505867aecbca7fe4870a",
+        "toEpoch": 2,
+        "transitionHash": "a037c1cd01d91462263c73cb30713e96b66679c48cd062685edc0e44539a40e2"
+      }
+    ],
+    "oldAuthorizationCertificate": {
+      "approvedWeight": 7,
+      "configurationHash": "e15627cf94dc07f03f144ebeb66b41c9516af78234b11591ab8b8003c8bc578a",
+      "epoch": 1,
+      "format": "rfe.old-constitution-authorization-certificate.v1.0",
+      "oldAuthorizationCertificateHash": "7a1d0ad54b734e822bf4e129c878504c22f59090a092344c241277cb653451ed",
+      "parentFederationRoot": "4fedf79abaa3f4031f0d3bf146cb887750093711957b693e87c3736954435e54",
+      "quorumWeight": 7,
+      "transitionHash": "a037c1cd01d91462263c73cb30713e96b66679c48cd062685edc0e44539a40e2",
+      "voteHashes": [
+        "1d8a78f0e0df747796d38f058b69f6de763078899d11811b3bdb1d60de1bc66a",
+        "5e2e76499334e1a6634f054df29b457843ea9694ebff327d37439e5695ecc7a7"
+      ],
+      "voterIds": [
+        "cluster:aurora",
+        "cluster:forge"
+      ]
+    },
+    "newAcceptanceCertificate": {
+      "acceptedWeight": 8,
+      "configurationHash": "f776ce8d39bf01e952f1e1966c4139489d99728d276a2a09de2866c4634830fe",
+      "epoch": 2,
+      "format": "rfe.new-constitution-acceptance-certificate.v1.0",
+      "newAcceptanceCertificateHash": "623b40ab5131a16537d86fb449b8746733e5f8f96ec33a491f5ef002f7a13b75",
+      "parentFederationRoot": "4fedf79abaa3f4031f0d3bf146cb887750093711957b693e87c3736954435e54",
+      "quorumWeight": 7,
+      "transitionHash": "a037c1cd01d91462263c73cb30713e96b66679c48cd062685edc0e44539a40e2",
+      "voteHashes": [
+        "31b9a340684806dda4a02a07e834a07e6185b99da63cc14c33bf566e1b0f7281",
+        "6e979b25d2b6be992f26bdcdddc60ac18dfcee3e89be88ebae470cacb6a54c76"
+      ],
+      "voterIds": [
+        "cluster:aurora",
+        "cluster:nova"
+      ]
+    },
+    "jointActivationCertificate": {
+      "format": "rfe.joint-constitution-activation-certificate.v1.0",
+      "fromEpoch": 1,
+      "jointActivationCertificateHash": "a57f2e016f3ce0fd36b273cd720bc0c044fc1e31d405f01738af4294cd9c3110",
+      "newAcceptanceCertificateHash": "623b40ab5131a16537d86fb449b8746733e5f8f96ec33a491f5ef002f7a13b75",
+      "newConfigurationHash": "f776ce8d39bf01e952f1e1966c4139489d99728d276a2a09de2866c4634830fe",
+      "oldAuthorizationCertificateHash": "7a1d0ad54b734e822bf4e129c878504c22f59090a092344c241277cb653451ed",
+      "oldConfigurationHash": "e15627cf94dc07f03f144ebeb66b41c9516af78234b11591ab8b8003c8bc578a",
+      "parentFederationRoot": "4fedf79abaa3f4031f0d3bf146cb887750093711957b693e87c3736954435e54",
+      "rotationProofHashes": [
+        "853e7a86e2404f66b782edd36c2914c403f60371c752505867aecbca7fe4870a"
+      ],
+      "targetTopologyRoot": "7db7fc6748a41b6f50bfe6940f03e5414429b571ccc5f406735295b523c81d3e",
+      "toEpoch": 2,
+      "transitionHash": "a037c1cd01d91462263c73cb30713e96b66679c48cd062685edc0e44539a40e2"
+    },
+    "interruptedActivationState": {
+      "crash": {
+        "code": "CONSTITUTIONAL_CRASH_INJECTED_AFTER_MEMBER",
+        "detail": 2
+      },
+      "durableJointCertificatePresent": true,
+      "appliedMembers": 2,
+      "remainingMembers": 3
+    },
+    "activationReceipt": {
+      "format": "rfe.constitutional-activation-receipt.v1.0",
+      "transitionHash": "a037c1cd01d91462263c73cb30713e96b66679c48cd062685edc0e44539a40e2",
+      "fromEpoch": 1,
+      "toEpoch": 2,
+      "oldConfigurationHash": "e15627cf94dc07f03f144ebeb66b41c9516af78234b11591ab8b8003c8bc578a",
+      "newConfigurationHash": "f776ce8d39bf01e952f1e1966c4139489d99728d276a2a09de2866c4634830fe",
+      "jointActivationCertificateHash": "a57f2e016f3ce0fd36b273cd720bc0c044fc1e31d405f01738af4294cd9c3110",
+      "finalTopologyRoot": "7db7fc6748a41b6f50bfe6940f03e5414429b571ccc5f406735295b523c81d3e",
+      "finalFederationRoot": "bd219851f287bc8c4ef8592bbb2aab4625f7cb6c1c048fac20326d562aa617c3",
+      "recovered": true,
+      "receiptHash": "a9e35bcc8cb4abc72a11d33ff083be581766912d920fe85ec4d908ef3b0c4c2c"
+    },
+    "recoveryReplayReceipt": {
+      "format": "rfe.constitutional-activation-receipt.v1.0",
+      "transitionHash": "a037c1cd01d91462263c73cb30713e96b66679c48cd062685edc0e44539a40e2",
+      "fromEpoch": 1,
+      "toEpoch": 2,
+      "oldConfigurationHash": "e15627cf94dc07f03f144ebeb66b41c9516af78234b11591ab8b8003c8bc578a",
+      "newConfigurationHash": "f776ce8d39bf01e952f1e1966c4139489d99728d276a2a09de2866c4634830fe",
+      "jointActivationCertificateHash": "a57f2e016f3ce0fd36b273cd720bc0c044fc1e31d405f01738af4294cd9c3110",
+      "finalTopologyRoot": "7db7fc6748a41b6f50bfe6940f03e5414429b571ccc5f406735295b523c81d3e",
+      "finalFederationRoot": "bd219851f287bc8c4ef8592bbb2aab4625f7cb6c1c048fac20326d562aa617c3",
+      "recovered": true,
+      "receiptHash": "a9e35bcc8cb4abc72a11d33ff083be581766912d920fe85ec4d908ef3b0c4c2c"
+    },
+    "staleEpochRejection": {
+      "code": "STALE_CONFIGURATION_EPOCH",
+      "detail": 1
+    },
+    "removedMemberRejection": {
+      "code": "REMOVED_CONSTITUTION_MEMBER",
+      "detail": "cluster:mirror"
+    },
+    "oldKeyRejection": {
+      "code": "CONFIGURATION_KEY_MISMATCH",
+      "detail": "cluster:aurora"
+    },
+    "confirmationCertificate": {
+      "format": "rfe.constitution-confirmation-certificate.v1.0",
+      "epoch": 2,
+      "configurationHash": "f776ce8d39bf01e952f1e1966c4139489d99728d276a2a09de2866c4634830fe",
+      "federationRoot": "bd219851f287bc8c4ef8592bbb2aab4625f7cb6c1c048fac20326d562aa617c3",
+      "confirmationId": "confirmation:c12:new-constitution-live",
+      "confirmationHash": "18ff0df00a377a891b9726347f1682c3694a13f1016c2cd8e73d96218297ab61",
+      "voterIds": [
+        "cluster:aurora",
+        "cluster:nova"
+      ],
+      "voteHashes": [
+        "460f6127d47b654dc123e820369f1140930151856b3538e96d0ac99ada5db324",
+        "d261aa179c328e48be88c93e0f1168d2a1e89a9fa302b15fba709d32e3a00f79"
+      ],
+      "confirmedWeight": 8,
+      "quorumWeight": 7,
+      "confirmationCertificateHash": "0b284e8c7e264a06615697397eb077fafe5031e6ce84b41a65972ff92af6b7cf"
+    },
+    "finalTopologyRoot": "7db7fc6748a41b6f50bfe6940f03e5414429b571ccc5f406735295b523c81d3e",
+    "finalFederationRoot": "bd219851f287bc8c4ef8592bbb2aab4625f7cb6c1c048fac20326d562aa617c3",
+    "finalEpoch": 2,
+    "topologyRecords": {
+      "cluster:aurora": {
+        "clusterId": "cluster:aurora",
+        "configurationHash": "f776ce8d39bf01e952f1e1966c4139489d99728d276a2a09de2866c4634830fe",
+        "effectiveEpoch": 2,
+        "format": "rfe.constitutional-topology-record.v1.0",
+        "identityCommitment": "725b09c2251a3d789185a601681ec8f0546f02d9ed2c1ba4f38f194ecb6a75f5",
+        "retiredAtEpoch": null,
+        "status": "active",
+        "topologyRecordHash": "17223f5f06d0ea50779f071767eedb0861950e2bfe26386abbbfa884206b0fe8",
+        "verifierKeyCommitment": "025815692b6167287e5e2d5e55d7e6b5e8824dee92beaaf70589c8347a6ad1aa",
+        "weight": 4
+      },
+      "cluster:forge": {
+        "clusterId": "cluster:forge",
+        "configurationHash": "f776ce8d39bf01e952f1e1966c4139489d99728d276a2a09de2866c4634830fe",
+        "effectiveEpoch": 2,
+        "format": "rfe.constitutional-topology-record.v1.0",
+        "identityCommitment": "965af085a1697ba7871044ea0b51ee80ab9879a0f0aadd850ce6e7c74b6f643b",
+        "retiredAtEpoch": null,
+        "status": "active",
+        "topologyRecordHash": "43f6e19daf70d41a707c4a178c227a4026c6963ac3923deacd99b0634d1a9923",
+        "verifierKeyCommitment": "7b167a9cea09ed95bd00005ca8786d3f7d764e411762a94e4fc1b20078556ad1",
+        "weight": 1
+      },
+      "cluster:harbor": {
+        "format": "rfe.constitutional-topology-record.v1.0",
+        "clusterId": "cluster:harbor",
+        "status": "active",
+        "weight": 1,
+        "identityCommitment": "d0560d3ef1e31103b88eb126763af5ada37a9f18110cc5985215bb5b64cc5432",
+        "verifierKeyCommitment": "5badae1f845c8a5e4504e300f7e765e077d733db9562a1689e941d78e5bf2d7b",
+        "configurationHash": "f776ce8d39bf01e952f1e1966c4139489d99728d276a2a09de2866c4634830fe",
+        "effectiveEpoch": 2,
+        "retiredAtEpoch": null,
+        "topologyRecordHash": "a56078c66f08e94f063c152025b19636a79a1737abd7973d37297dc7b9d29ba2"
+      },
+      "cluster:mirror": {
+        "format": "rfe.constitutional-topology-record.v1.0",
+        "clusterId": "cluster:mirror",
+        "status": "retired",
+        "weight": 1,
+        "identityCommitment": "23a785ace6409b75e7ade98b99de0e93bde6ab17735b055229f68d2de2687a2a",
+        "verifierKeyCommitment": "c1d185b0888761a439953ed604b732b504cb388ece1705bf6a5184d1ac425348",
+        "configurationHash": "f776ce8d39bf01e952f1e1966c4139489d99728d276a2a09de2866c4634830fe",
+        "effectiveEpoch": 2,
+        "retiredAtEpoch": 2,
+        "topologyRecordHash": "1cb3209d660e3ea8657922f5b0ffb84ba0b0014a2fd64edd8982f067322e5b39"
+      },
+      "cluster:nova": {
+        "format": "rfe.constitutional-topology-record.v1.0",
+        "clusterId": "cluster:nova",
+        "status": "active",
+        "weight": 4,
+        "identityCommitment": "f45cff4583be2a0e4e212aca52dd6be2d03b8ff149a2e4f6d6394c520520e44b",
+        "verifierKeyCommitment": "05ffbeca2748a05b424ba106119735c818ac39172645f8107aedac6054551e97",
+        "configurationHash": "f776ce8d39bf01e952f1e1966c4139489d99728d276a2a09de2866c4634830fe",
+        "effectiveEpoch": 2,
+        "retiredAtEpoch": null,
+        "topologyRecordHash": "d6e28f191e398b6f15879ec4e655369b2440500edc55f4f2f07a9b2f68ea4019"
+      }
+    },
+    "archivedConfigurationHashes": [
+      "e15627cf94dc07f03f144ebeb66b41c9516af78234b11591ab8b8003c8bc578a"
+    ],
+    "metrics": {
+      "confirmationCertificates": 1,
+      "confirmationVotesAccepted": 2,
+      "idempotentRecoveryReplays": 1,
+      "injectedInterruptions": 1,
+      "jointActivationCertificates": 1,
+      "keyMismatchRejections": 1,
+      "newAcceptanceCertificates": 1,
+      "newVotesAccepted": 2,
+      "oldAuthorizationCertificates": 1,
+      "oldVotesAccepted": 2,
+      "recoveries": 1,
+      "removedMemberRejections": 1,
+      "rotationProofsAccepted": 1,
+      "staleEpochRejections": 1,
+      "topologyDivergences": 0,
+      "topologyMutations": 5,
+      "transitionMismatchRejections": 0,
+      "transitionProposals": 1
+    },
+    "constitutionalRealityResultHash": "4779c30f20b1868f139a516bffca52b3a4d68815db1c4b5e75a2c78bdfcb6128"
+  },
+  "helpers": {
+    "oldConfigurationHash": "e15627cf94dc07f03f144ebeb66b41c9516af78234b11591ab8b8003c8bc578a",
+    "newConfigurationHash": "f776ce8d39bf01e952f1e1966c4139489d99728d276a2a09de2866c4634830fe",
+    "transitionHash": "a037c1cd01d91462263c73cb30713e96b66679c48cd062685edc0e44539a40e2",
+    "oldAuthorizationCertificateHash": "7a1d0ad54b734e822bf4e129c878504c22f59090a092344c241277cb653451ed",
+    "newAcceptanceCertificateHash": "623b40ab5131a16537d86fb449b8746733e5f8f96ec33a491f5ef002f7a13b75",
+    "jointActivationCertificateHash": "a57f2e016f3ce0fd36b273cd720bc0c044fc1e31d405f01738af4294cd9c3110",
+    "finalTopologyRoot": "7db7fc6748a41b6f50bfe6940f03e5414429b571ccc5f406735295b523c81d3e",
+    "finalFederationRoot": "bd219851f287bc8c4ef8592bbb2aab4625f7cb6c1c048fac20326d562aa617c3",
+    "confirmationCertificateHash": "0b284e8c7e264a06615697397eb077fafe5031e6ce84b41a65972ff92af6b7cf"
+  }
+}

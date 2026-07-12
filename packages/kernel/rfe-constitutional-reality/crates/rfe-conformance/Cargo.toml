@@ -1,0 +1,21 @@
+[package]
+name = "rfe-conformance"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Golden-vector conformance suite for the RFE native kernel"
+
+[dependencies]
+rfe-canonical = { path = "../rfe-canonical" }
+rfe-native-kernel = { path = "../rfe-native-kernel" }
+rfe-closed-loop = { path = "../rfe-closed-loop" }
+rfe-multi-session = { path = "../rfe-multi-session" }
+rfe-replicated-authority = { path = "../rfe-replicated-authority" }
+rfe-cross-domain-atomic = { path = "../rfe-cross-domain-atomic" }
+rfe-federated-consensus = { path = "../rfe-federated-consensus" }
+rfe-byzantine-federation = { path = "../rfe-byzantine-federation" }
+rfe-partition-healing = { path = "../rfe-partition-healing" }
+rfe-constitutional-reality = { path = "../rfe-constitutional-reality" }
+
+[lints]
+workspace = true

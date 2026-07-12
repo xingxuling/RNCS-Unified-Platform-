@@ -1,0 +1,20 @@
+{
+  "format": "rncs.version-manifest.v0.8",
+  "motherProject": "0.8.0-alpha.1",
+  "aetherworldNativeBridge": "0.2.0-alpha.1",
+  "aetherworld": "0.2.0-alpha.1",
+  "rsr": "0.8.0-alpha.1",
+  "vsr": "0.7.0-alpha.1",
+  "network": "0.2.0-alpha.1",
+  "gateway": "0.3.1-unified.1",
+  "playableSpatialWorld": "rncs.playable-spatial-world-evidence.v0.8",
+  "compilationPlan": "rncs.compilation-plan.v0.2",
+  "nativeProtocol": "rncs.aetherworld-native-runtime.v0.2",
+  "baselineCommit": "a340a2839786f0409616645fe0aa5cd612e9892c",
+  "directTests": "1283/1283",
+  "authorityRoot": "fnv1a64:d0b0f3fcfa1eae36",
+  "temporalPresentationRoot": "0a3cb838e464a861e81a90bc8ad59b35b7f98537a3c9723936e1a1558fd25c62",
+  "assetPresentationRoot": "02608d2d1785eb6c100323d6b785605d8803144519a5834ff1a79abf3cf40369",
+  "pixelRoot": "75740c4da9aa261b1c27a02e8014ce9800280ac846a2ce7fb2cb3ba211efae7f",
+  "gltfReceiptRoot": "02a18f1da9e7f55380236f4035b3e46e614717360b8ace4a29c7e1bbc4723b28"
+}

@@ -1,0 +1,244 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hnaf.org/schemas/hnac-manifest-0.4.schema.json",
+  "title": "HNAC Manifest v0.4",
+  "type": "object",
+  "required": [
+    "format_version",
+    "app",
+    "execution",
+    "capabilities",
+    "security",
+    "compatibility"
+  ],
+  "properties": {
+    "format_version": {
+      "const": "0.4"
+    },
+    "app": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "version"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+([.-][a-z0-9]+)+$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+([+-][A-Za-z0-9.-]+)?$"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "execution": {
+      "type": "object",
+      "required": [
+        "primary"
+      ],
+      "properties": {
+        "primary": {
+          "$ref": "#/$defs/executionProfile"
+        },
+        "alternatives": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/executionProfile"
+          }
+        },
+        "limits": {
+          "type": "object",
+          "properties": {
+            "fuel": {
+              "type": "integer",
+              "minimum": 1000
+            },
+            "memory_bytes": {
+              "type": "integer",
+              "minimum": 65536
+            },
+            "operations": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/capability"
+      }
+    },
+    "interface": {
+      "type": "object"
+    },
+    "state": {
+      "type": "object"
+    },
+    "distribution": {
+      "type": "object"
+    },
+    "security": {
+      "type": "object",
+      "required": [
+        "sandbox"
+      ],
+      "properties": {
+        "sandbox": {
+          "const": "deny-by-default"
+        },
+        "signature": {
+          "enum": [
+            "optional",
+            "required",
+            "ed25519"
+          ]
+        },
+        "supply_chain": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "compatibility": {
+      "type": "object",
+      "required": [
+        "min_runtime"
+      ],
+      "properties": {
+        "min_runtime": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "host_families": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "extensions": {
+      "type": "object"
+    },
+    "semantics": {
+      "type": "object",
+      "properties": {
+        "trace_contract": {
+          "type": "string",
+          "minLength": 1
+        },
+        "equivalent_profiles": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "observable_capabilities": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9.-]+$"
+          },
+          "uniqueItems": true
+        },
+        "outcome": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "executionProfile": {
+      "type": "object",
+      "required": [
+        "profile",
+        "entry"
+      ],
+      "properties": {
+        "profile": {
+          "type": "string",
+          "minLength": 1
+        },
+        "entry": {
+          "type": "string",
+          "minLength": 1
+        },
+        "abi": {
+          "type": "string"
+        },
+        "world": {
+          "type": "string"
+        },
+        "export": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contract": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": true
+    },
+    "capability": {
+      "type": "object",
+      "required": [
+        "id",
+        "required"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9.-]+$"
+        },
+        "version": {
+          "type": "string"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "scope": {
+          "enum": [
+            "one-shot",
+            "session",
+            "app",
+            "document",
+            "device",
+            "work"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        },
+        "fallback": {
+          "type": "string"
+        },
+        "constraints": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,12 @@
+{
+  "specVersion":"0.1","metadata":{"id":"rfe-door","title":"RFE Door Projection","duration":10,"defaultFps":30,"seed":5},
+  "canvas":{"width":960,"height":540,"background":{"type":"solid","color":"#101522"}},
+  "variables":{"doorState":"LOCKED","observer":"SUBJECT-A","provisional":false},
+  "events":[{"id":"unlock","time":3,"type":"set","target":"doorState","value":"OPEN"},{"id":"provisional","time":6,"type":"set","target":"provisional","value":true}],
+  "nodes":[
+    {"id":"room","type":"rect","layout":{"x":"8%","y":"12%","width":"84%","height":"76%"},"appearance":{"fill":{"type":"solid","color":"#1c293d"},"stroke":{"type":"solid","color":"#38516f"},"strokeWidth":3}},
+    {"id":"door","type":"rect","layout":{"x":"50%","y":"54%","width":220,"height":320,"anchorX":0.5,"anchorY":0.5},"appearance":{"fill":{"type":"solid","color":"#63472e"},"stroke":{"type":"solid","color":"#c69b6d"},"strokeWidth":5},"tracks":[{"id":"door-open","property":"transform.scaleX","mode":"expression","expression":"vars.doorState == 'OPEN' ? 0.25 : 1"}]},
+    {"id":"state","type":"text","layout":{"x":"50%","y":"9%","width":"80%","height":50,"anchorX":0.5,"anchorY":0},"appearance":{"fill":{"type":"solid","color":"#f5f8ff"}},"content":{"text":{"expression":"'DOOR: ' + vars.doorState"},"fontSize":30,"fontWeight":"bold","align":"center"}},
+    {"id":"observer","type":"text","layout":{"x":"50%","y":"91%","width":"80%","height":35,"anchorX":0.5,"anchorY":1},"appearance":{"fill":{"type":"solid","color":"#80baff"}},"content":{"text":{"expression":"'OBSERVER: ' + vars.observer + (vars.provisional ? ' / PROVISIONAL' : ' / COMMITTED')"},"fontSize":16,"align":"center"}}
+  ]
+}

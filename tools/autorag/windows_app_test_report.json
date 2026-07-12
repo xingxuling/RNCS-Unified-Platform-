@@ -1,0 +1,18 @@
+{
+  "timestamp": 1769200101.1212137,
+  "test_results": {
+    "system_check": true,
+    "files_check": true,
+    "modules_check": true,
+    "config_check": true,
+    "bat_files_check": false
+  },
+  "passed": 4,
+  "total": 5,
+  "percentage": 80.0,
+  "system_info": {
+    "python_version": "3.12.3",
+    "os": "Linux",
+    "current_dir": "/mnt/c/Users/User/auto-rag-system"
+  }
+}

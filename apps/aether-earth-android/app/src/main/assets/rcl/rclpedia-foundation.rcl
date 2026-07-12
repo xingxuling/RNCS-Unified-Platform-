@@ -1,0 +1,7 @@
+reality AetherEarthRclpediaFoundation {
+  facet encyclopedia.format : Text = "rclpedia.v0.1"
+  facet encyclopedia.seed_entries : Number = 512
+  facet encyclopedia.evidence_required : Truth = true
+  facet encyclopedia.conflict_tracking : Truth = true
+  facet encyclopedia.revision_tracking : Truth = true
+}

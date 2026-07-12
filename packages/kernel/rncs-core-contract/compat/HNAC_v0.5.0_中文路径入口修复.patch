@@ -1,0 +1,9 @@
+--- a/hosts/js/state-fabric.mjs
++++ b/hosts/js/state-fabric.mjs
+@@
+-if (import.meta.url === `file://${process.argv[1]}`) {
++import { pathToFileURL } from "node:url";
++if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+```
+
+原因：`import.meta.url` 会对中文路径进行 URL 编码，而字符串拼接的 `file://${process.argv[1]}` 不会。

@@ -21,7 +21,7 @@ func _ready() -> void:
 	_choose_target()
 
 func _physics_process(delta: float) -> void:
-	var direction := target_position - global_position
+	var direction = target_position - global_position
 	direction.y = 0.0
 	if direction.length() < 1.0:
 		_choose_target()
@@ -38,32 +38,32 @@ func _choose_target() -> void:
 	target_position = Vector3(_rng.randf_range(6.0, 104.0), 1.0, _rng.randf_range(6.0, 104.0))
 
 func _build_visual(color: Color) -> void:
-	var body := MeshInstance3D.new()
-	var box := BoxMesh.new()
+	var body = MeshInstance3D.new()
+	var box = BoxMesh.new()
 	body.mesh = box
 	body.position.y = 1.1
 	body.scale = Vector3(0.55, 1.05, 0.4)
-	var material := StandardMaterial3D.new()
+	var material = StandardMaterial3D.new()
 	material.albedo_color = color
 	material.roughness = 0.8
 	body.material_override = material
 	add_child(body)
-	var head := MeshInstance3D.new()
+	var head = MeshInstance3D.new()
 	head.mesh = SphereMesh.new()
 	head.position.y = 2.05
 	head.scale = Vector3.ONE * 0.42
-	var skin := StandardMaterial3D.new()
+	var skin = StandardMaterial3D.new()
 	skin.albedo_color = Color("d4a578")
 	head.material_override = skin
 	add_child(head)
-	var collision := CollisionShape3D.new()
-	var shape := CapsuleShape3D.new()
+	var collision = CollisionShape3D.new()
+	var shape = CapsuleShape3D.new()
 	shape.radius = 0.42
 	shape.height = 1.8
 	collision.shape = shape
 	collision.position.y = 0.95
 	add_child(collision)
-	var label := Label3D.new()
+	var label = Label3D.new()
 	label.text = "%s · %s Lv.%d\n[%s]" % [display_name, role, level, guild_name]
 	label.position = Vector3(0, 2.8, 0)
 	label.font_size = 20

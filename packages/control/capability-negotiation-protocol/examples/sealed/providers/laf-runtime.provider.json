@@ -1,0 +1,161 @@
+{
+  "provider_id": "laf-runtime",
+  "protocol_versions": [
+    "0.1.0"
+  ],
+  "status": "available",
+  "trust": {
+    "level": 3,
+    "attestations": [
+      "local-package-verified"
+    ]
+  },
+  "transports": [
+    {
+      "kind": "local",
+      "runtime": "node"
+    }
+  ],
+  "capabilities": [
+    {
+      "capability_id": "laf.progress.set",
+      "version": "1.0.0",
+      "fulfills": [
+        "artifact.progress.target"
+      ],
+      "inputs": {
+        "artifact_id": {
+          "type": "string",
+          "required": true
+        },
+        "value": {
+          "type": "integer",
+          "required": true
+        }
+      },
+      "outputs": {
+        "laf_revision": {
+          "type": "string"
+        },
+        "provisional_delta": {
+          "type": "object"
+        }
+      },
+      "required_scopes": [
+        "artifact.write"
+      ],
+      "host_requirements": [
+        "input.activate"
+      ],
+      "risk": {
+        "level": "medium",
+        "reasons": [
+          "artifact-mutation"
+        ]
+      },
+      "reversible": true,
+      "execution_phase": "transaction",
+      "side_effects": [
+        "artifact.revision"
+      ],
+      "evidence": {
+        "produces": [
+          "laf.revision",
+          "rncs.provisional-delta"
+        ],
+        "requires": [
+          "artifact.root"
+        ]
+      },
+      "cost": {
+        "cpu_millis": 3,
+        "memory_mb": 2,
+        "network_kb": 0,
+        "monetary_microunits": 0
+      },
+      "transport": {
+        "kind": "local",
+        "entrypoint": "laf.progress.set"
+      },
+      "provider_id": "laf-runtime",
+      "trust": {
+        "level": 3,
+        "attestations": [
+          "local-package-verified"
+        ]
+      },
+      "format": "cnp.capability-descriptor.v0.1",
+      "protocol_versions": [
+        "0.1.0"
+      ],
+      "constraints": {},
+      "status": "available",
+      "descriptor_root": "4c9ba5c7abf29e6cd57b6c726e65a4f22dc09b50ee9659388fb0ef1982e73a1b"
+    },
+    {
+      "capability_id": "laf.report.render",
+      "version": "1.1.0",
+      "fulfills": [
+        "artifact.report.generate"
+      ],
+      "inputs": {
+        "artifact_id": {
+          "type": "string",
+          "required": true
+        }
+      },
+      "outputs": {
+        "report": {
+          "type": "string"
+        }
+      },
+      "required_scopes": [
+        "artifact.read"
+      ],
+      "host_requirements": [
+        "display.text"
+      ],
+      "risk": {
+        "level": "low",
+        "reasons": []
+      },
+      "reversible": true,
+      "execution_phase": "read-only",
+      "evidence": {
+        "produces": [
+          "report.hash"
+        ],
+        "requires": [
+          "artifact.root"
+        ]
+      },
+      "cost": {
+        "cpu_millis": 2,
+        "memory_mb": 2,
+        "network_kb": 0,
+        "monetary_microunits": 0
+      },
+      "transport": {
+        "kind": "local",
+        "entrypoint": "laf.report.render"
+      },
+      "provider_id": "laf-runtime",
+      "trust": {
+        "level": 3,
+        "attestations": [
+          "local-package-verified"
+        ]
+      },
+      "format": "cnp.capability-descriptor.v0.1",
+      "protocol_versions": [
+        "0.1.0"
+      ],
+      "constraints": {},
+      "side_effects": [],
+      "status": "available",
+      "descriptor_root": "af04d730f72b24ef6d07cdf1335998ffd0612d31400ad2308078c62932aaddb2"
+    }
+  ],
+  "format": "cnp.provider-manifest.v0.1",
+  "provider_root": "a636eae41f2dd68c44fa6632cdd0950bc06fb6a404f57952f4bc4745b16eb231"
+}

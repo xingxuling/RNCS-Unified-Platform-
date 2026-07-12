@@ -1,0 +1,12 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://taowind.example/schemas/asset-family.v0.3.schema.json",
+  "title":"Reality Asset Family v0.3",
+  "type":"object",
+  "required":["format","version","family_id","asset_id","genome_root","selected_candidate_id","members","shared_invariants","family_root"],
+  "properties":{
+    "format":{"const":"reality-asset.family.v0.3"},"version":{"const":"0.3.0"},
+    "asset_id":{"type":"string"},"members":{"type":"array","minItems":1,"items":{"type":"object","required":["member_id","variant","candidate_id","candidate_root","selected","artifact_roles","artifact_roots"]}},
+    "family_root":{"type":"string","pattern":"^[a-f0-9]{64}$"}
+  },"additionalProperties":true
+}

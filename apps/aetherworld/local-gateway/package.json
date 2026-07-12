@@ -1,0 +1,21 @@
+{
+  "name": "aether-local-gateway",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Aether Local Gateway - 本地模型代理 + 本地执行网关。仅允许白名单训练命令，spawn shell:false，不读取全盘，不上传数据。",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "local-gateway": "node training-server.js",
+    "training-gateway": "node training-server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,0 +1,8 @@
+reality AetherEarthWorldFoundation {
+  facet world.id : Text = "aether-earth"
+  facet world.grid_width : Number = 16
+  facet world.grid_height : Number = 16
+  facet world.time_scale : Number = 1
+  facet world.compression_enabled : Truth = true
+  facet world.scientific_evidence_required : Truth = true
+}

@@ -1,0 +1,497 @@
+{
+  "format": "vsr.spatial-frame-plan.v0.4",
+  "version": "0.5.0-alpha.1",
+  "sceneId": "spatial-showcase",
+  "viewport": {
+    "width": 640,
+    "height": 360
+  },
+  "budget": {
+    "qualityTier": "quality",
+    "width": 640,
+    "height": 360,
+    "maxLights": 16,
+    "shadowMapSize": 256,
+    "shadows": true,
+    "lodBias": 1.2
+  },
+  "camera": {
+    "id": "camera:main",
+    "viewMatrix": [
+      0.8090169943749473,
+      0,
+      -0.587785252292473,
+      -0.12145595832791933,
+      -0.18163563200134017,
+      0.9510565162951533,
+      -0.24999999999999994,
+      -0.7617411217970886,
+      0.5590169943749473,
+      0.3090169943749474,
+      0.7694208842938133,
+      -8.658233013354973,
+      0,
+      0,
+      0,
+      1
+    ],
+    "projectionMatrix": [
+      1.153295910888354,
+      0,
+      0,
+      0,
+      0,
+      2.050303841579296,
+      0,
+      0,
+      0,
+      0,
+      -1.002002002002002,
+      -0.20020020020020018,
+      0,
+      0,
+      -1,
+      0
+    ],
+    "viewProjectionMatrix": [
+      0.9330359914518133,
+      0,
+      -0.6778903279493886,
+      -0.1400746600926157,
+      -0.37240823406003104,
+      1.9499548289189752,
+      -0.5125759603948239,
+      -1.5618007483094933,
+      -0.5601361475168392,
+      -0.30963564701633867,
+      -0.7709612664445517,
+      8.47536661298131,
+      -0.5590169943749473,
+      -0.3090169943749474,
+      -0.7694208842938133,
+      8.658233013354973
+    ],
+    "position": [
+      4.8,
+      3.4,
+      6.4
+    ]
+  },
+  "drawPackets": [
+    {
+      "nodeId": "ground",
+      "meshId": "mesh:ground",
+      "materialId": "mat:ground",
+      "worldMatrix": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "worldBounds": {
+        "min": [
+          -4.5,
+          0,
+          -4.5
+        ],
+        "max": [
+          4.5,
+          0,
+          4.5
+        ],
+        "center": [
+          0,
+          0,
+          0
+        ],
+        "radius": 6.3639610306789285
+      },
+      "distanceToCamera": 8.692525524840292,
+      "lodLevel": 0,
+      "indexCount": 6,
+      "castShadow": false,
+      "receiveShadow": true,
+      "packetRoot": "da5791308210ef1502e95752138c90155fa90a155e6f98683b75f201a1443e92"
+    },
+    {
+      "nodeId": "cube-a",
+      "meshId": "mesh:cube",
+      "materialId": "mat:blue-metal",
+      "worldMatrix": [
+        0.882947592858927,
+        0,
+        0.4694715627858908,
+        -1.5,
+        0,
+        1,
+        0,
+        0.65,
+        -0.4694715627858908,
+        0,
+        0.882947592858927,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "worldBounds": {
+        "min": [
+          -2.1762095778224086,
+          0.15000000000000002,
+          -0.6762095778224089
+        ],
+        "max": [
+          -0.8237904221775911,
+          1.15,
+          0.6762095778224089
+        ],
+        "center": [
+          -1.5,
+          0.6499999999999999,
+          0
+        ],
+        "radius": 0.8660254037844387
+      },
+      "distanceToCamera": 9.392150978343565,
+      "lodLevel": 0,
+      "indexCount": 36,
+      "castShadow": true,
+      "receiveShadow": true,
+      "packetRoot": "81deb3f564b96ebd1ebc70450528b754f0c1ba964dcadf88eb6c97035c9cc184"
+    },
+    {
+      "nodeId": "sphere-a",
+      "meshId": "mesh:sphere",
+      "materialId": "mat:red",
+      "worldMatrix": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0.8,
+        0,
+        0,
+        1,
+        -0.6,
+        0,
+        0,
+        0,
+        1
+      ],
+      "worldBounds": {
+        "min": [
+          -0.7,
+          0.10000000000000009,
+          -1.2999999999999998
+        ],
+        "max": [
+          0.7,
+          1.5,
+          0.09999999999999998
+        ],
+        "center": [
+          0,
+          0.8,
+          -0.5999999999999999
+        ],
+        "radius": 1.212435565298214
+      },
+      "distanceToCamera": 8.876936408468858,
+      "lodLevel": 0,
+      "indexCount": 2304,
+      "castShadow": true,
+      "receiveShadow": true,
+      "packetRoot": "c648b08947765ea23654256cfb18aa886e5a31956f29041a6a8b37899683991f"
+    },
+    {
+      "nodeId": "cube-b",
+      "meshId": "mesh:cube",
+      "materialId": "mat:emissive",
+      "worldMatrix": [
+        0.7345284520241742,
+        -0.22162298554798782,
+        -0.27292644967684987,
+        1.6,
+        0.10323124176013292,
+        1.062787545505866,
+        -0.1786410852304871,
+        0.55,
+        0.2996852747327296,
+        0.17710416537849508,
+        0.7304782787560926,
+        0.5,
+        0,
+        0,
+        0,
+        1
+      ],
+      "worldBounds": {
+        "min": [
+          0.9854610563754942,
+          -0.12232993624824295,
+          -0.10363385943365866
+        ],
+        "max": [
+          2.2145389436245058,
+          1.2223299362482432,
+          1.1036338594336588
+        ],
+        "center": [
+          1.6,
+          0.55,
+          0.5
+        ],
+        "radius": 0.7889866919029751
+      },
+      "distanceToCamera": 7.291947613635195,
+      "lodLevel": 0,
+      "indexCount": 36,
+      "castShadow": true,
+      "receiveShadow": true,
+      "packetRoot": "5ff6bc737cb4c6b884752a9f8308a647c219809615065a2ae4eca9649bc38b8e"
+    },
+    {
+      "nodeId": "child-cube",
+      "meshId": "mesh:cube",
+      "materialId": "mat:blue-metal",
+      "worldMatrix": [
+        0.25708495820846095,
+        -0.07756804494179573,
+        -0.09552425738689745,
+        1.3229712680650154,
+        0.036130934616046516,
+        0.37197564092705304,
+        -0.06252437983067048,
+        1.8784844318823326,
+        0.10488984615645536,
+        0.06198645788247327,
+        0.2556673975646324,
+        0.7213802067231189,
+        0,
+        0,
+        0,
+        1
+      ],
+      "worldBounds": {
+        "min": [
+          1.1078826377964384,
+          1.6431689541954475,
+          0.5101083559213384
+        ],
+        "max": [
+          1.5380598983335925,
+          2.1137999095692175,
+          0.9326520575248993
+        ],
+        "center": [
+          1.3229712680650154,
+          1.8784844318823324,
+          0.7213802067231189
+        ],
+        "radius": 0.2761453421660414
+      },
+      "distanceToCamera": 6.830187492545267,
+      "lodLevel": 0,
+      "indexCount": 36,
+      "castShadow": true,
+      "receiveShadow": true,
+      "packetRoot": "096cbb4757ba7a0b6ff092fd30eadd1d3029127bc40f1b7b79d90aeb7ebe77ca"
+    }
+  ],
+  "lights": [
+    {
+      "id": "light:ambient",
+      "kind": "ambient",
+      "color": "#7c9bc4",
+      "intensity": 0.16,
+      "range": 10
+    },
+    {
+      "id": "light:sun",
+      "kind": "directional",
+      "color": "#fff2d6",
+      "intensity": 2.1,
+      "direction": [
+        -0.55,
+        -1,
+        -0.35
+      ],
+      "castShadow": true,
+      "range": 10
+    },
+    {
+      "id": "light:fill",
+      "kind": "point",
+      "color": "#60a5fa",
+      "intensity": 5,
+      "position": [
+        -2.8,
+        2.4,
+        2.5
+      ],
+      "range": 7
+    }
+  ],
+  "passes": [
+    {
+      "id": "shadow-depth",
+      "kind": "shadow-depth",
+      "dependsOn": [],
+      "resourceIds": [
+        "shadow-depth"
+      ]
+    },
+    {
+      "id": "scene-depth-color",
+      "kind": "scene-depth-color",
+      "dependsOn": [
+        "shadow-depth"
+      ],
+      "resourceIds": [
+        "scene-color",
+        "scene-depth",
+        "shadow-depth"
+      ]
+    },
+    {
+      "id": "tone-map",
+      "kind": "tone-map",
+      "dependsOn": [
+        "scene-depth-color"
+      ],
+      "resourceIds": [
+        "scene-color",
+        "present-color"
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "id": "mesh:mesh:cube:vertices",
+      "kind": "vertex-buffer",
+      "byteLength": 768,
+      "resourceRoot": "452c485a9dd872570776d81f7e743daf25dac3b18f1e79fe669718a688bc110a"
+    },
+    {
+      "id": "mesh:mesh:cube:indices",
+      "kind": "index-buffer",
+      "byteLength": 144,
+      "resourceRoot": "5d6c1baf686316f9aa931b80536c9432b9454281e5fee10a8ff12c350fe1031e"
+    },
+    {
+      "id": "mesh:mesh:ground:vertices",
+      "kind": "vertex-buffer",
+      "byteLength": 128,
+      "resourceRoot": "783ea4d53cf55d55e04d99ef85edac6e30bfca82cbf08cc6e80baf6be3c792e0"
+    },
+    {
+      "id": "mesh:mesh:ground:indices",
+      "kind": "index-buffer",
+      "byteLength": 24,
+      "resourceRoot": "f01bc8551015552c3247b152e0cb7d2bd99443ba8b3afcb44663066d2c7896c1"
+    },
+    {
+      "id": "mesh:mesh:sphere:vertices",
+      "kind": "vertex-buffer",
+      "byteLength": 13600,
+      "resourceRoot": "cc02522a53989ec0c776c381621dd22bc96c079fc44acfc33235370007d99c7e"
+    },
+    {
+      "id": "mesh:mesh:sphere:indices",
+      "kind": "index-buffer",
+      "byteLength": 9216,
+      "resourceRoot": "6b56e56c1289eb523606cdbf59a0e31cb7dbc0273e9768831d98d6bb6535f9e0"
+    },
+    {
+      "id": "mesh:mesh:cube-low:vertices",
+      "kind": "vertex-buffer",
+      "byteLength": 768,
+      "resourceRoot": "452c485a9dd872570776d81f7e743daf25dac3b18f1e79fe669718a688bc110a"
+    },
+    {
+      "id": "mesh:mesh:cube-low:indices",
+      "kind": "index-buffer",
+      "byteLength": 144,
+      "resourceRoot": "5d6c1baf686316f9aa931b80536c9432b9454281e5fee10a8ff12c350fe1031e"
+    },
+    {
+      "id": "materials",
+      "kind": "material-buffer",
+      "byteLength": 256,
+      "resourceRoot": "822bb1b36735dd1968f382032d9f201e29f6d8cad26ed92abbfc3d07bc38eb3e"
+    },
+    {
+      "id": "lights",
+      "kind": "light-buffer",
+      "byteLength": 192,
+      "resourceRoot": "1b4468542091229539e238db5d13eb66e90e0fcffed1b89f558101114b411601"
+    },
+    {
+      "id": "scene-depth",
+      "kind": "depth-texture",
+      "byteLength": 921600,
+      "format": "depth24plus",
+      "resourceRoot": "0b0e3829b036a1aba9f52577092e92ea134e6ac20d67adff48ac8459ff608648"
+    },
+    {
+      "id": "scene-color",
+      "kind": "color-texture",
+      "byteLength": 1843200,
+      "format": "rgba16float",
+      "resourceRoot": "aecb2f4c94690154dd2bdcc059642c02598ffd9533e07e15b99b7a7ed0438d88"
+    },
+    {
+      "id": "present-color",
+      "kind": "color-texture",
+      "byteLength": 921600,
+      "format": "bgra8unorm",
+      "resourceRoot": "d0c070c32321869f121a7ff28270a6c4f99ca9f007836365a475bed5f14ebe26"
+    },
+    {
+      "id": "shadow-depth",
+      "kind": "shadow-texture",
+      "byteLength": 262144,
+      "format": "depth32float",
+      "resourceRoot": "2e71471d3cc08473bb78242e5303fcbf5720fed7c3e4b863c180983db879f588"
+    }
+  ],
+  "shaders": {
+    "vertex": "struct Camera { viewProjection: mat4x4<f32>, cameraPosition:vec4<f32>, ambient:vec4<f32>, sunDirection:vec4<f32>, sunColor:vec4<f32> }; @group(0) @binding(0) var<uniform> camera: Camera; struct Object { world: mat4x4<f32> }; @group(1) @binding(0) var<uniform> object: Object; struct VSIn { @location(0) position: vec3<f32>, @location(1) normal: vec3<f32>, @location(2) uv: vec2<f32> }; struct VSOut { @builtin(position) position: vec4<f32>, @location(0) worldPosition: vec3<f32>, @location(1) normal: vec3<f32>, @location(2) uv: vec2<f32> }; @vertex fn vs_main(input:VSIn)->VSOut { var out:VSOut; let worldPosition=object.world*vec4<f32>(input.position,1.0); out.position=camera.viewProjection*worldPosition; out.worldPosition=worldPosition.xyz; out.normal=normalize((object.world*vec4<f32>(input.normal,0.0)).xyz); out.uv=input.uv; return out; }",
+    "fragment": "\nstruct Camera { viewProjection: mat4x4<f32>, cameraPosition:vec4<f32>, ambient:vec4<f32>, sunDirection:vec4<f32>, sunColor:vec4<f32> };\n@group(0) @binding(0) var<uniform> camera: Camera;\nstruct Material { baseColor: vec4<f32>, params:vec4<f32>, emissive:vec4<f32>, advanced:vec4<f32> };\n@group(2) @binding(0) var<uniform> material:Material;\nconst PI:f32=3.14159265359;\nfn distributionGGX(nDotH:f32,roughness:f32)->f32{let a=roughness*roughness;let a2=a*a;let d=nDotH*nDotH*(a2-1.0)+1.0;return a2/max(PI*d*d,0.000001);}\nfn geometrySchlickGGX(nDotV:f32,roughness:f32)->f32{let r=roughness+1.0;let k=(r*r)/8.0;return nDotV/max(nDotV*(1.0-k)+k,0.000001);}\nfn geometrySmith(nDotV:f32,nDotL:f32,roughness:f32)->f32{return geometrySchlickGGX(nDotV,roughness)*geometrySchlickGGX(nDotL,roughness);}\nfn fresnelSchlick(cosTheta:f32,f0:vec3<f32>)->vec3<f32>{return f0+(vec3<f32>(1.0)-f0)*pow(clamp(1.0-cosTheta,0.0,1.0),5.0);}\n@fragment fn fs_main(@location(0) worldPosition:vec3<f32>,@location(1) normal:vec3<f32>)->@location(0) vec4<f32>{\n  let n=normalize(normal);let l=normalize(-camera.sunDirection.xyz);let v=normalize(camera.cameraPosition.xyz-worldPosition);let h=normalize(l+v);\n  let metallic=material.params.x;let roughness=max(material.params.y,0.04);let emissiveStrength=material.params.z;let opacity=material.params.w;\n  let ao=material.advanced.x;let clearcoat=material.advanced.y;let clearcoatRoughness=max(material.advanced.z,0.04);let ior=max(material.advanced.w,1.0);\n  let nDotL=max(dot(n,l),0.0);let nDotV=max(dot(n,v),0.0001);let nDotH=max(dot(n,h),0.0);let vDotH=max(dot(v,h),0.0);\n  let dielectric=pow((ior-1.0)/(ior+1.0),2.0);let f0=mix(vec3<f32>(dielectric),material.baseColor.rgb,vec3<f32>(metallic));\n  let f=fresnelSchlick(vDotH,f0);let d=distributionGGX(nDotH,roughness);let g=geometrySmith(nDotV,nDotL,roughness);\n  let specular=f*(d*g/max(4.0*nDotV*nDotL,0.0001));let kd=(vec3<f32>(1.0)-f)*(1.0-metallic);let diffuse=kd*material.baseColor.rgb/PI;\n  let coatF=fresnelSchlick(vDotH,vec3<f32>(0.04));let coatD=distributionGGX(nDotH,clearcoatRoughness);let coatG=geometrySmith(nDotV,nDotL,clearcoatRoughness);let coat=coatF*(coatD*coatG/max(4.0*nDotV*nDotL,0.0001))*clearcoat;\n  let direct=(diffuse+specular+coat)*camera.sunColor.rgb*camera.sunColor.a*nDotL;\n  let ambient=material.baseColor.rgb*camera.ambient.rgb*camera.ambient.a*ao;\n  return vec4<f32>(ambient+direct+material.emissive.rgb*emissiveStrength,material.baseColor.a*opacity);\n}",
+    "shadowVertex": "struct ShadowCamera { lightViewProjection:mat4x4<f32> }; @group(0) @binding(0) var<uniform> shadowCamera:ShadowCamera; struct Object { world:mat4x4<f32> }; @group(1) @binding(0) var<uniform> object:Object; @vertex fn vs_shadow(@location(0) position:vec3<f32>)->@builtin(position) vec4<f32>{return shadowCamera.lightViewProjection*object.world*vec4<f32>(position,1.0);}",
+    "sourceRoot": "3ab539a399ceceb7c24e266d55593fb40f0658373b4e7e437ad8a998ad325570"
+  },
+  "stats": {
+    "meshCount": 4,
+    "nodeCount": 5,
+    "visibleDraws": 5,
+    "culledDraws": 0,
+    "triangleCount": 806,
+    "lightCount": 3,
+    "shadowCasterCount": 4,
+    "lodHistogram": {
+      "0": 5
+    }
+  },
+  "sourceRealityRoot": "19194f45b9baadefa6769812d3459fc4c2ea7cbd080ca6397dc3e264ebe887ac",
+  "geometryRoot": "3ebc3aa1ae976b2c5c8d654089d6a4b9110876c4738bf9d78feccf82d86fa8e9",
+  "materialRoot": "822bb1b36735dd1968f382032d9f201e29f6d8cad26ed92abbfc3d07bc38eb3e",
+  "commandRoot": "542ba13de6c8be78f21cd2bd54aa7a4a9dde4c4065f268fbbe672fb6d82424e2",
+  "frameRoot": "2683103adcb3fcaa7eafdfffaef002796a760c840a41034db84b28dca9e07f47"
+}

@@ -1,0 +1,28 @@
+{
+  "suite": "RNCS_Aetherworld_Unified",
+  "version": "0.18.2-alpha.1",
+  "codename": "Bounded Startup & Staged Open-World Streaming Hotfix",
+  "based_on": "0.18.1-alpha.1",
+  "root_cause": {
+    "synchronous_world_generation_in_ready": true,
+    "diagnostic_ui_could_not_repaint": true,
+    "unbounded_wait_for_world_ready": true,
+    "hundreds_of_unique_runtime_meshes": true
+  },
+  "fixes": {
+    "threaded_scene_load": true,
+    "scene_load_timeout_ms": 15000,
+    "world_ready_timeout_ms": 30000,
+    "staged_world_initialization": true,
+    "multimesh_environment_batching": true,
+    "low_polygon_environment_meshes": true,
+    "frame_yield_between_spawn_batches": true,
+    "startup_progress_reporting": true,
+    "pre_tree_local_position_assignment": true
+  },
+  "verification": {
+    "gdscript_parse": "8/8 PASS via gdtoolkit parser",
+    "structural_checks": "PASS",
+    "godot_binary_execution": "NOT RUN IN CONTAINER - USER RUNTIME TEST REQUIRED"
+  }
+}

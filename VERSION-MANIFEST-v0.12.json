@@ -1,0 +1,37 @@
+{
+  "format": "rncs.aetherworld.unified-version-manifest.v0.12",
+  "suite_version": "0.12.0-alpha.1",
+  "release_name": "TaoWind Reality MCP Runtime",
+  "primary_package": "@taowind/taowind-reality-mcp@0.1.0-alpha.1",
+  "base_release": "0.11.0-alpha.1",
+  "capabilities": [
+    "remote-streamable-http-mcp",
+    "openai-compatible-search-fetch",
+    "reality-one-runtime-discovery",
+    "candidate-safe-world-compilation",
+    "candidate-branch-simulation",
+    "authority-state-isolation",
+    "origin-host-rate-limit-protection",
+    "docker-render-railway-deployment"
+  ],
+  "authority_tools_exposed": false,
+  "generated_at": "2026-07-03T11:12:59Z",
+  "verification": {
+    "mcp_tests": "13/13 PASS",
+    "smoke": "PASS",
+    "gateway_tests": "13/13 PASS",
+    "native_bridge_tests": "14/14 PASS",
+    "root_integration_tests": "19/19 PASS",
+    "runtime_health": "14/14 healthy",
+    "release_structure": "PASS (29 modules)",
+    "npm_audit": "0 vulnerabilities",
+    "node_syntax": "PASS",
+    "npm_pack_dry_run": "PASS"
+  },
+  "known_limits": [
+    "OAuth 2.1 not implemented",
+    "No hosted HTTPS endpoint included",
+    "Docker image not built in this environment",
+    "Historical full-suite test exceeds the execution window; MCP dependency chain and root integration are independently green"
+  ]
+}

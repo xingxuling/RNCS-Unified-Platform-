@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.example/schemas/vsr-observer-policy.v0.1.schema.json",
+  "title": "VSR Observer Policy v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "format": { "const": "vsr.observer-policy.v0.1" },
+    "anyRole": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+    "allRoles": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+    "anyScope": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+    "allScopes": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+    "minClearance": { "type": "number", "minimum": 0 },
+    "subjectIds": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+    "observerIds": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+    "deny": { "enum": ["redact", "hide"] },
+    "redactionText": { "type": "string" },
+    "reason": { "type": "string" }
+  }
+}

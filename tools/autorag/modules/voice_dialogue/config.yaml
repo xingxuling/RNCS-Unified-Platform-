@@ -1,0 +1,165 @@
+# 語音對話模塊配置文件
+# 版本: 1.0.0
+
+# 主模塊配置
+main:
+  # 運行模式
+  simulate_mode: true  # 模擬模式（用於測試，無需實際語音庫）
+  auto_start: false    # 自動開始對話
+  max_conversation_turns: 20  # 最大對話輪次
+  
+  # 日誌配置
+  log_level: "INFO"    # DEBUG, INFO, WARNING, ERROR
+  log_file: "voice_dialogue.log"  # 日誌文件路徑
+  enable_console_log: true  # 是否啟用控制台日誌
+  
+  # 性能配置
+  processing_timeout: 30  # 處理超時時間（秒）
+  audio_cache_size: 10    # 音頻緩存大小
+  
+  # 數據保存
+  save_conversations: true  # 是否保存對話記錄
+  conversation_history_dir: "conversations"  # 對話記錄目錄
+
+# 語音識別配置
+speech_recognition:
+  # 基本配置
+  language: "zh-CN"  # 識別語言
+  simulate_mode: true  # 模擬模式
+  
+  # 麥克風配置
+  device_index: null  # 麥克風設備索引（null表示自動選擇）
+  sample_rate: 16000  # 採樣率
+  chunk_size: 1024    # 塊大小
+  
+  # 識別參數
+  energy_threshold: 300  # 能量閾值
+  timeout: 5            # 超時時間（秒）
+  phrase_time_limit: 10  # 短語時間限制（秒）
+  pause_threshold: 0.8   # 暫停閾值
+  
+  # 高級配置
+  dynamic_energy_threshold: true  # 動態能量閾值
+  adjust_for_ambient_noise: true  # 調整環境噪音
+  ambient_duration: 1.0           # 環境噪音調整時長（秒）
+
+# RAG接口配置
+rag_interface:
+  # 系統路徑
+  rag_system_path: "."  # RAG系統路徑
+  simulate_mode: true   # 模擬模式
+  
+  # 查詢配置
+  timeout: 30           # 查詢超時時間（秒）
+  max_retries: 3        # 最大重試次數
+  max_query_length: 500 # 最大查詢長度
+  
+  # 上下文配置
+  enable_context: true  # 啟用上下文
+  context_size: 3       # 上下文大小（對話輪次）
+  
+  # 緩存配置
+  enable_cache: true    # 啟用緩存
+  cache_size: 100       # 緩存大小
+  cache_ttl: 3600       # 緩存生存時間（秒）
+
+# 語音合成配置
+speech_synthesis:
+  # 基本配置
+  language: "zh"        # 合成語言
+  simulate_mode: true   # 模擬模式
+  
+  # 語音參數
+  rate: 150             # 語速（詞每分鐘）
+  volume: 0.9           # 音量（0.0-1.0）
+  voice: "default"      # 語音類型
+  
+  # 輸出配置
+  output_dir: "audio_output"  # 音頻輸出目錄
+  keep_audio_files: false     # 是否保留音頻文件
+  audio_format: "mp3"         # 音頻格式（mp3, wav）
+  
+  # 引擎優先級
+  engine_priority: ["pyttsx3", "gtts", "system"]  # 引擎使用優先級
+
+# 對話管理配置
+dialogue_management:
+  # 對話流程
+  enable_welcome: true        # 啟用歡迎語
+  enable_goodbye: true        # 啟用結束語
+  enable_notifications: true  # 啟用通知音效
+  
+  # 超時控制
+  listening_timeout: 60       # 聆聽超時（秒，0表示無超時）
+  speaking_timeout: 30        # 說話超時（秒）
+  
+  # 錯誤處理
+  max_errors: 5               # 最大錯誤次數
+  error_cooldown: 10          # 錯誤冷卻時間（秒）
+  
+  # 用戶體驗
+  response_delay: 0.5         # 響應延遲（秒）
+  thinking_indicator: true    # 思考指示器
+
+# 錯誤處理配置
+error_handling:
+  # 錯誤級別
+  log_errors: true           # 記錄錯誤
+  show_user_errors: true     # 向用戶顯示錯誤
+  auto_recover: true         # 自動恢復
+  
+  # 重試策略
+  max_retries: 3             # 最大重試次數
+  retry_delay: 2.0           # 重試延遲（秒）
+  exponential_backoff: true  # 指數退避
+  
+  # 錯誤類型處理
+  handle_timeout: true       # 處理超時錯誤
+  handle_network: true       # 處理網絡錯誤
+  handle_audio: true         # 處理音頻錯誤
+
+# 性能監控配置
+performance_monitoring:
+  # 監控開關
+  enable_monitoring: true    # 啟用性能監控
+  monitor_interval: 60       # 監控間隔（秒）
+  
+  # 指標配置
+  track_response_time: true  # 跟踪響應時間
+  track_memory_usage: true   # 跟踪內存使用
+  track_cpu_usage: true      # 跟踪CPU使用
+  
+  # 閾值配置
+  max_response_time: 10.0    # 最大響應時間（秒）
+  max_memory_mb: 500         # 最大內存使用（MB）
+  max_cpu_percent: 80        # 最大CPU使用率（%）
+
+# 測試配置
+testing:
+  # 測試模式
+  enable_test_mode: false    # 啟用測試模式
+  test_scenarios: []         # 測試場景列表
+  
+  # 自動化測試
+  auto_test_on_start: false  # 啟動時自動測試
+  test_timeout: 300          # 測試超時時間（秒）
+  
+  # 結果記錄
+  save_test_results: true    # 保存測試結果
+  test_results_dir: "test_results"  # 測試結果目錄
+
+# 擴展配置
+extensions:
+  # 插件系統
+  enable_plugins: false      # 啟用插件系統
+  plugin_dir: "plugins"      # 插件目錄
+  
+  # Web接口
+  enable_web_interface: false  # 啟用Web接口
+  web_port: 8080             # Web端口
+  web_host: "localhost"      # Web主機
+  
+  # API接口
+  enable_api: false          # 啟用API接口
+  api_port: 8000             # API端口
+  api_auth_required: false   # API認證要求

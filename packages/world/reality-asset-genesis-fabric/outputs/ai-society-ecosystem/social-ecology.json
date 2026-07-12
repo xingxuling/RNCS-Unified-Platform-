@@ -1,0 +1,5064 @@
+{
+  "format": "ragf.social-ecology.v0.5",
+  "version": "0.5.0-alpha.1",
+  "world_id": "world:5c46cbb3d1a1e47712b0e9b4",
+  "genome_root": "f35d3ec4ff3e4a10afccac7f8527024e7c99d41afc68ab39f7bd032ea32de4d4",
+  "map": {
+    "projection": "2.5d-isometric",
+    "width": 12,
+    "height": 12,
+    "tiles": [
+      {
+        "tile_id": "tile:0:0",
+        "x": 0,
+        "y": 0,
+        "height": 4,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:1:0",
+        "x": 1,
+        "y": 0,
+        "height": 0,
+        "biome": "water",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 0,
+          "water": 10
+        },
+        "buildable": false
+      },
+      {
+        "tile_id": "tile:2:0",
+        "x": 2,
+        "y": 0,
+        "height": 0,
+        "biome": "water",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 0,
+          "water": 10
+        },
+        "buildable": false
+      },
+      {
+        "tile_id": "tile:3:0",
+        "x": 3,
+        "y": 0,
+        "height": 4,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:4:0",
+        "x": 4,
+        "y": 0,
+        "height": 4,
+        "biome": "rock",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 8,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:5:0",
+        "x": 5,
+        "y": 0,
+        "height": 4,
+        "biome": "forest",
+        "resources": {
+          "food": 3,
+          "timber": 8,
+          "ore": 0,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:6:0",
+        "x": 6,
+        "y": 0,
+        "height": 0,
+        "biome": "water",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 0,
+          "water": 10
+        },
+        "buildable": false
+      },
+      {
+        "tile_id": "tile:7:0",
+        "x": 7,
+        "y": 0,
+        "height": 0,
+        "biome": "water",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 0,
+          "water": 10
+        },
+        "buildable": false
+      },
+      {
+        "tile_id": "tile:8:0",
+        "x": 8,
+        "y": 0,
+        "height": 3,
+        "biome": "rock",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 8,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:9:0",
+        "x": 9,
+        "y": 0,
+        "height": 0,
+        "biome": "water",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 0,
+          "water": 10
+        },
+        "buildable": false
+      },
+      {
+        "tile_id": "tile:10:0",
+        "x": 10,
+        "y": 0,
+        "height": 2,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:11:0",
+        "x": 11,
+        "y": 0,
+        "height": 3,
+        "biome": "hill",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 4,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:0:1",
+        "x": 0,
+        "y": 1,
+        "height": 2,
+        "biome": "forest",
+        "resources": {
+          "food": 3,
+          "timber": 8,
+          "ore": 0,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:1:1",
+        "x": 1,
+        "y": 1,
+        "height": 0,
+        "biome": "water",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 0,
+          "water": 10
+        },
+        "buildable": false
+      },
+      {
+        "tile_id": "tile:2:1",
+        "x": 2,
+        "y": 1,
+        "height": 4,
+        "biome": "rock",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 8,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:3:1",
+        "x": 3,
+        "y": 1,
+        "height": 3,
+        "biome": "forest",
+        "resources": {
+          "food": 3,
+          "timber": 8,
+          "ore": 0,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:4:1",
+        "x": 4,
+        "y": 1,
+        "height": 1,
+        "biome": "rock",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 8,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:5:1",
+        "x": 5,
+        "y": 1,
+        "height": 2,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:6:1",
+        "x": 6,
+        "y": 1,
+        "height": 1,
+        "biome": "hill",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 4,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:7:1",
+        "x": 7,
+        "y": 1,
+        "height": 1,
+        "biome": "rock",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 8,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:8:1",
+        "x": 8,
+        "y": 1,
+        "height": 1,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:9:1",
+        "x": 9,
+        "y": 1,
+        "height": 1,
+        "biome": "forest",
+        "resources": {
+          "food": 3,
+          "timber": 8,
+          "ore": 0,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:10:1",
+        "x": 10,
+        "y": 1,
+        "height": 4,
+        "biome": "hill",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 4,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:11:1",
+        "x": 11,
+        "y": 1,
+        "height": 0,
+        "biome": "water",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 0,
+          "water": 10
+        },
+        "buildable": false
+      },
+      {
+        "tile_id": "tile:0:2",
+        "x": 0,
+        "y": 2,
+        "height": 3,
+        "biome": "hill",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 4,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:1:2",
+        "x": 1,
+        "y": 2,
+        "height": 3,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:2:2",
+        "x": 2,
+        "y": 2,
+        "height": 0,
+        "biome": "water",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 0,
+          "water": 10
+        },
+        "buildable": false
+      },
+      {
+        "tile_id": "tile:3:2",
+        "x": 3,
+        "y": 2,
+        "height": 2,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:4:2",
+        "x": 4,
+        "y": 2,
+        "height": 1,
+        "biome": "rock",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 8,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:5:2",
+        "x": 5,
+        "y": 2,
+        "height": 1,
+        "biome": "rock",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 8,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:6:2",
+        "x": 6,
+        "y": 2,
+        "height": 4,
+        "biome": "hill",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 4,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:7:2",
+        "x": 7,
+        "y": 2,
+        "height": 0,
+        "biome": "water",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 0,
+          "water": 10
+        },
+        "buildable": false
+      },
+      {
+        "tile_id": "tile:8:2",
+        "x": 8,
+        "y": 2,
+        "height": 4,
+        "biome": "hill",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 4,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:9:2",
+        "x": 9,
+        "y": 2,
+        "height": 1,
+        "biome": "rock",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 8,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:10:2",
+        "x": 10,
+        "y": 2,
+        "height": 2,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:11:2",
+        "x": 11,
+        "y": 2,
+        "height": 0,
+        "biome": "water",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 0,
+          "water": 10
+        },
+        "buildable": false
+      },
+      {
+        "tile_id": "tile:0:3",
+        "x": 0,
+        "y": 3,
+        "height": 3,
+        "biome": "rock",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 8,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:1:3",
+        "x": 1,
+        "y": 3,
+        "height": 3,
+        "biome": "forest",
+        "resources": {
+          "food": 3,
+          "timber": 8,
+          "ore": 0,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:2:3",
+        "x": 2,
+        "y": 3,
+        "height": 1,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:3:3",
+        "x": 3,
+        "y": 3,
+        "height": 3,
+        "biome": "hill",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 4,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:4:3",
+        "x": 4,
+        "y": 3,
+        "height": 1,
+        "biome": "rock",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 8,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:5:3",
+        "x": 5,
+        "y": 3,
+        "height": 3,
+        "biome": "rock",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 8,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:6:3",
+        "x": 6,
+        "y": 3,
+        "height": 0,
+        "biome": "water",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 0,
+          "water": 10
+        },
+        "buildable": false
+      },
+      {
+        "tile_id": "tile:7:3",
+        "x": 7,
+        "y": 3,
+        "height": 3,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:8:3",
+        "x": 8,
+        "y": 3,
+        "height": 3,
+        "biome": "forest",
+        "resources": {
+          "food": 3,
+          "timber": 8,
+          "ore": 0,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:9:3",
+        "x": 9,
+        "y": 3,
+        "height": 3,
+        "biome": "forest",
+        "resources": {
+          "food": 3,
+          "timber": 8,
+          "ore": 0,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:10:3",
+        "x": 10,
+        "y": 3,
+        "height": 4,
+        "biome": "rock",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 8,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:11:3",
+        "x": 11,
+        "y": 3,
+        "height": 3,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:0:4",
+        "x": 0,
+        "y": 4,
+        "height": 3,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:1:4",
+        "x": 1,
+        "y": 4,
+        "height": 1,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:2:4",
+        "x": 2,
+        "y": 4,
+        "height": 1,
+        "biome": "rock",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 8,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:3:4",
+        "x": 3,
+        "y": 4,
+        "height": 3,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:4:4",
+        "x": 4,
+        "y": 4,
+        "height": 2,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:5:4",
+        "x": 5,
+        "y": 4,
+        "height": 2,
+        "biome": "rock",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 8,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:6:4",
+        "x": 6,
+        "y": 4,
+        "height": 3,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:7:4",
+        "x": 7,
+        "y": 4,
+        "height": 4,
+        "biome": "rock",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 8,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:8:4",
+        "x": 8,
+        "y": 4,
+        "height": 4,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:9:4",
+        "x": 9,
+        "y": 4,
+        "height": 2,
+        "biome": "forest",
+        "resources": {
+          "food": 3,
+          "timber": 8,
+          "ore": 0,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:10:4",
+        "x": 10,
+        "y": 4,
+        "height": 4,
+        "biome": "rock",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 8,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:11:4",
+        "x": 11,
+        "y": 4,
+        "height": 0,
+        "biome": "water",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 0,
+          "water": 10
+        },
+        "buildable": false
+      },
+      {
+        "tile_id": "tile:0:5",
+        "x": 0,
+        "y": 5,
+        "height": 2,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:1:5",
+        "x": 1,
+        "y": 5,
+        "height": 3,
+        "biome": "hill",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 4,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:2:5",
+        "x": 2,
+        "y": 5,
+        "height": 3,
+        "biome": "forest",
+        "resources": {
+          "food": 3,
+          "timber": 8,
+          "ore": 0,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:3:5",
+        "x": 3,
+        "y": 5,
+        "height": 4,
+        "biome": "rock",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 8,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:4:5",
+        "x": 4,
+        "y": 5,
+        "height": 2,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:5:5",
+        "x": 5,
+        "y": 5,
+        "height": 4,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:6:5",
+        "x": 6,
+        "y": 5,
+        "height": 4,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:7:5",
+        "x": 7,
+        "y": 5,
+        "height": 3,
+        "biome": "forest",
+        "resources": {
+          "food": 3,
+          "timber": 8,
+          "ore": 0,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:8:5",
+        "x": 8,
+        "y": 5,
+        "height": 3,
+        "biome": "rock",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 8,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:9:5",
+        "x": 9,
+        "y": 5,
+        "height": 1,
+        "biome": "forest",
+        "resources": {
+          "food": 3,
+          "timber": 8,
+          "ore": 0,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:10:5",
+        "x": 10,
+        "y": 5,
+        "height": 4,
+        "biome": "rock",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 8,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:11:5",
+        "x": 11,
+        "y": 5,
+        "height": 4,
+        "biome": "forest",
+        "resources": {
+          "food": 3,
+          "timber": 8,
+          "ore": 0,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:0:6",
+        "x": 0,
+        "y": 6,
+        "height": 1,
+        "biome": "forest",
+        "resources": {
+          "food": 3,
+          "timber": 8,
+          "ore": 0,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:1:6",
+        "x": 1,
+        "y": 6,
+        "height": 4,
+        "biome": "rock",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 8,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:2:6",
+        "x": 2,
+        "y": 6,
+        "height": 4,
+        "biome": "hill",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 4,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:3:6",
+        "x": 3,
+        "y": 6,
+        "height": 4,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:4:6",
+        "x": 4,
+        "y": 6,
+        "height": 4,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:5:6",
+        "x": 5,
+        "y": 6,
+        "height": 4,
+        "biome": "hill",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 4,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:6:6",
+        "x": 6,
+        "y": 6,
+        "height": 4,
+        "biome": "rock",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 8,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:7:6",
+        "x": 7,
+        "y": 6,
+        "height": 4,
+        "biome": "rock",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 8,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:8:6",
+        "x": 8,
+        "y": 6,
+        "height": 4,
+        "biome": "rock",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 8,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:9:6",
+        "x": 9,
+        "y": 6,
+        "height": 4,
+        "biome": "forest",
+        "resources": {
+          "food": 3,
+          "timber": 8,
+          "ore": 0,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:10:6",
+        "x": 10,
+        "y": 6,
+        "height": 3,
+        "biome": "forest",
+        "resources": {
+          "food": 3,
+          "timber": 8,
+          "ore": 0,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:11:6",
+        "x": 11,
+        "y": 6,
+        "height": 3,
+        "biome": "hill",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 4,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:0:7",
+        "x": 0,
+        "y": 7,
+        "height": 2,
+        "biome": "rock",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 8,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:1:7",
+        "x": 1,
+        "y": 7,
+        "height": 0,
+        "biome": "water",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 0,
+          "water": 10
+        },
+        "buildable": false
+      },
+      {
+        "tile_id": "tile:2:7",
+        "x": 2,
+        "y": 7,
+        "height": 3,
+        "biome": "rock",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 8,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:3:7",
+        "x": 3,
+        "y": 7,
+        "height": 1,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:4:7",
+        "x": 4,
+        "y": 7,
+        "height": 2,
+        "biome": "hill",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 4,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:5:7",
+        "x": 5,
+        "y": 7,
+        "height": 1,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:6:7",
+        "x": 6,
+        "y": 7,
+        "height": 0,
+        "biome": "water",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 0,
+          "water": 10
+        },
+        "buildable": false
+      },
+      {
+        "tile_id": "tile:7:7",
+        "x": 7,
+        "y": 7,
+        "height": 3,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:8:7",
+        "x": 8,
+        "y": 7,
+        "height": 3,
+        "biome": "hill",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 4,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:9:7",
+        "x": 9,
+        "y": 7,
+        "height": 3,
+        "biome": "forest",
+        "resources": {
+          "food": 3,
+          "timber": 8,
+          "ore": 0,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:10:7",
+        "x": 10,
+        "y": 7,
+        "height": 0,
+        "biome": "water",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 0,
+          "water": 10
+        },
+        "buildable": false
+      },
+      {
+        "tile_id": "tile:11:7",
+        "x": 11,
+        "y": 7,
+        "height": 2,
+        "biome": "hill",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 4,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:0:8",
+        "x": 0,
+        "y": 8,
+        "height": 0,
+        "biome": "water",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 0,
+          "water": 10
+        },
+        "buildable": false
+      },
+      {
+        "tile_id": "tile:1:8",
+        "x": 1,
+        "y": 8,
+        "height": 3,
+        "biome": "forest",
+        "resources": {
+          "food": 3,
+          "timber": 8,
+          "ore": 0,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:2:8",
+        "x": 2,
+        "y": 8,
+        "height": 4,
+        "biome": "forest",
+        "resources": {
+          "food": 3,
+          "timber": 8,
+          "ore": 0,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:3:8",
+        "x": 3,
+        "y": 8,
+        "height": 4,
+        "biome": "forest",
+        "resources": {
+          "food": 3,
+          "timber": 8,
+          "ore": 0,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:4:8",
+        "x": 4,
+        "y": 8,
+        "height": 0,
+        "biome": "water",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 0,
+          "water": 10
+        },
+        "buildable": false
+      },
+      {
+        "tile_id": "tile:5:8",
+        "x": 5,
+        "y": 8,
+        "height": 4,
+        "biome": "forest",
+        "resources": {
+          "food": 3,
+          "timber": 8,
+          "ore": 0,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:6:8",
+        "x": 6,
+        "y": 8,
+        "height": 1,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:7:8",
+        "x": 7,
+        "y": 8,
+        "height": 2,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:8:8",
+        "x": 8,
+        "y": 8,
+        "height": 3,
+        "biome": "forest",
+        "resources": {
+          "food": 3,
+          "timber": 8,
+          "ore": 0,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:9:8",
+        "x": 9,
+        "y": 8,
+        "height": 4,
+        "biome": "forest",
+        "resources": {
+          "food": 3,
+          "timber": 8,
+          "ore": 0,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:10:8",
+        "x": 10,
+        "y": 8,
+        "height": 4,
+        "biome": "forest",
+        "resources": {
+          "food": 3,
+          "timber": 8,
+          "ore": 0,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:11:8",
+        "x": 11,
+        "y": 8,
+        "height": 3,
+        "biome": "rock",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 8,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:0:9",
+        "x": 0,
+        "y": 9,
+        "height": 4,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:1:9",
+        "x": 1,
+        "y": 9,
+        "height": 4,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:2:9",
+        "x": 2,
+        "y": 9,
+        "height": 2,
+        "biome": "rock",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 8,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:3:9",
+        "x": 3,
+        "y": 9,
+        "height": 4,
+        "biome": "rock",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 8,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:4:9",
+        "x": 4,
+        "y": 9,
+        "height": 0,
+        "biome": "water",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 0,
+          "water": 10
+        },
+        "buildable": false
+      },
+      {
+        "tile_id": "tile:5:9",
+        "x": 5,
+        "y": 9,
+        "height": 2,
+        "biome": "forest",
+        "resources": {
+          "food": 3,
+          "timber": 8,
+          "ore": 0,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:6:9",
+        "x": 6,
+        "y": 9,
+        "height": 3,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:7:9",
+        "x": 7,
+        "y": 9,
+        "height": 3,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:8:9",
+        "x": 8,
+        "y": 9,
+        "height": 2,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:9:9",
+        "x": 9,
+        "y": 9,
+        "height": 4,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:10:9",
+        "x": 10,
+        "y": 9,
+        "height": 1,
+        "biome": "rock",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 8,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:11:9",
+        "x": 11,
+        "y": 9,
+        "height": 0,
+        "biome": "water",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 0,
+          "water": 10
+        },
+        "buildable": false
+      },
+      {
+        "tile_id": "tile:0:10",
+        "x": 0,
+        "y": 10,
+        "height": 0,
+        "biome": "water",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 0,
+          "water": 10
+        },
+        "buildable": false
+      },
+      {
+        "tile_id": "tile:1:10",
+        "x": 1,
+        "y": 10,
+        "height": 1,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:2:10",
+        "x": 2,
+        "y": 10,
+        "height": 3,
+        "biome": "forest",
+        "resources": {
+          "food": 3,
+          "timber": 8,
+          "ore": 0,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:3:10",
+        "x": 3,
+        "y": 10,
+        "height": 4,
+        "biome": "rock",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 8,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:4:10",
+        "x": 4,
+        "y": 10,
+        "height": 4,
+        "biome": "forest",
+        "resources": {
+          "food": 3,
+          "timber": 8,
+          "ore": 0,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:5:10",
+        "x": 5,
+        "y": 10,
+        "height": 4,
+        "biome": "rock",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 8,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:6:10",
+        "x": 6,
+        "y": 10,
+        "height": 3,
+        "biome": "hill",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 4,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:7:10",
+        "x": 7,
+        "y": 10,
+        "height": 2,
+        "biome": "rock",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 8,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:8:10",
+        "x": 8,
+        "y": 10,
+        "height": 3,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:9:10",
+        "x": 9,
+        "y": 10,
+        "height": 2,
+        "biome": "rock",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 8,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:10:10",
+        "x": 10,
+        "y": 10,
+        "height": 1,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:11:10",
+        "x": 11,
+        "y": 10,
+        "height": 0,
+        "biome": "water",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 0,
+          "water": 10
+        },
+        "buildable": false
+      },
+      {
+        "tile_id": "tile:0:11",
+        "x": 0,
+        "y": 11,
+        "height": 1,
+        "biome": "forest",
+        "resources": {
+          "food": 3,
+          "timber": 8,
+          "ore": 0,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:1:11",
+        "x": 1,
+        "y": 11,
+        "height": 3,
+        "biome": "forest",
+        "resources": {
+          "food": 3,
+          "timber": 8,
+          "ore": 0,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:2:11",
+        "x": 2,
+        "y": 11,
+        "height": 2,
+        "biome": "forest",
+        "resources": {
+          "food": 3,
+          "timber": 8,
+          "ore": 0,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:3:11",
+        "x": 3,
+        "y": 11,
+        "height": 1,
+        "biome": "forest",
+        "resources": {
+          "food": 3,
+          "timber": 8,
+          "ore": 0,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:4:11",
+        "x": 4,
+        "y": 11,
+        "height": 4,
+        "biome": "hill",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 4,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:5:11",
+        "x": 5,
+        "y": 11,
+        "height": 3,
+        "biome": "forest",
+        "resources": {
+          "food": 3,
+          "timber": 8,
+          "ore": 0,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:6:11",
+        "x": 6,
+        "y": 11,
+        "height": 4,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:7:11",
+        "x": 7,
+        "y": 11,
+        "height": 0,
+        "biome": "water",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 0,
+          "water": 10
+        },
+        "buildable": false
+      },
+      {
+        "tile_id": "tile:8:11",
+        "x": 8,
+        "y": 11,
+        "height": 0,
+        "biome": "water",
+        "resources": {
+          "food": 1,
+          "timber": 0,
+          "ore": 0,
+          "water": 10
+        },
+        "buildable": false
+      },
+      {
+        "tile_id": "tile:9:11",
+        "x": 9,
+        "y": 11,
+        "height": 4,
+        "biome": "forest",
+        "resources": {
+          "food": 3,
+          "timber": 8,
+          "ore": 0,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:10:11",
+        "x": 10,
+        "y": 11,
+        "height": 3,
+        "biome": "forest",
+        "resources": {
+          "food": 3,
+          "timber": 8,
+          "ore": 0,
+          "water": 1
+        },
+        "buildable": true
+      },
+      {
+        "tile_id": "tile:11:11",
+        "x": 11,
+        "y": 11,
+        "height": 4,
+        "biome": "plain",
+        "resources": {
+          "food": 6,
+          "timber": 2,
+          "ore": 0,
+          "water": 3
+        },
+        "buildable": true
+      }
+    ]
+  },
+  "agents": [
+    {
+      "agent_id": "agent:001",
+      "name": "陆朔",
+      "age": 34,
+      "household_id": "household:01",
+      "occupation": "farmer",
+      "institution_id": "institution:council",
+      "home_tile_id": "tile:5:0",
+      "traits": {
+        "curiosity": 2629,
+        "cooperation": 2597,
+        "risk": 2152,
+        "status_drive": 15,
+        "craft": 9930
+      },
+      "needs": {
+        "nutrition": 8339,
+        "security": 6039,
+        "belonging": 7064,
+        "knowledge": 4510
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:002",
+      "name": "陆禾",
+      "age": 56,
+      "household_id": "household:01",
+      "occupation": "builder",
+      "institution_id": "institution:market",
+      "home_tile_id": "tile:8:1",
+      "traits": {
+        "curiosity": 9937,
+        "cooperation": 7734,
+        "risk": 884,
+        "status_drive": 2032,
+        "craft": 5914
+      },
+      "needs": {
+        "nutrition": 8671,
+        "security": 6595,
+        "belonging": 8073,
+        "knowledge": 6018
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:003",
+      "name": "林川",
+      "age": 26,
+      "household_id": "household:01",
+      "occupation": "miner",
+      "institution_id": "institution:archive",
+      "home_tile_id": "tile:10:2",
+      "traits": {
+        "curiosity": 2195,
+        "cooperation": 6183,
+        "risk": 8815,
+        "status_drive": 7806,
+        "craft": 3171
+      },
+      "needs": {
+        "nutrition": 8192,
+        "security": 6929,
+        "belonging": 6193,
+        "knowledge": 7171
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:004",
+      "name": "苏禾",
+      "age": 19,
+      "household_id": "household:01",
+      "occupation": "craftsperson",
+      "institution_id": "institution:workshop",
+      "home_tile_id": "tile:11:3",
+      "traits": {
+        "curiosity": 3271,
+        "cooperation": 2736,
+        "risk": 9241,
+        "status_drive": 7279,
+        "craft": 1002
+      },
+      "needs": {
+        "nutrition": 9046,
+        "security": 7135,
+        "belonging": 8237,
+        "knowledge": 6461
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:005",
+      "name": "苏砚",
+      "age": 16,
+      "household_id": "household:02",
+      "occupation": "healer",
+      "institution_id": "institution:clinic",
+      "home_tile_id": "tile:10:4",
+      "traits": {
+        "curiosity": 7511,
+        "cooperation": 2621,
+        "risk": 3617,
+        "status_drive": 6107,
+        "craft": 1312
+      },
+      "needs": {
+        "nutrition": 9132,
+        "security": 6912,
+        "belonging": 6147,
+        "knowledge": 7351
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:006",
+      "name": "杜砚",
+      "age": 62,
+      "household_id": "household:02",
+      "occupation": "researcher",
+      "institution_id": "institution:commons",
+      "home_tile_id": "tile:10:5",
+      "traits": {
+        "curiosity": 7581,
+        "cooperation": 6107,
+        "risk": 2334,
+        "status_drive": 1672,
+        "craft": 1983
+      },
+      "needs": {
+        "nutrition": 9094,
+        "security": 7528,
+        "belonging": 5624,
+        "knowledge": 5534
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:007",
+      "name": "黎弦",
+      "age": 54,
+      "household_id": "household:02",
+      "occupation": "merchant",
+      "institution_id": "institution:council",
+      "home_tile_id": "tile:9:6",
+      "traits": {
+        "curiosity": 5950,
+        "cooperation": 4507,
+        "risk": 1107,
+        "status_drive": 8169,
+        "craft": 5930
+      },
+      "needs": {
+        "nutrition": 9008,
+        "security": 7455,
+        "belonging": 5898,
+        "knowledge": 6309
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:008",
+      "name": "黎舟",
+      "age": 20,
+      "household_id": "household:02",
+      "occupation": "administrator",
+      "institution_id": "institution:market",
+      "home_tile_id": "tile:11:7",
+      "traits": {
+        "curiosity": 3612,
+        "cooperation": 5640,
+        "risk": 292,
+        "status_drive": 7929,
+        "craft": 6915
+      },
+      "needs": {
+        "nutrition": 8312,
+        "security": 8109,
+        "belonging": 8681,
+        "knowledge": 5238
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:009",
+      "name": "程岚",
+      "age": 66,
+      "household_id": "household:03",
+      "occupation": "transporter",
+      "institution_id": "institution:archive",
+      "home_tile_id": "tile:0:9",
+      "traits": {
+        "curiosity": 2132,
+        "cooperation": 4253,
+        "risk": 6991,
+        "status_drive": 5745,
+        "craft": 5736
+      },
+      "needs": {
+        "nutrition": 8159,
+        "security": 7924,
+        "belonging": 5711,
+        "knowledge": 4742
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:010",
+      "name": "程渊",
+      "age": 66,
+      "household_id": "household:03",
+      "occupation": "teacher",
+      "institution_id": "institution:workshop",
+      "home_tile_id": "tile:2:10",
+      "traits": {
+        "curiosity": 7624,
+        "cooperation": 6463,
+        "risk": 2281,
+        "status_drive": 8100,
+        "craft": 2856
+      },
+      "needs": {
+        "nutrition": 8501,
+        "security": 8682,
+        "belonging": 7175,
+        "knowledge": 8784
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:011",
+      "name": "周砚",
+      "age": 37,
+      "household_id": "household:03",
+      "occupation": "farmer",
+      "institution_id": "institution:clinic",
+      "home_tile_id": "tile:2:11",
+      "traits": {
+        "curiosity": 7743,
+        "cooperation": 2720,
+        "risk": 8419,
+        "status_drive": 6325,
+        "craft": 6092
+      },
+      "needs": {
+        "nutrition": 7829,
+        "security": 7832,
+        "belonging": 6185,
+        "knowledge": 5303
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:012",
+      "name": "叶衡",
+      "age": 17,
+      "household_id": "household:03",
+      "occupation": "builder",
+      "institution_id": "institution:commons",
+      "home_tile_id": "tile:5:0",
+      "traits": {
+        "curiosity": 5282,
+        "cooperation": 7356,
+        "risk": 3356,
+        "status_drive": 2324,
+        "craft": 4440
+      },
+      "needs": {
+        "nutrition": 9131,
+        "security": 8231,
+        "belonging": 6335,
+        "knowledge": 7552
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:013",
+      "name": "林遥",
+      "age": 64,
+      "household_id": "household:04",
+      "occupation": "miner",
+      "institution_id": "institution:council",
+      "home_tile_id": "tile:8:1",
+      "traits": {
+        "curiosity": 4487,
+        "cooperation": 8217,
+        "risk": 2412,
+        "status_drive": 7158,
+        "craft": 1643
+      },
+      "needs": {
+        "nutrition": 8736,
+        "security": 8517,
+        "belonging": 5756,
+        "knowledge": 4994
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:014",
+      "name": "周砾",
+      "age": 65,
+      "household_id": "household:04",
+      "occupation": "craftsperson",
+      "institution_id": "institution:market",
+      "home_tile_id": "tile:10:2",
+      "traits": {
+        "curiosity": 8661,
+        "cooperation": 7441,
+        "risk": 9448,
+        "status_drive": 4362,
+        "craft": 5579
+      },
+      "needs": {
+        "nutrition": 7865,
+        "security": 7071,
+        "belonging": 6966,
+        "knowledge": 5922
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:015",
+      "name": "杜砚",
+      "age": 34,
+      "household_id": "household:04",
+      "occupation": "healer",
+      "institution_id": "institution:archive",
+      "home_tile_id": "tile:11:3",
+      "traits": {
+        "curiosity": 162,
+        "cooperation": 5885,
+        "risk": 2396,
+        "status_drive": 8049,
+        "craft": 2084
+      },
+      "needs": {
+        "nutrition": 7298,
+        "security": 8262,
+        "belonging": 7168,
+        "knowledge": 7439
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:016",
+      "name": "苏衡",
+      "age": 34,
+      "household_id": "household:04",
+      "occupation": "researcher",
+      "institution_id": "institution:workshop",
+      "home_tile_id": "tile:10:4",
+      "traits": {
+        "curiosity": 6391,
+        "cooperation": 7252,
+        "risk": 463,
+        "status_drive": 7914,
+        "craft": 4283
+      },
+      "needs": {
+        "nutrition": 8737,
+        "security": 8437,
+        "belonging": 8537,
+        "knowledge": 5983
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:017",
+      "name": "顾澄",
+      "age": 47,
+      "household_id": "household:05",
+      "occupation": "merchant",
+      "institution_id": "institution:clinic",
+      "home_tile_id": "tile:10:5",
+      "traits": {
+        "curiosity": 7856,
+        "cooperation": 5446,
+        "risk": 2879,
+        "status_drive": 3443,
+        "craft": 1041
+      },
+      "needs": {
+        "nutrition": 7015,
+        "security": 8852,
+        "belonging": 8419,
+        "knowledge": 7024
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:018",
+      "name": "黎舟",
+      "age": 18,
+      "household_id": "household:05",
+      "occupation": "administrator",
+      "institution_id": "institution:commons",
+      "home_tile_id": "tile:9:6",
+      "traits": {
+        "curiosity": 6912,
+        "cooperation": 4172,
+        "risk": 1516,
+        "status_drive": 211,
+        "craft": 611
+      },
+      "needs": {
+        "nutrition": 7986,
+        "security": 7506,
+        "belonging": 7224,
+        "knowledge": 6113
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:019",
+      "name": "沈杉",
+      "age": 41,
+      "household_id": "household:05",
+      "occupation": "transporter",
+      "institution_id": "institution:council",
+      "home_tile_id": "tile:11:7",
+      "traits": {
+        "curiosity": 8270,
+        "cooperation": 5336,
+        "risk": 2234,
+        "status_drive": 4784,
+        "craft": 8087
+      },
+      "needs": {
+        "nutrition": 7503,
+        "security": 6568,
+        "belonging": 6171,
+        "knowledge": 4922
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:020",
+      "name": "程衡",
+      "age": 59,
+      "household_id": "household:05",
+      "occupation": "teacher",
+      "institution_id": "institution:market",
+      "home_tile_id": "tile:0:9",
+      "traits": {
+        "curiosity": 4864,
+        "cooperation": 6251,
+        "risk": 2285,
+        "status_drive": 5898,
+        "craft": 7745
+      },
+      "needs": {
+        "nutrition": 7549,
+        "security": 6865,
+        "belonging": 6440,
+        "knowledge": 7439
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:021",
+      "name": "杜杉",
+      "age": 17,
+      "household_id": "household:06",
+      "occupation": "farmer",
+      "institution_id": "institution:archive",
+      "home_tile_id": "tile:2:10",
+      "traits": {
+        "curiosity": 5174,
+        "cooperation": 5206,
+        "risk": 3627,
+        "status_drive": 8160,
+        "craft": 3875
+      },
+      "needs": {
+        "nutrition": 8697,
+        "security": 6620,
+        "belonging": 8130,
+        "knowledge": 8981
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:022",
+      "name": "陆岚",
+      "age": 62,
+      "household_id": "household:06",
+      "occupation": "builder",
+      "institution_id": "institution:workshop",
+      "home_tile_id": "tile:2:11",
+      "traits": {
+        "curiosity": 599,
+        "cooperation": 4400,
+        "risk": 4493,
+        "status_drive": 8192,
+        "craft": 6190
+      },
+      "needs": {
+        "nutrition": 8709,
+        "security": 7407,
+        "belonging": 8319,
+        "knowledge": 4165
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:023",
+      "name": "叶璃",
+      "age": 40,
+      "household_id": "household:06",
+      "occupation": "miner",
+      "institution_id": "institution:clinic",
+      "home_tile_id": "tile:5:0",
+      "traits": {
+        "curiosity": 3973,
+        "cooperation": 6803,
+        "risk": 4052,
+        "status_drive": 729,
+        "craft": 8406
+      },
+      "needs": {
+        "nutrition": 7694,
+        "security": 7012,
+        "belonging": 8892,
+        "knowledge": 5502
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:024",
+      "name": "沈遥",
+      "age": 55,
+      "household_id": "household:06",
+      "occupation": "craftsperson",
+      "institution_id": "institution:commons",
+      "home_tile_id": "tile:8:1",
+      "traits": {
+        "curiosity": 2816,
+        "cooperation": 4952,
+        "risk": 7512,
+        "status_drive": 2321,
+        "craft": 1097
+      },
+      "needs": {
+        "nutrition": 8394,
+        "security": 7669,
+        "belonging": 7172,
+        "knowledge": 5780
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:025",
+      "name": "罗衡",
+      "age": 50,
+      "household_id": "household:07",
+      "occupation": "healer",
+      "institution_id": "institution:council",
+      "home_tile_id": "tile:10:2",
+      "traits": {
+        "curiosity": 3412,
+        "cooperation": 3223,
+        "risk": 1504,
+        "status_drive": 5922,
+        "craft": 2407
+      },
+      "needs": {
+        "nutrition": 8261,
+        "security": 8855,
+        "belonging": 6266,
+        "knowledge": 4874
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:026",
+      "name": "黎岚",
+      "age": 55,
+      "household_id": "household:07",
+      "occupation": "researcher",
+      "institution_id": "institution:market",
+      "home_tile_id": "tile:11:3",
+      "traits": {
+        "curiosity": 4322,
+        "cooperation": 2610,
+        "risk": 2095,
+        "status_drive": 2747,
+        "craft": 2714
+      },
+      "needs": {
+        "nutrition": 8143,
+        "security": 8613,
+        "belonging": 5921,
+        "knowledge": 7145
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:027",
+      "name": "沈舟",
+      "age": 21,
+      "household_id": "household:07",
+      "occupation": "merchant",
+      "institution_id": "institution:archive",
+      "home_tile_id": "tile:10:4",
+      "traits": {
+        "curiosity": 398,
+        "cooperation": 4539,
+        "risk": 269,
+        "status_drive": 5935,
+        "craft": 1850
+      },
+      "needs": {
+        "nutrition": 8001,
+        "security": 8104,
+        "belonging": 5554,
+        "knowledge": 5100
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:028",
+      "name": "程弦",
+      "age": 23,
+      "household_id": "household:07",
+      "occupation": "administrator",
+      "institution_id": "institution:workshop",
+      "home_tile_id": "tile:10:5",
+      "traits": {
+        "curiosity": 924,
+        "cooperation": 7757,
+        "risk": 2228,
+        "status_drive": 4166,
+        "craft": 9957
+      },
+      "needs": {
+        "nutrition": 8218,
+        "security": 8830,
+        "belonging": 6487,
+        "knowledge": 8442
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:029",
+      "name": "罗澄",
+      "age": 46,
+      "household_id": "household:08",
+      "occupation": "transporter",
+      "institution_id": "institution:clinic",
+      "home_tile_id": "tile:9:6",
+      "traits": {
+        "curiosity": 7949,
+        "cooperation": 3807,
+        "risk": 4343,
+        "status_drive": 4993,
+        "craft": 5585
+      },
+      "needs": {
+        "nutrition": 8171,
+        "security": 7745,
+        "belonging": 8311,
+        "knowledge": 5190
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:030",
+      "name": "程朔",
+      "age": 52,
+      "household_id": "household:08",
+      "occupation": "teacher",
+      "institution_id": "institution:commons",
+      "home_tile_id": "tile:11:7",
+      "traits": {
+        "curiosity": 3433,
+        "cooperation": 8152,
+        "risk": 5115,
+        "status_drive": 6798,
+        "craft": 7114
+      },
+      "needs": {
+        "nutrition": 9380,
+        "security": 8198,
+        "belonging": 5659,
+        "knowledge": 7012
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:031",
+      "name": "沈砾",
+      "age": 34,
+      "household_id": "household:08",
+      "occupation": "farmer",
+      "institution_id": "institution:council",
+      "home_tile_id": "tile:0:9",
+      "traits": {
+        "curiosity": 6269,
+        "cooperation": 3443,
+        "risk": 8975,
+        "status_drive": 3900,
+        "craft": 6105
+      },
+      "needs": {
+        "nutrition": 8657,
+        "security": 8414,
+        "belonging": 6564,
+        "knowledge": 8431
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:032",
+      "name": "程禾",
+      "age": 64,
+      "household_id": "household:08",
+      "occupation": "builder",
+      "institution_id": "institution:market",
+      "home_tile_id": "tile:2:10",
+      "traits": {
+        "curiosity": 2806,
+        "cooperation": 2995,
+        "risk": 9281,
+        "status_drive": 3947,
+        "craft": 3664
+      },
+      "needs": {
+        "nutrition": 7313,
+        "security": 7967,
+        "belonging": 6924,
+        "knowledge": 3060
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:033",
+      "name": "罗澄",
+      "age": 56,
+      "household_id": "household:09",
+      "occupation": "miner",
+      "institution_id": "institution:archive",
+      "home_tile_id": "tile:2:11",
+      "traits": {
+        "curiosity": 6946,
+        "cooperation": 5978,
+        "risk": 337,
+        "status_drive": 4876,
+        "craft": 3426
+      },
+      "needs": {
+        "nutrition": 8105,
+        "security": 7449,
+        "belonging": 7008,
+        "knowledge": 3528
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:034",
+      "name": "罗弦",
+      "age": 59,
+      "household_id": "household:09",
+      "occupation": "craftsperson",
+      "institution_id": "institution:workshop",
+      "home_tile_id": "tile:5:0",
+      "traits": {
+        "curiosity": 8408,
+        "cooperation": 7368,
+        "risk": 803,
+        "status_drive": 8349,
+        "craft": 7230
+      },
+      "needs": {
+        "nutrition": 7214,
+        "security": 7282,
+        "belonging": 6272,
+        "knowledge": 7238
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:035",
+      "name": "苏渊",
+      "age": 51,
+      "household_id": "household:09",
+      "occupation": "healer",
+      "institution_id": "institution:clinic",
+      "home_tile_id": "tile:8:1",
+      "traits": {
+        "curiosity": 278,
+        "cooperation": 5185,
+        "risk": 3312,
+        "status_drive": 4162,
+        "craft": 2107
+      },
+      "needs": {
+        "nutrition": 9211,
+        "security": 6388,
+        "belonging": 8167,
+        "knowledge": 7630
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:036",
+      "name": "林朔",
+      "age": 24,
+      "household_id": "household:09",
+      "occupation": "researcher",
+      "institution_id": "institution:commons",
+      "home_tile_id": "tile:10:2",
+      "traits": {
+        "curiosity": 9396,
+        "cooperation": 3050,
+        "risk": 7665,
+        "status_drive": 6802,
+        "craft": 9651
+      },
+      "needs": {
+        "nutrition": 8531,
+        "security": 8152,
+        "belonging": 7964,
+        "knowledge": 8098
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:037",
+      "name": "黎杉",
+      "age": 25,
+      "household_id": "household:10",
+      "occupation": "merchant",
+      "institution_id": "institution:council",
+      "home_tile_id": "tile:11:3",
+      "traits": {
+        "curiosity": 5721,
+        "cooperation": 7587,
+        "risk": 7418,
+        "status_drive": 6415,
+        "craft": 1382
+      },
+      "needs": {
+        "nutrition": 9165,
+        "security": 8901,
+        "belonging": 7520,
+        "knowledge": 3217
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:038",
+      "name": "林霁",
+      "age": 36,
+      "household_id": "household:10",
+      "occupation": "administrator",
+      "institution_id": "institution:market",
+      "home_tile_id": "tile:10:4",
+      "traits": {
+        "curiosity": 9230,
+        "cooperation": 3712,
+        "risk": 2239,
+        "status_drive": 4574,
+        "craft": 6183
+      },
+      "needs": {
+        "nutrition": 7360,
+        "security": 7843,
+        "belonging": 7270,
+        "knowledge": 7432
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:039",
+      "name": "沈舟",
+      "age": 20,
+      "household_id": "household:10",
+      "occupation": "transporter",
+      "institution_id": "institution:archive",
+      "home_tile_id": "tile:10:5",
+      "traits": {
+        "curiosity": 5465,
+        "cooperation": 6331,
+        "risk": 845,
+        "status_drive": 1389,
+        "craft": 8421
+      },
+      "needs": {
+        "nutrition": 7752,
+        "security": 6158,
+        "belonging": 7105,
+        "knowledge": 8877
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:040",
+      "name": "顾璃",
+      "age": 22,
+      "household_id": "household:10",
+      "occupation": "teacher",
+      "institution_id": "institution:workshop",
+      "home_tile_id": "tile:9:6",
+      "traits": {
+        "curiosity": 3315,
+        "cooperation": 6481,
+        "risk": 1890,
+        "status_drive": 6592,
+        "craft": 7823
+      },
+      "needs": {
+        "nutrition": 9002,
+        "security": 8722,
+        "belonging": 6683,
+        "knowledge": 3470
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:041",
+      "name": "秦衡",
+      "age": 64,
+      "household_id": "household:11",
+      "occupation": "farmer",
+      "institution_id": "institution:clinic",
+      "home_tile_id": "tile:11:7",
+      "traits": {
+        "curiosity": 1129,
+        "cooperation": 3447,
+        "risk": 2628,
+        "status_drive": 4882,
+        "craft": 4721
+      },
+      "needs": {
+        "nutrition": 8105,
+        "security": 6634,
+        "belonging": 7082,
+        "knowledge": 7944
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:042",
+      "name": "顾朔",
+      "age": 18,
+      "household_id": "household:11",
+      "occupation": "builder",
+      "institution_id": "institution:commons",
+      "home_tile_id": "tile:0:9",
+      "traits": {
+        "curiosity": 9756,
+        "cooperation": 3882,
+        "risk": 7707,
+        "status_drive": 3415,
+        "craft": 6755
+      },
+      "needs": {
+        "nutrition": 8171,
+        "security": 6529,
+        "belonging": 6087,
+        "knowledge": 5969
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:043",
+      "name": "黎杉",
+      "age": 38,
+      "household_id": "household:11",
+      "occupation": "miner",
+      "institution_id": "institution:council",
+      "home_tile_id": "tile:2:10",
+      "traits": {
+        "curiosity": 3591,
+        "cooperation": 8470,
+        "risk": 2936,
+        "status_drive": 2480,
+        "craft": 5614
+      },
+      "needs": {
+        "nutrition": 7623,
+        "security": 8355,
+        "belonging": 8272,
+        "knowledge": 5023
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:044",
+      "name": "程渊",
+      "age": 47,
+      "household_id": "household:11",
+      "occupation": "craftsperson",
+      "institution_id": "institution:market",
+      "home_tile_id": "tile:2:11",
+      "traits": {
+        "curiosity": 3249,
+        "cooperation": 8153,
+        "risk": 1359,
+        "status_drive": 4488,
+        "craft": 4930
+      },
+      "needs": {
+        "nutrition": 9358,
+        "security": 8090,
+        "belonging": 8912,
+        "knowledge": 5166
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:045",
+      "name": "叶澄",
+      "age": 47,
+      "household_id": "household:12",
+      "occupation": "healer",
+      "institution_id": "institution:archive",
+      "home_tile_id": "tile:5:0",
+      "traits": {
+        "curiosity": 5931,
+        "cooperation": 7453,
+        "risk": 1495,
+        "status_drive": 72,
+        "craft": 2903
+      },
+      "needs": {
+        "nutrition": 9040,
+        "security": 6581,
+        "belonging": 6159,
+        "knowledge": 6379
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:046",
+      "name": "陆澄",
+      "age": 67,
+      "household_id": "household:12",
+      "occupation": "researcher",
+      "institution_id": "institution:workshop",
+      "home_tile_id": "tile:8:1",
+      "traits": {
+        "curiosity": 2093,
+        "cooperation": 3938,
+        "risk": 73,
+        "status_drive": 8173,
+        "craft": 5759
+      },
+      "needs": {
+        "nutrition": 7357,
+        "security": 6472,
+        "belonging": 5740,
+        "knowledge": 8612
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:047",
+      "name": "秦舟",
+      "age": 41,
+      "household_id": "household:12",
+      "occupation": "merchant",
+      "institution_id": "institution:clinic",
+      "home_tile_id": "tile:10:2",
+      "traits": {
+        "curiosity": 9511,
+        "cooperation": 4337,
+        "risk": 4123,
+        "status_drive": 2652,
+        "craft": 628
+      },
+      "needs": {
+        "nutrition": 9145,
+        "security": 6922,
+        "belonging": 7868,
+        "knowledge": 8212
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:048",
+      "name": "叶澄",
+      "age": 17,
+      "household_id": "household:12",
+      "occupation": "administrator",
+      "institution_id": "institution:commons",
+      "home_tile_id": "tile:11:3",
+      "traits": {
+        "curiosity": 8324,
+        "cooperation": 3355,
+        "risk": 9743,
+        "status_drive": 2068,
+        "craft": 8943
+      },
+      "needs": {
+        "nutrition": 7944,
+        "security": 6562,
+        "belonging": 8893,
+        "knowledge": 7877
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:049",
+      "name": "杜杉",
+      "age": 32,
+      "household_id": "household:13",
+      "occupation": "transporter",
+      "institution_id": "institution:council",
+      "home_tile_id": "tile:10:4",
+      "traits": {
+        "curiosity": 3170,
+        "cooperation": 2710,
+        "risk": 7408,
+        "status_drive": 6398,
+        "craft": 3949
+      },
+      "needs": {
+        "nutrition": 7672,
+        "security": 7896,
+        "belonging": 5603,
+        "knowledge": 4797
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:050",
+      "name": "沈澄",
+      "age": 26,
+      "household_id": "household:13",
+      "occupation": "teacher",
+      "institution_id": "institution:market",
+      "home_tile_id": "tile:10:5",
+      "traits": {
+        "curiosity": 979,
+        "cooperation": 5432,
+        "risk": 6157,
+        "status_drive": 2101,
+        "craft": 8417
+      },
+      "needs": {
+        "nutrition": 8708,
+        "security": 8100,
+        "belonging": 8482,
+        "knowledge": 7135
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:051",
+      "name": "程渊",
+      "age": 30,
+      "household_id": "household:13",
+      "occupation": "farmer",
+      "institution_id": "institution:archive",
+      "home_tile_id": "tile:9:6",
+      "traits": {
+        "curiosity": 5551,
+        "cooperation": 5937,
+        "risk": 1493,
+        "status_drive": 4038,
+        "craft": 1159
+      },
+      "needs": {
+        "nutrition": 8830,
+        "security": 6924,
+        "belonging": 8061,
+        "knowledge": 4508
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:052",
+      "name": "罗芒",
+      "age": 51,
+      "household_id": "household:13",
+      "occupation": "builder",
+      "institution_id": "institution:workshop",
+      "home_tile_id": "tile:11:7",
+      "traits": {
+        "curiosity": 2481,
+        "cooperation": 3930,
+        "risk": 4355,
+        "status_drive": 2911,
+        "craft": 3429
+      },
+      "needs": {
+        "nutrition": 7545,
+        "security": 6141,
+        "belonging": 7430,
+        "knowledge": 5620
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:053",
+      "name": "叶弦",
+      "age": 65,
+      "household_id": "household:14",
+      "occupation": "miner",
+      "institution_id": "institution:clinic",
+      "home_tile_id": "tile:0:9",
+      "traits": {
+        "curiosity": 549,
+        "cooperation": 5658,
+        "risk": 995,
+        "status_drive": 3487,
+        "craft": 8821
+      },
+      "needs": {
+        "nutrition": 8005,
+        "security": 8761,
+        "belonging": 7309,
+        "knowledge": 5709
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:054",
+      "name": "秦朔",
+      "age": 44,
+      "household_id": "household:14",
+      "occupation": "craftsperson",
+      "institution_id": "institution:commons",
+      "home_tile_id": "tile:2:10",
+      "traits": {
+        "curiosity": 8152,
+        "cooperation": 7531,
+        "risk": 6108,
+        "status_drive": 1003,
+        "craft": 2735
+      },
+      "needs": {
+        "nutrition": 8806,
+        "security": 8951,
+        "belonging": 5961,
+        "knowledge": 5956
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:055",
+      "name": "叶岚",
+      "age": 23,
+      "household_id": "household:14",
+      "occupation": "healer",
+      "institution_id": "institution:council",
+      "home_tile_id": "tile:2:11",
+      "traits": {
+        "curiosity": 5885,
+        "cooperation": 6673,
+        "risk": 4054,
+        "status_drive": 280,
+        "craft": 29
+      },
+      "needs": {
+        "nutrition": 8604,
+        "security": 6365,
+        "belonging": 7136,
+        "knowledge": 4523
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    },
+    {
+      "agent_id": "agent:056",
+      "name": "顾舟",
+      "age": 61,
+      "household_id": "household:14",
+      "occupation": "researcher",
+      "institution_id": "institution:market",
+      "home_tile_id": "tile:5:0",
+      "traits": {
+        "curiosity": 8850,
+        "cooperation": 6402,
+        "risk": 5525,
+        "status_drive": 5692,
+        "craft": 1926
+      },
+      "needs": {
+        "nutrition": 7099,
+        "security": 7349,
+        "belonging": 5554,
+        "knowledge": 6365
+      },
+      "memory": {
+        "capacity": 24,
+        "policy": "salience-and-recency",
+        "events": []
+      },
+      "decision": {
+        "model": "weighted-bounded-utility",
+        "action_set": [
+          "work",
+          "trade",
+          "learn",
+          "research",
+          "organize",
+          "rest",
+          "migrate"
+        ]
+      }
+    }
+  ],
+  "households": [
+    {
+      "household_id": "household:01",
+      "members": [
+        "agent:001",
+        "agent:002",
+        "agent:003",
+        "agent:004"
+      ],
+      "inventory": {
+        "food": 18,
+        "water": 24,
+        "tools": 3
+      },
+      "strategy": "satisfice-and-buffer"
+    },
+    {
+      "household_id": "household:02",
+      "members": [
+        "agent:005",
+        "agent:006",
+        "agent:007",
+        "agent:008"
+      ],
+      "inventory": {
+        "food": 18,
+        "water": 24,
+        "tools": 3
+      },
+      "strategy": "satisfice-and-buffer"
+    },
+    {
+      "household_id": "household:03",
+      "members": [
+        "agent:009",
+        "agent:010",
+        "agent:011",
+        "agent:012"
+      ],
+      "inventory": {
+        "food": 18,
+        "water": 24,
+        "tools": 3
+      },
+      "strategy": "satisfice-and-buffer"
+    },
+    {
+      "household_id": "household:04",
+      "members": [
+        "agent:013",
+        "agent:014",
+        "agent:015",
+        "agent:016"
+      ],
+      "inventory": {
+        "food": 18,
+        "water": 24,
+        "tools": 3
+      },
+      "strategy": "satisfice-and-buffer"
+    },
+    {
+      "household_id": "household:05",
+      "members": [
+        "agent:017",
+        "agent:018",
+        "agent:019",
+        "agent:020"
+      ],
+      "inventory": {
+        "food": 18,
+        "water": 24,
+        "tools": 3
+      },
+      "strategy": "satisfice-and-buffer"
+    },
+    {
+      "household_id": "household:06",
+      "members": [
+        "agent:021",
+        "agent:022",
+        "agent:023",
+        "agent:024"
+      ],
+      "inventory": {
+        "food": 18,
+        "water": 24,
+        "tools": 3
+      },
+      "strategy": "satisfice-and-buffer"
+    },
+    {
+      "household_id": "household:07",
+      "members": [
+        "agent:025",
+        "agent:026",
+        "agent:027",
+        "agent:028"
+      ],
+      "inventory": {
+        "food": 18,
+        "water": 24,
+        "tools": 3
+      },
+      "strategy": "satisfice-and-buffer"
+    },
+    {
+      "household_id": "household:08",
+      "members": [
+        "agent:029",
+        "agent:030",
+        "agent:031",
+        "agent:032"
+      ],
+      "inventory": {
+        "food": 18,
+        "water": 24,
+        "tools": 3
+      },
+      "strategy": "satisfice-and-buffer"
+    },
+    {
+      "household_id": "household:09",
+      "members": [
+        "agent:033",
+        "agent:034",
+        "agent:035",
+        "agent:036"
+      ],
+      "inventory": {
+        "food": 18,
+        "water": 24,
+        "tools": 3
+      },
+      "strategy": "satisfice-and-buffer"
+    },
+    {
+      "household_id": "household:10",
+      "members": [
+        "agent:037",
+        "agent:038",
+        "agent:039",
+        "agent:040"
+      ],
+      "inventory": {
+        "food": 18,
+        "water": 24,
+        "tools": 3
+      },
+      "strategy": "satisfice-and-buffer"
+    },
+    {
+      "household_id": "household:11",
+      "members": [
+        "agent:041",
+        "agent:042",
+        "agent:043",
+        "agent:044"
+      ],
+      "inventory": {
+        "food": 18,
+        "water": 24,
+        "tools": 3
+      },
+      "strategy": "satisfice-and-buffer"
+    },
+    {
+      "household_id": "household:12",
+      "members": [
+        "agent:045",
+        "agent:046",
+        "agent:047",
+        "agent:048"
+      ],
+      "inventory": {
+        "food": 18,
+        "water": 24,
+        "tools": 3
+      },
+      "strategy": "satisfice-and-buffer"
+    },
+    {
+      "household_id": "household:13",
+      "members": [
+        "agent:049",
+        "agent:050",
+        "agent:051",
+        "agent:052"
+      ],
+      "inventory": {
+        "food": 18,
+        "water": 24,
+        "tools": 3
+      },
+      "strategy": "satisfice-and-buffer"
+    },
+    {
+      "household_id": "household:14",
+      "members": [
+        "agent:053",
+        "agent:054",
+        "agent:055",
+        "agent:056"
+      ],
+      "inventory": {
+        "food": 18,
+        "water": 24,
+        "tools": 3
+      },
+      "strategy": "satisfice-and-buffer"
+    }
+  ],
+  "institutions": [
+    {
+      "institution_id": "institution:council",
+      "kind": "council",
+      "name": "议事厅",
+      "function": "governance",
+      "tile_id": "tile:0:6",
+      "capacity": 40,
+      "legitimacy": 5800,
+      "policies": []
+    },
+    {
+      "institution_id": "institution:market",
+      "kind": "market",
+      "name": "交换广场",
+      "function": "trade",
+      "tile_id": "tile:7:6",
+      "capacity": 52,
+      "legitimacy": 6040,
+      "policies": []
+    },
+    {
+      "institution_id": "institution:archive",
+      "kind": "archive",
+      "name": "公共档案馆",
+      "function": "knowledge",
+      "tile_id": "tile:3:7",
+      "capacity": 64,
+      "legitimacy": 6280,
+      "policies": []
+    },
+    {
+      "institution_id": "institution:workshop",
+      "kind": "workshop",
+      "name": "联合工坊",
+      "function": "engineering",
+      "tile_id": "tile:1:8",
+      "capacity": 76,
+      "legitimacy": 6520,
+      "policies": []
+    },
+    {
+      "institution_id": "institution:clinic",
+      "kind": "clinic",
+      "name": "社区诊疗所",
+      "function": "health",
+      "tile_id": "tile:9:8",
+      "capacity": 88,
+      "legitimacy": 6760,
+      "policies": []
+    },
+    {
+      "institution_id": "institution:commons",
+      "kind": "commons",
+      "name": "公共资源社",
+      "function": "ecology",
+      "tile_id": "tile:5:9",
+      "capacity": 100,
+      "legitimacy": 7000,
+      "policies": []
+    }
+  ],
+  "factions": [
+    {
+      "faction_id": "faction:commons",
+      "name": "公共协作派",
+      "priority": [
+        "cooperation",
+        "open-knowledge",
+        "ecology"
+      ],
+      "members": [
+        "agent:001",
+        "agent:005",
+        "agent:009",
+        "agent:013",
+        "agent:017",
+        "agent:021",
+        "agent:025",
+        "agent:029",
+        "agent:033",
+        "agent:037",
+        "agent:041",
+        "agent:045",
+        "agent:049",
+        "agent:053"
+      ]
+    },
+    {
+      "faction_id": "faction:makers",
+      "name": "工程制造派",
+      "priority": [
+        "production",
+        "experimentation",
+        "infrastructure"
+      ],
+      "members": [
+        "agent:002",
+        "agent:006",
+        "agent:010",
+        "agent:014",
+        "agent:018",
+        "agent:022",
+        "agent:026",
+        "agent:030",
+        "agent:034",
+        "agent:038",
+        "agent:042",
+        "agent:046",
+        "agent:050",
+        "agent:054"
+      ]
+    },
+    {
+      "faction_id": "faction:stewards",
+      "name": "稳态守护派",
+      "priority": [
+        "security",
+        "continuity",
+        "risk-control"
+      ],
+      "members": [
+        "agent:003",
+        "agent:007",
+        "agent:011",
+        "agent:015",
+        "agent:019",
+        "agent:023",
+        "agent:027",
+        "agent:031",
+        "agent:035",
+        "agent:039",
+        "agent:043",
+        "agent:047",
+        "agent:051",
+        "agent:055"
+      ]
+    },
+    {
+      "faction_id": "faction:frontier",
+      "name": "边界探索派",
+      "priority": [
+        "novelty",
+        "mobility",
+        "new-markets"
+      ],
+      "members": [
+        "agent:004",
+        "agent:008",
+        "agent:012",
+        "agent:016",
+        "agent:020",
+        "agent:024",
+        "agent:028",
+        "agent:032",
+        "agent:036",
+        "agent:040",
+        "agent:044",
+        "agent:048",
+        "agent:052",
+        "agent:056"
+      ]
+    }
+  ],
+  "links": [
+    {
+      "from": "agent:001",
+      "to": "agent:002",
+      "type": "kin",
+      "trust": 6200
+    },
+    {
+      "from": "agent:001",
+      "to": "agent:008",
+      "type": "work",
+      "trust": 4800
+    },
+    {
+      "from": "agent:002",
+      "to": "agent:003",
+      "type": "kin",
+      "trust": 6337
+    },
+    {
+      "from": "agent:003",
+      "to": "agent:004",
+      "type": "kin",
+      "trust": 6474
+    },
+    {
+      "from": "agent:004",
+      "to": "agent:005",
+      "type": "neighbor",
+      "trust": 6611
+    },
+    {
+      "from": "agent:004",
+      "to": "agent:011",
+      "type": "work",
+      "trust": 5379
+    },
+    {
+      "from": "agent:005",
+      "to": "agent:006",
+      "type": "kin",
+      "trust": 6748
+    },
+    {
+      "from": "agent:006",
+      "to": "agent:007",
+      "type": "kin",
+      "trust": 6885
+    },
+    {
+      "from": "agent:007",
+      "to": "agent:008",
+      "type": "kin",
+      "trust": 7022
+    },
+    {
+      "from": "agent:007",
+      "to": "agent:014",
+      "type": "work",
+      "trust": 5958
+    },
+    {
+      "from": "agent:008",
+      "to": "agent:009",
+      "type": "neighbor",
+      "trust": 7159
+    },
+    {
+      "from": "agent:009",
+      "to": "agent:010",
+      "type": "kin",
+      "trust": 7296
+    },
+    {
+      "from": "agent:010",
+      "to": "agent:011",
+      "type": "kin",
+      "trust": 7433
+    },
+    {
+      "from": "agent:010",
+      "to": "agent:017",
+      "type": "work",
+      "trust": 6537
+    },
+    {
+      "from": "agent:011",
+      "to": "agent:012",
+      "type": "kin",
+      "trust": 7570
+    },
+    {
+      "from": "agent:012",
+      "to": "agent:013",
+      "type": "neighbor",
+      "trust": 7707
+    },
+    {
+      "from": "agent:013",
+      "to": "agent:014",
+      "type": "kin",
+      "trust": 7844
+    },
+    {
+      "from": "agent:013",
+      "to": "agent:020",
+      "type": "work",
+      "trust": 7116
+    },
+    {
+      "from": "agent:014",
+      "to": "agent:015",
+      "type": "kin",
+      "trust": 7981
+    },
+    {
+      "from": "agent:015",
+      "to": "agent:016",
+      "type": "kin",
+      "trust": 8118
+    },
+    {
+      "from": "agent:016",
+      "to": "agent:017",
+      "type": "neighbor",
+      "trust": 8255
+    },
+    {
+      "from": "agent:016",
+      "to": "agent:023",
+      "type": "work",
+      "trust": 7695
+    },
+    {
+      "from": "agent:017",
+      "to": "agent:018",
+      "type": "kin",
+      "trust": 8392
+    },
+    {
+      "from": "agent:018",
+      "to": "agent:019",
+      "type": "kin",
+      "trust": 8529
+    },
+    {
+      "from": "agent:019",
+      "to": "agent:020",
+      "type": "kin",
+      "trust": 8666
+    },
+    {
+      "from": "agent:019",
+      "to": "agent:026",
+      "type": "work",
+      "trust": 4974
+    },
+    {
+      "from": "agent:020",
+      "to": "agent:021",
+      "type": "neighbor",
+      "trust": 8803
+    },
+    {
+      "from": "agent:021",
+      "to": "agent:022",
+      "type": "kin",
+      "trust": 8940
+    },
+    {
+      "from": "agent:022",
+      "to": "agent:023",
+      "type": "kin",
+      "trust": 6277
+    },
+    {
+      "from": "agent:022",
+      "to": "agent:029",
+      "type": "work",
+      "trust": 5553
+    },
+    {
+      "from": "agent:023",
+      "to": "agent:024",
+      "type": "kin",
+      "trust": 6414
+    },
+    {
+      "from": "agent:024",
+      "to": "agent:025",
+      "type": "neighbor",
+      "trust": 6551
+    },
+    {
+      "from": "agent:025",
+      "to": "agent:026",
+      "type": "kin",
+      "trust": 6688
+    },
+    {
+      "from": "agent:025",
+      "to": "agent:032",
+      "type": "work",
+      "trust": 6132
+    },
+    {
+      "from": "agent:026",
+      "to": "agent:027",
+      "type": "kin",
+      "trust": 6825
+    },
+    {
+      "from": "agent:027",
+      "to": "agent:028",
+      "type": "kin",
+      "trust": 6962
+    },
+    {
+      "from": "agent:028",
+      "to": "agent:029",
+      "type": "neighbor",
+      "trust": 7099
+    },
+    {
+      "from": "agent:028",
+      "to": "agent:035",
+      "type": "work",
+      "trust": 6711
+    },
+    {
+      "from": "agent:029",
+      "to": "agent:030",
+      "type": "kin",
+      "trust": 7236
+    },
+    {
+      "from": "agent:030",
+      "to": "agent:031",
+      "type": "kin",
+      "trust": 7373
+    },
+    {
+      "from": "agent:031",
+      "to": "agent:032",
+      "type": "kin",
+      "trust": 7510
+    },
+    {
+      "from": "agent:031",
+      "to": "agent:038",
+      "type": "work",
+      "trust": 7290
+    },
+    {
+      "from": "agent:032",
+      "to": "agent:033",
+      "type": "neighbor",
+      "trust": 7647
+    },
+    {
+      "from": "agent:033",
+      "to": "agent:034",
+      "type": "kin",
+      "trust": 7784
+    },
+    {
+      "from": "agent:034",
+      "to": "agent:035",
+      "type": "kin",
+      "trust": 7921
+    },
+    {
+      "from": "agent:034",
+      "to": "agent:041",
+      "type": "work",
+      "trust": 7869
+    },
+    {
+      "from": "agent:035",
+      "to": "agent:036",
+      "type": "kin",
+      "trust": 8058
+    },
+    {
+      "from": "agent:036",
+      "to": "agent:037",
+      "type": "neighbor",
+      "trust": 8195
+    },
+    {
+      "from": "agent:037",
+      "to": "agent:038",
+      "type": "kin",
+      "trust": 8332
+    },
+    {
+      "from": "agent:037",
+      "to": "agent:044",
+      "type": "work",
+      "trust": 5148
+    },
+    {
+      "from": "agent:038",
+      "to": "agent:039",
+      "type": "kin",
+      "trust": 8469
+    },
+    {
+      "from": "agent:039",
+      "to": "agent:040",
+      "type": "kin",
+      "trust": 8606
+    },
+    {
+      "from": "agent:040",
+      "to": "agent:041",
+      "type": "neighbor",
+      "trust": 8743
+    },
+    {
+      "from": "agent:040",
+      "to": "agent:047",
+      "type": "work",
+      "trust": 5727
+    },
+    {
+      "from": "agent:041",
+      "to": "agent:042",
+      "type": "kin",
+      "trust": 8880
+    },
+    {
+      "from": "agent:042",
+      "to": "agent:043",
+      "type": "kin",
+      "trust": 6217
+    },
+    {
+      "from": "agent:043",
+      "to": "agent:044",
+      "type": "kin",
+      "trust": 6354
+    },
+    {
+      "from": "agent:043",
+      "to": "agent:050",
+      "type": "work",
+      "trust": 6306
+    },
+    {
+      "from": "agent:044",
+      "to": "agent:045",
+      "type": "neighbor",
+      "trust": 6491
+    },
+    {
+      "from": "agent:045",
+      "to": "agent:046",
+      "type": "kin",
+      "trust": 6628
+    },
+    {
+      "from": "agent:046",
+      "to": "agent:047",
+      "type": "kin",
+      "trust": 6765
+    },
+    {
+      "from": "agent:046",
+      "to": "agent:053",
+      "type": "work",
+      "trust": 6885
+    },
+    {
+      "from": "agent:047",
+      "to": "agent:048",
+      "type": "kin",
+      "trust": 6902
+    },
+    {
+      "from": "agent:048",
+      "to": "agent:049",
+      "type": "neighbor",
+      "trust": 7039
+    },
+    {
+      "from": "agent:049",
+      "to": "agent:050",
+      "type": "kin",
+      "trust": 7176
+    },
+    {
+      "from": "agent:049",
+      "to": "agent:056",
+      "type": "work",
+      "trust": 7464
+    },
+    {
+      "from": "agent:050",
+      "to": "agent:051",
+      "type": "kin",
+      "trust": 7313
+    },
+    {
+      "from": "agent:051",
+      "to": "agent:052",
+      "type": "kin",
+      "trust": 7450
+    },
+    {
+      "from": "agent:052",
+      "to": "agent:053",
+      "type": "neighbor",
+      "trust": 7587
+    },
+    {
+      "from": "agent:052",
+      "to": "agent:003",
+      "type": "work",
+      "trust": 8043
+    },
+    {
+      "from": "agent:053",
+      "to": "agent:054",
+      "type": "kin",
+      "trust": 7724
+    },
+    {
+      "from": "agent:054",
+      "to": "agent:055",
+      "type": "kin",
+      "trust": 7861
+    },
+    {
+      "from": "agent:055",
+      "to": "agent:056",
+      "type": "kin",
+      "trust": 7998
+    },
+    {
+      "from": "agent:055",
+      "to": "agent:006",
+      "type": "work",
+      "trust": 5322
+    },
+    {
+      "from": "agent:056",
+      "to": "agent:001",
+      "type": "neighbor",
+      "trust": 8135
+    }
+  ],
+  "economy": {
+    "medium": "resource-and-credit-ledger",
+    "markets": [
+      "food",
+      "materials",
+      "labor",
+      "knowledge"
+    ],
+    "ownership": [
+      "personal",
+      "household",
+      "cooperative",
+      "public"
+    ]
+  },
+  "governance": {
+    "authority": "bounded-participatory",
+    "decision_cycles": 4,
+    "appeal": true
+  },
+  "ecology_root": "5aeef919058a3d4125ecb04a5dbc84424b6287a489b08b747e1b868bec95538f"
+}

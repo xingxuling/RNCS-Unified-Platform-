@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.example/schemas/reality-build-request.v0.2.schema.json",
+  "title": "Reality Build Request v0.2",
+  "type": "object",
+  "required": ["project_file", "output_dir", "targets", "app"],
+  "properties": {
+    "project_file": {"type": "string", "minLength": 1},
+    "output_dir": {"type": "string", "minLength": 1},
+    "targets": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["web-release", "web-single", "windows-portable", "windows-native", "android-project", "android-apk"]}},
+    "mode": {"enum": ["development", "release"]},
+    "quality_profile": {"enum": ["economy", "balanced", "quality", "cinematic"]},
+    "app": {
+      "type": "object",
+      "required": ["app_id", "title"],
+      "properties": {
+        "app_id": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_]*(\\.[A-Za-z][A-Za-z0-9_]*)+$"},
+        "title": {"type": "string", "minLength": 1},
+        "version_name": {"type": "string"},
+        "version_code": {"type": "integer", "minimum": 1},
+        "orientation": {"enum": ["landscape", "portrait"]},
+        "fullscreen": {"type": "boolean"}
+      }
+    }
+  }
+}

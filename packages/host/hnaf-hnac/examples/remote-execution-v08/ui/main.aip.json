@@ -1,0 +1,91 @@
+{
+  "version": "0.7",
+  "id": "remote-execution-main",
+  "root": "document.main",
+  "nodes": {
+    "document.main": {
+      "kind": "document",
+      "label": "远程能力与执行沙盒",
+      "priority": "critical",
+      "children": ["information.status", "group.actions"]
+    },
+    "information.status": {
+      "kind": "information",
+      "label": "运行状态",
+      "description": "同一意图可由本地、HTTP、WebSocket 或进程 Provider 执行，并留下 RFE Generation 证据。",
+      "priority": "primary",
+      "binding": {"path": "portable.last_execution", "fallback": "尚未执行"}
+    },
+    "group.actions": {
+      "kind": "group",
+      "label": "操作",
+      "priority": "primary",
+      "children": ["action.run", "action.http", "action.websocket", "action.process", "action.timeout"]
+    },
+    "action.run": {"kind": "action", "label": "增加连续计数", "priority": "critical", "intent": "app.run"},
+    "action.http": {"kind": "action", "label": "HTTP 回声", "priority": "primary", "intent": "app.http"},
+    "action.websocket": {"kind": "action", "label": "WebSocket 回声", "priority": "primary", "intent": "app.websocket"},
+    "action.process": {"kind": "action", "label": "本地进程回声", "priority": "secondary", "intent": "app.process"},
+    "action.timeout": {"kind": "action", "label": "超时测试", "priority": "secondary", "intent": "app.timeout"}
+  },
+  "intents": {
+    "app.run": {
+      "label": "增加连续计数",
+      "risk": "medium",
+      "confirmation": false,
+      "triggers": {"pointer": ["activate"], "touch": ["tap"], "keyboard": ["Enter"], "voice": ["增加计数"]},
+      "input_schema": {"type": "object", "properties": {"amount": {"type": "integer", "minimum": 1}}, "additionalProperties": false},
+      "goal": {"type": "app.counter.increment", "version_range": ">=1.0.0 <2.0.0", "inputs": {"amount": {"type": "integer", "required": false}}, "required_evidence": ["state.root"], "constraints": {"preserve_continuity": true}},
+      "execution": {"result_binding": "portable.last_execution", "failure_policy": "fallback", "offline": "required"},
+      "authority": {"human_control_required": false}
+    },
+    "app.http": {
+      "label": "HTTP 回声",
+      "risk": "medium",
+      "confirmation": false,
+      "triggers": {"pointer": ["http"], "touch": ["http"], "keyboard": ["Ctrl+H"], "voice": ["HTTP 回声"]},
+      "input_schema": {"type": "object", "additionalProperties": true},
+      "goal": {"type": "app.remote.http.echo", "version_range": "^1.0.0", "inputs": {}, "required_evidence": ["execution.receipt"], "constraints": {}},
+      "execution": {"result_binding": "portable.last_http_result", "failure_policy": "fail-fast", "offline": "optional"},
+      "authority": {"human_control_required": false}
+    },
+    "app.websocket": {
+      "label": "WebSocket 回声",
+      "risk": "medium",
+      "confirmation": false,
+      "triggers": {"pointer": ["websocket"], "touch": ["websocket"], "keyboard": ["Ctrl+W"], "voice": ["WebSocket 回声"]},
+      "input_schema": {"type": "object", "additionalProperties": true},
+      "goal": {"type": "app.remote.websocket.echo", "version_range": "^1.0.0", "inputs": {}, "required_evidence": ["execution.receipt"], "constraints": {}},
+      "execution": {"result_binding": "portable.last_websocket_result", "failure_policy": "fail-fast", "offline": "optional"},
+      "authority": {"human_control_required": false}
+    },
+    "app.process": {
+      "label": "本地进程回声",
+      "risk": "high",
+      "confirmation": true,
+      "triggers": {"pointer": ["process"], "touch": ["process"], "keyboard": ["Ctrl+P"], "voice": ["本地进程回声"]},
+      "input_schema": {"type": "object", "additionalProperties": true},
+      "goal": {"type": "app.local.process.echo", "version_range": "^1.0.0", "inputs": {}, "required_evidence": ["execution.receipt"], "constraints": {"explicit_confirmation": true}},
+      "execution": {"result_binding": "portable.last_process_result", "failure_policy": "fail-fast", "offline": "required"},
+      "authority": {"human_control_required": true, "confirmation_reason": "本地进程能力必须显式批准"}
+    },
+    "app.timeout": {
+      "label": "超时沙盒",
+      "risk": "high",
+      "confirmation": true,
+      "triggers": {"pointer": ["timeout"], "touch": ["timeout"], "keyboard": ["Ctrl+T"], "voice": ["超时测试"]},
+      "input_schema": {"type": "object", "additionalProperties": true},
+      "goal": {"type": "app.local.process.timeout", "version_range": "^1.0.0", "inputs": {}, "required_evidence": ["execution.receipt"], "constraints": {"explicit_confirmation": true}},
+      "execution": {"failure_policy": "fail-fast", "offline": "required"},
+      "authority": {"human_control_required": true, "confirmation_reason": "用于验证超时与熔断"}
+    }
+  },
+  "projections": {
+    "desktop": {"mode": "multi-pane", "columns": 3, "navigation": "sidebar"},
+    "tablet": {"mode": "adaptive-grid", "columns": 2, "navigation": "rail"},
+    "phone": {"mode": "single-column", "columns": 1, "navigation": "bottom"},
+    "accessibility": {"mode": "linear", "columns": 1, "navigation": "landmarks"},
+    "spatial": {"mode": "spatial-field", "columns": 0, "navigation": "portals"}
+  },
+  "metadata": {"language": "zh-CN", "purpose": "HNAC v0.8 remote execution conformance demo"}
+}

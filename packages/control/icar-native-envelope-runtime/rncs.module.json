@@ -1,0 +1,16 @@
+{
+  "id": "icar",
+  "name": "ICAR Native Envelope Runtime",
+  "version": "0.5.0",
+  "path": "packages/control/icar-native-envelope-runtime",
+  "layer": "control",
+  "runtime": "rncs.icar",
+  "dependsOn": [
+    "rncs-core",
+    "rfe-sdk",
+    "laf",
+    "cnp",
+    "aaf"
+  ],
+  "test": "npm test --workspace @taowind/icar-native-envelope-runtime"
+}

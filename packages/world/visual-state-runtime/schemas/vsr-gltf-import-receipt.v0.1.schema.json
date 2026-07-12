@@ -1,0 +1,8 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://taowind.dev/schemas/vsr-gltf-import-receipt.v0.1.schema.json",
+  "title":"VSR glTF Import Receipt v0.1",
+  "type":"object",
+  "required":["format","assetVersion","sceneId","meshCount","nodeCount","materialCount","textureCount","animationCount","sourceRoot","sceneRoot","warnings","receiptRoot"],
+  "properties":{"format":{"const":"vsr.gltf-import-receipt.v0.1"},"receiptRoot":{"type":"string","pattern":"^[a-f0-9]{64}$"}}
+}

@@ -1,0 +1,1613 @@
+{
+  "specVersion": "0.1",
+  "runtimeTarget": "rsr-experience-fabric-v0.4",
+  "metadata": {
+    "id": "experience:aether-blade-showcase:120",
+    "title": "aether-blade-showcase",
+    "duration": 1,
+    "defaultFps": 30,
+    "seed": 240601,
+    "description": "Animation, audio and effects as multimodal projections of one causal reality."
+  },
+  "canvas": {
+    "width": 480,
+    "height": 270,
+    "background": {
+      "type": "solid",
+      "color": "#07111f"
+    }
+  },
+  "variables": {
+    "tick": 120,
+    "stateRoot": "fnv1a64:abc7024fa1e4f94a"
+  },
+  "nodes": [
+    {
+      "id": "ground",
+      "type": "rect",
+      "zIndex": 1,
+      "layout": {
+        "x": 0,
+        "y": 205.2,
+        "width": 480,
+        "height": 64.8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#0d1b2a"
+        }
+      }
+    },
+    {
+      "id": "horizon",
+      "type": "line",
+      "zIndex": 2,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 480,
+        "height": 270
+      },
+      "content": {
+        "x1": 0,
+        "y1": 205.2,
+        "x2": 480,
+        "y2": 205.2
+      },
+      "appearance": {
+        "stroke": {
+          "type": "solid",
+          "color": "#38bdf8"
+        },
+        "strokeWidth": 2,
+        "opacity": 0.35
+      }
+    },
+    {
+      "id": "ambient-star:0",
+      "type": "ellipse",
+      "zIndex": 0,
+      "layout": {
+        "x": 43,
+        "y": 30,
+        "width": 2,
+        "height": 2
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#c4b5fd"
+        },
+        "opacity": 0.55
+      }
+    },
+    {
+      "id": "ambient-star:1",
+      "type": "ellipse",
+      "zIndex": 0,
+      "layout": {
+        "x": 180,
+        "y": 113,
+        "width": 3,
+        "height": 3
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#7dd3fc"
+        },
+        "opacity": 0.55
+      }
+    },
+    {
+      "id": "ambient-star:2",
+      "type": "ellipse",
+      "zIndex": 0,
+      "layout": {
+        "x": 317,
+        "y": 48,
+        "width": 4,
+        "height": 4
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#c4b5fd"
+        },
+        "opacity": 0.55
+      }
+    },
+    {
+      "id": "ambient-star:3",
+      "type": "ellipse",
+      "zIndex": 0,
+      "layout": {
+        "x": 454,
+        "y": 131,
+        "width": 2,
+        "height": 2
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#7dd3fc"
+        },
+        "opacity": 0.55
+      }
+    },
+    {
+      "id": "ambient-star:4",
+      "type": "ellipse",
+      "zIndex": 0,
+      "layout": {
+        "x": 111,
+        "y": 66,
+        "width": 3,
+        "height": 3
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#c4b5fd"
+        },
+        "opacity": 0.55
+      }
+    },
+    {
+      "id": "ambient-star:5",
+      "type": "ellipse",
+      "zIndex": 0,
+      "layout": {
+        "x": 248,
+        "y": 149,
+        "width": 4,
+        "height": 4
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#7dd3fc"
+        },
+        "opacity": 0.55
+      }
+    },
+    {
+      "id": "ambient-star:6",
+      "type": "ellipse",
+      "zIndex": 0,
+      "layout": {
+        "x": 385,
+        "y": 84,
+        "width": 2,
+        "height": 2
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#c4b5fd"
+        },
+        "opacity": 0.55
+      }
+    },
+    {
+      "id": "ambient-star:7",
+      "type": "ellipse",
+      "zIndex": 0,
+      "layout": {
+        "x": 42,
+        "y": 167,
+        "width": 3,
+        "height": 3
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#7dd3fc"
+        },
+        "opacity": 0.55
+      }
+    },
+    {
+      "id": "ambient-star:8",
+      "type": "ellipse",
+      "zIndex": 0,
+      "layout": {
+        "x": 179,
+        "y": 102,
+        "width": 4,
+        "height": 4
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#c4b5fd"
+        },
+        "opacity": 0.55
+      }
+    },
+    {
+      "id": "ambient-star:9",
+      "type": "ellipse",
+      "zIndex": 0,
+      "layout": {
+        "x": 316,
+        "y": 37,
+        "width": 2,
+        "height": 2
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#7dd3fc"
+        },
+        "opacity": 0.55
+      }
+    },
+    {
+      "id": "ambient-star:10",
+      "type": "ellipse",
+      "zIndex": 0,
+      "layout": {
+        "x": 453,
+        "y": 120,
+        "width": 3,
+        "height": 3
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#c4b5fd"
+        },
+        "opacity": 0.55
+      }
+    },
+    {
+      "id": "ambient-star:11",
+      "type": "ellipse",
+      "zIndex": 0,
+      "layout": {
+        "x": 110,
+        "y": 55,
+        "width": 4,
+        "height": 4
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#7dd3fc"
+        },
+        "opacity": 0.55
+      }
+    },
+    {
+      "id": "ambient-star:12",
+      "type": "ellipse",
+      "zIndex": 0,
+      "layout": {
+        "x": 247,
+        "y": 138,
+        "width": 2,
+        "height": 2
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#c4b5fd"
+        },
+        "opacity": 0.55
+      }
+    },
+    {
+      "id": "ambient-star:13",
+      "type": "ellipse",
+      "zIndex": 0,
+      "layout": {
+        "x": 384,
+        "y": 73,
+        "width": 3,
+        "height": 3
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#7dd3fc"
+        },
+        "opacity": 0.55
+      }
+    },
+    {
+      "id": "ambient-star:14",
+      "type": "ellipse",
+      "zIndex": 0,
+      "layout": {
+        "x": 41,
+        "y": 156,
+        "width": 4,
+        "height": 4
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#c4b5fd"
+        },
+        "opacity": 0.55
+      }
+    },
+    {
+      "id": "ambient-star:15",
+      "type": "ellipse",
+      "zIndex": 0,
+      "layout": {
+        "x": 178,
+        "y": 91,
+        "width": 2,
+        "height": 2
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#7dd3fc"
+        },
+        "opacity": 0.55
+      }
+    },
+    {
+      "id": "hero:body",
+      "type": "ellipse",
+      "zIndex": 25,
+      "layout": {
+        "x": 138,
+        "y": 141.5,
+        "width": 48,
+        "height": 72
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#2563eb"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#dbeafe"
+        },
+        "strokeWidth": 2
+      }
+    },
+    {
+      "id": "hero:head",
+      "type": "ellipse",
+      "zIndex": 26,
+      "layout": {
+        "x": 147,
+        "y": 111.5,
+        "width": 30,
+        "height": 30
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#dbeafe"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#60a5fa"
+        },
+        "strokeWidth": 2
+      }
+    },
+    {
+      "id": "bone:torso",
+      "type": "line",
+      "zIndex": 30,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 480,
+        "height": 270
+      },
+      "content": {
+        "x1": 162,
+        "y1": 170.5,
+        "x2": 188,
+        "y2": 171.5
+      },
+      "appearance": {
+        "stroke": {
+          "type": "solid",
+          "color": "#f8fafc"
+        },
+        "strokeWidth": 4,
+        "lineCap": "round"
+      }
+    },
+    {
+      "id": "bone:upper-arm",
+      "type": "line",
+      "zIndex": 30,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 480,
+        "height": 270
+      },
+      "content": {
+        "x1": 188,
+        "y1": 171.5,
+        "x2": 228,
+        "y2": 164
+      },
+      "appearance": {
+        "stroke": {
+          "type": "solid",
+          "color": "#f8fafc"
+        },
+        "strokeWidth": 4,
+        "lineCap": "round"
+      }
+    },
+    {
+      "id": "bone:forearm",
+      "type": "line",
+      "zIndex": 30,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 480,
+        "height": 270
+      },
+      "content": {
+        "x1": 228,
+        "y1": 164,
+        "x2": 283.5,
+        "y2": 171
+      },
+      "appearance": {
+        "stroke": {
+          "type": "solid",
+          "color": "#f8fafc"
+        },
+        "strokeWidth": 4,
+        "lineCap": "round"
+      }
+    },
+    {
+      "id": "bone:sword",
+      "type": "line",
+      "zIndex": 30,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 480,
+        "height": 270
+      },
+      "content": {
+        "x1": 283.5,
+        "y1": 171,
+        "x2": 283.5,
+        "y2": 171
+      },
+      "appearance": {
+        "stroke": {
+          "type": "solid",
+          "color": "#f8fafc"
+        },
+        "strokeWidth": 5,
+        "lineCap": "round"
+      }
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:115",
+      "type": "ellipse",
+      "zIndex": 60,
+      "layout": {
+        "x": 242.5,
+        "y": 136,
+        "width": 1,
+        "height": 1
+      },
+      "transform": {
+        "rotation": 156.08448
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "rgba(54,84,255,0.10588235294117647)"
+        },
+        "opacity": 0.090909
+      },
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:116",
+      "type": "ellipse",
+      "zIndex": 60,
+      "layout": {
+        "x": 288,
+        "y": 151.5,
+        "width": 1,
+        "height": 1
+      },
+      "transform": {
+        "rotation": -19.88244
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "rgba(45,82,255,0.0392156862745098)"
+        },
+        "opacity": 0.03252
+      },
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:118",
+      "type": "ellipse",
+      "zIndex": 60,
+      "layout": {
+        "x": 232,
+        "y": 170.5,
+        "width": 1,
+        "height": 1
+      },
+      "transform": {
+        "rotation": 113.70276
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "rgba(45,82,255,0.0392156862745098)"
+        },
+        "opacity": 0.03252
+      },
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:125",
+      "type": "ellipse",
+      "zIndex": 60,
+      "layout": {
+        "x": 266.753877,
+        "y": 167.753877,
+        "width": 1.492246,
+        "height": 1.492246
+      },
+      "transform": {
+        "rotation": 24.230520000000002
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "rgba(63,87,255,0.1803921568627451)"
+        },
+        "opacity": 0.155039
+      },
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:126",
+      "type": "ellipse",
+      "zIndex": 60,
+      "layout": {
+        "x": 285.373983,
+        "y": 130.873983,
+        "width": 1.2520339999999999,
+        "height": 1.2520339999999999
+      },
+      "transform": {
+        "rotation": -40.576679999999996
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "rgba(60,86,255,0.14901960784313725)"
+        },
+        "opacity": 0.130081
+      },
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:128",
+      "type": "ellipse",
+      "zIndex": 60,
+      "layout": {
+        "x": 269.5,
+        "y": 115,
+        "width": 1,
+        "height": 1
+      },
+      "transform": {
+        "rotation": 34.121880000000004
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "rgba(45,82,255,0.0392156862745098)"
+        },
+        "opacity": 0.035088
+      },
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:130",
+      "type": "ellipse",
+      "zIndex": 60,
+      "layout": {
+        "x": 286.8583345,
+        "y": 121.8583345,
+        "width": 1.283331,
+        "height": 1.283331
+      },
+      "transform": {
+        "rotation": -3.05424
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "rgba(60,86,255,0.15294117647058825)"
+        },
+        "opacity": 0.133333
+      },
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:132",
+      "type": "ellipse",
+      "zIndex": 60,
+      "layout": {
+        "x": 244.455425,
+        "y": 120.955425,
+        "width": 2.08915,
+        "height": 2.08915
+      },
+      "transform": {
+        "rotation": 208.10808
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "rgba(73,90,255,0.25098039215686274)"
+        },
+        "opacity": 0.217055
+      },
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:133",
+      "type": "ellipse",
+      "zIndex": 60,
+      "layout": {
+        "x": 241.806199,
+        "y": 143.806199,
+        "width": 2.3876020000000002,
+        "height": 2.3876020000000002
+      },
+      "transform": {
+        "rotation": -187.69500000000002
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "rgba(77,91,255,0.28627450980392155)"
+        },
+        "opacity": 0.248063
+      },
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:134",
+      "type": "ellipse",
+      "zIndex": 60,
+      "layout": {
+        "x": 244.1875035,
+        "y": 155.1875035,
+        "width": 2.6249930000000004,
+        "height": 2.6249930000000004
+      },
+      "transform": {
+        "rotation": 175.36068
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "rgba(81,93,255,0.3137254901960784)"
+        },
+        "opacity": 0.272727
+      },
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:135",
+      "type": "ellipse",
+      "zIndex": 60,
+      "layout": {
+        "x": 267.6979155,
+        "y": 93.6979155,
+        "width": 1.6041690000000002,
+        "height": 1.6041690000000002
+      },
+      "transform": {
+        "rotation": -112.42548
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "rgba(65,88,255,0.19215686274509805)"
+        },
+        "opacity": 0.166667
+      },
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:142",
+      "type": "ellipse",
+      "zIndex": 60,
+      "layout": {
+        "x": 239.655702,
+        "y": 149.155702,
+        "width": 1.688596,
+        "height": 1.688596
+      },
+      "transform": {
+        "rotation": 101.78748
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "rgba(66,88,255,0.20392156862745098)"
+        },
+        "opacity": 0.175439
+      },
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:144",
+      "type": "ellipse",
+      "zIndex": 60,
+      "layout": {
+        "x": 261.7166655,
+        "y": 121.2166655,
+        "width": 2.566669,
+        "height": 2.566669
+      },
+      "transform": {
+        "rotation": -19.4976
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "rgba(80,92,255,0.3058823529411765)"
+        },
+        "opacity": 0.266667
+      },
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:151",
+      "type": "ellipse",
+      "zIndex": 60,
+      "layout": {
+        "x": 259.1666685,
+        "y": 156.16666850000001,
+        "width": 3.666663,
+        "height": 3.666663
+      },
+      "transform": {
+        "rotation": 73.84212
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "rgba(97,98,255,0.4392156862745098)"
+        },
+        "opacity": 0.380952
+      },
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:154",
+      "type": "ellipse",
+      "zIndex": 60,
+      "layout": {
+        "x": 252.7354155,
+        "y": 130.7354155,
+        "width": 3.5291690000000004,
+        "height": 3.5291690000000004
+      },
+      "transform": {
+        "rotation": -50.6862
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "rgba(95,97,255,0.4235294117647059)"
+        },
+        "opacity": 0.366667
+      },
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:155",
+      "type": "ellipse",
+      "zIndex": 60,
+      "layout": {
+        "x": 243.556372,
+        "y": 152.056372,
+        "width": 1.887256,
+        "height": 1.887256
+      },
+      "transform": {
+        "rotation": 212.12351999999998
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "rgba(69,89,255,0.22745098039215686)"
+        },
+        "opacity": 0.196079
+      },
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:157",
+      "type": "ellipse",
+      "zIndex": 60,
+      "layout": {
+        "x": 250.2523165,
+        "y": 144.7523165,
+        "width": 2.495367,
+        "height": 2.495367
+      },
+      "transform": {
+        "rotation": -144.96192
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "rgba(79,92,255,0.2980392156862745)"
+        },
+        "opacity": 0.259259
+      },
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:158",
+      "type": "ellipse",
+      "zIndex": 60,
+      "layout": {
+        "x": 244.5740755,
+        "y": 146.0740755,
+        "width": 2.851849,
+        "height": 2.851849
+      },
+      "transform": {
+        "rotation": -142.08336
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "rgba(84,94,255,0.3411764705882353)"
+        },
+        "opacity": 0.296296
+      },
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:159",
+      "type": "ellipse",
+      "zIndex": 60,
+      "layout": {
+        "x": 280.9654465,
+        "y": 110.9654465,
+        "width": 4.069107,
+        "height": 4.069107
+      },
+      "transform": {
+        "rotation": -46.63511999999999
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "rgba(103,100,255,0.48627450980392156)"
+        },
+        "opacity": 0.422764
+      },
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:160",
+      "type": "ellipse",
+      "zIndex": 60,
+      "layout": {
+        "x": 279.575,
+        "y": 120.575,
+        "width": 3.8500000000000005,
+        "height": 3.8500000000000005
+      },
+      "transform": {
+        "rotation": -28.432080000000003
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "rgba(100,98,255,0.4627450980392157)"
+        },
+        "opacity": 0.4
+      },
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:161",
+      "type": "ellipse",
+      "zIndex": 60,
+      "layout": {
+        "x": 259.8958345,
+        "y": 153.3958345,
+        "width": 3.208331,
+        "height": 3.208331
+      },
+      "transform": {
+        "rotation": -7.94628
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "rgba(90,95,255,0.3843137254901961)"
+        },
+        "opacity": 0.333333
+      },
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:163",
+      "type": "ellipse",
+      "zIndex": 60,
+      "layout": {
+        "x": 251.308944,
+        "y": 130.808944,
+        "width": 4.382112,
+        "height": 4.382112
+      },
+      "transform": {
+        "rotation": -71.81172
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "rgba(108,101,255,0.5254901960784314)"
+        },
+        "opacity": 0.455284
+      },
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:165",
+      "type": "ellipse",
+      "zIndex": 60,
+      "layout": {
+        "x": 244.5,
+        "y": 108,
+        "width": 1,
+        "height": 1
+      },
+      "transform": {
+        "rotation": -98.30051999999999
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "rgba(54,84,255,0.10980392156862745)"
+        },
+        "opacity": 0.095239
+      },
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:166",
+      "type": "ellipse",
+      "zIndex": 60,
+      "layout": {
+        "x": 241.490198,
+        "y": 148.490198,
+        "width": 3.0196039999999997,
+        "height": 3.0196039999999997
+      },
+      "transform": {
+        "rotation": 60.86952
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "rgba(87,94,255,0.3607843137254902)"
+        },
+        "opacity": 0.313725
+      },
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:169",
+      "type": "ellipse",
+      "zIndex": 60,
+      "layout": {
+        "x": 257.8124985,
+        "y": 104.3124985,
+        "width": 1.375003,
+        "height": 1.375003
+      },
+      "transform": {
+        "rotation": -114.90983999999999
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "rgba(61,87,255,0.16470588235294117)"
+        },
+        "opacity": 0.142857
+      },
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:171",
+      "type": "ellipse",
+      "zIndex": 60,
+      "layout": {
+        "x": 238.729169,
+        "y": 125.229169,
+        "width": 5.541662,
+        "height": 5.541662
+      },
+      "transform": {
+        "rotation": -71.43804
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "rgba(126,107,255,0.6627450980392157)"
+        },
+        "opacity": 0.575757
+      },
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:172",
+      "type": "ellipse",
+      "zIndex": 60,
+      "layout": {
+        "x": 297,
+        "y": 132.5,
+        "width": 1,
+        "height": 1
+      },
+      "transform": {
+        "rotation": 16.34688
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "rgba(48,82,255,0.06274509803921569)"
+        },
+        "opacity": 0.053333
+      },
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:173",
+      "type": "ellipse",
+      "zIndex": 60,
+      "layout": {
+        "x": 253,
+        "y": 140.5,
+        "width": 1,
+        "height": 1
+      },
+      "transform": {
+        "rotation": -66.96072
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "rgba(55,85,255,0.11764705882352941)"
+        },
+        "opacity": 0.102564
+      },
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:174",
+      "type": "ellipse",
+      "zIndex": 60,
+      "layout": {
+        "x": 281.393678,
+        "y": 137.393678,
+        "width": 2.212644,
+        "height": 2.212644
+      },
+      "transform": {
+        "rotation": 94.68900000000001
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "rgba(74,91,255,0.26666666666666666)"
+        },
+        "opacity": 0.229885
+      },
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:175",
+      "type": "ellipse",
+      "zIndex": 60,
+      "layout": {
+        "x": 255.3440835,
+        "y": 157.8440835,
+        "width": 3.311833,
+        "height": 3.311833
+      },
+      "transform": {
+        "rotation": 86.73732000000001
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "rgba(92,96,255,0.396078431372549)"
+        },
+        "opacity": 0.344087
+      },
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:176",
+      "type": "ellipse",
+      "zIndex": 60,
+      "layout": {
+        "x": 251,
+        "y": 145,
+        "width": 1,
+        "height": 1
+      },
+      "transform": {
+        "rotation": 61.34328
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "rgba(48,83,255,0.06274509803921569)"
+        },
+        "opacity": 0.055556
+      },
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:177",
+      "type": "ellipse",
+      "zIndex": 60,
+      "layout": {
+        "x": 248.367524,
+        "y": 163.367524,
+        "width": 5.264952,
+        "height": 5.264952
+      },
+      "transform": {
+        "rotation": 111.96216
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "rgba(122,105,255,0.6313725490196078)"
+        },
+        "opacity": 0.547008
+      },
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:178",
+      "type": "ellipse",
+      "zIndex": 60,
+      "layout": {
+        "x": 242.6829305,
+        "y": 138.1829305,
+        "width": 5.634138999999999,
+        "height": 5.634138999999999
+      },
+      "transform": {
+        "rotation": 49.224239999999995
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "rgba(128,107,255,0.6745098039215687)"
+        },
+        "opacity": 0.585365
+      },
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "audio:caption",
+      "type": "text",
+      "zIndex": 110,
+      "layout": {
+        "x": 20,
+        "y": 214,
+        "width": 440,
+        "height": 30
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#f8fafc"
+        }
+      },
+      "content": {
+        "text": "AUDIO: SILENT",
+        "fontSize": 15
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor",
+            "accessibility"
+          ],
+          "deny": "hide",
+          "reason": "experience-audio-captions"
+        }
+      }
+    },
+    {
+      "id": "title",
+      "type": "text",
+      "zIndex": 120,
+      "layout": {
+        "x": 18,
+        "y": 14,
+        "width": 444,
+        "height": 30
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#e0f2fe"
+        }
+      },
+      "content": {
+        "text": "RNCS TEMPORAL EXPERIENCE FABRIC",
+        "fontSize": 20
+      }
+    },
+    {
+      "id": "debug:state",
+      "type": "text",
+      "zIndex": 121,
+      "layout": {
+        "x": 18,
+        "y": 46,
+        "width": 444,
+        "height": 88
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#fbbf24"
+        }
+      },
+      "content": {
+        "text": "tick=120  state=aura:aura | base:idle\nparticles=33  audio=4  effects=1\nroot=fnv1a64:abc7024fa1e4f94a",
+        "fontSize": 12
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "experience-debug-only"
+        }
+      }
+    },
+    {
+      "id": "debug:event:marker:hero:base:idle-breath:46:0",
+      "type": "text",
+      "zIndex": 122,
+      "layout": {
+        "x": 150,
+        "y": 48,
+        "width": 310,
+        "height": 18
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#c4b5fd"
+        }
+      },
+      "content": {
+        "text": "46 · animation.breath · animation-marker",
+        "fontSize": 11
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "experience-debug-only"
+        }
+      }
+    },
+    {
+      "id": "debug:event:magic-one:1",
+      "type": "text",
+      "zIndex": 122,
+      "layout": {
+        "x": 150,
+        "y": 66,
+        "width": 310,
+        "height": 18
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#c4b5fd"
+        }
+      },
+      "content": {
+        "text": "52 · magic.cast · input",
+        "fontSize": 11
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "experience-debug-only"
+        }
+      }
+    },
+    {
+      "id": "debug:event:marker:hero:base:idle-breath:76:2",
+      "type": "text",
+      "zIndex": 122,
+      "layout": {
+        "x": 150,
+        "y": 84,
+        "width": 310,
+        "height": 18
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#c4b5fd"
+        }
+      },
+      "content": {
+        "text": "76 · animation.breath · animation-marker",
+        "fontSize": 11
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "experience-debug-only"
+        }
+      }
+    },
+    {
+      "id": "debug:event:hurt-one:3",
+      "type": "text",
+      "zIndex": 122,
+      "layout": {
+        "x": 150,
+        "y": 102,
+        "width": 310,
+        "height": 18
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#c4b5fd"
+        }
+      },
+      "content": {
+        "text": "82 · hurt.request · input",
+        "fontSize": 11
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "experience-debug-only"
+        }
+      }
+    },
+    {
+      "id": "debug:event:attack-two:4",
+      "type": "text",
+      "zIndex": 122,
+      "layout": {
+        "x": 150,
+        "y": 120,
+        "width": 310,
+        "height": 18
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#c4b5fd"
+        }
+      },
+      "content": {
+        "text": "98 · attack.request · input",
+        "fontSize": 11
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "experience-debug-only"
+        }
+      }
+    },
+    {
+      "id": "debug:event:marker:hero:base:idle-breath:114:5",
+      "type": "text",
+      "zIndex": 122,
+      "layout": {
+        "x": 150,
+        "y": 138,
+        "width": 310,
+        "height": 18
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#c4b5fd"
+        }
+      },
+      "content": {
+        "text": "114 · animation.breath · animation-marker",
+        "fontSize": 11
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "experience-debug-only"
+        }
+      }
+    }
+  ],
+  "extensions": {
+    "rsr:experience-fabric": {
+      "format": "rsr.experience-fabric.v0.4",
+      "experienceId": "aether-blade-showcase",
+      "configHash": "fnv1a64:262dff1708dbc1e6",
+      "animationRoot": "fnv1a64:dd8b4e53984de061",
+      "audioPlanRoot": "fnv1a64:6e5962e7ff2139ca",
+      "effectRoot": "fnv1a64:53c39d5e9a862981"
+    }
+  }
+}

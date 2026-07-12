@@ -1,0 +1,2 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {runBehaviorSequencerWorld} from '../examples/behavior-sequencer-v011/runtime.mjs';
+test('v0.11 closes cooperative behavior, deterministic replay and multi-track Sequencer loop',async()=>{const r=await runBehaviorSequencerWorld();assert.equal(Object.values(r.acceptance).every(Boolean),true);assert.notEqual(r.sequence.completion_frame.authority_root,r.sequence.completion_frame.presentation_root);assert.equal(r.replay.deterministic,true);});

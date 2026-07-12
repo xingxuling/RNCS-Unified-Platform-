@@ -1,0 +1,332 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/vsr-webgpu-plan.v0.1.schema.json",
+  "title": "VSR WebGPU Plan v0.1",
+  "type": "object",
+  "required": [
+    "format",
+    "backendVersion",
+    "documentId",
+    "sourceDisplayHash",
+    "viewport",
+    "clearColor",
+    "vertexStrideFloats",
+    "vertexData",
+    "unsupported",
+    "stats",
+    "commands",
+    "textures",
+    "vertexHash",
+    "planHash"
+  ],
+  "properties": {
+    "format": {
+      "const": "vsr.webgpu-plan.v0.1"
+    },
+    "backendVersion": {
+      "type": "string"
+    },
+    "documentId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceDisplayHash": {
+      "type": "string"
+    },
+    "viewport": {
+      "type": "object",
+      "required": [
+        "width",
+        "height",
+        "dpr"
+      ],
+      "properties": {
+        "width": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "height": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "dpr": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "vertexStrideFloats": {
+      "const": 11
+    },
+    "vertexData": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    },
+    "unsupported": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "nodeId",
+          "type",
+          "reason"
+        ],
+        "properties": {
+          "nodeId": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "stats": {
+      "type": "object",
+      "required": [
+        "items",
+        "primitives",
+        "vertices",
+        "unsupported",
+        "bytes"
+      ],
+      "properties": {
+        "items": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "primitives": {
+          "type": "number",
+          "minimum": 0
+        },
+        "vertices": {
+          "type": "number",
+          "minimum": 0
+        },
+        "unsupported": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "triangles": {
+          "type": "number",
+          "minimum": 0
+        },
+        "textures": {
+          "type": "number",
+          "minimum": 0
+        },
+        "glyphs": {
+          "type": "number",
+          "minimum": 0
+        },
+        "pathTriangles": {
+          "type": "number",
+          "minimum": 0
+        },
+        "clippedItems": {
+          "type": "number",
+          "minimum": 0
+        },
+        "shadowPrimitives": {
+          "type": "number",
+          "minimum": 0
+        },
+        "additiveCommands": {
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "vertexHash": {
+      "type": "string",
+      "pattern": "^gpu32:[a-f0-9]{16}$"
+    },
+    "planHash": {
+      "type": "string"
+    },
+    "clearColor": {
+      "type": "array",
+      "prefixItems": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "minItems": 4,
+      "maxItems": 4
+    },
+    "commands": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "nodeId",
+          "pipeline",
+          "textureId",
+          "sampling",
+          "blendMode",
+          "firstVertex",
+          "vertexCount",
+          "order"
+        ],
+        "properties": {
+          "nodeId": {
+            "type": "string"
+          },
+          "pipeline": {
+            "enum": [
+              "solid",
+              "textured"
+            ]
+          },
+          "textureId": {
+            "type": "string"
+          },
+          "firstVertex": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "vertexCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "order": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "sampling": {
+            "enum": [
+              "linear",
+              "nearest"
+            ]
+          },
+          "blendMode": {
+            "enum": [
+              "normal",
+              "additive"
+            ]
+          },
+          "scissor": {
+            "type": "object",
+            "required": [
+              "x",
+              "y",
+              "width",
+              "height"
+            ],
+            "properties": {
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              },
+              "width": {
+                "type": "number"
+              },
+              "height": {
+                "type": "number"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "textures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "kind",
+          "width",
+          "height",
+          "data",
+          "textureHash"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "white",
+              "font-atlas",
+              "image"
+            ]
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 255
+            }
+          },
+          "textureHash": {
+            "type": "string"
+          },
+          "glyphs": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "required": [
+                "u0",
+                "v0",
+                "u1",
+                "v1"
+              ],
+              "properties": {
+                "u0": {
+                  "type": "number"
+                },
+                "v0": {
+                  "type": "number"
+                },
+                "u1": {
+                  "type": "number"
+                },
+                "v1": {
+                  "type": "number"
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

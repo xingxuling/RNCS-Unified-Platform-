@@ -1,0 +1,1 @@
+{"format":"vsr.observer-profile.v0.1","observerId":"observer:owner","subjectId":"subject:owner","roles":["owner"],"scopes":["intent.read","report.read","evidence.read","execution.read","diagnostics.read"],"clearance":4,"locale":"zh-CN","claims":{"kind":"owner"}}

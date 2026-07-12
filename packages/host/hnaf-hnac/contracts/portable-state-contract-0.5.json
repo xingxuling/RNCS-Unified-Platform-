@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hnaf.org/contracts/portable-state-contract-0.5.json",
+  "title": "HNAF Portable State Contract v0.5",
+  "type": "object",
+  "required": [
+    "format",
+    "app_id",
+    "schema_version",
+    "partitions"
+  ],
+  "properties": {
+    "format": {
+      "const": "hnaf.portable-state.v0.5"
+    },
+    "app_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "schema_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "partitions": {
+      "type": "object",
+      "required": [
+        "portable",
+        "device_private",
+        "secret",
+        "cache"
+      ],
+      "properties": {
+        "portable": {
+          "type": "object"
+        },
+        "device_private": {
+          "type": "object"
+        },
+        "secret": {
+          "type": "object"
+        },
+        "cache": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": false
+    },
+    "state_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "additionalProperties": true,
+  "x-hnaf-invariants": [
+    "ephemeral state is never persisted",
+    "device_private state is never exported",
+    "secret state is never exported without authenticated encryption",
+    "state_root excludes timestamps replica identity and generation",
+    "snapshot_root preserves replica generation parent and state_root",
+    "conflicting values produce explicit conflict evidence"
+  ]
+}

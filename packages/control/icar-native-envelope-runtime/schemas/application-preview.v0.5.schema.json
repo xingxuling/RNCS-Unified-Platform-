@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ICAR Application Preview v0.5",
+  "type": "object",
+  "required": [
+    "format",
+    "status",
+    "intent",
+    "plan",
+    "proposed_artifact",
+    "envelope",
+    "preview_root"
+  ],
+  "properties": {
+    "format": {
+      "const": "icar.application-preview.v0.5"
+    },
+    "status": {
+      "enum": [
+        "ready-for-explicit-commit",
+        "denied"
+      ]
+    },
+    "preview_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

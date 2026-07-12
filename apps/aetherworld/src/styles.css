@@ -1,0 +1,236 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Aether Fate Engine · 设计系统
+ * 风格：深邃星图 / 命运操作系统 / 黑金 + 深蓝 + 白金
+ * 默认深色，所有颜色使用 oklch
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* 命运五域语义色 */
+  --color-tian: var(--tian);
+  --color-di: var(--di);
+  --color-ren: var(--ren);
+  --color-shen: var(--shen);
+  --color-feng: var(--feng);
+
+  /* 触发强度色阶 */
+  --color-trigger-low: var(--trigger-low);
+  --color-trigger-mid: var(--trigger-mid);
+  --color-trigger-high: var(--trigger-high);
+  --color-trigger-peak: var(--trigger-peak);
+
+  /* 金属与星光 */
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-platinum: var(--platinum);
+  --color-starline: var(--starline);
+
+  --color-chart-1: var(--tian);
+  --color-chart-2: var(--di);
+  --color-chart-3: var(--ren);
+  --color-chart-4: var(--shen);
+  --color-chart-5: var(--feng);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --font-display: "Cormorant Garamond", "Noto Serif SC", ui-serif, serif;
+  --font-sans: "Inter", "Noto Sans SC", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+:root {
+  --radius: 0.5rem;
+
+  /* 深邃星空底色 */
+  --background: oklch(0.16 0.025 264);
+  --foreground: oklch(0.95 0.012 95);
+
+  --card: oklch(0.205 0.028 262);
+  --card-foreground: oklch(0.95 0.012 95);
+  --popover: oklch(0.205 0.028 262);
+  --popover-foreground: oklch(0.95 0.012 95);
+
+  /* 主色：白金 */
+  --primary: oklch(0.86 0.09 86);
+  --primary-foreground: oklch(0.18 0.03 264);
+
+  --secondary: oklch(0.26 0.035 262);
+  --secondary-foreground: oklch(0.93 0.012 95);
+
+  --muted: oklch(0.24 0.03 262);
+  --muted-foreground: oklch(0.68 0.02 95);
+
+  --accent: oklch(0.32 0.06 250);
+  --accent-foreground: oklch(0.95 0.012 95);
+
+  --destructive: oklch(0.62 0.21 22);
+  --destructive-foreground: oklch(0.98 0.01 95);
+
+  --border: oklch(0.3 0.03 262 / 0.6);
+  --input: oklch(0.28 0.03 262);
+  --ring: oklch(0.78 0.12 86);
+
+  /* 五域语义色 */
+  --tian: oklch(0.78 0.13 230);   /* 天 · 星蓝 */
+  --di:   oklch(0.7 0.12 70);     /* 地 · 大地金棕 */
+  --ren:  oklch(0.75 0.14 145);   /* 人 · 翠玉 */
+  --shen: oklch(0.85 0.13 95);    /* 神 · 白金 */
+  --feng: oklch(0.72 0.18 330);   /* 风 · 紫罗兰 */
+
+  /* 触发强度色阶 */
+  --trigger-low:  oklch(0.45 0.04 250);
+  --trigger-mid:  oklch(0.62 0.10 220);
+  --trigger-high: oklch(0.78 0.15 75);
+  --trigger-peak: oklch(0.85 0.18 50);
+
+  --gold: oklch(0.82 0.13 85);
+  --gold-soft: oklch(0.72 0.09 85 / 0.5);
+  --platinum: oklch(0.92 0.02 95);
+  --starline: oklch(1 0 0 / 0.08);
+
+  --sidebar: oklch(0.13 0.025 264);
+  --sidebar-foreground: oklch(0.88 0.012 95);
+  --sidebar-primary: oklch(0.86 0.09 86);
+  --sidebar-primary-foreground: oklch(0.16 0.025 264);
+  --sidebar-accent: oklch(0.22 0.03 262);
+  --sidebar-accent-foreground: oklch(0.95 0.012 95);
+  --sidebar-border: oklch(0.28 0.03 262 / 0.5);
+  --sidebar-ring: oklch(0.78 0.12 86);
+}
+
+/* 强制默认深色 */
+html { color-scheme: dark; }
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    background-image:
+      radial-gradient(ellipse at top, oklch(0.28 0.08 260 / 0.4), transparent 60%),
+      radial-gradient(ellipse at bottom right, oklch(0.3 0.1 280 / 0.25), transparent 55%),
+      linear-gradient(180deg, oklch(0.14 0.025 264), oklch(0.16 0.025 264));
+    min-height: 100vh;
+  }
+
+  /* 星点背景 */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image:
+      radial-gradient(1px 1px at 20% 30%, oklch(0.95 0.05 95 / 0.5), transparent 40%),
+      radial-gradient(1px 1px at 70% 60%, oklch(0.95 0.05 95 / 0.4), transparent 40%),
+      radial-gradient(1px 1px at 40% 80%, oklch(0.95 0.05 95 / 0.35), transparent 40%),
+      radial-gradient(1px 1px at 85% 20%, oklch(0.95 0.05 95 / 0.4), transparent 40%),
+      radial-gradient(1px 1px at 10% 65%, oklch(0.95 0.05 95 / 0.3), transparent 40%),
+      radial-gradient(1.5px 1.5px at 55% 15%, oklch(0.95 0.05 95 / 0.45), transparent 40%),
+      radial-gradient(1px 1px at 92% 75%, oklch(0.95 0.05 95 / 0.35), transparent 40%);
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: 0.01em;
+  }
+}
+
+@layer components {
+  .aether-card {
+    background: linear-gradient(180deg,
+      oklch(0.22 0.03 262 / 0.85),
+      oklch(0.18 0.028 262 / 0.85));
+    border: 1px solid oklch(0.35 0.04 262 / 0.6);
+    backdrop-filter: blur(8px);
+    border-radius: var(--radius-lg);
+    box-shadow:
+      0 1px 0 oklch(1 0 0 / 0.04) inset,
+      0 20px 40px -20px oklch(0 0 0 / 0.6);
+  }
+
+  .aether-card-elevated {
+    background: linear-gradient(180deg,
+      oklch(0.25 0.04 262 / 0.9),
+      oklch(0.2 0.03 262 / 0.9));
+    border: 1px solid oklch(0.82 0.13 85 / 0.25);
+    box-shadow:
+      0 0 0 1px oklch(0.82 0.13 85 / 0.1),
+      0 20px 60px -20px oklch(0 0 0 / 0.8);
+  }
+
+  .gold-text {
+    background: linear-gradient(135deg,
+      oklch(0.95 0.05 95),
+      oklch(0.82 0.13 85),
+      oklch(0.7 0.1 60));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .gold-divider {
+    height: 1px;
+    background: linear-gradient(90deg,
+      transparent,
+      oklch(0.82 0.13 85 / 0.5),
+      transparent);
+  }
+
+  .grid-overlay {
+    background-image:
+      linear-gradient(oklch(1 0 0 / 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, oklch(1 0 0 / 0.04) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+
+  .trigger-bar {
+    background: linear-gradient(90deg,
+      var(--trigger-low),
+      var(--trigger-mid),
+      var(--trigger-high),
+      var(--trigger-peak));
+  }
+}

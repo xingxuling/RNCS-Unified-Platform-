@@ -1,0 +1,32 @@
+{
+  "format": "rsr.world.v0.1",
+  "worldId": "falling-box-reality",
+  "scale": 1000,
+  "stepHz": 60,
+  "gravity": { "x": 0, "y": 980000 },
+  "solverIterations": 4,
+  "bodies": [
+    {
+      "id": "falling-box",
+      "kind": "dynamic",
+      "position": { "x": 320000, "y": 60000 },
+      "halfSize": { "x": 22000, "y": 22000 },
+      "velocity": { "x": 0, "y": 0 },
+      "inverseMassQ": 1000,
+      "restitutionQ": 40,
+      "frictionQ": 650,
+      "sleepThreshold": 2200,
+      "sleepTicks": 24,
+      "tags": ["subject", "blue-box"]
+    },
+    {
+      "id": "ground",
+      "kind": "static",
+      "position": { "x": 320000, "y": 334000 },
+      "halfSize": { "x": 300000, "y": 18000 },
+      "restitutionQ": 20,
+      "frictionQ": 800,
+      "tags": ["environment", "ground"]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "id": "hnaf.reference.phone",
+  "family": "mobile",
+  "execution_profiles": [
+    "wasm-core@1",
+    "declarative-v0"
+  ],
+  "capabilities": {
+    "host.log": [
+      "1"
+    ],
+    "host.clock": [
+      "1"
+    ],
+    "environment.summary": [
+      "1"
+    ],
+    "storage.kv": [
+      "1",
+      "2"
+    ],
+    "storage.state": [
+      "1"
+    ]
+  },
+  "interaction_modes": [
+    "touch",
+    "pointer",
+    "keyboard"
+  ],
+  "resources": {
+    "viewport_width": 390,
+    "viewport_height": 844,
+    "screen_reader": false,
+    "spatial": false
+  },
+  "policies": {
+    "require_signature": false,
+    "network_default": "deny",
+    "accessibility_mode": false
+  }
+}

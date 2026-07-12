@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/reality-branch-candidate.v0.2.schema.json",
+  "title": "Reality Branch Candidate v0.2",
+  "type": "object",
+  "required": [
+    "format",
+    "version",
+    "branch_id",
+    "parent_branch_id",
+    "operations",
+    "candidate_root"
+  ],
+  "properties": {
+    "format": {
+      "const": "reality-branch.candidate.v0.2"
+    },
+    "version": {
+      "const": "0.2.0-alpha.1"
+    },
+    "branch_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "parent_branch_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "label": {
+      "type": "string"
+    },
+    "hypothesis": {
+      "type": "string"
+    },
+    "assumptions": {
+      "type": "array"
+    },
+    "operations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "op",
+          "path"
+        ],
+        "properties": {
+          "operation_id": {
+            "type": "string"
+          },
+          "op": {
+            "enum": [
+              "set",
+              "remove",
+              "append",
+              "increment",
+              "merge"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "capability_id": {
+            "type": "string"
+          },
+          "preconditions": {
+            "type": "array"
+          },
+          "impact": {
+            "type": "object"
+          },
+          "reversible": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "constraints": {
+      "type": "object"
+    },
+    "invariants": {
+      "type": "array"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "candidate_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

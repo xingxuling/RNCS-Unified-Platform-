@@ -1,0 +1,13 @@
+{
+  "id": "cnp",
+  "name": "Capability Negotiation Protocol",
+  "version": "0.1.0",
+  "path": "packages/control/capability-negotiation-protocol",
+  "layer": "control",
+  "runtime": "rncs.cnp",
+  "dependsOn": [
+    "rncs-core",
+    "laf"
+  ],
+  "test": "npm test --workspace @taowind/capability-negotiation-protocol"
+}

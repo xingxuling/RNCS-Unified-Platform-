@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: taowind-execution-worker
+    runtime: docker
+    dockerfilePath: ./packages/operations/developer-execution-runtime/Dockerfile
+    healthCheckPath: /healthz
+    disk:
+      name: taowind-workspace
+      mountPath: /workspace/output
+      sizeGB: 10
+    envVars:
+      - key: TAOWIND_EXECUTION_WORKER_HOST
+        value: 0.0.0.0
+      - key: TAOWIND_EXECUTION_WORKER_PORT
+        value: 8790
+      - key: TAOWIND_EXECUTION_WORKER_TOKEN
+        generateValue: true
+      - key: TAOWIND_EXECUTION_MODE
+        value: founder
+      - key: TAOWIND_EXECUTION_ENABLE_SHELL
+        value: false

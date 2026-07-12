@@ -1,0 +1,10 @@
+{
+  "format": "vsr.device-profile.v0.1",
+  "deviceId": "device:xr-demo",
+  "deviceClass": "xr",
+  "viewport": { "width": 1832, "height": 1920, "dpr": 1 },
+  "safeArea": { "top": 80, "right": 120, "bottom": 80, "left": 120 },
+  "inputModes": ["gaze", "controller", "voice"],
+  "fit": "contain",
+  "orientation": "spatial"
+}

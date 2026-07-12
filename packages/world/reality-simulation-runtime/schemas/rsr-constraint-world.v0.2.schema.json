@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.example/schema/rsr-constraint-world.v0.2.schema.json",
+  "title": "RSR Constraint Physics World v0.2",
+  "type": "object",
+  "required": ["format", "worldId", "stepHz", "bodies"],
+  "properties": {
+    "format": { "const": "rsr.constraint-world.v0.2" },
+    "worldId": { "type": "string", "minLength": 1 },
+    "scale": { "type": "integer", "minimum": 1 },
+    "stepHz": { "type": "integer", "minimum": 1, "maximum": 1000 },
+    "gravity": { "$ref": "#/$defs/vector" },
+    "solverIterations": { "type": "integer", "minimum": 1, "maximum": 24 },
+    "gridCellSize": { "type": "integer", "minimum": 1 },
+    "maxSubsteps": { "type": "integer", "minimum": 1, "maximum": 64 },
+    "bodies": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/body" }
+    },
+    "constraints": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/distanceConstraint" }
+    }
+  },
+  "$defs": {
+    "vector": {
+      "type": "object",
+      "required": ["x", "y"],
+      "properties": {
+        "x": { "type": "integer" },
+        "y": { "type": "integer" }
+      },
+      "additionalProperties": false
+    },
+    "shape": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["type", "halfExtents"],
+          "properties": {
+            "type": { "const": "box" },
+            "halfExtents": { "$ref": "#/$defs/vector" }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["type", "radius"],
+          "properties": {
+            "type": { "const": "circle" },
+            "radius": { "type": "integer", "minimum": 1 }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "body": {
+      "type": "object",
+      "required": ["id", "kind", "position", "shape"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["static", "dynamic", "kinematic"] },
+        "position": { "$ref": "#/$defs/vector" },
+        "shape": { "$ref": "#/$defs/shape" },
+        "velocity": { "$ref": "#/$defs/vector" },
+        "acceleration": { "$ref": "#/$defs/vector" },
+        "inverseMassQ": { "type": "integer", "minimum": 0 },
+        "materialId": { "type": "string" },
+        "sensor": { "type": "boolean" },
+        "continuous": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+    "distanceConstraint": {
+      "type": "object",
+      "required": ["id", "type", "bodyA", "bodyB", "restLength"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "type": { "const": "distance" },
+        "bodyA": { "type": "string" },
+        "bodyB": { "type": "string" },
+        "restLength": { "type": "integer", "minimum": 0 },
+        "stiffnessQ": { "type": "integer", "minimum": 0, "maximum": 1000 },
+        "dampingQ": { "type": "integer", "minimum": 0, "maximum": 1000 },
+        "breakImpulse": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

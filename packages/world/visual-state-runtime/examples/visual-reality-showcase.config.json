@@ -1,0 +1,26 @@
+{
+  "quality":"cinematic",
+  "observer":{"id":"observer:player","purpose":"player"},
+  "device":{"class":"desktop","gpuTier":3},
+  "materials":[
+    {"id":"material:core","baseColor":"#38bdf8","emissive":"#7dd3fc","emissiveStrength":1.8,"roughness":0.18,"metallic":0.35,"receivesLight":true,"castsShadow":true,"blend":"opaque"},
+    {"id":"material:cyan-node","baseColor":"#22d3ee","emissive":"#67e8f9","emissiveStrength":0.8,"roughness":0.3,"metallic":0.15,"receivesLight":true,"castsShadow":true,"blend":"opaque"},
+    {"id":"material:purple-node","baseColor":"#a78bfa","emissive":"#c4b5fd","emissiveStrength":0.7,"roughness":0.35,"metallic":0.2,"receivesLight":true,"castsShadow":true,"blend":"opaque"},
+    {"id":"material:pink-node","baseColor":"#fb7185","emissive":"#fda4af","emissiveStrength":0.7,"roughness":0.4,"metallic":0.1,"receivesLight":true,"castsShadow":true,"blend":"opaque"},
+    {"id":"material:gold-node","baseColor":"#fbbf24","emissive":"#fde68a","emissiveStrength":0.7,"roughness":0.25,"metallic":0.45,"receivesLight":true,"castsShadow":true,"blend":"opaque"}
+  ],
+  "bindings":[
+    {"materialId":"material:core","nodeIds":["core"]},
+    {"materialId":"material:cyan-node","nodeIds":["node-rfe"]},
+    {"materialId":"material:purple-node","nodeIds":["node-hnac"]},
+    {"materialId":"material:pink-node","nodeIds":["node-rsr"]},
+    {"materialId":"material:gold-node","nodeIds":["node-laf"]}
+  ],
+  "lights":[
+    {"id":"light:ambient","kind":"ambient","color":"#9dbbff","intensity":0.28,"priority":100},
+    {"id":"light:core","kind":"point","color":"#7dd3fc","intensity":2.8,"x":320,"y":175,"radius":190,"castsShadow":true,"priority":90},
+    {"id":"light:violet","kind":"point","color":"#c084fc","intensity":1.5,"x":455,"y":120,"radius":170,"castsShadow":true,"priority":70},
+    {"id":"light:warm","kind":"point","color":"#fbbf24","intensity":1.0,"x":165,"y":270,"radius":120,"priority":50}
+  ],
+  "post":{"enabled":true,"exposure":0.35,"contrast":1.12,"saturation":1.16,"gamma":2.2,"toneMap":"aces","bloom":0.95,"bloomRadius":6,"vignette":0.25,"chromaticAberration":1,"grain":0.025}
+}

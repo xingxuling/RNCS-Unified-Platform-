@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.example/schemas/vsr-input-event.v0.1.schema.json",
+  "title": "VSR Input Event v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "inputId", "trigger", "nodeId", "logicalTime"],
+  "properties": {
+    "format": { "const": "vsr.input-event.v0.1" },
+    "inputId": { "type": "string", "minLength": 1 },
+    "trigger": { "enum": ["click", "pointerEnter", "pointerLeave", "pointerMove", "keyDown"] },
+    "nodeId": { "type": "string", "minLength": 1 },
+    "logicalTime": { "type": "number", "minimum": 0 },
+    "pointer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["x", "y"],
+      "properties": { "x": { "type": "number" }, "y": { "type": "number" } }
+    },
+    "key": { "type": "string" },
+    "payload": { "type": "object" },
+    "observerId": { "type": "string" },
+    "deviceId": { "type": "string" }
+  }
+}

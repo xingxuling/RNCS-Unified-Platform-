@@ -1,0 +1,43 @@
+{
+  "name": "@taowind/reality-asset-genesis-fabric",
+  "version": "0.5.0-alpha.1",
+  "type": "module",
+  "description": "Reality-native production and society genesis fabric: deterministic 2D/3D assets, social ecology seeds, historical simulation, technology concept emergence, engineering pathways, player branches and Studio acceptance without LLM dependency.",
+  "license": "Apache-2.0",
+  "bin": {
+    "asset-genesis": "src/cli.mjs"
+  },
+  "exports": {
+    ".": "./src/index.mjs"
+  },
+  "files": [
+    "src",
+    "schemas",
+    "examples",
+    "docs",
+    "web",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "STATUS.md",
+    "RELEASE_NOTES_v0.4.0-alpha.1.md",
+    "RELEASE_NOTES_v0.5.0-alpha.1.md"
+  ],
+  "scripts": {
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs",
+    "demo": "node src/cli.mjs generate --intent examples/ice-swordswoman-3d.intent.json --out outputs/ice-swordswoman-3d",
+    "verify": "node src/cli.mjs verify --workspace outputs/ice-swordswoman-3d/workspace.json",
+    "benchmark": "node scripts/benchmark.mjs",
+    "audit:release": "node scripts/release-audit-v04.mjs",
+    "manifest": "node scripts/generate-release-manifest.mjs",
+    "serve": "node src/cli.mjs serve --port 4188",
+    "inspect": "node src/cli.mjs inspect --workspace outputs/ice-swordswoman-3d/workspace.json",
+    "production-demo": "node src/cli.mjs production-demo --intent examples/ice-swordswoman-3d.intent.json --out outputs/production-demo",
+    "verify:v04": "npm test && npm run production-demo && npm run audit:release",
+    "demo:society": "node src/cli.mjs generate-society --intent examples/ai-society-ecosystem.intent.json --out outputs/ai-society-ecosystem",
+    "verify:society": "node src/cli.mjs verify-society --workspace outputs/ai-society-ecosystem/workspace.json --files"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

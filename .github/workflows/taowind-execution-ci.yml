@@ -1,0 +1,79 @@
+name: TaoWind Execution Plane CI
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_android:
+        description: Run Android Gradle build when gradlew exists
+        required: false
+        default: "false"
+  pull_request:
+    paths:
+      - "packages/operations/developer-execution-runtime/**"
+      - "packages/integration/taowind-reality-mcp/**"
+      - "packages/control/reality-one-gateway/**"
+      - ".github/workflows/taowind-execution-ci.yml"
+  push:
+    branches: [main]
+    paths:
+      - "packages/operations/developer-execution-runtime/**"
+      - "packages/integration/taowind-reality-mcp/**"
+      - "packages/control/reality-one-gateway/**"
+
+jobs:
+  execution-plane:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run test:execution
+      - run: npm run test:gateway
+      - run: npm run test:mcp
+      - run: npm run smoke:mcp
+      - run: npm run build --workspace @taowind/reality-simulation-runtime
+      - run: npm run build --workspace @taowind/visual-state-runtime
+      - name: Execute real RSR/VSR evidence
+        run: |
+          node --input-type=module <<'NODE'
+          import {DeveloperExecutionRuntime} from './packages/operations/developer-execution-runtime/src/runtime.mjs';
+          const runtime=new DeveloperExecutionRuntime({workspaceRoot:process.cwd(),mode:'founder'});
+          await runtime.rsrSimulate({out:'output/ci-rsr'});
+          await runtime.vsrRender({out:'output/ci-vsr.png'});
+          NODE
+      - uses: actions/upload-artifact@v4
+        with:
+          name: taowind-rsr-vsr-evidence
+          path: |
+            output/ci-rsr
+            output/ci-vsr.png
+
+  android-profile:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_android == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - uses: android-actions/setup-android@v3
+      - name: Build Android project when present
+        shell: bash
+        run: |
+          WRAPPER="$(find . -name gradlew -type f -print -quit)"
+          if [ -z "$WRAPPER" ]; then
+            echo "No Gradle wrapper found in this repository. Import or bind an Android project before using android-debug/android-release."
+            exit 1
+          fi
+          chmod +x "$WRAPPER"
+          (cd "$(dirname "$WRAPPER")" && ./gradlew assembleDebug)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: "**/build/outputs/apk/**/*.apk"

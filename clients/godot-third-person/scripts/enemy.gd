@@ -13,12 +13,12 @@ var aggro_range := 20.0
 var attack_cooldown := 0.0
 var boss := false
 var phase := 1
-var target
+var target: Node3D
 var _nameplate: Label3D
 
 func configure(kind: String) -> void:
 	enemy_type = kind
-	var table := {
+	var table = {
 		"imp": {"name": "灰烬小鬼", "hp": 70.0, "damage": 9.0, "speed": 3.0, "color": Color("cf3d20")},
 		"wolf": {"name": "苔原猎狼", "hp": 110.0, "damage": 13.0, "speed": 4.0, "color": Color("52705a")},
 		"sentinel": {"name": "遗迹哨兵", "hp": 170.0, "damage": 18.0, "speed": 2.5, "color": Color("6b738b")},
@@ -37,19 +37,19 @@ func configure(kind: String) -> void:
 
 func _ready() -> void:
 	add_to_group("enemy")
-	target = get_tree().get_first_node_in_group("player")
+	target = get_tree().get_first_node_in_group("player") as Node3D
 	_update_nameplate()
 
 func _physics_process(delta: float) -> void:
 	attack_cooldown = maxf(0.0, attack_cooldown - delta)
 	if not is_instance_valid(target):
-		target = get_tree().get_first_node_in_group("player")
+		target = get_tree().get_first_node_in_group("player") as Node3D
 		return
 	if boss:
 		phase = 3 if hp < max_hp * 0.33 else (2 if hp < max_hp * 0.66 else 1)
-	var distance := global_position.distance_to(target.global_position)
+	var distance: float = global_position.distance_to(target.global_position)
 	if distance < aggro_range and distance > attack_range:
-		var direction := (target.global_position - global_position).normalized()
+		var direction: Vector3 = (target.global_position - global_position).normalized()
 		velocity.x = direction.x * speed
 		velocity.z = direction.z * speed
 		rotation.y = lerp_angle(rotation.y, atan2(direction.x, direction.z), 8.0 * delta)
@@ -59,7 +59,7 @@ func _physics_process(delta: float) -> void:
 	if distance <= attack_range and attack_cooldown <= 0.0:
 		attack_cooldown = maxf(0.75, 1.7 - phase * 0.22) if boss else 1.4
 		if target.has_method("take_damage"):
-			var dealt := damage * (0.7 + phase * 0.18) if boss else damage
+			var dealt: float = damage * (0.7 + phase * 0.18) if boss else damage
 			target.call("take_damage", dealt)
 	if not is_on_floor():
 		velocity.y -= 24.0 * delta
@@ -78,22 +78,22 @@ func apply_knockback(direction: Vector3, force: float) -> void:
 	velocity.z += direction.z * force
 
 func _build_visual(color: Color) -> void:
-	var scale_factor := 2.4 if boss else (1.35 if enemy_type == "sentinel" else 0.9)
-	var mesh := MeshInstance3D.new()
-	var capsule := CapsuleMesh.new()
+	var scale_factor = 2.4 if boss else (1.35 if enemy_type == "sentinel" else 0.9)
+	var mesh = MeshInstance3D.new()
+	var capsule = CapsuleMesh.new()
 	capsule.radius = 0.55
 	capsule.height = 1.6
 	mesh.mesh = capsule
 	mesh.position.y = scale_factor
 	mesh.scale = Vector3.ONE * scale_factor
-	var material := StandardMaterial3D.new()
+	var material = StandardMaterial3D.new()
 	material.albedo_color = color
 	material.metallic = 0.3 if enemy_type == "sentinel" else 0.0
 	material.roughness = 0.65
 	mesh.material_override = material
 	add_child(mesh)
-	var collision := CollisionShape3D.new()
-	var shape := CapsuleShape3D.new()
+	var collision = CollisionShape3D.new()
+	var shape = CapsuleShape3D.new()
 	shape.radius = 0.55 * scale_factor
 	shape.height = 1.6 * scale_factor
 	collision.shape = shape
@@ -111,6 +111,6 @@ func _update_nameplate() -> void:
 		_nameplate.text = "%s  %d/%d" % [display_name, maxi(0, int(hp)), int(max_hp)]
 
 func _flash() -> void:
-	var tween := create_tween()
+	var tween = create_tween()
 	tween.tween_property(self, "scale", Vector3.ONE * 1.12, 0.05)
 	tween.tween_property(self, "scale", Vector3.ONE, 0.1)

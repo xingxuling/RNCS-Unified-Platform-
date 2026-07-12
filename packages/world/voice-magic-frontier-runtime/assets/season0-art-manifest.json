@@ -1,0 +1,15 @@
+{
+  "format": "ragf.asset-atlas-manifest.v0.1",
+  "atlas": "season0-style-atlas.png",
+  "cell": {"width": 128, "height": 128, "columns": 8},
+  "style": "stylized low-resolution fantasy, strong silhouettes, hand-painted pixel shading",
+  "entries": {
+    "player-idle": 0, "player-attack": 1, "player-cast": 2, "lyra": 3, "garrick": 4,
+    "ash-imp": 5, "moss-wolf": 6, "ruin-sentinel": 7, "cinder-warden": 8,
+    "fire-lance": 9, "frost-aegis": 10, "thunder-chain": 11, "wind-step": 12,
+    "healing-light": 13, "ember-nova": 14, "runic-focus": 15,
+    "guild": 16, "forge": 17, "inn": 18, "keep": 19, "ruin-gate": 20,
+    "tree": 21, "ash-tree": 22, "ruin-pillar": 23
+  },
+  "production_note": "This atlas is an executable vertical-slice art baseline, not final commercial MMO art."
+}

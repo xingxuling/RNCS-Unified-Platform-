@@ -1,0 +1,16 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "functions": {
+    "server.mjs": {
+      "maxDuration": 300,
+      "includeFiles": [
+        "packages/**",
+        "docs/**",
+        "rncs.modules.json",
+        "RELEASE-MANIFEST.json",
+        "VERSION-MANIFEST-v0.14.json"
+      ]
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "suite": "RNCS_Aetherworld_Unified",
+  "version": "0.18.0-alpha.1",
+  "codename": "Third Person Open World",
+  "deliverables": {
+    "webgl_client": "灰烬边境_第三人称3D_直接打开.html",
+    "godot_project": "clients/godot-third-person/project.godot",
+    "runtime": "packages/world/open-world-rpg-runtime"
+  },
+  "capabilities": {
+    "true_perspective_camera": true,
+    "third_person_character_visible": true,
+    "camera_orbit": true,
+    "action_combat": true,
+    "lock_on": true,
+    "dodge": true,
+    "voice_magic_web": true,
+    "deterministic_magic_grammar": true,
+    "npc_player_population": 16,
+    "boss_phases": 3,
+    "llm_required": false
+  },
+  "verification": {
+    "runtime_tests": "12/12 PASS",
+    "integration_tests": "2/2 PASS",
+    "browser_smoke": "PASS",
+    "webgl_context": "PASS",
+    "render_capture": "PASS",
+    "godot_source": "STATIC_VERIFIED_ONLY_NO_GODOT_BINARY"
+  }
+}

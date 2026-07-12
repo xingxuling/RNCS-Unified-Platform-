@@ -1,0 +1,16 @@
+{
+  "name": "@taowind/capability-negotiation-protocol",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Deterministic RNCS capability discovery, compatibility negotiation and plan selection protocol.",
+  "license": "Apache-2.0",
+  "bin": {"cnp": "src/cli.mjs", "cnp-provider": "src/provider-stdio.mjs"},
+  "exports": {".": "./src/index.mjs"},
+  "files": ["src", "schemas", "README.md", "LICENSE"],
+  "scripts": {
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs",
+    "demo": "node src/cli.mjs negotiate --request examples/requests/rncs-video.request.json --providers examples/providers --out examples/output/negotiation.json",
+    "benchmark": "node scripts/benchmark.mjs"
+  },
+  "engines": {"node": ">=20"}
+}

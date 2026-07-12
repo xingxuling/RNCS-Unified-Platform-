@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/rncs/reality-transition-envelope.v0.1.schema.json",
+  "title": "RNCS Reality Transition Envelope v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "contract_version",
+    "transition_id",
+    "phase",
+    "base_generation",
+    "subject",
+    "intent",
+    "capability_plan",
+    "inputs",
+    "provisional_delta",
+    "causal_basis",
+    "authority",
+    "evidence",
+    "commit",
+    "projections",
+    "host_state_refs",
+    "extensions",
+    "proposal_root",
+    "envelope_root"
+  ],
+  "properties": {
+    "format": {
+      "const": "rncs.reality-transition-envelope.v0.1"
+    },
+    "contract_version": {
+      "const": "0.1.0"
+    },
+    "transition_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "phase": {
+      "enum": [
+        "proposed",
+        "authorized",
+        "committed",
+        "rejected",
+        "projected"
+      ]
+    },
+    "base_generation": {
+      "$ref": "generation-reference.v0.1.schema.json"
+    },
+    "subject": {
+      "$ref": "subject-identity.v0.1.schema.json"
+    },
+    "intent": {
+      "type": "object"
+    },
+    "capability_plan": {
+      "type": "object"
+    },
+    "inputs": {
+      "type": "array",
+      "items": {
+        "$ref": "state-reference.v0.1.schema.json"
+      }
+    },
+    "provisional_delta": {
+      "type": "object"
+    },
+    "causal_basis": {
+      "type": "object"
+    },
+    "authority": {
+      "type": "object"
+    },
+    "evidence": {
+      "$ref": "evidence-graph.v0.1.schema.json"
+    },
+    "commit": {
+      "type": "object"
+    },
+    "projections": {
+      "type": "array",
+      "items": {
+        "$ref": "projection-reference.v0.1.schema.json"
+      }
+    },
+    "host_state_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "host-state-reference.v0.1.schema.json"
+      }
+    },
+    "extensions": {
+      "type": "object"
+    },
+    "proposal_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "envelope_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

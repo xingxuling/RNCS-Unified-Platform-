@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "format",
+    "kind",
+    "value",
+    "integrityHash"
+  ],
+  "properties": {
+    "format": {
+      "const": "rfe.content-object.v1"
+    },
+    "kind": {
+      "type": "string"
+    },
+    "value": {},
+    "integrityHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "additionalProperties": false
+}

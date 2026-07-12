@@ -1,0 +1,101 @@
+import { cryptographicHash } from '../packages/spec/src/index.js';
+import assert from 'node:assert/strict';
+import { existsSync, readFileSync } from 'node:fs';
+import {
+  VSR_SPATIAL_FRAGMENT_WGSL_V04,
+  VSR_SPATIAL_SCENE_FORMAT,
+  VSR_SPATIAL_SHADOW_WGSL_V04,
+  VSR_SPATIAL_VERTEX_WGSL_V04,
+  calculateMeshNormals,
+  distributionGGX,
+  evaluatePBRLighting,
+  fresnelSchlick,
+  geometrySmith,
+  cameraForward,
+  compileSpatialFrame,
+  createCubeMesh,
+  createPlaneMesh,
+  createSpatialShowcaseScene,
+  createUVSphereMesh,
+  identityMat4,
+  meshBounds,
+  packSpatialCameraUniform,
+  packSpatialIndexBuffer,
+  packSpatialMaterialUniform,
+  packSpatialObjectUniform,
+  packSpatialVertexBuffer,
+  probeSpatialWebGPU,
+  multiplyMat4,
+  renderSpatialReference,
+  sampleSpatialTexture,
+  sampleSpatialAnimation,
+  resolveSpatialBudget,
+  transformPoint3,
+  transformToMat4,
+  verifySpatialFrame,
+  verifySpatialWebGPUReceipt,
+  type VSRSpatialScene3D,
+} from '../packages/spatial-reality-3d/src/index.js';
+
+const tests:Array<{name:string;fn:()=>void|Promise<void>}>=[];
+const test=(name:string,fn:()=>void|Promise<void>):void=>{tests.push({name,fn})};
+const clone=<T>(value:T):T=>structuredClone(value);
+
+function minimalScene():VSRSpatialScene3D{return{format:VSR_SPATIAL_SCENE_FORMAT,sceneId:'minimal',background:'#000000',activeCameraId:'camera',meshes:[createCubeMesh('cube')],materials:[{id:'mat',baseColor:'#ff0000'}],nodes:[{id:'node',meshId:'cube',materialId:'mat'}],cameras:[{id:'camera',projection:'perspective',fovYDeg:60,near:.1,far:100,transform:{translation:[0,0,5]}}],lights:[{id:'ambient',kind:'ambient',color:'#ffffff',intensity:.4},{id:'sun',kind:'directional',direction:[0,-1,-1],intensity:1,castShadow:true}],reality:{worldId:'world:minimal',generation:1}}}
+
+test('identity matrix leaves points unchanged',()=>{assert.deepEqual(transformPoint3(identityMat4(),[1,2,3]),[1,2,3])});
+test('transform matrix applies scale rotation and translation deterministically',()=>{const matrix=transformToMat4({translation:[2,3,4],scale:[2,2,2]});assert.deepEqual(transformPoint3(matrix,[1,1,1]),[4,5,6]);assert.deepEqual(matrix,transformToMat4({translation:[2,3,4],scale:[2,2,2]}))});
+test('matrix multiplication preserves parent child transform order',()=>{const parent=transformToMat4({translation:[2,0,0]}),child=transformToMat4({translation:[0,3,0]});assert.deepEqual(transformPoint3(multiplyMat4(parent,child),[0,0,0]),[2,3,0])});
+test('camera without rotation faces negative Z',()=>{assert.deepEqual(cameraForward(minimalScene().cameras[0]!),[0,0,-1])});
+test('cube primitive has six faces and valid bounds',()=>{const cube=createCubeMesh('cube',2),bounds=meshBounds(cube);assert.equal(cube.indices.length,36);assert.deepEqual(bounds.min,[-1,-1,-1]);assert.deepEqual(bounds.max,[1,1,1]);assert.ok(Math.abs(bounds.radius-Math.sqrt(3))<1e-9)});
+test('plane primitive is a two triangle surface',()=>{const plane=createPlaneMesh('plane',4,6);assert.equal(plane.indices.length,6);assert.deepEqual(meshBounds(plane).min,[-2,0,-3])});
+test('UV sphere primitive emits indexed triangles and normalized normals',()=>{const sphere=createUVSphereMesh('sphere',2,12,8);assert.ok(sphere.indices.length>300);const length=Math.hypot(sphere.normals![6]!,sphere.normals![7]!,sphere.normals![8]!);assert.ok(Math.abs(length-1)<1e-9)});
+test('missing normals are generated deterministically',()=>{const cube=createCubeMesh('cube');const stripped={...cube,normals:undefined};const a=calculateMeshNormals(stripped),b=calculateMeshNormals(stripped);assert.deepEqual(a,b);assert.equal(a.length,cube.positions.length)});
+test('quality budgets are explicit and ordered',()=>{const economy=resolveSpatialBudget({qualityTier:'economy'}),cinematic=resolveSpatialBudget({qualityTier:'cinematic'});assert.ok(cinematic.width>economy.width);assert.ok(cinematic.maxLights>economy.maxLights);assert.equal(economy.shadows,false);assert.equal(cinematic.shadows,true)});
+test('spatial frame compilation is deterministic',()=>{const scene=minimalScene(),a=compileSpatialFrame(scene,{width:320,height:180}),b=compileSpatialFrame(scene,{width:320,height:180});assert.equal(a.frameRoot,b.frameRoot);assert.deepEqual(a.drawPackets,b.drawPackets)});
+test('compiled frame contains depth color and tone mapping passes',()=>{const plan=compileSpatialFrame(minimalScene(),{width:320,height:180});assert.ok(plan.passes.some(pass=>pass.kind==='scene-depth-color'));assert.ok(plan.passes.some(pass=>pass.kind==='tone-map'));assert.ok(plan.resources.some(resource=>resource.kind==='depth-texture'))});
+test('directional shadow requests create a shadow depth pass',()=>{const plan=compileSpatialFrame(minimalScene(),{enableShadows:true,shadowMapSize:128});assert.ok(plan.passes.some(pass=>pass.kind==='shadow-depth'));assert.ok(plan.resources.some(resource=>resource.kind==='shadow-texture'))});
+test('economy mode disables shadow work without changing source reality root',()=>{const scene=minimalScene(),economy=compileSpatialFrame(scene,{qualityTier:'economy'}),quality=compileSpatialFrame(scene,{qualityTier:'quality'});assert.equal(economy.sourceRealityRoot,quality.sourceRealityRoot);assert.notEqual(economy.frameRoot,quality.frameRoot);assert.equal(economy.passes.some(pass=>pass.kind==='shadow-depth'),false)});
+test('frustum culling rejects geometry behind the camera',()=>{const scene=minimalScene();scene.nodes.push({id:'behind',meshId:'cube',materialId:'mat',transform:{translation:[0,0,10]}});const plan=compileSpatialFrame(scene,{width:320,height:180});assert.equal(plan.drawPackets.some(packet=>packet.nodeId==='behind'),false);assert.ok(plan.stats.culledDraws>=1)});
+test('parent transforms are applied to child world bounds',()=>{const scene=minimalScene();scene.nodes=[{id:'parent',transform:{translation:[2,0,0]}},{id:'child',parentId:'parent',meshId:'cube',materialId:'mat',transform:{translation:[1,0,0]}}];const plan=compileSpatialFrame(scene);const child=plan.drawPackets.find(packet=>packet.nodeId==='child')!;assert.ok(Math.abs(child.worldBounds.center[0]-3)<1e-9)});
+test('distance LOD chooses farther mesh level',()=>{const scene=minimalScene();scene.meshes.push(createCubeMesh('cube-low'));scene.nodes[0]={id:'node',meshId:'cube',materialId:'mat',lods:[{maxDistance:1,meshId:'cube'},{maxDistance:100,meshId:'cube-low'}]};const plan=compileSpatialFrame(scene,{lodBias:1});assert.equal(plan.drawPackets[0]!.meshId,'cube-low');assert.equal(plan.drawPackets[0]!.lodLevel,1)});
+test('light budget caps visible lights deterministically',()=>{const scene=minimalScene();for(let i=0;i<20;i++)scene.lights.push({id:`point:${i}`,kind:'point',position:[i,2,0],range:5,intensity:1});const plan=compileSpatialFrame(scene,{maxLights:3});assert.equal(plan.lights.length,3);assert.equal(plan.stats.lightCount,3)});
+test('frame verifier accepts valid plans',()=>{assert.deepEqual(verifySpatialFrame(compileSpatialFrame(minimalScene())),{ok:true,diagnostics:[]})});
+test('frame verifier detects packet tampering',()=>{const plan=compileSpatialFrame(minimalScene());plan.drawPackets[0]!.indexCount+=3;const report=verifySpatialFrame(plan);assert.equal(report.ok,false);assert.ok(report.diagnostics.some(message=>message.includes('packet')))});
+test('frame verifier detects command and frame root tampering',()=>{const plan=compileSpatialFrame(minimalScene());plan.commandRoot='0'.repeat(64);const report=verifySpatialFrame(plan);assert.equal(report.ok,false);assert.ok(report.diagnostics.includes('command root mismatch'));assert.ok(report.diagnostics.includes('frame root mismatch'))});
+test('WGSL modules expose real vertex fragment and shadow entry points',()=>{assert.match(VSR_SPATIAL_VERTEX_WGSL_V04,/@vertex fn vs_main/);assert.match(VSR_SPATIAL_FRAGMENT_WGSL_V04,/@fragment fn fs_main/);assert.match(VSR_SPATIAL_SHADOW_WGSL_V04,/@vertex fn vs_shadow/)});
+test('reference renderer emits deterministic real PNG pixels',()=>{const scene=createSpatialShowcaseScene(),a=renderSpatialReference(scene,{width:320,height:180,shadowMapSize:128}),b=renderSpatialReference(scene,{width:320,height:180,shadowMapSize:128});assert.ok(a.png.byteLength>1000);assert.deepEqual([...a.png.slice(0,8)],[137,80,78,71,13,10,26,10]);assert.equal(a.pixelRoot,b.pixelRoot);assert.ok(a.depthRange.min<a.depthRange.max)});
+test('depth buffer makes nearer object dominate overlapping geometry',()=>{const scene=minimalScene();scene.materials.push({id:'blue',baseColor:'#0000ff'});scene.nodes=[{id:'far',meshId:'cube',materialId:'blue',transform:{translation:[0,0,-1]}},{id:'near',meshId:'cube',materialId:'mat',transform:{translation:[0,0,1]}}];const a=renderSpatialReference(scene,{width:128,height:128,enableShadows:false}),reversed=clone(scene);reversed.nodes.reverse();const b=renderSpatialReference(reversed,{width:128,height:128,enableShadows:false});assert.equal(a.pixelRoot,b.pixelRoot)});
+test('camera movement changes frame and pixels but preserves source reality root',()=>{const scene=minimalScene(),a=renderSpatialReference(scene,{width:160,height:90});scene.cameras[0]!.transform.translation=[2,0,5];const b=renderSpatialReference(scene,{width:160,height:90});assert.equal(a.framePlan.sourceRealityRoot,b.framePlan.sourceRealityRoot);assert.notEqual(a.framePlan.frameRoot,b.framePlan.frameRoot);assert.notEqual(a.pixelRoot,b.pixelRoot)});
+test('material changes preserve geometry root but change material and pixel roots',()=>{const scene=minimalScene(),a=renderSpatialReference(scene,{width:160,height:90});scene.materials[0]!.baseColor='#00ff00';const b=renderSpatialReference(scene,{width:160,height:90});assert.equal(a.framePlan.geometryRoot,b.framePlan.geometryRoot);assert.notEqual(a.framePlan.materialRoot,b.framePlan.materialRoot);assert.notEqual(a.pixelRoot,b.pixelRoot)});
+
+test('texture resources are sealed into frame plans',()=>{const scene=minimalScene();scene.textures=[{id:'checker',width:2,height:2,pixels:[255,0,0,255,0,255,0,255,0,0,255,255,255,255,255,255]}];scene.materials[0]!.baseColorTextureId='checker';const plan=compileSpatialFrame(scene);assert.equal(plan.stats.textureCount,1);assert.ok(plan.resources.some(resource=>resource.id==='texture:checker'&&resource.kind==='texture-2d'));assert.notEqual(plan.textureRoot,cryptographicHash([]))});
+test('base color texture sampling changes deterministic PNG pixels',()=>{const scene=minimalScene(),base=renderSpatialReference(scene,{width:160,height:90,enableShadows:false});scene.textures=[{id:'blue',width:1,height:1,pixels:[0,0,255,255]}];scene.materials[0]!.baseColor='#ffffff';scene.materials[0]!.baseColorTextureId='blue';const textured=renderSpatialReference(scene,{width:160,height:90,enableShadows:false});assert.equal(base.framePlan.geometryRoot,textured.framePlan.geometryRoot);assert.notEqual(base.framePlan.textureRoot,textured.framePlan.textureRoot);assert.notEqual(base.pixelRoot,textured.pixelRoot)});
+test('animation sampling changes presentation without rewriting source reality root',()=>{const scene=minimalScene();scene.animations=[{id:'move',duration:1,channels:[{nodeId:'node',path:'translation',times:[0,1],values:[[0,0,0],[1,0,0]]}]}];const sample=sampleSpatialAnimation(scene,'move',.5);assert.deepEqual(sample.get('node')?.translation,[.5,0,0]);const a=compileSpatialFrame(scene,{animation:{clipId:'move',timeSeconds:0}}),b=compileSpatialFrame(scene,{animation:{clipId:'move',timeSeconds:.5}});assert.equal(a.sourceRealityRoot,b.sourceRealityRoot);assert.notEqual(a.animationRoot,b.animationRoot);assert.notEqual(a.frameRoot,b.frameRoot)});
+
+test('linear texture filtering bilinearly blends RGBA texels',()=>{const texture={id:'linear',width:2,height:2,pixels:[255,0,0,255,0,255,0,255,0,0,255,255,255,255,255,255],filter:'linear' as const,colorSpace:'linear' as const,wrapU:'clamp' as const,wrapV:'clamp' as const};const sample=sampleSpatialTexture(texture,[.5,.5],'linear');assert.ok(sample[0]>.45&&sample[0]<.55);assert.ok(sample[1]>.45&&sample[1]<.55);assert.ok(sample[2]>.45&&sample[2]<.55);assert.equal(sample[3],1)});
+test('complete PBR texture bindings are sealed into draw packets and affect pixels',()=>{const scene=minimalScene();scene.materials[0]={id:'mat',baseColor:'#ffffff',metallic:.8,roughness:.7,emissive:'#ffffff',emissiveStrength:.4,baseColorTextureId:'base',metallicRoughnessTextureId:'mr',normalTextureId:'normal',occlusionTextureId:'ao',emissiveTextureId:'emit'};scene.textures=[{id:'base',width:1,height:1,pixels:[80,160,255,255]},{id:'mr',width:1,height:1,pixels:[0,64,230,255],colorSpace:'linear'},{id:'normal',width:1,height:1,pixels:[255,128,255,255],colorSpace:'linear'},{id:'ao',width:1,height:1,pixels:[48,48,48,255],colorSpace:'linear'},{id:'emit',width:1,height:1,pixels:[0,255,255,255]}];const textured=renderSpatialReference(scene,{width:160,height:90,enableShadows:false});assert.equal(textured.framePlan.stats.materialTextureBindings,5);assert.deepEqual(Object.values(textured.framePlan.drawPackets[0]!.textureBindings).filter(Boolean).sort(),['ao','base','emit','mr','normal']);const base=minimalScene(),plain=renderSpatialReference(base,{width:160,height:90,enableShadows:false});assert.equal(textured.framePlan.sourceRealityRoot,plain.framePlan.sourceRealityRoot);assert.notEqual(textured.framePlan.materialRoot,plain.framePlan.materialRoot);assert.notEqual(textured.pixelRoot,plain.pixelRoot)});
+test('tangent-space normal map changes presentation without changing geometry',()=>{const scene=minimalScene();scene.textures=[{id:'normal',width:1,height:1,pixels:[255,128,255,255],colorSpace:'linear'}];const plain=renderSpatialReference(scene,{width:160,height:90,enableShadows:false});scene.materials[0]!.normalTextureId='normal';const mapped=renderSpatialReference(scene,{width:160,height:90,enableShadows:false});assert.equal(plain.framePlan.geometryRoot,mapped.framePlan.geometryRoot);assert.notEqual(plain.framePlan.materialRoot,mapped.framePlan.materialRoot);assert.notEqual(plain.pixelRoot,mapped.pixelRoot)});
+test('alpha mask discards transparent fragments before depth writes',()=>{const scene=minimalScene();scene.materials[0]={id:'mat',baseColor:'#ffffff',baseColorTextureId:'mask',alphaMode:'MASK',alphaCutoff:.5};scene.textures=[{id:'mask',width:1,height:1,pixels:[255,255,255,0]}];const transparent=renderSpatialReference(scene,{width:160,height:90,enableShadows:false});scene.textures[0]!.pixels=[255,255,255,255];const opaque=renderSpatialReference(scene,{width:160,height:90,enableShadows:false});assert.equal(transparent.depthRange.min,1);assert.ok(opaque.depthRange.min<1);assert.notEqual(transparent.pixelRoot,opaque.pixelRoot)});
+test('scene validation rejects missing advanced material texture references',()=>{const scene=minimalScene();scene.materials[0]!.normalTextureId='missing-normal';assert.throws(()=>compileSpatialFrame(scene),/missing texture missing-normal/)});
+test('scene validation rejects missing material texture references',()=>{const scene=minimalScene();scene.materials[0]!.baseColorTextureId='missing';assert.throws(()=>compileSpatialFrame(scene),/missing texture/)});
+
+test('scene validation rejects invalid mesh references',()=>{const scene=minimalScene();scene.nodes[0]!.meshId='missing';assert.throws(()=>compileSpatialFrame(scene),/missing mesh/)});
+test('scene validation rejects hierarchy cycles',()=>{const scene=minimalScene();scene.nodes=[{id:'a',parentId:'b'},{id:'b',parentId:'a',meshId:'cube',materialId:'mat'}];assert.throws(()=>compileSpatialFrame(scene),/cycle/)});
+test('WebGPU vertex and index packing use stable GPU layouts',()=>{const mesh=createCubeMesh('cube'),vertices=packSpatialVertexBuffer(mesh),indices=packSpatialIndexBuffer(mesh);assert.equal(vertices.length,mesh.positions.length/3*8);assert.equal(indices.length,mesh.indices.length);assert.deepEqual(vertices,packSpatialVertexBuffer(mesh))});
+test('camera object and material uniforms have aligned deterministic sizes',()=>{const scene=minimalScene(),plan=compileSpatialFrame(scene),camera=packSpatialCameraUniform(plan),object=packSpatialObjectUniform(plan.drawPackets[0]!),material=packSpatialMaterialUniform(scene.materials[0]!);assert.equal(camera.byteLength,128);assert.equal(object.byteLength,64);assert.equal(material.byteLength,64);assert.deepEqual(camera,packSpatialCameraUniform(plan))});
+test('material uniform clamps metallic roughness and opacity safely',()=>{const packed=packSpatialMaterialUniform({id:'unsafe',baseColor:'#ffffff',metallic:4,roughness:-2,opacity:3});assert.equal(packed[4],1);assert.ok(Math.abs(packed[5]!-.04)<1e-6);assert.equal(packed[7],1)});
+test('spatial WebGPU probe is safe without navigator.gpu',()=>{const result=probeSpatialWebGPU();assert.equal(result.format,'vsr.spatial-webgpu-capabilities.v0.4');assert.equal(typeof result.available,'boolean')});
+test('spatial WebGPU receipt sealing detects tampering',()=>{const base={format:'vsr.spatial-webgpu-receipt.v0.4' as const,frameRoot:'a'.repeat(64),sceneId:'scene',adapterName:'test',drawCalls:1,triangles:12,submitted:true,deviceLost:false,compileMs:1,uploadMs:1,encodeMs:1,submitMs:1};const receipt={...base,receiptRoot:cryptographicHash(base)};assert.equal(verifySpatialWebGPUReceipt(receipt),true);receipt.drawCalls=2;assert.equal(verifySpatialWebGPUReceipt(receipt),false)});
+test('spatial scene and frame schemas are present',()=>{for(const file of ['schemas/vsr-spatial-scene.v0.4.schema.json','schemas/vsr-spatial-frame-plan.v0.4.schema.json']){assert.equal(existsSync(file),true);const schema=JSON.parse(readFileSync(file,'utf8')) as Record<string,unknown>;assert.equal(schema['$schema'],'https://json-schema.org/draft/2020-12/schema')}});
+
+test('GGX distribution and Smith masking remain finite across roughness range',()=>{for(const roughness of [.04,.2,.5,1]){const d=distributionGGX(.75,roughness),g=geometrySmith(.8,.65,roughness);assert.ok(Number.isFinite(d)&&d>=0);assert.ok(Number.isFinite(g)&&g>=0&&g<=1)}});
+test('Fresnel Schlick approaches white at grazing angle',()=>{const normal=fresnelSchlick(1,[.04,.04,.04]),grazing=fresnelSchlick(0,[.04,.04,.04]);assert.ok(grazing[0]>normal[0]);assert.ok(Math.abs(grazing[0]-1)<1e-9)});
+test('Cook-Torrance lighting is deterministic and energy bounded',()=>{const input={baseColor:[.8,.2,.1] as [number,number,number],metallic:.35,roughness:.4,ior:1.5,clearcoat:.2,clearcoatRoughness:.12,normal:[0,1,0] as [number,number,number],view:[0,1,1] as [number,number,number],light:[0,1,.5] as [number,number,number],radiance:[3,2.8,2.5] as [number,number,number]};const a=evaluatePBRLighting(input),b=evaluatePBRLighting(input);assert.deepEqual(a,b);assert.ok(a.every(value=>Number.isFinite(value)&&value>=0&&value<10))});
+test('clearcoat and IOR change material and pixel roots without changing geometry',()=>{const scene=minimalScene(),base=renderSpatialReference(scene,{width:160,height:90,enableShadows:false});scene.materials[0]!.clearcoat=1;scene.materials[0]!.clearcoatRoughness=.08;scene.materials[0]!.ior=1.8;const coated=renderSpatialReference(scene,{width:160,height:90,enableShadows:false});assert.equal(base.framePlan.geometryRoot,coated.framePlan.geometryRoot);assert.notEqual(base.framePlan.materialRoot,coated.framePlan.materialRoot);assert.notEqual(base.pixelRoot,coated.pixelRoot)});
+test('WebGPU fragment shader contains Cook-Torrance GGX stages',()=>{for(const symbol of ['distributionGGX','geometrySmith','fresnelSchlick'])assert.ok(VSR_SPATIAL_FRAGMENT_WGSL_V04.includes(symbol))});
+test('advanced material uniform clamps AO clearcoat roughness and IOR',()=>{const packed=packSpatialMaterialUniform({id:'advanced',occlusionStrength:-1,clearcoat:2,clearcoatRoughness:0,ior:7});assert.equal(packed.length,16);assert.equal(packed[12],0);assert.equal(packed[13],1);assert.ok(Math.abs(packed[14]!-.04)<1e-6);assert.equal(packed[15],2.5)});
+
+let passed=0;
+for(const entry of tests){try{await entry.fn();passed++;console.log(`PASS ${entry.name}`)}catch(error){console.error(`FAIL ${entry.name}`);throw error}}
+console.log(`VSR v0.8 spatial reality tests: ${passed}/${tests.length} PASS`);

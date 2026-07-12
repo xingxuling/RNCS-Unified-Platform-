@@ -1,0 +1,28 @@
+{
+  "name": "@taowind/developer-execution-runtime",
+  "version": "0.1.0-alpha.1",
+  "type": "module",
+  "description": "Project-confined developer execution runtime for TaoWind Reality MCP.",
+  "license": "Apache-2.0",
+  "bin": {
+    "taowind-execution-worker": "src/cli.mjs"
+  },
+  "exports": {
+    ".": "./src/index.mjs"
+  },
+  "scripts": {
+    "start": "node src/cli.mjs worker",
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "src",
+    "deploy",
+    "tests",
+    "README.md",
+    ".env.example",
+    "Dockerfile"
+  ]
+}

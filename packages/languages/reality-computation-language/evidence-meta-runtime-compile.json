@@ -1,0 +1,807 @@
+{
+  "format": "rcl.reality-program.v0.5",
+  "languageVersion": "0.5.0-alpha.1",
+  "foundation": {
+    "format": "rcl.reality-foundation.v0.5",
+    "domains": [
+      {
+        "id": "meta-computational",
+        "keyword": "meta",
+        "question": "How can computation inspect, validate and transform computation itself?"
+      },
+      {
+        "id": "computational",
+        "keyword": "reckon/host",
+        "question": "How are symbolic and machine states computed and executed?"
+      },
+      {
+        "id": "physical",
+        "keyword": "physical",
+        "question": "How do matter, energy, fields, space and time evolve?"
+      },
+      {
+        "id": "perceptual",
+        "keyword": "perception",
+        "question": "How does a world become observable and experienced by an observer?"
+      },
+      {
+        "id": "neural",
+        "keyword": "neural",
+        "question": "How do signals become memory, attention, learning, decisions and control?"
+      },
+      {
+        "id": "living",
+        "keyword": "living",
+        "question": "How does a living system maintain continuity, needs and autonomous action?"
+      },
+      {
+        "id": "genetic",
+        "keyword": "genetic",
+        "question": "How are structures encoded, expressed, inherited and changed across generations?"
+      },
+      {
+        "id": "quantitative",
+        "keyword": "quantitative",
+        "question": "What can be measured, on what scale, with what uncertainty, confidence and evidence?"
+      },
+      {
+        "id": "knowledge",
+        "keyword": "knowledge",
+        "question": "How do observations and prior structures become justified, revisable and actionable knowledge?"
+      }
+    ],
+    "crossDomainAxes": [
+      {
+        "id": "authority",
+        "primitives": [
+          "warrant",
+          "needs",
+          "preserve"
+        ],
+        "role": "opens bounded powers while constraining which changes can become authoritative reality"
+      },
+      {
+        "id": "causality-evidence",
+        "primitives": [
+          "cause",
+          "when",
+          "witness",
+          "evidence"
+        ],
+        "role": "connects change and knowledge to causes, conditions, provenance and reproducible evidence"
+      }
+    ],
+    "compositePlanes": [
+      {
+        "id": "natural-language-reality",
+        "primitives": [
+          "language",
+          "utterance",
+          "intent",
+          "interpret"
+        ],
+        "composedFrom": [
+          "perceptual",
+          "knowledge",
+          "authority"
+        ],
+        "role": "turns human symbols into explicit utterances, candidate meanings and bounded intents without making a language model the whole intelligence"
+      },
+      {
+        "id": "understanding-reality",
+        "primitives": [
+          "understanding",
+          "hypothesis",
+          "explanation",
+          "understand"
+        ],
+        "composedFrom": [
+          "knowledge",
+          "quantitative",
+          "perceptual",
+          "natural-language-reality"
+        ],
+        "role": "constructs testable world models that explain evidence, expose confidence and can be rejected by contradiction"
+      },
+      {
+        "id": "creative-reality",
+        "primitives": [
+          "creation",
+          "candidate",
+          "select",
+          "create"
+        ],
+        "composedFrom": [
+          "understanding-reality",
+          "knowledge",
+          "meta-computational",
+          "authority"
+        ],
+        "role": "generates bounded novelty, evaluates candidates by utility, feasibility, novelty and risk, then selects without automatically executing"
+      },
+      {
+        "id": "inner-reality",
+        "composedFrom": [
+          "perceptual",
+          "neural",
+          "living",
+          "knowledge",
+          "natural-language-reality",
+          "understanding-reality",
+          "creative-reality"
+        ],
+        "role": "the subject-relative model that contains percepts, needs, memories, claims, interpretations, explanations and candidate creations"
+      },
+      {
+        "id": "execution-reality",
+        "composedFrom": [
+          "computational",
+          "physical",
+          "authority",
+          "causality-evidence"
+        ],
+        "role": "the bounded transition plane that turns a justified and selected intention into an observed, authorized and evidenced change"
+      }
+    ],
+    "metaRealityPlanes": [
+      {
+        "id": "meta-spacetime-reality",
+        "primitives": [
+          "spacetime",
+          "frame",
+          "clock",
+          "coordinate",
+          "relation",
+          "synchronize"
+        ],
+        "operatesOn": [
+          "all reality domains",
+          "all transitions",
+          "all observations"
+        ],
+        "role": "locates every state, event and observer in a reference frame and logical/physical time while preserving causal order and synchronization boundaries"
+      },
+      {
+        "id": "meta-acceleration-reality",
+        "primitives": [
+          "acceleration",
+          "target",
+          "strategy",
+          "factor",
+          "budget",
+          "fidelity",
+          "accelerate"
+        ],
+        "operatesOn": [
+          "computation",
+          "simulation",
+          "learning",
+          "execution"
+        ],
+        "role": "changes the speed, scheduling and reuse strategy of reality computation while preserving declared fidelity, authority and causal invariants"
+      },
+      {
+        "id": "meta-compression-reality",
+        "primitives": [
+          "compression",
+          "target",
+          "mode",
+          "codec",
+          "reversible",
+          "fidelity",
+          "compress",
+          "restore"
+        ],
+        "operatesOn": [
+          "state",
+          "history",
+          "knowledge",
+          "world models",
+          "evidence"
+        ],
+        "role": "reduces representational cost while preserving a declared reconstruction contract, provenance and reality root"
+      }
+    ]
+  },
+  "name": "MetaRuntimeFoundation",
+  "facets": [
+    {
+      "kind": "FacetDecl",
+      "path": "world.result",
+      "valueType": "Number",
+      "value": {
+        "kind": "LiteralExpr",
+        "value": 0,
+        "valueType": "Number"
+      },
+      "owner": null
+    },
+    {
+      "kind": "FacetDecl",
+      "path": "memory.payload",
+      "valueType": "Text",
+      "value": {
+        "kind": "LiteralExpr",
+        "value": "META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-",
+        "valueType": "Text"
+      },
+      "owner": null
+    },
+    {
+      "kind": "FacetDecl",
+      "path": "chronos.simulation",
+      "valueType": "Time",
+      "value": {
+        "kind": "CallExpr",
+        "name": "seconds",
+        "args": [
+          {
+            "kind": "LiteralExpr",
+            "value": 0,
+            "valueType": "Number"
+          }
+        ]
+      },
+      "owner": "chronos",
+      "spacetimeClock": {
+        "kind": "SpacetimeClockDecl",
+        "path": "chronos.simulation",
+        "localName": "simulation",
+        "valueType": "Time",
+        "value": {
+          "kind": "CallExpr",
+          "name": "seconds",
+          "args": [
+            {
+              "kind": "LiteralExpr",
+              "value": 0,
+              "valueType": "Number"
+            }
+          ]
+        },
+        "tick": {
+          "kind": "CallExpr",
+          "name": "seconds",
+          "args": [
+            {
+              "kind": "LiteralExpr",
+              "value": 1,
+              "valueType": "Number"
+            }
+          ]
+        },
+        "rate": {
+          "kind": "LiteralExpr",
+          "value": 2,
+          "valueType": "Number"
+        }
+      }
+    },
+    {
+      "kind": "FacetDecl",
+      "path": "chronos.lamp",
+      "valueType": "SpacetimePoint",
+      "value": {
+        "kind": "CallExpr",
+        "name": "point",
+        "args": [
+          {
+            "kind": "LiteralExpr",
+            "value": "world",
+            "valueType": "Text"
+          },
+          {
+            "kind": "CallExpr",
+            "name": "meters",
+            "args": [
+              {
+                "kind": "LiteralExpr",
+                "value": 1,
+                "valueType": "Number"
+              }
+            ]
+          },
+          {
+            "kind": "CallExpr",
+            "name": "meters",
+            "args": [
+              {
+                "kind": "LiteralExpr",
+                "value": 2,
+                "valueType": "Number"
+              }
+            ]
+          },
+          {
+            "kind": "CallExpr",
+            "name": "meters",
+            "args": [
+              {
+                "kind": "LiteralExpr",
+                "value": 3,
+                "valueType": "Number"
+              }
+            ]
+          },
+          {
+            "kind": "CallExpr",
+            "name": "seconds",
+            "args": [
+              {
+                "kind": "LiteralExpr",
+                "value": 0,
+                "valueType": "Number"
+              }
+            ]
+          }
+        ]
+      },
+      "owner": "chronos",
+      "spacetimeCoordinate": {
+        "kind": "SpacetimeCoordinateDecl",
+        "path": "chronos.lamp",
+        "localName": "lamp",
+        "expression": {
+          "kind": "CallExpr",
+          "name": "point",
+          "args": [
+            {
+              "kind": "LiteralExpr",
+              "value": "world",
+              "valueType": "Text"
+            },
+            {
+              "kind": "CallExpr",
+              "name": "meters",
+              "args": [
+                {
+                  "kind": "LiteralExpr",
+                  "value": 1,
+                  "valueType": "Number"
+                }
+              ]
+            },
+            {
+              "kind": "CallExpr",
+              "name": "meters",
+              "args": [
+                {
+                  "kind": "LiteralExpr",
+                  "value": 2,
+                  "valueType": "Number"
+                }
+              ]
+            },
+            {
+              "kind": "CallExpr",
+              "name": "meters",
+              "args": [
+                {
+                  "kind": "LiteralExpr",
+                  "value": 3,
+                  "valueType": "Number"
+                }
+              ]
+            },
+            {
+              "kind": "CallExpr",
+              "name": "seconds",
+              "args": [
+                {
+                  "kind": "LiteralExpr",
+                  "value": 0,
+                  "valueType": "Number"
+                }
+              ]
+            }
+          ]
+        },
+        "target": "greenhouse.light",
+        "clock": "chronos.simulation"
+      }
+    }
+  ],
+  "facetTypes": {
+    "world.result": "Number",
+    "memory.payload": "Text",
+    "chronos.simulation": "Time",
+    "chronos.lamp": "SpacetimePoint"
+  },
+  "subjects": [
+    "architect"
+  ],
+  "warrants": [
+    {
+      "kind": "WarrantDecl",
+      "subject": "architect",
+      "capability": "world.write",
+      "target": "world",
+      "condition": null
+    }
+  ],
+  "reckons": [
+    {
+      "kind": "ReckonDecl",
+      "name": "fib",
+      "params": [
+        {
+          "name": "n",
+          "valueType": "Number"
+        }
+      ],
+      "returnType": "Number",
+      "expression": {
+        "kind": "CallExpr",
+        "name": "choose",
+        "args": [
+          {
+            "kind": "BinaryExpr",
+            "operator": "<=",
+            "left": {
+              "kind": "PathExpr",
+              "path": "n"
+            },
+            "right": {
+              "kind": "LiteralExpr",
+              "value": 1,
+              "valueType": "Number"
+            }
+          },
+          {
+            "kind": "PathExpr",
+            "path": "n"
+          },
+          {
+            "kind": "BinaryExpr",
+            "operator": "+",
+            "left": {
+              "kind": "CallExpr",
+              "name": "fib",
+              "args": [
+                {
+                  "kind": "BinaryExpr",
+                  "operator": "-",
+                  "left": {
+                    "kind": "PathExpr",
+                    "path": "n"
+                  },
+                  "right": {
+                    "kind": "LiteralExpr",
+                    "value": 1,
+                    "valueType": "Number"
+                  }
+                }
+              ]
+            },
+            "right": {
+              "kind": "CallExpr",
+              "name": "fib",
+              "args": [
+                {
+                  "kind": "BinaryExpr",
+                  "operator": "-",
+                  "left": {
+                    "kind": "PathExpr",
+                    "path": "n"
+                  },
+                  "right": {
+                    "kind": "LiteralExpr",
+                    "value": 2,
+                    "valueType": "Number"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "hosts": [],
+  "metaDomains": [],
+  "physicals": [],
+  "perceptions": [],
+  "neurals": [],
+  "livings": [],
+  "genetics": [],
+  "quantitatives": [],
+  "knowledges": [],
+  "naturalLanguages": [],
+  "understandings": [],
+  "creations": [],
+  "spacetimes": [
+    {
+      "kind": "SpacetimeDecl",
+      "name": "chronos",
+      "frames": [
+        {
+          "kind": "SpacetimeFrameDecl",
+          "name": "chronos.world",
+          "localName": "world",
+          "dimensions": 3,
+          "topology": "euclidean"
+        }
+      ],
+      "clocks": [
+        {
+          "kind": "SpacetimeClockDecl",
+          "path": "chronos.simulation",
+          "localName": "simulation",
+          "valueType": "Time",
+          "value": {
+            "kind": "CallExpr",
+            "name": "seconds",
+            "args": [
+              {
+                "kind": "LiteralExpr",
+                "value": 0,
+                "valueType": "Number"
+              }
+            ]
+          },
+          "tick": {
+            "kind": "CallExpr",
+            "name": "seconds",
+            "args": [
+              {
+                "kind": "LiteralExpr",
+                "value": 1,
+                "valueType": "Number"
+              }
+            ]
+          },
+          "rate": {
+            "kind": "LiteralExpr",
+            "value": 2,
+            "valueType": "Number"
+          }
+        }
+      ],
+      "coordinates": [
+        {
+          "kind": "SpacetimeCoordinateDecl",
+          "path": "chronos.lamp",
+          "localName": "lamp",
+          "expression": {
+            "kind": "CallExpr",
+            "name": "point",
+            "args": [
+              {
+                "kind": "LiteralExpr",
+                "value": "world",
+                "valueType": "Text"
+              },
+              {
+                "kind": "CallExpr",
+                "name": "meters",
+                "args": [
+                  {
+                    "kind": "LiteralExpr",
+                    "value": 1,
+                    "valueType": "Number"
+                  }
+                ]
+              },
+              {
+                "kind": "CallExpr",
+                "name": "meters",
+                "args": [
+                  {
+                    "kind": "LiteralExpr",
+                    "value": 2,
+                    "valueType": "Number"
+                  }
+                ]
+              },
+              {
+                "kind": "CallExpr",
+                "name": "meters",
+                "args": [
+                  {
+                    "kind": "LiteralExpr",
+                    "value": 3,
+                    "valueType": "Number"
+                  }
+                ]
+              },
+              {
+                "kind": "CallExpr",
+                "name": "seconds",
+                "args": [
+                  {
+                    "kind": "LiteralExpr",
+                    "value": 0,
+                    "valueType": "Number"
+                  }
+                ]
+              }
+            ]
+          },
+          "target": "greenhouse.light",
+          "clock": "chronos.simulation"
+        }
+      ],
+      "relations": [
+        {
+          "kind": "SpacetimeRelationDecl",
+          "left": "request",
+          "relation": "before",
+          "right": "calculation"
+        },
+        {
+          "kind": "SpacetimeRelationDecl",
+          "left": "calculation",
+          "relation": "before",
+          "right": "compression"
+        }
+      ],
+      "preserves": [
+        {
+          "kind": "BinaryExpr",
+          "operator": ">=",
+          "left": {
+            "kind": "PathExpr",
+            "path": "chronos.simulation"
+          },
+          "right": {
+            "kind": "CallExpr",
+            "name": "seconds",
+            "args": [
+              {
+                "kind": "LiteralExpr",
+                "value": 0,
+                "valueType": "Number"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "accelerations": [
+    {
+      "kind": "AccelerationDecl",
+      "name": "fast_fib",
+      "target": "fib",
+      "strategy": "memoize",
+      "factor": {
+        "kind": "LiteralExpr",
+        "value": 8,
+        "valueType": "Number"
+      },
+      "budget": {
+        "kind": "CallExpr",
+        "name": "seconds",
+        "args": [
+          {
+            "kind": "LiteralExpr",
+            "value": 1,
+            "valueType": "Number"
+          }
+        ]
+      },
+      "fidelity": {
+        "kind": "LiteralExpr",
+        "value": 1,
+        "valueType": "Number"
+      },
+      "evidence": [
+        "optimization:memoization"
+      ],
+      "preserves": []
+    }
+  ],
+  "compressions": [
+    {
+      "kind": "CompressionDecl",
+      "name": "memory_capsule",
+      "target": "memory",
+      "mode": "lossless",
+      "codec": "deflate",
+      "reversible": true,
+      "discard": true,
+      "fidelity": {
+        "kind": "LiteralExpr",
+        "value": 1,
+        "valueType": "Number"
+      },
+      "maxRatio": {
+        "kind": "LiteralExpr",
+        "value": 0.8,
+        "valueType": "Number"
+      },
+      "evidence": [
+        "snapshot:memory"
+      ],
+      "preserves": []
+    }
+  ],
+  "rules": [
+    {
+      "kind": "Emergence",
+      "name": "calculate",
+      "cause": "architect",
+      "from": null,
+      "into": null,
+      "when": {
+        "kind": "LiteralExpr",
+        "value": true,
+        "valueType": "Truth"
+      },
+      "needs": [
+        {
+          "capability": "world.write",
+          "target": "world"
+        }
+      ],
+      "preserves": [
+        {
+          "kind": "BinaryExpr",
+          "operator": "==",
+          "left": {
+            "kind": "PathExpr",
+            "path": "world.result"
+          },
+          "right": {
+            "kind": "LiteralExpr",
+            "value": 46368,
+            "valueType": "Number"
+          }
+        }
+      ],
+      "alters": [
+        {
+          "target": "world.result",
+          "expression": {
+            "kind": "CallExpr",
+            "name": "fib",
+            "args": [
+              {
+                "kind": "LiteralExpr",
+                "value": 24,
+                "valueType": "Number"
+              }
+            ]
+          }
+        }
+      ],
+      "calls": [],
+      "witnesses": [
+        "meta-runtime:calculation"
+      ]
+    }
+  ],
+  "directives": [
+    {
+      "kind": "Synchronize",
+      "name": "chronos",
+      "count": {
+        "kind": "LiteralExpr",
+        "value": 3,
+        "valueType": "Number"
+      },
+      "dt": null
+    },
+    {
+      "kind": "Accelerate",
+      "name": "fast_fib"
+    },
+    {
+      "kind": "Foresee",
+      "rule": "calculate"
+    },
+    {
+      "kind": "Realize",
+      "rule": "calculate"
+    },
+    {
+      "kind": "Compress",
+      "name": "memory_capsule"
+    },
+    {
+      "kind": "Restore",
+      "name": "memory_capsule"
+    }
+  ],
+  "programRoot": "6df61e1bd272b9db05875d4e291fdf4f084d3601be9a410c8a9c0bfd0b0c46a7"
+}

@@ -1,0 +1,130 @@
+{
+  "format": "rncs.reality-transition-envelope.v0.1",
+  "contract_version": "0.1.0",
+  "transition_id": "transition:rncs-demo-001",
+  "phase": "committed",
+  "base_generation": {
+    "reality_id": "world:rncs-demo",
+    "generation": 0,
+    "generation_root": "6b2ffb2853ca8f15a40468e0848120d27e4be4a36010ac55b4a65595045dfe16"
+  },
+  "subject": {
+    "subject_id": "subject:杜衡界",
+    "kind": "human",
+    "roles": [
+      "founder"
+    ],
+    "responsibility_boundary": "declared-operation"
+  },
+  "intent": {
+    "intent_id": "intent:建立RNCS项目",
+    "source": "demo",
+    "goals": [
+      "建立现实原生计算项目对象"
+    ],
+    "constraints": [],
+    "intent_root": "81d39be89bdcf5d52b1259461d6f36f7c657e7cd2ed589540a14694d729037f8"
+  },
+  "capability_plan": {
+    "plan_id": "plan:rfe-core",
+    "capabilities": [
+      "rfe.identity.create",
+      "rfe.fact.set",
+      "rfe.relation.add"
+    ],
+    "host_bindings": [],
+    "required_scopes": [],
+    "plan_root": "49e85a5c50c6361e714c10a291fc74f2b53a05f8b70d2078b594bd14a8d3e93b"
+  },
+  "inputs": [],
+  "provisional_delta": {
+    "operations": [
+      {
+        "op": "createIdentity",
+        "identity": {
+          "id": "subject:杜衡界",
+          "kind": "subject",
+          "metadata": {
+            "displayName": "杜衡界"
+          }
+        }
+      },
+      {
+        "op": "createIdentity",
+        "identity": {
+          "id": "project:rncs",
+          "kind": "project",
+          "metadata": {
+            "title": "现实原生计算栈"
+          }
+        }
+      },
+      {
+        "op": "setFact",
+        "fact": {
+          "subject": "project:rncs",
+          "predicate": "status",
+          "value": "active"
+        }
+      },
+      {
+        "op": "setFact",
+        "fact": {
+          "subject": "project:rncs",
+          "predicate": "version",
+          "value": "0.1"
+        }
+      },
+      {
+        "op": "addRelation",
+        "relation": {
+          "type": "founded_by",
+          "from": "project:rncs",
+          "to": "subject:杜衡界"
+        }
+      }
+    ],
+    "provisional": true,
+    "delta_root": "50048ff5e71a0654c9d9e5d2eb2bed9dc3dcf63218e3a34037c4e6aebfcd6d5e"
+  },
+  "causal_basis": {
+    "events": [],
+    "rules": [],
+    "simulation_refs": [],
+    "causal_root": "19e6318102510bc5757becff7f9d109740c11087915b6da15a000a2d4ff4cbf0"
+  },
+  "authority": {
+    "status": "approved",
+    "resolver": "authority:founder",
+    "proposal_root": "de2591a95bb8b29816d987e1f3988e0a37a76da151a99b8ff2a42cb7a9a2b520",
+    "claims": [],
+    "constraints": [],
+    "reason": "",
+    "decision_root": "1bdd4fdc55a98f92ee1396957416188f9769f7a9bee172ed1210a2c132069304"
+  },
+  "evidence": {
+    "nodes": [],
+    "edges": [],
+    "evidence_root": "57501e5c6808b3e14852a4ea21dc7873abf9409032a06f9b740c973e83f62cf7"
+  },
+  "commit": {
+    "status": "committed",
+    "proposal_root": "de2591a95bb8b29816d987e1f3988e0a37a76da151a99b8ff2a42cb7a9a2b520",
+    "decision_root": "1bdd4fdc55a98f92ee1396957416188f9769f7a9bee172ed1210a2c132069304",
+    "result_generation": {
+      "reality_id": "world:rncs-demo",
+      "generation": 1,
+      "generation_root": "528b02f99bffcbadad75825f319c84b3d69a2a97234ef8cd7d4cfebb96e84e71"
+    },
+    "receipt_refs": [
+      "d69a219a28ff5aacbb903aa07f051afba89614c9b987d7f1c69cc813e67deb16",
+      "57b21c55b3aba81c96ce4c44954d7d05f5ef3f75cf270c7478dd5c1a351662d5"
+    ],
+    "commit_root": "9c5c14291a280ae49f379df03cdcd291047916ddd345076659e63caf33f7b173"
+  },
+  "projections": [],
+  "host_state_refs": [],
+  "extensions": {},
+  "proposal_root": "de2591a95bb8b29816d987e1f3988e0a37a76da151a99b8ff2a42cb7a9a2b520",
+  "envelope_root": "c61d0daeec3a11b3c3aa23d7620b880ade9a138fd0f1db4726a567e19d5f39f8"
+}

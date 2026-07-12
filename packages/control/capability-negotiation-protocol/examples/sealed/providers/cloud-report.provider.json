@@ -1,0 +1,95 @@
+{
+  "provider_id": "cloud-report-vendor",
+  "protocol_versions": [
+    "0.1.0",
+    "0.2.0"
+  ],
+  "status": "available",
+  "trust": {
+    "level": 4,
+    "attestations": [
+      "vendor-attestation",
+      "tls"
+    ]
+  },
+  "transports": [
+    {
+      "kind": "https",
+      "endpoint": "https://example.invalid/cnp"
+    }
+  ],
+  "capabilities": [
+    {
+      "capability_id": "cloud.report.render",
+      "version": "2.0.0",
+      "fulfills": [
+        "artifact.report.generate"
+      ],
+      "inputs": {
+        "artifact_id": {
+          "type": "string",
+          "required": true
+        }
+      },
+      "outputs": {
+        "report": {
+          "type": "string"
+        }
+      },
+      "required_scopes": [
+        "artifact.read",
+        "network.external"
+      ],
+      "host_requirements": [
+        "network.https"
+      ],
+      "risk": {
+        "level": "high",
+        "reasons": [
+          "data-leaves-device"
+        ]
+      },
+      "reversible": true,
+      "execution_phase": "read-only",
+      "side_effects": [
+        "network.egress"
+      ],
+      "evidence": {
+        "produces": [
+          "report.hash",
+          "vendor.attestation"
+        ],
+        "requires": [
+          "artifact.root"
+        ]
+      },
+      "cost": {
+        "cpu_millis": 1,
+        "memory_mb": 1,
+        "network_kb": 128,
+        "monetary_microunits": 500
+      },
+      "transport": {
+        "kind": "https",
+        "endpoint": "https://example.invalid/cnp/report"
+      },
+      "provider_id": "cloud-report-vendor",
+      "trust": {
+        "level": 4,
+        "attestations": [
+          "tls",
+          "vendor-attestation"
+        ]
+      },
+      "format": "cnp.capability-descriptor.v0.1",
+      "protocol_versions": [
+        "0.1.0"
+      ],
+      "constraints": {},
+      "status": "available",
+      "descriptor_root": "e3bda3cbf32e1356dcd32d9bebec87bc11ae06cdd23e3767f26dd0e9999e3cff"
+    }
+  ],
+  "format": "cnp.provider-manifest.v0.1",
+  "provider_root": "24f4264bd751144d44a7cb18a5fe3e5805bb6fe64fb467b2bbc792943954a95d"
+}

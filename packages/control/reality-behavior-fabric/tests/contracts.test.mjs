@@ -1,0 +1,10 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {normalizeProgram,validateProgram} from '../src/contracts.mjs';import {clone} from '../src/canonical.mjs';import {loadProgram} from './helpers.mjs';
+test('示例程序有效',()=>assert.equal(validateProgram(loadProgram()).valid,true));
+test('normalizeProgram 产生稳定根',()=>{const p=loadProgram();delete p.program_root;const a=normalizeProgram(p),b=normalizeProgram(p);assert.equal(a.program_root,b.program_root);});
+test('篡改程序会被检测',()=>{const p=loadProgram();p.globals.score=99;assert.equal(validateProgram(p).valid,false);assert.ok(validateProgram(p).errors.some(x=>x.code==='PROGRAM_ROOT_MISMATCH'));});
+test('重复实体被拒绝',()=>{const p=loadProgram();p.entities.push(clone(p.entities[0]));delete p.program_root;const n=normalizeProgram(p),v=validateProgram(n);assert.ok(v.errors.some(x=>x.code==='DUPLICATE_ID'));});
+test('未知状态机被拒绝',()=>{const p=loadProgram();p.entities[0].machine_id='machine:missing';delete p.program_root;const v=validateProgram(normalizeProgram(p));assert.ok(v.errors.some(x=>x.code==='MACHINE_UNKNOWN'));});
+test('未知行为树被拒绝',()=>{const p=loadProgram();p.entities[0].tree_id='tree:missing';delete p.program_root;const v=validateProgram(normalizeProgram(p));assert.ok(v.errors.some(x=>x.code==='TREE_UNKNOWN'));});
+test('未知能力调用被拒绝',()=>{const p=loadProgram();p.rules[0].actions.push({type:'call',capability_id:'missing'});delete p.program_root;const v=validateProgram(normalizeProgram(p));assert.ok(v.errors.some(x=>x.code==='CAPABILITY_UNKNOWN'));});
+test('初始状态必须存在',()=>{const p=loadProgram();p.state_machines[0].initial_state='missing';delete p.program_root;const v=validateProgram(normalizeProgram(p));assert.ok(v.errors.some(x=>x.code==='MACHINE_INITIAL_UNKNOWN'));});
+test('非 deny 默认权威策略产生警告',()=>{const p=loadProgram();p.authority.default_effect='allow';delete p.program_root;const v=validateProgram(normalizeProgram(p));assert.ok(v.warnings.some(x=>x.code==='AUTHORITY_DEFAULT_NOT_DENY'));});

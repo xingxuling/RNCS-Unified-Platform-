@@ -1,0 +1,13 @@
+{
+  "$schema": "https://railway.com/railway.schema.json",
+  "build": {
+    "builder": "DOCKERFILE",
+    "dockerfilePath": "packages/operations/developer-execution-runtime/Dockerfile"
+  },
+  "deploy": {
+    "startCommand": "node packages/operations/developer-execution-runtime/src/cli.mjs worker",
+    "healthcheckPath": "/healthz",
+    "restartPolicyType": "ON_FAILURE",
+    "restartPolicyMaxRetries": 5
+  }
+}

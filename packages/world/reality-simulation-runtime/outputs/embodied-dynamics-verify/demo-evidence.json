@@ -1,0 +1,152 @@
+{
+  "format": "rsr.embodied-dynamics-demo-evidence.v0.3",
+  "runtimeVersion": "0.3.0-alpha.1",
+  "worldId": "advanced-playground",
+  "deterministicReplay": true,
+  "deterministicRecovery": true,
+  "initialStateRoot": "fnv1a64:022de9b8663c1eb9",
+  "checkpointStateRoot": "fnv1a64:20f9a38fcc70a4e6",
+  "finalStateRoot": "fnv1a64:6323fdceeab7e9f0",
+  "replayStateRoot": "fnv1a64:6323fdceeab7e9f0",
+  "recoveredStateRoot": "fnv1a64:6323fdceeab7e9f0",
+  "bodyRoot": "fnv1a64:7a331ae2e9493343",
+  "contactRoot": "fnv1a64:6a2167059a151128",
+  "jointRoot": "fnv1a64:4a61a00eb2683734",
+  "islandRoot": "fnv1a64:e8745c7fbe984e0d",
+  "queryRoot": "fnv1a64:78c90def5ba7f413",
+  "causalDeltaRoot": "fnv1a64:9c2e9b8e4cc128d6",
+  "diagnostics": {
+    "microsteps": 2,
+    "fixtureProxies": 12,
+    "candidatePairs": 8,
+    "narrowPhaseTests": 4,
+    "gjkCalls": 4,
+    "epaCalls": 2,
+    "resolvedContacts": 1,
+    "warmStartedContacts": 2,
+    "ccdBodies": 1,
+    "velocityIterations": 20,
+    "positionIterations": 8,
+    "rayTests": 0
+  },
+  "counts": {
+    "bodies": 11,
+    "fixtures": 12,
+    "joints": 2,
+    "contacts": 1,
+    "events": 1,
+    "islands": 5
+  },
+  "queries": {
+    "aabbQuery": [
+      {
+        "bodyId": "buoyant-box",
+        "fixtureId": "float"
+      },
+      {
+        "bodyId": "goal-sensor",
+        "fixtureId": "goal"
+      },
+      {
+        "bodyId": "vortex-capsule",
+        "fixtureId": "capsule"
+      }
+    ],
+    "pointQuery": [
+      {
+        "bodyId": "goal-sensor",
+        "fixtureId": "goal"
+      }
+    ],
+    "rayHits": [
+      {
+        "bodyId": "pendulum",
+        "fixtureId": "rod",
+        "fractionQ": 341871,
+        "point": {
+          "x": 334009,
+          "y": 180000
+        },
+        "normalQ": {
+          "x": -437624,
+          "y": 899158
+        }
+      },
+      {
+        "bodyId": "thin-wall",
+        "fixtureId": "wall-shape",
+        "fractionQ": 680233,
+        "point": {
+          "x": 625000,
+          "y": 180000
+        },
+        "normalQ": {
+          "x": -1000000,
+          "y": 0
+        }
+      }
+    ],
+    "shapeCastHits": [
+      {
+        "bodyId": "pendulum",
+        "fixtureId": "bob",
+        "fractionQ": 321871,
+        "point": {
+          "x": 326855,
+          "y": 208081
+        },
+        "normalQ": {
+          "x": 648345,
+          "y": 761347
+        },
+        "iterations": 20
+      },
+      {
+        "bodyId": "pendulum",
+        "fixtureId": "rod",
+        "fractionQ": 326201,
+        "point": {
+          "x": 334009,
+          "y": 146975
+        },
+        "normalQ": {
+          "x": 1000000,
+          "y": 0
+        },
+        "iterations": 20
+      }
+    ]
+  },
+  "initialViews": {
+    "playerHash": "fnv1a64:29c9355c09f124ae",
+    "debuggerHash": "fnv1a64:d511d41defab71b9",
+    "verification": {
+      "ok": true,
+      "sourceDisplayHash": "fnv1a64:09396f4a12b99826",
+      "invariantHash": "fnv1a64:574eb190bcf48478",
+      "observerCount": 2,
+      "projectedDisplayHashes": [
+        "fnv1a64:88d4dc60e24b03ce",
+        "fnv1a64:5557cb0b33ef9780"
+      ],
+      "diagnostics": []
+    },
+    "invariantHash": "fnv1a64:574eb190bcf48478"
+  },
+  "finalViews": {
+    "playerHash": "fnv1a64:12b18d33a00db4c2",
+    "debuggerHash": "fnv1a64:824c877919aea958",
+    "verification": {
+      "ok": true,
+      "sourceDisplayHash": "fnv1a64:ae8a3c16fc0ce89e",
+      "invariantHash": "fnv1a64:d51fc7b892193513",
+      "observerCount": 2,
+      "projectedDisplayHashes": [
+        "fnv1a64:c5897fe135002126",
+        "fnv1a64:b9ea466818fb5162"
+      ],
+      "diagnostics": []
+    },
+    "invariantHash": "fnv1a64:d51fc7b892193513"
+  }
+}

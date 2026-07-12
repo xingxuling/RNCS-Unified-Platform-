@@ -1,0 +1,65 @@
+{
+  "format": "rsr.spatial-embodiment-benchmark.v0.5",
+  "node": "v22.16.0",
+  "cases": [
+    {
+      "bodyCount": 64,
+      "ticks": 90,
+      "elapsedMs": 908.181,
+      "millisecondsPerTick": 10.0909,
+      "ticksPerSecond": 99.1,
+      "averageCandidatePairs": 224,
+      "averageNarrowPhaseTests": 0,
+      "averageContacts": 42.46,
+      "averageSensoryEvents": 19.91,
+      "broadPhaseCompression": 0.888889,
+      "maxSubsteps": 1,
+      "stateRoot": "fnv1a64:d5c8234bd6edc225"
+    },
+    {
+      "bodyCount": 144,
+      "ticks": 60,
+      "elapsedMs": 1099.233,
+      "millisecondsPerTick": 18.3206,
+      "ticksPerSecond": 54.58,
+      "averageCandidatePairs": 792,
+      "averageNarrowPhaseTests": 0,
+      "averageContacts": 83.2,
+      "averageSensoryEvents": 43.2,
+      "broadPhaseCompression": 0.923077,
+      "maxSubsteps": 1,
+      "stateRoot": "fnv1a64:b10e059c67fe75b7"
+    },
+    {
+      "bodyCount": 256,
+      "ticks": 30,
+      "elapsedMs": 865.036,
+      "millisecondsPerTick": 28.8345,
+      "ticksPerSecond": 34.68,
+      "averageCandidatePairs": 1920,
+      "averageNarrowPhaseTests": 0,
+      "averageContacts": 82.57,
+      "averageSensoryEvents": 68.27,
+      "broadPhaseCompression": 0.941176,
+      "maxSubsteps": 1,
+      "stateRoot": "fnv1a64:aa6c822d8feec52d"
+    }
+  ],
+  "characters": {
+    "characters": 32,
+    "ticks": 180,
+    "elapsedMs": 995.998,
+    "millisecondsPerTick": 5.5333,
+    "footstepEventsLastTick": 1,
+    "groundedBodies": 32,
+    "stateRoot": "fnv1a64:62ceedd2309df495"
+  },
+  "projection": {
+    "bodies": 48,
+    "drawCalls": 81,
+    "triangles": 30914,
+    "elapsedMs": 352.029,
+    "frameVerified": true,
+    "pixelRoot": "fnv1a64:6e62a2c3aed726f0"
+  }
+}

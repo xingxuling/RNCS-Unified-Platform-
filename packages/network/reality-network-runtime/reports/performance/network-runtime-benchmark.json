@@ -1,0 +1,75 @@
+{
+  "format": "rncs.network-runtime.performance.v0.1",
+  "generatedAt": "2026-07-02T19:13:19.791Z",
+  "runtimeVersion": "0.1.0-alpha.1",
+  "environment": {
+    "node": "v22.16.0",
+    "platform": "linux",
+    "arch": "x64"
+  },
+  "fullSimulation": {
+    "players": 2,
+    "ticks": 60,
+    "elapsedMs": 1320.302,
+    "effectiveTicksPerSecond": 45.44,
+    "averageTickMs": 22.005,
+    "snapshotBytes": 8098,
+    "averageDeltaBytes": 8416,
+    "transport": {
+      "sent": 240,
+      "delivered": 240,
+      "dropped": 0,
+      "duplicated": 0,
+      "bytes": 1409810,
+      "queued": 0,
+      "tick": 240
+    },
+    "finalStateRoot": "fnv1a64:69f003604f3a6a08"
+  },
+  "protocolQueueBenchmarks": [
+    {
+      "players": 10,
+      "ticks": 60,
+      "packets": 600,
+      "received": 600,
+      "elapsedMs": 24.291,
+      "averageQueueTickMs": 0.404848,
+      "packetsPerSecond": 24700.6,
+      "bytes": 154072
+    },
+    {
+      "players": 50,
+      "ticks": 60,
+      "packets": 3000,
+      "received": 3000,
+      "elapsedMs": 113.757,
+      "averageQueueTickMs": 1.895951,
+      "packetsPerSecond": 26372,
+      "bytes": 776693
+    }
+  ],
+  "hashCost": {
+    "iterations": 200,
+    "totalMs": 25.126,
+    "averageMs": 0.125631
+  },
+  "rollbackReplay": {
+    "unacknowledgedInputs": 20,
+    "replayedInputs": 20,
+    "elapsedMs": 33.158,
+    "correctionRoot": "774061a7be2b38f839a6c61e82bbb4e079ef0e7464e7a5cc4f2a16a8dd24752e"
+  },
+  "lossConvergence": {
+    "lossRate": 0.2,
+    "convergenceTicks": 2,
+    "transport": {
+      "sent": 155,
+      "delivered": 129,
+      "dropped": 32,
+      "duplicated": 6,
+      "bytes": 861060,
+      "queued": 0,
+      "tick": 278
+    }
+  }
+}

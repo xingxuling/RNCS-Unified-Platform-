@@ -1,0 +1,12 @@
+node_modules/
+state/relay/*
+state/host/*
+state/remote-stack-processes.json
+!state/relay/.gitkeep
+!state/host/.gitkeep
+config/cloudflared-config.yml
+config/cloudflared-runtime.json
+config/remote-stack.json
+*.log
+.env
+.env.local

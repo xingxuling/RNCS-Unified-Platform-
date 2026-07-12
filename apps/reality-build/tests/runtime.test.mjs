@@ -1,0 +1,14 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {buildBrowserBehaviorRuntime,buildGameSource,renderIndexHtml} from '../src/index.mjs';
+const runtime=buildBrowserBehaviorRuntime(),game=buildGameSource();
+test('浏览器行为运行时可解析',()=>assert.doesNotThrow(()=>new Function(runtime)));
+test('浏览器游戏宿主可解析',()=>assert.doesNotThrow(()=>new Function(game)));
+test('运行时暴露 BehaviorRuntime',()=>assert.match(runtime,/RNCSBehavior=\{BehaviorRuntime/));
+test('运行时不包含 node crypto 导入',()=>assert.doesNotMatch(runtime,/node:crypto/));
+test('游戏宿主使用真实行为 Tick',()=>assert.match(game,/runtime\.tick\(inputState\(\)\)/));
+test('游戏宿主包含触摸控制',()=>assert.match(game,/data-action/));
+test('游戏宿主包含音频 Provider',()=>assert.match(game,/experience\.audio\.emit/));
+test('游戏宿主包含特效 Provider',()=>assert.match(game,/experience\.effect\.emit/));
+test('单文件 HTML 嵌入运行时',()=>{const h=renderIndexHtml({title:'T',inline:true,runtimeSource:runtime,gameSource:game,payload:{project:{},assets:{},build:{}}});assert.match(h,/RNCSBehavior/);assert.doesNotMatch(h,/src="runtime\.js"/)});
+test('文件夹 HTML 引用外部脚本',()=>{const h=renderIndexHtml({title:'T'});assert.match(h,/src="runtime\.js"/);assert.match(h,/src="game\.js"/)});
+test('HTML 有移动端视口',()=>assert.match(renderIndexHtml({title:'T'}),/viewport-fit=cover/));
+test('HTML 有 Canvas',()=>assert.match(renderIndexHtml({title:'T'}),/id="game"/));

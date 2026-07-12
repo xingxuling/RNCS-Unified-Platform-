@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/ragf/technology-concept.v0.5.schema.json",
+  "title": "RAGF Technology Concept v0.5",
+  "type": "object",
+  "required": ["format", "concept_id", "name", "grammar", "engineering_path", "epistemic_status", "concept_root"],
+  "properties": {
+    "format": {"const": "ragf.technology-concept.v0.5"},
+    "concept_id": {"type": "string"},
+    "name": {"type": "string"},
+    "epistemic_status": {"const": "simulation-hypothesis"},
+    "real_world_validation_required": {"const": true},
+    "grammar": {
+      "type": "object",
+      "required": ["function", "principle", "substrate", "energy", "control", "manufacturing"]
+    },
+    "engineering_path": {"type": "array", "minItems": 6},
+    "concept_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

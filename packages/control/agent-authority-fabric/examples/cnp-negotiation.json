@@ -1,0 +1,1073 @@
+{
+  "format": "cnp.negotiation-result.v0.1",
+  "request": {
+    "request_id": "request:rncs-project-update-001",
+    "protocol_versions": [
+      "0.1.0"
+    ],
+    "subject": {
+      "subject_id": "subject:owner",
+      "scopes": [
+        "artifact.read",
+        "artifact.write",
+        "host.notify"
+      ]
+    },
+    "host": {
+      "host_id": "host:desktop",
+      "capabilities": [
+        "display.text",
+        "host.notification",
+        "input.activate"
+      ]
+    },
+    "goals": [
+      {
+        "goal_id": "goal:update-progress",
+        "type": "artifact.progress.target",
+        "version_range": "^1.0.0",
+        "inputs": {
+          "artifact_id": {
+            "type": "string"
+          },
+          "value": {
+            "type": "integer"
+          }
+        }
+      },
+      {
+        "goal_id": "goal:generate-report",
+        "type": "artifact.report.generate",
+        "version_range": ">=1.0.0 <2.0.0",
+        "inputs": {
+          "artifact_id": {
+            "type": "string",
+            "from_goal": "goal:update-progress"
+          }
+        }
+      },
+      {
+        "goal_id": "goal:notify",
+        "type": "host.notification.emit",
+        "version_range": "^1.0.0",
+        "inputs": {
+          "message": {
+            "type": "string",
+            "from_goal": "goal:generate-report"
+          }
+        }
+      }
+    ],
+    "policy": {
+      "max_risk": "medium",
+      "require_reversible": false,
+      "required_evidence": [],
+      "minimum_trust": 1,
+      "cost_budget": {
+        "cpu_millis": 100,
+        "memory_mb": 100,
+        "network_kb": 20,
+        "monetary_microunits": 0
+      }
+    },
+    "constraints": {
+      "prefer_local": true,
+      "base_generation": "generation:0"
+    },
+    "format": "cnp.negotiation-request.v0.1",
+    "request_root": "47d8a76bd5918d8684a1c648744ce46b31e7c7350ac2f741a45815be95d3f882"
+  },
+  "offers": {
+    "goal:update-progress": [
+      {
+        "capability_id": "laf.progress.set",
+        "capability_version": "1.0.0",
+        "provider_id": "laf-runtime",
+        "protocol_version": "0.1.0",
+        "eligible": true,
+        "rejection_reasons": [],
+        "warnings": [],
+        "score": 990568,
+        "score_components": {
+          "risk_penalty": 10000,
+          "cost_score": 32,
+          "trust_bonus": 300,
+          "reversible_bonus": 200,
+          "evidence_bonus": 0,
+          "version_bonus": 100
+        },
+        "descriptor_root": "4c9ba5c7abf29e6cd57b6c726e65a4f22dc09b50ee9659388fb0ef1982e73a1b",
+        "execution_phase": "transaction",
+        "reversible": true,
+        "risk": {
+          "level": "medium",
+          "reasons": [
+            "artifact-mutation"
+          ]
+        },
+        "cost": {
+          "cpu_millis": 3,
+          "memory_mb": 2,
+          "network_kb": 0,
+          "monetary_microunits": 0
+        },
+        "required_scopes": [
+          "artifact.write"
+        ],
+        "host_requirements": [
+          "input.activate"
+        ],
+        "evidence": {
+          "produces": [
+            "laf.revision",
+            "rncs.provisional-delta"
+          ],
+          "requires": [
+            "artifact.root"
+          ]
+        },
+        "transport": {
+          "kind": "local",
+          "entrypoint": "laf.progress.set"
+        },
+        "inputs": {
+          "artifact_id": {
+            "type": "string",
+            "required": true
+          },
+          "value": {
+            "type": "integer",
+            "required": true
+          }
+        },
+        "outputs": {
+          "laf_revision": {
+            "type": "string"
+          },
+          "provisional_delta": {
+            "type": "object"
+          }
+        }
+      },
+      {
+        "capability_id": "laf.report.render",
+        "capability_version": "1.1.0",
+        "provider_id": "laf-runtime",
+        "protocol_version": "0.1.0",
+        "eligible": false,
+        "rejection_reasons": [
+          "goal-not-fulfilled"
+        ],
+        "warnings": [],
+        "score": 588,
+        "score_components": {
+          "risk_penalty": 0,
+          "cost_score": 22,
+          "trust_bonus": 300,
+          "reversible_bonus": 200,
+          "evidence_bonus": 0,
+          "version_bonus": 110
+        },
+        "descriptor_root": "af04d730f72b24ef6d07cdf1335998ffd0612d31400ad2308078c62932aaddb2",
+        "execution_phase": "read-only",
+        "reversible": true,
+        "risk": {
+          "level": "low",
+          "reasons": []
+        },
+        "cost": {
+          "cpu_millis": 2,
+          "memory_mb": 2,
+          "network_kb": 0,
+          "monetary_microunits": 0
+        },
+        "required_scopes": [
+          "artifact.read"
+        ],
+        "host_requirements": [
+          "display.text"
+        ],
+        "evidence": {
+          "produces": [
+            "report.hash"
+          ],
+          "requires": [
+            "artifact.root"
+          ]
+        },
+        "transport": {
+          "kind": "local",
+          "entrypoint": "laf.report.render"
+        },
+        "inputs": {
+          "artifact_id": {
+            "type": "string",
+            "required": true
+          }
+        },
+        "outputs": {
+          "report": {
+            "type": "string"
+          }
+        }
+      },
+      {
+        "capability_id": "hnac.notification.emit",
+        "capability_version": "1.0.0",
+        "provider_id": "hnac-host:desktop",
+        "protocol_version": "0.1.0",
+        "eligible": false,
+        "rejection_reasons": [
+          "goal-not-fulfilled",
+          "missing-input:message"
+        ],
+        "warnings": [
+          "irreversible",
+          "post-commit-side-effect"
+        ],
+        "score": -1009716,
+        "score_components": {
+          "risk_penalty": 10000,
+          "cost_score": 16,
+          "trust_bonus": 200,
+          "reversible_bonus": 0,
+          "evidence_bonus": 0,
+          "version_bonus": 100
+        },
+        "descriptor_root": "078e0a0043cfa3e8f4d347fabb27f5610856ca11370c1e5c32c1cbda43f077ad",
+        "execution_phase": "post-commit",
+        "reversible": false,
+        "risk": {
+          "level": "medium",
+          "reasons": [
+            "external-side-effect"
+          ]
+        },
+        "cost": {
+          "cpu_millis": 1,
+          "memory_mb": 1,
+          "network_kb": 1,
+          "monetary_microunits": 0
+        },
+        "required_scopes": [
+          "host.notify"
+        ],
+        "host_requirements": [
+          "host.notification"
+        ],
+        "evidence": {
+          "produces": [
+            "notification.receipt"
+          ],
+          "requires": [
+            "rfe.commit-receipt"
+          ]
+        },
+        "transport": {
+          "kind": "hnac",
+          "capsule_id": "icar-native-v0.5",
+          "entrypoint": "notify"
+        },
+        "inputs": {
+          "message": {
+            "type": "string",
+            "required": true
+          }
+        },
+        "outputs": {
+          "receipt": {
+            "type": "object"
+          }
+        }
+      },
+      {
+        "capability_id": "cloud.report.render",
+        "capability_version": "2.0.0",
+        "provider_id": "cloud-report-vendor",
+        "protocol_version": "0.1.0",
+        "eligible": false,
+        "rejection_reasons": [
+          "goal-not-fulfilled",
+          "version-not-satisfied:^1.0.0",
+          "missing-scopes:network.external",
+          "missing-host:network.https",
+          "risk-exceeds:high",
+          "cost-exceeds:network_kb",
+          "cost-exceeds:monetary_microunits"
+        ],
+        "warnings": [],
+        "score": -6020351,
+        "score_components": {
+          "risk_penalty": 20000,
+          "cost_score": 1151,
+          "trust_bonus": 400,
+          "reversible_bonus": 200,
+          "evidence_bonus": 0,
+          "version_bonus": 200
+        },
+        "descriptor_root": "e3bda3cbf32e1356dcd32d9bebec87bc11ae06cdd23e3767f26dd0e9999e3cff",
+        "execution_phase": "read-only",
+        "reversible": true,
+        "risk": {
+          "level": "high",
+          "reasons": [
+            "data-leaves-device"
+          ]
+        },
+        "cost": {
+          "cpu_millis": 1,
+          "memory_mb": 1,
+          "network_kb": 128,
+          "monetary_microunits": 500
+        },
+        "required_scopes": [
+          "artifact.read",
+          "network.external"
+        ],
+        "host_requirements": [
+          "network.https"
+        ],
+        "evidence": {
+          "produces": [
+            "report.hash",
+            "vendor.attestation"
+          ],
+          "requires": [
+            "artifact.root"
+          ]
+        },
+        "transport": {
+          "kind": "https",
+          "endpoint": "https://example.invalid/cnp/report"
+        },
+        "inputs": {
+          "artifact_id": {
+            "type": "string",
+            "required": true
+          }
+        },
+        "outputs": {
+          "report": {
+            "type": "string"
+          }
+        }
+      }
+    ],
+    "goal:generate-report": [
+      {
+        "capability_id": "laf.report.render",
+        "capability_version": "1.1.0",
+        "provider_id": "laf-runtime",
+        "protocol_version": "0.1.0",
+        "eligible": true,
+        "rejection_reasons": [],
+        "warnings": [],
+        "score": 1000588,
+        "score_components": {
+          "risk_penalty": 0,
+          "cost_score": 22,
+          "trust_bonus": 300,
+          "reversible_bonus": 200,
+          "evidence_bonus": 0,
+          "version_bonus": 110
+        },
+        "descriptor_root": "af04d730f72b24ef6d07cdf1335998ffd0612d31400ad2308078c62932aaddb2",
+        "execution_phase": "read-only",
+        "reversible": true,
+        "risk": {
+          "level": "low",
+          "reasons": []
+        },
+        "cost": {
+          "cpu_millis": 2,
+          "memory_mb": 2,
+          "network_kb": 0,
+          "monetary_microunits": 0
+        },
+        "required_scopes": [
+          "artifact.read"
+        ],
+        "host_requirements": [
+          "display.text"
+        ],
+        "evidence": {
+          "produces": [
+            "report.hash"
+          ],
+          "requires": [
+            "artifact.root"
+          ]
+        },
+        "transport": {
+          "kind": "local",
+          "entrypoint": "laf.report.render"
+        },
+        "inputs": {
+          "artifact_id": {
+            "type": "string",
+            "required": true
+          }
+        },
+        "outputs": {
+          "report": {
+            "type": "string"
+          }
+        }
+      },
+      {
+        "capability_id": "laf.progress.set",
+        "capability_version": "1.0.0",
+        "provider_id": "laf-runtime",
+        "protocol_version": "0.1.0",
+        "eligible": false,
+        "rejection_reasons": [
+          "goal-not-fulfilled",
+          "missing-input:value"
+        ],
+        "warnings": [],
+        "score": -1009432,
+        "score_components": {
+          "risk_penalty": 10000,
+          "cost_score": 32,
+          "trust_bonus": 300,
+          "reversible_bonus": 200,
+          "evidence_bonus": 0,
+          "version_bonus": 100
+        },
+        "descriptor_root": "4c9ba5c7abf29e6cd57b6c726e65a4f22dc09b50ee9659388fb0ef1982e73a1b",
+        "execution_phase": "transaction",
+        "reversible": true,
+        "risk": {
+          "level": "medium",
+          "reasons": [
+            "artifact-mutation"
+          ]
+        },
+        "cost": {
+          "cpu_millis": 3,
+          "memory_mb": 2,
+          "network_kb": 0,
+          "monetary_microunits": 0
+        },
+        "required_scopes": [
+          "artifact.write"
+        ],
+        "host_requirements": [
+          "input.activate"
+        ],
+        "evidence": {
+          "produces": [
+            "laf.revision",
+            "rncs.provisional-delta"
+          ],
+          "requires": [
+            "artifact.root"
+          ]
+        },
+        "transport": {
+          "kind": "local",
+          "entrypoint": "laf.progress.set"
+        },
+        "inputs": {
+          "artifact_id": {
+            "type": "string",
+            "required": true
+          },
+          "value": {
+            "type": "integer",
+            "required": true
+          }
+        },
+        "outputs": {
+          "laf_revision": {
+            "type": "string"
+          },
+          "provisional_delta": {
+            "type": "object"
+          }
+        }
+      },
+      {
+        "capability_id": "hnac.notification.emit",
+        "capability_version": "1.0.0",
+        "provider_id": "hnac-host:desktop",
+        "protocol_version": "0.1.0",
+        "eligible": false,
+        "rejection_reasons": [
+          "goal-not-fulfilled",
+          "missing-input:message"
+        ],
+        "warnings": [
+          "irreversible",
+          "post-commit-side-effect"
+        ],
+        "score": -1009716,
+        "score_components": {
+          "risk_penalty": 10000,
+          "cost_score": 16,
+          "trust_bonus": 200,
+          "reversible_bonus": 0,
+          "evidence_bonus": 0,
+          "version_bonus": 100
+        },
+        "descriptor_root": "078e0a0043cfa3e8f4d347fabb27f5610856ca11370c1e5c32c1cbda43f077ad",
+        "execution_phase": "post-commit",
+        "reversible": false,
+        "risk": {
+          "level": "medium",
+          "reasons": [
+            "external-side-effect"
+          ]
+        },
+        "cost": {
+          "cpu_millis": 1,
+          "memory_mb": 1,
+          "network_kb": 1,
+          "monetary_microunits": 0
+        },
+        "required_scopes": [
+          "host.notify"
+        ],
+        "host_requirements": [
+          "host.notification"
+        ],
+        "evidence": {
+          "produces": [
+            "notification.receipt"
+          ],
+          "requires": [
+            "rfe.commit-receipt"
+          ]
+        },
+        "transport": {
+          "kind": "hnac",
+          "capsule_id": "icar-native-v0.5",
+          "entrypoint": "notify"
+        },
+        "inputs": {
+          "message": {
+            "type": "string",
+            "required": true
+          }
+        },
+        "outputs": {
+          "receipt": {
+            "type": "object"
+          }
+        }
+      },
+      {
+        "capability_id": "cloud.report.render",
+        "capability_version": "2.0.0",
+        "provider_id": "cloud-report-vendor",
+        "protocol_version": "0.1.0",
+        "eligible": false,
+        "rejection_reasons": [
+          "version-not-satisfied:>=1.0.0 <2.0.0",
+          "missing-scopes:network.external",
+          "missing-host:network.https",
+          "risk-exceeds:high",
+          "cost-exceeds:network_kb",
+          "cost-exceeds:monetary_microunits"
+        ],
+        "warnings": [],
+        "score": -5020351,
+        "score_components": {
+          "risk_penalty": 20000,
+          "cost_score": 1151,
+          "trust_bonus": 400,
+          "reversible_bonus": 200,
+          "evidence_bonus": 0,
+          "version_bonus": 200
+        },
+        "descriptor_root": "e3bda3cbf32e1356dcd32d9bebec87bc11ae06cdd23e3767f26dd0e9999e3cff",
+        "execution_phase": "read-only",
+        "reversible": true,
+        "risk": {
+          "level": "high",
+          "reasons": [
+            "data-leaves-device"
+          ]
+        },
+        "cost": {
+          "cpu_millis": 1,
+          "memory_mb": 1,
+          "network_kb": 128,
+          "monetary_microunits": 500
+        },
+        "required_scopes": [
+          "artifact.read",
+          "network.external"
+        ],
+        "host_requirements": [
+          "network.https"
+        ],
+        "evidence": {
+          "produces": [
+            "report.hash",
+            "vendor.attestation"
+          ],
+          "requires": [
+            "artifact.root"
+          ]
+        },
+        "transport": {
+          "kind": "https",
+          "endpoint": "https://example.invalid/cnp/report"
+        },
+        "inputs": {
+          "artifact_id": {
+            "type": "string",
+            "required": true
+          }
+        },
+        "outputs": {
+          "report": {
+            "type": "string"
+          }
+        }
+      }
+    ],
+    "goal:notify": [
+      {
+        "capability_id": "hnac.notification.emit",
+        "capability_version": "1.0.0",
+        "provider_id": "hnac-host:desktop",
+        "protocol_version": "0.1.0",
+        "eligible": true,
+        "rejection_reasons": [],
+        "warnings": [
+          "irreversible",
+          "post-commit-side-effect"
+        ],
+        "score": 990284,
+        "score_components": {
+          "risk_penalty": 10000,
+          "cost_score": 16,
+          "trust_bonus": 200,
+          "reversible_bonus": 0,
+          "evidence_bonus": 0,
+          "version_bonus": 100
+        },
+        "descriptor_root": "078e0a0043cfa3e8f4d347fabb27f5610856ca11370c1e5c32c1cbda43f077ad",
+        "execution_phase": "post-commit",
+        "reversible": false,
+        "risk": {
+          "level": "medium",
+          "reasons": [
+            "external-side-effect"
+          ]
+        },
+        "cost": {
+          "cpu_millis": 1,
+          "memory_mb": 1,
+          "network_kb": 1,
+          "monetary_microunits": 0
+        },
+        "required_scopes": [
+          "host.notify"
+        ],
+        "host_requirements": [
+          "host.notification"
+        ],
+        "evidence": {
+          "produces": [
+            "notification.receipt"
+          ],
+          "requires": [
+            "rfe.commit-receipt"
+          ]
+        },
+        "transport": {
+          "kind": "hnac",
+          "capsule_id": "icar-native-v0.5",
+          "entrypoint": "notify"
+        },
+        "inputs": {
+          "message": {
+            "type": "string",
+            "required": true
+          }
+        },
+        "outputs": {
+          "receipt": {
+            "type": "object"
+          }
+        }
+      },
+      {
+        "capability_id": "laf.report.render",
+        "capability_version": "1.1.0",
+        "provider_id": "laf-runtime",
+        "protocol_version": "0.1.0",
+        "eligible": false,
+        "rejection_reasons": [
+          "goal-not-fulfilled",
+          "missing-input:artifact_id"
+        ],
+        "warnings": [],
+        "score": -999412,
+        "score_components": {
+          "risk_penalty": 0,
+          "cost_score": 22,
+          "trust_bonus": 300,
+          "reversible_bonus": 200,
+          "evidence_bonus": 0,
+          "version_bonus": 110
+        },
+        "descriptor_root": "af04d730f72b24ef6d07cdf1335998ffd0612d31400ad2308078c62932aaddb2",
+        "execution_phase": "read-only",
+        "reversible": true,
+        "risk": {
+          "level": "low",
+          "reasons": []
+        },
+        "cost": {
+          "cpu_millis": 2,
+          "memory_mb": 2,
+          "network_kb": 0,
+          "monetary_microunits": 0
+        },
+        "required_scopes": [
+          "artifact.read"
+        ],
+        "host_requirements": [
+          "display.text"
+        ],
+        "evidence": {
+          "produces": [
+            "report.hash"
+          ],
+          "requires": [
+            "artifact.root"
+          ]
+        },
+        "transport": {
+          "kind": "local",
+          "entrypoint": "laf.report.render"
+        },
+        "inputs": {
+          "artifact_id": {
+            "type": "string",
+            "required": true
+          }
+        },
+        "outputs": {
+          "report": {
+            "type": "string"
+          }
+        }
+      },
+      {
+        "capability_id": "laf.progress.set",
+        "capability_version": "1.0.0",
+        "provider_id": "laf-runtime",
+        "protocol_version": "0.1.0",
+        "eligible": false,
+        "rejection_reasons": [
+          "goal-not-fulfilled",
+          "missing-input:artifact_id",
+          "missing-input:value"
+        ],
+        "warnings": [],
+        "score": -2009432,
+        "score_components": {
+          "risk_penalty": 10000,
+          "cost_score": 32,
+          "trust_bonus": 300,
+          "reversible_bonus": 200,
+          "evidence_bonus": 0,
+          "version_bonus": 100
+        },
+        "descriptor_root": "4c9ba5c7abf29e6cd57b6c726e65a4f22dc09b50ee9659388fb0ef1982e73a1b",
+        "execution_phase": "transaction",
+        "reversible": true,
+        "risk": {
+          "level": "medium",
+          "reasons": [
+            "artifact-mutation"
+          ]
+        },
+        "cost": {
+          "cpu_millis": 3,
+          "memory_mb": 2,
+          "network_kb": 0,
+          "monetary_microunits": 0
+        },
+        "required_scopes": [
+          "artifact.write"
+        ],
+        "host_requirements": [
+          "input.activate"
+        ],
+        "evidence": {
+          "produces": [
+            "laf.revision",
+            "rncs.provisional-delta"
+          ],
+          "requires": [
+            "artifact.root"
+          ]
+        },
+        "transport": {
+          "kind": "local",
+          "entrypoint": "laf.progress.set"
+        },
+        "inputs": {
+          "artifact_id": {
+            "type": "string",
+            "required": true
+          },
+          "value": {
+            "type": "integer",
+            "required": true
+          }
+        },
+        "outputs": {
+          "laf_revision": {
+            "type": "string"
+          },
+          "provisional_delta": {
+            "type": "object"
+          }
+        }
+      },
+      {
+        "capability_id": "cloud.report.render",
+        "capability_version": "2.0.0",
+        "provider_id": "cloud-report-vendor",
+        "protocol_version": "0.1.0",
+        "eligible": false,
+        "rejection_reasons": [
+          "goal-not-fulfilled",
+          "version-not-satisfied:^1.0.0",
+          "missing-scopes:network.external",
+          "missing-host:network.https",
+          "risk-exceeds:high",
+          "cost-exceeds:network_kb",
+          "cost-exceeds:monetary_microunits",
+          "missing-input:artifact_id"
+        ],
+        "warnings": [],
+        "score": -7020351,
+        "score_components": {
+          "risk_penalty": 20000,
+          "cost_score": 1151,
+          "trust_bonus": 400,
+          "reversible_bonus": 200,
+          "evidence_bonus": 0,
+          "version_bonus": 200
+        },
+        "descriptor_root": "e3bda3cbf32e1356dcd32d9bebec87bc11ae06cdd23e3767f26dd0e9999e3cff",
+        "execution_phase": "read-only",
+        "reversible": true,
+        "risk": {
+          "level": "high",
+          "reasons": [
+            "data-leaves-device"
+          ]
+        },
+        "cost": {
+          "cpu_millis": 1,
+          "memory_mb": 1,
+          "network_kb": 128,
+          "monetary_microunits": 500
+        },
+        "required_scopes": [
+          "artifact.read",
+          "network.external"
+        ],
+        "host_requirements": [
+          "network.https"
+        ],
+        "evidence": {
+          "produces": [
+            "report.hash",
+            "vendor.attestation"
+          ],
+          "requires": [
+            "artifact.root"
+          ]
+        },
+        "transport": {
+          "kind": "https",
+          "endpoint": "https://example.invalid/cnp/report"
+        },
+        "inputs": {
+          "artifact_id": {
+            "type": "string",
+            "required": true
+          }
+        },
+        "outputs": {
+          "report": {
+            "type": "string"
+          }
+        }
+      }
+    ]
+  },
+  "plan": {
+    "format": "cnp.negotiation-plan.v0.1",
+    "request_id": "request:rncs-project-update-001",
+    "request_root": "47d8a76bd5918d8684a1c648744ce46b31e7c7350ac2f741a45815be95d3f882",
+    "provider_roots": [
+      "24f4264bd751144d44a7cb18a5fe3e5805bb6fe64fb467b2bbc792943954a95d",
+      "a636eae41f2dd68c44fa6632cdd0950bc06fb6a404f57952f4bc4745b16eb231",
+      "cd9ee9693b45274810f40ea71de20860a690175e95417576d89db6c4a0be9ae0"
+    ],
+    "status": "satisfied",
+    "unresolved_goals": [],
+    "steps": [
+      {
+        "step_id": "step:1",
+        "goal_id": "goal:update-progress",
+        "goal_type": "artifact.progress.target",
+        "capability_id": "laf.progress.set",
+        "capability_version": "1.0.0",
+        "provider_id": "laf-runtime",
+        "protocol_version": "0.1.0",
+        "depends_on": [],
+        "execution_phase": "transaction",
+        "reversible": true,
+        "risk": {
+          "level": "medium",
+          "reasons": [
+            "artifact-mutation"
+          ]
+        },
+        "cost": {
+          "cpu_millis": 3,
+          "memory_mb": 2,
+          "network_kb": 0,
+          "monetary_microunits": 0
+        },
+        "required_scopes": [
+          "artifact.write"
+        ],
+        "host_requirements": [
+          "input.activate"
+        ],
+        "evidence": {
+          "produces": [
+            "laf.revision",
+            "rncs.provisional-delta"
+          ],
+          "requires": [
+            "artifact.root"
+          ]
+        },
+        "descriptor_root": "4c9ba5c7abf29e6cd57b6c726e65a4f22dc09b50ee9659388fb0ef1982e73a1b",
+        "transport": {
+          "kind": "local",
+          "entrypoint": "laf.progress.set"
+        }
+      },
+      {
+        "step_id": "step:2",
+        "goal_id": "goal:generate-report",
+        "goal_type": "artifact.report.generate",
+        "capability_id": "laf.report.render",
+        "capability_version": "1.1.0",
+        "provider_id": "laf-runtime",
+        "protocol_version": "0.1.0",
+        "depends_on": [
+          "step:1"
+        ],
+        "execution_phase": "read-only",
+        "reversible": true,
+        "risk": {
+          "level": "low",
+          "reasons": []
+        },
+        "cost": {
+          "cpu_millis": 2,
+          "memory_mb": 2,
+          "network_kb": 0,
+          "monetary_microunits": 0
+        },
+        "required_scopes": [
+          "artifact.read"
+        ],
+        "host_requirements": [
+          "display.text"
+        ],
+        "evidence": {
+          "produces": [
+            "report.hash"
+          ],
+          "requires": [
+            "artifact.root"
+          ]
+        },
+        "descriptor_root": "af04d730f72b24ef6d07cdf1335998ffd0612d31400ad2308078c62932aaddb2",
+        "transport": {
+          "kind": "local",
+          "entrypoint": "laf.report.render"
+        }
+      },
+      {
+        "step_id": "step:3",
+        "goal_id": "goal:notify",
+        "goal_type": "host.notification.emit",
+        "capability_id": "hnac.notification.emit",
+        "capability_version": "1.0.0",
+        "provider_id": "hnac-host:desktop",
+        "protocol_version": "0.1.0",
+        "depends_on": [
+          "step:2"
+        ],
+        "execution_phase": "post-commit",
+        "reversible": false,
+        "risk": {
+          "level": "medium",
+          "reasons": [
+            "external-side-effect"
+          ]
+        },
+        "cost": {
+          "cpu_millis": 1,
+          "memory_mb": 1,
+          "network_kb": 1,
+          "monetary_microunits": 0
+        },
+        "required_scopes": [
+          "host.notify"
+        ],
+        "host_requirements": [
+          "host.notification"
+        ],
+        "evidence": {
+          "produces": [
+            "notification.receipt"
+          ],
+          "requires": [
+            "rfe.commit-receipt"
+          ]
+        },
+        "descriptor_root": "078e0a0043cfa3e8f4d347fabb27f5610856ca11370c1e5c32c1cbda43f077ad",
+        "transport": {
+          "kind": "hnac",
+          "capsule_id": "icar-native-v0.5",
+          "entrypoint": "notify"
+        }
+      }
+    ],
+    "total_cost": {
+      "cpu_millis": 6,
+      "memory_mb": 5,
+      "network_kb": 1,
+      "monetary_microunits": 0
+    },
+    "required_scopes": [
+      "artifact.read",
+      "artifact.write",
+      "host.notify"
+    ],
+    "warnings": [
+      "contains-irreversible-step"
+    ],
+    "plan_root": "917350ba16133dbf841150985ede36268689211596e9d80ec3853762e0e39586"
+  },
+  "negotiation_root": "79a2cfdd79297201d267fcb2e21e29b8b46722fec679386a9a59aed23fb95f92"
+}

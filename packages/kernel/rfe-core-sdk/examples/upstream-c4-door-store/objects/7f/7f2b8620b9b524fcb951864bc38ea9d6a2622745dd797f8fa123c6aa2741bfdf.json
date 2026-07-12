@@ -1,0 +1,15 @@
+{
+  "format": "rfe.content-object.v1",
+  "kind": "paged-index",
+  "value": {
+    "format": "rfe.paged-index.v1",
+    "pages": [
+      {
+        "firstKey": "91a59fc0ddfb61d312203272663d38b6380279653e922013a0f108aaa6e9623e",
+        "lastKey": "91a59fc0ddfb61d312203272663d38b6380279653e922013a0f108aaa6e9623e",
+        "ref": "e02bc514c69489ea178fb1902c8b5613a892bf0fe176d5671506bc5a98a8af0e"
+      }
+    ]
+  },
+  "integrityHash": "7f2b8620b9b524fcb951864bc38ea9d6a2622745dd797f8fa123c6aa2741bfdf"
+}

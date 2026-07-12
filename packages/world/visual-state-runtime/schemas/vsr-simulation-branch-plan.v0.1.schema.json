@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/vsr-simulation-branch-plan.v0.1.schema.json",
+  "title": "VSR Simulation Branch Plan v0.1",
+  "type": "object",
+  "required": ["format","branchId","label","createdBy","logicalTime","baseRealityRoot","steps","commands"],
+  "properties": {
+    "format": {"const":"vsr.simulation-branch-plan.v0.1"},
+    "branchId": {"type":"string","minLength":1},
+    "label": {"type":"string","minLength":1},
+    "createdBy": {"type":"string","minLength":1},
+    "logicalTime": {"type":"number","minimum":0},
+    "baseRealityRoot": {"type":"string","pattern":"^[a-fA-F0-9]{64}$"},
+    "steps": {"type":"integer","minimum":0},
+    "commands": {"type":"array","items":{"type":"object","required":["id","tick","type","bodyId"],"properties":{"id":{"type":"string"},"tick":{"type":"integer","minimum":0},"type":{"enum":["apply-impulse","set-velocity","teleport","wake"]},"bodyId":{"type":"string"}},"additionalProperties":true}},
+    "tags": {"type":"array","items":{"type":"string"},"uniqueItems":true},
+    "metadata": {"type":"object"}
+  },
+  "additionalProperties": false
+}

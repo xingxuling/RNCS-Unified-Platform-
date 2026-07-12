@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.example/schemas/vsr-visual-reality-plan.v0.2.schema.json",
+  "title": "VSR Visual Reality Plan v0.2",
+  "type": "object",
+  "required": [
+    "format",
+    "compilerVersion",
+    "sourceDisplayHash",
+    "observer",
+    "device",
+    "budget",
+    "viewport",
+    "materials",
+    "materialAssignments",
+    "lights",
+    "visibility",
+    "batches",
+    "lightTiles",
+    "passes",
+    "shaderModules",
+    "resources",
+    "stats",
+    "semanticInvariant",
+    "planRoot",
+    "evidenceRoot"
+  ],
+  "properties": {
+    "format": {
+      "const": "vsr.visual-reality-plan.v0.2"
+    },
+    "compilerVersion": {
+      "type": "string"
+    },
+    "sourceDisplayHash": {
+      "type": "string"
+    },
+    "observer": {
+      "type": "object",
+      "required": [
+        "id",
+        "purpose"
+      ]
+    },
+    "device": {
+      "type": "object",
+      "required": [
+        "class",
+        "gpuTier"
+      ]
+    },
+    "budget": {
+      "type": "object",
+      "required": [
+        "quality",
+        "renderScale",
+        "maxLights",
+        "maxShadowLights",
+        "particleBudget",
+        "bloom",
+        "bloomRadius",
+        "lightTileSize",
+        "occlusionCulling",
+        "lodMinPixels"
+      ]
+    },
+    "viewport": {
+      "type": "object",
+      "required": [
+        "width",
+        "height",
+        "renderWidth",
+        "renderHeight",
+        "dpr"
+      ]
+    },
+    "materials": {
+      "type": "array"
+    },
+    "materialAssignments": {
+      "type": "object"
+    },
+    "lights": {
+      "type": "array"
+    },
+    "visibility": {
+      "type": "array"
+    },
+    "batches": {
+      "type": "array"
+    },
+    "lightTiles": {
+      "type": "array"
+    },
+    "passes": {
+      "type": "array"
+    },
+    "stats": {
+      "type": "object"
+    },
+    "semanticInvariant": {
+      "type": "object",
+      "required": [
+        "preservedItemIds",
+        "degradedDecorativeItemIds",
+        "sourceRealityHash"
+      ]
+    },
+    "planRoot": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "evidenceRoot": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "shaderModules": {
+      "type": "array"
+    },
+    "resources": {
+      "type": "array"
+    }
+  },
+  "additionalProperties": true
+}

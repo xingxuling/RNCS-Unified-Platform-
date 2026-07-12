@@ -1,0 +1,6 @@
+{
+  "type": "dml.goal.pause",
+  "project_ref": {"project_id": "project:vsr", "generation": 0},
+  "goal_ref": "goal:replace-after-demo",
+  "payload": {"goal_id": "goal:replace-after-demo"}
+}

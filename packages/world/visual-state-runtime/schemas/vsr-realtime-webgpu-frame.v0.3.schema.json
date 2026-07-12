@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/vsr-realtime-webgpu-frame.v0.3.schema.json",
+  "title": "VSR Realtime WebGPU Frame Plan v0.3",
+  "type": "object",
+  "required": ["format", "version", "sourceDisplayHash", "visualPlanRoot", "viewport", "stats", "resourceRoot", "commandRoot", "framePlanRoot"],
+  "properties": {
+    "format": {"const": "vsr.realtime-webgpu-frame.v0.3"},
+    "version": {"type": "string"},
+    "sourceDisplayHash": {"type": "string"},
+    "visualPlanRoot": {"type": "string"},
+    "visualEvidenceRoot": {"type": "string"},
+    "viewport": {"type": "object", "required": ["width", "height", "renderWidth", "renderHeight", "dpr"]},
+    "quality": {"type": "string"},
+    "stats": {"type": "object"},
+    "resourceRoot": {"type": "string"},
+    "commandRoot": {"type": "string"},
+    "framePlanRoot": {"type": "string"}
+  },
+  "additionalProperties": true
+}

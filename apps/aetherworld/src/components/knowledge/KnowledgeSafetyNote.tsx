@@ -1,0 +1,17 @@
+import { KNOWLEDGE_SAFETY_NOTE } from "@/constants/knowledge/knowledgeSafetyRules";
+
+export function KnowledgeSafetyNote({ extra }: { extra?: string[] }) {
+  return (
+    <div className="rounded-md border border-amber-500/30 bg-amber-500/5 p-3 text-xs space-y-1.5">
+      <div className="font-medium text-amber-500">知识安全说明</div>
+      {extra && extra.length > 0 && (
+        <ul className="list-disc list-inside text-muted-foreground space-y-1">
+          {extra.map((n, i) => <li key={i}>{n}</li>)}
+        </ul>
+      )}
+      <div className="pt-1.5 border-t border-amber-500/20 text-[10px] text-muted-foreground leading-relaxed">
+        {KNOWLEDGE_SAFETY_NOTE}
+      </div>
+    </div>
+  );
+}

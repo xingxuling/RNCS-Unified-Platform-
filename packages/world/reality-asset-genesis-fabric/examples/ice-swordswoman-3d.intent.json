@@ -1,0 +1,21 @@
+{
+  "description": "创建一名冰属性三维女剑士，名字叫霜璃，属于北境守望者。动作敏捷，蓝白战斗服，攻击前有清晰预警。",
+  "subject_id": "subject:taowind-owner",
+  "asset_kind": "character-3d",
+  "functional_role": "player-character",
+  "target_platforms": ["desktop", "mobile", "web", "xr"],
+  "constraints": {
+    "palette": ["#1c4fa3", "#f2f6ff", "#9ddcff", "#17305a"],
+    "style": "stylized-readable-pbr",
+    "max_texture_size": 512,
+    "max_sprite_frames": 6,
+    "audio_seconds": 0.8,
+    "max_particles": 96,
+    "max_triangles": 2400,
+    "pbr_texture_size": 256,
+    "max_bones": 64,
+    "animation_fps": 30,
+    "lod_ratios": [1, 0.55, 0.25],
+    "license_policy": "generated-or-cleared"
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "format_version": "0.2",
+  "app": {
+    "id": "org.taowind.hnac.hello-wasm",
+    "name": "HNAC Wasm Hello",
+    "version": "0.2.0",
+    "description": "A real Core Wasm vertical slice using host-neutral capability leases."
+  },
+  "execution": {
+    "primary": {
+      "profile": "wasm-core@1",
+      "entry": "components/main.wasm",
+      "abi": "hnaf-core-abi@0.2"
+    },
+    "alternatives": [
+      {
+        "profile": "declarative-v0",
+        "entry": "components/fallback.hnc.json"
+      }
+    ],
+    "limits": {
+      "fuel": 2000000,
+      "memory_bytes": 16777216,
+      "operations": 1000
+    }
+  },
+  "capabilities": [
+    {
+      "id": "host.log",
+      "version": "1",
+      "required": true,
+      "scope": "session",
+      "reason": "Display application output"
+    },
+    {
+      "id": "host.clock",
+      "version": "1",
+      "required": true,
+      "scope": "session",
+      "reason": "Obtain a host-neutral UTC timestamp"
+    },
+    {
+      "id": "environment.summary",
+      "version": "1",
+      "required": false,
+      "scope": "session",
+      "reason": "Demonstrate host translation",
+      "fallback": "omit-environment"
+    },
+    {
+      "id": "storage.kv",
+      "version": "1",
+      "required": false,
+      "scope": "app",
+      "reason": "Persist launch state",
+      "fallback": "memory-only"
+    },
+    {
+      "id": "device.neural-input",
+      "version": "0",
+      "required": false,
+      "scope": "session",
+      "reason": "Reserved future interaction surface",
+      "fallback": "standard-input"
+    }
+  ],
+  "interface": {
+    "graph": "ui/main.aip.json",
+    "modes": ["cli", "window", "touch", "voice", "neural-intent"]
+  },
+  "state": {
+    "schema": "state/schema.json",
+    "partitions": ["portable", "device-private", "cache"]
+  },
+  "distribution": {
+    "projections": ["windows-msix", "macos-app", "android-aab", "ios-ipa", "pwa"]
+  },
+  "security": {
+    "sandbox": "deny-by-default",
+    "signature": "ed25519",
+    "supply_chain": "content-indexed"
+  },
+  "compatibility": {
+    "min_runtime": "0.2.0",
+    "host_families": ["desktop", "mobile", "web", "spatial"]
+  },
+  "extensions": {}
+}

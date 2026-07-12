@@ -1,0 +1,21 @@
+import test from 'node:test';import assert from 'node:assert/strict';import path from 'node:path';import fs from 'node:fs';import os from 'node:os';import {fileURLToPath} from 'node:url';
+import {readJson,resolveAssetFile,bakeAssets,assetRuntimeMap,verifySeal} from '../src/index.mjs';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),projectFile=path.join(root,'examples','冰境试炼.unified-project.json'),project=readJson(projectFile),player=project.assets.registry[project.assets.order[0]];
+function temp(){return fs.mkdtempSync(path.join(os.tmpdir(),'ragf-assets-'));}
+test('可解析角色预览',()=>assert.equal(resolveAssetFile(projectFile,player,{role:'preview',path:player.preview_url}).found,true));
+test('可解析角色音效',()=>assert.equal(resolveAssetFile(projectFile,player,player.files.find(x=>x.role==='sfx-wav')).found,true));
+test('可解析角色精灵图',()=>assert.equal(resolveAssetFile(projectFile,player,player.files.find(x=>x.role==='sprite-sheet')).found,true));
+test('可解析内建守卫',()=>{const r=project.assets.registry['asset:frost-guard'];assert.equal(resolveAssetFile(projectFile,r,r.files[0]).found,true)});
+test('错误路径返回尝试列表',()=>{const r=resolveAssetFile(projectFile,player,{role:'x',path:'missing.bin'});assert.equal(r.found,false);assert.ok(r.attempts.length>0)});
+test('资产烘焙完成',()=>{const m=bakeAssets({project,projectFile,outDir:temp(),embed:true});assert.equal(m.errors.length,0)});
+test('资产清单可验证',()=>{const m=bakeAssets({project,projectFile,outDir:temp(),embed:true});assert.ok(verifySeal(m,'manifest_root'))});
+test('资产清单包含四项',()=>{const m=bakeAssets({project,projectFile,outDir:temp(),embed:true});assert.equal(Object.keys(m.records).length,4)});
+test('精灵图优先成为主视觉',()=>{const m=bakeAssets({project,projectFile,outDir:temp(),embed:true});assert.equal(m.records[player.asset_id].primary_visual.role,'sprite-sheet')});
+test('嵌入 URI 是 data URL',()=>{const m=bakeAssets({project,projectFile,outDir:temp(),embed:true});assert.match(m.records[player.asset_id].primary_visual.uri,/^data:image\//)});
+test('不嵌入时 URI 为空',()=>{const m=bakeAssets({project,projectFile,outDir:temp(),embed:false});assert.equal(m.records[player.asset_id].primary_visual.uri,null)});
+test('内容寻址文件名包含哈希',()=>{const m=bakeAssets({project,projectFile,outDir:temp(),embed:false});const p=m.records[player.asset_id].primary_visual.path;assert.ok(p.includes(m.records[player.asset_id].primary_visual.sha256))});
+test('重复预览和概念图发生去重',()=>{const m=bakeAssets({project,projectFile,outDir:temp(),embed:false});const files=m.records[player.asset_id].files.filter(x=>x.sha256===m.records[player.asset_id].files.find(y=>y.role==='concept-svg').sha256);assert.ok(files.length>=2);assert.equal(new Set(files.map(x=>x.store_path)).size,1)});
+test('运行时资产映射包含四项',()=>{const m=bakeAssets({project,projectFile,outDir:temp(),embed:true});assert.equal(Object.keys(assetRuntimeMap(m,{embedded:true})).length,4)});
+test('运行时映射保留资产名',()=>{const m=bakeAssets({project,projectFile,outDir:temp(),embed:true});assert.equal(assetRuntimeMap(m,{embedded:true})[player.asset_id].name,'霜璃')});
+test('缺失视觉可生成回退',()=>{const p=structuredClone(project);const a=p.assets.registry['asset:frost-key'];a.files=[];a.preview_url=null;const d=temp(),m=bakeAssets({project:p,projectFile,outDir:d,embed:true,missingPolicy:'fallback'});assert.equal(m.records['asset:frost-key'].primary_visual.role,'fallback')});
+test('缺失视觉严格模式失败',()=>{const p=structuredClone(project);const a=p.assets.registry['asset:frost-key'];a.files=[];a.preview_url=null;assert.throws(()=>bakeAssets({project:p,projectFile,outDir:temp(),embed:true,missingPolicy:'error'}),/ASSET_BAKE_FAILED/)});

@@ -1,0 +1,39 @@
+{
+  "format_version": "0.6",
+  "app": {
+    "id": "org.taowind.hnac.adaptive-interface-demo",
+    "name": "HNAF 自适应界面演示",
+    "version": "0.6.0",
+    "description": "同一胶囊按桌面、平板、手机、无障碍与空间宿主生成不同语义投影"
+  },
+  "execution": {
+    "primary": {"profile": "declarative-v0", "entry": "components/main.hnc.json"},
+    "limits": {"operations": 100}
+  },
+  "capabilities": [
+    {"id": "host.log", "version": "1", "required": true, "scope": "session", "reason": "显示执行轨迹"},
+    {"id": "storage.state", "version": "1", "required": true, "scope": "app", "reason": "保持跨宿主连续状态"}
+  ],
+  "interface": {
+    "version": "0.6",
+    "graph": "ui/main.aip.json",
+    "default_projection": "auto",
+    "intent_policy": {"require_confirmation_at_or_above": "high", "deny_unknown_intents": true}
+  },
+  "state": {
+    "schema_version": "2",
+    "autosnapshot": true,
+    "migration_graph": "state/migrations.json",
+    "partitions": {
+      "portable": {"persistence": "durable", "portability": "exportable", "encrypted": false},
+      "device_private": {"persistence": "durable", "portability": "local-only", "encrypted": false},
+      "secret": {"persistence": "durable", "portability": "encrypted-export", "encrypted": true},
+      "cache": {"persistence": "rebuildable", "portability": "optional-export", "encrypted": false},
+      "ephemeral": {"persistence": "memory", "portability": "never-export", "encrypted": false}
+    }
+  },
+  "distribution": {"projections": ["pwa", "desktop", "mobile", "accessibility", "spatial"]},
+  "security": {"sandbox": "deny-by-default", "signature": "optional"},
+  "compatibility": {"min_runtime": "0.6.0"},
+  "extensions": {}
+}

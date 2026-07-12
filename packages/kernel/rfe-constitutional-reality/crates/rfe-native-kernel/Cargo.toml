@@ -1,0 +1,12 @@
+[package]
+name = "rfe-native-kernel"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Native semantic kernel for RFE C0-C4 conformance"
+
+[dependencies]
+rfe-canonical = { path = "../rfe-canonical" }
+
+[lints]
+workspace = true

@@ -1,0 +1,29 @@
+{
+  "format": "dml.local-host-policy.v0.3",
+  "allowed_actions": [
+    "dml.goal.create",
+    "dml.goal.pause",
+    "dml.goal.resume",
+    "dml.goal.inspect",
+    "dml.learning.start",
+    "dml.learning.inspect",
+    "dml.skill.inspect",
+    "dml.project.inspect",
+    "dml.result.preview",
+    "dml.result.approve",
+    "dml.result.reject",
+    "dml.result.alternate",
+    "dml.system.pause",
+    "dml.system.resume",
+    "dml.message.send",
+    "dml.project.select"
+  ],
+  "max_risk": "high",
+  "require_reversible_above": "medium",
+  "strip_remote_identity": true,
+  "allow_unmapped_project_inspection": false,
+  "project_roots": {
+    "project:vsr": "C:/Your/Projects/VSR",
+    "project:reality-studio": "C:/Your/Projects/RealityStudio"
+  }
+}

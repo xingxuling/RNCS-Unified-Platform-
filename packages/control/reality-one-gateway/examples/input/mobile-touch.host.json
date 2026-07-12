@@ -1,0 +1,57 @@
+{
+  "host_profile_version": "0.1",
+  "identity": {
+    "id": "host:mobile:touch",
+    "runtime": "browser",
+    "platform": "android",
+    "form_factor": "mobile"
+  },
+  "capabilities": [
+    {
+      "id": "runtime.javascript",
+      "version": "1.0"
+    },
+    {
+      "id": "display.visual",
+      "version": "1.0",
+      "properties": {
+        "color": true,
+        "width_px": 412
+      }
+    },
+    {
+      "id": "display.text",
+      "version": "1.0"
+    },
+    {
+      "id": "input.activate",
+      "version": "1.0"
+    },
+    {
+      "id": "input.touch",
+      "version": "1.0"
+    },
+    {
+      "id": "input.text",
+      "version": "1.0"
+    },
+    {
+      "id": "storage.persistent",
+      "version": "1.0"
+    },
+    {
+      "id": "host.notification",
+      "version": "1.0",
+      "properties": {
+        "delivery": "simulated"
+      }
+    }
+  ],
+  "adapters": [],
+  "budgets": {
+    "memory_mb": 96,
+    "cpu_ms": 6,
+    "network_kb": 256,
+    "storage_mb": 64
+  }
+}

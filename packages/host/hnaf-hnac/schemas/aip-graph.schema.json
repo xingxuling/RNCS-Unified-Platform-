@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hnaf.org/schemas/aip-graph-0.1.schema.json",
+  "title": "Adaptive Interface Projection Graph v0.1",
+  "type": "object",
+  "required": ["version", "root", "nodes", "actions"],
+  "properties": {
+    "version": {"const": "0.1"},
+    "root": {"type": "string"},
+    "nodes": {"type": "array", "items": {"type": "object"}},
+    "actions": {"type": "array", "items": {"type": "object"}},
+    "constraints": {"type": "array", "items": {"type": "object"}},
+    "projections": {"type": "object"}
+  },
+  "additionalProperties": true
+}

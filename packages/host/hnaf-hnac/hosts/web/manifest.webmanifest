@@ -1,0 +1,11 @@
+{
+  "name": "HNAC Web Host",
+  "short_name": "HNAC Host",
+  "description": "Installable host-neutral application capsule runtime",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#111827",
+  "theme_color": "#111827",
+  "icons": []
+}

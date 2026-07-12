@@ -1,0 +1,47 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": [
+      "ES2020",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "strict": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noImplicitAny": false,
+    "noFallthroughCasesInSwitch": false,
+    "baseUrl": ".",
+    "paths": {
+      "@/lib/ial": [
+        "../../packages/intelligence/ial-compiler/src/index.ts"
+      ],
+      "@/lib/ial/*": [
+        "../../packages/intelligence/ial-compiler/src/*"
+      ],
+      "@/lib/ose": [
+        "../../packages/intelligence/ose-reasoner/src/index.ts"
+      ],
+      "@/lib/ose/*": [
+        "../../packages/intelligence/ose-reasoner/src/*"
+      ],
+      "@/*": [
+        "./src/*"
+      ]
+    }
+  },
+  "include": [
+    "src",
+    "../../packages/intelligence/ial-compiler/src",
+    "../../packages/intelligence/ose-reasoner/src"
+  ]
+}

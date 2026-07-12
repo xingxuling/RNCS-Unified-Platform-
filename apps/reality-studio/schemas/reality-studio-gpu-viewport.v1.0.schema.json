@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/reality-studio-gpu-viewport.v1.0.schema.json",
+  "title": "Reality Studio GPU Viewport Manifest v1.0",
+  "type": "object",
+  "required": ["format", "version", "project_root", "entry_scene_id", "preferred_backend", "fallback_backend", "vsr_requirement", "frame_summary", "capabilities", "manifest_root"],
+  "properties": {
+    "format": {"const": "reality-studio.gpu-viewport-manifest.v1.0"},
+    "version": {"const": "1.0.0-alpha.1"},
+    "project_root": {"type": "string", "minLength": 32},
+    "entry_scene_id": {"type": "string", "minLength": 1},
+    "preferred_backend": {"const": "webgpu"},
+    "fallback_backend": {"const": "canvas2d"},
+    "vsr_requirement": {"type": "string"},
+    "frame_summary": {
+      "type": "object",
+      "required": ["frame_plan_root", "resource_root", "command_root", "visual_plan_root", "visual_evidence_root", "stats"]
+    },
+    "capabilities": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "manifest_root": {"type": "string", "minLength": 32}
+  },
+  "additionalProperties": true
+}

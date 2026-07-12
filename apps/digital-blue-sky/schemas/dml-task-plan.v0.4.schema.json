@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.tech/schemas/dml-task-plan.v0.4.schema.json",
+  "title": "DML Task Plan v0.4",
+  "type": "object",
+  "required": [
+    "format",
+    "plan_id",
+    "task_id",
+    "operations",
+    "plan_root"
+  ],
+  "properties": {
+    "format": {
+      "const": "dml.task-plan.v0.4"
+    },
+    "plan_id": {
+      "type": "string"
+    },
+    "task_id": {
+      "type": "string"
+    },
+    "operations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "operation_id",
+          "sequence",
+          "type",
+          "status"
+        ],
+        "properties": {
+          "operation_id": {
+            "type": "string"
+          },
+          "sequence": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "type": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "waiting",
+              "running",
+              "completed",
+              "failed",
+              "waiting_approval"
+            ]
+          }
+        }
+      }
+    },
+    "plan_root": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64
+    }
+  }
+}

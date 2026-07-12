@@ -1,0 +1,8 @@
+{
+  "profile": "declarative-v0",
+  "operations": [
+    {"op": "set", "name": "message", "value": "{{app.name}} v{{app.version}} 已加载能力绑定织构"},
+    {"op": "capability_call", "capability": "host.log", "method": "write", "args": {"message": "{{message}}"}},
+    {"op": "capability_call", "capability": "storage.state", "method": "get", "args": {"partition": "portable", "key": "run_count", "default": 0}, "save_as": "run_count"}
+  ]
+}

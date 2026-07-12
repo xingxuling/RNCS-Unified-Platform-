@@ -1,0 +1,161 @@
+{
+  "format": "rsr.experience-snapshot.v0.4",
+  "runtimeVersion": "0.4.0-alpha.1",
+  "experienceId": "aether-blade-showcase",
+  "tick": 0,
+  "configHash": "fnv1a64:262dff1708dbc1e6",
+  "parameters": {
+    "hero:aimX": 140,
+    "hero:aimY": -20,
+    "hero:attack": false,
+    "hero:hurt": false,
+    "hero:ikWeight": 0
+  },
+  "layerStates": [
+    {
+      "animatorId": "hero",
+      "layerId": "aura",
+      "currentState": "aura",
+      "localTickQ": 0,
+      "previousLocalTick": 0
+    },
+    {
+      "animatorId": "hero",
+      "layerId": "base",
+      "currentState": "idle",
+      "localTickQ": 0,
+      "previousLocalTick": 0
+    }
+  ],
+  "properties": {},
+  "skeletonPoses": [
+    {
+      "skeletonId": "hero-rig",
+      "bones": [
+        {
+          "id": "torso",
+          "localPosition": {
+            "x": 0,
+            "y": -34
+          },
+          "localRotation": -250000,
+          "localScale": {
+            "x": 1000000,
+            "y": 1000000
+          },
+          "worldPosition": {
+            "x": 0,
+            "y": -34
+          },
+          "worldRotation": -250000,
+          "worldScale": {
+            "x": 1000000,
+            "y": 1000000
+          },
+          "endpoint": {
+            "x": 0,
+            "y": -86
+          }
+        },
+        {
+          "id": "upper-arm",
+          "localPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "localRotation": -80000,
+          "localScale": {
+            "x": 1000000,
+            "y": 1000000
+          },
+          "worldPosition": {
+            "x": 0,
+            "y": -86
+          },
+          "worldRotation": -330000,
+          "worldScale": {
+            "x": 1000000,
+            "y": 1000000
+          },
+          "endpoint": {
+            "x": -39,
+            "y": -156
+          }
+        },
+        {
+          "id": "forearm",
+          "localPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "localRotation": 70000,
+          "localScale": {
+            "x": 1000000,
+            "y": 1000000
+          },
+          "worldPosition": {
+            "x": -39,
+            "y": -156
+          },
+          "worldRotation": -260000,
+          "worldScale": {
+            "x": 1000000,
+            "y": 1000000
+          },
+          "endpoint": {
+            "x": -46,
+            "y": -268
+          }
+        },
+        {
+          "id": "sword",
+          "localPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "localRotation": 0,
+          "localScale": {
+            "x": 1000000,
+            "y": 1000000
+          },
+          "worldPosition": {
+            "x": -46,
+            "y": -268
+          },
+          "worldRotation": -260000,
+          "worldScale": {
+            "x": 1000000,
+            "y": 1000000
+          },
+          "endpoint": {
+            "x": -46,
+            "y": -268
+          }
+        }
+      ],
+      "poseRoot": "fnv1a64:1a7123dfc4fb65f9"
+    }
+  ],
+  "effectInstances": [],
+  "particles": [],
+  "screenSignals": [],
+  "audioEvents": [],
+  "events": [],
+  "diagnostics": {
+    "animationTracksSampled": 0,
+    "transitionsStarted": 0,
+    "markersEmitted": 0,
+    "activeEffectInstances": 0,
+    "activeParticles": 0,
+    "particlesSpawned": 0,
+    "particlesKilled": 0,
+    "audioCueEvents": 0,
+    "screenSignals": 0
+  },
+  "animationRoot": "fnv1a64:4ed5f4463c138dcc",
+  "skeletonRoot": "fnv1a64:9699e8579329b178",
+  "audioPlanRoot": "fnv1a64:09612b07b5ecb5a5",
+  "effectRoot": "fnv1a64:72a524fa19fb2ee3",
+  "eventRoot": "fnv1a64:09612b07b5ecb5a5",
+  "stateRoot": "fnv1a64:9cab27e3af6d648e"
+}

@@ -1,0 +1,33 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background: Deep Blue -->
+  <rect width="512" height="512" fill="#0f172a" rx="80"/>
+  
+  <!-- Main Symbol: Seed Circle with Diagonal -->
+  <g transform="translate(256, 256)">
+    <!-- Outer Circle -->
+    <circle cx="0" cy="0" r="140" fill="none" stroke="#0ea5e9" stroke-width="16" opacity="0.9"/>
+    
+    <!-- Inner Circle -->
+    <circle cx="0" cy="0" r="100" fill="none" stroke="#0ea5e9" stroke-width="12" opacity="0.7"/>
+    
+    <!-- Diagonal Line (Empty Set Symbol) -->
+    <line x1="-100" y1="-100" x2="100" y2="100" stroke="#0ea5e9" stroke-width="20" stroke-linecap="round" opacity="0.95"/>
+    
+    <!-- Center Dot (Seed Core) -->
+    <circle cx="0" cy="0" r="12" fill="#0ea5e9" opacity="1"/>
+    
+    <!-- Orbital Particles (Cosmic Energy) -->
+    <circle cx="0" cy="-160" r="4" fill="#0ea5e9" opacity="0.8"/>
+    <circle cx="113" cy="113" r="3" fill="#0ea5e9" opacity="0.7"/>
+    <circle cx="-113" cy="113" r="3" fill="#0ea5e9" opacity="0.7"/>
+    <circle cx="113" cy="-113" r="3" fill="#0ea5e9" opacity="0.7"/>
+    <circle cx="-113" cy="-113" r="3" fill="#0ea5e9" opacity="0.7"/>
+  </g>
+  
+  <!-- Text: THE SEED ENGINE (Optional, for larger sizes) -->
+  <g transform="translate(256, 420)" opacity="0.9">
+    <text x="0" y="0" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#0ea5e9" text-anchor="middle" letter-spacing="2">THE SEED</text>
+    <text x="0" y="36" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#0ea5e9" text-anchor="middle" letter-spacing="2">ENGINE</text>
+  </g>
+</svg>
+

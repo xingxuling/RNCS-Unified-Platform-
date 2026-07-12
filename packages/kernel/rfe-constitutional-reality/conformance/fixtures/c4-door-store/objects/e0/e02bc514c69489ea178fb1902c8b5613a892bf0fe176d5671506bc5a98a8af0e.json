@@ -1,0 +1,17 @@
+{
+  "format": "rfe.content-object.v1",
+  "kind": "paged-index-page",
+  "value": {
+    "format": "rfe.paged-index-page.v1",
+    "entries": [
+      [
+        "91a59fc0ddfb61d312203272663d38b6380279653e922013a0f108aaa6e9623e",
+        {
+          "objectRef": "a02e4a3420006748f78a02bfbeeadd3ab624b5d5bdc365d9a8e56df0b83056fd",
+          "kind": "fact-base"
+        }
+      ]
+    ]
+  },
+  "integrityHash": "e02bc514c69489ea178fb1902c8b5613a892bf0fe176d5671506bc5a98a8af0e"
+}

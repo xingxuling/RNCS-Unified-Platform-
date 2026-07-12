@@ -1,0 +1,9 @@
+{
+  "specVersion":"0.1","runtimeTarget":"vsr@0.1.0-alpha.12",
+  "metadata":{"id":"gpu-clip-shadow-blend","title":"GPU Clip Shadow Blend","duration":2,"defaultFps":60,"seed":11},
+  "canvas":{"width":320,"height":180,"background":{"type":"solid","color":"#07111f"}},
+  "nodes":[
+    {"id":"clip-group","type":"group","layout":{"x":30,"y":30,"width":180,"height":100},"content":{"clip":true}},
+    {"id":"glow-card","parentId":"clip-group","type":"rect","layout":{"x":-20,"y":10,"width":220,"height":70},"appearance":{"fill":{"type":"solid","color":"#38bdf8aa"},"blendMode":"lighter","shadow":{"color":"#00000088","blur":0,"offsetX":6,"offsetY":8}},"content":{"cornerRadius":14}}
+  ]
+}

@@ -1,0 +1,36 @@
+export const SYSTEM_LAYER_TYPES = [
+  "FUNCTION_LAYER",
+  "OBJECT_LAYER",
+  "WORKFLOW_LAYER",
+  "RUNTIME_LAYER",
+  "GOVERNANCE_LAYER",
+  "KNOWLEDGE_LAYER",
+  "DOCUMENTATION_LAYER",
+  "UI_LAYER",
+  "QA_LAYER",
+  "LIFECYCLE_LAYER",
+  "DATA_LAYER",
+  "COMMERCIAL_LAYER",
+  "EXPORT_LAYER",
+  "PERSONALIZATION_LAYER",
+  "SAFETY_LAYER",
+] as const;
+export type SystemLayerType = (typeof SYSTEM_LAYER_TYPES)[number];
+
+export const SYSTEM_LAYER_LABELS: Record<SystemLayerType, string> = {
+  FUNCTION_LAYER: "功能层",
+  OBJECT_LAYER: "对象层",
+  WORKFLOW_LAYER: "工作流层",
+  RUNTIME_LAYER: "运行层",
+  GOVERNANCE_LAYER: "治理层",
+  KNOWLEDGE_LAYER: "知识层",
+  DOCUMENTATION_LAYER: "文档教学层",
+  UI_LAYER: "界面入口层",
+  QA_LAYER: "质量审计层",
+  LIFECYCLE_LAYER: "生命周期层",
+  DATA_LAYER: "数据校准层",
+  COMMERCIAL_LAYER: "商业展示层",
+  EXPORT_LAYER: "导出层",
+  PERSONALIZATION_LAYER: "个性化层",
+  SAFETY_LAYER: "安全边界层",
+};

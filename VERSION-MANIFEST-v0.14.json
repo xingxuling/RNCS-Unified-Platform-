@@ -1,0 +1,34 @@
+{
+  "format": "rncs.aetherworld.version-manifest.v0.14",
+  "suite_version": "0.14.0-alpha.1",
+  "base_version": "0.13.0-alpha.1",
+  "release_name": "TaoWind Founder Engineering Execution Plane",
+  "mcp_version": "0.3.0-alpha.1",
+  "gateway_version": "0.4.0-alpha.1",
+  "execution_runtime_version": "0.1.0-alpha.1",
+  "runtime_count": 15,
+  "tool_count_default": 48,
+  "tool_count_breakglass": 49,
+  "changes": [
+    "Developer Execution Runtime as the fifteenth runtime",
+    "project-confined workspace read/write/patch/remove",
+    "argv command execution and optional break-glass shell",
+    "Git branch/diff/commit/push",
+    "GitHub pull request and workflow dispatch adapters",
+    "Vercel deployment adapter",
+    "Node/Python/Gradle/Android build profiles",
+    "real RSR simulation and VSR rendering",
+    "full engineering workflow with rollback and authority receipt",
+    "persistent remote execution worker for Vercel control-plane deployments",
+    "filtered artifact export with expiring download URLs"
+  ],
+  "generated_at": "2026-07-04T00:00:00Z",
+  "verification": {
+    "developer_execution": "13/13 PASS",
+    "gateway": "13/13 PASS",
+    "mcp": "24/24 PASS",
+    "root_integration": "19/19 PASS",
+    "runtime_health": "15/15 healthy",
+    "npm_audit": "0 vulnerabilities"
+  }
+}

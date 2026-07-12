@@ -1,0 +1,1239 @@
+{
+  "format": "rcl.reality-program.v0.3",
+  "languageVersion": "0.3.0-alpha.1",
+  "foundation": {
+    "format": "rcl.reality-foundation.v0.3",
+    "domains": [
+      {
+        "id": "meta-computational",
+        "keyword": "meta",
+        "question": "How can computation inspect, validate and transform computation itself?"
+      },
+      {
+        "id": "computational",
+        "keyword": "reckon/host",
+        "question": "How are symbolic and machine states computed and executed?"
+      },
+      {
+        "id": "physical",
+        "keyword": "physical",
+        "question": "How do matter, energy, fields, space and time evolve?"
+      },
+      {
+        "id": "perceptual",
+        "keyword": "perception",
+        "question": "How does a world become observable and experienced by an observer?"
+      },
+      {
+        "id": "neural",
+        "keyword": "neural",
+        "question": "How do signals become memory, attention, learning, decisions and control?"
+      },
+      {
+        "id": "living",
+        "keyword": "living",
+        "question": "How does a living system maintain continuity, needs and autonomous action?"
+      },
+      {
+        "id": "genetic",
+        "keyword": "genetic",
+        "question": "How are structures encoded, expressed, inherited and changed across generations?"
+      },
+      {
+        "id": "quantitative",
+        "keyword": "quantitative",
+        "question": "What can be measured, on what scale, with what uncertainty, confidence and evidence?"
+      },
+      {
+        "id": "knowledge",
+        "keyword": "knowledge",
+        "question": "How do observations and prior structures become justified, revisable and actionable knowledge?"
+      }
+    ],
+    "crossDomainAxes": [
+      {
+        "id": "authority",
+        "primitives": [
+          "warrant",
+          "needs",
+          "preserve"
+        ],
+        "role": "opens bounded powers while constraining which changes can become authoritative reality"
+      },
+      {
+        "id": "causality-evidence",
+        "primitives": [
+          "cause",
+          "when",
+          "witness",
+          "evidence"
+        ],
+        "role": "connects change and knowledge to causes, conditions, provenance and reproducible evidence"
+      }
+    ],
+    "compositePlanes": [
+      {
+        "id": "inner-reality",
+        "composedFrom": [
+          "perceptual",
+          "neural",
+          "living",
+          "knowledge"
+        ],
+        "role": "the subject-relative model that contains percepts, needs, memories, claims, uncertainty and candidate intentions"
+      },
+      {
+        "id": "execution-reality",
+        "composedFrom": [
+          "computational",
+          "physical",
+          "authority",
+          "causality-evidence"
+        ],
+        "role": "the bounded transition plane that turns a justified intention into an observed, authorized and evidenced change"
+      }
+    ]
+  },
+  "name": "EightDomainWorld",
+  "facets": [
+    {
+      "kind": "FacetDecl",
+      "path": "phenotype.motion_bias",
+      "valueType": "Number",
+      "value": {
+        "kind": "LiteralExpr",
+        "value": 0,
+        "valueType": "Number"
+      },
+      "owner": null
+    },
+    {
+      "kind": "FacetDecl",
+      "path": "founder.awareness",
+      "valueType": "Number",
+      "value": {
+        "kind": "LiteralExpr",
+        "value": 0,
+        "valueType": "Number"
+      },
+      "owner": "founder"
+    },
+    {
+      "kind": "FacetDecl",
+      "path": "self_model.revision",
+      "valueType": "Number",
+      "value": {
+        "kind": "LiteralExpr",
+        "value": 0,
+        "valueType": "Number"
+      },
+      "owner": "self_model"
+    },
+    {
+      "kind": "FacetDecl",
+      "path": "world.stone.position",
+      "valueType": "Length",
+      "value": {
+        "kind": "CallExpr",
+        "name": "meters",
+        "args": [
+          {
+            "kind": "LiteralExpr",
+            "value": 10,
+            "valueType": "Number"
+          }
+        ]
+      },
+      "owner": "world.stone"
+    },
+    {
+      "kind": "FacetDecl",
+      "path": "world.stone.velocity",
+      "valueType": "Velocity",
+      "value": {
+        "kind": "CallExpr",
+        "name": "meters_per_second",
+        "args": [
+          {
+            "kind": "LiteralExpr",
+            "value": 0,
+            "valueType": "Number"
+          }
+        ]
+      },
+      "owner": "world.stone"
+    },
+    {
+      "kind": "FacetDecl",
+      "path": "world.gravity.acceleration",
+      "valueType": "Acceleration",
+      "value": {
+        "kind": "CallExpr",
+        "name": "meters_per_second2",
+        "args": [
+          {
+            "kind": "UnaryExpr",
+            "operator": "-",
+            "expression": {
+              "kind": "LiteralExpr",
+              "value": 9.81,
+              "valueType": "Number"
+            }
+          }
+        ]
+      },
+      "owner": "world.gravity"
+    },
+    {
+      "kind": "FacetDecl",
+      "path": "sight.altitude",
+      "valueType": "Length",
+      "value": {
+        "kind": "PathExpr",
+        "path": "world.stone.position"
+      },
+      "owner": "sight",
+      "derivedBy": "perception"
+    },
+    {
+      "kind": "FacetDecl",
+      "path": "brain.stimulus",
+      "valueType": "Number",
+      "value": {
+        "kind": "LiteralExpr",
+        "value": 0,
+        "valueType": "Number"
+      },
+      "owner": "brain"
+    },
+    {
+      "kind": "FacetDecl",
+      "path": "brain.response",
+      "valueType": "Number",
+      "value": {
+        "kind": "LiteralExpr",
+        "value": 0,
+        "valueType": "Number"
+      },
+      "owner": "brain"
+    },
+    {
+      "kind": "FacetDecl",
+      "path": "creature.energy",
+      "valueType": "Number",
+      "value": {
+        "kind": "LiteralExpr",
+        "value": 1,
+        "valueType": "Number"
+      },
+      "owner": "creature"
+    },
+    {
+      "kind": "FacetDecl",
+      "path": "creature.altitude",
+      "valueType": "Length",
+      "value": {
+        "kind": "PathExpr",
+        "path": "sight.altitude"
+      },
+      "owner": "creature",
+      "derivedBy": "sense"
+    },
+    {
+      "kind": "FacetDecl",
+      "path": "lineage.expressed_motion",
+      "valueType": "Number",
+      "value": {
+        "kind": "LiteralExpr",
+        "value": 0,
+        "valueType": "Number"
+      },
+      "owner": "lineage"
+    },
+    {
+      "kind": "GeneDecl",
+      "path": "lineage.motion_bias",
+      "valueType": "Number",
+      "value": {
+        "kind": "LiteralExpr",
+        "value": 0.2,
+        "valueType": "Number"
+      },
+      "owner": "lineage",
+      "genetic": true
+    },
+    {
+      "kind": "FacetDecl",
+      "path": "telemetry.altitude",
+      "valueType": "Measure<Length>",
+      "value": {
+        "kind": "PathExpr",
+        "path": "world.stone.position"
+      },
+      "owner": "telemetry",
+      "measure": {
+        "kind": "MeasureDecl",
+        "path": "telemetry.altitude",
+        "baseType": "Length",
+        "value": {
+          "kind": "PathExpr",
+          "path": "world.stone.position"
+        },
+        "uncertainty": {
+          "kind": "CallExpr",
+          "name": "meters",
+          "args": [
+            {
+              "kind": "LiteralExpr",
+              "value": 0.05,
+              "valueType": "Number"
+            }
+          ]
+        },
+        "confidence": {
+          "kind": "LiteralExpr",
+          "value": 0.98,
+          "valueType": "Number"
+        },
+        "unit": "m",
+        "scale": "ratio",
+        "evidence": [
+          "sensor:simulated-altimeter"
+        ],
+        "calibratedBy": "rcl:foundation-calibration"
+      }
+    },
+    {
+      "kind": "FacetDecl",
+      "path": "telemetry.safe_altitude",
+      "valueType": "Truth",
+      "value": {
+        "kind": "BinaryExpr",
+        "operator": ">=",
+        "left": {
+          "kind": "CallExpr",
+          "name": "lower",
+          "args": [
+            {
+              "kind": "PathExpr",
+              "path": "telemetry.altitude"
+            }
+          ]
+        },
+        "right": {
+          "kind": "CallExpr",
+          "name": "meters",
+          "args": [
+            {
+              "kind": "LiteralExpr",
+              "value": 0,
+              "valueType": "Number"
+            }
+          ]
+        }
+      },
+      "owner": "telemetry",
+      "derivedBy": "quantitative"
+    }
+  ],
+  "facetTypes": {
+    "phenotype.motion_bias": "Number",
+    "founder.awareness": "Number",
+    "self_model.revision": "Number",
+    "world.stone.position": "Length",
+    "world.stone.velocity": "Velocity",
+    "world.gravity.acceleration": "Acceleration",
+    "sight.altitude": "Length",
+    "brain.stimulus": "Number",
+    "brain.response": "Number",
+    "creature.energy": "Number",
+    "creature.altitude": "Length",
+    "lineage.expressed_motion": "Number",
+    "lineage.motion_bias": "Number",
+    "telemetry.altitude": "Measure<Length>",
+    "telemetry.safe_altitude": "Truth"
+  },
+  "subjects": [
+    "founder"
+  ],
+  "warrants": [
+    {
+      "kind": "WarrantDecl",
+      "subject": "founder",
+      "capability": "world.write",
+      "target": "world",
+      "condition": null
+    }
+  ],
+  "reckons": [
+    {
+      "kind": "ReckonDecl",
+      "name": "clamp",
+      "params": [
+        {
+          "name": "value",
+          "valueType": "Number"
+        },
+        {
+          "name": "low",
+          "valueType": "Number"
+        },
+        {
+          "name": "high",
+          "valueType": "Number"
+        }
+      ],
+      "returnType": "Number",
+      "expression": {
+        "kind": "CallExpr",
+        "name": "max",
+        "args": [
+          {
+            "kind": "PathExpr",
+            "path": "low"
+          },
+          {
+            "kind": "CallExpr",
+            "name": "min",
+            "args": [
+              {
+                "kind": "PathExpr",
+                "path": "high"
+              },
+              {
+                "kind": "PathExpr",
+                "path": "value"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "hosts": [
+    {
+      "kind": "HostDecl",
+      "name": "console",
+      "offers": [
+        {
+          "capability": "emit",
+          "returnType": "Text"
+        }
+      ]
+    }
+  ],
+  "metaDomains": [
+    {
+      "kind": "MetaDecl",
+      "name": "self_model",
+      "facets": [
+        {
+          "kind": "FacetDecl",
+          "path": "self_model.revision",
+          "valueType": "Number",
+          "value": {
+            "kind": "LiteralExpr",
+            "value": 0,
+            "valueType": "Number"
+          },
+          "owner": "self_model"
+        }
+      ],
+      "inspections": [
+        "program",
+        "foundation"
+      ],
+      "revisions": [
+        {
+          "target": "self_model.revision",
+          "expression": {
+            "kind": "BinaryExpr",
+            "operator": "+",
+            "left": {
+              "kind": "PathExpr",
+              "path": "self_model.revision"
+            },
+            "right": {
+              "kind": "LiteralExpr",
+              "value": 1,
+              "valueType": "Number"
+            }
+          }
+        }
+      ],
+      "preserves": [
+        {
+          "kind": "BinaryExpr",
+          "operator": ">=",
+          "left": {
+            "kind": "PathExpr",
+            "path": "self_model.revision"
+          },
+          "right": {
+            "kind": "LiteralExpr",
+            "value": 0,
+            "valueType": "Number"
+          }
+        }
+      ]
+    }
+  ],
+  "physicals": [
+    {
+      "kind": "PhysicalDecl",
+      "name": "world",
+      "facets": [],
+      "bodies": [
+        {
+          "kind": "PhysicalBodyDecl",
+          "name": "stone",
+          "path": "world.stone",
+          "facets": [
+            {
+              "kind": "FacetDecl",
+              "path": "world.stone.position",
+              "valueType": "Length",
+              "value": {
+                "kind": "CallExpr",
+                "name": "meters",
+                "args": [
+                  {
+                    "kind": "LiteralExpr",
+                    "value": 10,
+                    "valueType": "Number"
+                  }
+                ]
+              },
+              "owner": "world.stone"
+            },
+            {
+              "kind": "FacetDecl",
+              "path": "world.stone.velocity",
+              "valueType": "Velocity",
+              "value": {
+                "kind": "CallExpr",
+                "name": "meters_per_second",
+                "args": [
+                  {
+                    "kind": "LiteralExpr",
+                    "value": 0,
+                    "valueType": "Number"
+                  }
+                ]
+              },
+              "owner": "world.stone"
+            }
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "kind": "PhysicalFieldDecl",
+          "name": "gravity",
+          "path": "world.gravity",
+          "facets": [
+            {
+              "kind": "FacetDecl",
+              "path": "world.gravity.acceleration",
+              "valueType": "Acceleration",
+              "value": {
+                "kind": "CallExpr",
+                "name": "meters_per_second2",
+                "args": [
+                  {
+                    "kind": "UnaryExpr",
+                    "operator": "-",
+                    "expression": {
+                      "kind": "LiteralExpr",
+                      "value": 9.81,
+                      "valueType": "Number"
+                    }
+                  }
+                ]
+              },
+              "owner": "world.gravity"
+            }
+          ]
+        }
+      ],
+      "laws": [
+        {
+          "kind": "PhysicalLawDecl",
+          "name": "world.fall",
+          "domain": "world",
+          "step": {
+            "name": "dt",
+            "valueType": "Time"
+          },
+          "when": {
+            "kind": "BinaryExpr",
+            "operator": ">",
+            "left": {
+              "kind": "PathExpr",
+              "path": "world.stone.position"
+            },
+            "right": {
+              "kind": "CallExpr",
+              "name": "meters",
+              "args": [
+                {
+                  "kind": "LiteralExpr",
+                  "value": 0,
+                  "valueType": "Number"
+                }
+              ]
+            }
+          },
+          "evolves": [
+            {
+              "target": "world.stone.velocity",
+              "expression": {
+                "kind": "BinaryExpr",
+                "operator": "+",
+                "left": {
+                  "kind": "PathExpr",
+                  "path": "world.stone.velocity"
+                },
+                "right": {
+                  "kind": "BinaryExpr",
+                  "operator": "*",
+                  "left": {
+                    "kind": "PathExpr",
+                    "path": "world.gravity.acceleration"
+                  },
+                  "right": {
+                    "kind": "PathExpr",
+                    "path": "dt"
+                  }
+                }
+              }
+            },
+            {
+              "target": "world.stone.position",
+              "expression": {
+                "kind": "CallExpr",
+                "name": "max",
+                "args": [
+                  {
+                    "kind": "CallExpr",
+                    "name": "meters",
+                    "args": [
+                      {
+                        "kind": "LiteralExpr",
+                        "value": 0,
+                        "valueType": "Number"
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "BinaryExpr",
+                    "operator": "+",
+                    "left": {
+                      "kind": "PathExpr",
+                      "path": "world.stone.position"
+                    },
+                    "right": {
+                      "kind": "BinaryExpr",
+                      "operator": "*",
+                      "left": {
+                        "kind": "PathExpr",
+                        "path": "world.stone.velocity"
+                      },
+                      "right": {
+                        "kind": "PathExpr",
+                        "path": "dt"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "conserves": [
+            {
+              "kind": "BinaryExpr",
+              "operator": ">=",
+              "left": {
+                "kind": "PathExpr",
+                "path": "world.stone.position"
+              },
+              "right": {
+                "kind": "CallExpr",
+                "name": "meters",
+                "args": [
+                  {
+                    "kind": "LiteralExpr",
+                    "value": 0,
+                    "valueType": "Number"
+                  }
+                ]
+              }
+            }
+          ],
+          "witnesses": [
+            "physical:gravity"
+          ]
+        }
+      ]
+    }
+  ],
+  "perceptions": [
+    {
+      "kind": "PerceptionDecl",
+      "name": "sight",
+      "observer": "creature",
+      "source": "world",
+      "channels": [
+        {
+          "kind": "PerceptionChannelDecl",
+          "path": "sight.altitude",
+          "valueType": "Length",
+          "expression": {
+            "kind": "PathExpr",
+            "path": "world.stone.position"
+          }
+        }
+      ],
+      "preserves": [
+        {
+          "kind": "BinaryExpr",
+          "operator": ">=",
+          "left": {
+            "kind": "PathExpr",
+            "path": "sight.altitude"
+          },
+          "right": {
+            "kind": "CallExpr",
+            "name": "meters",
+            "args": [
+              {
+                "kind": "LiteralExpr",
+                "value": 0,
+                "valueType": "Number"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "neurals": [
+    {
+      "kind": "NeuralDecl",
+      "name": "brain",
+      "facets": [
+        {
+          "kind": "FacetDecl",
+          "path": "brain.stimulus",
+          "valueType": "Number",
+          "value": {
+            "kind": "LiteralExpr",
+            "value": 0,
+            "valueType": "Number"
+          },
+          "owner": "brain"
+        },
+        {
+          "kind": "FacetDecl",
+          "path": "brain.response",
+          "valueType": "Number",
+          "value": {
+            "kind": "LiteralExpr",
+            "value": 0,
+            "valueType": "Number"
+          },
+          "owner": "brain"
+        }
+      ],
+      "pathways": [
+        {
+          "kind": "NeuralPathwayDecl",
+          "name": "brain.integrate",
+          "domain": "brain",
+          "when": {
+            "kind": "BinaryExpr",
+            "operator": ">",
+            "left": {
+              "kind": "PathExpr",
+              "path": "brain.stimulus"
+            },
+            "right": {
+              "kind": "LiteralExpr",
+              "value": 0,
+              "valueType": "Number"
+            }
+          },
+          "changes": [
+            {
+              "mode": "transmit",
+              "target": "brain.response",
+              "expression": {
+                "kind": "CallExpr",
+                "name": "clamp",
+                "args": [
+                  {
+                    "kind": "BinaryExpr",
+                    "operator": "+",
+                    "left": {
+                      "kind": "PathExpr",
+                      "path": "brain.response"
+                    },
+                    "right": {
+                      "kind": "BinaryExpr",
+                      "operator": "*",
+                      "left": {
+                        "kind": "PathExpr",
+                        "path": "brain.stimulus"
+                      },
+                      "right": {
+                        "kind": "LiteralExpr",
+                        "value": 0.5,
+                        "valueType": "Number"
+                      }
+                    }
+                  },
+                  {
+                    "kind": "LiteralExpr",
+                    "value": 0,
+                    "valueType": "Number"
+                  },
+                  {
+                    "kind": "LiteralExpr",
+                    "value": 1,
+                    "valueType": "Number"
+                  }
+                ]
+              }
+            }
+          ],
+          "preserves": [
+            {
+              "kind": "BinaryExpr",
+              "operator": "and",
+              "left": {
+                "kind": "BinaryExpr",
+                "operator": ">=",
+                "left": {
+                  "kind": "PathExpr",
+                  "path": "brain.response"
+                },
+                "right": {
+                  "kind": "LiteralExpr",
+                  "value": 0,
+                  "valueType": "Number"
+                }
+              },
+              "right": {
+                "kind": "BinaryExpr",
+                "operator": "<=",
+                "left": {
+                  "kind": "PathExpr",
+                  "path": "brain.response"
+                },
+                "right": {
+                  "kind": "LiteralExpr",
+                  "value": 1,
+                  "valueType": "Number"
+                }
+              }
+            }
+          ],
+          "witnesses": [
+            "neural:integration"
+          ]
+        }
+      ]
+    }
+  ],
+  "livings": [
+    {
+      "kind": "LivingDecl",
+      "name": "creature",
+      "body": "world.stone",
+      "facets": [
+        {
+          "kind": "FacetDecl",
+          "path": "creature.energy",
+          "valueType": "Number",
+          "value": {
+            "kind": "LiteralExpr",
+            "value": 1,
+            "valueType": "Number"
+          },
+          "owner": "creature"
+        }
+      ],
+      "needs": [
+        {
+          "kind": "NeedDecl",
+          "path": "creature.energy",
+          "target": {
+            "kind": "LiteralExpr",
+            "value": 1,
+            "valueType": "Number"
+          },
+          "critical": {
+            "kind": "LiteralExpr",
+            "value": 0.2,
+            "valueType": "Number"
+          }
+        }
+      ],
+      "senses": [
+        {
+          "kind": "SenseDecl",
+          "path": "creature.altitude",
+          "valueType": "Length",
+          "source": "sight.altitude"
+        }
+      ],
+      "maintains": [
+        {
+          "kind": "BinaryExpr",
+          "operator": ">=",
+          "left": {
+            "kind": "PathExpr",
+            "path": "creature.energy"
+          },
+          "right": {
+            "kind": "LiteralExpr",
+            "value": 0,
+            "valueType": "Number"
+          }
+        }
+      ],
+      "cycles": [
+        {
+          "kind": "LifeCycleDecl",
+          "name": "creature.survive",
+          "life": "creature",
+          "when": {
+            "kind": "BinaryExpr",
+            "operator": ">",
+            "left": {
+              "kind": "PathExpr",
+              "path": "creature.energy"
+            },
+            "right": {
+              "kind": "LiteralExpr",
+              "value": 0,
+              "valueType": "Number"
+            }
+          },
+          "changes": [
+            {
+              "mode": "metabolize",
+              "target": "creature.energy",
+              "expression": {
+                "kind": "BinaryExpr",
+                "operator": "-",
+                "left": {
+                  "kind": "PathExpr",
+                  "path": "creature.energy"
+                },
+                "right": {
+                  "kind": "LiteralExpr",
+                  "value": 0.1,
+                  "valueType": "Number"
+                }
+              }
+            },
+            {
+              "mode": "intend",
+              "target": "brain.stimulus",
+              "expression": {
+                "kind": "CallExpr",
+                "name": "choose",
+                "args": [
+                  {
+                    "kind": "BinaryExpr",
+                    "operator": ">",
+                    "left": {
+                      "kind": "PathExpr",
+                      "path": "creature.altitude"
+                    },
+                    "right": {
+                      "kind": "CallExpr",
+                      "name": "meters",
+                      "args": [
+                        {
+                          "kind": "LiteralExpr",
+                          "value": 0,
+                          "valueType": "Number"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "kind": "LiteralExpr",
+                    "value": 1,
+                    "valueType": "Number"
+                  },
+                  {
+                    "kind": "LiteralExpr",
+                    "value": 0,
+                    "valueType": "Number"
+                  }
+                ]
+              }
+            }
+          ],
+          "witnesses": [
+            "life:survival-cycle"
+          ]
+        }
+      ]
+    }
+  ],
+  "genetics": [
+    {
+      "kind": "GeneticDecl",
+      "name": "lineage",
+      "facets": [
+        {
+          "kind": "FacetDecl",
+          "path": "lineage.expressed_motion",
+          "valueType": "Number",
+          "value": {
+            "kind": "LiteralExpr",
+            "value": 0,
+            "valueType": "Number"
+          },
+          "owner": "lineage"
+        }
+      ],
+      "genes": [
+        {
+          "kind": "GeneDecl",
+          "path": "lineage.motion_bias",
+          "valueType": "Number",
+          "value": {
+            "kind": "LiteralExpr",
+            "value": 0.2,
+            "valueType": "Number"
+          }
+        }
+      ],
+      "expressions": [
+        {
+          "target": "lineage.expressed_motion",
+          "expression": {
+            "kind": "PathExpr",
+            "path": "lineage.motion_bias"
+          }
+        },
+        {
+          "target": "phenotype.motion_bias",
+          "expression": {
+            "kind": "PathExpr",
+            "path": "lineage.motion_bias"
+          }
+        }
+      ],
+      "mutations": [
+        {
+          "target": "lineage.motion_bias",
+          "expression": {
+            "kind": "LiteralExpr",
+            "value": 0.01,
+            "valueType": "Number"
+          }
+        }
+      ],
+      "preserves": [
+        {
+          "kind": "BinaryExpr",
+          "operator": "and",
+          "left": {
+            "kind": "BinaryExpr",
+            "operator": ">=",
+            "left": {
+              "kind": "PathExpr",
+              "path": "lineage.motion_bias"
+            },
+            "right": {
+              "kind": "LiteralExpr",
+              "value": 0,
+              "valueType": "Number"
+            }
+          },
+          "right": {
+            "kind": "BinaryExpr",
+            "operator": "<=",
+            "left": {
+              "kind": "PathExpr",
+              "path": "lineage.motion_bias"
+            },
+            "right": {
+              "kind": "LiteralExpr",
+              "value": 1,
+              "valueType": "Number"
+            }
+          }
+        }
+      ],
+      "witnesses": [
+        "genetic:lineage"
+      ]
+    }
+  ],
+  "quantitatives": [
+    {
+      "kind": "QuantitativeDecl",
+      "name": "telemetry",
+      "measures": [
+        {
+          "kind": "MeasureDecl",
+          "path": "telemetry.altitude",
+          "baseType": "Length",
+          "value": {
+            "kind": "PathExpr",
+            "path": "world.stone.position"
+          },
+          "uncertainty": {
+            "kind": "CallExpr",
+            "name": "meters",
+            "args": [
+              {
+                "kind": "LiteralExpr",
+                "value": 0.05,
+                "valueType": "Number"
+              }
+            ]
+          },
+          "confidence": {
+            "kind": "LiteralExpr",
+            "value": 0.98,
+            "valueType": "Number"
+          },
+          "unit": "m",
+          "scale": "ratio",
+          "evidence": [
+            "sensor:simulated-altimeter"
+          ],
+          "calibratedBy": "rcl:foundation-calibration"
+        }
+      ],
+      "derives": [
+        {
+          "kind": "DerivedMeasureDecl",
+          "path": "telemetry.safe_altitude",
+          "valueType": "Truth",
+          "expression": {
+            "kind": "BinaryExpr",
+            "operator": ">=",
+            "left": {
+              "kind": "CallExpr",
+              "name": "lower",
+              "args": [
+                {
+                  "kind": "PathExpr",
+                  "path": "telemetry.altitude"
+                }
+              ]
+            },
+            "right": {
+              "kind": "CallExpr",
+              "name": "meters",
+              "args": [
+                {
+                  "kind": "LiteralExpr",
+                  "value": 0,
+                  "valueType": "Number"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "preserves": [
+        {
+          "kind": "BinaryExpr",
+          "operator": ">=",
+          "left": {
+            "kind": "CallExpr",
+            "name": "confidence",
+            "args": [
+              {
+                "kind": "PathExpr",
+                "path": "telemetry.altitude"
+              }
+            ]
+          },
+          "right": {
+            "kind": "LiteralExpr",
+            "value": 0.95,
+            "valueType": "Number"
+          }
+        }
+      ]
+    }
+  ],
+  "knowledges": [],
+  "rules": [],
+  "directives": [
+    {
+      "kind": "Reflect",
+      "name": "self_model"
+    },
+    {
+      "kind": "Advance",
+      "name": "world.fall",
+      "count": {
+        "kind": "LiteralExpr",
+        "value": 2,
+        "valueType": "Number"
+      },
+      "dt": {
+        "kind": "CallExpr",
+        "name": "seconds",
+        "args": [
+          {
+            "kind": "LiteralExpr",
+            "value": 1,
+            "valueType": "Number"
+          }
+        ]
+      }
+    },
+    {
+      "kind": "Observe",
+      "name": "sight"
+    },
+    {
+      "kind": "Live",
+      "name": "creature",
+      "count": {
+        "kind": "LiteralExpr",
+        "value": 1,
+        "valueType": "Number"
+      },
+      "dt": null
+    },
+    {
+      "kind": "Propagate",
+      "name": "brain",
+      "count": {
+        "kind": "LiteralExpr",
+        "value": 1,
+        "valueType": "Number"
+      },
+      "dt": null
+    },
+    {
+      "kind": "Inherit",
+      "name": "lineage",
+      "count": {
+        "kind": "LiteralExpr",
+        "value": 2,
+        "valueType": "Number"
+      },
+      "dt": null
+    },
+    {
+      "kind": "Quantify",
+      "name": "telemetry"
+    }
+  ],
+  "programRoot": "a94d88be5a772a500b58f4de57b036b58bf1abea12a688f9d9a534d8fd5ead6f"
+}

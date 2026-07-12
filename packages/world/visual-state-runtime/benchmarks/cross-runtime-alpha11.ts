@@ -1,0 +1,20 @@
+import { readFileSync } from 'node:fs';
+import { compileWebGPUPlan } from '../packages/backend-webgpu/src/index.js';
+import { evaluateAt } from '../packages/core/src/index.js';
+import { applyRealityStudioVSRPatch, compileRealityStudioVSRBridge, createRealityStudioPatchFromVSRDocument, realityStudioProjectToVSR, type RealityStudioProject } from '../packages/adapter-reality-studio/src/index.js';
+import { compileRealityOneUnifiedV02Projection } from '../packages/adapter-reality-one/src/index.js';
+import type { VSRDocument, VSRNode } from '../packages/spec/src/index.js';
+
+const percentile=(samples:number[],fraction:number)=>samples[Math.min(samples.length-1,Math.floor(samples.length*fraction))]!;
+const measure=<T>(runs:number,fn:()=>T):{samples:number[];last:T}=>{const samples:number[]=[];let last=fn();for(let i=0;i<runs;i++){const started=performance.now();last=fn();samples.push(performance.now()-started);}samples.sort((a,b)=>a-b);return{samples,last};};
+const nodes:VSRNode[]=[{id:'clip',type:'group',layout:{x:20,y:20,width:1240,height:680},content:{clip:true}}];
+for(let i=0;i<1800;i++)nodes.push({id:`n-${i}`,parentId:'clip',type:i%9===0?'ellipse':'rect',layout:{x:(i%60)*22-8,y:Math.floor(i/60)*22-8,width:18,height:18},appearance:{fill:{type:'solid',color:i%3===0?'#38bdf8aa':i%3===1?'#8b5cf6aa':'#22c55eaa'},blendMode:i%7===0?'lighter':'normal',...(i%11===0?{shadow:{color:'#00000088',blur:0,offsetX:2,offsetY:3}}:{})},content:{cornerRadius:i%5===0?4:0}} as VSRNode);
+const gpuDocument:VSRDocument={specVersion:'0.1',runtimeTarget:'vsr@0.1.0-alpha.12',metadata:{id:'alpha11-gpu',title:'Alpha11 GPU',duration:1,defaultFps:60,seed:11},canvas:{width:1280,height:720,background:{type:'solid',color:'#020617'}},nodes};
+const gpuState=evaluateAt({document:gpuDocument,time:0}).displayState,gpu=measure(40,()=>compileWebGPUPlan(gpuState));
+const studioProject=JSON.parse(readFileSync('examples/reality-studio-component-v03.project.json','utf8')) as RealityStudioProject;
+const studio=measure(120,()=>compileRealityStudioVSRBridge(studioProject));
+const edited=realityStudioProjectToVSR(studioProject),player=edited.nodes.find(node=>node.id==='object:player')!;player.layout={...player.layout,x:100};
+const roundTrip=measure(200,()=>{const patch=createRealityStudioPatchFromVSRDocument(studioProject,edited);return applyRealityStudioVSRPatch(studioProject,patch);});
+const unifiedInput=JSON.parse(readFileSync('examples/reality-one-unified-result-v02.json','utf8')) as unknown;
+const unified=measure(200,()=>compileRealityOneUnifiedV02Projection(unifiedInput,{profile:'desktop'}));
+console.log(JSON.stringify({format:'vsr.alpha11.cross-runtime-benchmark.v0.1',runtime:'vsr@0.1.0-alpha.12',node:process.version,platform:process.platform,gpu:{runs:gpu.samples.length,items:gpuState.items.length,medianMs:percentile(gpu.samples,.5),p95Ms:percentile(gpu.samples,.95),stats:gpu.last.stats,planHash:gpu.last.planHash},realityStudioV03:{runs:studio.samples.length,objects:studioProject.scenes?.[0]?.objects.length??0,nodes:studio.last.document.nodes.length,medianMs:percentile(studio.samples,.5),p95Ms:percentile(studio.samples,.95),bridgeRoot:studio.last.bridgeRoot,componentContractHash:studio.last.componentContractHash},roundTripPatch:{runs:roundTrip.samples.length,medianMs:percentile(roundTrip.samples,.5),p95Ms:percentile(roundTrip.samples,.95),updatedProjectId:roundTrip.last.projectId},realityOneUnified:{runs:unified.samples.length,medianMs:percentile(unified.samples,.5),p95Ms:percentile(unified.samples,.95),projectionRoot:unified.last.projectionRoot,domains:Object.keys(unified.last.domainRoots).length}},null,2));

@@ -1,0 +1,17 @@
+{
+  "format": "aaf.approval-receipt.v0.1",
+  "approval_id": "approval:owner:001",
+  "proposal_root": "fd1657b27d0eee9a94f4c0733104beb2b5a5a228c931ab887a7ccae0fe9142a5",
+  "approver_id": "subject:human-owner",
+  "approver_roles": [
+    "owner"
+  ],
+  "decision": "approved",
+  "scopes": [
+    "*"
+  ],
+  "conditions": [],
+  "issued_at": "2026-06-30T11:00:00Z",
+  "expires_at": "2026-06-30T13:00:00Z",
+  "approval_root": "1d5320ce90bfd1f800b41c6551c56ccf8dcf6e0c8f17bf6729775145e46e06a7"
+}

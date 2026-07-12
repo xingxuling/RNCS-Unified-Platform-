@@ -1,0 +1,29 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://taowind.local/schemas/reality-studio-project.v0.8.schema.json",
+  "title":"Reality Studio Project v0.8 Behavior Native",
+  "type":"object",
+  "required":["format","version","identity","rncs","artifact","subjects","intents","capabilities","affordances","authority","reality","branches","projections","evidence","runtime_bindings","experience","behavior"],
+  "properties":{
+    "format":{"const":"reality-studio.project.v0.8"},
+    "version":{"const":"0.8.0-alpha.1"},
+    "identity":{"type":"object","required":["project_id","title","created_at","updated_at"]},
+    "rncs":{"type":"object","required":["contract_version","reality_id","branch_id"]},
+    "artifact":{"type":"object","required":["artifact_id","kind","title","owner_subject_id","field_schema","values"]},
+    "subjects":{"type":"array"},"intents":{"type":"array"},"capabilities":{"type":"array"},"affordances":{"type":"array"},
+    "authority":{"type":"object"},"reality":{"type":"object"},"branches":{"type":"array"},"projections":{"type":"array"},
+    "evidence":{"type":"object","required":["requirements","assertions","project_root"]},
+    "runtime_bindings":{"type":"array"},"experience":{"type":"object"},
+    "behavior":{
+      "type":"object",
+      "required":["active_program_id","programs","bindings","editor","trace_refs"],
+      "properties":{
+        "active_program_id":{"type":["string","null"]},
+        "programs":{"type":"array","items":{"type":"object","required":["program_id","title","program_root"]}},
+        "bindings":{"type":"array"},
+        "editor":{"type":"object","required":["active_panel","breakpoints","watch_expressions","play_state"]},
+        "trace_refs":{"type":"array"}
+      }
+    }
+  }
+}

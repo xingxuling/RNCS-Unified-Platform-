@@ -1,0 +1,24 @@
+{
+  "description": "创建一名冰属性女剑士，名字叫霜璃，属于北境守望者。她动作敏捷，蓝白战斗服，使用单手剑；攻击前需要清晰预警，命中时产生冰裂声音和冰晶粒子。用于手机与桌面横版动作游戏。",
+  "subject_id": "subject:creator:du-hengjie",
+  "asset_kind": "character-2d",
+  "world_context": {
+    "world_id": "world:northern-ruins",
+    "genre": "fantasy-action",
+    "tone": "hopeful-cold"
+  },
+  "functional_role": "fast-melee-enemy-or-ally",
+  "target_platforms": ["desktop", "mobile"],
+  "required_outputs": ["concept-svg", "sprite-sheet", "sfx-wav", "particle-preset", "collision-shape"],
+  "constraints": {
+    "palette": ["#1c4fa3", "#f2f6ff", "#9ddcff", "#17305a"],
+    "style": "stylized-readable",
+    "max_texture_size": 512,
+    "max_sprite_frames": 6,
+    "audio_seconds": 0.8,
+    "max_particles": 96,
+    "forbidden": ["gore", "photoreal-face"],
+    "semantic_requirements": ["attack-telegraph", "ice-element-readable", "mobile-silhouette-readable"]
+  },
+  "seed": "frostblade-001"
+}

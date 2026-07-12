@@ -1,0 +1,36 @@
+export const UPGRADE_RECOMMENDATION_TYPES = [
+  "ADD_NEW_ENGINE",
+  "ADD_NEW_CALCULUS",
+  "OBJECTIZE_OUTPUT",
+  "BRIDGE_EXISTING_MODULES",
+  "INTEGRATE_RUNTIME",
+  "ADD_QA_RULES",
+  "ADD_GOVERNANCE",
+  "ADD_DOCS",
+  "ADD_USAGE_EXAMPLES",
+  "IMPROVE_UI_ENTRY",
+  "ADD_DEMO_SHOWCASE",
+  "ARCHIVE_OR_CLM_REVIEW",
+  "PAUSE_AND_INTEGRATE",
+  "EXPORT_PACKAGE",
+  "COMMERCIALIZE",
+] as const;
+export type UpgradeRecommendationType = (typeof UPGRADE_RECOMMENDATION_TYPES)[number];
+
+export const UPGRADE_RECOMMENDATION_LABELS: Record<UpgradeRecommendationType, string> = {
+  ADD_NEW_ENGINE: "新增引擎",
+  ADD_NEW_CALCULUS: "新增计算法",
+  OBJECTIZE_OUTPUT: "对象化输出",
+  BRIDGE_EXISTING_MODULES: "桥接已有模块",
+  INTEGRATE_RUNTIME: "接入 Runtime",
+  ADD_QA_RULES: "补 QA",
+  ADD_GOVERNANCE: "补治理",
+  ADD_DOCS: "补文档",
+  ADD_USAGE_EXAMPLES: "补示例",
+  IMPROVE_UI_ENTRY: "优化入口",
+  ADD_DEMO_SHOWCASE: "补演示展示",
+  ARCHIVE_OR_CLM_REVIEW: "归档或 CLM 复审",
+  PAUSE_AND_INTEGRATE: "暂停新增并整合",
+  EXPORT_PACKAGE: "补导出",
+  COMMERCIALIZE: "商业化包装",
+};

@@ -1,0 +1,177 @@
+{
+  "format": "rfe.conformance.cross-domain-atomic.v0.6",
+  "scenario": "prepare-abort-then-durable-decision-recovery",
+  "participants": [
+    {
+      "domainId": "domain:world",
+      "semanticRoot": "abf1c9fcb99fd9db9e5bcd47dc46a043934c7f6bfa81da4484cecb10acabe94e",
+      "authorityProofHash": "61b2bbd1b98ceb14f3027eba05b22f83c93df4e47171f49bc3acf52682d7f3ec"
+    },
+    {
+      "domainId": "domain:economy",
+      "semanticRoot": "abf1c9fcb99fd9db9e5bcd47dc46a043934c7f6bfa81da4484cecb10acabe94e",
+      "authorityProofHash": "61b2bbd1b98ceb14f3027eba05b22f83c93df4e47171f49bc3acf52682d7f3ec"
+    },
+    {
+      "domainId": "domain:identity",
+      "semanticRoot": "abf1c9fcb99fd9db9e5bcd47dc46a043934c7f6bfa81da4484cecb10acabe94e",
+      "authorityProofHash": "61b2bbd1b98ceb14f3027eba05b22f83c93df4e47171f49bc3acf52682d7f3ec"
+    }
+  ],
+  "abortTransaction": {
+    "transactionId": "transaction:c8:abort-before-decision",
+    "operations": [
+      {
+        "domainId": "domain:world",
+        "operation": {
+          "type": "reserve-presence-slot",
+          "subjectId": "subject:alice",
+          "slot": "room-b"
+        }
+      },
+      {
+        "domainId": "domain:economy",
+        "operation": {
+          "type": "reserve-credit",
+          "accountId": "account:alice",
+          "amount": 7
+        }
+      }
+    ]
+  },
+  "commitTransaction": {
+    "transactionId": "transaction:c8:commit-after-recovery",
+    "operations": [
+      {
+        "domainId": "domain:world",
+        "operation": {
+          "type": "transfer-presence",
+          "subjectId": "subject:alice",
+          "from": "room-a",
+          "to": "room-b"
+        }
+      },
+      {
+        "domainId": "domain:economy",
+        "operation": {
+          "type": "settle-credit",
+          "from": "account:alice",
+          "to": "account:gate",
+          "amount": 7
+        }
+      },
+      {
+        "domainId": "domain:identity",
+        "operation": {
+          "type": "attach-entitlement",
+          "subjectId": "subject:alice",
+          "entitlement": "room-b-entry"
+        }
+      }
+    ]
+  },
+  "expected": {
+    "format": "rfe.cross-domain-atomic-result.v0.6",
+    "atomicityModel": "durable-decision-all-or-nothing",
+    "initialGlobalRoot": "a65e9e71e456816181ecac2a9438a7bf64fe22d3a9cc4bf3167a72c3e70192d6",
+    "abortReceipt": {
+      "format": "rfe.atomic-receipt.v0.6",
+      "transactionId": "transaction:c8:abort-before-decision",
+      "status": "aborted",
+      "baseGlobalRoot": "a65e9e71e456816181ecac2a9438a7bf64fe22d3a9cc4bf3167a72c3e70192d6",
+      "finalGlobalRoot": "a65e9e71e456816181ecac2a9438a7bf64fe22d3a9cc4bf3167a72c3e70192d6",
+      "decisionHash": null,
+      "participantIds": [
+        "domain:economy",
+        "domain:world"
+      ],
+      "recovered": true,
+      "atomicTransactionReceiptHash": "fd79cd21f82dd2c9bead80215a5992e5c253fd93be343d313bfed01575f1879c"
+    },
+    "interruptedCommitState": {
+      "committedParticipants": 1,
+      "preparedParticipants": 2,
+      "durableDecisionPresent": true
+    },
+    "commitReceipt": {
+      "format": "rfe.atomic-receipt.v0.6",
+      "transactionId": "transaction:c8:commit-after-recovery",
+      "status": "committed",
+      "baseGlobalRoot": "a65e9e71e456816181ecac2a9438a7bf64fe22d3a9cc4bf3167a72c3e70192d6",
+      "finalGlobalRoot": "ac594e674adb8e6d3c770a18ac9126de87148c1fef7bdbf1535cb38e853d5c5b",
+      "decisionHash": "2b36baff5bbc4483d6fea0e3450af2d1aa7857cc2fabe97fa70ae04087f3ab89",
+      "participantIds": [
+        "domain:economy",
+        "domain:identity",
+        "domain:world"
+      ],
+      "recovered": true,
+      "atomicTransactionReceiptHash": "59dbedc91f0ffceaa0ddad40712896dc05c5de76398b74ef0d05d4aa78a10bba"
+    },
+    "recoveryReplayReceipt": {
+      "format": "rfe.atomic-receipt.v0.6",
+      "transactionId": "transaction:c8:commit-after-recovery",
+      "status": "committed",
+      "baseGlobalRoot": "a65e9e71e456816181ecac2a9438a7bf64fe22d3a9cc4bf3167a72c3e70192d6",
+      "finalGlobalRoot": "ac594e674adb8e6d3c770a18ac9126de87148c1fef7bdbf1535cb38e853d5c5b",
+      "decisionHash": "2b36baff5bbc4483d6fea0e3450af2d1aa7857cc2fabe97fa70ae04087f3ab89",
+      "participantIds": [
+        "domain:economy",
+        "domain:identity",
+        "domain:world"
+      ],
+      "recovered": true,
+      "atomicTransactionReceiptHash": "59dbedc91f0ffceaa0ddad40712896dc05c5de76398b74ef0d05d4aa78a10bba"
+    },
+    "finalGlobalRoot": "ac594e674adb8e6d3c770a18ac9126de87148c1fef7bdbf1535cb38e853d5c5b",
+    "participantStates": {
+      "domain:economy": {
+        "format": "rfe.atomic-domain-state.v0.6",
+        "domainId": "domain:economy",
+        "authorityProofHash": "61b2bbd1b98ceb14f3027eba05b22f83c93df4e47171f49bc3acf52682d7f3ec",
+        "revision": 1,
+        "committedRoot": "b225bbc39ee4745218b0455e91781b8ba90d9440286f700167fe115ec151f96f",
+        "phase": "stable",
+        "pendingTransactionId": null,
+        "preparedRoot": null,
+        "prepareHash": null,
+        "integrityHash": "28dbef1a0da6820d9c0d522bcffbd04bb1f8fd18180fd8be80d3356bd47a6841"
+      },
+      "domain:identity": {
+        "format": "rfe.atomic-domain-state.v0.6",
+        "domainId": "domain:identity",
+        "authorityProofHash": "61b2bbd1b98ceb14f3027eba05b22f83c93df4e47171f49bc3acf52682d7f3ec",
+        "revision": 1,
+        "committedRoot": "5357bd320625530c9ae7411495cc2ed2707fa94c913803430ba4d7ceb04bd848",
+        "phase": "stable",
+        "pendingTransactionId": null,
+        "preparedRoot": null,
+        "prepareHash": null,
+        "integrityHash": "f2ae6c23da6c458ce37a13af5923d06fc35a038b9a153b99a6ab812bdef968c3"
+      },
+      "domain:world": {
+        "format": "rfe.atomic-domain-state.v0.6",
+        "domainId": "domain:world",
+        "authorityProofHash": "61b2bbd1b98ceb14f3027eba05b22f83c93df4e47171f49bc3acf52682d7f3ec",
+        "revision": 1,
+        "committedRoot": "e2201b7cf62c795d95cc180fcda036335082af204b13ae13b3d706716c63de40",
+        "phase": "stable",
+        "pendingTransactionId": null,
+        "preparedRoot": null,
+        "prepareHash": null,
+        "integrityHash": "3d522ffe01654a3d8c801c5a92b0c560dee63e399a95ed477657c79c3c415f2f"
+      }
+    },
+    "metrics": {
+      "transactionsAttempted": 2,
+      "transactionsAborted": 1,
+      "transactionsCommitted": 1,
+      "injectedInterruptions": 2,
+      "recoveryPasses": 3,
+      "partialCommitsExposed": 0,
+      "globalRootDivergences": 0,
+      "idempotentRecoveryReplays": 1
+    },
+    "crossDomainAtomicResultHash": "74cb358b84bd9560a0d564745dcaba3d2fdf9a9b2664b6156030a32ba7019cfd"
+  }
+}

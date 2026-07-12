@@ -1,0 +1,5 @@
+{"events":[
+  {"format":"reality-one.lifecycle-event.v0.1","sessionId":"gateway:alpha12","sequence":1,"type":"intent.received","payload":{"intentText":"生成一份当前项目状态报告"}},
+  {"format":"reality-one.lifecycle-event.v0.1","sessionId":"gateway:alpha12","sequence":2,"type":"intent.understood","payload":{"intentText":"生成一份当前项目状态报告","artifactTitle":"Reality One 状态报告","steps":[]}},
+  {"format":"reality-one.lifecycle-event.v0.1","sessionId":"gateway:alpha12","sequence":3,"type":"authority.requested","payload":{}}
+]}

@@ -1,0 +1,73 @@
+{
+  "host_profile_version": "0.1",
+  "identity": {
+    "id": "host:browser:desktop",
+    "runtime": "browser",
+    "platform": "web",
+    "form_factor": "desktop"
+  },
+  "capabilities": [
+    {
+      "id": "runtime.javascript",
+      "version": "1.0"
+    },
+    {
+      "id": "display.visual",
+      "version": "1.0",
+      "properties": {
+        "color": true,
+        "width_px": 1440
+      }
+    },
+    {
+      "id": "display.text",
+      "version": "1.0"
+    },
+    {
+      "id": "display.table",
+      "version": "1.0"
+    },
+    {
+      "id": "input.activate",
+      "version": "1.0"
+    },
+    {
+      "id": "input.pointer",
+      "version": "1.0"
+    },
+    {
+      "id": "input.keyboard",
+      "version": "1.0"
+    },
+    {
+      "id": "input.text",
+      "version": "1.0"
+    },
+    {
+      "id": "storage.persistent",
+      "version": "1.0"
+    },
+    {
+      "id": "storage.download",
+      "version": "1.0"
+    },
+    {
+      "id": "crypto.ed25519",
+      "version": "1.0"
+    },
+    {
+      "id": "host.notification",
+      "version": "1.0",
+      "properties": {
+        "delivery": "simulated"
+      }
+    }
+  ],
+  "adapters": [],
+  "budgets": {
+    "memory_mb": 256,
+    "cpu_ms": 8,
+    "network_kb": 1024,
+    "storage_mb": 256
+  }
+}

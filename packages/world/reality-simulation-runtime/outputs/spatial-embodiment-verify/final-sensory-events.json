@@ -1,0 +1,3806 @@
+[
+  {
+    "kind": "spatial-audio",
+    "id": "audio:1:avatar|avatar:capsule|floor",
+    "tick": 1,
+    "cue": "impact.body",
+    "position": {
+      "x": -2800,
+      "y": 0,
+      "z": 0
+    },
+    "gainQ": 80000,
+    "pitchQ": 853260,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "avatar"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:1:avatar|avatar:capsule|floor:avatar",
+    "tick": 1,
+    "bodyId": "avatar",
+    "zone": "torso",
+    "amplitudeQ": 80000,
+    "frequencyHz": 48,
+    "durationMs": 38,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "avatar|avatar:capsule|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:1:avatar|avatar:capsule|left-arm|left-arm:shape",
+    "tick": 1,
+    "cue": "impact.body",
+    "position": {
+      "x": -2500,
+      "y": 1599,
+      "z": 0
+    },
+    "gainQ": 80000,
+    "pitchQ": 850000,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "avatar"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:1:avatar|avatar:capsule|left-arm|left-arm:shape:avatar",
+    "tick": 1,
+    "bodyId": "avatar",
+    "zone": "torso",
+    "amplitudeQ": 80000,
+    "frequencyHz": 45,
+    "durationMs": 30,
+    "direction": {
+      "x": -1000000,
+      "y": 0,
+      "z": 0
+    },
+    "sourceContactId": "avatar|avatar:capsule|left-arm|left-arm:shape"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:1:avatar|avatar:capsule|left-arm|left-arm:shape:left-arm",
+    "tick": 1,
+    "bodyId": "left-arm",
+    "zone": "arm.left",
+    "amplitudeQ": 80000,
+    "frequencyHz": 45,
+    "durationMs": 30,
+    "direction": {
+      "x": 1000000,
+      "y": 0,
+      "z": 0
+    },
+    "sourceContactId": "avatar|avatar:capsule|left-arm|left-arm:shape"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:1:avatar|avatar:capsule|right-arm|right-arm:shape",
+    "tick": 1,
+    "cue": "impact.body",
+    "position": {
+      "x": -3050,
+      "y": 1349,
+      "z": 0
+    },
+    "gainQ": 80000,
+    "pitchQ": 850000,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "right-arm"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:1:avatar|avatar:capsule|right-arm|right-arm:shape:right-arm",
+    "tick": 1,
+    "bodyId": "right-arm",
+    "zone": "arm.right",
+    "amplitudeQ": 80000,
+    "frequencyHz": 45,
+    "durationMs": 30,
+    "direction": {
+      "x": -1000000,
+      "y": 0,
+      "z": 0
+    },
+    "sourceContactId": "avatar|avatar:capsule|right-arm|right-arm:shape"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:1:avatar|avatar:capsule|right-arm|right-arm:shape:avatar",
+    "tick": 1,
+    "bodyId": "avatar",
+    "zone": "torso",
+    "amplitudeQ": 80000,
+    "frequencyHz": 45,
+    "durationMs": 30,
+    "direction": {
+      "x": 1000000,
+      "y": 0,
+      "z": 0
+    },
+    "sourceContactId": "avatar|avatar:capsule|right-arm|right-arm:shape"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:4:crate-a|crate-a:shape|floor",
+    "tick": 4,
+    "cue": "impact.wood",
+    "position": {
+      "x": 500,
+      "y": 0,
+      "z": 0
+    },
+    "gainQ": 208600,
+    "pitchQ": 870860,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-a"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:4:crate-a|crate-a:shape|floor:crate-a",
+    "tick": 4,
+    "bodyId": "crate-a",
+    "zone": "object",
+    "amplitudeQ": 208600,
+    "frequencyHz": 66,
+    "durationMs": 82,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-a|crate-a:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:4:crate-b|crate-b:shape|floor",
+    "tick": 4,
+    "cue": "impact.wood",
+    "position": {
+      "x": 1500,
+      "y": 0,
+      "z": 100
+    },
+    "gainQ": 182600,
+    "pitchQ": 868260,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-b"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:4:crate-b|crate-b:shape|floor:crate-b",
+    "tick": 4,
+    "bodyId": "crate-b",
+    "zone": "object",
+    "amplitudeQ": 182600,
+    "frequencyHz": 63,
+    "durationMs": 76,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-b|crate-b:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:9:crate-a|crate-a:shape|floor",
+    "tick": 9,
+    "cue": "impact.wood",
+    "position": {
+      "x": 500,
+      "y": 0,
+      "z": 0
+    },
+    "gainQ": 260800,
+    "pitchQ": 876080,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-a"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:9:crate-a|crate-a:shape|floor:crate-a",
+    "tick": 9,
+    "bodyId": "crate-a",
+    "zone": "object",
+    "amplitudeQ": 260800,
+    "frequencyHz": 71,
+    "durationMs": 95,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-a|crate-a:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:9:crate-b|crate-b:shape|floor",
+    "tick": 9,
+    "cue": "impact.wood",
+    "position": {
+      "x": 1500,
+      "y": 0,
+      "z": 100
+    },
+    "gainQ": 228200,
+    "pitchQ": 872820,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-b"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:9:crate-b|crate-b:shape|floor:crate-b",
+    "tick": 9,
+    "bodyId": "crate-b",
+    "zone": "object",
+    "amplitudeQ": 228200,
+    "frequencyHz": 68,
+    "durationMs": 87,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-b|crate-b:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:13:crate-a|crate-a:shape|floor",
+    "tick": 13,
+    "cue": "impact.wood",
+    "position": {
+      "x": 500,
+      "y": 0,
+      "z": 0
+    },
+    "gainQ": 208600,
+    "pitchQ": 870860,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-a"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:13:crate-a|crate-a:shape|floor:crate-a",
+    "tick": 13,
+    "bodyId": "crate-a",
+    "zone": "object",
+    "amplitudeQ": 208600,
+    "frequencyHz": 66,
+    "durationMs": 82,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-a|crate-a:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:13:crate-b|crate-b:shape|floor",
+    "tick": 13,
+    "cue": "impact.wood",
+    "position": {
+      "x": 1500,
+      "y": 0,
+      "z": 100
+    },
+    "gainQ": 182600,
+    "pitchQ": 868260,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-b"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:13:crate-b|crate-b:shape|floor:crate-b",
+    "tick": 13,
+    "bodyId": "crate-b",
+    "zone": "object",
+    "amplitudeQ": 182600,
+    "frequencyHz": 63,
+    "durationMs": 76,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-b|crate-b:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:16:avatar|avatar:capsule|floor",
+    "tick": 16,
+    "cue": "impact.body",
+    "position": {
+      "x": -2666,
+      "y": 0,
+      "z": 83
+    },
+    "gainQ": 497800,
+    "pitchQ": 899780,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "avatar"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:16:avatar|avatar:capsule|floor:avatar",
+    "tick": 16,
+    "bodyId": "avatar",
+    "zone": "torso",
+    "amplitudeQ": 497800,
+    "frequencyHz": 95,
+    "durationMs": 154,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "avatar|avatar:capsule|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:18:avatar|avatar:capsule|floor",
+    "tick": 18,
+    "cue": "impact.body",
+    "position": {
+      "x": -2642,
+      "y": 0,
+      "z": 95
+    },
+    "gainQ": 80000,
+    "pitchQ": 856520,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "avatar"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:18:avatar|avatar:capsule|floor:avatar",
+    "tick": 18,
+    "bodyId": "avatar",
+    "zone": "torso",
+    "amplitudeQ": 80000,
+    "frequencyHz": 52,
+    "durationMs": 46,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "avatar|avatar:capsule|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:18:crate-a|crate-a:shape|floor",
+    "tick": 18,
+    "cue": "impact.wood",
+    "position": {
+      "x": 500,
+      "y": 0,
+      "z": 0
+    },
+    "gainQ": 156400,
+    "pitchQ": 865640,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-a"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:18:crate-a|crate-a:shape|floor:crate-a",
+    "tick": 18,
+    "bodyId": "crate-a",
+    "zone": "object",
+    "amplitudeQ": 156400,
+    "frequencyHz": 61,
+    "durationMs": 69,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-a|crate-a:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:18:crate-b|crate-b:shape|floor",
+    "tick": 18,
+    "cue": "impact.wood",
+    "position": {
+      "x": 1500,
+      "y": 0,
+      "z": 100
+    },
+    "gainQ": 137000,
+    "pitchQ": 863700,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-b"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:18:crate-b|crate-b:shape|floor:crate-b",
+    "tick": 18,
+    "bodyId": "crate-b",
+    "zone": "object",
+    "amplitudeQ": 137000,
+    "frequencyHz": 59,
+    "durationMs": 64,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-b|crate-b:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:20:avatar|avatar:capsule|floor",
+    "tick": 20,
+    "cue": "impact.body",
+    "position": {
+      "x": -2615,
+      "y": 0,
+      "z": 107
+    },
+    "gainQ": 80000,
+    "pitchQ": 856520,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "avatar"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:20:avatar|avatar:capsule|floor:avatar",
+    "tick": 20,
+    "bodyId": "avatar",
+    "zone": "torso",
+    "amplitudeQ": 80000,
+    "frequencyHz": 52,
+    "durationMs": 46,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "avatar|avatar:capsule|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:23:avatar|avatar:capsule|floor",
+    "tick": 23,
+    "cue": "impact.body",
+    "position": {
+      "x": -2570,
+      "y": 0,
+      "z": 125
+    },
+    "gainQ": 101400,
+    "pitchQ": 860140,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "avatar"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:23:avatar|avatar:capsule|floor:avatar",
+    "tick": 23,
+    "bodyId": "avatar",
+    "zone": "torso",
+    "amplitudeQ": 101400,
+    "frequencyHz": 55,
+    "durationMs": 55,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "avatar|avatar:capsule|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:25:avatar|avatar:capsule|floor",
+    "tick": 25,
+    "cue": "impact.body",
+    "position": {
+      "x": -2541,
+      "y": 0,
+      "z": 137
+    },
+    "gainQ": 80000,
+    "pitchQ": 856520,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "avatar"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:25:avatar|avatar:capsule|floor:avatar",
+    "tick": 25,
+    "bodyId": "avatar",
+    "zone": "torso",
+    "amplitudeQ": 80000,
+    "frequencyHz": 52,
+    "durationMs": 46,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "avatar|avatar:capsule|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:25:crate-a|crate-a:shape|floor",
+    "tick": 25,
+    "cue": "impact.wood",
+    "position": {
+      "x": 500,
+      "y": 0,
+      "z": 0
+    },
+    "gainQ": 156400,
+    "pitchQ": 865640,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-a"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:25:crate-a|crate-a:shape|floor:crate-a",
+    "tick": 25,
+    "bodyId": "crate-a",
+    "zone": "object",
+    "amplitudeQ": 156400,
+    "frequencyHz": 61,
+    "durationMs": 69,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-a|crate-a:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:25:crate-b|crate-b:shape|floor",
+    "tick": 25,
+    "cue": "impact.wood",
+    "position": {
+      "x": 1500,
+      "y": 0,
+      "z": 100
+    },
+    "gainQ": 137000,
+    "pitchQ": 863700,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-b"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:25:crate-b|crate-b:shape|floor:crate-b",
+    "tick": 25,
+    "bodyId": "crate-b",
+    "zone": "object",
+    "amplitudeQ": 137000,
+    "frequencyHz": 59,
+    "durationMs": 64,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-b|crate-b:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:28:avatar|avatar:capsule|floor",
+    "tick": 28,
+    "cue": "impact.body",
+    "position": {
+      "x": -2494,
+      "y": 0,
+      "z": 155
+    },
+    "gainQ": 80000,
+    "pitchQ": 857260,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "avatar"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:28:avatar|avatar:capsule|floor:avatar",
+    "tick": 28,
+    "bodyId": "avatar",
+    "zone": "torso",
+    "amplitudeQ": 80000,
+    "frequencyHz": 52,
+    "durationMs": 48,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "avatar|avatar:capsule|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:31:crate-b|crate-b:shape|orb|orb:shape",
+    "tick": 31,
+    "cue": "impact.wood",
+    "position": {
+      "x": 2000,
+      "y": 410,
+      "z": -400
+    },
+    "gainQ": 116600,
+    "pitchQ": 861660,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-b"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:31:crate-b|crate-b:shape|orb|orb:shape:crate-b",
+    "tick": 31,
+    "bodyId": "crate-b",
+    "zone": "object",
+    "amplitudeQ": 116600,
+    "frequencyHz": 57,
+    "durationMs": 59,
+    "direction": {
+      "x": -204538,
+      "y": 0,
+      "z": 978859
+    },
+    "sourceContactId": "crate-b|crate-b:shape|orb|orb:shape"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:31:crate-b|crate-b:shape|orb|orb:shape:orb",
+    "tick": 31,
+    "bodyId": "orb",
+    "zone": "object",
+    "amplitudeQ": 116600,
+    "frequencyHz": 57,
+    "durationMs": 59,
+    "direction": {
+      "x": 204538,
+      "y": 0,
+      "z": -978859
+    },
+    "sourceContactId": "crate-b|crate-b:shape|orb|orb:shape"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:32:avatar|avatar:capsule|floor",
+    "tick": 32,
+    "cue": "impact.body",
+    "position": {
+      "x": -2420,
+      "y": 0,
+      "z": 179
+    },
+    "gainQ": 110600,
+    "pitchQ": 861060,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "avatar"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:32:avatar|avatar:capsule|floor:avatar",
+    "tick": 32,
+    "bodyId": "avatar",
+    "zone": "torso",
+    "amplitudeQ": 110600,
+    "frequencyHz": 56,
+    "durationMs": 58,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "avatar|avatar:capsule|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:32:crate-a|crate-a:shape|floor",
+    "tick": 32,
+    "cue": "impact.wood",
+    "position": {
+      "x": 500,
+      "y": 0,
+      "z": 0
+    },
+    "gainQ": 156400,
+    "pitchQ": 865640,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-a"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:32:crate-a|crate-a:shape|floor:crate-a",
+    "tick": 32,
+    "bodyId": "crate-a",
+    "zone": "object",
+    "amplitudeQ": 156400,
+    "frequencyHz": 61,
+    "durationMs": 69,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-a|crate-a:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:32:crate-b|crate-b:shape|floor",
+    "tick": 32,
+    "cue": "impact.wood",
+    "position": {
+      "x": 1489,
+      "y": 0,
+      "z": 148
+    },
+    "gainQ": 246600,
+    "pitchQ": 874660,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-b"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:32:crate-b|crate-b:shape|floor:crate-b",
+    "tick": 32,
+    "bodyId": "crate-b",
+    "zone": "object",
+    "amplitudeQ": 246600,
+    "frequencyHz": 70,
+    "durationMs": 92,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-b|crate-b:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:32:floor|orb|orb:shape",
+    "tick": 32,
+    "cue": "impact.body",
+    "position": {
+      "x": 2061,
+      "y": 0,
+      "z": -810
+    },
+    "gainQ": 576400,
+    "pitchQ": 907640,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "orb"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:32:floor|orb|orb:shape:orb",
+    "tick": 32,
+    "bodyId": "orb",
+    "zone": "object",
+    "amplitudeQ": 576400,
+    "frequencyHz": 103,
+    "durationMs": 174,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "floor|orb|orb:shape"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:32:crate-a|crate-a:shape|crate-b|crate-b:shape",
+    "tick": 32,
+    "cue": "impact.wood",
+    "position": {
+      "x": 995,
+      "y": 498,
+      "z": 74
+    },
+    "gainQ": 80000,
+    "pitchQ": 852140,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-a"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:32:crate-a|crate-a:shape|crate-b|crate-b:shape:crate-a",
+    "tick": 32,
+    "bodyId": "crate-a",
+    "zone": "object",
+    "amplitudeQ": 80000,
+    "frequencyHz": 47,
+    "durationMs": 35,
+    "direction": {
+      "x": -1000000,
+      "y": 0,
+      "z": 0
+    },
+    "sourceContactId": "crate-a|crate-a:shape|crate-b|crate-b:shape"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:32:crate-a|crate-a:shape|crate-b|crate-b:shape:crate-b",
+    "tick": 32,
+    "bodyId": "crate-b",
+    "zone": "object",
+    "amplitudeQ": 80000,
+    "frequencyHz": 47,
+    "durationMs": 35,
+    "direction": {
+      "x": 1000000,
+      "y": 0,
+      "z": 0
+    },
+    "sourceContactId": "crate-a|crate-a:shape|crate-b|crate-b:shape"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:34:avatar|avatar:capsule|floor",
+    "tick": 34,
+    "cue": "impact.body",
+    "position": {
+      "x": -2384,
+      "y": 0,
+      "z": 191
+    },
+    "gainQ": 80000,
+    "pitchQ": 856520,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "avatar"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:34:avatar|avatar:capsule|floor:avatar",
+    "tick": 34,
+    "bodyId": "avatar",
+    "zone": "torso",
+    "amplitudeQ": 80000,
+    "frequencyHz": 52,
+    "durationMs": 46,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "avatar|avatar:capsule|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:36:crate-b|crate-b:shape|floor",
+    "tick": 36,
+    "cue": "impact.wood",
+    "position": {
+      "x": 1520,
+      "y": 0,
+      "z": 160
+    },
+    "gainQ": 182600,
+    "pitchQ": 868260,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-b"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:36:crate-b|crate-b:shape|floor:crate-b",
+    "tick": 36,
+    "bodyId": "crate-b",
+    "zone": "object",
+    "amplitudeQ": 182600,
+    "frequencyHz": 63,
+    "durationMs": 76,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-b|crate-b:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:37:avatar|avatar:capsule|floor",
+    "tick": 37,
+    "cue": "impact.body",
+    "position": {
+      "x": -2326,
+      "y": 0,
+      "z": 209
+    },
+    "gainQ": 98200,
+    "pitchQ": 859820,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "avatar"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:37:avatar|avatar:capsule|floor:avatar",
+    "tick": 37,
+    "bodyId": "avatar",
+    "zone": "torso",
+    "amplitudeQ": 98200,
+    "frequencyHz": 55,
+    "durationMs": 55,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "avatar|avatar:capsule|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:39:crate-a|crate-a:shape|floor",
+    "tick": 39,
+    "cue": "impact.wood",
+    "position": {
+      "x": 462,
+      "y": 0,
+      "z": 3
+    },
+    "gainQ": 156400,
+    "pitchQ": 865640,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-a"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:39:crate-a|crate-a:shape|floor:crate-a",
+    "tick": 39,
+    "bodyId": "crate-a",
+    "zone": "object",
+    "amplitudeQ": 156400,
+    "frequencyHz": 61,
+    "durationMs": 69,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-a|crate-a:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:40:avatar|avatar:capsule|floor",
+    "tick": 40,
+    "cue": "impact.body",
+    "position": {
+      "x": -2271,
+      "y": 0,
+      "z": 227
+    },
+    "gainQ": 97800,
+    "pitchQ": 859780,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "avatar"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:40:avatar|avatar:capsule|floor:avatar",
+    "tick": 40,
+    "bodyId": "avatar",
+    "zone": "torso",
+    "amplitudeQ": 97800,
+    "frequencyHz": 55,
+    "durationMs": 54,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "avatar|avatar:capsule|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:41:crate-b|crate-b:shape|floor",
+    "tick": 41,
+    "cue": "impact.wood",
+    "position": {
+      "x": 1519,
+      "y": 0,
+      "z": 166
+    },
+    "gainQ": 137000,
+    "pitchQ": 863700,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-b"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:41:crate-b|crate-b:shape|floor:crate-b",
+    "tick": 41,
+    "bodyId": "crate-b",
+    "zone": "object",
+    "amplitudeQ": 137000,
+    "frequencyHz": 59,
+    "durationMs": 64,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-b|crate-b:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:41:floor|orb|orb:shape",
+    "tick": 41,
+    "cue": "impact.body",
+    "position": {
+      "x": 2007,
+      "y": 0,
+      "z": -801
+    },
+    "gainQ": 205400,
+    "pitchQ": 870540,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "orb"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:41:floor|orb|orb:shape:orb",
+    "tick": 41,
+    "bodyId": "orb",
+    "zone": "object",
+    "amplitudeQ": 205400,
+    "frequencyHz": 66,
+    "durationMs": 81,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "floor|orb|orb:shape"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:41:crate-a|crate-a:shape|crate-b|crate-b:shape",
+    "tick": 41,
+    "cue": "impact.wood",
+    "position": {
+      "x": 1043,
+      "y": 520,
+      "z": 95
+    },
+    "gainQ": 466600,
+    "pitchQ": 896660,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-a"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:41:crate-a|crate-a:shape|crate-b|crate-b:shape:crate-a",
+    "tick": 41,
+    "bodyId": "crate-a",
+    "zone": "object",
+    "amplitudeQ": 466600,
+    "frequencyHz": 92,
+    "durationMs": 147,
+    "direction": {
+      "x": -1000000,
+      "y": 105,
+      "z": 0
+    },
+    "sourceContactId": "crate-a|crate-a:shape|crate-b|crate-b:shape"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:41:crate-a|crate-a:shape|crate-b|crate-b:shape:crate-b",
+    "tick": 41,
+    "bodyId": "crate-b",
+    "zone": "object",
+    "amplitudeQ": 466600,
+    "frequencyHz": 92,
+    "durationMs": 147,
+    "direction": {
+      "x": 1000000,
+      "y": -105,
+      "z": 0
+    },
+    "sourceContactId": "crate-a|crate-a:shape|crate-b|crate-b:shape"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:43:avatar|avatar:capsule|floor",
+    "tick": 43,
+    "cue": "impact.body",
+    "position": {
+      "x": -2215,
+      "y": 0,
+      "z": 245
+    },
+    "gainQ": 97800,
+    "pitchQ": 859780,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "avatar"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:43:avatar|avatar:capsule|floor:avatar",
+    "tick": 43,
+    "bodyId": "avatar",
+    "zone": "torso",
+    "amplitudeQ": 97800,
+    "frequencyHz": 55,
+    "durationMs": 54,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "avatar|avatar:capsule|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:45:crate-b|crate-b:shape|floor",
+    "tick": 45,
+    "cue": "impact.wood",
+    "position": {
+      "x": 1806,
+      "y": 0,
+      "z": 182
+    },
+    "gainQ": 80000,
+    "pitchQ": 857780,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-b"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:45:crate-b|crate-b:shape|floor:crate-b",
+    "tick": 45,
+    "bodyId": "crate-b",
+    "zone": "object",
+    "amplitudeQ": 80000,
+    "frequencyHz": 53,
+    "durationMs": 49,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-b|crate-b:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:46:avatar|avatar:capsule|floor",
+    "tick": 46,
+    "cue": "impact.body",
+    "position": {
+      "x": -2159,
+      "y": 0,
+      "z": 263
+    },
+    "gainQ": 97800,
+    "pitchQ": 859780,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "avatar"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:46:avatar|avatar:capsule|floor:avatar",
+    "tick": 46,
+    "bodyId": "avatar",
+    "zone": "torso",
+    "amplitudeQ": 97800,
+    "frequencyHz": 55,
+    "durationMs": 54,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "avatar|avatar:capsule|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:48:avatar|avatar:capsule|floor",
+    "tick": 48,
+    "cue": "impact.body",
+    "position": {
+      "x": -2122,
+      "y": 0,
+      "z": 275
+    },
+    "gainQ": 80000,
+    "pitchQ": 856520,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "avatar"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:48:avatar|avatar:capsule|floor:avatar",
+    "tick": 48,
+    "bodyId": "avatar",
+    "zone": "torso",
+    "amplitudeQ": 80000,
+    "frequencyHz": 52,
+    "durationMs": 46,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "avatar|avatar:capsule|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:49:crate-b|crate-b:shape|floor",
+    "tick": 49,
+    "cue": "impact.wood",
+    "position": {
+      "x": 1889,
+      "y": 0,
+      "z": 194
+    },
+    "gainQ": 137000,
+    "pitchQ": 863700,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-b"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:49:crate-b|crate-b:shape|floor:crate-b",
+    "tick": 49,
+    "bodyId": "crate-b",
+    "zone": "object",
+    "amplitudeQ": 137000,
+    "frequencyHz": 59,
+    "durationMs": 64,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-b|crate-b:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:49:floor|orb|orb:shape",
+    "tick": 49,
+    "cue": "impact.body",
+    "position": {
+      "x": 1991,
+      "y": 0,
+      "z": -801
+    },
+    "gainQ": 182600,
+    "pitchQ": 868260,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "orb"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:49:floor|orb|orb:shape:orb",
+    "tick": 49,
+    "bodyId": "orb",
+    "zone": "object",
+    "amplitudeQ": 182600,
+    "frequencyHz": 63,
+    "durationMs": 76,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "floor|orb|orb:shape"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:51:avatar|avatar:capsule|floor",
+    "tick": 51,
+    "cue": "impact.body",
+    "position": {
+      "x": -2064,
+      "y": 0,
+      "z": 293
+    },
+    "gainQ": 100000,
+    "pitchQ": 860000,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "avatar"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:51:avatar|avatar:capsule|floor:avatar",
+    "tick": 51,
+    "bodyId": "avatar",
+    "zone": "torso",
+    "amplitudeQ": 100000,
+    "frequencyHz": 55,
+    "durationMs": 55,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "avatar|avatar:capsule|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:52:crate-a|crate-a:shape|floor",
+    "tick": 52,
+    "cue": "impact.wood",
+    "position": {
+      "x": 727,
+      "y": 0,
+      "z": 100
+    },
+    "gainQ": 342800,
+    "pitchQ": 884280,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-a"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:52:crate-a|crate-a:shape|floor:crate-a",
+    "tick": 52,
+    "bodyId": "crate-a",
+    "zone": "object",
+    "amplitudeQ": 342800,
+    "frequencyHz": 79,
+    "durationMs": 116,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-a|crate-a:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:56:crate-b|crate-b:shape|floor",
+    "tick": 56,
+    "cue": "impact.wood",
+    "position": {
+      "x": 1934,
+      "y": 0,
+      "z": 199
+    },
+    "gainQ": 137000,
+    "pitchQ": 863700,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-b"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:56:crate-b|crate-b:shape|floor:crate-b",
+    "tick": 56,
+    "bodyId": "crate-b",
+    "zone": "object",
+    "amplitudeQ": 137000,
+    "frequencyHz": 59,
+    "durationMs": 64,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-b|crate-b:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:57:avatar|avatar:capsule|floor",
+    "tick": 57,
+    "cue": "impact.body",
+    "position": {
+      "x": -1935,
+      "y": 0,
+      "z": 329
+    },
+    "gainQ": 115600,
+    "pitchQ": 861560,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "avatar"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:57:avatar|avatar:capsule|floor:avatar",
+    "tick": 57,
+    "bodyId": "avatar",
+    "zone": "torso",
+    "amplitudeQ": 115600,
+    "frequencyHz": 57,
+    "durationMs": 59,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "avatar|avatar:capsule|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:57:floor|orb|orb:shape",
+    "tick": 57,
+    "cue": "impact.body",
+    "position": {
+      "x": 1991,
+      "y": 0,
+      "z": -801
+    },
+    "gainQ": 182600,
+    "pitchQ": 868260,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "orb"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:57:floor|orb|orb:shape:orb",
+    "tick": 57,
+    "bodyId": "orb",
+    "zone": "object",
+    "amplitudeQ": 182600,
+    "frequencyHz": 63,
+    "durationMs": 76,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "floor|orb|orb:shape"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:58:crate-a|crate-a:shape|floor",
+    "tick": 58,
+    "cue": "impact.wood",
+    "position": {
+      "x": 841,
+      "y": 0,
+      "z": 130
+    },
+    "gainQ": 313000,
+    "pitchQ": 881300,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-a"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:58:crate-a|crate-a:shape|floor:crate-a",
+    "tick": 58,
+    "bodyId": "crate-a",
+    "zone": "object",
+    "amplitudeQ": 313000,
+    "frequencyHz": 76,
+    "durationMs": 108,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-a|crate-a:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:59:avatar|avatar:capsule|floor",
+    "tick": 59,
+    "cue": "impact.body",
+    "position": {
+      "x": -1891,
+      "y": 0,
+      "z": 341
+    },
+    "gainQ": 80000,
+    "pitchQ": 856520,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "avatar"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:59:avatar|avatar:capsule|floor:avatar",
+    "tick": 59,
+    "bodyId": "avatar",
+    "zone": "torso",
+    "amplitudeQ": 80000,
+    "frequencyHz": 52,
+    "durationMs": 46,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "avatar|avatar:capsule|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:61:avatar|avatar:capsule|floor",
+    "tick": 61,
+    "cue": "impact.body",
+    "position": {
+      "x": -1845,
+      "y": 0,
+      "z": 353
+    },
+    "gainQ": 80000,
+    "pitchQ": 856520,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "avatar"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:61:avatar|avatar:capsule|floor:avatar",
+    "tick": 61,
+    "bodyId": "avatar",
+    "zone": "torso",
+    "amplitudeQ": 80000,
+    "frequencyHz": 52,
+    "durationMs": 46,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "avatar|avatar:capsule|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:61:crate-a|crate-a:shape|floor",
+    "tick": 61,
+    "cue": "impact.wood",
+    "position": {
+      "x": 880,
+      "y": 0,
+      "z": 139
+    },
+    "gainQ": 156400,
+    "pitchQ": 865640,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-a"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:61:crate-a|crate-a:shape|floor:crate-a",
+    "tick": 61,
+    "bodyId": "crate-a",
+    "zone": "object",
+    "amplitudeQ": 156400,
+    "frequencyHz": 61,
+    "durationMs": 69,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-a|crate-a:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:63:crate-b|crate-b:shape|floor",
+    "tick": 63,
+    "cue": "impact.wood",
+    "position": {
+      "x": 1939,
+      "y": 0,
+      "z": 199
+    },
+    "gainQ": 137000,
+    "pitchQ": 863700,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-b"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:63:crate-b|crate-b:shape|floor:crate-b",
+    "tick": 63,
+    "bodyId": "crate-b",
+    "zone": "object",
+    "amplitudeQ": 137000,
+    "frequencyHz": 59,
+    "durationMs": 64,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-b|crate-b:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:65:avatar|avatar:capsule|floor",
+    "tick": 65,
+    "cue": "impact.body",
+    "position": {
+      "x": -1744,
+      "y": 0,
+      "z": 377
+    },
+    "gainQ": 80000,
+    "pitchQ": 857680,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "avatar"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:65:avatar|avatar:capsule|floor:avatar",
+    "tick": 65,
+    "bodyId": "avatar",
+    "zone": "torso",
+    "amplitudeQ": 80000,
+    "frequencyHz": 53,
+    "durationMs": 49,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "avatar|avatar:capsule|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:65:floor|orb|orb:shape",
+    "tick": 65,
+    "cue": "impact.body",
+    "position": {
+      "x": 1991,
+      "y": 0,
+      "z": -801
+    },
+    "gainQ": 182600,
+    "pitchQ": 868260,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "orb"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:65:floor|orb|orb:shape:orb",
+    "tick": 65,
+    "bodyId": "orb",
+    "zone": "object",
+    "amplitudeQ": 182600,
+    "frequencyHz": 63,
+    "durationMs": 76,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "floor|orb|orb:shape"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:68:avatar|avatar:capsule|floor",
+    "tick": 68,
+    "cue": "impact.body",
+    "position": {
+      "x": -1666,
+      "y": 0,
+      "z": 395
+    },
+    "gainQ": 102000,
+    "pitchQ": 860200,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "avatar"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:68:avatar|avatar:capsule|floor:avatar",
+    "tick": 68,
+    "bodyId": "avatar",
+    "zone": "torso",
+    "amplitudeQ": 102000,
+    "frequencyHz": 55,
+    "durationMs": 56,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "avatar|avatar:capsule|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:68:crate-a|crate-a:shape|floor",
+    "tick": 68,
+    "cue": "impact.wood",
+    "position": {
+      "x": 908,
+      "y": 0,
+      "z": 148
+    },
+    "gainQ": 156400,
+    "pitchQ": 865640,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-a"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:68:crate-a|crate-a:shape|floor:crate-a",
+    "tick": 68,
+    "bodyId": "crate-a",
+    "zone": "object",
+    "amplitudeQ": 156400,
+    "frequencyHz": 61,
+    "durationMs": 69,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-a|crate-a:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:70:crate-b|crate-b:shape|floor",
+    "tick": 70,
+    "cue": "impact.wood",
+    "position": {
+      "x": 1939,
+      "y": 0,
+      "z": 199
+    },
+    "gainQ": 137000,
+    "pitchQ": 863700,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-b"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:70:crate-b|crate-b:shape|floor:crate-b",
+    "tick": 70,
+    "bodyId": "crate-b",
+    "zone": "object",
+    "amplitudeQ": 137000,
+    "frequencyHz": 59,
+    "durationMs": 64,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-b|crate-b:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:71:avatar|avatar:capsule|floor",
+    "tick": 71,
+    "cue": "impact.body",
+    "position": {
+      "x": -1587,
+      "y": 0,
+      "z": 413
+    },
+    "gainQ": 97800,
+    "pitchQ": 859780,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "avatar"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:71:avatar|avatar:capsule|floor:avatar",
+    "tick": 71,
+    "bodyId": "avatar",
+    "zone": "torso",
+    "amplitudeQ": 97800,
+    "frequencyHz": 55,
+    "durationMs": 54,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "avatar|avatar:capsule|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:73:floor|orb|orb:shape",
+    "tick": 73,
+    "cue": "impact.body",
+    "position": {
+      "x": 1991,
+      "y": 0,
+      "z": -801
+    },
+    "gainQ": 182600,
+    "pitchQ": 868260,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "orb"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:73:floor|orb|orb:shape:orb",
+    "tick": 73,
+    "bodyId": "orb",
+    "zone": "object",
+    "amplitudeQ": 182600,
+    "frequencyHz": 63,
+    "durationMs": 76,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "floor|orb|orb:shape"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:75:crate-a|crate-a:shape|floor",
+    "tick": 75,
+    "cue": "impact.wood",
+    "position": {
+      "x": 911,
+      "y": 0,
+      "z": 148
+    },
+    "gainQ": 156400,
+    "pitchQ": 865640,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-a"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:75:crate-a|crate-a:shape|floor:crate-a",
+    "tick": 75,
+    "bodyId": "crate-a",
+    "zone": "object",
+    "amplitudeQ": 156400,
+    "frequencyHz": 61,
+    "durationMs": 69,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-a|crate-a:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:77:crate-b|crate-b:shape|floor",
+    "tick": 77,
+    "cue": "impact.wood",
+    "position": {
+      "x": 1939,
+      "y": 0,
+      "z": 199
+    },
+    "gainQ": 137000,
+    "pitchQ": 863700,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-b"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:77:crate-b|crate-b:shape|floor:crate-b",
+    "tick": 77,
+    "bodyId": "crate-b",
+    "zone": "object",
+    "amplitudeQ": 137000,
+    "frequencyHz": 59,
+    "durationMs": 64,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-b|crate-b:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:81:floor|orb|orb:shape",
+    "tick": 81,
+    "cue": "impact.body",
+    "position": {
+      "x": 1991,
+      "y": 0,
+      "z": -801
+    },
+    "gainQ": 182600,
+    "pitchQ": 868260,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "orb"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:81:floor|orb|orb:shape:orb",
+    "tick": 81,
+    "bodyId": "orb",
+    "zone": "object",
+    "amplitudeQ": 182600,
+    "frequencyHz": 63,
+    "durationMs": 76,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "floor|orb|orb:shape"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:84:crate-a|crate-a:shape|floor",
+    "tick": 84,
+    "cue": "impact.wood",
+    "position": {
+      "x": 911,
+      "y": 0,
+      "z": 148
+    },
+    "gainQ": 156400,
+    "pitchQ": 865640,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-a"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:84:crate-a|crate-a:shape|floor:crate-a",
+    "tick": 84,
+    "bodyId": "crate-a",
+    "zone": "object",
+    "amplitudeQ": 156400,
+    "frequencyHz": 61,
+    "durationMs": 69,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-a|crate-a:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:84:crate-b|crate-b:shape|floor",
+    "tick": 84,
+    "cue": "impact.wood",
+    "position": {
+      "x": 1939,
+      "y": 0,
+      "z": 199
+    },
+    "gainQ": 137000,
+    "pitchQ": 863700,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-b"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:84:crate-b|crate-b:shape|floor:crate-b",
+    "tick": 84,
+    "bodyId": "crate-b",
+    "zone": "object",
+    "amplitudeQ": 137000,
+    "frequencyHz": 59,
+    "durationMs": 64,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-b|crate-b:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:89:floor|orb|orb:shape",
+    "tick": 89,
+    "cue": "impact.body",
+    "position": {
+      "x": 1991,
+      "y": 0,
+      "z": -801
+    },
+    "gainQ": 182600,
+    "pitchQ": 868260,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "orb"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:89:floor|orb|orb:shape:orb",
+    "tick": 89,
+    "bodyId": "orb",
+    "zone": "object",
+    "amplitudeQ": 182600,
+    "frequencyHz": 63,
+    "durationMs": 76,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "floor|orb|orb:shape"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:91:crate-a|crate-a:shape|floor",
+    "tick": 91,
+    "cue": "impact.wood",
+    "position": {
+      "x": 911,
+      "y": 0,
+      "z": 148
+    },
+    "gainQ": 156400,
+    "pitchQ": 865640,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-a"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:91:crate-a|crate-a:shape|floor:crate-a",
+    "tick": 91,
+    "bodyId": "crate-a",
+    "zone": "object",
+    "amplitudeQ": 156400,
+    "frequencyHz": 61,
+    "durationMs": 69,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-a|crate-a:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:91:crate-b|crate-b:shape|floor",
+    "tick": 91,
+    "cue": "impact.wood",
+    "position": {
+      "x": 1939,
+      "y": 0,
+      "z": 199
+    },
+    "gainQ": 137000,
+    "pitchQ": 863700,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-b"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:91:crate-b|crate-b:shape|floor:crate-b",
+    "tick": 91,
+    "bodyId": "crate-b",
+    "zone": "object",
+    "amplitudeQ": 137000,
+    "frequencyHz": 59,
+    "durationMs": 64,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-b|crate-b:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:97:floor|orb|orb:shape",
+    "tick": 97,
+    "cue": "impact.body",
+    "position": {
+      "x": 1991,
+      "y": 0,
+      "z": -801
+    },
+    "gainQ": 182600,
+    "pitchQ": 868260,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "orb"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:97:floor|orb|orb:shape:orb",
+    "tick": 97,
+    "bodyId": "orb",
+    "zone": "object",
+    "amplitudeQ": 182600,
+    "frequencyHz": 63,
+    "durationMs": 76,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "floor|orb|orb:shape"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:98:crate-a|crate-a:shape|floor",
+    "tick": 98,
+    "cue": "impact.wood",
+    "position": {
+      "x": 911,
+      "y": 0,
+      "z": 148
+    },
+    "gainQ": 156400,
+    "pitchQ": 865640,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-a"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:98:crate-a|crate-a:shape|floor:crate-a",
+    "tick": 98,
+    "bodyId": "crate-a",
+    "zone": "object",
+    "amplitudeQ": 156400,
+    "frequencyHz": 61,
+    "durationMs": 69,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-a|crate-a:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:98:crate-b|crate-b:shape|floor",
+    "tick": 98,
+    "cue": "impact.wood",
+    "position": {
+      "x": 1939,
+      "y": 0,
+      "z": 199
+    },
+    "gainQ": 137000,
+    "pitchQ": 863700,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-b"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:98:crate-b|crate-b:shape|floor:crate-b",
+    "tick": 98,
+    "bodyId": "crate-b",
+    "zone": "object",
+    "amplitudeQ": 137000,
+    "frequencyHz": 59,
+    "durationMs": 64,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-b|crate-b:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:100:floor|left-arm|left-arm:shape",
+    "tick": 100,
+    "cue": "impact.body",
+    "position": {
+      "x": -140,
+      "y": 0,
+      "z": 587
+    },
+    "gainQ": 867800,
+    "pitchQ": 936780,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "left-arm"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:100:floor|left-arm|left-arm:shape:left-arm",
+    "tick": 100,
+    "bodyId": "left-arm",
+    "zone": "arm.left",
+    "amplitudeQ": 867800,
+    "frequencyHz": 132,
+    "durationMs": 220,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "floor|left-arm|left-arm:shape"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:100:floor|right-arm|right-arm:shape",
+    "tick": 100,
+    "cue": "impact.body",
+    "position": {
+      "x": -940,
+      "y": 0,
+      "z": 587
+    },
+    "gainQ": 1000000,
+    "pitchQ": 953280,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "right-arm"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:100:floor|right-arm|right-arm:shape:right-arm",
+    "tick": 100,
+    "bodyId": "right-arm",
+    "zone": "arm.right",
+    "amplitudeQ": 1000000,
+    "frequencyHz": 148,
+    "durationMs": 220,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "floor|right-arm|right-arm:shape"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:102:avatar|avatar:capsule|floor",
+    "tick": 102,
+    "cue": "impact.body",
+    "position": {
+      "x": -478,
+      "y": 0,
+      "z": 598
+    },
+    "gainQ": 80000,
+    "pitchQ": 852760,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "avatar"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:102:avatar|avatar:capsule|floor:avatar",
+    "tick": 102,
+    "bodyId": "avatar",
+    "zone": "torso",
+    "amplitudeQ": 80000,
+    "frequencyHz": 48,
+    "durationMs": 37,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "avatar|avatar:capsule|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:105:crate-a|crate-a:shape|floor",
+    "tick": 105,
+    "cue": "impact.wood",
+    "position": {
+      "x": 911,
+      "y": 0,
+      "z": 148
+    },
+    "gainQ": 156400,
+    "pitchQ": 865640,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-a"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:105:crate-a|crate-a:shape|floor:crate-a",
+    "tick": 105,
+    "bodyId": "crate-a",
+    "zone": "object",
+    "amplitudeQ": 156400,
+    "frequencyHz": 61,
+    "durationMs": 69,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-a|crate-a:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:105:crate-b|crate-b:shape|floor",
+    "tick": 105,
+    "cue": "impact.wood",
+    "position": {
+      "x": 1939,
+      "y": 0,
+      "z": 199
+    },
+    "gainQ": 137000,
+    "pitchQ": 863700,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-b"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:105:crate-b|crate-b:shape|floor:crate-b",
+    "tick": 105,
+    "bodyId": "crate-b",
+    "zone": "object",
+    "amplitudeQ": 137000,
+    "frequencyHz": 59,
+    "durationMs": 64,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-b|crate-b:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:105:floor|orb|orb:shape",
+    "tick": 105,
+    "cue": "impact.body",
+    "position": {
+      "x": 1991,
+      "y": 0,
+      "z": -801
+    },
+    "gainQ": 182600,
+    "pitchQ": 868260,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "orb"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:105:floor|orb|orb:shape:orb",
+    "tick": 105,
+    "bodyId": "orb",
+    "zone": "object",
+    "amplitudeQ": 182600,
+    "frequencyHz": 63,
+    "durationMs": 76,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "floor|orb|orb:shape"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:112:crate-a|crate-a:shape|floor",
+    "tick": 112,
+    "cue": "impact.wood",
+    "position": {
+      "x": 911,
+      "y": 0,
+      "z": 148
+    },
+    "gainQ": 156400,
+    "pitchQ": 865640,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-a"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:112:crate-a|crate-a:shape|floor:crate-a",
+    "tick": 112,
+    "bodyId": "crate-a",
+    "zone": "object",
+    "amplitudeQ": 156400,
+    "frequencyHz": 61,
+    "durationMs": 69,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-a|crate-a:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:112:crate-b|crate-b:shape|floor",
+    "tick": 112,
+    "cue": "impact.wood",
+    "position": {
+      "x": 1939,
+      "y": 0,
+      "z": 199
+    },
+    "gainQ": 137000,
+    "pitchQ": 863700,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-b"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:112:crate-b|crate-b:shape|floor:crate-b",
+    "tick": 112,
+    "bodyId": "crate-b",
+    "zone": "object",
+    "amplitudeQ": 137000,
+    "frequencyHz": 59,
+    "durationMs": 64,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-b|crate-b:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:113:floor|orb|orb:shape",
+    "tick": 113,
+    "cue": "impact.body",
+    "position": {
+      "x": 1991,
+      "y": 0,
+      "z": -801
+    },
+    "gainQ": 182600,
+    "pitchQ": 868260,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "orb"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:113:floor|orb|orb:shape:orb",
+    "tick": 113,
+    "bodyId": "orb",
+    "zone": "object",
+    "amplitudeQ": 182600,
+    "frequencyHz": 63,
+    "durationMs": 76,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "floor|orb|orb:shape"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:119:crate-b|crate-b:shape|floor",
+    "tick": 119,
+    "cue": "impact.wood",
+    "position": {
+      "x": 1939,
+      "y": 0,
+      "z": 199
+    },
+    "gainQ": 137000,
+    "pitchQ": 863700,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-b"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:119:crate-b|crate-b:shape|floor:crate-b",
+    "tick": 119,
+    "bodyId": "crate-b",
+    "zone": "object",
+    "amplitudeQ": 137000,
+    "frequencyHz": 59,
+    "durationMs": 64,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-b|crate-b:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:120:crate-a|crate-a:shape|floor",
+    "tick": 120,
+    "cue": "impact.wood",
+    "position": {
+      "x": 911,
+      "y": 0,
+      "z": 148
+    },
+    "gainQ": 208600,
+    "pitchQ": 870860,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-a"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:120:crate-a|crate-a:shape|floor:crate-a",
+    "tick": 120,
+    "bodyId": "crate-a",
+    "zone": "object",
+    "amplitudeQ": 208600,
+    "frequencyHz": 66,
+    "durationMs": 82,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-a|crate-a:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:121:floor|orb|orb:shape",
+    "tick": 121,
+    "cue": "impact.body",
+    "position": {
+      "x": 1991,
+      "y": 0,
+      "z": -801
+    },
+    "gainQ": 182600,
+    "pitchQ": 868260,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "orb"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:121:floor|orb|orb:shape:orb",
+    "tick": 121,
+    "bodyId": "orb",
+    "zone": "object",
+    "amplitudeQ": 182600,
+    "frequencyHz": 63,
+    "durationMs": 76,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "floor|orb|orb:shape"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:123:crate-a|crate-a:shape|floor",
+    "tick": 123,
+    "cue": "impact.wood",
+    "position": {
+      "x": 911,
+      "y": 0,
+      "z": 148
+    },
+    "gainQ": 156400,
+    "pitchQ": 865640,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-a"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:123:crate-a|crate-a:shape|floor:crate-a",
+    "tick": 123,
+    "bodyId": "crate-a",
+    "zone": "object",
+    "amplitudeQ": 156400,
+    "frequencyHz": 61,
+    "durationMs": 69,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-a|crate-a:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:126:crate-b|crate-b:shape|floor",
+    "tick": 126,
+    "cue": "impact.wood",
+    "position": {
+      "x": 1939,
+      "y": 0,
+      "z": 199
+    },
+    "gainQ": 137000,
+    "pitchQ": 863700,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-b"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:126:crate-b|crate-b:shape|floor:crate-b",
+    "tick": 126,
+    "bodyId": "crate-b",
+    "zone": "object",
+    "amplitudeQ": 137000,
+    "frequencyHz": 59,
+    "durationMs": 64,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-b|crate-b:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:129:floor|orb|orb:shape",
+    "tick": 129,
+    "cue": "impact.body",
+    "position": {
+      "x": 1991,
+      "y": 0,
+      "z": -801
+    },
+    "gainQ": 182600,
+    "pitchQ": 868260,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "orb"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:129:floor|orb|orb:shape:orb",
+    "tick": 129,
+    "bodyId": "orb",
+    "zone": "object",
+    "amplitudeQ": 182600,
+    "frequencyHz": 63,
+    "durationMs": 76,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "floor|orb|orb:shape"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:130:crate-a|crate-a:shape|floor",
+    "tick": 130,
+    "cue": "impact.wood",
+    "position": {
+      "x": 911,
+      "y": 0,
+      "z": 148
+    },
+    "gainQ": 156400,
+    "pitchQ": 865640,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-a"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:130:crate-a|crate-a:shape|floor:crate-a",
+    "tick": 130,
+    "bodyId": "crate-a",
+    "zone": "object",
+    "amplitudeQ": 156400,
+    "frequencyHz": 61,
+    "durationMs": 69,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-a|crate-a:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:133:crate-b|crate-b:shape|floor",
+    "tick": 133,
+    "cue": "impact.wood",
+    "position": {
+      "x": 1939,
+      "y": 0,
+      "z": 199
+    },
+    "gainQ": 137000,
+    "pitchQ": 863700,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-b"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:133:crate-b|crate-b:shape|floor:crate-b",
+    "tick": 133,
+    "bodyId": "crate-b",
+    "zone": "object",
+    "amplitudeQ": 137000,
+    "frequencyHz": 59,
+    "durationMs": 64,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-b|crate-b:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:137:crate-a|crate-a:shape|floor",
+    "tick": 137,
+    "cue": "impact.wood",
+    "position": {
+      "x": 911,
+      "y": 0,
+      "z": 148
+    },
+    "gainQ": 156400,
+    "pitchQ": 865640,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-a"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:137:crate-a|crate-a:shape|floor:crate-a",
+    "tick": 137,
+    "bodyId": "crate-a",
+    "zone": "object",
+    "amplitudeQ": 156400,
+    "frequencyHz": 61,
+    "durationMs": 69,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-a|crate-a:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:137:floor|orb|orb:shape",
+    "tick": 137,
+    "cue": "impact.body",
+    "position": {
+      "x": 1991,
+      "y": 0,
+      "z": -801
+    },
+    "gainQ": 182600,
+    "pitchQ": 868260,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "orb"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:137:floor|orb|orb:shape:orb",
+    "tick": 137,
+    "bodyId": "orb",
+    "zone": "object",
+    "amplitudeQ": 182600,
+    "frequencyHz": 63,
+    "durationMs": 76,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "floor|orb|orb:shape"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:140:crate-b|crate-b:shape|floor",
+    "tick": 140,
+    "cue": "impact.wood",
+    "position": {
+      "x": 1939,
+      "y": 0,
+      "z": 199
+    },
+    "gainQ": 137000,
+    "pitchQ": 863700,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-b"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:140:crate-b|crate-b:shape|floor:crate-b",
+    "tick": 140,
+    "bodyId": "crate-b",
+    "zone": "object",
+    "amplitudeQ": 137000,
+    "frequencyHz": 59,
+    "durationMs": 64,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-b|crate-b:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:144:crate-a|crate-a:shape|floor",
+    "tick": 144,
+    "cue": "impact.wood",
+    "position": {
+      "x": 911,
+      "y": 0,
+      "z": 148
+    },
+    "gainQ": 156400,
+    "pitchQ": 865640,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-a"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:144:crate-a|crate-a:shape|floor:crate-a",
+    "tick": 144,
+    "bodyId": "crate-a",
+    "zone": "object",
+    "amplitudeQ": 156400,
+    "frequencyHz": 61,
+    "durationMs": 69,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-a|crate-a:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:145:floor|orb|orb:shape",
+    "tick": 145,
+    "cue": "impact.body",
+    "position": {
+      "x": 1991,
+      "y": 0,
+      "z": -801
+    },
+    "gainQ": 182600,
+    "pitchQ": 868260,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "orb"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:145:floor|orb|orb:shape:orb",
+    "tick": 145,
+    "bodyId": "orb",
+    "zone": "object",
+    "amplitudeQ": 182600,
+    "frequencyHz": 63,
+    "durationMs": 76,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "floor|orb|orb:shape"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:147:crate-b|crate-b:shape|floor",
+    "tick": 147,
+    "cue": "impact.wood",
+    "position": {
+      "x": 1939,
+      "y": 0,
+      "z": 199
+    },
+    "gainQ": 137000,
+    "pitchQ": 863700,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-b"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:147:crate-b|crate-b:shape|floor:crate-b",
+    "tick": 147,
+    "bodyId": "crate-b",
+    "zone": "object",
+    "amplitudeQ": 137000,
+    "frequencyHz": 59,
+    "durationMs": 64,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-b|crate-b:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:148:avatar|avatar:capsule|crate-b|crate-b:shape",
+    "tick": 148,
+    "cue": "impact.body",
+    "position": {
+      "x": 1736,
+      "y": 989,
+      "z": 641
+    },
+    "gainQ": 863600,
+    "pitchQ": 936360,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "avatar"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:148:avatar|avatar:capsule|crate-b|crate-b:shape:avatar",
+    "tick": 148,
+    "bodyId": "avatar",
+    "zone": "torso",
+    "amplitudeQ": 863600,
+    "frequencyHz": 131,
+    "durationMs": 220,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "avatar|avatar:capsule|crate-b|crate-b:shape"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:148:avatar|avatar:capsule|crate-b|crate-b:shape:crate-b",
+    "tick": 148,
+    "bodyId": "crate-b",
+    "zone": "object",
+    "amplitudeQ": 863600,
+    "frequencyHz": 131,
+    "durationMs": 220,
+    "direction": {
+      "x": 0,
+      "y": -1000000,
+      "z": 0
+    },
+    "sourceContactId": "avatar|avatar:capsule|crate-b|crate-b:shape"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:150:avatar|avatar:capsule|crate-b|crate-b:shape",
+    "tick": 150,
+    "cue": "impact.wood",
+    "position": {
+      "x": 1776,
+      "y": 1114,
+      "z": 646
+    },
+    "gainQ": 80000,
+    "pitchQ": 850000,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-b"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:150:avatar|avatar:capsule|crate-b|crate-b:shape:crate-b",
+    "tick": 150,
+    "bodyId": "crate-b",
+    "zone": "object",
+    "amplitudeQ": 80000,
+    "frequencyHz": 45,
+    "durationMs": 30,
+    "direction": {
+      "x": 0,
+      "y": 0,
+      "z": -1000000
+    },
+    "sourceContactId": "avatar|avatar:capsule|crate-b|crate-b:shape"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:150:avatar|avatar:capsule|crate-b|crate-b:shape:avatar",
+    "tick": 150,
+    "bodyId": "avatar",
+    "zone": "torso",
+    "amplitudeQ": 80000,
+    "frequencyHz": 45,
+    "durationMs": 30,
+    "direction": {
+      "x": 0,
+      "y": 0,
+      "z": 1000000
+    },
+    "sourceContactId": "avatar|avatar:capsule|crate-b|crate-b:shape"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:151:crate-a|crate-a:shape|floor",
+    "tick": 151,
+    "cue": "impact.wood",
+    "position": {
+      "x": 911,
+      "y": 0,
+      "z": 148
+    },
+    "gainQ": 156400,
+    "pitchQ": 865640,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-a"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:151:crate-a|crate-a:shape|floor:crate-a",
+    "tick": 151,
+    "bodyId": "crate-a",
+    "zone": "object",
+    "amplitudeQ": 156400,
+    "frequencyHz": 61,
+    "durationMs": 69,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-a|crate-a:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:151:crate-b|crate-b:shape|orb|orb:shape",
+    "tick": 151,
+    "cue": "impact.wood",
+    "position": {
+      "x": 1991,
+      "y": 386,
+      "z": -620
+    },
+    "gainQ": 80000,
+    "pitchQ": 850000,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-b"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:151:crate-b|crate-b:shape|orb|orb:shape:crate-b",
+    "tick": 151,
+    "bodyId": "crate-b",
+    "zone": "object",
+    "amplitudeQ": 80000,
+    "frequencyHz": 45,
+    "durationMs": 30,
+    "direction": {
+      "x": 0,
+      "y": 0,
+      "z": 1000000
+    },
+    "sourceContactId": "crate-b|crate-b:shape|orb|orb:shape"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:151:crate-b|crate-b:shape|orb|orb:shape:orb",
+    "tick": 151,
+    "bodyId": "orb",
+    "zone": "object",
+    "amplitudeQ": 80000,
+    "frequencyHz": 45,
+    "durationMs": 30,
+    "direction": {
+      "x": 0,
+      "y": 0,
+      "z": -1000000
+    },
+    "sourceContactId": "crate-b|crate-b:shape|orb|orb:shape"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:153:floor|orb|orb:shape",
+    "tick": 153,
+    "cue": "impact.body",
+    "position": {
+      "x": 1991,
+      "y": 0,
+      "z": -1634
+    },
+    "gainQ": 182600,
+    "pitchQ": 868260,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "orb"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:153:floor|orb|orb:shape:orb",
+    "tick": 153,
+    "bodyId": "orb",
+    "zone": "object",
+    "amplitudeQ": 182600,
+    "frequencyHz": 63,
+    "durationMs": 76,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "floor|orb|orb:shape"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:160:crate-a|crate-a:shape|floor",
+    "tick": 160,
+    "cue": "impact.wood",
+    "position": {
+      "x": 911,
+      "y": 0,
+      "z": 148
+    },
+    "gainQ": 156400,
+    "pitchQ": 865640,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-a"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:160:crate-a|crate-a:shape|floor:crate-a",
+    "tick": 160,
+    "bodyId": "crate-a",
+    "zone": "object",
+    "amplitudeQ": 156400,
+    "frequencyHz": 61,
+    "durationMs": 69,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-a|crate-a:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:161:floor|orb|orb:shape",
+    "tick": 161,
+    "cue": "impact.body",
+    "position": {
+      "x": 1991,
+      "y": 0,
+      "z": -1634
+    },
+    "gainQ": 182600,
+    "pitchQ": 868260,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "orb"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:161:floor|orb|orb:shape:orb",
+    "tick": 161,
+    "bodyId": "orb",
+    "zone": "object",
+    "amplitudeQ": 182600,
+    "frequencyHz": 63,
+    "durationMs": 76,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "floor|orb|orb:shape"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:163:avatar|avatar:capsule|floor",
+    "tick": 163,
+    "cue": "impact.body",
+    "position": {
+      "x": 2136,
+      "y": 0,
+      "z": 1239
+    },
+    "gainQ": 492200,
+    "pitchQ": 899220,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "avatar"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:163:avatar|avatar:capsule|floor:avatar",
+    "tick": 163,
+    "bodyId": "avatar",
+    "zone": "torso",
+    "amplitudeQ": 492200,
+    "frequencyHz": 94,
+    "durationMs": 153,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "avatar|avatar:capsule|floor"
+  },
+  {
+    "kind": "footstep",
+    "id": "footstep:163:subject:player:left",
+    "tick": 163,
+    "characterId": "subject:player",
+    "bodyId": "avatar",
+    "foot": "left",
+    "position": {
+      "x": 2036,
+      "y": 0,
+      "z": 1239
+    },
+    "materialId": "ground"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:footstep:163:subject:player:left",
+    "tick": 163,
+    "cue": "footstep.ground",
+    "position": {
+      "x": 2036,
+      "y": 0,
+      "z": 1239
+    },
+    "gainQ": 300000,
+    "pitchQ": 970000,
+    "minDistance": 200,
+    "maxDistance": 8000,
+    "occlusionQ": 0,
+    "sourceBodyId": "avatar"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:footstep:163:subject:player:left",
+    "tick": 163,
+    "bodyId": "avatar",
+    "zone": "foot.left",
+    "amplitudeQ": 180000,
+    "frequencyHz": 65,
+    "durationMs": 45,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    }
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:164:crate-b|crate-b:shape|floor",
+    "tick": 164,
+    "cue": "impact.wood",
+    "position": {
+      "x": 2070,
+      "y": 0,
+      "z": 306
+    },
+    "gainQ": 684600,
+    "pitchQ": 918460,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-b"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:164:crate-b|crate-b:shape|floor:crate-b",
+    "tick": 164,
+    "bodyId": "crate-b",
+    "zone": "object",
+    "amplitudeQ": 684600,
+    "frequencyHz": 113,
+    "durationMs": 201,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-b|crate-b:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:166:avatar|avatar:capsule|floor",
+    "tick": 166,
+    "cue": "impact.body",
+    "position": {
+      "x": 2214,
+      "y": 0,
+      "z": 1257
+    },
+    "gainQ": 97800,
+    "pitchQ": 859780,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "avatar"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:166:avatar|avatar:capsule|floor:avatar",
+    "tick": 166,
+    "bodyId": "avatar",
+    "zone": "torso",
+    "amplitudeQ": 97800,
+    "frequencyHz": 55,
+    "durationMs": 54,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "avatar|avatar:capsule|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:167:crate-a|crate-a:shape|floor",
+    "tick": 167,
+    "cue": "impact.wood",
+    "position": {
+      "x": 911,
+      "y": 0,
+      "z": 148
+    },
+    "gainQ": 156400,
+    "pitchQ": 865640,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-a"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:167:crate-a|crate-a:shape|floor:crate-a",
+    "tick": 167,
+    "bodyId": "crate-a",
+    "zone": "object",
+    "amplitudeQ": 156400,
+    "frequencyHz": 61,
+    "durationMs": 69,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-a|crate-a:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:169:avatar|avatar:capsule|floor",
+    "tick": 169,
+    "cue": "impact.body",
+    "position": {
+      "x": 2294,
+      "y": 0,
+      "z": 1275
+    },
+    "gainQ": 97800,
+    "pitchQ": 859780,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "avatar"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:169:avatar|avatar:capsule|floor:avatar",
+    "tick": 169,
+    "bodyId": "avatar",
+    "zone": "torso",
+    "amplitudeQ": 97800,
+    "frequencyHz": 55,
+    "durationMs": 54,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "avatar|avatar:capsule|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:169:floor|orb|orb:shape",
+    "tick": 169,
+    "cue": "impact.body",
+    "position": {
+      "x": 1991,
+      "y": 0,
+      "z": -1634
+    },
+    "gainQ": 182600,
+    "pitchQ": 868260,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "orb"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:169:floor|orb|orb:shape:orb",
+    "tick": 169,
+    "bodyId": "orb",
+    "zone": "object",
+    "amplitudeQ": 182600,
+    "frequencyHz": 63,
+    "durationMs": 76,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "floor|orb|orb:shape"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:170:crate-b|crate-b:shape|floor",
+    "tick": 170,
+    "cue": "impact.wood",
+    "position": {
+      "x": 2100,
+      "y": 0,
+      "z": 312
+    },
+    "gainQ": 273800,
+    "pitchQ": 877380,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-b"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:170:crate-b|crate-b:shape|floor:crate-b",
+    "tick": 170,
+    "bodyId": "crate-b",
+    "zone": "object",
+    "amplitudeQ": 273800,
+    "frequencyHz": 72,
+    "durationMs": 98,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-b|crate-b:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:174:avatar|avatar:capsule|floor",
+    "tick": 174,
+    "cue": "impact.body",
+    "position": {
+      "x": 2431,
+      "y": 0,
+      "z": 1305
+    },
+    "gainQ": 130400,
+    "pitchQ": 863040,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "avatar"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:174:avatar|avatar:capsule|floor:avatar",
+    "tick": 174,
+    "bodyId": "avatar",
+    "zone": "torso",
+    "amplitudeQ": 130400,
+    "frequencyHz": 58,
+    "durationMs": 63,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "avatar|avatar:capsule|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:174:crate-a|crate-a:shape|floor",
+    "tick": 174,
+    "cue": "impact.wood",
+    "position": {
+      "x": 911,
+      "y": 0,
+      "z": 148
+    },
+    "gainQ": 156400,
+    "pitchQ": 865640,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-a"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:174:crate-a|crate-a:shape|floor:crate-a",
+    "tick": 174,
+    "bodyId": "crate-a",
+    "zone": "object",
+    "amplitudeQ": 156400,
+    "frequencyHz": 61,
+    "durationMs": 69,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-a|crate-a:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:176:crate-b|crate-b:shape|floor",
+    "tick": 176,
+    "cue": "impact.wood",
+    "position": {
+      "x": 2118,
+      "y": 0,
+      "z": 312
+    },
+    "gainQ": 273800,
+    "pitchQ": 877380,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-b"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:176:crate-b|crate-b:shape|floor:crate-b",
+    "tick": 176,
+    "bodyId": "crate-b",
+    "zone": "object",
+    "amplitudeQ": 273800,
+    "frequencyHz": 72,
+    "durationMs": 98,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-b|crate-b:shape|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:177:floor|orb|orb:shape",
+    "tick": 177,
+    "cue": "impact.body",
+    "position": {
+      "x": 1991,
+      "y": 0,
+      "z": -1634
+    },
+    "gainQ": 182600,
+    "pitchQ": 868260,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "orb"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:177:floor|orb|orb:shape:orb",
+    "tick": 177,
+    "bodyId": "orb",
+    "zone": "object",
+    "amplitudeQ": 182600,
+    "frequencyHz": 63,
+    "durationMs": 76,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "floor|orb|orb:shape"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:178:avatar|avatar:capsule|floor",
+    "tick": 178,
+    "cue": "impact.body",
+    "position": {
+      "x": 2543,
+      "y": 0,
+      "z": 1329
+    },
+    "gainQ": 130400,
+    "pitchQ": 863040,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "avatar"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:178:avatar|avatar:capsule|floor:avatar",
+    "tick": 178,
+    "bodyId": "avatar",
+    "zone": "torso",
+    "amplitudeQ": 130400,
+    "frequencyHz": 58,
+    "durationMs": 63,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "avatar|avatar:capsule|floor"
+  },
+  {
+    "kind": "spatial-audio",
+    "id": "audio:179:crate-b|crate-b:shape|floor",
+    "tick": 179,
+    "cue": "impact.wood",
+    "position": {
+      "x": 2124,
+      "y": 0,
+      "z": 312
+    },
+    "gainQ": 137000,
+    "pitchQ": 863700,
+    "minDistance": 300,
+    "maxDistance": 12000,
+    "occlusionQ": 0,
+    "sourceBodyId": "crate-b"
+  },
+  {
+    "kind": "haptic",
+    "id": "haptic:179:crate-b|crate-b:shape|floor:crate-b",
+    "tick": 179,
+    "bodyId": "crate-b",
+    "zone": "object",
+    "amplitudeQ": 137000,
+    "frequencyHz": 59,
+    "durationMs": 64,
+    "direction": {
+      "x": 0,
+      "y": 1000000,
+      "z": 0
+    },
+    "sourceContactId": "crate-b|crate-b:shape|floor"
+  }
+]

@@ -1,0 +1,31 @@
+{
+  "ok": true,
+  "verification": {
+    "ok": true,
+    "diagnostics": []
+  },
+  "sceneId": "spatial-showcase",
+  "frameRoot": "2683103adcb3fcaa7eafdfffaef002796a760c840a41034db84b28dca9e07f47",
+  "pixelRoot": "4b5b48c9caf775ddd4bec0a4b10b97df1c32404b20aa94e51960b410d464477d",
+  "stats": {
+    "meshCount": 4,
+    "nodeCount": 5,
+    "visibleDraws": 5,
+    "culledDraws": 0,
+    "triangleCount": 806,
+    "lightCount": 3,
+    "shadowCasterCount": 4,
+    "lodHistogram": {
+      "0": 5
+    }
+  },
+  "depthRange": {
+    "min": 0.9680302143096924,
+    "max": 0.9940409660339355
+  },
+  "outputs": {
+    "scene": "scene.vsr3d.json",
+    "plan": "frame-plan.json",
+    "png": "reference.png"
+  }
+}

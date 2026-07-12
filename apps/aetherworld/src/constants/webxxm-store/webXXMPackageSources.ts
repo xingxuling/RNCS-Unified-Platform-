@@ -1,0 +1,2 @@
+export const WEBXXM_PACKAGE_SOURCES = ["BUILT_IN_REGISTRY", "LOCAL_FILE", "REMOTE_REGISTRY", "WORKSPACE_EXPORT"] as const;
+export type WebXXMPackageSource = typeof WEBXXM_PACKAGE_SOURCES[number];

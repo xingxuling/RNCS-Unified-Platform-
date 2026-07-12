@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "aetherseed.judgement.v1",
+  "judgementId": "jud_20260526_task_scan_001",
+  "eventId": "evt_20260526_task_scan_001",
+  "createdAt": "2026-05-26T15:42:00Z",
+  "model": {
+    "id": "aetherseed-tiny",
+    "status": "WRAPPER_NOT_FINETUNED",
+    "baseModel": "qwen3:8b"
+  },
+  "conclusion": "The next safe step is to use the scan summary as an evidence pack and generate draft-only engineering tasks, not to let the model claim direct computer access or execute commands.",
+  "evidence": [
+    {
+      "claim": "The event comes from an explicit read-only scanner output.",
+      "evidenceRefIds": ["evref_scan_json"],
+      "strength": "HIGH"
+    },
+    {
+      "claim": "Aetherworld registry data can provide module and risk vocabulary for classification.",
+      "evidenceRefIds": ["evref_registry"],
+      "strength": "MEDIUM"
+    }
+  ],
+  "verifiableAssumptions": [
+    {
+      "assumption": "The scan summary contains enough metadata to rank candidate tasks without reading private file contents.",
+      "verificationMethod": "Run task discovery over the JSON and check whether produced tasks have file references, risk level, and validation steps.",
+      "expectedSignal": "Each task candidate has a clear module, risk, effort, and next dry-run action."
+    }
+  ],
+  "risks": [
+    {
+      "risk": "The model may overclaim that it scanned the computer directly.",
+      "severity": "MEDIUM",
+      "mitigation": "Prompt and schema must state that analysis is limited to the provided evidence pack."
+    },
+    {
+      "risk": "Private repository metadata may be over-exported into training samples.",
+      "severity": "HIGH",
+      "mitigation": "Feedback samples must include safetyProfile and exportAllowed flags."
+    }
+  ],
+  "recommendedNextActions": [
+    {
+      "kind": "ACTION_ID",
+      "actionId": "act_20260526_codex_prompt_001"
+    }
+  ],
+  "confidence": {
+    "score": 0.78,
+    "reason": "The event source and safety boundary are clear, but task usefulness depends on scanner output quality."
+  },
+  "trainingValue": {
+    "canBecomeFeedbackSample": true,
+    "suggestedSampleType": "TASK_ANALYSIS",
+    "notes": "Useful for training AetherSeed to distinguish evidence-based local analysis from fake capability claims."
+  }
+}

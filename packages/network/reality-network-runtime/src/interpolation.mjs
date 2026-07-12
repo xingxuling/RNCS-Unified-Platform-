@@ -1,0 +1,9 @@
+import {clone} from './protocol.mjs';
+export class SnapshotInterpolator {
+  constructor({interpolationDelay=2, maximumPredictionWindow=4, errorThreshold=500, teleportThreshold=4000}={}) { this.interpolationDelay=interpolationDelay; this.maximumPredictionWindow=maximumPredictionWindow; this.errorThreshold=errorThreshold; this.teleportThreshold=teleportThreshold; this.buffers=new Map(); }
+  push(packet){for(const object of packet.objects??[]){const list=this.buffers.get(object.objectId)??[]; list.push({tick:packet.tick,object:clone(object)}); list.sort((a,b)=>a.tick-b.tick); while(list.length>32)list.shift(); this.buffers.set(object.objectId,list);}}
+  sample(objectId,serverTick){const list=this.buffers.get(objectId)??[]; if(!list.length)return null; const target=serverTick-this.interpolationDelay; let a=list[0],b=list[list.length-1]; for(let i=0;i<list.length-1;i++)if(list[i].tick<=target&&list[i+1].tick>=target){a=list[i];b=list[i+1];break;}
+    const dist=Math.hypot(b.object.position.x-a.object.position.x,b.object.position.y-a.object.position.y,b.object.position.z-a.object.position.z); if(dist>this.teleportThreshold)return {...clone(b.object),mode:'teleport'};
+    if(a.tick===b.tick||target<=a.tick)return {...clone(a.object),mode:'hold'}; if(target>b.tick){const dt=Math.min(target-b.tick,this.maximumPredictionWindow);return {...clone(b.object),position:{x:b.object.position.x+b.object.velocity.x*dt/60,y:b.object.position.y+b.object.velocity.y*dt/60,z:b.object.position.z+b.object.velocity.z*dt/60},mode:'extrapolate'};}
+    const t=(target-a.tick)/(b.tick-a.tick),lerp=(x,y)=>Math.round(x+(y-x)*t);return {...clone(b.object),position:{x:lerp(a.object.position.x,b.object.position.x),y:lerp(a.object.position.y,b.object.position.y),z:lerp(a.object.position.z,b.object.position.z)},mode:'interpolate'};}
+}

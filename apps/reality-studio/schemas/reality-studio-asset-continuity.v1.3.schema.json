@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.example/schemas/reality-studio-asset-continuity.v1.3.schema.json",
+  "title": "Reality Studio Asset Continuity Record v1.3",
+  "type": "object",
+  "required": ["format", "asset_id", "name", "kind", "source", "files", "dependencies", "import_state", "asset_root"],
+  "properties": {
+    "format": {"const": "reality-studio.asset-record.v1.3"},
+    "asset_id": {"type": "string", "minLength": 1},
+    "name": {"type": "string", "minLength": 1},
+    "kind": {"type": "string", "minLength": 1},
+    "continuity_policy": {"type": "string"},
+    "source": {
+      "type": "object",
+      "required": ["kind", "sha256", "size"],
+      "properties": {
+        "kind": {"enum": ["local-file", "embedded"]},
+        "relative_path": {"type": "string"},
+        "absolute_path": {"type": ["string", "null"]},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "size": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": true
+    },
+    "files": {"type": "array", "items": {"type": "object", "required": ["role", "path", "mime"]}},
+    "dependencies": {"type": "array", "items": {"type": "object"}},
+    "status": {"type": "string"},
+    "import_state": {
+      "type": "object",
+      "required": ["generation", "last_imported_at", "source_fingerprint"],
+      "properties": {
+        "generation": {"type": "integer", "minimum": 1},
+        "changed": {"type": "boolean"},
+        "stale": {"type": "boolean"},
+        "history": {"type": "array"}
+      },
+      "additionalProperties": true
+    },
+    "asset_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "additionalProperties": true
+}

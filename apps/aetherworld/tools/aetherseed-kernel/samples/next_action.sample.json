@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "aetherseed.next_action.v1",
+  "actionId": "act_20260526_codex_prompt_001",
+  "eventId": "evt_20260526_task_scan_001",
+  "judgementId": "jud_20260526_task_scan_001",
+  "createdAt": "2026-05-26T15:44:00Z",
+  "actionType": "CODEX_PROMPT",
+  "permissionLevel": "DRAFT",
+  "title": "Generate draft-only Codex task from local scan evidence",
+  "description": "Compile a safe Codex prompt from the provided scan summary. The prompt must ask Codex to inspect relevant files and propose changes without touching high-risk runtime unless explicitly allowed.",
+  "target": {
+    "tool": "codex",
+    "path": "taowindaether"
+  },
+  "draftPayload": "You are Codex. Read the provided task_scan.json summary and propose the smallest safe engineering task. Do not modify safety, provider, gateway, secret, or training execution files. Return changed-file plan, risk notes, and validation commands before editing.",
+  "commands": [],
+  "forbiddenFiles": [
+    "src/lib/**/safety*",
+    "src/lib/**/secret*",
+    "src/lib/**/provider*",
+    "src/lib/aetherseed-auto-training/**",
+    "package.json"
+  ],
+  "acceptanceCriteria": [
+    "Prompt is draft-only and does not claim execution.",
+    "Prompt includes forbidden files and validation commands.",
+    "Prompt references the scanner output as evidence rather than direct model access."
+  ],
+  "validationPlan": [
+    "Human reviews generated Codex prompt before use.",
+    "If Codex edits files later, run relevant build/test commands in that separate task."
+  ],
+  "status": "DRAFTED",
+  "auditNotes": [
+    "No local command execution is requested by this action.",
+    "This action is safe to convert into a feedback sample if accepted."
+  ]
+}

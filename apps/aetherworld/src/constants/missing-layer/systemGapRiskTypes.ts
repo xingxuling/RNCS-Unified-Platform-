@@ -1,0 +1,13 @@
+export const SYSTEM_GAP_RISK_TYPES = [
+  "FRAGMENTATION",
+  "OVERGROWTH",
+  "RUNTIME_BREAK",
+  "GOVERNANCE_GAP",
+  "MEANING_DRIFT",
+  "USER_CONFUSION",
+  "COMMERCIAL_INVISIBILITY",
+  "OBJECT_LEAK",
+  "DOC_LAG",
+  "QA_GAP",
+] as const;
+export type SystemGapRiskType = (typeof SYSTEM_GAP_RISK_TYPES)[number];

@@ -1,0 +1,11 @@
+{
+  "specVersion":"0.1","metadata":{"id":"interactive-card","title":"Interactive Card","duration":20,"defaultFps":60,"seed":99},
+  "canvas":{"width":800,"height":600,"layoutMode":"responsive","background":{"type":"solid","color":"#111827"}},
+  "variables":{"active":false,"title":"AGENT-NATIVE CARD"},
+  "nodes":[
+    {"id":"card","type":"rect","layout":{"x":"50%","y":"50%","width":460,"height":280,"anchorX":0.5,"anchorY":0.5,"responsive":[{"when":{"maxWidth":600},"set":{"width":"86%","height":260}}]},"appearance":{"fill":{"type":"solid","color":"#22304a"},"stroke":{"type":"solid","color":"#4d89d8"},"strokeWidth":3,"opacity":1},"content":{"cornerRadius":28},"tracks":[{"id":"card-move","property":"transform.translateX","mode":"expression","expression":"(input.pointerX - context.width / 2) * 0.03"},{"id":"card-move-y","property":"transform.translateY","mode":"expression","expression":"(input.pointerY - context.height / 2) * 0.03"}]},
+    {"id":"card-title","type":"text","layout":{"x":"50%","y":"46%","width":400,"height":60,"anchorX":0.5,"anchorY":0.5},"appearance":{"fill":{"type":"solid","color":"#f5f9ff"}},"content":{"text":{"binding":"vars.title"},"fontSize":32,"fontWeight":"bold","align":"center"}},
+    {"id":"hint","type":"text","layout":{"x":"50%","y":"59%","width":360,"height":40,"anchorX":0.5,"anchorY":0.5},"appearance":{"fill":{"type":"solid","color":"#8bbcff"}},"content":{"text":"MOVE THE POINTER","fontSize":18,"align":"center"}}
+  ],
+  "interactions":[{"id":"toggle","nodeId":"card","trigger":"click","action":{"type":"setVariable","target":"active","value":true}}]
+}

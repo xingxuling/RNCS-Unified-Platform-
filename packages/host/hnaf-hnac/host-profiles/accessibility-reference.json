@@ -1,0 +1,44 @@
+{
+  "id": "hnaf.reference.accessibility",
+  "family": "desktop",
+  "execution_profiles": [
+    "wasm-core@1",
+    "declarative-v0"
+  ],
+  "capabilities": {
+    "host.log": [
+      "1"
+    ],
+    "host.clock": [
+      "1"
+    ],
+    "environment.summary": [
+      "1"
+    ],
+    "storage.kv": [
+      "1",
+      "2"
+    ],
+    "storage.state": [
+      "1"
+    ]
+  },
+  "interaction_modes": [
+    "pointer",
+    "keyboard",
+    "screen-reader",
+    "voice"
+  ],
+  "resources": {
+    "viewport_width": 1280,
+    "viewport_height": 900,
+    "screen_reader": true,
+    "spatial": false
+  },
+  "policies": {
+    "require_signature": false,
+    "network_default": "deny",
+    "accessibility_mode": true,
+    "reduced_motion": true
+  }
+}

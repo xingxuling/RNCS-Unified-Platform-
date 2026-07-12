@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HNAC Hello Portable State",
+  "type": "object",
+  "properties": {
+    "launch_state": {"type": "string"}
+  },
+  "additionalProperties": false
+}

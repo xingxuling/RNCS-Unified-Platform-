@@ -1,0 +1,3534 @@
+{
+  "specVersion": "0.1",
+  "runtimeTarget": "rsr-embodied-dynamics-vsr-v0.3",
+  "metadata": {
+    "id": "embodied-dynamics:advanced-playground",
+    "title": "现实原生具身动力学织构",
+    "duration": 86400,
+    "defaultFps": 60,
+    "seed": 1,
+    "description": "具身动力学与现实约束求解层的观察者相对 Visual IR。"
+  },
+  "canvas": {
+    "width": 960,
+    "height": 540,
+    "background": {
+      "type": "solid",
+      "color": "#0f172a"
+    }
+  },
+  "variables": {
+    "worldId": "advanced-playground",
+    "tick": 0,
+    "stateRoot": ""
+  },
+  "nodes": [
+    {
+      "id": "joint:pendulum-hinge",
+      "type": "line",
+      "zIndex": 12,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "appearance": {
+        "stroke": {
+          "type": "solid",
+          "color": "#fbbf24"
+        },
+        "strokeWidth": 2
+      },
+      "content": {
+        "x1": 0,
+        "y1": 0,
+        "x2": 0,
+        "y2": 0
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      },
+      "data": {
+        "jointId": "pendulum-hinge",
+        "type": "revolute"
+      }
+    },
+    {
+      "id": "joint:slider-joint",
+      "type": "line",
+      "zIndex": 12,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "appearance": {
+        "stroke": {
+          "type": "solid",
+          "color": "#fbbf24"
+        },
+        "strokeWidth": 2
+      },
+      "content": {
+        "x1": 0,
+        "y1": 0,
+        "x2": 0,
+        "y2": 0
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      },
+      "data": {
+        "jointId": "slider-joint",
+        "type": "prismatic"
+      }
+    },
+    {
+      "id": "fixture:bullet:bullet-shape",
+      "type": "path",
+      "zIndex": 20,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#2563eb"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#e2e8f0"
+        },
+        "strokeWidth": 1,
+        "opacity": 1
+      },
+      "content": {
+        "d": "M 89.0000 180.0000 L 88.6933 182.3294 L 87.7942 184.5000 L 86.3640 186.3640 L 84.5000 187.7942 L 82.3294 188.6933 L 80.0000 189.0000 L 77.6706 188.6933 L 75.5000 187.7942 L 73.6360 186.3640 L 72.2058 184.5000 L 71.3067 182.3294 L 71.0000 180.0000 L 71.3067 177.6706 L 72.2058 175.5000 L 73.6360 173.6360 L 75.5000 172.2058 L 77.6706 171.3067 L 80.0000 171.0000 L 82.3294 171.3067 L 84.5000 172.2058 L 86.3640 173.6360 L 87.7942 175.5000 L 88.6933 177.6706 Z"
+      },
+      "tags": [
+        "embodied-fixture",
+        "dynamic",
+        "circle"
+      ],
+      "data": {
+        "bodyId": "bullet",
+        "fixtureId": "bullet-shape",
+        "shape": "circle",
+        "sensor": false
+      }
+    },
+    {
+      "id": "label:bullet:bullet-shape",
+      "type": "text",
+      "zIndex": 45,
+      "layout": {
+        "x": 71,
+        "y": 153,
+        "width": 120,
+        "height": 16
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#f8fafc"
+        }
+      },
+      "content": {
+        "text": "bullet/bullet-shape",
+        "fontSize": 11
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "velocity:bullet",
+      "type": "line",
+      "zIndex": 40,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "appearance": {
+        "stroke": {
+          "type": "solid",
+          "color": "#f97316"
+        },
+        "strokeWidth": 2
+      },
+      "content": {
+        "x1": 0,
+        "y1": 0,
+        "x2": 0,
+        "y2": 0
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "fixture:buoyant-box:float",
+      "type": "path",
+      "zIndex": 20,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#2563eb"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#e2e8f0"
+        },
+        "strokeWidth": 1,
+        "opacity": 1
+      },
+      "content": {
+        "d": "M 765.3719 395.9198 L 831.9712 432.5331 L 814.6281 464.0802 L 748.0288 427.4669 Z"
+      },
+      "tags": [
+        "embodied-fixture",
+        "dynamic",
+        "box"
+      ],
+      "data": {
+        "bodyId": "buoyant-box",
+        "fixtureId": "float",
+        "shape": "box",
+        "sensor": false
+      }
+    },
+    {
+      "id": "label:buoyant-box:float",
+      "type": "text",
+      "zIndex": 45,
+      "layout": {
+        "x": 748.0287800245023,
+        "y": 377.91984014334525,
+        "width": 163.94243995099532,
+        "height": 16
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#f8fafc"
+        }
+      },
+      "content": {
+        "text": "buoyant-box/float",
+        "fontSize": 11
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "velocity:buoyant-box",
+      "type": "line",
+      "zIndex": 40,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "appearance": {
+        "stroke": {
+          "type": "solid",
+          "color": "#f97316"
+        },
+        "strokeWidth": 2
+      },
+      "content": {
+        "x1": 0,
+        "y1": 0,
+        "x2": 0,
+        "y2": 0
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "fixture:goal-sensor:goal",
+      "type": "path",
+      "zIndex": 10,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#a855f7"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#e9d5ff"
+        },
+        "strokeWidth": 2,
+        "opacity": 0.45
+      },
+      "content": {
+        "d": "M 916.0000 430.0000 L 914.7733 439.3175 L 911.1769 448.0000 L 905.4558 455.4558 L 898.0000 461.1769 L 889.3175 464.7733 L 880.0000 466.0000 L 870.6825 464.7733 L 862.0000 461.1769 L 854.5442 455.4558 L 848.8231 448.0000 L 845.2267 439.3175 L 844.0000 430.0000 L 845.2267 420.6825 L 848.8231 412.0000 L 854.5442 404.5442 L 862.0000 398.8231 L 870.6825 395.2267 L 880.0000 394.0000 L 889.3175 395.2267 L 898.0000 398.8231 L 905.4558 404.5442 L 911.1769 412.0000 L 914.7733 420.6825 Z"
+      },
+      "tags": [
+        "embodied-fixture",
+        "static",
+        "circle"
+      ],
+      "data": {
+        "bodyId": "goal-sensor",
+        "fixtureId": "goal",
+        "shape": "circle",
+        "sensor": true
+      }
+    },
+    {
+      "id": "label:goal-sensor:goal",
+      "type": "text",
+      "zIndex": 45,
+      "layout": {
+        "x": 844,
+        "y": 376,
+        "width": 152,
+        "height": 16
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#f8fafc"
+        }
+      },
+      "content": {
+        "text": "goal-sensor/goal",
+        "fontSize": 11
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "velocity:goal-sensor",
+      "type": "line",
+      "zIndex": 40,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "appearance": {
+        "stroke": {
+          "type": "solid",
+          "color": "#f97316"
+        },
+        "strokeWidth": 2
+      },
+      "content": {
+        "x1": 0,
+        "y1": 0,
+        "x2": 0,
+        "y2": 0
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "fixture:ground:ground-shape",
+      "type": "path",
+      "zIndex": 10,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#334155"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#e2e8f0"
+        },
+        "strokeWidth": 1,
+        "opacity": 1
+      },
+      "content": {
+        "d": "M 30.0000 492.0000 L 930.0000 492.0000 L 930.0000 528.0000 L 30.0000 528.0000 Z"
+      },
+      "tags": [
+        "embodied-fixture",
+        "static",
+        "box"
+      ],
+      "data": {
+        "bodyId": "ground",
+        "fixtureId": "ground-shape",
+        "shape": "box",
+        "sensor": false
+      }
+    },
+    {
+      "id": "label:ground:ground-shape",
+      "type": "text",
+      "zIndex": 45,
+      "layout": {
+        "x": 30,
+        "y": 474,
+        "width": 980,
+        "height": 16
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#f8fafc"
+        }
+      },
+      "content": {
+        "text": "ground/ground-shape",
+        "fontSize": 11
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "velocity:ground",
+      "type": "line",
+      "zIndex": 40,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "appearance": {
+        "stroke": {
+          "type": "solid",
+          "color": "#f97316"
+        },
+        "strokeWidth": 2
+      },
+      "content": {
+        "x1": 0,
+        "y1": 0,
+        "x2": 0,
+        "y2": 0
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "fixture:left-ramp:ramp",
+      "type": "path",
+      "zIndex": 10,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#334155"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#e2e8f0"
+        },
+        "strokeWidth": 1,
+        "opacity": 1
+      },
+      "content": {
+        "d": "M 48.6907 440.8801 L 311.0906 317.4041 L 321.3093 339.1199 L 58.9094 462.5959 Z"
+      },
+      "tags": [
+        "embodied-fixture",
+        "static",
+        "box"
+      ],
+      "data": {
+        "bodyId": "left-ramp",
+        "fixtureId": "ramp",
+        "shape": "box",
+        "sensor": false
+      }
+    },
+    {
+      "id": "label:left-ramp:ramp",
+      "type": "text",
+      "zIndex": 45,
+      "layout": {
+        "x": 48.69072589364629,
+        "y": 299.4040780934723,
+        "width": 352.6185482127074,
+        "height": 16
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#f8fafc"
+        }
+      },
+      "content": {
+        "text": "left-ramp/ramp",
+        "fontSize": 11
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "velocity:left-ramp",
+      "type": "line",
+      "zIndex": 40,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "appearance": {
+        "stroke": {
+          "type": "solid",
+          "color": "#f97316"
+        },
+        "strokeWidth": 2
+      },
+      "content": {
+        "x1": 0,
+        "y1": 0,
+        "x2": 0,
+        "y2": 0
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "fixture:pendulum:rod",
+      "type": "path",
+      "zIndex": 20,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#2563eb"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#e2e8f0"
+        },
+        "strokeWidth": 1,
+        "opacity": 1
+      },
+      "content": {
+        "d": "M 356.0000 300.0000 L 355.1627 304.2095 L 352.7782 307.7782 L 349.2095 310.1627 L 345.0000 311.0000 L 340.7905 310.1627 L 337.2218 307.7782 L 334.8373 304.2095 L 334.0000 300.0000 L 334.0000 170.0000 L 334.8373 165.7905 L 337.2218 162.2218 L 340.7905 159.8373 L 345.0000 159.0000 L 349.2095 159.8373 L 352.7782 162.2218 L 355.1627 165.7905 L 356.0000 170.0000 Z"
+      },
+      "tags": [
+        "embodied-fixture",
+        "dynamic",
+        "capsule"
+      ],
+      "data": {
+        "bodyId": "pendulum",
+        "fixtureId": "rod",
+        "shape": "capsule",
+        "sensor": false
+      }
+    },
+    {
+      "id": "label:pendulum:rod",
+      "type": "text",
+      "zIndex": 45,
+      "layout": {
+        "x": 334,
+        "y": 141,
+        "width": 120,
+        "height": 16
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#f8fafc"
+        }
+      },
+      "content": {
+        "text": "pendulum/rod",
+        "fontSize": 11
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "fixture:pendulum:bob",
+      "type": "path",
+      "zIndex": 20,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#2563eb"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#e2e8f0"
+        },
+        "strokeWidth": 1,
+        "opacity": 1
+      },
+      "content": {
+        "d": "M 373.0000 307.0000 L 372.0459 314.2469 L 369.2487 321.0000 L 364.7990 326.7990 L 359.0000 331.2487 L 352.2469 334.0459 L 345.0000 335.0000 L 337.7531 334.0459 L 331.0000 331.2487 L 325.2010 326.7990 L 320.7513 321.0000 L 317.9541 314.2469 L 317.0000 307.0000 L 317.9541 299.7531 L 320.7513 293.0000 L 325.2010 287.2010 L 331.0000 282.7513 L 337.7531 279.9541 L 345.0000 279.0000 L 352.2469 279.9541 L 359.0000 282.7513 L 364.7990 287.2010 L 369.2487 293.0000 L 372.0459 299.7531 Z"
+      },
+      "tags": [
+        "embodied-fixture",
+        "dynamic",
+        "circle"
+      ],
+      "data": {
+        "bodyId": "pendulum",
+        "fixtureId": "bob",
+        "shape": "circle",
+        "sensor": false
+      }
+    },
+    {
+      "id": "label:pendulum:bob",
+      "type": "text",
+      "zIndex": 45,
+      "layout": {
+        "x": 317,
+        "y": 261,
+        "width": 136,
+        "height": 16
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#f8fafc"
+        }
+      },
+      "content": {
+        "text": "pendulum/bob",
+        "fontSize": 11
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "velocity:pendulum",
+      "type": "line",
+      "zIndex": 40,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "appearance": {
+        "stroke": {
+          "type": "solid",
+          "color": "#f97316"
+        },
+        "strokeWidth": 2
+      },
+      "content": {
+        "x1": 0,
+        "y1": 0,
+        "x2": 0,
+        "y2": 0
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "fixture:pendulum-anchor:anchor",
+      "type": "path",
+      "zIndex": 10,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#334155"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#e2e8f0"
+        },
+        "strokeWidth": 1,
+        "opacity": 1
+      },
+      "content": {
+        "d": "M 354.0000 85.0000 L 353.6933 87.3294 L 352.7942 89.5000 L 351.3640 91.3640 L 349.5000 92.7942 L 347.3294 93.6933 L 345.0000 94.0000 L 342.6706 93.6933 L 340.5000 92.7942 L 338.6360 91.3640 L 337.2058 89.5000 L 336.3067 87.3294 L 336.0000 85.0000 L 336.3067 82.6706 L 337.2058 80.5000 L 338.6360 78.6360 L 340.5000 77.2058 L 342.6706 76.3067 L 345.0000 76.0000 L 347.3294 76.3067 L 349.5000 77.2058 L 351.3640 78.6360 L 352.7942 80.5000 L 353.6933 82.6706 Z"
+      },
+      "tags": [
+        "embodied-fixture",
+        "static",
+        "circle"
+      ],
+      "data": {
+        "bodyId": "pendulum-anchor",
+        "fixtureId": "anchor",
+        "shape": "circle",
+        "sensor": false
+      }
+    },
+    {
+      "id": "label:pendulum-anchor:anchor",
+      "type": "text",
+      "zIndex": 45,
+      "layout": {
+        "x": 336,
+        "y": 58,
+        "width": 120,
+        "height": 16
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#f8fafc"
+        }
+      },
+      "content": {
+        "text": "pendulum-anchor/anchor",
+        "fontSize": 11
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "velocity:pendulum-anchor",
+      "type": "line",
+      "zIndex": 40,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "appearance": {
+        "stroke": {
+          "type": "solid",
+          "color": "#f97316"
+        },
+        "strokeWidth": 2
+      },
+      "content": {
+        "x1": 0,
+        "y1": 0,
+        "x2": 0,
+        "y2": 0
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "fixture:slider:slider-shape",
+      "type": "path",
+      "zIndex": 20,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#2563eb"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#e2e8f0"
+        },
+        "strokeWidth": 1,
+        "opacity": 1
+      },
+      "content": {
+        "d": "M 490.0000 287.0000 L 554.0000 293.0000 L 548.0000 323.0000 L 494.0000 327.0000 Z"
+      },
+      "tags": [
+        "embodied-fixture",
+        "dynamic",
+        "polygon"
+      ],
+      "data": {
+        "bodyId": "slider",
+        "fixtureId": "slider-shape",
+        "shape": "polygon",
+        "sensor": false
+      }
+    },
+    {
+      "id": "label:slider:slider-shape",
+      "type": "text",
+      "zIndex": 45,
+      "layout": {
+        "x": 490,
+        "y": 269,
+        "width": 144,
+        "height": 16
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#f8fafc"
+        }
+      },
+      "content": {
+        "text": "slider/slider-shape",
+        "fontSize": 11
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "velocity:slider",
+      "type": "line",
+      "zIndex": 40,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "appearance": {
+        "stroke": {
+          "type": "solid",
+          "color": "#f97316"
+        },
+        "strokeWidth": 2
+      },
+      "content": {
+        "x1": 0,
+        "y1": 0,
+        "x2": 0,
+        "y2": 0
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "fixture:slider-base:rail",
+      "type": "path",
+      "zIndex": 10,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#334155"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#e2e8f0"
+        },
+        "strokeWidth": 1,
+        "opacity": 1
+      },
+      "content": {
+        "d": "M 410.0000 326.0000 L 630.0000 326.0000 L 630.0000 344.0000 L 410.0000 344.0000 Z"
+      },
+      "tags": [
+        "embodied-fixture",
+        "static",
+        "box"
+      ],
+      "data": {
+        "bodyId": "slider-base",
+        "fixtureId": "rail",
+        "shape": "box",
+        "sensor": false
+      }
+    },
+    {
+      "id": "label:slider-base:rail",
+      "type": "text",
+      "zIndex": 45,
+      "layout": {
+        "x": 410,
+        "y": 308,
+        "width": 300,
+        "height": 16
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#f8fafc"
+        }
+      },
+      "content": {
+        "text": "slider-base/rail",
+        "fontSize": 11
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "velocity:slider-base",
+      "type": "line",
+      "zIndex": 40,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "appearance": {
+        "stroke": {
+          "type": "solid",
+          "color": "#f97316"
+        },
+        "strokeWidth": 2
+      },
+      "content": {
+        "x1": 0,
+        "y1": 0,
+        "x2": 0,
+        "y2": 0
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "fixture:thin-wall:wall-shape",
+      "type": "path",
+      "zIndex": 10,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#334155"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#e2e8f0"
+        },
+        "strokeWidth": 1,
+        "opacity": 1
+      },
+      "content": {
+        "d": "M 625.0000 85.0000 L 635.0000 85.0000 L 635.0000 275.0000 L 625.0000 275.0000 Z"
+      },
+      "tags": [
+        "embodied-fixture",
+        "static",
+        "box"
+      ],
+      "data": {
+        "bodyId": "thin-wall",
+        "fixtureId": "wall-shape",
+        "shape": "box",
+        "sensor": false
+      }
+    },
+    {
+      "id": "label:thin-wall:wall-shape",
+      "type": "text",
+      "zIndex": 45,
+      "layout": {
+        "x": 625,
+        "y": 67,
+        "width": 120,
+        "height": 16
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#f8fafc"
+        }
+      },
+      "content": {
+        "text": "thin-wall/wall-shape",
+        "fontSize": 11
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "velocity:thin-wall",
+      "type": "line",
+      "zIndex": 40,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "appearance": {
+        "stroke": {
+          "type": "solid",
+          "color": "#f97316"
+        },
+        "strokeWidth": 2
+      },
+      "content": {
+        "x1": 0,
+        "y1": 0,
+        "x2": 0,
+        "y2": 0
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "fixture:vortex-capsule:capsule",
+      "type": "path",
+      "zIndex": 20,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#2563eb"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#e2e8f0"
+        },
+        "strokeWidth": 1,
+        "opacity": 1
+      },
+      "content": {
+        "d": "M 752.0000 166.0000 L 757.3576 167.0657 L 761.8995 170.1005 L 764.9343 174.6424 L 766.0000 180.0000 L 764.9343 185.3576 L 761.8995 189.8995 L 757.3576 192.9343 L 752.0000 194.0000 L 688.0000 194.0000 L 682.6424 192.9343 L 678.1005 189.8995 L 675.0657 185.3576 L 674.0000 180.0000 L 675.0657 174.6424 L 678.1005 170.1005 L 682.6424 167.0657 L 688.0000 166.0000 Z"
+      },
+      "tags": [
+        "embodied-fixture",
+        "dynamic",
+        "capsule"
+      ],
+      "data": {
+        "bodyId": "vortex-capsule",
+        "fixtureId": "capsule",
+        "shape": "capsule",
+        "sensor": false
+      }
+    },
+    {
+      "id": "label:vortex-capsule:capsule",
+      "type": "text",
+      "zIndex": 45,
+      "layout": {
+        "x": 674,
+        "y": 148,
+        "width": 172,
+        "height": 16
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#f8fafc"
+        }
+      },
+      "content": {
+        "text": "vortex-capsule/capsule",
+        "fontSize": 11
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "velocity:vortex-capsule",
+      "type": "line",
+      "zIndex": 40,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "appearance": {
+        "stroke": {
+          "type": "solid",
+          "color": "#f97316"
+        },
+        "strokeWidth": 2
+      },
+      "content": {
+        "x1": 0,
+        "y1": 0,
+        "x2": 0,
+        "y2": 0
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:0",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:1",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:2",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:3",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:4",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:5",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:6",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:7",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:8",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:9",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:10",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:11",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:12",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:13",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:14",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:15",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:16",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:17",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:18",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:19",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:20",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:21",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:22",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:23",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:24",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:25",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:26",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:27",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:28",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:29",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:30",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:31",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:32",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:33",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:34",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:35",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:36",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:37",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:38",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:39",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:40",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:41",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:42",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:43",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:44",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:45",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:46",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:47",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:48",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:49",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:50",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:51",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:52",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:53",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:54",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:55",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:56",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:57",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:58",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:59",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:60",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:61",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:62",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:63",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 60,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "debug:status",
+      "type": "text",
+      "zIndex": 80,
+      "layout": {
+        "x": 12,
+        "y": 10,
+        "width": 936,
+        "height": 52
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#f8fafc"
+        }
+      },
+      "content": {
+        "text": "Embodied Dynamics",
+        "fontSize": 14
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "embodied-dynamics-debug-only"
+        }
+      }
+    }
+  ],
+  "extensions": {
+    "rsr:embodied-dynamics-world": {
+      "format": "rsr.embodied-dynamics-world.v0.3",
+      "worldId": "advanced-playground",
+      "configHash": "fnv1a64:a1ab68e441b2fdee",
+      "stableVisualIr": true
+    }
+  }
+}

@@ -1,0 +1,633 @@
+{
+  "format": "rcl.reality-program.v0.3",
+  "languageVersion": "0.3.0-alpha.1",
+  "foundation": {
+    "format": "rcl.reality-foundation.v0.3",
+    "domains": [
+      {
+        "id": "meta-computational",
+        "keyword": "meta",
+        "question": "How can computation inspect, validate and transform computation itself?"
+      },
+      {
+        "id": "computational",
+        "keyword": "reckon/host",
+        "question": "How are symbolic and machine states computed and executed?"
+      },
+      {
+        "id": "physical",
+        "keyword": "physical",
+        "question": "How do matter, energy, fields, space and time evolve?"
+      },
+      {
+        "id": "perceptual",
+        "keyword": "perception",
+        "question": "How does a world become observable and experienced by an observer?"
+      },
+      {
+        "id": "neural",
+        "keyword": "neural",
+        "question": "How do signals become memory, attention, learning, decisions and control?"
+      },
+      {
+        "id": "living",
+        "keyword": "living",
+        "question": "How does a living system maintain continuity, needs and autonomous action?"
+      },
+      {
+        "id": "genetic",
+        "keyword": "genetic",
+        "question": "How are structures encoded, expressed, inherited and changed across generations?"
+      },
+      {
+        "id": "quantitative",
+        "keyword": "quantitative",
+        "question": "What can be measured, on what scale, with what uncertainty, confidence and evidence?"
+      },
+      {
+        "id": "knowledge",
+        "keyword": "knowledge",
+        "question": "How do observations and prior structures become justified, revisable and actionable knowledge?"
+      }
+    ],
+    "crossDomainAxes": [
+      {
+        "id": "authority",
+        "primitives": [
+          "warrant",
+          "needs",
+          "preserve"
+        ],
+        "role": "opens bounded powers while constraining which changes can become authoritative reality"
+      },
+      {
+        "id": "causality-evidence",
+        "primitives": [
+          "cause",
+          "when",
+          "witness",
+          "evidence"
+        ],
+        "role": "connects change and knowledge to causes, conditions, provenance and reproducible evidence"
+      }
+    ],
+    "compositePlanes": [
+      {
+        "id": "inner-reality",
+        "composedFrom": [
+          "perceptual",
+          "neural",
+          "living",
+          "knowledge"
+        ],
+        "role": "the subject-relative model that contains percepts, needs, memories, claims, uncertainty and candidate intentions"
+      },
+      {
+        "id": "execution-reality",
+        "composedFrom": [
+          "computational",
+          "physical",
+          "authority",
+          "causality-evidence"
+        ],
+        "role": "the bounded transition plane that turns a justified intention into an observed, authorized and evidenced change"
+      }
+    ]
+  },
+  "name": "SmallDataCaretaker",
+  "facets": [
+    {
+      "kind": "FacetDecl",
+      "path": "room.temperature",
+      "valueType": "Temperature",
+      "value": {
+        "kind": "CallExpr",
+        "name": "celsius",
+        "args": [
+          {
+            "kind": "LiteralExpr",
+            "value": 8,
+            "valueType": "Number"
+          }
+        ]
+      },
+      "owner": null
+    },
+    {
+      "kind": "FacetDecl",
+      "path": "room.heater",
+      "valueType": "Truth",
+      "value": {
+        "kind": "LiteralExpr",
+        "value": false,
+        "valueType": "Truth"
+      },
+      "owner": null
+    },
+    {
+      "kind": "FacetDecl",
+      "path": "caretaker.actions",
+      "valueType": "Number",
+      "value": {
+        "kind": "LiteralExpr",
+        "value": 0,
+        "valueType": "Number"
+      },
+      "owner": "caretaker"
+    },
+    {
+      "kind": "FacetDecl",
+      "path": "sensor.temperature",
+      "valueType": "Measure<Temperature>",
+      "value": {
+        "kind": "PathExpr",
+        "path": "room.temperature"
+      },
+      "owner": "sensor",
+      "measure": {
+        "kind": "MeasureDecl",
+        "path": "sensor.temperature",
+        "baseType": "Temperature",
+        "value": {
+          "kind": "PathExpr",
+          "path": "room.temperature"
+        },
+        "uncertainty": {
+          "kind": "CallExpr",
+          "name": "celsius",
+          "args": [
+            {
+              "kind": "LiteralExpr",
+              "value": 0.2,
+              "valueType": "Number"
+            }
+          ]
+        },
+        "confidence": {
+          "kind": "LiteralExpr",
+          "value": 0.98,
+          "valueType": "Number"
+        },
+        "unit": "°C",
+        "scale": "interval",
+        "evidence": [
+          "sensor:room-temperature"
+        ],
+        "calibratedBy": "calibration:room-v1"
+      }
+    },
+    {
+      "kind": "FacetDecl",
+      "path": "sight.temperature",
+      "valueType": "Temperature",
+      "value": {
+        "kind": "CallExpr",
+        "name": "measure_value",
+        "args": [
+          {
+            "kind": "PathExpr",
+            "path": "sensor.temperature"
+          }
+        ]
+      },
+      "owner": "sight",
+      "derivedBy": "perception"
+    },
+    {
+      "kind": "FacetDecl",
+      "path": "mind.cold",
+      "valueType": "Know<Truth>",
+      "value": null,
+      "owner": "mind",
+      "knowledge": {
+        "kind": "KnowledgeClaimDecl",
+        "path": "mind.cold",
+        "baseType": "Truth",
+        "expression": {
+          "kind": "BinaryExpr",
+          "operator": "<",
+          "left": {
+            "kind": "PathExpr",
+            "path": "sight.temperature"
+          },
+          "right": {
+            "kind": "CallExpr",
+            "name": "celsius",
+            "args": [
+              {
+                "kind": "LiteralExpr",
+                "value": 12,
+                "valueType": "Number"
+              }
+            ]
+          }
+        },
+        "confidence": {
+          "kind": "CallExpr",
+          "name": "confidence",
+          "args": [
+            {
+              "kind": "PathExpr",
+              "path": "sensor.temperature"
+            }
+          ]
+        },
+        "evidence": [
+          "rule:cold-below-12c"
+        ],
+        "source": "sensor+threshold",
+        "scope": "room",
+        "status": "observed",
+        "dependencies": []
+      },
+      "deferred": true
+    },
+    {
+      "kind": "FacetDecl",
+      "path": "mind.should_heat",
+      "valueType": "Know<Truth>",
+      "value": null,
+      "owner": "mind",
+      "knowledge": {
+        "kind": "DerivedKnowledgeDecl",
+        "path": "mind.should_heat",
+        "baseType": "Truth",
+        "expression": {
+          "kind": "CallExpr",
+          "name": "knowledge_value",
+          "args": [
+            {
+              "kind": "PathExpr",
+              "path": "mind.cold"
+            }
+          ]
+        },
+        "confidence": {
+          "kind": "LiteralExpr",
+          "value": 0.95,
+          "valueType": "Number"
+        },
+        "evidence": [
+          "policy:maintain-habitable-room"
+        ],
+        "source": "rcl:inference",
+        "scope": "room",
+        "status": "derived",
+        "dependencies": [
+          "mind.cold"
+        ]
+      },
+      "deferred": true
+    }
+  ],
+  "facetTypes": {
+    "room.temperature": "Temperature",
+    "room.heater": "Truth",
+    "caretaker.actions": "Number",
+    "sensor.temperature": "Measure<Temperature>",
+    "sight.temperature": "Temperature",
+    "mind.cold": "Know<Truth>",
+    "mind.should_heat": "Know<Truth>"
+  },
+  "subjects": [
+    "caretaker"
+  ],
+  "warrants": [
+    {
+      "kind": "WarrantDecl",
+      "subject": "caretaker",
+      "capability": "room.control",
+      "target": "room",
+      "condition": null
+    }
+  ],
+  "reckons": [],
+  "hosts": [],
+  "metaDomains": [],
+  "physicals": [],
+  "perceptions": [
+    {
+      "kind": "PerceptionDecl",
+      "name": "sight",
+      "observer": "caretaker",
+      "source": "room",
+      "channels": [
+        {
+          "kind": "PerceptionChannelDecl",
+          "path": "sight.temperature",
+          "valueType": "Temperature",
+          "expression": {
+            "kind": "CallExpr",
+            "name": "measure_value",
+            "args": [
+              {
+                "kind": "PathExpr",
+                "path": "sensor.temperature"
+              }
+            ]
+          }
+        }
+      ],
+      "preserves": [
+        {
+          "kind": "BinaryExpr",
+          "operator": ">=",
+          "left": {
+            "kind": "PathExpr",
+            "path": "sight.temperature"
+          },
+          "right": {
+            "kind": "CallExpr",
+            "name": "celsius",
+            "args": [
+              {
+                "kind": "UnaryExpr",
+                "operator": "-",
+                "expression": {
+                  "kind": "LiteralExpr",
+                  "value": 50,
+                  "valueType": "Number"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "neurals": [],
+  "livings": [],
+  "genetics": [],
+  "quantitatives": [
+    {
+      "kind": "QuantitativeDecl",
+      "name": "sensor",
+      "measures": [
+        {
+          "kind": "MeasureDecl",
+          "path": "sensor.temperature",
+          "baseType": "Temperature",
+          "value": {
+            "kind": "PathExpr",
+            "path": "room.temperature"
+          },
+          "uncertainty": {
+            "kind": "CallExpr",
+            "name": "celsius",
+            "args": [
+              {
+                "kind": "LiteralExpr",
+                "value": 0.2,
+                "valueType": "Number"
+              }
+            ]
+          },
+          "confidence": {
+            "kind": "LiteralExpr",
+            "value": 0.98,
+            "valueType": "Number"
+          },
+          "unit": "°C",
+          "scale": "interval",
+          "evidence": [
+            "sensor:room-temperature"
+          ],
+          "calibratedBy": "calibration:room-v1"
+        }
+      ],
+      "derives": [],
+      "preserves": [
+        {
+          "kind": "BinaryExpr",
+          "operator": ">=",
+          "left": {
+            "kind": "CallExpr",
+            "name": "confidence",
+            "args": [
+              {
+                "kind": "PathExpr",
+                "path": "sensor.temperature"
+              }
+            ]
+          },
+          "right": {
+            "kind": "LiteralExpr",
+            "value": 0.95,
+            "valueType": "Number"
+          }
+        }
+      ]
+    }
+  ],
+  "knowledges": [
+    {
+      "kind": "KnowledgeDecl",
+      "name": "mind",
+      "claims": [
+        {
+          "kind": "KnowledgeClaimDecl",
+          "path": "mind.cold",
+          "baseType": "Truth",
+          "expression": {
+            "kind": "BinaryExpr",
+            "operator": "<",
+            "left": {
+              "kind": "PathExpr",
+              "path": "sight.temperature"
+            },
+            "right": {
+              "kind": "CallExpr",
+              "name": "celsius",
+              "args": [
+                {
+                  "kind": "LiteralExpr",
+                  "value": 12,
+                  "valueType": "Number"
+                }
+              ]
+            }
+          },
+          "confidence": {
+            "kind": "CallExpr",
+            "name": "confidence",
+            "args": [
+              {
+                "kind": "PathExpr",
+                "path": "sensor.temperature"
+              }
+            ]
+          },
+          "evidence": [
+            "rule:cold-below-12c"
+          ],
+          "source": "sensor+threshold",
+          "scope": "room",
+          "status": "observed",
+          "dependencies": []
+        }
+      ],
+      "derives": [
+        {
+          "kind": "DerivedKnowledgeDecl",
+          "path": "mind.should_heat",
+          "baseType": "Truth",
+          "expression": {
+            "kind": "CallExpr",
+            "name": "knowledge_value",
+            "args": [
+              {
+                "kind": "PathExpr",
+                "path": "mind.cold"
+              }
+            ]
+          },
+          "confidence": {
+            "kind": "LiteralExpr",
+            "value": 0.95,
+            "valueType": "Number"
+          },
+          "evidence": [
+            "policy:maintain-habitable-room"
+          ],
+          "source": "rcl:inference",
+          "scope": "room",
+          "status": "derived",
+          "dependencies": [
+            "mind.cold"
+          ]
+        }
+      ],
+      "revisions": [],
+      "decays": [],
+      "preserves": [
+        {
+          "kind": "CallExpr",
+          "name": "supported",
+          "args": [
+            {
+              "kind": "PathExpr",
+              "path": "mind.should_heat"
+            },
+            {
+              "kind": "LiteralExpr",
+              "value": 0.9,
+              "valueType": "Number"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "rules": [
+    {
+      "kind": "Emergence",
+      "name": "heat_room",
+      "cause": "caretaker",
+      "from": null,
+      "into": null,
+      "when": {
+        "kind": "BinaryExpr",
+        "operator": "and",
+        "left": {
+          "kind": "CallExpr",
+          "name": "supported",
+          "args": [
+            {
+              "kind": "PathExpr",
+              "path": "mind.should_heat"
+            },
+            {
+              "kind": "LiteralExpr",
+              "value": 0.9,
+              "valueType": "Number"
+            }
+          ]
+        },
+        "right": {
+          "kind": "CallExpr",
+          "name": "knowledge_value",
+          "args": [
+            {
+              "kind": "PathExpr",
+              "path": "mind.should_heat"
+            }
+          ]
+        }
+      },
+      "needs": [
+        {
+          "capability": "room.control",
+          "target": "room"
+        }
+      ],
+      "preserves": [
+        {
+          "kind": "BinaryExpr",
+          "operator": "<=",
+          "left": {
+            "kind": "PathExpr",
+            "path": "caretaker.actions"
+          },
+          "right": {
+            "kind": "LiteralExpr",
+            "value": 10,
+            "valueType": "Number"
+          }
+        }
+      ],
+      "alters": [
+        {
+          "target": "room.heater",
+          "expression": {
+            "kind": "LiteralExpr",
+            "value": true,
+            "valueType": "Truth"
+          }
+        },
+        {
+          "target": "caretaker.actions",
+          "expression": {
+            "kind": "BinaryExpr",
+            "operator": "+",
+            "left": {
+              "kind": "PathExpr",
+              "path": "caretaker.actions"
+            },
+            "right": {
+              "kind": "LiteralExpr",
+              "value": 1,
+              "valueType": "Number"
+            }
+          }
+        }
+      ],
+      "calls": [],
+      "witnesses": [
+        "execution:knowledge-to-action"
+      ]
+    }
+  ],
+  "directives": [
+    {
+      "kind": "Quantify",
+      "name": "sensor"
+    },
+    {
+      "kind": "Observe",
+      "name": "sight"
+    },
+    {
+      "kind": "Learn",
+      "name": "mind"
+    },
+    {
+      "kind": "Foresee",
+      "rule": "heat_room"
+    },
+    {
+      "kind": "Realize",
+      "rule": "heat_room"
+    }
+  ],
+  "programRoot": "b0c6cc77ffc888af6210354f0737bae6ebad0b7541264fea48eddb6d662b6b0d"
+}

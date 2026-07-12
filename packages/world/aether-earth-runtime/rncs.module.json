@@ -1,0 +1,20 @@
+{
+  "id": "aether-earth-runtime",
+  "version": "0.1.0-alpha.1",
+  "kind": "world-runtime",
+  "description": "A multi-scale Earth sandbox and collective intelligence laboratory powered by RCL/RNCS.",
+  "entry": "src/index.mjs",
+  "capabilities": [
+    "earth-sandbox",
+    "small-data-organisms",
+    "rclpedia",
+    "time-acceleration",
+    "reality-compression",
+    "collective-intelligence-crystallization",
+    "android-background-projection"
+  ],
+  "authority": {
+    "candidate_crystals_are_non_authoritative": true,
+    "promotion_requires_verification": true
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "format_version": "0.5",
+  "app": {
+    "id": "org.taowind.hnac.portable-state-demo",
+    "name": "HNAC Portable State Demo",
+    "version": "0.5.0",
+    "description": "Five-partition portable state reference capsule"
+  },
+  "execution": {
+    "primary": {
+      "profile": "declarative-v0",
+      "entry": "components/main.hnc.json"
+    },
+    "limits": {"operations": 100}
+  },
+  "capabilities": [
+    {
+      "id": "host.log",
+      "version": "1",
+      "required": true,
+      "scope": "session",
+      "reason": "Display execution result"
+    },
+    {
+      "id": "storage.state",
+      "version": "1",
+      "required": true,
+      "scope": "app",
+      "reason": "Use partitioned portable state"
+    }
+  ],
+  "interface": {"graph": "ui/main.aip.json"},
+  "state": {
+    "schema_version": "2",
+    "autosnapshot": true,
+    "migration_graph": "state/migrations.json",
+    "partitions": {
+      "portable": {"persistence": "durable", "portability": "exportable", "encrypted": false},
+      "device_private": {"persistence": "durable", "portability": "local-only", "encrypted": false},
+      "secret": {"persistence": "durable", "portability": "encrypted-export", "encrypted": true},
+      "cache": {"persistence": "rebuildable", "portability": "optional-export", "encrypted": false},
+      "ephemeral": {"persistence": "memory", "portability": "never-export", "encrypted": false}
+    }
+  },
+  "distribution": {"projections": ["pwa", "desktop", "mobile"]},
+  "security": {"sandbox": "deny-by-default", "signature": "optional"},
+  "compatibility": {"min_runtime": "0.5.0"},
+  "extensions": {}
+}

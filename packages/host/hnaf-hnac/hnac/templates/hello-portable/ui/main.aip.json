@@ -1,0 +1,18 @@
+{
+  "version": "0.2",
+  "root": "host-status",
+  "nodes": {
+    "host-status": {
+      "kind": "status",
+      "priority": "primary",
+      "label": "One capsule, negotiated by multiple hosts",
+      "actions": ["inspect", "run", "compare-hosts"]
+    },
+    "trust": {
+      "kind": "evidence",
+      "priority": "secondary",
+      "label": "Integrity and signature remain attached to the canonical capsule",
+      "actions": ["verify", "view-provenance"]
+    }
+  }
+}

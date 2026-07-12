@@ -1,0 +1,13 @@
+{
+  "name": "@taowind/hnaf-hnac-host",
+  "version": "0.8.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@taowind/capability-negotiation-protocol": "*",
+    "@taowind/agent-authority-fabric": "*"
+  },
+  "scripts": {
+    "test": "node ../../..//scripts/test-host.mjs"
+  }
+}

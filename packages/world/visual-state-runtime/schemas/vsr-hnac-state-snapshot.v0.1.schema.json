@@ -1,0 +1,19 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://taowind.dev/vsr/schemas/vsr-hnac-state-snapshot.v0.1.schema.json",
+  "title":"VSR HNAC State Snapshot v0.1",
+  "type":"object",
+  "required":["format","adapterVersion","replicaId","generation","labels","state","ephemeral","snapshotRoot"],
+  "properties":{
+    "format":{"const":"vsr.hnac-state-snapshot.v0.1"},
+    "adapterVersion":{"type":"string"},
+    "replicaId":{"type":"string","minLength":1},
+    "generation":{"type":"integer","minimum":0},
+    "parentSnapshotRoot":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "labels":{"type":"array","items":{"type":"string"}},
+    "state":{"type":"object","required":["format","app_id","schema_version","partitions","state_root"]},
+    "ephemeral":{"type":"object"},
+    "snapshotRoot":{"type":"string","pattern":"^[0-9a-f]{64}$"}
+  },
+  "additionalProperties":false
+}

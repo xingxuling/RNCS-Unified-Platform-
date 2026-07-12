@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "format",
+    "transactionId",
+    "branchId",
+    "baseGenerationId",
+    "resultGenerationId",
+    "resultGenerationRoot",
+    "eventId",
+    "operationsRoot",
+    "evidenceRoot",
+    "integrityHash"
+  ],
+  "properties": {
+    "format": {
+      "const": "rfe.local-commit-receipt.v0.1"
+    },
+    "transactionId": {
+      "type": "string"
+    },
+    "branchId": {
+      "type": "string"
+    },
+    "baseGenerationId": {
+      "type": "string"
+    },
+    "resultGenerationId": {
+      "type": "string"
+    },
+    "resultGenerationRoot": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "eventId": {
+      "type": "string"
+    },
+    "operationsRoot": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "evidenceRoot": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "integrityHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "additionalProperties": false
+}

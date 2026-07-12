@@ -1,0 +1,20 @@
+import { CREATION_FORBIDDEN_PHRASES, CREATION_REALITY_BOUNDARY_TEXT } from "@/constants/creationRiskTypes";
+
+export interface CreationBoundaryCheck {
+  passed: boolean;
+  violations: string[];
+  safetyNote: string;
+}
+
+export function checkCreationText(text: string): CreationBoundaryCheck {
+  const violations = CREATION_FORBIDDEN_PHRASES.filter(p => text.includes(p));
+  return { passed: violations.length === 0, violations, safetyNote: CREATION_REALITY_BOUNDARY_TEXT };
+}
+
+export function sanitizeCreationText(text: string): string {
+  let out = text;
+  CREATION_FORBIDDEN_PHRASES.forEach(p => { out = out.replaceAll(p, "（已移除绝对化表述）"); });
+  return out;
+}
+
+export { CREATION_REALITY_BOUNDARY_TEXT };

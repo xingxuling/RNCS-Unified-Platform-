@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/rncs/host-state-reference.v0.1.schema.json",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "kind",
+    "host_id",
+    "replica_id",
+    "snapshot_sequence",
+    "state_root",
+    "continuity_class"
+  ],
+  "not": {
+    "required": [
+      "generation"
+    ]
+  },
+  "properties": {
+    "kind": {
+      "const": "host-state"
+    },
+    "host_id": {
+      "type": "string"
+    },
+    "replica_id": {
+      "type": "string"
+    },
+    "snapshot_sequence": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "state_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "continuity_class": {
+      "const": "replica_snapshot"
+    }
+  }
+}

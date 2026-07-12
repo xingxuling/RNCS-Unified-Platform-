@@ -1,0 +1,14 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {evalCondition,evalValue,resolveRef} from '../src/expression.mjs';
+const state={tick:12,time:.2,globals:{score:5},entities:{a:{variables:{x:3,y:4,hp:9}},b:{variables:{x:0,y:0}}},input:{fire:true},machines:{m:{state:'run',entered_tick:8}}};let rv=0;const ctx={state,entityId:'a',event:{payload:{amount:7}},random:()=>++rv/10,runtime:{changedPaths:new Set(['entity:a.hp'])}};
+test('解析 globals 引用',()=>assert.equal(resolveRef('$globals.score',ctx),5));
+test('解析 self 引用',()=>assert.equal(resolveRef('$self.hp',ctx),9));
+test('解析 entity 引用',()=>assert.equal(resolveRef('$entity:b.x',ctx),0));
+test('解析 event/input/machine',()=>{assert.equal(resolveRef('$event.amount',ctx),7);assert.equal(resolveRef('$input.fire',ctx),true);assert.equal(resolveRef('$machine:m.state',ctx),'run');});
+test('算术表达式',()=>{assert.equal(evalValue({add:[2,3,{mul:[2,4]}]},ctx),13);assert.equal(evalValue({sub:[10,3,2]},ctx),5);assert.equal(evalValue({div:[20,2,2]},ctx),5);});
+test('向量距离',()=>assert.equal(evalValue({distance:[{vec2:[0,0]},{vec2:[3,4]}]},ctx),5));
+test('choose 表达式',()=>assert.equal(evalValue({choose:[{gt:[3,2]},'yes','no']},ctx),'yes'));
+test('all/any/not 条件',()=>{assert.equal(evalCondition({all:[{gt:[3,2]},{not:{eq:[1,2]}}]},ctx),true);assert.equal(evalCondition({any:[false,{eq:[2,2]}]},ctx),true);});
+test('距离条件',()=>assert.equal(evalCondition({distance_lte:[{vec2:['$self.x','$self.y']},{vec2:[0,0]},5]},ctx),true));
+test('changed 条件',()=>assert.equal(evalCondition({changed:'entity:a.hp'},ctx),true));
+test('随机引用由上下文控制',()=>{assert.equal(resolveRef('$random',ctx),.1);assert.equal(resolveRef('$random',ctx),.2);});
+test('concat',()=>assert.equal(evalValue({concat:['A',1,'B']},ctx),'A1B'));

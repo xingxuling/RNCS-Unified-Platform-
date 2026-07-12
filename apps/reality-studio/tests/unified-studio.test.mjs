@@ -1,0 +1,41 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {
+  UNIFIED_FORMAT,UNIFIED_VERSION,createAssetRecord,verifyAssetRecord,createSceneNode,
+  createSceneFromBehavior,createUnifiedProject,validateUnifiedProject,createSceneProjection,
+  UnifiedManufacturingSession,UnifiedSessionRegistry
+} from '../src/scene-studio.mjs';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const load=n=>JSON.parse(fs.readFileSync(path.join(root,'examples',n),'utf8'));
+const project=()=>load('冰境试炼.unified-project.json');
+const behavior=()=>load('冰境试炼.behavior.json');
+const bundle=()=>load('assets/霜璃/continuity-bundle.json');
+
+test('v0.9 format constants',()=>{assert.equal(UNIFIED_FORMAT,'reality-studio.unified-project.v0.9');assert.equal(UNIFIED_VERSION,'0.9.0-alpha.1')});
+test('create asset record from continuity bundle',()=>{const r=createAssetRecord(bundle(),{previewUrl:'x.png'});assert.equal(r.asset_id,'asset:3a82d1753e140d24552b89d1');assert.equal(r.preview_url,'x.png');assert.ok(r.asset_root)});
+test('verify asset record warns for missing files only when paths exist',()=>{const r=createAssetRecord(bundle());const v=verifyAssetRecord(r);assert.equal(v.valid,true)});
+test('verify strict asset record detects hash mismatch',()=>{const b=bundle();b.files=[{role:'x',path:'continuity-bundle.json',sha256:'0'.repeat(64)}];const r=createAssetRecord(b,{sourceRoot:path.join(root,'examples','assets','霜璃')});const v=verifyAssetRecord(r,{strictFiles:true});assert.equal(v.valid,false);assert.equal(v.errors[0].code,'ASSET_FILE_HASH_MISMATCH')});
+test('scene node carries stable asset and behavior binding',()=>{const n=createSceneNode({assetId:'asset:x',entityId:'entity:x',x:10,y:20});assert.equal(n.asset_id,'asset:x');assert.equal(n.behavior_binding.entity_id,'entity:x')});
+test('scene derives from behavior entities',()=>{const s=createSceneFromBehavior(behavior());assert.equal(s.nodes.length,4);assert.equal(s.nodes[0].behavior_binding.entity_id,'player');assert.ok(s.scene_root)});
+test('unified project validates',()=>{const v=validateUnifiedProject(project());assert.equal(v.valid,true);assert.equal(v.errors.length,0)});
+test('missing active scene is rejected',()=>{const p=project();p.active_scene_id='scene:none';const v=validateUnifiedProject(p);assert.equal(v.valid,false);assert.ok(v.errors.some(x=>x.code==='ACTIVE_SCENE_MISSING'))});
+test('unresolved asset is warning not fatal',()=>{const p=project();p.scenes[0].nodes[0].asset_id='asset:missing';const v=validateUnifiedProject(p);assert.equal(v.valid,true);assert.ok(v.warnings.some(x=>x.code==='NODE_ASSET_UNRESOLVED'))});
+test('session inspection exposes scene assets behavior',()=>{const s=new UnifiedManufacturingSession(project());const i=s.inspect();assert.equal(i.assets.count,4);assert.equal(i.scene.nodes.length,5);assert.equal(i.behavior.validation.valid,true)});
+test('select node updates editor state',()=>{const s=new UnifiedManufacturingSession(project());const id=s.project.scenes[0].nodes[1].node_id;assert.equal(s.select(id).editor.selected_node_id,id)});
+test('move node snaps to grid and syncs behavior program',()=>{const s=new UnifiedManufacturingSession(project());s.moveNode('node:player',{x:101,y:197,snap:true});const i=s.inspect();const n=i.scene.nodes.find(x=>x.node_id==='node:player');assert.equal(n.transform.x,96);assert.equal(n.transform.y,192);const p=s.behavior.program.entities.find(e=>e.entity_id==='player');assert.equal(p.variables.x,96);assert.equal(p.variables.y,192)});
+test('patch node changes name and visibility',()=>{const s=new UnifiedManufacturingSession(project());s.patchNode('node:key',{name:'新钥匙',visible:false});const n=s.inspect().scene.nodes.find(x=>x.node_id==='node:key');assert.equal(n.name,'新钥匙');assert.equal(n.visible,false)});
+test('add asset node creates behavior entity',()=>{const s=new UnifiedManufacturingSession(project());const before=s.inspect().scene.nodes.length;s.addAssetNode({assetId:'asset:frost-key',x:320,y:160});const i=s.inspect();assert.equal(i.scene.nodes.length,before+1);const added=i.scene.nodes.at(-1);assert.ok(added.behavior_binding.entity_id);assert.ok(s.behavior.program.entities.some(e=>e.entity_id===added.behavior_binding.entity_id))});
+test('remove node removes it from scene',()=>{const s=new UnifiedManufacturingSession(project());s.removeNode('node:key');assert.equal(s.inspect().scene.nodes.some(n=>n.node_id==='node:key'),false)});
+test('undo and redo scene edit',()=>{const s=new UnifiedManufacturingSession(project());const x=s.inspect().scene.nodes[0].transform.x;s.moveNode('node:player',{x:x+64,y:270});assert.notEqual(s.inspect().scene.nodes[0].transform.x,x);s.undo();assert.equal(s.inspect().scene.nodes[0].transform.x,x);s.redo();assert.notEqual(s.inspect().scene.nodes[0].transform.x,x)});
+test('step syncs runtime projection',()=>{const s=new UnifiedManufacturingSession(project());const before=s.inspect().scene.projection.nodes.find(n=>n.node_id==='node:player').transform.x;s.step({move_right:true});const after=s.inspect().scene.projection.nodes.find(n=>n.node_id==='node:player').transform.x;assert.ok(after>before)});
+test('reset restores behavior runtime',()=>{const s=new UnifiedManufacturingSession(project());s.step({move_right:true});assert.equal(s.inspect().behavior.runtime.tick,1);s.reset();assert.equal(s.inspect().behavior.runtime.tick,0)});
+test('scene player and debugger share project root',()=>{const s=new UnifiedManufacturingSession(project());const a=createSceneProjection(s.project,s.behavior.inspect(),{observer:'player'}),b=createSceneProjection(s.project,s.behavior.inspect(),{observer:'debugger'});assert.equal(a.project_root,b.project_root);assert.notEqual(a.projection_root,b.projection_root)});
+test('export contains scene asset behavior gateway build',()=>{const s=new UnifiedManufacturingSession(project());const e=s.exportArtifacts();for(const k of ['project','scene_player','scene_debugger','behavior_program','asset_manifest','gateway_manifest','build_plan'])assert.ok(e[k]);assert.equal(e.asset_manifest.assets.length,4)});
+test('registry creates and retrieves session',()=>{const r=new UnifiedSessionRegistry(),s=r.create(project());assert.equal(r.get(s.session_id),s)});
+test('registry missing session throws',()=>{const r=new UnifiedSessionRegistry();assert.throws(()=>r.get('nope'),/UNIFIED_SESSION_NOT_FOUND/)});
+test('full autonomous path still wins after scene unification',()=>{const s=new UnifiedManufacturingSession(project());for(let i=0;i<260;i++){const st=s.behavior.runtime.state,p=st.entities.player.variables,e=st.entities.enemy.variables,input={};if(!p.has_key)input.move_right=true;else if((e.health??0)>0){const dx=e.x-p.x;if(Math.abs(dx)>50)input[dx>0?'move_right':'move_left']=true;else if((p.attack_cooldown??0)<=0)input.attack=true}else input.move_right=true;s.step(input);s.behavior.runtime.paused=false;if(st.globals.victory)break;}assert.equal(s.behavior.runtime.state.globals.victory,true);assert.ok(s.behavior.runtime.state.tick<=260)});
+test('project root changes on scene mutation',()=>{const s=new UnifiedManufacturingSession(project());const a=s.project.project_root;s.moveNode('node:player',{x:128,y:256});assert.notEqual(s.project.project_root,a)});
+test('projection is deterministic for same state',()=>{const s=new UnifiedManufacturingSession(project());const i=s.behavior.inspect();const a=createSceneProjection(s.project,i,{observer:'player'}),b=createSceneProjection(s.project,i,{observer:'player'});assert.equal(a.projection_root,b.projection_root)});

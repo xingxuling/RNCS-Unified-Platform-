@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+<title>潮汐工坊镇｜2.5D技术生态商业模拟</title>
+<style>
+:root{--ink:#251d1a;--paper:#f4e6c9;--panel:#ead6ae;--edge:#6b4b37;--accent:#b84e3f;--green:#4d7655;--blue:#496f8d;--gold:#c98b37;--shadow:#2d2424}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:#1c2426;color:var(--ink);font-family:"Courier New","Noto Sans SC",monospace;overflow:hidden}button,input,select{font:inherit}
+#start{position:fixed;inset:0;z-index:20;display:grid;place-items:center;background:linear-gradient(#22343caa,#172126ee),repeating-linear-gradient(45deg,#24353a 0 8px,#2a3c41 8px 16px)}
+.start-card{width:min(92vw,620px);background:var(--paper);border:6px solid var(--edge);box-shadow:0 12px 0 #1118;padding:22px;image-rendering:pixelated}.start-card h1{margin:0 0 6px;font-size:28px}.start-card p{line-height:1.6}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:grid;gap:5px}.field input,.field select{padding:10px;border:3px solid var(--edge);background:#fff8e8}.primary{border:0;background:var(--accent);color:white;padding:13px 18px;box-shadow:0 5px 0 #713126;cursor:pointer;font-weight:bold}.primary:active{transform:translateY(3px);box-shadow:0 2px 0 #713126}.small-note{font-size:12px;color:#68584f}
+#game{height:100%;display:grid;grid-template-columns:minmax(0,1fr) 330px}.world{position:relative;min-width:0;background:#8eb17f}canvas{width:100%;height:100%;display:block;image-rendering:pixelated;touch-action:none}
+.topbar{position:absolute;left:10px;right:10px;top:10px;display:flex;gap:8px;flex-wrap:wrap;pointer-events:none}.chip{background:#f7e7c7e8;border:3px solid #6b4b37;padding:6px 9px;box-shadow:0 3px 0 #3e2a21;font-weight:bold;font-size:13px}
+.side{background:var(--paper);border-left:6px solid var(--edge);overflow:auto;padding:10px;display:flex;flex-direction:column;gap:9px}.panel{background:var(--panel);border:3px solid var(--edge);box-shadow:0 3px 0 #9b7a56;padding:9px}.panel h3{margin:0 0 7px;font-size:15px}.stats{display:grid;grid-template-columns:1fr 1fr;gap:5px;font-size:12px}.bar{height:10px;background:#6d5b50;border:2px solid #46352d}.bar>i{display:block;height:100%;background:#6ea85f}.bar.hunger>i{background:#ce754e}.bar.energy>i{background:#d3a83e}.inventory{display:flex;flex-wrap:wrap;gap:5px}.item{background:#fff5dc;border:2px solid #8b684b;padding:4px 6px;font-size:11px}.actions{display:grid;gap:6px}.actions button,.tool-row button{border:2px solid #664838;background:#fff4d6;padding:8px;text-align:left;cursor:pointer;box-shadow:0 2px 0 #92714e}.actions button:hover,.tool-row button:hover{background:#fff}.actions button:active,.tool-row button:active{transform:translateY(2px);box-shadow:none}.danger{color:#8a241e}.tech-stage{display:grid;grid-template-columns:repeat(6,1fr);gap:3px}.tech-stage i{height:12px;background:#9f8a71;border:1px solid #5e493b}.tech-stage i.on{background:#5f9561}.history{font-size:11px;line-height:1.45;max-height:130px;overflow:auto}.history div{padding:3px 0;border-bottom:1px dashed #987}.tool-row{display:flex;gap:6px;flex-wrap:wrap}.tool-row button{font-size:11px;padding:6px}.quest{font-size:11px;line-height:1.5}.quest .done{text-decoration:line-through;color:#4f7654}.quest .active{font-weight:bold;color:#9a342d}
+.dpad{position:absolute;left:18px;bottom:20px;width:142px;height:142px;display:none}.dpad button{position:absolute;width:46px;height:46px;border:3px solid #4f3a30;background:#f5dfb9dd;font-weight:bold;box-shadow:0 4px 0 #3a2922}.dpad .up{left:48px;top:0}.dpad .left{left:0;top:48px}.dpad .right{right:0;top:48px}.dpad .down{left:48px;bottom:0}.dpad .center{left:48px;top:48px;background:#b95040;color:white}.toast{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);background:#211b19e8;color:white;border:3px solid #f1d29e;padding:10px 14px;max-width:70%;display:none;z-index:5}.toast.show{display:block;animation:fade 2.4s both}@keyframes fade{0%{opacity:0;transform:translate(-50%,10px)}10%,80%{opacity:1;transform:translate(-50%,0)}100%{opacity:0}}
+@media(max-width:820px){#game{grid-template-columns:1fr;grid-template-rows:58vh 42vh}.side{border-left:0;border-top:5px solid var(--edge);display:grid;grid-template-columns:1fr 1fr;align-content:start}.panel{min-width:0}.dpad{display:block}.topbar{right:auto}.chip:nth-child(n+5){display:none}}
+@media(max-width:520px){.form-grid{grid-template-columns:1fr}.side{grid-template-columns:1fr}.start-card{padding:14px}.start-card h1{font-size:23px}}
+</style>
+</head>
+<body>
+<section id="start">
+  <div class="start-card">
+    <h1>潮汐工坊镇</h1>
+    <p>你不是旁观文明演化的上帝，而是住在镇里的学生、工匠、店员或商人。学习、工作、制造、开店，让一项技术真正进入居民生活。</p>
+    <div class="form-grid">
+      <label class="field">角色姓名<input id="playerName" value="杜衡界" maxlength="12"></label>
+      <label class="field">初始身份<select id="identity"><option value="apprentice">工坊学徒</option><option value="student">学生</option><option value="shopClerk">商店店员</option><option value="cook">餐馆厨工</option><option value="researcher">研究助理</option><option value="merchant">小商人</option></select></label>
+      <label class="field">家庭背景<select id="background"><option>普通家庭</option><option>工匠家庭</option><option>商人家庭</option></select></label>
+      <label class="field">世界种子<input id="seed" value="taowind-town-v016"></label>
+    </div>
+    <p class="small-note">无LLM运行 · 确定性社会模拟 · 本地存档 · 2.5D等距像素风</p>
+    <button class="primary" id="begin">进入小镇</button>
+  </div>
+</section>
+<main id="game">
+  <section class="world">
+    <canvas id="canvas"></canvas>
+    <div class="topbar" id="topbar"></div>
+    <div class="dpad"><button class="up" data-move="0,-1">▲</button><button class="left" data-move="-1,0">◀</button><button class="center" id="touchInteract">E</button><button class="right" data-move="1,0">▶</button><button class="down" data-move="0,1">▼</button></div>
+    <div class="toast" id="toast"></div>
+  </section>
+  <aside class="side">
+    <section class="panel" id="playerPanel"></section>
+    <section class="panel"><h3>当前地点与行动</h3><div id="location"></div><div class="actions" id="actions"></div></section>
+    <section class="panel" id="questPanel"></section>
+    <section class="panel" id="techPanel"></section>
+    <section class="panel"><h3>背包</h3><div class="inventory" id="inventory"></div></section>
+    <section class="panel"><h3>小镇历史</h3><div class="history" id="history"></div></section>
+    <section class="panel"><div class="tool-row"><button id="wait">等待30分钟</button><button id="save">保存</button><button id="load">读取</button><button id="reset">重新开始</button></div></section>
+  </aside>
+</main>
+<script>
+__ENGINE__
+
+let state=null,lastFrame=0,toastTimer=null;
+const $=s=>document.querySelector(s),canvas=$('#canvas'),ctx=canvas.getContext('2d');ctx.imageSmoothingEnabled=false;
+const itemIcon={bread:'🍞',stew:'🥘',milk:'🥛',clay:'🟤',wood:'🪵',iron:'⚙',ceramic:'🏺',porousCeramic:'◌',pottery:'🏺',woodenCrate:'▣',ceramicFilter:'💧'};
+const questSteps=[
+  s=>({text:'到学校学习材料学，知识达到2级',done:s.player.knowledge.materials>=2}),
+  s=>({text:'在学校验证多孔陶瓷净水原理',done:s.technologies['porous-ceramic-filtration'].stage>=1}),
+  s=>({text:'到材料行购买至少6份黏土与1份木料',done:(s.player.inventory.clay??0)>=6&&(s.player.inventory.wood??0)>=1}),
+  s=>({text:'在陶火工坊租用工作台',done:s.player.workshopRented}),
+  s=>({text:'制造2份多孔陶瓷',done:(s.player.inventory.porousCeramic??0)>=2||s.technologies['porous-ceramic-filtration'].stage>=3}),
+  s=>({text:'制造陶瓷净水器原型',done:s.technologies['porous-ceramic-filtration'].stage>=3}),
+  s=>({text:'在商店街租摊位并试销',done:s.technologies['porous-ceramic-filtration'].stage>=4}),
+  s=>({text:'售出3台，让技术被社区采用',done:s.technologies['porous-ceramic-filtration'].stage>=5})
+];
+function showToast(text){const el=$('#toast');el.textContent=text;el.classList.remove('show');void el.offsetWidth;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2500)}
+function startGame(){state=createTownGame({seed:$('#seed').value,player:{name:$('#playerName').value,identity:$('#identity').value,background:$('#background').value}});$('#start').style.display='none';renderUI();resize();showToast('WASD/方向键移动，靠近建筑门口选择行动。');}
+function apply(action){if(!state)return;const result=dispatchTownAction(state,action);if(!result.ok){showToast(result.error.message);return false}state=result.state;if(result.events.length)showToast(result.events[result.events.length-1].text);renderUI();return true}
+function fmtTime(){return `${String(Math.floor(state.minute/60)).padStart(2,'0')}:${String(state.minute%60).padStart(2,'0')}`}
+function renderUI(){
+  const p=state.player,tech=state.technologies['porous-ceramic-filtration'],inspect=inspectTownGame(state),context=townInteractionContext(state);
+  $('#topbar').innerHTML=`<span class="chip">第 ${state.day} 天 ${fmtTime()}</span><span class="chip">${state.weather}</span><span class="chip">水质 ${state.economy.waterQuality}</span><span class="chip">市场活跃 ${state.economy.marketActivity.toFixed(1)}</span><span class="chip">LLM ${state.metrics.llmCalls}</span>`;
+  $('#playerPanel').innerHTML=`<h3>${p.name} · ${JOBS[p.job].name}</h3><div class="stats"><span>资金</span><b>${p.money}</b><span>饥饿 ${Math.round(p.hunger)}</span><div class="bar hunger"><i style="width:${p.hunger}%"></i></div><span>精力 ${Math.round(p.energy)}</span><div class="bar energy"><i style="width:${p.energy}%"></i></div><span>材料知识</span><b>${p.knowledge.materials.toFixed(1)}</b><span>材料技能</span><b>${p.skills.materials.toFixed(1)}</b><span>商业技能</span><b>${p.skills.commerce.toFixed(1)}</b><span>声誉</span><b>${p.reputation}</b></div>`;
+  $('#location').innerHTML=context.building?`<b>${context.building.name}</b><div class="small-note">${context.building.sign} · 靠近入口</div>`:`<b>镇上街道</b><div class="small-note">沿道路寻找建筑门口</div>`;
+  $('#actions').innerHTML='';context.actions.slice(0,14).forEach(a=>{const b=document.createElement('button');b.textContent=a.label;b.onclick=()=>apply(a);$('#actions').appendChild(b)});if(!context.actions.length)$('#actions').innerHTML='<span class="small-note">附近没有可执行行动。</span>';
+  const q=questSteps.map(fn=>fn(state));let activeFound=false;$('#questPanel').innerHTML='<h3>创业主线</h3><div class="quest">'+q.map((x,i)=>{let cls=x.done?'done':'';if(!x.done&&!activeFound){cls='active';activeFound=true}return `<div class="${cls}">${x.done?'✓':'□'} ${i+1}. ${x.text}</div>`}).join('')+'</div>';
+  $('#techPanel').innerHTML=`<h3>${TECHNOLOGIES['porous-ceramic-filtration'].name}</h3><div class="tech-stage">${TECHNOLOGIES['porous-ceramic-filtration'].stages.map((_,i)=>`<i class="${i<=tech.stage?'on':''}"></i>`).join('')}</div><div class="small-note">阶段：${TECHNOLOGIES['porous-ceramic-filtration'].stages[tech.stage]} · 采用 ${tech.adoption}/3</div><p class="small-note">${TECHNOLOGIES['porous-ceramic-filtration'].description}</p>`;
+  $('#inventory').innerHTML=Object.entries(p.inventory).map(([k,v])=>`<span class="item" title="${ITEM_CATALOG[k]?.name??k}">${itemIcon[k]??'◆'} ${ITEM_CATALOG[k]?.name??k} ×${v}</span>`).join('')||'<span class="small-note">背包为空</span>';
+  $('#history').innerHTML=state.history.slice(-14).reverse().map(e=>`<div><b>D${e.day} ${String(Math.floor(e.minute/60)).padStart(2,'0')}:${String(e.minute%60).padStart(2,'0')}</b> ${e.text}</div>`).join('');
+}
+function iso(x,y){const tw=48,th=24,ox=canvas.width*.48,oy=68;return{x:ox+(x-y)*tw/2,y:oy+(x+y)*th/2}}
+function resize(){const r=canvas.getBoundingClientRect(),dpr=Math.min(2,devicePixelRatio||1);canvas.width=Math.floor(r.width*dpr);canvas.height=Math.floor(r.height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);ctx.imageSmoothingEnabled=false}
+function diamond(x,y,fill,stroke='#6e865c'){const p=iso(x,y),tw=48,th=24;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p.x+tw/2,p.y+th/2);ctx.lineTo(p.x,p.y+th);ctx.lineTo(p.x-tw/2,p.y+th/2);ctx.closePath();ctx.fillStyle=fill;ctx.fill();ctx.strokeStyle=stroke;ctx.lineWidth=1;ctx.stroke()}
+function isRoad(x,y){return state.town.roads.some(r=>r.x===x&&r.y===y)}function isWater(x,y){return state.town.water.some(r=>r.x===x&&r.y===y)}
+function drawBuilding(b){const p=iso(b.x,b.y),tw=48,th=24,w=b.w*tw/2,h=b.h*th/2,height=42+(b.h*2);const left={x:p.x-b.h*tw/2,y:p.y+b.h*th/2},right={x:p.x+b.w*tw/2,y:p.y+b.w*th/2},bottom={x:p.x+(b.w-b.h)*tw/2,y:p.y+(b.w+b.h)*th/2};
+  ctx.fillStyle=b.color;ctx.beginPath();ctx.moveTo(left.x,left.y);ctx.lineTo(bottom.x,bottom.y);ctx.lineTo(bottom.x,bottom.y-height);ctx.lineTo(left.x,left.y-height);ctx.closePath();ctx.fill();ctx.fillStyle=shade(b.color,-22);ctx.beginPath();ctx.moveTo(right.x,right.y);ctx.lineTo(bottom.x,bottom.y);ctx.lineTo(bottom.x,bottom.y-height);ctx.lineTo(right.x,right.y-height);ctx.closePath();ctx.fill();
+  ctx.fillStyle=b.roof;ctx.beginPath();ctx.moveTo(p.x,p.y-height-9);ctx.lineTo(right.x+5,right.y-height);ctx.lineTo(bottom.x,bottom.y-height+9);ctx.lineTo(left.x-5,left.y-height);ctx.closePath();ctx.fill();ctx.strokeStyle='#47342f';ctx.lineWidth=2;ctx.stroke();
+  for(let i=0;i<b.w;i++){const wp=iso(b.x+i+.5,b.y+b.h-.05);ctx.fillStyle='#89c6d1';ctx.fillRect(wp.x-6,wp.y-height+15,10,11);ctx.strokeStyle='#3d5054';ctx.strokeRect(wp.x-6,wp.y-height+15,10,11)}
+  const d=iso(b.door.x,b.door.y-.2);ctx.fillStyle='#4f3427';ctx.fillRect(d.x-5,d.y-height+26,11,18);ctx.fillStyle='#f1d79c';ctx.fillRect(d.x+2,d.y-height+34,2,2);
+  ctx.font='bold 11px monospace';ctx.textAlign='center';ctx.fillStyle='#fff2cf';ctx.fillRect(bottom.x-22,bottom.y-height-2,44,14);ctx.fillStyle='#3b2b25';ctx.fillText(b.sign,bottom.x,bottom.y-height+9)}
+function shade(hex,amt){const n=parseInt(hex.slice(1),16),r=Math.max(0,Math.min(255,(n>>16)+amt)),g=Math.max(0,Math.min(255,((n>>8)&255)+amt)),b=Math.max(0,Math.min(255,(n&255)+amt));return '#'+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1)}
+function drawTree(t){const p=iso(t.x,t.y);ctx.fillStyle='#5b3d28';ctx.fillRect(p.x-3,p.y-14,6,18);ctx.fillStyle='#426f45';ctx.fillRect(p.x-12,p.y-27,24,15);ctx.fillStyle='#5d8f55';ctx.fillRect(p.x-8,p.y-33,16,12)}
+function drawPerson(person,isPlayer=false){const p=iso(person.x+.5,person.y+.3),bob=Math.sin(performance.now()/220+(person.x+person.y))*1.2;ctx.save();ctx.translate(Math.round(p.x),Math.round(p.y-20+bob));if(isPlayer){ctx.fillStyle='#ffe07b';ctx.fillRect(-8,-24,16,3)}ctx.fillStyle='#3b2b25';ctx.fillRect(-5,9,4,8);ctx.fillRect(2,9,4,8);ctx.fillStyle=person.appearance.clothes;ctx.fillRect(-7,-3,14,13);ctx.fillStyle=person.appearance.skin;ctx.fillRect(-5,-13,10,10);ctx.fillStyle=person.appearance.hair;ctx.fillRect(-6,-16,12,6);ctx.fillRect(-6,-11,3,5);ctx.fillStyle='#272222';ctx.fillRect(-3,-9,2,2);ctx.fillRect(2,-9,2,2);if(isPlayer){ctx.strokeStyle='#fff';ctx.strokeRect(-8,-17,16,35)}ctx.restore()}
+function drawWorld(){if(!state)return;const cssW=canvas.clientWidth,cssH=canvas.clientHeight;ctx.clearRect(0,0,cssW,cssH);const sky=ctx.createLinearGradient(0,0,0,cssH);sky.addColorStop(0,'#9ed2d5');sky.addColorStop(.55,'#b5d5a1');sky.addColorStop(1,'#6d9d68');ctx.fillStyle=sky;ctx.fillRect(0,0,cssW,cssH);
+  for(let y=0;y<state.town.height;y++)for(let x=0;x<state.town.width;x++)diamond(x,y,isWater(x,y)?'#4f93b2':isRoad(x,y)?'#b79b72':((x+y)%2?'#7fa96f':'#83b276'),isWater(x,y)?'#3b7894':'#668458');
+  const drawables=[];state.town.trees.forEach(t=>drawables.push({z:t.x+t.y,type:'tree',v:t}));state.town.buildings.forEach(b=>drawables.push({z:b.x+b.y+b.w+b.h,type:'building',v:b}));state.npcs.forEach(n=>drawables.push({z:n.x+n.y+.6,type:'person',v:n}));drawables.push({z:state.player.x+state.player.y+.7,type:'player',v:state.player});drawables.sort((a,b)=>a.z-b.z);for(const d of drawables){if(d.type==='tree')drawTree(d.v);else if(d.type==='building')drawBuilding(d.v);else drawPerson(d.v,d.type==='player')}
+  const c=townInteractionContext(state);if(c.building){const p=iso(c.building.door.x+.5,c.building.door.y+.3);ctx.fillStyle='#fff1a0';ctx.font='bold 12px monospace';ctx.textAlign='center';ctx.fillText('E 互动',p.x,p.y-33)}
+  const h=Math.floor(state.minute/60);if(h<6||h>=20){ctx.fillStyle='rgba(20,28,55,.34)';ctx.fillRect(0,0,cssW,cssH)}
+}
+function loop(t){lastFrame=t;drawWorld();requestAnimationFrame(loop)}
+function move(dx,dy){apply({type:'move',dx,dy})}
+window.addEventListener('keydown',e=>{if(!state)return;const map={ArrowUp:[0,-1],w:[0,-1],W:[0,-1],ArrowDown:[0,1],s:[0,1],S:[0,1],ArrowLeft:[-1,0],a:[-1,0],A:[-1,0],ArrowRight:[1,0],d:[1,0],D:[1,0]};if(map[e.key]){e.preventDefault();move(...map[e.key])}if(e.key==='e'||e.key==='E'||e.key==='Enter'){$('#actions button')?.click()}});
+canvas.addEventListener('pointerdown',e=>{if(!state)return;const r=canvas.getBoundingClientRect(),mx=e.clientX-r.left,my=e.clientY-r.top,tw=48,th=24,ox=r.width*.48,oy=68;const dx=(mx-ox)/(tw/2),dy=(my-oy)/(th/2),tx=Math.round((dx+dy)/2),ty=Math.round((dy-dx)/2);move(Math.sign(tx-state.player.x),Math.sign(ty-state.player.y))});
+document.querySelectorAll('[data-move]').forEach(b=>b.onclick=()=>move(...b.dataset.move.split(',').map(Number)));$('#touchInteract').onclick=()=>$('#actions button')?.click();
+$('#begin').onclick=startGame;$('#wait').onclick=()=>apply({type:'wait',minutes:30});$('#save').onclick=()=>{localStorage.setItem('taowind-town-v016',exportTownSave(state));showToast('已保存到本机')};$('#load').onclick=()=>{const v=localStorage.getItem('taowind-town-v016');if(!v)return showToast('没有找到存档');try{state=importTownSave(v);$('#start').style.display='none';renderUI();showToast('存档已读取')}catch(e){showToast('存档损坏：'+e.message)}};$('#reset').onclick=()=>{if(confirm('重新开始并放弃当前进度？'))location.reload()};
+window.addEventListener('resize',resize);requestAnimationFrame(loop);
+</script>
+</body></html>

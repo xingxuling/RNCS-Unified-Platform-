@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/network.receipt.v0.1.schema.json",
+  "title": "network.receipt.v0.1",
+  "type": "object",
+  "required": [
+    "format",
+    "sessionId",
+    "tick",
+    "serverStateRoot",
+    "acceptedInputRoot",
+    "rejectedInputRoot",
+    "snapshotRoot",
+    "deltaRoot",
+    "networkReceiptRoot",
+    "previousTickRoot"
+  ],
+  "properties": {
+    "format": {
+      "const": "network.receipt.v0.1"
+    },
+    "sessionId": {
+      "type": "string"
+    },
+    "tick": {
+      "type": "integer"
+    },
+    "serverStateRoot": {
+      "type": "string"
+    },
+    "acceptedInputRoot": {
+      "type": "string"
+    },
+    "rejectedInputRoot": {
+      "type": "string"
+    },
+    "snapshotRoot": {
+      "type": "string"
+    },
+    "deltaRoot": {
+      "type": "string"
+    },
+    "networkReceiptRoot": {
+      "type": "string"
+    },
+    "previousTickRoot": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": true
+}

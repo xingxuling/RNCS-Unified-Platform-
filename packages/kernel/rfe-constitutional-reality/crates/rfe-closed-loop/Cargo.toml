@@ -1,0 +1,13 @@
+[package]
+name = "rfe-closed-loop"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Store-first minimum closed reality loop for RFE v0.3.0"
+
+[dependencies]
+rfe-canonical = { path = "../rfe-canonical" }
+rfe-native-kernel = { path = "../rfe-native-kernel" }
+
+[lints]
+workspace = true

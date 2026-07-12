@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.example/schemas/vsr-observer-profile.v0.1.schema.json",
+  "title": "VSR Observer Profile v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "observerId"],
+  "properties": {
+    "format": { "const": "vsr.observer-profile.v0.1" },
+    "observerId": { "type": "string", "minLength": 1 },
+    "subjectId": { "type": "string", "minLength": 1 },
+    "roles": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+    "scopes": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+    "clearance": { "type": "number", "minimum": 0 },
+    "locale": { "type": "string", "minLength": 1 },
+    "claims": { "type": "object" }
+  }
+}

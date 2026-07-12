@@ -1,0 +1,17 @@
+{
+  "artifact_file": "project.laf1.json",
+  "intent_file": "intent.zh.txt",
+  "actor_file": "actor-owner.json",
+  "host_files": ["browser-desktop.host.json", "mobile-touch.host.json"],
+  "capsule_file": "icar-native-v0.5.hnac.json",
+  "cnp_request_file": "cnp-request.json",
+  "provider_files": ["../providers/laf-runtime.provider.json", "../providers/hnac-host.provider.json", "../providers/cloud-report.provider.json"],
+  "policy_bundle_file": "policy-bundle.raw.json",
+  "rfe_store_path": "../../output/demo/rfe-store",
+  "reality_id": "reality:gateway-v0.3-demo",
+  "environment": "local",
+  "now": "2026-07-01T10:00:00Z",
+  "auto_approve": true,
+  "approver": {"id": "subject:taowind", "roles": ["owner"]},
+  "approval_expires_at": "2026-07-02T10:00:00Z"
+}

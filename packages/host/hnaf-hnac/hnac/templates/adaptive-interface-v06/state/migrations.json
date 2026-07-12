@@ -1,0 +1,15 @@
+{
+  "format": "hnaf.state-migrations.v0.5",
+  "app_id": "org.taowind.hnac.adaptive-interface-demo",
+  "migrations": [
+    {
+      "from": "1",
+      "to": "2",
+      "operations": [
+        {"op": "rename", "partition": "portable", "from": "user.name", "to": "profile.display_name"},
+        {"op": "set", "partition": "portable", "path": "profile.language", "value": "zh-CN"},
+        {"op": "delete", "partition": "cache", "path": "legacy_render"}
+      ]
+    }
+  ]
+}

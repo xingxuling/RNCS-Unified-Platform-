@@ -1,0 +1,9 @@
+{
+  "id": "autorag",
+  "name": "AutoRAG System",
+  "version": "source-import",
+  "path": "tools/autorag",
+  "layer": "tools",
+  "dependsOn": [],
+  "test": "python tools/autorag_adapter.py verify"
+}

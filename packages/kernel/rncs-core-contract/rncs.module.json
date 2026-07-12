@@ -1,0 +1,10 @@
+{
+  "id": "rncs-core",
+  "name": "RNCS Core Contract",
+  "version": "0.1.0",
+  "path": "packages/kernel/rncs-core-contract",
+  "layer": "kernel",
+  "runtime": "rncs.core",
+  "dependsOn": [],
+  "test": "npm test --workspace @taowind/rncs-core-contract"
+}

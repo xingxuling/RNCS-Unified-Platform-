@@ -1,0 +1,27 @@
+{
+  "project_file": "examples/冰境试炼.unified-project.json",
+  "output_dir": "output/冰境试炼-release",
+  "targets": [
+    "web-release",
+    "web-single",
+    "windows-portable",
+    "windows-native",
+    "android-project"
+  ],
+  "mode": "release",
+  "quality_profile": "balanced",
+  "app": {
+    "app_id": "com.taowind.frosttrial",
+    "title": "冰境试炼",
+    "version_name": "0.2.0",
+    "version_code": 2,
+    "orientation": "landscape",
+    "fullscreen": true
+  },
+  "policy": {
+    "missing_asset": "fallback",
+    "embed_assets": true,
+    "deterministic": true
+  },
+  "build_time": "2026-07-02T00:00:00.000Z"
+}

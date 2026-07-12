@@ -1,0 +1,9 @@
+{
+  "id": "aetherfusion",
+  "name": "AetherFusion",
+  "version": "source-import",
+  "path": "tools/aetherfusion",
+  "layer": "tools",
+  "dependsOn": [],
+  "test": "python -m unittest discover -s tools/aetherfusion/tests -p \"test_*.py\""
+}

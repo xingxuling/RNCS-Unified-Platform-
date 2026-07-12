@@ -1,0 +1,25 @@
+{
+  "format": "reality-one.runtime-manifest.v0.3",
+  "runtime_id": "rncs.core",
+  "runtime_version": "0.1.0",
+  "display_name": "RNCS Core Contract",
+  "gateway_protocol_versions": [
+    "0.3.0"
+  ],
+  "transport": {
+    "kind": "node-module",
+    "package": "@taowind/rncs-core-contract"
+  },
+  "bridge": "../src/bridges/rncs-core.bridge.mjs",
+  "actions": [
+    "health",
+    "newProposal",
+    "verify",
+    "authorize"
+  ],
+  "protocols": [
+    "rncs.reality-transition-envelope.v0.1"
+  ],
+  "requires": [],
+  "priority": 110
+}

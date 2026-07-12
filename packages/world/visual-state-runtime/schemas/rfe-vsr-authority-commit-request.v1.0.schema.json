@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/rfe-vsr-authority-commit-request.v1.0.schema.json",
+  "title": "RFE VSR Authority Commit Request v1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "bridgeRuntime",
+    "requestId",
+    "subjectIntent",
+    "proposalHash",
+    "authorizationHash",
+    "interactionCommitHash",
+    "constitutional",
+    "sharedReality",
+    "evidence",
+    "requestHash"
+  ],
+  "properties": {
+    "format": {
+      "const": "rfe.vsr-authority-commit-request.v1.0"
+    },
+    "bridgeRuntime": {
+      "const": "vsr@0.1.0-alpha.12"
+    },
+    "requestId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "subjectIntent": {
+      "type": "object"
+    },
+    "proposalHash": {
+      "type": "string",
+      "minLength": 1
+    },
+    "authorizationHash": {
+      "type": "string",
+      "minLength": 1
+    },
+    "interactionCommitHash": {
+      "type": "string",
+      "minLength": 1
+    },
+    "constitutional": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rfeVersion",
+        "epoch",
+        "configurationHash",
+        "federationRoot",
+        "parentCertificateHash",
+        "authorityClusterId"
+      ],
+      "properties": {
+        "rfeVersion": {
+          "const": "1.0.0"
+        },
+        "epoch": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "configurationHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "federationRoot": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "parentCertificateHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "authorityClusterId": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "sharedReality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sessionId",
+        "sequence",
+        "eventRoot",
+        "sharedStateHash"
+      ],
+      "properties": {
+        "sessionId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "eventRoot": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "sharedStateHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "evidence": {
+      "type": "object"
+    },
+    "requestHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';import {readFile} from 'node:fs/promises';import {newProposal,authorize,commit,attachProjection,verify,adaptHnacSnapshot,rootHash} from '../src/index.mjs';
+const load=async p=>JSON.parse(await readFile(new URL(p,import.meta.url),'utf8'));let pass=0;const t=(n,f)=>{try{f();console.log('ok',++pass,'-',n)}catch(e){console.error('not ok -',n,e);process.exitCode=1}};
+const input=await load('../examples/proposal-input.json');
+t('proposal verifies',()=>assert.equal(verify(newProposal(input)).valid,true));
+t('full lifecycle',()=>{let e=newProposal(input);e=authorize(e,{status:'approved',resolver:'rfe'});e=commit(e,{generation:8,generation_root:'9'.repeat(64)});assert.equal(verify(e).valid,true)});
+t('denied cannot commit',()=>{const e=authorize(newProposal(input),{status:'denied',resolver:'rfe'});assert.throws(()=>commit(e,{generation:8,generation_root:'9'.repeat(64)}))});
+t('generation advances',()=>{const e=authorize(newProposal(input),{status:'approved',resolver:'rfe'});assert.throws(()=>commit(e,{generation:7,generation_root:'9'.repeat(64)}))});
+t('projection preserves commit root',()=>{let e=commit(authorize(newProposal(input),{status:'approved',resolver:'rfe'}),{generation:8,generation_root:'9'.repeat(64)});const r=e.commit.commit_root;e=attachProjection(e,{projection_id:'p',observer_id:'s',modality:'visual',target_host:'web',semantic_root:'8'.repeat(64)});assert.equal(e.commit.commit_root,r);assert.equal(verify(e).valid,true)});
+t('HNAC generation demoted',()=>{const s={generation:4,replicaId:'r',state:{schema_version:'1',partitions:{portable:{}},state_root:'6'.repeat(64)}};const r=adaptHnacSnapshot(s,'h');assert.equal(r.snapshot_sequence,4);assert.equal('generation'in r,false)});
+t('tamper detected',()=>{const e=newProposal(input);e.intent.source='x';assert.equal(verify(e).valid,false)});
+t('unicode deterministic root',()=>assert.equal(rootHash({'𠮷':'中文','a':[1,true,null]}).length,64));

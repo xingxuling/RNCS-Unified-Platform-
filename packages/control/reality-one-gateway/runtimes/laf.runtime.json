@@ -1,0 +1,24 @@
+{
+  "format": "reality-one.runtime-manifest.v0.3",
+  "runtime_id": "rncs.laf",
+  "runtime_version": "1.0.0",
+  "display_name": "Living Artifact Format",
+  "gateway_protocol_versions": [
+    "0.3.0"
+  ],
+  "transport": {
+    "kind": "node-module",
+    "package": "@taowind/living-artifact-format"
+  },
+  "bridge": "../src/bridges/laf.bridge.mjs",
+  "actions": [
+    "health",
+    "validate",
+    "root"
+  ],
+  "protocols": [
+    "laf.artifact.v1"
+  ],
+  "requires": [],
+  "priority": 100
+}

@@ -1,0 +1,167 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rncs.dev/schemas/vsr-spatial-frame-plan.v0.4.schema.json",
+  "title": "VSR Spatial Frame Plan v0.4",
+  "type": "object",
+  "required": [
+    "format",
+    "version",
+    "sceneId",
+    "viewport",
+    "budget",
+    "camera",
+    "drawPackets",
+    "lights",
+    "passes",
+    "resources",
+    "stats",
+    "sourceRealityRoot",
+    "geometryRoot",
+    "materialRoot",
+    "textureRoot",
+    "animationRoot",
+    "commandRoot",
+    "frameRoot"
+  ],
+  "properties": {
+    "format": {
+      "const": "vsr.spatial-frame-plan.v0.4"
+    },
+    "version": {
+      "type": "string"
+    },
+    "sceneId": {
+      "type": "string"
+    },
+    "viewport": {
+      "type": "object",
+      "required": [
+        "width",
+        "height"
+      ],
+      "properties": {
+        "width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "budget": {
+      "type": "object"
+    },
+    "camera": {
+      "type": "object"
+    },
+    "drawPackets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "nodeId",
+          "meshId",
+          "materialId",
+          "textureBindings",
+          "packetRoot"
+        ],
+        "properties": {
+          "nodeId": {
+            "type": "string"
+          },
+          "meshId": {
+            "type": "string"
+          },
+          "materialId": {
+            "type": "string"
+          },
+          "textureBindings": {
+            "type": "object",
+            "properties": {
+              "baseColor": {
+                "type": "string"
+              },
+              "metallicRoughness": {
+                "type": "string"
+              },
+              "normal": {
+                "type": "string"
+              },
+              "occlusion": {
+                "type": "string"
+              },
+              "emissive": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          },
+          "packetRoot": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        }
+      }
+    },
+    "lights": {
+      "type": "array"
+    },
+    "passes": {
+      "type": "array"
+    },
+    "resources": {
+      "type": "array"
+    },
+    "shaders": {
+      "type": "object"
+    },
+    "stats": {
+      "type": "object",
+      "required": [
+        "textureCount",
+        "materialTextureBindings"
+      ],
+      "properties": {
+        "textureCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "materialTextureBindings": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "sourceRealityRoot": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "geometryRoot": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "materialRoot": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "commandRoot": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "frameRoot": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "textureRoot": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "animationRoot": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  },
+  "additionalProperties": false
+}

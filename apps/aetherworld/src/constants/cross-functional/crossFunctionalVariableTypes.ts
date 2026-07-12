@@ -1,0 +1,30 @@
+export const CROSS_FUNCTIONAL_VARIABLE_TRANSFORMATIONS = [
+  "DIRECT_COPY",
+  "STYLE_TRANSFER",
+  "EMOTION_MAPPING",
+  "STRUCTURE_MAPPING",
+  "LANGUAGE_ADAPTATION",
+  "TECHNICAL_TRANSLATION",
+  "PROMPT_PACKAGING",
+  "WORLD_CANON_BINDING",
+] as const;
+
+export type CrossFunctionalVariableTransformation =
+  (typeof CROSS_FUNCTIONAL_VARIABLE_TRANSFORMATIONS)[number];
+
+export const TRANSFORMATION_LABELS: Record<CrossFunctionalVariableTransformation, string> = {
+  DIRECT_COPY: "直接继承",
+  STYLE_TRANSFER: "风格迁移",
+  EMOTION_MAPPING: "情绪映射",
+  STRUCTURE_MAPPING: "结构映射",
+  LANGUAGE_ADAPTATION: "语言适配",
+  TECHNICAL_TRANSLATION: "技术转译",
+  PROMPT_PACKAGING: "Prompt 封装",
+  WORLD_CANON_BINDING: "世界正典绑定",
+};
+
+export const CROSS_FUNCTIONAL_OBJECT_TYPES = [
+  "CHARACTER","WORLD","STORY","SONG","LYRIC","PRODUCT","MODEL","CODE","PROMPT",
+  "SEQUENCE","VOCABULARY_TERM","CALCULUS","ENGINE","USER_PROFILE","REALITY_DATA","VISUAL_CONCEPT",
+] as const;
+export type CrossFunctionalObjectType = (typeof CROSS_FUNCTIONAL_OBJECT_TYPES)[number];

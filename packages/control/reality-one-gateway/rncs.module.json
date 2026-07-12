@@ -1,0 +1,18 @@
+{
+  "id": "gateway",
+  "name": "Reality One Gateway",
+  "version": "0.3.1-unified.1",
+  "path": "packages/control/reality-one-gateway",
+  "layer": "control",
+  "dependsOn": [
+    "rncs-core",
+    "rfe-sdk",
+    "laf",
+    "cnp",
+    "aaf",
+    "icar",
+    "rbf",
+    "behavior"
+  ],
+  "test": "npm test --workspace @taowind/reality-one-gateway"
+}

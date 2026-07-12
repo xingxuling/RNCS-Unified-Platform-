@@ -1,0 +1,33 @@
+{
+  "format": "rncs.version-manifest.v0.10",
+  "motherProject": "0.10.0-alpha.1",
+  "ragf": "0.4.0-alpha.1",
+  "realityStudio": "1.5.0-alpha.1",
+  "rsr": "0.9.0-alpha.1",
+  "vsr": "0.8.0-alpha.1",
+  "network": "0.2.0-alpha.1",
+  "gateway": "0.3.1-unified.1",
+  "assetProductionStudioForge": "rncs.asset-production-studio-forge-evidence.v0.10",
+  "directCurrentTests": "949/949",
+  "sourceBoundUnchanged": {
+    "csl": "162/162",
+    "aetherfusion": "344/344"
+  },
+  "combinedEvidenceCoverage": "1455/1455",
+  "assetId": "asset:ffdeebce846b016459b11e16",
+  "productionRoot": "e6c034895228b68eeb74f97ac74e2c4bb2ada846ce28ec178eeaa5de5dc00bb6",
+  "previewRoot": "0102389a805dfbc592c5bc5b27390ae89592d3b02c94db663456f990faa81296",
+  "acceptanceRoot": "86cac80bcc631516e9eb9d0326f6847bb6bc634d1391309a846aab362f928745",
+  "projectRoot": "45d9838bb27545ec889fa1d01f5b6ad619032ee1a8b4adf3375e62f522efc19a",
+  "spatialStateRoot": "fnv1a64:e0353fb59b875930",
+  "frameRoot": "fnv1a64:d00705d06571d2ea",
+  "pixelRoot": "fnv1a64:0d23eed0f44448fe",
+  "github": {
+    "repository": "xingxuling/RNCS-Unified-Platform-",
+    "branch": "rncs-v010",
+    "commit": "b13acb7f751b325e0ab9193684c9fd743e0b43da",
+    "pr": 6,
+    "base": "main-95",
+    "url": "https://github.com/xingxuling/RNCS-Unified-Platform-/pull/6"
+  }
+}

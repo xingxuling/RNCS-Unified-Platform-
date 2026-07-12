@@ -1,0 +1,2130 @@
+{
+  "specVersion": "0.1",
+  "runtimeTarget": "rsr-constraint-physics-vsr-v0.2",
+  "metadata": {
+    "id": "constraint-physics:constraint-causal-playground",
+    "title": "现实约束与因果响应织构",
+    "duration": 86400,
+    "defaultFps": 60,
+    "seed": 1,
+    "description": "现实约束与因果响应织构的稳定 Visual IR。"
+  },
+  "canvas": {
+    "width": 720,
+    "height": 420,
+    "background": {
+      "type": "solid",
+      "color": "#0f172a"
+    }
+  },
+  "variables": {
+    "worldId": "constraint-causal-playground",
+    "tick": 0,
+    "stateRoot": ""
+  },
+  "nodes": [
+    {
+      "id": "constraint:pendulum-link",
+      "type": "line",
+      "zIndex": 14,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 720,
+        "height": 420
+      },
+      "appearance": {
+        "stroke": {
+          "type": "solid",
+          "color": "#fbbf24"
+        },
+        "strokeWidth": 2
+      },
+      "content": {
+        "x1": 0,
+        "y1": 0,
+        "x2": 0,
+        "y2": 0
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      },
+      "data": {
+        "constraintId": "pendulum-link",
+        "type": "distance"
+      }
+    },
+    {
+      "id": "body:crate",
+      "type": "rect",
+      "zIndex": 20,
+      "layout": {
+        "x": 290,
+        "y": 70,
+        "width": 40,
+        "height": 40
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#2563eb"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#e2e8f0"
+        },
+        "strokeWidth": 1,
+        "opacity": 1
+      },
+      "content": {
+        "cornerRadius": 6
+      },
+      "tags": [
+        "constraint-physics-body",
+        "dynamic",
+        "box",
+        "subject",
+        "wind-affected"
+      ],
+      "data": {
+        "bodyId": "crate",
+        "kind": "dynamic",
+        "shape": "box",
+        "sensor": false
+      }
+    },
+    {
+      "id": "label:crate",
+      "type": "text",
+      "zIndex": 45,
+      "layout": {
+        "x": 290,
+        "y": 52,
+        "width": 100,
+        "height": 16
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#f8fafc"
+        }
+      },
+      "content": {
+        "text": "crate",
+        "fontSize": 11
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "velocity:crate",
+      "type": "line",
+      "zIndex": 40,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 720,
+        "height": 420
+      },
+      "appearance": {
+        "stroke": {
+          "type": "solid",
+          "color": "#f97316"
+        },
+        "strokeWidth": 2
+      },
+      "content": {
+        "x1": 0,
+        "y1": 0,
+        "x2": 0,
+        "y2": 0
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "body:fast-orb",
+      "type": "ellipse",
+      "zIndex": 20,
+      "layout": {
+        "x": 58,
+        "y": 168,
+        "width": 24,
+        "height": 24
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#2563eb"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#e2e8f0"
+        },
+        "strokeWidth": 1,
+        "opacity": 1
+      },
+      "content": {},
+      "tags": [
+        "constraint-physics-body",
+        "dynamic",
+        "circle",
+        "subject",
+        "orb",
+        "wind-affected"
+      ],
+      "data": {
+        "bodyId": "fast-orb",
+        "kind": "dynamic",
+        "shape": "circle",
+        "sensor": false
+      }
+    },
+    {
+      "id": "label:fast-orb",
+      "type": "text",
+      "zIndex": 45,
+      "layout": {
+        "x": 58,
+        "y": 150,
+        "width": 90,
+        "height": 16
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#f8fafc"
+        }
+      },
+      "content": {
+        "text": "fast-orb",
+        "fontSize": 11
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "velocity:fast-orb",
+      "type": "line",
+      "zIndex": 40,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 720,
+        "height": 420
+      },
+      "appearance": {
+        "stroke": {
+          "type": "solid",
+          "color": "#f97316"
+        },
+        "strokeWidth": 2
+      },
+      "content": {
+        "x1": 0,
+        "y1": 0,
+        "x2": 0,
+        "y2": 0
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "body:ground",
+      "type": "rect",
+      "zIndex": 10,
+      "layout": {
+        "x": 20,
+        "y": 377,
+        "width": 680,
+        "height": 36
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#334155"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#e2e8f0"
+        },
+        "strokeWidth": 1,
+        "opacity": 1
+      },
+      "content": {
+        "cornerRadius": 2
+      },
+      "tags": [
+        "constraint-physics-body",
+        "static",
+        "box",
+        "environment",
+        "ground"
+      ],
+      "data": {
+        "bodyId": "ground",
+        "kind": "static",
+        "shape": "box",
+        "sensor": false
+      }
+    },
+    {
+      "id": "label:ground",
+      "type": "text",
+      "zIndex": 45,
+      "layout": {
+        "x": 20,
+        "y": 359,
+        "width": 740,
+        "height": 16
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#f8fafc"
+        }
+      },
+      "content": {
+        "text": "ground",
+        "fontSize": 11
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "velocity:ground",
+      "type": "line",
+      "zIndex": 40,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 720,
+        "height": 420
+      },
+      "appearance": {
+        "stroke": {
+          "type": "solid",
+          "color": "#f97316"
+        },
+        "strokeWidth": 2
+      },
+      "content": {
+        "x1": 0,
+        "y1": 0,
+        "x2": 0,
+        "y2": 0
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "body:moving-platform",
+      "type": "rect",
+      "zIndex": 18,
+      "layout": {
+        "x": 265,
+        "y": 291,
+        "width": 170,
+        "height": 18
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#0891b2"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#e2e8f0"
+        },
+        "strokeWidth": 1,
+        "opacity": 1
+      },
+      "content": {
+        "cornerRadius": 6
+      },
+      "tags": [
+        "constraint-physics-body",
+        "kinematic",
+        "box",
+        "environment",
+        "kinematic"
+      ],
+      "data": {
+        "bodyId": "moving-platform",
+        "kind": "kinematic",
+        "shape": "box",
+        "sensor": false
+      }
+    },
+    {
+      "id": "label:moving-platform",
+      "type": "text",
+      "zIndex": 45,
+      "layout": {
+        "x": 265,
+        "y": 273,
+        "width": 230,
+        "height": 16
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#f8fafc"
+        }
+      },
+      "content": {
+        "text": "moving-platform",
+        "fontSize": 11
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "velocity:moving-platform",
+      "type": "line",
+      "zIndex": 40,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 720,
+        "height": 420
+      },
+      "appearance": {
+        "stroke": {
+          "type": "solid",
+          "color": "#f97316"
+        },
+        "strokeWidth": 2
+      },
+      "content": {
+        "x1": 0,
+        "y1": 0,
+        "x2": 0,
+        "y2": 0
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "body:pendulum-anchor",
+      "type": "ellipse",
+      "zIndex": 10,
+      "layout": {
+        "x": 143,
+        "y": 48,
+        "width": 14,
+        "height": 14
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#334155"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#e2e8f0"
+        },
+        "strokeWidth": 1,
+        "opacity": 1
+      },
+      "content": {},
+      "tags": [
+        "constraint-physics-body",
+        "static",
+        "circle",
+        "constraint-anchor"
+      ],
+      "data": {
+        "bodyId": "pendulum-anchor",
+        "kind": "static",
+        "shape": "circle",
+        "sensor": false
+      }
+    },
+    {
+      "id": "label:pendulum-anchor",
+      "type": "text",
+      "zIndex": 45,
+      "layout": {
+        "x": 143,
+        "y": 30,
+        "width": 90,
+        "height": 16
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#f8fafc"
+        }
+      },
+      "content": {
+        "text": "pendulum-anchor",
+        "fontSize": 11
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "velocity:pendulum-anchor",
+      "type": "line",
+      "zIndex": 40,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 720,
+        "height": 420
+      },
+      "appearance": {
+        "stroke": {
+          "type": "solid",
+          "color": "#f97316"
+        },
+        "strokeWidth": 2
+      },
+      "content": {
+        "x1": 0,
+        "y1": 0,
+        "x2": 0,
+        "y2": 0
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "body:pendulum-bob",
+      "type": "ellipse",
+      "zIndex": 20,
+      "layout": {
+        "x": 189,
+        "y": 136,
+        "width": 32,
+        "height": 32
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#2563eb"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#e2e8f0"
+        },
+        "strokeWidth": 1,
+        "opacity": 1
+      },
+      "content": {},
+      "tags": [
+        "constraint-physics-body",
+        "dynamic",
+        "circle",
+        "subject",
+        "orb"
+      ],
+      "data": {
+        "bodyId": "pendulum-bob",
+        "kind": "dynamic",
+        "shape": "circle",
+        "sensor": false
+      }
+    },
+    {
+      "id": "label:pendulum-bob",
+      "type": "text",
+      "zIndex": 45,
+      "layout": {
+        "x": 189,
+        "y": 118,
+        "width": 92,
+        "height": 16
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#f8fafc"
+        }
+      },
+      "content": {
+        "text": "pendulum-bob",
+        "fontSize": 11
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "velocity:pendulum-bob",
+      "type": "line",
+      "zIndex": 40,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 720,
+        "height": 420
+      },
+      "appearance": {
+        "stroke": {
+          "type": "solid",
+          "color": "#f97316"
+        },
+        "strokeWidth": 2
+      },
+      "content": {
+        "x1": 0,
+        "y1": 0,
+        "x2": 0,
+        "y2": 0
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "body:sensor-zone",
+      "type": "ellipse",
+      "zIndex": 10,
+      "layout": {
+        "x": 568,
+        "y": 63,
+        "width": 104,
+        "height": 104
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#8b5cf6"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#ddd6fe"
+        },
+        "strokeWidth": 2,
+        "opacity": 0.45
+      },
+      "content": {},
+      "tags": [
+        "constraint-physics-body",
+        "static",
+        "circle",
+        "sensor",
+        "goal-zone"
+      ],
+      "data": {
+        "bodyId": "sensor-zone",
+        "kind": "static",
+        "shape": "circle",
+        "sensor": true
+      }
+    },
+    {
+      "id": "label:sensor-zone",
+      "type": "text",
+      "zIndex": 45,
+      "layout": {
+        "x": 568,
+        "y": 45,
+        "width": 164,
+        "height": 16
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#f8fafc"
+        }
+      },
+      "content": {
+        "text": "sensor-zone",
+        "fontSize": 11
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "velocity:sensor-zone",
+      "type": "line",
+      "zIndex": 40,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 720,
+        "height": 420
+      },
+      "appearance": {
+        "stroke": {
+          "type": "solid",
+          "color": "#f97316"
+        },
+        "strokeWidth": 2
+      },
+      "content": {
+        "x1": 0,
+        "y1": 0,
+        "x2": 0,
+        "y2": 0
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "body:thin-wall",
+      "type": "rect",
+      "zIndex": 10,
+      "layout": {
+        "x": 514,
+        "y": 95,
+        "width": 12,
+        "height": 280
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#334155"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#e2e8f0"
+        },
+        "strokeWidth": 1,
+        "opacity": 1
+      },
+      "content": {
+        "cornerRadius": 2
+      },
+      "tags": [
+        "constraint-physics-body",
+        "static",
+        "box",
+        "environment",
+        "ccd-target"
+      ],
+      "data": {
+        "bodyId": "thin-wall",
+        "kind": "static",
+        "shape": "box",
+        "sensor": false
+      }
+    },
+    {
+      "id": "label:thin-wall",
+      "type": "text",
+      "zIndex": 45,
+      "layout": {
+        "x": 514,
+        "y": 77,
+        "width": 90,
+        "height": 16
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#f8fafc"
+        }
+      },
+      "content": {
+        "text": "thin-wall",
+        "fontSize": 11
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "velocity:thin-wall",
+      "type": "line",
+      "zIndex": 40,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 720,
+        "height": 420
+      },
+      "appearance": {
+        "stroke": {
+          "type": "solid",
+          "color": "#f97316"
+        },
+        "strokeWidth": 2
+      },
+      "content": {
+        "x1": 0,
+        "y1": 0,
+        "x2": 0,
+        "y2": 0
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      }
+    },
+    {
+      "id": "contact:0",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 55,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      },
+      "data": {
+        "contactSlot": 0
+      }
+    },
+    {
+      "id": "contact:1",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 55,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      },
+      "data": {
+        "contactSlot": 1
+      }
+    },
+    {
+      "id": "contact:2",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 55,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      },
+      "data": {
+        "contactSlot": 2
+      }
+    },
+    {
+      "id": "contact:3",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 55,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      },
+      "data": {
+        "contactSlot": 3
+      }
+    },
+    {
+      "id": "contact:4",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 55,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      },
+      "data": {
+        "contactSlot": 4
+      }
+    },
+    {
+      "id": "contact:5",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 55,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      },
+      "data": {
+        "contactSlot": 5
+      }
+    },
+    {
+      "id": "contact:6",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 55,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      },
+      "data": {
+        "contactSlot": 6
+      }
+    },
+    {
+      "id": "contact:7",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 55,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      },
+      "data": {
+        "contactSlot": 7
+      }
+    },
+    {
+      "id": "contact:8",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 55,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      },
+      "data": {
+        "contactSlot": 8
+      }
+    },
+    {
+      "id": "contact:9",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 55,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      },
+      "data": {
+        "contactSlot": 9
+      }
+    },
+    {
+      "id": "contact:10",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 55,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      },
+      "data": {
+        "contactSlot": 10
+      }
+    },
+    {
+      "id": "contact:11",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 55,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      },
+      "data": {
+        "contactSlot": 11
+      }
+    },
+    {
+      "id": "contact:12",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 55,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      },
+      "data": {
+        "contactSlot": 12
+      }
+    },
+    {
+      "id": "contact:13",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 55,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      },
+      "data": {
+        "contactSlot": 13
+      }
+    },
+    {
+      "id": "contact:14",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 55,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      },
+      "data": {
+        "contactSlot": 14
+      }
+    },
+    {
+      "id": "contact:15",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 55,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      },
+      "data": {
+        "contactSlot": 15
+      }
+    },
+    {
+      "id": "contact:16",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 55,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      },
+      "data": {
+        "contactSlot": 16
+      }
+    },
+    {
+      "id": "contact:17",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 55,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      },
+      "data": {
+        "contactSlot": 17
+      }
+    },
+    {
+      "id": "contact:18",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 55,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      },
+      "data": {
+        "contactSlot": 18
+      }
+    },
+    {
+      "id": "contact:19",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 55,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      },
+      "data": {
+        "contactSlot": 19
+      }
+    },
+    {
+      "id": "contact:20",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 55,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      },
+      "data": {
+        "contactSlot": 20
+      }
+    },
+    {
+      "id": "contact:21",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 55,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      },
+      "data": {
+        "contactSlot": 21
+      }
+    },
+    {
+      "id": "contact:22",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 55,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      },
+      "data": {
+        "contactSlot": 22
+      }
+    },
+    {
+      "id": "contact:23",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 55,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      },
+      "data": {
+        "contactSlot": 23
+      }
+    },
+    {
+      "id": "contact:24",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 55,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      },
+      "data": {
+        "contactSlot": 24
+      }
+    },
+    {
+      "id": "contact:25",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 55,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      },
+      "data": {
+        "contactSlot": 25
+      }
+    },
+    {
+      "id": "contact:26",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 55,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      },
+      "data": {
+        "contactSlot": 26
+      }
+    },
+    {
+      "id": "contact:27",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 55,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      },
+      "data": {
+        "contactSlot": 27
+      }
+    },
+    {
+      "id": "contact:28",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 55,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      },
+      "data": {
+        "contactSlot": 28
+      }
+    },
+    {
+      "id": "contact:29",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 55,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      },
+      "data": {
+        "contactSlot": 29
+      }
+    },
+    {
+      "id": "contact:30",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 55,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      },
+      "data": {
+        "contactSlot": 30
+      }
+    },
+    {
+      "id": "contact:31",
+      "type": "ellipse",
+      "visible": false,
+      "zIndex": 55,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 8
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ef4444"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#fff"
+        },
+        "strokeWidth": 1
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      },
+      "data": {
+        "contactSlot": 31
+      }
+    },
+    {
+      "id": "debug:status",
+      "type": "text",
+      "zIndex": 70,
+      "layout": {
+        "x": 12,
+        "y": 10,
+        "width": 696,
+        "height": 42
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#f8fafc"
+        }
+      },
+      "content": {
+        "text": "Constraint Physics",
+        "fontSize": 14
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "debugger",
+            "auditor"
+          ],
+          "deny": "hide",
+          "reason": "constraint-physics-debug-only"
+        }
+      }
+    }
+  ],
+  "extensions": {
+    "rsr:constraint-world": {
+      "format": "rsr.constraint-world.v0.2",
+      "worldId": "constraint-causal-playground",
+      "configHash": "fnv1a64:b4466c7586bff156",
+      "stableVisualIr": true
+    }
+  }
+}

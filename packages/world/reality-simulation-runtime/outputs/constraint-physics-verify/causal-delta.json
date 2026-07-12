@@ -1,0 +1,254 @@
+{
+  "format": "rfe.constraint-causal-delta.v0.2",
+  "provisional": true,
+  "baseRealityRoot": "rfe:demo:base-root",
+  "sourceRuntime": "RSR-ConstraintPhysics/0.2.0-alpha.1",
+  "worldId": "constraint-causal-playground",
+  "tick": 180,
+  "simulationRoot": "fnv1a64:674a4a0a0ac58310",
+  "facts": [
+    {
+      "subject": "body:crate",
+      "predicate": "simulation.embodiment-state",
+      "value": {
+        "position": {
+          "x": 340451,
+          "y": 271001
+        },
+        "velocity": {
+          "x": -64999,
+          "y": -172
+        },
+        "shape": {
+          "type": "box",
+          "halfExtents": {
+            "x": 20000,
+            "y": 20000
+          }
+        },
+        "awake": true,
+        "materialId": "stone",
+        "sensor": false
+      },
+      "evidence": "fnv1a64:fd30971bea6052c2"
+    },
+    {
+      "subject": "body:fast-orb",
+      "predicate": "simulation.embodiment-state",
+      "value": {
+        "position": {
+          "x": -857777,
+          "y": 2784886
+        },
+        "velocity": {
+          "x": -418992,
+          "y": 2286188
+        },
+        "shape": {
+          "type": "circle",
+          "radius": 12000
+        },
+        "awake": true,
+        "materialId": "rubber",
+        "sensor": false
+      },
+      "evidence": "fnv1a64:5a22c00c46353d4e"
+    },
+    {
+      "subject": "body:ground",
+      "predicate": "simulation.embodiment-state",
+      "value": {
+        "position": {
+          "x": 360000,
+          "y": 395000
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0
+        },
+        "shape": {
+          "type": "box",
+          "halfExtents": {
+            "x": 340000,
+            "y": 18000
+          }
+        },
+        "awake": false,
+        "materialId": "stone",
+        "sensor": false
+      },
+      "evidence": "fnv1a64:90500fd1a5d72dda"
+    },
+    {
+      "subject": "body:moving-platform",
+      "predicate": "simulation.embodiment-state",
+      "value": {
+        "position": {
+          "x": 350161,
+          "y": 300000
+        },
+        "velocity": {
+          "x": -65000,
+          "y": 0
+        },
+        "shape": {
+          "type": "box",
+          "halfExtents": {
+            "x": 85000,
+            "y": 9000
+          }
+        },
+        "awake": true,
+        "materialId": "metal",
+        "sensor": false
+      },
+      "evidence": "fnv1a64:54a94f8eb4e8cc11"
+    },
+    {
+      "subject": "body:pendulum-anchor",
+      "predicate": "simulation.embodiment-state",
+      "value": {
+        "position": {
+          "x": 150000,
+          "y": 55000
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0
+        },
+        "shape": {
+          "type": "circle",
+          "radius": 7000
+        },
+        "awake": false,
+        "materialId": "metal",
+        "sensor": false
+      },
+      "evidence": "fnv1a64:9327f5bda48da03a"
+    },
+    {
+      "subject": "body:pendulum-bob",
+      "predicate": "simulation.embodiment-state",
+      "value": {
+        "position": {
+          "x": 191401,
+          "y": 159070
+        },
+        "velocity": {
+          "x": 492911,
+          "y": -193256
+        },
+        "shape": {
+          "type": "circle",
+          "radius": 16000
+        },
+        "awake": true,
+        "materialId": "metal",
+        "sensor": false
+      },
+      "evidence": "fnv1a64:f805ab4b4fdefe37"
+    },
+    {
+      "subject": "body:sensor-zone",
+      "predicate": "simulation.embodiment-state",
+      "value": {
+        "position": {
+          "x": 620000,
+          "y": 115000
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0
+        },
+        "shape": {
+          "type": "circle",
+          "radius": 52000
+        },
+        "awake": false,
+        "materialId": "ghost",
+        "sensor": true
+      },
+      "evidence": "fnv1a64:37bb78e5ea8fb8d8"
+    },
+    {
+      "subject": "body:thin-wall",
+      "predicate": "simulation.embodiment-state",
+      "value": {
+        "position": {
+          "x": 520000,
+          "y": 235000
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0
+        },
+        "shape": {
+          "type": "box",
+          "halfExtents": {
+            "x": 6000,
+            "y": 140000
+          }
+        },
+        "awake": false,
+        "materialId": "metal",
+        "sensor": false
+      },
+      "evidence": "fnv1a64:02131be5dabed3a9"
+    },
+    {
+      "subject": "constraint:pendulum-link",
+      "predicate": "simulation.constraint-state",
+      "value": {
+        "type": "distance",
+        "bodyA": "pendulum-anchor",
+        "bodyB": "pendulum-bob",
+        "restLength": 112000,
+        "enabled": true,
+        "broken": false,
+        "lastImpulse": 828
+      },
+      "evidence": "fnv1a64:74d348ae4707b009"
+    }
+  ],
+  "events": [
+    {
+      "type": "simulation.contact.persist",
+      "subjects": [
+        "body:crate",
+        "body:moving-platform"
+      ],
+      "payload": {
+        "tick": 180,
+        "pair": "crate|moving-platform",
+        "constraintId": null,
+        "contact": {
+          "key": "crate|moving-platform",
+          "bodyA": "crate",
+          "bodyB": "moving-platform",
+          "normalQ": {
+            "x": 0,
+            "y": 1000
+          },
+          "penetration": 1,
+          "point": {
+            "x": 345306,
+            "y": 285500
+          },
+          "normalImpulse": 0,
+          "tangentImpulse": 0,
+          "sensor": false,
+          "materialPair": "metal|stone",
+          "microstep": 6
+        }
+      },
+      "evidence": "fnv1a64:fea107e5bad68719"
+    }
+  ],
+  "diagnostics": {
+    "microsteps": 7,
+    "candidatePairs": 42,
+    "narrowPhaseTests": 42,
+    "resolvedContacts": 7
+  },
+  "deltaRoot": "fnv1a64:cebf6281c00007c7"
+}

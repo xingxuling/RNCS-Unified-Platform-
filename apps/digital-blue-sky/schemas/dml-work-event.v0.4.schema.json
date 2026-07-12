@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.tech/schemas/dml-work-event.v0.4.schema.json",
+  "title": "DML Work Event v0.4",
+  "type": "object",
+  "required": [
+    "format",
+    "event_id",
+    "sequence",
+    "subject_id",
+    "type",
+    "phase",
+    "status",
+    "message",
+    "data",
+    "refs",
+    "evidence",
+    "created_at",
+    "event_root"
+  ],
+  "properties": {
+    "format": {
+      "const": "dml.work-event.v0.4"
+    },
+    "event_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "subject_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "project_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "goal_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "type": {
+      "type": "string"
+    },
+    "phase": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    },
+    "data": {
+      "type": "object"
+    },
+    "refs": {
+      "type": "object"
+    },
+    "evidence": {
+      "type": "array"
+    },
+    "caused_by": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "event_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "additionalProperties": false
+}

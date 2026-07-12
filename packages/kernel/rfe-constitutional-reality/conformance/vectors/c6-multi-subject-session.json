@@ -1,0 +1,1750 @@
+{
+  "format": "rfe.conformance.multi-subject-session.v0.4",
+  "scenario": "two-subject-shared-door-conflict-and-convergence",
+  "bootstrapWorld": {
+    "specVersion": "0.1.8",
+    "worldId": "world:multi-subject-door-lab",
+    "branchId": "branch:main",
+    "branchInfo": {
+      "branchId": "branch:main",
+      "parentBranchId": null,
+      "forkRevision": null,
+      "forkRealityHash": null,
+      "forkStateHash": null,
+      "lineage": []
+    },
+    "seed": 42,
+    "time": 0,
+    "revision": 0,
+    "constitution": {
+      "revision": "constitution:0.1",
+      "invariants": [
+        "no-dangling-identities",
+        "authority-required",
+        "atomic-transactions"
+      ]
+    },
+    "identities": [
+      {
+        "id": "object:door",
+        "kind": "door",
+        "continuityPolicy": "persistent",
+        "createdAt": 0,
+        "retiredAt": null,
+        "lineage": [],
+        "metadata": {}
+      },
+      {
+        "id": "object:key:alice",
+        "kind": "key",
+        "continuityPolicy": "persistent",
+        "createdAt": 0,
+        "retiredAt": null,
+        "lineage": [],
+        "metadata": {}
+      },
+      {
+        "id": "object:key:bob",
+        "kind": "key",
+        "continuityPolicy": "persistent",
+        "createdAt": 0,
+        "retiredAt": null,
+        "lineage": [],
+        "metadata": {}
+      },
+      {
+        "id": "place:room-a",
+        "kind": "place",
+        "continuityPolicy": "persistent",
+        "createdAt": 0,
+        "retiredAt": null,
+        "lineage": [],
+        "metadata": {}
+      },
+      {
+        "id": "place:room-b",
+        "kind": "place",
+        "continuityPolicy": "persistent",
+        "createdAt": 0,
+        "retiredAt": null,
+        "lineage": [],
+        "metadata": {}
+      },
+      {
+        "id": "subject:alice",
+        "kind": "subject",
+        "continuityPolicy": "persistent",
+        "createdAt": 0,
+        "retiredAt": null,
+        "lineage": [],
+        "metadata": {
+          "privateLabel": "alice-only"
+        }
+      },
+      {
+        "id": "subject:bob",
+        "kind": "subject",
+        "continuityPolicy": "persistent",
+        "createdAt": 0,
+        "retiredAt": null,
+        "lineage": [],
+        "metadata": {
+          "privateLabel": "bob-only"
+        }
+      }
+    ],
+    "facts": [
+      {
+        "id": "fact:door-integrity:0",
+        "subject": "object:door",
+        "predicate": "integrity",
+        "value": 100,
+        "validFrom": 0,
+        "validTo": null,
+        "source": "source:runtime",
+        "confidence": 1,
+        "visibility": {
+          "type": "public"
+        },
+        "authority": "authority:system"
+      },
+      {
+        "id": "fact:door-state:0",
+        "subject": "object:door",
+        "predicate": "state",
+        "value": "locked",
+        "validFrom": 0,
+        "validTo": null,
+        "source": "source:runtime",
+        "confidence": 1,
+        "visibility": {
+          "type": "public"
+        },
+        "authority": "authority:system"
+      }
+    ],
+    "relations": [
+      {
+        "id": "relation:door-from-room-a",
+        "type": "connects_from",
+        "from": "object:door",
+        "to": "place:room-a",
+        "qualifiers": {},
+        "validFrom": 0,
+        "validTo": null,
+        "authority": "authority:system"
+      },
+      {
+        "id": "relation:door-to-room-b",
+        "type": "connects_to",
+        "from": "object:door",
+        "to": "place:room-b",
+        "qualifiers": {},
+        "validFrom": 0,
+        "validTo": null,
+        "authority": "authority:system"
+      },
+      {
+        "id": "relation:key-alice-unlocks-door",
+        "type": "unlocks",
+        "from": "object:key:alice",
+        "to": "object:door",
+        "qualifiers": {},
+        "validFrom": 0,
+        "validTo": null,
+        "authority": "authority:system"
+      },
+      {
+        "id": "relation:key-bob-unlocks-door",
+        "type": "unlocks",
+        "from": "object:key:bob",
+        "to": "object:door",
+        "qualifiers": {},
+        "validFrom": 0,
+        "validTo": null,
+        "authority": "authority:system"
+      },
+      {
+        "id": "relation:alice-location:0",
+        "type": "located_in",
+        "from": "subject:alice",
+        "to": "place:room-a",
+        "qualifiers": {},
+        "validFrom": 0,
+        "validTo": null,
+        "authority": "authority:system"
+      },
+      {
+        "id": "relation:bob-location:0",
+        "type": "located_in",
+        "from": "subject:bob",
+        "to": "place:room-a",
+        "qualifiers": {},
+        "validFrom": 0,
+        "validTo": null,
+        "authority": "authority:system"
+      },
+      {
+        "id": "relation:alice-owns-key",
+        "type": "owns",
+        "from": "subject:alice",
+        "to": "object:key:alice",
+        "qualifiers": {},
+        "validFrom": 0,
+        "validTo": null,
+        "authority": "authority:system"
+      },
+      {
+        "id": "relation:bob-owns-key",
+        "type": "owns",
+        "from": "subject:bob",
+        "to": "object:key:bob",
+        "qualifiers": {},
+        "validFrom": 0,
+        "validTo": null,
+        "authority": "authority:system"
+      }
+    ],
+    "constraints": [
+      {
+        "id": "constraint:door-state-valid",
+        "scope": "world",
+        "description": "Door state must be locked, unlocked, or open",
+        "severity": "hard",
+        "when": {
+          "op": "literal",
+          "value": true
+        },
+        "assert": {
+          "op": "or",
+          "values": [
+            {
+              "op": "eq",
+              "left": {
+                "op": "fact",
+                "subject": "object:door",
+                "predicate": "state"
+              },
+              "right": {
+                "op": "literal",
+                "value": "locked"
+              }
+            },
+            {
+              "op": "eq",
+              "left": {
+                "op": "fact",
+                "subject": "object:door",
+                "predicate": "state"
+              },
+              "right": {
+                "op": "literal",
+                "value": "unlocked"
+              }
+            },
+            {
+              "op": "eq",
+              "left": {
+                "op": "fact",
+                "subject": "object:door",
+                "predicate": "state"
+              },
+              "right": {
+                "op": "literal",
+                "value": "open"
+              }
+            }
+          ]
+        },
+        "repairCandidates": [
+          {
+            "id": "repair:door-state:locked",
+            "description": "Restore the door to a valid locked state",
+            "operations": [
+              {
+                "op": "setFact",
+                "fact": {
+                  "subject": "object:door",
+                  "predicate": "state",
+                  "value": "locked"
+                }
+              }
+            ],
+            "estimatedCost": 1,
+            "estimatedRisk": "low"
+          }
+        ],
+        "tags": [],
+        "dependencies": [
+          "fact:*:state",
+          "fact:object:door:state"
+        ]
+      }
+    ],
+    "affordanceRules": [
+      {
+        "id": "affordance:inspect-door",
+        "action": "inspect",
+        "targetKind": "door",
+        "description": "Inspect the door",
+        "when": {
+          "op": "literal",
+          "value": true
+        },
+        "cost": {},
+        "risk": {},
+        "effects": [],
+        "dependencies": []
+      },
+      {
+        "id": "affordance:open-door",
+        "action": "open",
+        "targetKind": "door",
+        "description": "Open an unlocked door",
+        "when": {
+          "op": "eq",
+          "left": {
+            "op": "fact",
+            "subject": "$target",
+            "predicate": "state"
+          },
+          "right": {
+            "op": "literal",
+            "value": "unlocked"
+          }
+        },
+        "cost": {},
+        "risk": {},
+        "effects": [
+          {
+            "op": "setFact",
+            "fact": {
+              "subject": "$target",
+              "predicate": "state",
+              "value": "open"
+            }
+          }
+        ],
+        "dependencies": [
+          "fact:*:state"
+        ]
+      },
+      {
+        "id": "affordance:pass-door",
+        "action": "pass",
+        "targetKind": "door",
+        "description": "Pass through an open door",
+        "when": {
+          "op": "eq",
+          "left": {
+            "op": "fact",
+            "subject": "$target",
+            "predicate": "state"
+          },
+          "right": {
+            "op": "literal",
+            "value": "open"
+          }
+        },
+        "cost": {},
+        "risk": {},
+        "effects": [
+          {
+            "op": "removeRelation",
+            "match": {
+              "type": "located_in",
+              "from": "$actor",
+              "to": "place:room-a"
+            }
+          },
+          {
+            "op": "addRelation",
+            "relation": {
+              "type": "located_in",
+              "from": "$actor",
+              "to": "place:room-b"
+            }
+          }
+        ],
+        "dependencies": [
+          "fact:*:state"
+        ]
+      },
+      {
+        "id": "affordance:unlock-door",
+        "action": "unlock",
+        "targetKind": "door",
+        "description": "Unlock the door with an owned matching key",
+        "when": {
+          "op": "and",
+          "values": [
+            {
+              "op": "relationPath",
+              "from": "$actor",
+              "to": "$target",
+              "types": [
+                "owns",
+                "unlocks"
+              ]
+            },
+            {
+              "op": "eq",
+              "left": {
+                "op": "fact",
+                "subject": "$target",
+                "predicate": "state"
+              },
+              "right": {
+                "op": "literal",
+                "value": "locked"
+              }
+            }
+          ]
+        },
+        "cost": {},
+        "risk": {},
+        "effects": [
+          {
+            "op": "setFact",
+            "fact": {
+              "subject": "$target",
+              "predicate": "state",
+              "value": "unlocked"
+            }
+          }
+        ],
+        "dependencies": [
+          "fact:*:state",
+          "relationType:owns",
+          "relationType:unlocks"
+        ]
+      }
+    ],
+    "events": []
+  },
+  "bootstrap": {
+    "branchId": "branch:main",
+    "groups": {
+      "identity": [
+        {
+          "id": "object:door",
+          "kind": "door",
+          "continuityPolicy": "persistent",
+          "createdAt": 0,
+          "retiredAt": null,
+          "lineage": [],
+          "metadata": {}
+        },
+        {
+          "id": "object:key:alice",
+          "kind": "key",
+          "continuityPolicy": "persistent",
+          "createdAt": 0,
+          "retiredAt": null,
+          "lineage": [],
+          "metadata": {}
+        },
+        {
+          "id": "object:key:bob",
+          "kind": "key",
+          "continuityPolicy": "persistent",
+          "createdAt": 0,
+          "retiredAt": null,
+          "lineage": [],
+          "metadata": {}
+        },
+        {
+          "id": "place:room-a",
+          "kind": "place",
+          "continuityPolicy": "persistent",
+          "createdAt": 0,
+          "retiredAt": null,
+          "lineage": [],
+          "metadata": {}
+        },
+        {
+          "id": "place:room-b",
+          "kind": "place",
+          "continuityPolicy": "persistent",
+          "createdAt": 0,
+          "retiredAt": null,
+          "lineage": [],
+          "metadata": {}
+        },
+        {
+          "id": "subject:alice",
+          "kind": "subject",
+          "continuityPolicy": "persistent",
+          "createdAt": 0,
+          "retiredAt": null,
+          "lineage": [],
+          "metadata": {
+            "privateLabel": "alice-only"
+          }
+        },
+        {
+          "id": "subject:bob",
+          "kind": "subject",
+          "continuityPolicy": "persistent",
+          "createdAt": 0,
+          "retiredAt": null,
+          "lineage": [],
+          "metadata": {
+            "privateLabel": "bob-only"
+          }
+        }
+      ],
+      "fact:object:door:state": [
+        {
+          "id": "fact:door-state:0",
+          "subject": "object:door",
+          "predicate": "state",
+          "value": "locked",
+          "validFrom": 0,
+          "validTo": null,
+          "source": "source:runtime",
+          "confidence": 1,
+          "visibility": {
+            "type": "public"
+          },
+          "authority": "authority:system"
+        }
+      ],
+      "relation:owns": [
+        {
+          "id": "relation:alice-owns-key",
+          "type": "owns",
+          "from": "subject:alice",
+          "to": "object:key:alice",
+          "qualifiers": {},
+          "validFrom": 0,
+          "validTo": null,
+          "authority": "authority:system"
+        },
+        {
+          "id": "relation:bob-owns-key",
+          "type": "owns",
+          "from": "subject:bob",
+          "to": "object:key:bob",
+          "qualifiers": {},
+          "validFrom": 0,
+          "validTo": null,
+          "authority": "authority:system"
+        }
+      ],
+      "relation:unlocks": [
+        {
+          "id": "relation:key-alice-unlocks-door",
+          "type": "unlocks",
+          "from": "object:key:alice",
+          "to": "object:door",
+          "qualifiers": {},
+          "validFrom": 0,
+          "validTo": null,
+          "authority": "authority:system"
+        },
+        {
+          "id": "relation:key-bob-unlocks-door",
+          "type": "unlocks",
+          "from": "object:key:bob",
+          "to": "object:door",
+          "qualifiers": {},
+          "validFrom": 0,
+          "validTo": null,
+          "authority": "authority:system"
+        }
+      ],
+      "relation:connects_from": [
+        {
+          "id": "relation:door-from-room-a",
+          "type": "connects_from",
+          "from": "object:door",
+          "to": "place:room-a",
+          "qualifiers": {},
+          "validFrom": 0,
+          "validTo": null,
+          "authority": "authority:system"
+        }
+      ],
+      "relation:connects_to": [
+        {
+          "id": "relation:door-to-room-b",
+          "type": "connects_to",
+          "from": "object:door",
+          "to": "place:room-b",
+          "qualifiers": {},
+          "validFrom": 0,
+          "validTo": null,
+          "authority": "authority:system"
+        }
+      ],
+      "relation:located_in": [
+        {
+          "id": "relation:alice-location:0",
+          "type": "located_in",
+          "from": "subject:alice",
+          "to": "place:room-a",
+          "qualifiers": {},
+          "validFrom": 0,
+          "validTo": null,
+          "authority": "authority:system"
+        },
+        {
+          "id": "relation:bob-location:0",
+          "type": "located_in",
+          "from": "subject:bob",
+          "to": "place:room-a",
+          "qualifiers": {},
+          "validFrom": 0,
+          "validTo": null,
+          "authority": "authority:system"
+        }
+      ],
+      "affordance:door": [
+        {
+          "id": "affordance:inspect-door",
+          "action": "inspect",
+          "targetKind": "door",
+          "description": "Inspect the door",
+          "when": {
+            "op": "literal",
+            "value": true
+          },
+          "cost": {},
+          "risk": {},
+          "effects": [],
+          "dependencies": []
+        },
+        {
+          "id": "affordance:open-door",
+          "action": "open",
+          "targetKind": "door",
+          "description": "Open an unlocked door",
+          "when": {
+            "op": "eq",
+            "left": {
+              "op": "fact",
+              "subject": "$target",
+              "predicate": "state"
+            },
+            "right": {
+              "op": "literal",
+              "value": "unlocked"
+            }
+          },
+          "cost": {},
+          "risk": {},
+          "effects": [
+            {
+              "op": "setFact",
+              "fact": {
+                "subject": "$target",
+                "predicate": "state",
+                "value": "open"
+              }
+            }
+          ],
+          "dependencies": [
+            "fact:*:state"
+          ]
+        },
+        {
+          "id": "affordance:pass-door",
+          "action": "pass",
+          "targetKind": "door",
+          "description": "Pass through an open door",
+          "when": {
+            "op": "eq",
+            "left": {
+              "op": "fact",
+              "subject": "$target",
+              "predicate": "state"
+            },
+            "right": {
+              "op": "literal",
+              "value": "open"
+            }
+          },
+          "cost": {},
+          "risk": {},
+          "effects": [
+            {
+              "op": "removeRelation",
+              "match": {
+                "type": "located_in",
+                "from": "$actor",
+                "to": "place:room-a"
+              }
+            },
+            {
+              "op": "addRelation",
+              "relation": {
+                "type": "located_in",
+                "from": "$actor",
+                "to": "place:room-b"
+              }
+            }
+          ],
+          "dependencies": [
+            "fact:*:state"
+          ]
+        },
+        {
+          "id": "affordance:unlock-door",
+          "action": "unlock",
+          "targetKind": "door",
+          "description": "Unlock the door with an owned matching key",
+          "when": {
+            "op": "and",
+            "values": [
+              {
+                "op": "relationPath",
+                "from": "$actor",
+                "to": "$target",
+                "types": [
+                  "owns",
+                  "unlocks"
+                ]
+              },
+              {
+                "op": "eq",
+                "left": {
+                  "op": "fact",
+                  "subject": "$target",
+                  "predicate": "state"
+                },
+                "right": {
+                  "op": "literal",
+                  "value": "locked"
+                }
+              }
+            ]
+          },
+          "cost": {},
+          "risk": {},
+          "effects": [
+            {
+              "op": "setFact",
+              "fact": {
+                "subject": "$target",
+                "predicate": "state",
+                "value": "unlocked"
+              }
+            }
+          ],
+          "dependencies": [
+            "fact:*:state",
+            "relationType:owns",
+            "relationType:unlocks"
+          ]
+        }
+      ],
+      "constraint:world": [
+        {
+          "id": "constraint:door-state-valid",
+          "scope": "world",
+          "description": "Door state must be locked, unlocked, or open",
+          "severity": "hard",
+          "when": {
+            "op": "literal",
+            "value": true
+          },
+          "assert": {
+            "op": "or",
+            "values": [
+              {
+                "op": "eq",
+                "left": {
+                  "op": "fact",
+                  "subject": "object:door",
+                  "predicate": "state"
+                },
+                "right": {
+                  "op": "literal",
+                  "value": "locked"
+                }
+              },
+              {
+                "op": "eq",
+                "left": {
+                  "op": "fact",
+                  "subject": "object:door",
+                  "predicate": "state"
+                },
+                "right": {
+                  "op": "literal",
+                  "value": "unlocked"
+                }
+              },
+              {
+                "op": "eq",
+                "left": {
+                  "op": "fact",
+                  "subject": "object:door",
+                  "predicate": "state"
+                },
+                "right": {
+                  "op": "literal",
+                  "value": "open"
+                }
+              }
+            ]
+          },
+          "repairCandidates": [
+            {
+              "id": "repair:door-state:locked",
+              "description": "Restore the door to a valid locked state",
+              "operations": [
+                {
+                  "op": "setFact",
+                  "fact": {
+                    "subject": "object:door",
+                    "predicate": "state",
+                    "value": "locked"
+                  }
+                }
+              ],
+              "estimatedCost": 1,
+              "estimatedRisk": "low"
+            }
+          ],
+          "tags": [],
+          "dependencies": [
+            "fact:*:state",
+            "fact:object:door:state"
+          ]
+        }
+      ],
+      "event-ledger": []
+    },
+    "generation": {
+      "format": "rfe.generation.v0.3",
+      "branchId": "branch:main",
+      "generationId": "generation:0:d87f85955d3e1851",
+      "parentGenerationId": null,
+      "realityRevision": 0,
+      "logicalTime": 0,
+      "semanticRoot": "d87f85955d3e18511d996018d3c65d6a32710f48498bdb294532ca4b850c0c8b",
+      "evidenceRoot": "ed27707d468a5931795041b9e9c2b4170733f60f6db00e39b1806bc9787f3d05",
+      "refs": {
+        "affordance:door": "e23339c7e191e9f2868e11ae47c5b9bb65c241f464ff964b5344fd5163fa82d2",
+        "constraint:world": "7f8c157fd6c5258a1af26db46d4598661c15a736e12590210ba9a451aa9c961c",
+        "event-ledger": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "fact:object:door:state": "75554187f897dfb4ad47a3b0f5f5dbb3172a45c1876f9b9c36ea46a1cf9a66b5",
+        "identity": "4b5091dc8d811c74e532d5b385addb57ebc1ee7da955a9c2d3afde90270bd2a7",
+        "relation:connects_from": "9d4a763009cf041352f0ed721af5ad9cb231ba60d9d203d2f1650af208b830b1",
+        "relation:connects_to": "4a3d1ec3cf069082d38dd8de7267769b735cb3b09110190f660bf50231197e93",
+        "relation:located_in": "85de9f798ab0f2bcd8de286d21be5f2575555d4dc1d59bb902376cef98d1c4ed",
+        "relation:owns": "65aacd4e30f000815927e0a7d4120acc0b08697c81cb515f74bd995ea5886cde",
+        "relation:unlocks": "6a2cc504ccb0ffdf6559cd506130d918234d54d859c1edc5b5123d7a8e4ea5ae"
+      },
+      "integrityHash": "fb127205022d25e44c6e41bc700d49f6aaf1e66b6061eece974948ce0045bb68"
+    }
+  },
+  "session": {
+    "id": "session:door-lab:alice-bob",
+    "branchId": "branch:main",
+    "maxRounds": 8,
+    "arbiter": {
+      "order": [
+        "priority_desc",
+        "subject_utf16_asc",
+        "intent_utf16_asc"
+      ],
+      "conflictPolicy": "first-writer-wins",
+      "retryPolicy": "replan-next-round"
+    },
+    "intents": [
+      {
+        "id": "intent:alice:pass-room-b",
+        "subject": "subject:alice",
+        "kind": "pass_into",
+        "target": "place:room-b",
+        "authority": "authority:alice",
+        "priority": 100
+      },
+      {
+        "id": "intent:bob:pass-room-b",
+        "subject": "subject:bob",
+        "kind": "pass_into",
+        "target": "place:room-b",
+        "authority": "authority:bob",
+        "priority": 100
+      }
+    ]
+  },
+  "expected": {
+    "format": "rfe.multi-subject-session-result.v0.4",
+    "session": {
+      "id": "session:door-lab:alice-bob",
+      "branchId": "branch:main",
+      "maxRounds": 8,
+      "arbiter": {
+        "order": [
+          "priority_desc",
+          "subject_utf16_asc",
+          "intent_utf16_asc"
+        ],
+        "conflictPolicy": "first-writer-wins",
+        "retryPolicy": "replan-next-round"
+      },
+      "intents": [
+        {
+          "id": "intent:alice:pass-room-b",
+          "subject": "subject:alice",
+          "kind": "pass_into",
+          "target": "place:room-b",
+          "authority": "authority:alice",
+          "priority": 100
+        },
+        {
+          "id": "intent:bob:pass-room-b",
+          "subject": "subject:bob",
+          "kind": "pass_into",
+          "target": "place:room-b",
+          "authority": "authority:bob",
+          "priority": 100
+        }
+      ]
+    },
+    "initialGenerationId": "generation:0:d87f85955d3e1851",
+    "initialViews": {
+      "intent:alice:pass-room-b": {
+        "format": "rfe.observer-view.v0.3",
+        "generationId": "generation:0:d87f85955d3e1851",
+        "revision": 0,
+        "logicalTime": 0,
+        "observerId": "subject:alice",
+        "location": "place:room-a",
+        "visibleFacts": [
+          {
+            "subject": "object:door",
+            "predicate": "state",
+            "value": "locked"
+          }
+        ],
+        "visibleRelations": [
+          {
+            "type": "located_in",
+            "from": "subject:alice",
+            "to": "place:room-a"
+          }
+        ],
+        "availableActions": [
+          {
+            "action": "inspect",
+            "available": true,
+            "reasonCodes": []
+          },
+          {
+            "action": "open",
+            "available": false,
+            "reasonCodes": [
+              "requires_state:unlocked"
+            ]
+          },
+          {
+            "action": "pass",
+            "available": false,
+            "reasonCodes": [
+              "requires_state:open"
+            ]
+          },
+          {
+            "action": "unlock",
+            "available": true,
+            "reasonCodes": []
+          }
+        ],
+        "goal": {
+          "kind": "pass_into",
+          "target": "place:room-b",
+          "satisfied": false
+        },
+        "viewHash": "0f884caecee3a2a45e2c16aa09d0bd509009a1ab47c41fe8cb2bdaa03ac7bf24"
+      },
+      "intent:bob:pass-room-b": {
+        "format": "rfe.observer-view.v0.3",
+        "generationId": "generation:0:d87f85955d3e1851",
+        "revision": 0,
+        "logicalTime": 0,
+        "observerId": "subject:bob",
+        "location": "place:room-a",
+        "visibleFacts": [
+          {
+            "subject": "object:door",
+            "predicate": "state",
+            "value": "locked"
+          }
+        ],
+        "visibleRelations": [
+          {
+            "type": "located_in",
+            "from": "subject:bob",
+            "to": "place:room-a"
+          }
+        ],
+        "availableActions": [
+          {
+            "action": "inspect",
+            "available": true,
+            "reasonCodes": []
+          },
+          {
+            "action": "open",
+            "available": false,
+            "reasonCodes": [
+              "requires_state:unlocked"
+            ]
+          },
+          {
+            "action": "pass",
+            "available": false,
+            "reasonCodes": [
+              "requires_state:open"
+            ]
+          },
+          {
+            "action": "unlock",
+            "available": true,
+            "reasonCodes": []
+          }
+        ],
+        "goal": {
+          "kind": "pass_into",
+          "target": "place:room-b",
+          "satisfied": false
+        },
+        "viewHash": "575437046015d003ca91ca01741a27b478ac2a4bd1095877bd325f87026d0459"
+      }
+    },
+    "rounds": [
+      {
+        "format": "rfe.multi-subject-round.v0.4",
+        "round": 1,
+        "snapshotGenerationId": "generation:0:d87f85955d3e1851",
+        "snapshotRevision": 0,
+        "proposals": [
+          {
+            "format": "rfe.session-proposal.v0.4",
+            "intentId": "intent:alice:pass-room-b",
+            "subject": "subject:alice",
+            "priority": 100,
+            "baseRevision": 0,
+            "plan": {
+              "status": "action",
+              "action": "unlock",
+              "door": "object:door",
+              "reasonCodes": []
+            },
+            "readSet": [
+              "fact:object:door:state",
+              "relation:connects_from:object:door",
+              "relation:connects_to:object:door",
+              "relation:located_in:subject:alice",
+              "relation:owns:subject:alice",
+              "relation:unlocks:object:door"
+            ],
+            "writeSet": [
+              "fact:object:door:state"
+            ],
+            "readVersions": {
+              "fact:object:door:state": 0,
+              "relation:connects_from:object:door": 0,
+              "relation:connects_to:object:door": 0,
+              "relation:located_in:subject:alice": 0,
+              "relation:owns:subject:alice": 0,
+              "relation:unlocks:object:door": 0
+            },
+            "proposalHash": "c3a8c5019405edbe5ebd3c5e738ea5805b139d994eb3f17945c7afe23e372306"
+          },
+          {
+            "format": "rfe.session-proposal.v0.4",
+            "intentId": "intent:bob:pass-room-b",
+            "subject": "subject:bob",
+            "priority": 100,
+            "baseRevision": 0,
+            "plan": {
+              "status": "action",
+              "action": "unlock",
+              "door": "object:door",
+              "reasonCodes": []
+            },
+            "readSet": [
+              "fact:object:door:state",
+              "relation:connects_from:object:door",
+              "relation:connects_to:object:door",
+              "relation:located_in:subject:bob",
+              "relation:owns:subject:bob",
+              "relation:unlocks:object:door"
+            ],
+            "writeSet": [
+              "fact:object:door:state"
+            ],
+            "readVersions": {
+              "fact:object:door:state": 0,
+              "relation:connects_from:object:door": 0,
+              "relation:connects_to:object:door": 0,
+              "relation:located_in:subject:bob": 0,
+              "relation:owns:subject:bob": 0,
+              "relation:unlocks:object:door": 0
+            },
+            "proposalHash": "6deea47a78daee5e52a6b913e9ce195f45e8f56c60b90777d6fac7ae21bc64f6"
+          }
+        ],
+        "decisions": [
+          {
+            "intentId": "intent:alice:pass-room-b",
+            "subject": "subject:alice",
+            "status": "accepted",
+            "reasonCodes": [],
+            "conflictsWith": null,
+            "conflictResources": []
+          },
+          {
+            "intentId": "intent:bob:pass-room-b",
+            "subject": "subject:bob",
+            "status": "conflict_rejected",
+            "reasonCodes": [
+              "mvcc_conflict"
+            ],
+            "conflictsWith": "intent:alice:pass-room-b",
+            "conflictResources": [
+              "fact:object:door:state"
+            ]
+          }
+        ],
+        "commits": [
+          {
+            "intentId": "intent:alice:pass-room-b",
+            "subject": "subject:alice",
+            "action": "unlock",
+            "eventHash": "c36163d15e48a5c52374511658320b279e22533dc2e28182be5f0aa1d265532f",
+            "generationId": "generation:1:c02a507b64be4e6c",
+            "revision": 1,
+            "writeSet": [
+              "fact:object:door:state"
+            ]
+          }
+        ],
+        "resultingGenerationId": "generation:1:c02a507b64be4e6c",
+        "resultingRevision": 1,
+        "statusByIntent": {
+          "intent:alice:pass-room-b": "active",
+          "intent:bob:pass-room-b": "active"
+        },
+        "observerViewHashes": {
+          "intent:alice:pass-room-b": "67897bfd40a45b7b123894730a81293f972de7b9285d74941739cba78845cff7",
+          "intent:bob:pass-room-b": "a166f253ac0b7df0c6022a2753de596008d225ee78c582059c6239178591cd73"
+        },
+        "roundHash": "d4aa23e8f201b774e792810838edeec065838862dd35bbdfd005d52b128cf8ae"
+      },
+      {
+        "format": "rfe.multi-subject-round.v0.4",
+        "round": 2,
+        "snapshotGenerationId": "generation:1:c02a507b64be4e6c",
+        "snapshotRevision": 1,
+        "proposals": [
+          {
+            "format": "rfe.session-proposal.v0.4",
+            "intentId": "intent:alice:pass-room-b",
+            "subject": "subject:alice",
+            "priority": 100,
+            "baseRevision": 1,
+            "plan": {
+              "status": "action",
+              "action": "open",
+              "door": "object:door",
+              "reasonCodes": []
+            },
+            "readSet": [
+              "fact:object:door:state",
+              "relation:connects_from:object:door",
+              "relation:connects_to:object:door",
+              "relation:located_in:subject:alice"
+            ],
+            "writeSet": [
+              "fact:object:door:state"
+            ],
+            "readVersions": {
+              "fact:object:door:state": 1,
+              "relation:connects_from:object:door": 0,
+              "relation:connects_to:object:door": 0,
+              "relation:located_in:subject:alice": 0
+            },
+            "proposalHash": "0af578e3b2558f21d6356843e6758524963ed4e6cbd96c622da6b381132cf73f"
+          },
+          {
+            "format": "rfe.session-proposal.v0.4",
+            "intentId": "intent:bob:pass-room-b",
+            "subject": "subject:bob",
+            "priority": 100,
+            "baseRevision": 1,
+            "plan": {
+              "status": "action",
+              "action": "open",
+              "door": "object:door",
+              "reasonCodes": []
+            },
+            "readSet": [
+              "fact:object:door:state",
+              "relation:connects_from:object:door",
+              "relation:connects_to:object:door",
+              "relation:located_in:subject:bob"
+            ],
+            "writeSet": [
+              "fact:object:door:state"
+            ],
+            "readVersions": {
+              "fact:object:door:state": 1,
+              "relation:connects_from:object:door": 0,
+              "relation:connects_to:object:door": 0,
+              "relation:located_in:subject:bob": 0
+            },
+            "proposalHash": "e23561bce6b769df98f4f3444c9899cd7732f082ccfcf0748afe5e156e68af3b"
+          }
+        ],
+        "decisions": [
+          {
+            "intentId": "intent:alice:pass-room-b",
+            "subject": "subject:alice",
+            "status": "accepted",
+            "reasonCodes": [],
+            "conflictsWith": null,
+            "conflictResources": []
+          },
+          {
+            "intentId": "intent:bob:pass-room-b",
+            "subject": "subject:bob",
+            "status": "conflict_rejected",
+            "reasonCodes": [
+              "mvcc_conflict"
+            ],
+            "conflictsWith": "intent:alice:pass-room-b",
+            "conflictResources": [
+              "fact:object:door:state"
+            ]
+          }
+        ],
+        "commits": [
+          {
+            "intentId": "intent:alice:pass-room-b",
+            "subject": "subject:alice",
+            "action": "open",
+            "eventHash": "9058d0b7dda8f03bd95def3fbcae53a2e2ed39e6e88a545f9fff080c1ecfcf50",
+            "generationId": "generation:2:e16d21b2a495a4b1",
+            "revision": 2,
+            "writeSet": [
+              "fact:object:door:state"
+            ]
+          }
+        ],
+        "resultingGenerationId": "generation:2:e16d21b2a495a4b1",
+        "resultingRevision": 2,
+        "statusByIntent": {
+          "intent:alice:pass-room-b": "active",
+          "intent:bob:pass-room-b": "active"
+        },
+        "observerViewHashes": {
+          "intent:alice:pass-room-b": "7fddb92085be76e5c912832da9f9574bfa91b4460d694b0a70f6407b74fe9b0f",
+          "intent:bob:pass-room-b": "0fb5433ebe613c7d65f314d4983d85278db052e8d1fd493ca205ddfc56ef1a97"
+        },
+        "roundHash": "bf0eaed5d45bfcb87faa4e40f932d4576111bd14abb14bf1fbbe563f790b5146"
+      },
+      {
+        "format": "rfe.multi-subject-round.v0.4",
+        "round": 3,
+        "snapshotGenerationId": "generation:2:e16d21b2a495a4b1",
+        "snapshotRevision": 2,
+        "proposals": [
+          {
+            "format": "rfe.session-proposal.v0.4",
+            "intentId": "intent:alice:pass-room-b",
+            "subject": "subject:alice",
+            "priority": 100,
+            "baseRevision": 2,
+            "plan": {
+              "status": "action",
+              "action": "pass",
+              "door": "object:door",
+              "reasonCodes": []
+            },
+            "readSet": [
+              "fact:object:door:state",
+              "relation:connects_from:object:door",
+              "relation:connects_to:object:door",
+              "relation:located_in:subject:alice"
+            ],
+            "writeSet": [
+              "relation:located_in:subject:alice"
+            ],
+            "readVersions": {
+              "fact:object:door:state": 2,
+              "relation:connects_from:object:door": 0,
+              "relation:connects_to:object:door": 0,
+              "relation:located_in:subject:alice": 0
+            },
+            "proposalHash": "8f8474e9d58b2c03423b89d0254e6fea04fa7e1314eb2801e80287985d31219e"
+          },
+          {
+            "format": "rfe.session-proposal.v0.4",
+            "intentId": "intent:bob:pass-room-b",
+            "subject": "subject:bob",
+            "priority": 100,
+            "baseRevision": 2,
+            "plan": {
+              "status": "action",
+              "action": "pass",
+              "door": "object:door",
+              "reasonCodes": []
+            },
+            "readSet": [
+              "fact:object:door:state",
+              "relation:connects_from:object:door",
+              "relation:connects_to:object:door",
+              "relation:located_in:subject:bob"
+            ],
+            "writeSet": [
+              "relation:located_in:subject:bob"
+            ],
+            "readVersions": {
+              "fact:object:door:state": 2,
+              "relation:connects_from:object:door": 0,
+              "relation:connects_to:object:door": 0,
+              "relation:located_in:subject:bob": 0
+            },
+            "proposalHash": "2593a16ce6abfed6fd5e0a137d435f07dece515c2e97b82d38319766cfc6a650"
+          }
+        ],
+        "decisions": [
+          {
+            "intentId": "intent:alice:pass-room-b",
+            "subject": "subject:alice",
+            "status": "accepted",
+            "reasonCodes": [],
+            "conflictsWith": null,
+            "conflictResources": []
+          },
+          {
+            "intentId": "intent:bob:pass-room-b",
+            "subject": "subject:bob",
+            "status": "accepted",
+            "reasonCodes": [],
+            "conflictsWith": null,
+            "conflictResources": []
+          }
+        ],
+        "commits": [
+          {
+            "intentId": "intent:alice:pass-room-b",
+            "subject": "subject:alice",
+            "action": "pass",
+            "eventHash": "d5ec8ac6cc8fb8c49b329b98ab12f12579399e57e368250f3b2e4342bf8218d7",
+            "generationId": "generation:3:c71c5b2cb8e861c7",
+            "revision": 3,
+            "writeSet": [
+              "relation:located_in:subject:alice"
+            ]
+          },
+          {
+            "intentId": "intent:bob:pass-room-b",
+            "subject": "subject:bob",
+            "action": "pass",
+            "eventHash": "5b1aa7f8bbe67e56b0dbf91cf9b86f5ed99e0b2cb837d7dc2fe69a80b179e21c",
+            "generationId": "generation:4:abf1c9fcb99fd9db",
+            "revision": 4,
+            "writeSet": [
+              "relation:located_in:subject:bob"
+            ]
+          }
+        ],
+        "resultingGenerationId": "generation:4:abf1c9fcb99fd9db",
+        "resultingRevision": 4,
+        "statusByIntent": {
+          "intent:alice:pass-room-b": "satisfied",
+          "intent:bob:pass-room-b": "satisfied"
+        },
+        "observerViewHashes": {
+          "intent:alice:pass-room-b": "9513b2f69145afe0274c715cd025298b7d12bd6863e6e1f24d8b781edadd9c86",
+          "intent:bob:pass-room-b": "119a00daccb39c94a1245dbdb716a522a63ff811eee356e3247a5cf7c9929541"
+        },
+        "roundHash": "8c134df867b55f39147bd0c0ae583ae351c996fc0d579c579a5ee6f78d99d4aa"
+      }
+    ],
+    "events": [
+      {
+        "id": "event:intent:alice:pass-room-b:1:unlock",
+        "type": "transaction.committed",
+        "sequence": 1,
+        "branchId": "branch:main",
+        "logicalTime": 1,
+        "revision": 1,
+        "authority": "authority:alice",
+        "intentId": "intent:alice:pass-room-b",
+        "action": "unlock",
+        "target": "object:door",
+        "operations": [
+          {
+            "op": "setFact",
+            "fact": {
+              "id": "fact:door-state:1",
+              "subject": "object:door",
+              "predicate": "state",
+              "value": "unlocked",
+              "validFrom": 1,
+              "validTo": null,
+              "source": "source:closed-loop",
+              "confidence": 1,
+              "visibility": {
+                "type": "public"
+              },
+              "authority": "authority:alice"
+            }
+          }
+        ],
+        "inverseOperations": [],
+        "hashMode": "proof-native-store-v1",
+        "beforeProofRoot": "d87f85955d3e18511d996018d3c65d6a32710f48498bdb294532ca4b850c0c8b",
+        "afterProofRoot": "c02a507b64be4e6c79a7558c2274efd7306a2d185473668835aec9c3bdb198ab",
+        "previousEventHash": null,
+        "eventHash": "c36163d15e48a5c52374511658320b279e22533dc2e28182be5f0aa1d265532f",
+        "touchedGroups": [
+          "fact:object:door:state"
+        ],
+        "metadata": {
+          "closedRealityLoop": true,
+          "destination": "place:room-b"
+        }
+      },
+      {
+        "id": "event:intent:alice:pass-room-b:2:open",
+        "type": "transaction.committed",
+        "sequence": 2,
+        "branchId": "branch:main",
+        "logicalTime": 2,
+        "revision": 2,
+        "authority": "authority:alice",
+        "intentId": "intent:alice:pass-room-b",
+        "action": "open",
+        "target": "object:door",
+        "operations": [
+          {
+            "op": "setFact",
+            "fact": {
+              "id": "fact:door-state:2",
+              "subject": "object:door",
+              "predicate": "state",
+              "value": "open",
+              "validFrom": 2,
+              "validTo": null,
+              "source": "source:closed-loop",
+              "confidence": 1,
+              "visibility": {
+                "type": "public"
+              },
+              "authority": "authority:alice"
+            }
+          }
+        ],
+        "inverseOperations": [],
+        "hashMode": "proof-native-store-v1",
+        "beforeProofRoot": "c02a507b64be4e6c79a7558c2274efd7306a2d185473668835aec9c3bdb198ab",
+        "afterProofRoot": "e16d21b2a495a4b11e5b3a37cb14d82d5c1545f468ae4f1676540824b0ca6384",
+        "previousEventHash": "c36163d15e48a5c52374511658320b279e22533dc2e28182be5f0aa1d265532f",
+        "eventHash": "9058d0b7dda8f03bd95def3fbcae53a2e2ed39e6e88a545f9fff080c1ecfcf50",
+        "touchedGroups": [
+          "fact:object:door:state"
+        ],
+        "metadata": {
+          "closedRealityLoop": true,
+          "destination": "place:room-b"
+        }
+      },
+      {
+        "id": "event:intent:alice:pass-room-b:3:pass",
+        "type": "transaction.committed",
+        "sequence": 3,
+        "branchId": "branch:main",
+        "logicalTime": 3,
+        "revision": 3,
+        "authority": "authority:alice",
+        "intentId": "intent:alice:pass-room-b",
+        "action": "pass",
+        "target": "object:door",
+        "operations": [
+          {
+            "op": "removeRelation",
+            "match": {
+              "type": "located_in",
+              "from": "subject:alice"
+            }
+          },
+          {
+            "op": "addRelation",
+            "relation": {
+              "id": "relation:player-location:3",
+              "type": "located_in",
+              "from": "subject:alice",
+              "to": "place:room-b",
+              "qualifiers": {},
+              "validFrom": 3,
+              "validTo": null,
+              "authority": "authority:alice"
+            }
+          }
+        ],
+        "inverseOperations": [],
+        "hashMode": "proof-native-store-v1",
+        "beforeProofRoot": "e16d21b2a495a4b11e5b3a37cb14d82d5c1545f468ae4f1676540824b0ca6384",
+        "afterProofRoot": "c71c5b2cb8e861c792c48b251b0a8a1515e0416eddca1c43121d85836376af11",
+        "previousEventHash": "9058d0b7dda8f03bd95def3fbcae53a2e2ed39e6e88a545f9fff080c1ecfcf50",
+        "eventHash": "d5ec8ac6cc8fb8c49b329b98ab12f12579399e57e368250f3b2e4342bf8218d7",
+        "touchedGroups": [
+          "relation:located_in"
+        ],
+        "metadata": {
+          "closedRealityLoop": true,
+          "destination": "place:room-b"
+        }
+      },
+      {
+        "id": "event:intent:bob:pass-room-b:4:pass",
+        "type": "transaction.committed",
+        "sequence": 4,
+        "branchId": "branch:main",
+        "logicalTime": 4,
+        "revision": 4,
+        "authority": "authority:bob",
+        "intentId": "intent:bob:pass-room-b",
+        "action": "pass",
+        "target": "object:door",
+        "operations": [
+          {
+            "op": "removeRelation",
+            "match": {
+              "type": "located_in",
+              "from": "subject:bob"
+            }
+          },
+          {
+            "op": "addRelation",
+            "relation": {
+              "id": "relation:player-location:4",
+              "type": "located_in",
+              "from": "subject:bob",
+              "to": "place:room-b",
+              "qualifiers": {},
+              "validFrom": 4,
+              "validTo": null,
+              "authority": "authority:bob"
+            }
+          }
+        ],
+        "inverseOperations": [],
+        "hashMode": "proof-native-store-v1",
+        "beforeProofRoot": "c71c5b2cb8e861c792c48b251b0a8a1515e0416eddca1c43121d85836376af11",
+        "afterProofRoot": "abf1c9fcb99fd9db9e5bcd47dc46a043934c7f6bfa81da4484cecb10acabe94e",
+        "previousEventHash": "d5ec8ac6cc8fb8c49b329b98ab12f12579399e57e368250f3b2e4342bf8218d7",
+        "eventHash": "5b1aa7f8bbe67e56b0dbf91cf9b86f5ed99e0b2cb837d7dc2fe69a80b179e21c",
+        "touchedGroups": [
+          "relation:located_in"
+        ],
+        "metadata": {
+          "closedRealityLoop": true,
+          "destination": "place:room-b"
+        }
+      }
+    ],
+    "generationIds": [
+      "generation:0:d87f85955d3e1851",
+      "generation:1:c02a507b64be4e6c",
+      "generation:2:e16d21b2a495a4b1",
+      "generation:3:c71c5b2cb8e861c7",
+      "generation:4:abf1c9fcb99fd9db"
+    ],
+    "finalGeneration": {
+      "format": "rfe.generation.v0.3",
+      "branchId": "branch:main",
+      "generationId": "generation:4:abf1c9fcb99fd9db",
+      "parentGenerationId": "generation:3:c71c5b2cb8e861c7",
+      "realityRevision": 4,
+      "logicalTime": 4,
+      "semanticRoot": "abf1c9fcb99fd9db9e5bcd47dc46a043934c7f6bfa81da4484cecb10acabe94e",
+      "evidenceRoot": "822e49e649fc7a8b1a26ddff238e90b832d9dd58da36490c2680c7cbcc44ee18",
+      "refs": {
+        "affordance:door": "e23339c7e191e9f2868e11ae47c5b9bb65c241f464ff964b5344fd5163fa82d2",
+        "constraint:world": "7f8c157fd6c5258a1af26db46d4598661c15a736e12590210ba9a451aa9c961c",
+        "event-ledger": "12deb6922c32457ded6310359629018860f25653861a63c05f683e650c7793dc",
+        "fact:object:door:state": "2c2fd9889489aa9d1bd6319a579eff382e708fc8ecd242012c3fff72383eff29",
+        "identity": "4b5091dc8d811c74e532d5b385addb57ebc1ee7da955a9c2d3afde90270bd2a7",
+        "relation:connects_from": "9d4a763009cf041352f0ed721af5ad9cb231ba60d9d203d2f1650af208b830b1",
+        "relation:connects_to": "4a3d1ec3cf069082d38dd8de7267769b735cb3b09110190f660bf50231197e93",
+        "relation:located_in": "85c464916d4186b3c76a08777484aa3e9a61d350dc78aca9c757e1f164532556",
+        "relation:owns": "65aacd4e30f000815927e0a7d4120acc0b08697c81cb515f74bd995ea5886cde",
+        "relation:unlocks": "6a2cc504ccb0ffdf6559cd506130d918234d54d859c1edc5b5123d7a8e4ea5ae"
+      },
+      "integrityHash": "b988831af1c8acfd29e081706818a0d38daef6b0363932546c8f949e6032e64a"
+    },
+    "finalViews": {
+      "intent:alice:pass-room-b": {
+        "format": "rfe.observer-view.v0.3",
+        "generationId": "generation:4:abf1c9fcb99fd9db",
+        "revision": 4,
+        "logicalTime": 4,
+        "observerId": "subject:alice",
+        "location": "place:room-b",
+        "visibleFacts": [
+          {
+            "subject": "object:door",
+            "predicate": "state",
+            "value": "open"
+          }
+        ],
+        "visibleRelations": [
+          {
+            "type": "located_in",
+            "from": "subject:alice",
+            "to": "place:room-b"
+          }
+        ],
+        "availableActions": [
+          {
+            "action": "inspect",
+            "available": true,
+            "reasonCodes": []
+          },
+          {
+            "action": "open",
+            "available": false,
+            "reasonCodes": [
+              "requires_state:unlocked"
+            ]
+          },
+          {
+            "action": "pass",
+            "available": false,
+            "reasonCodes": [
+              "actor_not_at_door_origin"
+            ]
+          },
+          {
+            "action": "unlock",
+            "available": false,
+            "reasonCodes": [
+              "requires_state:locked"
+            ]
+          }
+        ],
+        "goal": {
+          "kind": "pass_into",
+          "target": "place:room-b",
+          "satisfied": true
+        },
+        "viewHash": "9513b2f69145afe0274c715cd025298b7d12bd6863e6e1f24d8b781edadd9c86"
+      },
+      "intent:bob:pass-room-b": {
+        "format": "rfe.observer-view.v0.3",
+        "generationId": "generation:4:abf1c9fcb99fd9db",
+        "revision": 4,
+        "logicalTime": 4,
+        "observerId": "subject:bob",
+        "location": "place:room-b",
+        "visibleFacts": [
+          {
+            "subject": "object:door",
+            "predicate": "state",
+            "value": "open"
+          }
+        ],
+        "visibleRelations": [
+          {
+            "type": "located_in",
+            "from": "subject:bob",
+            "to": "place:room-b"
+          }
+        ],
+        "availableActions": [
+          {
+            "action": "inspect",
+            "available": true,
+            "reasonCodes": []
+          },
+          {
+            "action": "open",
+            "available": false,
+            "reasonCodes": [
+              "requires_state:unlocked"
+            ]
+          },
+          {
+            "action": "pass",
+            "available": false,
+            "reasonCodes": [
+              "actor_not_at_door_origin"
+            ]
+          },
+          {
+            "action": "unlock",
+            "available": false,
+            "reasonCodes": [
+              "requires_state:locked"
+            ]
+          }
+        ],
+        "goal": {
+          "kind": "pass_into",
+          "target": "place:room-b",
+          "satisfied": true
+        },
+        "viewHash": "119a00daccb39c94a1245dbdb716a522a63ff811eee356e3247a5cf7c9929541"
+      }
+    },
+    "checkpoint": {
+      "format": "rfe.multi-subject-session-checkpoint.v0.4",
+      "sessionId": "session:door-lab:alice-bob",
+      "branchId": "branch:main",
+      "round": 3,
+      "generationId": "generation:4:abf1c9fcb99fd9db",
+      "realityRevision": 4,
+      "completed": true,
+      "statusByIntent": {
+        "intent:alice:pass-room-b": "satisfied",
+        "intent:bob:pass-room-b": "satisfied"
+      },
+      "resourceVersions": {
+        "fact:object:door:state": 2,
+        "relation:located_in:subject:alice": 3,
+        "relation:located_in:subject:bob": 4
+      },
+      "roundHashes": [
+        "d4aa23e8f201b774e792810838edeec065838862dd35bbdfd005d52b128cf8ae",
+        "bf0eaed5d45bfcb87faa4e40f932d4576111bd14abb14bf1fbbe563f790b5146",
+        "8c134df867b55f39147bd0c0ae583ae351c996fc0d579c579a5ee6f78d99d4aa"
+      ],
+      "checkpointHash": "f8f2e9871a67f86886a369ed3873cd38c90eeb6635dc556ba8aa3df04728fb5e"
+    },
+    "observerIsolation": {
+      "isolated": true,
+      "crossSubjectRelationLeaks": 0,
+      "observerViewHashes": {
+        "subject:alice": "9513b2f69145afe0274c715cd025298b7d12bd6863e6e1f24d8b781edadd9c86",
+        "subject:bob": "119a00daccb39c94a1245dbdb716a522a63ff811eee356e3247a5cf7c9929541"
+      }
+    },
+    "metrics": {
+      "rounds": 3,
+      "proposals": 6,
+      "acceptedCommits": 4,
+      "conflictRejections": 2,
+      "maxConcurrentAccepted": 2,
+      "fullWorldMaterializations": 0,
+      "sharedEventSequence": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    "sessionResultHash": "1afa7f568575432d80bef4cd3b7dd5fd5cf693ce75c4f757ef0e885e390d040b"
+  }
+}

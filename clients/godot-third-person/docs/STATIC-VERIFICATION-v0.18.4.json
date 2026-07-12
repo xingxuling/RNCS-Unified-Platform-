@@ -1,0 +1,443 @@
+{
+  "ok": true,
+  "status": "STATIC_VERIFIED_ANDROID_RUNTIME_USER_CONFIRMATION_PENDING",
+  "version": "0.18.4-alpha.1",
+  "checks": [
+    {
+      "name": "project.godot exists",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "bootstrap main scene",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Godot 4.7 target",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "GL compatibility",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "touch to mouse emulation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "mouse to touch emulation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "resource exists: scenes/Bootstrap.tscn",
+      "ok": true,
+      "detail": "scenes/Bootstrap.tscn"
+    },
+    {
+      "name": "resource exists: scenes/GameWorld.tscn",
+      "ok": true,
+      "detail": "scenes/GameWorld.tscn"
+    },
+    {
+      "name": "resource exists: scripts/bootstrap.gd",
+      "ok": true,
+      "detail": "scripts/bootstrap.gd"
+    },
+    {
+      "name": "resource exists: scripts/main.gd",
+      "ok": true,
+      "detail": "scripts/main.gd"
+    },
+    {
+      "name": "resource exists: scripts/player_controller.gd",
+      "ok": true,
+      "detail": "scripts/player_controller.gd"
+    },
+    {
+      "name": "resource exists: scripts/enemy.gd",
+      "ok": true,
+      "detail": "scripts/enemy.gd"
+    },
+    {
+      "name": "resource exists: scripts/npc_player.gd",
+      "ok": true,
+      "detail": "scripts/npc_player.gd"
+    },
+    {
+      "name": "resource exists: scripts/hud.gd",
+      "ok": true,
+      "detail": "scripts/hud.gd"
+    },
+    {
+      "name": "resource exists: scripts/mobile_controls.gd",
+      "ok": true,
+      "detail": "scripts/mobile_controls.gd"
+    },
+    {
+      "name": "resource exists: scripts/world_state.gd",
+      "ok": true,
+      "detail": "scripts/world_state.gd"
+    },
+    {
+      "name": "resource exists: scripts/voice_magic.gd",
+      "ok": true,
+      "detail": "scripts/voice_magic.gd"
+    },
+    {
+      "name": "threaded scene request",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "scene timeout",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "world timeout",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "staged enemies",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "staged NPC players",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "environment MultiMesh",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile quality mode",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile tree budget",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile rock budget",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "no runtime set_script",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile move signal",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile camera signal",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "multi-touch move id",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "multi-touch camera id",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "joystick draw",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "action buttons",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "five spell buttons",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "HUD mobile bridge",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "player mobile movement",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "player mobile camera",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile mouse capture guard",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile auto sprint",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "position shadow warning removed",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "no base-typed custom actor: world_state.gd",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "name": "parentheses balanced: world_state.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "brackets balanced: world_state.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "braces balanced: world_state.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "no base-typed custom actor: voice_magic.gd",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "name": "parentheses balanced: voice_magic.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "brackets balanced: voice_magic.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "braces balanced: voice_magic.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "no base-typed custom actor: player_controller.gd",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "name": "parentheses balanced: player_controller.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "brackets balanced: player_controller.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "braces balanced: player_controller.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "no base-typed custom actor: enemy.gd",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "name": "parentheses balanced: enemy.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "brackets balanced: enemy.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "braces balanced: enemy.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "no base-typed custom actor: npc_player.gd",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "name": "parentheses balanced: npc_player.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "brackets balanced: npc_player.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "braces balanced: npc_player.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "no base-typed custom actor: hud.gd",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "name": "parentheses balanced: hud.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "brackets balanced: hud.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "braces balanced: hud.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "no base-typed custom actor: main.gd",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "name": "parentheses balanced: main.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "brackets balanced: main.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "braces balanced: main.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "no base-typed custom actor: bootstrap.gd",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "name": "parentheses balanced: bootstrap.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "brackets balanced: bootstrap.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "braces balanced: bootstrap.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "no base-typed custom actor: mobile_controls.gd",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "name": "parentheses balanced: mobile_controls.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "brackets balanced: mobile_controls.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "braces balanced: mobile_controls.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "reference resolves: project.godot -> res://scenes/Bootstrap.tscn",
+      "ok": true,
+      "detail": "/mnt/data/rncs_v0184_full/RNCS_Aetherworld_Unified_v0.18.3-alpha.1_Godot_4.7_Variant_Hotfix_完整源码与运行包/clients/godot-third-person/scenes/Bootstrap.tscn"
+    },
+    {
+      "name": "reference resolves: project.godot -> res://scripts/voice_magic.gd",
+      "ok": true,
+      "detail": "/mnt/data/rncs_v0184_full/RNCS_Aetherworld_Unified_v0.18.3-alpha.1_Godot_4.7_Variant_Hotfix_完整源码与运行包/clients/godot-third-person/scripts/voice_magic.gd"
+    },
+    {
+      "name": "reference resolves: project.godot -> res://scripts/world_state.gd",
+      "ok": true,
+      "detail": "/mnt/data/rncs_v0184_full/RNCS_Aetherworld_Unified_v0.18.3-alpha.1_Godot_4.7_Variant_Hotfix_完整源码与运行包/clients/godot-third-person/scripts/world_state.gd"
+    },
+    {
+      "name": "reference resolves: Bootstrap.tscn -> res://scripts/bootstrap.gd",
+      "ok": true,
+      "detail": "/mnt/data/rncs_v0184_full/RNCS_Aetherworld_Unified_v0.18.3-alpha.1_Godot_4.7_Variant_Hotfix_完整源码与运行包/clients/godot-third-person/scripts/bootstrap.gd"
+    },
+    {
+      "name": "reference resolves: GameWorld.tscn -> res://scripts/hud.gd",
+      "ok": true,
+      "detail": "/mnt/data/rncs_v0184_full/RNCS_Aetherworld_Unified_v0.18.3-alpha.1_Godot_4.7_Variant_Hotfix_完整源码与运行包/clients/godot-third-person/scripts/hud.gd"
+    },
+    {
+      "name": "reference resolves: GameWorld.tscn -> res://scripts/main.gd",
+      "ok": true,
+      "detail": "/mnt/data/rncs_v0184_full/RNCS_Aetherworld_Unified_v0.18.3-alpha.1_Godot_4.7_Variant_Hotfix_完整源码与运行包/clients/godot-third-person/scripts/main.gd"
+    },
+    {
+      "name": "reference resolves: hud.gd -> res://scripts/mobile_controls.gd",
+      "ok": true,
+      "detail": "/mnt/data/rncs_v0184_full/RNCS_Aetherworld_Unified_v0.18.3-alpha.1_Godot_4.7_Variant_Hotfix_完整源码与运行包/clients/godot-third-person/scripts/mobile_controls.gd"
+    },
+    {
+      "name": "reference resolves: main.gd -> res://scripts/enemy.gd",
+      "ok": true,
+      "detail": "/mnt/data/rncs_v0184_full/RNCS_Aetherworld_Unified_v0.18.3-alpha.1_Godot_4.7_Variant_Hotfix_完整源码与运行包/clients/godot-third-person/scripts/enemy.gd"
+    },
+    {
+      "name": "reference resolves: main.gd -> res://scripts/npc_player.gd",
+      "ok": true,
+      "detail": "/mnt/data/rncs_v0184_full/RNCS_Aetherworld_Unified_v0.18.3-alpha.1_Godot_4.7_Variant_Hotfix_完整源码与运行包/clients/godot-third-person/scripts/npc_player.gd"
+    },
+    {
+      "name": "reference resolves: main.gd -> res://scripts/player_controller.gd",
+      "ok": true,
+      "detail": "/mnt/data/rncs_v0184_full/RNCS_Aetherworld_Unified_v0.18.3-alpha.1_Godot_4.7_Variant_Hotfix_完整源码与运行包/clients/godot-third-person/scripts/player_controller.gd"
+    },
+    {
+      "name": "reference resolves: bootstrap.gd -> res://scenes/GameWorld.tscn",
+      "ok": true,
+      "detail": "/mnt/data/rncs_v0184_full/RNCS_Aetherworld_Unified_v0.18.3-alpha.1_Godot_4.7_Variant_Hotfix_完整源码与运行包/clients/godot-third-person/scenes/GameWorld.tscn"
+    }
+  ],
+  "errors": []
+}

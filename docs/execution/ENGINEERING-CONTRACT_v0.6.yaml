@@ -1,0 +1,25 @@
+format: rncs.engineering-contract.v0.6
+goal: "在完整 RNCS+Aetherworld 母工程中建立网络权威状态到平滑视觉投影的可验证闭环"
+current_state:
+  suite: 0.5.0-alpha.1
+  rsr: 0.6.0-alpha.1
+  vsr: 0.5.0-alpha.1
+  network: 0.1.0-alpha.1
+target_state:
+  suite: 0.6.0-alpha.1
+  rsr: 0.7.0-alpha.1
+  vsr: 0.6.0-alpha.1
+  network: 0.2.0-alpha.1
+architecture_decisions:
+  - "RSR 是空间世界状态及差异协议的唯一权威"
+  - "Network 只负责传输、授权、预测与校正"
+  - "VSR 只负责时间化观察投影，不写回权威世界"
+modules_to_change: [rsr, vsr, network-runtime, gateway, root-integration]
+modules_not_to_change: [rfe-constitution, csl-compiler, ial-compiler, ose-reasoner]
+acceptance_tests:
+  - "RSR、VSR、Network、Gateway 全部通过"
+  - "完整母工程 npm test 与 npm run verify 通过"
+  - "权威根与表现根分离"
+  - "乱序增量无法污染客户端状态"
+delivery: [source, tests, evidence, github, full-zip, sha256, acceptance-report]
+rollback: "保留 v0.5.0-alpha.1 完整包；v0.6 升级仅新增协议与兼容字段"

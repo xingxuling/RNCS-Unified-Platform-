@@ -1,0 +1,13 @@
+[build-system]
+requires=["setuptools>=68","wheel"]
+build-backend="setuptools.build_meta"
+[project]
+name="living-artifact-format"
+version="1.0.0"
+description="Reality-native semantic object, revision and package runtime"
+requires-python=">=3.10"
+license={text="Apache-2.0"}
+[project.scripts]
+laf="laf_runtime.cli:main"
+[tool.setuptools.packages.find]
+include=["laf_runtime*"]

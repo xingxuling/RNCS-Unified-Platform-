@@ -1,0 +1,14 @@
+{
+  "format": "rncs.release-manifest.v0.16",
+  "suite_version": "0.16.0-alpha.1",
+  "release": "Town Life & Industry Playable Vertical Slice",
+  "entry": "潮汐工坊镇_v0.16_直接打开.html",
+  "runtime": "packages/world/town-life-industry-runtime",
+  "llm_required": false,
+  "tests": {
+    "town_runtime": "10/10 PASS",
+    "town_integration": "2/2 PASS",
+    "mother_project_integration": "27/27 PASS",
+    "health": "healthy"
+  }
+}

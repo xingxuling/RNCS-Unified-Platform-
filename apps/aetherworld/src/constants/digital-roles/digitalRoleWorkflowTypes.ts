@@ -1,0 +1,22 @@
+export type DigitalRoleWorkflowType =
+  | "PRODUCT_BUILD_CHAIN"
+  | "SYSTEM_BUILD_CHAIN"
+  | "CREATIVE_ASSET_CHAIN"
+  | "VERSION_UPGRADE_CHAIN"
+  | "GOVERNANCE_REVIEW_CHAIN";
+
+export const DIGITAL_ROLE_WORKFLOW_TYPES: DigitalRoleWorkflowType[] = [
+  "PRODUCT_BUILD_CHAIN",
+  "SYSTEM_BUILD_CHAIN",
+  "CREATIVE_ASSET_CHAIN",
+  "VERSION_UPGRADE_CHAIN",
+  "GOVERNANCE_REVIEW_CHAIN",
+];
+
+export const DIGITAL_ROLE_WORKFLOW_LABELS: Record<DigitalRoleWorkflowType, string> = {
+  PRODUCT_BUILD_CHAIN: "A · 产品构建链",
+  SYSTEM_BUILD_CHAIN: "B · 系统构建链",
+  CREATIVE_ASSET_CHAIN: "C · 创作资产链",
+  VERSION_UPGRADE_CHAIN: "D · 版本升级链",
+  GOVERNANCE_REVIEW_CHAIN: "E · 治理审查链",
+};

@@ -1,0 +1,12 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const source=fs.readFileSync(path.join(root,'src/index.mjs'),'utf8').replace(/^export\s+/gm,'');
+const atlas=fs.readFileSync(path.join(root,'assets/season0-style-atlas.png')).toString('base64');
+const exportsBlock=`\nObject.assign(globalThis,{VOICE_MAGIC_VERSION,VOICE_MAGIC_PROTOCOL,SPELLS,ITEMS,ENEMY_ARCHETYPES,QUESTS,WORLD_BUILDINGS,WORLD_NPCS,normalizeIncantation,compileIncantation,createFrontierGame,dispatchFrontierAction,frontierInteractionContext,terrainAt,projectFrontier2_5D,inspectFrontierGame,verifyFrontierGame,exportFrontierSave,importFrontierSave,health});\n`;
+const template=fs.readFileSync(path.join(root,'examples/frontier.template.html'),'utf8');
+const out=template.replace('__ENGINE__',source+exportsBlock).replaceAll('__ATLAS_DATA__',`data:image/png;base64,${atlas}`);
+const output=path.join(root,'examples/灰烬边境_Season0_声控魔法RPG_直接打开.html');
+fs.writeFileSync(output,out);
+console.log(JSON.stringify({ok:true,bytes:Buffer.byteLength(out),output:path.relative(root,output)}));

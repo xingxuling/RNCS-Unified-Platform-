@@ -19,7 +19,7 @@ var state: Dictionary = {
 }
 
 func announce(message: String) -> void:
-	var entry := {
+	var entry = {
 		"time": Time.get_unix_time_from_system(),
 		"message": message
 	}
@@ -35,9 +35,9 @@ func snapshot() -> Dictionary:
 	return state.duplicate(true)
 
 func save_world(player_data: Dictionary) -> bool:
-	var payload := snapshot()
+	var payload = snapshot()
 	payload["player"] = player_data
-	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+	var file = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if file == null:
 		push_error("Unable to open save file: %s" % SAVE_PATH)
 		return false
@@ -48,7 +48,7 @@ func save_world(player_data: Dictionary) -> bool:
 func load_world() -> Dictionary:
 	if not FileAccess.file_exists(SAVE_PATH):
 		return {}
-	var file := FileAccess.open(SAVE_PATH, FileAccess.READ)
+	var file = FileAccess.open(SAVE_PATH, FileAccess.READ)
 	if file == null:
 		return {}
 	var parsed = JSON.parse_string(file.get_as_text())

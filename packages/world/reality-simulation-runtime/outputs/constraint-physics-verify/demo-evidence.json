@@ -1,0 +1,59 @@
+{
+  "format": "rsr.constraint-physics-demo-evidence.v0.2",
+  "runtimeVersion": "0.2.0-alpha.1",
+  "worldId": "constraint-causal-playground",
+  "deterministicReplay": true,
+  "deterministicRecovery": true,
+  "initialStateRoot": "fnv1a64:0df65186364b285b",
+  "checkpointStateRoot": "fnv1a64:51ee8d3f58c0408c",
+  "finalStateRoot": "fnv1a64:674a4a0a0ac58310",
+  "replayStateRoot": "fnv1a64:674a4a0a0ac58310",
+  "recoveredStateRoot": "fnv1a64:674a4a0a0ac58310",
+  "contactRoot": "fnv1a64:b0d4689b0e4b2575",
+  "constraintRoot": "fnv1a64:6f858d6e4f629552",
+  "islandRoot": "fnv1a64:03c53fb53231f640",
+  "causalDeltaRoot": "fnv1a64:cebf6281c00007c7",
+  "diagnostics": {
+    "microsteps": 7,
+    "candidatePairs": 42,
+    "narrowPhaseTests": 42,
+    "resolvedContacts": 7
+  },
+  "counts": {
+    "bodies": 8,
+    "constraints": 1,
+    "contacts": 1,
+    "events": 1,
+    "islands": 3
+  },
+  "initialViews": {
+    "playerHash": "fnv1a64:f7c504d1d12d4327",
+    "debuggerHash": "fnv1a64:23064dd72ae40e6a",
+    "verification": {
+      "ok": true,
+      "sourceDisplayHash": "fnv1a64:6a5b14a68d16b5fa",
+      "invariantHash": "fnv1a64:6b13175764bad086",
+      "observerCount": 2,
+      "projectedDisplayHashes": [
+        "fnv1a64:5b136dd3fe825d45",
+        "fnv1a64:7d81a707e350c703"
+      ],
+      "diagnostics": []
+    }
+  },
+  "finalViews": {
+    "playerHash": "fnv1a64:ffc03c3c54fb1c0a",
+    "debuggerHash": "fnv1a64:aaeff948acff7925",
+    "verification": {
+      "ok": true,
+      "sourceDisplayHash": "fnv1a64:1ee653de3d946cc3",
+      "invariantHash": "fnv1a64:72feb77b6537c6e8",
+      "observerCount": 2,
+      "projectedDisplayHashes": [
+        "fnv1a64:0022cd37f2dc913d",
+        "fnv1a64:71a4fc42df2cfe95"
+      ],
+      "diagnostics": []
+    }
+  }
+}

@@ -1,0 +1,32 @@
+[workspace]
+resolver = "2"
+members = [
+  "crates/rfe-canonical",
+  "crates/rfe-native-kernel",
+  "crates/rfe-conformance",
+  "crates/rfe-closed-loop",
+  "crates/rfe-multi-session",
+  "crates/rfe-replicated-authority",
+  "crates/rfe-cross-domain-atomic",
+  "crates/rfe-federated-consensus",
+  "crates/rfe-byzantine-federation",
+  "crates/rfe-partition-healing",
+  "crates/rfe-constitutional-reality",
+]
+exclude = []
+
+
+[workspace.package]
+version = "1.0.0"
+edition = "2021"
+license = "Apache-2.0"
+authors = ["TaoWind Interactive Technology Limited"]
+repository = ""
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+missing_debug_implementations = "warn"
+
+[workspace.lints.clippy]
+all = "warn"
+pedantic = "warn"

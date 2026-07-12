@@ -1,0 +1,1667 @@
+{
+  "generated_at": "2026-07-02T11:31:45.999Z",
+  "summary": {
+    "branch_count": 3,
+    "scenario_count": 3,
+    "recommended_branch_id": "branch:safe",
+    "recommendation_stability_bps": 7500,
+    "execution_status": "completed",
+    "authority_decision": "approved",
+    "transition_phase": "authorized",
+    "committed_generation": 13,
+    "rebase_clean": false,
+    "rebase_conflict_count": 2
+  },
+  "explanation": {
+    "recommended_branch_id": "branch:safe",
+    "score": 3917,
+    "stability_bps": 7500,
+    "reasons": [
+      "预期收益 6480",
+      "预期风险 1075",
+      "预期成本 2180",
+      "韧性 6800",
+      "位于Pareto前沿：是"
+    ],
+    "explanation_root": "c697b1c5e7bb087543e58f97899bfd9f0ec6e59ec3843f81a69289e426e56e2a"
+  },
+  "studio_projection": {
+    "format": "reality-studio.branch-panel.v0.2",
+    "workspace_id": "workspace:24b0998d97f19ad803a217e4",
+    "workspace_root": "d44d64e1069a3ca3a251f7b63d4c95c3d95960b0fbc945d52b7f8f13ae75909e",
+    "base": {
+      "reality_id": "reality:rncs-demo",
+      "generation": 12,
+      "generation_root": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "branch_id": "branch:main",
+      "project_root": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "branches": [
+      {
+        "branch_id": "branch:safe",
+        "parent_branch_id": "branch:main",
+        "label": "稳健推进",
+        "hypothesis": "优先稳定性和可回滚性",
+        "candidate_root": "440bf2351e93d64cd19625aa01c04a15d4b34178ce04d04315abac9cca97d2d6",
+        "eligible": true,
+        "score": 3917,
+        "expected_metrics": {
+          "benefit": 6480,
+          "cost": 2180,
+          "risk": 1075,
+          "confidence": 8315,
+          "duration": 3690
+        },
+        "resilience": 6800
+      },
+      {
+        "branch_id": "branch:fast",
+        "parent_branch_id": "branch:main",
+        "label": "快速推进",
+        "hypothesis": "接受更高风险换取更快交付",
+        "candidate_root": "895981cae0d91ac7625950b9914e8f869dea193daf09f72f127f8e0b8b217913",
+        "eligible": true,
+        "score": 2726,
+        "expected_metrics": {
+          "benefit": 8580,
+          "cost": 5080,
+          "risk": 6375,
+          "confidence": 5715,
+          "duration": 1190
+        },
+        "resilience": 4725
+      },
+      {
+        "branch_id": "branch:fast-cache",
+        "parent_branch_id": "branch:fast",
+        "label": "快速推进＋缓存保护",
+        "hypothesis": "在快速方案上增加缓存和回滚保护",
+        "candidate_root": "e405da80e5fdc30dd28377320c9e00db37f8598f2c64ef0a060d9f2384f5a151",
+        "eligible": true,
+        "score": 3705,
+        "expected_metrics": {
+          "benefit": 9700,
+          "cost": 6180,
+          "risk": 4275,
+          "confidence": 7364,
+          "duration": 1990
+        },
+        "resilience": 5188
+      }
+    ],
+    "recommended_branch_id": "branch:safe",
+    "recommendation_stability_bps": 7500
+  },
+  "roots": {
+    "workspace_root": "d44d64e1069a3ca3a251f7b63d4c95c3d95960b0fbc945d52b7f8f13ae75909e",
+    "comparison_root": "7a3d304b3ebf61b5b1c20b332c113fe175be85c7309019976805b9d26d602160",
+    "plan_root": "36317e34bcdd99280e577e19674107a103e5ca58192e6605a3954e5169ba5164",
+    "execution_receipt_root": "7bf82f4e252902c13c46cc9dc48520652934a1ac1aa969e916a0e7f69b803dc3",
+    "proposal_root": "d6bb5efd75625e0036fc31c724c2892ad9ab4a3b3576437262dad7395119bc92",
+    "authority_decision_root": "a2638ea626ef7c08faa5140ff3e8531f24015ac26f77ab6026993f605c5e4793",
+    "transition_root": "dd88f6e8a15b8484823a96cdc9136596c22947ea465b6dc2253172f7018dbdbf",
+    "rfe_commit_receipt_root": "7bdc87b01b5fe2ef644926c43a00ad20d669758b355c78cdb3f9e865258c6026"
+  },
+  "provider_calls": [
+    "execute:step:0001",
+    "execute:step:0002"
+  ],
+  "simulations": [
+    {
+      "format": "reality-branch.simulation.v0.2",
+      "version": "0.2.0-alpha.1",
+      "simulation_id": "simulation:6e704f34021b91d1ffa5ffd0",
+      "workspace_root": "d44d64e1069a3ca3a251f7b63d4c95c3d95960b0fbc945d52b7f8f13ae75909e",
+      "branch_id": "branch:safe",
+      "branch_chain": [
+        "branch:safe"
+      ],
+      "branch_roots": [
+        "440bf2351e93d64cd19625aa01c04a15d4b34178ce04d04315abac9cca97d2d6"
+      ],
+      "base_generation_root": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "candidate_state_root": "4940e0a4822323ce54b09cd5cf27f8f0b05b698afea1d6f8076b34fe93453dcb",
+      "candidate_diff": [
+        {
+          "path": "project.progress",
+          "before": 50,
+          "after": 72,
+          "before_exists": true,
+          "after_exists": true,
+          "kind": "changed"
+        },
+        {
+          "path": "project.tests",
+          "before": 0,
+          "after": 24,
+          "before_exists": true,
+          "after_exists": true,
+          "kind": "changed"
+        }
+      ],
+      "scenarios": [
+        {
+          "scenario_id": "scenario:baseline",
+          "label": "基准情景",
+          "probability_bps": 6000,
+          "metrics": {
+            "benefit": 6600,
+            "cost": 2000,
+            "risk": 700,
+            "confidence": 8600,
+            "duration": 3500
+          },
+          "eligible": true,
+          "violations": [],
+          "model": "deterministic-scenario-v2",
+          "scenario_root": "be3393d4e20767fe4e26c26c9d6ccd6279ffd864b7d6f9f0a867f4a92066852d"
+        },
+        {
+          "scenario_id": "scenario:adverse",
+          "label": "不利情景",
+          "probability_bps": 2500,
+          "metrics": {
+            "benefit": 5400,
+            "cost": 2900,
+            "risk": 2500,
+            "confidence": 7100,
+            "duration": 4500
+          },
+          "eligible": true,
+          "violations": [],
+          "model": "deterministic-scenario-v2",
+          "scenario_root": "fb70040ea9a72855f9cf1ee9504b75c04dd8549316d57bf97dfd776b59bcb840"
+        },
+        {
+          "scenario_id": "scenario:upside",
+          "label": "有利情景",
+          "probability_bps": 1500,
+          "metrics": {
+            "benefit": 7800,
+            "cost": 1700,
+            "risk": 200,
+            "confidence": 9200,
+            "duration": 3100
+          },
+          "eligible": true,
+          "violations": [],
+          "model": "deterministic-scenario-v2",
+          "scenario_root": "482d7daa3e2b774d104305efd32c83564cdfe4f862c36ab7d48a59f079df901a"
+        }
+      ],
+      "aggregate": {
+        "expected": {
+          "benefit": 6480,
+          "cost": 2180,
+          "risk": 1075,
+          "confidence": 8315,
+          "duration": 3690
+        },
+        "worst": {
+          "benefit": 5400,
+          "cost": 2900,
+          "risk": 2500,
+          "confidence": 7100,
+          "duration": 4500
+        },
+        "resilience": 6800
+      },
+      "eligible": true,
+      "violations": [],
+      "evidence": [
+        {
+          "kind": "candidate-state-root",
+          "root": "4940e0a4822323ce54b09cd5cf27f8f0b05b698afea1d6f8076b34fe93453dcb"
+        },
+        {
+          "kind": "branch-root",
+          "root": "440bf2351e93d64cd19625aa01c04a15d4b34178ce04d04315abac9cca97d2d6"
+        },
+        {
+          "kind": "scenario-root",
+          "root": "be3393d4e20767fe4e26c26c9d6ccd6279ffd864b7d6f9f0a867f4a92066852d"
+        },
+        {
+          "kind": "scenario-root",
+          "root": "fb70040ea9a72855f9cf1ee9504b75c04dd8549316d57bf97dfd776b59bcb840"
+        },
+        {
+          "kind": "scenario-root",
+          "root": "482d7daa3e2b774d104305efd32c83564cdfe4f862c36ab7d48a59f079df901a"
+        }
+      ],
+      "simulated_at": "2026-07-02T11:31:45.984Z",
+      "simulation_root": "2bf7217d8d70f55db1f711db9175f3aed3c2b0280aec488096fabeb23343c122"
+    },
+    {
+      "format": "reality-branch.simulation.v0.2",
+      "version": "0.2.0-alpha.1",
+      "simulation_id": "simulation:339e16fa68edb9ad9aa8da1b",
+      "workspace_root": "d44d64e1069a3ca3a251f7b63d4c95c3d95960b0fbc945d52b7f8f13ae75909e",
+      "branch_id": "branch:fast",
+      "branch_chain": [
+        "branch:fast"
+      ],
+      "branch_roots": [
+        "895981cae0d91ac7625950b9914e8f869dea193daf09f72f127f8e0b8b217913"
+      ],
+      "base_generation_root": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "candidate_state_root": "ccda9188171d4ab6e97c1c1b82c567d84dd8a176ec7e59d979885648c3222075",
+      "candidate_diff": [
+        {
+          "path": "project.progress",
+          "before": 50,
+          "after": 96,
+          "before_exists": true,
+          "after_exists": true,
+          "kind": "changed"
+        },
+        {
+          "path": "project.release_mode",
+          "before": "stable",
+          "after": "fast",
+          "before_exists": true,
+          "after_exists": true,
+          "kind": "changed"
+        }
+      ],
+      "scenarios": [
+        {
+          "scenario_id": "scenario:baseline",
+          "label": "基准情景",
+          "probability_bps": 6000,
+          "metrics": {
+            "benefit": 8700,
+            "cost": 4900,
+            "risk": 6000,
+            "confidence": 6000,
+            "duration": 1000
+          },
+          "eligible": true,
+          "violations": [],
+          "model": "deterministic-scenario-v2",
+          "scenario_root": "a1abf9bfb5e623b4c9dd9222a190d93aefd62b75eecb28c5bbc8fa03988ceccb"
+        },
+        {
+          "scenario_id": "scenario:adverse",
+          "label": "不利情景",
+          "probability_bps": 2500,
+          "metrics": {
+            "benefit": 7500,
+            "cost": 5800,
+            "risk": 7800,
+            "confidence": 4500,
+            "duration": 2000
+          },
+          "eligible": true,
+          "violations": [],
+          "model": "deterministic-scenario-v2",
+          "scenario_root": "9b9c43edc8b5bad0ae850c77974daefcac85c9a4da7cc1631943a30f3d324c5c"
+        },
+        {
+          "scenario_id": "scenario:upside",
+          "label": "有利情景",
+          "probability_bps": 1500,
+          "metrics": {
+            "benefit": 9900,
+            "cost": 4600,
+            "risk": 5500,
+            "confidence": 6600,
+            "duration": 600
+          },
+          "eligible": true,
+          "violations": [],
+          "model": "deterministic-scenario-v2",
+          "scenario_root": "e4ce0ed4a72783e4cde92bed23566519b67092ecdb0677b7410396b9c05b9552"
+        }
+      ],
+      "aggregate": {
+        "expected": {
+          "benefit": 8580,
+          "cost": 5080,
+          "risk": 6375,
+          "confidence": 5715,
+          "duration": 1190
+        },
+        "worst": {
+          "benefit": 7500,
+          "cost": 5800,
+          "risk": 7800,
+          "confidence": 4500,
+          "duration": 2000
+        },
+        "resilience": 4725
+      },
+      "eligible": true,
+      "violations": [],
+      "evidence": [
+        {
+          "kind": "candidate-state-root",
+          "root": "ccda9188171d4ab6e97c1c1b82c567d84dd8a176ec7e59d979885648c3222075"
+        },
+        {
+          "kind": "branch-root",
+          "root": "895981cae0d91ac7625950b9914e8f869dea193daf09f72f127f8e0b8b217913"
+        },
+        {
+          "kind": "scenario-root",
+          "root": "a1abf9bfb5e623b4c9dd9222a190d93aefd62b75eecb28c5bbc8fa03988ceccb"
+        },
+        {
+          "kind": "scenario-root",
+          "root": "9b9c43edc8b5bad0ae850c77974daefcac85c9a4da7cc1631943a30f3d324c5c"
+        },
+        {
+          "kind": "scenario-root",
+          "root": "e4ce0ed4a72783e4cde92bed23566519b67092ecdb0677b7410396b9c05b9552"
+        }
+      ],
+      "simulated_at": "2026-07-02T11:31:45.987Z",
+      "simulation_root": "e7eb787d2d9877fd739d9d6e8d6e3dd81885645ceec242d0c5464709b452cf3c"
+    },
+    {
+      "format": "reality-branch.simulation.v0.2",
+      "version": "0.2.0-alpha.1",
+      "simulation_id": "simulation:c93bc834cac678c06be0800c",
+      "workspace_root": "d44d64e1069a3ca3a251f7b63d4c95c3d95960b0fbc945d52b7f8f13ae75909e",
+      "branch_id": "branch:fast-cache",
+      "branch_chain": [
+        "branch:fast",
+        "branch:fast-cache"
+      ],
+      "branch_roots": [
+        "895981cae0d91ac7625950b9914e8f869dea193daf09f72f127f8e0b8b217913",
+        "e405da80e5fdc30dd28377320c9e00db37f8598f2c64ef0a060d9f2384f5a151"
+      ],
+      "base_generation_root": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "candidate_state_root": "2b5d5837b0205feb17096eb643743e8990bb2f8eaac14bf3aeb80f9d868567dc",
+      "candidate_diff": [
+        {
+          "path": "project.cache.enabled",
+          "before": false,
+          "after": true,
+          "before_exists": true,
+          "after_exists": true,
+          "kind": "changed"
+        },
+        {
+          "path": "project.progress",
+          "before": 50,
+          "after": 96,
+          "before_exists": true,
+          "after_exists": true,
+          "kind": "changed"
+        },
+        {
+          "path": "project.release_mode",
+          "before": "stable",
+          "after": "fast",
+          "before_exists": true,
+          "after_exists": true,
+          "kind": "changed"
+        },
+        {
+          "path": "project.snapshots",
+          "before": [],
+          "after": [
+            "pre-release"
+          ],
+          "before_exists": true,
+          "after_exists": true,
+          "kind": "changed"
+        }
+      ],
+      "scenarios": [
+        {
+          "scenario_id": "scenario:baseline",
+          "label": "基准情景",
+          "probability_bps": 6000,
+          "metrics": {
+            "benefit": 10000,
+            "cost": 6000,
+            "risk": 3900,
+            "confidence": 7650,
+            "duration": 1800
+          },
+          "eligible": true,
+          "violations": [],
+          "model": "deterministic-scenario-v2",
+          "scenario_root": "60d47d1f5b394c120638b101d1da860945516fd815bacba0d5bae290faf69f0c"
+        },
+        {
+          "scenario_id": "scenario:adverse",
+          "label": "不利情景",
+          "probability_bps": 2500,
+          "metrics": {
+            "benefit": 8800,
+            "cost": 6900,
+            "risk": 5700,
+            "confidence": 6150,
+            "duration": 2800
+          },
+          "eligible": true,
+          "violations": [],
+          "model": "deterministic-scenario-v2",
+          "scenario_root": "8c2c5b2c7036bee14b26cc03c4112e61803a809d2ee0c7f745c2da204287e1cd"
+        },
+        {
+          "scenario_id": "scenario:upside",
+          "label": "有利情景",
+          "probability_bps": 1500,
+          "metrics": {
+            "benefit": 10000,
+            "cost": 5700,
+            "risk": 3400,
+            "confidence": 8250,
+            "duration": 1400
+          },
+          "eligible": true,
+          "violations": [],
+          "model": "deterministic-scenario-v2",
+          "scenario_root": "cbacd9970fd3c920072bfd046c6a4dcb3414a89fbe56e8a17eecd44737aacdfb"
+        }
+      ],
+      "aggregate": {
+        "expected": {
+          "benefit": 9700,
+          "cost": 6180,
+          "risk": 4275,
+          "confidence": 7364,
+          "duration": 1990
+        },
+        "worst": {
+          "benefit": 8800,
+          "cost": 6900,
+          "risk": 5700,
+          "confidence": 6150,
+          "duration": 2800
+        },
+        "resilience": 5188
+      },
+      "eligible": true,
+      "violations": [],
+      "evidence": [
+        {
+          "kind": "candidate-state-root",
+          "root": "2b5d5837b0205feb17096eb643743e8990bb2f8eaac14bf3aeb80f9d868567dc"
+        },
+        {
+          "kind": "branch-root",
+          "root": "895981cae0d91ac7625950b9914e8f869dea193daf09f72f127f8e0b8b217913"
+        },
+        {
+          "kind": "branch-root",
+          "root": "e405da80e5fdc30dd28377320c9e00db37f8598f2c64ef0a060d9f2384f5a151"
+        },
+        {
+          "kind": "scenario-root",
+          "root": "60d47d1f5b394c120638b101d1da860945516fd815bacba0d5bae290faf69f0c"
+        },
+        {
+          "kind": "scenario-root",
+          "root": "8c2c5b2c7036bee14b26cc03c4112e61803a809d2ee0c7f745c2da204287e1cd"
+        },
+        {
+          "kind": "scenario-root",
+          "root": "cbacd9970fd3c920072bfd046c6a4dcb3414a89fbe56e8a17eecd44737aacdfb"
+        }
+      ],
+      "simulated_at": "2026-07-02T11:31:45.990Z",
+      "simulation_root": "32f21b8c697261c783fe4f1013c68678ad29ad5e85109d94b3bfbe6d747aa3fa"
+    }
+  ],
+  "comparison": {
+    "format": "reality-branch.comparison.v0.2",
+    "version": "0.2.0-alpha.1",
+    "workspace_root": "d44d64e1069a3ca3a251f7b63d4c95c3d95960b0fbc945d52b7f8f13ae75909e",
+    "weights": {
+      "benefit": 3500,
+      "confidence": 1500,
+      "resilience": 1500,
+      "risk": 2000,
+      "cost": 1000,
+      "duration": 500
+    },
+    "rows": [
+      {
+        "format": "reality-branch.simulation.v0.2",
+        "version": "0.2.0-alpha.1",
+        "simulation_id": "simulation:6e704f34021b91d1ffa5ffd0",
+        "workspace_root": "d44d64e1069a3ca3a251f7b63d4c95c3d95960b0fbc945d52b7f8f13ae75909e",
+        "branch_id": "branch:safe",
+        "branch_chain": [
+          "branch:safe"
+        ],
+        "branch_roots": [
+          "440bf2351e93d64cd19625aa01c04a15d4b34178ce04d04315abac9cca97d2d6"
+        ],
+        "base_generation_root": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "candidate_state_root": "4940e0a4822323ce54b09cd5cf27f8f0b05b698afea1d6f8076b34fe93453dcb",
+        "candidate_diff": [
+          {
+            "path": "project.progress",
+            "before": 50,
+            "after": 72,
+            "before_exists": true,
+            "after_exists": true,
+            "kind": "changed"
+          },
+          {
+            "path": "project.tests",
+            "before": 0,
+            "after": 24,
+            "before_exists": true,
+            "after_exists": true,
+            "kind": "changed"
+          }
+        ],
+        "scenarios": [
+          {
+            "scenario_id": "scenario:baseline",
+            "label": "基准情景",
+            "probability_bps": 6000,
+            "metrics": {
+              "benefit": 6600,
+              "cost": 2000,
+              "risk": 700,
+              "confidence": 8600,
+              "duration": 3500
+            },
+            "eligible": true,
+            "violations": [],
+            "model": "deterministic-scenario-v2",
+            "scenario_root": "be3393d4e20767fe4e26c26c9d6ccd6279ffd864b7d6f9f0a867f4a92066852d"
+          },
+          {
+            "scenario_id": "scenario:adverse",
+            "label": "不利情景",
+            "probability_bps": 2500,
+            "metrics": {
+              "benefit": 5400,
+              "cost": 2900,
+              "risk": 2500,
+              "confidence": 7100,
+              "duration": 4500
+            },
+            "eligible": true,
+            "violations": [],
+            "model": "deterministic-scenario-v2",
+            "scenario_root": "fb70040ea9a72855f9cf1ee9504b75c04dd8549316d57bf97dfd776b59bcb840"
+          },
+          {
+            "scenario_id": "scenario:upside",
+            "label": "有利情景",
+            "probability_bps": 1500,
+            "metrics": {
+              "benefit": 7800,
+              "cost": 1700,
+              "risk": 200,
+              "confidence": 9200,
+              "duration": 3100
+            },
+            "eligible": true,
+            "violations": [],
+            "model": "deterministic-scenario-v2",
+            "scenario_root": "482d7daa3e2b774d104305efd32c83564cdfe4f862c36ab7d48a59f079df901a"
+          }
+        ],
+        "aggregate": {
+          "expected": {
+            "benefit": 6480,
+            "cost": 2180,
+            "risk": 1075,
+            "confidence": 8315,
+            "duration": 3690
+          },
+          "worst": {
+            "benefit": 5400,
+            "cost": 2900,
+            "risk": 2500,
+            "confidence": 7100,
+            "duration": 4500
+          },
+          "resilience": 6800
+        },
+        "eligible": true,
+        "violations": [],
+        "evidence": [
+          {
+            "kind": "candidate-state-root",
+            "root": "4940e0a4822323ce54b09cd5cf27f8f0b05b698afea1d6f8076b34fe93453dcb"
+          },
+          {
+            "kind": "branch-root",
+            "root": "440bf2351e93d64cd19625aa01c04a15d4b34178ce04d04315abac9cca97d2d6"
+          },
+          {
+            "kind": "scenario-root",
+            "root": "be3393d4e20767fe4e26c26c9d6ccd6279ffd864b7d6f9f0a867f4a92066852d"
+          },
+          {
+            "kind": "scenario-root",
+            "root": "fb70040ea9a72855f9cf1ee9504b75c04dd8549316d57bf97dfd776b59bcb840"
+          },
+          {
+            "kind": "scenario-root",
+            "root": "482d7daa3e2b774d104305efd32c83564cdfe4f862c36ab7d48a59f079df901a"
+          }
+        ],
+        "simulated_at": "2026-07-02T11:31:45.984Z",
+        "simulation_root": "2bf7217d8d70f55db1f711db9175f3aed3c2b0280aec488096fabeb23343c122",
+        "score": 3917,
+        "dominated_by": []
+      },
+      {
+        "format": "reality-branch.simulation.v0.2",
+        "version": "0.2.0-alpha.1",
+        "simulation_id": "simulation:c93bc834cac678c06be0800c",
+        "workspace_root": "d44d64e1069a3ca3a251f7b63d4c95c3d95960b0fbc945d52b7f8f13ae75909e",
+        "branch_id": "branch:fast-cache",
+        "branch_chain": [
+          "branch:fast",
+          "branch:fast-cache"
+        ],
+        "branch_roots": [
+          "895981cae0d91ac7625950b9914e8f869dea193daf09f72f127f8e0b8b217913",
+          "e405da80e5fdc30dd28377320c9e00db37f8598f2c64ef0a060d9f2384f5a151"
+        ],
+        "base_generation_root": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "candidate_state_root": "2b5d5837b0205feb17096eb643743e8990bb2f8eaac14bf3aeb80f9d868567dc",
+        "candidate_diff": [
+          {
+            "path": "project.cache.enabled",
+            "before": false,
+            "after": true,
+            "before_exists": true,
+            "after_exists": true,
+            "kind": "changed"
+          },
+          {
+            "path": "project.progress",
+            "before": 50,
+            "after": 96,
+            "before_exists": true,
+            "after_exists": true,
+            "kind": "changed"
+          },
+          {
+            "path": "project.release_mode",
+            "before": "stable",
+            "after": "fast",
+            "before_exists": true,
+            "after_exists": true,
+            "kind": "changed"
+          },
+          {
+            "path": "project.snapshots",
+            "before": [],
+            "after": [
+              "pre-release"
+            ],
+            "before_exists": true,
+            "after_exists": true,
+            "kind": "changed"
+          }
+        ],
+        "scenarios": [
+          {
+            "scenario_id": "scenario:baseline",
+            "label": "基准情景",
+            "probability_bps": 6000,
+            "metrics": {
+              "benefit": 10000,
+              "cost": 6000,
+              "risk": 3900,
+              "confidence": 7650,
+              "duration": 1800
+            },
+            "eligible": true,
+            "violations": [],
+            "model": "deterministic-scenario-v2",
+            "scenario_root": "60d47d1f5b394c120638b101d1da860945516fd815bacba0d5bae290faf69f0c"
+          },
+          {
+            "scenario_id": "scenario:adverse",
+            "label": "不利情景",
+            "probability_bps": 2500,
+            "metrics": {
+              "benefit": 8800,
+              "cost": 6900,
+              "risk": 5700,
+              "confidence": 6150,
+              "duration": 2800
+            },
+            "eligible": true,
+            "violations": [],
+            "model": "deterministic-scenario-v2",
+            "scenario_root": "8c2c5b2c7036bee14b26cc03c4112e61803a809d2ee0c7f745c2da204287e1cd"
+          },
+          {
+            "scenario_id": "scenario:upside",
+            "label": "有利情景",
+            "probability_bps": 1500,
+            "metrics": {
+              "benefit": 10000,
+              "cost": 5700,
+              "risk": 3400,
+              "confidence": 8250,
+              "duration": 1400
+            },
+            "eligible": true,
+            "violations": [],
+            "model": "deterministic-scenario-v2",
+            "scenario_root": "cbacd9970fd3c920072bfd046c6a4dcb3414a89fbe56e8a17eecd44737aacdfb"
+          }
+        ],
+        "aggregate": {
+          "expected": {
+            "benefit": 9700,
+            "cost": 6180,
+            "risk": 4275,
+            "confidence": 7364,
+            "duration": 1990
+          },
+          "worst": {
+            "benefit": 8800,
+            "cost": 6900,
+            "risk": 5700,
+            "confidence": 6150,
+            "duration": 2800
+          },
+          "resilience": 5188
+        },
+        "eligible": true,
+        "violations": [],
+        "evidence": [
+          {
+            "kind": "candidate-state-root",
+            "root": "2b5d5837b0205feb17096eb643743e8990bb2f8eaac14bf3aeb80f9d868567dc"
+          },
+          {
+            "kind": "branch-root",
+            "root": "895981cae0d91ac7625950b9914e8f869dea193daf09f72f127f8e0b8b217913"
+          },
+          {
+            "kind": "branch-root",
+            "root": "e405da80e5fdc30dd28377320c9e00db37f8598f2c64ef0a060d9f2384f5a151"
+          },
+          {
+            "kind": "scenario-root",
+            "root": "60d47d1f5b394c120638b101d1da860945516fd815bacba0d5bae290faf69f0c"
+          },
+          {
+            "kind": "scenario-root",
+            "root": "8c2c5b2c7036bee14b26cc03c4112e61803a809d2ee0c7f745c2da204287e1cd"
+          },
+          {
+            "kind": "scenario-root",
+            "root": "cbacd9970fd3c920072bfd046c6a4dcb3414a89fbe56e8a17eecd44737aacdfb"
+          }
+        ],
+        "simulated_at": "2026-07-02T11:31:45.990Z",
+        "simulation_root": "32f21b8c697261c783fe4f1013c68678ad29ad5e85109d94b3bfbe6d747aa3fa",
+        "score": 3705,
+        "dominated_by": []
+      },
+      {
+        "format": "reality-branch.simulation.v0.2",
+        "version": "0.2.0-alpha.1",
+        "simulation_id": "simulation:339e16fa68edb9ad9aa8da1b",
+        "workspace_root": "d44d64e1069a3ca3a251f7b63d4c95c3d95960b0fbc945d52b7f8f13ae75909e",
+        "branch_id": "branch:fast",
+        "branch_chain": [
+          "branch:fast"
+        ],
+        "branch_roots": [
+          "895981cae0d91ac7625950b9914e8f869dea193daf09f72f127f8e0b8b217913"
+        ],
+        "base_generation_root": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "candidate_state_root": "ccda9188171d4ab6e97c1c1b82c567d84dd8a176ec7e59d979885648c3222075",
+        "candidate_diff": [
+          {
+            "path": "project.progress",
+            "before": 50,
+            "after": 96,
+            "before_exists": true,
+            "after_exists": true,
+            "kind": "changed"
+          },
+          {
+            "path": "project.release_mode",
+            "before": "stable",
+            "after": "fast",
+            "before_exists": true,
+            "after_exists": true,
+            "kind": "changed"
+          }
+        ],
+        "scenarios": [
+          {
+            "scenario_id": "scenario:baseline",
+            "label": "基准情景",
+            "probability_bps": 6000,
+            "metrics": {
+              "benefit": 8700,
+              "cost": 4900,
+              "risk": 6000,
+              "confidence": 6000,
+              "duration": 1000
+            },
+            "eligible": true,
+            "violations": [],
+            "model": "deterministic-scenario-v2",
+            "scenario_root": "a1abf9bfb5e623b4c9dd9222a190d93aefd62b75eecb28c5bbc8fa03988ceccb"
+          },
+          {
+            "scenario_id": "scenario:adverse",
+            "label": "不利情景",
+            "probability_bps": 2500,
+            "metrics": {
+              "benefit": 7500,
+              "cost": 5800,
+              "risk": 7800,
+              "confidence": 4500,
+              "duration": 2000
+            },
+            "eligible": true,
+            "violations": [],
+            "model": "deterministic-scenario-v2",
+            "scenario_root": "9b9c43edc8b5bad0ae850c77974daefcac85c9a4da7cc1631943a30f3d324c5c"
+          },
+          {
+            "scenario_id": "scenario:upside",
+            "label": "有利情景",
+            "probability_bps": 1500,
+            "metrics": {
+              "benefit": 9900,
+              "cost": 4600,
+              "risk": 5500,
+              "confidence": 6600,
+              "duration": 600
+            },
+            "eligible": true,
+            "violations": [],
+            "model": "deterministic-scenario-v2",
+            "scenario_root": "e4ce0ed4a72783e4cde92bed23566519b67092ecdb0677b7410396b9c05b9552"
+          }
+        ],
+        "aggregate": {
+          "expected": {
+            "benefit": 8580,
+            "cost": 5080,
+            "risk": 6375,
+            "confidence": 5715,
+            "duration": 1190
+          },
+          "worst": {
+            "benefit": 7500,
+            "cost": 5800,
+            "risk": 7800,
+            "confidence": 4500,
+            "duration": 2000
+          },
+          "resilience": 4725
+        },
+        "eligible": true,
+        "violations": [],
+        "evidence": [
+          {
+            "kind": "candidate-state-root",
+            "root": "ccda9188171d4ab6e97c1c1b82c567d84dd8a176ec7e59d979885648c3222075"
+          },
+          {
+            "kind": "branch-root",
+            "root": "895981cae0d91ac7625950b9914e8f869dea193daf09f72f127f8e0b8b217913"
+          },
+          {
+            "kind": "scenario-root",
+            "root": "a1abf9bfb5e623b4c9dd9222a190d93aefd62b75eecb28c5bbc8fa03988ceccb"
+          },
+          {
+            "kind": "scenario-root",
+            "root": "9b9c43edc8b5bad0ae850c77974daefcac85c9a4da7cc1631943a30f3d324c5c"
+          },
+          {
+            "kind": "scenario-root",
+            "root": "e4ce0ed4a72783e4cde92bed23566519b67092ecdb0677b7410396b9c05b9552"
+          }
+        ],
+        "simulated_at": "2026-07-02T11:31:45.987Z",
+        "simulation_root": "e7eb787d2d9877fd739d9d6e8d6e3dd81885645ceec242d0c5464709b452cf3c",
+        "score": 2726,
+        "dominated_by": []
+      }
+    ],
+    "pareto_frontier": [
+      "branch:safe",
+      "branch:fast-cache",
+      "branch:fast"
+    ],
+    "recommended_branch_id": "branch:safe",
+    "recommendation_stability_bps": 7500,
+    "sensitivity": [
+      {
+        "profile_id": "profile:balanced",
+        "recommended_branch_id": "branch:safe",
+        "ranking": [
+          {
+            "branch_id": "branch:safe",
+            "score": 3917
+          },
+          {
+            "branch_id": "branch:fast-cache",
+            "score": 3705
+          },
+          {
+            "branch_id": "branch:fast",
+            "score": 2726
+          }
+        ]
+      },
+      {
+        "profile_id": "profile:safety",
+        "recommended_branch_id": "branch:safe",
+        "ranking": [
+          {
+            "branch_id": "branch:safe",
+            "score": 3595
+          },
+          {
+            "branch_id": "branch:fast-cache",
+            "score": 2013
+          },
+          {
+            "branch_id": "branch:fast",
+            "score": 696
+          }
+        ]
+      },
+      {
+        "profile_id": "profile:speed",
+        "recommended_branch_id": "branch:fast-cache",
+        "ranking": [
+          {
+            "branch_id": "branch:fast-cache",
+            "score": 3960
+          },
+          {
+            "branch_id": "branch:fast",
+            "score": 3318
+          },
+          {
+            "branch_id": "branch:safe",
+            "score": 3271
+          }
+        ]
+      },
+      {
+        "profile_id": "profile:cost",
+        "recommended_branch_id": "branch:safe",
+        "ranking": [
+          {
+            "branch_id": "branch:safe",
+            "score": 2384
+          },
+          {
+            "branch_id": "branch:fast-cache",
+            "score": 930
+          },
+          {
+            "branch_id": "branch:fast",
+            "score": 362
+          }
+        ]
+      }
+    ],
+    "conflict_matrix": [
+      {
+        "branch_a": "branch:safe",
+        "branch_b": "branch:fast",
+        "conflict_count": 1,
+        "conflicts": [
+          {
+            "code": "OVERLAPPING_WRITE",
+            "path_a": "project.progress",
+            "path_b": "project.progress",
+            "branch_a": "branch:safe",
+            "branch_b": "branch:fast"
+          }
+        ],
+        "compatible": false
+      },
+      {
+        "branch_a": "branch:safe",
+        "branch_b": "branch:fast-cache",
+        "conflict_count": 1,
+        "conflicts": [
+          {
+            "code": "OVERLAPPING_WRITE",
+            "path_a": "project.progress",
+            "path_b": "project.progress",
+            "branch_a": "branch:safe",
+            "branch_b": "branch:fast"
+          }
+        ],
+        "compatible": false
+      },
+      {
+        "branch_a": "branch:fast",
+        "branch_b": "branch:fast-cache",
+        "conflict_count": 0,
+        "conflicts": [],
+        "compatible": true
+      }
+    ],
+    "comparison_root": "7a3d304b3ebf61b5b1c20b332c113fe175be85c7309019976805b9d26d602160"
+  },
+  "execution_plan": {
+    "format": "reality-branch.execution-plan.v0.2",
+    "version": "0.2.0-alpha.1",
+    "plan_id": "execution:5c4f06ca6c651fc9c173d0e3",
+    "workspace_root": "d44d64e1069a3ca3a251f7b63d4c95c3d95960b0fbc945d52b7f8f13ae75909e",
+    "simulation_root": "2bf7217d8d70f55db1f711db9175f3aed3c2b0280aec488096fabeb23343c122",
+    "branch_id": "branch:safe",
+    "actor": "subject:owner",
+    "mode": "provider-sandbox",
+    "base_generation_root": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "initial_state_root": "5fdacf74c4889dda177a55cac5bc033043558a4ca10016fa5325b9cf9b587825",
+    "expected_final_state_root": "4940e0a4822323ce54b09cd5cf27f8f0b05b698afea1d6f8076b34fe93453dcb",
+    "steps": [
+      {
+        "step_id": "step:0001",
+        "branch_id": "branch:safe",
+        "operation": {
+          "operation_id": "op:safe-progress",
+          "op": "set",
+          "path": "project.progress",
+          "value": 72,
+          "capability_id": "project.update",
+          "impact": {
+            "benefit": 4800,
+            "cost": 1500,
+            "risk": 900,
+            "duration": 2600
+          }
+        },
+        "capability_id": "project.update",
+        "expected_before_state_root": "5fdacf74c4889dda177a55cac5bc033043558a4ca10016fa5325b9cf9b587825",
+        "expected_after_state_root": "ffd1a94bb84961d5c8cdc7a28eb1efb51fbff8d54a90ce551b9c124bea79c8f7",
+        "rollback_operation": {
+          "op": "set",
+          "path": "project.progress",
+          "value": 50,
+          "operation_id": "rollback:op:safe-progress"
+        }
+      },
+      {
+        "step_id": "step:0002",
+        "branch_id": "branch:safe",
+        "operation": {
+          "operation_id": "op:safe-tests",
+          "op": "increment",
+          "path": "project.tests",
+          "value": 24,
+          "capability_id": "test.run",
+          "impact": {
+            "benefit": 1800,
+            "cost": 500,
+            "risk": -200,
+            "confidence_delta": 900,
+            "duration": 900
+          }
+        },
+        "capability_id": "test.run",
+        "expected_before_state_root": "ffd1a94bb84961d5c8cdc7a28eb1efb51fbff8d54a90ce551b9c124bea79c8f7",
+        "expected_after_state_root": "4940e0a4822323ce54b09cd5cf27f8f0b05b698afea1d6f8076b34fe93453dcb",
+        "rollback_operation": {
+          "op": "set",
+          "path": "project.tests",
+          "value": 0,
+          "operation_id": "rollback:op:safe-tests"
+        }
+      }
+    ],
+    "created_at": "2026-07-02T11:31:45.994Z",
+    "plan_root": "36317e34bcdd99280e577e19674107a103e5ca58192e6605a3954e5169ba5164"
+  },
+  "execution_receipt": {
+    "format": "reality-branch.execution-receipt.v0.2",
+    "version": "0.2.0-alpha.1",
+    "receipt_id": "receipt:3449dffd37ffafe3985f0f20",
+    "plan_root": "36317e34bcdd99280e577e19674107a103e5ca58192e6605a3954e5169ba5164",
+    "branch_id": "branch:safe",
+    "status": "completed",
+    "step_receipts": [
+      {
+        "step_id": "step:0001",
+        "capability_id": "project.update",
+        "status": "applied",
+        "before_state_root": "5fdacf74c4889dda177a55cac5bc033043558a4ca10016fa5325b9cf9b587825",
+        "after_state_root": "ffd1a94bb84961d5c8cdc7a28eb1efb51fbff8d54a90ce551b9c124bea79c8f7",
+        "provider_evidence": [
+          {
+            "kind": "provider-execution",
+            "root": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+          }
+        ],
+        "provider_receipt": {
+          "job_id": "job:step:0001"
+        }
+      },
+      {
+        "step_id": "step:0002",
+        "capability_id": "test.run",
+        "status": "applied",
+        "before_state_root": "ffd1a94bb84961d5c8cdc7a28eb1efb51fbff8d54a90ce551b9c124bea79c8f7",
+        "after_state_root": "4940e0a4822323ce54b09cd5cf27f8f0b05b698afea1d6f8076b34fe93453dcb",
+        "provider_evidence": [
+          {
+            "kind": "provider-execution",
+            "root": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+          }
+        ],
+        "provider_receipt": {
+          "job_id": "job:step:0002"
+        }
+      }
+    ],
+    "failure": null,
+    "rollback": null,
+    "final_state_root": "4940e0a4822323ce54b09cd5cf27f8f0b05b698afea1d6f8076b34fe93453dcb",
+    "expected_final_state_root": "4940e0a4822323ce54b09cd5cf27f8f0b05b698afea1d6f8076b34fe93453dcb",
+    "executed_at": "2026-07-02T11:31:45.995Z",
+    "receipt_root": "7bf82f4e252902c13c46cc9dc48520652934a1ac1aa969e916a0e7f69b803dc3"
+  },
+  "merge_proposal": {
+    "format": "reality-branch.merge-proposal.v0.2",
+    "version": "0.2.0-alpha.1",
+    "proposal_id": "merge:684f3b071496001549e2ecdf",
+    "workspace_root": "d44d64e1069a3ca3a251f7b63d4c95c3d95960b0fbc945d52b7f8f13ae75909e",
+    "comparison_root": "7a3d304b3ebf61b5b1c20b332c113fe175be85c7309019976805b9d26d602160",
+    "selected_branch_id": "branch:safe",
+    "candidate_root": "440bf2351e93d64cd19625aa01c04a15d4b34178ce04d04315abac9cca97d2d6",
+    "simulation_root": "2bf7217d8d70f55db1f711db9175f3aed3c2b0280aec488096fabeb23343c122",
+    "execution_receipt_root": "7bf82f4e252902c13c46cc9dc48520652934a1ac1aa969e916a0e7f69b803dc3",
+    "base": {
+      "reality_id": "reality:rncs-demo",
+      "generation": 12,
+      "generation_root": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "branch_id": "branch:main",
+      "project_root": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "actor": "subject:owner",
+    "operations": [
+      {
+        "operation_id": "op:safe-progress",
+        "op": "set",
+        "path": "project.progress",
+        "value": 72,
+        "capability_id": "project.update",
+        "impact": {
+          "benefit": 4800,
+          "cost": 1500,
+          "risk": 900,
+          "duration": 2600
+        }
+      },
+      {
+        "operation_id": "op:safe-tests",
+        "op": "increment",
+        "path": "project.tests",
+        "value": 24,
+        "capability_id": "test.run",
+        "impact": {
+          "benefit": 1800,
+          "cost": 500,
+          "risk": -200,
+          "confidence_delta": 900,
+          "duration": 900
+        }
+      }
+    ],
+    "expected_candidate_state_root": "4940e0a4822323ce54b09cd5cf27f8f0b05b698afea1d6f8076b34fe93453dcb",
+    "require_authority": true,
+    "status": "proposed",
+    "created_at": "2026-07-02T11:31:45.996Z",
+    "proposal_root": "d6bb5efd75625e0036fc31c724c2892ad9ab4a3b3576437262dad7395119bc92"
+  },
+  "authority_request": {
+    "format": "reality-branch.authority-request.v0.2",
+    "version": "0.2.0-alpha.1",
+    "request_id": "authority-request:685708f68952c005680ba7af",
+    "proposal_root": "d6bb5efd75625e0036fc31c724c2892ad9ab4a3b3576437262dad7395119bc92",
+    "actor": "subject:owner",
+    "resolver": "aaf:default",
+    "risk_class": "medium",
+    "requested_scope": "merge-selected-branch",
+    "status": "pending",
+    "requested_at": "2026-07-02T11:31:45.996Z",
+    "request_root": "de7acf9f343568146dea8761f8cc1890add113830cd93ac076b2c12c4180f789"
+  },
+  "authority_decision": {
+    "format": "reality-branch.authority-decision.v0.2",
+    "version": "0.2.0-alpha.1",
+    "decision_id": "authority-decision:432acc6441aeca1b409c6c77",
+    "request_root": "de7acf9f343568146dea8761f8cc1890add113830cd93ac076b2c12c4180f789",
+    "proposal_root": "d6bb5efd75625e0036fc31c724c2892ad9ab4a3b3576437262dad7395119bc92",
+    "decision": "approved",
+    "authority_actor": "authority:acceptance",
+    "reason": "全部硬约束通过，沙箱执行完成",
+    "conditions": [],
+    "expires_at": null,
+    "decided_at": "2026-07-02T11:31:45.997Z",
+    "decision_root": "a2638ea626ef7c08faa5140ff3e8531f24015ac26f77ab6026993f605c5e4793"
+  },
+  "transition": {
+    "format": "rncs.reality-transition-envelope.v0.2",
+    "version": "0.2.0-alpha.1",
+    "transition_id": "transition:merge:684f3b071496001549e2ecdf",
+    "phase": "authorized",
+    "subject": {
+      "subject_id": "subject:owner"
+    },
+    "intent": {
+      "intent_id": "intent:adopt:branch:safe",
+      "goal": "采纳候选现实分支 branch:safe"
+    },
+    "capability_plan": {
+      "plan_id": "plan:merge:684f3b071496001549e2ecdf",
+      "steps": [
+        {
+          "capability_id": "rbf.branch.merge",
+          "phase": "transaction"
+        }
+      ]
+    },
+    "authority": {
+      "status": "approved",
+      "resolver": "aaf:default",
+      "decision_root": "a2638ea626ef7c08faa5140ff3e8531f24015ac26f77ab6026993f605c5e4793"
+    },
+    "candidate_change": {
+      "base_generation": 12,
+      "base_generation_root": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "branch_id": "branch:main",
+      "operations": [
+        {
+          "operation_id": "op:safe-progress",
+          "op": "set",
+          "path": "project.progress",
+          "value": 72,
+          "capability_id": "project.update",
+          "impact": {
+            "benefit": 4800,
+            "cost": 1500,
+            "risk": 900,
+            "duration": 2600
+          }
+        },
+        {
+          "operation_id": "op:safe-tests",
+          "op": "increment",
+          "path": "project.tests",
+          "value": 24,
+          "capability_id": "test.run",
+          "impact": {
+            "benefit": 1800,
+            "cost": 500,
+            "risk": -200,
+            "confidence_delta": 900,
+            "duration": 900
+          }
+        }
+      ],
+      "expected_state_root": "4940e0a4822323ce54b09cd5cf27f8f0b05b698afea1d6f8076b34fe93453dcb"
+    },
+    "causality": {
+      "reasons": [
+        {
+          "kind": "branch-comparison",
+          "root": "7a3d304b3ebf61b5b1c20b332c113fe175be85c7309019976805b9d26d602160"
+        }
+      ]
+    },
+    "continuity": {
+      "reality_id": "reality:rncs-demo"
+    },
+    "evidence": {
+      "items": [
+        {
+          "kind": "branch-workspace",
+          "root": "d44d64e1069a3ca3a251f7b63d4c95c3d95960b0fbc945d52b7f8f13ae75909e"
+        },
+        {
+          "kind": "simulation",
+          "root": "2bf7217d8d70f55db1f711db9175f3aed3c2b0280aec488096fabeb23343c122"
+        },
+        {
+          "kind": "merge-proposal",
+          "root": "d6bb5efd75625e0036fc31c724c2892ad9ab4a3b3576437262dad7395119bc92"
+        },
+        {
+          "kind": "execution-receipt",
+          "root": "7bf82f4e252902c13c46cc9dc48520652934a1ac1aa969e916a0e7f69b803dc3"
+        },
+        {
+          "kind": "authority-decision",
+          "root": "a2638ea626ef7c08faa5140ff3e8531f24015ac26f77ab6026993f605c5e4793"
+        }
+      ]
+    },
+    "projections": [],
+    "extensions": {
+      "rbf": {
+        "selected_branch_id": "branch:safe",
+        "workspace_root": "d44d64e1069a3ca3a251f7b63d4c95c3d95960b0fbc945d52b7f8f13ae75909e"
+      }
+    },
+    "created_at": "2026-07-02T11:31:45.997Z",
+    "envelope_root": "dd88f6e8a15b8484823a96cdc9136596c22947ea465b6dc2253172f7018dbdbf"
+  },
+  "rfe_commit_receipt": {
+    "format": "reality-branch.rfe-commit-receipt.v0.2",
+    "version": "0.2.0-alpha.1",
+    "receipt_id": "rfe-commit:c39c1cfbc2ab928f57ae6abd",
+    "transition_root": "dd88f6e8a15b8484823a96cdc9136596c22947ea465b6dc2253172f7018dbdbf",
+    "previous_generation_root": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "new_generation": 13,
+    "new_generation_root": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "committed_by": "rfe:acceptance",
+    "storage_receipt_root": null,
+    "committed_at": "2026-07-02T11:31:45.998Z",
+    "commit_receipt_root": "7bdc87b01b5fe2ef644926c43a00ad20d669758b355c78cdb3f9e865258c6026"
+  },
+  "rebase_report": {
+    "workspace": {
+      "format": "reality-branch.workspace.v0.2",
+      "version": "0.2.0-alpha.1",
+      "workspace_id": "workspace:58f5596ba1822af96404ccd1",
+      "base": {
+        "reality_id": "reality:rncs-demo",
+        "generation": 13,
+        "generation_root": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+        "branch_id": "branch:main",
+        "project_root": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      },
+      "base_state": {
+        "project": {
+          "progress": 58,
+          "tests": 0,
+          "release_mode": "stable",
+          "cache": {
+            "enabled": false
+          },
+          "snapshots": []
+        }
+      },
+      "branches": [
+        {
+          "format": "reality-branch.candidate.v0.2",
+          "version": "0.2.0-alpha.1",
+          "label": "稳健推进",
+          "hypothesis": "优先稳定性和可回滚性",
+          "assumptions": [
+            {
+              "claim": "现有团队容量稳定",
+              "uncertainty": 300
+            }
+          ],
+          "operations": [
+            {
+              "operation_id": "op:safe-progress",
+              "op": "set",
+              "path": "project.progress",
+              "value": 72,
+              "capability_id": "project.update",
+              "impact": {
+                "benefit": 4800,
+                "cost": 1500,
+                "risk": 900,
+                "duration": 2600
+              }
+            },
+            {
+              "operation_id": "op:safe-tests",
+              "op": "increment",
+              "path": "project.tests",
+              "value": 24,
+              "capability_id": "test.run",
+              "impact": {
+                "benefit": 1800,
+                "cost": 500,
+                "risk": -200,
+                "confidence_delta": 900,
+                "duration": 900
+              }
+            }
+          ],
+          "constraints": {
+            "max_risk": 4200,
+            "min_confidence": 5000,
+            "max_cost": 5000
+          },
+          "invariants": [
+            {
+              "path": "project.tests",
+              "operator": "gte",
+              "value": 24,
+              "code": "TESTS_REQUIRED"
+            }
+          ],
+          "tags": [
+            "stable",
+            "reversible"
+          ],
+          "branch_id": "branch:safe",
+          "parent_branch_id": "branch:main",
+          "predicted_metrics": {
+            "confidence": 1500
+          },
+          "candidate_root": "440bf2351e93d64cd19625aa01c04a15d4b34178ce04d04315abac9cca97d2d6"
+        },
+        {
+          "format": "reality-branch.candidate.v0.2",
+          "version": "0.2.0-alpha.1",
+          "label": "快速推进",
+          "hypothesis": "接受更高风险换取更快交付",
+          "assumptions": [
+            {
+              "claim": "外部依赖按时到位",
+              "uncertainty": 1000
+            }
+          ],
+          "operations": [
+            {
+              "operation_id": "op:fast-progress",
+              "op": "set",
+              "path": "project.progress",
+              "value": 96,
+              "capability_id": "project.update",
+              "reversible": false,
+              "impact": {
+                "benefit": 8200,
+                "cost": 4700,
+                "risk": 5000,
+                "duration": 900
+              }
+            },
+            {
+              "operation_id": "op:fast-mode",
+              "op": "set",
+              "path": "project.release_mode",
+              "value": "fast",
+              "capability_id": "release.configure",
+              "impact": {
+                "benefit": 500,
+                "cost": 200,
+                "risk": 1000,
+                "duration": 100
+              }
+            }
+          ],
+          "constraints": {
+            "max_risk": 8500,
+            "min_confidence": 3000,
+            "max_cost": 8500
+          },
+          "invariants": [
+            {
+              "path": "project.progress",
+              "operator": "gte",
+              "value": 90,
+              "code": "FAST_TARGET_REQUIRED"
+            }
+          ],
+          "tags": [
+            "speed"
+          ],
+          "branch_id": "branch:fast",
+          "parent_branch_id": "branch:main",
+          "predicted_metrics": {
+            "confidence": 500
+          },
+          "candidate_root": "895981cae0d91ac7625950b9914e8f869dea193daf09f72f127f8e0b8b217913"
+        },
+        {
+          "format": "reality-branch.candidate.v0.2",
+          "version": "0.2.0-alpha.1",
+          "label": "快速推进＋缓存保护",
+          "hypothesis": "在快速方案上增加缓存和回滚保护",
+          "assumptions": [
+            {
+              "claim": "缓存策略能降低失败成本",
+              "uncertainty": 350
+            }
+          ],
+          "operations": [
+            {
+              "operation_id": "op:cache-enable",
+              "op": "set",
+              "path": "project.cache.enabled",
+              "value": true,
+              "capability_id": "cache.configure",
+              "impact": {
+                "benefit": 900,
+                "cost": 800,
+                "risk": -1400,
+                "confidence_delta": 800,
+                "duration": 500
+              }
+            },
+            {
+              "operation_id": "op:snapshot",
+              "op": "append",
+              "path": "project.snapshots",
+              "value": "pre-release",
+              "capability_id": "snapshot.create",
+              "impact": {
+                "benefit": 400,
+                "cost": 300,
+                "risk": -700,
+                "confidence_delta": 500,
+                "duration": 300
+              }
+            }
+          ],
+          "constraints": {
+            "max_risk": 7200,
+            "min_confidence": 4000
+          },
+          "invariants": [
+            {
+              "path": "project.cache.enabled",
+              "operator": "equals",
+              "value": true,
+              "code": "CACHE_MUST_BE_ENABLED"
+            }
+          ],
+          "tags": [
+            "speed",
+            "resilient"
+          ],
+          "branch_id": "branch:fast-cache",
+          "parent_branch_id": "branch:fast",
+          "predicted_metrics": {
+            "confidence": 700
+          },
+          "candidate_root": "e405da80e5fdc30dd28377320c9e00db37f8598f2c64ef0a060d9f2384f5a151"
+        }
+      ],
+      "weights": {
+        "benefit": 3500,
+        "confidence": 1500,
+        "resilience": 1500,
+        "risk": 2000,
+        "cost": 1000,
+        "duration": 500
+      },
+      "scenarios": [
+        {
+          "scenario_id": "scenario:baseline",
+          "label": "基准情景",
+          "probability_bps": 6000,
+          "metric_adjustments": {}
+        },
+        {
+          "scenario_id": "scenario:adverse",
+          "label": "不利情景",
+          "probability_bps": 2500,
+          "metric_adjustments": {
+            "benefit": -1200,
+            "confidence": -1500,
+            "risk": 1800,
+            "cost": 900,
+            "duration": 1000
+          }
+        },
+        {
+          "scenario_id": "scenario:upside",
+          "label": "有利情景",
+          "probability_bps": 1500,
+          "metric_adjustments": {
+            "benefit": 1200,
+            "confidence": 600,
+            "risk": -500,
+            "cost": -300,
+            "duration": -400
+          }
+        }
+      ],
+      "authority_policy": {
+        "required": true,
+        "resolver": "aaf:default"
+      },
+      "metadata": {
+        "title": "RNCS项目推进候选现实",
+        "rebased_from_workspace_root": "d44d64e1069a3ca3a251f7b63d4c95c3d95960b0fbc945d52b7f8f13ae75909e",
+        "rebase_conflict_count": 2
+      },
+      "created_at": "2026-07-02T11:31:45.998Z",
+      "workspace_root": "df94a6cfd719169696ef6e9764ac38794ecd5aa393b122335c29d917bcc0d7cb"
+    },
+    "clean": false,
+    "conflicts": [
+      {
+        "branch_id": "branch:safe",
+        "operation_id": "op:safe-progress",
+        "operation_path": "project.progress",
+        "base_change_path": "project.progress",
+        "old_value": 50,
+        "new_value": 58,
+        "code": "BASE_DRIFT_OVERLAP"
+      },
+      {
+        "branch_id": "branch:fast",
+        "operation_id": "op:fast-progress",
+        "operation_path": "project.progress",
+        "base_change_path": "project.progress",
+        "old_value": 50,
+        "new_value": 58,
+        "code": "BASE_DRIFT_OVERLAP"
+      }
+    ],
+    "changed_base_paths": [
+      "project.progress"
+    ]
+  }
+}

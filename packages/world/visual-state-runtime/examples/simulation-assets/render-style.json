@@ -1,0 +1,11 @@
+{
+  "profile": "reality-native-debug",
+  "canvas": { "width": 640, "height": 360 },
+  "colors": {
+    "background": "#0f172a",
+    "dynamic": "#2563eb",
+    "static": "#334155",
+    "debug": "#f97316",
+    "contact": "#ef4444"
+  }
+}

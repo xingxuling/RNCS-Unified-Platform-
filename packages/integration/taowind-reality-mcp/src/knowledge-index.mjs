@@ -1,0 +1,25 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {createHash} from 'node:crypto';
+
+const SKIP_DIRS=new Set(['.git','node_modules','dist','build','coverage','.cache','.next','.turbo','output','tmp','temp']);
+const ROOT_EXTENSIONS=new Set(['.md','.txt','.json','.yaml','.yml']);
+const BLOCKED_NAME=/(?:^|[._-])(secret|token|credential|private[-_]?key|keystore|signing|api[-_]?key)(?:[._-]|$)|^\.env/i;
+const hash=value=>createHash('sha256').update(value).digest('hex');
+const normalize=value=>String(value??'').normalize('NFKC').toLowerCase();
+const occurrences=(text,needle)=>{if(!needle)return 0;let count=0,index=0;while((index=text.indexOf(needle,index))>=0){count++;index+=Math.max(1,needle.length);}return count;};
+const isRootFile=relative=>!relative.includes(path.sep);
+const isRuntimeManifest=relative=>relative.endsWith('.runtime.json');
+const isDocumentation=relative=>relative.split(path.sep).includes('docs')||/README|CHANGELOG|STATUS|REPORT|MANIFEST|验收报告|开发报告/i.test(path.basename(relative));
+const eligible=relative=>{const ext=path.extname(relative).toLowerCase();return ROOT_EXTENSIONS.has(ext)&&(isRootFile(relative)||isDocumentation(relative)||isRuntimeManifest(relative));};
+const titleFrom=(relative,text)=>{if(relative.toLowerCase().endsWith('.json')){try{const parsed=JSON.parse(text);return parsed.display_name??parsed.name??parsed.title??parsed.runtime_id??path.basename(relative);}catch{}}const heading=text.match(/^#\s+(.+)$/m)?.[1]?.trim();return heading||path.basename(relative);};
+const snippet=(text,query,max=240)=>{const flat=text.replace(/\s+/g,' ').trim();const i=normalize(flat).indexOf(normalize(query));if(i<0)return flat.slice(0,max);const start=Math.max(0,i-Math.floor(max/3));return `${start?'…':''}${flat.slice(start,start+max)}${start+max<flat.length?'…':''}`;};
+
+export class KnowledgeIndex{
+ constructor({repoRoot,publicBaseUrl='',artifactBaseUrl='',maxFileBytes=512_000,maxTotalBytes=24_000_000,maxFetchChars=200_000}={}){this.repoRoot=path.resolve(repoRoot);this.publicBaseUrl=publicBaseUrl;this.artifactBaseUrl=artifactBaseUrl;this.maxFileBytes=maxFileBytes;this.maxTotalBytes=maxTotalBytes;this.maxFetchChars=maxFetchChars;this.documents=[];this.byId=new Map();this.generatedAt=null;}
+ urlFor(id){return this.artifactBaseUrl?`${this.artifactBaseUrl}/${encodeURIComponent(id)}`:`taowind://artifact/${id}`;}
+ build(){this.documents=[];this.byId.clear();let total=0;const walk=dir=>{for(const entry of fs.readdirSync(dir,{withFileTypes:true})){if(entry.name.startsWith('.')&&entry.name!=='.well-known')continue;if(BLOCKED_NAME.test(entry.name))continue;const absolute=path.join(dir,entry.name),relative=path.relative(this.repoRoot,absolute);if(entry.isDirectory()){if(!SKIP_DIRS.has(entry.name))walk(absolute);continue;}if(!entry.isFile()||!eligible(relative))continue;const stat=fs.statSync(absolute);if(stat.size>this.maxFileBytes||total+stat.size>this.maxTotalBytes)continue;let text;try{text=fs.readFileSync(absolute,'utf8');}catch{continue;}if(text.includes('\u0000'))continue;total+=stat.size;const id=`artifact-${hash(relative).slice(0,20)}`;const document={id,title:titleFrom(relative,text),relative_path:relative.split(path.sep).join('/'),absolute_path:absolute,text,size_bytes:stat.size,sha256:hash(text),url:this.urlFor(id),normalized:normalize(`${relative}\n${text}`)};this.documents.push(document);this.byId.set(id,document);}};walk(this.repoRoot);this.documents.sort((a,b)=>a.relative_path.localeCompare(b.relative_path));this.generatedAt=new Date().toISOString();return this.stats();}
+ stats(){return{document_count:this.documents.length,total_bytes:this.documents.reduce((sum,item)=>sum+item.size_bytes,0),generated_at:this.generatedAt};}
+ search(query,{limit=8}={}){const q=normalize(query).trim();if(!q)return[];const terms=[...new Set([q,...q.split(/[\s,，。:：/\\_-]+/).filter(term=>term.length>=2)])];return this.documents.map(document=>{const title=normalize(document.title),relative=normalize(document.relative_path);let score=0;score+=occurrences(title,q)*80+occurrences(relative,q)*50+Math.min(occurrences(document.normalized,q),20)*12;for(const term of terms)score+=occurrences(title,term)*20+occurrences(relative,term)*12+Math.min(occurrences(document.normalized,term),10)*3;return{document,score};}).filter(item=>item.score>0).sort((a,b)=>b.score-a.score||a.document.relative_path.localeCompare(b.document.relative_path)).slice(0,Math.max(1,Math.min(20,limit))).map(({document,score})=>({id:document.id,title:document.title,url:document.url,snippet:snippet(document.text,query),metadata:{path:document.relative_path,sha256:document.sha256,size_bytes:document.size_bytes,score}}));}
+ fetch(id){const document=this.byId.get(id);if(!document)throw Object.assign(new Error('Artifact not found.'),{code:'ARTIFACT_NOT_FOUND'});const truncated=document.text.length>this.maxFetchChars;return{id:document.id,title:document.title,text:truncated?document.text.slice(0,this.maxFetchChars):document.text,url:document.url,metadata:{path:document.relative_path,sha256:document.sha256,size_bytes:document.size_bytes,truncated}};}
+}

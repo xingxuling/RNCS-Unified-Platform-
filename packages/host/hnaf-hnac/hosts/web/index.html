@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101826">
+  <title>HNAF 能力绑定应用宿主 v0.7</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="shell-header">
+    <p class="eyebrow">HOST-NEUTRAL APPLICATION FABRIC · v0.7</p>
+    <h1>同一个意图，动态选择能力并受权威约束</h1>
+    <p id="status" class="status">请选择一个 HNAC 胶囊，或载入内置演示。</p>
+  </header>
+  <main>
+    <section class="control-panel" aria-label="胶囊与投影控制">
+      <label class="file action-control">导入 .hnac<input id="capsule" type="file" accept=".hnac,application/zip"></label>
+      <button id="run" class="action-control primary" type="button" disabled>运行胶囊</button>
+      <label class="select-control">Gateway
+        <input id="gateway-url" value="./api" placeholder="./api 或 http://127.0.0.1:17303/api">
+      </label>
+      <label class="select-control">意图参数 JSON
+        <input id="intent-payload" value='{"amount":2,"key":"counter"}'>
+      </label>
+      <label class="select-control">投影宿主
+        <select id="projection-profile">
+          <option value="auto">自动识别</option>
+          <option value="desktop">桌面</option>
+          <option value="tablet">平板</option>
+          <option value="phone">手机</option>
+          <option value="accessibility">无障碍</option>
+          <option value="spatial">空间 / XR</option>
+        </select>
+      </label>
+    </section>
+
+    <section class="snapshot-card" aria-label="界面语义快照">
+      <span>当前投影语义快照</span>
+      <code id="semantic-snapshot">尚未生成</code>
+    </section>
+
+    <section id="projection" class="projection" aria-live="polite"></section>
+
+    <section class="route-lab" aria-labelledby="route-title">
+      <div>
+        <p class="eyebrow">INTERACTION INTENT ROUTER</p>
+        <h2 id="route-title">输入方式不绑定按钮，按钮也不绑定固定 Provider</h2>
+        <p>可以模拟触摸、键盘、语音或神经确认信号，宿主先解析为应用意图，再通过 CNP、AAF 与 Gateway 选择并授权执行能力。</p>
+      </div>
+      <label>输入模式
+        <select id="route-mode">
+          <option value="pointer">指针</option>
+          <option value="touch">触摸</option>
+          <option value="keyboard">键盘</option>
+          <option value="voice">语音</option>
+          <option value="neural">神经意图</option>
+        </select>
+      </label>
+      <label>信号<input id="route-signal" value="utterance" placeholder="activate / Enter / utterance"></label>
+      <label>值<input id="route-value" value="运行应用" placeholder="运行应用"></label>
+      <button id="route-input" type="button" disabled>路由输入</button>
+    </section>
+
+    <section class="trace-panel">
+      <h2>语义轨迹与执行证据</h2>
+      <pre id="output" tabindex="0"></pre>
+    </section>
+  </main>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

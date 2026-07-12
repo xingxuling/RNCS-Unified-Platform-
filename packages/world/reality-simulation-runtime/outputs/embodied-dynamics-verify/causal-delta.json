@@ -1,0 +1,437 @@
+{
+  "format": "rfe.embodied-dynamics-causal-delta.v0.3",
+  "provisional": true,
+  "baseRealityRoot": "rfe:embodied-demo:base",
+  "sourceRuntime": "0.3.0-alpha.1",
+  "worldId": "advanced-playground",
+  "tick": 240,
+  "simulationRoot": "fnv1a64:0be2e468b906f1a3",
+  "facts": [
+    {
+      "subject": "bullet",
+      "predicate": "embodied.position",
+      "value": {
+        "x": 102334,
+        "y": 388592
+      },
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "bullet",
+      "predicate": "embodied.angle",
+      "value": 778917,
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "bullet",
+      "predicate": "embodied.velocity",
+      "value": {
+        "x": 54655,
+        "y": 26281
+      },
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "bullet",
+      "predicate": "embodied.angularVelocity",
+      "value": 2023958,
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "bullet",
+      "predicate": "embodied.awake",
+      "value": true,
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "buoyant-box",
+      "predicate": "embodied.position",
+      "value": {
+        "x": 684837,
+        "y": 415333
+      },
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "buoyant-box",
+      "predicate": "embodied.angle",
+      "value": 286651,
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "buoyant-box",
+      "predicate": "embodied.velocity",
+      "value": {
+        "x": 33764,
+        "y": -13482
+      },
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "buoyant-box",
+      "predicate": "embodied.angularVelocity",
+      "value": 54866,
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "buoyant-box",
+      "predicate": "embodied.awake",
+      "value": true,
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "goal-sensor",
+      "predicate": "embodied.position",
+      "value": {
+        "x": 880000,
+        "y": 430000
+      },
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "goal-sensor",
+      "predicate": "embodied.angle",
+      "value": 0,
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "goal-sensor",
+      "predicate": "embodied.velocity",
+      "value": {
+        "x": 0,
+        "y": 0
+      },
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "goal-sensor",
+      "predicate": "embodied.angularVelocity",
+      "value": 0,
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "goal-sensor",
+      "predicate": "embodied.awake",
+      "value": false,
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "ground",
+      "predicate": "embodied.position",
+      "value": {
+        "x": 480000,
+        "y": 510000
+      },
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "ground",
+      "predicate": "embodied.angle",
+      "value": 0,
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "ground",
+      "predicate": "embodied.velocity",
+      "value": {
+        "x": 0,
+        "y": 0
+      },
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "ground",
+      "predicate": "embodied.angularVelocity",
+      "value": 0,
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "ground",
+      "predicate": "embodied.awake",
+      "value": false,
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "left-ramp",
+      "predicate": "embodied.position",
+      "value": {
+        "x": 185000,
+        "y": 390000
+      },
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "left-ramp",
+      "predicate": "embodied.angle",
+      "value": 930000,
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "left-ramp",
+      "predicate": "embodied.velocity",
+      "value": {
+        "x": 0,
+        "y": 0
+      },
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "left-ramp",
+      "predicate": "embodied.angularVelocity",
+      "value": 0,
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "left-ramp",
+      "predicate": "embodied.awake",
+      "value": false,
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "pendulum",
+      "predicate": "embodied.position",
+      "value": {
+        "x": 345009,
+        "y": 157399
+      },
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "pendulum",
+      "predicate": "embodied.angle",
+      "value": 0,
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "pendulum",
+      "predicate": "embodied.velocity",
+      "value": {
+        "x": -67,
+        "y": -12454
+      },
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "pendulum",
+      "predicate": "embodied.angularVelocity",
+      "value": 0,
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "pendulum",
+      "predicate": "embodied.awake",
+      "value": true,
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "pendulum-anchor",
+      "predicate": "embodied.position",
+      "value": {
+        "x": 345000,
+        "y": 85000
+      },
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "pendulum-anchor",
+      "predicate": "embodied.angle",
+      "value": 0,
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "pendulum-anchor",
+      "predicate": "embodied.velocity",
+      "value": {
+        "x": 0,
+        "y": 0
+      },
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "pendulum-anchor",
+      "predicate": "embodied.angularVelocity",
+      "value": 0,
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "pendulum-anchor",
+      "predicate": "embodied.awake",
+      "value": false,
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "slider",
+      "predicate": "embodied.position",
+      "value": {
+        "x": 522052,
+        "y": 335308
+      },
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "slider",
+      "predicate": "embodied.angle",
+      "value": 0,
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "slider",
+      "predicate": "embodied.velocity",
+      "value": {
+        "x": 348,
+        "y": -936
+      },
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "slider",
+      "predicate": "embodied.angularVelocity",
+      "value": 0,
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "slider",
+      "predicate": "embodied.awake",
+      "value": true,
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "slider-base",
+      "predicate": "embodied.position",
+      "value": {
+        "x": 520000,
+        "y": 335000
+      },
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "slider-base",
+      "predicate": "embodied.angle",
+      "value": 0,
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "slider-base",
+      "predicate": "embodied.velocity",
+      "value": {
+        "x": 0,
+        "y": 0
+      },
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "slider-base",
+      "predicate": "embodied.angularVelocity",
+      "value": 0,
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "slider-base",
+      "predicate": "embodied.awake",
+      "value": false,
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "thin-wall",
+      "predicate": "embodied.position",
+      "value": {
+        "x": 630000,
+        "y": 180000
+      },
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "thin-wall",
+      "predicate": "embodied.angle",
+      "value": 0,
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "thin-wall",
+      "predicate": "embodied.velocity",
+      "value": {
+        "x": 0,
+        "y": 0
+      },
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "thin-wall",
+      "predicate": "embodied.angularVelocity",
+      "value": 0,
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "thin-wall",
+      "predicate": "embodied.awake",
+      "value": false,
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "vortex-capsule",
+      "predicate": "embodied.position",
+      "value": {
+        "x": 694534,
+        "y": 478002
+      },
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "vortex-capsule",
+      "predicate": "embodied.angle",
+      "value": 0,
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "vortex-capsule",
+      "predicate": "embodied.velocity",
+      "value": {
+        "x": 0,
+        "y": -1667
+      },
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "vortex-capsule",
+      "predicate": "embodied.angularVelocity",
+      "value": 0,
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    },
+    {
+      "subject": "vortex-capsule",
+      "predicate": "embodied.awake",
+      "value": true,
+      "evidence": "fnv1a64:7a331ae2e9493343"
+    }
+  ],
+  "events": [
+    {
+      "type": "physics.contact.persist",
+      "subjects": [
+        "ground",
+        "vortex-capsule"
+      ],
+      "payload": {
+        "eventId": "advanced-playground:240:contact:persist:ground/ground-shape|vortex-capsule/capsule",
+        "pair": "ground/ground-shape|vortex-capsule/capsule",
+        "jointId": null
+      },
+      "evidence": "fnv1a64:9ab3ad85e1d68897"
+    }
+  ],
+  "diagnostics": {
+    "microsteps": 2,
+    "fixtureProxies": 12,
+    "candidatePairs": 8,
+    "narrowPhaseTests": 4,
+    "gjkCalls": 4,
+    "epaCalls": 2,
+    "resolvedContacts": 1,
+    "warmStartedContacts": 2,
+    "ccdBodies": 1,
+    "velocityIterations": 20,
+    "positionIterations": 8,
+    "rayTests": 12
+  },
+  "deltaRoot": "fnv1a64:9c2e9b8e4cc128d6"
+}

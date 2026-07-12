@@ -1,0 +1,88 @@
+{
+  "format": "rsr.snapshot.v0.1",
+  "runtimeVersion": "0.2.0-alpha.1",
+  "worldId": "falling-box-reality",
+  "tick": 180,
+  "logicalTime": {
+    "numerator": 180,
+    "denominator": 60
+  },
+  "scale": 1000,
+  "stepHz": 60,
+  "gravity": {
+    "x": 0,
+    "y": 980000
+  },
+  "solverIterations": 4,
+  "configHash": "fnv1a64:ebbe82ffa658aa60",
+  "bodies": [
+    {
+      "id": "falling-box",
+      "kind": "dynamic",
+      "position": {
+        "x": 320000,
+        "y": 294000
+      },
+      "halfSize": {
+        "x": 22000,
+        "y": 22000
+      },
+      "velocity": {
+        "x": 0,
+        "y": 0
+      },
+      "acceleration": {
+        "x": 0,
+        "y": 0
+      },
+      "inverseMassQ": 1000,
+      "restitutionQ": 40,
+      "frictionQ": 650,
+      "sleepThreshold": 2200,
+      "sleepTicks": 24,
+      "sleepCounter": 0,
+      "awake": false,
+      "tags": [
+        "blue-box",
+        "subject"
+      ],
+      "data": {}
+    },
+    {
+      "id": "ground",
+      "kind": "static",
+      "position": {
+        "x": 320000,
+        "y": 334000
+      },
+      "halfSize": {
+        "x": 300000,
+        "y": 18000
+      },
+      "velocity": {
+        "x": 0,
+        "y": 0
+      },
+      "acceleration": {
+        "x": 0,
+        "y": 0
+      },
+      "inverseMassQ": 0,
+      "restitutionQ": 20,
+      "frictionQ": 800,
+      "sleepThreshold": 2000,
+      "sleepTicks": 30,
+      "sleepCounter": 0,
+      "awake": false,
+      "tags": [
+        "environment",
+        "ground"
+      ],
+      "data": {}
+    }
+  ],
+  "contacts": [],
+  "events": [],
+  "contactRoot": "fnv1a64:09612b07b5ecb5a5",
+  "stateRoot": "fnv1a64:ae339aab5727a0ae"
+}

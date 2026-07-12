@@ -1,0 +1,15 @@
+export const ECONOMIC_CYCLE_TYPES = [
+  "RESOURCE_DISCOVERY_BOOM","TRADE_EXPANSION","MARKET_CONSOLIDATION",
+  "RESOURCE_MONOPOLY","SCARCITY_CRISIS","ARCHIVE_ECONOMY","SEQUENCE_VALUE_ECONOMY",
+] as const;
+export type EconomicCycleType = typeof ECONOMIC_CYCLE_TYPES[number];
+
+export const ECONOMIC_CYCLE_LABELS: Record<EconomicCycleType, string> = {
+  RESOURCE_DISCOVERY_BOOM: "资源发现繁荣", TRADE_EXPANSION: "贸易扩张",
+  MARKET_CONSOLIDATION: "市场整合", RESOURCE_MONOPOLY: "资源垄断",
+  SCARCITY_CRISIS: "稀缺危机", ARCHIVE_ECONOMY: "归档经济",
+  SEQUENCE_VALUE_ECONOMY: "数列价值经济",
+};
+
+export const ECONOMIC_CYCLE_FICTION_NOTE =
+  "经济周期为虚拟世界模拟产物，不代表现实金融、不构成投资建议。";

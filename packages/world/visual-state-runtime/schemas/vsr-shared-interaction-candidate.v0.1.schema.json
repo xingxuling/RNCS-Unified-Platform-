@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/vsr-shared-interaction-candidate.v0.1.schema.json",
+  "title": "VSR Shared Interaction Candidate v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "candidateId",
+    "sessionId",
+    "replicaId",
+    "baseSequence",
+    "baseEventRoot",
+    "logicalTime",
+    "proposal",
+    "authorization",
+    "receipt"
+  ],
+  "properties": {
+    "format": {
+      "const": "vsr.shared-interaction-candidate.v0.1"
+    },
+    "candidateId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sessionId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "replicaId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "baseSequence": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "baseEventRoot": {
+      "oneOf": [
+        {
+          "const": ""
+        },
+        {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      ]
+    },
+    "logicalTime": {
+      "type": "number",
+      "minimum": 0
+    },
+    "proposal": {
+      "type": "object",
+      "required": [
+        "format",
+        "proposalHash"
+      ]
+    },
+    "authorization": {
+      "type": "object",
+      "required": [
+        "format",
+        "proposalHash",
+        "decision",
+        "authorityId"
+      ]
+    },
+    "receipt": {
+      "type": "object",
+      "required": [
+        "format",
+        "proposalHash",
+        "authorizationHash",
+        "status",
+        "commitHash"
+      ]
+    }
+  }
+}

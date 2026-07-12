@@ -1,0 +1,19 @@
+{
+  "name": "@taowind/living-artifact-format",
+  "version": "1.0.0",
+  "type": "module",
+  "bin": {
+    "laf-js": "src/cli.mjs"
+  },
+  "scripts": {
+    "test": "node tests/run.mjs"
+  },
+  "license": "Apache-2.0",
+  "files": [
+    "src",
+    "schemas",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": "./src/index.mjs"
+}

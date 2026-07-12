@@ -1,0 +1,17 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://taowind.dev/schemas/vsr-hybrid-render-plan.v0.1.schema.json",
+  "title":"VSR Hybrid Render Plan v0.1",
+  "type":"object",
+  "required":["format","backendVersion","documentId","sourceDisplayHash","layers","stats","planHash"],
+  "properties":{
+    "format":{"const":"vsr.hybrid-render-plan.v0.1"},
+    "backendVersion":{"type":"string"},
+    "documentId":{"type":"string"},
+    "sourceDisplayHash":{"type":"string"},
+    "layers":{"type":"array","items":{"type":"object","required":["layerId","kind","itemIds","startOrder","endOrder","stateHash","layerHash"],"properties":{"layerId":{"type":"string"},"kind":{"enum":["gpu","software"]},"itemIds":{"type":"array","items":{"type":"string"}},"startOrder":{"type":"integer","minimum":0},"endOrder":{"type":"integer","minimum":0},"stateHash":{"type":"string"},"layerHash":{"type":"string"},"gpuPlan":{"type":"object"}},"additionalProperties":false}},
+    "stats":{"type":"object","required":["layers","gpuLayers","softwareLayers","gpuItems","softwareItems","gpuCoverage"],"properties":{"layers":{"type":"integer","minimum":0},"gpuLayers":{"type":"integer","minimum":0},"softwareLayers":{"type":"integer","minimum":0},"gpuItems":{"type":"integer","minimum":0},"softwareItems":{"type":"integer","minimum":0},"gpuCoverage":{"type":"number","minimum":0,"maximum":1}},"additionalProperties":false},
+    "planHash":{"type":"string"}
+  },
+  "additionalProperties":false
+}

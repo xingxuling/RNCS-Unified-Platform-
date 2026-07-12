@@ -1,0 +1,40 @@
+{
+  "request_id": "request:rncs-project-update-001",
+  "protocol_versions": ["0.1.0"],
+  "subject": {
+    "subject_id": "subject:owner",
+    "scopes": ["artifact.read", "artifact.write", "host.notify"]
+  },
+  "host": {
+    "host_id": "host:desktop",
+    "capabilities": ["display.text", "input.activate", "host.notification"]
+  },
+  "goals": [
+    {
+      "goal_id": "goal:update-progress",
+      "type": "artifact.progress.target",
+      "version_range": "^1.0.0",
+      "inputs": {"artifact_id": {"type": "string"}, "value": {"type": "integer"}}
+    },
+    {
+      "goal_id": "goal:generate-report",
+      "type": "artifact.report.generate",
+      "version_range": ">=1.0.0 <2.0.0",
+      "inputs": {"artifact_id": {"type": "string", "from_goal": "goal:update-progress"}}
+    },
+    {
+      "goal_id": "goal:notify",
+      "type": "host.notification.emit",
+      "version_range": "^1.0.0",
+      "inputs": {"message": {"type": "string", "from_goal": "goal:generate-report"}}
+    }
+  ],
+  "policy": {
+    "max_risk": "medium",
+    "require_reversible": false,
+    "required_evidence": [],
+    "minimum_trust": 1,
+    "cost_budget": {"cpu_millis": 100, "memory_mb": 100, "network_kb": 20, "monetary_microunits": 0}
+  },
+  "constraints": {"prefer_local": true, "base_generation": "generation:0"}
+}

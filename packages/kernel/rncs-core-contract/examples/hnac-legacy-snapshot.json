@@ -1,0 +1,26 @@
+{
+  "format": "vsr.hnac-state-snapshot.v0.1",
+  "adapterVersion": "0.1",
+  "replicaId": "phone-01",
+  "generation": 18,
+  "labels": [
+    "mobile"
+  ],
+  "state": {
+    "format": "hnaf.portable-state.v0.5",
+    "app_id": "app:demo",
+    "schema_version": "1.0",
+    "partitions": {
+      "portable": {
+        "progress": 80
+      },
+      "device_private": {
+        "window": "compact"
+      },
+      "cache": {}
+    },
+    "state_root": "6666666666666666666666666666666666666666666666666666666666666666"
+  },
+  "ephemeral": {},
+  "snapshotRoot": "7777777777777777777777777777777777777777777777777777777777777777"
+}

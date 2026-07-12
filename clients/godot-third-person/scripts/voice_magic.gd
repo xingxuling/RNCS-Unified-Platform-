@@ -15,13 +15,13 @@ const SPELLS := {
 var _web_callback
 
 func normalize(text: String) -> String:
-	var output := text.to_lower()
+	var output = text.to_lower()
 	for token in [" ", "，", "。", "！", "？", "、", "·", ",", ".", "!", "?", "_", "-"]:
 		output = output.replace(token, "")
 	return output
 
 func compile(text: String) -> Dictionary:
-	var normalized := normalize(text)
+	var normalized = normalize(text)
 	if _has_any(normalized, ["火焰", "烈火", "fire"]) and _has_any(normalized, ["长枪", "枪", "穿刺", "lance"]):
 		return _compiled("fire_lance")
 	if _has_any(normalized, ["寒霜", "冰霜", "frost", "ice"]) and _has_any(normalized, ["护盾", "护壁", "盾", "shield"]):
@@ -46,25 +46,25 @@ func request_microphone_recognition() -> void:
 	window.rncsVoiceMagicCallback = _web_callback
 	recognition_started.emit()
 	JavaScriptBridge.eval("""
-		(() => {
-		  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-		  if (!SR) { window.rncsVoiceMagicCallback('ERROR:UNSUPPORTED'); return; }
-		  const r = new SR(); r.lang='zh-CN'; r.interimResults=false;
-		  r.onresult = e => window.rncsVoiceMagicCallback(e.results[0][0].transcript);
-		  r.onerror = e => window.rncsVoiceMagicCallback('ERROR:' + e.error);
-		  r.start();
-		})();
+        (() => {
+          const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+          if (!SR) { window.rncsVoiceMagicCallback('ERROR:UNSUPPORTED'); return; }
+          const r = new SR(); r.lang='zh-CN'; r.interimResults=false;
+          r.onresult = e => window.rncsVoiceMagicCallback(e.results[0][0].transcript);
+          r.onerror = e => window.rncsVoiceMagicCallback('ERROR:' + e.error);
+          r.start();
+        })();
 	""", true)
 
 func _on_web_speech(args: Array) -> void:
 	if args.is_empty():
 		recognition_failed.emit("EMPTY_RESULT")
 		return
-	var text := str(args[0])
+	var text = str(args[0])
 	if text.begins_with("ERROR:"):
 		recognition_failed.emit(text)
 		return
-	var result := compile(text)
+	var result = compile(text)
 	if bool(result.get("ok", false)):
 		recognition_result.emit(text, str(result.get("spell_id", "")), float(result.get("confidence", 0.0)))
 	else:

@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';import fs from 'node:fs';import os from 'node:os';import path from 'node:path';import {fileURLToPath} from 'node:url';import {RealityStore,canonicalJson,rootHash,verifyExternalGeneration,federationCandidate} from '../src/index.mjs';
+let passed=0;const test=(n,f)=>{try{f();console.log(`ok ${++passed} - ${n}`)}catch(e){console.error(`not ok - ${n}\n${e.stack}`);process.exitCode=1}};
+const vector=JSON.parse(fs.readFileSync(new URL('../examples/upstream-c1-canonical.json',import.meta.url)));
+test('C1 canonical vectors',()=>{for(const c of vector.cases){assert.equal(canonicalJson(c.value),c.canonical);assert.equal(rootHash(c.value),c.sha256)}});
+let dir=fs.mkdtempSync(path.join(os.tmpdir(),'rfe-node-现实-')),s=RealityStore.init(path.join(dir,'仓库'),{worldId:'world:测试'});
+test('init and verify',()=>assert.equal(s.verify().valid,true));
+test('generation directory is portable',()=>{const id=s.currentGeneration().generationId;assert.equal(path.basename(path.dirname(s.generationPath(id))),encodeURIComponent(id));assert.equal(s.loadGeneration(id).generationId,id)});
+const seedOps=[{op:'createIdentity',identity:{id:'subject:alice',kind:'subject',createdAt:'$logicalTime',retiredAt:null,lineage:[],metadata:{}}},{op:'createIdentity',identity:{id:'object:door',kind:'door',createdAt:'$logicalTime',retiredAt:null,lineage:[],metadata:{}}},{op:'setFact',fact:{subject:'object:door',predicate:'state',value:'locked'}}];
+let r=s.commit({actor:'subject:alice',intent:{goal:'建立门'},authority:'authority:owner',operations:seedOps,transactionId:'tx:seed'});
+test('commit and query',()=>{assert.equal(r.generation.realityRevision,1);assert.equal(s.getFact('object:door','state').value,'locked')});
+test('RNCS generation reference',()=>assert.equal(s.generationReference().generation_root,r.generation.integrityHash));
+test('federation candidate boundary',()=>{const c=federationCandidate(r,{domainId:'domain:test'});assert.equal(c.status,'candidate-not-federated');assert.equal(c.generationRoot,r.generation.integrityHash)});
+test('tamper rejected',()=>{const ref=s.currentGeneration().refs.identity,p=s.objectPath(ref),o=JSON.parse(fs.readFileSync(p));o.value[0].kind='hacked';fs.writeFileSync(p,JSON.stringify(o));assert.equal(s.verify().valid,false)});
+const fixture=fileURLToPath(new URL('../examples/upstream-c4-door-store/',import.meta.url));test('upstream C4 fixture',()=>{const res=verifyExternalGeneration(path.join(fixture,'generations/g-conformance-c4-0001/generation.json'),path.join(fixture,'objects'));assert.equal(res.valid,true)});
+if(!process.exitCode)console.log(`1..${passed}`)

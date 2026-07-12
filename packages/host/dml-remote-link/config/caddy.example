@@ -1,0 +1,4 @@
+relay.example.com {
+  reverse_proxy 127.0.0.1:17901
+  encode zstd gzip
+}

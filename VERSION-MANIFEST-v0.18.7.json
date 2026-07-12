@@ -1,0 +1,31 @@
+{
+  "suite": "RNCS_Aetherworld_Unified",
+  "version": "0.18.7-alpha.1",
+  "codename": "Knowledge Reality & Small-Data AI Loop",
+  "based_on": "0.18.6-alpha.1",
+  "language": {
+    "rcl": "0.3.0-alpha.1",
+    "domains": 9,
+    "new_domain": "knowledge",
+    "composite_planes": [
+      "inner-reality",
+      "execution-reality"
+    ]
+  },
+  "capabilities": {
+    "typed_knowledge_claims": true,
+    "confidence_and_evidence": true,
+    "knowledge_revision_and_conflict_history": true,
+    "knowledge_decay_without_provenance_loss": true,
+    "small_data_ai_loop": true,
+    "llm_required_for_reference_loop": false
+  },
+  "verification": {
+    "rcl_tests": "22/22 PASS",
+    "mother_rcl_tests": "22/22 PASS",
+    "runtime_health": "PASS after local workspace bootstrap",
+    "knowledge_demo": "PASS: room.heater=true"
+  },
+  "evidence": "docs/evidence/rcl-v0.3",
+  "report": "RNCS_Aetherworld_v0.18.7-alpha.1_开发验收报告.md"
+}

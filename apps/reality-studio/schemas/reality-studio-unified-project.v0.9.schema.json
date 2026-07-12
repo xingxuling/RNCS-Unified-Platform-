@@ -1,0 +1,20 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://taowind.local/schemas/reality-studio-unified-project.v0.9.schema.json",
+  "title":"Reality Studio Unified Project v0.9",
+  "type":"object",
+  "required":["format","version","identity","active_scene_id","scenes","assets","behavior","editor","build","project_root"],
+  "properties":{
+    "format":{"const":"reality-studio.unified-project.v0.9"},
+    "version":{"const":"0.9.0-alpha.1"},
+    "identity":{"type":"object","required":["project_id","title"]},
+    "active_scene_id":{"type":"string"},
+    "scenes":{"type":"array","minItems":1,"items":{"type":"object","required":["scene_id","title","canvas","nodes","scene_root"]}},
+    "assets":{"type":"object","required":["registry","order"],"properties":{"registry":{"type":"object"},"order":{"type":"array","items":{"type":"string"}}}},
+    "behavior":{"type":"object","required":["active_program_id","programs"]},
+    "editor":{"type":"object"},
+    "build":{"type":"object","required":["targets","entry_scene_id"]},
+    "project_root":{"type":"string","pattern":"^[0-9a-f]{64}$"}
+  },
+  "additionalProperties":true
+}

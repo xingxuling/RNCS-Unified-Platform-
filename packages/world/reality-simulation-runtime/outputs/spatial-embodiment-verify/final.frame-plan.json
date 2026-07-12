@@ -1,0 +1,767 @@
+{
+  "format": "vsr.spatial-frame-plan.v0.4",
+  "version": "0.4.0-alpha.1",
+  "sceneId": "rsr-spatial:world:embodied-courtyard:180",
+  "viewport": {
+    "width": 960,
+    "height": 540
+  },
+  "budget": {
+    "qualityTier": "balanced",
+    "width": 960,
+    "height": 540,
+    "maxLights": 8,
+    "shadowMapSize": 256,
+    "shadows": true,
+    "lodBias": 1
+  },
+  "camera": {
+    "id": "camera:observer",
+    "viewMatrix": [
+      0.7660444431189781,
+      0,
+      -0.6427876096865394,
+      0.23789213519734886,
+      -0.20927117579357385,
+      0.945518575599317,
+      -0.24939967557840612,
+      -1.0865061506573968,
+      0.6077676251237063,
+      0.32556815445715676,
+      0.7243092507036281,
+      -14.659567241791107,
+      0,
+      0,
+      0,
+      1
+    ],
+    "projectionMatrix": [
+      1.153295910888354,
+      0,
+      0,
+      0,
+      0,
+      2.050303841579296,
+      0,
+      0,
+      0,
+      0,
+      -1.0005001250312577,
+      -0.10002500625156288,
+      0,
+      0,
+      -1,
+      0
+    ],
+    "viewProjectionMatrix": [
+      0.8834759238078638,
+      0,
+      -0.7413243218211852,
+      0.27436002675560195,
+      -0.42906949566138064,
+      1.9386003678358636,
+      -0.5113451129270362,
+      -2.227667734592394,
+      -0.6080715849262187,
+      -0.32573097924058114,
+      -0.7246714958902765,
+      14.56687385206457,
+      -0.6077676251237063,
+      -0.32556815445715676,
+      -0.7243092507036281,
+      14.659567241791107
+    ],
+    "position": [
+      8.5,
+      5.8,
+      10.5
+    ]
+  },
+  "drawPackets": [
+    {
+      "nodeId": "ground",
+      "meshId": "mesh:ground",
+      "materialId": "material:ground",
+      "worldMatrix": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "worldBounds": {
+        "min": [
+          -15,
+          0,
+          -15
+        ],
+        "max": [
+          15,
+          0,
+          15
+        ],
+        "center": [
+          0,
+          0,
+          0
+        ],
+        "radius": 21.213203435596427
+      },
+      "distanceToCamera": 14.701700581905483,
+      "lodLevel": 0,
+      "indexCount": 6,
+      "castShadow": false,
+      "receiveShadow": true,
+      "packetRoot": "fnv1a64:f92f91a7bab15ae0"
+    },
+    {
+      "nodeId": "node:avatar:avatar:capsule",
+      "meshId": "mesh:unit-sphere",
+      "materialId": "material:avatar",
+      "worldMatrix": [
+        0.5982082761149526,
+        -0.15444734405027413,
+        0,
+        2.594,
+        0.04633420321508224,
+        1.9940275870498423,
+        0,
+        1.1,
+        0,
+        0,
+        0.6,
+        1.341,
+        0,
+        0,
+        0,
+        1
+      ],
+      "worldBounds": {
+        "min": [
+          2.2176721899173866,
+          0.07981910486753785,
+          1.041
+        ],
+        "max": [
+          2.970327810082613,
+          2.1201808951324623,
+          1.641
+        ],
+        "center": [
+          2.594,
+          1.1,
+          1.341
+        ],
+        "radius": 1.0862780491200217
+      },
+      "distanceToCamera": 11.868366231288956,
+      "lodLevel": 0,
+      "indexCount": 1440,
+      "castShadow": true,
+      "receiveShadow": true,
+      "packetRoot": "fnv1a64:1162104cec490571"
+    },
+    {
+      "nodeId": "node:crate-a:crate-a:shape",
+      "meshId": "mesh:unit-cube",
+      "materialId": "material:crate-a",
+      "worldMatrix": [
+        0.99996063583532,
+        0.007382675670188289,
+        0.00492167448855105,
+        0.911,
+        -0.0073825862499404555,
+        0.9999727476786299,
+        -0.00003633611674674315,
+        0.513,
+        -0.004921808619261264,
+        0,
+        0.9999878878266053,
+        0.148,
+        0,
+        0,
+        0,
+        1
+      ],
+      "worldBounds": {
+        "min": [
+          0.40486750700297036,
+          0.009304164977341434,
+          -0.35445484822293327
+        ],
+        "max": [
+          1.4171324929970297,
+          1.0166958350226585,
+          0.6504548482229333
+        ],
+        "center": [
+          0.911,
+          0.5129999999999999,
+          0.14800000000000002
+        ],
+        "radius": 0.8660254037844388
+      },
+      "distanceToCamera": 13.881973706933751,
+      "lodLevel": 0,
+      "indexCount": 36,
+      "castShadow": true,
+      "receiveShadow": true,
+      "packetRoot": "fnv1a64:e79578d2ff621d83"
+    },
+    {
+      "nodeId": "node:crate-b:crate-b:shape",
+      "meshId": "mesh:unit-cube",
+      "materialId": "material:crate-b",
+      "worldMatrix": [
+        1,
+        0,
+        0,
+        2.125,
+        0,
+        1,
+        0,
+        0.505,
+        0,
+        0,
+        1,
+        0.312,
+        0,
+        0,
+        0,
+        1
+      ],
+      "worldBounds": {
+        "min": [
+          1.625,
+          0.0050000000000000044,
+          -0.188
+        ],
+        "max": [
+          2.625,
+          1.005,
+          0.812
+        ],
+        "center": [
+          2.125,
+          0.5049999999999999,
+          0.31200000000000006
+        ],
+        "radius": 0.8660254037844386
+      },
+      "distanceToCamera": 13.132897395472183,
+      "lodLevel": 0,
+      "indexCount": 36,
+      "castShadow": true,
+      "receiveShadow": true,
+      "packetRoot": "fnv1a64:e109daf2ed8f31e7"
+    },
+    {
+      "nodeId": "node:left-arm:left-arm:shape",
+      "meshId": "mesh:unit-sphere",
+      "materialId": "material:left-arm",
+      "worldMatrix": [
+        0.3,
+        0,
+        0,
+        3.253,
+        0,
+        1,
+        0,
+        1.9,
+        0,
+        0,
+        0.3,
+        1.341,
+        0,
+        0,
+        0,
+        1
+      ],
+      "worldBounds": {
+        "min": [
+          3.103,
+          1.4,
+          1.191
+        ],
+        "max": [
+          3.403,
+          2.4,
+          1.4909999999999999
+        ],
+        "center": [
+          3.253,
+          1.9,
+          1.341
+        ],
+        "radius": 0.5431390245600107
+      },
+      "distanceToCamera": 11.252923620108689,
+      "lodLevel": 0,
+      "indexCount": 1440,
+      "castShadow": true,
+      "receiveShadow": true,
+      "packetRoot": "fnv1a64:375ac79b8e607258"
+    },
+    {
+      "nodeId": "node:orb:orb:shape",
+      "meshId": "mesh:unit-sphere",
+      "materialId": "material:orb",
+      "worldMatrix": [
+        0.72,
+        0,
+        0,
+        1.991,
+        0,
+        0.72,
+        0,
+        0.427,
+        0,
+        0,
+        0.72,
+        -1.634,
+        0,
+        0,
+        0,
+        1
+      ],
+      "worldBounds": {
+        "min": [
+          1.6310000000000002,
+          0.067,
+          -1.9939999999999998
+        ],
+        "max": [
+          2.351,
+          0.7869999999999999,
+          -1.274
+        ],
+        "center": [
+          1.991,
+          0.42699999999999994,
+          -1.634
+        ],
+        "radius": 0.6235382907247957
+      },
+      "distanceToCamera": 14.780736314541304,
+      "lodLevel": 0,
+      "indexCount": 1440,
+      "castShadow": true,
+      "receiveShadow": true,
+      "packetRoot": "fnv1a64:14cd0347837f545b"
+    },
+    {
+      "nodeId": "node:pillar:pillar:shape",
+      "meshId": "mesh:unit-cube",
+      "materialId": "material:pillar",
+      "worldMatrix": [
+        0.9,
+        0,
+        0,
+        3.6,
+        0,
+        3,
+        0,
+        1.5,
+        0,
+        0,
+        0.9,
+        1,
+        0,
+        0,
+        0,
+        1
+      ],
+      "worldBounds": {
+        "min": [
+          3.15,
+          0,
+          0.55
+        ],
+        "max": [
+          4.05,
+          3,
+          1.45
+        ],
+        "center": [
+          3.5999999999999996,
+          1.5,
+          1
+        ],
+        "radius": 1.6294170736800324
+      },
+      "distanceToCamera": 11.521718621802911,
+      "lodLevel": 0,
+      "indexCount": 36,
+      "castShadow": true,
+      "receiveShadow": true,
+      "packetRoot": "fnv1a64:ee95e5a5f731a332"
+    },
+    {
+      "nodeId": "node:right-arm:right-arm:shape",
+      "meshId": "mesh:unit-sphere",
+      "materialId": "material:right-arm",
+      "worldMatrix": [
+        0.2914075983155318,
+        0.23761807927787656,
+        0,
+        1.935,
+        -0.07128542378336297,
+        0.9713586610517727,
+        0,
+        1.9,
+        0,
+        0,
+        0.3,
+        1.341,
+        0,
+        0,
+        0,
+        1
+      ],
+      "worldBounds": {
+        "min": [
+          1.6704871612032959,
+          1.3786779575824322,
+          1.191
+        ],
+        "max": [
+          2.1995128387967045,
+          2.4213220424175677,
+          1.4909999999999999
+        ],
+        "center": [
+          1.935,
+          1.9,
+          1.341
+        ],
+        "radius": 0.5431390245600107
+      },
+      "distanceToCamera": 11.924617645861858,
+      "lodLevel": 0,
+      "indexCount": 1440,
+      "castShadow": true,
+      "receiveShadow": true,
+      "packetRoot": "fnv1a64:0c2ae3003f3edeb2"
+    },
+    {
+      "nodeId": "contact:0",
+      "meshId": "mesh:unit-sphere",
+      "materialId": "material:contact",
+      "worldMatrix": [
+        0.1,
+        0,
+        0,
+        2.125,
+        0,
+        0.1,
+        0,
+        0,
+        0,
+        0,
+        0.1,
+        0.312,
+        0,
+        0,
+        0,
+        1
+      ],
+      "worldBounds": {
+        "min": [
+          2.075,
+          -0.05,
+          0.262
+        ],
+        "max": [
+          2.175,
+          0.05,
+          0.362
+        ],
+        "center": [
+          2.125,
+          0,
+          0.312
+        ],
+        "radius": 0.08660254037844377
+      },
+      "distanceToCamera": 13.344510819059648,
+      "lodLevel": 0,
+      "indexCount": 1440,
+      "castShadow": false,
+      "receiveShadow": true,
+      "packetRoot": "fnv1a64:0bc2be343018bd0f"
+    },
+    {
+      "nodeId": "contact:1",
+      "meshId": "mesh:unit-sphere",
+      "materialId": "material:contact",
+      "worldMatrix": [
+        0.1,
+        0,
+        0,
+        2.894,
+        0,
+        0.1,
+        0,
+        1.8,
+        0,
+        0,
+        0.1,
+        1.341,
+        0,
+        0,
+        0,
+        1
+      ],
+      "worldBounds": {
+        "min": [
+          2.8440000000000003,
+          1.75,
+          1.291
+        ],
+        "max": [
+          2.944,
+          1.85,
+          1.391
+        ],
+        "center": [
+          2.894,
+          1.8,
+          1.341
+        ],
+        "radius": 0.08660254037844381
+      },
+      "distanceToCamera": 11.45925464417298,
+      "lodLevel": 0,
+      "indexCount": 1440,
+      "castShadow": false,
+      "receiveShadow": true,
+      "packetRoot": "fnv1a64:65afede4532de3ec"
+    },
+    {
+      "nodeId": "contact:2",
+      "meshId": "mesh:unit-sphere",
+      "materialId": "material:contact",
+      "worldMatrix": [
+        0.1,
+        0,
+        0,
+        2.344,
+        0,
+        0.1,
+        0,
+        1.55,
+        0,
+        0,
+        0.1,
+        1.341,
+        0,
+        0,
+        0,
+        1
+      ],
+      "worldBounds": {
+        "min": [
+          2.294,
+          1.5,
+          1.291
+        ],
+        "max": [
+          2.3939999999999997,
+          1.6,
+          1.391
+        ],
+        "center": [
+          2.344,
+          1.55,
+          1.341
+        ],
+        "radius": 0.08660254037844381
+      },
+      "distanceToCamera": 11.825655034711609,
+      "lodLevel": 0,
+      "indexCount": 1440,
+      "castShadow": false,
+      "receiveShadow": true,
+      "packetRoot": "fnv1a64:07607fd2b9488a79"
+    }
+  ],
+  "lights": [
+    {
+      "id": "light:ambient",
+      "kind": "ambient",
+      "color": "#94a3b8",
+      "intensity": 0.18,
+      "range": 10
+    },
+    {
+      "id": "light:sun",
+      "kind": "directional",
+      "color": "#fff4db",
+      "intensity": 2.2,
+      "direction": [
+        -0.5,
+        -1,
+        -0.35
+      ],
+      "castShadow": true,
+      "range": 10
+    },
+    {
+      "id": "light:fill",
+      "kind": "point",
+      "color": "#60a5fa",
+      "intensity": 5,
+      "position": [
+        -3,
+        4,
+        4
+      ],
+      "range": 12
+    }
+  ],
+  "passes": [
+    {
+      "id": "shadow-depth",
+      "kind": "shadow-depth",
+      "dependsOn": [],
+      "resourceIds": [
+        "shadow-depth"
+      ]
+    },
+    {
+      "id": "scene-depth-color",
+      "kind": "scene-depth-color",
+      "dependsOn": [
+        "shadow-depth"
+      ],
+      "resourceIds": [
+        "scene-color",
+        "scene-depth",
+        "shadow-depth"
+      ]
+    },
+    {
+      "id": "tone-map",
+      "kind": "tone-map",
+      "dependsOn": [
+        "scene-depth-color"
+      ],
+      "resourceIds": [
+        "scene-color",
+        "present-color"
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "id": "mesh:mesh:unit-cube:vertices",
+      "kind": "vertex-buffer",
+      "byteLength": 768,
+      "resourceRoot": "fnv1a64:ec355681182831b9"
+    },
+    {
+      "id": "mesh:mesh:unit-cube:indices",
+      "kind": "index-buffer",
+      "byteLength": 144,
+      "resourceRoot": "fnv1a64:032fc41656650844"
+    },
+    {
+      "id": "mesh:mesh:unit-sphere:vertices",
+      "kind": "vertex-buffer",
+      "byteLength": 8736,
+      "resourceRoot": "fnv1a64:21176e72a8d83087"
+    },
+    {
+      "id": "mesh:mesh:unit-sphere:indices",
+      "kind": "index-buffer",
+      "byteLength": 5760,
+      "resourceRoot": "fnv1a64:4c83865acce53f15"
+    },
+    {
+      "id": "mesh:mesh:ground:vertices",
+      "kind": "vertex-buffer",
+      "byteLength": 128,
+      "resourceRoot": "fnv1a64:9e3a7d2c875bf4cd"
+    },
+    {
+      "id": "mesh:mesh:ground:indices",
+      "kind": "index-buffer",
+      "byteLength": 24,
+      "resourceRoot": "fnv1a64:3bb700db1e71348b"
+    },
+    {
+      "id": "materials",
+      "kind": "material-buffer",
+      "byteLength": 704,
+      "resourceRoot": "fnv1a64:3b8b92b032400b00"
+    },
+    {
+      "id": "lights",
+      "kind": "light-buffer",
+      "byteLength": 192,
+      "resourceRoot": "fnv1a64:169c301f8900e42c"
+    },
+    {
+      "id": "scene-depth",
+      "kind": "depth-texture",
+      "byteLength": 2073600,
+      "format": "depth24plus",
+      "resourceRoot": "fnv1a64:a78511db71b98f02"
+    },
+    {
+      "id": "scene-color",
+      "kind": "color-texture",
+      "byteLength": 4147200,
+      "format": "rgba16float",
+      "resourceRoot": "fnv1a64:3d94fc0359349718"
+    },
+    {
+      "id": "present-color",
+      "kind": "color-texture",
+      "byteLength": 2073600,
+      "format": "bgra8unorm",
+      "resourceRoot": "fnv1a64:126da566474a9354"
+    },
+    {
+      "id": "shadow-depth",
+      "kind": "shadow-texture",
+      "byteLength": 262144,
+      "format": "depth32float",
+      "resourceRoot": "fnv1a64:b26427c92734a316"
+    }
+  ],
+  "shaders": {
+    "vertex": "struct Camera { viewProjection: mat4x4<f32>, cameraPosition:vec4<f32>, ambient:vec4<f32>, sunDirection:vec4<f32>, sunColor:vec4<f32> }; @group(0) @binding(0) var<uniform> camera: Camera; struct Object { world: mat4x4<f32> }; @group(1) @binding(0) var<uniform> object: Object; struct VSIn { @location(0) position: vec3<f32>, @location(1) normal: vec3<f32>, @location(2) uv: vec2<f32> }; struct VSOut { @builtin(position) position: vec4<f32>, @location(0) worldPosition: vec3<f32>, @location(1) normal: vec3<f32>, @location(2) uv: vec2<f32> }; @vertex fn vs_main(input:VSIn)->VSOut { var out:VSOut; let worldPosition=object.world*vec4<f32>(input.position,1.0); out.position=camera.viewProjection*worldPosition; out.worldPosition=worldPosition.xyz; out.normal=normalize((object.world*vec4<f32>(input.normal,0.0)).xyz); out.uv=input.uv; return out; }",
+    "fragment": "struct Camera { viewProjection: mat4x4<f32>, cameraPosition:vec4<f32>, ambient:vec4<f32>, sunDirection:vec4<f32>, sunColor:vec4<f32> }; @group(0) @binding(0) var<uniform> camera: Camera; struct Material { baseColor: vec4<f32>, params:vec4<f32>, emissive:vec4<f32> }; @group(2) @binding(0) var<uniform> material:Material; @fragment fn fs_main(@location(0) worldPosition:vec3<f32>,@location(1) normal:vec3<f32>)->@location(0) vec4<f32>{ let n=normalize(normal); let l=normalize(-camera.sunDirection.xyz); let v=normalize(camera.cameraPosition.xyz-worldPosition); let h=normalize(l+v); let metallic=material.params.x; let roughness=max(material.params.y,0.04); let emissiveStrength=material.params.z; let opacity=material.params.w; let diffuse=max(dot(n,l),0.0); let specPower=2.0+pow(1.0-roughness,3.0)*254.0; let f0=0.04*(1.0-metallic)+metallic; let spec=pow(max(dot(n,h),0.0),specPower)*f0*(1.0-roughness*0.5); let lit=material.baseColor.rgb*camera.ambient.rgb*camera.ambient.a+(material.baseColor.rgb*(1.0-metallic)*diffuse+vec3<f32>(spec))*camera.sunColor.rgb*camera.sunColor.a; return vec4<f32>(lit+material.emissive.rgb*emissiveStrength,material.baseColor.a*opacity); }",
+    "shadowVertex": "struct ShadowCamera { lightViewProjection:mat4x4<f32> }; @group(0) @binding(0) var<uniform> shadowCamera:ShadowCamera; struct Object { world:mat4x4<f32> }; @group(1) @binding(0) var<uniform> object:Object; @vertex fn vs_shadow(@location(0) position:vec3<f32>)->@builtin(position) vec4<f32>{return shadowCamera.lightViewProjection*object.world*vec4<f32>(position,1.0);}",
+    "sourceRoot": "fnv1a64:3172d16289baf496"
+  },
+  "stats": {
+    "meshCount": 3,
+    "nodeCount": 18,
+    "visibleDraws": 11,
+    "culledDraws": 0,
+    "triangleCount": 3398,
+    "lightCount": 3,
+    "shadowCasterCount": 7,
+    "lodHistogram": {
+      "0": 11
+    }
+  },
+  "sourceRealityRoot": "fnv1a64:bcce1fbbf0ad2518",
+  "geometryRoot": "fnv1a64:45a03e09f2374cca",
+  "materialRoot": "fnv1a64:3b8b92b032400b00",
+  "commandRoot": "fnv1a64:ecc3ab645e9ec7ad",
+  "frameRoot": "fnv1a64:d6623661bae71d3f"
+}

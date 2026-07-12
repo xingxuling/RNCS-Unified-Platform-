@@ -1,0 +1,39 @@
+{
+  "format_version": "0.4",
+  "app": {
+    "id": "org.taowind.hnac.hello-portable",
+    "name": "HNAC Portable Host Proof",
+    "version": "0.4.0",
+    "description": "The same signed application object executed by Python, Node.js, and browser hosts."
+  },
+  "execution": {
+    "primary": {
+      "profile": "wasm-component@1",
+      "entry": "components/main.component.wasm",
+      "world": "hnaf:capabilities/application@0.3.0",
+      "export": "run",
+      "contract": "wit/hnaf-capabilities.wit"
+    },
+    "alternatives": [
+      {"profile": "wasm-core@1", "entry": "components/main.wasm", "abi": "hnaf-core-abi@0.2"},
+      {"profile": "declarative-v0", "entry": "components/fallback.hnc.json"}
+    ],
+    "limits": {"fuel": 2000000, "memory_bytes": 8388608, "operations": 100}
+  },
+  "capabilities": [
+    {"id": "host.log", "version": "1", "required": true, "scope": "session", "reason": "Expose application output through the host"},
+    {"id": "host.clock", "version": "1", "required": true, "scope": "session", "reason": "Obtain host-neutral time"}
+  ],
+  "interface": {"graph": "ui/main.aip.json", "modes": ["cli", "window", "touch", "pointer", "keyboard"]},
+  "state": {"schema": "state/schema.json", "partitions": ["portable", "device-private", "cache"]},
+  "distribution": {"projections": ["pwa", "windows-msix", "macos-app", "android-aab", "ios-ipa"]},
+  "security": {"sandbox": "deny-by-default", "signature": "ed25519", "supply_chain": "content-indexed"},
+  "compatibility": {"min_runtime": "0.4.0", "host_families": ["desktop", "mobile", "web", "spatial"]},
+  "semantics": {
+    "trace_contract": "hnaf-semantic-trace@0.4",
+    "equivalent_profiles": ["wasm-component@1", "wasm-core@1", "declarative-v0"],
+    "observable_capabilities": ["host.log", "host.clock"],
+    "outcome": "successful-launch"
+  },
+  "extensions": {}
+}

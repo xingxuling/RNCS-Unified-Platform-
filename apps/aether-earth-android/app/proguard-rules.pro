@@ -1,0 +1,1 @@
+-keepclassmembers class com.taowind.aetherearth.WorldBridge { @android.webkit.JavascriptInterface <methods>; }

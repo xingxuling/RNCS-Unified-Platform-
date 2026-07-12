@@ -1,0 +1,14 @@
+{
+  "specVersion":"0.1","metadata":{"id":"data-dashboard","title":"Data Dashboard","duration":8,"defaultFps":30,"seed":12},
+  "canvas":{"width":960,"height":540,"layoutMode":"responsive","background":{"type":"solid","color":"#0b1220"}},
+  "variables":{"value":72,"label":"RUNTIME HEALTH","status":"DETERMINISTIC"},
+  "events":[{"id":"raise-value","time":4,"type":"set","target":"value","value":91}],
+  "nodes":[
+    {"id":"panel","type":"rect","layout":{"x":"50%","y":"50%","width":"82%","height":"72%","anchorX":0.5,"anchorY":0.5},"appearance":{"fill":{"type":"solid","color":"#17233a"},"stroke":{"type":"solid","color":"#315a8a"},"strokeWidth":2,"opacity":0.96},"content":{"cornerRadius":28}},
+    {"id":"label","type":"text","layout":{"x":"50%","y":"28%","width":"70%","height":50,"anchorX":0.5,"anchorY":0.5},"appearance":{"fill":{"type":"solid","color":"#8bbcff"}},"content":{"text":{"binding":"vars.label"},"fontSize":25,"fontWeight":"bold","align":"center"}},
+    {"id":"meter-bg","type":"rect","layout":{"x":"18%","y":"48%","width":"64%","height":44},"appearance":{"fill":{"type":"solid","color":"#233650"}},"content":{"cornerRadius":22}},
+    {"id":"meter","type":"rect","layout":{"x":"18%","y":"48%","width":"64%","height":44},"appearance":{"fill":{"type":"linear-gradient","x1":0,"y1":0,"x2":600,"y2":0,"stops":[{"offset":0,"color":"#2c8cff"},{"offset":1,"color":"#70e0ff"}]}},"content":{"cornerRadius":22},"tracks":[{"id":"meter-scale","property":"transform.scaleX","mode":"expression","expression":"clamp(vars.value / 100, 0, 1)"}]},
+    {"id":"value","type":"text","layout":{"x":"50%","y":"66%","width":"70%","height":70,"anchorX":0.5,"anchorY":0.5},"appearance":{"fill":{"type":"solid","color":"#ffffff"}},"content":{"text":{"expression":"formatNumber(vars.value, 0) + '%'"},"fontSize":50,"fontWeight":"bold","align":"center"}},
+    {"id":"status","type":"text","layout":{"x":"50%","y":"78%","width":"70%","height":35,"anchorX":0.5,"anchorY":0.5},"appearance":{"fill":{"type":"solid","color":"#6df7b1"}},"content":{"text":{"binding":"vars.status"},"fontSize":18,"fontWeight":"bold","align":"center"}}
+  ]
+}

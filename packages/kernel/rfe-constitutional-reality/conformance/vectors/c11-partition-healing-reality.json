@@ -1,0 +1,421 @@
+{
+  "format": "rfe.conformance.partition-healing-reality.v0.9",
+  "scenario": "prepared-lock-survives-partition-timeout-view-change-conflict-and-crash-recovery",
+  "parentCertificateHash": "bed5f4ecdbf6fd3f21f79b1d88906ffe8a64b5682c2cdb1f9acc072eb5c25aa1",
+  "clusters": [
+    {
+      "clusterId": "cluster:aurora",
+      "weight": 4,
+      "revision": 2,
+      "sovereignRoot": "e44889149f5ab7dbdc232b24e89d1912f9e521156b61bc7cf54effc5f512762e",
+      "authorityProofHash": "74cb358b84bd9560a0d564745dcaba3d2fdf9a9b2664b6156030a32ba7019cfd",
+      "policyHash": "f0826282d28fa7aa42d8d9665502cfcb859435ac7268209c4eb61e33d836e67c",
+      "verifierKey": "fixture-key-aurora-v090"
+    },
+    {
+      "clusterId": "cluster:forge",
+      "weight": 3,
+      "revision": 2,
+      "sovereignRoot": "7c9c647389bc568debbc1bf641e354540c4551311a67c56da2ba95a72769bc4f",
+      "authorityProofHash": "74cb358b84bd9560a0d564745dcaba3d2fdf9a9b2664b6156030a32ba7019cfd",
+      "policyHash": "c99d6ae1b790b198af00087ace8915e685ddcd05eb9c9d738459d458f3b5019f",
+      "verifierKey": "fixture-key-forge-v090"
+    },
+    {
+      "clusterId": "cluster:harbor",
+      "weight": 2,
+      "revision": 0,
+      "sovereignRoot": "5da53a65b916100bddb6d4db6c2dd5c0381705e1c84185b8ebb777f689c149ad",
+      "authorityProofHash": "74cb358b84bd9560a0d564745dcaba3d2fdf9a9b2664b6156030a32ba7019cfd",
+      "policyHash": "e732b7649becf8011477a50e41a2bd04b6b128f32b262f94e7e886ae127a65b3",
+      "verifierKey": "fixture-key-harbor-v090"
+    },
+    {
+      "clusterId": "cluster:mirror",
+      "weight": 1,
+      "revision": 0,
+      "sovereignRoot": "071bf4a4e9ac69a0106d26a345e0ac68982b0064ac16cae3143ce6cca219d636",
+      "authorityProofHash": "74cb358b84bd9560a0d564745dcaba3d2fdf9a9b2664b6156030a32ba7019cfd",
+      "policyHash": "b8e58d208f8aad732822becc2d949e53258ed16c0908da47ad99e465f6c4775a",
+      "verifierKey": "fixture-key-mirror-v090"
+    }
+  ],
+  "totalWeight": 10,
+  "byzantineBudgetWeight": 3,
+  "quorumWeight": 7,
+  "partitionLabel": "partition:aurora-harbor-visible",
+  "partitionedReachableClusterIds": [
+    "cluster:aurora",
+    "cluster:harbor"
+  ],
+  "healedLabel": "partition:healed-majority-visible",
+  "healedReachableClusterIds": [
+    "cluster:aurora",
+    "cluster:forge",
+    "cluster:harbor"
+  ],
+  "prepareVoters": [
+    "cluster:aurora",
+    "cluster:forge"
+  ],
+  "timeoutVoters": [
+    "cluster:aurora",
+    "cluster:forge"
+  ],
+  "commitVoters": [
+    "cluster:aurora",
+    "cluster:forge"
+  ],
+  "crashAfterCommittedClusters": 1,
+  "initialProposal": {
+    "proposalId": "proposal:c11:view1-prepared-route",
+    "requiredClusterIds": [
+      "cluster:aurora",
+      "cluster:forge"
+    ],
+    "operations": [
+      {
+        "clusterId": "cluster:aurora",
+        "operation": {
+          "type": "advance-reality-route",
+          "routeId": "route:c11",
+          "target": "forge"
+        }
+      },
+      {
+        "clusterId": "cluster:forge",
+        "operation": {
+          "type": "anchor-reality-route",
+          "routeId": "route:c11",
+          "slot": 13
+        }
+      }
+    ]
+  },
+  "healingProposal": {
+    "proposalId": "proposal:c11:view2-healing-route",
+    "requiredClusterIds": [
+      "cluster:aurora",
+      "cluster:forge"
+    ],
+    "operations": [
+      {
+        "clusterId": "cluster:aurora",
+        "operation": {
+          "type": "advance-reality-route",
+          "routeId": "route:c11",
+          "target": "forge"
+        }
+      },
+      {
+        "clusterId": "cluster:forge",
+        "operation": {
+          "type": "anchor-reality-route",
+          "routeId": "route:c11",
+          "slot": 13
+        }
+      }
+    ]
+  },
+  "conflictingProposal": {
+    "proposalId": "proposal:c11:conflicting-route",
+    "requiredClusterIds": [
+      "cluster:harbor",
+      "cluster:mirror"
+    ],
+    "operations": [
+      {
+        "clusterId": "cluster:harbor",
+        "operation": {
+          "type": "redirect-reality-route",
+          "routeId": "route:c11",
+          "target": "mirror"
+        }
+      },
+      {
+        "clusterId": "cluster:mirror",
+        "operation": {
+          "type": "claim-reality-route",
+          "routeId": "route:c11",
+          "owner": "mirror"
+        }
+      }
+    ]
+  },
+  "helpers": {
+    "initialFederationRoot": "6dde6cd1cdaaffc8c3f5b765f410d60a732e87dd9a824995a140ef83e784a1c5",
+    "firstPrepareCertificateHash": "4f60b6fd7f9d7617af3fe701d8b2726f09db2f006acb4870595deac554da0b1a",
+    "timeoutCertificateHash": "3b6afa64a7069411d5cd2c6fb59a809529dd0bf4b54658aa1bd2008557895534",
+    "healingProposalHash": "b78b5bec25681a4aaa6aabc1491e03d2c3eb9bd9458c50201185d6e1985741fc",
+    "healingPrepareCertificateHash": "868ba1f228e416c26fd252085b33eedc7ca22de2f10a499a03c093648d596b42",
+    "commitCertificateHash": "4ace71ecb9dd5c80301ee4e77c686c3e8cf30b0a7dd283e7d19d9d8d9bcf7566",
+    "finalFederationRoot": "4fedf79abaa3f4031f0d3bf146cb887750093711957b693e87c3736954435e54"
+  },
+  "expected": {
+    "format": "rfe.partition-healing-reality-result.v0.9",
+    "livenessModel": "partial-synchrony-with-weighted-timeout-certificates",
+    "safetyModel": "byzantine-weighted-lock-preservation-across-views",
+    "totalWeight": 10,
+    "byzantineBudgetWeight": 3,
+    "quorumWeight": 7,
+    "initialFederationRoot": "6dde6cd1cdaaffc8c3f5b765f410d60a732e87dd9a824995a140ef83e784a1c5",
+    "parentCertificateHash": "bed5f4ecdbf6fd3f21f79b1d88906ffe8a64b5682c2cdb1f9acc072eb5c25aa1",
+    "partitionObservations": [
+      {
+        "epoch": 1,
+        "format": "rfe.partition-observation.v0.9",
+        "label": "partition:aurora-harbor-visible",
+        "partitionObservationHash": "320e957b5144ebb2527d22e68c43a0d1e0c1570aa6295e4c238204ee94dfb00c",
+        "quorumWeight": 7,
+        "reachableClusterIds": [
+          "cluster:aurora",
+          "cluster:harbor"
+        ],
+        "reachableWeight": 6,
+        "stalled": true,
+        "unreachableClusterIds": [
+          "cluster:forge",
+          "cluster:mirror"
+        ],
+        "view": 1
+      },
+      {
+        "epoch": 1,
+        "format": "rfe.partition-observation.v0.9",
+        "label": "partition:healed-majority-visible",
+        "partitionObservationHash": "c92d2b0632c9a120937fbd2e7b591f96038d943665fff5373c451cd3ef9433ef",
+        "quorumWeight": 7,
+        "reachableClusterIds": [
+          "cluster:aurora",
+          "cluster:forge",
+          "cluster:harbor"
+        ],
+        "reachableWeight": 9,
+        "stalled": false,
+        "unreachableClusterIds": [
+          "cluster:mirror"
+        ],
+        "view": 2
+      }
+    ],
+    "firstPrepareCertificate": {
+      "format": "rfe.partition-prepare-certificate.v0.9",
+      "epoch": 1,
+      "view": 1,
+      "parentFederationRoot": "6dde6cd1cdaaffc8c3f5b765f410d60a732e87dd9a824995a140ef83e784a1c5",
+      "proposalId": "proposal:c11:view1-prepared-route",
+      "proposalHash": "9e4fcb59615f16c3991fa151cb615361ff52150cc415540d9e205f94b762475c",
+      "changeHash": "c4d929afd9b5ffcc09e6714f1fba6c1521e61607dae9cc697e90b15960e4d8a2",
+      "projectedFederationRoot": "4fedf79abaa3f4031f0d3bf146cb887750093711957b693e87c3736954435e54",
+      "approvalWeight": 7,
+      "quorumWeight": 7,
+      "requiredClusterIds": [
+        "cluster:aurora",
+        "cluster:forge"
+      ],
+      "voteHashes": [
+        "9bd371a76bbf662340ba6a758abbd02280b3039313dc07e31e004b43fc1ffc5c",
+        "9315c07dd0428031126c815c3421711b45b1894ddbb980bf57d872d8ee0ec4bd"
+      ],
+      "extendsPreparedCertificateHash": null,
+      "prepareCertificateHash": "4f60b6fd7f9d7617af3fe701d8b2726f09db2f006acb4870595deac554da0b1a"
+    },
+    "timeoutCertificate": {
+      "format": "rfe.partition-timeout-certificate.v0.9",
+      "epoch": 1,
+      "sourceView": 1,
+      "nextView": 2,
+      "parentFederationRoot": "6dde6cd1cdaaffc8c3f5b765f410d60a732e87dd9a824995a140ef83e784a1c5",
+      "timeoutWeight": 7,
+      "quorumWeight": 7,
+      "timeoutVoteHashes": [
+        "02baa12d1bcd51d770935597b9f34393cc79c40acf2fb3f46ac705af22939f93",
+        "6022b327af6ce4266b87859e49f7452a6c621d5ce28091b31a256cbcdf282d5c"
+      ],
+      "highestPreparedView": 1,
+      "highestPreparedCertificateHash": "4f60b6fd7f9d7617af3fe701d8b2726f09db2f006acb4870595deac554da0b1a",
+      "highestPreparedChangeHash": "c4d929afd9b5ffcc09e6714f1fba6c1521e61607dae9cc697e90b15960e4d8a2",
+      "timeoutCertificateHash": "3b6afa64a7069411d5cd2c6fb59a809529dd0bf4b54658aa1bd2008557895534"
+    },
+    "staleViewRejection": {
+      "code": "STALE_PARTITION_VIEW",
+      "detail": "cluster:aurora"
+    },
+    "lockedConflictRejection": {
+      "code": "LOCKED_CHANGE_CONFLICT",
+      "detail": "proposal:c11:conflicting-route"
+    },
+    "healingProposalHash": "b78b5bec25681a4aaa6aabc1491e03d2c3eb9bd9458c50201185d6e1985741fc",
+    "healingPrepareCertificate": {
+      "format": "rfe.partition-prepare-certificate.v0.9",
+      "epoch": 1,
+      "view": 2,
+      "parentFederationRoot": "6dde6cd1cdaaffc8c3f5b765f410d60a732e87dd9a824995a140ef83e784a1c5",
+      "proposalId": "proposal:c11:view2-healing-route",
+      "proposalHash": "b78b5bec25681a4aaa6aabc1491e03d2c3eb9bd9458c50201185d6e1985741fc",
+      "changeHash": "c4d929afd9b5ffcc09e6714f1fba6c1521e61607dae9cc697e90b15960e4d8a2",
+      "projectedFederationRoot": "4fedf79abaa3f4031f0d3bf146cb887750093711957b693e87c3736954435e54",
+      "approvalWeight": 7,
+      "quorumWeight": 7,
+      "requiredClusterIds": [
+        "cluster:aurora",
+        "cluster:forge"
+      ],
+      "voteHashes": [
+        "a4d1fd0746b6077bbe5b3c1f98b5fe4e56a08b3d42b4b8906cfb7b5e6cbc9e1c",
+        "41495373182129cd06d52757ce1f7a7a6742d7d078edaf5ae8092f9dbb233f8a"
+      ],
+      "extendsPreparedCertificateHash": "4f60b6fd7f9d7617af3fe701d8b2726f09db2f006acb4870595deac554da0b1a",
+      "prepareCertificateHash": "868ba1f228e416c26fd252085b33eedc7ca22de2f10a499a03c093648d596b42"
+    },
+    "commitCertificate": {
+      "approvalWeight": 7,
+      "byzantineBudgetWeight": 3,
+      "changeHash": "c4d929afd9b5ffcc09e6714f1fba6c1521e61607dae9cc697e90b15960e4d8a2",
+      "commitCertificateHash": "4ace71ecb9dd5c80301ee4e77c686c3e8cf30b0a7dd283e7d19d9d8d9bcf7566",
+      "epoch": 1,
+      "finalFederationRoot": "4fedf79abaa3f4031f0d3bf146cb887750093711957b693e87c3736954435e54",
+      "format": "rfe.partition-healing-commit-certificate.v0.9",
+      "parentCertificateHash": "bed5f4ecdbf6fd3f21f79b1d88906ffe8a64b5682c2cdb1f9acc072eb5c25aa1",
+      "parentFederationRoot": "6dde6cd1cdaaffc8c3f5b765f410d60a732e87dd9a824995a140ef83e784a1c5",
+      "prepareCertificateHash": "868ba1f228e416c26fd252085b33eedc7ca22de2f10a499a03c093648d596b42",
+      "proposalHash": "b78b5bec25681a4aaa6aabc1491e03d2c3eb9bd9458c50201185d6e1985741fc",
+      "proposalId": "proposal:c11:view2-healing-route",
+      "quorumWeight": 7,
+      "requiredClusterIds": [
+        "cluster:aurora",
+        "cluster:forge"
+      ],
+      "timeoutCertificateHash": "3b6afa64a7069411d5cd2c6fb59a809529dd0bf4b54658aa1bd2008557895534",
+      "totalWeight": 10,
+      "view": 2,
+      "voteHashes": [
+        "b7c5b5dac58b1d49ce8f4a08c4a889458a8bac79473c6007c59713e3d6b7a8d6",
+        "f8e5429888fceaab91dfa536f50a0a6bcec4733f00061ad0f51aba8eb4621206"
+      ]
+    },
+    "interruptedCommitState": {
+      "crash": {
+        "code": "PARTITION_HEALING_CRASH_INJECTED_AFTER_COMMIT",
+        "detail": 1
+      },
+      "durableCommitCertificatePresent": true,
+      "committedClusters": 1,
+      "preparedClusters": 1
+    },
+    "commitReceipt": {
+      "format": "rfe.partition-healing-commit-receipt.v0.9",
+      "epoch": 1,
+      "committedView": 2,
+      "proposalHash": "b78b5bec25681a4aaa6aabc1491e03d2c3eb9bd9458c50201185d6e1985741fc",
+      "changeHash": "c4d929afd9b5ffcc09e6714f1fba6c1521e61607dae9cc697e90b15960e4d8a2",
+      "commitCertificateHash": "4ace71ecb9dd5c80301ee4e77c686c3e8cf30b0a7dd283e7d19d9d8d9bcf7566",
+      "finalFederationRoot": "4fedf79abaa3f4031f0d3bf146cb887750093711957b693e87c3736954435e54",
+      "recovered": true,
+      "receiptHash": "80f143d8c019181f3f44dff6553718d23f76f5916793f242f06937c273dc57e7"
+    },
+    "recoveryReplayReceipt": {
+      "format": "rfe.partition-healing-commit-receipt.v0.9",
+      "epoch": 1,
+      "committedView": 2,
+      "proposalHash": "b78b5bec25681a4aaa6aabc1491e03d2c3eb9bd9458c50201185d6e1985741fc",
+      "changeHash": "c4d929afd9b5ffcc09e6714f1fba6c1521e61607dae9cc697e90b15960e4d8a2",
+      "commitCertificateHash": "4ace71ecb9dd5c80301ee4e77c686c3e8cf30b0a7dd283e7d19d9d8d9bcf7566",
+      "finalFederationRoot": "4fedf79abaa3f4031f0d3bf146cb887750093711957b693e87c3736954435e54",
+      "recovered": true,
+      "receiptHash": "80f143d8c019181f3f44dff6553718d23f76f5916793f242f06937c273dc57e7"
+    },
+    "finalFederationRoot": "4fedf79abaa3f4031f0d3bf146cb887750093711957b693e87c3736954435e54",
+    "finalView": 2,
+    "clusterStates": {
+      "cluster:aurora": {
+        "authorityProofHash": "74cb358b84bd9560a0d564745dcaba3d2fdf9a9b2664b6156030a32ba7019cfd",
+        "clusterId": "cluster:aurora",
+        "format": "rfe.partition-healing-cluster-state.v0.9",
+        "identityCommitment": "8ded8e3f21c6d157b75d2789d652e27963a3ab0646be084f64e60fe55b42db51",
+        "integrityHash": "1472677f17ce3f4d1d31ae826cb0ffcfcdb56a395daff0cb44448a17d0a24456",
+        "pendingCommitCertificateHash": null,
+        "phase": "stable",
+        "policyHash": "f0826282d28fa7aa42d8d9665502cfcb859435ac7268209c4eb61e33d836e67c",
+        "preparedRoot": null,
+        "quarantineEvidenceHash": null,
+        "quarantined": false,
+        "revision": 3,
+        "sovereignRoot": "7b59c11ca69ee3d11e3898efc095fbe63776a69cd1e69e5a4c41449096e8f157",
+        "weight": 4
+      },
+      "cluster:forge": {
+        "authorityProofHash": "74cb358b84bd9560a0d564745dcaba3d2fdf9a9b2664b6156030a32ba7019cfd",
+        "clusterId": "cluster:forge",
+        "format": "rfe.partition-healing-cluster-state.v0.9",
+        "identityCommitment": "092d0525b68a6681e86501191259967ba206a4eac68dc691e7f2cc8b5ee27e22",
+        "integrityHash": "500e6bf878341b1a30751ef296f204b93a66941289b082cd43048807950c785c",
+        "pendingCommitCertificateHash": null,
+        "phase": "stable",
+        "policyHash": "c99d6ae1b790b198af00087ace8915e685ddcd05eb9c9d738459d458f3b5019f",
+        "preparedRoot": null,
+        "quarantineEvidenceHash": null,
+        "quarantined": false,
+        "revision": 3,
+        "sovereignRoot": "437eedae1c934f79c4c0e0876090da86e6578175961c3ebd449447babd3a7d55",
+        "weight": 3
+      },
+      "cluster:harbor": {
+        "authorityProofHash": "74cb358b84bd9560a0d564745dcaba3d2fdf9a9b2664b6156030a32ba7019cfd",
+        "clusterId": "cluster:harbor",
+        "format": "rfe.partition-healing-cluster-state.v0.9",
+        "identityCommitment": "735609f034dad2745aa65d238b1e608cd7b311bc695759a52e4edfbfd9ab779b",
+        "integrityHash": "72eabeb2bc4d836b3c89e7f5123a4bad977077e838f49cb7d62793fe24878b7a",
+        "pendingCommitCertificateHash": null,
+        "phase": "stable",
+        "policyHash": "e732b7649becf8011477a50e41a2bd04b6b128f32b262f94e7e886ae127a65b3",
+        "preparedRoot": null,
+        "quarantineEvidenceHash": null,
+        "quarantined": false,
+        "revision": 0,
+        "sovereignRoot": "5da53a65b916100bddb6d4db6c2dd5c0381705e1c84185b8ebb777f689c149ad",
+        "weight": 2
+      },
+      "cluster:mirror": {
+        "authorityProofHash": "74cb358b84bd9560a0d564745dcaba3d2fdf9a9b2664b6156030a32ba7019cfd",
+        "clusterId": "cluster:mirror",
+        "format": "rfe.partition-healing-cluster-state.v0.9",
+        "identityCommitment": "fed9a67a18bcef055d4fad2b4f3237d136d7192a09360d3afeb1ec41b22e17af",
+        "integrityHash": "1a3cd0d220da71e3566e7fb8dff49beec082b05cf36483baa03a63106b100495",
+        "pendingCommitCertificateHash": null,
+        "phase": "stable",
+        "policyHash": "b8e58d208f8aad732822becc2d949e53258ed16c0908da47ad99e465f6c4775a",
+        "preparedRoot": null,
+        "quarantineEvidenceHash": null,
+        "quarantined": false,
+        "revision": 0,
+        "sovereignRoot": "071bf4a4e9ac69a0106d26a345e0ac68982b0064ac16cae3143ce6cca219d636",
+        "weight": 1
+      }
+    },
+    "equivocationEvidence": [],
+    "metrics": {
+      "commitCertificatesFormed": 1,
+      "commitVotesAccepted": 2,
+      "equivocationsDetected": 0,
+      "federationRootDivergences": 0,
+      "forgedVotesRejected": 0,
+      "healedPartitions": 1,
+      "idempotentRecoveryReplays": 1,
+      "injectedInterruptions": 1,
+      "lockedChangesReproposed": 1,
+      "lockedConflictRejections": 1,
+      "partitionObservations": 2,
+      "partitionStallsObserved": 1,
+      "prepareCertificatesFormed": 2,
+      "prepareVotesAccepted": 4,
+      "quarantinedWeight": 0,
+      "recoveries": 1,
+      "staleViewMessagesRejected": 1,
+      "timeoutCertificatesFormed": 1,
+      "timeoutVotesAccepted": 2,
+      "viewChanges": 1
+    },
+    "partitionHealingRealityResultHash": "0b8400004dcb598a5576b344f84586e433013284f3104ed8e574f027423ffc04"
+  }
+}

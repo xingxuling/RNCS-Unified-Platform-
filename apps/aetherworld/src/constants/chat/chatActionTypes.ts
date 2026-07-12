@@ -1,0 +1,6 @@
+export const CHAT_ACTION_TYPES = [
+  "OPEN_PAGE", "INSTALL_CAPABILITY", "ENABLE_CAPABILITY",
+  "RUN_CAPABILITY", "OPEN_OBJECT", "EXPORT_OBJECT",
+  "VIEW_QA", "SAVE_TO_WORKSPACE", "CONTINUE",
+] as const;
+export type ChatActionType = (typeof CHAT_ACTION_TYPES)[number];

@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "aetherseed.feedback_sample.v1",
+  "sampleId": "fb_20260526_task_scan_001",
+  "createdAt": "2026-05-26T15:46:00Z",
+  "sourceEventId": "evt_20260526_task_scan_001",
+  "sourceJudgementId": "jud_20260526_task_scan_001",
+  "sourceActionId": "act_20260526_codex_prompt_001",
+  "sampleType": "TASK_ANALYSIS",
+  "input": {
+    "instruction": "Analyze a local task discovery evidence pack without claiming direct computer access. Return conclusion, evidence, assumptions, risks, and draft next actions.",
+    "context": "The event came from a read-only scanner and includes registry references, risk flags, and safe excerpts only.",
+    "evidenceSummary": "Read-only scan summary for taowindaether with canonical registry reference and private repo risk flag."
+  },
+  "targetOutput": {
+    "text": "Conclusion: use the scan summary as evidence and generate draft-only Codex tasks. Evidence: scanner output and canonical registry references. Assumptions: task metadata is sufficient for ranking. Risks: overclaiming computer access and exporting private material. Next action: produce a draft Codex prompt with forbidden files and validation commands.",
+    "structured": {
+      "conclusion": "Generate draft-only tasks from provided evidence.",
+      "permissionLevel": "DRAFT",
+      "nextActionId": "act_20260526_codex_prompt_001"
+    }
+  },
+  "qualitySignals": {
+    "acceptedByUser": true,
+    "verified": false,
+    "verificationNotes": "Sample fixture only. Future verification should track whether the generated prompt led to a successful safe task.",
+    "confidence": 0.78,
+    "reuseCount": 0
+  },
+  "safetyProfile": {
+    "containsSecrets": false,
+    "containsFull60": false,
+    "containsFounderOnly": false,
+    "exportAllowed": true,
+    "redactionNotes": [
+      "No raw private file contents are included.",
+      "Private repository context is represented only as a risk flag."
+    ]
+  },
+  "lineage": {
+    "origin": "aetherseed-kernel",
+    "aetherSeedModel": "aetherseed-tiny",
+    "aetherworldModules": ["canonical-registry", "aetherseed-local-bridge"],
+    "datasetVersionId": "sample-only",
+    "hash": "sample-only"
+  }
+}

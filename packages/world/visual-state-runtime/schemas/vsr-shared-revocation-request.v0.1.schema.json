@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/vsr-shared-revocation-request.v0.1.schema.json",
+  "title": "VSR Shared Revocation Request v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "revocationId",
+    "sessionId",
+    "targetKind",
+    "targetId",
+    "revokedBy",
+    "logicalTime"
+  ],
+  "properties": {
+    "format": {
+      "const": "vsr.shared-revocation-request.v0.1"
+    },
+    "revocationId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sessionId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "targetKind": {
+      "enum": [
+        "authority",
+        "observer",
+        "device",
+        "proposal"
+      ]
+    },
+    "targetId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "revokedBy": {
+      "type": "string",
+      "minLength": 1
+    },
+    "logicalTime": {
+      "type": "number",
+      "minimum": 0
+    },
+    "reason": {
+      "type": "string"
+    },
+    "previousEventRoot": {
+      "oneOf": [
+        {
+          "const": ""
+        },
+        {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      ]
+    },
+    "requestHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}

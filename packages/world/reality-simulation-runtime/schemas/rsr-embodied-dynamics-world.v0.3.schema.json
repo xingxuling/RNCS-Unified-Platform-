@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://reality-native.dev/schemas/rsr-embodied-dynamics-world.v0.3.schema.json",
+  "title": "RSR Embodied Dynamics World v0.3",
+  "type": "object",
+  "required": ["format", "worldId", "stepHz", "bodies"],
+  "properties": {
+    "format": { "const": "rsr.embodied-dynamics-world.v0.3" },
+    "worldId": { "type": "string", "minLength": 1 },
+    "positionScale": { "type": "integer", "minimum": 1 },
+    "stepHz": { "type": "integer", "minimum": 1 },
+    "gravity": { "$ref": "#/$defs/vector" },
+    "velocityIterations": { "type": "integer", "minimum": 1, "maximum": 100 },
+    "positionIterations": { "type": "integer", "minimum": 1, "maximum": 100 },
+    "broadPhase": { "enum": ["sweep-and-prune", "uniform-grid"] },
+    "gridCellSize": { "type": "integer", "minimum": 1 },
+    "maxSubsteps": { "type": "integer", "minimum": 1, "maximum": 256 },
+    "ccdTargetFractionQ": { "type": "integer", "minimum": 1, "maximum": 1000000 },
+    "warmStart": { "type": "boolean" },
+    "materials": { "type": "array", "items": { "$ref": "#/$defs/material" } },
+    "materialInteractions": { "type": "array", "items": { "$ref": "#/$defs/materialInteraction" } },
+    "fields": { "type": "array", "items": { "$ref": "#/$defs/field" } },
+    "joints": { "type": "array", "items": { "$ref": "#/$defs/joint" } },
+    "bodies": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/body" } }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "vector": {
+      "type": "object",
+      "required": ["x", "y"],
+      "properties": { "x": { "type": "integer" }, "y": { "type": "integer" } },
+      "additionalProperties": false
+    },
+    "filter": {
+      "type": "object",
+      "properties": {
+        "categoryBits": { "type": "integer", "minimum": 0 },
+        "maskBits": { "type": "integer", "minimum": 0 },
+        "groupIndex": { "type": "integer" }
+      },
+      "additionalProperties": false
+    },
+    "shape": {
+      "oneOf": [
+        { "type": "object", "required": ["type", "radius"], "properties": { "type": { "const": "circle" }, "radius": { "type": "integer", "minimum": 1 } }, "additionalProperties": false },
+        { "type": "object", "required": ["type", "halfExtents"], "properties": { "type": { "const": "box" }, "halfExtents": { "$ref": "#/$defs/vector" }, "cornerRadius": { "type": "integer", "minimum": 0 } }, "additionalProperties": false },
+        { "type": "object", "required": ["type", "vertices"], "properties": { "type": { "const": "polygon" }, "vertices": { "type": "array", "minItems": 3, "maxItems": 16, "items": { "$ref": "#/$defs/vector" } }, "radius": { "type": "integer", "minimum": 0 } }, "additionalProperties": false },
+        { "type": "object", "required": ["type", "halfLength", "radius"], "properties": { "type": { "const": "capsule" }, "halfLength": { "type": "integer", "minimum": 0 }, "radius": { "type": "integer", "minimum": 1 } }, "additionalProperties": false },
+        { "type": "object", "required": ["type", "a", "b"], "properties": { "type": { "const": "segment" }, "a": { "$ref": "#/$defs/vector" }, "b": { "$ref": "#/$defs/vector" }, "radius": { "type": "integer", "minimum": 0 }, "oneSided": { "type": "boolean" } }, "additionalProperties": false }
+      ]
+    },
+    "fixture": {
+      "type": "object",
+      "required": ["id", "shape"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "shape": { "$ref": "#/$defs/shape" },
+        "localPosition": { "$ref": "#/$defs/vector" },
+        "localAngle": { "type": "integer" },
+        "materialId": { "type": "string" },
+        "densityQ": { "type": "integer", "minimum": 0 },
+        "frictionQ": { "type": "integer", "minimum": 0 },
+        "restitutionQ": { "type": "integer", "minimum": 0 },
+        "sensor": { "type": "boolean" },
+        "filter": { "$ref": "#/$defs/filter" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "data": { "type": "object" }
+      },
+      "additionalProperties": false
+    },
+    "body": {
+      "type": "object",
+      "required": ["id", "kind", "position", "fixtures"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["static", "dynamic", "kinematic"] },
+        "position": { "$ref": "#/$defs/vector" },
+        "angle": { "type": "integer" },
+        "velocity": { "$ref": "#/$defs/vector" },
+        "angularVelocity": { "type": "integer" },
+        "fixtures": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/fixture" } },
+        "inverseMassQ": { "type": "integer", "minimum": 0 },
+        "inverseInertiaQ": { "type": "integer", "minimum": 0 },
+        "fixedRotation": { "type": "boolean" },
+        "bullet": { "type": "boolean" },
+        "enabled": { "type": "boolean" },
+        "allowSleep": { "type": "boolean" },
+        "sleepLinearThreshold": { "type": "integer", "minimum": 0 },
+        "sleepAngularThreshold": { "type": "integer", "minimum": 0 },
+        "sleepTicks": { "type": "integer", "minimum": 1 },
+        "gravityScaleQ": { "type": "integer" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "data": { "type": "object" }
+      },
+      "additionalProperties": false
+    },
+    "material": {
+      "type": "object",
+      "required": ["id"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "densityQ": { "type": "integer", "minimum": 0 },
+        "frictionQ": { "type": "integer", "minimum": 0 },
+        "restitutionQ": { "type": "integer", "minimum": 0 },
+        "rollingResistanceQ": { "type": "integer", "minimum": 0 },
+        "linearDampingQ": { "type": "integer", "minimum": 0 },
+        "angularDampingQ": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "materialInteraction": {
+      "type": "object",
+      "required": ["materialA", "materialB"],
+      "properties": {
+        "materialA": { "type": "string" },
+        "materialB": { "type": "string" },
+        "enabled": { "type": "boolean" },
+        "sensorOnly": { "type": "boolean" },
+        "frictionQ": { "type": "integer", "minimum": 0 },
+        "restitutionQ": { "type": "integer", "minimum": 0 },
+        "rollingResistanceQ": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "field": {
+      "type": "object",
+      "required": ["id", "type"],
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "enum": ["uniform", "radial", "drag", "vortex", "buoyancy"] },
+        "enabled": { "type": "boolean" },
+        "tagsAny": { "type": "array", "items": { "type": "string" } },
+        "categoryMask": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": true
+    },
+    "joint": {
+      "type": "object",
+      "required": ["id", "type", "bodyA", "bodyB"],
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "enum": ["distance", "revolute", "prismatic", "weld"] },
+        "bodyA": { "type": "string" },
+        "bodyB": { "type": "string" },
+        "enabled": { "type": "boolean" },
+        "collideConnected": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    }
+  }
+}

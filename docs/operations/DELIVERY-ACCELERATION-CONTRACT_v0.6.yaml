@@ -1,0 +1,15 @@
+format: rncs.delivery-acceleration-contract.v0.6
+primary_bottleneck: "RSR、Network、VSR 分别维护状态语义，跨层重复理解和返工"
+primary_role: integration-migration-engineer
+supporting_roles: [codebase-archaeologist, quality-automation-engineer]
+limits:
+  active_primary_roles: 1
+  active_supporting_roles: 2
+metrics:
+  baseline_targeted_tests_seconds:
+    rsr: 13.08
+    vsr: 14.09
+    network: 10.86
+    gateway: 2.04
+  track: [active_elapsed_seconds, scan_rounds, failed_build_cycles, failed_test_cycles, tests_passed, changed_files]
+release_gates: [clean_build, full_tests, release_verify, zip_integrity, sha256, github_commit]

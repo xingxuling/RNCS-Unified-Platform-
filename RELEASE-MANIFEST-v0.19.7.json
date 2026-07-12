@@ -1,0 +1,26 @@
+{
+  "format": "rncs.aether-earth.release.v0.1",
+  "suite": "RNCS_Aetherworld_Unified",
+  "version": "0.19.7-alpha.1",
+  "product": "Aether Earth",
+  "product_version": "0.1.0-alpha.1",
+  "rcl": "0.12.0-alpha.1",
+  "native_vm": "0.6.0-alpha.1",
+  "world_tiles": 256,
+  "organisms": 100,
+  "rclpedia_seed_entries": 512,
+  "runtimes": 16,
+  "modules": 37,
+  "verification": {
+    "aether_earth": "12/12 PASS",
+    "rcl": "70/70 PASS",
+    "control_plane": "7/7 PASS",
+    "integration": "36/36 PASS",
+    "release": "valid"
+  },
+  "android": {
+    "source": true,
+    "apk": false,
+    "reason": "Android SDK and Gradle distribution unavailable"
+  }
+}

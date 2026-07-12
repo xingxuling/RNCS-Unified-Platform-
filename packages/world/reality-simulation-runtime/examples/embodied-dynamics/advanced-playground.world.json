@@ -1,0 +1,152 @@
+{
+  "format": "rsr.embodied-dynamics-world.v0.3",
+  "worldId": "advanced-playground",
+  "positionScale": 1000,
+  "stepHz": 60,
+  "gravity": { "x": 0, "y": 240000 },
+  "velocityIterations": 10,
+  "positionIterations": 4,
+  "broadPhase": "sweep-and-prune",
+  "gridCellSize": 64000,
+  "maxSubsteps": 48,
+  "ccdTargetFractionQ": 300000,
+  "warmStart": true,
+  "materials": [
+    { "id": "stone", "densityQ": 2000000, "frictionQ": 750000, "restitutionQ": 50000 },
+    { "id": "metal", "densityQ": 3000000, "frictionQ": 350000, "restitutionQ": 180000, "rollingResistanceQ": 20000 },
+    { "id": "rubber", "densityQ": 900000, "frictionQ": 900000, "restitutionQ": 650000 },
+    { "id": "sensor", "densityQ": 0, "frictionQ": 0, "restitutionQ": 0 }
+  ],
+  "fields": [
+    { "id": "wind", "type": "uniform", "acceleration": { "x": 6000, "y": 0 }, "tagsAny": ["wind-reactive"] },
+    { "id": "vortex", "type": "vortex", "center": { "x": 720000, "y": 260000 }, "radius": 150000, "tangentialStrength": 18000, "radialStrength": -3000, "tagsAny": ["vortex-reactive"] },
+    { "id": "water", "type": "buoyancy", "surfaceY": 390000, "densityQ": 1350000, "linearDragQ": 420000, "angularDragQ": 380000, "gravity": { "x": 0, "y": 240000 }, "tagsAny": ["buoyant"] }
+  ],
+  "bodies": [
+    {
+      "id": "ground",
+      "kind": "static",
+      "position": { "x": 480000, "y": 510000 },
+      "fixtures": [
+        { "id": "ground-shape", "shape": { "type": "box", "halfExtents": { "x": 450000, "y": 18000 } }, "materialId": "stone" }
+      ]
+    },
+    {
+      "id": "left-ramp",
+      "kind": "static",
+      "position": { "x": 185000, "y": 390000 },
+      "angle": 930000,
+      "fixtures": [
+        { "id": "ramp", "shape": { "type": "box", "halfExtents": { "x": 145000, "y": 12000 } }, "materialId": "stone" }
+      ]
+    },
+    {
+      "id": "pendulum-anchor",
+      "kind": "static",
+      "position": { "x": 345000, "y": 85000 },
+      "fixtures": [
+        { "id": "anchor", "shape": { "type": "circle", "radius": 9000 }, "materialId": "metal" }
+      ]
+    },
+    {
+      "id": "pendulum",
+      "kind": "dynamic",
+      "position": { "x": 345000, "y": 235000 },
+      "fixtures": [
+        { "id": "rod", "shape": { "type": "capsule", "halfLength": 65000, "radius": 11000 }, "localAngle": 250000, "materialId": "metal" },
+        { "id": "bob", "shape": { "type": "circle", "radius": 28000 }, "localPosition": { "x": 0, "y": 72000 }, "materialId": "rubber" }
+      ],
+      "tags": ["wind-reactive"]
+    },
+    {
+      "id": "slider-base",
+      "kind": "static",
+      "position": { "x": 520000, "y": 335000 },
+      "fixtures": [
+        { "id": "rail", "shape": { "type": "box", "halfExtents": { "x": 110000, "y": 9000 } }, "materialId": "stone" }
+      ]
+    },
+    {
+      "id": "slider",
+      "kind": "dynamic",
+      "position": { "x": 520000, "y": 305000 },
+      "fixtures": [
+        { "id": "slider-shape", "shape": { "type": "polygon", "vertices": [ { "x": -30000, "y": -18000 }, { "x": 34000, "y": -12000 }, { "x": 28000, "y": 18000 }, { "x": -26000, "y": 22000 } ] }, "materialId": "metal" }
+      ]
+    },
+    {
+      "id": "bullet",
+      "kind": "dynamic",
+      "position": { "x": 80000, "y": 180000 },
+      "velocity": { "x": 520000, "y": 0 },
+      "bullet": true,
+      "fixtures": [
+        { "id": "bullet-shape", "shape": { "type": "circle", "radius": 9000 }, "materialId": "rubber" }
+      ]
+    },
+    {
+      "id": "thin-wall",
+      "kind": "static",
+      "position": { "x": 630000, "y": 180000 },
+      "fixtures": [
+        { "id": "wall-shape", "shape": { "type": "box", "halfExtents": { "x": 5000, "y": 95000 } }, "materialId": "stone" }
+      ]
+    },
+    {
+      "id": "vortex-capsule",
+      "kind": "dynamic",
+      "position": { "x": 720000, "y": 180000 },
+      "fixtures": [
+        { "id": "capsule", "shape": { "type": "capsule", "halfLength": 32000, "radius": 14000 }, "materialId": "metal" }
+      ],
+      "tags": ["vortex-reactive"]
+    },
+    {
+      "id": "buoyant-box",
+      "kind": "dynamic",
+      "position": { "x": 790000, "y": 430000 },
+      "angle": 80000,
+      "fixtures": [
+        { "id": "float", "shape": { "type": "box", "halfExtents": { "x": 38000, "y": 18000 }, "cornerRadius": 5000 }, "materialId": "rubber" }
+      ],
+      "tags": ["buoyant"]
+    },
+    {
+      "id": "goal-sensor",
+      "kind": "static",
+      "position": { "x": 880000, "y": 430000 },
+      "fixtures": [
+        { "id": "goal", "shape": { "type": "circle", "radius": 36000 }, "materialId": "sensor", "sensor": true }
+      ]
+    }
+  ],
+  "joints": [
+    {
+      "id": "pendulum-hinge",
+      "type": "revolute",
+      "bodyA": "pendulum-anchor",
+      "bodyB": "pendulum",
+      "localAnchorA": { "x": 0, "y": 0 },
+      "localAnchorB": { "x": 0, "y": -72000 },
+      "lowerAngle": -180000,
+      "upperAngle": 180000,
+      "motorSpeed": 18000,
+      "maxMotorTorque": 180000,
+      "stiffnessQ": 850000,
+      "dampingQ": 250000
+    },
+    {
+      "id": "slider-joint",
+      "type": "prismatic",
+      "bodyA": "slider-base",
+      "bodyB": "slider",
+      "localAxisA": { "x": 1000, "y": 0 },
+      "lowerTranslation": -90000,
+      "upperTranslation": 90000,
+      "motorSpeed": 26000,
+      "maxMotorForce": 220000,
+      "stiffnessQ": 900000,
+      "dampingQ": 300000
+    }
+  ]
+}

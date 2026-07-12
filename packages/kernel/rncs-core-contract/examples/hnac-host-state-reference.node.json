@@ -1,0 +1,15 @@
+{
+  "kind": "host-state",
+  "source_format": "vsr.hnac-state-snapshot.v0.1",
+  "host_id": "android-phone",
+  "replica_id": "phone-01",
+  "snapshot_sequence": 18,
+  "state_root": "7777777777777777777777777777777777777777777777777777777777777777",
+  "schema_version": "1.0",
+  "partitions": [
+    "cache",
+    "device_private",
+    "portable"
+  ],
+  "continuity_class": "replica_snapshot"
+}

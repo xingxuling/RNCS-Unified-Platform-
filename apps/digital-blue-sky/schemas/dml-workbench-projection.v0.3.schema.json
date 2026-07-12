@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.tech/schemas/dml-workbench-projection.v0.3.schema.json",
+  "title": "DML Workbench Projection v0.3",
+  "type": "object",
+  "required": [
+    "format",
+    "projection_id",
+    "subject_id",
+    "source_event_sequence",
+    "generated_at",
+    "state",
+    "projection_root"
+  ],
+  "properties": {
+    "format": {
+      "const": "dml.workbench-projection.v0.3"
+    },
+    "projection_id": {
+      "type": "string"
+    },
+    "subject_id": {
+      "type": "string"
+    },
+    "source_event_sequence": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "state": {
+      "type": "object"
+    },
+    "projection_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "additionalProperties": false
+}

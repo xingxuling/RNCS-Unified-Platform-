@@ -1,0 +1,996 @@
+{
+  "format": "rsr.embodied-dynamics-snapshot.v0.3",
+  "runtimeVersion": "0.3.0-alpha.1",
+  "worldId": "advanced-playground",
+  "tick": 120,
+  "logicalTime": {
+    "numerator": 120,
+    "denominator": 60
+  },
+  "positionScale": 1000,
+  "angleTurnScale": 1000000,
+  "stepHz": 60,
+  "gravity": {
+    "x": 0,
+    "y": 240000
+  },
+  "broadPhase": "sweep-and-prune",
+  "velocityIterations": 10,
+  "positionIterations": 4,
+  "gridCellSize": 64000,
+  "maxSubsteps": 48,
+  "ccdTargetFractionQ": 300000,
+  "warmStart": true,
+  "materials": [
+    {
+      "id": "default",
+      "densityQ": 1000000,
+      "frictionQ": 500000,
+      "restitutionQ": 0,
+      "rollingResistanceQ": 0,
+      "linearDampingQ": 0,
+      "angularDampingQ": 0
+    },
+    {
+      "id": "metal",
+      "densityQ": 3000000,
+      "frictionQ": 350000,
+      "restitutionQ": 180000,
+      "rollingResistanceQ": 20000,
+      "linearDampingQ": 0,
+      "angularDampingQ": 0
+    },
+    {
+      "id": "rubber",
+      "densityQ": 900000,
+      "frictionQ": 900000,
+      "restitutionQ": 650000,
+      "rollingResistanceQ": 0,
+      "linearDampingQ": 0,
+      "angularDampingQ": 0
+    },
+    {
+      "id": "sensor",
+      "densityQ": 0,
+      "frictionQ": 0,
+      "restitutionQ": 0,
+      "rollingResistanceQ": 0,
+      "linearDampingQ": 0,
+      "angularDampingQ": 0
+    },
+    {
+      "id": "stone",
+      "densityQ": 2000000,
+      "frictionQ": 750000,
+      "restitutionQ": 50000,
+      "rollingResistanceQ": 0,
+      "linearDampingQ": 0,
+      "angularDampingQ": 0
+    }
+  ],
+  "materialInteractions": [],
+  "configHash": "fnv1a64:a1ab68e441b2fdee",
+  "bodies": [
+    {
+      "id": "bullet",
+      "kind": "dynamic",
+      "position": {
+        "x": 238707,
+        "y": 45200
+      },
+      "angle": 269525,
+      "velocity": {
+        "x": -44187,
+        "y": 177021
+      },
+      "angularVelocity": 4016212,
+      "fixtures": [
+        {
+          "id": "bullet-shape",
+          "shape": {
+            "type": "circle",
+            "radius": 9000
+          },
+          "localPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "localAngle": 0,
+          "materialId": "rubber",
+          "densityQ": 900000,
+          "frictionQ": 900000,
+          "restitutionQ": 650000,
+          "sensor": false,
+          "filter": {
+            "categoryBits": 1,
+            "maskBits": 4294967295,
+            "groupIndex": 0
+          },
+          "tags": [],
+          "data": {}
+        }
+      ],
+      "inverseMassQ": 4366,
+      "inverseInertiaQ": 108,
+      "massQ": 229022104,
+      "inertiaQ": 9275395230,
+      "fixedRotation": false,
+      "bullet": true,
+      "enabled": true,
+      "allowSleep": true,
+      "sleepLinearThreshold": 20,
+      "sleepAngularThreshold": 2000,
+      "sleepTicks": 30,
+      "sleepCounter": 0,
+      "awake": true,
+      "gravityScaleQ": 1000000,
+      "tags": [],
+      "data": {}
+    },
+    {
+      "id": "buoyant-box",
+      "kind": "dynamic",
+      "position": {
+        "x": 683405,
+        "y": 413470
+      },
+      "angle": 332226,
+      "velocity": {
+        "x": 52232,
+        "y": 223430
+      },
+      "angularVelocity": 769702,
+      "fixtures": [
+        {
+          "id": "float",
+          "shape": {
+            "type": "box",
+            "halfExtents": {
+              "x": 38000,
+              "y": 18000
+            },
+            "cornerRadius": 5000
+          },
+          "localPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "localAngle": 0,
+          "materialId": "rubber",
+          "densityQ": 900000,
+          "frictionQ": 900000,
+          "restitutionQ": 650000,
+          "sensor": false,
+          "filter": {
+            "categoryBits": 1,
+            "maskBits": 4294967295,
+            "groupIndex": 0
+          },
+          "tags": [],
+          "data": {}
+        }
+      ],
+      "inverseMassQ": 406,
+      "inverseInertiaQ": 1,
+      "massQ": 2462400000,
+      "inertiaQ": 1451174400000,
+      "fixedRotation": false,
+      "bullet": false,
+      "enabled": true,
+      "allowSleep": true,
+      "sleepLinearThreshold": 20,
+      "sleepAngularThreshold": 2000,
+      "sleepTicks": 30,
+      "sleepCounter": 0,
+      "awake": true,
+      "gravityScaleQ": 1000000,
+      "tags": [
+        "buoyant"
+      ],
+      "data": {}
+    },
+    {
+      "id": "goal-sensor",
+      "kind": "static",
+      "position": {
+        "x": 880000,
+        "y": 430000
+      },
+      "angle": 0,
+      "velocity": {
+        "x": 0,
+        "y": 0
+      },
+      "angularVelocity": 0,
+      "fixtures": [
+        {
+          "id": "goal",
+          "shape": {
+            "type": "circle",
+            "radius": 36000
+          },
+          "localPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "localAngle": 0,
+          "materialId": "sensor",
+          "densityQ": 0,
+          "frictionQ": 0,
+          "restitutionQ": 0,
+          "sensor": true,
+          "filter": {
+            "categoryBits": 1,
+            "maskBits": 4294967295,
+            "groupIndex": 0
+          },
+          "tags": [],
+          "data": {}
+        }
+      ],
+      "inverseMassQ": 0,
+      "inverseInertiaQ": 0,
+      "massQ": 0,
+      "inertiaQ": 0,
+      "fixedRotation": false,
+      "bullet": false,
+      "enabled": true,
+      "allowSleep": true,
+      "sleepLinearThreshold": 20,
+      "sleepAngularThreshold": 2000,
+      "sleepTicks": 30,
+      "sleepCounter": 0,
+      "awake": false,
+      "gravityScaleQ": 1000000,
+      "tags": [],
+      "data": {}
+    },
+    {
+      "id": "ground",
+      "kind": "static",
+      "position": {
+        "x": 480000,
+        "y": 510000
+      },
+      "angle": 0,
+      "velocity": {
+        "x": 0,
+        "y": 0
+      },
+      "angularVelocity": 0,
+      "fixtures": [
+        {
+          "id": "ground-shape",
+          "shape": {
+            "type": "box",
+            "halfExtents": {
+              "x": 450000,
+              "y": 18000
+            }
+          },
+          "localPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "localAngle": 0,
+          "materialId": "stone",
+          "densityQ": 2000000,
+          "frictionQ": 750000,
+          "restitutionQ": 50000,
+          "sensor": false,
+          "filter": {
+            "categoryBits": 1,
+            "maskBits": 4294967295,
+            "groupIndex": 0
+          },
+          "tags": [],
+          "data": {}
+        }
+      ],
+      "inverseMassQ": 0,
+      "inverseInertiaQ": 0,
+      "massQ": 0,
+      "inertiaQ": 0,
+      "fixedRotation": false,
+      "bullet": false,
+      "enabled": true,
+      "allowSleep": true,
+      "sleepLinearThreshold": 20,
+      "sleepAngularThreshold": 2000,
+      "sleepTicks": 30,
+      "sleepCounter": 0,
+      "awake": false,
+      "gravityScaleQ": 1000000,
+      "tags": [],
+      "data": {}
+    },
+    {
+      "id": "left-ramp",
+      "kind": "static",
+      "position": {
+        "x": 185000,
+        "y": 390000
+      },
+      "angle": 930000,
+      "velocity": {
+        "x": 0,
+        "y": 0
+      },
+      "angularVelocity": 0,
+      "fixtures": [
+        {
+          "id": "ramp",
+          "shape": {
+            "type": "box",
+            "halfExtents": {
+              "x": 145000,
+              "y": 12000
+            }
+          },
+          "localPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "localAngle": 0,
+          "materialId": "stone",
+          "densityQ": 2000000,
+          "frictionQ": 750000,
+          "restitutionQ": 50000,
+          "sensor": false,
+          "filter": {
+            "categoryBits": 1,
+            "maskBits": 4294967295,
+            "groupIndex": 0
+          },
+          "tags": [],
+          "data": {}
+        }
+      ],
+      "inverseMassQ": 0,
+      "inverseInertiaQ": 0,
+      "massQ": 0,
+      "inertiaQ": 0,
+      "fixedRotation": false,
+      "bullet": false,
+      "enabled": true,
+      "allowSleep": true,
+      "sleepLinearThreshold": 20,
+      "sleepAngularThreshold": 2000,
+      "sleepTicks": 30,
+      "sleepCounter": 0,
+      "awake": false,
+      "gravityScaleQ": 1000000,
+      "tags": [],
+      "data": {}
+    },
+    {
+      "id": "pendulum",
+      "kind": "dynamic",
+      "position": {
+        "x": 345010,
+        "y": 156396
+      },
+      "angle": 0,
+      "velocity": {
+        "x": -86,
+        "y": -92868
+      },
+      "angularVelocity": 0,
+      "fixtures": [
+        {
+          "id": "rod",
+          "shape": {
+            "type": "capsule",
+            "halfLength": 65000,
+            "radius": 11000
+          },
+          "localPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "localAngle": 250000,
+          "materialId": "metal",
+          "densityQ": 3000000,
+          "frictionQ": 350000,
+          "restitutionQ": 180000,
+          "sensor": false,
+          "filter": {
+            "categoryBits": 1,
+            "maskBits": 4294967295,
+            "groupIndex": 0
+          },
+          "tags": [],
+          "data": {}
+        },
+        {
+          "id": "bob",
+          "shape": {
+            "type": "circle",
+            "radius": 28000
+          },
+          "localPosition": {
+            "x": 0,
+            "y": 72000
+          },
+          "localAngle": 0,
+          "materialId": "rubber",
+          "densityQ": 900000,
+          "frictionQ": 900000,
+          "restitutionQ": 650000,
+          "sensor": false,
+          "filter": {
+            "categoryBits": 1,
+            "maskBits": 4294967295,
+            "groupIndex": 0
+          },
+          "tags": [],
+          "data": {}
+        }
+      ],
+      "inverseMassQ": 84,
+      "inverseInertiaQ": 0,
+      "massQ": 11937105910,
+      "inertiaQ": 29677098761112,
+      "fixedRotation": false,
+      "bullet": false,
+      "enabled": true,
+      "allowSleep": true,
+      "sleepLinearThreshold": 20,
+      "sleepAngularThreshold": 2000,
+      "sleepTicks": 30,
+      "sleepCounter": 0,
+      "awake": true,
+      "gravityScaleQ": 1000000,
+      "tags": [
+        "wind-reactive"
+      ],
+      "data": {}
+    },
+    {
+      "id": "pendulum-anchor",
+      "kind": "static",
+      "position": {
+        "x": 345000,
+        "y": 85000
+      },
+      "angle": 0,
+      "velocity": {
+        "x": 0,
+        "y": 0
+      },
+      "angularVelocity": 0,
+      "fixtures": [
+        {
+          "id": "anchor",
+          "shape": {
+            "type": "circle",
+            "radius": 9000
+          },
+          "localPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "localAngle": 0,
+          "materialId": "metal",
+          "densityQ": 3000000,
+          "frictionQ": 350000,
+          "restitutionQ": 180000,
+          "sensor": false,
+          "filter": {
+            "categoryBits": 1,
+            "maskBits": 4294967295,
+            "groupIndex": 0
+          },
+          "tags": [],
+          "data": {}
+        }
+      ],
+      "inverseMassQ": 0,
+      "inverseInertiaQ": 0,
+      "massQ": 0,
+      "inertiaQ": 0,
+      "fixedRotation": false,
+      "bullet": false,
+      "enabled": true,
+      "allowSleep": true,
+      "sleepLinearThreshold": 20,
+      "sleepAngularThreshold": 2000,
+      "sleepTicks": 30,
+      "sleepCounter": 0,
+      "awake": false,
+      "gravityScaleQ": 1000000,
+      "tags": [],
+      "data": {}
+    },
+    {
+      "id": "slider",
+      "kind": "dynamic",
+      "position": {
+        "x": 520720,
+        "y": 334502
+      },
+      "angle": 0,
+      "velocity": {
+        "x": 720,
+        "y": -36727
+      },
+      "angularVelocity": 0,
+      "fixtures": [
+        {
+          "id": "slider-shape",
+          "shape": {
+            "type": "polygon",
+            "vertices": [
+              {
+                "x": -30000,
+                "y": -18000
+              },
+              {
+                "x": 34000,
+                "y": -12000
+              },
+              {
+                "x": 28000,
+                "y": 18000
+              },
+              {
+                "x": -26000,
+                "y": 22000
+              }
+            ],
+            "radius": 0
+          },
+          "localPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "localAngle": 0,
+          "materialId": "metal",
+          "densityQ": 3000000,
+          "frictionQ": 350000,
+          "restitutionQ": 180000,
+          "sensor": false,
+          "filter": {
+            "categoryBits": 1,
+            "maskBits": 4294967295,
+            "groupIndex": 0
+          },
+          "tags": [],
+          "data": {}
+        }
+      ],
+      "inverseMassQ": 161,
+      "inverseInertiaQ": 0,
+      "massQ": 6198000000,
+      "inertiaQ": 2468320000000,
+      "fixedRotation": false,
+      "bullet": false,
+      "enabled": true,
+      "allowSleep": true,
+      "sleepLinearThreshold": 20,
+      "sleepAngularThreshold": 2000,
+      "sleepTicks": 30,
+      "sleepCounter": 0,
+      "awake": true,
+      "gravityScaleQ": 1000000,
+      "tags": [],
+      "data": {}
+    },
+    {
+      "id": "slider-base",
+      "kind": "static",
+      "position": {
+        "x": 520000,
+        "y": 335000
+      },
+      "angle": 0,
+      "velocity": {
+        "x": 0,
+        "y": 0
+      },
+      "angularVelocity": 0,
+      "fixtures": [
+        {
+          "id": "rail",
+          "shape": {
+            "type": "box",
+            "halfExtents": {
+              "x": 110000,
+              "y": 9000
+            }
+          },
+          "localPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "localAngle": 0,
+          "materialId": "stone",
+          "densityQ": 2000000,
+          "frictionQ": 750000,
+          "restitutionQ": 50000,
+          "sensor": false,
+          "filter": {
+            "categoryBits": 1,
+            "maskBits": 4294967295,
+            "groupIndex": 0
+          },
+          "tags": [],
+          "data": {}
+        }
+      ],
+      "inverseMassQ": 0,
+      "inverseInertiaQ": 0,
+      "massQ": 0,
+      "inertiaQ": 0,
+      "fixedRotation": false,
+      "bullet": false,
+      "enabled": true,
+      "allowSleep": true,
+      "sleepLinearThreshold": 20,
+      "sleepAngularThreshold": 2000,
+      "sleepTicks": 30,
+      "sleepCounter": 0,
+      "awake": false,
+      "gravityScaleQ": 1000000,
+      "tags": [],
+      "data": {}
+    },
+    {
+      "id": "thin-wall",
+      "kind": "static",
+      "position": {
+        "x": 630000,
+        "y": 180000
+      },
+      "angle": 0,
+      "velocity": {
+        "x": 0,
+        "y": 0
+      },
+      "angularVelocity": 0,
+      "fixtures": [
+        {
+          "id": "wall-shape",
+          "shape": {
+            "type": "box",
+            "halfExtents": {
+              "x": 5000,
+              "y": 95000
+            }
+          },
+          "localPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "localAngle": 0,
+          "materialId": "stone",
+          "densityQ": 2000000,
+          "frictionQ": 750000,
+          "restitutionQ": 50000,
+          "sensor": false,
+          "filter": {
+            "categoryBits": 1,
+            "maskBits": 4294967295,
+            "groupIndex": 0
+          },
+          "tags": [],
+          "data": {}
+        }
+      ],
+      "inverseMassQ": 0,
+      "inverseInertiaQ": 0,
+      "massQ": 0,
+      "inertiaQ": 0,
+      "fixedRotation": false,
+      "bullet": false,
+      "enabled": true,
+      "allowSleep": true,
+      "sleepLinearThreshold": 20,
+      "sleepAngularThreshold": 2000,
+      "sleepTicks": 30,
+      "sleepCounter": 0,
+      "awake": false,
+      "gravityScaleQ": 1000000,
+      "tags": [],
+      "data": {}
+    },
+    {
+      "id": "vortex-capsule",
+      "kind": "dynamic",
+      "position": {
+        "x": 694534,
+        "y": 478002
+      },
+      "angle": 0,
+      "velocity": {
+        "x": 0,
+        "y": -1201
+      },
+      "angularVelocity": 0,
+      "fixtures": [
+        {
+          "id": "capsule",
+          "shape": {
+            "type": "capsule",
+            "halfLength": 32000,
+            "radius": 14000
+          },
+          "localPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "localAngle": 0,
+          "materialId": "metal",
+          "densityQ": 3000000,
+          "frictionQ": 350000,
+          "restitutionQ": 180000,
+          "sensor": false,
+          "filter": {
+            "categoryBits": 1,
+            "maskBits": 4294967295,
+            "groupIndex": 0
+          },
+          "tags": [],
+          "data": {}
+        }
+      ],
+      "inverseMassQ": 138,
+      "inverseInertiaQ": 0,
+      "massQ": 7223256480,
+      "inertiaQ": 4258861770909,
+      "fixedRotation": false,
+      "bullet": false,
+      "enabled": true,
+      "allowSleep": true,
+      "sleepLinearThreshold": 20,
+      "sleepAngularThreshold": 2000,
+      "sleepTicks": 30,
+      "sleepCounter": 0,
+      "awake": true,
+      "gravityScaleQ": 1000000,
+      "tags": [
+        "vortex-reactive"
+      ],
+      "data": {}
+    }
+  ],
+  "joints": [
+    {
+      "id": "pendulum-hinge",
+      "type": "revolute",
+      "bodyA": "pendulum-anchor",
+      "bodyB": "pendulum",
+      "enabled": true,
+      "broken": false,
+      "collideConnected": false,
+      "breakForce": null,
+      "breakTorque": null,
+      "lastForce": 1378610467,
+      "lastTorque": 0,
+      "data": {},
+      "localAnchorA": {
+        "x": 0,
+        "y": 0
+      },
+      "localAnchorB": {
+        "x": 0,
+        "y": -72000
+      },
+      "lowerAngle": -180000,
+      "upperAngle": 180000,
+      "motorSpeed": 18000,
+      "maxMotorTorque": 180000,
+      "stiffnessQ": 850000,
+      "dampingQ": 250000
+    },
+    {
+      "id": "slider-joint",
+      "type": "prismatic",
+      "bodyA": "slider-base",
+      "bodyB": "slider",
+      "enabled": true,
+      "broken": false,
+      "collideConnected": false,
+      "breakForce": null,
+      "breakTorque": null,
+      "lastForce": 570330838,
+      "lastTorque": 0,
+      "data": {},
+      "localAxisA": {
+        "x": 1000,
+        "y": 0
+      },
+      "lowerTranslation": -90000,
+      "upperTranslation": 90000,
+      "motorSpeed": 26000,
+      "maxMotorForce": 220000,
+      "stiffnessQ": 900000,
+      "dampingQ": 300000
+    }
+  ],
+  "fields": [
+    {
+      "id": "wind",
+      "type": "uniform",
+      "acceleration": {
+        "x": 6000,
+        "y": 0
+      },
+      "tagsAny": [
+        "wind-reactive"
+      ]
+    },
+    {
+      "id": "vortex",
+      "type": "vortex",
+      "center": {
+        "x": 720000,
+        "y": 260000
+      },
+      "radius": 150000,
+      "tangentialStrength": 18000,
+      "radialStrength": -3000,
+      "tagsAny": [
+        "vortex-reactive"
+      ]
+    },
+    {
+      "id": "water",
+      "type": "buoyancy",
+      "surfaceY": 390000,
+      "densityQ": 1350000,
+      "linearDragQ": 420000,
+      "angularDragQ": 380000,
+      "gravity": {
+        "x": 0,
+        "y": 240000
+      },
+      "tagsAny": [
+        "buoyant"
+      ]
+    }
+  ],
+  "contacts": [
+    {
+      "key": "ground/ground-shape|vortex-capsule/capsule",
+      "bodyA": "ground",
+      "bodyB": "vortex-capsule",
+      "fixtureA": "ground-shape",
+      "fixtureB": "capsule",
+      "normalQ": {
+        "x": 0,
+        "y": -1000000
+      },
+      "points": [
+        {
+          "point": {
+            "x": 796267,
+            "y": 492009
+          },
+          "separation": -18,
+          "normalImpulse": 29707367,
+          "tangentImpulse": 0,
+          "featureId": "epa:3"
+        }
+      ],
+      "sensor": false,
+      "materialPair": "metal|stone",
+      "microstep": 2,
+      "touching": true
+    }
+  ],
+  "events": [
+    {
+      "id": "advanced-playground:120:contact:persist:ground/ground-shape|vortex-capsule/capsule",
+      "tick": 120,
+      "kind": "contact",
+      "phase": "persist",
+      "subjects": [
+        "ground",
+        "vortex-capsule"
+      ],
+      "pair": "ground/ground-shape|vortex-capsule/capsule",
+      "manifold": {
+        "key": "ground/ground-shape|vortex-capsule/capsule",
+        "bodyA": "ground",
+        "bodyB": "vortex-capsule",
+        "fixtureA": "ground-shape",
+        "fixtureB": "capsule",
+        "normalQ": {
+          "x": 0,
+          "y": -1000000
+        },
+        "points": [
+          {
+            "point": {
+              "x": 796267,
+              "y": 492009
+            },
+            "separation": -18,
+            "normalImpulse": 29707367,
+            "tangentImpulse": 0,
+            "featureId": "epa:3"
+          }
+        ],
+        "sensor": false,
+        "materialPair": "metal|stone",
+        "microstep": 2,
+        "touching": true
+      },
+      "evidenceHash": "fnv1a64:dfe5ac7eac8df73c"
+    }
+  ],
+  "islands": [
+    {
+      "id": "island:fnv1a64:0f91db14d0d1ee69",
+      "bodyIds": [
+        "bullet"
+      ],
+      "contactKeys": [],
+      "jointIds": [],
+      "awake": true
+    },
+    {
+      "id": "island:fnv1a64:6680141196caa0c0",
+      "bodyIds": [
+        "slider"
+      ],
+      "contactKeys": [],
+      "jointIds": [
+        "slider-joint"
+      ],
+      "awake": true
+    },
+    {
+      "id": "island:fnv1a64:a500ebba563306eb",
+      "bodyIds": [
+        "vortex-capsule"
+      ],
+      "contactKeys": [
+        "ground/ground-shape|vortex-capsule/capsule"
+      ],
+      "jointIds": [],
+      "awake": true
+    },
+    {
+      "id": "island:fnv1a64:cbdc517a0bec807f",
+      "bodyIds": [
+        "buoyant-box"
+      ],
+      "contactKeys": [],
+      "jointIds": [],
+      "awake": true
+    },
+    {
+      "id": "island:fnv1a64:f5616c7dd2878707",
+      "bodyIds": [
+        "pendulum"
+      ],
+      "contactKeys": [],
+      "jointIds": [
+        "pendulum-hinge"
+      ],
+      "awake": true
+    }
+  ],
+  "diagnostics": {
+    "microsteps": 3,
+    "fixtureProxies": 12,
+    "candidatePairs": 9,
+    "narrowPhaseTests": 3,
+    "gjkCalls": 3,
+    "epaCalls": 3,
+    "resolvedContacts": 1,
+    "warmStartedContacts": 3,
+    "ccdBodies": 1,
+    "velocityIterations": 30,
+    "positionIterations": 12,
+    "rayTests": 0
+  },
+  "bodyRoot": "fnv1a64:f86545d124ed693b",
+  "contactRoot": "fnv1a64:7dd290ab52d1ad5a",
+  "jointRoot": "fnv1a64:c00764cf4f65bdaa",
+  "islandRoot": "fnv1a64:e8745c7fbe984e0d",
+  "queryRoot": "fnv1a64:09612b07b5ecb5a5",
+  "stateRoot": "fnv1a64:20f9a38fcc70a4e6"
+}

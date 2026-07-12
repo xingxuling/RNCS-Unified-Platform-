@@ -1,0 +1,173 @@
+{
+  "format": "ragf.player-participation.v0.5",
+  "version": "0.5.0-alpha.1",
+  "world_id": "world:5c46cbb3d1a1e47712b0e9b4",
+  "roles": [
+    "citizen",
+    "entrepreneur",
+    "policy-maker",
+    "researcher"
+  ],
+  "actions": [
+    {
+      "action_id": "allocate-research",
+      "inputs": {
+        "year": "integer",
+        "value": "0..1"
+      },
+      "effects": [
+        "research-share"
+      ],
+      "authority": "player-policy"
+    },
+    {
+      "action_id": "open-knowledge-commons",
+      "inputs": {
+        "year": "integer",
+        "value": "0..2000"
+      },
+      "effects": [
+        "knowledge-openness",
+        "diffusion"
+      ],
+      "authority": "player-policy"
+    },
+    {
+      "action_id": "resource-rationing",
+      "inputs": {
+        "year": "integer",
+        "enabled": "boolean"
+      },
+      "effects": [
+        "consumption",
+        "legitimacy"
+      ],
+      "authority": "player-policy"
+    },
+    {
+      "action_id": "sponsor-prototype",
+      "inputs": {
+        "year": "integer",
+        "concept_id": "technology-concept-id"
+      },
+      "effects": [
+        "concept-progress",
+        "resource-use"
+      ],
+      "authority": "player-investment"
+    },
+    {
+      "action_id": "found-institution",
+      "inputs": {
+        "year": "integer",
+        "kind": "lab|guild|cooperative|school",
+        "capacity": "integer"
+      },
+      "effects": [
+        "research-capacity",
+        "social-network"
+      ],
+      "authority": "player-organization"
+    },
+    {
+      "action_id": "propose-technology",
+      "inputs": {
+        "name": "string",
+        "function": "enum:function",
+        "principle": "enum:principle",
+        "substrate": "enum:substrate",
+        "energy": "enum:energy",
+        "control": "enum:control",
+        "manufacturing": "enum:manufacturing"
+      },
+      "effects": [
+        "new-technology-concept",
+        "engineering-path"
+      ],
+      "authority": "player-invention",
+      "llm_required": false
+    }
+  ],
+  "technology_proposal_grammar": {
+    "function": [
+      "store-energy",
+      "transmit-information",
+      "purify-water",
+      "repair-structure",
+      "coordinate-production",
+      "sense-environment",
+      "move-loads",
+      "stabilize-climate",
+      "preserve-food",
+      "augment-labor",
+      "compute-rules",
+      "heal-ecosystem"
+    ],
+    "principle": [
+      "phase-change",
+      "acoustic-resonance",
+      "capillary-flow",
+      "mechanical-logic",
+      "optical-coding",
+      "microbial-metabolism",
+      "thermal-gradient",
+      "electromagnetic-induction",
+      "feedback-control",
+      "modular-tension",
+      "chemical-adsorption",
+      "distributed-consensus"
+    ],
+    "substrate": [
+      "ceramic",
+      "glass",
+      "copper",
+      "fiber",
+      "timber",
+      "steel",
+      "mycelium",
+      "carbon",
+      "salt-hydrate",
+      "water",
+      "silicon",
+      "living-soil"
+    ],
+    "energy": [
+      "human",
+      "wind",
+      "water",
+      "solar-thermal",
+      "combustion",
+      "chemical",
+      "electrical",
+      "stored-heat"
+    ],
+    "control": [
+      "manual",
+      "mechanical-governor",
+      "fluidic-logic",
+      "relay",
+      "analog-feedback",
+      "digital-logic",
+      "distributed-protocol"
+    ],
+    "manufacturing": [
+      "craft",
+      "casting",
+      "kiln",
+      "machining",
+      "lamination",
+      "fermentation",
+      "wire-winding",
+      "precision-assembly",
+      "additive-forming",
+      "bioprocess"
+    ]
+  },
+  "branching": {
+    "baseline_history_root": null,
+    "player_branches": true,
+    "merge_policy": "explicit-authority"
+  },
+  "concept_count": 16,
+  "participation_root": "87a37390849762087f37267f946ee6823b4bc5021a7093b452a58414cbe76f97"
+}

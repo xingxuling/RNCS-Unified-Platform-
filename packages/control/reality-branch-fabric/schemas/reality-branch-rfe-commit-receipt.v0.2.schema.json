@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Reality Branch RFE Commit Receipt v0.2",
+  "type": "object",
+  "required": [
+    "format",
+    "version",
+    "receipt_id",
+    "transition_root",
+    "previous_generation_root",
+    "new_generation",
+    "new_generation_root",
+    "commit_receipt_root"
+  ],
+  "properties": {
+    "format": {
+      "const": "reality-branch.rfe-commit-receipt.v0.2"
+    },
+    "version": {
+      "const": "0.2.0-alpha.1"
+    },
+    "receipt_id": {
+      "type": "string"
+    },
+    "transition_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "previous_generation_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "new_generation": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "new_generation_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "commit_receipt_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

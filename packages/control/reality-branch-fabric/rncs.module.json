@@ -1,0 +1,14 @@
+{
+  "id": "rbf",
+  "name": "Reality Branch Fabric",
+  "version": "0.2.0-alpha.1",
+  "path": "packages/control/reality-branch-fabric",
+  "layer": "control",
+  "runtime": "rncs.rbf",
+  "dependsOn": [
+    "rncs-core",
+    "aaf",
+    "rfe-sdk"
+  ],
+  "test": "npm test --workspace @taowind/reality-branch-fabric"
+}

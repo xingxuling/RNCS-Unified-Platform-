@@ -1,0 +1,9 @@
+[package]
+name = "rfe-canonical"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Dependency-free canonical JSON and SHA-256 primitives for RFE conformance"
+
+[lints]
+workspace = true

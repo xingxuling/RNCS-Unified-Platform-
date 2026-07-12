@@ -1,0 +1,33 @@
+{
+  "name": "@taowind/icar-native-envelope-runtime",
+  "version": "0.5.0",
+  "type": "module",
+  "description": "RNCS-native Intent-Capability Application Runtime with preview, authority and RFE Generation commit.",
+  "license": "Apache-2.0",
+  "bin": {
+    "icar": "src/cli.mjs"
+  },
+  "exports": {
+    ".": "./src/runtime.mjs"
+  },
+  "files": [
+    "src",
+    "schemas",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs",
+    "smoke": "node scripts/smoke.mjs",
+    "benchmark": "node scripts/benchmark.mjs",
+    "demo": "node src/cli.mjs run --artifact examples/project.laf1.json --intent-file examples/requests/update-report-notify.zh.txt --actor examples/actor-owner.json --desktop examples/hosts/browser-desktop.host.json --mobile examples/hosts/mobile-touch.host.json --capsule examples/capsules/icar-native-v0.5.hnac.json --rfe-store output/demo/rfe-store --out output/demo"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@taowind/rncs-core-contract": "*",
+    "@taowind/rfe-core-sdk": "*",
+    "@taowind/living-artifact-format": "*"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "subject_id": "subject:taowind",
+  "kind": "human",
+  "role": "owner",
+  "scopes": [
+    "*"
+  ],
+  "responsibility_boundary": "project-authority"
+}

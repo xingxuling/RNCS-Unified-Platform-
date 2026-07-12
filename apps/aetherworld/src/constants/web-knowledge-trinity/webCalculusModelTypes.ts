@@ -1,0 +1,22 @@
+export const WEB_CALCULUS_MODEL_TYPES = [
+  { id: "SEQUENCE_OBJECT_ARCHITECTURE", title: "数列对象架构", riskLevel: "MEDIUM" as const },
+  { id: "CROSS_FUNCTIONAL_APPLICATION_CALCULUS", title: "跨功能应用计算法", riskLevel: "MEDIUM" as const },
+  { id: "MISSING_LAYER_DETECTION_CALCULUS", title: "缺层识别计算法", riskLevel: "MEDIUM" as const },
+  { id: "RECURSIVE_SYSTEM_LEAP_RECOGNITION_CALCULUS", title: "递归跃迁识别", riskLevel: "HIGH" as const },
+  { id: "DIGITAL_ROLE_CALCULUS", title: "数字角色计算法", riskLevel: "LOW" as const },
+  { id: "AGENT_KNOWLEDGE_PERSONALITY_BINDING", title: "Agent 知识人格绑定", riskLevel: "MEDIUM" as const },
+  { id: "OPEN_SOURCE_ARCHITECTURE_ASSIMILATION_CALCULUS", title: "开源架构吸收", riskLevel: "MEDIUM" as const },
+  { id: "APP_RUNTIME_CALCULUS", title: "App Runtime 计算法", riskLevel: "MEDIUM" as const },
+  { id: "CODE_SANDBOX_CALCULUS", title: "代码沙箱计算法", riskLevel: "HIGH" as const },
+  { id: "WEBLLM_CONTROL_CALCULUS", title: "WebLLM 控制计算法", riskLevel: "MEDIUM" as const },
+  { id: "WEBLCM_CONCEPT_CALCULUS", title: "WebLCM 概念计算法", riskLevel: "MEDIUM" as const },
+  { id: "TEXT_DYNAMIC_UPDATE", title: "文本动态更新", riskLevel: "LOW" as const },
+  { id: "VERSION_LEAP", title: "版本跃迁", riskLevel: "MEDIUM" as const },
+  { id: "SOFTWARE_QA", title: "软件 QA", riskLevel: "LOW" as const },
+  { id: "REALITY_DATA_CALIBRATION", title: "现实数据校准", riskLevel: "MEDIUM" as const },
+  { id: "HYBRID_COMPRESSION", title: "混合压缩", riskLevel: "LOW" as const },
+  { id: "VOCAL_ENGINE_CALCULUS", title: "声乐引擎计算法", riskLevel: "LOW" as const },
+  { id: "NARRATIVE_ENGINE_CALCULUS", title: "叙事引擎计算法", riskLevel: "LOW" as const },
+  { id: "WORLD_ENGINE_CALCULUS", title: "世界引擎计算法", riskLevel: "MEDIUM" as const },
+] as const;
+export type WebCalculusModelType = typeof WEB_CALCULUS_MODEL_TYPES[number]["id"];

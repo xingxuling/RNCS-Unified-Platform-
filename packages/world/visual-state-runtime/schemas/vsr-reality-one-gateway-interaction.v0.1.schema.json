@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/vsr/schemas/vsr-reality-one-gateway-interaction.v0.1.schema.json",
+  "title": "VSR Reality One Gateway Interaction Receipt v0.1",
+  "type": "object",
+  "required": [
+    "format",
+    "adapterVersion",
+    "sessionId",
+    "intentText",
+    "proposalHash",
+    "interactionCommitHash",
+    "authorityDecision",
+    "gatewayStatus",
+    "eventChainRoot",
+    "displayHash",
+    "receiptRoot"
+  ],
+  "properties": {
+    "format": {
+      "const": "vsr.reality-one-gateway-interaction.v0.1"
+    },
+    "adapterVersion": {
+      "type": "string"
+    },
+    "sessionId": {
+      "type": "string"
+    },
+    "intentText": {
+      "type": "string"
+    },
+    "proposalHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "interactionCommitHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "authorityDecision": {
+      "enum": [
+        "approved",
+        "denied"
+      ]
+    },
+    "gatewayStatus": {
+      "enum": [
+        "skipped",
+        "blocked",
+        "committed",
+        "failed"
+      ]
+    },
+    "previewRoot": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "executionRoot": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "finalGlobalRoot": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "eventChainRoot": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "displayHash": {
+      "type": "string"
+    },
+    "receiptRoot": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "error": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

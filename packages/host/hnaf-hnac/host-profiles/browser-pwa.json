@@ -1,0 +1,45 @@
+{
+  "id": "hnaf.javascript.browser",
+  "family": "web",
+  "execution_profiles": [
+    "wasm-core@1",
+    "declarative-v0"
+  ],
+  "capabilities": {
+    "host.log": [
+      "1"
+    ],
+    "host.clock": [
+      "1"
+    ],
+    "environment.summary": [
+      "1"
+    ],
+    "storage.kv": [
+      "1",
+      "2"
+    ],
+    "storage.state": [
+      "1"
+    ]
+  },
+  "interaction_modes": [
+    "touch",
+    "pointer",
+    "keyboard"
+  ],
+  "resources": {
+    "wasm_engine": "browser-webassembly",
+    "storage": "origin-scoped",
+    "viewport_width": 1280,
+    "viewport_height": 800,
+    "screen_reader": false,
+    "spatial": false
+  },
+  "policies": {
+    "require_signature": false,
+    "network_default": "deny",
+    "fuel_enforcement": "unavailable",
+    "accessibility_mode": false
+  }
+}

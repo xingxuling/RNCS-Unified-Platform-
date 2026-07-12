@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.tech/schemas/dml-semantic-action.v0.3.schema.json",
+  "title": "DML Semantic Action v0.3",
+  "type": "object",
+  "required": [
+    "format",
+    "action_id",
+    "type",
+    "subject",
+    "payload",
+    "authority",
+    "created_at",
+    "action_root"
+  ],
+  "properties": {
+    "format": {
+      "const": "dml.semantic-action.v0.3"
+    },
+    "action_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "type": {
+      "type": "string",
+      "pattern": "^dml\\."
+    },
+    "subject": {
+      "type": "object",
+      "required": [
+        "subject_id",
+        "kind",
+        "roles",
+        "scopes"
+      ],
+      "properties": {
+        "subject_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "type": "string"
+        },
+        "roles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "human_principal": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "project_ref": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "goal_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "trigger": {
+      "type": "string"
+    },
+    "payload": {
+      "type": "object"
+    },
+    "constraints": {
+      "type": "object"
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "max_risk",
+        "require_reversible",
+        "approval_mode"
+      ],
+      "properties": {
+        "max_risk": {
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "critical"
+          ]
+        },
+        "require_reversible": {
+          "type": "boolean"
+        },
+        "approval_mode": {
+          "enum": [
+            "never",
+            "when-required",
+            "always"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "action_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "additionalProperties": false
+}

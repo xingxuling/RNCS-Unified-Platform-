@@ -1,0 +1,35 @@
+{
+  "version": "0.5",
+  "contract": "HNAF host implementation with Portable State Fabric",
+  "required": {
+    "capsule_formats": [
+      "0.1",
+      "0.2",
+      "0.3",
+      "0.4",
+      "0.5"
+    ],
+    "state_format": "hnaf.portable-state.v0.5",
+    "partitions": [
+      "portable",
+      "device_private",
+      "secret",
+      "cache",
+      "ephemeral"
+    ],
+    "root_algorithm": "sha256(canonical-json)",
+    "state_capability": "storage.state@1",
+    "export_guards": [
+      "no-device-private",
+      "no-ephemeral",
+      "secret-authenticated-encryption"
+    ],
+    "migration_operations": [
+      "set",
+      "delete",
+      "rename",
+      "copy"
+    ],
+    "conflict_evidence": true
+  }
+}

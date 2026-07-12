@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.example/schemas/vsr-device-profile.v0.1.schema.json",
+  "title": "VSR Device Profile v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "deviceId", "deviceClass", "viewport"],
+  "properties": {
+    "format": { "const": "vsr.device-profile.v0.1" },
+    "deviceId": { "type": "string", "minLength": 1 },
+    "deviceClass": { "enum": ["desktop", "mobile", "tablet", "xr", "embedded"] },
+    "viewport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["width", "height"],
+      "properties": {
+        "width": { "type": "number", "exclusiveMinimum": 0 },
+        "height": { "type": "number", "exclusiveMinimum": 0 },
+        "dpr": { "type": "number", "exclusiveMinimum": 0 }
+      }
+    },
+    "safeArea": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "top": { "type": "number", "minimum": 0 },
+        "right": { "type": "number", "minimum": 0 },
+        "bottom": { "type": "number", "minimum": 0 },
+        "left": { "type": "number", "minimum": 0 }
+      }
+    },
+    "inputModes": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "enum": ["pointer", "touch", "keyboard", "voice", "gaze", "controller"] }
+    },
+    "fit": { "enum": ["contain", "cover", "stretch"] },
+    "orientation": { "enum": ["portrait", "landscape", "square", "spatial"] },
+    "claims": { "type": "object" }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["format", "reality_id", "generation", "generation_root", "rfe_generation_id", "branch_id", "evidence_root"],
+  "properties": {
+    "format": {"const": "rncs.generation-reference.v0.1"},
+    "reality_id": {"type": "string", "minLength": 1},
+    "generation": {"type": "integer", "minimum": 0},
+    "generation_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "rfe_generation_id": {"type": "string", "minLength": 1},
+    "branch_id": {"type": "string", "minLength": 1},
+    "evidence_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": false
+}

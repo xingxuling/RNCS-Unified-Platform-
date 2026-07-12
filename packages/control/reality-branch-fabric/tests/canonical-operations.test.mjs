@@ -1,0 +1,23 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {canonicalJson, rootHash, BranchError, applyOperation, applyOperations, diffStates, evaluatePredicate, getPath, hasPath, pathsOverlap} from '../src/index.mjs';
+
+test('canonical object key order is deterministic', () => assert.equal(rootHash({b: 2, a: 1}), rootHash({a: 1, b: 2})));
+test('canonical arrays preserve order', () => assert.notEqual(rootHash([1, 2]), rootHash([2, 1])));
+test('float values are forbidden', () => assert.throws(() => rootHash({x: 1.2}), /RBF_FLOAT_FORBIDDEN/));
+test('unsupported canonical values are rejected', () => assert.throws(() => canonicalJson(undefined), /RBF_CANONICAL_UNSUPPORTED/));
+test('set operation writes nested value', () => assert.equal(applyOperation({}, {op: 'set', path: 'a.b', value: 3}).a.b, 3));
+test('remove operation deletes value', () => assert.equal(hasPath(applyOperation({a: {b: 3}}, {op: 'remove', path: 'a.b'}), 'a.b'), false));
+test('append operation creates array', () => assert.deepEqual(applyOperation({}, {op: 'append', path: 'items', value: 'x'}).items, ['x']));
+test('increment operation adds integers', () => assert.equal(applyOperation({n: 2}, {op: 'increment', path: 'n', value: 4}).n, 6));
+test('merge operation performs shallow object merge', () => assert.deepEqual(applyOperation({x: {a: 1}}, {op: 'merge', path: 'x', value: {b: 2}}).x, {a: 1, b: 2}));
+test('unsupported operation is rejected', () => assert.throws(() => applyOperation({}, {op: 'exec', path: 'x'}), /RBF_OPERATION_UNSUPPORTED/));
+test('prototype pollution paths are rejected', () => assert.throws(() => applyOperation({}, {op: 'set', path: '__proto__.polluted', value: true}), /RBF_PATH_UNSAFE/));
+test('precondition success permits operation', () => assert.equal(applyOperation({n: 2}, {op: 'set', path: 'n', value: 3, preconditions: [{path: 'n', operator: 'equals', value: 2}]}).n, 3));
+test('precondition failure blocks operation', () => assert.throws(() => applyOperation({n: 2}, {op: 'set', path: 'n', value: 3, preconditions: [{path: 'n', operator: 'equals', value: 7}]}), /RBF_PRECONDITION_FAILED/));
+test('captured operation includes inverse and roots', () => { const result = applyOperation({n: 2}, {operation_id: 'op:1', op: 'set', path: 'n', value: 3}, {capture: true}); assert.equal(result.receipt.inverse.value, 2); assert.notEqual(result.receipt.before_state_root, result.receipt.after_state_root); });
+test('applyOperations captures all receipts', () => { const result = applyOperations({n: 0}, [{op: 'increment', path: 'n', value: 1}, {op: 'increment', path: 'n', value: 2}], {capture: true}); assert.equal(result.state.n, 3); assert.equal(result.receipts.length, 2); });
+test('diffStates reports additions changes and removals', () => { const diff = diffStates({a: 1, b: 2}, {a: 3, c: 4}); assert.deepEqual(diff.map(x => x.kind).sort(), ['added', 'changed', 'removed']); });
+test('predicate supports exists equals and range', () => { const s = {n: 5}; assert.equal(evaluatePredicate(s, {path: 'n', operator: 'exists', value: true}).passed, true); assert.equal(evaluatePredicate(s, {path: 'n', operator: 'gte', value: 4}).passed, true); assert.equal(evaluatePredicate(s, {path: 'n', operator: 'lte', value: 4}).passed, false); });
+test('path helpers read nested values', () => { const s = {a: {b: 2}}; assert.equal(getPath(s, 'a.b'), 2); assert.equal(hasPath(s, 'a.b'), true); });
+test('overlap detects parent-child writes', () => { assert.equal(pathsOverlap('a.b', 'a'), true); assert.equal(pathsOverlap('a.b', 'x'), false); });

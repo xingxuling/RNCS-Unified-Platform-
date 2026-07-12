@@ -1,0 +1,13 @@
+{
+  "name": "@taowind/csl-compiler",
+  "version": "0.9.0-unified.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./*": "./src/*"
+  },
+  "dependencies": {
+    "jszip": "^3.10.1"
+  }
+}

@@ -1,0 +1,45 @@
+version: 1
+project: RNCS_Aetherworld_Unified_v0.8.0-alpha.1
+baseline:
+  mother_project: 0.7.0-alpha.1
+  rsr: 0.7.0-alpha.1
+  vsr: 0.6.0-alpha.1
+  github_main: a340a2839786f0409616645fe0aa5cd612e9892c
+results_required:
+  - RSR provides deterministic persistent contact warm-starting.
+  - RSR broad phase uses deterministic spatial partitioning.
+  - Character controller supports step-up, ground snap, moving-platform inheritance and one-way platforms.
+  - VSR imports a real glTF 2.0 asset into native scene objects.
+  - Texture resources affect material and rendered pixel roots.
+  - Animation sampling changes presentation transforms without changing authority root.
+  - Existing RSR, VSR and Network authority protocols remain valid.
+authority:
+  physical_truth: RSR
+  multiplayer_truth: RSR_via_Network
+  presentation: VSR
+allowed_changes:
+  - packages/world/reality-simulation-runtime
+  - packages/world/visual-state-runtime
+  - packages/integration/aether-rncs-bridge
+  - tests
+  - examples
+  - docs
+  - version and release manifests
+forbidden_changes:
+  - replace RFE authority with frontend state
+  - create a second network physics model
+  - delete or weaken existing tests
+  - claim real GPU performance without target hardware evidence
+vertical_slices:
+  - id: rsr-contact-partition
+    evidence: deterministic warm-start and spatial partition tests
+  - id: rsr-character-playability
+    evidence: step, snap, moving platform and one-way platform tests
+  - id: vsr-gltf-texture
+    evidence: glTF import and textured reference render tests
+  - id: vsr-animation-projection
+    evidence: animation changes Presentation Root but not Authority Root
+  - id: integrated-playable-island
+    evidence: two-client authority convergence and independent VSR projection
+rollback:
+  method: restore v0.7 source archive or git baseline commit

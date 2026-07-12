@@ -1,0 +1,14 @@
+export const SEQUENCE_OBJECT_EXPORT_TARGETS = [
+  "JSON_OBJECT","WORKSPACE_PACK","PROMPT_PACK","VOCAL_PACK","NARRATIVE_PACK","WORLD_PACK",
+  "MODEL_SPEC","ENGINE_SPEC","RUNTIME_CONTRACT","PRODUCT_DOC","LEARNING_DOC",
+  "QA_REPORT","VERSION_RECORD","CLM_RECORD",
+] as const;
+export type SequenceObjectExportTarget = (typeof SEQUENCE_OBJECT_EXPORT_TARGETS)[number];
+
+export const EXPORT_TARGET_LABELS: Record<SequenceObjectExportTarget, string> = {
+  JSON_OBJECT: "JSON 对象", WORKSPACE_PACK: "工作区包", PROMPT_PACK: "Prompt 包",
+  VOCAL_PACK: "声乐包", NARRATIVE_PACK: "剧情包", WORLD_PACK: "世界包",
+  MODEL_SPEC: "模型规范", ENGINE_SPEC: "引擎规范", RUNTIME_CONTRACT: "运行契约",
+  PRODUCT_DOC: "产品文档", LEARNING_DOC: "学习文档",
+  QA_REPORT: "QA 报告", VERSION_RECORD: "版本记录", CLM_RECORD: "CLM 记录",
+};

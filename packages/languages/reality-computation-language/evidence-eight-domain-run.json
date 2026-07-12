@@ -1,0 +1,1464 @@
+{
+  "format": "rcl.reality-run.v0.3",
+  "program": "EightDomainWorld",
+  "programRoot": "a94d88be5a772a500b58f4de57b036b58bf1abea12a688f9d9a534d8fd5ead6f",
+  "foundation": {
+    "format": "rcl.reality-foundation.v0.3",
+    "program": "EightDomainWorld",
+    "languageVersion": "0.3.0-alpha.1",
+    "programRoot": "a94d88be5a772a500b58f4de57b036b58bf1abea12a688f9d9a534d8fd5ead6f",
+    "domains": {
+      "metaComputational": 1,
+      "computational": 2,
+      "physical": 1,
+      "perceptual": 1,
+      "neural": 1,
+      "living": 1,
+      "genetic": 1,
+      "quantitative": 1,
+      "knowledge": 0
+    },
+    "authority": {
+      "warrants": 1,
+      "boundedRules": 0
+    },
+    "compositePlanes": [
+      {
+        "id": "inner-reality",
+        "composedFrom": [
+          "perceptual",
+          "neural",
+          "living",
+          "knowledge"
+        ],
+        "role": "the subject-relative model that contains percepts, needs, memories, claims, uncertainty and candidate intentions"
+      },
+      {
+        "id": "execution-reality",
+        "composedFrom": [
+          "computational",
+          "physical",
+          "authority",
+          "causality-evidence"
+        ],
+        "role": "the bounded transition plane that turns a justified intention into an observed, authorized and evidenced change"
+      }
+    ]
+  },
+  "state": {
+    "lineage.motion_bias": 0.22000000000000003,
+    "lineage.expressed_motion": 0.22000000000000003,
+    "creature.energy": 0.9,
+    "brain.response": 0.5,
+    "brain.stimulus": 1,
+    "world.gravity.acceleration": {
+      "kind": "Quantity",
+      "type": "Acceleration",
+      "value": -9.81,
+      "unit": "m/s²"
+    },
+    "world.stone.velocity": {
+      "kind": "Quantity",
+      "type": "Velocity",
+      "value": -19.62,
+      "unit": "m/s"
+    },
+    "world.stone.position": {
+      "kind": "Quantity",
+      "type": "Length",
+      "value": 0.1899999999999995,
+      "unit": "m"
+    },
+    "self_model.revision": 1,
+    "founder.awareness": 0,
+    "phenotype.motion_bias": 0.22000000000000003,
+    "telemetry.altitude": {
+      "kind": "Measurement",
+      "baseType": "Length",
+      "value": {
+        "kind": "Quantity",
+        "type": "Length",
+        "value": 0.1899999999999995,
+        "unit": "m"
+      },
+      "uncertainty": {
+        "kind": "Quantity",
+        "type": "Length",
+        "value": 0.05,
+        "unit": "m"
+      },
+      "confidence": 0.98,
+      "unit": "m",
+      "scale": "ratio",
+      "evidence": [
+        "sensor:simulated-altimeter"
+      ],
+      "calibratedBy": "rcl:foundation-calibration"
+    },
+    "sight.altitude": {
+      "kind": "Quantity",
+      "type": "Length",
+      "value": 0.1899999999999995,
+      "unit": "m"
+    },
+    "telemetry.safe_altitude": true,
+    "creature.altitude": {
+      "kind": "Quantity",
+      "type": "Length",
+      "value": 0.1899999999999995,
+      "unit": "m"
+    }
+  },
+  "stateRoot": "c097eb49475406dbe599d18225387072ca7be0740b33fc279d395b9135614fed",
+  "history": [
+    {
+      "kind": "DomainTransition",
+      "domainKind": "meta-computational",
+      "name": "self_model",
+      "status": "realized",
+      "beforeRoot": "0b1ba124ead26bde0b2cee19d599d919aead4c55b8079e7c46a407adb82a9405",
+      "afterRoot": "cf0bc18a1617a1f19e111ca140e04970638d0a63288deda5a5b05b149bc8185c",
+      "changes": [
+        {
+          "target": "self_model.revision",
+          "before": 0,
+          "after": 1,
+          "source": "meta:revise"
+        }
+      ],
+      "inspections": [
+        "program",
+        "foundation"
+      ],
+      "foundation": {
+        "format": "rcl.reality-foundation.v0.3",
+        "program": "EightDomainWorld",
+        "languageVersion": "0.3.0-alpha.1",
+        "programRoot": "a94d88be5a772a500b58f4de57b036b58bf1abea12a688f9d9a534d8fd5ead6f",
+        "domains": {
+          "metaComputational": 1,
+          "computational": 2,
+          "physical": 1,
+          "perceptual": 1,
+          "neural": 1,
+          "living": 1,
+          "genetic": 1,
+          "quantitative": 1,
+          "knowledge": 0
+        },
+        "authority": {
+          "warrants": 1,
+          "boundedRules": 0
+        },
+        "compositePlanes": [
+          {
+            "id": "inner-reality",
+            "composedFrom": [
+              "perceptual",
+              "neural",
+              "living",
+              "knowledge"
+            ],
+            "role": "the subject-relative model that contains percepts, needs, memories, claims, uncertainty and candidate intentions"
+          },
+          {
+            "id": "execution-reality",
+            "composedFrom": [
+              "computational",
+              "physical",
+              "authority",
+              "causality-evidence"
+            ],
+            "role": "the bounded transition plane that turns a justified intention into an observed, authorized and evidenced change"
+          }
+        ]
+      },
+      "authorityClass": "metacomputational-self-inspection"
+    },
+    {
+      "kind": "DomainTransition",
+      "domainKind": "physical",
+      "name": "world.fall",
+      "status": "realized",
+      "beforeRoot": "cf0bc18a1617a1f19e111ca140e04970638d0a63288deda5a5b05b149bc8185c",
+      "afterRoot": "51d57f55694fe7fcac787d4656cb29fd031cd9d0eed0fc7233a98feecf8c4508",
+      "changes": [
+        {
+          "target": "world.stone.velocity",
+          "before": {
+            "kind": "Quantity",
+            "type": "Velocity",
+            "value": 0,
+            "unit": "m/s"
+          },
+          "after": {
+            "kind": "Quantity",
+            "type": "Velocity",
+            "value": -9.81,
+            "unit": "m/s"
+          },
+          "source": "physical:evolve"
+        },
+        {
+          "target": "world.stone.position",
+          "before": {
+            "kind": "Quantity",
+            "type": "Length",
+            "value": 10,
+            "unit": "m"
+          },
+          "after": {
+            "kind": "Quantity",
+            "type": "Length",
+            "value": 10,
+            "unit": "m"
+          },
+          "source": "physical:evolve"
+        }
+      ],
+      "step": 1,
+      "dt": {
+        "kind": "Quantity",
+        "type": "Time",
+        "value": 1,
+        "unit": "s"
+      },
+      "witnesses": [
+        "physical:gravity"
+      ],
+      "authorityClass": "natural-law"
+    },
+    {
+      "kind": "DomainTransition",
+      "domainKind": "physical",
+      "name": "world.fall",
+      "status": "realized",
+      "beforeRoot": "51d57f55694fe7fcac787d4656cb29fd031cd9d0eed0fc7233a98feecf8c4508",
+      "afterRoot": "2d4beeba017a6360dd5d4d282c772f9d79ae759e577e903b5bd745cbbd246eb2",
+      "changes": [
+        {
+          "target": "world.stone.velocity",
+          "before": {
+            "kind": "Quantity",
+            "type": "Velocity",
+            "value": -9.81,
+            "unit": "m/s"
+          },
+          "after": {
+            "kind": "Quantity",
+            "type": "Velocity",
+            "value": -19.62,
+            "unit": "m/s"
+          },
+          "source": "physical:evolve"
+        },
+        {
+          "target": "world.stone.position",
+          "before": {
+            "kind": "Quantity",
+            "type": "Length",
+            "value": 10,
+            "unit": "m"
+          },
+          "after": {
+            "kind": "Quantity",
+            "type": "Length",
+            "value": 0.1899999999999995,
+            "unit": "m"
+          },
+          "source": "physical:evolve"
+        }
+      ],
+      "step": 2,
+      "dt": {
+        "kind": "Quantity",
+        "type": "Time",
+        "value": 1,
+        "unit": "s"
+      },
+      "witnesses": [
+        "physical:gravity"
+      ],
+      "authorityClass": "natural-law"
+    },
+    {
+      "kind": "DomainTransition",
+      "domainKind": "perceptual",
+      "name": "sight",
+      "status": "realized",
+      "beforeRoot": "2d4beeba017a6360dd5d4d282c772f9d79ae759e577e903b5bd745cbbd246eb2",
+      "afterRoot": "a184936abda64a468a0f5963c0d40bc1268cb6348bc3c543f768cdaff8a57c3f",
+      "changes": [
+        {
+          "target": "sight.altitude",
+          "before": {
+            "kind": "Quantity",
+            "type": "Length",
+            "value": 10,
+            "unit": "m"
+          },
+          "after": {
+            "kind": "Quantity",
+            "type": "Length",
+            "value": 0.1899999999999995,
+            "unit": "m"
+          },
+          "source": "perception:observe"
+        }
+      ],
+      "observer": "creature",
+      "sourceReality": "world",
+      "authorityClass": "observation"
+    },
+    {
+      "kind": "DomainTransition",
+      "domainKind": "living",
+      "name": "creature.survive",
+      "status": "realized",
+      "beforeRoot": "abc895a21314aaf12c6c8d364fb9f74c9a40e260af234ca3d19b75c60f47bc18",
+      "afterRoot": "a5974696bba8f175fd0c4b5e42aa8a0dc710ed379f46de762c607dce5e5980a8",
+      "changes": [
+        {
+          "target": "creature.altitude",
+          "before": {
+            "kind": "Quantity",
+            "type": "Length",
+            "value": 10,
+            "unit": "m"
+          },
+          "after": {
+            "kind": "Quantity",
+            "type": "Length",
+            "value": 0.1899999999999995,
+            "unit": "m"
+          },
+          "source": "living:sense"
+        },
+        {
+          "target": "creature.energy",
+          "before": 1,
+          "after": 0.9,
+          "source": "living:metabolize"
+        },
+        {
+          "target": "brain.stimulus",
+          "before": 0,
+          "after": 1,
+          "source": "living:intend"
+        }
+      ],
+      "step": 1,
+      "body": "world.stone",
+      "needs": [
+        {
+          "kind": "NeedDecl",
+          "path": "creature.energy",
+          "target": {
+            "kind": "LiteralExpr",
+            "value": 1,
+            "valueType": "Number"
+          },
+          "critical": {
+            "kind": "LiteralExpr",
+            "value": 0.2,
+            "valueType": "Number"
+          }
+        }
+      ],
+      "witnesses": [
+        "life:survival-cycle"
+      ],
+      "authorityClass": "intrinsic-life-cycle"
+    },
+    {
+      "kind": "DomainTransition",
+      "domainKind": "neural",
+      "name": "brain.integrate",
+      "status": "realized",
+      "beforeRoot": "a5974696bba8f175fd0c4b5e42aa8a0dc710ed379f46de762c607dce5e5980a8",
+      "afterRoot": "cbc4d6175f1306e118ef143e357f206d36b8ecedf9f09a58e0281ff2ce8d83cc",
+      "changes": [
+        {
+          "target": "brain.response",
+          "before": 0,
+          "after": 0.5,
+          "source": "neural:transmit"
+        }
+      ],
+      "step": 1,
+      "witnesses": [
+        "neural:integration"
+      ],
+      "authorityClass": "intrinsic-neural-dynamics"
+    },
+    {
+      "kind": "DomainTransition",
+      "domainKind": "genetic",
+      "name": "lineage",
+      "status": "realized",
+      "beforeRoot": "cbc4d6175f1306e118ef143e357f206d36b8ecedf9f09a58e0281ff2ce8d83cc",
+      "afterRoot": "dd3fede97292419194336b28c13244a3e2f35105bc99366a91655af7bb627756",
+      "changes": [
+        {
+          "target": "lineage.motion_bias",
+          "before": 0.2,
+          "after": 0.21000000000000002,
+          "source": "genetic:mutation"
+        },
+        {
+          "target": "lineage.expressed_motion",
+          "before": 0,
+          "after": 0.21000000000000002,
+          "source": "genetic:expression"
+        },
+        {
+          "target": "phenotype.motion_bias",
+          "before": 0,
+          "after": 0.21000000000000002,
+          "source": "genetic:expression"
+        }
+      ],
+      "generation": 1,
+      "witnesses": [
+        "genetic:lineage"
+      ],
+      "authorityClass": "lineage-transformation"
+    },
+    {
+      "kind": "DomainTransition",
+      "domainKind": "genetic",
+      "name": "lineage",
+      "status": "realized",
+      "beforeRoot": "dd3fede97292419194336b28c13244a3e2f35105bc99366a91655af7bb627756",
+      "afterRoot": "723f8982713d443382052999c685086fccda74118949a17380d06c1f7866a55b",
+      "changes": [
+        {
+          "target": "lineage.motion_bias",
+          "before": 0.21000000000000002,
+          "after": 0.22000000000000003,
+          "source": "genetic:mutation"
+        },
+        {
+          "target": "lineage.expressed_motion",
+          "before": 0.21000000000000002,
+          "after": 0.22000000000000003,
+          "source": "genetic:expression"
+        },
+        {
+          "target": "phenotype.motion_bias",
+          "before": 0.21000000000000002,
+          "after": 0.22000000000000003,
+          "source": "genetic:expression"
+        }
+      ],
+      "generation": 2,
+      "witnesses": [
+        "genetic:lineage"
+      ],
+      "authorityClass": "lineage-transformation"
+    },
+    {
+      "kind": "DomainTransition",
+      "domainKind": "quantitative",
+      "name": "telemetry",
+      "status": "realized",
+      "beforeRoot": "723f8982713d443382052999c685086fccda74118949a17380d06c1f7866a55b",
+      "afterRoot": "c097eb49475406dbe599d18225387072ca7be0740b33fc279d395b9135614fed",
+      "changes": [
+        {
+          "target": "telemetry.altitude",
+          "before": {
+            "kind": "Measurement",
+            "baseType": "Length",
+            "value": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 10,
+              "unit": "m"
+            },
+            "uncertainty": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 0.05,
+              "unit": "m"
+            },
+            "confidence": 0.98,
+            "unit": "m",
+            "scale": "ratio",
+            "evidence": [
+              "sensor:simulated-altimeter"
+            ],
+            "calibratedBy": "rcl:foundation-calibration"
+          },
+          "after": {
+            "kind": "Measurement",
+            "baseType": "Length",
+            "value": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 0.1899999999999995,
+              "unit": "m"
+            },
+            "uncertainty": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 0.05,
+              "unit": "m"
+            },
+            "confidence": 0.98,
+            "unit": "m",
+            "scale": "ratio",
+            "evidence": [
+              "sensor:simulated-altimeter"
+            ],
+            "calibratedBy": "rcl:foundation-calibration"
+          },
+          "source": "quantitative:measure"
+        },
+        {
+          "target": "telemetry.safe_altitude",
+          "before": true,
+          "after": true,
+          "source": "quantitative:derive"
+        }
+      ],
+      "measurements": [
+        {
+          "path": "telemetry.altitude",
+          "scale": "ratio",
+          "evidence": [
+            "sensor:simulated-altimeter"
+          ],
+          "calibratedBy": "rcl:foundation-calibration"
+        }
+      ],
+      "authorityClass": "evidentiary-measurement"
+    }
+  ],
+  "projections": [],
+  "innerReality": {
+    "format": "rcl.inner-reality.v0.1",
+    "program": "EightDomainWorld",
+    "perceptual": {
+      "sight.altitude": {
+        "kind": "Quantity",
+        "type": "Length",
+        "value": 0.1899999999999995,
+        "unit": "m"
+      }
+    },
+    "neural": {
+      "brain.response": 0.5,
+      "brain.stimulus": 1
+    },
+    "living": {
+      "creature.energy": 0.9,
+      "creature.altitude": {
+        "kind": "Quantity",
+        "type": "Length",
+        "value": 0.1899999999999995,
+        "unit": "m"
+      }
+    },
+    "knowledge": {},
+    "unresolved": [],
+    "root": "cbb0db0025653ddfe6b3564c575282066b27be91eb829b9dc211b5c0172d2608"
+  },
+  "executionReality": {
+    "format": "rcl.execution-reality.v0.1",
+    "program": "EightDomainWorld",
+    "projected": [],
+    "realized": [
+      {
+        "kind": "DomainTransition",
+        "domainKind": "meta-computational",
+        "name": "self_model",
+        "status": "realized",
+        "beforeRoot": "0b1ba124ead26bde0b2cee19d599d919aead4c55b8079e7c46a407adb82a9405",
+        "afterRoot": "cf0bc18a1617a1f19e111ca140e04970638d0a63288deda5a5b05b149bc8185c",
+        "changes": [
+          {
+            "target": "self_model.revision",
+            "before": 0,
+            "after": 1,
+            "source": "meta:revise"
+          }
+        ],
+        "inspections": [
+          "program",
+          "foundation"
+        ],
+        "foundation": {
+          "format": "rcl.reality-foundation.v0.3",
+          "program": "EightDomainWorld",
+          "languageVersion": "0.3.0-alpha.1",
+          "programRoot": "a94d88be5a772a500b58f4de57b036b58bf1abea12a688f9d9a534d8fd5ead6f",
+          "domains": {
+            "metaComputational": 1,
+            "computational": 2,
+            "physical": 1,
+            "perceptual": 1,
+            "neural": 1,
+            "living": 1,
+            "genetic": 1,
+            "quantitative": 1,
+            "knowledge": 0
+          },
+          "authority": {
+            "warrants": 1,
+            "boundedRules": 0
+          },
+          "compositePlanes": [
+            {
+              "id": "inner-reality",
+              "composedFrom": [
+                "perceptual",
+                "neural",
+                "living",
+                "knowledge"
+              ],
+              "role": "the subject-relative model that contains percepts, needs, memories, claims, uncertainty and candidate intentions"
+            },
+            {
+              "id": "execution-reality",
+              "composedFrom": [
+                "computational",
+                "physical",
+                "authority",
+                "causality-evidence"
+              ],
+              "role": "the bounded transition plane that turns a justified intention into an observed, authorized and evidenced change"
+            }
+          ]
+        },
+        "authorityClass": "metacomputational-self-inspection"
+      },
+      {
+        "kind": "DomainTransition",
+        "domainKind": "physical",
+        "name": "world.fall",
+        "status": "realized",
+        "beforeRoot": "cf0bc18a1617a1f19e111ca140e04970638d0a63288deda5a5b05b149bc8185c",
+        "afterRoot": "51d57f55694fe7fcac787d4656cb29fd031cd9d0eed0fc7233a98feecf8c4508",
+        "changes": [
+          {
+            "target": "world.stone.velocity",
+            "before": {
+              "kind": "Quantity",
+              "type": "Velocity",
+              "value": 0,
+              "unit": "m/s"
+            },
+            "after": {
+              "kind": "Quantity",
+              "type": "Velocity",
+              "value": -9.81,
+              "unit": "m/s"
+            },
+            "source": "physical:evolve"
+          },
+          {
+            "target": "world.stone.position",
+            "before": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 10,
+              "unit": "m"
+            },
+            "after": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 10,
+              "unit": "m"
+            },
+            "source": "physical:evolve"
+          }
+        ],
+        "step": 1,
+        "dt": {
+          "kind": "Quantity",
+          "type": "Time",
+          "value": 1,
+          "unit": "s"
+        },
+        "witnesses": [
+          "physical:gravity"
+        ],
+        "authorityClass": "natural-law"
+      },
+      {
+        "kind": "DomainTransition",
+        "domainKind": "physical",
+        "name": "world.fall",
+        "status": "realized",
+        "beforeRoot": "51d57f55694fe7fcac787d4656cb29fd031cd9d0eed0fc7233a98feecf8c4508",
+        "afterRoot": "2d4beeba017a6360dd5d4d282c772f9d79ae759e577e903b5bd745cbbd246eb2",
+        "changes": [
+          {
+            "target": "world.stone.velocity",
+            "before": {
+              "kind": "Quantity",
+              "type": "Velocity",
+              "value": -9.81,
+              "unit": "m/s"
+            },
+            "after": {
+              "kind": "Quantity",
+              "type": "Velocity",
+              "value": -19.62,
+              "unit": "m/s"
+            },
+            "source": "physical:evolve"
+          },
+          {
+            "target": "world.stone.position",
+            "before": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 10,
+              "unit": "m"
+            },
+            "after": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 0.1899999999999995,
+              "unit": "m"
+            },
+            "source": "physical:evolve"
+          }
+        ],
+        "step": 2,
+        "dt": {
+          "kind": "Quantity",
+          "type": "Time",
+          "value": 1,
+          "unit": "s"
+        },
+        "witnesses": [
+          "physical:gravity"
+        ],
+        "authorityClass": "natural-law"
+      },
+      {
+        "kind": "DomainTransition",
+        "domainKind": "perceptual",
+        "name": "sight",
+        "status": "realized",
+        "beforeRoot": "2d4beeba017a6360dd5d4d282c772f9d79ae759e577e903b5bd745cbbd246eb2",
+        "afterRoot": "a184936abda64a468a0f5963c0d40bc1268cb6348bc3c543f768cdaff8a57c3f",
+        "changes": [
+          {
+            "target": "sight.altitude",
+            "before": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 10,
+              "unit": "m"
+            },
+            "after": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 0.1899999999999995,
+              "unit": "m"
+            },
+            "source": "perception:observe"
+          }
+        ],
+        "observer": "creature",
+        "sourceReality": "world",
+        "authorityClass": "observation"
+      },
+      {
+        "kind": "DomainTransition",
+        "domainKind": "living",
+        "name": "creature.survive",
+        "status": "realized",
+        "beforeRoot": "abc895a21314aaf12c6c8d364fb9f74c9a40e260af234ca3d19b75c60f47bc18",
+        "afterRoot": "a5974696bba8f175fd0c4b5e42aa8a0dc710ed379f46de762c607dce5e5980a8",
+        "changes": [
+          {
+            "target": "creature.altitude",
+            "before": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 10,
+              "unit": "m"
+            },
+            "after": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 0.1899999999999995,
+              "unit": "m"
+            },
+            "source": "living:sense"
+          },
+          {
+            "target": "creature.energy",
+            "before": 1,
+            "after": 0.9,
+            "source": "living:metabolize"
+          },
+          {
+            "target": "brain.stimulus",
+            "before": 0,
+            "after": 1,
+            "source": "living:intend"
+          }
+        ],
+        "step": 1,
+        "body": "world.stone",
+        "needs": [
+          {
+            "kind": "NeedDecl",
+            "path": "creature.energy",
+            "target": {
+              "kind": "LiteralExpr",
+              "value": 1,
+              "valueType": "Number"
+            },
+            "critical": {
+              "kind": "LiteralExpr",
+              "value": 0.2,
+              "valueType": "Number"
+            }
+          }
+        ],
+        "witnesses": [
+          "life:survival-cycle"
+        ],
+        "authorityClass": "intrinsic-life-cycle"
+      },
+      {
+        "kind": "DomainTransition",
+        "domainKind": "neural",
+        "name": "brain.integrate",
+        "status": "realized",
+        "beforeRoot": "a5974696bba8f175fd0c4b5e42aa8a0dc710ed379f46de762c607dce5e5980a8",
+        "afterRoot": "cbc4d6175f1306e118ef143e357f206d36b8ecedf9f09a58e0281ff2ce8d83cc",
+        "changes": [
+          {
+            "target": "brain.response",
+            "before": 0,
+            "after": 0.5,
+            "source": "neural:transmit"
+          }
+        ],
+        "step": 1,
+        "witnesses": [
+          "neural:integration"
+        ],
+        "authorityClass": "intrinsic-neural-dynamics"
+      },
+      {
+        "kind": "DomainTransition",
+        "domainKind": "genetic",
+        "name": "lineage",
+        "status": "realized",
+        "beforeRoot": "cbc4d6175f1306e118ef143e357f206d36b8ecedf9f09a58e0281ff2ce8d83cc",
+        "afterRoot": "dd3fede97292419194336b28c13244a3e2f35105bc99366a91655af7bb627756",
+        "changes": [
+          {
+            "target": "lineage.motion_bias",
+            "before": 0.2,
+            "after": 0.21000000000000002,
+            "source": "genetic:mutation"
+          },
+          {
+            "target": "lineage.expressed_motion",
+            "before": 0,
+            "after": 0.21000000000000002,
+            "source": "genetic:expression"
+          },
+          {
+            "target": "phenotype.motion_bias",
+            "before": 0,
+            "after": 0.21000000000000002,
+            "source": "genetic:expression"
+          }
+        ],
+        "generation": 1,
+        "witnesses": [
+          "genetic:lineage"
+        ],
+        "authorityClass": "lineage-transformation"
+      },
+      {
+        "kind": "DomainTransition",
+        "domainKind": "genetic",
+        "name": "lineage",
+        "status": "realized",
+        "beforeRoot": "dd3fede97292419194336b28c13244a3e2f35105bc99366a91655af7bb627756",
+        "afterRoot": "723f8982713d443382052999c685086fccda74118949a17380d06c1f7866a55b",
+        "changes": [
+          {
+            "target": "lineage.motion_bias",
+            "before": 0.21000000000000002,
+            "after": 0.22000000000000003,
+            "source": "genetic:mutation"
+          },
+          {
+            "target": "lineage.expressed_motion",
+            "before": 0.21000000000000002,
+            "after": 0.22000000000000003,
+            "source": "genetic:expression"
+          },
+          {
+            "target": "phenotype.motion_bias",
+            "before": 0.21000000000000002,
+            "after": 0.22000000000000003,
+            "source": "genetic:expression"
+          }
+        ],
+        "generation": 2,
+        "witnesses": [
+          "genetic:lineage"
+        ],
+        "authorityClass": "lineage-transformation"
+      },
+      {
+        "kind": "DomainTransition",
+        "domainKind": "quantitative",
+        "name": "telemetry",
+        "status": "realized",
+        "beforeRoot": "723f8982713d443382052999c685086fccda74118949a17380d06c1f7866a55b",
+        "afterRoot": "c097eb49475406dbe599d18225387072ca7be0740b33fc279d395b9135614fed",
+        "changes": [
+          {
+            "target": "telemetry.altitude",
+            "before": {
+              "kind": "Measurement",
+              "baseType": "Length",
+              "value": {
+                "kind": "Quantity",
+                "type": "Length",
+                "value": 10,
+                "unit": "m"
+              },
+              "uncertainty": {
+                "kind": "Quantity",
+                "type": "Length",
+                "value": 0.05,
+                "unit": "m"
+              },
+              "confidence": 0.98,
+              "unit": "m",
+              "scale": "ratio",
+              "evidence": [
+                "sensor:simulated-altimeter"
+              ],
+              "calibratedBy": "rcl:foundation-calibration"
+            },
+            "after": {
+              "kind": "Measurement",
+              "baseType": "Length",
+              "value": {
+                "kind": "Quantity",
+                "type": "Length",
+                "value": 0.1899999999999995,
+                "unit": "m"
+              },
+              "uncertainty": {
+                "kind": "Quantity",
+                "type": "Length",
+                "value": 0.05,
+                "unit": "m"
+              },
+              "confidence": 0.98,
+              "unit": "m",
+              "scale": "ratio",
+              "evidence": [
+                "sensor:simulated-altimeter"
+              ],
+              "calibratedBy": "rcl:foundation-calibration"
+            },
+            "source": "quantitative:measure"
+          },
+          {
+            "target": "telemetry.safe_altitude",
+            "before": true,
+            "after": true,
+            "source": "quantitative:derive"
+          }
+        ],
+        "measurements": [
+          {
+            "path": "telemetry.altitude",
+            "scale": "ratio",
+            "evidence": [
+              "sensor:simulated-altimeter"
+            ],
+            "calibratedBy": "rcl:foundation-calibration"
+          }
+        ],
+        "authorityClass": "evidentiary-measurement"
+      }
+    ],
+    "hostCalls": [],
+    "authorityDecisions": [],
+    "evidence": [
+      "physical:gravity",
+      "life:survival-cycle",
+      "neural:integration",
+      "genetic:lineage",
+      "sensor:simulated-altimeter"
+    ],
+    "root": "8b2c271c6d4c24657ef797b3cd4b5b7227de7eb794b3a0a33897490d0a2f3c08"
+  },
+  "outputs": [
+    {
+      "kind": "DomainTransition",
+      "domainKind": "meta-computational",
+      "name": "self_model",
+      "status": "realized",
+      "beforeRoot": "0b1ba124ead26bde0b2cee19d599d919aead4c55b8079e7c46a407adb82a9405",
+      "afterRoot": "cf0bc18a1617a1f19e111ca140e04970638d0a63288deda5a5b05b149bc8185c",
+      "changes": [
+        {
+          "target": "self_model.revision",
+          "before": 0,
+          "after": 1,
+          "source": "meta:revise"
+        }
+      ],
+      "inspections": [
+        "program",
+        "foundation"
+      ],
+      "foundation": {
+        "format": "rcl.reality-foundation.v0.3",
+        "program": "EightDomainWorld",
+        "languageVersion": "0.3.0-alpha.1",
+        "programRoot": "a94d88be5a772a500b58f4de57b036b58bf1abea12a688f9d9a534d8fd5ead6f",
+        "domains": {
+          "metaComputational": 1,
+          "computational": 2,
+          "physical": 1,
+          "perceptual": 1,
+          "neural": 1,
+          "living": 1,
+          "genetic": 1,
+          "quantitative": 1,
+          "knowledge": 0
+        },
+        "authority": {
+          "warrants": 1,
+          "boundedRules": 0
+        },
+        "compositePlanes": [
+          {
+            "id": "inner-reality",
+            "composedFrom": [
+              "perceptual",
+              "neural",
+              "living",
+              "knowledge"
+            ],
+            "role": "the subject-relative model that contains percepts, needs, memories, claims, uncertainty and candidate intentions"
+          },
+          {
+            "id": "execution-reality",
+            "composedFrom": [
+              "computational",
+              "physical",
+              "authority",
+              "causality-evidence"
+            ],
+            "role": "the bounded transition plane that turns a justified intention into an observed, authorized and evidenced change"
+          }
+        ]
+      },
+      "authorityClass": "metacomputational-self-inspection"
+    },
+    {
+      "kind": "DomainRun",
+      "domainKind": "physical",
+      "name": "world.fall",
+      "steps": 2,
+      "records": [
+        {
+          "kind": "DomainTransition",
+          "domainKind": "physical",
+          "name": "world.fall",
+          "status": "realized",
+          "beforeRoot": "cf0bc18a1617a1f19e111ca140e04970638d0a63288deda5a5b05b149bc8185c",
+          "afterRoot": "51d57f55694fe7fcac787d4656cb29fd031cd9d0eed0fc7233a98feecf8c4508",
+          "changes": [
+            {
+              "target": "world.stone.velocity",
+              "before": {
+                "kind": "Quantity",
+                "type": "Velocity",
+                "value": 0,
+                "unit": "m/s"
+              },
+              "after": {
+                "kind": "Quantity",
+                "type": "Velocity",
+                "value": -9.81,
+                "unit": "m/s"
+              },
+              "source": "physical:evolve"
+            },
+            {
+              "target": "world.stone.position",
+              "before": {
+                "kind": "Quantity",
+                "type": "Length",
+                "value": 10,
+                "unit": "m"
+              },
+              "after": {
+                "kind": "Quantity",
+                "type": "Length",
+                "value": 10,
+                "unit": "m"
+              },
+              "source": "physical:evolve"
+            }
+          ],
+          "step": 1,
+          "dt": {
+            "kind": "Quantity",
+            "type": "Time",
+            "value": 1,
+            "unit": "s"
+          },
+          "witnesses": [
+            "physical:gravity"
+          ],
+          "authorityClass": "natural-law"
+        },
+        {
+          "kind": "DomainTransition",
+          "domainKind": "physical",
+          "name": "world.fall",
+          "status": "realized",
+          "beforeRoot": "51d57f55694fe7fcac787d4656cb29fd031cd9d0eed0fc7233a98feecf8c4508",
+          "afterRoot": "2d4beeba017a6360dd5d4d282c772f9d79ae759e577e903b5bd745cbbd246eb2",
+          "changes": [
+            {
+              "target": "world.stone.velocity",
+              "before": {
+                "kind": "Quantity",
+                "type": "Velocity",
+                "value": -9.81,
+                "unit": "m/s"
+              },
+              "after": {
+                "kind": "Quantity",
+                "type": "Velocity",
+                "value": -19.62,
+                "unit": "m/s"
+              },
+              "source": "physical:evolve"
+            },
+            {
+              "target": "world.stone.position",
+              "before": {
+                "kind": "Quantity",
+                "type": "Length",
+                "value": 10,
+                "unit": "m"
+              },
+              "after": {
+                "kind": "Quantity",
+                "type": "Length",
+                "value": 0.1899999999999995,
+                "unit": "m"
+              },
+              "source": "physical:evolve"
+            }
+          ],
+          "step": 2,
+          "dt": {
+            "kind": "Quantity",
+            "type": "Time",
+            "value": 1,
+            "unit": "s"
+          },
+          "witnesses": [
+            "physical:gravity"
+          ],
+          "authorityClass": "natural-law"
+        }
+      ]
+    },
+    {
+      "kind": "DomainTransition",
+      "domainKind": "perceptual",
+      "name": "sight",
+      "status": "realized",
+      "beforeRoot": "2d4beeba017a6360dd5d4d282c772f9d79ae759e577e903b5bd745cbbd246eb2",
+      "afterRoot": "a184936abda64a468a0f5963c0d40bc1268cb6348bc3c543f768cdaff8a57c3f",
+      "changes": [
+        {
+          "target": "sight.altitude",
+          "before": {
+            "kind": "Quantity",
+            "type": "Length",
+            "value": 10,
+            "unit": "m"
+          },
+          "after": {
+            "kind": "Quantity",
+            "type": "Length",
+            "value": 0.1899999999999995,
+            "unit": "m"
+          },
+          "source": "perception:observe"
+        }
+      ],
+      "observer": "creature",
+      "sourceReality": "world",
+      "authorityClass": "observation"
+    },
+    {
+      "kind": "DomainRun",
+      "domainKind": "living",
+      "name": "creature",
+      "steps": 1,
+      "records": [
+        {
+          "kind": "DomainTransition",
+          "domainKind": "living",
+          "name": "creature.survive",
+          "status": "realized",
+          "beforeRoot": "abc895a21314aaf12c6c8d364fb9f74c9a40e260af234ca3d19b75c60f47bc18",
+          "afterRoot": "a5974696bba8f175fd0c4b5e42aa8a0dc710ed379f46de762c607dce5e5980a8",
+          "changes": [
+            {
+              "target": "creature.altitude",
+              "before": {
+                "kind": "Quantity",
+                "type": "Length",
+                "value": 10,
+                "unit": "m"
+              },
+              "after": {
+                "kind": "Quantity",
+                "type": "Length",
+                "value": 0.1899999999999995,
+                "unit": "m"
+              },
+              "source": "living:sense"
+            },
+            {
+              "target": "creature.energy",
+              "before": 1,
+              "after": 0.9,
+              "source": "living:metabolize"
+            },
+            {
+              "target": "brain.stimulus",
+              "before": 0,
+              "after": 1,
+              "source": "living:intend"
+            }
+          ],
+          "step": 1,
+          "body": "world.stone",
+          "needs": [
+            {
+              "kind": "NeedDecl",
+              "path": "creature.energy",
+              "target": {
+                "kind": "LiteralExpr",
+                "value": 1,
+                "valueType": "Number"
+              },
+              "critical": {
+                "kind": "LiteralExpr",
+                "value": 0.2,
+                "valueType": "Number"
+              }
+            }
+          ],
+          "witnesses": [
+            "life:survival-cycle"
+          ],
+          "authorityClass": "intrinsic-life-cycle"
+        }
+      ]
+    },
+    {
+      "kind": "DomainRun",
+      "domainKind": "neural",
+      "name": "brain",
+      "steps": 1,
+      "records": [
+        {
+          "kind": "DomainTransition",
+          "domainKind": "neural",
+          "name": "brain.integrate",
+          "status": "realized",
+          "beforeRoot": "a5974696bba8f175fd0c4b5e42aa8a0dc710ed379f46de762c607dce5e5980a8",
+          "afterRoot": "cbc4d6175f1306e118ef143e357f206d36b8ecedf9f09a58e0281ff2ce8d83cc",
+          "changes": [
+            {
+              "target": "brain.response",
+              "before": 0,
+              "after": 0.5,
+              "source": "neural:transmit"
+            }
+          ],
+          "step": 1,
+          "witnesses": [
+            "neural:integration"
+          ],
+          "authorityClass": "intrinsic-neural-dynamics"
+        }
+      ]
+    },
+    {
+      "kind": "DomainRun",
+      "domainKind": "genetic",
+      "name": "lineage",
+      "generations": 2,
+      "records": [
+        {
+          "kind": "DomainTransition",
+          "domainKind": "genetic",
+          "name": "lineage",
+          "status": "realized",
+          "beforeRoot": "cbc4d6175f1306e118ef143e357f206d36b8ecedf9f09a58e0281ff2ce8d83cc",
+          "afterRoot": "dd3fede97292419194336b28c13244a3e2f35105bc99366a91655af7bb627756",
+          "changes": [
+            {
+              "target": "lineage.motion_bias",
+              "before": 0.2,
+              "after": 0.21000000000000002,
+              "source": "genetic:mutation"
+            },
+            {
+              "target": "lineage.expressed_motion",
+              "before": 0,
+              "after": 0.21000000000000002,
+              "source": "genetic:expression"
+            },
+            {
+              "target": "phenotype.motion_bias",
+              "before": 0,
+              "after": 0.21000000000000002,
+              "source": "genetic:expression"
+            }
+          ],
+          "generation": 1,
+          "witnesses": [
+            "genetic:lineage"
+          ],
+          "authorityClass": "lineage-transformation"
+        },
+        {
+          "kind": "DomainTransition",
+          "domainKind": "genetic",
+          "name": "lineage",
+          "status": "realized",
+          "beforeRoot": "dd3fede97292419194336b28c13244a3e2f35105bc99366a91655af7bb627756",
+          "afterRoot": "723f8982713d443382052999c685086fccda74118949a17380d06c1f7866a55b",
+          "changes": [
+            {
+              "target": "lineage.motion_bias",
+              "before": 0.21000000000000002,
+              "after": 0.22000000000000003,
+              "source": "genetic:mutation"
+            },
+            {
+              "target": "lineage.expressed_motion",
+              "before": 0.21000000000000002,
+              "after": 0.22000000000000003,
+              "source": "genetic:expression"
+            },
+            {
+              "target": "phenotype.motion_bias",
+              "before": 0.21000000000000002,
+              "after": 0.22000000000000003,
+              "source": "genetic:expression"
+            }
+          ],
+          "generation": 2,
+          "witnesses": [
+            "genetic:lineage"
+          ],
+          "authorityClass": "lineage-transformation"
+        }
+      ]
+    },
+    {
+      "kind": "DomainTransition",
+      "domainKind": "quantitative",
+      "name": "telemetry",
+      "status": "realized",
+      "beforeRoot": "723f8982713d443382052999c685086fccda74118949a17380d06c1f7866a55b",
+      "afterRoot": "c097eb49475406dbe599d18225387072ca7be0740b33fc279d395b9135614fed",
+      "changes": [
+        {
+          "target": "telemetry.altitude",
+          "before": {
+            "kind": "Measurement",
+            "baseType": "Length",
+            "value": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 10,
+              "unit": "m"
+            },
+            "uncertainty": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 0.05,
+              "unit": "m"
+            },
+            "confidence": 0.98,
+            "unit": "m",
+            "scale": "ratio",
+            "evidence": [
+              "sensor:simulated-altimeter"
+            ],
+            "calibratedBy": "rcl:foundation-calibration"
+          },
+          "after": {
+            "kind": "Measurement",
+            "baseType": "Length",
+            "value": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 0.1899999999999995,
+              "unit": "m"
+            },
+            "uncertainty": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 0.05,
+              "unit": "m"
+            },
+            "confidence": 0.98,
+            "unit": "m",
+            "scale": "ratio",
+            "evidence": [
+              "sensor:simulated-altimeter"
+            ],
+            "calibratedBy": "rcl:foundation-calibration"
+          },
+          "source": "quantitative:measure"
+        },
+        {
+          "target": "telemetry.safe_altitude",
+          "before": true,
+          "after": true,
+          "source": "quantitative:derive"
+        }
+      ],
+      "measurements": [
+        {
+          "path": "telemetry.altitude",
+          "scale": "ratio",
+          "evidence": [
+            "sensor:simulated-altimeter"
+          ],
+          "calibratedBy": "rcl:foundation-calibration"
+        }
+      ],
+      "authorityClass": "evidentiary-measurement"
+    }
+  ]
+}

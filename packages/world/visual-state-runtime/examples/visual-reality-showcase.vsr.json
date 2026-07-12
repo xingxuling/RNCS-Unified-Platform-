@@ -1,0 +1,25 @@
+{
+  "specVersion":"0.1",
+  "runtimeTarget":"vsr@0.2",
+  "metadata":{"id":"visual-reality-showcase","title":"观察者相对视觉现实","duration":8,"defaultFps":60,"seed":20260701,"description":"VSR v0.2 材质、灯光、批处理与后处理演示"},
+  "canvas":{"width":640,"height":360,"background":{"type":"solid","color":"#040817"}},
+  "nodes":[
+    {"id":"sky","type":"rect","layout":{"x":0,"y":0,"width":640,"height":360},"appearance":{"fill":{"type":"linear-gradient","x1":0,"y1":0,"x2":640,"y2":360,"stops":[{"offset":0,"color":"#08172f"},{"offset":0.55,"color":"#10143a"},{"offset":1,"color":"#2a0c35"}]}}},
+    {"id":"horizon","type":"ellipse","layout":{"x":110,"y":100,"width":420,"height":190},"appearance":{"fill":{"type":"solid","color":"#142b55aa"}},"tags":["decorative"]},
+    {"id":"core-halo-outer","type":"ellipse","layout":{"x":205,"y":60,"width":230,"height":230},"appearance":{"fill":{"type":"solid","color":"#2563eb22"},"blendMode":"additive"},"tags":["decorative","emissive"]},
+    {"id":"core-halo","type":"ellipse","layout":{"x":240,"y":95,"width":160,"height":160},"appearance":{"fill":{"type":"solid","color":"#38bdf844"},"blendMode":"additive"},"tags":["decorative","emissive"]},
+    {"id":"core","type":"ellipse","layout":{"x":285,"y":140,"width":70,"height":70},"appearance":{"fill":{"type":"linear-gradient","x1":285,"y1":140,"x2":355,"y2":210,"stops":[{"offset":0,"color":"#e0f2fe"},{"offset":0.45,"color":"#38bdf8"},{"offset":1,"color":"#2563eb"}]},"shadow":{"color":"#00000099","blur":5,"offsetX":4,"offsetY":8}},"tags":["semantic","hero"]},
+    {"id":"orbit-a","type":"ellipse","layout":{"x":180,"y":70,"width":280,"height":220},"appearance":{"stroke":{"type":"solid","color":"#60a5fa88"},"strokeWidth":2},"tags":["decorative"]},
+    {"id":"orbit-b","type":"ellipse","layout":{"x":215,"y":40,"width":210,"height":280},"appearance":{"stroke":{"type":"solid","color":"#a78bfa66"},"strokeWidth":2},"tags":["decorative"]},
+    {"id":"node-rfe","type":"ellipse","layout":{"x":135,"y":160,"width":42,"height":42},"appearance":{"fill":{"type":"solid","color":"#22d3ee"}},"tags":["semantic"]},
+    {"id":"node-hnac","type":"ellipse","layout":{"x":463,"y":120,"width":38,"height":38},"appearance":{"fill":{"type":"solid","color":"#a78bfa"}},"tags":["semantic"]},
+    {"id":"node-rsr","type":"ellipse","layout":{"x":448,"y":245,"width":46,"height":46},"appearance":{"fill":{"type":"solid","color":"#fb7185"}},"tags":["semantic"]},
+    {"id":"node-laf","type":"ellipse","layout":{"x":150,"y":260,"width":35,"height":35},"appearance":{"fill":{"type":"solid","color":"#fbbf24"}},"tags":["semantic"]},
+    {"id":"title","type":"text","layout":{"x":90,"y":18,"width":460,"height":42},"appearance":{"fill":{"type":"solid","color":"#ffffff"}},"content":{"text":"REALITY-NATIVE VISUAL FABRIC","fontSize":28,"align":"center"},"tags":["semantic"]},
+    {"id":"subtitle","type":"text","layout":{"x":105,"y":310,"width":430,"height":34},"appearance":{"fill":{"type":"solid","color":"#c4d7ff"}},"content":{"text":"ONE REALITY · MANY OBSERVERS · VERIFIED PROJECTION","fontSize":15,"align":"center"},"tags":["semantic"]},
+    {"id":"particle-01","type":"rect","layout":{"x":80,"y":90,"width":2,"height":2},"appearance":{"fill":{"type":"solid","color":"#ffffff"}},"tags":["particle","decorative"]},
+    {"id":"particle-02","type":"rect","layout":{"x":550,"y":70,"width":2,"height":2},"appearance":{"fill":{"type":"solid","color":"#ffffff"}},"tags":["particle","decorative"]},
+    {"id":"particle-03","type":"rect","layout":{"x":570,"y":275,"width":2,"height":2},"appearance":{"fill":{"type":"solid","color":"#93c5fd"}},"tags":["particle","decorative"]},
+    {"id":"particle-04","type":"rect","layout":{"x":65,"y":280,"width":2,"height":2},"appearance":{"fill":{"type":"solid","color":"#c4b5fd"}},"tags":["particle","decorative"]}
+  ]
+}

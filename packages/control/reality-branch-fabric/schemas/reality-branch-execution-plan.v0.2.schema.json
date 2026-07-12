@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Reality Branch Execution Plan v0.2",
+  "type": "object",
+  "required": [
+    "format",
+    "version",
+    "plan_id",
+    "workspace_root",
+    "simulation_root",
+    "branch_id",
+    "mode",
+    "steps",
+    "plan_root"
+  ],
+  "properties": {
+    "format": {
+      "const": "reality-branch.execution-plan.v0.2"
+    },
+    "version": {
+      "const": "0.2.0-alpha.1"
+    },
+    "plan_id": {
+      "type": "string"
+    },
+    "workspace_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "simulation_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "branch_id": {
+      "type": "string"
+    },
+    "mode": {
+      "enum": [
+        "sandbox",
+        "dry-run",
+        "provider-sandbox"
+      ]
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "step_id",
+          "branch_id",
+          "operation",
+          "capability_id",
+          "expected_before_state_root",
+          "expected_after_state_root",
+          "rollback_operation"
+        ]
+      }
+    },
+    "plan_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

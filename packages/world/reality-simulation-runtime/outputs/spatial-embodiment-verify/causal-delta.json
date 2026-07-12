@@ -1,0 +1,183 @@
+{
+  "format": "rfe.spatial-embodiment-causal-delta.v0.5",
+  "worldId": "world:embodied-courtyard",
+  "baseRealityRoot": "rfe:world:embodied-courtyard:g12",
+  "tick": 180,
+  "facts": [
+    {
+      "subject": "body:avatar",
+      "predicate": "spatial.position",
+      "object": {
+        "x": 2594,
+        "y": 1100,
+        "z": 1341
+      }
+    },
+    {
+      "subject": "body:avatar",
+      "predicate": "spatial.rotation",
+      "object": {
+        "x": 0,
+        "y": 0,
+        "z": 4429
+      }
+    },
+    {
+      "subject": "body:avatar",
+      "predicate": "embodiment.grounded",
+      "object": false
+    },
+    {
+      "subject": "body:crate-a",
+      "predicate": "spatial.position",
+      "object": {
+        "x": 911,
+        "y": 513,
+        "z": 148
+      }
+    },
+    {
+      "subject": "body:crate-a",
+      "predicate": "spatial.rotation",
+      "object": {
+        "x": 0,
+        "y": 282,
+        "z": -423
+      }
+    },
+    {
+      "subject": "body:crate-a",
+      "predicate": "embodiment.grounded",
+      "object": false
+    },
+    {
+      "subject": "body:crate-b",
+      "predicate": "spatial.position",
+      "object": {
+        "x": 2125,
+        "y": 505,
+        "z": 312
+      }
+    },
+    {
+      "subject": "body:crate-b",
+      "predicate": "spatial.rotation",
+      "object": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "subject": "body:crate-b",
+      "predicate": "embodiment.grounded",
+      "object": true
+    },
+    {
+      "subject": "body:left-arm",
+      "predicate": "spatial.position",
+      "object": {
+        "x": 3253,
+        "y": 1900,
+        "z": 1341
+      }
+    },
+    {
+      "subject": "body:left-arm",
+      "predicate": "spatial.rotation",
+      "object": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "subject": "body:left-arm",
+      "predicate": "embodiment.grounded",
+      "object": false
+    },
+    {
+      "subject": "body:orb",
+      "predicate": "spatial.position",
+      "object": {
+        "x": 1991,
+        "y": 427,
+        "z": -1634
+      }
+    },
+    {
+      "subject": "body:orb",
+      "predicate": "spatial.rotation",
+      "object": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "subject": "body:orb",
+      "predicate": "embodiment.grounded",
+      "object": false
+    },
+    {
+      "subject": "body:pillar",
+      "predicate": "spatial.position",
+      "object": {
+        "x": 3600,
+        "y": 1500,
+        "z": 1000
+      }
+    },
+    {
+      "subject": "body:pillar",
+      "predicate": "spatial.rotation",
+      "object": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    {
+      "subject": "body:pillar",
+      "predicate": "embodiment.grounded",
+      "object": false
+    },
+    {
+      "subject": "body:right-arm",
+      "predicate": "spatial.position",
+      "object": {
+        "x": 1935,
+        "y": 1900,
+        "z": 1341
+      }
+    },
+    {
+      "subject": "body:right-arm",
+      "predicate": "spatial.rotation",
+      "object": {
+        "x": 0,
+        "y": 0,
+        "z": -13746
+      }
+    },
+    {
+      "subject": "body:right-arm",
+      "predicate": "embodiment.grounded",
+      "object": false
+    },
+    {
+      "subject": "character:subject:player",
+      "predicate": "embodiment.body",
+      "object": "avatar"
+    }
+  ],
+  "evidence": {
+    "stateRoot": "fnv1a64:e86cf73300988b3f",
+    "bodyRoot": "fnv1a64:0a131dd2b2291dc8",
+    "contactRoot": "fnv1a64:5767bdd3eb32743a",
+    "characterRoot": "fnv1a64:981d1b0224eb2ab6",
+    "sensoryRoot": "fnv1a64:09612b07b5ecb5a5",
+    "jointRoot": "fnv1a64:4a3093a13d6fed1d"
+  },
+  "deltaRoot": "fnv1a64:090c4ebfac941d7e"
+}

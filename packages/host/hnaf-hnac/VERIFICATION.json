@@ -1,0 +1,63 @@
+{
+  "automated_tests": {
+    "evidence": "evidence/TESTS_v0.7.0.txt",
+    "failed": 0,
+    "passed": 45,
+    "total": 45
+  },
+  "boundaries": [
+    "Provider registry is reference-scale, not an internet marketplace.",
+    "Gateway integration is real but not production multi-tenant orchestration.",
+    "Pocket APK requires the original signing keystore.",
+    "Structured neural events are not neural decoding or stimulation."
+  ],
+  "date": "2026-07-01",
+  "format": "hnaf.release-verification.v0.7",
+  "gateway_integration": {
+    "attempts": [
+      "failed",
+      "succeeded"
+    ],
+    "authority_backend": "reality-one-gateway",
+    "authority_status": "approved",
+    "evidence": [
+      "evidence/GATEWAY_HEALTH_v0.7.0.json",
+      "evidence/GATEWAY_BINDING_v0.7.0.json",
+      "evidence/GATEWAY_EXECUTION_v0.7.0.json"
+    ],
+    "execution_status": "executed",
+    "negotiation_backend": "reality-one-gateway",
+    "runtime_count": 5,
+    "selected_provider": "provider:local-fallback",
+    "status": "healthy"
+  },
+  "release": "0.7.0",
+  "signed_capsule": {
+    "evidence": "evidence/RELEASE_VERIFY_v0.7.0.json",
+    "public_key_sha256": "c3c39140bb05e8eb0f865cc1ed07ff095b06fd7c04f0464ad637c7b823b51204",
+    "signer": "TaoWind HNAF v0.7 Reference Release",
+    "status": "valid"
+  },
+  "syntax": {
+    "evidence": [
+      "evidence/NODE_SYNTAX_v0.7.0.txt",
+      "evidence/POCKET_JS_SYNTAX_v0.7.0.txt"
+    ],
+    "node_modules": "pass",
+    "pocket_inline_scripts": "pass"
+  },
+  "web_gateway_integration": {
+    "attempts": [
+      "failed",
+      "succeeded"
+    ],
+    "evidence": "evidence/WEB_GATEWAY_EXECUTION_v0.7.0.json",
+    "selected_provider": "provider:local-fallback",
+    "status": "executed"
+  },
+  "wheel": {
+    "assets_complete": true,
+    "evidence": "evidence/WHEEL_ASSETS_v0.7.0.json",
+    "version": "0.7.0"
+  }
+}

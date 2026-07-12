@@ -1,0 +1,1772 @@
+{
+  "specVersion": "0.1",
+  "runtimeTarget": "vsr@0.1.0-alpha.5",
+  "metadata": {
+    "id": "reality-one-live-desktop-reality-one:5d79c84a879bcfe2-10",
+    "title": "Reality One 实时生命周期投影｜prototype",
+    "duration": 4,
+    "defaultFps": 30,
+    "seed": 20260630,
+    "authoringTool": "VSR adapter-reality-one live projection",
+    "description": "A stable Visual IR template whose variables are updated by Reality One lifecycle events."
+  },
+  "canvas": {
+    "width": 1280,
+    "height": 720,
+    "background": {
+      "type": "solid",
+      "color": "#07111f"
+    },
+    "layoutMode": "responsive"
+  },
+  "variables": {
+    "intentText": "把现实原生计算项目进度提高到30%，生成状态报告并通知我。",
+    "phase": "result",
+    "progress": 30,
+    "progressText": "30%",
+    "progressWidth": 348,
+    "status": "prototype",
+    "authorityStatus": "approved",
+    "statusLine": "状态：prototype　 权限：approved",
+    "artifactTitle": "Reality-Native Computing Stack",
+    "report": "项目状态报告已经生成，并写入 Living Artifact。RFE 连续性根与宿主通知回执均已记录。",
+    "evidenceLine": "证据根：9af9fe682c…dad49084",
+    "liveLine": "实时事件 10 · 序列 10 · application.committed",
+    "eventChainRoot": "fnv1a64:f4f0c7930d4c50a0",
+    "phase_understanding_fill": {
+      "type": "solid",
+      "color": "#12243a"
+    },
+    "phase_understanding_text": {
+      "type": "solid",
+      "color": "#7f9ab7"
+    },
+    "phase_permission_fill": {
+      "type": "solid",
+      "color": "#12243a"
+    },
+    "phase_permission_text": {
+      "type": "solid",
+      "color": "#7f9ab7"
+    },
+    "phase_executing_fill": {
+      "type": "solid",
+      "color": "#12243a"
+    },
+    "phase_executing_text": {
+      "type": "solid",
+      "color": "#7f9ab7"
+    },
+    "phase_result_fill": {
+      "type": "solid",
+      "color": "#1768c8"
+    },
+    "phase_result_text": {
+      "type": "solid",
+      "color": "#ffffff"
+    },
+    "step0": {
+      "visible": true,
+      "title": "推进进度",
+      "status": "completed",
+      "dotFill": {
+        "type": "solid",
+        "color": "#1d9f6e"
+      },
+      "statusFill": {
+        "type": "solid",
+        "color": "#58d6a4"
+      }
+    },
+    "step1": {
+      "visible": true,
+      "title": "生成报告",
+      "status": "completed",
+      "dotFill": {
+        "type": "solid",
+        "color": "#1d9f6e"
+      },
+      "statusFill": {
+        "type": "solid",
+        "color": "#58d6a4"
+      }
+    },
+    "step2": {
+      "visible": true,
+      "title": "附加报告",
+      "status": "completed",
+      "dotFill": {
+        "type": "solid",
+        "color": "#1d9f6e"
+      },
+      "statusFill": {
+        "type": "solid",
+        "color": "#58d6a4"
+      }
+    },
+    "step3": {
+      "visible": true,
+      "title": "发送通知",
+      "status": "completed",
+      "dotFill": {
+        "type": "solid",
+        "color": "#1d9f6e"
+      },
+      "statusFill": {
+        "type": "solid",
+        "color": "#58d6a4"
+      }
+    },
+    "step4": {
+      "visible": false,
+      "title": "",
+      "status": "pending",
+      "dotFill": {
+        "type": "solid",
+        "color": "#31506d"
+      },
+      "statusFill": {
+        "type": "solid",
+        "color": "#8aa4bf"
+      }
+    },
+    "step5": {
+      "visible": false,
+      "title": "",
+      "status": "pending",
+      "dotFill": {
+        "type": "solid",
+        "color": "#31506d"
+      },
+      "statusFill": {
+        "type": "solid",
+        "color": "#8aa4bf"
+      }
+    }
+  },
+  "nodes": [
+    {
+      "id": "background",
+      "type": "rect",
+      "zIndex": -100,
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 720
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#07111f"
+        }
+      },
+      "content": {
+        "cornerRadius": 0
+      }
+    },
+    {
+      "id": "glow",
+      "type": "rect",
+      "zIndex": -90,
+      "layout": {
+        "x": 806.4,
+        "y": -144,
+        "width": 704,
+        "height": 417.59999999999997
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#0b2d5b"
+        }
+      },
+      "content": {
+        "cornerRadius": 128
+      }
+    },
+    {
+      "id": "brand",
+      "type": "text",
+      "zIndex": 3,
+      "layout": {
+        "x": 42,
+        "y": 30,
+        "width": 777.4,
+        "height": 40
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#f5f9ff"
+        }
+      },
+      "content": {
+        "text": "Reality One｜现实入口",
+        "fontSize": 28,
+        "fontWeight": "bold",
+        "lineHeight": 1.3,
+        "wrap": "word",
+        "overflow": "ellipsis"
+      }
+    },
+    {
+      "id": "runtime",
+      "type": "text",
+      "zIndex": 3,
+      "layout": {
+        "x": 1078,
+        "y": 34,
+        "width": 160,
+        "height": 28
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#82b8ff"
+        }
+      },
+      "content": {
+        "text": "VSR 实时投影",
+        "fontSize": 13,
+        "fontWeight": "normal",
+        "lineHeight": 1.3,
+        "wrap": "word",
+        "overflow": "ellipsis"
+      }
+    },
+    {
+      "id": "intent-card",
+      "type": "rect",
+      "zIndex": 0,
+      "layout": {
+        "x": 42,
+        "y": 142,
+        "width": 1196,
+        "height": 112
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#102238"
+        }
+      },
+      "content": {
+        "cornerRadius": 20
+      }
+    },
+    {
+      "id": "intent-title",
+      "type": "text",
+      "zIndex": 2,
+      "layout": {
+        "x": 60,
+        "y": 156,
+        "width": 120,
+        "height": 24
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#78a7e8"
+        }
+      },
+      "content": {
+        "text": "你的目标",
+        "fontSize": 13,
+        "fontWeight": "bold",
+        "lineHeight": 1.3,
+        "wrap": "word",
+        "overflow": "ellipsis"
+      }
+    },
+    {
+      "id": "intent-text",
+      "type": "text",
+      "zIndex": 2,
+      "layout": {
+        "x": 60,
+        "y": 184,
+        "width": 1160,
+        "height": 60
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#f4f8ff"
+        }
+      },
+      "content": {
+        "text": {
+          "binding": "vars.intentText"
+        },
+        "fontSize": 20,
+        "fontWeight": "bold",
+        "lineHeight": 1.3,
+        "wrap": "word",
+        "overflow": "ellipsis"
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyScope": [
+            "intent.read"
+          ],
+          "deny": "redact",
+          "redactionText": "•••• 目标内容受权限保护",
+          "reason": "intent-privacy"
+        }
+      }
+    },
+    {
+      "id": "progress-card",
+      "type": "rect",
+      "zIndex": 0,
+      "layout": {
+        "x": 42,
+        "y": 272,
+        "width": 1196,
+        "height": 94
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#0d1d30"
+        }
+      },
+      "content": {
+        "cornerRadius": 18
+      }
+    },
+    {
+      "id": "artifact-title",
+      "type": "text",
+      "zIndex": 2,
+      "layout": {
+        "x": 60,
+        "y": 286,
+        "width": 741.52,
+        "height": 24
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#c9ddff"
+        }
+      },
+      "content": {
+        "text": {
+          "binding": "vars.artifactTitle"
+        },
+        "fontSize": 14,
+        "fontWeight": "bold",
+        "lineHeight": 1.3,
+        "wrap": "word",
+        "overflow": "ellipsis"
+      }
+    },
+    {
+      "id": "progress-value",
+      "type": "text",
+      "zIndex": 2,
+      "layout": {
+        "x": 1146,
+        "y": 282,
+        "width": 74,
+        "height": 32
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#6db5ff"
+        }
+      },
+      "content": {
+        "text": {
+          "binding": "vars.progressText"
+        },
+        "fontSize": 24,
+        "fontWeight": "bold",
+        "lineHeight": 1.3,
+        "wrap": "word",
+        "overflow": "ellipsis"
+      }
+    },
+    {
+      "id": "progress-track",
+      "type": "rect",
+      "zIndex": 1,
+      "layout": {
+        "x": 60,
+        "y": 324,
+        "width": 1160,
+        "height": 14
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#223850"
+        }
+      },
+      "content": {
+        "cornerRadius": 7
+      }
+    },
+    {
+      "id": "progress-fill",
+      "type": "rect",
+      "zIndex": 2,
+      "layout": {
+        "x": 60,
+        "y": 324,
+        "width": 2,
+        "height": 14
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#2f8cff"
+        }
+      },
+      "content": {
+        "cornerRadius": 7
+      },
+      "tracks": [
+        {
+          "id": "progress-width",
+          "property": "layout.width",
+          "mode": "binding",
+          "binding": "vars.progressWidth"
+        }
+      ]
+    },
+    {
+      "id": "status-line",
+      "type": "text",
+      "zIndex": 2,
+      "layout": {
+        "x": 60,
+        "y": 344,
+        "width": 1160,
+        "height": 20
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#8faac8"
+        }
+      },
+      "content": {
+        "text": {
+          "binding": "vars.statusLine"
+        },
+        "fontSize": 12,
+        "fontWeight": "normal",
+        "lineHeight": 1.3,
+        "wrap": "word",
+        "overflow": "ellipsis"
+      }
+    },
+    {
+      "id": "steps-card",
+      "type": "rect",
+      "zIndex": 0,
+      "layout": {
+        "x": 42,
+        "y": 384,
+        "width": 1196,
+        "height": 130
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#0b1929"
+        }
+      },
+      "content": {
+        "cornerRadius": 18
+      }
+    },
+    {
+      "id": "steps-title",
+      "type": "text",
+      "zIndex": 2,
+      "layout": {
+        "x": 60,
+        "y": 398,
+        "width": 160,
+        "height": 24
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#d8e8ff"
+        }
+      },
+      "content": {
+        "text": "执行路径",
+        "fontSize": 14,
+        "fontWeight": "bold",
+        "lineHeight": 1.3,
+        "wrap": "word",
+        "overflow": "ellipsis"
+      }
+    },
+    {
+      "id": "live-line",
+      "type": "text",
+      "zIndex": 2,
+      "layout": {
+        "x": 190,
+        "y": 398,
+        "width": 1030,
+        "height": 24
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#6f8ba8"
+        }
+      },
+      "content": {
+        "text": {
+          "binding": "vars.liveLine"
+        },
+        "fontSize": 11,
+        "fontWeight": "normal",
+        "lineHeight": 1.3,
+        "wrap": "word",
+        "overflow": "ellipsis"
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyRole": [
+            "operator",
+            "auditor"
+          ],
+          "minClearance": 2,
+          "deny": "hide",
+          "reason": "runtime-telemetry"
+        }
+      }
+    },
+    {
+      "id": "report-card",
+      "type": "rect",
+      "zIndex": 0,
+      "layout": {
+        "x": 42,
+        "y": 532,
+        "width": 1196,
+        "height": 146
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#10243a"
+        }
+      },
+      "content": {
+        "cornerRadius": 18
+      }
+    },
+    {
+      "id": "report-title",
+      "type": "text",
+      "zIndex": 2,
+      "layout": {
+        "x": 60,
+        "y": 546,
+        "width": 160,
+        "height": 24
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#d8e8ff"
+        }
+      },
+      "content": {
+        "text": "结果与证据",
+        "fontSize": 14,
+        "fontWeight": "bold",
+        "lineHeight": 1.3,
+        "wrap": "word",
+        "overflow": "ellipsis"
+      }
+    },
+    {
+      "id": "report",
+      "type": "text",
+      "zIndex": 2,
+      "layout": {
+        "x": 60,
+        "y": 574,
+        "width": 1160,
+        "height": 72
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#bed2eb"
+        }
+      },
+      "content": {
+        "text": {
+          "binding": "vars.report"
+        },
+        "fontSize": 13,
+        "fontWeight": "normal",
+        "lineHeight": 1.3,
+        "wrap": "word",
+        "overflow": "ellipsis"
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyScope": [
+            "report.read"
+          ],
+          "deny": "redact",
+          "redactionText": "•••• 结果详情已脱敏",
+          "reason": "result-privacy"
+        }
+      }
+    },
+    {
+      "id": "evidence",
+      "type": "text",
+      "zIndex": 2,
+      "layout": {
+        "x": 60,
+        "y": 650,
+        "width": 1160,
+        "height": 18
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#6f8ba8"
+        }
+      },
+      "content": {
+        "text": {
+          "binding": "vars.evidenceLine"
+        },
+        "fontSize": 11,
+        "fontWeight": "normal",
+        "lineHeight": 1.3,
+        "wrap": "word",
+        "overflow": "ellipsis"
+      },
+      "extensions": {
+        "vsr:observer-policy": {
+          "format": "vsr.observer-policy.v0.1",
+          "anyScope": [
+            "evidence.read"
+          ],
+          "minClearance": 3,
+          "deny": "hide",
+          "reason": "evidence-boundary"
+        }
+      }
+    },
+    {
+      "id": "phase-understanding",
+      "type": "rect",
+      "zIndex": 0,
+      "layout": {
+        "x": 42,
+        "y": 88,
+        "width": 290,
+        "height": 34
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#12243a"
+        }
+      },
+      "content": {
+        "cornerRadius": 12
+      },
+      "tracks": [
+        {
+          "id": "phase-understanding-fill",
+          "property": "appearance.fill",
+          "mode": "binding",
+          "binding": "vars.phase_understanding_fill"
+        }
+      ]
+    },
+    {
+      "id": "phase-label-understanding",
+      "type": "text",
+      "zIndex": 2,
+      "layout": {
+        "x": 46,
+        "y": 96,
+        "width": 282,
+        "height": 20
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#7f9ab7"
+        }
+      },
+      "content": {
+        "text": "系统理解",
+        "fontSize": 12,
+        "fontWeight": "normal",
+        "lineHeight": 1.3,
+        "wrap": "word",
+        "overflow": "ellipsis"
+      },
+      "tracks": [
+        {
+          "id": "phase-understanding-text",
+          "property": "appearance.fill",
+          "mode": "binding",
+          "binding": "vars.phase_understanding_text"
+        }
+      ]
+    },
+    {
+      "id": "phase-permission",
+      "type": "rect",
+      "zIndex": 0,
+      "layout": {
+        "x": 344,
+        "y": 88,
+        "width": 290,
+        "height": 34
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#12243a"
+        }
+      },
+      "content": {
+        "cornerRadius": 12
+      },
+      "tracks": [
+        {
+          "id": "phase-permission-fill",
+          "property": "appearance.fill",
+          "mode": "binding",
+          "binding": "vars.phase_permission_fill"
+        }
+      ]
+    },
+    {
+      "id": "phase-label-permission",
+      "type": "text",
+      "zIndex": 2,
+      "layout": {
+        "x": 348,
+        "y": 96,
+        "width": 282,
+        "height": 20
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#7f9ab7"
+        }
+      },
+      "content": {
+        "text": "权限确认",
+        "fontSize": 12,
+        "fontWeight": "normal",
+        "lineHeight": 1.3,
+        "wrap": "word",
+        "overflow": "ellipsis"
+      },
+      "tracks": [
+        {
+          "id": "phase-permission-text",
+          "property": "appearance.fill",
+          "mode": "binding",
+          "binding": "vars.phase_permission_text"
+        }
+      ]
+    },
+    {
+      "id": "phase-executing",
+      "type": "rect",
+      "zIndex": 0,
+      "layout": {
+        "x": 646,
+        "y": 88,
+        "width": 290,
+        "height": 34
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#12243a"
+        }
+      },
+      "content": {
+        "cornerRadius": 12
+      },
+      "tracks": [
+        {
+          "id": "phase-executing-fill",
+          "property": "appearance.fill",
+          "mode": "binding",
+          "binding": "vars.phase_executing_fill"
+        }
+      ]
+    },
+    {
+      "id": "phase-label-executing",
+      "type": "text",
+      "zIndex": 2,
+      "layout": {
+        "x": 650,
+        "y": 96,
+        "width": 282,
+        "height": 20
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#7f9ab7"
+        }
+      },
+      "content": {
+        "text": "正在执行",
+        "fontSize": 12,
+        "fontWeight": "normal",
+        "lineHeight": 1.3,
+        "wrap": "word",
+        "overflow": "ellipsis"
+      },
+      "tracks": [
+        {
+          "id": "phase-executing-text",
+          "property": "appearance.fill",
+          "mode": "binding",
+          "binding": "vars.phase_executing_text"
+        }
+      ]
+    },
+    {
+      "id": "phase-result",
+      "type": "rect",
+      "zIndex": 0,
+      "layout": {
+        "x": 948,
+        "y": 88,
+        "width": 290,
+        "height": 34
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#12243a"
+        }
+      },
+      "content": {
+        "cornerRadius": 12
+      },
+      "tracks": [
+        {
+          "id": "phase-result-fill",
+          "property": "appearance.fill",
+          "mode": "binding",
+          "binding": "vars.phase_result_fill"
+        }
+      ]
+    },
+    {
+      "id": "phase-label-result",
+      "type": "text",
+      "zIndex": 2,
+      "layout": {
+        "x": 952,
+        "y": 96,
+        "width": 282,
+        "height": 20
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#7f9ab7"
+        }
+      },
+      "content": {
+        "text": "结果完成",
+        "fontSize": 12,
+        "fontWeight": "normal",
+        "lineHeight": 1.3,
+        "wrap": "word",
+        "overflow": "ellipsis"
+      },
+      "tracks": [
+        {
+          "id": "phase-result-text",
+          "property": "appearance.fill",
+          "mode": "binding",
+          "binding": "vars.phase_result_text"
+        }
+      ]
+    },
+    {
+      "id": "step-row-0",
+      "type": "group",
+      "visible": {
+        "binding": "vars.step0.visible"
+      },
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 720
+      }
+    },
+    {
+      "id": "step-dot-0",
+      "parentId": "step-row-0",
+      "type": "rect",
+      "zIndex": 1,
+      "layout": {
+        "x": 60,
+        "y": 437,
+        "width": 22,
+        "height": 22
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#31506d"
+        }
+      },
+      "content": {
+        "cornerRadius": 11
+      },
+      "tracks": [
+        {
+          "id": "step-dot-fill-0",
+          "property": "appearance.fill",
+          "mode": "binding",
+          "binding": "vars.step0.dotFill"
+        }
+      ]
+    },
+    {
+      "id": "step-index-0",
+      "parentId": "step-row-0",
+      "type": "text",
+      "zIndex": 2,
+      "layout": {
+        "x": 60,
+        "y": 440,
+        "width": 22,
+        "height": 16
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ffffff"
+        }
+      },
+      "content": {
+        "text": "1",
+        "fontSize": 10,
+        "fontWeight": "bold",
+        "lineHeight": 1.3,
+        "wrap": "word",
+        "overflow": "ellipsis"
+      }
+    },
+    {
+      "id": "step-title-0",
+      "parentId": "step-row-0",
+      "type": "text",
+      "zIndex": 2,
+      "layout": {
+        "x": 94,
+        "y": 436,
+        "width": 437,
+        "height": 24
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#dcecff"
+        }
+      },
+      "content": {
+        "text": {
+          "binding": "vars.step0.title"
+        },
+        "fontSize": 13,
+        "fontWeight": "bold",
+        "lineHeight": 1.3,
+        "wrap": "word",
+        "overflow": "ellipsis"
+      }
+    },
+    {
+      "id": "step-status-0",
+      "parentId": "step-row-0",
+      "type": "text",
+      "zIndex": 2,
+      "layout": {
+        "x": 551,
+        "y": 436,
+        "width": 78,
+        "height": 24
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#8aa4bf"
+        }
+      },
+      "content": {
+        "text": {
+          "binding": "vars.step0.status"
+        },
+        "fontSize": 11,
+        "fontWeight": "normal",
+        "lineHeight": 1.3,
+        "wrap": "word",
+        "overflow": "ellipsis"
+      },
+      "tracks": [
+        {
+          "id": "step-status-fill-0",
+          "property": "appearance.fill",
+          "mode": "binding",
+          "binding": "vars.step0.statusFill"
+        }
+      ]
+    },
+    {
+      "id": "step-row-1",
+      "type": "group",
+      "visible": {
+        "binding": "vars.step1.visible"
+      },
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 720
+      }
+    },
+    {
+      "id": "step-dot-1",
+      "parentId": "step-row-1",
+      "type": "rect",
+      "zIndex": 1,
+      "layout": {
+        "x": 60,
+        "y": 475,
+        "width": 22,
+        "height": 22
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#31506d"
+        }
+      },
+      "content": {
+        "cornerRadius": 11
+      },
+      "tracks": [
+        {
+          "id": "step-dot-fill-1",
+          "property": "appearance.fill",
+          "mode": "binding",
+          "binding": "vars.step1.dotFill"
+        }
+      ]
+    },
+    {
+      "id": "step-index-1",
+      "parentId": "step-row-1",
+      "type": "text",
+      "zIndex": 2,
+      "layout": {
+        "x": 60,
+        "y": 478,
+        "width": 22,
+        "height": 16
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ffffff"
+        }
+      },
+      "content": {
+        "text": "2",
+        "fontSize": 10,
+        "fontWeight": "bold",
+        "lineHeight": 1.3,
+        "wrap": "word",
+        "overflow": "ellipsis"
+      }
+    },
+    {
+      "id": "step-title-1",
+      "parentId": "step-row-1",
+      "type": "text",
+      "zIndex": 2,
+      "layout": {
+        "x": 94,
+        "y": 474,
+        "width": 437,
+        "height": 24
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#dcecff"
+        }
+      },
+      "content": {
+        "text": {
+          "binding": "vars.step1.title"
+        },
+        "fontSize": 13,
+        "fontWeight": "bold",
+        "lineHeight": 1.3,
+        "wrap": "word",
+        "overflow": "ellipsis"
+      }
+    },
+    {
+      "id": "step-status-1",
+      "parentId": "step-row-1",
+      "type": "text",
+      "zIndex": 2,
+      "layout": {
+        "x": 551,
+        "y": 474,
+        "width": 78,
+        "height": 24
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#8aa4bf"
+        }
+      },
+      "content": {
+        "text": {
+          "binding": "vars.step1.status"
+        },
+        "fontSize": 11,
+        "fontWeight": "normal",
+        "lineHeight": 1.3,
+        "wrap": "word",
+        "overflow": "ellipsis"
+      },
+      "tracks": [
+        {
+          "id": "step-status-fill-1",
+          "property": "appearance.fill",
+          "mode": "binding",
+          "binding": "vars.step1.statusFill"
+        }
+      ]
+    },
+    {
+      "id": "step-row-2",
+      "type": "group",
+      "visible": {
+        "binding": "vars.step2.visible"
+      },
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 720
+      }
+    },
+    {
+      "id": "step-dot-2",
+      "parentId": "step-row-2",
+      "type": "rect",
+      "zIndex": 1,
+      "layout": {
+        "x": 60,
+        "y": 513,
+        "width": 22,
+        "height": 22
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#31506d"
+        }
+      },
+      "content": {
+        "cornerRadius": 11
+      },
+      "tracks": [
+        {
+          "id": "step-dot-fill-2",
+          "property": "appearance.fill",
+          "mode": "binding",
+          "binding": "vars.step2.dotFill"
+        }
+      ]
+    },
+    {
+      "id": "step-index-2",
+      "parentId": "step-row-2",
+      "type": "text",
+      "zIndex": 2,
+      "layout": {
+        "x": 60,
+        "y": 516,
+        "width": 22,
+        "height": 16
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ffffff"
+        }
+      },
+      "content": {
+        "text": "3",
+        "fontSize": 10,
+        "fontWeight": "bold",
+        "lineHeight": 1.3,
+        "wrap": "word",
+        "overflow": "ellipsis"
+      }
+    },
+    {
+      "id": "step-title-2",
+      "parentId": "step-row-2",
+      "type": "text",
+      "zIndex": 2,
+      "layout": {
+        "x": 94,
+        "y": 512,
+        "width": 437,
+        "height": 24
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#dcecff"
+        }
+      },
+      "content": {
+        "text": {
+          "binding": "vars.step2.title"
+        },
+        "fontSize": 13,
+        "fontWeight": "bold",
+        "lineHeight": 1.3,
+        "wrap": "word",
+        "overflow": "ellipsis"
+      }
+    },
+    {
+      "id": "step-status-2",
+      "parentId": "step-row-2",
+      "type": "text",
+      "zIndex": 2,
+      "layout": {
+        "x": 551,
+        "y": 512,
+        "width": 78,
+        "height": 24
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#8aa4bf"
+        }
+      },
+      "content": {
+        "text": {
+          "binding": "vars.step2.status"
+        },
+        "fontSize": 11,
+        "fontWeight": "normal",
+        "lineHeight": 1.3,
+        "wrap": "word",
+        "overflow": "ellipsis"
+      },
+      "tracks": [
+        {
+          "id": "step-status-fill-2",
+          "property": "appearance.fill",
+          "mode": "binding",
+          "binding": "vars.step2.statusFill"
+        }
+      ]
+    },
+    {
+      "id": "step-row-3",
+      "type": "group",
+      "visible": {
+        "binding": "vars.step3.visible"
+      },
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 720
+      }
+    },
+    {
+      "id": "step-dot-3",
+      "parentId": "step-row-3",
+      "type": "rect",
+      "zIndex": 1,
+      "layout": {
+        "x": 651,
+        "y": 437,
+        "width": 22,
+        "height": 22
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#31506d"
+        }
+      },
+      "content": {
+        "cornerRadius": 11
+      },
+      "tracks": [
+        {
+          "id": "step-dot-fill-3",
+          "property": "appearance.fill",
+          "mode": "binding",
+          "binding": "vars.step3.dotFill"
+        }
+      ]
+    },
+    {
+      "id": "step-index-3",
+      "parentId": "step-row-3",
+      "type": "text",
+      "zIndex": 2,
+      "layout": {
+        "x": 651,
+        "y": 440,
+        "width": 22,
+        "height": 16
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ffffff"
+        }
+      },
+      "content": {
+        "text": "4",
+        "fontSize": 10,
+        "fontWeight": "bold",
+        "lineHeight": 1.3,
+        "wrap": "word",
+        "overflow": "ellipsis"
+      }
+    },
+    {
+      "id": "step-title-3",
+      "parentId": "step-row-3",
+      "type": "text",
+      "zIndex": 2,
+      "layout": {
+        "x": 685,
+        "y": 436,
+        "width": 437,
+        "height": 24
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#dcecff"
+        }
+      },
+      "content": {
+        "text": {
+          "binding": "vars.step3.title"
+        },
+        "fontSize": 13,
+        "fontWeight": "bold",
+        "lineHeight": 1.3,
+        "wrap": "word",
+        "overflow": "ellipsis"
+      }
+    },
+    {
+      "id": "step-status-3",
+      "parentId": "step-row-3",
+      "type": "text",
+      "zIndex": 2,
+      "layout": {
+        "x": 1142,
+        "y": 436,
+        "width": 78,
+        "height": 24
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#8aa4bf"
+        }
+      },
+      "content": {
+        "text": {
+          "binding": "vars.step3.status"
+        },
+        "fontSize": 11,
+        "fontWeight": "normal",
+        "lineHeight": 1.3,
+        "wrap": "word",
+        "overflow": "ellipsis"
+      },
+      "tracks": [
+        {
+          "id": "step-status-fill-3",
+          "property": "appearance.fill",
+          "mode": "binding",
+          "binding": "vars.step3.statusFill"
+        }
+      ]
+    },
+    {
+      "id": "step-row-4",
+      "type": "group",
+      "visible": {
+        "binding": "vars.step4.visible"
+      },
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 720
+      }
+    },
+    {
+      "id": "step-dot-4",
+      "parentId": "step-row-4",
+      "type": "rect",
+      "zIndex": 1,
+      "layout": {
+        "x": 651,
+        "y": 475,
+        "width": 22,
+        "height": 22
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#31506d"
+        }
+      },
+      "content": {
+        "cornerRadius": 11
+      },
+      "tracks": [
+        {
+          "id": "step-dot-fill-4",
+          "property": "appearance.fill",
+          "mode": "binding",
+          "binding": "vars.step4.dotFill"
+        }
+      ]
+    },
+    {
+      "id": "step-index-4",
+      "parentId": "step-row-4",
+      "type": "text",
+      "zIndex": 2,
+      "layout": {
+        "x": 651,
+        "y": 478,
+        "width": 22,
+        "height": 16
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ffffff"
+        }
+      },
+      "content": {
+        "text": "5",
+        "fontSize": 10,
+        "fontWeight": "bold",
+        "lineHeight": 1.3,
+        "wrap": "word",
+        "overflow": "ellipsis"
+      }
+    },
+    {
+      "id": "step-title-4",
+      "parentId": "step-row-4",
+      "type": "text",
+      "zIndex": 2,
+      "layout": {
+        "x": 685,
+        "y": 474,
+        "width": 437,
+        "height": 24
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#dcecff"
+        }
+      },
+      "content": {
+        "text": {
+          "binding": "vars.step4.title"
+        },
+        "fontSize": 13,
+        "fontWeight": "bold",
+        "lineHeight": 1.3,
+        "wrap": "word",
+        "overflow": "ellipsis"
+      }
+    },
+    {
+      "id": "step-status-4",
+      "parentId": "step-row-4",
+      "type": "text",
+      "zIndex": 2,
+      "layout": {
+        "x": 1142,
+        "y": 474,
+        "width": 78,
+        "height": 24
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#8aa4bf"
+        }
+      },
+      "content": {
+        "text": {
+          "binding": "vars.step4.status"
+        },
+        "fontSize": 11,
+        "fontWeight": "normal",
+        "lineHeight": 1.3,
+        "wrap": "word",
+        "overflow": "ellipsis"
+      },
+      "tracks": [
+        {
+          "id": "step-status-fill-4",
+          "property": "appearance.fill",
+          "mode": "binding",
+          "binding": "vars.step4.statusFill"
+        }
+      ]
+    },
+    {
+      "id": "step-row-5",
+      "type": "group",
+      "visible": {
+        "binding": "vars.step5.visible"
+      },
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 720
+      }
+    },
+    {
+      "id": "step-dot-5",
+      "parentId": "step-row-5",
+      "type": "rect",
+      "zIndex": 1,
+      "layout": {
+        "x": 651,
+        "y": 513,
+        "width": 22,
+        "height": 22
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#31506d"
+        }
+      },
+      "content": {
+        "cornerRadius": 11
+      },
+      "tracks": [
+        {
+          "id": "step-dot-fill-5",
+          "property": "appearance.fill",
+          "mode": "binding",
+          "binding": "vars.step5.dotFill"
+        }
+      ]
+    },
+    {
+      "id": "step-index-5",
+      "parentId": "step-row-5",
+      "type": "text",
+      "zIndex": 2,
+      "layout": {
+        "x": 651,
+        "y": 516,
+        "width": 22,
+        "height": 16
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#ffffff"
+        }
+      },
+      "content": {
+        "text": "6",
+        "fontSize": 10,
+        "fontWeight": "bold",
+        "lineHeight": 1.3,
+        "wrap": "word",
+        "overflow": "ellipsis"
+      }
+    },
+    {
+      "id": "step-title-5",
+      "parentId": "step-row-5",
+      "type": "text",
+      "zIndex": 2,
+      "layout": {
+        "x": 685,
+        "y": 512,
+        "width": 437,
+        "height": 24
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#dcecff"
+        }
+      },
+      "content": {
+        "text": {
+          "binding": "vars.step5.title"
+        },
+        "fontSize": 13,
+        "fontWeight": "bold",
+        "lineHeight": 1.3,
+        "wrap": "word",
+        "overflow": "ellipsis"
+      }
+    },
+    {
+      "id": "step-status-5",
+      "parentId": "step-row-5",
+      "type": "text",
+      "zIndex": 2,
+      "layout": {
+        "x": 1142,
+        "y": 512,
+        "width": 78,
+        "height": 24
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#8aa4bf"
+        }
+      },
+      "content": {
+        "text": {
+          "binding": "vars.step5.status"
+        },
+        "fontSize": 11,
+        "fontWeight": "normal",
+        "lineHeight": 1.3,
+        "wrap": "word",
+        "overflow": "ellipsis"
+      },
+      "tracks": [
+        {
+          "id": "step-status-fill-5",
+          "property": "appearance.fill",
+          "mode": "binding",
+          "binding": "vars.step5.statusFill"
+        }
+      ]
+    }
+  ],
+  "outputs": [
+    {
+      "id": "desktop-interactive",
+      "type": "interactive",
+      "width": 1280,
+      "height": 720,
+      "responsive": true
+    },
+    {
+      "id": "desktop-image",
+      "type": "image",
+      "width": 1280,
+      "height": 720
+    }
+  ],
+  "extensions": {
+    "reality-one:projection-mode": "lifecycle-event-stream-v0.1",
+    "reality-one:max-steps": 6,
+    "vsr:observer-projection": "observer-policy-v0.1",
+    "reality-one:summary": {
+      "intentText": "把现实原生计算项目进度提高到30%，生成状态报告并通知我。",
+      "phase": "result",
+      "progress": 30,
+      "status": "prototype",
+      "authorityStatus": "approved",
+      "artifactTitle": "Reality-Native Computing Stack",
+      "report": "项目状态报告已经生成，并写入 Living Artifact。RFE 连续性根与宿主通知回执均已记录。",
+      "steps": [
+        {
+          "id": "step:1:lar.progress.target",
+          "title": "推进进度",
+          "status": "completed"
+        },
+        {
+          "id": "step:2:lar.report.render",
+          "title": "生成报告",
+          "status": "completed"
+        },
+        {
+          "id": "step:3:lar.report.attach",
+          "title": "附加报告",
+          "status": "completed"
+        },
+        {
+          "id": "step:4:hnaf.notification.emit",
+          "title": "发送通知",
+          "status": "completed"
+        }
+      ],
+      "evidenceRoot": "9af9fe682cda861177ecf79c6ab7f69001bcbdc0aee68eb93e029ac8dad49084",
+      "applicationResultHash": "5d79c84a879bcfe20b3f0ebfb13071d052e18552a0de48a9b6f250a6cbaab740",
+      "sessionId": "reality-one:5d79c84a879bcfe2",
+      "sequence": 10,
+      "eventCount": 10,
+      "lastEventType": "application.committed",
+      "eventChainRoot": "fnv1a64:f4f0c7930d4c50a0"
+    },
+    "reality-one:event-chain-root": "fnv1a64:f4f0c7930d4c50a0",
+    "reality-one:event-count": 10
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "format": "rfe.content-object.v1",
+  "kind": "reality-continuity-manifest",
+  "value": {
+    "format": "rfe.reality-continuity-manifest.v1",
+    "worldId": "world:door-lab",
+    "branchId": "branch:main",
+    "factGroupIndexRef": "e5d90abd3001b7eebf82cdd069efddc23f3f788f7edc006e7136ac0281a45874",
+    "segmentCatalogIndexRef": "7f2b8620b9b524fcb951864bc38ea9d6a2622745dd797f8fa123c6aa2741bfdf"
+  },
+  "integrityHash": "6eb9227004045b0cb82a1caf865df05a4c59c65cc69cdb8ef60393800e9228ff"
+}

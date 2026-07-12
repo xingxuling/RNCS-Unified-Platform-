@@ -1,0 +1,26 @@
+{
+  "format": "reality-studio.asset-genesis-import.v0.1",
+  "version": "0.1.0",
+  "import_id": "studio-import:b35f2fc1a9bc16dec1afcf7d",
+  "workspace_root": "85f693d7d3995fe2a95ce715f380e3696b7756b8bf9c98df1655540375aebcf6",
+  "bundle_root": "1096a3048adeb8dc5496b01e4b7b5386b685b8ff95f7e37a3358a2b0a3311d0d",
+  "asset_id": "asset:3a82d1753e140d24552b89d1",
+  "preview_path": "preview.html",
+  "operations": [
+    {
+      "op": "register-asset-family",
+      "asset_id": "asset:3a82d1753e140d24552b89d1",
+      "bundle_root": "1096a3048adeb8dc5496b01e4b7b5386b685b8ff95f7e37a3358a2b0a3311d0d"
+    },
+    {
+      "op": "open-preview",
+      "path": "preview.html"
+    }
+  ],
+  "authority": {
+    "status": "proposal",
+    "resolver": "aaf:default"
+  },
+  "preserve_identity": true,
+  "import_root": "4675216055333c4cf68525841e465077b0dca704fa4eeed893d22892c97ac2b3"
+}

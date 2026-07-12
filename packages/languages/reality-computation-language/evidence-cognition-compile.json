@@ -1,0 +1,1040 @@
+{
+  "format": "rcl.reality-program.v0.4",
+  "languageVersion": "0.4.0-alpha.1",
+  "foundation": {
+    "format": "rcl.reality-foundation.v0.4",
+    "domains": [
+      {
+        "id": "meta-computational",
+        "keyword": "meta",
+        "question": "How can computation inspect, validate and transform computation itself?"
+      },
+      {
+        "id": "computational",
+        "keyword": "reckon/host",
+        "question": "How are symbolic and machine states computed and executed?"
+      },
+      {
+        "id": "physical",
+        "keyword": "physical",
+        "question": "How do matter, energy, fields, space and time evolve?"
+      },
+      {
+        "id": "perceptual",
+        "keyword": "perception",
+        "question": "How does a world become observable and experienced by an observer?"
+      },
+      {
+        "id": "neural",
+        "keyword": "neural",
+        "question": "How do signals become memory, attention, learning, decisions and control?"
+      },
+      {
+        "id": "living",
+        "keyword": "living",
+        "question": "How does a living system maintain continuity, needs and autonomous action?"
+      },
+      {
+        "id": "genetic",
+        "keyword": "genetic",
+        "question": "How are structures encoded, expressed, inherited and changed across generations?"
+      },
+      {
+        "id": "quantitative",
+        "keyword": "quantitative",
+        "question": "What can be measured, on what scale, with what uncertainty, confidence and evidence?"
+      },
+      {
+        "id": "knowledge",
+        "keyword": "knowledge",
+        "question": "How do observations and prior structures become justified, revisable and actionable knowledge?"
+      }
+    ],
+    "crossDomainAxes": [
+      {
+        "id": "authority",
+        "primitives": [
+          "warrant",
+          "needs",
+          "preserve"
+        ],
+        "role": "opens bounded powers while constraining which changes can become authoritative reality"
+      },
+      {
+        "id": "causality-evidence",
+        "primitives": [
+          "cause",
+          "when",
+          "witness",
+          "evidence"
+        ],
+        "role": "connects change and knowledge to causes, conditions, provenance and reproducible evidence"
+      }
+    ],
+    "compositePlanes": [
+      {
+        "id": "natural-language-reality",
+        "primitives": [
+          "language",
+          "utterance",
+          "intent",
+          "interpret"
+        ],
+        "composedFrom": [
+          "perceptual",
+          "knowledge",
+          "authority"
+        ],
+        "role": "turns human symbols into explicit utterances, candidate meanings and bounded intents without making a language model the whole intelligence"
+      },
+      {
+        "id": "understanding-reality",
+        "primitives": [
+          "understanding",
+          "hypothesis",
+          "explanation",
+          "understand"
+        ],
+        "composedFrom": [
+          "knowledge",
+          "quantitative",
+          "perceptual",
+          "natural-language-reality"
+        ],
+        "role": "constructs testable world models that explain evidence, expose confidence and can be rejected by contradiction"
+      },
+      {
+        "id": "creative-reality",
+        "primitives": [
+          "creation",
+          "candidate",
+          "select",
+          "create"
+        ],
+        "composedFrom": [
+          "understanding-reality",
+          "knowledge",
+          "meta-computational",
+          "authority"
+        ],
+        "role": "generates bounded novelty, evaluates candidates by utility, feasibility, novelty and risk, then selects without automatically executing"
+      },
+      {
+        "id": "inner-reality",
+        "composedFrom": [
+          "perceptual",
+          "neural",
+          "living",
+          "knowledge",
+          "natural-language-reality",
+          "understanding-reality",
+          "creative-reality"
+        ],
+        "role": "the subject-relative model that contains percepts, needs, memories, claims, interpretations, explanations and candidate creations"
+      },
+      {
+        "id": "execution-reality",
+        "composedFrom": [
+          "computational",
+          "physical",
+          "authority",
+          "causality-evidence"
+        ],
+        "role": "the bounded transition plane that turns a justified and selected intention into an observed, authorized and evidenced change"
+      }
+    ]
+  },
+  "name": "CognitiveGreenhouse",
+  "facets": [
+    {
+      "kind": "FacetDecl",
+      "path": "greenhouse.light",
+      "valueType": "Truth",
+      "value": {
+        "kind": "LiteralExpr",
+        "value": false,
+        "valueType": "Truth"
+      },
+      "owner": null
+    },
+    {
+      "kind": "FacetDecl",
+      "path": "greenhouse.safe",
+      "valueType": "Truth",
+      "value": {
+        "kind": "LiteralExpr",
+        "value": true,
+        "valueType": "Truth"
+      },
+      "owner": null
+    },
+    {
+      "kind": "FacetDecl",
+      "path": "caretaker.actions",
+      "valueType": "Number",
+      "value": {
+        "kind": "LiteralExpr",
+        "value": 0,
+        "valueType": "Number"
+      },
+      "owner": "caretaker"
+    },
+    {
+      "kind": "FacetDecl",
+      "path": "mind.operation_safe",
+      "valueType": "Know<Truth>",
+      "value": null,
+      "owner": "mind",
+      "knowledge": {
+        "kind": "KnowledgeClaimDecl",
+        "path": "mind.operation_safe",
+        "baseType": "Truth",
+        "expression": {
+          "kind": "PathExpr",
+          "path": "greenhouse.safe"
+        },
+        "confidence": {
+          "kind": "LiteralExpr",
+          "value": 0.99,
+          "valueType": "Number"
+        },
+        "evidence": [
+          "policy:greenhouse-safe"
+        ],
+        "source": "runtime:safety-state",
+        "scope": "greenhouse",
+        "status": "observed",
+        "dependencies": []
+      },
+      "deferred": true
+    },
+    {
+      "kind": "FacetDecl",
+      "path": "command.request",
+      "valueType": "Utterance",
+      "value": null,
+      "owner": "command",
+      "naturalLanguage": {
+        "kind": "UtteranceDecl",
+        "path": "command.request",
+        "expression": {
+          "kind": "LiteralExpr",
+          "value": "请打开温室灯",
+          "valueType": "Text"
+        },
+        "speaker": "operator",
+        "locale": "zh-CN",
+        "channel": "text",
+        "evidence": [
+          "input:user-request"
+        ]
+      },
+      "deferred": true
+    },
+    {
+      "kind": "FacetDecl",
+      "path": "command.activate_light",
+      "valueType": "Intent",
+      "value": null,
+      "owner": "command",
+      "naturalLanguage": {
+        "kind": "IntentDecl",
+        "path": "command.activate_light",
+        "name": "activate_light",
+        "when": {
+          "kind": "BinaryExpr",
+          "operator": "and",
+          "left": {
+            "kind": "CallExpr",
+            "name": "contains",
+            "args": [
+              {
+                "kind": "CallExpr",
+                "name": "utterance_text",
+                "args": [
+                  {
+                    "kind": "PathExpr",
+                    "path": "command.request"
+                  }
+                ]
+              },
+              {
+                "kind": "LiteralExpr",
+                "value": "打开",
+                "valueType": "Text"
+              }
+            ]
+          },
+          "right": {
+            "kind": "CallExpr",
+            "name": "contains",
+            "args": [
+              {
+                "kind": "CallExpr",
+                "name": "utterance_text",
+                "args": [
+                  {
+                    "kind": "PathExpr",
+                    "path": "command.request"
+                  }
+                ]
+              },
+              {
+                "kind": "LiteralExpr",
+                "value": "灯",
+                "valueType": "Text"
+              }
+            ]
+          }
+        },
+        "action": "activate",
+        "target": "greenhouse.light",
+        "confidence": {
+          "kind": "LiteralExpr",
+          "value": 0.97,
+          "valueType": "Number"
+        },
+        "evidence": [
+          "grammar:zh-open-light"
+        ],
+        "utterances": [
+          "command.request"
+        ],
+        "slots": [
+          {
+            "name": "device",
+            "expression": {
+              "kind": "LiteralExpr",
+              "value": "light",
+              "valueType": "Text"
+            }
+          }
+        ]
+      },
+      "deferred": true
+    },
+    {
+      "kind": "FacetDecl",
+      "path": "situation.authorized_request",
+      "valueType": "Understand<Truth>",
+      "value": null,
+      "owner": "situation",
+      "understanding": {
+        "kind": "HypothesisDecl",
+        "path": "situation.authorized_request",
+        "baseType": "Truth",
+        "expression": {
+          "kind": "BinaryExpr",
+          "operator": "and",
+          "left": {
+            "kind": "CallExpr",
+            "name": "intent_matches",
+            "args": [
+              {
+                "kind": "PathExpr",
+                "path": "command.activate_light"
+              },
+              {
+                "kind": "LiteralExpr",
+                "value": "activate",
+                "valueType": "Text"
+              },
+              {
+                "kind": "LiteralExpr",
+                "value": "greenhouse.light",
+                "valueType": "Text"
+              }
+            ]
+          },
+          "right": {
+            "kind": "CallExpr",
+            "name": "knowledge_value",
+            "args": [
+              {
+                "kind": "PathExpr",
+                "path": "mind.operation_safe"
+              }
+            ]
+          }
+        },
+        "confidence": {
+          "kind": "LiteralExpr",
+          "value": 0.96,
+          "valueType": "Number"
+        },
+        "explanation": "The utterance requests light activation and the greenhouse safety claim permits the operation.",
+        "evidence": [
+          "model:command-plus-safety"
+        ],
+        "dependencies": [
+          "command.activate_light",
+          "mind.operation_safe"
+        ],
+        "coverage": {
+          "kind": "LiteralExpr",
+          "value": 1,
+          "valueType": "Number"
+        },
+        "coherence": {
+          "kind": "LiteralExpr",
+          "value": 0.98,
+          "valueType": "Number"
+        },
+        "status": "hypothesis"
+      },
+      "deferred": true
+    },
+    {
+      "kind": "FacetDecl",
+      "path": "solutions.activate",
+      "valueType": "Create<Text>",
+      "value": null,
+      "owner": "solutions",
+      "creation": {
+        "kind": "CreationCandidateDecl",
+        "path": "solutions.activate",
+        "localName": "activate",
+        "baseType": "Text",
+        "expression": {
+          "kind": "LiteralExpr",
+          "value": "activate",
+          "valueType": "Text"
+        },
+        "when": {
+          "kind": "CallExpr",
+          "name": "understanding_value",
+          "args": [
+            {
+              "kind": "PathExpr",
+              "path": "situation.authorized_request"
+            }
+          ]
+        },
+        "target": "greenhouse.light",
+        "novelty": {
+          "kind": "LiteralExpr",
+          "value": 0.3,
+          "valueType": "Number"
+        },
+        "utility": {
+          "kind": "LiteralExpr",
+          "value": 0.98,
+          "valueType": "Number"
+        },
+        "feasibility": {
+          "kind": "LiteralExpr",
+          "value": 0.99,
+          "valueType": "Number"
+        },
+        "risk": {
+          "kind": "LiteralExpr",
+          "value": 0.02,
+          "valueType": "Number"
+        },
+        "evidence": [
+          "strategy:direct-safe-action"
+        ],
+        "basedOn": [
+          "situation.authorized_request"
+        ]
+      },
+      "deferred": true
+    },
+    {
+      "kind": "FacetDecl",
+      "path": "solutions.clarify",
+      "valueType": "Create<Text>",
+      "value": null,
+      "owner": "solutions",
+      "creation": {
+        "kind": "CreationCandidateDecl",
+        "path": "solutions.clarify",
+        "localName": "clarify",
+        "baseType": "Text",
+        "expression": {
+          "kind": "LiteralExpr",
+          "value": "ask-for-clarification",
+          "valueType": "Text"
+        },
+        "when": {
+          "kind": "LiteralExpr",
+          "value": true,
+          "valueType": "Truth"
+        },
+        "target": "operator",
+        "novelty": {
+          "kind": "LiteralExpr",
+          "value": 0.2,
+          "valueType": "Number"
+        },
+        "utility": {
+          "kind": "LiteralExpr",
+          "value": 0.25,
+          "valueType": "Number"
+        },
+        "feasibility": {
+          "kind": "LiteralExpr",
+          "value": 1,
+          "valueType": "Number"
+        },
+        "risk": {
+          "kind": "LiteralExpr",
+          "value": 0.01,
+          "valueType": "Number"
+        },
+        "evidence": [
+          "strategy:conservative-fallback"
+        ],
+        "basedOn": [
+          "command.activate_light"
+        ]
+      },
+      "deferred": true
+    },
+    {
+      "kind": "FacetDecl",
+      "path": "solutions.chosen",
+      "valueType": "Create<Text>",
+      "value": null,
+      "owner": "solutions",
+      "selection": {
+        "kind": "CreationSelectionDecl",
+        "path": "solutions.chosen",
+        "candidates": [
+          "solutions.activate",
+          "solutions.clarify"
+        ]
+      },
+      "deferred": true
+    }
+  ],
+  "facetTypes": {
+    "greenhouse.light": "Truth",
+    "greenhouse.safe": "Truth",
+    "caretaker.actions": "Number",
+    "mind.operation_safe": "Know<Truth>",
+    "command.request": "Utterance",
+    "command.activate_light": "Intent",
+    "situation.authorized_request": "Understand<Truth>",
+    "solutions.activate": "Create<Text>",
+    "solutions.clarify": "Create<Text>",
+    "solutions.chosen": "Create<Text>"
+  },
+  "subjects": [
+    "caretaker"
+  ],
+  "warrants": [
+    {
+      "kind": "WarrantDecl",
+      "subject": "caretaker",
+      "capability": "greenhouse.control",
+      "target": "greenhouse",
+      "condition": null
+    }
+  ],
+  "reckons": [],
+  "hosts": [],
+  "metaDomains": [],
+  "physicals": [],
+  "perceptions": [],
+  "neurals": [],
+  "livings": [],
+  "genetics": [],
+  "quantitatives": [],
+  "knowledges": [
+    {
+      "kind": "KnowledgeDecl",
+      "name": "mind",
+      "claims": [
+        {
+          "kind": "KnowledgeClaimDecl",
+          "path": "mind.operation_safe",
+          "baseType": "Truth",
+          "expression": {
+            "kind": "PathExpr",
+            "path": "greenhouse.safe"
+          },
+          "confidence": {
+            "kind": "LiteralExpr",
+            "value": 0.99,
+            "valueType": "Number"
+          },
+          "evidence": [
+            "policy:greenhouse-safe"
+          ],
+          "source": "runtime:safety-state",
+          "scope": "greenhouse",
+          "status": "observed",
+          "dependencies": []
+        }
+      ],
+      "derives": [],
+      "revisions": [],
+      "decays": [],
+      "preserves": [
+        {
+          "kind": "CallExpr",
+          "name": "supported",
+          "args": [
+            {
+              "kind": "PathExpr",
+              "path": "mind.operation_safe"
+            },
+            {
+              "kind": "LiteralExpr",
+              "value": 0.95,
+              "valueType": "Number"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "naturalLanguages": [
+    {
+      "kind": "NaturalLanguageDecl",
+      "name": "command",
+      "utterances": [
+        {
+          "kind": "UtteranceDecl",
+          "path": "command.request",
+          "expression": {
+            "kind": "LiteralExpr",
+            "value": "请打开温室灯",
+            "valueType": "Text"
+          },
+          "speaker": "operator",
+          "locale": "zh-CN",
+          "channel": "text",
+          "evidence": [
+            "input:user-request"
+          ]
+        }
+      ],
+      "intents": [
+        {
+          "kind": "IntentDecl",
+          "path": "command.activate_light",
+          "name": "activate_light",
+          "when": {
+            "kind": "BinaryExpr",
+            "operator": "and",
+            "left": {
+              "kind": "CallExpr",
+              "name": "contains",
+              "args": [
+                {
+                  "kind": "CallExpr",
+                  "name": "utterance_text",
+                  "args": [
+                    {
+                      "kind": "PathExpr",
+                      "path": "command.request"
+                    }
+                  ]
+                },
+                {
+                  "kind": "LiteralExpr",
+                  "value": "打开",
+                  "valueType": "Text"
+                }
+              ]
+            },
+            "right": {
+              "kind": "CallExpr",
+              "name": "contains",
+              "args": [
+                {
+                  "kind": "CallExpr",
+                  "name": "utterance_text",
+                  "args": [
+                    {
+                      "kind": "PathExpr",
+                      "path": "command.request"
+                    }
+                  ]
+                },
+                {
+                  "kind": "LiteralExpr",
+                  "value": "灯",
+                  "valueType": "Text"
+                }
+              ]
+            }
+          },
+          "action": "activate",
+          "target": "greenhouse.light",
+          "confidence": {
+            "kind": "LiteralExpr",
+            "value": 0.97,
+            "valueType": "Number"
+          },
+          "evidence": [
+            "grammar:zh-open-light"
+          ],
+          "utterances": [
+            "command.request"
+          ],
+          "slots": [
+            {
+              "name": "device",
+              "expression": {
+                "kind": "LiteralExpr",
+                "value": "light",
+                "valueType": "Text"
+              }
+            }
+          ]
+        }
+      ],
+      "preserves": [
+        {
+          "kind": "BinaryExpr",
+          "operator": ">=",
+          "left": {
+            "kind": "CallExpr",
+            "name": "intent_confidence",
+            "args": [
+              {
+                "kind": "PathExpr",
+                "path": "command.activate_light"
+              }
+            ]
+          },
+          "right": {
+            "kind": "LiteralExpr",
+            "value": 0.9,
+            "valueType": "Number"
+          }
+        }
+      ]
+    }
+  ],
+  "understandings": [
+    {
+      "kind": "UnderstandingDecl",
+      "name": "situation",
+      "hypotheses": [
+        {
+          "kind": "HypothesisDecl",
+          "path": "situation.authorized_request",
+          "baseType": "Truth",
+          "expression": {
+            "kind": "BinaryExpr",
+            "operator": "and",
+            "left": {
+              "kind": "CallExpr",
+              "name": "intent_matches",
+              "args": [
+                {
+                  "kind": "PathExpr",
+                  "path": "command.activate_light"
+                },
+                {
+                  "kind": "LiteralExpr",
+                  "value": "activate",
+                  "valueType": "Text"
+                },
+                {
+                  "kind": "LiteralExpr",
+                  "value": "greenhouse.light",
+                  "valueType": "Text"
+                }
+              ]
+            },
+            "right": {
+              "kind": "CallExpr",
+              "name": "knowledge_value",
+              "args": [
+                {
+                  "kind": "PathExpr",
+                  "path": "mind.operation_safe"
+                }
+              ]
+            }
+          },
+          "confidence": {
+            "kind": "LiteralExpr",
+            "value": 0.96,
+            "valueType": "Number"
+          },
+          "explanation": "The utterance requests light activation and the greenhouse safety claim permits the operation.",
+          "evidence": [
+            "model:command-plus-safety"
+          ],
+          "dependencies": [
+            "command.activate_light",
+            "mind.operation_safe"
+          ],
+          "coverage": {
+            "kind": "LiteralExpr",
+            "value": 1,
+            "valueType": "Number"
+          },
+          "coherence": {
+            "kind": "LiteralExpr",
+            "value": 0.98,
+            "valueType": "Number"
+          },
+          "status": "hypothesis"
+        }
+      ],
+      "preserves": [
+        {
+          "kind": "CallExpr",
+          "name": "understood",
+          "args": [
+            {
+              "kind": "PathExpr",
+              "path": "situation.authorized_request"
+            },
+            {
+              "kind": "LiteralExpr",
+              "value": 0.9,
+              "valueType": "Number"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "creations": [
+    {
+      "kind": "CreationDecl",
+      "name": "solutions",
+      "candidates": [
+        {
+          "kind": "CreationCandidateDecl",
+          "path": "solutions.activate",
+          "localName": "activate",
+          "baseType": "Text",
+          "expression": {
+            "kind": "LiteralExpr",
+            "value": "activate",
+            "valueType": "Text"
+          },
+          "when": {
+            "kind": "CallExpr",
+            "name": "understanding_value",
+            "args": [
+              {
+                "kind": "PathExpr",
+                "path": "situation.authorized_request"
+              }
+            ]
+          },
+          "target": "greenhouse.light",
+          "novelty": {
+            "kind": "LiteralExpr",
+            "value": 0.3,
+            "valueType": "Number"
+          },
+          "utility": {
+            "kind": "LiteralExpr",
+            "value": 0.98,
+            "valueType": "Number"
+          },
+          "feasibility": {
+            "kind": "LiteralExpr",
+            "value": 0.99,
+            "valueType": "Number"
+          },
+          "risk": {
+            "kind": "LiteralExpr",
+            "value": 0.02,
+            "valueType": "Number"
+          },
+          "evidence": [
+            "strategy:direct-safe-action"
+          ],
+          "basedOn": [
+            "situation.authorized_request"
+          ]
+        },
+        {
+          "kind": "CreationCandidateDecl",
+          "path": "solutions.clarify",
+          "localName": "clarify",
+          "baseType": "Text",
+          "expression": {
+            "kind": "LiteralExpr",
+            "value": "ask-for-clarification",
+            "valueType": "Text"
+          },
+          "when": {
+            "kind": "LiteralExpr",
+            "value": true,
+            "valueType": "Truth"
+          },
+          "target": "operator",
+          "novelty": {
+            "kind": "LiteralExpr",
+            "value": 0.2,
+            "valueType": "Number"
+          },
+          "utility": {
+            "kind": "LiteralExpr",
+            "value": 0.25,
+            "valueType": "Number"
+          },
+          "feasibility": {
+            "kind": "LiteralExpr",
+            "value": 1,
+            "valueType": "Number"
+          },
+          "risk": {
+            "kind": "LiteralExpr",
+            "value": 0.01,
+            "valueType": "Number"
+          },
+          "evidence": [
+            "strategy:conservative-fallback"
+          ],
+          "basedOn": [
+            "command.activate_light"
+          ]
+        }
+      ],
+      "selection": {
+        "kind": "CreationSelectionDecl",
+        "path": "solutions.chosen",
+        "candidates": [
+          "solutions.activate",
+          "solutions.clarify"
+        ]
+      },
+      "preserves": [
+        {
+          "kind": "BinaryExpr",
+          "operator": ">=",
+          "left": {
+            "kind": "CallExpr",
+            "name": "creation_score",
+            "args": [
+              {
+                "kind": "PathExpr",
+                "path": "solutions.chosen"
+              }
+            ]
+          },
+          "right": {
+            "kind": "LiteralExpr",
+            "value": 0.8,
+            "valueType": "Number"
+          }
+        }
+      ]
+    }
+  ],
+  "rules": [
+    {
+      "kind": "Emergence",
+      "name": "enact_selected_solution",
+      "cause": "caretaker",
+      "from": null,
+      "into": null,
+      "when": {
+        "kind": "BinaryExpr",
+        "operator": "and",
+        "left": {
+          "kind": "CallExpr",
+          "name": "selected",
+          "args": [
+            {
+              "kind": "PathExpr",
+              "path": "solutions.chosen"
+            }
+          ]
+        },
+        "right": {
+          "kind": "BinaryExpr",
+          "operator": "==",
+          "left": {
+            "kind": "CallExpr",
+            "name": "creation_value",
+            "args": [
+              {
+                "kind": "PathExpr",
+                "path": "solutions.chosen"
+              }
+            ]
+          },
+          "right": {
+            "kind": "LiteralExpr",
+            "value": "activate",
+            "valueType": "Text"
+          }
+        }
+      },
+      "needs": [
+        {
+          "capability": "greenhouse.control",
+          "target": "greenhouse"
+        }
+      ],
+      "preserves": [
+        {
+          "kind": "PathExpr",
+          "path": "greenhouse.safe"
+        }
+      ],
+      "alters": [
+        {
+          "target": "greenhouse.light",
+          "expression": {
+            "kind": "LiteralExpr",
+            "value": true,
+            "valueType": "Truth"
+          }
+        },
+        {
+          "target": "caretaker.actions",
+          "expression": {
+            "kind": "BinaryExpr",
+            "operator": "+",
+            "left": {
+              "kind": "PathExpr",
+              "path": "caretaker.actions"
+            },
+            "right": {
+              "kind": "LiteralExpr",
+              "value": 1,
+              "valueType": "Number"
+            }
+          }
+        }
+      ],
+      "calls": [],
+      "witnesses": [
+        "execution:natural-language-understanding-creation"
+      ]
+    }
+  ],
+  "directives": [
+    {
+      "kind": "Learn",
+      "name": "mind"
+    },
+    {
+      "kind": "Interpret",
+      "name": "command"
+    },
+    {
+      "kind": "Understand",
+      "name": "situation"
+    },
+    {
+      "kind": "Create",
+      "name": "solutions"
+    },
+    {
+      "kind": "Foresee",
+      "rule": "enact_selected_solution"
+    },
+    {
+      "kind": "Realize",
+      "rule": "enact_selected_solution"
+    }
+  ],
+  "programRoot": "ded4c5f1ccbf90f5c5629b36b85966d4e13e568bcf5a1f02ce1dc58ea949f229"
+}

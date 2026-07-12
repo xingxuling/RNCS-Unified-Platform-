@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Reality Branch Execution Receipt v0.2",
+  "type": "object",
+  "required": [
+    "format",
+    "version",
+    "receipt_id",
+    "plan_root",
+    "branch_id",
+    "status",
+    "step_receipts",
+    "final_state_root",
+    "receipt_root"
+  ],
+  "properties": {
+    "format": {
+      "const": "reality-branch.execution-receipt.v0.2"
+    },
+    "version": {
+      "const": "0.2.0-alpha.1"
+    },
+    "receipt_id": {
+      "type": "string"
+    },
+    "plan_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "branch_id": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "completed",
+        "rolled_back",
+        "rollback_incomplete"
+      ]
+    },
+    "step_receipts": {
+      "type": "array"
+    },
+    "rollback": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "final_state_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "receipt_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+contract: taowind-reality-mcp-v0.1
+suite_version: 0.12.0-alpha.1
+primary_architecture: V1-software
+auxiliary_architectures: [V3-system, V6-requirements]
+required_result:
+  - ChatGPT can connect to an HTTPS Streamable HTTP MCP endpoint.
+  - MCP routes requests through Reality One Gateway rather than duplicating runtime logic.
+  - Search/fetch can read allow-listed authoritative project artifacts.
+  - World planning can compile, create, diff, and simulate candidate branches.
+  - Candidate workflows cannot alter authoritative revision or state_root.
+allowed_changes:
+  - packages/integration/taowind-reality-mcp
+  - root package metadata and module registry
+  - docs, tests, release manifests, scripts
+forbidden_capabilities:
+  - AAF authorization through MCP
+  - candidate merge
+  - RFE rollback or replay
+  - arbitrary shell execution
+  - arbitrary filesystem access
+  - Git main branch write or release publication
+verification:
+  - MCP initialize, tools/list, tools/call through official TypeScript SDK client
+  - origin rejection
+  - path and auth configuration tests
+  - authority invariance before and after candidate workflow
+  - full gateway health and integration regression
+rollback: remove the integration package and root registry/script entries; no existing runtime contract is changed.

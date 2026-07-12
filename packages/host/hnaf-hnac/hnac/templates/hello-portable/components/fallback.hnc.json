@@ -1,0 +1,7 @@
+{
+  "profile": "declarative-v0",
+  "operations": [
+    {"op": "capability_call", "capability": "host.log", "method": "write", "args": {"message": "HNAC v0.4 declarative compatibility projection"}},
+    {"op": "capability_call", "capability": "host.clock", "method": "now", "args": {}, "save_as": "launch.time"}
+  ]
+}

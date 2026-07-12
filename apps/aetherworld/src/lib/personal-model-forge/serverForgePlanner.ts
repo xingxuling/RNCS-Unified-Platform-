@@ -1,0 +1,118 @@
+// 服务器爆发训练炉 · Server Forge Plan
+import type { ForgeExperiment, ForgeExperimentType } from "./personalModelForgeTypes";
+
+const TYPE_LABEL: Record<ForgeExperimentType, string> = {
+  TOKENIZER_TRAINING: "Tokenizer 训练",
+  TOY_PRETRAIN: "玩具预训练",
+  SMALL_SFT: "小规模 SFT",
+  LORA_TEST: "LoRA / QLoRA 实验",
+  ROUTER_MODEL: "Router 小模型",
+  MSL_MODEL: "MSL 小模型",
+  FORMAT_MODEL: "格式 / 结构小模型",
+  DATA_ABLATION: "数据消融",
+  SERVER_PRETRAIN: "服务器预训练",
+  SERVER_SFT: "服务器 SFT",
+};
+
+function exp(p: Omit<ForgeExperiment, "experimentTypeLabel">): ForgeExperiment {
+  return { ...p, experimentTypeLabel: TYPE_LABEL[p.experimentType] };
+}
+
+export function buildServerForgePlan(): ForgeExperiment[] {
+  return [
+    exp({
+      id: "SF-300M-01",
+      name: "AetherSeed-300M 正式预训练",
+      targetModel: "AetherSeed-300M",
+      experimentType: "SERVER_PRETRAIN",
+      location: "GPU_SERVER",
+      estimatedDuration: "数天（单 GPU）/ 1～2 天（多 GPU）",
+      costMode: "MONEY_RICH",
+      requiredTools: ["gpu-server", "codex", "aetherworld"],
+      datasetRefs: ["本机已清洗的全量预训练语料"],
+      outputArtifacts: ["300M checkpoint", "Tokenizer 复用", "评测报告"],
+      status: "DRAFT",
+      goal: "完成 AetherSeed 系列首个具备弱通用能力的基座。",
+      evalItems: ["perplexity", "格式输出", "Aetherworld 任务命中"],
+      failureRisks: ["数据混入敏感样本", "训练超时"],
+      nextStep: "回传后由 Ollama 装载用于全链路评测。",
+    }),
+    exp({
+      id: "SF-700M-01",
+      name: "AetherSeed-700M 训练",
+      targetModel: "AetherSeed-700M",
+      experimentType: "SERVER_PRETRAIN",
+      location: "GPU_SERVER",
+      estimatedDuration: "约 1 周",
+      costMode: "MONEY_RICH",
+      requiredTools: ["gpu-server", "codex"],
+      datasetRefs: ["300M 数据集扩展 + 高质量增量"],
+      outputArtifacts: ["700M checkpoint"],
+      status: "DRAFT",
+      goal: "中等规模通用能力跃迁。",
+      evalItems: ["指令遵循", "结构化输出", "MSL 合法率"],
+      failureRisks: ["显存不足", "数据重复过多"],
+      nextStep: "服务器 SFT 阶段。",
+    }),
+    exp({
+      id: "SF-1B5-01",
+      name: "AetherSeed-1.5B 训练",
+      targetModel: "AetherSeed-1.5B",
+      experimentType: "SERVER_PRETRAIN",
+      location: "GPU_SERVER",
+      estimatedDuration: "1～2 周",
+      costMode: "MONEY_RICH",
+      requiredTools: ["gpu-server"],
+      datasetRefs: ["高质量预训练 + Aetherworld 全任务样本"],
+      outputArtifacts: ["1.5B checkpoint"],
+      status: "DRAFT",
+      goal: "AetherSeed 系列的主力工作模型。",
+      evalItems: ["综合 eval", "Aetherworld 真实任务通过率"],
+      failureRisks: ["训练失稳", "数据偏倚"],
+      nextStep: "进入 7B 之前先做数据消融。",
+    }),
+    exp({
+      id: "SF-3B-01",
+      name: "AetherSeed-3B 训练",
+      targetModel: "AetherSeed-3B",
+      experimentType: "SERVER_PRETRAIN",
+      location: "GPU_SERVER",
+      estimatedDuration: "2～4 周",
+      costMode: "MONEY_RICH",
+      requiredTools: ["gpu-server"],
+      datasetRefs: ["全量清洗语料"],
+      outputArtifacts: ["3B checkpoint"],
+      status: "DRAFT",
+      goal: "在中等成本下达到较强通用能力。",
+      evalItems: ["综合 eval", "推理速度"],
+      failureRisks: ["费用上升", "需要更稳的训练框架"],
+      nextStep: "评估是否进入 7B。",
+    }),
+    exp({
+      id: "SF-7B-01",
+      name: "AetherSeed-7B 训练",
+      targetModel: "AetherSeed-7B",
+      experimentType: "SERVER_PRETRAIN",
+      location: "GPU_SERVER",
+      estimatedDuration: "数周（多 GPU 并行）",
+      costMode: "MONEY_RICH",
+      requiredTools: ["gpu-server"],
+      datasetRefs: ["最终高质量语料"],
+      outputArtifacts: ["7B checkpoint"],
+      status: "DRAFT",
+      goal: "AetherSeed 系列旗舰。",
+      evalItems: ["综合 eval", "对外可用性", "Ollama 部署可行性"],
+      failureRisks: ["费用高", "训练失败重跑成本巨大"],
+      nextStep: "回传后接入 Aetherworld Provider 与 Ollama，用于真实推理。",
+    }),
+  ];
+}
+
+export const SERVER_PREP_CHECKLIST: string[] = [
+  "本机已清洗数据 / 已生成 Tokenizer",
+  "本机已跑通训练脚本 dry-run",
+  "确认上传数据不含 secret / Full60 原始数列",
+  "明确 checkpoint 回传路径",
+  "明确训练后 Ollama 导入流程",
+  "明确评测项与回验计划",
+];

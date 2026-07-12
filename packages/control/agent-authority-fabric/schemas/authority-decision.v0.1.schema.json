@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "format",
+    "proposal_root",
+    "status",
+    "claims",
+    "decision_root",
+    "authorized_envelope"
+  ],
+  "properties": {
+    "format": {
+      "const": "aaf.authority-decision.v0.1"
+    },
+    "status": {
+      "enum": [
+        "approved",
+        "denied",
+        "pending_approval"
+      ]
+    },
+    "decision_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

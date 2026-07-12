@@ -1,0 +1,29 @@
+{
+  "name": "@taowind/reality-network-runtime",
+  "version": "0.2.0-alpha.1",
+  "type": "module",
+  "description": "RNCS authoritative multiplayer runtime using RSR v0.7 integrity-checked state frames/deltas with deterministic prediction, rollback and loopback fault injection.",
+  "license": "Apache-2.0",
+  "exports": {
+    ".": "./src/index.mjs"
+  },
+  "files": [
+    "src",
+    "schemas",
+    "README.md",
+    "rncs.module.json"
+  ],
+  "scripts": {
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs",
+    "benchmark": "node scripts/benchmark.mjs"
+  },
+  "dependencies": {
+    "@taowind/agent-authority-fabric": "*",
+    "@taowind/reality-branch-fabric": "*",
+    "@taowind/reality-simulation-runtime": "*",
+    "@taowind/rfe-core-sdk": "*"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

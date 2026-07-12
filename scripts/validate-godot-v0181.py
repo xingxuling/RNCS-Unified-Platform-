@@ -43,6 +43,8 @@ check("startup self-test exists", "run_startup_self_test" in (ROOT / "scripts/ma
 check("three-step combo exists", "combo_step" in (ROOT / "scripts/player_controller.gd").read_text(encoding="utf-8"))
 check("day cycle exists", "_update_day_cycle" in (ROOT / "scripts/main.gd").read_text(encoding="utf-8"))
 
+# The v0.18 crash-prone pattern typed a node as a Godot base class, then called
+# custom script members on it. This check blocks that regression.
 for script_path in ROOT.rglob("*.gd"):
     text = script_path.read_text(encoding="utf-8")
     risky = re.findall(r"var\s+(player|hud|enemy|npc|target)\s*:\s*(CharacterBody3D|CanvasLayer|Node3D|Node)\b", text)
@@ -54,6 +56,7 @@ for script_path in ROOT.rglob("*.gd"):
             f"{text.count(left)} vs {text.count(right)}",
         )
 
+# Validate res:// references used by project and scenes/scripts.
 reference_pattern = re.compile(r'res://[A-Za-z0-9_./-]+')
 for source in [ROOT / "project.godot", *ROOT.rglob("*.tscn"), *ROOT.rglob("*.gd")]:
     text = source.read_text(encoding="utf-8")

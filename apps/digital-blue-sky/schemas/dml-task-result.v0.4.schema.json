@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.tech/schemas/dml-task-result.v0.4.schema.json",
+  "title": "DML Task Result v0.4",
+  "type": "object",
+  "required": [
+    "format",
+    "result_id",
+    "task_id",
+    "plan_id",
+    "status",
+    "result_root"
+  ],
+  "properties": {
+    "format": {
+      "const": "dml.task-result.v0.4"
+    },
+    "result_id": {
+      "type": "string"
+    },
+    "task_id": {
+      "type": "string"
+    },
+    "plan_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "outputs": {
+      "type": "array"
+    },
+    "artifacts": {
+      "type": "array"
+    },
+    "evidence": {
+      "type": "array"
+    },
+    "result_root": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64
+    }
+  }
+}

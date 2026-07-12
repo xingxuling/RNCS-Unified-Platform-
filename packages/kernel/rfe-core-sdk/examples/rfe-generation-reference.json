@@ -1,0 +1,9 @@
+{
+  "format": "rncs.generation-reference.v0.1",
+  "reality_id": "world:rncs-demo",
+  "generation": 1,
+  "generation_root": "528b02f99bffcbadad75825f319c84b3d69a2a97234ef8cd7d4cfebb96e84e71",
+  "rfe_generation_id": "generation:1:abf561619b73d7da571b",
+  "branch_id": "branch:main",
+  "evidence_root": "57b21c55b3aba81c96ce4c44954d7d05f5ef3f75cf270c7478dd5c1a351662d5"
+}

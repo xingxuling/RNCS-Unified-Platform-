@@ -1,0 +1,21 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://taowind.dev/schemas/rsr-spatial-embodiment.v0.6.schema.json",
+  "title":"RSR Spatial Embodiment World v0.6",
+  "type":"object",
+  "required":["format","worldId","stepHz","bodies"],
+  "properties":{
+    "format":{"const":"rsr.spatial-embodiment-world.v0.6"},
+    "worldId":{"type":"string","minLength":1},
+    "stepHz":{"type":"number","exclusiveMinimum":0},
+    "floorY":{"type":"number"},
+    "broadPhaseCellSize":{"type":"integer","minimum":1},
+    "contactPersistenceDistance":{"type":"integer","minimum":0},
+    "bodies":{"type":"array","minItems":1},
+    "characters":{"type":"array"},
+    "joints":{"type":"array"},
+    "listeners":{"type":"array"},
+    "reality":{"type":"object"}
+  },
+  "additionalProperties":true
+}

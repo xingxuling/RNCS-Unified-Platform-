@@ -1,0 +1,119 @@
+{
+  "format": "rsr.spatial-embodiment-demo-evidence.v0.5",
+  "runtimeVersion": "0.6.0-alpha.1",
+  "worldId": "world:embodied-courtyard",
+  "deterministicReplay": true,
+  "deterministicRecovery": true,
+  "initialStateRoot": "fnv1a64:d74562ba6aa31a46",
+  "checkpointStateRoot": "fnv1a64:064729cfd6f95dbf",
+  "finalStateRoot": "fnv1a64:e86cf73300988b3f",
+  "replayStateRoot": "fnv1a64:e86cf73300988b3f",
+  "recoveredStateRoot": "fnv1a64:e86cf73300988b3f",
+  "roots": {
+    "bodyRoot": "fnv1a64:0a131dd2b2291dc8",
+    "contactRoot": "fnv1a64:5767bdd3eb32743a",
+    "characterRoot": "fnv1a64:981d1b0224eb2ab6",
+    "jointRoot": "fnv1a64:4a3093a13d6fed1d",
+    "sensoryRoot": "fnv1a64:09612b07b5ecb5a5",
+    "causalDeltaRoot": "fnv1a64:090c4ebfac941d7e"
+  },
+  "reality": {
+    "generation": 12,
+    "realityRoot": "rfe:world:embodied-courtyard:g12",
+    "evidenceRoot": "rfe:evidence:embodied-courtyard:g12"
+  },
+  "diagnostics": {
+    "broadPhasePairs": 7,
+    "narrowPhaseTests": 2,
+    "contacts": 3,
+    "sensorContacts": 0,
+    "groundedBodies": 1,
+    "sleepingBodies": 0,
+    "characterControllers": 1,
+    "jointConstraints": 10,
+    "microsteps": 1,
+    "ccdBodies": 1,
+    "audioEvents": 0,
+    "hapticEvents": 0,
+    "footstepEvents": 0
+  },
+  "counts": {
+    "bodies": 7,
+    "fixtures": 7,
+    "characters": 1,
+    "joints": 2,
+    "contacts": 3,
+    "events": 968,
+    "spatialAudio": 111,
+    "haptics": 119,
+    "footsteps": 1
+  },
+  "queries": {
+    "aabbQuery": [
+      {
+        "bodyId": "avatar",
+        "fixtureId": "avatar:capsule"
+      },
+      {
+        "bodyId": "crate-a",
+        "fixtureId": "crate-a:shape"
+      },
+      {
+        "bodyId": "crate-b",
+        "fixtureId": "crate-b:shape"
+      },
+      {
+        "bodyId": "orb",
+        "fixtureId": "orb:shape"
+      },
+      {
+        "bodyId": "right-arm",
+        "fixtureId": "right-arm:shape"
+      }
+    ],
+    "pointQuery": [
+      {
+        "bodyId": "avatar",
+        "fixtureId": "avatar:capsule"
+      }
+    ],
+    "rayHits": [
+      {
+        "bodyId": "crate-a",
+        "fixtureId": "crate-a:shape",
+        "distance": 6404,
+        "point": {
+          "x": 404,
+          "y": 1000,
+          "z": 0
+        }
+      },
+      {
+        "bodyId": "crate-b",
+        "fixtureId": "crate-b:shape",
+        "distance": 7625,
+        "point": {
+          "x": 1625,
+          "y": 1000,
+          "z": 0
+        }
+      }
+    ]
+  },
+  "initialProjection": {
+    "pixelRoot": "fnv1a64:b8722e547436164e",
+    "projectionRoot": "fnv1a64:6990591d2f99b27c",
+    "frameRoot": "fnv1a64:d8f4a4c579b89215",
+    "frameVerified": true,
+    "drawCalls": 8,
+    "triangles": 1958
+  },
+  "finalProjection": {
+    "pixelRoot": "fnv1a64:56d00c129f3094ff",
+    "projectionRoot": "fnv1a64:bc5e1caccd5a5f23",
+    "frameRoot": "fnv1a64:d6623661bae71d3f",
+    "frameVerified": true,
+    "drawCalls": 11,
+    "triangles": 3398
+  }
+}

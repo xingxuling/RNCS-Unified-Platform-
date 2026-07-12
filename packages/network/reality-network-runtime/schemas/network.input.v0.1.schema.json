@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/network.input.v0.1.schema.json",
+  "title": "network.input.v0.1",
+  "type": "object",
+  "required": [
+    "format",
+    "subjectId",
+    "playerId",
+    "sessionId",
+    "inputSequence",
+    "clientTick",
+    "targetServerTick",
+    "command",
+    "authorizationRoot",
+    "clientPredictionRoot"
+  ],
+  "properties": {
+    "format": {
+      "const": "network.input.v0.1"
+    },
+    "subjectId": {
+      "type": "string"
+    },
+    "playerId": {
+      "type": "string"
+    },
+    "sessionId": {
+      "type": "string"
+    },
+    "inputSequence": {
+      "type": "integer"
+    },
+    "clientTick": {
+      "type": "integer"
+    },
+    "targetServerTick": {
+      "type": "integer"
+    },
+    "command": {
+      "type": "object"
+    },
+    "authorizationRoot": {
+      "type": "string"
+    },
+    "clientPredictionRoot": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": true
+}

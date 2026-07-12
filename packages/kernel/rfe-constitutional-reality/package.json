@@ -1,0 +1,22 @@
+{
+  "name": "rfe-constitutional-reality",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "RFE v1.0.0 Constitutional Reality — C1-C12 conformance source and evidence",
+  "scripts": {
+    "check": "npm --prefix reference-js run check",
+    "test": "npm --prefix reference-js test",
+    "vector:c11": "npm --prefix reference-js run vector:c11",
+    "benchmark:c11": "npm --prefix reference-js run benchmark:c11",
+    "audit:source": "node scripts/audit_source_v100.mjs",
+    "verify": "npm run check && npm run test && npm run vector:c12 && npm run audit:source",
+    "verify:native": "cargo test --workspace --locked && cargo run -p rfe-constitutional-reality --example dump_c12 --locked",
+    "vector:c12": "npm --prefix reference-js run vector:c12",
+    "benchmark:c12": "npm --prefix reference-js run benchmark:c12",
+    "release:check": "node scripts/check_release.mjs release-v100"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

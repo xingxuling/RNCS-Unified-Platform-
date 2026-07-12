@@ -1,0 +1,677 @@
+{
+  "format": "rfe.conformance.replicated-authority.v0.5",
+  "scenario": "three-replica-leader-failover-lagging-catch-up",
+  "bootstrap": {
+    "branchId": "branch:main",
+    "groups": {
+      "identity": [
+        {
+          "id": "object:door",
+          "kind": "door",
+          "continuityPolicy": "persistent",
+          "createdAt": 0,
+          "retiredAt": null,
+          "lineage": [],
+          "metadata": {}
+        },
+        {
+          "id": "object:key:alice",
+          "kind": "key",
+          "continuityPolicy": "persistent",
+          "createdAt": 0,
+          "retiredAt": null,
+          "lineage": [],
+          "metadata": {}
+        },
+        {
+          "id": "object:key:bob",
+          "kind": "key",
+          "continuityPolicy": "persistent",
+          "createdAt": 0,
+          "retiredAt": null,
+          "lineage": [],
+          "metadata": {}
+        },
+        {
+          "id": "place:room-a",
+          "kind": "place",
+          "continuityPolicy": "persistent",
+          "createdAt": 0,
+          "retiredAt": null,
+          "lineage": [],
+          "metadata": {}
+        },
+        {
+          "id": "place:room-b",
+          "kind": "place",
+          "continuityPolicy": "persistent",
+          "createdAt": 0,
+          "retiredAt": null,
+          "lineage": [],
+          "metadata": {}
+        },
+        {
+          "id": "subject:alice",
+          "kind": "subject",
+          "continuityPolicy": "persistent",
+          "createdAt": 0,
+          "retiredAt": null,
+          "lineage": [],
+          "metadata": {
+            "privateLabel": "alice-only"
+          }
+        },
+        {
+          "id": "subject:bob",
+          "kind": "subject",
+          "continuityPolicy": "persistent",
+          "createdAt": 0,
+          "retiredAt": null,
+          "lineage": [],
+          "metadata": {
+            "privateLabel": "bob-only"
+          }
+        }
+      ],
+      "fact:object:door:state": [
+        {
+          "id": "fact:door-state:0",
+          "subject": "object:door",
+          "predicate": "state",
+          "value": "locked",
+          "validFrom": 0,
+          "validTo": null,
+          "source": "source:runtime",
+          "confidence": 1,
+          "visibility": {
+            "type": "public"
+          },
+          "authority": "authority:system"
+        }
+      ],
+      "relation:owns": [
+        {
+          "id": "relation:alice-owns-key",
+          "type": "owns",
+          "from": "subject:alice",
+          "to": "object:key:alice",
+          "qualifiers": {},
+          "validFrom": 0,
+          "validTo": null,
+          "authority": "authority:system"
+        },
+        {
+          "id": "relation:bob-owns-key",
+          "type": "owns",
+          "from": "subject:bob",
+          "to": "object:key:bob",
+          "qualifiers": {},
+          "validFrom": 0,
+          "validTo": null,
+          "authority": "authority:system"
+        }
+      ],
+      "relation:unlocks": [
+        {
+          "id": "relation:key-alice-unlocks-door",
+          "type": "unlocks",
+          "from": "object:key:alice",
+          "to": "object:door",
+          "qualifiers": {},
+          "validFrom": 0,
+          "validTo": null,
+          "authority": "authority:system"
+        },
+        {
+          "id": "relation:key-bob-unlocks-door",
+          "type": "unlocks",
+          "from": "object:key:bob",
+          "to": "object:door",
+          "qualifiers": {},
+          "validFrom": 0,
+          "validTo": null,
+          "authority": "authority:system"
+        }
+      ],
+      "relation:connects_from": [
+        {
+          "id": "relation:door-from-room-a",
+          "type": "connects_from",
+          "from": "object:door",
+          "to": "place:room-a",
+          "qualifiers": {},
+          "validFrom": 0,
+          "validTo": null,
+          "authority": "authority:system"
+        }
+      ],
+      "relation:connects_to": [
+        {
+          "id": "relation:door-to-room-b",
+          "type": "connects_to",
+          "from": "object:door",
+          "to": "place:room-b",
+          "qualifiers": {},
+          "validFrom": 0,
+          "validTo": null,
+          "authority": "authority:system"
+        }
+      ],
+      "relation:located_in": [
+        {
+          "id": "relation:alice-location:0",
+          "type": "located_in",
+          "from": "subject:alice",
+          "to": "place:room-a",
+          "qualifiers": {},
+          "validFrom": 0,
+          "validTo": null,
+          "authority": "authority:system"
+        },
+        {
+          "id": "relation:bob-location:0",
+          "type": "located_in",
+          "from": "subject:bob",
+          "to": "place:room-a",
+          "qualifiers": {},
+          "validFrom": 0,
+          "validTo": null,
+          "authority": "authority:system"
+        }
+      ],
+      "affordance:door": [
+        {
+          "id": "affordance:inspect-door",
+          "action": "inspect",
+          "targetKind": "door",
+          "description": "Inspect the door",
+          "when": {
+            "op": "literal",
+            "value": true
+          },
+          "cost": {},
+          "risk": {},
+          "effects": [],
+          "dependencies": []
+        },
+        {
+          "id": "affordance:open-door",
+          "action": "open",
+          "targetKind": "door",
+          "description": "Open an unlocked door",
+          "when": {
+            "op": "eq",
+            "left": {
+              "op": "fact",
+              "subject": "$target",
+              "predicate": "state"
+            },
+            "right": {
+              "op": "literal",
+              "value": "unlocked"
+            }
+          },
+          "cost": {},
+          "risk": {},
+          "effects": [
+            {
+              "op": "setFact",
+              "fact": {
+                "subject": "$target",
+                "predicate": "state",
+                "value": "open"
+              }
+            }
+          ],
+          "dependencies": [
+            "fact:*:state"
+          ]
+        },
+        {
+          "id": "affordance:pass-door",
+          "action": "pass",
+          "targetKind": "door",
+          "description": "Pass through an open door",
+          "when": {
+            "op": "eq",
+            "left": {
+              "op": "fact",
+              "subject": "$target",
+              "predicate": "state"
+            },
+            "right": {
+              "op": "literal",
+              "value": "open"
+            }
+          },
+          "cost": {},
+          "risk": {},
+          "effects": [
+            {
+              "op": "removeRelation",
+              "match": {
+                "type": "located_in",
+                "from": "$actor",
+                "to": "place:room-a"
+              }
+            },
+            {
+              "op": "addRelation",
+              "relation": {
+                "type": "located_in",
+                "from": "$actor",
+                "to": "place:room-b"
+              }
+            }
+          ],
+          "dependencies": [
+            "fact:*:state"
+          ]
+        },
+        {
+          "id": "affordance:unlock-door",
+          "action": "unlock",
+          "targetKind": "door",
+          "description": "Unlock the door with an owned matching key",
+          "when": {
+            "op": "and",
+            "values": [
+              {
+                "op": "relationPath",
+                "from": "$actor",
+                "to": "$target",
+                "types": [
+                  "owns",
+                  "unlocks"
+                ]
+              },
+              {
+                "op": "eq",
+                "left": {
+                  "op": "fact",
+                  "subject": "$target",
+                  "predicate": "state"
+                },
+                "right": {
+                  "op": "literal",
+                  "value": "locked"
+                }
+              }
+            ]
+          },
+          "cost": {},
+          "risk": {},
+          "effects": [
+            {
+              "op": "setFact",
+              "fact": {
+                "subject": "$target",
+                "predicate": "state",
+                "value": "unlocked"
+              }
+            }
+          ],
+          "dependencies": [
+            "fact:*:state",
+            "relationType:owns",
+            "relationType:unlocks"
+          ]
+        }
+      ],
+      "constraint:world": [
+        {
+          "id": "constraint:door-state-valid",
+          "scope": "world",
+          "description": "Door state must be locked, unlocked, or open",
+          "severity": "hard",
+          "when": {
+            "op": "literal",
+            "value": true
+          },
+          "assert": {
+            "op": "or",
+            "values": [
+              {
+                "op": "eq",
+                "left": {
+                  "op": "fact",
+                  "subject": "object:door",
+                  "predicate": "state"
+                },
+                "right": {
+                  "op": "literal",
+                  "value": "locked"
+                }
+              },
+              {
+                "op": "eq",
+                "left": {
+                  "op": "fact",
+                  "subject": "object:door",
+                  "predicate": "state"
+                },
+                "right": {
+                  "op": "literal",
+                  "value": "unlocked"
+                }
+              },
+              {
+                "op": "eq",
+                "left": {
+                  "op": "fact",
+                  "subject": "object:door",
+                  "predicate": "state"
+                },
+                "right": {
+                  "op": "literal",
+                  "value": "open"
+                }
+              }
+            ]
+          },
+          "repairCandidates": [
+            {
+              "id": "repair:door-state:locked",
+              "description": "Restore the door to a valid locked state",
+              "operations": [
+                {
+                  "op": "setFact",
+                  "fact": {
+                    "subject": "object:door",
+                    "predicate": "state",
+                    "value": "locked"
+                  }
+                }
+              ],
+              "estimatedCost": 1,
+              "estimatedRisk": "low"
+            }
+          ],
+          "tags": [],
+          "dependencies": [
+            "fact:*:state",
+            "fact:object:door:state"
+          ]
+        }
+      ],
+      "event-ledger": []
+    },
+    "generation": {
+      "format": "rfe.generation.v0.3",
+      "branchId": "branch:main",
+      "generationId": "generation:0:d87f85955d3e1851",
+      "parentGenerationId": null,
+      "realityRevision": 0,
+      "logicalTime": 0,
+      "semanticRoot": "d87f85955d3e18511d996018d3c65d6a32710f48498bdb294532ca4b850c0c8b",
+      "evidenceRoot": "ed27707d468a5931795041b9e9c2b4170733f60f6db00e39b1806bc9787f3d05",
+      "refs": {
+        "affordance:door": "e23339c7e191e9f2868e11ae47c5b9bb65c241f464ff964b5344fd5163fa82d2",
+        "constraint:world": "7f8c157fd6c5258a1af26db46d4598661c15a736e12590210ba9a451aa9c961c",
+        "event-ledger": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "fact:object:door:state": "75554187f897dfb4ad47a3b0f5f5dbb3172a45c1876f9b9c36ea46a1cf9a66b5",
+        "identity": "4b5091dc8d811c74e532d5b385addb57ebc1ee7da955a9c2d3afde90270bd2a7",
+        "relation:connects_from": "9d4a763009cf041352f0ed721af5ad9cb231ba60d9d203d2f1650af208b830b1",
+        "relation:connects_to": "4a3d1ec3cf069082d38dd8de7267769b735cb3b09110190f660bf50231197e93",
+        "relation:located_in": "85de9f798ab0f2bcd8de286d21be5f2575555d4dc1d59bb902376cef98d1c4ed",
+        "relation:owns": "65aacd4e30f000815927e0a7d4120acc0b08697c81cb515f74bd995ea5886cde",
+        "relation:unlocks": "6a2cc504ccb0ffdf6559cd506130d918234d54d859c1edc5b5123d7a8e4ea5ae"
+      },
+      "integrityHash": "fb127205022d25e44c6e41bc700d49f6aaf1e66b6061eece974948ce0045bb68"
+    }
+  },
+  "session": {
+    "id": "session:door-lab:alice-bob",
+    "branchId": "branch:main",
+    "maxRounds": 8,
+    "arbiter": {
+      "order": [
+        "priority_desc",
+        "subject_utf16_asc",
+        "intent_utf16_asc"
+      ],
+      "conflictPolicy": "first-writer-wins",
+      "retryPolicy": "replan-next-round"
+    },
+    "intents": [
+      {
+        "id": "intent:alice:pass-room-b",
+        "subject": "subject:alice",
+        "kind": "pass_into",
+        "target": "place:room-b",
+        "authority": "authority:alice",
+        "priority": 100
+      },
+      {
+        "id": "intent:bob:pass-room-b",
+        "subject": "subject:bob",
+        "kind": "pass_into",
+        "target": "place:room-b",
+        "authority": "authority:bob",
+        "priority": 100
+      }
+    ]
+  },
+  "cluster": {
+    "replicas": [
+      "replica:a",
+      "replica:b",
+      "replica:c"
+    ],
+    "initialLeader": "replica:a",
+    "quorum": 2,
+    "faultModel": "crash-fault-majority-single-leader"
+  },
+  "expected": {
+    "authorityLog": [
+      {
+        "authoritySnapshotHash": "d927718d6f421a2c01ac2890052b16b046519284697afb4e20ab26b60d777ecd",
+        "checkpointHash": "ce7d674a208dc7066c5fddb7671ae29040243afbd7343bc804651794ebf4448e",
+        "entryHash": "e95371444856ed5129181a1dd48995d41b8b68919ea090378fc30a81a4289189",
+        "eventHashes": [
+          "c36163d15e48a5c52374511658320b279e22533dc2e28182be5f0aa1d265532f"
+        ],
+        "eventHead": "c36163d15e48a5c52374511658320b279e22533dc2e28182be5f0aa1d265532f",
+        "eventSequence": 1,
+        "format": "rfe.replication-log-entry.v0.5",
+        "generationId": "generation:1:c02a507b64be4e6c",
+        "generationIds": [
+          "generation:0:d87f85955d3e1851",
+          "generation:1:c02a507b64be4e6c"
+        ],
+        "index": 1,
+        "leaderId": "replica:a",
+        "previousEntryHash": null,
+        "realityRevision": 1,
+        "round": 1,
+        "roundHash": "d4aa23e8f201b774e792810838edeec065838862dd35bbdfd005d52b128cf8ae",
+        "semanticRoot": "c02a507b64be4e6c79a7558c2274efd7306a2d185473668835aec9c3bdb198ab",
+        "sessionId": "session:door-lab:alice-bob",
+        "sessionStateIntegrityHash": "11f27225096ea49a7d644251fbd250090b4739f07c89e78fe1b7cdc343c5f664",
+        "term": 1
+      },
+      {
+        "authoritySnapshotHash": "a1ffd620093cde5fff8c3ef9fb6bea768572d4226fcd2dd249eb334c2624069e",
+        "checkpointHash": "b0c16b56fc7deb903e60c37325042ce375adc8d3ba94e75c971d3db68668e32a",
+        "entryHash": "b6aca7aa4fdb5ffa783c2c9c7a8ab4f428e08bf911584bcc4461e896c15fe1ad",
+        "eventHashes": [
+          "c36163d15e48a5c52374511658320b279e22533dc2e28182be5f0aa1d265532f",
+          "9058d0b7dda8f03bd95def3fbcae53a2e2ed39e6e88a545f9fff080c1ecfcf50"
+        ],
+        "eventHead": "9058d0b7dda8f03bd95def3fbcae53a2e2ed39e6e88a545f9fff080c1ecfcf50",
+        "eventSequence": 2,
+        "format": "rfe.replication-log-entry.v0.5",
+        "generationId": "generation:2:e16d21b2a495a4b1",
+        "generationIds": [
+          "generation:0:d87f85955d3e1851",
+          "generation:1:c02a507b64be4e6c",
+          "generation:2:e16d21b2a495a4b1"
+        ],
+        "index": 2,
+        "leaderId": "replica:a",
+        "previousEntryHash": "e95371444856ed5129181a1dd48995d41b8b68919ea090378fc30a81a4289189",
+        "realityRevision": 2,
+        "round": 2,
+        "roundHash": "bf0eaed5d45bfcb87faa4e40f932d4576111bd14abb14bf1fbbe563f790b5146",
+        "semanticRoot": "e16d21b2a495a4b11e5b3a37cb14d82d5c1545f468ae4f1676540824b0ca6384",
+        "sessionId": "session:door-lab:alice-bob",
+        "sessionStateIntegrityHash": "fb8e0ccba003d1f32ef25e894f788f546d916af64fc7cce17fcac8a281f3cdb1",
+        "term": 1
+      },
+      {
+        "authoritySnapshotHash": "7dc040c47857c802211d5e6a1e870443af0f35cb8fc2cd3f47d0505af405f260",
+        "checkpointHash": "f8f2e9871a67f86886a369ed3873cd38c90eeb6635dc556ba8aa3df04728fb5e",
+        "entryHash": "a8ca85a689e7efd56b69ff79c64b11640c6e354a143fb0360c9f61b664635ed6",
+        "eventHashes": [
+          "c36163d15e48a5c52374511658320b279e22533dc2e28182be5f0aa1d265532f",
+          "9058d0b7dda8f03bd95def3fbcae53a2e2ed39e6e88a545f9fff080c1ecfcf50",
+          "d5ec8ac6cc8fb8c49b329b98ab12f12579399e57e368250f3b2e4342bf8218d7",
+          "5b1aa7f8bbe67e56b0dbf91cf9b86f5ed99e0b2cb837d7dc2fe69a80b179e21c"
+        ],
+        "eventHead": "5b1aa7f8bbe67e56b0dbf91cf9b86f5ed99e0b2cb837d7dc2fe69a80b179e21c",
+        "eventSequence": 4,
+        "format": "rfe.replication-log-entry.v0.5",
+        "generationId": "generation:4:abf1c9fcb99fd9db",
+        "generationIds": [
+          "generation:0:d87f85955d3e1851",
+          "generation:1:c02a507b64be4e6c",
+          "generation:2:e16d21b2a495a4b1",
+          "generation:3:c71c5b2cb8e861c7",
+          "generation:4:abf1c9fcb99fd9db"
+        ],
+        "index": 3,
+        "leaderId": "replica:b",
+        "previousEntryHash": "b6aca7aa4fdb5ffa783c2c9c7a8ab4f428e08bf911584bcc4461e896c15fe1ad",
+        "realityRevision": 4,
+        "round": 3,
+        "roundHash": "8c134df867b55f39147bd0c0ae583ae351c996fc0d579c579a5ee6f78d99d4aa",
+        "semanticRoot": "abf1c9fcb99fd9db9e5bcd47dc46a043934c7f6bfa81da4484cecb10acabe94e",
+        "sessionId": "session:door-lab:alice-bob",
+        "sessionStateIntegrityHash": "44cffacf0f8a1f746ed046c67f81812a5a51b5e6c45d048d18596ab380872231",
+        "term": 2
+      }
+    ],
+    "clusterCommitIndex": 3,
+    "clusterLogHead": "a8ca85a689e7efd56b69ff79c64b11640c6e354a143fb0360c9f61b664635ed6",
+    "faultModel": "crash-fault-majority-single-leader",
+    "finalCheckpointHash": "f8f2e9871a67f86886a369ed3873cd38c90eeb6635dc556ba8aa3df04728fb5e",
+    "finalGenerationId": "generation:4:abf1c9fcb99fd9db",
+    "finalLeader": "replica:b",
+    "finalSemanticRoot": "abf1c9fcb99fd9db9e5bcd47dc46a043934c7f6bfa81da4484cecb10acabe94e",
+    "finalSessionResultHash": "1afa7f568575432d80bef4cd3b7dd5fd5cf693ce75c4f757ef0e885e390d040b",
+    "finalTerm": 2,
+    "format": "rfe.replicated-authority-result.v0.5",
+    "healthyConvergence": {
+      "commitIndex": 3,
+      "converged": true,
+      "healthyReplicas": [
+        "replica:b",
+        "replica:c"
+      ],
+      "identityCount": 1,
+      "logHead": "a8ca85a689e7efd56b69ff79c64b11640c6e354a143fb0360c9f61b664635ed6"
+    },
+    "initialLeader": "replica:a",
+    "metrics": {
+      "divergentHealthyReplicas": 0,
+      "healthyReplicaCount": 2,
+      "laggingReplicaCatchUpEntries": 2,
+      "leaderFailovers": 1,
+      "replicatedLogEntries": 5,
+      "staleLeaderRejections": 1,
+      "terms": 2,
+      "verifiedRuntimeTransfers": 4
+    },
+    "quorum": 2,
+    "replicaStates": {
+      "replica:a": {
+        "appliedIndex": 2,
+        "checkpointHash": "b0c16b56fc7deb903e60c37325042ce375adc8d3ba94e75c971d3db68668e32a",
+        "generationId": "generation:2:e16d21b2a495a4b1",
+        "logHead": "b6aca7aa4fdb5ffa783c2c9c7a8ab4f428e08bf911584bcc4461e896c15fe1ad",
+        "online": false,
+        "replicaId": "replica:a",
+        "role": "follower",
+        "round": 2,
+        "semanticRoot": "e16d21b2a495a4b11e5b3a37cb14d82d5c1545f468ae4f1676540824b0ca6384",
+        "term": 2
+      },
+      "replica:b": {
+        "appliedIndex": 3,
+        "checkpointHash": "f8f2e9871a67f86886a369ed3873cd38c90eeb6635dc556ba8aa3df04728fb5e",
+        "generationId": "generation:4:abf1c9fcb99fd9db",
+        "logHead": "a8ca85a689e7efd56b69ff79c64b11640c6e354a143fb0360c9f61b664635ed6",
+        "online": true,
+        "replicaId": "replica:b",
+        "role": "leader",
+        "round": 3,
+        "semanticRoot": "abf1c9fcb99fd9db9e5bcd47dc46a043934c7f6bfa81da4484cecb10acabe94e",
+        "term": 2
+      },
+      "replica:c": {
+        "appliedIndex": 3,
+        "checkpointHash": "f8f2e9871a67f86886a369ed3873cd38c90eeb6635dc556ba8aa3df04728fb5e",
+        "generationId": "generation:4:abf1c9fcb99fd9db",
+        "logHead": "a8ca85a689e7efd56b69ff79c64b11640c6e354a143fb0360c9f61b664635ed6",
+        "online": true,
+        "replicaId": "replica:c",
+        "role": "follower",
+        "round": 3,
+        "semanticRoot": "abf1c9fcb99fd9db9e5bcd47dc46a043934c7f6bfa81da4484cecb10acabe94e",
+        "term": 2
+      }
+    },
+    "replicatedAuthorityResultHash": "61b2bbd1b98ceb14f3027eba05b22f83c93df4e47171f49bc3acf52682d7f3ec",
+    "staleLeaderRejection": {
+      "currentTerm": 2,
+      "reasonCode": "stale_leader_term",
+      "replicaId": "replica:a",
+      "status": "rejected",
+      "suppliedTerm": 1
+    },
+    "timeline": [
+      {
+        "acknowledgedBy": [
+          "replica:a",
+          "replica:b",
+          "replica:c"
+        ],
+        "commitIndex": 1,
+        "leaderId": "replica:a",
+        "step": "round_1_committed",
+        "term": 1
+      },
+      {
+        "acknowledgedBy": [
+          "replica:a",
+          "replica:b"
+        ],
+        "commitIndex": 2,
+        "laggingAppliedIndex": 1,
+        "laggingReplica": "replica:c",
+        "leaderId": "replica:a",
+        "step": "round_2_committed_follower_c_lagging",
+        "term": 1
+      },
+      {
+        "failedLeader": "replica:a",
+        "newLeader": "replica:b",
+        "step": "leader_failover",
+        "term": 2,
+        "verifiedCommitIndex": 2
+      },
+      {
+        "acknowledgedBy": [
+          "replica:b",
+          "replica:c"
+        ],
+        "catchUpReplica": "replica:c",
+        "commitIndex": 3,
+        "entriesInstalledDuringCatchUp": 2,
+        "leaderId": "replica:b",
+        "step": "round_3_committed_after_failover",
+        "term": 2
+      }
+    ]
+  }
+}

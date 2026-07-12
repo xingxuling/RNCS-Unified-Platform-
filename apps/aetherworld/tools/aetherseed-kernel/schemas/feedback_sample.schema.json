@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aetherworld.local/schemas/aetherseed/feedback_sample.schema.json",
+  "title": "AetherSeed Feedback Sample",
+  "description": "A training/evaluation candidate compiled from a local event, judgement, action, and outcome. This schema is for future SFT/LoRA dataset construction.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "sampleId",
+    "createdAt",
+    "sourceEventId",
+    "sourceJudgementId",
+    "sampleType",
+    "input",
+    "targetOutput",
+    "safetyProfile",
+    "lineage"
+  ],
+  "properties": {
+    "schemaVersion": { "type": "string", "const": "aetherseed.feedback_sample.v1" },
+    "sampleId": { "type": "string", "minLength": 8 },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "sourceEventId": { "type": "string", "minLength": 8 },
+    "sourceJudgementId": { "type": "string", "minLength": 8 },
+    "sourceActionId": { "type": "string" },
+    "sampleType": {
+      "type": "string",
+      "enum": [
+        "TASK_ANALYSIS",
+        "RISK_ASSESSMENT",
+        "CODEX_PROMPT",
+        "CURSOR_PROMPT",
+        "LOVABLE_PROMPT",
+        "DATASET_PLAN",
+        "PROVIDER_CHECK",
+        "DRY_RUN_PLAN",
+        "REFUSAL_OR_BOUNDARY",
+        "OTHER"
+      ]
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["instruction"],
+      "properties": {
+        "instruction": { "type": "string", "minLength": 1 },
+        "context": { "type": "string" },
+        "evidenceSummary": { "type": "string" }
+      }
+    },
+    "targetOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text"],
+      "properties": {
+        "text": { "type": "string", "minLength": 1 },
+        "structured": { "type": "object" }
+      }
+    },
+    "qualitySignals": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "acceptedByUser": { "type": "boolean" },
+        "verified": { "type": "boolean" },
+        "verificationNotes": { "type": "string" },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "reuseCount": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "safetyProfile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["containsSecrets", "containsFull60", "containsFounderOnly", "exportAllowed"],
+      "allOf": [
+        {
+          "if": {
+            "anyOf": [
+              { "properties": { "containsSecrets": { "const": true } }, "required": ["containsSecrets"] },
+              { "properties": { "containsFull60": { "const": true } }, "required": ["containsFull60"] },
+              { "properties": { "containsFounderOnly": { "const": true } }, "required": ["containsFounderOnly"] }
+            ]
+          },
+          "then": {
+            "properties": { "exportAllowed": { "const": false } }
+          }
+        }
+      ],
+      "properties": {
+        "containsSecrets": { "type": "boolean" },
+        "containsFull60": { "type": "boolean" },
+        "containsFounderOnly": { "type": "boolean" },
+        "exportAllowed": { "type": "boolean" },
+        "redactionNotes": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "lineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["origin", "aetherSeedModel", "aetherworldModules"],
+      "properties": {
+        "origin": { "type": "string", "enum": ["aetherworld", "aetherseed-kernel", "scanner", "codex", "manual", "other"] },
+        "aetherSeedModel": { "type": "string" },
+        "aetherworldModules": { "type": "array", "items": { "type": "string" } },
+        "datasetVersionId": { "type": "string" },
+        "hash": { "type": "string" }
+      }
+    }
+  }
+}

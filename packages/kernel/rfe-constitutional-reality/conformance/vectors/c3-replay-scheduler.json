@@ -1,0 +1,1026 @@
+{
+  "format": "rfe.conformance.c3.v1",
+  "baseWorld": {
+    "specVersion": "0.1.8",
+    "worldId": "world:conformance-scheduler",
+    "branchId": "branch:main",
+    "branchInfo": {
+      "branchId": "branch:main",
+      "parentBranchId": null,
+      "forkRevision": null,
+      "forkRealityHash": null,
+      "forkStateHash": null,
+      "lineage": []
+    },
+    "seed": 7,
+    "time": 0,
+    "revision": 0,
+    "constitution": {
+      "revision": "constitution:0.1",
+      "invariants": [
+        "no-dangling-identities",
+        "authority-required",
+        "atomic-transactions"
+      ]
+    },
+    "identities": [
+      {
+        "id": "object:lamp",
+        "kind": "device",
+        "continuityPolicy": "persistent",
+        "createdAt": 0,
+        "retiredAt": null,
+        "lineage": [],
+        "metadata": {}
+      },
+      {
+        "id": "subject:clock",
+        "kind": "subject",
+        "continuityPolicy": "persistent",
+        "createdAt": 0,
+        "retiredAt": null,
+        "lineage": [],
+        "metadata": {}
+      }
+    ],
+    "facts": [
+      {
+        "id": "fact:lamp:0",
+        "subject": "object:lamp",
+        "predicate": "state",
+        "value": "off",
+        "validFrom": 0,
+        "validTo": null,
+        "source": "source:runtime",
+        "confidence": 1,
+        "visibility": {
+          "type": "public"
+        },
+        "authority": "authority:system"
+      }
+    ],
+    "relations": [],
+    "constraints": [],
+    "affordanceRules": [],
+    "events": []
+  },
+  "plan": {
+    "format": "rfe.causal-plan.v1",
+    "schedulerId": "scheduler:conformance",
+    "currentTime": 0,
+    "timeDomains": {
+      "default": {
+        "rate": 1,
+        "offset": 0,
+        "quantum": 0
+      }
+    },
+    "tasks": [
+      {
+        "id": "task:cause",
+        "baseId": "task:cause",
+        "occurrence": 1,
+        "sequence": 1,
+        "dueTime": 2,
+        "timeDomain": "default",
+        "domainTime": 2,
+        "priority": 5,
+        "dependsOn": [],
+        "trigger": null,
+        "triggerPolicy": "skip",
+        "retryDelay": 1,
+        "recurrence": null,
+        "authority": "authority:conformance",
+        "transaction": {
+          "authority": "authority:conformance",
+          "operations": [
+            {
+              "op": "setFact",
+              "fact": {
+                "subject": "object:lamp",
+                "predicate": "state",
+                "value": "warming"
+              }
+            }
+          ]
+        },
+        "supersedes": [],
+        "metadata": {},
+        "status": "scheduled",
+        "cancellation": null,
+        "result": null
+      },
+      {
+        "id": "task:effect",
+        "baseId": "task:effect",
+        "occurrence": 1,
+        "sequence": 2,
+        "dueTime": 3,
+        "timeDomain": "default",
+        "domainTime": 3,
+        "priority": 0,
+        "dependsOn": [
+          "task:cause"
+        ],
+        "trigger": null,
+        "triggerPolicy": "skip",
+        "retryDelay": 1,
+        "recurrence": null,
+        "authority": "authority:conformance",
+        "transaction": {
+          "authority": "authority:conformance",
+          "operations": [
+            {
+              "op": "setFact",
+              "fact": {
+                "subject": "object:lamp",
+                "predicate": "state",
+                "value": "on"
+              }
+            }
+          ]
+        },
+        "supersedes": [],
+        "metadata": {},
+        "status": "scheduled",
+        "cancellation": null,
+        "result": null
+      },
+      {
+        "id": "task:pulse",
+        "baseId": "task:pulse",
+        "occurrence": 1,
+        "sequence": 3,
+        "dueTime": 4,
+        "timeDomain": "default",
+        "domainTime": 4,
+        "priority": 0,
+        "dependsOn": [],
+        "trigger": null,
+        "triggerPolicy": "skip",
+        "retryDelay": 1,
+        "recurrence": {
+          "interval": 2,
+          "count": 2,
+          "until": null
+        },
+        "authority": "authority:conformance",
+        "transaction": {
+          "authority": "authority:conformance",
+          "operations": [
+            {
+              "op": "setFact",
+              "fact": {
+                "subject": "object:lamp",
+                "predicate": "state",
+                "value": "pulse"
+              }
+            }
+          ]
+        },
+        "supersedes": [],
+        "metadata": {},
+        "status": "scheduled",
+        "cancellation": null,
+        "result": null
+      }
+    ]
+  },
+  "targetTime": 7,
+  "expected": {
+    "executionOrder": [
+      "task:cause",
+      "task:effect",
+      "task:pulse",
+      "task:pulse@2"
+    ],
+    "finalWorld": {
+      "specVersion": "0.1.8",
+      "worldId": "world:conformance-scheduler",
+      "branchId": "branch:main",
+      "branchInfo": {
+        "branchId": "branch:main",
+        "parentBranchId": null,
+        "forkRevision": null,
+        "forkRealityHash": null,
+        "forkStateHash": null,
+        "lineage": []
+      },
+      "seed": 7,
+      "time": 7,
+      "revision": 5,
+      "constitution": {
+        "revision": "constitution:0.1",
+        "invariants": [
+          "no-dangling-identities",
+          "authority-required",
+          "atomic-transactions"
+        ]
+      },
+      "identities": [
+        {
+          "id": "object:lamp",
+          "kind": "device",
+          "continuityPolicy": "persistent",
+          "createdAt": 0,
+          "retiredAt": null,
+          "lineage": [],
+          "metadata": {}
+        },
+        {
+          "id": "subject:clock",
+          "kind": "subject",
+          "continuityPolicy": "persistent",
+          "createdAt": 0,
+          "retiredAt": null,
+          "lineage": [],
+          "metadata": {}
+        }
+      ],
+      "facts": [
+        {
+          "id": "fact:2",
+          "subject": "object:lamp",
+          "predicate": "state",
+          "value": "warming",
+          "validFrom": 2,
+          "validTo": 3,
+          "source": "source:runtime",
+          "confidence": 1,
+          "visibility": {
+            "type": "public"
+          },
+          "authority": "authority:system"
+        },
+        {
+          "id": "fact:3",
+          "subject": "object:lamp",
+          "predicate": "state",
+          "value": "on",
+          "validFrom": 3,
+          "validTo": 4,
+          "source": "source:runtime",
+          "confidence": 1,
+          "visibility": {
+            "type": "public"
+          },
+          "authority": "authority:system"
+        },
+        {
+          "id": "fact:4",
+          "subject": "object:lamp",
+          "predicate": "state",
+          "value": "pulse",
+          "validFrom": 4,
+          "validTo": 6,
+          "source": "source:runtime",
+          "confidence": 1,
+          "visibility": {
+            "type": "public"
+          },
+          "authority": "authority:system"
+        },
+        {
+          "id": "fact:5",
+          "subject": "object:lamp",
+          "predicate": "state",
+          "value": "pulse",
+          "validFrom": 6,
+          "validTo": null,
+          "source": "source:runtime",
+          "confidence": 1,
+          "visibility": {
+            "type": "public"
+          },
+          "authority": "authority:system"
+        },
+        {
+          "id": "fact:lamp:0",
+          "subject": "object:lamp",
+          "predicate": "state",
+          "value": "off",
+          "validFrom": 0,
+          "validTo": 2,
+          "source": "source:runtime",
+          "confidence": 1,
+          "visibility": {
+            "type": "public"
+          },
+          "authority": "authority:system"
+        }
+      ],
+      "relations": [],
+      "constraints": [],
+      "affordanceRules": [],
+      "events": [
+        {
+          "id": "event:causal:task:cause",
+          "type": "transaction.committed",
+          "sequence": 1,
+          "branchId": "branch:main",
+          "logicalTime": 2,
+          "revision": 1,
+          "authority": "authority:conformance",
+          "operations": [
+            {
+              "op": "setTime",
+              "time": 2
+            },
+            {
+              "op": "setFact",
+              "fact": {
+                "id": "fact:2",
+                "subject": "object:lamp",
+                "predicate": "state",
+                "value": "warming",
+                "validFrom": 2,
+                "validTo": null,
+                "source": "source:runtime",
+                "confidence": 1,
+                "visibility": {
+                  "type": "public"
+                },
+                "authority": "authority:system"
+              }
+            }
+          ],
+          "inverseOperations": [],
+          "env": {},
+          "hashMode": "legacy-state-v1",
+          "beforeHash": "a4a98a5069eea2bc4925d420f253d63d2e920b297807d4eb58427735467c75ac",
+          "afterHash": "ade464887f8a655e0e14206aa3ae7b27d5d478ba6a5df30e37f8c54877f6d307",
+          "beforeProofRoot": null,
+          "afterProofRoot": null,
+          "previousEventHash": null,
+          "eventHash": "32f01f27f6d32867ef7ff6817402fe7e548e55b441cc82b59291a4edcfa0041e",
+          "affectedRules": {
+            "touched": [
+              "fact:*:state",
+              "fact:object:lamp:state",
+              "identity:object:lamp",
+              "time"
+            ],
+            "constraints": [],
+            "affordances": []
+          },
+          "metadata": {
+            "causalScheduler": {
+              "schedulerId": "scheduler:conformance",
+              "taskId": "task:cause",
+              "baseId": "task:cause",
+              "occurrence": 1,
+              "dueTime": 2,
+              "priority": 5,
+              "executionKey": "scheduler:conformance:task:cause:1:2"
+            }
+          }
+        },
+        {
+          "id": "event:causal:task:effect",
+          "type": "transaction.committed",
+          "sequence": 2,
+          "branchId": "branch:main",
+          "logicalTime": 3,
+          "revision": 2,
+          "authority": "authority:conformance",
+          "operations": [
+            {
+              "op": "setTime",
+              "time": 3
+            },
+            {
+              "op": "setFact",
+              "fact": {
+                "id": "fact:3",
+                "subject": "object:lamp",
+                "predicate": "state",
+                "value": "on",
+                "validFrom": 3,
+                "validTo": null,
+                "source": "source:runtime",
+                "confidence": 1,
+                "visibility": {
+                  "type": "public"
+                },
+                "authority": "authority:system"
+              }
+            }
+          ],
+          "inverseOperations": [],
+          "env": {},
+          "hashMode": "legacy-state-v1",
+          "beforeHash": "ade464887f8a655e0e14206aa3ae7b27d5d478ba6a5df30e37f8c54877f6d307",
+          "afterHash": "5927004d345d26387fbdc5f1932947de0ec0f6c2cb445e458b88be699691ddd1",
+          "beforeProofRoot": null,
+          "afterProofRoot": null,
+          "previousEventHash": "32f01f27f6d32867ef7ff6817402fe7e548e55b441cc82b59291a4edcfa0041e",
+          "eventHash": "8661f6cf82a5b5d9b4a8ac53a7e83018a95e99774bf48259d2f82cac0dca8d3e",
+          "affectedRules": {
+            "touched": [
+              "fact:*:state",
+              "fact:object:lamp:state",
+              "identity:object:lamp",
+              "time"
+            ],
+            "constraints": [],
+            "affordances": []
+          },
+          "metadata": {
+            "causalScheduler": {
+              "schedulerId": "scheduler:conformance",
+              "taskId": "task:effect",
+              "baseId": "task:effect",
+              "occurrence": 1,
+              "dueTime": 3,
+              "priority": 0,
+              "executionKey": "scheduler:conformance:task:effect:1:3"
+            }
+          }
+        },
+        {
+          "id": "event:causal:task:pulse",
+          "type": "transaction.committed",
+          "sequence": 3,
+          "branchId": "branch:main",
+          "logicalTime": 4,
+          "revision": 3,
+          "authority": "authority:conformance",
+          "operations": [
+            {
+              "op": "setTime",
+              "time": 4
+            },
+            {
+              "op": "setFact",
+              "fact": {
+                "id": "fact:4",
+                "subject": "object:lamp",
+                "predicate": "state",
+                "value": "pulse",
+                "validFrom": 4,
+                "validTo": null,
+                "source": "source:runtime",
+                "confidence": 1,
+                "visibility": {
+                  "type": "public"
+                },
+                "authority": "authority:system"
+              }
+            }
+          ],
+          "inverseOperations": [],
+          "env": {},
+          "hashMode": "legacy-state-v1",
+          "beforeHash": "5927004d345d26387fbdc5f1932947de0ec0f6c2cb445e458b88be699691ddd1",
+          "afterHash": "1afbb29f75f69b392c9e3d1737553ca574e332727b8c84b90b9897541a479cf3",
+          "beforeProofRoot": null,
+          "afterProofRoot": null,
+          "previousEventHash": "8661f6cf82a5b5d9b4a8ac53a7e83018a95e99774bf48259d2f82cac0dca8d3e",
+          "eventHash": "ea9e57898eb16ea77fd80bb2f5dcb4cfdd23eb4c9b707066cf455c4cfb7a4c68",
+          "affectedRules": {
+            "touched": [
+              "fact:*:state",
+              "fact:object:lamp:state",
+              "identity:object:lamp",
+              "time"
+            ],
+            "constraints": [],
+            "affordances": []
+          },
+          "metadata": {
+            "causalScheduler": {
+              "schedulerId": "scheduler:conformance",
+              "taskId": "task:pulse",
+              "baseId": "task:pulse",
+              "occurrence": 1,
+              "dueTime": 4,
+              "priority": 0,
+              "executionKey": "scheduler:conformance:task:pulse:1:4"
+            }
+          }
+        },
+        {
+          "id": "event:causal:task:pulse@2",
+          "type": "transaction.committed",
+          "sequence": 4,
+          "branchId": "branch:main",
+          "logicalTime": 6,
+          "revision": 4,
+          "authority": "authority:conformance",
+          "operations": [
+            {
+              "op": "setTime",
+              "time": 6
+            },
+            {
+              "op": "setFact",
+              "fact": {
+                "id": "fact:5",
+                "subject": "object:lamp",
+                "predicate": "state",
+                "value": "pulse",
+                "validFrom": 6,
+                "validTo": null,
+                "source": "source:runtime",
+                "confidence": 1,
+                "visibility": {
+                  "type": "public"
+                },
+                "authority": "authority:system"
+              }
+            }
+          ],
+          "inverseOperations": [],
+          "env": {},
+          "hashMode": "legacy-state-v1",
+          "beforeHash": "1afbb29f75f69b392c9e3d1737553ca574e332727b8c84b90b9897541a479cf3",
+          "afterHash": "95b5bc55a2aac3be41c7ab6cf19f0b905cbd735500e070cb0b42c4f6a9339524",
+          "beforeProofRoot": null,
+          "afterProofRoot": null,
+          "previousEventHash": "ea9e57898eb16ea77fd80bb2f5dcb4cfdd23eb4c9b707066cf455c4cfb7a4c68",
+          "eventHash": "cc18021373104bc21c08972e3839de25ab9c6182439cf1edc2d3b1383a09b93f",
+          "affectedRules": {
+            "touched": [
+              "fact:*:state",
+              "fact:object:lamp:state",
+              "identity:object:lamp",
+              "time"
+            ],
+            "constraints": [],
+            "affordances": []
+          },
+          "metadata": {
+            "causalScheduler": {
+              "schedulerId": "scheduler:conformance",
+              "taskId": "task:pulse@2",
+              "baseId": "task:pulse",
+              "occurrence": 2,
+              "dueTime": 6,
+              "priority": 0,
+              "executionKey": "scheduler:conformance:task:pulse:2:6"
+            }
+          }
+        },
+        {
+          "id": "event:scheduler-clock:scheduler:conformance:7:5",
+          "type": "transaction.committed",
+          "sequence": 5,
+          "branchId": "branch:main",
+          "logicalTime": 7,
+          "revision": 5,
+          "authority": "authority:scheduler",
+          "operations": [
+            {
+              "op": "setTime",
+              "time": 7
+            }
+          ],
+          "inverseOperations": [],
+          "env": {},
+          "hashMode": "legacy-state-v1",
+          "beforeHash": "95b5bc55a2aac3be41c7ab6cf19f0b905cbd735500e070cb0b42c4f6a9339524",
+          "afterHash": "7557ac64dd7ba68243d0637d4dcad2ceded99961989713f50123b75d8b6c9d04",
+          "beforeProofRoot": null,
+          "afterProofRoot": null,
+          "previousEventHash": "cc18021373104bc21c08972e3839de25ab9c6182439cf1edc2d3b1383a09b93f",
+          "eventHash": "aa7349df662ab98c4fc5c6f9cc9bf0bf6dafc8d19b294d5e8c7da699bb294b89",
+          "affectedRules": {
+            "touched": [
+              "time"
+            ],
+            "constraints": [],
+            "affordances": []
+          },
+          "metadata": {
+            "schedulerClockAdvance": true,
+            "schedulerId": "scheduler:conformance",
+            "targetTime": 7
+          }
+        }
+      ]
+    },
+    "finalLampState": "pulse",
+    "finalRealityHash": "1265d5d01e9978549f7197628317bbef0db346fd7d14ceedbaf3bb73dffd7c16",
+    "eventHashes": [
+      "32f01f27f6d32867ef7ff6817402fe7e548e55b441cc82b59291a4edcfa0041e",
+      "8661f6cf82a5b5d9b4a8ac53a7e83018a95e99774bf48259d2f82cac0dca8d3e",
+      "ea9e57898eb16ea77fd80bb2f5dcb4cfdd23eb4c9b707066cf455c4cfb7a4c68",
+      "cc18021373104bc21c08972e3839de25ab9c6182439cf1edc2d3b1383a09b93f",
+      "aa7349df662ab98c4fc5c6f9cc9bf0bf6dafc8d19b294d5e8c7da699bb294b89"
+    ],
+    "schedulerState": {
+      "format": "rfe.causal-scheduler.v1",
+      "schedulerId": "scheduler:conformance",
+      "currentTime": 7,
+      "initialTime": 0,
+      "sequence": 4,
+      "timeDomains": {
+        "default": {
+          "rate": 1,
+          "offset": 0,
+          "quantum": 0
+        }
+      },
+      "tasks": [
+        {
+          "id": "task:cause",
+          "baseId": "task:cause",
+          "occurrence": 1,
+          "sequence": 1,
+          "dueTime": 2,
+          "timeDomain": "default",
+          "domainTime": 2,
+          "priority": 5,
+          "dependsOn": [],
+          "trigger": null,
+          "triggerPolicy": "skip",
+          "retryDelay": 1,
+          "recurrence": null,
+          "authority": "authority:conformance",
+          "transaction": {
+            "authority": "authority:conformance",
+            "operations": [
+              {
+                "op": "setFact",
+                "fact": {
+                  "subject": "object:lamp",
+                  "predicate": "state",
+                  "value": "warming"
+                }
+              }
+            ]
+          },
+          "supersedes": [],
+          "metadata": {},
+          "status": "executed",
+          "cancellation": null,
+          "result": {
+            "eventId": "event:causal:task:cause",
+            "revision": 1,
+            "afterHash": "ade464887f8a655e0e14206aa3ae7b27d5d478ba6a5df30e37f8c54877f6d307",
+            "executionKey": "scheduler:conformance:task:cause:1:2"
+          }
+        },
+        {
+          "id": "task:effect",
+          "baseId": "task:effect",
+          "occurrence": 1,
+          "sequence": 2,
+          "dueTime": 3,
+          "timeDomain": "default",
+          "domainTime": 3,
+          "priority": 0,
+          "dependsOn": [
+            "task:cause"
+          ],
+          "trigger": null,
+          "triggerPolicy": "skip",
+          "retryDelay": 1,
+          "recurrence": null,
+          "authority": "authority:conformance",
+          "transaction": {
+            "authority": "authority:conformance",
+            "operations": [
+              {
+                "op": "setFact",
+                "fact": {
+                  "subject": "object:lamp",
+                  "predicate": "state",
+                  "value": "on"
+                }
+              }
+            ]
+          },
+          "supersedes": [],
+          "metadata": {},
+          "status": "executed",
+          "cancellation": null,
+          "result": {
+            "eventId": "event:causal:task:effect",
+            "revision": 2,
+            "afterHash": "5927004d345d26387fbdc5f1932947de0ec0f6c2cb445e458b88be699691ddd1",
+            "executionKey": "scheduler:conformance:task:effect:1:3"
+          }
+        },
+        {
+          "id": "task:pulse",
+          "baseId": "task:pulse",
+          "occurrence": 1,
+          "sequence": 3,
+          "dueTime": 4,
+          "timeDomain": "default",
+          "domainTime": 4,
+          "priority": 0,
+          "dependsOn": [],
+          "trigger": null,
+          "triggerPolicy": "skip",
+          "retryDelay": 1,
+          "recurrence": {
+            "interval": 2,
+            "count": 2,
+            "until": null
+          },
+          "authority": "authority:conformance",
+          "transaction": {
+            "authority": "authority:conformance",
+            "operations": [
+              {
+                "op": "setFact",
+                "fact": {
+                  "subject": "object:lamp",
+                  "predicate": "state",
+                  "value": "pulse"
+                }
+              }
+            ]
+          },
+          "supersedes": [],
+          "metadata": {},
+          "status": "executed",
+          "cancellation": null,
+          "result": {
+            "eventId": "event:causal:task:pulse",
+            "revision": 3,
+            "afterHash": "1afbb29f75f69b392c9e3d1737553ca574e332727b8c84b90b9897541a479cf3",
+            "executionKey": "scheduler:conformance:task:pulse:1:4"
+          }
+        },
+        {
+          "id": "task:pulse@2",
+          "baseId": "task:pulse",
+          "occurrence": 2,
+          "sequence": 4,
+          "dueTime": 6,
+          "timeDomain": "default",
+          "domainTime": 6,
+          "priority": 0,
+          "dependsOn": [],
+          "trigger": null,
+          "triggerPolicy": "skip",
+          "retryDelay": 1,
+          "recurrence": {
+            "interval": 2,
+            "count": 2,
+            "until": null
+          },
+          "authority": "authority:conformance",
+          "transaction": {
+            "authority": "authority:conformance",
+            "operations": [
+              {
+                "op": "setFact",
+                "fact": {
+                  "subject": "object:lamp",
+                  "predicate": "state",
+                  "value": "pulse"
+                }
+              }
+            ]
+          },
+          "supersedes": [],
+          "metadata": {},
+          "status": "executed",
+          "cancellation": null,
+          "result": {
+            "eventId": "event:causal:task:pulse@2",
+            "revision": 4,
+            "afterHash": "95b5bc55a2aac3be41c7ab6cf19f0b905cbd735500e070cb0b42c4f6a9339524",
+            "executionKey": "scheduler:conformance:task:pulse:2:6"
+          }
+        }
+      ],
+      "plan": [
+        {
+          "id": "task:cause",
+          "baseId": "task:cause",
+          "occurrence": 1,
+          "sequence": 1,
+          "dueTime": 2,
+          "timeDomain": "default",
+          "domainTime": 2,
+          "priority": 5,
+          "dependsOn": [],
+          "trigger": null,
+          "triggerPolicy": "skip",
+          "retryDelay": 1,
+          "recurrence": null,
+          "authority": "authority:conformance",
+          "transaction": {
+            "authority": "authority:conformance",
+            "operations": [
+              {
+                "op": "setFact",
+                "fact": {
+                  "subject": "object:lamp",
+                  "predicate": "state",
+                  "value": "warming"
+                }
+              }
+            ]
+          },
+          "supersedes": [],
+          "metadata": {},
+          "status": "scheduled",
+          "cancellation": null,
+          "result": null
+        },
+        {
+          "id": "task:effect",
+          "baseId": "task:effect",
+          "occurrence": 1,
+          "sequence": 2,
+          "dueTime": 3,
+          "timeDomain": "default",
+          "domainTime": 3,
+          "priority": 0,
+          "dependsOn": [
+            "task:cause"
+          ],
+          "trigger": null,
+          "triggerPolicy": "skip",
+          "retryDelay": 1,
+          "recurrence": null,
+          "authority": "authority:conformance",
+          "transaction": {
+            "authority": "authority:conformance",
+            "operations": [
+              {
+                "op": "setFact",
+                "fact": {
+                  "subject": "object:lamp",
+                  "predicate": "state",
+                  "value": "on"
+                }
+              }
+            ]
+          },
+          "supersedes": [],
+          "metadata": {},
+          "status": "scheduled",
+          "cancellation": null,
+          "result": null
+        },
+        {
+          "id": "task:pulse",
+          "baseId": "task:pulse",
+          "occurrence": 1,
+          "sequence": 3,
+          "dueTime": 4,
+          "timeDomain": "default",
+          "domainTime": 4,
+          "priority": 0,
+          "dependsOn": [],
+          "trigger": null,
+          "triggerPolicy": "skip",
+          "retryDelay": 1,
+          "recurrence": {
+            "interval": 2,
+            "count": 2,
+            "until": null
+          },
+          "authority": "authority:conformance",
+          "transaction": {
+            "authority": "authority:conformance",
+            "operations": [
+              {
+                "op": "setFact",
+                "fact": {
+                  "subject": "object:lamp",
+                  "predicate": "state",
+                  "value": "pulse"
+                }
+              }
+            ]
+          },
+          "supersedes": [],
+          "metadata": {},
+          "status": "scheduled",
+          "cancellation": null,
+          "result": null
+        }
+      ],
+      "log": [
+        {
+          "sequence": 1,
+          "type": "task.scheduled",
+          "schedulerId": "scheduler:conformance",
+          "logicalTime": 0,
+          "previousHash": null,
+          "taskId": "task:cause",
+          "dueTime": 2,
+          "priority": 5,
+          "hash": "f5e095cbbe89ae99fc42b415ec5d1bb6e0d9c1b4fe9fd8c4b9dd2a571fdad4d4"
+        },
+        {
+          "sequence": 2,
+          "type": "task.scheduled",
+          "schedulerId": "scheduler:conformance",
+          "logicalTime": 0,
+          "previousHash": "f5e095cbbe89ae99fc42b415ec5d1bb6e0d9c1b4fe9fd8c4b9dd2a571fdad4d4",
+          "taskId": "task:effect",
+          "dueTime": 3,
+          "priority": 0,
+          "hash": "5008a8774ca272c41cff98d184d56faa2db7e9efea24750599f6e4d909f369dd"
+        },
+        {
+          "sequence": 3,
+          "type": "task.scheduled",
+          "schedulerId": "scheduler:conformance",
+          "logicalTime": 0,
+          "previousHash": "5008a8774ca272c41cff98d184d56faa2db7e9efea24750599f6e4d909f369dd",
+          "taskId": "task:pulse",
+          "dueTime": 4,
+          "priority": 0,
+          "hash": "0526d5c2dea8886caec708e484aaeba1940c3bdf87611d1c3654ae47ec7935a2"
+        },
+        {
+          "sequence": 4,
+          "type": "task.executed",
+          "schedulerId": "scheduler:conformance",
+          "logicalTime": 2,
+          "previousHash": "0526d5c2dea8886caec708e484aaeba1940c3bdf87611d1c3654ae47ec7935a2",
+          "taskId": "task:cause",
+          "eventId": "event:causal:task:cause",
+          "revision": 1,
+          "realityHash": "bf46237f34ffe6b30d9d4c797e725e148d10343cf9ae95953ad7ea15b76769de",
+          "hash": "b4cdce466faa62440ebca592d2a4d20852a6fe87a0316c411071c953cb51418a"
+        },
+        {
+          "sequence": 5,
+          "type": "task.executed",
+          "schedulerId": "scheduler:conformance",
+          "logicalTime": 3,
+          "previousHash": "b4cdce466faa62440ebca592d2a4d20852a6fe87a0316c411071c953cb51418a",
+          "taskId": "task:effect",
+          "eventId": "event:causal:task:effect",
+          "revision": 2,
+          "realityHash": "7b504f2551556426354d7c5e9ef39fb99b7318f98ea3a2737cb779daf63f5922",
+          "hash": "4edcf0f4c7433718a4a2e563ee5edd683f329eb27fde1d9a42e45e3977b29723"
+        },
+        {
+          "sequence": 6,
+          "type": "task.executed",
+          "schedulerId": "scheduler:conformance",
+          "logicalTime": 4,
+          "previousHash": "4edcf0f4c7433718a4a2e563ee5edd683f329eb27fde1d9a42e45e3977b29723",
+          "taskId": "task:pulse",
+          "eventId": "event:causal:task:pulse",
+          "revision": 3,
+          "realityHash": "bddeee2c10da3c96cf84f7bec9f96ed019d3c0651ffc1bc6e291a1bbb0d4973c",
+          "hash": "e218620bcd66e4849b50f0eb94bad055a15a77b5dadc35e6912e6d5418f55d4e"
+        },
+        {
+          "sequence": 7,
+          "type": "task.scheduled",
+          "schedulerId": "scheduler:conformance",
+          "logicalTime": 4,
+          "previousHash": "e218620bcd66e4849b50f0eb94bad055a15a77b5dadc35e6912e6d5418f55d4e",
+          "taskId": "task:pulse@2",
+          "dueTime": 6,
+          "priority": 0,
+          "hash": "acd357b48912fba56e32878c71a54c1b312ef7900533bc3bf94be4010f9f8ef2"
+        },
+        {
+          "sequence": 8,
+          "type": "task.executed",
+          "schedulerId": "scheduler:conformance",
+          "logicalTime": 6,
+          "previousHash": "acd357b48912fba56e32878c71a54c1b312ef7900533bc3bf94be4010f9f8ef2",
+          "taskId": "task:pulse@2",
+          "eventId": "event:causal:task:pulse@2",
+          "revision": 4,
+          "realityHash": "4be1e76deda001548897f42c321824c5db612ccce743456ae301bc3070dd607a",
+          "hash": "92c7663eec8bc8a49951c7e4253ec4c1ff1f8245c035f7e411f8c0a4d20f8a76"
+        },
+        {
+          "sequence": 9,
+          "type": "scheduler.advanced",
+          "schedulerId": "scheduler:conformance",
+          "logicalTime": 7,
+          "previousHash": "92c7663eec8bc8a49951c7e4253ec4c1ff1f8245c035f7e411f8c0a4d20f8a76",
+          "targetTime": 7,
+          "worldRevision": 5,
+          "realityHash": "1265d5d01e9978549f7197628317bbef0db346fd7d14ceedbaf3bb73dffd7c16",
+          "hash": "8fe79d9741a0dbf2f5fd55b8b52e134c33a4a5d7408da25f9898ede6d3aecaf9"
+        }
+      ],
+      "executionKeys": [
+        "scheduler:conformance:task:cause:1:2",
+        "scheduler:conformance:task:effect:1:3",
+        "scheduler:conformance:task:pulse:1:4",
+        "scheduler:conformance:task:pulse:2:6"
+      ]
+    },
+    "schedulerStateHash": "8787556f504b4cfb3c147a7b9e0f384df0757bedad66a8d884a6038809d40ffa",
+    "summary": {
+      "schedulerId": "scheduler:conformance",
+      "currentTime": 7,
+      "taskCount": 4,
+      "statuses": {
+        "executed": 4
+      },
+      "logEntries": 9,
+      "stateHash": "8787556f504b4cfb3c147a7b9e0f384df0757bedad66a8d884a6038809d40ffa"
+    }
+  }
+}

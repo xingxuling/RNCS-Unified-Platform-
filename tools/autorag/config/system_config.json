@@ -1,0 +1,10 @@
+{
+  "system": {
+    "name": "Enhanced RAG System",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "output_dir": "./output",
+    "logs_dir": "./logs"
+  }
+}

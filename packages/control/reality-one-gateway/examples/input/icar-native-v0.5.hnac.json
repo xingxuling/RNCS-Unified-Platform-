@@ -1,0 +1,98 @@
+{
+  "format_version": "0.5",
+  "app": {
+    "id": "org.taowind.icar.native-envelope",
+    "name": "ICAR Native Envelope Runtime",
+    "version": "0.5.0",
+    "description": "RNCS-native intent capability application capsule"
+  },
+  "execution": {
+    "primary": {
+      "profile": "node-js",
+      "entry": "src/cli.mjs"
+    },
+    "limits": {
+      "operations": 100
+    }
+  },
+  "capabilities": [
+    {
+      "id": "display.text",
+      "version": "1",
+      "required": true,
+      "scope": "session"
+    },
+    {
+      "id": "input.activate",
+      "version": "1",
+      "required": true,
+      "scope": "session"
+    },
+    {
+      "id": "input.text",
+      "version": "1",
+      "required": false,
+      "scope": "session"
+    },
+    {
+      "id": "host.notification",
+      "version": "1",
+      "required": false,
+      "scope": "session"
+    },
+    {
+      "id": "storage.state",
+      "version": "1",
+      "required": false,
+      "scope": "app"
+    }
+  ],
+  "state": {
+    "schema_version": "1",
+    "autosnapshot": true,
+    "partitions": {
+      "portable": {
+        "persistence": "durable",
+        "portability": "exportable",
+        "encrypted": false
+      },
+      "device_private": {
+        "persistence": "durable",
+        "portability": "local-only",
+        "encrypted": false
+      },
+      "secret": {
+        "persistence": "durable",
+        "portability": "encrypted-export",
+        "encrypted": true
+      },
+      "cache": {
+        "persistence": "rebuildable",
+        "portability": "optional-export",
+        "encrypted": false
+      },
+      "ephemeral": {
+        "persistence": "memory",
+        "portability": "never-export",
+        "encrypted": false
+      }
+    }
+  },
+  "distribution": {
+    "projections": [
+      "desktop",
+      "mobile",
+      "headless"
+    ]
+  },
+  "security": {
+    "sandbox": "deny-by-default",
+    "signature": "optional"
+  },
+  "compatibility": {
+    "min_runtime": "0.5.0"
+  },
+  "extensions": {
+    "rncs_contract": "0.1.0"
+  }
+}

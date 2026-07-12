@@ -1,0 +1,45 @@
+services:
+  execution-worker:
+    build:
+      context: .
+      dockerfile: packages/operations/developer-execution-runtime/Dockerfile
+    environment:
+      TAOWIND_EXECUTION_WORKER_HOST: 0.0.0.0
+      TAOWIND_EXECUTION_WORKER_PORT: 8790
+      TAOWIND_EXECUTION_WORKER_TOKEN: ${TAOWIND_EXECUTION_WORKER_TOKEN}
+      TAOWIND_EXECUTION_MODE: ${TAOWIND_EXECUTION_MODE:-founder}
+      TAOWIND_EXECUTION_ENABLE_SHELL: ${TAOWIND_EXECUTION_ENABLE_SHELL:-false}
+      TAOWIND_GITHUB_TOKEN: ${TAOWIND_GITHUB_TOKEN:-}
+      TAOWIND_GITHUB_OWNER: ${TAOWIND_GITHUB_OWNER:-}
+      TAOWIND_GITHUB_REPO: ${TAOWIND_GITHUB_REPO:-}
+      TAOWIND_VERCEL_TOKEN: ${TAOWIND_VERCEL_TOKEN:-}
+      TAOWIND_VERCEL_PROJECT_ID: ${TAOWIND_VERCEL_PROJECT_ID:-}
+      TAOWIND_VERCEL_TEAM_ID: ${TAOWIND_VERCEL_TEAM_ID:-}
+      TAOWIND_VERCEL_DEPLOY_HOOK: ${TAOWIND_VERCEL_DEPLOY_HOOK:-}
+    ports:
+      - "8790:8790"
+    volumes:
+      - taowind-output:/workspace/output
+
+  mcp:
+    build:
+      context: .
+      dockerfile: packages/integration/taowind-reality-mcp/Dockerfile
+    depends_on:
+      - execution-worker
+    environment:
+      TAOWIND_MCP_HOST: 0.0.0.0
+      TAOWIND_MCP_PORT: 8787
+      TAOWIND_MCP_PATH_TOKEN: ${TAOWIND_MCP_PATH_TOKEN}
+      TAOWIND_MCP_ALLOWED_HOSTS: ${TAOWIND_MCP_ALLOWED_HOSTS:-localhost,127.0.0.1}
+      TAOWIND_MCP_AUTHORITY_MODE: founder
+      TAOWIND_MCP_ENABLE_AUTHORITY_WRITES: true
+      TAOWIND_MCP_ENABLE_EXECUTION_TOOLS: true
+      TAOWIND_EXECUTION_PROVIDER: remote
+      TAOWIND_EXECUTION_WORKER_URL: http://execution-worker:8790
+      TAOWIND_EXECUTION_WORKER_TOKEN: ${TAOWIND_EXECUTION_WORKER_TOKEN}
+    ports:
+      - "8787:8787"
+
+volumes:
+  taowind-output:

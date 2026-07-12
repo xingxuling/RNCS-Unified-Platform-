@@ -1,0 +1,58 @@
+{
+  "format": "reality-one.runtime-manifest.v0.3",
+  "runtime_id": "rncs.developer-execution",
+  "runtime_version": "0.1.0-alpha.1",
+  "display_name": "Developer Execution Runtime",
+  "gateway_protocol_versions": [
+    "0.3.0"
+  ],
+  "transport": {
+    "kind": "node-module",
+    "package": "@taowind/developer-execution-runtime"
+  },
+  "bridge": "../src/bridges/developer-execution.bridge.mjs",
+  "actions": [
+    "health",
+    "status",
+    "listFiles",
+    "readFile",
+    "writeFile",
+    "applyPatch",
+    "removePath",
+    "exportArtifact",
+    "runCommand",
+    "runShell",
+    "runBuild",
+    "gitStatus",
+    "gitDiff",
+    "gitCreateBranch",
+    "gitCommit",
+    "gitPush",
+    "githubCreatePullRequest",
+    "githubTriggerWorkflow",
+    "vercelDeploy",
+    "vercelGetDeployment",
+    "rsrSimulate",
+    "vsrRender",
+    "engineeringWorkflow"
+  ],
+  "protocols": [
+    "taowind.developer-execution.v0.1",
+    "taowind.engineering-workflow-receipt.v0.1",
+    "rncs.reality-transition-envelope.v0.1"
+  ],
+  "requires": [
+    {
+      "runtime_id": "rncs.aaf",
+      "version_range": "^0.1.0",
+      "optional": true
+    },
+    {
+      "runtime_id": "rncs.rfe",
+      "version_range": "^0.1.0",
+      "optional": true
+    }
+  ],
+  "priority": 110,
+  "health_timeout_ms": 10000
+}

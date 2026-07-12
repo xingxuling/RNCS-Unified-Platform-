@@ -1,0 +1,13 @@
+{
+ "$schema":"https://json-schema.org/draft/2020-12/schema",
+ "$title":"LAF Package 1.0 Manifest",
+ "type":"object",
+ "required":["format","package_version","artifact_id","artifact_root","entrypoint","files","content_root","signature"],
+ "properties":{
+  "format":{"const":"laf.package.v1"},"package_version":{"const":"1.0.0"},
+  "artifact_id":{"type":"string"},"artifact_root":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+  "entrypoint":{"const":"artifact.laf.json"},"content_root":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+  "files":{"type":"array","items":{"type":"object","required":["path","media_type","size","sha256"],"properties":{"path":{"type":"string"},"media_type":{"type":"string"},"size":{"type":"integer","minimum":0},"sha256":{"type":"string","pattern":"^[0-9a-f]{64}$"}}}},
+  "signature":{"type":["object","null"]}
+ },"additionalProperties":false
+}

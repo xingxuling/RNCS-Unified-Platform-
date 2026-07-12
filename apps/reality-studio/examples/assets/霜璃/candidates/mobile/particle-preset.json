@@ -1,0 +1,79 @@
+{
+  "format": "rsr.particle-preset.v0.4",
+  "version": "0.1.0",
+  "preset_id": "particle:3a82d1753e140d24552b89d1:mobile",
+  "asset_id": "asset:3a82d1753e140d24552b89d1",
+  "variant": "mobile",
+  "semantic_event": "attack-hit",
+  "emitter": {
+    "shape": "cone",
+    "burst": 16,
+    "rate": 0,
+    "lifetime": [
+      0.25,
+      0.7
+    ],
+    "speed": [
+      80,
+      210
+    ],
+    "angle_degrees": [
+      -35,
+      35
+    ],
+    "gravity": [
+      0,
+      60
+    ],
+    "drag": 0.8
+  },
+  "curves": {
+    "size": [
+      [
+        0,
+        0.3
+      ],
+      [
+        0.15,
+        1
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "opacity": [
+      [
+        0,
+        0
+      ],
+      [
+        0.08,
+        1
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "color": [
+      [
+        0,
+        "#f2f6ff"
+      ],
+      [
+        0.35,
+        "#9ddcff"
+      ],
+      [
+        1,
+        "#1c4fa3"
+      ]
+    ]
+  },
+  "budget": {
+    "max_particles": 32,
+    "quality": "mobile"
+  },
+  "effect_root": "2f5e64062a503d35523b004826763ddd1319940e7523502164ac32f5c02d3afe"
+}

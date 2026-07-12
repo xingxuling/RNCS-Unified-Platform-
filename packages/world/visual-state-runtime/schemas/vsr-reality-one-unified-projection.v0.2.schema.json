@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/vsr-reality-one-unified-projection.v0.2.schema.json",
+  "title": "VSR Reality One Unified Projection v0.2",
+  "type": "object",
+  "required": [
+    "format",
+    "adapterVersion",
+    "sessionId",
+    "sourceRoot",
+    "documentRoot",
+    "displayHash",
+    "domainRoots",
+    "projectionRoot"
+  ],
+  "properties": {
+    "format": {
+      "const": "vsr.reality-one-unified-projection.v0.2"
+    },
+    "adapterVersion": {
+      "type": "string"
+    },
+    "sessionId": {
+      "type": "string"
+    },
+    "sourceRoot": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "document": {
+      "type": "object"
+    },
+    "documentRoot": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "displayHash": {
+      "type": "string"
+    },
+    "domainRoots": {
+      "type": "object",
+      "required": [
+        "hnac",
+        "simulation",
+        "projection",
+        "artifact",
+        "export",
+        "rfe"
+      ],
+      "properties": {
+        "hnac": {
+          "type": "string"
+        },
+        "simulation": {
+          "type": "string"
+        },
+        "projection": {
+          "type": "string"
+        },
+        "artifact": {
+          "type": "string"
+        },
+        "export": {
+          "type": "string"
+        },
+        "rfe": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "projectionRoot": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  },
+  "additionalProperties": false
+}

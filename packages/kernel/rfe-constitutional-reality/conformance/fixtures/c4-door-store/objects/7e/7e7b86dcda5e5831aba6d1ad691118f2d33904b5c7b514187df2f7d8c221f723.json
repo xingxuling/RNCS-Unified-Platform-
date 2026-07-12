@@ -1,0 +1,20 @@
+{
+  "format": "rfe.content-object.v1",
+  "kind": "paged-index-page",
+  "value": {
+    "format": "rfe.paged-index-page.v1",
+    "entries": [
+      [
+        "object:door\u0000state",
+        {
+          "baseRefs": [
+            "91a59fc0ddfb61d312203272663d38b6380279653e922013a0f108aaa6e9623e"
+          ],
+          "deltaRefs": [],
+          "recordCount": 2
+        }
+      ]
+    ]
+  },
+  "integrityHash": "7e7b86dcda5e5831aba6d1ad691118f2d33904b5c7b514187df2f7d8c221f723"
+}

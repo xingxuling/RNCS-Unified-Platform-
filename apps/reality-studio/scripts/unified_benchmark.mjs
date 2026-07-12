@@ -1,0 +1,8 @@
+import fs from 'node:fs';import path from 'node:path';import {performance} from 'node:perf_hooks';import {fileURLToPath} from 'node:url';import {UnifiedManufacturingSession} from '../src/scene-studio.mjs';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),sample=JSON.parse(fs.readFileSync(path.join(root,'examples/冰境试炼.unified-project.json'),'utf8'));
+const median=a=>a.sort((x,y)=>x-y)[Math.floor(a.length/2)],runs=(fn,n=11)=>{const a=[];for(let i=0;i<n;i++){const t=performance.now();fn();a.push(performance.now()-t)}return{median_ms:Number(median(a).toFixed(3)),p95_ms:Number(a.sort((x,y)=>x-y)[Math.floor(a.length*.95)].toFixed(3))}};
+const inspect=runs(()=>{const s=new UnifiedManufacturingSession(sample);s.inspect()});
+const edits=runs(()=>{const s=new UnifiedManufacturingSession(sample);for(let i=0;i<40;i++)s.moveNode('node:player',{x:64+(i%10)*16,y:240+(i%4)*16})},7);
+const ticks=runs(()=>{const s=new UnifiedManufacturingSession(sample);for(let i=0;i<300;i++){s.step({move_right:i<120,attack:i%30===0});s.behavior.runtime.paused=false}},7);
+const exports=runs(()=>{const s=new UnifiedManufacturingSession(sample);s.exportArtifacts()});
+const out={format:'reality-studio.unified-benchmark.v0.9',environment:{node:process.version,platform:process.platform,arch:process.arch},scenarios:{session_create_inspect:inspect,forty_scene_edits:edits,three_hundred_ticks:ticks,unified_export:exports},note:'TypeScript single-thread reference implementation; not a Godot editor throughput claim.'};fs.mkdirSync(path.join(root,'evidence'),{recursive:true});fs.writeFileSync(path.join(root,'evidence/UNIFIED_BENCHMARK_v0.9.json'),JSON.stringify(out,null,2)+'\n');console.log(JSON.stringify(out,null,2));

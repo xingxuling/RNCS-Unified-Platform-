@@ -1,0 +1,8 @@
+{
+  "projection_id": "projection:mobile-summary",
+  "observer_id": "subject:duhengjie",
+  "modality": "visual",
+  "target_host": "android-phone",
+  "semantic_root": "8888888888888888888888888888888888888888888888888888888888888888",
+  "artifact_ref": "artifact:demo-project"
+}

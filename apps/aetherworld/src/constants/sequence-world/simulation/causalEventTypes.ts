@@ -1,0 +1,13 @@
+export const CAUSAL_EVENT_TYPES = [
+  "USER_ACTION", "NPC_ACTION", "WORLD_STATE", "RESOURCE_CHANGE", "MSL_TRIGGER", "SYSTEM_EVENT",
+] as const;
+
+export type CausalEventType = typeof CAUSAL_EVENT_TYPES[number];
+
+export const SIMULATED_EVENT_TYPES = [
+  "DISCOVERY", "CONFLICT", "ALLIANCE", "RESOURCE_SHIFT",
+  "ARCHIVE", "RESEED", "NPC_MEMORY_TRIGGER", "WORLD_PHASE_SHIFT",
+  "FOUNDER_EVENT", "REALITY_ANCHOR_EVENT",
+] as const;
+
+export type SimulatedEventType = typeof SIMULATED_EVENT_TYPES[number];

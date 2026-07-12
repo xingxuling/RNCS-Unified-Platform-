@@ -1,0 +1,40 @@
+{
+  "provider_id": "laf-runtime",
+  "protocol_versions": ["0.1.0"],
+  "status": "available",
+  "trust": {"level": 3, "attestations": ["local-package-verified"]},
+  "transports": [{"kind": "local", "runtime": "node"}],
+  "capabilities": [
+    {
+      "capability_id": "laf.progress.set",
+      "version": "1.0.0",
+      "fulfills": ["artifact.progress.target"],
+      "inputs": {"artifact_id": {"type": "string", "required": true}, "value": {"type": "integer", "required": true}},
+      "outputs": {"laf_revision": {"type": "string"}, "provisional_delta": {"type": "object"}},
+      "required_scopes": ["artifact.write"],
+      "host_requirements": ["input.activate"],
+      "risk": {"level": "medium", "reasons": ["artifact-mutation"]},
+      "reversible": true,
+      "execution_phase": "transaction",
+      "side_effects": ["artifact.revision"],
+      "evidence": {"produces": ["laf.revision", "rncs.provisional-delta"], "requires": ["artifact.root"]},
+      "cost": {"cpu_millis": 3, "memory_mb": 2, "network_kb": 0, "monetary_microunits": 0},
+      "transport": {"kind": "local", "entrypoint": "laf.progress.set"}
+    },
+    {
+      "capability_id": "laf.report.render",
+      "version": "1.1.0",
+      "fulfills": ["artifact.report.generate"],
+      "inputs": {"artifact_id": {"type": "string", "required": true}},
+      "outputs": {"report": {"type": "string"}},
+      "required_scopes": ["artifact.read"],
+      "host_requirements": ["display.text"],
+      "risk": {"level": "low", "reasons": []},
+      "reversible": true,
+      "execution_phase": "read-only",
+      "evidence": {"produces": ["report.hash"], "requires": ["artifact.root"]},
+      "cost": {"cpu_millis": 2, "memory_mb": 2, "network_kb": 0, "monetary_microunits": 0},
+      "transport": {"kind": "local", "entrypoint": "laf.report.render"}
+    }
+  ]
+}

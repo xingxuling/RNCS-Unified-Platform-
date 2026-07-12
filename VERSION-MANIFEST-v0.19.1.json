@@ -1,0 +1,32 @@
+{
+  "suite": "RNCS_Aetherworld_Unified",
+  "version": "0.19.1-alpha.1",
+  "codename": "RCL Native VM Bootstrap",
+  "based_on": "0.19.0-alpha.1",
+  "language": {
+    "rcl": "0.7.0-alpha.1",
+    "domains": 14,
+    "ir": "rcl.reality-program.v0.7",
+    "bytecode": "RBC 1.0",
+    "native_vm": "0.1.0-alpha.1",
+    "self_hosting": "Stage-1 compiler seed"
+  },
+  "verification": {
+    "rcl_tests": "46/46 PASS",
+    "mother_rcl_tests": "46/46 PASS",
+    "native_parity": "PASS",
+    "sanitizers": "ASan+UBSan PASS",
+    "workspace_links": 31,
+    "runtime_health": "healthy",
+    "native_demo": "PASS",
+    "bytecode_demo": "PASS",
+    "bootstrap_demo": "PASS"
+  },
+  "evidence": "docs/evidence/rcl-v0.7",
+  "report": "RNCS_Aetherworld_v0.19.1-alpha.1_开发验收报告.md",
+  "remote_delivery": {
+    "git_commit": false,
+    "git_push": false,
+    "deployment": false
+  }
+}

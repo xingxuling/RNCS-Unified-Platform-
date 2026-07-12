@@ -1,0 +1,108 @@
+{
+  "format_version": "0.3",
+  "app": {
+    "id": "org.taowind.hnac.hello-component",
+    "name": "HNAC Component Hello",
+    "version": "0.3.0",
+    "description": "A typed WebAssembly Component Model vertical slice with capability leases and contract validation."
+  },
+  "execution": {
+    "primary": {
+      "profile": "wasm-component@1",
+      "entry": "components/main.component.wasm",
+      "world": "hnaf:capabilities/application@0.3.0",
+      "export": "run",
+      "contract": "wit/hnaf-capabilities.wit"
+    },
+    "alternatives": [
+      {
+        "profile": "wasm-core@1",
+        "entry": "components/main.wasm",
+        "abi": "hnaf-core-abi@0.2"
+      },
+      {
+        "profile": "declarative-v0",
+        "entry": "components/fallback.hnc.json"
+      }
+    ],
+    "limits": {
+      "fuel": 2000000,
+      "memory_bytes": 16777216,
+      "operations": 1000
+    }
+  },
+  "capabilities": [
+    {
+      "id": "host.log",
+      "version": "1",
+      "required": true,
+      "scope": "session",
+      "reason": "Display application output"
+    },
+    {
+      "id": "host.clock",
+      "version": "1",
+      "required": true,
+      "scope": "session",
+      "reason": "Obtain a host-neutral timestamp"
+    },
+    {
+      "id": "environment.summary",
+      "version": "1",
+      "required": false,
+      "scope": "session",
+      "reason": "Support the Core Wasm compatibility executor",
+      "fallback": "omit-environment"
+    },
+    {
+      "id": "storage.kv",
+      "version": "1",
+      "required": false,
+      "scope": "app",
+      "reason": "Support the Core Wasm compatibility executor",
+      "fallback": "memory-only"
+    }
+  ],
+  "interface": {
+    "graph": "ui/main.aip.json",
+    "modes": [
+      "cli",
+      "window",
+      "touch",
+      "voice",
+      "neural-intent"
+    ]
+  },
+  "state": {
+    "schema": "state/schema.json",
+    "partitions": [
+      "portable",
+      "device-private",
+      "cache"
+    ]
+  },
+  "distribution": {
+    "projections": [
+      "windows-msix",
+      "macos-app",
+      "android-aab",
+      "ios-ipa",
+      "pwa"
+    ]
+  },
+  "security": {
+    "sandbox": "deny-by-default",
+    "signature": "ed25519",
+    "supply_chain": "content-indexed"
+  },
+  "compatibility": {
+    "min_runtime": "0.3.0",
+    "host_families": [
+      "desktop",
+      "mobile",
+      "web",
+      "spatial"
+    ]
+  },
+  "extensions": {}
+}

@@ -1,0 +1,257 @@
+{
+  "ok": true,
+  "status": "STATIC_VERIFIED_USER_GODOT_RUNTIME_PENDING",
+  "checks": [
+    {
+      "name": "project.godot exists",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "bootstrap main scene",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Godot 4.7 target",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "GL compatibility",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "resource exists: scenes/Bootstrap.tscn",
+      "ok": true,
+      "detail": "scenes/Bootstrap.tscn"
+    },
+    {
+      "name": "resource exists: scenes/GameWorld.tscn",
+      "ok": true,
+      "detail": "scenes/GameWorld.tscn"
+    },
+    {
+      "name": "resource exists: scripts/bootstrap.gd",
+      "ok": true,
+      "detail": "scripts/bootstrap.gd"
+    },
+    {
+      "name": "resource exists: scripts/main.gd",
+      "ok": true,
+      "detail": "scripts/main.gd"
+    },
+    {
+      "name": "resource exists: scripts/player_controller.gd",
+      "ok": true,
+      "detail": "scripts/player_controller.gd"
+    },
+    {
+      "name": "resource exists: scripts/enemy.gd",
+      "ok": true,
+      "detail": "scripts/enemy.gd"
+    },
+    {
+      "name": "resource exists: scripts/npc_player.gd",
+      "ok": true,
+      "detail": "scripts/npc_player.gd"
+    },
+    {
+      "name": "resource exists: scripts/hud.gd",
+      "ok": true,
+      "detail": "scripts/hud.gd"
+    },
+    {
+      "name": "resource exists: scripts/world_state.gd",
+      "ok": true,
+      "detail": "scripts/world_state.gd"
+    },
+    {
+      "name": "resource exists: scripts/voice_magic.gd",
+      "ok": true,
+      "detail": "scripts/voice_magic.gd"
+    },
+    {
+      "name": "threaded scene request",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "threaded status polling",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "scene timeout",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "world timeout",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "startup progress bar",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "awaited launch coroutine",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "world progress signal",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "world ready signal",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "world failed signal",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "awaited initialization coroutine",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "staged enemies",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "staged NPC players",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "environment MultiMesh",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "low-poly radial segments",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "no synchronous _build_world",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "no runtime set_script",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "no pre-tree enemy global_position",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "no pre-tree npc global_position",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "no base-typed custom actor: world_state.gd",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "name": "no base-typed custom actor: voice_magic.gd",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "name": "no base-typed custom actor: player_controller.gd",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "name": "no base-typed custom actor: enemy.gd",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "name": "no base-typed custom actor: npc_player.gd",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "name": "no base-typed custom actor: hud.gd",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "name": "no base-typed custom actor: main.gd",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "name": "no base-typed custom actor: bootstrap.gd",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "name": "reference resolves: project.godot -> res://scenes/Bootstrap.tscn",
+      "ok": true,
+      "detail": "/mnt/data/work_v0182/full/RNCS_Aetherworld_Unified_v0.18.1-alpha.1_Godot_Native_Hotfix_完整源码与运行包/clients/godot-third-person/scenes/Bootstrap.tscn"
+    },
+    {
+      "name": "reference resolves: project.godot -> res://scripts/voice_magic.gd",
+      "ok": true,
+      "detail": "/mnt/data/work_v0182/full/RNCS_Aetherworld_Unified_v0.18.1-alpha.1_Godot_Native_Hotfix_完整源码与运行包/clients/godot-third-person/scripts/voice_magic.gd"
+    },
+    {
+      "name": "reference resolves: project.godot -> res://scripts/world_state.gd",
+      "ok": true,
+      "detail": "/mnt/data/work_v0182/full/RNCS_Aetherworld_Unified_v0.18.1-alpha.1_Godot_Native_Hotfix_完整源码与运行包/clients/godot-third-person/scripts/world_state.gd"
+    },
+    {
+      "name": "reference resolves: Bootstrap.tscn -> res://scripts/bootstrap.gd",
+      "ok": true,
+      "detail": "/mnt/data/work_v0182/full/RNCS_Aetherworld_Unified_v0.18.1-alpha.1_Godot_Native_Hotfix_完整源码与运行包/clients/godot-third-person/scripts/bootstrap.gd"
+    },
+    {
+      "name": "reference resolves: GameWorld.tscn -> res://scripts/hud.gd",
+      "ok": true,
+      "detail": "/mnt/data/work_v0182/full/RNCS_Aetherworld_Unified_v0.18.1-alpha.1_Godot_Native_Hotfix_完整源码与运行包/clients/godot-third-person/scripts/hud.gd"
+    },
+    {
+      "name": "reference resolves: GameWorld.tscn -> res://scripts/main.gd",
+      "ok": true,
+      "detail": "/mnt/data/work_v0182/full/RNCS_Aetherworld_Unified_v0.18.1-alpha.1_Godot_Native_Hotfix_完整源码与运行包/clients/godot-third-person/scripts/main.gd"
+    },
+    {
+      "name": "reference resolves: main.gd -> res://scripts/enemy.gd",
+      "ok": true,
+      "detail": "/mnt/data/work_v0182/full/RNCS_Aetherworld_Unified_v0.18.1-alpha.1_Godot_Native_Hotfix_完整源码与运行包/clients/godot-third-person/scripts/enemy.gd"
+    },
+    {
+      "name": "reference resolves: main.gd -> res://scripts/npc_player.gd",
+      "ok": true,
+      "detail": "/mnt/data/work_v0182/full/RNCS_Aetherworld_Unified_v0.18.1-alpha.1_Godot_Native_Hotfix_完整源码与运行包/clients/godot-third-person/scripts/npc_player.gd"
+    },
+    {
+      "name": "reference resolves: main.gd -> res://scripts/player_controller.gd",
+      "ok": true,
+      "detail": "/mnt/data/work_v0182/full/RNCS_Aetherworld_Unified_v0.18.1-alpha.1_Godot_Native_Hotfix_完整源码与运行包/clients/godot-third-person/scripts/player_controller.gd"
+    },
+    {
+      "name": "reference resolves: bootstrap.gd -> res://scenes/GameWorld.tscn",
+      "ok": true,
+      "detail": "/mnt/data/work_v0182/full/RNCS_Aetherworld_Unified_v0.18.1-alpha.1_Godot_Native_Hotfix_完整源码与运行包/clients/godot-third-person/scenes/GameWorld.tscn"
+    }
+  ],
+  "errors": []
+}

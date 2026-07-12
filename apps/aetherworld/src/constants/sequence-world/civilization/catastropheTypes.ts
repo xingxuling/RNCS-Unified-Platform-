@@ -1,0 +1,11 @@
+export const CATASTROPHE_TYPES = [
+  "RESOURCE_COLLAPSE","MEMORY_LOSS","RULE_FAILURE","BELIEF_BREAK",
+  "WORLD_STORM","VOID_EXPANSION","TERMINAL_SIGNAL","CIVILIZATION_ARCHIVE","RESEED_CATASTROPHE",
+] as const;
+export type CatastropheType = typeof CATASTROPHE_TYPES[number];
+
+export const CATASTROPHE_LABELS: Record<CatastropheType, string> = {
+  RESOURCE_COLLAPSE: "资源崩塌", MEMORY_LOSS: "集体记忆丢失", RULE_FAILURE: "规则失效",
+  BELIEF_BREAK: "信仰破裂", WORLD_STORM: "世界风暴", VOID_EXPANSION: "虚空扩张",
+  TERMINAL_SIGNAL: "终局信号", CIVILIZATION_ARCHIVE: "文明归档", RESEED_CATASTROPHE: "再种子灾变",
+};

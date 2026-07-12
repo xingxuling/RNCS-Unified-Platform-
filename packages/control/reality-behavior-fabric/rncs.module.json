@@ -1,0 +1,14 @@
+{
+  "id": "behavior",
+  "name": "Reality Behavior Fabric",
+  "version": "0.1.0-alpha.1",
+  "path": "packages/control/reality-behavior-fabric",
+  "layer": "control",
+  "runtime": "rncs.behavior",
+  "dependsOn": [
+    "rncs-core",
+    "aaf",
+    "rfe-sdk"
+  ],
+  "test": "npm test --workspace @taowind/reality-behavior-fabric"
+}

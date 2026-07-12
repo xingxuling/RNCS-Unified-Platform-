@@ -1,0 +1,11 @@
+{
+  "name":"@taowind/rfe-core-sdk",
+  "version":"0.1.0",
+  "type":"module",
+  "description":"Zero-dependency local reality continuity SDK",
+  "main":"src/index.mjs",
+  "exports":"./src/index.mjs",
+  "bin":{"rfe-core-js":"src/cli.mjs"},
+  "scripts":{"test":"node tests/run.mjs"},
+  "license":"Apache-2.0"
+}

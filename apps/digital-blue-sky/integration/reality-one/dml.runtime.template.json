@@ -1,0 +1,51 @@
+{
+  "format": "reality-one.runtime-manifest.v0.3",
+  "runtime_id": "rncs.dml-core",
+  "runtime_version": "0.2.0",
+  "display_name": "Digital Mechanical Life Core Runtime",
+  "gateway_protocol_versions": [
+    "0.3.0"
+  ],
+  "transport": {
+    "kind": "stdio",
+    "command": "node",
+    "args": [
+      "__DML_STDIO_RUNTIME__"
+    ],
+    "cwd": "__DML_ROOT__"
+  },
+  "actions": [
+    "health",
+    "describe",
+    "compileIntent",
+    "execute",
+    "executeAsync",
+    "project",
+    "readEvents",
+    "demo"
+  ],
+  "protocols": [
+    "dml.runtime.v0.2",
+    "dml.semantic-action.v0.2",
+    "dml.work-event.v0.2",
+    "dml.workbench-projection.v0.2"
+  ],
+  "requires": [
+    {
+      "runtime_id": "rncs.cnp",
+      "version_range": "^0.1.0",
+      "optional": true
+    },
+    {
+      "runtime_id": "rncs.aaf",
+      "version_range": "^0.1.0",
+      "optional": true
+    }
+  ],
+  "priority": 90,
+  "health_timeout_ms": 5000,
+  "metadata": {
+    "role": "digital-mechanical-life-core",
+    "api_boundary": "capability-and-event-projection-not-domain-rest"
+  }
+}

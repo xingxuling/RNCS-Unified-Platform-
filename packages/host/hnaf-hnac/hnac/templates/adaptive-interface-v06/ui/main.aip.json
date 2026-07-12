@@ -1,0 +1,147 @@
+{
+  "version": "0.6",
+  "id": "org.taowind.hnaf.adaptive-demo.main",
+  "root": "document.main",
+  "nodes": {
+    "document.main": {
+      "kind": "document",
+      "label": "宿主中立自适应应用",
+      "description": "同一份应用语义会根据桌面、平板、手机、无障碍与空间宿主形成不同界面。",
+      "priority": "primary",
+      "children": ["navigation.main", "information.identity", "information.state", "group.actions", "media.explainer", "spatial.anchor", "information.accessibility"]
+    },
+    "navigation.main": {
+      "kind": "navigation",
+      "label": "应用导航",
+      "priority": "primary",
+      "children": ["action.inspect", "action.run", "action.export-plan"]
+    },
+    "information.identity": {
+      "kind": "information",
+      "label": "一个应用，不等于一套固定页面",
+      "description": "胶囊保存应用身份、能力、状态和交互意图；宿主负责把它翻译成当前设备最合适的界面。",
+      "priority": "primary",
+      "binding": {"path": "app.name", "fallback": "HNAF 应用"}
+    },
+    "information.state": {
+      "kind": "information",
+      "label": "连续状态",
+      "description": "portable、device_private、secret、cache 与 ephemeral 五种状态边界继续保持。",
+      "priority": "secondary",
+      "binding": {"path": "state.state_root", "fallback": "尚未运行"}
+    },
+    "group.actions": {
+      "kind": "group",
+      "label": "可执行操作",
+      "priority": "primary",
+      "children": ["action.run", "action.inspect", "action.export-plan", "action.accessibility"]
+    },
+    "action.run": {
+      "kind": "action",
+      "label": "运行胶囊",
+      "description": "执行协商后的运行配置，并生成状态快照。",
+      "priority": "critical",
+      "intent": "app.run"
+    },
+    "action.inspect": {
+      "kind": "action",
+      "label": "检查身份与能力",
+      "priority": "primary",
+      "intent": "capsule.inspect"
+    },
+    "action.export-plan": {
+      "kind": "action",
+      "label": "导出当前投影计划",
+      "priority": "secondary",
+      "intent": "interface.export-plan"
+    },
+    "action.accessibility": {
+      "kind": "action",
+      "label": "切换无障碍投影",
+      "priority": "secondary",
+      "intent": "interface.toggle-accessibility"
+    },
+    "media.explainer": {
+      "kind": "media",
+      "label": "多端投影说明",
+      "description": "手机优先单列和大触控目标；桌面优先多栏；无障碍模式转为线性阅读；空间宿主使用锚点与门户。",
+      "priority": "supporting",
+      "media": {"type": "diagram", "alt": "五类宿主投影说明"}
+    },
+    "spatial.anchor": {
+      "kind": "spatial",
+      "label": "空间锚点",
+      "description": "在非空间设备上显示为可理解的回退卡片，在 XR 宿主中成为世界锚点。",
+      "priority": "supporting",
+      "spatial": {"anchor": "world.origin", "scale": "human"}
+    },
+    "information.accessibility": {
+      "kind": "information",
+      "label": "无障碍语义摘要",
+      "description": "当前界面已按阅读顺序、地标和命令语义线性化。",
+      "priority": "primary",
+      "visibility": {"profiles": ["accessibility"]}
+    }
+  },
+  "intents": {
+    "app.run": {
+      "label": "运行应用",
+      "risk": "low",
+      "confirmation": false,
+      "triggers": {
+        "pointer": ["activate"],
+        "touch": ["tap"],
+        "keyboard": ["Enter", "Ctrl+Enter"],
+        "voice": ["运行应用", "开始运行"],
+        "neural": ["confirm"]
+      }
+    },
+    "capsule.inspect": {
+      "label": "检查胶囊",
+      "risk": "low",
+      "confirmation": false,
+      "triggers": {
+        "pointer": ["inspect"],
+        "touch": ["inspect"],
+        "keyboard": ["Ctrl+I"],
+        "voice": ["检查应用"],
+        "neural": ["inspect"]
+      }
+    },
+    "interface.export-plan": {
+      "label": "导出投影计划",
+      "risk": "low",
+      "confirmation": false,
+      "triggers": {
+        "pointer": ["export"],
+        "touch": ["export"],
+        "keyboard": ["Ctrl+E"],
+        "voice": ["导出界面"],
+        "neural": ["export"]
+      }
+    },
+    "interface.toggle-accessibility": {
+      "label": "切换无障碍投影",
+      "risk": "low",
+      "confirmation": false,
+      "triggers": {
+        "pointer": ["accessibility"],
+        "touch": ["accessibility"],
+        "keyboard": ["Alt+A"],
+        "voice": ["切换无障碍模式"],
+        "neural": ["accessibility"]
+      }
+    }
+  },
+  "projections": {
+    "desktop": {"mode": "multi-pane", "columns": 3, "navigation": "sidebar"},
+    "tablet": {"mode": "adaptive-grid", "columns": 2, "navigation": "rail"},
+    "phone": {"mode": "single-column", "columns": 1, "navigation": "bottom"},
+    "accessibility": {"mode": "linear", "columns": 1, "navigation": "landmarks"},
+    "spatial": {"mode": "spatial-field", "columns": 0, "navigation": "portals"}
+  },
+  "metadata": {
+    "language": "zh-CN",
+    "purpose": "HNAC v0.6 adaptive interface conformance demo"
+  }
+}

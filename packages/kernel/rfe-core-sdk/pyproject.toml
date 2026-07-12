@@ -1,0 +1,16 @@
+[build-system]
+requires=["setuptools>=68","wheel"]
+build-backend="setuptools.build_meta"
+[project]
+name="rfe-core-sdk"
+version="0.1.0"
+description="Embedded local reality continuity SDK for the Reality Fabric Engine"
+readme="README.md"
+requires-python=">=3.10"
+license={text="Apache-2.0"}
+authors=[{name="TaoWind Interactive Technology Limited"}]
+keywords=["reality-native","event-sourcing","knowledge-graph","evidence","generation"]
+[project.scripts]
+rfe-core="rfe_core_sdk.cli:main"
+[tool.setuptools]
+packages=["rfe_core_sdk"]

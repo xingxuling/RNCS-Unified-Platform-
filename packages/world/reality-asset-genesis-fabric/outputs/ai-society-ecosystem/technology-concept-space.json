@@ -1,0 +1,4819 @@
+{
+  "format": "ragf.technology-concept-space.v0.5",
+  "version": "0.5.0-alpha.1",
+  "world_id": "world:5c46cbb3d1a1e47712b0e9b4",
+  "genome_root": "f35d3ec4ff3e4a10afccac7f8527024e7c99d41afc68ab39f7bd032ea32de4d4",
+  "generator": {
+    "kind": "deterministic-combinatorial-grammar",
+    "llm_calls": 0,
+    "dimensions": {
+      "functions": 12,
+      "principles": 12,
+      "substrates": 12,
+      "energy": 8,
+      "controls": 7,
+      "manufacturing": 10
+    }
+  },
+  "concepts": [
+    {
+      "format": "ragf.technology-concept.v0.5",
+      "version": "0.5.0-alpha.1",
+      "concept_id": "technology-concept:cd195418a5b5bca9d7ee3c49",
+      "name": "活土蒸散气候廊道",
+      "epistemic_status": "simulation-hypothesis",
+      "real_world_validation_required": true,
+      "origin": "deterministic-concept-grammar",
+      "grammar": {
+        "function": "stabilize-climate",
+        "principle": "capillary-flow",
+        "substrate": "living-soil",
+        "energy": "water",
+        "control": "analog-feedback",
+        "manufacturing": "bioprocess"
+      },
+      "domains": [
+        "biology",
+        "energy",
+        "organization"
+      ],
+      "novelty_score": 5628,
+      "feasibility_score": 5224,
+      "social_fit_score": 7190,
+      "knowledge_thresholds": {
+        "biology": 1790,
+        "energy": 1790,
+        "organization": 1790
+      },
+      "prerequisites": [
+        {
+          "type": "knowledge-domain",
+          "domain": "biology",
+          "minimum": 1790
+        },
+        {
+          "type": "knowledge-domain",
+          "domain": "energy",
+          "minimum": 1790
+        },
+        {
+          "type": "knowledge-domain",
+          "domain": "organization",
+          "minimum": 1790
+        }
+      ],
+      "bottlenecks": [
+        "living-soil-quality",
+        "analog-feedback-reliability",
+        "bioprocess-repeatability"
+      ],
+      "experiments": [
+        {
+          "experiment_id": "technology-concept:cd195418a5b5bca9d7ee3c49:exp:1",
+          "hypothesis": "capillary-flow可在living-soil中实现stabilize-climate",
+          "measurements": [
+            "efficiency",
+            "stability",
+            "failure-rate"
+          ],
+          "pass": {
+            "efficiency": 0.45,
+            "stability": 0.7
+          }
+        },
+        {
+          "experiment_id": "technology-concept:cd195418a5b5bca9d7ee3c49:exp:2",
+          "hypothesis": "analog-feedback能够在社会使用场景保持可控",
+          "measurements": [
+            "response-time",
+            "operator-error",
+            "maintenance-load"
+          ],
+          "pass": {
+            "operator_error_max": 0.12
+          }
+        }
+      ],
+      "engineering_path": [
+        {
+          "phase": 0,
+          "phase_id": "technology-concept:cd195418a5b5bca9d7ee3c49:phase:0",
+          "name": "need-model",
+          "label": "需求与边界建模",
+          "depends_on": [],
+          "deliverables": [
+            "pressure-map",
+            "success-metrics",
+            "safety-boundary"
+          ],
+          "work_packages": [
+            {
+              "discipline": "biology",
+              "task": "验证活土蒸散气候廊道在需求与边界建模阶段的关键假设",
+              "acceptance": "可证伪实验通过"
+            }
+          ],
+          "resources": {
+            "knowledge": 8,
+            "materials": 5,
+            "labor": 12
+          },
+          "risk_gate": "research"
+        },
+        {
+          "phase": 1,
+          "phase_id": "technology-concept:cd195418a5b5bca9d7ee3c49:phase:1",
+          "name": "principle-proof",
+          "label": "原理验证",
+          "depends_on": [
+            "technology-concept:cd195418a5b5bca9d7ee3c49:phase:0"
+          ],
+          "deliverables": [
+            "bench-experiment",
+            "measurement-protocol",
+            "falsification-result"
+          ],
+          "work_packages": [
+            {
+              "discipline": "energy",
+              "task": "验证活土蒸散气候廊道在原理验证阶段的关键假设",
+              "acceptance": "可证伪实验通过"
+            }
+          ],
+          "resources": {
+            "knowledge": 12,
+            "materials": 8,
+            "labor": 18
+          },
+          "risk_gate": "research"
+        },
+        {
+          "phase": 2,
+          "phase_id": "technology-concept:cd195418a5b5bca9d7ee3c49:phase:2",
+          "name": "material-process",
+          "label": "材料与工艺验证",
+          "depends_on": [
+            "technology-concept:cd195418a5b5bca9d7ee3c49:phase:1"
+          ],
+          "deliverables": [
+            "sample-set",
+            "process-window",
+            "failure-analysis"
+          ],
+          "work_packages": [
+            {
+              "discipline": "organization",
+              "task": "验证活土蒸散气候廊道在材料与工艺验证阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 16,
+            "materials": 11,
+            "labor": 24
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 3,
+          "phase_id": "technology-concept:cd195418a5b5bca9d7ee3c49:phase:3",
+          "name": "component-prototype",
+          "label": "关键组件原型",
+          "depends_on": [
+            "technology-concept:cd195418a5b5bca9d7ee3c49:phase:2"
+          ],
+          "deliverables": [
+            "component-bom",
+            "prototype-v1",
+            "test-report"
+          ],
+          "work_packages": [
+            {
+              "discipline": "biology",
+              "task": "验证活土蒸散气候廊道在关键组件原型阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 20,
+            "materials": 14,
+            "labor": 30
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 4,
+          "phase_id": "technology-concept:cd195418a5b5bca9d7ee3c49:phase:4",
+          "name": "system-integration",
+          "label": "系统集成",
+          "depends_on": [
+            "technology-concept:cd195418a5b5bca9d7ee3c49:phase:3"
+          ],
+          "deliverables": [
+            "interface-contract",
+            "prototype-v2",
+            "integration-evidence"
+          ],
+          "work_packages": [
+            {
+              "discipline": "energy",
+              "task": "验证活土蒸散气候廊道在系统集成阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 24,
+            "materials": 17,
+            "labor": 36
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 5,
+          "phase_id": "technology-concept:cd195418a5b5bca9d7ee3c49:phase:5",
+          "name": "field-pilot",
+          "label": "社会场景试点",
+          "depends_on": [
+            "technology-concept:cd195418a5b5bca9d7ee3c49:phase:4"
+          ],
+          "deliverables": [
+            "pilot-site",
+            "operator-training",
+            "impact-ledger"
+          ],
+          "work_packages": [
+            {
+              "discipline": "organization",
+              "task": "验证活土蒸散气候廊道在社会场景试点阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 28,
+            "materials": 20,
+            "labor": 42
+          },
+          "risk_gate": "social-deployment"
+        },
+        {
+          "phase": 6,
+          "phase_id": "technology-concept:cd195418a5b5bca9d7ee3c49:phase:6",
+          "name": "scale-and-govern",
+          "label": "规模化与治理",
+          "depends_on": [
+            "technology-concept:cd195418a5b5bca9d7ee3c49:phase:5"
+          ],
+          "deliverables": [
+            "manufacturing-plan",
+            "maintenance-model",
+            "governance-policy"
+          ],
+          "work_packages": [
+            {
+              "discipline": "biology",
+              "task": "验证活土蒸散气候廊道在规模化与治理阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 32,
+            "materials": 23,
+            "labor": 48
+          },
+          "risk_gate": "social-deployment"
+        }
+      ],
+      "failure_modes": [
+        {
+          "code": "PRINCIPLE_NOT_REPRODUCIBLE",
+          "mitigation": "回退到原理验证并缩小尺度"
+        },
+        {
+          "code": "MATERIAL_PROCESS_UNSTABLE",
+          "mitigation": "建立材料分级和工艺窗口"
+        },
+        {
+          "code": "SOCIAL_REJECTION",
+          "mitigation": "缩小试点并调整治理权责"
+        },
+        {
+          "code": "MAINTENANCE_OVERLOAD",
+          "mitigation": "模块化、冗余与运维训练"
+        }
+      ],
+      "adoption_conditions": {
+        "minimum_legitimacy": 4600,
+        "minimum_knowledge_openness": 3000,
+        "maximum_resource_stress": 8200,
+        "pilot_required": true
+      },
+      "projected_impact": {
+        "food": 8,
+        "water": 5,
+        "health": 5
+      },
+      "status": "latent",
+      "progress": 0,
+      "concept_root": "2d46ca7200fba38ae15ff6d424db97223fc8b969d293f5f09e43b4b9c49f8e4b"
+    },
+    {
+      "format": "ragf.technology-concept.v0.5",
+      "version": "0.5.0-alpha.1",
+      "concept_id": "technology-concept:98ef810222c4bcec476ceb34",
+      "name": "可验证协作账册",
+      "epistemic_status": "simulation-hypothesis",
+      "real_world_validation_required": true,
+      "origin": "deterministic-concept-grammar",
+      "grammar": {
+        "function": "coordinate-production",
+        "principle": "distributed-consensus",
+        "substrate": "fiber",
+        "energy": "human",
+        "control": "distributed-protocol",
+        "manufacturing": "craft"
+      },
+      "domains": [
+        "organization",
+        "computation",
+        "materials"
+      ],
+      "novelty_score": 7297,
+      "feasibility_score": 7149,
+      "social_fit_score": 7028,
+      "knowledge_thresholds": {
+        "organization": 1922,
+        "computation": 1922,
+        "materials": 1922
+      },
+      "prerequisites": [
+        {
+          "type": "knowledge-domain",
+          "domain": "organization",
+          "minimum": 1922
+        },
+        {
+          "type": "knowledge-domain",
+          "domain": "computation",
+          "minimum": 1922
+        },
+        {
+          "type": "knowledge-domain",
+          "domain": "materials",
+          "minimum": 1922
+        }
+      ],
+      "bottlenecks": [
+        "fiber-quality",
+        "distributed-protocol-reliability",
+        "craft-repeatability"
+      ],
+      "experiments": [
+        {
+          "experiment_id": "technology-concept:98ef810222c4bcec476ceb34:exp:1",
+          "hypothesis": "distributed-consensus可在fiber中实现coordinate-production",
+          "measurements": [
+            "efficiency",
+            "stability",
+            "failure-rate"
+          ],
+          "pass": {
+            "efficiency": 0.45,
+            "stability": 0.7
+          }
+        },
+        {
+          "experiment_id": "technology-concept:98ef810222c4bcec476ceb34:exp:2",
+          "hypothesis": "distributed-protocol能够在社会使用场景保持可控",
+          "measurements": [
+            "response-time",
+            "operator-error",
+            "maintenance-load"
+          ],
+          "pass": {
+            "operator_error_max": 0.12
+          }
+        }
+      ],
+      "engineering_path": [
+        {
+          "phase": 0,
+          "phase_id": "technology-concept:98ef810222c4bcec476ceb34:phase:0",
+          "name": "need-model",
+          "label": "需求与边界建模",
+          "depends_on": [],
+          "deliverables": [
+            "pressure-map",
+            "success-metrics",
+            "safety-boundary"
+          ],
+          "work_packages": [
+            {
+              "discipline": "organization",
+              "task": "验证可验证协作账册在需求与边界建模阶段的关键假设",
+              "acceptance": "可证伪实验通过"
+            }
+          ],
+          "resources": {
+            "knowledge": 8,
+            "materials": 5,
+            "labor": 12
+          },
+          "risk_gate": "research"
+        },
+        {
+          "phase": 1,
+          "phase_id": "technology-concept:98ef810222c4bcec476ceb34:phase:1",
+          "name": "principle-proof",
+          "label": "原理验证",
+          "depends_on": [
+            "technology-concept:98ef810222c4bcec476ceb34:phase:0"
+          ],
+          "deliverables": [
+            "bench-experiment",
+            "measurement-protocol",
+            "falsification-result"
+          ],
+          "work_packages": [
+            {
+              "discipline": "computation",
+              "task": "验证可验证协作账册在原理验证阶段的关键假设",
+              "acceptance": "可证伪实验通过"
+            }
+          ],
+          "resources": {
+            "knowledge": 12,
+            "materials": 8,
+            "labor": 18
+          },
+          "risk_gate": "research"
+        },
+        {
+          "phase": 2,
+          "phase_id": "technology-concept:98ef810222c4bcec476ceb34:phase:2",
+          "name": "material-process",
+          "label": "材料与工艺验证",
+          "depends_on": [
+            "technology-concept:98ef810222c4bcec476ceb34:phase:1"
+          ],
+          "deliverables": [
+            "sample-set",
+            "process-window",
+            "failure-analysis"
+          ],
+          "work_packages": [
+            {
+              "discipline": "materials",
+              "task": "验证可验证协作账册在材料与工艺验证阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 16,
+            "materials": 11,
+            "labor": 24
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 3,
+          "phase_id": "technology-concept:98ef810222c4bcec476ceb34:phase:3",
+          "name": "component-prototype",
+          "label": "关键组件原型",
+          "depends_on": [
+            "technology-concept:98ef810222c4bcec476ceb34:phase:2"
+          ],
+          "deliverables": [
+            "component-bom",
+            "prototype-v1",
+            "test-report"
+          ],
+          "work_packages": [
+            {
+              "discipline": "organization",
+              "task": "验证可验证协作账册在关键组件原型阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 20,
+            "materials": 14,
+            "labor": 30
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 4,
+          "phase_id": "technology-concept:98ef810222c4bcec476ceb34:phase:4",
+          "name": "system-integration",
+          "label": "系统集成",
+          "depends_on": [
+            "technology-concept:98ef810222c4bcec476ceb34:phase:3"
+          ],
+          "deliverables": [
+            "interface-contract",
+            "prototype-v2",
+            "integration-evidence"
+          ],
+          "work_packages": [
+            {
+              "discipline": "computation",
+              "task": "验证可验证协作账册在系统集成阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 24,
+            "materials": 17,
+            "labor": 36
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 5,
+          "phase_id": "technology-concept:98ef810222c4bcec476ceb34:phase:5",
+          "name": "field-pilot",
+          "label": "社会场景试点",
+          "depends_on": [
+            "technology-concept:98ef810222c4bcec476ceb34:phase:4"
+          ],
+          "deliverables": [
+            "pilot-site",
+            "operator-training",
+            "impact-ledger"
+          ],
+          "work_packages": [
+            {
+              "discipline": "materials",
+              "task": "验证可验证协作账册在社会场景试点阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 28,
+            "materials": 20,
+            "labor": 42
+          },
+          "risk_gate": "social-deployment"
+        },
+        {
+          "phase": 6,
+          "phase_id": "technology-concept:98ef810222c4bcec476ceb34:phase:6",
+          "name": "scale-and-govern",
+          "label": "规模化与治理",
+          "depends_on": [
+            "technology-concept:98ef810222c4bcec476ceb34:phase:5"
+          ],
+          "deliverables": [
+            "manufacturing-plan",
+            "maintenance-model",
+            "governance-policy"
+          ],
+          "work_packages": [
+            {
+              "discipline": "organization",
+              "task": "验证可验证协作账册在规模化与治理阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 32,
+            "materials": 23,
+            "labor": 48
+          },
+          "risk_gate": "social-deployment"
+        }
+      ],
+      "failure_modes": [
+        {
+          "code": "PRINCIPLE_NOT_REPRODUCIBLE",
+          "mitigation": "回退到原理验证并缩小尺度"
+        },
+        {
+          "code": "MATERIAL_PROCESS_UNSTABLE",
+          "mitigation": "建立材料分级和工艺窗口"
+        },
+        {
+          "code": "SOCIAL_REJECTION",
+          "mitigation": "缩小试点并调整治理权责"
+        },
+        {
+          "code": "MAINTENANCE_OVERLOAD",
+          "mitigation": "模块化、冗余与运维训练"
+        }
+      ],
+      "adoption_conditions": {
+        "minimum_legitimacy": 4600,
+        "minimum_knowledge_openness": 3000,
+        "maximum_resource_stress": 8200,
+        "pilot_required": true
+      },
+      "projected_impact": {
+        "legitimacy": 12,
+        "knowledge": 8
+      },
+      "status": "latent",
+      "progress": 0,
+      "concept_root": "f7e20e75ed2adfa2ae646a483024989be9d4bb499dce1db9e1b41e0f5e74904d"
+    },
+    {
+      "format": "ragf.technology-concept.v0.5",
+      "version": "0.5.0-alpha.1",
+      "concept_id": "technology-concept:6def80101f16a4a759beb141",
+      "name": "光码环境哨站",
+      "epistemic_status": "simulation-hypothesis",
+      "real_world_validation_required": true,
+      "origin": "deterministic-concept-grammar",
+      "grammar": {
+        "function": "sense-environment",
+        "principle": "optical-coding",
+        "substrate": "glass",
+        "energy": "solar-thermal",
+        "control": "analog-feedback",
+        "manufacturing": "precision-assembly"
+      },
+      "domains": [
+        "optics",
+        "materials",
+        "organization"
+      ],
+      "novelty_score": 5376,
+      "feasibility_score": 6335,
+      "social_fit_score": 7533,
+      "knowledge_thresholds": {
+        "optics": 1666,
+        "materials": 1666,
+        "organization": 1666
+      },
+      "prerequisites": [
+        {
+          "type": "knowledge-domain",
+          "domain": "optics",
+          "minimum": 1666
+        },
+        {
+          "type": "knowledge-domain",
+          "domain": "materials",
+          "minimum": 1666
+        },
+        {
+          "type": "knowledge-domain",
+          "domain": "organization",
+          "minimum": 1666
+        }
+      ],
+      "bottlenecks": [
+        "glass-quality",
+        "analog-feedback-reliability",
+        "precision-assembly-repeatability"
+      ],
+      "experiments": [
+        {
+          "experiment_id": "technology-concept:6def80101f16a4a759beb141:exp:1",
+          "hypothesis": "optical-coding可在glass中实现sense-environment",
+          "measurements": [
+            "efficiency",
+            "stability",
+            "failure-rate"
+          ],
+          "pass": {
+            "efficiency": 0.45,
+            "stability": 0.7
+          }
+        },
+        {
+          "experiment_id": "technology-concept:6def80101f16a4a759beb141:exp:2",
+          "hypothesis": "analog-feedback能够在社会使用场景保持可控",
+          "measurements": [
+            "response-time",
+            "operator-error",
+            "maintenance-load"
+          ],
+          "pass": {
+            "operator_error_max": 0.12
+          }
+        }
+      ],
+      "engineering_path": [
+        {
+          "phase": 0,
+          "phase_id": "technology-concept:6def80101f16a4a759beb141:phase:0",
+          "name": "need-model",
+          "label": "需求与边界建模",
+          "depends_on": [],
+          "deliverables": [
+            "pressure-map",
+            "success-metrics",
+            "safety-boundary"
+          ],
+          "work_packages": [
+            {
+              "discipline": "optics",
+              "task": "验证光码环境哨站在需求与边界建模阶段的关键假设",
+              "acceptance": "可证伪实验通过"
+            }
+          ],
+          "resources": {
+            "knowledge": 8,
+            "materials": 5,
+            "labor": 12
+          },
+          "risk_gate": "research"
+        },
+        {
+          "phase": 1,
+          "phase_id": "technology-concept:6def80101f16a4a759beb141:phase:1",
+          "name": "principle-proof",
+          "label": "原理验证",
+          "depends_on": [
+            "technology-concept:6def80101f16a4a759beb141:phase:0"
+          ],
+          "deliverables": [
+            "bench-experiment",
+            "measurement-protocol",
+            "falsification-result"
+          ],
+          "work_packages": [
+            {
+              "discipline": "materials",
+              "task": "验证光码环境哨站在原理验证阶段的关键假设",
+              "acceptance": "可证伪实验通过"
+            }
+          ],
+          "resources": {
+            "knowledge": 12,
+            "materials": 8,
+            "labor": 18
+          },
+          "risk_gate": "research"
+        },
+        {
+          "phase": 2,
+          "phase_id": "technology-concept:6def80101f16a4a759beb141:phase:2",
+          "name": "material-process",
+          "label": "材料与工艺验证",
+          "depends_on": [
+            "technology-concept:6def80101f16a4a759beb141:phase:1"
+          ],
+          "deliverables": [
+            "sample-set",
+            "process-window",
+            "failure-analysis"
+          ],
+          "work_packages": [
+            {
+              "discipline": "organization",
+              "task": "验证光码环境哨站在材料与工艺验证阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 16,
+            "materials": 11,
+            "labor": 24
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 3,
+          "phase_id": "technology-concept:6def80101f16a4a759beb141:phase:3",
+          "name": "component-prototype",
+          "label": "关键组件原型",
+          "depends_on": [
+            "technology-concept:6def80101f16a4a759beb141:phase:2"
+          ],
+          "deliverables": [
+            "component-bom",
+            "prototype-v1",
+            "test-report"
+          ],
+          "work_packages": [
+            {
+              "discipline": "optics",
+              "task": "验证光码环境哨站在关键组件原型阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 20,
+            "materials": 14,
+            "labor": 30
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 4,
+          "phase_id": "technology-concept:6def80101f16a4a759beb141:phase:4",
+          "name": "system-integration",
+          "label": "系统集成",
+          "depends_on": [
+            "technology-concept:6def80101f16a4a759beb141:phase:3"
+          ],
+          "deliverables": [
+            "interface-contract",
+            "prototype-v2",
+            "integration-evidence"
+          ],
+          "work_packages": [
+            {
+              "discipline": "materials",
+              "task": "验证光码环境哨站在系统集成阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 24,
+            "materials": 17,
+            "labor": 36
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 5,
+          "phase_id": "technology-concept:6def80101f16a4a759beb141:phase:5",
+          "name": "field-pilot",
+          "label": "社会场景试点",
+          "depends_on": [
+            "technology-concept:6def80101f16a4a759beb141:phase:4"
+          ],
+          "deliverables": [
+            "pilot-site",
+            "operator-training",
+            "impact-ledger"
+          ],
+          "work_packages": [
+            {
+              "discipline": "organization",
+              "task": "验证光码环境哨站在社会场景试点阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 28,
+            "materials": 20,
+            "labor": 42
+          },
+          "risk_gate": "social-deployment"
+        },
+        {
+          "phase": 6,
+          "phase_id": "technology-concept:6def80101f16a4a759beb141:phase:6",
+          "name": "scale-and-govern",
+          "label": "规模化与治理",
+          "depends_on": [
+            "technology-concept:6def80101f16a4a759beb141:phase:5"
+          ],
+          "deliverables": [
+            "manufacturing-plan",
+            "maintenance-model",
+            "governance-policy"
+          ],
+          "work_packages": [
+            {
+              "discipline": "optics",
+              "task": "验证光码环境哨站在规模化与治理阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 32,
+            "materials": 23,
+            "labor": 48
+          },
+          "risk_gate": "social-deployment"
+        }
+      ],
+      "failure_modes": [
+        {
+          "code": "PRINCIPLE_NOT_REPRODUCIBLE",
+          "mitigation": "回退到原理验证并缩小尺度"
+        },
+        {
+          "code": "MATERIAL_PROCESS_UNSTABLE",
+          "mitigation": "建立材料分级和工艺窗口"
+        },
+        {
+          "code": "SOCIAL_REJECTION",
+          "mitigation": "缩小试点并调整治理权责"
+        },
+        {
+          "code": "MAINTENANCE_OVERLOAD",
+          "mitigation": "模块化、冗余与运维训练"
+        }
+      ],
+      "adoption_conditions": {
+        "minimum_legitimacy": 4600,
+        "minimum_knowledge_openness": 3000,
+        "maximum_resource_stress": 8200,
+        "pilot_required": true
+      },
+      "projected_impact": {
+        "knowledge": 8,
+        "health": 4,
+        "food": 4
+      },
+      "status": "latent",
+      "progress": 0,
+      "concept_root": "492906218409d41118f06a1476f44aab5ff67c54f37b054551e358cc4164bbb7"
+    },
+    {
+      "format": "ragf.technology-concept.v0.5",
+      "version": "0.5.0-alpha.1",
+      "concept_id": "technology-concept:70ff74ced8346a952022c7a4",
+      "name": "毛细陶瓷净水塔",
+      "epistemic_status": "simulation-hypothesis",
+      "real_world_validation_required": true,
+      "origin": "deterministic-concept-grammar",
+      "grammar": {
+        "function": "purify-water",
+        "principle": "capillary-flow",
+        "substrate": "ceramic",
+        "energy": "solar-thermal",
+        "control": "manual",
+        "manufacturing": "kiln"
+      },
+      "domains": [
+        "materials",
+        "chemistry",
+        "health"
+      ],
+      "novelty_score": 6913,
+      "feasibility_score": 6487,
+      "social_fit_score": 6806,
+      "knowledge_thresholds": {
+        "materials": 1869,
+        "chemistry": 1869,
+        "health": 1869
+      },
+      "prerequisites": [
+        {
+          "type": "knowledge-domain",
+          "domain": "materials",
+          "minimum": 1869
+        },
+        {
+          "type": "knowledge-domain",
+          "domain": "chemistry",
+          "minimum": 1869
+        },
+        {
+          "type": "knowledge-domain",
+          "domain": "health",
+          "minimum": 1869
+        }
+      ],
+      "bottlenecks": [
+        "ceramic-quality",
+        "manual-reliability",
+        "kiln-repeatability"
+      ],
+      "experiments": [
+        {
+          "experiment_id": "technology-concept:70ff74ced8346a952022c7a4:exp:1",
+          "hypothesis": "capillary-flow可在ceramic中实现purify-water",
+          "measurements": [
+            "efficiency",
+            "stability",
+            "failure-rate"
+          ],
+          "pass": {
+            "efficiency": 0.45,
+            "stability": 0.7
+          }
+        },
+        {
+          "experiment_id": "technology-concept:70ff74ced8346a952022c7a4:exp:2",
+          "hypothesis": "manual能够在社会使用场景保持可控",
+          "measurements": [
+            "response-time",
+            "operator-error",
+            "maintenance-load"
+          ],
+          "pass": {
+            "operator_error_max": 0.12
+          }
+        }
+      ],
+      "engineering_path": [
+        {
+          "phase": 0,
+          "phase_id": "technology-concept:70ff74ced8346a952022c7a4:phase:0",
+          "name": "need-model",
+          "label": "需求与边界建模",
+          "depends_on": [],
+          "deliverables": [
+            "pressure-map",
+            "success-metrics",
+            "safety-boundary"
+          ],
+          "work_packages": [
+            {
+              "discipline": "materials",
+              "task": "验证毛细陶瓷净水塔在需求与边界建模阶段的关键假设",
+              "acceptance": "可证伪实验通过"
+            }
+          ],
+          "resources": {
+            "knowledge": 8,
+            "materials": 5,
+            "labor": 12
+          },
+          "risk_gate": "research"
+        },
+        {
+          "phase": 1,
+          "phase_id": "technology-concept:70ff74ced8346a952022c7a4:phase:1",
+          "name": "principle-proof",
+          "label": "原理验证",
+          "depends_on": [
+            "technology-concept:70ff74ced8346a952022c7a4:phase:0"
+          ],
+          "deliverables": [
+            "bench-experiment",
+            "measurement-protocol",
+            "falsification-result"
+          ],
+          "work_packages": [
+            {
+              "discipline": "chemistry",
+              "task": "验证毛细陶瓷净水塔在原理验证阶段的关键假设",
+              "acceptance": "可证伪实验通过"
+            }
+          ],
+          "resources": {
+            "knowledge": 12,
+            "materials": 8,
+            "labor": 18
+          },
+          "risk_gate": "research"
+        },
+        {
+          "phase": 2,
+          "phase_id": "technology-concept:70ff74ced8346a952022c7a4:phase:2",
+          "name": "material-process",
+          "label": "材料与工艺验证",
+          "depends_on": [
+            "technology-concept:70ff74ced8346a952022c7a4:phase:1"
+          ],
+          "deliverables": [
+            "sample-set",
+            "process-window",
+            "failure-analysis"
+          ],
+          "work_packages": [
+            {
+              "discipline": "health",
+              "task": "验证毛细陶瓷净水塔在材料与工艺验证阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 16,
+            "materials": 11,
+            "labor": 24
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 3,
+          "phase_id": "technology-concept:70ff74ced8346a952022c7a4:phase:3",
+          "name": "component-prototype",
+          "label": "关键组件原型",
+          "depends_on": [
+            "technology-concept:70ff74ced8346a952022c7a4:phase:2"
+          ],
+          "deliverables": [
+            "component-bom",
+            "prototype-v1",
+            "test-report"
+          ],
+          "work_packages": [
+            {
+              "discipline": "materials",
+              "task": "验证毛细陶瓷净水塔在关键组件原型阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 20,
+            "materials": 14,
+            "labor": 30
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 4,
+          "phase_id": "technology-concept:70ff74ced8346a952022c7a4:phase:4",
+          "name": "system-integration",
+          "label": "系统集成",
+          "depends_on": [
+            "technology-concept:70ff74ced8346a952022c7a4:phase:3"
+          ],
+          "deliverables": [
+            "interface-contract",
+            "prototype-v2",
+            "integration-evidence"
+          ],
+          "work_packages": [
+            {
+              "discipline": "chemistry",
+              "task": "验证毛细陶瓷净水塔在系统集成阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 24,
+            "materials": 17,
+            "labor": 36
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 5,
+          "phase_id": "technology-concept:70ff74ced8346a952022c7a4:phase:5",
+          "name": "field-pilot",
+          "label": "社会场景试点",
+          "depends_on": [
+            "technology-concept:70ff74ced8346a952022c7a4:phase:4"
+          ],
+          "deliverables": [
+            "pilot-site",
+            "operator-training",
+            "impact-ledger"
+          ],
+          "work_packages": [
+            {
+              "discipline": "health",
+              "task": "验证毛细陶瓷净水塔在社会场景试点阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 28,
+            "materials": 20,
+            "labor": 42
+          },
+          "risk_gate": "social-deployment"
+        },
+        {
+          "phase": 6,
+          "phase_id": "technology-concept:70ff74ced8346a952022c7a4:phase:6",
+          "name": "scale-and-govern",
+          "label": "规模化与治理",
+          "depends_on": [
+            "technology-concept:70ff74ced8346a952022c7a4:phase:5"
+          ],
+          "deliverables": [
+            "manufacturing-plan",
+            "maintenance-model",
+            "governance-policy"
+          ],
+          "work_packages": [
+            {
+              "discipline": "materials",
+              "task": "验证毛细陶瓷净水塔在规模化与治理阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 32,
+            "materials": 23,
+            "labor": 48
+          },
+          "risk_gate": "social-deployment"
+        }
+      ],
+      "failure_modes": [
+        {
+          "code": "PRINCIPLE_NOT_REPRODUCIBLE",
+          "mitigation": "回退到原理验证并缩小尺度"
+        },
+        {
+          "code": "MATERIAL_PROCESS_UNSTABLE",
+          "mitigation": "建立材料分级和工艺窗口"
+        },
+        {
+          "code": "SOCIAL_REJECTION",
+          "mitigation": "缩小试点并调整治理权责"
+        },
+        {
+          "code": "MAINTENANCE_OVERLOAD",
+          "mitigation": "模块化、冗余与运维训练"
+        }
+      ],
+      "adoption_conditions": {
+        "minimum_legitimacy": 4600,
+        "minimum_knowledge_openness": 3000,
+        "maximum_resource_stress": 8200,
+        "pilot_required": true
+      },
+      "projected_impact": {
+        "water": 22,
+        "health": 12
+      },
+      "status": "latent",
+      "progress": 0,
+      "concept_root": "9d356df93aec36fec12b3b7e8dff2c20b60befe97cea6604ac36b0c33455c942"
+    },
+    {
+      "format": "ragf.technology-concept.v0.5",
+      "version": "0.5.0-alpha.1",
+      "concept_id": "technology-concept:ca0d85577301359c5253a2a3",
+      "name": "相变热库网络",
+      "epistemic_status": "simulation-hypothesis",
+      "real_world_validation_required": true,
+      "origin": "deterministic-concept-grammar",
+      "grammar": {
+        "function": "store-energy",
+        "principle": "phase-change",
+        "substrate": "salt-hydrate",
+        "energy": "solar-thermal",
+        "control": "mechanical-governor",
+        "manufacturing": "kiln"
+      },
+      "domains": [
+        "materials",
+        "energy",
+        "mechanics"
+      ],
+      "novelty_score": 5102,
+      "feasibility_score": 6919,
+      "social_fit_score": 7107,
+      "knowledge_thresholds": {
+        "materials": 1614,
+        "energy": 1614,
+        "mechanics": 1614
+      },
+      "prerequisites": [
+        {
+          "type": "knowledge-domain",
+          "domain": "materials",
+          "minimum": 1614
+        },
+        {
+          "type": "knowledge-domain",
+          "domain": "energy",
+          "minimum": 1614
+        },
+        {
+          "type": "knowledge-domain",
+          "domain": "mechanics",
+          "minimum": 1614
+        }
+      ],
+      "bottlenecks": [
+        "salt-hydrate-quality",
+        "mechanical-governor-reliability",
+        "kiln-repeatability"
+      ],
+      "experiments": [
+        {
+          "experiment_id": "technology-concept:ca0d85577301359c5253a2a3:exp:1",
+          "hypothesis": "phase-change可在salt-hydrate中实现store-energy",
+          "measurements": [
+            "efficiency",
+            "stability",
+            "failure-rate"
+          ],
+          "pass": {
+            "efficiency": 0.45,
+            "stability": 0.7
+          }
+        },
+        {
+          "experiment_id": "technology-concept:ca0d85577301359c5253a2a3:exp:2",
+          "hypothesis": "mechanical-governor能够在社会使用场景保持可控",
+          "measurements": [
+            "response-time",
+            "operator-error",
+            "maintenance-load"
+          ],
+          "pass": {
+            "operator_error_max": 0.12
+          }
+        }
+      ],
+      "engineering_path": [
+        {
+          "phase": 0,
+          "phase_id": "technology-concept:ca0d85577301359c5253a2a3:phase:0",
+          "name": "need-model",
+          "label": "需求与边界建模",
+          "depends_on": [],
+          "deliverables": [
+            "pressure-map",
+            "success-metrics",
+            "safety-boundary"
+          ],
+          "work_packages": [
+            {
+              "discipline": "materials",
+              "task": "验证相变热库网络在需求与边界建模阶段的关键假设",
+              "acceptance": "可证伪实验通过"
+            }
+          ],
+          "resources": {
+            "knowledge": 8,
+            "materials": 5,
+            "labor": 12
+          },
+          "risk_gate": "research"
+        },
+        {
+          "phase": 1,
+          "phase_id": "technology-concept:ca0d85577301359c5253a2a3:phase:1",
+          "name": "principle-proof",
+          "label": "原理验证",
+          "depends_on": [
+            "technology-concept:ca0d85577301359c5253a2a3:phase:0"
+          ],
+          "deliverables": [
+            "bench-experiment",
+            "measurement-protocol",
+            "falsification-result"
+          ],
+          "work_packages": [
+            {
+              "discipline": "energy",
+              "task": "验证相变热库网络在原理验证阶段的关键假设",
+              "acceptance": "可证伪实验通过"
+            }
+          ],
+          "resources": {
+            "knowledge": 12,
+            "materials": 8,
+            "labor": 18
+          },
+          "risk_gate": "research"
+        },
+        {
+          "phase": 2,
+          "phase_id": "technology-concept:ca0d85577301359c5253a2a3:phase:2",
+          "name": "material-process",
+          "label": "材料与工艺验证",
+          "depends_on": [
+            "technology-concept:ca0d85577301359c5253a2a3:phase:1"
+          ],
+          "deliverables": [
+            "sample-set",
+            "process-window",
+            "failure-analysis"
+          ],
+          "work_packages": [
+            {
+              "discipline": "mechanics",
+              "task": "验证相变热库网络在材料与工艺验证阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 16,
+            "materials": 11,
+            "labor": 24
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 3,
+          "phase_id": "technology-concept:ca0d85577301359c5253a2a3:phase:3",
+          "name": "component-prototype",
+          "label": "关键组件原型",
+          "depends_on": [
+            "technology-concept:ca0d85577301359c5253a2a3:phase:2"
+          ],
+          "deliverables": [
+            "component-bom",
+            "prototype-v1",
+            "test-report"
+          ],
+          "work_packages": [
+            {
+              "discipline": "materials",
+              "task": "验证相变热库网络在关键组件原型阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 20,
+            "materials": 14,
+            "labor": 30
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 4,
+          "phase_id": "technology-concept:ca0d85577301359c5253a2a3:phase:4",
+          "name": "system-integration",
+          "label": "系统集成",
+          "depends_on": [
+            "technology-concept:ca0d85577301359c5253a2a3:phase:3"
+          ],
+          "deliverables": [
+            "interface-contract",
+            "prototype-v2",
+            "integration-evidence"
+          ],
+          "work_packages": [
+            {
+              "discipline": "energy",
+              "task": "验证相变热库网络在系统集成阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 24,
+            "materials": 17,
+            "labor": 36
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 5,
+          "phase_id": "technology-concept:ca0d85577301359c5253a2a3:phase:5",
+          "name": "field-pilot",
+          "label": "社会场景试点",
+          "depends_on": [
+            "technology-concept:ca0d85577301359c5253a2a3:phase:4"
+          ],
+          "deliverables": [
+            "pilot-site",
+            "operator-training",
+            "impact-ledger"
+          ],
+          "work_packages": [
+            {
+              "discipline": "mechanics",
+              "task": "验证相变热库网络在社会场景试点阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 28,
+            "materials": 20,
+            "labor": 42
+          },
+          "risk_gate": "social-deployment"
+        },
+        {
+          "phase": 6,
+          "phase_id": "technology-concept:ca0d85577301359c5253a2a3:phase:6",
+          "name": "scale-and-govern",
+          "label": "规模化与治理",
+          "depends_on": [
+            "technology-concept:ca0d85577301359c5253a2a3:phase:5"
+          ],
+          "deliverables": [
+            "manufacturing-plan",
+            "maintenance-model",
+            "governance-policy"
+          ],
+          "work_packages": [
+            {
+              "discipline": "materials",
+              "task": "验证相变热库网络在规模化与治理阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 32,
+            "materials": 23,
+            "labor": 48
+          },
+          "risk_gate": "social-deployment"
+        }
+      ],
+      "failure_modes": [
+        {
+          "code": "PRINCIPLE_NOT_REPRODUCIBLE",
+          "mitigation": "回退到原理验证并缩小尺度"
+        },
+        {
+          "code": "MATERIAL_PROCESS_UNSTABLE",
+          "mitigation": "建立材料分级和工艺窗口"
+        },
+        {
+          "code": "SOCIAL_REJECTION",
+          "mitigation": "缩小试点并调整治理权责"
+        },
+        {
+          "code": "MAINTENANCE_OVERLOAD",
+          "mitigation": "模块化、冗余与运维训练"
+        }
+      ],
+      "adoption_conditions": {
+        "minimum_legitimacy": 4600,
+        "minimum_knowledge_openness": 3000,
+        "maximum_resource_stress": 8200,
+        "pilot_required": true
+      },
+      "projected_impact": {
+        "energy": 18,
+        "food": 3,
+        "knowledge": 2
+      },
+      "status": "latent",
+      "progress": 0,
+      "concept_root": "31c5688d71f915481a68131420faa0d1e328bc847462a9ac53b5ef8c0b525c14"
+    },
+    {
+      "format": "ragf.technology-concept.v0.5",
+      "version": "0.5.0-alpha.1",
+      "concept_id": "technology-concept:0e5bcb2d7b17b67439ddd583",
+      "name": "碳基土壤修复阵列",
+      "epistemic_status": "simulation-hypothesis",
+      "real_world_validation_required": true,
+      "origin": "deterministic-concept-grammar",
+      "grammar": {
+        "function": "heal-ecosystem",
+        "principle": "chemical-adsorption",
+        "substrate": "carbon",
+        "energy": "solar-thermal",
+        "control": "distributed-protocol",
+        "manufacturing": "bioprocess"
+      },
+      "domains": [
+        "chemistry",
+        "biology",
+        "organization"
+      ],
+      "novelty_score": 8315,
+      "feasibility_score": 4775,
+      "social_fit_score": 7297,
+      "knowledge_thresholds": {
+        "chemistry": 2202,
+        "biology": 2202,
+        "organization": 2202
+      },
+      "prerequisites": [
+        {
+          "type": "knowledge-domain",
+          "domain": "chemistry",
+          "minimum": 2202
+        },
+        {
+          "type": "knowledge-domain",
+          "domain": "biology",
+          "minimum": 2202
+        },
+        {
+          "type": "knowledge-domain",
+          "domain": "organization",
+          "minimum": 2202
+        }
+      ],
+      "bottlenecks": [
+        "carbon-quality",
+        "distributed-protocol-reliability",
+        "bioprocess-repeatability"
+      ],
+      "experiments": [
+        {
+          "experiment_id": "technology-concept:0e5bcb2d7b17b67439ddd583:exp:1",
+          "hypothesis": "chemical-adsorption可在carbon中实现heal-ecosystem",
+          "measurements": [
+            "efficiency",
+            "stability",
+            "failure-rate"
+          ],
+          "pass": {
+            "efficiency": 0.45,
+            "stability": 0.7
+          }
+        },
+        {
+          "experiment_id": "technology-concept:0e5bcb2d7b17b67439ddd583:exp:2",
+          "hypothesis": "distributed-protocol能够在社会使用场景保持可控",
+          "measurements": [
+            "response-time",
+            "operator-error",
+            "maintenance-load"
+          ],
+          "pass": {
+            "operator_error_max": 0.12
+          }
+        }
+      ],
+      "engineering_path": [
+        {
+          "phase": 0,
+          "phase_id": "technology-concept:0e5bcb2d7b17b67439ddd583:phase:0",
+          "name": "need-model",
+          "label": "需求与边界建模",
+          "depends_on": [],
+          "deliverables": [
+            "pressure-map",
+            "success-metrics",
+            "safety-boundary"
+          ],
+          "work_packages": [
+            {
+              "discipline": "chemistry",
+              "task": "验证碳基土壤修复阵列在需求与边界建模阶段的关键假设",
+              "acceptance": "可证伪实验通过"
+            }
+          ],
+          "resources": {
+            "knowledge": 8,
+            "materials": 5,
+            "labor": 12
+          },
+          "risk_gate": "research"
+        },
+        {
+          "phase": 1,
+          "phase_id": "technology-concept:0e5bcb2d7b17b67439ddd583:phase:1",
+          "name": "principle-proof",
+          "label": "原理验证",
+          "depends_on": [
+            "technology-concept:0e5bcb2d7b17b67439ddd583:phase:0"
+          ],
+          "deliverables": [
+            "bench-experiment",
+            "measurement-protocol",
+            "falsification-result"
+          ],
+          "work_packages": [
+            {
+              "discipline": "biology",
+              "task": "验证碳基土壤修复阵列在原理验证阶段的关键假设",
+              "acceptance": "可证伪实验通过"
+            }
+          ],
+          "resources": {
+            "knowledge": 12,
+            "materials": 8,
+            "labor": 18
+          },
+          "risk_gate": "research"
+        },
+        {
+          "phase": 2,
+          "phase_id": "technology-concept:0e5bcb2d7b17b67439ddd583:phase:2",
+          "name": "material-process",
+          "label": "材料与工艺验证",
+          "depends_on": [
+            "technology-concept:0e5bcb2d7b17b67439ddd583:phase:1"
+          ],
+          "deliverables": [
+            "sample-set",
+            "process-window",
+            "failure-analysis"
+          ],
+          "work_packages": [
+            {
+              "discipline": "organization",
+              "task": "验证碳基土壤修复阵列在材料与工艺验证阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 16,
+            "materials": 11,
+            "labor": 24
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 3,
+          "phase_id": "technology-concept:0e5bcb2d7b17b67439ddd583:phase:3",
+          "name": "component-prototype",
+          "label": "关键组件原型",
+          "depends_on": [
+            "technology-concept:0e5bcb2d7b17b67439ddd583:phase:2"
+          ],
+          "deliverables": [
+            "component-bom",
+            "prototype-v1",
+            "test-report"
+          ],
+          "work_packages": [
+            {
+              "discipline": "chemistry",
+              "task": "验证碳基土壤修复阵列在关键组件原型阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 20,
+            "materials": 14,
+            "labor": 30
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 4,
+          "phase_id": "technology-concept:0e5bcb2d7b17b67439ddd583:phase:4",
+          "name": "system-integration",
+          "label": "系统集成",
+          "depends_on": [
+            "technology-concept:0e5bcb2d7b17b67439ddd583:phase:3"
+          ],
+          "deliverables": [
+            "interface-contract",
+            "prototype-v2",
+            "integration-evidence"
+          ],
+          "work_packages": [
+            {
+              "discipline": "biology",
+              "task": "验证碳基土壤修复阵列在系统集成阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 24,
+            "materials": 17,
+            "labor": 36
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 5,
+          "phase_id": "technology-concept:0e5bcb2d7b17b67439ddd583:phase:5",
+          "name": "field-pilot",
+          "label": "社会场景试点",
+          "depends_on": [
+            "technology-concept:0e5bcb2d7b17b67439ddd583:phase:4"
+          ],
+          "deliverables": [
+            "pilot-site",
+            "operator-training",
+            "impact-ledger"
+          ],
+          "work_packages": [
+            {
+              "discipline": "organization",
+              "task": "验证碳基土壤修复阵列在社会场景试点阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 28,
+            "materials": 20,
+            "labor": 42
+          },
+          "risk_gate": "social-deployment"
+        },
+        {
+          "phase": 6,
+          "phase_id": "technology-concept:0e5bcb2d7b17b67439ddd583:phase:6",
+          "name": "scale-and-govern",
+          "label": "规模化与治理",
+          "depends_on": [
+            "technology-concept:0e5bcb2d7b17b67439ddd583:phase:5"
+          ],
+          "deliverables": [
+            "manufacturing-plan",
+            "maintenance-model",
+            "governance-policy"
+          ],
+          "work_packages": [
+            {
+              "discipline": "chemistry",
+              "task": "验证碳基土壤修复阵列在规模化与治理阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 32,
+            "materials": 23,
+            "labor": 48
+          },
+          "risk_gate": "social-deployment"
+        }
+      ],
+      "failure_modes": [
+        {
+          "code": "PRINCIPLE_NOT_REPRODUCIBLE",
+          "mitigation": "回退到原理验证并缩小尺度"
+        },
+        {
+          "code": "MATERIAL_PROCESS_UNSTABLE",
+          "mitigation": "建立材料分级和工艺窗口"
+        },
+        {
+          "code": "SOCIAL_REJECTION",
+          "mitigation": "缩小试点并调整治理权责"
+        },
+        {
+          "code": "MAINTENANCE_OVERLOAD",
+          "mitigation": "模块化、冗余与运维训练"
+        }
+      ],
+      "adoption_conditions": {
+        "minimum_legitimacy": 4600,
+        "minimum_knowledge_openness": 3000,
+        "maximum_resource_stress": 8200,
+        "pilot_required": true
+      },
+      "projected_impact": {
+        "food": 9,
+        "health": 7
+      },
+      "status": "latent",
+      "progress": 0,
+      "concept_root": "c19273fd28e3462877616166b58599b7cfad262dad2e913d5ca8571ab397d3c6"
+    },
+    {
+      "format": "ragf.technology-concept.v0.5",
+      "version": "0.5.0-alpha.1",
+      "concept_id": "technology-concept:479ee92fd089fc91f4c0e70b",
+      "name": "菌丝自修复构件",
+      "epistemic_status": "simulation-hypothesis",
+      "real_world_validation_required": true,
+      "origin": "deterministic-concept-grammar",
+      "grammar": {
+        "function": "repair-structure",
+        "principle": "microbial-metabolism",
+        "substrate": "mycelium",
+        "energy": "chemical",
+        "control": "analog-feedback",
+        "manufacturing": "bioprocess"
+      },
+      "domains": [
+        "biology",
+        "materials",
+        "organization"
+      ],
+      "novelty_score": 5313,
+      "feasibility_score": 5935,
+      "social_fit_score": 7280,
+      "knowledge_thresholds": {
+        "biology": 1689,
+        "materials": 1689,
+        "organization": 1689
+      },
+      "prerequisites": [
+        {
+          "type": "knowledge-domain",
+          "domain": "biology",
+          "minimum": 1689
+        },
+        {
+          "type": "knowledge-domain",
+          "domain": "materials",
+          "minimum": 1689
+        },
+        {
+          "type": "knowledge-domain",
+          "domain": "organization",
+          "minimum": 1689
+        }
+      ],
+      "bottlenecks": [
+        "mycelium-quality",
+        "analog-feedback-reliability",
+        "bioprocess-repeatability"
+      ],
+      "experiments": [
+        {
+          "experiment_id": "technology-concept:479ee92fd089fc91f4c0e70b:exp:1",
+          "hypothesis": "microbial-metabolism可在mycelium中实现repair-structure",
+          "measurements": [
+            "efficiency",
+            "stability",
+            "failure-rate"
+          ],
+          "pass": {
+            "efficiency": 0.45,
+            "stability": 0.7
+          }
+        },
+        {
+          "experiment_id": "technology-concept:479ee92fd089fc91f4c0e70b:exp:2",
+          "hypothesis": "analog-feedback能够在社会使用场景保持可控",
+          "measurements": [
+            "response-time",
+            "operator-error",
+            "maintenance-load"
+          ],
+          "pass": {
+            "operator_error_max": 0.12
+          }
+        }
+      ],
+      "engineering_path": [
+        {
+          "phase": 0,
+          "phase_id": "technology-concept:479ee92fd089fc91f4c0e70b:phase:0",
+          "name": "need-model",
+          "label": "需求与边界建模",
+          "depends_on": [],
+          "deliverables": [
+            "pressure-map",
+            "success-metrics",
+            "safety-boundary"
+          ],
+          "work_packages": [
+            {
+              "discipline": "biology",
+              "task": "验证菌丝自修复构件在需求与边界建模阶段的关键假设",
+              "acceptance": "可证伪实验通过"
+            }
+          ],
+          "resources": {
+            "knowledge": 8,
+            "materials": 5,
+            "labor": 12
+          },
+          "risk_gate": "research"
+        },
+        {
+          "phase": 1,
+          "phase_id": "technology-concept:479ee92fd089fc91f4c0e70b:phase:1",
+          "name": "principle-proof",
+          "label": "原理验证",
+          "depends_on": [
+            "technology-concept:479ee92fd089fc91f4c0e70b:phase:0"
+          ],
+          "deliverables": [
+            "bench-experiment",
+            "measurement-protocol",
+            "falsification-result"
+          ],
+          "work_packages": [
+            {
+              "discipline": "materials",
+              "task": "验证菌丝自修复构件在原理验证阶段的关键假设",
+              "acceptance": "可证伪实验通过"
+            }
+          ],
+          "resources": {
+            "knowledge": 12,
+            "materials": 8,
+            "labor": 18
+          },
+          "risk_gate": "research"
+        },
+        {
+          "phase": 2,
+          "phase_id": "technology-concept:479ee92fd089fc91f4c0e70b:phase:2",
+          "name": "material-process",
+          "label": "材料与工艺验证",
+          "depends_on": [
+            "technology-concept:479ee92fd089fc91f4c0e70b:phase:1"
+          ],
+          "deliverables": [
+            "sample-set",
+            "process-window",
+            "failure-analysis"
+          ],
+          "work_packages": [
+            {
+              "discipline": "organization",
+              "task": "验证菌丝自修复构件在材料与工艺验证阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 16,
+            "materials": 11,
+            "labor": 24
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 3,
+          "phase_id": "technology-concept:479ee92fd089fc91f4c0e70b:phase:3",
+          "name": "component-prototype",
+          "label": "关键组件原型",
+          "depends_on": [
+            "technology-concept:479ee92fd089fc91f4c0e70b:phase:2"
+          ],
+          "deliverables": [
+            "component-bom",
+            "prototype-v1",
+            "test-report"
+          ],
+          "work_packages": [
+            {
+              "discipline": "biology",
+              "task": "验证菌丝自修复构件在关键组件原型阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 20,
+            "materials": 14,
+            "labor": 30
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 4,
+          "phase_id": "technology-concept:479ee92fd089fc91f4c0e70b:phase:4",
+          "name": "system-integration",
+          "label": "系统集成",
+          "depends_on": [
+            "technology-concept:479ee92fd089fc91f4c0e70b:phase:3"
+          ],
+          "deliverables": [
+            "interface-contract",
+            "prototype-v2",
+            "integration-evidence"
+          ],
+          "work_packages": [
+            {
+              "discipline": "materials",
+              "task": "验证菌丝自修复构件在系统集成阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 24,
+            "materials": 17,
+            "labor": 36
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 5,
+          "phase_id": "technology-concept:479ee92fd089fc91f4c0e70b:phase:5",
+          "name": "field-pilot",
+          "label": "社会场景试点",
+          "depends_on": [
+            "technology-concept:479ee92fd089fc91f4c0e70b:phase:4"
+          ],
+          "deliverables": [
+            "pilot-site",
+            "operator-training",
+            "impact-ledger"
+          ],
+          "work_packages": [
+            {
+              "discipline": "organization",
+              "task": "验证菌丝自修复构件在社会场景试点阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 28,
+            "materials": 20,
+            "labor": 42
+          },
+          "risk_gate": "social-deployment"
+        },
+        {
+          "phase": 6,
+          "phase_id": "technology-concept:479ee92fd089fc91f4c0e70b:phase:6",
+          "name": "scale-and-govern",
+          "label": "规模化与治理",
+          "depends_on": [
+            "technology-concept:479ee92fd089fc91f4c0e70b:phase:5"
+          ],
+          "deliverables": [
+            "manufacturing-plan",
+            "maintenance-model",
+            "governance-policy"
+          ],
+          "work_packages": [
+            {
+              "discipline": "biology",
+              "task": "验证菌丝自修复构件在规模化与治理阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 32,
+            "materials": 23,
+            "labor": 48
+          },
+          "risk_gate": "social-deployment"
+        }
+      ],
+      "failure_modes": [
+        {
+          "code": "PRINCIPLE_NOT_REPRODUCIBLE",
+          "mitigation": "回退到原理验证并缩小尺度"
+        },
+        {
+          "code": "MATERIAL_PROCESS_UNSTABLE",
+          "mitigation": "建立材料分级和工艺窗口"
+        },
+        {
+          "code": "SOCIAL_REJECTION",
+          "mitigation": "缩小试点并调整治理权责"
+        },
+        {
+          "code": "MAINTENANCE_OVERLOAD",
+          "mitigation": "模块化、冗余与运维训练"
+        }
+      ],
+      "adoption_conditions": {
+        "minimum_legitimacy": 4600,
+        "minimum_knowledge_openness": 3000,
+        "maximum_resource_stress": 8200,
+        "pilot_required": true
+      },
+      "projected_impact": {
+        "timber": 8,
+        "health": 5
+      },
+      "status": "latent",
+      "progress": 0,
+      "concept_root": "0fb40d2079ac09945e315e6252aa4cb4cf2e7ce039ace7ed3c7777e3ee81754b"
+    },
+    {
+      "format": "ragf.technology-concept.v0.5",
+      "version": "0.5.0-alpha.1",
+      "concept_id": "technology-concept:838f563709e679c927913b09",
+      "name": "分布式机械逻辑工坊",
+      "epistemic_status": "simulation-hypothesis",
+      "real_world_validation_required": true,
+      "origin": "deterministic-concept-grammar",
+      "grammar": {
+        "function": "compute-rules",
+        "principle": "mechanical-logic",
+        "substrate": "steel",
+        "energy": "water",
+        "control": "mechanical-governor",
+        "manufacturing": "precision-assembly"
+      },
+      "domains": [
+        "mechanics",
+        "computation",
+        "organization"
+      ],
+      "novelty_score": 6766,
+      "feasibility_score": 6645,
+      "social_fit_score": 7546,
+      "knowledge_thresholds": {
+        "mechanics": 1847,
+        "computation": 1847,
+        "organization": 1847
+      },
+      "prerequisites": [
+        {
+          "type": "knowledge-domain",
+          "domain": "mechanics",
+          "minimum": 1847
+        },
+        {
+          "type": "knowledge-domain",
+          "domain": "computation",
+          "minimum": 1847
+        },
+        {
+          "type": "knowledge-domain",
+          "domain": "organization",
+          "minimum": 1847
+        }
+      ],
+      "bottlenecks": [
+        "steel-quality",
+        "mechanical-governor-reliability",
+        "precision-assembly-repeatability"
+      ],
+      "experiments": [
+        {
+          "experiment_id": "technology-concept:838f563709e679c927913b09:exp:1",
+          "hypothesis": "mechanical-logic可在steel中实现compute-rules",
+          "measurements": [
+            "efficiency",
+            "stability",
+            "failure-rate"
+          ],
+          "pass": {
+            "efficiency": 0.45,
+            "stability": 0.7
+          }
+        },
+        {
+          "experiment_id": "technology-concept:838f563709e679c927913b09:exp:2",
+          "hypothesis": "mechanical-governor能够在社会使用场景保持可控",
+          "measurements": [
+            "response-time",
+            "operator-error",
+            "maintenance-load"
+          ],
+          "pass": {
+            "operator_error_max": 0.12
+          }
+        }
+      ],
+      "engineering_path": [
+        {
+          "phase": 0,
+          "phase_id": "technology-concept:838f563709e679c927913b09:phase:0",
+          "name": "need-model",
+          "label": "需求与边界建模",
+          "depends_on": [],
+          "deliverables": [
+            "pressure-map",
+            "success-metrics",
+            "safety-boundary"
+          ],
+          "work_packages": [
+            {
+              "discipline": "mechanics",
+              "task": "验证分布式机械逻辑工坊在需求与边界建模阶段的关键假设",
+              "acceptance": "可证伪实验通过"
+            }
+          ],
+          "resources": {
+            "knowledge": 8,
+            "materials": 5,
+            "labor": 12
+          },
+          "risk_gate": "research"
+        },
+        {
+          "phase": 1,
+          "phase_id": "technology-concept:838f563709e679c927913b09:phase:1",
+          "name": "principle-proof",
+          "label": "原理验证",
+          "depends_on": [
+            "technology-concept:838f563709e679c927913b09:phase:0"
+          ],
+          "deliverables": [
+            "bench-experiment",
+            "measurement-protocol",
+            "falsification-result"
+          ],
+          "work_packages": [
+            {
+              "discipline": "computation",
+              "task": "验证分布式机械逻辑工坊在原理验证阶段的关键假设",
+              "acceptance": "可证伪实验通过"
+            }
+          ],
+          "resources": {
+            "knowledge": 12,
+            "materials": 8,
+            "labor": 18
+          },
+          "risk_gate": "research"
+        },
+        {
+          "phase": 2,
+          "phase_id": "technology-concept:838f563709e679c927913b09:phase:2",
+          "name": "material-process",
+          "label": "材料与工艺验证",
+          "depends_on": [
+            "technology-concept:838f563709e679c927913b09:phase:1"
+          ],
+          "deliverables": [
+            "sample-set",
+            "process-window",
+            "failure-analysis"
+          ],
+          "work_packages": [
+            {
+              "discipline": "organization",
+              "task": "验证分布式机械逻辑工坊在材料与工艺验证阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 16,
+            "materials": 11,
+            "labor": 24
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 3,
+          "phase_id": "technology-concept:838f563709e679c927913b09:phase:3",
+          "name": "component-prototype",
+          "label": "关键组件原型",
+          "depends_on": [
+            "technology-concept:838f563709e679c927913b09:phase:2"
+          ],
+          "deliverables": [
+            "component-bom",
+            "prototype-v1",
+            "test-report"
+          ],
+          "work_packages": [
+            {
+              "discipline": "mechanics",
+              "task": "验证分布式机械逻辑工坊在关键组件原型阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 20,
+            "materials": 14,
+            "labor": 30
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 4,
+          "phase_id": "technology-concept:838f563709e679c927913b09:phase:4",
+          "name": "system-integration",
+          "label": "系统集成",
+          "depends_on": [
+            "technology-concept:838f563709e679c927913b09:phase:3"
+          ],
+          "deliverables": [
+            "interface-contract",
+            "prototype-v2",
+            "integration-evidence"
+          ],
+          "work_packages": [
+            {
+              "discipline": "computation",
+              "task": "验证分布式机械逻辑工坊在系统集成阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 24,
+            "materials": 17,
+            "labor": 36
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 5,
+          "phase_id": "technology-concept:838f563709e679c927913b09:phase:5",
+          "name": "field-pilot",
+          "label": "社会场景试点",
+          "depends_on": [
+            "technology-concept:838f563709e679c927913b09:phase:4"
+          ],
+          "deliverables": [
+            "pilot-site",
+            "operator-training",
+            "impact-ledger"
+          ],
+          "work_packages": [
+            {
+              "discipline": "organization",
+              "task": "验证分布式机械逻辑工坊在社会场景试点阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 28,
+            "materials": 20,
+            "labor": 42
+          },
+          "risk_gate": "social-deployment"
+        },
+        {
+          "phase": 6,
+          "phase_id": "technology-concept:838f563709e679c927913b09:phase:6",
+          "name": "scale-and-govern",
+          "label": "规模化与治理",
+          "depends_on": [
+            "technology-concept:838f563709e679c927913b09:phase:5"
+          ],
+          "deliverables": [
+            "manufacturing-plan",
+            "maintenance-model",
+            "governance-policy"
+          ],
+          "work_packages": [
+            {
+              "discipline": "mechanics",
+              "task": "验证分布式机械逻辑工坊在规模化与治理阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 32,
+            "materials": 23,
+            "labor": 48
+          },
+          "risk_gate": "social-deployment"
+        }
+      ],
+      "failure_modes": [
+        {
+          "code": "PRINCIPLE_NOT_REPRODUCIBLE",
+          "mitigation": "回退到原理验证并缩小尺度"
+        },
+        {
+          "code": "MATERIAL_PROCESS_UNSTABLE",
+          "mitigation": "建立材料分级和工艺窗口"
+        },
+        {
+          "code": "SOCIAL_REJECTION",
+          "mitigation": "缩小试点并调整治理权责"
+        },
+        {
+          "code": "MAINTENANCE_OVERLOAD",
+          "mitigation": "模块化、冗余与运维训练"
+        }
+      ],
+      "adoption_conditions": {
+        "minimum_legitimacy": 4600,
+        "minimum_knowledge_openness": 3000,
+        "maximum_resource_stress": 8200,
+        "pilot_required": true
+      },
+      "projected_impact": {
+        "knowledge": 12,
+        "ore": -3,
+        "legitimacy": 4
+      },
+      "status": "latent",
+      "progress": 0,
+      "concept_root": "955e3964b3f236f12fbffe0e71dbc1fb3554fe7a853295f316954b7ccb837927"
+    },
+    {
+      "format": "ragf.technology-concept.v0.5",
+      "version": "0.5.0-alpha.1",
+      "concept_id": "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+      "name": "流体逻辑助力外骨架",
+      "epistemic_status": "simulation-hypothesis",
+      "real_world_validation_required": true,
+      "origin": "deterministic-concept-grammar",
+      "grammar": {
+        "function": "augment-labor",
+        "principle": "feedback-control",
+        "substrate": "steel",
+        "energy": "chemical",
+        "control": "fluidic-logic",
+        "manufacturing": "machining"
+      },
+      "domains": [
+        "mechanics",
+        "materials",
+        "computation"
+      ],
+      "novelty_score": 7437,
+      "feasibility_score": 6257,
+      "social_fit_score": 7163,
+      "knowledge_thresholds": {
+        "mechanics": 1961,
+        "materials": 1961,
+        "computation": 1961
+      },
+      "prerequisites": [
+        {
+          "type": "knowledge-domain",
+          "domain": "mechanics",
+          "minimum": 1961
+        },
+        {
+          "type": "knowledge-domain",
+          "domain": "materials",
+          "minimum": 1961
+        },
+        {
+          "type": "knowledge-domain",
+          "domain": "computation",
+          "minimum": 1961
+        }
+      ],
+      "bottlenecks": [
+        "steel-quality",
+        "fluidic-logic-reliability",
+        "machining-repeatability"
+      ],
+      "experiments": [
+        {
+          "experiment_id": "technology-concept:6a72e0b3ad0a2f4028ecb04f:exp:1",
+          "hypothesis": "feedback-control可在steel中实现augment-labor",
+          "measurements": [
+            "efficiency",
+            "stability",
+            "failure-rate"
+          ],
+          "pass": {
+            "efficiency": 0.45,
+            "stability": 0.7
+          }
+        },
+        {
+          "experiment_id": "technology-concept:6a72e0b3ad0a2f4028ecb04f:exp:2",
+          "hypothesis": "fluidic-logic能够在社会使用场景保持可控",
+          "measurements": [
+            "response-time",
+            "operator-error",
+            "maintenance-load"
+          ],
+          "pass": {
+            "operator_error_max": 0.12
+          }
+        }
+      ],
+      "engineering_path": [
+        {
+          "phase": 0,
+          "phase_id": "technology-concept:6a72e0b3ad0a2f4028ecb04f:phase:0",
+          "name": "need-model",
+          "label": "需求与边界建模",
+          "depends_on": [],
+          "deliverables": [
+            "pressure-map",
+            "success-metrics",
+            "safety-boundary"
+          ],
+          "work_packages": [
+            {
+              "discipline": "mechanics",
+              "task": "验证流体逻辑助力外骨架在需求与边界建模阶段的关键假设",
+              "acceptance": "可证伪实验通过"
+            }
+          ],
+          "resources": {
+            "knowledge": 8,
+            "materials": 5,
+            "labor": 12
+          },
+          "risk_gate": "research"
+        },
+        {
+          "phase": 1,
+          "phase_id": "technology-concept:6a72e0b3ad0a2f4028ecb04f:phase:1",
+          "name": "principle-proof",
+          "label": "原理验证",
+          "depends_on": [
+            "technology-concept:6a72e0b3ad0a2f4028ecb04f:phase:0"
+          ],
+          "deliverables": [
+            "bench-experiment",
+            "measurement-protocol",
+            "falsification-result"
+          ],
+          "work_packages": [
+            {
+              "discipline": "materials",
+              "task": "验证流体逻辑助力外骨架在原理验证阶段的关键假设",
+              "acceptance": "可证伪实验通过"
+            }
+          ],
+          "resources": {
+            "knowledge": 12,
+            "materials": 8,
+            "labor": 18
+          },
+          "risk_gate": "research"
+        },
+        {
+          "phase": 2,
+          "phase_id": "technology-concept:6a72e0b3ad0a2f4028ecb04f:phase:2",
+          "name": "material-process",
+          "label": "材料与工艺验证",
+          "depends_on": [
+            "technology-concept:6a72e0b3ad0a2f4028ecb04f:phase:1"
+          ],
+          "deliverables": [
+            "sample-set",
+            "process-window",
+            "failure-analysis"
+          ],
+          "work_packages": [
+            {
+              "discipline": "computation",
+              "task": "验证流体逻辑助力外骨架在材料与工艺验证阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 16,
+            "materials": 11,
+            "labor": 24
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 3,
+          "phase_id": "technology-concept:6a72e0b3ad0a2f4028ecb04f:phase:3",
+          "name": "component-prototype",
+          "label": "关键组件原型",
+          "depends_on": [
+            "technology-concept:6a72e0b3ad0a2f4028ecb04f:phase:2"
+          ],
+          "deliverables": [
+            "component-bom",
+            "prototype-v1",
+            "test-report"
+          ],
+          "work_packages": [
+            {
+              "discipline": "mechanics",
+              "task": "验证流体逻辑助力外骨架在关键组件原型阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 20,
+            "materials": 14,
+            "labor": 30
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 4,
+          "phase_id": "technology-concept:6a72e0b3ad0a2f4028ecb04f:phase:4",
+          "name": "system-integration",
+          "label": "系统集成",
+          "depends_on": [
+            "technology-concept:6a72e0b3ad0a2f4028ecb04f:phase:3"
+          ],
+          "deliverables": [
+            "interface-contract",
+            "prototype-v2",
+            "integration-evidence"
+          ],
+          "work_packages": [
+            {
+              "discipline": "materials",
+              "task": "验证流体逻辑助力外骨架在系统集成阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 24,
+            "materials": 17,
+            "labor": 36
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 5,
+          "phase_id": "technology-concept:6a72e0b3ad0a2f4028ecb04f:phase:5",
+          "name": "field-pilot",
+          "label": "社会场景试点",
+          "depends_on": [
+            "technology-concept:6a72e0b3ad0a2f4028ecb04f:phase:4"
+          ],
+          "deliverables": [
+            "pilot-site",
+            "operator-training",
+            "impact-ledger"
+          ],
+          "work_packages": [
+            {
+              "discipline": "computation",
+              "task": "验证流体逻辑助力外骨架在社会场景试点阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 28,
+            "materials": 20,
+            "labor": 42
+          },
+          "risk_gate": "social-deployment"
+        },
+        {
+          "phase": 6,
+          "phase_id": "technology-concept:6a72e0b3ad0a2f4028ecb04f:phase:6",
+          "name": "scale-and-govern",
+          "label": "规模化与治理",
+          "depends_on": [
+            "technology-concept:6a72e0b3ad0a2f4028ecb04f:phase:5"
+          ],
+          "deliverables": [
+            "manufacturing-plan",
+            "maintenance-model",
+            "governance-policy"
+          ],
+          "work_packages": [
+            {
+              "discipline": "mechanics",
+              "task": "验证流体逻辑助力外骨架在规模化与治理阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 32,
+            "materials": 23,
+            "labor": 48
+          },
+          "risk_gate": "social-deployment"
+        }
+      ],
+      "failure_modes": [
+        {
+          "code": "PRINCIPLE_NOT_REPRODUCIBLE",
+          "mitigation": "回退到原理验证并缩小尺度"
+        },
+        {
+          "code": "MATERIAL_PROCESS_UNSTABLE",
+          "mitigation": "建立材料分级和工艺窗口"
+        },
+        {
+          "code": "SOCIAL_REJECTION",
+          "mitigation": "缩小试点并调整治理权责"
+        },
+        {
+          "code": "MAINTENANCE_OVERLOAD",
+          "mitigation": "模块化、冗余与运维训练"
+        }
+      ],
+      "adoption_conditions": {
+        "minimum_legitimacy": 4600,
+        "minimum_knowledge_openness": 3000,
+        "maximum_resource_stress": 8200,
+        "pilot_required": true
+      },
+      "projected_impact": {
+        "food": 5,
+        "ore": 8,
+        "timber": 6
+      },
+      "status": "latent",
+      "progress": 0,
+      "concept_root": "003bf8614740063f74d3397ce622b5b5076c083b5bd6452d63ead478ad8c93ea"
+    },
+    {
+      "format": "ragf.technology-concept.v0.5",
+      "version": "0.5.0-alpha.1",
+      "concept_id": "technology-concept:e58cc8a66c3a18c15a77024e",
+      "name": "声学公共通信网",
+      "epistemic_status": "simulation-hypothesis",
+      "real_world_validation_required": true,
+      "origin": "deterministic-concept-grammar",
+      "grammar": {
+        "function": "transmit-information",
+        "principle": "acoustic-resonance",
+        "substrate": "ceramic",
+        "energy": "human",
+        "control": "distributed-protocol",
+        "manufacturing": "craft"
+      },
+      "domains": [
+        "mechanics",
+        "organization",
+        "computation"
+      ],
+      "novelty_score": 8396,
+      "feasibility_score": 5268,
+      "social_fit_score": 6956,
+      "knowledge_thresholds": {
+        "mechanics": 2174,
+        "organization": 2174,
+        "computation": 2174
+      },
+      "prerequisites": [
+        {
+          "type": "knowledge-domain",
+          "domain": "mechanics",
+          "minimum": 2174
+        },
+        {
+          "type": "knowledge-domain",
+          "domain": "organization",
+          "minimum": 2174
+        },
+        {
+          "type": "knowledge-domain",
+          "domain": "computation",
+          "minimum": 2174
+        }
+      ],
+      "bottlenecks": [
+        "ceramic-quality",
+        "distributed-protocol-reliability",
+        "craft-repeatability"
+      ],
+      "experiments": [
+        {
+          "experiment_id": "technology-concept:e58cc8a66c3a18c15a77024e:exp:1",
+          "hypothesis": "acoustic-resonance可在ceramic中实现transmit-information",
+          "measurements": [
+            "efficiency",
+            "stability",
+            "failure-rate"
+          ],
+          "pass": {
+            "efficiency": 0.45,
+            "stability": 0.7
+          }
+        },
+        {
+          "experiment_id": "technology-concept:e58cc8a66c3a18c15a77024e:exp:2",
+          "hypothesis": "distributed-protocol能够在社会使用场景保持可控",
+          "measurements": [
+            "response-time",
+            "operator-error",
+            "maintenance-load"
+          ],
+          "pass": {
+            "operator_error_max": 0.12
+          }
+        }
+      ],
+      "engineering_path": [
+        {
+          "phase": 0,
+          "phase_id": "technology-concept:e58cc8a66c3a18c15a77024e:phase:0",
+          "name": "need-model",
+          "label": "需求与边界建模",
+          "depends_on": [],
+          "deliverables": [
+            "pressure-map",
+            "success-metrics",
+            "safety-boundary"
+          ],
+          "work_packages": [
+            {
+              "discipline": "mechanics",
+              "task": "验证声学公共通信网在需求与边界建模阶段的关键假设",
+              "acceptance": "可证伪实验通过"
+            }
+          ],
+          "resources": {
+            "knowledge": 8,
+            "materials": 5,
+            "labor": 12
+          },
+          "risk_gate": "research"
+        },
+        {
+          "phase": 1,
+          "phase_id": "technology-concept:e58cc8a66c3a18c15a77024e:phase:1",
+          "name": "principle-proof",
+          "label": "原理验证",
+          "depends_on": [
+            "technology-concept:e58cc8a66c3a18c15a77024e:phase:0"
+          ],
+          "deliverables": [
+            "bench-experiment",
+            "measurement-protocol",
+            "falsification-result"
+          ],
+          "work_packages": [
+            {
+              "discipline": "organization",
+              "task": "验证声学公共通信网在原理验证阶段的关键假设",
+              "acceptance": "可证伪实验通过"
+            }
+          ],
+          "resources": {
+            "knowledge": 12,
+            "materials": 8,
+            "labor": 18
+          },
+          "risk_gate": "research"
+        },
+        {
+          "phase": 2,
+          "phase_id": "technology-concept:e58cc8a66c3a18c15a77024e:phase:2",
+          "name": "material-process",
+          "label": "材料与工艺验证",
+          "depends_on": [
+            "technology-concept:e58cc8a66c3a18c15a77024e:phase:1"
+          ],
+          "deliverables": [
+            "sample-set",
+            "process-window",
+            "failure-analysis"
+          ],
+          "work_packages": [
+            {
+              "discipline": "computation",
+              "task": "验证声学公共通信网在材料与工艺验证阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 16,
+            "materials": 11,
+            "labor": 24
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 3,
+          "phase_id": "technology-concept:e58cc8a66c3a18c15a77024e:phase:3",
+          "name": "component-prototype",
+          "label": "关键组件原型",
+          "depends_on": [
+            "technology-concept:e58cc8a66c3a18c15a77024e:phase:2"
+          ],
+          "deliverables": [
+            "component-bom",
+            "prototype-v1",
+            "test-report"
+          ],
+          "work_packages": [
+            {
+              "discipline": "mechanics",
+              "task": "验证声学公共通信网在关键组件原型阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 20,
+            "materials": 14,
+            "labor": 30
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 4,
+          "phase_id": "technology-concept:e58cc8a66c3a18c15a77024e:phase:4",
+          "name": "system-integration",
+          "label": "系统集成",
+          "depends_on": [
+            "technology-concept:e58cc8a66c3a18c15a77024e:phase:3"
+          ],
+          "deliverables": [
+            "interface-contract",
+            "prototype-v2",
+            "integration-evidence"
+          ],
+          "work_packages": [
+            {
+              "discipline": "organization",
+              "task": "验证声学公共通信网在系统集成阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 24,
+            "materials": 17,
+            "labor": 36
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 5,
+          "phase_id": "technology-concept:e58cc8a66c3a18c15a77024e:phase:5",
+          "name": "field-pilot",
+          "label": "社会场景试点",
+          "depends_on": [
+            "technology-concept:e58cc8a66c3a18c15a77024e:phase:4"
+          ],
+          "deliverables": [
+            "pilot-site",
+            "operator-training",
+            "impact-ledger"
+          ],
+          "work_packages": [
+            {
+              "discipline": "computation",
+              "task": "验证声学公共通信网在社会场景试点阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 28,
+            "materials": 20,
+            "labor": 42
+          },
+          "risk_gate": "social-deployment"
+        },
+        {
+          "phase": 6,
+          "phase_id": "technology-concept:e58cc8a66c3a18c15a77024e:phase:6",
+          "name": "scale-and-govern",
+          "label": "规模化与治理",
+          "depends_on": [
+            "technology-concept:e58cc8a66c3a18c15a77024e:phase:5"
+          ],
+          "deliverables": [
+            "manufacturing-plan",
+            "maintenance-model",
+            "governance-policy"
+          ],
+          "work_packages": [
+            {
+              "discipline": "mechanics",
+              "task": "验证声学公共通信网在规模化与治理阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 32,
+            "materials": 23,
+            "labor": 48
+          },
+          "risk_gate": "social-deployment"
+        }
+      ],
+      "failure_modes": [
+        {
+          "code": "PRINCIPLE_NOT_REPRODUCIBLE",
+          "mitigation": "回退到原理验证并缩小尺度"
+        },
+        {
+          "code": "MATERIAL_PROCESS_UNSTABLE",
+          "mitigation": "建立材料分级和工艺窗口"
+        },
+        {
+          "code": "SOCIAL_REJECTION",
+          "mitigation": "缩小试点并调整治理权责"
+        },
+        {
+          "code": "MAINTENANCE_OVERLOAD",
+          "mitigation": "模块化、冗余与运维训练"
+        }
+      ],
+      "adoption_conditions": {
+        "minimum_legitimacy": 4600,
+        "minimum_knowledge_openness": 3000,
+        "maximum_resource_stress": 8200,
+        "pilot_required": true
+      },
+      "projected_impact": {
+        "knowledge": 16,
+        "legitimacy": 5
+      },
+      "status": "latent",
+      "progress": 0,
+      "concept_root": "cbf12402ddcc692f431e7fb2d003c12a7315f149782fa2fa4ae545d59d8d5277"
+    },
+    {
+      "format": "ragf.technology-concept.v0.5",
+      "version": "0.5.0-alpha.1",
+      "concept_id": "technology-concept:7e51a5b2767ba10f24fa17e1",
+      "name": "梯度温差保鲜窖",
+      "epistemic_status": "simulation-hypothesis",
+      "real_world_validation_required": true,
+      "origin": "deterministic-concept-grammar",
+      "grammar": {
+        "function": "preserve-food",
+        "principle": "thermal-gradient",
+        "substrate": "ceramic",
+        "energy": "stored-heat",
+        "control": "manual",
+        "manufacturing": "kiln"
+      },
+      "domains": [
+        "energy",
+        "materials",
+        "health"
+      ],
+      "novelty_score": 7976,
+      "feasibility_score": 6209,
+      "social_fit_score": 6823,
+      "knowledge_thresholds": {
+        "energy": 2040,
+        "materials": 2040,
+        "health": 2040
+      },
+      "prerequisites": [
+        {
+          "type": "knowledge-domain",
+          "domain": "energy",
+          "minimum": 2040
+        },
+        {
+          "type": "knowledge-domain",
+          "domain": "materials",
+          "minimum": 2040
+        },
+        {
+          "type": "knowledge-domain",
+          "domain": "health",
+          "minimum": 2040
+        }
+      ],
+      "bottlenecks": [
+        "ceramic-quality",
+        "manual-reliability",
+        "kiln-repeatability"
+      ],
+      "experiments": [
+        {
+          "experiment_id": "technology-concept:7e51a5b2767ba10f24fa17e1:exp:1",
+          "hypothesis": "thermal-gradient可在ceramic中实现preserve-food",
+          "measurements": [
+            "efficiency",
+            "stability",
+            "failure-rate"
+          ],
+          "pass": {
+            "efficiency": 0.45,
+            "stability": 0.7
+          }
+        },
+        {
+          "experiment_id": "technology-concept:7e51a5b2767ba10f24fa17e1:exp:2",
+          "hypothesis": "manual能够在社会使用场景保持可控",
+          "measurements": [
+            "response-time",
+            "operator-error",
+            "maintenance-load"
+          ],
+          "pass": {
+            "operator_error_max": 0.12
+          }
+        }
+      ],
+      "engineering_path": [
+        {
+          "phase": 0,
+          "phase_id": "technology-concept:7e51a5b2767ba10f24fa17e1:phase:0",
+          "name": "need-model",
+          "label": "需求与边界建模",
+          "depends_on": [],
+          "deliverables": [
+            "pressure-map",
+            "success-metrics",
+            "safety-boundary"
+          ],
+          "work_packages": [
+            {
+              "discipline": "energy",
+              "task": "验证梯度温差保鲜窖在需求与边界建模阶段的关键假设",
+              "acceptance": "可证伪实验通过"
+            }
+          ],
+          "resources": {
+            "knowledge": 8,
+            "materials": 5,
+            "labor": 12
+          },
+          "risk_gate": "research"
+        },
+        {
+          "phase": 1,
+          "phase_id": "technology-concept:7e51a5b2767ba10f24fa17e1:phase:1",
+          "name": "principle-proof",
+          "label": "原理验证",
+          "depends_on": [
+            "technology-concept:7e51a5b2767ba10f24fa17e1:phase:0"
+          ],
+          "deliverables": [
+            "bench-experiment",
+            "measurement-protocol",
+            "falsification-result"
+          ],
+          "work_packages": [
+            {
+              "discipline": "materials",
+              "task": "验证梯度温差保鲜窖在原理验证阶段的关键假设",
+              "acceptance": "可证伪实验通过"
+            }
+          ],
+          "resources": {
+            "knowledge": 12,
+            "materials": 8,
+            "labor": 18
+          },
+          "risk_gate": "research"
+        },
+        {
+          "phase": 2,
+          "phase_id": "technology-concept:7e51a5b2767ba10f24fa17e1:phase:2",
+          "name": "material-process",
+          "label": "材料与工艺验证",
+          "depends_on": [
+            "technology-concept:7e51a5b2767ba10f24fa17e1:phase:1"
+          ],
+          "deliverables": [
+            "sample-set",
+            "process-window",
+            "failure-analysis"
+          ],
+          "work_packages": [
+            {
+              "discipline": "health",
+              "task": "验证梯度温差保鲜窖在材料与工艺验证阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 16,
+            "materials": 11,
+            "labor": 24
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 3,
+          "phase_id": "technology-concept:7e51a5b2767ba10f24fa17e1:phase:3",
+          "name": "component-prototype",
+          "label": "关键组件原型",
+          "depends_on": [
+            "technology-concept:7e51a5b2767ba10f24fa17e1:phase:2"
+          ],
+          "deliverables": [
+            "component-bom",
+            "prototype-v1",
+            "test-report"
+          ],
+          "work_packages": [
+            {
+              "discipline": "energy",
+              "task": "验证梯度温差保鲜窖在关键组件原型阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 20,
+            "materials": 14,
+            "labor": 30
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 4,
+          "phase_id": "technology-concept:7e51a5b2767ba10f24fa17e1:phase:4",
+          "name": "system-integration",
+          "label": "系统集成",
+          "depends_on": [
+            "technology-concept:7e51a5b2767ba10f24fa17e1:phase:3"
+          ],
+          "deliverables": [
+            "interface-contract",
+            "prototype-v2",
+            "integration-evidence"
+          ],
+          "work_packages": [
+            {
+              "discipline": "materials",
+              "task": "验证梯度温差保鲜窖在系统集成阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 24,
+            "materials": 17,
+            "labor": 36
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 5,
+          "phase_id": "technology-concept:7e51a5b2767ba10f24fa17e1:phase:5",
+          "name": "field-pilot",
+          "label": "社会场景试点",
+          "depends_on": [
+            "technology-concept:7e51a5b2767ba10f24fa17e1:phase:4"
+          ],
+          "deliverables": [
+            "pilot-site",
+            "operator-training",
+            "impact-ledger"
+          ],
+          "work_packages": [
+            {
+              "discipline": "health",
+              "task": "验证梯度温差保鲜窖在社会场景试点阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 28,
+            "materials": 20,
+            "labor": 42
+          },
+          "risk_gate": "social-deployment"
+        },
+        {
+          "phase": 6,
+          "phase_id": "technology-concept:7e51a5b2767ba10f24fa17e1:phase:6",
+          "name": "scale-and-govern",
+          "label": "规模化与治理",
+          "depends_on": [
+            "technology-concept:7e51a5b2767ba10f24fa17e1:phase:5"
+          ],
+          "deliverables": [
+            "manufacturing-plan",
+            "maintenance-model",
+            "governance-policy"
+          ],
+          "work_packages": [
+            {
+              "discipline": "energy",
+              "task": "验证梯度温差保鲜窖在规模化与治理阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 32,
+            "materials": 23,
+            "labor": 48
+          },
+          "risk_gate": "social-deployment"
+        }
+      ],
+      "failure_modes": [
+        {
+          "code": "PRINCIPLE_NOT_REPRODUCIBLE",
+          "mitigation": "回退到原理验证并缩小尺度"
+        },
+        {
+          "code": "MATERIAL_PROCESS_UNSTABLE",
+          "mitigation": "建立材料分级和工艺窗口"
+        },
+        {
+          "code": "SOCIAL_REJECTION",
+          "mitigation": "缩小试点并调整治理权责"
+        },
+        {
+          "code": "MAINTENANCE_OVERLOAD",
+          "mitigation": "模块化、冗余与运维训练"
+        }
+      ],
+      "adoption_conditions": {
+        "minimum_legitimacy": 4600,
+        "minimum_knowledge_openness": 3000,
+        "maximum_resource_stress": 8200,
+        "pilot_required": true
+      },
+      "projected_impact": {
+        "food": 15,
+        "health": 3
+      },
+      "status": "latent",
+      "progress": 0,
+      "concept_root": "7e74ceeaeccc3e991f2963223fe37bf53912216a19543c70f27711763a29c39c"
+    },
+    {
+      "format": "ragf.technology-concept.v0.5",
+      "version": "0.5.0-alpha.1",
+      "concept_id": "technology-concept:31e150336509d05007349a44",
+      "name": "张力模块运输网",
+      "epistemic_status": "simulation-hypothesis",
+      "real_world_validation_required": true,
+      "origin": "deterministic-concept-grammar",
+      "grammar": {
+        "function": "move-loads",
+        "principle": "modular-tension",
+        "substrate": "fiber",
+        "energy": "wind",
+        "control": "mechanical-governor",
+        "manufacturing": "lamination"
+      },
+      "domains": [
+        "mechanics",
+        "materials",
+        "organization"
+      ],
+      "novelty_score": 7828,
+      "feasibility_score": 5250,
+      "social_fit_score": 7836,
+      "knowledge_thresholds": {
+        "mechanics": 2096,
+        "materials": 2096,
+        "organization": 2096
+      },
+      "prerequisites": [
+        {
+          "type": "knowledge-domain",
+          "domain": "mechanics",
+          "minimum": 2096
+        },
+        {
+          "type": "knowledge-domain",
+          "domain": "materials",
+          "minimum": 2096
+        },
+        {
+          "type": "knowledge-domain",
+          "domain": "organization",
+          "minimum": 2096
+        }
+      ],
+      "bottlenecks": [
+        "fiber-quality",
+        "mechanical-governor-reliability",
+        "lamination-repeatability"
+      ],
+      "experiments": [
+        {
+          "experiment_id": "technology-concept:31e150336509d05007349a44:exp:1",
+          "hypothesis": "modular-tension可在fiber中实现move-loads",
+          "measurements": [
+            "efficiency",
+            "stability",
+            "failure-rate"
+          ],
+          "pass": {
+            "efficiency": 0.45,
+            "stability": 0.7
+          }
+        },
+        {
+          "experiment_id": "technology-concept:31e150336509d05007349a44:exp:2",
+          "hypothesis": "mechanical-governor能够在社会使用场景保持可控",
+          "measurements": [
+            "response-time",
+            "operator-error",
+            "maintenance-load"
+          ],
+          "pass": {
+            "operator_error_max": 0.12
+          }
+        }
+      ],
+      "engineering_path": [
+        {
+          "phase": 0,
+          "phase_id": "technology-concept:31e150336509d05007349a44:phase:0",
+          "name": "need-model",
+          "label": "需求与边界建模",
+          "depends_on": [],
+          "deliverables": [
+            "pressure-map",
+            "success-metrics",
+            "safety-boundary"
+          ],
+          "work_packages": [
+            {
+              "discipline": "mechanics",
+              "task": "验证张力模块运输网在需求与边界建模阶段的关键假设",
+              "acceptance": "可证伪实验通过"
+            }
+          ],
+          "resources": {
+            "knowledge": 8,
+            "materials": 5,
+            "labor": 12
+          },
+          "risk_gate": "research"
+        },
+        {
+          "phase": 1,
+          "phase_id": "technology-concept:31e150336509d05007349a44:phase:1",
+          "name": "principle-proof",
+          "label": "原理验证",
+          "depends_on": [
+            "technology-concept:31e150336509d05007349a44:phase:0"
+          ],
+          "deliverables": [
+            "bench-experiment",
+            "measurement-protocol",
+            "falsification-result"
+          ],
+          "work_packages": [
+            {
+              "discipline": "materials",
+              "task": "验证张力模块运输网在原理验证阶段的关键假设",
+              "acceptance": "可证伪实验通过"
+            }
+          ],
+          "resources": {
+            "knowledge": 12,
+            "materials": 8,
+            "labor": 18
+          },
+          "risk_gate": "research"
+        },
+        {
+          "phase": 2,
+          "phase_id": "technology-concept:31e150336509d05007349a44:phase:2",
+          "name": "material-process",
+          "label": "材料与工艺验证",
+          "depends_on": [
+            "technology-concept:31e150336509d05007349a44:phase:1"
+          ],
+          "deliverables": [
+            "sample-set",
+            "process-window",
+            "failure-analysis"
+          ],
+          "work_packages": [
+            {
+              "discipline": "organization",
+              "task": "验证张力模块运输网在材料与工艺验证阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 16,
+            "materials": 11,
+            "labor": 24
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 3,
+          "phase_id": "technology-concept:31e150336509d05007349a44:phase:3",
+          "name": "component-prototype",
+          "label": "关键组件原型",
+          "depends_on": [
+            "technology-concept:31e150336509d05007349a44:phase:2"
+          ],
+          "deliverables": [
+            "component-bom",
+            "prototype-v1",
+            "test-report"
+          ],
+          "work_packages": [
+            {
+              "discipline": "mechanics",
+              "task": "验证张力模块运输网在关键组件原型阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 20,
+            "materials": 14,
+            "labor": 30
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 4,
+          "phase_id": "technology-concept:31e150336509d05007349a44:phase:4",
+          "name": "system-integration",
+          "label": "系统集成",
+          "depends_on": [
+            "technology-concept:31e150336509d05007349a44:phase:3"
+          ],
+          "deliverables": [
+            "interface-contract",
+            "prototype-v2",
+            "integration-evidence"
+          ],
+          "work_packages": [
+            {
+              "discipline": "materials",
+              "task": "验证张力模块运输网在系统集成阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 24,
+            "materials": 17,
+            "labor": 36
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 5,
+          "phase_id": "technology-concept:31e150336509d05007349a44:phase:5",
+          "name": "field-pilot",
+          "label": "社会场景试点",
+          "depends_on": [
+            "technology-concept:31e150336509d05007349a44:phase:4"
+          ],
+          "deliverables": [
+            "pilot-site",
+            "operator-training",
+            "impact-ledger"
+          ],
+          "work_packages": [
+            {
+              "discipline": "organization",
+              "task": "验证张力模块运输网在社会场景试点阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 28,
+            "materials": 20,
+            "labor": 42
+          },
+          "risk_gate": "social-deployment"
+        },
+        {
+          "phase": 6,
+          "phase_id": "technology-concept:31e150336509d05007349a44:phase:6",
+          "name": "scale-and-govern",
+          "label": "规模化与治理",
+          "depends_on": [
+            "technology-concept:31e150336509d05007349a44:phase:5"
+          ],
+          "deliverables": [
+            "manufacturing-plan",
+            "maintenance-model",
+            "governance-policy"
+          ],
+          "work_packages": [
+            {
+              "discipline": "mechanics",
+              "task": "验证张力模块运输网在规模化与治理阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 32,
+            "materials": 23,
+            "labor": 48
+          },
+          "risk_gate": "social-deployment"
+        }
+      ],
+      "failure_modes": [
+        {
+          "code": "PRINCIPLE_NOT_REPRODUCIBLE",
+          "mitigation": "回退到原理验证并缩小尺度"
+        },
+        {
+          "code": "MATERIAL_PROCESS_UNSTABLE",
+          "mitigation": "建立材料分级和工艺窗口"
+        },
+        {
+          "code": "SOCIAL_REJECTION",
+          "mitigation": "缩小试点并调整治理权责"
+        },
+        {
+          "code": "MAINTENANCE_OVERLOAD",
+          "mitigation": "模块化、冗余与运维训练"
+        }
+      ],
+      "adoption_conditions": {
+        "minimum_legitimacy": 4600,
+        "minimum_knowledge_openness": 3000,
+        "maximum_resource_stress": 8200,
+        "pilot_required": true
+      },
+      "projected_impact": {
+        "food": 5,
+        "timber": 4,
+        "ore": 4
+      },
+      "status": "latent",
+      "progress": 0,
+      "concept_root": "671ee5702d5bde1974d670a7156f3f5a91d455f686218bf1f4ee3ab6c82c266a"
+    },
+    {
+      "format": "ragf.technology-concept.v0.5",
+      "version": "0.5.0-alpha.1",
+      "concept_id": "technology-concept:b7f0ab814d4bce1b2288eaa9",
+      "name": "玻璃模块张力协作生产系统",
+      "epistemic_status": "simulation-hypothesis",
+      "real_world_validation_required": true,
+      "origin": "deterministic-concept-grammar",
+      "grammar": {
+        "function": "coordinate-production",
+        "principle": "modular-tension",
+        "substrate": "glass",
+        "energy": "electrical",
+        "control": "digital-logic",
+        "manufacturing": "wire-winding"
+      },
+      "domains": [
+        "organization",
+        "energy",
+        "biology"
+      ],
+      "novelty_score": 8143,
+      "feasibility_score": 4652,
+      "social_fit_score": 6810,
+      "knowledge_thresholds": {
+        "organization": 2188,
+        "energy": 2188,
+        "biology": 2188
+      },
+      "prerequisites": [
+        {
+          "type": "knowledge-domain",
+          "domain": "organization",
+          "minimum": 2188
+        },
+        {
+          "type": "knowledge-domain",
+          "domain": "energy",
+          "minimum": 2188
+        },
+        {
+          "type": "knowledge-domain",
+          "domain": "biology",
+          "minimum": 2188
+        }
+      ],
+      "bottlenecks": [
+        "glass-quality",
+        "digital-logic-reliability",
+        "wire-winding-repeatability"
+      ],
+      "experiments": [
+        {
+          "experiment_id": "technology-concept:b7f0ab814d4bce1b2288eaa9:exp:1",
+          "hypothesis": "modular-tension可在glass中实现coordinate-production",
+          "measurements": [
+            "efficiency",
+            "stability",
+            "failure-rate"
+          ],
+          "pass": {
+            "efficiency": 0.45,
+            "stability": 0.7
+          }
+        },
+        {
+          "experiment_id": "technology-concept:b7f0ab814d4bce1b2288eaa9:exp:2",
+          "hypothesis": "digital-logic能够在社会使用场景保持可控",
+          "measurements": [
+            "response-time",
+            "operator-error",
+            "maintenance-load"
+          ],
+          "pass": {
+            "operator_error_max": 0.12
+          }
+        }
+      ],
+      "engineering_path": [
+        {
+          "phase": 0,
+          "phase_id": "technology-concept:b7f0ab814d4bce1b2288eaa9:phase:0",
+          "name": "need-model",
+          "label": "需求与边界建模",
+          "depends_on": [],
+          "deliverables": [
+            "pressure-map",
+            "success-metrics",
+            "safety-boundary"
+          ],
+          "work_packages": [
+            {
+              "discipline": "organization",
+              "task": "验证玻璃模块张力协作生产系统在需求与边界建模阶段的关键假设",
+              "acceptance": "可证伪实验通过"
+            }
+          ],
+          "resources": {
+            "knowledge": 8,
+            "materials": 5,
+            "labor": 12
+          },
+          "risk_gate": "research"
+        },
+        {
+          "phase": 1,
+          "phase_id": "technology-concept:b7f0ab814d4bce1b2288eaa9:phase:1",
+          "name": "principle-proof",
+          "label": "原理验证",
+          "depends_on": [
+            "technology-concept:b7f0ab814d4bce1b2288eaa9:phase:0"
+          ],
+          "deliverables": [
+            "bench-experiment",
+            "measurement-protocol",
+            "falsification-result"
+          ],
+          "work_packages": [
+            {
+              "discipline": "energy",
+              "task": "验证玻璃模块张力协作生产系统在原理验证阶段的关键假设",
+              "acceptance": "可证伪实验通过"
+            }
+          ],
+          "resources": {
+            "knowledge": 12,
+            "materials": 8,
+            "labor": 18
+          },
+          "risk_gate": "research"
+        },
+        {
+          "phase": 2,
+          "phase_id": "technology-concept:b7f0ab814d4bce1b2288eaa9:phase:2",
+          "name": "material-process",
+          "label": "材料与工艺验证",
+          "depends_on": [
+            "technology-concept:b7f0ab814d4bce1b2288eaa9:phase:1"
+          ],
+          "deliverables": [
+            "sample-set",
+            "process-window",
+            "failure-analysis"
+          ],
+          "work_packages": [
+            {
+              "discipline": "biology",
+              "task": "验证玻璃模块张力协作生产系统在材料与工艺验证阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 16,
+            "materials": 11,
+            "labor": 24
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 3,
+          "phase_id": "technology-concept:b7f0ab814d4bce1b2288eaa9:phase:3",
+          "name": "component-prototype",
+          "label": "关键组件原型",
+          "depends_on": [
+            "technology-concept:b7f0ab814d4bce1b2288eaa9:phase:2"
+          ],
+          "deliverables": [
+            "component-bom",
+            "prototype-v1",
+            "test-report"
+          ],
+          "work_packages": [
+            {
+              "discipline": "organization",
+              "task": "验证玻璃模块张力协作生产系统在关键组件原型阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 20,
+            "materials": 14,
+            "labor": 30
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 4,
+          "phase_id": "technology-concept:b7f0ab814d4bce1b2288eaa9:phase:4",
+          "name": "system-integration",
+          "label": "系统集成",
+          "depends_on": [
+            "technology-concept:b7f0ab814d4bce1b2288eaa9:phase:3"
+          ],
+          "deliverables": [
+            "interface-contract",
+            "prototype-v2",
+            "integration-evidence"
+          ],
+          "work_packages": [
+            {
+              "discipline": "energy",
+              "task": "验证玻璃模块张力协作生产系统在系统集成阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 24,
+            "materials": 17,
+            "labor": 36
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 5,
+          "phase_id": "technology-concept:b7f0ab814d4bce1b2288eaa9:phase:5",
+          "name": "field-pilot",
+          "label": "社会场景试点",
+          "depends_on": [
+            "technology-concept:b7f0ab814d4bce1b2288eaa9:phase:4"
+          ],
+          "deliverables": [
+            "pilot-site",
+            "operator-training",
+            "impact-ledger"
+          ],
+          "work_packages": [
+            {
+              "discipline": "biology",
+              "task": "验证玻璃模块张力协作生产系统在社会场景试点阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 28,
+            "materials": 20,
+            "labor": 42
+          },
+          "risk_gate": "social-deployment"
+        },
+        {
+          "phase": 6,
+          "phase_id": "technology-concept:b7f0ab814d4bce1b2288eaa9:phase:6",
+          "name": "scale-and-govern",
+          "label": "规模化与治理",
+          "depends_on": [
+            "technology-concept:b7f0ab814d4bce1b2288eaa9:phase:5"
+          ],
+          "deliverables": [
+            "manufacturing-plan",
+            "maintenance-model",
+            "governance-policy"
+          ],
+          "work_packages": [
+            {
+              "discipline": "organization",
+              "task": "验证玻璃模块张力协作生产系统在规模化与治理阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 32,
+            "materials": 23,
+            "labor": 48
+          },
+          "risk_gate": "social-deployment"
+        }
+      ],
+      "failure_modes": [
+        {
+          "code": "PRINCIPLE_NOT_REPRODUCIBLE",
+          "mitigation": "回退到原理验证并缩小尺度"
+        },
+        {
+          "code": "MATERIAL_PROCESS_UNSTABLE",
+          "mitigation": "建立材料分级和工艺窗口"
+        },
+        {
+          "code": "SOCIAL_REJECTION",
+          "mitigation": "缩小试点并调整治理权责"
+        },
+        {
+          "code": "MAINTENANCE_OVERLOAD",
+          "mitigation": "模块化、冗余与运维训练"
+        }
+      ],
+      "adoption_conditions": {
+        "minimum_legitimacy": 4600,
+        "minimum_knowledge_openness": 3000,
+        "maximum_resource_stress": 8200,
+        "pilot_required": true
+      },
+      "projected_impact": {
+        "knowledge": 8,
+        "energy": 2,
+        "health": 2
+      },
+      "status": "latent",
+      "progress": 0,
+      "concept_root": "0b2ae86386bfc20ca50521eed81a573322862def517eadc1696a14a0769306fc"
+    },
+    {
+      "format": "ragf.technology-concept.v0.5",
+      "version": "0.5.0-alpha.1",
+      "concept_id": "technology-concept:198955a1a86d525184cca7b9",
+      "name": "水合盐电磁感应自修复结构系统",
+      "epistemic_status": "simulation-hypothesis",
+      "real_world_validation_required": true,
+      "origin": "deterministic-concept-grammar",
+      "grammar": {
+        "function": "repair-structure",
+        "principle": "electromagnetic-induction",
+        "substrate": "salt-hydrate",
+        "energy": "wind",
+        "control": "relay",
+        "manufacturing": "lamination"
+      },
+      "domains": [
+        "biology",
+        "optics",
+        "organization"
+      ],
+      "novelty_score": 8325,
+      "feasibility_score": 6283,
+      "social_fit_score": 6871,
+      "knowledge_thresholds": {
+        "biology": 2083,
+        "optics": 2083,
+        "organization": 2083
+      },
+      "prerequisites": [
+        {
+          "type": "knowledge-domain",
+          "domain": "biology",
+          "minimum": 2083
+        },
+        {
+          "type": "knowledge-domain",
+          "domain": "optics",
+          "minimum": 2083
+        },
+        {
+          "type": "knowledge-domain",
+          "domain": "organization",
+          "minimum": 2083
+        }
+      ],
+      "bottlenecks": [
+        "salt-hydrate-quality",
+        "relay-reliability",
+        "lamination-repeatability"
+      ],
+      "experiments": [
+        {
+          "experiment_id": "technology-concept:198955a1a86d525184cca7b9:exp:1",
+          "hypothesis": "electromagnetic-induction可在salt-hydrate中实现repair-structure",
+          "measurements": [
+            "efficiency",
+            "stability",
+            "failure-rate"
+          ],
+          "pass": {
+            "efficiency": 0.45,
+            "stability": 0.7
+          }
+        },
+        {
+          "experiment_id": "technology-concept:198955a1a86d525184cca7b9:exp:2",
+          "hypothesis": "relay能够在社会使用场景保持可控",
+          "measurements": [
+            "response-time",
+            "operator-error",
+            "maintenance-load"
+          ],
+          "pass": {
+            "operator_error_max": 0.12
+          }
+        }
+      ],
+      "engineering_path": [
+        {
+          "phase": 0,
+          "phase_id": "technology-concept:198955a1a86d525184cca7b9:phase:0",
+          "name": "need-model",
+          "label": "需求与边界建模",
+          "depends_on": [],
+          "deliverables": [
+            "pressure-map",
+            "success-metrics",
+            "safety-boundary"
+          ],
+          "work_packages": [
+            {
+              "discipline": "biology",
+              "task": "验证水合盐电磁感应自修复结构系统在需求与边界建模阶段的关键假设",
+              "acceptance": "可证伪实验通过"
+            }
+          ],
+          "resources": {
+            "knowledge": 8,
+            "materials": 5,
+            "labor": 12
+          },
+          "risk_gate": "research"
+        },
+        {
+          "phase": 1,
+          "phase_id": "technology-concept:198955a1a86d525184cca7b9:phase:1",
+          "name": "principle-proof",
+          "label": "原理验证",
+          "depends_on": [
+            "technology-concept:198955a1a86d525184cca7b9:phase:0"
+          ],
+          "deliverables": [
+            "bench-experiment",
+            "measurement-protocol",
+            "falsification-result"
+          ],
+          "work_packages": [
+            {
+              "discipline": "optics",
+              "task": "验证水合盐电磁感应自修复结构系统在原理验证阶段的关键假设",
+              "acceptance": "可证伪实验通过"
+            }
+          ],
+          "resources": {
+            "knowledge": 12,
+            "materials": 8,
+            "labor": 18
+          },
+          "risk_gate": "research"
+        },
+        {
+          "phase": 2,
+          "phase_id": "technology-concept:198955a1a86d525184cca7b9:phase:2",
+          "name": "material-process",
+          "label": "材料与工艺验证",
+          "depends_on": [
+            "technology-concept:198955a1a86d525184cca7b9:phase:1"
+          ],
+          "deliverables": [
+            "sample-set",
+            "process-window",
+            "failure-analysis"
+          ],
+          "work_packages": [
+            {
+              "discipline": "organization",
+              "task": "验证水合盐电磁感应自修复结构系统在材料与工艺验证阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 16,
+            "materials": 11,
+            "labor": 24
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 3,
+          "phase_id": "technology-concept:198955a1a86d525184cca7b9:phase:3",
+          "name": "component-prototype",
+          "label": "关键组件原型",
+          "depends_on": [
+            "technology-concept:198955a1a86d525184cca7b9:phase:2"
+          ],
+          "deliverables": [
+            "component-bom",
+            "prototype-v1",
+            "test-report"
+          ],
+          "work_packages": [
+            {
+              "discipline": "biology",
+              "task": "验证水合盐电磁感应自修复结构系统在关键组件原型阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 20,
+            "materials": 14,
+            "labor": 30
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 4,
+          "phase_id": "technology-concept:198955a1a86d525184cca7b9:phase:4",
+          "name": "system-integration",
+          "label": "系统集成",
+          "depends_on": [
+            "technology-concept:198955a1a86d525184cca7b9:phase:3"
+          ],
+          "deliverables": [
+            "interface-contract",
+            "prototype-v2",
+            "integration-evidence"
+          ],
+          "work_packages": [
+            {
+              "discipline": "optics",
+              "task": "验证水合盐电磁感应自修复结构系统在系统集成阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 24,
+            "materials": 17,
+            "labor": 36
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 5,
+          "phase_id": "technology-concept:198955a1a86d525184cca7b9:phase:5",
+          "name": "field-pilot",
+          "label": "社会场景试点",
+          "depends_on": [
+            "technology-concept:198955a1a86d525184cca7b9:phase:4"
+          ],
+          "deliverables": [
+            "pilot-site",
+            "operator-training",
+            "impact-ledger"
+          ],
+          "work_packages": [
+            {
+              "discipline": "organization",
+              "task": "验证水合盐电磁感应自修复结构系统在社会场景试点阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 28,
+            "materials": 20,
+            "labor": 42
+          },
+          "risk_gate": "social-deployment"
+        },
+        {
+          "phase": 6,
+          "phase_id": "technology-concept:198955a1a86d525184cca7b9:phase:6",
+          "name": "scale-and-govern",
+          "label": "规模化与治理",
+          "depends_on": [
+            "technology-concept:198955a1a86d525184cca7b9:phase:5"
+          ],
+          "deliverables": [
+            "manufacturing-plan",
+            "maintenance-model",
+            "governance-policy"
+          ],
+          "work_packages": [
+            {
+              "discipline": "biology",
+              "task": "验证水合盐电磁感应自修复结构系统在规模化与治理阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 32,
+            "materials": 23,
+            "labor": 48
+          },
+          "risk_gate": "social-deployment"
+        }
+      ],
+      "failure_modes": [
+        {
+          "code": "PRINCIPLE_NOT_REPRODUCIBLE",
+          "mitigation": "回退到原理验证并缩小尺度"
+        },
+        {
+          "code": "MATERIAL_PROCESS_UNSTABLE",
+          "mitigation": "建立材料分级和工艺窗口"
+        },
+        {
+          "code": "SOCIAL_REJECTION",
+          "mitigation": "缩小试点并调整治理权责"
+        },
+        {
+          "code": "MAINTENANCE_OVERLOAD",
+          "mitigation": "模块化、冗余与运维训练"
+        }
+      ],
+      "adoption_conditions": {
+        "minimum_legitimacy": 4600,
+        "minimum_knowledge_openness": 3000,
+        "maximum_resource_stress": 8200,
+        "pilot_required": true
+      },
+      "projected_impact": {
+        "knowledge": 9,
+        "energy": 3,
+        "health": 3
+      },
+      "status": "latent",
+      "progress": 0,
+      "concept_root": "e4496151726264c8768398d820cdbc260d48bd7b231c4b980818edbd28cf6a50"
+    },
+    {
+      "format": "ragf.technology-concept.v0.5",
+      "version": "0.5.0-alpha.1",
+      "concept_id": "technology-concept:cfca459a6e4416cdb60afa21",
+      "name": "钢温差梯度净水系统",
+      "epistemic_status": "simulation-hypothesis",
+      "real_world_validation_required": true,
+      "origin": "deterministic-concept-grammar",
+      "grammar": {
+        "function": "purify-water",
+        "principle": "thermal-gradient",
+        "substrate": "steel",
+        "energy": "electrical",
+        "control": "manual",
+        "manufacturing": "precision-assembly"
+      },
+      "domains": [
+        "health",
+        "biology",
+        "computation"
+      ],
+      "novelty_score": 8160,
+      "feasibility_score": 5771,
+      "social_fit_score": 6938,
+      "knowledge_thresholds": {
+        "health": 2101,
+        "biology": 2101,
+        "computation": 2101
+      },
+      "prerequisites": [
+        {
+          "type": "knowledge-domain",
+          "domain": "health",
+          "minimum": 2101
+        },
+        {
+          "type": "knowledge-domain",
+          "domain": "biology",
+          "minimum": 2101
+        },
+        {
+          "type": "knowledge-domain",
+          "domain": "computation",
+          "minimum": 2101
+        }
+      ],
+      "bottlenecks": [
+        "steel-quality",
+        "manual-reliability",
+        "precision-assembly-repeatability"
+      ],
+      "experiments": [
+        {
+          "experiment_id": "technology-concept:cfca459a6e4416cdb60afa21:exp:1",
+          "hypothesis": "thermal-gradient可在steel中实现purify-water",
+          "measurements": [
+            "efficiency",
+            "stability",
+            "failure-rate"
+          ],
+          "pass": {
+            "efficiency": 0.45,
+            "stability": 0.7
+          }
+        },
+        {
+          "experiment_id": "technology-concept:cfca459a6e4416cdb60afa21:exp:2",
+          "hypothesis": "manual能够在社会使用场景保持可控",
+          "measurements": [
+            "response-time",
+            "operator-error",
+            "maintenance-load"
+          ],
+          "pass": {
+            "operator_error_max": 0.12
+          }
+        }
+      ],
+      "engineering_path": [
+        {
+          "phase": 0,
+          "phase_id": "technology-concept:cfca459a6e4416cdb60afa21:phase:0",
+          "name": "need-model",
+          "label": "需求与边界建模",
+          "depends_on": [],
+          "deliverables": [
+            "pressure-map",
+            "success-metrics",
+            "safety-boundary"
+          ],
+          "work_packages": [
+            {
+              "discipline": "health",
+              "task": "验证钢温差梯度净水系统在需求与边界建模阶段的关键假设",
+              "acceptance": "可证伪实验通过"
+            }
+          ],
+          "resources": {
+            "knowledge": 8,
+            "materials": 5,
+            "labor": 12
+          },
+          "risk_gate": "research"
+        },
+        {
+          "phase": 1,
+          "phase_id": "technology-concept:cfca459a6e4416cdb60afa21:phase:1",
+          "name": "principle-proof",
+          "label": "原理验证",
+          "depends_on": [
+            "technology-concept:cfca459a6e4416cdb60afa21:phase:0"
+          ],
+          "deliverables": [
+            "bench-experiment",
+            "measurement-protocol",
+            "falsification-result"
+          ],
+          "work_packages": [
+            {
+              "discipline": "biology",
+              "task": "验证钢温差梯度净水系统在原理验证阶段的关键假设",
+              "acceptance": "可证伪实验通过"
+            }
+          ],
+          "resources": {
+            "knowledge": 12,
+            "materials": 8,
+            "labor": 18
+          },
+          "risk_gate": "research"
+        },
+        {
+          "phase": 2,
+          "phase_id": "technology-concept:cfca459a6e4416cdb60afa21:phase:2",
+          "name": "material-process",
+          "label": "材料与工艺验证",
+          "depends_on": [
+            "technology-concept:cfca459a6e4416cdb60afa21:phase:1"
+          ],
+          "deliverables": [
+            "sample-set",
+            "process-window",
+            "failure-analysis"
+          ],
+          "work_packages": [
+            {
+              "discipline": "computation",
+              "task": "验证钢温差梯度净水系统在材料与工艺验证阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 16,
+            "materials": 11,
+            "labor": 24
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 3,
+          "phase_id": "technology-concept:cfca459a6e4416cdb60afa21:phase:3",
+          "name": "component-prototype",
+          "label": "关键组件原型",
+          "depends_on": [
+            "technology-concept:cfca459a6e4416cdb60afa21:phase:2"
+          ],
+          "deliverables": [
+            "component-bom",
+            "prototype-v1",
+            "test-report"
+          ],
+          "work_packages": [
+            {
+              "discipline": "health",
+              "task": "验证钢温差梯度净水系统在关键组件原型阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 20,
+            "materials": 14,
+            "labor": 30
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 4,
+          "phase_id": "technology-concept:cfca459a6e4416cdb60afa21:phase:4",
+          "name": "system-integration",
+          "label": "系统集成",
+          "depends_on": [
+            "technology-concept:cfca459a6e4416cdb60afa21:phase:3"
+          ],
+          "deliverables": [
+            "interface-contract",
+            "prototype-v2",
+            "integration-evidence"
+          ],
+          "work_packages": [
+            {
+              "discipline": "biology",
+              "task": "验证钢温差梯度净水系统在系统集成阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 24,
+            "materials": 17,
+            "labor": 36
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 5,
+          "phase_id": "technology-concept:cfca459a6e4416cdb60afa21:phase:5",
+          "name": "field-pilot",
+          "label": "社会场景试点",
+          "depends_on": [
+            "technology-concept:cfca459a6e4416cdb60afa21:phase:4"
+          ],
+          "deliverables": [
+            "pilot-site",
+            "operator-training",
+            "impact-ledger"
+          ],
+          "work_packages": [
+            {
+              "discipline": "computation",
+              "task": "验证钢温差梯度净水系统在社会场景试点阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 28,
+            "materials": 20,
+            "labor": 42
+          },
+          "risk_gate": "social-deployment"
+        },
+        {
+          "phase": 6,
+          "phase_id": "technology-concept:cfca459a6e4416cdb60afa21:phase:6",
+          "name": "scale-and-govern",
+          "label": "规模化与治理",
+          "depends_on": [
+            "technology-concept:cfca459a6e4416cdb60afa21:phase:5"
+          ],
+          "deliverables": [
+            "manufacturing-plan",
+            "maintenance-model",
+            "governance-policy"
+          ],
+          "work_packages": [
+            {
+              "discipline": "health",
+              "task": "验证钢温差梯度净水系统在规模化与治理阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 32,
+            "materials": 23,
+            "labor": 48
+          },
+          "risk_gate": "social-deployment"
+        }
+      ],
+      "failure_modes": [
+        {
+          "code": "PRINCIPLE_NOT_REPRODUCIBLE",
+          "mitigation": "回退到原理验证并缩小尺度"
+        },
+        {
+          "code": "MATERIAL_PROCESS_UNSTABLE",
+          "mitigation": "建立材料分级和工艺窗口"
+        },
+        {
+          "code": "SOCIAL_REJECTION",
+          "mitigation": "缩小试点并调整治理权责"
+        },
+        {
+          "code": "MAINTENANCE_OVERLOAD",
+          "mitigation": "模块化、冗余与运维训练"
+        }
+      ],
+      "adoption_conditions": {
+        "minimum_legitimacy": 4600,
+        "minimum_knowledge_openness": 3000,
+        "maximum_resource_stress": 8200,
+        "pilot_required": true
+      },
+      "projected_impact": {
+        "knowledge": 13,
+        "energy": 6,
+        "health": 4
+      },
+      "status": "latent",
+      "progress": 0,
+      "concept_root": "7e37ae177e9152ebc09a045814d0c76a3213c6994bb99b2bb52bc5475e2dcbe4"
+    },
+    {
+      "format": "ragf.technology-concept.v0.5",
+      "version": "0.5.0-alpha.1",
+      "concept_id": "technology-concept:27028d28136d27f90b0ac15a",
+      "name": "碳基光学编码净水系统",
+      "epistemic_status": "simulation-hypothesis",
+      "real_world_validation_required": true,
+      "origin": "deterministic-concept-grammar",
+      "grammar": {
+        "function": "purify-water",
+        "principle": "optical-coding",
+        "substrate": "carbon",
+        "energy": "combustion",
+        "control": "mechanical-governor",
+        "manufacturing": "craft"
+      },
+      "domains": [
+        "health",
+        "computation",
+        "optics"
+      ],
+      "novelty_score": 6615,
+      "feasibility_score": 5904,
+      "social_fit_score": 7262,
+      "knowledge_thresholds": {
+        "health": 1874,
+        "computation": 1874,
+        "optics": 1874
+      },
+      "prerequisites": [
+        {
+          "type": "knowledge-domain",
+          "domain": "health",
+          "minimum": 1874
+        },
+        {
+          "type": "knowledge-domain",
+          "domain": "computation",
+          "minimum": 1874
+        },
+        {
+          "type": "knowledge-domain",
+          "domain": "optics",
+          "minimum": 1874
+        }
+      ],
+      "bottlenecks": [
+        "carbon-quality",
+        "mechanical-governor-reliability",
+        "craft-repeatability"
+      ],
+      "experiments": [
+        {
+          "experiment_id": "technology-concept:27028d28136d27f90b0ac15a:exp:1",
+          "hypothesis": "optical-coding可在carbon中实现purify-water",
+          "measurements": [
+            "efficiency",
+            "stability",
+            "failure-rate"
+          ],
+          "pass": {
+            "efficiency": 0.45,
+            "stability": 0.7
+          }
+        },
+        {
+          "experiment_id": "technology-concept:27028d28136d27f90b0ac15a:exp:2",
+          "hypothesis": "mechanical-governor能够在社会使用场景保持可控",
+          "measurements": [
+            "response-time",
+            "operator-error",
+            "maintenance-load"
+          ],
+          "pass": {
+            "operator_error_max": 0.12
+          }
+        }
+      ],
+      "engineering_path": [
+        {
+          "phase": 0,
+          "phase_id": "technology-concept:27028d28136d27f90b0ac15a:phase:0",
+          "name": "need-model",
+          "label": "需求与边界建模",
+          "depends_on": [],
+          "deliverables": [
+            "pressure-map",
+            "success-metrics",
+            "safety-boundary"
+          ],
+          "work_packages": [
+            {
+              "discipline": "health",
+              "task": "验证碳基光学编码净水系统在需求与边界建模阶段的关键假设",
+              "acceptance": "可证伪实验通过"
+            }
+          ],
+          "resources": {
+            "knowledge": 8,
+            "materials": 5,
+            "labor": 12
+          },
+          "risk_gate": "research"
+        },
+        {
+          "phase": 1,
+          "phase_id": "technology-concept:27028d28136d27f90b0ac15a:phase:1",
+          "name": "principle-proof",
+          "label": "原理验证",
+          "depends_on": [
+            "technology-concept:27028d28136d27f90b0ac15a:phase:0"
+          ],
+          "deliverables": [
+            "bench-experiment",
+            "measurement-protocol",
+            "falsification-result"
+          ],
+          "work_packages": [
+            {
+              "discipline": "computation",
+              "task": "验证碳基光学编码净水系统在原理验证阶段的关键假设",
+              "acceptance": "可证伪实验通过"
+            }
+          ],
+          "resources": {
+            "knowledge": 12,
+            "materials": 8,
+            "labor": 18
+          },
+          "risk_gate": "research"
+        },
+        {
+          "phase": 2,
+          "phase_id": "technology-concept:27028d28136d27f90b0ac15a:phase:2",
+          "name": "material-process",
+          "label": "材料与工艺验证",
+          "depends_on": [
+            "technology-concept:27028d28136d27f90b0ac15a:phase:1"
+          ],
+          "deliverables": [
+            "sample-set",
+            "process-window",
+            "failure-analysis"
+          ],
+          "work_packages": [
+            {
+              "discipline": "optics",
+              "task": "验证碳基光学编码净水系统在材料与工艺验证阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 16,
+            "materials": 11,
+            "labor": 24
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 3,
+          "phase_id": "technology-concept:27028d28136d27f90b0ac15a:phase:3",
+          "name": "component-prototype",
+          "label": "关键组件原型",
+          "depends_on": [
+            "technology-concept:27028d28136d27f90b0ac15a:phase:2"
+          ],
+          "deliverables": [
+            "component-bom",
+            "prototype-v1",
+            "test-report"
+          ],
+          "work_packages": [
+            {
+              "discipline": "health",
+              "task": "验证碳基光学编码净水系统在关键组件原型阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 20,
+            "materials": 14,
+            "labor": 30
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 4,
+          "phase_id": "technology-concept:27028d28136d27f90b0ac15a:phase:4",
+          "name": "system-integration",
+          "label": "系统集成",
+          "depends_on": [
+            "technology-concept:27028d28136d27f90b0ac15a:phase:3"
+          ],
+          "deliverables": [
+            "interface-contract",
+            "prototype-v2",
+            "integration-evidence"
+          ],
+          "work_packages": [
+            {
+              "discipline": "computation",
+              "task": "验证碳基光学编码净水系统在系统集成阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 24,
+            "materials": 17,
+            "labor": 36
+          },
+          "risk_gate": "engineering"
+        },
+        {
+          "phase": 5,
+          "phase_id": "technology-concept:27028d28136d27f90b0ac15a:phase:5",
+          "name": "field-pilot",
+          "label": "社会场景试点",
+          "depends_on": [
+            "technology-concept:27028d28136d27f90b0ac15a:phase:4"
+          ],
+          "deliverables": [
+            "pilot-site",
+            "operator-training",
+            "impact-ledger"
+          ],
+          "work_packages": [
+            {
+              "discipline": "optics",
+              "task": "验证碳基光学编码净水系统在社会场景试点阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 28,
+            "materials": 20,
+            "labor": 42
+          },
+          "risk_gate": "social-deployment"
+        },
+        {
+          "phase": 6,
+          "phase_id": "technology-concept:27028d28136d27f90b0ac15a:phase:6",
+          "name": "scale-and-govern",
+          "label": "规模化与治理",
+          "depends_on": [
+            "technology-concept:27028d28136d27f90b0ac15a:phase:5"
+          ],
+          "deliverables": [
+            "manufacturing-plan",
+            "maintenance-model",
+            "governance-policy"
+          ],
+          "work_packages": [
+            {
+              "discipline": "health",
+              "task": "验证碳基光学编码净水系统在规模化与治理阶段的关键假设",
+              "acceptance": "指标、成本与安全边界同时达标"
+            }
+          ],
+          "resources": {
+            "knowledge": 32,
+            "materials": 23,
+            "labor": 48
+          },
+          "risk_gate": "social-deployment"
+        }
+      ],
+      "failure_modes": [
+        {
+          "code": "PRINCIPLE_NOT_REPRODUCIBLE",
+          "mitigation": "回退到原理验证并缩小尺度"
+        },
+        {
+          "code": "MATERIAL_PROCESS_UNSTABLE",
+          "mitigation": "建立材料分级和工艺窗口"
+        },
+        {
+          "code": "SOCIAL_REJECTION",
+          "mitigation": "缩小试点并调整治理权责"
+        },
+        {
+          "code": "MAINTENANCE_OVERLOAD",
+          "mitigation": "模块化、冗余与运维训练"
+        }
+      ],
+      "adoption_conditions": {
+        "minimum_legitimacy": 4600,
+        "minimum_knowledge_openness": 3000,
+        "maximum_resource_stress": 8200,
+        "pilot_required": true
+      },
+      "projected_impact": {
+        "knowledge": 13,
+        "energy": 1,
+        "health": 3
+      },
+      "status": "latent",
+      "progress": 0,
+      "concept_root": "4231d205d179b3a62920db08db9c34ac191bb8ed90c46f7f1ff3d4c891c73075"
+    }
+  ],
+  "selection_policy": {
+    "score": "pressure-fit * feasibility * social-fit * prerequisite-readiness",
+    "novelty_is_not_proof": true
+  },
+  "concept_space_root": "fa9d540c33fb3f512ff080625b7106ba6f41d0656678ed2059036eda6c0080db"
+}

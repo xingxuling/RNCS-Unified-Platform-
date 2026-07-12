@@ -1,0 +1,1586 @@
+{
+  "format": "icar.application-result.v0.1",
+  "status": "committed",
+  "intent": {
+    "format": "icar.intent.v0.1",
+    "source": "把项目进度提高到30%，生成一份状态报告并通知我。",
+    "locale": "zh",
+    "goals": [
+      {
+        "type": "artifact.progress.target",
+        "value": 30
+      },
+      {
+        "type": "artifact.report.generate",
+        "format": "markdown"
+      },
+      {
+        "type": "host.notification.emit"
+      }
+    ],
+    "intentHash": "2f884761a6daa7aeac0fe7e72031712719a75430a3f048cf30d15a77ab52a92f"
+  },
+  "plan": {
+    "format": "icar.capability-plan.v0.1",
+    "intentHash": "2f884761a6daa7aeac0fe7e72031712719a75430a3f048cf30d15a77ab52a92f",
+    "steps": [
+      {
+        "id": "step:1:lar.progress.target",
+        "capabilityId": "lar.progress.target",
+        "runtime": "lar",
+        "goal": {
+          "type": "artifact.progress.target",
+          "value": 30
+        },
+        "dependsOn": [],
+        "requiresScopes": [
+          "artifact.write"
+        ],
+        "hostRequires": [
+          "input.activate"
+        ],
+        "cost": {
+          "cpu_ms": 1,
+          "memory_mb": 2,
+          "network_kb": 0
+        }
+      },
+      {
+        "id": "step:2:lar.report.render",
+        "capabilityId": "lar.report.render",
+        "runtime": "builtin",
+        "goal": {
+          "type": "artifact.report.generate",
+          "format": "markdown"
+        },
+        "dependsOn": [
+          "step:1:lar.progress.target"
+        ],
+        "requiresScopes": [
+          "artifact.read"
+        ],
+        "hostRequires": [
+          "display.text"
+        ],
+        "cost": {
+          "cpu_ms": 0.5,
+          "memory_mb": 2,
+          "network_kb": 0
+        }
+      },
+      {
+        "id": "step:3:lar.report.attach",
+        "capabilityId": "lar.report.attach",
+        "runtime": "lar",
+        "goal": {
+          "type": "artifact.report.attach"
+        },
+        "dependsOn": [
+          "step:2:lar.report.render"
+        ],
+        "requiresScopes": [
+          "artifact.write"
+        ],
+        "hostRequires": [],
+        "cost": {
+          "cpu_ms": 0.5,
+          "memory_mb": 2,
+          "network_kb": 0
+        }
+      },
+      {
+        "id": "step:4:hnaf.notification.emit",
+        "capabilityId": "hnaf.notification.emit",
+        "runtime": "hnac",
+        "goal": {
+          "type": "host.notification.emit"
+        },
+        "dependsOn": [
+          "step:3:lar.report.attach"
+        ],
+        "requiresScopes": [
+          "host.notify"
+        ],
+        "hostRequires": [
+          "host.notification"
+        ],
+        "cost": {
+          "cpu_ms": 0.2,
+          "memory_mb": 1,
+          "network_kb": 0
+        }
+      }
+    ],
+    "requiredScopes": [
+      "artifact.read",
+      "artifact.write",
+      "host.notify"
+    ],
+    "requiredHostCapabilities": [
+      "display.text",
+      "host.notification",
+      "input.activate"
+    ],
+    "totalCost": {
+      "cpu_ms": 2.2,
+      "memory_mb": 7,
+      "network_kb": 0
+    },
+    "planHash": "bea7918d4574181bee2f55eef12d3347fda9281819d939efd8e180e2dbadb1fd"
+  },
+  "authority": {
+    "format": "icar.authority-resolution.v0.1",
+    "actor": {
+      "id": "operator:taowind",
+      "role": "owner",
+      "scopes": [
+        "*"
+      ]
+    },
+    "planHash": "bea7918d4574181bee2f55eef12d3347fda9281819d939efd8e180e2dbadb1fd",
+    "scopeDecisions": [
+      {
+        "scope": "artifact.read",
+        "granted": true
+      },
+      {
+        "scope": "artifact.write",
+        "granted": true
+      },
+      {
+        "scope": "host.notify",
+        "granted": true
+      }
+    ],
+    "hostDecisions": [
+      {
+        "capability": "display.text",
+        "granted": true
+      },
+      {
+        "capability": "host.notification",
+        "granted": true
+      },
+      {
+        "capability": "input.activate",
+        "granted": true
+      }
+    ],
+    "status": "approved",
+    "denied": [],
+    "authorityHash": "1d45ad00c6433d7189713553389f2ec7ff60a3aedee84b6b5c9b77edf18da270"
+  },
+  "hostNegotiation": {
+    "format": "icar.hnac-negotiation.v0.1",
+    "contractVersion": "0.4",
+    "capsuleId": "hnac:icar:reference-v0.1",
+    "profile": "icar-composite@1",
+    "status": "ready",
+    "grants": [
+      "display.text",
+      "host.notification",
+      "input.activate"
+    ],
+    "unresolved": [],
+    "trace": [
+      {
+        "event": "host.context",
+        "host_ids": [
+          "host:browser:desktop",
+          "host:mobile:touch"
+        ]
+      },
+      {
+        "event": "capsule.verified",
+        "signature_status": "development-unsealed",
+        "capsule_hash": "38e80d28557ba72800f6070e87f583dab3bf262a5453285e340c526f6f4777ec"
+      },
+      {
+        "event": "capability.negotiated",
+        "profile": "icar-composite@1",
+        "status": "ready",
+        "grants": [
+          "display.text",
+          "host.notification",
+          "input.activate"
+        ],
+        "unresolved": [],
+        "fallbacks": []
+      },
+      {
+        "event": "execution.started",
+        "profile": "icar-composite@1"
+      },
+      {
+        "event": "capability.call",
+        "capability": "host.notification",
+        "method": "emit",
+        "receipt_hash": "af2b782525517d62d28639d0b84c1135082a7b19a4400dc17c67e0500b6ce226"
+      },
+      {
+        "event": "execution.completed",
+        "profile": "icar-composite@1"
+      }
+    ],
+    "negotiationHash": "adb8d9f62205df9074444e54ab914a4233165c4bc3172eac650be86e20bed81c"
+  },
+  "execution": {
+    "format": "icar.execution.v0.1",
+    "intentHash": "2f884761a6daa7aeac0fe7e72031712719a75430a3f048cf30d15a77ab52a92f",
+    "planHash": "bea7918d4574181bee2f55eef12d3347fda9281819d939efd8e180e2dbadb1fd",
+    "initialArtifactHash": "240d3210959207966726b9a053d10555455f1516a7806b008158bb904da76f74",
+    "finalArtifactHash": "49aadbf6f51ac76098526cfe3e6db3136ba6db794af07dfe7a2c8fb02493a83e",
+    "stepReceipts": [
+      {
+        "stepId": "step:1:lar.progress.target",
+        "status": "completed",
+        "target": 30,
+        "revisions": [
+          "rev-393ac44c-709c-410b-b7a2-792a49e5f9ff",
+          "rev-8d54e380-ff25-480e-888d-8b08a8a7a25c"
+        ]
+      },
+      {
+        "stepId": "step:2:lar.report.render",
+        "status": "completed",
+        "reportHash": "e1a4be94e2cd9ac2a8a7f8ff0c74f3ec543d63eeab76a27bcebdf22897290368"
+      },
+      {
+        "stepId": "step:3:lar.report.attach",
+        "status": "completed",
+        "revision": "rev-6a2cd392-08fd-41b1-94f4-f7f4c98085c4"
+      },
+      {
+        "stepId": "step:4:hnaf.notification.emit",
+        "status": "completed",
+        "receiptHash": "af2b782525517d62d28639d0b84c1135082a7b19a4400dc17c67e0500b6ce226"
+      }
+    ],
+    "notificationReceipt": {
+      "format": "icar.host-capability-receipt.v0.1",
+      "capability": "host.notification",
+      "method": "emit",
+      "status": "simulated-delivery",
+      "payload": {
+        "title": "意图执行完成",
+        "body": "项目进度已更新为 30%。",
+        "reportHash": "e1a4be94e2cd9ac2a8a7f8ff0c74f3ec543d63eeab76a27bcebdf22897290368"
+      },
+      "receiptHash": "af2b782525517d62d28639d0b84c1135082a7b19a4400dc17c67e0500b6ce226"
+    },
+    "executionRoot": "c6ddb75d0be82cb68afc744a4c7883d34c5fc2f9ef5d4778f53c4a31c8e51872"
+  },
+  "artifact": {
+    "laf_version": "0.7",
+    "identity": {
+      "id": "artifact:project:reality-native-computing",
+      "type": "project",
+      "title": "Reality-Native Computing Stack",
+      "owner": "TaoWind",
+      "created_at": "2026-06-30T00:00:00.000Z",
+      "updated_at": "2026-06-30T08:15:51.633Z"
+    },
+    "semantic": {
+      "fields": {
+        "status": {
+          "type": "enum",
+          "label": "Status",
+          "value": "prototype",
+          "options": [
+            "concept",
+            "prototype",
+            "validated",
+            "production"
+          ]
+        },
+        "progress": {
+          "type": "number",
+          "label": "Progress",
+          "value": 30
+        },
+        "owner": {
+          "type": "text",
+          "label": "Owner",
+          "value": "TaoWind"
+        },
+        "summary": {
+          "type": "text",
+          "label": "Summary",
+          "value": "A reality-native computing stack built from subject, intent, capability, authority, causality, continuity, evidence and projection."
+        },
+        "milestones": {
+          "type": "list",
+          "label": "Milestones",
+          "value": [
+            "RFE v0.3 closed loop",
+            "Living Artifact v0.2"
+          ]
+        },
+        "approved": {
+          "type": "boolean",
+          "label": "Approved",
+          "value": false
+        },
+        "generated_report": {
+          "type": "markdown",
+          "label": "Generated Report",
+          "value": "# 意图—能力应用运行时执行结果\n\n| 字段 | 值 |\n|---|---|\n| 状态 | 原型 |\n| 进度 | 30 |\n| 负责人 | TaoWind |\n| 摘要 | 由主体、意图、能力、权威、因果、连续性、证据与投影构成的现实原生计算栈。 |\n| 里程碑 | RFE v0.3 闭环、活工件 v0.2 |\n| 已批准 | 否 |\n",
+          "editable": false
+        }
+      },
+      "relations": [
+        {
+          "type": "depends_on",
+          "target": "artifact:rfe:v0.3"
+        },
+        {
+          "type": "contains",
+          "target": "artifact:living-artifact:v0.2"
+        }
+      ]
+    },
+    "permissions": {
+      "default_role": "viewer",
+      "roles": {
+        "viewer": [],
+        "editor": [
+          "advance",
+          "add_milestone",
+          "toggle_approval",
+          "edit_summary",
+          "attach_generated_report"
+        ],
+        "owner": [
+          "*"
+        ]
+      }
+    },
+    "actions": [
+      {
+        "id": "advance",
+        "label": "Advance project",
+        "requires": [
+          {
+            "path": "fields.progress",
+            "op": "lte",
+            "value": 90
+          }
+        ],
+        "mutations": [
+          {
+            "op": "increment",
+            "path": "progress",
+            "value": 10
+          },
+          {
+            "op": "set",
+            "path": "status",
+            "value": "prototype"
+          }
+        ],
+        "host_requires": [
+          {
+            "id": "input.activate",
+            "version": ">=1.0"
+          }
+        ]
+      },
+      {
+        "id": "add_milestone",
+        "label": "Add milestone",
+        "parameters": [
+          {
+            "id": "name",
+            "type": "text",
+            "required": true
+          }
+        ],
+        "mutations": [
+          {
+            "op": "append",
+            "path": "milestones",
+            "value": {
+              "$param": "name"
+            }
+          }
+        ],
+        "host_requires": [
+          {
+            "id": "input.text",
+            "version": ">=1.0"
+          }
+        ]
+      },
+      {
+        "id": "toggle_approval",
+        "label": "Toggle approval",
+        "mutations": [
+          {
+            "op": "toggle",
+            "path": "approved"
+          }
+        ],
+        "host_requires": [
+          {
+            "id": "input.activate",
+            "version": ">=1.0"
+          }
+        ]
+      },
+      {
+        "id": "edit_summary",
+        "label": "Edit summary",
+        "parameters": [
+          {
+            "id": "text",
+            "type": "text",
+            "required": true
+          }
+        ],
+        "mutations": [
+          {
+            "op": "set",
+            "path": "summary",
+            "value": {
+              "$param": "text"
+            }
+          }
+        ],
+        "host_requires": [
+          {
+            "id": "input.text",
+            "version": ">=1.0"
+          }
+        ]
+      },
+      {
+        "id": "attach_generated_report",
+        "label": "Attach generated report",
+        "parameters": [
+          {
+            "id": "report",
+            "type": "markdown",
+            "required": true
+          }
+        ],
+        "mutations": [
+          {
+            "op": "set",
+            "path": "generated_report",
+            "value": {
+              "$param": "report"
+            }
+          }
+        ],
+        "host_requires": [],
+        "internal": true
+      }
+    ],
+    "projections": {
+      "document": {
+        "mode": "document",
+        "title": "Project Brief",
+        "fields": [
+          "summary",
+          "status",
+          "progress",
+          "owner",
+          "milestones",
+          "approved",
+          "generated_report"
+        ],
+        "actions": [
+          "advance",
+          "add_milestone",
+          "toggle_approval"
+        ],
+        "requires": [
+          {
+            "id": "display.text",
+            "version": ">=1.0"
+          }
+        ],
+        "prefers": [],
+        "priority": 15,
+        "cost": {
+          "memory_mb": 2,
+          "cpu_ms": 0.2,
+          "network_kb": 0
+        }
+      },
+      "table": {
+        "mode": "table",
+        "title": "Project Data",
+        "fields": [
+          "status",
+          "progress",
+          "owner",
+          "approved"
+        ],
+        "requires": [
+          {
+            "id": "display.table",
+            "version": ">=1.0"
+          }
+        ],
+        "prefers": [],
+        "priority": 20,
+        "cost": {
+          "memory_mb": 8,
+          "cpu_ms": 0.6,
+          "network_kb": 0
+        }
+      },
+      "form": {
+        "mode": "form",
+        "title": "Project Editor",
+        "fields": [
+          "summary"
+        ],
+        "actions": [
+          "edit_summary"
+        ],
+        "requires": [
+          {
+            "id": "display.visual",
+            "version": ">=1.0"
+          },
+          {
+            "id": "input.text",
+            "version": ">=1.0"
+          }
+        ],
+        "prefers": [],
+        "priority": 30,
+        "cost": {
+          "memory_mb": 12,
+          "cpu_ms": 1,
+          "network_kb": 0
+        }
+      },
+      "app": {
+        "mode": "app",
+        "title": "Project Console",
+        "fields": [
+          "status",
+          "progress",
+          "milestones",
+          "approved"
+        ],
+        "actions": [
+          "advance",
+          "add_milestone",
+          "toggle_approval"
+        ],
+        "requires": [
+          {
+            "id": "display.visual",
+            "version": ">=1.0"
+          },
+          {
+            "id": "input.activate",
+            "version": ">=1.0"
+          }
+        ],
+        "prefers": [
+          {
+            "id": "runtime.javascript",
+            "version": ">=1.0"
+          }
+        ],
+        "priority": 40,
+        "cost": {
+          "memory_mb": 24,
+          "cpu_ms": 2,
+          "network_kb": 0
+        },
+        "form_factors": [
+          "desktop",
+          "tablet"
+        ]
+      },
+      "json": {
+        "mode": "json",
+        "title": "Reality-Native Computing Stack JSON",
+        "fields": [
+          "status",
+          "progress",
+          "owner",
+          "summary",
+          "milestones",
+          "approved"
+        ],
+        "actions": [],
+        "requires": [
+          {
+            "id": "output.json",
+            "version": ">=1.0"
+          }
+        ],
+        "prefers": [],
+        "priority": 5,
+        "cost": {
+          "memory_mb": 1,
+          "cpu_ms": 0.1,
+          "network_kb": 0
+        },
+        "form_factors": [
+          "headless"
+        ]
+      },
+      "mobile": {
+        "mode": "mobile",
+        "title": "Project Mobile",
+        "fields": [
+          "status",
+          "progress",
+          "milestones",
+          "approved"
+        ],
+        "actions": [
+          "advance",
+          "add_milestone",
+          "toggle_approval"
+        ],
+        "requires": [
+          {
+            "id": "display.visual",
+            "version": ">=1.0"
+          },
+          {
+            "id": "input.touch",
+            "version": ">=1.0"
+          }
+        ],
+        "prefers": [
+          {
+            "id": "runtime.javascript",
+            "version": ">=1.0"
+          },
+          {
+            "id": "storage.persistent",
+            "version": ">=1.0"
+          }
+        ],
+        "priority": 50,
+        "form_factors": [
+          "mobile"
+        ],
+        "cost": {
+          "memory_mb": 16,
+          "cpu_ms": 1.5,
+          "network_kb": 0
+        }
+      }
+    },
+    "capabilities": {
+      "provides": [
+        {
+          "id": "laf.projection",
+          "version": "0.2",
+          "modes": [
+            "document",
+            "table",
+            "form",
+            "app"
+          ]
+        },
+        {
+          "id": "laf.branching",
+          "version": "0.2"
+        },
+        {
+          "id": "laf.signed-manifest",
+          "version": "0.2"
+        },
+        {
+          "id": "laf.host-negotiation",
+          "version": "0.3",
+          "contract": "HNCA-0.1"
+        },
+        {
+          "id": "laf.intent-composition",
+          "version": "0.4",
+          "contract": "ICCP-0.1"
+        },
+        {
+          "id": "laf.sandboxed-federation",
+          "version": "0.5",
+          "contract": "SCFP-0.1"
+        },
+        {
+          "id": "laf.persistent-capability-mesh",
+          "version": "0.6",
+          "contract": "PCMP-0.1"
+        },
+        {
+          "id": "laf.shared-intent-session",
+          "version": "0.7",
+          "contract": "SISF-0.1"
+        }
+      ],
+      "requires": []
+    },
+    "continuity": {
+      "mode": "incremental",
+      "genesis_revision": "rev-6792f71e-c55c-4f38-82c6-f7b21f3e6625",
+      "genesis_fields": {
+        "status": "concept",
+        "progress": 10,
+        "owner": "TaoWind",
+        "summary": "A reality-native computing stack built from subject, intent, capability, authority, causality, continuity, evidence and projection.",
+        "milestones": [
+          "RFE v0.3 closed loop",
+          "Living Artifact v0.2"
+        ],
+        "approved": false,
+        "generated_report": ""
+      },
+      "revisions": [
+        {
+          "revision": "rev-6792f71e-c55c-4f38-82c6-f7b21f3e6625",
+          "parents": [],
+          "branch": "main",
+          "actor": {
+            "id": "system",
+            "role": "owner"
+          },
+          "intent": "initialize",
+          "params": {},
+          "timestamp": "2026-06-30T00:00:00.000Z",
+          "patches": [],
+          "change_count": 0,
+          "revision_hash": "f9830c539d2d3edecf2721968014212bcd20be883ba68ab3a3fd623824f8623b"
+        },
+        {
+          "revision": "rev-393ac44c-709c-410b-b7a2-792a49e5f9ff",
+          "parents": [
+            "rev-6792f71e-c55c-4f38-82c6-f7b21f3e6625"
+          ],
+          "branch": "main",
+          "actor": {
+            "id": "operator:taowind",
+            "role": "owner",
+            "scopes": [
+              "*"
+            ]
+          },
+          "intent": "advance",
+          "params": {},
+          "timestamp": "2026-06-30T08:15:51.621Z",
+          "patches": [
+            {
+              "op": "replace",
+              "path": "/semantic/fields/progress/value",
+              "value": 20
+            },
+            {
+              "op": "replace",
+              "path": "/semantic/fields/status/value",
+              "value": "prototype"
+            }
+          ],
+          "change_count": 2,
+          "revision_hash": "87318592e623faf890d5019e3b1c613330ab30a00fb47d250a3df21a1666a942"
+        },
+        {
+          "revision": "rev-8d54e380-ff25-480e-888d-8b08a8a7a25c",
+          "parents": [
+            "rev-393ac44c-709c-410b-b7a2-792a49e5f9ff"
+          ],
+          "branch": "main",
+          "actor": {
+            "id": "operator:taowind",
+            "role": "owner",
+            "scopes": [
+              "*"
+            ]
+          },
+          "intent": "advance",
+          "params": {},
+          "timestamp": "2026-06-30T08:15:51.628Z",
+          "patches": [
+            {
+              "op": "replace",
+              "path": "/semantic/fields/progress/value",
+              "value": 30
+            }
+          ],
+          "change_count": 1,
+          "revision_hash": "c6337c2d39a8518150edbb7bd5f5e2d9f65abb95a8444378a1173a1f25a80622"
+        },
+        {
+          "revision": "rev-6a2cd392-08fd-41b1-94f4-f7f4c98085c4",
+          "parents": [
+            "rev-8d54e380-ff25-480e-888d-8b08a8a7a25c"
+          ],
+          "branch": "main",
+          "actor": {
+            "id": "operator:taowind",
+            "role": "owner",
+            "scopes": [
+              "*"
+            ]
+          },
+          "intent": "attach_generated_report",
+          "params": {
+            "report": "# 意图—能力应用运行时执行结果\n\n| 字段 | 值 |\n|---|---|\n| 状态 | 原型 |\n| 进度 | 30 |\n| 负责人 | TaoWind |\n| 摘要 | 由主体、意图、能力、权威、因果、连续性、证据与投影构成的现实原生计算栈。 |\n| 里程碑 | RFE v0.3 闭环、活工件 v0.2 |\n| 已批准 | 否 |\n"
+          },
+          "timestamp": "2026-06-30T08:15:51.633Z",
+          "patches": [
+            {
+              "op": "replace",
+              "path": "/semantic/fields/generated_report/value",
+              "value": "# 意图—能力应用运行时执行结果\n\n| 字段 | 值 |\n|---|---|\n| 状态 | 原型 |\n| 进度 | 30 |\n| 负责人 | TaoWind |\n| 摘要 | 由主体、意图、能力、权威、因果、连续性、证据与投影构成的现实原生计算栈。 |\n| 里程碑 | RFE v0.3 闭环、活工件 v0.2 |\n| 已批准 | 否 |\n"
+            }
+          ],
+          "change_count": 1,
+          "revision_hash": "fbcc57fa6b1e32b76ce7af153e1fe1bc6bffdb5b1ace5f63fc13822cb8a7c13b"
+        }
+      ]
+    },
+    "branches": {
+      "current": "main",
+      "heads": {
+        "main": "rev-6a2cd392-08fd-41b1-94f4-f7f4c98085c4"
+      }
+    },
+    "conflicts": [],
+    "evidence": {
+      "algorithm": "SHA-256",
+      "content_hash": "49aadbf6f51ac76098526cfe3e6db3136ba6db794af07dfe7a2c8fb02493a83e",
+      "revision_root": "228128c43ff33a844fdcc55bdac00e7a85310da9d75e2db67264eccb525d7864",
+      "conflict_root": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "capability_root": "90fea963a4702c3ad821d35d778e2e46b60a64531ec7c0ddf797965863e57275",
+      "composition_root": "a532da5bf354dac98ebfa91fc99e88e622ae1929bb89984fbad52d301e3bf91a",
+      "federation_root": "597d65754aa5d0fd6f8503661ba372b72fde52b9202e7063125cc2de77c5457e",
+      "mesh_root": "7c5cb43e7cdb80574f461bd890260b2cef7eedafd9ff618f8a43ecc0e8c1e683",
+      "session_root": "45f3a7bd2bb1836c60e01c8b4f428303b026bed484e99c9b7740e8c9f36ea4b2",
+      "verified_at": "2026-06-30T08:15:51.633Z"
+    },
+    "host_policy": {
+      "negotiation_version": "0.1",
+      "hard_requirements": [],
+      "preferences": [
+        {
+          "id": "storage.persistent",
+          "version": ">=1.0",
+          "weight": 2
+        },
+        {
+          "id": "crypto.ed25519",
+          "version": ">=1.0",
+          "weight": 1
+        }
+      ],
+      "projection_order": [
+        "mobile",
+        "app",
+        "form",
+        "table",
+        "document",
+        "json"
+      ],
+      "allow_degraded": true
+    },
+    "composition_policy": {
+      "protocol": "ICCP-0.1",
+      "min_trust": 2,
+      "allowed_issuers": [
+        "TaoWind"
+      ],
+      "allow_remote": false,
+      "max_steps": 8,
+      "max_cost": {
+        "cpu_ms": 20,
+        "network_kb": 0,
+        "memory_mb": 64
+      }
+    },
+    "intents": [
+      {
+        "id": "intent:publish-status-report",
+        "label": "Publish status report",
+        "goal": {
+          "type": "projection.document"
+        },
+        "inputs": {
+          "artifact": {
+            "type": "laf.artifact",
+            "source": "$artifact"
+          },
+          "title": {
+            "type": "text",
+            "value": "Reality-Native Computing Stack Status Report"
+          }
+        },
+        "policy": {
+          "min_trust": 2,
+          "allowed_issuers": [
+            "TaoWind"
+          ],
+          "allow_remote": false,
+          "max_steps": 6
+        }
+      },
+      {
+        "id": "intent:federated-status-report",
+        "label": "Publish federated status report",
+        "goal": {
+          "type": "projection.document"
+        },
+        "inputs": {
+          "artifact": {
+            "type": "laf.artifact",
+            "source": "$artifact"
+          },
+          "field_name": {
+            "type": "text.field-name",
+            "value": "progress"
+          },
+          "title": {
+            "type": "text.title",
+            "value": "Reality-Native Computing Stack Federated Status Report"
+          }
+        },
+        "policy": {
+          "min_trust": 2,
+          "allowed_issuers": [
+            "TaoWind",
+            "TaoWind Remote Lab"
+          ],
+          "allow_remote": true,
+          "max_steps": 10,
+          "max_retries": 1
+        }
+      }
+    ],
+    "federation_policy": {
+      "protocol": "SCFP-0.1",
+      "min_trust": 2,
+      "allowed_issuers": [
+        "TaoWind",
+        "TaoWind Remote Lab"
+      ],
+      "allow_remote": true,
+      "max_steps": 12,
+      "max_retries": 1,
+      "max_cost": {
+        "cpu_ms": 50,
+        "network_kb": 256,
+        "memory_mb": 128
+      }
+    },
+    "mesh_policy": {
+      "protocol": "PCMP-0.1",
+      "provider_versions": {
+        "provider:remote-markdown-report": ">=1.0.0 <2.0.0"
+      },
+      "offline_mode": "verified-cache",
+      "cache": {
+        "max_entries": 64,
+        "max_bytes": 4194304
+      },
+      "health": {
+        "min_samples": 1,
+        "min_success_rate": 0.5,
+        "max_p95_ms": 1000
+      },
+      "reputation": {
+        "min_score": 0.5,
+        "allowed_issuers": [
+          "TaoWind Mesh Auditor"
+        ]
+      },
+      "upgrade": {
+        "strategy": "canary",
+        "canary": {
+          "provider:remote-markdown-report": {
+            "version": "1.1.0",
+            "percentage": 100
+          }
+        }
+      },
+      "quota": {
+        "required": true
+      }
+    },
+    "session_policy": {
+      "protocol": "SISF-0.1",
+      "max_artifacts": 16,
+      "max_subjects": 32,
+      "atomic_commit": "generation-pointer",
+      "disclosure": "field-filtered",
+      "reconnect": "three-way-reconcile",
+      "conflict_evidence": true
+    }
+  },
+  "projections": {
+    "format": "icar.application-projections.v0.3",
+    "locale": "zh-CN",
+    "semanticEquivalence": {
+      "equivalent": true,
+      "sharedFields": [
+        "approved",
+        "milestones",
+        "progress",
+        "status"
+      ]
+    },
+    "interfaceContext": {
+      "intentText": "把项目进度提高到30%，生成一份状态报告并通知我。",
+      "planHash": "bea7918d4574181bee2f55eef12d3347fda9281819d939efd8e180e2dbadb1fd",
+      "authorityStatus": "approved",
+      "requiredScopes": [
+        "artifact.read",
+        "artifact.write",
+        "host.notify"
+      ],
+      "requiredHostCapabilities": [
+        "display.text",
+        "host.notification",
+        "input.activate"
+      ],
+      "notificationReceipt": {
+        "format": "icar.host-capability-receipt.v0.1",
+        "capability": "host.notification",
+        "method": "emit",
+        "status": "simulated-delivery",
+        "payload": {
+          "title": "意图执行完成",
+          "body": "项目进度已更新为 30%。",
+          "reportHash": "e1a4be94e2cd9ac2a8a7f8ff0c74f3ec543d63eeab76a27bcebdf22897290368"
+        },
+        "receiptHash": "af2b782525517d62d28639d0b84c1135082a7b19a4400dc17c67e0500b6ce226"
+      },
+      "executionRoot": "c6ddb75d0be82cb68afc744a4c7883d34c5fc2f9ef5d4778f53c4a31c8e51872"
+    },
+    "desktop": {
+      "hostId": "host:browser:desktop",
+      "layout": "workspace",
+      "navigation": [
+        "总览",
+        "意图",
+        "执行计划",
+        "工件",
+        "证据",
+        "权威",
+        "投影"
+      ],
+      "selectedProjection": "app",
+      "surface": {
+        "projection_id": "app",
+        "mode": "app",
+        "title": "Project Console",
+        "artifact_id": "artifact:project:reality-native-computing",
+        "artifact_type": "project",
+        "branch": "main",
+        "revision": "rev-6a2cd392-08fd-41b1-94f4-f7f4c98085c4",
+        "fields": [
+          {
+            "name": "status",
+            "label": "Status",
+            "type": "enum",
+            "value": "prototype",
+            "editable": true
+          },
+          {
+            "name": "progress",
+            "label": "Progress",
+            "type": "number",
+            "value": 30,
+            "editable": true
+          },
+          {
+            "name": "milestones",
+            "label": "Milestones",
+            "type": "list",
+            "value": [
+              "RFE v0.3 closed loop",
+              "Living Artifact v0.2"
+            ],
+            "editable": true
+          },
+          {
+            "name": "approved",
+            "label": "Approved",
+            "type": "boolean",
+            "value": false,
+            "editable": true
+          }
+        ],
+        "actions": [
+          {
+            "id": "advance",
+            "label": "Advance project",
+            "requires": [
+              {
+                "path": "fields.progress",
+                "op": "lte",
+                "value": 90
+              }
+            ],
+            "mutations": [
+              {
+                "op": "increment",
+                "path": "progress",
+                "value": 10
+              },
+              {
+                "op": "set",
+                "path": "status",
+                "value": "prototype"
+              }
+            ],
+            "host_requires": [
+              {
+                "id": "input.activate",
+                "version": ">=1.0"
+              }
+            ]
+          },
+          {
+            "id": "add_milestone",
+            "label": "Add milestone",
+            "parameters": [
+              {
+                "id": "name",
+                "type": "text",
+                "required": true
+              }
+            ],
+            "mutations": [
+              {
+                "op": "append",
+                "path": "milestones",
+                "value": {
+                  "$param": "name"
+                }
+              }
+            ],
+            "host_requires": [
+              {
+                "id": "input.text",
+                "version": ">=1.0"
+              }
+            ]
+          },
+          {
+            "id": "toggle_approval",
+            "label": "Toggle approval",
+            "mutations": [
+              {
+                "op": "toggle",
+                "path": "approved"
+              }
+            ],
+            "host_requires": [
+              {
+                "id": "input.activate",
+                "version": ">=1.0"
+              }
+            ]
+          }
+        ],
+        "capabilities": {
+          "provides": [
+            {
+              "id": "laf.projection",
+              "version": "0.2",
+              "modes": [
+                "document",
+                "table",
+                "form",
+                "app"
+              ]
+            },
+            {
+              "id": "laf.branching",
+              "version": "0.2"
+            },
+            {
+              "id": "laf.signed-manifest",
+              "version": "0.2"
+            },
+            {
+              "id": "laf.host-negotiation",
+              "version": "0.3",
+              "contract": "HNCA-0.1"
+            },
+            {
+              "id": "laf.intent-composition",
+              "version": "0.4",
+              "contract": "ICCP-0.1"
+            },
+            {
+              "id": "laf.sandboxed-federation",
+              "version": "0.5",
+              "contract": "SCFP-0.1"
+            },
+            {
+              "id": "laf.persistent-capability-mesh",
+              "version": "0.6",
+              "contract": "PCMP-0.1"
+            },
+            {
+              "id": "laf.shared-intent-session",
+              "version": "0.7",
+              "contract": "SISF-0.1"
+            }
+          ],
+          "requires": []
+        },
+        "host_contract": {
+          "requires": [
+            {
+              "id": "display.visual",
+              "version": ">=1.0"
+            },
+            {
+              "id": "input.activate",
+              "version": ">=1.0"
+            }
+          ],
+          "prefers": [
+            {
+              "id": "runtime.javascript",
+              "version": ">=1.0"
+            }
+          ],
+          "cost": {
+            "memory_mb": 24,
+            "cpu_ms": 2,
+            "network_kb": 0
+          }
+        },
+        "evidence": {
+          "algorithm": "SHA-256",
+          "content_hash": "49aadbf6f51ac76098526cfe3e6db3136ba6db794af07dfe7a2c8fb02493a83e",
+          "revision_root": "228128c43ff33a844fdcc55bdac00e7a85310da9d75e2db67264eccb525d7864",
+          "conflict_root": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "capability_root": "90fea963a4702c3ad821d35d778e2e46b60a64531ec7c0ddf797965863e57275",
+          "composition_root": "a532da5bf354dac98ebfa91fc99e88e622ae1929bb89984fbad52d301e3bf91a",
+          "federation_root": "597d65754aa5d0fd6f8503661ba372b72fde52b9202e7063125cc2de77c5457e",
+          "mesh_root": "7c5cb43e7cdb80574f461bd890260b2cef7eedafd9ff618f8a43ecc0e8c1e683",
+          "session_root": "45f3a7bd2bb1836c60e01c8b4f428303b026bed484e99c9b7740e8c9f36ea4b2",
+          "verified_at": "2026-06-30T08:15:51.633Z"
+        },
+        "open_conflicts": 0,
+        "unavailable_actions": [],
+        "negotiation": {
+          "status": "ready",
+          "host_id": "host:browser:desktop",
+          "selected_projection": "app",
+          "plan_hash": "5acf294c8b0e86a4d343b34c64ab10882364473b0442ed6a71001188c9171728",
+          "activated_adapters": []
+        }
+      },
+      "executionTimeline": [
+        {
+          "stepId": "step:1:lar.progress.target",
+          "status": "completed",
+          "target": 30,
+          "revisions": [
+            "rev-393ac44c-709c-410b-b7a2-792a49e5f9ff",
+            "rev-8d54e380-ff25-480e-888d-8b08a8a7a25c"
+          ]
+        },
+        {
+          "stepId": "step:2:lar.report.render",
+          "status": "completed",
+          "reportHash": "e1a4be94e2cd9ac2a8a7f8ff0c74f3ec543d63eeab76a27bcebdf22897290368"
+        },
+        {
+          "stepId": "step:3:lar.report.attach",
+          "status": "completed",
+          "revision": "rev-6a2cd392-08fd-41b1-94f4-f7f4c98085c4"
+        },
+        {
+          "stepId": "step:4:hnaf.notification.emit",
+          "status": "completed",
+          "receiptHash": "af2b782525517d62d28639d0b84c1135082a7b19a4400dc17c67e0500b6ce226"
+        }
+      ]
+    },
+    "mobile": {
+      "hostId": "host:mobile:touch",
+      "layout": "focus-cards",
+      "navigation": [
+        "任务",
+        "结果",
+        "收据"
+      ],
+      "selectedProjection": "mobile",
+      "surface": {
+        "projection_id": "mobile",
+        "mode": "mobile",
+        "title": "Project Mobile",
+        "artifact_id": "artifact:project:reality-native-computing",
+        "artifact_type": "project",
+        "branch": "main",
+        "revision": "rev-6a2cd392-08fd-41b1-94f4-f7f4c98085c4",
+        "fields": [
+          {
+            "name": "status",
+            "label": "Status",
+            "type": "enum",
+            "value": "prototype",
+            "editable": true
+          },
+          {
+            "name": "progress",
+            "label": "Progress",
+            "type": "number",
+            "value": 30,
+            "editable": true
+          },
+          {
+            "name": "milestones",
+            "label": "Milestones",
+            "type": "list",
+            "value": [
+              "RFE v0.3 closed loop",
+              "Living Artifact v0.2"
+            ],
+            "editable": true
+          },
+          {
+            "name": "approved",
+            "label": "Approved",
+            "type": "boolean",
+            "value": false,
+            "editable": true
+          }
+        ],
+        "actions": [
+          {
+            "id": "advance",
+            "label": "Advance project",
+            "requires": [
+              {
+                "path": "fields.progress",
+                "op": "lte",
+                "value": 90
+              }
+            ],
+            "mutations": [
+              {
+                "op": "increment",
+                "path": "progress",
+                "value": 10
+              },
+              {
+                "op": "set",
+                "path": "status",
+                "value": "prototype"
+              }
+            ],
+            "host_requires": [
+              {
+                "id": "input.activate",
+                "version": ">=1.0"
+              }
+            ]
+          },
+          {
+            "id": "add_milestone",
+            "label": "Add milestone",
+            "parameters": [
+              {
+                "id": "name",
+                "type": "text",
+                "required": true
+              }
+            ],
+            "mutations": [
+              {
+                "op": "append",
+                "path": "milestones",
+                "value": {
+                  "$param": "name"
+                }
+              }
+            ],
+            "host_requires": [
+              {
+                "id": "input.text",
+                "version": ">=1.0"
+              }
+            ]
+          },
+          {
+            "id": "toggle_approval",
+            "label": "Toggle approval",
+            "mutations": [
+              {
+                "op": "toggle",
+                "path": "approved"
+              }
+            ],
+            "host_requires": [
+              {
+                "id": "input.activate",
+                "version": ">=1.0"
+              }
+            ]
+          }
+        ],
+        "capabilities": {
+          "provides": [
+            {
+              "id": "laf.projection",
+              "version": "0.2",
+              "modes": [
+                "document",
+                "table",
+                "form",
+                "app"
+              ]
+            },
+            {
+              "id": "laf.branching",
+              "version": "0.2"
+            },
+            {
+              "id": "laf.signed-manifest",
+              "version": "0.2"
+            },
+            {
+              "id": "laf.host-negotiation",
+              "version": "0.3",
+              "contract": "HNCA-0.1"
+            },
+            {
+              "id": "laf.intent-composition",
+              "version": "0.4",
+              "contract": "ICCP-0.1"
+            },
+            {
+              "id": "laf.sandboxed-federation",
+              "version": "0.5",
+              "contract": "SCFP-0.1"
+            },
+            {
+              "id": "laf.persistent-capability-mesh",
+              "version": "0.6",
+              "contract": "PCMP-0.1"
+            },
+            {
+              "id": "laf.shared-intent-session",
+              "version": "0.7",
+              "contract": "SISF-0.1"
+            }
+          ],
+          "requires": []
+        },
+        "host_contract": {
+          "requires": [
+            {
+              "id": "display.visual",
+              "version": ">=1.0"
+            },
+            {
+              "id": "input.touch",
+              "version": ">=1.0"
+            }
+          ],
+          "prefers": [
+            {
+              "id": "runtime.javascript",
+              "version": ">=1.0"
+            },
+            {
+              "id": "storage.persistent",
+              "version": ">=1.0"
+            }
+          ],
+          "cost": {
+            "memory_mb": 16,
+            "cpu_ms": 1.5,
+            "network_kb": 0
+          }
+        },
+        "evidence": {
+          "algorithm": "SHA-256",
+          "content_hash": "49aadbf6f51ac76098526cfe3e6db3136ba6db794af07dfe7a2c8fb02493a83e",
+          "revision_root": "228128c43ff33a844fdcc55bdac00e7a85310da9d75e2db67264eccb525d7864",
+          "conflict_root": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "capability_root": "90fea963a4702c3ad821d35d778e2e46b60a64531ec7c0ddf797965863e57275",
+          "composition_root": "a532da5bf354dac98ebfa91fc99e88e622ae1929bb89984fbad52d301e3bf91a",
+          "federation_root": "597d65754aa5d0fd6f8503661ba372b72fde52b9202e7063125cc2de77c5457e",
+          "mesh_root": "7c5cb43e7cdb80574f461bd890260b2cef7eedafd9ff618f8a43ecc0e8c1e683",
+          "session_root": "45f3a7bd2bb1836c60e01c8b4f428303b026bed484e99c9b7740e8c9f36ea4b2",
+          "verified_at": "2026-06-30T08:15:51.633Z"
+        },
+        "open_conflicts": 0,
+        "unavailable_actions": [],
+        "negotiation": {
+          "status": "ready",
+          "host_id": "host:mobile:touch",
+          "selected_projection": "mobile",
+          "plan_hash": "d0fca8aa97cdd72603c438eaa6d99d84039da8303abf6f4bb99925f4996dd05a",
+          "activated_adapters": []
+        }
+      },
+      "executionTimeline": [
+        {
+          "stepId": "step:1:lar.progress.target",
+          "status": "completed",
+          "target": 30,
+          "revisions": [
+            "rev-393ac44c-709c-410b-b7a2-792a49e5f9ff",
+            "rev-8d54e380-ff25-480e-888d-8b08a8a7a25c"
+          ]
+        },
+        {
+          "stepId": "step:2:lar.report.render",
+          "status": "completed",
+          "reportHash": "e1a4be94e2cd9ac2a8a7f8ff0c74f3ec543d63eeab76a27bcebdf22897290368"
+        },
+        {
+          "stepId": "step:3:lar.report.attach",
+          "status": "completed",
+          "revision": "rev-6a2cd392-08fd-41b1-94f4-f7f4c98085c4"
+        },
+        {
+          "stepId": "step:4:hnaf.notification.emit",
+          "status": "completed",
+          "receiptHash": "af2b782525517d62d28639d0b84c1135082a7b19a4400dc17c67e0500b6ce226"
+        }
+      ],
+      "primaryAction": "查看通知收据"
+    },
+    "projectionRoot": "bb69699b06771dbddc4910f63c796f3d6ffb0d82b8f34e75a9ae367931f828ea"
+  },
+  "atomicReceipt": {
+    "format": "rfe.atomic-receipt.v0.6",
+    "transactionId": "tx:2f884761a6daa7ae",
+    "status": "committed",
+    "baseGlobalRoot": "81a8190f390e4cb15815ab1efbb6cdd02976c6e795a8c8d887afed32e897ab15",
+    "finalGlobalRoot": "32a9996cab8ccd8b30aefa9470e802923fd88771f96fb6d06239123495288a50",
+    "decisionHash": "f1cb582f8d994aef91d550f53511a86e3a0f67f2ddfba5502d58b4ea09399f0c",
+    "participantIds": [
+      "artifact",
+      "capability",
+      "projection"
+    ],
+    "recovered": false,
+    "atomicTransactionReceiptHash": "d15d54b529ced8a466202755054077454c7d82b020fdd286d9e42612f96b3bd7"
+  },
+  "evidence": {
+    "lar": {
+      "implementation": "Living Artifact Runtime v0.7 core + host modules",
+      "initialArtifactHash": "240d3210959207966726b9a053d10555455f1516a7806b008158bb904da76f74",
+      "finalArtifactHash": "49aadbf6f51ac76098526cfe3e6db3136ba6db794af07dfe7a2c8fb02493a83e"
+    },
+    "hnac": {
+      "implementation": "HNAC v0.4 contract-compatible adapter",
+      "negotiationHash": "adb8d9f62205df9074444e54ab914a4233165c4bc3172eac650be86e20bed81c"
+    },
+    "rfe": {
+      "implementation": "RFE v0.6 AtomicRealityCoordinator",
+      "finalGlobalRoot": "32a9996cab8ccd8b30aefa9470e802923fd88771f96fb6d06239123495288a50"
+    }
+  },
+  "applicationResultHash": "42c78da3cc623715ad1c663d16e70b9bfed754d701e8f287ce9c7333284daf7d"
+}

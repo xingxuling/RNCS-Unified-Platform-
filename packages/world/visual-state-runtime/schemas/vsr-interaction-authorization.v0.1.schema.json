@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.example/schemas/vsr-interaction-authorization.v0.1.schema.json",
+  "title": "VSR Interaction Authorization v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "proposalHash",
+    "decision",
+    "authorityId",
+    "logicalTime"
+  ],
+  "properties": {
+    "format": {
+      "const": "vsr.interaction-authorization.v0.1"
+    },
+    "proposalHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "decision": {
+      "enum": [
+        "approved",
+        "denied"
+      ]
+    },
+    "authorityId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "grantedScopes": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "reason": {
+      "type": "string"
+    },
+    "evidenceRoot": {
+      "type": "string"
+    },
+    "logicalTime": {
+      "type": "number",
+      "minimum": 0
+    },
+    "authorizationHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

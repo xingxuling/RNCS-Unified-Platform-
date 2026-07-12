@@ -1,0 +1,131 @@
+{
+  "version": "0.7",
+  "id": "capability-binding-main",
+  "root": "document.main",
+  "nodes": {
+    "document.main": {
+      "kind": "document",
+      "label": "能力绑定控制台",
+      "priority": "critical",
+      "children": ["information.status", "group.actions"]
+    },
+    "information.status": {
+      "kind": "information",
+      "label": "运行状态",
+      "description": "界面按钮不绑定固定函数，而是绑定目标能力。",
+      "priority": "primary",
+      "binding": {"path": "portable.last_execution", "fallback": "尚未执行"}
+    },
+    "group.actions": {
+      "kind": "group",
+      "label": "操作",
+      "priority": "primary",
+      "children": ["action.run", "action.inspect", "action.remote"]
+    },
+    "action.run": {
+      "kind": "action",
+      "label": "增加连续计数",
+      "description": "首选 Provider 将故意失败，宿主应切换到已授权备用 Provider。",
+      "priority": "critical",
+      "intent": "app.run"
+    },
+    "action.inspect": {
+      "kind": "action",
+      "label": "检查胶囊",
+      "priority": "primary",
+      "intent": "capsule.inspect"
+    },
+    "action.remote": {
+      "kind": "action",
+      "label": "执行高风险能力",
+      "description": "必须经过显式人工确认。",
+      "priority": "secondary",
+      "intent": "app.high-risk"
+    }
+  },
+  "intents": {
+    "app.run": {
+      "label": "增加连续计数",
+      "risk": "medium",
+      "confirmation": false,
+      "triggers": {
+        "pointer": ["activate"],
+        "touch": ["tap"],
+        "keyboard": ["Enter"],
+        "voice": ["增加计数"],
+        "neural": ["confirm"]
+      },
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "amount": {"type": "integer", "minimum": 1, "maximum": 100},
+          "key": {"type": "string"}
+        },
+        "additionalProperties": false
+      },
+      "goal": {
+        "type": "app.counter.increment",
+        "version_range": ">=1.0.0 <2.0.0",
+        "inputs": {"amount": {"type": "integer", "required": false}},
+        "required_evidence": ["state.root"],
+        "constraints": {"preserve_continuity": true}
+      },
+      "execution": {
+        "result_binding": "portable.last_execution",
+        "failure_policy": "fallback",
+        "offline": "required"
+      },
+      "authority": {"human_control_required": false}
+    },
+    "capsule.inspect": {
+      "label": "检查胶囊",
+      "risk": "low",
+      "confirmation": false,
+      "triggers": {
+        "pointer": ["inspect"],
+        "touch": ["inspect"],
+        "keyboard": ["Ctrl+I"],
+        "voice": ["检查胶囊"]
+      },
+      "input_schema": {"type": "object", "additionalProperties": false},
+      "goal": {
+        "type": "capsule.inspect",
+        "version_range": "^1.0.0",
+        "inputs": {},
+        "required_evidence": ["capsule.integrity"],
+        "constraints": {}
+      },
+      "execution": {"result_binding": "portable.last_inspection", "failure_policy": "fail-fast", "offline": "required"},
+      "authority": {"human_control_required": false}
+    },
+    "app.high-risk": {
+      "label": "执行高风险能力",
+      "risk": "high",
+      "confirmation": true,
+      "triggers": {
+        "pointer": ["high-risk"],
+        "touch": ["high-risk"],
+        "keyboard": ["Ctrl+Shift+Enter"],
+        "voice": ["确认执行高风险能力"]
+      },
+      "input_schema": {"type": "object", "additionalProperties": true},
+      "goal": {
+        "type": "app.remote.echo",
+        "version_range": "^1.0.0",
+        "inputs": {},
+        "required_evidence": ["execution.receipt"],
+        "constraints": {"explicit_confirmation": true}
+      },
+      "execution": {"result_binding": "portable.last_high_risk", "failure_policy": "fail-fast", "offline": "optional"},
+      "authority": {"human_control_required": true, "confirmation_reason": "该能力标记为高风险"}
+    }
+  },
+  "projections": {
+    "desktop": {"mode": "multi-pane", "columns": 3, "navigation": "sidebar"},
+    "tablet": {"mode": "adaptive-grid", "columns": 2, "navigation": "rail"},
+    "phone": {"mode": "single-column", "columns": 1, "navigation": "bottom"},
+    "accessibility": {"mode": "linear", "columns": 1, "navigation": "landmarks"},
+    "spatial": {"mode": "spatial-field", "columns": 0, "navigation": "portals"}
+  },
+  "metadata": {"language": "zh-CN", "purpose": "HNAC v0.7 capability binding conformance demo"}
+}

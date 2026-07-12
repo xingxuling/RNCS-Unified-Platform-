@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#07111f" />
+  <title>Aether Earth · RCL 集体智能地球</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <p class="eyebrow">RNCS · RCL REALITY LAB</p>
+        <h1>Aether Earth</h1>
+        <p class="subtitle">100 个少数据 AI 生物，在压缩时空中共同形成可运行知识。</p>
+      </div>
+      <div class="status"><span id="runtimeDot"></span><b id="runtimeMode">浏览器沙盒</b></div>
+    </header>
+
+    <section class="hero-grid">
+      <article class="world-card panel">
+        <div class="panel-title"><div><small>SIMULATED EARTH</small><h2>16 × 16 地球瓦片</h2></div><b id="dayLabel">Day 0</b></div>
+        <canvas id="world" width="640" height="640" aria-label="Aether Earth world map"></canvas>
+        <div class="controls">
+          <button data-days="1">+1 天</button>
+          <button data-days="10">+10 天</button>
+          <button data-days="100" class="primary">+100 天</button>
+          <button id="backgroundButton">后台持续世界</button>
+        </div>
+        <div class="speed-control">
+          <span>时间倍率</span>
+          <button data-speed="1" class="active">1×</button>
+          <button data-speed="10">10×</button>
+          <button data-speed="100">100×</button>
+        </div>
+      </article>
+
+      <aside class="dashboard">
+        <section class="metrics panel" id="metrics"></section>
+        <section class="panel">
+          <div class="panel-title"><div><small>COLLECTIVE CRYSTALS</small><h2>集体智能结晶</h2></div><b id="crystalCount">0</b></div>
+          <div id="crystals" class="list empty">等待群体形成稳定模式……</div>
+        </section>
+        <section class="panel">
+          <div class="panel-title"><div><small>RCLPEDIA</small><h2>可运行百科</h2></div><b id="knowledgeCount">512</b></div>
+          <input id="search" placeholder="搜索气候、资源或知识关系" />
+          <div id="knowledge" class="list"></div>
+        </section>
+      </aside>
+    </section>
+
+    <section class="panel agents-panel">
+      <div class="panel-title"><div><small>LIVING SUBJECTS</small><h2>100 个 RCL 生物</h2></div><button id="exportButton">导出压缩现实</button></div>
+      <div id="agents" class="agents"></div>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

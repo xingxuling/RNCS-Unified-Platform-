@@ -1,0 +1,496 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hnaf.org/schemas/hnac-manifest-0.7.schema.json",
+  "title": "HNAC Manifest v0.7 — Capability Binding Fabric",
+  "type": "object",
+  "required": [
+    "format_version",
+    "app",
+    "execution",
+    "capabilities",
+    "security",
+    "compatibility",
+    "state",
+    "interface",
+    "capability_binding"
+  ],
+  "properties": {
+    "format_version": {
+      "const": "0.7"
+    },
+    "app": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "version"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+([.-][a-z0-9]+)+$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+([+-][A-Za-z0-9.-]+)?$"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "execution": {
+      "type": "object",
+      "required": [
+        "primary"
+      ],
+      "properties": {
+        "primary": {
+          "$ref": "#/$defs/executionProfile"
+        },
+        "alternatives": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/executionProfile"
+          }
+        },
+        "limits": {
+          "type": "object",
+          "properties": {
+            "fuel": {
+              "type": "integer",
+              "minimum": 1000
+            },
+            "memory_bytes": {
+              "type": "integer",
+              "minimum": 65536
+            },
+            "operations": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/capability"
+      }
+    },
+    "interface": {
+      "type": "object",
+      "required": [
+        "version",
+        "graph"
+      ],
+      "properties": {
+        "version": {
+          "const": "0.7"
+        },
+        "graph": {
+          "type": "string",
+          "minLength": 1
+        },
+        "default_projection": {
+          "enum": [
+            "auto",
+            "desktop",
+            "tablet",
+            "phone",
+            "accessibility",
+            "spatial"
+          ]
+        },
+        "intent_policy": {
+          "type": "object",
+          "properties": {
+            "require_confirmation_at_or_above": {
+              "enum": [
+                "moderate",
+                "high",
+                "critical"
+              ]
+            },
+            "deny_unknown_intents": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "state": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "partitions"
+      ],
+      "properties": {
+        "schema_version": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._-]+$"
+        },
+        "autosnapshot": {
+          "type": "boolean"
+        },
+        "migration_graph": {
+          "type": "string",
+          "minLength": 1
+        },
+        "partitions": {
+          "type": "object",
+          "required": [
+            "portable",
+            "device_private",
+            "secret",
+            "cache",
+            "ephemeral"
+          ],
+          "properties": {
+            "portable": {
+              "type": "object",
+              "required": [
+                "persistence",
+                "portability"
+              ],
+              "properties": {
+                "persistence": {
+                  "const": "durable"
+                },
+                "portability": {
+                  "const": "exportable"
+                },
+                "encrypted": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            },
+            "device_private": {
+              "type": "object",
+              "required": [
+                "persistence",
+                "portability"
+              ],
+              "properties": {
+                "persistence": {
+                  "const": "durable"
+                },
+                "portability": {
+                  "const": "local-only"
+                },
+                "encrypted": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            },
+            "secret": {
+              "type": "object",
+              "required": [
+                "persistence",
+                "portability",
+                "encrypted"
+              ],
+              "properties": {
+                "persistence": {
+                  "const": "durable"
+                },
+                "portability": {
+                  "const": "encrypted-export"
+                },
+                "encrypted": {
+                  "const": true
+                }
+              },
+              "additionalProperties": false
+            },
+            "cache": {
+              "type": "object",
+              "required": [
+                "persistence",
+                "portability"
+              ],
+              "properties": {
+                "persistence": {
+                  "const": "rebuildable"
+                },
+                "portability": {
+                  "const": "optional-export"
+                },
+                "encrypted": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            },
+            "ephemeral": {
+              "type": "object",
+              "required": [
+                "persistence",
+                "portability"
+              ],
+              "properties": {
+                "persistence": {
+                  "const": "memory"
+                },
+                "portability": {
+                  "const": "never-export"
+                },
+                "encrypted": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "distribution": {
+      "type": "object"
+    },
+    "security": {
+      "type": "object",
+      "required": [
+        "sandbox"
+      ],
+      "properties": {
+        "sandbox": {
+          "const": "deny-by-default"
+        },
+        "signature": {
+          "enum": [
+            "optional",
+            "required",
+            "ed25519"
+          ]
+        },
+        "supply_chain": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "compatibility": {
+      "type": "object",
+      "required": [
+        "min_runtime"
+      ],
+      "properties": {
+        "min_runtime": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "host_families": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "extensions": {
+      "type": "object"
+    },
+    "semantics": {
+      "type": "object",
+      "properties": {
+        "trace_contract": {
+          "type": "string",
+          "minLength": 1
+        },
+        "equivalent_profiles": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "observable_capabilities": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9.-]+$"
+          },
+          "uniqueItems": true
+        },
+        "outcome": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "capability_binding": {
+      "type": "object",
+      "required": [
+        "version",
+        "providers",
+        "authority_policy",
+        "strategy"
+      ],
+      "properties": {
+        "version": {
+          "const": "0.7"
+        },
+        "providers": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority_policy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "strategy": {
+          "type": "object",
+          "required": [
+            "prefer_local",
+            "offline_first",
+            "max_fallbacks"
+          ],
+          "properties": {
+            "prefer_local": {
+              "type": "boolean"
+            },
+            "offline_first": {
+              "type": "boolean"
+            },
+            "max_fallbacks": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 8
+            },
+            "max_risk": {
+              "enum": [
+                "low",
+                "medium",
+                "high",
+                "critical"
+              ]
+            },
+            "require_reversible": {
+              "type": "boolean"
+            },
+            "minimum_trust": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "cost_budget": {
+              "type": "object",
+              "properties": {
+                "cpu_millis": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "memory_mb": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "network_kb": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "monetary_microunits": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "executionProfile": {
+      "type": "object",
+      "required": [
+        "profile",
+        "entry"
+      ],
+      "properties": {
+        "profile": {
+          "type": "string",
+          "minLength": 1
+        },
+        "entry": {
+          "type": "string",
+          "minLength": 1
+        },
+        "abi": {
+          "type": "string"
+        },
+        "world": {
+          "type": "string"
+        },
+        "export": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contract": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": true
+    },
+    "capability": {
+      "type": "object",
+      "required": [
+        "id",
+        "required"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9.-]+$"
+        },
+        "version": {
+          "type": "string"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "scope": {
+          "enum": [
+            "one-shot",
+            "session",
+            "app",
+            "document",
+            "device",
+            "work"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        },
+        "fallback": {
+          "type": "string"
+        },
+        "constraints": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

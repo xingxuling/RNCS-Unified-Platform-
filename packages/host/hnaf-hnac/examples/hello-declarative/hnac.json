@@ -1,0 +1,21 @@
+{
+  "format_version": "0.2",
+  "app": {
+    "id": "org.taowind.hnac.hello-declarative",
+    "name": "HNAC Declarative Hello",
+    "version": "0.2.0"
+  },
+  "execution": {
+    "primary": {"profile": "declarative-v0", "entry": "components/main.hnc.json"},
+    "limits": {"operations": 100}
+  },
+  "capabilities": [
+    {"id": "host.log", "version": "1", "required": true, "scope": "session", "reason": "Display output"}
+  ],
+  "interface": {"graph": "ui/main.aip.json"},
+  "state": {"schema": "state/schema.json"},
+  "distribution": {"projections": ["pwa"]},
+  "security": {"sandbox": "deny-by-default", "signature": "optional"},
+  "compatibility": {"min_runtime": "0.2.0"},
+  "extensions": {}
+}

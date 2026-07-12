@@ -1,0 +1,57 @@
+{
+  "format": "reality-build.asset-reconciliation.v0.1",
+  "project_id": "unified-project:frost-trial-v09",
+  "asset_id": "asset:3a82d1753e140d24552b89d1",
+  "reason": "随包实际文件与旧资产记录哈希不一致；发布前按实际文件重新对账并密封。",
+  "rows": [
+    {
+      "role": "sfx-wav",
+      "path": "candidates/mobile/attack-sfx.wav",
+      "old_sha256": "42d086c5b2bcda6694f0b057f360753f5a96ea1d3242f3b9251dc233a28e6a53",
+      "new_sha256": "ba8ebd46b31544ce76973a7ac88039c82d0c1aaaaabdf1cbfb1339a495f2e53e",
+      "old_size": 19888,
+      "new_size": 19888
+    },
+    {
+      "role": "collision-shape",
+      "path": "candidates/mobile/collision-shape.json",
+      "old_sha256": "af4328b8880bc88ea8c287a8d971fe0cb63db7454c7f75c2936a5a84edb32173",
+      "new_sha256": "44480910ae1a57d379700fa1767591a2888d2d01ca5209b46a0f0c95345de88e",
+      "old_size": 819,
+      "new_size": 819
+    },
+    {
+      "role": "concept-svg",
+      "path": "candidates/mobile/concept.svg",
+      "old_sha256": "e78d31d45965f12d5c55b5451db8e4804389d77c6fbbaea5e452313bf9b97954",
+      "new_sha256": "88581d8c40ce2c9a5e5d570a9d287b3ad05fbed2d7e9da41f16e1cdb9d4bc661",
+      "old_size": 2057,
+      "new_size": 2057
+    },
+    {
+      "role": "particle-preset",
+      "path": "candidates/mobile/particle-preset.json",
+      "old_sha256": "c9a21ce436aa1d3b94af13fa4502784ed68dfbdc581f1adb0329a36c3a5e39bf",
+      "new_sha256": "4680d26a0200483eec718ffb7249203a1e0114b0f434dc6babe9a411eabb8b92",
+      "old_size": 1110,
+      "new_size": 1110
+    },
+    {
+      "role": "sprite-metadata",
+      "path": "candidates/mobile/sprite-sheet.json",
+      "old_sha256": "b604b2c3aa90288f463f67ae7094bdd0df85a2781ecb9dffd8ed2c65737a6f8c",
+      "new_sha256": "40f3e51c8bce62f0e4827bcea63408eb6edb03e52371658e490bbce73a9131af",
+      "old_size": 749,
+      "new_size": 749
+    },
+    {
+      "role": "sprite-sheet",
+      "path": "candidates/mobile/sprite-sheet.png",
+      "old_sha256": "0ee5f7dde6a3c4275480c109a151e66098e6b8bf6b846e9df326c739e6242ba2",
+      "new_sha256": "fcf49fc901802d8699c0b5be05feec076f915bb0c45db126e6c50096a4d6651f",
+      "old_size": 941,
+      "new_size": 941
+    }
+  ],
+  "new_project_root": "fff2312f5e9ded65c519b42148e74fcb683bb4f117dcfd6a9d47f95dffa4967e"
+}

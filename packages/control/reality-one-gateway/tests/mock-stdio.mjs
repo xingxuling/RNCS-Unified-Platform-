@@ -1,0 +1,1 @@
+let s='';process.stdin.on('data',d=>s+=d);process.stdin.on('end',()=>{const r=JSON.parse(s.trim());const result=r.action==='health'?{status:'ok',transport:'stdio'}:{echo:r.payload,action:r.action};process.stdout.write(JSON.stringify({result})+'\n');});

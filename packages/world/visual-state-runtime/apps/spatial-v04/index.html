@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>VSR v0.4 三维空间现实执行器</title>
+  <style>
+    :root{font-family:Inter,"Noto Sans SC",system-ui,sans-serif;color-scheme:dark;background:#050914;color:#e5eefc}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 20% 0,#102b52 0,#050914 44%);display:grid;place-items:center;padding:24px}
+    main{width:min(1180px,100%);display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:18px}
+    .viewport,.panel{border:1px solid #274468;border-radius:18px;background:rgba(5,12,25,.88);box-shadow:0 24px 80px rgba(0,0,0,.4);overflow:hidden}
+    header{padding:18px 20px;border-bottom:1px solid #203a5d}h1{font-size:20px;margin:0 0 6px}p{margin:0;color:#9fb6d5;line-height:1.55;font-size:13px}
+    canvas{display:block;width:100%;aspect-ratio:16/9;background:#07101e}.fallback{display:none;width:100%;aspect-ratio:16/9;object-fit:cover}
+    .bar{display:flex;gap:10px;align-items:center;padding:12px 16px;border-top:1px solid #203a5d}.badge{padding:5px 9px;border-radius:999px;background:#102843;color:#9ed0ff;font-size:12px}.ok{background:#123a2c;color:#8ff0bf}.warn{background:#4b3012;color:#ffd188}
+    .panel{padding:18px}.panel h2{margin:0 0 14px;font-size:15px}.metric{padding:12px 0;border-bottom:1px solid #1d3351;display:flex;justify-content:space-between;gap:12px;font-size:13px}.metric span:first-child{color:#8ba4c6}.metric strong{text-align:right;word-break:break-all;font-weight:600}
+    button{width:100%;margin-top:16px;border:0;border-radius:12px;padding:11px 14px;background:#2f7de1;color:white;font-weight:700;cursor:pointer}button:hover{background:#4892ef}
+    code{font-size:11px;color:#8fd5ff}@media(max-width:850px){main{grid-template-columns:1fr}.panel{order:-1}}
+  </style>
+</head>
+<body>
+<main>
+  <section class="viewport">
+    <header><h1>VSR v0.4 · 三维空间现实执行器</h1><p>Mesh、Camera、Depth、Metallic/Roughness、三维灯光、LOD 与证据根。WebGPU不可用时使用CPU参考图，不伪造GPU结果。</p></header>
+    <canvas id="gpu"></canvas><img id="fallback" class="fallback" alt="CPU参考渲染" />
+    <div class="bar"><span id="mode" class="badge">探测中</span><span id="fps" class="badge">帧率：—</span><span id="root" class="badge">Frame Root：—</span></div>
+  </section>
+  <aside class="panel">
+    <h2>执行状态</h2>
+    <div class="metric"><span>场景</span><strong id="scene">—</strong></div>
+    <div class="metric"><span>可见Draw</span><strong id="draws">—</strong></div>
+    <div class="metric"><span>三角形</span><strong id="triangles">—</strong></div>
+    <div class="metric"><span>材质根</span><strong><code id="material">—</code></strong></div>
+    <div class="metric"><span>几何根</span><strong><code id="geometry">—</code></strong></div>
+    <div class="metric"><span>现实根</span><strong><code id="reality">—</code></strong></div>
+    <button id="toggle">暂停旋转</button>
+  </aside>
+</main>
+<script type="module" src="./demo.js"></script>
+</body>
+</html>

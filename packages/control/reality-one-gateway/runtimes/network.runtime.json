@@ -1,0 +1,57 @@
+{
+  "format": "reality-one.runtime-manifest.v0.3",
+  "gateway_protocol_versions": [
+    "0.3.0"
+  ],
+  "runtime_id": "rncs.network",
+  "runtime_version": "0.2.0-alpha.1",
+  "display_name": "Reality Network Runtime",
+  "transport": {
+    "kind": "node-module",
+    "package": "@taowind/reality-network-runtime"
+  },
+  "bridge": "../src/bridges/network.bridge.mjs",
+  "actions": [
+    "health",
+    "createSession",
+    "joinSession",
+    "submitInput",
+    "advanceServerTick",
+    "pullSnapshot",
+    "pullDelta",
+    "acknowledge",
+    "reconcile",
+    "disconnect",
+    "reconnect",
+    "getSessionHealth",
+    "closeSession"
+  ],
+  "protocols": [
+    "rncs.network-runtime.v0.2",
+    "rsr.authoritative-state.v0.7"
+  ],
+  "requires": [
+    {
+      "runtime_id": "rncs.rsr",
+      "version_range": ">=0.7.0-alpha.1 <0.10.0",
+      "optional": false
+    },
+    {
+      "runtime_id": "rncs.aaf",
+      "version_range": "^0.1.0",
+      "optional": false
+    },
+    {
+      "runtime_id": "rncs.rbf",
+      "version_range": "^0.2.0-alpha.1",
+      "optional": false
+    },
+    {
+      "runtime_id": "rncs.rfe",
+      "version_range": "^0.1.0",
+      "optional": false
+    }
+  ],
+  "priority": 90,
+  "health_timeout_ms": 4000
+}

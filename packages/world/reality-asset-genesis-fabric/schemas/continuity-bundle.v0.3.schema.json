@@ -1,0 +1,12 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://taowind.example/schemas/continuity-bundle.v0.3.schema.json",
+  "title":"Reality Asset Continuity Bundle v0.3",
+  "type":"object",
+  "required":["format","version","bundle_id","asset_identity","source","provenance","files","dependencies","variants","import_contract","bundle_root"],
+  "properties":{
+    "format":{"const":"reality-asset.continuity-bundle.v0.3"},"version":{"const":"0.3.0"},
+    "files":{"type":"array","minItems":1,"items":{"type":"object","required":["role","path","mime","sha256","size","platforms"]}},
+    "bundle_root":{"type":"string","pattern":"^[a-f0-9]{64}$"}
+  },"additionalProperties":true
+}

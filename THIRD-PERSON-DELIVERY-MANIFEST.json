@@ -1,0 +1,12 @@
+{
+  "version": "0.18.1-alpha.1",
+  "playable": "灰烬边境_第三人称3D_直接打开.html",
+  "render_evidence": "artifacts/third-person-open-world-v018/third-person-smoke.png",
+  "browser_behavior_evidence": "artifacts/third-person-open-world-v018/browser-smoke-result.json",
+  "godot_project": "clients/godot-third-person",
+  "runtime": "packages/world/open-world-rpg-runtime",
+  "godot_status": "STATIC_VERIFIED_64_CHECKS_BINARY_NOT_AVAILABLE",
+  "webgl_status": "RUN_AND_CAPTURED",
+  "runtime_version": "0.2.0-alpha.1",
+  "startup_hotfix": true
+}

@@ -1,0 +1,111 @@
+export interface LegacyRouteEntry { route: string; title: string; }
+export interface LegacyRouteGroup { id: string; label: string; entries: LegacyRouteEntry[]; }
+
+export const LEGACY_ROUTE_GROUPS: LegacyRouteGroup[] = [
+  { id: "MOTHER_SEQUENCE", label: "Mother Sequence", entries: [
+    { route: "/mother-sequence-language", title: "母体数列语言" },
+    { route: "/msl-console", title: "MSL Console" },
+    { route: "/msl-terminal", title: "MSL Terminal" },
+    { route: "/sequence-language", title: "数列语言" },
+  ]},
+  { id: "SEQUENCE_AI", label: "Sequence AI", entries: [
+    { route: "/sequence-ai", title: "Sequence AI" },
+    { route: "/ask-sequence-ai", title: "问数列 AI" },
+    { route: "/sequence-terminal", title: "Sequence Terminal" },
+  ]},
+  { id: "WORLD_ENGINE", label: "World Engine", entries: [
+    { route: "/world-engine", title: "World Engine" },
+    { route: "/world-runtime", title: "World Runtime" },
+    { route: "/sequence-world", title: "Sequence World" },
+    { route: "/world-map", title: "World Map" },
+    { route: "/world-timelines", title: "Timelines" },
+    { route: "/world-causality", title: "Causality" },
+    { route: "/multi-world-network", title: "Multi-World" },
+  ]},
+  { id: "NARRATIVE", label: "Narrative", entries: [
+    { route: "/narrative-engine", title: "Narrative Engine" },
+    { route: "/story-forge", title: "Story Forge" },
+    { route: "/comic-script", title: "Comic Script" },
+    { route: "/game-quest-text", title: "Quest Text" },
+  ]},
+  { id: "VOCAL", label: "Vocal", entries: [
+    { route: "/vocal-engine", title: "Vocal Engine" },
+    { route: "/voice-profile", title: "Voice Profile" },
+    { route: "/ai-music-prompt", title: "AI Music Prompt" },
+  ]},
+  { id: "OBJECTS", label: "Objects", entries: [
+    { route: "/sequence-object-architecture", title: "Architecture" },
+    { route: "/sequence-objects", title: "Objects" },
+    { route: "/sequence-object-compiler", title: "Compiler" },
+    { route: "/sequence-object-examples", title: "Examples" },
+    { route: "/sequence-object-audit", title: "Audit" },
+  ]},
+  { id: "APP_RUNTIME", label: "App Runtime", entries: [
+    { route: "/app-runtime", title: "App Runtime" },
+    { route: "/app-projects", title: "App Projects" },
+    { route: "/app-preview", title: "App Preview" },
+    { route: "/app-runtime-examples", title: "Examples" },
+    { route: "/app-runtime-audit", title: "Audit" },
+  ]},
+  { id: "CODE_SANDBOX", label: "Code Sandbox", entries: [
+    { route: "/code-sandbox", title: "Code Sandbox" },
+    { route: "/code-runs", title: "Code Runs" },
+    { route: "/code-sandbox-examples", title: "Examples" },
+    { route: "/code-sandbox-audit", title: "Audit" },
+  ]},
+  { id: "WEBLLM", label: "WebLLM", entries: [
+    { route: "/webllm-runtime", title: "Runtime" },
+    { route: "/webllm-models", title: "Models" },
+    { route: "/webllm-neuro-control", title: "Neuro Control" },
+    { route: "/webllm-examples", title: "Examples" },
+    { route: "/webllm-audit", title: "Audit" },
+  ]},
+  { id: "WEBLCM", label: "WebLCM", entries: [
+    { route: "/weblcm-runtime", title: "Runtime" },
+    { route: "/weblcm-concepts", title: "Concepts" },
+    { route: "/weblcm-concept-graph", title: "Graph" },
+    { route: "/weblcm-concept-search", title: "Search" },
+    { route: "/weblcm-examples", title: "Examples" },
+    { route: "/weblcm-audit", title: "Audit" },
+  ]},
+  { id: "WEB_KNOWLEDGE", label: "Web Knowledge Trinity", entries: [
+    { route: "/web-knowledge-trinity", title: "Trinity" },
+    { route: "/weblkm-runtime", title: "WebLKM" },
+    { route: "/webcm-runtime", title: "WebCM" },
+    { route: "/webcom-runtime", title: "WebCoM" },
+    { route: "/web-knowledge-search", title: "Search" },
+    { route: "/web-knowledge-examples", title: "Examples" },
+    { route: "/web-knowledge-audit", title: "Audit" },
+  ]},
+  { id: "WEB_CAPABILITIES", label: "Web Capabilities", entries: [
+    { route: "/web-capabilities", title: "Registry" },
+    { route: "/web-capability-run", title: "Run" },
+    { route: "/web-capability-examples", title: "Examples" },
+    { route: "/web-capability-audit", title: "Audit" },
+  ]},
+  { id: "QA", label: "QA", entries: [
+    { route: "/system-audit", title: "System Audit" },
+    { route: "/constitution-violations", title: "Violations" },
+    { route: "/text-audit", title: "Text Audit" },
+  ]},
+  { id: "VERSION", label: "Version", entries: [
+    { route: "/version-leap", title: "Version Leap" },
+    { route: "/version-audit", title: "Audit" },
+    { route: "/version-timeline", title: "Timeline" },
+    { route: "/release-notes", title: "Release Notes" },
+  ]},
+  { id: "SYSTEM", label: "System", entries: [
+    { route: "/system-constitution", title: "Constitution" },
+    { route: "/system-evolution-map", title: "Evolution Map" },
+    { route: "/system-gap-map", title: "Gap Map" },
+    { route: "/system-upgrade-planner", title: "Upgrade Planner" },
+    { route: "/founder-console", title: "Founder Console" },
+  ]},
+  { id: "DOCS", label: "Docs", entries: [
+    { route: "/docs", title: "Docs" },
+    { route: "/learn", title: "Learn" },
+    { route: "/tutorials", title: "Tutorials" },
+    { route: "/faq", title: "FAQ" },
+    { route: "/technical-manual", title: "Technical Manual" },
+  ]},
+];

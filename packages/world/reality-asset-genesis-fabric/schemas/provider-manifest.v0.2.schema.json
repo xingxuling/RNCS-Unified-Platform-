@@ -1,0 +1,13 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://taowind.example/schemas/provider-manifest.v0.2.schema.json",
+  "title":"RAGF Provider Manifest v0.2",
+  "type":"object",
+  "required":["format","version","provider_id","name","mode","capabilities","provider_root"],
+  "properties":{
+    "format":{"const":"reality-asset.provider.v0.2"},"version":{"const":"0.2.0"},
+    "provider_id":{"type":"string"},"mode":{"enum":["builtin","stdio","http"]},
+    "capabilities":{"type":"array","minItems":1,"items":{"type":"object","required":["capability_id","outputs","quality","cost","latency","platforms","asset_kinds","deterministic"]}},
+    "provider_root":{"type":"string","pattern":"^[a-f0-9]{64}$"}
+  },"additionalProperties":true
+}

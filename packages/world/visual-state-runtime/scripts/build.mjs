@@ -1,0 +1,13 @@
+import { spawnSync } from 'node:child_process';
+import { mkdirSync, cpSync } from 'node:fs';
+const result = spawnSync('tsc', ['-p', 'tsconfig.json'], { stdio: 'inherit' });
+if (result.status !== 0) process.exit(result.status ?? 1);
+mkdirSync('dist/apps/studio', { recursive: true });
+cpSync('apps/studio', 'dist/apps/studio', { recursive: true });
+mkdirSync('dist/apps/webgpu-v03', { recursive: true });
+cpSync('apps/webgpu-v03', 'dist/apps/webgpu-v03', { recursive: true });
+mkdirSync('dist/apps/spatial-v04', { recursive: true });
+cpSync('apps/spatial-v04', 'dist/apps/spatial-v04', { recursive: true });
+mkdirSync('dist/schemas', { recursive: true });
+cpSync('schemas', 'dist/schemas', { recursive: true });
+console.log('VSR build complete.');

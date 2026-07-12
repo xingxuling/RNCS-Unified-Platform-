@@ -1,0 +1,7 @@
+tunnel: <TUNNEL_ID>
+credentials-file: C:/Users/<USER>/.cloudflared/<TUNNEL_ID>.json
+
+ingress:
+  - hostname: relay.example.com
+    service: http://127.0.0.1:17901
+  - service: http_status:404

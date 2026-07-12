@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Reality Branch Merge Proposal v0.2",
+  "type": "object",
+  "required": [
+    "format",
+    "version",
+    "proposal_id",
+    "workspace_root",
+    "comparison_root",
+    "selected_branch_id",
+    "candidate_root",
+    "simulation_root",
+    "base",
+    "operations",
+    "expected_candidate_state_root",
+    "require_authority",
+    "proposal_root"
+  ],
+  "properties": {
+    "format": {
+      "const": "reality-branch.merge-proposal.v0.2"
+    },
+    "version": {
+      "const": "0.2.0-alpha.1"
+    },
+    "proposal_id": {
+      "type": "string"
+    },
+    "workspace_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "comparison_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "selected_branch_id": {
+      "type": "string"
+    },
+    "candidate_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "simulation_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "execution_receipt_root": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "base": {
+      "type": "object"
+    },
+    "operations": {
+      "type": "array"
+    },
+    "expected_candidate_state_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "require_authority": {
+      "type": "boolean"
+    },
+    "proposal_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

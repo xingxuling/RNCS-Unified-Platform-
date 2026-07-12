@@ -1,0 +1,21 @@
+{
+  "version": "0.1",
+  "root": "screen.main",
+  "nodes": [
+    {"id": "screen.main", "role": "application", "label": "HNAC Hello"},
+    {"id": "status.runtime", "role": "status", "label": "Runtime status", "priority": "primary"},
+    {"id": "action.inspect", "role": "action", "label": "Inspect capsule"}
+  ],
+  "actions": [
+    {"id": "inspect", "target": "action.inspect", "intent": "show application identity, trust, and capability plan"}
+  ],
+  "constraints": [
+    {"type": "reading-order", "nodes": ["status.runtime", "action.inspect"]}
+  ],
+  "projections": {
+    "compact-touch": {"navigation": "single-surface"},
+    "desktop": {"navigation": "window"},
+    "voice": {"navigation": "command-tree"},
+    "neural-intent": {"navigation": "intent-selection"}
+  }
+}

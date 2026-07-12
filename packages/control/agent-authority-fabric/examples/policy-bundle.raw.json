@@ -1,0 +1,78 @@
+{
+  "bundle_id": "policy:rncs-default",
+  "default_effect": "deny",
+  "policies": [
+    {
+      "policy_id": "allow-owner-artifact",
+      "effect": "allow",
+      "priority": 10,
+      "match": {
+        "roles_any": [
+          "owner"
+        ],
+        "scopes_any": [
+          "artifact.*"
+        ],
+        "risk_at_most": "medium"
+      },
+      "obligations": [
+        {
+          "type": "evidence-required"
+        }
+      ]
+    },
+    {
+      "policy_id": "approve-irreversible",
+      "effect": "require_approval",
+      "priority": 50,
+      "match": {
+        "irreversible": true
+      },
+      "approval": {
+        "roles": [
+          "owner",
+          "security"
+        ],
+        "quorum": 1
+      }
+    },
+    {
+      "policy_id": "approve-high-risk",
+      "effect": "require_approval",
+      "priority": 60,
+      "match": {
+        "risk_at_least": "high"
+      },
+      "approval": {
+        "roles": [
+          "owner",
+          "security"
+        ],
+        "quorum": 2
+      }
+    },
+    {
+      "policy_id": "deny-critical",
+      "effect": "deny",
+      "priority": 100,
+      "match": {
+        "risk_at_least": "critical"
+      }
+    },
+    {
+      "policy_id": "approve-money",
+      "effect": "require_approval",
+      "priority": 70,
+      "match": {
+        "monetary_above": 1000000
+      },
+      "approval": {
+        "roles": [
+          "finance",
+          "owner"
+        ],
+        "quorum": 2
+      }
+    }
+  ]
+}

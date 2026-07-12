@@ -1,0 +1,14 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "type":"object",
+  "required":["format","provider_id","protocol_versions","capabilities","transports","trust","status","provider_root"],
+  "properties":{
+    "format":{"const":"cnp.provider-manifest.v0.1"},
+    "provider_id":{"type":"string","minLength":1},
+    "protocol_versions":{"type":"array","items":{"type":"string"},"minItems":1},
+    "capabilities":{"type":"array","items":{"$ref":"capability-descriptor.v0.1.schema.json"}},
+    "transports":{"type":"array","items":{"type":"object"}},
+    "status":{"enum":["available","degraded","unavailable"]},
+    "provider_root":{"type":"string","pattern":"^[0-9a-f]{64}$"}
+  },"additionalProperties":true
+}

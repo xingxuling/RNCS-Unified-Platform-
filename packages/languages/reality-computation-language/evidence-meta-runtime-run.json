@@ -1,0 +1,2340 @@
+{
+  "format": "rcl.reality-run.v0.5",
+  "program": "MetaRuntimeFoundation",
+  "programRoot": "6df61e1bd272b9db05875d4e291fdf4f084d3601be9a410c8a9c0bfd0b0c46a7",
+  "foundation": {
+    "format": "rcl.reality-foundation.v0.5",
+    "program": "MetaRuntimeFoundation",
+    "languageVersion": "0.5.0-alpha.1",
+    "programRoot": "6df61e1bd272b9db05875d4e291fdf4f084d3601be9a410c8a9c0bfd0b0c46a7",
+    "domains": {
+      "metaComputational": 0,
+      "computational": 1,
+      "physical": 0,
+      "perceptual": 0,
+      "neural": 0,
+      "living": 0,
+      "genetic": 0,
+      "quantitative": 0,
+      "knowledge": 0
+    },
+    "runningPlanes": {
+      "naturalLanguage": 0,
+      "understanding": 0,
+      "creative": 0,
+      "inner": 1,
+      "execution": 1
+    },
+    "metaPlanes": {
+      "spacetime": 1,
+      "acceleration": 1,
+      "compression": 1
+    },
+    "authority": {
+      "warrants": 1,
+      "boundedRules": 1
+    },
+    "compositePlanes": [
+      {
+        "id": "natural-language-reality",
+        "primitives": [
+          "language",
+          "utterance",
+          "intent",
+          "interpret"
+        ],
+        "composedFrom": [
+          "perceptual",
+          "knowledge",
+          "authority"
+        ],
+        "role": "turns human symbols into explicit utterances, candidate meanings and bounded intents without making a language model the whole intelligence"
+      },
+      {
+        "id": "understanding-reality",
+        "primitives": [
+          "understanding",
+          "hypothesis",
+          "explanation",
+          "understand"
+        ],
+        "composedFrom": [
+          "knowledge",
+          "quantitative",
+          "perceptual",
+          "natural-language-reality"
+        ],
+        "role": "constructs testable world models that explain evidence, expose confidence and can be rejected by contradiction"
+      },
+      {
+        "id": "creative-reality",
+        "primitives": [
+          "creation",
+          "candidate",
+          "select",
+          "create"
+        ],
+        "composedFrom": [
+          "understanding-reality",
+          "knowledge",
+          "meta-computational",
+          "authority"
+        ],
+        "role": "generates bounded novelty, evaluates candidates by utility, feasibility, novelty and risk, then selects without automatically executing"
+      },
+      {
+        "id": "inner-reality",
+        "composedFrom": [
+          "perceptual",
+          "neural",
+          "living",
+          "knowledge",
+          "natural-language-reality",
+          "understanding-reality",
+          "creative-reality"
+        ],
+        "role": "the subject-relative model that contains percepts, needs, memories, claims, interpretations, explanations and candidate creations"
+      },
+      {
+        "id": "execution-reality",
+        "composedFrom": [
+          "computational",
+          "physical",
+          "authority",
+          "causality-evidence"
+        ],
+        "role": "the bounded transition plane that turns a justified and selected intention into an observed, authorized and evidenced change"
+      }
+    ],
+    "metaRealityPlanes": [
+      {
+        "id": "meta-spacetime-reality",
+        "primitives": [
+          "spacetime",
+          "frame",
+          "clock",
+          "coordinate",
+          "relation",
+          "synchronize"
+        ],
+        "operatesOn": [
+          "all reality domains",
+          "all transitions",
+          "all observations"
+        ],
+        "role": "locates every state, event and observer in a reference frame and logical/physical time while preserving causal order and synchronization boundaries"
+      },
+      {
+        "id": "meta-acceleration-reality",
+        "primitives": [
+          "acceleration",
+          "target",
+          "strategy",
+          "factor",
+          "budget",
+          "fidelity",
+          "accelerate"
+        ],
+        "operatesOn": [
+          "computation",
+          "simulation",
+          "learning",
+          "execution"
+        ],
+        "role": "changes the speed, scheduling and reuse strategy of reality computation while preserving declared fidelity, authority and causal invariants"
+      },
+      {
+        "id": "meta-compression-reality",
+        "primitives": [
+          "compression",
+          "target",
+          "mode",
+          "codec",
+          "reversible",
+          "fidelity",
+          "compress",
+          "restore"
+        ],
+        "operatesOn": [
+          "state",
+          "history",
+          "knowledge",
+          "world models",
+          "evidence"
+        ],
+        "role": "reduces representational cost while preserving a declared reconstruction contract, provenance and reality root"
+      }
+    ]
+  },
+  "state": {
+    "chronos.lamp": {
+      "kind": "SpacetimePoint",
+      "frame": "world",
+      "x": {
+        "kind": "Quantity",
+        "type": "Length",
+        "value": 1,
+        "unit": "m"
+      },
+      "y": {
+        "kind": "Quantity",
+        "type": "Length",
+        "value": 2,
+        "unit": "m"
+      },
+      "z": {
+        "kind": "Quantity",
+        "type": "Length",
+        "value": 3,
+        "unit": "m"
+      },
+      "t": {
+        "kind": "Quantity",
+        "type": "Time",
+        "value": 6,
+        "unit": "s"
+      },
+      "target": "greenhouse.light"
+    },
+    "chronos.simulation": {
+      "kind": "Quantity",
+      "type": "Time",
+      "value": 6,
+      "unit": "s"
+    },
+    "world.result": 46368,
+    "memory.payload": "META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-"
+  },
+  "stateRoot": "d8b42b64b3fd57c42ad5a49d2cb255d3784298ace14deaedb256f9fd0cd533f0",
+  "history": [
+    {
+      "kind": "DomainTransition",
+      "domainKind": "meta-spacetime",
+      "name": "chronos",
+      "status": "realized",
+      "beforeRoot": "d1a517bb56d4e1b8e8f45482bee31a0c522aa8804205f883824457ed1a6fb89f",
+      "afterRoot": "8b70efc0af0507fe0ddb857d2388763d493f6a544b4b5a4b9d3b75533f73a19f",
+      "changes": [
+        {
+          "target": "chronos.simulation",
+          "before": {
+            "kind": "Quantity",
+            "type": "Time",
+            "value": 0,
+            "unit": "s"
+          },
+          "after": {
+            "kind": "Quantity",
+            "type": "Time",
+            "value": 2,
+            "unit": "s"
+          },
+          "source": "meta-spacetime:clock"
+        },
+        {
+          "target": "chronos.lamp",
+          "before": {
+            "kind": "SpacetimePoint",
+            "frame": "world",
+            "x": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 1,
+              "unit": "m"
+            },
+            "y": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 2,
+              "unit": "m"
+            },
+            "z": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 3,
+              "unit": "m"
+            },
+            "t": {
+              "kind": "Quantity",
+              "type": "Time",
+              "value": 0,
+              "unit": "s"
+            },
+            "target": "greenhouse.light"
+          },
+          "after": {
+            "kind": "SpacetimePoint",
+            "frame": "world",
+            "x": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 1,
+              "unit": "m"
+            },
+            "y": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 2,
+              "unit": "m"
+            },
+            "z": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 3,
+              "unit": "m"
+            },
+            "t": {
+              "kind": "Quantity",
+              "type": "Time",
+              "value": 2,
+              "unit": "s"
+            },
+            "target": "greenhouse.light"
+          },
+          "source": "meta-spacetime:coordinate"
+        }
+      ],
+      "step": 1,
+      "frames": [
+        {
+          "kind": "SpacetimeFrameDecl",
+          "name": "chronos.world",
+          "localName": "world",
+          "dimensions": 3,
+          "topology": "euclidean"
+        }
+      ],
+      "relations": [
+        {
+          "kind": "SpacetimeRelationDecl",
+          "left": "request",
+          "relation": "before",
+          "right": "calculation"
+        },
+        {
+          "kind": "SpacetimeRelationDecl",
+          "left": "calculation",
+          "relation": "before",
+          "right": "compression"
+        }
+      ],
+      "authorityClass": "meta-location-and-causal-order",
+      "spacetime": {
+        "domain": "chronos",
+        "step": 1,
+        "clocks": {
+          "chronos.simulation": {
+            "kind": "Quantity",
+            "type": "Time",
+            "value": 2,
+            "unit": "s"
+          }
+        },
+        "frameRoots": {
+          "chronos.world": "d4c94dc56ea4b03e1b67e12ff577f6dd2db935ecc640d51bde7d40971a40b8e7"
+        },
+        "causalRoot": "539275d1896eb2c011e30d71ca0c52c98b89b9ab889e5aa0012f513364a4536d"
+      }
+    },
+    {
+      "kind": "DomainTransition",
+      "domainKind": "meta-spacetime",
+      "name": "chronos",
+      "status": "realized",
+      "beforeRoot": "8b70efc0af0507fe0ddb857d2388763d493f6a544b4b5a4b9d3b75533f73a19f",
+      "afterRoot": "0d59c9381546e554be73a60fa8b9c6dde6cedc2dcaa57f507ad76cf3e7dc122e",
+      "changes": [
+        {
+          "target": "chronos.simulation",
+          "before": {
+            "kind": "Quantity",
+            "type": "Time",
+            "value": 2,
+            "unit": "s"
+          },
+          "after": {
+            "kind": "Quantity",
+            "type": "Time",
+            "value": 4,
+            "unit": "s"
+          },
+          "source": "meta-spacetime:clock"
+        },
+        {
+          "target": "chronos.lamp",
+          "before": {
+            "kind": "SpacetimePoint",
+            "frame": "world",
+            "x": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 1,
+              "unit": "m"
+            },
+            "y": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 2,
+              "unit": "m"
+            },
+            "z": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 3,
+              "unit": "m"
+            },
+            "t": {
+              "kind": "Quantity",
+              "type": "Time",
+              "value": 2,
+              "unit": "s"
+            },
+            "target": "greenhouse.light"
+          },
+          "after": {
+            "kind": "SpacetimePoint",
+            "frame": "world",
+            "x": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 1,
+              "unit": "m"
+            },
+            "y": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 2,
+              "unit": "m"
+            },
+            "z": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 3,
+              "unit": "m"
+            },
+            "t": {
+              "kind": "Quantity",
+              "type": "Time",
+              "value": 4,
+              "unit": "s"
+            },
+            "target": "greenhouse.light"
+          },
+          "source": "meta-spacetime:coordinate"
+        }
+      ],
+      "step": 2,
+      "frames": [
+        {
+          "kind": "SpacetimeFrameDecl",
+          "name": "chronos.world",
+          "localName": "world",
+          "dimensions": 3,
+          "topology": "euclidean"
+        }
+      ],
+      "relations": [
+        {
+          "kind": "SpacetimeRelationDecl",
+          "left": "request",
+          "relation": "before",
+          "right": "calculation"
+        },
+        {
+          "kind": "SpacetimeRelationDecl",
+          "left": "calculation",
+          "relation": "before",
+          "right": "compression"
+        }
+      ],
+      "authorityClass": "meta-location-and-causal-order",
+      "spacetime": {
+        "domain": "chronos",
+        "step": 2,
+        "clocks": {
+          "chronos.simulation": {
+            "kind": "Quantity",
+            "type": "Time",
+            "value": 4,
+            "unit": "s"
+          }
+        },
+        "frameRoots": {
+          "chronos.world": "d4c94dc56ea4b03e1b67e12ff577f6dd2db935ecc640d51bde7d40971a40b8e7"
+        },
+        "causalRoot": "539275d1896eb2c011e30d71ca0c52c98b89b9ab889e5aa0012f513364a4536d"
+      }
+    },
+    {
+      "kind": "DomainTransition",
+      "domainKind": "meta-spacetime",
+      "name": "chronos",
+      "status": "realized",
+      "beforeRoot": "0d59c9381546e554be73a60fa8b9c6dde6cedc2dcaa57f507ad76cf3e7dc122e",
+      "afterRoot": "e8130e112789029b0f8f0c5f412621faa139e4af4b66aec774a8ae43fddd2880",
+      "changes": [
+        {
+          "target": "chronos.simulation",
+          "before": {
+            "kind": "Quantity",
+            "type": "Time",
+            "value": 4,
+            "unit": "s"
+          },
+          "after": {
+            "kind": "Quantity",
+            "type": "Time",
+            "value": 6,
+            "unit": "s"
+          },
+          "source": "meta-spacetime:clock"
+        },
+        {
+          "target": "chronos.lamp",
+          "before": {
+            "kind": "SpacetimePoint",
+            "frame": "world",
+            "x": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 1,
+              "unit": "m"
+            },
+            "y": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 2,
+              "unit": "m"
+            },
+            "z": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 3,
+              "unit": "m"
+            },
+            "t": {
+              "kind": "Quantity",
+              "type": "Time",
+              "value": 4,
+              "unit": "s"
+            },
+            "target": "greenhouse.light"
+          },
+          "after": {
+            "kind": "SpacetimePoint",
+            "frame": "world",
+            "x": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 1,
+              "unit": "m"
+            },
+            "y": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 2,
+              "unit": "m"
+            },
+            "z": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 3,
+              "unit": "m"
+            },
+            "t": {
+              "kind": "Quantity",
+              "type": "Time",
+              "value": 6,
+              "unit": "s"
+            },
+            "target": "greenhouse.light"
+          },
+          "source": "meta-spacetime:coordinate"
+        }
+      ],
+      "step": 3,
+      "frames": [
+        {
+          "kind": "SpacetimeFrameDecl",
+          "name": "chronos.world",
+          "localName": "world",
+          "dimensions": 3,
+          "topology": "euclidean"
+        }
+      ],
+      "relations": [
+        {
+          "kind": "SpacetimeRelationDecl",
+          "left": "request",
+          "relation": "before",
+          "right": "calculation"
+        },
+        {
+          "kind": "SpacetimeRelationDecl",
+          "left": "calculation",
+          "relation": "before",
+          "right": "compression"
+        }
+      ],
+      "authorityClass": "meta-location-and-causal-order",
+      "spacetime": {
+        "domain": "chronos",
+        "step": 3,
+        "clocks": {
+          "chronos.simulation": {
+            "kind": "Quantity",
+            "type": "Time",
+            "value": 6,
+            "unit": "s"
+          }
+        },
+        "frameRoots": {
+          "chronos.world": "d4c94dc56ea4b03e1b67e12ff577f6dd2db935ecc640d51bde7d40971a40b8e7"
+        },
+        "causalRoot": "539275d1896eb2c011e30d71ca0c52c98b89b9ab889e5aa0012f513364a4536d"
+      }
+    },
+    {
+      "kind": "DomainTransition",
+      "domainKind": "meta-acceleration",
+      "name": "fast_fib",
+      "status": "realized",
+      "beforeRoot": "e8130e112789029b0f8f0c5f412621faa139e4af4b66aec774a8ae43fddd2880",
+      "afterRoot": "e8130e112789029b0f8f0c5f412621faa139e4af4b66aec774a8ae43fddd2880",
+      "changes": [],
+      "profile": {
+        "name": "fast_fib",
+        "target": "fib",
+        "strategy": "memoize",
+        "factor": 8,
+        "fidelity": 1,
+        "budget": {
+          "kind": "Quantity",
+          "type": "Time",
+          "value": 1,
+          "unit": "s"
+        },
+        "evidence": [
+          "optimization:memoization"
+        ],
+        "activatedAtRoot": "e8130e112789029b0f8f0c5f412621faa139e4af4b66aec774a8ae43fddd2880"
+      },
+      "authorityClass": "meta-execution-optimization",
+      "spacetime": {
+        "domain": "chronos",
+        "step": 3,
+        "clocks": {
+          "chronos.simulation": {
+            "kind": "Quantity",
+            "type": "Time",
+            "value": 6,
+            "unit": "s"
+          }
+        },
+        "frameRoots": {
+          "chronos.world": "d4c94dc56ea4b03e1b67e12ff577f6dd2db935ecc640d51bde7d40971a40b8e7"
+        },
+        "causalRoot": "539275d1896eb2c011e30d71ca0c52c98b89b9ab889e5aa0012f513364a4536d"
+      }
+    },
+    {
+      "kind": "Transition",
+      "rule": "calculate",
+      "ruleKind": "Emergence",
+      "mode": "realize",
+      "status": "realized",
+      "actor": "architect",
+      "from": null,
+      "into": null,
+      "beforeRoot": "e8130e112789029b0f8f0c5f412621faa139e4af4b66aec774a8ae43fddd2880",
+      "afterRoot": "d8b42b64b3fd57c42ad5a49d2cb255d3784298ace14deaedb256f9fd0cd533f0",
+      "changes": [
+        {
+          "target": "world.result",
+          "before": 0,
+          "after": 46368,
+          "source": "alter"
+        }
+      ],
+      "authority": {
+        "needs": [
+          {
+            "capability": "world.write",
+            "target": "world"
+          }
+        ],
+        "activeWarrants": [
+          {
+            "subject": "architect",
+            "capability": "world.write",
+            "target": "world"
+          }
+        ]
+      },
+      "witnesses": [
+        "meta-runtime:calculation"
+      ],
+      "hostCalls": [],
+      "spacetime": {
+        "domain": "chronos",
+        "step": 3,
+        "clocks": {
+          "chronos.simulation": {
+            "kind": "Quantity",
+            "type": "Time",
+            "value": 6,
+            "unit": "s"
+          }
+        },
+        "frameRoots": {
+          "chronos.world": "d4c94dc56ea4b03e1b67e12ff577f6dd2db935ecc640d51bde7d40971a40b8e7"
+        },
+        "causalRoot": "539275d1896eb2c011e30d71ca0c52c98b89b9ab889e5aa0012f513364a4536d"
+      }
+    },
+    {
+      "kind": "DomainTransition",
+      "domainKind": "meta-compression",
+      "name": "memory_capsule",
+      "status": "realized",
+      "beforeRoot": "d8b42b64b3fd57c42ad5a49d2cb255d3784298ace14deaedb256f9fd0cd533f0",
+      "afterRoot": "90d5e0972604b7dc427de9bc211f51ec2ac96454a72dafa47625424ee055d336",
+      "changes": [
+        {
+          "target": "memory.payload",
+          "before": "META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-",
+          "after": null,
+          "source": "meta-compression:discard"
+        }
+      ],
+      "capsule": {
+        "target": "memory",
+        "codec": "deflate",
+        "mode": "lossless",
+        "reversible": true,
+        "fidelity": 1,
+        "originalRoot": "a16cbd35d621f0f5275ef7064be8e526adb480cfed4e3905fab31d30f8b9593a",
+        "originalBytes": 5221,
+        "compressedBytes": 69,
+        "ratio": 0.013215859030837005,
+        "evidence": [
+          "snapshot:memory"
+        ]
+      },
+      "authorityClass": "meta-representation-compression",
+      "spacetime": {
+        "domain": "chronos",
+        "step": 3,
+        "clocks": {
+          "chronos.simulation": {
+            "kind": "Quantity",
+            "type": "Time",
+            "value": 6,
+            "unit": "s"
+          }
+        },
+        "frameRoots": {
+          "chronos.world": "d4c94dc56ea4b03e1b67e12ff577f6dd2db935ecc640d51bde7d40971a40b8e7"
+        },
+        "causalRoot": "539275d1896eb2c011e30d71ca0c52c98b89b9ab889e5aa0012f513364a4536d"
+      }
+    },
+    {
+      "kind": "DomainTransition",
+      "domainKind": "meta-compression-restore",
+      "name": "memory_capsule",
+      "status": "realized",
+      "beforeRoot": "90d5e0972604b7dc427de9bc211f51ec2ac96454a72dafa47625424ee055d336",
+      "afterRoot": "d8b42b64b3fd57c42ad5a49d2cb255d3784298ace14deaedb256f9fd0cd533f0",
+      "changes": [
+        {
+          "target": "memory.payload",
+          "before": null,
+          "after": "META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-",
+          "source": "meta-compression:restore"
+        }
+      ],
+      "originalRoot": "a16cbd35d621f0f5275ef7064be8e526adb480cfed4e3905fab31d30f8b9593a",
+      "restoredRoot": "a16cbd35d621f0f5275ef7064be8e526adb480cfed4e3905fab31d30f8b9593a",
+      "authorityClass": "meta-representation-restoration",
+      "spacetime": {
+        "domain": "chronos",
+        "step": 3,
+        "clocks": {
+          "chronos.simulation": {
+            "kind": "Quantity",
+            "type": "Time",
+            "value": 6,
+            "unit": "s"
+          }
+        },
+        "frameRoots": {
+          "chronos.world": "d4c94dc56ea4b03e1b67e12ff577f6dd2db935ecc640d51bde7d40971a40b8e7"
+        },
+        "causalRoot": "539275d1896eb2c011e30d71ca0c52c98b89b9ab889e5aa0012f513364a4536d"
+      }
+    }
+  ],
+  "projections": [
+    {
+      "kind": "Projection",
+      "rule": "calculate",
+      "ruleKind": "Emergence",
+      "mode": "foresee",
+      "status": "projected",
+      "actor": "architect",
+      "from": null,
+      "into": null,
+      "beforeRoot": "e8130e112789029b0f8f0c5f412621faa139e4af4b66aec774a8ae43fddd2880",
+      "afterRoot": "d8b42b64b3fd57c42ad5a49d2cb255d3784298ace14deaedb256f9fd0cd533f0",
+      "changes": [
+        {
+          "target": "world.result",
+          "before": 0,
+          "after": 46368,
+          "source": "alter"
+        }
+      ],
+      "authority": {
+        "needs": [
+          {
+            "capability": "world.write",
+            "target": "world"
+          }
+        ],
+        "activeWarrants": [
+          {
+            "subject": "architect",
+            "capability": "world.write",
+            "target": "world"
+          }
+        ]
+      },
+      "witnesses": [
+        "meta-runtime:calculation"
+      ],
+      "hostCalls": [],
+      "projectedState": {
+        "chronos.lamp": {
+          "kind": "SpacetimePoint",
+          "frame": "world",
+          "x": {
+            "kind": "Quantity",
+            "type": "Length",
+            "value": 1,
+            "unit": "m"
+          },
+          "y": {
+            "kind": "Quantity",
+            "type": "Length",
+            "value": 2,
+            "unit": "m"
+          },
+          "z": {
+            "kind": "Quantity",
+            "type": "Length",
+            "value": 3,
+            "unit": "m"
+          },
+          "t": {
+            "kind": "Quantity",
+            "type": "Time",
+            "value": 6,
+            "unit": "s"
+          },
+          "target": "greenhouse.light"
+        },
+        "chronos.simulation": {
+          "kind": "Quantity",
+          "type": "Time",
+          "value": 6,
+          "unit": "s"
+        },
+        "memory.payload": "META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-",
+        "world.result": 46368
+      }
+    }
+  ],
+  "naturalLanguageReality": {
+    "format": "rcl.natural-language-reality.v0.1",
+    "program": "MetaRuntimeFoundation",
+    "utterances": {},
+    "intents": {},
+    "activeIntents": [],
+    "interpretations": [],
+    "root": "64e091f7fb2619be3c62d7e79fe2489d1ddb3acd12a487ea2be4fc1ce682f64b"
+  },
+  "understandingReality": {
+    "format": "rcl.understanding-reality.v0.1",
+    "program": "MetaRuntimeFoundation",
+    "models": {},
+    "weakModels": [],
+    "explanations": [],
+    "root": "2283733027f17bc3af9d2626b6880fa6050e137fb2c5842ae5e1d1db4bbe02e5"
+  },
+  "creativeReality": {
+    "format": "rcl.creative-reality.v0.1",
+    "program": "MetaRuntimeFoundation",
+    "candidates": {},
+    "selected": {},
+    "generations": [],
+    "root": "c119fb03c7b6aa5d469d123faa60242ac8b948c0aefa798917f198bd8942868d"
+  },
+  "spacetimeReality": {
+    "format": "rcl.meta-spacetime-reality.v0.1",
+    "programs": [
+      {
+        "name": "chronos",
+        "frames": [
+          {
+            "kind": "SpacetimeFrameDecl",
+            "name": "chronos.world",
+            "localName": "world",
+            "dimensions": 3,
+            "topology": "euclidean"
+          }
+        ],
+        "clocks": {
+          "chronos.simulation": {
+            "kind": "Quantity",
+            "type": "Time",
+            "value": 6,
+            "unit": "s"
+          }
+        },
+        "coordinates": {
+          "chronos.lamp": {
+            "kind": "SpacetimePoint",
+            "frame": "world",
+            "x": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 1,
+              "unit": "m"
+            },
+            "y": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 2,
+              "unit": "m"
+            },
+            "z": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 3,
+              "unit": "m"
+            },
+            "t": {
+              "kind": "Quantity",
+              "type": "Time",
+              "value": 6,
+              "unit": "s"
+            },
+            "target": "greenhouse.light"
+          }
+        },
+        "relations": [
+          {
+            "kind": "SpacetimeRelationDecl",
+            "left": "request",
+            "relation": "before",
+            "right": "calculation"
+          },
+          {
+            "kind": "SpacetimeRelationDecl",
+            "left": "calculation",
+            "relation": "before",
+            "right": "compression"
+          }
+        ]
+      }
+    ],
+    "current": {
+      "domain": "chronos",
+      "step": 3,
+      "clocks": {
+        "chronos.simulation": {
+          "kind": "Quantity",
+          "type": "Time",
+          "value": 6,
+          "unit": "s"
+        }
+      },
+      "frameRoots": {
+        "chronos.world": "d4c94dc56ea4b03e1b67e12ff577f6dd2db935ecc640d51bde7d40971a40b8e7"
+      },
+      "causalRoot": "539275d1896eb2c011e30d71ca0c52c98b89b9ab889e5aa0012f513364a4536d"
+    },
+    "stampedTransitions": 7
+  },
+  "accelerationReality": {
+    "format": "rcl.meta-acceleration-reality.v0.1",
+    "profiles": [
+      {
+        "name": "fast_fib",
+        "target": "fib",
+        "strategy": "memoize",
+        "factor": 8,
+        "fidelity": 1,
+        "budget": {
+          "kind": "Quantity",
+          "type": "Time",
+          "value": 1,
+          "unit": "s"
+        },
+        "evidence": [
+          "optimization:memoization"
+        ],
+        "activatedAtRoot": "e8130e112789029b0f8f0c5f412621faa139e4af4b66aec774a8ae43fddd2880"
+      }
+    ],
+    "metrics": {
+      "fib": {
+        "requests": 48,
+        "evaluations": 25,
+        "cacheHits": 23
+      }
+    }
+  },
+  "compressionReality": {
+    "format": "rcl.meta-compression-reality.v0.1",
+    "definitions": [
+      {
+        "name": "memory_capsule",
+        "target": "memory",
+        "mode": "lossless",
+        "codec": "deflate",
+        "reversible": true,
+        "discard": true
+      }
+    ],
+    "capsules": [
+      {
+        "name": "memory_capsule",
+        "target": "memory",
+        "mode": "lossless",
+        "codec": "deflate",
+        "reversible": true,
+        "fidelity": 1,
+        "originalRoot": "a16cbd35d621f0f5275ef7064be8e526adb480cfed4e3905fab31d30f8b9593a",
+        "originalBytes": 5221,
+        "compressedBytes": 69,
+        "ratio": 0.013215859030837005,
+        "keys": [
+          "memory.payload"
+        ],
+        "evidence": [
+          "snapshot:memory"
+        ]
+      }
+    ]
+  },
+  "innerReality": {
+    "format": "rcl.inner-reality.v0.2",
+    "program": "MetaRuntimeFoundation",
+    "perceptual": {},
+    "neural": {},
+    "living": {},
+    "knowledge": {},
+    "naturalLanguage": {},
+    "understanding": {},
+    "creative": {},
+    "unresolved": [],
+    "root": "5ca7725369c4adfc5982ccde7c63bd05f53e5f09d6ce2736ee2e8a1a607ab76c"
+  },
+  "executionReality": {
+    "format": "rcl.execution-reality.v0.2",
+    "program": "MetaRuntimeFoundation",
+    "projected": [
+      {
+        "kind": "Projection",
+        "rule": "calculate",
+        "ruleKind": "Emergence",
+        "mode": "foresee",
+        "status": "projected",
+        "actor": "architect",
+        "from": null,
+        "into": null,
+        "beforeRoot": "e8130e112789029b0f8f0c5f412621faa139e4af4b66aec774a8ae43fddd2880",
+        "afterRoot": "d8b42b64b3fd57c42ad5a49d2cb255d3784298ace14deaedb256f9fd0cd533f0",
+        "changes": [
+          {
+            "target": "world.result",
+            "before": 0,
+            "after": 46368,
+            "source": "alter"
+          }
+        ],
+        "authority": {
+          "needs": [
+            {
+              "capability": "world.write",
+              "target": "world"
+            }
+          ],
+          "activeWarrants": [
+            {
+              "subject": "architect",
+              "capability": "world.write",
+              "target": "world"
+            }
+          ]
+        },
+        "witnesses": [
+          "meta-runtime:calculation"
+        ],
+        "hostCalls": [],
+        "projectedState": {
+          "chronos.lamp": {
+            "kind": "SpacetimePoint",
+            "frame": "world",
+            "x": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 1,
+              "unit": "m"
+            },
+            "y": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 2,
+              "unit": "m"
+            },
+            "z": {
+              "kind": "Quantity",
+              "type": "Length",
+              "value": 3,
+              "unit": "m"
+            },
+            "t": {
+              "kind": "Quantity",
+              "type": "Time",
+              "value": 6,
+              "unit": "s"
+            },
+            "target": "greenhouse.light"
+          },
+          "chronos.simulation": {
+            "kind": "Quantity",
+            "type": "Time",
+            "value": 6,
+            "unit": "s"
+          },
+          "memory.payload": "META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-",
+          "world.result": 46368
+        }
+      }
+    ],
+    "realized": [
+      {
+        "kind": "DomainTransition",
+        "domainKind": "meta-spacetime",
+        "name": "chronos",
+        "status": "realized",
+        "beforeRoot": "d1a517bb56d4e1b8e8f45482bee31a0c522aa8804205f883824457ed1a6fb89f",
+        "afterRoot": "8b70efc0af0507fe0ddb857d2388763d493f6a544b4b5a4b9d3b75533f73a19f",
+        "changes": [
+          {
+            "target": "chronos.simulation",
+            "before": {
+              "kind": "Quantity",
+              "type": "Time",
+              "value": 0,
+              "unit": "s"
+            },
+            "after": {
+              "kind": "Quantity",
+              "type": "Time",
+              "value": 2,
+              "unit": "s"
+            },
+            "source": "meta-spacetime:clock"
+          },
+          {
+            "target": "chronos.lamp",
+            "before": {
+              "kind": "SpacetimePoint",
+              "frame": "world",
+              "x": {
+                "kind": "Quantity",
+                "type": "Length",
+                "value": 1,
+                "unit": "m"
+              },
+              "y": {
+                "kind": "Quantity",
+                "type": "Length",
+                "value": 2,
+                "unit": "m"
+              },
+              "z": {
+                "kind": "Quantity",
+                "type": "Length",
+                "value": 3,
+                "unit": "m"
+              },
+              "t": {
+                "kind": "Quantity",
+                "type": "Time",
+                "value": 0,
+                "unit": "s"
+              },
+              "target": "greenhouse.light"
+            },
+            "after": {
+              "kind": "SpacetimePoint",
+              "frame": "world",
+              "x": {
+                "kind": "Quantity",
+                "type": "Length",
+                "value": 1,
+                "unit": "m"
+              },
+              "y": {
+                "kind": "Quantity",
+                "type": "Length",
+                "value": 2,
+                "unit": "m"
+              },
+              "z": {
+                "kind": "Quantity",
+                "type": "Length",
+                "value": 3,
+                "unit": "m"
+              },
+              "t": {
+                "kind": "Quantity",
+                "type": "Time",
+                "value": 2,
+                "unit": "s"
+              },
+              "target": "greenhouse.light"
+            },
+            "source": "meta-spacetime:coordinate"
+          }
+        ],
+        "step": 1,
+        "frames": [
+          {
+            "kind": "SpacetimeFrameDecl",
+            "name": "chronos.world",
+            "localName": "world",
+            "dimensions": 3,
+            "topology": "euclidean"
+          }
+        ],
+        "relations": [
+          {
+            "kind": "SpacetimeRelationDecl",
+            "left": "request",
+            "relation": "before",
+            "right": "calculation"
+          },
+          {
+            "kind": "SpacetimeRelationDecl",
+            "left": "calculation",
+            "relation": "before",
+            "right": "compression"
+          }
+        ],
+        "authorityClass": "meta-location-and-causal-order",
+        "spacetime": {
+          "domain": "chronos",
+          "step": 1,
+          "clocks": {
+            "chronos.simulation": {
+              "kind": "Quantity",
+              "type": "Time",
+              "value": 2,
+              "unit": "s"
+            }
+          },
+          "frameRoots": {
+            "chronos.world": "d4c94dc56ea4b03e1b67e12ff577f6dd2db935ecc640d51bde7d40971a40b8e7"
+          },
+          "causalRoot": "539275d1896eb2c011e30d71ca0c52c98b89b9ab889e5aa0012f513364a4536d"
+        }
+      },
+      {
+        "kind": "DomainTransition",
+        "domainKind": "meta-spacetime",
+        "name": "chronos",
+        "status": "realized",
+        "beforeRoot": "8b70efc0af0507fe0ddb857d2388763d493f6a544b4b5a4b9d3b75533f73a19f",
+        "afterRoot": "0d59c9381546e554be73a60fa8b9c6dde6cedc2dcaa57f507ad76cf3e7dc122e",
+        "changes": [
+          {
+            "target": "chronos.simulation",
+            "before": {
+              "kind": "Quantity",
+              "type": "Time",
+              "value": 2,
+              "unit": "s"
+            },
+            "after": {
+              "kind": "Quantity",
+              "type": "Time",
+              "value": 4,
+              "unit": "s"
+            },
+            "source": "meta-spacetime:clock"
+          },
+          {
+            "target": "chronos.lamp",
+            "before": {
+              "kind": "SpacetimePoint",
+              "frame": "world",
+              "x": {
+                "kind": "Quantity",
+                "type": "Length",
+                "value": 1,
+                "unit": "m"
+              },
+              "y": {
+                "kind": "Quantity",
+                "type": "Length",
+                "value": 2,
+                "unit": "m"
+              },
+              "z": {
+                "kind": "Quantity",
+                "type": "Length",
+                "value": 3,
+                "unit": "m"
+              },
+              "t": {
+                "kind": "Quantity",
+                "type": "Time",
+                "value": 2,
+                "unit": "s"
+              },
+              "target": "greenhouse.light"
+            },
+            "after": {
+              "kind": "SpacetimePoint",
+              "frame": "world",
+              "x": {
+                "kind": "Quantity",
+                "type": "Length",
+                "value": 1,
+                "unit": "m"
+              },
+              "y": {
+                "kind": "Quantity",
+                "type": "Length",
+                "value": 2,
+                "unit": "m"
+              },
+              "z": {
+                "kind": "Quantity",
+                "type": "Length",
+                "value": 3,
+                "unit": "m"
+              },
+              "t": {
+                "kind": "Quantity",
+                "type": "Time",
+                "value": 4,
+                "unit": "s"
+              },
+              "target": "greenhouse.light"
+            },
+            "source": "meta-spacetime:coordinate"
+          }
+        ],
+        "step": 2,
+        "frames": [
+          {
+            "kind": "SpacetimeFrameDecl",
+            "name": "chronos.world",
+            "localName": "world",
+            "dimensions": 3,
+            "topology": "euclidean"
+          }
+        ],
+        "relations": [
+          {
+            "kind": "SpacetimeRelationDecl",
+            "left": "request",
+            "relation": "before",
+            "right": "calculation"
+          },
+          {
+            "kind": "SpacetimeRelationDecl",
+            "left": "calculation",
+            "relation": "before",
+            "right": "compression"
+          }
+        ],
+        "authorityClass": "meta-location-and-causal-order",
+        "spacetime": {
+          "domain": "chronos",
+          "step": 2,
+          "clocks": {
+            "chronos.simulation": {
+              "kind": "Quantity",
+              "type": "Time",
+              "value": 4,
+              "unit": "s"
+            }
+          },
+          "frameRoots": {
+            "chronos.world": "d4c94dc56ea4b03e1b67e12ff577f6dd2db935ecc640d51bde7d40971a40b8e7"
+          },
+          "causalRoot": "539275d1896eb2c011e30d71ca0c52c98b89b9ab889e5aa0012f513364a4536d"
+        }
+      },
+      {
+        "kind": "DomainTransition",
+        "domainKind": "meta-spacetime",
+        "name": "chronos",
+        "status": "realized",
+        "beforeRoot": "0d59c9381546e554be73a60fa8b9c6dde6cedc2dcaa57f507ad76cf3e7dc122e",
+        "afterRoot": "e8130e112789029b0f8f0c5f412621faa139e4af4b66aec774a8ae43fddd2880",
+        "changes": [
+          {
+            "target": "chronos.simulation",
+            "before": {
+              "kind": "Quantity",
+              "type": "Time",
+              "value": 4,
+              "unit": "s"
+            },
+            "after": {
+              "kind": "Quantity",
+              "type": "Time",
+              "value": 6,
+              "unit": "s"
+            },
+            "source": "meta-spacetime:clock"
+          },
+          {
+            "target": "chronos.lamp",
+            "before": {
+              "kind": "SpacetimePoint",
+              "frame": "world",
+              "x": {
+                "kind": "Quantity",
+                "type": "Length",
+                "value": 1,
+                "unit": "m"
+              },
+              "y": {
+                "kind": "Quantity",
+                "type": "Length",
+                "value": 2,
+                "unit": "m"
+              },
+              "z": {
+                "kind": "Quantity",
+                "type": "Length",
+                "value": 3,
+                "unit": "m"
+              },
+              "t": {
+                "kind": "Quantity",
+                "type": "Time",
+                "value": 4,
+                "unit": "s"
+              },
+              "target": "greenhouse.light"
+            },
+            "after": {
+              "kind": "SpacetimePoint",
+              "frame": "world",
+              "x": {
+                "kind": "Quantity",
+                "type": "Length",
+                "value": 1,
+                "unit": "m"
+              },
+              "y": {
+                "kind": "Quantity",
+                "type": "Length",
+                "value": 2,
+                "unit": "m"
+              },
+              "z": {
+                "kind": "Quantity",
+                "type": "Length",
+                "value": 3,
+                "unit": "m"
+              },
+              "t": {
+                "kind": "Quantity",
+                "type": "Time",
+                "value": 6,
+                "unit": "s"
+              },
+              "target": "greenhouse.light"
+            },
+            "source": "meta-spacetime:coordinate"
+          }
+        ],
+        "step": 3,
+        "frames": [
+          {
+            "kind": "SpacetimeFrameDecl",
+            "name": "chronos.world",
+            "localName": "world",
+            "dimensions": 3,
+            "topology": "euclidean"
+          }
+        ],
+        "relations": [
+          {
+            "kind": "SpacetimeRelationDecl",
+            "left": "request",
+            "relation": "before",
+            "right": "calculation"
+          },
+          {
+            "kind": "SpacetimeRelationDecl",
+            "left": "calculation",
+            "relation": "before",
+            "right": "compression"
+          }
+        ],
+        "authorityClass": "meta-location-and-causal-order",
+        "spacetime": {
+          "domain": "chronos",
+          "step": 3,
+          "clocks": {
+            "chronos.simulation": {
+              "kind": "Quantity",
+              "type": "Time",
+              "value": 6,
+              "unit": "s"
+            }
+          },
+          "frameRoots": {
+            "chronos.world": "d4c94dc56ea4b03e1b67e12ff577f6dd2db935ecc640d51bde7d40971a40b8e7"
+          },
+          "causalRoot": "539275d1896eb2c011e30d71ca0c52c98b89b9ab889e5aa0012f513364a4536d"
+        }
+      },
+      {
+        "kind": "DomainTransition",
+        "domainKind": "meta-acceleration",
+        "name": "fast_fib",
+        "status": "realized",
+        "beforeRoot": "e8130e112789029b0f8f0c5f412621faa139e4af4b66aec774a8ae43fddd2880",
+        "afterRoot": "e8130e112789029b0f8f0c5f412621faa139e4af4b66aec774a8ae43fddd2880",
+        "changes": [],
+        "profile": {
+          "name": "fast_fib",
+          "target": "fib",
+          "strategy": "memoize",
+          "factor": 8,
+          "fidelity": 1,
+          "budget": {
+            "kind": "Quantity",
+            "type": "Time",
+            "value": 1,
+            "unit": "s"
+          },
+          "evidence": [
+            "optimization:memoization"
+          ],
+          "activatedAtRoot": "e8130e112789029b0f8f0c5f412621faa139e4af4b66aec774a8ae43fddd2880"
+        },
+        "authorityClass": "meta-execution-optimization",
+        "spacetime": {
+          "domain": "chronos",
+          "step": 3,
+          "clocks": {
+            "chronos.simulation": {
+              "kind": "Quantity",
+              "type": "Time",
+              "value": 6,
+              "unit": "s"
+            }
+          },
+          "frameRoots": {
+            "chronos.world": "d4c94dc56ea4b03e1b67e12ff577f6dd2db935ecc640d51bde7d40971a40b8e7"
+          },
+          "causalRoot": "539275d1896eb2c011e30d71ca0c52c98b89b9ab889e5aa0012f513364a4536d"
+        }
+      },
+      {
+        "kind": "Transition",
+        "rule": "calculate",
+        "ruleKind": "Emergence",
+        "mode": "realize",
+        "status": "realized",
+        "actor": "architect",
+        "from": null,
+        "into": null,
+        "beforeRoot": "e8130e112789029b0f8f0c5f412621faa139e4af4b66aec774a8ae43fddd2880",
+        "afterRoot": "d8b42b64b3fd57c42ad5a49d2cb255d3784298ace14deaedb256f9fd0cd533f0",
+        "changes": [
+          {
+            "target": "world.result",
+            "before": 0,
+            "after": 46368,
+            "source": "alter"
+          }
+        ],
+        "authority": {
+          "needs": [
+            {
+              "capability": "world.write",
+              "target": "world"
+            }
+          ],
+          "activeWarrants": [
+            {
+              "subject": "architect",
+              "capability": "world.write",
+              "target": "world"
+            }
+          ]
+        },
+        "witnesses": [
+          "meta-runtime:calculation"
+        ],
+        "hostCalls": [],
+        "spacetime": {
+          "domain": "chronos",
+          "step": 3,
+          "clocks": {
+            "chronos.simulation": {
+              "kind": "Quantity",
+              "type": "Time",
+              "value": 6,
+              "unit": "s"
+            }
+          },
+          "frameRoots": {
+            "chronos.world": "d4c94dc56ea4b03e1b67e12ff577f6dd2db935ecc640d51bde7d40971a40b8e7"
+          },
+          "causalRoot": "539275d1896eb2c011e30d71ca0c52c98b89b9ab889e5aa0012f513364a4536d"
+        }
+      },
+      {
+        "kind": "DomainTransition",
+        "domainKind": "meta-compression",
+        "name": "memory_capsule",
+        "status": "realized",
+        "beforeRoot": "d8b42b64b3fd57c42ad5a49d2cb255d3784298ace14deaedb256f9fd0cd533f0",
+        "afterRoot": "90d5e0972604b7dc427de9bc211f51ec2ac96454a72dafa47625424ee055d336",
+        "changes": [
+          {
+            "target": "memory.payload",
+            "before": "META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-",
+            "after": null,
+            "source": "meta-compression:discard"
+          }
+        ],
+        "capsule": {
+          "target": "memory",
+          "codec": "deflate",
+          "mode": "lossless",
+          "reversible": true,
+          "fidelity": 1,
+          "originalRoot": "a16cbd35d621f0f5275ef7064be8e526adb480cfed4e3905fab31d30f8b9593a",
+          "originalBytes": 5221,
+          "compressedBytes": 69,
+          "ratio": 0.013215859030837005,
+          "evidence": [
+            "snapshot:memory"
+          ]
+        },
+        "authorityClass": "meta-representation-compression",
+        "spacetime": {
+          "domain": "chronos",
+          "step": 3,
+          "clocks": {
+            "chronos.simulation": {
+              "kind": "Quantity",
+              "type": "Time",
+              "value": 6,
+              "unit": "s"
+            }
+          },
+          "frameRoots": {
+            "chronos.world": "d4c94dc56ea4b03e1b67e12ff577f6dd2db935ecc640d51bde7d40971a40b8e7"
+          },
+          "causalRoot": "539275d1896eb2c011e30d71ca0c52c98b89b9ab889e5aa0012f513364a4536d"
+        }
+      },
+      {
+        "kind": "DomainTransition",
+        "domainKind": "meta-compression-restore",
+        "name": "memory_capsule",
+        "status": "realized",
+        "beforeRoot": "90d5e0972604b7dc427de9bc211f51ec2ac96454a72dafa47625424ee055d336",
+        "afterRoot": "d8b42b64b3fd57c42ad5a49d2cb255d3784298ace14deaedb256f9fd0cd533f0",
+        "changes": [
+          {
+            "target": "memory.payload",
+            "before": null,
+            "after": "META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-",
+            "source": "meta-compression:restore"
+          }
+        ],
+        "originalRoot": "a16cbd35d621f0f5275ef7064be8e526adb480cfed4e3905fab31d30f8b9593a",
+        "restoredRoot": "a16cbd35d621f0f5275ef7064be8e526adb480cfed4e3905fab31d30f8b9593a",
+        "authorityClass": "meta-representation-restoration",
+        "spacetime": {
+          "domain": "chronos",
+          "step": 3,
+          "clocks": {
+            "chronos.simulation": {
+              "kind": "Quantity",
+              "type": "Time",
+              "value": 6,
+              "unit": "s"
+            }
+          },
+          "frameRoots": {
+            "chronos.world": "d4c94dc56ea4b03e1b67e12ff577f6dd2db935ecc640d51bde7d40971a40b8e7"
+          },
+          "causalRoot": "539275d1896eb2c011e30d71ca0c52c98b89b9ab889e5aa0012f513364a4536d"
+        }
+      }
+    ],
+    "hostCalls": [],
+    "authorityDecisions": [
+      {
+        "rule": "calculate",
+        "actor": "architect",
+        "authority": {
+          "needs": [
+            {
+              "capability": "world.write",
+              "target": "world"
+            }
+          ],
+          "activeWarrants": [
+            {
+              "subject": "architect",
+              "capability": "world.write",
+              "target": "world"
+            }
+          ]
+        }
+      }
+    ],
+    "evidence": [
+      "meta-runtime:calculation"
+    ],
+    "root": "c20645a5f742a0297773ae46da5406d78f94975296c1f9332fd0e0966bfd8d7d"
+  },
+  "outputs": [
+    {
+      "kind": "MetaPlaneRun",
+      "plane": "meta-spacetime",
+      "name": "chronos",
+      "steps": 3,
+      "records": [
+        {
+          "kind": "DomainTransition",
+          "domainKind": "meta-spacetime",
+          "name": "chronos",
+          "status": "realized",
+          "beforeRoot": "d1a517bb56d4e1b8e8f45482bee31a0c522aa8804205f883824457ed1a6fb89f",
+          "afterRoot": "8b70efc0af0507fe0ddb857d2388763d493f6a544b4b5a4b9d3b75533f73a19f",
+          "changes": [
+            {
+              "target": "chronos.simulation",
+              "before": {
+                "kind": "Quantity",
+                "type": "Time",
+                "value": 0,
+                "unit": "s"
+              },
+              "after": {
+                "kind": "Quantity",
+                "type": "Time",
+                "value": 2,
+                "unit": "s"
+              },
+              "source": "meta-spacetime:clock"
+            },
+            {
+              "target": "chronos.lamp",
+              "before": {
+                "kind": "SpacetimePoint",
+                "frame": "world",
+                "x": {
+                  "kind": "Quantity",
+                  "type": "Length",
+                  "value": 1,
+                  "unit": "m"
+                },
+                "y": {
+                  "kind": "Quantity",
+                  "type": "Length",
+                  "value": 2,
+                  "unit": "m"
+                },
+                "z": {
+                  "kind": "Quantity",
+                  "type": "Length",
+                  "value": 3,
+                  "unit": "m"
+                },
+                "t": {
+                  "kind": "Quantity",
+                  "type": "Time",
+                  "value": 0,
+                  "unit": "s"
+                },
+                "target": "greenhouse.light"
+              },
+              "after": {
+                "kind": "SpacetimePoint",
+                "frame": "world",
+                "x": {
+                  "kind": "Quantity",
+                  "type": "Length",
+                  "value": 1,
+                  "unit": "m"
+                },
+                "y": {
+                  "kind": "Quantity",
+                  "type": "Length",
+                  "value": 2,
+                  "unit": "m"
+                },
+                "z": {
+                  "kind": "Quantity",
+                  "type": "Length",
+                  "value": 3,
+                  "unit": "m"
+                },
+                "t": {
+                  "kind": "Quantity",
+                  "type": "Time",
+                  "value": 2,
+                  "unit": "s"
+                },
+                "target": "greenhouse.light"
+              },
+              "source": "meta-spacetime:coordinate"
+            }
+          ],
+          "step": 1,
+          "frames": [
+            {
+              "kind": "SpacetimeFrameDecl",
+              "name": "chronos.world",
+              "localName": "world",
+              "dimensions": 3,
+              "topology": "euclidean"
+            }
+          ],
+          "relations": [
+            {
+              "kind": "SpacetimeRelationDecl",
+              "left": "request",
+              "relation": "before",
+              "right": "calculation"
+            },
+            {
+              "kind": "SpacetimeRelationDecl",
+              "left": "calculation",
+              "relation": "before",
+              "right": "compression"
+            }
+          ],
+          "authorityClass": "meta-location-and-causal-order",
+          "spacetime": {
+            "domain": "chronos",
+            "step": 1,
+            "clocks": {
+              "chronos.simulation": {
+                "kind": "Quantity",
+                "type": "Time",
+                "value": 2,
+                "unit": "s"
+              }
+            },
+            "frameRoots": {
+              "chronos.world": "d4c94dc56ea4b03e1b67e12ff577f6dd2db935ecc640d51bde7d40971a40b8e7"
+            },
+            "causalRoot": "539275d1896eb2c011e30d71ca0c52c98b89b9ab889e5aa0012f513364a4536d"
+          }
+        },
+        {
+          "kind": "DomainTransition",
+          "domainKind": "meta-spacetime",
+          "name": "chronos",
+          "status": "realized",
+          "beforeRoot": "8b70efc0af0507fe0ddb857d2388763d493f6a544b4b5a4b9d3b75533f73a19f",
+          "afterRoot": "0d59c9381546e554be73a60fa8b9c6dde6cedc2dcaa57f507ad76cf3e7dc122e",
+          "changes": [
+            {
+              "target": "chronos.simulation",
+              "before": {
+                "kind": "Quantity",
+                "type": "Time",
+                "value": 2,
+                "unit": "s"
+              },
+              "after": {
+                "kind": "Quantity",
+                "type": "Time",
+                "value": 4,
+                "unit": "s"
+              },
+              "source": "meta-spacetime:clock"
+            },
+            {
+              "target": "chronos.lamp",
+              "before": {
+                "kind": "SpacetimePoint",
+                "frame": "world",
+                "x": {
+                  "kind": "Quantity",
+                  "type": "Length",
+                  "value": 1,
+                  "unit": "m"
+                },
+                "y": {
+                  "kind": "Quantity",
+                  "type": "Length",
+                  "value": 2,
+                  "unit": "m"
+                },
+                "z": {
+                  "kind": "Quantity",
+                  "type": "Length",
+                  "value": 3,
+                  "unit": "m"
+                },
+                "t": {
+                  "kind": "Quantity",
+                  "type": "Time",
+                  "value": 2,
+                  "unit": "s"
+                },
+                "target": "greenhouse.light"
+              },
+              "after": {
+                "kind": "SpacetimePoint",
+                "frame": "world",
+                "x": {
+                  "kind": "Quantity",
+                  "type": "Length",
+                  "value": 1,
+                  "unit": "m"
+                },
+                "y": {
+                  "kind": "Quantity",
+                  "type": "Length",
+                  "value": 2,
+                  "unit": "m"
+                },
+                "z": {
+                  "kind": "Quantity",
+                  "type": "Length",
+                  "value": 3,
+                  "unit": "m"
+                },
+                "t": {
+                  "kind": "Quantity",
+                  "type": "Time",
+                  "value": 4,
+                  "unit": "s"
+                },
+                "target": "greenhouse.light"
+              },
+              "source": "meta-spacetime:coordinate"
+            }
+          ],
+          "step": 2,
+          "frames": [
+            {
+              "kind": "SpacetimeFrameDecl",
+              "name": "chronos.world",
+              "localName": "world",
+              "dimensions": 3,
+              "topology": "euclidean"
+            }
+          ],
+          "relations": [
+            {
+              "kind": "SpacetimeRelationDecl",
+              "left": "request",
+              "relation": "before",
+              "right": "calculation"
+            },
+            {
+              "kind": "SpacetimeRelationDecl",
+              "left": "calculation",
+              "relation": "before",
+              "right": "compression"
+            }
+          ],
+          "authorityClass": "meta-location-and-causal-order",
+          "spacetime": {
+            "domain": "chronos",
+            "step": 2,
+            "clocks": {
+              "chronos.simulation": {
+                "kind": "Quantity",
+                "type": "Time",
+                "value": 4,
+                "unit": "s"
+              }
+            },
+            "frameRoots": {
+              "chronos.world": "d4c94dc56ea4b03e1b67e12ff577f6dd2db935ecc640d51bde7d40971a40b8e7"
+            },
+            "causalRoot": "539275d1896eb2c011e30d71ca0c52c98b89b9ab889e5aa0012f513364a4536d"
+          }
+        },
+        {
+          "kind": "DomainTransition",
+          "domainKind": "meta-spacetime",
+          "name": "chronos",
+          "status": "realized",
+          "beforeRoot": "0d59c9381546e554be73a60fa8b9c6dde6cedc2dcaa57f507ad76cf3e7dc122e",
+          "afterRoot": "e8130e112789029b0f8f0c5f412621faa139e4af4b66aec774a8ae43fddd2880",
+          "changes": [
+            {
+              "target": "chronos.simulation",
+              "before": {
+                "kind": "Quantity",
+                "type": "Time",
+                "value": 4,
+                "unit": "s"
+              },
+              "after": {
+                "kind": "Quantity",
+                "type": "Time",
+                "value": 6,
+                "unit": "s"
+              },
+              "source": "meta-spacetime:clock"
+            },
+            {
+              "target": "chronos.lamp",
+              "before": {
+                "kind": "SpacetimePoint",
+                "frame": "world",
+                "x": {
+                  "kind": "Quantity",
+                  "type": "Length",
+                  "value": 1,
+                  "unit": "m"
+                },
+                "y": {
+                  "kind": "Quantity",
+                  "type": "Length",
+                  "value": 2,
+                  "unit": "m"
+                },
+                "z": {
+                  "kind": "Quantity",
+                  "type": "Length",
+                  "value": 3,
+                  "unit": "m"
+                },
+                "t": {
+                  "kind": "Quantity",
+                  "type": "Time",
+                  "value": 4,
+                  "unit": "s"
+                },
+                "target": "greenhouse.light"
+              },
+              "after": {
+                "kind": "SpacetimePoint",
+                "frame": "world",
+                "x": {
+                  "kind": "Quantity",
+                  "type": "Length",
+                  "value": 1,
+                  "unit": "m"
+                },
+                "y": {
+                  "kind": "Quantity",
+                  "type": "Length",
+                  "value": 2,
+                  "unit": "m"
+                },
+                "z": {
+                  "kind": "Quantity",
+                  "type": "Length",
+                  "value": 3,
+                  "unit": "m"
+                },
+                "t": {
+                  "kind": "Quantity",
+                  "type": "Time",
+                  "value": 6,
+                  "unit": "s"
+                },
+                "target": "greenhouse.light"
+              },
+              "source": "meta-spacetime:coordinate"
+            }
+          ],
+          "step": 3,
+          "frames": [
+            {
+              "kind": "SpacetimeFrameDecl",
+              "name": "chronos.world",
+              "localName": "world",
+              "dimensions": 3,
+              "topology": "euclidean"
+            }
+          ],
+          "relations": [
+            {
+              "kind": "SpacetimeRelationDecl",
+              "left": "request",
+              "relation": "before",
+              "right": "calculation"
+            },
+            {
+              "kind": "SpacetimeRelationDecl",
+              "left": "calculation",
+              "relation": "before",
+              "right": "compression"
+            }
+          ],
+          "authorityClass": "meta-location-and-causal-order",
+          "spacetime": {
+            "domain": "chronos",
+            "step": 3,
+            "clocks": {
+              "chronos.simulation": {
+                "kind": "Quantity",
+                "type": "Time",
+                "value": 6,
+                "unit": "s"
+              }
+            },
+            "frameRoots": {
+              "chronos.world": "d4c94dc56ea4b03e1b67e12ff577f6dd2db935ecc640d51bde7d40971a40b8e7"
+            },
+            "causalRoot": "539275d1896eb2c011e30d71ca0c52c98b89b9ab889e5aa0012f513364a4536d"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "DomainTransition",
+      "domainKind": "meta-acceleration",
+      "name": "fast_fib",
+      "status": "realized",
+      "beforeRoot": "e8130e112789029b0f8f0c5f412621faa139e4af4b66aec774a8ae43fddd2880",
+      "afterRoot": "e8130e112789029b0f8f0c5f412621faa139e4af4b66aec774a8ae43fddd2880",
+      "changes": [],
+      "profile": {
+        "name": "fast_fib",
+        "target": "fib",
+        "strategy": "memoize",
+        "factor": 8,
+        "fidelity": 1,
+        "budget": {
+          "kind": "Quantity",
+          "type": "Time",
+          "value": 1,
+          "unit": "s"
+        },
+        "evidence": [
+          "optimization:memoization"
+        ],
+        "activatedAtRoot": "e8130e112789029b0f8f0c5f412621faa139e4af4b66aec774a8ae43fddd2880"
+      },
+      "authorityClass": "meta-execution-optimization",
+      "spacetime": {
+        "domain": "chronos",
+        "step": 3,
+        "clocks": {
+          "chronos.simulation": {
+            "kind": "Quantity",
+            "type": "Time",
+            "value": 6,
+            "unit": "s"
+          }
+        },
+        "frameRoots": {
+          "chronos.world": "d4c94dc56ea4b03e1b67e12ff577f6dd2db935ecc640d51bde7d40971a40b8e7"
+        },
+        "causalRoot": "539275d1896eb2c011e30d71ca0c52c98b89b9ab889e5aa0012f513364a4536d"
+      }
+    },
+    {
+      "kind": "Projection",
+      "rule": "calculate",
+      "ruleKind": "Emergence",
+      "mode": "foresee",
+      "status": "projected",
+      "actor": "architect",
+      "from": null,
+      "into": null,
+      "beforeRoot": "e8130e112789029b0f8f0c5f412621faa139e4af4b66aec774a8ae43fddd2880",
+      "afterRoot": "d8b42b64b3fd57c42ad5a49d2cb255d3784298ace14deaedb256f9fd0cd533f0",
+      "changes": [
+        {
+          "target": "world.result",
+          "before": 0,
+          "after": 46368,
+          "source": "alter"
+        }
+      ],
+      "authority": {
+        "needs": [
+          {
+            "capability": "world.write",
+            "target": "world"
+          }
+        ],
+        "activeWarrants": [
+          {
+            "subject": "architect",
+            "capability": "world.write",
+            "target": "world"
+          }
+        ]
+      },
+      "witnesses": [
+        "meta-runtime:calculation"
+      ],
+      "hostCalls": []
+    },
+    {
+      "kind": "Transition",
+      "rule": "calculate",
+      "ruleKind": "Emergence",
+      "mode": "realize",
+      "status": "realized",
+      "actor": "architect",
+      "from": null,
+      "into": null,
+      "beforeRoot": "e8130e112789029b0f8f0c5f412621faa139e4af4b66aec774a8ae43fddd2880",
+      "afterRoot": "d8b42b64b3fd57c42ad5a49d2cb255d3784298ace14deaedb256f9fd0cd533f0",
+      "changes": [
+        {
+          "target": "world.result",
+          "before": 0,
+          "after": 46368,
+          "source": "alter"
+        }
+      ],
+      "authority": {
+        "needs": [
+          {
+            "capability": "world.write",
+            "target": "world"
+          }
+        ],
+        "activeWarrants": [
+          {
+            "subject": "architect",
+            "capability": "world.write",
+            "target": "world"
+          }
+        ]
+      },
+      "witnesses": [
+        "meta-runtime:calculation"
+      ],
+      "hostCalls": [],
+      "spacetime": {
+        "domain": "chronos",
+        "step": 3,
+        "clocks": {
+          "chronos.simulation": {
+            "kind": "Quantity",
+            "type": "Time",
+            "value": 6,
+            "unit": "s"
+          }
+        },
+        "frameRoots": {
+          "chronos.world": "d4c94dc56ea4b03e1b67e12ff577f6dd2db935ecc640d51bde7d40971a40b8e7"
+        },
+        "causalRoot": "539275d1896eb2c011e30d71ca0c52c98b89b9ab889e5aa0012f513364a4536d"
+      }
+    },
+    {
+      "kind": "DomainTransition",
+      "domainKind": "meta-compression",
+      "name": "memory_capsule",
+      "status": "realized",
+      "beforeRoot": "d8b42b64b3fd57c42ad5a49d2cb255d3784298ace14deaedb256f9fd0cd533f0",
+      "afterRoot": "90d5e0972604b7dc427de9bc211f51ec2ac96454a72dafa47625424ee055d336",
+      "changes": [
+        {
+          "target": "memory.payload",
+          "before": "META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-",
+          "after": null,
+          "source": "meta-compression:discard"
+        }
+      ],
+      "capsule": {
+        "target": "memory",
+        "codec": "deflate",
+        "mode": "lossless",
+        "reversible": true,
+        "fidelity": 1,
+        "originalRoot": "a16cbd35d621f0f5275ef7064be8e526adb480cfed4e3905fab31d30f8b9593a",
+        "originalBytes": 5221,
+        "compressedBytes": 69,
+        "ratio": 0.013215859030837005,
+        "evidence": [
+          "snapshot:memory"
+        ]
+      },
+      "authorityClass": "meta-representation-compression",
+      "spacetime": {
+        "domain": "chronos",
+        "step": 3,
+        "clocks": {
+          "chronos.simulation": {
+            "kind": "Quantity",
+            "type": "Time",
+            "value": 6,
+            "unit": "s"
+          }
+        },
+        "frameRoots": {
+          "chronos.world": "d4c94dc56ea4b03e1b67e12ff577f6dd2db935ecc640d51bde7d40971a40b8e7"
+        },
+        "causalRoot": "539275d1896eb2c011e30d71ca0c52c98b89b9ab889e5aa0012f513364a4536d"
+      }
+    },
+    {
+      "kind": "DomainTransition",
+      "domainKind": "meta-compression-restore",
+      "name": "memory_capsule",
+      "status": "realized",
+      "beforeRoot": "90d5e0972604b7dc427de9bc211f51ec2ac96454a72dafa47625424ee055d336",
+      "afterRoot": "d8b42b64b3fd57c42ad5a49d2cb255d3784298ace14deaedb256f9fd0cd533f0",
+      "changes": [
+        {
+          "target": "memory.payload",
+          "before": null,
+          "after": "META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-META-REALITY-",
+          "source": "meta-compression:restore"
+        }
+      ],
+      "originalRoot": "a16cbd35d621f0f5275ef7064be8e526adb480cfed4e3905fab31d30f8b9593a",
+      "restoredRoot": "a16cbd35d621f0f5275ef7064be8e526adb480cfed4e3905fab31d30f8b9593a",
+      "authorityClass": "meta-representation-restoration",
+      "spacetime": {
+        "domain": "chronos",
+        "step": 3,
+        "clocks": {
+          "chronos.simulation": {
+            "kind": "Quantity",
+            "type": "Time",
+            "value": 6,
+            "unit": "s"
+          }
+        },
+        "frameRoots": {
+          "chronos.world": "d4c94dc56ea4b03e1b67e12ff577f6dd2db935ecc640d51bde7d40971a40b8e7"
+        },
+        "causalRoot": "539275d1896eb2c011e30d71ca0c52c98b89b9ab889e5aa0012f513364a4536d"
+      }
+    }
+  ]
+}

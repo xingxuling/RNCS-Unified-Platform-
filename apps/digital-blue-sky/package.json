@@ -1,0 +1,38 @@
+{
+  "name": "@taowind/dml-core-runtime",
+  "version": "0.5.0-alpha.1",
+  "type": "module",
+  "description": "Digital Mechanical Life cognitive runtime with real dialogue, bounded tool use, persistent memory and task execution.",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "dml-core": "src/cli.mjs",
+    "dml-provider": "src/stdio-runtime.mjs"
+  },
+  "exports": {
+    ".": "./src/index.mjs"
+  },
+  "files": [
+    "src",
+    "schemas",
+    "integration",
+    "web",
+    "docs",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node scripts/run-tests.mjs",
+    "demo": "node src/cli.mjs demo --reset",
+    "serve": "node src/web-host.mjs --port 17801",
+    "verify": "node scripts/verify-release.mjs",
+    "pack:release": "node scripts/build-release.mjs",
+    "develop:vsr": "node src/cli.mjs develop-vsr --project-path ../../packages/world/visual-state-runtime"
+  },
+  "dependencies": {
+    "@taowind/capability-negotiation-protocol": "*",
+    "@taowind/agent-authority-fabric": "*"
+  }
+}

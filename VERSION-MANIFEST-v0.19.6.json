@@ -1,0 +1,42 @@
+{
+  "suite": "RNCS_Aetherworld_Unified",
+  "version": "0.19.6-alpha.1",
+  "codename": "RCL Embedded Control Plane",
+  "based_on": "0.19.5-alpha.1",
+  "language": {
+    "rcl": "0.12.0-alpha.1",
+    "native_vm": "0.6.0-alpha.1",
+    "rbc": "1.1",
+    "provider_abi": "v1",
+    "self_hosting_stage": 5,
+    "runtime_mode": "embedded-long-lived-aot"
+  },
+  "rcl_control_plane": {
+    "version": "0.2.0-alpha.1",
+    "modules": 11,
+    "verified_edges": 10,
+    "stage": "embedded-aot-authority-mirror"
+  },
+  "verification": {
+    "rcl_tests": "70/70 PASS",
+    "control_plane_tests": "7/7 PASS",
+    "integration_tests": "34/34 PASS",
+    "workspace_links": 32,
+    "runtime_health": "healthy",
+    "healthy_runtimes": 15,
+    "asan": "PASS",
+    "ubsan": "PASS"
+  },
+  "benchmark": {
+    "child_process_aot_ms": 22.50572552,
+    "long_lived_daemon_ms": 0.502897996,
+    "direct_embedded_ms": 0.003719826,
+    "direct_embedded_runs_per_second": 268829.807
+  },
+  "remote_delivery": {
+    "git_commit": false,
+    "git_push": false,
+    "deployment": false,
+    "reason": "Developer Execution Worker not configured"
+  }
+}

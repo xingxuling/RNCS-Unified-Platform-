@@ -1,0 +1,45 @@
+{
+  "format": "reality-one.runtime-manifest.v0.3",
+  "gateway_protocol_versions": [
+    "0.3.0"
+  ],
+  "runtime_id": "rncs.ragf",
+  "runtime_version": "0.5.0-alpha.1",
+  "display_name": "Reality Asset Genesis Fabric",
+  "transport": {
+    "kind": "node-module",
+    "package": "@taowind/reality-asset-genesis-fabric"
+  },
+  "bridge": "../src/bridges/ragf.bridge.mjs",
+  "actions": [
+    "health",
+    "generate",
+    "verify",
+    "inspect",
+    "production-create",
+    "production-generate",
+    "production-select",
+    "production-regenerate",
+    "production-accept",
+    "production-export",
+    "society-generate",
+    "society-verify",
+    "society-inspect",
+    "society-session-create",
+    "society-session-step",
+    "society-session-act",
+    "society-session-propose",
+    "society-session-inspect"
+  ],
+  "protocols": [
+    "reality-asset-genesis.v0.4",
+    "reality-society-genesis.v0.5"
+  ],
+  "requires": [
+    {
+      "runtime_id": "rncs.core",
+      "version_range": "^0.1.0"
+    }
+  ],
+  "priority": 90
+}

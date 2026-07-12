@@ -1,0 +1,60 @@
+[
+  {
+    "id": "walk-forward",
+    "tick": 2,
+    "type": "move-character",
+    "characterId": "subject:player",
+    "direction": {
+      "x": 1000000,
+      "y": 0,
+      "z": 120000
+    },
+    "speedQ": 1000000
+  },
+  {
+    "id": "avatar-jump",
+    "tick": 72,
+    "type": "jump-character",
+    "characterId": "subject:player"
+  },
+  {
+    "id": "crate-kick",
+    "tick": 40,
+    "type": "apply-impulse",
+    "bodyId": "crate-a",
+    "impulse": {
+      "x": 5000,
+      "y": 2200,
+      "z": 900
+    },
+    "worldPoint": {
+      "x": 500,
+      "y": 900,
+      "z": 300
+    }
+  },
+  {
+    "id": "arm-wave-reverse",
+    "tick": 100,
+    "type": "set-joint-motor",
+    "jointId": "joint:right-shoulder",
+    "motorSpeedDeg": -45000,
+    "maxMotorTorque": 7000
+  },
+  {
+    "id": "listener-follow",
+    "tick": 120,
+    "type": "set-listener",
+    "listenerId": "listener:player",
+    "position": {
+      "x": 800,
+      "y": 1800,
+      "z": 300
+    },
+    "forward": {
+      "x": 1000000,
+      "y": 0,
+      "z": 0
+    }
+  }
+]

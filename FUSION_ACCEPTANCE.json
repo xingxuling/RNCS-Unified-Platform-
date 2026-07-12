@@ -1,0 +1,127 @@
+{
+  "format": "rncs-aetherworld.fusion-acceptance.v0.4",
+  "suiteVersion": "0.4.0-alpha.1",
+  "generatedAt": "2026-07-03",
+  "moduleCount": 27,
+  "productApps": [
+    "aetherworld",
+    "csl-studio",
+    "seed-forge",
+    "reality-studio",
+    "reality-build",
+    "digital-blue-sky"
+  ],
+  "sharedFusionPackages": [
+    "csl-compiler",
+    "ial-compiler",
+    "ose-reasoner",
+    "aether-rncs-bridge"
+  ],
+  "authorityKernel": "RNCS",
+  "validation": {
+    "cleanInstalls": {
+      "root": true,
+      "aetherworld": true,
+      "cslStudio": true,
+      "seedForge": true
+    },
+    "productBuilds": {
+      "aetherworld": true,
+      "cslStudio": true,
+      "seedForge": true
+    },
+    "productTypechecks": {
+      "aetherworld": true,
+      "cslStudio": true,
+      "seedForge": true
+    },
+    "languageTests": {
+      "csl": 162,
+      "ial": 1,
+      "bridge": 2,
+      "failed": 0
+    },
+    "rncsRuntimeHealth": {
+      "healthy": 12,
+      "total": 12
+    },
+    "rncsE2E": {
+      "passed": 4,
+      "failed": 0
+    },
+    "unifiedIntegration": {
+      "passed": 11,
+      "failed": 0
+    },
+    "aetherworldHealth": {
+      "routes": 370,
+      "sourceFiles": 3075,
+      "serverFunctionDefinitionFiles": 1,
+      "localStorageFiles": 125,
+      "status": "healthy"
+    },
+    "engineAndDownstreamTests": {
+      "rsr": {
+        "passed": 164,
+        "failed": 0
+      },
+      "vsr": {
+        "passed": 159,
+        "failed": 0
+      },
+      "realityStudio": {
+        "passed": 188,
+        "failed": 0
+      },
+      "realityBuild": {
+        "passed": 113,
+        "failed": 0
+      },
+      "gateway": {
+        "passed": 10,
+        "failed": 0
+      },
+      "unifiedIntegration": {
+        "passed": 11,
+        "failed": 0
+      },
+      "totalPassed": 645,
+      "totalFailed": 0
+    },
+    "releaseAudits": {
+      "rsr": "PASS",
+      "vsr": "PASS"
+    },
+    "unicodeFilenameRecovery": {
+      "recoveredFiles": 204,
+      "studioTests": "188/188",
+      "buildTests": "113/113"
+    }
+  },
+  "knownBoundaries": [
+    "Aetherworld仍有125个文件使用localStorage，尚未迁移为RFE/LAF权威状态。",
+    "CSL测试存在一个非阻断DOM嵌套警告及React Router未来版本提示。",
+    "Aetherworld的WebLLM按需包约6MB；CSL和Seed主包仍需要后续拆包。",
+    "Seed Forge保留世界规划能力，但RNCS是唯一事实、授权、分支和世界执行底座。",
+    "当前受限运行器中嵌套执行整套语言回归偶发Vitest子进程不退出，发布验收与语言回归因此拆成两个命令。",
+    "RSR旋转Box已进入SAT窄相，但任意凸体GJK/EPA、完整多点接触流形和生产级并行求解仍未完成。",
+    "VSR已具备GGX/Clearcoat材质基线，但真实GPU Shadow Map、纹理/法线贴图、IBL、TAA和骨骼蒙皮仍是下一阶段。"
+  ],
+  "engineUpgrade": {
+    "rsrVersion": "0.6.0-alpha.1",
+    "vsrVersion": "0.5.0-alpha.1",
+    "rsrSpatialTests": "40/40",
+    "vsrSpatialTests": "39/39",
+    "features": [
+      "rotated-fixture-offsets",
+      "oriented-box-world-aabb",
+      "sphere-vs-obb",
+      "obb-vs-obb-15-axis-sat",
+      "cook-torrance-ggx",
+      "metallic-energy-conservation",
+      "clearcoat",
+      "material-ao",
+      "ior"
+    ]
+  }
+}

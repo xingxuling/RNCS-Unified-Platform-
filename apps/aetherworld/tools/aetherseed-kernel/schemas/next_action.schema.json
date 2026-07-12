@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aetherworld.local/schemas/aetherseed/next_action.schema.json",
+  "title": "AetherSeed Kernel Next Action",
+  "description": "A gated next action proposed by AetherSeed. This may be a draft, dry-run, or confirmation-gated operation, but must not imply execution without evidence.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "actionId",
+    "eventId",
+    "judgementId",
+    "createdAt",
+    "actionType",
+    "permissionLevel",
+    "title",
+    "description",
+    "acceptanceCriteria",
+    "status"
+  ],
+  "properties": {
+    "schemaVersion": { "type": "string", "const": "aetherseed.next_action.v1" },
+    "actionId": { "type": "string", "minLength": 8 },
+    "eventId": { "type": "string", "minLength": 8 },
+    "judgementId": { "type": "string", "minLength": 8 },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "actionType": {
+      "type": "string",
+      "enum": [
+        "CODEX_PROMPT",
+        "CURSOR_PROMPT",
+        "LOVABLE_PROMPT",
+        "LOCAL_RUNBOOK",
+        "DRY_RUN_COMMAND",
+        "DATASET_EXPORT_PLAN",
+        "TRAINING_PLAN",
+        "RECORD_ONLY",
+        "HUMAN_REVIEW",
+        "BLOCKED_NOTICE",
+        "OTHER"
+      ]
+    },
+    "permissionLevel": {
+      "type": "string",
+      "enum": ["READ_ONLY", "DRAFT", "DRY_RUN", "CONFIRM_TO_EXECUTE", "BLOCKED"]
+    },
+    "title": { "type": "string", "minLength": 1 },
+    "description": { "type": "string", "minLength": 1 },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "type": "string",
+          "enum": ["aetherworld", "aetherseed", "codex", "cursor", "lovable", "ollama", "python", "powershell", "human", "other"]
+        },
+        "path": { "type": "string" },
+        "route": { "type": "string" },
+        "issueNumber": { "type": "integer" }
+      }
+    },
+    "draftPayload": {
+      "description": "Prompt, runbook, or patch-plan text. Must be safe to review before execution.",
+      "type": "string"
+    },
+    "commands": {
+      "type": "array",
+      "description": "Commands proposed for dry-run or confirmation. These are not evidence of execution.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["command", "mode"],
+        "properties": {
+          "command": { "type": "string" },
+          "mode": { "type": "string", "enum": ["READ_ONLY", "DRY_RUN", "CONFIRM_TO_EXECUTE", "BLOCKED"] },
+          "workingDirectory": { "type": "string" },
+          "riskReason": { "type": "string" }
+        }
+      }
+    },
+    "forbiddenFiles": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "acceptanceCriteria": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "validationPlan": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "status": {
+      "type": "string",
+      "enum": ["PROPOSED", "DRAFTED", "WAITING_CONFIRMATION", "EXECUTED", "DEFERRED", "BLOCKED", "FAILED"]
+    },
+    "auditNotes": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    }
+  }
+}

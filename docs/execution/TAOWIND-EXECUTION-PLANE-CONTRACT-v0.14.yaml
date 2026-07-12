@@ -1,0 +1,75 @@
+format: taowind.execution-plane-contract.v0.14
+release: 0.14.0-alpha.1
+control_plane:
+  package: '@taowind/taowind-reality-mcp'
+  version: 0.3.0-alpha.1
+  responsibilities:
+    - tool_discovery
+    - authority_state
+    - candidate_plans
+    - founder_authorization
+    - generations_and_receipts
+    - execution_dispatch
+execution_plane:
+  package: '@taowind/developer-execution-runtime'
+  version: 0.1.0-alpha.1
+  workspace_boundary:
+    deny_absolute_paths: true
+    deny_parent_traversal: true
+    deny_symlink_escape: true
+    deny_secret_paths: true
+  command_boundary:
+    argv_execution_default: true
+    executable_allow_list: true
+    bounded_timeout: true
+    bounded_output: true
+    sanitized_environment: true
+    shell:
+      mode_required: founder-unrestricted
+      explicit_flag_required: true
+  providers:
+    github:
+      capabilities: [branch, commit, push, pull_request, workflow_dispatch]
+      token_scope: bound_repository_only
+    vercel:
+      capabilities: [deploy, deployment_status]
+      preferred_write_path: project_deploy_hook
+  build_profiles:
+    - node_test
+    - node_build
+    - python_test
+    - gradle_test
+    - android_debug
+    - android_release
+    - rncs
+    - rsr
+    - vsr
+  native_execution:
+    rsr: real_project_execution
+    vsr: real_render_execution
+  artifact_export:
+    files: true
+    directories: filtered_zip
+    expiring_download_token: true
+  workflow:
+    stages:
+      - inspect
+      - create_task_branch
+      - modify
+      - test
+      - build
+      - diff
+      - commit
+      - optional_push
+      - optional_pull_request
+      - optional_deploy
+      - optional_native_verification
+      - receipt
+    rollback_on_failure: true
+authority:
+  state_preconditions_required_for_provider_writes: true
+  successful_workflow_can_record_generation: true
+acceptance:
+  default_founder_tools: 48
+  founder_unrestricted_tools: 49
+  registered_runtimes: 15

@@ -1,0 +1,28 @@
+{
+  "version": "0.1",
+  "documentId": "hello-title",
+  "documentHash": "fnv1a64:0cc450cd6f0d3b9c",
+  "fps": 5,
+  "start": 0,
+  "end": 0.2,
+  "width": 160,
+  "height": 90,
+  "frames": [
+    {
+      "frameIndex": 0,
+      "time": 0,
+      "filename": "C:\\Users\\USER\\Documents\\RCL\\RNCS-Unified-Platform\\packages\\world\\reality-simulation-runtime\\outputs\\test-range-2\\frame_000000.png",
+      "byteSize": 820,
+      "contentHash": "fnv1a64:e195a026b998e1e0",
+      "semanticHash": "fnv1a64:e0084fb6a57892ab"
+    },
+    {
+      "frameIndex": 1,
+      "time": 0.2,
+      "filename": "C:\\Users\\USER\\Documents\\RCL\\RNCS-Unified-Platform\\packages\\world\\reality-simulation-runtime\\outputs\\test-range-2\\frame_000001.png",
+      "byteSize": 1387,
+      "contentHash": "fnv1a64:5b4a20942ae43057",
+      "semanticHash": "fnv1a64:b1426ce1e69f5a9b"
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "format": "taowind.reality-mcp.release.v0.3",
+  "name": "TaoWind Reality MCP",
+  "version": "0.3.0-alpha.1",
+  "suite_version": "0.14.0-alpha.1",
+  "base_release": "0.13.0-alpha.1",
+  "transport": "streamable-http",
+  "sdk": "@modelcontextprotocol/sdk@1.29.0",
+  "runtime_gateway": "@taowind/reality-one-gateway@0.4.0-alpha.1",
+  "execution_runtime": "@taowind/developer-execution-runtime@0.1.0-alpha.1",
+  "runtime_count": 15,
+  "tool_count_default_founder": 48,
+  "tool_count_founder_unrestricted": 49,
+  "tool_groups": {
+    "authority_and_runtime": 27,
+    "engineering_execution_default": 21,
+    "breakglass_shell_optional": 1
+  },
+  "authority_boundary": {
+    "profile": "founder",
+    "read": true,
+    "candidate_branch_write": true,
+    "authorize": true,
+    "merge": true,
+    "rollback": true,
+    "replay": true,
+    "declared_runtime_actions": true,
+    "project_workspace_read_write": true,
+    "build_and_test": true,
+    "git_commit_push": true,
+    "github_provider_write": true,
+    "vercel_provider_write": true,
+    "rsr_simulation": true,
+    "vsr_render": true,
+    "breakglass_shell": "founder-unrestricted plus explicit enablement",
+    "host_filesystem": "not exposed; dedicated worker/container boundary",
+    "state_root_preconditions": true
+  },
+  "security": [
+    "origin-and-host-allow-lists",
+    "path-token-or-bearer",
+    "per-client-rate-limit",
+    "session-ttl",
+    "workspace-path-and-symlink-confinement",
+    "secret-path-exclusion",
+    "sanitized-child-process-environment",
+    "argv-command-execution-by-default",
+    "breakglass-shell-explicit-mode-only",
+    "provider-adapter-least-privilege-tokens",
+    "state-root-and-revision-preconditions",
+    "workflow-receipts",
+    "automatic-local-git-rollback-on-failure"
+  ],
+  "known_limits": [
+    "The online MCP does not change until this source is pushed and its deployment is rebuilt.",
+    "Vercel is the control plane; long builds and GPU workloads require a persistent remote execution worker.",
+    "Android builds require a worker or GitHub runner with JDK, Android SDK, and a project Gradle wrapper.",
+    "GPU-quality VSR rendering depends on the selected worker hardware and renderer backend."
+  ],
+  "generated_at": "2026-07-04T00:00:00Z"
+}

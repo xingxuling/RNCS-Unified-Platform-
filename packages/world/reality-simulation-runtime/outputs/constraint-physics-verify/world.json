@@ -1,0 +1,303 @@
+{
+  "format": "rsr.constraint-world.v0.2",
+  "worldId": "constraint-causal-playground",
+  "scale": 1000,
+  "stepHz": 60,
+  "gravity": {
+    "x": 0,
+    "y": 980000
+  },
+  "solverIterations": 6,
+  "gridCellSize": 64000,
+  "maxSubsteps": 12,
+  "materials": [
+    {
+      "id": "stone",
+      "restitutionQ": 80,
+      "frictionQ": 850,
+      "linearDampingQ": 0
+    },
+    {
+      "id": "rubber",
+      "restitutionQ": 780,
+      "frictionQ": 620,
+      "linearDampingQ": 10
+    },
+    {
+      "id": "metal",
+      "restitutionQ": 180,
+      "frictionQ": 300,
+      "linearDampingQ": 0
+    },
+    {
+      "id": "ghost",
+      "restitutionQ": 0,
+      "frictionQ": 0,
+      "linearDampingQ": 0
+    }
+  ],
+  "materialInteractions": [
+    {
+      "materialA": "rubber",
+      "materialB": "metal",
+      "restitutionQ": 900,
+      "frictionQ": 180
+    },
+    {
+      "materialA": "ghost",
+      "materialB": "rubber",
+      "sensorOnly": true
+    }
+  ],
+  "fields": [
+    {
+      "id": "wind",
+      "type": "uniform",
+      "acceleration": {
+        "x": 90000,
+        "y": 0
+      },
+      "tagsAny": [
+        "wind-affected"
+      ]
+    },
+    {
+      "id": "gravity-well",
+      "type": "radial",
+      "center": {
+        "x": 360000,
+        "y": 190000
+      },
+      "radius": 250000,
+      "strength": 180000,
+      "tagsAny": [
+        "orb"
+      ]
+    },
+    {
+      "id": "air",
+      "type": "linear-drag",
+      "coefficientQ": 35,
+      "categoryMask": 2
+    }
+  ],
+  "constraints": [
+    {
+      "id": "pendulum-link",
+      "type": "distance",
+      "bodyA": "pendulum-anchor",
+      "bodyB": "pendulum-bob",
+      "restLength": 112000,
+      "stiffnessQ": 930,
+      "dampingQ": 220,
+      "breakImpulse": 420000
+    }
+  ],
+  "bodies": [
+    {
+      "id": "ground",
+      "kind": "static",
+      "position": {
+        "x": 360000,
+        "y": 395000
+      },
+      "shape": {
+        "type": "box",
+        "halfExtents": {
+          "x": 340000,
+          "y": 18000
+        }
+      },
+      "materialId": "stone",
+      "filter": {
+        "categoryBits": 1,
+        "maskBits": 4294967295
+      },
+      "tags": [
+        "environment",
+        "ground"
+      ]
+    },
+    {
+      "id": "thin-wall",
+      "kind": "static",
+      "position": {
+        "x": 520000,
+        "y": 235000
+      },
+      "shape": {
+        "type": "box",
+        "halfExtents": {
+          "x": 6000,
+          "y": 140000
+        }
+      },
+      "materialId": "metal",
+      "filter": {
+        "categoryBits": 1,
+        "maskBits": 4294967295
+      },
+      "tags": [
+        "environment",
+        "ccd-target"
+      ]
+    },
+    {
+      "id": "moving-platform",
+      "kind": "kinematic",
+      "position": {
+        "x": 350000,
+        "y": 300000
+      },
+      "shape": {
+        "type": "box",
+        "halfExtents": {
+          "x": 85000,
+          "y": 9000
+        }
+      },
+      "velocity": {
+        "x": 65000,
+        "y": 0
+      },
+      "materialId": "metal",
+      "filter": {
+        "categoryBits": 1,
+        "maskBits": 4294967295
+      },
+      "tags": [
+        "environment",
+        "kinematic"
+      ]
+    },
+    {
+      "id": "fast-orb",
+      "kind": "dynamic",
+      "position": {
+        "x": 70000,
+        "y": 180000
+      },
+      "shape": {
+        "type": "circle",
+        "radius": 12000
+      },
+      "velocity": {
+        "x": 1500000,
+        "y": -80000
+      },
+      "inverseMassQ": 1000,
+      "materialId": "rubber",
+      "continuous": true,
+      "filter": {
+        "categoryBits": 2,
+        "maskBits": 4294967295
+      },
+      "sleepThreshold": 1800,
+      "sleepTicks": 30,
+      "tags": [
+        "subject",
+        "orb",
+        "wind-affected"
+      ]
+    },
+    {
+      "id": "crate",
+      "kind": "dynamic",
+      "position": {
+        "x": 310000,
+        "y": 90000
+      },
+      "shape": {
+        "type": "box",
+        "halfExtents": {
+          "x": 20000,
+          "y": 20000
+        }
+      },
+      "velocity": {
+        "x": 0,
+        "y": 0
+      },
+      "inverseMassQ": 650,
+      "materialId": "stone",
+      "continuous": false,
+      "filter": {
+        "categoryBits": 2,
+        "maskBits": 4294967295
+      },
+      "tags": [
+        "subject",
+        "wind-affected"
+      ]
+    },
+    {
+      "id": "pendulum-anchor",
+      "kind": "static",
+      "position": {
+        "x": 150000,
+        "y": 55000
+      },
+      "shape": {
+        "type": "circle",
+        "radius": 7000
+      },
+      "materialId": "metal",
+      "filter": {
+        "categoryBits": 1,
+        "maskBits": 4294967295
+      },
+      "tags": [
+        "constraint-anchor"
+      ]
+    },
+    {
+      "id": "pendulum-bob",
+      "kind": "dynamic",
+      "position": {
+        "x": 205000,
+        "y": 152000
+      },
+      "shape": {
+        "type": "circle",
+        "radius": 16000
+      },
+      "velocity": {
+        "x": 0,
+        "y": 0
+      },
+      "inverseMassQ": 800,
+      "materialId": "metal",
+      "continuous": true,
+      "filter": {
+        "categoryBits": 2,
+        "maskBits": 4294967295
+      },
+      "tags": [
+        "subject",
+        "orb"
+      ]
+    },
+    {
+      "id": "sensor-zone",
+      "kind": "static",
+      "position": {
+        "x": 620000,
+        "y": 115000
+      },
+      "shape": {
+        "type": "circle",
+        "radius": 52000
+      },
+      "materialId": "ghost",
+      "sensor": true,
+      "filter": {
+        "categoryBits": 4,
+        "maskBits": 2
+      },
+      "tags": [
+        "sensor",
+        "goal-zone"
+      ]
+    }
+  ]
+}

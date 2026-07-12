@@ -1,0 +1,60 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {performance} from 'node:perf_hooks';
+import {readJson,writeJson,emptyDir,ensureDir,fileManifest,seal,verifySeal,sha256File,BuildError,rootHash,clone} from './canonical.mjs';
+import {normalizeBuildRequest,assertRequest,assertProject,validateBuildRequest,validateUnifiedProject,createBuildIdentity,TARGET_PROFILES} from './contracts.mjs';
+import {bakeAssets} from './assets.mjs';
+import {TARGET_BUILDERS} from './targets.mjs';
+import {runBuildPreflight} from './preflight.mjs';
+
+export function createBuildGraph(request,project,identity){
+  const nodes=[
+    {id:'validate',kind:'validation',depends_on:[],outputs:['validation.json']},
+    {id:'preflight',kind:'capability-preflight',depends_on:['validate'],outputs:['build-preflight.json']},
+    {id:'asset-bake',kind:'asset-bake',depends_on:['preflight'],outputs:['asset-manifest.json']},
+    ...request.targets.map(t=>({id:`target:${t}`,kind:'target-build',target:t,depends_on:['asset-bake'],outputs:[t]})),
+    {id:'receipt',kind:'evidence',depends_on:request.targets.map(t=>`target:${t}`),outputs:['build-receipt.json','integrity-manifest.json']}
+  ];
+  return seal({format:'reality-build.graph.v0.2',version:'0.2.0-alpha.1',build_id:identity.build_id,project_root:identity.project_root,request_root:request.request_root,nodes},'graph_root');
+}
+
+export function verifyTarget(dir){
+  const receiptFile=path.join(dir,'target-receipt.json');if(!fs.existsSync(receiptFile))return{valid:false,errors:[{code:'TARGET_RECEIPT_MISSING',path:receiptFile}]};
+  const receipt=readJson(receiptFile),errors=[];if(!verifySeal(receipt,'target_root'))errors.push({code:'TARGET_ROOT_MISMATCH'});
+  for(const f of receipt.files??[]){const p=path.join(dir,f.path);if(!fs.existsSync(p)){errors.push({code:'FILE_MISSING',path:f.path});continue;}const actual=sha256File(p);if(actual!==f.sha256)errors.push({code:'FILE_HASH_MISMATCH',path:f.path,expected:f.sha256,actual});if(fs.statSync(p).size!==f.size)errors.push({code:'FILE_SIZE_MISMATCH',path:f.path});}
+  return{valid:errors.length===0,errors,target:receipt.target,target_root:receipt.target_root,files:receipt.files?.length??0};
+}
+
+export function verifyBuild(outRoot){
+  const receiptFile=path.join(outRoot,'build-receipt.json');if(!fs.existsSync(receiptFile))return{valid:false,errors:[{code:'BUILD_RECEIPT_MISSING'}]};
+  const receipt=readJson(receiptFile),errors=[];if(!verifySeal(receipt,'receipt_root'))errors.push({code:'BUILD_RECEIPT_ROOT_MISMATCH'});
+  for(const f of receipt.core_files??[]){const p=path.join(outRoot,f.path);if(!fs.existsSync(p)){errors.push({code:'CORE_FILE_MISSING',path:f.path});continue;}const actual=sha256File(p);if(actual!==f.sha256)errors.push({code:'CORE_FILE_HASH_MISMATCH',path:f.path,expected:f.sha256,actual});}
+  const targetResults={};for(const t of receipt.targets??[]){const r=verifyTarget(path.join(outRoot,t.target));targetResults[t.target]=r;if(!r.valid)errors.push(...r.errors.map(e=>({...e,target:t.target})));if(r.target_root!==t.target_root)errors.push({code:'TARGET_ROOT_REFERENCE_MISMATCH',target:t.target});}
+  return{valid:errors.length===0,errors,receipt,target_results:targetResults};
+}
+
+export function buildProject(input={}){
+  const request=assertRequest(input?.format?input:normalizeBuildRequest(input));
+  if(!fs.existsSync(request.project_file))throw new BuildError('PROJECT_FILE_NOT_FOUND',request.project_file);
+  const project=assertProject(readJson(request.project_file)),identity=createBuildIdentity(request,project),outRoot=request.output_dir;
+  if(fs.existsSync(path.join(outRoot,'build-receipt.json'))){const existing=verifyBuild(outRoot);if(existing.valid&&existing.receipt.build_key===identity.build_key)return{...existing.receipt,cache_hit:true,output_dir:outRoot,verification:existing};}
+  emptyDir(outRoot);const graph=createBuildGraph(request,project,identity);writeJson(path.join(outRoot,'build-graph.json'),graph);
+  const started=performance.now(),metrics=[];
+  const mark=(phase,t0,extra={})=>metrics.push({phase,duration_ms:Number((performance.now()-t0).toFixed(3)),...extra});
+  let t=performance.now();const requestValidation=validateBuildRequest(request),projectValidation=validateUnifiedProject(project);writeJson(path.join(outRoot,'validation.json'),{request:requestValidation,project:projectValidation});mark('validate',t,{warnings:requestValidation.warnings.length+projectValidation.warnings.length});
+  if(request.policy.fail_on_warning&&(requestValidation.warnings.length||projectValidation.warnings.length))throw new BuildError('BUILD_WARNING_FORBIDDEN');
+  t=performance.now();const preflight=runBuildPreflight({request,project});writeJson(path.join(outRoot,'build-preflight.json'),preflight);mark('preflight',t,{checks:preflight.checks.length,warnings:preflight.warnings.length,blocked:preflight.blocked.length});
+  if(preflight.status!=='ready')throw new BuildError('BUILD_PREFLIGHT_BLOCKED','',preflight);
+  t=performance.now();const bakeDir=ensureDir(path.join(outRoot,'_bake'));const assetManifest=bakeAssets({project,projectFile:request.project_file,outDir:bakeDir,embed:true,missingPolicy:request.policy.missing_asset});mark('asset-bake',t,{assets:Object.keys(assetManifest.records).length,files:assetManifest.store.file_count});
+  const targets=[];for(const target of request.targets){t=performance.now();const builder=TARGET_BUILDERS[target];const result=builder({project,request,identity,bakeDir,outRoot,assetManifest});targets.push({target,target_root:result.receipt.target_root,files:result.receipt.files.length,profile:TARGET_PROFILES[target]});mark(`target:${target}`,t,{files:result.receipt.files.length});}
+  const publicAssetManifest=clone(assetManifest);for(const rec of Object.values(publicAssetManifest.records??{}))for(const f of rec.files??[])f.embedded_uri=null;if(publicAssetManifest.manifest_root)delete publicAssetManifest.manifest_root;const sealedPublicAssetManifest=seal(publicAssetManifest,'manifest_root');writeJson(path.join(outRoot,'asset-manifest.json'),sealedPublicAssetManifest);
+  fs.rmSync(bakeDir,{recursive:true,force:true});
+  const integrity=seal({format:'reality-build.integrity-manifest.v0.2',version:'0.2.0-alpha.1',build_id:identity.build_id,build_key:identity.build_key,graph_root:graph.graph_root,targets:targets.map(t=>({target:t.target,target_root:t.target_root,files:t.files}))},'integrity_root');writeJson(path.join(outRoot,'integrity-manifest.json'),integrity);
+  const coreFiles=['build-graph.json','validation.json','build-preflight.json','asset-manifest.json','integrity-manifest.json'].map(rel=>({path:rel,size:fs.statSync(path.join(outRoot,rel)).size,sha256:sha256File(path.join(outRoot,rel))}));
+  const receipt=seal({format:'reality-build.receipt.v0.2',version:'0.2.0-alpha.1',build_id:identity.build_id,build_key:identity.build_key,project_id:project.identity.project_id,project_root:identity.project_root,request_root:request.request_root,semantic_request_root:identity.semantic_request_root,graph_root:graph.graph_root,preflight_root:preflight.preflight_root,mode:request.mode,quality_profile:request.quality_profile,app:clone(request.app),build_time:request.build_time,targets,core_files:coreFiles,integrity_root:integrity.integrity_root,deterministic_outputs:request.policy.deterministic,environment_evidence:true,status:'built'},'receipt_root');writeJson(path.join(outRoot,'build-receipt.json'),receipt);
+  const verification=verifyBuild(outRoot);if(!verification.valid)throw new BuildError('BUILD_SELF_VERIFY_FAILED','',verification);
+  writeJson(path.join(outRoot,'build-metrics.json'),{format:'reality-build.metrics.v0.2',build_id:identity.build_id,total_ms:Number((performance.now()-started).toFixed(3)),phases:metrics,not_part_of_deterministic_root:true});
+  return{...receipt,cache_hit:false,output_dir:outRoot,verification};
+}
+
+export function inspectBuild(outRoot){const v=verifyBuild(outRoot);return{...v,output_dir:path.resolve(outRoot)};}

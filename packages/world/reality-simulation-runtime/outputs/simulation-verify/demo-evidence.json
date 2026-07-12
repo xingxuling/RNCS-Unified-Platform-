@@ -1,0 +1,98 @@
+{
+  "format": "rsr.demo-evidence.v0.1",
+  "finalTick": 180,
+  "checkpointTick": 60,
+  "finalStateRoot": "fnv1a64:ae339aab5727a0ae",
+  "replayStateRoot": "fnv1a64:ae339aab5727a0ae",
+  "restoredStateRoot": "fnv1a64:ae339aab5727a0ae",
+  "deterministicReplay": true,
+  "deterministicRecovery": true,
+  "collisionBeginEvidence": [
+    {
+      "id": "falling-box-reality:41:begin:falling-box|ground",
+      "tick": 41,
+      "phase": "begin",
+      "pair": "falling-box|ground",
+      "bodyA": "falling-box",
+      "bodyB": "ground",
+      "contact": {
+        "key": "falling-box|ground",
+        "a": "falling-box",
+        "b": "ground",
+        "normal": {
+          "x": 0,
+          "y": 1
+        },
+        "penetration": 358,
+        "point": {
+          "x": 320000,
+          "y": 314000
+        },
+        "normalImpulse": 683046,
+        "tangentImpulse": 0
+      },
+      "evidenceHash": "fnv1a64:662f48fa7adf7473"
+    }
+  ],
+  "collisionSnapshot": {
+    "tick": 41,
+    "stateRoot": "fnv1a64:af46bf24dc072d86",
+    "contactRoot": "fnv1a64:b403fe5770d5e67a"
+  },
+  "causalDeltaRoot": "fnv1a64:e25067510f5b5254",
+  "sourceDocumentHash": "fnv1a64:ff97c48f0eb8a97f",
+  "sourceDisplayHash": "fnv1a64:b762d1f2735bac9e",
+  "invariantHash": "fnv1a64:4498da0c6bc3015f",
+  "observerVerification": {
+    "ok": true,
+    "sourceDisplayHash": "fnv1a64:b762d1f2735bac9e",
+    "invariantHash": "fnv1a64:4498da0c6bc3015f",
+    "observerCount": 2,
+    "projectedDisplayHashes": [
+      "fnv1a64:f502c15b030d3884",
+      "fnv1a64:bec0b7dff822b45e"
+    ],
+    "diagnostics": []
+  },
+  "views": [
+    {
+      "observerId": "simulation:player",
+      "pngHash": "c3d31d6b15fa9d8344374e63a2a248b5ee4143fc514fc90be53da39708f33e98",
+      "projectionHash": "fnv1a64:f502c15b030d3884"
+    },
+    {
+      "observerId": "simulation:debugger",
+      "pngHash": "f9171a5140d281e058e7566a7791b8967a40a47026cdfa77071e10be11fa949a",
+      "projectionHash": "fnv1a64:bec0b7dff822b45e"
+    }
+  ],
+  "collisionViews": [
+    {
+      "observerId": "simulation:player",
+      "pngHash": "c3d31d6b15fa9d8344374e63a2a248b5ee4143fc514fc90be53da39708f33e98",
+      "projectionHash": "fnv1a64:cd4baae27283dcb2"
+    },
+    {
+      "observerId": "simulation:debugger",
+      "pngHash": "224d2cbd24f3639aa393846a9ae5999a6a4b0a047dee22573e2f959dd656cb30",
+      "projectionHash": "fnv1a64:18ca51f295ecf19e"
+    }
+  ],
+  "build": {
+    "buildRoot": "fnv1a64:985f127399225ba7",
+    "firstBuilt": [
+      "style",
+      "world"
+    ],
+    "secondReused": [
+      "style",
+      "world"
+    ],
+    "verification": {
+      "ok": true,
+      "checked": 2,
+      "errors": [],
+      "recomputedRoot": "fnv1a64:985f127399225ba7"
+    }
+  }
+}

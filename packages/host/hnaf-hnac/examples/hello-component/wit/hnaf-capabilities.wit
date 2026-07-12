@@ -1,0 +1,32 @@
+package hnaf:capabilities@0.3.0;
+
+interface log {
+  write: func(message: string);
+}
+
+interface clock {
+  now-unix-ms: func() -> u64;
+}
+
+interface environment {
+  record summary {
+    system: string,
+    release: string,
+    machine: string,
+    runtime: string,
+  }
+  get-summary: func() -> summary;
+}
+
+interface kv {
+  get: func(key: string) -> option<string>;
+  set: func(key: string, value: string);
+}
+
+world application {
+  import log;
+  import clock;
+  import environment;
+  import kv;
+  export run: func() -> u64;
+}

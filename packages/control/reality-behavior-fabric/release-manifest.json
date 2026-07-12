@@ -1,0 +1,330 @@
+{
+  "format": "rncs.release-manifest.v0.1",
+  "package": "Reality_Behavior_Fabric_v0.1.0-alpha.1",
+  "files": [
+    {
+      "path": "benchmarks/benchmark.json",
+      "size_bytes": 1937,
+      "sha256": "1768d43b3d83ca7d12e1c3b2fa72f52d35616d649327a7a882b126abadfb6125"
+    },
+    {
+      "path": "benchmarks/BENCHMARK.md",
+      "size_bytes": 499,
+      "sha256": "7c19a761ae77ec4b9d5452ac3ee38334d72d8775b2753dbba3cda8d84766ada3"
+    },
+    {
+      "path": "docs/BEHAVIOR_FABRIC_API_v0.1.md",
+      "size_bytes": 1333,
+      "sha256": "76d4a99eb72866398294c500cd41ccf1f8bf3972376a71ea72fcbb4bcab29a6a"
+    },
+    {
+      "path": "docs/BEHAVIOR_FABRIC_CONTRACT_v0.1.md",
+      "size_bytes": 1609,
+      "sha256": "bbd4186253fcce4e3e7f235f0090f3a4f37e09d5f2d0c0d7812e1d8652ed98e2"
+    },
+    {
+      "path": "docs/GODOT_MATURITY_ROADMAP_AFTER_RBF_v0.1.md",
+      "size_bytes": 1766,
+      "sha256": "5ff3a7e7d7432a98f7069613ded4dd74a93a5edb29fbed1aee22e7ca41d5e794"
+    },
+    {
+      "path": "docs/IAL_现实行为织构_自执行提示词.md",
+      "size_bytes": 1353,
+      "sha256": "25567cfd2ee80a6fffbbee032a22119b5f42c84341d935a71b3c42b3b093878a"
+    },
+    {
+      "path": "docs/NAMING_BOUNDARY_INVERSION_BEHAVIOR_v0.1.md",
+      "size_bytes": 1739,
+      "sha256": "8349e07eaf0e6d44dd2d1241e57af86dbc13e6a01edd5a104e20203441026025"
+    },
+    {
+      "path": "docs/Reality_Native_Computing_Stack_发现文档_v0.1.md",
+      "size_bytes": 22171,
+      "sha256": "0c529696b9d21394389b922612964a46152340e838cb35bd91432740aa289775"
+    },
+    {
+      "path": "docs/TEST_REPORT_v0.1.md",
+      "size_bytes": 786,
+      "sha256": "4bbe8390fd0595cb237f143a2f079a1b2d96d366644f64c29d77ea58a2bf3707"
+    },
+    {
+      "path": "evidence/RBF_v0.1_玩家与调试投影.png",
+      "size_bytes": 210664,
+      "sha256": "ab75f7a525bdfa3ee887b9bc9f541f3f6105bcf2cb3bb72c76accde9fcf4efb7"
+    },
+    {
+      "path": "evidence/release-audit.json",
+      "size_bytes": 312,
+      "sha256": "2b8f075597b163f28956299c5071fdc9b9f8579b5a8c7ae4f510f8013466bca6"
+    },
+    {
+      "path": "evidence/VSR_v0.2_兼容验证.json",
+      "size_bytes": 227,
+      "sha256": "830c4f27e862f65ff2bfe1f80b72e3c1ea77f5d0402b653c9bc35675b0deb752"
+    },
+    {
+      "path": "evidence/vsr-runtime-debugger.png",
+      "size_bytes": 3421,
+      "sha256": "1468242d09a9929d4fbaa03d49eced8e0a37d9d677a1d324acb4665de3bd1827"
+    },
+    {
+      "path": "evidence/vsr-runtime-player.png",
+      "size_bytes": 2471,
+      "sha256": "0d65cf9eda8e3a317341dfc46e2a1006535e7571d1d6816b7b37a56a781f34c0"
+    },
+    {
+      "path": "examples/frost-trial.behavior.json",
+      "size_bytes": 27412,
+      "sha256": "b14afc81a66265627f85dc62ec13f46eed65576773889d2ea7123a55c5f4ba90"
+    },
+    {
+      "path": "integrations/reality-studio-v0.7/README.md",
+      "size_bytes": 435,
+      "sha256": "511a531f7d3a9dfc4be7eec1cac6def1c3b4928afcb4c19c7c5f2ba8d680fd67"
+    },
+    {
+      "path": "integrations/rsr-v0.4/README.md",
+      "size_bytes": 214,
+      "sha256": "e4046c40ff9a639bbad1c28688cc69643e2b1636eb705f88480bf68f348b2ead"
+    },
+    {
+      "path": "integrations/vsr-v0.2/README.md",
+      "size_bytes": 241,
+      "sha256": "fdea9063b19d2be091635f4315f704fcc92c1e90d426e592d078ec32b37b935c"
+    },
+    {
+      "path": "outputs/frost-trial/final-debugger.png",
+      "size_bytes": 166838,
+      "sha256": "b5518f1f15def51e88385a7bb4b6be1295ec0ad6d7e6e4922b58fc3069e543bd"
+    },
+    {
+      "path": "outputs/frost-trial/final-debugger.svg",
+      "size_bytes": 4510,
+      "sha256": "32ef383ca3d33e71230b02c7afd2559ab1d42336bf31c181dbad2ee0c650e692"
+    },
+    {
+      "path": "outputs/frost-trial/final-player.png",
+      "size_bytes": 118501,
+      "sha256": "04003bbfca140636ce3ebe0f81f5b3a37173fcb28ac3c8f4bef13cc76a2acb1a"
+    },
+    {
+      "path": "outputs/frost-trial/final-player.svg",
+      "size_bytes": 2979,
+      "sha256": "3b31fab8a0e2c23d3c77d7563843326fc22cd8d1805b0bf6927161913ac1dd35"
+    },
+    {
+      "path": "outputs/frost-trial/final-state.json",
+      "size_bytes": 29018,
+      "sha256": "3a5d2b0c509c465aa4c34dc0328e818d2010c55236f06e4418226f40080186be"
+    },
+    {
+      "path": "outputs/frost-trial/gateway-runtime-manifest.json",
+      "size_bytes": 1068,
+      "sha256": "f5d2e7f73422e7d6680d4c3ec9a643cbf475bc09828e8ef73e2afe320b922b55"
+    },
+    {
+      "path": "outputs/frost-trial/output-hashes.json",
+      "size_bytes": 1368,
+      "sha256": "6c03ad0733c1e36411a5e8e24a9f56f510ee96bc5fbd2a976ba083cfa8dd96b2"
+    },
+    {
+      "path": "outputs/frost-trial/playable.html",
+      "size_bytes": 16181,
+      "sha256": "2e3356f9242341ba91d9e6999d8b0d9250999206db90dfb1f182b8009b6f1142"
+    },
+    {
+      "path": "outputs/frost-trial/program.json",
+      "size_bytes": 27412,
+      "sha256": "b14afc81a66265627f85dc62ec13f46eed65576773889d2ea7123a55c5f4ba90"
+    },
+    {
+      "path": "outputs/frost-trial/rfe-causal-delta.json",
+      "size_bytes": 83060,
+      "sha256": "bb2a68e7cacdcf108962c9dadc378266435cd5d45cb0bca189eab65682d46934"
+    },
+    {
+      "path": "outputs/frost-trial/rsr-command-batch.json",
+      "size_bytes": 6751,
+      "sha256": "9badc5845d93b8bc4be8eaba138241fd09dfa3ee03cff26aa33288c1a390f3c9"
+    },
+    {
+      "path": "outputs/frost-trial/studio-import.json",
+      "size_bytes": 1069,
+      "sha256": "76634b13d1dd415f08cf32df9eb90aca82872e7a52e537263d0a8135f8c95378"
+    },
+    {
+      "path": "outputs/frost-trial/trace.json",
+      "size_bytes": 296362,
+      "sha256": "c601151d27fd7a93d72d88e55aa257c27913f995546b25cfb192c5e4c0338c66"
+    },
+    {
+      "path": "outputs/frost-trial/vsr-debugger.json",
+      "size_bytes": 4116,
+      "sha256": "b8f77b13b36704cb74d8e00708211935e1b5c63baadfe9919efbb919aa9e2243"
+    },
+    {
+      "path": "outputs/frost-trial/vsr-player.json",
+      "size_bytes": 3586,
+      "sha256": "9365d12d704669d36efb95bcabbccac714110f3601c4a51e85e32631ef008478"
+    },
+    {
+      "path": "outputs/frost-trial/workspace.json",
+      "size_bytes": 494605,
+      "sha256": "ac39f9a1e1379fb564dda2c687b7ad95865e602b90de40580323e221fd99b8d6"
+    },
+    {
+      "path": "package.json",
+      "size_bytes": 920,
+      "sha256": "bbaed502affe1d29e94a11d6c8170352a9b1f69acad1424d23c8c6d4f26e58cb"
+    },
+    {
+      "path": "README.md",
+      "size_bytes": 2211,
+      "sha256": "346d59e5078a7b600a91a560ce34259c0bdcc2285ddc66bf040742e5d38d46c4"
+    },
+    {
+      "path": "runtimes/reality-behavior-fabric.manifest.json",
+      "size_bytes": 903,
+      "sha256": "a99b361c57a6518355a9ccd0e20e8d76ca282d043476f529e53ad73970aa0a9d"
+    },
+    {
+      "path": "schemas/reality-behavior-program.v0.1.schema.json",
+      "size_bytes": 1904,
+      "sha256": "5bb3c35c0594cacc683ebe488e3859101adf2c9cbe44291a5128030a846b2b28"
+    },
+    {
+      "path": "schemas/reality-behavior-workspace.v0.1.schema.json",
+      "size_bytes": 990,
+      "sha256": "9d912ee056f792389a0944215344bf6d3b8b81b8aa2aa9c2b23ed7025ac168de"
+    },
+    {
+      "path": "scripts/benchmark.mjs",
+      "size_bytes": 3291,
+      "sha256": "4c1823d0ce9b062a6bb635936b0cba9035792a9a9b055adf3af1fc1e04599ad9"
+    },
+    {
+      "path": "scripts/generate-release-manifest.mjs",
+      "size_bytes": 953,
+      "sha256": "e6f464afd3a15b4f36d84a29adf0668beba46e16c724b20ac4b22bd118773f48"
+    },
+    {
+      "path": "scripts/release-audit.mjs",
+      "size_bytes": 2144,
+      "sha256": "93e5e726b8f90781f198672049a44dc0875f7a8e8d0ca552264a52edb47f5a8a"
+    },
+    {
+      "path": "scripts/verify-release-manifest.mjs",
+      "size_bytes": 755,
+      "sha256": "e98e51c1203a5ac88b2306f8d26d09d2921b41292e67d73fbaebeff53262ba70"
+    },
+    {
+      "path": "src/adapters.mjs",
+      "size_bytes": 6782,
+      "sha256": "b36ba98f40c932700f27a4db67834191bc3f76121870c89edd367b26d2136fab"
+    },
+    {
+      "path": "src/authority.mjs",
+      "size_bytes": 1939,
+      "sha256": "a61b2979021630d704e1006a473e805cb4bc83ff10aeba034ef9ae0771fd78ff"
+    },
+    {
+      "path": "src/behavior-tree.mjs",
+      "size_bytes": 2913,
+      "sha256": "44ab01ed22e259b3cc7d17e75785c488a115599a33d87d58511cbe4f899a5f3e"
+    },
+    {
+      "path": "src/canonical.mjs",
+      "size_bytes": 2911,
+      "sha256": "ea09a09c57826e38dd3c322a4ec1aaeeda712d67ff3feb5f70944b8f078a1821"
+    },
+    {
+      "path": "src/cli.mjs",
+      "size_bytes": 5922,
+      "sha256": "8c91c61809bb38a0771e50f5b9a8253f6b28a8bc3ce9c421dabc3c6d5e4b8abe"
+    },
+    {
+      "path": "src/contracts.mjs",
+      "size_bytes": 5202,
+      "sha256": "487c8209fb97641f9b76a66fd0fe6a730ca0de8a1056a5f7d4803b0bbd6d7cd5"
+    },
+    {
+      "path": "src/event-bus.mjs",
+      "size_bytes": 1366,
+      "sha256": "c3d8098a913872748d86ded273912928e73385810f7d99baebdaf545eed0efba"
+    },
+    {
+      "path": "src/expression.mjs",
+      "size_bytes": 4328,
+      "sha256": "e357e2fed062bce24d18b7497535fe866277293e5e1bc95f7c8dc2c08bf9fb2d"
+    },
+    {
+      "path": "src/index.mjs",
+      "size_bytes": 362,
+      "sha256": "964e24bba7f305a2b5b07a33d8f901cbf9fff33fc892529300b9dee2e0b64bb5"
+    },
+    {
+      "path": "src/render.mjs",
+      "size_bytes": 9650,
+      "sha256": "e2eabf829ecb184bfb16ecd73e586804742980f0854456613e7dc9742eebb594"
+    },
+    {
+      "path": "src/rules.mjs",
+      "size_bytes": 909,
+      "sha256": "39900ad161b6a87c2f8232342d66a2add2fba22e39c36fb41b7d460faf511ae0"
+    },
+    {
+      "path": "src/runtime.mjs",
+      "size_bytes": 13964,
+      "sha256": "bad84368a9722436f6ec5d77e9eb33205ad97c7a2233458a003e190d7ce2f18f"
+    },
+    {
+      "path": "src/state-machine.mjs",
+      "size_bytes": 2209,
+      "sha256": "148357a01f62ea128f5af24392a9e34be37810de86c31a12b1d8401a357b754b"
+    },
+    {
+      "path": "tests/authority-hot-reload.test.mjs",
+      "size_bytes": 3126,
+      "sha256": "7d21db3f5f64ce91f45efc2dcfd1ae7131100ddd0c963d586daacb16cebe0eb9"
+    },
+    {
+      "path": "tests/contracts.test.mjs",
+      "size_bytes": 2119,
+      "sha256": "d64955b9e14f2601d2e302d02de63c21e44989d7019ec1edd101074e00707ab7"
+    },
+    {
+      "path": "tests/expression.test.mjs",
+      "size_bytes": 1854,
+      "sha256": "dc53657a9e3069f110062d428b18e4512d0533f6ded3a79506bb8287683bee26"
+    },
+    {
+      "path": "tests/helpers.mjs",
+      "size_bytes": 785,
+      "sha256": "595c2c85d2b334b32a0a6ed82b0b2ca90334160d1af317bcaf77927e0e97e79a"
+    },
+    {
+      "path": "tests/integration.test.mjs",
+      "size_bytes": 3127,
+      "sha256": "ae2681d8529aa51c8bc83a61c7162a6ed5952bd6399c52ab01a3c62f53b58b4a"
+    },
+    {
+      "path": "tests/runtime.test.mjs",
+      "size_bytes": 4524,
+      "sha256": "b4ec0567c9d84bb708873b47709d83a92c30d8b79ee3b624046f5f62e5e1aca7"
+    },
+    {
+      "path": "tests/state-tree-rules.test.mjs",
+      "size_bytes": 3826,
+      "sha256": "35bdfc32db81a279c4e706d8c8afe3c74cc24df4e6c50643f946ab367cfe7e1d"
+    },
+    {
+      "path": "开发验收报告.md",
+      "size_bytes": 956,
+      "sha256": "de2b2d0c83d4991ebc0384f8e372e1e01998efd4f13d53da6f61be792ad19117"
+    }
+  ],
+  "totals": {
+    "files": 64,
+    "bytes": 1628859
+  }
+}

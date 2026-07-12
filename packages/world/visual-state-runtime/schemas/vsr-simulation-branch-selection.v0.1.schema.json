@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/vsr-simulation-branch-selection.v0.1.schema.json",
+  "title": "VSR Simulation Branch Selection v0.1",
+  "type": "object",
+  "required": ["format","provisional","selectedBranchId","selectedBranchRoot","selectedCausalDeltaRoot","rejectedBranchRoots","selectedBy","logicalTime","selectionRoot"],
+  "properties": {
+    "format": {"const":"vsr.simulation-branch-selection.v0.1"},
+    "provisional": {"const":true},
+    "selectedBranchId": {"type":"string","minLength":1},
+    "selectedBranchRoot": {"type":"string","pattern":"^[a-fA-F0-9]{64}$"},
+    "selectedCausalDeltaRoot": {"type":"string","pattern":"^[a-fA-F0-9]{64}$"},
+    "rejectedBranchRoots": {"type":"array","items":{"type":"string","pattern":"^[a-fA-F0-9]{64}$"}},
+    "selectedBy": {"type":"string","minLength":1},
+    "logicalTime": {"type":"number","minimum":0},
+    "reason": {"type":"string"},
+    "selectionRoot": {"type":"string","pattern":"^[a-fA-F0-9]{64}$"}
+  },
+  "additionalProperties": false
+}

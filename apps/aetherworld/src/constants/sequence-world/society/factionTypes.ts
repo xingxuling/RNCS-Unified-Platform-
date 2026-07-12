@@ -1,0 +1,19 @@
+export const FACTION_TYPES = [
+  "FOUNDER_ORDER","ARCHIVE_GUILD","WIND_WANDERERS","RESOURCE_FORGE",
+  "SYMBOL_CITY_COUNCIL","LIFE_GARDEN_KEEPERS","VOID_SECT",
+  "STAR_CIVILIZATION_RELIC","MARKET_LEAGUE","REBEL_CLUSTER",
+] as const;
+export type FactionType = typeof FACTION_TYPES[number];
+
+export const FACTION_LABELS: Record<FactionType, string> = {
+  FOUNDER_ORDER: "创始秩序",
+  ARCHIVE_GUILD: "档案公会",
+  WIND_WANDERERS: "风行者",
+  RESOURCE_FORGE: "资源锻炉",
+  SYMBOL_CITY_COUNCIL: "符号城议会",
+  LIFE_GARDEN_KEEPERS: "生命花园守护者",
+  VOID_SECT: "虚空教团",
+  STAR_CIVILIZATION_RELIC: "星海文明遗民",
+  MARKET_LEAGUE: "市场联盟",
+  REBEL_CLUSTER: "反叛群体",
+};

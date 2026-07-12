@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+[project]
+name = "rncs-core-contract"
+version = "0.1.0"
+description = "Reality-Native Computing Stack core transition contract"
+requires-python = ">=3.10"
+license = {text = "Apache-2.0"}
+[project.scripts]
+rncs-contract = "rncs_contract.cli:main"
+[tool.setuptools]
+packages = ["rncs_contract"]

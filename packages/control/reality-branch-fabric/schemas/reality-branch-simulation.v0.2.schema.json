@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Reality Branch Simulation v0.2",
+  "type": "object",
+  "required": [
+    "format",
+    "version",
+    "simulation_id",
+    "workspace_root",
+    "branch_id",
+    "candidate_state_root",
+    "scenarios",
+    "aggregate",
+    "eligible",
+    "simulation_root"
+  ],
+  "properties": {
+    "format": {
+      "const": "reality-branch.simulation.v0.2"
+    },
+    "version": {
+      "const": "0.2.0-alpha.1"
+    },
+    "simulation_id": {
+      "type": "string"
+    },
+    "workspace_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "branch_id": {
+      "type": "string"
+    },
+    "branch_chain": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "candidate_state_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "scenarios": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "scenario_id",
+          "probability_bps",
+          "metrics",
+          "eligible",
+          "scenario_root"
+        ]
+      }
+    },
+    "aggregate": {
+      "type": "object",
+      "required": [
+        "expected",
+        "worst",
+        "resilience"
+      ]
+    },
+    "eligible": {
+      "type": "boolean"
+    },
+    "violations": {
+      "type": "array"
+    },
+    "simulation_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

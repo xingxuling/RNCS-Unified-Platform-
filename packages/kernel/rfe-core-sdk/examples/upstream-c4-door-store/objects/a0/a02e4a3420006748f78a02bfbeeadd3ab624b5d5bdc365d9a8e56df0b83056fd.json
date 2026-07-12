@@ -1,0 +1,39 @@
+{
+  "format": "rfe.content-object.v1",
+  "kind": "component-segment",
+  "value": {
+    "id": "91a59fc0ddfb61d312203272663d38b6380279653e922013a0f108aaa6e9623e",
+    "kind": "fact-base",
+    "records": [
+      {
+        "id": "fact:door-state:0",
+        "subject": "object:door",
+        "predicate": "state",
+        "value": "locked",
+        "validFrom": 0,
+        "validTo": 1,
+        "source": "source:runtime",
+        "confidence": 1,
+        "visibility": {
+          "type": "public"
+        },
+        "authority": "authority:system"
+      },
+      {
+        "id": "fact:door-state:1",
+        "subject": "object:door",
+        "predicate": "state",
+        "value": "unlocked",
+        "validFrom": 1,
+        "validTo": null,
+        "source": "source:runtime",
+        "confidence": 1,
+        "visibility": {
+          "type": "public"
+        },
+        "authority": "authority:conformance"
+      }
+    ]
+  },
+  "integrityHash": "a02e4a3420006748f78a02bfbeeadd3ab624b5d5bdc365d9a8e56df0b83056fd"
+}

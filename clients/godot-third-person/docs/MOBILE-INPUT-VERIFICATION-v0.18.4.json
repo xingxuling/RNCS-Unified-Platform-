@@ -1,0 +1,227 @@
+{
+  "version": "0.18.4-alpha.1",
+  "target": "Godot 4.7 Android touch controls",
+  "ok": true,
+  "checks": [
+    {
+      "name": "mobile_script_preloaded",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "move_signal_wired",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "camera_signal_wired",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "six_action_buttons",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "five_spells",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "multi_touch",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile_no_mouse_capture",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "voice_panel_pauses_touch",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile_quality_mode",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "touch_emulation",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "position_shadow_warning_removed",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "balanced_world_state.gd",
+      "ok": true,
+      "detail": "paren 27/27"
+    },
+    {
+      "name": "brackets_world_state.gd",
+      "ok": true,
+      "detail": "bracket 6/6"
+    },
+    {
+      "name": "braces_world_state.gd",
+      "ok": true,
+      "detail": "brace 6/6"
+    },
+    {
+      "name": "balanced_voice_magic.gd",
+      "ok": true,
+      "detail": "paren 60/60"
+    },
+    {
+      "name": "brackets_voice_magic.gd",
+      "ok": true,
+      "detail": "bracket 15/15"
+    },
+    {
+      "name": "braces_voice_magic.gd",
+      "ok": true,
+      "detail": "brace 10/10"
+    },
+    {
+      "name": "balanced_player_controller.gd",
+      "ok": true,
+      "detail": "paren 196/196"
+    },
+    {
+      "name": "brackets_player_controller.gd",
+      "ok": true,
+      "detail": "bracket 25/25"
+    },
+    {
+      "name": "braces_player_controller.gd",
+      "ok": true,
+      "detail": "brace 6/6"
+    },
+    {
+      "name": "balanced_enemy.gd",
+      "ok": true,
+      "detail": "paren 67/67"
+    },
+    {
+      "name": "brackets_enemy.gd",
+      "ok": true,
+      "detail": "bracket 2/2"
+    },
+    {
+      "name": "braces_enemy.gd",
+      "ok": true,
+      "detail": "brace 5/5"
+    },
+    {
+      "name": "balanced_npc_player.gd",
+      "ok": true,
+      "detail": "paren 35/35"
+    },
+    {
+      "name": "brackets_npc_player.gd",
+      "ok": true,
+      "detail": "bracket 6/6"
+    },
+    {
+      "name": "braces_npc_player.gd",
+      "ok": true,
+      "detail": "brace 0/0"
+    },
+    {
+      "name": "balanced_hud.gd",
+      "ok": true,
+      "detail": "paren 183/183"
+    },
+    {
+      "name": "brackets_hud.gd",
+      "ok": true,
+      "detail": "bracket 2/2"
+    },
+    {
+      "name": "braces_hud.gd",
+      "ok": true,
+      "detail": "brace 2/2"
+    },
+    {
+      "name": "balanced_main.gd",
+      "ok": true,
+      "detail": "paren 350/350"
+    },
+    {
+      "name": "brackets_main.gd",
+      "ok": true,
+      "detail": "bracket 78/78"
+    },
+    {
+      "name": "braces_main.gd",
+      "ok": true,
+      "detail": "brace 3/3"
+    },
+    {
+      "name": "balanced_bootstrap.gd",
+      "ok": true,
+      "detail": "paren 86/86"
+    },
+    {
+      "name": "brackets_bootstrap.gd",
+      "ok": true,
+      "detail": "bracket 5/5"
+    },
+    {
+      "name": "braces_bootstrap.gd",
+      "ok": true,
+      "detail": "brace 0/0"
+    },
+    {
+      "name": "balanced_mobile_controls.gd",
+      "ok": true,
+      "detail": "paren 128/128"
+    },
+    {
+      "name": "brackets_mobile_controls.gd",
+      "ok": true,
+      "detail": "bracket 8/8"
+    },
+    {
+      "name": "braces_mobile_controls.gd",
+      "ok": true,
+      "detail": "brace 0/0"
+    },
+    {
+      "name": "exists_scripts/mobile_controls.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "exists_scripts/hud.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "exists_scripts/player_controller.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "exists_scripts/main.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "exists_scenes/Bootstrap.tscn",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "exists_scenes/GameWorld.tscn",
+      "ok": true,
+      "detail": ""
+    }
+  ]
+}

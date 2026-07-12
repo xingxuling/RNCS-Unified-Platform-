@@ -1,0 +1,16 @@
+import fs from 'node:fs'; import path from 'node:path';
+import {buildRegistry} from '../../_icar_src/ICAR_Native_Envelope_Runtime_v0.5.0/src/capabilities.mjs';
+import {providerFromIcarRegistry,fromHnacManifest} from '../src/adapters.mjs';
+import {negotiate} from '../src/negotiator.mjs';
+const here=path.resolve(import.meta.dirname,'..');
+const icar='/mnt/data/_icar_src/ICAR_Native_Envelope_Runtime_v0.5.0';
+const artifact=JSON.parse(fs.readFileSync(path.join(icar,'examples/project.laf1.json'),'utf8'));
+const capsule=JSON.parse(fs.readFileSync(path.join(icar,'examples/capsules/icar-native-v0.5.hnac.json'),'utf8'));
+const legacy=buildRegistry({artifact,providers:[]});
+const icarProvider=providerFromIcarRegistry(legacy,'icar-v0.5-real');
+const hnacProvider=fromHnacManifest(capsule);
+const request={request_id:'request:real-icar-integration',protocol_versions:['0.1.0'],subject:{subject_id:'subject:owner',scopes:['artifact.read','artifact.write','host.notify']},host:{host_id:'host:desktop',capabilities:['display.text','input.activate','input.text','host.notification','storage.state']},goals:[{goal_id:'progress',type:'artifact.progress.target',version_range:'^1.0.0',inputs:{}},{goal_id:'report',type:'artifact.report.generate',version_range:'^1.0.0',inputs:{}}],policy:{max_risk:'medium',require_reversible:false,required_evidence:[],minimum_trust:0,cost_budget:{cpu_millis:100,memory_mb:100,network_kb:100,monetary_microunits:0}},constraints:{source:'ICAR v0.5 real registry'}};
+const result=negotiate({request,providers:[icarProvider,hnacProvider]});
+const out={source:{icar_registry_root:legacy.registry_root,icar_capability_count:legacy.entries.length,hnac_app_id:capsule.app.id},providers:{icar_provider_root:icarProvider.provider_root,hnac_provider_root:hnacProvider.provider_root},result};
+fs.mkdirSync(path.join(here,'evidence'),{recursive:true});fs.writeFileSync(path.join(here,'evidence/REAL_ICAR_HNAC_INTEGRATION_v0.1.0.json'),JSON.stringify(out,null,2)+'\n');
+console.log(JSON.stringify({status:result.plan.status,steps:result.plan.steps.map(x=>x.capability_id),icar_capability_count:legacy.entries.length,negotiation_root:result.negotiation_root},null,2));

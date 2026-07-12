@@ -30,22 +30,29 @@ var combo_window := 0.0
 var combo_step := 0
 var dodge_cooldown := 0.0
 var invulnerable := 0.0
-var locked_target
+var locked_target: Node3D
 var camera_yaw := 0.75
 var camera_pitch := -0.28
 var _camera_pivot: Node3D
 var _camera: Camera3D
 var _visual: Node3D
+var _mobile_move_vector: Vector2 = Vector2.ZERO
+var _mobile_device: bool = false
 
 func _ready() -> void:
 	add_to_group("player")
 	_build_visual()
 	_build_camera()
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	_mobile_device = _is_mobile_device()
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if _mobile_device else Input.MOUSE_MODE_CAPTURED
 	_emit_stats()
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+	if (
+		event is InputEventMouseMotion
+		and not _mobile_device
+		and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED
+	):
 		camera_yaw -= event.relative.x * 0.004
 		camera_pitch = clampf(camera_pitch - event.relative.y * 0.003, -0.9, 0.35)
 	if event.is_action_pressed("ui_cancel"):
@@ -67,7 +74,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		voice_panel_requested.emit()
 	for index in range(1, 6):
 		if event.is_action_pressed("spell_%d" % index):
-			var spell_ids := ["fire_lance", "frost_aegis", "thunder_chain", "wind_step", "healing_light"]
+			var spell_ids: Array[String] = ["fire_lance", "frost_aegis", "thunder_chain", "wind_step", "healing_light"]
 			request_spell(spell_ids[index - 1])
 
 func _physics_process(delta: float) -> void:
@@ -83,11 +90,14 @@ func _physics_process(delta: float) -> void:
 		cooldowns[key] = maxf(0.0, float(cooldowns[key]) - delta)
 	if not is_on_floor():
 		velocity.y -= gravity * delta
-	var input_vector := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
-	var camera_basis := Basis(Vector3.UP, camera_yaw)
-	var direction := (camera_basis * Vector3(input_vector.x, 0.0, input_vector.y)).normalized()
-	var sprinting := Input.is_key_pressed(KEY_CTRL) and stamina > 0.0 and direction.length() > 0.05
-	var target_speed := sprint_speed if sprinting else walk_speed
+	var input_vector: Vector2 = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
+	if _mobile_move_vector.length() > input_vector.length():
+		input_vector = _mobile_move_vector
+	var camera_basis = Basis(Vector3.UP, camera_yaw)
+	var direction = (camera_basis * Vector3(input_vector.x, 0.0, input_vector.y)).normalized()
+	var sprint_requested: bool = Input.is_key_pressed(KEY_CTRL) or _mobile_move_vector.length() > 0.88
+	var sprinting: bool = sprint_requested and stamina > 0.0 and direction.length() > 0.05
+	var target_speed = sprint_speed if sprinting else walk_speed
 	velocity.x = move_toward(velocity.x, direction.x * target_speed, acceleration * delta)
 	velocity.z = move_toward(velocity.z, direction.z * target_speed, acceleration * delta)
 	if direction.length() > 0.05:
@@ -98,14 +108,39 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	_emit_stats()
 
+func set_mobile_move_vector(value: Vector2) -> void:
+	_mobile_move_vector = value.limit_length(1.0)
+
+func add_mobile_camera_delta(relative: Vector2) -> void:
+	camera_yaw -= relative.x * 0.004
+	camera_pitch = clampf(camera_pitch - relative.y * 0.003, -0.9, 0.35)
+
+func request_jump() -> void:
+	if is_on_floor():
+		velocity.y = jump_velocity
+
+func request_interaction() -> void:
+	interaction_requested.emit()
+
+func request_voice_panel() -> void:
+	voice_panel_requested.emit()
+
+func _is_mobile_device() -> bool:
+	return (
+		OS.has_feature("mobile")
+		or OS.get_name() == "Android"
+		or OS.get_name() == "iOS"
+		or DisplayServer.is_touchscreen_available()
+	)
+
 func attack() -> void:
 	if attack_cooldown > 0.0 or stamina < 10.0:
 		return
 	combo_step = 1 if combo_window <= 0.0 else (combo_step % 3) + 1
 	combo_window = 0.72
 	attack_cooldown = [0.0, 0.34, 0.38, 0.54][combo_step]
-	var stamina_cost := [0.0, 10.0, 12.0, 18.0][combo_step]
-	var damage_scale := [0.0, 1.0, 1.18, 1.62][combo_step]
+	var stamina_cost: float = float([0.0, 10.0, 12.0, 18.0][combo_step])
+	var damage_scale: float = float([0.0, 1.0, 1.18, 1.62][combo_step])
 	stamina -= stamina_cost
 	var metrics: Dictionary = WorldState.state.get("metrics", {})
 	metrics["sword_swings"] = int(metrics.get("sword_swings", 0)) + 1
@@ -119,10 +154,12 @@ func dodge() -> void:
 	dodge_cooldown = 0.8
 	invulnerable = 0.42
 	stamina -= 24.0
-	var input_vector := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
-	var direction := aim_direction()
+	var input_vector: Vector2 = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
+	if _mobile_move_vector.length() > input_vector.length():
+		input_vector = _mobile_move_vector
+	var direction: Vector3 = aim_direction()
 	if input_vector.length() > 0.05:
-		var camera_basis := Basis(Vector3.UP, camera_yaw)
+		var camera_basis = Basis(Vector3.UP, camera_yaw)
 		direction = (camera_basis * Vector3(input_vector.x, 0.0, input_vector.y)).normalized()
 	velocity.x = direction.x * 14.0
 	velocity.z = direction.z * 14.0
@@ -131,7 +168,7 @@ func request_spell(spell_id: String) -> void:
 	if not VoiceMagic.SPELLS.has(spell_id):
 		return
 	var spell: Dictionary = VoiceMagic.SPELLS[spell_id]
-	var mana_cost := float(spell.get("mana", 0.0))
+	var mana_cost = float(spell.get("mana", 0.0))
 	if float(cooldowns.get(spell_id, 0.0)) > 0.0 or mana < mana_cost:
 		return
 	mana -= mana_cost
@@ -150,12 +187,13 @@ func toggle_lock() -> void:
 	if is_instance_valid(locked_target):
 		locked_target = null
 	else:
-		var nearest = null
-		var best := 28.0
-		for candidate in get_tree().get_nodes_in_group("enemy"):
-			if not is_instance_valid(candidate):
+		var nearest: Node3D = null
+		var best = 28.0
+		for candidate_node in get_tree().get_nodes_in_group("enemy"):
+			var candidate: Node3D = candidate_node as Node3D
+			if candidate == null or not is_instance_valid(candidate):
 				continue
-			var distance := global_position.distance_to(candidate.global_position)
+			var distance: float = global_position.distance_to(candidate.global_position)
 			if distance < best:
 				best = distance
 				nearest = candidate
@@ -165,7 +203,7 @@ func toggle_lock() -> void:
 func take_damage(amount: float) -> void:
 	if invulnerable > 0.0:
 		return
-	var blocked := minf(shield, amount)
+	var blocked = minf(shield, amount)
 	shield -= blocked
 	hp -= amount - blocked
 	if hp <= 0.0:
@@ -176,7 +214,7 @@ func take_damage(amount: float) -> void:
 		WorldState.announce("【复苏】你在灰烬边境重新苏醒。")
 	_emit_stats()
 
-func add_loot(kind: String, amount := 1) -> void:
+func add_loot(kind: String, amount: int = 1) -> void:
 	inventory[kind] = int(inventory.get(kind, 0)) + amount
 	_emit_stats()
 
@@ -214,8 +252,8 @@ func _build_visual() -> void:
 	_add_mesh(_visual, BoxMesh.new(), Vector3(0, 1.25, 0), Vector3(0.72, 1.25, 0.48), Color("347bd0"))
 	_add_mesh(_visual, SphereMesh.new(), Vector3(0, 2.25, 0), Vector3(0.48, 0.48, 0.48), Color("d4a578"))
 	_add_mesh(_visual, BoxMesh.new(), Vector3(0.66, 1.4, 0), Vector3(0.08, 1.45, 0.08), Color("aeb9ca"))
-	var collision := CollisionShape3D.new()
-	var capsule := CapsuleShape3D.new()
+	var collision = CollisionShape3D.new()
+	var capsule = CapsuleShape3D.new()
 	capsule.radius = 0.48
 	capsule.height = 2.0
 	collision.shape = capsule
@@ -226,7 +264,7 @@ func _build_camera() -> void:
 	_camera_pivot = Node3D.new()
 	_camera_pivot.name = "CameraPivot"
 	add_child(_camera_pivot)
-	var spring := SpringArm3D.new()
+	var spring = SpringArm3D.new()
 	spring.name = "SpringArm"
 	spring.spring_length = 9.0
 	spring.collision_mask = 1
@@ -240,25 +278,25 @@ func _build_camera() -> void:
 func _update_camera(delta: float) -> void:
 	_camera_pivot.global_position = global_position + Vector3.UP * 1.55
 	if is_instance_valid(locked_target):
-		var target_direction := locked_target.global_position - global_position
-		var desired_yaw := atan2(target_direction.x, target_direction.z) + PI
+		var target_direction: Vector3 = locked_target.global_position - global_position
+		var desired_yaw = atan2(target_direction.x, target_direction.z) + PI
 		camera_yaw = lerp_angle(camera_yaw, desired_yaw, minf(1.0, 5.5 * delta))
 	_camera_pivot.rotation = Vector3(camera_pitch, camera_yaw, 0.0)
 
 func _animate_attack(step: int) -> void:
 	if _visual == null:
 		return
-	var angle := [-0.0, -0.62, 0.78, -1.05][step]
-	var tween := create_tween()
+	var angle: float = float([-0.0, -0.62, 0.78, -1.05][step])
+	var tween = create_tween()
 	tween.tween_property(_visual, "rotation:y", angle, 0.1)
 	tween.tween_property(_visual, "rotation:y", 0.0, 0.16 if step < 3 else 0.28)
 
-func _add_mesh(parent: Node3D, mesh: PrimitiveMesh, position: Vector3, scale_value: Vector3, color: Color) -> MeshInstance3D:
-	var instance := MeshInstance3D.new()
+func _add_mesh(parent: Node3D, mesh: PrimitiveMesh, mesh_position: Vector3, scale_value: Vector3, color: Color) -> MeshInstance3D:
+	var instance = MeshInstance3D.new()
 	instance.mesh = mesh
-	instance.position = position
+	instance.position = mesh_position
 	instance.scale = scale_value
-	var material := StandardMaterial3D.new()
+	var material = StandardMaterial3D.new()
 	material.albedo_color = color
 	material.roughness = 0.78
 	instance.material_override = material

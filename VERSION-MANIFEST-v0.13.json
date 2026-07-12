@@ -1,0 +1,27 @@
+{
+  "format": "rncs.aetherworld.version-manifest.v0.13",
+  "suite_version": "0.13.0-alpha.1",
+  "base_version": "0.12.0-alpha.1",
+  "release_name": "TaoWind Reality MCP Founder Authority",
+  "mcp_version": "0.2.0-alpha.1",
+  "runtime_count": 14,
+  "tool_count": 27,
+  "changes": [
+    "MCP structuredContent top-level object normalization",
+    "Founder authority profile",
+    "AAF candidate authorization tools",
+    "Formal RFE merge tool",
+    "Generation rollback and replay tools",
+    "Authoritative two-client loopback tool",
+    "Declared runtime action gateway",
+    "State-root and revision optimistic preconditions",
+    "Dynamic tool catalog by read/candidate/founder profile"
+  ],
+  "authority_boundary": {
+    "formal_world_write": true,
+    "arbitrary_shell": false,
+    "arbitrary_filesystem": false,
+    "publish": false
+  },
+  "generated_at": "2026-07-04T00:00:00Z"
+}

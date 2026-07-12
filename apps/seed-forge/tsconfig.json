@@ -1,0 +1,37 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/lib/ial": [
+        "../../packages/intelligence/ial-compiler/src/index.ts"
+      ],
+      "@/lib/ial/*": [
+        "../../packages/intelligence/ial-compiler/src/*"
+      ],
+      "@/lib/ose": [
+        "../../packages/intelligence/ose-reasoner/src/index.ts"
+      ],
+      "@/lib/ose/*": [
+        "../../packages/intelligence/ose-reasoner/src/*"
+      ],
+      "@/*": [
+        "./src/*"
+      ]
+    },
+    "noImplicitAny": false,
+    "noUnusedParameters": false,
+    "skipLibCheck": true,
+    "allowJs": true,
+    "noUnusedLocals": false,
+    "strictNullChecks": false
+  }
+}

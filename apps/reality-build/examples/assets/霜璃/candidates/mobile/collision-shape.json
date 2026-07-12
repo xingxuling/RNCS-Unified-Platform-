@@ -1,0 +1,43 @@
+{
+  "format": "rsr.collision-shape.v0.3",
+  "version": "0.1.0",
+  "shape_id": "collision:3a82d1753e140d24552b89d1:mobile",
+  "asset_id": "asset:3a82d1753e140d24552b89d1",
+  "variant": "mobile",
+  "type": "capsule",
+  "center": [
+    0,
+    2
+  ],
+  "radius": 11.040000000000001,
+  "half_height": 21.16,
+  "collision_layer": "character",
+  "mask": [
+    "world",
+    "enemy",
+    "trigger"
+  ],
+  "semantic_regions": [
+    {
+      "name": "body",
+      "role": "solid"
+    },
+    {
+      "name": "weapon-reach",
+      "role": "attack-sensor",
+      "shape": {
+        "type": "segment",
+        "from": [
+          12,
+          -8
+        ],
+        "to": [
+          35,
+          15
+        ],
+        "radius": 4
+      }
+    }
+  ],
+  "shape_root": "13fe3a028ef2c17b2ad8f151002a1300975c57eb801375641e095e262adec697"
+}

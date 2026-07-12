@@ -1,0 +1,3 @@
+{
+  "id":"aether-rncs-bridge","name":"Aetherworld RNCS Native Runtime Bridge","version":"0.2.0-alpha.1","layer":"integration","runtime_id":"rncs.aetherworld-native","protocol":"rncs.aetherworld-native-runtime.v0.2","entry":"src/index.mjs","test":"npm test --workspace @taowind/aether-rncs-bridge"
+}

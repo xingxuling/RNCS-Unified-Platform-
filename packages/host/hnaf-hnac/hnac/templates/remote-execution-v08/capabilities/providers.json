@@ -1,0 +1,409 @@
+{
+  "format": "hnaf.provider-registry.v0.8",
+  "providers": [
+    {
+      "provider_id": "provider:local-primary-failing",
+      "protocol_versions": [
+        "0.1.0"
+      ],
+      "status": "available",
+      "trust": {
+        "level": 5,
+        "attestations": [
+          "signed-demo"
+        ]
+      },
+      "transports": [
+        {
+          "kind": "hnaf-builtin"
+        }
+      ],
+      "capabilities": [
+        {
+          "capability_id": "hnaf.counter.primary",
+          "version": "1.0.0",
+          "fulfills": [
+            "app.counter.increment"
+          ],
+          "inputs": {},
+          "outputs": {
+            "result": {
+              "type": "object"
+            }
+          },
+          "required_scopes": [
+            "state.write"
+          ],
+          "host_requirements": [],
+          "risk": {
+            "level": "medium",
+            "reasons": [
+              "remote-or-sandboxed-execution"
+            ]
+          },
+          "reversible": true,
+          "execution_phase": "transaction",
+          "side_effects": [],
+          "evidence": {
+            "produces": [
+              "state.root"
+            ],
+            "requires": []
+          },
+          "cost": {
+            "cpu_millis": 1,
+            "memory_mb": 1,
+            "network_kb": 0,
+            "monetary_microunits": 0
+          },
+          "transport": {
+            "kind": "hnaf-builtin",
+            "handler": "fail"
+          },
+          "supply_chain": {
+            "algorithm": "ed25519",
+            "signer_id": "signer:taowind-demo-provider",
+            "public_key_b64": "gAYqVgWsi4wIQDw6PKch10NQmQqWoiXEJ1T0MJU76jY=",
+            "signed_root": "12e1deb4bdb4467383592281c49e49a5120e89331357dea6cab26651594c5022",
+            "signature_b64": "ZlWrM6+0YpqbwylXKInkyp9pehzlL6H6AINICNgpDuhdJuRSqRlcFxibUHQ+KQF22qflVgxtXRB2dR/Qf25uAA=="
+          }
+        }
+      ]
+    },
+    {
+      "provider_id": "provider:local-fallback",
+      "protocol_versions": [
+        "0.1.0"
+      ],
+      "status": "available",
+      "trust": {
+        "level": 5,
+        "attestations": [
+          "signed-demo"
+        ]
+      },
+      "transports": [
+        {
+          "kind": "hnaf-builtin"
+        }
+      ],
+      "capabilities": [
+        {
+          "capability_id": "hnaf.counter.fallback",
+          "version": "1.0.0",
+          "fulfills": [
+            "app.counter.increment"
+          ],
+          "inputs": {},
+          "outputs": {
+            "result": {
+              "type": "object"
+            }
+          },
+          "required_scopes": [
+            "state.write"
+          ],
+          "host_requirements": [],
+          "risk": {
+            "level": "medium",
+            "reasons": [
+              "remote-or-sandboxed-execution"
+            ]
+          },
+          "reversible": true,
+          "execution_phase": "transaction",
+          "side_effects": [],
+          "evidence": {
+            "produces": [
+              "state.root"
+            ],
+            "requires": []
+          },
+          "cost": {
+            "cpu_millis": 2,
+            "memory_mb": 1,
+            "network_kb": 0,
+            "monetary_microunits": 0
+          },
+          "transport": {
+            "kind": "hnaf-builtin",
+            "handler": "state.increment"
+          },
+          "supply_chain": {
+            "algorithm": "ed25519",
+            "signer_id": "signer:taowind-demo-provider",
+            "public_key_b64": "gAYqVgWsi4wIQDw6PKch10NQmQqWoiXEJ1T0MJU76jY=",
+            "signed_root": "491ac8ab1c9ae7791cc6d745d521cb5ac85000d4fe0df942df724b09832f30bf",
+            "signature_b64": "UzyF0YHbbQYcoJlskP7TG5Io3IcH2uY8HU92YT2TjenbssCJZ5Tce9vXOR9KtAm9Bsuw3/j3H6UkVl5hppl5AA=="
+          }
+        }
+      ]
+    },
+    {
+      "provider_id": "provider:http-loopback",
+      "protocol_versions": [
+        "0.1.0"
+      ],
+      "status": "available",
+      "trust": {
+        "level": 5,
+        "attestations": [
+          "signed-demo"
+        ]
+      },
+      "transports": [
+        {
+          "kind": "http"
+        }
+      ],
+      "capabilities": [
+        {
+          "capability_id": "hnaf.http.echo",
+          "version": "1.0.0",
+          "fulfills": [
+            "app.remote.http.echo"
+          ],
+          "inputs": {},
+          "outputs": {
+            "result": {
+              "type": "object"
+            }
+          },
+          "required_scopes": [
+            "state.write"
+          ],
+          "host_requirements": [],
+          "risk": {
+            "level": "medium",
+            "reasons": [
+              "remote-or-sandboxed-execution"
+            ]
+          },
+          "reversible": true,
+          "execution_phase": "transaction",
+          "side_effects": [],
+          "evidence": {
+            "produces": [
+              "execution.receipt"
+            ],
+            "requires": []
+          },
+          "cost": {
+            "cpu_millis": 10,
+            "memory_mb": 16,
+            "network_kb": 1,
+            "monetary_microunits": 0
+          },
+          "transport": {
+            "kind": "http",
+            "url": "http://127.0.0.1:18708/execute"
+          },
+          "supply_chain": {
+            "algorithm": "ed25519",
+            "signer_id": "signer:taowind-demo-provider",
+            "public_key_b64": "gAYqVgWsi4wIQDw6PKch10NQmQqWoiXEJ1T0MJU76jY=",
+            "signed_root": "5678a0e6664baa6c821fdc583e0dfcf686001f649834454804d2bb14b67e9245",
+            "signature_b64": "9ccoJMHBEg6GnGT2u3hcQz30hjP9YhzJgLfa4LL2dGV23o6f/yPAr3WZmFzK6U/WvDMJkcuvxC3FjxDg1+RCBw=="
+          }
+        }
+      ]
+    },
+    {
+      "provider_id": "provider:websocket-loopback",
+      "protocol_versions": [
+        "0.1.0"
+      ],
+      "status": "available",
+      "trust": {
+        "level": 5,
+        "attestations": [
+          "signed-demo"
+        ]
+      },
+      "transports": [
+        {
+          "kind": "websocket"
+        }
+      ],
+      "capabilities": [
+        {
+          "capability_id": "hnaf.websocket.echo",
+          "version": "1.0.0",
+          "fulfills": [
+            "app.remote.websocket.echo"
+          ],
+          "inputs": {},
+          "outputs": {
+            "result": {
+              "type": "object"
+            }
+          },
+          "required_scopes": [
+            "state.write"
+          ],
+          "host_requirements": [],
+          "risk": {
+            "level": "medium",
+            "reasons": [
+              "remote-or-sandboxed-execution"
+            ]
+          },
+          "reversible": true,
+          "execution_phase": "transaction",
+          "side_effects": [],
+          "evidence": {
+            "produces": [
+              "execution.receipt"
+            ],
+            "requires": []
+          },
+          "cost": {
+            "cpu_millis": 10,
+            "memory_mb": 16,
+            "network_kb": 1,
+            "monetary_microunits": 0
+          },
+          "transport": {
+            "kind": "websocket",
+            "url": "ws://127.0.0.1:18709/execute"
+          },
+          "supply_chain": {
+            "algorithm": "ed25519",
+            "signer_id": "signer:taowind-demo-provider",
+            "public_key_b64": "gAYqVgWsi4wIQDw6PKch10NQmQqWoiXEJ1T0MJU76jY=",
+            "signed_root": "18a4faa25f1225431d2f2c9a6b79f3c2652bd28a407b279159dd0eb0617b0a2b",
+            "signature_b64": "GYBegzop3hFl0jaTj3vkd1V1nYCDYn5K125SfLS61hebzLWNPKQLQTeuZhetzmS3ftUv5I/lllhKCYOyUu9MAw=="
+          }
+        }
+      ]
+    },
+    {
+      "provider_id": "provider:local-process",
+      "protocol_versions": [
+        "0.1.0"
+      ],
+      "status": "available",
+      "trust": {
+        "level": 5,
+        "attestations": [
+          "signed-demo"
+        ]
+      },
+      "transports": [
+        {
+          "kind": "local-process"
+        }
+      ],
+      "capabilities": [
+        {
+          "capability_id": "hnaf.process.echo",
+          "version": "1.0.0",
+          "fulfills": [
+            "app.local.process.echo"
+          ],
+          "inputs": {},
+          "outputs": {
+            "result": {
+              "type": "object"
+            }
+          },
+          "required_scopes": [
+            "state.write"
+          ],
+          "host_requirements": [],
+          "risk": {
+            "level": "high",
+            "reasons": [
+              "remote-or-sandboxed-execution"
+            ]
+          },
+          "reversible": true,
+          "execution_phase": "transaction",
+          "side_effects": [],
+          "evidence": {
+            "produces": [
+              "execution.receipt"
+            ],
+            "requires": []
+          },
+          "cost": {
+            "cpu_millis": 10,
+            "memory_mb": 16,
+            "network_kb": 1,
+            "monetary_microunits": 0
+          },
+          "transport": {
+            "kind": "local-process",
+            "command": [
+              "python3",
+              "-S",
+              "-c",
+              "import json,sys; d=json.load(sys.stdin); print(json.dumps({'process':d['payload'],'idempotency_key':d['context']['idempotency_key']},ensure_ascii=False))"
+            ]
+          },
+          "supply_chain": {
+            "algorithm": "ed25519",
+            "signer_id": "signer:taowind-demo-provider",
+            "public_key_b64": "gAYqVgWsi4wIQDw6PKch10NQmQqWoiXEJ1T0MJU76jY=",
+            "signed_root": "2f396534d234998434da4d7de8bbab578f48b12e5a394aeda65c5940f76c1347",
+            "signature_b64": "9te1VoT4Ej3AtLjDhoa7vEmgcFRpsUfsaB2GeB6lxRonqE6Lkxrt0jjijtlhuW0ELvga2smmRsN8JgMyZw8aDg=="
+          }
+        },
+        {
+          "capability_id": "hnaf.process.timeout",
+          "version": "1.0.0",
+          "fulfills": [
+            "app.local.process.timeout"
+          ],
+          "inputs": {},
+          "outputs": {
+            "result": {
+              "type": "object"
+            }
+          },
+          "required_scopes": [
+            "state.write"
+          ],
+          "host_requirements": [],
+          "risk": {
+            "level": "high",
+            "reasons": [
+              "remote-or-sandboxed-execution"
+            ]
+          },
+          "reversible": true,
+          "execution_phase": "transaction",
+          "side_effects": [],
+          "evidence": {
+            "produces": [
+              "execution.receipt"
+            ],
+            "requires": []
+          },
+          "cost": {
+            "cpu_millis": 10,
+            "memory_mb": 16,
+            "network_kb": 1,
+            "monetary_microunits": 0
+          },
+          "transport": {
+            "kind": "local-process",
+            "command": [
+              "python3",
+              "-S",
+              "-c",
+              "import time,json; time.sleep(4); print(json.dumps({'late':True}))"
+            ]
+          },
+          "supply_chain": {
+            "algorithm": "ed25519",
+            "signer_id": "signer:taowind-demo-provider",
+            "public_key_b64": "gAYqVgWsi4wIQDw6PKch10NQmQqWoiXEJ1T0MJU76jY=",
+            "signed_root": "afe20a14b719e87d8a5e51cc6ca066f3d618f7fbb1a07163e56da34c3bb56312",
+            "signature_b64": "h3stGudX3KLtpJkzVJU2DHuUTnb28e9dgVI+DG6r+huyfKnaqIvv2ysydssDGuK5Ngf2amBTNGvYyFpnRrE0Aw=="
+          }
+        }
+      ]
+    }
+  ]
+}

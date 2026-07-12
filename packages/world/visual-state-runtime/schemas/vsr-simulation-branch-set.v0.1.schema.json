@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/vsr-simulation-branch-set.v0.1.schema.json",
+  "title": "VSR Simulation Branch Set v0.1",
+  "type": "object",
+  "required": ["format","runtime","baseSimulationRoot","baseTick","branchCount","branches","comparisons","setRoot"],
+  "properties": {
+    "format": {"const":"vsr.simulation-branch-set.v0.1"},
+    "runtime": {"const":"vsr@0.1.0-alpha.12"},
+    "baseSimulationRoot": {"type":"string","pattern":"^[a-fA-F0-9]{64}$"},
+    "baseTick": {"type":"integer","minimum":0},
+    "branchCount": {"type":"integer","minimum":0},
+    "branches": {"type":"array","items":{"type":"object","required":["format","branchId","branchRoot","finalSnapshot","causalDelta","metrics"],"properties":{"format":{"const":"vsr.simulation-branch-result.v0.1"},"branchId":{"type":"string"},"branchRoot":{"type":"string","pattern":"^[a-fA-F0-9]{64}$"}},"additionalProperties":true}},
+    "comparisons": {"type":"array","items":{"type":"object"}},
+    "setRoot": {"type":"string","pattern":"^[a-fA-F0-9]{64}$"}
+  },
+  "additionalProperties": false
+}

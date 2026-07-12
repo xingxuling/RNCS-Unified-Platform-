@@ -1,0 +1,19 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://taowind.dev/vsr/schemas/vsr-reality-studio-live-event.v0.4.schema.json",
+  "title":"Reality Studio v0.4 Live Event",
+  "type":"object",
+  "required":["format","sessionId","projectId","sequence","type","sceneId","payload"],
+  "properties":{
+    "format":{"const":"reality-studio.live-event.v0.4"},
+    "sessionId":{"type":"string","minLength":1},
+    "projectId":{"type":"string","minLength":1},
+    "sequence":{"type":"integer","minimum":1},
+    "type":{"enum":["scene.activated","object.added","object.updated","object.removed","blackboard.set","signal.emitted","component.triggered"]},
+    "sceneId":{"type":"string","minLength":1},
+    "payload":{"type":"object"},
+    "previousEventHash":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "eventHash":{"type":"string","pattern":"^[0-9a-f]{64}$"}
+  },
+  "additionalProperties":false
+}

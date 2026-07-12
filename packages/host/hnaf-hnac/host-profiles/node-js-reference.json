@@ -1,0 +1,45 @@
+{
+  "id": "hnaf.javascript.node",
+  "family": "desktop",
+  "execution_profiles": [
+    "wasm-core@1",
+    "declarative-v0"
+  ],
+  "capabilities": {
+    "host.log": [
+      "1"
+    ],
+    "host.clock": [
+      "1"
+    ],
+    "environment.summary": [
+      "1"
+    ],
+    "storage.kv": [
+      "1",
+      "2"
+    ],
+    "storage.state": [
+      "1"
+    ]
+  },
+  "interaction_modes": [
+    "cli",
+    "keyboard",
+    "pointer"
+  ],
+  "resources": {
+    "wasm_engine": "javascript-webassembly",
+    "viewport_width": 1440,
+    "viewport_height": 900,
+    "screen_reader": false,
+    "spatial": false
+  },
+  "policies": {
+    "require_signature": false,
+    "network_default": "deny",
+    "fuel_enforcement": "unavailable",
+    "wasm_memory_limits": "module-declared",
+    "accessibility_mode": false
+  }
+}

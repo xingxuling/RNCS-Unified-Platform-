@@ -1,0 +1,37 @@
+{
+  "name": "@taowind/reality-computation-language",
+  "version": "0.12.0-alpha.1",
+  "description": "RCL v0.12 embedded long-lived native VM, AOT control-plane runtime and Provider ABI v1.",
+  "type": "module",
+  "license": "Apache-2.0",
+  "exports": {
+    ".": "./src/index.mjs"
+  },
+  "bin": {
+    "rcl": "./src/cli.mjs"
+  },
+  "scripts": {
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs",
+    "demo": "node src/cli.mjs run examples/hello-reality.rcl",
+    "demo:subjects": "node src/cli.mjs run examples/subject-resonance.rcl",
+    "demo:computer": "node examples/computer-reality-demo.mjs",
+    "demo:foundation": "node src/cli.mjs run examples/eight-domain-foundation.rcl",
+    "demo:knowledge": "node src/cli.mjs run examples/small-data-agent.rcl",
+    "demo:cognition": "node src/cli.mjs run examples/cognitive-creation-agent.rcl",
+    "demo:meta": "node src/cli.mjs run examples/meta-runtime-foundation.rcl",
+    "demo:closure": "node src/cli.mjs run examples/foundation-closure.rcl",
+    "build:native": "node scripts-build-native.mjs",
+    "pretest": "npm run build:native",
+    "demo:native": "node src/cli.mjs native examples/hello-reality.rcl",
+    "demo:bytecode": "node src/cli.mjs bytecode examples/hello-reality.rcl build/hello-reality.rbc && node src/cli.mjs native-run build/hello-reality.rbc",
+    "demo:bootstrap": "node src/cli.mjs bootstrap",
+    "demo:bootstrap2": "node src/cli.mjs bootstrap2",
+    "demo:bootstrap3": "node src/cli.mjs bootstrap3",
+    "demo:bootstrap4": "node src/cli.mjs bootstrap4",
+    "demo:bootstrap5": "node src/cli.mjs bootstrap5",
+    "demo:embedded": "node examples/embedded-vm-demo.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

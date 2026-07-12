@@ -1,0 +1,74 @@
+reality RenderScene {
+  facet scene.state : Text = "ready"
+  facet scene.frame : Number = 0
+
+  subject renderer {
+    facet progress : Number = 0
+    warrant render.execute on scene
+  }
+
+  host render {
+    offers transform_vertices -> Text
+    offers rasterize_triangle -> Text
+    offers pbr_shade -> Text
+    offers shadow_test -> Text
+  }
+
+  emergence setup_camera {
+    cause renderer
+    when scene.state == "ready"
+    needs render.execute on scene
+    alter scene.state <- "camera_set"
+    alter scene.frame <- 0
+    preserve scene.frame >= 0
+    witness "rcl:render-camera"
+  }
+
+  emergence transform_mesh {
+    cause renderer
+    when scene.state == "camera_set"
+    needs render.execute on scene
+    call render.transform_vertices("{\"m0\":1000,\"m1\":0,\"m2\":0,\"m3\":0,\"m4\":0,\"m5\":1000,\"m6\":0,\"m7\":0,\"m8\":0,\"m9\":0,\"m10\":1000,\"m11\":-5000,\"m12\":0,\"m13\":0,\"m14\":-200,\"m15\":1000,\"verts\":[0,0,0,1000,0,0,500,1000,0]}") -> scene.state
+    alter scene.frame <- scene.frame + 1
+    preserve scene.frame > 0
+    witness "rcl:render-transform"
+  }
+
+  emergence shade_pixel {
+    cause renderer
+    when scene.frame > 0
+    needs render.execute on scene
+    call render.pbr_shade("{\"base_r\":800,\"base_g\":800,\"base_b\":800,\"metallic\":0,\"roughness\":600,\"ior\":1500,\"light_r\":1000,\"light_g\":1000,\"light_b\":1000,\"light_intensity\":1000,\"nx\":0,\"ny\":1000,\"nz\":0,\"vx\":0,\"vy\":0,\"vz\":1000,\"lx\":500,\"ly\":866,\"lz\":0}") -> scene.state
+    preserve length(scene.state) > 0
+    witness "rcl:render-shade"
+  }
+
+  emergence test_shadow {
+    cause renderer
+    when scene.frame > 0
+    needs render.execute on scene
+    call render.shadow_test("{\"map_size\":256,\"wx\":0,\"wy\":0,\"wz\":0,\"bias\":3,\"lm0\":1000,\"lm1\":0,\"lm2\":0,\"lm3\":0,\"lm4\":0,\"lm5\":1000,\"lm6\":0,\"lm7\":0,\"lm8\":0,\"lm9\":0,\"lm10\":1000,\"lm11\":0,\"lm12\":0,\"lm13\":0,\"lm14\":0,\"lm15\":1000,\"stored_depth\":1000}") -> scene.state
+    preserve length(scene.state) > 0
+    witness "rcl:render-shadow"
+  }
+
+  emergence rasterize {
+    cause renderer
+    when scene.frame > 0
+    needs render.execute on scene
+    call render.rasterize_triangle("{\"ax\":100,\"ay\":100,\"bx\":200,\"by\":100,\"cx\":150,\"cy\":200,\"az\":0,\"bz\":0,\"cz\":0,\"awx\":0,\"awy\":0,\"awz\":0,\"bwx\":1000,\"bwy\":0,\"bwz\":0,\"cwx\":500,\"cwy\":1000,\"cwz\":0,\"anx\":0,\"any\":1000,\"anz\":0,\"bnx\":0,\"bny\":1000,\"bnz\":0,\"cnx\":0,\"cny\":1000,\"cnz\":0,\"width\":640,\"height\":360}") -> scene.state
+    preserve length(scene.state) > 0
+    witness "rcl:render-rasterize"
+  }
+
+  foresee setup_camera
+  foresee transform_mesh
+  foresee shade_pixel
+  foresee test_shadow
+  foresee rasterize
+  realize setup_camera
+  realize transform_mesh
+  realize shade_pixel
+  realize test_shadow
+  realize rasterize
+}

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.tech/schemas/dml-task-contract.v0.4.schema.json",
+  "title": "DML Task Contract v0.4",
+  "type": "object",
+  "required": [
+    "format",
+    "task_id",
+    "project_id",
+    "instruction",
+    "contract_root"
+  ],
+  "properties": {
+    "format": {
+      "const": "dml.task-contract.v0.4"
+    },
+    "task_id": {
+      "type": "string"
+    },
+    "project_id": {
+      "type": "string"
+    },
+    "instruction": {
+      "type": "string",
+      "minLength": 1
+    },
+    "payload": {
+      "type": "object"
+    },
+    "constraints": {
+      "type": "object"
+    },
+    "authority": {
+      "type": "object"
+    },
+    "contract_root": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64
+    }
+  }
+}

@@ -1,0 +1,1 @@
+export { FounderProtectedRoute } from "./FounderGate";

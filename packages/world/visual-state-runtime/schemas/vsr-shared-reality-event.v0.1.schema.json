@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/vsr-shared-reality-event.v0.1.schema.json",
+  "title": "VSR Shared Reality Event v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "sessionId",
+    "sequence",
+    "type",
+    "logicalTime",
+    "payload",
+    "previousEventHash",
+    "eventHash"
+  ],
+  "properties": {
+    "format": {
+      "const": "vsr.shared-reality-event.v0.1"
+    },
+    "sessionId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "type": {
+      "enum": [
+        "interaction.committed",
+        "authority.revoked",
+        "snapshot.published"
+      ]
+    },
+    "logicalTime": {
+      "type": "number",
+      "minimum": 0
+    },
+    "payload": {
+      "type": "object"
+    },
+    "previousEventHash": {
+      "oneOf": [
+        {
+          "const": ""
+        },
+        {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      ]
+    },
+    "eventHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}

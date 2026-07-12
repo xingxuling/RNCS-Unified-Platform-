@@ -1,0 +1,30 @@
+{
+  "suite": "RNCS_Aetherworld_Unified",
+  "version": "0.19.2-alpha.1",
+  "codename": "RCL Stage-2 Self-Hosting Core",
+  "based_on": "0.19.1-alpha.1",
+  "language": {
+    "rcl": "0.8.0-alpha.1",
+    "domains": 14,
+    "ir": "rcl.reality-program.v0.8",
+    "bytecode": "RBC 1.1",
+    "native_vm": "0.2.0-alpha.1",
+    "self_hosting": "Stage-2 RCL tokenizer/core parser"
+  },
+  "verification": {
+    "rcl_tests": "51/51 PASS",
+    "mother_rcl_tests": "51/51 PASS",
+    "stage0_stage2_parity": "PASS",
+    "sanitizers": "ASan+UBSan PASS (independent package)",
+    "workspace_links": 31,
+    "runtime_health": "healthy",
+    "bootstrap2_demo": "PASS"
+  },
+  "evidence": "docs/evidence/rcl-v0.8",
+  "report": "RNCS_Aetherworld_v0.19.2-alpha.1_开发验收报告.md",
+  "remote_delivery": {
+    "git_commit": false,
+    "git_push": false,
+    "deployment": false
+  }
+}

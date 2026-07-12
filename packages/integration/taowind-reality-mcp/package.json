@@ -1,0 +1,36 @@
+{
+  "name": "@taowind/taowind-reality-mcp",
+  "version": "0.3.0-alpha.1",
+  "type": "module",
+  "description": "Private founder-authority and engineering-execution MCP gateway for RNCS + Aetherworld.",
+  "license": "Apache-2.0",
+  "bin": {
+    "taowind-reality-mcp": "src/cli.mjs"
+  },
+  "exports": {
+    ".": "./src/index.mjs"
+  },
+  "files": [
+    "src",
+    "scripts",
+    "deploy",
+    "README.md",
+    "manifest.json",
+    ".env.example",
+    "Dockerfile"
+  ],
+  "scripts": {
+    "start": "node src/cli.mjs serve",
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs",
+    "smoke": "node scripts/smoke.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.29.0",
+    "@taowind/reality-one-gateway": "*",
+    "zod": "3.25.76",
+    "@taowind/developer-execution-runtime": "*"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

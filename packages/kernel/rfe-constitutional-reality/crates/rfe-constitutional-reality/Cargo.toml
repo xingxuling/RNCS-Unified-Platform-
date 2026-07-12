@@ -1,0 +1,14 @@
+[package]
+name = "rfe-constitutional-reality"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+description = "C12 constitutional authority-topology evolution and durable recovery verifier"
+
+[dependencies]
+rfe-canonical = { path = "../rfe-canonical" }
+
+[lints]
+workspace = true

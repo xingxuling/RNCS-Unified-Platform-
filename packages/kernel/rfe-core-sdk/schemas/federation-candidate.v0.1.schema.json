@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["format", "domainId", "worldId", "branchId", "generationId", "generationRoot", "semanticRoot", "evidenceRoot", "localReceiptRoot", "requestedPolicy", "status", "integrityHash"],
+  "properties": {
+    "format": {"const": "rfe.federation-candidate.v0.1"},
+    "domainId": {"type": "string", "minLength": 1},
+    "worldId": {"type": "string", "minLength": 1},
+    "branchId": {"type": "string", "minLength": 1},
+    "generationId": {"type": "string", "minLength": 1},
+    "generationRoot": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "semanticRoot": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "evidenceRoot": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "localReceiptRoot": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "requestedPolicy": {"type": "string"},
+    "status": {"const": "candidate-not-federated"},
+    "integrityHash": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": false
+}

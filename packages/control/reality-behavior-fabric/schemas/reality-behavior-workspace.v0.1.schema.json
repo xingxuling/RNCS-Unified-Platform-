@@ -1,0 +1,23 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://taowind.example/schemas/reality-behavior-workspace.v0.1.schema.json",
+  "title":"Reality Behavior Workspace v0.1",
+  "type":"object",
+  "required":["format","version","workspace_id","program","final_snapshot","trace","causal_delta","rsr_command_batch","vsr","studio_import","gateway_manifest","outputs","summary","workspace_root"],
+  "properties":{
+    "format":{"const":"reality-behavior.workspace.v0.1"},
+    "version":{"const":"0.1.0"},
+    "workspace_id":{"type":"string"},
+    "program":{"type":"object"},
+    "final_snapshot":{"type":"object"},
+    "trace":{"type":"object"},
+    "causal_delta":{"type":"object"},
+    "rsr_command_batch":{"type":"object"},
+    "vsr":{"type":"object"},
+    "studio_import":{"type":"object"},
+    "gateway_manifest":{"type":"object"},
+    "outputs":{"type":"object"},
+    "summary":{"type":"object"},
+    "workspace_root":{"type":"string","pattern":"^[0-9a-f]{64}$"}
+  }
+}

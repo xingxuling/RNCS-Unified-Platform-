@@ -1,0 +1,16 @@
+export const MISSING_LAYER_SCORING_WEIGHTS = {
+  currentCapability: 1.0,
+  expansionPressure: 1.1,
+  missingAbstraction: 1.4,
+  reusePotential: 1.3,
+  governanceNeed: 1.1,
+  runtimeNeed: 1.2,
+  userUnderstandingGap: 1.1,
+  commercialPresentationNeed: 1.0,
+  featureFragmentation: 1.3,
+  cognitiveLoad: 1.2,
+  runtimeRisk: 1.2,
+  overgrowth: 1.4,
+  meaningDrift: 1.2,
+  developmentCost: 1.0,
+} as const;

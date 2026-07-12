@@ -1,0 +1,150 @@
+// 计算法文档数据
+export type CalculusStatus = "Active" | "v0.1" | "v0.2" | "v0.3" | "Placeholder";
+
+export interface CalculusDoc {
+  id: string;
+  cn: string;
+  en: string;
+  status: CalculusStatus;
+  purpose: string;        // 作用
+  problem: string;        // 它解决的问题
+  inputs: string[];       // 输入变量
+  outputs: string[];      // 输出结果
+  position: string;       // 在系统中的位置
+  boundary: string;       // 安全边界
+}
+
+export const CALCULUS_DOCS: CalculusDoc[] = [
+  {
+    id: "scatter",
+    cn: "抽散计算法",
+    en: "Scatter Trigger Calculus",
+    status: "v0.1",
+    purpose: "从主体数列与日期数字根中抽取触发数字，作为基础触发强度。",
+    problem: "今天哪些数字被点亮？是否落在主体的强位？",
+    inputs: ["主体数列", "出生日", "查询日", "抽散随机种子"],
+    outputs: ["触发数字", "基础触发分数 0–100", "落域分布"],
+    position: "触发日历 → 预测详情 · 第一层基础分数",
+    boundary: "仅作为结构基础值，不可单独作为决策依据。",
+  },
+  {
+    id: "signal",
+    cn: "信号净化计算法",
+    en: "Signal Purification Engine",
+    status: "v0.2",
+    purpose: "区分真信号、情绪、愿望、恐惧、伪同步、反向信号。",
+    problem: "这个信号是真是假？",
+    inputs: ["输入意图", "情绪强度", "愿望强度", "恐惧强度", "外部噪声"],
+    outputs: ["真信号分数", "信号类型", "噪声来源列表"],
+    position: "所有计算法的前置净化层",
+    boundary: "不替代心理评估，仅做结构性判断。",
+  },
+  {
+    id: "folding",
+    cn: "折域计算法",
+    en: "Domain Folding Engine",
+    status: "v0.2",
+    purpose: "判断同一事件是否在天/地/人/神/风/身/脉/资/制 多域同向显化。",
+    problem: "结构是否在多个域同向收束？",
+    inputs: ["五域 / 九域得分", "事件主线"],
+    outputs: ["折域指数 0–100", "各域分数", "同向 / 背离判断"],
+    position: "结构验证层，定数计算法主要来源。",
+    boundary: "折域高 ≠ 必然发生，仍受人物与场域变量影响。",
+  },
+  {
+    id: "rebound",
+    cn: "反冲计算法",
+    en: "Pressure Rebound Engine",
+    status: "v0.2",
+    purpose: "计算长期被压制、延迟、削弱的变量何时反向显化。",
+    problem: "什么被压住了？什么时候反向爆发？",
+    inputs: ["被压制变量", "压制时长", "外部释放窗口"],
+    outputs: ["反冲指数", "被压变量", "反冲类型", "释放建议"],
+    position: "时间场引擎 · 风险窗口判断。",
+    boundary: "反冲指数高时建议主动释放，不鼓励强压。",
+  },
+  {
+    id: "resonance",
+    cn: "共振锁定计算法",
+    en: "Resonance Lock Engine",
+    status: "v0.2",
+    purpose: "判断主体与人/事/物/地点之间的频率锁定与补偿。",
+    problem: "谁/什么/哪里在与主体形成共振？",
+    inputs: ["主体频率向量", "对象频率向量"],
+    outputs: ["共振指数", "锁定类型", "补偿建议"],
+    position: "关系 / 协作 / 合作判断层。",
+    boundary: "强共振 + 弱真信号 = 警惕投射，不可直接行动。",
+  },
+  {
+    id: "branch",
+    cn: "多域分支塌缩计算法",
+    en: "Branch Collapse Engine",
+    status: "v0.2",
+    purpose: "追踪未来分支从 OPEN → SEMI → COLLAPSED → MANIFESTED 的演化。",
+    problem: "哪条未来分支正在收束？哪条正在关闭？",
+    inputs: ["分支主线", "多域得分", "时间窗口", "回验序列"],
+    outputs: ["分支状态", "塌缩度 0–100", "六层分支结构"],
+    position: "定数计算法核心输入。",
+    boundary: "塌缩 ≠ 已发生，仅表示不可逆度上升。",
+  },
+  {
+    id: "constant",
+    cn: "常数计算法",
+    en: "Constant Value Engine",
+    status: "v0.2",
+    purpose: "用 0–9 常数维度评估一个方法、项目、产品或决策的结构得分。",
+    problem: "这件事在结构层面的得分是多少？",
+    inputs: ["对象 9 维评分", "权重配置"],
+    outputs: ["常数总分", "维度雷达"],
+    position: "产品 / 项目 / 决策评估通用层。",
+    boundary: "仅评估结构维度，不评估市场或法律风险。",
+  },
+  {
+    id: "vitality",
+    cn: "产品活性计算法",
+    en: "Product Vitality Engine",
+    status: "v0.2",
+    purpose: "评估一个产品是否具备显化与扩张活性。",
+    problem: "这个产品现在有没有活性？",
+    inputs: ["生命周期阶段", "用户活跃", "回验数据", "市场反馈"],
+    outputs: ["活性等级 Dormant / Latent / Active / Vital", "维度评分"],
+    position: "产品阶段决策层。",
+    boundary: "不构成投资建议，仅做产品结构评估。",
+  },
+  {
+    id: "geo",
+    cn: "地理位置因素计算法",
+    en: "Geo-Factor Engine",
+    status: "v0.2",
+    purpose: "判断当前地点对当前阶段的承载度（制度/资源/文化/市场/物理/网络/成本/战略/阶段适配）。",
+    problem: "这个地点现在是否支持当前阶段？",
+    inputs: ["地点", "当前阶段", "9 维场域评分"],
+    outputs: ["场域承载分", "迁移建议", "最佳产品 / 行动"],
+    position: "战略 / 迁移 / 发布层。",
+    boundary: "不对城市做主观评价，不构成移居或经营建议。",
+  },
+  {
+    id: "prompt",
+    cn: "提示词计算法",
+    en: "Prompt Calculus Engine",
+    status: "v0.2",
+    purpose: "根据定数与多计算法结果，生成给 AI / Codex / Lovable 的结构化提示词。",
+    problem: "现在应该让 AI 工具做什么？",
+    inputs: ["定数状态", "事件类型", "行动许可", "上下文"],
+    outputs: ["提示词文本", "提示词强度", "风险提示"],
+    position: "外部工具协作层。",
+    boundary: "提示词仅辅助生成，不保证外部工具一定成功。",
+  },
+  {
+    id: "determinant",
+    cn: "定数计算法",
+    en: "Determinant Number Engine",
+    status: "v0.3",
+    purpose: "把多个计算法的输出压缩为最终定数判断（未定 / 半定 / 接近已定 / 已定 / 反定 / 假定）。",
+    problem: "什么已经固定？什么仍是变数？现在应该按定数行动还是按变数观察？",
+    inputs: ["真信号", "折域", "共振", "分支塌缩", "回验连续度", "主线正当性", "场域承载", "噪声", "人物变量", "反向信号"],
+    outputs: ["定数值 0–100", "定数状态", "已固定变量", "仍开放变量", "最终动作"],
+    position: "多计算法输出的最终收束层。",
+    boundary: "定数低时系统提示信息不足，不建议重大决策。",
+  },
+];

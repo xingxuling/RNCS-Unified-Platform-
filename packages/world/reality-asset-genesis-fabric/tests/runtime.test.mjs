@@ -1,0 +1,25 @@
+import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import os from 'node:os';import path from 'node:path';
+import {generateAssetWorkspace,verifyWorkspace,validateRealityBranchWorkspace,rootHash,createStudioImport,createAuthorityRequest,createProviderManifest} from '../src/index.mjs';
+const intent={description:'创建一名冰属性女剑士，名字叫霜璃，属于北境守望者，动作敏捷，攻击前有预警。',subject_id:'subject:test',asset_kind:'character-2d',target_platforms:['desktop','mobile'],constraints:{palette:['#1c4fa3','#f2f6ff','#9ddcff','#17305a'],style:'stylized-readable',max_texture_size:512,max_sprite_frames:6,audio_seconds:.8,max_particles:96}};
+function run(){const dir=fs.mkdtempSync(path.join(os.tmpdir(),'ragf-'));return{dir,ws:generateAssetWorkspace(intent,{outDir:dir})}}
+test('full workspace generates',()=>{const {ws}=run();assert.equal(ws.format,'reality-asset.genesis-workspace.v0.3')});
+test('workspace verification passes',()=>{const {ws}=run();assert.equal(verifyWorkspace(ws).valid,true)});
+test('three candidate branches are generated',()=>{const {ws}=run();assert.equal(ws.candidates.length,3)});
+test('all candidate reports are eligible',()=>{const {ws}=run();assert.ok(ws.reports.every(r=>r.eligible))});
+test('recommended candidate exists',()=>{const {ws}=run();assert.ok(ws.candidates.some(c=>c.candidate_id===ws.recommended_candidate_id))});
+test('continuity asset identity matches genome',()=>{const {ws}=run();assert.equal(ws.continuity_bundle.asset_identity.asset_id,ws.genome.identity.asset_id)});
+test('causal delta references continuity bundle',()=>{const {ws}=run();assert.equal(ws.causal_delta.continuity.bundle_root,ws.continuity_bundle.bundle_root)});
+test('reality branch adapter is valid',()=>{const {ws}=run();assert.equal(validateRealityBranchWorkspace(ws.reality_branch_workspace).valid,true)});
+test('candidate files are written',()=>{const {dir}=run();for(const v of ['balanced','mobile','cinematic'])assert.ok(fs.existsSync(path.join(dir,'candidates',v,'sprite-sheet.png')))});
+test('preview HTML is written',()=>{const {dir}=run();assert.ok(fs.readFileSync(path.join(dir,'preview.html'),'utf8').includes('现实资产创生'))});
+test('continuity bundle contains file hashes',()=>{const {ws}=run();assert.ok(ws.continuity_bundle.files.every(f=>f.sha256.length===64))});
+test('workspace root is deterministic across output paths',()=>{const a=run(),b=run();assert.equal(a.ws.workspace_root,b.ws.workspace_root)});
+test('different seed changes workspace root',()=>{const a=run();const dir=fs.mkdtempSync(path.join(os.tmpdir(),'ragf-'));const b=generateAssetWorkspace({...intent,seed:'different-seed'},{outDir:dir});assert.notEqual(a.ws.workspace_root,b.workspace_root)});
+test('tampering is detected',()=>{const {ws}=run();ws.genome.identity.name='bad';assert.equal(verifyWorkspace(ws).valid,false)});
+test('Chinese output path works',()=>{const dir=fs.mkdtempSync(path.join(os.tmpdir(),'现实资产-'));const ws=generateAssetWorkspace(intent,{outDir:path.join(dir,'霜璃候选')});assert.equal(verifyWorkspace(ws).valid,true)});
+test('Studio import is sealed',()=>{const {ws}=run();const x=createStudioImport({workspace:ws,continuityBundle:ws.continuity_bundle});assert.equal(x.import_root.length,64)});
+test('Authority request is sealed',()=>{const {ws}=run();const x=createAuthorityRequest({intent:ws.intent,continuityBundle:ws.continuity_bundle,causalDelta:ws.causal_delta});assert.equal(x.request_root.length,64)});
+test('selected bundle contains visual, audio, effect and physics roles',()=>{const {ws}=run(),roles=new Set(ws.continuity_bundle.files.map(f=>f.role));for(const r of ['concept-svg','sprite-sheet','sfx-wav','particle-preset','collision-shape'])assert.ok(roles.has(r))});
+test('mobile candidate has fewer sprite frames',()=>{const {ws}=run();const m=ws.candidates.find(c=>c.variant==='mobile'),b=ws.candidates.find(c=>c.variant==='balanced');assert.ok(m.artifacts['sprite-sheet'].metadata.frames.length<b.artifacts['sprite-sheet'].metadata.frames.length)});
+test('all artifact roots are content-addressed',()=>{const {ws}=run();for(const c of ws.candidates)for(const a of Object.values(c.artifacts))assert.equal(a.root.length,64)});
+test('external stdio provider can override concept generation',()=>{const dir=fs.mkdtempSync(path.join(os.tmpdir(),'ragf-ext-'));const provider=createProviderManifest({provider_id:'provider:test:external',name:'External Test',mode:'stdio',command:[process.execPath,path.resolve('examples/providers/mock-concept-provider.mjs')],capabilities:[{capability_id:'asset.generate.vector-concept',outputs:['concept-svg'],quality:9900,cost:100,latency:100,platforms:['any']}]});const ws=generateAssetWorkspace(intent,{outDir:dir,providers:[provider]});const svg=fs.readFileSync(path.join(dir,'candidates','balanced','concept.svg'),'utf8');assert.ok(svg.includes('EXTERNAL'));assert.ok(ws.candidates.every(c=>c.provider_roots.includes(provider.provider_root)))});

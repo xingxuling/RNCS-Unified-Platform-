@@ -1,0 +1,96 @@
+reality WorldProviderDemo {
+  facet world.state : Text = "ready"
+  facet world.step : Number = 0
+  facet world.hash : Text = ""
+  facet scene.state : Text = "idle"
+
+  subject simulator {
+    facet velocity : Number = 0
+    warrant physics.simulate on world
+    warrant render.execute on scene
+  }
+
+  host physics {
+    offers broad_phase -> Text
+    offers narrow_phase -> Text
+    offers integrate -> Text
+    offers resolve_contact -> Text
+    offers solve_constraints -> Text
+  }
+
+  host render {
+    offers transform_vertices -> Text
+    offers rasterize_triangle -> Text
+    offers pbr_shade -> Text
+    offers shadow_test -> Text
+  }
+
+  emergence initialize_world {
+    cause simulator
+    when world.state == "ready"
+    needs physics.simulate on world
+    alter world.state <- "initialized"
+    alter world.step <- 0
+    preserve world.step >= 0
+    witness "rcl:world-init"
+  }
+
+  emergence physics_step {
+    cause simulator
+    when world.state == "initialized"
+    needs physics.simulate on world
+    call physics.integrate("{\"stepHz\":60,\"gx\":0,\"gy\":-10000,\"microsteps\":1,\"bodies\":[{\"id\":0,\"kind\":1,\"px\":0,\"py\":10000,\"vx\":500,\"vy\":0,\"ax\":0,\"ay\":0,\"inv_mass_q\":1000,\"rest_q\":50,\"fric_q\":500,\"damp_q\":0,\"awake\":1,\"sensor\":0},{\"id\":1,\"kind\":1,\"px\":5000,\"py\":10000,\"vx\":-500,\"vy\":0,\"ax\":0,\"ay\":0,\"inv_mass_q\":1000,\"rest_q\":50,\"fric_q\":500,\"damp_q\":0,\"awake\":1,\"sensor\":0}]}") -> world.state
+    alter world.step <- world.step + 1
+    preserve world.step > 0
+    witness "rcl:physics-integrate"
+  }
+
+  emergence broad_phase_detect {
+    cause simulator
+    when world.step > 0
+    needs physics.simulate on world
+    call physics.broad_phase("{\"gridCellSize\":64000,\"bodies\":[{\"id\":0,\"kind\":1,\"px\":0,\"py\":10000,\"shape\":\"box\",\"hx\":500,\"hy\":500,\"cat\":1,\"mask\":-1},{\"id\":1,\"kind\":1,\"px\":5000,\"py\":10000,\"shape\":\"box\",\"hx\":500,\"hy\":500,\"cat\":1,\"mask\":-1}]}") -> world.state
+    preserve length(world.state) > 0
+    witness "rcl:physics-broadphase"
+  }
+
+  emergence shade_pixel {
+    cause simulator
+    when world.step > 0
+    needs render.execute on scene
+    call render.pbr_shade("{\"base_r\":800,\"base_g\":800,\"base_b\":800,\"metallic\":0,\"roughness\":500,\"ior\":1500,\"nDotL\":800,\"nDotV\":800,\"nDotH\":900,\"rad_r\":1000,\"rad_g\":1000,\"rad_b\":1000}") -> scene.state
+    preserve length(scene.state) > 0
+    witness "rcl:render-pbr"
+  }
+
+  emergence rasterize_triangle {
+    cause simulator
+    when world.step > 0
+    needs render.execute on scene
+    call render.rasterize_triangle("{\"ax\":100,\"ay\":100,\"bx\":200,\"by\":100,\"cx\":150,\"cy\":200,\"az\":0,\"bz\":0,\"cz\":0,\"awx\":0,\"awy\":0,\"awz\":0,\"bwx\":1000,\"bwy\":0,\"bwz\":0,\"cwx\":500,\"cwy\":1000,\"cwz\":0,\"anx\":0,\"any\":1000,\"anz\":0,\"bnx\":0,\"bny\":1000,\"bnz\":0,\"cnx\":0,\"cny\":1000,\"cnz\":0,\"width\":640,\"height\":360}") -> scene.state
+    preserve length(scene.state) > 0
+    witness "rcl:render-rasterize"
+  }
+
+  emergence compute_hash {
+    cause simulator
+    when world.step > 1
+    alter world.hash <- text(world.step)
+    preserve length(world.hash) > 0
+    witness "rcl:hash-computed"
+  }
+
+  foresee initialize_world
+  foresee physics_step
+  foresee broad_phase_detect
+  foresee shade_pixel
+  foresee rasterize_triangle
+  foresee compute_hash
+
+  realize initialize_world
+  realize physics_step
+  realize broad_phase_detect
+  realize shade_pixel
+  realize rasterize_triangle
+  realize compute_hash
+}

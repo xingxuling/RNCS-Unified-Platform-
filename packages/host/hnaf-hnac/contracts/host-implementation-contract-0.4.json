@@ -1,0 +1,24 @@
+{
+  "version": "0.4",
+  "name": "HNAF Host Implementation Contract",
+  "required_behaviors": [
+    "read-deterministic-zip-capsule",
+    "reject-unsafe-or-duplicate-logical-paths",
+    "verify-canonical-sha256-file-map",
+    "verify-ed25519-envelope-when-supported-or-required",
+    "negotiate-execution-profile-before-instantiation",
+    "issue-session-scoped-capability-leases",
+    "reject-undeclared-or-ungranted-imports",
+    "emit-semantic-trace-v0.4",
+    "keep-projection-non-canonical",
+    "preserve-capsule-root-provenance"
+  ],
+  "execution_profiles": {
+    "wasm-component@1": {"level": "optional", "contract": "WIT world and import signatures"},
+    "wasm-core@1": {"level": "reference", "contract": "hnaf-core-abi@0.2"},
+    "declarative-v0": {"level": "compatibility", "contract": "bounded operation graph"}
+  },
+  "capability_rule": "No host API may be reachable without a negotiated semantic capability lease.",
+  "equivalence_rule": "Implementations are equivalent when their normalized semantic traces match for the same capsule, host policy class, and selected execution profile.",
+  "canonicality_rule": "The HNAC capsule remains canonical; every host shell and store package is a reversible projection."
+}

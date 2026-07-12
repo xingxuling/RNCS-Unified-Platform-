@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/network.session.v0.1.schema.json",
+  "title": "network.session.v0.1",
+  "type": "object",
+  "required": [
+    "format",
+    "sessionId",
+    "status"
+  ],
+  "properties": {
+    "format": {
+      "const": "network.session.v0.1"
+    },
+    "sessionId": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": true
+}

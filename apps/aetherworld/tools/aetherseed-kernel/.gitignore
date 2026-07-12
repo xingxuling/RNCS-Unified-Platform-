@@ -1,0 +1,12 @@
+# Local AetherSeed Kernel runtime outputs
+records/
+datasets/
+prompts/
+generated/
+*.jsonl
+*.manifest.json
+*.prompt.txt
+__pycache__/
+.pytest_cache/
+
+# Keep schema/sample fixtures tracked via explicit files under schemas/ and samples/.

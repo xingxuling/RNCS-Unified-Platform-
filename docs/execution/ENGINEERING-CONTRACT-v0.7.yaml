@@ -1,0 +1,42 @@
+contract: rncs.aetherworld-native-runtime-engineering.v0.7
+version: 0.7.0-alpha.1
+baseline:
+  branch: main-95
+  commit: a340a2839786f0409616645fe0aa5cd612e9892c
+  archive_sha256: bea02112ae9835e853dc697684b1bb6fefd075f2ad1884900f4f3a9760069494
+objective: >-
+  Make Aetherworld the native interaction, cognitive compilation and world-manufacturing surface of RNCS,
+  with RFE/RSR/Network as authority and VSR as presentation-only projection.
+invariants:
+  - candidate_before_formal_commit
+  - all_mutating_actions_authorized
+  - rfe_is_world_fact_authority
+  - network_reuses_rsr_authority
+  - authority_root_ne_presentation_root
+  - ui_state_is_not_world_fact
+  - rollback_and_replay_create_new_evidenced_generations
+must_reuse:
+  rsr: 0.7.0-alpha.1
+  vsr: 0.6.0-alpha.1
+  network: 0.2.0-alpha.1
+minimum_change_surface:
+  - packages/integration/aether-rncs-bridge
+  - packages/control/reality-one-gateway
+  - apps/aetherworld
+  - tests
+  - docs
+acceptance:
+  - executable_compilation_plan
+  - candidate_branch_simulation
+  - action_level_aaf
+  - formal_behavior_registration_and_trigger
+  - rfe_generation_and_behavior_evidence
+  - rsr_materialization
+  - two_client_loopback_convergence
+  - independent_vsr_projection
+  - aetherworld_runtime_cockpit
+  - rollback_and_replay
+  - full_regression
+rollback:
+  code: revert feature commit or PR
+  data: restore prior RFE generation through AAF-approved restore

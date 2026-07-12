@@ -1,0 +1,12 @@
+{
+  "profile": "declarative-v0",
+  "operations": [
+    {"op": "capability_call", "capability": "storage.state", "method": "set", "args": {"partition": "portable", "key": "profile", "value": {"display_name": "杜衡界", "language": "zh-CN"}}},
+    {"op": "capability_call", "capability": "storage.state", "method": "set", "args": {"partition": "device_private", "key": "window", "value": {"width": 1280, "height": 720}}},
+    {"op": "capability_call", "capability": "storage.state", "method": "set", "args": {"partition": "secret", "key": "demo_token", "value": "secret-value"}},
+    {"op": "capability_call", "capability": "storage.state", "method": "set", "args": {"partition": "cache", "key": "compiled_projection", "value": "cache-v1"}},
+    {"op": "capability_call", "capability": "storage.state", "method": "set", "args": {"partition": "ephemeral", "key": "session", "value": "active"}},
+    {"op": "capability_call", "capability": "storage.state", "method": "get", "args": {"partition": "portable", "key": "profile"}, "save_as": "portable.profile"},
+    {"op": "capability_call", "capability": "host.log", "method": "write", "args": {"message": "Portable state ready: {{portable.profile}}"}}
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "@taowind/ose-reasoner",
+  "version": "2.0.0-unified.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./*": "./src/*"
+  },
+  "dependencies": {
+    "@taowind/ial-compiler": "*"
+  }
+}

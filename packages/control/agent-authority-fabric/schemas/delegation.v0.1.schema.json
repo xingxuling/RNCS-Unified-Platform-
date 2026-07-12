@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "format",
+    "delegation_id",
+    "issuer_id",
+    "delegate_id",
+    "scopes",
+    "delegation_root"
+  ],
+  "properties": {
+    "format": {
+      "const": "aaf.delegation.v0.1"
+    },
+    "delegation_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

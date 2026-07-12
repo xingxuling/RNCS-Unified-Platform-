@@ -1,0 +1,19 @@
+{
+  "format": "rfe.conformance.index.v10",
+  "generatedBy": "@rfe/reference-runtime@1.0.0",
+  "levels": {
+    "C1": "c1-canonical.json",
+    "C2": "c2-transaction.json",
+    "C3": "c3-replay-scheduler.json",
+    "C4": "c4-proof-persistence-generation.json",
+    "C5": "c5-closed-reality-loop.json",
+    "C6": "c6-multi-subject-session.json",
+    "C7": "c7-replicated-authority.json",
+    "C8": "c8-cross-domain-atomic.json",
+    "C9": "c9-federated-reality-consensus.json",
+    "C10": "c10-byzantine-federated-reality.json",
+    "C11": "c11-partition-healing-reality.json",
+    "C12": "c12-constitutional-reality.json"
+  },
+  "vectorHash": "8f4f75b88170385e79587acff8067a896bafa65464c107fc0351d0a9933089a4"
+}

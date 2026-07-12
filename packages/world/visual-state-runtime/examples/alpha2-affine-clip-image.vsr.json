@@ -1,0 +1,210 @@
+{
+  "specVersion": "0.1",
+  "metadata": {
+    "id": "alpha2-affine-clip-image",
+    "title": "VSR Alpha 2 Affine Clip Image",
+    "duration": 6,
+    "defaultFps": 30,
+    "seed": 20260630
+  },
+  "canvas": {
+    "width": 960,
+    "height": 540,
+    "layoutMode": "responsive",
+    "background": {
+      "type": "linear-gradient",
+      "x1": 0,
+      "y1": 0,
+      "x2": 960,
+      "y2": 540,
+      "stops": [
+        {
+          "offset": 0,
+          "color": "#07111f"
+        },
+        {
+          "offset": 1,
+          "color": "#111f38"
+        }
+      ]
+    }
+  },
+  "assets": [
+    {
+      "id": "grid",
+      "type": "image",
+      "src": "assets/vsr-grid.png",
+      "mimeType": "image/png"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "clip-stage",
+      "type": "group",
+      "layout": {
+        "x": 70,
+        "y": 90,
+        "width": 450,
+        "height": 330
+      },
+      "content": {
+        "clip": true
+      }
+    },
+    {
+      "id": "grid-image",
+      "parentId": "clip-stage",
+      "type": "image",
+      "layout": {
+        "x": -40,
+        "y": -20,
+        "width": 540,
+        "height": 380
+      },
+      "transform": {
+        "rotation": -7,
+        "originX": 270,
+        "originY": 190
+      },
+      "content": {
+        "assetId": "grid",
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "moving-card",
+      "parentId": "clip-stage",
+      "type": "rect",
+      "layout": {
+        "x": 85,
+        "y": 85,
+        "width": 280,
+        "height": 150
+      },
+      "transform": {
+        "rotation": 12,
+        "originX": 140,
+        "originY": 75
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "rgba(17,34,63,0.82)"
+        },
+        "stroke": {
+          "type": "solid",
+          "color": "#7ddcff"
+        },
+        "strokeWidth": 3,
+        "opacity": 1
+      },
+      "content": {
+        "cornerRadius": 24
+      },
+      "tracks": [
+        {
+          "id": "card-float",
+          "property": "transform.translateY",
+          "mode": "expression",
+          "expression": "sin(time * 2) * 14"
+        }
+      ]
+    },
+    {
+      "id": "title",
+      "type": "text",
+      "layout": {
+        "x": 560,
+        "y": 115,
+        "width": 330,
+        "height": 100
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#eaf8ff"
+        }
+      },
+      "content": {
+        "text": "VSR ALPHA 2",
+        "fontSize": 44,
+        "fontWeight": "bold",
+        "align": "left",
+        "wrap": "word"
+      }
+    },
+    {
+      "id": "subtitle",
+      "type": "text",
+      "layout": {
+        "x": 560,
+        "y": 220,
+        "width": 330,
+        "height": 100
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#82dfff"
+        }
+      },
+      "content": {
+        "text": "AFFINE  CLIP  PATH  PNG  INCREMENTAL",
+        "fontSize": 19,
+        "align": "left",
+        "wrap": "word",
+        "maxLines": 3
+      }
+    },
+    {
+      "id": "signal-path",
+      "type": "path",
+      "layout": {
+        "x": 0,
+        "y": 0,
+        "width": 960,
+        "height": 540
+      },
+      "appearance": {
+        "stroke": {
+          "type": "solid",
+          "color": "#52f0c4"
+        },
+        "strokeWidth": 5
+      },
+      "content": {
+        "d": "M 560 365 C 635 290 720 445 885 340"
+      }
+    },
+    {
+      "id": "pulse",
+      "type": "ellipse",
+      "layout": {
+        "x": 850,
+        "y": 325,
+        "width": 30,
+        "height": 30
+      },
+      "appearance": {
+        "fill": {
+          "type": "solid",
+          "color": "#52f0c4"
+        }
+      },
+      "tracks": [
+        {
+          "id": "pulse-scale",
+          "property": "transform.scaleX",
+          "mode": "expression",
+          "expression": "0.8 + sin(time * 4) * 0.2"
+        },
+        {
+          "id": "pulse-scale-y",
+          "property": "transform.scaleY",
+          "mode": "expression",
+          "expression": "0.8 + sin(time * 4) * 0.2"
+        }
+      ]
+    }
+  ]
+}

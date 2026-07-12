@@ -1,0 +1,9 @@
+{
+  "format":"reality-one.unified-application-result.v0.2","status":"committed","sessionId":"level-alpha11",
+  "intent":{"source":"创建一个现实关卡，模拟、投影、保存并导出。","intentHash":"intent-alpha11"},
+  "plan":{"planHash":"plan-alpha11","steps":[{"id":"1"},{"id":"2"},{"id":"3"},{"id":"4"},{"id":"5"}]},
+  "authority":{"status":"approved","authorityHash":"authority-alpha11"},
+  "execution":{"hnacRoot":"hnac-root-alpha11","simulationRoot":"simulation-root-alpha11","projectionRoot":"projection-root-alpha11","artifactHash":"artifact-root-alpha11","gameHash":"game-root-alpha11","executionRoot":"execution-root-alpha11","stepReceipts":[{"stepId":"step:3:vsr.observer.project","observers":["player","debugger"]}]},
+  "artifact":{"identity":{"title":"Reality One Alpha.11 统一对象"}},
+  "atomicReceipt":{"finalGlobalRoot":"rfe-final-root-alpha11"}
+}

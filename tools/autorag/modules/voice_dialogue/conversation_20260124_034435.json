@@ -1,0 +1,289 @@
+{
+  "metadata": {
+    "created_at": "2026-01-24 03:44:35",
+    "total_turns": 20,
+    "simulate_mode": true
+  },
+  "conversation": [
+    {
+      "timestamp": "2026-01-24 03:44:25",
+      "turn": 1,
+      "role": "user",
+      "content": "你好，我想了解這個項目",
+      "confidence": 1.0
+    },
+    {
+      "timestamp": "2026-01-24 03:44:25",
+      "turn": 1,
+      "role": "system",
+      "content": "模擬響應：收到查詢 '你好，我想了解這個項目'。這是測試模式，實際系統會提供詳細分析。",
+      "confidence": 0.5
+    },
+    {
+      "timestamp": "2026-01-24 03:44:25",
+      "turn": 2,
+      "role": "user",
+      "content": "請幫我分析一下代碼質量",
+      "confidence": 1.0
+    },
+    {
+      "timestamp": "2026-01-24 03:44:25",
+      "turn": 2,
+      "role": "system",
+      "content": "模擬響應：收到查詢 '請幫我分析一下代碼質量'。這是測試模式，實際系統會提供詳細分析。",
+      "confidence": 0.5
+    },
+    {
+      "timestamp": "2026-01-24 03:44:26",
+      "turn": 3,
+      "role": "user",
+      "content": "如何運行這個項目",
+      "confidence": 1.0
+    },
+    {
+      "timestamp": "2026-01-24 03:44:26",
+      "turn": 3,
+      "role": "system",
+      "content": "模擬響應：收到查詢 '如何運行這個項目'。這是測試模式，實際系統會提供詳細分析。",
+      "confidence": 0.5
+    },
+    {
+      "timestamp": "2026-01-24 03:44:26",
+      "turn": 4,
+      "role": "user",
+      "content": "這個系統有什麼功能",
+      "confidence": 1.0
+    },
+    {
+      "timestamp": "2026-01-24 03:44:26",
+      "turn": 4,
+      "role": "system",
+      "content": "模擬響應：收到查詢 '這個系統有什麼功能'。這是測試模式，實際系統會提供詳細分析。",
+      "confidence": 0.5
+    },
+    {
+      "timestamp": "2026-01-24 03:44:27",
+      "turn": 5,
+      "role": "user",
+      "content": "這個系統有什麼功能",
+      "confidence": 1.0
+    },
+    {
+      "timestamp": "2026-01-24 03:44:27",
+      "turn": 5,
+      "role": "system",
+      "content": "模擬響應：收到查詢 '這個系統有什麼功能'。這是測試模式，實際系統會提供詳細分析。",
+      "confidence": 0.5
+    },
+    {
+      "timestamp": "2026-01-24 03:44:27",
+      "turn": 6,
+      "role": "user",
+      "content": "你好，我想了解這個項目",
+      "confidence": 1.0
+    },
+    {
+      "timestamp": "2026-01-24 03:44:27",
+      "turn": 6,
+      "role": "system",
+      "content": "模擬響應：收到查詢 '你好，我想了解這個項目'。這是測試模式，實際系統會提供詳細分析。",
+      "confidence": 0.5
+    },
+    {
+      "timestamp": "2026-01-24 03:44:28",
+      "turn": 7,
+      "role": "user",
+      "content": "如何運行這個項目",
+      "confidence": 1.0
+    },
+    {
+      "timestamp": "2026-01-24 03:44:28",
+      "turn": 7,
+      "role": "system",
+      "content": "模擬響應：收到查詢 '如何運行這個項目'。這是測試模式，實際系統會提供詳細分析。",
+      "confidence": 0.5
+    },
+    {
+      "timestamp": "2026-01-24 03:44:28",
+      "turn": 8,
+      "role": "user",
+      "content": "你好，我想了解這個項目",
+      "confidence": 1.0
+    },
+    {
+      "timestamp": "2026-01-24 03:44:28",
+      "turn": 8,
+      "role": "system",
+      "content": "模擬響應：收到查詢 '你好，我想了解這個項目'。這是測試模式，實際系統會提供詳細分析。",
+      "confidence": 0.5
+    },
+    {
+      "timestamp": "2026-01-24 03:44:29",
+      "turn": 9,
+      "role": "user",
+      "content": "請幫我分析一下代碼質量",
+      "confidence": 1.0
+    },
+    {
+      "timestamp": "2026-01-24 03:44:29",
+      "turn": 9,
+      "role": "system",
+      "content": "模擬響應：收到查詢 '請幫我分析一下代碼質量'。這是測試模式，實際系統會提供詳細分析。",
+      "confidence": 0.5
+    },
+    {
+      "timestamp": "2026-01-24 03:44:29",
+      "turn": 10,
+      "role": "user",
+      "content": "謝謝你的幫助",
+      "confidence": 1.0
+    },
+    {
+      "timestamp": "2026-01-24 03:44:29",
+      "turn": 10,
+      "role": "system",
+      "content": "模擬響應：收到查詢 '謝謝你的幫助'。這是測試模式，實際系統會提供詳細分析。",
+      "confidence": 0.5
+    },
+    {
+      "timestamp": "2026-01-24 03:44:30",
+      "turn": 11,
+      "role": "user",
+      "content": "請幫我分析一下代碼質量",
+      "confidence": 1.0
+    },
+    {
+      "timestamp": "2026-01-24 03:44:30",
+      "turn": 11,
+      "role": "system",
+      "content": "模擬響應：收到查詢 '請幫我分析一下代碼質量'。這是測試模式，實際系統會提供詳細分析。",
+      "confidence": 0.5
+    },
+    {
+      "timestamp": "2026-01-24 03:44:30",
+      "turn": 12,
+      "role": "user",
+      "content": "請幫我分析一下代碼質量",
+      "confidence": 1.0
+    },
+    {
+      "timestamp": "2026-01-24 03:44:30",
+      "turn": 12,
+      "role": "system",
+      "content": "模擬響應：收到查詢 '請幫我分析一下代碼質量'。這是測試模式，實際系統會提供詳細分析。",
+      "confidence": 0.5
+    },
+    {
+      "timestamp": "2026-01-24 03:44:31",
+      "turn": 13,
+      "role": "user",
+      "content": "謝謝你的幫助",
+      "confidence": 1.0
+    },
+    {
+      "timestamp": "2026-01-24 03:44:31",
+      "turn": 13,
+      "role": "system",
+      "content": "模擬響應：收到查詢 '謝謝你的幫助'。這是測試模式，實際系統會提供詳細分析。",
+      "confidence": 0.5
+    },
+    {
+      "timestamp": "2026-01-24 03:44:31",
+      "turn": 14,
+      "role": "user",
+      "content": "如何運行這個項目",
+      "confidence": 1.0
+    },
+    {
+      "timestamp": "2026-01-24 03:44:31",
+      "turn": 14,
+      "role": "system",
+      "content": "模擬響應：收到查詢 '如何運行這個項目'。這是測試模式，實際系統會提供詳細分析。",
+      "confidence": 0.5
+    },
+    {
+      "timestamp": "2026-01-24 03:44:32",
+      "turn": 15,
+      "role": "user",
+      "content": "如何運行這個項目",
+      "confidence": 1.0
+    },
+    {
+      "timestamp": "2026-01-24 03:44:32",
+      "turn": 15,
+      "role": "system",
+      "content": "模擬響應：收到查詢 '如何運行這個項目'。這是測試模式，實際系統會提供詳細分析。",
+      "confidence": 0.5
+    },
+    {
+      "timestamp": "2026-01-24 03:44:32",
+      "turn": 16,
+      "role": "user",
+      "content": "如何運行這個項目",
+      "confidence": 1.0
+    },
+    {
+      "timestamp": "2026-01-24 03:44:32",
+      "turn": 16,
+      "role": "system",
+      "content": "模擬響應：收到查詢 '如何運行這個項目'。這是測試模式，實際系統會提供詳細分析。",
+      "confidence": 0.5
+    },
+    {
+      "timestamp": "2026-01-24 03:44:33",
+      "turn": 17,
+      "role": "user",
+      "content": "如何運行這個項目",
+      "confidence": 1.0
+    },
+    {
+      "timestamp": "2026-01-24 03:44:33",
+      "turn": 17,
+      "role": "system",
+      "content": "模擬響應：收到查詢 '如何運行這個項目'。這是測試模式，實際系統會提供詳細分析。",
+      "confidence": 0.5
+    },
+    {
+      "timestamp": "2026-01-24 03:44:33",
+      "turn": 18,
+      "role": "user",
+      "content": "請幫我分析一下代碼質量",
+      "confidence": 1.0
+    },
+    {
+      "timestamp": "2026-01-24 03:44:33",
+      "turn": 18,
+      "role": "system",
+      "content": "模擬響應：收到查詢 '請幫我分析一下代碼質量'。這是測試模式，實際系統會提供詳細分析。",
+      "confidence": 0.5
+    },
+    {
+      "timestamp": "2026-01-24 03:44:34",
+      "turn": 19,
+      "role": "user",
+      "content": "如何運行這個項目",
+      "confidence": 1.0
+    },
+    {
+      "timestamp": "2026-01-24 03:44:34",
+      "turn": 19,
+      "role": "system",
+      "content": "模擬響應：收到查詢 '如何運行這個項目'。這是測試模式，實際系統會提供詳細分析。",
+      "confidence": 0.5
+    },
+    {
+      "timestamp": "2026-01-24 03:44:34",
+      "turn": 20,
+      "role": "user",
+      "content": "謝謝你的幫助",
+      "confidence": 1.0
+    },
+    {
+      "timestamp": "2026-01-24 03:44:34",
+      "turn": 20,
+      "role": "system",
+      "content": "模擬響應：收到查詢 '謝謝你的幫助'。這是測試模式，實際系統會提供詳細分析。",
+      "confidence": 0.5
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import path from 'node:path';
+import {createProject,sealProject,validateProject} from '../src/model.mjs';import {migrateProject} from '../src/migration.mjs';import {compileAll,compileLAF} from '../src/compiler.mjs';
+import {validateArtifact} from '@taowind/living-artifact-format';
+const sample=()=>JSON.parse(fs.readFileSync(new URL('../examples/RNCS原生项目示例.reality-project.json',import.meta.url),'utf8'));
+test('new project is valid',()=>{const p=createProject();assert.equal(validateProject(p).valid,true)});
+test('tampered project root is rejected',()=>{const p=createProject();p.artifact.values.progress=91;const r=validateProject(p);assert.equal(r.valid,false);assert.ok(r.errors.some(x=>x.code==='PROJECT_ROOT_MISMATCH'))});
+test('reseal repairs deterministic root',()=>{const p=createProject();p.artifact.values.progress=91;const a=sealProject(p),b=sealProject(structuredClone(p));assert.equal(a.evidence.project_root,b.evidence.project_root);assert.equal(validateProject(a).valid,true)});
+test('duplicate subject rejected',()=>{let p=createProject();p.subjects.push(structuredClone(p.subjects[0]));p=sealProject(p);assert.equal(validateProject(p).valid,false)});
+test('compile creates valid LAF 1.0',()=>{const a=compileLAF(sample());const r=validateArtifact(a);assert.equal(r.valid,true,r.errors?.join(','));assert.equal(a.continuity.current.binding_status,'unbound');assert.equal(a.continuity.current.authoritative_generation.generation,0)});
+test('compile emits all native layers',()=>{const c=compileAll(sample());assert.equal(c.format,'reality-studio.compilation.v0.8');assert.equal(c.providers.length,2);assert.equal(c.cnp_request.goals.length,3);assert.equal(c.behavior_domain.format,'reality-studio.behavior-domain.v0.8');assert.ok(c.compilation_root)});
+test('v0.5 migrates as experience projection',()=>{const old={format:'reality-studio.project.v0.5',version:'0.5.0-alpha.1',projectUid:'old-1',title:'旧场景',description:'demo',scenes:[{id:'s1',objects:[{id:'o1'},{id:'o2'}]}]};const p=migrateProject(old);assert.equal(validateProject(p).valid,true);assert.equal(p.experience.legacy_format,'reality-studio.project.v0.5');assert.equal(p.artifact.values.object_count,2);assert.ok(p.projections.some(x=>x.projection_id==='projection:experience-canvas'))});

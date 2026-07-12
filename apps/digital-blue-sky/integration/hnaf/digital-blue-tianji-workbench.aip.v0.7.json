@@ -1,0 +1,351 @@
+{
+  "version": "0.7",
+  "id": "aip:digital-blue-tianji-workbench:v0.2",
+  "root": "workspace",
+  "nodes": {
+    "workspace": {
+      "kind": "group",
+      "label": "数字蓝天机工作台",
+      "priority": "primary",
+      "children": [
+        "send",
+        "develop",
+        "pause",
+        "resume",
+        "preview",
+        "approve",
+        "reject",
+        "alternate"
+      ]
+    },
+    "send": {
+      "kind": "action",
+      "label": "发送任务",
+      "priority": "critical",
+      "intent": "message.send"
+    },
+    "pause": {
+      "kind": "action",
+      "label": "暂停任务",
+      "priority": "primary",
+      "intent": "goal.pause"
+    },
+    "resume": {
+      "kind": "action",
+      "label": "继续任务",
+      "priority": "primary",
+      "intent": "goal.resume"
+    },
+    "preview": {
+      "kind": "action",
+      "label": "检查结果",
+      "priority": "primary",
+      "intent": "result.preview"
+    },
+    "approve": {
+      "kind": "action",
+      "label": "采用结果",
+      "priority": "critical",
+      "intent": "result.approve"
+    },
+    "reject": {
+      "kind": "action",
+      "label": "放弃结果",
+      "priority": "secondary",
+      "intent": "result.reject"
+    },
+    "alternate": {
+      "kind": "action",
+      "label": "换一个方案",
+      "priority": "secondary",
+      "intent": "result.alternate"
+    },
+    "develop": {
+      "kind": "action",
+      "label": "运行完整成长闭环",
+      "priority": "critical",
+      "intent": "development.run"
+    }
+  },
+  "intents": {
+    "message.send": {
+      "label": "发送任务",
+      "risk": "low",
+      "confirmation": false,
+      "triggers": {
+        "desktop": [
+          "submit"
+        ],
+        "phone": [
+          "tap"
+        ]
+      },
+      "input_schema": {
+        "type": "object",
+        "required": [
+          "text"
+        ],
+        "properties": {
+          "text": {
+            "type": "string"
+          }
+        }
+      },
+      "goal": {
+        "type": "dml.message.send",
+        "version_range": "^0.2.0",
+        "inputs": {
+          "text": {
+            "type": "string",
+            "required": true
+          }
+        },
+        "required_evidence": [
+          "dml.work-event"
+        ],
+        "constraints": {
+          "prefer_local": true
+        }
+      },
+      "execution": {
+        "result_binding": "portable.workspace.last_message",
+        "failure_policy": "fallback",
+        "offline": "preferred"
+      }
+    },
+    "goal.pause": {
+      "label": "暂停任务",
+      "risk": "low",
+      "confirmation": false,
+      "triggers": {
+        "desktop": [
+          "activate"
+        ],
+        "phone": [
+          "tap"
+        ]
+      },
+      "goal": {
+        "type": "dml.goal.pause",
+        "version_range": "^0.2.0",
+        "inputs": {
+          "goal_id": {
+            "type": "string",
+            "required": true
+          }
+        },
+        "required_evidence": [
+          "dml.work-event"
+        ],
+        "constraints": {}
+      },
+      "execution": {
+        "result_binding": "portable.workspace.goal_status",
+        "failure_policy": "fail-fast",
+        "offline": "required"
+      }
+    },
+    "goal.resume": {
+      "label": "继续任务",
+      "risk": "low",
+      "confirmation": false,
+      "triggers": {
+        "desktop": [
+          "activate"
+        ],
+        "phone": [
+          "tap"
+        ]
+      },
+      "goal": {
+        "type": "dml.goal.resume",
+        "version_range": "^0.2.0",
+        "inputs": {
+          "goal_id": {
+            "type": "string",
+            "required": true
+          }
+        },
+        "required_evidence": [
+          "dml.work-event"
+        ],
+        "constraints": {}
+      },
+      "execution": {
+        "result_binding": "portable.workspace.goal_status",
+        "failure_policy": "fail-fast",
+        "offline": "required"
+      }
+    },
+    "result.preview": {
+      "label": "检查结果",
+      "risk": "low",
+      "confirmation": false,
+      "triggers": {
+        "desktop": [
+          "activate"
+        ],
+        "phone": [
+          "tap"
+        ]
+      },
+      "goal": {
+        "type": "dml.result.preview",
+        "version_range": "^0.2.0",
+        "inputs": {},
+        "required_evidence": [],
+        "constraints": {}
+      },
+      "execution": {
+        "result_binding": "portable.workspace.artifacts",
+        "failure_policy": "fallback",
+        "offline": "preferred"
+      }
+    },
+    "result.approve": {
+      "label": "采用结果",
+      "risk": "high",
+      "confirmation": true,
+      "triggers": {
+        "desktop": [
+          "activate"
+        ],
+        "phone": [
+          "tap"
+        ]
+      },
+      "goal": {
+        "type": "dml.result.approve",
+        "version_range": "^0.2.0",
+        "inputs": {
+          "artifact_id": {
+            "type": "string",
+            "required": true
+          }
+        },
+        "required_evidence": [
+          "aaf.approval",
+          "dml.work-event"
+        ],
+        "constraints": {}
+      },
+      "execution": {
+        "result_binding": "portable.workspace.commit",
+        "failure_policy": "fail-fast",
+        "offline": "optional"
+      }
+    },
+    "result.reject": {
+      "label": "放弃结果",
+      "risk": "low",
+      "confirmation": false,
+      "triggers": {
+        "desktop": [
+          "activate"
+        ],
+        "phone": [
+          "tap"
+        ]
+      },
+      "goal": {
+        "type": "dml.result.reject",
+        "version_range": "^0.2.0",
+        "inputs": {
+          "artifact_id": {
+            "type": "string",
+            "required": true
+          }
+        },
+        "required_evidence": [
+          "dml.work-event"
+        ],
+        "constraints": {}
+      },
+      "execution": {
+        "result_binding": "portable.workspace.commit",
+        "failure_policy": "fail-fast",
+        "offline": "required"
+      }
+    },
+    "result.alternate": {
+      "label": "换一个方案",
+      "risk": "low",
+      "confirmation": false,
+      "triggers": {
+        "desktop": [
+          "activate"
+        ],
+        "phone": [
+          "tap"
+        ]
+      },
+      "goal": {
+        "type": "dml.result.alternate",
+        "version_range": "^0.2.0",
+        "inputs": {},
+        "required_evidence": [
+          "dml.work-event"
+        ],
+        "constraints": {}
+      },
+      "execution": {
+        "result_binding": "portable.workspace.last_message",
+        "failure_policy": "fallback",
+        "offline": "preferred"
+      }
+    },
+    "development.run": {
+      "label": "运行完整成长闭环",
+      "risk": "medium",
+      "confirmation": true,
+      "triggers": {
+        "desktop": [
+          "activate"
+        ],
+        "phone": [
+          "tap"
+        ]
+      },
+      "goal": {
+        "type": "dml.development.run",
+        "version_range": "^0.2.0",
+        "inputs": {
+          "project_path": {
+            "type": "string",
+            "required": false
+          }
+        },
+        "required_evidence": [
+          "learning-plan",
+          "knowledge-claim",
+          "reality-branch",
+          "experiment-record"
+        ],
+        "constraints": {
+          "prefer_local": true,
+          "require_reversible": true
+        }
+      },
+      "execution": {
+        "result_binding": "portable.workspace.growth",
+        "failure_policy": "fail-fast",
+        "offline": "required"
+      }
+    }
+  },
+  "projections": {
+    "desktop": {
+      "layout": "workbench-three-column"
+    },
+    "phone": {
+      "layout": "conversation-with-task-drawer"
+    },
+    "accessibility": {
+      "layout": "linear-work-sequence"
+    }
+  },
+  "metadata": {
+    "product": "Digital Blue Tianji Workbench",
+    "binding": "capability-not-fixed-function"
+  }
+}

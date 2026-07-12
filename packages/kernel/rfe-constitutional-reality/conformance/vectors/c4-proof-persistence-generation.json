@@ -1,0 +1,34 @@
+{
+  "format": "rfe.conformance.c4.v1",
+  "fixture": "conformance/fixtures/c4-door-store",
+  "branchId": "branch:main",
+  "expected": {
+    "afterGeneration": {
+      "format": "rfe.reality-generation-manifest.v1",
+      "generationId": "g-conformance-c4-0001",
+      "parentGeneration": null,
+      "generationType": "conformance-fixture",
+      "worldId": "world:door-lab",
+      "branchId": "branch:main",
+      "realityRevision": 1,
+      "logicalTime": 1,
+      "authorityEventHead": "event:conformance:store-unlock",
+      "continuityManifestRef": "6eb9227004045b0cb82a1caf865df05a4c59c65cc69cdb8ef60393800e9228ff",
+      "continuityManifestRoot": "6eb9227004045b0cb82a1caf865df05a4c59c65cc69cdb8ef60393800e9228ff",
+      "evidenceRoot": "f4ea93d26ddbd9fbd45e0c09a83171bdff006f6b2e23f56201d683be31f56a55",
+      "objectRefs": [
+        "6eb9227004045b0cb82a1caf865df05a4c59c65cc69cdb8ef60393800e9228ff",
+        "7e7b86dcda5e5831aba6d1ad691118f2d33904b5c7b514187df2f7d8c221f723",
+        "7f2b8620b9b524fcb951864bc38ea9d6a2622745dd797f8fa123c6aa2741bfdf",
+        "a02e4a3420006748f78a02bfbeeadd3ab624b5d5bdc365d9a8e56df0b83056fd",
+        "e02bc514c69489ea178fb1902c8b5613a892bf0fe176d5671506bc5a98a8af0e",
+        "e5d90abd3001b7eebf82cdd069efddc23f3f788f7edc006e7136ac0281a45874"
+      ],
+      "integrityHash": "8f5faabdf114edb37f744ba5306878b8db3d351a93f4bc2b78c274792de179e9"
+    },
+    "afterDoorState": "unlocked",
+    "recoveredDoorState": "unlocked",
+    "evidenceRoot": "f4ea93d26ddbd9fbd45e0c09a83171bdff006f6b2e23f56201d683be31f56a55",
+    "objectCount": 6
+  }
+}

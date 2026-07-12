@@ -1,0 +1,187 @@
+{
+  "format": "rncs.reality-transition-envelope.v0.1",
+  "contract_version": "0.1.0",
+  "transition_id": "transition:demo-0001",
+  "phase": "projected",
+  "base_generation": {
+    "reality_id": "reality:demo-project",
+    "generation": 7,
+    "generation_root": "1111111111111111111111111111111111111111111111111111111111111111"
+  },
+  "subject": {
+    "subject_id": "subject:duhengjie",
+    "kind": "human",
+    "roles": [
+      "creator",
+      "owner"
+    ],
+    "responsibility_boundary": "project-authority"
+  },
+  "intent": {
+    "intent_id": "intent:update-progress",
+    "source": "把项目进度更新到80%，生成报告并通知团队",
+    "goals": [
+      {
+        "type": "artifact.progress.target",
+        "value": 80
+      },
+      {
+        "type": "artifact.report.generate"
+      },
+      {
+        "type": "host.notification.emit"
+      }
+    ],
+    "constraints": [
+      "must-preview-before-commit"
+    ],
+    "intent_root": "6951b7c25b918ac14db92f1e521fdd5ec3cb5e8a5d4c5add20799280f36b0545"
+  },
+  "capability_plan": {
+    "plan_id": "plan:update-progress",
+    "capabilities": [
+      {
+        "capability_id": "laf.progress.set"
+      },
+      {
+        "capability_id": "laf.report.render"
+      },
+      {
+        "capability_id": "hnaf.notification.emit"
+      }
+    ],
+    "host_bindings": [
+      {
+        "host_id": "desktop-reference"
+      }
+    ],
+    "required_scopes": [
+      "artifact.write",
+      "host.notify"
+    ],
+    "plan_root": "cbbb9e62f42290e2678cd403d19459c9e7ed9bf06bd73e0154dda15475b132ed"
+  },
+  "inputs": [
+    {
+      "kind": "semantic-object",
+      "id": "artifact:demo-project",
+      "root": "2222222222222222222222222222222222222222222222222222222222222222",
+      "version": "revision:12",
+      "continuity_class": "object_revision"
+    }
+  ],
+  "provisional_delta": {
+    "operations": [
+      {
+        "op": "replace",
+        "target": "artifact:demo-project",
+        "path": "/semantic/fields/progress",
+        "before_root": "3333333333333333333333333333333333333333333333333333333333333333",
+        "after": 80
+      }
+    ],
+    "provisional": true,
+    "delta_root": "c1881d84375d9b9320887445396b4b64dc5e82015b806d2609751eb030890a83"
+  },
+  "causal_basis": {
+    "events": [
+      {
+        "event_id": "event:intent-received",
+        "kind": "intent"
+      }
+    ],
+    "rules": [
+      {
+        "rule_id": "progress-range",
+        "expression": "0 <= progress <= 100"
+      }
+    ],
+    "simulation_refs": [],
+    "causal_root": "4c30f7333861abb7e752a95e4082c58b2781859cc22b4313c658e216b16caca9"
+  },
+  "authority": {
+    "status": "approved",
+    "resolver": "rfe:constitutional-resolver",
+    "proposal_root": "ca7c43bd39baa1a7c9309229fdac28a583f2afe5f2e837b84250cca7e7a0d7f1",
+    "claims": [
+      {
+        "scope": "artifact.write",
+        "granted": true
+      },
+      {
+        "scope": "host.notify",
+        "granted": true
+      }
+    ],
+    "constraints": [
+      {
+        "id": "preview",
+        "satisfied": true
+      }
+    ],
+    "reason": "All required scopes and constraints satisfied",
+    "decision_root": "0bb9dcad1f24f1ff1f611735dc09da7d2a54aba1354b44681800ea00bde58388"
+  },
+  "evidence": {
+    "nodes": [
+      {
+        "evidence_id": "evidence:user-intent",
+        "kind": "subject-declaration",
+        "source": "ICAR",
+        "content_root": "4444444444444444444444444444444444444444444444444444444444444444",
+        "node_root": "6ccdd13491c72b8bb43d267207c3a80865d6b580e3eb771dda00584ae2ed359c"
+      }
+    ],
+    "edges": [],
+    "evidence_root": "6d5fec56981220fc3066aff1ae0d2ee373327931f28d96ec97e74b8cfee01e72"
+  },
+  "commit": {
+    "status": "committed",
+    "proposal_root": "ca7c43bd39baa1a7c9309229fdac28a583f2afe5f2e837b84250cca7e7a0d7f1",
+    "decision_root": "0bb9dcad1f24f1ff1f611735dc09da7d2a54aba1354b44681800ea00bde58388",
+    "result_generation": {
+      "reality_id": "reality:demo-project",
+      "generation": 8,
+      "generation_root": "9999999999999999999999999999999999999999999999999999999999999999"
+    },
+    "receipt_refs": [
+      {
+        "kind": "rfe-generation-certificate",
+        "root": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    ],
+    "commit_root": "ee3ccdecd152507ff6edc705fb8f108f995f1dfd86c99d8583bfdb23edd03422"
+  },
+  "projections": [
+    {
+      "projection_id": "projection:mobile-summary",
+      "observer_id": "subject:duhengjie",
+      "modality": "visual",
+      "target_host": "android-phone",
+      "semantic_root": "8888888888888888888888888888888888888888888888888888888888888888",
+      "artifact_ref": "artifact:demo-project",
+      "projection_root": "470b93658a8c74441fdcbf4071c0f77890885d5a53431c5121635c1342085c11"
+    }
+  ],
+  "host_state_refs": [
+    {
+      "kind": "host-state",
+      "source_format": "hnaf.portable-state.v0.5",
+      "host_id": "desktop-reference",
+      "replica_id": "replica:desktop-01",
+      "snapshot_sequence": 12,
+      "state_root": "5555555555555555555555555555555555555555555555555555555555555555",
+      "schema_version": "1.0",
+      "partitions": [
+        "portable",
+        "device_private"
+      ],
+      "continuity_class": "replica_snapshot"
+    }
+  ],
+  "extensions": {
+    "demo": true
+  },
+  "proposal_root": "ca7c43bd39baa1a7c9309229fdac28a583f2afe5f2e837b84250cca7e7a0d7f1",
+  "envelope_root": "c9759e5e0a01cf90a9269f4b0df5b927e0de7091b37450252277629f1922c05d"
+}

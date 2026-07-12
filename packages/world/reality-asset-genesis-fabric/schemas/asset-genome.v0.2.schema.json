@@ -1,0 +1,14 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://taowind.example/schemas/asset-genome.v0.2.schema.json",
+  "title":"Reality Asset Genome v0.2",
+  "type":"object",
+  "required":["format","version","genome_id","intent_root","identity","semantics","visual","behavior","physical","budgets","provenance","required_outputs","genome_root"],
+  "properties":{
+    "format":{"const":"reality-asset.genome.v0.2"},"version":{"const":"0.2.0"},
+    "identity":{"type":"object","required":["asset_id","name","kind","continuity_policy"]},
+    "budgets":{"type":"object","required":["max_texture_size","max_triangles","pbr_texture_size","max_bones","animation_fps","lod_ratios"]},
+    "provenance":{"type":"object","required":["policy","source_kind"]},
+    "genome_root":{"type":"string","pattern":"^[a-f0-9]{64}$"}
+  },"additionalProperties":true
+}

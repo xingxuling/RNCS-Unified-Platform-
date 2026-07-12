@@ -1,0 +1,91 @@
+// 万物本身计算法 · 对象本体类型
+export interface ObjectOntologyType {
+  id: string;
+  userFriendlyName: string;
+  defaultEssenceQuestions: string[];
+  likelyInvariants: string[];
+  likelyDynamicVariables: string[];
+  commonMislabels: string[];
+  bestNextEngines: string[];
+}
+
+export const OBJECT_ONTOLOGY_TYPES: ObjectOntologyType[] = [
+  { id: "PERSON", userFriendlyName: "人",
+    defaultEssenceQuestions: ["他/她最不可替换的特质是什么？", "他/她的核心驱动是什么？"],
+    likelyInvariants: ["核心价值观", "能量节律", "底层动机"],
+    likelyDynamicVariables: ["情绪", "关系", "资源", "身体状态"],
+    commonMislabels: ["标签化人格", "命运论断"],
+    bestNextEngines: ["universal-breakthrough", "virtual-life"] },
+  { id: "RELATIONSHIP", userFriendlyName: "关系",
+    defaultEssenceQuestions: ["它的真实功能是什么？", "它在双方生活中扮演什么角色？"],
+    likelyInvariants: ["核心承诺", "互信结构"], likelyDynamicVariables: ["距离", "频率", "信任值"],
+    commonMislabels: ["浪漫包装", "义务化"], bestNextEngines: ["universal-breakthrough"] },
+  { id: "PRODUCT", userFriendlyName: "产品",
+    defaultEssenceQuestions: ["它解决谁的什么问题？", "它的核心价值主张？"],
+    likelyInvariants: ["核心场景", "目标用户"], likelyDynamicVariables: ["市场反馈", "竞争", "技术栈"],
+    commonMislabels: ["功能堆砌当价值", "工具误当平台"], bestNextEngines: ["virtual-creation", "universal-breakthrough"] },
+  { id: "PROJECT", userFriendlyName: "项目",
+    defaultEssenceQuestions: ["它要交付的最小成果是什么？"],
+    likelyInvariants: ["核心目标", "交付定义"], likelyDynamicVariables: ["进度", "团队", "预算"],
+    commonMislabels: ["把过程误当目标"], bestNextEngines: ["universal-breakthrough"] },
+  { id: "COMPANY", userFriendlyName: "公司", defaultEssenceQuestions: ["它的核心商业模式？"],
+    likelyInvariants: ["使命", "客户价值"], likelyDynamicVariables: ["现金流", "团队", "市场"],
+    commonMislabels: ["规模即成功"], bestNextEngines: ["universal-breakthrough"] },
+  { id: "CITY", userFriendlyName: "城市", defaultEssenceQuestions: ["它的核心地理/经济角色？"],
+    likelyInvariants: ["地理位置", "文化基因"], likelyDynamicVariables: ["人口", "政策", "经济"],
+    commonMislabels: ["旅游印象当本质"], bestNextEngines: [] },
+  { id: "PLATFORM", userFriendlyName: "平台", defaultEssenceQuestions: ["它连接谁与谁？"],
+    likelyInvariants: ["双边/多边结构", "网络效应"], likelyDynamicVariables: ["活跃用户", "规则", "算法"],
+    commonMislabels: ["产品当平台"], bestNextEngines: ["universal-breakthrough"] },
+  { id: "MARKET", userFriendlyName: "市场", defaultEssenceQuestions: ["谁在买？谁在卖？"],
+    likelyInvariants: ["核心需求"], likelyDynamicVariables: ["供给", "需求", "价格"],
+    commonMislabels: ["热度当趋势"], bestNextEngines: [] },
+  { id: "IDEA", userFriendlyName: "想法", defaultEssenceQuestions: ["它要解决什么？"],
+    likelyInvariants: ["核心洞察"], likelyDynamicVariables: ["清晰度", "时机", "执行力"],
+    commonMislabels: ["创意当方案"], bestNextEngines: ["virtual-creation", "prompt-forge"] },
+  { id: "METHOD", userFriendlyName: "方法论", defaultEssenceQuestions: ["它适用于什么问题？"],
+    likelyInvariants: ["核心步骤", "适用边界"], likelyDynamicVariables: ["熟练度", "工具"],
+    commonMislabels: ["万能化"], bestNextEngines: [] },
+  { id: "ALGORITHM", userFriendlyName: "算法 / 计算法", defaultEssenceQuestions: ["输入/输出/约束？"],
+    likelyInvariants: ["计算结构", "边界条件"], likelyDynamicVariables: ["参数", "数据质量"],
+    commonMislabels: ["算法当魔法"], bestNextEngines: ["code-generator"] },
+  { id: "EVENT", userFriendlyName: "事件", defaultEssenceQuestions: ["它何时、何地、由谁触发？"],
+    likelyInvariants: ["触发条件"], likelyDynamicVariables: ["影响范围", "持续时间"],
+    commonMislabels: ["孤立看待"], bestNextEngines: ["universal-breakthrough"] },
+  { id: "DECISION", userFriendlyName: "决策", defaultEssenceQuestions: ["可逆还是不可逆？"],
+    likelyInvariants: ["核心权衡"], likelyDynamicVariables: ["信息", "时间窗口"],
+    commonMislabels: ["把偏好当决策"], bestNextEngines: ["universal-breakthrough"] },
+  { id: "CONTENT", userFriendlyName: "内容", defaultEssenceQuestions: ["对谁说？说什么？"],
+    likelyInvariants: ["核心观点"], likelyDynamicVariables: ["渠道", "时机"],
+    commonMislabels: ["自嗨"], bestNextEngines: ["copy-generator"] },
+  { id: "CREATIVE_WORK", userFriendlyName: "作品", defaultEssenceQuestions: ["它的美学/功能核心？"],
+    likelyInvariants: ["核心张力"], likelyDynamicVariables: ["受众"], commonMislabels: [], bestNextEngines: [] },
+  { id: "VIRTUAL_WORLD", userFriendlyName: "虚拟世界", defaultEssenceQuestions: ["世界规则与边界？"],
+    likelyInvariants: ["世界种子", "规则"], likelyDynamicVariables: ["角色", "任务"],
+    commonMislabels: ["游戏当现实"], bestNextEngines: ["virtual-world", "virtual-life"] },
+  { id: "CHARACTER", userFriendlyName: "角色", defaultEssenceQuestions: ["他的核心冲突？"],
+    likelyInvariants: ["人物弧光"], likelyDynamicVariables: ["关系", "处境"], commonMislabels: [], bestNextEngines: [] },
+  { id: "DEITY_OBJECT", userFriendlyName: "神明对象", defaultEssenceQuestions: ["象征什么力量？"],
+    likelyInvariants: ["原型"], likelyDynamicVariables: ["叙事语境"],
+    commonMislabels: ["象征当真实"], bestNextEngines: [] },
+  { id: "CIVILIZATION", userFriendlyName: "文明", defaultEssenceQuestions: ["核心价值与生存方式？"],
+    likelyInvariants: ["核心信仰"], likelyDynamicVariables: ["技术", "人口"], commonMislabels: [], bestNextEngines: [] },
+  { id: "SYSTEM", userFriendlyName: "系统", defaultEssenceQuestions: ["核心反馈回路？"],
+    likelyInvariants: ["架构"], likelyDynamicVariables: ["负载", "输入"], commonMislabels: ["功能堆砌"], bestNextEngines: [] },
+  { id: "TOOL", userFriendlyName: "工具", defaultEssenceQuestions: ["完成什么任务？"],
+    likelyInvariants: ["核心功能"], likelyDynamicVariables: ["使用频率"], commonMislabels: [], bestNextEngines: [] },
+  { id: "BODY_STATE", userFriendlyName: "身体状态", defaultEssenceQuestions: ["核心信号是什么？"],
+    likelyInvariants: ["体质基线"], likelyDynamicVariables: ["睡眠", "饮食", "压力"],
+    commonMislabels: ["情绪当身体"], bestNextEngines: [] },
+  { id: "COGNITIVE_STATE", userFriendlyName: "认知状态", defaultEssenceQuestions: ["当前注意力结构？"],
+    likelyInvariants: ["认知风格"], likelyDynamicVariables: ["专注度", "情绪"], commonMislabels: [], bestNextEngines: [] },
+  { id: "MEMORY_FRAGMENT", userFriendlyName: "记忆碎片", defaultEssenceQuestions: ["它指向什么主题？"],
+    likelyInvariants: ["核心意象"], likelyDynamicVariables: ["唤起情绪"],
+    commonMislabels: ["把象征当事实"], bestNextEngines: ["subconscious-recall"] },
+  { id: "UNKNOWN", userFriendlyName: "未知对象", defaultEssenceQuestions: ["它最像什么？"],
+    likelyInvariants: [], likelyDynamicVariables: [], commonMislabels: ["过早命名"], bestNextEngines: [] },
+];
+
+export function resolveOntologyType(id: string): ObjectOntologyType {
+  return OBJECT_ONTOLOGY_TYPES.find(t => t.id === id) ?? OBJECT_ONTOLOGY_TYPES[OBJECT_ONTOLOGY_TYPES.length - 1];
+}

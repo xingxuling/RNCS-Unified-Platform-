@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoRAG Web 服务</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+        .header h1 {
+            color: #333;
+            margin: 0;
+        }
+        .header p {
+            color: #666;
+            margin: 10px 0 0;
+        }
+        .content {
+            display: flex;
+            gap: 30px;
+        }
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+        }
+        .form-section, .result-section {
+            flex: 1;
+        }
+        .section-title {
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+        .result-container {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 20px;
+            min-height: 300px;
+            max-height: 500px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+        }
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+        }
+        .success {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        .error {
+            border-color: #dc3545;
+            background: #f8d7da;
+        }
+        .status {
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .status-loading {
+            background: #cce5ff;
+            color: #004085;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            font-size: 12px;
+        }
+        .result-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .result-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .result-label {
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 5px;
+        }
+        .result-value {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 AutoRAG Web 服务</h1>
+            <p>通过浏览器访问 AutoRAG 自动化分析系统</p>
+        </div>
+        
+        <div class="content">
+            <div class="form-section">
+                <h2 class="section-title">📁 项目分析</h2>
+                
+                <div class="form-group">
+                    <label for="projectPath">项目路径：</label>
+                    <input type="text" id="projectPath" placeholder="输入项目路径" value="./test_project">
+                    <div style="font-size: 12px; color: #666; margin-top: 5px;">
+                        示例: ./test_project 或 /path/to/project
+                    </div>
+                </div>
+                
+                <div>
+                    <button class="btn" onclick="runAnalysis()" id="runBtn">
+                        🚀 运行分析
+                    </button>
+                    <button class="btn btn-secondary" onclick="testWithSample()" id="testBtn">
+                        🧪 测试项目
+                    </button>
+                    <button class="btn btn-secondary" onclick="clearResults()">
+                        🗑️ 清除
+                    </button>
+                </div>
+                
+                <div style="margin-top: 20px; padding: 15px; background: #e7f3ff; border-radius: 5px;">
+                    <h3 style="margin-top: 0; color: #004085;">💡 使用说明</h3>
+                    <ul style="margin: 0; padding-left: 20px; color: #555;">
+                        <li>输入要分析的项目路径</li>
+                        <li>点击"运行分析"开始分析</li>
+                        <li>分析结果将显示在右侧</li>
+                        <li>使用"测试项目"快速体验</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="result-section">
+                <h2 class="section-title">📊 分析结果</h2>
+                
+                <div id="statusIndicator" style="display: none;">
+                    <span class="status status-loading">分析进行中...</span>
+                </div>
+                
+                <div id="resultContainer" class="result-container">
+                    <div class="loading">
+                        <div style="font-size: 48px; margin-bottom: 20px;">📋</div>
+                        <div>分析结果将显示在这里</div>
+                        <div style="font-size: 12px; margin-top: 10px;">请先运行分析</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>AutoRAG Web 服务 v1.0.0 | 本地浏览器访问接口</p>
+            <p>服务状态: <span id="serviceStatus">检查中...</span></p>
+        </div>
+    </div>
+    
+    <script>
+        // 检查服务状态
+        async function checkServiceStatus() {
+            try {
+                const response = await fetch('/api/status');
+                const data = await response.json();
+                document.getElementById('serviceStatus').innerHTML = 
+                    `<span style="color: #28a745;">✅ 运行正常</span>`;
+            } catch (error) {
+                document.getElementById('serviceStatus').innerHTML = 
+                    '<span style="color: #dc3545;">❌ 连接失败</span>';
+            }
+        }
+        
+        // 运行分析
+        async function runAnalysis() {
+            const projectPath = document.getElementById('projectPath').value.trim();
+            if (!projectPath) {
+                alert('请输入项目路径');
+                return;
+            }
+            
+            const runBtn = document.getElementById('runBtn');
+            const testBtn = document.getElementById('testBtn');
+            const statusIndicator = document.getElementById('statusIndicator');
+            const resultContainer = document.getElementById('resultContainer');
+            
+            // 更新UI状态
+            runBtn.disabled = true;
+            testBtn.disabled = true;
+            runBtn.textContent = '分析中...';
+            statusIndicator.style.display = 'block';
+            resultContainer.className = 'result-container';
+            resultContainer.innerHTML = '<div class="loading">分析进行中，请稍候...</div>';
+            
+            try {
+                const formData = new FormData();
+                formData.append('project_path', projectPath);
+                
+                const response = await fetch('/api/run', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                // 恢复UI状态
+                runBtn.disabled = false;
+                testBtn.disabled = false;
+                runBtn.textContent = '🚀 运行分析';
+                statusIndicator.style.display = 'none';
+                
+                // 显示结果
+                if (result.status === 'success') {
+                    resultContainer.className = 'result-container success';
+                    displaySuccessResult(result);
+                } else {
+                    resultContainer.className = 'result-container error';
+                    displayErrorResult(result);
+                }
+                
+            } catch (error) {
+                // 恢复UI状态
+                runBtn.disabled = false;
+                testBtn.disabled = false;
+                runBtn.textContent = '🚀 运行分析';
+                statusIndicator.style.display = 'none';
+                
+                // 显示错误
+                resultContainer.className = 'result-container error';
+                resultContainer.innerHTML = `
+                    <div style="color: #dc3545; font-weight: bold; margin-bottom: 10px;">❌ 请求失败</div>
+                    <div>${error.message || '网络错误或服务器无响应'}</div>
+                `;
+            }
+        }
+        
+        // 使用测试项目
+        async function testWithSample() {
+            document.getElementById('projectPath').value = './test_project';
+            runAnalysis();
+        }
+        
+        // 清除结果
+        function clearResults() {
+            const resultContainer = document.getElementById('resultContainer');
+            resultContainer.className = 'result-container';
+            resultContainer.innerHTML = `
+                <div class="loading">
+                    <div style="font-size: 48px; margin-bottom: 20px;">📋</div>
+                    <div>分析结果将显示在这里</div>
+                    <div style="font-size: 12px; margin-top: 10px;">请先运行分析</div>
+                </div>
+            `;
+        }
+        
+        // 显示成功结果
+        function displaySuccessResult(result) {
+            let html = '';
+            
+            // 基本信息
+            html += `
+                <div class="result-item">
+                    <div class="result-label">项目名称</div>
+                    <div class="result-value">${result.project_name || '未知'}</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-label">分析状态</div>
+                    <div class="result-value">
+                        <span class="status status-success">✅ 成功</span>
+                    </div>
+                </div>
+            `;
+            
+            // 如果有分数信息
+            if (result.overall_score !== undefined) {
+                let scoreClass = 'status-error';
+                if (result.overall_score >= 60) scoreClass = 'status-success';
+                else if (result.overall_score >= 40) scoreClass = 'status-loading';
+                
+                html += `
+                    <div class="result-item">
+                        <div class="result-label">总体分数</div>
+                        <div class="result-value">
+                            <span class="status ${scoreClass}">${result.overall_score}/100</span>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // 成熟度等级
+            if (result.maturity_level) {
+                html += `
+                    <div class="result-item">
+                        <div class="result-label">成熟度等级</div>
+                        <div class="result-value">${result.maturity_level}</div>
+                    </div>
+                `;
+            }
+            
+            // 是否继续
+            if (result.should_proceed !== undefined) {
+                html += `
+                    <div class="result-item">
+                        <div class="result-label">是否继续</div>
+                        <div class="result-value">${result.should_proceed ? '✅ 是' : '❌ 否'}</div>
+                    </div>
+                `;
+            }
+            
+            // 迭代主题
+            if (result.iteration_theme) {
+                html += `
+                    <div class="result-item">
+                        <div class="result-label">迭代主题</div>
+                        <div class="result-value">${result.iteration_theme}</div>
+                    </div>
+                `;
+            }
+            
+            // 建议数量
+            if (result.recommendations_count !== undefined) {
+                html += `
+                    <div class="result-item">
+                        <div class="result-label">建议数量</div>
+                        <div class="result-value">${result.recommendations_count} 条</div>
+                    </div>
+                `;
+            }
+            
+            // 时间戳
+            if (result.timestamp) {
+                html += `
+                    <div class="result-item">
+                        <div class="result-label">分析时间</div>
+                        <div class="result-value">${result.timestamp}</div>
+                    </div>
+                `;
+            }
+            
+            // 报告路径
+            if (result.report_path) {
+                html += `
+                    <div class="result-item">
+                        <div class="result-label">报告文件</div>
+                        <div class="result-value" style="font-size: 11px;">${result.report_path}</div>
+                    </div>
+                `;
+            }
+            
+            resultContainer.innerHTML = html;
+        }
+        
+        // 显示错误结果
+        function displayErrorResult(result) {
+            let html = `
+                <div class="result-item">
+                    <div class="result-label">分析状态</div>
+                    <div class="result-value">
+                        <span class="status status-error">❌ 失败</span>
+                    </div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-label">错误信息</div>
+                    <div class="result-value">${result.message || '未知错误'}</div>
+                </div>
+            `;
+            
+            if (result.timestamp) {
+                html += `
+                    <div class="result-item">
+                        <div class="result-label">时间</div>
+                        <div class="result-value">${result.timestamp}</div>
+                    </div>
+                `;
+            }
+            
+            resultContainer.innerHTML = html;
+        }
+        
+        // 页面加载时检查服务状态
+        window.onload = function() {
+            checkServiceStatus();
+        };
+    </script>
+</body>
+</html>

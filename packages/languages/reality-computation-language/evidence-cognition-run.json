@@ -1,0 +1,2183 @@
+{
+  "format": "rcl.reality-run.v0.4",
+  "program": "CognitiveGreenhouse",
+  "programRoot": "ded4c5f1ccbf90f5c5629b36b85966d4e13e568bcf5a1f02ce1dc58ea949f229",
+  "foundation": {
+    "format": "rcl.reality-foundation.v0.4",
+    "program": "CognitiveGreenhouse",
+    "languageVersion": "0.4.0-alpha.1",
+    "programRoot": "ded4c5f1ccbf90f5c5629b36b85966d4e13e568bcf5a1f02ce1dc58ea949f229",
+    "domains": {
+      "metaComputational": 0,
+      "computational": 0,
+      "physical": 0,
+      "perceptual": 0,
+      "neural": 0,
+      "living": 0,
+      "genetic": 0,
+      "quantitative": 0,
+      "knowledge": 1
+    },
+    "runningPlanes": {
+      "naturalLanguage": 1,
+      "understanding": 1,
+      "creative": 1,
+      "inner": 1,
+      "execution": 1
+    },
+    "authority": {
+      "warrants": 1,
+      "boundedRules": 1
+    },
+    "compositePlanes": [
+      {
+        "id": "natural-language-reality",
+        "primitives": [
+          "language",
+          "utterance",
+          "intent",
+          "interpret"
+        ],
+        "composedFrom": [
+          "perceptual",
+          "knowledge",
+          "authority"
+        ],
+        "role": "turns human symbols into explicit utterances, candidate meanings and bounded intents without making a language model the whole intelligence"
+      },
+      {
+        "id": "understanding-reality",
+        "primitives": [
+          "understanding",
+          "hypothesis",
+          "explanation",
+          "understand"
+        ],
+        "composedFrom": [
+          "knowledge",
+          "quantitative",
+          "perceptual",
+          "natural-language-reality"
+        ],
+        "role": "constructs testable world models that explain evidence, expose confidence and can be rejected by contradiction"
+      },
+      {
+        "id": "creative-reality",
+        "primitives": [
+          "creation",
+          "candidate",
+          "select",
+          "create"
+        ],
+        "composedFrom": [
+          "understanding-reality",
+          "knowledge",
+          "meta-computational",
+          "authority"
+        ],
+        "role": "generates bounded novelty, evaluates candidates by utility, feasibility, novelty and risk, then selects without automatically executing"
+      },
+      {
+        "id": "inner-reality",
+        "composedFrom": [
+          "perceptual",
+          "neural",
+          "living",
+          "knowledge",
+          "natural-language-reality",
+          "understanding-reality",
+          "creative-reality"
+        ],
+        "role": "the subject-relative model that contains percepts, needs, memories, claims, interpretations, explanations and candidate creations"
+      },
+      {
+        "id": "execution-reality",
+        "composedFrom": [
+          "computational",
+          "physical",
+          "authority",
+          "causality-evidence"
+        ],
+        "role": "the bounded transition plane that turns a justified and selected intention into an observed, authorized and evidenced change"
+      }
+    ]
+  },
+  "state": {
+    "caretaker.actions": 1,
+    "greenhouse.safe": true,
+    "greenhouse.light": true,
+    "mind.operation_safe": {
+      "kind": "Knowledge",
+      "baseType": "Truth",
+      "value": true,
+      "confidence": 0.99,
+      "evidence": [
+        "policy:greenhouse-safe"
+      ],
+      "source": "runtime:safety-state",
+      "scope": "greenhouse",
+      "status": "observed",
+      "dependencies": [],
+      "revision": 1,
+      "alternatives": [],
+      "formedAtRoot": "2523a28466b6d45b6fae8b80b56bc3ee8d5f47e13885fccba922bc41460ab56a"
+    },
+    "command.request": {
+      "kind": "Utterance",
+      "text": "请打开温室灯",
+      "speaker": "operator",
+      "locale": "zh-CN",
+      "channel": "text",
+      "evidence": [
+        "input:user-request"
+      ],
+      "formedAtRoot": "d70d836b8c024681e0904c173375d4fbba36f32eb582b94a054e91b25ff900f7"
+    },
+    "command.activate_light": {
+      "kind": "Intent",
+      "name": "activate_light",
+      "active": true,
+      "action": "activate",
+      "target": "greenhouse.light",
+      "confidence": 0.97,
+      "evidence": [
+        "grammar:zh-open-light",
+        "input:user-request"
+      ],
+      "utterances": [
+        "command.request"
+      ],
+      "slots": {
+        "device": "light"
+      },
+      "formedAtRoot": "f0b926d5b094eef1c1e82b61a8f7b4e323827f5b86470ce3454449704ffa3b84"
+    },
+    "situation.authorized_request": {
+      "kind": "Understanding",
+      "baseType": "Truth",
+      "value": true,
+      "confidence": 0.96,
+      "explanation": "The utterance requests light activation and the greenhouse safety claim permits the operation.",
+      "evidence": [
+        "model:command-plus-safety",
+        "grammar:zh-open-light",
+        "input:user-request",
+        "policy:greenhouse-safe"
+      ],
+      "dependencies": [
+        "command.activate_light",
+        "mind.operation_safe"
+      ],
+      "coverage": 1,
+      "coherence": 0.98,
+      "status": "hypothesis",
+      "formedAtRoot": "4681783846cfcbe627dceb97f664cd64c6a145d62476f056c0e0eab7b1eecbcd"
+    },
+    "solutions.activate": {
+      "kind": "Creation",
+      "baseType": "Text",
+      "value": "activate",
+      "active": true,
+      "target": "greenhouse.light",
+      "novelty": 0.3,
+      "utility": 0.98,
+      "feasibility": 0.99,
+      "risk": 0.02,
+      "score": 0.881,
+      "status": "candidate",
+      "evidence": [
+        "strategy:direct-safe-action",
+        "model:command-plus-safety",
+        "grammar:zh-open-light",
+        "input:user-request",
+        "policy:greenhouse-safe"
+      ],
+      "basedOn": [
+        "situation.authorized_request"
+      ],
+      "formedAtRoot": "8a813e966c31c7a1aec60d1a572b5e0fdb93d8fa417630794b80103560f6fb38"
+    },
+    "solutions.clarify": {
+      "kind": "Creation",
+      "baseType": "Text",
+      "value": "ask-for-clarification",
+      "active": true,
+      "target": "operator",
+      "novelty": 0.2,
+      "utility": 0.25,
+      "feasibility": 1,
+      "risk": 0.01,
+      "score": 0.5415,
+      "status": "candidate",
+      "evidence": [
+        "strategy:conservative-fallback",
+        "grammar:zh-open-light",
+        "input:user-request"
+      ],
+      "basedOn": [
+        "command.activate_light"
+      ],
+      "formedAtRoot": "3c3ab1e20b5917ec48cac816e3d693de5b5d07471ad2c5b737eb2a9ebf19ebf8"
+    },
+    "solutions.chosen": {
+      "kind": "Creation",
+      "baseType": "Text",
+      "value": "activate",
+      "active": true,
+      "target": "greenhouse.light",
+      "novelty": 0.3,
+      "utility": 0.98,
+      "feasibility": 0.99,
+      "risk": 0.02,
+      "score": 0.881,
+      "status": "selected",
+      "evidence": [
+        "strategy:direct-safe-action",
+        "model:command-plus-safety",
+        "grammar:zh-open-light",
+        "input:user-request",
+        "policy:greenhouse-safe"
+      ],
+      "basedOn": [
+        "situation.authorized_request"
+      ],
+      "formedAtRoot": "8a813e966c31c7a1aec60d1a572b5e0fdb93d8fa417630794b80103560f6fb38",
+      "selectedFrom": [
+        "solutions.activate",
+        "solutions.clarify"
+      ]
+    }
+  },
+  "stateRoot": "7118a55993a1f2e1ed2907cbf53d76e7e1574f962ec653ef06926e0cbb54beea",
+  "history": [
+    {
+      "kind": "DomainTransition",
+      "domainKind": "knowledge",
+      "name": "mind",
+      "status": "realized",
+      "beforeRoot": "2523a28466b6d45b6fae8b80b56bc3ee8d5f47e13885fccba922bc41460ab56a",
+      "afterRoot": "d70d836b8c024681e0904c173375d4fbba36f32eb582b94a054e91b25ff900f7",
+      "changes": [
+        {
+          "target": "mind.operation_safe",
+          "before": null,
+          "after": {
+            "kind": "Knowledge",
+            "baseType": "Truth",
+            "value": true,
+            "confidence": 0.99,
+            "evidence": [
+              "policy:greenhouse-safe"
+            ],
+            "source": "runtime:safety-state",
+            "scope": "greenhouse",
+            "status": "observed",
+            "dependencies": [],
+            "revision": 1,
+            "alternatives": [],
+            "formedAtRoot": "2523a28466b6d45b6fae8b80b56bc3ee8d5f47e13885fccba922bc41460ab56a"
+          },
+          "source": "knowledge:claim"
+        }
+      ],
+      "knowledgeClaims": [
+        {
+          "path": "mind.operation_safe",
+          "confidence": 0.99,
+          "evidence": [
+            "policy:greenhouse-safe"
+          ],
+          "source": "runtime:safety-state",
+          "status": "observed",
+          "dependencies": []
+        }
+      ],
+      "conflicts": [],
+      "authorityClass": "epistemic-formation"
+    },
+    {
+      "kind": "DomainTransition",
+      "domainKind": "natural-language-plane",
+      "name": "command",
+      "status": "realized",
+      "beforeRoot": "d70d836b8c024681e0904c173375d4fbba36f32eb582b94a054e91b25ff900f7",
+      "afterRoot": "4681783846cfcbe627dceb97f664cd64c6a145d62476f056c0e0eab7b1eecbcd",
+      "changes": [
+        {
+          "target": "command.request",
+          "before": null,
+          "after": {
+            "kind": "Utterance",
+            "text": "请打开温室灯",
+            "speaker": "operator",
+            "locale": "zh-CN",
+            "channel": "text",
+            "evidence": [
+              "input:user-request"
+            ],
+            "formedAtRoot": "d70d836b8c024681e0904c173375d4fbba36f32eb582b94a054e91b25ff900f7"
+          },
+          "source": "language:utterance"
+        },
+        {
+          "target": "command.activate_light",
+          "before": null,
+          "after": {
+            "kind": "Intent",
+            "name": "activate_light",
+            "active": true,
+            "action": "activate",
+            "target": "greenhouse.light",
+            "confidence": 0.97,
+            "evidence": [
+              "grammar:zh-open-light",
+              "input:user-request"
+            ],
+            "utterances": [
+              "command.request"
+            ],
+            "slots": {
+              "device": "light"
+            },
+            "formedAtRoot": "f0b926d5b094eef1c1e82b61a8f7b4e323827f5b86470ce3454449704ffa3b84"
+          },
+          "source": "language:intent"
+        }
+      ],
+      "utterances": [
+        "command.request"
+      ],
+      "intents": [
+        "command.activate_light"
+      ],
+      "authorityClass": "symbolic-interpretation"
+    },
+    {
+      "kind": "DomainTransition",
+      "domainKind": "understanding-plane",
+      "name": "situation",
+      "status": "realized",
+      "beforeRoot": "4681783846cfcbe627dceb97f664cd64c6a145d62476f056c0e0eab7b1eecbcd",
+      "afterRoot": "8a813e966c31c7a1aec60d1a572b5e0fdb93d8fa417630794b80103560f6fb38",
+      "changes": [
+        {
+          "target": "situation.authorized_request",
+          "before": null,
+          "after": {
+            "kind": "Understanding",
+            "baseType": "Truth",
+            "value": true,
+            "confidence": 0.96,
+            "explanation": "The utterance requests light activation and the greenhouse safety claim permits the operation.",
+            "evidence": [
+              "model:command-plus-safety",
+              "grammar:zh-open-light",
+              "input:user-request",
+              "policy:greenhouse-safe"
+            ],
+            "dependencies": [
+              "command.activate_light",
+              "mind.operation_safe"
+            ],
+            "coverage": 1,
+            "coherence": 0.98,
+            "status": "hypothesis",
+            "formedAtRoot": "4681783846cfcbe627dceb97f664cd64c6a145d62476f056c0e0eab7b1eecbcd"
+          },
+          "source": "understanding:model"
+        }
+      ],
+      "explanations": [
+        {
+          "path": "situation.authorized_request",
+          "explanation": "The utterance requests light activation and the greenhouse safety claim permits the operation.",
+          "confidence": 0.96
+        }
+      ],
+      "authorityClass": "world-model-formation"
+    },
+    {
+      "kind": "DomainTransition",
+      "domainKind": "creative-plane",
+      "name": "solutions",
+      "status": "realized",
+      "beforeRoot": "8a813e966c31c7a1aec60d1a572b5e0fdb93d8fa417630794b80103560f6fb38",
+      "afterRoot": "d7ffadd977cce1c46d6ee0fc6b4068d198a0edac711b469ab97a63bb60a905b0",
+      "changes": [
+        {
+          "target": "solutions.activate",
+          "before": null,
+          "after": {
+            "kind": "Creation",
+            "baseType": "Text",
+            "value": "activate",
+            "active": true,
+            "target": "greenhouse.light",
+            "novelty": 0.3,
+            "utility": 0.98,
+            "feasibility": 0.99,
+            "risk": 0.02,
+            "score": 0.881,
+            "status": "candidate",
+            "evidence": [
+              "strategy:direct-safe-action",
+              "model:command-plus-safety",
+              "grammar:zh-open-light",
+              "input:user-request",
+              "policy:greenhouse-safe"
+            ],
+            "basedOn": [
+              "situation.authorized_request"
+            ],
+            "formedAtRoot": "8a813e966c31c7a1aec60d1a572b5e0fdb93d8fa417630794b80103560f6fb38"
+          },
+          "source": "creation:candidate"
+        },
+        {
+          "target": "solutions.clarify",
+          "before": null,
+          "after": {
+            "kind": "Creation",
+            "baseType": "Text",
+            "value": "ask-for-clarification",
+            "active": true,
+            "target": "operator",
+            "novelty": 0.2,
+            "utility": 0.25,
+            "feasibility": 1,
+            "risk": 0.01,
+            "score": 0.5415,
+            "status": "candidate",
+            "evidence": [
+              "strategy:conservative-fallback",
+              "grammar:zh-open-light",
+              "input:user-request"
+            ],
+            "basedOn": [
+              "command.activate_light"
+            ],
+            "formedAtRoot": "3c3ab1e20b5917ec48cac816e3d693de5b5d07471ad2c5b737eb2a9ebf19ebf8"
+          },
+          "source": "creation:candidate"
+        },
+        {
+          "target": "solutions.chosen",
+          "before": null,
+          "after": {
+            "kind": "Creation",
+            "baseType": "Text",
+            "value": "activate",
+            "active": true,
+            "target": "greenhouse.light",
+            "novelty": 0.3,
+            "utility": 0.98,
+            "feasibility": 0.99,
+            "risk": 0.02,
+            "score": 0.881,
+            "status": "selected",
+            "evidence": [
+              "strategy:direct-safe-action",
+              "model:command-plus-safety",
+              "grammar:zh-open-light",
+              "input:user-request",
+              "policy:greenhouse-safe"
+            ],
+            "basedOn": [
+              "situation.authorized_request"
+            ],
+            "formedAtRoot": "8a813e966c31c7a1aec60d1a572b5e0fdb93d8fa417630794b80103560f6fb38",
+            "selectedFrom": [
+              "solutions.activate",
+              "solutions.clarify"
+            ]
+          },
+          "source": "creation:select"
+        }
+      ],
+      "candidates": [
+        {
+          "path": "solutions.activate",
+          "score": 0.881,
+          "active": true
+        },
+        {
+          "path": "solutions.clarify",
+          "score": 0.5415,
+          "active": true
+        }
+      ],
+      "selected": {
+        "path": "solutions.chosen",
+        "value": "activate",
+        "score": 0.881,
+        "target": "greenhouse.light"
+      },
+      "authorityClass": "bounded-novelty-generation"
+    },
+    {
+      "kind": "Transition",
+      "rule": "enact_selected_solution",
+      "ruleKind": "Emergence",
+      "mode": "realize",
+      "status": "realized",
+      "actor": "caretaker",
+      "from": null,
+      "into": null,
+      "beforeRoot": "d7ffadd977cce1c46d6ee0fc6b4068d198a0edac711b469ab97a63bb60a905b0",
+      "afterRoot": "7118a55993a1f2e1ed2907cbf53d76e7e1574f962ec653ef06926e0cbb54beea",
+      "changes": [
+        {
+          "target": "greenhouse.light",
+          "before": false,
+          "after": true,
+          "source": "alter"
+        },
+        {
+          "target": "caretaker.actions",
+          "before": 0,
+          "after": 1,
+          "source": "alter"
+        }
+      ],
+      "authority": {
+        "needs": [
+          {
+            "capability": "greenhouse.control",
+            "target": "greenhouse"
+          }
+        ],
+        "activeWarrants": [
+          {
+            "subject": "caretaker",
+            "capability": "greenhouse.control",
+            "target": "greenhouse"
+          }
+        ]
+      },
+      "witnesses": [
+        "execution:natural-language-understanding-creation"
+      ],
+      "hostCalls": []
+    }
+  ],
+  "projections": [
+    {
+      "kind": "Projection",
+      "rule": "enact_selected_solution",
+      "ruleKind": "Emergence",
+      "mode": "foresee",
+      "status": "projected",
+      "actor": "caretaker",
+      "from": null,
+      "into": null,
+      "beforeRoot": "d7ffadd977cce1c46d6ee0fc6b4068d198a0edac711b469ab97a63bb60a905b0",
+      "afterRoot": "7118a55993a1f2e1ed2907cbf53d76e7e1574f962ec653ef06926e0cbb54beea",
+      "changes": [
+        {
+          "target": "greenhouse.light",
+          "before": false,
+          "after": true,
+          "source": "alter"
+        },
+        {
+          "target": "caretaker.actions",
+          "before": 0,
+          "after": 1,
+          "source": "alter"
+        }
+      ],
+      "authority": {
+        "needs": [
+          {
+            "capability": "greenhouse.control",
+            "target": "greenhouse"
+          }
+        ],
+        "activeWarrants": [
+          {
+            "subject": "caretaker",
+            "capability": "greenhouse.control",
+            "target": "greenhouse"
+          }
+        ]
+      },
+      "witnesses": [
+        "execution:natural-language-understanding-creation"
+      ],
+      "hostCalls": [],
+      "projectedState": {
+        "caretaker.actions": 1,
+        "greenhouse.safe": true,
+        "greenhouse.light": true,
+        "mind.operation_safe": {
+          "kind": "Knowledge",
+          "baseType": "Truth",
+          "value": true,
+          "confidence": 0.99,
+          "evidence": [
+            "policy:greenhouse-safe"
+          ],
+          "source": "runtime:safety-state",
+          "scope": "greenhouse",
+          "status": "observed",
+          "dependencies": [],
+          "revision": 1,
+          "alternatives": [],
+          "formedAtRoot": "2523a28466b6d45b6fae8b80b56bc3ee8d5f47e13885fccba922bc41460ab56a"
+        },
+        "command.request": {
+          "kind": "Utterance",
+          "text": "请打开温室灯",
+          "speaker": "operator",
+          "locale": "zh-CN",
+          "channel": "text",
+          "evidence": [
+            "input:user-request"
+          ],
+          "formedAtRoot": "d70d836b8c024681e0904c173375d4fbba36f32eb582b94a054e91b25ff900f7"
+        },
+        "command.activate_light": {
+          "kind": "Intent",
+          "name": "activate_light",
+          "active": true,
+          "action": "activate",
+          "target": "greenhouse.light",
+          "confidence": 0.97,
+          "evidence": [
+            "grammar:zh-open-light",
+            "input:user-request"
+          ],
+          "utterances": [
+            "command.request"
+          ],
+          "slots": {
+            "device": "light"
+          },
+          "formedAtRoot": "f0b926d5b094eef1c1e82b61a8f7b4e323827f5b86470ce3454449704ffa3b84"
+        },
+        "situation.authorized_request": {
+          "kind": "Understanding",
+          "baseType": "Truth",
+          "value": true,
+          "confidence": 0.96,
+          "explanation": "The utterance requests light activation and the greenhouse safety claim permits the operation.",
+          "evidence": [
+            "model:command-plus-safety",
+            "grammar:zh-open-light",
+            "input:user-request",
+            "policy:greenhouse-safe"
+          ],
+          "dependencies": [
+            "command.activate_light",
+            "mind.operation_safe"
+          ],
+          "coverage": 1,
+          "coherence": 0.98,
+          "status": "hypothesis",
+          "formedAtRoot": "4681783846cfcbe627dceb97f664cd64c6a145d62476f056c0e0eab7b1eecbcd"
+        },
+        "solutions.activate": {
+          "kind": "Creation",
+          "baseType": "Text",
+          "value": "activate",
+          "active": true,
+          "target": "greenhouse.light",
+          "novelty": 0.3,
+          "utility": 0.98,
+          "feasibility": 0.99,
+          "risk": 0.02,
+          "score": 0.881,
+          "status": "candidate",
+          "evidence": [
+            "strategy:direct-safe-action",
+            "model:command-plus-safety",
+            "grammar:zh-open-light",
+            "input:user-request",
+            "policy:greenhouse-safe"
+          ],
+          "basedOn": [
+            "situation.authorized_request"
+          ],
+          "formedAtRoot": "8a813e966c31c7a1aec60d1a572b5e0fdb93d8fa417630794b80103560f6fb38"
+        },
+        "solutions.clarify": {
+          "kind": "Creation",
+          "baseType": "Text",
+          "value": "ask-for-clarification",
+          "active": true,
+          "target": "operator",
+          "novelty": 0.2,
+          "utility": 0.25,
+          "feasibility": 1,
+          "risk": 0.01,
+          "score": 0.5415,
+          "status": "candidate",
+          "evidence": [
+            "strategy:conservative-fallback",
+            "grammar:zh-open-light",
+            "input:user-request"
+          ],
+          "basedOn": [
+            "command.activate_light"
+          ],
+          "formedAtRoot": "3c3ab1e20b5917ec48cac816e3d693de5b5d07471ad2c5b737eb2a9ebf19ebf8"
+        },
+        "solutions.chosen": {
+          "kind": "Creation",
+          "baseType": "Text",
+          "value": "activate",
+          "active": true,
+          "target": "greenhouse.light",
+          "novelty": 0.3,
+          "utility": 0.98,
+          "feasibility": 0.99,
+          "risk": 0.02,
+          "score": 0.881,
+          "status": "selected",
+          "evidence": [
+            "strategy:direct-safe-action",
+            "model:command-plus-safety",
+            "grammar:zh-open-light",
+            "input:user-request",
+            "policy:greenhouse-safe"
+          ],
+          "basedOn": [
+            "situation.authorized_request"
+          ],
+          "formedAtRoot": "8a813e966c31c7a1aec60d1a572b5e0fdb93d8fa417630794b80103560f6fb38",
+          "selectedFrom": [
+            "solutions.activate",
+            "solutions.clarify"
+          ]
+        }
+      }
+    }
+  ],
+  "naturalLanguageReality": {
+    "format": "rcl.natural-language-reality.v0.1",
+    "program": "CognitiveGreenhouse",
+    "utterances": {
+      "command.request": {
+        "kind": "Utterance",
+        "text": "请打开温室灯",
+        "speaker": "operator",
+        "locale": "zh-CN",
+        "channel": "text",
+        "evidence": [
+          "input:user-request"
+        ],
+        "formedAtRoot": "d70d836b8c024681e0904c173375d4fbba36f32eb582b94a054e91b25ff900f7"
+      }
+    },
+    "intents": {
+      "command.activate_light": {
+        "kind": "Intent",
+        "name": "activate_light",
+        "active": true,
+        "action": "activate",
+        "target": "greenhouse.light",
+        "confidence": 0.97,
+        "evidence": [
+          "grammar:zh-open-light",
+          "input:user-request"
+        ],
+        "utterances": [
+          "command.request"
+        ],
+        "slots": {
+          "device": "light"
+        },
+        "formedAtRoot": "f0b926d5b094eef1c1e82b61a8f7b4e323827f5b86470ce3454449704ffa3b84"
+      }
+    },
+    "activeIntents": [
+      {
+        "path": "command.activate_light",
+        "action": "activate",
+        "target": "greenhouse.light",
+        "confidence": 0.97
+      }
+    ],
+    "interpretations": [
+      {
+        "kind": "DomainTransition",
+        "domainKind": "natural-language-plane",
+        "name": "command",
+        "status": "realized",
+        "beforeRoot": "d70d836b8c024681e0904c173375d4fbba36f32eb582b94a054e91b25ff900f7",
+        "afterRoot": "4681783846cfcbe627dceb97f664cd64c6a145d62476f056c0e0eab7b1eecbcd",
+        "changes": [
+          {
+            "target": "command.request",
+            "before": null,
+            "after": {
+              "kind": "Utterance",
+              "text": "请打开温室灯",
+              "speaker": "operator",
+              "locale": "zh-CN",
+              "channel": "text",
+              "evidence": [
+                "input:user-request"
+              ],
+              "formedAtRoot": "d70d836b8c024681e0904c173375d4fbba36f32eb582b94a054e91b25ff900f7"
+            },
+            "source": "language:utterance"
+          },
+          {
+            "target": "command.activate_light",
+            "before": null,
+            "after": {
+              "kind": "Intent",
+              "name": "activate_light",
+              "active": true,
+              "action": "activate",
+              "target": "greenhouse.light",
+              "confidence": 0.97,
+              "evidence": [
+                "grammar:zh-open-light",
+                "input:user-request"
+              ],
+              "utterances": [
+                "command.request"
+              ],
+              "slots": {
+                "device": "light"
+              },
+              "formedAtRoot": "f0b926d5b094eef1c1e82b61a8f7b4e323827f5b86470ce3454449704ffa3b84"
+            },
+            "source": "language:intent"
+          }
+        ],
+        "utterances": [
+          "command.request"
+        ],
+        "intents": [
+          "command.activate_light"
+        ],
+        "authorityClass": "symbolic-interpretation"
+      }
+    ],
+    "root": "98e85aab205d3db45403d1bcea13e89b7f7d233fe540c02c170e8e5af0d2733a"
+  },
+  "understandingReality": {
+    "format": "rcl.understanding-reality.v0.1",
+    "program": "CognitiveGreenhouse",
+    "models": {
+      "situation.authorized_request": {
+        "kind": "Understanding",
+        "baseType": "Truth",
+        "value": true,
+        "confidence": 0.96,
+        "explanation": "The utterance requests light activation and the greenhouse safety claim permits the operation.",
+        "evidence": [
+          "model:command-plus-safety",
+          "grammar:zh-open-light",
+          "input:user-request",
+          "policy:greenhouse-safe"
+        ],
+        "dependencies": [
+          "command.activate_light",
+          "mind.operation_safe"
+        ],
+        "coverage": 1,
+        "coherence": 0.98,
+        "status": "hypothesis",
+        "formedAtRoot": "4681783846cfcbe627dceb97f664cd64c6a145d62476f056c0e0eab7b1eecbcd"
+      }
+    },
+    "weakModels": [],
+    "explanations": [
+      {
+        "path": "situation.authorized_request",
+        "explanation": "The utterance requests light activation and the greenhouse safety claim permits the operation.",
+        "confidence": 0.96
+      }
+    ],
+    "root": "5def3ff2247b860b25b094fee67ccd2ff79a3e5f22399acf7a38df0445286e19"
+  },
+  "creativeReality": {
+    "format": "rcl.creative-reality.v0.1",
+    "program": "CognitiveGreenhouse",
+    "candidates": {
+      "solutions.activate": {
+        "kind": "Creation",
+        "baseType": "Text",
+        "value": "activate",
+        "active": true,
+        "target": "greenhouse.light",
+        "novelty": 0.3,
+        "utility": 0.98,
+        "feasibility": 0.99,
+        "risk": 0.02,
+        "score": 0.881,
+        "status": "candidate",
+        "evidence": [
+          "strategy:direct-safe-action",
+          "model:command-plus-safety",
+          "grammar:zh-open-light",
+          "input:user-request",
+          "policy:greenhouse-safe"
+        ],
+        "basedOn": [
+          "situation.authorized_request"
+        ],
+        "formedAtRoot": "8a813e966c31c7a1aec60d1a572b5e0fdb93d8fa417630794b80103560f6fb38"
+      },
+      "solutions.clarify": {
+        "kind": "Creation",
+        "baseType": "Text",
+        "value": "ask-for-clarification",
+        "active": true,
+        "target": "operator",
+        "novelty": 0.2,
+        "utility": 0.25,
+        "feasibility": 1,
+        "risk": 0.01,
+        "score": 0.5415,
+        "status": "candidate",
+        "evidence": [
+          "strategy:conservative-fallback",
+          "grammar:zh-open-light",
+          "input:user-request"
+        ],
+        "basedOn": [
+          "command.activate_light"
+        ],
+        "formedAtRoot": "3c3ab1e20b5917ec48cac816e3d693de5b5d07471ad2c5b737eb2a9ebf19ebf8"
+      },
+      "solutions.chosen": {
+        "kind": "Creation",
+        "baseType": "Text",
+        "value": "activate",
+        "active": true,
+        "target": "greenhouse.light",
+        "novelty": 0.3,
+        "utility": 0.98,
+        "feasibility": 0.99,
+        "risk": 0.02,
+        "score": 0.881,
+        "status": "selected",
+        "evidence": [
+          "strategy:direct-safe-action",
+          "model:command-plus-safety",
+          "grammar:zh-open-light",
+          "input:user-request",
+          "policy:greenhouse-safe"
+        ],
+        "basedOn": [
+          "situation.authorized_request"
+        ],
+        "formedAtRoot": "8a813e966c31c7a1aec60d1a572b5e0fdb93d8fa417630794b80103560f6fb38",
+        "selectedFrom": [
+          "solutions.activate",
+          "solutions.clarify"
+        ]
+      }
+    },
+    "selected": {
+      "solutions.chosen": {
+        "kind": "Creation",
+        "baseType": "Text",
+        "value": "activate",
+        "active": true,
+        "target": "greenhouse.light",
+        "novelty": 0.3,
+        "utility": 0.98,
+        "feasibility": 0.99,
+        "risk": 0.02,
+        "score": 0.881,
+        "status": "selected",
+        "evidence": [
+          "strategy:direct-safe-action",
+          "model:command-plus-safety",
+          "grammar:zh-open-light",
+          "input:user-request",
+          "policy:greenhouse-safe"
+        ],
+        "basedOn": [
+          "situation.authorized_request"
+        ],
+        "formedAtRoot": "8a813e966c31c7a1aec60d1a572b5e0fdb93d8fa417630794b80103560f6fb38",
+        "selectedFrom": [
+          "solutions.activate",
+          "solutions.clarify"
+        ]
+      }
+    },
+    "generations": [
+      {
+        "kind": "DomainTransition",
+        "domainKind": "creative-plane",
+        "name": "solutions",
+        "status": "realized",
+        "beforeRoot": "8a813e966c31c7a1aec60d1a572b5e0fdb93d8fa417630794b80103560f6fb38",
+        "afterRoot": "d7ffadd977cce1c46d6ee0fc6b4068d198a0edac711b469ab97a63bb60a905b0",
+        "changes": [
+          {
+            "target": "solutions.activate",
+            "before": null,
+            "after": {
+              "kind": "Creation",
+              "baseType": "Text",
+              "value": "activate",
+              "active": true,
+              "target": "greenhouse.light",
+              "novelty": 0.3,
+              "utility": 0.98,
+              "feasibility": 0.99,
+              "risk": 0.02,
+              "score": 0.881,
+              "status": "candidate",
+              "evidence": [
+                "strategy:direct-safe-action",
+                "model:command-plus-safety",
+                "grammar:zh-open-light",
+                "input:user-request",
+                "policy:greenhouse-safe"
+              ],
+              "basedOn": [
+                "situation.authorized_request"
+              ],
+              "formedAtRoot": "8a813e966c31c7a1aec60d1a572b5e0fdb93d8fa417630794b80103560f6fb38"
+            },
+            "source": "creation:candidate"
+          },
+          {
+            "target": "solutions.clarify",
+            "before": null,
+            "after": {
+              "kind": "Creation",
+              "baseType": "Text",
+              "value": "ask-for-clarification",
+              "active": true,
+              "target": "operator",
+              "novelty": 0.2,
+              "utility": 0.25,
+              "feasibility": 1,
+              "risk": 0.01,
+              "score": 0.5415,
+              "status": "candidate",
+              "evidence": [
+                "strategy:conservative-fallback",
+                "grammar:zh-open-light",
+                "input:user-request"
+              ],
+              "basedOn": [
+                "command.activate_light"
+              ],
+              "formedAtRoot": "3c3ab1e20b5917ec48cac816e3d693de5b5d07471ad2c5b737eb2a9ebf19ebf8"
+            },
+            "source": "creation:candidate"
+          },
+          {
+            "target": "solutions.chosen",
+            "before": null,
+            "after": {
+              "kind": "Creation",
+              "baseType": "Text",
+              "value": "activate",
+              "active": true,
+              "target": "greenhouse.light",
+              "novelty": 0.3,
+              "utility": 0.98,
+              "feasibility": 0.99,
+              "risk": 0.02,
+              "score": 0.881,
+              "status": "selected",
+              "evidence": [
+                "strategy:direct-safe-action",
+                "model:command-plus-safety",
+                "grammar:zh-open-light",
+                "input:user-request",
+                "policy:greenhouse-safe"
+              ],
+              "basedOn": [
+                "situation.authorized_request"
+              ],
+              "formedAtRoot": "8a813e966c31c7a1aec60d1a572b5e0fdb93d8fa417630794b80103560f6fb38",
+              "selectedFrom": [
+                "solutions.activate",
+                "solutions.clarify"
+              ]
+            },
+            "source": "creation:select"
+          }
+        ],
+        "candidates": [
+          {
+            "path": "solutions.activate",
+            "score": 0.881,
+            "active": true
+          },
+          {
+            "path": "solutions.clarify",
+            "score": 0.5415,
+            "active": true
+          }
+        ],
+        "selected": {
+          "path": "solutions.chosen",
+          "value": "activate",
+          "score": 0.881,
+          "target": "greenhouse.light"
+        },
+        "authorityClass": "bounded-novelty-generation"
+      }
+    ],
+    "root": "f33cadb5fb6d94552cc94176b21c924c87bfdfeab8b880e36b57eb4b696102ed"
+  },
+  "innerReality": {
+    "format": "rcl.inner-reality.v0.2",
+    "program": "CognitiveGreenhouse",
+    "perceptual": {},
+    "neural": {},
+    "living": {},
+    "knowledge": {
+      "mind.operation_safe": {
+        "kind": "Knowledge",
+        "baseType": "Truth",
+        "value": true,
+        "confidence": 0.99,
+        "evidence": [
+          "policy:greenhouse-safe"
+        ],
+        "source": "runtime:safety-state",
+        "scope": "greenhouse",
+        "status": "observed",
+        "dependencies": [],
+        "revision": 1,
+        "alternatives": [],
+        "formedAtRoot": "2523a28466b6d45b6fae8b80b56bc3ee8d5f47e13885fccba922bc41460ab56a"
+      }
+    },
+    "naturalLanguage": {
+      "command.request": {
+        "kind": "Utterance",
+        "text": "请打开温室灯",
+        "speaker": "operator",
+        "locale": "zh-CN",
+        "channel": "text",
+        "evidence": [
+          "input:user-request"
+        ],
+        "formedAtRoot": "d70d836b8c024681e0904c173375d4fbba36f32eb582b94a054e91b25ff900f7"
+      },
+      "command.activate_light": {
+        "kind": "Intent",
+        "name": "activate_light",
+        "active": true,
+        "action": "activate",
+        "target": "greenhouse.light",
+        "confidence": 0.97,
+        "evidence": [
+          "grammar:zh-open-light",
+          "input:user-request"
+        ],
+        "utterances": [
+          "command.request"
+        ],
+        "slots": {
+          "device": "light"
+        },
+        "formedAtRoot": "f0b926d5b094eef1c1e82b61a8f7b4e323827f5b86470ce3454449704ffa3b84"
+      }
+    },
+    "understanding": {
+      "situation.authorized_request": {
+        "kind": "Understanding",
+        "baseType": "Truth",
+        "value": true,
+        "confidence": 0.96,
+        "explanation": "The utterance requests light activation and the greenhouse safety claim permits the operation.",
+        "evidence": [
+          "model:command-plus-safety",
+          "grammar:zh-open-light",
+          "input:user-request",
+          "policy:greenhouse-safe"
+        ],
+        "dependencies": [
+          "command.activate_light",
+          "mind.operation_safe"
+        ],
+        "coverage": 1,
+        "coherence": 0.98,
+        "status": "hypothesis",
+        "formedAtRoot": "4681783846cfcbe627dceb97f664cd64c6a145d62476f056c0e0eab7b1eecbcd"
+      }
+    },
+    "creative": {
+      "solutions.activate": {
+        "kind": "Creation",
+        "baseType": "Text",
+        "value": "activate",
+        "active": true,
+        "target": "greenhouse.light",
+        "novelty": 0.3,
+        "utility": 0.98,
+        "feasibility": 0.99,
+        "risk": 0.02,
+        "score": 0.881,
+        "status": "candidate",
+        "evidence": [
+          "strategy:direct-safe-action",
+          "model:command-plus-safety",
+          "grammar:zh-open-light",
+          "input:user-request",
+          "policy:greenhouse-safe"
+        ],
+        "basedOn": [
+          "situation.authorized_request"
+        ],
+        "formedAtRoot": "8a813e966c31c7a1aec60d1a572b5e0fdb93d8fa417630794b80103560f6fb38"
+      },
+      "solutions.clarify": {
+        "kind": "Creation",
+        "baseType": "Text",
+        "value": "ask-for-clarification",
+        "active": true,
+        "target": "operator",
+        "novelty": 0.2,
+        "utility": 0.25,
+        "feasibility": 1,
+        "risk": 0.01,
+        "score": 0.5415,
+        "status": "candidate",
+        "evidence": [
+          "strategy:conservative-fallback",
+          "grammar:zh-open-light",
+          "input:user-request"
+        ],
+        "basedOn": [
+          "command.activate_light"
+        ],
+        "formedAtRoot": "3c3ab1e20b5917ec48cac816e3d693de5b5d07471ad2c5b737eb2a9ebf19ebf8"
+      },
+      "solutions.chosen": {
+        "kind": "Creation",
+        "baseType": "Text",
+        "value": "activate",
+        "active": true,
+        "target": "greenhouse.light",
+        "novelty": 0.3,
+        "utility": 0.98,
+        "feasibility": 0.99,
+        "risk": 0.02,
+        "score": 0.881,
+        "status": "selected",
+        "evidence": [
+          "strategy:direct-safe-action",
+          "model:command-plus-safety",
+          "grammar:zh-open-light",
+          "input:user-request",
+          "policy:greenhouse-safe"
+        ],
+        "basedOn": [
+          "situation.authorized_request"
+        ],
+        "formedAtRoot": "8a813e966c31c7a1aec60d1a572b5e0fdb93d8fa417630794b80103560f6fb38",
+        "selectedFrom": [
+          "solutions.activate",
+          "solutions.clarify"
+        ]
+      }
+    },
+    "unresolved": [],
+    "root": "d5484873c5736538a273fd6fbd1b63a504eac851db6e9fd2e769347082946e38"
+  },
+  "executionReality": {
+    "format": "rcl.execution-reality.v0.2",
+    "program": "CognitiveGreenhouse",
+    "projected": [
+      {
+        "kind": "Projection",
+        "rule": "enact_selected_solution",
+        "ruleKind": "Emergence",
+        "mode": "foresee",
+        "status": "projected",
+        "actor": "caretaker",
+        "from": null,
+        "into": null,
+        "beforeRoot": "d7ffadd977cce1c46d6ee0fc6b4068d198a0edac711b469ab97a63bb60a905b0",
+        "afterRoot": "7118a55993a1f2e1ed2907cbf53d76e7e1574f962ec653ef06926e0cbb54beea",
+        "changes": [
+          {
+            "target": "greenhouse.light",
+            "before": false,
+            "after": true,
+            "source": "alter"
+          },
+          {
+            "target": "caretaker.actions",
+            "before": 0,
+            "after": 1,
+            "source": "alter"
+          }
+        ],
+        "authority": {
+          "needs": [
+            {
+              "capability": "greenhouse.control",
+              "target": "greenhouse"
+            }
+          ],
+          "activeWarrants": [
+            {
+              "subject": "caretaker",
+              "capability": "greenhouse.control",
+              "target": "greenhouse"
+            }
+          ]
+        },
+        "witnesses": [
+          "execution:natural-language-understanding-creation"
+        ],
+        "hostCalls": [],
+        "projectedState": {
+          "caretaker.actions": 1,
+          "greenhouse.safe": true,
+          "greenhouse.light": true,
+          "mind.operation_safe": {
+            "kind": "Knowledge",
+            "baseType": "Truth",
+            "value": true,
+            "confidence": 0.99,
+            "evidence": [
+              "policy:greenhouse-safe"
+            ],
+            "source": "runtime:safety-state",
+            "scope": "greenhouse",
+            "status": "observed",
+            "dependencies": [],
+            "revision": 1,
+            "alternatives": [],
+            "formedAtRoot": "2523a28466b6d45b6fae8b80b56bc3ee8d5f47e13885fccba922bc41460ab56a"
+          },
+          "command.request": {
+            "kind": "Utterance",
+            "text": "请打开温室灯",
+            "speaker": "operator",
+            "locale": "zh-CN",
+            "channel": "text",
+            "evidence": [
+              "input:user-request"
+            ],
+            "formedAtRoot": "d70d836b8c024681e0904c173375d4fbba36f32eb582b94a054e91b25ff900f7"
+          },
+          "command.activate_light": {
+            "kind": "Intent",
+            "name": "activate_light",
+            "active": true,
+            "action": "activate",
+            "target": "greenhouse.light",
+            "confidence": 0.97,
+            "evidence": [
+              "grammar:zh-open-light",
+              "input:user-request"
+            ],
+            "utterances": [
+              "command.request"
+            ],
+            "slots": {
+              "device": "light"
+            },
+            "formedAtRoot": "f0b926d5b094eef1c1e82b61a8f7b4e323827f5b86470ce3454449704ffa3b84"
+          },
+          "situation.authorized_request": {
+            "kind": "Understanding",
+            "baseType": "Truth",
+            "value": true,
+            "confidence": 0.96,
+            "explanation": "The utterance requests light activation and the greenhouse safety claim permits the operation.",
+            "evidence": [
+              "model:command-plus-safety",
+              "grammar:zh-open-light",
+              "input:user-request",
+              "policy:greenhouse-safe"
+            ],
+            "dependencies": [
+              "command.activate_light",
+              "mind.operation_safe"
+            ],
+            "coverage": 1,
+            "coherence": 0.98,
+            "status": "hypothesis",
+            "formedAtRoot": "4681783846cfcbe627dceb97f664cd64c6a145d62476f056c0e0eab7b1eecbcd"
+          },
+          "solutions.activate": {
+            "kind": "Creation",
+            "baseType": "Text",
+            "value": "activate",
+            "active": true,
+            "target": "greenhouse.light",
+            "novelty": 0.3,
+            "utility": 0.98,
+            "feasibility": 0.99,
+            "risk": 0.02,
+            "score": 0.881,
+            "status": "candidate",
+            "evidence": [
+              "strategy:direct-safe-action",
+              "model:command-plus-safety",
+              "grammar:zh-open-light",
+              "input:user-request",
+              "policy:greenhouse-safe"
+            ],
+            "basedOn": [
+              "situation.authorized_request"
+            ],
+            "formedAtRoot": "8a813e966c31c7a1aec60d1a572b5e0fdb93d8fa417630794b80103560f6fb38"
+          },
+          "solutions.clarify": {
+            "kind": "Creation",
+            "baseType": "Text",
+            "value": "ask-for-clarification",
+            "active": true,
+            "target": "operator",
+            "novelty": 0.2,
+            "utility": 0.25,
+            "feasibility": 1,
+            "risk": 0.01,
+            "score": 0.5415,
+            "status": "candidate",
+            "evidence": [
+              "strategy:conservative-fallback",
+              "grammar:zh-open-light",
+              "input:user-request"
+            ],
+            "basedOn": [
+              "command.activate_light"
+            ],
+            "formedAtRoot": "3c3ab1e20b5917ec48cac816e3d693de5b5d07471ad2c5b737eb2a9ebf19ebf8"
+          },
+          "solutions.chosen": {
+            "kind": "Creation",
+            "baseType": "Text",
+            "value": "activate",
+            "active": true,
+            "target": "greenhouse.light",
+            "novelty": 0.3,
+            "utility": 0.98,
+            "feasibility": 0.99,
+            "risk": 0.02,
+            "score": 0.881,
+            "status": "selected",
+            "evidence": [
+              "strategy:direct-safe-action",
+              "model:command-plus-safety",
+              "grammar:zh-open-light",
+              "input:user-request",
+              "policy:greenhouse-safe"
+            ],
+            "basedOn": [
+              "situation.authorized_request"
+            ],
+            "formedAtRoot": "8a813e966c31c7a1aec60d1a572b5e0fdb93d8fa417630794b80103560f6fb38",
+            "selectedFrom": [
+              "solutions.activate",
+              "solutions.clarify"
+            ]
+          }
+        }
+      }
+    ],
+    "realized": [
+      {
+        "kind": "DomainTransition",
+        "domainKind": "knowledge",
+        "name": "mind",
+        "status": "realized",
+        "beforeRoot": "2523a28466b6d45b6fae8b80b56bc3ee8d5f47e13885fccba922bc41460ab56a",
+        "afterRoot": "d70d836b8c024681e0904c173375d4fbba36f32eb582b94a054e91b25ff900f7",
+        "changes": [
+          {
+            "target": "mind.operation_safe",
+            "before": null,
+            "after": {
+              "kind": "Knowledge",
+              "baseType": "Truth",
+              "value": true,
+              "confidence": 0.99,
+              "evidence": [
+                "policy:greenhouse-safe"
+              ],
+              "source": "runtime:safety-state",
+              "scope": "greenhouse",
+              "status": "observed",
+              "dependencies": [],
+              "revision": 1,
+              "alternatives": [],
+              "formedAtRoot": "2523a28466b6d45b6fae8b80b56bc3ee8d5f47e13885fccba922bc41460ab56a"
+            },
+            "source": "knowledge:claim"
+          }
+        ],
+        "knowledgeClaims": [
+          {
+            "path": "mind.operation_safe",
+            "confidence": 0.99,
+            "evidence": [
+              "policy:greenhouse-safe"
+            ],
+            "source": "runtime:safety-state",
+            "status": "observed",
+            "dependencies": []
+          }
+        ],
+        "conflicts": [],
+        "authorityClass": "epistemic-formation"
+      },
+      {
+        "kind": "DomainTransition",
+        "domainKind": "natural-language-plane",
+        "name": "command",
+        "status": "realized",
+        "beforeRoot": "d70d836b8c024681e0904c173375d4fbba36f32eb582b94a054e91b25ff900f7",
+        "afterRoot": "4681783846cfcbe627dceb97f664cd64c6a145d62476f056c0e0eab7b1eecbcd",
+        "changes": [
+          {
+            "target": "command.request",
+            "before": null,
+            "after": {
+              "kind": "Utterance",
+              "text": "请打开温室灯",
+              "speaker": "operator",
+              "locale": "zh-CN",
+              "channel": "text",
+              "evidence": [
+                "input:user-request"
+              ],
+              "formedAtRoot": "d70d836b8c024681e0904c173375d4fbba36f32eb582b94a054e91b25ff900f7"
+            },
+            "source": "language:utterance"
+          },
+          {
+            "target": "command.activate_light",
+            "before": null,
+            "after": {
+              "kind": "Intent",
+              "name": "activate_light",
+              "active": true,
+              "action": "activate",
+              "target": "greenhouse.light",
+              "confidence": 0.97,
+              "evidence": [
+                "grammar:zh-open-light",
+                "input:user-request"
+              ],
+              "utterances": [
+                "command.request"
+              ],
+              "slots": {
+                "device": "light"
+              },
+              "formedAtRoot": "f0b926d5b094eef1c1e82b61a8f7b4e323827f5b86470ce3454449704ffa3b84"
+            },
+            "source": "language:intent"
+          }
+        ],
+        "utterances": [
+          "command.request"
+        ],
+        "intents": [
+          "command.activate_light"
+        ],
+        "authorityClass": "symbolic-interpretation"
+      },
+      {
+        "kind": "DomainTransition",
+        "domainKind": "understanding-plane",
+        "name": "situation",
+        "status": "realized",
+        "beforeRoot": "4681783846cfcbe627dceb97f664cd64c6a145d62476f056c0e0eab7b1eecbcd",
+        "afterRoot": "8a813e966c31c7a1aec60d1a572b5e0fdb93d8fa417630794b80103560f6fb38",
+        "changes": [
+          {
+            "target": "situation.authorized_request",
+            "before": null,
+            "after": {
+              "kind": "Understanding",
+              "baseType": "Truth",
+              "value": true,
+              "confidence": 0.96,
+              "explanation": "The utterance requests light activation and the greenhouse safety claim permits the operation.",
+              "evidence": [
+                "model:command-plus-safety",
+                "grammar:zh-open-light",
+                "input:user-request",
+                "policy:greenhouse-safe"
+              ],
+              "dependencies": [
+                "command.activate_light",
+                "mind.operation_safe"
+              ],
+              "coverage": 1,
+              "coherence": 0.98,
+              "status": "hypothesis",
+              "formedAtRoot": "4681783846cfcbe627dceb97f664cd64c6a145d62476f056c0e0eab7b1eecbcd"
+            },
+            "source": "understanding:model"
+          }
+        ],
+        "explanations": [
+          {
+            "path": "situation.authorized_request",
+            "explanation": "The utterance requests light activation and the greenhouse safety claim permits the operation.",
+            "confidence": 0.96
+          }
+        ],
+        "authorityClass": "world-model-formation"
+      },
+      {
+        "kind": "DomainTransition",
+        "domainKind": "creative-plane",
+        "name": "solutions",
+        "status": "realized",
+        "beforeRoot": "8a813e966c31c7a1aec60d1a572b5e0fdb93d8fa417630794b80103560f6fb38",
+        "afterRoot": "d7ffadd977cce1c46d6ee0fc6b4068d198a0edac711b469ab97a63bb60a905b0",
+        "changes": [
+          {
+            "target": "solutions.activate",
+            "before": null,
+            "after": {
+              "kind": "Creation",
+              "baseType": "Text",
+              "value": "activate",
+              "active": true,
+              "target": "greenhouse.light",
+              "novelty": 0.3,
+              "utility": 0.98,
+              "feasibility": 0.99,
+              "risk": 0.02,
+              "score": 0.881,
+              "status": "candidate",
+              "evidence": [
+                "strategy:direct-safe-action",
+                "model:command-plus-safety",
+                "grammar:zh-open-light",
+                "input:user-request",
+                "policy:greenhouse-safe"
+              ],
+              "basedOn": [
+                "situation.authorized_request"
+              ],
+              "formedAtRoot": "8a813e966c31c7a1aec60d1a572b5e0fdb93d8fa417630794b80103560f6fb38"
+            },
+            "source": "creation:candidate"
+          },
+          {
+            "target": "solutions.clarify",
+            "before": null,
+            "after": {
+              "kind": "Creation",
+              "baseType": "Text",
+              "value": "ask-for-clarification",
+              "active": true,
+              "target": "operator",
+              "novelty": 0.2,
+              "utility": 0.25,
+              "feasibility": 1,
+              "risk": 0.01,
+              "score": 0.5415,
+              "status": "candidate",
+              "evidence": [
+                "strategy:conservative-fallback",
+                "grammar:zh-open-light",
+                "input:user-request"
+              ],
+              "basedOn": [
+                "command.activate_light"
+              ],
+              "formedAtRoot": "3c3ab1e20b5917ec48cac816e3d693de5b5d07471ad2c5b737eb2a9ebf19ebf8"
+            },
+            "source": "creation:candidate"
+          },
+          {
+            "target": "solutions.chosen",
+            "before": null,
+            "after": {
+              "kind": "Creation",
+              "baseType": "Text",
+              "value": "activate",
+              "active": true,
+              "target": "greenhouse.light",
+              "novelty": 0.3,
+              "utility": 0.98,
+              "feasibility": 0.99,
+              "risk": 0.02,
+              "score": 0.881,
+              "status": "selected",
+              "evidence": [
+                "strategy:direct-safe-action",
+                "model:command-plus-safety",
+                "grammar:zh-open-light",
+                "input:user-request",
+                "policy:greenhouse-safe"
+              ],
+              "basedOn": [
+                "situation.authorized_request"
+              ],
+              "formedAtRoot": "8a813e966c31c7a1aec60d1a572b5e0fdb93d8fa417630794b80103560f6fb38",
+              "selectedFrom": [
+                "solutions.activate",
+                "solutions.clarify"
+              ]
+            },
+            "source": "creation:select"
+          }
+        ],
+        "candidates": [
+          {
+            "path": "solutions.activate",
+            "score": 0.881,
+            "active": true
+          },
+          {
+            "path": "solutions.clarify",
+            "score": 0.5415,
+            "active": true
+          }
+        ],
+        "selected": {
+          "path": "solutions.chosen",
+          "value": "activate",
+          "score": 0.881,
+          "target": "greenhouse.light"
+        },
+        "authorityClass": "bounded-novelty-generation"
+      },
+      {
+        "kind": "Transition",
+        "rule": "enact_selected_solution",
+        "ruleKind": "Emergence",
+        "mode": "realize",
+        "status": "realized",
+        "actor": "caretaker",
+        "from": null,
+        "into": null,
+        "beforeRoot": "d7ffadd977cce1c46d6ee0fc6b4068d198a0edac711b469ab97a63bb60a905b0",
+        "afterRoot": "7118a55993a1f2e1ed2907cbf53d76e7e1574f962ec653ef06926e0cbb54beea",
+        "changes": [
+          {
+            "target": "greenhouse.light",
+            "before": false,
+            "after": true,
+            "source": "alter"
+          },
+          {
+            "target": "caretaker.actions",
+            "before": 0,
+            "after": 1,
+            "source": "alter"
+          }
+        ],
+        "authority": {
+          "needs": [
+            {
+              "capability": "greenhouse.control",
+              "target": "greenhouse"
+            }
+          ],
+          "activeWarrants": [
+            {
+              "subject": "caretaker",
+              "capability": "greenhouse.control",
+              "target": "greenhouse"
+            }
+          ]
+        },
+        "witnesses": [
+          "execution:natural-language-understanding-creation"
+        ],
+        "hostCalls": []
+      }
+    ],
+    "hostCalls": [],
+    "authorityDecisions": [
+      {
+        "rule": "enact_selected_solution",
+        "actor": "caretaker",
+        "authority": {
+          "needs": [
+            {
+              "capability": "greenhouse.control",
+              "target": "greenhouse"
+            }
+          ],
+          "activeWarrants": [
+            {
+              "subject": "caretaker",
+              "capability": "greenhouse.control",
+              "target": "greenhouse"
+            }
+          ]
+        }
+      }
+    ],
+    "evidence": [
+      "policy:greenhouse-safe",
+      "input:user-request",
+      "grammar:zh-open-light",
+      "model:command-plus-safety",
+      "strategy:direct-safe-action",
+      "strategy:conservative-fallback",
+      "execution:natural-language-understanding-creation"
+    ],
+    "root": "5a652df381b6a61349473444193e21c8798a3f732ddb0923b55e6bf04b71d91e"
+  },
+  "outputs": [
+    {
+      "kind": "DomainTransition",
+      "domainKind": "knowledge",
+      "name": "mind",
+      "status": "realized",
+      "beforeRoot": "2523a28466b6d45b6fae8b80b56bc3ee8d5f47e13885fccba922bc41460ab56a",
+      "afterRoot": "d70d836b8c024681e0904c173375d4fbba36f32eb582b94a054e91b25ff900f7",
+      "changes": [
+        {
+          "target": "mind.operation_safe",
+          "before": null,
+          "after": {
+            "kind": "Knowledge",
+            "baseType": "Truth",
+            "value": true,
+            "confidence": 0.99,
+            "evidence": [
+              "policy:greenhouse-safe"
+            ],
+            "source": "runtime:safety-state",
+            "scope": "greenhouse",
+            "status": "observed",
+            "dependencies": [],
+            "revision": 1,
+            "alternatives": [],
+            "formedAtRoot": "2523a28466b6d45b6fae8b80b56bc3ee8d5f47e13885fccba922bc41460ab56a"
+          },
+          "source": "knowledge:claim"
+        }
+      ],
+      "knowledgeClaims": [
+        {
+          "path": "mind.operation_safe",
+          "confidence": 0.99,
+          "evidence": [
+            "policy:greenhouse-safe"
+          ],
+          "source": "runtime:safety-state",
+          "status": "observed",
+          "dependencies": []
+        }
+      ],
+      "conflicts": [],
+      "authorityClass": "epistemic-formation"
+    },
+    {
+      "kind": "DomainTransition",
+      "domainKind": "natural-language-plane",
+      "name": "command",
+      "status": "realized",
+      "beforeRoot": "d70d836b8c024681e0904c173375d4fbba36f32eb582b94a054e91b25ff900f7",
+      "afterRoot": "4681783846cfcbe627dceb97f664cd64c6a145d62476f056c0e0eab7b1eecbcd",
+      "changes": [
+        {
+          "target": "command.request",
+          "before": null,
+          "after": {
+            "kind": "Utterance",
+            "text": "请打开温室灯",
+            "speaker": "operator",
+            "locale": "zh-CN",
+            "channel": "text",
+            "evidence": [
+              "input:user-request"
+            ],
+            "formedAtRoot": "d70d836b8c024681e0904c173375d4fbba36f32eb582b94a054e91b25ff900f7"
+          },
+          "source": "language:utterance"
+        },
+        {
+          "target": "command.activate_light",
+          "before": null,
+          "after": {
+            "kind": "Intent",
+            "name": "activate_light",
+            "active": true,
+            "action": "activate",
+            "target": "greenhouse.light",
+            "confidence": 0.97,
+            "evidence": [
+              "grammar:zh-open-light",
+              "input:user-request"
+            ],
+            "utterances": [
+              "command.request"
+            ],
+            "slots": {
+              "device": "light"
+            },
+            "formedAtRoot": "f0b926d5b094eef1c1e82b61a8f7b4e323827f5b86470ce3454449704ffa3b84"
+          },
+          "source": "language:intent"
+        }
+      ],
+      "utterances": [
+        "command.request"
+      ],
+      "intents": [
+        "command.activate_light"
+      ],
+      "authorityClass": "symbolic-interpretation"
+    },
+    {
+      "kind": "DomainTransition",
+      "domainKind": "understanding-plane",
+      "name": "situation",
+      "status": "realized",
+      "beforeRoot": "4681783846cfcbe627dceb97f664cd64c6a145d62476f056c0e0eab7b1eecbcd",
+      "afterRoot": "8a813e966c31c7a1aec60d1a572b5e0fdb93d8fa417630794b80103560f6fb38",
+      "changes": [
+        {
+          "target": "situation.authorized_request",
+          "before": null,
+          "after": {
+            "kind": "Understanding",
+            "baseType": "Truth",
+            "value": true,
+            "confidence": 0.96,
+            "explanation": "The utterance requests light activation and the greenhouse safety claim permits the operation.",
+            "evidence": [
+              "model:command-plus-safety",
+              "grammar:zh-open-light",
+              "input:user-request",
+              "policy:greenhouse-safe"
+            ],
+            "dependencies": [
+              "command.activate_light",
+              "mind.operation_safe"
+            ],
+            "coverage": 1,
+            "coherence": 0.98,
+            "status": "hypothesis",
+            "formedAtRoot": "4681783846cfcbe627dceb97f664cd64c6a145d62476f056c0e0eab7b1eecbcd"
+          },
+          "source": "understanding:model"
+        }
+      ],
+      "explanations": [
+        {
+          "path": "situation.authorized_request",
+          "explanation": "The utterance requests light activation and the greenhouse safety claim permits the operation.",
+          "confidence": 0.96
+        }
+      ],
+      "authorityClass": "world-model-formation"
+    },
+    {
+      "kind": "DomainTransition",
+      "domainKind": "creative-plane",
+      "name": "solutions",
+      "status": "realized",
+      "beforeRoot": "8a813e966c31c7a1aec60d1a572b5e0fdb93d8fa417630794b80103560f6fb38",
+      "afterRoot": "d7ffadd977cce1c46d6ee0fc6b4068d198a0edac711b469ab97a63bb60a905b0",
+      "changes": [
+        {
+          "target": "solutions.activate",
+          "before": null,
+          "after": {
+            "kind": "Creation",
+            "baseType": "Text",
+            "value": "activate",
+            "active": true,
+            "target": "greenhouse.light",
+            "novelty": 0.3,
+            "utility": 0.98,
+            "feasibility": 0.99,
+            "risk": 0.02,
+            "score": 0.881,
+            "status": "candidate",
+            "evidence": [
+              "strategy:direct-safe-action",
+              "model:command-plus-safety",
+              "grammar:zh-open-light",
+              "input:user-request",
+              "policy:greenhouse-safe"
+            ],
+            "basedOn": [
+              "situation.authorized_request"
+            ],
+            "formedAtRoot": "8a813e966c31c7a1aec60d1a572b5e0fdb93d8fa417630794b80103560f6fb38"
+          },
+          "source": "creation:candidate"
+        },
+        {
+          "target": "solutions.clarify",
+          "before": null,
+          "after": {
+            "kind": "Creation",
+            "baseType": "Text",
+            "value": "ask-for-clarification",
+            "active": true,
+            "target": "operator",
+            "novelty": 0.2,
+            "utility": 0.25,
+            "feasibility": 1,
+            "risk": 0.01,
+            "score": 0.5415,
+            "status": "candidate",
+            "evidence": [
+              "strategy:conservative-fallback",
+              "grammar:zh-open-light",
+              "input:user-request"
+            ],
+            "basedOn": [
+              "command.activate_light"
+            ],
+            "formedAtRoot": "3c3ab1e20b5917ec48cac816e3d693de5b5d07471ad2c5b737eb2a9ebf19ebf8"
+          },
+          "source": "creation:candidate"
+        },
+        {
+          "target": "solutions.chosen",
+          "before": null,
+          "after": {
+            "kind": "Creation",
+            "baseType": "Text",
+            "value": "activate",
+            "active": true,
+            "target": "greenhouse.light",
+            "novelty": 0.3,
+            "utility": 0.98,
+            "feasibility": 0.99,
+            "risk": 0.02,
+            "score": 0.881,
+            "status": "selected",
+            "evidence": [
+              "strategy:direct-safe-action",
+              "model:command-plus-safety",
+              "grammar:zh-open-light",
+              "input:user-request",
+              "policy:greenhouse-safe"
+            ],
+            "basedOn": [
+              "situation.authorized_request"
+            ],
+            "formedAtRoot": "8a813e966c31c7a1aec60d1a572b5e0fdb93d8fa417630794b80103560f6fb38",
+            "selectedFrom": [
+              "solutions.activate",
+              "solutions.clarify"
+            ]
+          },
+          "source": "creation:select"
+        }
+      ],
+      "candidates": [
+        {
+          "path": "solutions.activate",
+          "score": 0.881,
+          "active": true
+        },
+        {
+          "path": "solutions.clarify",
+          "score": 0.5415,
+          "active": true
+        }
+      ],
+      "selected": {
+        "path": "solutions.chosen",
+        "value": "activate",
+        "score": 0.881,
+        "target": "greenhouse.light"
+      },
+      "authorityClass": "bounded-novelty-generation"
+    },
+    {
+      "kind": "Projection",
+      "rule": "enact_selected_solution",
+      "ruleKind": "Emergence",
+      "mode": "foresee",
+      "status": "projected",
+      "actor": "caretaker",
+      "from": null,
+      "into": null,
+      "beforeRoot": "d7ffadd977cce1c46d6ee0fc6b4068d198a0edac711b469ab97a63bb60a905b0",
+      "afterRoot": "7118a55993a1f2e1ed2907cbf53d76e7e1574f962ec653ef06926e0cbb54beea",
+      "changes": [
+        {
+          "target": "greenhouse.light",
+          "before": false,
+          "after": true,
+          "source": "alter"
+        },
+        {
+          "target": "caretaker.actions",
+          "before": 0,
+          "after": 1,
+          "source": "alter"
+        }
+      ],
+      "authority": {
+        "needs": [
+          {
+            "capability": "greenhouse.control",
+            "target": "greenhouse"
+          }
+        ],
+        "activeWarrants": [
+          {
+            "subject": "caretaker",
+            "capability": "greenhouse.control",
+            "target": "greenhouse"
+          }
+        ]
+      },
+      "witnesses": [
+        "execution:natural-language-understanding-creation"
+      ],
+      "hostCalls": []
+    },
+    {
+      "kind": "Transition",
+      "rule": "enact_selected_solution",
+      "ruleKind": "Emergence",
+      "mode": "realize",
+      "status": "realized",
+      "actor": "caretaker",
+      "from": null,
+      "into": null,
+      "beforeRoot": "d7ffadd977cce1c46d6ee0fc6b4068d198a0edac711b469ab97a63bb60a905b0",
+      "afterRoot": "7118a55993a1f2e1ed2907cbf53d76e7e1574f962ec653ef06926e0cbb54beea",
+      "changes": [
+        {
+          "target": "greenhouse.light",
+          "before": false,
+          "after": true,
+          "source": "alter"
+        },
+        {
+          "target": "caretaker.actions",
+          "before": 0,
+          "after": 1,
+          "source": "alter"
+        }
+      ],
+      "authority": {
+        "needs": [
+          {
+            "capability": "greenhouse.control",
+            "target": "greenhouse"
+          }
+        ],
+        "activeWarrants": [
+          {
+            "subject": "caretaker",
+            "capability": "greenhouse.control",
+            "target": "greenhouse"
+          }
+        ]
+      },
+      "witnesses": [
+        "execution:natural-language-understanding-creation"
+      ],
+      "hostCalls": []
+    }
+  ]
+}

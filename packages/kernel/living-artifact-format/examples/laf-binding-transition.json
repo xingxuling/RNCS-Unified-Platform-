@@ -1,0 +1,118 @@
+{
+  "format": "rncs.reality-transition-envelope.v0.1",
+  "contract_version": "0.1.0",
+  "transition_id": "transition:347e8d31-d975-45e4-8be0-416571ae1d35",
+  "phase": "committed",
+  "base_generation": {
+    "reality_id": "reality:taowind:rncs",
+    "generation": 0,
+    "generation_root": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "subject": {
+    "subject_id": "subject:taowind:founder",
+    "kind": "human",
+    "roles": [
+      "owner"
+    ],
+    "responsibility_boundary": "declared-operation"
+  },
+  "intent": {
+    "intent_id": "intent:591a3e10-0beb-4bf2-a190-0ef33892b0e8",
+    "source": "Bind migrated Living Artifact to authoritative reality",
+    "goals": [
+      {
+        "kind": "bind-artifact",
+        "artifact_id": "artifact:project:reality-native-computing"
+      }
+    ],
+    "constraints": [],
+    "intent_root": "a9e1c3bdd6d210ad3016b03a70a19be599a2b2804ad88c5311e09e394ce6744e"
+  },
+  "capability_plan": {
+    "plan_id": "plan:08599038-d79d-4ea7-b5dd-f54c22824260",
+    "capabilities": [
+      {
+        "capability_id": "laf.bind-generation",
+        "version": "1.0.0"
+      }
+    ],
+    "host_bindings": [],
+    "required_scopes": [
+      "artifact.commit"
+    ],
+    "plan_root": "f3a6fd008b398263b27784337d82fd54c83cb0d18bb0047e05c87e1aa1f3af22"
+  },
+  "inputs": [
+    {
+      "kind": "living-artifact",
+      "artifact_id": "artifact:project:reality-native-computing",
+      "artifact_root": "ac5f31664475614fe138182bbe84036cd36eb777442524d6b8bf38fcb62e34d6",
+      "revision_root": "7027e64153f43eaca62aa8c1d7d634de0c567fec2621fdc53f4864cc8f2ffcc8"
+    }
+  ],
+  "provisional_delta": {
+    "operations": [
+      {
+        "op": "bind-generation",
+        "artifact_id": "artifact:project:reality-native-computing",
+        "artifact_root": "ac5f31664475614fe138182bbe84036cd36eb777442524d6b8bf38fcb62e34d6"
+      }
+    ],
+    "provisional": true,
+    "delta_root": "7e06469760f72ff3607a9fe7161895fd7244621dbf16a06a5e398fe204219dce"
+  },
+  "causal_basis": {
+    "events": [],
+    "rules": [],
+    "simulation_refs": [],
+    "causal_root": "19e6318102510bc5757becff7f9d109740c11087915b6da15a000a2d4ff4cbf0"
+  },
+  "authority": {
+    "status": "approved",
+    "resolver": "resolver:rfe-local",
+    "proposal_root": "afc48d908b54e7eaea2543923758224105efeb7e380ac242b80be403f315a869",
+    "claims": [
+      {
+        "scope": "artifact.commit"
+      }
+    ],
+    "constraints": [],
+    "reason": "",
+    "decision_root": "c8682c87c5ed37c70c401c909d9e8bf4ca1b074613d94564720bc9b9a8daa136"
+  },
+  "evidence": {
+    "nodes": [
+      {
+        "evidence_id": "evidence:laf-validation",
+        "kind": "validation",
+        "source": "laf-runtime",
+        "artifact_root": "ac5f31664475614fe138182bbe84036cd36eb777442524d6b8bf38fcb62e34d6",
+        "node_root": "490da4fdd0d04f7cc518e8a4c8bbcf4412c2cccb014f228db67604e19961d87a"
+      }
+    ],
+    "edges": [],
+    "evidence_root": "7af1c316ef325a0d38e87f2a15f9f2a43e895ebc689a5c39a0531264d6053d05"
+  },
+  "commit": {
+    "status": "committed",
+    "proposal_root": "afc48d908b54e7eaea2543923758224105efeb7e380ac242b80be403f315a869",
+    "decision_root": "c8682c87c5ed37c70c401c909d9e8bf4ca1b074613d94564720bc9b9a8daa136",
+    "result_generation": {
+      "reality_id": "reality:taowind:rncs",
+      "generation": 1,
+      "generation_root": "1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    "receipt_refs": [
+      "receipt:laf-demo"
+    ],
+    "commit_root": "2b73f773524f2e2f6146d7490389843448fcd0192c51328e8ab009f3d50ceab3"
+  },
+  "projections": [],
+  "host_state_refs": [],
+  "extensions": {
+    "laf_artifact_id": "artifact:project:reality-native-computing",
+    "laf_artifact_root": "ac5f31664475614fe138182bbe84036cd36eb777442524d6b8bf38fcb62e34d6"
+  },
+  "proposal_root": "afc48d908b54e7eaea2543923758224105efeb7e380ac242b80be403f315a869",
+  "envelope_root": "217a8e7cd17d7e3d3f1c748fdbff52665443b7a3961a3ea856268bbb6abd6ec5"
+}

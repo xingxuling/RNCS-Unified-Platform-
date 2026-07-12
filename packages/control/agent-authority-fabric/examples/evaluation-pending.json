@@ -1,0 +1,463 @@
+{
+  "format": "aaf.authority-decision.v0.1",
+  "request": {
+    "format": "aaf.authority-request.v0.1",
+    "request_id": "request:real-icar",
+    "proposal_root": "fd1657b27d0eee9a94f4c0733104beb2b5a5a228c931ab887a7ccae0fe9142a5",
+    "envelope_root": "73cd6e59bbf1b860e678c2981f055256e451f1819ec23ba142bd7e4eb01a23e5",
+    "subject": {
+      "subject_id": "subject:taowind",
+      "kind": "human",
+      "roles": [
+        "owner"
+      ],
+      "responsibility_boundary": "project-authority"
+    },
+    "requested_scopes": [
+      "artifact.read",
+      "artifact.write",
+      "host.notify"
+    ],
+    "capability_steps": [
+      {
+        "step_id": "step:1",
+        "goal_id": "goal:update-progress",
+        "goal_type": "artifact.progress.target",
+        "capability_id": "laf.progress.set",
+        "capability_version": "1.0.0",
+        "provider_id": "laf-runtime",
+        "protocol_version": "0.1.0",
+        "depends_on": [],
+        "execution_phase": "transaction",
+        "reversible": true,
+        "risk": {
+          "level": "medium",
+          "reasons": [
+            "artifact-mutation"
+          ]
+        },
+        "cost": {
+          "cpu_millis": 3,
+          "memory_mb": 2,
+          "network_kb": 0,
+          "monetary_microunits": 0
+        },
+        "required_scopes": [
+          "artifact.write"
+        ],
+        "host_requirements": [
+          "input.activate"
+        ],
+        "evidence": {
+          "produces": [
+            "laf.revision",
+            "rncs.provisional-delta"
+          ],
+          "requires": [
+            "artifact.root"
+          ]
+        },
+        "descriptor_root": "4c9ba5c7abf29e6cd57b6c726e65a4f22dc09b50ee9659388fb0ef1982e73a1b",
+        "transport": {
+          "kind": "local",
+          "entrypoint": "laf.progress.set"
+        }
+      },
+      {
+        "step_id": "step:2",
+        "goal_id": "goal:generate-report",
+        "goal_type": "artifact.report.generate",
+        "capability_id": "laf.report.render",
+        "capability_version": "1.1.0",
+        "provider_id": "laf-runtime",
+        "protocol_version": "0.1.0",
+        "depends_on": [
+          "step:1"
+        ],
+        "execution_phase": "read-only",
+        "reversible": true,
+        "risk": {
+          "level": "low",
+          "reasons": []
+        },
+        "cost": {
+          "cpu_millis": 2,
+          "memory_mb": 2,
+          "network_kb": 0,
+          "monetary_microunits": 0
+        },
+        "required_scopes": [
+          "artifact.read"
+        ],
+        "host_requirements": [
+          "display.text"
+        ],
+        "evidence": {
+          "produces": [
+            "report.hash"
+          ],
+          "requires": [
+            "artifact.root"
+          ]
+        },
+        "descriptor_root": "af04d730f72b24ef6d07cdf1335998ffd0612d31400ad2308078c62932aaddb2",
+        "transport": {
+          "kind": "local",
+          "entrypoint": "laf.report.render"
+        }
+      },
+      {
+        "step_id": "step:3",
+        "goal_id": "goal:notify",
+        "goal_type": "host.notification.emit",
+        "capability_id": "hnac.notification.emit",
+        "capability_version": "1.0.0",
+        "provider_id": "hnac-host:desktop",
+        "protocol_version": "0.1.0",
+        "depends_on": [
+          "step:2"
+        ],
+        "execution_phase": "post-commit",
+        "reversible": false,
+        "risk": {
+          "level": "medium",
+          "reasons": [
+            "external-side-effect"
+          ]
+        },
+        "cost": {
+          "cpu_millis": 1,
+          "memory_mb": 1,
+          "network_kb": 1,
+          "monetary_microunits": 0
+        },
+        "required_scopes": [
+          "host.notify"
+        ],
+        "host_requirements": [
+          "host.notification"
+        ],
+        "evidence": {
+          "produces": [
+            "notification.receipt"
+          ],
+          "requires": [
+            "rfe.commit-receipt"
+          ]
+        },
+        "descriptor_root": "078e0a0043cfa3e8f4d347fabb27f5610856ca11370c1e5c32c1cbda43f077ad",
+        "transport": {
+          "kind": "hnac",
+          "capsule_id": "icar-native-v0.5",
+          "entrypoint": "notify"
+        }
+      }
+    ],
+    "context": {
+      "now": "2026-06-30T12:00:00Z",
+      "environment": "local",
+      "request_id": "request:real-icar",
+      "risk": "medium",
+      "irreversible": true,
+      "monetary_microunits": 0
+    },
+    "policy_bundle_root": "99267b859941fb6caea4e5cb1a45a025c5a6606a037710d6ac7278a057f6e011",
+    "delegation_roots": [],
+    "approval_roots": [],
+    "authority_request_root": "ced76c37ce4aae60a5bb2ee39c0c6f8bc0caee5e3765db3cf8acd35bd8a478a3"
+  },
+  "proposal_root": "fd1657b27d0eee9a94f4c0733104beb2b5a5a228c931ab887a7ccae0fe9142a5",
+  "status": "pending_approval",
+  "reason": "approval-required:0/1",
+  "claims": [
+    {
+      "scope": "artifact.read",
+      "granted": true,
+      "source": "identity",
+      "reason": "direct-scope"
+    },
+    {
+      "scope": "artifact.write",
+      "granted": true,
+      "source": "identity",
+      "reason": "direct-scope"
+    },
+    {
+      "scope": "host.notify",
+      "granted": true,
+      "source": "identity",
+      "reason": "direct-scope"
+    }
+  ],
+  "constraints": [],
+  "obligations": [
+    {
+      "policy_id": "allow-owner-artifact",
+      "type": "evidence-required"
+    }
+  ],
+  "requirements": [
+    {
+      "kind": "human-approval",
+      "roles": [
+        "owner",
+        "security"
+      ],
+      "quorum": 1,
+      "proposal_root": "fd1657b27d0eee9a94f4c0733104beb2b5a5a228c931ab887a7ccae0fe9142a5",
+      "policy_ids": [
+        "approve-irreversible"
+      ],
+      "valid_approvers": [],
+      "invalid_approvals": []
+    }
+  ],
+  "risk_summary": {
+    "level": "medium",
+    "irreversible": true,
+    "monetary_microunits": 0,
+    "capability_ids": [
+      "hnac.notification.emit",
+      "laf.progress.set",
+      "laf.report.render"
+    ]
+  },
+  "matched_policies": [
+    {
+      "policy_id": "approve-irreversible",
+      "effect": "require_approval",
+      "priority": 50
+    },
+    {
+      "policy_id": "allow-owner-artifact",
+      "effect": "allow",
+      "priority": 10
+    }
+  ],
+  "delegation_evidence": [],
+  "evaluated_at": "2026-06-30T12:00:00Z",
+  "decision_root": "854976c00a63e12075716619d4620ad99c761ed8c100e6490951c6b8abaa41e4",
+  "authorized_envelope": {
+    "format": "rncs.reality-transition-envelope.v0.1",
+    "contract_version": "0.1.0",
+    "transition_id": "transition:f4fc865623e1dfb5b0f44ee9",
+    "phase": "proposed",
+    "base_generation": {
+      "reality_id": "reality:icar-demo",
+      "generation": 0,
+      "generation_root": "2bd3049cf4eca0047b328c85ebaa169833da0e63915ba9dd6a24501112447f30"
+    },
+    "subject": {
+      "subject_id": "subject:taowind",
+      "kind": "human",
+      "roles": [
+        "owner"
+      ],
+      "responsibility_boundary": "project-authority"
+    },
+    "intent": {
+      "intent_id": "intent:2ed4601377f46aac4c9d",
+      "source": "把项目进度更新到80%，生成状态报告并通知我。",
+      "goals": [
+        {
+          "type": "artifact.progress.target",
+          "value": 80
+        },
+        {
+          "type": "artifact.report.generate",
+          "format": "markdown"
+        },
+        {
+          "type": "host.notification.emit"
+        }
+      ],
+      "constraints": [
+        "must-preview-before-commit"
+      ],
+      "intent_root": "eb24f051af662a3aca8c3c27a2d4ac55782cb0cfa63bf6b4a023f2f71d74e21e"
+    },
+    "capability_plan": {
+      "plan_id": "plan:f4fc865623e1dfb5b0f4",
+      "capabilities": [
+        {
+          "capability_id": "laf.progress.set",
+          "provider": "laf-runtime",
+          "risk": "medium",
+          "reversible": true
+        },
+        {
+          "capability_id": "laf.report.render",
+          "provider": "icar-builtin",
+          "risk": "low",
+          "reversible": true
+        },
+        {
+          "capability_id": "laf.report.attach",
+          "provider": "laf-runtime",
+          "risk": "medium",
+          "reversible": true
+        },
+        {
+          "capability_id": "hnac.notification.emit",
+          "provider": "hnac-host",
+          "risk": "medium",
+          "reversible": false
+        }
+      ],
+      "host_bindings": [
+        {
+          "host_id": "host:browser:desktop"
+        },
+        {
+          "host_id": "host:mobile:touch"
+        }
+      ],
+      "required_scopes": [
+        "artifact.read",
+        "artifact.write",
+        "host.notify"
+      ],
+      "plan_root": "851145ed214ca83182c2d6e5e4a9e4a4edbd5cafa50d20b8925078d386b5eefa"
+    },
+    "inputs": [
+      {
+        "kind": "living-artifact",
+        "id": "artifact:project:reality-native-computing",
+        "root": "ac5f31664475614fe138182bbe84036cd36eb777442524d6b8bf38fcb62e34d6",
+        "version": "revision:1",
+        "continuity_class": "object_revision"
+      }
+    ],
+    "provisional_delta": {
+      "operations": [
+        {
+          "operation_id": "operation:1",
+          "op": "set",
+          "target": "artifact:project:reality-native-computing",
+          "path": "/semantics/values/progress",
+          "before_root": "4a44dc15364204a80fe80e9039455cc1608281820fe2b24f1e5233ade6af1dd5",
+          "after": 80
+        },
+        {
+          "operation_id": "operation:2",
+          "op": "set",
+          "target": "artifact:project:reality-native-computing",
+          "path": "/semantics/values/generated_report",
+          "before_root": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126",
+          "after": "# Reality-Native Computing Stack 状态报告\n\n- 状态：concept\n- 进度：10%\n- 所有者：TaoWind\n\n## 摘要\n\nA reality-native computing stack built from subject, intent, capability, authority, causality, continuity, evidence and projection.\n\n## 里程碑\n\n- RFE v0.3 closed loop\n- Living Artifact v0.2\n"
+        }
+      ],
+      "provisional": true,
+      "delta_root": "d0e4f273dec23b89fd74fed5eda8f984e9c27618fec335e8f4d6ba91433c6b1e"
+    },
+    "causal_basis": {
+      "events": [
+        {
+          "event_id": "event:intent:f4fc865623e1dfb5",
+          "kind": "intent-received"
+        }
+      ],
+      "rules": [
+        {
+          "rule_id": "preview-before-commit",
+          "expression": "phase authorized before commit"
+        },
+        {
+          "rule_id": "rfe-generation-only",
+          "expression": "only RFE commit advances reality generation"
+        }
+      ],
+      "simulation_refs": [],
+      "causal_root": "8786905cdf83dd72d5aaaf033d6685461c891400c440356fd0c52912f45e690c"
+    },
+    "authority": {
+      "status": "pending",
+      "claims": [],
+      "constraints": []
+    },
+    "evidence": {
+      "nodes": [
+        {
+          "evidence_id": "evidence:artifact-preview",
+          "kind": "artifact-revision",
+          "source": "LAF v1.0",
+          "content_root": "6f790f44110f5b10d41cea4eb54f2ba8f2b2d1847facb2ca84ee0f8cfaca57af",
+          "node_root": "eea5927a87f06fa3920361411ee831a9752f222a2cae40f31676b22a7832d75e"
+        },
+        {
+          "evidence_id": "evidence:intent",
+          "kind": "subject-declaration",
+          "source": "ICAR v0.5",
+          "content_root": "f4fc865623e1dfb5b0f44ee9da2d30bfb31b9fda5a3059d885874c9c478e554c",
+          "node_root": "fd9334198faed160e06874f24341ec72ae15cb29da4c94bc2d6483e4a692cb7f"
+        },
+        {
+          "evidence_id": "evidence:plan",
+          "kind": "capability-plan",
+          "source": "ICAR v0.5",
+          "content_root": "ab1a0142aa085f1b76a8ba69217e056dd3f96d600e204df75bfea3047b5ad13b",
+          "node_root": "993863a28203779dfe4fbc4e40e6b6365ea08ec55a8c68183a86582a2fe210a1"
+        }
+      ],
+      "edges": [
+        {
+          "from": "evidence:plan",
+          "to": "evidence:artifact-preview",
+          "relation": "proposes"
+        },
+        {
+          "from": "evidence:intent",
+          "to": "evidence:plan",
+          "relation": "compiled-to"
+        }
+      ],
+      "evidence_root": "283ea1a0be1d138593639247eb42193de2bfeecd48510aaa705131b428e989bc"
+    },
+    "commit": {
+      "status": "not_committed"
+    },
+    "projections": [],
+    "host_state_refs": [
+      {
+        "kind": "host-state",
+        "source_format": "hnaf.portable-state.v0.5",
+        "host_id": "host:browser:desktop",
+        "replica_id": "replica:host:browser:desktop",
+        "snapshot_sequence": 0,
+        "state_root": "737d0f84a199400d94057b2550a6ec4cd29b531b80e794418bd935407bd8c063",
+        "schema_version": "1",
+        "partitions": [
+          "portable",
+          "device_private"
+        ],
+        "continuity_class": "replica_snapshot"
+      },
+      {
+        "kind": "host-state",
+        "source_format": "hnaf.portable-state.v0.5",
+        "host_id": "host:mobile:touch",
+        "replica_id": "replica:host:mobile:touch",
+        "snapshot_sequence": 0,
+        "state_root": "e6c59a103a52975d377b74dddd62f05bd58cf5e1afa3e6be476428b26d28c049",
+        "schema_version": "1",
+        "partitions": [
+          "portable",
+          "device_private"
+        ],
+        "continuity_class": "replica_snapshot"
+      }
+    ],
+    "extensions": {
+      "icar": {
+        "version": "0.5.0",
+        "registry_root": "a234c9c57c9cd7d08c176dea48d8b48bf461ecb5de23cb90a683b3e980717012",
+        "host_negotiation_root": "c4ba287fda05860cc26f80f0943dec457a68f05f667f2b669e2ed576a86cc08e",
+        "proposed_artifact_id": "artifact:project:reality-native-computing",
+        "proposed_artifact_root": "6f790f44110f5b10d41cea4eb54f2ba8f2b2d1847facb2ca84ee0f8cfaca57af",
+        "proposed_revision_root": "f07a34df7b322c62e92856a16fc7f0e104af994bf25feaa34ddc0554b473f023"
+      }
+    },
+    "proposal_root": "fd1657b27d0eee9a94f4c0733104beb2b5a5a228c931ab887a7ccae0fe9142a5",
+    "envelope_root": "73cd6e59bbf1b860e678c2981f055256e451f1819ec23ba142bd7e4eb01a23e5"
+  }
+}

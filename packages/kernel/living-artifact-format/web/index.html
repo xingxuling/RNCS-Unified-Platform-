@@ -1,0 +1,825 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LAF 1.0 离线工作台</title>
+<style>
+:root{--bg:#07111f;--panel:#0e1b2f;--line:#27405f;--text:#e8f0fa;--muted:#8fa8c4;--cyan:#4dd8ff;--green:#63e6a7;--amber:#ffd166;--red:#ff6b7a}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 20% 0,#14365c 0,#07111f 42%);color:var(--text);font:14px/1.55 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif}.shell{max-width:1320px;margin:auto;padding:24px}.top{display:flex;gap:18px;justify-content:space-between;align-items:flex-start}.brand h1{font-size:28px;margin:0 0 5px}.brand p{color:var(--muted);margin:0}.actions{display:flex;gap:8px;flex-wrap:wrap}button,.file{border:1px solid var(--line);background:#142943;color:var(--text);border-radius:10px;padding:9px 13px;cursor:pointer}.file input{display:none}button:hover,.file:hover{border-color:var(--cyan)}.hero{margin:22px 0;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:12px}.card{background:linear-gradient(145deg,rgba(20,41,67,.95),rgba(10,24,42,.95));border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:0 18px 50px rgba(0,0,0,.2)}.k{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.v{font-size:19px;margin-top:5px;word-break:break-all}.status{color:var(--green)}.grid{display:grid;grid-template-columns:1.25fr .75fr;gap:14px}.section-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.section-title h2{font-size:17px;margin:0}.pill{border:1px solid var(--line);padding:3px 8px;border-radius:999px;color:var(--muted);font-size:12px}.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.field{border:1px solid #223d5c;background:#0b192b;border-radius:10px;padding:11px}.field b{display:block;color:var(--cyan);margin-bottom:4px}.field pre{margin:0;white-space:pre-wrap;word-break:break-word;color:#cddcee}.list{display:flex;flex-direction:column;gap:8px}.item{padding:10px;border:1px solid #223d5c;border-radius:9px;background:#0b192b}.item strong{color:var(--cyan)}.roots{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12px}.root{display:grid;grid-template-columns:155px 1fr;gap:8px;padding:7px 0;border-bottom:1px dashed #263f5b}.root span:last-child{word-break:break-all;color:#b6cce2}.json{margin-top:14px}.json pre{max-height:480px;overflow:auto;background:#040b14;border-radius:10px;padding:14px;border:1px solid #1c334e;color:#bfd0df}.error{color:var(--red)}.warn{color:var(--amber)}@media(max-width:900px){.hero{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}.fields{grid-template-columns:1fr}.top{flex-direction:column}}@media(max-width:520px){.hero{grid-template-columns:1fr}.shell{padding:14px}}
+</style></head><body><div class="shell">
+<div class="top"><div class="brand"><h1>Living Artifact Format 1.0</h1><p>统一语义对象 · 局部Revision · RFE Generation绑定 · 多投影与证据</p></div><div class="actions"><label class="file">载入JSON<input id="file" type="file" accept=".json,.laf"></label><button id="download">导出当前JSON</button><button id="demo">恢复示例</button></div></div>
+<div class="hero"><div class="card"><div class="k">Artifact</div><div class="v" id="title"></div><div id="id" style="color:var(--muted);word-break:break-all"></div></div><div class="card"><div class="k">Revision</div><div class="v" id="revision"></div></div><div class="card"><div class="k">RFE Generation</div><div class="v" id="generation"></div></div><div class="card"><div class="k">Validation</div><div class="v status" id="valid"></div></div></div>
+<div class="grid"><div><div class="card"><div class="section-title"><h2>语义字段</h2><span class="pill" id="fieldCount"></span></div><div class="fields" id="fields"></div></div><div class="card" style="margin-top:14px"><div class="section-title"><h2>可供性与投影</h2><span class="pill">Affordances / Projections</span></div><div class="list" id="affordances"></div><div class="list" id="projections" style="margin-top:10px"></div></div></div><div><div class="card"><div class="section-title"><h2>连续性</h2><span class="pill" id="binding"></span></div><div class="list" id="continuity"></div></div><div class="card" style="margin-top:14px"><div class="section-title"><h2>证据根</h2><span class="pill">SHA-256</span></div><div class="roots" id="roots"></div></div></div></div>
+<div class="card json"><div class="section-title"><h2>完整对象</h2><span class="pill">laf.artifact.v1</span></div><pre id="json"></pre></div>
+</div><script>
+const DEMO={
+  "format": "laf.artifact.v1",
+  "laf_version": "1.0.0",
+  "identity": {
+    "artifact_id": "artifact:project:reality-native-computing",
+    "kind": "project",
+    "title": "Reality-Native Computing Stack",
+    "owner_subject_id": "TaoWind",
+    "created_at": "2026-06-30T14:07:27.190366Z",
+    "updated_at": "2026-06-30T14:08:06.084629Z"
+  },
+  "semantics": {
+    "field_schema": {
+      "status": {
+        "type": "enum",
+        "label": "Status",
+        "options": [
+          "concept",
+          "prototype",
+          "validated",
+          "production"
+        ]
+      },
+      "progress": {
+        "type": "number",
+        "label": "Progress"
+      },
+      "owner": {
+        "type": "text",
+        "label": "Owner"
+      },
+      "summary": {
+        "type": "text",
+        "label": "Summary"
+      },
+      "milestones": {
+        "type": "list",
+        "label": "Milestones"
+      },
+      "approved": {
+        "type": "boolean",
+        "label": "Approved"
+      },
+      "generated_report": {
+        "type": "markdown",
+        "label": "Generated Report",
+        "editable": false
+      }
+    },
+    "values": {
+      "status": "concept",
+      "progress": 10,
+      "owner": "TaoWind",
+      "summary": "A reality-native computing stack built from subject, intent, capability, authority, causality, continuity, evidence and projection.",
+      "milestones": [
+        "RFE v0.3 closed loop",
+        "Living Artifact v0.2"
+      ],
+      "approved": false,
+      "generated_report": ""
+    },
+    "relations": [
+      {
+        "relation_id": "relation:0",
+        "predicate": "depends_on",
+        "target_artifact_id": "artifact:rfe:v0.3",
+        "attributes": {}
+      },
+      {
+        "relation_id": "relation:1",
+        "predicate": "contains",
+        "target_artifact_id": "artifact:living-artifact:v0.2",
+        "attributes": {}
+      }
+    ],
+    "tags": [
+      "laf-0.7",
+      "migrated"
+    ]
+  },
+  "authority": {
+    "default_role": "viewer",
+    "roles": {
+      "viewer": {
+        "scopes": []
+      },
+      "editor": {
+        "scopes": [
+          "artifact.action.add_milestone",
+          "artifact.action.advance",
+          "artifact.action.attach_generated_report",
+          "artifact.action.edit_summary",
+          "artifact.action.toggle_approval"
+        ]
+      },
+      "owner": {
+        "scopes": [
+          "*"
+        ]
+      }
+    },
+    "policy_refs": [],
+    "mutations_require_transition": true
+  },
+  "affordances": [
+    {
+      "affordance_id": "advance",
+      "label": "Advance project",
+      "intent_patterns": [],
+      "parameters": [],
+      "required_scopes": [
+        "artifact.action.advance"
+      ],
+      "capability_requirements": [
+        {
+          "id": "input.activate",
+          "version": ">=1.0"
+        }
+      ],
+      "proposed_operations": [
+        {
+          "op": "increment",
+          "path": "progress",
+          "value": 10
+        },
+        {
+          "op": "set",
+          "path": "status",
+          "value": "prototype"
+        }
+      ],
+      "preconditions": [
+        {
+          "path": "fields.progress",
+          "op": "lte",
+          "value": 90
+        }
+      ]
+    },
+    {
+      "affordance_id": "add_milestone",
+      "label": "Add milestone",
+      "intent_patterns": [],
+      "parameters": [
+        {
+          "id": "name",
+          "type": "text",
+          "required": true
+        }
+      ],
+      "required_scopes": [
+        "artifact.action.add_milestone"
+      ],
+      "capability_requirements": [
+        {
+          "id": "input.text",
+          "version": ">=1.0"
+        }
+      ],
+      "proposed_operations": [
+        {
+          "op": "append",
+          "path": "milestones",
+          "value": {
+            "$param": "name"
+          }
+        }
+      ],
+      "preconditions": []
+    },
+    {
+      "affordance_id": "toggle_approval",
+      "label": "Toggle approval",
+      "intent_patterns": [],
+      "parameters": [],
+      "required_scopes": [
+        "artifact.action.toggle_approval"
+      ],
+      "capability_requirements": [
+        {
+          "id": "input.activate",
+          "version": ">=1.0"
+        }
+      ],
+      "proposed_operations": [
+        {
+          "op": "toggle",
+          "path": "approved"
+        }
+      ],
+      "preconditions": []
+    },
+    {
+      "affordance_id": "edit_summary",
+      "label": "Edit summary",
+      "intent_patterns": [],
+      "parameters": [
+        {
+          "id": "text",
+          "type": "text",
+          "required": true
+        }
+      ],
+      "required_scopes": [
+        "artifact.action.edit_summary"
+      ],
+      "capability_requirements": [
+        {
+          "id": "input.text",
+          "version": ">=1.0"
+        }
+      ],
+      "proposed_operations": [
+        {
+          "op": "set",
+          "path": "summary",
+          "value": {
+            "$param": "text"
+          }
+        }
+      ],
+      "preconditions": []
+    },
+    {
+      "affordance_id": "attach_generated_report",
+      "label": "Attach generated report",
+      "intent_patterns": [],
+      "parameters": [
+        {
+          "id": "report",
+          "type": "markdown",
+          "required": true
+        }
+      ],
+      "required_scopes": [
+        "artifact.action.attach_generated_report"
+      ],
+      "capability_requirements": [],
+      "proposed_operations": [
+        {
+          "op": "set",
+          "path": "generated_report",
+          "value": {
+            "$param": "report"
+          }
+        }
+      ],
+      "preconditions": []
+    }
+  ],
+  "capabilities": {
+    "provides": [
+      {
+        "id": "laf.projection",
+        "version": "0.2",
+        "modes": [
+          "document",
+          "table",
+          "form",
+          "app"
+        ]
+      },
+      {
+        "id": "laf.branching",
+        "version": "0.2"
+      },
+      {
+        "id": "laf.signed-manifest",
+        "version": "0.2"
+      },
+      {
+        "id": "laf.host-negotiation",
+        "version": "0.3",
+        "contract": "HNCA-0.1"
+      },
+      {
+        "id": "laf.intent-composition",
+        "version": "0.4",
+        "contract": "ICCP-0.1"
+      },
+      {
+        "id": "laf.sandboxed-federation",
+        "version": "0.5",
+        "contract": "SCFP-0.1"
+      },
+      {
+        "id": "laf.persistent-capability-mesh",
+        "version": "0.6",
+        "contract": "PCMP-0.1"
+      },
+      {
+        "id": "laf.shared-intent-session",
+        "version": "0.7",
+        "contract": "SISF-0.1"
+      }
+    ],
+    "requires": []
+  },
+  "continuity": {
+    "current": {
+      "revision": 1,
+      "revision_root": "4cbdac42eb6fe5319603504990407be69f871aade293d4bc4a7a74690455d18b",
+      "parent_revision_root": "043d47761c86eeda09fc314703efe969ef24875cd76e7d87a946e1ace8d8ea71",
+      "branch": "main",
+      "binding_status": "bound",
+      "authoritative_generation": {
+        "reality_id": "reality:taowind:rncs",
+        "generation": 1,
+        "generation_root": "1111111111111111111111111111111111111111111111111111111111111111"
+      },
+      "committed_transition_ref": "transition:347e8d31-d975-45e4-8be0-416571ae1d35"
+    },
+    "branches": {
+      "main": "4cbdac42eb6fe5319603504990407be69f871aade293d4bc4a7a74690455d18b"
+    },
+    "history": [
+      {
+        "revision": 0,
+        "revision_root": "043d47761c86eeda09fc314703efe969ef24875cd76e7d87a946e1ace8d8ea71",
+        "parent_revision_root": null,
+        "branch": "main",
+        "actor_subject_id": "TaoWind",
+        "message": "genesis",
+        "created_at": "2026-06-30T14:07:27.191031Z",
+        "binding_status": "unbound",
+        "authoritative_generation": {
+          "reality_id": "reality:local",
+          "generation": 0,
+          "generation_root": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "semantic_root": "b89d0710eaed492bdff901155ef11e2b3ecf8f954c481cbf467582a02499100e",
+        "authority_root": "8a7a53650813dd31abd44ee03f4dd3575574a776f9ec4df94d2190297cc30547",
+        "affordance_root": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "capability_root": "3dacae61c375c67454a58b03b32f6f5a0a7a95de4a35e4e205d2e1b302c4ee2a",
+        "projection_root": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "host_state_root": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      {
+        "revision": 1,
+        "revision_root": "7027e64153f43eaca62aa8c1d7d634de0c567fec2621fdc53f4864cc8f2ffcc8",
+        "parent_revision_root": "043d47761c86eeda09fc314703efe969ef24875cd76e7d87a946e1ace8d8ea71",
+        "branch": "main",
+        "actor_subject_id": "TaoWind",
+        "message": "migrate LAF 0.7 to 1.0",
+        "created_at": "2026-06-30T14:07:27.192888Z",
+        "binding_status": "unbound",
+        "authoritative_generation": {
+          "reality_id": "reality:local",
+          "generation": 0,
+          "generation_root": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "semantic_root": "b89d0710eaed492bdff901155ef11e2b3ecf8f954c481cbf467582a02499100e",
+        "authority_root": "1208da4dd06c975c0c1fe3f386f780d48fa0502b8113f53a61e86382152b1653",
+        "affordance_root": "64827898c8cb23affdeb775a237d09e943788726c9e94d76c1dc2d2cec0848c4",
+        "capability_root": "6e1389a8ab287c0074b5a1c1267b818ebe50d5d7d8fc9533a975a707faca8a21",
+        "projection_root": "bb72f612298037843d2b4a3834396bc767421cbe2a61ee3ee6eeaeba6f4205e8",
+        "host_state_root": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      {
+        "revision": 1,
+        "revision_root": "4cbdac42eb6fe5319603504990407be69f871aade293d4bc4a7a74690455d18b",
+        "parent_revision_root": "043d47761c86eeda09fc314703efe969ef24875cd76e7d87a946e1ace8d8ea71",
+        "branch": "main",
+        "actor_subject_id": "system:rfe",
+        "message": "bind authoritative generation",
+        "created_at": "2026-06-30T14:08:06.084629Z",
+        "binding_status": "bound",
+        "authoritative_generation": {
+          "reality_id": "reality:taowind:rncs",
+          "generation": 1,
+          "generation_root": "1111111111111111111111111111111111111111111111111111111111111111"
+        },
+        "semantic_root": "b89d0710eaed492bdff901155ef11e2b3ecf8f954c481cbf467582a02499100e",
+        "authority_root": "1208da4dd06c975c0c1fe3f386f780d48fa0502b8113f53a61e86382152b1653",
+        "affordance_root": "64827898c8cb23affdeb775a237d09e943788726c9e94d76c1dc2d2cec0848c4",
+        "capability_root": "6e1389a8ab287c0074b5a1c1267b818ebe50d5d7d8fc9533a975a707faca8a21",
+        "projection_root": "bb72f612298037843d2b4a3834396bc767421cbe2a61ee3ee6eeaeba6f4205e8",
+        "host_state_root": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      }
+    ]
+  },
+  "host_state_refs": [],
+  "projections": [
+    {
+      "projection_id": "projection:document",
+      "modality": "visual",
+      "target_hosts": [
+        "document"
+      ],
+      "definition": {
+        "mode": "document",
+        "title": "Project Brief",
+        "fields": [
+          "summary",
+          "status",
+          "progress",
+          "owner",
+          "milestones",
+          "approved",
+          "generated_report"
+        ],
+        "actions": [
+          "advance",
+          "add_milestone",
+          "toggle_approval"
+        ],
+        "requires": [
+          {
+            "id": "display.text",
+            "version": ">=1.0"
+          }
+        ],
+        "prefers": [],
+        "priority": 15,
+        "cost": {
+          "memory_mb": 2,
+          "cpu_ms": "0.2",
+          "network_kb": 0
+        }
+      }
+    },
+    {
+      "projection_id": "projection:table",
+      "modality": "visual",
+      "target_hosts": [
+        "table"
+      ],
+      "definition": {
+        "mode": "table",
+        "title": "Project Data",
+        "fields": [
+          "status",
+          "progress",
+          "owner",
+          "approved"
+        ],
+        "requires": [
+          {
+            "id": "display.table",
+            "version": ">=1.0"
+          }
+        ],
+        "prefers": [],
+        "priority": 20,
+        "cost": {
+          "memory_mb": 8,
+          "cpu_ms": "0.6",
+          "network_kb": 0
+        }
+      }
+    },
+    {
+      "projection_id": "projection:form",
+      "modality": "visual",
+      "target_hosts": [
+        "form"
+      ],
+      "definition": {
+        "mode": "form",
+        "title": "Project Editor",
+        "fields": [
+          "summary"
+        ],
+        "actions": [
+          "edit_summary"
+        ],
+        "requires": [
+          {
+            "id": "display.visual",
+            "version": ">=1.0"
+          },
+          {
+            "id": "input.text",
+            "version": ">=1.0"
+          }
+        ],
+        "prefers": [],
+        "priority": 30,
+        "cost": {
+          "memory_mb": 12,
+          "cpu_ms": 1,
+          "network_kb": 0
+        }
+      }
+    },
+    {
+      "projection_id": "projection:app",
+      "modality": "visual",
+      "target_hosts": [
+        "app"
+      ],
+      "definition": {
+        "mode": "app",
+        "title": "Project Console",
+        "fields": [
+          "status",
+          "progress",
+          "milestones",
+          "approved"
+        ],
+        "actions": [
+          "advance",
+          "add_milestone",
+          "toggle_approval"
+        ],
+        "requires": [
+          {
+            "id": "display.visual",
+            "version": ">=1.0"
+          },
+          {
+            "id": "input.activate",
+            "version": ">=1.0"
+          }
+        ],
+        "prefers": [
+          {
+            "id": "runtime.javascript",
+            "version": ">=1.0"
+          }
+        ],
+        "priority": 40,
+        "cost": {
+          "memory_mb": 24,
+          "cpu_ms": 2,
+          "network_kb": 0
+        },
+        "form_factors": [
+          "desktop",
+          "tablet"
+        ]
+      }
+    },
+    {
+      "projection_id": "projection:json",
+      "modality": "visual",
+      "target_hosts": [
+        "json"
+      ],
+      "definition": {
+        "mode": "json",
+        "title": "Reality-Native Computing Stack JSON",
+        "fields": [
+          "status",
+          "progress",
+          "owner",
+          "summary",
+          "milestones",
+          "approved"
+        ],
+        "actions": [],
+        "requires": [
+          {
+            "id": "output.json",
+            "version": ">=1.0"
+          }
+        ],
+        "prefers": [],
+        "priority": 5,
+        "cost": {
+          "memory_mb": 1,
+          "cpu_ms": "0.1",
+          "network_kb": 0
+        },
+        "form_factors": [
+          "headless"
+        ]
+      }
+    },
+    {
+      "projection_id": "projection:mobile",
+      "modality": "visual",
+      "target_hosts": [
+        "mobile"
+      ],
+      "definition": {
+        "mode": "mobile",
+        "title": "Project Mobile",
+        "fields": [
+          "status",
+          "progress",
+          "milestones",
+          "approved"
+        ],
+        "actions": [
+          "advance",
+          "add_milestone",
+          "toggle_approval"
+        ],
+        "requires": [
+          {
+            "id": "display.visual",
+            "version": ">=1.0"
+          },
+          {
+            "id": "input.touch",
+            "version": ">=1.0"
+          }
+        ],
+        "prefers": [
+          {
+            "id": "runtime.javascript",
+            "version": ">=1.0"
+          },
+          {
+            "id": "storage.persistent",
+            "version": ">=1.0"
+          }
+        ],
+        "priority": 50,
+        "form_factors": [
+          "mobile"
+        ],
+        "cost": {
+          "memory_mb": 16,
+          "cpu_ms": "1.5",
+          "network_kb": 0
+        }
+      }
+    }
+  ],
+  "evidence": {
+    "algorithm": "sha256-rncs-canonical-v1",
+    "semantic_root": "b89d0710eaed492bdff901155ef11e2b3ecf8f954c481cbf467582a02499100e",
+    "authority_root": "1208da4dd06c975c0c1fe3f386f780d48fa0502b8113f53a61e86382152b1653",
+    "affordance_root": "64827898c8cb23affdeb775a237d09e943788726c9e94d76c1dc2d2cec0848c4",
+    "capability_root": "6e1389a8ab287c0074b5a1c1267b818ebe50d5d7d8fc9533a975a707faca8a21",
+    "projection_root": "bb72f612298037843d2b4a3834396bc767421cbe2a61ee3ee6eeaeba6f4205e8",
+    "host_state_root": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "revision_root": "4cbdac42eb6fe5319603504990407be69f871aade293d4bc4a7a74690455d18b",
+    "artifact_root": "3c7839c6ff8e7209378cd2d47631d7fc417bd186bc2069ff8f96203c3e07f087"
+  },
+  "extensions": {
+    "laf.legacy": {
+      "source": "json",
+      "source_laf_version": "0.7",
+      "legacy_evidence": {
+        "algorithm": "SHA-256",
+        "content_hash": "240d3210959207966726b9a053d10555455f1516a7806b008158bb904da76f74",
+        "revision_root": "aa4dd1b13f70589a146fc8bc37a918caa6339f67e2cc8f5bad2841bf63450361",
+        "conflict_root": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "capability_root": "90fea963a4702c3ad821d35d778e2e46b60a64531ec7c0ddf797965863e57275",
+        "composition_root": "a532da5bf354dac98ebfa91fc99e88e622ae1929bb89984fbad52d301e3bf91a",
+        "federation_root": "597d65754aa5d0fd6f8503661ba372b72fde52b9202e7063125cc2de77c5457e",
+        "mesh_root": "7c5cb43e7cdb80574f461bd890260b2cef7eedafd9ff618f8a43ecc0e8c1e683",
+        "session_root": "45f3a7bd2bb1836c60e01c8b4f428303b026bed484e99c9b7740e8c9f36ea4b2",
+        "verified_at": "2026-06-30T00:00:00.000Z"
+      },
+      "host_policy": {
+        "negotiation_version": "0.1",
+        "hard_requirements": [],
+        "preferences": [
+          {
+            "id": "storage.persistent",
+            "version": ">=1.0",
+            "weight": 2
+          },
+          {
+            "id": "crypto.ed25519",
+            "version": ">=1.0",
+            "weight": 1
+          }
+        ],
+        "projection_order": [
+          "mobile",
+          "app",
+          "form",
+          "table",
+          "document",
+          "json"
+        ],
+        "allow_degraded": true
+      },
+      "composition_policy": {
+        "protocol": "ICCP-0.1",
+        "min_trust": 2,
+        "allowed_issuers": [
+          "TaoWind"
+        ],
+        "allow_remote": false,
+        "max_steps": 8,
+        "max_cost": {
+          "cpu_ms": 20,
+          "network_kb": 0,
+          "memory_mb": 64
+        }
+      },
+      "intents": [
+        {
+          "id": "intent:publish-status-report",
+          "label": "Publish status report",
+          "goal": {
+            "type": "projection.document"
+          },
+          "inputs": {
+            "artifact": {
+              "type": "laf.artifact",
+              "source": "$artifact"
+            },
+            "title": {
+              "type": "text",
+              "value": "Reality-Native Computing Stack Status Report"
+            }
+          },
+          "policy": {
+            "min_trust": 2,
+            "allowed_issuers": [
+              "TaoWind"
+            ],
+            "allow_remote": false,
+            "max_steps": 6
+          }
+        },
+        {
+          "id": "intent:federated-status-report",
+          "label": "Publish federated status report",
+          "goal": {
+            "type": "projection.document"
+          },
+          "inputs": {
+            "artifact": {
+              "type": "laf.artifact",
+              "source": "$artifact"
+            },
+            "field_name": {
+              "type": "text.field-name",
+              "value": "progress"
+            },
+            "title": {
+              "type": "text.title",
+              "value": "Reality-Native Computing Stack Federated Status Report"
+            }
+          },
+          "policy": {
+            "min_trust": 2,
+            "allowed_issuers": [
+              "TaoWind",
+              "TaoWind Remote Lab"
+            ],
+            "allow_remote": true,
+            "max_steps": 10,
+            "max_retries": 1
+          }
+        }
+      ],
+      "federation_policy": {
+        "protocol": "SCFP-0.1",
+        "min_trust": 2,
+        "allowed_issuers": [
+          "TaoWind",
+          "TaoWind Remote Lab"
+        ],
+        "allow_remote": true,
+        "max_steps": 12,
+        "max_retries": 1,
+        "max_cost": {
+          "cpu_ms": 50,
+          "network_kb": 256,
+          "memory_mb": 128
+        }
+      },
+      "mesh_policy": {
+        "protocol": "PCMP-0.1",
+        "provider_versions": {
+          "provider:remote-markdown-report": ">=1.0.0 <2.0.0"
+        },
+        "offline_mode": "verified-cache",
+        "cache": {
+          "max_entries": 64,
+          "max_bytes": 4194304
+        },
+        "health": {
+          "min_samples": 1,
+          "min_success_rate": "0.5",
+          "max_p95_ms": 1000
+        },
+        "reputation": {
+          "min_score": "0.5",
+          "allowed_issuers": [
+            "TaoWind Mesh Auditor"
+          ]
+        },
+        "upgrade": {
+          "strategy": "canary",
+          "canary": {
+            "provider:remote-markdown-report": {
+              "version": "1.1.0",
+              "percentage": 100
+            }
+          }
+        },
+        "quota": {
+          "required": true
+        }
+      },
+      "session_policy": {
+        "protocol": "SISF-0.1",
+        "max_artifacts": 16,
+        "max_subjects": 32,
+        "atomic_commit": "generation-pointer",
+        "disclosure": "field-filtered",
+        "reconnect": "three-way-reconcile",
+        "conflict_evidence": true
+      }
+    }
+  }
+};
+let current=structuredClone(DEMO);
+const TE=new TextEncoder();const cmp=(a,b)=>{const x=TE.encode(a),y=TE.encode(b),n=Math.min(x.length,y.length);for(let i=0;i<n;i++){if(x[i]!==y[i])return x[i]-y[i]}return x.length-y.length};const enc=v=>{if(v===null)return'null';if(v===true)return'true';if(v===false)return'false';if(Number.isSafeInteger(v))return String(v);if(typeof v==='number')throw Error('核心哈希禁止浮点数');if(typeof v==='string')return JSON.stringify(v);if(Array.isArray(v))return'['+v.map(enc).join(',')+']';if(typeof v==='object'){const ks=Object.keys(v).sort(cmp);return'{'+ks.map(k=>enc(k)+':'+enc(v[k])).join(',')+'}'}throw Error('不支持的数据类型')};
+function sha256Text(text){const K=[1116352408,1899447441,3049323471,3921009573,961987163,1508970993,2453635748,2870763221,3624381080,310598401,607225278,1426881987,1925078388,2162078206,2614888103,3248222580,3835390401,4022224774,264347078,604807628,770255983,1249150122,1555081692,1996064986,2554220882,2821834349,2952996808,3210313671,3336571891,3584528711,113926993,338241895,666307205,773529912,1294757372,1396182291,1695183700,1986661051,2177026350,2456956037,2730485921,2820302411,3259730800,3345764771,3516065817,3600352804,4094571909,275423344,430227734,506948616,659060556,883997877,958139571,1322822218,1537002063,1747873779,1955562222,2024104815,2227730452,2361852424,2428436474,2756734187,3204031479,3329325298];const H=[1779033703,3144134277,1013904242,2773480762,1359893119,2600822924,528734635,1541459225];const input=[...TE.encode(text)],bitLen=input.length*8;input.push(128);while((input.length%64)!==56)input.push(0);const hi=Math.floor(bitLen/4294967296),lo=bitLen>>>0;for(let i=3;i>=0;i--)input.push((hi>>>(i*8))&255);for(let i=3;i>=0;i--)input.push((lo>>>(i*8))&255);const rotr=(x,n)=>(x>>>n)|(x<<(32-n));for(let off=0;off<input.length;off+=64){const w=new Uint32Array(64);for(let i=0;i<16;i++)w[i]=((input[off+i*4]<<24)|(input[off+i*4+1]<<16)|(input[off+i*4+2]<<8)|input[off+i*4+3])>>>0;for(let i=16;i<64;i++){const s0=rotr(w[i-15],7)^rotr(w[i-15],18)^(w[i-15]>>>3),s1=rotr(w[i-2],17)^rotr(w[i-2],19)^(w[i-2]>>>10);w[i]=(w[i-16]+s0+w[i-7]+s1)>>>0}let[a,b,c,d,e,f,g,h]=H;for(let i=0;i<64;i++){const S1=rotr(e,6)^rotr(e,11)^rotr(e,25),ch=(e&f)^((~e)&g),t1=(h+S1+ch+K[i]+w[i])>>>0,S0=rotr(a,2)^rotr(a,13)^rotr(a,22),maj=(a&b)^(a&c)^(b&c),t2=(S0+maj)>>>0;h=g;g=f;f=e;e=(d+t1)>>>0;d=c;c=b;b=a;a=(t1+t2)>>>0}H[0]=(H[0]+a)>>>0;H[1]=(H[1]+b)>>>0;H[2]=(H[2]+c)>>>0;H[3]=(H[3]+d)>>>0;H[4]=(H[4]+e)>>>0;H[5]=(H[5]+f)>>>0;H[6]=(H[6]+g)>>>0;H[7]=(H[7]+h)>>>0}return H.map(x=>x.toString(16).padStart(8,'0')).join('')}async function hash(v){const text=enc(v);if(globalThis.crypto?.subtle){const b=await crypto.subtle.digest('SHA-256',TE.encode(text));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}return sha256Text(text)}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+async function validate(a){const e=[];if(a.format!=='laf.artifact.v1')e.push('FORMAT_INVALID');if(a.laf_version!=='1.0.0')e.push('VERSION_INVALID');try{const cp=structuredClone(a);delete cp.evidence;const ar=await hash(cp);if(ar!==a.evidence?.artifact_root)e.push('ARTIFACT_ROOT_MISMATCH');if(a.host_state_refs?.some(x=>'generation'in x))e.push('HOST_STATE_MUST_NOT_DECLARE_GENERATION')}catch(x){e.push(x.message)}return e}
+async function render(){const a=current,i=a.identity||{},c=a.continuity?.current||{},g=c.authoritative_generation||{};title.textContent=i.title||'未命名';id.textContent=i.artifact_id||'';revision.textContent=`r${c.revision??'-'} / ${c.branch||'-'}`;generation.textContent=`G${g.generation??'-'}`;binding.textContent=c.binding_status||'unknown';fieldCount.textContent=`${Object.keys(a.semantics?.values||{}).length} fields`;fields.innerHTML=Object.entries(a.semantics?.values||{}).map(([k,v])=>`<div class="field"><b>${esc(k)}</b><pre>${esc(JSON.stringify(v,null,2))}</pre></div>`).join('')||'<div class="item">暂无字段</div>';affordances.innerHTML=(a.affordances||[]).map(x=>`<div class="item"><strong>${esc(x.label||x.affordance_id)}</strong><br><small>${esc((x.required_scopes||[]).join(' · '))}</small></div>`).join('')||'<div class="item">暂无可供性</div>';projections.innerHTML=(a.projections||[]).map(x=>`<div class="item"><strong>${esc(x.projection_id)}</strong><br><small>${esc(x.modality)} → ${esc((x.target_hosts||[]).join(', '))}</small></div>`).join('');continuity.innerHTML=`<div class="item">Revision root<br><small>${esc(c.revision_root||'')}</small></div><div class="item">RFE reality<br><strong>${esc(g.reality_id||'')}</strong></div><div class="item">Transition<br><small>${esc(c.committed_transition_ref||'尚未绑定')}</small></div>`;roots.innerHTML=Object.entries(a.evidence||{}).filter(([k])=>k.endsWith('_root')).map(([k,v])=>`<div class="root"><span>${esc(k)}</span><span>${esc(v)}</span></div>`).join('');json.textContent=JSON.stringify(a,null,2);const errors=await validate(a);valid.textContent=errors.length?'未通过':'通过';valid.className='v '+(errors.length?'error':'status');valid.title=errors.join('\n')}
+file.onchange=async e=>{const f=e.target.files[0];if(!f)return;try{current=JSON.parse(await f.text());await render()}catch(x){alert('无法读取：'+x.message)}};download.onclick=()=>{const b=new Blob([JSON.stringify(current,null,2)+'\n'],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='artifact.laf.json';a.click();URL.revokeObjectURL(u)};demo.onclick=()=>{current=structuredClone(DEMO);render()};render();
+</script></body></html>

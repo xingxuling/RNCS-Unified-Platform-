@@ -1,0 +1,429 @@
+{
+  "format": "ragf.projection-2.5d.v0.5",
+  "version": "0.5.0-alpha.1",
+  "world_id": "world:5c46cbb3d1a1e47712b0e9b4",
+  "projection": "2.5d-isometric",
+  "camera": {
+    "mode": "isometric",
+    "yaw": 45,
+    "pitch": 35.264,
+    "zoom": [
+      0.5,
+      2.4
+    ]
+  },
+  "map": {
+    "width": 12,
+    "height": 12,
+    "tile_size": 64,
+    "height_scale": 18,
+    "layers": [
+      "ground",
+      "resource",
+      "building",
+      "agent",
+      "effect",
+      "ui"
+    ]
+  },
+  "entities": {
+    "agents": [
+      {
+        "entity_id": "agent:001",
+        "sprite_family": "occupation:farmer",
+        "home_tile_id": "tile:5:0",
+        "institution_id": "institution:council"
+      },
+      {
+        "entity_id": "agent:002",
+        "sprite_family": "occupation:builder",
+        "home_tile_id": "tile:8:1",
+        "institution_id": "institution:market"
+      },
+      {
+        "entity_id": "agent:003",
+        "sprite_family": "occupation:miner",
+        "home_tile_id": "tile:10:2",
+        "institution_id": "institution:archive"
+      },
+      {
+        "entity_id": "agent:004",
+        "sprite_family": "occupation:craftsperson",
+        "home_tile_id": "tile:11:3",
+        "institution_id": "institution:workshop"
+      },
+      {
+        "entity_id": "agent:005",
+        "sprite_family": "occupation:healer",
+        "home_tile_id": "tile:10:4",
+        "institution_id": "institution:clinic"
+      },
+      {
+        "entity_id": "agent:006",
+        "sprite_family": "occupation:researcher",
+        "home_tile_id": "tile:10:5",
+        "institution_id": "institution:commons"
+      },
+      {
+        "entity_id": "agent:007",
+        "sprite_family": "occupation:merchant",
+        "home_tile_id": "tile:9:6",
+        "institution_id": "institution:council"
+      },
+      {
+        "entity_id": "agent:008",
+        "sprite_family": "occupation:administrator",
+        "home_tile_id": "tile:11:7",
+        "institution_id": "institution:market"
+      },
+      {
+        "entity_id": "agent:009",
+        "sprite_family": "occupation:transporter",
+        "home_tile_id": "tile:0:9",
+        "institution_id": "institution:archive"
+      },
+      {
+        "entity_id": "agent:010",
+        "sprite_family": "occupation:teacher",
+        "home_tile_id": "tile:2:10",
+        "institution_id": "institution:workshop"
+      },
+      {
+        "entity_id": "agent:011",
+        "sprite_family": "occupation:farmer",
+        "home_tile_id": "tile:2:11",
+        "institution_id": "institution:clinic"
+      },
+      {
+        "entity_id": "agent:012",
+        "sprite_family": "occupation:builder",
+        "home_tile_id": "tile:5:0",
+        "institution_id": "institution:commons"
+      },
+      {
+        "entity_id": "agent:013",
+        "sprite_family": "occupation:miner",
+        "home_tile_id": "tile:8:1",
+        "institution_id": "institution:council"
+      },
+      {
+        "entity_id": "agent:014",
+        "sprite_family": "occupation:craftsperson",
+        "home_tile_id": "tile:10:2",
+        "institution_id": "institution:market"
+      },
+      {
+        "entity_id": "agent:015",
+        "sprite_family": "occupation:healer",
+        "home_tile_id": "tile:11:3",
+        "institution_id": "institution:archive"
+      },
+      {
+        "entity_id": "agent:016",
+        "sprite_family": "occupation:researcher",
+        "home_tile_id": "tile:10:4",
+        "institution_id": "institution:workshop"
+      },
+      {
+        "entity_id": "agent:017",
+        "sprite_family": "occupation:merchant",
+        "home_tile_id": "tile:10:5",
+        "institution_id": "institution:clinic"
+      },
+      {
+        "entity_id": "agent:018",
+        "sprite_family": "occupation:administrator",
+        "home_tile_id": "tile:9:6",
+        "institution_id": "institution:commons"
+      },
+      {
+        "entity_id": "agent:019",
+        "sprite_family": "occupation:transporter",
+        "home_tile_id": "tile:11:7",
+        "institution_id": "institution:council"
+      },
+      {
+        "entity_id": "agent:020",
+        "sprite_family": "occupation:teacher",
+        "home_tile_id": "tile:0:9",
+        "institution_id": "institution:market"
+      },
+      {
+        "entity_id": "agent:021",
+        "sprite_family": "occupation:farmer",
+        "home_tile_id": "tile:2:10",
+        "institution_id": "institution:archive"
+      },
+      {
+        "entity_id": "agent:022",
+        "sprite_family": "occupation:builder",
+        "home_tile_id": "tile:2:11",
+        "institution_id": "institution:workshop"
+      },
+      {
+        "entity_id": "agent:023",
+        "sprite_family": "occupation:miner",
+        "home_tile_id": "tile:5:0",
+        "institution_id": "institution:clinic"
+      },
+      {
+        "entity_id": "agent:024",
+        "sprite_family": "occupation:craftsperson",
+        "home_tile_id": "tile:8:1",
+        "institution_id": "institution:commons"
+      },
+      {
+        "entity_id": "agent:025",
+        "sprite_family": "occupation:healer",
+        "home_tile_id": "tile:10:2",
+        "institution_id": "institution:council"
+      },
+      {
+        "entity_id": "agent:026",
+        "sprite_family": "occupation:researcher",
+        "home_tile_id": "tile:11:3",
+        "institution_id": "institution:market"
+      },
+      {
+        "entity_id": "agent:027",
+        "sprite_family": "occupation:merchant",
+        "home_tile_id": "tile:10:4",
+        "institution_id": "institution:archive"
+      },
+      {
+        "entity_id": "agent:028",
+        "sprite_family": "occupation:administrator",
+        "home_tile_id": "tile:10:5",
+        "institution_id": "institution:workshop"
+      },
+      {
+        "entity_id": "agent:029",
+        "sprite_family": "occupation:transporter",
+        "home_tile_id": "tile:9:6",
+        "institution_id": "institution:clinic"
+      },
+      {
+        "entity_id": "agent:030",
+        "sprite_family": "occupation:teacher",
+        "home_tile_id": "tile:11:7",
+        "institution_id": "institution:commons"
+      },
+      {
+        "entity_id": "agent:031",
+        "sprite_family": "occupation:farmer",
+        "home_tile_id": "tile:0:9",
+        "institution_id": "institution:council"
+      },
+      {
+        "entity_id": "agent:032",
+        "sprite_family": "occupation:builder",
+        "home_tile_id": "tile:2:10",
+        "institution_id": "institution:market"
+      },
+      {
+        "entity_id": "agent:033",
+        "sprite_family": "occupation:miner",
+        "home_tile_id": "tile:2:11",
+        "institution_id": "institution:archive"
+      },
+      {
+        "entity_id": "agent:034",
+        "sprite_family": "occupation:craftsperson",
+        "home_tile_id": "tile:5:0",
+        "institution_id": "institution:workshop"
+      },
+      {
+        "entity_id": "agent:035",
+        "sprite_family": "occupation:healer",
+        "home_tile_id": "tile:8:1",
+        "institution_id": "institution:clinic"
+      },
+      {
+        "entity_id": "agent:036",
+        "sprite_family": "occupation:researcher",
+        "home_tile_id": "tile:10:2",
+        "institution_id": "institution:commons"
+      },
+      {
+        "entity_id": "agent:037",
+        "sprite_family": "occupation:merchant",
+        "home_tile_id": "tile:11:3",
+        "institution_id": "institution:council"
+      },
+      {
+        "entity_id": "agent:038",
+        "sprite_family": "occupation:administrator",
+        "home_tile_id": "tile:10:4",
+        "institution_id": "institution:market"
+      },
+      {
+        "entity_id": "agent:039",
+        "sprite_family": "occupation:transporter",
+        "home_tile_id": "tile:10:5",
+        "institution_id": "institution:archive"
+      },
+      {
+        "entity_id": "agent:040",
+        "sprite_family": "occupation:teacher",
+        "home_tile_id": "tile:9:6",
+        "institution_id": "institution:workshop"
+      },
+      {
+        "entity_id": "agent:041",
+        "sprite_family": "occupation:farmer",
+        "home_tile_id": "tile:11:7",
+        "institution_id": "institution:clinic"
+      },
+      {
+        "entity_id": "agent:042",
+        "sprite_family": "occupation:builder",
+        "home_tile_id": "tile:0:9",
+        "institution_id": "institution:commons"
+      },
+      {
+        "entity_id": "agent:043",
+        "sprite_family": "occupation:miner",
+        "home_tile_id": "tile:2:10",
+        "institution_id": "institution:council"
+      },
+      {
+        "entity_id": "agent:044",
+        "sprite_family": "occupation:craftsperson",
+        "home_tile_id": "tile:2:11",
+        "institution_id": "institution:market"
+      },
+      {
+        "entity_id": "agent:045",
+        "sprite_family": "occupation:healer",
+        "home_tile_id": "tile:5:0",
+        "institution_id": "institution:archive"
+      },
+      {
+        "entity_id": "agent:046",
+        "sprite_family": "occupation:researcher",
+        "home_tile_id": "tile:8:1",
+        "institution_id": "institution:workshop"
+      },
+      {
+        "entity_id": "agent:047",
+        "sprite_family": "occupation:merchant",
+        "home_tile_id": "tile:10:2",
+        "institution_id": "institution:clinic"
+      },
+      {
+        "entity_id": "agent:048",
+        "sprite_family": "occupation:administrator",
+        "home_tile_id": "tile:11:3",
+        "institution_id": "institution:commons"
+      },
+      {
+        "entity_id": "agent:049",
+        "sprite_family": "occupation:transporter",
+        "home_tile_id": "tile:10:4",
+        "institution_id": "institution:council"
+      },
+      {
+        "entity_id": "agent:050",
+        "sprite_family": "occupation:teacher",
+        "home_tile_id": "tile:10:5",
+        "institution_id": "institution:market"
+      },
+      {
+        "entity_id": "agent:051",
+        "sprite_family": "occupation:farmer",
+        "home_tile_id": "tile:9:6",
+        "institution_id": "institution:archive"
+      },
+      {
+        "entity_id": "agent:052",
+        "sprite_family": "occupation:builder",
+        "home_tile_id": "tile:11:7",
+        "institution_id": "institution:workshop"
+      },
+      {
+        "entity_id": "agent:053",
+        "sprite_family": "occupation:miner",
+        "home_tile_id": "tile:0:9",
+        "institution_id": "institution:clinic"
+      },
+      {
+        "entity_id": "agent:054",
+        "sprite_family": "occupation:craftsperson",
+        "home_tile_id": "tile:2:10",
+        "institution_id": "institution:commons"
+      },
+      {
+        "entity_id": "agent:055",
+        "sprite_family": "occupation:healer",
+        "home_tile_id": "tile:2:11",
+        "institution_id": "institution:council"
+      },
+      {
+        "entity_id": "agent:056",
+        "sprite_family": "occupation:researcher",
+        "home_tile_id": "tile:5:0",
+        "institution_id": "institution:market"
+      }
+    ],
+    "institutions": [
+      {
+        "entity_id": "institution:council",
+        "prefab": "institution:council",
+        "tile_id": "tile:0:6"
+      },
+      {
+        "entity_id": "institution:market",
+        "prefab": "institution:market",
+        "tile_id": "tile:7:6"
+      },
+      {
+        "entity_id": "institution:archive",
+        "prefab": "institution:archive",
+        "tile_id": "tile:3:7"
+      },
+      {
+        "entity_id": "institution:workshop",
+        "prefab": "institution:workshop",
+        "tile_id": "tile:1:8"
+      },
+      {
+        "entity_id": "institution:clinic",
+        "prefab": "institution:clinic",
+        "tile_id": "tile:9:8"
+      },
+      {
+        "entity_id": "institution:commons",
+        "prefab": "institution:commons",
+        "tile_id": "tile:5:9"
+      }
+    ]
+  },
+  "history_projection": {
+    "year": 80,
+    "event_markers": [
+      {
+        "kind": "technology",
+        "code": "PROTOTYPE_READY",
+        "concept_id": "technology-concept:b7f0ab814d4bce1b2288eaa9"
+      },
+      {
+        "kind": "technology",
+        "code": "EXPERIMENT_FAILED",
+        "concept_id": "technology-concept:b7f0ab814d4bce1b2288eaa9"
+      },
+      {
+        "kind": "history",
+        "code": "DECADE_RECORDED",
+        "concept_id": null
+      }
+    ]
+  },
+  "interaction": {
+    "select_agents": true,
+    "select_institutions": true,
+    "technology_tree": true,
+    "history_scrubber": true,
+    "player_action_panel": true
+  },
+  "projection_root": "b9d73ec358a90ff40aee5755873d6062cdcfcd45477b920d0cc7463376bb2df6"
+}

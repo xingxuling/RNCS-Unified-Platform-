@@ -1,0 +1,20 @@
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { RealityOneVSRSession, createRealityOneObserverProfile } from '../dist/packages/adapter-reality-one/src/index.js';
+import { createDeviceProfile } from '../dist/packages/device-projection/src/index.js';
+import { renderPng } from '../dist/packages/backend-canvas/src/index.js';
+mkdirSync('outputs',{recursive:true});
+const session=new RealityOneVSRSession({profile:'desktop'});
+const sid='alpha6:interactive-demo';
+session.append({format:'reality-one.lifecycle-event.v0.1',sessionId:sid,sequence:1,type:'intent.received',payload:{intentText:'生成项目状态报告并准备提交。'}});
+session.append({format:'reality-one.lifecycle-event.v0.1',sessionId:sid,sequence:2,type:'intent.understood',payload:{status:'目标已理解',artifactTitle:'现实原生计算栈',steps:[{id:'step:1',title:'生成报告',status:'pending'}]}});
+session.append({format:'reality-one.lifecycle-event.v0.1',sessionId:sid,sequence:3,type:'authority.requested',payload:{status:'等待主体确认'}});
+const owner=createRealityOneObserverProfile('owner');
+const devices=[createDeviceProfile('desktop'),createDeviceProfile('mobile'),createDeviceProfile('tablet'),createDeviceProfile('xr')];
+const before=session.evaluateForObserverAndDevices(owner,devices);
+writeFileSync('outputs/reality-one-alpha6-device-equivalence.json',JSON.stringify({verification:before.verification,manifests:before.devices.map(x=>x.manifest)},null,2));
+for(const projection of before.devices){writeFileSync(`outputs/reality-one-alpha6-${projection.profile.deviceClass}.png`,renderPng(projection.displayState));writeFileSync(`outputs/reality-one-alpha6-${projection.profile.deviceClass}.display.json`,JSON.stringify(projection.displayState,null,2));}
+const proposal=session.proposeInteraction({format:'vsr.input-event.v0.1',inputId:'alpha6-approve',trigger:'click',nodeId:'authority-approve',logicalTime:0,observerId:owner.observerId,deviceId:'device:mobile'},owner,createDeviceProfile('mobile'));
+const committed=session.commitInteraction(proposal,{format:'vsr.interaction-authorization.v0.1',proposalHash:proposal.proposalHash,decision:'approved',authorityId:'subject:owner',logicalTime:0,evidenceRoot:'rfe-v1-constitutional-placeholder-root'});
+writeFileSync('outputs/reality-one-alpha6-interaction-commit.json',JSON.stringify({proposal,receipt:committed.receipt,lifecycleEvent:committed.lifecycleEvent,summary:session.currentSummary(),eventChainRoot:session.eventChainRoot()},null,2));
+session.dispose();
+console.log(JSON.stringify({deviceVerification:before.verification,interactionStatus:committed.receipt.status,lifecycleEvent:committed.lifecycleEvent?.type},null,2));

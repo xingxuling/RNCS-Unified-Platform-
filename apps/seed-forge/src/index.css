@@ -1,0 +1,148 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Cosmic Void - Deep space background */
+    --background: 240 12% 6%;
+    --foreground: 180 100% 90%;
+
+    /* Panels - Slightly elevated surfaces */
+    --card: 240 10% 8%;
+    --card-foreground: 180 100% 92%;
+
+    --popover: 240 12% 10%;
+    --popover-foreground: 180 100% 90%;
+
+    /* Primary - Electric Cyan (Digital Energy) */
+    --primary: 180 100% 50%;
+    --primary-foreground: 240 12% 6%;
+
+    /* Secondary - Deep Blue Grid */
+    --secondary: 220 40% 15%;
+    --secondary-foreground: 180 100% 90%;
+
+    /* Muted - Subdued cosmic tones */
+    --muted: 240 10% 12%;
+    --muted-foreground: 220 15% 55%;
+
+    /* Accent - Gold/Amber (Fate energy) */
+    --accent: 45 100% 60%;
+    --accent-foreground: 240 12% 6%;
+
+    /* Consciousness - Purple/Magenta */
+    --consciousness: 280 80% 60%;
+    --consciousness-foreground: 180 100% 98%;
+
+    /* Destructive - Crimson */
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 180 100% 98%;
+
+    /* Borders and inputs */
+    --border: 220 40% 18%;
+    --input: 240 10% 12%;
+    --ring: 180 100% 50%;
+
+    --radius: 0.375rem;
+
+    /* Grid effect colors */
+    --grid-primary: 180 100% 50%;
+    --grid-secondary: 220 60% 30%;
+
+    /* Glow effects */
+    --glow-cyan: 180 100% 50%;
+    --glow-gold: 45 100% 60%;
+    --glow-purple: 280 80% 60%;
+
+    /* Sidebar (Console style) */
+    --sidebar-background: 240 15% 8%;
+    --sidebar-foreground: 180 90% 85%;
+    --sidebar-primary: 180 100% 50%;
+    --sidebar-primary-foreground: 240 12% 6%;
+    --sidebar-accent: 240 12% 12%;
+    --sidebar-accent-foreground: 180 100% 90%;
+    --sidebar-border: 220 40% 15%;
+    --sidebar-ring: 180 100% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
+
+/* Custom animations and effects */
+@layer utilities {
+  .cosmic-grid {
+    background-image: 
+      linear-gradient(hsl(var(--grid-secondary) / 0.3) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--grid-secondary) / 0.3) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+
+  .glow-cyan {
+    box-shadow: 0 0 20px hsl(var(--glow-cyan) / 0.5);
+  }
+
+  .glow-gold {
+    box-shadow: 0 0 20px hsl(var(--glow-gold) / 0.5);
+  }
+
+  .glow-purple {
+    box-shadow: 0 0 20px hsl(var(--glow-purple) / 0.5);
+  }
+
+  .text-glow-cyan {
+    text-shadow: 0 0 10px hsl(var(--glow-cyan) / 0.7);
+  }
+
+  .text-glow-gold {
+    text-shadow: 0 0 10px hsl(var(--glow-gold) / 0.7);
+  }
+
+  .border-glow-cyan {
+    border-color: hsl(var(--primary));
+    box-shadow: 0 0 10px hsl(var(--glow-cyan) / 0.4);
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { 
+      box-shadow: 0 0 10px hsl(var(--glow-cyan) / 0.4);
+    }
+    50% { 
+      box-shadow: 0 0 20px hsl(var(--glow-cyan) / 0.7);
+    }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+
+  @keyframes scan-line {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .animate-scan {
+    animation: scan-line 3s linear infinite;
+  }
+}

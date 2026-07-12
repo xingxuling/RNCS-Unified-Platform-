@@ -1,0 +1,34 @@
+export const AGENT_TYPES = [
+  "GUIDE_AGENT","MERCHANT_AGENT","RULER_AGENT","SCHOLAR_AGENT","WARRIOR_AGENT",
+  "ARTIST_AGENT","PRIEST_AGENT","ENGINEER_AGENT","OUTSIDER_AGENT",
+  "TRICKSTER_AGENT","ARCHIVIST_AGENT","FOUNDER_ECHO_AGENT",
+] as const;
+export type AgentType = typeof AGENT_TYPES[number];
+
+export const AGENT_TYPE_LABELS: Record<AgentType, string> = {
+  GUIDE_AGENT: "引导者",
+  MERCHANT_AGENT: "商人",
+  RULER_AGENT: "统治者",
+  SCHOLAR_AGENT: "学者",
+  WARRIOR_AGENT: "战士",
+  ARTIST_AGENT: "艺术家",
+  PRIEST_AGENT: "祭司",
+  ENGINEER_AGENT: "工程师",
+  OUTSIDER_AGENT: "外来者",
+  TRICKSTER_AGENT: "扰动者",
+  ARCHIVIST_AGENT: "归档者",
+  FOUNDER_ECHO_AGENT: "创始人回声",
+};
+
+export const DIGIT_TO_AGENT_TYPE: Record<string, AgentType> = {
+  "0": "ARCHIVIST_AGENT",
+  "1": "RULER_AGENT",
+  "2": "GUIDE_AGENT",
+  "3": "ARTIST_AGENT",
+  "4": "SCHOLAR_AGENT",
+  "5": "TRICKSTER_AGENT",
+  "6": "PRIEST_AGENT",
+  "7": "SCHOLAR_AGENT",
+  "8": "MERCHANT_AGENT",
+  "9": "PRIEST_AGENT",
+};

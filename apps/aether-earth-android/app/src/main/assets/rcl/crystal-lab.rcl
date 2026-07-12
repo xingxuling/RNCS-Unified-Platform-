@@ -1,0 +1,7 @@
+reality AetherEarthCrystalLab {
+  facet lab.topic : Text = "collective-intelligence-crystallization"
+  facet lab.isolated_verification : Truth = true
+  facet lab.native_vm_required : Truth = true
+  facet lab.auto_promotion_threshold : Number = 0.72
+  facet lab.unknown_structure_is_candidate : Truth = true
+}

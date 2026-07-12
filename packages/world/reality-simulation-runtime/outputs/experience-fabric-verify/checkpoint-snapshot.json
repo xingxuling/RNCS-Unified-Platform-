@@ -1,0 +1,1684 @@
+{
+  "format": "rsr.experience-snapshot.v0.4",
+  "runtimeVersion": "0.4.0-alpha.1",
+  "experienceId": "aether-blade-showcase",
+  "tick": 60,
+  "configHash": "fnv1a64:262dff1708dbc1e6",
+  "parameters": {
+    "hero:aimX": 140,
+    "hero:aimY": -20,
+    "hero:attack": false,
+    "hero:hurt": false,
+    "hero:ikWeight": 0
+  },
+  "layerStates": [
+    {
+      "animatorId": "hero",
+      "layerId": "aura",
+      "currentState": "aura",
+      "localTickQ": 60000000,
+      "previousLocalTick": 59
+    },
+    {
+      "animatorId": "hero",
+      "layerId": "base",
+      "currentState": "idle",
+      "localTickQ": 28000000,
+      "previousLocalTick": 27
+    }
+  ],
+  "properties": {
+    "hero.aura": 0,
+    "hero.position.x": 320,
+    "hero.position.y": 378,
+    "skeleton:hero-rig/bone:forearm.rotation": 59271,
+    "skeleton:hero-rig/bone:torso.rotation": -10834,
+    "skeleton:hero-rig/bone:upper-arm.rotation": -49028
+  },
+  "skeletonPoses": [
+    {
+      "skeletonId": "hero-rig",
+      "bones": [
+        {
+          "id": "torso",
+          "localPosition": {
+            "x": 0,
+            "y": -34
+          },
+          "localRotation": -10834,
+          "localScale": {
+            "x": 1000000,
+            "y": 1000000
+          },
+          "worldPosition": {
+            "x": 0,
+            "y": -34
+          },
+          "worldRotation": -10834,
+          "worldScale": {
+            "x": 1000000,
+            "y": 1000000
+          },
+          "endpoint": {
+            "x": 52,
+            "y": -38
+          }
+        },
+        {
+          "id": "upper-arm",
+          "localPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "localRotation": -49028,
+          "localScale": {
+            "x": 1000000,
+            "y": 1000000
+          },
+          "worldPosition": {
+            "x": 52,
+            "y": -38
+          },
+          "worldRotation": -59862,
+          "worldScale": {
+            "x": 1000000,
+            "y": 1000000
+          },
+          "endpoint": {
+            "x": 127,
+            "y": -68
+          }
+        },
+        {
+          "id": "forearm",
+          "localPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "localRotation": 59271,
+          "localScale": {
+            "x": 1000000,
+            "y": 1000000
+          },
+          "worldPosition": {
+            "x": 127,
+            "y": -68
+          },
+          "worldRotation": -591,
+          "worldScale": {
+            "x": 1000000,
+            "y": 1000000
+          },
+          "endpoint": {
+            "x": 239,
+            "y": -68
+          }
+        },
+        {
+          "id": "sword",
+          "localPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "localRotation": 0,
+          "localScale": {
+            "x": 1000000,
+            "y": 1000000
+          },
+          "worldPosition": {
+            "x": 239,
+            "y": -68
+          },
+          "worldRotation": -591,
+          "worldScale": {
+            "x": 1000000,
+            "y": 1000000
+          },
+          "endpoint": {
+            "x": 239,
+            "y": -68
+          }
+        }
+      ],
+      "poseRoot": "fnv1a64:c75c48cc2f910290"
+    }
+  ],
+  "effectInstances": [
+    {
+      "id": "effect:magic-aura:52:magic-one:0",
+      "effectId": "magic-aura",
+      "startTick": 52,
+      "ageTicks": 8,
+      "position": {
+        "x": 520,
+        "y": 300
+      },
+      "intensityQ": 700000,
+      "emitterAccumulatorsQ": {
+        "motes": 0
+      },
+      "emittedCounts": {
+        "motes": 46
+      },
+      "completed": false
+    }
+  ],
+  "particles": [
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:0",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 521,
+        "y": 329
+      },
+      "velocity": {
+        "x": -2,
+        "y": 6
+      },
+      "rotation": 257065,
+      "angularVelocity": -26228,
+      "ageTicks": 8,
+      "lifetimeTicks": 30,
+      "sizeQ": 833334,
+      "opacityQ": 977777,
+      "color": {
+        "r": 151,
+        "g": 144,
+        "b": 255,
+        "a": 194
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:1",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 556,
+        "y": 264
+      },
+      "velocity": {
+        "x": 22,
+        "y": 10
+      },
+      "rotation": 95684,
+      "angularVelocity": -63664,
+      "ageTicks": 8,
+      "lifetimeTicks": 41,
+      "sizeQ": 690244,
+      "opacityQ": 780488,
+      "color": {
+        "r": 135,
+        "g": 164,
+        "b": 255,
+        "a": 142
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:2",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 534,
+        "y": 312
+      },
+      "velocity": {
+        "x": 16,
+        "y": -22
+      },
+      "rotation": -121759,
+      "angularVelocity": -96107,
+      "ageTicks": 8,
+      "lifetimeTicks": 40,
+      "sizeQ": 700000,
+      "opacityQ": 800000,
+      "color": {
+        "r": 136,
+        "g": 163,
+        "b": 255,
+        "a": 146
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:3",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 496,
+        "y": 275
+      },
+      "velocity": {
+        "x": 16,
+        "y": 10
+      },
+      "rotation": 154560,
+      "angularVelocity": 30443,
+      "ageTicks": 8,
+      "lifetimeTicks": 44,
+      "sizeQ": 663636,
+      "opacityQ": 727272,
+      "color": {
+        "r": 132,
+        "g": 168,
+        "b": 255,
+        "a": 132
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:4",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 502,
+        "y": 271
+      },
+      "velocity": {
+        "x": 25,
+        "y": -9
+      },
+      "rotation": -35573,
+      "angularVelocity": -108510,
+      "ageTicks": 8,
+      "lifetimeTicks": 36,
+      "sizeQ": 744444,
+      "opacityQ": 888888,
+      "color": {
+        "r": 141,
+        "g": 157,
+        "b": 255,
+        "a": 162
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:5",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 513,
+        "y": 321
+      },
+      "velocity": {
+        "x": -22,
+        "y": 3
+      },
+      "rotation": 467349,
+      "angularVelocity": 98131,
+      "ageTicks": 8,
+      "lifetimeTicks": 33,
+      "sizeQ": 784848,
+      "opacityQ": 969696,
+      "color": {
+        "r": 145,
+        "g": 151,
+        "b": 255,
+        "a": 177
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:6",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 494,
+        "y": 312
+      },
+      "velocity": {
+        "x": -16,
+        "y": -55
+      },
+      "rotation": -305556,
+      "angularVelocity": 16894,
+      "ageTicks": 8,
+      "lifetimeTicks": 42,
+      "sizeQ": 680952,
+      "opacityQ": 761904,
+      "color": {
+        "r": 134,
+        "g": 166,
+        "b": 255,
+        "a": 139
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:7",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 519,
+        "y": 307
+      },
+      "velocity": {
+        "x": -41,
+        "y": -19
+      },
+      "rotation": -448969,
+      "angularVelocity": 56596,
+      "ageTicks": 8,
+      "lifetimeTicks": 23,
+      "sizeQ": 995652,
+      "opacityQ": 869565,
+      "color": {
+        "r": 170,
+        "g": 121,
+        "b": 255,
+        "a": 253
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:8",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 562,
+        "y": 280
+      },
+      "velocity": {
+        "x": 14,
+        "y": 33
+      },
+      "rotation": 234935,
+      "angularVelocity": 105348,
+      "ageTicks": 8,
+      "lifetimeTicks": 28,
+      "sizeQ": 871428,
+      "opacityQ": 952381,
+      "color": {
+        "r": 155,
+        "g": 138,
+        "b": 255,
+        "a": 208
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:9",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 485,
+        "y": 307
+      },
+      "velocity": {
+        "x": -12,
+        "y": 22
+      },
+      "rotation": 288815,
+      "angularVelocity": -31518,
+      "ageTicks": 8,
+      "lifetimeTicks": 24,
+      "sizeQ": 966666,
+      "opacityQ": 888889,
+      "color": {
+        "r": 166,
+        "g": 125,
+        "b": 255,
+        "a": 243
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:10",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 475,
+        "y": 275
+      },
+      "velocity": {
+        "x": -35,
+        "y": -25
+      },
+      "rotation": -412719,
+      "angularVelocity": 8661,
+      "ageTicks": 8,
+      "lifetimeTicks": 33,
+      "sizeQ": 784848,
+      "opacityQ": 969696,
+      "color": {
+        "r": 145,
+        "g": 151,
+        "b": 255,
+        "a": 177
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:11",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 517,
+        "y": 318
+      },
+      "velocity": {
+        "x": -19,
+        "y": -16
+      },
+      "rotation": -475254,
+      "angularVelocity": -80555,
+      "ageTicks": 8,
+      "lifetimeTicks": 22,
+      "sizeQ": 1027272,
+      "opacityQ": 848485,
+      "color": {
+        "r": 167,
+        "g": 119,
+        "b": 255,
+        "a": 250
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:12",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 488,
+        "y": 288
+      },
+      "velocity": {
+        "x": 5,
+        "y": 30
+      },
+      "rotation": 240724,
+      "angularVelocity": 23553,
+      "ageTicks": 8,
+      "lifetimeTicks": 21,
+      "sizeQ": 1061904,
+      "opacityQ": 825397,
+      "color": {
+        "r": 164,
+        "g": 118,
+        "b": 255,
+        "a": 243
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:13",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 567,
+        "y": 288
+      },
+      "velocity": {
+        "x": 6,
+        "y": 38
+      },
+      "rotation": 203171,
+      "angularVelocity": -116795,
+      "ageTicks": 8,
+      "lifetimeTicks": 31,
+      "sizeQ": 816130,
+      "opacityQ": 989247,
+      "color": {
+        "r": 149,
+        "g": 146,
+        "b": 255,
+        "a": 188
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:14",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 538,
+        "y": 291
+      },
+      "velocity": {
+        "x": 41,
+        "y": -30
+      },
+      "rotation": -82910,
+      "angularVelocity": 17971,
+      "ageTicks": 8,
+      "lifetimeTicks": 21,
+      "sizeQ": 1061904,
+      "opacityQ": 825397,
+      "color": {
+        "r": 164,
+        "g": 118,
+        "b": 255,
+        "a": 243
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:15",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 499,
+        "y": 335
+      },
+      "velocity": {
+        "x": 2,
+        "y": 30
+      },
+      "rotation": 270805,
+      "angularVelocity": 97669,
+      "ageTicks": 8,
+      "lifetimeTicks": 20,
+      "sizeQ": 1100000,
+      "opacityQ": 800000,
+      "color": {
+        "r": 160,
+        "g": 117,
+        "b": 255,
+        "a": 235
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:16",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 557,
+        "y": 276
+      },
+      "velocity": {
+        "x": 16,
+        "y": 38
+      },
+      "rotation": 188162,
+      "angularVelocity": 182,
+      "ageTicks": 8,
+      "lifetimeTicks": 27,
+      "sizeQ": 892592,
+      "opacityQ": 938272,
+      "color": {
+        "r": 158,
+        "g": 135,
+        "b": 255,
+        "a": 216
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:17",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 497,
+        "y": 333
+      },
+      "velocity": {
+        "x": -43,
+        "y": 31
+      },
+      "rotation": 358632,
+      "angularVelocity": -95346,
+      "ageTicks": 8,
+      "lifetimeTicks": 34,
+      "sizeQ": 770588,
+      "opacityQ": 941176,
+      "color": {
+        "r": 144,
+        "g": 153,
+        "b": 255,
+        "a": 171
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:18",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 529,
+        "y": 321
+      },
+      "velocity": {
+        "x": 10,
+        "y": 18
+      },
+      "rotation": 216066,
+      "angularVelocity": 47524,
+      "ageTicks": 8,
+      "lifetimeTicks": 35,
+      "sizeQ": 757142,
+      "opacityQ": 914284,
+      "color": {
+        "r": 142,
+        "g": 155,
+        "b": 255,
+        "a": 167
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:19",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 493,
+        "y": 299
+      },
+      "velocity": {
+        "x": 16,
+        "y": 36
+      },
+      "rotation": 224736,
+      "angularVelocity": 66862,
+      "ageTicks": 8,
+      "lifetimeTicks": 33,
+      "sizeQ": 784848,
+      "opacityQ": 969696,
+      "color": {
+        "r": 145,
+        "g": 151,
+        "b": 255,
+        "a": 177
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:20",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 485,
+        "y": 322
+      },
+      "velocity": {
+        "x": -16,
+        "y": 5
+      },
+      "rotation": 425568,
+      "angularVelocity": 100161,
+      "ageTicks": 8,
+      "lifetimeTicks": 32,
+      "sizeQ": 800000,
+      "opacityQ": 1000000,
+      "color": {
+        "r": 147,
+        "g": 149,
+        "b": 255,
+        "a": 182
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:21",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 521,
+        "y": 307
+      },
+      "velocity": {
+        "x": -43,
+        "y": 16
+      },
+      "rotation": 413196,
+      "angularVelocity": -9309,
+      "ageTicks": 7,
+      "lifetimeTicks": 29,
+      "sizeQ": 782758,
+      "opacityQ": 965516,
+      "color": {
+        "r": 145,
+        "g": 151,
+        "b": 255,
+        "a": 176
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:22",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 502,
+        "y": 330
+      },
+      "velocity": {
+        "x": 8,
+        "y": 21
+      },
+      "rotation": 215650,
+      "angularVelocity": -2600,
+      "ageTicks": 7,
+      "lifetimeTicks": 28,
+      "sizeQ": 800000,
+      "opacityQ": 1000000,
+      "color": {
+        "r": 147,
+        "g": 149,
+        "b": 255,
+        "a": 182
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:23",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 533,
+        "y": 250
+      },
+      "velocity": {
+        "x": 21,
+        "y": -17
+      },
+      "rotation": -46672,
+      "angularVelocity": 38335,
+      "ageTicks": 7,
+      "lifetimeTicks": 26,
+      "sizeQ": 838462,
+      "opacityQ": 974359,
+      "color": {
+        "r": 152,
+        "g": 143,
+        "b": 255,
+        "a": 196
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:24",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 523,
+        "y": 257
+      },
+      "velocity": {
+        "x": -38,
+        "y": -1
+      },
+      "rotation": 493889,
+      "angularVelocity": 65593,
+      "ageTicks": 7,
+      "lifetimeTicks": 22,
+      "sizeQ": 936364,
+      "opacityQ": 909091,
+      "color": {
+        "r": 163,
+        "g": 129,
+        "b": 255,
+        "a": 232
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:25",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 497,
+        "y": 306
+      },
+      "velocity": {
+        "x": -2,
+        "y": -50
+      },
+      "rotation": -274059,
+      "angularVelocity": -89842,
+      "ageTicks": 6,
+      "lifetimeTicks": 20,
+      "sizeQ": 900000,
+      "opacityQ": 933333,
+      "color": {
+        "r": 159,
+        "g": 134,
+        "b": 255,
+        "a": 219
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:26",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 481,
+        "y": 301
+      },
+      "velocity": {
+        "x": 10,
+        "y": 8
+      },
+      "rotation": 147388,
+      "angularVelocity": -90478,
+      "ageTicks": 6,
+      "lifetimeTicks": 30,
+      "sizeQ": 700000,
+      "opacityQ": 800000,
+      "color": {
+        "r": 136,
+        "g": 163,
+        "b": 255,
+        "a": 146
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:27",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 508,
+        "y": 313
+      },
+      "velocity": {
+        "x": -22,
+        "y": -51
+      },
+      "rotation": -345412,
+      "angularVelocity": -80738,
+      "ageTicks": 6,
+      "lifetimeTicks": 27,
+      "sizeQ": 744444,
+      "opacityQ": 888888,
+      "color": {
+        "r": 141,
+        "g": 157,
+        "b": 255,
+        "a": 162
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:28",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 536,
+        "y": 301
+      },
+      "velocity": {
+        "x": -9,
+        "y": -23
+      },
+      "rotation": -317934,
+      "angularVelocity": -2030,
+      "ageTicks": 5,
+      "lifetimeTicks": 41,
+      "sizeQ": 543902,
+      "opacityQ": 487804,
+      "color": {
+        "r": 118,
+        "g": 185,
+        "b": 255,
+        "a": 89
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:29",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 493,
+        "y": 267
+      },
+      "velocity": {
+        "x": -34,
+        "y": 8
+      },
+      "rotation": 460472,
+      "angularVelocity": 112628,
+      "ageTicks": 5,
+      "lifetimeTicks": 28,
+      "sizeQ": 657142,
+      "opacityQ": 714284,
+      "color": {
+        "r": 131,
+        "g": 169,
+        "b": 255,
+        "a": 130
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:30",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 504,
+        "y": 334
+      },
+      "velocity": {
+        "x": -12,
+        "y": 18
+      },
+      "rotation": 325632,
+      "angularVelocity": 65993,
+      "ageTicks": 5,
+      "lifetimeTicks": 24,
+      "sizeQ": 716666,
+      "opacityQ": 833332,
+      "color": {
+        "r": 138,
+        "g": 160,
+        "b": 255,
+        "a": 152
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:31",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 524,
+        "y": 256
+      },
+      "velocity": {
+        "x": -21,
+        "y": -8
+      },
+      "rotation": -473165,
+      "angularVelocity": 39624,
+      "ageTicks": 5,
+      "lifetimeTicks": 37,
+      "sizeQ": 570270,
+      "opacityQ": 540540,
+      "color": {
+        "r": 121,
+        "g": 181,
+        "b": 255,
+        "a": 98
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:32",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 488,
+        "y": 323
+      },
+      "velocity": {
+        "x": 8,
+        "y": 44
+      },
+      "rotation": 233966,
+      "angularVelocity": 40986,
+      "ageTicks": 4,
+      "lifetimeTicks": 33,
+      "sizeQ": 542424,
+      "opacityQ": 484848,
+      "color": {
+        "r": 118,
+        "g": 185,
+        "b": 255,
+        "a": 88
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:33",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 546,
+        "y": 260
+      },
+      "velocity": {
+        "x": 37,
+        "y": 22
+      },
+      "rotation": 113547,
+      "angularVelocity": 103323,
+      "ageTicks": 4,
+      "lifetimeTicks": 45,
+      "sizeQ": 477778,
+      "opacityQ": 355556,
+      "color": {
+        "r": 110,
+        "g": 195,
+        "b": 255,
+        "a": 65
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:34",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 520,
+        "y": 292
+      },
+      "velocity": {
+        "x": -14,
+        "y": -67
+      },
+      "rotation": -272833,
+      "angularVelocity": 64599,
+      "ageTicks": 4,
+      "lifetimeTicks": 26,
+      "sizeQ": 607692,
+      "opacityQ": 615384,
+      "color": {
+        "r": 125,
+        "g": 176,
+        "b": 255,
+        "a": 112
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:35",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 487,
+        "y": 323
+      },
+      "velocity": {
+        "x": -55,
+        "y": 7
+      },
+      "rotation": 466893,
+      "angularVelocity": -62419,
+      "ageTicks": 3,
+      "lifetimeTicks": 35,
+      "sizeQ": 471428,
+      "opacityQ": 342856,
+      "color": {
+        "r": 110,
+        "g": 196,
+        "b": 255,
+        "a": 62
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:36",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 514,
+        "y": 323
+      },
+      "velocity": {
+        "x": -12,
+        "y": -12
+      },
+      "rotation": -393747,
+      "angularVelocity": 60089,
+      "ageTicks": 3,
+      "lifetimeTicks": 25,
+      "sizeQ": 540000,
+      "opacityQ": 480000,
+      "color": {
+        "r": 117,
+        "g": 186,
+        "b": 255,
+        "a": 87
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:37",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 500,
+        "y": 266
+      },
+      "velocity": {
+        "x": -34,
+        "y": 40
+      },
+      "rotation": 353911,
+      "angularVelocity": -21083,
+      "ageTicks": 3,
+      "lifetimeTicks": 31,
+      "sizeQ": 493548,
+      "opacityQ": 387096,
+      "color": {
+        "r": 112,
+        "g": 192,
+        "b": 255,
+        "a": 71
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:38",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 573,
+        "y": 293
+      },
+      "velocity": {
+        "x": 22,
+        "y": -36
+      },
+      "rotation": -163315,
+      "angularVelocity": -102641,
+      "ageTicks": 3,
+      "lifetimeTicks": 45,
+      "sizeQ": 433334,
+      "opacityQ": 266668,
+      "color": {
+        "r": 105,
+        "g": 201,
+        "b": 255,
+        "a": 49
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:39",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 488,
+        "y": 311
+      },
+      "velocity": {
+        "x": -20,
+        "y": -7
+      },
+      "rotation": -463048,
+      "angularVelocity": 56703,
+      "ageTicks": 2,
+      "lifetimeTicks": 31,
+      "sizeQ": 429032,
+      "opacityQ": 258064,
+      "color": {
+        "r": 105,
+        "g": 202,
+        "b": 255,
+        "a": 47
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:40",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 483,
+        "y": 305
+      },
+      "velocity": {
+        "x": -25,
+        "y": 63
+      },
+      "rotation": 306523,
+      "angularVelocity": -26576,
+      "ageTicks": 2,
+      "lifetimeTicks": 38,
+      "sizeQ": 405264,
+      "opacityQ": 210528,
+      "color": {
+        "r": 102,
+        "g": 205,
+        "b": 255,
+        "a": 38
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:41",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 540,
+        "y": 302
+      },
+      "velocity": {
+        "x": 57,
+        "y": -27
+      },
+      "rotation": -58866,
+      "angularVelocity": 95545,
+      "ageTicks": 2,
+      "lifetimeTicks": 42,
+      "sizeQ": 395238,
+      "opacityQ": 190476,
+      "color": {
+        "r": 101,
+        "g": 206,
+        "b": 255,
+        "a": 35
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:42",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 482,
+        "y": 290
+      },
+      "velocity": {
+        "x": 31,
+        "y": -23
+      },
+      "rotation": -97081,
+      "angularVelocity": 14952,
+      "ageTicks": 1,
+      "lifetimeTicks": 38,
+      "sizeQ": 352632,
+      "opacityQ": 105264,
+      "color": {
+        "r": 96,
+        "g": 212,
+        "b": 255,
+        "a": 19
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:43",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 534,
+        "y": 318
+      },
+      "velocity": {
+        "x": -15,
+        "y": -8
+      },
+      "rotation": -429869,
+      "angularVelocity": -30684,
+      "ageTicks": 1,
+      "lifetimeTicks": 39,
+      "sizeQ": 351282,
+      "opacityQ": 102564,
+      "color": {
+        "r": 96,
+        "g": 213,
+        "b": 255,
+        "a": 19
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:44",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 538,
+        "y": 315
+      },
+      "velocity": {
+        "x": 22,
+        "y": 35
+      },
+      "rotation": 164028,
+      "angularVelocity": 49607,
+      "ageTicks": 1,
+      "lifetimeTicks": 36,
+      "sizeQ": 355556,
+      "opacityQ": 111112,
+      "color": {
+        "r": 96,
+        "g": 212,
+        "b": 255,
+        "a": 20
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    },
+    {
+      "id": "particle:effect:magic-aura:52:magic-one:0:motes:45",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "emitterId": "motes",
+      "position": {
+        "x": 527,
+        "y": 257
+      },
+      "velocity": {
+        "x": 16,
+        "y": 25
+      },
+      "rotation": 162648,
+      "angularVelocity": 78427,
+      "ageTicks": 1,
+      "lifetimeTicks": 31,
+      "sizeQ": 364516,
+      "opacityQ": 129032,
+      "color": {
+        "r": 97,
+        "g": 211,
+        "b": 255,
+        "a": 24
+      },
+      "blend": "additive",
+      "tags": [
+        "magic",
+        "aura"
+      ]
+    }
+  ],
+  "screenSignals": [
+    {
+      "id": "screen:effect:magic-aura:52:magic-one:0:flash",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "type": "flash",
+      "intensityQ": 175799,
+      "progressQ": 583333,
+      "color": {
+        "r": 120,
+        "g": 190,
+        "b": 255,
+        "a": 255
+      }
+    },
+    {
+      "id": "screen:effect:magic-aura:52:magic-one:0:time-dilation",
+      "effectInstanceId": "effect:magic-aura:52:magic-one:0",
+      "type": "time-dilation",
+      "intensityQ": 187111,
+      "progressQ": 350000
+    }
+  ],
+  "audioEvents": [
+    {
+      "id": "audio:sword-whoosh:12:0",
+      "tick": 12,
+      "cueId": "sword-whoosh",
+      "position": {
+        "x": 348,
+        "y": 369
+      },
+      "gainQ": 1000000,
+      "sourceEventId": "marker:hero:base:whoosh:12"
+    },
+    {
+      "id": "audio:blade-impact:20:1",
+      "tick": 20,
+      "cueId": "blade-impact",
+      "position": {
+        "x": 367,
+        "y": 368
+      },
+      "gainQ": 1000000,
+      "sourceEventId": "marker:hero:base:impact:20"
+    },
+    {
+      "id": "audio:magic-bloom:52:2",
+      "tick": 52,
+      "cueId": "magic-bloom",
+      "position": {
+        "x": 520,
+        "y": 300
+      },
+      "gainQ": 1000000,
+      "sourceEventId": "magic-one"
+    }
+  ],
+  "events": [
+    {
+      "id": "attack-one",
+      "tick": 8,
+      "type": "attack.request",
+      "position": {
+        "x": 385,
+        "y": 330
+      },
+      "intensityQ": 900000,
+      "subjectId": "hero",
+      "source": "input"
+    },
+    {
+      "id": "marker:hero:base:whoosh:12",
+      "tick": 12,
+      "type": "attack.whoosh",
+      "position": {
+        "x": 348,
+        "y": 369
+      },
+      "intensityQ": 1000000,
+      "source": "animation-marker"
+    },
+    {
+      "id": "marker:hero:base:impact:20",
+      "tick": 20,
+      "type": "attack.impact",
+      "data": {
+        "damage": 120
+      },
+      "position": {
+        "x": 367,
+        "y": 368
+      },
+      "intensityQ": 1000000,
+      "source": "animation-marker"
+    },
+    {
+      "id": "marker:hero:base:idle-breath:46",
+      "tick": 46,
+      "type": "animation.breath",
+      "position": {
+        "x": 326,
+        "y": 374
+      },
+      "intensityQ": 1000000,
+      "source": "animation-marker"
+    },
+    {
+      "id": "magic-one",
+      "tick": 52,
+      "type": "magic.cast",
+      "position": {
+        "x": 520,
+        "y": 300
+      },
+      "intensityQ": 700000,
+      "subjectId": "hero",
+      "source": "input"
+    }
+  ],
+  "diagnostics": {
+    "animationTracksSampled": 6,
+    "transitionsStarted": 0,
+    "markersEmitted": 0,
+    "activeEffectInstances": 1,
+    "activeParticles": 46,
+    "particlesSpawned": 4,
+    "particlesKilled": 0,
+    "audioCueEvents": 0,
+    "screenSignals": 2
+  },
+  "animationRoot": "fnv1a64:ae77eea1661a7434",
+  "skeletonRoot": "fnv1a64:7ea1376c17fb937e",
+  "audioPlanRoot": "fnv1a64:4d3c0e484a4f1e22",
+  "effectRoot": "fnv1a64:2dbf197eb51f2265",
+  "eventRoot": "fnv1a64:c44cd892b306da80",
+  "stateRoot": "fnv1a64:d585ab72920bd9ee"
+}

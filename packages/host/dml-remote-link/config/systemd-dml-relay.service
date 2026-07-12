@@ -1,0 +1,20 @@
+[Unit]
+Description=DML Secure Relay
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/dml-remote-link
+ExecStart=/usr/bin/node src/relay/cli.mjs serve --host 127.0.0.1 --port 17901 --origins https://your-lovable-domain.example
+Environment=DML_RELAY_STATE=/var/lib/dml-relay
+Restart=always
+RestartSec=3
+User=dml-relay
+Group=dml-relay
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/dml-relay
+
+[Install]
+WantedBy=multi-user.target

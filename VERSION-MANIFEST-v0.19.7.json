@@ -1,0 +1,71 @@
+{
+  "suite": "RNCS_Aetherworld_Unified",
+  "version": "0.19.7-alpha.1",
+  "codename": "Aether Earth Collective Intelligence Sandbox",
+  "based_on": "0.19.6-alpha.1",
+  "products": {
+    "aether_earth": "0.1.0-alpha.1",
+    "rcl": "0.12.0-alpha.1",
+    "native_vm": "0.6.0-alpha.1",
+    "rcl_control_plane": "0.3.0-alpha.1"
+  },
+  "scale": {
+    "world_tiles": 256,
+    "organisms": 100,
+    "seed_knowledge_claims": 512,
+    "runtime_knowledge_claims": 524,
+    "time_scales": [
+      1,
+      10,
+      100
+    ]
+  },
+  "crystallization": {
+    "verification_days": 720,
+    "generated_and_native_verified": 16,
+    "candidate_first": true,
+    "arbitrary_provider_access": false
+  },
+  "compression": {
+    "original_bytes": 322131,
+    "compressed_bytes": 27325,
+    "ratio": 0.084826,
+    "reversible": true
+  },
+  "benchmark": {
+    "days": 1000,
+    "agent_days": 100000,
+    "elapsed_ms": 837.211,
+    "agent_days_per_second": 119444
+  },
+  "integration": {
+    "modules": 37,
+    "runtimes": 16,
+    "rcl_control_modules": 12,
+    "verified_edges": 11,
+    "gateway_runtime": "rncs.aether-earth"
+  },
+  "verification": {
+    "aether_earth_tests": "12/12 PASS",
+    "rcl_tests": "70/70 PASS",
+    "control_plane_tests": "7/7 PASS",
+    "integration_tests": "36/36 PASS",
+    "gateway_tests": "2/2 PASS",
+    "runtime_health": "healthy",
+    "release_verification": "valid"
+  },
+  "android": {
+    "source_project": true,
+    "foreground_service": true,
+    "job_scheduler": true,
+    "gzip_capsule": true,
+    "apk_built": false,
+    "reason": "Android SDK and Gradle distribution unavailable in execution container"
+  },
+  "remote_delivery": {
+    "git_commit": false,
+    "git_push": false,
+    "deployment": false,
+    "reason": "Developer Execution Worker not configured"
+  }
+}

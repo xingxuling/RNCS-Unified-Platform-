@@ -1,0 +1,161 @@
+{
+  "format": "rfe.experience-causal-delta.v0.4",
+  "provisional": true,
+  "experienceId": "aether-blade-showcase",
+  "tick": 120,
+  "baseRealityRoot": "rfe:experience-showcase:base",
+  "candidateStateRoot": "fnv1a64:abc7024fa1e4f94a",
+  "facts": [
+    {
+      "subject": "aether-blade-showcase",
+      "predicate": "experience.tick",
+      "value": 120
+    },
+    {
+      "subject": "aether-blade-showcase",
+      "predicate": "experience.animation-root",
+      "value": "fnv1a64:dd8b4e53984de061"
+    },
+    {
+      "subject": "aether-blade-showcase",
+      "predicate": "experience.audio-plan-root",
+      "value": "fnv1a64:6e5962e7ff2139ca"
+    },
+    {
+      "subject": "aether-blade-showcase",
+      "predicate": "experience.effect-root",
+      "value": "fnv1a64:53c39d5e9a862981"
+    },
+    {
+      "subject": "aether-blade-showcase",
+      "predicate": "experience.active-particles",
+      "value": 33
+    },
+    {
+      "subject": "hero/aura",
+      "predicate": "animation.state",
+      "value": "aura"
+    },
+    {
+      "subject": "hero/base",
+      "predicate": "animation.state",
+      "value": "idle"
+    }
+  ],
+  "events": [
+    {
+      "id": "attack-one",
+      "tick": 8,
+      "type": "attack.request",
+      "position": {
+        "x": 385,
+        "y": 330
+      },
+      "intensityQ": 900000,
+      "subjectId": "hero",
+      "source": "input"
+    },
+    {
+      "id": "marker:hero:base:whoosh:12",
+      "tick": 12,
+      "type": "attack.whoosh",
+      "position": {
+        "x": 348,
+        "y": 369
+      },
+      "intensityQ": 1000000,
+      "source": "animation-marker"
+    },
+    {
+      "id": "marker:hero:base:impact:20",
+      "tick": 20,
+      "type": "attack.impact",
+      "data": {
+        "damage": 120
+      },
+      "position": {
+        "x": 367,
+        "y": 368
+      },
+      "intensityQ": 1000000,
+      "source": "animation-marker"
+    },
+    {
+      "id": "marker:hero:base:idle-breath:46",
+      "tick": 46,
+      "type": "animation.breath",
+      "position": {
+        "x": 326,
+        "y": 374
+      },
+      "intensityQ": 1000000,
+      "source": "animation-marker"
+    },
+    {
+      "id": "magic-one",
+      "tick": 52,
+      "type": "magic.cast",
+      "position": {
+        "x": 520,
+        "y": 300
+      },
+      "intensityQ": 700000,
+      "subjectId": "hero",
+      "source": "input"
+    },
+    {
+      "id": "marker:hero:base:idle-breath:76",
+      "tick": 76,
+      "type": "animation.breath",
+      "position": {
+        "x": 326,
+        "y": 374
+      },
+      "intensityQ": 1000000,
+      "source": "animation-marker"
+    },
+    {
+      "id": "hurt-one",
+      "tick": 82,
+      "type": "hurt.request",
+      "position": {
+        "x": 318,
+        "y": 350
+      },
+      "intensityQ": 800000,
+      "subjectId": "hero",
+      "source": "input"
+    },
+    {
+      "id": "attack-two",
+      "tick": 98,
+      "type": "attack.request",
+      "position": {
+        "x": 395,
+        "y": 328
+      },
+      "intensityQ": 1000000,
+      "subjectId": "hero",
+      "source": "input"
+    },
+    {
+      "id": "marker:hero:base:idle-breath:114",
+      "tick": 114,
+      "type": "animation.breath",
+      "position": {
+        "x": 326,
+        "y": 374
+      },
+      "intensityQ": 1000000,
+      "source": "animation-marker"
+    }
+  ],
+  "evidenceRoots": {
+    "animation": "fnv1a64:dd8b4e53984de061",
+    "skeleton": "fnv1a64:de9227e31473a282",
+    "audioPlan": "fnv1a64:6e5962e7ff2139ca",
+    "effects": "fnv1a64:53c39d5e9a862981",
+    "events": "fnv1a64:c42371b59485df76"
+  },
+  "deltaRoot": "fnv1a64:7a2850b468bbddac"
+}

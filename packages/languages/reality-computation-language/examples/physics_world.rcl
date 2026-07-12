@@ -1,0 +1,64 @@
+reality PhysicsWorld {
+  facet world.state : Text = "ready"
+  facet world.step : Number = 0
+
+  subject simulator {
+    facet position : Number = 0
+    warrant physics.simulate on world
+  }
+
+  host physics {
+    offers broad_phase -> Text
+    offers narrow_phase -> Text
+    offers resolve_contact -> Text
+    offers integrate -> Text
+    offers solve_constraints -> Text
+  }
+
+  emergence initialize {
+    cause simulator
+    when world.state == "ready"
+    needs physics.simulate on world
+    alter world.state <- "initialized"
+    alter world.step <- 0
+    preserve world.step >= 0
+    witness "rcl:physics-init"
+  }
+
+  emergence step_forward {
+    cause simulator
+    when world.state == "initialized"
+    needs physics.simulate on world
+    call physics.integrate("{\"stepHz\":60,\"gx\":0,\"gy\":-10000,\"microsteps\":1,\"bodies\":[{\"id\":0,\"kind\":1,\"px\":0,\"py\":10000,\"vx\":500,\"vy\":0,\"ax\":0,\"ay\":0,\"inv_mass_q\":1000,\"rest_q\":50,\"fric_q\":500,\"damp_q\":0,\"awake\":1,\"sensor\":0},{\"id\":1,\"kind\":1,\"px\":5000,\"py\":10000,\"vx\":-500,\"vy\":0,\"ax\":0,\"ay\":0,\"inv_mass_q\":1000,\"rest_q\":50,\"fric_q\":500,\"damp_q\":0,\"awake\":1,\"sensor\":0}]}") -> world.state
+    alter world.step <- world.step + 1
+    preserve world.step > 0
+    witness "rcl:physics-step"
+  }
+
+  emergence detect_collisions {
+    cause simulator
+    when world.step > 0
+    needs physics.simulate on world
+    call physics.broad_phase("{\"gridCellSize\":64000,\"bodies\":[{\"id\":0,\"kind\":1,\"px\":0,\"py\":10000,\"shape\":\"box\",\"hx\":500,\"hy\":500,\"cat\":1,\"mask\":-1},{\"id\":1,\"kind\":1,\"px\":5000,\"py\":10000,\"shape\":\"box\",\"hx\":500,\"hy\":500,\"cat\":1,\"mask\":-1}]}") -> world.state
+    preserve length(world.state) > 0
+    witness "rcl:physics-broadphase"
+  }
+
+  emergence resolve {
+    cause simulator
+    when world.step > 0
+    needs physics.simulate on world
+    call physics.resolve_contact("{\"a_id\":0,\"a_kind\":1,\"a_px\":0,\"a_py\":10000,\"a_vx\":500,\"a_vy\":0,\"a_inv_mass_q\":1000,\"a_rest_q\":50,\"a_fric_q\":500,\"a_sensor\":0,\"b_id\":1,\"b_kind\":1,\"b_px\":5000,\"b_py\":10000,\"b_vx\":-500,\"b_vy\":0,\"b_inv_mass_q\":1000,\"b_rest_q\":50,\"b_fric_q\":500,\"b_sensor\":0,\"nx\":1000,\"ny\":0,\"pen\":100,\"ptx\":2500,\"pty\":10000}") -> world.state
+    preserve length(world.state) > 0
+    witness "rcl:physics-resolve"
+  }
+
+  foresee initialize
+  foresee step_forward
+  foresee detect_collisions
+  foresee resolve
+  realize initialize
+  realize step_forward
+  realize detect_collisions
+  realize resolve
+}

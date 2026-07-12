@@ -1,0 +1,6 @@
+[
+  {"op":"createIdentity","identity":{"id":"subject:alice","kind":"subject","createdAt":"$logicalTime","retiredAt":null,"lineage":[],"metadata":{"displayName":"Alice"}}},
+  {"op":"createIdentity","identity":{"id":"object:door","kind":"door","createdAt":"$logicalTime","retiredAt":null,"lineage":[],"metadata":{}}},
+  {"op":"setFact","fact":{"subject":"object:door","predicate":"state","value":"locked"}},
+  {"op":"addRelation","relation":{"type":"owns","from":"subject:alice","to":"object:door","qualifiers":{"scope":"demo"}}}
+]

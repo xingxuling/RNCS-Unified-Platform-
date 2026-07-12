@@ -1,0 +1,20 @@
+{
+  "format": "rncs.unified-version-manifest.v0.16",
+  "suiteVersion": "0.16.0-alpha.1",
+  "title": "Town Life & Industry Vertical Slice",
+  "releaseType": "playable vertical slice",
+  "primaryRuntime": "@taowind/town-life-industry-runtime@0.1.0-alpha.1",
+  "llmRequired": false,
+  "capabilities": [
+    "2.5d isometric pixel town",
+    "character creation and starting identities",
+    "food, hunger, energy and rest",
+    "school, jobs and career skills",
+    "materials purchasing and inventory",
+    "manufacturing recipes and equipment abstraction",
+    "technology prerequisite and engineering pathway",
+    "shop rental, product sales and town impact",
+    "visible NPC routines and relationships",
+    "local save and continuous history"
+  ]
+}

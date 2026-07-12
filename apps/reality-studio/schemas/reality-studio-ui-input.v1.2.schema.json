@@ -1,0 +1,215 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/reality-studio-ui-input.v1.2.schema.json",
+  "title": "Reality Studio UI and Input v1.2",
+  "type": "object",
+  "required": [
+    "ui",
+    "input"
+  ],
+  "properties": {
+    "ui": {
+      "type": "object",
+      "required": [
+        "active_ui_id",
+        "trees"
+      ],
+      "properties": {
+        "active_ui_id": {
+          "type": "string"
+        },
+        "trees": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/uiTree"
+          }
+        }
+      }
+    },
+    "input": {
+      "type": "object",
+      "required": [
+        "active_profile_id",
+        "profiles"
+      ],
+      "properties": {
+        "active_profile_id": {
+          "type": "string"
+        },
+        "profiles": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/inputProfile"
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "uiTree": {
+      "type": "object",
+      "required": [
+        "format",
+        "version",
+        "ui_id",
+        "root_id",
+        "nodes",
+        "ui_root"
+      ],
+      "properties": {
+        "format": {
+          "const": "reality-studio.ui-tree.v1.2"
+        },
+        "version": {
+          "const": "1.2.0-alpha.1"
+        },
+        "ui_id": {
+          "type": "string"
+        },
+        "root_id": {
+          "type": "string"
+        },
+        "nodes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "ui_node_id",
+              "type",
+              "anchors",
+              "offsets"
+            ],
+            "properties": {
+              "ui_node_id": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "parent_id": {
+                "type": "string"
+              },
+              "children": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "anchors": {
+                "type": "object",
+                "required": [
+                  "left",
+                  "top",
+                  "right",
+                  "bottom"
+                ],
+                "additionalProperties": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 1000
+                }
+              },
+              "offsets": {
+                "type": "object",
+                "required": [
+                  "left",
+                  "top",
+                  "right",
+                  "bottom"
+                ],
+                "additionalProperties": {
+                  "type": "integer"
+                }
+              },
+              "focus_mode": {
+                "enum": [
+                  "none",
+                  "click",
+                  "all"
+                ]
+              },
+              "mouse_filter": {
+                "enum": [
+                  "ignore",
+                  "pass",
+                  "stop"
+                ]
+              },
+              "bindings": {
+                "type": "object"
+              },
+              "events": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "ui_root": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "inputProfile": {
+      "type": "object",
+      "required": [
+        "format",
+        "version",
+        "profile_id",
+        "actions",
+        "input_root"
+      ],
+      "properties": {
+        "format": {
+          "const": "reality-studio.input-profile.v1.2"
+        },
+        "version": {
+          "const": "1.2.0-alpha.1"
+        },
+        "profile_id": {
+          "type": "string"
+        },
+        "actions": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "bindings"
+            ],
+            "properties": {
+              "deadzone_milli": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000
+              },
+              "bindings": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "device"
+                  ],
+                  "properties": {
+                    "device": {
+                      "enum": [
+                        "keyboard",
+                        "mouse-button",
+                        "gamepad-button",
+                        "gamepad-axis",
+                        "touch"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "input_root": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    }
+  }
+}

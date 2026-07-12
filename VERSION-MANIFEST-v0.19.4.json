@@ -1,0 +1,24 @@
+{
+  "suite": "RNCS_Aetherworld_Unified",
+  "version": "0.19.4-alpha.1",
+  "codename": "RCL Stage-4 Module Core",
+  "based_on": "0.19.3-alpha.1",
+  "language": {
+    "rcl": "0.10.0-alpha.1",
+    "native_vm": "0.4.0-alpha.1",
+    "self_hosting_stage": 4,
+    "module_core": "module/import/require",
+    "rbc": "1.1"
+  },
+  "verification": {
+    "rcl_tests": "61/61 PASS",
+    "workspace_links": 31,
+    "runtime_health": "healthy",
+    "stage4_demo": "PASS"
+  },
+  "remote_delivery": {
+    "git_commit": false,
+    "git_push": false,
+    "deployment": false
+  }
+}

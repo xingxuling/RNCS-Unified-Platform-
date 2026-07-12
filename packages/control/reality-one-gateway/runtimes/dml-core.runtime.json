@@ -1,0 +1,32 @@
+{
+  "format": "reality-one.runtime-manifest.v0.3",
+  "gateway_protocol_versions": [
+    "0.3.0"
+  ],
+  "runtime_id": "rncs.dml-core",
+  "runtime_version": "0.5.0-alpha.1",
+  "display_name": "Digital Blue Sky Cognitive Runtime",
+  "transport": {
+    "kind": "node-module",
+    "package": "@taowind/dml-core-runtime"
+  },
+  "bridge": "../src/bridges/dml-core.bridge.mjs",
+  "actions": [
+    "health",
+    "createRuntime"
+  ],
+  "protocols": [
+    "dml.cognitive-runtime.v0.5"
+  ],
+  "requires": [
+    {
+      "runtime_id": "rncs.cnp",
+      "version_range": "^0.1.0"
+    },
+    {
+      "runtime_id": "rncs.aaf",
+      "version_range": "^0.1.0"
+    }
+  ],
+  "priority": 75
+}

@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: taowind-reality-mcp
+    runtime: docker
+    dockerfilePath: ./packages/integration/taowind-reality-mcp/Dockerfile
+    healthCheckPath: /healthz
+    envVars:
+      - key: TAOWIND_MCP_HOST
+        value: 0.0.0.0
+      - key: TAOWIND_MCP_PORT
+        value: 8787
+      - key: TAOWIND_MCP_PATH_TOKEN
+        generateValue: true
+      - key: TAOWIND_MCP_ALLOWED_ORIGINS
+        value: https://chatgpt.com,https://chat.openai.com
+      - key: TAOWIND_MCP_ENABLE_CANDIDATE_WRITES
+        value: true

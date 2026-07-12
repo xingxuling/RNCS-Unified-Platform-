@@ -1,0 +1,4 @@
+import fs from 'node:fs';import path from 'node:path';
+const read=p=>JSON.parse(fs.readFileSync(p,'utf8'));
+export function loadPipelineConfig(file){const abs=path.resolve(file),base=path.dirname(abs),c=read(abs),r=p=>path.resolve(base,p);return{
+ artifact:read(r(c.artifact_file)),intent_text:fs.readFileSync(r(c.intent_file),'utf8').trim(),actor:read(r(c.actor_file)),hosts:c.host_files.map(x=>read(r(x))),capsule:read(r(c.capsule_file)),cnp_request:read(r(c.cnp_request_file)),providers:c.provider_files.map(x=>read(r(x))),policy_bundle:read(r(c.policy_bundle_file)),rfe_store_path:r(c.rfe_store_path),reality_id:c.reality_id,environment:c.environment,now:c.now,auto_approve:c.auto_approve!==false,approver:c.approver,approval_expires_at:c.approval_expires_at,icar_policy:c.icar_policy??{},icar_providers:c.icar_providers??[]};}

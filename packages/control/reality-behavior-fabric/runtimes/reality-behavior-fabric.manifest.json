@@ -1,0 +1,16 @@
+{
+  "format":"reality-one.runtime-manifest.v0.3",
+  "runtime_id":"rncs.behavior",
+  "name":"Reality Behavior Fabric",
+  "version":"0.1.0-alpha.1",
+  "entry":"src/index.mjs",
+  "capabilities":[
+    {"capability_id":"behavior.program.validate","method":"validateProgram","risk":"low","reversible":true},
+    {"capability_id":"behavior.simulate","method":"BehaviorRuntime.run","risk":"low","reversible":true},
+    {"capability_id":"behavior.snapshot","method":"BehaviorRuntime.snapshot","risk":"low","reversible":true},
+    {"capability_id":"behavior.hot-reload","method":"BehaviorRuntime.hotReload","risk":"medium","reversible":true},
+    {"capability_id":"behavior.commit-delta","method":"BehaviorRuntime.causalDelta","risk":"medium","reversible":true}
+  ],
+  "host_requirements":["runtime.javascript","storage.state"],
+  "evidence":["behavior.trace","behavior.state-root","rfe.behavior-causal-delta"]
+}

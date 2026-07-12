@@ -1,0 +1,31 @@
+{
+  "version": "0.4",
+  "name": "HNAF Semantic Trace Contract",
+  "ordered_events": [
+    "host.context",
+    "capsule.verified",
+    "capability.negotiated",
+    "execution.started",
+    "capability.call|capability.denied*",
+    "execution.completed"
+  ],
+  "stable_fields": {
+    "capsule.verified": ["signature.status"],
+    "capability.negotiated": ["status", "execution.profile", "grants.capability", "fallbacks.capability", "unresolved"],
+    "execution.started": ["profile"],
+    "capability.call": ["capability", "method"],
+    "capability.denied": ["capability", "method", "reason"],
+    "execution.completed": ["result.profile"]
+  },
+  "volatile_fields": [
+    "time",
+    "lease_id",
+    "issued_utc",
+    "host.id",
+    "host.resources",
+    "elapsed_ns",
+    "fuel_remaining",
+    "clock values",
+    "implementation-specific result payloads"
+  ]
+}

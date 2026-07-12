@@ -1,0 +1,26 @@
+export const SEQ_WORLD_ZONE_TYPES = [
+  "VOID_GATE","WIND_FIELD","ARCHIVE_LIBRARY","FOUNDER_CONSOLE",
+  "RELATION_HARBOR","SYMBOL_CITY","RECOVERY_GARDEN","RESOURCE_FORGE",
+  "CIVILIZATION_RUIN","EVENT_STORM",
+] as const;
+export type SeqWorldZoneType = typeof SEQ_WORLD_ZONE_TYPES[number];
+
+export const ZONE_TYPE_LABEL: Record<SeqWorldZoneType, string> = {
+  VOID_GATE:"虚空之门", WIND_FIELD:"风之场域", ARCHIVE_LIBRARY:"归档图书馆",
+  FOUNDER_CONSOLE:"创始人控制台", RELATION_HARBOR:"关系港湾", SYMBOL_CITY:"符号之城",
+  RECOVERY_GARDEN:"恢复花园", RESOURCE_FORGE:"资源熔炉", CIVILIZATION_RUIN:"文明遗迹",
+  EVENT_STORM:"事件风暴",
+};
+
+export const DIGIT_ZONE_AFFINITY: Record<string, SeqWorldZoneType[]> = {
+  "0": ["VOID_GATE","ARCHIVE_LIBRARY"],
+  "1": ["FOUNDER_CONSOLE"],
+  "2": ["RELATION_HARBOR"],
+  "3": ["SYMBOL_CITY"],
+  "4": ["FOUNDER_CONSOLE","RESOURCE_FORGE"],
+  "5": ["WIND_FIELD","EVENT_STORM"],
+  "6": ["RECOVERY_GARDEN"],
+  "7": ["ARCHIVE_LIBRARY","VOID_GATE"],
+  "8": ["RESOURCE_FORGE"],
+  "9": ["CIVILIZATION_RUIN","FOUNDER_CONSOLE"],
+};

@@ -1,0 +1,9 @@
+{
+  "format": "vsr.device-profile.v0.1",
+  "deviceId": "device:mobile-demo",
+  "deviceClass": "mobile",
+  "viewport": { "width": 390, "height": 844, "dpr": 3 },
+  "safeArea": { "top": 47, "bottom": 34, "left": 0, "right": 0 },
+  "inputModes": ["touch", "voice"],
+  "fit": "contain"
+}

@@ -1,0 +1,521 @@
+{
+  "format": "rsr.constraint-snapshot.v0.2",
+  "runtimeVersion": "0.2.0-alpha.1",
+  "worldId": "constraint-causal-playground",
+  "tick": 180,
+  "logicalTime": {
+    "numerator": 180,
+    "denominator": 60
+  },
+  "scale": 1000,
+  "stepHz": 60,
+  "gravity": {
+    "x": 0,
+    "y": 980000
+  },
+  "solverIterations": 6,
+  "gridCellSize": 64000,
+  "maxSubsteps": 12,
+  "configHash": "fnv1a64:236ba3e1ad4181b6",
+  "bodies": [
+    {
+      "id": "crate",
+      "kind": "dynamic",
+      "position": {
+        "x": 340451,
+        "y": 271001
+      },
+      "shape": {
+        "type": "box",
+        "halfExtents": {
+          "x": 20000,
+          "y": 20000
+        }
+      },
+      "velocity": {
+        "x": -64999,
+        "y": -172
+      },
+      "acceleration": {
+        "x": 0,
+        "y": 0
+      },
+      "inverseMassQ": 650,
+      "materialId": "stone",
+      "restitutionQ": 80,
+      "frictionQ": 850,
+      "linearDampingQ": 0,
+      "sensor": false,
+      "continuous": false,
+      "filter": {
+        "categoryBits": 2,
+        "maskBits": 4294967295,
+        "groupIndex": 0
+      },
+      "sleepThreshold": 2000,
+      "sleepTicks": 30,
+      "sleepCounter": 0,
+      "awake": true,
+      "tags": [
+        "subject",
+        "wind-affected"
+      ],
+      "data": {}
+    },
+    {
+      "id": "fast-orb",
+      "kind": "dynamic",
+      "position": {
+        "x": -857777,
+        "y": 2784886
+      },
+      "shape": {
+        "type": "circle",
+        "radius": 12000
+      },
+      "velocity": {
+        "x": -418992,
+        "y": 2286188
+      },
+      "acceleration": {
+        "x": 0,
+        "y": 0
+      },
+      "inverseMassQ": 1000,
+      "materialId": "rubber",
+      "restitutionQ": 780,
+      "frictionQ": 620,
+      "linearDampingQ": 10,
+      "sensor": false,
+      "continuous": true,
+      "filter": {
+        "categoryBits": 2,
+        "maskBits": 4294967295,
+        "groupIndex": 0
+      },
+      "sleepThreshold": 1800,
+      "sleepTicks": 30,
+      "sleepCounter": 0,
+      "awake": true,
+      "tags": [
+        "orb",
+        "subject",
+        "wind-affected"
+      ],
+      "data": {}
+    },
+    {
+      "id": "ground",
+      "kind": "static",
+      "position": {
+        "x": 360000,
+        "y": 395000
+      },
+      "shape": {
+        "type": "box",
+        "halfExtents": {
+          "x": 340000,
+          "y": 18000
+        }
+      },
+      "velocity": {
+        "x": 0,
+        "y": 0
+      },
+      "acceleration": {
+        "x": 0,
+        "y": 0
+      },
+      "inverseMassQ": 0,
+      "materialId": "stone",
+      "restitutionQ": 80,
+      "frictionQ": 850,
+      "linearDampingQ": 0,
+      "sensor": false,
+      "continuous": false,
+      "filter": {
+        "categoryBits": 1,
+        "maskBits": 4294967295,
+        "groupIndex": 0
+      },
+      "sleepThreshold": 2000,
+      "sleepTicks": 30,
+      "sleepCounter": 0,
+      "awake": false,
+      "tags": [
+        "environment",
+        "ground"
+      ],
+      "data": {}
+    },
+    {
+      "id": "moving-platform",
+      "kind": "kinematic",
+      "position": {
+        "x": 350161,
+        "y": 300000
+      },
+      "shape": {
+        "type": "box",
+        "halfExtents": {
+          "x": 85000,
+          "y": 9000
+        }
+      },
+      "velocity": {
+        "x": -65000,
+        "y": 0
+      },
+      "acceleration": {
+        "x": 0,
+        "y": 0
+      },
+      "inverseMassQ": 0,
+      "materialId": "metal",
+      "restitutionQ": 180,
+      "frictionQ": 300,
+      "linearDampingQ": 0,
+      "sensor": false,
+      "continuous": false,
+      "filter": {
+        "categoryBits": 1,
+        "maskBits": 4294967295,
+        "groupIndex": 0
+      },
+      "sleepThreshold": 2000,
+      "sleepTicks": 30,
+      "sleepCounter": 0,
+      "awake": true,
+      "tags": [
+        "environment",
+        "kinematic"
+      ],
+      "data": {}
+    },
+    {
+      "id": "pendulum-anchor",
+      "kind": "static",
+      "position": {
+        "x": 150000,
+        "y": 55000
+      },
+      "shape": {
+        "type": "circle",
+        "radius": 7000
+      },
+      "velocity": {
+        "x": 0,
+        "y": 0
+      },
+      "acceleration": {
+        "x": 0,
+        "y": 0
+      },
+      "inverseMassQ": 0,
+      "materialId": "metal",
+      "restitutionQ": 180,
+      "frictionQ": 300,
+      "linearDampingQ": 0,
+      "sensor": false,
+      "continuous": false,
+      "filter": {
+        "categoryBits": 1,
+        "maskBits": 4294967295,
+        "groupIndex": 0
+      },
+      "sleepThreshold": 2000,
+      "sleepTicks": 30,
+      "sleepCounter": 0,
+      "awake": false,
+      "tags": [
+        "constraint-anchor"
+      ],
+      "data": {}
+    },
+    {
+      "id": "pendulum-bob",
+      "kind": "dynamic",
+      "position": {
+        "x": 191401,
+        "y": 159070
+      },
+      "shape": {
+        "type": "circle",
+        "radius": 16000
+      },
+      "velocity": {
+        "x": 492911,
+        "y": -193256
+      },
+      "acceleration": {
+        "x": 0,
+        "y": 0
+      },
+      "inverseMassQ": 800,
+      "materialId": "metal",
+      "restitutionQ": 180,
+      "frictionQ": 300,
+      "linearDampingQ": 0,
+      "sensor": false,
+      "continuous": true,
+      "filter": {
+        "categoryBits": 2,
+        "maskBits": 4294967295,
+        "groupIndex": 0
+      },
+      "sleepThreshold": 2000,
+      "sleepTicks": 30,
+      "sleepCounter": 0,
+      "awake": true,
+      "tags": [
+        "orb",
+        "subject"
+      ],
+      "data": {}
+    },
+    {
+      "id": "sensor-zone",
+      "kind": "static",
+      "position": {
+        "x": 620000,
+        "y": 115000
+      },
+      "shape": {
+        "type": "circle",
+        "radius": 52000
+      },
+      "velocity": {
+        "x": 0,
+        "y": 0
+      },
+      "acceleration": {
+        "x": 0,
+        "y": 0
+      },
+      "inverseMassQ": 0,
+      "materialId": "ghost",
+      "restitutionQ": 0,
+      "frictionQ": 0,
+      "linearDampingQ": 0,
+      "sensor": true,
+      "continuous": false,
+      "filter": {
+        "categoryBits": 4,
+        "maskBits": 2,
+        "groupIndex": 0
+      },
+      "sleepThreshold": 2000,
+      "sleepTicks": 30,
+      "sleepCounter": 0,
+      "awake": false,
+      "tags": [
+        "goal-zone",
+        "sensor"
+      ],
+      "data": {}
+    },
+    {
+      "id": "thin-wall",
+      "kind": "static",
+      "position": {
+        "x": 520000,
+        "y": 235000
+      },
+      "shape": {
+        "type": "box",
+        "halfExtents": {
+          "x": 6000,
+          "y": 140000
+        }
+      },
+      "velocity": {
+        "x": 0,
+        "y": 0
+      },
+      "acceleration": {
+        "x": 0,
+        "y": 0
+      },
+      "inverseMassQ": 0,
+      "materialId": "metal",
+      "restitutionQ": 180,
+      "frictionQ": 300,
+      "linearDampingQ": 0,
+      "sensor": false,
+      "continuous": false,
+      "filter": {
+        "categoryBits": 1,
+        "maskBits": 4294967295,
+        "groupIndex": 0
+      },
+      "sleepThreshold": 2000,
+      "sleepTicks": 30,
+      "sleepCounter": 0,
+      "awake": false,
+      "tags": [
+        "ccd-target",
+        "environment"
+      ],
+      "data": {}
+    }
+  ],
+  "constraints": [
+    {
+      "id": "pendulum-link",
+      "type": "distance",
+      "bodyA": "pendulum-anchor",
+      "bodyB": "pendulum-bob",
+      "restLength": 112000,
+      "stiffnessQ": 930,
+      "dampingQ": 220,
+      "breakImpulse": 420000,
+      "enabled": true,
+      "broken": false,
+      "lastImpulse": 828,
+      "data": {}
+    }
+  ],
+  "fields": [
+    {
+      "id": "air",
+      "type": "linear-drag",
+      "coefficientQ": 35,
+      "categoryMask": 2
+    },
+    {
+      "id": "gravity-well",
+      "type": "radial",
+      "center": {
+        "x": 360000,
+        "y": 190000
+      },
+      "radius": 250000,
+      "strength": 180000,
+      "tagsAny": [
+        "orb"
+      ]
+    },
+    {
+      "id": "wind",
+      "type": "uniform",
+      "acceleration": {
+        "x": 90000,
+        "y": 0
+      },
+      "tagsAny": [
+        "wind-affected"
+      ]
+    }
+  ],
+  "materialInteractions": [
+    {
+      "materialA": "ghost",
+      "materialB": "rubber",
+      "sensorOnly": true
+    },
+    {
+      "materialA": "rubber",
+      "materialB": "metal",
+      "restitutionQ": 900,
+      "frictionQ": 180
+    }
+  ],
+  "contacts": [
+    {
+      "key": "crate|moving-platform",
+      "bodyA": "crate",
+      "bodyB": "moving-platform",
+      "normalQ": {
+        "x": 0,
+        "y": 1000
+      },
+      "penetration": 1,
+      "point": {
+        "x": 345306,
+        "y": 285500
+      },
+      "normalImpulse": 0,
+      "tangentImpulse": 0,
+      "sensor": false,
+      "materialPair": "metal|stone",
+      "microstep": 6
+    }
+  ],
+  "events": [
+    {
+      "id": "constraint-causal-playground:180:contact:persist:crate|moving-platform",
+      "tick": 180,
+      "kind": "contact",
+      "phase": "persist",
+      "subjects": [
+        "crate",
+        "moving-platform"
+      ],
+      "pair": "crate|moving-platform",
+      "contact": {
+        "key": "crate|moving-platform",
+        "bodyA": "crate",
+        "bodyB": "moving-platform",
+        "normalQ": {
+          "x": 0,
+          "y": 1000
+        },
+        "penetration": 1,
+        "point": {
+          "x": 345306,
+          "y": 285500
+        },
+        "normalImpulse": 0,
+        "tangentImpulse": 0,
+        "sensor": false,
+        "materialPair": "metal|stone",
+        "microstep": 6
+      },
+      "evidenceHash": "fnv1a64:fea107e5bad68719"
+    }
+  ],
+  "islands": [
+    {
+      "id": "island:fnv1a64:3dd343dd23d1ba4b",
+      "bodyIds": [
+        "fast-orb"
+      ],
+      "contactKeys": [],
+      "constraintIds": [],
+      "awake": true
+    },
+    {
+      "id": "island:fnv1a64:48ba7b24420a7858",
+      "bodyIds": [
+        "crate",
+        "moving-platform"
+      ],
+      "contactKeys": [
+        "crate|moving-platform"
+      ],
+      "constraintIds": [],
+      "awake": true
+    },
+    {
+      "id": "island:fnv1a64:e85c322522828435",
+      "bodyIds": [
+        "pendulum-bob"
+      ],
+      "contactKeys": [],
+      "constraintIds": [
+        "pendulum-link"
+      ],
+      "awake": true
+    }
+  ],
+  "diagnostics": {
+    "microsteps": 7,
+    "candidatePairs": 42,
+    "narrowPhaseTests": 42,
+    "resolvedContacts": 7
+  },
+  "contactRoot": "fnv1a64:b0d4689b0e4b2575",
+  "constraintRoot": "fnv1a64:6f858d6e4f629552",
+  "islandRoot": "fnv1a64:03c53fb53231f640",
+  "stateRoot": "fnv1a64:674a4a0a0ac58310"
+}

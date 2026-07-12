@@ -1,0 +1,87 @@
+{
+  "format": "hnaf.provider-registry.v0.7",
+  "providers": [
+    {
+      "provider_id": "provider:local-primary-failing",
+      "protocol_versions": ["0.1.0"],
+      "status": "available",
+      "trust": {"level": 5, "attestations": ["capsule-local"]},
+      "transports": [{"kind": "hnaf-builtin"}],
+      "capabilities": [
+        {
+          "capability_id": "hnaf.counter.primary",
+          "version": "1.1.0",
+          "fulfills": ["app.counter.increment"],
+          "inputs": {"amount": {"type": "integer", "required": false}},
+          "outputs": {"state_root": {"type": "string"}},
+          "required_scopes": ["state.write"],
+          "host_requirements": ["storage.state"],
+          "risk": {"level": "medium", "reasons": ["changes-portable-state"]},
+          "reversible": true,
+          "execution_phase": "transaction",
+          "side_effects": ["state.write"],
+          "evidence": {"produces": ["state.root"], "requires": []},
+          "cost": {"cpu_millis": 1, "memory_mb": 1, "network_kb": 0, "monetary_microunits": 0},
+          "transport": {"kind": "hnaf-builtin", "handler": "fail"}
+        }
+      ]
+    },
+    {
+      "provider_id": "provider:local-fallback",
+      "protocol_versions": ["0.1.0"],
+      "status": "available",
+      "trust": {"level": 5, "attestations": ["capsule-local"]},
+      "transports": [{"kind": "hnaf-builtin"}],
+      "capabilities": [
+        {
+          "capability_id": "hnaf.counter.fallback",
+          "version": "1.0.0",
+          "fulfills": ["app.counter.increment"],
+          "inputs": {"amount": {"type": "integer", "required": false}},
+          "outputs": {"state_root": {"type": "string"}},
+          "required_scopes": ["state.write"],
+          "host_requirements": ["storage.state"],
+          "risk": {"level": "medium", "reasons": ["changes-portable-state"]},
+          "reversible": true,
+          "execution_phase": "transaction",
+          "side_effects": ["state.write"],
+          "evidence": {"produces": ["state.root"], "requires": []},
+          "cost": {"cpu_millis": 2, "memory_mb": 1, "network_kb": 0, "monetary_microunits": 0},
+          "transport": {"kind": "hnaf-builtin", "handler": "state.increment"}
+        },
+        {
+          "capability_id": "hnaf.capsule.inspect",
+          "version": "1.0.0",
+          "fulfills": ["capsule.inspect"],
+          "inputs": {},
+          "outputs": {"summary": {"type": "object"}},
+          "required_scopes": ["capsule.read"],
+          "host_requirements": [],
+          "risk": {"level": "low", "reasons": []},
+          "reversible": true,
+          "execution_phase": "read-only",
+          "side_effects": [],
+          "evidence": {"produces": ["capsule.integrity"], "requires": []},
+          "cost": {"cpu_millis": 1, "memory_mb": 1, "network_kb": 0, "monetary_microunits": 0},
+          "transport": {"kind": "hnaf-builtin", "handler": "capsule.inspect"}
+        },
+        {
+          "capability_id": "hnaf.remote.echo",
+          "version": "1.0.0",
+          "fulfills": ["app.remote.echo"],
+          "inputs": {},
+          "outputs": {"echo": {"type": "object"}},
+          "required_scopes": ["remote.execute"],
+          "host_requirements": [],
+          "risk": {"level": "high", "reasons": ["explicit-high-risk-demo"]},
+          "reversible": true,
+          "execution_phase": "transaction",
+          "side_effects": [],
+          "evidence": {"produces": ["execution.receipt"], "requires": []},
+          "cost": {"cpu_millis": 1, "memory_mb": 1, "network_kb": 0, "monetary_microunits": 0},
+          "transport": {"kind": "hnaf-builtin", "handler": "echo"}
+        }
+      ]
+    }
+  ]
+}

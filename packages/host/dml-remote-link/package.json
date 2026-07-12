@@ -1,0 +1,28 @@
+{
+  "name": "@taowind/dml-remote-link",
+  "version": "0.3.0-alpha.1",
+  "type": "module",
+  "description": "Secure relay and outbound local host bridge for Digital Blue Tianji Workbench and DML Core Runtime.",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "dml-relay": "src/relay/cli.mjs",
+    "dml-local-host": "src/host/cli.mjs"
+  },
+  "scripts": {
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs",
+    "relay:create-session": "node src/relay/cli.mjs create-session",
+    "relay:serve": "node src/relay/cli.mjs serve",
+    "host:pair": "node src/host/cli.mjs pair",
+    "host:run": "node src/host/cli.mjs run",
+    "demo": "node scripts/demo.mjs",
+    "verify": "node scripts/verify-release.mjs"
+  },
+  "dependencies": {
+    "@taowind/capability-negotiation-protocol": "*",
+    "@taowind/agent-authority-fabric": "*",
+    "@taowind/dml-core-runtime": "*"
+  }
+}

@@ -1,0 +1,22 @@
+goal: "交付可实际运行的第三人称3D开放世界动作RPG垂直切片，并提供Godot 4.7原生工程源码"
+verified_runtime:
+  webgl_client: true
+  perspective_camera: true
+  visible_player_avatar: true
+  camera_orbit: true
+  movement: true
+  sword_attack: true
+  dodge: true
+  target_lock: true
+  voice_magic: true
+  npc_players: 16
+  enemies: 14
+  boss_phases: 3
+  llm_calls: 0
+verification_seams:
+  - open-world-rpg-runtime public API
+  - browser WebGL context and interaction smoke test
+  - RNCS mother-project integration tests
+  - Godot project resource/static structure
+blocked:
+  - "Godot executable unavailable in build container; no Godot runtime/export claim"

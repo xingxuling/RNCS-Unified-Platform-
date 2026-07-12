@@ -1,0 +1,12 @@
+{
+  "version": "0.1",
+  "root": "status",
+  "nodes": {
+    "status": {
+      "kind": "information",
+      "priority": "primary",
+      "label": "HNAC execution status",
+      "actions": ["inspect", "run", "export-trace"]
+    }
+  }
+}

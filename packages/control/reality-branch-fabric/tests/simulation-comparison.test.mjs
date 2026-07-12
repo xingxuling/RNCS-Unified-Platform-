@@ -1,0 +1,23 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {simulateBranch, verifySimulation, replaySimulation, compareBranches, explainRecommendation, createWorkspace} from '../src/index.mjs';
+import {workspace, branches} from './fixture.mjs';
+
+test('simulation emits all configured scenarios', () => assert.equal(simulateBranch(workspace(), 'branch:safe').scenarios.length, 3));
+test('simulation is sealed and valid', () => assert.equal(verifySimulation(simulateBranch(workspace(), 'branch:safe')), true));
+test('simulation root deterministic despite timestamp', () => assert.equal(simulateBranch(workspace(), 'branch:safe').simulation_root, simulateBranch(workspace(), 'branch:safe').simulation_root));
+test('candidate state root deterministic', () => assert.equal(simulateBranch(workspace(), 'branch:fast-cache').candidate_state_root, simulateBranch(workspace(), 'branch:fast-cache').candidate_state_root));
+test('adverse scenario has greater risk than baseline', () => { const s = simulateBranch(workspace(), 'branch:safe'); const b = s.scenarios.find(x => x.scenario_id === 'scenario:baseline'); const a = s.scenarios.find(x => x.scenario_id === 'scenario:adverse'); assert.ok(a.metrics.risk > b.metrics.risk); });
+test('aggregate expected metrics are emitted', () => assert.ok(simulateBranch(workspace(), 'branch:safe').aggregate.expected.benefit > 0));
+test('resilience is bounded', () => { const r = simulateBranch(workspace(), 'branch:safe').aggregate.resilience; assert.ok(r >= 0 && r <= 10000); });
+test('hard invariant failure makes scenario ineligible', () => { const bad = createWorkspace({base_generation_root: 'a'.repeat(64), project_root: 'b'.repeat(64), base_state: {project: {tests: 0}}, branches: [{...branches[0], operations: [{op: 'set', path: 'project.progress', value: 70}]}]}); assert.equal(simulateBranch(bad, 'branch:safe').eligible, false); });
+test('external adapter can supply metrics', () => { const s = simulateBranch(workspace(), 'branch:safe', {adapter: () => ({benefit: 9000, cost: 100, risk: 100, confidence: 9000, duration: 100})}); assert.equal(s.scenarios[0].model, 'external-adapter'); assert.equal(s.aggregate.expected.benefit, 9000); });
+test('simulation replay is deterministic', () => { const w = workspace(); const s = simulateBranch(w, 'branch:safe'); const r = replaySimulation(w, s); assert.equal(r.deterministic, true); assert.equal(r.candidate_state_match, true); });
+test('comparison recommends an eligible branch', () => { const c = compareBranches(workspace()); assert.ok(c.recommended_branch_id); assert.equal(c.rows.find(x => x.branch_id === c.recommended_branch_id).eligible, true); });
+test('comparison emits pareto frontier', () => assert.ok(compareBranches(workspace()).pareto_frontier.length >= 1));
+test('comparison emits sensitivity profiles', () => assert.equal(compareBranches(workspace()).sensitivity.length, 4));
+test('recommendation stability is basis points', () => { const v = compareBranches(workspace()).recommendation_stability_bps; assert.ok(v >= 0 && v <= 10000); });
+test('comparison emits conflict matrix', () => assert.equal(compareBranches(workspace()).conflict_matrix.length, 3));
+test('recommendation explanation binds selected branch', () => { const c = compareBranches(workspace()); const e = explainRecommendation(c); assert.equal(e.recommended_branch_id, c.recommended_branch_id); assert.ok(e.reasons.length >= 4); });
+test('tampered simulation is rejected by comparison', () => { const w = workspace(); const s = simulateBranch(w, 'branch:safe'); s.aggregate.expected.benefit = 1; assert.throws(() => compareBranches(w, [s]), /RBF_SIMULATION_INVALID/); });
+test('ineligible branch receives sentinel score', () => { const w = workspace(); const s = simulateBranch(w, 'branch:safe'); s.eligible = false; s.simulation_root = '0'.repeat(64); assert.throws(() => compareBranches(w, [s]), /RBF_SIMULATION_INVALID/); });

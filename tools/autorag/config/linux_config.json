@@ -1,0 +1,22 @@
+{
+  "system": {
+    "name": "Enhanced RAG System",
+    "version": "1.0.0",
+    "linux": true,
+    "wsl": true
+  },
+  "paths": {
+    "default_project_dir": "$HOME/projects",
+    "output_dir": "./output",
+    "logs_dir": "./logs"
+  },
+  "monitoring": {
+    "enabled": true,
+    "interval_seconds": 5,
+    "watch_directories": [
+      "$HOME/projects",
+      "$HOME/workspace",
+      "."
+    ]
+  }
+}

@@ -1,0 +1,65 @@
+// System Constitution v0.2 — Engine Obligations
+export interface EngineObligation {
+  engineId: string;
+  chineseName: string;
+  mustReadConstants: string[];
+  mustCheckArticles: string[];
+  mustOutputMetadata: string[];
+  forbidden: string[];
+}
+
+export const ENGINE_OBLIGATIONS: EngineObligation[] = [
+  { engineId: "SequenceAI", chineseName: "数列人工智能",
+    mustReadConstants: ["MODE_*", "ENGINE_WEIGHT_*", "RISK_*", "COMP_*"],
+    mustCheckArticles: ["A010", "A040", "A080", "A100", "A110"],
+    mustOutputMetadata: ["subjectModeUsed", "constantUniverseVersion", "constitutionalStatus"],
+    forbidden: ["默认 Demo 而不声明", "缺少 validationPoints"] },
+  { engineId: "FreeInput", chineseName: "自由输入",
+    mustReadConstants: ["MODE_*", "RISK_*"],
+    mustCheckArticles: ["A010", "A040", "A100"],
+    mustOutputMetadata: ["subjectModeUsed", "constitutionalStatus"],
+    forbidden: ["把虚拟当现实"] },
+  { engineId: "Omni", chineseName: "全域调度",
+    mustReadConstants: ["ENGINE_WEIGHT_*", "MODE_*"],
+    mustCheckArticles: ["A040", "A080"],
+    mustOutputMetadata: ["subjectModeUsed", "engineWeightsUsed"], forbidden: ["越权调用"] },
+  { engineId: "MSL", chineseName: "母体数列语言",
+    mustReadConstants: ["DIGIT_*", "DOMAIN_*"],
+    mustCheckArticles: ["A030"],
+    mustOutputMetadata: ["constantUniverseVersion"], forbidden: ["内部重复定义 0–9"] },
+  { engineId: "WorldEngine", chineseName: "数列世界引擎 v0.1–v0.6",
+    mustReadConstants: ["WS_*", "WG_*", "WSOC_*", "CIV_*", "PRES_*"],
+    mustCheckArticles: ["A060", "A090", "A110"],
+    mustOutputMetadata: ["subjectModeUsed", "safetyNotes"],
+    forbidden: ["把虚拟世界标 REAL_WORLD_FACT", "无限自动扩张", "声称替代 Unity/Godot/Unreal"] },
+  { engineId: "SequenceCurrency", chineseName: "数列货币",
+    mustReadConstants: ["CURRENCY_NON_FINANCIAL_LOCKS"],
+    mustCheckArticles: ["A070"],
+    mustOutputMetadata: ["nonFinancialNotice"], forbidden: ["金融化", "公开交易"] },
+  { engineId: "HybridCompression", chineseName: "黑白箱混合压缩",
+    mustReadConstants: ["COMP_*"],
+    mustCheckArticles: ["A080"],
+    mustOutputMetadata: ["sections", "blackboxFlagged"],
+    forbidden: ["删关键风险", "把黑箱当事实"] },
+  { engineId: "WorldKnowledge", chineseName: "世界知识引擎",
+    mustReadConstants: [],
+    mustCheckArticles: ["A050"],
+    mustOutputMetadata: ["knowledgeType", "accessLevel"],
+    forbidden: ["把 FICTIONAL_LORE 标 REAL_WORLD_FACT"] },
+  { engineId: "SequenceTerminal", chineseName: "数列终端",
+    mustReadConstants: [],
+    mustCheckArticles: ["A020", "A040"],
+    mustOutputMetadata: ["actor", "auditId"], forbidden: ["越权命令"] },
+  { engineId: "Safety", chineseName: "安全边界",
+    mustReadConstants: ["RISK_*", "SAFETY_*"],
+    mustCheckArticles: ["A100"],
+    mustOutputMetadata: ["severity", "mitigation"], forbidden: ["关闭"] },
+  { engineId: "Recalculation", chineseName: "重新计算",
+    mustReadConstants: [],
+    mustCheckArticles: ["A120"],
+    mustOutputMetadata: ["staleReason"], forbidden: ["静默使用过期"] },
+  { engineId: "Validation", chineseName: "回验",
+    mustReadConstants: ["VAL_*"],
+    mustCheckArticles: ["A110"],
+    mustOutputMetadata: ["validationType", "signals"], forbidden: ["未回验标 VERIFIED"] },
+];

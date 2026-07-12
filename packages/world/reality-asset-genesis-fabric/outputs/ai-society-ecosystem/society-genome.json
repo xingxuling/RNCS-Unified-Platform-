@@ -1,0 +1,192 @@
+{
+  "format": "ragf.society-genome.v0.5",
+  "version": "0.5.0-alpha.1",
+  "genome_id": "society-genome:162e7d4f5f7ab7193e9d540a",
+  "intent_root": "92ead88ce0c1efb1b063003a95575a9937bdc38fceb034faaed5d2147d2f7712",
+  "identity": {
+    "world_id": "world:5c46cbb3d1a1e47712b0e9b4",
+    "name": "潮汐工坊城邦",
+    "continuity_policy": "generation-ledger"
+  },
+  "simulation": {
+    "engine": "deterministic-rule-system",
+    "llm_calls": 0,
+    "tick_unit": "year",
+    "years": 80,
+    "map_size": 12,
+    "seed": "tide-forge-society-v1",
+    "agent_model": "bounded-utility-memory-state-machine"
+  },
+  "environment": {
+    "climate": "coastal-variable",
+    "water_abundance": 7200,
+    "fertility": 5600,
+    "ore_abundance": 3900,
+    "timber_abundance": 5300,
+    "hazard": 3300
+  },
+  "population": {
+    "initial": 320,
+    "representative_agents": 56,
+    "household_size": [
+      2,
+      6
+    ],
+    "life_expectancy": [
+      48,
+      82
+    ],
+    "mobility": "occupation-and-institution-driven"
+  },
+  "needs": {
+    "nutrition": 1,
+    "shelter": 0.82,
+    "health": 0.78,
+    "knowledge": 0.55,
+    "security": 0.72,
+    "belonging": 0.74,
+    "legitimacy": 0.66
+  },
+  "domains": {
+    "materials": 1800,
+    "mechanics": 1600,
+    "chemistry": 1100,
+    "biology": 1500,
+    "optics": 900,
+    "computation": 700,
+    "organization": 2200,
+    "energy": 1300,
+    "health": 1400
+  },
+  "institutions": [
+    "council",
+    "market",
+    "archive",
+    "workshop",
+    "clinic",
+    "commons"
+  ],
+  "occupations": [
+    "farmer",
+    "builder",
+    "miner",
+    "craftsperson",
+    "healer",
+    "researcher",
+    "merchant",
+    "administrator",
+    "transporter",
+    "teacher"
+  ],
+  "norms": {
+    "knowledge_openness": 6800,
+    "risk_tolerance": 5200,
+    "cooperation": 6500,
+    "inequality": 2400,
+    "centralization": 3800
+  },
+  "resources": [
+    "food",
+    "water",
+    "timber",
+    "ore",
+    "energy",
+    "knowledge",
+    "health",
+    "legitimacy"
+  ],
+  "technology_grammar": {
+    "functions": [
+      "store-energy",
+      "transmit-information",
+      "purify-water",
+      "repair-structure",
+      "coordinate-production",
+      "sense-environment",
+      "move-loads",
+      "stabilize-climate",
+      "preserve-food",
+      "augment-labor",
+      "compute-rules",
+      "heal-ecosystem"
+    ],
+    "principles": [
+      "phase-change",
+      "acoustic-resonance",
+      "capillary-flow",
+      "mechanical-logic",
+      "optical-coding",
+      "microbial-metabolism",
+      "thermal-gradient",
+      "electromagnetic-induction",
+      "feedback-control",
+      "modular-tension",
+      "chemical-adsorption",
+      "distributed-consensus"
+    ],
+    "substrates": [
+      "ceramic",
+      "glass",
+      "copper",
+      "fiber",
+      "timber",
+      "steel",
+      "mycelium",
+      "carbon",
+      "salt-hydrate",
+      "water",
+      "silicon",
+      "living-soil"
+    ],
+    "energy": [
+      "human",
+      "wind",
+      "water",
+      "solar-thermal",
+      "combustion",
+      "chemical",
+      "electrical",
+      "stored-heat"
+    ],
+    "controls": [
+      "manual",
+      "mechanical-governor",
+      "fluidic-logic",
+      "relay",
+      "analog-feedback",
+      "digital-logic",
+      "distributed-protocol"
+    ],
+    "manufacturing": [
+      "craft",
+      "casting",
+      "kiln",
+      "machining",
+      "lamination",
+      "fermentation",
+      "wire-winding",
+      "precision-assembly",
+      "additive-forming",
+      "bioprocess"
+    ]
+  },
+  "player": {
+    "roles": [
+      "citizen",
+      "entrepreneur",
+      "policy-maker",
+      "researcher"
+    ],
+    "participation": "authority-bounded-world-actions"
+  },
+  "epistemic": {
+    "status": "simulation-model",
+    "real_world_validation_required": true,
+    "claims_prohibited": [
+      "guaranteed-future",
+      "proven-feasibility",
+      "scientific-certainty"
+    ]
+  },
+  "genome_root": "f35d3ec4ff3e4a10afccac7f8527024e7c99d41afc68ab39f7bd032ea32de4d4"
+}

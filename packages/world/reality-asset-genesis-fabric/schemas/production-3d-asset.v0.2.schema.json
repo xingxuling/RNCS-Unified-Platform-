@@ -1,0 +1,13 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://taowind.example/schemas/production-3d-asset.v0.2.schema.json",
+  "title":"RAGF Production 3D Asset Family v0.2",
+  "type":"object",
+  "required":["asset_id","variant","mesh","pbr","rig","animations","lod","vsr","rsr"],
+  "properties":{
+    "asset_id":{"type":"string"},"variant":{"enum":["balanced","mobile","cinematic"]},
+    "mesh":{"type":"object","required":["primary","lod1","lod2"]},
+    "pbr":{"type":"object","required":["base_color","normal","orm","emissive"]},
+    "rig":{"type":"string"},"animations":{"type":"string"},"lod":{"type":"string"},"vsr":{"type":"string"},"rsr":{"type":"string"}
+  },"additionalProperties":true
+}

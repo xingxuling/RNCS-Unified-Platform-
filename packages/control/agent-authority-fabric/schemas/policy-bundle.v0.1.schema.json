@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "format",
+    "bundle_id",
+    "policies",
+    "policy_bundle_root"
+  ],
+  "properties": {
+    "format": {
+      "const": "aaf.policy-bundle.v0.1"
+    },
+    "bundle_id": {
+      "type": "string"
+    },
+    "policies": {
+      "type": "array"
+    },
+    "policy_bundle_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

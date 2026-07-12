@@ -1,0 +1,7 @@
+reality AetherEarthLifeCollective {
+  facet collective.population : Number = 100
+  facet collective.small_data : Truth = true
+  facet collective.shared_knowledge : Truth = true
+  facet collective.crystallization_candidate_only : Truth = true
+  facet collective.authority_gate_required : Truth = true
+}

@@ -1,0 +1,17 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {normalizeIntent,deriveGenomeFromIntent,generateVectorConcept,generateSpriteSheet,generateSfx,generateParticlePreset,generateCollisionShape,encodePng,surface,rootHash} from '../src/index.mjs';
+const i=normalizeIntent({description:'创建一名冰属性女剑士，名字叫霜璃，动作敏捷。',constraints:{palette:['#1c4fa3','#f2f6ff','#9ddcff','#17305a'],max_texture_size:512,max_sprite_frames:6,max_particles:96,audio_seconds:.8}}),g=deriveGenomeFromIntent(i);
+test('SVG contains asset name',()=>assert.ok(generateVectorConcept({genome:g,variant:'balanced'}).includes('霜璃')));
+test('SVG contains genome element',()=>assert.ok(generateVectorConcept({genome:g,variant:'balanced'}).includes('ice')));
+test('cinematic SVG has more detail',()=>assert.ok(generateVectorConcept({genome:g,variant:'cinematic'}).length>generateVectorConcept({genome:g,variant:'mobile'}).length));
+test('sprite sheet is PNG',()=>assert.deepEqual([...generateSpriteSheet({genome:g,variant:'balanced'}).png.subarray(0,8)],[137,80,78,71,13,10,26,10]));
+test('mobile sprite sheet has four frames',()=>assert.equal(generateSpriteSheet({genome:g,variant:'mobile'}).metadata.frames.length,4));
+test('balanced sprite sheet respects budget',()=>assert.ok(generateSpriteSheet({genome:g,variant:'balanced'}).metadata.frames.length<=g.budgets.max_sprite_frames));
+test('sprite output is deterministic',()=>assert.equal(rootHash(generateSpriteSheet({genome:g,variant:'balanced'}).png.toString('base64')),rootHash(generateSpriteSheet({genome:g,variant:'balanced'}).png.toString('base64'))));
+test('WAV has RIFF/WAVE header',()=>{const b=generateSfx({genome:g,variant:'balanced'}).wav;assert.equal(b.toString('ascii',0,4),'RIFF');assert.equal(b.toString('ascii',8,12),'WAVE')});
+test('mobile WAV is shorter',()=>assert.ok(generateSfx({genome:g,variant:'mobile'}).wav.length<generateSfx({genome:g,variant:'balanced'}).wav.length));
+test('particle preset is sealed',()=>assert.equal(generateParticlePreset({genome:g,variant:'balanced'}).effect_root.length,64));
+test('mobile particle budget is 32 or less',()=>assert.ok(generateParticlePreset({genome:g,variant:'mobile'}).budget.max_particles<=32));
+test('collision shape is capsule',()=>assert.equal(generateCollisionShape({genome:g,variant:'balanced'}).type,'capsule'));
+test('collision includes attack sensor',()=>assert.ok(generateCollisionShape({genome:g,variant:'balanced'}).semantic_regions.some(x=>x.role==='attack-sensor')));
+test('raw PNG encoder creates valid signature',()=>{const s=surface(2,2,[255,0,0,255]);assert.equal(encodePng(2,2,s.data).subarray(1,4).toString(),'PNG')});

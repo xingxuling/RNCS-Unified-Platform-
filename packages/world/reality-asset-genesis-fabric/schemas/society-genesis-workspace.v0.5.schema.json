@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/ragf/society-genesis-workspace.v0.5.schema.json",
+  "title": "RAGF Society Genesis Workspace v0.5",
+  "type": "object",
+  "required": ["format", "intent", "genome", "social_ecology", "technology_concept_space", "history", "player_participation", "projection_2_5d", "runtime_contract", "workspace_root"],
+  "properties": {
+    "format": {"const": "ragf.society-genesis-workspace.v0.5"},
+    "workspace_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "quality_gates": {
+      "type": "object",
+      "properties": {
+        "llm_calls_zero": {"const": true},
+        "deterministic": {"const": true},
+        "historical_continuity": {"const": true},
+        "human_participation": {"const": true}
+      }
+    }
+  }
+}

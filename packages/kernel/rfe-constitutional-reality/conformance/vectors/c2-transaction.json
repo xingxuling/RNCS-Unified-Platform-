@@ -1,0 +1,850 @@
+{
+  "format": "rfe.conformance.c2.v1",
+  "baseWorld": {
+    "specVersion": "0.1.8",
+    "worldId": "world:door-lab",
+    "branchId": "branch:main",
+    "branchInfo": {
+      "branchId": "branch:main",
+      "parentBranchId": null,
+      "forkRevision": null,
+      "forkRealityHash": null,
+      "forkStateHash": null,
+      "lineage": []
+    },
+    "seed": 42,
+    "time": 0,
+    "revision": 0,
+    "constitution": {
+      "revision": "constitution:0.1",
+      "invariants": [
+        "no-dangling-identities",
+        "authority-required",
+        "atomic-transactions"
+      ]
+    },
+    "identities": [
+      {
+        "id": "object:door",
+        "kind": "door",
+        "continuityPolicy": "persistent",
+        "createdAt": 0,
+        "retiredAt": null,
+        "lineage": [],
+        "metadata": {}
+      },
+      {
+        "id": "object:key",
+        "kind": "key",
+        "continuityPolicy": "persistent",
+        "createdAt": 0,
+        "retiredAt": null,
+        "lineage": [],
+        "metadata": {}
+      },
+      {
+        "id": "place:room-a",
+        "kind": "place",
+        "continuityPolicy": "persistent",
+        "createdAt": 0,
+        "retiredAt": null,
+        "lineage": [],
+        "metadata": {}
+      },
+      {
+        "id": "place:room-b",
+        "kind": "place",
+        "continuityPolicy": "persistent",
+        "createdAt": 0,
+        "retiredAt": null,
+        "lineage": [],
+        "metadata": {}
+      },
+      {
+        "id": "subject:player",
+        "kind": "subject",
+        "continuityPolicy": "persistent",
+        "createdAt": 0,
+        "retiredAt": null,
+        "lineage": [],
+        "metadata": {}
+      }
+    ],
+    "facts": [
+      {
+        "id": "fact:door-integrity:0",
+        "subject": "object:door",
+        "predicate": "integrity",
+        "value": 100,
+        "validFrom": 0,
+        "validTo": null,
+        "source": "source:runtime",
+        "confidence": 1,
+        "visibility": {
+          "type": "public"
+        },
+        "authority": "authority:system"
+      },
+      {
+        "id": "fact:door-state:0",
+        "subject": "object:door",
+        "predicate": "state",
+        "value": "locked",
+        "validFrom": 0,
+        "validTo": null,
+        "source": "source:runtime",
+        "confidence": 1,
+        "visibility": {
+          "type": "public"
+        },
+        "authority": "authority:system"
+      }
+    ],
+    "relations": [
+      {
+        "id": "relation:door-from-room-a",
+        "type": "connects_from",
+        "from": "object:door",
+        "to": "place:room-a",
+        "qualifiers": {},
+        "validFrom": 0,
+        "validTo": null,
+        "authority": "authority:system"
+      },
+      {
+        "id": "relation:door-to-room-b",
+        "type": "connects_to",
+        "from": "object:door",
+        "to": "place:room-b",
+        "qualifiers": {},
+        "validFrom": 0,
+        "validTo": null,
+        "authority": "authority:system"
+      },
+      {
+        "id": "relation:key-unlocks-door",
+        "type": "unlocks",
+        "from": "object:key",
+        "to": "object:door",
+        "qualifiers": {},
+        "validFrom": 0,
+        "validTo": null,
+        "authority": "authority:system"
+      },
+      {
+        "id": "relation:player-location:0",
+        "type": "located_in",
+        "from": "subject:player",
+        "to": "place:room-a",
+        "qualifiers": {},
+        "validFrom": 0,
+        "validTo": null,
+        "authority": "authority:system"
+      },
+      {
+        "id": "relation:player-owns-key",
+        "type": "owns",
+        "from": "subject:player",
+        "to": "object:key",
+        "qualifiers": {},
+        "validFrom": 0,
+        "validTo": null,
+        "authority": "authority:system"
+      }
+    ],
+    "constraints": [
+      {
+        "id": "constraint:door-state-valid",
+        "scope": "world",
+        "description": "Door state must be locked, unlocked, or open",
+        "severity": "hard",
+        "when": {
+          "op": "literal",
+          "value": true
+        },
+        "assert": {
+          "op": "or",
+          "values": [
+            {
+              "op": "eq",
+              "left": {
+                "op": "fact",
+                "subject": "object:door",
+                "predicate": "state"
+              },
+              "right": {
+                "op": "literal",
+                "value": "locked"
+              }
+            },
+            {
+              "op": "eq",
+              "left": {
+                "op": "fact",
+                "subject": "object:door",
+                "predicate": "state"
+              },
+              "right": {
+                "op": "literal",
+                "value": "unlocked"
+              }
+            },
+            {
+              "op": "eq",
+              "left": {
+                "op": "fact",
+                "subject": "object:door",
+                "predicate": "state"
+              },
+              "right": {
+                "op": "literal",
+                "value": "open"
+              }
+            }
+          ]
+        },
+        "repairCandidates": [
+          {
+            "id": "repair:door-state:locked",
+            "description": "Restore the door to a valid locked state",
+            "operations": [
+              {
+                "op": "setFact",
+                "fact": {
+                  "subject": "object:door",
+                  "predicate": "state",
+                  "value": "locked"
+                }
+              }
+            ],
+            "estimatedCost": 1,
+            "estimatedRisk": "low"
+          }
+        ],
+        "tags": [],
+        "dependencies": [
+          "fact:*:state",
+          "fact:object:door:state"
+        ]
+      }
+    ],
+    "affordanceRules": [
+      {
+        "id": "affordance:inspect-door",
+        "action": "inspect",
+        "targetKind": "door",
+        "description": "Inspect the door",
+        "when": {
+          "op": "literal",
+          "value": true
+        },
+        "cost": {},
+        "risk": {},
+        "effects": [],
+        "dependencies": []
+      },
+      {
+        "id": "affordance:open-door",
+        "action": "open",
+        "targetKind": "door",
+        "description": "Open an unlocked door",
+        "when": {
+          "op": "eq",
+          "left": {
+            "op": "fact",
+            "subject": "$target",
+            "predicate": "state"
+          },
+          "right": {
+            "op": "literal",
+            "value": "unlocked"
+          }
+        },
+        "cost": {},
+        "risk": {},
+        "effects": [
+          {
+            "op": "setFact",
+            "fact": {
+              "subject": "$target",
+              "predicate": "state",
+              "value": "open"
+            }
+          }
+        ],
+        "dependencies": [
+          "fact:*:state"
+        ]
+      },
+      {
+        "id": "affordance:pass-door",
+        "action": "pass",
+        "targetKind": "door",
+        "description": "Pass through an open door",
+        "when": {
+          "op": "eq",
+          "left": {
+            "op": "fact",
+            "subject": "$target",
+            "predicate": "state"
+          },
+          "right": {
+            "op": "literal",
+            "value": "open"
+          }
+        },
+        "cost": {},
+        "risk": {},
+        "effects": [
+          {
+            "op": "removeRelation",
+            "match": {
+              "type": "located_in",
+              "from": "$actor",
+              "to": "place:room-a"
+            }
+          },
+          {
+            "op": "addRelation",
+            "relation": {
+              "type": "located_in",
+              "from": "$actor",
+              "to": "place:room-b"
+            }
+          }
+        ],
+        "dependencies": [
+          "fact:*:state"
+        ]
+      },
+      {
+        "id": "affordance:unlock-door",
+        "action": "unlock",
+        "targetKind": "door",
+        "description": "Unlock the door with an owned matching key",
+        "when": {
+          "op": "and",
+          "values": [
+            {
+              "op": "relationPath",
+              "from": "$actor",
+              "to": "$target",
+              "types": [
+                "owns",
+                "unlocks"
+              ]
+            },
+            {
+              "op": "eq",
+              "left": {
+                "op": "fact",
+                "subject": "$target",
+                "predicate": "state"
+              },
+              "right": {
+                "op": "literal",
+                "value": "locked"
+              }
+            }
+          ]
+        },
+        "cost": {},
+        "risk": {},
+        "effects": [
+          {
+            "op": "setFact",
+            "fact": {
+              "subject": "$target",
+              "predicate": "state",
+              "value": "unlocked"
+            }
+          }
+        ],
+        "dependencies": [
+          "fact:*:state",
+          "relationType:owns",
+          "relationType:unlocks"
+        ]
+      }
+    ],
+    "events": []
+  },
+  "transaction": {
+    "id": "event:conformance:unlock",
+    "authority": "authority:conformance",
+    "operations": [
+      {
+        "op": "setFact",
+        "fact": {
+          "subject": "object:door",
+          "predicate": "state",
+          "value": "unlocked"
+        }
+      }
+    ],
+    "metadata": {
+      "conformance": "C2"
+    }
+  },
+  "expected": {
+    "event": {
+      "id": "event:conformance:unlock",
+      "type": "transaction.committed",
+      "sequence": 1,
+      "branchId": "branch:main",
+      "logicalTime": 0,
+      "revision": 1,
+      "authority": "authority:conformance",
+      "operations": [
+        {
+          "op": "setFact",
+          "fact": {
+            "id": "fact:3",
+            "subject": "object:door",
+            "predicate": "state",
+            "value": "unlocked",
+            "validFrom": 0,
+            "validTo": null,
+            "source": "source:runtime",
+            "confidence": 1,
+            "visibility": {
+              "type": "public"
+            },
+            "authority": "authority:system"
+          }
+        }
+      ],
+      "inverseOperations": [
+        {
+          "op": "restoreFactDelta",
+          "subject": "object:door",
+          "predicate": "state",
+          "removeIds": [
+            "fact:3"
+          ],
+          "restore": [
+            {
+              "id": "fact:door-state:0",
+              "validTo": null
+            }
+          ]
+        }
+      ],
+      "env": {},
+      "hashMode": "proof-native-v1",
+      "beforeHash": "8b8bef1faac8a5f17517e6707b4fa257c2b0b713d4dfe506733a15b70b6f1985",
+      "afterHash": "dd670b444a785ffcbdc78d5b3cc53b88b9e62b8bf673dcaecae6741b2ae15b12",
+      "beforeProofRoot": "8b8bef1faac8a5f17517e6707b4fa257c2b0b713d4dfe506733a15b70b6f1985",
+      "afterProofRoot": "dd670b444a785ffcbdc78d5b3cc53b88b9e62b8bf673dcaecae6741b2ae15b12",
+      "previousEventHash": null,
+      "eventHash": "dc5dec22a026e910020618e6bf0b682144b0324c151a14aea41c023e5d388020",
+      "affectedRules": {
+        "touched": [
+          "fact:*:state",
+          "fact:object:door:state",
+          "identity:object:door"
+        ],
+        "constraints": [
+          "constraint:door-state-valid"
+        ],
+        "affordances": [
+          "affordance:open-door",
+          "affordance:pass-door",
+          "affordance:unlock-door"
+        ]
+      },
+      "metadata": {
+        "conformance": "C2"
+      }
+    },
+    "eventAuthoritativeHash": "dc5dec22a026e910020618e6bf0b682144b0324c151a14aea41c023e5d388020",
+    "afterWorld": {
+      "specVersion": "0.1.8",
+      "worldId": "world:door-lab",
+      "branchId": "branch:main",
+      "branchInfo": {
+        "branchId": "branch:main",
+        "parentBranchId": null,
+        "forkRevision": null,
+        "forkRealityHash": null,
+        "forkStateHash": null,
+        "lineage": []
+      },
+      "seed": 42,
+      "time": 0,
+      "revision": 1,
+      "constitution": {
+        "revision": "constitution:0.1",
+        "invariants": [
+          "no-dangling-identities",
+          "authority-required",
+          "atomic-transactions"
+        ]
+      },
+      "identities": [
+        {
+          "id": "object:door",
+          "kind": "door",
+          "continuityPolicy": "persistent",
+          "createdAt": 0,
+          "retiredAt": null,
+          "lineage": [],
+          "metadata": {}
+        },
+        {
+          "id": "object:key",
+          "kind": "key",
+          "continuityPolicy": "persistent",
+          "createdAt": 0,
+          "retiredAt": null,
+          "lineage": [],
+          "metadata": {}
+        },
+        {
+          "id": "place:room-a",
+          "kind": "place",
+          "continuityPolicy": "persistent",
+          "createdAt": 0,
+          "retiredAt": null,
+          "lineage": [],
+          "metadata": {}
+        },
+        {
+          "id": "place:room-b",
+          "kind": "place",
+          "continuityPolicy": "persistent",
+          "createdAt": 0,
+          "retiredAt": null,
+          "lineage": [],
+          "metadata": {}
+        },
+        {
+          "id": "subject:player",
+          "kind": "subject",
+          "continuityPolicy": "persistent",
+          "createdAt": 0,
+          "retiredAt": null,
+          "lineage": [],
+          "metadata": {}
+        }
+      ],
+      "facts": [
+        {
+          "id": "fact:3",
+          "subject": "object:door",
+          "predicate": "state",
+          "value": "unlocked",
+          "validFrom": 0,
+          "validTo": null,
+          "source": "source:runtime",
+          "confidence": 1,
+          "visibility": {
+            "type": "public"
+          },
+          "authority": "authority:system"
+        },
+        {
+          "id": "fact:door-integrity:0",
+          "subject": "object:door",
+          "predicate": "integrity",
+          "value": 100,
+          "validFrom": 0,
+          "validTo": null,
+          "source": "source:runtime",
+          "confidence": 1,
+          "visibility": {
+            "type": "public"
+          },
+          "authority": "authority:system"
+        },
+        {
+          "id": "fact:door-state:0",
+          "subject": "object:door",
+          "predicate": "state",
+          "value": "locked",
+          "validFrom": 0,
+          "validTo": 0,
+          "source": "source:runtime",
+          "confidence": 1,
+          "visibility": {
+            "type": "public"
+          },
+          "authority": "authority:system"
+        }
+      ],
+      "relations": [
+        {
+          "id": "relation:door-from-room-a",
+          "type": "connects_from",
+          "from": "object:door",
+          "to": "place:room-a",
+          "qualifiers": {},
+          "validFrom": 0,
+          "validTo": null,
+          "authority": "authority:system"
+        },
+        {
+          "id": "relation:door-to-room-b",
+          "type": "connects_to",
+          "from": "object:door",
+          "to": "place:room-b",
+          "qualifiers": {},
+          "validFrom": 0,
+          "validTo": null,
+          "authority": "authority:system"
+        },
+        {
+          "id": "relation:key-unlocks-door",
+          "type": "unlocks",
+          "from": "object:key",
+          "to": "object:door",
+          "qualifiers": {},
+          "validFrom": 0,
+          "validTo": null,
+          "authority": "authority:system"
+        },
+        {
+          "id": "relation:player-location:0",
+          "type": "located_in",
+          "from": "subject:player",
+          "to": "place:room-a",
+          "qualifiers": {},
+          "validFrom": 0,
+          "validTo": null,
+          "authority": "authority:system"
+        },
+        {
+          "id": "relation:player-owns-key",
+          "type": "owns",
+          "from": "subject:player",
+          "to": "object:key",
+          "qualifiers": {},
+          "validFrom": 0,
+          "validTo": null,
+          "authority": "authority:system"
+        }
+      ],
+      "constraints": [
+        {
+          "id": "constraint:door-state-valid",
+          "scope": "world",
+          "description": "Door state must be locked, unlocked, or open",
+          "severity": "hard",
+          "when": {
+            "op": "literal",
+            "value": true
+          },
+          "assert": {
+            "op": "or",
+            "values": [
+              {
+                "op": "eq",
+                "left": {
+                  "op": "fact",
+                  "subject": "object:door",
+                  "predicate": "state"
+                },
+                "right": {
+                  "op": "literal",
+                  "value": "locked"
+                }
+              },
+              {
+                "op": "eq",
+                "left": {
+                  "op": "fact",
+                  "subject": "object:door",
+                  "predicate": "state"
+                },
+                "right": {
+                  "op": "literal",
+                  "value": "unlocked"
+                }
+              },
+              {
+                "op": "eq",
+                "left": {
+                  "op": "fact",
+                  "subject": "object:door",
+                  "predicate": "state"
+                },
+                "right": {
+                  "op": "literal",
+                  "value": "open"
+                }
+              }
+            ]
+          },
+          "repairCandidates": [
+            {
+              "id": "repair:door-state:locked",
+              "description": "Restore the door to a valid locked state",
+              "operations": [
+                {
+                  "op": "setFact",
+                  "fact": {
+                    "subject": "object:door",
+                    "predicate": "state",
+                    "value": "locked"
+                  }
+                }
+              ],
+              "estimatedCost": 1,
+              "estimatedRisk": "low"
+            }
+          ],
+          "tags": [],
+          "dependencies": [
+            "fact:*:state",
+            "fact:object:door:state"
+          ]
+        }
+      ],
+      "affordanceRules": [
+        {
+          "id": "affordance:inspect-door",
+          "action": "inspect",
+          "targetKind": "door",
+          "description": "Inspect the door",
+          "when": {
+            "op": "literal",
+            "value": true
+          },
+          "cost": {},
+          "risk": {},
+          "effects": [],
+          "dependencies": []
+        },
+        {
+          "id": "affordance:open-door",
+          "action": "open",
+          "targetKind": "door",
+          "description": "Open an unlocked door",
+          "when": {
+            "op": "eq",
+            "left": {
+              "op": "fact",
+              "subject": "$target",
+              "predicate": "state"
+            },
+            "right": {
+              "op": "literal",
+              "value": "unlocked"
+            }
+          },
+          "cost": {},
+          "risk": {},
+          "effects": [
+            {
+              "op": "setFact",
+              "fact": {
+                "subject": "$target",
+                "predicate": "state",
+                "value": "open"
+              }
+            }
+          ],
+          "dependencies": [
+            "fact:*:state"
+          ]
+        },
+        {
+          "id": "affordance:pass-door",
+          "action": "pass",
+          "targetKind": "door",
+          "description": "Pass through an open door",
+          "when": {
+            "op": "eq",
+            "left": {
+              "op": "fact",
+              "subject": "$target",
+              "predicate": "state"
+            },
+            "right": {
+              "op": "literal",
+              "value": "open"
+            }
+          },
+          "cost": {},
+          "risk": {},
+          "effects": [
+            {
+              "op": "removeRelation",
+              "match": {
+                "type": "located_in",
+                "from": "$actor",
+                "to": "place:room-a"
+              }
+            },
+            {
+              "op": "addRelation",
+              "relation": {
+                "type": "located_in",
+                "from": "$actor",
+                "to": "place:room-b"
+              }
+            }
+          ],
+          "dependencies": [
+            "fact:*:state"
+          ]
+        },
+        {
+          "id": "affordance:unlock-door",
+          "action": "unlock",
+          "targetKind": "door",
+          "description": "Unlock the door with an owned matching key",
+          "when": {
+            "op": "and",
+            "values": [
+              {
+                "op": "relationPath",
+                "from": "$actor",
+                "to": "$target",
+                "types": [
+                  "owns",
+                  "unlocks"
+                ]
+              },
+              {
+                "op": "eq",
+                "left": {
+                  "op": "fact",
+                  "subject": "$target",
+                  "predicate": "state"
+                },
+                "right": {
+                  "op": "literal",
+                  "value": "locked"
+                }
+              }
+            ]
+          },
+          "cost": {},
+          "risk": {},
+          "effects": [
+            {
+              "op": "setFact",
+              "fact": {
+                "subject": "$target",
+                "predicate": "state",
+                "value": "unlocked"
+              }
+            }
+          ],
+          "dependencies": [
+            "fact:*:state",
+            "relationType:owns",
+            "relationType:unlocks"
+          ]
+        }
+      ],
+      "events": []
+    },
+    "revision": 1,
+    "logicalTime": 0,
+    "doorState": "unlocked",
+    "realityHash": "e2980e71c715294bd6dfd89cc6788ed52d9e4d2247d0821bd84fcb3f21811ca6",
+    "proofRoot": "dd670b444a785ffcbdc78d5b3cc53b88b9e62b8bf673dcaecae6741b2ae15b12"
+  }
+}

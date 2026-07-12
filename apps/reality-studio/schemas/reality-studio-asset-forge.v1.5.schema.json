@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/reality-studio-asset-forge.v1.5.schema.json",
+  "title": "Reality Studio Asset Forge Session v1.5",
+  "type": "object",
+  "required": [
+    "format",
+    "version",
+    "forge_id",
+    "status",
+    "production",
+    "project",
+    "forge_root"
+  ],
+  "properties": {
+    "format": {
+      "const": "reality-studio.asset-forge-session.v1.5"
+    },
+    "version": {
+      "const": "1.5.0-alpha.1"
+    },
+    "forge_id": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "new",
+        "review",
+        "accepted"
+      ]
+    },
+    "production": {
+      "type": "object"
+    },
+    "preview": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "accepted": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "project": {
+      "type": "object",
+      "required": [
+        "project_root",
+        "asset_count",
+        "scene_node_count",
+        "spatial_body_count"
+      ]
+    },
+    "event_tail": {
+      "type": "array"
+    },
+    "forge_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "additionalProperties": true
+}

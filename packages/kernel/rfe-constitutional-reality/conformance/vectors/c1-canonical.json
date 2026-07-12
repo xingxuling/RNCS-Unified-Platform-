@@ -1,0 +1,85 @@
+{
+  "format": "rfe.conformance.c1.v1",
+  "algorithm": {
+    "canonical": "rfe-stable-json-v1",
+    "digest": "sha256"
+  },
+  "cases": [
+    {
+      "id": "null",
+      "value": null,
+      "canonical": "null",
+      "sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+    },
+    {
+      "id": "boolean",
+      "value": true,
+      "canonical": "true",
+      "sha256": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b"
+    },
+    {
+      "id": "integer",
+      "value": 42,
+      "canonical": "42",
+      "sha256": "73475cb40a568e8da8a045ced110137e159f890ac4da883b6b17dc651b3a8049"
+    },
+    {
+      "id": "negative-zero",
+      "value": 0,
+      "canonical": "0",
+      "sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+    },
+    {
+      "id": "float",
+      "value": 12.5,
+      "canonical": "12.5",
+      "sha256": "b902cc4550838229a710bfec4c38cbc7eb11082367a409df9135e7f007a96bda"
+    },
+    {
+      "id": "escaped-string",
+      "value": "line\n\"quote\"\\slash\tend",
+      "canonical": "\"line\\n\\\"quote\\\"\\\\slash\\tend\"",
+      "sha256": "80cfaf8893327a1077d7981bf24bb19f22f03b112dd0f3fbd795f3e52ba775c3"
+    },
+    {
+      "id": "unicode",
+      "value": "现实织构🌌",
+      "canonical": "\"现实织构🌌\"",
+      "sha256": "f169dd39942d68884f30d880e3324aba53102daf469572762f193d26cc3e4e3a"
+    },
+    {
+      "id": "array",
+      "value": [
+        3,
+        "two",
+        false,
+        null,
+        {
+          "z": 1,
+          "a": 2
+        }
+      ],
+      "canonical": "[3,\"two\",false,null,{\"a\":2,\"z\":1}]",
+      "sha256": "fbc31676255257ff0024ac6db4d7d586c23af27c534f560f6672b6e6703ab24c"
+    },
+    {
+      "id": "object-order",
+      "value": {
+        "z": 3,
+        "a": 1,
+        "nested": {
+          "y": 2,
+          "x": 1
+        },
+        "list": [
+          {
+            "b": 2,
+            "a": 1
+          }
+        ]
+      },
+      "canonical": "{\"a\":1,\"list\":[{\"a\":1,\"b\":2}],\"nested\":{\"x\":1,\"y\":2},\"z\":3}",
+      "sha256": "b7281b5f0860a5663bf965be5331c018b856d688b90dfd806b4e9f3a0b381c44"
+    }
+  ]
+}

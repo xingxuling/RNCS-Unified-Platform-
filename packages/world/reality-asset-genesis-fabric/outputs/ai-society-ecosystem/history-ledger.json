@@ -1,0 +1,4553 @@
+{
+  "format": "ragf.society-history.v0.5",
+  "version": "0.5.0-alpha.1",
+  "world_id": "world:5c46cbb3d1a1e47712b0e9b4",
+  "genome_root": "f35d3ec4ff3e4a10afccac7f8527024e7c99d41afc68ab39f7bd032ea32de4d4",
+  "ecology_root": "5aeef919058a3d4125ecb04a5dbc84424b6287a489b08b747e1b868bec95538f",
+  "concept_space_root": "fa9d540c33fb3f512ff080625b7106ba6f41d0656678ed2059036eda6c0080db",
+  "simulation": {
+    "engine": "deterministic-rule-system",
+    "llm_calls": 0,
+    "seed": "tide-forge-society-v1",
+    "years": 80
+  },
+  "interventions": [
+    {
+      "year": 3,
+      "type": "open-knowledge-commons",
+      "value": 1200
+    },
+    {
+      "year": 5,
+      "type": "allocate-research",
+      "value": 0.22
+    },
+    {
+      "year": 9,
+      "type": "found-institution",
+      "kind": "lab",
+      "capacity": 42
+    },
+    {
+      "year": 14,
+      "type": "sponsor-prototype",
+      "value": 0.24
+    }
+  ],
+  "ledger": [
+    {
+      "year": 1,
+      "state": {
+        "population": 323,
+        "resources": {
+          "food": 463.37,
+          "water": 638.91,
+          "timber": 432.03,
+          "ore": 224.93,
+          "energy": 226.85,
+          "knowledge": 114.28,
+          "health": 7248,
+          "legitimacy": 6520
+        },
+        "knowledge": {
+          "materials": 1802,
+          "mechanics": 1602,
+          "chemistry": 1107,
+          "biology": 1503,
+          "optics": 905,
+          "computation": 707,
+          "organization": 2203,
+          "energy": 1303,
+          "health": 1403
+        },
+        "policies": {
+          "knowledge_openness": 6800,
+          "research_share": 0.12,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": []
+      },
+      "events": [],
+      "event_root": "0b17ddf396d9f08ca30b3ac4ce83424b27d2102e5fdd74762b03a12e81f1dae9"
+    },
+    {
+      "year": 2,
+      "state": {
+        "population": 326,
+        "resources": {
+          "food": 467.89,
+          "water": 702.41,
+          "timber": 442.18,
+          "ore": 231.81,
+          "energy": 274.14,
+          "knowledge": 118.6,
+          "health": 7288,
+          "legitimacy": 6540
+        },
+        "knowledge": {
+          "materials": 1804,
+          "mechanics": 1605,
+          "chemistry": 1115,
+          "biology": 1506,
+          "optics": 911,
+          "computation": 713,
+          "organization": 2206,
+          "energy": 1306,
+          "health": 1406
+        },
+        "policies": {
+          "knowledge_openness": 6800,
+          "research_share": 0.12,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": []
+      },
+      "events": [],
+      "event_root": "1bc09fabc84f44879fc7a9b0f478a914fa8b5a4af9de43f154ca2d3ae3118860"
+    },
+    {
+      "year": 3,
+      "state": {
+        "population": 329,
+        "resources": {
+          "food": 464.91,
+          "water": 766.51,
+          "timber": 454.69,
+          "ore": 239.33,
+          "energy": 321.86,
+          "knowledge": 123.31,
+          "health": 7329,
+          "legitimacy": 6562
+        },
+        "knowledge": {
+          "materials": 1806,
+          "mechanics": 1608,
+          "chemistry": 1123,
+          "biology": 1509,
+          "optics": 919,
+          "computation": 720,
+          "organization": 2208,
+          "energy": 1308,
+          "health": 1408
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.12,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": []
+      },
+      "events": [
+        {
+          "type": "player-policy",
+          "code": "KNOWLEDGE_OPENED",
+          "detail": {
+            "value": 8000
+          }
+        }
+      ],
+      "event_root": "36c5d2dcb9aa658f87c210bfd82d62bdd4c0b5b43842853d984ac183dd4d5df4"
+    },
+    {
+      "year": 4,
+      "state": {
+        "population": 332,
+        "resources": {
+          "food": 460.59,
+          "water": 831.19,
+          "timber": 465.33,
+          "ore": 246.45,
+          "energy": 370.03,
+          "knowledge": 128.05,
+          "health": 7389,
+          "legitimacy": 6584
+        },
+        "knowledge": {
+          "materials": 1809,
+          "mechanics": 1611,
+          "chemistry": 1130,
+          "biology": 1512,
+          "optics": 926,
+          "computation": 726,
+          "organization": 2210,
+          "energy": 1310,
+          "health": 1410
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.12,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": []
+      },
+      "events": [],
+      "event_root": "734e466533ccd1bbc8fb8d596dd7c1e7e5db73fad3b8db8d3bcd44b93645d099"
+    },
+    {
+      "year": 5,
+      "state": {
+        "population": 335,
+        "resources": {
+          "food": 468.52,
+          "water": 896.46,
+          "timber": 475.5,
+          "ore": 253.15,
+          "energy": 418.63,
+          "knowledge": 136.84,
+          "health": 7442,
+          "legitimacy": 6606
+        },
+        "knowledge": {
+          "materials": 1814,
+          "mechanics": 1615,
+          "chemistry": 1141,
+          "biology": 1516,
+          "optics": 938,
+          "computation": 740,
+          "organization": 2215,
+          "energy": 1315,
+          "health": 1416
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": []
+      },
+      "events": [
+        {
+          "type": "player-policy",
+          "code": "RESEARCH_REALLOCATED",
+          "detail": {
+            "value": 0.22
+          }
+        },
+        {
+          "type": "technology",
+          "code": "CONCEPT_FORMED",
+          "concept_id": "technology-concept:6def80101f16a4a759beb141",
+          "name": "光码环境哨站",
+          "progress": 0.2996
+        }
+      ],
+      "event_root": "ce031050fbeb39ca6e17b9c394f9dc651252f0aedaa4901ed4868b2867ba4ffb"
+    },
+    {
+      "year": 6,
+      "state": {
+        "population": 338,
+        "resources": {
+          "food": 464.36,
+          "water": 962.32,
+          "timber": 485.33,
+          "ore": 258.28,
+          "energy": 467.68,
+          "knowledge": 145.7,
+          "health": 7495,
+          "legitimacy": 6628
+        },
+        "knowledge": {
+          "materials": 1819,
+          "mechanics": 1620,
+          "chemistry": 1154,
+          "biology": 1520,
+          "optics": 953,
+          "computation": 756,
+          "organization": 2220,
+          "energy": 1320,
+          "health": 1420
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": []
+      },
+      "events": [],
+      "event_root": "86197acd570c939368b70bfd96ce266f799650ab9cc50529a570494780e30430"
+    },
+    {
+      "year": 7,
+      "state": {
+        "population": 341,
+        "resources": {
+          "food": 467.34,
+          "water": 1028.77,
+          "timber": 497.35,
+          "ore": 265.92,
+          "energy": 517.16,
+          "knowledge": 154.64,
+          "health": 7533,
+          "legitimacy": 6650
+        },
+        "knowledge": {
+          "materials": 1824,
+          "mechanics": 1624,
+          "chemistry": 1169,
+          "biology": 1526,
+          "optics": 967,
+          "computation": 772,
+          "organization": 2225,
+          "energy": 1325,
+          "health": 1426
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": []
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "PRINCIPLE_DEMONSTRATED",
+          "concept_id": "technology-concept:6def80101f16a4a759beb141",
+          "name": "光码环境哨站",
+          "progress": 0.5229
+        },
+        {
+          "type": "technology",
+          "code": "CONCEPT_FORMED",
+          "concept_id": "technology-concept:198955a1a86d525184cca7b9",
+          "name": "水合盐电磁感应自修复结构系统",
+          "progress": 0.272
+        }
+      ],
+      "event_root": "62b0be2303e166830a040de3191851d1ba50f4fe964390c37003edc6509dc355"
+    },
+    {
+      "year": 8,
+      "state": {
+        "population": 344,
+        "resources": {
+          "food": 477.87,
+          "water": 1095.81,
+          "timber": 510.39,
+          "ore": 273.02,
+          "energy": 567.08,
+          "knowledge": 163.66,
+          "health": 7570,
+          "legitimacy": 6672
+        },
+        "knowledge": {
+          "materials": 1829,
+          "mechanics": 1628,
+          "chemistry": 1184,
+          "biology": 1530,
+          "optics": 979,
+          "computation": 785,
+          "organization": 2229,
+          "energy": 1331,
+          "health": 1431
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": []
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "CONCEPT_FORMED",
+          "concept_id": "technology-concept:b7f0ab814d4bce1b2288eaa9",
+          "name": "玻璃模块张力协作生产系统",
+          "progress": 0.305
+        }
+      ],
+      "event_root": "ef41301624153d80253097e219052fc14c42be0f421109b53a35f49c2b2aa178"
+    },
+    {
+      "year": 9,
+      "state": {
+        "population": 347,
+        "resources": {
+          "food": 461.64,
+          "water": 1163.44,
+          "timber": 522.98,
+          "ore": 280.67,
+          "energy": 617.44,
+          "knowledge": 172.88,
+          "health": 7625,
+          "legitimacy": 6694
+        },
+        "knowledge": {
+          "materials": 1834,
+          "mechanics": 1632,
+          "chemistry": 1198,
+          "biology": 1535,
+          "optics": 991,
+          "computation": 801,
+          "organization": 2233,
+          "energy": 1336,
+          "health": 1437
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": []
+      },
+      "events": [
+        {
+          "type": "player-institution",
+          "code": "INSTITUTION_FOUNDED",
+          "detail": {
+            "institution_id": "institution:player:lab"
+          }
+        }
+      ],
+      "event_root": "bcf7674266fb1b28d46b67fd4b646563b8915502cace4cf8ae6be60a124d1b84"
+    },
+    {
+      "year": 10,
+      "state": {
+        "population": 350,
+        "resources": {
+          "food": 491,
+          "water": 1231.66,
+          "timber": 536.59,
+          "ore": 286.68,
+          "energy": 668.24,
+          "knowledge": 182.18,
+          "health": 7675,
+          "legitimacy": 6716
+        },
+        "knowledge": {
+          "materials": 1840,
+          "mechanics": 1638,
+          "chemistry": 1209,
+          "biology": 1541,
+          "optics": 1005,
+          "computation": 814,
+          "organization": 2239,
+          "energy": 1340,
+          "health": 1442
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": []
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "PROTOTYPE_READY",
+          "concept_id": "technology-concept:6def80101f16a4a759beb141",
+          "name": "光码环境哨站",
+          "progress": 0.8406
+        },
+        {
+          "type": "technology",
+          "code": "EXPERIMENT_FAILED",
+          "concept_id": "technology-concept:6def80101f16a4a759beb141",
+          "name": "光码环境哨站"
+        },
+        {
+          "type": "technology",
+          "code": "CONCEPT_FORMED",
+          "concept_id": "technology-concept:838f563709e679c927913b09",
+          "name": "分布式机械逻辑工坊",
+          "progress": 0.2727
+        },
+        {
+          "type": "technology",
+          "code": "PRINCIPLE_DEMONSTRATED",
+          "concept_id": "technology-concept:198955a1a86d525184cca7b9",
+          "name": "水合盐电磁感应自修复结构系统",
+          "progress": 0.5649
+        },
+        {
+          "type": "technology",
+          "code": "EXPERIMENT_FAILED",
+          "concept_id": "technology-concept:198955a1a86d525184cca7b9",
+          "name": "水合盐电磁感应自修复结构系统"
+        },
+        {
+          "type": "history",
+          "code": "DECADE_RECORDED",
+          "detail": {
+            "population": 350,
+            "adopted": 0
+          }
+        }
+      ],
+      "event_root": "a5f587a5f0e707b3088ea2d615c545074ef91d38e723491afd2125402dc37c42"
+    },
+    {
+      "year": 11,
+      "state": {
+        "population": 353,
+        "resources": {
+          "food": 516.35,
+          "water": 1300.47,
+          "timber": 548.24,
+          "ore": 294.46,
+          "energy": 719.48,
+          "knowledge": 191.57,
+          "health": 7721,
+          "legitimacy": 6738
+        },
+        "knowledge": {
+          "materials": 1846,
+          "mechanics": 1643,
+          "chemistry": 1226,
+          "biology": 1545,
+          "optics": 1022,
+          "computation": 828,
+          "organization": 2245,
+          "energy": 1345,
+          "health": 1447
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": []
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "PRINCIPLE_DEMONSTRATED",
+          "concept_id": "technology-concept:b7f0ab814d4bce1b2288eaa9",
+          "name": "玻璃模块张力协作生产系统",
+          "progress": 0.545
+        }
+      ],
+      "event_root": "19df3d3ee45ca34184b597c0ee89e52a0192125ab2fd5f2b477ba823fd616094"
+    },
+    {
+      "year": 12,
+      "state": {
+        "population": 356,
+        "resources": {
+          "food": 503.35,
+          "water": 1369.87,
+          "timber": 558.83,
+          "ore": 301.1,
+          "energy": 771.16,
+          "knowledge": 201.03,
+          "health": 7769,
+          "legitimacy": 6760
+        },
+        "knowledge": {
+          "materials": 1852,
+          "mechanics": 1647,
+          "chemistry": 1238,
+          "biology": 1549,
+          "optics": 1036,
+          "computation": 842,
+          "organization": 2250,
+          "energy": 1350,
+          "health": 1452
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": []
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "EXPERIMENT_FAILED",
+          "concept_id": "technology-concept:6def80101f16a4a759beb141",
+          "name": "光码环境哨站"
+        },
+        {
+          "type": "technology",
+          "code": "CONCEPT_FORMED",
+          "concept_id": "technology-concept:98ef810222c4bcec476ceb34",
+          "name": "可验证协作账册",
+          "progress": 0.3107
+        }
+      ],
+      "event_root": "30f27c5c389bf07eea44ad9ee5b08ae48d2c10aba285ce5a159eea66551e8984"
+    },
+    {
+      "year": 13,
+      "state": {
+        "population": 359,
+        "resources": {
+          "food": 478.65,
+          "water": 1439.86,
+          "timber": 569.75,
+          "ore": 307.96,
+          "energy": 823.28,
+          "knowledge": 210.57,
+          "health": 7807,
+          "legitimacy": 6782
+        },
+        "knowledge": {
+          "materials": 1857,
+          "mechanics": 1653,
+          "chemistry": 1251,
+          "biology": 1555,
+          "optics": 1048,
+          "computation": 859,
+          "organization": 2256,
+          "energy": 1355,
+          "health": 1458
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": []
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "PRINCIPLE_DEMONSTRATED",
+          "concept_id": "technology-concept:838f563709e679c927913b09",
+          "name": "分布式机械逻辑工坊",
+          "progress": 0.5416
+        },
+        {
+          "type": "technology",
+          "code": "EXPERIMENT_FAILED",
+          "concept_id": "technology-concept:b7f0ab814d4bce1b2288eaa9",
+          "name": "玻璃模块张力协作生产系统"
+        },
+        {
+          "type": "technology",
+          "code": "CONCEPT_FORMED",
+          "concept_id": "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "name": "流体逻辑助力外骨架",
+          "progress": 0.2803
+        }
+      ],
+      "event_root": "73611e10f5f2edeb707bd72043f252429f4e5cefb9f84d5541a41296621a9a4c"
+    },
+    {
+      "year": 14,
+      "state": {
+        "population": 362,
+        "resources": {
+          "food": 487.94,
+          "water": 1510.44,
+          "timber": 581.47,
+          "ore": 313.77,
+          "energy": 875.84,
+          "knowledge": 220.19,
+          "health": 7851,
+          "legitimacy": 6804
+        },
+        "knowledge": {
+          "materials": 1861,
+          "mechanics": 1657,
+          "chemistry": 1268,
+          "biology": 1560,
+          "optics": 1065,
+          "computation": 876,
+          "organization": 2261,
+          "energy": 1360,
+          "health": 1464
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0.22
+        },
+        "adopted": []
+      },
+      "events": [
+        {
+          "type": "player-project",
+          "code": "PROTOTYPE_SPONSORED",
+          "detail": {
+            "concept_id": null
+          }
+        },
+        {
+          "type": "technology",
+          "code": "PRINCIPLE_DEMONSTRATED",
+          "concept_id": "technology-concept:98ef810222c4bcec476ceb34",
+          "name": "可验证协作账册",
+          "progress": 0.5276
+        },
+        {
+          "type": "technology",
+          "code": "EXPERIMENT_FAILED",
+          "concept_id": "technology-concept:b7f0ab814d4bce1b2288eaa9",
+          "name": "玻璃模块张力协作生产系统"
+        },
+        {
+          "type": "technology",
+          "code": "PROTOTYPE_READY",
+          "concept_id": "technology-concept:198955a1a86d525184cca7b9",
+          "name": "水合盐电磁感应自修复结构系统",
+          "progress": 0.8092
+        }
+      ],
+      "event_root": "96d38cc4bd8adff68f34081bca7f901e38adddf523bc37d0b31034cbb982ce5e"
+    },
+    {
+      "year": 15,
+      "state": {
+        "population": 365,
+        "resources": {
+          "food": 513.82,
+          "water": 1581.61,
+          "timber": 592.47,
+          "ore": 322.12,
+          "energy": 928.84,
+          "knowledge": 237.89,
+          "health": 7897,
+          "legitimacy": 6826
+        },
+        "knowledge": {
+          "materials": 1865,
+          "mechanics": 1663,
+          "chemistry": 1280,
+          "biology": 1566,
+          "optics": 1081,
+          "computation": 893,
+          "organization": 2266,
+          "energy": 1366,
+          "health": 1469
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0.2
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "TECHNOLOGY_ADOPTED",
+          "concept_id": "technology-concept:6def80101f16a4a759beb141",
+          "name": "光码环境哨站",
+          "progress": 1
+        },
+        {
+          "type": "technology",
+          "code": "PROTOTYPE_READY",
+          "concept_id": "technology-concept:838f563709e679c927913b09",
+          "name": "分布式机械逻辑工坊",
+          "progress": 0.7972
+        },
+        {
+          "type": "technology",
+          "code": "EXPERIMENT_FAILED",
+          "concept_id": "technology-concept:b7f0ab814d4bce1b2288eaa9",
+          "name": "玻璃模块张力协作生产系统"
+        },
+        {
+          "type": "technology",
+          "code": "PRINCIPLE_DEMONSTRATED",
+          "concept_id": "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "name": "流体逻辑助力外骨架",
+          "progress": 0.5321
+        }
+      ],
+      "event_root": "74d5c7b3a0ff225c2a6016abe21a1b07d7b046b180327c13b510bc06288a0419"
+    },
+    {
+      "year": 16,
+      "state": {
+        "population": 369,
+        "resources": {
+          "food": 505.88,
+          "water": 1670.19,
+          "timber": 605.44,
+          "ore": 329.32,
+          "energy": 985.27,
+          "knowledge": 256.7,
+          "health": 7960,
+          "legitimacy": 6848
+        },
+        "knowledge": {
+          "materials": 1872,
+          "mechanics": 1669,
+          "chemistry": 1298,
+          "biology": 1571,
+          "optics": 1093,
+          "computation": 909,
+          "organization": 2272,
+          "energy": 1371,
+          "health": 1474
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0.18000000000000002
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "PROTOTYPE_READY",
+          "concept_id": "technology-concept:98ef810222c4bcec476ceb34",
+          "name": "可验证协作账册",
+          "progress": 0.7878
+        },
+        {
+          "type": "technology",
+          "code": "TECHNOLOGY_ADOPTED",
+          "concept_id": "technology-concept:198955a1a86d525184cca7b9",
+          "name": "水合盐电磁感应自修复结构系统",
+          "progress": 1
+        }
+      ],
+      "event_root": "c7625c62294f8a38722fe5cb9ce481232c7fbfbdeb5c991cd9ba53db36be1325"
+    },
+    {
+      "year": 17,
+      "state": {
+        "population": 373,
+        "resources": {
+          "food": 568.58,
+          "water": 1776.74,
+          "timber": 615.72,
+          "ore": 334.16,
+          "energy": 1039.29,
+          "knowledge": 278.62,
+          "health": 8011,
+          "legitimacy": 6874
+        },
+        "knowledge": {
+          "materials": 1877,
+          "mechanics": 1674,
+          "chemistry": 1310,
+          "biology": 1576,
+          "optics": 1109,
+          "computation": 921,
+          "organization": 2279,
+          "energy": 1376,
+          "health": 1479
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0.16000000000000003
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "TECHNOLOGY_ADOPTED",
+          "concept_id": "technology-concept:838f563709e679c927913b09",
+          "name": "分布式机械逻辑工坊",
+          "progress": 1
+        },
+        {
+          "type": "technology",
+          "code": "EXPERIMENT_FAILED",
+          "concept_id": "technology-concept:b7f0ab814d4bce1b2288eaa9",
+          "name": "玻璃模块张力协作生产系统"
+        },
+        {
+          "type": "technology",
+          "code": "EXPERIMENT_FAILED",
+          "concept_id": "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "name": "流体逻辑助力外骨架"
+        }
+      ],
+      "event_root": "3b647e83a615a08d236fbb132873d377cbefb39c5b5edc2e68c7a5d6419c1a38"
+    },
+    {
+      "year": 18,
+      "state": {
+        "population": 377,
+        "resources": {
+          "food": 636.21,
+          "water": 1901.64,
+          "timber": 630.38,
+          "ore": 341.28,
+          "energy": 1093.9,
+          "knowledge": 296.64,
+          "health": 8051,
+          "legitimacy": 6908
+        },
+        "knowledge": {
+          "materials": 1883,
+          "mechanics": 1679,
+          "chemistry": 1327,
+          "biology": 1581,
+          "optics": 1124,
+          "computation": 938,
+          "organization": 2284,
+          "energy": 1381,
+          "health": 1486
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0.14000000000000004
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "TECHNOLOGY_ADOPTED",
+          "concept_id": "technology-concept:98ef810222c4bcec476ceb34",
+          "name": "可验证协作账册",
+          "progress": 1
+        }
+      ],
+      "event_root": "e3e1cd8910a82c420f661a50f4d543e3f3890c04deb9f3696af677debed74c6d"
+    },
+    {
+      "year": 19,
+      "state": {
+        "population": 381,
+        "resources": {
+          "food": 717.34,
+          "water": 2045.25,
+          "timber": 642.03,
+          "ore": 349.51,
+          "energy": 1149.09,
+          "knowledge": 306.76,
+          "health": 8105,
+          "legitimacy": 6930
+        },
+        "knowledge": {
+          "materials": 1889,
+          "mechanics": 1684,
+          "chemistry": 1343,
+          "biology": 1586,
+          "optics": 1136,
+          "computation": 952,
+          "organization": 2290,
+          "energy": 1387,
+          "health": 1492
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0.12000000000000004
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "CONCEPT_FORMED",
+          "concept_id": "technology-concept:e58cc8a66c3a18c15a77024e",
+          "name": "声学公共通信网",
+          "progress": 0.2814
+        },
+        {
+          "type": "technology",
+          "code": "PROTOTYPE_READY",
+          "concept_id": "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "name": "流体逻辑助力外骨架",
+          "progress": 0.7881
+        },
+        {
+          "type": "technology",
+          "code": "EXPERIMENT_FAILED",
+          "concept_id": "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "name": "流体逻辑助力外骨架"
+        },
+        {
+          "type": "technology",
+          "code": "EXPERIMENT_FAILED",
+          "concept_id": "technology-concept:b7f0ab814d4bce1b2288eaa9",
+          "name": "玻璃模块张力协作生产系统"
+        }
+      ],
+      "event_root": "69b05bc6e0fc3e5fcb0dd47d5484639a435983bea0ec71406b4cfa481791eba5"
+    },
+    {
+      "year": 20,
+      "state": {
+        "population": 385,
+        "resources": {
+          "food": 792.5,
+          "water": 2190.38,
+          "timber": 656.17,
+          "ore": 358.01,
+          "energy": 1204.87,
+          "knowledge": 317,
+          "health": 8141,
+          "legitimacy": 6952
+        },
+        "knowledge": {
+          "materials": 1894,
+          "mechanics": 1689,
+          "chemistry": 1357,
+          "biology": 1592,
+          "optics": 1150,
+          "computation": 964,
+          "organization": 2296,
+          "energy": 1394,
+          "health": 1498
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0.10000000000000003
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "CONCEPT_FORMED",
+          "concept_id": "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "name": "梯度温差保鲜窖",
+          "progress": 0.2631
+        },
+        {
+          "type": "history",
+          "code": "DECADE_RECORDED",
+          "detail": {
+            "population": 385,
+            "adopted": 4
+          }
+        }
+      ],
+      "event_root": "02a2c21ee2faeade3000a6de10ccefdeb9e76b381d40241dc11dbe38ffa7776b"
+    },
+    {
+      "year": 21,
+      "state": {
+        "population": 389,
+        "resources": {
+          "food": 853.68,
+          "water": 2337.03,
+          "timber": 668.45,
+          "ore": 364.2,
+          "energy": 1261.24,
+          "knowledge": 327.33,
+          "health": 8189,
+          "legitimacy": 6974
+        },
+        "knowledge": {
+          "materials": 1901,
+          "mechanics": 1694,
+          "chemistry": 1371,
+          "biology": 1598,
+          "optics": 1165,
+          "computation": 980,
+          "organization": 2301,
+          "energy": 1400,
+          "health": 1505
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0.08000000000000003
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34"
+        ]
+      },
+      "events": [],
+      "event_root": "58296508efc5f4e24202de3100aefda2db7dde03072dbd3c6e10ab53f85d8dda"
+    },
+    {
+      "year": 22,
+      "state": {
+        "population": 393,
+        "resources": {
+          "food": 944.26,
+          "water": 2485.21,
+          "timber": 680.19,
+          "ore": 370.22,
+          "energy": 1318.19,
+          "knowledge": 337.78,
+          "health": 8252,
+          "legitimacy": 6996
+        },
+        "knowledge": {
+          "materials": 1908,
+          "mechanics": 1700,
+          "chemistry": 1388,
+          "biology": 1603,
+          "optics": 1180,
+          "computation": 993,
+          "organization": 2306,
+          "energy": 1406,
+          "health": 1510
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0.060000000000000026
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "PRINCIPLE_DEMONSTRATED",
+          "concept_id": "technology-concept:e58cc8a66c3a18c15a77024e",
+          "name": "声学公共通信网",
+          "progress": 0.5829
+        },
+        {
+          "type": "technology",
+          "code": "PRINCIPLE_DEMONSTRATED",
+          "concept_id": "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "name": "梯度温差保鲜窖",
+          "progress": 0.5551
+        },
+        {
+          "type": "technology",
+          "code": "CONCEPT_FORMED",
+          "concept_id": "technology-concept:70ff74ced8346a952022c7a4",
+          "name": "毛细陶瓷净水塔",
+          "progress": 0.2859
+        }
+      ],
+      "event_root": "64679120775300b175a291ef23609c492bc908579f5db29ab70b30c05e41c017"
+    },
+    {
+      "year": 23,
+      "state": {
+        "population": 397,
+        "resources": {
+          "food": 975.49,
+          "water": 2634.92,
+          "timber": 698.91,
+          "ore": 386.38,
+          "energy": 1375.72,
+          "knowledge": 348.33,
+          "health": 8305,
+          "legitimacy": 7018
+        },
+        "knowledge": {
+          "materials": 1915,
+          "mechanics": 1705,
+          "chemistry": 1406,
+          "biology": 1610,
+          "optics": 1194,
+          "computation": 1006,
+          "organization": 2311,
+          "energy": 1411,
+          "health": 1515
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0.04000000000000002
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "TECHNOLOGY_ADOPTED",
+          "concept_id": "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "name": "流体逻辑助力外骨架",
+          "progress": 1
+        }
+      ],
+      "event_root": "d113f50ede052ab73d915c37081beecc639219f81de93d01d7ee12c515fb465b"
+    },
+    {
+      "year": 24,
+      "state": {
+        "population": 401,
+        "resources": {
+          "food": 1064.26,
+          "water": 2804.44,
+          "timber": 714.67,
+          "ore": 393.4,
+          "energy": 1433.84,
+          "knowledge": 358.99,
+          "health": 8360,
+          "legitimacy": 7040
+        },
+        "knowledge": {
+          "materials": 1921,
+          "mechanics": 1710,
+          "chemistry": 1424,
+          "biology": 1615,
+          "optics": 1207,
+          "computation": 1022,
+          "organization": 2318,
+          "energy": 1418,
+          "health": 1522
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0.02000000000000002
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "PROTOTYPE_READY",
+          "concept_id": "technology-concept:e58cc8a66c3a18c15a77024e",
+          "name": "声学公共通信网",
+          "progress": 0.8005
+        },
+        {
+          "type": "technology",
+          "code": "EXPERIMENT_FAILED",
+          "concept_id": "technology-concept:e58cc8a66c3a18c15a77024e",
+          "name": "声学公共通信网"
+        },
+        {
+          "type": "technology",
+          "code": "PROTOTYPE_READY",
+          "concept_id": "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "name": "梯度温差保鲜窖",
+          "progress": 0.8338
+        },
+        {
+          "type": "technology",
+          "code": "EXPERIMENT_FAILED",
+          "concept_id": "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "name": "梯度温差保鲜窖"
+        },
+        {
+          "type": "technology",
+          "code": "PRINCIPLE_DEMONSTRATED",
+          "concept_id": "technology-concept:70ff74ced8346a952022c7a4",
+          "name": "毛细陶瓷净水塔",
+          "progress": 0.5722
+        }
+      ],
+      "event_root": "237e6b6ab21abbe7f4f1237a78462c6ce1a1392e1fc8d5530a0cc6675a054803"
+    },
+    {
+      "year": 25,
+      "state": {
+        "population": 405,
+        "resources": {
+          "food": 1127.83,
+          "water": 2975.67,
+          "timber": 730.01,
+          "ore": 399.55,
+          "energy": 1492.55,
+          "knowledge": 369.75,
+          "health": 8419,
+          "legitimacy": 7062
+        },
+        "knowledge": {
+          "materials": 1927,
+          "mechanics": 1717,
+          "chemistry": 1429,
+          "biology": 1621,
+          "optics": 1226,
+          "computation": 1041,
+          "organization": 2323,
+          "energy": 1433,
+          "health": 1529
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 2.0816681711721685e-17
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "EXPERIMENT_FAILED",
+          "concept_id": "technology-concept:e58cc8a66c3a18c15a77024e",
+          "name": "声学公共通信网"
+        }
+      ],
+      "event_root": "91a7d165489d2b5857dc9a0bcd01e6db63738aaf9239e03088d8f2e81e8175e6"
+    },
+    {
+      "year": 26,
+      "state": {
+        "population": 409,
+        "resources": {
+          "food": 1189.64,
+          "water": 3148.6,
+          "timber": 742.86,
+          "ore": 407.08,
+          "energy": 1551.84,
+          "knowledge": 380.63,
+          "health": 8473,
+          "legitimacy": 7084
+        },
+        "knowledge": {
+          "materials": 1933,
+          "mechanics": 1723,
+          "chemistry": 1447,
+          "biology": 1626,
+          "optics": 1244,
+          "computation": 1059,
+          "organization": 2330,
+          "energy": 1438,
+          "health": 1536
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "PROTOTYPE_READY",
+          "concept_id": "technology-concept:70ff74ced8346a952022c7a4",
+          "name": "毛细陶瓷净水塔",
+          "progress": 0.8824
+        },
+        {
+          "type": "technology",
+          "code": "EXPERIMENT_FAILED",
+          "concept_id": "technology-concept:70ff74ced8346a952022c7a4",
+          "name": "毛细陶瓷净水塔"
+        }
+      ],
+      "event_root": "7d9ed00c59350129f76674ae94efa005c69dc15f7fb4c0c6533b1e00865d1c47"
+    },
+    {
+      "year": 27,
+      "state": {
+        "population": 413,
+        "resources": {
+          "food": 1265.58,
+          "water": 3323.25,
+          "timber": 757.13,
+          "ore": 415.34,
+          "energy": 1611.72,
+          "knowledge": 391.6,
+          "health": 8530,
+          "legitimacy": 7106
+        },
+        "knowledge": {
+          "materials": 1938,
+          "mechanics": 1729,
+          "chemistry": 1452,
+          "biology": 1633,
+          "optics": 1263,
+          "computation": 1073,
+          "organization": 2336,
+          "energy": 1453,
+          "health": 1542
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "TECHNOLOGY_ADOPTED",
+          "concept_id": "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "name": "梯度温差保鲜窖",
+          "progress": 1
+        },
+        {
+          "type": "technology",
+          "code": "EXPERIMENT_FAILED",
+          "concept_id": "technology-concept:70ff74ced8346a952022c7a4",
+          "name": "毛细陶瓷净水塔"
+        }
+      ],
+      "event_root": "12094a5adfc88b963edbd3e605e5ef73c3c926cfbb69eff69a637b981a34750a"
+    },
+    {
+      "year": 28,
+      "state": {
+        "population": 417,
+        "resources": {
+          "food": 1362.91,
+          "water": 3518.63,
+          "timber": 771.11,
+          "ore": 423.09,
+          "energy": 1672.18,
+          "knowledge": 402.69,
+          "health": 8572,
+          "legitimacy": 7128
+        },
+        "knowledge": {
+          "materials": 1945,
+          "mechanics": 1734,
+          "chemistry": 1470,
+          "biology": 1639,
+          "optics": 1280,
+          "computation": 1092,
+          "organization": 2342,
+          "energy": 1460,
+          "health": 1549
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "EXPERIMENT_FAILED",
+          "concept_id": "technology-concept:e58cc8a66c3a18c15a77024e",
+          "name": "声学公共通信网"
+        }
+      ],
+      "event_root": "2376befb9bd03c192df79771edf5295b567d0d33b479a121c4da36bdb04f0b43"
+    },
+    {
+      "year": 29,
+      "state": {
+        "population": 421,
+        "resources": {
+          "food": 1455.12,
+          "water": 3715.91,
+          "timber": 785.28,
+          "ore": 430.58,
+          "energy": 1733.23,
+          "knowledge": 413.88,
+          "health": 8625,
+          "legitimacy": 7150
+        },
+        "knowledge": {
+          "materials": 1952,
+          "mechanics": 1741,
+          "chemistry": 1477,
+          "biology": 1644,
+          "optics": 1297,
+          "computation": 1108,
+          "organization": 2349,
+          "energy": 1474,
+          "health": 1554
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "EXPERIMENT_FAILED",
+          "concept_id": "technology-concept:e58cc8a66c3a18c15a77024e",
+          "name": "声学公共通信网"
+        }
+      ],
+      "event_root": "ac277e556d590d3641a039835375dfb47238ad379e1fb4be3f838a8ab24a67b6"
+    },
+    {
+      "year": 30,
+      "state": {
+        "population": 425,
+        "resources": {
+          "food": 1539.13,
+          "water": 3937.08,
+          "timber": 798.03,
+          "ore": 438.75,
+          "energy": 1794.86,
+          "knowledge": 425.17,
+          "health": 8695,
+          "legitimacy": 7172
+        },
+        "knowledge": {
+          "materials": 1959,
+          "mechanics": 1748,
+          "chemistry": 1484,
+          "biology": 1650,
+          "optics": 1313,
+          "computation": 1122,
+          "organization": 2356,
+          "energy": 1492,
+          "health": 1560
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "EXPERIMENT_FAILED",
+          "concept_id": "technology-concept:e58cc8a66c3a18c15a77024e",
+          "name": "声学公共通信网"
+        },
+        {
+          "type": "technology",
+          "code": "TECHNOLOGY_ADOPTED",
+          "concept_id": "technology-concept:70ff74ced8346a952022c7a4",
+          "name": "毛细陶瓷净水塔",
+          "progress": 1
+        },
+        {
+          "type": "history",
+          "code": "DECADE_RECORDED",
+          "detail": {
+            "population": 425,
+            "adopted": 7
+          }
+        }
+      ],
+      "event_root": "6a9780f415f2215b6e865004505ae22571753e1f5b864ff5c90a644f55501351"
+    },
+    {
+      "year": 31,
+      "state": {
+        "population": 430,
+        "resources": {
+          "food": 1626.83,
+          "water": 4157.72,
+          "timber": 813.79,
+          "ore": 445.83,
+          "energy": 1857.08,
+          "knowledge": 436.6,
+          "health": 8756,
+          "legitimacy": 7194
+        },
+        "knowledge": {
+          "materials": 1965,
+          "mechanics": 1755,
+          "chemistry": 1499,
+          "biology": 1656,
+          "optics": 1332,
+          "computation": 1138,
+          "organization": 2363,
+          "energy": 1499,
+          "health": 1566
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "EXPERIMENT_FAILED",
+          "concept_id": "technology-concept:e58cc8a66c3a18c15a77024e",
+          "name": "声学公共通信网"
+        }
+      ],
+      "event_root": "e5f7596ca40ee13c06658ff8d4e92759b094ec5bda32c29feccc8a6a2ae2adce"
+    },
+    {
+      "year": 32,
+      "state": {
+        "population": 435,
+        "resources": {
+          "food": 1775.78,
+          "water": 4380.97,
+          "timber": 826.11,
+          "ore": 452.63,
+          "energy": 1920.04,
+          "knowledge": 448.16,
+          "health": 8814,
+          "legitimacy": 7216
+        },
+        "knowledge": {
+          "materials": 1973,
+          "mechanics": 1761,
+          "chemistry": 1519,
+          "biology": 1663,
+          "optics": 1352,
+          "computation": 1154,
+          "organization": 2368,
+          "energy": 1506,
+          "health": 1572
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4"
+        ]
+      },
+      "events": [],
+      "event_root": "63324da81583c43dfb5963c5683c3c8e890e293a5a204ca97342c14d3f8f3aa4"
+    },
+    {
+      "year": 33,
+      "state": {
+        "population": 440,
+        "resources": {
+          "food": 1879.08,
+          "water": 4606.8,
+          "timber": 839.87,
+          "ore": 459.96,
+          "energy": 1983.72,
+          "knowledge": 459.86,
+          "health": 8868,
+          "legitimacy": 7238
+        },
+        "knowledge": {
+          "materials": 1980,
+          "mechanics": 1769,
+          "chemistry": 1524,
+          "biology": 1669,
+          "optics": 1369,
+          "computation": 1170,
+          "organization": 2375,
+          "energy": 1520,
+          "health": 1579
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "CONCEPT_FORMED",
+          "concept_id": "technology-concept:cfca459a6e4416cdb60afa21",
+          "name": "钢温差梯度净水系统",
+          "progress": 0.2613
+        }
+      ],
+      "event_root": "0e611424bb2d13f2b8c54fe794390e8780373bafb5f2ad178fd356b26f93dd43"
+    },
+    {
+      "year": 34,
+      "state": {
+        "population": 445,
+        "resources": {
+          "food": 1958.74,
+          "water": 4835.24,
+          "timber": 855,
+          "ore": 469.73,
+          "energy": 2048.14,
+          "knowledge": 471.68,
+          "health": 8924,
+          "legitimacy": 7260
+        },
+        "knowledge": {
+          "materials": 1987,
+          "mechanics": 1776,
+          "chemistry": 1530,
+          "biology": 1677,
+          "optics": 1385,
+          "computation": 1191,
+          "organization": 2380,
+          "energy": 1539,
+          "health": 1585
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "CONCEPT_FORMED",
+          "concept_id": "technology-concept:ca0d85577301359c5253a2a3",
+          "name": "相变热库网络",
+          "progress": 0.3971
+        }
+      ],
+      "event_root": "43ec9bbbb330c61bdf1c4328b9a26ff13cf2c1817ab60a75348b4de20a021724"
+    },
+    {
+      "year": 35,
+      "state": {
+        "population": 450,
+        "resources": {
+          "food": 2083.59,
+          "water": 5066.27,
+          "timber": 870.82,
+          "ore": 478.76,
+          "energy": 2113.28,
+          "knowledge": 483.65,
+          "health": 8976,
+          "legitimacy": 7282
+        },
+        "knowledge": {
+          "materials": 1994,
+          "mechanics": 1783,
+          "chemistry": 1551,
+          "biology": 1684,
+          "optics": 1401,
+          "computation": 1208,
+          "organization": 2387,
+          "energy": 1545,
+          "health": 1592
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "PRINCIPLE_DEMONSTRATED",
+          "concept_id": "technology-concept:cfca459a6e4416cdb60afa21",
+          "name": "钢温差梯度净水系统",
+          "progress": 0.5219
+        },
+        {
+          "type": "technology",
+          "code": "PRINCIPLE_DEMONSTRATED",
+          "concept_id": "technology-concept:ca0d85577301359c5253a2a3",
+          "name": "相变热库网络",
+          "progress": 0.5801
+        }
+      ],
+      "event_root": "2e8c43bdcf03fb14fb50eb0b9dda5d990393ed819fb9848d7438b7279892161f"
+    },
+    {
+      "year": 36,
+      "state": {
+        "population": 455,
+        "resources": {
+          "food": 2202.13,
+          "water": 5299.89,
+          "timber": 888.3,
+          "ore": 487.44,
+          "energy": 2179.16,
+          "knowledge": 495.74,
+          "health": 9019,
+          "legitimacy": 7304
+        },
+        "knowledge": {
+          "materials": 2001,
+          "mechanics": 1791,
+          "chemistry": 1558,
+          "biology": 1691,
+          "optics": 1418,
+          "computation": 1226,
+          "organization": 2394,
+          "energy": 1565,
+          "health": 1599
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "PROTOTYPE_READY",
+          "concept_id": "technology-concept:ca0d85577301359c5253a2a3",
+          "name": "相变热库网络",
+          "progress": 0.8006
+        },
+        {
+          "type": "technology",
+          "code": "EXPERIMENT_FAILED",
+          "concept_id": "technology-concept:ca0d85577301359c5253a2a3",
+          "name": "相变热库网络"
+        }
+      ],
+      "event_root": "e323688fe415d45483c21556f2699b0da714a450eb08c20f077d36cd5462ac54"
+    },
+    {
+      "year": 37,
+      "state": {
+        "population": 460,
+        "resources": {
+          "food": 2358.25,
+          "water": 5536.11,
+          "timber": 905.4,
+          "ore": 494.57,
+          "energy": 2245.78,
+          "knowledge": 507.96,
+          "health": 9065,
+          "legitimacy": 7326
+        },
+        "knowledge": {
+          "materials": 2008,
+          "mechanics": 1798,
+          "chemistry": 1575,
+          "biology": 1697,
+          "optics": 1437,
+          "computation": 1248,
+          "organization": 2402,
+          "energy": 1571,
+          "health": 1607
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "EXPERIMENT_FAILED",
+          "concept_id": "technology-concept:cfca459a6e4416cdb60afa21",
+          "name": "钢温差梯度净水系统"
+        },
+        {
+          "type": "technology",
+          "code": "EXPERIMENT_FAILED",
+          "concept_id": "technology-concept:ca0d85577301359c5253a2a3",
+          "name": "相变热库网络"
+        }
+      ],
+      "event_root": "ac88ed26f691d972028098d939ee3d8800797944e765f48c438629704b13bc0a"
+    },
+    {
+      "year": 38,
+      "state": {
+        "population": 465,
+        "resources": {
+          "food": 2526.62,
+          "water": 5774.93,
+          "timber": 920.5,
+          "ore": 502.56,
+          "energy": 2313.12,
+          "knowledge": 520.32,
+          "health": 9116,
+          "legitimacy": 7348
+        },
+        "knowledge": {
+          "materials": 2016,
+          "mechanics": 1805,
+          "chemistry": 1581,
+          "biology": 1703,
+          "optics": 1457,
+          "computation": 1268,
+          "organization": 2408,
+          "energy": 1586,
+          "health": 1614
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4"
+        ]
+      },
+      "events": [],
+      "event_root": "306d105ace29e115da52e0a9f1773821d49f3341d57d4f48d64420a297c33028"
+    },
+    {
+      "year": 39,
+      "state": {
+        "population": 470,
+        "resources": {
+          "food": 2691.42,
+          "water": 6016.34,
+          "timber": 933.65,
+          "ore": 510.24,
+          "energy": 2399.2,
+          "knowledge": 534.82,
+          "health": 9158,
+          "legitimacy": 7370
+        },
+        "knowledge": {
+          "materials": 2024,
+          "mechanics": 1811,
+          "chemistry": 1600,
+          "biology": 1711,
+          "optics": 1479,
+          "computation": 1287,
+          "organization": 2414,
+          "energy": 1593,
+          "health": 1620
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "PROTOTYPE_READY",
+          "concept_id": "technology-concept:cfca459a6e4416cdb60afa21",
+          "name": "钢温差梯度净水系统",
+          "progress": 0.8603
+        },
+        {
+          "type": "technology",
+          "code": "TECHNOLOGY_ADOPTED",
+          "concept_id": "technology-concept:ca0d85577301359c5253a2a3",
+          "name": "相变热库网络",
+          "progress": 1
+        }
+      ],
+      "event_root": "72ffa5e9bc282edc0f596eb8827ac93ac6504979eda489c5e7713ffea9311dea"
+    },
+    {
+      "year": 40,
+      "state": {
+        "population": 475,
+        "resources": {
+          "food": 2881.82,
+          "water": 6282.01,
+          "timber": 951.81,
+          "ore": 518.68,
+          "energy": 2489.81,
+          "knowledge": 547.44,
+          "health": 9201,
+          "legitimacy": 7392
+        },
+        "knowledge": {
+          "materials": 2031,
+          "mechanics": 1819,
+          "chemistry": 1607,
+          "biology": 1718,
+          "optics": 1498,
+          "computation": 1305,
+          "organization": 2422,
+          "energy": 1615,
+          "health": 1626
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3"
+        ]
+      },
+      "events": [
+        {
+          "type": "history",
+          "code": "DECADE_RECORDED",
+          "detail": {
+            "population": 475,
+            "adopted": 8
+          }
+        }
+      ],
+      "event_root": "40912a64d0ec8713f00f7de820bd96f26a8bf19b88f8bd967585ef5a4cd5eb16"
+    },
+    {
+      "year": 41,
+      "state": {
+        "population": 480,
+        "resources": {
+          "food": 3007.4,
+          "water": 6550.5,
+          "timber": 969.96,
+          "ore": 528.99,
+          "energy": 2587.39,
+          "knowledge": 573.2,
+          "health": 9259,
+          "legitimacy": 7414
+        },
+        "knowledge": {
+          "materials": 2038,
+          "mechanics": 1826,
+          "chemistry": 1625,
+          "biology": 1725,
+          "optics": 1516,
+          "computation": 1322,
+          "organization": 2429,
+          "energy": 1622,
+          "health": 1634
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "TECHNOLOGY_ADOPTED",
+          "concept_id": "technology-concept:cfca459a6e4416cdb60afa21",
+          "name": "钢温差梯度净水系统",
+          "progress": 1
+        }
+      ],
+      "event_root": "a3b9b0fbbb9152eb46134c4ed51f86b92f72529694ab40160c9d150cc554564b"
+    },
+    {
+      "year": 42,
+      "state": {
+        "population": 485,
+        "resources": {
+          "food": 3194.93,
+          "water": 6843.94,
+          "timber": 984.17,
+          "ore": 538.31,
+          "energy": 2679.94,
+          "knowledge": 586.09,
+          "health": 9299,
+          "legitimacy": 7436
+        },
+        "knowledge": {
+          "materials": 2046,
+          "mechanics": 1832,
+          "chemistry": 1631,
+          "biology": 1731,
+          "optics": 1532,
+          "computation": 1338,
+          "organization": 2436,
+          "energy": 1643,
+          "health": 1642
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21"
+        ]
+      },
+      "events": [],
+      "event_root": "87412d13ed6af29c3eb9eb9b0921eb2b5b8492ab6033881e33619d44fa14de1d"
+    },
+    {
+      "year": 43,
+      "state": {
+        "population": 491,
+        "resources": {
+          "food": 3366.02,
+          "water": 7140.43,
+          "timber": 1003.27,
+          "ore": 547.3,
+          "energy": 2773.44,
+          "knowledge": 599.14,
+          "health": 9345,
+          "legitimacy": 7458
+        },
+        "knowledge": {
+          "materials": 2052,
+          "mechanics": 1841,
+          "chemistry": 1647,
+          "biology": 1739,
+          "optics": 1552,
+          "computation": 1356,
+          "organization": 2445,
+          "energy": 1651,
+          "health": 1648
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21"
+        ]
+      },
+      "events": [],
+      "event_root": "c8ab26bda912d6d1251d37fd21fe92c429ff026f3aa65de33bcbdd0f5f6feb4f"
+    },
+    {
+      "year": 44,
+      "state": {
+        "population": 497,
+        "resources": {
+          "food": 3499.22,
+          "water": 7440.6,
+          "timber": 1019.29,
+          "ore": 555.2,
+          "energy": 2868.11,
+          "knowledge": 612.35,
+          "health": 9390,
+          "legitimacy": 7480
+        },
+        "knowledge": {
+          "materials": 2059,
+          "mechanics": 1848,
+          "chemistry": 1669,
+          "biology": 1747,
+          "optics": 1570,
+          "computation": 1377,
+          "organization": 2453,
+          "energy": 1659,
+          "health": 1655
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "CONCEPT_FORMED",
+          "concept_id": "technology-concept:31e150336509d05007349a44",
+          "name": "张力模块运输网",
+          "progress": 0.292
+        }
+      ],
+      "event_root": "363a237397a9d645aceafd02608c232f7a38cc9135b4ea6870a986c4d608ba5b"
+    },
+    {
+      "year": 45,
+      "state": {
+        "population": 503,
+        "resources": {
+          "food": 3633.65,
+          "water": 7744.43,
+          "timber": 1033.8,
+          "ore": 563.11,
+          "energy": 2963.93,
+          "knowledge": 625.72,
+          "health": 9431,
+          "legitimacy": 7502
+        },
+        "knowledge": {
+          "materials": 2066,
+          "mechanics": 1854,
+          "chemistry": 1678,
+          "biology": 1754,
+          "optics": 1593,
+          "computation": 1397,
+          "organization": 2461,
+          "energy": 1666,
+          "health": 1674
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21"
+        ]
+      },
+      "events": [],
+      "event_root": "909e9514d405d92c561342c91a48b6dcf47b4d45d2156d7ddae30a12521350ae"
+    },
+    {
+      "year": 46,
+      "state": {
+        "population": 509,
+        "resources": {
+          "food": 3763.76,
+          "water": 8051.93,
+          "timber": 1052.82,
+          "ore": 573.79,
+          "energy": 3060.91,
+          "knowledge": 639.25,
+          "health": 9480,
+          "legitimacy": 7524
+        },
+        "knowledge": {
+          "materials": 2074,
+          "mechanics": 1860,
+          "chemistry": 1686,
+          "biology": 1762,
+          "optics": 1609,
+          "computation": 1421,
+          "organization": 2468,
+          "energy": 1687,
+          "health": 1680
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "PRINCIPLE_DEMONSTRATED",
+          "concept_id": "technology-concept:31e150336509d05007349a44",
+          "name": "张力模块运输网",
+          "progress": 0.5947
+        }
+      ],
+      "event_root": "9a40275637f6025b6ace19f4423f3a448ddbb73301dc1e2f23d06edbc0c0237e"
+    },
+    {
+      "year": 47,
+      "state": {
+        "population": 515,
+        "resources": {
+          "food": 3913.19,
+          "water": 8363.09,
+          "timber": 1072.35,
+          "ore": 582.23,
+          "energy": 3159.04,
+          "knowledge": 652.94,
+          "health": 9539,
+          "legitimacy": 7546
+        },
+        "knowledge": {
+          "materials": 2082,
+          "mechanics": 1869,
+          "chemistry": 1694,
+          "biology": 1770,
+          "optics": 1632,
+          "computation": 1445,
+          "organization": 2476,
+          "energy": 1694,
+          "health": 1701
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "EXPERIMENT_FAILED",
+          "concept_id": "technology-concept:31e150336509d05007349a44",
+          "name": "张力模块运输网"
+        }
+      ],
+      "event_root": "b4f1b95c5a43835f3eaf0e7d68e96825bde1285025b32f44115016cf438c13af"
+    },
+    {
+      "year": 48,
+      "state": {
+        "population": 521,
+        "resources": {
+          "food": 4104.41,
+          "water": 8677.93,
+          "timber": 1089.67,
+          "ore": 592.15,
+          "energy": 3258.34,
+          "knowledge": 666.78,
+          "health": 9583,
+          "legitimacy": 7568
+        },
+        "knowledge": {
+          "materials": 2091,
+          "mechanics": 1878,
+          "chemistry": 1714,
+          "biology": 1777,
+          "optics": 1655,
+          "computation": 1466,
+          "organization": 2483,
+          "energy": 1701,
+          "health": 1710
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21"
+        ]
+      },
+      "events": [],
+      "event_root": "cc6c043c944910ce4bb2c9b160fe92c870a817a48a3704656815c837da9029bc"
+    },
+    {
+      "year": 49,
+      "state": {
+        "population": 527,
+        "resources": {
+          "food": 4252.23,
+          "water": 8996.43,
+          "timber": 1108.28,
+          "ore": 603.75,
+          "energy": 3358.78,
+          "knowledge": 680.79,
+          "health": 9639,
+          "legitimacy": 7590
+        },
+        "knowledge": {
+          "materials": 2098,
+          "mechanics": 1886,
+          "chemistry": 1723,
+          "biology": 1784,
+          "optics": 1672,
+          "computation": 1486,
+          "organization": 2491,
+          "energy": 1722,
+          "health": 1718
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "PROTOTYPE_READY",
+          "concept_id": "technology-concept:31e150336509d05007349a44",
+          "name": "张力模块运输网",
+          "progress": 0.8668
+        }
+      ],
+      "event_root": "6d3c7542ddd20fe14b78a8721f38d2808b878f056d98214a3824bf6768854262"
+    },
+    {
+      "year": 50,
+      "state": {
+        "population": 533,
+        "resources": {
+          "food": 4440.67,
+          "water": 9318.6,
+          "timber": 1128.45,
+          "ore": 619.91,
+          "energy": 3460.39,
+          "knowledge": 694.96,
+          "health": 9684,
+          "legitimacy": 7612
+        },
+        "knowledge": {
+          "materials": 2105,
+          "mechanics": 1893,
+          "chemistry": 1731,
+          "biology": 1791,
+          "optics": 1694,
+          "computation": 1506,
+          "organization": 2499,
+          "energy": 1731,
+          "health": 1743
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21",
+          "technology-concept:31e150336509d05007349a44"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "TECHNOLOGY_ADOPTED",
+          "concept_id": "technology-concept:31e150336509d05007349a44",
+          "name": "张力模块运输网",
+          "progress": 1
+        },
+        {
+          "type": "history",
+          "code": "DECADE_RECORDED",
+          "detail": {
+            "population": 533,
+            "adopted": 10
+          }
+        }
+      ],
+      "event_root": "adb099c6c6091084000216683ec00d083ebb262ffe57cb86a8c5848ee4397af3"
+    },
+    {
+      "year": 51,
+      "state": {
+        "population": 539,
+        "resources": {
+          "food": 4597.88,
+          "water": 9669,
+          "timber": 1146.05,
+          "ore": 630.76,
+          "energy": 3563.15,
+          "knowledge": 709.28,
+          "health": 9724,
+          "legitimacy": 7634
+        },
+        "knowledge": {
+          "materials": 2113,
+          "mechanics": 1900,
+          "chemistry": 1755,
+          "biology": 1800,
+          "optics": 1716,
+          "computation": 1523,
+          "organization": 2508,
+          "energy": 1740,
+          "health": 1751
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21",
+          "technology-concept:31e150336509d05007349a44"
+        ]
+      },
+      "events": [],
+      "event_root": "eb4b585f856995dfb2cc4e51cd95c8fa41e9a448924e6b8ab68ca450f5d8d7ec"
+    },
+    {
+      "year": 52,
+      "state": {
+        "population": 545,
+        "resources": {
+          "food": 4746.57,
+          "water": 10023.34,
+          "timber": 1165.31,
+          "ore": 639.51,
+          "energy": 3667.07,
+          "knowledge": 723.77,
+          "health": 9768,
+          "legitimacy": 7656
+        },
+        "knowledge": {
+          "materials": 2120,
+          "mechanics": 1909,
+          "chemistry": 1764,
+          "biology": 1808,
+          "optics": 1737,
+          "computation": 1546,
+          "organization": 2517,
+          "energy": 1757,
+          "health": 1758
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21",
+          "technology-concept:31e150336509d05007349a44"
+        ]
+      },
+      "events": [],
+      "event_root": "4d4a4775eac1255d62f58d3702be11f2bfdacf4ebf9708b058fbb9ca512f81b6"
+    },
+    {
+      "year": 53,
+      "state": {
+        "population": 552,
+        "resources": {
+          "food": 4956.62,
+          "water": 10381.63,
+          "timber": 1185.89,
+          "ore": 651.08,
+          "energy": 3772.15,
+          "knowledge": 738.44,
+          "health": 9815,
+          "legitimacy": 7678
+        },
+        "knowledge": {
+          "materials": 2127,
+          "mechanics": 1917,
+          "chemistry": 1773,
+          "biology": 1817,
+          "optics": 1761,
+          "computation": 1570,
+          "organization": 2526,
+          "energy": 1778,
+          "health": 1766
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21",
+          "technology-concept:31e150336509d05007349a44"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "CONCEPT_FORMED",
+          "concept_id": "technology-concept:27028d28136d27f90b0ac15a",
+          "name": "碳基光学编码净水系统",
+          "progress": 0.3703
+        }
+      ],
+      "event_root": "abf686dedfeebb3447e0140784498aaa08e45bf25e153f1d2f306f2f672c1905"
+    },
+    {
+      "year": 54,
+      "state": {
+        "population": 559,
+        "resources": {
+          "food": 5181.95,
+          "water": 10744.52,
+          "timber": 1203.34,
+          "ore": 662.09,
+          "energy": 3878.57,
+          "knowledge": 753.3,
+          "health": 9853,
+          "legitimacy": 7700
+        },
+        "knowledge": {
+          "materials": 2137,
+          "mechanics": 1927,
+          "chemistry": 1781,
+          "biology": 1824,
+          "optics": 1783,
+          "computation": 1595,
+          "organization": 2534,
+          "energy": 1785,
+          "health": 1791
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21",
+          "technology-concept:31e150336509d05007349a44"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "PRINCIPLE_DEMONSTRATED",
+          "concept_id": "technology-concept:27028d28136d27f90b0ac15a",
+          "name": "碳基光学编码净水系统",
+          "progress": 0.5834
+        }
+      ],
+      "event_root": "170f38ebe1584f75832429a67b36fddc6051c3fe8535b309a7f75d214e549cfc"
+    },
+    {
+      "year": 55,
+      "state": {
+        "population": 566,
+        "resources": {
+          "food": 5397.68,
+          "water": 11112.01,
+          "timber": 1222.69,
+          "ore": 673.61,
+          "energy": 3986.35,
+          "knowledge": 768.34,
+          "health": 9909,
+          "legitimacy": 7722
+        },
+        "knowledge": {
+          "materials": 2144,
+          "mechanics": 1935,
+          "chemistry": 1807,
+          "biology": 1833,
+          "optics": 1803,
+          "computation": 1620,
+          "organization": 2543,
+          "energy": 1793,
+          "health": 1801
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21",
+          "technology-concept:31e150336509d05007349a44"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "EXPERIMENT_FAILED",
+          "concept_id": "technology-concept:27028d28136d27f90b0ac15a",
+          "name": "碳基光学编码净水系统"
+        }
+      ],
+      "event_root": "e318d3c743faf4b5d30799b49bd57779f533915d1460840290c6c3d203d22c4a"
+    },
+    {
+      "year": 56,
+      "state": {
+        "population": 573,
+        "resources": {
+          "food": 5637.94,
+          "water": 11484.11,
+          "timber": 1238.93,
+          "ore": 683.34,
+          "energy": 4095.47,
+          "knowledge": 783.57,
+          "health": 9953,
+          "legitimacy": 7744
+        },
+        "knowledge": {
+          "materials": 2152,
+          "mechanics": 1944,
+          "chemistry": 1817,
+          "biology": 1842,
+          "optics": 1812,
+          "computation": 1641,
+          "organization": 2552,
+          "energy": 1820,
+          "health": 1821
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21",
+          "technology-concept:31e150336509d05007349a44"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "PROTOTYPE_READY",
+          "concept_id": "technology-concept:27028d28136d27f90b0ac15a",
+          "name": "碳基光学编码净水系统",
+          "progress": 0.7644
+        }
+      ],
+      "event_root": "c3f78007a86bdc2da062fbb3c72776b3eb2f130663867769deaad791ee79327d"
+    },
+    {
+      "year": 57,
+      "state": {
+        "population": 580,
+        "resources": {
+          "food": 5883.03,
+          "water": 11860.8,
+          "timber": 1257.34,
+          "ore": 692.07,
+          "energy": 4205.95,
+          "knowledge": 798.99,
+          "health": 10000,
+          "legitimacy": 7766
+        },
+        "knowledge": {
+          "materials": 2159,
+          "mechanics": 1954,
+          "chemistry": 1839,
+          "biology": 1849,
+          "optics": 1837,
+          "computation": 1661,
+          "organization": 2559,
+          "energy": 1829,
+          "health": 1830
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21",
+          "technology-concept:31e150336509d05007349a44"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "EXPERIMENT_FAILED",
+          "concept_id": "technology-concept:27028d28136d27f90b0ac15a",
+          "name": "碳基光学编码净水系统"
+        }
+      ],
+      "event_root": "6bb1ce024cc6077838b786b60344f47a31c2168ef0cb58c30ed1c05bce2c4fd2"
+    },
+    {
+      "year": 58,
+      "state": {
+        "population": 587,
+        "resources": {
+          "food": 6097.99,
+          "water": 12242.1,
+          "timber": 1278.96,
+          "ore": 703.84,
+          "energy": 4317.77,
+          "knowledge": 814.59,
+          "health": 10000,
+          "legitimacy": 7788
+        },
+        "knowledge": {
+          "materials": 2166,
+          "mechanics": 1963,
+          "chemistry": 1848,
+          "biology": 1858,
+          "optics": 1846,
+          "computation": 1687,
+          "organization": 2569,
+          "energy": 1856,
+          "health": 1855
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21",
+          "technology-concept:31e150336509d05007349a44"
+        ]
+      },
+      "events": [],
+      "event_root": "1175bd5bd8d48b8822f8085e45c40a0d1362d0a9f0413df2891aa24b76eb063e"
+    },
+    {
+      "year": 59,
+      "state": {
+        "population": 594,
+        "resources": {
+          "food": 6251.96,
+          "water": 12628,
+          "timber": 1302.44,
+          "ore": 713.53,
+          "energy": 4431.95,
+          "knowledge": 843.38,
+          "health": 10003,
+          "legitimacy": 7810
+        },
+        "knowledge": {
+          "materials": 2173,
+          "mechanics": 1971,
+          "chemistry": 1873,
+          "biology": 1865,
+          "optics": 1869,
+          "computation": 1710,
+          "organization": 2577,
+          "energy": 1864,
+          "health": 1864
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21",
+          "technology-concept:31e150336509d05007349a44",
+          "technology-concept:27028d28136d27f90b0ac15a"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "TECHNOLOGY_ADOPTED",
+          "concept_id": "technology-concept:27028d28136d27f90b0ac15a",
+          "name": "碳基光学编码净水系统",
+          "progress": 1
+        }
+      ],
+      "event_root": "f6fb992ac00d1c7ecc511ba4cd250ea316ea4367d20711f77aa8e977f9b697d9"
+    },
+    {
+      "year": 60,
+      "state": {
+        "population": 601,
+        "resources": {
+          "food": 6431.55,
+          "water": 13045.88,
+          "timber": 1325.94,
+          "ore": 726.56,
+          "energy": 4546.47,
+          "knowledge": 859.35,
+          "health": 10000,
+          "legitimacy": 7832
+        },
+        "knowledge": {
+          "materials": 2181,
+          "mechanics": 1979,
+          "chemistry": 1882,
+          "biology": 1873,
+          "optics": 1878,
+          "computation": 1735,
+          "organization": 2585,
+          "energy": 1886,
+          "health": 1889
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21",
+          "technology-concept:31e150336509d05007349a44",
+          "technology-concept:27028d28136d27f90b0ac15a"
+        ]
+      },
+      "events": [
+        {
+          "type": "history",
+          "code": "DECADE_RECORDED",
+          "detail": {
+            "population": 601,
+            "adopted": 11
+          }
+        }
+      ],
+      "event_root": "35a783d4e6c0b294fd1ba1ea5aa89c34de54d6df7abf88bb30b9e890f8d5c2bf"
+    },
+    {
+      "year": 61,
+      "state": {
+        "population": 608,
+        "resources": {
+          "food": 6640.13,
+          "water": 13468.67,
+          "timber": 1349.42,
+          "ore": 738.51,
+          "energy": 4662.34,
+          "knowledge": 875.51,
+          "health": 10000,
+          "legitimacy": 7854
+        },
+        "knowledge": {
+          "materials": 2190,
+          "mechanics": 1990,
+          "chemistry": 1891,
+          "biology": 1901,
+          "optics": 1903,
+          "computation": 1761,
+          "organization": 2593,
+          "energy": 1897,
+          "health": 1900
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21",
+          "technology-concept:31e150336509d05007349a44",
+          "technology-concept:27028d28136d27f90b0ac15a"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "EXPERIMENT_FAILED",
+          "concept_id": "technology-concept:e58cc8a66c3a18c15a77024e",
+          "name": "声学公共通信网"
+        }
+      ],
+      "event_root": "b5e5b47e3bc7fe52918376e1687e6c45bd651ff34db5ee7f8be3a900984dc888"
+    },
+    {
+      "year": 62,
+      "state": {
+        "population": 615,
+        "resources": {
+          "food": 6847.68,
+          "water": 13896.4,
+          "timber": 1372.65,
+          "ore": 750.63,
+          "energy": 4779.56,
+          "knowledge": 891.86,
+          "health": 10000,
+          "legitimacy": 7876
+        },
+        "knowledge": {
+          "materials": 2201,
+          "mechanics": 1998,
+          "chemistry": 1920,
+          "biology": 1911,
+          "optics": 1912,
+          "computation": 1788,
+          "organization": 2601,
+          "energy": 1917,
+          "health": 1910
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21",
+          "technology-concept:31e150336509d05007349a44",
+          "technology-concept:27028d28136d27f90b0ac15a"
+        ]
+      },
+      "events": [],
+      "event_root": "805a913ff34e1a1f40d56e84d3b9023106b8fe9944dd80254d14a76f0b5b5dcd"
+    },
+    {
+      "year": 63,
+      "state": {
+        "population": 623,
+        "resources": {
+          "food": 7115.89,
+          "water": 14329.04,
+          "timber": 1393.91,
+          "ore": 763.43,
+          "energy": 4898.14,
+          "knowledge": 908.42,
+          "health": 10000,
+          "legitimacy": 7898
+        },
+        "knowledge": {
+          "materials": 2210,
+          "mechanics": 2009,
+          "chemistry": 1929,
+          "biology": 1941,
+          "optics": 1922,
+          "computation": 1814,
+          "organization": 2612,
+          "energy": 1926,
+          "health": 1931
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21",
+          "technology-concept:31e150336509d05007349a44",
+          "technology-concept:27028d28136d27f90b0ac15a"
+        ]
+      },
+      "events": [],
+      "event_root": "5279d0900cfa8281ec31d91810915c27e4972b316f29e21f66c84b4732ba134c"
+    },
+    {
+      "year": 64,
+      "state": {
+        "population": 631,
+        "resources": {
+          "food": 7403.3,
+          "water": 14767.32,
+          "timber": 1418.24,
+          "ore": 776.21,
+          "energy": 5018.25,
+          "knowledge": 941.19,
+          "health": 10000,
+          "legitimacy": 7925
+        },
+        "knowledge": {
+          "materials": 2221,
+          "mechanics": 2018,
+          "chemistry": 1940,
+          "biology": 1952,
+          "optics": 1944,
+          "computation": 1839,
+          "organization": 2620,
+          "energy": 1956,
+          "health": 1941
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21",
+          "technology-concept:31e150336509d05007349a44",
+          "technology-concept:27028d28136d27f90b0ac15a",
+          "technology-concept:e58cc8a66c3a18c15a77024e"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "TECHNOLOGY_ADOPTED",
+          "concept_id": "technology-concept:e58cc8a66c3a18c15a77024e",
+          "name": "声学公共通信网",
+          "progress": 1
+        }
+      ],
+      "event_root": "73abd7743d6726061dead83836d38f8cc12bb1f72b7a7f941e481f4acca99482"
+    },
+    {
+      "year": 65,
+      "state": {
+        "population": 639,
+        "resources": {
+          "food": 7678.96,
+          "water": 15240.3,
+          "timber": 1437.16,
+          "ore": 789.4,
+          "energy": 5139.91,
+          "knowledge": 958.17,
+          "health": 10000,
+          "legitimacy": 7947
+        },
+        "knowledge": {
+          "materials": 2231,
+          "mechanics": 2027,
+          "chemistry": 1969,
+          "biology": 1962,
+          "optics": 1954,
+          "computation": 1866,
+          "organization": 2631,
+          "energy": 1964,
+          "health": 1962
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21",
+          "technology-concept:31e150336509d05007349a44",
+          "technology-concept:27028d28136d27f90b0ac15a",
+          "technology-concept:e58cc8a66c3a18c15a77024e"
+        ]
+      },
+      "events": [],
+      "event_root": "5f5765b1db210ab847dcccc689fa3893a8de7712ac6082ffe42e696e20b92022"
+    },
+    {
+      "year": 66,
+      "state": {
+        "population": 647,
+        "resources": {
+          "food": 7903.62,
+          "water": 15719.27,
+          "timber": 1455.17,
+          "ore": 802.3,
+          "energy": 5263.11,
+          "knowledge": 975.37,
+          "health": 10000,
+          "legitimacy": 7969
+        },
+        "knowledge": {
+          "materials": 2239,
+          "mechanics": 2038,
+          "chemistry": 1980,
+          "biology": 1988,
+          "optics": 1978,
+          "computation": 1889,
+          "organization": 2639,
+          "energy": 1974,
+          "health": 1971
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21",
+          "technology-concept:31e150336509d05007349a44",
+          "technology-concept:27028d28136d27f90b0ac15a",
+          "technology-concept:e58cc8a66c3a18c15a77024e"
+        ]
+      },
+      "events": [],
+      "event_root": "65ae01e6e7bfcf5089813b117d68aa355b9bbc916d8b4dd1ece639cb73ab8cb6"
+    },
+    {
+      "year": 67,
+      "state": {
+        "population": 655,
+        "resources": {
+          "food": 8267.62,
+          "water": 16204.25,
+          "timber": 1475.8,
+          "ore": 814.18,
+          "energy": 5387.85,
+          "knowledge": 992.78,
+          "health": 10000,
+          "legitimacy": 7991
+        },
+        "knowledge": {
+          "materials": 2250,
+          "mechanics": 2050,
+          "chemistry": 1988,
+          "biology": 1998,
+          "optics": 1987,
+          "computation": 1919,
+          "organization": 2650,
+          "energy": 2004,
+          "health": 1994
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21",
+          "technology-concept:31e150336509d05007349a44",
+          "technology-concept:27028d28136d27f90b0ac15a",
+          "technology-concept:e58cc8a66c3a18c15a77024e"
+        ]
+      },
+      "events": [],
+      "event_root": "18e6494ca1a0cf2b9495bcc2df0b077df4b2b12622dba28cfb4d4674e33dfa29"
+    },
+    {
+      "year": 68,
+      "state": {
+        "population": 663,
+        "resources": {
+          "food": 8511.25,
+          "water": 16695.22,
+          "timber": 1498.5,
+          "ore": 828.94,
+          "energy": 5514.13,
+          "knowledge": 1010.4,
+          "health": 10000,
+          "legitimacy": 8013
+        },
+        "knowledge": {
+          "materials": 2259,
+          "mechanics": 2060,
+          "chemistry": 2010,
+          "biology": 2006,
+          "optics": 2015,
+          "computation": 1949,
+          "organization": 2659,
+          "energy": 2013,
+          "health": 2002
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21",
+          "technology-concept:31e150336509d05007349a44",
+          "technology-concept:27028d28136d27f90b0ac15a",
+          "technology-concept:e58cc8a66c3a18c15a77024e"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "CONCEPT_FORMED",
+          "concept_id": "technology-concept:0e5bcb2d7b17b67439ddd583",
+          "name": "碳基土壤修复阵列",
+          "progress": 0.363
+        }
+      ],
+      "event_root": "299c339ba269b028b76fff67b152a2c8303466ad127e962b7e751d083eb5af51"
+    },
+    {
+      "year": 69,
+      "state": {
+        "population": 671,
+        "resources": {
+          "food": 8766.06,
+          "water": 17192.18,
+          "timber": 1521.75,
+          "ore": 841.06,
+          "energy": 5641.96,
+          "knowledge": 1028.23,
+          "health": 10000,
+          "legitimacy": 8035
+        },
+        "knowledge": {
+          "materials": 2268,
+          "mechanics": 2071,
+          "chemistry": 2020,
+          "biology": 2038,
+          "optics": 2023,
+          "computation": 1979,
+          "organization": 2670,
+          "energy": 2022,
+          "health": 2028
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21",
+          "technology-concept:31e150336509d05007349a44",
+          "technology-concept:27028d28136d27f90b0ac15a",
+          "technology-concept:e58cc8a66c3a18c15a77024e"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "PRINCIPLE_DEMONSTRATED",
+          "concept_id": "technology-concept:0e5bcb2d7b17b67439ddd583",
+          "name": "碳基土壤修复阵列",
+          "progress": 0.5333
+        }
+      ],
+      "event_root": "a5574ccbacac545939ac0ba72bc901d0039fbd397576124dfcb02fe873dd34a6"
+    },
+    {
+      "year": 70,
+      "state": {
+        "population": 679,
+        "resources": {
+          "food": 9102.93,
+          "water": 17695.15,
+          "timber": 1544.3,
+          "ore": 851.47,
+          "energy": 5771.33,
+          "knowledge": 1046.28,
+          "health": 10000,
+          "legitimacy": 8057
+        },
+        "knowledge": {
+          "materials": 2278,
+          "mechanics": 2080,
+          "chemistry": 2049,
+          "biology": 2046,
+          "optics": 2035,
+          "computation": 2003,
+          "organization": 2682,
+          "energy": 2045,
+          "health": 2038
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21",
+          "technology-concept:31e150336509d05007349a44",
+          "technology-concept:27028d28136d27f90b0ac15a",
+          "technology-concept:e58cc8a66c3a18c15a77024e"
+        ]
+      },
+      "events": [
+        {
+          "type": "history",
+          "code": "DECADE_RECORDED",
+          "detail": {
+            "population": 679,
+            "adopted": 12
+          }
+        }
+      ],
+      "event_root": "18d638778d1bd6256f1f9e40ec5af7c02d35d41d6996c4bae02ebb3a26e31cb2"
+    },
+    {
+      "year": 71,
+      "state": {
+        "population": 687,
+        "resources": {
+          "food": 9387.37,
+          "water": 18204.11,
+          "timber": 1566.18,
+          "ore": 863.52,
+          "energy": 5902.24,
+          "knowledge": 1064.54,
+          "health": 10000,
+          "legitimacy": 8079
+        },
+        "knowledge": {
+          "materials": 2287,
+          "mechanics": 2091,
+          "chemistry": 2058,
+          "biology": 2057,
+          "optics": 2065,
+          "computation": 2032,
+          "organization": 2693,
+          "energy": 2056,
+          "health": 2070
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21",
+          "technology-concept:31e150336509d05007349a44",
+          "technology-concept:27028d28136d27f90b0ac15a",
+          "technology-concept:e58cc8a66c3a18c15a77024e"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "PROTOTYPE_READY",
+          "concept_id": "technology-concept:0e5bcb2d7b17b67439ddd583",
+          "name": "碳基土壤修复阵列",
+          "progress": 0.9211
+        }
+      ],
+      "event_root": "e21675bccdf1c6ecb9d6bc26ed0698cd961ed3e35c2eb5c455c9447062a848b1"
+    },
+    {
+      "year": 72,
+      "state": {
+        "population": 695,
+        "resources": {
+          "food": 9682.37,
+          "water": 18719.06,
+          "timber": 1587.36,
+          "ore": 877.53,
+          "energy": 6034.69,
+          "knowledge": 1083.01,
+          "health": 10007,
+          "legitimacy": 8101
+        },
+        "knowledge": {
+          "materials": 2299,
+          "mechanics": 2101,
+          "chemistry": 2067,
+          "biology": 2086,
+          "optics": 2074,
+          "computation": 2062,
+          "organization": 2705,
+          "energy": 2080,
+          "health": 2080
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21",
+          "technology-concept:31e150336509d05007349a44",
+          "technology-concept:27028d28136d27f90b0ac15a",
+          "technology-concept:e58cc8a66c3a18c15a77024e",
+          "technology-concept:0e5bcb2d7b17b67439ddd583"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "TECHNOLOGY_ADOPTED",
+          "concept_id": "technology-concept:0e5bcb2d7b17b67439ddd583",
+          "name": "碳基土壤修复阵列",
+          "progress": 1
+        }
+      ],
+      "event_root": "c71e2a3b3e5febdb2e0f58a0afd56b4fc7432fb6867d27566a8aa50c72a6b89f"
+    },
+    {
+      "year": 73,
+      "state": {
+        "population": 704,
+        "resources": {
+          "food": 9944.02,
+          "water": 19272.04,
+          "timber": 1614.86,
+          "ore": 890.17,
+          "energy": 6168.69,
+          "knowledge": 1101.72,
+          "health": 10000,
+          "legitimacy": 8123
+        },
+        "knowledge": {
+          "materials": 2311,
+          "mechanics": 2111,
+          "chemistry": 2098,
+          "biology": 2097,
+          "optics": 2098,
+          "computation": 2090,
+          "organization": 2714,
+          "energy": 2089,
+          "health": 2091
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21",
+          "technology-concept:31e150336509d05007349a44",
+          "technology-concept:27028d28136d27f90b0ac15a",
+          "technology-concept:e58cc8a66c3a18c15a77024e",
+          "technology-concept:0e5bcb2d7b17b67439ddd583"
+        ]
+      },
+      "events": [],
+      "event_root": "5310c124b0f39eb9e8c74107e676707abee09511bdf0ea6e08babcd476338612"
+    },
+    {
+      "year": 74,
+      "state": {
+        "population": 713,
+        "resources": {
+          "food": 10290.65,
+          "water": 19832.18,
+          "timber": 1642.86,
+          "ore": 904.45,
+          "energy": 6304.42,
+          "knowledge": 1120.67,
+          "health": 10000,
+          "legitimacy": 8145
+        },
+        "knowledge": {
+          "materials": 2323,
+          "mechanics": 2120,
+          "chemistry": 2108,
+          "biology": 2108,
+          "optics": 2108,
+          "computation": 2121,
+          "organization": 2723,
+          "energy": 2115,
+          "health": 2116
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21",
+          "technology-concept:31e150336509d05007349a44",
+          "technology-concept:27028d28136d27f90b0ac15a",
+          "technology-concept:e58cc8a66c3a18c15a77024e",
+          "technology-concept:0e5bcb2d7b17b67439ddd583"
+        ]
+      },
+      "events": [],
+      "event_root": "6c0c5e70f9cb30e170f83c8c3bab57da34639d0d146929504ac5f768c22f427d"
+    },
+    {
+      "year": 75,
+      "state": {
+        "population": 722,
+        "resources": {
+          "food": 10704.86,
+          "water": 20399.48,
+          "timber": 1664.13,
+          "ore": 915.96,
+          "energy": 6441.89,
+          "knowledge": 1139.86,
+          "health": 10000,
+          "legitimacy": 8167
+        },
+        "knowledge": {
+          "materials": 2332,
+          "mechanics": 2131,
+          "chemistry": 2142,
+          "biology": 2133,
+          "optics": 2142,
+          "computation": 2130,
+          "organization": 2733,
+          "energy": 2125,
+          "health": 2128
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21",
+          "technology-concept:31e150336509d05007349a44",
+          "technology-concept:27028d28136d27f90b0ac15a",
+          "technology-concept:e58cc8a66c3a18c15a77024e",
+          "technology-concept:0e5bcb2d7b17b67439ddd583"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "CONCEPT_FORMED",
+          "concept_id": "technology-concept:479ee92fd089fc91f4c0e70b",
+          "name": "菌丝自修复构件",
+          "progress": 0.4342
+        }
+      ],
+      "event_root": "edbc343948ef007d984762f7ef0c8d9f4034ff841b7f076f69f28151cef50060"
+    },
+    {
+      "year": 76,
+      "state": {
+        "population": 731,
+        "resources": {
+          "food": 11022.18,
+          "water": 20973.94,
+          "timber": 1691.93,
+          "ore": 931.38,
+          "energy": 6581.09,
+          "knowledge": 1159.29,
+          "health": 10000,
+          "legitimacy": 8189
+        },
+        "knowledge": {
+          "materials": 2341,
+          "mechanics": 2141,
+          "chemistry": 2152,
+          "biology": 2143,
+          "optics": 2152,
+          "computation": 2160,
+          "organization": 2742,
+          "energy": 2153,
+          "health": 2161
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21",
+          "technology-concept:31e150336509d05007349a44",
+          "technology-concept:27028d28136d27f90b0ac15a",
+          "technology-concept:e58cc8a66c3a18c15a77024e",
+          "technology-concept:0e5bcb2d7b17b67439ddd583"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "PRINCIPLE_DEMONSTRATED",
+          "concept_id": "technology-concept:479ee92fd089fc91f4c0e70b",
+          "name": "菌丝自修复构件",
+          "progress": 0.661
+        }
+      ],
+      "event_root": "85c029ba4f8cfde0c6a65a4b0bdb7fb38069759693a45cd6fe813b40832a3110"
+    },
+    {
+      "year": 77,
+      "state": {
+        "population": 740,
+        "resources": {
+          "food": 11450.34,
+          "water": 21555.56,
+          "timber": 1716.1,
+          "ore": 945.57,
+          "energy": 6722.02,
+          "knowledge": 1178.96,
+          "health": 10000,
+          "legitimacy": 8211
+        },
+        "knowledge": {
+          "materials": 2350,
+          "mechanics": 2170,
+          "chemistry": 2182,
+          "biology": 2176,
+          "optics": 2164,
+          "computation": 2171,
+          "organization": 2754,
+          "energy": 2164,
+          "health": 2172
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21",
+          "technology-concept:31e150336509d05007349a44",
+          "technology-concept:27028d28136d27f90b0ac15a",
+          "technology-concept:e58cc8a66c3a18c15a77024e",
+          "technology-concept:0e5bcb2d7b17b67439ddd583"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "PROTOTYPE_READY",
+          "concept_id": "technology-concept:479ee92fd089fc91f4c0e70b",
+          "name": "菌丝自修复构件",
+          "progress": 0.912
+        }
+      ],
+      "event_root": "405a54eb0e446f0805b56bd5810ed34937d87e553b7d3f14fd317eac8b49cf2e"
+    },
+    {
+      "year": 78,
+      "state": {
+        "population": 749,
+        "resources": {
+          "food": 11739.89,
+          "water": 22144.35,
+          "timber": 1749.83,
+          "ore": 957.41,
+          "energy": 6864.7,
+          "knowledge": 1198.87,
+          "health": 10005,
+          "legitimacy": 8233
+        },
+        "knowledge": {
+          "materials": 2363,
+          "mechanics": 2198,
+          "chemistry": 2193,
+          "biology": 2187,
+          "optics": 2193,
+          "computation": 2184,
+          "organization": 2765,
+          "energy": 2191,
+          "health": 2182
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21",
+          "technology-concept:31e150336509d05007349a44",
+          "technology-concept:27028d28136d27f90b0ac15a",
+          "technology-concept:e58cc8a66c3a18c15a77024e",
+          "technology-concept:0e5bcb2d7b17b67439ddd583",
+          "technology-concept:479ee92fd089fc91f4c0e70b"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "TECHNOLOGY_ADOPTED",
+          "concept_id": "technology-concept:479ee92fd089fc91f4c0e70b",
+          "name": "菌丝自修复构件",
+          "progress": 1
+        }
+      ],
+      "event_root": "c2d4cb18c72da3a6ad4d9ced5eccacdf401a7fae85715604da7686de50fd7252"
+    },
+    {
+      "year": 79,
+      "state": {
+        "population": 758,
+        "resources": {
+          "food": 12160.56,
+          "water": 22774.81,
+          "timber": 1771.35,
+          "ore": 974.88,
+          "energy": 7009.1,
+          "knowledge": 1219.02,
+          "health": 10000,
+          "legitimacy": 8255
+        },
+        "knowledge": {
+          "materials": 2376,
+          "mechanics": 2210,
+          "chemistry": 2205,
+          "biology": 2218,
+          "optics": 2203,
+          "computation": 2220,
+          "organization": 2774,
+          "energy": 2202,
+          "health": 2209
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21",
+          "technology-concept:31e150336509d05007349a44",
+          "technology-concept:27028d28136d27f90b0ac15a",
+          "technology-concept:e58cc8a66c3a18c15a77024e",
+          "technology-concept:0e5bcb2d7b17b67439ddd583",
+          "technology-concept:479ee92fd089fc91f4c0e70b"
+        ]
+      },
+      "events": [],
+      "event_root": "ef3b4ee1b01d1aafca0ed3357ce2ab6edc406bb9185c5401fc9e05dfdb806a4e"
+    },
+    {
+      "year": 80,
+      "state": {
+        "population": 767,
+        "resources": {
+          "food": 12573.56,
+          "water": 23412.84,
+          "timber": 1796.89,
+          "ore": 989.68,
+          "energy": 7155.25,
+          "knowledge": 1239.4,
+          "health": 10000,
+          "legitimacy": 8277
+        },
+        "knowledge": {
+          "materials": 2386,
+          "mechanics": 2223,
+          "chemistry": 2235,
+          "biology": 2227,
+          "optics": 2233,
+          "computation": 2231,
+          "organization": 2788,
+          "energy": 2228,
+          "health": 2219
+        },
+        "policies": {
+          "knowledge_openness": 8000,
+          "research_share": 0.22,
+          "rationing": false,
+          "prototype_subsidy": 0
+        },
+        "adopted": [
+          "technology-concept:6def80101f16a4a759beb141",
+          "technology-concept:198955a1a86d525184cca7b9",
+          "technology-concept:838f563709e679c927913b09",
+          "technology-concept:98ef810222c4bcec476ceb34",
+          "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+          "technology-concept:7e51a5b2767ba10f24fa17e1",
+          "technology-concept:70ff74ced8346a952022c7a4",
+          "technology-concept:ca0d85577301359c5253a2a3",
+          "technology-concept:cfca459a6e4416cdb60afa21",
+          "technology-concept:31e150336509d05007349a44",
+          "technology-concept:27028d28136d27f90b0ac15a",
+          "technology-concept:e58cc8a66c3a18c15a77024e",
+          "technology-concept:0e5bcb2d7b17b67439ddd583",
+          "technology-concept:479ee92fd089fc91f4c0e70b"
+        ]
+      },
+      "events": [
+        {
+          "type": "technology",
+          "code": "PROTOTYPE_READY",
+          "concept_id": "technology-concept:b7f0ab814d4bce1b2288eaa9",
+          "name": "玻璃模块张力协作生产系统",
+          "progress": 0.7785
+        },
+        {
+          "type": "technology",
+          "code": "EXPERIMENT_FAILED",
+          "concept_id": "technology-concept:b7f0ab814d4bce1b2288eaa9",
+          "name": "玻璃模块张力协作生产系统"
+        },
+        {
+          "type": "history",
+          "code": "DECADE_RECORDED",
+          "detail": {
+            "population": 767,
+            "adopted": 14
+          }
+        }
+      ],
+      "event_root": "9d06f46d3a42598bf49bd2b102915081e8264565fe6b2955043fae462a7c9a86"
+    }
+  ],
+  "final_state": {
+    "year": 80,
+    "population": 767,
+    "resources": {
+      "food": 12573.560844286209,
+      "water": 23412.840392999995,
+      "timber": 1796.8895481526076,
+      "ore": 989.6799293815363,
+      "energy": 7155.245599999997,
+      "knowledge": 1239.4023184000005,
+      "health": 10000,
+      "legitimacy": 8277
+    },
+    "knowledge": {
+      "materials": 2386,
+      "mechanics": 2223,
+      "chemistry": 2235,
+      "biology": 2227,
+      "optics": 2233,
+      "computation": 2231,
+      "organization": 2788,
+      "energy": 2228,
+      "health": 2219
+    },
+    "policies": {
+      "knowledge_openness": 8000,
+      "research_share": 0.22,
+      "rationing": false,
+      "prototype_subsidy": 0
+    },
+    "institutions": {
+      "institution:council": {
+        "capacity": 40,
+        "legitimacy": 5800
+      },
+      "institution:market": {
+        "capacity": 52,
+        "legitimacy": 6040
+      },
+      "institution:archive": {
+        "capacity": 64,
+        "legitimacy": 6280
+      },
+      "institution:workshop": {
+        "capacity": 76,
+        "legitimacy": 6520
+      },
+      "institution:clinic": {
+        "capacity": 88,
+        "legitimacy": 6760
+      },
+      "institution:commons": {
+        "capacity": 100,
+        "legitimacy": 7000
+      },
+      "institution:player:lab": {
+        "capacity": 42,
+        "legitimacy": 5200
+      }
+    },
+    "concepts": {
+      "technology-concept:cd195418a5b5bca9d7ee3c49": {
+        "progress": 0,
+        "status": "latent",
+        "milestones": []
+      },
+      "technology-concept:98ef810222c4bcec476ceb34": {
+        "progress": 1,
+        "status": "adopted",
+        "milestones": [
+          "CONCEPT_FORMED",
+          "PRINCIPLE_DEMONSTRATED",
+          "PROTOTYPE_READY",
+          "TECHNOLOGY_ADOPTED"
+        ]
+      },
+      "technology-concept:6def80101f16a4a759beb141": {
+        "progress": 1,
+        "status": "adopted",
+        "milestones": [
+          "CONCEPT_FORMED",
+          "PRINCIPLE_DEMONSTRATED",
+          "PROTOTYPE_READY",
+          "TECHNOLOGY_ADOPTED"
+        ]
+      },
+      "technology-concept:70ff74ced8346a952022c7a4": {
+        "progress": 1,
+        "status": "adopted",
+        "milestones": [
+          "CONCEPT_FORMED",
+          "PRINCIPLE_DEMONSTRATED",
+          "PROTOTYPE_READY",
+          "TECHNOLOGY_ADOPTED"
+        ]
+      },
+      "technology-concept:ca0d85577301359c5253a2a3": {
+        "progress": 1,
+        "status": "adopted",
+        "milestones": [
+          "CONCEPT_FORMED",
+          "PRINCIPLE_DEMONSTRATED",
+          "PROTOTYPE_READY",
+          "TECHNOLOGY_ADOPTED"
+        ]
+      },
+      "technology-concept:0e5bcb2d7b17b67439ddd583": {
+        "progress": 1,
+        "status": "adopted",
+        "milestones": [
+          "CONCEPT_FORMED",
+          "PRINCIPLE_DEMONSTRATED",
+          "PROTOTYPE_READY",
+          "TECHNOLOGY_ADOPTED"
+        ]
+      },
+      "technology-concept:479ee92fd089fc91f4c0e70b": {
+        "progress": 1,
+        "status": "adopted",
+        "milestones": [
+          "CONCEPT_FORMED",
+          "PRINCIPLE_DEMONSTRATED",
+          "PROTOTYPE_READY",
+          "TECHNOLOGY_ADOPTED"
+        ]
+      },
+      "technology-concept:838f563709e679c927913b09": {
+        "progress": 1,
+        "status": "adopted",
+        "milestones": [
+          "CONCEPT_FORMED",
+          "PRINCIPLE_DEMONSTRATED",
+          "PROTOTYPE_READY",
+          "TECHNOLOGY_ADOPTED"
+        ]
+      },
+      "technology-concept:6a72e0b3ad0a2f4028ecb04f": {
+        "progress": 1,
+        "status": "adopted",
+        "milestones": [
+          "CONCEPT_FORMED",
+          "PRINCIPLE_DEMONSTRATED",
+          "PROTOTYPE_READY",
+          "TECHNOLOGY_ADOPTED"
+        ]
+      },
+      "technology-concept:e58cc8a66c3a18c15a77024e": {
+        "progress": 1,
+        "status": "adopted",
+        "milestones": [
+          "CONCEPT_FORMED",
+          "PRINCIPLE_DEMONSTRATED",
+          "PROTOTYPE_READY",
+          "TECHNOLOGY_ADOPTED"
+        ]
+      },
+      "technology-concept:7e51a5b2767ba10f24fa17e1": {
+        "progress": 1,
+        "status": "adopted",
+        "milestones": [
+          "CONCEPT_FORMED",
+          "PRINCIPLE_DEMONSTRATED",
+          "PROTOTYPE_READY",
+          "TECHNOLOGY_ADOPTED"
+        ]
+      },
+      "technology-concept:31e150336509d05007349a44": {
+        "progress": 1,
+        "status": "adopted",
+        "milestones": [
+          "CONCEPT_FORMED",
+          "PRINCIPLE_DEMONSTRATED",
+          "PROTOTYPE_READY",
+          "TECHNOLOGY_ADOPTED"
+        ]
+      },
+      "technology-concept:b7f0ab814d4bce1b2288eaa9": {
+        "progress": 0.5984586198953918,
+        "status": "prototype",
+        "milestones": [
+          "CONCEPT_FORMED",
+          "PRINCIPLE_DEMONSTRATED",
+          "PROTOTYPE_READY"
+        ]
+      },
+      "technology-concept:198955a1a86d525184cca7b9": {
+        "progress": 1,
+        "status": "adopted",
+        "milestones": [
+          "CONCEPT_FORMED",
+          "PRINCIPLE_DEMONSTRATED",
+          "PROTOTYPE_READY",
+          "TECHNOLOGY_ADOPTED"
+        ]
+      },
+      "technology-concept:cfca459a6e4416cdb60afa21": {
+        "progress": 1,
+        "status": "adopted",
+        "milestones": [
+          "CONCEPT_FORMED",
+          "PRINCIPLE_DEMONSTRATED",
+          "PROTOTYPE_READY",
+          "TECHNOLOGY_ADOPTED"
+        ]
+      },
+      "technology-concept:27028d28136d27f90b0ac15a": {
+        "progress": 1,
+        "status": "adopted",
+        "milestones": [
+          "CONCEPT_FORMED",
+          "PRINCIPLE_DEMONSTRATED",
+          "PROTOTYPE_READY",
+          "TECHNOLOGY_ADOPTED"
+        ]
+      }
+    },
+    "adopted": [
+      "technology-concept:6def80101f16a4a759beb141",
+      "technology-concept:198955a1a86d525184cca7b9",
+      "technology-concept:838f563709e679c927913b09",
+      "technology-concept:98ef810222c4bcec476ceb34",
+      "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+      "technology-concept:7e51a5b2767ba10f24fa17e1",
+      "technology-concept:70ff74ced8346a952022c7a4",
+      "technology-concept:ca0d85577301359c5253a2a3",
+      "technology-concept:cfca459a6e4416cdb60afa21",
+      "technology-concept:31e150336509d05007349a44",
+      "technology-concept:27028d28136d27f90b0ac15a",
+      "technology-concept:e58cc8a66c3a18c15a77024e",
+      "technology-concept:0e5bcb2d7b17b67439ddd583",
+      "technology-concept:479ee92fd089fc91f4c0e70b"
+    ],
+    "failed": []
+  },
+  "summary": {
+    "years": 80,
+    "population_start": 320,
+    "population_end": 767,
+    "technologies_adopted": 14,
+    "technology_ids": [
+      "technology-concept:6def80101f16a4a759beb141",
+      "technology-concept:198955a1a86d525184cca7b9",
+      "technology-concept:838f563709e679c927913b09",
+      "technology-concept:98ef810222c4bcec476ceb34",
+      "technology-concept:6a72e0b3ad0a2f4028ecb04f",
+      "technology-concept:7e51a5b2767ba10f24fa17e1",
+      "technology-concept:70ff74ced8346a952022c7a4",
+      "technology-concept:ca0d85577301359c5253a2a3",
+      "technology-concept:cfca459a6e4416cdb60afa21",
+      "technology-concept:31e150336509d05007349a44",
+      "technology-concept:27028d28136d27f90b0ac15a",
+      "technology-concept:e58cc8a66c3a18c15a77024e",
+      "technology-concept:0e5bcb2d7b17b67439ddd583",
+      "technology-concept:479ee92fd089fc91f4c0e70b"
+    ],
+    "event_count": 98
+  },
+  "history_root": "aaff02e9947fdef84759bf4913ab8537c6fdbf72e3f0f1f79e0117ac967dbb46"
+}

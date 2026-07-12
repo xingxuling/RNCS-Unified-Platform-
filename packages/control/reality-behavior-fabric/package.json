@@ -1,0 +1,23 @@
+{
+  "name": "@taowind/reality-behavior-fabric",
+  "version": "0.9.0-alpha.1",
+  "description": "生产级确定性行为、任务、协作、重放、规则、状态机、行为树与权威执行织构",
+  "type": "module",
+  "scripts": {
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs",
+    "demo": "node src/cli.mjs demo --program examples/frost-trial.behavior.json --out outputs/frost-trial",
+    "verify": "node src/cli.mjs verify --workspace outputs/frost-trial/workspace.json",
+    "benchmark": "node scripts/benchmark.mjs",
+    "audit:release": "node scripts/release-audit.mjs",
+    "manifest": "node scripts/generate-release-manifest.mjs",
+    "serve": "node src/cli.mjs serve --dir outputs/frost-trial --port 4192",
+    "verify:release": "npm test && npm run demo && npm run verify && npm run benchmark && npm run audit:release && npm run manifest",
+    "verify:files": "node scripts/verify-release-manifest.mjs"
+  },
+  "exports": {
+    ".": "./src/index.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

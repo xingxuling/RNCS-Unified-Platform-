@@ -1,0 +1,28 @@
+{
+  "version": "0.1",
+  "documentId": "hello-title",
+  "documentHash": "fnv1a64:0cc450cd6f0d3b9c",
+  "fps": 5,
+  "start": 0,
+  "end": 0.2,
+  "width": 160,
+  "height": 90,
+  "frames": [
+    {
+      "frameIndex": 0,
+      "time": 0,
+      "filename": "C:\\Users\\USER\\Documents\\RCL\\RNCS-Unified-Platform\\packages\\world\\visual-state-runtime\\outputs\\test-range\\frame_000000.png",
+      "byteSize": 931,
+      "contentHash": "fnv1a64:11a6872d52f3bd9d",
+      "semanticHash": "fnv1a64:39ed6844598d5830"
+    },
+    {
+      "frameIndex": 1,
+      "time": 0.2,
+      "filename": "C:\\Users\\USER\\Documents\\RCL\\RNCS-Unified-Platform\\packages\\world\\visual-state-runtime\\outputs\\test-range\\frame_000001.png",
+      "byteSize": 1675,
+      "contentHash": "fnv1a64:d9113eb0efaa205b",
+      "semanticHash": "fnv1a64:6f236210f7bf4674"
+    }
+  ]
+}

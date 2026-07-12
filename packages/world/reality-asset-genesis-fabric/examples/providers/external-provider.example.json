@@ -1,0 +1,11 @@
+{
+  "format": "reality-asset.provider.v0.1",
+  "provider_id": "provider:external:image-model",
+  "name": "External Image Model Adapter Example",
+  "mode": "stdio",
+  "command": ["python", "provider.py"],
+  "capabilities": [
+    {"capability_id":"asset.generate.vector-concept","outputs":["concept-svg"],"quality":9000,"cost":3000,"latency":5000,"platforms":["any"]}
+  ],
+  "metadata": {"note":"Use createProviderManifest() before registration to seal this manifest."}
+}

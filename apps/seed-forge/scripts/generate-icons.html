@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Seed Engine - 图标生成器</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #0f172a;
+      color: #e2e8f0;
+    }
+    .container {
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 30px;
+      border: 1px solid #334155;
+    }
+    h1 {
+      color: #0ea5e9;
+      margin-top: 0;
+    }
+    .icon-preview {
+      display: flex;
+      gap: 20px;
+      margin: 30px 0;
+      flex-wrap: wrap;
+    }
+    .icon-box {
+      text-align: center;
+      padding: 20px;
+      background: #0f172a;
+      border-radius: 8px;
+      border: 1px solid #334155;
+    }
+    .icon-box canvas {
+      border: 2px solid #0ea5e9;
+      border-radius: 8px;
+      background: #0f172a;
+    }
+    button {
+      background: #0ea5e9;
+      color: #0f172a;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button:hover {
+      background: #06b6d4;
+    }
+    .instructions {
+      background: #0f172a;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+      border-left: 4px solid #0ea5e9;
+    }
+    .instructions ol {
+      line-height: 1.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🌱 The Seed Engine - 图标生成器</h1>
+    <p>使用此工具生成 PWA 所需的图标文件</p>
+    
+    <div class="icon-preview">
+      <div class="icon-box">
+        <h3>192x192</h3>
+        <canvas id="canvas192" width="192" height="192"></canvas>
+        <br><br>
+        <button onclick="downloadIcon(192)">下载 192x192</button>
+      </div>
+      
+      <div class="icon-box">
+        <h3>512x512</h3>
+        <canvas id="canvas512" width="512" height="512"></canvas>
+        <br><br>
+        <button onclick="downloadIcon(512)">下载 512x512</button>
+      </div>
+      
+      <div class="icon-box">
+        <h3>1024x1024</h3>
+        <canvas id="canvas1024" width="512" height="512"></canvas>
+        <br><br>
+        <button onclick="downloadIcon(1024)">下载 1024x1024</button>
+      </div>
+    </div>
+    
+    <div class="instructions">
+      <h3>📋 使用说明</h3>
+      <ol>
+        <li>点击上方的"下载"按钮生成对应尺寸的图标</li>
+        <li>将下载的 PNG 文件保存到 <code>public/</code> 目录</li>
+        <li>重命名为：<code>icon-192.png</code> 和 <code>icon-512.png</code></li>
+        <li>运行 <code>npm run build</code> 重新构建</li>
+        <li>运行 <code>npm run preview</code> 测试 PWA</li>
+      </ol>
+    </div>
+  </div>
+
+  <script>
+    // 绘制图标
+    function drawIcon(canvas, size) {
+      const ctx = canvas.getContext('2d');
+      const scale = canvas.width / 512; // 基于 512 设计
+      
+      // 背景
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // 渐变背景
+      const bgGradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+      bgGradient.addColorStop(0, '#0f172a');
+      bgGradient.addColorStop(1, '#1e293b');
+      ctx.fillStyle = bgGradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      
+      // 主符号：空集符号
+      ctx.save();
+      ctx.translate(centerX, centerY * 0.4);
+      
+      // 外圆
+      ctx.strokeStyle = '#0ea5e9';
+      ctx.lineWidth = 18 * scale;
+      ctx.beginPath();
+      ctx.arc(0, 0, 120 * scale, 0, Math.PI * 2);
+      ctx.stroke();
+      
+      // 内圆
+      ctx.lineWidth = 14 * scale;
+      ctx.beginPath();
+      ctx.arc(0, 0, 85 * scale, 0, Math.PI * 2);
+      ctx.stroke();
+      
+      // 对角线
+      ctx.lineWidth = 22 * scale;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(-85 * scale, -85 * scale);
+      ctx.lineTo(85 * scale, 85 * scale);
+      ctx.stroke();
+      
+      // 中心点
+      ctx.fillStyle = '#0ea5e9';
+      ctx.beginPath();
+      ctx.arc(0, 0, 14 * scale, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // 轨道粒子
+      const particles = [
+        [0, -140 * scale, 5 * scale],
+        [99 * scale, 99 * scale, 4 * scale],
+        [-99 * scale, 99 * scale, 4 * scale],
+        [99 * scale, -99 * scale, 4 * scale],
+        [-99 * scale, -99 * scale, 4 * scale],
+        [0, 140 * scale, 3 * scale],
+        [140 * scale, 0, 3 * scale],
+        [-140 * scale, 0, 3 * scale],
+      ];
+      
+      particles.forEach(([x, y, r]) => {
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      
+      ctx.restore();
+      
+      // 文字（仅大尺寸显示）
+      if (size >= 512) {
+        ctx.fillStyle = '#0ea5e9';
+        ctx.font = `bold ${36 * scale}px Arial`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('THE SEED', centerX, centerY * 1.4);
+        ctx.fillText('ENGINE', centerX, centerY * 1.4 + 42 * scale);
+      }
+    }
+    
+    // 初始化画布
+    function init() {
+      drawIcon(document.getElementById('canvas192'), 192);
+      drawIcon(document.getElementById('canvas512'), 512);
+      drawIcon(document.getElementById('canvas1024'), 1024);
+    }
+    
+    // 下载图标
+    function downloadIcon(size) {
+      const canvas = document.getElementById(`canvas${size}`);
+      const link = document.createElement('a');
+      link.download = `icon-${size}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+    
+    // 页面加载时初始化
+    window.onload = init;
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,7 @@
+{
+  "events": [
+    {"format":"reality-studio.live-event.v0.4","sessionId":"studio-live:cli","projectId":"reality-studio-reality-graph-demo","sequence":1,"type":"blackboard.set","sceneId":"first-leap","payload":{"key":"energy","value":3}},
+    {"format":"reality-studio.live-event.v0.4","sessionId":"studio-live:cli","projectId":"reality-studio-reality-graph-demo","sequence":2,"type":"signal.emitted","sceneId":"first-leap","payload":{"signal":"core.collected","subject":"core-a","payload":{"energy":3}}},
+    {"format":"reality-studio.live-event.v0.4","sessionId":"studio-live:cli","projectId":"reality-studio-reality-graph-demo","sequence":3,"type":"object.updated","sceneId":"first-leap","payload":{"objectUid":"obj-0xnzhd9","set":{"x":155,"y":233}}}
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.example/schemas/rfe-generation-v0.3.json",
+  "type": "object",
+  "required": [
+    "format",
+    "worldId",
+    "branchId",
+    "generationId",
+    "realityRevision",
+    "logicalTime",
+    "semanticRoot",
+    "evidenceRoot",
+    "refs",
+    "integrityHash"
+  ],
+  "properties": {
+    "format": {
+      "const": "rfe.generation.v0.3"
+    },
+    "worldId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "branchId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "generationId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "parentGenerationId": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "realityRevision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "logicalTime": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "semanticRoot": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "evidenceRoot": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "authorityEventHead": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "refs": {
+      "type": "object",
+      "required": [
+        "identity",
+        "event-ledger"
+      ],
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+      }
+    },
+    "integrityHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "additionalProperties": false
+}

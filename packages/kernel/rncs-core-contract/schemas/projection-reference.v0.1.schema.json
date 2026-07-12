@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/rncs/projection-reference.v0.1.schema.json",
+  "type": "object",
+  "required": [
+    "projection_id",
+    "observer_id",
+    "modality",
+    "target_host",
+    "semantic_root",
+    "projection_root"
+  ],
+  "properties": {
+    "projection_id": {
+      "type": "string"
+    },
+    "observer_id": {
+      "type": "string"
+    },
+    "modality": {
+      "enum": [
+        "visual",
+        "auditory",
+        "haptic",
+        "text",
+        "multimodal"
+      ]
+    },
+    "target_host": {
+      "type": "string"
+    },
+    "semantic_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "projection_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

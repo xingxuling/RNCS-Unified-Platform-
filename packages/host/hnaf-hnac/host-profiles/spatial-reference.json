@@ -1,0 +1,43 @@
+{
+  "id": "hnaf.reference.spatial",
+  "family": "xr",
+  "execution_profiles": [
+    "wasm-core@1",
+    "declarative-v0"
+  ],
+  "capabilities": {
+    "host.log": [
+      "1"
+    ],
+    "host.clock": [
+      "1"
+    ],
+    "environment.summary": [
+      "1"
+    ],
+    "storage.kv": [
+      "1",
+      "2"
+    ],
+    "storage.state": [
+      "1"
+    ]
+  },
+  "interaction_modes": [
+    "pointer",
+    "keyboard",
+    "voice",
+    "neural"
+  ],
+  "resources": {
+    "viewport_width": 1920,
+    "viewport_height": 1080,
+    "screen_reader": false,
+    "spatial": true
+  },
+  "policies": {
+    "require_signature": false,
+    "network_default": "deny",
+    "accessibility_mode": false
+  }
+}

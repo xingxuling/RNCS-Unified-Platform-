@@ -1,0 +1,60 @@
+{
+  "format": "ragf.society-runtime-contract.v0.5",
+  "version": "0.5.0-alpha.1",
+  "world_id": "world:5c46cbb3d1a1e47712b0e9b4",
+  "runtimes": {
+    "behavior": {
+      "required": true,
+      "systems": [
+        "agent-state-machines",
+        "institution-rules",
+        "player-actions"
+      ]
+    },
+    "rsr": {
+      "required": true,
+      "systems": [
+        "resource-flows",
+        "time",
+        "causality",
+        "deterministic-replay"
+      ]
+    },
+    "vsr": {
+      "required": true,
+      "systems": [
+        "2.5d-isometric-projection",
+        "history-overlay",
+        "technology-graph"
+      ]
+    },
+    "network": {
+      "required": false,
+      "systems": [
+        "player-session",
+        "authority-sync"
+      ]
+    }
+  },
+  "tick": {
+    "unit": "year",
+    "subticks": [
+      "production",
+      "consumption",
+      "social-decision",
+      "research",
+      "technology",
+      "history-commit"
+    ]
+  },
+  "authority": {
+    "world_state": "server-or-local-authoritative",
+    "player_actions": "bounded-and-audited"
+  },
+  "contracts": {
+    "ecology_root": "5aeef919058a3d4125ecb04a5dbc84424b6287a489b08b747e1b868bec95538f",
+    "concept_space_root": "fa9d540c33fb3f512ff080625b7106ba6f41d0656678ed2059036eda6c0080db",
+    "participation_root": "87a37390849762087f37267f946ee6823b4bc5021a7093b452a58414cbe76f97"
+  },
+  "runtime_root": "b495008607fe1dc5ca138a8a3f42c233e292415ddce74f2103b7737574bc81c8"
+}

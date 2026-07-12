@@ -1,0 +1,11 @@
+{
+  "version": "0.1",
+  "root": {
+    "type": "document",
+    "title": "Portable State Fabric",
+    "children": [
+      {"type": "information", "label": "Portable", "binding": "state.portable.profile"},
+      {"type": "action", "label": "Export portable state", "intent": "state.export"}
+    ]
+  }
+}

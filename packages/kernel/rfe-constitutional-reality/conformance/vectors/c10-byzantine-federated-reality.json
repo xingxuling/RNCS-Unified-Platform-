@@ -1,0 +1,285 @@
+{
+  "format": "rfe.conformance.byzantine-federated-reality.v0.8",
+  "scenario": "equivocation-quarantine-conflicting-fork-rejection-and-durable-certificate-recovery",
+  "parentCertificateHash": "49162edb564dc6e8523fb08bf54c7666be62c2cda8cc4b531b996cbc4b50eaf7",
+  "clusters": [
+    {
+      "clusterId": "cluster:aurora",
+      "weight": 4,
+      "revision": 1,
+      "sovereignRoot": "b801c9223613da332740232a7898a710ed63ce184b8ff900d547b9daae752924",
+      "authorityProofHash": "74cb358b84bd9560a0d564745dcaba3d2fdf9a9b2664b6156030a32ba7019cfd",
+      "policyHash": "f0826282d28fa7aa42d8d9665502cfcb859435ac7268209c4eb61e33d836e67c",
+      "verifierKey": "fixture-key-aurora-v080"
+    },
+    {
+      "clusterId": "cluster:forge",
+      "weight": 3,
+      "revision": 1,
+      "sovereignRoot": "6c527db265a50263e0054fc880846efb9251d4d73445108ee0756e400603e550",
+      "authorityProofHash": "74cb358b84bd9560a0d564745dcaba3d2fdf9a9b2664b6156030a32ba7019cfd",
+      "policyHash": "c99d6ae1b790b198af00087ace8915e685ddcd05eb9c9d738459d458f3b5019f",
+      "verifierKey": "fixture-key-forge-v080"
+    },
+    {
+      "clusterId": "cluster:harbor",
+      "weight": 2,
+      "revision": 0,
+      "sovereignRoot": "5da53a65b916100bddb6d4db6c2dd5c0381705e1c84185b8ebb777f689c149ad",
+      "authorityProofHash": "74cb358b84bd9560a0d564745dcaba3d2fdf9a9b2664b6156030a32ba7019cfd",
+      "policyHash": "e732b7649becf8011477a50e41a2bd04b6b128f32b262f94e7e886ae127a65b3",
+      "verifierKey": "fixture-key-harbor-v080"
+    },
+    {
+      "clusterId": "cluster:mirror",
+      "weight": 1,
+      "revision": 0,
+      "sovereignRoot": "071bf4a4e9ac69a0106d26a345e0ac68982b0064ac16cae3143ce6cca219d636",
+      "authorityProofHash": "74cb358b84bd9560a0d564745dcaba3d2fdf9a9b2664b6156030a32ba7019cfd",
+      "policyHash": "b8e58d208f8aad732822becc2d949e53258ed16c0908da47ad99e465f6c4775a",
+      "verifierKey": "fixture-key-mirror-v080"
+    }
+  ],
+  "totalWeight": 10,
+  "byzantineBudgetWeight": 3,
+  "quorumWeight": 7,
+  "mainProposal": {
+    "proposalId": "proposal:c10:canonical-main",
+    "requiredClusterIds": [
+      "cluster:aurora",
+      "cluster:forge"
+    ],
+    "operations": [
+      {
+        "clusterId": "cluster:aurora",
+        "operation": {
+          "type": "activate-reality-bridge",
+          "bridgeId": "bridge:c10",
+          "route": "aurora-forge"
+        }
+      },
+      {
+        "clusterId": "cluster:forge",
+        "operation": {
+          "type": "anchor-reality-bridge",
+          "bridgeId": "bridge:c10",
+          "ledgerSlot": 12
+        }
+      }
+    ]
+  },
+  "forkProposal": {
+    "proposalId": "proposal:c10:malicious-fork",
+    "requiredClusterIds": [
+      "cluster:harbor",
+      "cluster:mirror"
+    ],
+    "operations": [
+      {
+        "clusterId": "cluster:harbor",
+        "operation": {
+          "type": "redirect-reality-bridge",
+          "bridgeId": "bridge:c10",
+          "route": "harbor-mirror"
+        }
+      },
+      {
+        "clusterId": "cluster:mirror",
+        "operation": {
+          "type": "claim-reality-bridge",
+          "bridgeId": "bridge:c10",
+          "owner": "mirror"
+        }
+      }
+    ]
+  },
+  "helpers": {
+    "initialFederationRoot": "ff5af2c2a05264610c9f7e926f705bdee20032b640afe7fa5ae1e398e2872074",
+    "mainProposalHash": "d2cd4d1068ee9dc6dce9c93d3eddb30938266bdf298c3669713f891b0e2b3f50",
+    "forkProposalHash": "8eb5774d876879848377554b14a0de5e19d092731b4e84022ce3b12a857729c0",
+    "attestationHashes": [
+      "b84e35598fa9ea1705a9a47179b03825b37f4c21823476ea874873559cc2caa5",
+      "3005bdc4d3ce06325a81221c1780a1fedb6f7ba896db9f15ecc4bf3e74d85af8",
+      "a20a97670687fcfb98e48d1128c5b4316859ffa9257920605c22500afd360039",
+      "a8e052fa155f16cd3f1c0b66b08679d83724721c35d9fdc0949469a3c6a9686c",
+      "15dd39ea566535a2e11461973988e5eaf143aae41f4e9d560518095351aca718"
+    ]
+  },
+  "expected": {
+    "format": "rfe.byzantine-federated-reality-result.v0.8",
+    "consensusModel": "weighted-byzantine-quorum-with-equivocation-exclusion",
+    "totalWeight": 10,
+    "byzantineBudgetWeight": 3,
+    "quorumWeight": 7,
+    "initialFederationRoot": "ff5af2c2a05264610c9f7e926f705bdee20032b640afe7fa5ae1e398e2872074",
+    "parentCertificateHash": "49162edb564dc6e8523fb08bf54c7666be62c2cda8cc4b531b996cbc4b50eaf7",
+    "mainProposalHash": "d2cd4d1068ee9dc6dce9c93d3eddb30938266bdf298c3669713f891b0e2b3f50",
+    "forkProposalHash": "8eb5774d876879848377554b14a0de5e19d092731b4e84022ce3b12a857729c0",
+    "equivocationEvidence": [
+      {
+        "format": "rfe.equivocation-evidence.v0.8",
+        "epoch": 1,
+        "round": 1,
+        "clusterId": "cluster:harbor",
+        "parentFederationRoot": "ff5af2c2a05264610c9f7e926f705bdee20032b640afe7fa5ae1e398e2872074",
+        "firstProposalHash": "8eb5774d876879848377554b14a0de5e19d092731b4e84022ce3b12a857729c0",
+        "secondProposalHash": "d2cd4d1068ee9dc6dce9c93d3eddb30938266bdf298c3669713f891b0e2b3f50",
+        "firstAttestationHash": "a8e052fa155f16cd3f1c0b66b08679d83724721c35d9fdc0949469a3c6a9686c",
+        "secondAttestationHash": "a20a97670687fcfb98e48d1128c5b4316859ffa9257920605c22500afd360039",
+        "evidenceHash": "9e3761e33c0ca162bfa617108c1ff3b1e7ff8cf1f783e6625c03c5550391d953"
+      }
+    ],
+    "rejectedFork": {
+      "format": "rfe.rejected-byzantine-fork.v0.8",
+      "proposalId": "proposal:c10:malicious-fork",
+      "proposalHash": "8eb5774d876879848377554b14a0de5e19d092731b4e84022ce3b12a857729c0",
+      "effectiveApprovalWeight": 1,
+      "quorumWeight": 7,
+      "reason": "INSUFFICIENT_NON_EQUIVOCATING_QUORUM",
+      "rejectionHash": "83324e0b6a69570763ea59e44faf04717bc8071a63d012b493ed7dbf1b8aa5bc"
+    },
+    "certificate": {
+      "format": "rfe.byzantine-quorum-certificate.v0.8",
+      "epoch": 1,
+      "round": 1,
+      "parentFederationRoot": "ff5af2c2a05264610c9f7e926f705bdee20032b640afe7fa5ae1e398e2872074",
+      "parentCertificateHash": "49162edb564dc6e8523fb08bf54c7666be62c2cda8cc4b531b996cbc4b50eaf7",
+      "proposalId": "proposal:c10:canonical-main",
+      "proposalHash": "d2cd4d1068ee9dc6dce9c93d3eddb30938266bdf298c3669713f891b0e2b3f50",
+      "finalFederationRoot": "d4554d7ee98d8c5d1a4ca78df36566b3c020fd048a20431154e39398f3b17879",
+      "totalWeight": 10,
+      "byzantineBudgetWeight": 3,
+      "quorumWeight": 7,
+      "approvalWeight": 7,
+      "requiredClusterIds": [
+        "cluster:aurora",
+        "cluster:forge"
+      ],
+      "attestationHashes": [
+        "b84e35598fa9ea1705a9a47179b03825b37f4c21823476ea874873559cc2caa5",
+        "3005bdc4d3ce06325a81221c1780a1fedb6f7ba896db9f15ecc4bf3e74d85af8"
+      ],
+      "excludedEvidenceHashes": [
+        "9e3761e33c0ca162bfa617108c1ff3b1e7ff8cf1f783e6625c03c5550391d953"
+      ],
+      "byzantineCertificateHash": "bed5f4ecdbf6fd3f21f79b1d88906ffe8a64b5682c2cdb1f9acc072eb5c25aa1"
+    },
+    "interruptedCommitState": {
+      "committedClusters": 1,
+      "preparedClusters": 1,
+      "durableCertificatePresent": true
+    },
+    "commitReceipt": {
+      "format": "rfe.byzantine-federation-receipt.v0.8",
+      "epoch": 1,
+      "round": 1,
+      "proposalId": "proposal:c10:canonical-main",
+      "proposalHash": "d2cd4d1068ee9dc6dce9c93d3eddb30938266bdf298c3669713f891b0e2b3f50",
+      "status": "committed",
+      "finalFederationRoot": "d4554d7ee98d8c5d1a4ca78df36566b3c020fd048a20431154e39398f3b17879",
+      "byzantineCertificateHash": "bed5f4ecdbf6fd3f21f79b1d88906ffe8a64b5682c2cdb1f9acc072eb5c25aa1",
+      "approvalWeight": 7,
+      "quorumWeight": 7,
+      "quarantinedWeight": 2,
+      "recovered": true,
+      "receiptHash": "5edc0f523506ac0351e0b19ae94b1f177e14ad32a81d151d63cede020c17eb55"
+    },
+    "recoveryReplayReceipt": {
+      "format": "rfe.byzantine-federation-receipt.v0.8",
+      "epoch": 1,
+      "round": 1,
+      "proposalId": "proposal:c10:canonical-main",
+      "proposalHash": "d2cd4d1068ee9dc6dce9c93d3eddb30938266bdf298c3669713f891b0e2b3f50",
+      "status": "committed",
+      "finalFederationRoot": "d4554d7ee98d8c5d1a4ca78df36566b3c020fd048a20431154e39398f3b17879",
+      "byzantineCertificateHash": "bed5f4ecdbf6fd3f21f79b1d88906ffe8a64b5682c2cdb1f9acc072eb5c25aa1",
+      "approvalWeight": 7,
+      "quorumWeight": 7,
+      "quarantinedWeight": 2,
+      "recovered": true,
+      "receiptHash": "5edc0f523506ac0351e0b19ae94b1f177e14ad32a81d151d63cede020c17eb55"
+    },
+    "finalFederationRoot": "d4554d7ee98d8c5d1a4ca78df36566b3c020fd048a20431154e39398f3b17879",
+    "clusterStates": {
+      "cluster:aurora": {
+        "format": "rfe.byzantine-cluster-state.v0.8",
+        "clusterId": "cluster:aurora",
+        "weight": 4,
+        "authorityProofHash": "74cb358b84bd9560a0d564745dcaba3d2fdf9a9b2664b6156030a32ba7019cfd",
+        "policyHash": "f0826282d28fa7aa42d8d9665502cfcb859435ac7268209c4eb61e33d836e67c",
+        "identityCommitment": "67ab90befcd9d057f6628c535814ad7214e7ead5c700da6024c8096258e1a333",
+        "revision": 2,
+        "sovereignRoot": "e44889149f5ab7dbdc232b24e89d1912f9e521156b61bc7cf54effc5f512762e",
+        "phase": "stable",
+        "pendingCertificateHash": null,
+        "preparedRoot": null,
+        "quarantined": false,
+        "quarantineEvidenceHash": null,
+        "integrityHash": "3ea7aeacf21ce201a1ef941817aa18c0155282560a585cff1651988cf5b2f834"
+      },
+      "cluster:forge": {
+        "format": "rfe.byzantine-cluster-state.v0.8",
+        "clusterId": "cluster:forge",
+        "weight": 3,
+        "authorityProofHash": "74cb358b84bd9560a0d564745dcaba3d2fdf9a9b2664b6156030a32ba7019cfd",
+        "policyHash": "c99d6ae1b790b198af00087ace8915e685ddcd05eb9c9d738459d458f3b5019f",
+        "identityCommitment": "fb265bc6a02631ec97e294df88a1937ecdc0563457dd21cc3f042f793cd09a4e",
+        "revision": 2,
+        "sovereignRoot": "7c9c647389bc568debbc1bf641e354540c4551311a67c56da2ba95a72769bc4f",
+        "phase": "stable",
+        "pendingCertificateHash": null,
+        "preparedRoot": null,
+        "quarantined": false,
+        "quarantineEvidenceHash": null,
+        "integrityHash": "5ec0a7c085f4debe3d8986bae0395db0916a8ef294665ba97ba44f12b37d24c0"
+      },
+      "cluster:harbor": {
+        "format": "rfe.byzantine-cluster-state.v0.8",
+        "clusterId": "cluster:harbor",
+        "weight": 2,
+        "authorityProofHash": "74cb358b84bd9560a0d564745dcaba3d2fdf9a9b2664b6156030a32ba7019cfd",
+        "policyHash": "e732b7649becf8011477a50e41a2bd04b6b128f32b262f94e7e886ae127a65b3",
+        "identityCommitment": "36d7863f4e659f84cc883d8079f18e898bdbb2d9412040be358e27dec9bb7bb4",
+        "revision": 0,
+        "sovereignRoot": "5da53a65b916100bddb6d4db6c2dd5c0381705e1c84185b8ebb777f689c149ad",
+        "phase": "stable",
+        "pendingCertificateHash": null,
+        "preparedRoot": null,
+        "quarantined": true,
+        "quarantineEvidenceHash": "9e3761e33c0ca162bfa617108c1ff3b1e7ff8cf1f783e6625c03c5550391d953",
+        "integrityHash": "3dcea0019e1814969eccbf5cfbb851418f103cce9c491c1e21914b2d24e22f85"
+      },
+      "cluster:mirror": {
+        "format": "rfe.byzantine-cluster-state.v0.8",
+        "clusterId": "cluster:mirror",
+        "weight": 1,
+        "authorityProofHash": "74cb358b84bd9560a0d564745dcaba3d2fdf9a9b2664b6156030a32ba7019cfd",
+        "policyHash": "b8e58d208f8aad732822becc2d949e53258ed16c0908da47ad99e465f6c4775a",
+        "identityCommitment": "a11927751fe2439fb10fb6ca3a72fefbb14c090fe64d53cb3e9b195fa17a65b3",
+        "revision": 0,
+        "sovereignRoot": "071bf4a4e9ac69a0106d26a345e0ac68982b0064ac16cae3143ce6cca219d636",
+        "phase": "stable",
+        "pendingCertificateHash": null,
+        "preparedRoot": null,
+        "quarantined": false,
+        "quarantineEvidenceHash": null,
+        "integrityHash": "8da0fc54f4e1917a030733ef2007f39510441006175ff2efeff4c30d24e41ba6"
+      }
+    },
+    "metrics": {
+      "attestationsAccepted": 5,
+      "forgedAttestationsRejected": 0,
+      "equivocationsDetected": 1,
+      "quarantinedWeight": 2,
+      "conflictingCertificatesFormed": 0,
+      "staleRoundAttestationsRejected": 0,
+      "wrongParentAttestationsRejected": 0,
+      "certificateRecoveries": 2,
+      "idempotentRecoveryReplays": 1,
+      "partialFederationCommitsExposed": 0,
+      "federationRootDivergences": 0,
+      "injectedInterruptions": 1
+    },
+    "byzantineFederatedRealityResultHash": "303624a7b7c51f4ae87c061c745e59eece35a5bdec5d7e7755188e4ef191e038"
+  }
+}

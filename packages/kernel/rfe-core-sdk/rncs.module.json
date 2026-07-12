@@ -1,0 +1,12 @@
+{
+  "id": "rfe-sdk",
+  "name": "RFE Core SDK",
+  "version": "0.1.0",
+  "path": "packages/kernel/rfe-core-sdk",
+  "layer": "kernel",
+  "runtime": "rncs.rfe",
+  "dependsOn": [
+    "rncs-core"
+  ],
+  "test": "npm test --workspace @taowind/rfe-core-sdk"
+}

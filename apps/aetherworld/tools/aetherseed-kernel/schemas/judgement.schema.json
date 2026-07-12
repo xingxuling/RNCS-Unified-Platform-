@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aetherworld.local/schemas/aetherseed/judgement.schema.json",
+  "title": "AetherSeed Kernel Judgement",
+  "description": "A structured judgement generated from a safe event/evidence package.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "judgementId",
+    "eventId",
+    "createdAt",
+    "model",
+    "conclusion",
+    "evidence",
+    "verifiableAssumptions",
+    "risks",
+    "recommendedNextActions",
+    "confidence"
+  ],
+  "properties": {
+    "schemaVersion": { "type": "string", "const": "aetherseed.judgement.v1" },
+    "judgementId": { "type": "string", "minLength": 8 },
+    "eventId": { "type": "string", "minLength": 8 },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "status"],
+      "properties": {
+        "id": { "type": "string", "examples": ["aetherseed-tiny"] },
+        "status": {
+          "type": "string",
+          "enum": ["WRAPPER_NOT_FINETUNED", "SMOKE_TRAINED", "SFT_ADAPTER", "GGUF_IMPORTED", "UNKNOWN"]
+        },
+        "baseModel": { "type": "string" }
+      }
+    },
+    "conclusion": { "type": "string", "minLength": 1 },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["claim", "evidenceRefIds"],
+        "properties": {
+          "claim": { "type": "string" },
+          "evidenceRefIds": { "type": "array", "items": { "type": "string" } },
+          "strength": { "type": "string", "enum": ["LOW", "MEDIUM", "HIGH"] }
+        }
+      }
+    },
+    "verifiableAssumptions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["assumption", "verificationMethod"],
+        "properties": {
+          "assumption": { "type": "string" },
+          "verificationMethod": { "type": "string" },
+          "expectedSignal": { "type": "string" }
+        }
+      }
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["risk", "severity", "mitigation"],
+        "properties": {
+          "risk": { "type": "string" },
+          "severity": { "type": "string", "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"] },
+          "mitigation": { "type": "string" }
+        }
+      }
+    },
+    "recommendedNextActions": {
+      "type": "array",
+      "description": "Structured references to next_action records or inline summaries. ACTION_ID items can be reliably joined with next_action records.",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["kind", "actionId"],
+            "properties": {
+              "kind": { "type": "string", "const": "ACTION_ID" },
+              "actionId": { "type": "string", "pattern": "^act_" }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["kind", "summary"],
+            "properties": {
+              "kind": { "type": "string", "const": "INLINE_SUMMARY" },
+              "summary": { "type": "string", "minLength": 1 }
+            }
+          }
+        ]
+      }
+    },
+    "confidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["score", "reason"],
+      "properties": {
+        "score": { "type": "number", "minimum": 0, "maximum": 1 },
+        "reason": { "type": "string" }
+      }
+    },
+    "trainingValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "canBecomeFeedbackSample": { "type": "boolean" },
+        "suggestedSampleType": {
+          "type": "string",
+          "enum": ["TASK_ANALYSIS", "RISK_ASSESSMENT", "CODEX_PROMPT", "DATASET_PLAN", "PROVIDER_CHECK", "OTHER"]
+        },
+        "notes": { "type": "string" }
+      }
+    }
+  }
+}

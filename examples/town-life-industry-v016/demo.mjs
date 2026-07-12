@@ -1,0 +1,11 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {createTownGame,dispatchTownAction,inspectTownGame,verifyTownGame} from '../../packages/world/town-life-industry-runtime/src/index.mjs';
+const act=(s,a)=>{const r=dispatchTownAction(s,a);if(!r.ok)throw new Error(r.error.message);return r.state};
+let state=createTownGame({seed:'taowind-town-v016-demo',player:{name:'杜衡界',identity:'apprentice',background:'工匠家庭'}});state.player.money=1200;
+state.player.x=11;state.player.y=5;for(let i=0;i<4;i++)state=act(state,{type:'study',domain:'materials'});state=act(state,{type:'research'});
+state.player.x=9;state.player.y=9;state=act(state,{type:'buy',item:'clay',count:18});state=act(state,{type:'buy',item:'wood',count:3});
+state.player.x=15;state.player.y=8;state=act(state,{type:'rent-workshop'});for(let i=0;i<6;i++)state=act(state,{type:'craft',recipe:'porousCeramic'});for(let i=0;i<3;i++)state=act(state,{type:'craft',recipe:'ceramicFilter'});
+state.player.x=12;state.player.y=9;state=act(state,{type:'rent-stall'});state=act(state,{type:'launch-product'});state=act(state,{type:'wait',minutes:2880});
+const evidence={format:'rncs.town-life-industry-evidence.v0.16',inspect:inspectTownGame(state),verification:verifyTownGame(state),acceptance:{noLlm:state.metrics.llmCalls===0,materialEvolution:state.history.some(e=>e.code==='MATERIAL_EVOLVED'),prototype:state.history.some(e=>e.code==='TECH_PROTOTYPE'),market:state.history.some(e=>e.code==='PRODUCT_LAUNCHED'),townAdoption:state.history.some(e=>e.code==='TECH_ADOPTED')}};
+const out=path.resolve('artifacts/town-life-industry-v016');fs.mkdirSync(out,{recursive:true});fs.writeFileSync(path.join(out,'evidence.json'),JSON.stringify(evidence,null,2)+'\n');console.log(JSON.stringify(evidence,null,2));if(!evidence.verification.valid||!Object.values(evidence.acceptance).every(Boolean))process.exitCode=1;

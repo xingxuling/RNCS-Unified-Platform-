@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/rfe-vsr-simulation-commit-request.v1.0.schema.json",
+  "title": "RFE VSR Simulation Commit Request v1.0",
+  "type": "object",
+  "required": ["format","bridgeRuntime","requestId","constitutional","branchSetRoot","selection","selectedBranch","causalDelta","evidence","provisional","requestHash"],
+  "properties": {
+    "format": {"const":"rfe.vsr-simulation-commit-request.v1.0"},
+    "bridgeRuntime": {"const":"vsr@0.1.0-alpha.12"},
+    "requestId": {"type":"string","minLength":1},
+    "constitutional": {"type":"object"},
+    "sharedReality": {"type":"object"},
+    "branchSetRoot": {"type":"string","pattern":"^[a-fA-F0-9]{64}$"},
+    "selection": {"type":"object"},
+    "selectedBranch": {"type":"object"},
+    "causalDelta": {"type":"object"},
+    "evidence": {"type":"object"},
+    "provisional": {"const":true},
+    "requestHash": {"type":"string","pattern":"^[a-fA-F0-9]{64}$"}
+  },
+  "additionalProperties": false
+}

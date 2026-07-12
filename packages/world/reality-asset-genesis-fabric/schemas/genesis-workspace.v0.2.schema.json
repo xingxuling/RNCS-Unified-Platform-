@@ -1,0 +1,12 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://taowind.example/schemas/genesis-workspace.v0.2.schema.json",
+  "title":"Reality Asset Genesis Workspace v0.2",
+  "type":"object",
+  "required":["format","version","workspace_id","intent","genome","negotiation","plan","candidates","reports","comparison","recommended_candidate_id","continuity_bundle","causal_delta","reality_branch_workspace","workspace_root"],
+  "properties":{
+    "format":{"const":"reality-asset.genesis-workspace.v0.2"},"version":{"const":"0.2.0"},
+    "candidates":{"type":"array","minItems":3},"reports":{"type":"array","minItems":3},
+    "recommended_candidate_id":{"type":"string"},"workspace_root":{"type":"string","pattern":"^[a-f0-9]{64}$"}
+  },"additionalProperties":true
+}

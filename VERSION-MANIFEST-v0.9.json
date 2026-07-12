@@ -1,0 +1,26 @@
+{
+  "format": "rncs.version-manifest.v0.9",
+  "motherProject": "0.9.0-alpha.1",
+  "aetherworldNativeBridge": "0.2.0-alpha.1",
+  "aetherworld": "0.2.0-alpha.1",
+  "rsr": "0.9.0-alpha.1",
+  "vsr": "0.8.0-alpha.1",
+  "network": "0.2.0-alpha.1",
+  "gateway": "0.3.1-unified.1",
+  "stableEmbodimentPbr": "rncs.stable-embodiment-pbr-evidence.v0.9",
+  "directTests": "1298/1298",
+  "authorityRoot": "fnv1a64:e9907f033fd78c80",
+  "temporalPresentationRoot": "0863310b274b3ad7b0475b13f3b8a2a2d16805c34a69525671fc4dd384990589",
+  "assetPresentationRoot": "ee4a90677d8f864b23afe7de4ba8ad5ef9f1c78939ca8a2820755402b28f7097",
+  "materialRoot": "7fd294f5c33fffdbbf9d99bc75a597d73cc7db769866f6190782dbf604b66157",
+  "textureRoot": "9886cf66e790dbcd259ab194497ab6eca114973de538cbdeb0b3916eb959f9d6",
+  "pixelRoot": "69cc66738467de58717025eade7b7b436f93ff5d7bcc113450ad7443d71ee28b",
+  "baselineCommit": "a340a2839786f0409616645fe0aa5cd612e9892c",
+  "github": {
+    "repository": "xingxuling/RNCS-Unified-Platform-",
+    "branch": "rncs-v09",
+    "commit": "9a9f95be289cd66b6b5990cdd12d6590c4948e9e",
+    "pr": "https://github.com/xingxuling/RNCS-Unified-Platform-/pull/5",
+    "base": "main-95"
+  }
+}

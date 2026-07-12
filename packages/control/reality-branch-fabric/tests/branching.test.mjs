@@ -1,0 +1,23 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createBranch, createWorkspace, validateWorkspace, branchChain, compileBranch, detectBranchConflicts, inspectPathDrift, rebaseWorkspace, rootHash} from '../src/index.mjs';
+import {workspace, branches} from './fixture.mjs';
+
+test('workspace validates', () => assert.equal(validateWorkspace(workspace()).valid, true));
+test('workspace root is deterministic across creation time', () => assert.equal(workspace().workspace_root, workspace().workspace_root));
+test('branch candidate root is deterministic', () => assert.equal(createBranch(branches[0]).candidate_root, createBranch(branches[0]).candidate_root));
+test('child branch chain includes parent first', () => assert.deepEqual(branchChain(workspace(), 'branch:fast-cache').map(x => x.branch_id), ['branch:fast', 'branch:fast-cache']));
+test('compile child branch inherits parent operations', () => { const c = compileBranch(workspace(), 'branch:fast-cache'); assert.equal(c.state.project.progress, 95); assert.equal(c.state.project.cache.enabled, true); assert.deepEqual(c.state.project.snapshots, ['before-release']); });
+test('compiled candidate state root matches state', () => { const c = compileBranch(workspace(), 'branch:safe'); assert.equal(c.state_root, rootHash(c.state)); });
+test('compiled diff is emitted', () => assert.ok(compileBranch(workspace(), 'branch:safe').diff.length >= 2));
+test('missing parent branch invalidates workspace', () => { const bad = workspace({branches: [{...branches[0], parent_branch_id: 'branch:missing'}]}); assert.equal(validateWorkspace(bad).valid, false); });
+test('duplicate branch id invalidates workspace', () => { const bad = createWorkspace({base_generation_root: 'a'.repeat(64), project_root: 'b'.repeat(64), branches: [branches[0], branches[0]]}); assert.ok(validateWorkspace(bad).errors.some(x => x.startsWith('DUPLICATE_BRANCH'))); });
+test('branch cycle invalidates workspace', () => { const cyc = createWorkspace({base_generation_root: 'a'.repeat(64), project_root: 'b'.repeat(64), branches: [{...branches[0], parent_branch_id: 'branch:fast'}, {...branches[1], parent_branch_id: 'branch:safe'}]}); assert.ok(validateWorkspace(cyc).errors.some(x => x.startsWith('BRANCH_CYCLE'))); });
+test('tampered branch root is detected', () => { const bad = workspace(); bad.branches[0].operations[0].value = 1; assert.ok(validateWorkspace(bad).errors.some(x => x.startsWith('CANDIDATE_ROOT_MISMATCH'))); });
+test('scenario probability must total 10000', () => { const bad = workspace({scenarios: [{scenario_id: 'x', probability_bps: 9000}]}); assert.ok(validateWorkspace(bad).errors.some(x => x.startsWith('SCENARIO_PROBABILITY_INVALID'))); });
+test('conflicting writes are detected', () => assert.equal(detectBranchConflicts(workspace(), 'branch:safe', 'branch:fast').compatible, false));
+test('shared ancestor operations are not treated as conflicts', () => assert.equal(detectBranchConflicts(workspace(), 'branch:fast', 'branch:fast-cache').compatible, true));
+test('path drift inspection compares base and candidate', () => { const d = inspectPathDrift(workspace(), 'branch:safe', 'project.progress'); assert.equal(d.base_value, 50); assert.equal(d.candidate_value, 70); });
+test('clean rebase updates generation', () => { const w = workspace(); const next = structuredClone(w.base_state); next.project.new_field = 1; const r = rebaseWorkspace(w, {new_base_state: next, new_generation: 4, new_generation_root: 'c'.repeat(64)}); assert.equal(r.clean, true); assert.equal(r.workspace.base.generation, 4); });
+test('rebase detects overlapping base drift', () => { const w = workspace(); const next = structuredClone(w.base_state); next.project.progress = 60; const r = rebaseWorkspace(w, {new_base_state: next, new_generation: 4, new_generation_root: 'c'.repeat(64)}); assert.equal(r.clean, false); assert.ok(r.conflicts.length >= 2); });
+test('reject strategy throws on rebase conflicts', () => { const w = workspace(); const next = structuredClone(w.base_state); next.project.progress = 60; assert.throws(() => rebaseWorkspace(w, {new_base_state: next, new_generation: 4, new_generation_root: 'c'.repeat(64), strategy: 'reject'}), /RBF_REBASE_CONFLICT/); });

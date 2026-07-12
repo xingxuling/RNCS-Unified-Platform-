@@ -1,0 +1,11 @@
+import fs from 'node:fs';import path from 'node:path';
+import {normalizeManifest,publicManifest} from './manifest.mjs';import {hash,seal,GatewayError} from './canonical.mjs';import {compareVersions,satisfies} from './semver.mjs';
+function walk(dir,out=[]){if(!fs.existsSync(dir))return out;for(const e of fs.readdirSync(dir,{withFileTypes:true})){const p=path.join(dir,e.name);if(e.isDirectory())walk(p,out);else if(e.isFile()&&e.name.endsWith('.runtime.json'))out.push(p);}return out;}
+export function discoverRuntimeManifests(dirs,{gatewayProtocol='0.3.0'}={}){
+ const candidates=[];for(const d of dirs)for(const f of walk(path.resolve(d)))candidates.push(normalizeManifest(JSON.parse(fs.readFileSync(f,'utf8')),f));
+ const compatible=candidates.filter(m=>m.gateway_protocol_versions.some(v=>satisfies(gatewayProtocol,v)||satisfies(v,gatewayProtocol)));
+ const selected=new Map();for(const m of compatible){const old=selected.get(m.runtime_id);if(!old||compareVersions(m.runtime_version,old.runtime_version)>0||(compareVersions(m.runtime_version,old.runtime_version)===0&&m.priority>old.priority))selected.set(m.runtime_id,m);}
+ for(const m of selected.values())for(const d of m.requires){const dep=selected.get(d.runtime_id);if(!dep&&!d.optional)throw new GatewayError('RUNTIME_DEPENDENCY_MISSING',`${m.runtime_id} -> ${d.runtime_id}`);if(dep&&d.version_range&&!satisfies(dep.runtime_version,d.version_range))throw new GatewayError('RUNTIME_DEPENDENCY_VERSION',`${m.runtime_id} -> ${d.runtime_id}@${d.version_range}`);}
+ const order=[],vis=new Set(),stack=new Set();const visit=m=>{if(vis.has(m.runtime_id))return;if(stack.has(m.runtime_id))throw new GatewayError('RUNTIME_DEPENDENCY_CYCLE',m.runtime_id);stack.add(m.runtime_id);for(const d of m.requires){const dep=selected.get(d.runtime_id);if(dep)visit(dep);}stack.delete(m.runtime_id);vis.add(m.runtime_id);order.push(m.runtime_id);};for(const m of [...selected.values()].sort((a,b)=>a.runtime_id.localeCompare(b.runtime_id)))visit(m);
+ const registry=seal({format:'reality-one.runtime-registry.v0.3',gateway_protocol:gatewayProtocol,runtime_order:order,runtimes:order.map(id=>publicManifest(selected.get(id))),candidate_count:candidates.length,compatible_count:compatible.length},'registry_root');return{registry,selected,candidates};
+}

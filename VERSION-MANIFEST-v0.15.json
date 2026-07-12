@@ -1,0 +1,28 @@
+{
+  "format": "rncs.aetherworld.version-manifest.v0.15",
+  "suite_version": "0.15.0-alpha.1",
+  "base_version": "0.14.0-alpha.1",
+  "release_name": "RAGF Social Ecology and Technology Genesis",
+  "ragf_version": "0.5.0-alpha.1",
+  "runtime_count": 15,
+  "primary_goal": "Provide deterministic production seeds for a human-playable 2.5D AI society ecosystem game without LLM dependency.",
+  "changes": [
+    "deterministic social ecology genesis",
+    "representative rule-based agents, households, institutions, factions and links",
+    "continuous history ledger with player branches",
+    "technology concept grammar across function, principle, substrate, energy, control and manufacturing",
+    "seven-phase engineering implementation pathways",
+    "structured player technology proposals without LLM",
+    "2.5D projection and runtime integration contracts",
+    "interactive offline preview"
+  ],
+  "epistemic_boundary": "Generated future technologies are simulation hypotheses and require real-world scientific and engineering validation.",
+  "validation": {
+    "ragf_tests": "170/170 PASS",
+    "gateway_tests": "14/14 PASS",
+    "root_integration_tests": "25/25 PASS",
+    "ragf_integration_tests": "6/6 PASS",
+    "runtime_health": "15/15 healthy"
+  },
+  "delivery_boundary": "RAGF generation and deterministic simulation substrate; not yet the complete 2.5D game client."
+}

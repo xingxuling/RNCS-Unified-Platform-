@@ -1,0 +1,15 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://taowind.example/schemas/asset-intent.v0.2.schema.json",
+  "title":"Reality Asset Intent v0.2",
+  "type":"object",
+  "required":["format","version","intent_id","subject_id","description","asset_kind","target_platforms","required_outputs","constraints","seed","intent_root"],
+  "properties":{
+    "format":{"const":"reality-asset.intent.v0.2"},
+    "version":{"const":"0.2.0"},
+    "intent_id":{"type":"string"},"subject_id":{"type":"string"},"description":{"type":"string","minLength":1},
+    "asset_kind":{"type":"string"},"target_platforms":{"type":"array","minItems":1,"items":{"type":"string"}},
+    "required_outputs":{"type":"array","minItems":1,"items":{"type":"string"}},
+    "constraints":{"type":"object"},"seed":{"type":"string"},"intent_root":{"type":"string","pattern":"^[a-f0-9]{64}$"}
+  },"additionalProperties":true
+}

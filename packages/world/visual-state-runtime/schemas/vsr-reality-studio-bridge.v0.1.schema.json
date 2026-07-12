@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/vsr-reality-studio-bridge.v0.1.schema.json",
+  "title": "VSR Reality Studio Bridge v0.1",
+  "type": "object",
+  "required": [
+    "format",
+    "adapterVersion",
+    "sourceFormat",
+    "projectId",
+    "activeSceneId",
+    "projectRoot",
+    "sceneRoot",
+    "componentContractHash",
+    "documentRoot",
+    "sourceDisplayHash",
+    "verification",
+    "bridgeRoot"
+  ],
+  "properties": {
+    "format": {
+      "const": "vsr.reality-studio-bridge.v0.1"
+    },
+    "adapterVersion": {
+      "type": "string"
+    },
+    "projectId": {
+      "type": "string"
+    },
+    "projectRoot": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "documentRoot": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "sourceDisplayHash": {
+      "type": "string"
+    },
+    "document": {
+      "type": "object"
+    },
+    "hybridPlan": {
+      "type": "object"
+    },
+    "verification": {
+      "type": "object",
+      "required": [
+        "ok",
+        "diagnostics"
+      ],
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        },
+        "diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "bridgeRoot": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "sourceFormat": {
+      "enum": [
+        "reality-studio.project.v0.1",
+        "reality-studio.project.v0.3"
+      ]
+    },
+    "activeSceneId": {
+      "type": "string"
+    },
+    "sceneRoot": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "componentContractHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  },
+  "additionalProperties": false
+}

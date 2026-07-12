@@ -1,0 +1,72 @@
+{
+  "format_version": "0.1",
+  "app": {
+    "id": "org.taowind.hnac.hello",
+    "name": "HNAC Hello",
+    "version": "0.1.0",
+    "entry": "components/main.hnc.json"
+  },
+  "execution": {
+    "primary": "declarative-v0",
+    "alternatives": ["wasm-component@0.3", "web@1"]
+  },
+  "capabilities": [
+    {
+      "id": "host.log",
+      "version": "1",
+      "required": true,
+      "scope": "session",
+      "reason": "Display application output"
+    },
+    {
+      "id": "host.clock",
+      "version": "1",
+      "required": true,
+      "scope": "session",
+      "reason": "Show a host-neutral timestamp"
+    },
+    {
+      "id": "environment.summary",
+      "version": "1",
+      "required": false,
+      "scope": "session",
+      "reason": "Demonstrate host translation",
+      "fallback": "omit-environment"
+    },
+    {
+      "id": "storage.kv",
+      "version": "1",
+      "required": false,
+      "scope": "app",
+      "reason": "Persist a launch counter",
+      "fallback": "memory-only"
+    },
+    {
+      "id": "device.neural-input",
+      "version": "0",
+      "required": false,
+      "scope": "session",
+      "reason": "Reserved future interaction surface",
+      "fallback": "standard-input"
+    }
+  ],
+  "interface": {
+    "graph": "ui/main.aip.json",
+    "modes": ["cli", "window", "touch", "voice", "neural-intent"]
+  },
+  "state": {
+    "schema": "state/schema.json",
+    "portability": "portable-encrypted"
+  },
+  "distribution": {
+    "projections": ["windows-msix", "macos-app", "android-aab", "ios-ipa", "pwa"]
+  },
+  "security": {
+    "sandbox": "deny-by-default",
+    "signature": "ed25519"
+  },
+  "compatibility": {
+    "min_runtime": "0.1.0"
+  },
+  "extensions": {}
+}

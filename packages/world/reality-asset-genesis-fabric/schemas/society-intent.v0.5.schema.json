@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/ragf/society-intent.v0.5.schema.json",
+  "title": "RAGF Society Intent v0.5",
+  "type": "object",
+  "required": ["description", "world_name"],
+  "properties": {
+    "description": {"type": "string", "minLength": 1},
+    "world_name": {"type": "string", "minLength": 1},
+    "seed": {"type": "string"},
+    "population": {"type": "integer", "minimum": 24, "maximum": 5000},
+    "years": {"type": "integer", "minimum": 5, "maximum": 500},
+    "map_size": {"type": "integer", "minimum": 6, "maximum": 32},
+    "player_roles": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "technology_focus": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+  },
+  "additionalProperties": true
+}

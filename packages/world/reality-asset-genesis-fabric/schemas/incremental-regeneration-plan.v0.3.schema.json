@@ -1,0 +1,11 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://taowind.example/schemas/incremental-regeneration-plan.v0.3.schema.json",
+  "title":"Reality Asset Incremental Regeneration Plan v0.3",
+  "type":"object",
+  "required":["format","version","plan_id","source_workspace_root","asset_id","patch","changed_paths","impacted_roles","reusable_roles","execution_mode","identity_policy","plan_root"],
+  "properties":{
+    "format":{"const":"reality-asset.incremental-regeneration-plan.v0.3"},"version":{"const":"0.3.0"},
+    "impacted_roles":{"type":"array"},"reusable_roles":{"type":"array"},"plan_root":{"type":"string","pattern":"^[a-f0-9]{64}$"}
+  },"additionalProperties":true
+}

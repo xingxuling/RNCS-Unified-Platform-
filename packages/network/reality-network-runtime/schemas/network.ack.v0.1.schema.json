@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/network.ack.v0.1.schema.json",
+  "title": "network.ack.v0.1",
+  "type": "object",
+  "required": [
+    "format",
+    "sessionId",
+    "playerId",
+    "inputSequence",
+    "serverTick",
+    "status"
+  ],
+  "properties": {
+    "format": {
+      "const": "network.ack.v0.1"
+    },
+    "sessionId": {
+      "type": "string"
+    },
+    "playerId": {
+      "type": "string"
+    },
+    "inputSequence": {
+      "type": "integer"
+    },
+    "serverTick": {
+      "type": "integer"
+    },
+    "status": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": true
+}

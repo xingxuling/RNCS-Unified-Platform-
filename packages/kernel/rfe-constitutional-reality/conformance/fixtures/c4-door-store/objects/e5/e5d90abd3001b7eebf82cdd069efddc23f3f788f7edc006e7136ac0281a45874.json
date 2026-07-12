@@ -1,0 +1,15 @@
+{
+  "format": "rfe.content-object.v1",
+  "kind": "paged-index",
+  "value": {
+    "format": "rfe.paged-index.v1",
+    "pages": [
+      {
+        "firstKey": "object:door\u0000state",
+        "lastKey": "object:door\u0000state",
+        "ref": "7e7b86dcda5e5831aba6d1ad691118f2d33904b5c7b514187df2f7d8c221f723"
+      }
+    ]
+  },
+  "integrityHash": "e5d90abd3001b7eebf82cdd069efddc23f3f788f7edc006e7136ac0281a45874"
+}

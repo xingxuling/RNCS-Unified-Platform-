@@ -1,0 +1,18 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://taowind.dev/schemas/vsr-bitmap-font.v1.schema.json",
+  "title":"VSR Frozen Bitmap Font v1",
+  "type":"object",
+  "required":["format","family","glyphWidth","glyphHeight","glyphs"],
+  "properties":{
+    "format":{"const":"vsr-bitmap-font-1"},
+    "family":{"type":"string","minLength":1},
+    "glyphWidth":{"type":"integer","minimum":1},
+    "glyphHeight":{"type":"integer","minimum":1},
+    "advance":{"type":"integer","minimum":1},
+    "glyphs":{"type":"object","additionalProperties":{"type":"array","items":{"type":"string","pattern":"^[01]+$"}}},
+    "fallback":{"type":"array","items":{"type":"string","pattern":"^[01]+$"}},
+    "metadata":{"type":"object","properties":{"sourceFontHash":{"type":"string","pattern":"^[a-f0-9]{64}$"},"glyphSetHash":{"type":"string"},"glyphCount":{"type":"integer","minimum":0},"generatedBy":{"type":"string"},"pixelSize":{"type":"integer","minimum":1}},"additionalProperties":true}
+  },
+  "additionalProperties":true
+}

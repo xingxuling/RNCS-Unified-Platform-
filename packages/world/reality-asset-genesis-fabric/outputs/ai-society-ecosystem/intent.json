@@ -1,0 +1,62 @@
+{
+  "format": "ragf.society-intent.v0.5",
+  "version": "0.5.0-alpha.1",
+  "intent_id": "society-intent:a35b630156474c90de5a14e0",
+  "subject_id": "subject:founder",
+  "description": "生成一个无需LLM即可持续演化的2.5D海陆城邦社会。人类玩家可以成为公民、研究者、创业者或政策制定者，参与资源分配、制度建设、技术提案和历史分支。社会必须能从现实压力中产生已知或尚不存在的技术概念，并输出可证伪实验、原型、工程工作包、制造与扩散路径。",
+  "world_name": "潮汐工坊城邦",
+  "seed": "tide-forge-society-v1",
+  "population": 320,
+  "years": 80,
+  "map_size": 12,
+  "era": "open-ended-industrial-transition",
+  "target_platforms": [
+    "desktop",
+    "mobile",
+    "web"
+  ],
+  "design": {
+    "projection": "2.5d-isometric",
+    "human_playable": true,
+    "llm_usage": "forbidden",
+    "history_required": true,
+    "social_ecology_required": true,
+    "technology_emergence_required": true
+  },
+  "environment": {
+    "climate": "coastal-variable",
+    "water_abundance": 7200,
+    "fertility": 5600,
+    "ore_abundance": 3900,
+    "timber_abundance": 5300,
+    "hazard": 3300
+  },
+  "society": {
+    "knowledge_openness": 6800,
+    "risk_tolerance": 5200,
+    "cooperation": 6500,
+    "inequality": 2400,
+    "centralization": 3800
+  },
+  "technology_focus": [
+    "computation",
+    "energy",
+    "health",
+    "materials",
+    "organization"
+  ],
+  "player_roles": [
+    "citizen",
+    "entrepreneur",
+    "policy-maker",
+    "researcher"
+  ],
+  "constraints": {
+    "max_agents": 56,
+    "max_concepts": 16,
+    "epistemic_policy": "simulation-hypothesis-not-real-world-proof",
+    "deterministic": true
+  },
+  "extensions": {},
+  "intent_root": "92ead88ce0c1efb1b063003a95575a9937bdc38fceb034faaed5d2147d2f7712"
+}

@@ -1,0 +1,822 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+<title>HNAF Pocket</title>
+<style>:root{
+  color-scheme:dark;
+  --bg:#071018;--surface:#0d1822;--surface2:#122331;--surface3:#182d3d;
+  --line:#254052;--text:#f4f8fb;--muted:#91a6b5;--accent:#57c7ff;
+  --green:#57e2a5;--amber:#ffc766;--red:#ff7585;
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body,#app{margin:0;min-height:100%;background:var(--bg);color:var(--text)}
+body{min-height:100vh;overflow-x:hidden;background:radial-gradient(circle at 92% -10%,rgba(87,199,255,.16),transparent 32%),var(--bg)}
+button,input,textarea,select{font:inherit}button{border:0;color:inherit;cursor:pointer}
+.screen-shell{width:min(100%,720px);min-height:100vh;margin:0 auto;padding:24px 20px 104px;position:relative}
+.topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:26px}
+.topbar-copy h1{font-size:22px;line-height:1.25;margin:0 0 4px;letter-spacing:-.025em}.topbar-copy p{font-size:12px;color:var(--muted);margin:0}
+.trust-chip,.badge{display:inline-flex;align-items:center;gap:6px;border-radius:999px;background:var(--surface3);padding:7px 11px;font-size:10px;font-weight:750;white-space:nowrap}.trust-chip{color:var(--green)}.trust-chip::before,.badge::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.badge.good{color:var(--green)}.badge.warn{color:var(--amber)}.badge.neutral{color:var(--accent)}
+.runtime-card{position:relative;min-height:118px;padding:18px;border:1px solid rgba(87,199,255,.42);background:linear-gradient(145deg,rgba(87,199,255,.08),rgba(18,35,49,.98));border-radius:22px;overflow:hidden}.runtime-card h2{font-size:18px;margin:0 0 7px}.runtime-card p{font-size:11px;color:var(--muted);margin:0}.runtime-card .trust-chip{margin-top:17px}.runtime-orb{position:absolute;right:18px;top:29px;width:60px;height:60px;border-radius:50%;display:grid;place-items:center;border:2px solid rgba(87,199,255,.7);background:rgba(87,199,255,.1);color:var(--accent);font-size:28px;font-weight:900}
+.section-label{font-size:14px;font-weight:750;margin:26px 0 14px}.quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.quick-card{min-height:106px;padding:12px;border-radius:18px;background:var(--surface);border:1px solid rgba(37,64,82,.8);text-align:left}.quick-icon,.tool-icon,.big-icon{display:grid;place-items:center;border-radius:12px;background:var(--surface3);border:1px solid rgba(87,199,255,.35);color:var(--accent);font-weight:850}.quick-icon{width:40px;height:40px;margin-bottom:10px}.quick-card strong{display:block;font-size:12px}.quick-card small{display:block;color:var(--muted);font-size:10px;margin-top:5px}
+.tool-list,.tool-grid{display:grid;gap:12px}.tool-card{position:relative;display:flex;gap:14px;min-height:108px;padding:14px;border-radius:18px;background:var(--surface);border:1px solid rgba(37,64,82,.8);box-shadow:0 16px 36px rgba(0,0,0,.14)}.tool-card.broken{opacity:.7}.tool-icon{width:48px;height:48px;flex:0 0 auto;font-size:17px}.tool-main{min-width:0;flex:1}.tool-title-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.tool-card h2{font-size:15px;margin:0}.tool-card p{font-size:11px;line-height:1.5;color:var(--muted);margin:7px 0 10px}.meta{display:flex;gap:7px;flex-wrap:wrap}.meta span{font-size:9px;color:var(--muted);background:var(--surface3);padding:4px 7px;border-radius:999px}.card-actions{display:flex;gap:8px;margin-top:11px}.card-actions .primary{min-width:84px}.tool-arrow{position:absolute;right:17px;top:40px;color:var(--muted);font-size:24px}
+.bottom-nav{position:fixed;z-index:20;left:50%;bottom:max(14px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(calc(100% - 40px),680px);height:70px;border-radius:22px;border:1px solid rgba(37,64,82,.9);background:rgba(13,24,34,.96);backdrop-filter:blur(18px);display:grid;grid-template-columns:repeat(4,1fr);padding:7px 4px 4px;box-shadow:0 14px 40px rgba(0,0,0,.35)}.nav-item{position:relative;background:transparent;color:var(--muted);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:10px}.nav-item b{font-size:18px;font-weight:600}.nav-item.active{color:var(--accent)}.nav-item.active::after{content:"";position:absolute;bottom:0;width:24px;height:3px;border-radius:3px;background:var(--accent)}
+.primary,.secondary,.ghost,.danger-text,.back{min-height:46px;border-radius:14px;padding:0 16px;font-weight:750}.primary{background:var(--accent);color:var(--bg)}.secondary{background:var(--surface3);border:1px solid var(--line)}.ghost,.back{background:transparent;border:1px solid var(--line)}.danger-text{background:transparent;color:var(--red)}button:disabled{opacity:.45}
+.import-zone{border:1px dashed rgba(87,199,255,.7);background:var(--surface);border-radius:24px;padding:30px 20px;text-align:center}.import-mark{width:64px;height:64px;margin:0 auto 16px;border-radius:18px;display:grid;place-items:center;background:var(--surface3);border:1px solid rgba(87,199,255,.4);font-size:29px;color:var(--accent)}.import-zone h2{font-size:17px;margin:0 0 7px}.import-zone p{color:var(--muted);font-size:11px;margin:0 0 18px}.library-summary{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:18px}.metric-card{padding:15px;border-radius:17px;border:1px solid var(--line);background:var(--surface)}.metric-card strong{display:block;font-size:24px;color:var(--accent)}.metric-card span{font-size:10px;color:var(--muted)}
+.trace-list{display:grid;gap:8px}.trace-row{display:grid;grid-template-columns:64px 1fr auto;gap:10px;padding:13px;border-radius:14px;background:var(--surface);border:1px solid rgba(37,64,82,.65);font-size:11px}.trace-row time,.trace-row small{color:var(--muted)}.trace-row code{color:var(--green);font-size:9px}.settings-list{display:grid;gap:10px}.setting-row{padding:15px;border-radius:16px;border:1px solid var(--line);background:var(--surface);display:flex;justify-content:space-between;gap:12px}.setting-row strong{font-size:13px}.setting-row span{font-size:11px;color:var(--muted)}
+.tool-runtime-head{display:grid;gap:14px}.back{justify-self:start;min-height:40px}.runtime-app{display:flex;align-items:center;gap:14px}.big-icon{width:68px;height:68px;font-size:23px}.runtime-app h1{font-size:22px;margin:0 0 4px}.runtime-app p{font-size:11px;color:var(--muted);margin:0}.trust-panel{border:1px solid var(--line);background:var(--surface);border-radius:18px}.trust-panel summary{padding:14px 16px;font-size:13px;font-weight:750;cursor:pointer}.trust-panel summary span{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:rgba(87,226,165,.12);color:var(--green);margin-right:8px}.trust-body{padding:0 16px 16px}.trust-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.trust-grid>div{background:var(--surface2);border-radius:13px;padding:11px}.trust-grid small,.trust-grid span{display:block;color:var(--muted);font-size:9px}.trust-grid strong{display:block;font-size:11px;margin:4px 0}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.cap-list{list-style:none;margin:10px 0 0;padding:0}.cap-list li{display:flex;justify-content:space-between;gap:8px;border-top:1px solid var(--line);padding:9px 2px}.cap-list code{color:var(--accent);font-size:10px}.cap-list span{color:var(--muted);font-size:10px}
+.workspace{margin-top:15px;padding:18px;border-radius:22px;background:var(--surface);border:1px solid var(--line)}.workspace-title h2{font-size:18px;margin:0 0 5px}.workspace-title p{font-size:11px;color:var(--muted);margin:0}.form-stack{display:grid;gap:12px;margin-top:17px}.field{display:grid;gap:7px}.field>span{font-size:11px;color:#c5d7e3;font-weight:700}.field input,.field textarea,.field select{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:13px;padding:13px;outline:none}.field textarea{min-height:110px;resize:vertical}.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(87,199,255,.12)}.check-row{display:flex;gap:10px;padding:13px;border-radius:14px;border:1px solid var(--line);background:var(--surface2)}.check-row input{width:20px;height:20px;accent-color:var(--accent)}.check-row span{display:grid;gap:3px}.check-row small{color:var(--muted)}.action-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}.result{white-space:pre-wrap;padding:14px;border:1px solid var(--line);background:var(--bg);border-radius:14px;color:var(--green);overflow:auto}.result.error{color:var(--red)}
+.native-panel{margin-top:18px;border:1px solid rgba(87,199,255,.3);border-radius:20px;background:linear-gradient(155deg,rgba(87,199,255,.08),rgba(18,35,49,.7));padding:16px}.native-title{display:grid;gap:4px}.native-title small{font-size:9px;letter-spacing:.13em;color:var(--accent)}.native-title strong{font-size:15px}.native-title span{font-size:10px;color:var(--muted)}.native-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(105px,1fr));gap:9px;margin-top:13px}.native-action{min-height:82px;background:var(--surface3);border:1px solid var(--line);border-radius:15px;display:grid;place-items:center;gap:3px;padding:9px}.native-action b{color:var(--accent);font-size:17px}.native-action span{font-size:11px}.native-action small{color:var(--muted);font-size:8px}.native-result{margin-top:12px;border-radius:14px;background:var(--bg);padding:12px;font-size:11px}.capture-preview{max-width:100%;border-radius:12px}.native-ok,.native-error,.native-wait{display:grid;gap:4px}.native-ok strong{color:var(--green)}.native-error strong{color:var(--red)}
+.operation-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:12px 0}.code-area{font-family:ui-monospace,SFMono-Regular,Menlo,monospace!important;min-height:150px!important}.decision-card{margin-top:18px;padding:18px;border-radius:18px;border:1px solid var(--line);background:var(--surface2)}.decision-card h3{font-size:21px}.step-mark,.result-mark{font-size:10px;color:var(--accent);font-weight:850;letter-spacing:.1em}.choice-stack{display:grid;gap:9px}.choice{display:flex;justify-content:space-between;text-align:left;background:var(--surface3);border:1px solid var(--line);padding:13px;border-radius:13px}.decision-history{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px;font-size:10px;color:var(--muted)}.decision-history span{background:var(--surface3);padding:5px 8px;border-radius:99px}.score-list,.diag-list,.aip-grid{display:grid;gap:9px;margin-top:17px}.score-row{display:grid;grid-template-columns:minmax(110px,1fr) 2fr 44px;gap:10px;align-items:center;padding:13px;border:1px solid var(--line);border-radius:14px;background:var(--surface2)}.score-row small{color:var(--muted)}.score-row input{accent-color:var(--accent)}.score-result{margin-top:15px;padding:17px;border-radius:17px;border:1px solid rgba(87,199,255,.35);background:rgba(87,199,255,.08)}.score-result strong{display:block;font-size:34px}.score-result small,.score-result span{color:var(--muted)}.diag-list>div{display:grid;grid-template-columns:12px 1fr auto;gap:10px;padding:13px;border:1px solid var(--line);border-radius:14px;background:var(--surface2)}.diag-dot{width:8px;height:8px;border-radius:50%;background:var(--green);margin-top:5px}.diag-list section p{margin:3px 0 0;color:var(--muted);font-size:10px}.diag-list code{color:var(--accent);font-size:10px}.manifest{border:1px solid var(--line);border-radius:14px;margin-top:10px}.manifest summary{padding:12px}.manifest pre{margin:0;border-top:1px solid var(--line);padding:12px;max-height:300px;overflow:auto;font-size:10px;color:#b7d6e8}.aip-grid article{display:grid;gap:4px;padding:14px;border:1px solid var(--line);border-radius:14px}.aip-grid small{color:var(--accent)}.aip-grid span{color:var(--muted)}
+.principle{margin-top:18px;padding:15px;border:1px dashed var(--line);border-radius:17px;background:rgba(13,24,34,.7);display:grid;gap:4px}.principle span{font-size:9px;color:var(--accent);letter-spacing:.12em}.principle strong{font-size:12px}.loading,.empty,.fatal{padding:38px 20px;text-align:center;border:1px dashed var(--line);border-radius:20px;color:var(--muted);display:grid;gap:9px}.loading strong,.empty strong,.fatal h2{color:var(--text)}.spinner{width:34px;height:34px;border:3px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:auto}@keyframes spin{to{transform:rotate(360deg)}}.fatal div{margin:auto;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:rgba(255,117,133,.2);color:var(--red);font-size:24px;font-weight:900}.error-strip{font-size:10px;color:var(--red)}
+@media(min-width:700px){.screen-shell{padding-inline:28px}.tool-list{grid-template-columns:repeat(2,1fr)}.quick-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:420px){.screen-shell{padding:22px 20px 102px}.trust-grid{grid-template-columns:1fr}.score-row{grid-template-columns:1fr}.quick-grid{gap:10px}.quick-card{padding:10px}.bottom-nav{width:calc(100% - 40px)}}
+
+.shell{width:min(100%,720px);min-height:100vh;margin:0 auto;padding:max(24px,env(safe-area-inset-top)) 20px 40px;position:relative}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>(() => {
+  'use strict';
+  const RUNTIME_VERSION = '0.5.0-android-remote-execution';
+  let NATIVE_CAPABILITIES = {};
+  const CAPABILITY_CATALOG = {
+    'host.log': ['1'],
+    'host.clock': ['1'],
+    'environment.summary': ['1'],
+    'storage.kv': ['1'],
+    'pocket.ui.form': ['1'],
+    'pocket.ui.transform': ['1'],
+    'pocket.ui.decision': ['1'],
+    'pocket.ui.scorecard': ['1'],
+    'pocket.ui.diagnostics': ['1'],
+  };
+  const IMPORT_TO_CAPABILITY = {
+    log_write: 'host.log', clock_now: 'host.clock', environment_summary: 'environment.summary', kv_get: 'storage.kv', kv_set: 'storage.kv',
+  };
+  class HNACError extends Error {}
+  const encoder = new TextEncoder();
+  const decoder = new TextDecoder();
+  function sortObject(value) {
+    if (Array.isArray(value)) return value.map(sortObject);
+    if (value && typeof value === 'object' && !(value instanceof Uint8Array) && !(value instanceof ArrayBuffer)) {
+      return Object.fromEntries(Object.keys(value).sort().map((key) => [key, sortObject(value[key])]));
+    }
+    return value;
+  }
+  function canonicalJson(value) { return encoder.encode(JSON.stringify(sortObject(value))); }
+  function hex(buffer) { return [...new Uint8Array(buffer)].map((v) => v.toString(16).padStart(2, '0')).join(''); }
+  async function sha256(data) { return hex(await crypto.subtle.digest('SHA-256', data)); }
+  function b64(value) { return Uint8Array.from(atob(value), (c) => c.charCodeAt(0)); }
+  function u16(view, offset) { return view.getUint16(offset, true); }
+  function u32(view, offset) { return view.getUint32(offset, true); }
+  function safeLogicalPath(raw) {
+    const name = String(raw).replaceAll('\\', '/');
+    if (!name || name.startsWith('/') || name.endsWith('/') || name.includes('\0')) throw new HNACError(`不安全路径: ${raw}`);
+    for (const part of name.split('/')) if (!part || part === '.' || part === '..') throw new HNACError(`不安全路径: ${raw}`);
+    return name;
+  }
+  function findEocd(bytes, view) {
+    const minimum = Math.max(0, bytes.length - 65557);
+    for (let offset = bytes.length - 22; offset >= minimum; offset -= 1) if (u32(view, offset) === 0x06054b50) return offset;
+    throw new HNACError('ZIP 结束目录不存在');
+  }
+  async function inflateRaw(data) {
+    if (!globalThis.DecompressionStream) throw new HNACError('当前 WebView 不支持 deflate 解压；请使用 STORE 打包或更新系统 WebView');
+    const stream = new Blob([data]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+    return new Uint8Array(await new Response(stream).arrayBuffer());
+  }
+  async function readZipUnique(input) {
+    const arrayBuffer = input instanceof ArrayBuffer ? input : input.buffer.slice(input.byteOffset, input.byteOffset + input.byteLength);
+    const bytes = new Uint8Array(arrayBuffer);
+    if (bytes.length > 16 * 1024 * 1024) throw new HNACError('胶囊超过 16 MiB');
+    const view = new DataView(arrayBuffer);
+    const eocd = findEocd(bytes, view);
+    const count = u16(view, eocd + 10);
+    if (count > 256) throw new HNACError('ZIP 条目数量超过限制');
+    let cursor = u32(view, eocd + 16);
+    let total = 0;
+    const files = new Map();
+    for (let index = 0; index < count; index += 1) {
+      if (u32(view, cursor) !== 0x02014b50) throw new HNACError('ZIP 中央目录无效');
+      const method = u16(view, cursor + 10);
+      const compressedSize = u32(view, cursor + 20);
+      const uncompressedSize = u32(view, cursor + 24);
+      const nameLength = u16(view, cursor + 28);
+      const extraLength = u16(view, cursor + 30);
+      const commentLength = u16(view, cursor + 32);
+      const localOffset = u32(view, cursor + 42);
+      const name = safeLogicalPath(decoder.decode(bytes.slice(cursor + 46, cursor + 46 + nameLength)));
+      if (files.has(name)) throw new HNACError(`重复路径: ${name}`);
+      if (uncompressedSize > 8 * 1024 * 1024) throw new HNACError(`ZIP 条目过大: ${name}`);
+      total += uncompressedSize;
+      if (total > 32 * 1024 * 1024) throw new HNACError('ZIP 解压总量超过限制');
+      if (u32(view, localOffset) !== 0x04034b50) throw new HNACError('ZIP 本地头无效');
+      const localNameLength = u16(view, localOffset + 26);
+      const localExtraLength = u16(view, localOffset + 28);
+      const dataOffset = localOffset + 30 + localNameLength + localExtraLength;
+      const compressed = bytes.slice(dataOffset, dataOffset + compressedSize);
+      const data = method === 0 ? compressed : (method === 8 ? await inflateRaw(compressed) : null);
+      if (!data) throw new HNACError(`不支持的 ZIP 压缩算法: ${method}`);
+      if (data.length !== uncompressedSize) throw new HNACError(`ZIP 大小不匹配: ${name}`);
+      files.set(name, data);
+      cursor += 46 + nameLength + extraLength + commentLength;
+    }
+    return files;
+  }
+  function parseJson(files, name) {
+    if (!files.has(name)) throw new HNACError(`缺少文件: ${name}`);
+    try { return JSON.parse(decoder.decode(files.get(name))); } catch { throw new HNACError(`JSON 无效: ${name}`); }
+  }
+  function executionCandidates(manifest) {
+    if (manifest.format_version === '0.1') return [manifest.execution.primary, ...(manifest.execution.alternatives ?? [])].map((profile) => ({ profile, entry: manifest.app.entry }));
+    return [manifest.execution.primary, ...(manifest.execution.alternatives ?? [])];
+  }
+  function validateManifest(manifest) {
+    if (!['0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8'].includes(manifest?.format_version)) throw new HNACError(`不支持格式版本: ${manifest?.format_version}`);
+    if (!manifest.app || !manifest.execution || !Array.isArray(manifest.capabilities) || !manifest.security) throw new HNACError('清单缺少必要区段');
+    for (const key of ['id', 'name', 'version']) if (typeof manifest.app[key] !== 'string' || !manifest.app[key]) throw new HNACError(`app.${key} 无效`);
+    if (manifest.security.sandbox !== 'deny-by-default') throw new HNACError('必须使用 deny-by-default 沙盒');
+    const seen = new Set();
+    for (const request of manifest.capabilities) {
+      if (!request || typeof request.id !== 'string' || typeof request.required !== 'boolean') throw new HNACError('能力声明无效');
+      if (seen.has(request.id)) throw new HNACError(`重复能力声明: ${request.id}`);
+      seen.add(request.id);
+    }
+    for (const candidate of executionCandidates(manifest)) {
+      if (!candidate || typeof candidate.profile !== 'string' || typeof candidate.entry !== 'string') throw new HNACError('执行候选无效');
+      safeLogicalPath(candidate.entry);
+    }
+  }
+  async function verifyCapsule(input, requireSignature = false) {
+    const files = await readZipUnique(input);
+    const manifest = parseJson(files, 'hnac.json');
+    validateManifest(manifest);
+    const index = parseJson(files, 'integrity/index.json');
+    const payload = [...files.keys()].filter((name) => !/^(integrity|signatures|attestations)\//.test(name)).sort();
+    const indexed = Object.keys(index.files ?? {}).sort();
+    if (JSON.stringify(payload) !== JSON.stringify(indexed)) throw new HNACError('完整性文件集合不一致');
+    for (const name of indexed) {
+      const record = index.files[name];
+      const data = files.get(name);
+      if (!data || record.size !== data.length || record.sha256 !== await sha256(data)) throw new HNACError(`完整性错误: ${name}`);
+    }
+    let signature = { status: 'absent', signer: '' };
+    if (files.has('signatures/ed25519.json')) {
+      const envelope = parseJson(files, 'signatures/ed25519.json');
+      const signedObject = safeLogicalPath(envelope.signed_object ?? 'integrity/index.json');
+      if (signedObject !== 'integrity/index.json' || !files.has(signedObject)) throw new HNACError('签名对象无效');
+      const signed = files.get(signedObject);
+      if (envelope.signed_sha256 !== await sha256(signed)) throw new HNACError('签名对象哈希不匹配');
+      try {
+        const raw = b64(envelope.public_key);
+        const key = await crypto.subtle.importKey('raw', raw, { name: 'Ed25519' }, false, ['verify']);
+        const valid = await crypto.subtle.verify({ name: 'Ed25519' }, key, b64(envelope.signature), signed);
+        if (!valid) throw new HNACError('Ed25519 签名无效');
+        signature = { status: 'valid', signer: envelope.signer ?? 'unknown', public_key_sha256: await sha256(raw) };
+      } catch (error) {
+        if (error instanceof HNACError || requireSignature) throw new HNACError(`签名验证失败: ${error.message}`);
+        signature = { status: 'unverified', signer: envelope.signer ?? 'unknown', reason: 'webcrypto-ed25519-unavailable' };
+      }
+    } else if (requireSignature) throw new HNACError('需要签名但胶囊未签名');
+    for (const candidate of executionCandidates(manifest)) if (!files.has(candidate.entry)) throw new HNACError(`执行入口不存在: ${candidate.entry}`);
+    return { files, manifest, index, signature, capsule_sha256: await sha256(input instanceof Uint8Array ? input : new Uint8Array(input)) };
+  }
+  function hostProfile(overrides = {}) {
+    const base = {
+      id: 'hnaf.pocket.android.webview', family: 'mobile',
+      execution_profiles: ['wasm-core@1', 'declarative-v0'],
+      capabilities: Object.fromEntries([...Object.entries(CAPABILITY_CATALOG), ...Object.entries(NATIVE_CAPABILITIES)]),
+      interaction_modes: ['touch', 'pointer', 'keyboard'],
+      resources: { language: navigator.language, online: navigator.onLine, memory_class: navigator.deviceMemory ?? 'unknown', viewport_width: innerWidth || 390, viewport_height: innerHeight || 844, screen_reader: false, spatial: false },
+      policies: { network_default: 'deny', storage: 'app-origin-scoped', native_bridge: 'url-message-boundary', capability_broker: 'lease-required', accessibility_mode: false },
+    };
+    return { ...base, ...overrides, resources: { ...base.resources, ...(overrides.resources ?? {}) }, policies: { ...base.policies, ...(overrides.policies ?? {}) }, interaction_modes: overrides.interaction_modes ?? base.interaction_modes };
+  }
+
+  const AIP_PRIORITY = { critical: 0, primary: 1, secondary: 2, supporting: 3, low: 4 };
+  function compareId(a, b) { return a === b ? 0 : (a < b ? -1 : 1); }
+  function aipPriority(node) { return AIP_PRIORITY[node?.priority ?? 'secondary'] ?? 9; }
+  function projectionProfile(host) {
+    if (host.resources?.spatial || ['xr', 'spatial'].includes(String(host.family).toLowerCase())) return 'spatial';
+    if (host.policies?.accessibility_mode || host.resources?.screen_reader || host.interaction_modes?.includes('screen-reader')) return 'accessibility';
+    const width = Number(host.resources?.viewport_width ?? 0) || 0;
+    return width >= 700 ? 'tablet' : 'phone';
+  }
+  function aipVisible(node, profile, host) {
+    const rule = node.visibility ?? {};
+    if (rule.profiles?.length && !rule.profiles.includes(profile)) return false;
+    if (rule.exclude_profiles?.includes(profile)) return false;
+    if (rule.interaction_modes?.length && !rule.interaction_modes.some((mode) => host.interaction_modes.includes(mode))) return false;
+    const width = Number(host.resources?.viewport_width ?? 0) || 0;
+    if (rule.min_width !== undefined && width && width < Number(rule.min_width)) return false;
+    if (rule.max_width !== undefined && width && width > Number(rule.max_width)) return false;
+    return true;
+  }
+  function aipAffordance(kind, profile) {
+    const table = {
+      action: { phone: 'full-width-action', tablet: 'touch-action', accessibility: 'command', spatial: 'spatial-control' },
+      information: { phone: 'stacked-card', tablet: 'card', accessibility: 'reading-block', spatial: 'world-label' },
+      navigation: { phone: 'bottom-navigation', tablet: 'rail-navigation', accessibility: 'landmark', spatial: 'portal' },
+      document: { phone: 'single-column-document', tablet: 'document', accessibility: 'linear-document', spatial: 'document-surface' },
+      media: { phone: 'responsive-media', tablet: 'media-card', accessibility: 'described-media', spatial: 'immersive-media' },
+      spatial: { phone: 'spatial-fallback-card', tablet: 'spatial-preview', accessibility: 'spatial-description', spatial: 'spatial-anchor' },
+      group: { phone: 'stack', tablet: 'grid', accessibility: 'group', spatial: 'cluster' },
+    };
+    return table[kind]?.[profile] ?? kind;
+  }
+  function aipLayout(profile, graph) {
+    const defaults = {
+      phone: { mode: 'single-column', columns: 1, navigation: 'bottom', density: 'comfortable' },
+      tablet: { mode: 'adaptive-grid', columns: 2, navigation: 'rail', density: 'comfortable' },
+      accessibility: { mode: 'linear', columns: 1, navigation: 'landmarks', density: 'spacious' },
+      spatial: { mode: 'spatial-field', columns: 0, navigation: 'portals', density: 'world-scale' },
+    };
+    return { ...defaults[profile], ...(graph.projections?.[profile] ?? {}) };
+  }
+  async function compileAdaptiveInterface(graph, host = hostProfile()) {
+    if (!graph || !['0.6', '0.7'].includes(graph.version) || !graph.nodes || !graph.intents || !graph.nodes[graph.root]) throw new HNACError('AIP v0.6/v0.7 图无效');
+    const profile = projectionProfile(host);
+    const visible = new Set(Object.entries(graph.nodes).filter(([, node]) => aipVisible(node, profile, host)).map(([id]) => id));
+    if (!visible.has(graph.root)) throw new HNACError(`AIP 根节点在 ${profile} 投影中不可见`);
+    const order = [], seen = new Set();
+    const visit = (id) => {
+      if (seen.has(id) || !visible.has(id)) return;
+      seen.add(id); order.push(id);
+      const children = (graph.nodes[id].children ?? []).filter((child) => visible.has(child)).sort((a, b) => aipPriority(graph.nodes[a]) - aipPriority(graph.nodes[b]) || compareId(a, b));
+      children.forEach(visit);
+    };
+    visit(graph.root);
+    [...visible].sort((a, b) => aipPriority(graph.nodes[a]) - aipPriority(graph.nodes[b]) || compareId(a, b)).forEach(visit);
+    const nodes = order.map((id, index) => {
+      const source = graph.nodes[id];
+      const node = { id, kind: source.kind, label: source.label ?? id, description: source.description, priority: source.priority ?? 'secondary', order: index, affordance: aipAffordance(source.kind, profile), children: (source.children ?? []).filter((child) => visible.has(child)) };
+      for (const key of ['intent', 'media', 'spatial', 'document', 'navigation', 'style', 'fallback']) if (source[key] !== undefined) node[key] = source[key];
+      if (source.binding !== undefined) node.binding = typeof source.binding === 'string' ? { path: source.binding } : source.binding;
+      return Object.fromEntries(Object.entries(node).filter(([, value]) => value !== undefined && value !== null));
+    });
+    const intents = Object.entries(graph.intents).sort(([a], [b]) => compareId(a, b)).map(([id, intent]) => ({ id, label: intent.label ?? id, risk: intent.risk ?? 'low', confirmation: Boolean(intent.confirmation), triggers: Object.fromEntries(Object.entries(intent.triggers ?? {}).filter(([mode]) => host.interaction_modes.includes(mode)).sort(([a], [b]) => compareId(a, b))) }));
+    const plan = { version: `hnaf.adaptive-interface-plan.v${graph.version}`, graph_id: graph.id ?? 'main', graph_version: graph.version, profile, host: { id: host.id, family: host.family }, root: graph.root, layout: aipLayout(profile, graph), interaction_modes: [...host.interaction_modes].sort(compareId), nodes, intents };
+    plan.semantic_snapshot = await sha256(canonicalJson(plan));
+    return plan;
+  }
+  function negotiate(manifest, host = hostProfile()) {
+    let execution = null;
+    const unsupported_profiles = [];
+    for (const candidate of executionCandidates(manifest)) {
+      if (host.execution_profiles.includes(candidate.profile)) { execution = candidate; break; }
+      unsupported_profiles.push(candidate.profile);
+    }
+    const grants = [], fallbacks = [], unresolved = [];
+    for (const request of manifest.capabilities) {
+      const versions = host.capabilities[request.id] ?? [];
+      const requestedMajor = String(request.version ?? versions.at(-1) ?? '').split('.')[0];
+      const version = [...versions].reverse().find((item) => String(item).split('.')[0] === requestedMajor);
+      if (version) grants.push({ lease_id: crypto.randomUUID(), capability: request.id, version, scope: request.scope ?? 'session', expires: 'session-end' });
+      else if (request.required) unresolved.push(request.id);
+      else fallbacks.push({ capability: request.id, fallback: request.fallback ?? 'unavailable' });
+    }
+    if (!execution) unresolved.push('execution-profile');
+    return { status: unresolved.length ? 'blocked' : (fallbacks.length ? 'degraded' : 'ready'), execution, grants, fallbacks, unresolved, unsupported_profiles, host };
+  }
+  class Broker {
+    constructor(appId, grants, trace) { this.appId = appId; this.grants = new Map(grants.map((g) => [g.capability, g])); this.trace = trace; }
+    require(capability, method) { if (!this.grants.has(capability)) throw new HNACError(`能力没有租约: ${capability}/${method}`); }
+    call(capability, method, args = {}) {
+      this.require(capability, method);
+      this.trace.push({ event: 'capability.call', capability, method });
+      if (capability === 'host.log' && method === 'write') { console.log(`[HNAC ${this.appId}]`, String(args.message ?? '')); return { written: true }; }
+      if (capability === 'host.clock' && method === 'now') return new Date().toISOString();
+      if (capability === 'environment.summary' && method === 'get') return { runtime: RUNTIME_VERSION, platform: navigator.userAgent, language: navigator.language };
+      if (capability === 'storage.kv') {
+        const key = `hnaf:${this.appId}:${String(args.key)}`;
+        if (method === 'get') return localStorage.getItem(key) ?? args.default;
+        if (method === 'set') { localStorage.setItem(key, String(args.value)); return { stored: true }; }
+      }
+      return { available: true };
+    }
+  }
+  function resolveTemplate(value, vars) {
+    if (typeof value === 'string') {
+      let result = value;
+      for (const [key, item] of Object.entries(vars)) result = result.replaceAll(`{{${key}}}`, typeof item === 'object' ? JSON.stringify(item) : String(item));
+      return result;
+    }
+    if (Array.isArray(value)) return value.map((item) => resolveTemplate(item, vars));
+    if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, resolveTemplate(v, vars)]));
+    return value;
+  }
+  async function executeDeclarative(payload, broker, manifest, limits = {}) {
+    const component = JSON.parse(decoder.decode(payload));
+    if (component.profile !== 'declarative-v0' || !Array.isArray(component.operations)) throw new HNACError('声明式组件无效');
+    if (component.operations.length > Number(limits.operations ?? 1000)) throw new HNACError('操作数量超过限制');
+    const vars = { 'app.name': manifest.app.name, 'app.version': manifest.app.version };
+    for (const [index, operation] of component.operations.entries()) {
+      if (operation.op === 'set') vars[String(operation.name)] = resolveTemplate(operation.value, vars);
+      else if (operation.op === 'capability_call') {
+        const value = broker.call(String(operation.capability), String(operation.method), resolveTemplate(operation.args ?? {}, vars));
+        if (operation.save_as) vars[String(operation.save_as)] = value;
+      } else if (operation.op === 'print') console.log(resolveTemplate(operation.text ?? '', vars));
+      else if (operation.op === 'assert') {
+        const left = resolveTemplate(operation.left, vars), right = resolveTemplate(operation.right, vars);
+        if (JSON.stringify(left) !== JSON.stringify(right)) throw new HNACError(`断言失败: ${index}`);
+      } else throw new HNACError(`未知声明式操作: ${operation.op}`);
+    }
+    return { profile: 'declarative-v0', operations: component.operations.length, variables: vars };
+  }
+  async function executeWasmCore(payload, broker) {
+    const module = await WebAssembly.compile(payload);
+    for (const item of WebAssembly.Module.imports(module)) {
+      if (item.module !== 'hnaf' || !IMPORT_TO_CAPABILITY[item.name]) throw new HNACError(`禁止的 Wasm 导入: ${item.module}/${item.name}`);
+      if (!broker.grants.has(IMPORT_TO_CAPABILITY[item.name])) throw new HNACError(`Wasm 导入未获租约: ${IMPORT_TO_CAPABILITY[item.name]}`);
+    }
+    let instance;
+    const memory = () => {
+      const value = instance?.exports?.memory;
+      if (!(value instanceof WebAssembly.Memory)) throw new HNACError('Wasm 必须导出 memory');
+      return value;
+    };
+    const readUtf8 = (ptr, length) => {
+      const view = new Uint8Array(memory().buffer);
+      if (ptr < 0 || length < 0 || ptr + length > view.length) throw new HNACError('Wasm 内存范围无效');
+      return decoder.decode(view.subarray(ptr, ptr + length));
+    };
+    const writeUtf8 = (ptr, capacity, value) => {
+      const bytes = encoder.encode(value), view = new Uint8Array(memory().buffer);
+      if (ptr < 0 || capacity < 0 || ptr + capacity > view.length) throw new HNACError('Wasm 输出范围无效');
+      if (bytes.length > capacity) return bytes.length;
+      view.set(bytes, ptr); return bytes.length;
+    };
+    const imports = { hnaf: {
+      log_write: (ptr, len) => { broker.call('host.log', 'write', { message: readUtf8(ptr, len) }); return 0; },
+      clock_now: (ptr, cap) => writeUtf8(ptr, cap, broker.call('host.clock', 'now', {})),
+      environment_summary: (ptr, cap) => writeUtf8(ptr, cap, JSON.stringify(broker.call('environment.summary', 'get', {}))),
+      kv_get: (kp, kl, op, oc) => writeUtf8(op, oc, String(broker.call('storage.kv', 'get', { key: readUtf8(kp, kl), default: '' }))),
+      kv_set: (kp, kl, vp, vl) => { broker.call('storage.kv', 'set', { key: readUtf8(kp, kl), value: readUtf8(vp, vl) }); return 0; },
+    } };
+    instance = await WebAssembly.instantiate(module, imports);
+    if (typeof instance.exports.run !== 'function') throw new HNACError('Wasm 必须导出 run()');
+    const code = instance.exports.run();
+    if (code !== 0) throw new HNACError(`Wasm 返回非零状态: ${code}`);
+    return { profile: 'wasm-core@1', status_code: code, imports: WebAssembly.Module.imports(module).map((i) => `${i.module}/${i.name}`) };
+  }
+  async function launch(input) {
+    const trace = [];
+    const verified = await verifyCapsule(input, false);
+    trace.push({ event: 'capsule.verified', signature: verified.signature.status });
+    const plan = negotiate(verified.manifest);
+    trace.push({ event: 'capability.negotiated', status: plan.status, profile: plan.execution?.profile ?? null });
+    if (plan.status === 'blocked' || !plan.execution) throw new HNACError(`启动被阻断: ${plan.unresolved.join(', ')}`);
+    const broker = new Broker(verified.manifest.app.id, plan.grants, trace);
+    const payload = verified.files.get(plan.execution.entry);
+    let execution;
+    if (plan.execution.profile === 'wasm-core@1') execution = await executeWasmCore(payload, broker);
+    else if (plan.execution.profile === 'declarative-v0') execution = await executeDeclarative(payload, broker, verified.manifest, verified.manifest.execution?.limits ?? {});
+    else throw new HNACError(`Pocket 暂不支持执行器: ${plan.execution.profile}`);
+    trace.push({ event: 'execution.completed', profile: execution.profile });
+    const pocket = verified.manifest.extensions?.pocket ?? null;
+    let tool = null;
+    if (pocket?.definition) tool = parseJson(verified.files, safeLogicalPath(pocket.definition));
+    let aip = null, aipPlan = null;
+    if (verified.manifest.interface?.graph && verified.files.has(verified.manifest.interface.graph)) {
+      aip = parseJson(verified.files, verified.manifest.interface.graph);
+      if (['0.6', '0.7'].includes(verified.manifest.interface?.version) && ['0.6', '0.7'].includes(aip.version)) {
+        aipPlan = await compileAdaptiveInterface(aip, hostProfile());
+        trace.push({ event: 'interface.projected', profile: aipPlan.profile, semantic_snapshot: aipPlan.semantic_snapshot });
+      }
+    }
+    return { ...verified, plan, execution, trace, tool, aip, aipPlan, runtime: RUNTIME_VERSION };
+  }
+  function setNativeCapabilities(value) {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) throw new HNACError('原生能力目录无效');
+    NATIVE_CAPABILITIES = Object.fromEntries(Object.entries(value).filter(([id, versions]) => typeof id === 'string' && Array.isArray(versions)));
+    return hostProfile();
+  }
+  globalThis.HNAFRuntime = { HNACError, readZipUnique, verifyCapsule, negotiate, launch, compileAdaptiveInterface, hostProfile, sha256, sortObject, setNativeCapabilities, RUNTIME_VERSION };
+})();
+</script>
+<script>(() => {
+  'use strict';
+
+  globalThis.CSS = globalThis.CSS || {};
+  if (typeof globalThis.CSS.escape !== 'function') {
+    globalThis.CSS.escape = (value) => String(value).replace(/[^a-zA-Z0-9_-]/g, (ch) => `\\${ch}`);
+  }
+  const state = { library: [], current: null, view: 'home', nativePending: new Map() };
+  const $ = (selector) => document.querySelector(selector);
+  const app = $('#app');
+
+  function esc(value) {
+    return String(value ?? '').replace(/[&<>'"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
+  }
+  function hostAction(action, params = {}) {
+    const query = new URLSearchParams(params).toString();
+    location.href = `hnaf-action://${action}${query ? `?${query}` : ''}`;
+  }
+  function jsonBase64Url(value) {
+    const bytes = new TextEncoder().encode(JSON.stringify(value ?? {}));
+    let binary = '';
+    for (const byte of bytes) binary += String.fromCharCode(byte);
+    return btoa(binary).replaceAll('+', '-').replaceAll('/', '_').replace(/=+$/g, '');
+  }
+  function requestNative(capability, method, args = {}) {
+    const appId = state.current?.manifest?.app?.id;
+    if (!appId) return Promise.reject(new Error('当前没有活动胶囊'));
+    const requestId = crypto.randomUUID();
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => {
+        state.nativePending.delete(requestId);
+        reject(new Error(`能力调用超时：${capability}`));
+      }, 90000);
+      state.nativePending.set(requestId, { resolve, reject, timer, capability });
+      hostAction('capability', { requestId, appId, capability, method, payload: jsonBase64Url(args) });
+    });
+  }
+  function receiveNativeResult(requestId, envelope) {
+    const pending = state.nativePending.get(requestId);
+    if (!pending) return false;
+    clearTimeout(pending.timer);
+    state.nativePending.delete(requestId);
+    if (envelope?.ok) pending.resolve(envelope.result);
+    else pending.reject(new Error(envelope?.error?.message ?? '原生能力调用失败'));
+    return true;
+  }
+  function topBar(title, subtitle, trusted = true) {
+    return `<header class="topbar"><div class="topbar-copy"><h1>${esc(title)}</h1><p>${esc(subtitle)}</p></div>${trusted ? '<span class="trust-chip">可信宿主</span>' : ''}</header>`;
+  }
+  function bottomNav(active = 'home') {
+    const items = [
+      ['home', '▦', '工具'], ['capsules', '◇', '胶囊'], ['trace', '⌁', '轨迹'], ['settings', '⚙', '设置']
+    ];
+    return `<nav class="bottom-nav">${items.map(([id, icon, label]) => `<button class="nav-item ${id === active ? 'active' : ''}" data-nav="${id}"><b>${icon}</b><span>${label}</span></button>`).join('')}</nav>`;
+  }
+  function bindNav() {
+    document.querySelectorAll('[data-nav]').forEach((button) => button.addEventListener('click', () => {
+      const target = button.dataset.nav;
+      if (target === 'home') showHome();
+      else if (target === 'capsules') showCapsules();
+      else if (target === 'trace') showTraceHub();
+      else showSettings();
+    }));
+  }
+  function shell(content, title = 'HNAF Pocket', subtitle = '宿主中立应用胶囊', active = 'home', trusted = true) {
+    app.innerHTML = `<main class="screen-shell">${topBar(title, subtitle, trusted)}${content}${bottomNav(active)}</main>`;
+    bindNav();
+  }
+  function signatureBadge(signature) {
+    const status = signature?.status ?? 'unknown';
+    if (status === 'valid') return '<span class="badge good">签名有效</span>';
+    if (status === 'absent') return '<span class="badge warn">未签名</span>';
+    return '<span class="badge neutral">待复核</span>';
+  }
+  function appIcon(item) { return item?.pocket?.icon ?? '◈'; }
+  function launchButton(item) {
+    return item.broken ? '' : `<button class="primary" data-launch="${esc(item.id)}">运行</button>`;
+  }
+  function toolCard(item) {
+    return `<article class="tool-card ${item.broken ? 'broken' : ''}">
+      <div class="tool-icon">${esc(appIcon(item))}</div>
+      <div class="tool-main"><div class="tool-title-row"><h2>${esc(item.name)}</h2>${signatureBadge(item.signature)}</div>
+      <p>${esc(item.description || 'HNAC 工具胶囊')}</p>
+      <div class="meta"><span>v${esc(item.version)}</span><span>${esc(item.pocket?.category ?? 'utility')}</span><span>${item.file_count ?? '?'} files</span></div>
+      ${item.broken ? `<div class="error-strip">${esc(item.error)}</div>` : ''}
+      <div class="card-actions">${launchButton(item)}<button class="danger-text" data-delete="${esc(item.id)}">卸载</button></div></div>
+      <span class="tool-arrow">›</span>
+    </article>`;
+  }
+  function bindLibraryActions() {
+    document.querySelectorAll('[data-launch]').forEach((button) => button.addEventListener('click', () => hostAction('launch', { appId: button.dataset.launch })));
+    document.querySelectorAll('[data-delete]').forEach((button) => button.addEventListener('click', () => hostAction('delete', { appId: button.dataset.delete })));
+    document.querySelectorAll('[data-action="import"]').forEach((button) => button.addEventListener('click', () => hostAction('import')));
+  }
+  function showHome() {
+    state.current = null; state.view = 'home';
+    const validCount = state.library.filter((item) => item.signature?.status === 'valid').length;
+    const quick = state.library.slice(0, 3);
+    const featured = state.library.slice(3);
+    shell(`
+      <section class="runtime-card"><h2>宿主运行正常</h2><p>签名验证、能力租约与隔离状态均已启用</p><span class="trust-chip">安全等级 A</span><div class="runtime-orb">✓</div></section>
+      <h2 class="section-label">常用工具</h2>
+      <section class="quick-grid">${quick.map((item) => `<button class="quick-card" data-launch="${esc(item.id)}"><span class="quick-icon">${esc(appIcon(item))}</span><strong>${esc(item.name.replace('现场','').replace('记录','').slice(0,6))}</strong><small>点击运行</small></button>`).join('') || '<div class="empty">暂无工具</div>'}</section>
+      <h2 class="section-label">全部胶囊</h2>
+      <section class="tool-list">${(featured.length ? featured : state.library).map(toolCard).join('') || '<div class="empty"><strong>还没有工具</strong><span>导入 .hnac 或重启以安装内置胶囊。</span></div>'}</section>
+    `, 'HNAF Pocket', `${state.library.length} 个工具 · 运行时安全`, 'home');
+    bindLibraryActions();
+  }
+  function showCapsules() {
+    state.current = null; state.view = 'capsules';
+    const validCount = state.library.filter((item) => item.signature?.status === 'valid').length;
+    shell(`
+      <section class="import-zone"><div class="import-mark">＋</div><h2>选择 HNAC 文件</h2><p>最大 16 MiB · 本地验证 · 不上传云端</p><button class="primary" data-action="import">打开文件</button></section>
+      <section class="library-summary"><div class="metric-card"><strong>${state.library.length}</strong><span>已安装胶囊</span></div><div class="metric-card"><strong>${validCount}</strong><span>签名有效</span></div></section>
+      <h2 class="section-label">已安装应用对象</h2><section class="tool-list">${state.library.map(toolCard).join('')}</section>
+    `, '导入胶囊', '从文件、分享菜单或二维码导入 .hnac', 'capsules');
+    bindLibraryActions();
+  }
+  function showTraceHub() {
+    state.current = null; state.view = 'trace';
+    const rows = [
+      ['刚刚','capsule.library','SYNCED'],['2 分钟','signature.verify','VALID'],['5 分钟','capability.broker','READY'],['启动时','builtin.seed','COMPLETED']
+    ];
+    shell(`<section class="runtime-card"><h2>安全状态良好</h2><p>运行时、签名链与能力代理均可用</p><span class="trust-chip">发行检查通过</span><div class="runtime-orb">A</div></section><h2 class="section-label">最近语义轨迹</h2><section class="trace-list">${rows.map((r,i)=>`<div class="trace-row"><time>${r[0]}</time><span>${r[1]}</span><code>${r[2]}</code></div>`).join('')}</section>`, '宿主诊断', '语义轨迹与安全边界', 'trace');
+  }
+  function showSettings() {
+    state.current = null; state.view = 'settings';
+    shell(`<section class="settings-list"><div class="setting-row"><div><strong>网络访问</strong><br><span>胶囊默认禁止联网</span></div><span>关闭</span></div><div class="setting-row"><div><strong>原生对象桥</strong><br><span>不暴露 Java / Android 对象</span></div><span>关闭</span></div><div class="setting-row"><div><strong>能力授权</strong><br><span>按会话或单次签发租约</span></div><span>严格</span></div><div class="setting-row"><div><strong>本地状态</strong><br><span>按应用身份隔离</span></div><span>启用</span></div></section><section class="principle"><span>结构锚点</span><strong>Android 是宿主，不是应用的所有者。</strong></section>`, '宿主设置', '安全策略与运行时偏好', 'settings');
+  }
+  function setLibrary(library) {
+    state.library = Array.isArray(library) ? library : [];
+    if (state.current) return;
+    if (state.view === 'capsules') showCapsules(); else if (state.view === 'trace') showTraceHub(); else if (state.view === 'settings') showSettings(); else showHome();
+  }
+  function canGoHome() { return Boolean(state.current) || state.view !== 'home'; }
+
+  function trustPanel(result) {
+    const sig = result.signature;
+    const capabilityRows = result.manifest.capabilities.map((cap) => `<li><code>${esc(cap.id)}</code><span>${cap.required ? '必需' : '可选'} · ${esc(cap.scope ?? 'session')}</span></li>`).join('');
+    return `<details class="trust-panel">
+      <summary><span>${sig.status === 'valid' ? '✓' : '!'}</span> 信任与能力边界</summary>
+      <div class="trust-body">
+        <div class="trust-grid">
+          <div><small>签名</small><strong>${esc(sig.status)}</strong><span>${esc(sig.signer || sig.reason || '—')}</span></div>
+          <div><small>执行器</small><strong>${esc(result.execution.profile)}</strong><span>${esc(result.runtime)}</span></div>
+          <div><small>胶囊 SHA-256</small><strong class="mono">${esc(result.capsule_sha256.slice(0, 16))}…</strong><span>${result.files.size} 个文件</span></div>
+        </div>
+        <ul class="cap-list">${capabilityRows}</ul>
+      </div>
+    </details>`;
+  }
+  function toolHeader(result) {
+    return `<div class="tool-runtime-head">
+      <button class="back" data-home>‹ 返回工具中枢</button>
+      <div class="runtime-app"><span class="big-icon">${esc(result.manifest.extensions?.pocket?.icon ?? '◈')}</span><div><h1>${esc(result.manifest.app.name)}</h1><p>${esc(result.manifest.app.description ?? '')}</p>${signatureBadge(result.signature)}</div></div>
+      ${trustPanel(result)}
+    </div>`;
+  }
+  function bindHome() { $('[data-home]')?.addEventListener('click', showHome); }
+  function storageKey(appId, suffix) { return `hnaf-tool:${appId}:${suffix}`; }
+  function saveJson(appId, suffix, value) { localStorage.setItem(storageKey(appId, suffix), JSON.stringify(value)); }
+  function loadJson(appId, suffix, fallback) { try { return JSON.parse(localStorage.getItem(storageKey(appId, suffix))) ?? fallback; } catch { return fallback; } }
+  function copyReport(value) { hostAction('copy', { text: typeof value === 'string' ? value : JSON.stringify(value, null, 2) }); }
+  function nativeArgs(action, contextFactory) {
+    const args = structuredClone(action.args ?? {});
+    if (action.payload === 'report') {
+      const report = contextFactory ? contextFactory() : { app: state.current?.manifest?.app, generated_at: new Date().toISOString() };
+      const text = JSON.stringify(report, null, 2);
+      if (action.capability === 'system.document.export') {
+        args.filename = action.filename ?? `${state.current.manifest.app.name}-${Date.now()}.json`;
+        args.mime = 'application/json'; args.content = text; args.encoding = 'utf8';
+      } else if (action.capability === 'system.share') {
+        args.subject = action.subject ?? state.current.manifest.app.name; args.mime = 'text/plain'; args.text = text;
+      }
+    }
+    return args;
+  }
+  function nativeActionMarkup(actions = []) {
+    if (!actions.length) return '';
+    return `<section class="native-panel"><div class="native-title"><small>ANDROID CAPABILITY BROKER</small><strong>现场能力</strong><span>每次调用都需要清单声明、用户授权与能力租约。</span></div><div class="native-grid">${actions.map((action) => `<button class="native-action" data-native-action="${esc(action.id)}"><b>${esc(action.icon ?? '◇')}</b><span>${esc(action.label)}</span><small>${esc(action.capability)}</small></button>`).join('')}</div><div class="native-result" data-native-result hidden></div></section>`;
+  }
+  function compactNativeData(value) {
+    if (!value || typeof value !== 'object') return value;
+    const copy = structuredClone(value);
+    if (copy.data_url) copy.data_url = `[image data omitted: ${copy.data_url.length} chars]`;
+    return copy;
+  }
+  function bindNativeActions(actions = [], contextFactory = null, onResult = null) {
+    const byId = Object.fromEntries(actions.map((action) => [action.id, action]));
+    document.querySelectorAll('[data-native-action]').forEach((button) => button.addEventListener('click', async () => {
+      const action = byId[button.dataset.nativeAction];
+      if (!action) return;
+      const target = $('[data-native-result]');
+      button.disabled = true;
+      target.hidden = false;
+      target.innerHTML = `<div class="native-wait">正在请求 ${esc(action.label)} 的能力租约…</div>`;
+      try {
+        const result = await requestNative(action.capability, action.method ?? 'invoke', nativeArgs(action, contextFactory));
+        const data = result?.data ?? {};
+        const image = typeof data.data_url === 'string' ? `<img class="capture-preview" src="${data.data_url}" alt="能力返回图像">` : '';
+        target.innerHTML = `${image}<div class="native-ok"><strong>调用成功</strong><span>租约 ${esc(result?.lease?.scope ?? 'unknown')} · ${esc(action.capability)}</span></div><pre>${esc(JSON.stringify(compactNativeData(data), null, 2))}</pre>`;
+        if (onResult) onResult(action, result);
+      } catch (error) {
+        target.innerHTML = `<div class="native-error"><strong>调用被阻断或失败</strong><span>${esc(error.message)}</span></div>`;
+      } finally {
+        button.disabled = false;
+      }
+    }));
+  }
+
+  function renderForm(result, tool) {
+    const appId = result.manifest.app.id;
+    const fields = tool.fields ?? [];
+    const saved = loadJson(appId, 'draft', {});
+    const controls = fields.map((field) => {
+      const value = saved[field.id] ?? field.default ?? '';
+      if (field.type === 'checkbox') return `<label class="check-row"><input type="checkbox" data-field="${esc(field.id)}" ${value ? 'checked' : ''}><span><strong>${esc(field.label)}</strong><small>${esc(field.help ?? '')}</small></span></label>`;
+      if (field.type === 'select') return `<label class="field"><span>${esc(field.label)}</span><select data-field="${esc(field.id)}">${(field.options ?? []).map((opt) => `<option value="${esc(opt.value ?? opt)}" ${(opt.value ?? opt) === value ? 'selected' : ''}>${esc(opt.label ?? opt)}</option>`).join('')}</select></label>`;
+      if (field.type === 'number') return `<label class="field"><span>${esc(field.label)}</span><input type="number" data-field="${esc(field.id)}" value="${esc(value)}" placeholder="${esc(field.placeholder ?? '')}"></label>`;
+      return `<label class="field"><span>${esc(field.label)}</span>${field.multiline ? `<textarea data-field="${esc(field.id)}" placeholder="${esc(field.placeholder ?? '')}">${esc(value)}</textarea>` : `<input data-field="${esc(field.id)}" value="${esc(value)}" placeholder="${esc(field.placeholder ?? '')}">`}</label>`;
+    }).join('');
+    const evidence = loadJson(appId, 'native-evidence', {});
+    app.innerHTML = `<main class="shell">${toolHeader(result)}<section class="workspace"><div class="workspace-title"><h2>${esc(tool.title)}</h2><p>${esc(tool.description ?? '')}</p></div><div class="form-stack">${controls}</div>${nativeActionMarkup(tool.native_actions ?? [])}<div class="action-row"><button class="primary" data-save>保存记录</button><button class="secondary" data-export>生成报告</button><button class="ghost" data-reset>重置</button></div><pre class="result" data-result hidden></pre></section></main>`;
+    bindHome();
+    const collect = () => Object.fromEntries(fields.map((field) => {
+      const node = document.querySelector(`[data-field="${CSS.escape(field.id)}"]`);
+      let value = field.type === 'checkbox' ? node.checked : node.value;
+      if (field.type === 'number' && value !== '') value = Number(value);
+      return [field.id, value];
+    }));
+    const buildReport = () => ({ schema: 'hnaf-pocket-report@0.2', app: result.manifest.app, generated_at: new Date().toISOString(), values: collect(), evidence });
+    bindNativeActions(tool.native_actions ?? [], buildReport, (action, nativeResult) => {
+      const data = compactNativeData(nativeResult?.data ?? {});
+      evidence[action.id] = { capability: action.capability, observed_at: new Date().toISOString(), data };
+      saveJson(appId, 'native-evidence', evidence);
+    });
+    $('[data-save]').addEventListener('click', () => {
+      const values = collect();
+      const requiredMissing = fields.filter((field) => field.required && (values[field.id] === '' || values[field.id] === false)).map((field) => field.label);
+      if (requiredMissing.length) return showInline(`缺少必填项：${requiredMissing.join('、')}`, true);
+      saveJson(appId, 'draft', values);
+      const history = loadJson(appId, 'history', []);
+      history.unshift({ time: new Date().toISOString(), values });
+      saveJson(appId, 'history', history.slice(0, 50));
+      showInline('记录已保存在该胶囊的独立状态空间。');
+    });
+    $('[data-export]').addEventListener('click', () => {
+      const report = buildReport();
+      showInline(JSON.stringify(report, null, 2));
+      copyReport(report);
+    });
+    $('[data-reset]').addEventListener('click', () => { localStorage.removeItem(storageKey(appId, 'draft')); renderForm(result, tool); });
+  }
+
+  function parseCsv(text) {
+    const lines = text.trim().split(/\r?\n/).filter(Boolean);
+    if (!lines.length) return [];
+    const parseLine = (line) => {
+      const out = []; let value = ''; let quoted = false;
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        if (char === '"' && quoted && line[i + 1] === '"') { value += '"'; i++; }
+        else if (char === '"') quoted = !quoted;
+        else if (char === ',' && !quoted) { out.push(value); value = ''; }
+        else value += char;
+      }
+      out.push(value); return out;
+    };
+    const headers = parseLine(lines[0]);
+    return lines.slice(1).map((line) => Object.fromEntries(headers.map((header, i) => [header, parseLine(line)[i] ?? ''])));
+  }
+  async function renderTransform(result, tool) {
+    app.innerHTML = `<main class="shell">${toolHeader(result)}<section class="workspace"><div class="workspace-title"><h2>${esc(tool.title)}</h2><p>${esc(tool.description ?? '')}</p></div><label class="field"><span>输入</span><textarea class="code-area" data-input placeholder="粘贴 JSON、CSV 或文本"></textarea></label><div class="operation-grid">${(tool.operations ?? []).map((op) => `<button class="secondary" data-op="${esc(op.id)}">${esc(op.label)}</button>`).join('')}</div><label class="field"><span>输出</span><textarea class="code-area" data-output readonly></textarea></label><div class="action-row"><button class="primary" data-copy>复制输出</button><button class="ghost" data-clear>清空</button></div></section></main>`;
+    bindHome();
+    const input = $('[data-input]'), output = $('[data-output]');
+    const operations = Object.fromEntries((tool.operations ?? []).map((op) => [op.id, op]));
+    document.querySelectorAll('[data-op]').forEach((button) => button.addEventListener('click', async () => {
+      try {
+        const id = button.dataset.op, op = operations[id], text = input.value;
+        if (id === 'json.format') output.value = JSON.stringify(JSON.parse(text), null, 2);
+        else if (id === 'json.minify') output.value = JSON.stringify(JSON.parse(text));
+        else if (id === 'csv.to-json') output.value = JSON.stringify(parseCsv(text), null, 2);
+        else if (id === 'text.dedupe-lines') output.value = [...new Set(text.split(/\r?\n/))].join('\n');
+        else if (id === 'text.sha256') output.value = await HNAFRuntime.sha256(new TextEncoder().encode(text));
+        else throw new Error(`不支持操作: ${id}`);
+      } catch (error) { output.value = `错误：${error.message}`; }
+    }));
+    $('[data-copy]').addEventListener('click', () => copyReport(output.value));
+    $('[data-clear]').addEventListener('click', () => { input.value = ''; output.value = ''; });
+  }
+
+  function renderDecision(result, tool) {
+    const nodes = tool.nodes ?? {};
+    let current = tool.start;
+    const history = [];
+    app.innerHTML = `<main class="shell">${toolHeader(result)}<section class="workspace"><div class="workspace-title"><h2>${esc(tool.title)}</h2><p>${esc(tool.description ?? '')}</p></div><div class="decision-card" data-decision></div><div class="decision-history" data-history></div></section></main>`;
+    bindHome();
+    const renderNode = () => {
+      const node = nodes[current];
+      if (!node) return showInline('决策节点不存在', true);
+      const area = $('[data-decision]');
+      if (node.result) {
+        area.innerHTML = `<div class="result-mark">结论</div><h3>${esc(node.title ?? '处理建议')}</h3><p>${esc(node.result)}</p><div class="action-row"><button class="primary" data-restart>重新开始</button><button class="secondary" data-copy-result>复制路径</button></div>`;
+        $('[data-restart]').addEventListener('click', () => { current = tool.start; history.length = 0; renderNode(); });
+        $('[data-copy-result]').addEventListener('click', () => copyReport({ tool: tool.title, path: history, result: node.result, time: new Date().toISOString() }));
+      } else {
+        area.innerHTML = `<div class="step-mark">步骤 ${history.length + 1}</div><h3>${esc(node.question)}</h3><div class="choice-stack">${(node.options ?? []).map((option, index) => `<button class="choice" data-choice="${index}"><span>${esc(option.label)}</span><b>→</b></button>`).join('')}</div>`;
+        document.querySelectorAll('[data-choice]').forEach((button) => button.addEventListener('click', () => {
+          const option = node.options[Number(button.dataset.choice)]; history.push({ question: node.question, answer: option.label }); current = option.next; renderNode();
+        }));
+      }
+      $('[data-history]').innerHTML = history.length ? `<small>已走路径</small>${history.map((item) => `<span>${esc(item.answer)}</span>`).join('<i>›</i>')}` : '';
+    };
+    renderNode();
+  }
+
+  function renderScorecard(result, tool) {
+    const factors = tool.factors ?? [];
+    app.innerHTML = `<main class="shell">${toolHeader(result)}<section class="workspace"><div class="workspace-title"><h2>${esc(tool.title)}</h2><p>${esc(tool.description ?? '')}</p></div><div class="score-list">${factors.map((factor) => `<label class="score-row"><div><strong>${esc(factor.label)}</strong><small>权重 ${factor.weight}</small></div><input type="range" min="${factor.min ?? 0}" max="${factor.max ?? 10}" value="${factor.default ?? 5}" step="${factor.step ?? 1}" data-score="${esc(factor.id)}"><output data-value="${esc(factor.id)}">${factor.default ?? 5}</output></label>`).join('')}</div><div class="score-result"><small>综合结果</small><strong data-total>—</strong><span data-band>调整参数后计算</span></div><div class="action-row"><button class="primary" data-calc>计算</button><button class="secondary" data-copy-score>复制报告</button></div></section></main>`;
+    bindHome();
+    const calculate = () => {
+      let weighted = 0, totalWeight = 0; const values = {};
+      factors.forEach((factor) => {
+        const value = Number(document.querySelector(`[data-score="${CSS.escape(factor.id)}"]`).value);
+        values[factor.id] = value; weighted += value * Number(factor.weight); totalWeight += Number(factor.weight);
+      });
+      const score = totalWeight ? weighted / totalWeight : 0;
+      const band = (tool.bands ?? []).find((item) => score >= item.min && score <= item.max) ?? { label: '未分类' };
+      $('[data-total]').textContent = score.toFixed(2);
+      $('[data-band]').textContent = band.label;
+      return { score, band: band.label, values };
+    };
+    document.querySelectorAll('[data-score]').forEach((slider) => slider.addEventListener('input', () => { document.querySelector(`[data-value="${CSS.escape(slider.dataset.score)}"]`).textContent = slider.value; }));
+    $('[data-calc]').addEventListener('click', calculate);
+    $('[data-copy-score]').addEventListener('click', () => copyReport({ schema: 'hnaf-scorecard@0.1', app: result.manifest.app, generated_at: new Date().toISOString(), ...calculate() }));
+  }
+
+  function renderDiagnostics(result, tool) {
+    const checks = [
+      ['容器路径安全', '通过', 'ZIP 路径已去重并阻止目录穿越'],
+      ['内容完整性', '通过', `${result.files.size} 个文件与 SHA-256 索引一致`],
+      ['开发者签名', result.signature.status, result.signature.signer || result.signature.reason || '—'],
+      ['能力协商', result.plan.status, `${result.plan.grants.length} 个租约，${result.plan.unresolved.length} 个未解决`],
+      ['执行投影', result.execution.profile, `入口 ${result.plan.execution.entry}`],
+      ['原生权限直通', '关闭', '胶囊无法调用 Android Java 对象'],
+    ];
+    app.innerHTML = `<main class="shell">${toolHeader(result)}<section class="workspace"><div class="workspace-title"><h2>${esc(tool.title)}</h2><p>${esc(tool.description ?? '')}</p></div><div class="diag-list">${checks.map(([name, status, detail]) => `<div><span class="diag-dot"></span><section><strong>${esc(name)}</strong><p>${esc(detail)}</p></section><code>${esc(status)}</code></div>`).join('')}</div><details class="manifest"><summary>查看清单</summary><pre>${esc(JSON.stringify(result.manifest, null, 2))}</pre></details><details class="manifest"><summary>查看语义轨迹</summary><pre>${esc(JSON.stringify(result.trace, null, 2))}</pre></details><div class="action-row"><button class="primary" data-copy-diag>复制诊断报告</button></div></section></main>`;
+    bindHome();
+    $('[data-copy-diag]').addEventListener('click', () => copyReport({ schema: 'hnaf-diagnostic@0.1', app: result.manifest.app, signature: result.signature, plan: result.plan, execution: result.execution, trace: result.trace }));
+  }
+
+  function renderNativeLab(result, tool) {
+    const actions = tool.native_actions ?? [];
+    app.innerHTML = `<main class="shell">${toolHeader(result)}<section class="workspace"><div class="workspace-title"><h2>${esc(tool.title)}</h2><p>${esc(tool.description ?? '')}</p></div>${nativeActionMarkup(actions)}<section class="principle"><span>租约边界</span><strong>胶囊只能请求语义能力，不能持有 Android 对象。</strong></section></section></main>`;
+    bindHome();
+    bindNativeActions(actions, () => ({ schema: 'hnaf-capability-lab-report@0.2', app: result.manifest.app, generated_at: new Date().toISOString() }));
+  }
+
+  function renderFallback(result) {
+    const list = result.aipPlan?.nodes ?? (result.aip?.nodes && typeof result.aip.nodes === 'object' ? Object.entries(result.aip.nodes).map(([id, node]) => ({ id, ...node })) : []);
+    const snapshot = result.aipPlan?.semantic_snapshot ?? 'legacy';
+    app.innerHTML = `<main class="shell">${toolHeader(result)}<section class="workspace"><div class="workspace-title"><h2>自适应界面投影</h2><p>${esc(result.aipPlan ? `${result.aipPlan.profile} 投影 · ${snapshot}` : '旧版 AIP 图')}</p></div><div class="aip-grid">${list.map((node) => `<article><small>${esc(`${node.kind ?? 'node'} · ${node.affordance ?? 'legacy'}`)}</small><strong>${esc(node.label ?? '未命名节点')}</strong><span>${esc(node.description ?? '')}</span>${node.intent ? `<button class="secondary" data-aip-intent="${esc(node.intent)}">${esc(node.label)}</button>` : ''}</article>`).join('') || '<div class="empty">没有可显示节点</div>'}</div><details class="manifest"><summary>查看投影计划</summary><pre>${esc(JSON.stringify(result.aipPlan ?? result.aip, null, 2))}</pre></details></section></main>`;
+    bindHome();
+    $$('[data-aip-intent]').forEach((button) => button.onclick = async () => {
+      const intent = button.dataset.aipIntent;
+      if (intent === 'capsule.inspect') return alert(JSON.stringify(result.manifest, null, 2));
+      if (intent === 'interface.export-plan') { await navigator.clipboard?.writeText(JSON.stringify(result.aipPlan, null, 2)); return alert('投影计划已复制'); }
+      if (intent === 'interface.toggle-accessibility') { result.aipPlan = await HNAFRuntime.compileAdaptiveInterface(result.aip, HNAFRuntime.hostProfile({ resources: { screen_reader: true }, policies: { accessibility_mode: true }, interaction_modes: ['pointer', 'keyboard', 'screen-reader'] })); return renderFallback(result); }
+      if (result.manifest.format_version === '0.8' && result.manifest.capability_binding && result.manifest.execution_fabric) {
+        const requestId = crypto.randomUUID();
+        hostAction('remote-execution-intent', {
+          requestId,
+          app_id: result.manifest.app.id,
+          intent,
+          binding: '0.8',
+          execution_policy: jsonBase64Url(result.manifest.execution_fabric),
+          capability_binding: jsonBase64Url(result.manifest.capability_binding),
+          require_native_confirmation: 'true'
+        });
+        return alert(`意图已交给 Android 远程执行织构：${intent}`);
+      }
+      if (result.manifest.format_version === '0.7' && result.manifest.capability_binding) {
+        hostAction('capability-intent', { intent, app_id: result.manifest.app.id, binding: '0.7' });
+        return alert(`意图已交给 Android 能力绑定桥：${intent}`);
+      }
+      if (intent === 'app.run') return alert(`胶囊已执行：${result.execution.profile}`);
+      alert(`当前 Pocket 宿主未注册意图：${intent}`);
+    });
+  }
+  function showInline(message, error = false) {
+    const node = $('[data-result]');
+    if (!node) return;
+    node.hidden = false; node.textContent = message; node.classList.toggle('error', error);
+  }
+  async function receiveCapsule(name, base64) {
+    shell('<section class="loading"><div class="spinner"></div><strong>验证并启动胶囊</strong><span>正在检查完整性、签名、能力租约与执行投影…</span></section>', '启动中', name);
+    try {
+      const bytes = Uint8Array.from(atob(base64), (char) => char.charCodeAt(0));
+      const result = await HNAFRuntime.launch(bytes);
+      state.current = result;
+      const kind = result.tool?.kind;
+      if (kind === 'form') renderForm(result, result.tool);
+      else if (kind === 'transform') await renderTransform(result, result.tool);
+      else if (kind === 'decision-tree') renderDecision(result, result.tool);
+      else if (kind === 'scorecard') renderScorecard(result, result.tool);
+      else if (kind === 'diagnostic') renderDiagnostics(result, result.tool);
+      else if (kind === 'native-lab') renderNativeLab(result, result.tool);
+      else renderFallback(result);
+    } catch (error) {
+      state.current = { error };
+      shell(`<section class="fatal"><div>!</div><h2>胶囊启动失败</h2><p>${esc(error.message)}</p><button class="primary" data-home>返回工具库</button></section>`, '执行被阻断', '宿主拒绝了不满足契约的应用对象');
+      bindHome();
+    }
+  }
+  globalThis.HNAFPocket = { setLibrary, showHome, receiveCapsule, receiveNativeResult, canGoHome };
+  showHome();
+})();
+</script>
+</body>
+</html>

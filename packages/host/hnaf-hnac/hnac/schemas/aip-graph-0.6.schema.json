@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hnaf.org/schemas/aip-graph-0.6.schema.json",
+  "title": "HNAF Adaptive Interface Projection Graph v0.6",
+  "type": "object",
+  "required": ["version", "id", "root", "nodes", "intents"],
+  "properties": {
+    "version": {"const": "0.6"},
+    "id": {"type": "string", "minLength": 1},
+    "root": {"type": "string", "minLength": 1},
+    "nodes": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {"$ref": "#/$defs/node"}
+    },
+    "intents": {
+      "type": "object",
+      "additionalProperties": {"$ref": "#/$defs/intent"}
+    },
+    "projections": {
+      "type": "object",
+      "propertyNames": {"enum": ["desktop", "tablet", "phone", "accessibility", "spatial"]},
+      "additionalProperties": {"type": "object"}
+    },
+    "metadata": {"type": "object"}
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "node": {
+      "type": "object",
+      "required": ["kind", "label"],
+      "properties": {
+        "kind": {"enum": ["action", "information", "navigation", "document", "media", "spatial", "group"]},
+        "label": {"type": "string", "minLength": 1},
+        "description": {"type": "string"},
+        "priority": {"enum": ["critical", "primary", "secondary", "supporting", "low"]},
+        "children": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "intent": {"type": "string", "minLength": 1},
+        "binding": {
+          "oneOf": [
+            {"type": "string", "minLength": 1},
+            {
+              "type": "object",
+              "required": ["path"],
+              "properties": {
+                "path": {"type": "string", "minLength": 1},
+                "fallback": {},
+                "format": {"type": "string"}
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "visibility": {
+          "type": "object",
+          "properties": {
+            "profiles": {"type": "array", "items": {"enum": ["desktop", "tablet", "phone", "accessibility", "spatial"]}, "uniqueItems": true},
+            "exclude_profiles": {"type": "array", "items": {"enum": ["desktop", "tablet", "phone", "accessibility", "spatial"]}, "uniqueItems": true},
+            "interaction_modes": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+            "min_width": {"type": "integer", "minimum": 0},
+            "max_width": {"type": "integer", "minimum": 0}
+          },
+          "additionalProperties": false
+        },
+        "media": {"type": "object"},
+        "spatial": {"type": "object"},
+        "document": {"type": "object"},
+        "navigation": {"type": "object"},
+        "style": {"type": "object"},
+        "fallback": {"type": "object"}
+      },
+      "additionalProperties": false
+    },
+    "intent": {
+      "type": "object",
+      "required": ["label", "triggers"],
+      "properties": {
+        "label": {"type": "string", "minLength": 1},
+        "risk": {"enum": ["low", "moderate", "high", "critical"]},
+        "confirmation": {"type": "boolean"},
+        "triggers": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {"type": "string", "minLength": 1},
+            "uniqueItems": true
+          }
+        },
+        "input_schema": {"type": "object"}
+      },
+      "additionalProperties": false
+    }
+  }
+}

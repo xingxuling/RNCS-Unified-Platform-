@@ -1,0 +1,11 @@
+{
+  "format":"reality-studio.project.v0.3","version":"0.3.0-alpha.1","projectId":"component-bridge-demo","title":"组件桥接演示","description":"VSR Alpha.11 Reality Studio v0.3 bridge fixture",
+  "canvas":{"width":640,"height":360,"grid":10},"activeSceneId":"scene-a","assets":[],"prefabs":[],
+  "scenes":[{"id":"scene-a","title":"组件场景","background":"#07111f","physics":{"stepHz":60,"gravityY":900,"solverIterations":4,"moveSpeed":185,"jumpSpeed":430,"maxSeconds":20},"objects":[
+    {"id":"floor","type":"platform","x":0,"y":320,"width":640,"height":40,"rotation":0,"opacity":1,"layer":0,"color":"#25324a","locked":true,"components":[]},
+    {"id":"player","type":"player","x":60,"y":280,"width":28,"height":36,"rotation":0,"opacity":1,"layer":1,"color":"#38bdf8","locked":false,"components":[]},
+    {"id":"core","type":"core","x":260,"y":240,"width":28,"height":28,"rotation":0,"opacity":1,"layer":2,"color":"#facc15","locked":false,"components":[{"id":"spin","enabled":true,"lifecycle":"tick","subject":"*","condition":"true","action":"rotate","target":"self","value":"90","everyTicks":1,"once":false,"breakpoint":false}]},
+    {"id":"checkpoint","type":"checkpoint","x":420,"y":250,"width":24,"height":70,"rotation":0,"opacity":1,"layer":1,"color":"#06b6d4","locked":false,"components":[{"id":"pulse","enabled":true,"lifecycle":"tick","subject":"*","condition":"true","action":"pulse-opacity","target":"self","value":"0.3,1,1.4","everyTicks":1,"once":false,"breakpoint":false}]},
+    {"id":"exit","type":"exit","x":560,"y":220,"width":48,"height":100,"rotation":0,"opacity":1,"layer":1,"color":"#22c55e","locked":false,"components":[]}
+  ],"logic":[]}],"metadata":{"controls":"A/D 移动，空格跳跃"}
+}

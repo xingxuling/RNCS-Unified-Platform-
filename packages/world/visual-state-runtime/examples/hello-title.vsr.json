@@ -1,0 +1,12 @@
+{
+  "specVersion": "0.1",
+  "metadata": {"id":"hello-title","title":"VSR Hello Title","duration":5,"defaultFps":30,"seed":42},
+  "canvas": {"width":960,"height":540,"layoutMode":"responsive","background":{"type":"linear-gradient","x1":0,"y1":0,"x2":960,"y2":540,"stops":[{"offset":0,"color":"#07111f"},{"offset":1,"color":"#173b68"}]}},
+  "variables": {"headline":"VISUAL STATE RUNTIME","subtitle":"VISUALS ARE COMPUTED STATE"},
+  "nodes": [
+    {"id":"halo","type":"ellipse","layout":{"x":"50%","y":"50%","width":420,"height":420,"anchorX":0.5,"anchorY":0.5},"appearance":{"fill":{"type":"solid","color":"#2b8cff"},"opacity":0.12},"tracks":[{"id":"halo-scale","property":"transform.scaleX","mode":"expression","expression":"1 + sin(time * 2) * 0.08"},{"id":"halo-scale-y","property":"transform.scaleY","mode":"expression","expression":"1 + sin(time * 2) * 0.08"}]},
+    {"id":"title","type":"text","layout":{"x":"50%","y":"44%","width":"85%","height":90,"anchorX":0.5,"anchorY":0.5,"responsive":[{"when":{"maxAspect":1},"set":{"width":"92%","height":130,"y":"42%"}}]},"appearance":{"fill":{"type":"solid","color":"#f3f8ff"},"opacity":1},"content":{"text":{"binding":"vars.headline"},"fontFamily":"sans-serif","fontSize":54,"fontWeight":"bold","align":"center"},"tracks":[{"id":"title-opacity","property":"appearance.opacity","mode":"keyframes","keyframes":[{"id":"k0","time":0,"value":0,"easing":"easeOut"},{"id":"k1","time":1,"value":1,"easing":"easeOut"},{"id":"k2","time":4,"value":1,"easing":"easeIn"},{"id":"k3","time":5,"value":0,"easing":"easeIn"}]},{"id":"title-y","property":"transform.translateY","mode":"keyframes","keyframes":[{"id":"y0","time":0,"value":30,"easing":"easeOut"},{"id":"y1","time":1,"value":0,"easing":"easeOut"}]}]},
+    {"id":"subtitle","type":"text","layout":{"x":"50%","y":"61%","width":"80%","height":46,"anchorX":0.5,"anchorY":0.5},"appearance":{"fill":{"type":"solid","color":"#8dc8ff"},"opacity":1},"content":{"text":{"binding":"vars.subtitle"},"fontSize":22,"fontWeight":"bold","align":"center"},"tracks":[{"id":"sub-opacity","property":"appearance.opacity","mode":"keyframes","keyframes":[{"id":"s0","time":0.4,"value":0},{"id":"s1","time":1.4,"value":1},{"id":"s2","time":4.2,"value":1},{"id":"s3","time":5,"value":0}]}]}
+  ],
+  "outputs": [{"id":"landscape","type":"video","width":960,"height":540,"fps":30,"codec":"h264"},{"id":"portrait","type":"video","width":540,"height":960,"fps":30,"codec":"h264"},{"id":"web","type":"interactive","responsive":true}]
+}

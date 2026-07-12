@@ -1,0 +1,68 @@
+{
+  "format": "rsr.experience-fabric-demo-evidence.v0.4",
+  "runtimeVersion": "0.4.0-alpha.1",
+  "experienceId": "aether-blade-showcase",
+  "deterministicReplay": true,
+  "deterministicRecovery": true,
+  "initialStateRoot": "fnv1a64:9cab27e3af6d648e",
+  "checkpointStateRoot": "fnv1a64:d585ab72920bd9ee",
+  "finalStateRoot": "fnv1a64:abc7024fa1e4f94a",
+  "replayStateRoot": "fnv1a64:abc7024fa1e4f94a",
+  "recoveredStateRoot": "fnv1a64:abc7024fa1e4f94a",
+  "animationRoot": "fnv1a64:dd8b4e53984de061",
+  "skeletonRoot": "fnv1a64:de9227e31473a282",
+  "audioPlanRoot": "fnv1a64:6e5962e7ff2139ca",
+  "effectRoot": "fnv1a64:53c39d5e9a862981",
+  "eventRoot": "fnv1a64:c42371b59485df76",
+  "causalDeltaRoot": "fnv1a64:7a2850b468bbddac",
+  "counts": {
+    "events": 9,
+    "audioCueEvents": 4,
+    "particlesAtFinal": 33,
+    "activeEffectsAtFinal": 1,
+    "frames": 30
+  },
+  "audio": {
+    "wavHash": "fnv1a64:745adb18721ab241",
+    "bytes": 768044,
+    "diagnostics": {
+      "sampleRate": 48000,
+      "frames": 192000,
+      "scheduledVoices": 7,
+      "renderedVoices": 7,
+      "droppedVoices": 0,
+      "peakBeforeNormalize": 0.42363648626246464,
+      "normalizeGain": 1,
+      "buses": 3
+    }
+  },
+  "video": {
+    "encoded": true,
+    "path": "/mnt/data/rncs_vsr_rsr_upgrade/RNCS_Aetherworld_Unified_v0.3.0-alpha.1/packages/world/reality-simulation-runtime/outputs/experience-fabric-verify/experience-showcase.mp4",
+    "stderrTail": "",
+    "frameRenderElapsedMs": 2517.775275,
+    "averageMsPerFrame": 83.9258425,
+    "frameCount": 30
+  },
+  "finalViews": {
+    "hashes": {
+      "player": "fnv1a64:44a1d360e5c2c76c",
+      "debugger": "fnv1a64:74f97c4263910b00",
+      "accessibility": "fnv1a64:64f2782d815d7820"
+    },
+    "verification": {
+      "ok": true,
+      "sourceDisplayHash": "fnv1a64:e9c5aa00b1175df4",
+      "invariantHash": "fnv1a64:be2d1d572e81feb6",
+      "observerCount": 3,
+      "projectedDisplayHashes": [
+        "fnv1a64:25642f2bc41be6ba",
+        "fnv1a64:a0646c22572a6309",
+        "fnv1a64:1363cdfab0601eaa"
+      ],
+      "diagnostics": []
+    },
+    "invariantHash": "fnv1a64:be2d1d572e81feb6",
+    "sourceDocumentHash": "fnv1a64:5a7e61a602af3e87"
+  }
+}

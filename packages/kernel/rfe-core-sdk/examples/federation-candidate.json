@@ -1,0 +1,14 @@
+{
+  "format": "rfe.federation-candidate.v0.1",
+  "domainId": "domain:local-demo",
+  "worldId": "world:rncs-demo",
+  "branchId": "branch:main",
+  "generationId": "generation:1:abf561619b73d7da571b",
+  "generationRoot": "528b02f99bffcbadad75825f319c84b3d69a2a97234ef8cd7d4cfebb96e84e71",
+  "semanticRoot": "642e16bc86a0c0afc1a816ffe79389b05730bbab5dbd504aeeaa25530d580f28",
+  "evidenceRoot": "57b21c55b3aba81c96ce4c44954d7d05f5ef3f75cf270c7478dd5c1a351662d5",
+  "localReceiptRoot": "d69a219a28ff5aacbb903aa07f051afba89614c9b987d7f1c69cc813e67deb16",
+  "requestedPolicy": "quorum",
+  "status": "candidate-not-federated",
+  "integrityHash": "7aac31798ec6c53ebbec9497d31b6b4d9774afaf2919ddf60a0fbeba9644e311"
+}

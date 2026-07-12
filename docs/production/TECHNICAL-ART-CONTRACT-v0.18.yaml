@@ -1,0 +1,18 @@
+engine_targets:
+  verified: "WebGL 1 compatible procedural renderer"
+  source_only: "Godot 4.7 GL Compatibility"
+performance_budget:
+  target_fps: 60
+  visible_npc_players: 16
+  active_enemies: 14
+  world_extent_meters: 110
+asset_strategy:
+  geometry: "procedural primitive proxy assets"
+  materials: "single-color stylized rough materials"
+  lighting: "one directional light + ambient/fog"
+  future: "replace proxies through RAGF modular character/environment/VFX families"
+quality_gate:
+  - "玩家背影在默认镜头可读"
+  - "敌我与职业色可区分"
+  - "法术颜色与功能一致"
+  - "目标设备帧率与输入延迟需要后续实机验证"

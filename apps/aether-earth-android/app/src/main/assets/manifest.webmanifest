@@ -1,0 +1,9 @@
+{
+  "name": "Aether Earth",
+  "short_name": "Aether Earth",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#040a12",
+  "theme_color": "#07111f",
+  "description": "RCL collective intelligence Earth sandbox"
+}

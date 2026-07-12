@@ -1,0 +1,25 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {createAssetRecord,createUnifiedProject,sealUnifiedProject,createSceneNode} from '../src/scene-studio.mjs';
+import {normalizeProgram} from '@taowind/reality-behavior-fabric';
+import {seal} from '../src/canonical.mjs';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const behavior=JSON.parse(fs.readFileSync(path.join(root,'examples','冰境试炼.behavior.json'),'utf8'));
+const frostRoot=path.join(root,'examples','assets','霜璃');
+const bundle=JSON.parse(fs.readFileSync(path.join(frostRoot,'continuity-bundle.json'),'utf8'));
+const proposal=JSON.parse(fs.readFileSync(path.join(frostRoot,'reality-studio-import.json'),'utf8'));
+const playerAssetId=bundle.asset_identity.asset_id;
+const rawBehavior=structuredClone(behavior);delete rawBehavior.program_root;const playerEntity=rawBehavior.entities.find(e=>e.entity_id==='player');if(playerEntity)playerEntity.components.asset_id=playerAssetId;const unifiedBehavior=normalizeProgram(rawBehavior);
+let player=createAssetRecord(bundle,{importProposal:proposal,previewUrl:'assets/霜璃/concept.svg'});
+const FIXED_TIME='2026-07-01T08:00:00.000Z';player=seal({...player,imported_at:FIXED_TIME},'asset_root');
+function builtin(asset_id,name,kind,preview_url,color){return seal({format:'reality-studio.asset-record.v0.9',asset_id,name,kind,continuity_policy:'stable-identity',bundle_root:`builtin:${asset_id}`,source:{kind:'builtin-reference'},variants:{selected:'balanced',available:['balanced']},files:[{role:'concept-svg',path:preview_url,mime:'image/svg+xml',platforms:['desktop','mobile']}],dependencies:[],extensions:{visual:{color}},import_proposal:null,preview_url,imported_at:FIXED_TIME,status:'ready'},'asset_root')}
+const assets=[player,builtin('asset:frost-guard','寒霜守卫','character-2d','assets/builtin/frost-guard.svg','#fb7185'),builtin('asset:frost-key','寒霜钥匙','prop-2d','assets/builtin/frost-key.svg','#fde047'),builtin('asset:frost-gate','寒霜之门','environment-2d','assets/builtin/frost-gate.svg','#5eead4')];
+let project=createUnifiedProject({title:'冰境试炼：TileMap与导航原生项目',program:unifiedBehavior,assets});
+project.identity.project_id='unified-project:frost-trial-v11';project.identity.created_at=FIXED_TIME;project.identity.updated_at=FIXED_TIME;project.scenes[0].metadata.created_at=FIXED_TIME;for(const n of project.scenes[0].nodes)n.metadata.created_at=FIXED_TIME;
+const scout=createSceneNode({nodeId:'node:navigation-scout',name:'导航探针',x:88,y:72,zIndex:8,components:{tags:['navigation-agent','debug-probe'],navigation_agent:{speed_milli:3200,allow_diagonal:false,target:{x:568,y:280}},navigation_obstacle:false}});scout.metadata.created_at=FIXED_TIME;project.scenes[0].nodes.push(scout);
+project.editor.active_tool='tile-paint';project.editor.active_tilemap_id=project.scenes[0].tilemaps[0].tilemap_id;project.editor.active_tile_layer_id='layer:terrain';project.editor.selected_tile_id=2;project.editor.tile_overlay='navigation';
+project.build.targets=['web','windows-preview','android-preview'];project.build.quality_profile='balanced';project=sealUnifiedProject(project);
+fs.writeFileSync(path.join(root,'examples','冰境试炼.unified-project.json'),JSON.stringify(project,null,2)+'\n');
+fs.writeFileSync(path.join(root,'web','sample-unified.js'),`window.SAMPLE_UNIFIED=${JSON.stringify(project)};\n`);
+console.log(JSON.stringify({project:project.identity.project_id,project_root:project.project_root,assets:assets.length,nodes:project.scenes[0].nodes.length,tilemaps:project.scenes[0].tilemaps.length,tilemap_root:project.scenes[0].tilemaps[0].tilemap_root},null,2));

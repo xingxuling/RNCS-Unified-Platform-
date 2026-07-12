@@ -1,0 +1,12 @@
+{
+  "id": "laf",
+  "name": "Living Artifact Format",
+  "version": "1.0.0",
+  "path": "packages/kernel/living-artifact-format",
+  "layer": "kernel",
+  "runtime": "rncs.laf",
+  "dependsOn": [
+    "rncs-core"
+  ],
+  "test": "npm test --workspace @taowind/living-artifact-format"
+}

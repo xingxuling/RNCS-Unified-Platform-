@@ -1,0 +1,966 @@
+{
+  "format": "reality-studio.project.v0.4",
+  "version": "0.4.0-alpha.1",
+  "projectUid": "project-0s2qwdn",
+  "projectId": "reality-studio-reality-graph-demo",
+  "title": "现实核心：关系图与状态织构",
+  "description": "Reality Studio v0.4 现实关系图、稳定身份、共享状态、信号与持续预制体演示。",
+  "canvas": {
+    "width": 960,
+    "height": 540,
+    "grid": 10
+  },
+  "activeSceneId": "first-leap",
+  "assets": [],
+  "prefabs": [],
+  "scenes": [
+    {
+      "uid": "scene-1oymzy8",
+      "id": "first-leap",
+      "title": "第一跃迁",
+      "description": "收集现实核心并抵达出口。",
+      "background": "#07111f",
+      "blackboard": {
+        "energy": 0,
+        "phase": "explore",
+        "gateOpen": false
+      },
+      "physics": {
+        "stepHz": 60,
+        "gravityY": 900,
+        "solverIterations": 4,
+        "moveSpeed": 185,
+        "jumpSpeed": 430,
+        "maxSeconds": 45
+      },
+      "camera": {
+        "mode": "follow",
+        "zoom": 1,
+        "smoothing": 0.18
+      },
+      "autoNext": true,
+      "objects": [
+        {
+          "uid": "obj-1nqn673",
+          "id": "world-floor",
+          "type": "platform",
+          "parentId": null,
+          "role": "platform",
+          "tags": [
+            "platform"
+          ],
+          "x": 0,
+          "y": 500,
+          "width": 960,
+          "height": 40,
+          "rotation": 0,
+          "opacity": 1,
+          "layer": 0,
+          "color": "#25324a",
+          "assetId": "",
+          "text": "",
+          "locked": false,
+          "restitution": 0,
+          "friction": 0.7,
+          "motion": {
+            "axis": "x",
+            "distance": 0,
+            "speed": 60
+          },
+          "components": [],
+          "prefabUid": null,
+          "prefabRevision": 0
+        },
+        {
+          "uid": "obj-0dvf04q",
+          "id": "world-left",
+          "type": "wall",
+          "parentId": null,
+          "role": "wall",
+          "tags": [
+            "wall",
+            "world-boundary"
+          ],
+          "x": -20,
+          "y": 0,
+          "width": 20,
+          "height": 540,
+          "rotation": 0,
+          "opacity": 1,
+          "layer": 0,
+          "color": "#334155",
+          "assetId": "",
+          "text": "",
+          "locked": true,
+          "restitution": 0,
+          "friction": 0.7,
+          "motion": {
+            "axis": "x",
+            "distance": 0,
+            "speed": 60
+          },
+          "components": [],
+          "prefabUid": null,
+          "prefabRevision": 0
+        },
+        {
+          "uid": "obj-0uf8iev",
+          "id": "world-right",
+          "type": "wall",
+          "parentId": null,
+          "role": "wall",
+          "tags": [
+            "wall",
+            "world-boundary"
+          ],
+          "x": 960,
+          "y": 0,
+          "width": 20,
+          "height": 540,
+          "rotation": 0,
+          "opacity": 1,
+          "layer": 0,
+          "color": "#334155",
+          "assetId": "",
+          "text": "",
+          "locked": true,
+          "restitution": 0,
+          "friction": 0.7,
+          "motion": {
+            "axis": "x",
+            "distance": 0,
+            "speed": 60
+          },
+          "components": [],
+          "prefabUid": null,
+          "prefabRevision": 0
+        },
+        {
+          "uid": "obj-0xnzhd9",
+          "id": "player",
+          "type": "player",
+          "parentId": null,
+          "role": "player",
+          "tags": [
+            "player"
+          ],
+          "x": 70,
+          "y": 460,
+          "width": 28,
+          "height": 36,
+          "rotation": 0,
+          "opacity": 1,
+          "layer": 0,
+          "color": "#38bdf8",
+          "assetId": "",
+          "text": "",
+          "locked": false,
+          "restitution": 0,
+          "friction": 0.7,
+          "motion": {
+            "axis": "x",
+            "distance": 0,
+            "speed": 60
+          },
+          "components": [],
+          "prefabUid": null,
+          "prefabRevision": 0
+        },
+        {
+          "uid": "obj-17d3ial",
+          "id": "core-a",
+          "type": "core",
+          "parentId": null,
+          "role": "core",
+          "tags": [
+            "collectible",
+            "core"
+          ],
+          "x": 210,
+          "y": 460,
+          "width": 20,
+          "height": 20,
+          "rotation": 0,
+          "opacity": 1,
+          "layer": 0,
+          "color": "#facc15",
+          "assetId": "",
+          "text": "",
+          "locked": false,
+          "restitution": 0,
+          "friction": 0.7,
+          "motion": {
+            "axis": "x",
+            "distance": 0,
+            "speed": 60
+          },
+          "components": [
+            {
+              "uid": "cmp-10kwehw",
+              "id": "energy-counter",
+              "enabled": true,
+              "lifecycle": "collect",
+              "signal": "*",
+              "subject": "*",
+              "condition": "true",
+              "action": "add-variable",
+              "target": "energy",
+              "value": "1",
+              "everyTicks": 1,
+              "once": false,
+              "breakpoint": false
+            },
+            {
+              "uid": "cmp-093eio4",
+              "id": "core-signal",
+              "enabled": true,
+              "lifecycle": "collect",
+              "signal": "*",
+              "subject": "*",
+              "condition": "true",
+              "action": "emit-signal",
+              "target": "self",
+              "value": "core.collected",
+              "everyTicks": 1,
+              "once": false,
+              "breakpoint": false
+            },
+            {
+              "uid": "cmp-1gm8aqg",
+              "id": "core-spin",
+              "enabled": true,
+              "lifecycle": "tick",
+              "signal": "*",
+              "subject": "*",
+              "condition": "true",
+              "action": "rotate",
+              "target": "self",
+              "value": "90",
+              "everyTicks": 1,
+              "once": false,
+              "breakpoint": false
+            }
+          ],
+          "prefabUid": null,
+          "prefabRevision": 0
+        },
+        {
+          "uid": "obj-16j4p7o",
+          "id": "core-b",
+          "type": "core",
+          "parentId": null,
+          "role": "core",
+          "tags": [
+            "collectible",
+            "core"
+          ],
+          "x": 410,
+          "y": 460,
+          "width": 20,
+          "height": 20,
+          "rotation": 0,
+          "opacity": 1,
+          "layer": 0,
+          "color": "#facc15",
+          "assetId": "",
+          "text": "",
+          "locked": false,
+          "restitution": 0,
+          "friction": 0.7,
+          "motion": {
+            "axis": "x",
+            "distance": 0,
+            "speed": 60
+          },
+          "components": [],
+          "prefabUid": null,
+          "prefabRevision": 0
+        },
+        {
+          "uid": "obj-16t4awn",
+          "id": "core-c",
+          "type": "core",
+          "parentId": null,
+          "role": "core",
+          "tags": [
+            "collectible",
+            "core"
+          ],
+          "x": 680,
+          "y": 460,
+          "width": 20,
+          "height": 20,
+          "rotation": 0,
+          "opacity": 1,
+          "layer": 0,
+          "color": "#facc15",
+          "assetId": "",
+          "text": "",
+          "locked": false,
+          "restitution": 0,
+          "friction": 0.7,
+          "motion": {
+            "axis": "x",
+            "distance": 0,
+            "speed": 60
+          },
+          "components": [],
+          "prefabUid": null,
+          "prefabRevision": 0
+        },
+        {
+          "uid": "obj-0zhpgkw",
+          "id": "obstacle-alpha",
+          "type": "obstacle",
+          "parentId": null,
+          "role": "obstacle",
+          "tags": [
+            "platform",
+            "obstacle"
+          ],
+          "x": 500,
+          "y": 420,
+          "width": 48,
+          "height": 80,
+          "rotation": 0,
+          "opacity": 1,
+          "layer": 0,
+          "color": "#64748b",
+          "assetId": "",
+          "text": "",
+          "locked": false,
+          "restitution": 0,
+          "friction": 0.7,
+          "motion": {
+            "axis": "x",
+            "distance": 0,
+            "speed": 60
+          },
+          "components": [],
+          "prefabUid": null,
+          "prefabRevision": 0
+        },
+        {
+          "uid": "obj-133u0w7",
+          "id": "checkpoint-alpha",
+          "type": "checkpoint",
+          "parentId": null,
+          "role": "checkpoint",
+          "tags": [
+            "checkpoint"
+          ],
+          "x": 610,
+          "y": 440,
+          "width": 24,
+          "height": 60,
+          "rotation": 0,
+          "opacity": 1,
+          "layer": 0,
+          "color": "#06b6d4",
+          "assetId": "",
+          "text": "",
+          "locked": false,
+          "restitution": 0,
+          "friction": 0.7,
+          "motion": {
+            "axis": "x",
+            "distance": 0,
+            "speed": 60
+          },
+          "components": [
+            {
+              "uid": "cmp-14c2et8",
+              "id": "checkpoint-pulse",
+              "enabled": true,
+              "lifecycle": "tick",
+              "signal": "*",
+              "subject": "*",
+              "condition": "true",
+              "action": "pulse-opacity",
+              "target": "self",
+              "value": "0.3,1,1.4",
+              "everyTicks": 1,
+              "once": false,
+              "breakpoint": false
+            }
+          ],
+          "prefabUid": null,
+          "prefabRevision": 0
+        },
+        {
+          "uid": "obj-0wl3473",
+          "id": "moving-platform-alpha",
+          "type": "movingPlatform",
+          "parentId": null,
+          "role": "movingPlatform",
+          "tags": [
+            "platform",
+            "moving-platform"
+          ],
+          "x": 260,
+          "y": 360,
+          "width": 140,
+          "height": 24,
+          "rotation": 0,
+          "opacity": 1,
+          "layer": 0,
+          "color": "#8b5cf6",
+          "assetId": "",
+          "text": "",
+          "locked": false,
+          "restitution": 0,
+          "friction": 0.7,
+          "motion": {
+            "axis": "y",
+            "distance": 100,
+            "speed": 45
+          },
+          "components": [],
+          "prefabUid": null,
+          "prefabRevision": 0
+        },
+        {
+          "uid": "obj-10spbhp",
+          "id": "enemy-alpha",
+          "type": "enemy",
+          "parentId": null,
+          "role": "enemy",
+          "tags": [
+            "hazard",
+            "enemy"
+          ],
+          "x": 720,
+          "y": 470,
+          "width": 34,
+          "height": 34,
+          "rotation": 0,
+          "opacity": 1,
+          "layer": 0,
+          "color": "#e11d48",
+          "assetId": "",
+          "text": "",
+          "locked": false,
+          "restitution": 0,
+          "friction": 0.7,
+          "motion": {
+            "axis": "x",
+            "distance": 90,
+            "speed": 70
+          },
+          "components": [],
+          "prefabUid": null,
+          "prefabRevision": 0
+        },
+        {
+          "uid": "obj-1w92wl4",
+          "id": "exit-gate",
+          "type": "exit",
+          "parentId": null,
+          "role": "exit",
+          "tags": [
+            "exit"
+          ],
+          "x": 860,
+          "y": 400,
+          "width": 48,
+          "height": 100,
+          "rotation": 0,
+          "opacity": 1,
+          "layer": 0,
+          "color": "#22c55e",
+          "assetId": "",
+          "text": "",
+          "locked": false,
+          "restitution": 0,
+          "friction": 0.7,
+          "motion": {
+            "axis": "x",
+            "distance": 0,
+            "speed": 60
+          },
+          "components": [],
+          "prefabUid": null,
+          "prefabRevision": 0
+        },
+        {
+          "uid": "obj-1sm3how",
+          "id": "core-halo",
+          "type": "decor",
+          "parentId": "core-a",
+          "role": "visual-halo",
+          "tags": [
+            "visual",
+            "child"
+          ],
+          "x": -10,
+          "y": -10,
+          "width": 40,
+          "height": 40,
+          "rotation": 0,
+          "opacity": 0.22,
+          "layer": -1,
+          "color": "#fde047",
+          "assetId": "",
+          "text": "",
+          "locked": false,
+          "restitution": 0,
+          "friction": 0.7,
+          "motion": {
+            "axis": "x",
+            "distance": 0,
+            "speed": 60
+          },
+          "components": [
+            {
+              "uid": "cmp-1ojkgwv",
+              "id": "halo-listener",
+              "enabled": true,
+              "lifecycle": "signal",
+              "signal": "core.collected",
+              "subject": "*",
+              "condition": "vars.energy >= 1",
+              "action": "pulse-opacity",
+              "target": "self",
+              "value": "0.1,0.7,0.7",
+              "everyTicks": 1,
+              "once": false,
+              "breakpoint": false
+            }
+          ],
+          "prefabUid": null,
+          "prefabRevision": 0
+        }
+      ],
+      "logic": [
+        {
+          "id": "start-message",
+          "event": "start",
+          "subject": "*",
+          "action": "message",
+          "target": "",
+          "value": "第一跃迁：收集全部核心后进入出口。"
+        },
+        {
+          "id": "checkpoint-message",
+          "event": "checkpoint",
+          "subject": "*",
+          "action": "message",
+          "target": "",
+          "value": "检查点已激活，之后死亡会从这里重生。"
+        }
+      ]
+    },
+    {
+      "uid": "scene-0ergpvo",
+      "id": "branch-corridor",
+      "title": "分支回廊",
+      "description": "收集现实核心并抵达出口。",
+      "background": "#0b1024",
+      "blackboard": {
+        "energy": 0,
+        "phase": "explore",
+        "gateOpen": false
+      },
+      "physics": {
+        "stepHz": 60,
+        "gravityY": 900,
+        "solverIterations": 4,
+        "moveSpeed": 185,
+        "jumpSpeed": 430,
+        "maxSeconds": 45
+      },
+      "camera": {
+        "mode": "follow",
+        "zoom": 1,
+        "smoothing": 0.18
+      },
+      "autoNext": false,
+      "objects": [
+        {
+          "uid": "obj-028uoep",
+          "id": "world-floor",
+          "type": "platform",
+          "parentId": null,
+          "role": "platform",
+          "tags": [
+            "platform"
+          ],
+          "x": 0,
+          "y": 500,
+          "width": 960,
+          "height": 40,
+          "rotation": 0,
+          "opacity": 1,
+          "layer": 0,
+          "color": "#25324a",
+          "assetId": "",
+          "text": "",
+          "locked": false,
+          "restitution": 0,
+          "friction": 0.7,
+          "motion": {
+            "axis": "x",
+            "distance": 0,
+            "speed": 60
+          },
+          "components": [],
+          "prefabUid": null,
+          "prefabRevision": 0
+        },
+        {
+          "uid": "obj-0tyicdo",
+          "id": "world-left",
+          "type": "wall",
+          "parentId": null,
+          "role": "wall",
+          "tags": [
+            "wall",
+            "world-boundary"
+          ],
+          "x": -20,
+          "y": 0,
+          "width": 20,
+          "height": 540,
+          "rotation": 0,
+          "opacity": 1,
+          "layer": 0,
+          "color": "#334155",
+          "assetId": "",
+          "text": "",
+          "locked": true,
+          "restitution": 0,
+          "friction": 0.7,
+          "motion": {
+            "axis": "x",
+            "distance": 0,
+            "speed": 60
+          },
+          "components": [],
+          "prefabUid": null,
+          "prefabRevision": 0
+        },
+        {
+          "uid": "obj-0lowawp",
+          "id": "world-right",
+          "type": "wall",
+          "parentId": null,
+          "role": "wall",
+          "tags": [
+            "wall",
+            "world-boundary"
+          ],
+          "x": 960,
+          "y": 0,
+          "width": 20,
+          "height": 540,
+          "rotation": 0,
+          "opacity": 1,
+          "layer": 0,
+          "color": "#334155",
+          "assetId": "",
+          "text": "",
+          "locked": true,
+          "restitution": 0,
+          "friction": 0.7,
+          "motion": {
+            "axis": "x",
+            "distance": 0,
+            "speed": 60
+          },
+          "components": [],
+          "prefabUid": null,
+          "prefabRevision": 0
+        },
+        {
+          "uid": "obj-12ij9r7",
+          "id": "player",
+          "type": "player",
+          "parentId": null,
+          "role": "player",
+          "tags": [
+            "player"
+          ],
+          "x": 80,
+          "y": 460,
+          "width": 28,
+          "height": 36,
+          "rotation": 0,
+          "opacity": 1,
+          "layer": 0,
+          "color": "#38bdf8",
+          "assetId": "",
+          "text": "",
+          "locked": false,
+          "restitution": 0,
+          "friction": 0.7,
+          "motion": {
+            "axis": "x",
+            "distance": 0,
+            "speed": 60
+          },
+          "components": [],
+          "prefabUid": null,
+          "prefabRevision": 0
+        },
+        {
+          "uid": "obj-1s6iomr",
+          "id": "core-a",
+          "type": "core",
+          "parentId": null,
+          "role": "core",
+          "tags": [
+            "collectible",
+            "core"
+          ],
+          "x": 210,
+          "y": 460,
+          "width": 20,
+          "height": 20,
+          "rotation": 0,
+          "opacity": 1,
+          "layer": 0,
+          "color": "#facc15",
+          "assetId": "",
+          "text": "",
+          "locked": false,
+          "restitution": 0,
+          "friction": 0.7,
+          "motion": {
+            "axis": "x",
+            "distance": 0,
+            "speed": 60
+          },
+          "components": [],
+          "prefabUid": null,
+          "prefabRevision": 0
+        },
+        {
+          "uid": "obj-1sqhw0p",
+          "id": "core-c",
+          "type": "core",
+          "parentId": null,
+          "role": "core",
+          "tags": [
+            "collectible",
+            "core"
+          ],
+          "x": 680,
+          "y": 460,
+          "width": 20,
+          "height": 20,
+          "rotation": 0,
+          "opacity": 1,
+          "layer": 0,
+          "color": "#facc15",
+          "assetId": "",
+          "text": "",
+          "locked": false,
+          "restitution": 0,
+          "friction": 0.7,
+          "motion": {
+            "axis": "x",
+            "distance": 0,
+            "speed": 60
+          },
+          "components": [],
+          "prefabUid": null,
+          "prefabRevision": 0
+        },
+        {
+          "uid": "obj-0r5msvp",
+          "id": "checkpoint-alpha",
+          "type": "checkpoint",
+          "parentId": null,
+          "role": "checkpoint",
+          "tags": [
+            "checkpoint"
+          ],
+          "x": 610,
+          "y": 440,
+          "width": 24,
+          "height": 60,
+          "rotation": 0,
+          "opacity": 1,
+          "layer": 0,
+          "color": "#06b6d4",
+          "assetId": "",
+          "text": "",
+          "locked": false,
+          "restitution": 0,
+          "friction": 0.7,
+          "motion": {
+            "axis": "x",
+            "distance": 0,
+            "speed": 60
+          },
+          "components": [],
+          "prefabUid": null,
+          "prefabRevision": 0
+        },
+        {
+          "uid": "obj-0qe674h",
+          "id": "moving-platform-alpha",
+          "type": "movingPlatform",
+          "parentId": null,
+          "role": "movingPlatform",
+          "tags": [
+            "platform",
+            "moving-platform"
+          ],
+          "x": 260,
+          "y": 360,
+          "width": 140,
+          "height": 24,
+          "rotation": 0,
+          "opacity": 1,
+          "layer": 0,
+          "color": "#8b5cf6",
+          "assetId": "",
+          "text": "",
+          "locked": false,
+          "restitution": 0,
+          "friction": 0.7,
+          "motion": {
+            "axis": "y",
+            "distance": 100,
+            "speed": 45
+          },
+          "components": [],
+          "prefabUid": null,
+          "prefabRevision": 0
+        },
+        {
+          "uid": "obj-0wxoxyf",
+          "id": "enemy-alpha",
+          "type": "enemy",
+          "parentId": null,
+          "role": "enemy",
+          "tags": [
+            "hazard",
+            "enemy"
+          ],
+          "x": 720,
+          "y": 470,
+          "width": 34,
+          "height": 34,
+          "rotation": 0,
+          "opacity": 1,
+          "layer": 0,
+          "color": "#e11d48",
+          "assetId": "",
+          "text": "",
+          "locked": false,
+          "restitution": 0,
+          "friction": 0.7,
+          "motion": {
+            "axis": "x",
+            "distance": 90,
+            "speed": 70
+          },
+          "components": [
+            {
+              "uid": "cmp-0fu4lfy",
+              "id": "enemy-bob",
+              "enabled": true,
+              "lifecycle": "tick",
+              "signal": "*",
+              "subject": "*",
+              "condition": "tick >= 0",
+              "action": "bob",
+              "target": "self",
+              "value": "y,8,0.8",
+              "everyTicks": 1,
+              "once": false,
+              "breakpoint": false
+            }
+          ],
+          "prefabUid": null,
+          "prefabRevision": 0
+        },
+        {
+          "uid": "obj-10lkrwq",
+          "id": "exit-gate",
+          "type": "exit",
+          "parentId": null,
+          "role": "exit",
+          "tags": [
+            "exit"
+          ],
+          "x": 880,
+          "y": 400,
+          "width": 48,
+          "height": 100,
+          "rotation": 0,
+          "opacity": 1,
+          "layer": 0,
+          "color": "#22c55e",
+          "assetId": "",
+          "text": "",
+          "locked": false,
+          "restitution": 0,
+          "friction": 0.7,
+          "motion": {
+            "axis": "x",
+            "distance": 0,
+            "speed": 60
+          },
+          "components": [],
+          "prefabUid": null,
+          "prefabRevision": 0
+        },
+        {
+          "uid": "obj-0d2em9b",
+          "id": "physics-box",
+          "type": "dynamicBox",
+          "parentId": null,
+          "role": "dynamicBox",
+          "tags": [
+            "dynamic-box"
+          ],
+          "x": 470,
+          "y": 250,
+          "width": 34,
+          "height": 34,
+          "rotation": 0,
+          "opacity": 1,
+          "layer": 0,
+          "color": "#f97316",
+          "assetId": "",
+          "text": "",
+          "locked": false,
+          "restitution": 0.15,
+          "friction": 0.7,
+          "motion": {
+            "axis": "x",
+            "distance": 0,
+            "speed": 60
+          },
+          "components": [],
+          "prefabUid": null,
+          "prefabRevision": 0
+        }
+      ],
+      "logic": [
+        {
+          "id": "start-message",
+          "event": "start",
+          "subject": "*",
+          "action": "message",
+          "target": "",
+          "value": "分支回廊：收集全部核心后进入出口。"
+        },
+        {
+          "id": "win-message",
+          "event": "win",
+          "subject": "*",
+          "action": "message",
+          "target": "",
+          "value": "两场景闭环完成。"
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "controls": "A/D 或方向键移动，W/空格/上方向键跳跃，R 重开，Esc 停止。"
+  }
+}

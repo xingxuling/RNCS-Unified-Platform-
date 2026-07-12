@@ -1,0 +1,815 @@
+{
+  "format": "rsr.spatial-embodiment-snapshot.v0.5",
+  "runtimeVersion": "0.6.0-alpha.1",
+  "worldId": "world:embodied-courtyard",
+  "tick": 180,
+  "stepHz": 60,
+  "positionScale": 1000,
+  "floorY": 0,
+  "gravity": {
+    "x": 0,
+    "y": -9810,
+    "z": 0
+  },
+  "velocityIterations": 7,
+  "positionIterations": 5,
+  "maxSubsteps": 24,
+  "materials": [
+    {
+      "id": "material:body",
+      "frictionQ": 520000,
+      "restitutionQ": 0,
+      "impactSound": "impact.body",
+      "impactHaptic": "haptic.body"
+    },
+    {
+      "id": "material:crate",
+      "frictionQ": 620000,
+      "restitutionQ": 80000,
+      "impactSound": "impact.wood",
+      "impactHaptic": "haptic.object"
+    }
+  ],
+  "reality": {
+    "generation": 12,
+    "realityRoot": "rfe:world:embodied-courtyard:g12",
+    "evidenceRoot": "rfe:evidence:embodied-courtyard:g12"
+  },
+  "bodies": [
+    {
+      "id": "avatar",
+      "kind": "dynamic",
+      "position": {
+        "x": 2594,
+        "y": 1100,
+        "z": 1341
+      },
+      "fixtures": [
+        {
+          "id": "avatar:capsule",
+          "shape": {
+            "type": "capsule",
+            "radius": 300,
+            "halfHeight": 700
+          },
+          "materialId": "material:body",
+          "bodyZone": "torso",
+          "localPosition": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "categoryBits": 1,
+          "maskBits": 4294967295
+        }
+      ],
+      "massQ": 1000000,
+      "frictionQ": 550000,
+      "allowSleep": false,
+      "tags": [
+        "subject-body",
+        "player"
+      ],
+      "rotationDeg": {
+        "x": 0,
+        "y": 0,
+        "z": 4429
+      },
+      "velocity": {
+        "x": 1247,
+        "y": -326,
+        "z": 500
+      },
+      "angularVelocityDeg": {
+        "x": 0,
+        "y": 0,
+        "z": 10909
+      },
+      "inverseMassQ": 1000000,
+      "gravityScaleQ": 1000000,
+      "linearDampingQ": 12000,
+      "angularDampingQ": 20000,
+      "restitutionQ": 0,
+      "enabled": true,
+      "sleepSpeedThreshold": 8,
+      "sleepTicks": 60,
+      "awake": true,
+      "sleepCounter": 0,
+      "grounded": false,
+      "groundNormal": {
+        "x": 0,
+        "y": 1000000,
+        "z": 0
+      },
+      "accumulatedImpulse": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "accumulatedTorque": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "data": {}
+    },
+    {
+      "id": "crate-a",
+      "kind": "dynamic",
+      "position": {
+        "x": 911,
+        "y": 513,
+        "z": 148
+      },
+      "fixtures": [
+        {
+          "id": "crate-a:shape",
+          "shape": {
+            "type": "box",
+            "halfExtents": {
+              "x": 500,
+              "y": 500,
+              "z": 500
+            }
+          },
+          "materialId": "material:crate",
+          "bodyZone": "object",
+          "localPosition": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "categoryBits": 1,
+          "maskBits": 4294967295
+        }
+      ],
+      "massQ": 1600000,
+      "rotationDeg": {
+        "x": 0,
+        "y": 282,
+        "z": -423
+      },
+      "velocity": {
+        "x": 0,
+        "y": -326,
+        "z": 0
+      },
+      "angularVelocityDeg": {
+        "x": -29,
+        "y": 145,
+        "z": -191
+      },
+      "inverseMassQ": 625000,
+      "gravityScaleQ": 1000000,
+      "linearDampingQ": 12000,
+      "angularDampingQ": 20000,
+      "frictionQ": 500000,
+      "restitutionQ": 0,
+      "enabled": true,
+      "allowSleep": true,
+      "sleepSpeedThreshold": 8,
+      "sleepTicks": 60,
+      "awake": true,
+      "sleepCounter": 0,
+      "grounded": false,
+      "groundNormal": {
+        "x": 0,
+        "y": 1000000,
+        "z": 0
+      },
+      "accumulatedImpulse": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "accumulatedTorque": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "tags": [],
+      "data": {}
+    },
+    {
+      "id": "crate-b",
+      "kind": "dynamic",
+      "position": {
+        "x": 2125,
+        "y": 505,
+        "z": 312
+      },
+      "fixtures": [
+        {
+          "id": "crate-b:shape",
+          "shape": {
+            "type": "box",
+            "halfExtents": {
+              "x": 500,
+              "y": 500,
+              "z": 500
+            }
+          },
+          "materialId": "material:crate",
+          "bodyZone": "object",
+          "localPosition": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "categoryBits": 1,
+          "maskBits": 4294967295
+        }
+      ],
+      "massQ": 1400000,
+      "rotationDeg": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "velocity": {
+        "x": 53,
+        "y": 0,
+        "z": 6
+      },
+      "angularVelocityDeg": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "inverseMassQ": 714286,
+      "gravityScaleQ": 1000000,
+      "linearDampingQ": 12000,
+      "angularDampingQ": 20000,
+      "frictionQ": 500000,
+      "restitutionQ": 0,
+      "enabled": true,
+      "allowSleep": true,
+      "sleepSpeedThreshold": 8,
+      "sleepTicks": 60,
+      "awake": true,
+      "sleepCounter": 0,
+      "grounded": true,
+      "groundNormal": {
+        "x": 0,
+        "y": 1000000,
+        "z": 0
+      },
+      "accumulatedImpulse": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "accumulatedTorque": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "tags": [],
+      "data": {}
+    },
+    {
+      "id": "left-arm",
+      "kind": "dynamic",
+      "position": {
+        "x": 3253,
+        "y": 1900,
+        "z": 1341
+      },
+      "fixtures": [
+        {
+          "id": "left-arm:shape",
+          "shape": {
+            "type": "capsule",
+            "radius": 150,
+            "halfHeight": 350
+          },
+          "materialId": "material:body",
+          "bodyZone": "arm.left",
+          "localPosition": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "categoryBits": 1,
+          "maskBits": 4294967295
+        }
+      ],
+      "massQ": 320000,
+      "rotationDeg": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "velocity": {
+        "x": 4136,
+        "y": -12554,
+        "z": 500
+      },
+      "angularVelocityDeg": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "inverseMassQ": 3125000,
+      "gravityScaleQ": 1000000,
+      "linearDampingQ": 12000,
+      "angularDampingQ": 20000,
+      "frictionQ": 500000,
+      "restitutionQ": 0,
+      "enabled": true,
+      "allowSleep": true,
+      "sleepSpeedThreshold": 8,
+      "sleepTicks": 60,
+      "awake": true,
+      "sleepCounter": 0,
+      "grounded": false,
+      "groundNormal": {
+        "x": 0,
+        "y": 1000000,
+        "z": 0
+      },
+      "accumulatedImpulse": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "accumulatedTorque": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "tags": [],
+      "data": {}
+    },
+    {
+      "id": "orb",
+      "kind": "dynamic",
+      "position": {
+        "x": 1991,
+        "y": 427,
+        "z": -1634
+      },
+      "velocity": {
+        "x": 0,
+        "y": -489,
+        "z": 0
+      },
+      "fixtures": [
+        {
+          "id": "orb:shape",
+          "shape": {
+            "type": "sphere",
+            "radius": 360
+          },
+          "materialId": "material:body",
+          "bodyZone": "object",
+          "localPosition": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "categoryBits": 1,
+          "maskBits": 4294967295
+        }
+      ],
+      "massQ": 700000,
+      "bullet": true,
+      "rotationDeg": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "angularVelocityDeg": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "inverseMassQ": 1428571,
+      "gravityScaleQ": 1000000,
+      "linearDampingQ": 12000,
+      "angularDampingQ": 20000,
+      "frictionQ": 500000,
+      "restitutionQ": 0,
+      "enabled": true,
+      "allowSleep": true,
+      "sleepSpeedThreshold": 8,
+      "sleepTicks": 60,
+      "awake": true,
+      "sleepCounter": 0,
+      "grounded": false,
+      "groundNormal": {
+        "x": 0,
+        "y": 1000000,
+        "z": 0
+      },
+      "accumulatedImpulse": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "accumulatedTorque": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "tags": [],
+      "data": {}
+    },
+    {
+      "id": "pillar",
+      "kind": "static",
+      "position": {
+        "x": 3600,
+        "y": 1500,
+        "z": 1000
+      },
+      "fixtures": [
+        {
+          "id": "pillar:shape",
+          "shape": {
+            "type": "box",
+            "halfExtents": {
+              "x": 450,
+              "y": 1500,
+              "z": 450
+            }
+          },
+          "materialId": "material:crate",
+          "localPosition": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "categoryBits": 1,
+          "maskBits": 4294967295
+        }
+      ],
+      "rotationDeg": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "angularVelocityDeg": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "inverseMassQ": 0,
+      "gravityScaleQ": 1000000,
+      "linearDampingQ": 12000,
+      "angularDampingQ": 20000,
+      "frictionQ": 500000,
+      "restitutionQ": 0,
+      "enabled": true,
+      "allowSleep": true,
+      "sleepSpeedThreshold": 8,
+      "sleepTicks": 60,
+      "awake": false,
+      "sleepCounter": 0,
+      "grounded": false,
+      "groundNormal": {
+        "x": 0,
+        "y": 1000000,
+        "z": 0
+      },
+      "accumulatedImpulse": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "accumulatedTorque": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "tags": [],
+      "data": {}
+    },
+    {
+      "id": "right-arm",
+      "kind": "dynamic",
+      "position": {
+        "x": 1935,
+        "y": 1900,
+        "z": 1341
+      },
+      "fixtures": [
+        {
+          "id": "right-arm:shape",
+          "shape": {
+            "type": "capsule",
+            "radius": 150,
+            "halfHeight": 350
+          },
+          "materialId": "material:body",
+          "bodyZone": "arm.right",
+          "localPosition": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "categoryBits": 1,
+          "maskBits": 4294967295
+        }
+      ],
+      "massQ": 320000,
+      "rotationDeg": {
+        "x": 0,
+        "y": 0,
+        "z": -13746
+      },
+      "velocity": {
+        "x": 0,
+        "y": -12938,
+        "z": 0
+      },
+      "angularVelocityDeg": {
+        "x": 0,
+        "y": 0,
+        "z": -34091
+      },
+      "inverseMassQ": 3125000,
+      "gravityScaleQ": 1000000,
+      "linearDampingQ": 12000,
+      "angularDampingQ": 20000,
+      "frictionQ": 500000,
+      "restitutionQ": 0,
+      "enabled": true,
+      "allowSleep": true,
+      "sleepSpeedThreshold": 8,
+      "sleepTicks": 60,
+      "awake": true,
+      "sleepCounter": 0,
+      "grounded": false,
+      "groundNormal": {
+        "x": 0,
+        "y": 1000000,
+        "z": 0
+      },
+      "accumulatedImpulse": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "accumulatedTorque": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "tags": [],
+      "data": {}
+    }
+  ],
+  "characters": [
+    {
+      "id": "subject:player",
+      "bodyId": "avatar",
+      "walkSpeed": 4200,
+      "acceleration": 18000,
+      "airControlQ": 260000,
+      "jumpSpeed": 5600,
+      "footstepDistance": 620,
+      "leftFootZone": "foot.left",
+      "rightFootZone": "foot.right",
+      "groundProbe": 80,
+      "maxSlopeDeg": 50,
+      "desiredDirection": {
+        "x": 1000000,
+        "y": 0,
+        "z": 120000
+      },
+      "desiredSpeedQ": 1000000,
+      "jumpQueued": false,
+      "grounded": false,
+      "distanceSinceFootstep": 140.25366120822738,
+      "nextFoot": "right"
+    }
+  ],
+  "joints": [
+    {
+      "id": "joint:left-shoulder",
+      "type": "ball",
+      "bodyA": "avatar",
+      "bodyB": "left-arm",
+      "localAnchorA": {
+        "x": 400,
+        "y": 450,
+        "z": 0
+      },
+      "localAnchorB": {
+        "x": 0,
+        "y": -350,
+        "z": 0
+      },
+      "stiffnessQ": 900000,
+      "dampingQ": 320000,
+      "breakForce": 800000,
+      "enabled": true,
+      "broken": false,
+      "lastForce": 1
+    },
+    {
+      "id": "joint:right-shoulder",
+      "type": "hinge",
+      "bodyA": "avatar",
+      "bodyB": "right-arm",
+      "localAnchorA": {
+        "x": -400,
+        "y": 450,
+        "z": 0
+      },
+      "localAnchorB": {
+        "x": 0,
+        "y": -350,
+        "z": 0
+      },
+      "axis": {
+        "x": 0,
+        "y": 0,
+        "z": 1000000
+      },
+      "motorSpeedDeg": -45000,
+      "maxMotorTorque": 7000,
+      "breakForce": 800000,
+      "enabled": true,
+      "broken": false,
+      "lastForce": 0
+    }
+  ],
+  "listeners": [
+    {
+      "id": "listener:player",
+      "position": {
+        "x": 800,
+        "y": 1800,
+        "z": 300
+      },
+      "forward": {
+        "x": 1000000,
+        "y": 0,
+        "z": 0
+      },
+      "up": {
+        "x": 0,
+        "y": 1000000,
+        "z": 0
+      }
+    }
+  ],
+  "contacts": [
+    {
+      "id": "crate-b|crate-b:shape|floor",
+      "bodyA": "crate-b",
+      "fixtureA": "crate-b:shape",
+      "bodyB": "__floor__",
+      "fixtureB": "__floor__",
+      "point": {
+        "x": 2125,
+        "y": 0,
+        "z": 312
+      },
+      "normal": {
+        "x": 0,
+        "y": -1000000,
+        "z": 0
+      },
+      "penetration": 2,
+      "impulse": 228,
+      "sensor": false,
+      "zoneA": "object",
+      "zoneB": "ground"
+    },
+    {
+      "id": "avatar|avatar:capsule|left-arm|left-arm:shape",
+      "bodyA": "avatar",
+      "fixtureA": "avatar:capsule",
+      "bodyB": "left-arm",
+      "fixtureB": "left-arm:shape",
+      "point": {
+        "x": 2894,
+        "y": 1800,
+        "z": 1341
+      },
+      "normal": {
+        "x": 1000000,
+        "y": 0,
+        "z": 0
+      },
+      "penetration": 50,
+      "impulse": 0,
+      "sensor": false,
+      "zoneA": "torso",
+      "zoneB": "arm.left"
+    },
+    {
+      "id": "avatar|avatar:capsule|right-arm|right-arm:shape",
+      "bodyA": "right-arm",
+      "fixtureA": "right-arm:shape",
+      "bodyB": "avatar",
+      "fixtureB": "avatar:capsule",
+      "point": {
+        "x": 2344,
+        "y": 1550,
+        "z": 1341
+      },
+      "normal": {
+        "x": 1000000,
+        "y": 0,
+        "z": 0
+      },
+      "penetration": 50,
+      "impulse": 0,
+      "sensor": false,
+      "zoneA": "arm.right",
+      "zoneB": "torso"
+    }
+  ],
+  "events": [
+    {
+      "kind": "contact",
+      "phase": "persist",
+      "tick": 180,
+      "contactId": "crate-b|crate-b:shape|floor",
+      "bodyA": "crate-b",
+      "bodyB": "__floor__",
+      "point": {
+        "x": 2125,
+        "y": 0,
+        "z": 312
+      },
+      "normal": {
+        "x": 0,
+        "y": -1000000,
+        "z": 0
+      },
+      "impulse": 228,
+      "sensor": false
+    },
+    {
+      "kind": "contact",
+      "phase": "persist",
+      "tick": 180,
+      "contactId": "avatar|avatar:capsule|left-arm|left-arm:shape",
+      "bodyA": "avatar",
+      "bodyB": "left-arm",
+      "point": {
+        "x": 2894,
+        "y": 1800,
+        "z": 1341
+      },
+      "normal": {
+        "x": 1000000,
+        "y": 0,
+        "z": 0
+      },
+      "impulse": 0,
+      "sensor": false
+    },
+    {
+      "kind": "contact",
+      "phase": "persist",
+      "tick": 180,
+      "contactId": "avatar|avatar:capsule|right-arm|right-arm:shape",
+      "bodyA": "right-arm",
+      "bodyB": "avatar",
+      "point": {
+        "x": 2344,
+        "y": 1550,
+        "z": 1341
+      },
+      "normal": {
+        "x": 1000000,
+        "y": 0,
+        "z": 0
+      },
+      "impulse": 0,
+      "sensor": false
+    }
+  ],
+  "diagnostics": {
+    "broadPhasePairs": 7,
+    "narrowPhaseTests": 2,
+    "contacts": 3,
+    "sensorContacts": 0,
+    "groundedBodies": 1,
+    "sleepingBodies": 0,
+    "characterControllers": 1,
+    "jointConstraints": 10,
+    "microsteps": 1,
+    "ccdBodies": 1,
+    "audioEvents": 0,
+    "hapticEvents": 0,
+    "footstepEvents": 0
+  },
+  "bodyRoot": "fnv1a64:0a131dd2b2291dc8",
+  "contactRoot": "fnv1a64:5767bdd3eb32743a",
+  "characterRoot": "fnv1a64:981d1b0224eb2ab6",
+  "sensoryRoot": "fnv1a64:09612b07b5ecb5a5",
+  "jointRoot": "fnv1a64:4a3093a13d6fed1d",
+  "stateRoot": "fnv1a64:e86cf73300988b3f"
+}

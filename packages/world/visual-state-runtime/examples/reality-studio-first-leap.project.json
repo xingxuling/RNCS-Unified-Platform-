@@ -1,0 +1,125 @@
+{
+  "format": "reality-studio.project.v0.1",
+  "version": "0.1.0-alpha.1",
+  "projectId": "first-leap-editable",
+  "title": "现实核心：第一跃迁",
+  "description": "收集三个现实核心，越过障碍并抵达绿色出口。",
+  "canvas": {
+    "width": 960,
+    "height": 540,
+    "background": "#07111f",
+    "grid": 10
+  },
+  "physics": {
+    "stepHz": 60,
+    "gravityY": 900,
+    "moveSpeed": 185,
+    "jumpSpeed": 430,
+    "maxSeconds": 45
+  },
+  "objects": [
+    {
+      "id": "world-floor",
+      "type": "platform",
+      "x": 0,
+      "y": 500,
+      "width": 960,
+      "height": 40,
+      "color": "#25324a",
+      "locked": false
+    },
+    {
+      "id": "world-left",
+      "type": "wall",
+      "x": -20,
+      "y": 0,
+      "width": 20,
+      "height": 540,
+      "color": "#334155",
+      "locked": true
+    },
+    {
+      "id": "world-right",
+      "type": "wall",
+      "x": 960,
+      "y": 0,
+      "width": 20,
+      "height": 540,
+      "color": "#334155",
+      "locked": true
+    },
+    {
+      "id": "obstacle-alpha",
+      "type": "obstacle",
+      "x": 496,
+      "y": 420,
+      "width": 48,
+      "height": 80,
+      "color": "#475569",
+      "locked": false
+    },
+    {
+      "id": "player",
+      "type": "player",
+      "x": 66,
+      "y": 462,
+      "width": 28,
+      "height": 36,
+      "color": "#38bdf8",
+      "locked": false
+    },
+    {
+      "id": "core-a",
+      "type": "core",
+      "x": 210,
+      "y": 458,
+      "width": 20,
+      "height": 20,
+      "color": "#facc15",
+      "locked": false
+    },
+    {
+      "id": "core-b",
+      "type": "core",
+      "x": 410,
+      "y": 458,
+      "width": 20,
+      "height": 20,
+      "color": "#facc15",
+      "locked": false
+    },
+    {
+      "id": "core-c",
+      "type": "core",
+      "x": 680,
+      "y": 458,
+      "width": 20,
+      "height": 20,
+      "color": "#facc15",
+      "locked": false
+    },
+    {
+      "id": "exit-gate",
+      "type": "exit",
+      "x": 856,
+      "y": 400,
+      "width": 48,
+      "height": 100,
+      "color": "#22c55e",
+      "locked": false
+    },
+    {
+      "id": "hazard-pit",
+      "type": "hazard",
+      "x": 552,
+      "y": 520,
+      "width": 96,
+      "height": 16,
+      "color": "#ef4444",
+      "locked": false
+    }
+  ],
+  "metadata": {
+    "controls": "A/D 或方向键移动，W/空格/上方向键跳跃，R 重开。"
+  }
+}

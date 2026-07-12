@@ -1,0 +1,13 @@
+{
+  "id": "aaf",
+  "name": "Agent Authority Fabric",
+  "version": "0.1.0",
+  "path": "packages/control/agent-authority-fabric",
+  "layer": "control",
+  "runtime": "rncs.aaf",
+  "dependsOn": [
+    "rncs-core",
+    "cnp"
+  ],
+  "test": "npm test --workspace @taowind/agent-authority-fabric"
+}

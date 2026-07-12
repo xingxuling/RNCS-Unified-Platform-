@@ -1,0 +1,16 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {performance} from 'node:perf_hooks';
+import {fileURLToPath} from 'node:url';
+import {BehaviorEditorSession,compileBehaviorStudio} from '../src/behavior-studio.mjs';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const program=JSON.parse(fs.readFileSync(path.join(root,'examples/冰境试炼.behavior.json'),'utf8'));
+const measure=(fn,n)=>{const a=[];for(let i=0;i<n;i++){const t=performance.now();fn();a.push(performance.now()-t)}a.sort((x,y)=>x-y);return{iterations:n,median_ms:+a[Math.floor(n*.5)].toFixed(3),p95_ms:+a[Math.floor(n*.95)].toFixed(3),max_ms:+a.at(-1).toFixed(3)}};
+const graph_compile=measure(()=>compileBehaviorStudio(program),500);
+const session=new BehaviorEditorSession(program);
+const tick=measure(()=>{session.runtime.resume();session.step({move_right:true})},300);
+const inspect=measure(()=>session.inspect(),500);
+const patchSession=new BehaviorEditorSession(program);
+const patch=measure(()=>{patchSession.patch([{op:'set',path:'metadata.benchmark_counter',value:patchSession.history.length}],{preserveState:true});if(patchSession.history.length>80)patchSession.undo()},80);
+const out={format:'reality-studio.behavior-benchmark.v0.8',environment:{node:process.version,platform:process.platform,arch:process.arch},graph_compile,tick,inspect,hot_reload_patch:patch};
+fs.mkdirSync(path.join(root,'evidence'),{recursive:true});fs.writeFileSync(path.join(root,'evidence/BEHAVIOR_BENCHMARK_v0.8.json'),JSON.stringify(out,null,2)+'\n');console.log(JSON.stringify(out,null,2));

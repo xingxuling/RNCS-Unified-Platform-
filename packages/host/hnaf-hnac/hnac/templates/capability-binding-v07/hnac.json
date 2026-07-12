@@ -1,0 +1,58 @@
+{
+  "format_version": "0.7",
+  "app": {
+    "id": "org.taowind.hnac.capability-binding-demo",
+    "name": "HNAF 能力绑定演示",
+    "version": "0.7.0",
+    "description": "从界面意图动态发现能力、裁决权威、执行故障切换并生成证据回执"
+  },
+  "execution": {
+    "primary": {"profile": "declarative-v0", "entry": "components/main.hnc.json"},
+    "limits": {"operations": 100}
+  },
+  "capabilities": [
+    {"id": "host.log", "version": "1", "required": true, "scope": "session", "reason": "显示执行轨迹"},
+    {"id": "storage.state", "version": "1", "required": true, "scope": "app", "reason": "保存连续状态"}
+  ],
+  "interface": {
+    "version": "0.7",
+    "graph": "ui/main.aip.json",
+    "default_projection": "auto",
+    "intent_policy": {"require_confirmation_at_or_above": "high", "deny_unknown_intents": true}
+  },
+  "capability_binding": {
+    "version": "0.7",
+    "providers": "capabilities/providers.json",
+    "authority_policy": "authority/policy.json",
+    "strategy": {
+      "prefer_local": true,
+      "offline_first": true,
+      "max_fallbacks": 2,
+      "max_risk": "high",
+      "require_reversible": false,
+      "minimum_trust": 1,
+      "cost_budget": {
+        "cpu_millis": 1000,
+        "memory_mb": 256,
+        "network_kb": 1024,
+        "monetary_microunits": 0
+      }
+    }
+  },
+  "state": {
+    "schema_version": "3",
+    "autosnapshot": true,
+    "migration_graph": "state/migrations.json",
+    "partitions": {
+      "portable": {"persistence": "durable", "portability": "exportable", "encrypted": false},
+      "device_private": {"persistence": "durable", "portability": "local-only", "encrypted": false},
+      "secret": {"persistence": "durable", "portability": "encrypted-export", "encrypted": true},
+      "cache": {"persistence": "rebuildable", "portability": "optional-export", "encrypted": false},
+      "ephemeral": {"persistence": "memory", "portability": "never-export", "encrypted": false}
+    }
+  },
+  "distribution": {"projections": ["pwa", "desktop", "mobile", "accessibility", "spatial"]},
+  "security": {"sandbox": "deny-by-default", "signature": "optional"},
+  "compatibility": {"min_runtime": "0.7.0"},
+  "extensions": {"rncs": {"cnp": "0.1.0", "aaf": "0.1.0", "gateway": "0.3.0"}}
+}

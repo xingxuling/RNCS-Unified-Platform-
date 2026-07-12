@@ -1,0 +1,122 @@
+{
+  "reality_id": "reality:demo-project",
+  "base_generation": 7,
+  "base_generation_root": "1111111111111111111111111111111111111111111111111111111111111111",
+  "subject": {
+    "subject_id": "subject:duhengjie",
+    "kind": "human",
+    "roles": [
+      "owner",
+      "creator"
+    ],
+    "responsibility_boundary": "project-authority"
+  },
+  "intent": {
+    "intent_id": "intent:update-progress",
+    "source": "把项目进度更新到80%，生成报告并通知团队",
+    "goals": [
+      {
+        "type": "artifact.progress.target",
+        "value": 80
+      },
+      {
+        "type": "artifact.report.generate"
+      },
+      {
+        "type": "host.notification.emit"
+      }
+    ],
+    "constraints": [
+      "must-preview-before-commit"
+    ]
+  },
+  "capability_plan": {
+    "plan_id": "plan:update-progress",
+    "capabilities": [
+      {
+        "capability_id": "laf.progress.set"
+      },
+      {
+        "capability_id": "laf.report.render"
+      },
+      {
+        "capability_id": "hnaf.notification.emit"
+      }
+    ],
+    "host_bindings": [
+      {
+        "host_id": "desktop-reference"
+      }
+    ],
+    "required_scopes": [
+      "artifact.write",
+      "host.notify"
+    ]
+  },
+  "inputs": [
+    {
+      "kind": "semantic-object",
+      "id": "artifact:demo-project",
+      "root": "2222222222222222222222222222222222222222222222222222222222222222",
+      "version": "revision:12",
+      "continuity_class": "object_revision"
+    }
+  ],
+  "provisional_delta": {
+    "operations": [
+      {
+        "op": "replace",
+        "target": "artifact:demo-project",
+        "path": "/semantic/fields/progress",
+        "before_root": "3333333333333333333333333333333333333333333333333333333333333333",
+        "after": 80
+      }
+    ]
+  },
+  "causal_basis": {
+    "events": [
+      {
+        "event_id": "event:intent-received",
+        "kind": "intent"
+      }
+    ],
+    "rules": [
+      {
+        "rule_id": "progress-range",
+        "expression": "0 <= progress <= 100"
+      }
+    ],
+    "simulation_refs": []
+  },
+  "evidence": {
+    "nodes": [
+      {
+        "evidence_id": "evidence:user-intent",
+        "kind": "subject-declaration",
+        "source": "ICAR",
+        "content_root": "4444444444444444444444444444444444444444444444444444444444444444"
+      }
+    ],
+    "edges": []
+  },
+  "host_state_refs": [
+    {
+      "kind": "host-state",
+      "source_format": "hnaf.portable-state.v0.5",
+      "host_id": "desktop-reference",
+      "replica_id": "replica:desktop-01",
+      "snapshot_sequence": 12,
+      "state_root": "5555555555555555555555555555555555555555555555555555555555555555",
+      "schema_version": "1.0",
+      "partitions": [
+        "portable",
+        "device_private"
+      ],
+      "continuity_class": "replica_snapshot"
+    }
+  ],
+  "transition_id": "transition:demo-0001",
+  "extensions": {
+    "demo": true
+  }
+}

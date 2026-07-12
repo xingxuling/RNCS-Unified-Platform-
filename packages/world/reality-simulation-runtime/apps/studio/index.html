@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>VSR Studio v0.1</title><link rel="stylesheet" href="/dist/apps/studio/style.css"></head>
+<body>
+  <header class="toolbar">
+    <div class="brand"><span class="brand-mark">V</span><div><strong>VSR Studio</strong><small>v0.1.0-alpha.5 · 观察者相对视觉状态运行时</small></div></div>
+    <div class="toolbar-group"><button id="newDoc">新建</button><button id="openDoc">打开 JSON</button><button id="saveDoc">保存 JSON</button><button id="loadExample">加载示例</button><button id="validateDoc">校验</button></div>
+    <div class="toolbar-group"><button id="undo">撤销</button><button id="redo">重做</button><button id="exportPng" class="primary">导出 PNG</button><button id="renderRange">渲染区间</button></div><div class="toolbar-group reality-tools"><button id="loadRealityDemo">Reality One 实时演示</button><button id="nextRealityEvent">下一事件</button><button id="autoRealityReplay">自动回放</button></div>
+    <input id="fileInput" type="file" accept="application/json,.json" hidden>
+  </header>
+  <main class="workspace">
+    <aside class="panel left-panel"><div class="panel-title">场景树 <span id="nodeCount"></span></div><div class="scene-actions"><button id="addRect">＋矩形</button><button id="duplicateNode">复制</button><button id="deleteNode" class="danger">删除</button></div><div id="sceneTree" class="scene-tree"></div></aside>
+    <section class="stage-column">
+      <div class="stage-header"><span id="documentTitle">未载入文档</span><span id="runtimeStatus" class="status">就绪</span></div>
+      <div class="stage-shell"><div id="canvasWrap" class="canvas-wrap"><canvas id="stage"></canvas></div></div>
+      <div class="transport">
+        <button id="prevFrame">◀ 帧</button><button id="play" class="primary">播放</button><button id="pause">暂停</button><button id="stop">停止</button><button id="nextFrame">帧 ▶</button>
+        <input id="timeSlider" type="range" min="0" max="5" step="0.001" value="0"><input id="timeInput" type="number" min="0" step="0.001" value="0"><span id="durationLabel">/ 0.000s</span>
+      </div>
+      <div class="timeline"><div class="timeline-head"><strong>时间轴</strong><button id="addKeyframe">添加透明度关键帧</button><button id="removeKeyframe">删除末尾关键帧</button></div><div id="timelineTracks"></div></div>
+    </section>
+    <aside class="panel right-panel">
+      <div class="tabs"><button class="tab active" data-tab="inspector">属性</button><button class="tab" data-tab="json">Visual IR</button><button class="tab" data-tab="agent">Agent</button><button class="tab" data-tab="live">实时</button><button class="tab" data-tab="output">输出</button></div>
+      <section id="inspectorTab" class="tab-body active"><div id="selectionTitle" class="selection-title">未选择节点</div><label>名称<input id="propName"></label><label>X<input id="propX" type="text"></label><label>Y<input id="propY" type="text"></label><label>宽度<input id="propWidth" type="text"></label><label>高度<input id="propHeight" type="text"></label><label>透明度<input id="propOpacity" type="number" min="0" max="1" step="0.01"></label><label>填充颜色<input id="propFill" type="color"></label><button id="applyProperties" class="primary full">应用属性事务</button></section>
+      <section id="jsonTab" class="tab-body"><textarea id="jsonEditor" spellcheck="false"></textarea><button id="applyJson" class="primary full">应用 Visual IR</button></section>
+      <section id="agentTab" class="tab-body"><p class="hint">输入结构化事务。事务会先验证，再原子提交。</p><textarea id="transactionEditor" spellcheck="false"></textarea><button id="applyTransaction" class="primary full">应用事务</button><pre id="diffOutput"></pre></section>
+      <section id="liveTab" class="tab-body"><p class="hint">Reality One 生命周期事件会更新同一个 VSRRuntimeSession，不重建 Visual IR。</p><label>观察者<select id="observerProfile"><option value="owner">所有者</option><option value="operator">操作员</option><option value="auditor">审计员</option><option value="guest">访客</option></select></label><div class="live-actions"><button id="resetRealityReplay">重置事件流</button><button id="exportRealitySnapshot">导出当前快照</button></div><pre id="liveOutput">尚未载入实时会话。</pre></section><section id="outputTab" class="tab-body"><div id="outputReport" class="report">尚未执行输出。</div></section>
+    </aside>
+  </main>
+  <footer class="diagnostics"><div><strong>诊断</strong><button id="clearDiagnostics">清空</button></div><pre id="diagnosticsOutput">等待文档。</pre></footer>
+  <script type="module" src="/dist/apps/studio/app.js"></script>
+</body></html>

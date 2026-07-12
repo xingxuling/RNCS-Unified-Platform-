@@ -1,0 +1,6 @@
+[
+  {"year": 3, "type": "open-knowledge-commons", "value": 1200},
+  {"year": 5, "type": "allocate-research", "value": 0.22},
+  {"year": 9, "type": "found-institution", "kind": "lab", "capacity": 42},
+  {"year": 14, "type": "sponsor-prototype", "value": 0.24}
+]

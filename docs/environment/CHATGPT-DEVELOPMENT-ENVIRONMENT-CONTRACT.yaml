@@ -1,0 +1,63 @@
+format: taowind.chatgpt-development-environment-contract.v0.1
+contract_id: taowind-reality-mcp-founder-authority-v020
+suite_version: 0.13.0-alpha.1
+mcp_version: 0.2.0-alpha.1
+owner_subject: subject:duhengjie
+environments:
+  chatgpt_remote:
+    role: orchestration_client
+    capabilities:
+      - discover_tools
+      - invoke_mcp_tools
+      - inspect_structured_results
+    limitations:
+      - cannot_mutate_offline_source_without_a_writable_connector
+      - cannot_redeploy_github_or_vercel_without_deployment_credentials
+  taowind_mcp_service:
+    role: authority_gateway
+    default_profile: founder
+    capabilities:
+      - read_authoritative_state
+      - create_and_simulate_candidates
+      - authorize_and_merge_candidates
+      - operate_declared_runtime_actions
+      - rollback_and_replay_generations
+    denied:
+      - arbitrary_shell
+      - arbitrary_filesystem
+      - undeclared_runtime_actions
+  rncs_aetherworld_runtime:
+    role: authoritative_execution_plane
+    runtime_count: 14
+    action_source: runtime_manifest
+state_protocol:
+  required_for_destructive_actions:
+    - expected_state_root
+    - expected_revision
+  concurrency_model: optimistic_authoritative_precondition
+  evidence:
+    - invocation_receipt
+    - generation_history
+    - state_root_transition
+security:
+  public_private_entry:
+    path_token_minimum: 32
+    bearer_supported: true
+  founder_identity:
+    subject_id: subject:duhengjie
+    approval_roles:
+      - owner
+      - security
+  secret_policy:
+    index_secret_named_files: false
+    expose_arbitrary_paths: false
+release_gate:
+  required:
+    - mcp_tests_pass
+    - mcp_smoke_pass
+    - gateway_tests_pass
+    - native_bridge_tests_pass
+    - root_integration_pass
+    - runtime_health_pass
+    - npm_audit_zero
+  deployment_is_separate_from_source_delivery: true

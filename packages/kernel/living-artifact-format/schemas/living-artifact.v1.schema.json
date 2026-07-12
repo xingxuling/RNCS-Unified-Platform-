@@ -1,0 +1,210 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.example/schemas/living-artifact.v1.schema.json",
+  "title": "Living Artifact Format 1.0",
+  "type": "object",
+  "required": [
+    "format",
+    "laf_version",
+    "identity",
+    "semantics",
+    "authority",
+    "affordances",
+    "capabilities",
+    "continuity",
+    "host_state_refs",
+    "projections",
+    "evidence",
+    "extensions"
+  ],
+  "properties": {
+    "format": {
+      "const": "laf.artifact.v1"
+    },
+    "laf_version": {
+      "const": "1.0.0"
+    },
+    "identity": {
+      "type": "object",
+      "required": [
+        "artifact_id",
+        "kind",
+        "title",
+        "owner_subject_id",
+        "created_at",
+        "updated_at"
+      ],
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "type": "string",
+          "minLength": 1
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "owner_subject_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "semantics": {
+      "type": "object",
+      "required": [
+        "field_schema",
+        "values",
+        "relations",
+        "tags"
+      ],
+      "properties": {
+        "field_schema": {
+          "type": "object"
+        },
+        "values": {
+          "type": "object"
+        },
+        "relations": {
+          "type": "array"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "default_role",
+        "roles",
+        "policy_refs",
+        "mutations_require_transition"
+      ]
+    },
+    "affordances": {
+      "type": "array"
+    },
+    "capabilities": {
+      "type": "object",
+      "required": [
+        "provides",
+        "requires"
+      ]
+    },
+    "continuity": {
+      "type": "object",
+      "required": [
+        "current",
+        "branches",
+        "history"
+      ],
+      "properties": {
+        "current": {
+          "type": "object",
+          "required": [
+            "revision",
+            "revision_root",
+            "branch",
+            "binding_status",
+            "authoritative_generation"
+          ],
+          "properties": {
+            "revision": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "revision_root": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "branch": {
+              "type": "string"
+            },
+            "binding_status": {
+              "enum": [
+                "unbound",
+                "bound"
+              ]
+            },
+            "authoritative_generation": {
+              "type": "object",
+              "required": [
+                "reality_id",
+                "generation",
+                "generation_root"
+              ],
+              "properties": {
+                "reality_id": {
+                  "type": "string"
+                },
+                "generation": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "generation_root": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              }
+            }
+          }
+        },
+        "branches": {
+          "type": "object"
+        },
+        "history": {
+          "type": "array"
+        }
+      }
+    },
+    "host_state_refs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "snapshot_sequence"
+        ],
+        "not": {
+          "required": [
+            "generation"
+          ]
+        }
+      }
+    },
+    "projections": {
+      "type": "array"
+    },
+    "evidence": {
+      "type": "object",
+      "required": [
+        "algorithm",
+        "semantic_root",
+        "authority_root",
+        "affordance_root",
+        "capability_root",
+        "projection_root",
+        "host_state_root",
+        "revision_root",
+        "artifact_root"
+      ]
+    },
+    "extensions": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": false
+}

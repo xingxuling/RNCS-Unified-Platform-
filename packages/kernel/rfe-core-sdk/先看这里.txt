@@ -1,0 +1,9 @@
+RFE Core SDK v0.1.0
+
+1. 阅读 README.md。
+2. Windows 可先运行：python -m rfe_core_sdk init 我的现实仓库
+3. 示例操作位于 examples/operations-seed.json。
+4. 离线查看 Generation 完整性：打开 web/index.html。
+5. 完整测试证据位于 evidence/。
+
+重要边界：本版本是 Local Core，本地提交不等于联盟共识。

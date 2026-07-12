@@ -1,0 +1,42 @@
+{
+  "format": "reality-asset.sprite-sheet.v0.1",
+  "asset_id": "asset:3a82d1753e140d24552b89d1",
+  "variant": "mobile",
+  "frame_width": 64,
+  "frame_height": 64,
+  "frames": [
+    {
+      "name": "idle",
+      "x": 0,
+      "y": 0,
+      "w": 64,
+      "h": 64,
+      "duration_ms": 140
+    },
+    {
+      "name": "move-1",
+      "x": 64,
+      "y": 0,
+      "w": 64,
+      "h": 64,
+      "duration_ms": 140
+    },
+    {
+      "name": "move-2",
+      "x": 128,
+      "y": 0,
+      "w": 64,
+      "h": 64,
+      "duration_ms": 140
+    },
+    {
+      "name": "attack-1",
+      "x": 192,
+      "y": 0,
+      "w": 64,
+      "h": 64,
+      "duration_ms": 90
+    }
+  ],
+  "pixel_root": "0ee5f7dde6a3c4275480c109a151e66098e6b8bf6b846e9df326c739e6242ba2"
+}

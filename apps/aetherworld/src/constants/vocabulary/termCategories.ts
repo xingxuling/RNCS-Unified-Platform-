@@ -1,0 +1,21 @@
+export const TERM_CATEGORIES = [
+  { id: "CORE_SYSTEM_TERM",   label: "核心系统词",   en: "Core System" },
+  { id: "SEQUENCE_TERM",      label: "数列词",       en: "Sequence" },
+  { id: "CALCULUS_TERM",      label: "计算法词",     en: "Calculus" },
+  { id: "WORLD_ENGINE_TERM",  label: "世界引擎词",   en: "World Engine" },
+  { id: "GOVERNANCE_TERM",    label: "治理词",       en: "Governance" },
+  { id: "SUBJECT_MODE_TERM",  label: "主体模式词",   en: "Subject Mode" },
+  { id: "UI_TERM",            label: "界面词",       en: "UI" },
+  { id: "DOCS_TERM",          label: "教程文档词",   en: "Docs" },
+  { id: "TEXT_TERM",          label: "动态文本词",   en: "Text" },
+  { id: "VERSION_TERM",       label: "版本词",       en: "Version" },
+  { id: "REALITY_DATA_TERM",  label: "现实数据词",   en: "Reality Data" },
+  { id: "CURRENCY_TERM",      label: "数列货币词",   en: "Currency" },
+  { id: "COMPRESSION_TERM",   label: "压缩输出词",   en: "Compression" },
+  { id: "QA_TERM",            label: "质量审计词",   en: "QA" },
+  { id: "FICTIONAL_LORE_TERM",label: "虚构世界观词", en: "Fictional Lore" },
+  { id: "PERSONA_TERM",       label: "人格 / 原型词",en: "Persona" },
+  { id: "EXPORT_TERM",        label: "导出词",       en: "Export" },
+  { id: "SAFETY_TERM",        label: "安全边界词",   en: "Safety" },
+] as const;
+export type TermCategoryId = (typeof TERM_CATEGORIES)[number]["id"];

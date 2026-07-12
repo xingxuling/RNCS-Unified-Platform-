@@ -1,0 +1,125 @@
+{
+  "format": "reality-asset.continuity-bundle.v0.1",
+  "version": "0.1.0",
+  "bundle_id": "asset-bundle:b4f248c542ee32140f7d99d3",
+  "asset_identity": {
+    "asset_id": "asset:3a82d1753e140d24552b89d1",
+    "name": "霜璃",
+    "kind": "character-2d",
+    "continuity_policy": "stable-identity"
+  },
+  "source": {
+    "intent_root": "0d7c1c6f2b11011c02bc6e6b891b9da9f267d7f55fc71bbe8b320db0f1954b5b",
+    "genome_root": "5ca9c6a0fe96b99e739249f24c51ef1073e0354150f98be1e8b981063ecbc828",
+    "plan_root": "9689d15b8aea068a22292bfe96e9a874500a9f2338fe958ee5863e56f4521d8b",
+    "candidate_root": "f4706a3ef922ad4bd09db4646f4218378504dea32203523ccd5a81687008e7a7",
+    "validation_root": "684e972f59525ccce0dca6a9df60f6192faf9b69b3cc168919cee4bb1caf3e29",
+    "comparison_root": "e3552a2cdc95f6f312591102ab293ab7e7250aa821b41bd5a049ca38a21016aa"
+  },
+  "files": [
+    {
+      "role": "sfx-wav",
+      "path": "candidates/mobile/attack-sfx.wav",
+      "mime": "audio/wav",
+      "sha256": "42d086c5b2bcda6694f0b057f360753f5a96ea1d3242f3b9251dc233a28e6a53",
+      "size": 19888,
+      "platforms": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "role": "collision-shape",
+      "path": "candidates/mobile/collision-shape.json",
+      "mime": "application/json",
+      "sha256": "af4328b8880bc88ea8c287a8d971fe0cb63db7454c7f75c2936a5a84edb32173",
+      "size": 819,
+      "platforms": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "role": "concept-svg",
+      "path": "candidates/mobile/concept.svg",
+      "mime": "image/svg+xml",
+      "sha256": "e78d31d45965f12d5c55b5451db8e4804389d77c6fbbaea5e452313bf9b97954",
+      "size": 2057,
+      "platforms": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "role": "particle-preset",
+      "path": "candidates/mobile/particle-preset.json",
+      "mime": "application/json",
+      "sha256": "c9a21ce436aa1d3b94af13fa4502784ed68dfbdc581f1adb0329a36c3a5e39bf",
+      "size": 1110,
+      "platforms": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "role": "sprite-metadata",
+      "path": "candidates/mobile/sprite-sheet.json",
+      "mime": "application/json",
+      "sha256": "b604b2c3aa90288f463f67ae7094bdd0df85a2781ecb9dffd8ed2c65737a6f8c",
+      "size": 749,
+      "platforms": [
+        "desktop",
+        "mobile"
+      ]
+    },
+    {
+      "role": "sprite-sheet",
+      "path": "candidates/mobile/sprite-sheet.png",
+      "mime": "image/png",
+      "sha256": "0ee5f7dde6a3c4275480c109a151e66098e6b8bf6b846e9df326c739e6242ba2",
+      "size": 941,
+      "platforms": [
+        "desktop",
+        "mobile"
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "kind": "genome",
+      "root": "5ca9c6a0fe96b99e739249f24c51ef1073e0354150f98be1e8b981063ecbc828"
+    },
+    {
+      "kind": "candidate",
+      "root": "f4706a3ef922ad4bd09db4646f4218378504dea32203523ccd5a81687008e7a7"
+    }
+  ],
+  "variants": {
+    "selected": "mobile",
+    "available": [
+      "mobile",
+      "balanced",
+      "cinematic"
+    ]
+  },
+  "import_contract": {
+    "target": "Reality Asset Continuity Fabric",
+    "operation": "import-or-update-by-stable-asset-id",
+    "preserve_identity": true,
+    "asset_id": "asset:3a82d1753e140d24552b89d1"
+  },
+  "extensions": {
+    "rsr": {
+      "collision_role": "collision-shape",
+      "particle_role": "particle-preset",
+      "audio_role": "sfx-wav"
+    },
+    "vsr": {
+      "visual_roles": [
+        "concept-svg",
+        "sprite-sheet"
+      ]
+    }
+  },
+  "bundle_root": "1096a3048adeb8dc5496b01e4b7b5386b685b8ff95f7e37a3358a2b0a3311d0d"
+}

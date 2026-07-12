@@ -1,0 +1,5 @@
+{
+  "type": "dml.learning.start",
+  "project_ref": {"project_id": "project:vsr", "generation": 0},
+  "payload": {"topic": "WebGPU 级联阴影映射"}
+}

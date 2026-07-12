@@ -1,0 +1,12 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://taowind.example/schemas/prefab-blueprint.v0.3.schema.json",
+  "title":"Reality Asset Prefab Blueprint v0.3",
+  "type":"object",
+  "required":["format","version","prefab_id","asset_id","variant","hierarchy","components","dependencies","runtime_contract","prefab_root"],
+  "properties":{
+    "format":{"const":"reality-asset.prefab-blueprint.v0.3"},"version":{"const":"0.3.0"},
+    "components":{"type":"array","minItems":1},"dependencies":{"type":"array","minItems":1},
+    "prefab_root":{"type":"string","pattern":"^[a-f0-9]{64}$"}
+  },"additionalProperties":true
+}

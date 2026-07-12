@@ -1,0 +1,212 @@
+{
+  "format": "reality-asset.candidate.v0.1",
+  "version": "0.1.0",
+  "candidate_id": "asset-candidate:269891118430a8c7f5e49daf",
+  "genome_root": "5ca9c6a0fe96b99e739249f24c51ef1073e0354150f98be1e8b981063ecbc828",
+  "variant": "mobile",
+  "provider_roots": [
+    "a16f411aa04b587295389e45b028ea81dbdd994620cba083941086c4ee7a68c7"
+  ],
+  "artifacts": {
+    "concept-svg": {
+      "role": "concept-svg",
+      "root": "7f2e6b4c9ceb68c8f7a63ac4e020e7ccedaa77b380a1f77113ec1fdcdea43a59",
+      "mime": "image/svg+xml",
+      "text": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"512\" height=\"512\" viewBox=\"0 0 512 512\"><metadata>dd23ab63794521cbd0cd87a63f2164e9ce42037e17718cf16ee28c4fe2f0b01e</metadata><defs><linearGradient id=\"bg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop stop-color=\"#17305a\"/><stop offset=\"1\" stop-color=\"#08101f\"/></linearGradient><filter id=\"glow\"><feGaussianBlur stdDeviation=\"4\" result=\"b\"/><feMerge><feMergeNode in=\"b\"/><feMergeNode in=\"SourceGraphic\"/></feMerge></filter></defs><rect width=\"512\" height=\"512\" fill=\"url(#bg)\"/><polygon points=\"40,46 44,50 40,54 36,50\" fill=\"#9ddcff\" opacity=\"0.15\"/><polygon points=\"111,97 117,103 111,109 105,103\" fill=\"#9ddcff\" opacity=\"0.22999999999999998\"/><polygon points=\"182,148 190,156 182,164 174,156\" fill=\"#9ddcff\" opacity=\"0.31\"/><polygon points=\"253,205 257,209 253,213 249,209\" fill=\"#9ddcff\" opacity=\"0.39\"/><circle cx=\"256\" cy=\"135\" r=\"54\" fill=\"#f2f6ff\"/><path d=\"M202 133 Q256 64 310 133 L300 168 Q256 143 212 168Z\" fill=\"#1c4fa3\"/><path d=\"M218 125 Q235 113 248 126\" fill=\"none\" stroke=\"#30445f\" stroke-width=\"4\"/><path d=\"M264 126 Q281 113 294 125\" fill=\"none\" stroke=\"#30445f\" stroke-width=\"4\"/><path d=\"M230 198 L282 198 L324 356 L188 356Z\" fill=\"#1c4fa3\" stroke=\"#9ddcff\" stroke-width=\"5\"/><path d=\"M223 211 L256 263 L289 211\" fill=\"#f2f6ff\" opacity=\".9\"/><path d=\"M188 225 L130 330\" stroke=\"#f2f6ff\" stroke-width=\"22\" stroke-linecap=\"round\"/><path d=\"M324 225 L378 324\" stroke=\"#f2f6ff\" stroke-width=\"22\" stroke-linecap=\"round\"/><path d=\"M221 356 L205 468\" stroke=\"#17305a\" stroke-width=\"30\" stroke-linecap=\"round\"/><path d=\"M291 356 L309 468\" stroke=\"#17305a\" stroke-width=\"30\" stroke-linecap=\"round\"/><path d=\"M365 175 L390 395\" stroke=\"#9ddcff\" stroke-width=\"10\" filter=\"url(#glow)\"/><path d=\"M350 179 L379 169 L397 193 L368 201Z\" fill=\"#f2f6ff\"/><text x=\"24\" y=\"470\" fill=\"white\" font-size=\"24\" font-family=\"sans-serif\" font-weight=\"700\">霜璃</text><text x=\"24\" y=\"495\" fill=\"#9ddcff\" font-size=\"14\" font-family=\"sans-serif\">mobile · ice · dd23ab637945</text></svg>"
+    },
+    "sprite-sheet": {
+      "role": "sprite-sheet",
+      "root": "41efb144ee60a91ec0373250241e4dc7718fd7b1b2562171c4f4313d7547184a",
+      "mime": "image/png",
+      "metadata": {
+        "format": "reality-asset.sprite-sheet.v0.1",
+        "asset_id": "asset:3a82d1753e140d24552b89d1",
+        "variant": "mobile",
+        "frame_width": 64,
+        "frame_height": 64,
+        "frames": [
+          {
+            "name": "idle",
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64,
+            "duration_ms": 140
+          },
+          {
+            "name": "move-1",
+            "x": 64,
+            "y": 0,
+            "w": 64,
+            "h": 64,
+            "duration_ms": 140
+          },
+          {
+            "name": "move-2",
+            "x": 128,
+            "y": 0,
+            "w": 64,
+            "h": 64,
+            "duration_ms": 140
+          },
+          {
+            "name": "attack-1",
+            "x": 192,
+            "y": 0,
+            "w": 64,
+            "h": 64,
+            "duration_ms": 90
+          }
+        ],
+        "pixel_root": "0ee5f7dde6a3c4275480c109a151e66098e6b8bf6b846e9df326c739e6242ba2"
+      }
+    },
+    "sfx-wav": {
+      "role": "sfx-wav",
+      "root": "86f50b138d912ee17779bc3c74e4375c4cd506f72eef38a4cc7ebe0d38c6d750",
+      "mime": "audio/wav",
+      "metadata": {
+        "format": "reality-asset.audio.v0.1",
+        "asset_id": "asset:3a82d1753e140d24552b89d1",
+        "variant": "mobile",
+        "sample_rate": 22050,
+        "channels": 1,
+        "duration_seconds": 0.44997732426303855,
+        "audio_root": "42d086c5b2bcda6694f0b057f360753f5a96ea1d3242f3b9251dc233a28e6a53"
+      }
+    },
+    "particle-preset": {
+      "role": "particle-preset",
+      "root": "2f5e64062a503d35523b004826763ddd1319940e7523502164ac32f5c02d3afe",
+      "mime": "application/json",
+      "data": {
+        "format": "rsr.particle-preset.v0.4",
+        "version": "0.1.0",
+        "preset_id": "particle:3a82d1753e140d24552b89d1:mobile",
+        "asset_id": "asset:3a82d1753e140d24552b89d1",
+        "variant": "mobile",
+        "semantic_event": "attack-hit",
+        "emitter": {
+          "shape": "cone",
+          "burst": 16,
+          "rate": 0,
+          "lifetime": [
+            0.25,
+            0.7
+          ],
+          "speed": [
+            80,
+            210
+          ],
+          "angle_degrees": [
+            -35,
+            35
+          ],
+          "gravity": [
+            0,
+            60
+          ],
+          "drag": 0.8
+        },
+        "curves": {
+          "size": [
+            [
+              0,
+              0.3
+            ],
+            [
+              0.15,
+              1
+            ],
+            [
+              1,
+              0
+            ]
+          ],
+          "opacity": [
+            [
+              0,
+              0
+            ],
+            [
+              0.08,
+              1
+            ],
+            [
+              1,
+              0
+            ]
+          ],
+          "color": [
+            [
+              0,
+              "#f2f6ff"
+            ],
+            [
+              0.35,
+              "#9ddcff"
+            ],
+            [
+              1,
+              "#1c4fa3"
+            ]
+          ]
+        },
+        "budget": {
+          "max_particles": 32,
+          "quality": "mobile"
+        },
+        "effect_root": "2f5e64062a503d35523b004826763ddd1319940e7523502164ac32f5c02d3afe"
+      }
+    },
+    "collision-shape": {
+      "role": "collision-shape",
+      "root": "13fe3a028ef2c17b2ad8f151002a1300975c57eb801375641e095e262adec697",
+      "mime": "application/json",
+      "data": {
+        "format": "rsr.collision-shape.v0.3",
+        "version": "0.1.0",
+        "shape_id": "collision:3a82d1753e140d24552b89d1:mobile",
+        "asset_id": "asset:3a82d1753e140d24552b89d1",
+        "variant": "mobile",
+        "type": "capsule",
+        "center": [
+          0,
+          2
+        ],
+        "radius": 11.040000000000001,
+        "half_height": 21.16,
+        "collision_layer": "character",
+        "mask": [
+          "world",
+          "enemy",
+          "trigger"
+        ],
+        "semantic_regions": [
+          {
+            "name": "body",
+            "role": "solid"
+          },
+          {
+            "name": "weapon-reach",
+            "role": "attack-sensor",
+            "shape": {
+              "type": "segment",
+              "from": [
+                12,
+                -8
+              ],
+              "to": [
+                35,
+                15
+              ],
+              "radius": 4
+            }
+          }
+        ],
+        "shape_root": "13fe3a028ef2c17b2ad8f151002a1300975c57eb801375641e095e262adec697"
+      }
+    }
+  },
+  "candidate_root": "f4706a3ef922ad4bd09db4646f4218378504dea32203523ccd5a81687008e7a7"
+}

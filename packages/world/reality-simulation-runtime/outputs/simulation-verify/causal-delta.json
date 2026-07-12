@@ -1,0 +1,45 @@
+{
+  "format": "rfe.causal-delta.v0.1",
+  "provisional": true,
+  "baseRealityRoot": "rfe:demo:genesis",
+  "sourceRuntime": "RSR/0.2.0-alpha.1",
+  "worldId": "falling-box-reality",
+  "tick": 180,
+  "simulationRoot": "fnv1a64:ae339aab5727a0ae",
+  "facts": [
+    {
+      "subject": "body:falling-box",
+      "predicate": "simulation.transform",
+      "value": {
+        "position": {
+          "x": 320000,
+          "y": 294000
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0
+        },
+        "awake": false
+      },
+      "evidence": "fnv1a64:5d56aeb65354c381"
+    },
+    {
+      "subject": "body:ground",
+      "predicate": "simulation.transform",
+      "value": {
+        "position": {
+          "x": 320000,
+          "y": 334000
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0
+        },
+        "awake": false
+      },
+      "evidence": "fnv1a64:06c6f58fc9eb0b74"
+    }
+  ],
+  "events": [],
+  "deltaRoot": "fnv1a64:e25067510f5b5254"
+}

@@ -1,0 +1,131 @@
+{
+  "format": "rsr.snapshot.v0.1",
+  "runtimeVersion": "0.2.0-alpha.1",
+  "worldId": "falling-box-reality",
+  "tick": 41,
+  "logicalTime": {
+    "numerator": 41,
+    "denominator": 60
+  },
+  "scale": 1000,
+  "stepHz": 60,
+  "gravity": {
+    "x": 0,
+    "y": 980000
+  },
+  "solverIterations": 4,
+  "configHash": "fnv1a64:ebbe82ffa658aa60",
+  "bodies": [
+    {
+      "id": "falling-box",
+      "kind": "dynamic",
+      "position": {
+        "x": 320000,
+        "y": 294000
+      },
+      "halfSize": {
+        "x": 22000,
+        "y": 22000
+      },
+      "velocity": {
+        "x": 0,
+        "y": -13393
+      },
+      "acceleration": {
+        "x": 0,
+        "y": 0
+      },
+      "inverseMassQ": 1000,
+      "restitutionQ": 40,
+      "frictionQ": 650,
+      "sleepThreshold": 2200,
+      "sleepTicks": 24,
+      "sleepCounter": 0,
+      "awake": true,
+      "tags": [
+        "blue-box",
+        "subject"
+      ],
+      "data": {}
+    },
+    {
+      "id": "ground",
+      "kind": "static",
+      "position": {
+        "x": 320000,
+        "y": 334000
+      },
+      "halfSize": {
+        "x": 300000,
+        "y": 18000
+      },
+      "velocity": {
+        "x": 0,
+        "y": 0
+      },
+      "acceleration": {
+        "x": 0,
+        "y": 0
+      },
+      "inverseMassQ": 0,
+      "restitutionQ": 20,
+      "frictionQ": 800,
+      "sleepThreshold": 2000,
+      "sleepTicks": 30,
+      "sleepCounter": 0,
+      "awake": false,
+      "tags": [
+        "environment",
+        "ground"
+      ],
+      "data": {}
+    }
+  ],
+  "contacts": [
+    {
+      "key": "falling-box|ground",
+      "a": "falling-box",
+      "b": "ground",
+      "normal": {
+        "x": 0,
+        "y": 1
+      },
+      "penetration": 358,
+      "point": {
+        "x": 320000,
+        "y": 314000
+      },
+      "normalImpulse": 683046,
+      "tangentImpulse": 0
+    }
+  ],
+  "events": [
+    {
+      "id": "falling-box-reality:41:begin:falling-box|ground",
+      "tick": 41,
+      "phase": "begin",
+      "pair": "falling-box|ground",
+      "bodyA": "falling-box",
+      "bodyB": "ground",
+      "contact": {
+        "key": "falling-box|ground",
+        "a": "falling-box",
+        "b": "ground",
+        "normal": {
+          "x": 0,
+          "y": 1
+        },
+        "penetration": 358,
+        "point": {
+          "x": 320000,
+          "y": 314000
+        },
+        "normalImpulse": 683046,
+        "tangentImpulse": 0
+      },
+      "evidenceHash": "fnv1a64:662f48fa7adf7473"
+    }
+  ],
+  "contactRoot": "fnv1a64:b403fe5770d5e67a",
+  "stateRoot": "fnv1a64:af46bf24dc072d86"
+}

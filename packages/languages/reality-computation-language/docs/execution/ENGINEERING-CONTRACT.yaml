@@ -1,0 +1,27 @@
+version: 0.7.0-alpha.1
+objective: establish a real native execution kernel and an honest self-hosting seed for RCL
+baseline:
+  rcl: 0.6.0-alpha.1
+  rncs: 0.19.0-alpha.1
+  reference_runtime: Node.js
+  native_toolchain: C11 + libcrypto
+required_results:
+  - deterministic RBC v1 binary format
+  - C native VM executable independent of Node.js at execution time
+  - parity for state, transaction, authority and reality roots on supported programs
+  - explicit refusal of unsupported provider domains
+  - Stage-1 compiler seed authored in RCL and executed by rclvm
+allowed_scope:
+  - packages/languages/reality-computation-language
+  - RNCS module registry and release metadata
+forbidden_claims:
+  - full fourteen-domain native execution
+  - full self-hosted compiler
+  - JIT or AOT completion
+verification_seams:
+  - compileRealityToBytecode(source)
+  - runNativeBytecode(rbc)
+  - verifyNativeParity(source)
+  - bootstrapCompilerSeed()
+rollback:
+  - retain v0.6 reference runtime and remove v0.7 bytecode/native modules

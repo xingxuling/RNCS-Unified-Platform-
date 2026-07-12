@@ -1,0 +1,10 @@
+import { createHash } from 'node:crypto';
+import { existsSync, readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+const required=['README.md','RELEASE_MANIFEST.json','schemas/vsr-visual-reality-plan.v0.2.schema.json','packages/visual-reality-compiler/src/index.ts','docs/NAMING_BOUNDARY_INVERSION_VISUAL_REALITY_v0.2.md','docs/VISUAL_REALITY_COMPILER_CONTRACT_v0.2.md','docs/VISUAL_REALITY_API_v0.2.md','docs/VISUAL_REALITY_TEST_REPORT_v0.2.md','evidence/VISUAL_REALITY_VALIDATION_v0.2.json','evidence/TESTS_v0.2.txt','evidence/BENCHMARK_VISUAL_REALITY_v0.2.json','outputs/visual-reality-v02/cinematic.png','outputs/visual-reality-v02/debugger.png','outputs/visual-reality-v02/economy-mobile.png','outputs/visual-reality-v02/cinematic-plan.json'];
+const failures=[];for(const file of required)if(!existsSync(resolve(file)))failures.push(`missing:${file}`);
+const validation=JSON.parse(readFileSync(resolve('evidence/VISUAL_REALITY_VALIDATION_v0.2.json'),'utf8'));
+if(validation.tests.passed!==95)failures.push('tests-not-95');if(!validation.semanticInvariantShared)failures.push('source-reality-not-shared');
+const testText=readFileSync(resolve('evidence/TESTS_v0.2.txt'),'utf8');if(!testText.includes('95/95 tests passed'))failures.push('test-log-missing-pass');
+const plan=JSON.parse(readFileSync(resolve('outputs/visual-reality-v02/cinematic-plan.json'),'utf8'));if(plan.format!=='vsr.visual-reality-plan.v0.2')failures.push('plan-format');if(!/^[a-f0-9]{64}$/.test(plan.planRoot))failures.push('plan-root');if(!/^[a-f0-9]{64}$/.test(plan.evidenceRoot))failures.push('evidence-root');
+const root=createHash('sha256').update(JSON.stringify({required,validation,planRoot:plan.planRoot})).digest('hex');console.log(JSON.stringify({ok:failures.length===0,failures,releaseAuditRoot:root,requiredFiles:required.length,tests:validation.tests},null,2));if(failures.length)process.exitCode=1;

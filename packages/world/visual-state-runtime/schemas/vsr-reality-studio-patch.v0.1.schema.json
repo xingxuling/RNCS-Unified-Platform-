@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/vsr-reality-studio-patch.v0.1.schema.json",
+  "title": "VSR Reality Studio Patch v0.1",
+  "type": "object",
+  "required": [
+    "format",
+    "adapterVersion",
+    "projectId",
+    "sceneId",
+    "baseProjectRoot",
+    "changes",
+    "patchRoot"
+  ],
+  "properties": {
+    "format": {
+      "const": "vsr.reality-studio-patch.v0.1"
+    },
+    "adapterVersion": {
+      "type": "string"
+    },
+    "projectId": {
+      "type": "string"
+    },
+    "sceneId": {
+      "type": "string"
+    },
+    "baseProjectRoot": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "patchRoot": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "changes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "objectId",
+          "set"
+        ],
+        "properties": {
+          "objectId": {
+            "type": "string"
+          },
+          "set": {
+            "type": "object",
+            "properties": {
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              },
+              "width": {
+                "type": "number"
+              },
+              "height": {
+                "type": "number"
+              },
+              "rotation": {
+                "type": "number"
+              },
+              "opacity": {
+                "type": "number"
+              },
+              "layer": {
+                "type": "number"
+              },
+              "color": {
+                "type": "string"
+              },
+              "locked": {
+                "type": "boolean"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/network.recovery.v0.1.schema.json",
+  "title": "network.recovery.v0.1",
+  "type": "object",
+  "required": [
+    "format",
+    "sessionId",
+    "playerId",
+    "trustedTick",
+    "trustedStateRoot",
+    "workspace"
+  ],
+  "properties": {
+    "format": {
+      "const": "network.recovery.v0.1"
+    },
+    "sessionId": {
+      "type": "string"
+    },
+    "playerId": {
+      "type": "string"
+    },
+    "trustedTick": {
+      "type": "integer"
+    },
+    "trustedStateRoot": {
+      "type": "string"
+    },
+    "workspace": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

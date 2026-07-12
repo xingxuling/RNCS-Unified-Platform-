@@ -1,0 +1,43 @@
+{
+  "name": "@taowind/reality-build-fabric",
+  "version": "0.2.0-alpha.1",
+  "type": "module",
+  "description": "Reality-native deterministic build, native Windows packaging, Android APK automation and release evidence fabric.",
+  "license": "Apache-2.0",
+  "bin": {
+    "reality-build": "src/cli.mjs"
+  },
+  "exports": {
+    ".": "./src/index.mjs"
+  },
+  "files": [
+    "src",
+    "examples",
+    "docs",
+    "schemas",
+    "scripts",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "STATUS.md",
+    "开发验收报告.md",
+    "启动构建.bat",
+    "build-release.sh",
+    "vendor/windows-native-host"
+  ],
+  "scripts": {
+    "build:sample": "node src/cli.mjs build --project examples/冰境试炼.unified-project.json --out output/冰境试炼-release --targets web-release,web-single,windows-portable,windows-native,android-project --title 冰境试炼 --app-id com.taowind.frosttrial --version 0.2.0 --version-code 2",
+    "verify:sample": "node src/cli.mjs verify --out output/冰境试炼-release",
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs",
+    "benchmark": "node scripts/benchmark.mjs",
+    "audit:release": "node scripts/release_audit.mjs",
+    "verify": "npm test && npm run build:sample && npm run verify:sample && npm run browser-test && npm run benchmark && npm run audit:release",
+    "browser-test": "python tests/browser_test.py"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@taowind/reality-behavior-fabric": "*"
+  }
+}

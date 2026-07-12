@@ -1,0 +1,91 @@
+{
+  "provider_id": "hnac-host:desktop",
+  "protocol_versions": [
+    "0.1.0"
+  ],
+  "status": "available",
+  "trust": {
+    "level": 2,
+    "attestations": [
+      "signed-capsule"
+    ]
+  },
+  "transports": [
+    {
+      "kind": "hnac",
+      "capsule_id": "icar-native-v0.5"
+    }
+  ],
+  "capabilities": [
+    {
+      "capability_id": "hnac.notification.emit",
+      "version": "1.0.0",
+      "fulfills": [
+        "host.notification.emit"
+      ],
+      "inputs": {
+        "message": {
+          "type": "string",
+          "required": true
+        }
+      },
+      "outputs": {
+        "receipt": {
+          "type": "object"
+        }
+      },
+      "required_scopes": [
+        "host.notify"
+      ],
+      "host_requirements": [
+        "host.notification"
+      ],
+      "risk": {
+        "level": "medium",
+        "reasons": [
+          "external-side-effect"
+        ]
+      },
+      "reversible": false,
+      "execution_phase": "post-commit",
+      "side_effects": [
+        "external.notification"
+      ],
+      "evidence": {
+        "produces": [
+          "notification.receipt"
+        ],
+        "requires": [
+          "rfe.commit-receipt"
+        ]
+      },
+      "cost": {
+        "cpu_millis": 1,
+        "memory_mb": 1,
+        "network_kb": 1,
+        "monetary_microunits": 0
+      },
+      "transport": {
+        "kind": "hnac",
+        "capsule_id": "icar-native-v0.5",
+        "entrypoint": "notify"
+      },
+      "provider_id": "hnac-host:desktop",
+      "trust": {
+        "level": 2,
+        "attestations": [
+          "signed-capsule"
+        ]
+      },
+      "format": "cnp.capability-descriptor.v0.1",
+      "protocol_versions": [
+        "0.1.0"
+      ],
+      "constraints": {},
+      "status": "available",
+      "descriptor_root": "078e0a0043cfa3e8f4d347fabb27f5610856ca11370c1e5c32c1cbda43f077ad"
+    }
+  ],
+  "format": "cnp.provider-manifest.v0.1",
+  "provider_root": "cd9ee9693b45274810f40ea71de20860a690175e95417576d89db6c4a0be9ae0"
+}

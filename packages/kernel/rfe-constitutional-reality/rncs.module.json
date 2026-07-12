@@ -1,0 +1,11 @@
+{
+  "id": "rfe-constitution",
+  "name": "RFE Constitutional Reality",
+  "version": "1.0.0",
+  "path": "packages/kernel/rfe-constitutional-reality",
+  "layer": "kernel",
+  "dependsOn": [
+    "rncs-core"
+  ],
+  "test": "npm test --workspace rfe-constitutional-reality"
+}

@@ -1,0 +1,50 @@
+{
+  "profile": "declarative-v0",
+  "operations": [
+    {
+      "op": "capability_call",
+      "capability": "host.clock",
+      "method": "now",
+      "args": {},
+      "save_as": "time"
+    },
+    {
+      "op": "capability_call",
+      "capability": "environment.summary",
+      "method": "get",
+      "args": {},
+      "save_as": "environment"
+    },
+    {
+      "op": "capability_call",
+      "capability": "storage.kv",
+      "method": "get",
+      "args": {"key": "launch_state", "default": "first portable launch"},
+      "save_as": "previous_state"
+    },
+    {
+      "op": "capability_call",
+      "capability": "host.log",
+      "method": "write",
+      "args": {"message": "{{app.name}} {{app.version}} is running through a host-neutral capability broker."}
+    },
+    {
+      "op": "print",
+      "text": "UTC: {{time}}"
+    },
+    {
+      "op": "print",
+      "text": "Host projection: {{environment}}"
+    },
+    {
+      "op": "print",
+      "text": "Previous portable state: {{previous_state}}"
+    },
+    {
+      "op": "capability_call",
+      "capability": "storage.kv",
+      "method": "set",
+      "args": {"key": "launch_state", "value": "capsule executed and state persisted"}
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "format": "reality-build.manifest.v0.1",
+  "projectId": "test-pipeline",
+  "target": "node",
+  "assets": [
+    {
+      "id": "style",
+      "type": "json",
+      "source": "examples/simulation-assets/render-style.json",
+      "sourceHash": "262e373e10684287127d340945e48752882a632b92802335ada07ae660245822",
+      "contentHash": "1945ecab26adb4ccca7bab901cd268d1463f17b09a5a646d70078ae490565aa6",
+      "byteLength": 182,
+      "compiledPath": "cache/1945ecab26adb4ccca7bab901cd268d1463f17b09a5a646d70078ae490565aa6.json",
+      "dependencies": [
+        "world"
+      ]
+    },
+    {
+      "id": "world",
+      "type": "json",
+      "source": "examples/simulation-assets/falling-box.world.json",
+      "sourceHash": "abaa6cc268a82bac9d5a00a65fb9f213963a56ba801fc9cf3950d116b6fa512d",
+      "contentHash": "549bc641bc9b8f427760ec9f106bef7cb953d96acaef66a81640a4ca40fa22d0",
+      "byteLength": 565,
+      "compiledPath": "cache/549bc641bc9b8f427760ec9f106bef7cb953d96acaef66a81640a4ca40fa22d0.json",
+      "dependencies": []
+    }
+  ],
+  "buildRoot": "fnv1a64:9ccb8dbc1073cf2b"
+}

@@ -1,0 +1,113 @@
+// UI Update Engine — Safety Note Templates v0.1
+// 高风险模块的安全提示，配合 SafetyBoundaryBanner 使用。
+export interface SafetyNoteDefinition {
+  moduleId: string;
+  /** 简短提示，可直接显示在按钮 / Quick Start / Empty State 旁 */
+  shortNote: string;
+  /** 详细安全边界说明，可显示在页面顶部或 Tooltip */
+  longNote: string;
+  level: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
+}
+
+export const SAFETY_NOTE_TEMPLATES: SafetyNoteDefinition[] = [
+  { moduleId: "real-subject-setup",
+    shortNote: "Full60 默认本地保存，导出前需确认。",
+    longNote: "真实主体数列（Light20 / Full60）默认仅保存在本地浏览器，不会自动上传。导出前请确认隐私边界。",
+    level: "HIGH" },
+  { moduleId: "subject-mode",
+    shortNote: "切换主体可能改变输出。",
+    longNote: "Demo / Light20 / Full60 / Founder 各自隔离，切换主体会改变所有引擎的输出权重。",
+    level: "MEDIUM" },
+  { moduleId: "sequence-ai",
+    shortNote: "输出不保证现实必然发生，需回验。",
+    longNote: "Sequence AI 的输出是结构性建议，不是现实预测。所有结论应进入回验闭环。",
+    level: "MEDIUM" },
+  { moduleId: "msl",
+    shortNote: "MSL 是结构语言，不是绝对现实定律。",
+    longNote: "MSL 描述的是系统结构与可推演关系，不构成对现实事件的断言。",
+    level: "MEDIUM" },
+  { moduleId: "sequence-terminal",
+    shortNote: "终端命令不执行现实动作，Founder 命令需权限。",
+    longNote: "Sequence Terminal 仅在系统内执行；Founder 命令受权限保护，普通用户无法触发。",
+    level: "MEDIUM" },
+  { moduleId: "sequence-currency",
+    shortNote: "内部积分，不是现实货币，不支持提现、交易、投资。",
+    longNote: "数列货币（Sequence Currency）是 Aetherworld 内部贡献凭证，不可兑换法定货币，不可交易，不可投资。",
+    level: "HIGH" },
+  { moduleId: "sequence-world",
+    shortNote: "虚拟世界不等于现实。",
+    longNote: "Sequence World 生成的世界、区域、NPC、任务均为创作内容，不代表现实事件或预测。",
+    level: "MEDIUM" },
+  { moduleId: "world-simulation",
+    shortNote: "虚拟世界模拟不等于现实预测。",
+    longNote: "World Simulation 的 tick、事件、因果链仅作用于虚拟世界。",
+    level: "MEDIUM" },
+  { moduleId: "world-growth",
+    shortNote: "生长结果是创作世界，不等于现实事实。",
+    longNote: "World Growth 的新增区域、规则、NPC 均为创作素材。",
+    level: "MEDIUM" },
+  { moduleId: "world-society",
+    shortNote: "社会模型不等于现实社会预测。",
+    longNote: "World Society 中的阵营、信仰、经济仅为虚拟推演。",
+    level: "MEDIUM" },
+  { moduleId: "civilization",
+    shortNote: "文明演化是虚拟创作，不预测现实文明走向。",
+    longNote: "Civilization 推演的时代、战争、和平不代表现实文明进程。",
+    level: "MEDIUM" },
+  { moduleId: "world-presentation",
+    shortNote: "表现层是创作参数，不代表真实物理或现实事件。",
+    longNote: "World Presentation 的渲染、动画、镜头与声音参数仅用于创作工程。",
+    level: "MEDIUM" },
+  { moduleId: "constant-universe",
+    shortNote: "系统常数不是现实宇宙定律。",
+    longNote: "Constant Universe 中的 0–9 数字、五域、阈值是系统内部常数，不是现实物理定律。",
+    level: "MEDIUM" },
+  { moduleId: "system-constitution",
+    shortNote: "系统宪法不是现实法律文件。",
+    longNote: "System Constitution 是 Aetherworld 内部治理规范，不构成现实法律或行政依据。",
+    level: "MEDIUM" },
+  { moduleId: "hybrid-compression",
+    shortNote: "黑箱信号不是确定事实。",
+    longNote: "Hybrid Black-White Box Compression 的黑箱信号属于结构性提示，需结合白箱核对。",
+    level: "MEDIUM" },
+  { moduleId: "software-qa",
+    shortNote: "QA 用于系统质量审计，不代表现实必然正确。",
+    longNote: "Software QA 仅作用于系统内部质量，不构成对现实业务结论的判定。",
+    level: "LOW" },
+  { moduleId: "recalculation",
+    shortNote: "重算结果仅作系统一致性使用。",
+    longNote: "Recalculation 处理的是 stale 数据，不重新预测现实事件。",
+    level: "LOW" },
+  { moduleId: "vocal",
+    shortNote: "声乐提示不是医学声带诊断。",
+    longNote: "Vocal Engine 生成的提示词面向音乐创作，不可用于医学声带或健康诊断。",
+    level: "MEDIUM" },
+  { moduleId: "translation",
+    shortNote: "翻译可能存在语境漂移。",
+    longNote: "Translation Engine 的多语转译可能在语境上偏移，重要文本请人工校对。",
+    level: "LOW" },
+  { moduleId: "code-generation",
+    shortNote: "代码需要人工测试。",
+    longNote: "代码生成的产物未经测试，请先在沙箱中验证再投入生产。",
+    level: "MEDIUM" },
+  { moduleId: "prompt-forge",
+    shortNote: "提示词需要人工测试。",
+    longNote: "Prompt Forge 生成的提示词需要人工调优与测试，避免直接上线。",
+    level: "LOW" },
+  { moduleId: "founder-terminal",
+    shortNote: "Founder 专属，含特权命令。",
+    longNote: "Founder Terminal 含系统级特权命令，仅对 Founder 暴露。",
+    level: "HIGH" },
+  { moduleId: "founder",
+    shortNote: "Founder 控制台，含系统级操作。",
+    longNote: "Founder Console 含宪法、常数、引擎注册等系统级操作入口。",
+    level: "HIGH" },
+];
+
+export function getSafetyNote(moduleId: string): SafetyNoteDefinition | undefined {
+  return SAFETY_NOTE_TEMPLATES.find((s) => s.moduleId === moduleId);
+}
+
+export function listModulesWithSafetyNote(): string[] {
+  return SAFETY_NOTE_TEMPLATES.map((s) => s.moduleId);
+}

@@ -1,0 +1,162 @@
+{
+  "ok": true,
+  "status": "GDSCRIPT_PARSED_GODOT_USER_RUNTIME_RETEST_REQUIRED",
+  "checks": [
+    {
+      "name": "exists:project.godot",
+      "ok": true,
+      "detail": "project.godot"
+    },
+    {
+      "name": "exists:scenes/Bootstrap.tscn",
+      "ok": true,
+      "detail": "scenes/Bootstrap.tscn"
+    },
+    {
+      "name": "exists:scenes/GameWorld.tscn",
+      "ok": true,
+      "detail": "scenes/GameWorld.tscn"
+    },
+    {
+      "name": "exists:scripts/bootstrap.gd",
+      "ok": true,
+      "detail": "scripts/bootstrap.gd"
+    },
+    {
+      "name": "exists:scripts/main.gd",
+      "ok": true,
+      "detail": "scripts/main.gd"
+    },
+    {
+      "name": "exists:scripts/player_controller.gd",
+      "ok": true,
+      "detail": "scripts/player_controller.gd"
+    },
+    {
+      "name": "exists:scripts/enemy.gd",
+      "ok": true,
+      "detail": "scripts/enemy.gd"
+    },
+    {
+      "name": "exists:scripts/npc_player.gd",
+      "ok": true,
+      "detail": "scripts/npc_player.gd"
+    },
+    {
+      "name": "exists:scripts/hud.gd",
+      "ok": true,
+      "detail": "scripts/hud.gd"
+    },
+    {
+      "name": "exists:scripts/world_state.gd",
+      "ok": true,
+      "detail": "scripts/world_state.gd"
+    },
+    {
+      "name": "exists:scripts/voice_magic.gd",
+      "ok": true,
+      "detail": "scripts/voice_magic.gd"
+    },
+    {
+      "name": "bootstrap main scene",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "version title",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "gdparse all scripts",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "to_enemy explicitly Vector3",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "projectile vectors explicit",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "locked target explicitly Node3D",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "enemy target explicitly Node3D",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "distance values explicit float",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "hotfix marker",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "no function-local := inference",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "ref:project.godot->res://scenes/Bootstrap.tscn",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "ref:project.godot->res://scripts/voice_magic.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "ref:project.godot->res://scripts/world_state.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "ref:Bootstrap.tscn->res://scripts/bootstrap.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "ref:GameWorld.tscn->res://scripts/hud.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "ref:GameWorld.tscn->res://scripts/main.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "ref:main.gd->res://scripts/enemy.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "ref:main.gd->res://scripts/npc_player.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "ref:main.gd->res://scripts/player_controller.gd",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "ref:bootstrap.gd->res://scenes/GameWorld.tscn",
+      "ok": true,
+      "detail": ""
+    }
+  ],
+  "errors": []
+}

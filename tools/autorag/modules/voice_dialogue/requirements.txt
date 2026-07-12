@@ -1,0 +1,23 @@
+# 語音對話模塊依賴
+
+# 核心語音識別庫
+SpeechRecognition==3.10.0
+
+# 音頻處理庫
+pyaudio==0.2.14
+
+# 文本轉語音庫
+pyttsx3==2.90
+gTTS==2.4.0
+
+# 音頻播放庫
+playsound==1.3.0
+
+# 配置管理
+PyYAML==6.0.1
+
+# 日誌記錄
+colorlog==6.8.2
+
+# 工具庫
+python-dotenv==1.0.1

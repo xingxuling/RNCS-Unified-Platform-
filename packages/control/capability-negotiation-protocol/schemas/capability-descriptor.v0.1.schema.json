@@ -1,0 +1,25 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://taowind.example/rncs/cnp/capability-descriptor.v0.1.schema.json",
+  "type":"object",
+  "required":["format","capability_id","version","provider_id","protocol_versions","fulfills","inputs","outputs","required_scopes","host_requirements","risk","reversible","execution_phase","evidence","cost","transport","descriptor_root"],
+  "properties":{
+    "format":{"const":"cnp.capability-descriptor.v0.1"},
+    "capability_id":{"type":"string","minLength":1},
+    "version":{"type":"string","pattern":"^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?$"},
+    "provider_id":{"type":"string","minLength":1},
+    "protocol_versions":{"type":"array","items":{"type":"string"},"minItems":1,"uniqueItems":true},
+    "fulfills":{"type":"array","items":{"type":"string"},"uniqueItems":true},
+    "inputs":{"type":"object"},"outputs":{"type":"object"},
+    "required_scopes":{"type":"array","items":{"type":"string"},"uniqueItems":true},
+    "host_requirements":{"type":"array","items":{"type":"string"},"uniqueItems":true},
+    "risk":{"type":"object","required":["level","reasons"],"properties":{"level":{"enum":["low","medium","high","critical"]},"reasons":{"type":"array","items":{"type":"string"}}}},
+    "reversible":{"type":"boolean"},
+    "execution_phase":{"enum":["transaction","post-commit","read-only"]},
+    "evidence":{"type":"object","required":["produces","requires"]},
+    "cost":{"type":"object","required":["cpu_millis","memory_mb","network_kb","monetary_microunits"]},
+    "transport":{"type":"object","required":["kind"]},
+    "descriptor_root":{"type":"string","pattern":"^[0-9a-f]{64}$"}
+  },
+  "additionalProperties":true
+}

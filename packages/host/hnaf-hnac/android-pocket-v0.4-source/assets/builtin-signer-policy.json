@@ -1,0 +1,41 @@
+{
+  "current_signer_sha256": "f7d5033478705bfae8b1e26cdf470ad3247aa9eb644667f539f3c280ca2c0e65",
+  "managed_apps": [
+    "org.taowind.hnaf.tool.patrol",
+    "org.taowind.hnaf.tool.data",
+    "org.taowind.hnaf.tool.sop",
+    "org.taowind.hnaf.tool.score",
+    "org.taowind.hnaf.tool.capture",
+    "org.taowind.hnaf.tool.diagnostic"
+  ],
+  "migrations": [
+    {
+      "app_ids": [
+        "org.taowind.hnaf.tool.patrol",
+        "org.taowind.hnaf.tool.data",
+        "org.taowind.hnaf.tool.sop",
+        "org.taowind.hnaf.tool.score",
+        "org.taowind.hnaf.tool.diagnostic"
+      ],
+      "from_signer_sha256": "77177c651c49f8fdbe885dd19fde689c332fbf50add30b32fe31e77d6b0e7f21",
+      "id": "pocket-v0.1-to-v0.2",
+      "max_from_version": "0.1.99",
+      "to_signer_sha256": "f7d5033478705bfae8b1e26cdf470ad3247aa9eb644667f539f3c280ca2c0e65"
+    },
+    {
+      "app_ids": [
+        "org.taowind.hnaf.tool.patrol",
+        "org.taowind.hnaf.tool.data",
+        "org.taowind.hnaf.tool.sop",
+        "org.taowind.hnaf.tool.score",
+        "org.taowind.hnaf.tool.capture",
+        "org.taowind.hnaf.tool.diagnostic"
+      ],
+      "from_signer_sha256": "bbf934639cbd733952caa329d811fbc5ebd704896c8b54a22541784b35055fab",
+      "id": "pocket-v0.2-to-v0.2.2-signature-hotfix",
+      "max_from_version": "0.2.99",
+      "to_signer_sha256": "f7d5033478705bfae8b1e26cdf470ad3247aa9eb644667f539f3c280ca2c0e65"
+    }
+  ],
+  "schema": "hnaf-builtin-signer-policy@0.2"
+}

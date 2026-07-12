@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.example/schemas/reality-one-lifecycle-event.v0.1.schema.json",
+  "title": "Reality One Lifecycle Event v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "sessionId",
+    "sequence",
+    "type"
+  ],
+  "properties": {
+    "format": {
+      "const": "reality-one.lifecycle-event.v0.1"
+    },
+    "sessionId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "type": {
+      "enum": [
+        "intent.received",
+        "intent.understood",
+        "authority.requested",
+        "authority.resolved",
+        "execution.started",
+        "execution.step.updated",
+        "execution.progress",
+        "application.committed",
+        "application.failed"
+      ]
+    },
+    "payload": {
+      "type": "object"
+    },
+    "previousEventHash": {
+      "type": "string",
+      "pattern": "^(fnv1a64:[0-9a-f]{16}|[0-9a-f]{64}|)$"
+    },
+    "eventHash": {
+      "type": "string",
+      "pattern": "^(fnv1a64:[0-9a-f]{16}|[0-9a-f]{64})$"
+    }
+  }
+}

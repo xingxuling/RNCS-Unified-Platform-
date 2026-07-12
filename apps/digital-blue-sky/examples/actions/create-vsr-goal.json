@@ -1,0 +1,8 @@
+{
+  "type": "dml.goal.create",
+  "project_ref": {"project_id": "project:vsr", "generation": 0},
+  "payload": {
+    "title": "升级 VSR 光照系统",
+    "instruction": "继续升级 VSR 的光照系统，优先解决阴影抖动。"
+  }
+}

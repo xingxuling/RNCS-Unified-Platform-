@@ -1,0 +1,53 @@
+{
+  "name": "@taowind/reality-one-gateway",
+  "version": "0.4.0-alpha.1",
+  "type": "module",
+  "description": "Dynamic runtime discovery and orchestration gateway for the Reality-Native Computing Stack.",
+  "license": "Apache-2.0",
+  "bin": {
+    "reality-one": "src/cli.mjs"
+  },
+  "exports": {
+    ".": "./src/index.mjs"
+  },
+  "files": [
+    "src",
+    "runtimes",
+    "web",
+    "examples",
+    "docs",
+    "schemas",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "STATUS.md",
+    "RELEASE_NOTES_v0.3.0.md",
+    "Reality_One_v0.3_Workbench_离线版.html",
+    "开发验收报告.md"
+  ],
+  "scripts": {
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs",
+    "smoke": "node scripts/smoke.mjs",
+    "demo": "node src/cli.mjs pipeline --config examples/input/pipeline.json --out output/demo",
+    "benchmark": "node scripts/benchmark.mjs"
+  },
+  "dependencies": {
+    "@taowind/rncs-core-contract": "*",
+    "@taowind/rfe-core-sdk": "*",
+    "@taowind/living-artifact-format": "*",
+    "@taowind/icar-native-envelope-runtime": "*",
+    "@taowind/capability-negotiation-protocol": "*",
+    "@taowind/agent-authority-fabric": "*",
+    "@taowind/reality-branch-fabric": "*",
+    "@taowind/reality-behavior-fabric": "*",
+    "@taowind/reality-asset-genesis-fabric": "*",
+    "@taowind/reality-simulation-runtime": "*",
+    "@taowind/visual-state-runtime": "*",
+    "@taowind/dml-core-runtime": "*",
+    "@taowind/aether-rncs-bridge": "*",
+    "@taowind/developer-execution-runtime": "*"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

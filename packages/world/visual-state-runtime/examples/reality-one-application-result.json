@@ -1,0 +1,39 @@
+{
+  "format": "icar.application-result.v0.1",
+  "status": "committed",
+  "intent": {
+    "source": "把现实原生计算项目进度提高到30%，生成状态报告并通知我。",
+    "intentHash": "2f884761a6daa7aeac0fe7e72031712719a75430a3f048cf30d15a77ab52a92f"
+  },
+  "plan": {
+    "requiredScopes": ["artifact.read", "artifact.write", "host.notify"],
+    "requiredHostCapabilities": ["display.text", "host.notification", "input.activate"],
+    "steps": [
+      {"id":"step:1:lar.progress.target","capabilityId":"lar.progress.target"},
+      {"id":"step:2:lar.report.render","capabilityId":"lar.report.render"},
+      {"id":"step:3:lar.report.attach","capabilityId":"lar.report.attach"},
+      {"id":"step:4:hnaf.notification.emit","capabilityId":"hnaf.notification.emit"}
+    ]
+  },
+  "authority": {"status":"approved","denied":[]},
+  "execution": {
+    "stepReceipts": [
+      {"stepId":"step:1:lar.progress.target","status":"completed"},
+      {"stepId":"step:2:lar.report.render","status":"completed"},
+      {"stepId":"step:3:lar.report.attach","status":"completed"},
+      {"stepId":"step:4:hnaf.notification.emit","status":"completed"}
+    ],
+    "executionRoot":"d97f48a304eced02dddef26e3b59fb2787a80592754963dcb43ddd948edc255e"
+  },
+  "artifact": {
+    "identity":{"title":"Reality-Native Computing Stack"},
+    "semantic":{"fields":{
+      "progress":{"value":30},
+      "status":{"value":"prototype"},
+      "generated_report":{"value":"项目状态报告已经生成，并写入 Living Artifact。RFE 连续性根与宿主通知回执均已记录。"}
+    }}
+  },
+  "atomicReceipt":{"status":"committed","finalGlobalRoot":"9af9fe682cda861177ecf79c6ab7f69001bcbdc0aee68eb93e029ac8dad49084"},
+  "evidence":{"rfe":{"finalGlobalRoot":"9af9fe682cda861177ecf79c6ab7f69001bcbdc0aee68eb93e029ac8dad49084"}},
+  "applicationResultHash":"5d79c84a879bcfe20b3f0ebfb13071d052e18552a0de48a9b6f250a6cbaab740"
+}

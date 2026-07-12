@@ -1,0 +1,18 @@
+{
+  "format": "reality-build.manifest.v0.1",
+  "projectId": "tamper",
+  "target": "node",
+  "assets": [
+    {
+      "id": "world",
+      "type": "json",
+      "source": "examples/simulation-assets/falling-box.world.json",
+      "sourceHash": "abaa6cc268a82bac9d5a00a65fb9f213963a56ba801fc9cf3950d116b6fa512d",
+      "contentHash": "549bc641bc9b8f427760ec9f106bef7cb953d96acaef66a81640a4ca40fa22d0",
+      "byteLength": 565,
+      "compiledPath": "cache/549bc641bc9b8f427760ec9f106bef7cb953d96acaef66a81640a4ca40fa22d0.json",
+      "dependencies": []
+    }
+  ],
+  "buildRoot": "fnv1a64:e532db7108ade390"
+}

@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aetherworld.local/schemas/aetherseed/event.schema.json",
+  "title": "AetherSeed Kernel Event",
+  "description": "A local-first observed event or evidence package that AetherSeed may analyse. This record must not contain raw secrets or unauthorized private material.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "eventId",
+    "eventType",
+    "createdAt",
+    "source",
+    "permissionLevel",
+    "summary",
+    "evidenceRefs",
+    "riskFlags"
+  ],
+  "properties": {
+    "schemaVersion": { "type": "string", "const": "aetherseed.event.v1" },
+    "eventId": { "type": "string", "minLength": 8, "description": "Stable local event id, for example evt_20260526_001." },
+    "eventType": {
+      "type": "string",
+      "enum": [
+        "LOCAL_SCAN",
+        "PROJECT_SUMMARY",
+        "REGISTRY_SLICE",
+        "DATASET_EXPORT",
+        "TRAINING_RUN",
+        "OLLAMA_SMOKE_TEST",
+        "CODEX_RESULT",
+        "USER_NOTE",
+        "SYSTEM_AUDIT",
+        "OTHER"
+      ]
+    },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "label"],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": ["scanner", "aetherworld", "github", "codex", "ollama", "manual", "dataset-builder", "training-tool", "other"]
+        },
+        "label": { "type": "string", "minLength": 1 },
+        "path": { "type": "string" },
+        "url": { "type": "string" },
+        "hash": { "type": "string" }
+      }
+    },
+    "permissionLevel": {
+      "type": "string",
+      "enum": ["READ_ONLY", "DRAFT", "DRY_RUN", "CONFIRM_TO_EXECUTE", "BLOCKED"]
+    },
+    "summary": { "type": "string", "minLength": 1 },
+    "observations": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "evidenceRefs": {
+      "type": "array",
+      "description": "References to safe summaries, files, registry ids, or tool outputs. Avoid raw secret content.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "label"],
+        "properties": {
+          "id": { "type": "string" },
+          "kind": {
+            "type": "string",
+            "enum": ["file", "directory", "route", "module", "engine", "dataset", "command-output", "report", "url", "manual-note", "other"]
+          },
+          "label": { "type": "string" },
+          "path": { "type": "string" },
+          "safeExcerpt": { "type": "string" },
+          "hash": { "type": "string" }
+        }
+      }
+    },
+    "riskFlags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "MAY_CONTAIN_SECRETS",
+          "FULL60_RELATED",
+          "FOUNDER_ONLY",
+          "TRAINING_EXECUTION",
+          "LOCAL_COMMAND",
+          "NETWORK_ACCESS",
+          "PUBLIC_RELEASE",
+          "MODEL_WEIGHTS",
+          "PRIVATE_REPO",
+          "LARGE_FILES",
+          "UNKNOWN_RISK"
+        ]
+      }
+    },
+    "redactionNotes": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "lineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "parentEventIds": { "type": "array", "items": { "type": "string" } },
+        "aetherworldModuleIds": { "type": "array", "items": { "type": "string" } },
+        "aetherSeedModel": { "type": "string" },
+        "datasetVersionId": { "type": "string" }
+      }
+    }
+  }
+}

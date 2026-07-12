@@ -1,0 +1,1 @@
+{"format":"vsr.observer-profile.v0.1","observerId":"observer:auditor","roles":["auditor"],"scopes":["report.read","evidence.read","execution.read","diagnostics.read"],"clearance":3,"locale":"zh-CN","claims":{"kind":"auditor"}}

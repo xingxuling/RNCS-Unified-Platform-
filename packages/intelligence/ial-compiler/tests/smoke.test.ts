@@ -1,0 +1,1 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {compileIAL} from '../src/index.ts';test('IAL smoke',()=>{const r=compileIAL('Ψ : Γ K Z : V');assert.equal(r.success,true);assert.ok(r.compiled?.length)});

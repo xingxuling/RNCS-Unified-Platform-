@@ -1,0 +1,46 @@
+{
+  "id": "hnaf.reference.desktop",
+  "family": "desktop",
+  "execution_profiles": [
+    "wasm-component@1",
+    "wasm-core@1",
+    "declarative-v0"
+  ],
+  "capabilities": {
+    "host.log": [
+      "1"
+    ],
+    "host.clock": [
+      "1"
+    ],
+    "environment.summary": [
+      "1"
+    ],
+    "storage.kv": [
+      "1",
+      "2"
+    ],
+    "storage.state": [
+      "1"
+    ]
+  },
+  "interaction_modes": [
+    "cli",
+    "keyboard",
+    "pointer"
+  ],
+  "resources": {
+    "memory_class": "medium",
+    "display_class": "windowed",
+    "energy_mode": "mains-or-battery",
+    "viewport_width": 1440,
+    "viewport_height": 900,
+    "screen_reader": false,
+    "spatial": false
+  },
+  "policies": {
+    "require_signature": false,
+    "network_default": "deny",
+    "accessibility_mode": false
+  }
+}

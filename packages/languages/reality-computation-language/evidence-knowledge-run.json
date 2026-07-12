@@ -1,0 +1,1183 @@
+{
+  "format": "rcl.reality-run.v0.3",
+  "program": "SmallDataCaretaker",
+  "programRoot": "b0c6cc77ffc888af6210354f0737bae6ebad0b7541264fea48eddb6d662b6b0d",
+  "foundation": {
+    "format": "rcl.reality-foundation.v0.3",
+    "program": "SmallDataCaretaker",
+    "languageVersion": "0.3.0-alpha.1",
+    "programRoot": "b0c6cc77ffc888af6210354f0737bae6ebad0b7541264fea48eddb6d662b6b0d",
+    "domains": {
+      "metaComputational": 0,
+      "computational": 0,
+      "physical": 0,
+      "perceptual": 1,
+      "neural": 0,
+      "living": 0,
+      "genetic": 0,
+      "quantitative": 1,
+      "knowledge": 1
+    },
+    "authority": {
+      "warrants": 1,
+      "boundedRules": 1
+    },
+    "compositePlanes": [
+      {
+        "id": "inner-reality",
+        "composedFrom": [
+          "perceptual",
+          "neural",
+          "living",
+          "knowledge"
+        ],
+        "role": "the subject-relative model that contains percepts, needs, memories, claims, uncertainty and candidate intentions"
+      },
+      {
+        "id": "execution-reality",
+        "composedFrom": [
+          "computational",
+          "physical",
+          "authority",
+          "causality-evidence"
+        ],
+        "role": "the bounded transition plane that turns a justified intention into an observed, authorized and evidenced change"
+      }
+    ]
+  },
+  "state": {
+    "caretaker.actions": 1,
+    "room.heater": true,
+    "room.temperature": {
+      "kind": "Quantity",
+      "type": "Temperature",
+      "value": 8,
+      "unit": "°C"
+    },
+    "sensor.temperature": {
+      "kind": "Measurement",
+      "baseType": "Temperature",
+      "value": {
+        "kind": "Quantity",
+        "type": "Temperature",
+        "value": 8,
+        "unit": "°C"
+      },
+      "uncertainty": {
+        "kind": "Quantity",
+        "type": "Temperature",
+        "value": 0.2,
+        "unit": "°C"
+      },
+      "confidence": 0.98,
+      "unit": "°C",
+      "scale": "interval",
+      "evidence": [
+        "sensor:room-temperature"
+      ],
+      "calibratedBy": "calibration:room-v1"
+    },
+    "sight.temperature": {
+      "kind": "Quantity",
+      "type": "Temperature",
+      "value": 8,
+      "unit": "°C"
+    },
+    "mind.cold": {
+      "kind": "Knowledge",
+      "baseType": "Truth",
+      "value": true,
+      "confidence": 0.98,
+      "evidence": [
+        "rule:cold-below-12c"
+      ],
+      "source": "sensor+threshold",
+      "scope": "room",
+      "status": "observed",
+      "dependencies": [],
+      "revision": 1,
+      "alternatives": [],
+      "formedAtRoot": "c257e974ff18481a88359940ce0f0ae37a30299b5a1276db94d5b2e5f61b4452"
+    },
+    "mind.should_heat": {
+      "kind": "Knowledge",
+      "baseType": "Truth",
+      "value": true,
+      "confidence": 0.95,
+      "evidence": [
+        "policy:maintain-habitable-room",
+        "rule:cold-below-12c"
+      ],
+      "source": "rcl:inference",
+      "scope": "room",
+      "status": "derived",
+      "dependencies": [
+        "mind.cold"
+      ],
+      "revision": 1,
+      "alternatives": [],
+      "formedAtRoot": "6b56344c59bc713071be72a5d70cc902859978e5ef97a7cd60050c97c087908e"
+    }
+  },
+  "stateRoot": "995f1e35a3930106bfc76714e04deb341f9bc969a6eda1b4ad901b2b1bd053cd",
+  "history": [
+    {
+      "kind": "DomainTransition",
+      "domainKind": "quantitative",
+      "name": "sensor",
+      "status": "realized",
+      "beforeRoot": "c257e974ff18481a88359940ce0f0ae37a30299b5a1276db94d5b2e5f61b4452",
+      "afterRoot": "c257e974ff18481a88359940ce0f0ae37a30299b5a1276db94d5b2e5f61b4452",
+      "changes": [
+        {
+          "target": "sensor.temperature",
+          "before": {
+            "kind": "Measurement",
+            "baseType": "Temperature",
+            "value": {
+              "kind": "Quantity",
+              "type": "Temperature",
+              "value": 8,
+              "unit": "°C"
+            },
+            "uncertainty": {
+              "kind": "Quantity",
+              "type": "Temperature",
+              "value": 0.2,
+              "unit": "°C"
+            },
+            "confidence": 0.98,
+            "unit": "°C",
+            "scale": "interval",
+            "evidence": [
+              "sensor:room-temperature"
+            ],
+            "calibratedBy": "calibration:room-v1"
+          },
+          "after": {
+            "kind": "Measurement",
+            "baseType": "Temperature",
+            "value": {
+              "kind": "Quantity",
+              "type": "Temperature",
+              "value": 8,
+              "unit": "°C"
+            },
+            "uncertainty": {
+              "kind": "Quantity",
+              "type": "Temperature",
+              "value": 0.2,
+              "unit": "°C"
+            },
+            "confidence": 0.98,
+            "unit": "°C",
+            "scale": "interval",
+            "evidence": [
+              "sensor:room-temperature"
+            ],
+            "calibratedBy": "calibration:room-v1"
+          },
+          "source": "quantitative:measure"
+        }
+      ],
+      "measurements": [
+        {
+          "path": "sensor.temperature",
+          "scale": "interval",
+          "evidence": [
+            "sensor:room-temperature"
+          ],
+          "calibratedBy": "calibration:room-v1"
+        }
+      ],
+      "authorityClass": "evidentiary-measurement"
+    },
+    {
+      "kind": "DomainTransition",
+      "domainKind": "perceptual",
+      "name": "sight",
+      "status": "realized",
+      "beforeRoot": "c257e974ff18481a88359940ce0f0ae37a30299b5a1276db94d5b2e5f61b4452",
+      "afterRoot": "c257e974ff18481a88359940ce0f0ae37a30299b5a1276db94d5b2e5f61b4452",
+      "changes": [
+        {
+          "target": "sight.temperature",
+          "before": {
+            "kind": "Quantity",
+            "type": "Temperature",
+            "value": 8,
+            "unit": "°C"
+          },
+          "after": {
+            "kind": "Quantity",
+            "type": "Temperature",
+            "value": 8,
+            "unit": "°C"
+          },
+          "source": "perception:observe"
+        }
+      ],
+      "observer": "caretaker",
+      "sourceReality": "room",
+      "authorityClass": "observation"
+    },
+    {
+      "kind": "DomainTransition",
+      "domainKind": "knowledge",
+      "name": "mind",
+      "status": "realized",
+      "beforeRoot": "c257e974ff18481a88359940ce0f0ae37a30299b5a1276db94d5b2e5f61b4452",
+      "afterRoot": "d68f0f465a3eb3dcb9e275965fdaa87c77a482f8ff304caf22dfeb12d32f723e",
+      "changes": [
+        {
+          "target": "mind.cold",
+          "before": null,
+          "after": {
+            "kind": "Knowledge",
+            "baseType": "Truth",
+            "value": true,
+            "confidence": 0.98,
+            "evidence": [
+              "rule:cold-below-12c"
+            ],
+            "source": "sensor+threshold",
+            "scope": "room",
+            "status": "observed",
+            "dependencies": [],
+            "revision": 1,
+            "alternatives": [],
+            "formedAtRoot": "c257e974ff18481a88359940ce0f0ae37a30299b5a1276db94d5b2e5f61b4452"
+          },
+          "source": "knowledge:claim"
+        },
+        {
+          "target": "mind.should_heat",
+          "before": null,
+          "after": {
+            "kind": "Knowledge",
+            "baseType": "Truth",
+            "value": true,
+            "confidence": 0.95,
+            "evidence": [
+              "policy:maintain-habitable-room",
+              "rule:cold-below-12c"
+            ],
+            "source": "rcl:inference",
+            "scope": "room",
+            "status": "derived",
+            "dependencies": [
+              "mind.cold"
+            ],
+            "revision": 1,
+            "alternatives": [],
+            "formedAtRoot": "6b56344c59bc713071be72a5d70cc902859978e5ef97a7cd60050c97c087908e"
+          },
+          "source": "knowledge:derive"
+        }
+      ],
+      "knowledgeClaims": [
+        {
+          "path": "mind.cold",
+          "confidence": 0.98,
+          "evidence": [
+            "rule:cold-below-12c"
+          ],
+          "source": "sensor+threshold",
+          "status": "observed",
+          "dependencies": []
+        },
+        {
+          "path": "mind.should_heat",
+          "confidence": 0.95,
+          "evidence": [
+            "policy:maintain-habitable-room",
+            "rule:cold-below-12c"
+          ],
+          "source": "rcl:inference",
+          "status": "derived",
+          "dependencies": [
+            "mind.cold"
+          ]
+        }
+      ],
+      "conflicts": [],
+      "authorityClass": "epistemic-formation"
+    },
+    {
+      "kind": "Transition",
+      "rule": "heat_room",
+      "ruleKind": "Emergence",
+      "mode": "realize",
+      "status": "realized",
+      "actor": "caretaker",
+      "from": null,
+      "into": null,
+      "beforeRoot": "d68f0f465a3eb3dcb9e275965fdaa87c77a482f8ff304caf22dfeb12d32f723e",
+      "afterRoot": "995f1e35a3930106bfc76714e04deb341f9bc969a6eda1b4ad901b2b1bd053cd",
+      "changes": [
+        {
+          "target": "room.heater",
+          "before": false,
+          "after": true,
+          "source": "alter"
+        },
+        {
+          "target": "caretaker.actions",
+          "before": 0,
+          "after": 1,
+          "source": "alter"
+        }
+      ],
+      "authority": {
+        "needs": [
+          {
+            "capability": "room.control",
+            "target": "room"
+          }
+        ],
+        "activeWarrants": [
+          {
+            "subject": "caretaker",
+            "capability": "room.control",
+            "target": "room"
+          }
+        ]
+      },
+      "witnesses": [
+        "execution:knowledge-to-action"
+      ],
+      "hostCalls": []
+    }
+  ],
+  "projections": [
+    {
+      "kind": "Projection",
+      "rule": "heat_room",
+      "ruleKind": "Emergence",
+      "mode": "foresee",
+      "status": "projected",
+      "actor": "caretaker",
+      "from": null,
+      "into": null,
+      "beforeRoot": "d68f0f465a3eb3dcb9e275965fdaa87c77a482f8ff304caf22dfeb12d32f723e",
+      "afterRoot": "995f1e35a3930106bfc76714e04deb341f9bc969a6eda1b4ad901b2b1bd053cd",
+      "changes": [
+        {
+          "target": "room.heater",
+          "before": false,
+          "after": true,
+          "source": "alter"
+        },
+        {
+          "target": "caretaker.actions",
+          "before": 0,
+          "after": 1,
+          "source": "alter"
+        }
+      ],
+      "authority": {
+        "needs": [
+          {
+            "capability": "room.control",
+            "target": "room"
+          }
+        ],
+        "activeWarrants": [
+          {
+            "subject": "caretaker",
+            "capability": "room.control",
+            "target": "room"
+          }
+        ]
+      },
+      "witnesses": [
+        "execution:knowledge-to-action"
+      ],
+      "hostCalls": [],
+      "projectedState": {
+        "caretaker.actions": 1,
+        "room.heater": true,
+        "room.temperature": {
+          "kind": "Quantity",
+          "type": "Temperature",
+          "value": 8,
+          "unit": "°C"
+        },
+        "sensor.temperature": {
+          "kind": "Measurement",
+          "baseType": "Temperature",
+          "value": {
+            "kind": "Quantity",
+            "type": "Temperature",
+            "value": 8,
+            "unit": "°C"
+          },
+          "uncertainty": {
+            "kind": "Quantity",
+            "type": "Temperature",
+            "value": 0.2,
+            "unit": "°C"
+          },
+          "confidence": 0.98,
+          "unit": "°C",
+          "scale": "interval",
+          "evidence": [
+            "sensor:room-temperature"
+          ],
+          "calibratedBy": "calibration:room-v1"
+        },
+        "sight.temperature": {
+          "kind": "Quantity",
+          "type": "Temperature",
+          "value": 8,
+          "unit": "°C"
+        },
+        "mind.cold": {
+          "kind": "Knowledge",
+          "baseType": "Truth",
+          "value": true,
+          "confidence": 0.98,
+          "evidence": [
+            "rule:cold-below-12c"
+          ],
+          "source": "sensor+threshold",
+          "scope": "room",
+          "status": "observed",
+          "dependencies": [],
+          "revision": 1,
+          "alternatives": [],
+          "formedAtRoot": "c257e974ff18481a88359940ce0f0ae37a30299b5a1276db94d5b2e5f61b4452"
+        },
+        "mind.should_heat": {
+          "kind": "Knowledge",
+          "baseType": "Truth",
+          "value": true,
+          "confidence": 0.95,
+          "evidence": [
+            "policy:maintain-habitable-room",
+            "rule:cold-below-12c"
+          ],
+          "source": "rcl:inference",
+          "scope": "room",
+          "status": "derived",
+          "dependencies": [
+            "mind.cold"
+          ],
+          "revision": 1,
+          "alternatives": [],
+          "formedAtRoot": "6b56344c59bc713071be72a5d70cc902859978e5ef97a7cd60050c97c087908e"
+        }
+      }
+    }
+  ],
+  "innerReality": {
+    "format": "rcl.inner-reality.v0.1",
+    "program": "SmallDataCaretaker",
+    "perceptual": {
+      "sight.temperature": {
+        "kind": "Quantity",
+        "type": "Temperature",
+        "value": 8,
+        "unit": "°C"
+      }
+    },
+    "neural": {},
+    "living": {},
+    "knowledge": {
+      "mind.cold": {
+        "kind": "Knowledge",
+        "baseType": "Truth",
+        "value": true,
+        "confidence": 0.98,
+        "evidence": [
+          "rule:cold-below-12c"
+        ],
+        "source": "sensor+threshold",
+        "scope": "room",
+        "status": "observed",
+        "dependencies": [],
+        "revision": 1,
+        "alternatives": [],
+        "formedAtRoot": "c257e974ff18481a88359940ce0f0ae37a30299b5a1276db94d5b2e5f61b4452"
+      },
+      "mind.should_heat": {
+        "kind": "Knowledge",
+        "baseType": "Truth",
+        "value": true,
+        "confidence": 0.95,
+        "evidence": [
+          "policy:maintain-habitable-room",
+          "rule:cold-below-12c"
+        ],
+        "source": "rcl:inference",
+        "scope": "room",
+        "status": "derived",
+        "dependencies": [
+          "mind.cold"
+        ],
+        "revision": 1,
+        "alternatives": [],
+        "formedAtRoot": "6b56344c59bc713071be72a5d70cc902859978e5ef97a7cd60050c97c087908e"
+      }
+    },
+    "unresolved": [],
+    "root": "8e0325e476b7d9f8ec51d9245c79fd8288b53151de816e91e743f817323f0421"
+  },
+  "executionReality": {
+    "format": "rcl.execution-reality.v0.1",
+    "program": "SmallDataCaretaker",
+    "projected": [
+      {
+        "kind": "Projection",
+        "rule": "heat_room",
+        "ruleKind": "Emergence",
+        "mode": "foresee",
+        "status": "projected",
+        "actor": "caretaker",
+        "from": null,
+        "into": null,
+        "beforeRoot": "d68f0f465a3eb3dcb9e275965fdaa87c77a482f8ff304caf22dfeb12d32f723e",
+        "afterRoot": "995f1e35a3930106bfc76714e04deb341f9bc969a6eda1b4ad901b2b1bd053cd",
+        "changes": [
+          {
+            "target": "room.heater",
+            "before": false,
+            "after": true,
+            "source": "alter"
+          },
+          {
+            "target": "caretaker.actions",
+            "before": 0,
+            "after": 1,
+            "source": "alter"
+          }
+        ],
+        "authority": {
+          "needs": [
+            {
+              "capability": "room.control",
+              "target": "room"
+            }
+          ],
+          "activeWarrants": [
+            {
+              "subject": "caretaker",
+              "capability": "room.control",
+              "target": "room"
+            }
+          ]
+        },
+        "witnesses": [
+          "execution:knowledge-to-action"
+        ],
+        "hostCalls": [],
+        "projectedState": {
+          "caretaker.actions": 1,
+          "room.heater": true,
+          "room.temperature": {
+            "kind": "Quantity",
+            "type": "Temperature",
+            "value": 8,
+            "unit": "°C"
+          },
+          "sensor.temperature": {
+            "kind": "Measurement",
+            "baseType": "Temperature",
+            "value": {
+              "kind": "Quantity",
+              "type": "Temperature",
+              "value": 8,
+              "unit": "°C"
+            },
+            "uncertainty": {
+              "kind": "Quantity",
+              "type": "Temperature",
+              "value": 0.2,
+              "unit": "°C"
+            },
+            "confidence": 0.98,
+            "unit": "°C",
+            "scale": "interval",
+            "evidence": [
+              "sensor:room-temperature"
+            ],
+            "calibratedBy": "calibration:room-v1"
+          },
+          "sight.temperature": {
+            "kind": "Quantity",
+            "type": "Temperature",
+            "value": 8,
+            "unit": "°C"
+          },
+          "mind.cold": {
+            "kind": "Knowledge",
+            "baseType": "Truth",
+            "value": true,
+            "confidence": 0.98,
+            "evidence": [
+              "rule:cold-below-12c"
+            ],
+            "source": "sensor+threshold",
+            "scope": "room",
+            "status": "observed",
+            "dependencies": [],
+            "revision": 1,
+            "alternatives": [],
+            "formedAtRoot": "c257e974ff18481a88359940ce0f0ae37a30299b5a1276db94d5b2e5f61b4452"
+          },
+          "mind.should_heat": {
+            "kind": "Knowledge",
+            "baseType": "Truth",
+            "value": true,
+            "confidence": 0.95,
+            "evidence": [
+              "policy:maintain-habitable-room",
+              "rule:cold-below-12c"
+            ],
+            "source": "rcl:inference",
+            "scope": "room",
+            "status": "derived",
+            "dependencies": [
+              "mind.cold"
+            ],
+            "revision": 1,
+            "alternatives": [],
+            "formedAtRoot": "6b56344c59bc713071be72a5d70cc902859978e5ef97a7cd60050c97c087908e"
+          }
+        }
+      }
+    ],
+    "realized": [
+      {
+        "kind": "DomainTransition",
+        "domainKind": "quantitative",
+        "name": "sensor",
+        "status": "realized",
+        "beforeRoot": "c257e974ff18481a88359940ce0f0ae37a30299b5a1276db94d5b2e5f61b4452",
+        "afterRoot": "c257e974ff18481a88359940ce0f0ae37a30299b5a1276db94d5b2e5f61b4452",
+        "changes": [
+          {
+            "target": "sensor.temperature",
+            "before": {
+              "kind": "Measurement",
+              "baseType": "Temperature",
+              "value": {
+                "kind": "Quantity",
+                "type": "Temperature",
+                "value": 8,
+                "unit": "°C"
+              },
+              "uncertainty": {
+                "kind": "Quantity",
+                "type": "Temperature",
+                "value": 0.2,
+                "unit": "°C"
+              },
+              "confidence": 0.98,
+              "unit": "°C",
+              "scale": "interval",
+              "evidence": [
+                "sensor:room-temperature"
+              ],
+              "calibratedBy": "calibration:room-v1"
+            },
+            "after": {
+              "kind": "Measurement",
+              "baseType": "Temperature",
+              "value": {
+                "kind": "Quantity",
+                "type": "Temperature",
+                "value": 8,
+                "unit": "°C"
+              },
+              "uncertainty": {
+                "kind": "Quantity",
+                "type": "Temperature",
+                "value": 0.2,
+                "unit": "°C"
+              },
+              "confidence": 0.98,
+              "unit": "°C",
+              "scale": "interval",
+              "evidence": [
+                "sensor:room-temperature"
+              ],
+              "calibratedBy": "calibration:room-v1"
+            },
+            "source": "quantitative:measure"
+          }
+        ],
+        "measurements": [
+          {
+            "path": "sensor.temperature",
+            "scale": "interval",
+            "evidence": [
+              "sensor:room-temperature"
+            ],
+            "calibratedBy": "calibration:room-v1"
+          }
+        ],
+        "authorityClass": "evidentiary-measurement"
+      },
+      {
+        "kind": "DomainTransition",
+        "domainKind": "perceptual",
+        "name": "sight",
+        "status": "realized",
+        "beforeRoot": "c257e974ff18481a88359940ce0f0ae37a30299b5a1276db94d5b2e5f61b4452",
+        "afterRoot": "c257e974ff18481a88359940ce0f0ae37a30299b5a1276db94d5b2e5f61b4452",
+        "changes": [
+          {
+            "target": "sight.temperature",
+            "before": {
+              "kind": "Quantity",
+              "type": "Temperature",
+              "value": 8,
+              "unit": "°C"
+            },
+            "after": {
+              "kind": "Quantity",
+              "type": "Temperature",
+              "value": 8,
+              "unit": "°C"
+            },
+            "source": "perception:observe"
+          }
+        ],
+        "observer": "caretaker",
+        "sourceReality": "room",
+        "authorityClass": "observation"
+      },
+      {
+        "kind": "DomainTransition",
+        "domainKind": "knowledge",
+        "name": "mind",
+        "status": "realized",
+        "beforeRoot": "c257e974ff18481a88359940ce0f0ae37a30299b5a1276db94d5b2e5f61b4452",
+        "afterRoot": "d68f0f465a3eb3dcb9e275965fdaa87c77a482f8ff304caf22dfeb12d32f723e",
+        "changes": [
+          {
+            "target": "mind.cold",
+            "before": null,
+            "after": {
+              "kind": "Knowledge",
+              "baseType": "Truth",
+              "value": true,
+              "confidence": 0.98,
+              "evidence": [
+                "rule:cold-below-12c"
+              ],
+              "source": "sensor+threshold",
+              "scope": "room",
+              "status": "observed",
+              "dependencies": [],
+              "revision": 1,
+              "alternatives": [],
+              "formedAtRoot": "c257e974ff18481a88359940ce0f0ae37a30299b5a1276db94d5b2e5f61b4452"
+            },
+            "source": "knowledge:claim"
+          },
+          {
+            "target": "mind.should_heat",
+            "before": null,
+            "after": {
+              "kind": "Knowledge",
+              "baseType": "Truth",
+              "value": true,
+              "confidence": 0.95,
+              "evidence": [
+                "policy:maintain-habitable-room",
+                "rule:cold-below-12c"
+              ],
+              "source": "rcl:inference",
+              "scope": "room",
+              "status": "derived",
+              "dependencies": [
+                "mind.cold"
+              ],
+              "revision": 1,
+              "alternatives": [],
+              "formedAtRoot": "6b56344c59bc713071be72a5d70cc902859978e5ef97a7cd60050c97c087908e"
+            },
+            "source": "knowledge:derive"
+          }
+        ],
+        "knowledgeClaims": [
+          {
+            "path": "mind.cold",
+            "confidence": 0.98,
+            "evidence": [
+              "rule:cold-below-12c"
+            ],
+            "source": "sensor+threshold",
+            "status": "observed",
+            "dependencies": []
+          },
+          {
+            "path": "mind.should_heat",
+            "confidence": 0.95,
+            "evidence": [
+              "policy:maintain-habitable-room",
+              "rule:cold-below-12c"
+            ],
+            "source": "rcl:inference",
+            "status": "derived",
+            "dependencies": [
+              "mind.cold"
+            ]
+          }
+        ],
+        "conflicts": [],
+        "authorityClass": "epistemic-formation"
+      },
+      {
+        "kind": "Transition",
+        "rule": "heat_room",
+        "ruleKind": "Emergence",
+        "mode": "realize",
+        "status": "realized",
+        "actor": "caretaker",
+        "from": null,
+        "into": null,
+        "beforeRoot": "d68f0f465a3eb3dcb9e275965fdaa87c77a482f8ff304caf22dfeb12d32f723e",
+        "afterRoot": "995f1e35a3930106bfc76714e04deb341f9bc969a6eda1b4ad901b2b1bd053cd",
+        "changes": [
+          {
+            "target": "room.heater",
+            "before": false,
+            "after": true,
+            "source": "alter"
+          },
+          {
+            "target": "caretaker.actions",
+            "before": 0,
+            "after": 1,
+            "source": "alter"
+          }
+        ],
+        "authority": {
+          "needs": [
+            {
+              "capability": "room.control",
+              "target": "room"
+            }
+          ],
+          "activeWarrants": [
+            {
+              "subject": "caretaker",
+              "capability": "room.control",
+              "target": "room"
+            }
+          ]
+        },
+        "witnesses": [
+          "execution:knowledge-to-action"
+        ],
+        "hostCalls": []
+      }
+    ],
+    "hostCalls": [],
+    "authorityDecisions": [
+      {
+        "rule": "heat_room",
+        "actor": "caretaker",
+        "authority": {
+          "needs": [
+            {
+              "capability": "room.control",
+              "target": "room"
+            }
+          ],
+          "activeWarrants": [
+            {
+              "subject": "caretaker",
+              "capability": "room.control",
+              "target": "room"
+            }
+          ]
+        }
+      }
+    ],
+    "evidence": [
+      "sensor:room-temperature",
+      "rule:cold-below-12c",
+      "policy:maintain-habitable-room",
+      "execution:knowledge-to-action"
+    ],
+    "root": "6d9931361a49499cf11eb77840295a166cd8c6f55295f158dedd2c6a989b6e54"
+  },
+  "outputs": [
+    {
+      "kind": "DomainTransition",
+      "domainKind": "quantitative",
+      "name": "sensor",
+      "status": "realized",
+      "beforeRoot": "c257e974ff18481a88359940ce0f0ae37a30299b5a1276db94d5b2e5f61b4452",
+      "afterRoot": "c257e974ff18481a88359940ce0f0ae37a30299b5a1276db94d5b2e5f61b4452",
+      "changes": [
+        {
+          "target": "sensor.temperature",
+          "before": {
+            "kind": "Measurement",
+            "baseType": "Temperature",
+            "value": {
+              "kind": "Quantity",
+              "type": "Temperature",
+              "value": 8,
+              "unit": "°C"
+            },
+            "uncertainty": {
+              "kind": "Quantity",
+              "type": "Temperature",
+              "value": 0.2,
+              "unit": "°C"
+            },
+            "confidence": 0.98,
+            "unit": "°C",
+            "scale": "interval",
+            "evidence": [
+              "sensor:room-temperature"
+            ],
+            "calibratedBy": "calibration:room-v1"
+          },
+          "after": {
+            "kind": "Measurement",
+            "baseType": "Temperature",
+            "value": {
+              "kind": "Quantity",
+              "type": "Temperature",
+              "value": 8,
+              "unit": "°C"
+            },
+            "uncertainty": {
+              "kind": "Quantity",
+              "type": "Temperature",
+              "value": 0.2,
+              "unit": "°C"
+            },
+            "confidence": 0.98,
+            "unit": "°C",
+            "scale": "interval",
+            "evidence": [
+              "sensor:room-temperature"
+            ],
+            "calibratedBy": "calibration:room-v1"
+          },
+          "source": "quantitative:measure"
+        }
+      ],
+      "measurements": [
+        {
+          "path": "sensor.temperature",
+          "scale": "interval",
+          "evidence": [
+            "sensor:room-temperature"
+          ],
+          "calibratedBy": "calibration:room-v1"
+        }
+      ],
+      "authorityClass": "evidentiary-measurement"
+    },
+    {
+      "kind": "DomainTransition",
+      "domainKind": "perceptual",
+      "name": "sight",
+      "status": "realized",
+      "beforeRoot": "c257e974ff18481a88359940ce0f0ae37a30299b5a1276db94d5b2e5f61b4452",
+      "afterRoot": "c257e974ff18481a88359940ce0f0ae37a30299b5a1276db94d5b2e5f61b4452",
+      "changes": [
+        {
+          "target": "sight.temperature",
+          "before": {
+            "kind": "Quantity",
+            "type": "Temperature",
+            "value": 8,
+            "unit": "°C"
+          },
+          "after": {
+            "kind": "Quantity",
+            "type": "Temperature",
+            "value": 8,
+            "unit": "°C"
+          },
+          "source": "perception:observe"
+        }
+      ],
+      "observer": "caretaker",
+      "sourceReality": "room",
+      "authorityClass": "observation"
+    },
+    {
+      "kind": "DomainTransition",
+      "domainKind": "knowledge",
+      "name": "mind",
+      "status": "realized",
+      "beforeRoot": "c257e974ff18481a88359940ce0f0ae37a30299b5a1276db94d5b2e5f61b4452",
+      "afterRoot": "d68f0f465a3eb3dcb9e275965fdaa87c77a482f8ff304caf22dfeb12d32f723e",
+      "changes": [
+        {
+          "target": "mind.cold",
+          "before": null,
+          "after": {
+            "kind": "Knowledge",
+            "baseType": "Truth",
+            "value": true,
+            "confidence": 0.98,
+            "evidence": [
+              "rule:cold-below-12c"
+            ],
+            "source": "sensor+threshold",
+            "scope": "room",
+            "status": "observed",
+            "dependencies": [],
+            "revision": 1,
+            "alternatives": [],
+            "formedAtRoot": "c257e974ff18481a88359940ce0f0ae37a30299b5a1276db94d5b2e5f61b4452"
+          },
+          "source": "knowledge:claim"
+        },
+        {
+          "target": "mind.should_heat",
+          "before": null,
+          "after": {
+            "kind": "Knowledge",
+            "baseType": "Truth",
+            "value": true,
+            "confidence": 0.95,
+            "evidence": [
+              "policy:maintain-habitable-room",
+              "rule:cold-below-12c"
+            ],
+            "source": "rcl:inference",
+            "scope": "room",
+            "status": "derived",
+            "dependencies": [
+              "mind.cold"
+            ],
+            "revision": 1,
+            "alternatives": [],
+            "formedAtRoot": "6b56344c59bc713071be72a5d70cc902859978e5ef97a7cd60050c97c087908e"
+          },
+          "source": "knowledge:derive"
+        }
+      ],
+      "knowledgeClaims": [
+        {
+          "path": "mind.cold",
+          "confidence": 0.98,
+          "evidence": [
+            "rule:cold-below-12c"
+          ],
+          "source": "sensor+threshold",
+          "status": "observed",
+          "dependencies": []
+        },
+        {
+          "path": "mind.should_heat",
+          "confidence": 0.95,
+          "evidence": [
+            "policy:maintain-habitable-room",
+            "rule:cold-below-12c"
+          ],
+          "source": "rcl:inference",
+          "status": "derived",
+          "dependencies": [
+            "mind.cold"
+          ]
+        }
+      ],
+      "conflicts": [],
+      "authorityClass": "epistemic-formation"
+    },
+    {
+      "kind": "Projection",
+      "rule": "heat_room",
+      "ruleKind": "Emergence",
+      "mode": "foresee",
+      "status": "projected",
+      "actor": "caretaker",
+      "from": null,
+      "into": null,
+      "beforeRoot": "d68f0f465a3eb3dcb9e275965fdaa87c77a482f8ff304caf22dfeb12d32f723e",
+      "afterRoot": "995f1e35a3930106bfc76714e04deb341f9bc969a6eda1b4ad901b2b1bd053cd",
+      "changes": [
+        {
+          "target": "room.heater",
+          "before": false,
+          "after": true,
+          "source": "alter"
+        },
+        {
+          "target": "caretaker.actions",
+          "before": 0,
+          "after": 1,
+          "source": "alter"
+        }
+      ],
+      "authority": {
+        "needs": [
+          {
+            "capability": "room.control",
+            "target": "room"
+          }
+        ],
+        "activeWarrants": [
+          {
+            "subject": "caretaker",
+            "capability": "room.control",
+            "target": "room"
+          }
+        ]
+      },
+      "witnesses": [
+        "execution:knowledge-to-action"
+      ],
+      "hostCalls": []
+    },
+    {
+      "kind": "Transition",
+      "rule": "heat_room",
+      "ruleKind": "Emergence",
+      "mode": "realize",
+      "status": "realized",
+      "actor": "caretaker",
+      "from": null,
+      "into": null,
+      "beforeRoot": "d68f0f465a3eb3dcb9e275965fdaa87c77a482f8ff304caf22dfeb12d32f723e",
+      "afterRoot": "995f1e35a3930106bfc76714e04deb341f9bc969a6eda1b4ad901b2b1bd053cd",
+      "changes": [
+        {
+          "target": "room.heater",
+          "before": false,
+          "after": true,
+          "source": "alter"
+        },
+        {
+          "target": "caretaker.actions",
+          "before": 0,
+          "after": 1,
+          "source": "alter"
+        }
+      ],
+      "authority": {
+        "needs": [
+          {
+            "capability": "room.control",
+            "target": "room"
+          }
+        ],
+        "activeWarrants": [
+          {
+            "subject": "caretaker",
+            "capability": "room.control",
+            "target": "room"
+          }
+        ]
+      },
+      "witnesses": [
+        "execution:knowledge-to-action"
+      ],
+      "hostCalls": []
+    }
+  ]
+}

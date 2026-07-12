@@ -1,0 +1,9 @@
+{
+  "format": "vsr.input-event.v0.1",
+  "inputId": "card-click-demo",
+  "trigger": "click",
+  "nodeId": "card",
+  "logicalTime": 0,
+  "deviceId": "device:desktop-demo",
+  "observerId": "observer:owner"
+}

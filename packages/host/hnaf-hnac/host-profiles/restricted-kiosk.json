@@ -1,0 +1,19 @@
+{
+  "id": "hnaf.reference.restricted-kiosk",
+  "family": "embedded",
+  "execution_profiles": ["declarative-v0"],
+  "capabilities": {
+    "host.log": ["1"],
+    "host.clock": ["1"]
+  },
+  "interaction_modes": ["touch"],
+  "resources": {
+    "memory_class": "low",
+    "display_class": "single-surface",
+    "energy_mode": "constrained"
+  },
+  "policies": {
+    "require_signature": true,
+    "network_default": "deny"
+  }
+}

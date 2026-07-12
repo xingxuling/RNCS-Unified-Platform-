@@ -1,0 +1,35 @@
+format: rncs.engineering-contract.v0.9
+release: 0.9.0-alpha.1
+objective: stable-embodiment-and-complete-pbr-projection
+versions:
+  rsr: 0.9.0-alpha.1
+  vsr: 0.8.0-alpha.1
+  network: 0.2.0-alpha.1
+invariants:
+  - authority-root-is-owned-by-rsr-rfe
+  - presentation-root-must-not-rewrite-authority
+  - network-reuses-rsr-authoritative-state
+  - deterministic-ordering-for-contacts-and-islands
+acceptance:
+  rsr:
+    - exact-capsule-obb-contact
+    - persistent-normal-and-friction-warm-start
+    - deterministic-constraint-islands
+    - island-sleep
+    - coyote-time
+    - jump-buffer
+  vsr:
+    - five-pbr-texture-bindings
+    - bilinear-filtering
+    - tangent-space-normal-map
+    - alpha-mask-before-depth-write
+    - pixel-root-proves-material-effect
+  integration:
+    - two-client-authority-convergence
+    - authority-presentation-root-separation
+    - rollback-compatible
+boundaries:
+  - vertical-capsule-only
+  - persistent-single-point-manifold
+  - cpu-reference-pbr-complete-gpu-bind-groups-not-complete
+  - compressed-images-decoded-by-host

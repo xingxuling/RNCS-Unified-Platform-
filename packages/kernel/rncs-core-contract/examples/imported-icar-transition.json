@@ -1,0 +1,188 @@
+{
+  "format": "rncs.reality-transition-envelope.v0.1",
+  "contract_version": "0.1.0",
+  "transition_id": "transition:c5e67bb8-7412-4627-b724-de33bcd770b6",
+  "phase": "committed",
+  "base_generation": {
+    "reality_id": "artifact:project:reality-native-computing",
+    "generation": 0,
+    "generation_root": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "subject": {
+    "subject_id": "operator:taowind",
+    "kind": "human",
+    "roles": [
+      "owner"
+    ],
+    "responsibility_boundary": "legacy-icar-import"
+  },
+  "intent": {
+    "intent_id": "2f884761a6daa7aeac0fe7e72031712719a75430a3f048cf30d15a77ab52a92f",
+    "source": "把项目进度提高到30%，生成一份状态报告并通知我。",
+    "goals": [
+      {
+        "type": "artifact.progress.target",
+        "value": 30
+      },
+      {
+        "type": "artifact.report.generate",
+        "format": "markdown"
+      },
+      {
+        "type": "host.notification.emit"
+      }
+    ],
+    "constraints": [],
+    "intent_root": "f94da503bb40a725f536d5b2ad280d1c2050c911bbea29a23946c1b516dbd760"
+  },
+  "capability_plan": {
+    "plan_id": "bea7918d4574181bee2f55eef12d3347fda9281819d939efd8e180e2dbadb1fd",
+    "capabilities": [
+      {
+        "capability_id": "lar.progress.target",
+        "step_id": "step:1:lar.progress.target"
+      },
+      {
+        "capability_id": "lar.report.render",
+        "step_id": "step:2:lar.report.render"
+      },
+      {
+        "capability_id": "lar.report.attach",
+        "step_id": "step:3:lar.report.attach"
+      },
+      {
+        "capability_id": "hnaf.notification.emit",
+        "step_id": "step:4:hnaf.notification.emit"
+      }
+    ],
+    "host_bindings": [],
+    "required_scopes": [
+      "artifact.read",
+      "artifact.write",
+      "host.notify"
+    ],
+    "plan_root": "3885a56dcf889e79370bf4877e081ddc104071e8da6e335e7e4a087b33ab6ae0"
+  },
+  "inputs": [
+    {
+      "kind": "semantic-object",
+      "id": "artifact:project:reality-native-computing",
+      "version": "unknown",
+      "root": "da872535fa1a5a24c74d3fd77848beef756ba07190999728fff174f0eb1b294c",
+      "continuity_class": "object_revision",
+      "source_format": "0.7"
+    }
+  ],
+  "provisional_delta": {
+    "operations": [
+      {
+        "op": "legacy-import",
+        "target": "artifact:project:reality-native-computing",
+        "after_root": "da872535fa1a5a24c74d3fd77848beef756ba07190999728fff174f0eb1b294c"
+      }
+    ],
+    "provisional": true,
+    "delta_root": "e83724a769705420aaa647a212ee32c7140051a68e84524e99f718395f7d4252"
+  },
+  "causal_basis": {
+    "events": [
+      {
+        "kind": "icar.execution",
+        "root": "c6ddb75d0be82cb68afc744a4c7883d34c5fc2f9ef5d4778f53c4a31c8e51872"
+      }
+    ],
+    "rules": [],
+    "simulation_refs": [],
+    "causal_root": "3a64af4ea165a47803dd7154e2050e8c436da248eb041858b796f2f4c956fbbc"
+  },
+  "authority": {
+    "status": "approved",
+    "resolver": "legacy-import:icar-v0.4",
+    "proposal_root": "71c402dbe5de4e924f3956d10c32f1b8100be3230223aa5d6a480022c70a8ac1",
+    "claims": [
+      {
+        "scope": "artifact.read",
+        "granted": true
+      },
+      {
+        "scope": "artifact.write",
+        "granted": true
+      },
+      {
+        "scope": "host.notify",
+        "granted": true
+      }
+    ],
+    "constraints": [
+      {
+        "capability": "display.text",
+        "granted": true
+      },
+      {
+        "capability": "host.notification",
+        "granted": true
+      },
+      {
+        "capability": "input.activate",
+        "granted": true
+      }
+    ],
+    "reason": "Imported from an already committed legacy ICAR result",
+    "decision_root": "051c5878b365757a59d4fd86740d29462d4051ec960881a958c068c11989cf97"
+  },
+  "evidence": {
+    "nodes": [
+      {
+        "evidence_id": "legacy:icar-result",
+        "kind": "legacy-receipt",
+        "source": "ICAR v0.4",
+        "content_root": "42c78da3cc623715ad1c663d16e70b9bfed754d701e8f287ce9c7333284daf7d",
+        "node_root": "a4b90b48d46daab72771658a5d3f085bff623f73c8461875704f1f2cc7ff3fc5"
+      }
+    ],
+    "edges": [],
+    "evidence_root": "2b6342abfb676b28a51b4909e6e2d19d74facde52d78c743a8f61b2eb875b149"
+  },
+  "commit": {
+    "status": "committed",
+    "proposal_root": "71c402dbe5de4e924f3956d10c32f1b8100be3230223aa5d6a480022c70a8ac1",
+    "decision_root": "051c5878b365757a59d4fd86740d29462d4051ec960881a958c068c11989cf97",
+    "result_generation": {
+      "reality_id": "artifact:project:reality-native-computing",
+      "generation": 1,
+      "generation_root": "32a9996cab8ccd8b30aefa9470e802923fd88771f96fb6d06239123495288a50"
+    },
+    "receipt_refs": [
+      {
+        "kind": "legacy-rfe-atomic-receipt",
+        "root": "32a9996cab8ccd8b30aefa9470e802923fd88771f96fb6d06239123495288a50"
+      }
+    ],
+    "commit_root": "91f0417b7b7b0a39b1405d6a36e4708e8b63d18cdb31966bbf67e04179d60e4e"
+  },
+  "projections": [],
+  "host_state_refs": [],
+  "extensions": {
+    "legacy": {
+      "source_format": "icar.application-result.v0.1",
+      "application_result_hash": "42c78da3cc623715ad1c663d16e70b9bfed754d701e8f287ce9c7333284daf7d",
+      "atomic_receipt": {
+        "format": "rfe.atomic-receipt.v0.6",
+        "transactionId": "tx:2f884761a6daa7ae",
+        "status": "committed",
+        "baseGlobalRoot": "81a8190f390e4cb15815ab1efbb6cdd02976c6e795a8c8d887afed32e897ab15",
+        "finalGlobalRoot": "32a9996cab8ccd8b30aefa9470e802923fd88771f96fb6d06239123495288a50",
+        "decisionHash": "f1cb582f8d994aef91d550f53511a86e3a0f67f2ddfba5502d58b4ea09399f0c",
+        "participantIds": [
+          "artifact",
+          "capability",
+          "projection"
+        ],
+        "recovered": false,
+        "atomicTransactionReceiptHash": "d15d54b529ced8a466202755054077454c7d82b020fdd286d9e42612f96b3bd7"
+      }
+    }
+  },
+  "proposal_root": "71c402dbe5de4e924f3956d10c32f1b8100be3230223aa5d6a480022c70a8ac1",
+  "envelope_root": "7ba7fe416fb221632543d3c9fec3c8fc5c6340e82cbf7731194760b3385d29f8"
+}

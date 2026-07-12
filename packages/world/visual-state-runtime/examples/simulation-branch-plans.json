@@ -1,0 +1,36 @@
+[
+  {
+    "format": "vsr.simulation-branch-plan.v0.1",
+    "branchId": "baseline",
+    "label": "自然演化",
+    "createdBy": "subject:planner",
+    "logicalTime": 1,
+    "baseRealityRoot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "steps": 90,
+    "commands": []
+  },
+  {
+    "format": "vsr.simulation-branch-plan.v0.1",
+    "branchId": "impulse-right",
+    "label": "右向冲量",
+    "createdBy": "subject:planner",
+    "logicalTime": 1,
+    "baseRealityRoot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "steps": 90,
+    "commands": [
+      {"id":"impulse-right","tick":40,"type":"apply-impulse","bodyId":"falling-box","impulse":{"x":180000,"y":-120000}}
+    ]
+  },
+  {
+    "format": "vsr.simulation-branch-plan.v0.1",
+    "branchId": "brake",
+    "label": "提前制动",
+    "createdBy": "subject:planner",
+    "logicalTime": 1,
+    "baseRealityRoot": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "steps": 90,
+    "commands": [
+      {"id":"brake","tick":50,"type":"set-velocity","bodyId":"falling-box","velocity":{"x":0,"y":0}}
+    ]
+  }
+]

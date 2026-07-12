@@ -1,0 +1,21 @@
+export const WEB_KNOWLEDGE_SOURCE_TYPES = [
+  { id: "CALCULUS_UNIVERSE", title: "计算法宇宙" },
+  { id: "CONSTANT_UNIVERSE", title: "常数宇宙" },
+  { id: "WORLD_ENGINE", title: "数列世界引擎" },
+  { id: "VOCABULARY", title: "词汇百科" },
+  { id: "PRODUCT_ENCYCLOPEDIA", title: "产品百科" },
+  { id: "LEARNING_DOCS", title: "Learning Docs" },
+  { id: "USAGE_EXAMPLES", title: "用法示例" },
+  { id: "SYSTEM_CONSTITUTION", title: "系统宪法" },
+  { id: "SOFTWARE_QA_RULES", title: "QA 规则" },
+  { id: "VERSION_RECORDS", title: "版本记录" },
+  { id: "WORKSPACE_OBJECTS", title: "Workspace 对象" },
+  { id: "APP_PROJECTS", title: "App 项目" },
+  { id: "CODE_RUNS", title: "代码运行" },
+  { id: "PATCH_DRAFTS", title: "Patch 草案" },
+  { id: "AGENT_BINDINGS", title: "Agent 绑定" },
+  { id: "DIGITAL_ROLE_OUTPUTS", title: "数字角色输出" },
+  { id: "WEBLCM_CONCEPTS", title: "WebLCM 概念" },
+  { id: "WEBLLM_RUN_RESULTS", title: "WebLLM 运行结果" },
+] as const;
+export type WebKnowledgeSourceType = typeof WEB_KNOWLEDGE_SOURCE_TYPES[number]["id"];

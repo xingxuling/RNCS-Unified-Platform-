@@ -1,0 +1,160 @@
+{
+  "format": "vsr.observer-projection-manifest.v0.1",
+  "runtime": "vsr@0.1.0-alpha.5",
+  "observerId": "simulation:debugger",
+  "observerHash": "fnv1a64:cd9d8d5f07156411",
+  "sourceDocumentHash": "fnv1a64:ff97c48f0eb8a97f",
+  "sourceDisplayHash": "fnv1a64:b762d1f2735bac9e",
+  "projectedDisplayHash": "fnv1a64:bec0b7dff822b45e",
+  "invariantHash": "fnv1a64:4498da0c6bc3015f",
+  "policyHash": "fnv1a64:8fbd03a340e2db1f",
+  "shownNodeIds": [
+    "body:falling-box",
+    "body:ground",
+    "debug:status",
+    "label:falling-box",
+    "label:ground",
+    "velocity:falling-box",
+    "velocity:ground"
+  ],
+  "redactedNodeIds": [],
+  "hiddenNodeIds": [],
+  "decisions": [
+    {
+      "nodeId": "body:falling-box",
+      "decision": "show",
+      "reason": "public"
+    },
+    {
+      "nodeId": "body:ground",
+      "decision": "show",
+      "reason": "public"
+    },
+    {
+      "nodeId": "contact:0",
+      "decision": "show",
+      "reason": "simulation-debug-only",
+      "policyNodeId": "contact:0"
+    },
+    {
+      "nodeId": "contact:1",
+      "decision": "show",
+      "reason": "simulation-debug-only",
+      "policyNodeId": "contact:1"
+    },
+    {
+      "nodeId": "contact:10",
+      "decision": "show",
+      "reason": "simulation-debug-only",
+      "policyNodeId": "contact:10"
+    },
+    {
+      "nodeId": "contact:11",
+      "decision": "show",
+      "reason": "simulation-debug-only",
+      "policyNodeId": "contact:11"
+    },
+    {
+      "nodeId": "contact:12",
+      "decision": "show",
+      "reason": "simulation-debug-only",
+      "policyNodeId": "contact:12"
+    },
+    {
+      "nodeId": "contact:13",
+      "decision": "show",
+      "reason": "simulation-debug-only",
+      "policyNodeId": "contact:13"
+    },
+    {
+      "nodeId": "contact:14",
+      "decision": "show",
+      "reason": "simulation-debug-only",
+      "policyNodeId": "contact:14"
+    },
+    {
+      "nodeId": "contact:15",
+      "decision": "show",
+      "reason": "simulation-debug-only",
+      "policyNodeId": "contact:15"
+    },
+    {
+      "nodeId": "contact:2",
+      "decision": "show",
+      "reason": "simulation-debug-only",
+      "policyNodeId": "contact:2"
+    },
+    {
+      "nodeId": "contact:3",
+      "decision": "show",
+      "reason": "simulation-debug-only",
+      "policyNodeId": "contact:3"
+    },
+    {
+      "nodeId": "contact:4",
+      "decision": "show",
+      "reason": "simulation-debug-only",
+      "policyNodeId": "contact:4"
+    },
+    {
+      "nodeId": "contact:5",
+      "decision": "show",
+      "reason": "simulation-debug-only",
+      "policyNodeId": "contact:5"
+    },
+    {
+      "nodeId": "contact:6",
+      "decision": "show",
+      "reason": "simulation-debug-only",
+      "policyNodeId": "contact:6"
+    },
+    {
+      "nodeId": "contact:7",
+      "decision": "show",
+      "reason": "simulation-debug-only",
+      "policyNodeId": "contact:7"
+    },
+    {
+      "nodeId": "contact:8",
+      "decision": "show",
+      "reason": "simulation-debug-only",
+      "policyNodeId": "contact:8"
+    },
+    {
+      "nodeId": "contact:9",
+      "decision": "show",
+      "reason": "simulation-debug-only",
+      "policyNodeId": "contact:9"
+    },
+    {
+      "nodeId": "debug:status",
+      "decision": "show",
+      "reason": "simulation-debug-only",
+      "policyNodeId": "debug:status"
+    },
+    {
+      "nodeId": "label:falling-box",
+      "decision": "show",
+      "reason": "simulation-debug-only",
+      "policyNodeId": "label:falling-box"
+    },
+    {
+      "nodeId": "label:ground",
+      "decision": "show",
+      "reason": "simulation-debug-only",
+      "policyNodeId": "label:ground"
+    },
+    {
+      "nodeId": "velocity:falling-box",
+      "decision": "show",
+      "reason": "simulation-debug-only",
+      "policyNodeId": "velocity:falling-box"
+    },
+    {
+      "nodeId": "velocity:ground",
+      "decision": "show",
+      "reason": "simulation-debug-only",
+      "policyNodeId": "velocity:ground"
+    }
+  ]
+}

@@ -1,0 +1,1263 @@
+{
+  "format": "rsr.experience-fabric.v0.4",
+  "experienceId": "aether-blade-showcase",
+  "tickHz": 30,
+  "seed": 240601,
+  "durationTicks": 120,
+  "clips": [
+    {
+      "id": "idle",
+      "durationTicks": 30,
+      "loop": true,
+      "tracks": [
+        {
+          "target": "hero.position.x",
+          "keyframes": [
+            {
+              "tick": 0,
+              "value": 320
+            },
+            {
+              "tick": 15,
+              "value": 326,
+              "interpolation": "smooth"
+            },
+            {
+              "tick": 30,
+              "value": 320,
+              "interpolation": "smooth"
+            }
+          ]
+        },
+        {
+          "target": "hero.position.y",
+          "keyframes": [
+            {
+              "tick": 0,
+              "value": 378
+            },
+            {
+              "tick": 15,
+              "value": 374,
+              "interpolation": "smooth"
+            },
+            {
+              "tick": 30,
+              "value": 378,
+              "interpolation": "smooth"
+            }
+          ]
+        },
+        {
+          "target": "skeleton:hero-rig/bone:torso.rotation",
+          "keyframes": [
+            {
+              "tick": 0,
+              "value": -12000
+            },
+            {
+              "tick": 15,
+              "value": 12000,
+              "interpolation": "smooth"
+            },
+            {
+              "tick": 30,
+              "value": -12000,
+              "interpolation": "smooth"
+            }
+          ]
+        },
+        {
+          "target": "skeleton:hero-rig/bone:upper-arm.rotation",
+          "keyframes": [
+            {
+              "tick": 0,
+              "value": -50000
+            },
+            {
+              "tick": 15,
+              "value": -30000,
+              "interpolation": "smooth"
+            },
+            {
+              "tick": 30,
+              "value": -50000,
+              "interpolation": "smooth"
+            }
+          ]
+        },
+        {
+          "target": "skeleton:hero-rig/bone:forearm.rotation",
+          "keyframes": [
+            {
+              "tick": 0,
+              "value": 60000
+            },
+            {
+              "tick": 15,
+              "value": 45000,
+              "interpolation": "smooth"
+            },
+            {
+              "tick": 30,
+              "value": 60000,
+              "interpolation": "smooth"
+            }
+          ]
+        }
+      ],
+      "markers": [
+        {
+          "id": "idle-breath",
+          "tick": 15,
+          "eventType": "animation.breath"
+        }
+      ]
+    },
+    {
+      "id": "attack",
+      "durationTicks": 24,
+      "loop": false,
+      "tracks": [
+        {
+          "target": "hero.position.x",
+          "keyframes": [
+            {
+              "tick": 0,
+              "value": 320
+            },
+            {
+              "tick": 8,
+              "value": 375,
+              "interpolation": "ease-in"
+            },
+            {
+              "tick": 15,
+              "value": 350,
+              "interpolation": "ease-out"
+            },
+            {
+              "tick": 24,
+              "value": 320,
+              "interpolation": "smooth"
+            }
+          ]
+        },
+        {
+          "target": "hero.position.y",
+          "keyframes": [
+            {
+              "tick": 0,
+              "value": 378
+            },
+            {
+              "tick": 8,
+              "value": 360,
+              "interpolation": "ease-out"
+            },
+            {
+              "tick": 24,
+              "value": 378,
+              "interpolation": "smooth"
+            }
+          ]
+        },
+        {
+          "target": "skeleton:hero-rig/bone:torso.rotation",
+          "keyframes": [
+            {
+              "tick": 0,
+              "value": -50000
+            },
+            {
+              "tick": 8,
+              "value": 90000,
+              "interpolation": "ease-in"
+            },
+            {
+              "tick": 15,
+              "value": -80000,
+              "interpolation": "ease-out"
+            },
+            {
+              "tick": 24,
+              "value": 0,
+              "interpolation": "smooth"
+            }
+          ]
+        },
+        {
+          "target": "skeleton:hero-rig/bone:upper-arm.rotation",
+          "keyframes": [
+            {
+              "tick": 0,
+              "value": -180000
+            },
+            {
+              "tick": 8,
+              "value": 80000,
+              "interpolation": "ease-in"
+            },
+            {
+              "tick": 13,
+              "value": 230000,
+              "interpolation": "spring"
+            },
+            {
+              "tick": 24,
+              "value": -50000,
+              "interpolation": "smooth"
+            }
+          ]
+        },
+        {
+          "target": "skeleton:hero-rig/bone:forearm.rotation",
+          "keyframes": [
+            {
+              "tick": 0,
+              "value": 20000
+            },
+            {
+              "tick": 8,
+              "value": -100000,
+              "interpolation": "ease-in"
+            },
+            {
+              "tick": 13,
+              "value": 50000,
+              "interpolation": "ease-out"
+            },
+            {
+              "tick": 24,
+              "value": 60000,
+              "interpolation": "smooth"
+            }
+          ]
+        },
+        {
+          "target": "skeleton:hero-rig/bone:sword.rotation",
+          "keyframes": [
+            {
+              "tick": 0,
+              "value": 0
+            },
+            {
+              "tick": 13,
+              "value": 30000,
+              "interpolation": "smooth"
+            },
+            {
+              "tick": 24,
+              "value": 0
+            }
+          ]
+        }
+      ],
+      "markers": [
+        {
+          "id": "whoosh",
+          "tick": 5,
+          "eventType": "attack.whoosh"
+        },
+        {
+          "id": "impact",
+          "tick": 13,
+          "eventType": "attack.impact",
+          "data": {
+            "damage": 120
+          }
+        }
+      ]
+    },
+    {
+      "id": "hurt",
+      "durationTicks": 18,
+      "loop": false,
+      "tracks": [
+        {
+          "target": "hero.position.x",
+          "keyframes": [
+            {
+              "tick": 0,
+              "value": 320
+            },
+            {
+              "tick": 4,
+              "value": 290,
+              "interpolation": "ease-out"
+            },
+            {
+              "tick": 18,
+              "value": 320,
+              "interpolation": "smooth"
+            }
+          ]
+        },
+        {
+          "target": "skeleton:hero-rig/bone:torso.rotation",
+          "keyframes": [
+            {
+              "tick": 0,
+              "value": 0
+            },
+            {
+              "tick": 4,
+              "value": -110000,
+              "interpolation": "spring"
+            },
+            {
+              "tick": 18,
+              "value": 0,
+              "interpolation": "smooth"
+            }
+          ]
+        }
+      ],
+      "markers": [
+        {
+          "id": "hurt-hit",
+          "tick": 2,
+          "eventType": "hurt.impact"
+        }
+      ]
+    },
+    {
+      "id": "aura",
+      "durationTicks": 60,
+      "loop": true,
+      "tracks": [
+        {
+          "target": "hero.aura",
+          "keyframes": [
+            {
+              "tick": 0,
+              "value": 0
+            },
+            {
+              "tick": 20,
+              "value": 1000000,
+              "interpolation": "smooth"
+            },
+            {
+              "tick": 40,
+              "value": 400000,
+              "interpolation": "smooth"
+            },
+            {
+              "tick": 60,
+              "value": 0,
+              "interpolation": "smooth"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "animators": [
+    {
+      "id": "hero",
+      "parameters": {
+        "attack": false,
+        "hurt": false,
+        "aimX": 140,
+        "aimY": -20,
+        "ikWeight": 0
+      },
+      "layers": [
+        {
+          "id": "base",
+          "initialState": "idle",
+          "weightQ": 1000000,
+          "mode": "override",
+          "states": [
+            {
+              "id": "idle",
+              "clipId": "idle",
+              "loop": true
+            },
+            {
+              "id": "attack",
+              "clipId": "attack",
+              "loop": false
+            },
+            {
+              "id": "hurt",
+              "clipId": "hurt",
+              "loop": false
+            }
+          ],
+          "transitions": [
+            {
+              "id": "any-hurt",
+              "from": "*",
+              "to": "hurt",
+              "durationTicks": 2,
+              "priority": 20,
+              "conditions": [
+                {
+                  "parameter": "hurt",
+                  "op": "trigger"
+                }
+              ]
+            },
+            {
+              "id": "idle-attack",
+              "from": "idle",
+              "to": "attack",
+              "durationTicks": 3,
+              "priority": 10,
+              "conditions": [
+                {
+                  "parameter": "attack",
+                  "op": "trigger"
+                }
+              ]
+            },
+            {
+              "id": "attack-idle",
+              "from": "attack",
+              "to": "idle",
+              "durationTicks": 4,
+              "exitTimeQ": 960000
+            },
+            {
+              "id": "hurt-idle",
+              "from": "hurt",
+              "to": "idle",
+              "durationTicks": 4,
+              "exitTimeQ": 950000
+            }
+          ]
+        },
+        {
+          "id": "aura",
+          "initialState": "aura",
+          "weightQ": 1000000,
+          "mode": "additive",
+          "states": [
+            {
+              "id": "aura",
+              "clipId": "aura",
+              "loop": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "skeletons": [
+    {
+      "id": "hero-rig",
+      "bones": [
+        {
+          "id": "torso",
+          "length": 52,
+          "restPosition": {
+            "x": 0,
+            "y": -34
+          },
+          "restRotation": -250000
+        },
+        {
+          "id": "upper-arm",
+          "parentId": "torso",
+          "length": 42,
+          "restPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "restRotation": -80000
+        },
+        {
+          "id": "forearm",
+          "parentId": "upper-arm",
+          "length": 40,
+          "restPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "restRotation": 70000
+        },
+        {
+          "id": "sword",
+          "parentId": "forearm",
+          "length": 72,
+          "restPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "restRotation": 0
+        }
+      ],
+      "ik": [
+        {
+          "id": "aim-arm",
+          "rootBone": "upper-arm",
+          "midBone": "forearm",
+          "endBone": "sword",
+          "targetXParameter": "hero:aimX",
+          "targetYParameter": "hero:aimY",
+          "weightParameter": "hero:ikWeight",
+          "bend": 1
+        }
+      ]
+    }
+  ],
+  "audioBuses": [
+    {
+      "id": "master",
+      "gainQ": 850000
+    },
+    {
+      "id": "sfx",
+      "parentId": "master",
+      "gainQ": 900000,
+      "lowPassHz": 12000
+    },
+    {
+      "id": "magic",
+      "parentId": "master",
+      "gainQ": 700000,
+      "delayMs": 120,
+      "delayFeedbackQ": 280000
+    }
+  ],
+  "listener": {
+    "position": {
+      "x": 480,
+      "y": 270
+    },
+    "facing": {
+      "x": 1,
+      "y": 0
+    }
+  },
+  "audioCues": [
+    {
+      "id": "sword-whoosh",
+      "cooldownTicks": 2,
+      "voices": [
+        {
+          "id": "air",
+          "source": {
+            "type": "oscillator",
+            "waveform": "noise",
+            "frequencyHz": 200
+          },
+          "durationMs": 280,
+          "gainQ": 270000,
+          "panQ": -150000,
+          "priority": 4,
+          "busId": "sfx",
+          "envelope": {
+            "attackMs": 5,
+            "decayMs": 80,
+            "sustainQ": 380000,
+            "releaseMs": 120
+          },
+          "spatial": {
+            "minDistance": 20,
+            "maxDistance": 700,
+            "rolloffQ": 700000
+          }
+        },
+        {
+          "id": "tone",
+          "source": {
+            "type": "oscillator",
+            "waveform": "sine",
+            "frequencyHz": 620,
+            "frequencyEndHz": 160
+          },
+          "durationMs": 240,
+          "gainQ": 180000,
+          "priority": 5,
+          "busId": "sfx",
+          "envelope": {
+            "attackMs": 4,
+            "decayMs": 60,
+            "sustainQ": 300000,
+            "releaseMs": 110
+          }
+        }
+      ]
+    },
+    {
+      "id": "blade-impact",
+      "voices": [
+        {
+          "id": "impact-low",
+          "source": {
+            "type": "oscillator",
+            "waveform": "triangle",
+            "frequencyHz": 150,
+            "frequencyEndHz": 55
+          },
+          "durationMs": 420,
+          "gainQ": 650000,
+          "priority": 10,
+          "busId": "sfx",
+          "envelope": {
+            "attackMs": 2,
+            "decayMs": 90,
+            "sustainQ": 220000,
+            "releaseMs": 220
+          }
+        },
+        {
+          "id": "metal",
+          "source": {
+            "type": "oscillator",
+            "waveform": "square",
+            "frequencyHz": 980,
+            "frequencyEndHz": 420
+          },
+          "durationMs": 160,
+          "gainQ": 170000,
+          "priority": 8,
+          "busId": "sfx",
+          "envelope": {
+            "attackMs": 1,
+            "decayMs": 35,
+            "sustainQ": 100000,
+            "releaseMs": 90
+          }
+        }
+      ]
+    },
+    {
+      "id": "hurt-hit",
+      "voices": [
+        {
+          "id": "thud",
+          "source": {
+            "type": "oscillator",
+            "waveform": "sine",
+            "frequencyHz": 90,
+            "frequencyEndHz": 42
+          },
+          "durationMs": 350,
+          "gainQ": 500000,
+          "priority": 9,
+          "busId": "sfx",
+          "envelope": {
+            "attackMs": 2,
+            "decayMs": 80,
+            "sustainQ": 250000,
+            "releaseMs": 180
+          }
+        }
+      ]
+    },
+    {
+      "id": "magic-bloom",
+      "voices": [
+        {
+          "id": "bloom",
+          "source": {
+            "type": "oscillator",
+            "waveform": "sine",
+            "frequencyHz": 220,
+            "frequencyEndHz": 880
+          },
+          "durationMs": 900,
+          "gainQ": 260000,
+          "priority": 6,
+          "busId": "magic",
+          "envelope": {
+            "attackMs": 180,
+            "decayMs": 160,
+            "sustainQ": 600000,
+            "releaseMs": 300
+          }
+        },
+        {
+          "id": "sparkle",
+          "source": {
+            "type": "oscillator",
+            "waveform": "triangle",
+            "frequencyHz": 1320,
+            "frequencyEndHz": 1760
+          },
+          "durationMs": 480,
+          "gainQ": 90000,
+          "priority": 5,
+          "busId": "magic",
+          "envelope": {
+            "attackMs": 20,
+            "decayMs": 100,
+            "sustainQ": 280000,
+            "releaseMs": 220
+          }
+        }
+      ]
+    }
+  ],
+  "effects": [
+    {
+      "id": "slash-arc",
+      "durationTicks": 20,
+      "maxInstances": 3,
+      "emitters": [
+        {
+          "id": "arc",
+          "bursts": [
+            {
+              "tick": 0,
+              "count": 36
+            }
+          ],
+          "maxParticles": 80,
+          "lifetimeTicks": {
+            "min": 8,
+            "max": 18
+          },
+          "spawn": {
+            "type": "line",
+            "a": {
+              "x": -15,
+              "y": -45
+            },
+            "b": {
+              "x": 65,
+              "y": 20
+            }
+          },
+          "speed": {
+            "min": 80,
+            "max": 260
+          },
+          "angleTurnsQ": {
+            "min": -180000,
+            "max": 80000
+          },
+          "dragQ": 60000,
+          "gravity": {
+            "x": 0,
+            "y": 120
+          },
+          "angularVelocity": {
+            "min": -200000,
+            "max": 200000
+          },
+          "sizeCurve": [
+            {
+              "tQ": 0,
+              "value": 900000
+            },
+            {
+              "tQ": 300000,
+              "value": 1500000
+            },
+            {
+              "tQ": 1000000,
+              "value": 0
+            }
+          ],
+          "opacityCurve": [
+            {
+              "tQ": 0,
+              "value": 1000000
+            },
+            {
+              "tQ": 700000,
+              "value": 700000
+            },
+            {
+              "tQ": 1000000,
+              "value": 0
+            }
+          ],
+          "colorCurve": [
+            {
+              "tQ": 0,
+              "color": {
+                "r": 210,
+                "g": 250,
+                "b": 255,
+                "a": 255
+              }
+            },
+            {
+              "tQ": 1000000,
+              "color": {
+                "r": 30,
+                "g": 120,
+                "b": 255,
+                "a": 0
+              }
+            }
+          ],
+          "blend": "additive",
+          "tags": [
+            "slash",
+            "energy"
+          ]
+        }
+      ],
+      "screenEffects": [
+        {
+          "type": "chromatic-aberration",
+          "durationTicks": 8,
+          "intensityQ": 350000
+        }
+      ]
+    },
+    {
+      "id": "impact-sparks",
+      "durationTicks": 28,
+      "maxInstances": 4,
+      "emitters": [
+        {
+          "id": "sparks",
+          "bursts": [
+            {
+              "tick": 0,
+              "count": 68
+            }
+          ],
+          "maxParticles": 140,
+          "lifetimeTicks": {
+            "min": 12,
+            "max": 28
+          },
+          "spawn": {
+            "type": "circle",
+            "radius": 12
+          },
+          "speed": {
+            "min": 120,
+            "max": 520
+          },
+          "angleTurnsQ": {
+            "min": -500000,
+            "max": 500000
+          },
+          "gravity": {
+            "x": 0,
+            "y": 680
+          },
+          "dragQ": 25000,
+          "angularVelocity": {
+            "min": -400000,
+            "max": 400000
+          },
+          "sizeCurve": [
+            {
+              "tQ": 0,
+              "value": 1400000
+            },
+            {
+              "tQ": 1000000,
+              "value": 100000
+            }
+          ],
+          "opacityCurve": [
+            {
+              "tQ": 0,
+              "value": 1000000
+            },
+            {
+              "tQ": 1000000,
+              "value": 0
+            }
+          ],
+          "colorCurve": [
+            {
+              "tQ": 0,
+              "color": {
+                "r": 255,
+                "g": 250,
+                "b": 180,
+                "a": 255
+              }
+            },
+            {
+              "tQ": 500000,
+              "color": {
+                "r": 255,
+                "g": 100,
+                "b": 30,
+                "a": 220
+              }
+            },
+            {
+              "tQ": 1000000,
+              "color": {
+                "r": 120,
+                "g": 20,
+                "b": 0,
+                "a": 0
+              }
+            }
+          ],
+          "collision": {
+            "min": {
+              "x": 0,
+              "y": 0
+            },
+            "max": {
+              "x": 960,
+              "y": 410
+            },
+            "restitutionQ": 400000
+          },
+          "blend": "additive",
+          "tags": [
+            "impact",
+            "spark"
+          ]
+        }
+      ],
+      "screenEffects": [
+        {
+          "type": "shake",
+          "durationTicks": 10,
+          "intensityQ": 800000
+        },
+        {
+          "type": "flash",
+          "durationTicks": 5,
+          "intensityQ": 550000,
+          "color": {
+            "r": 210,
+            "g": 245,
+            "b": 255,
+            "a": 255
+          }
+        }
+      ]
+    },
+    {
+      "id": "hurt-burst",
+      "durationTicks": 20,
+      "emitters": [
+        {
+          "id": "fragments",
+          "bursts": [
+            {
+              "tick": 0,
+              "count": 26
+            }
+          ],
+          "maxParticles": 60,
+          "lifetimeTicks": {
+            "min": 10,
+            "max": 20
+          },
+          "spawn": {
+            "type": "box",
+            "extents": {
+              "x": 20,
+              "y": 25
+            }
+          },
+          "speed": {
+            "min": 60,
+            "max": 260
+          },
+          "angleTurnsQ": {
+            "min": -500000,
+            "max": 500000
+          },
+          "gravity": {
+            "x": 0,
+            "y": 520
+          },
+          "dragQ": 50000,
+          "sizeCurve": [
+            {
+              "tQ": 0,
+              "value": 1000000
+            },
+            {
+              "tQ": 1000000,
+              "value": 200000
+            }
+          ],
+          "opacityCurve": [
+            {
+              "tQ": 0,
+              "value": 1000000
+            },
+            {
+              "tQ": 1000000,
+              "value": 0
+            }
+          ],
+          "colorCurve": [
+            {
+              "tQ": 0,
+              "color": {
+                "r": 255,
+                "g": 70,
+                "b": 90,
+                "a": 255
+              }
+            },
+            {
+              "tQ": 1000000,
+              "color": {
+                "r": 80,
+                "g": 0,
+                "b": 20,
+                "a": 0
+              }
+            }
+          ],
+          "blend": "additive"
+        }
+      ],
+      "screenEffects": [
+        {
+          "type": "shake",
+          "durationTicks": 8,
+          "intensityQ": 500000
+        }
+      ]
+    },
+    {
+      "id": "magic-aura",
+      "durationTicks": 45,
+      "emitters": [
+        {
+          "id": "motes",
+          "rateQ": 3500000,
+          "bursts": [
+            {
+              "tick": 0,
+              "count": 18
+            }
+          ],
+          "maxParticles": 120,
+          "lifetimeTicks": {
+            "min": 20,
+            "max": 45
+          },
+          "spawn": {
+            "type": "circle",
+            "radius": 52
+          },
+          "speed": {
+            "min": 15,
+            "max": 75
+          },
+          "angleTurnsQ": {
+            "min": -500000,
+            "max": 500000
+          },
+          "gravity": {
+            "x": 0,
+            "y": -35
+          },
+          "dragQ": 30000,
+          "angularVelocity": {
+            "min": -120000,
+            "max": 120000
+          },
+          "sizeCurve": [
+            {
+              "tQ": 0,
+              "value": 300000
+            },
+            {
+              "tQ": 400000,
+              "value": 1100000
+            },
+            {
+              "tQ": 1000000,
+              "value": 0
+            }
+          ],
+          "opacityCurve": [
+            {
+              "tQ": 0,
+              "value": 0
+            },
+            {
+              "tQ": 250000,
+              "value": 1000000
+            },
+            {
+              "tQ": 1000000,
+              "value": 0
+            }
+          ],
+          "colorCurve": [
+            {
+              "tQ": 0,
+              "color": {
+                "r": 90,
+                "g": 220,
+                "b": 255,
+                "a": 0
+              }
+            },
+            {
+              "tQ": 350000,
+              "color": {
+                "r": 170,
+                "g": 120,
+                "b": 255,
+                "a": 255
+              }
+            },
+            {
+              "tQ": 1000000,
+              "color": {
+                "r": 40,
+                "g": 80,
+                "b": 255,
+                "a": 0
+              }
+            }
+          ],
+          "blend": "additive",
+          "tags": [
+            "magic",
+            "aura"
+          ]
+        }
+      ],
+      "screenEffects": [
+        {
+          "type": "flash",
+          "durationTicks": 12,
+          "intensityQ": 260000,
+          "color": {
+            "r": 120,
+            "g": 190,
+            "b": 255,
+            "a": 255
+          }
+        },
+        {
+          "type": "time-dilation",
+          "durationTicks": 20,
+          "intensityQ": 300000
+        }
+      ]
+    }
+  ],
+  "bindings": [
+    {
+      "id": "request-attack",
+      "eventType": "attack.request",
+      "actions": [
+        {
+          "type": "animation-trigger",
+          "animatorId": "hero",
+          "parameter": "attack"
+        }
+      ]
+    },
+    {
+      "id": "attack-whoosh",
+      "eventType": "attack.whoosh",
+      "actions": [
+        {
+          "type": "audio-cue",
+          "cueId": "sword-whoosh"
+        },
+        {
+          "type": "effect",
+          "effectId": "slash-arc"
+        }
+      ]
+    },
+    {
+      "id": "attack-impact",
+      "eventType": "attack.impact",
+      "actions": [
+        {
+          "type": "audio-cue",
+          "cueId": "blade-impact",
+          "gainFromIntensity": true
+        },
+        {
+          "type": "effect",
+          "effectId": "impact-sparks"
+        }
+      ]
+    },
+    {
+      "id": "hurt-request",
+      "eventType": "hurt.request",
+      "actions": [
+        {
+          "type": "animation-trigger",
+          "animatorId": "hero",
+          "parameter": "hurt"
+        },
+        {
+          "type": "audio-cue",
+          "cueId": "hurt-hit"
+        },
+        {
+          "type": "effect",
+          "effectId": "hurt-burst"
+        }
+      ]
+    },
+    {
+      "id": "magic-request",
+      "eventType": "magic.cast",
+      "actions": [
+        {
+          "type": "audio-cue",
+          "cueId": "magic-bloom"
+        },
+        {
+          "type": "effect",
+          "effectId": "magic-aura"
+        }
+      ]
+    }
+  ],
+  "initialEvents": [
+    {
+      "id": "attack-one",
+      "tick": 8,
+      "type": "attack.request",
+      "position": {
+        "x": 385,
+        "y": 330
+      },
+      "intensityQ": 900000,
+      "subjectId": "hero"
+    },
+    {
+      "id": "magic-one",
+      "tick": 52,
+      "type": "magic.cast",
+      "position": {
+        "x": 520,
+        "y": 300
+      },
+      "intensityQ": 700000,
+      "subjectId": "hero"
+    },
+    {
+      "id": "hurt-one",
+      "tick": 82,
+      "type": "hurt.request",
+      "position": {
+        "x": 318,
+        "y": 350
+      },
+      "intensityQ": 800000,
+      "subjectId": "hero"
+    },
+    {
+      "id": "attack-two",
+      "tick": 98,
+      "type": "attack.request",
+      "position": {
+        "x": 395,
+        "y": 328
+      },
+      "intensityQ": 1000000,
+      "subjectId": "hero"
+    }
+  ]
+}

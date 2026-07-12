@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+web_venv/
+
+# Build outputs
+build/
+dist/
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+diagnose.log
+
+# Temporary files
+*.tmp
+*.temp
+get-pip.py
+python_installer.exe
+
+# Test projects
+test-project/

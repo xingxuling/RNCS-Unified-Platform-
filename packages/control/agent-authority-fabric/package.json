@@ -1,0 +1,19 @@
+{
+  "name": "@taowind/agent-authority-fabric",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "RNCS Agent Authority Fabric reference runtime",
+  "exports": "./src/index.mjs",
+  "bin": {
+    "aaf": "./src/cli.mjs"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.mjs"
+  },
+  "files": [
+    "src",
+    "schemas",
+    "README.md",
+    "LICENSE"
+  ]
+}
