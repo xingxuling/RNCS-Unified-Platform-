@@ -120,7 +120,10 @@ export function commitToRfe(store, envelope, {
     baseGenerationId: generation.generationId,
     evidence: clone(evidence)
   });
-  return {kernel, rfe};
+  const continuity = envelope.continuity
+    ? vm.continuityLedger.accept(envelope.continuity, envelope.transitionId)
+    : null;
+  return {kernel, rfe, continuity};
 }
 
 export {STATE_PREDICATE};
