@@ -1,3 +1,10 @@
+# v0.19.8-alpha.1 — RCL Native Gateway Fusion
+
+- 统一 release manifest、根 package/lockfile 与模块登记的版本契约，并新增 `npm run verify:version-contract`。
+- 修正 Reality Behavior Fabric、TaoWind Reality MCP、Reality Studio、Reality Build Fabric 与 Aetherworld 的模块版本登记，使其与各自 `package.json` 对齐。
+- 将 execution-plane CI 的 push 触发覆盖默认分支 `main-95`，并把版本契约验证纳入该工作流。
+- RCL canonical-source 关系和 zhinao vendored snapshot 状态见 `docs/migration/`；本版本不宣称跨仓库字节级同一。
+
 # v0.19.7-alpha.1 — Aether Earth RCL 集体智能地球沙盒
 
 - 新增 `@taowind/aether-earth-runtime` 与 `rncs.aether-earth`。
