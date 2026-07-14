@@ -12,6 +12,7 @@ on:
       - "packages/operations/developer-execution-runtime/**"
       - "packages/integration/taowind-reality-mcp/**"
       - "packages/control/reality-one-gateway/**"
+      - "packages/kernel/reality-kernel/**"
       - ".github/workflows/taowind-execution-ci.yml"
       - "package.json"
       - "package-lock.json"
@@ -26,6 +27,7 @@ on:
       - "packages/operations/developer-execution-runtime/**"
       - "packages/integration/taowind-reality-mcp/**"
       - "packages/control/reality-one-gateway/**"
+      - "packages/kernel/reality-kernel/**"
       - "package.json"
       - "package-lock.json"
       - "rncs.modules.json"
@@ -44,7 +46,9 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm ci --ignore-scripts
+      - name: Pin npm for stable monorepo installation
+        run: npm install --global npm@11.18.0 --no-audit --no-fund
+      - run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Verify version contract
         run: npm run verify:version-contract
       - run: npm run test:execution
@@ -102,6 +106,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: npm ci --ignore-scripts
+      - name: Pin npm for stable monorepo installation
+        run: npm install --global npm@11.18.0 --no-audit --no-fund
+      - run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Verify Windows native boundary
         run: npm run verify:native-boundary
