@@ -1,4 +1,5 @@
 import {RealityKernelError, assertNonEmptyString, clone, rootHash, withIntegrity} from './canonical.mjs';
+import {verifySubjectSovereigntyEnvelope} from './continuity.mjs';
 import {createRealityObject, replaceObjectState} from './object-abi.mjs';
 import {RealityGraph} from './reality-graph.mjs';
 
@@ -15,7 +16,8 @@ function proposalBody(envelope) {
     actor: envelope.actor,
     intent: envelope.intent,
     operations: envelope.operations,
-    evidenceRefs: envelope.evidenceRefs
+    evidenceRefs: envelope.evidenceRefs,
+    continuity: envelope.continuity ?? null
   };
 }
 
@@ -26,7 +28,8 @@ export function buildTransitionEnvelope({
   actor,
   intent = {},
   operations = [],
-  evidenceRefs = []
+  evidenceRefs = [],
+  continuity = null
 }) {
   assertNonEmptyString(transitionId, 'RK_TRANSITION_ID_REQUIRED', 'transitionId');
   assertNonEmptyString(worldId, 'RK_WORLD_ID_REQUIRED', 'worldId');
@@ -35,7 +38,16 @@ export function buildTransitionEnvelope({
   if (!Array.isArray(operations) || operations.length === 0) throw new RealityKernelError('RK_OPERATIONS_REQUIRED', 'at least one operation is required');
   if (!Array.isArray(evidenceRefs)) throw new RealityKernelError('RK_EVIDENCE_REFS_INVALID', 'evidenceRefs must be an array');
   const envelope = {
-    ...proposalBody({transitionId, worldId, baseRoot, actor, intent: clone(intent), operations: clone(operations), evidenceRefs: clone(evidenceRefs)})
+    ...proposalBody({
+      transitionId,
+      worldId,
+      baseRoot,
+      actor,
+      intent: clone(intent),
+      operations: clone(operations),
+      evidenceRefs: clone(evidenceRefs),
+      continuity: clone(continuity)
+    })
   };
   return {...envelope, proposalRoot: rootHash(envelope)};
 }
@@ -98,8 +110,10 @@ function scopeAllows(scope, operation) {
 }
 
 export class RealityTransitionVM {
-  constructor({maxOperations = 128} = {}) {
+  constructor({maxOperations = 128, continuityLedger = null, requireContinuity = false} = {}) {
     this.maxOperations = maxOperations;
+    this.continuityLedger = continuityLedger;
+    this.requireContinuity = requireContinuity;
   }
 
   execute(graph, envelope) {
@@ -109,6 +123,22 @@ export class RealityTransitionVM {
     if (envelope.baseRoot !== graph.realityRoot) throw new RealityKernelError('RK_STALE_BASE', envelope.baseRoot);
     if (!verifyAuthorityDecision(envelope)) throw new RealityKernelError('RK_AUTHORITY_REQUIRED', 'an integrity-bound authority decision is required');
     if (!envelope.authority.approved) throw new RealityKernelError('RK_AUTHORITY_DENIED', envelope.authority.reason ?? 'authority denied');
+    if (this.requireContinuity && !envelope.continuity) {
+      throw new RealityKernelError('RK_CONTINUITY_REQUIRED', 'an integrity-bound continuity proof is required');
+    }
+    let continuityRecord = null;
+    if (envelope.continuity) {
+      if (!this.continuityLedger || typeof this.continuityLedger.preview !== 'function') {
+        throw new RealityKernelError('RK_CONTINUITY_LEDGER_REQUIRED', 'continuity proof requires a continuity ledger');
+      }
+      if (!envelope.continuity.claim || envelope.actor !== envelope.continuity.claim.subjectId) {
+        throw new RealityKernelError('RK_CONTINUITY_ACTOR_MISMATCH', envelope.actor);
+      }
+      if (!verifySubjectSovereigntyEnvelope(envelope.continuity.sovereignty)) {
+        throw new RealityKernelError('RK_SOVEREIGNTY_INVALID', 'sovereignty envelope failed verification');
+      }
+      continuityRecord = this.continuityLedger.preview(envelope.continuity, envelope.transitionId);
+    }
     if (!Array.isArray(envelope.operations) || envelope.operations.length === 0 || envelope.operations.length > this.maxOperations) {
       throw new RealityKernelError('RK_OPERATION_COUNT_INVALID', `expected 1..${this.maxOperations} operations`);
     }
@@ -131,6 +161,8 @@ export class RealityTransitionVM {
       resultRoot: snapshot.realityRoot,
       proposalRoot: envelope.proposalRoot,
       decisionRoot: envelope.authority.decisionRoot,
+      continuityClaimRoot: envelope.continuity?.claim?.claimRoot ?? null,
+      sovereigntyRoot: envelope.continuity?.sovereignty?.sovereigntyRoot ?? null,
       revision: snapshot.revision,
       logicalTime: snapshot.logicalTime,
       operations: clone(envelope.operations),
@@ -139,6 +171,8 @@ export class RealityTransitionVM {
         transitionId: envelope.transitionId,
         proposalRoot: envelope.proposalRoot,
         decisionRoot: envelope.authority.decisionRoot,
+        continuityClaimRoot: envelope.continuity?.claim?.claimRoot ?? null,
+        sovereigntyRoot: envelope.continuity?.sovereignty?.sovereigntyRoot ?? null,
         baseRoot: envelope.baseRoot,
         resultRoot: snapshot.realityRoot,
         revision: snapshot.revision,
@@ -146,12 +180,21 @@ export class RealityTransitionVM {
         operations: envelope.operations
       })
     }, 'receiptRoot');
-    return {phase: 'preview', snapshot, receipt, envelope: clone(envelope)};
+    return {phase: 'preview', snapshot, receipt, envelope: clone(envelope), continuity: continuityRecord};
   }
 
   commit(graph, envelope) {
     const result = this.execute(graph, envelope);
-    graph.commitSnapshot(result.snapshot);
+    const graphBefore = graph.snapshot();
+    const ledgerBefore = this.continuityLedger?.snapshot?.();
+    try {
+      if (envelope.continuity) this.continuityLedger.accept(envelope.continuity, envelope.transitionId);
+      graph.commitSnapshot(result.snapshot);
+    } catch (error) {
+      graph.commitSnapshot(graphBefore);
+      if (ledgerBefore && this.continuityLedger?.restore) this.continuityLedger.restore(ledgerBefore);
+      throw error;
+    }
     const committedReceipt = withIntegrity({...result.receipt, status: 'committed'}, 'receiptRoot');
     return {...result, phase: 'committed', receipt: committedReceipt};
   }
