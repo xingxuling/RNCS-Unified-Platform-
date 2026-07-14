@@ -1,4 +1,5 @@
 import { compileReality } from './compiler.mjs';
+import { createHash } from 'node:crypto';
 import { RCLRuntimeError } from './errors.mjs';
 import { canonicalReality, realityRoot } from './canonical.mjs';
 import {
@@ -30,6 +31,34 @@ import {
 } from './final-foundation.mjs';
 import { span, token, facetAst, parseState, symbolValue, semanticFacet, irStore, isSpan, isToken, isAstNode, isParseState, isSymbolValue, isSemanticNode, isIrNode } from './compiler-primitives.mjs';
 
+const MAX_RECKON_DEPTH = 4096;
+
+function invokeInternalDomain(domain, operation, args) {
+  const key = `${domain}.${operation}`;
+  if (key === 'core.echo') return args[0];
+  if (key === 'quantity.make') return quantity(args[0], args[1], args[2] || undefined);
+  if (key === 'quantitative.measure') {
+    return measurement(args[0], args[1], {
+      uncertainty: args[2], confidence: args[3], unit: args[4] || undefined,
+      scale: args[5], evidence: args[6], calibratedBy: args[7] || null,
+    });
+  }
+  if (key === 'knowledge.claim') {
+    return knowledgeClaim(args[0], args[1], {
+      confidence: args[2], evidence: args[3], source: args[4] || null,
+      scope: args[5], status: args[6], dependencies: args[7],
+      revision: args[8], formedAtRoot: args[9] || null,
+    });
+  }
+  throw new RCLRuntimeError('RCL_DOMAIN_OPERATION_MISSING', `Internal domain operation '${key}' is not registered`);
+}
+
+// Trampoline sentinel: returned from tail-call sites to avoid stack overflow.
+// evaluateExpressionCore returns this instead of recursing; the trampoline loop unwinds it.
+class _TailCall {
+  constructor(expr, context, cacheEntry) { this.expr = expr; this.context = context; this.cacheEntry = cacheEntry; }
+}
+
 function getPath(state, path) {
   if (!Object.prototype.hasOwnProperty.call(state, path)) throw new RCLRuntimeError('RCL_STATE_MISSING', `Facet '${path}' does not exist`, { path });
   return state[path];
@@ -40,11 +69,40 @@ function compareValues(left, right) {
   return left - right;
 }
 
-function evaluateExpression(expr, context) {
+function _evalCore(expr, context) {
   const { state, locals, functions, providers = {}, depth = 0 } = context;
-  if (depth > 256) throw new RCLRuntimeError('RCL_RECKON_DEPTH_EXCEEDED', 'Reckoning recursion exceeded 256 frames');
+  if (depth > MAX_RECKON_DEPTH) throw new RCLRuntimeError('RCL_RECKON_DEPTH_EXCEEDED', `Reckoning recursion exceeded ${MAX_RECKON_DEPTH} frames`);
   switch (expr.kind) {
     case 'LiteralExpr': return expr.value;
+    case 'RecordConstructExpr': {
+      const fields = {};
+      for (const field of expr.fields ?? []) fields[field.name] = evaluateExpression(field.value, { ...context, depth: depth + 1 });
+      return Object.freeze({ __rclKind: 'Record', __rclType: expr.canonicalType, __rclRecord: expr.typeName, ...fields });
+    }
+    case 'UnionConstructExpr': {
+      const payload = (expr.payload ?? []).map(item => evaluateExpression(item.value, { ...context, depth: depth + 1 }));
+      return Object.freeze({ __rclKind: 'Union', __rclType: expr.canonicalType, __rclUnion: expr.typeName, variant: expr.variant, payload });
+    }
+    case 'FieldAccessExpr': {
+      const object = evaluateExpression(expr.object, { ...context, depth: depth + 1 });
+      if (!object || typeof object !== 'object') throw new RCLRuntimeError('RCL_FIELD_ACCESS_TARGET', `Field '${expr.field}' requires a record-like object`);
+      if (!Object.prototype.hasOwnProperty.call(object, expr.field)) throw new RCLRuntimeError('RCL_FIELD_ACCESS_MISSING', `Field '${expr.field}' does not exist on typed record`, { field: expr.field });
+      return object[expr.field];
+    }
+    case 'MatchUnionExpr': {
+      const value = evaluateExpression(expr.target, { ...context, depth: depth + 1 });
+      if (!value || value.__rclKind !== 'Union') throw new RCLRuntimeError('RCL_MATCH_EXPECTED_UNION', 'match requires a typed union value');
+      const selected = (expr.cases ?? []).find(item => item.wildcard || item.variant === value.variant);
+      if (!selected) throw new RCLRuntimeError('RCL_MATCH_NON_EXHAUSTIVE', `No match case for variant '${value.variant}'`);
+      const branchLocals = new Map(locals);
+      selected.bindings.forEach((name, index) => branchLocals.set(name, value.payload?.[index]));
+      return new _TailCall(selected.expression, { ...context, locals: branchLocals, depth: depth + 1 }, null);
+    }
+    case 'RecordLiteralExpr': {
+      const fields = {};
+      for (const field of expr.fields ?? []) fields[field.name] = evaluateExpression(field.expression, { ...context, depth: depth + 1 });
+      return Object.freeze(fields);
+    }
     case 'PathExpr':
       if (locals.has(expr.path)) return locals.get(expr.path);
       return getPath(state, expr.path);
@@ -68,6 +126,13 @@ function evaluateExpression(expr, context) {
       return applyBinary(expr.operator, left, right);
     }
     case 'CallExpr': {
+      if (expr.name === 'domain_call') {
+        if (expr.args.length < 2) throw new RCLRuntimeError('RCL_CALL_ARITY', 'domain_call expects domain, operation and optional arguments');
+        const domain = evaluateExpression(expr.args[0], { ...context, depth: depth + 1 });
+        const operation = evaluateExpression(expr.args[1], { ...context, depth: depth + 1 });
+        const args = expr.args.slice(2).map(arg => evaluateExpression(arg, { ...context, depth: depth + 1 }));
+        return invokeInternalDomain(domain, operation, args);
+      }
       if (expr.name === 'provider_call') {
         const providerId = evaluateExpression(expr.args[0], { ...context, depth: depth + 1 });
         const capability = evaluateExpression(expr.args[1], { ...context, depth: depth + 1 });
@@ -78,7 +143,7 @@ function evaluateExpression(expr, context) {
       }
       if (expr.name === 'choose') {
         const condition = evaluateExpression(expr.args[0], { ...context, depth: depth + 1 });
-        return evaluateExpression(condition ? expr.args[1] : expr.args[2], { ...context, depth: depth + 1 });
+        return new _TailCall(condition ? expr.args[1] : expr.args[2], { ...context, depth: depth + 1 }, null);
       }
       if (quantityConstructors[expr.name]) {
         const value = evaluateExpression(expr.args[0], { ...context, depth: depth + 1 });
@@ -285,6 +350,79 @@ function evaluateExpression(expr, context) {
         if (!Array.isArray(sequence)) throw new RCLRuntimeError('RCL_EXPECTED_SEQUENCE', 'sequence_append() expects Sequence');
         return Object.freeze([...sequence, structuredClone(value)]);
       }
+      if (expr.name === 'sequence_append_unique') {
+        const sequence = evaluateExpression(expr.args[0], { ...context, depth: depth + 1 });
+        const value = evaluateExpression(expr.args[1], { ...context, depth: depth + 1 });
+        if (!Array.isArray(sequence)) throw new RCLRuntimeError('RCL_EXPECTED_SEQUENCE', 'sequence_append_unique() expects Sequence');
+        const encoded = JSON.stringify(value);
+        return Object.freeze(sequence.some(item => JSON.stringify(item) === encoded)
+          ? sequence.map(item => structuredClone(item))
+          : [...sequence.map(item => structuredClone(item)), structuredClone(value)]);
+      }
+      if (expr.name === 'sequence_unique') {
+        const sequence = evaluateExpression(expr.args[0], { ...context, depth: depth + 1 });
+        if (!Array.isArray(sequence)) throw new RCLRuntimeError('RCL_EXPECTED_SEQUENCE', 'sequence_unique() expects Sequence');
+        const seen = new Set();
+        return Object.freeze(sequence.filter(item => {
+          const encoded = JSON.stringify(item);
+          if (seen.has(encoded)) return false;
+          seen.add(encoded);
+          return true;
+        }).map(item => structuredClone(item)));
+      }
+      if (expr.name === 'sequence_index_of') {
+        const sequence = evaluateExpression(expr.args[0], { ...context, depth: depth + 1 });
+        const value = evaluateExpression(expr.args[1], { ...context, depth: depth + 1 });
+        const start = evaluateExpression(expr.args[2], { ...context, depth: depth + 1 });
+        if (!Array.isArray(sequence) || !Number.isInteger(start) || start < 0) throw new RCLRuntimeError('RCL_SEQUENCE_SEARCH', 'sequence_index_of() expects Sequence, value and non-negative start');
+        const encoded = JSON.stringify(value);
+        return sequence.findIndex((item, index) => index >= start && JSON.stringify(item) === encoded);
+      }
+      if (expr.name === 'sequence_find_field') {
+        const sequence = evaluateExpression(expr.args[0], { ...context, depth: depth + 1 });
+        const field = evaluateExpression(expr.args[1], { ...context, depth: depth + 1 });
+        const value = evaluateExpression(expr.args[2], { ...context, depth: depth + 1 });
+        const start = evaluateExpression(expr.args[3], { ...context, depth: depth + 1 });
+        if (!Array.isArray(sequence) || !Number.isInteger(field) || field < 0 || !Number.isInteger(start) || start < 0) throw new RCLRuntimeError('RCL_SEQUENCE_SEARCH', 'sequence_find_field() expects Sequence, non-negative field, value and non-negative start');
+        const encoded = JSON.stringify(value);
+        return sequence.findIndex((item, index) => index >= start && Array.isArray(item) && field < item.length && JSON.stringify(item[field]) === encoded);
+      }
+      if (expr.name === 'decode_string_slice') {
+        const source = String(evaluateExpression(expr.args[0], { ...context, depth: depth + 1 }));
+        const start = evaluateExpression(expr.args[1], { ...context, depth: depth + 1 });
+        const end = evaluateExpression(expr.args[2], { ...context, depth: depth + 1 });
+        if (!Number.isInteger(start) || !Number.isInteger(end) || start < 0 || end < start) throw new RCLRuntimeError('RCL_TEXT_SLICE', 'decode_string_slice() expects valid character indexes');
+        return [...source].slice(start, end).join('').replace(/\\(.)/gs, (_match, value) => ({ n: '\n', r: '\r', t: '\t', '"': '"', '\\': '\\' })[value] ?? value);
+      }
+      if (expr.name === 'compiler_tokenize') {
+        const source = String(evaluateExpression(expr.args[0], { ...context, depth: depth + 1 }));
+        const chars = [...source];
+        const tokens = [];
+        let index = 0; let line = 1; let column = 1;
+        const code = value => value?.codePointAt(0) ?? 0;
+        const identifierStart = value => /[A-Za-z_]/.test(value ?? '') || code(value) >= 0x80;
+        const identifierPart = value => /[A-Za-z0-9_]/.test(value ?? '') || code(value) >= 0x80;
+        while (index < chars.length) {
+          const ch = chars[index];
+          if (/\s/.test(ch)) { if (ch === '\n') { line += 1; column = 1; } else column += 1; index += 1; continue; }
+          if (ch === '#' || (ch === '/' && chars[index + 1] === '/')) { while (index < chars.length && chars[index] !== '\n') { index += 1; column += 1; } continue; }
+          const start = index; const tokenLine = line; const tokenColumn = column;
+          let kind = 'SYMBOL'; let textValue = null;
+          if (identifierStart(ch)) { index += 1; while (identifierPart(chars[index])) index += 1; kind = 'IDENT'; }
+          else if (/[0-9]/.test(ch)) { let dot = false; index += 1; while (/[0-9]/.test(chars[index] ?? '') || (chars[index] === '.' && !dot && (dot = true))) index += 1; kind = 'NUMBER'; }
+          else if (ch === '"') {
+            index += 1; const contentStart = index; let escaped = false;
+            while (index < chars.length) { const value = chars[index]; if (escaped) escaped = false; else if (value === '\\') escaped = true; else if (value === '"') break; index += 1; }
+            textValue = chars.slice(contentStart, index).join('').replace(/\\(.)/gs, (_match, value) => ({ n: '\n', r: '\r', t: '\t', '"': '"', '\\': '\\' })[value] ?? value);
+            if (index < chars.length) index += 1; kind = 'STRING';
+          } else { const pair = chars.slice(index, index + 2).join(''); index += ['<-', '->', '==', '!=', '<=', '>='].includes(pair) ? 2 : 1; }
+          textValue ??= chars.slice(start, index).join('');
+          for (let cursor = start; cursor < index; cursor += 1) { if (chars[cursor] === '\n') { line += 1; column = 1; } else column += 1; }
+          tokens.push(Object.freeze([kind, textValue, tokenLine, tokenColumn]));
+        }
+        tokens.push(Object.freeze(['EOF', '<eof>', line, column]));
+        return Object.freeze(tokens);
+      }
       if (expr.name === 'sequence_get') {
         const sequence = evaluateExpression(expr.args[0], { ...context, depth: depth + 1 });
         const index = evaluateExpression(expr.args[1], { ...context, depth: depth + 1 });
@@ -295,7 +433,7 @@ function evaluateExpression(expr, context) {
         const left = evaluateExpression(expr.args[0], { ...context, depth: depth + 1 });
         const right = evaluateExpression(expr.args[1], { ...context, depth: depth + 1 });
         if (!Array.isArray(left) || !Array.isArray(right)) throw new RCLRuntimeError('RCL_EXPECTED_SEQUENCE', 'sequence_concat() expects two Sequences');
-        return Object.freeze([...left.map(structuredClone), ...right.map(structuredClone)]);
+        return Object.freeze([...left.map(item => structuredClone(item)), ...right.map(item => structuredClone(item))]);
       }
       if (['bytes_u8', 'bytes_u16le', 'bytes_u32le', 'bytes_i32le', 'bytes_f64le'].includes(expr.name)) {
         const value = evaluateExpression(expr.args[0], { ...context, depth: depth + 1 });
@@ -321,6 +459,15 @@ function evaluateExpression(expr, context) {
       if (expr.name === 'utf8_bytes') {
         const value = String(evaluateExpression(expr.args[0], { ...context, depth: depth + 1 }));
         return Object.freeze([...Buffer.from(value, 'utf8')]);
+      }
+      if (expr.name === 'hex_bytes') {
+        const value = String(evaluateExpression(expr.args[0], { ...context, depth: depth + 1 })).trim();
+        if (value.length % 2 !== 0 || /[^0-9a-f]/i.test(value)) throw new RCLRuntimeError('RCL_HEX_BYTES_INVALID', 'hex_bytes() expects even-length hexadecimal Text');
+        return Object.freeze([...Buffer.from(value, 'hex')]);
+      }
+      if (expr.name === 'sha256_text') {
+        const value = String(evaluateExpression(expr.args[0], { ...context, depth: depth + 1 }));
+        return createHash('sha256').update(value).digest('hex');
       }
       if (expr.name === 'char_at') {
         const text = String(evaluateExpression(expr.args[0], { ...context, depth: depth + 1 }));
@@ -491,12 +638,28 @@ function evaluateExpression(expr, context) {
       fn.__rclMetrics.evaluations += 1;
       const childLocals = new Map();
       fn.params.forEach((param, index) => childLocals.set(param.name, values[index]));
-      const result = evaluateExpression(fn.expression, { state, locals: childLocals, functions, depth: depth + 1 });
-      if (cacheKey) acceleration.cache.set(cacheKey, structuredClone(result));
-      return result;
+      const _cacheEntry = cacheKey ? { cacheKey, acceleration } : null;
+      return new _TailCall(fn.expression, { state, locals: childLocals, functions, depth: depth + 1 }, _cacheEntry);
     }
     default: throw new RCLRuntimeError('RCL_EXPRESSION_UNKNOWN', `Unknown expression kind '${expr.kind}'`);
   }
+}
+
+// Trampoline wrapper: converts _TailCall returns from _evalCore into a loop,
+// eliminating deep recursion from RCL tail-call patterns (choose chains, reckon calls).
+function evaluateExpression(expr, context) {
+  let result = _evalCore(expr, context);
+  let pendingCaches = null;
+  while (result instanceof _TailCall) {
+    if (result.cacheEntry) {
+      pendingCaches = (pendingCaches ?? []).concat(result.cacheEntry);
+    }
+    result = _evalCore(result.expr, result.context);
+  }
+  if (pendingCaches) {
+    for (const pc of pendingCaches) pc.acceleration.cache.set(pc.cacheKey, structuredClone(result));
+  }
+  return result;
 }
 
 function evaluateCount(expr, runtime, label) {
@@ -526,6 +689,9 @@ async function invokeHost(call, state, functions, adapters, rule, mode) {
     args,
     rule: rule.name,
     actor: actorFor(rule),
+    authorityNeeds: structuredClone(rule.needs ?? []),
+    witnesses: structuredClone(rule.witnesses ?? []),
+    mode,
     state: structuredClone(state),
   };
   let result;
@@ -1408,7 +1574,7 @@ function initializeState(program, functions, providers = {}) {
 }
 
 export async function runReality(compiledOrSource, options = {}) {
-  const program = typeof compiledOrSource === 'string' ? compileReality(compiledOrSource) : compiledOrSource;
+  const program = typeof compiledOrSource === 'string' ? compileReality(compiledOrSource, options.compilerOptions ?? options) : compiledOrSource;
   const functions = new Map(program.reckons.map(fn => [fn.name, fn]));
   const state = initializeState(program, functions, options.providers ?? {});
   const runtime = {

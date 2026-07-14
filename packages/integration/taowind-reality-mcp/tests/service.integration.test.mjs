@@ -26,9 +26,19 @@ const resultOf=response=>response.structuredContent?.result;
 test('private founder profile exposes authority and project execution tools while break-glass shell stays hidden',async()=>withClient(async({client})=>{
  const tools=await client.listTools();
  const names=tools.tools.map(tool=>tool.name);
- for(const expected of ['rncs_candidate_workflow','rncs_authorize_candidate','rncs_merge_candidate','rncs_rollback_generation','rncs_replay_generation','rncs_runtime_action','developer_execution_status','workspace_read_file','workspace_write_file','workspace_export_artifact','execution_run_command','git_commit','github_create_pr','vercel_deploy','rsr_simulate','vsr_render','rncs_engineering_workflow'])assert.ok(names.includes(expected),expected);
+ for(const expected of ['rncs_candidate_workflow','rncs_authorize_candidate','rncs_merge_candidate','rncs_rollback_generation','rncs_replay_generation','rncs_runtime_action','rncs_rcl_compile_execute','developer_execution_status','workspace_read_file','workspace_write_file','workspace_export_artifact','execution_run_command','git_commit','github_create_pr','vercel_deploy','rsr_simulate','vsr_render','rncs_engineering_workflow'])assert.ok(names.includes(expected),expected);
  for(const forbidden of ['execute_shell','read_arbitrary_file','write_arbitrary_file','execution_run_shell'])assert.ok(!names.includes(forbidden));
  assert.equal(tools.tools.find(tool=>tool.name==='rncs_merge_candidate').annotations.destructiveHint,true);
+}));
+
+test('RCL MCP bridge compiles, executes native RBC, and reports parity',async()=>withClient(async({client})=>{
+ const response=await client.callTool({name:'rncs_rcl_compile_execute',arguments:{source:'reality McpRclBridge { facet world.ready : Truth = true facet world.value : Number = 7 }'}});
+ assert.equal(response.isError,undefined);
+ const result=resultOf(response);
+ assert.equal(result.format,'rncs.rcl-native-execution.v0.1');
+ assert.equal(result.parity.ok,true);
+ assert.equal(result.native.state['world.ready'],true);
+ assert.equal(result.native.state['world.value'],7);
 }));
 
 
@@ -179,6 +189,6 @@ test('manifest reports founder authority without revealing private path publicly
   const ready=await fetch(`${service.url}/readyz`);
   const readyBody=await ready.json();
   assert.equal('runtimes' in readyBody,false);
-  assert.equal(readyBody.runtime_count,15);
+  assert.equal(readyBody.runtime_count,17);
  }finally{await service.stop();}
 });

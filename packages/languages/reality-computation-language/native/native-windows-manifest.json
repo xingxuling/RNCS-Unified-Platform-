@@ -1,0 +1,49 @@
+{
+  "format": "rcl.native-windows-prebuilt.v1",
+  "sourceSha256": "5cae93a2726ebd3c333b0352e81ebcce1268fd647f5f65821deffab6817674aa",
+  "sources": [
+    "native/rclvm.c",
+    "native/rclvm.h",
+    "native/rclc.c",
+    "native/rclvmd.c",
+    "native/provider_demo.c",
+    "scripts/build-native-windows.mjs"
+  ],
+  "artifacts": [
+    {
+      "path": "native/rclvm.exe",
+      "bytes": 351232,
+      "sha256": "38c298ebfd4703c6d39197ff29c7a9c4078efa5bd8e8dd93490ece128d489c71"
+    },
+    {
+      "path": "native/rclc.exe",
+      "bytes": 355840,
+      "sha256": "fe862a808286a108ef09b51d7eadc272e61a52205f143fd8feb36098bd797358"
+    },
+    {
+      "path": "native/rclvmd.exe",
+      "bytes": 352768,
+      "sha256": "d6264a354355c5442b1a8e4291c9c0759c92f2883478b47d64347dd0dd6f1b7c"
+    },
+    {
+      "path": "native/provider_demo.exe",
+      "bytes": 351232,
+      "sha256": "35c19870befa19811ff28277b3aac3ed9087d9f0b80734f9e59fc58b161d8efc"
+    },
+    {
+      "path": "native/librclvm.a",
+      "bytes": 425448,
+      "sha256": "1a7d38e8788b8a1b8ab570fd3314dd88571a3586f0f3e4837f5ec48baab9d57c"
+    },
+    {
+      "path": "native/rclvm.dll",
+      "bytes": 348672,
+      "sha256": "e403b3a90dd65bbaf919a344587da24581cd797bf4f2f13425fbadf83567bde7"
+    },
+    {
+      "path": "native/rclvm.lib",
+      "bytes": 4930,
+      "sha256": "c43d3533e28aa5fb4c3a9c5ba76d627b25593c832e7abc01bb8a2633b8030512"
+    }
+  ]
+}

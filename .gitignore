@@ -24,6 +24,7 @@ zig-cache/
 *.p12
 *.pfx
 packages/languages/reality-computation-language/native/rclvm.exe
+*.pdb
 
 __pycache__/
 *.py[cod]

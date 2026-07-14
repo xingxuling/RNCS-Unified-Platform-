@@ -36,6 +36,12 @@ class Parser {
       case 'subject': return this.parseSubject();
       case 'reckon': return this.parseReckon();
       case 'host': return this.parseHost();
+      case 'dialect': return this.parseDialect();
+      case 'effect': return this.parseEffectDecl();
+      case 'capability_policy': return this.parseCapabilityPolicy();
+      case 'store': return this.parseStoreDecl();
+      case 'verify': return this.parseAbsorptionDirective('VerifyCapabilities', 'policy');
+      case 'snapshot': return this.parseAbsorptionDirective('SnapshotStore', 'store');
       case 'meta': return this.parseMeta();
       case 'physical': return this.parsePhysical();
       case 'perception': return this.parsePerception();
@@ -88,16 +94,67 @@ class Parser {
     while (this.at('.')) { this.advance(); parts.push(this.expectType('IDENT', 'Expected name after dot').value); }
     return parts.join('.');
   }
-  parseType() { return this.expectType('IDENT', 'Expected type name').value; }
+
+  parseType() {
+    const parseOne = () => {
+      let name = this.expectType('IDENT', 'Expected type name').value;
+      while (this.at('.')) {
+        this.advance();
+        name += `.${this.expectType('IDENT', 'Expected type name after dot').value}`;
+      }
+      const args = [];
+      if (this.at('<')) {
+        this.advance();
+        if (!this.at('>')) {
+          while (true) {
+            args.push(parseOne());
+            if (!this.at(',')) break;
+            this.advance();
+          }
+        }
+        this.expect('>', 'Expected closing > in generic type');
+      }
+      return `${name}${args.length ? `<${args.join(',')}>` : ''}`;
+    };
+    return parseOne();
+  }
+
+  parseNameList(message = 'Expected name') {
+    const names = [];
+    do {
+      names.push(this.parsePath());
+      if (!this.at(',')) break;
+      this.advance();
+    } while (true);
+    if (names.length === 0) throw new RCLSyntaxError(message, this.current());
+    return names;
+  }
+
+  parseBooleanLiteral(message = 'Expected true or false') {
+    const value = this.expectType('IDENT', message).value;
+    if (value !== 'true' && value !== 'false') throw new RCLSyntaxError(message, this.current());
+    return value === 'true';
+  }
+
+  parseNumberLiteral(message = 'Expected number') {
+    return Number(this.expectType('NUMBER', message).value);
+  }
 
   parseFacet(prefix) {
-    this.expect('facet');
+    const start = this.expect('facet');
     const local = this.parsePath();
     const path = prefix ? `${prefix}.${local}` : local;
     this.expect(':');
     const valueType = this.parseType();
     this.expect('=');
-    return { kind: 'FacetDecl', path, valueType, value: this.parseExpression(), owner: prefix };
+    return {
+      kind: 'FacetDecl',
+      path,
+      valueType,
+      value: this.parseExpression(),
+      owner: prefix,
+      location: { line: start.line, column: start.column },
+    };
   }
 
   parseSubject() {
@@ -741,6 +798,115 @@ class Parser {
     this.expect('}'); return node;
   }
 
+
+  parseDialectOperation() {
+    this.expect('operation');
+    const name = this.expectType('IDENT', 'Expected dialect operation name').value;
+    const operation = { name, inputs: [], outputs: [], effects: [], lowersTo: [] };
+    this.expect('{');
+    while (!this.at('}')) {
+      const keyword = this.current().value;
+      if (keyword === 'input') { this.advance(); operation.inputs.push(this.parseType()); }
+      else if (keyword === 'output') { this.advance(); operation.outputs.push(this.parseType()); }
+      else if (keyword === 'effect' || keyword === 'effects') { this.advance(); operation.effects.push(...this.parseNameList('Expected effect name')); }
+      else if (keyword === 'lowers_to') { this.advance(); operation.lowersTo.push(...this.parseNameList('Expected target dialect')); }
+      else throw new RCLSyntaxError(`Unknown dialect operation clause '${keyword}'`, this.current());
+    }
+    this.expect('}');
+    return operation;
+  }
+
+  parseDialect() {
+    this.expect('dialect');
+    const id = this.expectType('IDENT', 'Expected dialect id').value;
+    const node = {
+      kind: 'DialectDecl', id, version: '0.14.0-alpha.1', layer: 'semantic', domain: null,
+      description: '', operations: [], lowersTo: [], invariants: [],
+    };
+    this.expect('{');
+    while (!this.at('}')) {
+      const keyword = this.current().value;
+      if (keyword === 'version') { this.advance(); node.version = this.expectType('STRING', 'Expected dialect version string').value; }
+      else if (keyword === 'layer') { this.advance(); node.layer = this.expectType('IDENT', 'Expected dialect layer').value; }
+      else if (keyword === 'domain') { this.advance(); node.domain = this.parsePath(); }
+      else if (keyword === 'description') { this.advance(); node.description = this.expectType('STRING', 'Expected dialect description').value; }
+      else if (keyword === 'lowers_to') { this.advance(); node.lowersTo.push(...this.parseNameList('Expected target dialect')); }
+      else if (keyword === 'operation') node.operations.push(this.parseDialectOperation());
+      else if (keyword === 'invariant') { this.advance(); node.invariants.push(this.expectType('STRING', 'Expected invariant text').value); }
+      else throw new RCLSyntaxError(`Unknown dialect clause '${keyword}'`, this.current());
+    }
+    this.expect('}');
+    return node;
+  }
+
+  parseEffectDecl() {
+    this.expect('effect');
+    const name = this.expectType('IDENT', 'Expected effect name').value;
+    const node = {
+      kind: 'EffectDecl', name, deterministic: true, replay: 'deterministic', evidenceRequired: false,
+      description: '', lowersTo: [],
+    };
+    this.expect('{');
+    while (!this.at('}')) {
+      const keyword = this.current().value;
+      if (keyword === 'deterministic') { this.advance(); node.deterministic = this.parseBooleanLiteral('Expected true or false after deterministic'); }
+      else if (keyword === 'replay') { this.advance(); node.replay = this.expectType('STRING', 'Expected replay mode text').value; }
+      else if (keyword === 'evidence_required') { this.advance(); node.evidenceRequired = this.parseBooleanLiteral('Expected true or false after evidence_required'); }
+      else if (keyword === 'description') { this.advance(); node.description = this.expectType('STRING', 'Expected effect description').value; }
+      else if (keyword === 'lowers_to') { this.advance(); node.lowersTo.push(...this.parseNameList('Expected target dialect')); }
+      else throw new RCLSyntaxError(`Unknown effect clause '${keyword}'`, this.current());
+    }
+    this.expect('}');
+    return node;
+  }
+
+  parseCapabilityPolicy() {
+    this.expect('capability_policy');
+    const name = this.expectType('IDENT', 'Expected capability policy name').value;
+    const node = {
+      kind: 'CapabilityPolicyDecl', name, allowedEffects: [], deniedEffects: [], capabilities: [],
+      hostCapabilities: [], budget: {}, requireDeterministicReplay: false,
+    };
+    this.expect('{');
+    while (!this.at('}')) {
+      const keyword = this.current().value;
+      if (keyword === 'allow_effect') { this.advance(); node.allowedEffects.push(...this.parseNameList('Expected effect name')); }
+      else if (keyword === 'deny_effect') { this.advance(); node.deniedEffects.push(...this.parseNameList('Expected effect name')); }
+      else if (keyword === 'allow') {
+        this.advance(); const capability = this.parsePath(); this.expect('on'); const target = this.parsePath();
+        node.capabilities.push({ capability, target });
+      } else if (keyword === 'allow_host') { this.advance(); node.hostCapabilities.push(...this.parseNameList('Expected host capability')); }
+      else if (keyword === 'require_deterministic_replay') {
+        this.advance();
+        node.requireDeterministicReplay = this.at('true') || this.at('false') ? this.parseBooleanLiteral('Expected true or false') : true;
+      } else if (keyword === 'budget') {
+        this.advance(); const key = this.expectType('IDENT', 'Expected budget key').value; node.budget[key] = this.parseNumberLiteral('Expected budget number');
+      } else throw new RCLSyntaxError(`Unknown capability policy clause '${keyword}'`, this.current());
+    }
+    this.expect('}');
+    return node;
+  }
+
+  parseStoreDecl() {
+    this.expect('store');
+    const name = this.expectType('IDENT', 'Expected store name').value;
+    const node = { kind: 'StoreDecl', name, branches: [], commits: [] };
+    this.expect('{');
+    while (!this.at('}')) {
+      const keyword = this.current().value;
+      if (keyword === 'branch') { this.advance(); node.branches.push(this.expectType('IDENT', 'Expected branch name').value); }
+      else if (keyword === 'commit') { this.advance(); node.commits.push(this.expectType('STRING', 'Expected commit message').value); }
+      else throw new RCLSyntaxError(`Unknown store clause '${keyword}'`, this.current());
+    }
+    this.expect('}');
+    return node;
+  }
+
+  parseAbsorptionDirective(kind, targetKey) {
+    this.advance();
+    return { kind, [targetKey]: this.expectType('IDENT', `Expected ${targetKey} name`).value };
+  }
+
   parseRule(ruleKind) {
     this.expect(ruleKind === 'Emergence' ? 'emergence' : 'resonance'); const name = this.expectType('IDENT', 'Expected rule name').value;
     const rule = { kind: ruleKind, name, cause: null, from: null, into: null, when: null, needs: [], preserves: [], alters: [], calls: [], witnesses: [] }; this.expect('{');
@@ -781,13 +947,63 @@ class Parser {
     return left;
   }
 
+  parseMatchExpression() {
+    const start = this.expect('match');
+    const target = this.parseExpression();
+    this.expect('{', 'Expected { after match target');
+    const cases = [];
+    while (!this.at('}')) {
+      if (this.atType('EOF')) throw new RCLSyntaxError('Match expression is not closed', this.current());
+      const variantToken = this.expectType('IDENT', 'Expected union variant name or _ in match case');
+      const bindings = [];
+      if (this.at('(')) {
+        this.advance();
+        if (!this.at(')')) {
+          while (true) {
+            const binding = this.expectType('IDENT', 'Expected match binding name').value;
+            bindings.push(binding);
+            if (!this.at(',')) break;
+            this.advance();
+          }
+        }
+        this.expect(')', 'Expected ) after match bindings');
+      }
+      this.expect('->', 'Expected -> in match case');
+      const expression = this.parseExpression();
+      cases.push({
+        variant: variantToken.value,
+        wildcard: variantToken.value === '_',
+        bindings,
+        expression,
+        location: { line: variantToken.line, column: variantToken.column },
+      });
+      if (this.at(',')) this.advance();
+    }
+    this.expect('}', 'Expected closing } in match expression');
+    return { kind: 'MatchUnionExpr', target, cases, location: { line: start.line, column: start.column } };
+  }
+
   parsePrefix() {
     const token = this.current();
     if (token.value === 'not' || token.value === '-') { this.advance(); return { kind: 'UnaryExpr', operator: token.value, expression: this.parseExpression(7) }; }
+    if (token.value === 'match') return this.parseMatchExpression();
     if (token.type === 'NUMBER') { this.advance(); return { kind: 'LiteralExpr', value: Number(token.value), valueType: 'Number' }; }
     if (token.type === 'STRING') { this.advance(); return { kind: 'LiteralExpr', value: token.value, valueType: 'Text' }; }
     if (token.value === 'true' || token.value === 'false') { this.advance(); return { kind: 'LiteralExpr', value: token.value === 'true', valueType: 'Truth' }; }
     if (token.value === '(') { this.advance(); const expression = this.parseExpression(); this.expect(')'); return expression; }
+    if (token.value === '{') {
+      const start = this.advance();
+      const fields = [];
+      if (!this.at('}')) do {
+        const nameToken = this.expectType('IDENT', 'Expected record field name');
+        this.expect(':', 'Expected : after record field name');
+        fields.push({ name: nameToken.value, expression: this.parseExpression(), location: { line: nameToken.line, column: nameToken.column } });
+        if (!this.at(',')) break;
+        this.advance();
+      } while (!this.at('}'));
+      this.expect('}', 'Expected closing } in record literal');
+      return { kind: 'RecordLiteralExpr', fields, location: { line: start.line, column: start.column } };
+    }
     if (token.type === 'IDENT') {
       const name = this.parsePath();
       if (this.at('(')) {

@@ -2,6 +2,7 @@ import {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js';
 import * as z from 'zod';
 import {readInvocationReceipts} from './receipts.mjs';
 import {EXECUTION_TOOL_CATALOG,registerExecutionTools} from './execution-tools.mjs';
+import {compileRclSource} from '@taowind/rncs-rcl-control-plane';
 
 const objectPayload=z.object({}).passthrough();
 const resultSchema=z.object({ok:z.boolean(),result:objectPayload});
@@ -34,6 +35,7 @@ export const TOOL_CATALOG=Object.freeze([
  {name:'rncs_runtime_health',level:'read'},
  {name:'rncs_world_status',level:'read'},
  {name:'rncs_compile_plan',level:'read'},
+ {name:'rncs_rcl_compile_execute',level:'read'},
  {name:'rncs_validate_plan',level:'read'},
  {name:'rncs_create_candidate',level:'candidate'},
  {name:'rncs_get_candidate',level:'read'},
@@ -172,6 +174,12 @@ export function createTaoWindMcpServer({gateway,knowledge,config}){
   title:'Compile World Manufacturing Plan',description:'Compile Chinese natural language, CSL, or IAL into an RNCS compilation plan. Compilation is read-only.',
   inputSchema:{source:z.string().min(4).max(20_000),language:z.enum(['NATURAL_LANGUAGE','CSL','IAL']).optional(),subject_id:z.string().min(3).max(200).optional()},annotations:readAnnotations
  },async({source,language='NATURAL_LANGUAGE',subject_id=config.founderSubjectId})=>native(gateway,'compile',{source,language,subjectId:subject_id},{idempotencyKey:`compile:${language}:${subject_id}:${source}`}));
+
+ registerRegular(server,'rncs_rcl_compile_execute',{
+  title:'Compile and Execute RCL Natively',
+  description:'Compile an RCL source program with the current RNCS RCL runtime, execute its RBC in the native VM, and optionally verify reference/native parity. This is read-only and never merges state into RNCS.',
+  inputSchema:{source:z.string().min(1).max(20_000),verify_parity:z.boolean().optional(),timeout_ms:z.number().int().min(100).max(120_000).optional()},annotations:readAnnotations
+ },async({source,verify_parity=true,timeout_ms=30_000})=>compileRclSource(source,{verifyParity:verify_parity,timeout:timeout_ms}));
 
  registerRegular(server,'rncs_validate_plan',{
   title:'Validate RNCS Compilation Plan',description:'Validate a previously compiled RNCS plan against the native runtime contract.',

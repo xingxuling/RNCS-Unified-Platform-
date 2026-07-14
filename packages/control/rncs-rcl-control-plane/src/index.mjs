@@ -2,7 +2,18 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
-import { bootstrapCompilerStage5, runNativeBytecode, EmbeddedNativeVm } from '@taowind/reality-computation-language';
+import {
+  bootstrapCompilerStage5,
+  compileRealityToBytecode,
+  decodeBytecode,
+  runNativeBytecode,
+  verifyNativeParity,
+  EmbeddedNativeVm,
+  RCL_BYTECODE_VERSION,
+  RCL_LANGUAGE_VERSION,
+} from '@taowind/reality-computation-language';
+
+export { RCL_BYTECODE_VERSION, RCL_LANGUAGE_VERSION };
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 export const PACKAGE_ROOT = path.dirname(HERE);
@@ -50,6 +61,31 @@ function sha256(buffer) {
 function selectNamespace(state, namespace) {
   const prefix = `${namespace}::`;
   return Object.fromEntries(Object.entries(state).filter(([key]) => key.startsWith(prefix)));
+}
+
+export async function compileRclSource(source, options = {}) {
+  if (typeof source !== 'string' || source.trim().length === 0) throw new TypeError('RCL source must be a non-empty string');
+  const bytecode = compileRealityToBytecode(source);
+  const decoded = decodeBytecode(bytecode);
+  const timeout = options.timeout ?? 30_000;
+  const native = runNativeBytecode(bytecode, { timeout });
+  const parity = options.verifyParity === false
+    ? null
+    : await verifyNativeParity(source, { nativeRuntime: { timeout } });
+  return {
+    format: 'rncs.rcl-native-execution.v0.1',
+    languageVersion: RCL_LANGUAGE_VERSION,
+    bytecodeVersion: RCL_BYTECODE_VERSION,
+    bytecodeHash: sha256(bytecode),
+    byteLength: bytecode.length,
+    instructionCount: decoded.instructions.length,
+    native: {
+      state: native.state,
+      projections: native.projections,
+      history: native.history,
+    },
+    parity: parity ? { ok: parity.ok, checks: parity.parity } : null,
+  };
 }
 
 export function compileControlPlaneEdge(from, to) {

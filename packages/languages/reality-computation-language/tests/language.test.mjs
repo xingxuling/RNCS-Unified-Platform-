@@ -873,15 +873,21 @@ test('native VM rejects preserve-bound violations instead of committing unsafe s
   });
 });
 
-test('native subset refuses provider domains rather than pretending full-domain execution', () => {
+test('native VM executes registered energy domains with state and transition evidence', () => {
   const source = `
   reality NativeBoundary {
     energy grid { reservoir source : Energy = joules(10) }
     energize grid
   }`;
-  const result = tryCompileRealityToBytecode(source);
-  assert.equal(result.ok, false);
-  assert.ok(result.diagnostics.some(item => item.code === 'RCL_NATIVE_DOMAIN_PROVIDER_REQUIRED'));
+  const compiled = tryCompileRealityToBytecode(source);
+  assert.equal(compiled.ok, true);
+  const result = runRealityNative(source);
+  assert.equal(result.bytecodeVersion, '1.3');
+  assert.equal(result.state['grid.source'].__rclType, 'Quantity');
+  assert.equal(result.state['grid.source'].type, 'Energy');
+  assert.equal(result.state['grid.source'].value, 10);
+  assert.equal(result.state['grid.source'].unit, 'J');
+  assert.deepEqual(result.history[0].witnesses, ['domain:energize:grid']);
 });
 
 test('Stage-1 RCL compiler seed lowers a literal assignment and produces runnable target bytecode', () => {
@@ -1100,6 +1106,22 @@ test('native VM v0.5 exposes deterministic byte and UTF-8 primitives for self-ho
   assert.match(result.vm, /0\.6\.0-alpha\.1/);
 });
 
+test('sha256_text computes the same SHA-256 digest in JS and native runtimes', async () => {
+  const source = `
+  reality HashPrimitive {
+    facet hash.input : Text = "abc"
+    facet hash.digest : Text = sha256_text(hash.input)
+  }`;
+  const expected = 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad';
+  const jsRun = await runReality(source);
+  const nativeRun = runRealityNative(source);
+  const decoded = decodeBytecode(compileRealityToBytecode(source));
+
+  assert.equal(jsRun.state['hash.digest'], expected);
+  assert.equal(nativeRun.state['hash.digest'], expected);
+  assert.equal(decoded.instructions.some(instruction => instruction.builtin === 'SHA256_TEXT'), true);
+});
+
 test('native byte primitives reject values outside their declared binary range', () => {
   assert.throws(() => runRealityNative('reality InvalidByte { facet bytes.bad : Sequence = bytes_u8(256) }'), error => {
     assert.equal(error.code, 'RCL_BYTE_ENCODING_RANGE');
@@ -1162,7 +1184,8 @@ test('native Provider ABI v1 invokes a registered provider from RCL bytecode', (
   assert.ok(decoded.instructions.some(instruction => instruction.name === 'CALL_PROVIDER'));
   const buildPath = path.join(PACKAGE_ROOT, 'build', 'provider-abi-test.rbc');
   fs.writeFileSync(buildPath, bytecode);
-  const run = spawnSync(path.join(PACKAGE_ROOT, 'native', 'provider_demo'), [buildPath], { encoding: 'utf8' });
+  const providerDemo = process.platform === 'win32' ? 'provider_demo.exe' : 'provider_demo';
+  const run = spawnSync(path.join(PACKAGE_ROOT, 'native', providerDemo), [buildPath], { encoding: 'utf8' });
   assert.equal(run.status, 0, run.stderr);
   const payload = JSON.parse(run.stdout);
   assert.match(payload.state['provider.reply'], /hello-provider/);
@@ -1175,7 +1198,10 @@ test('reference runtime accepts the same provider_call contract through explicit
 });
 
 test('native build exports embeddable static/shared libraries and public header', () => {
-  for (const file of ['librclvm.a', 'librclvm.so', 'rclvm.h', 'rclvmd']) {
+  const files = process.platform === 'win32'
+    ? ['librclvm.a', 'rclvm.dll', 'rclvm.lib', 'rclvm.h', 'rclvmd.exe', 'rclc.exe']
+    : ['librclvm.a', 'librclvm.so', 'rclvm.h', 'rclvmd', 'rclc'];
+  for (const file of files) {
     assert.equal(fs.existsSync(path.join(PACKAGE_ROOT, 'native', file)), true, file);
   }
 });

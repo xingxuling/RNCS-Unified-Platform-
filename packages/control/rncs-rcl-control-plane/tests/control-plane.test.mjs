@@ -4,6 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   buildRclControlPlane,
+  compileRclSource,
   compileControlPlaneEdge,
   CONTROL_PLANE_EDGES,
   verifyLegacyManifestParity,
@@ -81,6 +82,19 @@ test('AOT RCL control-plane bundle executes all twelve readiness contracts in on
   assert.equal(run.state['rncs::aether_earth.ready'], true);
   assert.equal(run.state['rncs::control.long_lived_vm'], true);
   assert.equal(run.state['rncs::control.authoritative'], true);
+});
+
+test('current RCL source compiles and executes through the RNCS control-plane bridge', async () => {
+  const result = await compileRclSource(`reality RncsNativeBridge {
+    facet world.ready : Truth = true
+    facet world.value : Number = 7
+  }`);
+  assert.equal(result.format, 'rncs.rcl-native-execution.v0.1');
+  assert.equal(result.parity.ok, true);
+  assert.equal(result.native.state['world.ready'], true);
+  assert.equal(result.native.state['world.value'], 7);
+  assert.ok(result.byteLength > 36);
+  assert.ok(result.instructionCount > 0);
 });
 
 

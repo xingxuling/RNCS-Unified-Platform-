@@ -27,6 +27,7 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.29.0",
     "@taowind/reality-one-gateway": "*",
+    "@taowind/rncs-rcl-control-plane": "*",
     "zod": "3.25.76",
     "@taowind/developer-execution-runtime": "*"
   },

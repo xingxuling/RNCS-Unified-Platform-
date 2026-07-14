@@ -46,8 +46,122 @@ function arraysFromPhysical(node) {
   ];
 }
 
-export function checkReality(program) {
+export function checkReality(program, options = {}) {
   const diagnostics = [];
+  const externalTypeResolver = options.externalTypeResolver ?? null;
+  const externalTypeCache = new Map();
+  const resolveExternalType = (type) => {
+    if (!externalTypeResolver) return { ok: false, diagnostics: [] };
+    if (!externalTypeCache.has(type)) externalTypeCache.set(type, externalTypeResolver(type));
+    return externalTypeCache.get(type);
+  };
+  const isKnown = (type) => isKnownType(type) || Boolean(resolveExternalType(type).ok);
+  const isExternal = (type) => Boolean(resolveExternalType(type).ok);
+  const substituteTypeParams = (typeText, substitutions = {}) => String(typeText).replace(/\b[A-Za-z_][A-Za-z0-9_]*\b/g, (name) => substitutions[name] ?? name);
+  const constructorLabel = (node) => node?.path ? `Facet '${node.path}'` : 'Typed constructor';
+
+  const followRecordFields = (baseType, fields, ownerNode) => {
+    let currentType = baseType;
+    const trace = [];
+    for (const fieldName of fields) {
+      const resolved = resolveExternalType(currentType);
+      if (!resolved.ok || resolved.declaration?.kind !== 'Record') {
+        diagnostics.push(diagnostic('RCL_FIELD_ACCESS_EXPECTED_RECORD', `Field '${fieldName}' requires a linked record type, received ${currentType}`, ownerNode));
+        return null;
+      }
+      const field = (resolved.declaration.fields ?? []).find(item => item.name === fieldName);
+      if (!field) {
+        diagnostics.push(diagnostic('RCL_FIELD_ACCESS_UNKNOWN', `Record '${resolved.canonical}' has no field '${fieldName}'`, ownerNode));
+        return null;
+      }
+      currentType = substituteTypeParams(field.canonicalType, resolved.typeParamMap ?? {});
+      trace.push({ name: fieldName, canonicalType: currentType, ownerType: resolved.canonical });
+    }
+    return { type: currentType, trace };
+  };
+
+  const resolveFieldPath = (path, locals = new Map(), ownerNode = null) => {
+    const parts = String(path).split('.');
+    if (parts.length < 2) return null;
+    for (let index = parts.length - 1; index >= 1; index -= 1) {
+      const prefix = parts.slice(0, index).join('.');
+      let baseType = null;
+      if (locals.has(prefix)) baseType = locals.get(prefix);
+      else if (facets.has(prefix)) baseType = facets.get(prefix);
+      if (!baseType) continue;
+      const fields = parts.slice(index);
+      const followed = followRecordFields(baseType, fields, ownerNode);
+      if (!followed) return { ok: false };
+      return { ok: true, basePath: prefix, fields: followed.trace, type: followed.type };
+    }
+    return null;
+  };
+
+  const validateTypedConstructor = (expression, expectedType, node, locals = new Map()) => {
+    if (!expression) return { handled: false, type: 'Unknown' };
+    const expected = resolveExternalType(expectedType);
+    if (!expected.ok || !expected.declaration) {
+      if (expression.kind === 'RecordLiteralExpr') diagnostics.push(diagnostic('RCL_RECORD_LITERAL_EXPECTED_RECORD', `${constructorLabel(node)} uses a record literal but '${expectedType}' is not a linked record type`, expression));
+      return { handled: expression.kind === 'RecordLiteralExpr', type: expectedType };
+    }
+    const declaration = expected.declaration;
+    const substitutions = expected.typeParamMap ?? {};
+
+    if (expression.kind === 'RecordLiteralExpr') {
+      if (declaration.kind !== 'Record') {
+        diagnostics.push(diagnostic('RCL_RECORD_LITERAL_EXPECTED_RECORD', `${constructorLabel(node)} uses a record literal but '${expectedType}' resolves to ${declaration.kind}`, expression));
+        return { handled: true, type: expectedType };
+      }
+      const declaredFields = new Map((declaration.fields ?? []).map(field => [field.name, field]));
+      const seen = new Set();
+      for (const field of expression.fields ?? []) {
+        if (seen.has(field.name)) diagnostics.push(diagnostic('RCL_RECORD_FIELD_DUPLICATE', `Record '${expected.canonical}' repeats field '${field.name}'`, field));
+        seen.add(field.name);
+        const declared = declaredFields.get(field.name);
+        if (!declared) {
+          diagnostics.push(diagnostic('RCL_RECORD_FIELD_UNKNOWN', `Record '${expected.canonical}' has no field '${field.name}'`, field));
+          infer(field.expression, locals);
+          continue;
+        }
+        const fieldType = substituteTypeParams(declared.canonicalType, substitutions);
+        const nested = validateTypedConstructor(field.expression, fieldType, field, locals);
+        const actual = nested.handled ? nested.type : infer(field.expression, locals);
+        if (actual !== fieldType && actual !== 'Unknown') diagnostics.push(diagnostic('RCL_RECORD_FIELD_TYPE', `Record field '${field.name}' expects ${fieldType}, received ${actual}`, field));
+      }
+      for (const declared of declaration.fields ?? []) {
+        if (!seen.has(declared.name)) diagnostics.push(diagnostic('RCL_RECORD_FIELD_MISSING', `Record '${expected.canonical}' is missing field '${declared.name}'`, expression));
+      }
+      return { handled: true, type: expectedType };
+    }
+
+    if (expression.kind === 'CallExpr' && declaration.kind === 'Union') {
+      const variant = (declaration.variants ?? []).find(item => item.name === expression.name);
+      if (!variant) {
+        diagnostics.push(diagnostic('RCL_UNION_VARIANT_UNKNOWN', `Union '${expected.canonical}' has no variant '${expression.name}'`, expression));
+        expression.args.forEach(arg => infer(arg, locals));
+        return { handled: true, type: expectedType };
+      }
+      if (expression.args.length !== variant.payload.length) diagnostics.push(diagnostic('RCL_UNION_VARIANT_ARITY', `Union variant '${expression.name}' expects ${variant.payload.length} payload value(s), got ${expression.args.length}`, expression));
+      expression.args.forEach((arg, index) => {
+        const payload = variant.payload[index];
+        if (!payload) { infer(arg, locals); return; }
+        const payloadType = substituteTypeParams(payload.canonicalType, substitutions);
+        const nested = validateTypedConstructor(arg, payloadType, expression, locals);
+        const actual = nested.handled ? nested.type : infer(arg, locals);
+        if (actual !== payloadType && actual !== 'Unknown') diagnostics.push(diagnostic('RCL_UNION_PAYLOAD_TYPE', `Union variant '${expression.name}' payload ${index + 1} expects ${payloadType}, received ${actual}`, expression));
+      });
+      return { handled: true, type: expectedType };
+    }
+
+    return { handled: false, type: 'Unknown' };
+  };
+  const reportUnknownType = (type, message, node) => {
+    if (isKnown(type)) return;
+    const external = resolveExternalType(type);
+    if (external.diagnostics?.length) {
+      for (const item of external.diagnostics) diagnostics.push({ ...item, nodeKind: node?.kind ?? null });
+    } else diagnostics.push(diagnostic('RCL_TYPE_UNKNOWN', message, node));
+  };
   const facets = new Map();
   const facetDecls = new Map();
   const subjects = new Map();
@@ -79,7 +193,7 @@ export function checkReality(program) {
 
   const addFacet = (decl, typeOverride = null) => {
     const type = typeOverride ?? decl.valueType;
-    if (!isKnownType(type)) diagnostics.push(diagnostic('RCL_TYPE_UNKNOWN', `Unknown type '${type}' for ${decl.path}`, decl));
+    reportUnknownType(type, `Unknown type '${type}' for ${decl.path}`, decl);
     if (facets.has(decl.path)) diagnostics.push(diagnostic('RCL_FACET_DUPLICATE', `Facet '${decl.path}' is declared more than once`, decl));
     facets.set(decl.path, type);
     facetDecls.set(decl.path, decl);
@@ -184,8 +298,53 @@ export function checkReality(program) {
       case 'LiteralExpr': return expr.valueType;
       case 'PathExpr': {
         if (locals.has(expr.path)) return locals.get(expr.path);
-        if (!facets.has(expr.path)) diagnostics.push(diagnostic('RCL_NAME_UNKNOWN', `Unknown facet or local '${expr.path}'`, expr));
-        return facets.get(expr.path) ?? 'Unknown';
+        if (facets.has(expr.path)) return facets.get(expr.path);
+        const projection = resolveFieldPath(expr.path, locals, expr);
+        if (projection?.ok) return projection.type;
+        if (!projection) diagnostics.push(diagnostic('RCL_NAME_UNKNOWN', `Unknown facet or local '${expr.path}'`, expr));
+        return 'Unknown';
+      }
+      case 'FieldAccessExpr': {
+        const base = infer(expr.object, locals);
+        const followed = followRecordFields(base, [expr.field], expr);
+        return followed?.type ?? 'Unknown';
+      }
+      case 'MatchUnionExpr': {
+        const targetType = infer(expr.target, locals);
+        const resolved = resolveExternalType(targetType);
+        if (!resolved.ok || resolved.declaration?.kind !== 'Union') {
+          diagnostics.push(diagnostic('RCL_MATCH_EXPECTED_UNION', `match requires a linked union type, received ${targetType}`, expr));
+          expr.cases.forEach(item => infer(item.expression, locals));
+          return 'Unknown';
+        }
+        const variants = new Map((resolved.declaration.variants ?? []).map(item => [item.name, item]));
+        const covered = new Set();
+        const branchTypes = [];
+        for (const item of expr.cases ?? []) {
+          const branchLocals = new Map(locals);
+          if (item.wildcard) {
+            if (item.bindings.length) diagnostics.push(diagnostic('RCL_MATCH_WILDCARD_BINDINGS', 'Wildcard match case cannot bind payload values', item));
+          } else {
+            const variant = variants.get(item.variant);
+            if (!variant) diagnostics.push(diagnostic('RCL_MATCH_VARIANT_UNKNOWN', `Union '${resolved.canonical}' has no variant '${item.variant}'`, item));
+            else {
+              covered.add(item.variant);
+              if (item.bindings.length !== variant.payload.length) diagnostics.push(diagnostic('RCL_MATCH_BINDING_ARITY', `Variant '${item.variant}' exposes ${variant.payload.length} payload value(s), got ${item.bindings.length} binding(s)`, item));
+              item.bindings.forEach((name, index) => {
+                const payload = variant.payload[index];
+                if (payload) branchLocals.set(name, substituteTypeParams(payload.canonicalType, resolved.typeParamMap ?? {}));
+              });
+            }
+          }
+          branchTypes.push(infer(item.expression, branchLocals));
+        }
+        if (!expr.cases?.some(item => item.wildcard)) {
+          const missing = [...variants.keys()].filter(name => !covered.has(name));
+          if (missing.length) diagnostics.push(diagnostic('RCL_MATCH_NON_EXHAUSTIVE', `match on '${resolved.canonical}' is missing variant(s): ${missing.join(', ')}`, expr));
+        }
+        const first = branchTypes.find(type => type !== 'Unknown') ?? 'Unknown';
+        for (const type of branchTypes) if (type !== first && type !== 'Unknown' && first !== 'Unknown') diagnostics.push(diagnostic('RCL_MATCH_BRANCH_TYPE', `match branches disagree: ${first} vs ${type}`, expr));
+        return first;
       }
       case 'UnaryExpr': {
         const type = infer(expr.expression, locals);
@@ -381,10 +540,35 @@ export function checkReality(program) {
         }
         if (expr.name === 'element_symbol') return 'Text';
         if (expr.name === 'is_element' || expr.name === 'body_maintained' || expr.name === 'spirit_integrated') return 'Truth';
+        if (expr.name === 'typed_ref') {
+          if (expr.args.length !== 1) diagnostics.push(diagnostic('RCL_CALL_ARITY', 'typed_ref expects one typed object', expr));
+          if (expr.args[0]) infer(expr.args[0], locals);
+          return 'TypedRef';
+        }
+        if (expr.name === 'typed_deref') {
+          if (expr.args.length !== 1) diagnostics.push(diagnostic('RCL_CALL_ARITY', 'typed_deref expects one TypedRef', expr));
+          const actual = expr.args[0] ? infer(expr.args[0], locals) : 'Unknown';
+          if (actual !== 'TypedRef' && actual !== 'Unknown') diagnostics.push(diagnostic('RCL_CALL_TYPE', `typed_deref expects TypedRef, received ${actual}`, expr));
+          return 'Unknown';
+        }
+        if (expr.name === 'typed_ref_id') {
+          if (expr.args.length !== 1) diagnostics.push(diagnostic('RCL_CALL_ARITY', 'typed_ref_id expects one TypedRef', expr));
+          const actual = expr.args[0] ? infer(expr.args[0], locals) : 'Unknown';
+          if (actual !== 'TypedRef' && actual !== 'Unknown') diagnostics.push(diagnostic('RCL_CALL_TYPE', `typed_ref_id expects TypedRef, received ${actual}`, expr));
+          return 'Number';
+        }
         if (expr.name === 'provider_call') {
           if (expr.args.length !== 3) diagnostics.push(diagnostic('RCL_CALL_ARITY', 'provider_call expects provider id, capability and request JSON', expr));
           expr.args.forEach(arg => { const type = infer(arg, locals); if (type !== 'Text' && type !== 'Unknown') diagnostics.push(diagnostic('RCL_CALL_TYPE', 'provider_call arguments must be Text', expr)); });
           return 'Text';
+        }
+        if (expr.name === 'domain_call') {
+          if (expr.args.length < 2) diagnostics.push(diagnostic('RCL_CALL_ARITY', 'domain_call expects domain, operation and optional arguments', expr));
+          expr.args.forEach((arg, index) => {
+            const type = infer(arg, locals);
+            if (index < 2 && type !== 'Text' && type !== 'Unknown') diagnostics.push(diagnostic('RCL_CALL_TYPE', 'domain_call domain and operation must be Text', expr));
+          });
+          return 'Unknown';
         }
         if (expr.name === 'empty_sequence') {
           if (expr.args.length !== 0) diagnostics.push(diagnostic('RCL_CALL_ARITY', 'empty_sequence expects no arguments', expr));
@@ -395,6 +579,46 @@ export function checkReality(program) {
           const sequenceType = expr.args[0] ? infer(expr.args[0], locals) : 'Unknown';
           if (sequenceType !== 'Sequence' && sequenceType !== 'Unknown') diagnostics.push(diagnostic('RCL_CALL_TYPE', `sequence_append expects Sequence, received ${sequenceType}`, expr));
           if (expr.args[1]) infer(expr.args[1], locals);
+          return 'Sequence';
+        }
+        if (expr.name === 'sequence_append_unique') {
+          if (expr.args.length !== 2) diagnostics.push(diagnostic('RCL_CALL_ARITY', 'sequence_append_unique expects Sequence and value', expr));
+          const sequenceType = expr.args[0] ? infer(expr.args[0], locals) : 'Unknown';
+          if (sequenceType !== 'Sequence' && sequenceType !== 'Unknown') diagnostics.push(diagnostic('RCL_CALL_TYPE', `sequence_append_unique expects Sequence, received ${sequenceType}`, expr));
+          if (expr.args[1]) infer(expr.args[1], locals);
+          return 'Sequence';
+        }
+        if (expr.name === 'sequence_unique') {
+          if (expr.args.length !== 1) diagnostics.push(diagnostic('RCL_CALL_ARITY', 'sequence_unique expects one Sequence', expr));
+          const sequenceType = expr.args[0] ? infer(expr.args[0], locals) : 'Unknown';
+          if (sequenceType !== 'Sequence' && sequenceType !== 'Unknown') diagnostics.push(diagnostic('RCL_CALL_TYPE', `sequence_unique expects Sequence, received ${sequenceType}`, expr));
+          return 'Sequence';
+        }
+        if (expr.name === 'sequence_index_of') {
+          if (expr.args.length !== 3) diagnostics.push(diagnostic('RCL_CALL_ARITY', 'sequence_index_of expects Sequence, value and start', expr));
+          const types = expr.args.map(arg => infer(arg, locals));
+          if (types[0] !== 'Sequence' && types[0] !== 'Unknown') diagnostics.push(diagnostic('RCL_CALL_TYPE', 'sequence_index_of first argument must be Sequence', expr));
+          if (types[2] !== 'Number' && types[2] !== 'Unknown') diagnostics.push(diagnostic('RCL_CALL_TYPE', 'sequence_index_of start must be Number', expr));
+          return 'Number';
+        }
+        if (expr.name === 'sequence_find_field') {
+          if (expr.args.length !== 4) diagnostics.push(diagnostic('RCL_CALL_ARITY', 'sequence_find_field expects Sequence, field, value and start', expr));
+          const types = expr.args.map(arg => infer(arg, locals));
+          if (types[0] !== 'Sequence' && types[0] !== 'Unknown') diagnostics.push(diagnostic('RCL_CALL_TYPE', 'sequence_find_field first argument must be Sequence', expr));
+          for (const type of [types[1], types[3]]) if (type !== 'Number' && type !== 'Unknown') diagnostics.push(diagnostic('RCL_CALL_TYPE', 'sequence_find_field field and start must be Number', expr));
+          return 'Number';
+        }
+        if (expr.name === 'decode_string_slice') {
+          if (expr.args.length !== 3) diagnostics.push(diagnostic('RCL_CALL_ARITY', 'decode_string_slice expects Text, start and end', expr));
+          const types = expr.args.map(arg => infer(arg, locals));
+          if (types[0] !== 'Text' && types[0] !== 'Unknown') diagnostics.push(diagnostic('RCL_CALL_TYPE', 'decode_string_slice source must be Text', expr));
+          for (const type of types.slice(1)) if (type !== 'Number' && type !== 'Unknown') diagnostics.push(diagnostic('RCL_CALL_TYPE', 'decode_string_slice indexes must be Number', expr));
+          return 'Text';
+        }
+        if (expr.name === 'compiler_tokenize') {
+          if (expr.args.length !== 1) diagnostics.push(diagnostic('RCL_CALL_ARITY', 'compiler_tokenize expects source Text', expr));
+          const sourceType = expr.args[0] ? infer(expr.args[0], locals) : 'Unknown';
+          if (sourceType !== 'Text' && sourceType !== 'Unknown') diagnostics.push(diagnostic('RCL_CALL_TYPE', 'compiler_tokenize source must be Text', expr));
           return 'Sequence';
         }
         if (expr.name === 'sequence_get') {
@@ -543,6 +767,18 @@ export function checkReality(program) {
           if (actual !== 'Text' && actual !== 'Unknown') diagnostics.push(diagnostic('RCL_CALL_TYPE', `utf8_bytes expects Text, received ${actual}`, expr));
           return 'Sequence';
         }
+        if (expr.name === 'hex_bytes') {
+          if (expr.args.length !== 1) diagnostics.push(diagnostic('RCL_CALL_ARITY', 'hex_bytes expects one Text', expr));
+          const actual = expr.args[0] ? infer(expr.args[0], locals) : 'Unknown';
+          if (actual !== 'Text' && actual !== 'Unknown') diagnostics.push(diagnostic('RCL_CALL_TYPE', `hex_bytes expects Text, received ${actual}`, expr));
+          return 'Sequence';
+        }
+        if (expr.name === 'sha256_text') {
+          if (expr.args.length !== 1) diagnostics.push(diagnostic('RCL_CALL_ARITY', 'sha256_text expects one Text', expr));
+          const actual = expr.args[0] ? infer(expr.args[0], locals) : 'Unknown';
+          if (actual !== 'Text' && actual !== 'Unknown') diagnostics.push(diagnostic('RCL_CALL_TYPE', `sha256_text expects Text, received ${actual}`, expr));
+          return 'Text';
+        }
         if (expr.name === 'make_parse_state') {
           if (expr.args.length !== 2) diagnostics.push(diagnostic('RCL_CALL_ARITY', 'make_parse_state expects next index and nodes Sequence', expr));
           const types = expr.args.map(arg => infer(arg, locals));
@@ -611,6 +847,10 @@ export function checkReality(program) {
         });
         return fn.returnType;
       }
+      case 'RecordLiteralExpr':
+        diagnostics.push(diagnostic('RCL_RECORD_LITERAL_CONTEXT_MISSING', 'Record literals require an expected linked record type', expr));
+        expr.fields?.forEach(field => infer(field.expression, locals));
+        return 'Unknown';
       default:
         diagnostics.push(diagnostic('RCL_EXPRESSION_UNKNOWN', `Unknown expression kind '${expr.kind}'`, expr));
         return 'Unknown';
@@ -618,7 +858,10 @@ export function checkReality(program) {
   };
 
   const checkInitial = (decl, expression = decl.value, expected = decl.valueType) => {
+    const constructor = validateTypedConstructor(expression, expected, decl);
+    if (constructor.handled) return;
     const actual = infer(expression);
+    if (isExternal(expected) && actual !== expected && actual !== 'Unknown') return;
     if (actual !== expected && actual !== 'Unknown') diagnostics.push(diagnostic('RCL_FACET_INITIAL_TYPE', `Facet '${decl.path}' expects ${expected}, received ${actual}`, decl));
   };
 
@@ -633,7 +876,8 @@ export function checkReality(program) {
     for (const change of changes) {
       const expected = facets.get(change.target);
       if (!expected) diagnostics.push(diagnostic('RCL_CHANGE_TARGET_UNKNOWN', `${label} changes unknown facet '${change.target}'`, node));
-      const actual = infer(change[expressionKey]);
+      const constructor = expected ? validateTypedConstructor(change[expressionKey], expected, node) : { handled: false };
+      const actual = constructor.handled ? constructor.type : infer(change[expressionKey]);
       if (expected && actual !== expected && actual !== 'Unknown') diagnostics.push(diagnostic('RCL_CHANGE_TYPE', `${label} assigns ${actual} to ${change.target}:${expected}`, node));
     }
   };
@@ -651,10 +895,10 @@ export function checkReality(program) {
     } else if (node.kind === 'ReckonDecl') {
       const locals = new Map();
       for (const param of node.params) {
-        if (!isKnownType(param.valueType)) diagnostics.push(diagnostic('RCL_TYPE_UNKNOWN', `Unknown parameter type '${param.valueType}' in ${node.name}`, node));
+        reportUnknownType(param.valueType, `Unknown parameter type '${param.valueType}' in ${node.name}`, node);
         locals.set(param.name, param.valueType);
       }
-      if (!isKnownType(node.returnType)) diagnostics.push(diagnostic('RCL_TYPE_UNKNOWN', `Unknown return type '${node.returnType}' in ${node.name}`, node));
+      reportUnknownType(node.returnType, `Unknown return type '${node.returnType}' in ${node.name}`, node);
       const actual = infer(node.expression, locals);
       if (actual !== node.returnType && actual !== 'Unknown') diagnostics.push(diagnostic('RCL_RECKON_RETURN_TYPE', `Reckoning '${node.name}' returns ${actual}, declared ${node.returnType}`, node));
     } else if (node.kind === 'HostDecl') {
@@ -966,7 +1210,7 @@ export function checkReality(program) {
     for (const need of rule.needs) {
       if (actor && !warrantExists(actor, need)) diagnostics.push(diagnostic('RCL_WARRANT_MISSING', `Subject '${actor}' lacks warrant '${need.capability}' on '${need.target}' required by '${rule.name}'`, rule));
     }
-    
+
     for (const alteration of rule.alters) {
       const expected = facets.get(alteration.target);
       if (!expected) diagnostics.push(diagnostic('RCL_ALTER_TARGET_UNKNOWN', `Rule '${rule.name}' alters unknown facet '${alteration.target}'`, rule));

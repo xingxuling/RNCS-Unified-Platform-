@@ -13,6 +13,6 @@
     "benchmark": "node scripts/benchmark.mjs"
   },
   "dependencies": {
-    "@taowind/reality-computation-language": "0.12.0-alpha.1"
+    "@taowind/reality-computation-language": "0.94.0-alpha.1"
   }
 }

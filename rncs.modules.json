@@ -1,6 +1,6 @@
 {
   "format": "rncs.unified-module-registry.v0.13",
-  "suiteVersion": "0.19.7-alpha.1",
+  "suiteVersion": "0.19.8-alpha.1",
   "modules": [
     {
       "id": "rncs-core",
@@ -392,7 +392,7 @@
     {
       "id": "rcl",
       "name": "Reality Computation Language",
-      "version": "0.12.0-alpha.1",
+      "version": "0.94.0-alpha.1",
       "path": "packages/languages/reality-computation-language",
       "layer": "language",
       "runtime": "rncs.language.rcl",
@@ -479,7 +479,7 @@
         "rcl.native.shared-library",
         "rcl.native.static-library"
       ],
-      "description": "RCL v0.11 Stage-5 self-hosted RBC 1.1 encoder core with exact native byte emission, deterministic parity and C VM v0.5."
+      "description": "RCL v0.94 native/self-hosted language runtime with deterministic RBC emission, embedded VM, Provider ABI, typed compiler, RNCS bridge and advanced reality planes."
     },
     {
       "id": "rncs-rcl-control",

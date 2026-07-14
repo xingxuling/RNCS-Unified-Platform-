@@ -1,0 +1,22 @@
+{
+  "suite": "RNCS_Aetherworld_Unified",
+  "version": "0.19.8-alpha.1",
+  "codename": "RCL Native Gateway Fusion",
+  "based_on": "0.19.7-alpha.1",
+  "products": {
+    "rcl": "0.94.0-alpha.1",
+    "native_vm": "0.6.0-alpha.1",
+    "rcl_control_plane": "0.3.0-alpha.1",
+    "rcl_gateway_runtime": "0.3.0-alpha.1",
+    "mcp": "0.3.0-alpha.1"
+  },
+  "runtime_count": 17,
+  "rcl_gateway_runtime": "rncs.rcl-control",
+  "mcp_read_tool": "rncs_rcl_compile_execute",
+  "verification": {
+    "rcl_control_plane": "8/8 pass",
+    "gateway": "15/15 pass",
+    "rcl_native_parity": "pass",
+    "rsr_vsr_dependencies": "discovered and healthy"
+  }
+}

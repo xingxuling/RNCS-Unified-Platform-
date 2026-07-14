@@ -1,7 +1,7 @@
 {
   "id": "rcl",
   "name": "Reality Computation Language",
-  "version": "0.12.0-alpha.1",
+  "version": "0.94.0-alpha.1",
   "path": "packages/languages/reality-computation-language",
   "layer": "language",
   "runtime": "rncs.language.rcl",
@@ -88,5 +88,5 @@
     "rcl.native.shared-library",
     "rcl.native.static-library"
   ],
-  "description": "RCL v0.12 embedded long-lived native VM, static/shared embedding library, AOT hot replay and Provider ABI v1; Stage-5 self-hosted RBC encoder retained."
+  "description": "RCL v0.94 native/self-hosted language runtime with deterministic RBC emission, embedded VM, Provider ABI, typed compiler, RNCS bridge and advanced reality planes."
 }

@@ -1,4 +1,4 @@
-# RNCS + Aetherworld Unified v0.19.7-alpha.1
+# RNCS + Aetherworld Unified v0.19.8-alpha.1
 
 本版本交付 **Aether Earth v0.1**：把 RCL/RNCS 的世界、100 个少数据生物、RCLpedia、时间加速、现实压缩、科学证据与集体智能结晶化组合为一个可运行产品。
 
@@ -12,8 +12,10 @@
 - 世界状态 322,131 bytes → 27,325 bytes，无损恢复；
 - 1000 天 / 100,000 agent-days：约 837 ms（当前容器）；
 - 浏览器直接打开版与 Android Studio 源码宿主；
-- RNCS Gateway/Registry 接入，Runtime health healthy（16 runtimes）；
-- Aether Earth 12/12、RCL 70/70、控制平面 7/7、集成 36/36。
+- RNCS Gateway/Registry 接入，Runtime health healthy（17 runtimes，含正式 `rncs.rcl-control`）；
+- RCL `0.94.0-alpha.1` 已作为 workspace 真实语言运行时同步进 RNCS；
+- `rncs.rcl-control` 可经 Gateway 完成 RCL → RBC → native VM → parity；
+- MCP 暴露只读 `rncs_rcl_compile_execute`，可直接查看 native state、history、projection 和 parity。
 
 ## 运行
 

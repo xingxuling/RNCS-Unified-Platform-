@@ -91,7 +91,7 @@ export function runtimeType(value) {
   if (Boolean(value) && typeof value === 'object' && value.kind === 'Span') return 'Span';
   if (Boolean(value) && typeof value === 'object' && value.kind === 'Token') return 'Token';
   if (Boolean(value) && typeof value === 'object' && value.kind === 'FacetDecl') return 'AstNode';
-  if (Boolean(value) && typeof value === 'object' && value.kind === 'ParseState') return 'ParseState'; 
+  if (Boolean(value) && typeof value === 'object' && value.kind === 'ParseState') return 'ParseState';
   if (isQuantity(value)) return value.type;
   if (typeof value === 'number') return 'Number';
   if (typeof value === 'string') return 'Text';
