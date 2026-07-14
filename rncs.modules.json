@@ -38,7 +38,7 @@
     {
       "id": "reality-kernel",
       "name": "Reality Kernel",
-      "version": "0.1.0-alpha.1",
+      "version": "0.2.0-alpha.1",
       "path": "packages/kernel/reality-kernel",
       "layer": "kernel",
       "runtime": "rncs.reality-kernel",
@@ -52,7 +52,13 @@
         "deterministic-reality-graph-query",
         "reality-transition-vm",
         "evidence-root-compilation",
-        "rfe-local-commit-bridge"
+        "rfe-local-commit-bridge",
+        "typed-continuity-contract",
+        "subject-sovereignty-envelope",
+        "continuity-ledger",
+        "anti-replay-fencing",
+        "epoch-rollover",
+        "bounded-continuity-fork"
       ]
     },
     {
