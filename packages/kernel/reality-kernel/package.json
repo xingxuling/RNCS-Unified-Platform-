@@ -1,7 +1,7 @@
 {
   "name": "@taowind/reality-kernel",
-  "version": "0.1.0-alpha.1",
-  "description": "Deterministic reality object ABI, graph queries, transition VM, and evidence compiler.",
+  "version": "0.2.0-alpha.1",
+  "description": "Deterministic reality object ABI, graph queries, transition VM, typed continuity, and evidence compiler.",
   "type": "module",
   "license": "Apache-2.0",
   "engines": {
