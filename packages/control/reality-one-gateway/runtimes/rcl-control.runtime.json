@@ -14,6 +14,8 @@
     "rncs.rcl-control.v0.3",
     "rncs.rcl-control.v0.4",
     "rncs.rcl-authority.v0.1",
+    "rncs.rcl-native-execution.v0.2",
+    "rcl.native.selfhost-compiler.v0.1",
     "rcl.native.execute.v0.1",
     "rcl.native.parity.v0.1",
     "rcl.bootstrap.stage5.v0.1"

@@ -90,12 +90,56 @@ test('current RCL source compiles and executes through the RNCS control-plane br
     facet world.ready : Truth = true
     facet world.value : Number = 7
   }`);
-  assert.equal(result.format, 'rncs.rcl-native-execution.v0.1');
+  assert.equal(result.format, 'rncs.rcl-native-execution.v0.2');
+  assert.equal(result.compiler.kind, 'rcl-native-selfhost');
+  assert.equal(result.compiler.artifact, 'selfhost/compiler.rbc');
+  assert.match(result.compiler.artifactHash, /^[0-9a-f]{64}$/);
+  assert.equal(result.compilerParity.ok, true);
   assert.equal(result.parity.ok, true);
   assert.equal(result.native.state['world.ready'], true);
   assert.equal(result.native.state['world.value'], 7);
   assert.ok(result.byteLength > 36);
   assert.ok(result.instructionCount > 0);
+});
+
+test('Energy authority state passes semantic native parity through the RNCS compiler', async () => {
+  const result = await compileRclSource(`reality RncsNativeEnergy {
+    energy grid {
+      reservoir source : Energy = joules(100)
+      reservoir load : Energy = joules(0)
+      flow charge from source to load amount joules(40) efficiency 0.9 evidence "meter"
+      preserve grid.source >= joules(0)
+      witness "rcl:energy"
+    }
+    energize grid
+  }`);
+  assert.equal(result.compiler.kind, 'rcl-native-selfhost');
+  assert.equal(result.compilerParity.ok, true);
+  assert.equal(result.parity.ok, true);
+  assert.equal(result.native.state['grid.source'].value, 60);
+  assert.equal(result.native.state['grid.load'].value, 36);
+});
+
+test('Energy domain state becomes an RNCS authority change with provenance', async () => {
+  const result = await compileRclAuthorityPlan(`reality RncsEnergyAuthority {
+    facet rncs.world.world_id : Text = "world:rcl-energy"
+    energy grid {
+      reservoir source : Energy = joules(100)
+      reservoir load : Energy = joules(0)
+      flow charge from source to load amount joules(40) efficiency 0.9 evidence "meter"
+      preserve grid.source >= joules(0)
+      witness "rcl:energy"
+    }
+    energize grid
+  }`);
+  const domainChange = result.changes.find(change => change.path === 'world.rcl.state');
+  assert.ok(domainChange);
+  assert.equal(domainChange.value['grid.source'].value, 60);
+  assert.equal(domainChange.value['grid.load'].value, 36);
+  assert.match(result.domainStateRoot, /^[0-9a-f]{64}$/);
+  assert.equal(result.plan.source.rcl_domain_state_root, result.domainStateRoot);
+  assert.equal(result.plan.evidence_requirements.some(item => item.kind === 'rcl-native-domain-state' && item.root === result.domainStateRoot), true);
+  assert.ok(result.plan.authority_requirements.some(item => item.action === 'commit_rcl_domain_state' && item.scope === 'world.rcl.write'));
 });
 
 test('RCL native state compiles into an RNCS authority plan without authority metadata writes', async () => {
@@ -106,6 +150,9 @@ test('RCL native state compiles into an RNCS authority plan without authority me
   }`);
   assert.equal(result.format, 'rncs.rcl-authority-plan.v0.1');
   assert.equal(result.execution.parity.ok, true);
+  assert.equal(result.plan.source.compiler.kind, 'rcl-native-selfhost');
+  assert.equal(result.plan.source.compiler_parity.ok, true);
+  assert.equal(result.plan.evidence_requirements[0].kind, 'rcl-native-selfhost-compiler');
   assert.deepEqual(result.changes.map(change => change.path), ['world.rcl_marker', 'world.title', 'world.world_id']);
   assert.ok(result.plan.authority_requirements.some(item => item.action === 'merge_candidate_branch'));
   assert.ok(!result.changes.some(change => /authority|generation|revision|state_root|evidence_root/i.test(change.path)));

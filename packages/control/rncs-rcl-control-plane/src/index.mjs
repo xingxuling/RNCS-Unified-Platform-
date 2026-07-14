@@ -5,6 +5,8 @@ import { fileURLToPath } from 'node:url';
 import {
   bootstrapCompilerStage5,
   compileRealityToBytecode,
+  compileSourceSelfHosted,
+  DEFAULT_GENERAL_SELFHOST_COMPILER_ARTIFACT_PATH,
   decodeBytecode,
   runNativeBytecode,
   verifyNativeParity,
@@ -65,20 +67,43 @@ function selectNamespace(state, namespace) {
 
 export async function compileRclSource(source, options = {}) {
   if (typeof source !== 'string' || source.trim().length === 0) throw new TypeError('RCL source must be a non-empty string');
-  const bytecode = compileRealityToBytecode(source);
-  const decoded = decodeBytecode(bytecode);
   const timeout = options.timeout ?? 30_000;
+  const bytecode = Buffer.from(compileSourceSelfHosted(source, { timeout }));
+  const referenceBytecode = Buffer.from(compileRealityToBytecode(source));
+  const compilerParity = bytecode.equals(referenceBytecode);
+  if (!compilerParity) {
+    throw Object.assign(new Error('RCL_SELFHOST_BYTECODE_MISMATCH'), {
+      code: 'RCL_SELFHOST_BYTECODE_MISMATCH',
+      details: {
+        native_hash: sha256(bytecode),
+        reference_hash: sha256(referenceBytecode),
+        native_length: bytecode.length,
+        reference_length: referenceBytecode.length,
+      },
+    });
+  }
+  const decoded = decodeBytecode(bytecode);
   const native = runNativeBytecode(bytecode, { timeout });
   const parity = options.verifyParity === false
     ? null
     : await verifyNativeParity(source, { nativeRuntime: { timeout } });
   return {
-    format: 'rncs.rcl-native-execution.v0.1',
+    format: 'rncs.rcl-native-execution.v0.2',
     languageVersion: RCL_LANGUAGE_VERSION,
     bytecodeVersion: RCL_BYTECODE_VERSION,
     bytecodeHash: sha256(bytecode),
     byteLength: bytecode.length,
     instructionCount: decoded.instructions.length,
+    compiler: {
+      kind: 'rcl-native-selfhost',
+      artifact: 'selfhost/compiler.rbc',
+      artifactHash: sha256(fs.readFileSync(DEFAULT_GENERAL_SELFHOST_COMPILER_ARTIFACT_PATH)),
+    },
+    compilerParity: {
+      ok: compilerParity,
+      reference: 'rcl-js-bootstrap',
+      referenceBytecodeHash: sha256(referenceBytecode),
+    },
     native: {
       state: native.state,
       projections: native.projections,
@@ -193,9 +218,32 @@ function collectRclChanges(state) {
   });
 }
 
+const RCL_INTERNAL_METADATA_KEYS = new Set(['__rclKind', '__rclType', '__rclObjectId', '__rclFieldOffsets']);
+
+function normalizeRclAuthorityValue(value) {
+  if (Array.isArray(value)) return value.map(normalizeRclAuthorityValue);
+  if (!value || typeof value !== 'object') return value;
+  return Object.fromEntries(Object.entries(value)
+    .filter(([key]) => !RCL_INTERNAL_METADATA_KEYS.has(key))
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([key, nested]) => [key, normalizeRclAuthorityValue(nested)]));
+}
+
+function collectRclDomainState(state) {
+  const domainState = {};
+  for (const [key, value] of Object.entries(state ?? {}).sort(([a], [b]) => a.localeCompare(b))) {
+    if (key.startsWith(RCL_RNCS_WORLD_PREFIX) || key.startsWith('world.')) continue;
+    const normalized = normalizeRclAuthorityValue(value);
+    if (!isJsonValue(normalized)) throw new TypeError(`RCL_RNCS_DOMAIN_VALUE_NOT_JSON:${key}`);
+    domainState[key] = normalized;
+  }
+  return domainState;
+}
+
 function rclWorldChanges(state) {
   const changes = [];
   const directStateKeys = [];
+  const domainState = collectRclDomainState(state);
   for (const [key, value] of Object.entries(state ?? {}).sort(([a], [b]) => a.localeCompare(b))) {
     if (!key.startsWith(RCL_RNCS_WORLD_PREFIX)) continue;
     if (key.startsWith(RCL_RNCS_OBJECT_PREFIX) || key.startsWith(RCL_RNCS_BEHAVIOR_PREFIX) || key.startsWith(RCL_RNCS_CHANGE_PREFIX)) continue;
@@ -218,12 +266,14 @@ function rclWorldChanges(state) {
   }
   if (objects.length) changes.push({op: 'set', path: 'world.objects', value: objects});
   if (behaviors.length) changes.push({op: 'set', path: 'world.behaviors', value: behaviors});
+  if (Object.keys(domainState).length) changes.push({op: 'set', path: 'world.rcl.state', value: domainState});
   changes.push(...operations);
   return {
     changes: changes.sort((a, b) => a.path.localeCompare(b.path)),
     objects,
     behaviors,
     operations,
+    domainState,
   };
 }
 
@@ -233,6 +283,9 @@ export async function compileRclAuthorityPlan(source, options = {}) {
   const changes = worldModel.changes;
   if (!changes.length) throw new Error('RCL_RNCS_WORLD_CHANGE_REQUIRED');
   const sourceRoot = execution.bytecodeHash;
+  const domainStateRoot = Object.keys(worldModel.domainState).length
+    ? sha256(Buffer.from(JSON.stringify(worldModel.domainState), 'utf8'))
+    : null;
   const planId = `plan:rcl:${sourceRoot.slice(0, 24)}`;
   const subjectId = String(options.subjectId ?? 'subject:rcl-native');
   const baselineGeneration = Number(options.baselineGeneration ?? 0);
@@ -249,6 +302,9 @@ export async function compileRclAuthorityPlan(source, options = {}) {
       bytecode_hash: execution.bytecodeHash,
       bytecode_version: execution.bytecodeVersion,
       instruction_count: execution.instructionCount,
+      compiler: execution.compiler,
+      compiler_parity: execution.compilerParity,
+      rcl_domain_state_root: domainStateRoot,
     },
     subject: {
       subject_id: subjectId,
@@ -272,6 +328,7 @@ export async function compileRclAuthorityPlan(source, options = {}) {
       { action: 'create_world_object', scope: 'world.object.create', risk_level: 'medium' },
       ...((worldModel.objects.length || worldModel.operations.some(operation => operation.path === 'world.objects' || operation.path.startsWith('world.objects.'))) ? [{ action: 'modify_object_property', scope: 'world.object.write', risk_level: 'medium' }] : []),
       ...((worldModel.behaviors.length || worldModel.operations.some(operation => operation.path === 'world.behaviors' || operation.path.startsWith('world.behaviors.'))) ? [{ action: 'register_behavior', scope: 'behavior.register', risk_level: 'medium' }] : []),
+      ...(domainStateRoot ? [{ action: 'commit_rcl_domain_state', scope: 'world.rcl.write', risk_level: 'medium' }] : []),
       { action: 'merge_candidate_branch', scope: 'branch.merge', risk_level: riskLevel },
       { action: 'rollback_generation', scope: 'rfe.rollback', risk_level: 'high' },
     ],
@@ -283,8 +340,10 @@ export async function compileRclAuthorityPlan(source, options = {}) {
     ],
     projection_targets: ['aetherworld', 'rncs.rsr', 'rncs.vsr'],
     evidence_requirements: [
+      { kind: 'rcl-native-selfhost-compiler', root: execution.compiler?.artifactHash },
       { kind: 'rcl-native-bytecode', root: execution.bytecodeHash },
       { kind: 'rcl-native-parity', verified: execution.parity?.ok === true },
+      ...(domainStateRoot ? [{ kind: 'rcl-native-domain-state', root: domainStateRoot }] : []),
       { kind: 'rbf-simulation-receipt' },
       { kind: 'aaf-decision' },
       { kind: 'rfe-commit-receipt' },
@@ -306,6 +365,8 @@ export async function compileRclAuthorityPlan(source, options = {}) {
     objects: worldModel.objects,
     behaviors: worldModel.behaviors,
     operations: worldModel.operations,
+    domainState: worldModel.domainState,
+    domainStateRoot,
     stateRoot: sha256(Buffer.from(JSON.stringify(execution.native.state), 'utf8')),
   };
 }

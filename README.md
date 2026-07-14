@@ -14,11 +14,11 @@
 - 浏览器直接打开版与 Android Studio 源码宿主；
 - RNCS Gateway/Registry 接入，Runtime health healthy（17 runtimes，含正式 `rncs.rcl-control`）；
 - RCL `0.94.0-alpha.1` 已作为 workspace 真实语言运行时同步进 RNCS；
-- `rncs.rcl-control` 可经 Gateway 完成 RCL → RBC → native VM → parity → RNCS candidate → RSR simulation → AAF → RFE commit；
+- `rncs.rcl-control` 可经 Gateway 完成 RCL native self-host compiler → JS reference byte parity → native VM → RNCS candidate → RSR simulation → AAF → RFE commit；
 - RCL authority plan 支持 `set`、`remove`、`append`、`increment`、`merge` 五类世界增量操作，并由 RBF candidate 保留顺序、基线与回滚语义；
 - RCL 行为执行的 causal delta 会投影回 `world.snapshot`，而不是只写一条行为日志；
 - MCP 暴露只读 `rncs_rcl_compile_execute`、`rncs_rcl_compile_authority_plan`，以及 founder 权限的 `rncs_rcl_authority_workflow` 和 `rncs_execute_behavior`；后者只接受带状态前置条件、显式审批角色和 parity 证据的权威提交；
-- RFE 提交回执会携带 RCL 原生 bytecode、authority plan 与 parity 证据根，RCL 不再只是 RNCS 的描述性输入。
+- RFE 提交回执会携带 RCL self-host compiler artifact、原生 bytecode、domain state、authority plan 与 parity 证据根，RCL 不再只是 RNCS 的描述性输入。
 
 ## 运行
 
