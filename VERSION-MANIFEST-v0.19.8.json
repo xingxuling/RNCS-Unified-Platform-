@@ -6,17 +6,19 @@
   "products": {
     "rcl": "0.94.0-alpha.1",
     "native_vm": "0.6.0-alpha.1",
-    "rcl_control_plane": "0.3.0-alpha.1",
-    "rcl_gateway_runtime": "0.3.0-alpha.1",
-    "mcp": "0.3.0-alpha.1"
+    "rcl_control_plane": "0.4.0-alpha.1",
+    "rcl_gateway_runtime": "0.4.0-alpha.1",
+    "mcp": "0.4.0-alpha.1"
   },
   "runtime_count": 17,
   "rcl_gateway_runtime": "rncs.rcl-control",
   "mcp_read_tool": "rncs_rcl_compile_execute",
+  "mcp_authority_tool": "rncs_rcl_authority_workflow",
   "verification": {
-    "rcl_control_plane": "8/8 pass",
-    "gateway": "15/15 pass",
+    "rcl_control_plane": "9/9 pass",
+    "gateway": "16/16 pass",
     "rcl_native_parity": "pass",
+    "rcl_native_authority_commit": "pass",
     "rsr_vsr_dependencies": "discovered and healthy"
   }
 }

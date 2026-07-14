@@ -88,6 +88,104 @@ export async function compileRclSource(source, options = {}) {
   };
 }
 
+const RCL_RNCS_WORLD_PREFIX = 'rncs.world.';
+const RCL_RNCS_FORBIDDEN_PATH = /(^|\.)(authority|generation|revision|state_root|evidence_root)(\.|$)/i;
+
+function isJsonValue(value) {
+  if (value === null || typeof value === 'string' || typeof value === 'boolean') return true;
+  if (typeof value === 'number') return Number.isFinite(value);
+  if (Array.isArray(value)) return value.every(isJsonValue);
+  if (value && typeof value === 'object') return Object.values(value).every(isJsonValue);
+  return false;
+}
+
+function rclWorldChanges(state) {
+  const changes = [];
+  for (const [key, value] of Object.entries(state ?? {}).sort(([a], [b]) => a.localeCompare(b))) {
+    if (!key.startsWith(RCL_RNCS_WORLD_PREFIX)) continue;
+    const pathName = `world.${key.slice(RCL_RNCS_WORLD_PREFIX.length)}`;
+    if (!pathName.slice('world.'.length) || RCL_RNCS_FORBIDDEN_PATH.test(pathName)) {
+      throw new Error(`RCL_RNCS_WORLD_PATH_FORBIDDEN:${pathName}`);
+    }
+    if (!isJsonValue(value)) throw new TypeError(`RCL_RNCS_WORLD_VALUE_NOT_JSON:${pathName}`);
+    changes.push({ op: 'set', path: pathName, value });
+  }
+  return changes;
+}
+
+export async function compileRclAuthorityPlan(source, options = {}) {
+  const execution = options.execution ?? await compileRclSource(source, options);
+  const changes = rclWorldChanges(execution.native?.state);
+  if (!changes.length) throw new Error('RCL_RNCS_WORLD_CHANGE_REQUIRED');
+  const sourceRoot = execution.bytecodeHash;
+  const planId = `plan:rcl:${sourceRoot.slice(0, 24)}`;
+  const subjectId = String(options.subjectId ?? 'subject:rcl-native');
+  const baselineGeneration = Number(options.baselineGeneration ?? 0);
+  const riskLevel = options.riskLevel ?? 'high';
+  const plan = {
+    format: 'rncs.compilation-plan.v0.2',
+    version: '0.2.0',
+    plan_id: planId,
+    source: {
+      language: 'RCL',
+      version: RCL_LANGUAGE_VERSION,
+      text: source,
+      source_root: sourceRoot,
+      bytecode_hash: execution.bytecodeHash,
+      bytecode_version: execution.bytecodeVersion,
+      instruction_count: execution.instructionCount,
+    },
+    subject: {
+      subject_id: subjectId,
+      roles: options.roles ?? ['rcl-author'],
+      responsibility_boundary: 'world-authority',
+    },
+    artifacts: [],
+    behaviors: [],
+    candidate_branch: {
+      branch_id: `branch:rcl-${sourceRoot.slice(0, 24)}`,
+      baseline_generation: baselineGeneration,
+      risk_level: riskLevel,
+      reason: 'RCL native state transition must be simulated before authority commit',
+    },
+    authority_requirements: [
+      { action: 'create_world_object', scope: 'world.object.create', risk_level: 'medium' },
+      { action: 'register_behavior', scope: 'behavior.register', risk_level: 'medium' },
+      { action: 'merge_candidate_branch', scope: 'branch.merge', risk_level: riskLevel },
+      { action: 'rollback_generation', scope: 'rfe.rollback', risk_level: 'high' },
+    ],
+    world_state_changes: changes,
+    simulation_requirements: [
+      { runtime: 'rcl.native', mode: 'native-bytecode-parity' },
+      { runtime: 'rncs.rsr', mode: 'candidate-isolated', fixed_step_hz: 60 },
+      { runtime: 'rncs.vsr', mode: 'presentation-only' },
+    ],
+    projection_targets: ['aetherworld', 'rncs.rsr', 'rncs.vsr'],
+    evidence_requirements: [
+      { kind: 'rcl-native-bytecode', root: execution.bytecodeHash },
+      { kind: 'rcl-native-parity', verified: execution.parity?.ok === true },
+      { kind: 'rbf-simulation-receipt' },
+      { kind: 'aaf-decision' },
+      { kind: 'rfe-commit-receipt' },
+    ],
+    rollback_policy: { mode: 'generation-restore', restore_baseline: true, retain_evidence: true },
+    acceptance_rules: [
+      { rule: 'rcl-native-parity-before-candidate' },
+      { rule: 'candidate-before-commit' },
+      { rule: 'all-mutating-actions-authorized' },
+      { rule: 'state-precondition-must-match' },
+      { rule: 'rfe-receipt-required' },
+    ],
+  };
+  return {
+    format: 'rncs.rcl-authority-plan.v0.1',
+    execution,
+    plan,
+    changes,
+    stateRoot: sha256(Buffer.from(JSON.stringify(execution.native.state), 'utf8')),
+  };
+}
+
 export function compileControlPlaneEdge(from, to) {
   const result = bootstrapCompilerStage5({
     coreSource: readRclModule(from, { interfaceOnly: true }),

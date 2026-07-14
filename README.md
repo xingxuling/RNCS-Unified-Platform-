@@ -14,8 +14,9 @@
 - 浏览器直接打开版与 Android Studio 源码宿主；
 - RNCS Gateway/Registry 接入，Runtime health healthy（17 runtimes，含正式 `rncs.rcl-control`）；
 - RCL `0.94.0-alpha.1` 已作为 workspace 真实语言运行时同步进 RNCS；
-- `rncs.rcl-control` 可经 Gateway 完成 RCL → RBC → native VM → parity；
-- MCP 暴露只读 `rncs_rcl_compile_execute`，可直接查看 native state、history、projection 和 parity。
+- `rncs.rcl-control` 可经 Gateway 完成 RCL → RBC → native VM → parity → RNCS candidate → RSR simulation → AAF → RFE commit；
+- MCP 暴露只读 `rncs_rcl_compile_execute`，以及 founder 权限的 `rncs_rcl_authority_workflow`，后者只接受带状态前置条件、显式审批角色和 parity 证据的权威提交；
+- RFE 提交回执会携带 RCL 原生 bytecode、authority plan 与 parity 证据根，RCL 不再只是 RNCS 的描述性输入。
 
 ## 运行
 

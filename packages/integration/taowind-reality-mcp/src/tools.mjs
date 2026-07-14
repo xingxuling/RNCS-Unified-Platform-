@@ -36,6 +36,7 @@ export const TOOL_CATALOG=Object.freeze([
  {name:'rncs_world_status',level:'read'},
  {name:'rncs_compile_plan',level:'read'},
  {name:'rncs_rcl_compile_execute',level:'read'},
+ {name:'rncs_rcl_authority_workflow',level:'founder'},
  {name:'rncs_validate_plan',level:'read'},
  {name:'rncs_create_candidate',level:'candidate'},
  {name:'rncs_get_candidate',level:'read'},
@@ -239,6 +240,17 @@ export function createTaoWindMcpServer({gateway,knowledge,config}){
  },async({generation_id})=>native(gateway,'materializeRSR',{generationId:generation_id??null}));
 
  if(config.authorityWritesEnabled){
+  registerRegular(server,'rncs_rcl_authority_workflow',{
+   title:'Execute RCL as Authoritative RNCS State',
+   description:'Compile RCL natively, verify reference/native parity, create and simulate an RNCS candidate, obtain AAF decisions, and optionally commit the resulting state through RFE. Requires fresh RNCS state preconditions for commit.',
+   inputSchema:{source:z.string().min(1).max(20_000),commit:z.boolean().optional(),approval_roles:approvalRolesSchema.optional(),subject_id:z.string().min(3).max(200).optional(),roles:approvalRolesSchema.optional(),expected_state_root:stateRootSchema.optional(),expected_revision:z.number().int().min(0).optional(),verify_parity:z.boolean().optional(),timeout_ms:z.number().int().min(100).max(120_000).optional()},annotations:destructiveAnnotations
+  },async({source,commit=true,approval_roles=config.founderApprovalRoles,subject_id=config.founderSubjectId,roles,expected_state_root,expected_revision,verify_parity=true,timeout_ms=30_000})=>{
+   assertAuthorityEnabled(config);
+   const before=await assertExpectedState(gateway,config,{expected_state_root,expected_revision},'RCL authority workflow');
+   const result=await gateway.invoke('rncs.rcl-control','authorityWorkflow',{source,commit,approvalRoles:approval_roles,subjectId:subject_id,roles,expectedStateRoot:before.state_root,expectedRevision:before.revision,verifyParity:verify_parity,timeout:timeout_ms},{idempotencyKey:`rcl-authority:${source}:${before.state_root}:${commit}`});
+   return{...result,authority_invariant:{before_state_root:before.state_root,before_revision:before.revision,commit_requested:commit}};
+  });
+
   registerRegular(server,'rncs_authorize_candidate',{
    title:'Authorize Candidate Reality',description:'Issue AAF authority decisions for a simulated candidate using private founder roles.',
    inputSchema:{candidate_id:z.string().min(1).max(300),approval_roles:approvalRolesSchema.optional()},annotations:authorityAnnotations

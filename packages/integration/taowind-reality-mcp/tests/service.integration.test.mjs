@@ -26,7 +26,7 @@ const resultOf=response=>response.structuredContent?.result;
 test('private founder profile exposes authority and project execution tools while break-glass shell stays hidden',async()=>withClient(async({client})=>{
  const tools=await client.listTools();
  const names=tools.tools.map(tool=>tool.name);
- for(const expected of ['rncs_candidate_workflow','rncs_authorize_candidate','rncs_merge_candidate','rncs_rollback_generation','rncs_replay_generation','rncs_runtime_action','rncs_rcl_compile_execute','developer_execution_status','workspace_read_file','workspace_write_file','workspace_export_artifact','execution_run_command','git_commit','github_create_pr','vercel_deploy','rsr_simulate','vsr_render','rncs_engineering_workflow'])assert.ok(names.includes(expected),expected);
+ for(const expected of ['rncs_candidate_workflow','rncs_authorize_candidate','rncs_merge_candidate','rncs_rollback_generation','rncs_replay_generation','rncs_runtime_action','rncs_rcl_compile_execute','rncs_rcl_authority_workflow','developer_execution_status','workspace_read_file','workspace_write_file','workspace_export_artifact','execution_run_command','git_commit','github_create_pr','vercel_deploy','rsr_simulate','vsr_render','rncs_engineering_workflow'])assert.ok(names.includes(expected),expected);
  for(const forbidden of ['execute_shell','read_arbitrary_file','write_arbitrary_file','execution_run_shell'])assert.ok(!names.includes(forbidden));
  assert.equal(tools.tools.find(tool=>tool.name==='rncs_merge_candidate').annotations.destructiveHint,true);
 }));
@@ -39,6 +39,19 @@ test('RCL MCP bridge compiles, executes native RBC, and reports parity',async()=
  assert.equal(result.parity.ok,true);
  assert.equal(result.native.state['world.ready'],true);
  assert.equal(result.native.state['world.value'],7);
+}));
+
+test('RCL MCP authority tool commits native state through AAF and RFE',async()=>withClient(async({client})=>{
+ const before=resultOf(await client.callTool({name:'rncs_world_status',arguments:{}}));
+ const response=await client.callTool({name:'rncs_rcl_authority_workflow',arguments:{source:'reality McpRclAuthority { facet rncs.world.world_id : Text = "world:aether-island" facet rncs.world.title : Text = "MCP RCL authoritative title" facet rncs.world.rcl_marker : Truth = true }',commit:true,expected_state_root:before.state_root,expected_revision:before.revision,approval_roles:['owner','security']}});
+ assert.equal(response.isError,undefined);
+ const result=resultOf(response);
+ assert.equal(result.status,'committed');
+ assert.equal(result.authority.authorized,true);
+ assert.equal(result.changed,true);
+ assert.equal(result.candidate.candidate_root.length,64);
+ assert.equal(result.merge.evidence.rcl_native_evidence.parity_verified,true);
+ assert.ok(result.merge.evidence.rfe_commit_receipt.integrityHash);
 }));
 
 

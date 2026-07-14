@@ -1,7 +1,7 @@
 {
   "format": "taowind.reality-mcp.release.v0.3",
   "name": "TaoWind Reality MCP",
-  "version": "0.3.0-alpha.1",
+  "version": "0.4.0-alpha.1",
   "suite_version": "0.14.0-alpha.1",
   "base_release": "0.13.0-alpha.1",
   "transport": "streamable-http",
@@ -9,10 +9,10 @@
   "runtime_gateway": "@taowind/reality-one-gateway@0.4.0-alpha.1",
   "execution_runtime": "@taowind/developer-execution-runtime@0.1.0-alpha.1",
   "runtime_count": 17,
-  "tool_count_default_founder": 48,
-  "tool_count_founder_unrestricted": 49,
+  "tool_count_default_founder": 49,
+  "tool_count_founder_unrestricted": 50,
   "tool_groups": {
-    "authority_and_runtime": 27,
+    "authority_and_runtime": 28,
     "engineering_execution_default": 21,
     "breakglass_shell_optional": 1
   },

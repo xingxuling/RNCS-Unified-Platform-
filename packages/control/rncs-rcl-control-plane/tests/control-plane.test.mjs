@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import {
   buildRclControlPlane,
   compileRclSource,
+  compileRclAuthorityPlan,
   compileControlPlaneEdge,
   CONTROL_PLANE_EDGES,
   verifyLegacyManifestParity,
@@ -95,6 +96,19 @@ test('current RCL source compiles and executes through the RNCS control-plane br
   assert.equal(result.native.state['world.value'], 7);
   assert.ok(result.byteLength > 36);
   assert.ok(result.instructionCount > 0);
+});
+
+test('RCL native state compiles into an RNCS authority plan without authority metadata writes', async () => {
+  const result = await compileRclAuthorityPlan(`reality RncsAuthoritySource {
+    facet rncs.world.world_id : Text = "world:aether-island"
+    facet rncs.world.title : Text = "RCL authoritative title"
+    facet rncs.world.rcl_marker : Truth = true
+  }`);
+  assert.equal(result.format, 'rncs.rcl-authority-plan.v0.1');
+  assert.equal(result.execution.parity.ok, true);
+  assert.deepEqual(result.changes.map(change => change.path), ['world.rcl_marker', 'world.title', 'world.world_id']);
+  assert.ok(result.plan.authority_requirements.some(item => item.action === 'merge_candidate_branch'));
+  assert.ok(!result.changes.some(change => /authority|generation|revision|state_root|evidence_root/i.test(change.path)));
 });
 
 

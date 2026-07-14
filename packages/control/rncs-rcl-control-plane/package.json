@@ -1,7 +1,7 @@
 {
   "name": "@taowind/rncs-rcl-control-plane",
-  "version": "0.3.0-alpha.1",
-  "description": "Long-lived embedded RCL AOT control plane for twelve RNCS semantic modules including Aether Earth.",
+  "version": "0.4.0-alpha.1",
+  "description": "Long-lived embedded RCL AOT control plane with native authority-plan compilation for RNCS state commits.",
   "type": "module",
   "license": "Apache-2.0",
   "exports": {
