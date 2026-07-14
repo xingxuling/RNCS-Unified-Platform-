@@ -47,3 +47,8 @@ test('RCL behavior execution projects its causal state into the authoritative wo
  facet rncs.world.behavior.signal.capability.risk : Text = "medium"
  }
  `);const candidate=r.createCandidate({plan:compiled.plan});await r.simulateCandidate({candidateId:candidate.candidate_id});r.authorizeCandidate({candidateId:candidate.candidate_id,approvalRoles:['owner','security']});await r.mergeCandidate({candidateId:candidate.candidate_id});const execution=r.executeBehavior({behaviorId:'behavior:rcl-projection',event:'rcl.signal'});const snapshot=r.worldSnapshot();assert.equal(snapshot.state.world.runtime.behavior_globals.triggered,true);assert.ok(execution.execution.world_changed_paths.includes('world.runtime.behavior_globals.triggered'));assert.equal(execution.execution.world_state_root,snapshot.state_root);});
+test('RCL authority binding is committed into the RFE authority event',async()=>{const r=runtime();const compiled=await compileRclAuthorityPlan(`reality RclAuthorityBinding {
+ facet rncs.world.world_id : Text = "world:rcl-authority-binding"
+ facet rncs.world.title : Text = "bound candidate"
+ }
+ `);const candidate=r.createCandidate({plan:compiled.plan});await r.simulateCandidate({candidateId:candidate.candidate_id});r.authorizeCandidate({candidateId:candidate.candidate_id,approvalRoles:['owner','security']});await r.mergeCandidate({candidateId:candidate.candidate_id});const event=r.store.materialize().events.at(-1);assert.equal(event.authority.status,'approved');assert.match(event.authority.binding_root,/^[0-9a-f]{64}$/);const evidence=event.evidence.find(item=>item.kind==='rncs.rcl-authority-binding');assert.ok(evidence);assert.equal(evidence.root,event.authority.binding_root);});
