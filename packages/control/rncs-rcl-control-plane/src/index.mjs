@@ -160,9 +160,10 @@ function collectRclEntities(state, prefix, kind) {
     if (!alias || !fieldParts.length || !RCL_RNCS_ALIAS.test(alias)) {
       throw new Error(`RCL_RNCS_ENTITY_DECLARATION_INVALID:${key}`);
     }
-    if (!isJsonValue(value)) throw new TypeError(`RCL_RNCS_ENTITY_VALUE_NOT_JSON:${key}`);
+    const normalized = normalizeRclAuthorityValue(value);
+    if (!isJsonValue(normalized)) throw new TypeError(`RCL_RNCS_ENTITY_VALUE_NOT_JSON:${key}`);
     const entity = groups.get(alias) ?? {};
-    setNestedValue(entity, fieldParts, value, key);
+    setNestedValue(entity, fieldParts, normalized, key);
     groups.set(alias, entity);
   }
   const entities = [...groups.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([, entity]) => entity);
@@ -197,9 +198,10 @@ function collectRclChanges(state) {
     if (!alias || !fieldParts.length || !RCL_RNCS_ALIAS.test(alias)) {
       throw new Error(`RCL_RNCS_CHANGE_DECLARATION_INVALID:${key}`);
     }
-    if (!isJsonValue(value)) throw new TypeError(`RCL_RNCS_CHANGE_VALUE_NOT_JSON:${key}`);
+    const normalized = normalizeRclAuthorityValue(value);
+    if (!isJsonValue(normalized)) throw new TypeError(`RCL_RNCS_CHANGE_VALUE_NOT_JSON:${key}`);
     const change = groups.get(alias) ?? {};
-    setNestedValue(change, fieldParts, value, key);
+    setNestedValue(change, fieldParts, normalized, key);
     groups.set(alias, change);
   }
   return [...groups.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([alias, change]) => {
@@ -221,6 +223,10 @@ function collectRclChanges(state) {
 const RCL_INTERNAL_METADATA_KEYS = new Set(['__rclKind', '__rclType', '__rclObjectId', '__rclFieldOffsets']);
 
 function normalizeRclAuthorityValue(value) {
+  if (typeof value === 'number') {
+    if (!Number.isFinite(value)) throw new TypeError('RCL_RNCS_DOMAIN_NUMBER_NOT_FINITE');
+    return Number.isSafeInteger(value) ? value : String(value);
+  }
   if (Array.isArray(value)) return value.map(normalizeRclAuthorityValue);
   if (!value || typeof value !== 'object') return value;
   return Object.fromEntries(Object.entries(value)
@@ -251,9 +257,10 @@ function rclWorldChanges(state) {
     if (!pathName.slice('world.'.length) || RCL_RNCS_FORBIDDEN_PATH.test(pathName)) {
       throw new Error(`RCL_RNCS_WORLD_PATH_FORBIDDEN:${pathName}`);
     }
-    if (!isJsonValue(value)) throw new TypeError(`RCL_RNCS_WORLD_VALUE_NOT_JSON:${pathName}`);
+    const normalized = normalizeRclAuthorityValue(value);
+    if (!isJsonValue(normalized)) throw new TypeError(`RCL_RNCS_WORLD_VALUE_NOT_JSON:${pathName}`);
     directStateKeys.push(pathName);
-    changes.push({op: 'set', path: pathName, value});
+    changes.push({op: 'set', path: pathName, value: normalized});
   }
   const objects = collectRclEntities(state, RCL_RNCS_OBJECT_PREFIX, 'object');
   const behaviors = collectRclEntities(state, RCL_RNCS_BEHAVIOR_PREFIX, 'behavior');

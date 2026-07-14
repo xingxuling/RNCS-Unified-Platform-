@@ -17,6 +17,88 @@ import {
 
 const packageRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const repoRoot = path.resolve(packageRoot, '../../..');
+const COGNITION_SOURCE = `reality RncsCognitionAuthority {
+  facet rncs.world.world_id : Text = "world:rcl-cognition"
+  facet rncs.world.confidence : Number = 0.97
+  facet greenhouse.light : Truth = false
+  facet greenhouse.safe : Truth = true
+
+  subject caretaker {
+    facet actions : Number = 0
+    warrant greenhouse.control on greenhouse
+  }
+
+  knowledge mind {
+    claim operation_safe : Truth = greenhouse.safe
+      confidence 0.99
+      evidence "policy:greenhouse-safe"
+      source "runtime:safety-state"
+      scope "greenhouse"
+      status observed
+    preserve supported(mind.operation_safe, 0.95)
+  }
+
+  language command {
+    utterance request = "open greenhouse light"
+      speaker "operator"
+      locale "en-US"
+      channel "text"
+      evidence "input:user-request"
+
+    intent activate_light
+      when contains(utterance_text(command.request), "open") and contains(utterance_text(command.request), "light")
+      action "activate"
+      target "greenhouse.light"
+      confidence 0.97
+      evidence "grammar:open-light"
+      from command.request
+      slot device = "light"
+
+    preserve intent_confidence(command.activate_light) >= 0.90
+  }
+
+  understanding situation {
+    hypothesis authorized_request : Truth =
+      intent_matches(command.activate_light, "activate", "greenhouse.light") and knowledge_value(mind.operation_safe)
+      confidence 0.96
+      explanation "The request is safe and targets the greenhouse light."
+      evidence "model:command-plus-safety"
+      from command.activate_light, mind.operation_safe
+      coverage 1.0
+      coherence 0.98
+    preserve understood(situation.authorized_request, 0.90)
+  }
+
+  creation solutions {
+    candidate activate : Text = "activate"
+      when understanding_value(situation.authorized_request)
+      target "greenhouse.light"
+      novelty 0.30
+      utility 0.98
+      feasibility 0.99
+      risk 0.02
+      evidence "strategy:direct-safe-action"
+      based_on situation.authorized_request
+
+    candidate clarify : Text = "ask-for-clarification"
+      when true
+      target "operator"
+      novelty 0.20
+      utility 0.25
+      feasibility 1.0
+      risk 0.01
+      evidence "strategy:conservative-fallback"
+      based_on command.activate_light
+
+    select chosen from activate, clarify
+    preserve creation_score(solutions.chosen) >= 0.80
+  }
+
+  learn mind
+  interpret command
+  understand situation
+  create solutions
+}`;
 
 test('RCL-native RNCS control plane compiles twelve semantic modules through eleven verified edges', () => {
   const result = buildRclControlPlane();
@@ -139,6 +221,30 @@ test('Energy domain state becomes an RNCS authority change with provenance', asy
   assert.match(result.domainStateRoot, /^[0-9a-f]{64}$/);
   assert.equal(result.plan.source.rcl_domain_state_root, result.domainStateRoot);
   assert.equal(result.plan.evidence_requirements.some(item => item.kind === 'rcl-native-domain-state' && item.root === result.domainStateRoot), true);
+  assert.ok(result.plan.authority_requirements.some(item => item.action === 'commit_rcl_domain_state' && item.scope === 'world.rcl.write'));
+});
+
+test('Cognition and creation state pass native parity through the RNCS compiler', async () => {
+  const result = await compileRclSource(COGNITION_SOURCE);
+  assert.equal(result.compiler.kind, 'rcl-native-selfhost');
+  assert.equal(result.compilerParity.ok, true);
+  assert.equal(result.parity.ok, true);
+  assert.equal(result.parity.checks.rawRoots, true);
+  assert.deepEqual(result.native.state['command.activate_light'].slots, { device: 'light' });
+  assert.equal(result.native.state['solutions.chosen'].status, 'selected');
+});
+
+test('Cognition state becomes an RNCS authority change with native evidence', async () => {
+  const result = await compileRclAuthorityPlan(COGNITION_SOURCE);
+  const domainChange = result.changes.find(change => change.path === 'world.rcl.state');
+  assert.ok(domainChange);
+  assert.deepEqual(domainChange.value['command.activate_light'].slots, { device: 'light' });
+  assert.equal(domainChange.value['command.activate_light'].confidence, '0.97');
+  assert.equal(domainChange.value['solutions.chosen'].status, 'selected');
+  assert.equal(result.changes.find(change => change.path === 'world.confidence')?.value, '0.97');
+  assert.match(result.domainStateRoot, /^[0-9a-f]{64}$/);
+  assert.equal(result.plan.source.rcl_domain_state_root, result.domainStateRoot);
+  assert.ok(result.plan.evidence_requirements.some(item => item.kind === 'rcl-native-domain-state' && item.root === result.domainStateRoot));
   assert.ok(result.plan.authority_requirements.some(item => item.action === 'commit_rcl_domain_state' && item.scope === 'world.rcl.write'));
 });
 
