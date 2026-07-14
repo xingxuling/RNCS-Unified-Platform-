@@ -55,12 +55,12 @@ jobs:
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Verify version contract
         run: npm run verify:version-contract
+      - run: npm run build --workspace @taowind/reality-simulation-runtime
+      - run: npm run build --workspace @taowind/visual-state-runtime
       - run: npm run test:execution
       - run: npm run test:gateway
       - run: npm run test:mcp
       - run: npm run smoke:mcp
-      - run: npm run build --workspace @taowind/reality-simulation-runtime
-      - run: npm run build --workspace @taowind/visual-state-runtime
       - name: Execute real RSR/VSR evidence
         run: |
           node --input-type=module <<'NODE'
