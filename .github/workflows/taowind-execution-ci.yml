@@ -13,8 +13,13 @@ on:
       - "packages/integration/taowind-reality-mcp/**"
       - "packages/control/reality-one-gateway/**"
       - ".github/workflows/taowind-execution-ci.yml"
+      - "package.json"
+      - "package-lock.json"
+      - "rncs.modules.json"
+      - "VERSION-MANIFEST-v0.19.8.json"
+      - "scripts/verify-version-contract.mjs"
   push:
-    branches: [main]
+    branches: [main, main-95]
     paths:
       - "packages/operations/developer-execution-runtime/**"
       - "packages/integration/taowind-reality-mcp/**"
@@ -31,6 +36,8 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci --ignore-scripts
+      - name: Verify version contract
+        run: npm run verify:version-contract
       - run: npm run test:execution
       - run: npm run test:gateway
       - run: npm run test:mcp
