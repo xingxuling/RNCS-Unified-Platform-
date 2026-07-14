@@ -178,6 +178,9 @@ test('current RCL source compiles and executes through the RNCS control-plane br
   assert.match(result.compiler.artifactHash, /^[0-9a-f]{64}$/);
   assert.equal(result.compilerParity.ok, true);
   assert.equal(result.parity.ok, true);
+  assert.match(result.native.nativeStateRoot, /^[0-9a-f]{64}$/);
+  assert.equal(result.native.stateRoot, result.native.nativeStateRoot);
+  assert.equal(result.native.stateRootVerified, true);
   assert.equal(result.native.state['world.ready'], true);
   assert.equal(result.native.state['world.value'], 7);
   assert.ok(result.byteLength > 36);
@@ -219,6 +222,8 @@ test('Energy domain state becomes an RNCS authority change with provenance', asy
   assert.equal(domainChange.value['grid.source'].value, 60);
   assert.equal(domainChange.value['grid.load'].value, 36);
   assert.match(result.domainStateRoot, /^[0-9a-f]{64}$/);
+  assert.equal(result.plan.source.rcl_native_state_root, result.execution.native.nativeStateRoot);
+  assert.ok(result.plan.evidence_requirements.some(item => item.kind === 'rcl-native-authority-state' && item.root === result.execution.native.nativeStateRoot && item.verified === true));
   assert.equal(result.plan.source.rcl_domain_state_root, result.domainStateRoot);
   assert.equal(result.plan.evidence_requirements.some(item => item.kind === 'rcl-native-domain-state' && item.root === result.domainStateRoot), true);
   assert.ok(result.plan.authority_requirements.some(item => item.action === 'commit_rcl_domain_state' && item.scope === 'world.rcl.write'));
@@ -255,6 +260,13 @@ test('Cognition state becomes an RNCS authority change with native evidence', as
   assert.equal(result.plan.source.rcl_domain_state_root, result.domainStateRoot);
   assert.ok(result.plan.evidence_requirements.some(item => item.kind === 'rcl-native-domain-state' && item.root === result.domainStateRoot));
   assert.ok(result.plan.authority_requirements.some(item => item.action === 'commit_rcl_domain_state' && item.scope === 'world.rcl.write'));
+  assert.equal(result.authorityEvidence.format, 'rcl.native-authority-evidence.v0.1');
+  assert.match(result.authorityEvidence.root, /^[0-9a-f]{64}$/);
+  assert.equal(result.plan.source.rcl_authority_evidence_root, result.authorityEvidence.root);
+  assert.ok(result.plan.authority_requirements.some(item => item.action === 'authorize_rcl_transition' && item.scope === 'world.rcl.authority'));
+  assert.ok(result.plan.acceptance_rules.some(item => item.rule === 'rcl-authority-continuity-bound'));
+  assert.ok(result.authorityEvidence.transitions.length >= 4);
+  assert.ok(result.authorityEvidence.transitions.every(item => item.subject?.subject_id && Array.isArray(item.capability_plan?.required_scopes)));
 });
 
 test('RCL native state compiles into an RNCS authority plan without authority metadata writes', async () => {

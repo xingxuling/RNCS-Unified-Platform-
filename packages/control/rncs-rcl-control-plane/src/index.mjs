@@ -13,6 +13,7 @@ import {
   EmbeddedNativeVm,
   RCL_BYTECODE_VERSION,
   RCL_LANGUAGE_VERSION,
+  toRncsProposalInput,
 } from '@taowind/reality-computation-language';
 
 export { RCL_BYTECODE_VERSION, RCL_LANGUAGE_VERSION };
@@ -84,10 +85,16 @@ export async function compileRclSource(source, options = {}) {
   }
   const decoded = decodeBytecode(bytecode);
   const native = runNativeBytecode(bytecode, { timeout });
+  if (native.stateRootVerified !== true || typeof native.nativeStateRoot !== 'string') {
+    throw Object.assign(new Error('RCL_NATIVE_AUTHORITY_STATE_ROOT_REQUIRED'), {
+      code: 'RCL_NATIVE_AUTHORITY_STATE_ROOT_REQUIRED',
+      details: { stateRoot: native.stateRoot ?? null, nativeStateRoot: native.nativeStateRoot ?? null },
+    });
+  }
   const parity = options.verifyParity === false
     ? null
     : await verifyNativeParity(source, { nativeRuntime: { timeout } });
-  return {
+  const execution = {
     format: 'rncs.rcl-native-execution.v0.2',
     languageVersion: RCL_LANGUAGE_VERSION,
     bytecodeVersion: RCL_BYTECODE_VERSION,
@@ -105,12 +112,22 @@ export async function compileRclSource(source, options = {}) {
       referenceBytecodeHash: sha256(referenceBytecode),
     },
     native: {
+      program: native.program,
+      sourceRoot: native.sourceRoot,
+      stateRootAlgorithm: native.stateRootAlgorithm,
       state: native.state,
+      stateRoot: native.stateRoot,
+      nativeStateRoot: native.nativeStateRoot,
+      stateRootVerified: native.stateRootVerified,
       projections: native.projections,
       history: native.history,
     },
     parity: parity ? { ok: parity.ok, checks: parity.parity } : null,
   };
+  const authorityEvidence = collectRclNativeAuthorityEvidence(execution, options);
+  execution.authorityEvidence = authorityEvidence;
+  execution.native.authorityEvidence = authorityEvidence;
+  return execution;
 }
 
 const RCL_RNCS_WORLD_PREFIX = 'rncs.world.';
@@ -250,6 +267,44 @@ function rclJsonRoot(value) {
   return sha256(Buffer.from(JSON.stringify(value), 'utf8'));
 }
 
+function normalizeRclAuthorityEvidenceValue(value) {
+  if (typeof value === 'number') return Number.isInteger(value) ? value : String(value);
+  if (Array.isArray(value)) return value.map(normalizeRclAuthorityEvidenceValue);
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(Object.entries(value).map(([key, entry]) => [key, normalizeRclAuthorityEvidenceValue(entry)]));
+  }
+  return value;
+}
+
+function collectRclNativeAuthorityEvidence(execution, options = {}) {
+  const transitions = (execution.native?.history ?? []).filter(record => record?.status === 'realized');
+  if (!transitions.length) return null;
+  const program = {
+    name: execution.native?.program ?? 'RCLNativeAuthority',
+    programRoot: execution.bytecodeHash,
+    languageVersion: execution.languageVersion ?? RCL_LANGUAGE_VERSION,
+  };
+  const proposals = transitions.map((transition, index) => ({
+    sequence: index + 1,
+    ...toRncsProposalInput(program, transition, {
+      realityId: `rcl:${program.name}`,
+      baseGeneration: options.baselineGeneration ?? 0,
+      baseGenerationRoot: options.baselineGenerationRoot ?? '0'.repeat(64),
+      subjectId: options.subjectId ?? 'rcl:system',
+      roles: options.roles ?? ['reality-program-actor'],
+    }),
+  })).map(normalizeRclAuthorityEvidenceValue);
+  const evidence = normalizeRclAuthorityEvidenceValue({
+    format: 'rcl.native-authority-evidence.v0.1',
+    program,
+    state_root: execution.native.nativeStateRoot ?? execution.native.stateRoot,
+    state_root_algorithm: execution.native.stateRootAlgorithm ?? 'rcl.semantic-state-root.v1',
+    raw_transition_count: transitions.length,
+    transitions: proposals,
+  });
+  return { ...evidence, root: rclJsonRoot(evidence) };
+}
+
 function collectRclKnowledgeGraph(domainState) {
   const claimEntries = Object.entries(domainState)
     .filter(([, value]) => value && typeof value === 'object' && value.kind === 'Knowledge')
@@ -348,6 +403,13 @@ function rclWorldChanges(state) {
 
 export async function compileRclAuthorityPlan(source, options = {}) {
   const execution = options.execution ?? await compileRclSource(source, options);
+  const nativeStateRoot = execution.native?.nativeStateRoot ?? execution.native?.stateRoot;
+  if (execution.native?.stateRootVerified !== true || typeof nativeStateRoot !== 'string') {
+    throw Object.assign(new Error('RCL_NATIVE_AUTHORITY_STATE_ROOT_REQUIRED'), {
+      code: 'RCL_NATIVE_AUTHORITY_STATE_ROOT_REQUIRED',
+      details: { stateRoot: execution.native?.stateRoot ?? null, nativeStateRoot: nativeStateRoot ?? null },
+    });
+  }
   const worldModel = rclWorldChanges(execution.native?.state);
   const changes = worldModel.changes;
   if (!changes.length) throw new Error('RCL_RNCS_WORLD_CHANGE_REQUIRED');
@@ -356,8 +418,14 @@ export async function compileRclAuthorityPlan(source, options = {}) {
     ? sha256(Buffer.from(JSON.stringify(worldModel.domainState), 'utf8'))
     : null;
   const knowledgeGraph = collectRclKnowledgeGraph(worldModel.domainState);
+  const authorityEvidence = execution.authorityEvidence
+    ?? collectRclNativeAuthorityEvidence(execution, options);
   const planId = `plan:rcl:${sourceRoot.slice(0, 24)}`;
-  const subjectId = String(options.subjectId ?? 'subject:rcl-native');
+  const authorityTransition = [...(authorityEvidence?.transitions ?? [])]
+    .reverse()
+    .find(transition => transition.capability_plan?.required_scopes?.length)
+    ?? authorityEvidence?.transitions?.[0];
+  const subjectId = String(options.subjectId ?? authorityTransition?.subject?.subject_id ?? 'subject:rcl-native');
   const baselineGeneration = Number(options.baselineGeneration ?? 0);
   const riskLevel = options.riskLevel ?? 'high';
   const plan = {
@@ -374,9 +442,13 @@ export async function compileRclAuthorityPlan(source, options = {}) {
       instruction_count: execution.instructionCount,
       compiler: execution.compiler,
       compiler_parity: execution.compilerParity,
+      rcl_native_state_root: nativeStateRoot,
+      rcl_state_root_algorithm: execution.native?.stateRootAlgorithm ?? null,
       rcl_domain_state_root: domainStateRoot,
       rcl_knowledge_graph_root: knowledgeGraph?.root ?? null,
+      rcl_authority_evidence_root: authorityEvidence?.root ?? null,
     },
+    rcl_authority_evidence: authorityEvidence,
     rcl_knowledge_graph: knowledgeGraph,
     subject: {
       subject_id: subjectId,
@@ -402,6 +474,7 @@ export async function compileRclAuthorityPlan(source, options = {}) {
       ...((worldModel.behaviors.length || worldModel.operations.some(operation => operation.path === 'world.behaviors' || operation.path.startsWith('world.behaviors.'))) ? [{ action: 'register_behavior', scope: 'behavior.register', risk_level: 'medium' }] : []),
       ...(domainStateRoot ? [{ action: 'commit_rcl_domain_state', scope: 'world.rcl.write', risk_level: 'medium' }] : []),
       ...(knowledgeGraph ? [{ action: 'commit_rcl_knowledge', scope: 'world.rcl.knowledge.write', risk_level: knowledgeGraph.unresolved_dependencies.length ? 'high' : 'medium' }] : []),
+      ...(authorityEvidence ? [{ action: 'authorize_rcl_transition', scope: 'world.rcl.authority', risk_level: 'high' }] : []),
       { action: 'merge_candidate_branch', scope: 'branch.merge', risk_level: riskLevel },
       { action: 'rollback_generation', scope: 'rfe.rollback', risk_level: 'high' },
     ],
@@ -415,6 +488,7 @@ export async function compileRclAuthorityPlan(source, options = {}) {
     evidence_requirements: [
       { kind: 'rcl-native-selfhost-compiler', root: execution.compiler?.artifactHash },
       { kind: 'rcl-native-bytecode', root: execution.bytecodeHash },
+      { kind: 'rcl-native-authority-state', root: nativeStateRoot, verified: true },
       { kind: 'rcl-native-parity', verified: execution.parity?.ok === true },
       ...(domainStateRoot ? [{ kind: 'rcl-native-domain-state', root: domainStateRoot }] : []),
       ...(knowledgeGraph ? [{
@@ -422,7 +496,12 @@ export async function compileRclAuthorityPlan(source, options = {}) {
         root: knowledgeGraph.root,
         claims: knowledgeGraph.claims.length,
         evidence_references: knowledgeGraph.evidence_nodes.length,
-        dependency_edges: knowledgeGraph.dependency_edges.length,
+         dependency_edges: knowledgeGraph.dependency_edges.length,
+       }] : []),
+      ...(authorityEvidence ? [{
+        kind: 'rcl-native-authority-evidence',
+        root: authorityEvidence.root,
+        transition_count: authorityEvidence.transitions.length,
       }] : []),
       { kind: 'rbf-simulation-receipt' },
       { kind: 'aaf-decision' },
@@ -431,6 +510,8 @@ export async function compileRclAuthorityPlan(source, options = {}) {
     rollback_policy: { mode: 'generation-restore', restore_baseline: true, retain_evidence: true },
     acceptance_rules: [
       { rule: 'rcl-native-parity-before-candidate' },
+      { rule: 'rcl-native-authority-state-root-bound' },
+      ...(authorityEvidence ? [{ rule: 'rcl-authority-continuity-bound' }] : []),
       { rule: 'candidate-before-commit' },
       { rule: 'all-mutating-actions-authorized' },
       { rule: 'state-precondition-must-match' },
@@ -448,8 +529,9 @@ export async function compileRclAuthorityPlan(source, options = {}) {
     operations: worldModel.operations,
     domainState: worldModel.domainState,
     knowledgeGraph,
+    authorityEvidence,
     domainStateRoot,
-    stateRoot: sha256(Buffer.from(JSON.stringify(execution.native.state), 'utf8')),
+    stateRoot: nativeStateRoot,
   };
 }
 

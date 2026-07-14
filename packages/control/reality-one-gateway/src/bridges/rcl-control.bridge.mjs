@@ -35,7 +35,7 @@ function compactCandidate(candidate) {
   };
 }
 
-export async function createBridge({module, manifest}) {
+export async function createBridge({module, manifest, dataDir}) {
   const health = () => ({
     status: 'ok',
     protocol: 'rncs.rcl-control.v0.4',
@@ -46,7 +46,9 @@ export async function createBridge({module, manifest}) {
     authority_plan_compilation: true,
     authority_commit: true,
   });
-  const aetherDataDir = path.resolve(path.dirname(manifest.manifest_file), '../output/aetherworld-native');
+  const aetherDataDir = dataDir
+    ? path.resolve(dataDir, 'runtime-state', 'aetherworld-native')
+    : path.resolve(path.dirname(manifest.manifest_file), '../output/aetherworld-native');
   const createAetherRuntime = () => new AetherworldRNCSNativeRuntime({ dataDir: aetherDataDir });
 
   const compileAuthorityPlan = async (payload = {}) => {
@@ -128,7 +130,7 @@ export async function createBridge({module, manifest}) {
         candidate_persisted: false,
         before,
         execution,
-        plan: { plan_id: compiled.plan.plan_id, state_root: compiled.stateRoot, changes: compiled.changes },
+        plan: { plan_id: compiled.plan.plan_id, state_root: compiled.stateRoot, rcl_native_state_root: compiled.plan.source.rcl_native_state_root, rcl_domain_state_root: compiled.plan.source.rcl_domain_state_root, rcl_knowledge_graph_root: compiled.plan.source.rcl_knowledge_graph_root, rcl_authority_evidence_root: compiled.plan.source.rcl_authority_evidence_root, rcl_authority_transition_count: compiled.plan.rcl_authority_evidence?.transitions?.length ?? 0, changes: compiled.changes },
         candidate: compactCandidate(candidate),
         simulation: { status: simulation.execution_receipt?.status, evidence_root: simulation.evidence_root },
         authority: { summary: authority.summary, authority_root: authority.authority_root, authorized },
@@ -157,7 +159,7 @@ export async function createBridge({module, manifest}) {
       committed: true,
       before,
       execution,
-      plan: { plan_id: compiled.plan.plan_id, state_root: compiled.stateRoot, changes: compiled.changes },
+      plan: { plan_id: compiled.plan.plan_id, state_root: compiled.stateRoot, rcl_native_state_root: compiled.plan.source.rcl_native_state_root, rcl_domain_state_root: compiled.plan.source.rcl_domain_state_root, rcl_knowledge_graph_root: compiled.plan.source.rcl_knowledge_graph_root, rcl_authority_evidence_root: compiled.plan.source.rcl_authority_evidence_root, rcl_authority_transition_count: compiled.plan.rcl_authority_evidence?.transitions?.length ?? 0, changes: compiled.changes },
       candidate: compactCandidate(candidate),
       simulation: { status: simulation.execution_receipt?.status, evidence_root: simulation.evidence_root },
       authority: { summary: authority.summary, authority_root: authority.authority_root, authorized },

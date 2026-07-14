@@ -40,6 +40,24 @@ export class RealityStore{
   const operationsRoot=rootHash(operations),event=withIntegrity({format:'rfe.authority-event.v0.1',eventId:`event:${rootHash({tx:transactionId,base:current.generationId,operationsRoot}).slice(0,24)}`,transactionId,actor,intent:clone(intent),authority,baseGenerationId:current.generationId,logicalTime,operationsRoot,evidence:clone(evidence)});state.events.push(event);const refs={identity:this.putObject('identity-group',state.identities.sort((a,b)=>keySort(a.id,b.id))),'event-ledger':this.putObject('event-ledger',state.events)};for(const p of [...new Set(state.facts.map(f=>f.predicate))].sort(keySort))refs[`fact:${p}`]=this.putObject('fact-group',state.facts.filter(f=>f.predicate===p).sort((a,b)=>keySort(a.subject,b.subject)||a.validFrom-b.validFrom||keySort(a.id,b.id)));for(const t of [...new Set(state.relations.map(r=>r.type))].sort(keySort))refs[`relation:${t}`]=this.putObject('relation-group',state.relations.filter(r=>r.type===t).sort((a,b)=>keySort(a.from,b.from)||keySort(a.to,b.to)||a.validFrom-b.validFrom||keySort(a.id,b.id)));const g=this.makeGeneration({branchId,revision,logicalTime,parent:current.generationId,parentEvidence:current.evidenceRoot,refs,authorityEventHead:event.eventId});this.persistGeneration(g);if(this.currentGeneration(branchId).generationId!==current.generationId)throw new RFEError('RFE_POINTER_CHANGED_DURING_COMMIT',branchId);this.writePointer(branchId,g);const receipt=withIntegrity({format:'rfe.local-commit-receipt.v0.1',transactionId,branchId,baseGenerationId:current.generationId,resultGenerationId:g.generationId,resultGenerationRoot:g.integrityHash,eventId:event.eventId,operationsRoot,evidenceRoot:g.evidenceRoot});return{generation:g,event,receipt}}
  verify({deep=true}={}){const errors=[],objects=new Set(),generations=new Set();try{this.metadata}catch(e){errors.push(e.message)}for(const name of fs.readdirSync(path.join(this.root,'branches'))){if(!name.endsWith('.json'))continue;try{const p=read(path.join(this.root,'branches',name));if(!verifyIntegrity(p))throw new RFEError('RFE_POINTER_TAMPERED',name);const g=this.loadGeneration(p.generationId);generations.add(g.generationId);if(p.generationRoot!==g.integrityHash)throw new RFEError('RFE_POINTER_ROOT_MISMATCH',p.branchId);if(deep)for(const ref of Object.values(g.refs)){this.loadObject(ref);objects.add(ref)}}catch(e){errors.push(e.message)}}return{valid:!errors.length,errors,checked_generations:generations.size,checked_objects:objects.size}}
 }
+function acquireCommitLock(root,{timeoutMs=15000,staleMs=60000}={}){
+ const lockPath=path.join(root,'.commit.lock');
+ const deadline=Date.now()+timeoutMs;
+ for(;;){
+  try{
+   fs.mkdirSync(lockPath);
+   fs.writeFileSync(path.join(lockPath,'owner.json'),JSON.stringify({pid:process.pid,createdAt:new Date().toISOString()}));
+   return ()=>{fs.rmSync(lockPath,{recursive:true,force:true});};
+  }catch(error){
+   if(error.code!=='EEXIST')throw error;
+   if(Date.now()>=deadline)throw new RFEError('RFE_COMMIT_LOCK_TIMEOUT',root);
+   try{const age=Date.now()-fs.statSync(lockPath).mtimeMs;if(age>staleMs)fs.rmSync(lockPath,{recursive:true,force:true});}catch{}
+   sleepSync(5);
+  }
+ }
+}
+const nativeCommit=RealityStore.prototype.commit;
+RealityStore.prototype.commit=function(request={}){const release=acquireCommitLock(this.root);try{const guarded={...request};guarded.baseGenerationId??=this.currentGeneration(guarded.branchId??this.defaultBranch).generationId;return nativeCommit.call(this,guarded)}finally{release()}};
 export function verifyExternalGeneration(generationPath,objectsRoot=null){const g=read(generationPath),errors=[];if(!verifyIntegrity(g))errors.push('GENERATION_INTEGRITY_MISMATCH');if(objectsRoot){for(const ref of Object.values(g.refs??{}).concat(g.objectRefs??[])){const candidates=[path.join(objectsRoot,ref.slice(0,2),`${ref}.json`),path.join(objectsRoot,`${ref}.json`)];const p=candidates.find(fs.existsSync);if(!p){errors.push(`OBJECT_MISSING:${ref}`);continue}const o=read(p);if(o.integrityHash!==ref||rootHash(Object.fromEntries(Object.entries(o).filter(([k])=>k!=='integrityHash')))!==ref)errors.push(`OBJECT_INTEGRITY_MISMATCH:${ref}`)}}return{valid:!errors.length,errors,generation_id:g.generationId,generation_root:g.integrityHash}}
 
 export function federationCandidate(commitResult,{domainId,requestedPolicy='quorum'}={}){const g=commitResult.generation,r=commitResult.receipt;if(!domainId)throw new RFEError('RFE_FEDERATION_DOMAIN_REQUIRED','domainId');return withIntegrity({format:'rfe.federation-candidate.v0.1',domainId,worldId:g.worldId,branchId:g.branchId,generationId:g.generationId,generationRoot:g.integrityHash,semanticRoot:g.semanticRoot,evidenceRoot:g.evidenceRoot,localReceiptRoot:r.integrityHash,requestedPolicy,status:'candidate-not-federated'})}

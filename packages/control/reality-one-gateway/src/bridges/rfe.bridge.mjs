@@ -5,7 +5,7 @@ export async function createBridge({module}){
   if(action==='init'){const store=module.RealityStore.init(payload.root,{worldId:payload.worldId,branchId:payload.branchId,overwrite:payload.overwrite});return{metadata:store.metadata,generation:store.currentGeneration(),reference:store.generationReference()};}
   if(action==='status'){const store=new module.RealityStore(payload.root);return{metadata:store.metadata,generation:store.currentGeneration(),reference:store.generationReference()};}
   if(action==='materialize'){return new module.RealityStore(payload.root).materialize(payload.options??{});}
-  if(action==='verify'){const store=new module.RealityStore(payload.root);const g=store.currentGeneration(payload.branchId);return{valid:true,generation_id:g.generationId,generation_root:g.integrityHash,metadata:store.metadata};}
+  if(action==='verify'){const store=new module.RealityStore(payload.root);const verification=store.verify({deep:payload.deep!==false});let g=null;try{g=store.currentGeneration(payload.branchId);}catch{}return{...verification,generation_id:g?.generationId??null,generation_root:g?.integrityHash??null,metadata:verification.valid?store.metadata:null};}
   throw Object.assign(new Error(`Unsupported RFE action: ${action}`),{code:'RFE_ACTION_UNSUPPORTED'});
  }};
 }
