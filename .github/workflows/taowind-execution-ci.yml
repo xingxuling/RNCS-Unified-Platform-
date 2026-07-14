@@ -115,5 +115,7 @@ jobs:
       - name: Normalize lockfile registry for public runner
         run: node scripts/normalize-lockfile-registry.mjs
       - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm run build --workspace @taowind/reality-simulation-runtime
+      - run: npm run build --workspace @taowind/visual-state-runtime
       - name: Verify Windows native boundary
-        run: npm run verify:native-boundary
+        run: npm run test:native
