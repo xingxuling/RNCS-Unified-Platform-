@@ -1,0 +1,36 @@
+{
+  "format": "taowind.cross-repository-version-contract.v1",
+  "generatedAt": "2026-07-14",
+  "repositories": {
+    "rncs": {
+      "repository": "xingxuling/RNCS-Unified-Platform-",
+      "branch": "main-95",
+      "suiteVersion": "0.19.8-alpha.1",
+      "manifest": "VERSION-MANIFEST-v0.19.8.json"
+    },
+    "rcl": {
+      "repository": "xingxuling/RCL",
+      "branch": "main",
+      "packageVersion": "0.94.0-alpha.1",
+      "canonical": true
+    },
+    "zhinao": {
+      "repository": "xingxuling/zhinao",
+      "branch": "tarot",
+      "packageVersion": "0.16.0-alpha.1",
+      "vendorPath": "vendor/rcl",
+      "vendorStatus": "stage39-snapshot-pending-sync"
+    }
+  },
+  "relations": [
+    {
+      "source": "xingxuling/RCL@main",
+      "consumers": [
+        "xingxuling/RNCS-Unified-Platform-@main-95:packages/languages/reality-computation-language",
+        "xingxuling/zhinao@tarot:vendor/rcl"
+      ],
+      "byteIdentityClaimed": false,
+      "requiredAction": "sync downstream copies before claiming repository-wide parity"
+    }
+  ]
+}

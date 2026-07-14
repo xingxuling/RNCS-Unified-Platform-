@@ -106,7 +106,7 @@
     {
       "id": "behavior",
       "name": "Reality Behavior Fabric",
-      "version": "0.1.0-alpha.1",
+      "version": "0.9.0-alpha.1",
       "path": "packages/control/reality-behavior-fabric",
       "layer": "control",
       "runtime": "rncs.behavior",
@@ -268,7 +268,7 @@
     {
       "id": "taowind-reality-mcp",
       "name": "TaoWind Reality MCP",
-      "version": "0.3.0-alpha.1",
+      "version": "0.4.0-alpha.1",
       "path": "packages/integration/taowind-reality-mcp",
       "layer": "integration",
       "dependsOn": [
@@ -308,7 +308,7 @@
     {
       "id": "reality-studio",
       "name": "Reality Studio",
-      "version": "1.5.0-alpha.1-unified.1",
+      "version": "1.6.0-alpha.1",
       "path": "apps/reality-studio",
       "layer": "apps",
       "dependsOn": [
@@ -325,7 +325,7 @@
     {
       "id": "reality-build",
       "name": "Reality Build Fabric",
-      "version": "0.2.0-alpha.1-unified.1",
+      "version": "0.2.0-alpha.1",
       "path": "apps/reality-build",
       "layer": "apps",
       "dependsOn": [
@@ -524,7 +524,7 @@
     {
       "id": "aetherworld",
       "name": "Aetherworld Cockpit",
-      "version": "0.1.0-unified.1",
+      "version": "0.2.0-alpha.1",
       "path": "apps/aetherworld",
       "layer": "apps",
       "dependsOn": [
