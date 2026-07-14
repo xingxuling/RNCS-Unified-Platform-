@@ -49,6 +49,8 @@ export function compileEvidence({envelope, receipt, observations = [], assertion
     worldId: envelope.worldId,
     proposalRoot: envelope.proposalRoot,
     decisionRoot: envelope.authority.decisionRoot,
+    continuityClaimRoot: envelope.continuity?.claim?.claimRoot ?? null,
+    sovereigntyRoot: envelope.continuity?.sovereignty?.sovereigntyRoot ?? null,
     commitRoot: receipt.commitRoot,
     resultRoot: receipt.resultRoot,
     items
