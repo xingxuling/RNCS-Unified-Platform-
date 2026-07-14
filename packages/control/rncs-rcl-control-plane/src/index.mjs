@@ -89,7 +89,10 @@ export async function compileRclSource(source, options = {}) {
 }
 
 const RCL_RNCS_WORLD_PREFIX = 'rncs.world.';
+const RCL_RNCS_OBJECT_PREFIX = 'rncs.world.object.';
+const RCL_RNCS_BEHAVIOR_PREFIX = 'rncs.world.behavior.';
 const RCL_RNCS_FORBIDDEN_PATH = /(^|\.)(authority|generation|revision|state_root|evidence_root)(\.|$)/i;
+const RCL_RNCS_ALIAS = /^[A-Za-z0-9_-]+$/;
 
 function isJsonValue(value) {
   if (value === null || typeof value === 'string' || typeof value === 'boolean') return true;
@@ -99,23 +102,89 @@ function isJsonValue(value) {
   return false;
 }
 
+function setNestedValue(target, parts, value, pathName) {
+  let cursor = target;
+  for (const part of parts.slice(0, -1)) {
+    if (!RCL_RNCS_ALIAS.test(part) || RCL_RNCS_FORBIDDEN_PATH.test(part)) {
+      throw new Error(`RCL_RNCS_ENTITY_PATH_FORBIDDEN:${pathName}`);
+    }
+    if (cursor[part] === undefined) cursor[part] = {};
+    if (!cursor[part] || typeof cursor[part] !== 'object' || Array.isArray(cursor[part])) {
+      throw new Error(`RCL_RNCS_ENTITY_PATH_CONFLICT:${pathName}`);
+    }
+    cursor = cursor[part];
+  }
+  const leaf = parts.at(-1);
+  if (!leaf || !RCL_RNCS_ALIAS.test(leaf) || RCL_RNCS_FORBIDDEN_PATH.test(leaf)) {
+    throw new Error(`RCL_RNCS_ENTITY_PATH_FORBIDDEN:${pathName}`);
+  }
+  if (Object.prototype.hasOwnProperty.call(cursor, leaf)) {
+    throw new Error(`RCL_RNCS_ENTITY_FIELD_DUPLICATE:${pathName}`);
+  }
+  cursor[leaf] = value;
+}
+
+function collectRclEntities(state, prefix, kind) {
+  const groups = new Map();
+  for (const [key, value] of Object.entries(state ?? {}).sort(([a], [b]) => a.localeCompare(b))) {
+    if (!key.startsWith(prefix)) continue;
+    const suffix = key.slice(prefix.length);
+    const [alias, ...fieldParts] = suffix.split('.');
+    if (!alias || !fieldParts.length || !RCL_RNCS_ALIAS.test(alias)) {
+      throw new Error(`RCL_RNCS_ENTITY_DECLARATION_INVALID:${key}`);
+    }
+    if (!isJsonValue(value)) throw new TypeError(`RCL_RNCS_ENTITY_VALUE_NOT_JSON:${key}`);
+    const entity = groups.get(alias) ?? {};
+    setNestedValue(entity, fieldParts, value, key);
+    groups.set(alias, entity);
+  }
+  const entities = [...groups.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([, entity]) => entity);
+  if (kind === 'object') {
+    for (const entity of entities) {
+      if (typeof entity.id !== 'string' || !entity.id.trim()) throw new Error('RCL_RNCS_OBJECT_ID_REQUIRED');
+      if (typeof entity.kind !== 'string' || !entity.kind.trim()) throw new Error(`RCL_RNCS_OBJECT_KIND_REQUIRED:${entity.id}`);
+    }
+    return entities.map(entity => ({...entity, id: entity.id.trim(), kind: entity.kind.trim()}));
+  }
+  for (const entity of entities) {
+    const behaviorId = entity.behavior_id ?? entity.id;
+    if (typeof behaviorId !== 'string' || !behaviorId.trim()) throw new Error('RCL_RNCS_BEHAVIOR_ID_REQUIRED');
+    if (typeof entity.version !== 'string' || !entity.version.trim()) throw new Error(`RCL_RNCS_BEHAVIOR_VERSION_REQUIRED:${behaviorId}`);
+  }
+  return entities.map(entity => ({...entity, behavior_id: (entity.behavior_id ?? entity.id).trim(), version: entity.version.trim()}));
+}
+
 function rclWorldChanges(state) {
   const changes = [];
+  const directStateKeys = [];
   for (const [key, value] of Object.entries(state ?? {}).sort(([a], [b]) => a.localeCompare(b))) {
     if (!key.startsWith(RCL_RNCS_WORLD_PREFIX)) continue;
+    if (key.startsWith(RCL_RNCS_OBJECT_PREFIX) || key.startsWith(RCL_RNCS_BEHAVIOR_PREFIX)) continue;
     const pathName = `world.${key.slice(RCL_RNCS_WORLD_PREFIX.length)}`;
     if (!pathName.slice('world.'.length) || RCL_RNCS_FORBIDDEN_PATH.test(pathName)) {
       throw new Error(`RCL_RNCS_WORLD_PATH_FORBIDDEN:${pathName}`);
     }
     if (!isJsonValue(value)) throw new TypeError(`RCL_RNCS_WORLD_VALUE_NOT_JSON:${pathName}`);
-    changes.push({ op: 'set', path: pathName, value });
+    directStateKeys.push(pathName);
+    changes.push({op: 'set', path: pathName, value});
   }
-  return changes;
+  const objects = collectRclEntities(state, RCL_RNCS_OBJECT_PREFIX, 'object');
+  const behaviors = collectRclEntities(state, RCL_RNCS_BEHAVIOR_PREFIX, 'behavior');
+  if (objects.length && directStateKeys.includes('world.objects')) throw new Error('RCL_RNCS_OBJECTS_DECLARATION_CONFLICT');
+  if (behaviors.length && directStateKeys.includes('world.behaviors')) throw new Error('RCL_RNCS_BEHAVIORS_DECLARATION_CONFLICT');
+  if (objects.length) changes.push({op: 'set', path: 'world.objects', value: objects});
+  if (behaviors.length) changes.push({op: 'set', path: 'world.behaviors', value: behaviors});
+  return {
+    changes: changes.sort((a, b) => a.path.localeCompare(b.path)),
+    objects,
+    behaviors,
+  };
 }
 
 export async function compileRclAuthorityPlan(source, options = {}) {
   const execution = options.execution ?? await compileRclSource(source, options);
-  const changes = rclWorldChanges(execution.native?.state);
+  const worldModel = rclWorldChanges(execution.native?.state);
+  const changes = worldModel.changes;
   if (!changes.length) throw new Error('RCL_RNCS_WORLD_CHANGE_REQUIRED');
   const sourceRoot = execution.bytecodeHash;
   const planId = `plan:rcl:${sourceRoot.slice(0, 24)}`;
@@ -140,8 +209,13 @@ export async function compileRclAuthorityPlan(source, options = {}) {
       roles: options.roles ?? ['rcl-author'],
       responsibility_boundary: 'world-authority',
     },
-    artifacts: [],
-    behaviors: [],
+    artifacts: worldModel.objects.map(object => ({
+      id: object.id,
+      kind: object.kind,
+      name: object.name ?? object.id,
+      definition: object,
+    })),
+    behaviors: worldModel.behaviors,
     candidate_branch: {
       branch_id: `branch:rcl-${sourceRoot.slice(0, 24)}`,
       baseline_generation: baselineGeneration,
@@ -150,7 +224,8 @@ export async function compileRclAuthorityPlan(source, options = {}) {
     },
     authority_requirements: [
       { action: 'create_world_object', scope: 'world.object.create', risk_level: 'medium' },
-      { action: 'register_behavior', scope: 'behavior.register', risk_level: 'medium' },
+      ...(worldModel.objects.length ? [{ action: 'modify_object_property', scope: 'world.object.write', risk_level: 'medium' }] : []),
+      ...(worldModel.behaviors.length ? [{ action: 'register_behavior', scope: 'behavior.register', risk_level: 'medium' }] : []),
       { action: 'merge_candidate_branch', scope: 'branch.merge', risk_level: riskLevel },
       { action: 'rollback_generation', scope: 'rfe.rollback', risk_level: 'high' },
     ],
@@ -182,6 +257,8 @@ export async function compileRclAuthorityPlan(source, options = {}) {
     execution,
     plan,
     changes,
+    objects: worldModel.objects,
+    behaviors: worldModel.behaviors,
     stateRoot: sha256(Buffer.from(JSON.stringify(execution.native.state), 'utf8')),
   };
 }

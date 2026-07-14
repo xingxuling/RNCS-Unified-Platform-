@@ -16,8 +16,8 @@ Vercel 适合控制平面，不适合持久工作区、长时间 Gradle 或 GPU 
 
 ## 工具数量
 
-- 默认 Founder：48个工具（原27个权威/运行时工具＋21个工程工具）。
-- Founder Unrestricted：49个工具，额外开放 `execution_run_shell`。
+- 默认 Founder：51个工具（含 RCL 原生 authority-plan 编译、提交与行为执行工具）。
+- Founder Unrestricted：52个工具，额外开放 `execution_run_shell`。
 - 运行时：15个，第15个是 Developer Execution Runtime。
 
 工程工具覆盖：工作区列出/读取/写入/精确补丁/删除/产物导出、命令与构建 Profile、Git 状态/Diff/分支/Commit/Push、GitHub PR和Actions触发、Vercel部署与状态查询、真实 RSR/VSR、完整自动工程工作流。

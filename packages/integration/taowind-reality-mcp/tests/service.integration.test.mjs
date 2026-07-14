@@ -26,7 +26,7 @@ const resultOf=response=>response.structuredContent?.result;
 test('private founder profile exposes authority and project execution tools while break-glass shell stays hidden',async()=>withClient(async({client})=>{
  const tools=await client.listTools();
  const names=tools.tools.map(tool=>tool.name);
- for(const expected of ['rncs_candidate_workflow','rncs_authorize_candidate','rncs_merge_candidate','rncs_rollback_generation','rncs_replay_generation','rncs_runtime_action','rncs_rcl_compile_execute','rncs_rcl_authority_workflow','developer_execution_status','workspace_read_file','workspace_write_file','workspace_export_artifact','execution_run_command','git_commit','github_create_pr','vercel_deploy','rsr_simulate','vsr_render','rncs_engineering_workflow'])assert.ok(names.includes(expected),expected);
+ for(const expected of ['rncs_candidate_workflow','rncs_authorize_candidate','rncs_merge_candidate','rncs_rollback_generation','rncs_replay_generation','rncs_runtime_action','rncs_rcl_compile_execute','rncs_rcl_compile_authority_plan','rncs_rcl_authority_workflow','rncs_execute_behavior','developer_execution_status','workspace_read_file','workspace_write_file','workspace_export_artifact','execution_run_command','git_commit','github_create_pr','vercel_deploy','rsr_simulate','vsr_render','rncs_engineering_workflow'])assert.ok(names.includes(expected),expected);
  for(const forbidden of ['execute_shell','read_arbitrary_file','write_arbitrary_file','execution_run_shell'])assert.ok(!names.includes(forbidden));
  assert.equal(tools.tools.find(tool=>tool.name==='rncs_merge_candidate').annotations.destructiveHint,true);
 }));

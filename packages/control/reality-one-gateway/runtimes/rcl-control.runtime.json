@@ -9,9 +9,10 @@
     "package": "@taowind/rncs-rcl-control-plane"
   },
   "bridge": "../src/bridges/rcl-control.bridge.mjs",
-  "actions": ["health", "compileExecute", "authorityWorkflow", "controlPlane"],
+  "actions": ["health", "compileExecute", "compileAuthorityPlan", "authorityWorkflow", "controlPlane"],
   "protocols": [
     "rncs.rcl-control.v0.3",
+    "rncs.rcl-control.v0.4",
     "rncs.rcl-authority.v0.1",
     "rcl.native.execute.v0.1",
     "rcl.native.parity.v0.1",

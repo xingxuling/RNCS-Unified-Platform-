@@ -49,6 +49,39 @@ export async function createBridge({module, manifest}) {
   const aetherDataDir = path.resolve(path.dirname(manifest.manifest_file), '../output/aetherworld-native');
   const createAetherRuntime = () => new AetherworldRNCSNativeRuntime({ dataDir: aetherDataDir });
 
+  const compileAuthorityPlan = async (payload = {}) => {
+    const runtime = createAetherRuntime();
+    const before = runtime.worldStatus();
+    assertStatePrecondition(before, payload);
+    const execution = await module.compileRclSource(payload.source, {
+      verifyParity: payload.verifyParity !== false,
+      timeout: Number(payload.timeout ?? 30_000),
+    });
+    const compiled = await module.compileRclAuthorityPlan(payload.source, {
+      execution,
+      subjectId: payload.subjectId ?? payload.subject_id,
+      roles: payload.roles ?? payload.approvalRoles ?? payload.approval_roles,
+      baselineGeneration: before.revision,
+      riskLevel: payload.riskLevel ?? payload.risk_level,
+    });
+    const validation = runtime.validatePlan({ plan: compiled.plan });
+    if (!validation.valid) {
+      throw Object.assign(new Error(`RCL_AUTHORITY_PLAN_INVALID:${validation.errors.join(',')}`), {
+        code: 'RCL_AUTHORITY_PLAN_INVALID',
+        details: validation,
+      });
+    }
+    return {
+      format: 'rncs.rcl-authority-plan-workflow.v0.1',
+      before,
+      execution,
+      plan: compiled.plan,
+      changes: compiled.changes,
+      state_root: compiled.stateRoot,
+      validation,
+    };
+  };
+
   const runAuthorityWorkflow = async (payload = {}) => {
     const runtime = createAetherRuntime();
     const before = runtime.worldStatus();
@@ -144,6 +177,7 @@ export async function createBridge({module, manifest}) {
           timeout: Number(payload.timeout ?? 30_000),
         });
       }
+      if (action === 'compileAuthorityPlan') return compileAuthorityPlan(payload);
       if (action === 'authorityWorkflow') return runAuthorityWorkflow(payload);
       if (action === 'controlPlane') return module.buildRclControlPlane();
       throw Object.assign(new Error(`Unsupported RCL control action: ${action}`), { code: 'RCL_CONTROL_ACTION_UNSUPPORTED' });

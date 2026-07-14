@@ -28,7 +28,8 @@ export function validateCompilationPlan(plan){
     if(/(^|\.)(authority|generation|revision|state_root|evidence_root)(\.|$)/i.test(String(change.path)))errors.push(`DIRECT_AUTHORITY_WRITE_FORBIDDEN:${change.path}`);
   }
   const actions=new Set((plan?.authority_requirements??[]).map(x=>x.action));
-  for(const action of ['create_world_object','register_behavior','merge_candidate_branch','rollback_generation'])if(!actions.has(action))errors.push(`AUTHORITY_REQUIREMENT_MISSING:${action}`);
+  for(const action of ['create_world_object','merge_candidate_branch','rollback_generation'])if(!actions.has(action))errors.push(`AUTHORITY_REQUIREMENT_MISSING:${action}`);
+  if((plan?.behaviors?.length??0)>0&&!actions.has('register_behavior'))errors.push('AUTHORITY_REQUIREMENT_MISSING:register_behavior');
   return {valid:errors.length===0,errors};
 }
 export function assertCompilationPlan(plan){const r=validateCompilationPlan(plan);if(!r.valid)throw new Error(`COMPILATION_PLAN_INVALID:${r.errors.join(',')}`);return plan;}

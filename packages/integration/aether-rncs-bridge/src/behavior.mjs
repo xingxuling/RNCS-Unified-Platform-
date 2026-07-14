@@ -18,10 +18,18 @@ export function createAetherIslandProgram(version='1.0.0'){
   authority:{default_effect:'deny',policies:[{policy_id:'allow-runtime',effect:'allow',priority:10,roles_any:['runtime'],capabilities:['*'],risk_at_most:'medium'}]}
  });
 }
-export function createBehaviorRegistration({providers={}}={}){
- const program=createAetherIslandProgram();const validation=validateProgram(program);if(!validation.valid)throw new Error(`BEHAVIOR_PROGRAM_INVALID:${JSON.stringify(validation.errors)}`);
- const runtime=new BehaviorRuntime(program,{providers,actor:{subject_id:'subject:behavior-runtime',roles:['runtime'],scopes:['physics.write','projection.write','audio.emit']}});
+export function createBehaviorRegistration({providers={},program:inputProgram=null}={}){
+ const program=normalizeProgram(inputProgram??createAetherIslandProgram());const validation=validateProgram(program);if(!validation.valid)throw new Error(`BEHAVIOR_PROGRAM_INVALID:${JSON.stringify(validation.errors)}`);
+ const programScopes=program.capabilities.flatMap(capability=>capability.required_scopes??[]);
+ const scopes=[...new Set(['physics.write','projection.write','audio.emit',...programScopes])];
+ const runtime=new BehaviorRuntime(program,{providers,actor:{subject_id:'subject:behavior-runtime',roles:['runtime'],scopes}});
  return {behavior_id:program.identity.program_id,version:program.identity.version,enabled:true,program,program_root:program.program_root,validation,runtime};
+}
+export function triggerBehavior(registration,event,payload={}){
+ if(!registration.enabled)throw new Error('BEHAVIOR_DISABLED');
+ registration.runtime.bus.emit(event,clone(payload),{phase:'simulation',source:payload.source??'rncs',target:payload.target??null});
+ const tick=registration.runtime.tick(payload.input??{});
+ return {state:clone(registration.runtime.state),delta:registration.runtime.causalDelta(),trace:registration.runtime.exportTrace(),tick};
 }
 export function triggerAetherIslandBehavior(registration,payload){
  if(!registration.enabled)throw new Error('BEHAVIOR_DISABLED');

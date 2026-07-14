@@ -36,6 +36,7 @@ export const TOOL_CATALOG=Object.freeze([
  {name:'rncs_world_status',level:'read'},
  {name:'rncs_compile_plan',level:'read'},
  {name:'rncs_rcl_compile_execute',level:'read'},
+ {name:'rncs_rcl_compile_authority_plan',level:'read'},
  {name:'rncs_rcl_authority_workflow',level:'founder'},
  {name:'rncs_validate_plan',level:'read'},
  {name:'rncs_create_candidate',level:'candidate'},
@@ -48,6 +49,7 @@ export const TOOL_CATALOG=Object.freeze([
  {name:'rncs_authorize_candidate',level:'authority'},
  {name:'rncs_reject_candidate',level:'authority'},
  {name:'rncs_register_behavior',level:'authority'},
+ {name:'rncs_execute_behavior',level:'founder'},
  {name:'rncs_set_behavior_enabled',level:'authority'},
  {name:'rncs_update_behavior',level:'authority'},
  {name:'rncs_merge_candidate',level:'founder'},
@@ -182,6 +184,12 @@ export function createTaoWindMcpServer({gateway,knowledge,config}){
   inputSchema:{source:z.string().min(1).max(20_000),verify_parity:z.boolean().optional(),timeout_ms:z.number().int().min(100).max(120_000).optional()},annotations:readAnnotations
  },async({source,verify_parity=true,timeout_ms=30_000})=>compileRclSource(source,{verifyParity:verify_parity,timeout:timeout_ms}));
 
+ registerRegular(server,'rncs_rcl_compile_authority_plan',{
+  title:'Compile RCL Authority Plan',
+  description:'Compile RCL natively into an RNCS authority plan with typed world objects, behavior declarations, parity evidence, and explicit authority requirements. This is read-only and does not create a candidate or commit state.',
+  inputSchema:{source:z.string().min(1).max(20_000),subject_id:z.string().min(3).max(200).optional(),roles:approvalRolesSchema.optional(),approval_roles:approvalRolesSchema.optional(),verify_parity:z.boolean().optional(),timeout_ms:z.number().int().min(100).max(120_000).optional()},annotations:readAnnotations
+ },async({source,subject_id,roles,approval_roles,verify_parity=true,timeout_ms=30_000})=>gateway.invoke('rncs.rcl-control','compileAuthorityPlan',{source,subjectId:subject_id,roles:roles??approval_roles,verifyParity:verify_parity,timeout:timeout_ms},{idempotencyKey:`rcl-authority-plan:${source}:${subject_id??''}:${JSON.stringify(roles??approval_roles??[])}`}));
+
  registerRegular(server,'rncs_validate_plan',{
   title:'Validate RNCS Compilation Plan',description:'Validate a previously compiled RNCS plan against the native runtime contract.',
   inputSchema:{plan:z.record(z.any())},annotations:readAnnotations
@@ -265,6 +273,11 @@ export function createTaoWindMcpServer({gateway,knowledge,config}){
    title:'Register Candidate Behavior',description:'Register the candidate behavior program after AAF authorization.',
    inputSchema:{candidate_id:z.string().min(1).max(300)},annotations:authorityAnnotations
   },async({candidate_id})=>{assertAuthorityEnabled(config);return native(gateway,'registerBehavior',{candidateId:candidate_id});});
+
+  registerRegular(server,'rncs_execute_behavior',{
+   title:'Execute Registered Behavior',description:'Trigger an executable RCL-authored behavior and record its causal delta, trace, program root, and RFE execution receipt.',
+   inputSchema:{behavior_id:z.string().min(1).max(300),event:z.string().min(1).max(300),payload:z.record(z.any()).optional(),expected_state_root:stateRootSchema.optional(),expected_revision:z.number().int().min(0).optional()},annotations:destructiveAnnotations
+  },async({behavior_id,event,payload={},expected_state_root,expected_revision})=>{assertAuthorityEnabled(config);await assertExpectedState(gateway,config,{expected_state_root,expected_revision},'execute behavior');return native(gateway,'executeBehavior',{behaviorId:behavior_id,event,payload});});
 
   registerRegular(server,'rncs_set_behavior_enabled',{
    title:'Enable or Disable Behavior',description:'Enable or disable a registered behavior program in the native runtime.',

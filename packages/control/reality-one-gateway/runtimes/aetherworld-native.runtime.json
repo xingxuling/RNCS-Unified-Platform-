@@ -23,6 +23,7 @@
     "authorizeCandidate",
     "rejectCandidate",
     "registerBehavior",
+    "executeBehavior",
     "setBehaviorEnabled",
     "updateBehavior",
     "mergeCandidate",

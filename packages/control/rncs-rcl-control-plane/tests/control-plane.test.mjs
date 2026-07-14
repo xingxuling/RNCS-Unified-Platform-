@@ -111,6 +111,30 @@ test('RCL native state compiles into an RNCS authority plan without authority me
   assert.ok(!result.changes.some(change => /authority|generation|revision|state_root|evidence_root/i.test(change.path)));
 });
 
+test('RCL native object and behavior facets lower into RNCS semantic collections', async () => {
+  const result = await compileRclAuthorityPlan(`reality RncsObjectAuthority {
+    facet rncs.world.world_id : Text = "world:rcl-object"
+    facet rncs.world.object.island.id : Text = "island:rcl"
+    facet rncs.world.object.island.kind : Text = "island"
+    facet rncs.world.object.island.position.x : Number = 0
+    facet rncs.world.object.island.position.y : Number = -500
+    facet rncs.world.object.island.position.z : Number = 0
+    facet rncs.world.object.island.physical.body : Text = "static"
+    facet rncs.world.object.island.physical.halfExtents.x : Number = 100
+    facet rncs.world.object.island.physical.halfExtents.y : Number = 10
+    facet rncs.world.object.island.physical.halfExtents.z : Number = 100
+    facet rncs.world.behavior.sensor.id : Text = "behavior:rcl-sensor"
+    facet rncs.world.behavior.sensor.version : Text = "1.0.0"
+    facet rncs.world.behavior.sensor.enabled : Truth = true
+  }`);
+  assert.equal(result.execution.parity.ok, true);
+  assert.equal(result.plan.artifacts[0].definition.physical.halfExtents.x, 100);
+  assert.equal(result.plan.behaviors[0].behavior_id, 'behavior:rcl-sensor');
+  assert.deepEqual(result.changes.map(change => change.path), ['world.behaviors', 'world.objects', 'world.world_id']);
+  assert.ok(result.plan.authority_requirements.some(item => item.action === 'modify_object_property'));
+  assert.ok(result.plan.authority_requirements.some(item => item.action === 'register_behavior'));
+});
+
 
 test('embedded AOT control plane reuses one long-lived native VM process', async () => {
   const bundle = compileRuntimeBundle();
