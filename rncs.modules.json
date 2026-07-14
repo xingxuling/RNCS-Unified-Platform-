@@ -36,6 +36,26 @@
       "test": "npm test --workspace @taowind/rfe-core-sdk"
     },
     {
+      "id": "reality-kernel",
+      "name": "Reality Kernel",
+      "version": "0.1.0-alpha.1",
+      "path": "packages/kernel/reality-kernel",
+      "layer": "kernel",
+      "runtime": "rncs.reality-kernel",
+      "dependsOn": [
+        "rncs-core",
+        "rfe-sdk"
+      ],
+      "test": "npm test --workspace @taowind/reality-kernel",
+      "capabilities": [
+        "reality-object-abi",
+        "deterministic-reality-graph-query",
+        "reality-transition-vm",
+        "evidence-root-compilation",
+        "rfe-local-commit-bridge"
+      ]
+    },
+    {
       "id": "laf",
       "name": "Living Artifact Format",
       "version": "1.0.0",
