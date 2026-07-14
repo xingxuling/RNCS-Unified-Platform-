@@ -43,7 +43,7 @@
     "test:languages": "npm run test:csl && npm run test:ial && npm run test:bridge && npm run test:rcl",
     "typecheck:products": "npm run typecheck --prefix apps/aetherworld && npm run typecheck --prefix apps/csl-studio && npm run typecheck --prefix apps/seed-forge",
     "check:fusion": "npm run build:world && npm run build:products && npm run typecheck:products && npm run health && npm run test:integration",
-    "validate:release": "npm run check:fusion && npm run health --prefix apps/aetherworld",
+    "validate:release": "npm run verify:version-contract && npm run check:fusion && npm run health --prefix apps/aetherworld",
     "test:network": "npm test --workspace @taowind/reality-network-runtime",
     "benchmark:network": "npm run benchmark --workspace @taowind/reality-network-runtime",
     "demo:network": "node examples/two-player-loopback/demo-server.mjs",
@@ -99,10 +99,11 @@
     "demo:aether-earth": "npm run demo --workspace @taowind/aether-earth-runtime",
     "benchmark:aether-earth": "npm run benchmark --workspace @taowind/aether-earth-runtime",
     "build:aether-earth:web": "npm run build:web --workspace @taowind/aether-earth-runtime",
-    "verify:aether-earth": "npm run verify --workspace @taowind/aether-earth-runtime"
+    "verify:aether-earth": "npm run verify --workspace @taowind/aether-earth-runtime",
+    "verify:version-contract": "node scripts/verify-version-contract.mjs"
   },
   "engines": {
     "node": ">=20"
   },
-  "description": "RNCS + Aetherworld Unified v0.19.7 with Aether Earth: 100 RCL organisms, RCLpedia, accelerated spacetime, compression and collective-intelligence crystallization."
+  "description": "RNCS + Aetherworld Unified v0.19.8-alpha.1 with Aether Earth: 100 RCL organisms, RCLpedia, accelerated spacetime, compression and collective-intelligence crystallization."
 }
