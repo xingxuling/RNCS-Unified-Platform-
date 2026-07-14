@@ -76,16 +76,53 @@ function makePolicy(){return sealPolicyBundle({bundle_id:'policy:aetherworld-nat
  {policy_id:'high-requires-two',effect:'require_approval',priority:90,match:{risk_at_least:'high'},approval:{roles:['owner','security'],quorum:2}},
  {policy_id:'allow-owner-medium',effect:'allow',priority:50,match:{roles_any:['owner'],scopes_any:['world.*','behavior.*','physics.*','network.*','branch.*','rfe.*'],risk_at_most:'medium'},obligations:[{type:'evidence-required'}]}
 ]});}
+function rclBehaviorActionList(definition){
+ const declared=definition.actions??definition.action;
+ if(Array.isArray(declared))return declared;
+ if(declared&&typeof declared==='object'&&typeof declared.type==='string')return[declared];
+ if(declared&&typeof declared==='object')return Object.entries(declared).sort(([a],[b])=>a.localeCompare(b)).map(([actionId,action])=>({...action,action_id:actionId}));
+ return[];
+}
+function rclBehaviorCapabilityList(definition){
+ const declared=definition.capabilities??definition.capability;
+ if(Array.isArray(declared))return declared;
+ if(declared&&typeof declared==='object'&&((declared.capability_id??declared.id)||declared.required_scope||declared.required_scopes))return[declared];
+ if(declared&&typeof declared==='object')return Object.entries(declared).sort(([a],[b])=>a.localeCompare(b)).map(([capabilityId,capability])=>({...capability,capability_id:capability.capability_id??capability.id??capabilityId}));
+ return[];
+}
 function rclBehaviorProgram(definition={}){
  const event=definition.trigger?.event??definition.event;
- const action=definition.action;
- const capability=definition.capability;
- const capabilityId=action?.capability_id??capability?.capability_id??capability?.id;
- const requiredScope=capability?.required_scope??capability?.scope;
- if(typeof event!=='string'||!event||action?.type!=='set'||typeof action.target!=='string'||!action.target||action.value===undefined||typeof capabilityId!=='string'||!capabilityId||typeof requiredScope!=='string'||!requiredScope)return null;
  const programId=definition.behavior_id??definition.id;
- if(typeof programId!=='string'||!programId)return null;
- return {identity:{program_id:programId,title:definition.name??programId,description:definition.description??'RCL-authored RNCS behavior',version:definition.version??'0.1.0'},seed:`rcl:${programId}`,tick_rate:Number(definition.tick_rate??60),globals:{},entities:[],state_machines:[],behavior_trees:[],rules:[{rule_id:`rule:${programId}:${event}`,event,actions:[{type:'set',target:action.target,value:clone(action.value)},{type:'call',capability_id:capabilityId,inputs:clone(action.inputs??capability.inputs??{})}]}],capabilities:[{capability_id:capabilityId,required_scopes:[requiredScope],risk:capability.risk??'medium',irreversible:false}],authority:{default_effect:'deny',policies:[{policy_id:`policy:${programId}`,effect:'allow',priority:10,roles_any:['runtime'],capabilities:[capabilityId],risk_at_most:capability.risk??'medium'}]},metadata:{source_language:'RCL',authority_boundary:'rncs-world-state'}};
+ if(typeof event!=='string'||!event||typeof programId!=='string'||!programId)return null;
+ const actions=rclBehaviorActionList(definition);
+ const declaredCapabilities=rclBehaviorCapabilityList(definition);
+ const capabilityMap=new Map(declaredCapabilities.map(capability=>[capability.capability_id??capability.id,capability]));
+ const lowered=[];const usedCapabilities=[];
+ for(const action of actions){
+  if(!action||typeof action!=='object'||!['set','add','multiply','clamp','emit','call'].includes(action.type))return null;
+  const capability=capabilityMap.get(action.capability_id??action.capability?.capability_id??action.capability?.id);
+  const capabilityId=action.capability_id??action.capability?.capability_id??action.capability?.id;
+  if(['set','add','multiply','clamp'].includes(action.type)&&(typeof action.target!=='string'||!action.target||action.value===undefined&&action.type!=='clamp'||action.type==='clamp'&&(action.min===undefined||action.max===undefined)))return null;
+  if(action.type==='emit'&&(typeof action.event!=='string'||!action.event))return null;
+  if(action.type==='call'&&typeof capabilityId!=='string')return null;
+  if(action.type!=='emit'&&typeof capabilityId!=='string')return null;
+  const loweredAction={type:action.type};
+  for(const key of ['target','value','min','max','event','payload','phase','priority','inputs'])if(action[key]!==undefined)loweredAction[key]=clone(action[key]);
+  if(action.type==='call')loweredAction.capability_id=capabilityId;
+  lowered.push(loweredAction);
+  if(typeof capabilityId==='string'){
+   usedCapabilities.push(capabilityId);
+   if(action.type!=='call')lowered.push({type:'call',capability_id:capabilityId,inputs:clone(action.inputs??capability?.inputs??{})});
+  }
+ }
+ const capabilities=[];
+ for(const capabilityId of [...new Set(usedCapabilities)].sort()){
+  const capability=capabilityMap.get(capabilityId);const scopes=capability?.required_scopes??(capability?.required_scope??capability?.scope?[capability.required_scope??capability.scope]:[]);
+  if(!Array.isArray(scopes)||!scopes.length||scopes.some(scope=>typeof scope!=='string'||!scope))return null;
+  capabilities.push({capability_id:capabilityId,required_scopes:[...scopes],risk:capability.risk??'medium',irreversible:Boolean(capability.irreversible)});
+ }
+ if(!lowered.length||!capabilities.length)return null;
+ return {identity:{program_id:programId,title:definition.name??programId,description:definition.description??'RCL-authored RNCS behavior',version:definition.version??'0.1.0'},seed:`rcl:${programId}`,tick_rate:Number(definition.tick_rate??60),globals:clone(definition.globals??{}),entities:[],state_machines:[],behavior_trees:[],rules:[{rule_id:`rule:${programId}:${event}`,event,actions:lowered}],capabilities,authority:{default_effect:'deny',policies:[{policy_id:`policy:${programId}`,effect:'allow',priority:10,roles_any:['runtime'],capabilities:capabilities.map(capability=>capability.capability_id),risk_at_most:capabilities.reduce((max,capability)=>riskRank[capability.risk]>riskRank[max]?capability.risk:max,'low')}]},metadata:{source_language:'RCL',authority_boundary:'rncs-world-state',rcl_action_count:actions.length}};
 }
 function behaviorProviders(calls){return{'rsr.authority-command':({inputs})=>(calls.push({provider:'rsr',inputs}),{accepted:true}),'vsr.presentation-event':({inputs})=>(calls.push({provider:'vsr',inputs}),{accepted:true}),'audio.environment.emit':({inputs})=>(calls.push({provider:'audio',inputs}),{accepted:true})};}
 function makeEnvelope(plan,req){
