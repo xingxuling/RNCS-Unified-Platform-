@@ -1,4 +1,4 @@
-format: reality-kernel.engineering-contract.v0.1
+format: reality-kernel.engineering-contract.v0.2
 status: executable
 target:
   repository: xingxuling/RNCS-Unified-Platform-
@@ -10,6 +10,9 @@ must_change:
   - public reality object ABI with tamper verification
   - deterministic graph relation queries
   - proposal-authority-commit transition execution with atomic failure behavior
+  - typed continuity claims with predecessor, epoch, replay, and sequence guards
+  - subject-sovereignty envelopes with lease fencing and transition binding
+  - continuity ledger acceptance only after a successful kernel/RFE commit
   - evidence compilation bound to transition roots
   - duck-typed RFE local commit bridge without taking ownership of RFE storage
 must_not_change:
@@ -22,6 +25,7 @@ interfaces:
   transition_vm: src/transition-vm.mjs
   evidence: src/evidence-compiler.mjs
   rfe_bridge: src/rfe-bridge.mjs
+  continuity: src/continuity.mjs
   public_entry: src/index.mjs
 vertical_slices:
   - id: RK-01
@@ -40,10 +44,19 @@ vertical_slices:
     name: evidence-and-rfe
     seam: compileEvidence / commitToRfe
     command: npm test -- --test-name-pattern="evidence|RFE"
+  - id: RK-07
+    name: typed-continuity
+    seam: createContinuityClaim / ContinuityLedger.preview / accept
+    command: npm test -- --test-name-pattern="continuity"
+  - id: RK-08
+    name: sovereignty-bound-commit
+    seam: RealityTransitionVM with continuity ledger / commitToRfe
+    command: npm test -- --test-name-pattern="continuity|RFE"
 quality_gates:
   - npm test
   - npm run demo
   - node --check src/index.mjs
+  - node --check src/continuity.mjs
 boundaries:
   verification: proxy-only local deterministic tests; no external-world verification is claimed
   persistence: RFE remains the authoritative persistence implementation
