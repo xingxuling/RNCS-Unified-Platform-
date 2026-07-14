@@ -21,6 +21,7 @@ on:
       - "CHANGELOG.md"
       - "README.md"
       - "scripts/verify-version-contract.mjs"
+      - "scripts/normalize-lockfile-registry.mjs"
   push:
     branches: [main, main-95]
     paths:
@@ -35,6 +36,7 @@ on:
       - "CHANGELOG.md"
       - "README.md"
       - "scripts/verify-version-contract.mjs"
+      - "scripts/normalize-lockfile-registry.mjs"
 
 jobs:
   execution-plane:
@@ -48,6 +50,8 @@ jobs:
           cache: npm
       - name: Pin npm for stable monorepo installation
         run: npm install --global npm@11.18.0 --no-audit --no-fund
+      - name: Normalize lockfile registry for public runner
+        run: node scripts/normalize-lockfile-registry.mjs
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Verify version contract
         run: npm run verify:version-contract
@@ -108,6 +112,8 @@ jobs:
           node-version: 22
       - name: Pin npm for stable monorepo installation
         run: npm install --global npm@11.18.0 --no-audit --no-fund
+      - name: Normalize lockfile registry for public runner
+        run: node scripts/normalize-lockfile-registry.mjs
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Verify Windows native boundary
         run: npm run verify:native-boundary
