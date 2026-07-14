@@ -135,6 +135,29 @@ test('RCL native object and behavior facets lower into RNCS semantic collections
   assert.ok(result.plan.authority_requirements.some(item => item.action === 'register_behavior'));
 });
 
+test('RCL native change facets lower into ordered RNCS candidate operations', async () => {
+  const result = await compileRclAuthorityPlan(`reality RncsOperationAuthority {
+    facet rncs.world.world_id : Text = "world:rcl-operations"
+    facet rncs.world.change.title.op : Text = "set"
+    facet rncs.world.change.title.path : Text = "world.title"
+    facet rncs.world.change.title.value : Text = "operation title"
+    facet rncs.world.change.count.op : Text = "increment"
+    facet rncs.world.change.count.path : Text = "world.count"
+    facet rncs.world.change.count.value : Number = 2
+    facet rncs.world.change.tag.op : Text = "append"
+    facet rncs.world.change.tag.path : Text = "world.tags"
+    facet rncs.world.change.tag.value : Text = "rcl"
+    facet rncs.world.change.old.op : Text = "remove"
+    facet rncs.world.change.old.path : Text = "world.old"
+  }
+  `);
+  assert.equal(result.execution.parity.ok, true);
+  assert.deepEqual(result.operations.map(operation => operation.op), ['increment', 'remove', 'append', 'set']);
+  assert.deepEqual(result.operations.map(operation => operation.path), ['world.count', 'world.old', 'world.tags', 'world.title']);
+  assert.equal(result.operations[0].operation_id, 'rcl-change:count');
+  assert.ok(result.plan.authority_requirements.some(item => item.action === 'merge_candidate_branch'));
+});
+
 
 test('embedded AOT control plane reuses one long-lived native VM process', async () => {
   const bundle = compileRuntimeBundle();

@@ -1,5 +1,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import os from 'node:os';import path from 'node:path';
 import {AetherworldRNCSNativeRuntime,compileNaturalLanguageToRNCS,validateCompilationPlan,migrateCompilationPlan,createAetherIslandProgram} from '../src/index.mjs';
+import {compileRclAuthorityPlan as compileRclAuthorityPlanRaw} from '../../../control/rncs-rcl-control-plane/src/index.mjs';
+const compileRclAuthorityPlan=source=>compileRclAuthorityPlanRaw(source,{roles:['owner','security']});
 const source='创建一座小型以太岛。岛上有两个玩家出生点、一扇可开关的门、一盏蓝色能量灯和一个感应区域。玩家进入感应区域时，门自动打开，灯光增强并产生环境声音。两个客户端必须看到一致的门状态和玩家位置。';
 const runtime=()=>new AetherworldRNCSNativeRuntime({dataDir:fs.mkdtempSync(path.join(os.tmpdir(),'rncs-native-test-'))});
 async function authorized(){const r=runtime(),plan=r.compile({source}),candidate=r.createCandidate({plan});await r.simulateCandidate({candidateId:candidate.candidate_id});const authority=r.authorizeCandidate({candidateId:candidate.candidate_id,approvalRoles:['owner','security']});return{r,plan,candidate,authority};}
@@ -18,3 +20,30 @@ test('RSR materializes formal world state',async()=>{const {r,candidate}=await a
 test('Network two clients converge and VSR stays presentation-only',async()=>{const {r,candidate}=await authorized();r.registerBehavior({candidateId:candidate.candidate_id});await r.mergeCandidate({candidateId:candidate.candidate_id});const x=await r.runLoopback();assert.equal(x.sensor_entered,true);assert.equal(x.network.converged,true);assert.equal(x.projection.authority_presentation_separated,true);assert.equal(x.door_state,true);assert.ok(x.rfe_event.generation_id);assert.equal(r.worldStatus().revision,x.rfe_event.revision);});
 test('rollback and replay create new Generations and restore world',async()=>{const {r,candidate}=await authorized();const before=r.history()[0];r.registerBehavior({candidateId:candidate.candidate_id});const merge=await r.mergeCandidate({candidateId:candidate.candidate_id});const rb=r.rollbackGeneration({generationId:before.generation_id});assert.equal(rb.state.world.world_id,'world:empty');assert.equal(rb.authority.status,'approved');const rp=r.replayGeneration({generationId:merge.generation.generationId});assert.equal(rp.state.world.world_id,'world:aether-island');assert.equal(rp.authority.status,'approved');});
 test('complete Aetherworld world manufacturing E2E passes all acceptance rules',async()=>{const result=await runtime().runEndToEnd({source});assert.ok(Object.values(result.acceptance).every(Boolean),JSON.stringify(result.acceptance));});
+test('RCL candidate operations execute and persist in the authoritative world snapshot',async()=>{const r=runtime();const compiled=await compileRclAuthorityPlan(`reality RclOperationRuntime {
+ facet rncs.world.world_id : Text = "world:rcl-operations"
+ facet rncs.world.change.title.op : Text = "set"
+ facet rncs.world.change.title.path : Text = "world.title"
+ facet rncs.world.change.title.value : Text = "native operation"
+ facet rncs.world.change.count.op : Text = "increment"
+ facet rncs.world.change.count.path : Text = "world.count"
+ facet rncs.world.change.count.value : Number = 2
+ facet rncs.world.change.tag.op : Text = "append"
+ facet rncs.world.change.tag.path : Text = "world.tags"
+ facet rncs.world.change.tag.value : Text = "rcl"
+ }
+ `);const candidate=r.createCandidate({plan:compiled.plan});await r.simulateCandidate({candidateId:candidate.candidate_id});r.authorizeCandidate({candidateId:candidate.candidate_id,approvalRoles:['owner','security']});await r.mergeCandidate({candidateId:candidate.candidate_id});const snapshot=r.worldSnapshot();assert.equal(snapshot.state.world.title,'native operation');assert.equal(snapshot.state.world.count,2);assert.deepEqual(snapshot.state.world.tags,['rcl']);});
+test('RCL behavior execution projects its causal state into the authoritative world snapshot',async()=>{const r=runtime();const compiled=await compileRclAuthorityPlan(`reality RclBehaviorProjection {
+ facet rncs.world.world_id : Text = "world:rcl-behavior-projection"
+ facet rncs.world.behavior.signal.id : Text = "behavior:rcl-projection"
+ facet rncs.world.behavior.signal.version : Text = "1.0.0"
+ facet rncs.world.behavior.signal.trigger.event : Text = "rcl.signal"
+ facet rncs.world.behavior.signal.action.type : Text = "set"
+ facet rncs.world.behavior.signal.action.target : Text = "globals.triggered"
+ facet rncs.world.behavior.signal.action.value : Truth = true
+ facet rncs.world.behavior.signal.action.capability_id : Text = "rcl.state.write"
+ facet rncs.world.behavior.signal.capability.id : Text = "rcl.state.write"
+ facet rncs.world.behavior.signal.capability.required_scope : Text = "world.object.write"
+ facet rncs.world.behavior.signal.capability.risk : Text = "medium"
+ }
+ `);const candidate=r.createCandidate({plan:compiled.plan});await r.simulateCandidate({candidateId:candidate.candidate_id});r.authorizeCandidate({candidateId:candidate.candidate_id,approvalRoles:['owner','security']});await r.mergeCandidate({candidateId:candidate.candidate_id});const execution=r.executeBehavior({behaviorId:'behavior:rcl-projection',event:'rcl.signal'});const snapshot=r.worldSnapshot();assert.equal(snapshot.state.world.runtime.behavior_globals.triggered,true);assert.ok(execution.execution.world_changed_paths.includes('world.runtime.behavior_globals.triggered'));assert.equal(execution.execution.world_state_root,snapshot.state_root);});

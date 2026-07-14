@@ -30,6 +30,7 @@
     "materializeRSR",
     "runLoopback",
     "history",
+    "worldSnapshot",
     "rollbackGeneration",
     "replayGeneration",
     "worldStatus",

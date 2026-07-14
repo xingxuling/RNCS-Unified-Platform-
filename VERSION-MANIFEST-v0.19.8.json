@@ -15,7 +15,8 @@
   "mcp_read_tool": "rncs_rcl_compile_execute",
   "mcp_authority_tool": "rncs_rcl_authority_workflow",
   "verification": {
-    "rcl_control_plane": "10/10 pass",
+    "rcl_control_plane": "11/11 pass",
+    "aether_bridge": "17/17 pass",
     "gateway": "19/19 pass",
     "rcl_native_parity": "pass",
     "rcl_native_authority_commit": "pass",

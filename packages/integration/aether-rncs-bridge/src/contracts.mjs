@@ -24,8 +24,10 @@ export function validateCompilationPlan(plan){
   if(!plan?.subject?.subject_id)errors.push('SUBJECT_ID_REQUIRED');
   if(!plan?.candidate_branch?.branch_id)errors.push('BRANCH_ID_REQUIRED');
   for(const change of plan?.world_state_changes??[]){
-    if(!['set','remove'].includes(change.op))errors.push(`WORLD_CHANGE_OP_INVALID:${change.op}`);
+    if(!['set','remove','append','increment','merge'].includes(change.op))errors.push(`WORLD_CHANGE_OP_INVALID:${change.op}`);
+    if(!/^world(?:\.[A-Za-z0-9_-]+)+$/.test(String(change.path??'')))errors.push(`WORLD_CHANGE_PATH_INVALID:${change.path}`);
     if(/(^|\.)(authority|generation|revision|state_root|evidence_root)(\.|$)/i.test(String(change.path)))errors.push(`DIRECT_AUTHORITY_WRITE_FORBIDDEN:${change.path}`);
+    if(change.op!=='remove'&&change.value===undefined)errors.push(`WORLD_CHANGE_VALUE_REQUIRED:${change.path}`);
   }
   const actions=new Set((plan?.authority_requirements??[]).map(x=>x.action));
   for(const action of ['create_world_object','merge_candidate_branch','rollback_generation'])if(!actions.has(action))errors.push(`AUTHORITY_REQUIREMENT_MISSING:${action}`);
