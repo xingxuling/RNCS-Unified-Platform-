@@ -243,6 +243,15 @@ test('Cognition state becomes an RNCS authority change with native evidence', as
   assert.equal(domainChange.value['solutions.chosen'].status, 'selected');
   assert.equal(result.changes.find(change => change.path === 'world.confidence')?.value, '0.97');
   assert.match(result.domainStateRoot, /^[0-9a-f]{64}$/);
+  assert.equal(result.knowledgeGraph.format, 'rcl.knowledge-authority-graph.v0.1');
+  assert.equal(result.knowledgeGraph.claims.length, 1);
+  assert.equal(result.knowledgeGraph.claims[0].path, 'mind.operation_safe');
+  assert.equal(result.knowledgeGraph.claims[0].evidence[0], 'policy:greenhouse-safe');
+  assert.equal(result.knowledgeGraph.evidence_nodes[0].kind, 'rcl-evidence-reference');
+  assert.match(result.knowledgeGraph.root, /^[0-9a-f]{64}$/);
+  assert.equal(result.plan.source.rcl_knowledge_graph_root, result.knowledgeGraph.root);
+  assert.ok(result.plan.authority_requirements.some(item => item.action === 'commit_rcl_knowledge' && item.scope === 'world.rcl.knowledge.write'));
+  assert.ok(result.plan.evidence_requirements.some(item => item.kind === 'rcl-native-knowledge-graph' && item.root === result.knowledgeGraph.root));
   assert.equal(result.plan.source.rcl_domain_state_root, result.domainStateRoot);
   assert.ok(result.plan.evidence_requirements.some(item => item.kind === 'rcl-native-domain-state' && item.root === result.domainStateRoot));
   assert.ok(result.plan.authority_requirements.some(item => item.action === 'commit_rcl_domain_state' && item.scope === 'world.rcl.write'));

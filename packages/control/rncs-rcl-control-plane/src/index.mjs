@@ -246,6 +246,68 @@ function collectRclDomainState(state) {
   return domainState;
 }
 
+function rclJsonRoot(value) {
+  return sha256(Buffer.from(JSON.stringify(value), 'utf8'));
+}
+
+function collectRclKnowledgeGraph(domainState) {
+  const claimEntries = Object.entries(domainState)
+    .filter(([, value]) => value && typeof value === 'object' && value.kind === 'Knowledge')
+    .sort(([a], [b]) => a.localeCompare(b));
+  if (!claimEntries.length) return null;
+
+  const claims = claimEntries.map(([pathName, value]) => {
+    const claim = {
+      path: pathName,
+      base_type: value.baseType,
+      value: value.value,
+      confidence: value.confidence,
+      status: value.status,
+      source: value.source,
+      scope: value.scope,
+      evidence: [...(value.evidence ?? [])],
+      dependencies: [...(value.dependencies ?? [])],
+      revision: value.revision,
+      alternatives: value.alternatives ?? [],
+      formed_at_root: value.formedAtRoot ?? null,
+    };
+    return { ...claim, claim_root: rclJsonRoot(claim) };
+  });
+  const claimPaths = new Set(claims.map(claim => claim.path));
+  const evidenceReferences = new Map();
+  for (const claim of claims) {
+    for (const reference of claim.evidence) {
+      const entry = evidenceReferences.get(reference) ?? { reference, claims: [] };
+      entry.claims.push(claim.path);
+      evidenceReferences.set(reference, entry);
+    }
+  }
+  const evidenceNodes = [...evidenceReferences.values()]
+    .sort((a, b) => a.reference.localeCompare(b.reference))
+    .map(entry => ({
+      id: `rcl:evidence:${rclJsonRoot(entry.reference).slice(0, 24)}`,
+      kind: 'rcl-evidence-reference',
+      reference: entry.reference,
+      claims: [...entry.claims].sort(),
+    }));
+  const dependencyEdges = claims.flatMap(claim => claim.dependencies.map(target => ({
+    from: claim.path,
+    to: target,
+    resolved: claimPaths.has(target),
+  }))).sort((a, b) => `${a.from}:${a.to}`.localeCompare(`${b.from}:${b.to}`));
+  const graph = {
+    format: 'rcl.knowledge-authority-graph.v0.1',
+    claims,
+    evidence_nodes: evidenceNodes,
+    dependency_edges: dependencyEdges,
+  };
+  return {
+    ...graph,
+    root: rclJsonRoot(graph),
+    unresolved_dependencies: dependencyEdges.filter(edge => !edge.resolved).map(edge => `${edge.from}->${edge.to}`),
+  };
+}
+
 function rclWorldChanges(state) {
   const changes = [];
   const directStateKeys = [];
@@ -293,6 +355,7 @@ export async function compileRclAuthorityPlan(source, options = {}) {
   const domainStateRoot = Object.keys(worldModel.domainState).length
     ? sha256(Buffer.from(JSON.stringify(worldModel.domainState), 'utf8'))
     : null;
+  const knowledgeGraph = collectRclKnowledgeGraph(worldModel.domainState);
   const planId = `plan:rcl:${sourceRoot.slice(0, 24)}`;
   const subjectId = String(options.subjectId ?? 'subject:rcl-native');
   const baselineGeneration = Number(options.baselineGeneration ?? 0);
@@ -312,7 +375,9 @@ export async function compileRclAuthorityPlan(source, options = {}) {
       compiler: execution.compiler,
       compiler_parity: execution.compilerParity,
       rcl_domain_state_root: domainStateRoot,
+      rcl_knowledge_graph_root: knowledgeGraph?.root ?? null,
     },
+    rcl_knowledge_graph: knowledgeGraph,
     subject: {
       subject_id: subjectId,
       roles: options.roles ?? ['rcl-author'],
@@ -336,6 +401,7 @@ export async function compileRclAuthorityPlan(source, options = {}) {
       ...((worldModel.objects.length || worldModel.operations.some(operation => operation.path === 'world.objects' || operation.path.startsWith('world.objects.'))) ? [{ action: 'modify_object_property', scope: 'world.object.write', risk_level: 'medium' }] : []),
       ...((worldModel.behaviors.length || worldModel.operations.some(operation => operation.path === 'world.behaviors' || operation.path.startsWith('world.behaviors.'))) ? [{ action: 'register_behavior', scope: 'behavior.register', risk_level: 'medium' }] : []),
       ...(domainStateRoot ? [{ action: 'commit_rcl_domain_state', scope: 'world.rcl.write', risk_level: 'medium' }] : []),
+      ...(knowledgeGraph ? [{ action: 'commit_rcl_knowledge', scope: 'world.rcl.knowledge.write', risk_level: knowledgeGraph.unresolved_dependencies.length ? 'high' : 'medium' }] : []),
       { action: 'merge_candidate_branch', scope: 'branch.merge', risk_level: riskLevel },
       { action: 'rollback_generation', scope: 'rfe.rollback', risk_level: 'high' },
     ],
@@ -351,6 +417,13 @@ export async function compileRclAuthorityPlan(source, options = {}) {
       { kind: 'rcl-native-bytecode', root: execution.bytecodeHash },
       { kind: 'rcl-native-parity', verified: execution.parity?.ok === true },
       ...(domainStateRoot ? [{ kind: 'rcl-native-domain-state', root: domainStateRoot }] : []),
+      ...(knowledgeGraph ? [{
+        kind: 'rcl-native-knowledge-graph',
+        root: knowledgeGraph.root,
+        claims: knowledgeGraph.claims.length,
+        evidence_references: knowledgeGraph.evidence_nodes.length,
+        dependency_edges: knowledgeGraph.dependency_edges.length,
+      }] : []),
       { kind: 'rbf-simulation-receipt' },
       { kind: 'aaf-decision' },
       { kind: 'rfe-commit-receipt' },
@@ -361,6 +434,7 @@ export async function compileRclAuthorityPlan(source, options = {}) {
       { rule: 'candidate-before-commit' },
       { rule: 'all-mutating-actions-authorized' },
       { rule: 'state-precondition-must-match' },
+      ...(knowledgeGraph ? [{ rule: 'rcl-knowledge-evidence-bound' }, { rule: 'rcl-knowledge-dependencies-explicit' }] : []),
       { rule: 'rfe-receipt-required' },
     ],
   };
@@ -373,6 +447,7 @@ export async function compileRclAuthorityPlan(source, options = {}) {
     behaviors: worldModel.behaviors,
     operations: worldModel.operations,
     domainState: worldModel.domainState,
+    knowledgeGraph,
     domainStateRoot,
     stateRoot: sha256(Buffer.from(JSON.stringify(execution.native.state), 'utf8')),
   };
