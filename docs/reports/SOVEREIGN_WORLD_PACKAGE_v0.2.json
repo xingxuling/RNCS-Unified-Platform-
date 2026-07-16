@@ -1,0 +1,77 @@
+{
+  "format": "rncs.sovereign-world-verification-report.v0.2",
+  "version": "0.2.0-alpha.1",
+  "status": "pass",
+  "package": {
+    "format": "rncs.sovereign-world-package.v0.2",
+    "package_root": "14c0d4668eacb8b557d369990718925cd81f8e9576e9b4188ccb60729d3cc52d",
+    "build_id": "build:b648ef29a7104ff65a6405f5",
+    "roots": {
+      "gamebrain_semantic": "657104be5813de55de402d2546950612a6f72ab7f163cc390e64b941510e7544",
+      "foundation_run": "d9c08961df261478460ce5626ffdc5cc897b16cc982a262f90a68fce68351b61",
+      "rncs_proposal": "5e6b883f8646c898e8a29333ee171f02dfbe01a33821ea5eb7f54dd5ba0e58df",
+      "rncs_authority": "38dbd93e09c1ad1533a291f377dcd54cb6615954f4222f0f45b5e447b0f50e3e",
+      "rncs_commit": "634c431da6c04dcb87e27e16cbb1f586af19a7a3bfea53f556f39b7a0fc8c24f",
+      "network_recovery": "f7f034aec8bfc85ab1b637ee7d1dbd422b81ffa055d7eea43c9504cf9224e6eb",
+      "viewport_pixels": "d02747f47db20b0d7cf230c1600f990414ed8b29a6a2a06b28b9b5f886556eca",
+      "project": "ef35fb02f7778fbad3bc9133d2a1ac9e3fbda6c022eeb2d57fe9014754c3f4cb",
+      "build_receipt": "0a6c1a8aef2fe5fe710794c276851460e644b104dd39890f5461abf02f77bc58",
+      "build_runtime_replay": "c4d53ec19bc88a7f9603932a06db4ff761e1d55dc400ef503f2a68d1ee81d605"
+    },
+    "targets": [
+      { "target": "web-release", "target_root": "3572de11ec69d7e01f16f7ea2f54efa7d632928bac05e0867d9f368207f52fa3" },
+      { "target": "windows-portable", "target_root": "43bc8f49512a178ade089fdbcc0d9fbf7ca54a8293b768b0ebe34c263d2fb8cd" },
+      { "target": "headless-server", "target_root": "357a4813c4994b82eb392326e08b77e05fe089f11cdf1eaa163fdd3ed9070cb0" },
+      { "target": "replay-bundle", "target_root": "69f29842e9c7ea84f1d1792fb8f514b6aa4eb73c5456ab36c9847c6c9ae86e2b" }
+    ],
+    "assets": {
+      "model": { "mime": "model/gltf-binary", "sha256": "9a0e2027e3fa3233242b98a126251e7fff134d8b5dc38890d62a097f1b9c2af9", "bytes": 648 },
+      "audio": { "mime": "audio/wav", "sha256": "fc7a256512c7e0e6a944b17de3ff8511be805e55500c88beda4a55d5ae516aa1", "bytes": 11068 }
+    }
+  },
+  "acceptance": {
+    "realGameBrainProvider": true,
+    "languageChangedWorldAction": true,
+    "fivePlanesPrecedeExecution": true,
+    "canonicalRncsProposalCommitted": true,
+    "unauthorizedCommitRejected": true,
+    "malformed4RGateRejected": true,
+    "modelImportedAndBaked": true,
+    "audioImportedAndBaked": true,
+    "viewportRenderedRealSpatialAsset": true,
+    "twoClientDisconnectRecovery": true,
+    "deterministicMultiTargetBuild": true,
+    "clientHeadlessReplayShareProject": true,
+    "replayBundleExecutes": true,
+    "headlessServerExecutes": true
+  },
+  "tests": {
+    "passed": 496,
+    "skipped_environment": 8,
+    "failed": 0,
+    "suites": {
+      "sovereign_world_v02": { "passed": 2, "skipped": 0, "failed": 0 },
+      "beyond_engine_v01": { "passed": 1, "skipped": 0, "failed": 0 },
+      "reality_build": { "passed": 109, "skipped": 8, "failed": 0 },
+      "reality_network": { "passed": 22, "skipped": 0, "failed": 0 },
+      "reality_studio": { "passed": 210, "skipped": 0, "failed": 0 },
+      "zhinao": { "passed": 152, "test_files": 23, "skipped": 0, "failed": 0 }
+    }
+  },
+  "performance_snapshot": {
+    "rncs_core_ms": 13.335,
+    "gamebrain_spatial_network_ms": 2254.721,
+    "multi_target_build_ms": 1021.026,
+    "replay_headless_verification_ms": 1293.05,
+    "memory_rss_delta_bytes": 176484352,
+    "provider_call_count": 1,
+    "event_count": 59,
+    "deterministic_root_excludes_metrics": true
+  },
+  "limitations": [
+    "complete RCL Native VM lowering is not claimed",
+    "spatial viewport remains a projection",
+    "Windows portable remains browser-hosted",
+    "Android APK and store signing are not part of this workflow"
+  ]
+}
