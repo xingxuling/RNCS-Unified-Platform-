@@ -1,0 +1,76 @@
+{
+  "format": "taowind.foundation-conformance.v0.1",
+  "project": "RNCS-Unified-Platform",
+  "contract": {
+    "format": "taowind.rcl-foundation-contract.v0.1",
+    "version": "0.1.0",
+    "manifestRoot": "34e508fe3b6587e630cc32a075edbad87323c7359434b2a2aaf01cf7e250f7e1",
+    "source": "xingxuling/RCL@main:src/foundation-contract.mjs",
+    "byteIdentityClaimed": false
+  },
+  "executionLayers": {
+    "rncsProposalEnvelope": "native",
+    "rclCompatibilityAdapter": "bridge",
+    "rclReferenceRuntime": "bridge",
+    "rclNativeVmDeclaredFoundationLowering": "none"
+  },
+  "domains": {
+    "metacomputation": { "mode": "none", "implementation": null, "tests": [] },
+    "computation": { "mode": "none", "implementation": null, "tests": [] },
+    "physical": { "mode": "none", "implementation": null, "tests": [] },
+    "energy": { "mode": "bridge", "implementation": "RCL energy state through RNCS native control-plane compatibility adapter", "tests": ["packages/control/rncs-rcl-control-plane/tests/control-plane.test.mjs"] },
+    "elemental": { "mode": "none", "implementation": null, "tests": [] },
+    "perception": { "mode": "none", "implementation": null, "tests": [] },
+    "neural": { "mode": "projection", "implementation": "downstream cognition state lowered into RNCS collections", "tests": ["packages/control/rncs-rcl-control-plane/tests/control-plane.test.mjs"] },
+    "embodiment": { "mode": "none", "implementation": null, "tests": [] },
+    "life": { "mode": "none", "implementation": null, "tests": [] },
+    "genetic": { "mode": "none", "implementation": null, "tests": [] },
+    "quantitative": { "mode": "none", "implementation": null, "tests": [] },
+    "knowledge": { "mode": "projection", "implementation": "downstream cognition collections, not canonical Foundation result", "tests": ["packages/control/rncs-rcl-control-plane/tests/control-plane.test.mjs"] },
+    "scientific": { "mode": "none", "implementation": null, "tests": [] },
+    "spiritual": { "mode": "none", "implementation": null, "tests": [] }
+  },
+  "planes": {
+    "natural-language-reality": { "mode": "none", "implementation": null, "tests": [] },
+    "understanding-reality": { "mode": "projection", "implementation": "cognition state compatibility lowering", "tests": ["packages/control/rncs-rcl-control-plane/tests/control-plane.test.mjs"] },
+    "creative-reality": { "mode": "projection", "implementation": "creation solution compatibility lowering", "tests": ["packages/control/rncs-rcl-control-plane/tests/control-plane.test.mjs"] },
+    "inner-reality": { "mode": "none", "implementation": null, "tests": [] },
+    "execution-reality": { "mode": "native", "implementation": "RNCS Proposal -> Authority -> Commit envelope", "tests": ["packages/kernel/rncs-core-contract/tests/foundation-governance.mjs"] }
+  },
+  "metaPlanes": {
+    "meta-spacetime": { "mode": "none", "implementation": null, "tests": [] },
+    "meta-acceleration": { "mode": "none", "implementation": null, "tests": [] },
+    "meta-compression": { "mode": "none", "implementation": null, "tests": [] }
+  },
+  "axes": {
+    "authority-boundary": { "mode": "native", "implementation": "RNCS authority decision and commit gate", "tests": ["packages/kernel/rncs-core-contract/tests/foundation-governance.mjs"] },
+    "causality-evidence": { "mode": "native", "implementation": "proposal roots, causal parents, evidence roots and commit roots", "tests": ["packages/kernel/rncs-core-contract/tests/foundation-governance.mjs"] }
+  },
+  "realityRobustness": {
+    "explicit-variable": { "mode": "native", "implementation": "foundation_governance.explicitVariables and uncertainty", "tests": ["packages/kernel/rncs-core-contract/tests/foundation-governance.mjs"] },
+    "provider-capability-boundary": { "mode": "native", "implementation": "foundation_governance.providerCapabilities", "tests": ["packages/kernel/rncs-core-contract/tests/foundation-governance.mjs"] },
+    "authorization-evidence": { "mode": "native", "implementation": "authorityRequirements, irreversibleEffects and evidenceRequirements", "tests": ["packages/kernel/rncs-core-contract/tests/foundation-governance.mjs"] },
+    "adaptive-invariant-field": { "mode": "native", "implementation": "invariants and adaptiveInvariantField checked by commit gate", "tests": ["packages/kernel/rncs-core-contract/tests/foundation-governance.mjs"] }
+  },
+  "products": {
+    "aetherEarthAndroid": { "status": "available", "conformance": "apps/aether-earth-android/foundation-conformance.json" },
+    "aetherForgePocket": {
+      "status": "blocked-independent-project-missing",
+      "internalArtifactMode": "projection",
+      "internalArtifact": "packages/languages/reality-computation-language/src/aether-forge-pocket-product-bridge.mjs",
+      "limitation": "The internal artifact emits product cards and evidence bundles; it is not a Pocket task execution repository and has no RNCS code-change commit loop."
+    }
+  },
+  "checks": [
+    "foundation-contract-bridge",
+    "foundation-governance-proposal-root",
+    "foundation-4r-commit-gate",
+    "tamper-evidence",
+    "native-control-plane-parity"
+  ],
+  "knownLimitations": [
+    "The RNCS RCL package is a downstream extension delta and is not byte-identical to canonical RCL.",
+    "Most Foundation domains and planes do not yet have direct standard-result invocation inside RNCS.",
+    "Declared Foundation domains still require provider lowering before canonical RCL Native VM execution."
+  ]
+}

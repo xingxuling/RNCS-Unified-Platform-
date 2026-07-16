@@ -90,6 +90,7 @@
         "$ref": "host-state-reference.v0.1.schema.json"
       }
     },
+    "foundation_governance": { "type": "object" },
     "extensions": {
       "type": "object"
     },
