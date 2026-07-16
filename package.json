@@ -100,6 +100,7 @@
     "benchmark:aether-earth": "npm run benchmark --workspace @taowind/aether-earth-runtime",
     "build:aether-earth:web": "npm run build:web --workspace @taowind/aether-earth-runtime",
     "verify:aether-earth": "npm run verify --workspace @taowind/aether-earth-runtime",
+    "verify:aether-earth:android-foundation": "node scripts/verify-aether-earth-android-foundation.mjs",
     "verify:version-contract": "node scripts/verify-version-contract.mjs"
   },
   "engines": {
