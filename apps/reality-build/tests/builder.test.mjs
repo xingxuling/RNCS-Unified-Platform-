@@ -12,7 +12,7 @@ test('多目标构建成功',()=>{const out=dir(),b=buildProject(req(out,['web-r
 test('构建后自校验成功',()=>{const out=dir();buildProject(req(out));assert.equal(verifyBuild(out).valid,true)});
 test('第二次构建命中缓存',()=>{const out=dir(),r=req(out);buildProject(r);assert.equal(buildProject(r).cache_hit,true)});
 test('构建收据可验证',()=>{const out=dir();buildProject(req(out));assert.ok(verifySeal(readJson(path.join(out,'build-receipt.json')),'receipt_root'))});
-test('核心文件被记录',()=>{const out=dir(),b=buildProject(req(out));assert.equal(b.core_files.length,5)});
+test('核心文件被记录',()=>{const out=dir(),b=buildProject(req(out));assert.equal(b.core_files.length,9);assert.ok(b.core_files.some(file=>file.path==='runtime-evidence.json'))});
 test('能力预检被保留',()=>{const out=dir();buildProject(req(out));const p=readJson(path.join(out,'build-preflight.json'));assert.equal(p.status,'ready');assert.ok(verifySeal(p,'preflight_root'))});
 test('资产清单被保留',()=>{const out=dir();buildProject(req(out));assert.ok(fs.existsSync(path.join(out,'asset-manifest.json')))});
 test('临时烘焙目录会清理',()=>{const out=dir();buildProject(req(out));assert.equal(fs.existsSync(path.join(out,'_bake')),false)});

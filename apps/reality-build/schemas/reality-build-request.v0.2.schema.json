@@ -7,7 +7,8 @@
   "properties": {
     "project_file": {"type": "string", "minLength": 1},
     "output_dir": {"type": "string", "minLength": 1},
-    "targets": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["web-release", "web-single", "windows-portable", "windows-native", "android-project", "android-apk"]}},
+    "targets": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["web-release", "web-single", "windows-portable", "windows-native", "android-project", "android-apk", "headless-server", "replay-bundle"]}},
+    "runtime_trace": {"type": "array", "items": {"type": "object"}},
     "mode": {"enum": ["development", "release"]},
     "quality_profile": {"enum": ["economy", "balanced", "quality", "cinematic"]},
     "app": {

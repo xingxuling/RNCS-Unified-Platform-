@@ -2,7 +2,7 @@ import test from 'node:test';import assert from 'node:assert/strict';import path
 import {normalizeBuildRequest,validateBuildRequest,validateUnifiedProject,createBuildIdentity,verifySeal,SUPPORTED_TARGETS,TARGET_PROFILES,readJson} from '../src/index.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),projectFile=path.join(root,'examples','冰境试炼.unified-project.json'),project=readJson(projectFile);
 const base=()=>normalizeBuildRequest({project_file:projectFile,output_dir:path.join(root,'output','test-contract'),targets:['web-release'],app:{app_id:'com.taowind.test',title:'测试'}});
-test('支持六种构建目标',()=>assert.deepEqual(SUPPORTED_TARGETS,['web-release','web-single','windows-portable','windows-native','android-project','android-apk']));
+test('支持八种构建目标',()=>assert.deepEqual(SUPPORTED_TARGETS,['web-release','web-single','windows-portable','windows-native','android-project','android-apk','headless-server','replay-bundle']));
 test('原生 Windows 目标存在',()=>assert.equal(TARGET_PROFILES['windows-native'].kind,'native-windows-executable'));
 test('自动 APK 目标存在',()=>assert.equal(TARGET_PROFILES['android-apk'].kind,'compiled-signed-debug-apk'));
 test('每种目标都有配置',()=>SUPPORTED_TARGETS.forEach(t=>assert.ok(TARGET_PROFILES[t])));

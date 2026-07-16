@@ -1,7 +1,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';import path from 'node:path';import fs from 'node:fs';import os from 'node:os';import {fileURLToPath} from 'node:url';
 import {normalizeBuildRequest,buildProject,readJson} from '../src/index.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),projectFile=path.join(root,'examples','冰境试炼.unified-project.json');
-const out=fs.mkdtempSync(path.join(os.tmpdir(),'reality-targets-'));const built=buildProject(normalizeBuildRequest({project_file:projectFile,output_dir:out,targets:['web-release','web-single','windows-portable','android-project'],app:{app_id:'com.taowind.targets',title:'目标验收',version_name:'1.2.3',version_code:12}}));
+const out=fs.mkdtempSync(path.join(os.tmpdir(),'reality-targets-'));const built=buildProject(normalizeBuildRequest({project_file:projectFile,output_dir:out,targets:['web-release','web-single','windows-portable','android-project','headless-server','replay-bundle'],app:{app_id:'com.taowind.targets',title:'目标验收',version_name:'1.2.3',version_code:12}}));
 test('Web Release 有入口',()=>assert.ok(fs.existsSync(path.join(out,'web-release','index.html'))));
 test('Web Release 有运行时',()=>assert.ok(fs.existsSync(path.join(out,'web-release','runtime.js'))));
 test('Web Release 有 Service Worker',()=>assert.ok(fs.existsSync(path.join(out,'web-release','service-worker.js'))));
@@ -20,8 +20,10 @@ test('Android 工程有 MainActivity',()=>assert.ok(fs.existsSync(path.join(out,
 test('Android 工程内嵌游戏 HTML',()=>assert.ok(fs.existsSync(path.join(out,'android-project','app','src','main','assets','index.html'))));
 test('Android 清单承认未编译 APK',()=>{const m=readJson(path.join(out,'android-project','android-build-manifest.json'));assert.equal(m.apk_built,false)});
 test('Android 版本号正确',()=>{const m=readJson(path.join(out,'android-project','android-build-manifest.json'));assert.equal(m.version_code,12)});
-test('四个目标均有目标收据',()=>built.targets.forEach(t=>assert.ok(fs.existsSync(path.join(out,t.target,'target-receipt.json')))));
-test('所有目标根唯一',()=>assert.equal(new Set(built.targets.map(x=>x.target_root)).size,4));
+test('六个目标均有目标收据',()=>built.targets.forEach(t=>assert.ok(fs.existsSync(path.join(out,t.target,'target-receipt.json')))));
+test('所有目标根唯一',()=>assert.equal(new Set(built.targets.map(x=>x.target_root)).size,6));
 
 test('Android 工程有一键构建脚本',()=>assert.ok(fs.existsSync(path.join(out,'android-project','构建调试APK.bat'))));
 test('Android 工程声明自动构建脚本',()=>{const m=readJson(path.join(out,'android-project','android-build-manifest.json'));assert.equal(m.automatic_build_script,true)});
+test('Headless server exposes deterministic runtime files',()=>{assert.ok(fs.existsSync(path.join(out,'headless-server','server.mjs')));assert.ok(fs.existsSync(path.join(out,'headless-server','runtime-replay.json')));assert.ok(fs.existsSync(path.join(out,'headless-server','server-manifest.json')))});
+test('Replay bundle exposes executable verifier',()=>{assert.ok(fs.existsSync(path.join(out,'replay-bundle','verify-replay.mjs')));const m=readJson(path.join(out,'replay-bundle','replay-manifest.json'));assert.equal(m.entry,'verify-replay.mjs');assert.equal(m.runtime_evidence.deterministic,true)});

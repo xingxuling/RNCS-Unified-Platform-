@@ -38,6 +38,7 @@
     "node": ">=20"
   },
   "dependencies": {
-    "@taowind/reality-behavior-fabric": "*"
+    "@taowind/reality-behavior-fabric": "*",
+    "@taowind/reality-studio-native": "*"
   }
 }

@@ -93,7 +93,14 @@ try{
       session.step(input);session.behavior.runtime.paused=false;if(r.globals.victory)break;
     }
     const out=path.resolve(opt('--out')??'output/unified-demo');fs.mkdirSync(out,{recursive:true});const artifacts=session.exportArtifacts();for(const[k,v]of Object.entries(artifacts))write(path.join(out,`${k}.json`),v);write(path.join(out,'session.json'),session.inspect());console.log(JSON.stringify({out,tick:session.behavior.runtime.state.tick,victory:session.behavior.runtime.state.globals.victory,project_root:session.project.project_root,projection_root:artifacts.scene_player.projection_root},null,2));
+  }else if(cmd==='runtime-timeline-demo'){
+    const session=new UnifiedManufacturingSession(loadUnified()),ticks=Math.max(1,Number(opt('--ticks')??24));
+    for(let i=0;i<ticks;i++)session.step({move_right:i%2===0,move_left:i%2===1});
+    const midpoint=Math.floor(ticks/2);session.seekRuntime({tick:midpoint});session.step({attack:true});
+    const checkpoint=session.createRuntimeCheckpoint('cli-demo'),artifacts=session.exportArtifacts(),out=path.resolve(opt('--out')??'output/runtime-timeline-demo');fs.mkdirSync(out,{recursive:true});
+    for(const[k,v]of Object.entries(artifacts))write(path.join(out,k+'.json'),v);write(path.join(out,'session.json'),session.inspect());
+    console.log(JSON.stringify({out,tick:session.behavior.runtime.state.tick,timeline_entries:artifacts.runtime_timeline.entries.length,timeline_cursor:artifacts.runtime_timeline.cursor,replay_root:artifacts.runtime_replay.replay_root,deterministic:artifacts.runtime_replay.deterministic,checkpoint_id:checkpoint.runtime_checkpoint.checkpoint_id},null,2));
   }else{
-    console.error('Usage: reality-studio-native serve|new|validate|migrate|compile|branch-evaluate|branch-adopt|branch-commit|health|preview|commit|behavior-validate|behavior-compile|behavior-demo|asset-forge-demo|asset-import|asset-reimport|asset-audit|asset-ledger|unified-validate|gpu-frame|ui-layout|navigation-path|spatial-validate|spatial-demo|spatial-frame|unified-demo');process.exitCode=2;
+     console.error('Usage: reality-studio-native serve|new|validate|migrate|compile|branch-evaluate|branch-adopt|branch-commit|health|preview|commit|behavior-validate|behavior-compile|behavior-demo|asset-forge-demo|asset-import|asset-reimport|asset-audit|asset-ledger|unified-validate|gpu-frame|ui-layout|navigation-path|spatial-validate|spatial-demo|spatial-frame|unified-demo|runtime-timeline-demo');process.exitCode=2;
   }
 }catch(e){console.error(JSON.stringify({error:{code:e.code??'ERROR',message:e.message,details:e.details??{}}},null,2));process.exitCode=1;}

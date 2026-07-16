@@ -1,0 +1,23 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import {buildProject,verifyBuild} from '../src/builder.mjs';
+import {readJson,verifySeal} from '../src/canonical.mjs';
+
+const root=path.resolve(import.meta.dirname,'..');
+const projectFile=path.join(root,'examples','冰境试炼.unified-project.json');
+
+test('release builds carry deterministic runtime evidence',()=>{
+  const base={project_file:projectFile,targets:['web-release'],mode:'release',quality_profile:'balanced',build_time:'2026-07-15T00:00:00.000Z',runtime_trace:[{move_right:true},{},{attack:true}],app:{app_id:'com.taowind.runtimeevidence',title:'Runtime Evidence',version_name:'0.1.0',version_code:1}};
+  const outA=fs.mkdtempSync(path.join(os.tmpdir(),'reality-build-runtime-a-')),outB=fs.mkdtempSync(path.join(os.tmpdir(),'reality-build-runtime-b-'));
+  const a=buildProject({...base,output_dir:outA}),b=buildProject({...base,output_dir:outB});
+  assert.equal(a.cache_hit,false);assert.equal(b.cache_hit,false);assert.equal(a.runtime_deterministic,true);assert.equal(b.runtime_deterministic,true);
+  const evidenceA=readJson(path.join(outA,'runtime-evidence.json')),evidenceB=readJson(path.join(outB,'runtime-evidence.json'));
+  assert.equal(verifySeal(evidenceA,'evidence_root'),true);assert.equal(evidenceA.evidence_root,evidenceB.evidence_root);assert.equal(evidenceA.timeline_root,evidenceB.timeline_root);assert.equal(evidenceA.replay_root,evidenceB.replay_root);
+  for(const file of ['runtime-evidence.json','runtime-timeline.json','runtime-replay.json','runtime-checkpoint.json'])assert.ok(fs.existsSync(path.join(outA,file)));
+  for(const file of ['runtime-evidence.json','runtime-timeline.json','runtime-replay.json','runtime-checkpoint.json'])assert.ok(fs.existsSync(path.join(outA,'web-release',file)));
+  const graph=readJson(path.join(outA,'build-graph.json'));assert.ok(graph.nodes.some(node=>node.id==='runtime-evidence'));
+  assert.equal(verifyBuild(outA).valid,true);assert.equal(verifyBuild(outB).valid,true);
+});

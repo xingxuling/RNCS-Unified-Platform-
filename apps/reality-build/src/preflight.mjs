@@ -20,10 +20,22 @@ export function findCommand(name,{env=process.env}={}){
   return null;
 }
 
+export function commandInvocation(command,args=[],{env=process.env}={}){
+  if(process.platform==='win32'&&path.isAbsolute(command)&&!path.extname(command)){
+    const shell=findCommand('sh',{env});
+    if(shell){
+      const normalized=command.replaceAll('\\','/'),drive=normalized.match(/^([A-Za-z]):\//);
+      const shellPath=drive?`/${drive[1].toLowerCase()}${normalized.slice(2)}`:normalized;
+      return{command:shell,args:[shellPath,...args]};
+    }
+  }
+  return{command,args};
+}
+
 function firstLine(text){return String(text??'').trim().split(/\r?\n/).find(Boolean)??null;}
 function probe(name,args=['--version'],options={}){
   const command=findCommand(name,options);if(!command)return{name,available:false,version:null};
-  const r=spawnSync(command,args,{encoding:'utf8',timeout:5000,windowsHide:true,env:options.env??process.env});
+  const invocation=commandInvocation(command,args,options),r=spawnSync(invocation.command,invocation.args,{encoding:'utf8',timeout:5000,windowsHide:true,env:options.env??process.env});
   return{name,available:r.status===0||Boolean(r.stdout)||Boolean(r.stderr),version:firstLine(r.stdout)||firstLine(r.stderr),command};
 }
 
@@ -66,12 +78,14 @@ function declaredCapabilities(project,request){
 export function runBuildPreflight({request,project,env=process.env}={}){
   const tools=inspectToolchains({env,includePaths:false}),checks=[],warnings=[];
   const add=(target,capability,required,available,details={})=>checks.push({target,capability,required,available:Boolean(available),...details});
+  const injectedGradle=Boolean(env.RBF_GRADLE_COMMAND);
   for(const target of request.targets){
     if(target==='windows-native')add(target,'toolchain.go',true,tools.go.available,{version:tools.go.version});
     if(target==='android-apk'){
       add(target,'toolchain.java',true,tools.java.available,{version:tools.java.version});
       add(target,'toolchain.gradle',true,tools.gradle.available,{version:tools.gradle.version});
-      add(target,'toolchain.android-sdk',true,tools.android_sdk.available);
+      add(target,'toolchain.android-sdk',!injectedGradle,tools.android_sdk.available,{injected:injectedGradle});
+      if(injectedGradle&&!tools.android_sdk.available)warnings.push({code:'ANDROID_APK_CUSTOM_GRADLE_WITHOUT_SDK',target});
     }
     if(target==='android-project'&&(!tools.java.available||!tools.android_sdk.available))warnings.push({code:'ANDROID_PROJECT_TOOLCHAIN_NOT_READY',target,missing:[!tools.java.available&&'java',!tools.android_sdk.available&&'android-sdk'].filter(Boolean)});
   }
