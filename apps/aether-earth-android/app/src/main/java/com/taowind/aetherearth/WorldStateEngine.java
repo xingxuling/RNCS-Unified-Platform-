@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Locale;
@@ -22,9 +23,15 @@ public final class WorldStateEngine {
     private static final String[] CLIMATES = {"oceanic", "temperate", "arid", "tundra"};
     private static final String[] ARCHETYPES = {"Forager", "Scholar", "Cooperator", "Explorer"};
     private final SharedPreferences preferences;
+    private final FoundationProviderBridge foundation;
 
     public WorldStateEngine(Context context) {
         preferences = context.getApplicationContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        foundation = new FoundationProviderBridge(assetPath -> {
+            try (InputStream input = context.getApplicationContext().getAssets().open(assetPath)) {
+                return new String(input.readAllBytes(), StandardCharsets.UTF_8);
+            }
+        });
         if (!preferences.contains(KEY_CAPSULE)) save(createInitialState());
     }
 
@@ -54,9 +61,17 @@ public final class WorldStateEngine {
     }
 
     public synchronized String advance(int days) {
-        int safeDays = Math.max(0, Math.min(days, 10000));
+        FoundationProviderBridge.AdvanceDecision foundationDecision = foundation.evaluateAdvance(days);
+        int safeDays = foundationDecision.effectiveDays;
+        FoundationProviderBridge.Policy policy = foundationDecision.policy;
         JSONObject state = load();
         try {
+            state.put("foundationRuntime", new JSONObject(foundationDecision.toStandardRuntimeResultJson()));
+            if (!foundationDecision.accepted) {
+                state.put("realityRoot", sha256(state.toString()));
+                save(state);
+                return state.toString();
+            }
             long randomState = Integer.toUnsignedLong(state.optInt("randomState", 20260704));
             JSONArray tiles = state.getJSONArray("tiles");
             JSONArray agents = state.getJSONArray("agents");
@@ -67,22 +82,22 @@ public final class WorldStateEngine {
                 day += 1;
                 for (int t = 0; t < tiles.length(); t++) {
                     JSONObject tile = tiles.getJSONObject(t);
-                    tile.put("b", Math.min(1.0, tile.optDouble("b", 0.5) + 0.004));
+                    tile.put("b", round(policy.regrowBiomass(tile.optDouble("b", 0.5))));
                 }
                 for (int i = 0; i < agents.length(); i++) {
                     JSONObject agent = agents.getJSONObject(i);
                     int x = agent.optInt("x");
                     int y = agent.optInt("y");
-                    JSONObject tile = tiles.getJSONObject(y * 16 + x);
-                    double energy = agent.optDouble("e", 60) - 0.7;
+                    JSONObject tile = tiles.getJSONObject(y * policy.gridWidth + x);
+                    double energy = agent.optDouble("e", 60) - policy.dailyEnergyCost;
                     randomState = nextRandom(randomState);
                     double random = toUnit(randomState);
                     String action;
                     if (energy < 48 && tile.optDouble("b", 0.2) > 0.04) {
                         action = "forage";
-                        double gain = Math.min(7, tile.optDouble("b") * 10);
+                        double gain = Math.min(7, tile.optDouble("b") * policy.forageGainMultiplier);
                         energy = Math.min(100, energy + gain);
-                        tile.put("b", Math.max(0, tile.optDouble("b") - gain / 45.0));
+                        tile.put("b", round(policy.consumeBiomass(tile.optDouble("b"), gain / 45.0)));
                         randomState = nextRandom(randomState);
                         if (toUnit(randomState) < 0.07) {
                             agent.put("k", agent.optInt("k", 0) + 1);
@@ -94,8 +109,8 @@ public final class WorldStateEngine {
                         int dx = (int) (toUnit(randomState) * 3) - 1;
                         randomState = nextRandom(randomState);
                         int dy = (int) (toUnit(randomState) * 3) - 1;
-                        agent.put("x", mod(x + dx, 16));
-                        agent.put("y", mod(y + dy, 16));
+                        agent.put("x", mod(x + dx, policy.gridWidth));
+                        agent.put("y", mod(y + dy, policy.gridHeight));
                     } else if (random < 0.25) {
                         action = "experiment";
                         agent.put("k", agent.optInt("k", 0) + 1);
@@ -151,6 +166,7 @@ public final class WorldStateEngine {
 
     private JSONObject createInitialState() {
         try {
+            FoundationProviderBridge.Policy policy = foundation.policy();
             JSONObject state = new JSONObject();
             state.put("format", "aether-earth.mobile-state.v0.1");
             state.put("day", 0);
@@ -160,9 +176,9 @@ public final class WorldStateEngine {
             state.put("randomState", 20260704);
             JSONArray tiles = new JSONArray();
             long randomState = 20260704;
-            for (int y = 0; y < 16; y++) {
-                double latitude = Math.abs(y / 15.0 * 2 - 1);
-                for (int x = 0; x < 16; x++) {
+            for (int y = 0; y < policy.gridHeight; y++) {
+                double latitude = Math.abs(y / Math.max(1.0, policy.gridHeight - 1.0) * 2 - 1);
+                for (int x = 0; x < policy.gridWidth; x++) {
                     randomState = nextRandom(randomState);
                     double r = toUnit(randomState);
                     String climate = latitude > 0.78 ? "tundra" : r < 0.24 ? "arid" : r > 0.75 ? "oceanic" : "temperate";
@@ -177,8 +193,8 @@ public final class WorldStateEngine {
             for (int i = 0; i < 100; i++) {
                 JSONObject agent = new JSONObject();
                 agent.put("id", String.format(Locale.US, "life:%03d", i + 1));
-                randomState = nextRandom(randomState); agent.put("x", (int) (toUnit(randomState) * 16));
-                randomState = nextRandom(randomState); agent.put("y", (int) (toUnit(randomState) * 16));
+                randomState = nextRandom(randomState); agent.put("x", (int) (toUnit(randomState) * policy.gridWidth));
+                randomState = nextRandom(randomState); agent.put("y", (int) (toUnit(randomState) * policy.gridHeight));
                 randomState = nextRandom(randomState); agent.put("e", round(55 + toUnit(randomState) * 40));
                 agent.put("k", 0); agent.put("g", 1); agent.put("a", ARCHETYPES[i % 4]); agent.put("action", "rest");
                 agents.put(agent);
@@ -187,6 +203,7 @@ public final class WorldStateEngine {
             state.put("agents", agents);
             state.put("crystals", new JSONArray());
             state.put("randomState", (int) randomState);
+            state.put("foundationRuntime", new JSONObject(foundation.evaluateAdvance(0).toStandardRuntimeResultJson()));
             state.put("realityRoot", sha256(state.toString()));
             return state;
         } catch (Exception error) {

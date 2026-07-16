@@ -1,0 +1,59 @@
+{
+  "format": "taowind.foundation-conformance.v0.1",
+  "project": "Aether Earth Android",
+  "rclVersion": "Foundation ABI 0.1.0",
+  "manifestRoot": "34e508fe3b6587e630cc32a075edbad87323c7359434b2a2aaf01cf7e250f7e1",
+  "runtime": {
+    "mode": "bridge",
+    "implementation": "app/src/main/java/com/taowind/aetherearth/FoundationProviderBridge.java",
+    "nativeVmEmbedded": false,
+    "assetOnlyFallback": false
+  },
+  "domains": {
+    "metacomputation": { "mode": "none", "implementation": null, "tests": [], "knownLimitations": [] },
+    "computation": { "mode": "none", "implementation": null, "tests": [], "knownLimitations": [] },
+    "physical": { "mode": "bridge", "implementation": "RCL biomass and grid policy consumed by WorldStateEngine", "tests": ["FoundationProviderBridgeTest.rclPhysicalRuleChangesWorldBiomass"], "knownLimitations": ["typed facet provider subset, not embedded native VM"] },
+    "energy": { "mode": "bridge", "implementation": "RCL energy cost and forage gain policy consumed by WorldStateEngine", "tests": ["scripts/verify-aether-earth-android-foundation.mjs"], "knownLimitations": ["typed facet provider subset"] },
+    "elemental": { "mode": "none", "implementation": null, "tests": [], "knownLimitations": [] },
+    "perception": { "mode": "none", "implementation": null, "tests": [], "knownLimitations": [] },
+    "neural": { "mode": "none", "implementation": null, "tests": [], "knownLimitations": [] },
+    "embodiment": { "mode": "projection", "implementation": "Java agent state", "tests": [], "knownLimitations": ["not governed by a standard Foundation result"] },
+    "life": { "mode": "projection", "implementation": "Java organism loop", "tests": [], "knownLimitations": ["physical and energy inputs are bridged, life logic remains Java"] },
+    "genetic": { "mode": "projection", "implementation": "Java generation counter", "tests": [], "knownLimitations": ["not an RCL provider"] },
+    "quantitative": { "mode": "none", "implementation": null, "tests": [], "knownLimitations": [] },
+    "knowledge": { "mode": "projection", "implementation": "Java knowledge counter", "tests": [], "knownLimitations": ["not an RCL provider"] },
+    "scientific": { "mode": "asset", "implementation": "world.scientific_evidence_required facet", "tests": [], "knownLimitations": ["declared but not a scientific runtime"] },
+    "spiritual": { "mode": "none", "implementation": null, "tests": [], "knownLimitations": [] }
+  },
+  "planes": {
+    "natural-language-reality": { "mode": "none" },
+    "understanding-reality": { "mode": "none" },
+    "creative-reality": { "mode": "none" },
+    "inner-reality": { "mode": "none" },
+    "execution-reality": { "mode": "bridge", "implementation": "FoundationProviderBridge.evaluateAdvance" }
+  },
+  "metaPlanes": {
+    "meta-spacetime": { "mode": "none" },
+    "meta-acceleration": { "mode": "none" },
+    "meta-compression": { "mode": "projection", "implementation": "gzip SharedPreferences capsule outside RCL" }
+  },
+  "axes": {
+    "authority-boundary": { "mode": "bridge", "implementation": "max advance capability rejection" },
+    "causality-evidence": { "mode": "bridge", "implementation": "source root, contract root and deterministic replay root" }
+  },
+  "fourR": {
+    "mode": "bridge",
+    "explicitVariables": true,
+    "providerCapabilities": true,
+    "irreversibleAuthorization": true,
+    "adaptiveInvariantField": true
+  },
+  "tests": [
+    "app/src/test/java/com/taowind/aetherearth/FoundationProviderBridgeTest.java",
+    "scripts/verify-aether-earth-android-foundation.mjs"
+  ],
+  "knownLimitations": [
+    "Android SDK and Gradle wrapper are unavailable in this checkout, so APK and Gradle unit tests are not claimed.",
+    "The provider supports the typed constant-facet subset used by the mobile world; it is not a native RCL VM."
+  ]
+}
