@@ -1,0 +1,20 @@
+{
+  "format": "taowind.rcl-downstream-source-receipt.v0.1",
+  "canonicalRepository": "xingxuling/RCL",
+  "canonicalBranch": "codex/foundation-native-batch-a",
+  "canonicalCommit": "43b6755",
+  "providerId": "rcl.foundation.batch-a",
+  "mode": "bridge",
+  "synchronizedFiles": [
+    "src/foundation-contract.mjs",
+    "src/foundation-native-bridge.mjs",
+    "native/foundation_provider.c",
+    "benchmarks/foundation-native-batch-a-baseline.json",
+    "docs/foundation-native-provider-bridge.md",
+    "examples/foundation-native-batch-a-request.json",
+    "examples/foundation-native-batch-a.mjs",
+    "tests/foundation-native-bridge.test.mjs"
+  ],
+  "byteIdentityClaimedForWholePackage": false,
+  "relationship": "RNCS extension delta consuming a scoped canonical RCL bridge snapshot"
+}

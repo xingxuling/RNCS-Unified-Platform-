@@ -1,0 +1,78 @@
+{
+  "format": "rncs.rcl-foundation-native-evidence.v0.1",
+  "version": "0.1.0-alpha.1",
+  "canonicalRcl": {
+    "repository": "xingxuling/RCL",
+    "branch": "codex/foundation-native-batch-a",
+    "commit": "43b6755",
+    "providerId": "rcl.foundation.batch-a",
+    "providerAbi": 1
+  },
+  "execution": {
+    "mode": "bridge",
+    "nativeVm": "rcl-native-vm/0.6.0-alpha.1",
+    "bytecodeVersion": "1.2",
+    "bytecodeRoot": "9693d45edccdf54cc7bf863816e9a0bf4689ba7f438a7a6579677ff2060314a2",
+    "domains": [
+      "quantitative",
+      "knowledge",
+      "perception",
+      "natural-language-reality",
+      "understanding-reality",
+      "creative-reality"
+    ],
+    "selectedAction": "generate-authorized-candidate",
+    "finalStateRoot": "932cdfb284f297c0bb0eb655d04005403e879ab1b9a404ffacedba5a2b9b4b6a",
+    "deterministicReceiptRoot": "f1130e9cf5bac006a64cbaa4229e01691f36ee12e084cc16bd2a5bb8b0f0edfe",
+    "replayVerified": true
+  },
+  "rncs": {
+    "status": "committed",
+    "proposalRoot": "96a7552a41f1a633e0218670b75baa4759fc90f4f1ca9b52656f6fe07cac6b32",
+    "decisionRoot": "09cb5f225fcd7916629bf864de0fee56c7333dd6d663baa8768320a8670562be",
+    "commitRoot": "b4ad9fb87aafc85042ccbe3553ed1d1b315667d238f282f492b1151842dcafe6",
+    "envelopeRoot": "0d285d672cf34ea5d5dc6c14941d31302c8d8d1a584d78c893f7a8ad660a63da",
+    "generationRoot": "932cdfb284f297c0bb0eb655d04005403e879ab1b9a404ffacedba5a2b9b4b6a",
+    "bridgeReceiptRoot": "b42a7aaef7731fb75c91345e12167c35cea1a48f183e7f94db9020ff9e617205"
+  },
+  "gateway": {
+    "runtimeId": "rncs.rcl-foundation-native",
+    "mode": "bridge",
+    "actions": [
+      "health",
+      "prepare",
+      "authorize",
+      "commit",
+      "verify"
+    ],
+    "runtimeManifestCount": 18,
+    "manifestSourceRoot": "8d7ff6707af912af7c78810a49572f4398b26b956d7286faf530668ef55125d2",
+    "bridgeSha256": "fbd941dece1c2e83b180e0c14985ee628b0a556f8575a905e45f88a110c25b69"
+  },
+  "performance": {
+    "compileMs": "410.447",
+    "runtimeMs": "358.072",
+    "replayMs": "40.802",
+    "sourceBytes": 3980,
+    "bytecodeBytes": 2491,
+    "estimatedWorkingSetBytes": 44149,
+    "nativeInstructionCount": 65,
+    "resultCount": 6,
+    "providerCallCount": 6,
+    "cacheHitRate": "0.00",
+    "compressionRatio": "1.597752"
+  },
+  "checks": {
+    "standardResultCount": true,
+    "nativeReplay": true,
+    "proposalVerified": true,
+    "humanApprovalRecorded": true,
+    "commitReceiptBound": true,
+    "finalRootBound": true,
+    "gatewayRuntimeRegistered": true,
+    "gatewayBridgeModeExplicit": true,
+    "gatewayAuthoritySeparated": true
+  },
+  "evidenceRootScope": "all fields except wall-clock compileMs, runtimeMs, and replayMs",
+  "evidenceRoot": "d0c95b5ccfd6728654b850fb1c9caa4abef4f53bd194f7ef7ace5f4e8af40f7e"
+}

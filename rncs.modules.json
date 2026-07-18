@@ -482,6 +482,25 @@
       "description": "RCL v0.94 native/self-hosted language runtime with deterministic RBC emission, embedded VM, Provider ABI, typed compiler, RNCS bridge and advanced reality planes."
     },
     {
+      "id": "rcl-foundation-rncs-bridge",
+      "name": "RCL Foundation Native RNCS Bridge",
+      "version": "0.1.0-alpha.1",
+      "path": "packages/integration/rcl-foundation-rncs-bridge",
+      "layer": "integration",
+      "runtime": "rncs.rcl-foundation-native",
+      "dependsOn": [
+        "rncs-core",
+        "rcl"
+      ],
+      "test": "npm test --workspace @taowind/rcl-foundation-rncs-bridge",
+      "capabilities": [
+        "foundation-native-proposal",
+        "foundation-native-authority-gate",
+        "foundation-native-commit",
+        "foundation-native-deterministic-replay"
+      ]
+    },
+    {
       "id": "rncs-rcl-control",
       "name": "RNCS RCL Control Plane",
       "version": "0.4.0-alpha.1",

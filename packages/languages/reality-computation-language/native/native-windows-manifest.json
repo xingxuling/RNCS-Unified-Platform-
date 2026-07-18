@@ -1,44 +1,50 @@
 {
   "format": "rcl.native-windows-prebuilt.v1",
-  "sourceSha256": "2bb97fdc574aaf2f22f6e5985fe0c36f6301c6bc4a22b1cc8fc0428a0181a21e",
+  "sourceSha256": "4654f63154d2bf0122f1dd1f83caaf48db6eb8dbdacc1c919fb1df8a68eab4e8",
   "sources": [
     "native/rclvm.c",
     "native/rclvm.h",
     "native/rclc.c",
     "native/rclvmd.c",
     "native/provider_demo.c",
+    "native/foundation_provider.c",
     "scripts/build-native-windows.mjs"
   ],
   "artifacts": [
     {
       "path": "native/rclvm.exe",
       "bytes": 357888,
-      "sha256": "cf675a435fd7bf5d965a2a4f60128745330ff5e4262568e430d6869efeef67ec"
+      "sha256": "5e06f62ca2bcad325746c58a507f2a642dab9528aab8a07b9ed2007752a109bd"
     },
     {
       "path": "native/rclc.exe",
       "bytes": 361984,
-      "sha256": "099a8baac54567ad3dbcb6090cbe6c996355fcd9cd618e11b3353029570a70ac"
+      "sha256": "2b833cbbc8dcbb478da568ea61b216da87c4a079305e04eb8bbb00f8424340ca"
     },
     {
       "path": "native/rclvmd.exe",
       "bytes": 358912,
-      "sha256": "f2a0fa97f4b3cbc87b2841d94a8ef41e1e1db984dd5c7812f7a308927e2c36a3"
+      "sha256": "917de046d3ef6548deb5f33dec28e024e944fc8b28d6281e50660a5df4cfe15b"
     },
     {
       "path": "native/provider_demo.exe",
       "bytes": 357888,
-      "sha256": "fb2cf20e216d122268566634635d4b79ee6da95b6ea59a801c8abb88b35c6409"
+      "sha256": "c982b3e127ae66c9860d678173679aec2a13a314221a27476999ecb1103aa5ea"
+    },
+    {
+      "path": "native/rclfoundation.exe",
+      "bytes": 367616,
+      "sha256": "c6b0df1a78fb9e630f69a811fd590c880bcdf4ff199a594bea868d281640aa07"
     },
     {
       "path": "native/librclvm.a",
-      "bytes": 446582,
-      "sha256": "c1f6938e988435b179ceb33e5c0b2dbf0edf95f27c08831ca0857e50ba729192"
+      "bytes": 447574,
+      "sha256": "ed354207b7e6988c31a7713ac2dee3877ecc618e47bac2b30cbbd0c83f42a632"
     },
     {
       "path": "native/rclvm.dll",
       "bytes": 354816,
-      "sha256": "3d563d2ff22a523800f4d16294049db97b478813dda89a488bdaaa3bc612c5f7"
+      "sha256": "3576b1c6432fd450d124627178def92500cf4b80328fdf9a76ce32168f90ea49"
     },
     {
       "path": "native/rclvm.lib",
