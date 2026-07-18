@@ -9,6 +9,7 @@ import {TILEMAP_VERSION,generateFrostTrialTileMap,validateTileMap,setTile,paintT
 import {UI_INPUT_VERSION,createDefaultUITree,createDefaultInputProfile,validateUITree,validateInputProfile,layoutUITree,routePointerEvent,moveUIFocus,InputActionRuntime,compileUIInputManifest} from './ui-input.mjs';
 import {ASSET_CONTINUITY_VERSION,createLocalAssetRecord,createEmbeddedAssetRecord,reimportLocalAsset,importAssetSource,auditAssetContinuity,buildAssetDependencyGraph,createAssetContinuityLedger} from './asset-continuity.mjs';
 import {SPATIAL_STUDIO_VERSION,createDefaultSpatialWorkspace,ensureSpatialWorkspace,sealSpatialWorkspace,validateSpatialWorkspace,SpatialStudioSession} from './spatial-studio.mjs';
+import {createNetworkAuthoring,validateNetworkAuthoring,compileNetworkWorld} from './network-world-compiler.mjs';
 
 export const UNIFIED_FORMAT='reality-studio.unified-project.v0.9';
 export const UNIFIED_VERSION='0.9.0-alpha.1';
@@ -63,7 +64,7 @@ export function verifyAssetRecord(record,{strictFiles=false}={}){
   return{valid:errors.length===0,errors,warnings};
 }
 
-export function createSceneNode({nodeId=null,name='节点',assetId=null,parentId=null,x=0,y=0,zIndex=0,entityId=null,components={}}={}){
+export function createSceneNode({nodeId=null,name='节点',assetId=null,parentId=null,x=0,y=0,zIndex=0,entityId=null,components={},createdAt=null}={}){
   return{
     node_id:nodeId??`node:${randomUUID()}`,
     name,
@@ -74,11 +75,11 @@ export function createSceneNode({nodeId=null,name='节点',assetId=null,parentId
     asset_id:assetId,
     behavior_binding:entityId?{entity_id:entityId,mode:'bidirectional'}:null,
     components:deep(components),
-    metadata:{created_at:now()}
+    metadata:{created_at:createdAt??now()}
   };
 }
 
-export function createSceneFromBehavior(program,{sceneId='scene:main',title='主场景'}={}){
+export function createSceneFromBehavior(program,{sceneId='scene:main',title='主场景',createdAt=null}={}){
   const p=program?.program_root?program:normalizeProgram(program);
   const nodes=(p.entities??[]).map((e,i)=>createSceneNode({
     nodeId:`node:${e.entity_id}`,
@@ -88,19 +89,20 @@ export function createSceneFromBehavior(program,{sceneId='scene:main',title='主
     y:e.variables?.y??240,
     zIndex:i,
     entityId:e.entity_id,
-    components:{collider:deep(e.components?.collider??null),tags:deep(e.tags??[])}
+    components:{collider:deep(e.components?.collider??null),tags:deep(e.tags??[])},
+    createdAt
   }));
-  return seal({format:'reality-studio.scene.v0.9',scene_id:sceneId,title,canvas:{width:640,height:360,background:'#071426',grid_size:16},tilemaps:[generateFrostTrialTileMap()],nodes,metadata:{behavior_program_id:p.identity.program_id,created_at:now()}},'scene_root');
+  return seal({format:'reality-studio.scene.v0.9',scene_id:sceneId,title,canvas:{width:640,height:360,background:'#071426',grid_size:16},tilemaps:[generateFrostTrialTileMap()],nodes,metadata:{behavior_program_id:p.identity.program_id,created_at:createdAt??now()}},'scene_root');
 }
 
-export function createUnifiedProject({title='冰境试炼统一制造项目',program,assets=[]}={}){
+export function createUnifiedProject({title='冰境试炼统一制造项目',program,assets=[],projectId=null,createdAt=null}={}){
   const p=program?.program_root?program:normalizeProgram(program);
-  const scene=createSceneFromBehavior(p);
+  const timestamp=createdAt??now(),scene=createSceneFromBehavior(p,{createdAt:timestamp});
   const registry=Object.fromEntries(assets.map(a=>[a.asset_id,deep(a)]));
   return sealMixed({
     format:UNIFIED_FORMAT,
     version:UNIFIED_VERSION,
-    identity:{project_id:`unified-project:${randomUUID()}`,title,created_at:now(),updated_at:now()},
+    identity:{project_id:projectId??`unified-project:${randomUUID()}`,title,created_at:timestamp,updated_at:timestamp},
     active_scene_id:scene.scene_id,
     scenes:[scene],
     assets:{format:'reality-studio.asset-catalog.v1.3',version:ASSET_CONTINUITY_VERSION,registry,order:Object.keys(registry),import_roots:[],last_audit_root:null},
@@ -142,12 +144,13 @@ export function validateUnifiedProject(project){
   if(project?.input&&!project.input.profiles?.[project.input.active_profile_id])errors.push({code:'ACTIVE_INPUT_PROFILE_MISSING',path:'input.active_profile_id'});
   const assetAudit=auditAssetContinuity(project,{strictFiles:false});warnings.push(...assetAudit.warnings);errors.push(...assetAudit.errors);
   const spatialValidation=validateSpatialWorkspace(project?.spatial3d);warnings.push(...spatialValidation.warnings);errors.push(...spatialValidation.errors);
-  return{valid:errors.length===0,errors,warnings,asset_audit_root:assetAudit.audit_root,spatial_workspace_root:project?.spatial3d?.workspace_root??null,spatial:spatialValidation};
+  const networkValidation=validateNetworkAuthoring(project);warnings.push(...networkValidation.warnings);errors.push(...networkValidation.errors);
+  return{valid:errors.length===0,errors,warnings,asset_audit_root:assetAudit.audit_root,spatial_workspace_root:project?.spatial3d?.workspace_root??null,spatial:spatialValidation,network:networkValidation};
 }
 
 function sealScene(scene){const out={...deep(scene)};out.tilemaps=(out.tilemaps??[]).map(t=>{const x=deep(t);delete x.tilemap_root;return seal(x,'tilemap_root')});return seal(out,'scene_root');}
-export function sealUnifiedProject(project,{touch=false}={}){const out=deep(project);if(touch)out.identity.updated_at=now();out.scenes=out.scenes.map(sealScene);if(out.spatial3d)out.spatial3d=sealSpatialWorkspace(out.spatial3d);return sealMixed(out,'project_root');}
-function sealProject(project){return sealUnifiedProject(project,{touch:true});}
+export function sealUnifiedProject(project,{touch=false,timestamp=null}={}){const out=deep(project);if(touch)out.identity.updated_at=timestamp??now();out.scenes=out.scenes.map(sealScene);if(out.spatial3d)out.spatial3d=sealSpatialWorkspace(out.spatial3d);return sealMixed(out,'project_root');}
+function sealProject(project,clock=now){return sealUnifiedProject(project,{touch:true,timestamp:clock()});}
 export function ensureUIInputProject(project){
   const out=deep(project);const scene=out.scenes?.find(s=>s.scene_id===out.active_scene_id)??out.scenes?.[0];
   out.assets??={registry:{},order:[]};out.assets.format??='reality-studio.asset-catalog.v1.3';out.assets.version??=ASSET_CONTINUITY_VERSION;out.assets.import_roots??=[];out.assets.last_audit_root??=null;
@@ -196,10 +199,10 @@ export function createSceneProjection(project,behaviorInspection,{observer='play
 }
 
 export class UnifiedManufacturingSession{
-  constructor(project,{sessionId=null}={}){
+  constructor(project,{sessionId=null,clock=now}={}){
     project=ensureUIInputProject(project);
     const validation=validateUnifiedProject(project);if(!validation.valid)throw new StudioError('UNIFIED_PROJECT_INVALID','',validation);
-    this.session_id=sessionId??`unified-session:${randomUUID()}`;
+    this.session_id=sessionId??`unified-session:${randomUUID()}`;this.clock=typeof clock==='function'?clock:now;
     this.project=sealUnifiedProject(project,{touch:false});
     const program=this.project.behavior.programs[this.project.behavior.active_program_id];
     this.behavior=new BehaviorEditorSession(program);
@@ -214,7 +217,7 @@ export class UnifiedManufacturingSession{
     const profile=this.project.input?.profiles?.[this.project.input.active_profile_id]??createDefaultInputProfile();this.inputRuntime=new InputActionRuntime(profile);this.uiState={focus_id:this.project.editor.selected_ui_node_id??null,last_event:null,last_layout:null,device:{touch:false,kind:'desktop',safe_area:{left:0,top:0,right:0,bottom:0}},events:[]};
     this.spatial=new SpatialStudioSession(this.project.spatial3d);
   }
-  record(type,data={}){this.events.push({sequence:this.events.length+1,time:now(),type,...deep(data)});if(this.events.length>500)this.events.shift();}
+  record(type,data={}){this.events.push({sequence:this.events.length+1,time:this.clock(),type,...deep(data)});if(this.events.length>500)this.events.shift();}
   timelineView(){return seal(this.runtimeTimeline,'timeline_root');}
   resetRuntimeTimeline(){this.timelineInitialSnapshot=this.behavior.runtime.snapshot();this.runtimeTimeline=createRuntimeTimeline({projectRoot:this.project.project_root,programRoot:this.behavior.program.program_root,initialStateRoot:this.behavior.runtime.stateRoot(),initialTick:this.behavior.runtime.state.tick});this.runtimeCheckpoints.clear();}
   recordRuntimeStep({input,beforeStateRoot,beforeTick,beforeProjectionRoot}={}){
@@ -224,7 +227,7 @@ export class UnifiedManufacturingSession{
     entries.push(entry);this.runtimeTimeline.entries=entries;this.runtimeTimeline.cursor=entries.length;
     return entry;
   }
-  checkpoint({record=true}={}){if(this.spatial)this.project.spatial3d=deep(this.spatial.workspace);this.project=sealProject(this.project);if(record){this.history=this.history.slice(0,this.history_index+1);this.history.push(deep(this.project));this.history_index=this.history.length-1;this.resetRuntimeTimeline();}return this.inspect();}
+  checkpoint({record=true}={}){if(this.spatial)this.project.spatial3d=deep(this.spatial.workspace);this.project=sealProject(this.project,this.clock);if(record){this.history=this.history.slice(0,this.history_index+1);this.history.push(deep(this.project));this.history_index=this.history.length-1;this.resetRuntimeTimeline();}return this.inspect();}
   importAsset(bundle,options={}){
     const rec=createAssetRecord(bundle,options);const v=verifyAssetRecord(rec,{strictFiles:options.strictFiles??false});if(!v.valid)throw new StudioError('ASSET_IMPORT_INVALID','',v);
     this.project.assets.registry[rec.asset_id]=rec;if(!this.project.assets.order.includes(rec.asset_id))this.project.assets.order.push(rec.asset_id);
@@ -260,6 +263,8 @@ export class UnifiedManufacturingSession{
   spatialPatchJoint(jointId,patch={}){this.spatial.patchJoint(jointId,patch);this.project.spatial3d=deep(this.spatial.workspace);this.record('spatial.joint-patched',{joint_id:jointId});return this.checkpoint();}
   spatialRemoveJoint(jointId){this.spatial.removeJoint(jointId);this.project.spatial3d=deep(this.spatial.workspace);this.project.editor.selected_spatial_joint_id=null;this.record('spatial.joint-removed',{joint_id:jointId});return this.checkpoint();}
   spatialUpsertCharacter(spec){this.spatial.upsertCharacter(spec);this.project.spatial3d=deep(this.spatial.workspace);this.record('spatial.character-upserted',{character_id:spec.id,body_id:spec.bodyId});return this.checkpoint();}
+  networkConfigure(options={}){this.project.network=createNetworkAuthoring(this.project,options);this.record('network.authoring-configured',{world_id:this.project.network.world_id,player_slots:this.project.network.player_slots.length,authoring_root:this.project.network.authoring_root});return this.checkpoint();}
+  networkCompile(options={}){return compileNetworkWorld(this.project,options);}
   spatialSetCamera(options={}){this.spatial.setCamera(options);this.project.spatial3d=deep(this.spatial.workspace);this.record('spatial.camera-changed');return this.checkpoint({record:false});}
   spatialCommand(command){const result=this.spatial.command(command);this.record('spatial.command',{type:command.type,tick:result.snapshot.tick});return this.inspect();}
   spatialStep(options={}){const result=this.spatial.step(options);this.record('spatial.step',{tick:result.snapshot.tick});return this.inspect();}
@@ -311,13 +316,13 @@ export class UnifiedManufacturingSession{
     }
     const tile=this.activeTileMap(),nav=compileSceneNavigation(scene,{positions:this.navigation.positions,excludeNodeIds:Object.keys(this.navigation.positions)});this.navigation.last_receipt=navigationReceipt({sceneId:scene.scene_id,tilemap:tile,grid:nav.grid,paths:Object.values(this.navigation.paths),agents:Object.entries(this.navigation.positions).map(([node_id,p])=>({node_id,...p,target:this.navigation.targets[node_id]??null}))});
   }
-  addAssetNode({assetId,x=160,y=160,name=null,bindEntity=true}={}){
+  addAssetNode({assetId,x=160,y=160,name=null,bindEntity=true,nodeId=null,entityId=null}={}){
     const asset=this.project.assets.registry[assetId];if(!asset)throw new StudioError('ASSET_NOT_FOUND',assetId);
-    const entityId=bindEntity?`entity:${safeId(assetId.split(':').at(-1))}:${this.project.scenes[0].nodes.length+1}`:null;
-    const node=createSceneNode({name:name??asset.name,assetId,x,y,zIndex:activeScene(this.project).nodes.length,entityId,components:{asset_kind:asset.kind}});
+    const boundEntityId=bindEntity?(entityId??`entity:${safeId(assetId.split(':').at(-1))}:${this.project.scenes[0].nodes.length+1}`):null;
+    const node=createSceneNode({nodeId,name:name??asset.name,assetId,x,y,zIndex:activeScene(this.project).nodes.length,entityId:boundEntityId,components:{asset_kind:asset.kind},createdAt:this.clock()});
     activeScene(this.project).nodes.push(node);this.project.editor.selected_node_id=node.node_id;
-    if(entityId){const program=this.project.behavior.programs[this.project.behavior.active_program_id];const next=syncProgramFromScene(this.project,program);this.project.behavior.programs[next.identity.program_id]=next;this.behavior.replaceProgram(next,{preserveState:true});}
-    this.record('scene.node-added',{node_id:node.node_id,asset_id:assetId,entity_id:entityId});return this.checkpoint();
+    if(boundEntityId){const program=this.project.behavior.programs[this.project.behavior.active_program_id];const next=syncProgramFromScene(this.project,program);this.project.behavior.programs[next.identity.program_id]=next;this.behavior.replaceProgram(next,{preserveState:true});}
+    this.record('scene.node-added',{node_id:node.node_id,asset_id:assetId,entity_id:boundEntityId});return this.checkpoint();
   }
   patchNode(nodeId,patch={}){
     const found=findNode(this.project,nodeId);if(!found)throw new StudioError('NODE_NOT_FOUND',nodeId);
@@ -398,18 +403,19 @@ export class UnifiedManufacturingSession{
   }
   exportArtifacts(){
     const behavior=this.behavior.exportArtifacts();const player=createSceneProjection(this.project,this.behavior.inspect(),{observer:'player',navigationPositions:this.navigation.positions}),debuggerView=createSceneProjection(this.project,this.behavior.inspect(),{observer:'debugger',navigationPositions:this.navigation.positions});
-     const gpu=this.compileGPUFrame({serialized:false});const spatial=this.spatial.exportArtifacts();const runtimeTimeline=this.timelineView(),runtimeReplay=this.replayRuntime({verify:true});
+     const gpu=this.compileGPUFrame({serialized:false});const spatial=this.spatial.exportArtifacts();const runtimeTimeline=this.timelineView(),runtimeReplay=this.replayRuntime({verify:true}),networkCompilation=this.project.network?this.networkCompile():null;
     const assetLedger=this.assetLedger({strictFiles:false});const assetManifest=seal({format:'reality-studio.asset-manifest.v1.3',assets:this.project.assets.order.map(id=>this.project.assets.registry[id]),asset_ledger_root:assetLedger.ledger_root,dependency_graph_root:assetLedger.dependency_graph.graph_root,audit_root:assetLedger.audit.audit_root,project_root:this.project.project_root},'manifest_root');
-     const gateway=seal({format:'reality-one.runtime-manifest.v0.3',runtime_id:'rncs.reality-studio-unified-world',version:STUDIO_VERSION,entry:'runtime/project.json',capabilities:['scene.instantiate','asset.resolve','behavior.execute','projection.render','gpu.viewport','gpu.frame-evidence','ui.layout','ui.focus','input.actions','input.gamepad','input.touch','runtime.timeline','runtime.replay','runtime.seek','runtime.checkpoint','spatial.body.edit','spatial.character.control','spatial.joint.edit','spatial.simulate','spatial.audio-events','spatial.haptic-events','spatial.vsr-project'],dependencies:['rncs.behavior@^0.1.0','rncs.rsr@^0.5.0','rncs.vsr@^0.4.0']},'manifest_root');
+     const gateway=seal({format:'reality-one.runtime-manifest.v0.3',runtime_id:'rncs.reality-studio-unified-world',version:STUDIO_VERSION,entry:'runtime/project.json',capabilities:['scene.instantiate','asset.resolve','behavior.execute','projection.render','gpu.viewport','gpu.frame-evidence','ui.layout','ui.focus','input.actions','input.gamepad','input.touch','runtime.timeline','runtime.replay','runtime.seek','runtime.checkpoint','spatial.body.edit','spatial.character.control','spatial.joint.edit','spatial.simulate','spatial.audio-events','spatial.haptic-events','spatial.vsr-project','network.player-slot.bind','network.world.compile'],dependencies:['rncs.behavior@^0.1.0','rncs.rsr@^0.5.0','rncs.vsr@^0.4.0','rncs.network@^0.2.0']},'manifest_root');
     const nav=this.activeTileMap()?compileSceneNavigation(activeScene(this.project),{positions:this.navigation.positions,excludeNodeIds:Object.keys(this.navigation.positions)}):null;
     const tilemapManifest=nav?seal({format:'reality-studio.tilemap-navigation-manifest.v1.1',version:TILEMAP_VERSION,project_root:this.project.project_root,tilemap:deep(nav.tilemap),collision:deep(nav.collision),navigation_grid:deep(nav.grid),receipt:deep(this.navigation.last_receipt)},'manifest_root'):null;
     const uiLayout=this.compileUILayout(),uiInputManifest=compileUIInputManifest({projectRoot:this.project.project_root,tree:this.activeUITree(),profile:this.activeInputProfile(),layout:uiLayout});
-     const build=seal({format:'reality-studio.web-build-plan.v1.2',project_root:this.project.project_root,entry_scene_id:this.project.active_scene_id,files:['project.json','scene-player.json','scene-debugger.json','behavior.json','assets.json','asset-continuity-ledger.json','gateway.runtime.json','runtime-timeline.json','runtime-replay.json','gpu-viewport.manifest.json','gpu-frame-summary.json','tilemap-navigation.manifest.json','ui-input.manifest.json','spatial-workspace.json','spatial-world.json','spatial-snapshot.json','spatial-frame-plan.json','spatial-runtime.manifest.json','web-preview.html'],targets:deep(this.project.build.targets),gpu:{preferred_backend:'webgpu',fallback_backend:'canvas2d',frame_plan_root:gpu.summary.frame_plan_root},ui_input:{manifest_root:uiInputManifest.manifest_root}},'build_root');
-     return{project:this.project,scene_player:player,scene_debugger:debuggerView,behavior_program:this.behavior.program,behavior_runtime:behavior,runtime_timeline:runtimeTimeline,runtime_replay:runtimeReplay,asset_manifest:assetManifest,asset_continuity_ledger:assetLedger,gateway_manifest:gateway,build_plan:build,gpu_viewport_manifest:gpu.manifest,gpu_frame_summary:gpu.summary,tilemap_navigation_manifest:tilemapManifest,ui_input_manifest:uiInputManifest,ui_layout:uiLayout,input_profile:this.activeInputProfile(),...spatial,editor_events:deep(this.events)};
+     const buildFiles=['project.json','scene-player.json','scene-debugger.json','behavior.json','assets.json','asset-continuity-ledger.json','gateway.runtime.json','runtime-timeline.json','runtime-replay.json','gpu-viewport.manifest.json','gpu-frame-summary.json','tilemap-navigation.manifest.json','ui-input.manifest.json','spatial-workspace.json','spatial-world.json','spatial-snapshot.json','spatial-frame-plan.json','spatial-runtime.manifest.json','web-preview.html'];if(networkCompilation)buildFiles.push('network-world-compilation.json');
+     const build=seal({format:'reality-studio.web-build-plan.v1.2',project_root:this.project.project_root,entry_scene_id:this.project.active_scene_id,files:buildFiles,targets:deep(this.project.build.targets),gpu:{preferred_backend:'webgpu',fallback_backend:'canvas2d',frame_plan_root:gpu.summary.frame_plan_root},ui_input:{manifest_root:uiInputManifest.manifest_root},network:networkCompilation?{compilation_root:networkCompilation.compilation_root,world_config_root:networkCompilation.world_config_root,player_slots:networkCompilation.counts.player_slots}:null},'build_root');
+     return{project:this.project,scene_player:player,scene_debugger:debuggerView,behavior_program:this.behavior.program,behavior_runtime:behavior,runtime_timeline:runtimeTimeline,runtime_replay:runtimeReplay,asset_manifest:assetManifest,asset_continuity_ledger:assetLedger,gateway_manifest:gateway,build_plan:build,gpu_viewport_manifest:gpu.manifest,gpu_frame_summary:gpu.summary,tilemap_navigation_manifest:tilemapManifest,ui_input_manifest:uiInputManifest,ui_layout:uiLayout,input_profile:this.activeInputProfile(),network_world_compilation:networkCompilation,...spatial,editor_events:deep(this.events)};
   }
   inspect(){
     const b=this.behavior.inspect(),scene=activeScene(this.project),selected=findNode(this.project,this.project.editor.selected_node_id)?.node??null;
-    const timeline=this.timelineView();
+    const timeline=this.timelineView(),networkValidation=validateNetworkAuthoring(this.project),networkCompilation=networkValidation.configured&&networkValidation.valid?compileNetworkWorld(this.project):null;
     return{
       format:'reality-studio.unified-session.v1.0',session_id:this.session_id,status:this.status,
       validation:validateUnifiedProject(this.project),
@@ -423,6 +429,7 @@ export class UnifiedManufacturingSession{
       ui:{version:UI_INPUT_VERSION,tree:deep(this.activeUITree()),layout:deep(this.compileUILayout()),focus_id:this.uiState.focus_id,last_event:deep(this.uiState.last_event),event_tail:deep(this.uiState.events.slice(-50))},
       input:{version:UI_INPUT_VERSION,profile:deep(this.activeInputProfile()),last_frame:deep(this.inputRuntime.last)},
       spatial:this.spatial.inspect(),
+      network:{configured:networkValidation.configured,authoring:deep(this.project.network??null),validation:networkValidation,compilation:networkCompilation?{compilation_root:networkCompilation.compilation_root,world_config_root:networkCompilation.world_config_root,project_root:networkCompilation.project_root,player_slots:networkCompilation.counts.player_slots,asset_bindings:networkCompilation.counts.asset_bindings}:null},
       editor:{...deep(this.project.editor),selected_node:deep(selected),selected_ui_node:deep(this.activeUITree()?.nodes?.find(n=>n.ui_node_id===this.project.editor.selected_ui_node_id)??null),history_index:this.history_index,history_length:this.history.length,can_undo:this.history_index>0,can_redo:this.history_index<this.history.length-1},
       event_tail:this.events.slice(-100)
     };

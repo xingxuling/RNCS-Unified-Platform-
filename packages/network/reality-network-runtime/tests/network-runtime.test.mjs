@@ -6,9 +6,10 @@ import fs from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {
   RealityNetworkRuntime, issuePlayerDelegation, FORMATS, SnapshotInterpolator,
-  createTwoPlayerWorldConfig, hash, NETWORK_PROTOCOL
+  createTwoPlayerWorldConfig, hash, NETWORK_PROTOCOL, verifyNetworkWorldCompilationEnvelope
 } from '../src/index.mjs';
 import {RealityOneGateway} from '../../../control/reality-one-gateway/src/index.mjs';
+import {createStudioNetworkWorld} from '../../../../examples/studio-authored-network-world-v03/project.mjs';
 
 const CLOCK=()=> '2026-07-03T12:00:00.000Z';
 async function setup({id='session:test',network={seed:1},joinB=true}={}){
@@ -168,4 +169,45 @@ test('delta with unavailable base is isolated until a full snapshot arrives',asy
   assert.equal(client.deltaBaseMismatchCount,1);
   client.reconcile(second.snapshot);
   assert.equal(client.world.snapshot().stateRoot,second.snapshot.stateRoot);
+});
+
+// 23
+test('network boots only from a verified Studio-authored compilation and joins declared slots',async()=>{
+  const {compilation}=createStudioNetworkWorld();
+  const runtime=new RealityNetworkRuntime(),id='session:studio-compiled';
+  const created=await runtime.createSessionFromCompilation({sessionId:id,compilation,clock:CLOCK});
+  assert.equal(created.compilationRoot,compilation.compilation_root);
+  await runtime.joinCompiledSlot({sessionId:id,slotId:'slot:blue',subjectId:'subject:blue'});
+  await runtime.joinCompiledSlot({sessionId:id,slotId:'slot:red',subjectId:'subject:red'});
+  runtime.submitInput({sessionId:id,playerId:'blue',command:{type:'move',x:1000000,z:0}});
+  runtime.submitInput({sessionId:id,playerId:'red',command:{type:'move',x:-1000000,z:0}});
+  drain(runtime,id,8);
+  const health=runtime.getSessionHealth({sessionId:id});
+  assert.equal(health.source.compilationRoot,compilation.compilation_root);
+  assert.equal(health.source.projectRoot,compilation.project_root);
+  assert.equal(health.source.worldConfigRoot,compilation.world_config_root);
+  assert.equal(health.clients.blue.clientStateRoot,health.server.stateRoot);
+  assert.equal(health.clients.red.clientStateRoot,health.server.stateRoot);
+});
+
+// 24
+test('network independently rejects a tampered Studio compilation',async()=>{
+  const {compilation}=createStudioNetworkWorld();
+  const tampered=structuredClone(compilation);
+  tampered.world_config.bodies.find(body=>body.id==='studio-player-blue').position.x+=10;
+  const verification=verifyNetworkWorldCompilationEnvelope(tampered);
+  assert.equal(verification.valid,false);
+  assert.ok(verification.errors.includes('NETWORK_COMPILATION_ROOT_MISMATCH'));
+  await assert.rejects(new RealityNetworkRuntime().createSessionFromCompilation({compilation:tampered}),/NETWORK_COMPILATION_ROOT_MISMATCH/);
+});
+
+// 25
+test('server rejects nonexistent, mismatched, duplicate and occupied player bindings',async()=>{
+  const runtime=new RealityNetworkRuntime(),id='session:join-binding-guards';
+  await runtime.createSession({sessionId:id,worldConfig:createTwoPlayerWorldConfig(),clock:CLOCK});
+  await assert.rejects(runtime.joinSession({sessionId:id,subjectId:'subject:x',playerId:'x',characterId:'character:blue',bodyId:'missing'}),/PLAYER_BODY_NOT_FOUND/);
+  await assert.rejects(runtime.joinSession({sessionId:id,subjectId:'subject:x',playerId:'x',characterId:'character:blue',bodyId:'player-red'}),/PLAYER_CHARACTER_BODY_MISMATCH/);
+  await runtime.joinSession({sessionId:id,subjectId:'subject:a',playerId:'a',characterId:'character:blue',bodyId:'player-blue'});
+  await assert.rejects(runtime.joinSession({sessionId:id,subjectId:'subject:a',playerId:'a',characterId:'character:blue',bodyId:'player-blue'}),/PLAYER_ALREADY_JOINED/);
+  await assert.rejects(runtime.joinSession({sessionId:id,subjectId:'subject:c',playerId:'c',characterId:'character:blue',bodyId:'player-blue'}),/PLAYER_SLOT_OCCUPIED/);
 });

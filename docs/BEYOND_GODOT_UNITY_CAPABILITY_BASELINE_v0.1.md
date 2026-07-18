@@ -115,5 +115,38 @@ Foundation cognitive loop, canonical RNCS 4R commit, deterministic GLB/WAV
 asset baking, two-client disconnect recovery, and executable client/headless/
 replay targets under one package root. This closes one G1 workflow; it does not
 yet prove a production-grade visual editor, general project-to-network world
-compilation, multiplayer scale beyond the current benchmark envelope,
-store-signed release packages, complete RCL Native VM lowering, or full G2/G3.
+ compilation, multiplayer scale beyond the current benchmark envelope,
+ store-signed release packages, complete RCL Native VM lowering, or full G2/G3.
+
+## 7. Verified Progress v0.3
+
+G2 now has one real Studio-to-authority workflow:
+
+- Reality Studio compiles its active scene, GLB bindings, RSR bodies,
+  characters, player slots, authority policy, and deterministic network profile
+  into a content-addressed `network-world-compilation`.
+- Reality Network independently verifies the compilation, world-config,
+  evidence, and asset-binding roots before creating the authoritative world.
+- Server joins reject missing, mismatched, duplicate, occupied, or forged
+  player/body/character/subject bindings.
+- Two clients converge under deterministic latency, jitter, packet loss,
+  duplication, and reordering. An input created while disconnected is retained
+  and commits exactly once after reconnect.
+- The authoritative snapshot renders the authored GLB meshes into a verified
+  VSR PNG. Recompiling from a fresh Studio project instance produces the same
+  project and compilation roots, while repeating the same network session
+  produces the same final State Root and network evidence root.
+- A Studio body edit changes the project root, world-config root, compilation
+  root, and initial authoritative State Root, proving that editor mutation is
+  connected to runtime authority rather than being presentation-only.
+
+Current verification is 216/216 Studio tests, 25/25 Network tests, 109 Build
+passes with eight environment skips, 555 RCL passes with one environment skip,
+20/20 Foundation conformance checks, and 152 zhinao passes across 23 files.
+Regenerate with `npm run demo:studio-network:v03` and verify with
+`npm run test:studio-network:v03`.
+
+This closes the specific project-to-network compilation gap named in v0.2. It
+does not yet prove complete editor parity, public-WAN multiplayer scale,
+native-rendered desktop/mobile distribution, or full stack superiority over
+every Godot and Unity workflow.

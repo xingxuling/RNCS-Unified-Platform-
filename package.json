@@ -59,6 +59,8 @@
     "test:beyond-engine": "node --test tests/beyond-engine-vertical-slice-v01.integration.test.mjs",
     "demo:beyond-engine:v02": "node examples/beyond-engine-vertical-slice-v02/demo.mjs",
     "test:beyond-engine:v02": "node --test tests/beyond-engine-vertical-slice-v02.integration.test.mjs",
+    "demo:studio-network:v03": "node examples/studio-authored-network-world-v03/demo.mjs",
+    "test:studio-network:v03": "node --test tests/studio-authored-network-world-v03.integration.test.mjs",
     "demo:stable-world": "node examples/stable-embodiment-pbr-v09/demo.mjs",
     "test:stable-world": "npm run build:world && node --test tests/stable-embodiment-pbr-v09.integration.test.mjs",
     "demo:asset-forge": "node examples/asset-production-studio-forge-v010/demo.mjs",
