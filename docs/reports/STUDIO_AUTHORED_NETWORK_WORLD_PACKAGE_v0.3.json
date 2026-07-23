@@ -1,0 +1,78 @@
+{
+  "format": "rncs.studio-authored-network-world-verification-report.v0.3",
+  "version": "0.3.0-alpha.1",
+  "generated_at": "2026-07-18T00:00:00.000Z",
+  "status": "pass",
+  "package": {
+    "format": "rncs.studio-authored-network-world-package.v0.3",
+    "package_root": "22d7c82c33e3b892af9309b669bc9ce32cc6fd60dc38876cc9c0bbd13690aac7",
+    "roots": {
+      "studio_project": "0ad8f26a8a44d4ca68d6f4081fd5a452d0285a5c8efec39e68727d03c10c006c",
+      "network_compilation": "cf382684e0f9234204f783b94b0cfc62b56a3f4fd7db310e8665be56c9590515",
+      "world_config": "1266f77a8e98b4d08694def615c8ffef6700273de8dd55cf4499f507a7f06765",
+      "initial_authoritative_state": "fnv1a64:95671a1389182e12",
+      "final_authoritative_state": "fnv1a64:915fe9419d782cf1",
+      "network_replay": "b303df0e4cdfef1f0043f23ef48856f3d74db317e175539a20d6385e3be6eac5",
+      "viewport": "d29ff108755863f522a3c3aedfa46cbc4592674a79714b402eaa7e2f9cb65d75",
+      "viewport_pixels": "613f4c05c7e0559e96f023b3dc683cb285f3453ee889a2fc91c75ebd5b68d60a",
+      "editor_counterfactual": "63c0c6d4a7cc65e08d02f78406169907c8d90606981a634fa618b526ff61d458",
+      "edited_network_compilation": "adef564faa892daab54d7e9360b129c3f7a301eb973ab33426db94b1b43c5c19",
+      "edited_initial_authoritative_state": "fnv1a64:fd1aee937b7aaa4f"
+    },
+    "counts": {
+      "bodies": 6,
+      "characters": 3,
+      "player_slots": 2,
+      "asset_bindings": 2,
+      "network_ticks": 26,
+      "authoritative_world_instances": 1
+    }
+  },
+  "acceptance": {
+    "studioCompilationVerified": true,
+    "networkIndependentVerification": true,
+    "exportPublishesCompilation": true,
+    "sceneAssetsBindPhysicsAndPlayers": true,
+    "runtimeUsesCompiledSourceRoots": true,
+    "twoClientsConverge": true,
+    "disconnectedInputPreserved": true,
+    "disconnectedInputCommittedExactlyOnce": true,
+    "deterministicNetworkReplay": true,
+    "authoritativeGlbViewport": true,
+    "sameProjectRecompileDeterministic": true,
+    "freshProjectRegenerationDeterministic": true,
+    "editorMutationChangesCompiledAuthority": true,
+    "tamperedCompilationRejected": true,
+    "forgedSlotSubjectRejected": true
+  },
+  "tests": {
+    "passed": 1061,
+    "skipped_environment": 9,
+    "failed": 0,
+    "suites": {
+      "rcl": { "passed": 555, "skipped": 1, "failed": 0 },
+      "rcl_foundation_conformance": { "checks": 20, "failed": 0, "included_in_rcl_total": true },
+      "reality_studio": { "passed": 216, "skipped": 0, "failed": 0 },
+      "reality_network": { "passed": 25, "skipped": 0, "failed": 0 },
+      "reality_build": { "passed": 109, "skipped": 8, "failed": 0 },
+      "studio_network_v03": { "passed": 1, "skipped": 0, "failed": 0 },
+      "sovereign_world_v02": { "passed": 2, "skipped": 0, "failed": 0 },
+      "beyond_engine_v01": { "passed": 1, "skipped": 0, "failed": 0 },
+      "zhinao": { "passed": 152, "test_files": 23, "skipped": 0, "failed": 0 }
+    }
+  },
+  "performance_snapshot": {
+    "studio_authoring_and_compilation_ms": 282.088,
+    "authoritative_two_client_session_ms": 496.877,
+    "deterministic_network_replay_ms": 450.17,
+    "authoritative_gltf_viewport_ms": 148.178,
+    "total_ms": 1377.313,
+    "deterministic_root_excludes_metrics": true
+  },
+  "limitations": [
+    "complete Godot or Unity editor parity is not claimed",
+    "public-WAN multiplayer scale is not yet proven",
+    "the GLB viewport remains a verified software projection",
+    "full native Windows, Android store, and console export remain incomplete"
+  ]
+}

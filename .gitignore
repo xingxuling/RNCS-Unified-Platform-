@@ -12,6 +12,7 @@ coverage/
 .deploy/
 .zig-cache/
 zig-cache/
+packages/languages/reality-computation-language/_tools/
 
 .env
 .env.local

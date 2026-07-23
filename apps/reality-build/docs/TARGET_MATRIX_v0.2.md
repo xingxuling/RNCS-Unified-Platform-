@@ -8,6 +8,13 @@
 | windows-native | Node.js + Go | Windows 10/11 + Edge/Chrome | PE32+ GUI EXE | executable SHA-256 + PE test |
 | android-project | Node.js | Android Studio/Gradle to compile | complete project | project manifest |
 | android-apk | Node.js + JDK + Gradle + Android SDK 35 | Android 7.0+ | debug-signed APK | APK SHA-256 + signature status |
+| headless-server | Node.js | Node.js 20+ plus Reality Studio package | HTTP headless runtime folder | server manifest + runtime replay |
+| replay-bundle | Node.js | Node.js 20+ plus Reality Studio package | project + replay verifier | evidence, timeline and replay roots |
+
+Every build also emits root-level runtime-evidence.json, runtime-timeline.json,
+runtime-replay.json, and runtime-checkpoint.json. File-based targets copy the
+same artifacts so a client package, headless runtime, and replay bundle can be
+checked against one deterministic build identity.
 
 ## 选择原则
 

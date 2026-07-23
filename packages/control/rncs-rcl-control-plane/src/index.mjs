@@ -14,9 +14,13 @@ import {
   RCL_BYTECODE_VERSION,
   RCL_LANGUAGE_VERSION,
   toRncsProposalInput,
+  FOUNDATION_CONTRACT_FORMAT,
+  FOUNDATION_CONTRACT_VERSION,
+  FOUNDATION_MANIFEST_ROOT,
+  foundationContractSummary,
 } from '@taowind/reality-computation-language';
 
-export { RCL_BYTECODE_VERSION, RCL_LANGUAGE_VERSION };
+export { RCL_BYTECODE_VERSION, RCL_LANGUAGE_VERSION, FOUNDATION_CONTRACT_FORMAT, FOUNDATION_CONTRACT_VERSION, FOUNDATION_MANIFEST_ROOT, foundationContractSummary };
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 export const PACKAGE_ROOT = path.dirname(HERE);
@@ -96,6 +100,7 @@ export async function compileRclSource(source, options = {}) {
     : await verifyNativeParity(source, { nativeRuntime: { timeout } });
   const execution = {
     format: 'rncs.rcl-native-execution.v0.2',
+    foundationContract: foundationContractSummary(),
     languageVersion: RCL_LANGUAGE_VERSION,
     bytecodeVersion: RCL_BYTECODE_VERSION,
     bytecodeHash: sha256(bytecode),
@@ -434,6 +439,7 @@ export async function compileRclAuthorityPlan(source, options = {}) {
     plan_id: planId,
     source: {
       language: 'RCL',
+      foundation_contract: foundationContractSummary(),
       version: RCL_LANGUAGE_VERSION,
       text: source,
       source_root: sourceRoot,

@@ -1,0 +1,17 @@
+{
+  "name": "@taowind/rcl-foundation-rncs-bridge",
+  "version": "0.2.0-alpha.1",
+  "type": "module",
+  "description": "RCL Foundation Native Batch A and Meta Batch B results compiled into RNCS Proposal, Authority, and Commit envelopes",
+  "license": "Apache-2.0",
+  "exports": {
+    ".": "./src/index.mjs"
+  },
+  "scripts": {
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs",
+    "demo": "node examples/demo.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

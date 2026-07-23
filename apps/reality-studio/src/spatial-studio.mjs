@@ -23,6 +23,10 @@ import {
 export const SPATIAL_STUDIO_VERSION='1.4.0-alpha.1';
 export const SPATIAL_WORKSPACE_FORMAT='reality-studio.spatial-workspace.v1.4';
 export const SPATIAL_EDITOR_FORMAT='reality-studio.spatial-editor-state.v1.4';
+
+export function projectSpatialSnapshotToVSRScene(snapshot,options={}){
+  return spatialEmbodimentSnapshotToVSRScene(snapshot,options);
+}
 const deep=v=>structuredClone(v);
 const q=n=>Math.round(Number(n)||0);
 const vec=(x=0,y=0,z=0)=>({x:q(x),y:q(y),z:q(z)});

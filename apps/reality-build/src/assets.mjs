@@ -1,10 +1,18 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import {ensureDir,sha256File,sha256,writeJson,seal,BuildError,copyFileDeterministic,safeName} from './canonical.mjs';
+import {ensureDir,sha256,writeJson,seal,BuildError,safeName} from './canonical.mjs';
 
-const MIME={'.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.jpeg':'image/jpeg','.webp':'image/webp','.wav':'audio/wav','.mp3':'audio/mpeg','.ogg':'audio/ogg','.json':'application/json','.ttf':'font/ttf','.otf':'font/otf'};
+const MIME={'.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.jpeg':'image/jpeg','.webp':'image/webp','.wav':'audio/wav','.mp3':'audio/mpeg','.ogg':'audio/ogg','.glb':'model/gltf-binary','.gltf':'model/gltf+json','.json':'application/json','.ttf':'font/ttf','.otf':'font/otf'};
+const TEXT_EXTENSIONS=new Set(['.css','.glsl','.html','.js','.json','.mjs','.svg','.ts','.txt','.xml','.yaml','.yml']);
 const extMime=p=>MIME[path.extname(p).toLowerCase()]??'application/octet-stream';
-const dataUri=(file,mime=extMime(file))=>`data:${mime};base64,${fs.readFileSync(file).toString('base64')}`;
+const assetBytes=file=>{
+  const bytes=fs.readFileSync(file);
+  if(!TEXT_EXTENSIONS.has(path.extname(file).toLowerCase()))return bytes;
+  return Buffer.from(bytes.toString('utf8').replace(/\r\n/g,'\n').replace(/\r/g,'\n'),'utf8');
+};
+const assetHash=file=>sha256(assetBytes(file));
+const copyAssetDeterministic=(src,dst)=>{ensureDir(path.dirname(dst));fs.writeFileSync(dst,assetBytes(src));fs.utimesSync(dst,new Date(0),new Date(0));return dst;};
+const dataUri=(file,mime=extMime(file))=>`data:${mime};base64,${assetBytes(file).toString('base64')}`;
 
 function candidateRoots(projectFile,record){
   const dir=path.dirname(projectFile),roots=[dir,path.join(dir,'assets')];
@@ -51,9 +59,9 @@ export function bakeAssets({project,projectFile,outDir,embed=false,missingPolicy
     for(const f of declared){
       const r=resolveAssetFile(projectFile,record,f);
       if(!r.found){warnings.push({code:'ASSET_FILE_UNRESOLVED',asset_id:assetId,role:f.role,path:f.path,attempts:r.attempts});continue;}
-      const actual=sha256File(r.path);if(f.sha256&&f.sha256!==actual){errors.push({code:'ASSET_HASH_MISMATCH',asset_id:assetId,path:f.path,expected:f.sha256,actual});continue;}
-      const ext=path.extname(r.path).toLowerCase()||'.bin',destName=`${actual}${ext}`,dest=path.join(store,destName);if(!fs.existsSync(dest))copyFileDeterministic(r.path,dest);
-      const row={role:f.role??'file',source_path:f.path??record.preview_url,store_path:`assets/${destName}`,mime:f.mime??extMime(r.path),sha256:actual,size:fs.statSync(r.path).size,platforms:f.platforms??['all'],embedded_uri:embed?dataUri(r.path,f.mime??extMime(r.path)):null};resolved.push(row);allFiles.push(row);
+      const actual=assetHash(r.path);if(f.sha256&&f.sha256!==actual){errors.push({code:'ASSET_HASH_MISMATCH',asset_id:assetId,path:f.path,expected:f.sha256,actual});continue;}
+      const bytes=assetBytes(r.path),ext=path.extname(r.path).toLowerCase()||'.bin',destName=`${actual}${ext}`,dest=path.join(store,destName);if(!fs.existsSync(dest))copyAssetDeterministic(r.path,dest);
+      const row={role:f.role??'file',source_path:f.path??record.preview_url,store_path:`assets/${destName}`,mime:f.mime??extMime(r.path),sha256:actual,size:bytes.length,platforms:f.platforms??['all'],embedded_uri:embed?dataUri(r.path,f.mime??extMime(r.path)):null};resolved.push(row);allFiles.push(row);
     }
     if(!resolved.some(x=>x.mime.startsWith('image/'))){
       if(missingPolicy==='error'){errors.push({code:'ASSET_VISUAL_MISSING',asset_id:assetId});}
@@ -72,7 +80,7 @@ export function bakeAssets({project,projectFile,outDir,embed=false,missingPolicy
 }
 
 export function copyBakedAssets(assetManifest,fromDir,toDir){
-  const copied=[];for(const rec of Object.values(assetManifest.records))for(const f of rec.files){const src=path.join(fromDir,f.store_path),dst=path.join(toDir,f.store_path);if(!fs.existsSync(dst)){copyFileDeterministic(src,dst);copied.push(f.store_path);}}
+  const copied=[];for(const rec of Object.values(assetManifest.records))for(const f of rec.files){const src=path.join(fromDir,f.store_path),dst=path.join(toDir,f.store_path);if(!fs.existsSync(dst)){copyAssetDeterministic(src,dst);copied.push(f.store_path);}}
   return copied;
 }
 

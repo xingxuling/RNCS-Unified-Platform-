@@ -1,8 +1,15 @@
 reality AetherEarthWorldFoundation {
+  facet foundation.contract_root : Text = "34e508fe3b6587e630cc32a075edbad87323c7359434b2a2aaf01cf7e250f7e1"
   facet world.id : Text = "aether-earth"
   facet world.grid_width : Number = 16
   facet world.grid_height : Number = 16
   facet world.time_scale : Number = 1
   facet world.compression_enabled : Truth = true
   facet world.scientific_evidence_required : Truth = true
+  facet physical.biomass_regrowth_per_day : Number = 0.004
+  facet energy.agent_daily_cost : Number = 0.7
+  facet energy.forage_gain_multiplier : Number = 10
+  facet authority.max_advance_days : Number = 10000
+  facet aif.biomass_min : Number = 0
+  facet aif.biomass_max : Number = 1
 }

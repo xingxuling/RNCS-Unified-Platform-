@@ -26,6 +26,31 @@ export {
   QUANTITY_TYPES,
 } from './quantity.mjs';
 export { REALITY_DOMAINS, CROSS_DOMAIN_AXES, COMPOSITE_REALITY_PLANES, META_REALITY_PLANES, foundationSummary } from './foundation.mjs';
+export {
+  FOUNDATION_CONTRACT_FORMAT,
+  FOUNDATION_CONTRACT_VERSION,
+  FOUNDATION_MANIFEST_ROOT,
+  FOUNDATION_DOMAINS,
+  FOUNDATION_COMPOSITE_PLANES,
+  FOUNDATION_META_PLANES,
+  FOUNDATION_CROSS_DOMAIN_AXES,
+  FOUNDATION_4R_FIELDS,
+  FOUNDATION_CONTRACT_PROVENANCE,
+  foundationContractSummary,
+} from './foundation-contract-bridge.mjs';
+export {
+  FOUNDATION_RUNTIME_RESULT_FORMAT,
+  FOUNDATION_EXECUTION_MODES,
+  FOUNDATION_4R,
+  FOUNDATION_MANIFEST,
+  getFoundationSpec,
+  resolveFoundationId,
+  createFoundationRuntimeResult,
+  validateFoundationRuntimeResult,
+  standardizeFoundationRecord,
+  buildFoundationRuntimeResults,
+  foundationManifestSummary,
+} from './foundation-contract.mjs';
 export { knowledgeType, isKnowledgeType, knowledgeBaseType, knowledgeClaim, isKnowledge, reviseKnowledge, decayKnowledge } from './knowledge.mjs';
 export { buildInnerReality, buildExecutionReality, buildNaturalLanguageReality, buildUnderstandingReality, buildCreativeReality } from './planes.mjs';
 export {
@@ -1568,3 +1593,35 @@ export {
   writeRclRncsFusionReports,
   runRclRncsFusionDemo,
 } from './rncs-rcl-fusion.mjs';
+
+export {
+  createFoundationNativeBatchRuntime,
+} from './foundation-native-batch-runtime.mjs';
+
+export {
+  FOUNDATION_NATIVE_BATCH_A_FORMAT,
+  FOUNDATION_NATIVE_BATCH_A_REQUEST_FORMAT,
+  FOUNDATION_NATIVE_HOST_FORMAT,
+  FOUNDATION_NATIVE_PROVIDER_ID,
+  DEFAULT_FOUNDATION_NATIVE_HOST_PATH,
+  FOUNDATION_NATIVE_BATCH_A,
+  FoundationNativeBridgeError,
+  normalizeFoundationNativeBatchARequest,
+  renderFoundationNativeBatchASource,
+  compileFoundationNativeBatchA,
+  runFoundationNativeHost,
+  verifyFoundationNativeBatchAExecution,
+  runFoundationNativeBatchA,
+} from './foundation-native-bridge.mjs';
+
+export {
+  FOUNDATION_NATIVE_META_BATCH_B_FORMAT,
+  FOUNDATION_NATIVE_META_BATCH_B_REQUEST_FORMAT,
+  FOUNDATION_NATIVE_META_PROVIDER_ID,
+  FOUNDATION_NATIVE_META_BATCH_B,
+  normalizeFoundationNativeMetaBatchBRequest,
+  renderFoundationNativeMetaBatchBSource,
+  compileFoundationNativeMetaBatchB,
+  verifyFoundationNativeMetaBatchBExecution,
+  runFoundationNativeMetaBatchB,
+} from './foundation-native-meta-bridge.mjs';

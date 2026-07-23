@@ -3,14 +3,16 @@ import {clone,rootHash,seal,verifySeal,BuildError,fixedIso,safeName} from './can
 
 export const BUILD_FORMAT='reality-build.request.v0.1';
 export const BUILD_VERSION='0.2.0-alpha.1';
-export const SUPPORTED_TARGETS=['web-release','web-single','windows-portable','windows-native','android-project','android-apk'];
+export const SUPPORTED_TARGETS=['web-release','web-single','windows-portable','windows-native','android-project','android-apk','headless-server','replay-bundle'];
 export const TARGET_PROFILES={
   'web-release':{kind:'deployable-web-folder',requires:[],quality:['economy','balanced','quality','cinematic']},
   'web-single':{kind:'single-file-web',requires:[],quality:['economy','balanced','quality']},
   'windows-portable':{kind:'browser-host-portable',requires:['Windows 10+ and a modern browser'],quality:['economy','balanced','quality']},
   'windows-native':{kind:'native-windows-executable',requires:['Go build toolchain at build time','Windows 10+ and Edge/Chrome at runtime'],quality:['economy','balanced','quality']},
   'android-project':{kind:'android-studio-project',requires:['Android Studio or Gradle + Android SDK'],quality:['economy','balanced']},
-  'android-apk':{kind:'compiled-signed-debug-apk',requires:['JDK 17+','Gradle','Android SDK 35'],quality:['economy','balanced']}
+  'android-apk':{kind:'compiled-signed-debug-apk',requires:['JDK 17+','Gradle','Android SDK 35'],quality:['economy','balanced']},
+  'headless-server':{kind:'node-headless-server',requires:['Node.js 20+ and the Reality Studio package'],quality:['economy','balanced','quality','cinematic']},
+  'replay-bundle':{kind:'deterministic-replay-bundle',requires:['Node.js 20+ and the Reality Studio package'],quality:['economy','balanced','quality','cinematic']}
 };
 
 export function normalizeBuildRequest(input={}){
@@ -37,6 +39,7 @@ export function normalizeBuildRequest(input={}){
       fail_on_warning:input.policy?.fail_on_warning===true
     },
     build_time:fixedIso(input.build_time??'2026-07-01T00:00:00.000Z'),
+    runtime_trace:Array.isArray(input.runtime_trace)?clone(input.runtime_trace):[{},{}],
     metadata:clone(input.metadata??{})
   };
   return seal(request,'request_root');
@@ -52,6 +55,7 @@ export function validateBuildRequest(r){
   need(['economy','balanced','quality','cinematic'].includes(r?.quality_profile),'QUALITY_INVALID','quality_profile');
   need(/^[A-Za-z][A-Za-z0-9_]*(\.[A-Za-z][A-Za-z0-9_]*)+$/.test(r?.app?.app_id??''),'APP_ID_INVALID','app.app_id');
   need(Number.isInteger(r?.app?.version_code)&&r.app.version_code>0,'VERSION_CODE_INVALID','app.version_code');
+  need(Array.isArray(r?.runtime_trace),'RUNTIME_TRACE_INVALID','runtime_trace');
   if(r?.targets?.some(t=>t==='android-project'||t==='android-apk')&&r.quality_profile==='cinematic')warnings.push({code:'ANDROID_CINEMATIC_DOWNGRADED',path:'quality_profile',to:'quality'});
   if(!verifySeal(r,'request_root'))errors.push({code:'REQUEST_ROOT_MISMATCH',path:'request_root'});
   return{valid:errors.length===0,errors,warnings};
@@ -72,7 +76,7 @@ export function validateUnifiedProject(project){
 }
 
 export function createBuildIdentity(request,project){
-  const semantic={fabric_version:BUILD_VERSION,project_root:project.project_root??rootHash(project),targets:request.targets,mode:request.mode,quality_profile:request.quality_profile,app:request.app,policy:request.policy,build_time:request.build_time,metadata:request.metadata};
+  const semantic={fabric_version:BUILD_VERSION,project_root:project.project_root??rootHash(project),targets:request.targets,mode:request.mode,quality_profile:request.quality_profile,app:request.app,policy:request.policy,build_time:request.build_time,runtime_trace:request.runtime_trace,metadata:request.metadata};
   const semantic_request_root=rootHash(semantic),value={semantic_request_root,...semantic};
   return{build_id:`build:${rootHash(value).slice(0,24)}`,build_key:rootHash(value),semantic_request_root,safe_title:safeName(request.app.title),project_root:semantic.project_root};
 }

@@ -111,6 +111,7 @@
     "@taowind/reality-behavior-fabric": "*",
     "@taowind/reality-branch-fabric": "*",
     "@taowind/reality-one-gateway": "*",
+    "@taowind/rfe-core-sdk": "*",
     "@taowind/living-artifact-format": "*",
     "@taowind/reality-simulation-runtime": "*",
     "@taowind/visual-state-runtime": "*",
