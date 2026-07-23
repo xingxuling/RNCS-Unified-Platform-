@@ -8,10 +8,12 @@
     "native_vm": "0.6.0-alpha.1",
     "rcl_control_plane": "0.4.0-alpha.1",
     "rcl_gateway_runtime": "0.4.0-alpha.1",
+    "rcl_foundation_bridge": "0.1.0-alpha.1",
     "mcp": "0.4.0-alpha.1"
   },
-  "runtime_count": 17,
+  "runtime_count": 18,
   "rcl_gateway_runtime": "rncs.rcl-control",
+  "rcl_foundation_gateway_runtime": "rncs.rcl-foundation-native",
   "mcp_read_tool": "rncs_rcl_compile_execute",
   "mcp_authority_tool": "rncs_rcl_authority_workflow",
   "verification": {
@@ -22,6 +24,9 @@
     "rcl_native_authority_commit": "pass",
     "rcl_authority_plan_persistence": "pass",
     "rcl_behavior_execution": "pass",
+    "rcl_foundation_native_batch_a": "6/6 pass",
+    "rcl_foundation_rncs_authority_commit": "7/7 pass",
+    "rcl_foundation_gateway": "18/18 runtimes healthy; proposal-only invocation pass",
     "rsr_vsr_dependencies": "discovered and healthy"
   }
 }

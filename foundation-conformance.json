@@ -5,13 +5,17 @@
     "format": "taowind.rcl-foundation-contract.v0.1",
     "version": "0.1.0",
     "manifestRoot": "34e508fe3b6587e630cc32a075edbad87323c7359434b2a2aaf01cf7e250f7e1",
-    "source": "xingxuling/RCL@main:src/foundation-contract.mjs",
+    "source": "xingxuling/RCL@78b2c351b90f4971bcdb4db3308e9fd6aee5a7c4:src/foundation-contract.mjs",
+    "scopedSourceRoot": "b1fd7f2f279eebc09cb71f945db727538dcf944618fb0082be3c0e630af6d0ef",
     "byteIdentityClaimed": false
   },
   "executionLayers": {
     "rncsProposalEnvelope": "native",
     "rclCompatibilityAdapter": "bridge",
     "rclReferenceRuntime": "bridge",
+    "rclFoundationNativeProvider": "bridge",
+    "rclFoundationNativeMetaProvider": "bridge",
+    "rncsFoundationGateway": "bridge",
     "rclNativeVmDeclaredFoundationLowering": "none"
   },
   "domains": {
@@ -20,27 +24,27 @@
     "physical": { "mode": "none", "implementation": null, "tests": [] },
     "energy": { "mode": "bridge", "implementation": "RCL energy state through RNCS native control-plane compatibility adapter", "tests": ["packages/control/rncs-rcl-control-plane/tests/control-plane.test.mjs"] },
     "elemental": { "mode": "none", "implementation": null, "tests": [] },
-    "perception": { "mode": "none", "implementation": null, "tests": [] },
+    "perception": { "mode": "bridge", "implementation": "RclVmProviderV1 Batch A compiled into RNCS Proposal/Authority/Commit", "tests": ["packages/integration/rcl-foundation-rncs-bridge/tests/bridge.test.mjs"] },
     "neural": { "mode": "projection", "implementation": "downstream cognition state lowered into RNCS collections", "tests": ["packages/control/rncs-rcl-control-plane/tests/control-plane.test.mjs"] },
     "embodiment": { "mode": "none", "implementation": null, "tests": [] },
     "life": { "mode": "none", "implementation": null, "tests": [] },
     "genetic": { "mode": "none", "implementation": null, "tests": [] },
-    "quantitative": { "mode": "none", "implementation": null, "tests": [] },
-    "knowledge": { "mode": "projection", "implementation": "downstream cognition collections, not canonical Foundation result", "tests": ["packages/control/rncs-rcl-control-plane/tests/control-plane.test.mjs"] },
+    "quantitative": { "mode": "bridge", "implementation": "RclVmProviderV1 Batch A compiled into RNCS Proposal/Authority/Commit", "tests": ["packages/integration/rcl-foundation-rncs-bridge/tests/bridge.test.mjs"] },
+    "knowledge": { "mode": "bridge", "implementation": "RclVmProviderV1 Batch A standard result bound to RNCS evidence root", "tests": ["packages/integration/rcl-foundation-rncs-bridge/tests/bridge.test.mjs"] },
     "scientific": { "mode": "none", "implementation": null, "tests": [] },
     "spiritual": { "mode": "none", "implementation": null, "tests": [] }
   },
   "planes": {
-    "natural-language-reality": { "mode": "none", "implementation": null, "tests": [] },
-    "understanding-reality": { "mode": "projection", "implementation": "cognition state compatibility lowering", "tests": ["packages/control/rncs-rcl-control-plane/tests/control-plane.test.mjs"] },
-    "creative-reality": { "mode": "projection", "implementation": "creation solution compatibility lowering", "tests": ["packages/control/rncs-rcl-control-plane/tests/control-plane.test.mjs"] },
+    "natural-language-reality": { "mode": "bridge", "implementation": "RclVmProviderV1 Batch A intent proposal under RNCS human authority", "tests": ["packages/integration/rcl-foundation-rncs-bridge/tests/bridge.test.mjs"] },
+    "understanding-reality": { "mode": "bridge", "implementation": "RclVmProviderV1 Batch A causal model result bound into RNCS proposal", "tests": ["packages/integration/rcl-foundation-rncs-bridge/tests/bridge.test.mjs"] },
+    "creative-reality": { "mode": "bridge", "implementation": "RclVmProviderV1 candidate remains proposal-only until RNCS authority and commit", "tests": ["packages/integration/rcl-foundation-rncs-bridge/tests/bridge.test.mjs"] },
     "inner-reality": { "mode": "none", "implementation": null, "tests": [] },
     "execution-reality": { "mode": "native", "implementation": "RNCS Proposal -> Authority -> Commit envelope", "tests": ["packages/kernel/rncs-core-contract/tests/foundation-governance.mjs"] }
   },
   "metaPlanes": {
-    "meta-spacetime": { "mode": "none", "implementation": null, "tests": [] },
-    "meta-acceleration": { "mode": "none", "implementation": null, "tests": [] },
-    "meta-compression": { "mode": "none", "implementation": null, "tests": [] }
+    "meta-spacetime": { "mode": "bridge", "implementation": "RclVmProviderV1 causal timeline result bound as an RNCS semantic operation and committed generation", "tests": ["packages/integration/rcl-foundation-rncs-bridge/tests/meta-bridge.test.mjs", "tests/unified.integration.test.mjs"] },
+    "meta-acceleration": { "mode": "bridge", "implementation": "RclVmProviderV1 bounded acceleration and fidelity state sealed by RNCS 4R governance", "tests": ["packages/integration/rcl-foundation-rncs-bridge/tests/meta-bridge.test.mjs", "tests/unified.integration.test.mjs"] },
+    "meta-compression": { "mode": "bridge", "implementation": "RclVmProviderV1 reversible content-root packing and restore proof bound into RNCS proposal and commit roots", "tests": ["packages/integration/rcl-foundation-rncs-bridge/tests/meta-bridge.test.mjs", "tests/unified.integration.test.mjs"] }
   },
   "axes": {
     "authority-boundary": { "mode": "native", "implementation": "RNCS authority decision and commit gate", "tests": ["packages/kernel/rncs-core-contract/tests/foundation-governance.mjs"] },
@@ -65,12 +69,20 @@
     "foundation-contract-bridge",
     "foundation-governance-proposal-root",
     "foundation-4r-commit-gate",
+    "foundation-native-provider-batch-a",
+    "foundation-native-provider-meta-batch-b",
+    "foundation-native-rncs-proposal-authority-commit",
+    "foundation-native-gateway-runtime",
+    "foundation-native-meta-semantic-state-root",
+    "foundation-native-generation-continuity",
+    "foundation-native-counterfactual",
+    "foundation-native-provider-degradation",
     "tamper-evidence",
     "native-control-plane-parity"
   ],
   "knownLimitations": [
     "The RNCS RCL package is a downstream extension delta and is not byte-identical to canonical RCL.",
-    "Most Foundation domains and planes do not yet have direct standard-result invocation inside RNCS.",
-    "Declared Foundation domains still require provider lowering before canonical RCL Native VM execution."
+    "Batch A and Meta Batch B cover nine Foundation entries through two Native Provider IDs; the remaining eleven base domains and two composite planes do not yet have direct standard-result invocation inside RNCS.",
+    "Declared Foundation syntax remains outside native lowering; both batches are bridge mode and are not relabeled as native."
   ]
 }

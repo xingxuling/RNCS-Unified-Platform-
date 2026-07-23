@@ -1,0 +1,20 @@
+{
+  "id": "rcl-foundation-rncs-bridge",
+  "name": "RCL Foundation Native RNCS Bridge",
+  "version": "0.2.0-alpha.1",
+  "layer": "integration",
+  "runtime": "rncs.rcl-foundation-native",
+  "dependsOn": [
+    "rncs-core",
+    "rcl"
+  ],
+  "capabilities": [
+    "foundation-native-proposal",
+    "foundation-native-authority-gate",
+    "foundation-native-commit",
+    "foundation-native-deterministic-replay",
+    "foundation-native-meta-spacetime",
+    "foundation-native-bounded-acceleration",
+    "foundation-native-reversible-root-compression"
+  ]
+}

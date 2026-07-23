@@ -150,3 +150,57 @@ This closes the specific project-to-network compilation gap named in v0.2. It
 does not yet prove complete editor parity, public-WAN multiplayer scale,
 native-rendered desktop/mobile distribution, or full stack superiority over
 every Godot and Unity workflow.
+
+## 8. Verified Progress v0.4
+
+RCL Foundation Native Batch A is now connected to RNCS authority instead of
+ending at a language-runtime receipt:
+
+- Six modules execute as RBC 1.2 through `RclVmProviderV1` in bridge mode:
+  quantitative, knowledge, perception, natural-language, understanding, and
+  creative reality.
+- Their standard Foundation results compile into one deterministic RNCS
+  Proposal whose evidence root binds the Native receipt, bytecode root, causal
+  chain, and final candidate root.
+- Candidate approval and commit confirmation are separate gates. Missing
+  Provider, denied RCL authority, unstable AIF, incomplete evidence, missing
+  human approval, and incomplete RNCS 4R governance all fail closed.
+- The committed RNCS generation root must equal the verified RCL final state
+  root; a caller cannot substitute a different commit root.
+- Reality One Gateway now discovers `rncs.rcl-foundation-native` as one of 18
+  healthy runtimes. Its `prepare`, `authorize`, and `commit` actions preserve
+  the same separated authority gates; Gateway preparation cannot auto-commit.
+
+Verify with `npm run test:foundation-native-rncs` and regenerate the rooted
+evidence with `npm run evidence:foundation-native-rncs`. The unified runtime
+path is covered by `npm run test:integration` and `npm run health`.
+
+This closes one language-to-authority integration gap. It does not make the
+remaining Foundation modules native, remove the JavaScript Reference Runtime,
+or prove complete editor/distribution parity with Godot and Unity.
+
+## 9. Verified Progress v0.5
+
+RCL Foundation Native Meta Batch B now continues the Batch A generation
+through RNCS and Reality One Gateway:
+
+- `meta-spacetime` commits a bounded causal timeline transition.
+- `meta-acceleration` records requested and effective factors, caps execution
+  at 8, and preserves the fidelity floor as deterministic RNCS data.
+- `meta-compression` binds reversible 64-byte-to-32-byte content-root packing
+  and exact restore proof into the proposal.
+- Every semantic operation carries its structured parameters and parameter
+  root. A total semantic state root is repeated in RNCS 4R governance,
+  extensions, verification output, and evidence.
+- Batch A generation 1 becomes Meta Batch B's causal base; Meta commits as
+  generation 2 only after separate human approval and commit confirmation.
+- Gateway selects the batch during `prepare` and still requires distinct
+  `authorize`, `commit`, and `verify` calls.
+
+The deterministic evidence is regenerated with
+`npm run evidence:foundation-native-rncs`; scoped canonical RCL source is
+checked with `npm run verify:foundation-native-rcl-source`.
+
+This verifies nine Foundation entries through Native Provider bridges and RNCS
+authority. It still does not implement declared Foundation syntax lowering,
+the remaining domains, or full Godot/Unity workflow parity.

@@ -1,0 +1,50 @@
+{
+  "format": "reality-one.runtime-manifest.v0.3",
+  "runtime_id": "rncs.rcl-foundation-native",
+  "runtime_version": "0.2.0-alpha.1",
+  "display_name": "RCL Foundation Native RNCS Bridge",
+  "gateway_protocol_versions": [
+    "0.3.0"
+  ],
+  "transport": {
+    "kind": "node-module",
+    "package": "@taowind/rcl-foundation-rncs-bridge"
+  },
+  "bridge": "../src/bridges/rcl-foundation-native.bridge.mjs",
+  "actions": [
+    "health",
+    "prepare",
+    "authorize",
+    "commit",
+    "verify"
+  ],
+  "protocols": [
+    "rncs.rcl-foundation-native-bridge.v0.1",
+    "taowind.rcl-foundation-runtime-result.v0.1",
+    "rcl.provider.v1",
+    "taowind.rcl-foundation-native-meta-batch-b.v0.1"
+  ],
+  "requires": [
+    {
+      "runtime_id": "rncs.core",
+      "version_range": "^0.1.0"
+    }
+  ],
+  "priority": 85,
+  "health_timeout_ms": 60000,
+  "metadata": {
+    "mode": "bridge",
+    "provider_id": "rcl.foundation.batch-a",
+    "provider_ids": [
+      "rcl.foundation.batch-a",
+      "rcl.foundation.meta-batch-b"
+    ],
+    "default_batch": "batch-a",
+    "selectable_batches": [
+      "batch-a",
+      "meta-batch-b"
+    ],
+    "authority": "proposal-human-approval-explicit-commit",
+    "source_of_truth": "packages/languages/reality-computation-language"
+  }
+}
