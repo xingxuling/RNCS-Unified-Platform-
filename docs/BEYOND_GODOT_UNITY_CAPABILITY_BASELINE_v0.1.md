@@ -178,3 +178,29 @@ path is covered by `npm run test:integration` and `npm run health`.
 This closes one language-to-authority integration gap. It does not make the
 remaining Foundation modules native, remove the JavaScript Reference Runtime,
 or prove complete editor/distribution parity with Godot and Unity.
+
+## 9. Verified Progress v0.5
+
+RCL Foundation Native Meta Batch B now continues the Batch A generation
+through RNCS and Reality One Gateway:
+
+- `meta-spacetime` commits a bounded causal timeline transition.
+- `meta-acceleration` records requested and effective factors, caps execution
+  at 8, and preserves the fidelity floor as deterministic RNCS data.
+- `meta-compression` binds reversible 64-byte-to-32-byte content-root packing
+  and exact restore proof into the proposal.
+- Every semantic operation carries its structured parameters and parameter
+  root. A total semantic state root is repeated in RNCS 4R governance,
+  extensions, verification output, and evidence.
+- Batch A generation 1 becomes Meta Batch B's causal base; Meta commits as
+  generation 2 only after separate human approval and commit confirmation.
+- Gateway selects the batch during `prepare` and still requires distinct
+  `authorize`, `commit`, and `verify` calls.
+
+The deterministic evidence is regenerated with
+`npm run evidence:foundation-native-rncs`; scoped canonical RCL source is
+checked with `npm run verify:foundation-native-rcl-source`.
+
+This verifies nine Foundation entries through Native Provider bridges and RNCS
+authority. It still does not implement declared Foundation syntax lowering,
+the remaining domains, or full Godot/Unity workflow parity.

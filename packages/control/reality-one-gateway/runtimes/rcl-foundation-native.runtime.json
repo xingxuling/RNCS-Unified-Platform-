@@ -1,7 +1,7 @@
 {
   "format": "reality-one.runtime-manifest.v0.3",
   "runtime_id": "rncs.rcl-foundation-native",
-  "runtime_version": "0.1.0-alpha.1",
+  "runtime_version": "0.2.0-alpha.1",
   "display_name": "RCL Foundation Native RNCS Bridge",
   "gateway_protocol_versions": [
     "0.3.0"
@@ -21,7 +21,8 @@
   "protocols": [
     "rncs.rcl-foundation-native-bridge.v0.1",
     "taowind.rcl-foundation-runtime-result.v0.1",
-    "rcl.provider.v1"
+    "rcl.provider.v1",
+    "taowind.rcl-foundation-native-meta-batch-b.v0.1"
   ],
   "requires": [
     {
@@ -34,6 +35,15 @@
   "metadata": {
     "mode": "bridge",
     "provider_id": "rcl.foundation.batch-a",
+    "provider_ids": [
+      "rcl.foundation.batch-a",
+      "rcl.foundation.meta-batch-b"
+    ],
+    "default_batch": "batch-a",
+    "selectable_batches": [
+      "batch-a",
+      "meta-batch-b"
+    ],
     "authority": "proposal-human-approval-explicit-commit",
     "source_of_truth": "packages/languages/reality-computation-language"
   }

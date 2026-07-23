@@ -10,5 +10,5 @@ import {discoverRuntimeManifests} from '../src/discovery.mjs';
  assert.ok(runtime);
  assert.ok(runtime.actions.includes('engineeringWorkflow'));
  assert.ok(runtime.actions.includes('vsrRender'));
- assert.equal(registry.runtimes.length,17);
+ assert.equal(registry.runtimes.length,18);
 });

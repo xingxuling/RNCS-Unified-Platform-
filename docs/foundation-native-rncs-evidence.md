@@ -1,27 +1,33 @@
 # RCL Foundation Native RNCS Evidence
 
 - status: **pass**
-- canonical RCL commit: `43b6755`
-- provider: `rcl.foundation.batch-a` ABI 1
-- domains: quantitative, knowledge, perception, natural-language-reality, understanding-reality, creative-reality
-- RCL receipt: `f1130e9cf5bac006a64cbaa4229e01691f36ee12e084cc16bd2a5bb8b0f0edfe`
-- RNCS proposal: `96a7552a41f1a633e0218670b75baa4759fc90f4f1ca9b52656f6fe07cac6b32`
-- RNCS commit: `b4ad9fb87aafc85042ccbe3553ed1d1b315667d238f282f492b1151842dcafe6`
-- final generation root: `932cdfb284f297c0bb0eb655d04005403e879ab1b9a404ffacedba5a2b9b4b6a`
+- canonical RCL commit: `78b2c351b90f4971bcdb4db3308e9fd6aee5a7c4`
+- scoped source root: `b1fd7f2f279eebc09cb71f945db727538dcf944618fb0082be3c0e630af6d0ef` (17 files)
+- Batch A provider: `rcl.foundation.batch-a`
+- Batch A generation: 1 / `932cdfb284f297c0bb0eb655d04005403e879ab1b9a404ffacedba5a2b9b4b6a`
+- Meta Batch B provider: `rcl.foundation.meta-batch-b`
+- Meta Batch B generation: 2 / `39ac942239870c105c1894c9d81f292a823479626c0422215b3a392ea5baadb6`
+- Meta semantic state: `63cd16830a065e8f38d27c020e118d69dfae12f75702dce3ee400aa834141e7b`
 - Gateway runtime: `rncs.rcl-foundation-native` (18 registered runtimes)
-- Gateway source root: `8d7ff6707af912af7c78810a49572f4398b26b956d7286faf530668ef55125d2`
-- evidence root: `d0c95b5ccfd6728654b850fb1c9caa4abef4f53bd194f7ef7ace5f4e8af40f7e`
+- Gateway committed root: `39ac942239870c105c1894c9d81f292a823479626c0422215b3a392ea5baadb6`
+- evidence root: `e2cff7f17bbbe560fc75b5dc00a0449ff4baafb273e963b9b847a278034aa84e`
 
 | Check | Status |
 | --- | --- |
-| standardResultCount | pass |
+| rclSourceScopeVerified | pass |
+| wholePackageIdentityNotClaimed | pass |
+| batchAStandardResultCount | pass |
+| metaStandardResultCount | pass |
 | nativeReplay | pass |
-| proposalVerified | pass |
+| proposalsVerified | pass |
 | humanApprovalRecorded | pass |
-| commitReceiptBound | pass |
-| finalRootBound | pass |
+| commitReceiptsBound | pass |
+| generationContinuity | pass |
+| metaTimelineMutation | pass |
+| metaAccelerationBound | pass |
+| metaCompressionRestore | pass |
 | gatewayRuntimeRegistered | pass |
-| gatewayBridgeModeExplicit | pass |
 | gatewayAuthoritySeparated | pass |
+| gatewayMetaCommitted | pass |
 
-Batch A remains bridge mode. Human approval and commit confirmation are separate gates.
+Batch A and Meta Batch B remain bridge mode. Human approval and commit confirmation are separate calls. Declared Foundation syntax is not counted as Native VM lowering.

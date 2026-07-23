@@ -1,20 +1,57 @@
 {
-  "format": "taowind.rcl-downstream-source-receipt.v0.1",
+  "format": "taowind.rcl-downstream-source-receipt.v0.2",
   "canonicalRepository": "xingxuling/RCL",
-  "canonicalBranch": "codex/foundation-native-batch-a",
-  "canonicalCommit": "43b6755",
-  "providerId": "rcl.foundation.batch-a",
+  "canonicalBranch": "codex/foundation-native-meta-batch-b",
+  "canonicalCommit": "78b2c351b90f4971bcdb4db3308e9fd6aee5a7c4",
+  "providerIds": [
+    "rcl.foundation.batch-a",
+    "rcl.foundation.meta-batch-b"
+  ],
   "mode": "bridge",
+  "normalization": "UTF-8 text uses LF for scoped hashing; rclfoundation.exe uses exact bytes",
   "synchronizedFiles": [
-    "src/foundation-contract.mjs",
-    "src/foundation-native-bridge.mjs",
-    "native/foundation_provider.c",
+    "README.md",
     "benchmarks/foundation-native-batch-a-baseline.json",
+    "benchmarks/foundation-native-meta-batch-b-baseline.json",
     "docs/foundation-native-provider-bridge.md",
     "examples/foundation-native-batch-a-request.json",
     "examples/foundation-native-batch-a.mjs",
-    "tests/foundation-native-bridge.test.mjs"
+    "examples/foundation-native-meta-batch-b-request.json",
+    "examples/foundation-native-meta-batch-b.mjs",
+    "native/foundation_provider.c",
+    "native/native-windows-manifest.json",
+    "native/rclfoundation.exe",
+    "src/foundation-contract.mjs",
+    "src/foundation-native-batch-runtime.mjs",
+    "src/foundation-native-bridge.mjs",
+    "src/foundation-native-meta-bridge.mjs",
+    "tests/foundation-native-bridge.test.mjs",
+    "tests/foundation-native-meta-bridge.test.mjs"
+  ],
+  "fileSha256": {
+    "README.md": "e89b3d4dd850d1b8b007407be00cd102234ea164c1018081a469025ffbee2423",
+    "benchmarks/foundation-native-batch-a-baseline.json": "2f2192b80ec3668c300469d85f1e3496b845ca8cb1e399ac74ce598961b8f73e",
+    "benchmarks/foundation-native-meta-batch-b-baseline.json": "b7054386bfe14428607a370fae54540863e1c8150ab4bfcde316c2dec9c0240a",
+    "docs/foundation-native-provider-bridge.md": "8b1fb5e77d52bd0739192765fabb89a1477e34aee5e34edb7268044f5996a22c",
+    "examples/foundation-native-batch-a-request.json": "d792540315b83d588b5e50be90f91b1012c3247d40b13d20211d5ab40102f4b1",
+    "examples/foundation-native-batch-a.mjs": "bb4b12346695f4cc92bdead6a31ac09e90c47b4009e62912ec0e86fe6b019d85",
+    "examples/foundation-native-meta-batch-b-request.json": "a91d12e73559a6415233d46c5f5cfffc7a75cbd750e12d0518f17bdb18b19a0d",
+    "examples/foundation-native-meta-batch-b.mjs": "2e23924afbfadc73934831e976abbb2cb2fc228464ca6ddacce8ce0bb00eab5e",
+    "native/foundation_provider.c": "61fed9bd13794171073b4e6fa867026f7e301578148bbfdfa0e46374b7576e84",
+    "native/native-windows-manifest.json": "9b7a134864614874bea6cb3482522008b36d7438f97a358bbc6e70c3358e59a9",
+    "native/rclfoundation.exe": "7bc9c5e9befdafaf638660804ae54315d7c1d60a64233fa84924a111ccfda70b",
+    "src/foundation-contract.mjs": "d93d469069308a21ca15e46a9bc3899b845775d84f8aa6e4b67f8a1e9411367e",
+    "src/foundation-native-batch-runtime.mjs": "f20558da15067b3160c9cd325c64a06fefe6d8200f92f005773ce90d1592b5e1",
+    "src/foundation-native-bridge.mjs": "bc2b282ec86238cc8a27e13dd91487ae91e3ea5ac4b6fa2bc148598a95e79bad",
+    "src/foundation-native-meta-bridge.mjs": "1b0239426061202443d2437bcc3556b686510383f9352af538da4e778d539bd0",
+    "tests/foundation-native-bridge.test.mjs": "bd38920824dbca1be308d6e6461a509813bfa9bec58f86899830dbbe962e0516",
+    "tests/foundation-native-meta-bridge.test.mjs": "e7436d990203326e1e348ea00a15179d237438bc0044c43bf89ac5ee577c8fdd"
+  },
+  "scopeRoot": "b1fd7f2f279eebc09cb71f945db727538dcf944618fb0082be3c0e630af6d0ef",
+  "downstreamDeltaFiles": [
+    "package.json",
+    "src/index.mjs"
   ],
   "byteIdentityClaimedForWholePackage": false,
-  "relationship": "RNCS extension delta consuming a scoped canonical RCL bridge snapshot"
+  "relationship": "RNCS extension delta consuming a scoped canonical RCL Native Provider snapshot"
 }

@@ -5,7 +5,8 @@
     "format": "taowind.rcl-foundation-contract.v0.1",
     "version": "0.1.0",
     "manifestRoot": "34e508fe3b6587e630cc32a075edbad87323c7359434b2a2aaf01cf7e250f7e1",
-    "source": "xingxuling/RCL@main:src/foundation-contract.mjs",
+    "source": "xingxuling/RCL@78b2c351b90f4971bcdb4db3308e9fd6aee5a7c4:src/foundation-contract.mjs",
+    "scopedSourceRoot": "b1fd7f2f279eebc09cb71f945db727538dcf944618fb0082be3c0e630af6d0ef",
     "byteIdentityClaimed": false
   },
   "executionLayers": {
@@ -13,6 +14,7 @@
     "rclCompatibilityAdapter": "bridge",
     "rclReferenceRuntime": "bridge",
     "rclFoundationNativeProvider": "bridge",
+    "rclFoundationNativeMetaProvider": "bridge",
     "rncsFoundationGateway": "bridge",
     "rclNativeVmDeclaredFoundationLowering": "none"
   },
@@ -40,9 +42,9 @@
     "execution-reality": { "mode": "native", "implementation": "RNCS Proposal -> Authority -> Commit envelope", "tests": ["packages/kernel/rncs-core-contract/tests/foundation-governance.mjs"] }
   },
   "metaPlanes": {
-    "meta-spacetime": { "mode": "none", "implementation": null, "tests": [] },
-    "meta-acceleration": { "mode": "none", "implementation": null, "tests": [] },
-    "meta-compression": { "mode": "none", "implementation": null, "tests": [] }
+    "meta-spacetime": { "mode": "bridge", "implementation": "RclVmProviderV1 causal timeline result bound as an RNCS semantic operation and committed generation", "tests": ["packages/integration/rcl-foundation-rncs-bridge/tests/meta-bridge.test.mjs", "tests/unified.integration.test.mjs"] },
+    "meta-acceleration": { "mode": "bridge", "implementation": "RclVmProviderV1 bounded acceleration and fidelity state sealed by RNCS 4R governance", "tests": ["packages/integration/rcl-foundation-rncs-bridge/tests/meta-bridge.test.mjs", "tests/unified.integration.test.mjs"] },
+    "meta-compression": { "mode": "bridge", "implementation": "RclVmProviderV1 reversible content-root packing and restore proof bound into RNCS proposal and commit roots", "tests": ["packages/integration/rcl-foundation-rncs-bridge/tests/meta-bridge.test.mjs", "tests/unified.integration.test.mjs"] }
   },
   "axes": {
     "authority-boundary": { "mode": "native", "implementation": "RNCS authority decision and commit gate", "tests": ["packages/kernel/rncs-core-contract/tests/foundation-governance.mjs"] },
@@ -68,8 +70,11 @@
     "foundation-governance-proposal-root",
     "foundation-4r-commit-gate",
     "foundation-native-provider-batch-a",
+    "foundation-native-provider-meta-batch-b",
     "foundation-native-rncs-proposal-authority-commit",
     "foundation-native-gateway-runtime",
+    "foundation-native-meta-semantic-state-root",
+    "foundation-native-generation-continuity",
     "foundation-native-counterfactual",
     "foundation-native-provider-degradation",
     "tamper-evidence",
@@ -77,7 +82,7 @@
   ],
   "knownLimitations": [
     "The RNCS RCL package is a downstream extension delta and is not byte-identical to canonical RCL.",
-    "Batch A covers six modules through the Native Provider ABI; the remaining Foundation domains and planes do not yet have direct standard-result invocation inside RNCS.",
-    "Declared Foundation syntax remains outside native lowering; Batch A is bridge mode and is not relabeled as native."
+    "Batch A and Meta Batch B cover nine Foundation entries through two Native Provider IDs; the remaining eleven base domains and two composite planes do not yet have direct standard-result invocation inside RNCS.",
+    "Declared Foundation syntax remains outside native lowering; both batches are bridge mode and are not relabeled as native."
   ]
 }
