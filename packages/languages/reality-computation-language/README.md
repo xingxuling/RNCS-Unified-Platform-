@@ -3,35 +3,32 @@
 
 # RCL v0.94.0-alpha.1
 
-RCL stopped borrowing its compiler.
+> Canonical source: `xingxuling/RCL@main`. The verified ceiling is Stage40 native-core RCL self-hosting. Whole-language runtime self-hosting and byte identity with downstream copies are not claimed; see `VERSION-CONTRACT.json`.
 
-Now it has also stopped spending six minutes copying its own output.
+> Release-history sections below are historical records and do not represent the current `main` state. Current release facts are defined by `package.json`, `CURRENT-STATUS.md`, and `VERSION-CONTRACT.json`.
+
+
+RCL stopped borrowing its compiler.
 
 The repository now contains a general compiler written in RCL, a checked-in fixed-point compiler artifact, a real Windows `rclc.exe`, and a native VM capable of compiling that compiler again. JavaScript is used once to create C0. Native C0 emits C1. Native C1 emits C2. All three artifacts are byte-identical.
 
-This is not another stage label taped over a JavaScript call. `rcl bytecode` and `rcl native` use `selfhost/compiler.rbc` through `native/rclc.exe` by default. The compiler handles the executable native-core language with facets, reckonings, subjects, warrants, emergence/resonance transactions, multiple needs/alters/preserves/witnesses, foresee/realize directives, primitive expressions, compiler builtins, and metadata accepted by the native backend. Invalid headers, declarations, paths, calls, arities, targets, and literal facet types are rejected instead of silently emitted.
-
-The native VM now keeps `sequence_concat` persistent instead of copying the entire accumulated sequence on every append. On the verified Windows machine, a native self-host generation fell from roughly 363 seconds to 5.3 seconds; the normal two-generation fixed-point build completes in about 15 seconds including bootstrap and reporting. The 500,000,000-instruction hard limit was not raised. The bottleneck was removed.
-
-RBC 1.3 `domain_call` now carries zero or more operation arguments in both literal-target and dynamic-target forms. The native registry executes the quantitative, perception, knowledge, language, understanding, creation, energy, element, science, embodiment, spirit, spacetime, reflection, physical advance, living, neural propagation, and inheritance slices covered by the domain regression suite.
+This is not another stage label taped over a JavaScript call. `rcl bytecode` and `rcl native` now use `selfhost/compiler.rbc` through `native/rclc.exe` by default. The compiler handles the executable native-core language with facets, reckonings, subjects, warrants, emergence/resonance transactions, multiple needs/alters/preserves/witnesses, foresee/realize directives, primitive expressions, compiler builtins, and metadata accepted by the native backend. Invalid headers, declarations, paths, calls, arities, targets, and literal facet types are rejected instead of silently emitted.
 
 ## Current Verified Ceiling
 
 ```text
 native core compiler self-hosting: VERIFIED
-C0 == C1 == C2: 372,818 bytes
-fixed-point SHA-256: 7f42128c87560992b6ec5342783e63ff5bd05f3b52f723f6d82b1e26fe37660f
-native compiler peak: 952 Value stack / 235 CallFrames
-native fixed point: about 9.9 seconds for C0 -> C1 -> C2 in the direct verifier
-full fixed-point build: about 15.1 seconds including bootstrap and report
-native-core example parity: 17 byte-identical examples
-known self-host example gaps: 2 advanced-domain parser failures; 32 examples outside native-core eligibility
+C0 == C1 == C2: 160,572 bytes
+fixed-point SHA-256: a2e9cd44c9afb0a488ef797431f6bbf53e621c756d5b9906ad85bc3fa350789c
+native compiler peak: 880 Value stack / 217 CallFrames
+native-core example parity: 14 eligible / 14 byte-identical / 0 failures
 stage ladder ceiling: stage40_rcl_owned_dual_need_warrant_lowering_subset
 Stage40 target: 407 static instructions / 367 executed / 20 CHECK_WARRANT operations
-native artifacts: rclvm.exe, rclc.exe, rclvmd.exe, provider_demo.exe, librclvm.a, rclvm.dll, rclvm.lib
+native artifacts: rclvm.exe, rclc.exe, rclvmd.exe, provider_demo.exe, rclfoundation.exe, librclvm.a, rclvm.dll, rclvm.lib
 default bytecode/native compiler: selfhost/compiler.rbc via native/rclc.exe
-RBC 1.3 registered domain runtime: native C for the verified domain slices
-advanced domain grammar parity: incomplete in the self-hosted compiler
+Foundation Native Batch A: six domains through a verified RclVmProviderV1 bridge
+Foundation Native Meta Batch B: spacetime, bounded acceleration, and reversible root compression through a second verified provider
+advanced declared-domain syntax: still JavaScript Reference Runtime
 whole-language runtime self-hosting: not claimed
 ```
 
@@ -42,6 +39,9 @@ npm run build:native
 npm run build:selfhost-compiler
 npm run verify:selfhost-fixedpoint
 npm run verify:selfhost-examples
+npm run test:foundation-native-batch-a
+npm run test:foundation-native-meta-batch-b
+npm run conformance:foundation
 node scripts/verify-native-windows-boundary.mjs
 node scripts/verify-rcl-selfhost-stage40.mjs
 node scripts/verify-rcl-selfhost-all.mjs
@@ -49,9 +49,9 @@ node scripts/verify-rcl-selfhost-all.mjs
 
 ## Honest Boundary
 
-The native-core compiler has escaped JavaScript after the one-time C0 bootstrap. A substantial RBC 1.3 domain slice now executes in native C as well, but the self-hosted parser does not yet accept the complete advanced-domain grammar and several declaration families still rely on the JavaScript compiler/toolchain. Programs outside the verified native subset are reported separately and are not counted as self-host parity successes.
+The native-core compiler has escaped JavaScript after the one-time C0 bootstrap. Foundation Native Batch A now runs quantitative, knowledge, perception, natural-language, understanding, and creative proposals through RBC 1.2 and a real `RclVmProviderV1` host. Meta Batch B adds causal timeline mutation, bounded acceleration, and reversible content-root representation compression through a second provider. Both are bridge mode, not native Foundation syntax. Physical, biological, scientific, product-domain execution, and all uncovered Foundation modules still run in the JavaScript Reference Runtime. Programs that the native-bytecode backend rejects are reported separately and are not counted as self-host parity successes.
 
-RCL is a real self-hosted native-core language with a native advanced-domain runtime slice. The remaining fight is full advanced-grammar parity, native typed modules, and moving the package authority path onto the same foundation.
+See `docs/foundation-native-provider-bridge.md` for the ABI, failure contract, migration path, and performance evidence. The remaining work is moving more domain semantics, the typed module toolchain, and the package authority path onto the same native foundation.
 
 ---
 

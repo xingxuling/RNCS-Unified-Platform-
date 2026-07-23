@@ -6,6 +6,11 @@ export async function createBridge({ module }) {
     mode: 'bridge',
     provider_id: 'rcl.foundation.batch-a',
     native_result_count: 6,
+    provider_ids: [
+      'rcl.foundation.batch-a',
+      'rcl.foundation.meta-batch-b',
+    ],
+    batches: module.RCL_FOUNDATION_RNCS_BATCHES,
     authority: 'proposal-human-approval-explicit-commit',
   });
 
@@ -14,9 +19,13 @@ export async function createBridge({ module }) {
     invoke: async (action, payload = {}) => {
       if (action === 'health') return health();
       if (action === 'prepare') {
+        const options = {
+          ...(payload.options ?? {}),
+          ...(payload.batch ? { batch: payload.batch } : {}),
+        };
         return module.prepareFoundationNativeRncsTransition(
           payload.request ?? {},
-          payload.options ?? {},
+          options,
         );
       }
       if (action === 'authorize') {

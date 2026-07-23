@@ -11,6 +11,7 @@ const skip=new Set(['autorag','aetherfusion']);
 const seenCommands=new Set();
 const timeoutMs=Number(process.env.RNCS_TEST_COMMAND_TIMEOUT_MS??240000);
 const only=new Set((process.env.RNCS_TEST_ONLY??'').split(',').map(x=>x.trim()).filter(Boolean));
+const npmCli=process.env.npm_execpath;
 const childEnv=Object.fromEntries(Object.entries(process.env).filter(([key])=>!key.toLowerCase().startsWith('npm_')&&!['INIT_CWD','NODE_CHANNEL_FD'].includes(key)));
 
 function tokenize(command){
@@ -25,11 +26,13 @@ function tokenize(command){
 }
 async function run(id,command){
   const [rawExecutable,...args]=tokenize(command);
-  const executable=process.platform==='win32'&&rawExecutable==='npm'?'npm.cmd':rawExecutable;
+  const useNpmCli=rawExecutable==='npm'&&npmCli;
+  const executable=useNpmCli?process.execPath:(process.platform==='win32'&&rawExecutable==='npm'?'npm.cmd':rawExecutable);
+  const spawnArgs=useNpmCli?[npmCli,...args]:args;
   const started=performance.now();
   console.log(`\n===== ${id} =====\n$ ${command}`);
   const result=await new Promise(resolve=>{
-    const child=spawn(executable,args,{cwd:root,stdio:'inherit',env:childEnv,windowsHide:true});
+    const child=spawn(executable,spawnArgs,{cwd:root,stdio:'inherit',env:childEnv,windowsHide:true});
     let timedOut=false;
     const timer=setTimeout(()=>{timedOut=true;child.kill('SIGTERM');setTimeout(()=>child.kill('SIGKILL'),5000).unref();},timeoutMs);
     child.once('error',error=>{clearTimeout(timer);resolve({status:1,signal:null,timedOut,error:error.message});});
