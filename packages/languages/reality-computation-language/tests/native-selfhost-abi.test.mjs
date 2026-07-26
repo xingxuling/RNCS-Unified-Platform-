@@ -64,6 +64,10 @@ function sha256File(filePath) {
   return crypto.createHash('sha256').update(fs.readFileSync(filePath)).digest('hex');
 }
 
+function normalizedSourceBytes(filePath) {
+  return Buffer.from(fs.readFileSync(filePath, 'utf8').replace(/\r\n?/g, '\n'));
+}
+
 test('native core bytecode implements MOD and JS-compatible and/or short circuiting', async () => {
   const source = `reality NativeCoreSemantics {
     facet logic.and : Truth = false and late.value
@@ -259,7 +263,7 @@ test('native rclc rejects invalid RBC output without replacing an existing targe
   }
 });
 
-test('Windows native manifest tracks the exact required prebuilt path set and hashes', { skip: process.platform !== 'win32' }, () => {
+test('Windows native manifest tracks the RNCS core prebuilt boundary and hashes', { skip: process.platform !== 'win32' }, () => {
   const manifestPath = path.join(ROOT, 'native', 'native-windows-manifest.json');
   const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
   const expectedSources = [
@@ -268,7 +272,6 @@ test('Windows native manifest tracks the exact required prebuilt path set and ha
     'native/rclc.c',
     'native/rclvmd.c',
     'native/provider_demo.c',
-    'native/foundation_provider.c',
     'scripts/build-native-windows.mjs',
   ];
   const expectedArtifacts = [
@@ -276,7 +279,6 @@ test('Windows native manifest tracks the exact required prebuilt path set and ha
     'native/rclc.exe',
     'native/rclvmd.exe',
     'native/provider_demo.exe',
-    'native/rclfoundation.exe',
     'native/librclvm.a',
     'native/rclvm.dll',
     'native/rclvm.lib',
@@ -293,10 +295,18 @@ test('Windows native manifest tracks the exact required prebuilt path set and ha
   for (const relative of expectedSources) {
     sourceHash.update(relative);
     sourceHash.update('\0');
-    sourceHash.update(fs.readFileSync(path.join(ROOT, relative)));
+    sourceHash.update(normalizedSourceBytes(path.join(ROOT, relative)));
     sourceHash.update('\0');
   }
   assert.equal(manifest.sourceSha256, sourceHash.digest('hex'));
+
+  const foundationReceipt = JSON.parse(fs.readFileSync(
+    path.join(ROOT, 'FOUNDATION-NATIVE-BRIDGE-SOURCE.json'),
+    'utf8',
+  ));
+  assert.ok(foundationReceipt.synchronizedFiles.includes('native/foundation_provider.c'));
+  assert.ok(foundationReceipt.synchronizedFiles.includes('native/rclfoundation.exe'));
+  assert.ok(!foundationReceipt.synchronizedFiles.includes('native/native-windows-manifest.json'));
 });
 
 test('Windows rclvm DLL supports an external import-library link and runtime load', { skip: process.platform !== 'win32' }, t => {

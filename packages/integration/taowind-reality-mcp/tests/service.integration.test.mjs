@@ -35,7 +35,7 @@ test('RCL MCP bridge compiles, executes native RBC, and reports parity',async()=
  const response=await client.callTool({name:'rncs_rcl_compile_execute',arguments:{source:'reality McpRclBridge { facet world.ready : Truth = true facet world.value : Number = 7 }'}});
  assert.equal(response.isError,undefined);
  const result=resultOf(response);
- assert.equal(result.format,'rncs.rcl-native-execution.v0.1');
+ assert.equal(result.format,'rncs.rcl-native-execution.v0.2');
  assert.equal(result.parity.ok,true);
  assert.equal(result.native.state['world.ready'],true);
  assert.equal(result.native.state['world.value'],7);
@@ -52,6 +52,13 @@ test('RCL MCP authority tool commits native state through AAF and RFE',async()=>
  assert.equal(result.candidate.candidate_root.length,64);
  assert.equal(result.merge.evidence.rcl_native_evidence.parity_verified,true);
  assert.ok(result.merge.evidence.rfe_commit_receipt.integrityHash);
+}));
+
+test('RCL MCP authority plan omits absent optional fields from the sealed Gateway payload',async()=>withClient(async({client})=>{
+ const response=await client.callTool({name:'rncs_rcl_compile_authority_plan',arguments:{source:'reality McpRclPlan { facet rncs.world.title : Text = "sealed optional payload" }'}});
+ assert.equal(response.isError,undefined);
+ assert.equal(resultOf(response).format,'rncs.rcl-authority-plan-workflow.v0.1');
+ assert.match(resultOf(response).plan.plan_id,/^plan:rcl:/);
 }));
 
 
@@ -202,6 +209,6 @@ test('manifest reports founder authority without revealing private path publicly
   const ready=await fetch(`${service.url}/readyz`);
   const readyBody=await ready.json();
   assert.equal('runtimes' in readyBody,false);
-  assert.equal(readyBody.runtime_count,17);
+  assert.equal(readyBody.runtime_count,18);
  }finally{await service.stop();}
 });

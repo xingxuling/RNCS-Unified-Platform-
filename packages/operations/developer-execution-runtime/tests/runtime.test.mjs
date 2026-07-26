@@ -5,6 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import {execFileSync} from 'node:child_process';
 import http from 'node:http';
+import JSZip from 'jszip';
 import {DeveloperExecutionRuntime} from '../src/runtime.mjs';
 
 const tempRoot=()=>fs.mkdtempSync(path.join(os.tmpdir(),'taowind-exec-'));
@@ -63,15 +64,16 @@ test('child processes do not inherit provider or MCP secrets',async()=>{
 
 test('break-glass shell is available only in founder-unrestricted mode',async()=>{
  const root=tempRoot();
- await assert.rejects(()=>createRuntime(root).invoke('runShell',{script:'printf ok'}),error=>error.code==='SHELL_DISABLED');
+ await assert.rejects(()=>createRuntime(root).invoke('runShell',{script:'echo ok'}),error=>error.code==='SHELL_DISABLED');
  const runtime=createRuntime(root,{mode:'founder-unrestricted',enableShell:true,allowedExecutables:['node','git','bash']});
- const result=await runtime.invoke('runShell',{script:'printf ok'});
- assert.equal(result.stdout,'ok');
+ const result=await runtime.invoke('runShell',{script:'echo ok'});
+ assert.equal(result.stdout.trim(),'ok');
 });
 
 test('git branch, diff and commit form a real local engineering transaction',async()=>{
  const root=tempRoot();
  execFileSync('git',['init'],{cwd:root});
+ execFileSync('git',['config','core.autocrlf','false'],{cwd:root});
  execFileSync('git',['config','user.email','test@example.invalid'],{cwd:root});
  execFileSync('git',['config','user.name','TaoWind Test'],{cwd:root});
  fs.writeFileSync(path.join(root,'README.md'),'base\n');
@@ -103,9 +105,9 @@ test('build profiles run declared project commands and reject unknown profiles',
 
 test('Android build profile invokes the bound project Gradle wrapper',async()=>{
  const root=tempRoot();
- const wrapper=path.join(root,'gradlew');
- fs.writeFileSync(wrapper,'#!/bin/sh\nprintf "gradle:%s" "$1"\n');
- fs.chmodSync(wrapper,0o755);
+ const wrapper=path.join(root,process.platform==='win32'?'gradlew.bat':'gradlew');
+ if(process.platform==='win32')fs.writeFileSync(wrapper,'@echo off\r\n<nul set /p =gradle:%1\r\nexit /b 0\r\n');
+ else{fs.writeFileSync(wrapper,'#!/bin/sh\nprintf "gradle:%s" "$1"\n');fs.chmodSync(wrapper,0o755);}
  const runtime=createRuntime(root,{allowedExecutables:['./gradlew','git']});
  const result=await runtime.invoke('runBuild',{profile:'android-debug'});
  assert.equal(result.exit_code,0);
@@ -117,12 +119,12 @@ test('artifacts export as files or secret-filtered directory archives',async()=>
  fs.mkdirSync(path.join(root,'out'),{recursive:true});
  fs.writeFileSync(path.join(root,'out','app.apk'),'apk-bytes');
  fs.writeFileSync(path.join(root,'out','.env'),'TOKEN=hidden');
- const runtime=createRuntime(root,{allowedExecutables:['node','git','zip']});
+ const runtime=createRuntime(root,{allowedExecutables:['node','git']});
  const file=await runtime.invoke('exportArtifact',{path:'out/app.apk'});
  assert.equal(fs.readFileSync(file.local_path,'utf8'),'apk-bytes');
  assert.equal(runtime.openExport(file.export_id,file.download_token).sha256,file.sha256);
  const archive=await runtime.invoke('exportArtifact',{path:'out',filename:'out.zip'});
- const listing=execFileSync('unzip',['-l',archive.local_path],{encoding:'utf8'});
+ const listing=Object.keys((await JSZip.loadAsync(fs.readFileSync(archive.local_path))).files).join('\n');
  assert.match(listing,/app\.apk/);
  assert.doesNotMatch(listing,/\.env/);
 });
@@ -160,6 +162,7 @@ test('GitHub and Vercel provider adapters perform authenticated writes against c
 test('engineering workflow modifies, tests and commits a real task branch',async()=>{
  const root=tempRoot();
  execFileSync('git',['init','-b','main'],{cwd:root});
+ execFileSync('git',['config','core.autocrlf','false'],{cwd:root});
  execFileSync('git',['config','user.email','test@example.invalid'],{cwd:root});
  execFileSync('git',['config','user.name','TaoWind Test'],{cwd:root});
  fs.writeFileSync(path.join(root,'app.txt'),'stable\n');
@@ -178,6 +181,7 @@ test('engineering workflow modifies, tests and commits a real task branch',async
 test('engineering workflow rolls back a failed task branch',async()=>{
  const root=tempRoot();
  execFileSync('git',['init','-b','main'],{cwd:root});
+ execFileSync('git',['config','core.autocrlf','false'],{cwd:root});
  execFileSync('git',['config','user.email','test@example.invalid'],{cwd:root});
  execFileSync('git',['config','user.name','TaoWind Test'],{cwd:root});
  fs.writeFileSync(path.join(root,'app.txt'),'stable\n');

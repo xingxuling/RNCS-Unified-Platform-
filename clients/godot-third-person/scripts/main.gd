@@ -214,7 +214,7 @@ func _on_sword_attack(
 	combo_step: int
 ) -> void:
 	for enemy_node in get_tree().get_nodes_in_group("enemy"):
-		var enemy: Node3D = enemy_node as Node3D
+		var enemy: FrontierEnemy = enemy_node as FrontierEnemy
 		if enemy == null or not is_instance_valid(enemy):
 			continue
 		if origin.distance_to(enemy.global_position) > 3.5 + combo_step * 0.15:
@@ -300,7 +300,7 @@ func _tick_projectiles(delta: float) -> void:
 		if is_instance_valid(node):
 			node.global_position = projectile_position
 		for enemy_node in get_tree().get_nodes_in_group("enemy"):
-			var enemy: Node3D = enemy_node as Node3D
+			var enemy: FrontierEnemy = enemy_node as FrontierEnemy
 			if enemy == null or not is_instance_valid(enemy):
 				continue
 			if (

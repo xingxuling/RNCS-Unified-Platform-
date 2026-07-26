@@ -1,4 +1,5 @@
 extends CharacterBody3D
+class_name FrontierEnemy
 
 signal defeated(enemy, enemy_type: String)
 
@@ -13,7 +14,7 @@ var aggro_range := 20.0
 var attack_cooldown := 0.0
 var boss := false
 var phase := 1
-var target: Node3D
+var target: PlayerController
 var _nameplate: Label3D
 
 func configure(kind: String) -> void:
@@ -37,13 +38,13 @@ func configure(kind: String) -> void:
 
 func _ready() -> void:
 	add_to_group("enemy")
-	target = get_tree().get_first_node_in_group("player") as Node3D
+	target = get_tree().get_first_node_in_group("player") as PlayerController
 	_update_nameplate()
 
 func _physics_process(delta: float) -> void:
 	attack_cooldown = maxf(0.0, attack_cooldown - delta)
 	if not is_instance_valid(target):
-		target = get_tree().get_first_node_in_group("player") as Node3D
+		target = get_tree().get_first_node_in_group("player") as PlayerController
 		return
 	if boss:
 		phase = 3 if hp < max_hp * 0.33 else (2 if hp < max_hp * 0.66 else 1)

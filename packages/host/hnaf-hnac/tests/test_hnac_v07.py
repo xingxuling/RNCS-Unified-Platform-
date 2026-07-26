@@ -140,7 +140,7 @@ class HNACV07CapabilityBindingTests(unittest.TestCase):
                     "--subject", json.dumps(SUBJECT, ensure_ascii=False, separators=(",", ":")),
                     "--payload", '{"amount":2}', "--now", NOW,
                 ],
-                capture_output=True, text=True, check=False,
+                capture_output=True, text=True, encoding="utf-8", check=False,
             )
             self.assertEqual(completed.returncode, 0, completed.stderr)
             node_binding = json.loads(completed.stdout)

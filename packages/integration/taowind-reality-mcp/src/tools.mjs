@@ -21,6 +21,7 @@ const failure=error=>({
  isError:true,
  content:[{type:'text',text:json({ok:false,error:{code:error?.code??'TOOL_ERROR',message:error?.message??String(error),details:error?.details}})}]
 });
+const defined=object=>Object.fromEntries(Object.entries(object).filter(([,value])=>value!==undefined));
 const safe=handler=>async(args,extra)=>{try{return await handler(args,extra);}catch(error){return failure(error);}};
 const readAnnotations={readOnlyHint:true,destructiveHint:false,idempotentHint:true,openWorldHint:false};
 const candidateAnnotations={readOnlyHint:false,destructiveHint:false,idempotentHint:false,openWorldHint:false};
@@ -188,7 +189,7 @@ export function createTaoWindMcpServer({gateway,knowledge,config}){
   title:'Compile RCL Authority Plan',
   description:'Compile RCL natively into an RNCS authority plan with typed world objects, behavior declarations, parity evidence, and explicit authority requirements. This is read-only and does not create a candidate or commit state.',
   inputSchema:{source:z.string().min(1).max(20_000),subject_id:z.string().min(3).max(200).optional(),roles:approvalRolesSchema.optional(),approval_roles:approvalRolesSchema.optional(),verify_parity:z.boolean().optional(),timeout_ms:z.number().int().min(100).max(120_000).optional()},annotations:readAnnotations
- },async({source,subject_id,roles,approval_roles,verify_parity=true,timeout_ms=30_000})=>gateway.invoke('rncs.rcl-control','compileAuthorityPlan',{source,subjectId:subject_id,roles:roles??approval_roles,verifyParity:verify_parity,timeout:timeout_ms},{idempotencyKey:`rcl-authority-plan:${source}:${subject_id??''}:${JSON.stringify(roles??approval_roles??[])}`}));
+ },async({source,subject_id,roles,approval_roles,verify_parity=true,timeout_ms=30_000})=>gateway.invoke('rncs.rcl-control','compileAuthorityPlan',defined({source,subjectId:subject_id,roles:roles??approval_roles,verifyParity:verify_parity,timeout:timeout_ms}),{idempotencyKey:`rcl-authority-plan:${source}:${subject_id??''}:${JSON.stringify(roles??approval_roles??[])}`}));
 
  registerRegular(server,'rncs_validate_plan',{
   title:'Validate RNCS Compilation Plan',description:'Validate a previously compiled RNCS plan against the native runtime contract.',
@@ -255,7 +256,7 @@ export function createTaoWindMcpServer({gateway,knowledge,config}){
   },async({source,commit=true,approval_roles=config.founderApprovalRoles,subject_id=config.founderSubjectId,roles,expected_state_root,expected_revision,verify_parity=true,timeout_ms=30_000})=>{
    assertAuthorityEnabled(config);
    const before=await assertExpectedState(gateway,config,{expected_state_root,expected_revision},'RCL authority workflow');
-   const result=await gateway.invoke('rncs.rcl-control','authorityWorkflow',{source,commit,approvalRoles:approval_roles,subjectId:subject_id,roles,expectedStateRoot:before.state_root,expectedRevision:before.revision,verifyParity:verify_parity,timeout:timeout_ms},{idempotencyKey:`rcl-authority:${source}:${before.state_root}:${commit}`});
+   const result=await gateway.invoke('rncs.rcl-control','authorityWorkflow',defined({source,commit,approvalRoles:approval_roles,subjectId:subject_id,roles:roles??approval_roles,expectedStateRoot:before.state_root,expectedRevision:before.revision,verifyParity:verify_parity,timeout:timeout_ms}),{idempotencyKey:`rcl-authority:${source}:${before.state_root}:${commit}`});
    return{...result,authority_invariant:{before_state_root:before.state_root,before_revision:before.revision,commit_requested:commit}};
   });
 

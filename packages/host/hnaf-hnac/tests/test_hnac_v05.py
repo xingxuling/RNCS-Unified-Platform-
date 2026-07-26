@@ -31,7 +31,7 @@ class HNACV05PortableStateTests(unittest.TestCase):
             root = Path(directory)
             fixture = root / "state.json"
             fixture.write_text(json.dumps({"app_id": self.APP_ID, "schema_version": "2", "partitions": partitions}, ensure_ascii=False), "utf-8")
-            node = subprocess.run(["node", str(NODE_STATE), "root", str(fixture)], capture_output=True, text=True, check=False)
+            node = subprocess.run(["node", str(NODE_STATE), "root", str(fixture)], capture_output=True, text=True, encoding="utf-8", check=False)
             self.assertEqual(node.returncode, 0, node.stderr)
             self.assertEqual(node.stdout.strip(), expected)
 
@@ -43,7 +43,7 @@ class HNACV05PortableStateTests(unittest.TestCase):
                 '''console.log(await module.computeStateRoot(value.app_id, value.schema_version, value.partitions));\n''',
                 "utf-8",
             )
-            web = subprocess.run(["node", str(smoke)], capture_output=True, text=True, check=False)
+            web = subprocess.run(["node", str(smoke)], capture_output=True, text=True, encoding="utf-8", check=False)
             self.assertEqual(web.returncode, 0, web.stderr)
             self.assertEqual(web.stdout.strip(), expected)
 
@@ -171,7 +171,7 @@ class HNACV05PortableStateTests(unittest.TestCase):
                 'console.log(JSON.stringify({state_root:result.state.state_root,generation:result.state.generation,partition_keys:result.state.partition_keys}));\n'
             )
             smoke.write_text(script, "utf-8")
-            completed = subprocess.run(["node", str(smoke)], capture_output=True, text=True, check=False)
+            completed = subprocess.run(["node", str(smoke)], capture_output=True, text=True, encoding="utf-8", check=False)
             self.assertEqual(completed.returncode, 0, completed.stderr)
             browser = json.loads(completed.stdout)
             self.assertEqual(browser["state_root"], python_result["state"]["state_root"])

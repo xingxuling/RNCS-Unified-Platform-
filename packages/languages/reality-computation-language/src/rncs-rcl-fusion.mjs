@@ -355,7 +355,7 @@ export function runRclRncsFusion(options = {}) {
     && allDeterministic
     && allReferenceParity
     && runtimeBundle.ready
-    && evidenceSummary.availableEdgeEvidenceParity;
+    && evidenceSummary.current;
   const result = {
     ...baseResult,
     controlPlaneEvidence,

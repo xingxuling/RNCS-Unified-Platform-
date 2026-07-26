@@ -19,6 +19,7 @@ import {
   FOUNDATION_MANIFEST_ROOT,
   foundationContractSummary,
 } from '@taowind/reality-computation-language';
+import { discoverRuntimeManifests } from '@taowind/reality-one-gateway';
 
 export { RCL_BYTECODE_VERSION, RCL_LANGUAGE_VERSION, FOUNDATION_CONTRACT_FORMAT, FOUNDATION_CONTRACT_VERSION, FOUNDATION_MANIFEST_ROOT, foundationContractSummary };
 
@@ -50,7 +51,7 @@ export const LEGACY_MODULES = Object.freeze({
   cnp: { id: 'cnp', version: '0.1.0', manifest: 'packages/control/capability-negotiation-protocol/rncs.module.json' },
   laf: { id: 'laf', version: '1.0.0', manifest: 'packages/kernel/living-artifact-format/rncs.module.json' },
   hnac: { id: '@taowind/hnaf-hnac-host', version: '0.8.0', manifest: 'packages/host/hnaf-hnac/package.json', idField: 'name' },
-  runtime_registry: { id: 'reality-one.runtime-registry', version: '0.3.0', manifest: 'artifacts/gateway-health/runtime-registry.json', idField: 'format', idTransform: 'registry-format', versionField: 'gateway_protocol' },
+  runtime_registry: { id: 'reality-one.runtime-registry', version: '0.3.0', manifestDir: 'packages/control/reality-one-gateway/runtimes', idField: 'format', idTransform: 'registry-format', versionField: 'gateway_protocol' },
   gateway: { id: 'gateway', version: '0.3.1-unified.1', manifest: 'packages/control/reality-one-gateway/rncs.module.json' },
   aether_earth: { id: 'aether-earth-runtime', version: '0.1.0-alpha.1', manifest: 'packages/world/aether-earth-runtime/rncs.module.json' },
 });
@@ -639,14 +640,16 @@ export function replayCompiledControlPlane(compiledEdges) {
 export function verifyLegacyManifestParity(repoRoot) {
   const checks = [];
   for (const [name, expected] of Object.entries(LEGACY_MODULES)) {
-    const manifestPath = path.join(repoRoot, expected.manifest);
-    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    const sourcePath = expected.manifest ?? expected.manifestDir;
+    const manifest = expected.manifestDir
+      ? discoverRuntimeManifests([path.join(repoRoot, expected.manifestDir)]).registry
+      : JSON.parse(fs.readFileSync(path.join(repoRoot, expected.manifest), 'utf8'));
     const idField = expected.idField ?? 'id';
     const versionField = expected.versionField ?? 'version';
     let actualId = manifest[idField];
     if (expected.idTransform === 'registry-format') actualId = actualId === 'reality-one.runtime-registry.v0.3' ? 'reality-one.runtime-registry' : actualId;
     checks.push({
-      name, path: expected.manifest, expectedId: expected.id, actualId,
+      name, path: sourcePath, expectedId: expected.id, actualId,
       expectedVersion: expected.version, actualVersion: manifest[versionField],
       passed: actualId === expected.id && manifest[versionField] === expected.version,
     });

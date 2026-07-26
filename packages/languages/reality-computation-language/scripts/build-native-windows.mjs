@@ -13,7 +13,6 @@ const exePath = path.join(root, 'native', 'rclvm.exe');
 const compilerPath = path.join(root, 'native', 'rclc.exe');
 const daemonPath = path.join(root, 'native', 'rclvmd.exe');
 const providerDemoPath = path.join(root, 'native', 'provider_demo.exe');
-const foundationProviderPath = path.join(root, 'native', 'rclfoundation.exe');
 const objectPath = path.join(root, 'native', 'rclvm.o');
 const staticLibraryPath = path.join(root, 'native', 'librclvm.a');
 const sharedLibraryPath = path.join(root, 'native', 'rclvm.dll');
@@ -27,7 +26,6 @@ const sourceFiles = [
   'native/rclc.c',
   'native/rclvmd.c',
   'native/provider_demo.c',
-  'native/foundation_provider.c',
   'scripts/build-native-windows.mjs',
 ];
 
@@ -36,7 +34,6 @@ const distributedArtifacts = [
   compilerPath,
   daemonPath,
   providerDemoPath,
-  foundationProviderPath,
   staticLibraryPath,
   sharedLibraryPath,
   importLibraryPath,
@@ -44,6 +41,10 @@ const distributedArtifacts = [
 
 function sha256File(filePath) {
   return crypto.createHash('sha256').update(fs.readFileSync(filePath)).digest('hex');
+}
+
+function normalizedSourceBytes(filePath) {
+  return Buffer.from(fs.readFileSync(filePath, 'utf8').replace(/\r\n?/g, '\n'));
 }
 
 function relativePath(filePath) {
@@ -55,7 +56,7 @@ function sourceSha256() {
   for (const relative of sourceFiles) {
     hash.update(relative);
     hash.update('\0');
-    hash.update(fs.readFileSync(path.join(root, relative)));
+    hash.update(normalizedSourceBytes(path.join(root, relative)));
     hash.update('\0');
   }
   return hash.digest('hex');
@@ -250,19 +251,6 @@ const targets = [
       '-DRCLVM_EMBEDDED_ONLY',
       '-o', providerDemoPath,
       path.join(root, 'native', 'provider_demo.c'),
-      sourcePath,
-      '-lbcrypt',
-      '-lm',
-    ],
-  },
-  {
-    id: 'rclfoundation',
-    path: foundationProviderPath,
-    args: [
-      ...commonArgs,
-      '-DRCLVM_EMBEDDED_ONLY',
-      '-o', foundationProviderPath,
-      path.join(root, 'native', 'foundation_provider.c'),
       sourcePath,
       '-lbcrypt',
       '-lm',

@@ -3,6 +3,7 @@ import path from 'node:path';
 import os from 'node:os';
 import {spawn} from 'node:child_process';
 import {createHash,randomUUID,timingSafeEqual} from 'node:crypto';
+import JSZip from 'jszip';
 
 const DEFAULT_EXECUTABLES=['node','npm','npx','python','python3','git','java','javac','gradle','./gradlew','zip'];
 const SECRET_BASENAMES=new Set(['.env','.npmrc','.pypirc','.git-credentials','credentials','credentials.json','id_rsa','id_ed25519']);
@@ -65,6 +66,45 @@ function resolveWorkspacePath(root,relativePath,{allowMissing=false,secretCheck=
 }
 
 function readJsonResponse(response){return response.text().then(text=>{let body;try{body=text?JSON.parse(text):{};}catch{throw runtimeError('PROVIDER_RESPONSE_INVALID',`Provider returned non-JSON response (${response.status}).`,{body:text.slice(0,500)});}if(!response.ok)throw runtimeError(body?.error?.code??'PROVIDER_REQUEST_FAILED',body?.error?.message??`Provider request failed (${response.status}).`,body);return body;});}
+
+function npmCliPath(executable){
+ const cli=executable==='npx'?'npx-cli.js':'npm-cli.js';
+ const candidates=[
+  executable==='npm'?process.env.npm_execpath:null,
+  path.join(path.dirname(process.execPath),'node_modules','npm','bin',cli),
+  path.join(path.dirname(process.execPath),'..','lib','node_modules','npm','bin',cli)
+ ].filter(Boolean);
+ return candidates.find(candidate=>fs.existsSync(candidate))??null;
+}
+
+function resolveProcessInvocation(executable,args,absoluteCwd){
+ if(executable==='npm'||executable==='npx'){
+  const cli=npmCliPath(executable);
+  if(cli)return{executable:process.execPath,args:[cli,...args],mode:`node-${executable}-cli`};
+  if(process.platform==='win32')return{executable:`${executable}.cmd`,args,mode:`windows-${executable}-cmd`};
+ }
+ if(process.platform==='win32'&&(executable==='./gradlew'||executable==='gradlew')){
+  const wrapper=path.join(absoluteCwd,'gradlew.bat');
+  if(fs.existsSync(wrapper))return{executable:process.env.ComSpec||'cmd.exe',args:['/d','/s','/c','call',wrapper,...args],mode:'windows-gradle-wrapper'};
+ }
+ return{executable,args,mode:'direct'};
+}
+
+async function zipDirectory(source){
+ const archive=new JSZip();
+ const visit=(absolute,base='')=>{
+  for(const entry of fs.readdirSync(absolute,{withFileTypes:true})){
+   const relative=path.posix.join(base,entry.name);
+   try{assertNonSecret(relative);}catch{continue;}
+   const full=path.join(absolute,entry.name),info=fs.lstatSync(full);
+   if(info.isSymbolicLink())continue;
+   if(entry.isDirectory())visit(full,relative);
+   else if(entry.isFile())archive.file(relative,fs.readFileSync(full));
+  }
+ };
+ visit(source);
+ return archive.generateAsync({type:'nodebuffer',compression:'DEFLATE',compressionOptions:{level:6},platform:'UNIX'});
+}
 
 export class DeveloperExecutionRuntime{
  constructor(options={}){
@@ -189,20 +229,7 @@ export class DeveloperExecutionRuntime{
   const destination=path.join(this.exportDir,`${exportId}-${safeName}`);
   if(stat.isFile())fs.copyFileSync(source,destination);
   else if(stat.isDirectory()){
-   const staging=path.join(this.workspaceRoot,`.taowind-export-${exportId}`);
-   const copy=(from,to,base='')=>{
-    fs.mkdirSync(to,{recursive:true});
-    for(const entry of fs.readdirSync(from,{withFileTypes:true})){
-     const rel=path.posix.join(base,entry.name);
-     try{assertNonSecret(rel);}catch{continue;}
-     const src=path.join(from,entry.name),dst=path.join(to,entry.name),info=fs.lstatSync(src);
-     if(src===staging||isWithin(staging,src)||info.isSymbolicLink())continue;
-     if(entry.isDirectory())copy(src,dst,rel);else if(entry.isFile())fs.copyFileSync(src,dst);
-    }
-   };
-   copy(source,staging,path.basename(source));
-   try{await this.runProcess({executable:'zip',args:['-r','-q',destination,'.'],cwd:path.relative(this.workspaceRoot,staging),timeout_ms:10*60_000});}
-   finally{fs.rmSync(staging,{recursive:true,force:true});}
+   fs.writeFileSync(destination,await zipDirectory(source));
   }else throw runtimeError('ARTIFACT_TYPE_UNSUPPORTED',`Unsupported artifact type: ${relative}`);
   const output=fs.statSync(destination),expiresAtMs=Date.now()+this.exportTtlMs;
   const record={export_id:exportId,filename:safeName,absolute_path:destination,size:output.size,sha256:sha256(fs.readFileSync(destination)),token,expires_at_ms:expiresAtMs};
@@ -224,14 +251,16 @@ export class DeveloperExecutionRuntime{
   if(shell&&!(this.mode==='founder-unrestricted'&&this.enableShell))throw runtimeError('SHELL_DISABLED','Shell execution requires founder-unrestricted mode and TAOWIND_EXECUTION_ENABLE_SHELL=true.');
   const safeEnv={};
   for(const [key,value] of Object.entries(process.env)){
-   if(CHILD_ENV_ALLOWLIST.has(key)&&!SENSITIVE_ENV_PATTERN.test(key))safeEnv[key]=value;
+   if(CHILD_ENV_ALLOWLIST.has(key.toUpperCase())&&!SENSITIVE_ENV_PATTERN.test(key))safeEnv[key]=value;
   }
   for(const [key,value] of Object.entries(env??{})){
    if(SENSITIVE_ENV_PATTERN.test(key))throw runtimeError('EXECUTION_ENV_SECRET_DENIED',`Secret-like environment variable cannot be supplied through MCP: ${key}`);
    safeEnv[key]=String(value);
   }
   const detached=process.platform!=='win32';
-  const child=spawn(executable,args.map(String),{cwd:absoluteCwd,env:safeEnv,shell,windowsHide:true,detached,stdio:['pipe','pipe','pipe']});
+  const requestedArgs=args.map(String);
+  const invocation=resolveProcessInvocation(executable,requestedArgs,absoluteCwd);
+  const child=spawn(invocation.executable,invocation.args,{cwd:absoluteCwd,env:safeEnv,shell,windowsHide:true,detached,stdio:['pipe','pipe','pipe']});
   let stdout='',stderr='',truncated=false,timedOut=false;
   const append=(current,chunk)=>{const next=current+chunk.toString('utf8');if(Buffer.byteLength(next)<=this.maxOutputBytes)return next;truncated=true;return next.slice(-this.maxOutputBytes);};
   child.stdout.on('data',chunk=>stdout=append(stdout,chunk));
@@ -242,7 +271,7 @@ export class DeveloperExecutionRuntime{
    child.on('error',error=>{clearTimeout(timer);reject(runtimeError('PROCESS_SPAWN_FAILED',error.message));});
    child.on('close',code=>{clearTimeout(timer);resolve(code??-1);});
   });
-  const receipt={receipt_id:`exec-${randomUUID()}`,action:'process',executable,path_args_hash:sha256(JSON.stringify(args)),cwd:normalizeRelative(cwd),exit_code:exitCode,timed_out:timedOut,truncated,duration_ms:Date.now()-started,created_at:new Date().toISOString()};
+  const receipt={receipt_id:`exec-${randomUUID()}`,action:'process',executable,resolved_executable:invocation.executable,invocation_mode:invocation.mode,path_args_hash:sha256(JSON.stringify(requestedArgs)),cwd:normalizeRelative(cwd),exit_code:exitCode,timed_out:timedOut,truncated,duration_ms:Date.now()-started,created_at:new Date().toISOString()};
   fs.writeFileSync(path.join(this.receiptDir,`${receipt.receipt_id}.json`),JSON.stringify(receipt,null,2)+'\n');
   const result={...receipt,stdout,stderr};
   if((exitCode!==0||timedOut)&&!allow_failure)throw runtimeError(timedOut?'PROCESS_TIMEOUT':'PROCESS_EXIT_NONZERO',`${executable} exited with code ${exitCode}.`,result);

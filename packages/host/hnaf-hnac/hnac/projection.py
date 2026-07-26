@@ -49,9 +49,9 @@ def project_web(capsule: Path, output: Path, *, autorun: bool = False, require_s
             "host": "hnaf.javascript.browser",
             "execution_profiles": ["wasm-core@1", "declarative-v0"],
             "state_fabric": "hnaf.portable-state.v0.5",
-            "interface_fabric": f"hnaf.adaptive-interface.v{verified["manifest"].get("interface", {}).get("version", "0.6")}",
-            "capability_binding": f"hnaf.intent-capability-binding.v{verified["manifest"].get("capability_binding", {}).get("version", "none")}",
-            "execution_fabric": f"hnaf.remote-execution.v{verified["manifest"].get("format_version", "none")}" if verified["manifest"].get("execution_fabric") else None,
+            "interface_fabric": f"hnaf.adaptive-interface.v{verified['manifest'].get('interface', {}).get('version', '0.6')}",
+            "capability_binding": f"hnaf.intent-capability-binding.v{verified['manifest'].get('capability_binding', {}).get('version', 'none')}",
+            "execution_fabric": f"hnaf.remote-execution.v{verified['manifest'].get('format_version', 'none')}" if verified["manifest"].get("execution_fabric") else None,
             "created_utc": dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat(),
         },
     }

@@ -12,7 +12,7 @@
 - 世界状态 322,131 bytes → 27,325 bytes，无损恢复；
 - 1000 天 / 100,000 agent-days：约 837 ms（当前容器）；
 - 浏览器直接打开版与 Android Studio 源码宿主；
-- RNCS Gateway/Registry 接入，Runtime health healthy（17 runtimes，含正式 `rncs.rcl-control`）；
+- RNCS Gateway/Registry 接入，Runtime health healthy（18 runtimes，含正式 `rncs.rcl-control`）；
 - RCL `0.94.0-alpha.1` 已作为 workspace 真实语言运行时同步进 RNCS；
 - `rncs.rcl-control` 可经 Gateway 完成 RCL native self-host compiler → JS reference byte parity → native VM → RNCS candidate → RSR simulation → AAF → RFE commit；
 - RCL authority plan 支持 `set`、`remove`、`append`、`increment`、`merge` 五类世界增量操作，并由 RBF candidate 保留顺序、基线与回滚语义；

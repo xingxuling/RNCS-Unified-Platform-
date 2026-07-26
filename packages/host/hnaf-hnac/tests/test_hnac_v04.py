@@ -26,7 +26,7 @@ class HNACV04Tests(unittest.TestCase):
         return capsule
 
     def run_node(self, *args: str) -> subprocess.CompletedProcess[str]:
-        return subprocess.run(["node", str(JS_HOST), *args], capture_output=True, text=True, check=False)
+        return subprocess.run(["node", str(JS_HOST), *args], capture_output=True, text=True, encoding="utf-8", check=False)
 
     def test_v04_component_capsule_runs_on_python_host(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -121,7 +121,7 @@ class HNACV04Tests(unittest.TestCase):
                 '''console.log(JSON.stringify({signature:verified.signature.status, profile:result.execution.profile, calls:events.filter((e)=>e.event==="capability.call").map((e)=>e.capability)}));\n''',
                 "utf-8",
             )
-            completed = subprocess.run(["node", str(smoke)], capture_output=True, text=True, check=False)
+            completed = subprocess.run(["node", str(smoke)], capture_output=True, text=True, encoding="utf-8", check=False)
             self.assertEqual(completed.returncode, 0, completed.stderr)
             result = json.loads(completed.stdout)
             self.assertEqual(result["signature"], "valid")
