@@ -526,6 +526,18 @@
       "test": "npm test --workspace @taowind/rncs-rcl-control-plane"
     },
     {
+      "id": "reality-engine-session",
+      "name": "Reality Engine Session",
+      "version": "0.1.0-alpha.1",
+      "path": "packages/control/reality-engine-session",
+      "layer": "control",
+      "runtime": "rncs.engine-session",
+      "dependsOn": [
+        "rncs-core"
+      ],
+      "test": "npm test --workspace @taowind/reality-engine-session"
+    },
+    {
       "id": "aether-rncs-bridge",
       "name": "Aether RNCS Compilation Bridge",
       "version": "0.2.0-alpha.1",

@@ -1,0 +1,19 @@
+{
+  "name": "@taowind/reality-engine-session",
+  "version": "0.1.0-alpha.1",
+  "description": "RNCS authority-bound engine session for candidate, simulation, commit and network startup.",
+  "type": "module",
+  "license": "Apache-2.0",
+  "exports": {
+    ".": "./src/index.mjs"
+  },
+  "scripts": {
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs"
+  },
+  "dependencies": {
+    "@taowind/rncs-core-contract": "*"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
