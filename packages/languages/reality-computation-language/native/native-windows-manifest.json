@@ -1,55 +1,49 @@
 {
   "format": "rcl.native-windows-prebuilt.v1",
-  "sourceSha256": "f683808e124c86dffd869381849066f956d2c872caebbf28c72b1bba451c0415",
+  "sourceSha256": "365438d960d4bf3227b2e2e28c5292c0de9b5d0934503b405a03e195bb764b07",
   "sources": [
     "native/rclvm.c",
     "native/rclvm.h",
     "native/rclc.c",
     "native/rclvmd.c",
     "native/provider_demo.c",
-    "native/foundation_provider.c",
     "scripts/build-native-windows.mjs"
   ],
   "artifacts": [
     {
       "path": "native/rclvm.exe",
-      "bytes": 309760,
-      "sha256": "e95a85d5dbeb1c21a38bde9e47e1a60eb76a84a7d8d35012a1807b6acff192e6"
+      "bytes": 357888,
+      "sha256": "817556bc2125398527f0899ec69512eb7219dce0b0b77f74c042d983b69a82c7"
     },
     {
       "path": "native/rclc.exe",
-      "bytes": 313856,
-      "sha256": "d945fa896e9c7d606fc6073e8e9aee057b837401f638e7acedaa42e59b6f2018"
+      "bytes": 361984,
+      "sha256": "0846cb3cde7cb8ee5cc1e06f39fd2f902795c6fdf2ee171031bf32a53bb63f77"
     },
     {
       "path": "native/rclvmd.exe",
-      "bytes": 310272,
-      "sha256": "d2170fd0b4168a7ad3632b0fdf1954a64466cc4fe141953bf1b5176d35d1170c"
+      "bytes": 358912,
+      "sha256": "45890051cd412af88664a5da0c0a4e3c007184ff95977201422d5442cf956cc9"
     },
     {
       "path": "native/provider_demo.exe",
-      "bytes": 309760,
-      "sha256": "02a62121f30d80750cd6e60b84ee26dd28e0adacf8e144b5b3b66301dd986bbd"
-    },
-    {
-      "path": "native/rclfoundation.exe",
-      "bytes": 326656,
-      "sha256": "7bc9c5e9befdafaf638660804ae54315d7c1d60a64233fa84924a111ccfda70b"
+      "bytes": 357888,
+      "sha256": "12821aedb4cc0a81603ab488dd9ba6045969b4d7093046e33054b5aee7926890"
     },
     {
       "path": "native/librclvm.a",
-      "bytes": 292348,
-      "sha256": "50f8bf47cdb6dc5e202a546a3133efa3495bce5e5a92902626e06738982ec9b0"
+      "bytes": 447542,
+      "sha256": "c0e38b0aa3063b24f701f51d30b1e381f05a1313a4568c1f8c00264a398e0cec"
     },
     {
       "path": "native/rclvm.dll",
-      "bytes": 307200,
-      "sha256": "209963230fd103112b1bcb362af16aa7e8935d09621c011a760c82c2cd511bd0"
+      "bytes": 354816,
+      "sha256": "ddf95f81872ef6ee53ec54a904408cde201766b1d30f0bbc7475b521cc3aae92"
     },
     {
       "path": "native/rclvm.lib",
-      "bytes": 4582,
-      "sha256": "83a1afb39b70dffb8c85507170561aa779ded4138553237bf2acb28375d10b8f"
+      "bytes": 4930,
+      "sha256": "c43d3533e28aa5fb4c3a9c5ba76d627b25593c832e7abc01bb8a2633b8030512"
     }
   ]
 }

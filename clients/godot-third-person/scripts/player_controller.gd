@@ -1,4 +1,5 @@
 extends CharacterBody3D
+class_name PlayerController
 
 signal stats_changed(data: Dictionary)
 signal interaction_requested

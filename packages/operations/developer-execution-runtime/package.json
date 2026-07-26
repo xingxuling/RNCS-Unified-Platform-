@@ -10,6 +10,9 @@
   "exports": {
     ".": "./src/index.mjs"
   },
+  "dependencies": {
+    "jszip": "3.10.1"
+  },
   "scripts": {
     "start": "node src/cli.mjs worker",
     "test": "node --test --test-concurrency=1 tests/*.test.mjs"

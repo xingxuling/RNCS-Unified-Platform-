@@ -243,6 +243,7 @@ export class TaskExecutor {
           for (let attempt = 1; attempt <= 2; attempt += 1) {
             const receipt = await runProjectScript({
               projectPath: candidate.branch_path,
+              dependencySourcePath: candidate.source_path,
               script: operation.script,
               timeoutMs: Math.min(
                 Number(task.constraints.max_command_seconds || 600),

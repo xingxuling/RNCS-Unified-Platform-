@@ -44,6 +44,33 @@ function npmInvocation(script) {
   };
 }
 
+function dependencyDirectories(sourcePath) {
+  if (!sourcePath) return [];
+  const directories = [];
+  let current = path.resolve(sourcePath);
+  while (true) {
+    const candidate = path.join(current, 'node_modules');
+    try {
+      if (fs.statSync(candidate).isDirectory()) directories.push(candidate);
+    } catch {}
+    const parent = path.dirname(current);
+    if (parent === current) break;
+    current = parent;
+  }
+  return directories;
+}
+
+function projectEnvironment(env, dependencySourcePath) {
+  const result = { ...process.env, ...env };
+  const directories = dependencyDirectories(dependencySourcePath);
+  if (!directories.length) return { env: result, dependencyDirectories: [] };
+  const pathKey = Object.keys(result).find((key) => key.toLowerCase() === 'path') || 'PATH';
+  const executablePaths = directories.map((directory) => path.join(directory, '.bin'));
+  result[pathKey] = [...executablePaths, result[pathKey]].filter(Boolean).join(path.delimiter);
+  result.NODE_PATH = [...directories, result.NODE_PATH].filter(Boolean).join(path.delimiter);
+  return { env: result, dependencyDirectories: directories };
+}
+
 function killChild(child) {
   if (process.platform === 'win32' && child?.pid) {
     try {
@@ -65,7 +92,7 @@ function killChild(child) {
   }, 1500).unref();
 }
 
-export async function runProjectScript({ projectPath, script, timeoutMs = 180_000, env = {}, evidenceDir = null }) {
+export async function runProjectScript({ projectPath, script, timeoutMs = 180_000, env = {}, evidenceDir = null, dependencySourcePath = null }) {
   if (!safeScriptName(script)) throw Object.assign(new Error(`脚本名称不安全：${script}`), { code: 'SCRIPT_NAME_DENIED' });
   const packageFile = path.join(projectPath, 'package.json');
   if (!fs.existsSync(packageFile)) throw Object.assign(new Error('项目缺少 package.json'), { code: 'PACKAGE_JSON_MISSING' });
@@ -73,6 +100,7 @@ export async function runProjectScript({ projectPath, script, timeoutMs = 180_00
   if (!pkg.scripts?.[script]) throw Object.assign(new Error(`项目没有脚本：${script}`), { code: 'SCRIPT_NOT_FOUND' });
 
   const invocation = npmInvocation(script);
+  const projectEnv = projectEnvironment(env, dependencySourcePath);
   const startedAt = now();
   const started = Date.now();
   let stdout = '';
@@ -94,7 +122,7 @@ export async function runProjectScript({ projectPath, script, timeoutMs = 180_00
       child = spawn(invocation.command, invocation.args, {
         cwd: projectPath,
         windowsHide: true,
-        env: { ...process.env, ...env },
+        env: projectEnv.env,
         shell: false,
         detached: process.platform !== 'win32',
         stdio: ['ignore', 'pipe', 'pipe'],
@@ -123,6 +151,7 @@ export async function runProjectScript({ projectPath, script, timeoutMs = 180_00
     experiment_id: id('experiment', { projectPath, script, startedAt }),
     command: invocation.display,
     invocation_mode: invocation.mode,
+    dependency_roots: projectEnv.dependencyDirectories,
     cwd: path.resolve(projectPath),
     started_at: startedAt,
     completed_at: now(),

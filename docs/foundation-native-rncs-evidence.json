@@ -5,10 +5,11 @@
     "repository": "xingxuling/RCL",
     "branch": "codex/foundation-native-meta-batch-b",
     "commit": "78b2c351b90f4971bcdb4db3308e9fd6aee5a7c4",
-    "synchronizedFileCount": 17,
-    "scopeRoot": "b1fd7f2f279eebc09cb71f945db727538dcf944618fb0082be3c0e630af6d0ef",
+    "synchronizedFileCount": 16,
+    "scopeRoot": "71b4bbbe5b4af46c9ed97e59d5a22576333fbc32852807beccdaf322ae4aa94e",
     "wholePackageByteIdentityClaimed": false,
     "downstreamDeltaFiles": [
+      "native/native-windows-manifest.json",
       "package.json",
       "src/index.mjs"
     ]
@@ -43,9 +44,9 @@
         "replayVerified": true,
         "semanticStateRoot": null,
         "performance": {
-          "compileMs": "58.954",
-          "runtimeMs": "33.822",
-          "replayMs": "35.947",
+          "compileMs": "77.330",
+          "runtimeMs": "42.600",
+          "replayMs": "39.748",
           "sourceBytes": 3980,
           "bytecodeBytes": 2491,
           "estimatedWorkingSetBytes": 44020,
@@ -93,9 +94,9 @@
         "replayVerified": true,
         "semanticStateRoot": "63cd16830a065e8f38d27c020e118d69dfae12f75702dce3ee400aa834141e7b",
         "performance": {
-          "compileMs": "48.586",
-          "runtimeMs": "30.411",
-          "replayMs": "49.110",
+          "compileMs": "59.318",
+          "runtimeMs": "41.585",
+          "replayMs": "32.613",
           "sourceBytes": 2559,
           "bytecodeBytes": 2092,
           "estimatedWorkingSetBytes": 25511,
@@ -196,7 +197,7 @@
     ],
     "runtimeManifestCount": 18,
     "manifestSourceRoot": "1a07f94ca171b4f8534496d1de3e7d66b940833f1e34b119327be6e46a0dadbc",
-    "bridgeSha256": "8b2f14b90b7bf70baec690ebd4c0a430c1e48c62a314cb41b14ae7136c1d2a46",
+    "bridgeSha256": "48e950f0bad6a5c83a00e2e3861780eec35690f2a0312336c521a7164dddeac1",
     "preparedProposalRoot": "3502485ab15d873290f6f559629f2f40dcc4d98f537cf60fe742a39a3f7dbcaf",
     "committedGenerationRoot": "39ac942239870c105c1894c9d81f292a823479626c0422215b3a392ea5baadb6",
     "verification": {
@@ -229,5 +230,5 @@
     "gatewayMetaCommitted": true
   },
   "evidenceRootScope": "all fields except wall-clock compileMs, runtimeMs, and replayMs",
-  "evidenceRoot": "e2cff7f17bbbe560fc75b5dc00a0449ff4baafb273e963b9b847a278034aa84e"
+  "evidenceRoot": "f817e00ec9ed021798d4997bc608496f6219e9a7120b2ea5cd64c78ae4b3c922"
 }

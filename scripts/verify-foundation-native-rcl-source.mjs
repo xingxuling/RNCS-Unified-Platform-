@@ -17,7 +17,7 @@ const RECEIPT_PATH = path.join(
 );
 const EXPECTED_COMMIT = '78b2c351b90f4971bcdb4db3308e9fd6aee5a7c4';
 const EXPECTED_SCOPE_ROOT =
-  'b1fd7f2f279eebc09cb71f945db727538dcf944618fb0082be3c0e630af6d0ef';
+  '71b4bbbe5b4af46c9ed97e59d5a22576333fbc32852807beccdaf322ae4aa94e';
 
 function sha256(value) {
   return crypto.createHash('sha256').update(value).digest('hex');

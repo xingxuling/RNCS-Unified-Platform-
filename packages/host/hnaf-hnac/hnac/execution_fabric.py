@@ -6,6 +6,7 @@ import json
 import math
 import os
 import subprocess
+import sys
 import tempfile
 import time
 import urllib.error
@@ -326,13 +327,14 @@ def _process_execute(transport: dict[str, Any], payload: dict[str, Any], context
     allowed = set(policy.allowed_executables)
     if allowed and executable not in allowed and resolved not in allowed and Path(executable).name not in allowed:
         raise HNACError(f"Process executable is outside sandbox allowlist: {executable}")
+    invocation = [sys.executable, *command[1:]] if executable in {"python", "python3"} else command
     env = {key: os.environ[key] for key in policy.environment_allowlist if key in os.environ}
     env.update({"HNAF_IDEMPOTENCY_KEY": str(context["idempotency_key"]), "HNAF_EXECUTION_VERSION": EXECUTION_VERSION})
     request = json.dumps({"payload": payload, "context": context}, ensure_ascii=False, separators=(",", ":")) + "\n"
     cwd = transport.get("cwd")
     try:
         process = subprocess.Popen(
-            command,
+            invocation,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,

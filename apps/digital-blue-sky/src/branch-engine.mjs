@@ -13,13 +13,21 @@ function assertInside(root, candidate) {
   return resolved;
 }
 
-function scan(root, limit = 20_000) {
+function normalizeLineEndings(value) {
+  return String(value ?? '').replace(/\r\n/g, '\n');
+}
+
+function restoreLineEndings(value, before) {
+  return before.includes('\r\n') ? value.replace(/\n/g, '\r\n') : value;
+}
+
+function scan(root, limit = 20_000, ignoredDirectories = DEFAULT_IGNORES) {
   const files = new Map();
   const stack = [root];
   while (stack.length && files.size < limit) {
     const current = stack.pop();
     for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
-      if (DEFAULT_IGNORES.has(entry.name)) continue;
+      if (ignoredDirectories.has(entry.name)) continue;
       const absolute = path.join(current, entry.name);
       if (entry.isDirectory()) stack.push(absolute);
       else if (entry.isFile()) {
@@ -38,16 +46,13 @@ export function createRealityBranch({ sourcePath, branchesRoot, projectId, label
   fs.mkdirSync(branchesRoot, { recursive: true });
   const branchId = id('branch', { source, projectId, label, at: now() });
   const branchPath = path.join(branchesRoot, branchId.replace(/[:]/g, '_'));
+  const ignoredDirectories = new Set(DEFAULT_IGNORES);
+  if (!copyDist) ignoredDirectories.add('dist');
   fs.cpSync(source, branchPath, {
     recursive: true,
-    filter: (entry) => {
-      const name = path.basename(entry);
-      if (name === 'node_modules' || name === '.git' || name === 'outputs') return false;
-      if (!copyDist && name === 'dist') return false;
-      return true;
-    },
+    filter: (entry) => !ignoredDirectories.has(path.basename(entry)),
   });
-  const baseFiles = scan(source);
+  const baseFiles = scan(source, 20_000, ignoredDirectories);
   const manifest = {
     format: 'dml.reality-branch.v0.2',
     branch_id: branchId,
@@ -57,6 +62,7 @@ export function createRealityBranch({ sourcePath, branchesRoot, projectId, label
     branch_path: branchPath,
     created_at: now(),
     strategy,
+    ignored_directories: [...ignoredDirectories].sort(),
     base_root: hash([...baseFiles.entries()]),
     status: 'candidate',
     reversible: true,
@@ -74,19 +80,26 @@ export function applyBranchChanges(branch, operations) {
       fs.writeFileSync(file, String(operation.content ?? ''), 'utf8');
     } else if (operation.type === 'replace') {
       const before = fs.readFileSync(file, 'utf8');
-      const needle = String(operation.search ?? '');
-      if (!needle || !before.includes(needle)) throw Object.assign(new Error(`未找到替换目标：${operation.path}`), { code: 'PATCH_TARGET_NOT_FOUND' });
-      const occurrences = before.split(needle).length - 1;
+      const normalizedBefore = normalizeLineEndings(before);
+      const needle = normalizeLineEndings(operation.search);
+      if (!needle || !normalizedBefore.includes(needle)) throw Object.assign(new Error(`未找到替换目标：${operation.path}`), { code: 'PATCH_TARGET_NOT_FOUND' });
+      const occurrences = normalizedBefore.split(needle).length - 1;
       if (operation.expectedOccurrences && occurrences !== operation.expectedOccurrences) throw Object.assign(new Error(`替换次数不符：${operation.path}，期望 ${operation.expectedOccurrences}，实际 ${occurrences}`), { code: 'PATCH_OCCURRENCE_MISMATCH' });
-      const after = operation.all === false ? before.replace(needle, String(operation.replace ?? '')) : before.split(needle).join(String(operation.replace ?? ''));
-      fs.writeFileSync(file, after, 'utf8');
+      const replacement = normalizeLineEndings(operation.replace);
+      const after = operation.all === false ? normalizedBefore.replace(needle, replacement) : normalizedBefore.split(needle).join(replacement);
+      fs.writeFileSync(file, restoreLineEndings(after, before), 'utf8');
     } else if (operation.type === 'regex-replace') {
       const before = fs.readFileSync(file, 'utf8');
-      const expression = new RegExp(String(operation.pattern || ''), String(operation.flags || 'g'));
-      const matches = [...before.matchAll(new RegExp(String(operation.pattern || ''), String(operation.flags || 'g').includes('g') ? String(operation.flags || 'g') : `${String(operation.flags || '')}g`))];
+      const normalizedBefore = normalizeLineEndings(before);
+      const pattern = normalizeLineEndings(operation.pattern);
+      const flags = String(operation.flags || 'g');
+      const expression = new RegExp(pattern, flags);
+      const matchFlags = flags.includes('g') ? flags : `${flags}g`;
+      const matches = [...normalizedBefore.matchAll(new RegExp(pattern, matchFlags))];
       if (!matches.length) throw Object.assign(new Error(`未找到正则替换目标：${operation.path}`), { code: 'PATCH_TARGET_NOT_FOUND' });
       if (operation.expectedOccurrences && matches.length !== operation.expectedOccurrences) throw Object.assign(new Error(`正则替换次数不符：${operation.path}，期望 ${operation.expectedOccurrences}，实际 ${matches.length}`), { code: 'PATCH_OCCURRENCE_MISMATCH' });
-      fs.writeFileSync(file, before.replace(expression, String(operation.replace ?? '')), 'utf8');
+      const after = normalizedBefore.replace(expression, normalizeLineEndings(operation.replace));
+      fs.writeFileSync(file, restoreLineEndings(after, before), 'utf8');
     } else if (operation.type === 'delete') {
       fs.rmSync(file, { force: true, recursive: true });
     } else {
@@ -98,8 +111,9 @@ export function applyBranchChanges(branch, operations) {
 }
 
 export function diffRealityBranch(branch) {
-  const sourceFiles = scan(branch.source_path);
-  const branchFiles = scan(branch.branch_path);
+  const ignoredDirectories = new Set(branch.ignored_directories || DEFAULT_IGNORES);
+  const sourceFiles = scan(branch.source_path, 20_000, ignoredDirectories);
+  const branchFiles = scan(branch.branch_path, 20_000, ignoredDirectories);
   branchFiles.delete('.dml-branch.json');
   const paths = [...new Set([...sourceFiles.keys(), ...branchFiles.keys()])].sort();
   const changes = [];

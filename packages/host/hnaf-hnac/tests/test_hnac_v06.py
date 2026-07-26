@@ -96,6 +96,7 @@ class HNACV06AdaptiveInterfaceTests(unittest.TestCase):
                 ["node", str(JS_HOST), "plan", str(capsule), "--host-profile", str(host_path)],
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
                 check=False,
             )
             self.assertEqual(completed.returncode, 0, completed.stderr)

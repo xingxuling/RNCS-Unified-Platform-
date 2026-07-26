@@ -8,7 +8,7 @@
     "rcl.foundation.meta-batch-b"
   ],
   "mode": "bridge",
-  "normalization": "UTF-8 text uses LF for scoped hashing; rclfoundation.exe uses exact bytes",
+  "normalization": "UTF-8 text uses LF for scoped hashing; rclfoundation.exe uses exact bytes; the RNCS core Windows manifest is downstream-owned",
   "synchronizedFiles": [
     "README.md",
     "benchmarks/foundation-native-batch-a-baseline.json",
@@ -19,7 +19,6 @@
     "examples/foundation-native-meta-batch-b-request.json",
     "examples/foundation-native-meta-batch-b.mjs",
     "native/foundation_provider.c",
-    "native/native-windows-manifest.json",
     "native/rclfoundation.exe",
     "src/foundation-contract.mjs",
     "src/foundation-native-batch-runtime.mjs",
@@ -38,7 +37,6 @@
     "examples/foundation-native-meta-batch-b-request.json": "a91d12e73559a6415233d46c5f5cfffc7a75cbd750e12d0518f17bdb18b19a0d",
     "examples/foundation-native-meta-batch-b.mjs": "2e23924afbfadc73934831e976abbb2cb2fc228464ca6ddacce8ce0bb00eab5e",
     "native/foundation_provider.c": "61fed9bd13794171073b4e6fa867026f7e301578148bbfdfa0e46374b7576e84",
-    "native/native-windows-manifest.json": "9b7a134864614874bea6cb3482522008b36d7438f97a358bbc6e70c3358e59a9",
     "native/rclfoundation.exe": "7bc9c5e9befdafaf638660804ae54315d7c1d60a64233fa84924a111ccfda70b",
     "src/foundation-contract.mjs": "d93d469069308a21ca15e46a9bc3899b845775d84f8aa6e4b67f8a1e9411367e",
     "src/foundation-native-batch-runtime.mjs": "f20558da15067b3160c9cd325c64a06fefe6d8200f92f005773ce90d1592b5e1",
@@ -47,11 +45,12 @@
     "tests/foundation-native-bridge.test.mjs": "bd38920824dbca1be308d6e6461a509813bfa9bec58f86899830dbbe962e0516",
     "tests/foundation-native-meta-bridge.test.mjs": "e7436d990203326e1e348ea00a15179d237438bc0044c43bf89ac5ee577c8fdd"
   },
-  "scopeRoot": "b1fd7f2f279eebc09cb71f945db727538dcf944618fb0082be3c0e630af6d0ef",
+  "scopeRoot": "71b4bbbe5b4af46c9ed97e59d5a22576333fbc32852807beccdaf322ae4aa94e",
   "downstreamDeltaFiles": [
+    "native/native-windows-manifest.json",
     "package.json",
     "src/index.mjs"
   ],
   "byteIdentityClaimedForWholePackage": false,
-  "relationship": "RNCS extension delta consuming a scoped canonical RCL Native Provider snapshot"
+  "relationship": "RNCS extension delta consuming a scoped canonical RCL Native Provider snapshot while retaining its own native core manifest"
 }

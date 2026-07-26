@@ -174,10 +174,10 @@ export async function runVSRShadowDevelopmentLoop(runtime, action) {
   emitStep(runtime, projectId, goalId, 'tests', '执行 24 组稳定性矩阵与完整测试', 'started', { progress: { current: 0, total: 4, label: '准备测试' } });
   const branchResults = [];
   for (const [index, branch] of [stable, performance].entries()) {
-    const matrix = await runProjectScript({ projectPath: branch.branch_path, script: 'dml:shadow-matrix', timeoutMs: 180_000, evidenceDir });
+    const matrix = await runProjectScript({ projectPath: branch.branch_path, dependencySourcePath: branch.source_path, script: 'dml:shadow-matrix', timeoutMs: 180_000, evidenceDir });
     event(runtime, { type: 'experiment.completed', project_id: projectId, goal_id: goalId, message: `${branch.label}：24 组阴影稳定性矩阵 ${matrix.status}`, data: { ...matrix, branch_id: branch.branch_id, hypothesis: '纹素对齐后，光空间坐标不存在分数纹素误差', cases: 24 }, evidence: [{ kind: 'experiment-root', root: matrix.evidence_root }] });
     emitStep(runtime, projectId, goalId, 'tests', '执行 24 组稳定性矩阵与完整测试', 'progressed', { progress: { current: index * 2 + 1, total: 4, label: `${branch.label}稳定性矩阵完成` } });
-    const tests = await runProjectScript({ projectPath: branch.branch_path, script: 'test:spatial-3d', timeoutMs: 240_000, evidenceDir });
+    const tests = await runProjectScript({ projectPath: branch.branch_path, dependencySourcePath: branch.source_path, script: 'test:spatial-3d', timeoutMs: 240_000, evidenceDir });
     event(runtime, { type: 'branch.tested', project_id: projectId, goal_id: goalId, message: `${branch.label}：空间测试 ${tests.status}`, data: { branch_id: branch.branch_id, branch_path: branch.branch_path, strategy: branch.strategy, tests: [matrix, tests], status: matrix.status === 'passed' && tests.status === 'passed' ? 'passed' : 'failed' }, evidence: [{ kind: 'matrix-root', root: matrix.evidence_root }, { kind: 'test-root', root: tests.evidence_root }] });
     emitStep(runtime, projectId, goalId, 'tests', '执行 24 组稳定性矩阵与完整测试', 'progressed', { progress: { current: index * 2 + 2, total: 4, label: `${branch.label}完整测试完成` } });
     branchResults.push({ branch, matrix, tests, passed: matrix.status === 'passed' && tests.status === 'passed' });

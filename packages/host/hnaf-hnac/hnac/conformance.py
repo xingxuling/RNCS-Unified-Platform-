@@ -147,7 +147,7 @@ def run_js_host(
         command.extend(["--host-profile", str(host_profile)])
     if require_signature:
         command.append("--require-signature")
-    completed = subprocess.run(command, capture_output=True, text=True, check=False)
+    completed = subprocess.run(command, capture_output=True, text=True, encoding="utf-8", check=False)
     if completed.returncode != 0:
         raise HNACError(f"JavaScript host failed: {completed.stderr.strip() or completed.stdout.strip()}")
     try:
@@ -183,7 +183,7 @@ def _capability_conformance(capsule: Path, js_host: Path, host: HostProfile, hos
     ]
     if require_signature:
         command.append("--require-signature")
-    completed = subprocess.run(command, capture_output=True, text=True, check=False)
+    completed = subprocess.run(command, capture_output=True, text=True, encoding="utf-8", check=False)
     if completed.returncode != 0:
         raise HNACError(f"JavaScript capability binding failed: {completed.stderr.strip() or completed.stdout.strip()}")
     try:

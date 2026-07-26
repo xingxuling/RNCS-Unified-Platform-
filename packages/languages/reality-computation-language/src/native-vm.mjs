@@ -108,7 +108,13 @@ function equalJson(left, right) {
   return JSON.stringify(canonicalJson(left)) === JSON.stringify(canonicalJson(right));
 }
 
-const NATIVE_HEAP_METADATA = new Set(['__rclKind', '__rclType', '__rclObjectId', '__rclFieldOffsets']);
+const NATIVE_HEAP_METADATA = new Set([
+  '__rclKind',
+  '__rclType',
+  '__rclObjectId',
+  '__rclFieldOffsets',
+  '__rclPayloadOffsets',
+]);
 
 function semanticValue(value) {
   if (Array.isArray(value)) return value.map(semanticValue);

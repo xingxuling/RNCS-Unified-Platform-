@@ -54,5 +54,8 @@
     "./temporal-presentation": "./dist/packages/temporal-presentation/src/index.js",
     "./spatial-reality-3d": "./dist/packages/spatial-reality-3d/src/index.js",
     "./gltf-asset": "./dist/packages/gltf-asset/src/index.js"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3"
   }
 }
