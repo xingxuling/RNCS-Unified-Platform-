@@ -12,6 +12,7 @@
 - `environment.textureId` 接入 RGBA equirectangular 环境纹理；新增 CPU/WebGPU 方向采样、基础 roughness lobe 混合和环境纹理 bind group 证据；预过滤 mip、探针混合和 GI 仍未完成；
 - 新增确定性静态实例合批与 World Partition streaming；CPU 参考渲染逐实例保真，WebGPU scene/shadow pass 使用 instance matrix storage buffer 与 `instanceCount`，并把可见实例、实例 draw、streaming root 和 instance buffer 纳入帧证据；
 - 新增默认关闭的 `gpuDrivenCulling`：显式共享 compute bind group layout，compute pass 按实例 bounds 写 visible-index 与 indirect args，scene pass 使用 `drawIndexedIndirect`；fake WebGPU 编码链已验收，真实硬件像素、驱动兼容与性能仍需浏览器 GPU 验收；
+- 扩展 `gpuDrivenCulling` 到方向光 Shadow Pass：为场景相机与 light-space 相机维护独立的 visible/counter/indirect buffers，阴影深度绘制也使用 `drawIndexedIndirect`，并在 WebGPU receipt 中记录 `gpuDrivenShadowDraws`；真实设备像素、驱动兼容与性能仍需浏览器 GPU 验收；
 - 新增 `vsr.spatial-asset-streaming.v0.1`：资产 catalog、依赖优先异步加载、并发预算、字节 SHA-256 校验、驻留/失败/阻断状态和收据根；空间帧计划可绑定 `assetStreaming`；真实网络、磁盘缓存和 GPU 上传执行器仍需平台验收；
 
 ## 0.4.0-alpha.1
