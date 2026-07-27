@@ -21,7 +21,10 @@ var VSRSpatial3D = (() => {
   // packages/spatial-reality-3d/src/index.ts
   var index_exports = {};
   __export(index_exports, {
+    VSRSpatialAssetStreamer: () => VSRSpatialAssetStreamer,
     VSRSpatialWebGPUExecutor: () => VSRSpatialWebGPUExecutor,
+    VSR_SPATIAL_ASSET_STREAMING_FORMAT: () => VSR_SPATIAL_ASSET_STREAMING_FORMAT,
+    VSR_SPATIAL_ASSET_STREAMING_VERSION: () => VSR_SPATIAL_ASSET_STREAMING_VERSION,
     VSR_SPATIAL_CULL_WGSL_V04: () => VSR_SPATIAL_CULL_WGSL_V04,
     VSR_SPATIAL_FRAGMENT_WGSL_V04: () => VSR_SPATIAL_FRAGMENT_WGSL_V04,
     VSR_SPATIAL_FRAME_FORMAT: () => VSR_SPATIAL_FRAME_FORMAT,
@@ -71,6 +74,7 @@ var VSRSpatial3D = (() => {
     probeSpatialWebGPU: () => probeSpatialWebGPU,
     quaternionSlerp: () => quaternionSlerp,
     renderSpatialReference: () => renderSpatialReference,
+    resolveSpatialAssetStreaming: () => resolveSpatialAssetStreaming,
     resolveSpatialBudget: () => resolveSpatialBudget,
     resolveSpatialShadowCamera: () => resolveSpatialShadowCamera,
     resolveSpatialStreaming: () => resolveSpatialStreaming,
@@ -85,6 +89,7 @@ var VSRSpatial3D = (() => {
     transformPoint3: () => transformPoint3,
     transformToMat4: () => transformToMat4,
     transformVec4: () => transformVec4,
+    verifySpatialAssetStreamingReceipt: () => verifySpatialAssetStreamingReceipt,
     verifySpatialFrame: () => verifySpatialFrame,
     verifySpatialVisualIntent: () => verifySpatialVisualIntent,
     verifySpatialWebGPUReceipt: () => verifySpatialWebGPUReceipt
@@ -227,6 +232,224 @@ var VSRSpatial3D = (() => {
   }
   function cryptographicHash(value) {
     return sha256Hex(canonicalize(value));
+  }
+
+  // packages/spatial-reality-3d/src/asset-streaming.ts
+  var VSR_SPATIAL_ASSET_STREAMING_FORMAT = "vsr.spatial-asset-streaming.v0.1";
+  var VSR_SPATIAL_ASSET_STREAMING_VERSION = "0.1.0";
+  var orderedUnique = (values) => [...new Set((values ?? []).filter((value) => typeof value === "string" && value.length > 0))];
+  var unique = (values) => orderedUnique(values).sort((a, b) => a.localeCompare(b));
+  var finiteBudget = (value, fallback) => value === void 0 || !Number.isFinite(value) ? fallback : Math.max(0, Math.floor(value));
+  var assetView = (asset) => ({ id: asset.id, uri: asset.uri, sha256: asset.sha256, byteLength: asset.byteLength, kind: asset.kind, dependencies: unique(asset.dependencies), cellIds: unique(asset.cellIds), priority: asset.priority ?? 0 });
+  var assertAsset = (asset) => {
+    if (!asset.id || !asset.uri || !/^[a-f0-9]{64}$/i.test(asset.sha256) || !Number.isInteger(asset.byteLength) || asset.byteLength < 0) throw new Error(`Invalid spatial asset record ${asset.id || "unknown"}.`);
+  };
+  function catalogMap(catalog) {
+    const map = /* @__PURE__ */ new Map();
+    for (const asset of catalog) {
+      assertAsset(asset);
+      if (map.has(asset.id)) throw new Error(`Duplicate spatial asset ${asset.id}.`);
+      map.set(asset.id, asset);
+    }
+    return map;
+  }
+  function catalogRoot(catalog) {
+    return cryptographicHash(catalog.map(assetView).sort((a, b) => a.id.localeCompare(b.id)));
+  }
+  function dependencyClosure(catalog, roots, diagnostics) {
+    const required = /* @__PURE__ */ new Set(), missing = /* @__PURE__ */ new Set(), visiting = /* @__PURE__ */ new Set();
+    const visit = (id) => {
+      if (required.has(id)) return;
+      const asset = catalog.get(id);
+      if (!asset) {
+        missing.add(id);
+        required.add(id);
+        return;
+      }
+      if (visiting.has(id)) {
+        diagnostics.push(`dependency-cycle:${id}`);
+        return;
+      }
+      visiting.add(id);
+      for (const dependency of unique(asset.dependencies)) visit(dependency);
+      visiting.delete(id);
+      required.add(id);
+    };
+    for (const root of roots) visit(root);
+    return { required, missing };
+  }
+  function dependencyFirstOrder(catalog, roots, diagnostics) {
+    const visited = /* @__PURE__ */ new Set(), visiting = /* @__PURE__ */ new Set(), ordered = [];
+    const visit = (id) => {
+      if (visited.has(id) || !catalog.has(id)) return;
+      if (visiting.has(id)) {
+        diagnostics.push(`dependency-cycle:${id}`);
+        return;
+      }
+      visiting.add(id);
+      for (const dependency of unique(catalog.get(id).dependencies)) visit(dependency);
+      visiting.delete(id);
+      visited.add(id);
+      ordered.push(id);
+    };
+    for (const id of roots) visit(id);
+    return ordered;
+  }
+  function resolveSpatialAssetStreaming(catalog, request = {}) {
+    const map = catalogMap(catalog), activeCellIds = unique(request.activeCellIds), explicit = unique(request.requestedAssetIds), cellRoots = [...map.values()].filter((asset) => asset.cellIds?.length && asset.cellIds.some((cellId) => activeCellIds.includes(cellId))).sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0) || a.id.localeCompare(b.id)).map((asset) => asset.id), requestedAssetIds = unique([...explicit, ...cellRoots]), diagnostics = [];
+    const { required, missing } = dependencyClosure(map, requestedAssetIds, diagnostics), ordered = dependencyFirstOrder(map, requestedAssetIds, diagnostics), requiredAssetIds = [...required].sort((a, b) => {
+      const ai = ordered.indexOf(a), bi = ordered.indexOf(b);
+      return (ai < 0 ? Number.MAX_SAFE_INTEGER : ai) - (bi < 0 ? Number.MAX_SAFE_INTEGER : bi) || a.localeCompare(b);
+    }), residentCandidates = new Set(unique(request.residentAssetIds)), maxAssets = finiteBudget(request.maxAssets, Number.MAX_SAFE_INTEGER), maxBytes = finiteBudget(request.maxBytes, Number.MAX_SAFE_INTEGER);
+    const residentAssetIds = [], queuedAssetIds = [], deferredAssetIds = [], evictedAssetIds = [];
+    let bytesResident = 0, bytesQueued = 0, usedAssets = 0, usedBytes = 0;
+    for (const id of ordered) {
+      const asset = map.get(id);
+      if (missing.has(id)) continue;
+      const dependencies = unique(asset.dependencies);
+      if (dependencies.some((dependency) => missing.has(dependency))) {
+        diagnostics.push(`blocked-by-missing:${id}`);
+        continue;
+      }
+      const fits = usedAssets + 1 <= maxAssets && usedBytes + asset.byteLength <= maxBytes;
+      if (fits) {
+        usedAssets++;
+        usedBytes += asset.byteLength;
+        if (residentCandidates.has(id)) {
+          residentAssetIds.push(id);
+          bytesResident += asset.byteLength;
+        } else {
+          queuedAssetIds.push(id);
+          bytesQueued += asset.byteLength;
+        }
+      } else if (residentCandidates.has(id)) {
+        evictedAssetIds.push(id);
+      } else deferredAssetIds.push(id);
+    }
+    for (const id of residentCandidates) if (!required.has(id) && map.has(id)) evictedAssetIds.push(id);
+    const base = { format: VSR_SPATIAL_ASSET_STREAMING_FORMAT, version: VSR_SPATIAL_ASSET_STREAMING_VERSION, activeCellIds, requestedAssetIds, requiredAssetIds, residentAssetIds: unique(residentAssetIds), queuedAssetIds: unique(queuedAssetIds), deferredAssetIds: unique(deferredAssetIds), missingAssetIds: unique([...missing]), evictedAssetIds: unique(evictedAssetIds), bytesResident, bytesQueued, maxAssets, maxBytes, catalogRoot: catalogRoot(catalog), requestRoot: cryptographicHash({ requestedAssetIds, activeCellIds, residentAssetIds: unique([...residentCandidates]), maxAssets, maxBytes }), diagnostics: unique(diagnostics) };
+    return { ...base, residentAssetIds: orderedUnique(residentAssetIds), queuedAssetIds: orderedUnique(queuedAssetIds), deferredAssetIds: orderedUnique(deferredAssetIds), root: cryptographicHash({ ...base, residentAssetIds: orderedUnique(residentAssetIds), queuedAssetIds: orderedUnique(queuedAssetIds), deferredAssetIds: orderedUnique(deferredAssetIds) }) };
+  }
+  var payloadBytes = (payload) => payload instanceof Uint8Array ? new Uint8Array(payload) : new Uint8Array(payload);
+  var errorInfo = (error) => {
+    const value = error;
+    return { code: typeof value?.code === "string" ? value.code : "VSR_ASSET_LOAD_FAILED", message: typeof value?.message === "string" ? value.message : String(error) };
+  };
+  var VSRSpatialAssetStreamer = class {
+    catalog;
+    loader;
+    maxConcurrent;
+    states = /* @__PURE__ */ new Map();
+    constructor(catalog, loader, { maxConcurrent = 4 } = {}) {
+      this.catalog = catalogMap(catalog);
+      this.loader = loader;
+      this.maxConcurrent = Math.max(1, Math.floor(maxConcurrent));
+      for (const id of this.catalog.keys()) this.states.set(id, { status: "idle", attempts: 0, leases: 0 });
+    }
+    state(assetId) {
+      return this.states.get(assetId)?.status ?? "evicted";
+    }
+    get(assetId) {
+      const bytes = this.states.get(assetId)?.bytes;
+      return bytes ? new Uint8Array(bytes) : void 0;
+    }
+    inspect() {
+      const ready = [...this.states.entries()].filter(([, state]) => state.status === "ready").map(([id]) => id).sort((a, b) => a.localeCompare(b));
+      return { format: VSR_SPATIAL_ASSET_STREAMING_FORMAT, catalogRoot: catalogRoot([...this.catalog.values()]), maxConcurrent: this.maxConcurrent, readyAssetIds: ready, bytesResident: ready.reduce((sum, id) => sum + (this.catalog.get(id)?.byteLength ?? 0), 0), states: Object.fromEntries([...this.states.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([id, state]) => [id, state.status])) };
+    }
+    async acquire(request = {}) {
+      const resolution = resolveSpatialAssetStreaming([...this.catalog.values()], { ...request, residentAssetIds: [...this.states.entries()].filter(([, state]) => state.status === "ready").map(([id]) => id) }), operations = [];
+      for (const id of resolution.queuedAssetIds) {
+        const state = this.states.get(id);
+        if (state.status === "failed" || state.status === "blocked" || state.status === "evicted") state.status = "idle";
+      }
+      const pending = new Set(resolution.queuedAssetIds), blocked = /* @__PURE__ */ new Set();
+      let bytesLoaded = 0;
+      while (pending.size) {
+        const newlyBlocked = [...pending].filter((id) => unique(this.catalog.get(id)?.dependencies).some((dependency) => resolution.missingAssetIds.includes(dependency) || this.states.get(dependency)?.status === "failed" || blocked.has(dependency)));
+        for (const id of newlyBlocked) {
+          pending.delete(id);
+          blocked.add(id);
+          const state = this.states.get(id);
+          state.status = "blocked";
+          operations.push({ assetId: id, status: "blocked", errorCode: "VSR_ASSET_DEPENDENCY_BLOCKED", errorMessage: "Dependency failed or is missing." });
+        }
+        const loadable = [...pending].filter((id) => unique(this.catalog.get(id)?.dependencies).every((dependency) => this.states.get(dependency)?.status === "ready")).slice(0, this.maxConcurrent);
+        if (!loadable.length) {
+          for (const id of pending) {
+            blocked.add(id);
+            const state = this.states.get(id);
+            state.status = "blocked";
+            operations.push({ assetId: id, status: "blocked", errorCode: "VSR_ASSET_DEPENDENCY_UNRESOLVED", errorMessage: "Dependency did not become ready." });
+          }
+          pending.clear();
+          break;
+        }
+        for (const id of loadable) {
+          pending.delete(id);
+          this.states.get(id).status = "loading";
+        }
+        const results = await Promise.all(loadable.map(async (id) => {
+          const state = this.states.get(id), asset = this.catalog.get(id);
+          state.attempts++;
+          const controller = new AbortController();
+          try {
+            const bytes = payloadBytes(await this.loader(asset, { asset, signal: controller.signal, attempt: state.attempts })), actual = sha256Bytes(bytes);
+            if (actual.toLowerCase() !== asset.sha256.toLowerCase()) {
+              const error = Object.assign(new Error(`SHA-256 mismatch for ${id}.`), { code: "VSR_ASSET_HASH_MISMATCH" });
+              throw error;
+            }
+            state.bytes = bytes;
+            state.status = "ready";
+            return { assetId: id, status: "loaded", byteLength: bytes.byteLength, sha256: actual, attempt: state.attempts };
+          } catch (error) {
+            const info = errorInfo(error);
+            state.status = "failed";
+            state.bytes = void 0;
+            state.errorCode = info.code;
+            state.errorMessage = info.message;
+            return { assetId: id, status: "failed", errorCode: info.code, errorMessage: info.message, attempt: state.attempts };
+          }
+        }));
+        for (const result of results) {
+          operations.push(result);
+          if (result.status === "loaded") bytesLoaded += result.byteLength ?? 0;
+        }
+      }
+      const finalResolution = resolveSpatialAssetStreaming([...this.catalog.values()], { ...request, residentAssetIds: [...this.states.entries()].filter(([, state]) => state.status === "ready").map(([id]) => id) });
+      const leasedAssetIds = finalResolution.residentAssetIds.filter((id) => {
+        const state = this.states.get(id);
+        state.leases++;
+        return true;
+      }), failedAssetIds = operations.filter((operation) => operation.status === "failed").map((operation) => operation.assetId).sort((a, b) => a.localeCompare(b)), blockedAssetIds = operations.filter((operation) => operation.status === "blocked").map((operation) => operation.assetId).sort((a, b) => a.localeCompare(b)), base = { format: VSR_SPATIAL_ASSET_STREAMING_FORMAT, version: VSR_SPATIAL_ASSET_STREAMING_VERSION, resolution: finalResolution, operations, readyAssetIds: finalResolution.residentAssetIds, failedAssetIds, blockedAssetIds, leasedAssetIds, bytesLoaded };
+      return { ...base, receiptRoot: cryptographicHash(base) };
+    }
+    release(assetIds) {
+      const { required } = dependencyClosure(this.catalog, unique(assetIds), []), released = [];
+      for (const id of required) {
+        const state = this.states.get(id);
+        if (state && state.leases > 0) {
+          state.leases--;
+          released.push(id);
+        }
+      }
+      return released.sort((a, b) => a.localeCompare(b));
+    }
+    evict(assetIds) {
+      const candidates = assetIds ? unique(assetIds) : [...this.states.keys()].sort((a, b) => a.localeCompare(b)), evicted = [];
+      for (const id of candidates) {
+        const state = this.states.get(id);
+        if (!state || state.status !== "ready" || state.leases > 0) continue;
+        state.status = "evicted";
+        state.bytes = void 0;
+        evicted.push(id);
+      }
+      return evicted;
+    }
+  };
+  function verifySpatialAssetStreamingReceipt(receipt) {
+    const { receiptRoot, ...base } = receipt;
+    return cryptographicHash(base) === receiptRoot && receipt.resolution.root === cryptographicHash({ ...receipt.resolution, ...{ root: void 0 } });
   }
 
   // packages/spatial-reality-3d/src/index.ts
@@ -628,7 +851,7 @@ var VSRSpatial3D = (() => {
     }
     const active = new Set(activeCellIds), enteredCellIds = activeCellIds.filter((id) => !previous.has(id)).sort(), exitedCellIds = previousActiveCellIds.filter((id) => !active.has(id)).sort(), persistentNodeIds = [...config.persistentNodeIds ?? []].filter((id, index, array) => array.indexOf(id) === index).sort(), streamedNodeSet = new Set(persistentNodeIds);
     for (const cell of cells) if (active.has(cell.id)) for (const nodeId of cell.nodeIds) streamedNodeSet.add(nodeId);
-    const nodeIds = scene.nodes.filter((node) => streamedNodeSet.has(node.id)).map((node) => node.id), catalogRoot = cryptographicHash({ worldId: config.worldId, cells: config.cells, persistentNodeIds: config.persistentNodeIds ?? [] }), base = { format: VSR_SPATIAL_STREAMING_FORMAT, worldId: config.worldId, observerPosition: [...observerPosition], loadRadius: defaultLoadRadius, unloadRadius: defaultUnloadRadius, previousActiveCellIds, forcedCellIds, activeCellIds: [...activeCellIds].sort(), enteredCellIds, exitedCellIds, persistentNodeIds, nodeIds, catalogRoot };
+    const nodeIds = scene.nodes.filter((node) => streamedNodeSet.has(node.id)).map((node) => node.id), catalogRoot2 = cryptographicHash({ worldId: config.worldId, cells: config.cells, persistentNodeIds: config.persistentNodeIds ?? [] }), base = { format: VSR_SPATIAL_STREAMING_FORMAT, worldId: config.worldId, observerPosition: [...observerPosition], loadRadius: defaultLoadRadius, unloadRadius: defaultUnloadRadius, previousActiveCellIds, forcedCellIds, activeCellIds: [...activeCellIds].sort(), enteredCellIds, exitedCellIds, persistentNodeIds, nodeIds, catalogRoot: catalogRoot2 };
     return { ...base, root: cryptographicHash(base) };
   }
   function lerpVec3(a, b, t) {
@@ -1145,9 +1368,9 @@ fn visible(centerRadius:vec4<f32>)->bool{let clip=camera.viewProjection*vec4<f32
     for (const texture of scene.textures ?? []) resources.push({ id: `texture:${texture.id}`, kind: "texture-2d", byteLength: texture.pixels.length, format: "rgba8unorm", resourceRoot: cryptographicHash(texture) });
     resources.push({ id: "materials", kind: "material-buffer", byteLength: materialById.size * 64, resourceRoot: cryptographicHash([...materialById.values()]) }, { id: "lights", kind: "light-buffer", byteLength: lights.length * 64, resourceRoot: cryptographicHash(lights) }, { id: "scene-depth", kind: "depth-texture", byteLength: budget.width * budget.height * 4, format: "depth24plus", resourceRoot: cryptographicHash({ width: budget.width, height: budget.height, format: "depth24plus" }) }, { id: "scene-color", kind: "color-texture", byteLength: budget.width * budget.height * 8, format: "rgba16float", resourceRoot: cryptographicHash({ width: budget.width, height: budget.height, format: "rgba16float" }) }, { id: "present-color", kind: "color-texture", byteLength: budget.width * budget.height * 4, format: "bgra8unorm", resourceRoot: cryptographicHash({ width: budget.width, height: budget.height, format: "bgra8unorm" }) });
     if (passes.some((pass) => pass.id === "shadow-depth")) resources.push({ id: "shadow-depth", kind: "shadow-texture", byteLength: budget.shadowMapSize ** 2 * 4, format: "depth32float", resourceRoot: cryptographicHash({ size: budget.shadowMapSize, format: "depth32float" }) });
-    const sourceRealityRoot = cryptographicHash({ format: scene.format, sceneId: scene.sceneId, reality: scene.reality ?? null }), geometryRoot = cryptographicHash(scene.meshes.map((mesh) => ({ id: mesh.id, positions: mesh.positions, normals: mesh.normals ?? null, uvs: mesh.uvs ?? null, indices: mesh.indices, jointIndices: mesh.jointIndices ?? null, jointWeights: mesh.jointWeights ?? null, morphTargets: mesh.morphTargets ?? null }))), materialRoot = cryptographicHash([...materialById.values()]), textureRoot = cryptographicHash(scene.textures ?? []), environmentRoot = cryptographicHash(environment), commandRoot = cryptographicHash({ drawPackets, passes, lights, budget, textureRoot, environmentRoot, animationRoot, streaming: streaming ?? null, gpuDrivenCulling: Boolean(options.gpuDrivenCulling) }), shaders = { vertex: VSR_SPATIAL_VERTEX_WGSL_V04, fragment: VSR_SPATIAL_FRAGMENT_WGSL_V04, shadowVertex: VSR_SPATIAL_SHADOW_WGSL_V04, ...options.gpuDrivenCulling ? { compute: VSR_SPATIAL_CULL_WGSL_V04 } : {}, sourceRoot: cryptographicHash([VSR_SPATIAL_VERTEX_WGSL_V04, VSR_SPATIAL_FRAGMENT_WGSL_V04, VSR_SPATIAL_SHADOW_WGSL_V04, ...options.gpuDrivenCulling ? [VSR_SPATIAL_CULL_WGSL_V04] : []]) };
+    const sourceRealityRoot = cryptographicHash({ format: scene.format, sceneId: scene.sceneId, reality: scene.reality ?? null }), geometryRoot = cryptographicHash(scene.meshes.map((mesh) => ({ id: mesh.id, positions: mesh.positions, normals: mesh.normals ?? null, uvs: mesh.uvs ?? null, indices: mesh.indices, jointIndices: mesh.jointIndices ?? null, jointWeights: mesh.jointWeights ?? null, morphTargets: mesh.morphTargets ?? null }))), materialRoot = cryptographicHash([...materialById.values()]), textureRoot = cryptographicHash(scene.textures ?? []), environmentRoot = cryptographicHash(environment), commandRoot = cryptographicHash({ drawPackets, passes, lights, budget, textureRoot, environmentRoot, animationRoot, streaming: streaming ?? null, gpuDrivenCulling: Boolean(options.gpuDrivenCulling), assetStreaming: options.assetStreaming ?? null }), shaders = { vertex: VSR_SPATIAL_VERTEX_WGSL_V04, fragment: VSR_SPATIAL_FRAGMENT_WGSL_V04, shadowVertex: VSR_SPATIAL_SHADOW_WGSL_V04, ...options.gpuDrivenCulling ? { compute: VSR_SPATIAL_CULL_WGSL_V04 } : {}, sourceRoot: cryptographicHash([VSR_SPATIAL_VERTEX_WGSL_V04, VSR_SPATIAL_FRAGMENT_WGSL_V04, VSR_SPATIAL_SHADOW_WGSL_V04, ...options.gpuDrivenCulling ? [VSR_SPATIAL_CULL_WGSL_V04] : []]) };
     const stats = { meshCount: scene.meshes.length, nodeCount: scene.nodes.length, textureCount: (scene.textures ?? []).length, materialTextureBindings: drawPackets.reduce((sum, packet) => sum + Object.values(packet.textureBindings).filter(Boolean).length, 0), animationClipCount: (scene.animations ?? []).length, visibleDraws: drawPackets.length, visibleInstances: visiblePackets.length, instancedDraws: drawPackets.filter((packet) => packetInstanceCount(packet) > 1).length, gpuDrivenDraws: options.gpuDrivenCulling ? drawPackets.length : 0, activeCells: streaming?.activeCellIds.length ?? 0, streamedNodes: streaming?.nodeIds.length ?? scene.nodes.length, streamingCulledCells, culledDraws: culled, triangleCount: drawPackets.reduce((sum, packet) => sum + packet.indexCount / 3 * packetInstanceCount(packet), 0), lightCount: lights.length, shadowCasterCount, skinnedDraws: drawPackets.reduce((sum, packet) => sum + (packet.skinId ? packetInstanceCount(packet) : 0), 0), morphedDraws: drawPackets.reduce((sum, packet) => sum + (packet.morphWeights.some((weight) => Math.abs(weight) > EPS) ? packetInstanceCount(packet) : 0), 0), lodHistogram };
-    const base = { format: VSR_SPATIAL_FRAME_FORMAT, version: VSR_SPATIAL_REALITY_VERSION, sceneId: scene.sceneId, viewport: { width: budget.width, height: budget.height }, budget, camera: { id: camera.id, viewMatrix: view, projectionMatrix: projection, viewProjectionMatrix: viewProjection, position: cameraPos }, environment, drawPackets, lights, passes, resources, shaders, stats, sourceRealityRoot, geometryRoot, materialRoot, textureRoot, animationRoot, environmentRoot, ...streaming ? { streaming } : {}, ...options.gpuDrivenCulling ? { gpuDrivenCulling: true } : {}, ...visualIntentRoot ? { visualIntentRoot } : {}, commandRoot };
+    const base = { format: VSR_SPATIAL_FRAME_FORMAT, version: VSR_SPATIAL_REALITY_VERSION, sceneId: scene.sceneId, viewport: { width: budget.width, height: budget.height }, budget, camera: { id: camera.id, viewMatrix: view, projectionMatrix: projection, viewProjectionMatrix: viewProjection, position: cameraPos }, environment, drawPackets, lights, passes, resources, shaders, stats, sourceRealityRoot, geometryRoot, materialRoot, textureRoot, animationRoot, environmentRoot, ...streaming ? { streaming } : {}, ...options.gpuDrivenCulling ? { gpuDrivenCulling: true } : {}, ...options.assetStreaming ? { assetStreaming: options.assetStreaming } : {}, ...visualIntentRoot ? { visualIntentRoot } : {}, commandRoot };
     return { ...base, frameRoot: cryptographicHash(base) };
   }
   function verifySpatialFrame(plan) {
@@ -1156,6 +1379,10 @@ fn visible(centerRadius:vec4<f32>)->bool{let clip=camera.viewProjection*vec4<f32
     if (plan.streaming) {
       const { root, ...streamingBase } = plan.streaming;
       if (cryptographicHash(streamingBase) !== root) diagnostics.push("streaming root mismatch");
+    }
+    if (plan.assetStreaming) {
+      const { root, ...assetStreamingBase } = plan.assetStreaming;
+      if (cryptographicHash(assetStreamingBase) !== root) diagnostics.push("asset streaming root mismatch");
     }
     const resourceIds = new Set(plan.resources.map((resource) => resource.id));
     for (const pass of plan.passes) {
@@ -1169,7 +1396,7 @@ fn visible(centerRadius:vec4<f32>)->bool{let clip=camera.viewProjection*vec4<f32
       const { packetRoot, ...base2 } = packet;
       if (cryptographicHash(base2) !== packetRoot) diagnostics.push(`draw packet ${packet.nodeId} root mismatch`);
     }
-    const commandRoot = cryptographicHash({ drawPackets: plan.drawPackets, passes: plan.passes, lights: plan.lights, budget: plan.budget, textureRoot: plan.textureRoot, environmentRoot: plan.environmentRoot, animationRoot: plan.animationRoot, streaming: plan.streaming ?? null, gpuDrivenCulling: Boolean(plan.gpuDrivenCulling) });
+    const commandRoot = cryptographicHash({ drawPackets: plan.drawPackets, passes: plan.passes, lights: plan.lights, budget: plan.budget, textureRoot: plan.textureRoot, environmentRoot: plan.environmentRoot, animationRoot: plan.animationRoot, streaming: plan.streaming ?? null, gpuDrivenCulling: Boolean(plan.gpuDrivenCulling), assetStreaming: plan.assetStreaming ?? null });
     if (commandRoot !== plan.commandRoot) diagnostics.push("command root mismatch");
     const { frameRoot, ...base } = plan;
     if (cryptographicHash(base) !== frameRoot) diagnostics.push("frame root mismatch");

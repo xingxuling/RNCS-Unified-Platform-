@@ -43,6 +43,20 @@ node src/cli.mjs asset-database-watch --project examples/冰境试炼.unified-pr
 变更计划和同步回执只携带源根 ID、相对路径和内容哈希；本地缓存文件不会
 被再次当成项目资产扫描，删除的源文件会保留为 `missing` 记录等待修复。
 
+运行时加载现在也使用同一份内容寻址缓存：
+
+```bash
+npm run asset-stream
+node src/cli.mjs asset-stream --project examples/冰境试炼.unified-project.json \\
+  --cache-dir output/asset-cache --assets asset:local:<id>
+```
+
+`asset-stream` 会把资产记录、依赖图和缓存 payload 转成 VSR
+`vsr.spatial-asset-streaming.v0.1`，按依赖优先异步读取，校验字节 SHA-256，输出
+`asset_streaming_receipt`。缓存缺失、哈希错误和被依赖阻断都会进入收据，不会被
+静默当成已加载；它是 RNCS 的运行时加载边界，浏览器 fetch、GPU 上传和平台缓存
+策略仍由具体执行器实现。
+
 ## 受控运行时热更新
 
 统一会话提供 RNCS 边界内的行为程序热更新事务。候选先在当前 tick 和实体

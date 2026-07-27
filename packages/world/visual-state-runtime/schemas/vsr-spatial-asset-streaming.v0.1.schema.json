@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rncs.dev/schemas/vsr-spatial-asset-streaming.v0.1.schema.json",
+  "title": "VSR Spatial Asset Streaming v0.1",
+  "type": "object",
+  "required": [
+    "format",
+    "version",
+    "activeCellIds",
+    "requestedAssetIds",
+    "requiredAssetIds",
+    "residentAssetIds",
+    "queuedAssetIds",
+    "deferredAssetIds",
+    "missingAssetIds",
+    "evictedAssetIds",
+    "bytesResident",
+    "bytesQueued",
+    "maxAssets",
+    "maxBytes",
+    "catalogRoot",
+    "requestRoot",
+    "diagnostics",
+    "root"
+  ],
+  "properties": {
+    "format": {
+      "const": "vsr.spatial-asset-streaming.v0.1"
+    },
+    "version": {
+      "const": "0.1.0"
+    },
+    "activeCellIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "requestedAssetIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "requiredAssetIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "residentAssetIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "queuedAssetIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "deferredAssetIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "missingAssetIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "evictedAssetIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "bytesResident": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "bytesQueued": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "maxAssets": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "maxBytes": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "catalogRoot": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "requestRoot": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "root": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  },
+  "additionalProperties": false
+}
