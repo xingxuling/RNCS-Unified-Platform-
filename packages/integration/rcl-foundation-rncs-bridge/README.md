@@ -1,10 +1,10 @@
 # RCL Foundation Native RNCS Bridge
 
 This package consumes canonical RCL Foundation Native Batch A, Meta Batch B,
-and Batch C results and compiles them into the existing RNCS Proposal,
+Batch C, and Batch D results and compiles them into the existing RNCS Proposal,
 Authority, and Commit contract.
 
-The eleven covered Foundation entries remain `bridge` mode. RNCS does not relabel
+The fourteen covered Foundation entries remain `bridge` mode. RNCS does not relabel
 them as native syntax. The lifecycle is:
 
 ```text
@@ -23,6 +23,8 @@ prepareFoundationNativeMetaRncsTransition(request);
 prepareFoundationNativeRncsTransition(request, { batch: 'meta-batch-b' });
 prepareFoundationNativeBatchCRncsTransition(request);
 prepareFoundationNativeRncsTransition(request, { batch: 'batch-c' });
+prepareFoundationNativeBatchDRncsTransition(request);
+prepareFoundationNativeRncsTransition(request, { batch: 'batch-d' });
 ```
 
 Meta Batch B binds the causal timeline, bounded acceleration, fidelity floor,
@@ -35,6 +37,10 @@ embodiment command. Its `embodiment` result must carry the preceding physical
 `afterRoot`, so the physical-to-body transition cannot be detached from the
 causal chain.
 
+Batch D binds bounded energy transfer to elemental composition and neural signal
+integration. The elemental result must carry the energy result's `afterRoot`,
+and the neural result must carry the elemental result's `afterRoot`.
+
 Run:
 
 ```bash
@@ -46,7 +52,8 @@ npm run evidence:foundation-native-rncs
 
 The bridge is registered in Reality One Gateway as
 `rncs.rcl-foundation-native`, with separate `prepare`, `authorize`, `commit`,
-and `verify` actions. Pass `batch: "meta-batch-b"` or `batch: "batch-c"` to
+and `verify` actions. Pass `batch: "meta-batch-b"`, `batch: "batch-c"`, or
+`batch: "batch-d"` to
 Gateway `prepare`.
 Preparation remains proposal-only; approval and commit require distinct calls.
 

@@ -23,7 +23,8 @@
     "taowind.rcl-foundation-runtime-result.v0.1",
     "rcl.provider.v1",
     "taowind.rcl-foundation-native-meta-batch-b.v0.1",
-    "taowind.rcl-foundation-native-batch-c.v0.1"
+    "taowind.rcl-foundation-native-batch-c.v0.1",
+    "taowind.rcl-foundation-native-batch-d.v0.1"
   ],
   "requires": [
     {
@@ -39,13 +40,15 @@
     "provider_ids": [
       "rcl.foundation.batch-a",
       "rcl.foundation.meta-batch-b",
-      "rcl.foundation.batch-c"
+      "rcl.foundation.batch-c",
+      "rcl.foundation.batch-d"
     ],
     "default_batch": "batch-a",
     "selectable_batches": [
       "batch-a",
       "meta-batch-b",
-      "batch-c"
+      "batch-c",
+      "batch-d"
     ],
     "authority": "proposal-human-approval-explicit-commit",
     "source_of_truth": "packages/languages/reality-computation-language"

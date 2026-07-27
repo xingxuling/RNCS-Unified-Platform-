@@ -14,6 +14,11 @@ import {
   runFoundationNativeBatchC,
 } from '../../../languages/reality-computation-language/src/foundation-native-batch-c.mjs';
 import {
+  FOUNDATION_NATIVE_BATCH_D,
+  FOUNDATION_NATIVE_BATCH_D_PROVIDER_ID,
+  runFoundationNativeBatchD,
+} from '../../../languages/reality-computation-language/src/foundation-native-batch-d.mjs';
+import {
   authorize,
   commit,
   newProposal,
@@ -27,6 +32,7 @@ export const RCL_FOUNDATION_RNCS_BRIDGE_VERSION = '0.2.0-alpha.1';
 export const RCL_FOUNDATION_RNCS_BATCH_A = 'batch-a';
 export const RCL_FOUNDATION_RNCS_META_BATCH_B = 'meta-batch-b';
 export const RCL_FOUNDATION_RNCS_BATCH_C = 'batch-c';
+export const RCL_FOUNDATION_RNCS_BATCH_D = 'batch-d';
 
 const BATCHES = Object.freeze({
   [RCL_FOUNDATION_RNCS_BATCH_A]: Object.freeze({
@@ -52,6 +58,14 @@ const BATCHES = Object.freeze({
     run: runFoundationNativeBatchC,
     realityId: 'reality:foundation-native-batch-c',
     rule: 'rcl-foundation-native-batch-c',
+  }),
+  [RCL_FOUNDATION_RNCS_BATCH_D]: Object.freeze({
+    id: RCL_FOUNDATION_RNCS_BATCH_D,
+    providerId: FOUNDATION_NATIVE_BATCH_D_PROVIDER_ID,
+    entries: FOUNDATION_NATIVE_BATCH_D,
+    run: runFoundationNativeBatchD,
+    realityId: 'reality:foundation-native-batch-d',
+    rule: 'rcl-foundation-native-batch-d',
   }),
 });
 
@@ -523,6 +537,16 @@ export function prepareFoundationNativeBatchCRncsTransition(
   });
 }
 
+export function prepareFoundationNativeBatchDRncsTransition(
+  request = {},
+  options = {},
+) {
+  return prepareFoundationNativeRncsTransition(request, {
+    ...options,
+    batch: RCL_FOUNDATION_RNCS_BATCH_D,
+  });
+}
+
 export function authorizeFoundationNativeRncsTransition(
   prepared,
   approval = {},
@@ -685,6 +709,78 @@ function verifyBatchCSemantics(execution, errors) {
   }
 }
 
+function verifyBatchDSemantics(execution, errors) {
+  const [energy, elemental, neural] = execution.results ?? [];
+  const input = execution.request?.input;
+  const createMode = ['create', 'generate', 'build'].includes(input?.speechAct);
+  const energyInput = input?.energy;
+  const energyState = energy?.proposal?.parameters?.energy;
+  const effective = createMode
+    ? Math.min(energyInput?.requestedMilliJoules, energyInput?.availableMilliJoules)
+    : 0;
+  const loss = Math.floor(effective * energyInput?.lossPpm / 1_000_000);
+  if (
+    energyState?.model !== 'bounded-transfer-v1'
+    || energyState?.availableMilliJoules !== energyInput?.availableMilliJoules
+    || energyState?.requestedMilliJoules !== energyInput?.requestedMilliJoules
+    || energyState?.effectiveMilliJoules !== effective
+    || energyState?.lossPpm !== energyInput?.lossPpm
+    || energyState?.lossMilliJoules !== loss
+    || energyState?.deliveredMilliJoules !== effective - loss
+    || energyState?.remainingMilliJoules
+      !== energyInput?.availableMilliJoules - effective
+    || energyState?.tickBefore !== energyInput?.tick
+    || energyState?.tickAfter !== (
+      createMode ? energyInput?.tick + 1 : energyInput?.tick
+    )
+    || energyState?.clamped
+      !== (energyInput?.requestedMilliJoules > energyInput?.availableMilliJoules)
+    || energyState?.mutationApplied !== createMode
+  ) {
+    errors.push('ENERGY_SEMANTICS_INVALID');
+  }
+
+  const elementalInput = input?.elemental;
+  const elementalState = elemental?.proposal?.parameters?.elemental;
+  if (
+    elementalState?.materialId !== elementalInput?.materialId
+    || elementalState?.massMg !== elementalInput?.massMg
+    || elementalState?.purityPpm !== elementalInput?.purityPpm
+    || elementalState?.temperatureMilliK !== elementalInput?.temperatureMilliK
+    || elementalState?.energyUseMilliJoules !== elementalInput?.energyUseMilliJoules
+    || elementalState?.energyParentRoot !== elemental?.stateDelta?.beforeRoot
+    || elementalState?.compositionState !== (createMode ? 'composed' : 'observed')
+    || elementalState?.stable !== (elementalInput?.purityPpm >= 900_000)
+    || elementalState?.mutationApplied !== createMode
+  ) {
+    errors.push('ELEMENTAL_SEMANTICS_INVALID');
+  }
+
+  const neuralInput = input?.neural;
+  const neuralState = neural?.proposal?.parameters?.neural;
+  const effectiveAmplitude = createMode ? neuralInput?.amplitudePpm : 0;
+  const retainedMemory = createMode
+    ? Math.min(neuralInput?.memoryBudgetBytes, neuralInput?.attentionWindow * 64)
+    : 0;
+  const controlScore = Math.floor(
+    effectiveAmplitude * (1_000_000 - neuralInput?.inhibitionPpm) / 1_000_000,
+  );
+  if (
+    neuralState?.signalId !== neuralInput?.signalId
+    || neuralState?.amplitudePpm !== neuralInput?.amplitudePpm
+    || neuralState?.effectiveAmplitudePpm !== effectiveAmplitude
+    || neuralState?.memoryBudgetBytes !== neuralInput?.memoryBudgetBytes
+    || neuralState?.retainedMemoryBytes !== retainedMemory
+    || neuralState?.attentionWindow !== neuralInput?.attentionWindow
+    || neuralState?.inhibitionPpm !== neuralInput?.inhibitionPpm
+    || neuralState?.controlScorePpm !== controlScore
+    || neuralState?.elementalParentRoot !== neural?.stateDelta?.beforeRoot
+    || neuralState?.mutationApplied !== createMode
+  ) {
+    errors.push('NEURAL_SEMANTICS_INVALID');
+  }
+}
+
 export function verifyFoundationNativeRncsTransition(value) {
   const errors = [];
   if (!value || value.format !== RCL_FOUNDATION_RNCS_BRIDGE_FORMAT) {
@@ -812,6 +908,10 @@ export function verifyFoundationNativeRncsTransition(value) {
 
   if (batch?.id === RCL_FOUNDATION_RNCS_BATCH_C) {
     verifyBatchCSemantics(value.execution, errors);
+  }
+
+  if (batch?.id === RCL_FOUNDATION_RNCS_BATCH_D) {
+    verifyBatchDSemantics(value.execution, errors);
   }
 
   if (
