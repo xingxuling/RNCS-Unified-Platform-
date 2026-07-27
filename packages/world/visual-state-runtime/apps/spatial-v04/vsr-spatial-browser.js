@@ -55,6 +55,7 @@ var VSRSpatial3D = (() => {
     packSpatialCameraUniform: () => packSpatialCameraUniform,
     packSpatialDeformationUniform: () => packSpatialDeformationUniform,
     packSpatialIndexBuffer: () => packSpatialIndexBuffer,
+    packSpatialInstanceBuffer: () => packSpatialInstanceBuffer,
     packSpatialJointBuffer: () => packSpatialJointBuffer,
     packSpatialMaterialUniform: () => packSpatialMaterialUniform,
     packSpatialMorphBuffer: () => packSpatialMorphBuffer,
@@ -975,7 +976,17 @@ var VSRSpatial3D = (() => {
     const margin = bounds.radius * Math.max(Math.abs(viewProjection[0]), Math.abs(viewProjection[5]), 1);
     return clip[0] >= -clip[3] - margin && clip[0] <= clip[3] + margin && clip[1] >= -clip[3] - margin && clip[1] <= clip[3] + margin && clip[2] >= -clip[3] - margin && clip[2] <= clip[3] + margin;
   }
-  var VSR_SPATIAL_VERTEX_WGSL_V04 = `struct Camera { viewProjection: mat4x4<f32>, cameraPosition:vec4<f32>, ambient:vec4<f32>, sunDirection:vec4<f32>, sunColor:vec4<f32>, environmentDiffuse:vec4<f32>, environmentSpecular:vec4<f32>, environmentParams:vec4<f32> }; @group(0) @binding(0) var<uniform> camera: Camera; struct Object { world:mat4x4<f32> }; @group(1) @binding(0) var<uniform> object:Object; @group(1) @binding(1) var<storage,read> jointMatrices:array<mat4x4<f32>>; struct Deformation { skinEnabled:f32, vertexCount:f32, morphCount:f32, _pad:f32, morphWeights:vec4<f32> }; @group(1) @binding(2) var<uniform> deformation:Deformation; @group(1) @binding(3) var<storage,read> morphDeltas:array<vec4<f32>>; struct VSIn { @location(0) position:vec3<f32>, @location(1) normal:vec3<f32>, @location(2) uv:vec2<f32>, @location(3) joints:vec4<f32>, @location(4) weights:vec4<f32>, @builtin(vertex_index) vertexIndex:u32 }; struct VSOut { @builtin(position) position:vec4<f32>, @location(0) worldPosition:vec3<f32>, @location(1) normal:vec3<f32>, @location(2) uv:vec2<f32> }; fn morphPosition(position:vec3<f32>,vertexIndex:u32)->vec3<f32>{var result=position;let vertexCount=u32(deformation.vertexCount);for(var morph:u32=0u;morph<4u;morph=morph+1u){if(morph<u32(deformation.morphCount)){result=result+morphDeltas[morph*vertexCount+vertexIndex].xyz*deformation.morphWeights[morph];}}return result;} fn skinPosition(position:vec3<f32>,joints:vec4<f32>,weights:vec4<f32>)->vec3<f32>{if(deformation.skinEnabled<0.5){return position;}let total=weights.x+weights.y+weights.z+weights.w;if(total<=0.0001){return position;}return(jointMatrices[u32(joints.x)]*vec4<f32>(position,1.0)*weights.x+jointMatrices[u32(joints.y)]*vec4<f32>(position,1.0)*weights.y+jointMatrices[u32(joints.z)]*vec4<f32>(position,1.0)*weights.z+jointMatrices[u32(joints.w)]*vec4<f32>(position,1.0)*weights.w).xyz/total;} fn skinNormal(normal:vec3<f32>,joints:vec4<f32>,weights:vec4<f32>)->vec3<f32>{if(deformation.skinEnabled<0.5){return normal;}let total=weights.x+weights.y+weights.z+weights.w;if(total<=0.0001){return normal;}return normalize((jointMatrices[u32(joints.x)]*vec4<f32>(normal,0.0)*weights.x+jointMatrices[u32(joints.y)]*vec4<f32>(normal,0.0)*weights.y+jointMatrices[u32(joints.z)]*vec4<f32>(normal,0.0)*weights.z+jointMatrices[u32(joints.w)]*vec4<f32>(normal,0.0)*weights.w).xyz);} @vertex fn vs_main(input:VSIn)->VSOut{var out:VSOut;let localPosition=skinPosition(morphPosition(input.position,input.vertexIndex),input.joints,input.weights);let worldPosition=object.world*vec4<f32>(localPosition,1.0);out.position=camera.viewProjection*worldPosition;out.worldPosition=worldPosition.xyz;out.normal=normalize((object.world*vec4<f32>(skinNormal(input.normal,input.joints,input.weights),0.0)).xyz);out.uv=input.uv;return out;}`;
+  function packetInstances(packet) {
+    return packet.instances?.length ? packet.instances : [{ nodeId: packet.nodeId, worldMatrix: packet.worldMatrix, worldBounds: packet.worldBounds, distanceToCamera: packet.distanceToCamera }];
+  }
+  function packetInstanceCount(packet) {
+    return packet.instanceCount ?? packetInstances(packet).length;
+  }
+  function mergeSpatialBounds(a, b) {
+    const min = [Math.min(a.min[0], b.min[0]), Math.min(a.min[1], b.min[1]), Math.min(a.min[2], b.min[2])], max = [Math.max(a.max[0], b.max[0]), Math.max(a.max[1], b.max[1]), Math.max(a.max[2], b.max[2])], center = [(min[0] + max[0]) / 2, (min[1] + max[1]) / 2, (min[2] + max[2]) / 2];
+    return { min, max, center, radius: Math.max(distance3(min, center), distance3(max, center)) };
+  }
+  var VSR_SPATIAL_VERTEX_WGSL_V04 = `struct Camera { viewProjection: mat4x4<f32>, cameraPosition:vec4<f32>, ambient:vec4<f32>, sunDirection:vec4<f32>, sunColor:vec4<f32>, environmentDiffuse:vec4<f32>, environmentSpecular:vec4<f32>, environmentParams:vec4<f32> }; @group(0) @binding(0) var<uniform> camera: Camera; struct Object { world:mat4x4<f32> }; @group(1) @binding(0) var<uniform> object:Object; @group(1) @binding(1) var<storage,read> jointMatrices:array<mat4x4<f32>>; struct Deformation { skinEnabled:f32, vertexCount:f32, morphCount:f32, _pad:f32, morphWeights:vec4<f32> }; @group(1) @binding(2) var<uniform> deformation:Deformation; @group(1) @binding(3) var<storage,read> morphDeltas:array<vec4<f32>>; @group(1) @binding(4) var<storage,read> instanceMatrices:array<mat4x4<f32>>; struct VSIn { @location(0) position:vec3<f32>, @location(1) normal:vec3<f32>, @location(2) uv:vec2<f32>, @location(3) joints:vec4<f32>, @location(4) weights:vec4<f32>, @builtin(vertex_index) vertexIndex:u32, @builtin(instance_index) instanceIndex:u32 }; struct VSOut { @builtin(position) position:vec4<f32>, @location(0) worldPosition:vec3<f32>, @location(1) normal:vec3<f32>, @location(2) uv:vec2<f32> }; fn morphPosition(position:vec3<f32>,vertexIndex:u32)->vec3<f32>{var result=position;let vertexCount=u32(deformation.vertexCount);for(var morph:u32=0u;morph<4u;morph=morph+1u){if(morph<u32(deformation.morphCount)){result=result+morphDeltas[morph*vertexCount+vertexIndex].xyz*deformation.morphWeights[morph];}}return result;} fn skinPosition(position:vec3<f32>,joints:vec4<f32>,weights:vec4<f32>)->vec3<f32>{if(deformation.skinEnabled<0.5){return position;}let total=weights.x+weights.y+weights.z+weights.w;if(total<=0.0001){return position;}return(jointMatrices[u32(joints.x)]*vec4<f32>(position,1.0)*weights.x+jointMatrices[u32(joints.y)]*vec4<f32>(position,1.0)*weights.y+jointMatrices[u32(joints.z)]*vec4<f32>(position,1.0)*weights.z+jointMatrices[u32(joints.w)]*vec4<f32>(position,1.0)*weights.w).xyz/total;} fn skinNormal(normal:vec3<f32>,joints:vec4<f32>,weights:vec4<f32>)->vec3<f32>{if(deformation.skinEnabled<0.5){return normal;}let total=weights.x+weights.y+weights.z+weights.w;if(total<=0.0001){return normal;}return normalize((jointMatrices[u32(joints.x)]*vec4<f32>(normal,0.0)*weights.x+jointMatrices[u32(joints.y)]*vec4<f32>(normal,0.0)*weights.y+jointMatrices[u32(joints.z)]*vec4<f32>(normal,0.0)*weights.z+jointMatrices[u32(joints.w)]*vec4<f32>(normal,0.0)*weights.w).xyz);} @vertex fn vs_main(input:VSIn)->VSOut{var out:VSOut;let localPosition=skinPosition(morphPosition(input.position,input.vertexIndex),input.joints,input.weights);let instanceWorld=object.world*instanceMatrices[input.instanceIndex];let worldPosition=instanceWorld*vec4<f32>(localPosition,1.0);out.position=camera.viewProjection*worldPosition;out.worldPosition=worldPosition.xyz;out.normal=normalize((instanceWorld*vec4<f32>(skinNormal(input.normal,input.joints,input.weights),0.0)).xyz);out.uv=input.uv;return out;}`;
   var VSR_SPATIAL_FRAGMENT_WGSL_V04 = `
  struct ShadowCamera { lightViewProjection:mat4x4<f32>, params:vec4<f32> };
  @group(0) @binding(1) var shadowSampler:sampler;
@@ -1022,11 +1033,11 @@ fn environmentSample(direction:vec3<f32>,fallback:vec3<f32>)->vec3<f32>{return s
    let ambient=baseColor.rgb*camera.ambient.rgb*camera.ambient.a*ao;
    return vec4<f32>(environmentDiffuse+environmentSpecular+ambient+direct+material.emissive.rgb*emissiveSample.rgb*emissiveStrength,opacity);
  }`;
-  var VSR_SPATIAL_SHADOW_WGSL_V04 = `struct ShadowCamera { lightViewProjection:mat4x4<f32> }; @group(0) @binding(0) var<uniform> shadowCamera:ShadowCamera; struct Object { world:mat4x4<f32> }; @group(1) @binding(0) var<uniform> object:Object; @group(1) @binding(1) var<storage,read> jointMatrices:array<mat4x4<f32>>; struct Deformation { skinEnabled:f32, vertexCount:f32, morphCount:f32, _pad:f32, morphWeights:vec4<f32> }; @group(1) @binding(2) var<uniform> deformation:Deformation; @group(1) @binding(3) var<storage,read> morphDeltas:array<vec4<f32>>; struct ShadowIn { @location(0) position:vec3<f32>, @location(3) joints:vec4<f32>, @location(4) weights:vec4<f32>, @builtin(vertex_index) vertexIndex:u32 }; fn morphPosition(position:vec3<f32>,vertexIndex:u32)->vec3<f32>{var result=position;let vertexCount=u32(deformation.vertexCount);for(var morph:u32=0u;morph<4u;morph=morph+1u){if(morph<u32(deformation.morphCount)){result=result+morphDeltas[morph*vertexCount+vertexIndex].xyz*deformation.morphWeights[morph];}}return result;} fn skinPosition(position:vec3<f32>,joints:vec4<f32>,weights:vec4<f32>)->vec3<f32>{if(deformation.skinEnabled<0.5){return position;}let total=weights.x+weights.y+weights.z+weights.w;if(total<=0.0001){return position;}return(jointMatrices[u32(joints.x)]*vec4<f32>(position,1.0)*weights.x+jointMatrices[u32(joints.y)]*vec4<f32>(position,1.0)*weights.y+jointMatrices[u32(joints.z)]*vec4<f32>(position,1.0)*weights.z+jointMatrices[u32(joints.w)]*vec4<f32>(position,1.0)*weights.w).xyz/total;} @vertex fn vs_shadow(input:ShadowIn)->@builtin(position) vec4<f32>{let localPosition=skinPosition(morphPosition(input.position,input.vertexIndex),input.joints,input.weights);return shadowCamera.lightViewProjection*object.world*vec4<f32>(localPosition,1.0);}`;
+  var VSR_SPATIAL_SHADOW_WGSL_V04 = `struct ShadowCamera { lightViewProjection:mat4x4<f32> }; @group(0) @binding(0) var<uniform> shadowCamera:ShadowCamera; struct Object { world:mat4x4<f32> }; @group(1) @binding(0) var<uniform> object:Object; @group(1) @binding(1) var<storage,read> jointMatrices:array<mat4x4<f32>>; struct Deformation { skinEnabled:f32, vertexCount:f32, morphCount:f32, _pad:f32, morphWeights:vec4<f32> }; @group(1) @binding(2) var<uniform> deformation:Deformation; @group(1) @binding(3) var<storage,read> morphDeltas:array<vec4<f32>>; @group(1) @binding(4) var<storage,read> instanceMatrices:array<mat4x4<f32>>; struct ShadowIn { @location(0) position:vec3<f32>, @location(3) joints:vec4<f32>, @location(4) weights:vec4<f32>, @builtin(vertex_index) vertexIndex:u32, @builtin(instance_index) instanceIndex:u32 }; fn morphPosition(position:vec3<f32>,vertexIndex:u32)->vec3<f32>{var result=position;let vertexCount=u32(deformation.vertexCount);for(var morph:u32=0u;morph<4u;morph=morph+1u){if(morph<u32(deformation.morphCount)){result=result+morphDeltas[morph*vertexCount+vertexIndex].xyz*deformation.morphWeights[morph];}}return result;} fn skinPosition(position:vec3<f32>,joints:vec4<f32>,weights:vec4<f32>)->vec3<f32>{if(deformation.skinEnabled<0.5){return position;}let total=weights.x+weights.y+weights.z+weights.w;if(total<=0.0001){return position;}return(jointMatrices[u32(joints.x)]*vec4<f32>(position,1.0)*weights.x+jointMatrices[u32(joints.y)]*vec4<f32>(position,1.0)*weights.y+jointMatrices[u32(joints.z)]*vec4<f32>(position,1.0)*weights.z+jointMatrices[u32(joints.w)]*vec4<f32>(position,1.0)*weights.w).xyz/total;} @vertex fn vs_shadow(input:ShadowIn)->@builtin(position) vec4<f32>{let localPosition=skinPosition(morphPosition(input.position,input.vertexIndex),input.joints,input.weights);return shadowCamera.lightViewProjection*object.world*instanceMatrices[input.instanceIndex]*vec4<f32>(localPosition,1.0);}`;
   function compileSpatialFrame(scene, options = {}) {
     validateScene(scene);
     const budget = resolveSpatialBudget(options), baseAnimationOverrides = options.animationGraph ? sampleSpatialAnimationGraph(scene, options.animationGraph) : options.animationLayers ? sampleSpatialAnimationLayers(scene, options.animationLayers) : options.animation ? sampleSpatialAnimation(scene, options.animation.clipId, options.animation.timeSeconds, options.animation.loop ?? true) : /* @__PURE__ */ new Map(), animationConstraints = options.animationConstraints ?? [], animationOverrides = applySpatialAnimationConstraints(scene, baseAnimationOverrides, animationConstraints), visualIntentRoot = options.visualIntentRoot ?? null, animationRoot = cryptographicHash({ selection: options.animation ?? null, layers: options.animationLayers ?? null, graph: options.animationGraph ?? null, ...animationConstraints.length ? { animationConstraints } : {}, ...visualIntentRoot ? { visualIntentRoot } : {}, overrides: [...animationOverrides.entries()] }), camera = scene.cameras.find((entry) => entry.id === scene.activeCameraId), aspect = budget.width / budget.height, near = Math.max(1e-3, camera.near ?? 0.1), far = Math.max(near + 0.01, camera.far ?? 1e3), view = cameraViewMatrix(camera), projection = camera.projection === "orthographic" ? orthographicMat4(camera.orthoHeight ?? 10, aspect, near, far) : perspectiveMat4(camera.fovYDeg ?? 60, aspect, near, far), viewProjection = multiplyMat4(projection, view), cameraPos = cameraPosition(camera), world = worldMatrices(scene, animationOverrides), meshById = new Map(scene.meshes.map((mesh) => [mesh.id, mesh])), materialById = new Map(scene.materials.map((material) => [material.id, sanitizeMaterial(material)])), skinById = new Map((scene.skins ?? []).map((skin) => [skin.id, skin]));
-    const drawPackets = [];
+    const visiblePackets = [];
     let culled = 0;
     const lodHistogram = {};
     for (const node of scene.nodes) {
@@ -1049,12 +1060,28 @@ fn environmentSample(direction:vec3<f32>,fallback:vec3<f32>)->vec3<f32>{return s
       const materialId = node.materialId ?? scene.materials[0]?.id ?? "material:default";
       if (!materialById.has(materialId)) materialById.set(materialId, sanitizeMaterial({ id: materialId }));
       lodHistogram[String(selected.level)] = (lodHistogram[String(selected.level)] ?? 0) + 1;
-      const material = materialById.get(materialId), textureBindings = { baseColor: material.baseColorTextureId, metallicRoughness: material.metallicRoughnessTextureId, normal: material.normalTextureId, occlusion: material.occlusionTextureId, emissive: material.emissiveTextureId }, deformation = resolveSpatialDeformation(mesh, node, skinById, world);
-      const packetBase = { nodeId: node.id, meshId: mesh.id, materialId, worldMatrix: matrix, worldBounds: bounds, distanceToCamera: distance, lodLevel: selected.level, indexCount: mesh.indices.length, castShadow: node.castShadow ?? true, receiveShadow: node.receiveShadow ?? true, textureBindings, ...deformation };
-      drawPackets.push({ ...packetBase, packetRoot: cryptographicHash(packetBase) });
+      const material = materialById.get(materialId), textureBindings = { baseColor: material.baseColorTextureId, metallicRoughness: material.metallicRoughnessTextureId, normal: material.normalTextureId, occlusion: material.occlusionTextureId, emissive: material.emissiveTextureId }, deformation = resolveSpatialDeformation(mesh, node, skinById, world), instance = { nodeId: node.id, worldMatrix: matrix, worldBounds: bounds, distanceToCamera: distance }, packetBase = { nodeId: node.id, meshId: mesh.id, materialId, worldMatrix: matrix, worldBounds: bounds, distanceToCamera: distance, lodLevel: selected.level, indexCount: mesh.indices.length, castShadow: node.castShadow ?? true, receiveShadow: node.receiveShadow ?? true, textureBindings, ...deformation, instances: [instance], instanceCount: 1 };
+      visiblePackets.push({ ...packetBase, packetRoot: cryptographicHash(packetBase) });
     }
+    const groupedPackets = /* @__PURE__ */ new Map();
+    for (const packet of visiblePackets) {
+      const key = cryptographicHash({ meshId: packet.meshId, materialId: packet.materialId, lodLevel: packet.lodLevel, castShadow: packet.castShadow, receiveShadow: packet.receiveShadow, textureBindings: packet.textureBindings, deformationRoot: packet.deformationRoot }), existing = groupedPackets.get(key);
+      if (!existing) {
+        groupedPackets.set(key, packet);
+        continue;
+      }
+      const instances = [...packetInstances(existing), ...packetInstances(packet)];
+      existing.instances = instances;
+      existing.instanceCount = instances.length;
+      existing.worldBounds = mergeSpatialBounds(existing.worldBounds, packet.worldBounds);
+      existing.distanceToCamera = Math.min(existing.distanceToCamera, packet.distanceToCamera);
+    }
+    const drawPackets = [...groupedPackets.values()].map((packet) => {
+      const { packetRoot: _packetRoot, ...base2 } = packet;
+      return { ...base2, packetRoot: cryptographicHash(base2) };
+    });
     const lights = scene.lights.slice(0, budget.maxLights).map((light) => ({ ...light, color: light.color ?? "#ffffff", intensity: Math.max(0, light.intensity ?? 1), range: Math.max(1e-3, light.range ?? 10) })), environment = sanitizeSpatialEnvironment(scene.environment);
-    const shadowCasterCount = drawPackets.filter((packet) => packet.castShadow).length, passes = [];
+    const shadowCasterCount = drawPackets.reduce((sum, packet) => sum + (packet.castShadow ? packetInstanceCount(packet) : 0), 0), passes = [];
     if (budget.shadows && lights.some((light) => light.kind === "directional" && light.castShadow) && shadowCasterCount) passes.push({ id: "shadow-depth", kind: "shadow-depth", dependsOn: [], resourceIds: ["shadow-depth"] });
     passes.push({ id: "scene-depth-color", kind: "scene-depth-color", dependsOn: passes.length ? ["shadow-depth"] : [], resourceIds: ["scene-color", "scene-depth", ...passes.length ? ["shadow-depth"] : []] }, { id: "tone-map", kind: "tone-map", dependsOn: ["scene-depth-color"], resourceIds: ["scene-color", "present-color"] });
     const resources = [], activeSkinIds = new Set(drawPackets.map((packet) => packet.skinId).filter((id) => Boolean(id)));
@@ -1064,11 +1091,12 @@ fn environmentSample(direction:vec3<f32>,fallback:vec3<f32>)->vec3<f32>{return s
       if (mesh.morphTargets?.length) resources.push({ id: `mesh:${mesh.id}:morphs`, kind: "morph-buffer", byteLength: mesh.morphTargets.length * vertexCount * 4 * 4, resourceRoot: cryptographicHash(mesh.morphTargets) });
     }
     for (const skin of scene.skins ?? []) if (activeSkinIds.has(skin.id)) resources.push({ id: `skin:${skin.id}:joints`, kind: "joint-buffer", byteLength: skin.joints.length * 64, resourceRoot: cryptographicHash(skin) });
+    for (const packet of drawPackets) resources.push({ id: `instances:${packet.nodeId}`, kind: "instance-buffer", byteLength: packetInstanceCount(packet) * 64, resourceRoot: cryptographicHash(packetInstances(packet)) });
     for (const texture of scene.textures ?? []) resources.push({ id: `texture:${texture.id}`, kind: "texture-2d", byteLength: texture.pixels.length, format: "rgba8unorm", resourceRoot: cryptographicHash(texture) });
     resources.push({ id: "materials", kind: "material-buffer", byteLength: materialById.size * 64, resourceRoot: cryptographicHash([...materialById.values()]) }, { id: "lights", kind: "light-buffer", byteLength: lights.length * 64, resourceRoot: cryptographicHash(lights) }, { id: "scene-depth", kind: "depth-texture", byteLength: budget.width * budget.height * 4, format: "depth24plus", resourceRoot: cryptographicHash({ width: budget.width, height: budget.height, format: "depth24plus" }) }, { id: "scene-color", kind: "color-texture", byteLength: budget.width * budget.height * 8, format: "rgba16float", resourceRoot: cryptographicHash({ width: budget.width, height: budget.height, format: "rgba16float" }) }, { id: "present-color", kind: "color-texture", byteLength: budget.width * budget.height * 4, format: "bgra8unorm", resourceRoot: cryptographicHash({ width: budget.width, height: budget.height, format: "bgra8unorm" }) });
     if (passes.some((pass) => pass.id === "shadow-depth")) resources.push({ id: "shadow-depth", kind: "shadow-texture", byteLength: budget.shadowMapSize ** 2 * 4, format: "depth32float", resourceRoot: cryptographicHash({ size: budget.shadowMapSize, format: "depth32float" }) });
     const sourceRealityRoot = cryptographicHash({ format: scene.format, sceneId: scene.sceneId, reality: scene.reality ?? null }), geometryRoot = cryptographicHash(scene.meshes.map((mesh) => ({ id: mesh.id, positions: mesh.positions, normals: mesh.normals ?? null, uvs: mesh.uvs ?? null, indices: mesh.indices, jointIndices: mesh.jointIndices ?? null, jointWeights: mesh.jointWeights ?? null, morphTargets: mesh.morphTargets ?? null }))), materialRoot = cryptographicHash([...materialById.values()]), textureRoot = cryptographicHash(scene.textures ?? []), environmentRoot = cryptographicHash(environment), commandRoot = cryptographicHash({ drawPackets, passes, lights, budget, textureRoot, environmentRoot, animationRoot }), shaders = { vertex: VSR_SPATIAL_VERTEX_WGSL_V04, fragment: VSR_SPATIAL_FRAGMENT_WGSL_V04, shadowVertex: VSR_SPATIAL_SHADOW_WGSL_V04, sourceRoot: cryptographicHash([VSR_SPATIAL_VERTEX_WGSL_V04, VSR_SPATIAL_FRAGMENT_WGSL_V04, VSR_SPATIAL_SHADOW_WGSL_V04]) };
-    const stats = { meshCount: scene.meshes.length, nodeCount: scene.nodes.length, textureCount: (scene.textures ?? []).length, materialTextureBindings: drawPackets.reduce((sum, packet) => sum + Object.values(packet.textureBindings).filter(Boolean).length, 0), animationClipCount: (scene.animations ?? []).length, visibleDraws: drawPackets.length, culledDraws: culled, triangleCount: drawPackets.reduce((sum, packet) => sum + packet.indexCount / 3, 0), lightCount: lights.length, shadowCasterCount, skinnedDraws: drawPackets.filter((packet) => Boolean(packet.skinId)).length, morphedDraws: drawPackets.filter((packet) => packet.morphWeights.some((weight) => Math.abs(weight) > EPS)).length, lodHistogram };
+    const stats = { meshCount: scene.meshes.length, nodeCount: scene.nodes.length, textureCount: (scene.textures ?? []).length, materialTextureBindings: drawPackets.reduce((sum, packet) => sum + Object.values(packet.textureBindings).filter(Boolean).length, 0), animationClipCount: (scene.animations ?? []).length, visibleDraws: drawPackets.length, visibleInstances: visiblePackets.length, instancedDraws: drawPackets.filter((packet) => packetInstanceCount(packet) > 1).length, culledDraws: culled, triangleCount: drawPackets.reduce((sum, packet) => sum + packet.indexCount / 3 * packetInstanceCount(packet), 0), lightCount: lights.length, shadowCasterCount, skinnedDraws: drawPackets.reduce((sum, packet) => sum + (packet.skinId ? packetInstanceCount(packet) : 0), 0), morphedDraws: drawPackets.reduce((sum, packet) => sum + (packet.morphWeights.some((weight) => Math.abs(weight) > EPS) ? packetInstanceCount(packet) : 0), 0), lodHistogram };
     const base = { format: VSR_SPATIAL_FRAME_FORMAT, version: VSR_SPATIAL_REALITY_VERSION, sceneId: scene.sceneId, viewport: { width: budget.width, height: budget.height }, budget, camera: { id: camera.id, viewMatrix: view, projectionMatrix: projection, viewProjectionMatrix: viewProjection, position: cameraPos }, environment, drawPackets, lights, passes, resources, shaders, stats, sourceRealityRoot, geometryRoot, materialRoot, textureRoot, animationRoot, environmentRoot, ...visualIntentRoot ? { visualIntentRoot } : {}, commandRoot };
     return { ...base, frameRoot: cryptographicHash(base) };
   }
@@ -1081,6 +1109,9 @@ fn environmentSample(direction:vec3<f32>,fallback:vec3<f32>)->vec3<f32>{return s
       for (const id of pass.resourceIds) if (!resourceIds.has(id)) diagnostics.push(`pass ${pass.id} missing resource ${id}`);
     }
     for (const packet of plan.drawPackets) {
+      const instances = packetInstances(packet);
+      if (packet.instanceCount !== void 0 && packet.instanceCount !== instances.length) diagnostics.push(`draw packet ${packet.nodeId} instance count mismatch`);
+      if (!instances.length) diagnostics.push(`draw packet ${packet.nodeId} has no instances`);
       const { packetRoot, ...base2 } = packet;
       if (cryptographicHash(base2) !== packetRoot) diagnostics.push(`draw packet ${packet.nodeId} root mismatch`);
     }
@@ -1135,9 +1166,9 @@ fn environmentSample(direction:vec3<f32>,fallback:vec3<f32>)->vec3<f32>{return s
     const light = plan.lights.find((entry) => entry.kind === "directional" && entry.castShadow), packets = plan.drawPackets.filter((packet) => packet.castShadow);
     if (!plan.budget.shadows || !light || !packets.length) return void 0;
     let min = [Infinity, Infinity, Infinity], max = [-Infinity, -Infinity, -Infinity];
-    for (const packet of packets) {
-      min = [Math.min(min[0], packet.worldBounds.min[0]), Math.min(min[1], packet.worldBounds.min[1]), Math.min(min[2], packet.worldBounds.min[2])];
-      max = [Math.max(max[0], packet.worldBounds.max[0]), Math.max(max[1], packet.worldBounds.max[1]), Math.max(max[2], packet.worldBounds.max[2])];
+    for (const packet of packets) for (const instance of packetInstances(packet)) {
+      min = [Math.min(min[0], instance.worldBounds.min[0]), Math.min(min[1], instance.worldBounds.min[1]), Math.min(min[2], instance.worldBounds.min[2])];
+      max = [Math.max(max[0], instance.worldBounds.max[0]), Math.max(max[1], instance.worldBounds.max[1]), Math.max(max[2], instance.worldBounds.max[2])];
     }
     const center = [(min[0] + max[0]) / 2, (min[1] + max[1]) / 2, (min[2] + max[2]) / 2], radius = Math.max(1, distance3(min, max) / 2), direction = normalize3(light.direction ?? [-0.5, -1, -0.35]), eye = sub3(center, scale3(direction, radius * 2.5)), view = lookAtMat4(eye, center, [0, 1, 0]), projection = orthographicMat4(radius * 2.4, 1, 0.01, radius * 6);
     return { size: plan.budget.shadowMapSize, viewProjection: multiplyMat4(projection, view), bias: 25e-4 };
@@ -1147,12 +1178,12 @@ fn environmentSample(direction:vec3<f32>,fallback:vec3<f32>)->vec3<f32>{return s
     if (!camera) return void 0;
     const depth = new Float32Array(camera.size * camera.size);
     depth.fill(Infinity);
-    for (const packet of plan.drawPackets.filter((entry) => entry.castShadow)) {
+    for (const packet of plan.drawPackets.filter((entry) => entry.castShadow)) for (const instance of packetInstances(packet)) {
       const mesh = deformSpatialMesh(meshById.get(packet.meshId), packet);
       for (let i = 0; i < mesh.indices.length; i += 3) {
         const vertices = [];
         for (const index of [mesh.indices[i], mesh.indices[i + 1], mesh.indices[i + 2]]) {
-          const base = index * 3, v = projectVertex([mesh.positions[base], mesh.positions[base + 1], mesh.positions[base + 2]], [0, 1, 0], [0, 0], packet.worldMatrix, camera.viewProjection, camera.size, camera.size);
+          const base = index * 3, v = projectVertex([mesh.positions[base], mesh.positions[base + 1], mesh.positions[base + 2]], [0, 1, 0], [0, 0], instance.worldMatrix, camera.viewProjection, camera.size, camera.size);
           if (v) vertices.push(v);
         }
         if (vertices.length !== 3) continue;
@@ -1279,32 +1310,35 @@ fn environmentSample(direction:vec3<f32>,fallback:vec3<f32>)->vec3<f32>{return s
     const meshById = new Map(scene.meshes.map((mesh) => [mesh.id, { ...mesh, normals: mesh.normals ?? calculateMeshNormals(mesh) }])), materialById = new Map(scene.materials.map((material) => [material.id, material])), textureById = new Map((scene.textures ?? []).map((texture) => [texture.id, texture])), shadow = buildShadow(scene, plan, new Map([...meshById.entries()].map(([id, mesh]) => [id, mesh])));
     for (const packet of [...plan.drawPackets].sort((a, b) => a.distanceToCamera - b.distanceToCamera || a.nodeId.localeCompare(b.nodeId))) {
       const mesh = deformSpatialMesh(meshById.get(packet.meshId), packet), material = materialById.get(packet.materialId) ?? { id: packet.materialId }, sanitized = sanitizeMaterial(material);
-      for (let i = 0; i < mesh.indices.length; i += 3) {
-        const vertices = [];
-        for (const index of [mesh.indices[i], mesh.indices[i + 1], mesh.indices[i + 2]]) {
-          const p = index * 3, n = index * 3, v = projectVertex([mesh.positions[p], mesh.positions[p + 1], mesh.positions[p + 2]], [mesh.normals[n], mesh.normals[n + 1], mesh.normals[n + 2]], [mesh.uvs?.[index * 2] ?? 0, mesh.uvs?.[index * 2 + 1] ?? 0], packet.worldMatrix, plan.camera.viewProjectionMatrix, width, height);
-          if (v) vertices.push(v);
-        }
-        if (vertices.length !== 3) continue;
-        const [a, b, c] = vertices, area = edge(a, b, c.x, c.y);
-        if (Math.abs(area) < EPS) continue;
-        if (area < 0 && !sanitized.doubleSided) continue;
-        const faceNormal = normalize3(cross3(sub3(b.world, a.world), sub3(c.world, a.world))), basis = triangleTangentFrame(a, b, c, faceNormal), minX = Math.max(0, Math.floor(Math.min(a.x, b.x, c.x))), maxX = Math.min(width - 1, Math.ceil(Math.max(a.x, b.x, c.x))), minY = Math.max(0, Math.floor(Math.min(a.y, b.y, c.y))), maxY = Math.min(height - 1, Math.ceil(Math.max(a.y, b.y, c.y)));
-        for (let y = minY; y <= maxY; y++) for (let x = minX; x <= maxX; x++) {
-          const px = x + 0.5, py = y + 0.5, w0 = edge(b, c, px, py) / area, w1 = edge(c, a, px, py) / area, w2 = 1 - w0 - w1;
-          if (w0 < 0 || w1 < 0 || w2 < 0) continue;
-          const inv = w0 * a.invW + w1 * b.invW + w2 * c.invW;
-          if (inv <= 0) continue;
-          const p0 = w0 * a.invW / inv, p1 = w1 * b.invW / inv, p2 = w2 * c.invW / inv, z = p0 * a.depth + p1 * b.depth + p2 * c.depth, index = y * width + x;
-          if (z < 0 || z > 1 || z >= depth[index]) continue;
-          const world = [p0 * a.world[0] + p1 * b.world[0] + p2 * c.world[0], p0 * a.world[1] + p1 * b.world[1] + p2 * c.world[1], p0 * a.world[2] + p1 * b.world[2] + p2 * c.world[2]], normal = normalize3([p0 * a.normal[0] + p1 * b.normal[0] + p2 * c.normal[0], p0 * a.normal[1] + p1 * b.normal[1] + p2 * c.normal[1], p0 * a.normal[2] + p1 * b.normal[2] + p2 * c.normal[2]]), uv = [p0 * a.uv[0] + p1 * b.uv[0] + p2 * c.uv[0], p0 * a.uv[1] + p1 * b.uv[1] + p2 * c.uv[1]], sample = sampleSpatialMaterial(material, textureById, uv, normal, basis.tangent, basis.bitangent);
-          if (sample.discarded) continue;
-          depth[index] = z;
-          const rgb = shade(material, sample, world, plan.camera.position, plan.environment, textureById, plan.lights, shadow, packet.receiveShadow), opacity = sample.opacity;
-          color[index * 4] = rgb[0] * opacity + color[index * 4] * (1 - opacity);
-          color[index * 4 + 1] = rgb[1] * opacity + color[index * 4 + 1] * (1 - opacity);
-          color[index * 4 + 2] = rgb[2] * opacity + color[index * 4 + 2] * (1 - opacity);
-          color[index * 4 + 3] = 1;
+      for (const instance of packetInstances(packet)) {
+        const worldMatrix = instance.worldMatrix;
+        for (let i = 0; i < mesh.indices.length; i += 3) {
+          const vertices = [];
+          for (const index of [mesh.indices[i], mesh.indices[i + 1], mesh.indices[i + 2]]) {
+            const p = index * 3, n = index * 3, v = projectVertex([mesh.positions[p], mesh.positions[p + 1], mesh.positions[p + 2]], [mesh.normals[n], mesh.normals[n + 1], mesh.normals[n + 2]], [mesh.uvs?.[index * 2] ?? 0, mesh.uvs?.[index * 2 + 1] ?? 0], worldMatrix, plan.camera.viewProjectionMatrix, width, height);
+            if (v) vertices.push(v);
+          }
+          if (vertices.length !== 3) continue;
+          const [a, b, c] = vertices, area = edge(a, b, c.x, c.y);
+          if (Math.abs(area) < EPS) continue;
+          if (area < 0 && !sanitized.doubleSided) continue;
+          const faceNormal = normalize3(cross3(sub3(b.world, a.world), sub3(c.world, a.world))), basis = triangleTangentFrame(a, b, c, faceNormal), minX = Math.max(0, Math.floor(Math.min(a.x, b.x, c.x))), maxX = Math.min(width - 1, Math.ceil(Math.max(a.x, b.x, c.x))), minY = Math.max(0, Math.floor(Math.min(a.y, b.y, c.y))), maxY = Math.min(height - 1, Math.ceil(Math.max(a.y, b.y, c.y)));
+          for (let y = minY; y <= maxY; y++) for (let x = minX; x <= maxX; x++) {
+            const px = x + 0.5, py = y + 0.5, w0 = edge(b, c, px, py) / area, w1 = edge(c, a, px, py) / area, w2 = 1 - w0 - w1;
+            if (w0 < 0 || w1 < 0 || w2 < 0) continue;
+            const inv = w0 * a.invW + w1 * b.invW + w2 * c.invW;
+            if (inv <= 0) continue;
+            const p0 = w0 * a.invW / inv, p1 = w1 * b.invW / inv, p2 = w2 * c.invW / inv, z = p0 * a.depth + p1 * b.depth + p2 * c.depth, index = y * width + x;
+            if (z < 0 || z > 1 || z >= depth[index]) continue;
+            const world = [p0 * a.world[0] + p1 * b.world[0] + p2 * c.world[0], p0 * a.world[1] + p1 * b.world[1] + p2 * c.world[1], p0 * a.world[2] + p1 * b.world[2] + p2 * c.world[2]], normal = normalize3([p0 * a.normal[0] + p1 * b.normal[0] + p2 * c.normal[0], p0 * a.normal[1] + p1 * b.normal[1] + p2 * c.normal[1], p0 * a.normal[2] + p1 * b.normal[2] + p2 * c.normal[2]]), uv = [p0 * a.uv[0] + p1 * b.uv[0] + p2 * c.uv[0], p0 * a.uv[1] + p1 * b.uv[1] + p2 * c.uv[1]], sample = sampleSpatialMaterial(material, textureById, uv, normal, basis.tangent, basis.bitangent);
+            if (sample.discarded) continue;
+            depth[index] = z;
+            const rgb = shade(material, sample, world, plan.camera.position, plan.environment, textureById, plan.lights, shadow, packet.receiveShadow), opacity = sample.opacity;
+            color[index * 4] = rgb[0] * opacity + color[index * 4] * (1 - opacity);
+            color[index * 4 + 1] = rgb[1] * opacity + color[index * 4 + 1] * (1 - opacity);
+            color[index * 4 + 2] = rgb[2] * opacity + color[index * 4 + 2] * (1 - opacity);
+            color[index * 4 + 3] = 1;
+          }
         }
       }
     }
@@ -1357,6 +1391,11 @@ fn environmentSample(direction:vec3<f32>,fallback:vec3<f32>)->vec3<f32>{return s
   }
   function packSpatialObjectUniform(packet) {
     return transposeMat4(packet.worldMatrix);
+  }
+  function packSpatialInstanceBuffer(packet) {
+    const instances = packetInstances(packet), out = new Float32Array(instances.length * 16);
+    for (let index = 0; index < instances.length; index++) out.set(transposeMat4(instances[index].worldMatrix), index * 16);
+    return out;
   }
   function packSpatialJointBuffer(packet) {
     const joints = packet.jointMatrices.length ? packet.jointMatrices : [identityMat4()], out = new Float32Array(joints.length * 16);
@@ -1426,6 +1465,7 @@ fn environmentSample(direction:vec3<f32>,fallback:vec3<f32>)->vec3<f32>{return s
     meshBuffers = /* @__PURE__ */ new Map();
     materialBuffers = /* @__PURE__ */ new Map();
     objectBuffers = /* @__PURE__ */ new Map();
+    instanceBuffers = /* @__PURE__ */ new Map();
     deformationBuffers = /* @__PURE__ */ new Map();
     textures = /* @__PURE__ */ new Map();
     samplers = /* @__PURE__ */ new Map();
@@ -1542,13 +1582,25 @@ ${VSR_SPATIAL_FRAGMENT_WGSL_V04}` });
       return { view: texture.createView(), sampler };
     }
     objectBuffer(packet) {
-      const data = packSpatialObjectUniform(packet);
+      const data = transposeMat4(identityMat4());
       let buffer = this.objectBuffers.get(packet.nodeId);
       if (!buffer) {
         buffer = this.uploadBuffer(data, GPU_BUFFER_USAGE.UNIFORM);
         this.objectBuffers.set(packet.nodeId, buffer);
-      } else this.device.queue.writeBuffer(buffer, 0, data.buffer, data.byteOffset, data.byteLength);
+      }
       return buffer;
+    }
+    instanceBuffer(packet) {
+      const data = packSpatialInstanceBuffer(packet), root = cryptographicHash(packetInstances(packet)), cached = this.instanceBuffers.get(packet.nodeId);
+      if (!cached || cached.byteLength !== data.byteLength) {
+        cached?.buffer.destroy?.();
+        const buffer = this.uploadBuffer(data, GPU_BUFFER_USAGE.STORAGE);
+        this.instanceBuffers.set(packet.nodeId, { buffer, root, byteLength: data.byteLength });
+        return buffer;
+      }
+      if (cached.root !== root) this.device.queue.writeBuffer(cached.buffer, 0, data.buffer, data.byteOffset, data.byteLength);
+      if (cached.root !== root) this.instanceBuffers.set(packet.nodeId, { ...cached, root });
+      return cached.buffer;
     }
     deformation(scene, packet) {
       const mesh = scene.meshes.find((entry) => entry.id === packet.meshId);
@@ -1562,8 +1614,8 @@ ${VSR_SPATIAL_FRAGMENT_WGSL_V04}` });
       this.deformationBuffers.set(packet.nodeId, value);
       return value;
     }
-    objectGroup(pipeline, buffer, deformation) {
-      return this.device.createBindGroup({ layout: pipeline.getBindGroupLayout(1), entries: [{ binding: 0, resource: { buffer } }, { binding: 1, resource: { buffer: deformation.joint } }, { binding: 2, resource: { buffer: deformation.uniform } }, { binding: 3, resource: { buffer: deformation.morph } }] });
+    objectGroup(pipeline, buffer, instanceBuffer, deformation) {
+      return this.device.createBindGroup({ layout: pipeline.getBindGroupLayout(1), entries: [{ binding: 0, resource: { buffer } }, { binding: 1, resource: { buffer: deformation.joint } }, { binding: 2, resource: { buffer: deformation.uniform } }, { binding: 3, resource: { buffer: deformation.morph } }, { binding: 4, resource: { buffer: instanceBuffer } }] });
     }
     materialGroup(pipeline, scene, packet) {
       const material = scene.materials.find((entry) => entry.id === packet.materialId), base = this.textureResource(scene, material?.baseColorTextureId, "base"), metallicRoughness = this.textureResource(scene, material?.metallicRoughnessTextureId, "metallic-roughness"), normal = this.textureResource(scene, material?.normalTextureId, "normal"), occlusion = this.textureResource(scene, material?.occlusionTextureId, "occlusion"), emissive = this.textureResource(scene, material?.emissiveTextureId, "emissive");
@@ -1585,11 +1637,11 @@ ${VSR_SPATIAL_FRAGMENT_WGSL_V04}` });
         shadowPass.setPipeline(shadowPipeline);
         shadowPass.setBindGroup(0, shadowGroup);
         for (const packet of plan.drawPackets.filter((entry) => entry.castShadow)) {
-          const mesh = this.mesh(scene, packet.meshId), objectBuffer = this.objectBuffer(packet), deformation = this.deformation(scene, packet);
-          shadowPass.setBindGroup(1, this.objectGroup(shadowPipeline, objectBuffer, deformation));
+          const mesh = this.mesh(scene, packet.meshId), objectBuffer = this.objectBuffer(packet), instanceBuffer = this.instanceBuffer(packet), deformation = this.deformation(scene, packet);
+          shadowPass.setBindGroup(1, this.objectGroup(shadowPipeline, objectBuffer, instanceBuffer, deformation));
           shadowPass.setVertexBuffer(0, mesh.vertex);
           shadowPass.setIndexBuffer(mesh.index, "uint32");
-          shadowPass.drawIndexed(mesh.indexCount, 1, 0, 0, 0);
+          shadowPass.drawIndexed(mesh.indexCount, packetInstanceCount(packet), 0, 0, 0);
         }
         shadowPass.end();
       }
@@ -1597,18 +1649,18 @@ ${VSR_SPATIAL_FRAGMENT_WGSL_V04}` });
       pass.setPipeline(pipeline);
       pass.setBindGroup(0, cameraGroup);
       for (const packet of plan.drawPackets) {
-        const mesh = this.mesh(scene, packet.meshId), objectBuffer = this.objectBuffer(packet), deformation = this.deformation(scene, packet);
-        pass.setBindGroup(1, this.objectGroup(pipeline, objectBuffer, deformation));
+        const mesh = this.mesh(scene, packet.meshId), objectBuffer = this.objectBuffer(packet), instanceBuffer = this.instanceBuffer(packet), deformation = this.deformation(scene, packet);
+        pass.setBindGroup(1, this.objectGroup(pipeline, objectBuffer, instanceBuffer, deformation));
         pass.setBindGroup(2, this.materialGroup(pipeline, scene, packet));
         pass.setVertexBuffer(0, mesh.vertex);
         pass.setIndexBuffer(mesh.index, "uint32");
-        pass.drawIndexed(mesh.indexCount, 1, 0, 0, 0);
+        pass.drawIndexed(mesh.indexCount, packetInstanceCount(packet), 0, 0, 0);
       }
       pass.end();
       const commands = encoder.finish(), encodeMs = now() - encodeStart, submitStart = now();
       this.device.queue.submit([commands]);
       await this.device.queue.onSubmittedWorkDone?.();
-      const submitMs = now() - submitStart, base = { format: "vsr.spatial-webgpu-receipt.v0.4", frameRoot: plan.frameRoot, sceneId: scene.sceneId, adapterName: this.adapterName, drawCalls: plan.drawPackets.length, triangles: plan.stats.triangleCount, submitted: true, deviceLost: this.lost, compileMs, uploadMs, encodeMs, submitMs, materialTextureBindings: plan.stats.materialTextureBindings, shadowPasses: shadowCamera ? 1 : 0 };
+      const submitMs = now() - submitStart, base = { format: "vsr.spatial-webgpu-receipt.v0.4", frameRoot: plan.frameRoot, sceneId: scene.sceneId, adapterName: this.adapterName, drawCalls: plan.drawPackets.length, triangles: plan.stats.triangleCount, submitted: true, deviceLost: this.lost, compileMs, uploadMs, encodeMs, submitMs, materialTextureBindings: plan.stats.materialTextureBindings, shadowPasses: shadowCamera ? 1 : 0, visibleInstances: plan.stats.visibleInstances ?? plan.drawPackets.reduce((sum, packet) => sum + packetInstanceCount(packet), 0), instancedDraws: plan.stats.instancedDraws ?? plan.drawPackets.filter((packet) => packetInstanceCount(packet) > 1).length };
       return { ...base, receiptRoot: cryptographicHash(base) };
     }
     destroy() {
@@ -1618,6 +1670,7 @@ ${VSR_SPATIAL_FRAGMENT_WGSL_V04}` });
       }
       for (const material of this.materialBuffers.values()) material.buffer.destroy?.();
       for (const buffer of this.objectBuffers.values()) buffer.destroy?.();
+      for (const instance of this.instanceBuffers.values()) instance.buffer.destroy?.();
       for (const deformation of this.deformationBuffers.values()) {
         deformation.joint.destroy?.();
         deformation.morph.destroy?.();
@@ -1631,6 +1684,7 @@ ${VSR_SPATIAL_FRAGMENT_WGSL_V04}` });
       this.meshBuffers.clear();
       this.materialBuffers.clear();
       this.objectBuffers.clear();
+      this.instanceBuffers.clear();
       this.deformationBuffers.clear();
       this.textures.clear();
       this.samplers.clear();

@@ -124,6 +124,44 @@
             },
             "additionalProperties": false
           },
+          "instances": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": [
+                "nodeId",
+                "worldMatrix",
+                "worldBounds",
+                "distanceToCamera"
+              ],
+              "properties": {
+                "nodeId": {
+                  "type": "string"
+                },
+                "worldMatrix": {
+                  "type": "array",
+                  "minItems": 16,
+                  "maxItems": 16,
+                  "items": {
+                    "type": "number"
+                  }
+                },
+                "worldBounds": {
+                  "type": "object"
+                },
+                "distanceToCamera": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "instanceCount": {
+            "type": "integer",
+            "minimum": 1
+          },
           "packetRoot": {
             "type": "string",
             "pattern": "^[a-f0-9]{64}$"
@@ -155,6 +193,14 @@
           "minimum": 0
         },
         "materialTextureBindings": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "visibleInstances": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "instancedDraws": {
           "type": "integer",
           "minimum": 0
         }
