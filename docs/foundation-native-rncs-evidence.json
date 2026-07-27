@@ -4,9 +4,9 @@
   "canonicalRcl": {
     "repository": "xingxuling/RCL",
     "branch": "main",
-    "commit": "549231a9b9d916d8790aa089cf0ccdd034603df9",
-    "synchronizedFileCount": 19,
-    "scopeRoot": "3d88cb487b070423de06fc46ccf5ef703b0ddee90f99094d5d7630c391df03ad",
+    "commit": "0857429f0c120982f1e895c741c22ab936ddac9e",
+    "synchronizedFileCount": 22,
+    "scopeRoot": "6f4b98e09899daa2df6d211693ed4d715a8778483ee998149c83dfd3b1810a2d",
     "wholePackageByteIdentityClaimed": false,
     "downstreamDeltaFiles": [
       "native/native-windows-manifest.json",
@@ -44,9 +44,9 @@
         "replayVerified": true,
         "semanticStateRoot": null,
         "performance": {
-          "compileMs": "73.483",
-          "runtimeMs": "42.908",
-          "replayMs": "38.285",
+          "compileMs": "69.174",
+          "runtimeMs": "44.496",
+          "replayMs": "30.822",
           "sourceBytes": 3980,
           "bytecodeBytes": 2491,
           "estimatedWorkingSetBytes": 44020,
@@ -94,9 +94,9 @@
         "replayVerified": true,
         "semanticStateRoot": "63cd16830a065e8f38d27c020e118d69dfae12f75702dce3ee400aa834141e7b",
         "performance": {
-          "compileMs": "59.336",
-          "runtimeMs": "41.367",
-          "replayMs": "45.344",
+          "compileMs": "50.176",
+          "runtimeMs": "34.968",
+          "replayMs": "28.904",
           "sourceBytes": 2559,
           "bytecodeBytes": 2092,
           "estimatedWorkingSetBytes": 25511,
@@ -192,9 +192,9 @@
         "replayVerified": true,
         "semanticStateRoot": null,
         "performance": {
-          "compileMs": "53.380",
-          "runtimeMs": "41.950",
-          "replayMs": "29.627",
+          "compileMs": "47.573",
+          "runtimeMs": "40.118",
+          "replayMs": "26.635",
           "sourceBytes": 1512,
           "bytecodeBytes": 1643,
           "estimatedWorkingSetBytes": 15819,
@@ -248,6 +248,113 @@
           "parametersRoot": "266cf88fe49beaa9761e43bed4a554fdc184e4db2c2a5929e2f2ebd5a44c178b"
         }
       ]
+    },
+    "batchD": {
+      "execution": {
+        "providerId": "rcl.foundation.batch-d",
+        "providerAbi": 1,
+        "mode": "bridge",
+        "nativeVm": "rcl-native-vm/0.6.0-alpha.1",
+        "bytecodeVersion": "1.2",
+        "bytecodeRoot": "a12b15551b1ef54d49897224f9ae36c5d9aa52aea4f4071b0ad27f9b411b1224",
+        "domains": [
+          "energy",
+          "elemental",
+          "neural"
+        ],
+        "selectedActions": [
+          "transfer-bounded-energy",
+          "compose-bounded-material",
+          "integrate-signal-control"
+        ],
+        "finalStateRoot": "be4f3ec2e23b1de5c71a13a20da862fa617b695d443401c35de7e8a48572bdbd",
+        "deterministicReceiptRoot": "d3246a920156dff97a26eb6a995a756687fb6cadfde50ec634f4d3952431f2a1",
+        "replayVerified": true,
+        "semanticStateRoot": null,
+        "performance": {
+          "compileMs": "55.924",
+          "runtimeMs": "39.307",
+          "replayMs": "29.564",
+          "sourceBytes": 2965,
+          "bytecodeBytes": 2326,
+          "estimatedWorkingSetBytes": 26615,
+          "nativeInstructionCount": 32,
+          "resultCount": 3,
+          "providerCallCount": 3,
+          "cacheHitRate": "0.00",
+          "compressionRatio": "1.274721"
+        }
+      },
+      "rncs": {
+        "status": "committed",
+        "realityId": "reality:foundation-native-stack",
+        "baseGeneration": 3,
+        "baseGenerationRoot": "9e73b28e35c1e79f6ebd81c77c9be4a0d788ce34ce56aacbf3f932c0aa018be3",
+        "proposalRoot": "1c1af5652b86f5dc11cc4cd37652e7a9ea5c8ae0fbbf3f06b3355dc92cd6e0db",
+        "decisionRoot": "9bdbf7b7d03f80d6a6026d841630dbe7fa1b281ca00f783920a20a6a0912c256",
+        "commitRoot": "ebeb65142214e973d817581a96486d53fc8329fa72f582678543eeecc2db8816",
+        "envelopeRoot": "f31ea6657c085365b554aac401b00e8207cf19a1bc74ab88f697909f8b2d4f1f",
+        "generation": 4,
+        "generationRoot": "be4f3ec2e23b1de5c71a13a20da862fa617b695d443401c35de7e8a48572bdbd",
+        "bridgeReceiptRoot": "0c84c00c14a13de2c01bf6d1c534c5732df9356d39e4b05e29987e9054ef99da"
+      },
+      "semanticState": [
+        {
+          "path": "foundation.energy",
+          "parameters": {
+            "energy": {
+              "model": "bounded-transfer-v1",
+              "availableMilliJoules": 120000,
+              "requestedMilliJoules": 75000,
+              "effectiveMilliJoules": 75000,
+              "lossPpm": 10000,
+              "lossMilliJoules": 750,
+              "deliveredMilliJoules": 74250,
+              "remainingMilliJoules": 45000,
+              "tickBefore": 28,
+              "tickAfter": 29,
+              "clamped": false,
+              "mutationApplied": true
+            }
+          },
+          "parametersRoot": "85eeb2164a2858e85232d36b57a28d9411651ab8e5ea06b04850f69de8d2e928"
+        },
+        {
+          "path": "foundation.elemental",
+          "parameters": {
+            "elemental": {
+              "materialId": "material:steel",
+              "massMg": 250000,
+              "purityPpm": 950000,
+              "temperatureMilliK": 300000,
+              "energyUseMilliJoules": 50000,
+              "energyParentRoot": "b237b05f094a6551983d56586b513df7a6c91e5dd809662f6a1b3524d5ef7ec9",
+              "compositionState": "composed",
+              "stable": true,
+              "mutationApplied": true
+            }
+          },
+          "parametersRoot": "c1526f6588464d3134492d36f5a30717bd63b5111576c9924e79130f6fd9e833"
+        },
+        {
+          "path": "foundation.neural",
+          "parameters": {
+            "neural": {
+              "signalId": "signal:operator",
+              "amplitudePpm": 850000,
+              "effectiveAmplitudePpm": 850000,
+              "memoryBudgetBytes": 4096,
+              "retainedMemoryBytes": 2048,
+              "attentionWindow": 32,
+              "inhibitionPpm": 100000,
+              "controlScorePpm": 765000,
+              "elementalParentRoot": "84c81d43d61798f988aa34975e4bee6eeeb7c10b4c458b2d246bd56bdf33034c",
+              "mutationApplied": true
+            }
+          },
+          "parametersRoot": "455bd50e1fc47031d351ca4e9d0655901fa8cdd3af9aaec62f5d5dc7ed26b8b1"
+        }
+      ]
     }
   },
   "generationContinuity": {
@@ -261,7 +368,11 @@
     "batchCBaseGeneration": 2,
     "batchCBaseRoot": "39ac942239870c105c1894c9d81f292a823479626c0422215b3a392ea5baadb6",
     "batchCGeneration": 3,
-    "batchCFinalRoot": "9e73b28e35c1e79f6ebd81c77c9be4a0d788ce34ce56aacbf3f932c0aa018be3"
+    "batchCFinalRoot": "9e73b28e35c1e79f6ebd81c77c9be4a0d788ce34ce56aacbf3f932c0aa018be3",
+    "batchDBaseGeneration": 3,
+    "batchDBaseRoot": "9e73b28e35c1e79f6ebd81c77c9be4a0d788ce34ce56aacbf3f932c0aa018be3",
+    "batchDGeneration": 4,
+    "batchDFinalRoot": "be4f3ec2e23b1de5c71a13a20da862fa617b695d443401c35de7e8a48572bdbd"
   },
   "gateway": {
     "runtimeId": "rncs.rcl-foundation-native",
@@ -276,11 +387,12 @@
     "selectableBatches": [
       "batch-a",
       "meta-batch-b",
-      "batch-c"
+      "batch-c",
+      "batch-d"
     ],
     "runtimeManifestCount": 18,
-    "manifestSourceRoot": "4d98ba666a02125122c7477143aadb05445d7a3e297f99342e219c7efc1b9f61",
-    "bridgeSha256": "105a387d2a242d7429d8e65ffafd35e053e737fc5c94f46ec6efd31184766677",
+    "manifestSourceRoot": "3affc8158d9fc0c3c2730ce164ab60f0c52ba8f8d7db3e185ac7ca33fcf013ab",
+    "bridgeSha256": "f462a11393ec8a12f2f9efefdb01bd09a7872a39e59423bb20e972a3ed3b023b",
     "preparedProposalRoot": "3502485ab15d873290f6f559629f2f40dcc4d98f537cf60fe742a39a3f7dbcaf",
     "committedGenerationRoot": "39ac942239870c105c1894c9d81f292a823479626c0422215b3a392ea5baadb6",
     "verification": {
@@ -306,6 +418,19 @@
       "proposalRoot": "241f2d5b9f3f81dac50fb52df5075cc26caf878f59b874bd6aadeef33e031e80",
       "receiptRoot": "3af82e5ffce98e2179e81e34e15d48c77c9f399beb5cb15ca5c37a2875b4913e",
       "semanticStateRoot": null
+    },
+    "batchDPreparedProposalRoot": "1c1af5652b86f5dc11cc4cd37652e7a9ea5c8ae0fbbf3f06b3355dc92cd6e0db",
+    "batchDCommittedGenerationRoot": "be4f3ec2e23b1de5c71a13a20da862fa617b695d443401c35de7e8a48572bdbd",
+    "batchDVerification": {
+      "ok": true,
+      "errors": [],
+      "status": "committed",
+      "batch": "batch-d",
+      "providerId": "rcl.foundation.batch-d",
+      "envelopeRoot": "d532d81340307904b84312587955a2884370f69232438bf425fec9cca08d4d40",
+      "proposalRoot": "1c1af5652b86f5dc11cc4cd37652e7a9ea5c8ae0fbbf3f06b3355dc92cd6e0db",
+      "receiptRoot": "d3246a920156dff97a26eb6a995a756687fb6cadfde50ec634f4d3952431f2a1",
+      "semanticStateRoot": null
     }
   },
   "checks": {
@@ -314,6 +439,7 @@
     "batchAStandardResultCount": true,
     "metaStandardResultCount": true,
     "batchCStandardResultCount": true,
+    "batchDStandardResultCount": true,
     "nativeReplay": true,
     "proposalsVerified": true,
     "humanApprovalRecorded": true,
@@ -325,8 +451,9 @@
     "gatewayRuntimeRegistered": true,
     "gatewayAuthoritySeparated": true,
     "gatewayMetaCommitted": true,
-    "gatewayBatchCCommitted": true
+    "gatewayBatchCCommitted": true,
+    "gatewayBatchDCommitted": true
   },
   "evidenceRootScope": "all fields except wall-clock compileMs, runtimeMs, and replayMs",
-  "evidenceRoot": "8ce7ad45291857ebcc90e661ae6e1358e42ff2fc9aabbf5a5a4719e9a79ce00c"
+  "evidenceRoot": "32286848581dad52396106a67e8bd41f31963fc2473cd503b163e2d5039bb9db"
 }

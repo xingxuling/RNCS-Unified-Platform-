@@ -15,9 +15,9 @@ const RECEIPT_PATH = path.join(
   RCL_ROOT,
   'FOUNDATION-NATIVE-BRIDGE-SOURCE.json',
 );
-const EXPECTED_COMMIT = '549231a9b9d916d8790aa089cf0ccdd034603df9';
+const EXPECTED_COMMIT = '0857429f0c120982f1e895c741c22ab936ddac9e';
 const EXPECTED_SCOPE_ROOT =
-  '3d88cb487b070423de06fc46ccf5ef703b0ddee90f99094d5d7630c391df03ad';
+  '6f4b98e09899daa2df6d211693ed4d715a8778483ee998149c83dfd3b1810a2d';
 
 function sha256(value) {
   return crypto.createHash('sha256').update(value).digest('hex');
@@ -89,6 +89,7 @@ if (
   !receipt.providerIds?.includes('rcl.foundation.batch-a')
   || !receipt.providerIds?.includes('rcl.foundation.meta-batch-b')
   || !receipt.providerIds?.includes('rcl.foundation.batch-c')
+  || !receipt.providerIds?.includes('rcl.foundation.batch-d')
 ) {
   problems.push('provider IDs');
 }

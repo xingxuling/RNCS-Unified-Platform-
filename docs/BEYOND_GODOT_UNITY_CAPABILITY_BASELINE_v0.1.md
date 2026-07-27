@@ -224,3 +224,32 @@ Nine base domains and two composite planes remain without direct standard-result
 invocation in RNCS. The Godot/Unity gaps in editor workflow, asset authoring,
 production networking scale, platform distribution, and ecosystem depth remain
 open.
+
+## 11. Verified Progress v0.7
+
+RCL Foundation Native Batch D now adds a third engine-facing causal chain to the
+same Native VM and RNCS authority path:
+
+- `energy` performs bounded integer milli-joule transfer with capped loss,
+  remaining budget, tick mutation, and explicit clamping.
+- `elemental` validates material, mass, purity, temperature, and energy-use
+  parameters, then binds `energyParentRoot` to the preceding energy result.
+- `neural` validates signal, amplitude, memory, attention, and inhibition
+  budgets, then derives retained memory and a deterministic control score while
+  binding `elementalParentRoot`.
+
+Batch D is registered as a fourth `RclVmProviderV1` bridge and is compiled into
+RNCS Proposal/Authority/Commit with separate human approval and commit
+confirmation. Canonical RCL source synchronization now covers 22 files from
+RCL main commit `0857429`; the four-generation evidence chain ends at generation
+4. RCL and the vendored RNCS conformance harness both report 78/78 checks,
+RNCS Foundation integration reports 22/22, Gateway reports 26/26, and the
+rooted four-batch evidence report has 19/19 checks passing.
+
+This verifies fourteen Foundation entries through four Native Provider bridges:
+the remaining six base domains and two composite planes still lack direct
+standard-result invocation in RNCS. All four batches remain `bridge` mode;
+declared Foundation syntax lowering, a production editor, full asset/rendering
+parity, public-WAN scale, platform distribution, and ecosystem depth remain
+open. This is measurable runtime progress, not a claim of complete Godot/Unity
+replacement.
