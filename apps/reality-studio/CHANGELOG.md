@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- Added VSR-backed runtime asset streaming from the v1.4 content-addressed cache, with dependency-first loading, SHA-256 verification, CLI/API entry points and explicit failure receipts.
 - Added a governed behavior live-update transaction for unified sessions.
 - Added deterministic candidate replay, explicit resolver authorization and commit confirmation.
 - Preserved runtime tick/entity state during committed hot reloads and exported live-update manifest evidence.

@@ -11,6 +11,7 @@ export * from './ui-input.mjs';
 
 export * from './asset-continuity.mjs';
 export * from './asset-database.mjs';
+export * from './asset-streaming.mjs';
 
 export * from './spatial-studio.mjs';
 

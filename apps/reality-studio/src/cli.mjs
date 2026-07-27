@@ -14,6 +14,7 @@ import {compileSceneNavigation,findPath,smoothPath,pathWorldPoints,worldToCell} 
 import {layoutUITree} from './ui-input.mjs';
 import {AssetForgeSession} from './asset-forge.mjs';
 import {createAssetDatabase} from './asset-database.mjs';
+import {streamSpatialAssets} from './asset-streaming.mjs';
 
 const args=process.argv.slice(2),cmd=args.shift()??'serve';
 const opt=n=>{const i=args.indexOf(n);return i>=0?args[i+1]:null;};
@@ -76,6 +77,9 @@ try{
     const project=ensureUIInputProject(loadUnified()),projectPath=path.resolve(opt('--project')),cacheDir=path.resolve(opt('--cache-dir')??path.join(path.dirname(projectPath),'output','asset-cache')),profiles=(opt('--profiles')??'runtime').split(',').map(value=>value.trim()).filter(Boolean),sourceRoot=opt('--source-root'),autoSync=args.includes('--auto-sync'),db=createAssetDatabase(project,{cacheDir,profiles}),watcher=db.watch({sourceRoots:sourceRoot?[sourceRoot]:undefined,recursive:!args.includes('--no-recursive'),intervalMs:Number(opt('--interval')??1000),autoSync});
     const duration=Number(opt('--duration')??0);let result=null;if(duration>0){watcher.start();await new Promise(resolve=>setTimeout(resolve,duration));watcher.stop();if(autoSync){const out=path.resolve(opt('--out')??'output/project-with-asset-database.unified-project.json'),persisted=sealUnifiedProject(db.project,{touch:true});write(out,persisted);result={output:out,project_root:persisted.project_root};}}else{result=await watcher.poll({force:true});watcher.stop();if(result.synced?.project){const out=path.resolve(opt('--out')??'output/project-with-asset-database.unified-project.json');write(out,sealUnifiedProject(result.synced.project,{touch:true}));result.output=out;}}
     console.log(JSON.stringify({result,watcher:watcher.inspect()},null,2));
+  }else if(cmd==='asset-stream'){
+    const project=ensureUIInputProject(loadUnified()),cacheDir=path.resolve(opt('--cache-dir')??path.join(path.dirname(path.resolve(opt('--project'))),'output','asset-cache')),profile=opt('--profile')??'runtime',requestedAssetIds=(opt('--assets')??'').split(',').map(value=>value.trim()).filter(Boolean),activeCellIds=(opt('--cells')??'').split(',').map(value=>value.trim()).filter(Boolean),number=value=>value===null?undefined:Number(value),result=await streamSpatialAssets(project,{requestedAssetIds,activeCellIds,maxAssets:number(opt('--max-assets')),maxBytes:number(opt('--max-bytes'))},{cacheDir,profile,maxConcurrent:number(opt('--max-concurrent'))}),out=path.resolve(opt('--out')??'output/asset-streaming-receipt.json');
+    write(out,result);console.log(JSON.stringify({out,format:result.format,catalog_root:result.catalogRoot,receipt_root:result.receipt.receiptRoot,ready:result.receipt.readyAssetIds.length,failed:result.receipt.failedAssetIds.length,blocked:result.receipt.blockedAssetIds.length},null,2));
   }else if(cmd==='unified-validate'){
     const v=validateUnifiedProject(loadUnified());console.log(JSON.stringify(v,null,2));if(!v.valid)process.exitCode=1;
   }else if(cmd==='gpu-frame'){
@@ -110,6 +114,6 @@ try{
     for(const[k,v]of Object.entries(artifacts))write(path.join(out,k+'.json'),v);write(path.join(out,'session.json'),session.inspect());
     console.log(JSON.stringify({out,tick:session.behavior.runtime.state.tick,timeline_entries:artifacts.runtime_timeline.entries.length,timeline_cursor:artifacts.runtime_timeline.cursor,replay_root:artifacts.runtime_replay.replay_root,deterministic:artifacts.runtime_replay.deterministic,checkpoint_id:checkpoint.runtime_checkpoint.checkpoint_id},null,2));
   }else{
-     console.error('Usage: reality-studio-native serve|new|validate|migrate|compile|branch-evaluate|branch-adopt|branch-commit|health|preview|commit|behavior-validate|behavior-compile|behavior-demo|asset-forge-demo|asset-import|asset-reimport|asset-audit|asset-ledger|asset-database-plan|asset-database-sync|asset-database-watch|unified-validate|gpu-frame|ui-layout|navigation-path|spatial-validate|spatial-demo|spatial-frame|unified-demo|runtime-timeline-demo');process.exitCode=2;
+     console.error('Usage: reality-studio-native serve|new|validate|migrate|compile|branch-evaluate|branch-adopt|branch-commit|health|preview|commit|behavior-validate|behavior-compile|behavior-demo|asset-forge-demo|asset-import|asset-reimport|asset-audit|asset-ledger|asset-database-plan|asset-database-sync|asset-database-watch|asset-stream|unified-validate|gpu-frame|ui-layout|navigation-path|spatial-validate|spatial-demo|spatial-frame|unified-demo|runtime-timeline-demo');process.exitCode=2;
   }
 }catch(e){console.error(JSON.stringify({error:{code:e.code??'ERROR',message:e.message,details:e.details??{}}},null,2));process.exitCode=1;}
