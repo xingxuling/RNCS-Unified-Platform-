@@ -13,7 +13,7 @@ export type VSRSpatialProjection='perspective'|'orthographic';
 export type VSRSpatialLightKind='ambient'|'directional'|'point';
 export type VSRSpatialQualityTier='economy'|'balanced'|'quality'|'cinematic';
 
-export interface VSRSpatialTransform {translation?:Vec3;rotationEulerDeg?:Vec3;scale?:Vec3}
+export interface VSRSpatialTransform {translation?:Vec3;rotationEulerDeg?:Vec3;rotationQuaternion?:Vec4;scale?:Vec3}
 export interface VSRSpatialMorphTarget {id?:string;positions:number[];normals?:number[];defaultWeight?:number}
 export interface VSRSpatialSkin {id:string;joints:string[];inverseBindMatrices?:Mat4[]}
 export interface VSRSpatialMesh {
@@ -59,8 +59,9 @@ export interface VSRSpatialTexture {
   wrapV?:'repeat'|'clamp';
   filter?:'nearest'|'linear';
 }
-export type VSRSpatialAnimationPath='translation'|'rotationEulerDeg'|'scale';
-export interface VSRSpatialAnimationChannel {nodeId:string;path:VSRSpatialAnimationPath;times:number[];values:Vec3[];interpolation?:'LINEAR'|'STEP'}
+export type VSRSpatialAnimationPath='translation'|'rotationEulerDeg'|'rotationQuaternion'|'scale';
+export type VSRSpatialAnimationValue=Vec3|Vec4;
+export interface VSRSpatialAnimationChannel {nodeId:string;path:VSRSpatialAnimationPath;times:number[];values:VSRSpatialAnimationValue[];inTangents?:VSRSpatialAnimationValue[];outTangents?:VSRSpatialAnimationValue[];interpolation?:'LINEAR'|'STEP'|'CUBICSPLINE'}
 export interface VSRSpatialAnimationClip {id:string;duration:number;channels:VSRSpatialAnimationChannel[]}
 export interface VSRSpatialLOD {maxDistance:number;meshId:string}
 export interface VSRSpatialNode {
@@ -189,6 +190,11 @@ const length3=(a:Vec3):number=>Math.hypot(a[0],a[1],a[2]);
 const normalize3=(a:Vec3):Vec3=>{const l=length3(a);return l<EPS?[0,0,0]:[a[0]/l,a[1]/l,a[2]/l]};
 const distance3=(a:Vec3,b:Vec3):number=>length3(sub3(a,b));
 const radians=(deg:number):number=>deg*Math.PI/180;
+const dot4=(a:Vec4,b:Vec4):number=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2]+a[3]*b[3];
+const normalizeQuaternion=(value:Vec4):Vec4=>{const length=Math.hypot(value[0],value[1],value[2],value[3]);return length<EPS?[0,0,0,1]:[value[0]/length,value[1]/length,value[2]/length,value[3]/length]};
+
+export function quaternionSlerp(a:Vec4,b:Vec4,t:number):Vec4{let end=normalizeQuaternion(b),start=normalizeQuaternion(a),cosine=dot4(start,end);if(cosine<0){end=[-end[0],-end[1],-end[2],-end[3]];cosine=-cosine}if(cosine>.9995)return normalizeQuaternion([start[0]+(end[0]-start[0])*t,start[1]+(end[1]-start[1])*t,start[2]+(end[2]-start[2])*t,start[3]+(end[3]-start[3])*t]);const angle=Math.acos(clamp(cosine,-1,1)),sinAngle=Math.sin(angle),aWeight=Math.sin((1-t)*angle)/sinAngle,bWeight=Math.sin(t*angle)/sinAngle;return normalizeQuaternion([start[0]*aWeight+end[0]*bWeight,start[1]*aWeight+end[1]*bWeight,start[2]*aWeight+end[2]*bWeight,start[3]*aWeight+end[3]*bWeight])}
+function quaternionToMat4(value:Vec4):Mat4{const [x,y,z,w]=normalizeQuaternion(value),xx=x*x,yy=y*y,zz=z*z,xy=x*y,xz=x*z,yz=y*z,wx=w*x,wy=w*y,wz=w*z;return[1-2*(yy+zz),2*(xy-wz),2*(xz+wy),0,2*(xy+wz),1-2*(xx+zz),2*(yz-wx),0,2*(xz-wy),2*(yz+wx),1-2*(xx+yy),0,0,0,0,1]}
 
 export function identityMat4():Mat4{return[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]}
 export function multiplyMat4(a:Mat4,b:Mat4):Mat4{const out=new Array<number>(16).fill(0);for(let r=0;r<4;r++)for(let c=0;c<4;c++)for(let k=0;k<4;k++)out[r*4+c]!+=a[r*4+k]!*b[k*4+c]!;return out as Mat4}
@@ -202,14 +208,16 @@ export function transformPoint3(m:Mat4,p:Vec3):Vec3{const v=transformVec4(m,[p[0
 export function transformDirection3(m:Mat4,p:Vec3):Vec3{return normalize3([m[0]*p[0]+m[1]*p[1]+m[2]*p[2],m[4]*p[0]+m[5]*p[1]+m[6]*p[2],m[8]*p[0]+m[9]*p[1]+m[10]*p[2]])}
 
 export function transformToMat4(transform:VSRSpatialTransform={}):Mat4{
-  const [tx,ty,tz]=transform.translation??[0,0,0], [rx,ry,rz]=(transform.rotationEulerDeg??[0,0,0]).map(radians) as Vec3, [sx,sy,sz]=transform.scale??[1,1,1];
+  const [tx,ty,tz]=transform.translation??[0,0,0], [sx,sy,sz]=transform.scale??[1,1,1];
+  const [rx,ry,rz]=(transform.rotationEulerDeg??[0,0,0]).map(radians) as Vec3;
   const cx=Math.cos(rx),sxv=Math.sin(rx),cy=Math.cos(ry),syv=Math.sin(ry),cz=Math.cos(rz),szv=Math.sin(rz);
   const mx:Mat4=[1,0,0,0,0,cx,-sxv,0,0,sxv,cx,0,0,0,0,1];
   const my:Mat4=[cy,0,syv,0,0,1,0,0,-syv,0,cy,0,0,0,0,1];
   const mz:Mat4=[cz,-szv,0,0,szv,cz,0,0,0,0,1,0,0,0,0,1];
   const scale:Mat4=[sx,0,0,0,0,sy,0,0,0,0,sz,0,0,0,0,1];
   const translation:Mat4=[1,0,0,tx,0,1,0,ty,0,0,1,tz,0,0,0,1];
-  return multiplyMat4(translation,multiplyMat4(mz,multiplyMat4(my,multiplyMat4(mx,scale))));
+  const rotation=transform.rotationQuaternion?quaternionToMat4(transform.rotationQuaternion):multiplyMat4(mz,multiplyMat4(my,mx));
+  return multiplyMat4(translation,multiplyMat4(rotation,scale));
 }
 export function perspectiveMat4(fovYDeg:number,aspect:number,near:number,far:number):Mat4{const f=1/Math.tan(radians(fovYDeg)/2),nf=1/(near-far);return[f/aspect,0,0,0,0,f,0,0,0,0,(far+near)*nf,2*far*near*nf,0,0,-1,0]}
 export function orthographicMat4(height:number,aspect:number,near:number,far:number):Mat4{const width=height*aspect;return[2/width,0,0,0,0,2/height,0,0,0,0,-2/(far-near),-(far+near)/(far-near),0,0,0,1]}
@@ -276,11 +284,15 @@ function validateScene(scene:VSRSpatialScene3D):void{
     for(const textureId of bindings)if(!textureIds.has(textureId))throw new Error(`Material ${material.id} missing texture ${textureId}.`);
   }
   for(const node of scene.nodes){if(node.parentId&&!nodeIds.has(node.parentId))throw new Error(`Node ${node.id} missing parent ${node.parentId}.`);if(node.meshId&&!scene.meshes.some(mesh=>mesh.id===node.meshId))throw new Error(`Node ${node.id} missing mesh ${node.meshId}.`);if(node.materialId&&!scene.materials.some(material=>material.id===node.materialId))throw new Error(`Node ${node.id} missing material ${node.materialId}.`);if(node.skinId&&!skinIds.has(node.skinId))throw new Error(`Node ${node.id} missing skin ${node.skinId}.`)}
-  for(const clip of scene.animations??[]){if(clip.duration<0)throw new Error(`Animation ${clip.id} duration must be non-negative.`);for(const channel of clip.channels){if(!nodeIds.has(channel.nodeId))throw new Error(`Animation ${clip.id} missing node ${channel.nodeId}.`);if(channel.times.length!==channel.values.length||!channel.times.length)throw new Error(`Animation ${clip.id} channel length mismatch.`)}}
+  const animationIds=new Set<string>();
+  for(const clip of scene.animations??[]){if(animationIds.has(clip.id))throw new Error(`Duplicate animation ${clip.id}.`);animationIds.add(clip.id);if(!Number.isFinite(clip.duration)||clip.duration<0)throw new Error(`Animation ${clip.id} duration must be non-negative.`);for(const channel of clip.channels){if(!nodeIds.has(channel.nodeId))throw new Error(`Animation ${clip.id} missing node ${channel.nodeId}.`);const dimension=channel.path==='rotationQuaternion'?4:3;if(channel.times.length!==channel.values.length||!channel.times.length)throw new Error(`Animation ${clip.id} channel length mismatch.`);if(channel.interpolation==='CUBICSPLINE'&&(channel.inTangents?.length!==channel.values.length||channel.outTangents?.length!==channel.values.length))throw new Error(`Animation ${clip.id} cubic channel tangent length mismatch.`);for(let index=0;index<channel.times.length;index++){if(!Number.isFinite(channel.times[index]!)||(index>0&&channel.times[index]!<channel.times[index-1]!))throw new Error(`Animation ${clip.id} channel times must be finite and ordered.`);const value=channel.values[index]!;if(value.length!==dimension||value.some(component=>!Number.isFinite(component)))throw new Error(`Animation ${clip.id} channel value dimension mismatch.`);for(const tangent of [channel.inTangents?.[index],channel.outTangents?.[index]])if(tangent&&(tangent.length!==dimension||tangent.some(component=>!Number.isFinite(component))))throw new Error(`Animation ${clip.id} channel tangent dimension mismatch.`)}}}
 }
 
 function lerpVec3(a:Vec3,b:Vec3,t:number):Vec3{return[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,a[2]+(b[2]-a[2])*t]}
-export function sampleSpatialAnimation(scene:VSRSpatialScene3D,clipId:string,timeSeconds:number,loop=true):Map<string,VSRSpatialTransform>{const clip=(scene.animations??[]).find(entry=>entry.id===clipId);if(!clip)throw new Error(`Missing animation ${clipId}.`);const t=clip.duration>0?(loop?((timeSeconds%clip.duration)+clip.duration)%clip.duration:clamp(timeSeconds,0,clip.duration)):0,out=new Map<string,VSRSpatialTransform>();for(const channel of clip.channels){let index=0;while(index<channel.times.length-2&&t>=channel.times[index+1]!)index++;const aTime=channel.times[index]!,bTime=channel.times[Math.min(index+1,channel.times.length-1)]!,span=Math.max(EPS,bTime-aTime),alpha=channel.interpolation==='STEP'?0:clamp((t-aTime)/span,0,1),value=lerpVec3(channel.values[index]!,channel.values[Math.min(index+1,channel.values.length-1)]!,alpha),current=out.get(channel.nodeId)??{};current[channel.path]=value;out.set(channel.nodeId,current)}return out}
+function hermiteVec3(a:Vec3,b:Vec3,outTangent:Vec3,inTangent:Vec3,t:number,span:number):Vec3{const t2=t*t,t3=t2*t,h00=2*t3-3*t2+1,h10=t3-2*t2+t,h01=-2*t3+3*t2,h11=t3-t2;return[h00*a[0]+h10*span*outTangent[0]+h01*b[0]+h11*span*inTangent[0],h00*a[1]+h10*span*outTangent[1]+h01*b[1]+h11*span*inTangent[1],h00*a[2]+h10*span*outTangent[2]+h01*b[2]+h11*span*inTangent[2]]}
+function hermiteVec4(a:Vec4,b:Vec4,outTangent:Vec4,inTangent:Vec4,t:number,span:number):Vec4{const t2=t*t,t3=t2*t,h00=2*t3-3*t2+1,h10=t3-2*t2+t,h01=-2*t3+3*t2,h11=t3-t2;return[h00*a[0]+h10*span*outTangent[0]+h01*b[0]+h11*span*inTangent[0],h00*a[1]+h10*span*outTangent[1]+h01*b[1]+h11*span*inTangent[1],h00*a[2]+h10*span*outTangent[2]+h01*b[2]+h11*span*inTangent[2],h00*a[3]+h10*span*outTangent[3]+h01*b[3]+h11*span*inTangent[3]]}
+function sampleAnimationValue(channel:VSRSpatialAnimationChannel,index:number,nextIndex:number,alpha:number,span:number):VSRSpatialAnimationValue{const a=channel.values[index]!,b=channel.values[nextIndex]!;if(channel.interpolation==='STEP')return channel.path==='rotationQuaternion'?normalizeQuaternion(a as Vec4):a;if(channel.path==='rotationQuaternion'){if(channel.interpolation==='CUBICSPLINE'&&channel.outTangents?.[index]&&channel.inTangents?.[nextIndex])return normalizeQuaternion(hermiteVec4(a as Vec4,b as Vec4,channel.outTangents[index] as Vec4,channel.inTangents[nextIndex] as Vec4,alpha,span));return quaternionSlerp(a as Vec4,b as Vec4,alpha)}if(channel.interpolation==='CUBICSPLINE'&&channel.outTangents?.[index]&&channel.inTangents?.[nextIndex])return hermiteVec3(a as Vec3,b as Vec3,channel.outTangents[index] as Vec3,channel.inTangents[nextIndex] as Vec3,alpha,span);return lerpVec3(a as Vec3,b as Vec3,alpha)}
+export function sampleSpatialAnimation(scene:VSRSpatialScene3D,clipId:string,timeSeconds:number,loop=true):Map<string,VSRSpatialTransform>{const clip=(scene.animations??[]).find(entry=>entry.id===clipId);if(!clip)throw new Error(`Missing animation ${clipId}.`);const t=clip.duration>0?(loop?((timeSeconds%clip.duration)+clip.duration)%clip.duration:clamp(timeSeconds,0,clip.duration)):0,out=new Map<string,VSRSpatialTransform>();for(const channel of clip.channels){let index=0;while(index<channel.times.length-2&&t>=channel.times[index+1]!)index++;const nextIndex=Math.min(index+1,channel.times.length-1),aTime=channel.times[index]!,bTime=channel.times[nextIndex]!,span=Math.max(EPS,bTime-aTime),alpha=channel.interpolation==='STEP'?0:clamp((t-aTime)/span,0,1),value=sampleAnimationValue(channel,index,nextIndex,alpha,span),current=out.get(channel.nodeId)??{};if(channel.path==='translation')current.translation=value as Vec3;else if(channel.path==='scale')current.scale=value as Vec3;else if(channel.path==='rotationQuaternion')current.rotationQuaternion=value as Vec4;else current.rotationEulerDeg=value as Vec3;out.set(channel.nodeId,current)}return out}
 
 function worldMatrices(scene:VSRSpatialScene3D,overrides=new Map<string,VSRSpatialTransform>()):Map<string,Mat4>{const byId=new Map(scene.nodes.map(node=>[node.id,node])),cache=new Map<string,Mat4>(),visiting=new Set<string>();const resolve=(id:string):Mat4=>{const cached=cache.get(id);if(cached)return cached;if(visiting.has(id))throw new Error(`Node hierarchy cycle at ${id}.`);visiting.add(id);const node=byId.get(id)!,override=overrides.get(id)??{},effective={...node.transform,...override},local=transformToMat4(effective),world=node.parentId?multiplyMat4(resolve(node.parentId),local):local;cache.set(id,world);visiting.delete(id);return world};for(const node of scene.nodes)resolve(node.id);return cache}
 function resolveSpatialMorphWeights(mesh:VSRSpatialMesh,node:VSRSpatialNode):number[]{return(mesh.morphTargets??[]).slice(0,4).map((target,index)=>clamp(node.morphWeights?.[index]??target.defaultWeight??0,-1,1))}
