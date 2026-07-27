@@ -1,4 +1,4 @@
-import test from 'node:test';import assert from 'node:assert/strict';import {buildBrowserBehaviorRuntime,buildBrowserRSRRuntime,buildBrowserVSRRuntime,buildGameSource,renderIndexHtml} from '../src/index.mjs';
+import test from 'node:test';import assert from 'node:assert/strict';import {buildBrowserBehaviorRuntime,buildBrowserRSRRuntime,buildBrowserSpatial3DRuntime,buildBrowserVSRRuntime,buildGameSource,renderIndexHtml} from '../src/index.mjs';
 const runtime=buildBrowserBehaviorRuntime(),game=buildGameSource();
 test('浏览器行为运行时可解析',()=>assert.doesNotThrow(()=>new Function(runtime)));
 test('浏览器游戏宿主可解析',()=>assert.doesNotThrow(()=>new Function(game)));
@@ -11,6 +11,7 @@ test('游戏宿主包含特效 Provider',()=>assert.match(game,/experience\.effe
 test('游戏宿主包含 VSR WebGPU 入口与回退',()=>{assert.match(game,/VSRRealtimeWebGPUExecutor/);assert.match(game,/Canvas 2D/);assert.match(game,/gpu_frame_plan/)});
 test('浏览器 VSR 入口无 Node 依赖',()=>{const source=buildBrowserVSRRuntime();assert.doesNotMatch(source,/node:/);assert.match(source,/VSRRealtimeWebGPUExecutor/);assert.match(source,/createRealtimeWebGPUFrame/);assert.match(source,/verifyRealtimeWebGPUFrame/);assert.match(source,/__RNCSVSR__/)});
 test('浏览器 RSR 入口包含真实空间运行时',()=>{const source=buildBrowserRSRRuntime();assert.doesNotMatch(source,/node:/);assert.match(source,/SpatialEmbodimentWorld/);assert.match(source,/verifySpatialEmbodimentSnapshot/);assert.match(source,/__RNCSRSR__/)});
+test('浏览器 VSR 3D 入口无 Node 依赖并暴露真实执行器',()=>{const source=buildBrowserSpatial3DRuntime();assert.doesNotMatch(source,/node:/);assert.match(source,/VSRSpatialWebGPUExecutor/);assert.match(source,/compileSpatialFrame/);assert.match(source,/verifySpatialFrame/);assert.match(source,/__RNCS3D__/);assert.doesNotThrow(()=>new Function(source))});
 test('游戏宿主按行为 Tick 生成动态 GPU 帧快照',()=>{assert.match(game,/dynamicGPUFrame/);assert.match(game,/gpuFrameSnapshot/);assert.match(game,/runtime\.stateRoot\(\)/)});
 test('单文件 HTML 嵌入运行时',()=>{const h=renderIndexHtml({title:'T',inline:true,runtimeSource:runtime,rsrRuntimeSource:'window.__RNCSRSR__={};',gpuRuntimeSource:'window.__RNCSVSR__={};',gameSource:game,payload:{project:{},assets:{},build:{}}});assert.match(h,/RNCSBehavior/);assert.match(h,/__RNCSRSR__/);assert.match(h,/__RNCSVSR__/);assert.doesNotMatch(h,/src="runtime\.js"/)});
 test('文件夹 HTML 引用外部脚本',()=>{const h=renderIndexHtml({title:'T'});assert.match(h,/src="runtime\.js"/);assert.match(h,/src="rsr-runtime\.js"/);assert.match(h,/src="vsr-runtime\.js"/);assert.match(h,/src="game\.js"/)});
