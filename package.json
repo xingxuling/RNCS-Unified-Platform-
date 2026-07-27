@@ -22,7 +22,7 @@
     "release": "node scripts/release.mjs",
     "fusion": "python tools/aetherfusion_adapter.py",
     "workbench": "node scripts/build-workbench.mjs",
-    "build:world": "npm run build --workspace @taowind/reality-simulation-runtime && npm run build --workspace @taowind/visual-state-runtime",
+    "build:world": "npm run build --workspace @taowind/visual-state-runtime && npm run build --workspace @taowind/reality-simulation-runtime",
     "test:world": "npm test --workspace @taowind/reality-asset-genesis-fabric && npm test --workspace @taowind/reality-simulation-runtime && npm test --workspace @taowind/visual-state-runtime",
     "test:apps": "npm test --workspace @taowind/reality-studio-native && npm test --workspace @taowind/reality-build-fabric && npm test --workspace @taowind/dml-core-runtime && npm test --workspace @taowind/dml-remote-link",
     "test:host": "node scripts/test-host.mjs",

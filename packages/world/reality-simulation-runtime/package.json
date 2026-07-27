@@ -5,6 +5,7 @@
   "type": "module",
   "description": "Reality-native authoritative spatial simulation with deterministic convex Sphere-Box-Capsule collision, friction warm starts, deterministic constraint islands, island sleep, coyote time, jump buffering and v0.7 network state compatibility.",
   "scripts": {
+    "prebuild": "npm run build --workspace @taowind/visual-state-runtime",
     "clean": "node scripts/clean.mjs",
     "build": "node scripts/build.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
@@ -43,6 +44,9 @@
     "node": ">=20"
   },
   "license": "Apache-2.0",
+  "dependencies": {
+    "@taowind/visual-state-runtime": "*"
+  },
   "exports": {
     ".": "./src/unified-index.mjs",
     "./network-reconciliation": "./dist/packages/network-reconciliation/src/index.js",

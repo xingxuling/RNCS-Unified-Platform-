@@ -31,7 +31,8 @@ const failures = required.filter(path => !existsSync(path)).map(path => `missing
 const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
 if (!['reality-simulation-runtime','@taowind/reality-simulation-runtime'].includes(pkg.name)) failures.push(`package-name:${pkg.name}`);
 if (pkg.version !== '0.9.0-alpha.1') failures.push(`package-version:${pkg.version}`);
-if (Object.keys(pkg.dependencies ?? {}).length) failures.push('runtime-dependencies-must-be-zero');
+const runtimeDependencies = Object.keys(pkg.dependencies ?? {});
+if (runtimeDependencies.some(name => name !== '@taowind/visual-state-runtime')) failures.push('runtime-dependencies-must-be-central-vsr-only');
 
 function json(path) { return existsSync(path) ? JSON.parse(readFileSync(path, 'utf8')) : {}; }
 const spatial = json('outputs/spatial-embodiment-verify/demo-evidence.json');
@@ -65,7 +66,7 @@ const sourceFiles = walk('packages').filter(path => /\.(ts|js|mjs)$/.test(path))
 const spatialArtifacts = walk('outputs/spatial-embodiment-verify').filter(path => /\.(png|json)$/.test(path));
 const audit = {
   format: 'rsr.release-audit.v0.6', version: pkg.version, ok: failures.length === 0, failures,
-  sourceFileCount: sourceFiles.length, packageRuntimeDependencies: Object.keys(pkg.dependencies ?? {}).length,
+  sourceFileCount: sourceFiles.length, packageRuntimeDependencies: runtimeDependencies,
   testSummary: { vsr: '29/29', simulationV01: '11/11', constraintPhysicsV02: '19/19', embodiedDynamicsV03: '30/30', temporalExperienceV04: '35/35', spatialEmbodimentV06: '59/59', total: '189/189' },
   spatialRoots: spatial.roots,
   spatialReality: spatial.reality,
