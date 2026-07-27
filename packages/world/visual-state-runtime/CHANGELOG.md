@@ -10,7 +10,8 @@
 - 新增 RCL RNCS Visual Intent v0.1 consumer，验证 content root 后统一编译 clip、layers、graph、node mask、look-at/two-bone IK constraints 与 skin/morph deformation；
 - 新增确定性环境光照颜色项，统一 CPU 参考渲染与 WebGPU Camera uniform，并将 Environment Root 纳入 Command/Frame Root；图像探针 IBL 与 GI 仍保留为后续边界；
 - `environment.textureId` 接入 RGBA equirectangular 环境纹理；新增 CPU/WebGPU 方向采样、基础 roughness lobe 混合和环境纹理 bind group 证据；预过滤 mip、探针混合和 GI 仍未完成；
-- 新增确定性静态实例合批；CPU 参考渲染逐实例保真，WebGPU scene/shadow pass 使用 instance matrix storage buffer 与 `instanceCount`，并把可见实例、实例 draw 和 instance buffer 纳入帧证据；GPU-driven indirect draw 与流式分区仍未完成；
+- 新增确定性静态实例合批与 World Partition streaming；CPU 参考渲染逐实例保真，WebGPU scene/shadow pass 使用 instance matrix storage buffer 与 `instanceCount`，并把可见实例、实例 draw、streaming root 和 instance buffer 纳入帧证据；
+- 新增默认关闭的 `gpuDrivenCulling`：显式共享 compute bind group layout，compute pass 按实例 bounds 写 visible-index 与 indirect args，scene pass 使用 `drawIndexedIndirect`；fake WebGPU 编码链已验收，真实硬件像素、驱动兼容与性能仍需浏览器 GPU 验收；
 
 ## 0.4.0-alpha.1
 
