@@ -86,6 +86,8 @@
     "verify:v12": "npm test && npm run test:vsr && npm run build:sample && npm run build:offline:v12 && npm run browser-test:v12 && npm run server-api-test:v12 && npm run ui-input-benchmark && npm run audit:release",
     "asset-audit": "node src/cli.mjs asset-audit --project examples/冰境试炼.unified-project.json",
     "asset-ledger": "node src/cli.mjs asset-ledger --project examples/冰境试炼.unified-project.json --out output/asset-continuity-ledger.json",
+    "asset-database-plan": "node src/cli.mjs asset-database-plan --project examples/冰境试炼.unified-project.json --source-root examples/assets --cache-dir output/asset-cache --out output/asset-change-plan.json",
+    "asset-database-sync": "node src/cli.mjs asset-database-sync --project examples/冰境试炼.unified-project.json --source-root examples/assets --cache-dir output/asset-cache --out output/project-with-asset-database.unified-project.json",
     "asset-benchmark": "node scripts/asset_continuity_benchmark.mjs",
     "build:offline:v13": "python scripts/build_offline_v13.py",
     "browser-test:v13": "python tests/browser_asset_continuity_test.py",

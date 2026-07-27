@@ -10,6 +10,7 @@ export * from './tilemap-navigation.mjs';
 export * from './ui-input.mjs';
 
 export * from './asset-continuity.mjs';
+export * from './asset-database.mjs';
 
 export * from './spatial-studio.mjs';
 
