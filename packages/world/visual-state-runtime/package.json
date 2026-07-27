@@ -3,7 +3,7 @@
   "version": "0.8.0-alpha.1",
   "private": false,
   "type": "module",
-  "description": "Reality-native visual runtime with full glTF PBR texture channels, bilinear sampling, tangent-space normal mapping, alpha masking, deterministic 3D projection and authority-preserving temporal correction.",
+  "description": "Reality-native visual runtime with glTF PBR texture channels, deterministic environment lighting, bilinear sampling, tangent-space normal mapping, alpha masking, 3D projection and authority-preserving temporal correction.",
   "scripts": {
     "clean": "node scripts/clean.mjs",
     "build": "node scripts/build.mjs",

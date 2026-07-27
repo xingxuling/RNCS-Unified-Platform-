@@ -56,6 +56,28 @@
     "camera": {
       "type": "object"
     },
+    "environment": {
+      "type": "object",
+      "required": [
+        "diffuseColor",
+        "specularColor",
+        "intensity"
+      ],
+      "properties": {
+        "diffuseColor": {
+          "type": "string"
+        },
+        "specularColor": {
+          "type": "string"
+        },
+        "intensity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 32
+        }
+      },
+      "additionalProperties": false
+    },
     "drawPackets": {
       "type": "array",
       "items": {
@@ -159,6 +181,10 @@
       "pattern": "^[a-f0-9]{64}$"
     },
     "animationRoot": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "environmentRoot": {
       "type": "string",
       "pattern": "^[a-f0-9]{64}$"
     }
