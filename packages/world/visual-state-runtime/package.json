@@ -43,7 +43,8 @@
     "release:audit:v04": "npm run typecheck && npm run lint && npm run test && npm run test:e2e && npm run benchmark:spatial-3d && npm run verify:spatial-3d && node scripts/release-audit-v04.mjs",
     "release:audit:v05": "npm run typecheck && npm run lint && npm test && npm run test:e2e && npm run verify:spatial-3d && npm run benchmark:spatial-3d && node scripts/release-audit-v05.mjs",
     "test:temporal": "npm run build && node dist/tests/temporal-presentation.js",
-    "test:gltf": "npm run build && node dist/tests/gltf-asset.js"
+    "test:gltf": "npm run build && node dist/tests/gltf-asset.js",
+    "build:spatial-browser": "node scripts/build-spatial-browser.mjs"
   },
   "engines": {
     "node": ">=20"
@@ -57,6 +58,7 @@
     "./gltf-asset": "./dist/packages/gltf-asset/src/index.js"
   },
   "devDependencies": {
+    "esbuild": "^0.28.1",
     "typescript": "5.9.3"
   }
 }

@@ -1,4 +1,4 @@
-import {compileSpatialFrame,createSpatialShowcaseScene,probeSpatialWebGPU,VSRSpatialWebGPUExecutor} from '../../packages/spatial-reality-3d/src/index.js';
+const {compileSpatialFrame,createSpatialShowcaseScene,probeSpatialWebGPU,VSRSpatialWebGPUExecutor}=window.VSRSpatial3D;
 const canvas=document.querySelector('#gpu'),fallback=document.querySelector('#fallback'),mode=document.querySelector('#mode'),fps=document.querySelector('#fps'),root=document.querySelector('#root'),button=document.querySelector('#toggle');
 const scene=createSpatialShowcaseScene();let executor,paused=false,last=performance.now(),frames=0,lastFps=last;
 const set=(id,value)=>{document.querySelector(`#${id}`).textContent=value};

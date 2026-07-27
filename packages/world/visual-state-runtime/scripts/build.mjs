@@ -22,6 +22,15 @@ if (result.error) {
   process.exit(1);
 }
 if (result.status !== 0) process.exit(result.status ?? 1);
+const browserResult = spawnSync(process.execPath, [path.join(packageRoot, 'scripts/build-spatial-browser.mjs')], {
+  cwd: packageRoot,
+  stdio: 'inherit'
+});
+if (browserResult.error) {
+  console.error(`VSR_BUILD_BROWSER_SPAWN_FAILED: ${browserResult.error.message}`);
+  process.exit(1);
+}
+if (browserResult.status !== 0) process.exit(browserResult.status ?? 1);
 mkdirSync(path.join(packageRoot, 'dist/apps/studio'), { recursive: true });
 cpSync(path.join(packageRoot, 'apps/studio'), path.join(packageRoot, 'dist/apps/studio'), { recursive: true });
 mkdirSync(path.join(packageRoot, 'dist/apps/webgpu-v03'), { recursive: true });
