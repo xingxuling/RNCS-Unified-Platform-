@@ -14,6 +14,7 @@ VSR是RNCS的独立视觉时间投影、三维资产和可验证像素执行层�
 - WebGPU Frame Receipt记录材质纹理绑定数与shadow pass数；设备无关fake-device验收覆盖完整编码链。
 - WebGPU与CPU参考路径已接入四影响骨骼蒙皮和最多四个Morph Target；glTF JOINTS_0、WEIGHTS_0、skins与targets/POSITION可直接导入。
 - 动画采样保留glTF原生四元数，支持最短弧SLERP、STEP、LINEAR和CUBICSPLINE Hermite关键帧；旋转不再先降成欧拉角。
+- 编译选项支持确定性动画图状态、状态过渡、Override/Additive图层和显式node mask；混合结果进入Animation Root与Frame Root。
 - 变形状态进入Draw Packet、Geometry Root、joint/morph GPU resource root和Frame Root。
 
 ## 运行
@@ -31,4 +32,4 @@ npm test
 - 真实浏览器GPU adapter、纹理采样结果、Shadow Map像素正确性和GPU性能仍待硬件验收；当前不声称实机帧率。
 - 压缩图像解码仍由宿主资产管线提供RGBA。
 - IBL/GI、服务器级世界分区仍未完成。
-- TAA、XR双目、动画图混合、加法层、骨骼遮罩和IK仍未完成。
+- TAA、XR双目、双骨骼IK和look-at仍未完成；真实硬件GPU像素/性能验收仍待浏览器环境。
