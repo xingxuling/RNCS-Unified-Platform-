@@ -13,7 +13,7 @@ test('server exposes project and behavior native endpoints',async()=>{
   try{
     const h=await fetch(url+'/api/health').then(r=>r.json());
     assert.equal(h.status,'healthy');assert.equal(h.behavior_native,true);assert.equal(h.webgpu_viewport,true);assert.equal(h.studio_version,'1.5.0-alpha.1');assert.equal(h.ui_native,true);assert.equal(h.input_native,true);assert.equal(h.asset_continuity_native,true);assert.equal(h.asset_reimport,true);assert.equal(h.dependency_graph,true);
-     assert.equal(h.runtime_timeline,true);assert.equal(h.runtime_replay,true);assert.equal(h.runtime_time_travel,true);
+    assert.equal(h.runtime_timeline,true);assert.equal(h.runtime_replay,true);assert.equal(h.runtime_time_travel,true);assert.equal(h.asset_database,true);assert.equal(h.asset_incremental_cache,true);assert.equal(h.asset_watch,true);
     const p=await fetch(url+'/api/project/new').then(r=>r.json());
     assert.equal(p.format,'reality-studio.project.v0.8');
     const v=await post(url,'/api/project/validate',{project:p});assert.equal(v.valid,true);
@@ -37,7 +37,10 @@ test('server exposes project and behavior native endpoints',async()=>{
     const audit=await post(url,'/api/unified/session/command',{session_id:us.session_id,command:'audit-assets'});assert.equal(audit.valid,true);assert.ok(audit.audit_root);
     const graph=await post(url,'/api/unified/session/command',{session_id:us.session_id,command:'asset-dependency-graph'});assert.equal(graph.nodes.length,5);assert.ok(graph.graph_root);
     const ledger=await post(url,'/api/unified/session/command',{session_id:us.session_id,command:'asset-ledger'});assert.equal(ledger.assets.length,5);assert.ok(ledger.ledger_root);
+    const sourceRoot=path.join(dir,'asset-source');fs.mkdirSync(sourceRoot,{recursive:true});fs.writeFileSync(path.join(sourceRoot,'server-db.png'),'server-db');
+    const plan=await post(url,'/api/unified/session/command',{session_id:us.session_id,command:'asset-database-plan',source_roots:[sourceRoot],cache_dir:path.join(dir,'asset-cache')});assert.equal(plan.items.length,1);assert.equal(plan.items[0].status,'added');
+    us=await post(url,'/api/unified/session/command',{session_id:us.session_id,command:'asset-database-sync',source_roots:[sourceRoot],cache_dir:path.join(dir,'asset-cache'),profiles:['runtime']});assert.equal(us.asset_database_summary.added,1);assert.equal(us.assets.count,6);assert.ok(us.assets.database.last_sync_root);
     const gf=await post(url,'/api/unified/session/gpu-frame',{session_id:us.session_id,quality:'quality'});assert.equal(gf.frame.transport_format,'reality-studio.serialized-gpu-frame.v1.0');assert.ok(gf.summary.frame_plan_root);
-     const ue=await post(url,'/api/unified/session/export',{session_id:us.session_id});assert.ok(ue.build_plan.build_root);assert.ok(ue.runtime_timeline.timeline_root);assert.ok(ue.runtime_replay.replay_root);assert.equal(ue.runtime_replay.deterministic,true);assert.equal(ue.asset_manifest.assets.length,5);assert.ok(ue.asset_continuity_ledger.ledger_root);assert.ok(ue.gpu_viewport_manifest.manifest_root);assert.ok(ue.ui_input_manifest.manifest_root);
+     const ue=await post(url,'/api/unified/session/export',{session_id:us.session_id});assert.ok(ue.build_plan.build_root);assert.ok(ue.runtime_timeline.timeline_root);assert.ok(ue.runtime_replay.replay_root);assert.equal(ue.runtime_replay.deterministic,true);assert.equal(ue.asset_manifest.assets.length,6);assert.ok(ue.asset_database.database_root);assert.ok(ue.asset_continuity_ledger.ledger_root);assert.ok(ue.gpu_viewport_manifest.manifest_root);assert.ok(ue.ui_input_manifest.manifest_root);
   }finally{await new Promise(r=>server.close(r));}
 });

@@ -13,6 +13,7 @@ import {importAssetSource,reimportLocalAsset,auditAssetContinuity,createAssetCon
 import {compileSceneNavigation,findPath,smoothPath,pathWorldPoints,worldToCell} from './tilemap-navigation.mjs';
 import {layoutUITree} from './ui-input.mjs';
 import {AssetForgeSession} from './asset-forge.mjs';
+import {createAssetDatabase} from './asset-database.mjs';
 
 const args=process.argv.slice(2),cmd=args.shift()??'serve';
 const opt=n=>{const i=args.indexOf(n);return i>=0?args[i+1]:null;};
@@ -67,6 +68,14 @@ try{
     const project=ensureUIInputProject(loadUnified()),audit=auditAssetContinuity(project,{strictFiles:args.includes('--strict-files')});console.log(JSON.stringify(audit,null,2));if(!audit.valid)process.exitCode=1;
   }else if(cmd==='asset-ledger'){
     const project=ensureUIInputProject(loadUnified()),ledger=createAssetContinuityLedger(project,{strictFiles:args.includes('--strict-files')}),out=path.resolve(opt('--out')??'output/asset-continuity-ledger.json');write(out,ledger);console.log(JSON.stringify({out,ledger_root:ledger.ledger_root,summary:ledger.audit.summary},null,2));
+  }else if(cmd==='asset-database-plan'||cmd==='asset-database-sync'){
+    const project=ensureUIInputProject(loadUnified()),projectPath=path.resolve(opt('--project')),cacheDir=path.resolve(opt('--cache-dir')??path.join(path.dirname(projectPath),'output','asset-cache')),profiles=(opt('--profiles')??'runtime').split(',').map(value=>value.trim()).filter(Boolean),sourceRoot=opt('--source-root'),db=createAssetDatabase(project,{cacheDir,profiles}),options={cacheDir,profiles,sourceRoots:sourceRoot?[sourceRoot]:undefined,recursive:!args.includes('--no-recursive')};
+    if(cmd==='asset-database-plan'){const plan=db.plan(options),out=path.resolve(opt('--out')??'output/asset-change-plan.json'),groups=Object.groupBy(plan.items,item=>item.status),summary=Object.fromEntries(Object.entries(groups).map(([status,items])=>[status,items.length]));write(out,plan);console.log(JSON.stringify({out,plan_root:plan.plan_root,items:plan.items.length,summary},null,2));}
+    else{const result=db.sync(options),sealed=sealUnifiedProject(result.project,{touch:true}),out=path.resolve(opt('--out')??'output/project-with-asset-database.unified-project.json');write(out,sealed);write(`${out}.plan.json`,result.plan);write(`${out}.sync.json`,result.sync_receipt);console.log(JSON.stringify({out,plan_root:result.plan.plan_root,sync_root:result.sync_receipt.sync_root,summary:result.summary,cache_index_root:result.cache_index.index_root,project_root:sealed.project_root},null,2));}
+  }else if(cmd==='asset-database-watch'){
+    const project=ensureUIInputProject(loadUnified()),projectPath=path.resolve(opt('--project')),cacheDir=path.resolve(opt('--cache-dir')??path.join(path.dirname(projectPath),'output','asset-cache')),profiles=(opt('--profiles')??'runtime').split(',').map(value=>value.trim()).filter(Boolean),sourceRoot=opt('--source-root'),autoSync=args.includes('--auto-sync'),db=createAssetDatabase(project,{cacheDir,profiles}),watcher=db.watch({sourceRoots:sourceRoot?[sourceRoot]:undefined,recursive:!args.includes('--no-recursive'),intervalMs:Number(opt('--interval')??1000),autoSync});
+    const duration=Number(opt('--duration')??0);let result=null;if(duration>0){watcher.start();await new Promise(resolve=>setTimeout(resolve,duration));watcher.stop();if(autoSync){const out=path.resolve(opt('--out')??'output/project-with-asset-database.unified-project.json'),persisted=sealUnifiedProject(db.project,{touch:true});write(out,persisted);result={output:out,project_root:persisted.project_root};}}else{result=await watcher.poll({force:true});watcher.stop();if(result.synced?.project){const out=path.resolve(opt('--out')??'output/project-with-asset-database.unified-project.json');write(out,sealUnifiedProject(result.synced.project,{touch:true}));result.output=out;}}
+    console.log(JSON.stringify({result,watcher:watcher.inspect()},null,2));
   }else if(cmd==='unified-validate'){
     const v=validateUnifiedProject(loadUnified());console.log(JSON.stringify(v,null,2));if(!v.valid)process.exitCode=1;
   }else if(cmd==='gpu-frame'){
@@ -101,6 +110,6 @@ try{
     for(const[k,v]of Object.entries(artifacts))write(path.join(out,k+'.json'),v);write(path.join(out,'session.json'),session.inspect());
     console.log(JSON.stringify({out,tick:session.behavior.runtime.state.tick,timeline_entries:artifacts.runtime_timeline.entries.length,timeline_cursor:artifacts.runtime_timeline.cursor,replay_root:artifacts.runtime_replay.replay_root,deterministic:artifacts.runtime_replay.deterministic,checkpoint_id:checkpoint.runtime_checkpoint.checkpoint_id},null,2));
   }else{
-     console.error('Usage: reality-studio-native serve|new|validate|migrate|compile|branch-evaluate|branch-adopt|branch-commit|health|preview|commit|behavior-validate|behavior-compile|behavior-demo|asset-forge-demo|asset-import|asset-reimport|asset-audit|asset-ledger|unified-validate|gpu-frame|ui-layout|navigation-path|spatial-validate|spatial-demo|spatial-frame|unified-demo|runtime-timeline-demo');process.exitCode=2;
+     console.error('Usage: reality-studio-native serve|new|validate|migrate|compile|branch-evaluate|branch-adopt|branch-commit|health|preview|commit|behavior-validate|behavior-compile|behavior-demo|asset-forge-demo|asset-import|asset-reimport|asset-audit|asset-ledger|asset-database-plan|asset-database-sync|asset-database-watch|unified-validate|gpu-frame|ui-layout|navigation-path|spatial-validate|spatial-demo|spatial-frame|unified-demo|runtime-timeline-demo');process.exitCode=2;
   }
 }catch(e){console.error(JSON.stringify({error:{code:e.code??'ERROR',message:e.message,details:e.details??{}}},null,2));process.exitCode=1;}

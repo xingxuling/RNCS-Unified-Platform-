@@ -40,7 +40,7 @@ export async function startStudioServer({host='127.0.0.1',port=17608,dataDir=pat
     try{
       const u=new URL(req.url,`http://${req.headers.host||'localhost'}`);
       if(req.method==='OPTIONS')return send(res,204,'','text/plain');
-       if(req.method==='GET'&&u.pathname==='/api/health')return send(res,200,{...(await runtime.health()),studio_version:'1.5.0-alpha.1',behavior_native:true,scene_asset_behavior_unified:true,webgpu_viewport:true,tilemap_native:true,navigation_native:true,ui_native:true,input_native:true,runtime_timeline:true,runtime_replay:true,runtime_time_travel:true,asset_continuity_native:true,asset_reimport:true,dependency_graph:true,asset_ledger:true,spatial_editor:true,spatial_bodies:true,spatial_characters:true,spatial_joints:true,spatial_audio_events:true,spatial_haptic_events:true,keyboard_input:true,gamepad_input:true,touch_input:true,asset_forge_native:true,ragf_version:'0.4.0-alpha.1',asset_candidate_review:true,targeted_asset_regeneration:true,asset_acceptance_to_scene:true,vsr_version:'0.8.0-alpha.1',rsr_version:'0.9.0-alpha.1'});
+      if(req.method==='GET'&&u.pathname==='/api/health')return send(res,200,{...(await runtime.health()),studio_version:'1.5.0-alpha.1',behavior_native:true,scene_asset_behavior_unified:true,webgpu_viewport:true,tilemap_native:true,navigation_native:true,ui_native:true,input_native:true,runtime_timeline:true,runtime_replay:true,runtime_time_travel:true,asset_continuity_native:true,asset_reimport:true,dependency_graph:true,asset_ledger:true,asset_database:true,asset_incremental_cache:true,asset_change_plan:true,asset_watch:true,spatial_editor:true,spatial_bodies:true,spatial_characters:true,spatial_joints:true,spatial_audio_events:true,spatial_haptic_events:true,keyboard_input:true,gamepad_input:true,touch_input:true,asset_forge_native:true,ragf_version:'0.4.0-alpha.1',asset_candidate_review:true,targeted_asset_regeneration:true,asset_acceptance_to_scene:true,vsr_version:'0.8.0-alpha.1',rsr_version:'0.9.0-alpha.1'});
       if(req.method==='GET'&&u.pathname==='/api/project/new')return send(res,200,createProject({}));
       if(req.method==='POST'&&u.pathname==='/api/project/validate'){const b=await body(req);return send(res,200,validateProject(b.project??b));}
       if(req.method==='POST'&&u.pathname==='/api/project/seal'){const b=await body(req);return send(res,200,sealProject(b.project??b));}
@@ -116,9 +116,11 @@ export async function startStudioServer({host='127.0.0.1',port=17608,dataDir=pat
         else if(b.command==='import-asset-source')result=s.importAssetSource(b.source,{sourceRoot:b.source_root,recursive:b.recursive!==false});
         else if(b.command==='reimport-asset')result=s.reimportAsset(b.asset_id,{strict:b.strict!==false});
         else if(b.command==='reimport-all-assets')result=s.reimportAllAssets({strict:b.strict===true});
-        else if(b.command==='audit-assets')result=s.auditAssets({strictFiles:b.strict_files===true});
-        else if(b.command==='asset-dependency-graph')result=s.assetDependencyGraph();
-        else if(b.command==='asset-ledger')result=s.assetLedger({strictFiles:b.strict_files===true});
+         else if(b.command==='audit-assets')result=s.auditAssets({strictFiles:b.strict_files===true});
+         else if(b.command==='asset-dependency-graph')result=s.assetDependencyGraph();
+         else if(b.command==='asset-ledger')result=s.assetLedger({strictFiles:b.strict_files===true});
+         else if(b.command==='asset-database-plan')result=s.assetDatabasePlan({cacheDir:b.cache_dir,sourceRoots:b.source_roots,recursive:b.recursive!==false,profiles:b.profiles??['runtime']});
+         else if(b.command==='asset-database-sync')result=s.assetDatabaseSync({cacheDir:b.cache_dir,sourceRoots:b.source_roots,recursive:b.recursive!==false,profiles:b.profiles??['runtime'],materialize:b.materialize!==false});
         else if(b.command==='gpu-options')result=s.setGPUOptions({quality:b.quality,observer:b.observer,gpu_tier:b.gpu_tier,enabled:b.enabled});
         else if(b.command==='tile-edit')result=s.editTile({operation:b.operation,layerId:b.layer_id,x:b.x,y:b.y,tileId:b.tile_id,cells:b.cells??[],rect:b.rect??null});
         else if(b.command==='tile-tool')result=s.setTileTool({layerId:b.layer_id,tileId:b.tile_id,overlay:b.overlay,tool:b.tool});
