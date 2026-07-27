@@ -3,10 +3,10 @@
   "version": "0.2.0-alpha.1",
   "canonicalRcl": {
     "repository": "xingxuling/RCL",
-    "branch": "codex/foundation-native-meta-batch-b",
-    "commit": "78b2c351b90f4971bcdb4db3308e9fd6aee5a7c4",
-    "synchronizedFileCount": 16,
-    "scopeRoot": "71b4bbbe5b4af46c9ed97e59d5a22576333fbc32852807beccdaf322ae4aa94e",
+    "branch": "main",
+    "commit": "549231a9b9d916d8790aa089cf0ccdd034603df9",
+    "synchronizedFileCount": 19,
+    "scopeRoot": "3d88cb487b070423de06fc46ccf5ef703b0ddee90f99094d5d7630c391df03ad",
     "wholePackageByteIdentityClaimed": false,
     "downstreamDeltaFiles": [
       "native/native-windows-manifest.json",
@@ -44,9 +44,9 @@
         "replayVerified": true,
         "semanticStateRoot": null,
         "performance": {
-          "compileMs": "77.330",
-          "runtimeMs": "42.600",
-          "replayMs": "39.748",
+          "compileMs": "73.483",
+          "runtimeMs": "42.908",
+          "replayMs": "38.285",
           "sourceBytes": 3980,
           "bytecodeBytes": 2491,
           "estimatedWorkingSetBytes": 44020,
@@ -94,9 +94,9 @@
         "replayVerified": true,
         "semanticStateRoot": "63cd16830a065e8f38d27c020e118d69dfae12f75702dce3ee400aa834141e7b",
         "performance": {
-          "compileMs": "59.318",
-          "runtimeMs": "41.585",
-          "replayMs": "32.613",
+          "compileMs": "59.336",
+          "runtimeMs": "41.367",
+          "replayMs": "45.344",
           "sourceBytes": 2559,
           "bytecodeBytes": 2092,
           "estimatedWorkingSetBytes": 25511,
@@ -170,6 +170,84 @@
           "parametersRoot": "91cc96e924b71a121d398dd064bf6c1ce6906a741305da933096c079c8709c2e"
         }
       ]
+    },
+    "batchC": {
+      "execution": {
+        "providerId": "rcl.foundation.batch-c",
+        "providerAbi": 1,
+        "mode": "bridge",
+        "nativeVm": "rcl-native-vm/0.6.0-alpha.1",
+        "bytecodeVersion": "1.2",
+        "bytecodeRoot": "b45a64f00322ddc77c0ab68f98e14dd0757381ab0f77060cfe50002664bc2c2f",
+        "domains": [
+          "physical",
+          "embodiment"
+        ],
+        "selectedActions": [
+          "simulate-constrained-step",
+          "integrate-embodied-state"
+        ],
+        "finalStateRoot": "9e73b28e35c1e79f6ebd81c77c9be4a0d788ce34ce56aacbf3f932c0aa018be3",
+        "deterministicReceiptRoot": "3af82e5ffce98e2179e81e34e15d48c77c9f399beb5cb15ca5c37a2875b4913e",
+        "replayVerified": true,
+        "semanticStateRoot": null,
+        "performance": {
+          "compileMs": "53.380",
+          "runtimeMs": "41.950",
+          "replayMs": "29.627",
+          "sourceBytes": 1512,
+          "bytecodeBytes": 1643,
+          "estimatedWorkingSetBytes": 15819,
+          "nativeInstructionCount": 21,
+          "resultCount": 2,
+          "providerCallCount": 2,
+          "cacheHitRate": "0.00",
+          "compressionRatio": "0.920268"
+        }
+      },
+      "rncs": {
+        "status": "committed",
+        "realityId": "reality:foundation-native-stack",
+        "baseGeneration": 2,
+        "baseGenerationRoot": "39ac942239870c105c1894c9d81f292a823479626c0422215b3a392ea5baadb6",
+        "proposalRoot": "241f2d5b9f3f81dac50fb52df5075cc26caf878f59b874bd6aadeef33e031e80",
+        "decisionRoot": "99b42e9ed3426bb862f1ea5b3970565b62aaf50b70605b2e4fe53e0ce7fa1658",
+        "commitRoot": "7b67ac2c065adc3d0ab58a8f51fc1d13b8165b272e990c827414982fdcfe6ec3",
+        "envelopeRoot": "2902239866d29166bac1bfeb6ab3ef0a35b1b6ffbd256ad53af787cf2664c67c",
+        "generation": 3,
+        "generationRoot": "9e73b28e35c1e79f6ebd81c77c9be4a0d788ce34ce56aacbf3f932c0aa018be3",
+        "bridgeReceiptRoot": "ad871f22c6e13d9588f0776937c458466db80660a527ada4cea19cafe6f9965f"
+      },
+      "semanticState": [
+        {
+          "path": "foundation.physical",
+          "parameters": {
+            "physical": {
+              "solver": "deterministic-semi-implicit",
+              "tickBefore": 24,
+              "tickAfter": 25,
+              "dtMicros": 16667,
+              "bodyCount": 3,
+              "contactBudget": 8,
+              "mutationApplied": true
+            }
+          },
+          "parametersRoot": "76bd83905077a94025769d7f33ee396881d0828801a935085ef54cc8f381eabe"
+        },
+        {
+          "path": "foundation.embodiment",
+          "parameters": {
+            "embodiment": {
+              "subjectId": "body:avatar",
+              "command": "walk",
+              "controlMode": "authority-bounded",
+              "physicalParentRoot": "2cf52d61b9d0d09aa2bbedce3845972f1f7bffdb01e9db927fb64b3448edd74e",
+              "mutationApplied": true
+            }
+          },
+          "parametersRoot": "266cf88fe49beaa9761e43bed4a554fdc184e4db2c2a5929e2f2ebd5a44c178b"
+        }
+      ]
     }
   },
   "generationContinuity": {
@@ -179,7 +257,11 @@
     "metaBaseGeneration": 1,
     "metaBaseRoot": "932cdfb284f297c0bb0eb655d04005403e879ab1b9a404ffacedba5a2b9b4b6a",
     "metaGeneration": 2,
-    "metaFinalRoot": "39ac942239870c105c1894c9d81f292a823479626c0422215b3a392ea5baadb6"
+    "metaFinalRoot": "39ac942239870c105c1894c9d81f292a823479626c0422215b3a392ea5baadb6",
+    "batchCBaseGeneration": 2,
+    "batchCBaseRoot": "39ac942239870c105c1894c9d81f292a823479626c0422215b3a392ea5baadb6",
+    "batchCGeneration": 3,
+    "batchCFinalRoot": "9e73b28e35c1e79f6ebd81c77c9be4a0d788ce34ce56aacbf3f932c0aa018be3"
   },
   "gateway": {
     "runtimeId": "rncs.rcl-foundation-native",
@@ -193,11 +275,12 @@
     ],
     "selectableBatches": [
       "batch-a",
-      "meta-batch-b"
+      "meta-batch-b",
+      "batch-c"
     ],
     "runtimeManifestCount": 18,
-    "manifestSourceRoot": "1a07f94ca171b4f8534496d1de3e7d66b940833f1e34b119327be6e46a0dadbc",
-    "bridgeSha256": "48e950f0bad6a5c83a00e2e3861780eec35690f2a0312336c521a7164dddeac1",
+    "manifestSourceRoot": "4d98ba666a02125122c7477143aadb05445d7a3e297f99342e219c7efc1b9f61",
+    "bridgeSha256": "105a387d2a242d7429d8e65ffafd35e053e737fc5c94f46ec6efd31184766677",
     "preparedProposalRoot": "3502485ab15d873290f6f559629f2f40dcc4d98f537cf60fe742a39a3f7dbcaf",
     "committedGenerationRoot": "39ac942239870c105c1894c9d81f292a823479626c0422215b3a392ea5baadb6",
     "verification": {
@@ -210,6 +293,19 @@
       "proposalRoot": "3502485ab15d873290f6f559629f2f40dcc4d98f537cf60fe742a39a3f7dbcaf",
       "receiptRoot": "97dd464ed946c96717d5c8c0119ce0e65235832368a6df6a01ad52ecb055c569",
       "semanticStateRoot": "63cd16830a065e8f38d27c020e118d69dfae12f75702dce3ee400aa834141e7b"
+    },
+    "batchCPreparedProposalRoot": "241f2d5b9f3f81dac50fb52df5075cc26caf878f59b874bd6aadeef33e031e80",
+    "batchCCommittedGenerationRoot": "9e73b28e35c1e79f6ebd81c77c9be4a0d788ce34ce56aacbf3f932c0aa018be3",
+    "batchCVerification": {
+      "ok": true,
+      "errors": [],
+      "status": "committed",
+      "batch": "batch-c",
+      "providerId": "rcl.foundation.batch-c",
+      "envelopeRoot": "afacb50993f923b1bb35834c9a87283346d8c9baf9656bfe616067afd2a64964",
+      "proposalRoot": "241f2d5b9f3f81dac50fb52df5075cc26caf878f59b874bd6aadeef33e031e80",
+      "receiptRoot": "3af82e5ffce98e2179e81e34e15d48c77c9f399beb5cb15ca5c37a2875b4913e",
+      "semanticStateRoot": null
     }
   },
   "checks": {
@@ -217,6 +313,7 @@
     "wholePackageIdentityNotClaimed": true,
     "batchAStandardResultCount": true,
     "metaStandardResultCount": true,
+    "batchCStandardResultCount": true,
     "nativeReplay": true,
     "proposalsVerified": true,
     "humanApprovalRecorded": true,
@@ -227,8 +324,9 @@
     "metaCompressionRestore": true,
     "gatewayRuntimeRegistered": true,
     "gatewayAuthoritySeparated": true,
-    "gatewayMetaCommitted": true
+    "gatewayMetaCommitted": true,
+    "gatewayBatchCCommitted": true
   },
   "evidenceRootScope": "all fields except wall-clock compileMs, runtimeMs, and replayMs",
-  "evidenceRoot": "f817e00ec9ed021798d4997bc608496f6219e9a7120b2ea5cd64c78ae4b3c922"
+  "evidenceRoot": "8ce7ad45291857ebcc90e661ae6e1358e42ff2fc9aabbf5a5a4719e9a79ce00c"
 }

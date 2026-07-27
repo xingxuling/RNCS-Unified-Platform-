@@ -9,6 +9,7 @@ export async function createBridge({ module }) {
     provider_ids: [
       'rcl.foundation.batch-a',
       'rcl.foundation.meta-batch-b',
+      'rcl.foundation.batch-c',
     ],
     batches: module.RCL_FOUNDATION_RNCS_BATCHES,
     authority: 'proposal-human-approval-explicit-commit',

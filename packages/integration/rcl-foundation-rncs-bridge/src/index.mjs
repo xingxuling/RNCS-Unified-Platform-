@@ -9,6 +9,11 @@ import {
   runFoundationNativeMetaBatchB,
 } from '../../../languages/reality-computation-language/src/foundation-native-meta-bridge.mjs';
 import {
+  FOUNDATION_NATIVE_BATCH_C,
+  FOUNDATION_NATIVE_BATCH_C_PROVIDER_ID,
+  runFoundationNativeBatchC,
+} from '../../../languages/reality-computation-language/src/foundation-native-batch-c.mjs';
+import {
   authorize,
   commit,
   newProposal,
@@ -21,6 +26,7 @@ export const RCL_FOUNDATION_RNCS_BRIDGE_FORMAT =
 export const RCL_FOUNDATION_RNCS_BRIDGE_VERSION = '0.2.0-alpha.1';
 export const RCL_FOUNDATION_RNCS_BATCH_A = 'batch-a';
 export const RCL_FOUNDATION_RNCS_META_BATCH_B = 'meta-batch-b';
+export const RCL_FOUNDATION_RNCS_BATCH_C = 'batch-c';
 
 const BATCHES = Object.freeze({
   [RCL_FOUNDATION_RNCS_BATCH_A]: Object.freeze({
@@ -38,6 +44,14 @@ const BATCHES = Object.freeze({
     run: runFoundationNativeMetaBatchB,
     realityId: 'reality:foundation-native-meta-batch-b',
     rule: 'rcl-foundation-native-meta-batch-b',
+  }),
+  [RCL_FOUNDATION_RNCS_BATCH_C]: Object.freeze({
+    id: RCL_FOUNDATION_RNCS_BATCH_C,
+    providerId: FOUNDATION_NATIVE_BATCH_C_PROVIDER_ID,
+    entries: FOUNDATION_NATIVE_BATCH_C,
+    run: runFoundationNativeBatchC,
+    realityId: 'reality:foundation-native-batch-c',
+    rule: 'rcl-foundation-native-batch-c',
   }),
 });
 
@@ -499,6 +513,16 @@ export function prepareFoundationNativeMetaRncsTransition(
   });
 }
 
+export function prepareFoundationNativeBatchCRncsTransition(
+  request = {},
+  options = {},
+) {
+  return prepareFoundationNativeRncsTransition(request, {
+    ...options,
+    batch: RCL_FOUNDATION_RNCS_BATCH_C,
+  });
+}
+
 export function authorizeFoundationNativeRncsTransition(
   prepared,
   approval = {},
@@ -631,6 +655,36 @@ function verifyMetaSemantics(execution, errors) {
   }
 }
 
+function verifyBatchCSemantics(execution, errors) {
+  const [physical, embodiment] = execution.results ?? [];
+  const input = execution.request?.input;
+  const createMode = ['create', 'generate', 'build'].includes(input?.speechAct);
+  const physicalState = physical?.proposal?.parameters?.physical;
+  const embodimentState = embodiment?.proposal?.parameters?.embodiment;
+  if (
+    physicalState?.solver !== 'deterministic-semi-implicit'
+    || physicalState?.tickBefore !== input?.physical?.tick
+    || physicalState?.tickAfter !== (
+      createMode ? input?.physical?.tick + 1 : input?.physical?.tick
+    )
+    || physicalState?.dtMicros !== input?.physical?.dtMicros
+    || physicalState?.bodyCount !== input?.physical?.bodyCount
+    || physicalState?.contactBudget !== input?.physical?.contactBudget
+    || physicalState?.mutationApplied !== createMode
+  ) {
+    errors.push('PHYSICAL_SEMANTICS_INVALID');
+  }
+  if (
+    embodimentState?.subjectId !== input?.embodiment?.subjectId
+    || embodimentState?.command !== input?.embodiment?.command
+    || embodimentState?.controlMode !== 'authority-bounded'
+    || embodimentState?.physicalParentRoot !== embodiment?.stateDelta?.beforeRoot
+    || embodimentState?.mutationApplied !== createMode
+  ) {
+    errors.push('EMBODIMENT_SEMANTICS_INVALID');
+  }
+}
+
 export function verifyFoundationNativeRncsTransition(value) {
   const errors = [];
   if (!value || value.format !== RCL_FOUNDATION_RNCS_BRIDGE_FORMAT) {
@@ -754,6 +808,10 @@ export function verifyFoundationNativeRncsTransition(value) {
     ) {
       errors.push('META_SEMANTIC_RESULT_BINDINGS_MISMATCH');
     }
+  }
+
+  if (batch?.id === RCL_FOUNDATION_RNCS_BATCH_C) {
+    verifyBatchCSemantics(value.execution, errors);
   }
 
   if (

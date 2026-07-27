@@ -5,8 +5,8 @@
     "format": "taowind.rcl-foundation-contract.v0.1",
     "version": "0.1.0",
     "manifestRoot": "34e508fe3b6587e630cc32a075edbad87323c7359434b2a2aaf01cf7e250f7e1",
-    "source": "xingxuling/RCL@78b2c351b90f4971bcdb4db3308e9fd6aee5a7c4:src/foundation-contract.mjs",
-    "scopedSourceRoot": "b1fd7f2f279eebc09cb71f945db727538dcf944618fb0082be3c0e630af6d0ef",
+    "source": "xingxuling/RCL@549231a9b9d916d8790aa089cf0ccdd034603df9:src/foundation-contract.mjs",
+    "scopedSourceRoot": "3d88cb487b070423de06fc46ccf5ef703b0ddee90f99094d5d7630c391df03ad",
     "byteIdentityClaimed": false
   },
   "executionLayers": {
@@ -15,18 +15,19 @@
     "rclReferenceRuntime": "bridge",
     "rclFoundationNativeProvider": "bridge",
     "rclFoundationNativeMetaProvider": "bridge",
+    "rclFoundationNativeBatchCProvider": "bridge",
     "rncsFoundationGateway": "bridge",
     "rclNativeVmDeclaredFoundationLowering": "none"
   },
   "domains": {
     "metacomputation": { "mode": "none", "implementation": null, "tests": [] },
     "computation": { "mode": "none", "implementation": null, "tests": [] },
-    "physical": { "mode": "none", "implementation": null, "tests": [] },
+    "physical": { "mode": "bridge", "implementation": "RCL Native VM Batch C deterministic physical step provider bound into RNCS Proposal/Authority/Commit", "tests": ["packages/languages/reality-computation-language/tests/foundation-native-batch-c.test.mjs", "packages/integration/rcl-foundation-rncs-bridge/tests/batch-c.test.mjs"] },
     "energy": { "mode": "bridge", "implementation": "RCL energy state through RNCS native control-plane compatibility adapter", "tests": ["packages/control/rncs-rcl-control-plane/tests/control-plane.test.mjs"] },
     "elemental": { "mode": "none", "implementation": null, "tests": [] },
     "perception": { "mode": "bridge", "implementation": "RclVmProviderV1 Batch A compiled into RNCS Proposal/Authority/Commit", "tests": ["packages/integration/rcl-foundation-rncs-bridge/tests/bridge.test.mjs"] },
     "neural": { "mode": "projection", "implementation": "downstream cognition state lowered into RNCS collections", "tests": ["packages/control/rncs-rcl-control-plane/tests/control-plane.test.mjs"] },
-    "embodiment": { "mode": "none", "implementation": null, "tests": [] },
+    "embodiment": { "mode": "bridge", "implementation": "RCL Native VM Batch C authority-bounded embodiment integration chained after physical state", "tests": ["packages/languages/reality-computation-language/tests/foundation-native-batch-c.test.mjs", "packages/integration/rcl-foundation-rncs-bridge/tests/batch-c.test.mjs"] },
     "life": { "mode": "none", "implementation": null, "tests": [] },
     "genetic": { "mode": "none", "implementation": null, "tests": [] },
     "quantitative": { "mode": "bridge", "implementation": "RclVmProviderV1 Batch A compiled into RNCS Proposal/Authority/Commit", "tests": ["packages/integration/rcl-foundation-rncs-bridge/tests/bridge.test.mjs"] },
@@ -71,6 +72,7 @@
     "foundation-4r-commit-gate",
     "foundation-native-provider-batch-a",
     "foundation-native-provider-meta-batch-b",
+    "foundation-native-provider-batch-c",
     "foundation-native-rncs-proposal-authority-commit",
     "foundation-native-gateway-runtime",
     "foundation-native-meta-semantic-state-root",
@@ -82,7 +84,7 @@
   ],
   "knownLimitations": [
     "The RNCS RCL package is a downstream extension delta and is not byte-identical to canonical RCL.",
-    "Batch A and Meta Batch B cover nine Foundation entries through two Native Provider IDs; the remaining eleven base domains and two composite planes do not yet have direct standard-result invocation inside RNCS.",
-    "Declared Foundation syntax remains outside native lowering; both batches are bridge mode and are not relabeled as native."
+    "Batch A, Meta Batch B and Batch C cover eleven Foundation entries through three Native Provider IDs; the remaining nine base domains and two composite planes do not yet have direct standard-result invocation inside RNCS.",
+    "Declared Foundation syntax remains outside native lowering; all three batches are bridge mode and are not relabeled as native."
   ]
 }

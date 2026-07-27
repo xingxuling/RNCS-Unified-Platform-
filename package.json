@@ -84,6 +84,7 @@
     "validate:godot": "python scripts/validate-godot-v0184.py",
     "test:mobile-touch": "node --test tests/godot-mobile-touch-v0184.integration.test.mjs",
     "test:rcl": "npm test --workspace @taowind/reality-computation-language",
+    "test:foundation-native-batch-c": "npm run test:foundation-native-batch-c --workspace @taowind/reality-computation-language",
     "test:foundation-native-rncs": "npm test --workspace @taowind/rcl-foundation-rncs-bridge",
     "demo:foundation-native-rncs": "npm run demo --workspace @taowind/rcl-foundation-rncs-bridge",
     "evidence:foundation-native-rncs": "node scripts/generate-foundation-native-rncs-evidence.mjs",
