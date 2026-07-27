@@ -5,8 +5,8 @@
     "format": "taowind.rcl-foundation-contract.v0.1",
     "version": "0.1.0",
     "manifestRoot": "34e508fe3b6587e630cc32a075edbad87323c7359434b2a2aaf01cf7e250f7e1",
-    "source": "xingxuling/RCL@0857429f0c120982f1e895c741c22ab936ddac9e:src/foundation-contract.mjs",
-    "scopedSourceRoot": "6f4b98e09899daa2df6d211693ed4d715a8778483ee998149c83dfd3b1810a2d",
+    "source": "xingxuling/RCL@9d6a5e133a459bd9322fcef9514abbb9dddbfd88:src/foundation-contract.mjs",
+    "scopedSourceRoot": "cd21e6ef8d2e58e8e95f28b6ac40aea8a1615a92d281a11124f324a39d8f334f",
     "byteIdentityClaimed": false
   },
   "executionLayers": {
@@ -17,12 +17,13 @@
     "rclFoundationNativeMetaProvider": "bridge",
     "rclFoundationNativeBatchCProvider": "bridge",
     "rclFoundationNativeBatchDProvider": "bridge",
+    "rclFoundationNativeBatchEProvider": "bridge",
     "rncsFoundationGateway": "bridge",
     "rclNativeVmDeclaredFoundationLowering": "none"
   },
   "domains": {
-    "metacomputation": { "mode": "none", "implementation": null, "tests": [] },
-    "computation": { "mode": "none", "implementation": null, "tests": [] },
+    "metacomputation": { "mode": "bridge", "implementation": "RCL Native VM Batch E bounded metacomputation plan bound into RNCS Proposal/Authority/Commit", "tests": ["packages/languages/reality-computation-language/tests/foundation-native-batch-e.test.mjs", "packages/integration/rcl-foundation-rncs-bridge/tests/batch-e.test.mjs"] },
+    "computation": { "mode": "bridge", "implementation": "RCL Native VM Batch E bounded computation execution chained after metacomputation state", "tests": ["packages/languages/reality-computation-language/tests/foundation-native-batch-e.test.mjs", "packages/integration/rcl-foundation-rncs-bridge/tests/batch-e.test.mjs"] },
     "physical": { "mode": "bridge", "implementation": "RCL Native VM Batch C deterministic physical step provider bound into RNCS Proposal/Authority/Commit", "tests": ["packages/languages/reality-computation-language/tests/foundation-native-batch-c.test.mjs", "packages/integration/rcl-foundation-rncs-bridge/tests/batch-c.test.mjs"] },
     "energy": { "mode": "bridge", "implementation": "RCL Native VM Batch D bounded energy transfer bound into RNCS Proposal/Authority/Commit", "tests": ["packages/languages/reality-computation-language/tests/foundation-native-batch-d.test.mjs", "packages/integration/rcl-foundation-rncs-bridge/tests/batch-d.test.mjs"] },
     "elemental": { "mode": "bridge", "implementation": "RCL Native VM Batch D bounded elemental composition chained after energy state", "tests": ["packages/languages/reality-computation-language/tests/foundation-native-batch-d.test.mjs", "packages/integration/rcl-foundation-rncs-bridge/tests/batch-d.test.mjs"] },
@@ -75,6 +76,7 @@
     "foundation-native-provider-meta-batch-b",
     "foundation-native-provider-batch-c",
     "foundation-native-provider-batch-d",
+    "foundation-native-provider-batch-e",
     "foundation-native-rncs-proposal-authority-commit",
     "foundation-native-gateway-runtime",
     "foundation-native-meta-semantic-state-root",
@@ -86,7 +88,7 @@
   ],
   "knownLimitations": [
     "The RNCS RCL package is a downstream extension delta and is not byte-identical to canonical RCL.",
-    "Batch A, Meta Batch B, Batch C and Batch D cover fourteen Foundation entries through four Native Provider IDs; the remaining six base domains and two composite planes do not yet have direct standard-result invocation inside RNCS.",
-    "Declared Foundation syntax remains outside native lowering; all four batches are bridge mode and are not relabeled as native."
+    "Batch A, Meta Batch B, Batch C, Batch D and Batch E cover sixteen Foundation entries through five Native Provider IDs; the remaining four base domains and two composite planes do not yet have direct standard-result invocation inside RNCS.",
+    "Declared Foundation syntax remains outside native lowering; all five batches are bridge mode and are not relabeled as native."
   ]
 }

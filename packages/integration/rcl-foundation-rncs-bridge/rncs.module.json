@@ -18,6 +18,8 @@
     "foundation-native-reversible-root-compression",
     "foundation-native-bounded-energy",
     "foundation-native-elemental-composition",
-    "foundation-native-neural-signal"
+    "foundation-native-neural-signal",
+    "foundation-native-metacomputation-plan",
+    "foundation-native-computation-execution"
   ]
 }

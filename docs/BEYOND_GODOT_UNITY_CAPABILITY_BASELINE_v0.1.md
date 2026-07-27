@@ -252,4 +252,34 @@ standard-result invocation in RNCS. All four batches remain `bridge` mode;
 declared Foundation syntax lowering, a production editor, full asset/rendering
 parity, public-WAN scale, platform distribution, and ecosystem depth remain
 open. This is measurable runtime progress, not a claim of complete Godot/Unity
-replacement.
+ replacement.
+
+## 12. Verified Progress v0.8
+
+RCL Foundation Native Batch E now connects the computation substrate to the
+same Native VM, RNCS authority, and Reality One Gateway path:
+
+- `metacomputation` bounds a selected plan by requested and maximum step
+  budgets, records clamping, and advances a deterministic planning tick.
+- `computation` executes bounded sum, difference, or product operations with
+  an instruction budget and binds `metacomputationParentRoot` to the plan.
+- Both results are standard Foundation results with semantic parameter roots,
+  replay verification, invalid-input rejection, and separate human approval
+  and commit confirmation.
+
+Batch E is registered as the fifth `RclVmProviderV1` bridge. Canonical RCL
+source synchronization now covers 25 files from RCL main commit
+`9d6a5e133a459bd9322fcef9514abbb9dddbfd88`; the five-generation evidence chain
+ends at generation 5 with evidence root
+`fed41df8555ae41dc9e1220bf74fa983c738f0cc017074c991c3c588e9be5fa2`.
+RCL and the vendored RNCS conformance harness report 93/93 checks, RNCS
+Foundation integration reports 26/26, and the rooted five-batch evidence
+report has 21/21 checks passing.
+
+This verifies sixteen Foundation entries through five Native Provider bridges.
+The remaining four base domains and two composite planes still lack direct
+standard-result invocation inside RNCS. All five batches remain `bridge` mode;
+declared Foundation syntax lowering, a production editor, complete
+asset/render/audio/animation parity, public-WAN scale, platform distribution,
+and ecosystem depth remain open. This is measurable runtime progress, not a
+claim of complete Godot/Unity replacement.
