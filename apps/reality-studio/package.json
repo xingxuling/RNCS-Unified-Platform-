@@ -8,7 +8,8 @@
     "reality-studio-native": "src/cli.mjs"
   },
   "exports": {
-    ".": "./src/index.mjs"
+    ".": "./src/index.mjs",
+    "./asset-database": "./src/asset-database.mjs"
   },
   "files": [
     "src",

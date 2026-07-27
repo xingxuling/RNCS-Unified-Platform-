@@ -85,20 +85,20 @@ function previewFor(filePath,mime,{previewUrl=null,embeddedDataUrl=null}={}){
 }
 function sourceStat(filePath){const s=fs.statSync(filePath);return{size:s.size,mtime_ms:Math.trunc(s.mtimeMs)}}
 
-export function createLocalAssetRecord(filePath,{sourceRoot=null,assetId=null,name=null,previousRecord=null,previewUrl=null,copyPath=null}={}){
+export function createLocalAssetRecord(filePath,{sourceRoot=null,assetId=null,name=null,previousRecord=null,previewUrl=null,copyPath=null,importedAt=null}={}){
   const absolute=path.resolve(filePath);if(!fs.existsSync(absolute)||!fs.statSync(absolute).isFile())throw new StudioError('ASSET_SOURCE_FILE_MISSING',absolute);
   const ext=path.extname(absolute).toLowerCase();if(!EXTENSIONS.has(ext))throw new StudioError('ASSET_EXTENSION_UNSUPPORTED',ext,{supported:[...EXTENSIONS]});
-  const buffer=fs.readFileSync(absolute),mime=assetMime(absolute),hash=sha256Buffer(buffer),stat=sourceStat(absolute),root=sourceRoot?path.resolve(sourceRoot):path.dirname(absolute),relative=normalizePath(path.relative(root,absolute)||path.basename(absolute));
+  const buffer=fs.readFileSync(absolute),mime=assetMime(absolute),hash=sha256Buffer(buffer),stat=sourceStat(absolute),root=sourceRoot?path.resolve(sourceRoot):path.dirname(absolute),relative=normalizePath(path.relative(root,absolute)||path.basename(absolute)),timestamp=importedAt??now();
   const prior=previousRecord??null,id=assetId??prior?.asset_id??stableAssetId(absolute,root),generation=Math.max(1,Number(prior?.import_state?.generation??0)+(prior?1:0));
-  const history=[...(prior?.import_state?.history??[])];if(prior?.asset_root)history.push({generation:prior.import_state?.generation??1,asset_root:prior.asset_root,source_sha256:prior.source?.sha256??null,recorded_at:prior.import_state?.last_imported_at??prior.imported_at??now()});
+  const history=[...(prior?.import_state?.history??[])];if(prior?.asset_root)history.push({generation:prior.import_state?.generation??1,asset_root:prior.asset_root,source_sha256:prior.source?.sha256??null,recorded_at:prior.import_state?.last_imported_at??prior.imported_at??timestamp});
   const raw={
     format:ASSET_RECORD_FORMAT,asset_id:id,name:name??prior?.name??path.basename(absolute,ext),kind:inferAssetKind(absolute,mime),continuity_policy:'stable-source-identity',
     source:{kind:'local-file',absolute_path:absolute,source_root:root,relative_path:relative,sha256:hash,size:stat.size,mtime_ms:stat.mtime_ms,extension:ext,importer:{id:'reality-studio.native-file-importer',version:ASSET_CONTINUITY_VERSION}},
     variants:prior?.variants??{selected:'source',available:['source']},
     files:[{role:inferAssetRole(absolute),path:copyPath??relative,mime,sha256:hash,size:stat.size,absolute_path:absolute,platforms:['desktop','mobile','web']}],
     dependencies:inferDependencies(absolute,buffer),extensions:{...(prior?.extensions??{}),asset_continuity:{source_key:sourceKey(absolute,root),content_addressed:true,reimportable:true}},
-    preview_url:previewFor(copyPath??relative,mime,{previewUrl}),imported_at:prior?.imported_at??now(),status:'ready',
-    import_state:{generation,first_imported_at:prior?.import_state?.first_imported_at??prior?.imported_at??now(),last_imported_at:now(),source_fingerprint:rootHash({relative_path:relative,sha256:hash,size:stat.size}),changed:prior?prior.source?.sha256!==hash:true,stale:false,history:history.slice(-20)}
+    preview_url:previewFor(copyPath??relative,mime,{previewUrl}),imported_at:prior?.imported_at??timestamp,status:'ready',
+    import_state:{generation,first_imported_at:prior?.import_state?.first_imported_at??prior?.imported_at??timestamp,last_imported_at:timestamp,source_fingerprint:rootHash({relative_path:relative,sha256:hash,size:stat.size}),changed:prior?prior.source?.sha256!==hash:true,stale:false,history:history.slice(-20)}
   };
   return seal(raw,'asset_root');
 }
