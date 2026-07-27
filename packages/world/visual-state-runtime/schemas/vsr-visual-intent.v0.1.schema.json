@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/vsr-visual-intent.v0.1.schema.json",
+  "title": "RCL RNCS Visual Intent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "version",
+    "sourceAssetId",
+    "nodeIds",
+    "animation",
+    "animationLayers",
+    "animationGraph",
+    "deformation",
+    "root"
+  ],
+  "properties": {
+    "format": { "const": "taowind.rcl-rncs-visual-intent.v0.1" },
+    "version": { "const": "0.1.0" },
+    "sourceAssetId": { "type": "string", "minLength": 1 },
+    "sceneId": { "type": ["string", "null"], "minLength": 1 },
+    "nodeIds": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+    "animation": {
+      "type": ["object", "null"],
+      "properties": {
+        "clipId": { "type": "string", "minLength": 1 },
+        "timeSeconds": { "type": "number", "minimum": 0 },
+        "loop": { "type": "boolean" }
+      },
+      "required": ["clipId", "timeSeconds"],
+      "additionalProperties": false
+    },
+    "animationLayers": {
+      "type": ["array", "null"],
+      "items": {
+        "type": "object",
+        "properties": {
+          "clipId": { "type": "string", "minLength": 1 },
+          "timeSeconds": { "type": "number", "minimum": 0 },
+          "weight": { "type": "number", "minimum": 0, "maximum": 1 },
+          "loop": { "type": "boolean" },
+          "mode": { "enum": ["override", "additive"] },
+          "nodeIds": { "type": ["array", "null"], "items": { "type": "string", "minLength": 1 } }
+        },
+        "required": ["clipId", "timeSeconds", "weight", "loop", "mode", "nodeIds"],
+        "additionalProperties": false
+      }
+    },
+    "animationGraph": {
+      "type": ["object", "null"],
+      "required": ["graph", "stateId", "timeSeconds", "transition"],
+      "properties": {
+        "graph": {
+          "type": "object",
+          "required": ["initialState", "states"],
+          "properties": {
+            "initialState": { "type": "string", "minLength": 1 },
+            "states": { "type": "array", "minItems": 1, "items": { "type": "object" } }
+          },
+          "additionalProperties": false
+        },
+        "stateId": { "type": ["string", "null"], "minLength": 1 },
+        "timeSeconds": { "type": "number", "minimum": 0 },
+        "transition": { "type": ["object", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "deformation": {
+      "type": ["object", "null"],
+      "properties": {
+        "nodeId": { "type": "string", "minLength": 1 },
+        "skinId": { "type": ["string", "null"], "minLength": 1 },
+        "morphWeights": {
+          "type": ["array", "null"],
+          "maxItems": 4,
+          "items": { "type": "number", "minimum": -1, "maximum": 1 }
+        }
+      },
+      "required": ["nodeId", "skinId", "morphWeights"],
+      "additionalProperties": false
+    },
+    "root": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  },
+  "anyOf": [
+    { "required": ["animation"] },
+    { "required": ["animationLayers"] },
+    { "required": ["animationGraph"] }
+  ]
+}
