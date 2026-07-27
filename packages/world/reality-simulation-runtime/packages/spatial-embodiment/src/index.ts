@@ -1,4 +1,5 @@
 import { deepClone, semanticHash, type VSRValue } from '../../spec/src/index.js';
+import { collideConvex, type ConvexProxy } from './convex-narrow-phase.js';
 
 export const SPATIAL_EMBODIMENT_VERSION = '0.9.0-alpha.1';
 export const SPATIAL_EMBODIMENT_FORMAT = 'rsr.spatial-embodiment-world.v0.6' as const;
@@ -277,6 +278,10 @@ export interface SpatialEmbodimentDiagnostics {
   coyoteJumps: number;
   bufferedJumps: number;
   capsuleObbContacts: number;
+  gjkCalls: number;
+  epaCalls: number;
+  convexContacts: number;
+  convexFallbacks: number;
 }
 
 export interface SpatialEmbodimentSnapshot {
@@ -311,7 +316,8 @@ export interface SpatialEmbodimentSnapshot {
 }
 
 interface Aabb3 { min: IntVector3; max: IntVector3 }
-interface CollisionResult { point: IntVector3; normal: IntVector3; penetration: number; feature?: 'capsule-obb' }
+interface CollisionResult { point: IntVector3; normal: IntVector3; penetration: number; feature?: 'capsule-obb' | 'gjk-epa' }
+interface CollisionStats { gjkCalls: number; epaCalls: number; convexContacts: number; convexFallbacks: number }
 
 const v3 = (x = 0, y = 0, z = 0): IntVector3 => ({ x, y, z });
 const add = (a: IntVector3, b: IntVector3): IntVector3 => v3(a.x + b.x, a.y + b.y, a.z + b.z);
@@ -385,6 +391,28 @@ function closestSegmentAabbLocal(start:FloatVector3,end:FloatVector3,half:FloatV
   let best:{segment:FloatVector3;box:FloatVector3;distance:number}|undefined;for(const t of candidates){const segment=fadd(start,fscale(d,clamp(t,0,1))),boxPoint={x:clamp(segment.x,-half.x,half.x),y:clamp(segment.y,-half.y,half.y),z:clamp(segment.z,-half.z,half.z)},distance=flength(fsub(boxPoint,segment));if(!best||distance<best.distance-1e-9)best={segment,box:boxPoint,distance}}
   const result=best!;if(result.distance>1e-9)return{...result,inside:false};const faceDistances=[{axis:'x' as const,distance:half.x-Math.abs(result.segment.x)},{axis:'y' as const,distance:half.y-Math.abs(result.segment.y)},{axis:'z' as const,distance:half.z-Math.abs(result.segment.z)}].sort((a,b)=>a.distance-b.distance||a.axis.localeCompare(b.axis));const face=faceDistances[0]!,boxPoint={...result.segment};boxPoint[face.axis]=(result.segment[face.axis]>=0?1:-1)*half[face.axis];return{segment:result.segment,box:boxPoint,distance:Math.max(0,face.distance),inside:true};
 }
+function convexProxy(body: RuntimeSpatialBody, fixture: RuntimeSpatialFixture): ConvexProxy {
+  const center = toFloat3(fixtureWorldPosition(body, fixture)), axes = rotationAxes(body.rotationDeg), shape = fixture.shape;
+  if (shape.type === 'sphere') return { kind: 'sphere', center, radius: shape.radius };
+  if (shape.type === 'capsule') {
+    const offset = fscale(axes[1], shape.halfHeight);
+    return { kind: 'capsule', center, segment: [fsub(center, offset), fadd(center, offset)], radius: shape.radius };
+  }
+  return { kind: 'box', center, axes, halfExtents: toFloat3(shape.halfExtents) };
+}
+function collideFixtures(bodyA: RuntimeSpatialBody, fixtureA: RuntimeSpatialFixture, bodyB: RuntimeSpatialBody, fixtureB: RuntimeSpatialFixture, stats?: CollisionStats): CollisionResult | undefined {
+  if (fixtureA.shape.type !== 'box' || fixtureB.shape.type !== 'box') return legacyCollideFixtures(bodyA, fixtureA, bodyB, fixtureB);
+  const convex = collideConvex(convexProxy(bodyA, fixtureA), convexProxy(bodyB, fixtureB));
+  if (stats) { stats.gjkCalls++; if (convex.epaIterations > 0) stats.epaCalls++; }
+  if (convex.status === 'collision' && convex.contact) {
+    if (stats) stats.convexContacts++;
+    const normal = normalizeQ(v3(Math.round(convex.contact.normal.x * Q), Math.round(convex.contact.normal.y * Q), Math.round(convex.contact.normal.z * Q)));
+    return { point: fromFloat3(convex.contact.point), normal, penetration: Math.max(0, Math.round(convex.contact.penetration)), feature: 'gjk-epa' };
+  }
+  if (convex.status === 'separated') return undefined;
+  if (stats) stats.convexFallbacks++;
+  return legacyCollideFixtures(bodyA, fixtureA, bodyB, fixtureB);
+}
 function capsuleObbCollision(capsuleCenter:IntVector3,capsule:Extract<SpatialShape,{type:'capsule'}>,box:OrientedBox3):CollisionResult|undefined{
   const [worldStart,worldEnd]=capsuleSegment(capsuleCenter,capsule),closest=closestSegmentAabbLocal(pointToObbLocal(worldStart,box),pointToObbLocal(worldEnd,box),box.halfExtents);if(!closest.inside&&closest.distance>=capsule.radius)return undefined;const segmentWorld=pointFromObbLocal(closest.segment,box),boxWorld=pointFromObbLocal(closest.box,box),delta=sub(boxWorld,segmentWorld),normal=length(delta)<1e-9?v3(Q,0,0):normalizeQ(delta),penetration=Math.max(0,Math.round(closest.inside?capsule.radius+closest.distance:capsule.radius-closest.distance));return{point:boxWorld,normal,penetration,feature:'capsule-obb'};
 }
@@ -426,7 +454,7 @@ function closestVerticalSegments(a0: IntVector3, a1: IntVector3, b0: IntVector3,
   const ay = clamp((b0.y + b1.y) / 2, a0.y, a1.y), by = clamp(ay, b0.y, b1.y);
   return [v3(a0.x, Math.round(ay), a0.z), v3(b0.x, Math.round(by), b0.z)];
 }
-function collideFixtures(bodyA: RuntimeSpatialBody, fixtureA: RuntimeSpatialFixture, bodyB: RuntimeSpatialBody, fixtureB: RuntimeSpatialFixture): CollisionResult | undefined {
+function legacyCollideFixtures(bodyA: RuntimeSpatialBody, fixtureA: RuntimeSpatialFixture, bodyB: RuntimeSpatialBody, fixtureB: RuntimeSpatialFixture): CollisionResult | undefined {
   const aPos = fixtureWorldPosition(bodyA, fixtureA), bPos = fixtureWorldPosition(bodyB, fixtureB), a = fixtureA.shape, b = fixtureB.shape;
   if (a.type === 'sphere' && b.type === 'sphere') {
     const delta = sub(bPos, aPos), d = length(delta), radius = a.radius + b.radius; if (d >= radius) return undefined;
@@ -436,7 +464,7 @@ function collideFixtures(bodyA: RuntimeSpatialBody, fixtureA: RuntimeSpatialFixt
     const closest = closestPointObb(aPos, fixtureObb(bodyB, fixtureB as RuntimeSpatialFixture & { shape: Extract<SpatialShape, { type: 'box' }> })), delta = sub(closest, aPos), d = length(delta); if (d >= a.radius) return undefined;
     const normal = d < 1e-9 ? axisCollision(fixtureAabb(bodyA, fixtureA), fixtureAabb(bodyB, fixtureB))?.normal ?? v3(Q, 0, 0) : normalizeQ(delta); return { point: closest, normal, penetration: Math.round(a.radius - d) };
   }
-  if (a.type === 'box' && b.type === 'sphere') { const result = collideFixtures(bodyB, fixtureB, bodyA, fixtureA); return result ? { ...result, normal: mul(result.normal, -1) } : undefined; }
+  if (a.type === 'box' && b.type === 'sphere') { const result = legacyCollideFixtures(bodyB, fixtureB, bodyA, fixtureA); return result ? { ...result, normal: mul(result.normal, -1) } : undefined; }
   if (a.type === 'capsule' && b.type === 'capsule') {
     const [a0, a1] = capsuleSegment(aPos, a), [b0, b1] = capsuleSegment(bPos, b), [pa, pb] = closestVerticalSegments(a0, a1, b0, b1), delta = sub(pb, pa), d = length(delta), radius = a.radius + b.radius; if (d >= radius) return undefined;
     const normal = d < 1e-9 ? v3(Q, 0, 0) : normalizeQ(delta); return { point: add(pa, mul(normal, a.radius / Q)), normal, penetration: Math.round(radius - d) };
@@ -445,9 +473,9 @@ function collideFixtures(bodyA: RuntimeSpatialBody, fixtureA: RuntimeSpatialFixt
     const [b0, b1] = capsuleSegment(bPos, b), closest = v3(bPos.x, clamp(aPos.y, b0.y, b1.y), bPos.z), delta = sub(closest, aPos), d = length(delta), radius = a.radius + b.radius; if (d >= radius) return undefined;
     const normal = d < 1e-9 ? v3(Q, 0, 0) : normalizeQ(delta); return { point: add(aPos, mul(normal, a.radius / Q)), normal, penetration: Math.round(radius - d) };
   }
-  if (a.type === 'capsule' && b.type === 'sphere') { const result = collideFixtures(bodyB, fixtureB, bodyA, fixtureA); return result ? { ...result, normal: mul(result.normal, -1) } : undefined; }
+  if (a.type === 'capsule' && b.type === 'sphere') { const result = legacyCollideFixtures(bodyB, fixtureB, bodyA, fixtureA); return result ? { ...result, normal: mul(result.normal, -1) } : undefined; }
   if (a.type === 'capsule' && b.type === 'box') return capsuleObbCollision(aPos,a,fixtureObb(bodyB,fixtureB as RuntimeSpatialFixture & {shape:Extract<SpatialShape,{type:'box'}>}));
-  if (a.type === 'box' && b.type === 'capsule') { const result=collideFixtures(bodyB,fixtureB,bodyA,fixtureA);return result?{...result,normal:mul(result.normal,-1)}:undefined; }
+  if (a.type === 'box' && b.type === 'capsule') { const result=legacyCollideFixtures(bodyB,fixtureB,bodyA,fixtureA);return result?{...result,normal:mul(result.normal,-1)}:undefined; }
   if (a.type === 'box' && b.type === 'box') return obbCollision(fixtureObb(bodyA, fixtureA as RuntimeSpatialFixture & { shape: Extract<SpatialShape, { type: 'box' }> }), fixtureObb(bodyB, fixtureB as RuntimeSpatialFixture & { shape: Extract<SpatialShape, { type: 'box' }> }));
   return axisCollision(fixtureAabb(bodyA, fixtureA), fixtureAabb(bodyB, fixtureB));
 }
@@ -490,7 +518,7 @@ export class SpatialEmbodimentWorld {
   private readonly contactImpulseCache = new Map<string, { normalImpulse: number; tangentImpulse: number; tangent: IntVector3 }>();
   private currentContacts: SpatialContactPoint[] = [];
   private currentEvents: SpatialEmbodimentEvent[] = [];
-  private diagnosticsValue: SpatialEmbodimentDiagnostics = { broadPhasePairs: 0, narrowPhaseTests: 0, contacts: 0, sensorContacts: 0, groundedBodies: 0, sleepingBodies: 0, characterControllers: 0, jointConstraints: 0, microsteps: 1, ccdBodies: 0, audioEvents: 0, hapticEvents: 0, footstepEvents: 0, broadPhaseCells: 0, persistentManifolds: 0, warmStartedContacts: 0, steppedCharacters: 0, snappedCharacters: 0, movingPlatformTransfers: 0, solverIslands:0, largestSolverIsland:0, sleepingIslands:0, warmStartedFrictionContacts:0, coyoteJumps:0, bufferedJumps:0, capsuleObbContacts:0 };
+  private diagnosticsValue: SpatialEmbodimentDiagnostics = { broadPhasePairs: 0, narrowPhaseTests: 0, contacts: 0, sensorContacts: 0, groundedBodies: 0, sleepingBodies: 0, characterControllers: 0, jointConstraints: 0, microsteps: 1, ccdBodies: 0, audioEvents: 0, hapticEvents: 0, footstepEvents: 0, broadPhaseCells: 0, persistentManifolds: 0, warmStartedContacts: 0, steppedCharacters: 0, snappedCharacters: 0, movingPlatformTransfers: 0, solverIslands:0, largestSolverIsland:0, sleepingIslands:0, warmStartedFrictionContacts:0, coyoteJumps:0, bufferedJumps:0, capsuleObbContacts:0, gjkCalls: 0, epaCalls: 0, convexContacts: 0, convexFallbacks: 0 };
 
   constructor(config: SpatialEmbodimentWorldConfig) {
     if (config.format !== SPATIAL_EMBODIMENT_FORMAT && config.format !== LEGACY_SPATIAL_EMBODIMENT_FORMAT) throw new Error(`unsupported spatial embodiment format: ${config.format}`);
@@ -617,7 +645,7 @@ export class SpatialEmbodimentWorld {
       const a=proxies[i]!, b=proxies[j]!; this.diagnosticsValue.broadPhasePairs++;
       if (a.body.id===b.body.id || (a.body.kind==='static'&&b.body.kind==='static') || !filterPair(a.fixture,b.fixture) || !overlaps(a.aabb,b.aabb)) continue;
       if (!this.oneWayAllows(a.body,a.fixture,b.body) || !this.oneWayAllows(b.body,b.fixture,a.body)) continue;
-      this.diagnosticsValue.narrowPhaseTests++; const result=collideFixtures(a.body,a.fixture,b.body,b.fixture); if(!result)continue;if(result.feature==='capsule-obb')this.diagnosticsValue.capsuleObbContacts++;
+      this.diagnosticsValue.narrowPhaseTests++; const result=collideFixtures(a.body,a.fixture,b.body,b.fixture,this.diagnosticsValue); if(!result)continue;if(result.feature==='capsule-obb')this.diagnosticsValue.capsuleObbContacts++;
       contacts.push(this.makeContact(a.body,a.fixture,b.body,b.fixture,result));
     }
     return contacts.sort((a,b)=>a.id.localeCompare(b.id));
@@ -752,7 +780,7 @@ export class SpatialEmbodimentWorld {
   }
 
   step(commands: SpatialCommand[] = []): { snapshot: SpatialEmbodimentSnapshot; events: SpatialEmbodimentEvent[] } {
-    this.tickValue++; this.currentEvents = []; this.currentContacts = []; this.diagnosticsValue = { broadPhasePairs: 0, narrowPhaseTests: 0, contacts: 0, sensorContacts: 0, groundedBodies: 0, sleepingBodies: 0, characterControllers: this.characterMap.size, jointConstraints: 0, microsteps: 1, ccdBodies: 0, audioEvents: 0, hapticEvents: 0, footstepEvents: 0, broadPhaseCells: 0, persistentManifolds: this.contactImpulseCache.size, warmStartedContacts: 0, steppedCharacters: 0, snappedCharacters: 0, movingPlatformTransfers: 0, solverIslands:0, largestSolverIsland:0, sleepingIslands:0, warmStartedFrictionContacts:0, coyoteJumps:0, bufferedJumps:0, capsuleObbContacts:0 };
+    this.tickValue++; this.currentEvents = []; this.currentContacts = []; this.diagnosticsValue = { broadPhasePairs: 0, narrowPhaseTests: 0, contacts: 0, sensorContacts: 0, groundedBodies: 0, sleepingBodies: 0, characterControllers: this.characterMap.size, jointConstraints: 0, microsteps: 1, ccdBodies: 0, audioEvents: 0, hapticEvents: 0, footstepEvents: 0, broadPhaseCells: 0, persistentManifolds: this.contactImpulseCache.size, warmStartedContacts: 0, steppedCharacters: 0, snappedCharacters: 0, movingPlatformTransfers: 0, solverIslands:0, largestSolverIsland:0, sleepingIslands:0, warmStartedFrictionContacts:0, coyoteJumps:0, bufferedJumps:0, capsuleObbContacts:0, gjkCalls: 0, epaCalls: 0, convexContacts: 0, convexFallbacks: 0 };
     this.applyMovingPlatformInheritance();
     for (const command of commands.filter(c => c.tick === this.tickValue).sort((a, b) => a.id.localeCompare(b.id))) this.applyCommand(command);
     this.applyCharacterControllers(); this.resetGrounding(); const previousPositions = new Map([...this.bodyMap.values()].map(body => [body.id, cloneVec(body.position)]));

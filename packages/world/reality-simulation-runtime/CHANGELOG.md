@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- 旋转 OBB-OBB 窄相位接入确定性三维 GJK/EPA，并将 GJK/EPA、凸体接触和退化兜底写入空间诊断；
+- 保留 Sphere/Capsule 专用窄相位作为稳定性兜底，避免实验性广义 EPA 破坏角色控制；
+- 新增旋转 OBB GJK/EPA 接触、重放和诊断回归，空间具身测试达到 54/54。
+
 ## 0.5.0-alpha.1
 
 - 新增 Spatial Embodiment Fabric；
