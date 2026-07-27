@@ -27,6 +27,7 @@ var VSRSpatial3D = (() => {
     VSR_SPATIAL_REALITY_VERSION: () => VSR_SPATIAL_REALITY_VERSION,
     VSR_SPATIAL_SCENE_FORMAT: () => VSR_SPATIAL_SCENE_FORMAT,
     VSR_SPATIAL_SHADOW_WGSL_V04: () => VSR_SPATIAL_SHADOW_WGSL_V04,
+    VSR_SPATIAL_STREAMING_FORMAT: () => VSR_SPATIAL_STREAMING_FORMAT,
     VSR_SPATIAL_VERTEX_WGSL_V04: () => VSR_SPATIAL_VERTEX_WGSL_V04,
     VSR_SPATIAL_VISUAL_INTENT_FORMAT: () => VSR_SPATIAL_VISUAL_INTENT_FORMAT,
     VSR_SPATIAL_VISUAL_INTENT_VERSION: () => VSR_SPATIAL_VISUAL_INTENT_VERSION,
@@ -68,6 +69,7 @@ var VSRSpatial3D = (() => {
     renderSpatialReference: () => renderSpatialReference,
     resolveSpatialBudget: () => resolveSpatialBudget,
     resolveSpatialShadowCamera: () => resolveSpatialShadowCamera,
+    resolveSpatialStreaming: () => resolveSpatialStreaming,
     sampleSpatialAnimation: () => sampleSpatialAnimation,
     sampleSpatialAnimationGraph: () => sampleSpatialAnimationGraph,
     sampleSpatialAnimationLayers: () => sampleSpatialAnimationLayers,
@@ -310,6 +312,7 @@ var VSRSpatial3D = (() => {
   var VSR_SPATIAL_REALITY_VERSION = "0.8.0-alpha.1";
   var VSR_SPATIAL_SCENE_FORMAT = "vsr.spatial-scene.v0.4";
   var VSR_SPATIAL_FRAME_FORMAT = "vsr.spatial-frame-plan.v0.4";
+  var VSR_SPATIAL_STREAMING_FORMAT = "vsr.spatial-streaming-resolution.v0.1";
   var VSR_SPATIAL_VISUAL_INTENT_FORMAT = "taowind.rcl-rncs-visual-intent.v0.1";
   var VSR_SPATIAL_VISUAL_INTENT_VERSION = "0.1.0";
   var EPS = 1e-9;
@@ -566,6 +569,19 @@ var VSRSpatial3D = (() => {
     else ids.add(node.id);
     if (!scene.cameras.some((camera) => camera.id === scene.activeCameraId)) throw new Error(`Missing active camera ${scene.activeCameraId}.`);
     const nodeIds = new Set(scene.nodes.map((node) => node.id)), textureIds = new Set((scene.textures ?? []).map((texture) => texture.id)), skinIds = new Set((scene.skins ?? []).map((skin) => skin.id));
+    if (scene.streaming) {
+      if (!scene.streaming.worldId) throw new Error("Spatial streaming worldId is required.");
+      const cellIds = /* @__PURE__ */ new Set();
+      for (const cell of scene.streaming.cells) {
+        if (!cell.id || cellIds.has(cell.id)) throw new Error(`Duplicate streaming cell ${cell.id}.`);
+        cellIds.add(cell.id);
+        if (!validVec3(cell.center) || !Number.isFinite(cell.radius) || cell.radius <= 0) throw new Error(`Streaming cell ${cell.id} bounds are invalid.`);
+        for (const radius of [cell.loadRadius, cell.unloadRadius]) if (radius !== void 0 && (!Number.isFinite(radius) || radius < 0)) throw new Error(`Streaming cell ${cell.id} radius is invalid.`);
+        if (cell.unloadRadius !== void 0 && cell.loadRadius !== void 0 && cell.unloadRadius < cell.loadRadius) throw new Error(`Streaming cell ${cell.id} unloadRadius must be >= loadRadius.`);
+        for (const nodeId of cell.nodeIds) if (!nodeIds.has(nodeId)) throw new Error(`Streaming cell ${cell.id} missing node ${nodeId}.`);
+      }
+      for (const nodeId of scene.streaming.persistentNodeIds ?? []) if (!nodeIds.has(nodeId)) throw new Error(`Streaming persistent node ${nodeId} is missing.`);
+    }
     if (scene.environment?.textureId && !textureIds.has(scene.environment.textureId)) throw new Error(`Environment missing texture ${scene.environment.textureId}.`);
     for (const skin of scene.skins ?? []) for (const joint of skin.joints) if (!nodeIds.has(joint)) throw new Error(`Skin ${skin.id} missing joint ${joint}.`);
     for (const material of scene.materials) {
@@ -596,6 +612,20 @@ var VSRSpatial3D = (() => {
         }
       }
     }
+  }
+  function resolveSpatialStreaming(scene, observerPosition, options = {}) {
+    const config = scene.streaming;
+    if (!config) return void 0;
+    const defaultLoadRadius = Math.max(0, options.loadRadius ?? 64), defaultUnloadRadius = Math.max(defaultLoadRadius, options.unloadRadius ?? defaultLoadRadius * 1.25), cells = [...config.cells].sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0) || a.id.localeCompare(b.id)), cellIds = new Set(cells.map((cell) => cell.id));
+    const previousActiveCellIds = [...options.previousActiveCellIds ?? []].filter((id, index, array) => cellIds.has(id) && array.indexOf(id) === index).sort(), forcedCellIds = [...options.forcedCellIds ?? []].filter((id, index, array) => cellIds.has(id) && array.indexOf(id) === index).sort(), previous = new Set(previousActiveCellIds), forced = new Set(forcedCellIds), activeCellIds = [];
+    for (const cell of cells) {
+      const loadRadius = Math.max(0, cell.loadRadius ?? defaultLoadRadius), unloadRadius = Math.max(loadRadius, cell.unloadRadius ?? defaultUnloadRadius), threshold = previous.has(cell.id) ? unloadRadius : loadRadius;
+      if (forced.has(cell.id) || distance3(observerPosition, cell.center) <= cell.radius + threshold) activeCellIds.push(cell.id);
+    }
+    const active = new Set(activeCellIds), enteredCellIds = activeCellIds.filter((id) => !previous.has(id)).sort(), exitedCellIds = previousActiveCellIds.filter((id) => !active.has(id)).sort(), persistentNodeIds = [...config.persistentNodeIds ?? []].filter((id, index, array) => array.indexOf(id) === index).sort(), streamedNodeSet = new Set(persistentNodeIds);
+    for (const cell of cells) if (active.has(cell.id)) for (const nodeId of cell.nodeIds) streamedNodeSet.add(nodeId);
+    const nodeIds = scene.nodes.filter((node) => streamedNodeSet.has(node.id)).map((node) => node.id), catalogRoot = cryptographicHash({ worldId: config.worldId, cells: config.cells, persistentNodeIds: config.persistentNodeIds ?? [] }), base = { format: VSR_SPATIAL_STREAMING_FORMAT, worldId: config.worldId, observerPosition: [...observerPosition], loadRadius: defaultLoadRadius, unloadRadius: defaultUnloadRadius, previousActiveCellIds, forcedCellIds, activeCellIds: [...activeCellIds].sort(), enteredCellIds, exitedCellIds, persistentNodeIds, nodeIds, catalogRoot };
+    return { ...base, root: cryptographicHash(base) };
   }
   function lerpVec3(a, b, t) {
     return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
@@ -1036,11 +1066,12 @@ fn environmentSample(direction:vec3<f32>,fallback:vec3<f32>)->vec3<f32>{return s
   var VSR_SPATIAL_SHADOW_WGSL_V04 = `struct ShadowCamera { lightViewProjection:mat4x4<f32> }; @group(0) @binding(0) var<uniform> shadowCamera:ShadowCamera; struct Object { world:mat4x4<f32> }; @group(1) @binding(0) var<uniform> object:Object; @group(1) @binding(1) var<storage,read> jointMatrices:array<mat4x4<f32>>; struct Deformation { skinEnabled:f32, vertexCount:f32, morphCount:f32, _pad:f32, morphWeights:vec4<f32> }; @group(1) @binding(2) var<uniform> deformation:Deformation; @group(1) @binding(3) var<storage,read> morphDeltas:array<vec4<f32>>; @group(1) @binding(4) var<storage,read> instanceMatrices:array<mat4x4<f32>>; struct ShadowIn { @location(0) position:vec3<f32>, @location(3) joints:vec4<f32>, @location(4) weights:vec4<f32>, @builtin(vertex_index) vertexIndex:u32, @builtin(instance_index) instanceIndex:u32 }; fn morphPosition(position:vec3<f32>,vertexIndex:u32)->vec3<f32>{var result=position;let vertexCount=u32(deformation.vertexCount);for(var morph:u32=0u;morph<4u;morph=morph+1u){if(morph<u32(deformation.morphCount)){result=result+morphDeltas[morph*vertexCount+vertexIndex].xyz*deformation.morphWeights[morph];}}return result;} fn skinPosition(position:vec3<f32>,joints:vec4<f32>,weights:vec4<f32>)->vec3<f32>{if(deformation.skinEnabled<0.5){return position;}let total=weights.x+weights.y+weights.z+weights.w;if(total<=0.0001){return position;}return(jointMatrices[u32(joints.x)]*vec4<f32>(position,1.0)*weights.x+jointMatrices[u32(joints.y)]*vec4<f32>(position,1.0)*weights.y+jointMatrices[u32(joints.z)]*vec4<f32>(position,1.0)*weights.z+jointMatrices[u32(joints.w)]*vec4<f32>(position,1.0)*weights.w).xyz/total;} @vertex fn vs_shadow(input:ShadowIn)->@builtin(position) vec4<f32>{let localPosition=skinPosition(morphPosition(input.position,input.vertexIndex),input.joints,input.weights);return shadowCamera.lightViewProjection*object.world*instanceMatrices[input.instanceIndex]*vec4<f32>(localPosition,1.0);}`;
   function compileSpatialFrame(scene, options = {}) {
     validateScene(scene);
-    const budget = resolveSpatialBudget(options), baseAnimationOverrides = options.animationGraph ? sampleSpatialAnimationGraph(scene, options.animationGraph) : options.animationLayers ? sampleSpatialAnimationLayers(scene, options.animationLayers) : options.animation ? sampleSpatialAnimation(scene, options.animation.clipId, options.animation.timeSeconds, options.animation.loop ?? true) : /* @__PURE__ */ new Map(), animationConstraints = options.animationConstraints ?? [], animationOverrides = applySpatialAnimationConstraints(scene, baseAnimationOverrides, animationConstraints), visualIntentRoot = options.visualIntentRoot ?? null, animationRoot = cryptographicHash({ selection: options.animation ?? null, layers: options.animationLayers ?? null, graph: options.animationGraph ?? null, ...animationConstraints.length ? { animationConstraints } : {}, ...visualIntentRoot ? { visualIntentRoot } : {}, overrides: [...animationOverrides.entries()] }), camera = scene.cameras.find((entry) => entry.id === scene.activeCameraId), aspect = budget.width / budget.height, near = Math.max(1e-3, camera.near ?? 0.1), far = Math.max(near + 0.01, camera.far ?? 1e3), view = cameraViewMatrix(camera), projection = camera.projection === "orthographic" ? orthographicMat4(camera.orthoHeight ?? 10, aspect, near, far) : perspectiveMat4(camera.fovYDeg ?? 60, aspect, near, far), viewProjection = multiplyMat4(projection, view), cameraPos = cameraPosition(camera), world = worldMatrices(scene, animationOverrides), meshById = new Map(scene.meshes.map((mesh) => [mesh.id, mesh])), materialById = new Map(scene.materials.map((material) => [material.id, sanitizeMaterial(material)])), skinById = new Map((scene.skins ?? []).map((skin) => [skin.id, skin]));
+    const budget = resolveSpatialBudget(options), baseAnimationOverrides = options.animationGraph ? sampleSpatialAnimationGraph(scene, options.animationGraph) : options.animationLayers ? sampleSpatialAnimationLayers(scene, options.animationLayers) : options.animation ? sampleSpatialAnimation(scene, options.animation.clipId, options.animation.timeSeconds, options.animation.loop ?? true) : /* @__PURE__ */ new Map(), animationConstraints = options.animationConstraints ?? [], animationOverrides = applySpatialAnimationConstraints(scene, baseAnimationOverrides, animationConstraints), visualIntentRoot = options.visualIntentRoot ?? null, animationRoot = cryptographicHash({ selection: options.animation ?? null, layers: options.animationLayers ?? null, graph: options.animationGraph ?? null, ...animationConstraints.length ? { animationConstraints } : {}, ...visualIntentRoot ? { visualIntentRoot } : {}, overrides: [...animationOverrides.entries()] }), camera = scene.cameras.find((entry) => entry.id === scene.activeCameraId), aspect = budget.width / budget.height, near = Math.max(1e-3, camera.near ?? 0.1), far = Math.max(near + 0.01, camera.far ?? 1e3), view = cameraViewMatrix(camera), projection = camera.projection === "orthographic" ? orthographicMat4(camera.orthoHeight ?? 10, aspect, near, far) : perspectiveMat4(camera.fovYDeg ?? 60, aspect, near, far), viewProjection = multiplyMat4(projection, view), cameraPos = cameraPosition(camera), streaming = scene.streaming ? resolveSpatialStreaming(scene, cameraPos, options.streaming) : void 0, streamedNodeIds = streaming ? new Set(streaming.nodeIds) : void 0, world = worldMatrices(scene, animationOverrides), meshById = new Map(scene.meshes.map((mesh) => [mesh.id, mesh])), materialById = new Map(scene.materials.map((material) => [material.id, sanitizeMaterial(material)])), skinById = new Map((scene.skins ?? []).map((skin) => [skin.id, skin]));
     const visiblePackets = [];
     let culled = 0;
-    const lodHistogram = {};
+    const streamingCulledCells = streaming ? scene.streaming.cells.length - streaming.activeCellIds.length : 0, lodHistogram = {};
     for (const node of scene.nodes) {
+      if (streamedNodeIds && !streamedNodeIds.has(node.id)) continue;
       if (node.visible === false || !node.meshId && !node.lods?.length) continue;
       const matrix = world.get(node.id), baseMeshId = node.meshId ?? node.lods?.[0]?.meshId, baseMesh = baseMeshId ? meshById.get(baseMeshId) : void 0;
       if (!baseMesh) {
@@ -1095,14 +1126,18 @@ fn environmentSample(direction:vec3<f32>,fallback:vec3<f32>)->vec3<f32>{return s
     for (const texture of scene.textures ?? []) resources.push({ id: `texture:${texture.id}`, kind: "texture-2d", byteLength: texture.pixels.length, format: "rgba8unorm", resourceRoot: cryptographicHash(texture) });
     resources.push({ id: "materials", kind: "material-buffer", byteLength: materialById.size * 64, resourceRoot: cryptographicHash([...materialById.values()]) }, { id: "lights", kind: "light-buffer", byteLength: lights.length * 64, resourceRoot: cryptographicHash(lights) }, { id: "scene-depth", kind: "depth-texture", byteLength: budget.width * budget.height * 4, format: "depth24plus", resourceRoot: cryptographicHash({ width: budget.width, height: budget.height, format: "depth24plus" }) }, { id: "scene-color", kind: "color-texture", byteLength: budget.width * budget.height * 8, format: "rgba16float", resourceRoot: cryptographicHash({ width: budget.width, height: budget.height, format: "rgba16float" }) }, { id: "present-color", kind: "color-texture", byteLength: budget.width * budget.height * 4, format: "bgra8unorm", resourceRoot: cryptographicHash({ width: budget.width, height: budget.height, format: "bgra8unorm" }) });
     if (passes.some((pass) => pass.id === "shadow-depth")) resources.push({ id: "shadow-depth", kind: "shadow-texture", byteLength: budget.shadowMapSize ** 2 * 4, format: "depth32float", resourceRoot: cryptographicHash({ size: budget.shadowMapSize, format: "depth32float" }) });
-    const sourceRealityRoot = cryptographicHash({ format: scene.format, sceneId: scene.sceneId, reality: scene.reality ?? null }), geometryRoot = cryptographicHash(scene.meshes.map((mesh) => ({ id: mesh.id, positions: mesh.positions, normals: mesh.normals ?? null, uvs: mesh.uvs ?? null, indices: mesh.indices, jointIndices: mesh.jointIndices ?? null, jointWeights: mesh.jointWeights ?? null, morphTargets: mesh.morphTargets ?? null }))), materialRoot = cryptographicHash([...materialById.values()]), textureRoot = cryptographicHash(scene.textures ?? []), environmentRoot = cryptographicHash(environment), commandRoot = cryptographicHash({ drawPackets, passes, lights, budget, textureRoot, environmentRoot, animationRoot }), shaders = { vertex: VSR_SPATIAL_VERTEX_WGSL_V04, fragment: VSR_SPATIAL_FRAGMENT_WGSL_V04, shadowVertex: VSR_SPATIAL_SHADOW_WGSL_V04, sourceRoot: cryptographicHash([VSR_SPATIAL_VERTEX_WGSL_V04, VSR_SPATIAL_FRAGMENT_WGSL_V04, VSR_SPATIAL_SHADOW_WGSL_V04]) };
-    const stats = { meshCount: scene.meshes.length, nodeCount: scene.nodes.length, textureCount: (scene.textures ?? []).length, materialTextureBindings: drawPackets.reduce((sum, packet) => sum + Object.values(packet.textureBindings).filter(Boolean).length, 0), animationClipCount: (scene.animations ?? []).length, visibleDraws: drawPackets.length, visibleInstances: visiblePackets.length, instancedDraws: drawPackets.filter((packet) => packetInstanceCount(packet) > 1).length, culledDraws: culled, triangleCount: drawPackets.reduce((sum, packet) => sum + packet.indexCount / 3 * packetInstanceCount(packet), 0), lightCount: lights.length, shadowCasterCount, skinnedDraws: drawPackets.reduce((sum, packet) => sum + (packet.skinId ? packetInstanceCount(packet) : 0), 0), morphedDraws: drawPackets.reduce((sum, packet) => sum + (packet.morphWeights.some((weight) => Math.abs(weight) > EPS) ? packetInstanceCount(packet) : 0), 0), lodHistogram };
-    const base = { format: VSR_SPATIAL_FRAME_FORMAT, version: VSR_SPATIAL_REALITY_VERSION, sceneId: scene.sceneId, viewport: { width: budget.width, height: budget.height }, budget, camera: { id: camera.id, viewMatrix: view, projectionMatrix: projection, viewProjectionMatrix: viewProjection, position: cameraPos }, environment, drawPackets, lights, passes, resources, shaders, stats, sourceRealityRoot, geometryRoot, materialRoot, textureRoot, animationRoot, environmentRoot, ...visualIntentRoot ? { visualIntentRoot } : {}, commandRoot };
+    const sourceRealityRoot = cryptographicHash({ format: scene.format, sceneId: scene.sceneId, reality: scene.reality ?? null }), geometryRoot = cryptographicHash(scene.meshes.map((mesh) => ({ id: mesh.id, positions: mesh.positions, normals: mesh.normals ?? null, uvs: mesh.uvs ?? null, indices: mesh.indices, jointIndices: mesh.jointIndices ?? null, jointWeights: mesh.jointWeights ?? null, morphTargets: mesh.morphTargets ?? null }))), materialRoot = cryptographicHash([...materialById.values()]), textureRoot = cryptographicHash(scene.textures ?? []), environmentRoot = cryptographicHash(environment), commandRoot = cryptographicHash({ drawPackets, passes, lights, budget, textureRoot, environmentRoot, animationRoot, streaming: streaming ?? null }), shaders = { vertex: VSR_SPATIAL_VERTEX_WGSL_V04, fragment: VSR_SPATIAL_FRAGMENT_WGSL_V04, shadowVertex: VSR_SPATIAL_SHADOW_WGSL_V04, sourceRoot: cryptographicHash([VSR_SPATIAL_VERTEX_WGSL_V04, VSR_SPATIAL_FRAGMENT_WGSL_V04, VSR_SPATIAL_SHADOW_WGSL_V04]) };
+    const stats = { meshCount: scene.meshes.length, nodeCount: scene.nodes.length, textureCount: (scene.textures ?? []).length, materialTextureBindings: drawPackets.reduce((sum, packet) => sum + Object.values(packet.textureBindings).filter(Boolean).length, 0), animationClipCount: (scene.animations ?? []).length, visibleDraws: drawPackets.length, visibleInstances: visiblePackets.length, instancedDraws: drawPackets.filter((packet) => packetInstanceCount(packet) > 1).length, activeCells: streaming?.activeCellIds.length ?? 0, streamedNodes: streaming?.nodeIds.length ?? scene.nodes.length, streamingCulledCells, culledDraws: culled, triangleCount: drawPackets.reduce((sum, packet) => sum + packet.indexCount / 3 * packetInstanceCount(packet), 0), lightCount: lights.length, shadowCasterCount, skinnedDraws: drawPackets.reduce((sum, packet) => sum + (packet.skinId ? packetInstanceCount(packet) : 0), 0), morphedDraws: drawPackets.reduce((sum, packet) => sum + (packet.morphWeights.some((weight) => Math.abs(weight) > EPS) ? packetInstanceCount(packet) : 0), 0), lodHistogram };
+    const base = { format: VSR_SPATIAL_FRAME_FORMAT, version: VSR_SPATIAL_REALITY_VERSION, sceneId: scene.sceneId, viewport: { width: budget.width, height: budget.height }, budget, camera: { id: camera.id, viewMatrix: view, projectionMatrix: projection, viewProjectionMatrix: viewProjection, position: cameraPos }, environment, drawPackets, lights, passes, resources, shaders, stats, sourceRealityRoot, geometryRoot, materialRoot, textureRoot, animationRoot, environmentRoot, ...streaming ? { streaming } : {}, ...visualIntentRoot ? { visualIntentRoot } : {}, commandRoot };
     return { ...base, frameRoot: cryptographicHash(base) };
   }
   function verifySpatialFrame(plan) {
     const diagnostics = [];
     if (plan.format !== VSR_SPATIAL_FRAME_FORMAT) diagnostics.push("frame format mismatch");
+    if (plan.streaming) {
+      const { root, ...streamingBase } = plan.streaming;
+      if (cryptographicHash(streamingBase) !== root) diagnostics.push("streaming root mismatch");
+    }
     const resourceIds = new Set(plan.resources.map((resource) => resource.id));
     for (const pass of plan.passes) {
       for (const dep of pass.dependsOn) if (!plan.passes.some((candidate) => candidate.id === dep)) diagnostics.push(`pass ${pass.id} missing dependency ${dep}`);
@@ -1115,7 +1150,7 @@ fn environmentSample(direction:vec3<f32>,fallback:vec3<f32>)->vec3<f32>{return s
       const { packetRoot, ...base2 } = packet;
       if (cryptographicHash(base2) !== packetRoot) diagnostics.push(`draw packet ${packet.nodeId} root mismatch`);
     }
-    const commandRoot = cryptographicHash({ drawPackets: plan.drawPackets, passes: plan.passes, lights: plan.lights, budget: plan.budget, textureRoot: plan.textureRoot, environmentRoot: plan.environmentRoot, animationRoot: plan.animationRoot });
+    const commandRoot = cryptographicHash({ drawPackets: plan.drawPackets, passes: plan.passes, lights: plan.lights, budget: plan.budget, textureRoot: plan.textureRoot, environmentRoot: plan.environmentRoot, animationRoot: plan.animationRoot, streaming: plan.streaming ?? null });
     if (commandRoot !== plan.commandRoot) diagnostics.push("command root mismatch");
     const { frameRoot, ...base } = plan;
     if (cryptographicHash(base) !== frameRoot) diagnostics.push("frame root mismatch");

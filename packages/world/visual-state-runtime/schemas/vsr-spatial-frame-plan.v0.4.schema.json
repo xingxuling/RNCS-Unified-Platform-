@@ -82,6 +82,95 @@
       },
       "additionalProperties": false
     },
+    "streaming": {
+      "type": "object",
+      "required": [
+        "format",
+        "worldId",
+        "observerPosition",
+        "activeCellIds",
+        "enteredCellIds",
+        "exitedCellIds",
+        "nodeIds",
+        "catalogRoot",
+        "root"
+      ],
+      "properties": {
+        "format": {
+          "const": "vsr.spatial-streaming-resolution.v0.1"
+        },
+        "worldId": {
+          "type": "string"
+        },
+        "observerPosition": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "number"
+          }
+        },
+        "loadRadius": {
+          "type": "number",
+          "minimum": 0
+        },
+        "unloadRadius": {
+          "type": "number",
+          "minimum": 0
+        },
+        "previousActiveCellIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "forcedCellIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "activeCellIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "enteredCellIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "exitedCellIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "persistentNodeIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "nodeIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "catalogRoot": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "root": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "additionalProperties": false
+    },
     "drawPackets": {
       "type": "array",
       "items": {
@@ -201,6 +290,18 @@
           "minimum": 0
         },
         "instancedDraws": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "activeCells": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "streamedNodes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "streamingCulledCells": {
           "type": "integer",
           "minimum": 0
         }

@@ -48,6 +48,76 @@
       },
       "additionalProperties": false
     },
+    "streaming": {
+      "type": "object",
+      "required": [
+        "worldId",
+        "cells"
+      ],
+      "properties": {
+        "worldId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "persistentNodeIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "cells": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "center",
+              "radius",
+              "nodeIds"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "center": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": {
+                  "type": "number"
+                }
+              },
+              "radius": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "nodeIds": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "loadRadius": {
+                "type": "number",
+                "minimum": 0
+              },
+              "unloadRadius": {
+                "type": "number",
+                "minimum": 0
+              },
+              "priority": {
+                "type": "number"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
     "activeCameraId": {
       "type": "string",
       "minLength": 1
