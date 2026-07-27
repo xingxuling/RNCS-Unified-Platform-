@@ -33,3 +33,27 @@ The session accepts an RCL Foundation/RNCS bridge value through
 `foundationTransition` and an RCL resource WAL-compatible `resourceRuntime`
 through `recordOperation(type, input, fn)`. Those values remain evidence and
 provider boundaries; they do not grant model or organ output commit authority.
+
+## Verified spatial replay and branches
+
+`spatial-replay` turns an RSR snapshot plus fixed-point command trace into a
+portable `rncs.spatial-replay-bundle.v0.1`. Every checkpoint carries the RSR
+state root, VSR scene/frame roots and causal-delta root. The verifier replays
+the trace instead of trusting the stored final snapshot, and a branch can be
+created from any verified checkpoint without mutating the parent bundle.
+
+```js
+const bundle = session.createReplayBundle({ ticks: 30, commands });
+const verification = verifySpatialReplayBundle(bundle);
+const branch = createSpatialReplayBranch(bundle, {
+  fromCheckpoint: 10,
+  branchId: 'branch:counterfactual-left',
+  ticks: 20,
+  commands: alternateCommands,
+});
+const comparison = compareSpatialReplayBranches(bundle, branch);
+```
+
+The replay bundle is a simulation artifact, not authority. Committing a
+selected branch still goes through the RNCS proposal, simulation, authority
+and commit gates.

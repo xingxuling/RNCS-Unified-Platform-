@@ -39,6 +39,7 @@
   },
   "dependencies": {
     "@taowind/reality-behavior-fabric": "*",
+    "@taowind/reality-engine-session": "*",
     "@taowind/reality-studio-native": "*"
   }
 }

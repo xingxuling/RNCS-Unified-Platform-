@@ -1,4 +1,5 @@
 import {UnifiedManufacturingSession} from '@taowind/reality-studio-native';
+import {replaySpatialReplayBundle,verifySpatialReplayBundle} from '@taowind/reality-engine-session/spatial-replay';
 import {clone,rootHash,seal} from './canonical.mjs';
 
 export const RUNTIME_EVIDENCE_FORMAT='reality-build.runtime-evidence.v0.1';
@@ -16,6 +17,10 @@ function normalizeSpatialTrace(trace){
   });
 }
 
+function replayCommands(trace,initialTick){
+  return trace.flatMap((commands,frameIndex)=>commands.map(command=>({...clone(command),tick:initialTick+frameIndex+1})));
+}
+
 function portableProject(project){
   const out=clone(project);
   if(out.assets){
@@ -29,13 +34,13 @@ function portableProject(project){
 }
 
 function runSpatialTrace(session,trace){
-  const initial=session.spatial.lastSnapshot,frames=[];
+  const initial=clone(session.spatial.lastSnapshot),frames=[];
   for(const [index,commands] of trace.entries()){
     session.spatial.step({commands});
     const snapshot=session.spatial.lastSnapshot;
     frames.push({sequence:index+1,tick:snapshot.tick,command_count:commands.length,command_root:rootHash(commands),state_root:snapshot.stateRoot});
   }
-  return{initial_state_root:initial.stateRoot,frames,final_state_root:session.spatial.lastSnapshot.stateRoot};
+  return{initial_snapshot:initial,initial_state_root:initial.stateRoot,frames,final_snapshot:clone(session.spatial.lastSnapshot),final_state_root:session.spatial.lastSnapshot.stateRoot};
 }
 
 export function buildRuntimeEvidence({project,request,identity}={}){
@@ -46,8 +51,18 @@ export function buildRuntimeEvidence({project,request,identity}={}){
   const initialCheckpoint=session.createRuntimeCheckpoint('build-initial').runtime_checkpoint;
   const initialArtifacts=session.exportArtifacts();
   for(const input of trace)session.step(input);
-  const spatial=runSpatialTrace(session,spatialTrace);
   const spatialReplaySession=new UnifiedManufacturingSession(runtimeProject,{sessionId:`build-spatial-replay:${identity.build_id}`});
+  const spatialReplayBundle=spatialTrace.length?spatialReplaySession.spatial.createReplayBundle({
+    ticks:spatialTrace.length,
+    commands:replayCommands(spatialTrace,spatialReplaySession.spatial.lastSnapshot.tick),
+    checkpointEvery:1,
+    branchId:`build:${identity.build_id}:spatial`,
+    bundleId:`build-spatial:${identity.build_id}`,
+    metadata:{build_id:identity.build_id,project_root:project.project_root,source:'reality-build'}
+  }):null;
+  const spatialReplayVerification=spatialReplayBundle?verifySpatialReplayBundle(spatialReplayBundle):null;
+  const spatialReplayResult=spatialReplayBundle&&spatialReplayVerification?.valid?replaySpatialReplayBundle(spatialReplayBundle):null;
+  const spatial=runSpatialTrace(session,spatialTrace);
   const spatialReplay=runSpatialTrace(spatialReplaySession,spatialTrace);
   const spatialChecks=spatial.frames.map((frame,index)=>({sequence:frame.sequence,expected_state_root:frame.state_root,actual_state_root:spatialReplay.frames[index]?.state_root??null,match:frame.state_root===spatialReplay.frames[index]?.state_root}));
   const spatialDeterministic=spatial.final_state_root===spatialReplay.final_state_root&&spatialChecks.every(check=>check.match);
@@ -76,6 +91,12 @@ export function buildRuntimeEvidence({project,request,identity}={}){
     spatial_replay_state_root:spatialReplay.final_state_root,
     spatial_deterministic:spatialDeterministic,
     spatial_checks:spatialChecks,
+    spatial_replay_bundle_root:spatialReplayBundle?.bundle_root??null,
+    spatial_replay_result_root:spatialReplayResult?.replay_root??null,
+    spatial_replay_deterministic:spatialReplayVerification?.deterministic??null,
+    spatial_replay_checkpoint_count:spatialReplayVerification?.checkpoint_count??0,
+    spatial_replay_final_state_root:spatialReplayResult?.final_state_root??null,
+    spatial_replay_final_frame_root:spatialReplayResult?.final_frame_root??null,
     spatial_initial_frame_root:spatialFramePlan.frameRoot??null,
     spatial_frame_root:artifacts.spatial_frame_plan?.frameRoot??null,
     spatial_final_frame_root:artifacts.spatial_frame_plan?.frameRoot??null,
@@ -89,11 +110,11 @@ export function buildRuntimeEvidence({project,request,identity}={}){
     gpu_frame_summary_root:gpuFrameSummary.summary_root??null,
     gpu_viewport_manifest_root:gpuViewportManifest.manifest_root??null
   },'evidence_root');
-  return{evidence,timeline:artifacts.runtime_timeline,replay:artifacts.runtime_replay,checkpoint:initialCheckpoint,spatial_initial_snapshot:spatialInitialSnapshot,spatial_world:spatialWorld,spatial_scene:spatialScene,spatial_frame_plan:spatialFramePlan,spatial_snapshot:artifacts.spatial_snapshot,spatial_causal_delta:artifacts.spatial_causal_delta,spatial_runtime_manifest:artifacts.spatial_runtime_manifest,navigation_manifest:artifacts.tilemap_navigation_manifest,gpu_frame_plan:gpuFramePlan,gpu_frame_summary:gpuFrameSummary,gpu_viewport_manifest:gpuViewportManifest};
+  return{evidence,timeline:artifacts.runtime_timeline,replay:artifacts.runtime_replay,checkpoint:initialCheckpoint,spatial_initial_snapshot:spatialInitialSnapshot,spatial_world:spatialWorld,spatial_scene:spatialScene,spatial_frame_plan:spatialFramePlan,spatial_snapshot:artifacts.spatial_snapshot,spatial_causal_delta:artifacts.spatial_causal_delta,spatial_runtime_manifest:artifacts.spatial_runtime_manifest,spatial_replay_bundle:spatialReplayBundle,spatial_replay_result:spatialReplayResult,navigation_manifest:artifacts.tilemap_navigation_manifest,gpu_frame_plan:gpuFramePlan,gpu_frame_summary:gpuFrameSummary,gpu_viewport_manifest:gpuViewportManifest};
 }
 
 export function runtimeEvidenceSummary(runtimeEvidence){
   const e=runtimeEvidence?.evidence??runtimeEvidence;
   if(!e)return null;
-  return{format:e.format,version:e.version,evidence_root:e.evidence_root,timeline_root:e.timeline_root,replay_root:e.replay_root,deterministic:e.deterministic,final_state_root:e.final_state_root,spatial_deterministic:e.spatial_deterministic,spatial_initial_frame_root:e.spatial_initial_frame_root,spatial_final_frame_root:e.spatial_final_frame_root,spatial_final_state_root:e.spatial_final_state_root,spatial_runtime_manifest_root:e.spatial_runtime_manifest_root,navigation_manifest_root:e.navigation_manifest_root,gpu_frame_plan_root:e.gpu_frame_plan_root,gpu_resource_root:e.gpu_resource_root,gpu_command_root:e.gpu_command_root,gpu_frame_summary_root:e.gpu_frame_summary_root,gpu_viewport_manifest_root:e.gpu_viewport_manifest_root};
+  return{format:e.format,version:e.version,evidence_root:e.evidence_root,timeline_root:e.timeline_root,replay_root:e.replay_root,deterministic:e.deterministic,final_state_root:e.final_state_root,spatial_deterministic:e.spatial_deterministic,spatial_initial_frame_root:e.spatial_initial_frame_root,spatial_final_frame_root:e.spatial_final_frame_root,spatial_final_state_root:e.spatial_final_state_root,spatial_replay_bundle_root:e.spatial_replay_bundle_root,spatial_replay_result_root:e.spatial_replay_result_root,spatial_replay_deterministic:e.spatial_replay_deterministic,spatial_replay_checkpoint_count:e.spatial_replay_checkpoint_count,spatial_replay_final_state_root:e.spatial_replay_final_state_root,spatial_replay_final_frame_root:e.spatial_replay_final_frame_root,spatial_runtime_manifest_root:e.spatial_runtime_manifest_root,navigation_manifest_root:e.navigation_manifest_root,gpu_frame_plan_root:e.gpu_frame_plan_root,gpu_resource_root:e.gpu_resource_root,gpu_command_root:e.gpu_command_root,gpu_frame_summary_root:e.gpu_frame_summary_root,gpu_viewport_manifest_root:e.gpu_viewport_manifest_root};
 }
