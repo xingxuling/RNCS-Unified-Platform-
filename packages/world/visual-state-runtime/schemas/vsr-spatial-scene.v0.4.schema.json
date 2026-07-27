@@ -27,6 +27,23 @@
     "background": {
       "type": "string"
     },
+    "environment": {
+      "type": "object",
+      "properties": {
+        "diffuseColor": {
+          "type": "string"
+        },
+        "specularColor": {
+          "type": "string"
+        },
+        "intensity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 32
+        }
+      },
+      "additionalProperties": false
+    },
     "activeCameraId": {
       "type": "string",
       "minLength": 1
