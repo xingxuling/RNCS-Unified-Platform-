@@ -14,4 +14,9 @@
 - Windows embedded rendering runtime: not implemented; system Edge/Chrome is used
 - Android project one-click scripts: implemented
 - Compiled/debug-signed Android APK target: implemented; requires external Android toolchain
+- Deterministic Behavior + RSR spatial build evidence: implemented
+- Spatial snapshot, causal delta and runtime manifest outputs: implemented
+- TileMap collision/navigation manifest output: implemented when the active scene has a TileMap
+- Headless spatial inspection and step endpoints: implemented
+- Browser-native RSR physics/rendering runtime: not implemented; web targets currently retain the Behavior browser runtime and carry spatial evidence separately
 - Release-signed APK/AAB: not implemented

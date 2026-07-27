@@ -21,11 +21,14 @@ RBF v0.2 接受 `reality-build.request.v0.1` 规范化请求和 `reality-studio.
 
 启用后，构建会先生成 `asset-change-plan.json` 和 `asset-database-sync.json`，再从缓存 payload 烘焙资产；所有非单文件目标携带同一组资源证据，单文件 Web 将其内嵌在运行时 payload 中。
 
+可选的 `spatial_trace` 按帧承载 RSR 空间命令。命令使用整数定点坐标，轨迹进入语义构建键；构建器会独立重放轨迹并比较空间状态根。空间构建证据包括 `spatial-snapshot.json`、`spatial-causal-delta.json`、`spatial-runtime.manifest.json`，项目含 TileMap 时还包括 `tilemap-navigation.manifest.json`。
+
 ## 2. 构建图
 
 ```text
 validate
 → preflight
+→ runtime-evidence（Behavior + RSR Spatial）
 → asset-bake
 → target:*
 → receipt
@@ -70,6 +73,9 @@ v0.2 的自动 APK 是调试签名包，不冒充商店发布包。
 - `asset-manifest.json`
 - 启用 Asset Database 时的 `asset-database.json`、`asset-change-plan.json`、`asset-database-sync.json`、`asset-cache-index.json`
 - `integrity-manifest.json`
+- `runtime-evidence.json`、`runtime-timeline.json`、`runtime-replay.json`、`runtime-checkpoint.json`
+- `spatial-snapshot.json`、`spatial-causal-delta.json`、`spatial-runtime.manifest.json`
+- 含 TileMap 项目的 `tilemap-navigation.manifest.json`
 - 每个目标的 `target-receipt.json`
 - `build-receipt.json`
 - 非确定性的性能指标 `build-metrics.json`
