@@ -401,7 +401,6 @@ function convexProxy(body: RuntimeSpatialBody, fixture: RuntimeSpatialFixture): 
   return { kind: 'box', center, axes, halfExtents: toFloat3(shape.halfExtents) };
 }
 function collideFixtures(bodyA: RuntimeSpatialBody, fixtureA: RuntimeSpatialFixture, bodyB: RuntimeSpatialBody, fixtureB: RuntimeSpatialFixture, stats?: CollisionStats): CollisionResult | undefined {
-  if (fixtureA.shape.type !== 'box' || fixtureB.shape.type !== 'box') return legacyCollideFixtures(bodyA, fixtureA, bodyB, fixtureB);
   const convex = collideConvex(convexProxy(bodyA, fixtureA), convexProxy(bodyB, fixtureB));
   if (stats) { stats.gjkCalls++; if (convex.epaIterations > 0) stats.epaCalls++; }
   if (convex.status === 'collision' && convex.contact) {
@@ -413,8 +412,8 @@ function collideFixtures(bodyA: RuntimeSpatialBody, fixtureA: RuntimeSpatialFixt
   if (stats) stats.convexFallbacks++;
   return legacyCollideFixtures(bodyA, fixtureA, bodyB, fixtureB);
 }
-function capsuleObbCollision(capsuleCenter:IntVector3,capsule:Extract<SpatialShape,{type:'capsule'}>,box:OrientedBox3):CollisionResult|undefined{
-  const [worldStart,worldEnd]=capsuleSegment(capsuleCenter,capsule),closest=closestSegmentAabbLocal(pointToObbLocal(worldStart,box),pointToObbLocal(worldEnd,box),box.halfExtents);if(!closest.inside&&closest.distance>=capsule.radius)return undefined;const segmentWorld=pointFromObbLocal(closest.segment,box),boxWorld=pointFromObbLocal(closest.box,box),delta=sub(boxWorld,segmentWorld),normal=length(delta)<1e-9?v3(Q,0,0):normalizeQ(delta),penetration=Math.max(0,Math.round(closest.inside?capsule.radius+closest.distance:capsule.radius-closest.distance));return{point:boxWorld,normal,penetration,feature:'capsule-obb'};
+function capsuleObbCollision(capsuleCenter:IntVector3,capsule:Extract<SpatialShape,{type:'capsule'}>,box:OrientedBox3,axes: [FloatVector3,FloatVector3,FloatVector3]=[{x:1,y:0,z:0},{x:0,y:1,z:0},{x:0,y:0,z:1}]):CollisionResult|undefined{
+  const [worldStart,worldEnd]=capsuleSegment(capsuleCenter,capsule,axes),closest=closestSegmentAabbLocal(pointToObbLocal(worldStart,box),pointToObbLocal(worldEnd,box),box.halfExtents);if(!closest.inside&&closest.distance>=capsule.radius)return undefined;const segmentWorld=pointFromObbLocal(closest.segment,box),boxWorld=pointFromObbLocal(closest.box,box),delta=sub(boxWorld,segmentWorld),normal=length(delta)<1e-9?v3(Q,0,0):normalizeQ(delta),penetration=Math.max(0,Math.round(closest.inside?capsule.radius+closest.distance:capsule.radius-closest.distance));return{point:boxWorld,normal,penetration,feature:'capsule-obb'};
 }
 function obbCollision(a: OrientedBox3, b: OrientedBox3): CollisionResult | undefined {
   const axes: FloatVector3[] = [...a.axes, ...b.axes];
@@ -433,7 +432,7 @@ function obbCollision(a: OrientedBox3, b: OrientedBox3): CollisionResult | undef
 function fixtureAabb(body: RuntimeSpatialBody, fixture: RuntimeSpatialFixture): Aabb3 {
   const p = fixtureWorldPosition(body, fixture), s = fixture.shape;
   if (s.type === 'sphere') return { min: v3(p.x - s.radius, p.y - s.radius, p.z - s.radius), max: v3(p.x + s.radius, p.y + s.radius, p.z + s.radius) };
-  if (s.type === 'capsule') return { min: v3(p.x - s.radius, p.y - s.halfHeight - s.radius, p.z - s.radius), max: v3(p.x + s.radius, p.y + s.halfHeight + s.radius, p.z + s.radius) };
+  if (s.type === 'capsule') { const [start, end] = capsuleSegment(p, s, rotationAxes(body.rotationDeg)); return { min: v3(Math.min(start.x, end.x) - s.radius, Math.min(start.y, end.y) - s.radius, Math.min(start.z, end.z) - s.radius), max: v3(Math.max(start.x, end.x) + s.radius, Math.max(start.y, end.y) + s.radius, Math.max(start.z, end.z) + s.radius) }; }
   return obbAabb(fixtureObb(body, fixture as RuntimeSpatialFixture & { shape: Extract<SpatialShape, { type: 'box' }> }));
 }
 function overlaps(a: Aabb3, b: Aabb3): boolean { return a.min.x <= b.max.x && a.max.x >= b.min.x && a.min.y <= b.max.y && a.max.y >= b.min.y && a.min.z <= b.max.z && a.max.z >= b.min.z; }
@@ -449,10 +448,21 @@ function axisCollision(a: Aabb3, b: Aabb3): CollisionResult | undefined {
   const best = overlapsAxis[0]!; const normal = v3(); normal[best.axis] = best.sign * Q;
   return { point: v3(Math.round((Math.max(a.min.x, b.min.x) + Math.min(a.max.x, b.max.x)) / 2), Math.round((Math.max(a.min.y, b.min.y) + Math.min(a.max.y, b.max.y)) / 2), Math.round((Math.max(a.min.z, b.min.z) + Math.min(a.max.z, b.max.z)) / 2)), normal, penetration: Math.max(0, best.amount) };
 }
-function capsuleSegment(center: IntVector3, shape: Extract<SpatialShape, { type: 'capsule' }>): [IntVector3, IntVector3] { return [v3(center.x, center.y - shape.halfHeight, center.z), v3(center.x, center.y + shape.halfHeight, center.z)]; }
-function closestVerticalSegments(a0: IntVector3, a1: IntVector3, b0: IntVector3, b1: IntVector3): [IntVector3, IntVector3] {
-  const ay = clamp((b0.y + b1.y) / 2, a0.y, a1.y), by = clamp(ay, b0.y, b1.y);
-  return [v3(a0.x, Math.round(ay), a0.z), v3(b0.x, Math.round(by), b0.z)];
+function capsuleSegment(center: IntVector3, shape: Extract<SpatialShape, { type: 'capsule' }>, axes: [FloatVector3,FloatVector3,FloatVector3]=[{x:1,y:0,z:0},{x:0,y:1,z:0},{x:0,y:0,z:1}]): [IntVector3, IntVector3] { const offset=fromFloat3(fscale(axes[1],shape.halfHeight)); return [sub(center,offset),add(center,offset)]; }
+function lerpPoint(start: IntVector3, end: IntVector3, amount: number): IntVector3 { return v3(Math.round(start.x + (end.x - start.x) * amount), Math.round(start.y + (end.y - start.y) * amount), Math.round(start.z + (end.z - start.z) * amount)); }
+function closestSegments(a0: IntVector3, a1: IntVector3, b0: IntVector3, b1: IntVector3): [IntVector3, IntVector3] {
+  const d1 = sub(a1, a0), d2 = sub(b1, b0), offset = sub(a0, b0), lengthA = dot(d1, d1), lengthB = dot(d2, d2), crossTerm = dot(d2, offset);
+  let first = 0, second = 0;
+  if (lengthA <= 1e-9 && lengthB <= 1e-9) return [a0, b0];
+  if (lengthA <= 1e-9) second = clamp(crossTerm / lengthB, 0, 1);
+  else {
+    const denominator = lengthA * lengthB - dot(d1, d2) ** 2;
+    if (denominator > 1e-9) first = clamp((dot(d1, d2) * crossTerm - dot(d1, offset) * lengthB) / denominator, 0, 1);
+    second = clamp((dot(d1, d2) * first + crossTerm) / lengthB, 0, 1);
+    if (second <= 0) { second = 0; first = clamp(-dot(d1, offset) / lengthA, 0, 1); }
+    else if (second >= 1) { second = 1; first = clamp((dot(d1, sub(b1, a0))) / lengthA, 0, 1); }
+  }
+  return [lerpPoint(a0, a1, first), lerpPoint(b0, b1, second)];
 }
 function legacyCollideFixtures(bodyA: RuntimeSpatialBody, fixtureA: RuntimeSpatialFixture, bodyB: RuntimeSpatialBody, fixtureB: RuntimeSpatialFixture): CollisionResult | undefined {
   const aPos = fixtureWorldPosition(bodyA, fixtureA), bPos = fixtureWorldPosition(bodyB, fixtureB), a = fixtureA.shape, b = fixtureB.shape;
@@ -466,15 +476,15 @@ function legacyCollideFixtures(bodyA: RuntimeSpatialBody, fixtureA: RuntimeSpati
   }
   if (a.type === 'box' && b.type === 'sphere') { const result = legacyCollideFixtures(bodyB, fixtureB, bodyA, fixtureA); return result ? { ...result, normal: mul(result.normal, -1) } : undefined; }
   if (a.type === 'capsule' && b.type === 'capsule') {
-    const [a0, a1] = capsuleSegment(aPos, a), [b0, b1] = capsuleSegment(bPos, b), [pa, pb] = closestVerticalSegments(a0, a1, b0, b1), delta = sub(pb, pa), d = length(delta), radius = a.radius + b.radius; if (d >= radius) return undefined;
+    const [a0, a1] = capsuleSegment(aPos, a, rotationAxes(bodyA.rotationDeg)), [b0, b1] = capsuleSegment(bPos, b, rotationAxes(bodyB.rotationDeg)), [pa, pb] = closestSegments(a0, a1, b0, b1), delta = sub(pb, pa), d = length(delta), radius = a.radius + b.radius; if (d >= radius) return undefined;
     const normal = d < 1e-9 ? v3(Q, 0, 0) : normalizeQ(delta); return { point: add(pa, mul(normal, a.radius / Q)), normal, penetration: Math.round(radius - d) };
   }
   if (a.type === 'sphere' && b.type === 'capsule') {
-    const [b0, b1] = capsuleSegment(bPos, b), closest = v3(bPos.x, clamp(aPos.y, b0.y, b1.y), bPos.z), delta = sub(closest, aPos), d = length(delta), radius = a.radius + b.radius; if (d >= radius) return undefined;
+    const [b0, b1] = capsuleSegment(bPos, b, rotationAxes(bodyB.rotationDeg)), segment = sub(b1, b0), amount = dot(segment, segment) <= 1e-9 ? 0 : clamp(dot(sub(aPos, b0), segment) / dot(segment, segment), 0, 1), closest = lerpPoint(b0, b1, amount), delta = sub(closest, aPos), d = length(delta), radius = a.radius + b.radius; if (d >= radius) return undefined;
     const normal = d < 1e-9 ? v3(Q, 0, 0) : normalizeQ(delta); return { point: add(aPos, mul(normal, a.radius / Q)), normal, penetration: Math.round(radius - d) };
   }
   if (a.type === 'capsule' && b.type === 'sphere') { const result = legacyCollideFixtures(bodyB, fixtureB, bodyA, fixtureA); return result ? { ...result, normal: mul(result.normal, -1) } : undefined; }
-  if (a.type === 'capsule' && b.type === 'box') return capsuleObbCollision(aPos,a,fixtureObb(bodyB,fixtureB as RuntimeSpatialFixture & {shape:Extract<SpatialShape,{type:'box'}>}));
+  if (a.type === 'capsule' && b.type === 'box') return capsuleObbCollision(aPos,a,fixtureObb(bodyB,fixtureB as RuntimeSpatialFixture & {shape:Extract<SpatialShape,{type:'box'}>}),rotationAxes(bodyA.rotationDeg));
   if (a.type === 'box' && b.type === 'capsule') { const result=legacyCollideFixtures(bodyB,fixtureB,bodyA,fixtureA);return result?{...result,normal:mul(result.normal,-1)}:undefined; }
   if (a.type === 'box' && b.type === 'box') return obbCollision(fixtureObb(bodyA, fixtureA as RuntimeSpatialFixture & { shape: Extract<SpatialShape, { type: 'box' }> }), fixtureObb(bodyB, fixtureB as RuntimeSpatialFixture & { shape: Extract<SpatialShape, { type: 'box' }> }));
   return axisCollision(fixtureAabb(bodyA, fixtureA), fixtureAabb(bodyB, fixtureB));
@@ -645,7 +655,7 @@ export class SpatialEmbodimentWorld {
       const a=proxies[i]!, b=proxies[j]!; this.diagnosticsValue.broadPhasePairs++;
       if (a.body.id===b.body.id || (a.body.kind==='static'&&b.body.kind==='static') || !filterPair(a.fixture,b.fixture) || !overlaps(a.aabb,b.aabb)) continue;
       if (!this.oneWayAllows(a.body,a.fixture,b.body) || !this.oneWayAllows(b.body,b.fixture,a.body)) continue;
-      this.diagnosticsValue.narrowPhaseTests++; const result=collideFixtures(a.body,a.fixture,b.body,b.fixture,this.diagnosticsValue); if(!result)continue;if(result.feature==='capsule-obb')this.diagnosticsValue.capsuleObbContacts++;
+      this.diagnosticsValue.narrowPhaseTests++; const result=collideFixtures(a.body,a.fixture,b.body,b.fixture,this.diagnosticsValue); if(!result)continue;const capsuleObb=(a.fixture.shape.type==='capsule'&&b.fixture.shape.type==='box')||(a.fixture.shape.type==='box'&&b.fixture.shape.type==='capsule');if(result.feature==='capsule-obb'||capsuleObb)this.diagnosticsValue.capsuleObbContacts++;
       contacts.push(this.makeContact(a.body,a.fixture,b.body,b.fixture,result));
     }
     return contacts.sort((a,b)=>a.id.localeCompare(b.id));
