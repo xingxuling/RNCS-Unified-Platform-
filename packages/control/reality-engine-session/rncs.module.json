@@ -6,8 +6,10 @@
   "layer": "control",
   "runtime": "rncs.engine-session",
   "dependsOn": [
-    "rncs-core"
+    "rncs-core",
+    "rsr",
+    "vsr"
   ],
   "test": "npm test --workspace @taowind/reality-engine-session",
-  "description": "Authority-bound candidate, simulation, commit, rollback and network-start boundary for engine worlds."
+  "description": "Authority-bound candidate, deterministic RSR spatial simulation, verified VSR frame projection, commit, rollback and network-start boundary for engine worlds."
 }

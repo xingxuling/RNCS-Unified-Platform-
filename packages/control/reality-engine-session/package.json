@@ -11,7 +11,9 @@
     "test": "node --test --test-concurrency=1 tests/*.test.mjs"
   },
   "dependencies": {
-    "@taowind/rncs-core-contract": "*"
+    "@taowind/rncs-core-contract": "*",
+    "@taowind/reality-simulation-runtime": "*",
+    "@taowind/visual-state-runtime": "*"
   },
   "engines": {
     "node": ">=20"

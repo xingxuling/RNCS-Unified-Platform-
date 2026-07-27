@@ -18,3 +18,18 @@ embedding a particular transport. The adapter must expose
 `createSessionFromCompilation({ sessionId, compilation, network, clock })`.
 This lets Reality Studio and the authoritative network runtime share the same
 RFE boundary without granting model or organ output commit authority.
+
+## Spatial RSR/VSR session
+
+`src/spatial.mjs` adds a drop-in `createRealityEngineSession` implementation
+for deterministic RSR spatial worlds and VSR 3D frame plans. Its commit path
+requires all of the following roots to agree:
+
+- the RSR snapshot root produced by the fixed-point world;
+- the RNCS SHA-256 bridge root used by the transition envelope;
+- the verified VSR frame root projected from the simulated snapshot.
+
+The session accepts an RCL Foundation/RNCS bridge value through
+`foundationTransition` and an RCL resource WAL-compatible `resourceRuntime`
+through `recordOperation(type, input, fn)`. Those values remain evidence and
+provider boundaries; they do not grant model or organ output commit authority.

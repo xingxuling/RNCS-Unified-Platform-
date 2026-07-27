@@ -46,7 +46,8 @@
   "exports": {
     ".": "./src/unified-index.mjs",
     "./network-reconciliation": "./dist/packages/network-reconciliation/src/index.js",
-    "./spatial-embodiment": "./dist/packages/spatial-embodiment/src/index.js"
+    "./spatial-embodiment": "./dist/packages/spatial-embodiment/src/index.js",
+    "./spatial-embodiment-vsr": "./dist/packages/spatial-embodiment-vsr/src/index.js"
   },
   "devDependencies": {
     "typescript": "5.9.3"
