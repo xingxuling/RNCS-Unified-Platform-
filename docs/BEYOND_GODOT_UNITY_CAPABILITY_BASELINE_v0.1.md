@@ -204,3 +204,23 @@ checked with `npm run verify:foundation-native-rcl-source`.
 This verifies nine Foundation entries through Native Provider bridges and RNCS
 authority. It still does not implement declared Foundation syntax lowering,
 the remaining domains, or full Godot/Unity workflow parity.
+
+## 10. Verified Progress v0.6
+
+RCL Foundation Native Batch C now connects two engine-facing Foundation domains
+to the same RCL Native VM and RNCS authority path:
+
+- `physical` executes a bounded deterministic semi-implicit step with explicit
+  tick, timestep, body count, and contact budget variables.
+- `embodiment` executes after `physical` and carries the physical result's
+  `afterRoot` as its required causal parent.
+- Both results are standard Foundation results, replay-checked, and compiled
+  into RNCS provisional deltas with semantic parameter roots.
+- Batch C remains `bridge` mode. It does not claim declared Foundation syntax
+  lowering or native physics/embodiment language semantics.
+
+This verifies eleven Foundation entries through three Native Provider bridges.
+Nine base domains and two composite planes remain without direct standard-result
+invocation in RNCS. The Godot/Unity gaps in editor workflow, asset authoring,
+production networking scale, platform distribution, and ecosystem depth remain
+open.
