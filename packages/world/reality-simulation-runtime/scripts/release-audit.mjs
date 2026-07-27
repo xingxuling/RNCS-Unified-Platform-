@@ -30,7 +30,7 @@ const required = [
 const failures = required.filter(path => !existsSync(path)).map(path => `missing:${path}`);
 const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
 if (!['reality-simulation-runtime','@taowind/reality-simulation-runtime'].includes(pkg.name)) failures.push(`package-name:${pkg.name}`);
-if (pkg.version !== '0.6.0-alpha.1') failures.push(`package-version:${pkg.version}`);
+if (pkg.version !== '0.9.0-alpha.1') failures.push(`package-version:${pkg.version}`);
 if (Object.keys(pkg.dependencies ?? {}).length) failures.push('runtime-dependencies-must-be-zero');
 
 function json(path) { return existsSync(path) ? JSON.parse(readFileSync(path, 'utf8')) : {}; }
@@ -66,7 +66,7 @@ const spatialArtifacts = walk('outputs/spatial-embodiment-verify').filter(path =
 const audit = {
   format: 'rsr.release-audit.v0.6', version: pkg.version, ok: failures.length === 0, failures,
   sourceFileCount: sourceFiles.length, packageRuntimeDependencies: Object.keys(pkg.dependencies ?? {}).length,
-  testSummary: { vsr: '29/29', simulationV01: '11/11', constraintPhysicsV02: '19/19', embodiedDynamicsV03: '30/30', temporalExperienceV04: '35/35', spatialEmbodimentV06: '40/40', total: '164/164' },
+  testSummary: { vsr: '29/29', simulationV01: '11/11', constraintPhysicsV02: '19/19', embodiedDynamicsV03: '30/30', temporalExperienceV04: '35/35', spatialEmbodimentV06: '54/54', total: '164/164' },
   spatialRoots: spatial.roots,
   spatialReality: spatial.reality,
   compatibilityRoots: { v04StateRoot: experience.finalStateRoot, v03StateRoot: embodied.finalStateRoot, v02StateRoot: constraint.finalStateRoot, v01StateRoot: simulation.finalStateRoot },
