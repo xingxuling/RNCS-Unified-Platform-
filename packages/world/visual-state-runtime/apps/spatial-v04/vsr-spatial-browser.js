@@ -70,8 +70,10 @@ var VSRSpatial3D = (() => {
     sampleSpatialAnimation: () => sampleSpatialAnimation,
     sampleSpatialAnimationGraph: () => sampleSpatialAnimationGraph,
     sampleSpatialAnimationLayers: () => sampleSpatialAnimationLayers,
+    sampleSpatialEnvironment: () => sampleSpatialEnvironment,
     sampleSpatialTexture: () => sampleSpatialTexture,
     sanitizeSpatialEnvironment: () => sanitizeSpatialEnvironment,
+    spatialEnvironmentUV: () => spatialEnvironmentUV,
     transformDirection3: () => transformDirection3,
     transformPoint3: () => transformPoint3,
     transformToMat4: () => transformToMat4,
@@ -532,7 +534,7 @@ var VSRSpatial3D = (() => {
   }
   function sanitizeSpatialEnvironment(environment) {
     const intensity = environment?.intensity;
-    return { diffuseColor: environment?.diffuseColor ?? "#000000", specularColor: environment?.specularColor ?? "#000000", intensity: Number.isFinite(intensity) ? clamp(intensity, 0, 32) : 1 };
+    return { diffuseColor: environment?.diffuseColor ?? "#000000", specularColor: environment?.specularColor ?? "#000000", intensity: Number.isFinite(intensity) ? clamp(intensity, 0, 32) : 1, ...environment?.textureId ? { textureId: environment.textureId } : {} };
   }
   function resolveSpatialBudget(options = {}) {
     const qualityTier = options.qualityTier ?? "balanced", defaults = { economy: { width: 640, height: 360, maxLights: 4, shadowMapSize: 128, shadows: false, lodBias: 0.8 }, balanced: { width: 960, height: 540, maxLights: 8, shadowMapSize: 256, shadows: true, lodBias: 1 }, quality: { width: 1280, height: 720, maxLights: 16, shadowMapSize: 512, shadows: true, lodBias: 1.2 }, cinematic: { width: 1920, height: 1080, maxLights: 32, shadowMapSize: 1024, shadows: true, lodBias: 1.5 } }[qualityTier];
@@ -563,6 +565,7 @@ var VSRSpatial3D = (() => {
     else ids.add(node.id);
     if (!scene.cameras.some((camera) => camera.id === scene.activeCameraId)) throw new Error(`Missing active camera ${scene.activeCameraId}.`);
     const nodeIds = new Set(scene.nodes.map((node) => node.id)), textureIds = new Set((scene.textures ?? []).map((texture) => texture.id)), skinIds = new Set((scene.skins ?? []).map((skin) => skin.id));
+    if (scene.environment?.textureId && !textureIds.has(scene.environment.textureId)) throw new Error(`Environment missing texture ${scene.environment.textureId}.`);
     for (const skin of scene.skins ?? []) for (const joint of skin.joints) if (!nodeIds.has(joint)) throw new Error(`Skin ${skin.id} missing joint ${joint}.`);
     for (const material of scene.materials) {
       const bindings = [material.baseColorTextureId, material.metallicRoughnessTextureId, material.normalTextureId, material.occlusionTextureId, material.emissiveTextureId].filter((value) => Boolean(value));
@@ -972,12 +975,14 @@ var VSRSpatial3D = (() => {
     const margin = bounds.radius * Math.max(Math.abs(viewProjection[0]), Math.abs(viewProjection[5]), 1);
     return clip[0] >= -clip[3] - margin && clip[0] <= clip[3] + margin && clip[1] >= -clip[3] - margin && clip[1] <= clip[3] + margin && clip[2] >= -clip[3] - margin && clip[2] <= clip[3] + margin;
   }
-  var VSR_SPATIAL_VERTEX_WGSL_V04 = `struct Camera { viewProjection: mat4x4<f32>, cameraPosition:vec4<f32>, ambient:vec4<f32>, sunDirection:vec4<f32>, sunColor:vec4<f32>, environmentDiffuse:vec4<f32>, environmentSpecular:vec4<f32> }; @group(0) @binding(0) var<uniform> camera: Camera; struct Object { world:mat4x4<f32> }; @group(1) @binding(0) var<uniform> object:Object; @group(1) @binding(1) var<storage,read> jointMatrices:array<mat4x4<f32>>; struct Deformation { skinEnabled:f32, vertexCount:f32, morphCount:f32, _pad:f32, morphWeights:vec4<f32> }; @group(1) @binding(2) var<uniform> deformation:Deformation; @group(1) @binding(3) var<storage,read> morphDeltas:array<vec4<f32>>; struct VSIn { @location(0) position:vec3<f32>, @location(1) normal:vec3<f32>, @location(2) uv:vec2<f32>, @location(3) joints:vec4<f32>, @location(4) weights:vec4<f32>, @builtin(vertex_index) vertexIndex:u32 }; struct VSOut { @builtin(position) position:vec4<f32>, @location(0) worldPosition:vec3<f32>, @location(1) normal:vec3<f32>, @location(2) uv:vec2<f32> }; fn morphPosition(position:vec3<f32>,vertexIndex:u32)->vec3<f32>{var result=position;let vertexCount=u32(deformation.vertexCount);for(var morph:u32=0u;morph<4u;morph=morph+1u){if(morph<u32(deformation.morphCount)){result=result+morphDeltas[morph*vertexCount+vertexIndex].xyz*deformation.morphWeights[morph];}}return result;} fn skinPosition(position:vec3<f32>,joints:vec4<f32>,weights:vec4<f32>)->vec3<f32>{if(deformation.skinEnabled<0.5){return position;}let total=weights.x+weights.y+weights.z+weights.w;if(total<=0.0001){return position;}return(jointMatrices[u32(joints.x)]*vec4<f32>(position,1.0)*weights.x+jointMatrices[u32(joints.y)]*vec4<f32>(position,1.0)*weights.y+jointMatrices[u32(joints.z)]*vec4<f32>(position,1.0)*weights.z+jointMatrices[u32(joints.w)]*vec4<f32>(position,1.0)*weights.w).xyz/total;} fn skinNormal(normal:vec3<f32>,joints:vec4<f32>,weights:vec4<f32>)->vec3<f32>{if(deformation.skinEnabled<0.5){return normal;}let total=weights.x+weights.y+weights.z+weights.w;if(total<=0.0001){return normal;}return normalize((jointMatrices[u32(joints.x)]*vec4<f32>(normal,0.0)*weights.x+jointMatrices[u32(joints.y)]*vec4<f32>(normal,0.0)*weights.y+jointMatrices[u32(joints.z)]*vec4<f32>(normal,0.0)*weights.z+jointMatrices[u32(joints.w)]*vec4<f32>(normal,0.0)*weights.w).xyz);} @vertex fn vs_main(input:VSIn)->VSOut{var out:VSOut;let localPosition=skinPosition(morphPosition(input.position,input.vertexIndex),input.joints,input.weights);let worldPosition=object.world*vec4<f32>(localPosition,1.0);out.position=camera.viewProjection*worldPosition;out.worldPosition=worldPosition.xyz;out.normal=normalize((object.world*vec4<f32>(skinNormal(input.normal,input.joints,input.weights),0.0)).xyz);out.uv=input.uv;return out;}`;
+  var VSR_SPATIAL_VERTEX_WGSL_V04 = `struct Camera { viewProjection: mat4x4<f32>, cameraPosition:vec4<f32>, ambient:vec4<f32>, sunDirection:vec4<f32>, sunColor:vec4<f32>, environmentDiffuse:vec4<f32>, environmentSpecular:vec4<f32>, environmentParams:vec4<f32> }; @group(0) @binding(0) var<uniform> camera: Camera; struct Object { world:mat4x4<f32> }; @group(1) @binding(0) var<uniform> object:Object; @group(1) @binding(1) var<storage,read> jointMatrices:array<mat4x4<f32>>; struct Deformation { skinEnabled:f32, vertexCount:f32, morphCount:f32, _pad:f32, morphWeights:vec4<f32> }; @group(1) @binding(2) var<uniform> deformation:Deformation; @group(1) @binding(3) var<storage,read> morphDeltas:array<vec4<f32>>; struct VSIn { @location(0) position:vec3<f32>, @location(1) normal:vec3<f32>, @location(2) uv:vec2<f32>, @location(3) joints:vec4<f32>, @location(4) weights:vec4<f32>, @builtin(vertex_index) vertexIndex:u32 }; struct VSOut { @builtin(position) position:vec4<f32>, @location(0) worldPosition:vec3<f32>, @location(1) normal:vec3<f32>, @location(2) uv:vec2<f32> }; fn morphPosition(position:vec3<f32>,vertexIndex:u32)->vec3<f32>{var result=position;let vertexCount=u32(deformation.vertexCount);for(var morph:u32=0u;morph<4u;morph=morph+1u){if(morph<u32(deformation.morphCount)){result=result+morphDeltas[morph*vertexCount+vertexIndex].xyz*deformation.morphWeights[morph];}}return result;} fn skinPosition(position:vec3<f32>,joints:vec4<f32>,weights:vec4<f32>)->vec3<f32>{if(deformation.skinEnabled<0.5){return position;}let total=weights.x+weights.y+weights.z+weights.w;if(total<=0.0001){return position;}return(jointMatrices[u32(joints.x)]*vec4<f32>(position,1.0)*weights.x+jointMatrices[u32(joints.y)]*vec4<f32>(position,1.0)*weights.y+jointMatrices[u32(joints.z)]*vec4<f32>(position,1.0)*weights.z+jointMatrices[u32(joints.w)]*vec4<f32>(position,1.0)*weights.w).xyz/total;} fn skinNormal(normal:vec3<f32>,joints:vec4<f32>,weights:vec4<f32>)->vec3<f32>{if(deformation.skinEnabled<0.5){return normal;}let total=weights.x+weights.y+weights.z+weights.w;if(total<=0.0001){return normal;}return normalize((jointMatrices[u32(joints.x)]*vec4<f32>(normal,0.0)*weights.x+jointMatrices[u32(joints.y)]*vec4<f32>(normal,0.0)*weights.y+jointMatrices[u32(joints.z)]*vec4<f32>(normal,0.0)*weights.z+jointMatrices[u32(joints.w)]*vec4<f32>(normal,0.0)*weights.w).xyz);} @vertex fn vs_main(input:VSIn)->VSOut{var out:VSOut;let localPosition=skinPosition(morphPosition(input.position,input.vertexIndex),input.joints,input.weights);let worldPosition=object.world*vec4<f32>(localPosition,1.0);out.position=camera.viewProjection*worldPosition;out.worldPosition=worldPosition.xyz;out.normal=normalize((object.world*vec4<f32>(skinNormal(input.normal,input.joints,input.weights),0.0)).xyz);out.uv=input.uv;return out;}`;
   var VSR_SPATIAL_FRAGMENT_WGSL_V04 = `
  struct ShadowCamera { lightViewProjection:mat4x4<f32>, params:vec4<f32> };
  @group(0) @binding(1) var shadowSampler:sampler;
  @group(0) @binding(2) var shadowMap:texture_depth_2d;
  @group(0) @binding(3) var<uniform> shadowCamera:ShadowCamera;
+ @group(0) @binding(4) var environmentSampler:sampler;
+ @group(0) @binding(5) var environmentTexture:texture_2d<f32>;
  struct Material { baseColor: vec4<f32>, params:vec4<f32>, emissive:vec4<f32>, advanced:vec4<f32> };
  @group(2) @binding(0) var<uniform> material:Material;
  @group(2) @binding(1) var baseColorSampler:sampler;
@@ -995,6 +1000,8 @@ fn distributionGGX(nDotH:f32,roughness:f32)->f32{let a=roughness*roughness;let a
 fn geometrySchlickGGX(nDotV:f32,roughness:f32)->f32{let r=roughness+1.0;let k=(r*r)/8.0;return nDotV/max(nDotV*(1.0-k)+k,0.000001);}
 fn geometrySmith(nDotV:f32,nDotL:f32,roughness:f32)->f32{return geometrySchlickGGX(nDotV,roughness)*geometrySchlickGGX(nDotL,roughness);}
 fn fresnelSchlick(cosTheta:f32,f0:vec3<f32>)->vec3<f32>{return f0+(vec3<f32>(1.0)-f0)*pow(clamp(1.0-cosTheta,0.0,1.0),5.0);}
+fn environmentUv(direction:vec3<f32>)->vec2<f32>{let d=normalize(direction);return vec2<f32>(0.5+atan2(d.z,d.x)/(PI*2.0),0.5+asin(clamp(d.y,-1.0,1.0))/PI);}
+fn environmentSample(direction:vec3<f32>,fallback:vec3<f32>)->vec3<f32>{return select(fallback,textureSample(environmentTexture,environmentSampler,environmentUv(direction)).rgb,camera.environmentParams.x>0.5);}
  fn shadowVisibility(worldPosition:vec3<f32>)->f32{
    if(shadowCamera.params.x<0.5){return 1.0;}
    let clip=shadowCamera.lightViewProjection*vec4<f32>(worldPosition,1.0);if(clip.w<=0.0){return 1.0;}
@@ -1008,7 +1015,7 @@ fn fresnelSchlick(cosTheta:f32,f0:vec3<f32>)->vec3<f32>{return f0+(vec3<f32>(1.0
    let ao=mix(1.0,aoSample.r,material.advanced.x);let clearcoat=material.advanced.y;let clearcoatRoughness=max(material.advanced.z,0.04);let ior=max(material.advanced.w,1.0);
    let nDotL=max(dot(n,l),0.0);let nDotV=max(dot(n,v),0.0001);let nDotH=max(dot(n,h),0.0);let vDotH=max(dot(v,h),0.0);
    let dielectric=pow((ior-1.0)/(ior+1.0),2.0);let f0=mix(vec3<f32>(dielectric),baseColor.rgb,vec3<f32>(metallic));
-   let f=fresnelSchlick(vDotH,f0);let environmentF=fresnelSchlick(nDotV,f0);let environmentKd=(vec3<f32>(1.0)-environmentF)*(1.0-metallic);let environmentDiffuse=environmentKd*baseColor.rgb/PI*camera.environmentDiffuse.rgb*camera.environmentDiffuse.a*ao;let environmentSpecular=camera.environmentSpecular.rgb*camera.environmentSpecular.a*environmentF*(0.35+0.65*(1.0-roughness));let d=distributionGGX(nDotH,roughness);let g=geometrySmith(nDotV,nDotL,roughness);
+   let f=fresnelSchlick(vDotH,f0);let environmentF=fresnelSchlick(nDotV,f0);let environmentKd=(vec3<f32>(1.0)-environmentF)*(1.0-metallic);let reflection=normalize(2.0*nDotV*n-v);let environmentDiffuseColor=environmentSample(n,camera.environmentDiffuse.rgb);let environmentSpecularColor=mix(environmentSample(reflection,camera.environmentSpecular.rgb),environmentDiffuseColor,roughness*roughness);let environmentDiffuse=environmentKd*baseColor.rgb/PI*environmentDiffuseColor*camera.environmentDiffuse.a*ao;let environmentSpecular=environmentSpecularColor*camera.environmentSpecular.a*environmentF*(0.35+0.65*(1.0-roughness));let d=distributionGGX(nDotH,roughness);let g=geometrySmith(nDotV,nDotL,roughness);
    let specular=f*(d*g/max(4.0*nDotV*nDotL,0.0001));let kd=(vec3<f32>(1.0)-f)*(1.0-metallic);let diffuse=kd*baseColor.rgb/PI;
    let coatF=fresnelSchlick(vDotH,vec3<f32>(0.04));let coatD=distributionGGX(nDotH,clearcoatRoughness);let coatG=geometrySmith(nDotV,nDotL,clearcoatRoughness);let coat=coatF*(coatD*coatG/max(4.0*nDotV*nDotL,0.0001))*clearcoat;
    let direct=(diffuse+specular+coat)*camera.sunColor.rgb*camera.sunColor.a*nDotL*shadowVisibility(worldPosition);
@@ -1187,6 +1194,14 @@ fn fresnelSchlick(cosTheta:f32,f0:vec3<f32>)->vec3<f32>{return f0+(vec3<f32>(1.0
     const a = textureTexel(texture, x0, y0, colorSpace), b = textureTexel(texture, x1, y0, colorSpace), c = textureTexel(texture, x0, y1, colorSpace), d = textureTexel(texture, x1, y1, colorSpace), mix = (p, q, t) => p + (q - p) * t;
     return [0, 1, 2, 3].map((channel) => mix(mix(a[channel], b[channel], tx), mix(c[channel], d[channel], tx), ty));
   }
+  function spatialEnvironmentUV(direction) {
+    const d = normalize3(direction);
+    return [0.5 + Math.atan2(d[2], d[0]) / (Math.PI * 2), 0.5 + Math.asin(clamp(d[1], -1, 1)) / Math.PI];
+  }
+  function sampleSpatialEnvironment(texture, direction) {
+    const sample = sampleSpatialTexture({ ...texture, wrapU: texture.wrapU ?? "repeat", wrapV: texture.wrapV ?? "clamp" }, spatialEnvironmentUV(direction));
+    return [sample[0], sample[1], sample[2]];
+  }
   function triangleTangentFrame(a, b, c, normal) {
     const edge1 = sub3(b.world, a.world), edge2 = sub3(c.world, a.world), du1 = b.uv[0] - a.uv[0], dv1 = b.uv[1] - a.uv[1], du2 = c.uv[0] - a.uv[0], dv2 = c.uv[1] - a.uv[1], det = du1 * dv2 - du2 * dv1;
     if (Math.abs(det) < EPS) {
@@ -1227,8 +1242,8 @@ fn fresnelSchlick(cosTheta:f32,f0:vec3<f32>)->vec3<f32>{return f0+(vec3<f32>(1.0
     const opacity = clamp(m.opacity * baseSample[3], 0, 1), discarded = m.alphaMode === "MASK" && opacity < m.alphaCutoff;
     return { baseColor: mul3(baseFactor, [baseSample[0], baseSample[1], baseSample[2]]), metallic, roughness, emissive: scale3(mul3(emissiveFactor, [emissiveSample[0], emissiveSample[1], emissiveSample[2]]), m.emissiveStrength), occlusion, normal, opacity: m.alphaMode === "MASK" ? 1 : opacity, discarded };
   }
-  function shade(material, sample, world, camera, environment, lights, shadow, receiveShadow) {
-    const m = sanitizeMaterial(material), v = normalize3(sub3(camera, world)), nDotV = Math.max(1e-4, dot3(normalize3(sample.normal), v)), dielectric = Math.pow((m.ior - 1) / (m.ior + 1), 2), f0 = mix3([dielectric, dielectric, dielectric], sample.baseColor, sample.metallic), environmentF = fresnelSchlick(nDotV, f0), environmentKd = scale3([1 - environmentF[0], 1 - environmentF[1], 1 - environmentF[2]], 1 - sample.metallic), environmentDiffuse = scale3(mul3(mul3(environmentKd, sample.baseColor), materialColor(environment.diffuseColor)), environment.intensity * sample.occlusion / Math.PI), environmentSpecular = scale3(mul3(materialColor(environment.specularColor), environmentF), environment.intensity * (0.35 + 0.65 * (1 - sample.roughness)));
+  function shade(material, sample, world, camera, environment, textures, lights, shadow, receiveShadow) {
+    const m = sanitizeMaterial(material), v = normalize3(sub3(camera, world)), n = normalize3(sample.normal), nDotV = Math.max(1e-4, dot3(n, v)), dielectric = Math.pow((m.ior - 1) / (m.ior + 1), 2), f0 = mix3([dielectric, dielectric, dielectric], sample.baseColor, sample.metallic), environmentF = fresnelSchlick(nDotV, f0), environmentKd = scale3([1 - environmentF[0], 1 - environmentF[1], 1 - environmentF[2]], 1 - sample.metallic), reflection = normalize3(sub3(scale3(n, 2 * nDotV), v)), environmentTexture = environment.textureId ? textures.get(environment.textureId) : void 0, environmentDiffuseColor = environmentTexture ? sampleSpatialEnvironment(environmentTexture, n) : materialColor(environment.diffuseColor), environmentSpecularColor = environmentTexture ? mix3(sampleSpatialEnvironment(environmentTexture, reflection), environmentDiffuseColor, sample.roughness * sample.roughness) : materialColor(environment.specularColor), environmentDiffuse = scale3(mul3(mul3(environmentKd, sample.baseColor), environmentDiffuseColor), environment.intensity * sample.occlusion / Math.PI), environmentSpecular = scale3(mul3(environmentSpecularColor, environmentF), environment.intensity * (0.35 + 0.65 * (1 - sample.roughness)));
     let color = add3([sample.emissive[0], sample.emissive[1], sample.emissive[2]], add3(environmentDiffuse, environmentSpecular));
     for (const light of lights) {
       const lc = materialColor(light.color ?? "#ffffff"), intensity = Math.max(0, light.intensity ?? 1);
@@ -1285,7 +1300,7 @@ fn fresnelSchlick(cosTheta:f32,f0:vec3<f32>)->vec3<f32>{return f0+(vec3<f32>(1.0
           const world = [p0 * a.world[0] + p1 * b.world[0] + p2 * c.world[0], p0 * a.world[1] + p1 * b.world[1] + p2 * c.world[1], p0 * a.world[2] + p1 * b.world[2] + p2 * c.world[2]], normal = normalize3([p0 * a.normal[0] + p1 * b.normal[0] + p2 * c.normal[0], p0 * a.normal[1] + p1 * b.normal[1] + p2 * c.normal[1], p0 * a.normal[2] + p1 * b.normal[2] + p2 * c.normal[2]]), uv = [p0 * a.uv[0] + p1 * b.uv[0] + p2 * c.uv[0], p0 * a.uv[1] + p1 * b.uv[1] + p2 * c.uv[1]], sample = sampleSpatialMaterial(material, textureById, uv, normal, basis.tangent, basis.bitangent);
           if (sample.discarded) continue;
           depth[index] = z;
-          const rgb = shade(material, sample, world, plan.camera.position, plan.environment, plan.lights, shadow, packet.receiveShadow), opacity = sample.opacity;
+          const rgb = shade(material, sample, world, plan.camera.position, plan.environment, textureById, plan.lights, shadow, packet.receiveShadow), opacity = sample.opacity;
           color[index * 4] = rgb[0] * opacity + color[index * 4] * (1 - opacity);
           color[index * 4 + 1] = rgb[1] * opacity + color[index * 4 + 1] * (1 - opacity);
           color[index * 4 + 2] = rgb[2] * opacity + color[index * 4 + 2] * (1 - opacity);
@@ -1374,7 +1389,7 @@ fn fresnelSchlick(cosTheta:f32,f0:vec3<f32>)->vec3<f32>{return f0+(vec3<f32>(1.0
     return new Float32Array([...matrix, camera ? 1 : 0, camera?.bias ?? 0, camera ? 1 / camera.size : 0, 0]);
   }
   function packSpatialCameraUniform(plan) {
-    const ambient = plan.lights.find((light) => light.kind === "ambient"), sun = plan.lights.find((light) => light.kind === "directional"), ambientColor = materialColor(ambient?.color ?? "#ffffff"), sunColor = materialColor(sun?.color ?? "#ffffff"), sunDirection = normalize3(sun?.direction ?? [-0.4, -1, -0.3]), environment = plan.environment ?? sanitizeSpatialEnvironment(void 0), environmentDiffuse = materialColor(environment.diffuseColor), environmentSpecular = materialColor(environment.specularColor), matrix = transposeMat4(plan.camera.viewProjectionMatrix), out = new Float32Array(40);
+    const ambient = plan.lights.find((light) => light.kind === "ambient"), sun = plan.lights.find((light) => light.kind === "directional"), ambientColor = materialColor(ambient?.color ?? "#ffffff"), sunColor = materialColor(sun?.color ?? "#ffffff"), sunDirection = normalize3(sun?.direction ?? [-0.4, -1, -0.3]), environment = plan.environment ?? sanitizeSpatialEnvironment(void 0), environmentDiffuse = materialColor(environment.diffuseColor), environmentSpecular = materialColor(environment.specularColor), matrix = transposeMat4(plan.camera.viewProjectionMatrix), out = new Float32Array(44);
     out.set(matrix, 0);
     out.set([...plan.camera.position, 1], 16);
     out.set([...ambientColor, ambient?.intensity ?? 0.12], 20);
@@ -1382,6 +1397,7 @@ fn fresnelSchlick(cosTheta:f32,f0:vec3<f32>)->vec3<f32>{return f0+(vec3<f32>(1.0
     out.set([...sunColor, sun?.intensity ?? 1], 28);
     out.set([...environmentDiffuse, environment.intensity], 32);
     out.set([...environmentSpecular, environment.intensity], 36);
+    out.set([environment.textureId ? 1 : 0, 0, 0, 0], 40);
     return out;
   }
   function probeSpatialWebGPU() {
@@ -1505,7 +1521,7 @@ ${VSR_SPATIAL_FRAGMENT_WGSL_V04}` });
       let texture = cached?.texture;
       if (!cached || cached.root !== root) {
         cached?.texture.destroy?.();
-        texture = this.device.createTexture({ size: [width, height, 1], format: fallback === "base" || fallback === "emissive" ? "rgba8unorm-srgb" : "rgba8unorm", usage: GPU_TEXTURE_USAGE.COPY_DST | GPU_TEXTURE_USAGE.TEXTURE_BINDING });
+        texture = this.device.createTexture({ size: [width, height, 1], format: (fallback === "base" || fallback === "emissive" || fallback === "environment") && source?.colorSpace !== "linear" ? "rgba8unorm-srgb" : "rgba8unorm", usage: GPU_TEXTURE_USAGE.COPY_DST | GPU_TEXTURE_USAGE.TEXTURE_BINDING });
         const pixels = source ? source.pixels : fallback === "normal" ? [128, 128, 255, 255] : fallback === "metallic-roughness" ? [255, 255, 0, 255] : [255, 255, 255, 255], bytesPerRow = Math.max(256, Math.ceil(width * 4 / 256) * 256), data = new Uint8Array(bytesPerRow * height);
         for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
           const sourceIndex = (y * width + x) * 4, dataIndex = y * bytesPerRow + x * 4;
@@ -1517,10 +1533,10 @@ ${VSR_SPATIAL_FRAGMENT_WGSL_V04}` });
         this.device.queue.writeTexture({ texture }, data, { bytesPerRow, rowsPerImage: height }, [width, height, 1]);
         this.textures.set(key, { texture, root });
       }
-      const filter = source?.filter ?? "nearest", samplerKey = source ? `${source.id}:${filter}:${source.wrapU ?? "repeat"}:${source.wrapV ?? "repeat"}` : `fallback:${fallback}`;
+      const filter = source?.filter ?? (fallback === "environment" ? "linear" : "nearest"), samplerKey = source ? `${source.id}:${filter}:${source.wrapU ?? "repeat"}:${source.wrapV ?? (fallback === "environment" ? "clamp" : "repeat")}` : `fallback:${fallback}`;
       let sampler = this.samplers.get(samplerKey);
       if (!sampler) {
-        sampler = this.device.createSampler({ magFilter: filter === "nearest" ? "nearest" : "linear", minFilter: filter === "nearest" ? "nearest" : "linear", addressModeU: source?.wrapU === "clamp" ? "clamp-to-edge" : "repeat", addressModeV: source?.wrapV === "clamp" ? "clamp-to-edge" : "repeat" });
+        sampler = this.device.createSampler({ magFilter: filter === "nearest" ? "nearest" : "linear", minFilter: filter === "nearest" ? "nearest" : "linear", addressModeU: source?.wrapU === "clamp" ? "clamp-to-edge" : "repeat", addressModeV: source?.wrapV === "clamp" || fallback === "environment" && source?.wrapV === void 0 ? "clamp-to-edge" : "repeat" });
         this.samplers.set(samplerKey, sampler);
       }
       return { view: texture.createView(), sampler };
@@ -1562,7 +1578,7 @@ ${VSR_SPATIAL_FRAGMENT_WGSL_V04}` });
       this.canvas.height = plan.viewport.height;
       const pipeline = this.ensurePipeline(), shadowCamera = resolveSpatialShadowCamera(plan), uploadStart = now();
       this.ensureFrameBuffers(plan);
-      const cameraGroup = this.device.createBindGroup({ layout: pipeline.getBindGroupLayout(0), entries: [{ binding: 0, resource: { buffer: this.cameraBuffer } }, { binding: 1, resource: this.shadowSampler }, { binding: 2, resource: this.shadowTexture.createView() }, { binding: 3, resource: { buffer: this.shadowUniformBuffer } }] });
+      const environmentResource = this.textureResource(scene, plan.environment.textureId, "environment"), cameraGroup = this.device.createBindGroup({ layout: pipeline.getBindGroupLayout(0), entries: [{ binding: 0, resource: { buffer: this.cameraBuffer } }, { binding: 1, resource: this.shadowSampler }, { binding: 2, resource: this.shadowTexture.createView() }, { binding: 3, resource: { buffer: this.shadowUniformBuffer } }, { binding: 4, resource: environmentResource.sampler }, { binding: 5, resource: environmentResource.view }] });
       const uploadMs = now() - uploadStart, encodeStart = now(), encoder = this.device.createCommandEncoder();
       if (shadowCamera) {
         const shadowPipeline = this.ensureShadowPipeline(), shadowGroup = this.device.createBindGroup({ layout: shadowPipeline.getBindGroupLayout(0), entries: [{ binding: 0, resource: { buffer: this.shadowUniformBuffer } }] }), shadowPass = encoder.beginRenderPass({ colorAttachments: [], depthStencilAttachment: { view: this.shadowTexture.createView(), depthClearValue: 1, depthLoadOp: "clear", depthStoreOp: "store" } });

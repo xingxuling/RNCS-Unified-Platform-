@@ -40,6 +40,10 @@
           "type": "number",
           "minimum": 0,
           "maximum": 32
+        },
+        "textureId": {
+          "type": "string",
+          "minLength": 1
         }
       },
       "additionalProperties": false

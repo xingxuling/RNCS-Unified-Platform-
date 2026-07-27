@@ -19,6 +19,7 @@ VSR是RNCS的独立视觉时间投影、三维资产和可验证像素执行层�
 - 新增 `compileSpatialFrameFromVisualIntent()`，消费 RCL `taowind.rcl-rncs-visual-intent.v0.1`，验证 intent root 后把动画选择、节点遮罩、look-at/two-bone IK、skin/morph 变形和 visual intent root 纳入帧计划。
 - `animationConstraints` 支持确定性 `look-at` 与 `two-bone-ik`；约束在动画图/图层采样之后解算，结果进入 Animation Root、Draw Packet 与 Frame Root。
 - 新增确定性环境光照项：diffuse/specular environment colors 与 intensity 同时进入 CPU 参考路径、WebGPU Camera uniform、Environment Root 和 Frame Root；这是统一环境光照，不冒称图像探针 IBL。
+- `environment.textureId` 接入 RGBA equirectangular 环境纹理；CPU 与 WebGPU 使用相同方向到经纬度 UV 和 roughness lobe 混合，纹理采样进入 Environment Root、Texture Root 和 Frame Root。
 
 ## 运行
 
@@ -34,6 +35,6 @@ npm test
 - CPU参考光栅与fake WebGPU设备编码链均已验证完整PBR纹理和GPU Shadow Map资源边界。
 - 真实浏览器GPU adapter、纹理采样结果、Shadow Map像素正确性和GPU性能仍待硬件验收；当前不声称实机帧率。
 - 压缩图像解码仍由宿主资产管线提供RGBA。
-- 图像探针 IBL（equirectangular采样、预过滤mip、反射探针混合）、GI、服务器级世界分区仍未完成；当前环境光照仅提供统一颜色项。
+- 预过滤 mip、反射探针混合、局部/全局 GI、服务器级世界分区仍未完成；当前环境纹理是单张 equirectangular、无 mip 的确定性基础 IBL。
 - TAA、XR双目仍未完成；真实硬件GPU像素/性能验收仍待浏览器环境。
 - GameBrain/RCL 的视觉意图接入是受控帧编译输入，不等于外部世界提交；权威提交仍由 RNCS 控制平面和人工授权负责。
