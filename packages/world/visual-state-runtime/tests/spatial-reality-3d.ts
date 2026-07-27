@@ -23,6 +23,7 @@ import {
   packSpatialIndexBuffer,
   packSpatialMaterialUniform,
   packSpatialObjectUniform,
+  VSRSpatialWebGPUExecutor,
   packSpatialVertexBuffer,
   probeSpatialWebGPU,
   multiplyMat4,
@@ -87,6 +88,15 @@ test('camera object and material uniforms have aligned deterministic sizes',()=>
 test('material uniform clamps metallic roughness and opacity safely',()=>{const packed=packSpatialMaterialUniform({id:'unsafe',baseColor:'#ffffff',metallic:4,roughness:-2,opacity:3});assert.equal(packed[4],1);assert.ok(Math.abs(packed[5]!-.04)<1e-6);assert.equal(packed[7],1)});
 test('spatial WebGPU probe is safe without navigator.gpu',()=>{const result=probeSpatialWebGPU();assert.equal(result.format,'vsr.spatial-webgpu-capabilities.v0.4');assert.equal(typeof result.available,'boolean')});
 test('spatial WebGPU receipt sealing detects tampering',()=>{const base={format:'vsr.spatial-webgpu-receipt.v0.4' as const,frameRoot:'a'.repeat(64),sceneId:'scene',adapterName:'test',drawCalls:1,triangles:12,submitted:true,deviceLost:false,compileMs:1,uploadMs:1,encodeMs:1,submitMs:1};const receipt={...base,receiptRoot:cryptographicHash(base)};assert.equal(verifySpatialWebGPUReceipt(receipt),true);receipt.drawCalls=2;assert.equal(verifySpatialWebGPUReceipt(receipt),false)});
+test('WebGPU executor encodes material texture bindings and a real shadow pass',async()=>{
+  const calls:string[]=[],resource=(kind:string):any=>{const id=`${kind}:${calls.length}`;return{id,createView:()=>({id:`view:${id}`}),destroy:()=>calls.push(`destroy:${id}`)}};
+  const device:any={lost:new Promise<void>(()=>{}),createShaderModule:({code}:{code:string})=>{calls.push(`shader:${code.includes('textureSampleCompare')?'scene':'shadow'}`);return{code}},createRenderPipeline:(descriptor:any)=>{calls.push(`pipeline:${descriptor.vertex.entryPoint}`);return{getBindGroupLayout:(index:number)=>({index}),descriptor}},createBuffer:(descriptor:any)=>{calls.push(`buffer:${descriptor.size}`);return resource('buffer')},createTexture:(descriptor:any)=>{calls.push(`texture:${descriptor.format}`);return resource('texture')},createSampler:()=>{calls.push('sampler');return resource('sampler')},createBindGroup:(descriptor:any)=>{calls.push(`bind:${descriptor.entries.length}`);return resource('bind')},createCommandEncoder:()=>({beginRenderPass:(descriptor:any)=>{calls.push(`pass:${descriptor.colorAttachments.length?'scene':'shadow'}`);return{setPipeline:()=>calls.push('set-pipeline'),setBindGroup:(index:number)=>calls.push(`set-group:${index}`),setVertexBuffer:()=>{},setIndexBuffer:()=>{},drawIndexed:()=>calls.push('draw'),end:()=>calls.push('end-pass')}},finish:()=>({})}),queue:{writeBuffer:()=>{},writeTexture:()=>calls.push('write-texture'),submit:()=>calls.push('submit'),onSubmittedWorkDone:async()=>{}}};
+  const canvas:any={width:0,height:0},context:any={getCurrentTexture:()=>({createView:()=>({id:'present-view'})})},scene=minimalScene();
+  scene.materials[0]={id:'mat',baseColor:'#ffffff',baseColorTextureId:'base',metallicRoughnessTextureId:'mr',normalTextureId:'normal',occlusionTextureId:'ao',emissiveTextureId:'emit'};
+  scene.textures=['base','mr','normal','ao','emit'].map((id)=>({id,width:1,height:1,pixels:[255,255,255,255]}));
+  const executor=VSRSpatialWebGPUExecutor.fromDevice(canvas,{},device,context,'bgra8unorm'),receipt=await executor.render(scene,{width:64,height:64,enableShadows:true,shadowMapSize:32});
+  assert.equal(receipt.shadowPasses,1);assert.equal(receipt.materialTextureBindings,5);assert.equal(receipt.submitted,true);assert.ok(calls.includes('pass:shadow'));assert.ok(calls.includes('pass:scene'));assert.ok(calls.includes('bind:11'));assert.equal(calls.filter(call=>call==='write-texture').length,5);assert.equal(verifySpatialWebGPUReceipt(receipt),true);executor.destroy();
+});
 test('spatial scene and frame schemas are present',()=>{for(const file of ['schemas/vsr-spatial-scene.v0.4.schema.json','schemas/vsr-spatial-frame-plan.v0.4.schema.json']){assert.equal(existsSync(file),true);const schema=JSON.parse(readFileSync(file,'utf8')) as Record<string,unknown>;assert.equal(schema['$schema'],'https://json-schema.org/draft/2020-12/schema')}});
 
 test('GGX distribution and Smith masking remain finite across roughness range',()=>{for(const roughness of [.04,.2,.5,1]){const d=distributionGGX(.75,roughness),g=geometrySmith(.8,.65,roughness);assert.ok(Number.isFinite(d)&&d>=0);assert.ok(Number.isFinite(g)&&g>=0&&g<=1)}});
