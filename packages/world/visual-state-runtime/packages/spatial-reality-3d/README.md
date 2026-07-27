@@ -22,6 +22,6 @@ VSR 的首个三维空间现实参考层。它把 Mesh、层级变换、相机�
 - WebGPU WGSL 和资源 / Pass 计划；
 - Reality Root、Geometry Root、Material Root、Command Root、Frame Root。
 
-相同 Mesh、Material、LOD、阴影标志和变形根的可见节点会合并到一个 instanced draw packet。每个实例仍保留自己的节点标识、世界矩阵、包围盒和距离证据；旧的单节点 packet 也能被验证和回放。World Partition 以 cell 的中心、半径和节点清单定义加载边界；跨帧把上一帧活动 cell 传回编译器即可得到 `enteredCellIds` / `exitedCellIds`，并由 `streaming.root` 和 `frameRoot` 封存。`gpuDrivenCulling` 默认关闭；开启后，CPU 只编译候选实例，WebGPU compute pass 按实例 bounds 写 visible-index 与 indirect args，场景 pass 通过 `drawIndexedIndirect` 执行。真实设备像素/驱动兼容性仍需浏览器 GPU 验收。当前范围仍不包含跨材质合批、磁盘异步资产调度或完整商业 PBR。
+相同 Mesh、Material、LOD、阴影标志和变形根的可见节点会合并到一个 instanced draw packet。每个实例仍保留自己的节点标识、世界矩阵、包围盒和距离证据；旧的单节点 packet 也能被验证和回放。World Partition 以 cell 的中心、半径和节点清单定义加载边界；跨帧把上一帧活动 cell 传回编译器即可得到 `enteredCellIds` / `exitedCellIds`，并由 `streaming.root` 和 `frameRoot` 封存。`gpuDrivenCulling` 默认关闭；开启后，CPU 只编译候选实例，WebGPU compute pass 按场景相机和独立的 shadow light-space camera 写 visible-index 与 indirect args，场景与阴影 pass 都通过 `drawIndexedIndirect` 执行。fake WebGPU 编码链已覆盖两条通道；真实设备像素、驱动兼容性和性能仍需浏览器 GPU 验收。当前范围仍不包含跨材质合批、磁盘异步资产调度或完整商业 PBR。
 
 它是三维真实性基线，不是完整商业 PBR、glTF 资产管线或生产级 GPU 渲染器。资产流模块只定义确定性的加载与证据边界；实际 fetch、磁盘缓存、GPU 上传和设备兼容性仍需宿主执行器验收。

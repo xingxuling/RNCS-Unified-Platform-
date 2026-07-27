@@ -1766,10 +1766,12 @@ fn visible(centerRadius:vec4<f32>)->bool{let clip=camera.viewProjection*vec4<f32
     instanceBuffers = /* @__PURE__ */ new Map();
     identityIndexBuffers = /* @__PURE__ */ new Map();
     cullingBuffers = /* @__PURE__ */ new Map();
+    shadowCullingBuffers = /* @__PURE__ */ new Map();
     deformationBuffers = /* @__PURE__ */ new Map();
     textures = /* @__PURE__ */ new Map();
     samplers = /* @__PURE__ */ new Map();
     cameraBuffer;
+    shadowCullingCameraBuffer;
     constructor(canvas, adapter, device, context, format) {
       this.canvas = canvas;
       this.adapter = adapter;
@@ -1919,15 +1921,21 @@ ${VSR_SPATIAL_FRAGMENT_WGSL_V04}` });
       }
       return cached.buffer;
     }
-    culling(packet) {
-      const boundsData = packSpatialInstanceBoundsBuffer(packet), identity = packSpatialVisibleInstanceIndices(packet), command = packSpatialIndirectDrawCommand(packet), root = cryptographicHash({ bounds: [...boundsData], command: [...command] }), cached = this.cullingBuffers.get(packet.nodeId);
+    shadowCullingCamera(camera) {
+      const data = transposeMat4(camera.viewProjection);
+      if (!this.shadowCullingCameraBuffer) this.shadowCullingCameraBuffer = this.uploadBuffer(data, GPU_BUFFER_USAGE.UNIFORM);
+      else this.device.queue.writeBuffer(this.shadowCullingCameraBuffer, 0, data.buffer, data.byteOffset, data.byteLength);
+      return this.shadowCullingCameraBuffer;
+    }
+    culling(packet, buffers = this.cullingBuffers) {
+      const boundsData = packSpatialInstanceBoundsBuffer(packet), identity = packSpatialVisibleInstanceIndices(packet), command = packSpatialIndirectDrawCommand(packet), root = cryptographicHash({ bounds: [...boundsData], command: [...command] }), cached = buffers.get(packet.nodeId);
       if (!cached || cached.byteLength !== boundsData.byteLength) {
         cached?.bounds.destroy?.();
         cached?.visible.destroy?.();
         cached?.counter.destroy?.();
         cached?.indirect.destroy?.();
         const value = { bounds: this.uploadBuffer(boundsData, GPU_BUFFER_USAGE.STORAGE), visible: this.uploadBuffer(identity, GPU_BUFFER_USAGE.STORAGE), counter: this.uploadBuffer(new Uint32Array([0]), GPU_BUFFER_USAGE.STORAGE), indirect: this.uploadBuffer(command, GPU_BUFFER_USAGE.STORAGE | GPU_BUFFER_USAGE.INDIRECT), root, byteLength: boundsData.byteLength };
-        this.cullingBuffers.set(packet.nodeId, value);
+        buffers.set(packet.nodeId, value);
         return value;
       }
       if (cached.root !== root) {
@@ -1935,7 +1943,7 @@ ${VSR_SPATIAL_FRAGMENT_WGSL_V04}` });
         this.device.queue.writeBuffer(cached.visible, 0, identity.buffer, identity.byteOffset, identity.byteLength);
         this.device.queue.writeBuffer(cached.counter, 0, new Uint32Array([0]).buffer, 0, 4);
         this.device.queue.writeBuffer(cached.indirect, 0, command.buffer, command.byteOffset, command.byteLength);
-        this.cullingBuffers.set(packet.nodeId, { ...cached, root });
+        buffers.set(packet.nodeId, { ...cached, root });
       }
       return cached;
     }
@@ -1967,14 +1975,15 @@ ${VSR_SPATIAL_FRAGMENT_WGSL_V04}` });
       this.canvas.height = plan.viewport.height;
       const pipeline = this.ensurePipeline(), shadowCamera = resolveSpatialShadowCamera(plan), gpuDriven = Boolean(plan.gpuDrivenCulling), uploadStart = now();
       this.ensureFrameBuffers(plan);
-      const environmentResource = this.textureResource(scene, plan.environment.textureId, "environment"), cameraGroup = this.device.createBindGroup({ layout: pipeline.getBindGroupLayout(0), entries: [{ binding: 0, resource: { buffer: this.cameraBuffer } }, { binding: 1, resource: this.shadowSampler }, { binding: 2, resource: this.shadowTexture.createView() }, { binding: 3, resource: { buffer: this.shadowUniformBuffer } }, { binding: 4, resource: environmentResource.sampler }, { binding: 5, resource: environmentResource.view }] }), cullingRecords = /* @__PURE__ */ new Map();
+      const environmentResource = this.textureResource(scene, plan.environment.textureId, "environment"), cameraGroup = this.device.createBindGroup({ layout: pipeline.getBindGroupLayout(0), entries: [{ binding: 0, resource: { buffer: this.cameraBuffer } }, { binding: 1, resource: this.shadowSampler }, { binding: 2, resource: this.shadowTexture.createView() }, { binding: 3, resource: { buffer: this.shadowUniformBuffer } }, { binding: 4, resource: environmentResource.sampler }, { binding: 5, resource: environmentResource.view }] }), shadowPackets = plan.drawPackets.filter((entry) => entry.castShadow), cullingRecords = /* @__PURE__ */ new Map(), shadowCullingRecords = /* @__PURE__ */ new Map();
       if (gpuDriven) for (const packet of plan.drawPackets) cullingRecords.set(packet.nodeId, this.culling(packet));
+      if (gpuDriven && shadowCamera) for (const packet of shadowPackets) shadowCullingRecords.set(packet.nodeId, this.culling(packet, this.shadowCullingBuffers));
       const uploadMs = now() - uploadStart, encodeStart = now(), encoder = this.device.createCommandEncoder();
-      if (gpuDriven) {
+      const encodeCulling = (cameraBuffer, records, packets) => {
         const cullingPipelines = this.ensureCullingPipelines(), computePass = encoder.beginComputePass();
-        for (const packet of plan.drawPackets) {
-          const culling = cullingRecords.get(packet.nodeId);
-          const group = this.device.createBindGroup({ layout: this.cullingBindGroupLayout, entries: [{ binding: 0, resource: { buffer: this.cameraBuffer } }, { binding: 1, resource: { buffer: culling.bounds } }, { binding: 2, resource: { buffer: culling.visible } }, { binding: 3, resource: { buffer: culling.counter } }, { binding: 4, resource: { buffer: culling.indirect } }] });
+        for (const packet of packets) {
+          const culling = records.get(packet.nodeId);
+          const group = this.device.createBindGroup({ layout: this.cullingBindGroupLayout, entries: [{ binding: 0, resource: { buffer: cameraBuffer } }, { binding: 1, resource: { buffer: culling.bounds } }, { binding: 2, resource: { buffer: culling.visible } }, { binding: 3, resource: { buffer: culling.counter } }, { binding: 4, resource: { buffer: culling.indirect } }] });
           computePass.setBindGroup(0, group);
           computePass.setPipeline(cullingPipelines.reset);
           computePass.dispatchWorkgroups(1);
@@ -1984,17 +1993,20 @@ ${VSR_SPATIAL_FRAGMENT_WGSL_V04}` });
           computePass.dispatchWorkgroups(1);
         }
         computePass.end();
-      }
+      };
+      if (gpuDriven && shadowCamera) encodeCulling(this.shadowCullingCamera(shadowCamera), shadowCullingRecords, shadowPackets);
+      if (gpuDriven) encodeCulling(this.cameraBuffer, cullingRecords, plan.drawPackets);
       if (shadowCamera) {
         const shadowPipeline = this.ensureShadowPipeline(), shadowGroup = this.device.createBindGroup({ layout: shadowPipeline.getBindGroupLayout(0), entries: [{ binding: 0, resource: { buffer: this.shadowUniformBuffer } }] }), shadowPass = encoder.beginRenderPass({ colorAttachments: [], depthStencilAttachment: { view: this.shadowTexture.createView(), depthClearValue: 1, depthLoadOp: "clear", depthStoreOp: "store" } });
         shadowPass.setPipeline(shadowPipeline);
         shadowPass.setBindGroup(0, shadowGroup);
-        for (const packet of plan.drawPackets.filter((entry) => entry.castShadow)) {
-          const mesh = this.mesh(scene, packet.meshId), objectBuffer = this.objectBuffer(packet), instanceBuffer = this.instanceBuffer(packet), deformation = this.deformation(scene, packet);
-          shadowPass.setBindGroup(1, this.objectGroup(shadowPipeline, objectBuffer, instanceBuffer, deformation, this.identityIndexBuffer(packet)));
+        for (const packet of shadowPackets) {
+          const mesh = this.mesh(scene, packet.meshId), objectBuffer = this.objectBuffer(packet), instanceBuffer = this.instanceBuffer(packet), deformation = this.deformation(scene, packet), culling = gpuDriven ? shadowCullingRecords.get(packet.nodeId) : void 0;
+          shadowPass.setBindGroup(1, this.objectGroup(shadowPipeline, objectBuffer, instanceBuffer, deformation, culling?.visible ?? this.identityIndexBuffer(packet)));
           shadowPass.setVertexBuffer(0, mesh.vertex);
           shadowPass.setIndexBuffer(mesh.index, "uint32");
-          shadowPass.drawIndexed(mesh.indexCount, packetInstanceCount(packet), 0, 0, 0);
+          if (culling) shadowPass.drawIndexedIndirect(culling.indirect, 0);
+          else shadowPass.drawIndexed(mesh.indexCount, packetInstanceCount(packet), 0, 0, 0);
         }
         shadowPass.end();
       }
@@ -2003,18 +2015,18 @@ ${VSR_SPATIAL_FRAGMENT_WGSL_V04}` });
       pass.setBindGroup(0, cameraGroup);
       for (const packet of plan.drawPackets) {
         const mesh = this.mesh(scene, packet.meshId), objectBuffer = this.objectBuffer(packet), instanceBuffer = this.instanceBuffer(packet), deformation = this.deformation(scene, packet), culling = gpuDriven ? cullingRecords.get(packet.nodeId) : void 0;
-        pass.setBindGroup(1, this.objectGroup(pipeline, objectBuffer, instanceBuffer, deformation, gpuDriven ? culling.visible : this.identityIndexBuffer(packet)));
+        pass.setBindGroup(1, this.objectGroup(pipeline, objectBuffer, instanceBuffer, deformation, culling?.visible ?? this.identityIndexBuffer(packet)));
         pass.setBindGroup(2, this.materialGroup(pipeline, scene, packet));
         pass.setVertexBuffer(0, mesh.vertex);
         pass.setIndexBuffer(mesh.index, "uint32");
-        if (gpuDriven) pass.drawIndexedIndirect(culling.indirect, 0);
+        if (culling) pass.drawIndexedIndirect(culling.indirect, 0);
         else pass.drawIndexed(mesh.indexCount, packetInstanceCount(packet), 0, 0, 0);
       }
       pass.end();
       const commands = encoder.finish(), encodeMs = now() - encodeStart, submitStart = now();
       this.device.queue.submit([commands]);
       await this.device.queue.onSubmittedWorkDone?.();
-      const submitMs = now() - submitStart, base = { format: "vsr.spatial-webgpu-receipt.v0.4", frameRoot: plan.frameRoot, sceneId: scene.sceneId, adapterName: this.adapterName, drawCalls: plan.drawPackets.length, triangles: plan.stats.triangleCount, submitted: true, deviceLost: this.lost, compileMs, uploadMs, encodeMs, submitMs, materialTextureBindings: plan.stats.materialTextureBindings, shadowPasses: shadowCamera ? 1 : 0, visibleInstances: plan.stats.visibleInstances ?? plan.drawPackets.reduce((sum, packet) => sum + packetInstanceCount(packet), 0), instancedDraws: plan.stats.instancedDraws ?? plan.drawPackets.filter((packet) => packetInstanceCount(packet) > 1).length, gpuDrivenDraws: gpuDriven ? plan.drawPackets.length : 0 };
+      const submitMs = now() - submitStart, base = { format: "vsr.spatial-webgpu-receipt.v0.4", frameRoot: plan.frameRoot, sceneId: scene.sceneId, adapterName: this.adapterName, drawCalls: plan.drawPackets.length, triangles: plan.stats.triangleCount, submitted: true, deviceLost: this.lost, compileMs, uploadMs, encodeMs, submitMs, materialTextureBindings: plan.stats.materialTextureBindings, shadowPasses: shadowCamera ? 1 : 0, visibleInstances: plan.stats.visibleInstances ?? plan.drawPackets.reduce((sum, packet) => sum + packetInstanceCount(packet), 0), instancedDraws: plan.stats.instancedDraws ?? plan.drawPackets.filter((packet) => packetInstanceCount(packet) > 1).length, gpuDrivenDraws: gpuDriven ? plan.drawPackets.length : 0, gpuDrivenShadowDraws: gpuDriven && shadowCamera ? shadowPackets.length : 0 };
       return { ...base, receiptRoot: cryptographicHash(base) };
     }
     destroy() {
@@ -2026,7 +2038,7 @@ ${VSR_SPATIAL_FRAGMENT_WGSL_V04}` });
       for (const buffer of this.objectBuffers.values()) buffer.destroy?.();
       for (const instance of this.instanceBuffers.values()) instance.buffer.destroy?.();
       for (const identity of this.identityIndexBuffers.values()) identity.buffer.destroy?.();
-      for (const culling of this.cullingBuffers.values()) {
+      for (const records of [this.cullingBuffers, this.shadowCullingBuffers]) for (const culling of records.values()) {
         culling.bounds.destroy?.();
         culling.visible.destroy?.();
         culling.counter.destroy?.();
@@ -2039,6 +2051,7 @@ ${VSR_SPATIAL_FRAGMENT_WGSL_V04}` });
       }
       for (const entry of this.textures.values()) entry.texture.destroy?.();
       this.cameraBuffer?.destroy?.();
+      this.shadowCullingCameraBuffer?.destroy?.();
       this.shadowUniformBuffer?.destroy?.();
       this.depthTexture?.destroy?.();
       this.shadowTexture?.destroy?.();
@@ -2048,6 +2061,7 @@ ${VSR_SPATIAL_FRAGMENT_WGSL_V04}` });
       this.instanceBuffers.clear();
       this.identityIndexBuffers.clear();
       this.cullingBuffers.clear();
+      this.shadowCullingBuffers.clear();
       this.deformationBuffers.clear();
       this.textures.clear();
       this.samplers.clear();
