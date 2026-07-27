@@ -5,7 +5,9 @@
   "type": "module",
   "license": "Apache-2.0",
   "exports": {
-    ".": "./src/index.mjs"
+    ".": "./src/index.mjs",
+    "./spatial": "./src/spatial.mjs",
+    "./spatial-replay": "./src/spatial-replay.mjs"
   },
   "scripts": {
     "test": "node --test --test-concurrency=1 tests/*.test.mjs"

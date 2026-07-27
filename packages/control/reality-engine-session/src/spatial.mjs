@@ -21,6 +21,7 @@ import {
   verifyEngineSessionSnapshot,
   ZERO_ROOT,
 } from './index.mjs';
+import { createSpatialReplayBundle } from './spatial-replay.mjs';
 
 export const SPATIAL_ENGINE_SESSION_FORMAT = 'rncs.spatial-engine-session.v0.1';
 export const SPATIAL_ENGINE_SIMULATION_FORMAT = 'rncs.spatial-engine-simulation.v0.1';
@@ -611,6 +612,22 @@ export class SpatialRealityEngineSession {
     return this.world.snapshot();
   }
 
+  createReplayBundle(options = {}) {
+    return createSpatialReplayBundle({
+      ...options,
+      initialSnapshot: this.world.snapshot(),
+      projectionOptions: options.projectionOptions ?? this.spatialProjectionOptions,
+      branchId: options.branchId ?? `branch:${this.session_id}:replay`,
+      metadata: {
+        session_id: this.session_id,
+        reality_id: this.reality_id,
+        source_state_root: this.engine.state_root,
+        foundation_receipt_root: this.foundation?.receiptRoot ?? null,
+        ...(options.metadata ?? {}),
+      },
+    });
+  }
+
   snapshot() {
     const base = this.engine.snapshot();
     const authoritativeSnapshot = this.world.snapshot();
@@ -687,3 +704,11 @@ export {
   createSpatialRealityEngineSession as createRealityEngineSession,
   verifySpatialEngineSessionSnapshot as verifyEngineSessionSnapshot,
 };
+
+export {
+  createSpatialReplayBundle,
+  verifySpatialReplayBundle,
+  replaySpatialReplayBundle,
+  createSpatialReplayBranch,
+  compareSpatialReplayBranches,
+} from './spatial-replay.mjs';
