@@ -16,6 +16,7 @@ VSR是RNCS的独立视觉时间投影、三维资产和可验证像素执行层�
 - 动画采样保留glTF原生四元数，支持最短弧SLERP、STEP、LINEAR和CUBICSPLINE Hermite关键帧；旋转不再先降成欧拉角。
 - 编译选项支持确定性动画图状态、状态过渡、Override/Additive图层和显式node mask；混合结果进入Animation Root与Frame Root。
 - 变形状态进入Draw Packet、Geometry Root、joint/morph GPU resource root和Frame Root。
+- 新增 `compileSpatialFrameFromVisualIntent()`，消费 RCL `taowind.rcl-rncs-visual-intent.v0.1`，验证 intent root 后把动画选择、节点遮罩、skin/morph 变形和 visual intent root 纳入帧计划。
 
 ## 运行
 
@@ -33,3 +34,4 @@ npm test
 - 压缩图像解码仍由宿主资产管线提供RGBA。
 - IBL/GI、服务器级世界分区仍未完成。
 - TAA、XR双目、双骨骼IK和look-at仍未完成；真实硬件GPU像素/性能验收仍待浏览器环境。
+- GameBrain/RCL 的视觉意图接入是受控帧编译输入，不等于外部世界提交；权威提交仍由 RNCS 控制平面和人工授权负责。
