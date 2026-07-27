@@ -16,8 +16,8 @@ function nodeVisual(node,asset){
   if(id.includes('guard')||tags.includes('enemy'))return{type:'ellipse',width:48,height:64,anchorY:64,color:(node.runtime?.health??1)<=0?'#47556966':'#a855f7ff',radius:0,tags:[...tags,'enemy']};
   return{type:'ellipse',width:48,height:64,anchorY:64,color:(node.runtime?.health??1)<=0?'#47556966':'#2563ebff',radius:0,tags:[...tags,'hero']};
 }
-function item({id,type='rect',x,y,width,height,color,opacity=1,order=0,tags=[],radius=0}){
-  return{id,nodeId:id,type,orderKey:`${pad(order)}:${id}`,worldTransform:I,localBounds:{x,y,width,height},worldBounds:{x,y,width,height},opacity,appearance:{fill:{type:'solid',color},opacity},content:radius?{cornerRadius:radius}:{},sourceTrace:{},clipStack:[],tags};
+function item({id,type='rect',x,y,width,height,color,opacity=1,order=0,tags=[],radius=0,sourceTrace={}}){
+  return{id,nodeId:id,type,orderKey:`${pad(order)}:${id}`,worldTransform:I,localBounds:{x,y,width,height},worldBounds:{x,y,width,height},opacity,appearance:{fill:{type:'solid',color},opacity},content:radius?{cornerRadius:radius}:{},sourceTrace,clipStack:[],tags};
 }
 
 export function sceneProjectionToVSRDisplayState(project,projection,{observer='player'}={}){
@@ -29,8 +29,9 @@ export function sceneProjectionToVSRDisplayState(project,projection,{observer='p
     if(node.visible===false)continue;
     const asset=project.assets?.registry?.[node.asset_id];
     const v=nodeVisual(node,asset),x=(node.transform?.x??0)-v.width/2,y=(node.transform?.y??0)-v.anchorY;
-    items.push(item({id:node.node_id,type:v.type,x,y,width:v.width,height:v.height,color:v.color,order:index+node.z_index*100,tags:v.tags,radius:v.radius}));
-    if(v.tags.includes('hero'))items.push(item({id:`${node.node_id}:glow`,type:'ellipse',x:x-10,y:y-8,width:v.width+20,height:v.height+18,color:'#38bdf822',opacity:.45,order:index+node.z_index*100-1,tags:['decorative','particle']}));
+    const sourceTrace=node.entity_id?{entity_id:String(node.entity_id),base_x:String(node.transform?.x??0),base_y:String(node.transform?.y??0)}:{};
+    items.push(item({id:node.node_id,type:v.type,x,y,width:v.width,height:v.height,color:v.color,order:index+node.z_index*100,tags:v.tags,radius:v.radius,sourceTrace}));
+    if(v.tags.includes('hero'))items.push(item({id:`${node.node_id}:glow`,type:'ellipse',x:x-10,y:y-8,width:v.width+20,height:v.height+18,color:'#38bdf822',opacity:.45,order:index+node.z_index*100-1,tags:['decorative','particle'],sourceTrace}));
   }
   const victory=projection.globals?.victory===true;
   if(victory)items.push(item({id:'studio:victory-glow',type:'rect',x:170,y:115,width:300,height:105,color:'#22c55e44',opacity:.75,order:9000,tags:['overlay','decorative']}));
@@ -62,7 +63,11 @@ export function compileStudioGPUFrame(project,projection,{quality='quality',obse
     ],
     post:{bloom:quality==='economy'?0:.68,vignette:.15,exposure:.08,contrast:1.04,saturation:1.06,gamma:2.2,toneMap:'aces'}
   };
-  const plan=compileRealtimeWebGPUFrame(state,config,undefined,{particleLimit:quality==='economy'?64:512});
+  const dynamicLightBindings=[
+    player?.entity_id?{lightId:'player-light',entityId:String(player.entity_id),offsetY:-30}:null,
+    door?.entity_id?{lightId:'goal-light',entityId:String(door.entity_id),offsetY:-35}:null
+  ].filter(Boolean);
+  const plan=compileRealtimeWebGPUFrame(state,config,undefined,{particleLimit:quality==='economy'?64:512,dynamicLightBindings});
   const verification=verifyRealtimeWebGPUFrame(plan);
   if(!verification.ok)throw new Error(`GPU_FRAME_INVALID:${verification.diagnostics.join(',')}`);
   return plan;
