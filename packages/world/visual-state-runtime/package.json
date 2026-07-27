@@ -51,6 +51,7 @@
   "license": "Apache-2.0",
   "exports": {
     ".": "./src/unified-index.mjs",
+    "./realtime-webgpu/browser": "./dist/packages/realtime-webgpu/src/browser-executor.js",
     "./temporal-presentation": "./dist/packages/temporal-presentation/src/index.js",
     "./spatial-reality-3d": "./dist/packages/spatial-reality-3d/src/index.js",
     "./gltf-asset": "./dist/packages/gltf-asset/src/index.js"

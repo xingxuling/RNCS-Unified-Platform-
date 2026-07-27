@@ -4,13 +4,14 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),proje
 const out=fs.mkdtempSync(path.join(os.tmpdir(),'reality-targets-'));const built=buildProject(normalizeBuildRequest({project_file:projectFile,output_dir:out,targets:['web-release','web-single','windows-portable','android-project','headless-server','replay-bundle'],app:{app_id:'com.taowind.targets',title:'目标验收',version_name:'1.2.3',version_code:12}}));
 test('Web Release 有入口',()=>assert.ok(fs.existsSync(path.join(out,'web-release','index.html'))));
 test('Web Release 有运行时',()=>assert.ok(fs.existsSync(path.join(out,'web-release','runtime.js'))));
+test('Web Release 有 VSR WebGPU 运行时',()=>{assert.ok(fs.existsSync(path.join(out,'web-release','vsr-runtime.js')));assert.match(fs.readFileSync(path.join(out,'web-release','vsr-runtime.js'),'utf8'),/VSRRealtimeWebGPUExecutor/)});
 test('Web Release 有 Service Worker',()=>assert.ok(fs.existsSync(path.join(out,'web-release','service-worker.js'))));
 test('Web Release 有 PWA 清单',()=>assert.ok(fs.existsSync(path.join(out,'web-release','manifest.webmanifest'))));
 test('Web Release 有本地启动器',()=>assert.ok(fs.existsSync(path.join(out,'web-release','启动本地预览.bat'))));
-test('Web Release 携带空间证据',()=>{for(const file of ['spatial-snapshot.json','spatial-causal-delta.json','spatial-runtime.manifest.json'])assert.ok(fs.existsSync(path.join(out,'web-release',file)))});
+test('Web Release 携带空间与 GPU 证据',()=>{for(const file of ['spatial-snapshot.json','spatial-causal-delta.json','spatial-runtime.manifest.json','gpu-frame-plan.json','gpu-frame-summary.json','gpu-viewport.manifest.json'])assert.ok(fs.existsSync(path.join(out,'web-release',file)))});
 test('Web Release 资产采用内容寻址',()=>{const files=fs.readdirSync(path.join(out,'web-release','assets'));assert.ok(files.every(x=>/^[a-f0-9]{64}\./.test(x)))});
 test('单文件版只有HTML与收据',()=>{const files=fs.readdirSync(path.join(out,'web-single'));assert.deepEqual(files.sort(),['target-receipt.json','目标验收_单文件版.html'].sort())});
-test('单文件版不依赖外部脚本',()=>{const h=fs.readFileSync(path.join(out,'web-single','目标验收_单文件版.html'),'utf8');assert.doesNotMatch(h,/src="runtime\.js"/)});
+test('单文件版不依赖外部脚本',()=>{const h=fs.readFileSync(path.join(out,'web-single','目标验收_单文件版.html'),'utf8');assert.doesNotMatch(h,/src="runtime\.js"/);assert.doesNotMatch(h,/src="vsr-runtime\.js"/);assert.match(h,/VSRRealtimeWebGPUExecutor/)});
 test('Windows 包有启动器',()=>assert.ok(fs.existsSync(path.join(out,'windows-portable','启动游戏.bat'))));
 test('Windows 包明确非原生 EXE',()=>{const m=readJson(path.join(out,'windows-portable','app-manifest.json'));assert.equal(m.native_executable,false)});
 test('Windows 包可直接打开 HTML',()=>assert.ok(fs.existsSync(path.join(out,'windows-portable','目标验收.html'))));
@@ -26,5 +27,5 @@ test('所有目标根唯一',()=>assert.equal(new Set(built.targets.map(x=>x.tar
 
 test('Android 工程有一键构建脚本',()=>assert.ok(fs.existsSync(path.join(out,'android-project','构建调试APK.bat'))));
 test('Android 工程声明自动构建脚本',()=>{const m=readJson(path.join(out,'android-project','android-build-manifest.json'));assert.equal(m.automatic_build_script,true)});
-test('Headless server exposes behavior and spatial runtime files',()=>{assert.ok(fs.existsSync(path.join(out,'headless-server','server.mjs')));assert.ok(fs.existsSync(path.join(out,'headless-server','runtime-replay.json')));assert.ok(fs.existsSync(path.join(out,'headless-server','spatial-runtime.manifest.json')));assert.match(fs.readFileSync(path.join(out,'headless-server','server.mjs'),'utf8'),/spatial-step/);assert.ok(fs.existsSync(path.join(out,'headless-server','server-manifest.json')))});
+test('Headless server exposes behavior, spatial, and GPU runtime evidence',()=>{assert.ok(fs.existsSync(path.join(out,'headless-server','server.mjs')));assert.ok(fs.existsSync(path.join(out,'headless-server','runtime-replay.json')));assert.ok(fs.existsSync(path.join(out,'headless-server','spatial-runtime.manifest.json')));assert.ok(fs.existsSync(path.join(out,'headless-server','gpu-frame-plan.json')));assert.match(fs.readFileSync(path.join(out,'headless-server','server.mjs'),'utf8'),/spatial-step/);assert.ok(fs.existsSync(path.join(out,'headless-server','server-manifest.json')))});
 test('Replay bundle exposes executable verifier',()=>{assert.ok(fs.existsSync(path.join(out,'replay-bundle','verify-replay.mjs')));const m=readJson(path.join(out,'replay-bundle','replay-manifest.json'));assert.equal(m.entry,'verify-replay.mjs');assert.equal(m.runtime_evidence.deterministic,true)});
