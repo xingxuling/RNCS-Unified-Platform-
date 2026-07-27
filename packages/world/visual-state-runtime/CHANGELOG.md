@@ -6,6 +6,7 @@
 - 新增四影响骨骼蒙皮、最多四个Morph Target，以及对应的CPU参考、GPU storage buffer和Frame Root证据；
 - glTF导入器接入JOINTS_0、WEIGHTS_0、skins与targets/POSITION，并扩展导入收据统计；
 - 动画采样保留glTF四元数，新增最短弧SLERP、CUBICSPLINE Hermite采样与动画场景Schema证据；
+- 新增确定性动画图状态过渡、Override/Additive图层与显式骨骼遮罩，并将混合姿态绑定到Frame Root；
 
 ## 0.4.0-alpha.1
 

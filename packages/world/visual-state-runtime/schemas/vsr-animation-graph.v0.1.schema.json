@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/vsr-animation-graph.v0.1.schema.json",
+  "title": "VSR Deterministic Animation Graph",
+  "type": "object",
+  "required": [
+    "graph",
+    "timeSeconds"
+  ],
+  "properties": {
+    "graph": {
+      "type": "object",
+      "required": [
+        "initialState",
+        "states"
+      ],
+      "properties": {
+        "initialState": {
+          "type": "string"
+        },
+        "states": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "clipId"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "clipId": {
+                "type": "string"
+              },
+              "speed": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "loop": {
+                "type": "boolean"
+              },
+              "nodeIds": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "stateId": {
+      "type": "string"
+    },
+    "timeSeconds": {
+      "type": "number"
+    },
+    "transition": {
+      "type": "object",
+      "required": [
+        "fromStateId",
+        "toStateId",
+        "progress"
+      ],
+      "properties": {
+        "fromStateId": {
+          "type": "string"
+        },
+        "toStateId": {
+          "type": "string"
+        },
+        "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "layers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "clipId",
+          "timeSeconds"
+        ],
+        "properties": {
+          "clipId": {
+            "type": "string"
+          },
+          "timeSeconds": {
+            "type": "number"
+          },
+          "weight": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "loop": {
+            "type": "boolean"
+          },
+          "mode": {
+            "enum": [
+              "override",
+              "additive"
+            ]
+          },
+          "nodeIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}
