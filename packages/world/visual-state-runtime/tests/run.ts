@@ -29,6 +29,7 @@ import { collectDocumentText, collectGlyphs, verifyFrozenFont, type VSRFrozenFon
 import { comparePerceptualPlans, compileVisualRealityPlan, renderVisualRealityReference, resolveRenderBudget, verifyVisualRealityPlan, type VSRVisualRealityConfig } from '../packages/visual-reality-compiler/src/index.js';
 import { compileRealityBuildGPURequirement, compileRealityStudioGPUViewport, verifyRealityBuildGPURequirement, verifyRealityStudioGPUViewport } from '../packages/adapter-reality-products/src/index.js';
 import { compileRealtimeWebGPUFrame, packWebGPUTextureAtlas, probeRealtimeWebGPU, verifyRealtimeGPUReceipt, verifyRealtimeWebGPUFrame, VSR_LIGHT_CULL_SHADER_V03, VSR_PARTICLE_SHADER_V03, VSR_POST_SHADER_V03, VSR_SCENE_SHADER_V03, type VSRRealtimeGPUFrameReceipt } from '../packages/realtime-webgpu/src/index.js';
+import { hashRealtimeWebGPUValue, normalizeRealtimeWebGPUFrame, verifyRealtimeWebGPUFrame as verifyBrowserRealtimeWebGPUFrame } from '../packages/realtime-webgpu/src/browser-executor.js';
 import { computeHNACStateRoot, createVSRHNACSnapshot, exportVSRHNACBundle, mergeHNACPortableStates, restoreVSRSessionFromHNACSnapshot, sealHNACPortableState, verifyVSRHNACSnapshot } from '../packages/adapter-hnac-state/src/index.js';
 
 const tests:Array<{name:string;fn:()=>void|Promise<void>}>=[];const test=(name:string,fn:()=>void|Promise<void>)=>tests.push({name,fn});
@@ -657,6 +658,10 @@ test('realtime WebGPU frame schema is present',()=>{const schema=JSON.parse(read
 
 test('realtime WebGPU compiler exports a serializable evidence view',()=>{
   const state=evaluateAt({document:visualRealityDocument,time:0}).displayState,plan=compileRealtimeWebGPUFrame(state,visualRealityConfig),view={format:plan.format,framePlanRoot:plan.framePlanRoot,resourceRoot:plan.resourceRoot,commandRoot:plan.commandRoot,stats:plan.stats,atlas:{width:plan.atlas.width,height:plan.atlas.height,regions:plan.atlas.regions},passes:plan.passes};const text=JSON.stringify(view);assert.ok(text.includes(plan.framePlanRoot));assert.equal(JSON.parse(text).format,'vsr.realtime-webgpu-frame.v0.3');
+});
+
+test('browser WebGPU executor accepts the serialized build frame without Node imports',()=>{
+  const state=evaluateAt({document:visualRealityDocument,time:0}).displayState,plan=compileRealtimeWebGPUFrame(state,visualRealityConfig),serialized={...plan,atlas:{...plan.atlas,data_base64:Buffer.from(plan.atlas.data).toString('base64'),data:undefined},vertex_data:Array.from(plan.vertexData),light_data:Array.from(plan.lightData),tile_data:Array.from(plan.tileData),particle_data:Array.from(plan.particleData)},normalized=normalizeRealtimeWebGPUFrame(serialized);assert.equal(verifyBrowserRealtimeWebGPUFrame(normalized).ok,true);assert.equal(normalized.framePlanRoot,plan.framePlanRoot);assert.equal(hashRealtimeWebGPUValue({b:2,a:1}),cryptographicHash({a:1,b:2}));
 });
 
 

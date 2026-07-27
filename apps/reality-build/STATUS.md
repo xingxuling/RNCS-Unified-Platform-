@@ -18,5 +18,7 @@
 - Spatial snapshot, causal delta and runtime manifest outputs: implemented
 - TileMap collision/navigation manifest output: implemented when the active scene has a TileMap
 - Headless spatial inspection and step endpoints: implemented
+- Browser VSR WebGPU executor: implemented for Web Release, single-file, Windows Portable and embedded Android HTML targets; build-time GPU frame, tiled lights, particles, postprocess and Canvas/device-loss fallback are verified
 - Browser-native RSR physics/rendering runtime: not implemented; web targets currently retain the Behavior browser runtime and carry spatial evidence separately
+- Browser GPU frame is currently a build-time visual snapshot; client-side dynamic VSR recompilation and browser-native RSR authority remain open work
 - Release-signed APK/AAB: not implemented

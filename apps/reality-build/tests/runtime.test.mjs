@@ -1,4 +1,4 @@
-import test from 'node:test';import assert from 'node:assert/strict';import {buildBrowserBehaviorRuntime,buildGameSource,renderIndexHtml} from '../src/index.mjs';
+import test from 'node:test';import assert from 'node:assert/strict';import {buildBrowserBehaviorRuntime,buildBrowserVSRRuntime,buildGameSource,renderIndexHtml} from '../src/index.mjs';
 const runtime=buildBrowserBehaviorRuntime(),game=buildGameSource();
 test('浏览器行为运行时可解析',()=>assert.doesNotThrow(()=>new Function(runtime)));
 test('浏览器游戏宿主可解析',()=>assert.doesNotThrow(()=>new Function(game)));
@@ -8,7 +8,9 @@ test('游戏宿主使用真实行为 Tick',()=>assert.match(game,/runtime\.tick\
 test('游戏宿主包含触摸控制',()=>assert.match(game,/data-action/));
 test('游戏宿主包含音频 Provider',()=>assert.match(game,/experience\.audio\.emit/));
 test('游戏宿主包含特效 Provider',()=>assert.match(game,/experience\.effect\.emit/));
-test('单文件 HTML 嵌入运行时',()=>{const h=renderIndexHtml({title:'T',inline:true,runtimeSource:runtime,gameSource:game,payload:{project:{},assets:{},build:{}}});assert.match(h,/RNCSBehavior/);assert.doesNotMatch(h,/src="runtime\.js"/)});
-test('文件夹 HTML 引用外部脚本',()=>{const h=renderIndexHtml({title:'T'});assert.match(h,/src="runtime\.js"/);assert.match(h,/src="game\.js"/)});
+test('游戏宿主包含 VSR WebGPU 入口与回退',()=>{assert.match(game,/VSRRealtimeWebGPUExecutor/);assert.match(game,/Canvas 2D/);assert.match(game,/gpu_frame_plan/)});
+test('浏览器 VSR 入口无 Node 依赖',()=>{const source=buildBrowserVSRRuntime();assert.doesNotMatch(source,/node:/);assert.match(source,/VSRRealtimeWebGPUExecutor/);assert.match(source,/__RNCSVSR__/)});
+test('单文件 HTML 嵌入运行时',()=>{const h=renderIndexHtml({title:'T',inline:true,runtimeSource:runtime,gpuRuntimeSource:'window.__RNCSVSR__={};',gameSource:game,payload:{project:{},assets:{},build:{}}});assert.match(h,/RNCSBehavior/);assert.match(h,/__RNCSVSR__/);assert.doesNotMatch(h,/src="runtime\.js"/)});
+test('文件夹 HTML 引用外部脚本',()=>{const h=renderIndexHtml({title:'T'});assert.match(h,/src="runtime\.js"/);assert.match(h,/src="vsr-runtime\.js"/);assert.match(h,/src="game\.js"/)});
 test('HTML 有移动端视口',()=>assert.match(renderIndexHtml({title:'T'}),/viewport-fit=cover/));
-test('HTML 有 Canvas',()=>assert.match(renderIndexHtml({title:'T'}),/id="game"/));
+test('HTML 有 Canvas 渲染与 GPU 画布',()=>{const h=renderIndexHtml({title:'T'});assert.match(h,/id="game"/);assert.match(h,/id="gpu-game"/)});

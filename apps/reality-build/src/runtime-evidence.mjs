@@ -51,6 +51,8 @@ export function buildRuntimeEvidence({project,request,identity}={}){
   const spatialChecks=spatial.frames.map((frame,index)=>({sequence:frame.sequence,expected_state_root:frame.state_root,actual_state_root:spatialReplay.frames[index]?.state_root??null,match:frame.state_root===spatialReplay.frames[index]?.state_root}));
   const spatialDeterministic=spatial.final_state_root===spatialReplay.final_state_root&&spatialChecks.every(check=>check.match);
   const artifacts=session.exportArtifacts();
+  const gpuFramePlan=artifacts.gpu_frame_plan??null,gpuFrameSummary=artifacts.gpu_frame_summary??null,gpuViewportManifest=artifacts.gpu_viewport_manifest??null;
+  if(!gpuFramePlan||!gpuFrameSummary||!gpuViewportManifest)throw new Error('GPU_RUNTIME_EVIDENCE_MISSING');
   const evidence=seal({
     format:RUNTIME_EVIDENCE_FORMAT,
     version:RUNTIME_EVIDENCE_VERSION,
@@ -75,13 +77,18 @@ export function buildRuntimeEvidence({project,request,identity}={}){
     spatial_causal_delta_root:artifacts.spatial_causal_delta?.deltaRoot??null,
     spatial_runtime_manifest_root:artifacts.spatial_runtime_manifest?.manifest_root??null,
     navigation_manifest_root:artifacts.tilemap_navigation_manifest?.manifest_root??null,
-    navigation_receipt_root:artifacts.tilemap_navigation_manifest?.receipt?.receipt_root??null
+    navigation_receipt_root:artifacts.tilemap_navigation_manifest?.receipt?.receipt_root??null,
+    gpu_frame_plan_root:gpuFrameSummary.frame_plan_root??gpuFramePlan.framePlanRoot??null,
+    gpu_resource_root:gpuFrameSummary.resource_root??gpuFramePlan.resourceRoot??null,
+    gpu_command_root:gpuFrameSummary.command_root??gpuFramePlan.commandRoot??null,
+    gpu_frame_summary_root:gpuFrameSummary.summary_root??null,
+    gpu_viewport_manifest_root:gpuViewportManifest.manifest_root??null
   },'evidence_root');
-  return{evidence,timeline:artifacts.runtime_timeline,replay:artifacts.runtime_replay,checkpoint:initialCheckpoint,spatial_snapshot:artifacts.spatial_snapshot,spatial_causal_delta:artifacts.spatial_causal_delta,spatial_runtime_manifest:artifacts.spatial_runtime_manifest,navigation_manifest:artifacts.tilemap_navigation_manifest};
+  return{evidence,timeline:artifacts.runtime_timeline,replay:artifacts.runtime_replay,checkpoint:initialCheckpoint,spatial_snapshot:artifacts.spatial_snapshot,spatial_causal_delta:artifacts.spatial_causal_delta,spatial_runtime_manifest:artifacts.spatial_runtime_manifest,navigation_manifest:artifacts.tilemap_navigation_manifest,gpu_frame_plan:gpuFramePlan,gpu_frame_summary:gpuFrameSummary,gpu_viewport_manifest:gpuViewportManifest};
 }
 
 export function runtimeEvidenceSummary(runtimeEvidence){
   const e=runtimeEvidence?.evidence??runtimeEvidence;
   if(!e)return null;
-  return{format:e.format,version:e.version,evidence_root:e.evidence_root,timeline_root:e.timeline_root,replay_root:e.replay_root,deterministic:e.deterministic,final_state_root:e.final_state_root,spatial_deterministic:e.spatial_deterministic,spatial_final_state_root:e.spatial_final_state_root,spatial_runtime_manifest_root:e.spatial_runtime_manifest_root,navigation_manifest_root:e.navigation_manifest_root};
+  return{format:e.format,version:e.version,evidence_root:e.evidence_root,timeline_root:e.timeline_root,replay_root:e.replay_root,deterministic:e.deterministic,final_state_root:e.final_state_root,spatial_deterministic:e.spatial_deterministic,spatial_final_state_root:e.spatial_final_state_root,spatial_runtime_manifest_root:e.spatial_runtime_manifest_root,navigation_manifest_root:e.navigation_manifest_root,gpu_frame_plan_root:e.gpu_frame_plan_root,gpu_resource_root:e.gpu_resource_root,gpu_command_root:e.gpu_command_root,gpu_frame_summary_root:e.gpu_frame_summary_root,gpu_viewport_manifest_root:e.gpu_viewport_manifest_root};
 }
