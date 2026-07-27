@@ -86,6 +86,7 @@
     "test:rcl": "npm test --workspace @taowind/reality-computation-language",
     "test:foundation-native-batch-c": "npm run test:foundation-native-batch-c --workspace @taowind/reality-computation-language",
     "test:foundation-native-batch-d": "npm run test:foundation-native-batch-d --workspace @taowind/reality-computation-language",
+    "test:foundation-native-batch-e": "npm run test:foundation-native-batch-e --workspace @taowind/reality-computation-language",
     "test:foundation-native-rncs": "npm test --workspace @taowind/rcl-foundation-rncs-bridge",
     "demo:foundation-native-rncs": "npm run demo --workspace @taowind/rcl-foundation-rncs-bridge",
     "evidence:foundation-native-rncs": "node scripts/generate-foundation-native-rncs-evidence.mjs",

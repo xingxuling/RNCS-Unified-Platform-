@@ -10,6 +10,7 @@ import {
   foundationNativeRncsReceiptRoot,
   prepareFoundationNativeBatchCRncsTransition,
   prepareFoundationNativeBatchDRncsTransition,
+  prepareFoundationNativeBatchERncsTransition,
   prepareFoundationNativeMetaRncsTransition,
   prepareFoundationNativeRncsTransition,
   verifyFoundationNativeRncsTransition,
@@ -365,6 +366,56 @@ const batchDVerification = verifyFoundationNativeRncsTransition(
   batchDCommitted,
 );
 
+const batchERequest = {
+  authorized: true,
+  aifDecision: 'stable',
+  causalParents: [batchDCommitted.roots.finalStateRoot],
+  input: {
+    speechAct: 'create',
+    metacomputation: {
+      planId: 'plan:sum-v1',
+      strategy: 'bounded-step',
+      requestedSteps: 12,
+      maximumSteps: 8,
+      tick: 32,
+    },
+    computation: {
+      programId: 'program:sum-v1',
+      operation: 'sum',
+      leftOperand: 21,
+      rightOperand: 21,
+      instructionBudget: 64,
+    },
+  },
+  evidence: [{
+    type: 'evidence-generation',
+    id: 'rncs-foundation-native-batch-e',
+  }],
+};
+const batchEPrepared = prepareFoundationNativeBatchERncsTransition(
+  batchERequest,
+  {
+    realityId,
+    baseGeneration: 4,
+    baseGenerationRoot: batchDCommitted.roots.finalStateRoot,
+  },
+);
+const batchEAuthorized = authorizeFoundationNativeRncsTransition(
+  batchEPrepared,
+  {
+    approved: true,
+    roles: ['owner'],
+    resolver: 'evidence-human-owner',
+  },
+);
+const batchECommitted = commitFoundationNativeRncsTransition(
+  batchEAuthorized,
+  { confirmed: true },
+);
+const batchEVerification = verifyFoundationNativeRncsTransition(
+  batchECommitted,
+);
+
 const gatewayData = fs.mkdtempSync(
   path.join(os.tmpdir(), 'rncs-foundation-meta-evidence-'),
 );
@@ -377,6 +428,9 @@ let gatewayBatchCVerification;
 let gatewayBatchDPrepared;
 let gatewayBatchDCommitted;
 let gatewayBatchDVerification;
+let gatewayBatchEPrepared;
+let gatewayBatchECommitted;
+let gatewayBatchEVerification;
 try {
   const gateway = new RealityOneGateway({
     manifestDirs: [GATEWAY_RUNTIME_DIR],
@@ -491,6 +545,44 @@ try {
     'verify',
     { transition: gatewayBatchDCommitted },
   );
+  gatewayBatchEPrepared = await gateway.invoke(
+    'rncs.rcl-foundation-native',
+    'prepare',
+    {
+      batch: 'batch-e',
+      request: batchERequest,
+      options: {
+        realityId,
+        baseGeneration: 4,
+        baseGenerationRoot: batchDCommitted.roots.finalStateRoot,
+      },
+    },
+  );
+  const gatewayBatchEAuthorized = await gateway.invoke(
+    'rncs.rcl-foundation-native',
+    'authorize',
+    {
+      prepared: gatewayBatchEPrepared,
+      approval: {
+        approved: true,
+        roles: ['owner'],
+        resolver: 'gateway-evidence-owner',
+      },
+    },
+  );
+  gatewayBatchECommitted = await gateway.invoke(
+    'rncs.rcl-foundation-native',
+    'commit',
+    {
+      authorized: gatewayBatchEAuthorized,
+      confirmation: { confirmed: true },
+    },
+  );
+  gatewayBatchEVerification = await gateway.invoke(
+    'rncs.rcl-foundation-native',
+    'verify',
+    { transition: gatewayBatchECommitted },
+  );
 } finally {
   fs.rmSync(gatewayData, { recursive: true, force: true });
 }
@@ -529,6 +621,16 @@ const batchD = {
       parametersRoot: operation.semantic_parameters_root,
     })),
 };
+const batchE = {
+  execution: executionEvidence(batchECommitted),
+  rncs: rncsEvidence(batchECommitted),
+  semanticState: batchECommitted.envelope.provisional_delta.operations
+    .map(operation => ({
+      path: operation.path,
+      parameters: operation.semantic_parameters,
+      parametersRoot: operation.semantic_parameters_root,
+    })),
+};
 const evidence = {
   format: 'rncs.rcl-foundation-native-evidence.v0.2',
   version: '0.2.0-alpha.1',
@@ -547,6 +649,7 @@ const evidence = {
     metaBatchB,
     batchC,
     batchD,
+    batchE,
   },
   generationContinuity: {
     realityId,
@@ -564,6 +667,10 @@ const evidence = {
     batchDBaseRoot: batchD.rncs.baseGenerationRoot,
     batchDGeneration: batchD.rncs.generation,
     batchDFinalRoot: batchD.rncs.generationRoot,
+    batchEBaseGeneration: batchE.rncs.baseGeneration,
+    batchEBaseRoot: batchE.rncs.baseGenerationRoot,
+    batchEGeneration: batchE.rncs.generation,
+    batchEFinalRoot: batchE.rncs.generationRoot,
   },
   gateway: {
     runtimeId: gatewayManifest.runtime_id,
@@ -585,6 +692,10 @@ const evidence = {
     batchDCommittedGenerationRoot:
       gatewayBatchDCommitted.envelope.commit.result_generation.generation_root,
     batchDVerification: gatewayBatchDVerification,
+    batchEPreparedProposalRoot: gatewayBatchEPrepared.envelope.proposal_root,
+    batchECommittedGenerationRoot:
+      gatewayBatchECommitted.envelope.commit.result_generation.generation_root,
+    batchEVerification: gatewayBatchEVerification,
   },
   checks: {
     rclSourceScopeVerified:
@@ -599,21 +710,26 @@ const evidence = {
       batchCCommitted.execution.results.length === 2,
     batchDStandardResultCount:
       batchDCommitted.execution.results.length === 3,
+    batchEStandardResultCount:
+      batchECommitted.execution.results.length === 2,
     nativeReplay:
       batchACommitted.execution.replayVerified === true
       && metaCommitted.execution.replayVerified === true
       && batchCCommitted.execution.replayVerified === true
-      && batchDCommitted.execution.replayVerified === true,
+      && batchDCommitted.execution.replayVerified === true
+      && batchECommitted.execution.replayVerified === true,
     proposalsVerified:
       batchAVerification.ok
       && metaVerification.ok
       && batchCVerification.ok
-      && batchDVerification.ok,
+      && batchDVerification.ok
+      && batchEVerification.ok,
     humanApprovalRecorded:
       batchACommitted.envelope.authority.status === 'approved'
       && metaCommitted.envelope.authority.status === 'approved'
       && batchCCommitted.envelope.authority.status === 'approved'
-      && batchDCommitted.envelope.authority.status === 'approved',
+      && batchDCommitted.envelope.authority.status === 'approved'
+      && batchECommitted.envelope.authority.status === 'approved',
     commitReceiptsBound:
       batchACommitted.envelope.commit.receipt_refs
         .includes(batchACommitted.roots.receiptRoot)
@@ -622,7 +738,9 @@ const evidence = {
       && batchCCommitted.envelope.commit.receipt_refs
         .includes(batchCCommitted.roots.receiptRoot)
       && batchDCommitted.envelope.commit.receipt_refs
-        .includes(batchDCommitted.roots.receiptRoot),
+        .includes(batchDCommitted.roots.receiptRoot)
+      && batchECommitted.envelope.commit.receipt_refs
+        .includes(batchECommitted.roots.receiptRoot),
     generationContinuity:
       batchA.rncs.generation === 1
       && metaBatchB.rncs.baseGeneration === 1
@@ -634,7 +752,10 @@ const evidence = {
       && batchC.rncs.generation === 3
       && batchD.rncs.baseGeneration === 3
       && batchD.rncs.baseGenerationRoot === batchC.rncs.generationRoot
-      && batchD.rncs.generation === 4,
+      && batchD.rncs.generation === 4
+      && batchE.rncs.baseGeneration === 4
+      && batchE.rncs.baseGenerationRoot === batchD.rncs.generationRoot
+      && batchE.rncs.generation === 5,
     metaTimelineMutation:
       metaBatchB.semanticState[0].parameters.timeline.tickBefore === 20
       && metaBatchB.semanticState[0].parameters.timeline.tickAfter === 24,
@@ -667,6 +788,10 @@ const evidence = {
       gatewayBatchDVerification.ok === true
       && gatewayBatchDVerification.batch === 'batch-d'
       && gatewayBatchDCommitted.status === 'committed',
+    gatewayBatchECommitted:
+      gatewayBatchEVerification.ok === true
+      && gatewayBatchEVerification.batch === 'batch-e'
+      && gatewayBatchECommitted.status === 'committed',
   },
 };
 evidence.evidenceRootScope = (
@@ -679,6 +804,7 @@ const deterministicEvidence = {
     metaBatchB: maskWallClock(metaBatchB),
     batchC: maskWallClock(batchC),
     batchD: maskWallClock(batchD),
+    batchE: maskWallClock(batchE),
   },
 };
 const invalidPaths = undefinedPaths(deterministicEvidence);
@@ -702,6 +828,8 @@ const markdown = [
   `- Batch C generation: ${batchC.rncs.generation} / \`${batchC.rncs.generationRoot}\``,
   `- Batch D provider: \`${batchD.execution.providerId}\``,
   `- Batch D generation: ${batchD.rncs.generation} / \`${batchD.rncs.generationRoot}\``,
+  `- Batch E provider: \`${batchE.execution.providerId}\``,
+  `- Batch E generation: ${batchE.rncs.generation} / \`${batchE.rncs.generationRoot}\``,
   `- Gateway runtime: \`${evidence.gateway.runtimeId}\` (${evidence.gateway.runtimeManifestCount} registered runtimes)`,
   `- Gateway committed root: \`${evidence.gateway.committedGenerationRoot}\``,
   `- evidence root: \`${evidence.evidenceRoot}\``,
@@ -712,7 +840,7 @@ const markdown = [
     ([key, passed]) => `| ${key} | ${passed ? 'pass' : 'fail'} |`,
   ),
   '',
-  'Batch A, Meta Batch B, Batch C, and Batch D remain bridge mode. Human approval and commit confirmation are separate calls. Declared Foundation syntax is not counted as Native VM lowering.',
+  'Batch A, Meta Batch B, Batch C, Batch D, and Batch E remain bridge mode. Human approval and commit confirmation are separate calls. Declared Foundation syntax is not counted as Native VM lowering.',
   '',
 ].join('\n');
 

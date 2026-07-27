@@ -19,6 +19,11 @@ import {
   runFoundationNativeBatchD,
 } from '../../../languages/reality-computation-language/src/foundation-native-batch-d.mjs';
 import {
+  FOUNDATION_NATIVE_BATCH_E,
+  FOUNDATION_NATIVE_BATCH_E_PROVIDER_ID,
+  runFoundationNativeBatchE,
+} from '../../../languages/reality-computation-language/src/foundation-native-batch-e.mjs';
+import {
   authorize,
   commit,
   newProposal,
@@ -33,6 +38,7 @@ export const RCL_FOUNDATION_RNCS_BATCH_A = 'batch-a';
 export const RCL_FOUNDATION_RNCS_META_BATCH_B = 'meta-batch-b';
 export const RCL_FOUNDATION_RNCS_BATCH_C = 'batch-c';
 export const RCL_FOUNDATION_RNCS_BATCH_D = 'batch-d';
+export const RCL_FOUNDATION_RNCS_BATCH_E = 'batch-e';
 
 const BATCHES = Object.freeze({
   [RCL_FOUNDATION_RNCS_BATCH_A]: Object.freeze({
@@ -66,6 +72,14 @@ const BATCHES = Object.freeze({
     run: runFoundationNativeBatchD,
     realityId: 'reality:foundation-native-batch-d',
     rule: 'rcl-foundation-native-batch-d',
+  }),
+  [RCL_FOUNDATION_RNCS_BATCH_E]: Object.freeze({
+    id: RCL_FOUNDATION_RNCS_BATCH_E,
+    providerId: FOUNDATION_NATIVE_BATCH_E_PROVIDER_ID,
+    entries: FOUNDATION_NATIVE_BATCH_E,
+    run: runFoundationNativeBatchE,
+    realityId: 'reality:foundation-native-batch-e',
+    rule: 'rcl-foundation-native-batch-e',
   }),
 });
 
@@ -547,6 +561,16 @@ export function prepareFoundationNativeBatchDRncsTransition(
   });
 }
 
+export function prepareFoundationNativeBatchERncsTransition(
+  request = {},
+  options = {},
+) {
+  return prepareFoundationNativeRncsTransition(request, {
+    ...options,
+    batch: RCL_FOUNDATION_RNCS_BATCH_E,
+  });
+}
+
 export function authorizeFoundationNativeRncsTransition(
   prepared,
   approval = {},
@@ -781,6 +805,56 @@ function verifyBatchDSemantics(execution, errors) {
   }
 }
 
+function verifyBatchESemantics(execution, errors) {
+  const [metacomputation, computation] = execution.results ?? [];
+  const input = execution.request?.input;
+  const createMode = ['create', 'generate', 'build'].includes(input?.speechAct);
+  const metacomputationInput = input?.metacomputation;
+  const metacomputationState = metacomputation?.proposal?.parameters?.metacomputation;
+  const effectiveSteps = createMode
+    ? Math.min(metacomputationInput?.requestedSteps, metacomputationInput?.maximumSteps)
+    : 0;
+  if (
+    metacomputationState?.planId !== metacomputationInput?.planId
+    || metacomputationState?.strategy !== metacomputationInput?.strategy
+    || metacomputationState?.requestedSteps !== metacomputationInput?.requestedSteps
+    || metacomputationState?.maximumSteps !== metacomputationInput?.maximumSteps
+    || metacomputationState?.effectiveSteps !== effectiveSteps
+    || metacomputationState?.tickBefore !== metacomputationInput?.tick
+    || metacomputationState?.tickAfter !== (
+      createMode ? metacomputationInput?.tick + 1 : metacomputationInput?.tick
+    )
+    || metacomputationState?.clamped
+      !== (metacomputationInput?.requestedSteps > metacomputationInput?.maximumSteps)
+    || metacomputationState?.mutationApplied !== createMode
+  ) {
+    errors.push('METACOMPUTATION_SEMANTICS_INVALID');
+  }
+
+  const computationInput = input?.computation;
+  const computationState = computation?.proposal?.parameters?.computation;
+  const computedValue = computationInput?.operation === 'sum'
+    ? computationInput?.leftOperand + computationInput?.rightOperand
+    : computationInput?.operation === 'difference'
+      ? computationInput?.leftOperand - computationInput?.rightOperand
+      : computationInput?.leftOperand * computationInput?.rightOperand;
+  const stepsUsed = computationInput?.operation === 'product' ? 3 : 1;
+  if (
+    computationState?.programId !== computationInput?.programId
+    || computationState?.operation !== computationInput?.operation
+    || computationState?.leftOperand !== computationInput?.leftOperand
+    || computationState?.rightOperand !== computationInput?.rightOperand
+    || computationState?.result !== (createMode ? computedValue : 0)
+    || computationState?.instructionBudget !== computationInput?.instructionBudget
+    || computationState?.stepsUsed !== (createMode ? stepsUsed : 0)
+    || computationState?.budgetSatisfied !== (computationInput?.instructionBudget >= stepsUsed)
+    || computationState?.metacomputationParentRoot !== computation?.stateDelta?.beforeRoot
+    || computationState?.mutationApplied !== createMode
+  ) {
+    errors.push('COMPUTATION_SEMANTICS_INVALID');
+  }
+}
+
 export function verifyFoundationNativeRncsTransition(value) {
   const errors = [];
   if (!value || value.format !== RCL_FOUNDATION_RNCS_BRIDGE_FORMAT) {
@@ -912,6 +986,10 @@ export function verifyFoundationNativeRncsTransition(value) {
 
   if (batch?.id === RCL_FOUNDATION_RNCS_BATCH_D) {
     verifyBatchDSemantics(value.execution, errors);
+  }
+
+  if (batch?.id === RCL_FOUNDATION_RNCS_BATCH_E) {
+    verifyBatchESemantics(value.execution, errors);
   }
 
   if (
