@@ -12,6 +12,7 @@
     "animation",
     "animationLayers",
     "animationGraph",
+    "animationConstraints",
     "deformation",
     "root"
   ],
@@ -66,6 +67,39 @@
       },
       "additionalProperties": false
     },
+    "animationConstraints": {
+      "type": ["array", "null"],
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["type", "nodeId", "target"],
+            "properties": {
+              "type": { "const": "look-at" },
+              "nodeId": { "type": "string", "minLength": 1 },
+              "target": { "type": "array", "minItems": 3, "maxItems": 3, "items": { "type": "number" } },
+              "up": { "type": ["array", "null"], "minItems": 3, "maxItems": 3, "items": { "type": "number" } },
+              "weight": { "type": "number", "minimum": 0, "maximum": 1 }
+            },
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "required": ["type", "rootNodeId", "midNodeId", "endNodeId", "target"],
+            "properties": {
+              "type": { "const": "two-bone-ik" },
+              "rootNodeId": { "type": "string", "minLength": 1 },
+              "midNodeId": { "type": "string", "minLength": 1 },
+              "endNodeId": { "type": "string", "minLength": 1 },
+              "target": { "type": "array", "minItems": 3, "maxItems": 3, "items": { "type": "number" } },
+              "pole": { "type": ["array", "null"], "minItems": 3, "maxItems": 3, "items": { "type": "number" } },
+              "weight": { "type": "number", "minimum": 0, "maximum": 1 }
+            },
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
     "deformation": {
       "type": ["object", "null"],
       "properties": {
@@ -85,6 +119,7 @@
   "anyOf": [
     { "required": ["animation"] },
     { "required": ["animationLayers"] },
-    { "required": ["animationGraph"] }
+    { "required": ["animationGraph"] },
+    { "required": ["animationConstraints"] }
   ]
 }
