@@ -10,7 +10,8 @@ Reality Build Fabric 把 Reality Studio 统一项目编译成可验证、可缓�
 → Asset Database 增量同步与缓存命中
 → 构建工具链 / 宿主能力预检
 → 资产内容寻址烘焙
-→ Behavior Runtime 编译
+→ Behavior + RSR Spatial Runtime 确定性回放
+→ 物理快照 / 因果 delta / 导航清单
 → Web / Windows EXE / Android 工程或 APK
 → 文件完整性与 Target Root
 → Build Receipt
@@ -67,9 +68,28 @@ node src/cli.mjs build --config examples/reality-build.json
 
 启用后，构建输出会生成 `asset-database.json`、变更计划、同步收据和缓存索引；`web-release`、Windows 便携包、Android 工程、无头服务和回放包会携带这些证据，单文件 Web 则将资源数据库根和缓存制品摘要内嵌到 HTML。
 
+## 空间运行时证据
+
+构建请求可以提供按帧组织的 RSR 空间命令。每个命令必须使用整数定点值，轨迹会进入语义构建键：
+
+```json
+{
+  "spatial_trace": [
+    [{
+      "type": "move-character",
+      "characterId": "subject:player",
+      "direction": {"x": 1000000, "y": 0, "z": 0}
+    }]
+  ]
+}
+```
+
+构建器会独立重放空间轨迹并比较最终状态根，同时输出 `spatial-snapshot.json`、`spatial-causal-delta.json`、`spatial-runtime.manifest.json` 和可用时的 `tilemap-navigation.manifest.json`。`headless-server` 额外暴露 `/spatial-inspect` 与 `POST /spatial-step`，因此物理与导航状态可以被运行时验收，而不只停留在编辑器导出阶段。
+
 ## 诚实边界
 
 - `windows-native` 是真实 Windows GUI EXE，不依赖 BAT 或 Node.js；但 v0.2 的渲染宿主仍使用 Windows 自带或已安装的 Edge/Chrome，而不是内嵌 Chromium/WebView2 Runtime。
 - `android-apk` 已实现真实 Gradle 调用、产物检查、调试签名声明及可用时的 `apksigner` 验证；本发布环境没有 Android SDK/Gradle，因此发布样板只附 Android 工程，自动 APK 路径由隔离工具链测试验证。
 - 正式商店 Android 发布仍需用户的 release keystore、AAB、商店元数据与真实设备矩阵。
 - 原生 GPU、原生音频、增量补丁、自动更新和代码签名证书尚未完成。
+- 浏览器 `web-release` 仍使用现有 Behavior 浏览器 runtime；RSR 物理、空间快照与导航目前作为 RNCS 构建证据和 headless 运行时接入，尚未声称已经替换浏览器渲染器。

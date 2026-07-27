@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased — 2026-07-27
+
+- 构建请求新增 `spatial_trace`，纳入语义构建键并执行两次独立 RSR 空间回放。
+- 构建收据新增空间状态根、因果 delta 根、空间 runtime manifest 根和导航 manifest 根。
+- 构建输出新增 `spatial-snapshot.json`、`spatial-causal-delta.json`、`spatial-runtime.manifest.json`；含 TileMap 项目时新增 `tilemap-navigation.manifest.json`。
+- `headless-server` 新增 `/spatial-inspect` 与 `POST /spatial-step`，回放 verifier 同时校验 Behavior 与空间状态根。
+- 统一项目的可移植资产投影用于构建证据和目标回放，避免绝对路径造成 Behavior replay root 漂移。
+
 ## v0.2.0-alpha.1 — 2026-07-02
 
 - 新增 `windows-native`：通过 Go 交叉编译生成 PE32+ Windows GUI EXE。

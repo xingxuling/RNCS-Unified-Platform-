@@ -11,9 +11,11 @@
 | headless-server | Node.js | Node.js 20+ plus Reality Studio package | HTTP headless runtime folder | server manifest + runtime replay |
 | replay-bundle | Node.js | Node.js 20+ plus Reality Studio package | project + replay verifier | evidence, timeline and replay roots |
 
-Every build also emits root-level runtime-evidence.json, runtime-timeline.json,
-runtime-replay.json, and runtime-checkpoint.json. File-based targets copy the
-same artifacts so a client package, headless runtime, and replay bundle can be
+Every build also emits root-level behavior evidence plus
+spatial-snapshot.json, spatial-causal-delta.json, and
+spatial-runtime.manifest.json. Projects with an active TileMap additionally
+emit tilemap-navigation.manifest.json. File-based targets copy the same
+artifacts so a client package, headless runtime, and replay bundle can be
 checked against one deterministic build identity.
 
 ## 选择原则
