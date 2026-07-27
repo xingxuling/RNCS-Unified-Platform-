@@ -146,7 +146,8 @@ export function verifyEngineSessionSnapshot(snapshot) {
     check(rootHash(without(snapshot.simulation, 'simulation_root')) === simulationRoot, 'SIMULATION_ROOT_MISMATCH');
   }
   if (snapshot?.session_root) {
-    check(rootHash(without(snapshot, 'session_root')) === snapshot.session_root, 'SESSION_ROOT_MISMATCH');
+    const sessionRootPayload = snapshot.session_root_payload ?? without(snapshot, 'session_root');
+    check(rootHash(sessionRootPayload) === snapshot.session_root, 'SESSION_ROOT_MISMATCH');
   }
   return { valid: errors.length === 0, errors, session_root: snapshot?.session_root ?? null };
 }

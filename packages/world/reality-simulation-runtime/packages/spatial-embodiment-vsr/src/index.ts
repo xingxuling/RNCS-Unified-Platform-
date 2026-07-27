@@ -109,6 +109,10 @@ export function spatialEmbodimentSnapshotToVSRScene(snapshot: SpatialEmbodimentS
   return scene;
 }
 
+export function spatialEmbodimentSceneRoot(scene: VSRSpatialScene3D): string {
+  return semanticHash(scene);
+}
+
 export function projectSpatialEmbodiment(snapshot: SpatialEmbodimentSnapshot, options: SpatialEmbodimentProjectionOptions = {}): SpatialEmbodimentProjectionResult {
   const scene = spatialEmbodimentSnapshotToVSRScene(snapshot, options);
   const rendered = renderSpatialReference(scene, { width: options.width ?? 960, height: options.height ?? 540, qualityTier: options.qualityTier ?? 'balanced', enableShadows: true });
