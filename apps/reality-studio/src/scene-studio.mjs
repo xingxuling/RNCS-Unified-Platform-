@@ -216,6 +216,7 @@ export function createSceneProjection(project,behaviorInspection,{observer='play
       transform:{...deep(n.transform),x:nav?.x??runtimeEntity?.x??n.transform.x,y:nav?.y??runtimeEntity?.y??n.transform.y},
       visible:n.visible!==false,
       runtime:{health:runtimeEntity?.health,open:runtimeEntity?.open,collected:runtimeEntity?.collected,has_key:runtimeEntity?.has_key,navigation:nav?deep(nav):undefined},
+      entity_id:entityId,
       debug:observer==='debugger'?{entity_id:entityId,components:deep(n.components),binding:n.behavior_binding}:undefined
     };
   }).sort((a,b)=>a.z_index-b.z_index||a.node_id.localeCompare(b.node_id));

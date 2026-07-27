@@ -5,6 +5,7 @@ const out=fs.mkdtempSync(path.join(os.tmpdir(),'reality-targets-'));const built=
 test('Web Release 有入口',()=>assert.ok(fs.existsSync(path.join(out,'web-release','index.html'))));
 test('Web Release 有运行时',()=>assert.ok(fs.existsSync(path.join(out,'web-release','runtime.js'))));
 test('Web Release 有 VSR WebGPU 运行时',()=>{assert.ok(fs.existsSync(path.join(out,'web-release','vsr-runtime.js')));assert.match(fs.readFileSync(path.join(out,'web-release','vsr-runtime.js'),'utf8'),/VSRRealtimeWebGPUExecutor/)});
+test('Web Release 有 RSR 空间运行时',()=>{assert.ok(fs.existsSync(path.join(out,'web-release','rsr-runtime.js')));assert.match(fs.readFileSync(path.join(out,'web-release','rsr-runtime.js'),'utf8'),/SpatialEmbodimentWorld/)});
 test('Web Release 有 Service Worker',()=>assert.ok(fs.existsSync(path.join(out,'web-release','service-worker.js'))));
 test('Web Release 有 PWA 清单',()=>assert.ok(fs.existsSync(path.join(out,'web-release','manifest.webmanifest'))));
 test('Web Release 有本地启动器',()=>assert.ok(fs.existsSync(path.join(out,'web-release','启动本地预览.bat'))));

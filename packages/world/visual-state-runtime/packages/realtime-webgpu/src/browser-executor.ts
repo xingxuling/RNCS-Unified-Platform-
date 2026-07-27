@@ -51,6 +51,7 @@ export interface VSRRealtimeGPUFramePlan {
   lights: VSRGPULightRecord[]; lightData: Float32Array; tileData: Uint32Array;
   tileSize: number; tilesX: number; tilesY: number; particleSeeds: VSRGPUParticleSeed[];
   particleData: Float32Array; passes: VSRGPUExecutionPass[];
+  dynamicBindings: VSRGPUDynamicNodeBinding[]; dynamicLightBindings: VSRGPUDynamicLightBinding[];
   shaders: { id: string; stage: 'vertex-fragment' | 'compute'; source: string; sourceRoot: string }[];
   stats: VSRRealtimeGPUStats; resourceRoot: string; commandRoot: string; framePlanRoot: string;
 }
@@ -62,11 +63,20 @@ export interface VSRSerializedRealtimeGPUFrame {
   vertex_data: number[]; light_data: number[]; tile_data: number[]; particle_data: number[];
   drawPackets: VSRGPUDrawPacket[]; lights: VSRGPULightRecord[]; tileSize: number; tilesX: number; tilesY: number;
   particleSeeds: VSRGPUParticleSeed[]; passes: VSRGPUExecutionPass[];
+  dynamicBindings: VSRGPUDynamicNodeBinding[]; dynamicLightBindings: VSRGPUDynamicLightBinding[];
   shaders: VSRRealtimeGPUFramePlan['shaders']; stats: VSRRealtimeGPUStats;
   resourceRoot: string; commandRoot: string; framePlanRoot: string; transport_format?: string;
 }
 export type VSRRealtimeGPUFrameInput = VSRRealtimeGPUFramePlan | VSRSerializedRealtimeGPUFrame;
 export interface VSRRealtimeGPUPlanVerification { ok: boolean; diagnostics: string[] }
+export interface VSRGPUDynamicNodeBinding {
+  nodeId: string; entityId: string; firstVertex: number; vertexCount: number; baseX: number; baseY: number;
+}
+export interface VSRGPUDynamicLightBinding { lightId: string; entityId: string; offsetX?: number; offsetY?: number }
+export interface VSRRealtimeGPUEntityState { variables?: Record<string, unknown>; active?: boolean; alive?: boolean }
+export interface VSRRealtimeGPUFrameRuntimeState {
+  tick: number; stateRoot: string; entities: Record<string, VSRRealtimeGPUEntityState>;
+}
 export interface VSRRealtimeGPUFrameReceipt {
   format: 'vsr.realtime-webgpu-frame-receipt.v0.3'; version: string;
   mode: VSRGPUExecutionMode; frameIndex: number; sourceDisplayHash: string;
@@ -233,13 +243,44 @@ export function verifyRealtimeWebGPUFrame(plan: VSRRealtimeGPUFramePlan): VSRRea
   for (const packet of plan.drawPackets) if (packet.firstVertex < 0 || packet.vertexCount < 0 || packet.firstVertex + packet.vertexCount > plan.vertexData.length / SOURCE_VERTEX_STRIDE) diagnostics.push(`draw-range:${packet.id}`);
   const passIds = new Set(plan.passes.map(pass => pass.id));
   for (const pass of plan.passes) for (const dependency of pass.dependsOn) if (!passIds.has(dependency)) diagnostics.push(`missing-pass:${pass.id}:${dependency}`);
-  const resourceRoot = cryptographicHash({ atlasRoot: plan.atlas.atlasRoot, vertexRoot: bytesRoot(plan.vertexData), lightRoot: bytesRoot(plan.lightData), tileRoot: bytesRoot(plan.tileData), particleRoot: bytesRoot(plan.particleData) });
+  const resourceRoot = frameResourceRoot(plan);
   if (resourceRoot !== plan.resourceRoot) diagnostics.push('resource-root-mismatch');
   const commandRoot = cryptographicHash({ drawPackets: plan.drawPackets, passes: plan.passes, shaders: plan.shaders.map(({ id, stage, sourceRoot }) => ({ id, stage, sourceRoot })) });
   if (commandRoot !== plan.commandRoot) diagnostics.push('command-root-mismatch');
-  const base = { format: plan.format, version: plan.version, sourceDisplayHash: plan.sourceDisplayHash, visualPlanRoot: plan.visualPlanRoot, visualEvidenceRoot: plan.visualEvidenceRoot, viewport: plan.viewport, quality: plan.quality, atlas: { width: plan.atlas.width, height: plan.atlas.height, padding: plan.atlas.padding, regions: plan.atlas.regions, atlasRoot: plan.atlas.atlasRoot }, drawPackets: plan.drawPackets, lights: plan.lights, tileSize: plan.tileSize, tilesX: plan.tilesX, tilesY: plan.tilesY, particleSeeds: plan.particleSeeds, passes: plan.passes, shaders: plan.shaders, stats: plan.stats, resourceRoot: plan.resourceRoot, commandRoot: plan.commandRoot };
+  const base = framePlanBase(plan);
   if (cryptographicHash(base) !== plan.framePlanRoot) diagnostics.push('frame-plan-root-mismatch');
   return { ok: diagnostics.length === 0, diagnostics };
+}
+
+function frameResourceRoot(plan: VSRRealtimeGPUFramePlan, vertexData = plan.vertexData, lightData = plan.lightData): string {
+  return cryptographicHash({ atlasRoot: plan.atlas.atlasRoot, vertexRoot: bytesRoot(vertexData), lightRoot: bytesRoot(lightData), tileRoot: bytesRoot(plan.tileData), particleRoot: bytesRoot(plan.particleData) });
+}
+
+function framePlanBase(plan: VSRRealtimeGPUFramePlan): Record<string, unknown> {
+  return { format: plan.format, version: plan.version, sourceDisplayHash: plan.sourceDisplayHash, visualPlanRoot: plan.visualPlanRoot, visualEvidenceRoot: plan.visualEvidenceRoot, viewport: plan.viewport, quality: plan.quality, atlas: { width: plan.atlas.width, height: plan.atlas.height, padding: plan.atlas.padding, regions: plan.atlas.regions, atlasRoot: plan.atlas.atlasRoot }, drawPackets: plan.drawPackets, lights: plan.lights, tileSize: plan.tileSize, tilesX: plan.tilesX, tilesY: plan.tilesY, particleSeeds: plan.particleSeeds, passes: plan.passes, dynamicBindings: plan.dynamicBindings, dynamicLightBindings: plan.dynamicLightBindings, shaders: plan.shaders, stats: plan.stats, resourceRoot: plan.resourceRoot, commandRoot: plan.commandRoot };
+}
+
+export function createRealtimeWebGPUFrame(input: VSRRealtimeGPUFrameInput, state: VSRRealtimeGPUFrameRuntimeState): VSRRealtimeGPUFramePlan {
+  const plan = normalizeRealtimeWebGPUFrame(input), vertexData = new Float32Array(plan.vertexData), lights = plan.lights.map(light => ({ ...light })), lightData = new Float32Array(plan.lightData);
+  for (const binding of plan.dynamicBindings) {
+    const entity = state.entities[binding.entityId], variables = entity?.variables ?? {}, x = Number(variables.x), y = Number(variables.y);
+    if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
+    const dx = (x - binding.baseX) * 2 / plan.viewport.width, dy = -(y - binding.baseY) * 2 / plan.viewport.height;
+    const visible = entity?.active !== false && entity?.alive !== false && variables.collected !== true;
+    for (let vertex = binding.firstVertex; vertex < binding.firstVertex + binding.vertexCount; vertex++) {
+      const base = vertex * SOURCE_VERTEX_STRIDE;
+      vertexData[base] = (vertexData[base] ?? 0) + dx; vertexData[base + 1] = (vertexData[base + 1] ?? 0) + dy;
+      if (!visible) vertexData[base + 7] = 0;
+    }
+  }
+  for (const binding of plan.dynamicLightBindings) {
+    const index = lights.findIndex(light => light.id === binding.lightId), variables = state.entities[binding.entityId]?.variables ?? {}, x = Number(variables.x), y = Number(variables.y);
+    if (index < 0 || !Number.isFinite(x) || !Number.isFinite(y)) continue;
+    const nextX = x + Number(binding.offsetX ?? 0), nextY = y + Number(binding.offsetY ?? 0), light = lights[index]!;
+    lights[index] = { ...light, x: nextX, y: nextY }; const base = index * 12; lightData[base + 1] = nextX; lightData[base + 2] = nextY;
+  }
+  const next = { ...plan, sourceDisplayHash: state.stateRoot || plan.sourceDisplayHash, lights, vertexData, lightData, resourceRoot: frameResourceRoot(plan, vertexData, lightData) };
+  return { ...next, framePlanRoot: cryptographicHash(framePlanBase(next)) };
 }
 
 export function probeRealtimeWebGPU(): VSRRealtimeWebGPUCapabilities {

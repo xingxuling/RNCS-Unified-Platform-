@@ -44,6 +44,7 @@ export function buildRuntimeEvidence({project,request,identity}={}){
   const runtimeProject=portableProject(project);
   const session=new UnifiedManufacturingSession(runtimeProject,{sessionId:`build-runtime:${identity.build_id}`});
   const initialCheckpoint=session.createRuntimeCheckpoint('build-initial').runtime_checkpoint;
+  const initialArtifacts=session.exportArtifacts();
   for(const input of trace)session.step(input);
   const spatial=runSpatialTrace(session,spatialTrace);
   const spatialReplaySession=new UnifiedManufacturingSession(runtimeProject,{sessionId:`build-spatial-replay:${identity.build_id}`});
@@ -51,7 +52,7 @@ export function buildRuntimeEvidence({project,request,identity}={}){
   const spatialChecks=spatial.frames.map((frame,index)=>({sequence:frame.sequence,expected_state_root:frame.state_root,actual_state_root:spatialReplay.frames[index]?.state_root??null,match:frame.state_root===spatialReplay.frames[index]?.state_root}));
   const spatialDeterministic=spatial.final_state_root===spatialReplay.final_state_root&&spatialChecks.every(check=>check.match);
   const artifacts=session.exportArtifacts();
-  const gpuFramePlan=artifacts.gpu_frame_plan??null,gpuFrameSummary=artifacts.gpu_frame_summary??null,gpuViewportManifest=artifacts.gpu_viewport_manifest??null;
+  const gpuFramePlan=initialArtifacts.gpu_frame_plan??null,gpuFrameSummary=initialArtifacts.gpu_frame_summary??null,gpuViewportManifest=initialArtifacts.gpu_viewport_manifest??null;
   if(!gpuFramePlan||!gpuFrameSummary||!gpuViewportManifest)throw new Error('GPU_RUNTIME_EVIDENCE_MISSING');
   const evidence=seal({
     format:RUNTIME_EVIDENCE_FORMAT,

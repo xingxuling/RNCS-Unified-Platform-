@@ -3,7 +3,7 @@
   "$id": "https://taowind.dev/schemas/vsr-realtime-webgpu-frame.v0.3.schema.json",
   "title": "VSR Realtime WebGPU Frame Plan v0.3",
   "type": "object",
-  "required": ["format", "version", "sourceDisplayHash", "visualPlanRoot", "viewport", "stats", "resourceRoot", "commandRoot", "framePlanRoot"],
+  "required": ["format", "version", "sourceDisplayHash", "visualPlanRoot", "viewport", "stats", "resourceRoot", "commandRoot", "framePlanRoot", "dynamicBindings", "dynamicLightBindings"],
   "properties": {
     "format": {"const": "vsr.realtime-webgpu-frame.v0.3"},
     "version": {"type": "string"},
@@ -15,7 +15,35 @@
     "stats": {"type": "object"},
     "resourceRoot": {"type": "string"},
     "commandRoot": {"type": "string"},
-    "framePlanRoot": {"type": "string"}
+    "framePlanRoot": {"type": "string"},
+    "dynamicBindings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["nodeId", "entityId", "firstVertex", "vertexCount", "baseX", "baseY"],
+        "properties": {
+          "nodeId": {"type": "string"},
+          "entityId": {"type": "string"},
+          "firstVertex": {"type": "integer", "minimum": 0},
+          "vertexCount": {"type": "integer", "minimum": 0},
+          "baseX": {"type": "number"},
+          "baseY": {"type": "number"}
+        }
+      }
+    },
+    "dynamicLightBindings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["lightId", "entityId"],
+        "properties": {
+          "lightId": {"type": "string"},
+          "entityId": {"type": "string"},
+          "offsetX": {"type": "number"},
+          "offsetY": {"type": "number"}
+        }
+      }
+    }
   },
   "additionalProperties": true
 }

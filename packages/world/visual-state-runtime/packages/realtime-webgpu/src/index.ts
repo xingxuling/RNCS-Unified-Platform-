@@ -47,6 +47,7 @@ export interface VSRRealtimeGPUFramePlan {
   quality:string;atlas:VSRGPUTextureAtlasPlan;vertexData:Float32Array;drawPackets:VSRGPUDrawPacket[];
   lights:VSRGPULightRecord[];lightData:Float32Array;tileData:Uint32Array;tileSize:number;tilesX:number;tilesY:number;
   particleSeeds:VSRGPUParticleSeed[];particleData:Float32Array;passes:VSRGPUExecutionPass[];
+  dynamicBindings:VSRGPUDynamicNodeBinding[];dynamicLightBindings:VSRGPUDynamicLightBinding[];
   shaders:{id:string;stage:'vertex-fragment'|'compute';source:string;sourceRoot:string}[];
   stats:VSRRealtimeGPUStats;resourceRoot:string;commandRoot:string;framePlanRoot:string;
 }
@@ -58,7 +59,13 @@ export interface VSRRealtimeGPUFrameReceipt {
   compileMs:number;uploadMs:number;encodeMs:number;submitMs:number;receiptRoot:string;
 }
 export interface VSRRealtimeGPUCompilerOptions {
-  atlasMaxSize?:number;atlasPadding?:number;particleLimit?:number;
+  atlasMaxSize?:number;atlasPadding?:number;particleLimit?:number;dynamicLightBindings?:VSRGPUDynamicLightBinding[];
+}
+export interface VSRGPUDynamicNodeBinding {
+  nodeId:string;entityId:string;firstVertex:number;vertexCount:number;baseX:number;baseY:number;
+}
+export interface VSRGPUDynamicLightBinding {
+  lightId:string;entityId:string;offsetX?:number;offsetY?:number;
 }
 export interface VSRRealtimeWebGPUExecutorOptions {
   powerPreference?:'low-power'|'high-performance';requiredFeatures?:string[];alphaMode?:'opaque'|'premultiplied';
@@ -147,8 +154,20 @@ struct Out{@builtin(position) position:vec4f,@location(0) uv:vec2f};
 fn tone(v:vec3f)->vec3f{let x=v*exp2(frame.exposure);return clamp((x*(2.51*x+vec3f(0.03)))/(x*(2.43*x+vec3f(0.59))+vec3f(0.14)),vec3f(0.0),vec3f(1.0));}
 @fragment fn fs_full(in:Out)->@location(0) vec4f{let texel=1.0/frame.resolution;var base=textureSample(sceneTex,sceneSampler,in.uv);var glow=vec3f(0.0);for(var y=-1;y<=1;y++){for(var x=-1;x<=1;x++){let c=textureSample(sceneTex,sceneSampler,in.uv+vec2f(f32(x),f32(y))*texel*2.0).rgb;let lum=dot(c,vec3f(0.2126,0.7152,0.0722));glow+=c*max(0.0,lum-0.65);}}glow/=9.0;var rgb=tone(base.rgb+glow*frame.bloom);let d=distance(in.uv,vec2f(0.5))*1.414;rgb*=1.0-frame.vignette*smoothstep(0.45,1.0,d);return vec4f(pow(rgb,vec3f(1.0/2.2)),base.a);}`;
 
+function compileDynamicBindings(state:VSRDisplayState,commands:VSRWebGPUDrawCommand[]):VSRGPUDynamicNodeBinding[]{
+  const items=new Map(state.items.flatMap(item=>[[item.nodeId,item],[item.id,item]] as Array<[string,typeof item]>));
+  return commands.flatMap(command=>{
+    const item=items.get(command.nodeId),trace=item?.sourceTrace,entityId=trace?.entity_id;
+    if(!entityId)return[];
+    const baseX=Number(trace?.base_x),baseY=Number(trace?.base_y);
+    if(!Number.isFinite(baseX)||!Number.isFinite(baseY))return[];
+    return[{nodeId:command.nodeId,entityId,firstVertex:command.firstVertex,vertexCount:command.vertexCount,baseX,baseY}];
+  });
+}
+
 export function compileRealtimeWebGPUFrame(state:VSRDisplayState,config:VSRVisualRealityConfig={},resources?:VSRRasterResourceInput,options:VSRRealtimeGPUCompilerOptions={}):VSRRealtimeGPUFramePlan{
   const visual=compileVisualRealityPlan(state,config,resources),atlas=packWebGPUTextureAtlas(visual.webgpuPlan.textures,options),vertexData=remapVertexData(visual,atlas),drawPackets=mergeDrawPackets(visual.webgpuPlan.commands),compiledLights=compileLights(visual),tiles=compileTiles(visual,compiledLights.lights),particles=compileParticles(state,Math.max(0,Math.floor(options.particleLimit??visual.budget.particleBudget)));
+  const dynamicBindings=compileDynamicBindings(state,visual.webgpuPlan.commands),dynamicLightBindings=options.dynamicLightBindings??[];
   const passes:VSRGPUExecutionPass[]=[
     {id:'upload',kind:'upload',enabled:true,dependsOn:[]},
     {id:'light-cull',kind:'light-cull',enabled:compiledLights.lights.length>0,dependsOn:['upload'],reason:compiledLights.lights.length?'':'no-lights'},
@@ -161,7 +180,7 @@ export function compileRealtimeWebGPUFrame(state:VSRDisplayState,config:VSRVisua
   const shaders=[{id:'scene-v03',stage:'vertex-fragment' as const,source:VSR_SCENE_SHADER_V03,sourceRoot:cryptographicHash(VSR_SCENE_SHADER_V03)},{id:'light-cull-v03',stage:'compute' as const,source:VSR_LIGHT_CULL_SHADER_V03,sourceRoot:cryptographicHash(VSR_LIGHT_CULL_SHADER_V03)},{id:'particle-compute-v03',stage:'compute' as const,source:VSR_PARTICLE_COMPUTE_SHADER_V03,sourceRoot:cryptographicHash(VSR_PARTICLE_COMPUTE_SHADER_V03)},{id:'particle-render-v03',stage:'vertex-fragment' as const,source:VSR_PARTICLE_RENDER_SHADER_V03,sourceRoot:cryptographicHash(VSR_PARTICLE_RENDER_SHADER_V03)},{id:'post-v03',stage:'vertex-fragment' as const,source:VSR_POST_SHADER_V03,sourceRoot:cryptographicHash(VSR_POST_SHADER_V03)}];
   const stats:VSRRealtimeGPUStats={sourceCommands:visual.webgpuPlan.commands.length,drawPackets:drawPackets.length,vertices:vertexData.length/SOURCE_VERTEX_STRIDE,atlasTextures:atlas.regions.length,atlasBytes:atlas.data.byteLength,lights:compiledLights.lights.length,lightTiles:tiles.tilesX*tiles.tilesY,particleSeeds:particles.seeds.length,enabledPasses:passes.filter(pass=>pass.enabled).length,estimatedDrawCalls:drawPackets.length+(particles.seeds.length?1:0)+1};
   const resourceRoot=cryptographicHash({atlasRoot:atlas.atlasRoot,vertexRoot:bytesRoot(vertexData),lightRoot:bytesRoot(compiledLights.data),tileRoot:bytesRoot(tiles.data),particleRoot:bytesRoot(particles.data)}),commandRoot=cryptographicHash({drawPackets,passes,shaders:shaders.map(({id,stage,sourceRoot})=>({id,stage,sourceRoot}))});
-  const base={format:VSR_REALTIME_WEBGPU_FORMAT,version:VSR_REALTIME_WEBGPU_VERSION,sourceDisplayHash:state.semanticHash,visualPlanRoot:visual.planRoot,visualEvidenceRoot:visual.evidenceRoot,viewport:{width:state.viewport.width,height:state.viewport.height,renderWidth:visual.viewport.renderWidth,renderHeight:visual.viewport.renderHeight,dpr:state.viewport.dpr},quality:visual.budget.quality,atlas:{width:atlas.width,height:atlas.height,padding:atlas.padding,regions:atlas.regions,atlasRoot:atlas.atlasRoot},drawPackets,lights:compiledLights.lights,tileSize:visual.budget.lightTileSize,tilesX:tiles.tilesX,tilesY:tiles.tilesY,particleSeeds:particles.seeds,passes,shaders,stats,resourceRoot,commandRoot};
+  const base={format:VSR_REALTIME_WEBGPU_FORMAT,version:VSR_REALTIME_WEBGPU_VERSION,sourceDisplayHash:state.semanticHash,visualPlanRoot:visual.planRoot,visualEvidenceRoot:visual.evidenceRoot,viewport:{width:state.viewport.width,height:state.viewport.height,renderWidth:visual.viewport.renderWidth,renderHeight:visual.viewport.renderHeight,dpr:state.viewport.dpr},quality:visual.budget.quality,atlas:{width:atlas.width,height:atlas.height,padding:atlas.padding,regions:atlas.regions,atlasRoot:atlas.atlasRoot},drawPackets,lights:compiledLights.lights,tileSize:visual.budget.lightTileSize,tilesX:tiles.tilesX,tilesY:tiles.tilesY,particleSeeds:particles.seeds,passes,dynamicBindings,dynamicLightBindings,shaders,stats,resourceRoot,commandRoot};
   const framePlanRoot=cryptographicHash(base);return{...base,atlas,vertexData,lightData:compiledLights.data,tileData:tiles.data,particleData:particles.data,framePlanRoot};
 }
 
@@ -170,7 +189,7 @@ export function verifyRealtimeWebGPUFrame(plan:VSRRealtimeGPUFramePlan):VSRRealt
   for(const packet of plan.drawPackets){if(packet.firstVertex<0||packet.vertexCount<0||packet.firstVertex+packet.vertexCount>plan.vertexData.length/SOURCE_VERTEX_STRIDE)diagnostics.push(`draw-range:${packet.id}`);}
   const passIds=new Set(plan.passes.map(pass=>pass.id));for(const pass of plan.passes)for(const dependency of pass.dependsOn)if(!passIds.has(dependency))diagnostics.push(`missing-pass:${pass.id}:${dependency}`);
   const resourceRoot=cryptographicHash({atlasRoot:plan.atlas.atlasRoot,vertexRoot:bytesRoot(plan.vertexData),lightRoot:bytesRoot(plan.lightData),tileRoot:bytesRoot(plan.tileData),particleRoot:bytesRoot(plan.particleData)});if(resourceRoot!==plan.resourceRoot)diagnostics.push('resource-root-mismatch');const commandRoot=cryptographicHash({drawPackets:plan.drawPackets,passes:plan.passes,shaders:plan.shaders.map(({id,stage,sourceRoot})=>({id,stage,sourceRoot}))});if(commandRoot!==plan.commandRoot)diagnostics.push('command-root-mismatch');
-  const base={format:plan.format,version:plan.version,sourceDisplayHash:plan.sourceDisplayHash,visualPlanRoot:plan.visualPlanRoot,visualEvidenceRoot:plan.visualEvidenceRoot,viewport:plan.viewport,quality:plan.quality,atlas:{width:plan.atlas.width,height:plan.atlas.height,padding:plan.atlas.padding,regions:plan.atlas.regions,atlasRoot:plan.atlas.atlasRoot},drawPackets:plan.drawPackets,lights:plan.lights,tileSize:plan.tileSize,tilesX:plan.tilesX,tilesY:plan.tilesY,particleSeeds:plan.particleSeeds,passes:plan.passes,shaders:plan.shaders,stats:plan.stats,resourceRoot:plan.resourceRoot,commandRoot:plan.commandRoot};if(cryptographicHash(base)!==plan.framePlanRoot)diagnostics.push('frame-plan-root-mismatch');return{ok:diagnostics.length===0,diagnostics};
+  const base={format:plan.format,version:plan.version,sourceDisplayHash:plan.sourceDisplayHash,visualPlanRoot:plan.visualPlanRoot,visualEvidenceRoot:plan.visualEvidenceRoot,viewport:plan.viewport,quality:plan.quality,atlas:{width:plan.atlas.width,height:plan.atlas.height,padding:plan.atlas.padding,regions:plan.atlas.regions,atlasRoot:plan.atlas.atlasRoot},drawPackets:plan.drawPackets,lights:plan.lights,tileSize:plan.tileSize,tilesX:plan.tilesX,tilesY:plan.tilesY,particleSeeds:plan.particleSeeds,passes:plan.passes,dynamicBindings:plan.dynamicBindings,dynamicLightBindings:plan.dynamicLightBindings,shaders:plan.shaders,stats:plan.stats,resourceRoot:plan.resourceRoot,commandRoot:plan.commandRoot};if(cryptographicHash(base)!==plan.framePlanRoot)diagnostics.push('frame-plan-root-mismatch');return{ok:diagnostics.length===0,diagnostics};
 }
 
 export function probeRealtimeWebGPU():VSRRealtimeWebGPUCapabilities{

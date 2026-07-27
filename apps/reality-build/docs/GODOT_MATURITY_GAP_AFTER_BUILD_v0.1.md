@@ -18,7 +18,7 @@
 
 1. Windows、Linux、macOS 原生运行时和可执行文件；
 2. Android/iOS 自动工具链、签名和商店发布；
-3. 完整 GPU 编辑器/运行时闭环：VSR WebGPU 已接入 Web、单文件、Windows Portable 和嵌入式 Android HTML，并保留 Canvas 回退；动态客户端重编译、浏览器 RSR 权威物理和 3D GPU 运行时仍缺失；
+3. 完整 GPU 编辑器/运行时闭环：VSR WebGPU 已接入 Web、单文件、Windows Portable 和嵌入式 Android HTML，并保留 Canvas 回退；动态实体/灯光 buffer 与 2D 浏览器 RSR 桥接已按行为 Tick 接入，完整 3D RSR/GPU 运行时、原生渲染和真实硬件矩阵仍缺失；
 4. 完整输入、窗口、UI、本地化和无障碍；
 5. 导航、网络、3D、插件和包管理；
 6. Profiler、崩溃报告、增量补丁；
@@ -35,4 +35,4 @@
 
 这些数字是子系统覆盖估算，不是性能跑分。
 
-下一项最值得开发的是 **动态 VSR + RSR 浏览器运行时**：让 Behavior/空间状态变化直接进入 GPU frame，并把当前 headless 的 RSR 权威步进收敛到浏览器或原生客户端；同时补齐 3D GPU、设备矩阵和移动正式签名。
+下一项最值得开发的是 **3D RSR/GPU 与设备发布闭环**：在现有动态 VSR + 2D 浏览器 RSR 桥接上继续接入 3D 场景、原生渲染、设备矩阵和移动正式签名。
