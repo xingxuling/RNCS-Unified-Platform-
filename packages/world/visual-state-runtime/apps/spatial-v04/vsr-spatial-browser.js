@@ -49,10 +49,12 @@ var VSRSpatial3D = (() => {
     createUVSphereMesh: () => createUVSphereMesh,
     distributionGGX: () => distributionGGX,
     evaluatePBRLighting: () => evaluatePBRLighting,
+    evaluateSpatialWebGPUCapabilities: () => evaluateSpatialWebGPUCapabilities,
     fresnelSchlick: () => fresnelSchlick,
     geometrySchlickGGX: () => geometrySchlickGGX,
     geometrySmith: () => geometrySmith,
     identityMat4: () => identityMat4,
+    inspectSpatialWebGPU: () => inspectSpatialWebGPU,
     lookAtMat4: () => lookAtMat4,
     meshBounds: () => meshBounds,
     multiplyMat4: () => multiplyMat4,
@@ -1734,9 +1736,57 @@ fn visible(centerRadius:vec4<f32>)->bool{let clip=camera.viewProjection*vec4<f32
     out.set([environment.textureId ? 1 : 0, 0, 0, 0], 40);
     return out;
   }
+  function spatialAdapterName(adapter) {
+    const name = adapter?.info?.description ?? adapter?.info?.device ?? adapter?.name;
+    return name === void 0 ? void 0 : String(name);
+  }
+  function spatialFeatureList(adapter) {
+    const features = adapter?.features;
+    if (!features) return [];
+    return Array.from(features).map(String).sort();
+  }
+  function spatialLimitRecord(limits) {
+    const result = {};
+    if (!limits) return result;
+    const keys = typeof limits.keys === "function" ? Array.from(limits.keys()).map(String) : Object.keys(limits);
+    for (const key of keys) {
+      const value = Number(typeof limits.get === "function" ? limits.get(key) : limits[key]);
+      if (Number.isFinite(value)) result[key] = value;
+    }
+    return result;
+  }
+  function evaluateSpatialWebGPUCapabilities(adapter, requirements = {}, secureContext = true, reason) {
+    const features = spatialFeatureList(adapter), limits = spatialLimitRecord(adapter?.limits), requiredFeatures = Array.from(new Set(requirements.requiredFeatures ?? [])).map(String).sort(), requiredLimits = {};
+    for (const [key, value] of Object.entries(requirements.requiredLimits ?? {}).sort(([a], [b]) => a.localeCompare(b))) {
+      const numberValue = Number(value);
+      if (Number.isFinite(numberValue) && numberValue >= 0) requiredLimits[key] = numberValue;
+    }
+    const missingFeatures = requiredFeatures.filter((feature) => !features.includes(feature)), missingLimits = {};
+    for (const [key, required] of Object.entries(requiredLimits)) {
+      const available = limits[key];
+      if (available === void 0 || available < required) missingLimits[key] = available === void 0 ? { required } : { required, available };
+    }
+    const reasons = [];
+    if (!adapter) reasons.push(reason ?? "adapter unavailable");
+    if (!secureContext) reasons.push("insecure context");
+    if (missingFeatures.length) reasons.push(`missing features: ${missingFeatures.join(",")}`);
+    const limitNames = Object.keys(missingLimits);
+    if (limitNames.length) reasons.push(`missing limits: ${limitNames.join(",")}`);
+    return { format: "vsr.spatial-webgpu-capabilities.v0.4", available: Boolean(adapter) && secureContext && !missingFeatures.length && !limitNames.length, secureContext, adapterName: spatialAdapterName(adapter), features, limits, requiredFeatures, requiredLimits, missingFeatures, missingLimits, reason: reasons.length ? reasons.join("; ") : void 0 };
+  }
   function probeSpatialWebGPU() {
     const secure = typeof window === "undefined" || window.isSecureContext, nav = typeof navigator === "undefined" ? {} : navigator;
-    return nav.gpu ? { format: "vsr.spatial-webgpu-capabilities.v0.4", available: true, secureContext: secure } : { format: "vsr.spatial-webgpu-capabilities.v0.4", available: false, secureContext: secure, reason: "navigator.gpu unavailable" };
+    return { format: "vsr.spatial-webgpu-capabilities.v0.4", available: Boolean(nav.gpu) && secure, secureContext: secure, features: [], limits: {}, requiredFeatures: [], requiredLimits: {}, missingFeatures: [], missingLimits: {}, reason: nav.gpu ? secure ? void 0 : "insecure context" : "navigator.gpu unavailable" };
+  }
+  async function inspectSpatialWebGPU(options = {}) {
+    const secure = typeof window === "undefined" || window.isSecureContext, nav = typeof navigator === "undefined" ? {} : navigator;
+    if (!nav.gpu) return evaluateSpatialWebGPUCapabilities(void 0, options, secure, "navigator.gpu unavailable");
+    try {
+      const adapter = await nav.gpu.requestAdapter({ powerPreference: options.powerPreference ?? "high-performance" });
+      return evaluateSpatialWebGPUCapabilities(adapter, options, secure, "adapter unavailable");
+    } catch (error) {
+      return evaluateSpatialWebGPUCapabilities(void 0, options, secure, `requestAdapter failed: ${error instanceof Error ? error.message : String(error)}`);
+    }
   }
   var GPU_BUFFER_USAGE = { COPY_DST: 8, INDEX: 16, VERTEX: 32, UNIFORM: 64, STORAGE: 128, INDIRECT: 256 };
   var GPU_SHADER_STAGE = { COMPUTE: 4 };
@@ -1759,6 +1809,7 @@ fn visible(centerRadius:vec4<f32>)->bool{let clip=camera.viewProjection*vec4<f32
     shadowSampler;
     shadowUniformBuffer;
     lost = false;
+    lostReason;
     adapterName = "unknown";
     meshBuffers = /* @__PURE__ */ new Map();
     materialBuffers = /* @__PURE__ */ new Map();
@@ -1779,8 +1830,10 @@ fn visible(centerRadius:vec4<f32>)->bool{let clip=camera.viewProjection*vec4<f32
       this.context = context;
       this.format = format;
       this.adapterName = String(adapter?.info?.description ?? adapter?.name ?? "unknown");
-      void device.lost?.then?.(() => {
+      void device.lost?.then?.((info) => {
         this.lost = true;
+        const detail = info?.message ?? info?.reason;
+        if (detail) this.lostReason = String(detail);
       });
     }
     static fromDevice(canvas, adapter, device, context, format) {
@@ -1789,9 +1842,11 @@ fn visible(centerRadius:vec4<f32>)->bool{let clip=camera.viewProjection*vec4<f32
     static async create(canvas, options = {}) {
       const nav = navigator;
       if (!nav.gpu) throw new Error("WebGPU unavailable: navigator.gpu is missing.");
-      const adapter = await nav.gpu.requestAdapter({ powerPreference: options.powerPreference ?? "high-performance" });
+      const secure = typeof window === "undefined" || window.isSecureContext, adapter = await nav.gpu.requestAdapter({ powerPreference: options.powerPreference ?? "high-performance" });
       if (!adapter) throw new Error("WebGPU adapter unavailable.");
-      const device = await adapter.requestDevice(), context = canvas.getContext("webgpu");
+      const capabilities = evaluateSpatialWebGPUCapabilities(adapter, options, secure);
+      if (!capabilities.available) throw new Error(`WebGPU requirements unavailable: ${capabilities.reason ?? "unknown capability mismatch"}`);
+      const device = await adapter.requestDevice({ requiredFeatures: options.requiredFeatures ?? [], requiredLimits: options.requiredLimits ?? {} }), context = canvas.getContext("webgpu");
       if (!context) throw new Error("Unable to acquire webgpu canvas context.");
       const format = nav.gpu.getPreferredCanvasFormat();
       context.configure({ device, format, alphaMode: options.alphaMode ?? "opaque" });
@@ -1799,6 +1854,9 @@ fn visible(centerRadius:vec4<f32>)->bool{let clip=camera.viewProjection*vec4<f32
     }
     isLost() {
       return this.lost;
+    }
+    lossReason() {
+      return this.lostReason;
     }
     ensurePipeline() {
       if (this.pipeline) return this.pipeline;
@@ -2026,7 +2084,7 @@ ${VSR_SPATIAL_FRAGMENT_WGSL_V04}` });
       const commands = encoder.finish(), encodeMs = now() - encodeStart, submitStart = now();
       this.device.queue.submit([commands]);
       await this.device.queue.onSubmittedWorkDone?.();
-      const submitMs = now() - submitStart, base = { format: "vsr.spatial-webgpu-receipt.v0.4", frameRoot: plan.frameRoot, sceneId: scene.sceneId, adapterName: this.adapterName, drawCalls: plan.drawPackets.length, triangles: plan.stats.triangleCount, submitted: true, deviceLost: this.lost, compileMs, uploadMs, encodeMs, submitMs, materialTextureBindings: plan.stats.materialTextureBindings, shadowPasses: shadowCamera ? 1 : 0, visibleInstances: plan.stats.visibleInstances ?? plan.drawPackets.reduce((sum, packet) => sum + packetInstanceCount(packet), 0), instancedDraws: plan.stats.instancedDraws ?? plan.drawPackets.filter((packet) => packetInstanceCount(packet) > 1).length, gpuDrivenDraws: gpuDriven ? plan.drawPackets.length : 0, gpuDrivenShadowDraws: gpuDriven && shadowCamera ? shadowPackets.length : 0 };
+      const submitMs = now() - submitStart, base = { format: "vsr.spatial-webgpu-receipt.v0.4", frameRoot: plan.frameRoot, sceneId: scene.sceneId, adapterName: this.adapterName, drawCalls: plan.drawPackets.length, triangles: plan.stats.triangleCount, submitted: true, deviceLost: this.lost, ...this.lostReason ? { deviceLostReason: this.lostReason } : {}, compileMs, uploadMs, encodeMs, submitMs, materialTextureBindings: plan.stats.materialTextureBindings, shadowPasses: shadowCamera ? 1 : 0, visibleInstances: plan.stats.visibleInstances ?? plan.drawPackets.reduce((sum, packet) => sum + packetInstanceCount(packet), 0), instancedDraws: plan.stats.instancedDraws ?? plan.drawPackets.filter((packet) => packetInstanceCount(packet) > 1).length, gpuDrivenDraws: gpuDriven ? plan.drawPackets.length : 0, gpuDrivenShadowDraws: gpuDriven && shadowCamera ? shadowPackets.length : 0 };
       return { ...base, receiptRoot: cryptographicHash(base) };
     }
     destroy() {

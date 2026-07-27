@@ -36,6 +36,7 @@ import {
   packSpatialMorphBuffer,
   packSpatialObjectUniform,
   VSRSpatialWebGPUExecutor,
+  evaluateSpatialWebGPUCapabilities,
   packSpatialVertexBuffer,
   probeSpatialWebGPU,
   multiplyMat4,
@@ -129,6 +130,7 @@ test('WebGPU vertex and index packing include deformation channels',()=>{const m
 test('camera object and material uniforms have aligned deterministic sizes',()=>{const scene=minimalScene(),plan=compileSpatialFrame(scene),camera=packSpatialCameraUniform(plan),object=packSpatialObjectUniform(plan.drawPackets[0]!),material=packSpatialMaterialUniform(scene.materials[0]!);assert.equal(camera.byteLength,176);assert.equal(object.byteLength,64);assert.equal(material.byteLength,64);assert.deepEqual(camera,packSpatialCameraUniform(plan))});
 test('material uniform clamps metallic roughness and opacity safely',()=>{const packed=packSpatialMaterialUniform({id:'unsafe',baseColor:'#ffffff',metallic:4,roughness:-2,opacity:3});assert.equal(packed[4],1);assert.ok(Math.abs(packed[5]!-.04)<1e-6);assert.equal(packed[7],1)});
 test('spatial WebGPU probe is safe without navigator.gpu',()=>{const result=probeSpatialWebGPU();assert.equal(result.format,'vsr.spatial-webgpu-capabilities.v0.4');assert.equal(typeof result.available,'boolean')});
+test('spatial WebGPU capability validation seals adapter features and limits',()=>{const adapter={name:'fake-adapter',features:new Set(['timestamp-query','float32-filterable']),limits:{maxTextureDimension2D:4096,maxStorageBufferBindingSize:131072}},accepted=evaluateSpatialWebGPUCapabilities(adapter,{requiredFeatures:['timestamp-query'],requiredLimits:{maxTextureDimension2D:2048}},true),rejected=evaluateSpatialWebGPUCapabilities(adapter,{requiredFeatures:['bc-compressed-texture'],requiredLimits:{maxTextureDimension2D:8192}},true);assert.equal(accepted.available,true);assert.equal(accepted.adapterName,'fake-adapter');assert.deepEqual(accepted.missingFeatures,[]);assert.deepEqual(accepted.missingLimits,{});assert.equal(rejected.available,false);assert.deepEqual(rejected.missingFeatures,['bc-compressed-texture']);assert.deepEqual(rejected.missingLimits,{maxTextureDimension2D:{required:8192,available:4096}});assert.match(rejected.reason??'',/missing features/);assert.match(rejected.reason??'',/missing limits/) });
 test('spatial WebGPU receipt sealing detects tampering',()=>{const base={format:'vsr.spatial-webgpu-receipt.v0.4' as const,frameRoot:'a'.repeat(64),sceneId:'scene',adapterName:'test',drawCalls:1,triangles:12,submitted:true,deviceLost:false,compileMs:1,uploadMs:1,encodeMs:1,submitMs:1};const receipt={...base,receiptRoot:cryptographicHash(base)};assert.equal(verifySpatialWebGPUReceipt(receipt),true);receipt.drawCalls=2;assert.equal(verifySpatialWebGPUReceipt(receipt),false)});
 test('WebGPU executor encodes material texture bindings and a real shadow pass',async()=>{
   const calls:string[]=[],resource=(kind:string):any=>{const id=`${kind}:${calls.length}`;return{id,createView:()=>({id:`view:${id}`}),destroy:()=>calls.push(`destroy:${id}`)}};
