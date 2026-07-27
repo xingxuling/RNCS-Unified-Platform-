@@ -118,6 +118,7 @@
     "@taowind/living-artifact-format": "*",
     "@taowind/reality-simulation-runtime": "*",
     "@taowind/visual-state-runtime": "*",
-    "@taowind/reality-asset-genesis-fabric": "*"
+    "@taowind/reality-asset-genesis-fabric": "*",
+    "@taowind/reality-engine-session": "*"
   }
 }

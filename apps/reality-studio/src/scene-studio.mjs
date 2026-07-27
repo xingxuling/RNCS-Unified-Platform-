@@ -11,18 +11,42 @@ import {ASSET_CONTINUITY_VERSION,createLocalAssetRecord,createEmbeddedAssetRecor
 import {ASSET_DATABASE_FORMAT,ASSET_DATABASE_VERSION,createAssetDatabase} from './asset-database.mjs';
 import {SPATIAL_STUDIO_VERSION,createDefaultSpatialWorkspace,ensureSpatialWorkspace,sealSpatialWorkspace,validateSpatialWorkspace,SpatialStudioSession} from './spatial-studio.mjs';
 import {createNetworkAuthoring,validateNetworkAuthoring,compileNetworkWorld} from './network-world-compiler.mjs';
+import {createEngineProposalInput,createRealityEngineSession} from '@taowind/reality-engine-session';
 
 export const UNIFIED_FORMAT='reality-studio.unified-project.v0.9';
 export const UNIFIED_VERSION='0.9.0-alpha.1';
 export const STUDIO_VERSION='1.5.0-alpha.1';
 export const RUNTIME_TIMELINE_FORMAT='reality-studio.runtime-timeline.v1.0';
 export const RUNTIME_TIMELINE_VERSION='1.0.0-alpha.1';
+export const LIVE_UPDATE_FORMAT='reality-studio.live-update.v0.1';
+export const LIVE_UPDATE_VERSION='0.1.0-alpha.1';
 const sha256File=p=>createHash('sha256').update(fs.readFileSync(p)).digest('hex');
 const safeId=s=>String(s??'').replace(/[^a-zA-Z0-9:_-]/g,'-');
 const deep=v=>structuredClone(v);
 const sealMixed=(value,field)=>{const out=deep(value);delete out[field];out[field]=behaviorRootHash(out);return out;};
 function createRuntimeTimeline({projectRoot,programRoot,initialStateRoot,initialTick=0}={}){
   return{format:RUNTIME_TIMELINE_FORMAT,version:RUNTIME_TIMELINE_VERSION,project_root:projectRoot,program_root:programRoot,initial:{tick:initialTick,state_root:initialStateRoot},entries:[],checkpoints:[],cursor:0};
+}
+function liveUpdateView(record){
+  const engine=record.engine.snapshot();
+  return{
+    format:LIVE_UPDATE_FORMAT,
+    version:LIVE_UPDATE_VERSION,
+    candidate_id:record.candidate_id,
+    scope:'behavior-program',
+    phase:engine.status,
+    base:deep(record.base),
+    candidate:deep(record.candidate),
+    patches:deep(record.patches),
+    preserve_state:record.preserve_state,
+    metadata:deep(record.metadata),
+    deterministic:record.deterministic,
+    checks:deep(record.checks),
+    simulation:deep(record.simulation),
+    causal_delta:deep(record.causal_delta),
+    engine,
+    verification:record.engine.verify()
+  };
 }
 
 export function createAssetRecord(bundle,{sourceRoot=null,importProposal=null,previewUrl=null}={}){
@@ -207,6 +231,9 @@ export class UnifiedManufacturingSession{
     this.project=sealUnifiedProject(project,{touch:false});
     const program=this.project.behavior.programs[this.project.behavior.active_program_id];
     this.behavior=new BehaviorEditorSession(program);
+    this.live_update_generation=0;
+    this.live_update_candidates=new Map();
+    this.live_update_counter=0;
     this.history=[deep(this.project)];this.history_index=0;
     this.status='editing';this.events=[];
     this.timelineInitialSnapshot=this.behavior.runtime.snapshot();
@@ -345,6 +372,131 @@ export class UnifiedManufacturingSession{
   }
   select(nodeId){if(nodeId&&!findNode(this.project,nodeId))throw new StudioError('NODE_NOT_FOUND',nodeId);this.project.editor.selected_node_id=nodeId;return this.inspect();}
   replaceBehavior(program,{preserveState=true}={}){const next=program?.program_root?program:normalizeProgram(program);this.behavior.replaceProgram(next,{preserveState});this.project.behavior.programs[next.identity.program_id]=next;this.project.behavior.active_program_id=next.identity.program_id;this.record('behavior.replaced',{program_root:next.program_root});return this.checkpoint();}
+  _buildLiveUpdateCandidate({patches=[],preserveState=true,metadata={}}={}){
+    if(!Array.isArray(patches)||patches.length===0)throw new StudioError('LIVE_UPDATE_PATCHES_REQUIRED');
+    metadata=metadata&&typeof metadata==='object'?metadata:{};
+    const programId=this.project.behavior.active_program_id,baseSnapshot=this.behavior.runtime.snapshot(),base={
+      generation:this.live_update_generation,
+      project_root:this.project.project_root,
+      program_root:this.behavior.program.program_root,
+      state_root:this.behavior.runtime.stateRoot(),
+      tick:this.behavior.runtime.state.tick,
+      program_id:programId
+    };
+    const candidateId=`live-update:${this.session_id}:${++this.live_update_counter}`;
+    const makePreview=()=>{
+      const preview=new BehaviorEditorSession(this.behavior.program,{sessionId:`${candidateId}:preview`});
+      try{
+        preview.runtime.restore(baseSnapshot);
+        preview.patch(patches,{preserveState});
+      }catch(error){
+        throw new StudioError('LIVE_UPDATE_PATCH_INVALID',error.message,{code:error.code??'PATCH_INVALID',details:error.details??null});
+      }
+      return preview;
+    };
+    const preview=makePreview(),replay=makePreview();
+    const candidateProgram=deep(preview.program);
+    if(candidateProgram.identity.program_id!==programId)throw new StudioError('LIVE_UPDATE_PROGRAM_ID_IMMUTABLE',programId);
+    const candidateValidation=preview.validation();
+    if(!candidateValidation.valid)throw new StudioError('LIVE_UPDATE_PROGRAM_INVALID','',candidateValidation);
+    const candidateStateRoot=preview.runtime.stateRoot(),replayStateRoot=replay.runtime.stateRoot();
+    const deterministic=candidateProgram.program_root===replay.program.program_root&&candidateStateRoot===replayStateRoot;
+    const checks=[
+      {kind:'program-validation',valid:candidateValidation.valid,errors:deep(candidateValidation.errors??[]),warnings:deep(candidateValidation.warnings??[])},
+      {kind:'candidate-replay',valid:deterministic,program_root:candidateProgram.program_root,state_root:candidateStateRoot,replay_state_root:replayStateRoot}
+    ];
+    if(!deterministic)throw new StudioError('LIVE_UPDATE_SIMULATION_NONDETERMINISTIC','',checks);
+    const candidateProject=deep(this.project);
+    candidateProject.behavior.programs[programId]=candidateProgram;
+    candidateProject.behavior.active_program_id=programId;
+    const sealedCandidateProject=sealUnifiedProject(candidateProject,{touch:false});
+    const candidateInspection=preview.inspect();
+    const candidateProjection=createSceneProjection(sealedCandidateProject,candidateInspection,{observer:'debugger',navigationPositions:this.navigation.positions});
+    const candidate={
+      project_root:sealedCandidateProject.project_root,
+      program_root:candidateProgram.program_root,
+      state_root:candidateStateRoot,
+      projection_root:candidateProjection.projection_root,
+      tick:candidateInspection.runtime.tick,
+      transition_root:rootHash({format:LIVE_UPDATE_FORMAT,candidate_id:candidateId,base_generation:base.generation,base_project_root:base.project_root,candidate_project_root:sealedCandidateProject.project_root,base_state_root:base.state_root,candidate_state_root:candidateStateRoot,patches}),
+      hot_reload_count:preview.runtime.state.hot_reload_count??null
+    };
+    const metadataRoles=Array.isArray(metadata.roles)?metadata.roles:[];
+    const subject={
+      subject_id:String(metadata.subject_id??`subject:reality-studio:${this.session_id}`),
+      kind:'editor',
+      roles:[...new Set(['editor','runtime',...metadataRoles.map(String)])].sort(),
+      responsibility_boundary:'candidate-only-until-authorized'
+    };
+    const realityId=`reality:studio:${this.session_id}`;
+    const engine=createRealityEngineSession({sessionId:candidateId,realityId,generation:base.generation,generationRoot:base.state_root,stateRoot:base.state_root,subject,clock:this.clock});
+    const operations=patches.map((patch,index)=>({...deep(patch),operation_id:`live-update-operation:${index+1}`,target:programId}));
+    engine.propose(createEngineProposalInput({
+      realityId,
+      baseGeneration:base.generation,
+      baseGenerationRoot:base.state_root,
+      transitionId:`transition:${candidateId}`,
+      subject,
+      intent:{intent_id:`intent:${candidateId}`,source:'Reality Studio editor live update',goals:[{type:'behavior.program.hot-reload',program_id:programId}],constraints:['simulate-before-commit','preserve-runtime-state-when-requested']},
+      capabilityPlan:{plan_id:`plan:${candidateId}`,capabilities:[{capability_id:'reality-studio.live-update.commit',risk:'medium',reversible:true}],host_bindings:[{host_id:'reality-studio-unified-session'}],required_scopes:['reality-studio.live-update.commit']},
+      inputs:[{kind:'behavior-program',program_id:programId,program_root:base.program_root}],
+      operations,
+      causalBasis:{events:[{event_id:`event:${candidateId}`,kind:'editor-live-update-requested',base_project_root:base.project_root,base_state_root:base.state_root}],rules:[{rule_id:'live-update-simulate-before-commit',expression:'candidate validation and deterministic replay must pass before commit'}],simulation_refs:[]},
+      evidence:{nodes:[{evidence_id:'evidence:program',kind:'behavior-program',source:'reality-studio',content_root:candidateProgram.program_root},{evidence_id:'evidence:project',kind:'unified-project',source:'reality-studio',content_root:sealedCandidateProject.project_root},{evidence_id:'evidence:projection',kind:'scene-projection',source:'reality-studio',content_root:candidateProjection.projection_root}],edges:[]},
+      extensions:{reality_studio:{format:LIVE_UPDATE_FORMAT,version:LIVE_UPDATE_VERSION,candidate_id:candidateId,base_project_root:base.project_root,candidate_project_root:sealedCandidateProject.project_root,metadata:deep(metadata)}}
+    }));
+    const simulation=engine.simulate({targetGeneration:base.generation+1,afterStateRoot:candidateStateRoot,outputs:[{kind:'behavior-program',root:candidateProgram.program_root},{kind:'unified-project',root:sealedCandidateProject.project_root},{kind:'scene-projection',root:candidateProjection.projection_root}],receiptRefs:[{kind:'live-update-candidate',root:candidate.transition_root}],diagnostics:[]});
+    const record={candidate_id:candidateId,base,candidate,patches:deep(patches),preserve_state:Boolean(preserveState),metadata:deep(metadata),candidate_project:sealedCandidateProject,runtime_snapshot:preview.runtime.snapshot(),causal_delta:preview.runtime.causalDelta(base.state_root),deterministic,checks,engine,simulation};
+    this.live_update_candidates.set(candidateId,record);
+    this.record('live-update.proposed',{candidate_id:candidateId,program_root:candidateProgram.program_root,project_root:sealedCandidateProject.project_root,state_root:candidateStateRoot});
+    return liveUpdateView(record);
+  }
+  _liveUpdateCandidate(candidateId){const record=this.live_update_candidates.get(String(candidateId));if(!record)throw new StudioError('LIVE_UPDATE_CANDIDATE_NOT_FOUND',String(candidateId));return record;}
+  _assertLiveUpdateBase(record){
+    const actual={project_root:this.project.project_root,program_root:this.behavior.program.program_root,state_root:this.behavior.runtime.stateRoot(),tick:this.behavior.runtime.state.tick};
+    const expected={project_root:record.base.project_root,program_root:record.base.program_root,state_root:record.base.state_root,tick:record.base.tick};
+    if(actual.project_root!==expected.project_root||actual.program_root!==expected.program_root||actual.state_root!==expected.state_root||actual.tick!==expected.tick)throw new StudioError('LIVE_UPDATE_BASE_STALE','', {expected,actual});
+  }
+  proposeLiveUpdate(options={}){return this._buildLiveUpdateCandidate(options);}
+  authorizeLiveUpdate({candidateId,resolver,claims=[],constraints=[],reason=''}={}){
+    const record=this._liveUpdateCandidate(candidateId);
+    if(record.engine.status!=='simulated')throw new StudioError('LIVE_UPDATE_AUTHORITY_PHASE_INVALID',record.engine.status);
+    this._assertLiveUpdateBase(record);
+    record.engine.authorize({status:'approved',resolver,claims:[...deep(claims),{kind:'explicit-live-update-approval',candidate_id:record.candidate_id}],constraints,reason});
+    this.record('live-update.authorized',{candidate_id:record.candidate_id,decision_root:record.engine.envelope.authority.decision_root,resolver:String(resolver)});
+    return liveUpdateView(record);
+  }
+  async commitLiveUpdate({candidateId,confirmed=false,receiptRefs=[]}={}){
+    const record=this._liveUpdateCandidate(candidateId);
+    if(!confirmed)throw new StudioError('LIVE_UPDATE_CONFIRMATION_REQUIRED');
+    if(record.engine.status!=='authorized')throw new StudioError('LIVE_UPDATE_COMMIT_PHASE_INVALID',record.engine.status);
+    this._assertLiveUpdateBase(record);
+    const nextGeneration=this.live_update_generation+1,currentStatus=this.behavior.status;
+    const result=await record.engine.commit({generation:nextGeneration,generationRoot:record.candidate.state_root,receiptRefs:[...deep(receiptRefs),{kind:'unified-project',root:record.candidate.project_root},{kind:'behavior-program',root:record.candidate.program_root}],apply:async()=>{
+      this.project=deep(record.candidate_project);
+      const program=this.project.behavior.programs[this.project.behavior.active_program_id];
+      this.behavior.replaceProgram(program,{preserveState:true,recordHistory:false});
+      this.behavior.runtime.restore(deep(record.runtime_snapshot));
+      this.behavior.status=currentStatus;
+      this.history=this.history.slice(0,this.history_index+1);this.history.push(deep(this.project));this.history_index=this.history.length-1;
+      this.live_update_generation=nextGeneration;
+      this.resetRuntimeTimeline();
+      this.record('live-update.committed',{candidate_id:record.candidate_id,generation:nextGeneration,project_root:record.candidate.project_root,program_root:record.candidate.program_root,state_root:record.candidate.state_root});
+      return{stateRoot:record.candidate.state_root};
+    },startNetwork:false});
+    return{...this.inspect(),live_update:liveUpdateView(record),live_update_manifest:this.liveUpdateManifest(),live_update_commit:result};
+  }
+  rollbackLiveUpdate({candidateId,reason='candidate-withdrawn'}={}){
+    const record=this._liveUpdateCandidate(candidateId);
+    if(record.engine.status==='committed'||record.engine.status==='commit_partial')throw new StudioError('LIVE_UPDATE_COMMITTED_REQUIRES_COMPENSATING_TRANSITION');
+    const result=record.engine.rollback({reason});
+    this.record('live-update.rolled-back',{candidate_id:record.candidate_id,reason});
+    return{...liveUpdateView(record),rollback:result};
+  }
+  liveUpdateManifest(){
+    const candidates=[...this.live_update_candidates.values()].map(record=>{const view=liveUpdateView(record);const causalDelta=view.causal_delta;delete view.causal_delta;view.causal_delta_root=causalDelta?.delta_root??null;return view;});
+    return seal({format:'reality-studio.live-update-manifest.v0.1',version:LIVE_UPDATE_VERSION,session_id:this.session_id,generation:this.live_update_generation,current:{project_root:this.project.project_root,program_root:this.behavior.program.program_root,state_root:this.behavior.runtime.stateRoot(),tick:this.behavior.runtime.state.tick},candidates},'manifest_root');
+  }
   activeUITree(){return this.project.ui?.trees?.[this.project.ui.active_ui_id]??null;}
   activeInputProfile(){return this.project.input?.profiles?.[this.project.input.active_profile_id]??null;}
   compileUILayout({width=null,height=null,touch=null,safeArea=null}={}){const tree=this.activeUITree();if(!tree)return null;const scene=activeScene(this.project),runtime=this.behavior.inspect().runtime,data={project:{title:this.project.identity.title},globals:runtime.globals??{},entities:Object.fromEntries(Object.entries(runtime.entities??{}).map(([k,v])=>[k,v.variables??{}])),device:{touch:touch??this.uiState.device.touch,kind:this.uiState.device.kind}};const layout=layoutUITree(tree,{width:width??scene.canvas.width,height:height??scene.canvas.height,safe_area:safeArea??this.uiState.device.safe_area,data});this.uiState.last_layout=layout;return layout;}
@@ -408,13 +560,14 @@ export class UnifiedManufacturingSession{
     const behavior=this.behavior.exportArtifacts();const player=createSceneProjection(this.project,this.behavior.inspect(),{observer:'player',navigationPositions:this.navigation.positions}),debuggerView=createSceneProjection(this.project,this.behavior.inspect(),{observer:'debugger',navigationPositions:this.navigation.positions});
      const gpu=this.compileGPUFrame({serialized:false});const spatial=this.spatial.exportArtifacts();const runtimeTimeline=this.timelineView(),runtimeReplay=this.replayRuntime({verify:true}),networkCompilation=this.project.network?this.networkCompile():null;
     const assetLedger=this.assetLedger({strictFiles:false});const assetDatabase=seal({format:ASSET_DATABASE_FORMAT,version:ASSET_DATABASE_VERSION,project_root:this.project.project_root,cache_namespace:this.project.assets.database?.cache_namespace??'content-addressed',profiles:deep(this.project.assets.database?.profiles??['runtime']),source_root_ids:deep(this.project.assets.database?.source_root_ids??[]),last_plan_root:this.project.assets.database?.last_plan_root??null,last_sync_root:this.project.assets.database?.last_sync_root??null,asset_count:this.project.assets.order.length},'database_root');const assetManifest=seal({format:'reality-studio.asset-manifest.v1.3',assets:this.project.assets.order.map(id=>this.project.assets.registry[id]),asset_ledger_root:assetLedger.ledger_root,asset_database_root:assetDatabase.database_root,dependency_graph_root:assetLedger.dependency_graph.graph_root,audit_root:assetLedger.audit.audit_root,project_root:this.project.project_root},'manifest_root');
-     const gateway=seal({format:'reality-one.runtime-manifest.v0.3',runtime_id:'rncs.reality-studio-unified-world',version:STUDIO_VERSION,entry:'runtime/project.json',capabilities:['scene.instantiate','asset.resolve','behavior.execute','projection.render','gpu.viewport','gpu.frame-evidence','ui.layout','ui.focus','input.actions','input.gamepad','input.touch','runtime.timeline','runtime.replay','runtime.seek','runtime.checkpoint','spatial.body.edit','spatial.character.control','spatial.joint.edit','spatial.simulate','spatial.audio-events','spatial.haptic-events','spatial.vsr-project','network.player-slot.bind','network.world.compile'],dependencies:['rncs.behavior@^0.1.0','rncs.rsr@^0.5.0','rncs.vsr@^0.4.0','rncs.network@^0.2.0']},'manifest_root');
+     const gateway=seal({format:'reality-one.runtime-manifest.v0.3',runtime_id:'rncs.reality-studio-unified-world',version:STUDIO_VERSION,entry:'runtime/project.json',capabilities:['scene.instantiate','asset.resolve','behavior.execute','behavior.live-update.propose','behavior.live-update.simulate','behavior.live-update.authorize','behavior.live-update.commit','projection.render','gpu.viewport','gpu.frame-evidence','ui.layout','ui.focus','input.actions','input.gamepad','input.touch','runtime.timeline','runtime.replay','runtime.seek','runtime.checkpoint','spatial.body.edit','spatial.character.control','spatial.joint.edit','spatial.simulate','spatial.audio-events','spatial.haptic-events','spatial.vsr-project','network.player-slot.bind','network.world.compile'],dependencies:['rncs.behavior@^0.1.0','rncs.rsr@^0.5.0','rncs.vsr@^0.4.0','rncs.network@^0.2.0']},'manifest_root');
     const nav=this.activeTileMap()?compileSceneNavigation(activeScene(this.project),{positions:this.navigation.positions,excludeNodeIds:Object.keys(this.navigation.positions)}):null;
     const tilemapManifest=nav?seal({format:'reality-studio.tilemap-navigation-manifest.v1.1',version:TILEMAP_VERSION,project_root:this.project.project_root,tilemap:deep(nav.tilemap),collision:deep(nav.collision),navigation_grid:deep(nav.grid),receipt:deep(this.navigation.last_receipt)},'manifest_root'):null;
     const uiLayout=this.compileUILayout(),uiInputManifest=compileUIInputManifest({projectRoot:this.project.project_root,tree:this.activeUITree(),profile:this.activeInputProfile(),layout:uiLayout});
-     const buildFiles=['project.json','scene-player.json','scene-debugger.json','behavior.json','assets.json','asset-database.json','asset-continuity-ledger.json','gateway.runtime.json','runtime-timeline.json','runtime-replay.json','gpu-viewport.manifest.json','gpu-frame-summary.json','tilemap-navigation.manifest.json','ui-input.manifest.json','spatial-workspace.json','spatial-world.json','spatial-snapshot.json','spatial-frame-plan.json','spatial-runtime.manifest.json','web-preview.html'];if(networkCompilation)buildFiles.push('network-world-compilation.json');
+     const liveUpdateManifest=this.liveUpdateManifest();
+     const buildFiles=['project.json','scene-player.json','scene-debugger.json','behavior.json','assets.json','asset-database.json','asset-continuity-ledger.json','live-update.manifest.json','gateway.runtime.json','runtime-timeline.json','runtime-replay.json','gpu-viewport.manifest.json','gpu-frame-summary.json','tilemap-navigation.manifest.json','ui-input.manifest.json','spatial-workspace.json','spatial-world.json','spatial-snapshot.json','spatial-frame-plan.json','spatial-runtime.manifest.json','web-preview.html'];if(networkCompilation)buildFiles.push('network-world-compilation.json');
      const build=seal({format:'reality-studio.web-build-plan.v1.2',project_root:this.project.project_root,entry_scene_id:this.project.active_scene_id,files:buildFiles,targets:deep(this.project.build.targets),gpu:{preferred_backend:'webgpu',fallback_backend:'canvas2d',frame_plan_root:gpu.summary.frame_plan_root},ui_input:{manifest_root:uiInputManifest.manifest_root},network:networkCompilation?{compilation_root:networkCompilation.compilation_root,world_config_root:networkCompilation.world_config_root,player_slots:networkCompilation.counts.player_slots}:null},'build_root');
-     return{project:this.project,scene_player:player,scene_debugger:debuggerView,behavior_program:this.behavior.program,behavior_runtime:behavior,runtime_timeline:runtimeTimeline,runtime_replay:runtimeReplay,asset_manifest:assetManifest,asset_database:assetDatabase,asset_continuity_ledger:assetLedger,gateway_manifest:gateway,build_plan:build,gpu_viewport_manifest:gpu.manifest,gpu_frame_summary:gpu.summary,tilemap_navigation_manifest:tilemapManifest,ui_input_manifest:uiInputManifest,ui_layout:uiLayout,input_profile:this.activeInputProfile(),network_world_compilation:networkCompilation,...spatial,editor_events:deep(this.events)};
+     return{project:this.project,scene_player:player,scene_debugger:debuggerView,behavior_program:this.behavior.program,behavior_runtime:behavior,runtime_timeline:runtimeTimeline,runtime_replay:runtimeReplay,asset_manifest:assetManifest,asset_database:assetDatabase,asset_continuity_ledger:assetLedger,live_update_manifest:liveUpdateManifest,gateway_manifest:gateway,build_plan:build,gpu_viewport_manifest:gpu.manifest,gpu_frame_summary:gpu.summary,tilemap_navigation_manifest:tilemapManifest,ui_input_manifest:uiInputManifest,ui_layout:uiLayout,input_profile:this.activeInputProfile(),network_world_compilation:networkCompilation,...spatial,editor_events:deep(this.events)};
   }
   inspect(){
     const b=this.behavior.inspect(),scene=activeScene(this.project),selected=findNode(this.project,this.project.editor.selected_node_id)?.node??null;
@@ -426,7 +579,7 @@ export class UnifiedManufacturingSession{
       project_full:deep(this.project),
       scene:{...deep(scene),projection:createSceneProjection(this.project,b,{observer:'debugger',navigationPositions:this.navigation.positions})},
       assets:{version:ASSET_CONTINUITY_VERSION,count:this.project.assets.order.length,items:this.project.assets.order.map(id=>this.project.assets.registry[id]),import_roots:deep(this.project.assets.import_roots??[]),last_audit_root:this.project.assets.last_audit_root??null,database:deep(this.project.assets.database??null),dependency_graph:this.assetDependencyGraph(),audit:auditAssetContinuity(this.project,{strictFiles:false})},
-      behavior:b,timeline,runtime_timeline:timeline,
+      behavior:b,timeline,runtime_timeline:timeline,live_update:this.liveUpdateManifest(),
       gpu:{version:GPU_STUDIO_VERSION,...deep(this.gpu)},
       navigation:{...deep(this.navigation),tilemap_count:scene.tilemaps?.length??0,active_tilemap:this.activeTileMap()?{tilemap_id:this.activeTileMap().tilemap_id,tilemap_root:this.activeTileMap().tilemap_root,width:this.activeTileMap().width,height:this.activeTileMap().height,cell_size:this.activeTileMap().cell_size}:null},
       ui:{version:UI_INPUT_VERSION,tree:deep(this.activeUITree()),layout:deep(this.compileUILayout()),focus_id:this.uiState.focus_id,last_event:deep(this.uiState.last_event),event_tail:deep(this.uiState.events.slice(-50))},
