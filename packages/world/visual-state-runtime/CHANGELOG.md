@@ -3,6 +3,7 @@
 ## Unreleased
 
 - WebGPU三维执行器接入五路材质纹理Bind Group与方向光GPU Shadow Map depth pass；
+- 新增空间 WebGPU adapter capability contract：`evaluateSpatialWebGPUCapabilities` / `inspectSpatialWebGPU` 收集 adapter 名称、features、limits，拒绝缺失的 required features/limits，并将设备丢失原因写入 WebGPU receipt；
 - 新增四影响骨骼蒙皮、最多四个Morph Target，以及对应的CPU参考、GPU storage buffer和Frame Root证据；
 - glTF导入器接入JOINTS_0、WEIGHTS_0、skins与targets/POSITION，并扩展导入收据统计；
 - 动画采样保留glTF四元数，新增最短弧SLERP、CUBICSPLINE Hermite采样与动画场景Schema证据；
