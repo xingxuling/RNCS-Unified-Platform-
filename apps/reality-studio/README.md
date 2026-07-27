@@ -43,6 +43,23 @@ node src/cli.mjs asset-database-watch --project examples/冰境试炼.unified-pr
 变更计划和同步回执只携带源根 ID、相对路径和内容哈希；本地缓存文件不会
 被再次当成项目资产扫描，删除的源文件会保留为 `missing` 记录等待修复。
 
+## 受控运行时热更新
+
+统一会话提供 RNCS 边界内的行为程序热更新事务。候选先在当前 tick 和实体
+状态上生成，经过程序校验与确定性重放后才可授权和提交；未提交候选不会改变
+当前运行态，提交会保留 tick、实体变量和可验证的状态根。
+
+```text
+live-update propose
+→ deterministic simulation
+→ explicit resolver authorization
+→ explicit commit confirmation
+```
+
+服务端统一会话命令使用 `live-update`，`phase` 依次取 `propose`、`authorize`
+和 `commit`；提交请求必须带 `confirmed: true`。当前 v0.1 范围是行为程序的
+JSON 点路径 patch，候选过期时会因项目根、程序根或运行态根变化而拒绝提交。
+
 ## 验证
 
 ```bash

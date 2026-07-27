@@ -40,7 +40,7 @@ export async function startStudioServer({host='127.0.0.1',port=17608,dataDir=pat
     try{
       const u=new URL(req.url,`http://${req.headers.host||'localhost'}`);
       if(req.method==='OPTIONS')return send(res,204,'','text/plain');
-      if(req.method==='GET'&&u.pathname==='/api/health')return send(res,200,{...(await runtime.health()),studio_version:'1.5.0-alpha.1',behavior_native:true,scene_asset_behavior_unified:true,webgpu_viewport:true,tilemap_native:true,navigation_native:true,ui_native:true,input_native:true,runtime_timeline:true,runtime_replay:true,runtime_time_travel:true,asset_continuity_native:true,asset_reimport:true,dependency_graph:true,asset_ledger:true,asset_database:true,asset_incremental_cache:true,asset_change_plan:true,asset_watch:true,spatial_editor:true,spatial_bodies:true,spatial_characters:true,spatial_joints:true,spatial_audio_events:true,spatial_haptic_events:true,keyboard_input:true,gamepad_input:true,touch_input:true,asset_forge_native:true,ragf_version:'0.4.0-alpha.1',asset_candidate_review:true,targeted_asset_regeneration:true,asset_acceptance_to_scene:true,vsr_version:'0.8.0-alpha.1',rsr_version:'0.9.0-alpha.1'});
+      if(req.method==='GET'&&u.pathname==='/api/health')return send(res,200,{...(await runtime.health()),studio_version:'1.5.0-alpha.1',behavior_native:true,scene_asset_behavior_unified:true,webgpu_viewport:true,tilemap_native:true,navigation_native:true,ui_native:true,input_native:true,runtime_timeline:true,runtime_replay:true,runtime_time_travel:true,live_update_native:true,live_update_version:'0.1.0-alpha.1',asset_continuity_native:true,asset_reimport:true,dependency_graph:true,asset_ledger:true,asset_database:true,asset_incremental_cache:true,asset_change_plan:true,asset_watch:true,spatial_editor:true,spatial_bodies:true,spatial_characters:true,spatial_joints:true,spatial_audio_events:true,spatial_haptic_events:true,keyboard_input:true,gamepad_input:true,touch_input:true,asset_forge_native:true,ragf_version:'0.4.0-alpha.1',asset_candidate_review:true,targeted_asset_regeneration:true,asset_acceptance_to_scene:true,vsr_version:'0.8.0-alpha.1',rsr_version:'0.9.0-alpha.1'});
       if(req.method==='GET'&&u.pathname==='/api/project/new')return send(res,200,createProject({}));
       if(req.method==='POST'&&u.pathname==='/api/project/validate'){const b=await body(req);return send(res,200,validateProject(b.project??b));}
       if(req.method==='POST'&&u.pathname==='/api/project/seal'){const b=await body(req);return send(res,200,sealProject(b.project??b));}
@@ -110,6 +110,17 @@ export async function startStudioServer({host='127.0.0.1',port=17608,dataDir=pat
         else if(b.command==='undo')result=s.undo();
         else if(b.command==='redo')result=s.redo();
         else if(b.command==='replace-behavior')result=s.replaceBehavior(b.program,{preserveState:b.preserve_state!==false});
+        else if(b.command==='live-update-propose')result=s.proposeLiveUpdate({patches:b.patches??[],preserveState:b.preserve_state!==false,metadata:b.metadata??{}});
+        else if(b.command==='live-update-authorize')result=s.authorizeLiveUpdate({candidateId:b.candidate_id,resolver:b.resolver,claims:b.claims??[],constraints:b.constraints??[],reason:b.reason??''});
+        else if(b.command==='live-update-commit')result=await s.commitLiveUpdate({candidateId:b.candidate_id,confirmed:b.confirmed===true,receiptRefs:b.receipt_refs??[]});
+        else if(b.command==='live-update-rollback')result=s.rollbackLiveUpdate({candidateId:b.candidate_id,reason:b.reason??'candidate-withdrawn'});
+        else if(b.command==='live-update'){
+          if(b.phase==='propose')result=s.proposeLiveUpdate({patches:b.patches??[],preserveState:b.preserve_state!==false,metadata:b.metadata??{}});
+          else if(b.phase==='authorize')result=s.authorizeLiveUpdate({candidateId:b.candidate_id,resolver:b.resolver,claims:b.claims??[],constraints:b.constraints??[],reason:b.reason??''});
+          else if(b.phase==='commit')result=await s.commitLiveUpdate({candidateId:b.candidate_id,confirmed:b.confirmed===true,receiptRefs:b.receipt_refs??[]});
+          else if(b.phase==='rollback')result=s.rollbackLiveUpdate({candidateId:b.candidate_id,reason:b.reason??'candidate-withdrawn'});
+          else throw Object.assign(new Error(`LIVE_UPDATE_PHASE_UNKNOWN:${b.phase}`),{code:'LIVE_UPDATE_PHASE_UNKNOWN'});
+        }
         else if(b.command==='import-asset')result=s.importAsset(b.bundle,{sourceRoot:b.source_root,importProposal:b.import_proposal,previewUrl:b.preview_url,strictFiles:b.strict_files===true});
         else if(b.command==='import-local-asset')result=s.importLocalAsset(b.file_path,{sourceRoot:b.source_root,name:b.name,previewUrl:b.preview_url});
         else if(b.command==='import-embedded-asset')result=s.importEmbeddedAsset(b.file??b,{assetId:b.asset_id});

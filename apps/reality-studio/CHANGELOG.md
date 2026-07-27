@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+- Added a governed behavior live-update transaction for unified sessions.
+- Added deterministic candidate replay, explicit resolver authorization and commit confirmation.
+- Preserved runtime tick/entity state during committed hot reloads and exported live-update manifest evidence.
+- Added server `live-update` commands and regression coverage for inert candidates and stale-base rejection.
+
 ## 1.5.0-alpha.1
 - Added Asset Forge sessions from intent to three RAGF production candidates.
 - Added real mesh, material, prefab and embodiment preview payloads.
