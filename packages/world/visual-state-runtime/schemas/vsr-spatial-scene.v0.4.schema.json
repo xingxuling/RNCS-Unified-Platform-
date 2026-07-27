@@ -359,7 +359,76 @@
             "minimum": 0
           },
           "channels": {
-            "type": "array"
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "nodeId",
+                "path",
+                "times",
+                "values"
+              ],
+              "properties": {
+                "nodeId": {
+                  "type": "string"
+                },
+                "path": {
+                  "enum": [
+                    "translation",
+                    "rotationEulerDeg",
+                    "rotationQuaternion",
+                    "scale"
+                  ]
+                },
+                "times": {
+                  "type": "array",
+                  "items": {
+                    "type": "number",
+                    "minimum": 0
+                  }
+                },
+                "values": {
+                  "type": "array",
+                  "items": {
+                    "type": "array",
+                    "minItems": 3,
+                    "maxItems": 4,
+                    "items": {
+                      "type": "number"
+                    }
+                  }
+                },
+                "inTangents": {
+                  "type": "array",
+                  "items": {
+                    "type": "array",
+                    "minItems": 3,
+                    "maxItems": 4,
+                    "items": {
+                      "type": "number"
+                    }
+                  }
+                },
+                "outTangents": {
+                  "type": "array",
+                  "items": {
+                    "type": "array",
+                    "minItems": 3,
+                    "maxItems": 4,
+                    "items": {
+                      "type": "number"
+                    }
+                  }
+                },
+                "interpolation": {
+                  "enum": [
+                    "LINEAR",
+                    "STEP",
+                    "CUBICSPLINE"
+                  ]
+                }
+              }
+            }
           }
         }
       }
