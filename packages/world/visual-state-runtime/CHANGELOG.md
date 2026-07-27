@@ -9,6 +9,7 @@
 - 新增确定性动画图状态过渡、Override/Additive图层与显式骨骼遮罩，并将混合姿态绑定到Frame Root；
 - 新增 RCL RNCS Visual Intent v0.1 consumer，验证 content root 后统一编译 clip、layers、graph、node mask、look-at/two-bone IK constraints 与 skin/morph deformation；
 - 新增确定性环境光照颜色项，统一 CPU 参考渲染与 WebGPU Camera uniform，并将 Environment Root 纳入 Command/Frame Root；图像探针 IBL 与 GI 仍保留为后续边界；
+- `environment.textureId` 接入 RGBA equirectangular 环境纹理；新增 CPU/WebGPU 方向采样、基础 roughness lobe 混合和环境纹理 bind group 证据；预过滤 mip、探针混合和 GI 仍未完成；
 
 ## 0.4.0-alpha.1
 
