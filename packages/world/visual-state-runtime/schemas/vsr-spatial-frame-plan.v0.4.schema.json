@@ -171,6 +171,9 @@
       },
       "additionalProperties": false
     },
+    "gpuDrivenCulling": {
+      "type": "boolean"
+    },
     "drawPackets": {
       "type": "array",
       "items": {
@@ -302,6 +305,10 @@
           "minimum": 0
         },
         "streamingCulledCells": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "gpuDrivenDraws": {
           "type": "integer",
           "minimum": 0
         }

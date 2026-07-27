@@ -22,6 +22,7 @@ var VSRSpatial3D = (() => {
   var index_exports = {};
   __export(index_exports, {
     VSRSpatialWebGPUExecutor: () => VSRSpatialWebGPUExecutor,
+    VSR_SPATIAL_CULL_WGSL_V04: () => VSR_SPATIAL_CULL_WGSL_V04,
     VSR_SPATIAL_FRAGMENT_WGSL_V04: () => VSR_SPATIAL_FRAGMENT_WGSL_V04,
     VSR_SPATIAL_FRAME_FORMAT: () => VSR_SPATIAL_FRAME_FORMAT,
     VSR_SPATIAL_REALITY_VERSION: () => VSR_SPATIAL_REALITY_VERSION,
@@ -56,6 +57,8 @@ var VSRSpatial3D = (() => {
     packSpatialCameraUniform: () => packSpatialCameraUniform,
     packSpatialDeformationUniform: () => packSpatialDeformationUniform,
     packSpatialIndexBuffer: () => packSpatialIndexBuffer,
+    packSpatialIndirectDrawCommand: () => packSpatialIndirectDrawCommand,
+    packSpatialInstanceBoundsBuffer: () => packSpatialInstanceBoundsBuffer,
     packSpatialInstanceBuffer: () => packSpatialInstanceBuffer,
     packSpatialJointBuffer: () => packSpatialJointBuffer,
     packSpatialMaterialUniform: () => packSpatialMaterialUniform,
@@ -63,6 +66,7 @@ var VSRSpatial3D = (() => {
     packSpatialObjectUniform: () => packSpatialObjectUniform,
     packSpatialShadowUniform: () => packSpatialShadowUniform,
     packSpatialVertexBuffer: () => packSpatialVertexBuffer,
+    packSpatialVisibleInstanceIndices: () => packSpatialVisibleInstanceIndices,
     perspectiveMat4: () => perspectiveMat4,
     probeSpatialWebGPU: () => probeSpatialWebGPU,
     quaternionSlerp: () => quaternionSlerp,
@@ -1016,7 +1020,7 @@ var VSRSpatial3D = (() => {
     const min = [Math.min(a.min[0], b.min[0]), Math.min(a.min[1], b.min[1]), Math.min(a.min[2], b.min[2])], max = [Math.max(a.max[0], b.max[0]), Math.max(a.max[1], b.max[1]), Math.max(a.max[2], b.max[2])], center = [(min[0] + max[0]) / 2, (min[1] + max[1]) / 2, (min[2] + max[2]) / 2];
     return { min, max, center, radius: Math.max(distance3(min, center), distance3(max, center)) };
   }
-  var VSR_SPATIAL_VERTEX_WGSL_V04 = `struct Camera { viewProjection: mat4x4<f32>, cameraPosition:vec4<f32>, ambient:vec4<f32>, sunDirection:vec4<f32>, sunColor:vec4<f32>, environmentDiffuse:vec4<f32>, environmentSpecular:vec4<f32>, environmentParams:vec4<f32> }; @group(0) @binding(0) var<uniform> camera: Camera; struct Object { world:mat4x4<f32> }; @group(1) @binding(0) var<uniform> object:Object; @group(1) @binding(1) var<storage,read> jointMatrices:array<mat4x4<f32>>; struct Deformation { skinEnabled:f32, vertexCount:f32, morphCount:f32, _pad:f32, morphWeights:vec4<f32> }; @group(1) @binding(2) var<uniform> deformation:Deformation; @group(1) @binding(3) var<storage,read> morphDeltas:array<vec4<f32>>; @group(1) @binding(4) var<storage,read> instanceMatrices:array<mat4x4<f32>>; struct VSIn { @location(0) position:vec3<f32>, @location(1) normal:vec3<f32>, @location(2) uv:vec2<f32>, @location(3) joints:vec4<f32>, @location(4) weights:vec4<f32>, @builtin(vertex_index) vertexIndex:u32, @builtin(instance_index) instanceIndex:u32 }; struct VSOut { @builtin(position) position:vec4<f32>, @location(0) worldPosition:vec3<f32>, @location(1) normal:vec3<f32>, @location(2) uv:vec2<f32> }; fn morphPosition(position:vec3<f32>,vertexIndex:u32)->vec3<f32>{var result=position;let vertexCount=u32(deformation.vertexCount);for(var morph:u32=0u;morph<4u;morph=morph+1u){if(morph<u32(deformation.morphCount)){result=result+morphDeltas[morph*vertexCount+vertexIndex].xyz*deformation.morphWeights[morph];}}return result;} fn skinPosition(position:vec3<f32>,joints:vec4<f32>,weights:vec4<f32>)->vec3<f32>{if(deformation.skinEnabled<0.5){return position;}let total=weights.x+weights.y+weights.z+weights.w;if(total<=0.0001){return position;}return(jointMatrices[u32(joints.x)]*vec4<f32>(position,1.0)*weights.x+jointMatrices[u32(joints.y)]*vec4<f32>(position,1.0)*weights.y+jointMatrices[u32(joints.z)]*vec4<f32>(position,1.0)*weights.z+jointMatrices[u32(joints.w)]*vec4<f32>(position,1.0)*weights.w).xyz/total;} fn skinNormal(normal:vec3<f32>,joints:vec4<f32>,weights:vec4<f32>)->vec3<f32>{if(deformation.skinEnabled<0.5){return normal;}let total=weights.x+weights.y+weights.z+weights.w;if(total<=0.0001){return normal;}return normalize((jointMatrices[u32(joints.x)]*vec4<f32>(normal,0.0)*weights.x+jointMatrices[u32(joints.y)]*vec4<f32>(normal,0.0)*weights.y+jointMatrices[u32(joints.z)]*vec4<f32>(normal,0.0)*weights.z+jointMatrices[u32(joints.w)]*vec4<f32>(normal,0.0)*weights.w).xyz);} @vertex fn vs_main(input:VSIn)->VSOut{var out:VSOut;let localPosition=skinPosition(morphPosition(input.position,input.vertexIndex),input.joints,input.weights);let instanceWorld=object.world*instanceMatrices[input.instanceIndex];let worldPosition=instanceWorld*vec4<f32>(localPosition,1.0);out.position=camera.viewProjection*worldPosition;out.worldPosition=worldPosition.xyz;out.normal=normalize((instanceWorld*vec4<f32>(skinNormal(input.normal,input.joints,input.weights),0.0)).xyz);out.uv=input.uv;return out;}`;
+  var VSR_SPATIAL_VERTEX_WGSL_V04 = `struct Camera { viewProjection: mat4x4<f32>, cameraPosition:vec4<f32>, ambient:vec4<f32>, sunDirection:vec4<f32>, sunColor:vec4<f32>, environmentDiffuse:vec4<f32>, environmentSpecular:vec4<f32>, environmentParams:vec4<f32> }; @group(0) @binding(0) var<uniform> camera: Camera; struct Object { world:mat4x4<f32> }; @group(1) @binding(0) var<uniform> object:Object; @group(1) @binding(1) var<storage,read> jointMatrices:array<mat4x4<f32>>; struct Deformation { skinEnabled:f32, vertexCount:f32, morphCount:f32, _pad:f32, morphWeights:vec4<f32> }; @group(1) @binding(2) var<uniform> deformation:Deformation; @group(1) @binding(3) var<storage,read> morphDeltas:array<vec4<f32>>; @group(1) @binding(4) var<storage,read> instanceMatrices:array<mat4x4<f32>>; @group(1) @binding(5) var<storage,read> visibleInstanceIndices:array<u32>; struct VSIn { @location(0) position:vec3<f32>, @location(1) normal:vec3<f32>, @location(2) uv:vec2<f32>, @location(3) joints:vec4<f32>, @location(4) weights:vec4<f32>, @builtin(vertex_index) vertexIndex:u32, @builtin(instance_index) instanceIndex:u32 }; struct VSOut { @builtin(position) position:vec4<f32>, @location(0) worldPosition:vec3<f32>, @location(1) normal:vec3<f32>, @location(2) uv:vec2<f32> }; fn morphPosition(position:vec3<f32>,vertexIndex:u32)->vec3<f32>{var result=position;let vertexCount=u32(deformation.vertexCount);for(var morph:u32=0u;morph<4u;morph=morph+1u){if(morph<u32(deformation.morphCount)){result=result+morphDeltas[morph*vertexCount+vertexIndex].xyz*deformation.morphWeights[morph];}}return result;} fn skinPosition(position:vec3<f32>,joints:vec4<f32>,weights:vec4<f32>)->vec3<f32>{if(deformation.skinEnabled<0.5){return position;}let total=weights.x+weights.y+weights.z+weights.w;if(total<=0.0001){return position;}return(jointMatrices[u32(joints.x)]*vec4<f32>(position,1.0)*weights.x+jointMatrices[u32(joints.y)]*vec4<f32>(position,1.0)*weights.y+jointMatrices[u32(joints.z)]*vec4<f32>(position,1.0)*weights.z+jointMatrices[u32(joints.w)]*vec4<f32>(position,1.0)*weights.w).xyz/total;} fn skinNormal(normal:vec3<f32>,joints:vec4<f32>,weights:vec4<f32>)->vec3<f32>{if(deformation.skinEnabled<0.5){return normal;}let total=weights.x+weights.y+weights.z+weights.w;if(total<=0.0001){return normal;}return normalize((jointMatrices[u32(joints.x)]*vec4<f32>(normal,0.0)*weights.x+jointMatrices[u32(joints.y)]*vec4<f32>(normal,0.0)*weights.y+jointMatrices[u32(joints.z)]*vec4<f32>(normal,0.0)*weights.z+jointMatrices[u32(joints.w)]*vec4<f32>(normal,0.0)*weights.w).xyz);} @vertex fn vs_main(input:VSIn)->VSOut{var out:VSOut;let localPosition=skinPosition(morphPosition(input.position,input.vertexIndex),input.joints,input.weights);let instanceWorld=object.world*instanceMatrices[visibleInstanceIndices[input.instanceIndex]];let worldPosition=instanceWorld*vec4<f32>(localPosition,1.0);out.position=camera.viewProjection*worldPosition;out.worldPosition=worldPosition.xyz;out.normal=normalize((instanceWorld*vec4<f32>(skinNormal(input.normal,input.joints,input.weights),0.0)).xyz);out.uv=input.uv;return out;}`;
   var VSR_SPATIAL_FRAGMENT_WGSL_V04 = `
  struct ShadowCamera { lightViewProjection:mat4x4<f32>, params:vec4<f32> };
  @group(0) @binding(1) var shadowSampler:sampler;
@@ -1063,7 +1067,18 @@ fn environmentSample(direction:vec3<f32>,fallback:vec3<f32>)->vec3<f32>{return s
    let ambient=baseColor.rgb*camera.ambient.rgb*camera.ambient.a*ao;
    return vec4<f32>(environmentDiffuse+environmentSpecular+ambient+direct+material.emissive.rgb*emissiveSample.rgb*emissiveStrength,opacity);
  }`;
-  var VSR_SPATIAL_SHADOW_WGSL_V04 = `struct ShadowCamera { lightViewProjection:mat4x4<f32> }; @group(0) @binding(0) var<uniform> shadowCamera:ShadowCamera; struct Object { world:mat4x4<f32> }; @group(1) @binding(0) var<uniform> object:Object; @group(1) @binding(1) var<storage,read> jointMatrices:array<mat4x4<f32>>; struct Deformation { skinEnabled:f32, vertexCount:f32, morphCount:f32, _pad:f32, morphWeights:vec4<f32> }; @group(1) @binding(2) var<uniform> deformation:Deformation; @group(1) @binding(3) var<storage,read> morphDeltas:array<vec4<f32>>; @group(1) @binding(4) var<storage,read> instanceMatrices:array<mat4x4<f32>>; struct ShadowIn { @location(0) position:vec3<f32>, @location(3) joints:vec4<f32>, @location(4) weights:vec4<f32>, @builtin(vertex_index) vertexIndex:u32, @builtin(instance_index) instanceIndex:u32 }; fn morphPosition(position:vec3<f32>,vertexIndex:u32)->vec3<f32>{var result=position;let vertexCount=u32(deformation.vertexCount);for(var morph:u32=0u;morph<4u;morph=morph+1u){if(morph<u32(deformation.morphCount)){result=result+morphDeltas[morph*vertexCount+vertexIndex].xyz*deformation.morphWeights[morph];}}return result;} fn skinPosition(position:vec3<f32>,joints:vec4<f32>,weights:vec4<f32>)->vec3<f32>{if(deformation.skinEnabled<0.5){return position;}let total=weights.x+weights.y+weights.z+weights.w;if(total<=0.0001){return position;}return(jointMatrices[u32(joints.x)]*vec4<f32>(position,1.0)*weights.x+jointMatrices[u32(joints.y)]*vec4<f32>(position,1.0)*weights.y+jointMatrices[u32(joints.z)]*vec4<f32>(position,1.0)*weights.z+jointMatrices[u32(joints.w)]*vec4<f32>(position,1.0)*weights.w).xyz/total;} @vertex fn vs_shadow(input:ShadowIn)->@builtin(position) vec4<f32>{let localPosition=skinPosition(morphPosition(input.position,input.vertexIndex),input.joints,input.weights);return shadowCamera.lightViewProjection*object.world*instanceMatrices[input.instanceIndex]*vec4<f32>(localPosition,1.0);}`;
+  var VSR_SPATIAL_SHADOW_WGSL_V04 = `struct ShadowCamera { lightViewProjection:mat4x4<f32> }; @group(0) @binding(0) var<uniform> shadowCamera:ShadowCamera; struct Object { world:mat4x4<f32> }; @group(1) @binding(0) var<uniform> object:Object; @group(1) @binding(1) var<storage,read> jointMatrices:array<mat4x4<f32>>; struct Deformation { skinEnabled:f32, vertexCount:f32, morphCount:f32, _pad:f32, morphWeights:vec4<f32> }; @group(1) @binding(2) var<uniform> deformation:Deformation; @group(1) @binding(3) var<storage,read> morphDeltas:array<vec4<f32>>; @group(1) @binding(4) var<storage,read> instanceMatrices:array<mat4x4<f32>>; @group(1) @binding(5) var<storage,read> visibleInstanceIndices:array<u32>; struct ShadowIn { @location(0) position:vec3<f32>, @location(3) joints:vec4<f32>, @location(4) weights:vec4<f32>, @builtin(vertex_index) vertexIndex:u32, @builtin(instance_index) instanceIndex:u32 }; fn morphPosition(position:vec3<f32>,vertexIndex:u32)->vec3<f32>{var result=position;let vertexCount=u32(deformation.vertexCount);for(var morph:u32=0u;morph<4u;morph=morph+1u){if(morph<u32(deformation.morphCount)){result=result+morphDeltas[morph*vertexCount+vertexIndex].xyz*deformation.morphWeights[morph];}}return result;} fn skinPosition(position:vec3<f32>,joints:vec4<f32>,weights:vec4<f32>)->vec3<f32>{if(deformation.skinEnabled<0.5){return position;}let total=weights.x+weights.y+weights.z+weights.w;if(total<=0.0001){return position;}return(jointMatrices[u32(joints.x)]*vec4<f32>(position,1.0)*weights.x+jointMatrices[u32(joints.y)]*vec4<f32>(position,1.0)*weights.y+jointMatrices[u32(joints.z)]*vec4<f32>(position,1.0)*weights.z+jointMatrices[u32(joints.w)]*vec4<f32>(position,1.0)*weights.w).xyz/total;} @vertex fn vs_shadow(input:ShadowIn)->@builtin(position) vec4<f32>{let localPosition=skinPosition(morphPosition(input.position,input.vertexIndex),input.joints,input.weights);return shadowCamera.lightViewProjection*object.world*instanceMatrices[visibleInstanceIndices[input.instanceIndex]]*vec4<f32>(localPosition,1.0);}`;
+  var VSR_SPATIAL_CULL_WGSL_V04 = `struct CullCamera { viewProjection:mat4x4<f32> };
+@group(0) @binding(0) var<uniform> camera:CullCamera;
+struct Bounds { centerRadius:vec4<f32> };
+@group(0) @binding(1) var<storage,read> bounds:array<Bounds>;
+@group(0) @binding(2) var<storage,read_write> visibleIndices:array<u32>;
+@group(0) @binding(3) var<storage,read_write> visibleCount:atomic<u32>;
+@group(0) @binding(4) var<storage,read_write> indirectArgs:array<u32>;
+fn visible(centerRadius:vec4<f32>)->bool{let clip=camera.viewProjection*vec4<f32>(centerRadius.xyz,1.0);let margin=centerRadius.w*max(max(abs(camera.viewProjection[0][0]),abs(camera.viewProjection[1][1])),1.0);return clip.w>0.0&&clip.x>=-clip.w-margin&&clip.x<=clip.w+margin&&clip.y>=-clip.w-margin&&clip.y<=clip.w+margin&&clip.z>=-margin&&clip.z<=clip.w+margin;}
+@compute @workgroup_size(64) fn cs_reset(@builtin(global_invocation_id) id:vec3<u32>){if(id.x==0u){atomicStore(&visibleCount,0u);indirectArgs[1]=0u;}}
+@compute @workgroup_size(64) fn cs_cull(@builtin(global_invocation_id) id:vec3<u32>){if(id.x>=arrayLength(&bounds)){return;}if(visible(bounds[id.x].centerRadius)){let destination=atomicAdd(&visibleCount,1u);visibleIndices[destination]=id.x;}}
+@compute @workgroup_size(64) fn cs_finalize(@builtin(global_invocation_id) id:vec3<u32>){if(id.x==0u){indirectArgs[1]=atomicLoad(&visibleCount);}}`;
   function compileSpatialFrame(scene, options = {}) {
     validateScene(scene);
     const budget = resolveSpatialBudget(options), baseAnimationOverrides = options.animationGraph ? sampleSpatialAnimationGraph(scene, options.animationGraph) : options.animationLayers ? sampleSpatialAnimationLayers(scene, options.animationLayers) : options.animation ? sampleSpatialAnimation(scene, options.animation.clipId, options.animation.timeSeconds, options.animation.loop ?? true) : /* @__PURE__ */ new Map(), animationConstraints = options.animationConstraints ?? [], animationOverrides = applySpatialAnimationConstraints(scene, baseAnimationOverrides, animationConstraints), visualIntentRoot = options.visualIntentRoot ?? null, animationRoot = cryptographicHash({ selection: options.animation ?? null, layers: options.animationLayers ?? null, graph: options.animationGraph ?? null, ...animationConstraints.length ? { animationConstraints } : {}, ...visualIntentRoot ? { visualIntentRoot } : {}, overrides: [...animationOverrides.entries()] }), camera = scene.cameras.find((entry) => entry.id === scene.activeCameraId), aspect = budget.width / budget.height, near = Math.max(1e-3, camera.near ?? 0.1), far = Math.max(near + 0.01, camera.far ?? 1e3), view = cameraViewMatrix(camera), projection = camera.projection === "orthographic" ? orthographicMat4(camera.orthoHeight ?? 10, aspect, near, far) : perspectiveMat4(camera.fovYDeg ?? 60, aspect, near, far), viewProjection = multiplyMat4(projection, view), cameraPos = cameraPosition(camera), streaming = scene.streaming ? resolveSpatialStreaming(scene, cameraPos, options.streaming) : void 0, streamedNodeIds = streaming ? new Set(streaming.nodeIds) : void 0, world = worldMatrices(scene, animationOverrides), meshById = new Map(scene.meshes.map((mesh) => [mesh.id, mesh])), materialById = new Map(scene.materials.map((material) => [material.id, sanitizeMaterial(material)])), skinById = new Map((scene.skins ?? []).map((skin) => [skin.id, skin]));
@@ -1084,7 +1099,7 @@ fn environmentSample(direction:vec3<f32>,fallback:vec3<f32>)->vec3<f32>{return s
         continue;
       }
       const bounds = transformBounds(meshBounds(mesh), matrix);
-      if (!sphereInFrustum(bounds, viewProjection)) {
+      if (!options.gpuDrivenCulling && !sphereInFrustum(bounds, viewProjection)) {
         culled++;
         continue;
       }
@@ -1122,13 +1137,17 @@ fn environmentSample(direction:vec3<f32>,fallback:vec3<f32>)->vec3<f32>{return s
       if (mesh.morphTargets?.length) resources.push({ id: `mesh:${mesh.id}:morphs`, kind: "morph-buffer", byteLength: mesh.morphTargets.length * vertexCount * 4 * 4, resourceRoot: cryptographicHash(mesh.morphTargets) });
     }
     for (const skin of scene.skins ?? []) if (activeSkinIds.has(skin.id)) resources.push({ id: `skin:${skin.id}:joints`, kind: "joint-buffer", byteLength: skin.joints.length * 64, resourceRoot: cryptographicHash(skin) });
-    for (const packet of drawPackets) resources.push({ id: `instances:${packet.nodeId}`, kind: "instance-buffer", byteLength: packetInstanceCount(packet) * 64, resourceRoot: cryptographicHash(packetInstances(packet)) });
+    for (const packet of drawPackets) {
+      const instanceCount = packetInstanceCount(packet);
+      resources.push({ id: `instances:${packet.nodeId}`, kind: "instance-buffer", byteLength: instanceCount * 64, resourceRoot: cryptographicHash(packetInstances(packet)) });
+      if (options.gpuDrivenCulling) resources.push({ id: `indirect:${packet.nodeId}`, kind: "indirect-buffer", byteLength: 20, format: "draw-indexed-indirect", resourceRoot: cryptographicHash(packSpatialIndirectDrawCommand(packet)) }, { id: `culling-bounds:${packet.nodeId}`, kind: "culling-bounds-buffer", byteLength: instanceCount * 16, format: "vec4-center-radius", resourceRoot: cryptographicHash(packSpatialInstanceBoundsBuffer(packet)) }, { id: `visible-indices:${packet.nodeId}`, kind: "visible-index-buffer", byteLength: instanceCount * 4, format: "u32", resourceRoot: cryptographicHash(packSpatialVisibleInstanceIndices(packet)) }, { id: `culling-counter:${packet.nodeId}`, kind: "culling-counter-buffer", byteLength: 4, format: "atomic-u32", resourceRoot: cryptographicHash({ packet: packet.nodeId, kind: "visible-counter" }) });
+    }
     for (const texture of scene.textures ?? []) resources.push({ id: `texture:${texture.id}`, kind: "texture-2d", byteLength: texture.pixels.length, format: "rgba8unorm", resourceRoot: cryptographicHash(texture) });
     resources.push({ id: "materials", kind: "material-buffer", byteLength: materialById.size * 64, resourceRoot: cryptographicHash([...materialById.values()]) }, { id: "lights", kind: "light-buffer", byteLength: lights.length * 64, resourceRoot: cryptographicHash(lights) }, { id: "scene-depth", kind: "depth-texture", byteLength: budget.width * budget.height * 4, format: "depth24plus", resourceRoot: cryptographicHash({ width: budget.width, height: budget.height, format: "depth24plus" }) }, { id: "scene-color", kind: "color-texture", byteLength: budget.width * budget.height * 8, format: "rgba16float", resourceRoot: cryptographicHash({ width: budget.width, height: budget.height, format: "rgba16float" }) }, { id: "present-color", kind: "color-texture", byteLength: budget.width * budget.height * 4, format: "bgra8unorm", resourceRoot: cryptographicHash({ width: budget.width, height: budget.height, format: "bgra8unorm" }) });
     if (passes.some((pass) => pass.id === "shadow-depth")) resources.push({ id: "shadow-depth", kind: "shadow-texture", byteLength: budget.shadowMapSize ** 2 * 4, format: "depth32float", resourceRoot: cryptographicHash({ size: budget.shadowMapSize, format: "depth32float" }) });
-    const sourceRealityRoot = cryptographicHash({ format: scene.format, sceneId: scene.sceneId, reality: scene.reality ?? null }), geometryRoot = cryptographicHash(scene.meshes.map((mesh) => ({ id: mesh.id, positions: mesh.positions, normals: mesh.normals ?? null, uvs: mesh.uvs ?? null, indices: mesh.indices, jointIndices: mesh.jointIndices ?? null, jointWeights: mesh.jointWeights ?? null, morphTargets: mesh.morphTargets ?? null }))), materialRoot = cryptographicHash([...materialById.values()]), textureRoot = cryptographicHash(scene.textures ?? []), environmentRoot = cryptographicHash(environment), commandRoot = cryptographicHash({ drawPackets, passes, lights, budget, textureRoot, environmentRoot, animationRoot, streaming: streaming ?? null }), shaders = { vertex: VSR_SPATIAL_VERTEX_WGSL_V04, fragment: VSR_SPATIAL_FRAGMENT_WGSL_V04, shadowVertex: VSR_SPATIAL_SHADOW_WGSL_V04, sourceRoot: cryptographicHash([VSR_SPATIAL_VERTEX_WGSL_V04, VSR_SPATIAL_FRAGMENT_WGSL_V04, VSR_SPATIAL_SHADOW_WGSL_V04]) };
-    const stats = { meshCount: scene.meshes.length, nodeCount: scene.nodes.length, textureCount: (scene.textures ?? []).length, materialTextureBindings: drawPackets.reduce((sum, packet) => sum + Object.values(packet.textureBindings).filter(Boolean).length, 0), animationClipCount: (scene.animations ?? []).length, visibleDraws: drawPackets.length, visibleInstances: visiblePackets.length, instancedDraws: drawPackets.filter((packet) => packetInstanceCount(packet) > 1).length, activeCells: streaming?.activeCellIds.length ?? 0, streamedNodes: streaming?.nodeIds.length ?? scene.nodes.length, streamingCulledCells, culledDraws: culled, triangleCount: drawPackets.reduce((sum, packet) => sum + packet.indexCount / 3 * packetInstanceCount(packet), 0), lightCount: lights.length, shadowCasterCount, skinnedDraws: drawPackets.reduce((sum, packet) => sum + (packet.skinId ? packetInstanceCount(packet) : 0), 0), morphedDraws: drawPackets.reduce((sum, packet) => sum + (packet.morphWeights.some((weight) => Math.abs(weight) > EPS) ? packetInstanceCount(packet) : 0), 0), lodHistogram };
-    const base = { format: VSR_SPATIAL_FRAME_FORMAT, version: VSR_SPATIAL_REALITY_VERSION, sceneId: scene.sceneId, viewport: { width: budget.width, height: budget.height }, budget, camera: { id: camera.id, viewMatrix: view, projectionMatrix: projection, viewProjectionMatrix: viewProjection, position: cameraPos }, environment, drawPackets, lights, passes, resources, shaders, stats, sourceRealityRoot, geometryRoot, materialRoot, textureRoot, animationRoot, environmentRoot, ...streaming ? { streaming } : {}, ...visualIntentRoot ? { visualIntentRoot } : {}, commandRoot };
+    const sourceRealityRoot = cryptographicHash({ format: scene.format, sceneId: scene.sceneId, reality: scene.reality ?? null }), geometryRoot = cryptographicHash(scene.meshes.map((mesh) => ({ id: mesh.id, positions: mesh.positions, normals: mesh.normals ?? null, uvs: mesh.uvs ?? null, indices: mesh.indices, jointIndices: mesh.jointIndices ?? null, jointWeights: mesh.jointWeights ?? null, morphTargets: mesh.morphTargets ?? null }))), materialRoot = cryptographicHash([...materialById.values()]), textureRoot = cryptographicHash(scene.textures ?? []), environmentRoot = cryptographicHash(environment), commandRoot = cryptographicHash({ drawPackets, passes, lights, budget, textureRoot, environmentRoot, animationRoot, streaming: streaming ?? null, gpuDrivenCulling: Boolean(options.gpuDrivenCulling) }), shaders = { vertex: VSR_SPATIAL_VERTEX_WGSL_V04, fragment: VSR_SPATIAL_FRAGMENT_WGSL_V04, shadowVertex: VSR_SPATIAL_SHADOW_WGSL_V04, ...options.gpuDrivenCulling ? { compute: VSR_SPATIAL_CULL_WGSL_V04 } : {}, sourceRoot: cryptographicHash([VSR_SPATIAL_VERTEX_WGSL_V04, VSR_SPATIAL_FRAGMENT_WGSL_V04, VSR_SPATIAL_SHADOW_WGSL_V04, ...options.gpuDrivenCulling ? [VSR_SPATIAL_CULL_WGSL_V04] : []]) };
+    const stats = { meshCount: scene.meshes.length, nodeCount: scene.nodes.length, textureCount: (scene.textures ?? []).length, materialTextureBindings: drawPackets.reduce((sum, packet) => sum + Object.values(packet.textureBindings).filter(Boolean).length, 0), animationClipCount: (scene.animations ?? []).length, visibleDraws: drawPackets.length, visibleInstances: visiblePackets.length, instancedDraws: drawPackets.filter((packet) => packetInstanceCount(packet) > 1).length, gpuDrivenDraws: options.gpuDrivenCulling ? drawPackets.length : 0, activeCells: streaming?.activeCellIds.length ?? 0, streamedNodes: streaming?.nodeIds.length ?? scene.nodes.length, streamingCulledCells, culledDraws: culled, triangleCount: drawPackets.reduce((sum, packet) => sum + packet.indexCount / 3 * packetInstanceCount(packet), 0), lightCount: lights.length, shadowCasterCount, skinnedDraws: drawPackets.reduce((sum, packet) => sum + (packet.skinId ? packetInstanceCount(packet) : 0), 0), morphedDraws: drawPackets.reduce((sum, packet) => sum + (packet.morphWeights.some((weight) => Math.abs(weight) > EPS) ? packetInstanceCount(packet) : 0), 0), lodHistogram };
+    const base = { format: VSR_SPATIAL_FRAME_FORMAT, version: VSR_SPATIAL_REALITY_VERSION, sceneId: scene.sceneId, viewport: { width: budget.width, height: budget.height }, budget, camera: { id: camera.id, viewMatrix: view, projectionMatrix: projection, viewProjectionMatrix: viewProjection, position: cameraPos }, environment, drawPackets, lights, passes, resources, shaders, stats, sourceRealityRoot, geometryRoot, materialRoot, textureRoot, animationRoot, environmentRoot, ...streaming ? { streaming } : {}, ...options.gpuDrivenCulling ? { gpuDrivenCulling: true } : {}, ...visualIntentRoot ? { visualIntentRoot } : {}, commandRoot };
     return { ...base, frameRoot: cryptographicHash(base) };
   }
   function verifySpatialFrame(plan) {
@@ -1150,7 +1169,7 @@ fn environmentSample(direction:vec3<f32>,fallback:vec3<f32>)->vec3<f32>{return s
       const { packetRoot, ...base2 } = packet;
       if (cryptographicHash(base2) !== packetRoot) diagnostics.push(`draw packet ${packet.nodeId} root mismatch`);
     }
-    const commandRoot = cryptographicHash({ drawPackets: plan.drawPackets, passes: plan.passes, lights: plan.lights, budget: plan.budget, textureRoot: plan.textureRoot, environmentRoot: plan.environmentRoot, animationRoot: plan.animationRoot, streaming: plan.streaming ?? null });
+    const commandRoot = cryptographicHash({ drawPackets: plan.drawPackets, passes: plan.passes, lights: plan.lights, budget: plan.budget, textureRoot: plan.textureRoot, environmentRoot: plan.environmentRoot, animationRoot: plan.animationRoot, streaming: plan.streaming ?? null, gpuDrivenCulling: Boolean(plan.gpuDrivenCulling) });
     if (commandRoot !== plan.commandRoot) diagnostics.push("command root mismatch");
     const { frameRoot, ...base } = plan;
     if (cryptographicHash(base) !== frameRoot) diagnostics.push("frame root mismatch");
@@ -1432,6 +1451,20 @@ fn environmentSample(direction:vec3<f32>,fallback:vec3<f32>)->vec3<f32>{return s
     for (let index = 0; index < instances.length; index++) out.set(transposeMat4(instances[index].worldMatrix), index * 16);
     return out;
   }
+  function packSpatialInstanceBoundsBuffer(packet) {
+    const instances = packetInstances(packet), out = new Float32Array(instances.length * 4);
+    for (let index = 0; index < instances.length; index++) {
+      const bounds = instances[index].worldBounds;
+      out.set([...bounds.center, bounds.radius], index * 4);
+    }
+    return out;
+  }
+  function packSpatialVisibleInstanceIndices(packet) {
+    return Uint32Array.from(packetInstances(packet).map((_, index) => index));
+  }
+  function packSpatialIndirectDrawCommand(packet) {
+    return new Uint32Array([packet.indexCount, packetInstanceCount(packet), 0, 0, 0]);
+  }
   function packSpatialJointBuffer(packet) {
     const joints = packet.jointMatrices.length ? packet.jointMatrices : [identityMat4()], out = new Float32Array(joints.length * 16);
     for (let index = 0; index < joints.length; index++) out.set(transposeMat4(joints[index]), index * 16);
@@ -1478,7 +1511,8 @@ fn environmentSample(direction:vec3<f32>,fallback:vec3<f32>)->vec3<f32>{return s
     const secure = typeof window === "undefined" || window.isSecureContext, nav = typeof navigator === "undefined" ? {} : navigator;
     return nav.gpu ? { format: "vsr.spatial-webgpu-capabilities.v0.4", available: true, secureContext: secure } : { format: "vsr.spatial-webgpu-capabilities.v0.4", available: false, secureContext: secure, reason: "navigator.gpu unavailable" };
   }
-  var GPU_BUFFER_USAGE = { COPY_DST: 8, INDEX: 16, VERTEX: 32, UNIFORM: 64, STORAGE: 128 };
+  var GPU_BUFFER_USAGE = { COPY_DST: 8, INDEX: 16, VERTEX: 32, UNIFORM: 64, STORAGE: 128, INDIRECT: 256 };
+  var GPU_SHADER_STAGE = { COMPUTE: 4 };
   var GPU_TEXTURE_USAGE = { COPY_DST: 2, TEXTURE_BINDING: 4, RENDER_ATTACHMENT: 16 };
   var now = () => typeof performance !== "undefined" ? performance.now() : Date.now();
   var VSRSpatialWebGPUExecutor = class _VSRSpatialWebGPUExecutor {
@@ -1489,6 +1523,8 @@ fn environmentSample(direction:vec3<f32>,fallback:vec3<f32>)->vec3<f32>{return s
     format;
     pipeline;
     shadowPipeline;
+    cullingPipelines;
+    cullingBindGroupLayout;
     depthTexture;
     shadowTexture;
     depthSize = "";
@@ -1501,6 +1537,8 @@ fn environmentSample(direction:vec3<f32>,fallback:vec3<f32>)->vec3<f32>{return s
     materialBuffers = /* @__PURE__ */ new Map();
     objectBuffers = /* @__PURE__ */ new Map();
     instanceBuffers = /* @__PURE__ */ new Map();
+    identityIndexBuffers = /* @__PURE__ */ new Map();
+    cullingBuffers = /* @__PURE__ */ new Map();
     deformationBuffers = /* @__PURE__ */ new Map();
     textures = /* @__PURE__ */ new Map();
     samplers = /* @__PURE__ */ new Map();
@@ -1545,6 +1583,13 @@ ${VSR_SPATIAL_FRAGMENT_WGSL_V04}` });
       const module = this.device.createShaderModule({ code: VSR_SPATIAL_SHADOW_WGSL_V04 });
       this.shadowPipeline = this.device.createRenderPipeline({ layout: "auto", vertex: { module, entryPoint: "vs_shadow", buffers: [{ arrayStride: 64, attributes: [{ shaderLocation: 0, offset: 0, format: "float32x3" }, { shaderLocation: 3, offset: 32, format: "float32x4" }, { shaderLocation: 4, offset: 48, format: "float32x4" }] }] }, primitive: { topology: "triangle-list", frontFace: "ccw", cullMode: "back" }, depthStencil: { format: "depth32float", depthWriteEnabled: true, depthCompare: "less" } });
       return this.shadowPipeline;
+    }
+    ensureCullingPipelines() {
+      if (this.cullingPipelines) return this.cullingPipelines;
+      const module = this.device.createShaderModule({ code: VSR_SPATIAL_CULL_WGSL_V04 }), bindGroupLayout = this.device.createBindGroupLayout({ entries: [{ binding: 0, visibility: GPU_SHADER_STAGE.COMPUTE, buffer: { type: "uniform" } }, { binding: 1, visibility: GPU_SHADER_STAGE.COMPUTE, buffer: { type: "read-only-storage" } }, { binding: 2, visibility: GPU_SHADER_STAGE.COMPUTE, buffer: { type: "storage" } }, { binding: 3, visibility: GPU_SHADER_STAGE.COMPUTE, buffer: { type: "storage" } }, { binding: 4, visibility: GPU_SHADER_STAGE.COMPUTE, buffer: { type: "storage" } }] }), layout = this.device.createPipelineLayout({ bindGroupLayouts: [bindGroupLayout] }), make = (entryPoint) => this.device.createComputePipeline({ layout, compute: { module, entryPoint } });
+      this.cullingBindGroupLayout = bindGroupLayout;
+      this.cullingPipelines = { reset: make("cs_reset"), cull: make("cs_cull"), finalize: make("cs_finalize") };
+      return this.cullingPipelines;
     }
     uploadBuffer(data, usage) {
       const size = Math.max(4, Math.ceil(data.byteLength / 4) * 4), buffer = this.device.createBuffer({ size, usage: usage | GPU_BUFFER_USAGE.COPY_DST });
@@ -1637,6 +1682,36 @@ ${VSR_SPATIAL_FRAGMENT_WGSL_V04}` });
       if (cached.root !== root) this.instanceBuffers.set(packet.nodeId, { ...cached, root });
       return cached.buffer;
     }
+    identityIndexBuffer(packet) {
+      const data = packSpatialVisibleInstanceIndices(packet), root = cryptographicHash(data), cached = this.identityIndexBuffers.get(packet.nodeId);
+      if (!cached || cached.byteLength !== data.byteLength) {
+        cached?.buffer.destroy?.();
+        const buffer = this.uploadBuffer(data, GPU_BUFFER_USAGE.STORAGE);
+        this.identityIndexBuffers.set(packet.nodeId, { buffer, root, byteLength: data.byteLength });
+        return buffer;
+      }
+      return cached.buffer;
+    }
+    culling(packet) {
+      const boundsData = packSpatialInstanceBoundsBuffer(packet), identity = packSpatialVisibleInstanceIndices(packet), command = packSpatialIndirectDrawCommand(packet), root = cryptographicHash({ bounds: [...boundsData], command: [...command] }), cached = this.cullingBuffers.get(packet.nodeId);
+      if (!cached || cached.byteLength !== boundsData.byteLength) {
+        cached?.bounds.destroy?.();
+        cached?.visible.destroy?.();
+        cached?.counter.destroy?.();
+        cached?.indirect.destroy?.();
+        const value = { bounds: this.uploadBuffer(boundsData, GPU_BUFFER_USAGE.STORAGE), visible: this.uploadBuffer(identity, GPU_BUFFER_USAGE.STORAGE), counter: this.uploadBuffer(new Uint32Array([0]), GPU_BUFFER_USAGE.STORAGE), indirect: this.uploadBuffer(command, GPU_BUFFER_USAGE.STORAGE | GPU_BUFFER_USAGE.INDIRECT), root, byteLength: boundsData.byteLength };
+        this.cullingBuffers.set(packet.nodeId, value);
+        return value;
+      }
+      if (cached.root !== root) {
+        this.device.queue.writeBuffer(cached.bounds, 0, boundsData.buffer, boundsData.byteOffset, boundsData.byteLength);
+        this.device.queue.writeBuffer(cached.visible, 0, identity.buffer, identity.byteOffset, identity.byteLength);
+        this.device.queue.writeBuffer(cached.counter, 0, new Uint32Array([0]).buffer, 0, 4);
+        this.device.queue.writeBuffer(cached.indirect, 0, command.buffer, command.byteOffset, command.byteLength);
+        this.cullingBuffers.set(packet.nodeId, { ...cached, root });
+      }
+      return cached;
+    }
     deformation(scene, packet) {
       const mesh = scene.meshes.find((entry) => entry.id === packet.meshId);
       if (!mesh) throw new Error(`Missing mesh ${packet.meshId}`);
@@ -1649,8 +1724,8 @@ ${VSR_SPATIAL_FRAGMENT_WGSL_V04}` });
       this.deformationBuffers.set(packet.nodeId, value);
       return value;
     }
-    objectGroup(pipeline, buffer, instanceBuffer, deformation) {
-      return this.device.createBindGroup({ layout: pipeline.getBindGroupLayout(1), entries: [{ binding: 0, resource: { buffer } }, { binding: 1, resource: { buffer: deformation.joint } }, { binding: 2, resource: { buffer: deformation.uniform } }, { binding: 3, resource: { buffer: deformation.morph } }, { binding: 4, resource: { buffer: instanceBuffer } }] });
+    objectGroup(pipeline, buffer, instanceBuffer, deformation, visibleIndexBuffer) {
+      return this.device.createBindGroup({ layout: pipeline.getBindGroupLayout(1), entries: [{ binding: 0, resource: { buffer } }, { binding: 1, resource: { buffer: deformation.joint } }, { binding: 2, resource: { buffer: deformation.uniform } }, { binding: 3, resource: { buffer: deformation.morph } }, { binding: 4, resource: { buffer: instanceBuffer } }, { binding: 5, resource: { buffer: visibleIndexBuffer } }] });
     }
     materialGroup(pipeline, scene, packet) {
       const material = scene.materials.find((entry) => entry.id === packet.materialId), base = this.textureResource(scene, material?.baseColorTextureId, "base"), metallicRoughness = this.textureResource(scene, material?.metallicRoughnessTextureId, "metallic-roughness"), normal = this.textureResource(scene, material?.normalTextureId, "normal"), occlusion = this.textureResource(scene, material?.occlusionTextureId, "occlusion"), emissive = this.textureResource(scene, material?.emissiveTextureId, "emissive");
@@ -1663,17 +1738,33 @@ ${VSR_SPATIAL_FRAGMENT_WGSL_V04}` });
       if (this.lost) throw new Error("WebGPU device is lost.");
       this.canvas.width = plan.viewport.width;
       this.canvas.height = plan.viewport.height;
-      const pipeline = this.ensurePipeline(), shadowCamera = resolveSpatialShadowCamera(plan), uploadStart = now();
+      const pipeline = this.ensurePipeline(), shadowCamera = resolveSpatialShadowCamera(plan), gpuDriven = Boolean(plan.gpuDrivenCulling), uploadStart = now();
       this.ensureFrameBuffers(plan);
-      const environmentResource = this.textureResource(scene, plan.environment.textureId, "environment"), cameraGroup = this.device.createBindGroup({ layout: pipeline.getBindGroupLayout(0), entries: [{ binding: 0, resource: { buffer: this.cameraBuffer } }, { binding: 1, resource: this.shadowSampler }, { binding: 2, resource: this.shadowTexture.createView() }, { binding: 3, resource: { buffer: this.shadowUniformBuffer } }, { binding: 4, resource: environmentResource.sampler }, { binding: 5, resource: environmentResource.view }] });
+      const environmentResource = this.textureResource(scene, plan.environment.textureId, "environment"), cameraGroup = this.device.createBindGroup({ layout: pipeline.getBindGroupLayout(0), entries: [{ binding: 0, resource: { buffer: this.cameraBuffer } }, { binding: 1, resource: this.shadowSampler }, { binding: 2, resource: this.shadowTexture.createView() }, { binding: 3, resource: { buffer: this.shadowUniformBuffer } }, { binding: 4, resource: environmentResource.sampler }, { binding: 5, resource: environmentResource.view }] }), cullingRecords = /* @__PURE__ */ new Map();
+      if (gpuDriven) for (const packet of plan.drawPackets) cullingRecords.set(packet.nodeId, this.culling(packet));
       const uploadMs = now() - uploadStart, encodeStart = now(), encoder = this.device.createCommandEncoder();
+      if (gpuDriven) {
+        const cullingPipelines = this.ensureCullingPipelines(), computePass = encoder.beginComputePass();
+        for (const packet of plan.drawPackets) {
+          const culling = cullingRecords.get(packet.nodeId);
+          const group = this.device.createBindGroup({ layout: this.cullingBindGroupLayout, entries: [{ binding: 0, resource: { buffer: this.cameraBuffer } }, { binding: 1, resource: { buffer: culling.bounds } }, { binding: 2, resource: { buffer: culling.visible } }, { binding: 3, resource: { buffer: culling.counter } }, { binding: 4, resource: { buffer: culling.indirect } }] });
+          computePass.setBindGroup(0, group);
+          computePass.setPipeline(cullingPipelines.reset);
+          computePass.dispatchWorkgroups(1);
+          computePass.setPipeline(cullingPipelines.cull);
+          computePass.dispatchWorkgroups(Math.max(1, Math.ceil(packetInstanceCount(packet) / 64)));
+          computePass.setPipeline(cullingPipelines.finalize);
+          computePass.dispatchWorkgroups(1);
+        }
+        computePass.end();
+      }
       if (shadowCamera) {
         const shadowPipeline = this.ensureShadowPipeline(), shadowGroup = this.device.createBindGroup({ layout: shadowPipeline.getBindGroupLayout(0), entries: [{ binding: 0, resource: { buffer: this.shadowUniformBuffer } }] }), shadowPass = encoder.beginRenderPass({ colorAttachments: [], depthStencilAttachment: { view: this.shadowTexture.createView(), depthClearValue: 1, depthLoadOp: "clear", depthStoreOp: "store" } });
         shadowPass.setPipeline(shadowPipeline);
         shadowPass.setBindGroup(0, shadowGroup);
         for (const packet of plan.drawPackets.filter((entry) => entry.castShadow)) {
           const mesh = this.mesh(scene, packet.meshId), objectBuffer = this.objectBuffer(packet), instanceBuffer = this.instanceBuffer(packet), deformation = this.deformation(scene, packet);
-          shadowPass.setBindGroup(1, this.objectGroup(shadowPipeline, objectBuffer, instanceBuffer, deformation));
+          shadowPass.setBindGroup(1, this.objectGroup(shadowPipeline, objectBuffer, instanceBuffer, deformation, this.identityIndexBuffer(packet)));
           shadowPass.setVertexBuffer(0, mesh.vertex);
           shadowPass.setIndexBuffer(mesh.index, "uint32");
           shadowPass.drawIndexed(mesh.indexCount, packetInstanceCount(packet), 0, 0, 0);
@@ -1684,18 +1775,19 @@ ${VSR_SPATIAL_FRAGMENT_WGSL_V04}` });
       pass.setPipeline(pipeline);
       pass.setBindGroup(0, cameraGroup);
       for (const packet of plan.drawPackets) {
-        const mesh = this.mesh(scene, packet.meshId), objectBuffer = this.objectBuffer(packet), instanceBuffer = this.instanceBuffer(packet), deformation = this.deformation(scene, packet);
-        pass.setBindGroup(1, this.objectGroup(pipeline, objectBuffer, instanceBuffer, deformation));
+        const mesh = this.mesh(scene, packet.meshId), objectBuffer = this.objectBuffer(packet), instanceBuffer = this.instanceBuffer(packet), deformation = this.deformation(scene, packet), culling = gpuDriven ? cullingRecords.get(packet.nodeId) : void 0;
+        pass.setBindGroup(1, this.objectGroup(pipeline, objectBuffer, instanceBuffer, deformation, gpuDriven ? culling.visible : this.identityIndexBuffer(packet)));
         pass.setBindGroup(2, this.materialGroup(pipeline, scene, packet));
         pass.setVertexBuffer(0, mesh.vertex);
         pass.setIndexBuffer(mesh.index, "uint32");
-        pass.drawIndexed(mesh.indexCount, packetInstanceCount(packet), 0, 0, 0);
+        if (gpuDriven) pass.drawIndexedIndirect(culling.indirect, 0);
+        else pass.drawIndexed(mesh.indexCount, packetInstanceCount(packet), 0, 0, 0);
       }
       pass.end();
       const commands = encoder.finish(), encodeMs = now() - encodeStart, submitStart = now();
       this.device.queue.submit([commands]);
       await this.device.queue.onSubmittedWorkDone?.();
-      const submitMs = now() - submitStart, base = { format: "vsr.spatial-webgpu-receipt.v0.4", frameRoot: plan.frameRoot, sceneId: scene.sceneId, adapterName: this.adapterName, drawCalls: plan.drawPackets.length, triangles: plan.stats.triangleCount, submitted: true, deviceLost: this.lost, compileMs, uploadMs, encodeMs, submitMs, materialTextureBindings: plan.stats.materialTextureBindings, shadowPasses: shadowCamera ? 1 : 0, visibleInstances: plan.stats.visibleInstances ?? plan.drawPackets.reduce((sum, packet) => sum + packetInstanceCount(packet), 0), instancedDraws: plan.stats.instancedDraws ?? plan.drawPackets.filter((packet) => packetInstanceCount(packet) > 1).length };
+      const submitMs = now() - submitStart, base = { format: "vsr.spatial-webgpu-receipt.v0.4", frameRoot: plan.frameRoot, sceneId: scene.sceneId, adapterName: this.adapterName, drawCalls: plan.drawPackets.length, triangles: plan.stats.triangleCount, submitted: true, deviceLost: this.lost, compileMs, uploadMs, encodeMs, submitMs, materialTextureBindings: plan.stats.materialTextureBindings, shadowPasses: shadowCamera ? 1 : 0, visibleInstances: plan.stats.visibleInstances ?? plan.drawPackets.reduce((sum, packet) => sum + packetInstanceCount(packet), 0), instancedDraws: plan.stats.instancedDraws ?? plan.drawPackets.filter((packet) => packetInstanceCount(packet) > 1).length, gpuDrivenDraws: gpuDriven ? plan.drawPackets.length : 0 };
       return { ...base, receiptRoot: cryptographicHash(base) };
     }
     destroy() {
@@ -1706,6 +1798,13 @@ ${VSR_SPATIAL_FRAGMENT_WGSL_V04}` });
       for (const material of this.materialBuffers.values()) material.buffer.destroy?.();
       for (const buffer of this.objectBuffers.values()) buffer.destroy?.();
       for (const instance of this.instanceBuffers.values()) instance.buffer.destroy?.();
+      for (const identity of this.identityIndexBuffers.values()) identity.buffer.destroy?.();
+      for (const culling of this.cullingBuffers.values()) {
+        culling.bounds.destroy?.();
+        culling.visible.destroy?.();
+        culling.counter.destroy?.();
+        culling.indirect.destroy?.();
+      }
       for (const deformation of this.deformationBuffers.values()) {
         deformation.joint.destroy?.();
         deformation.morph.destroy?.();
@@ -1720,11 +1819,15 @@ ${VSR_SPATIAL_FRAGMENT_WGSL_V04}` });
       this.materialBuffers.clear();
       this.objectBuffers.clear();
       this.instanceBuffers.clear();
+      this.identityIndexBuffers.clear();
+      this.cullingBuffers.clear();
       this.deformationBuffers.clear();
       this.textures.clear();
       this.samplers.clear();
       this.pipeline = void 0;
       this.shadowPipeline = void 0;
+      this.cullingPipelines = void 0;
+      this.cullingBindGroupLayout = void 0;
     }
   };
   function verifySpatialWebGPUReceipt(receipt) {
