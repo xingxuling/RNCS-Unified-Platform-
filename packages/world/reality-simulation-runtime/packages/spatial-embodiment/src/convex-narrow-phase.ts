@@ -209,7 +209,20 @@ function epa(a: ConvexProxy, b: ConvexProxy, simplex: SimplexVertex[]): { contac
   return { iterations: MAX_EPA_ITERATIONS };
 }
 
+function sphereSphereContact(a: Extract<ConvexProxy, { kind: 'sphere' }>, b: Extract<ConvexProxy, { kind: 'sphere' }>): ConvexContact | undefined {
+  const delta = sub(b.center, a.center), distance = length(delta), radius = a.radius + b.radius;
+  if (distance >= radius) return undefined;
+  const normal = distance <= EPSILON ? { x: 1, y: 0, z: 0 } : scale(delta, 1 / distance);
+  const witnessA = add(a.center, scale(normal, a.radius));
+  const witnessB = sub(b.center, scale(normal, b.radius));
+  return { point: midpoint(witnessA, witnessB), normal, penetration: Math.max(0, radius - distance) };
+}
+
 export function collideConvex(a: ConvexProxy, b: ConvexProxy): ConvexCollisionResult {
+  if (a.kind === 'sphere' && b.kind === 'sphere') {
+    const contact = sphereSphereContact(a, b);
+    return contact ? { status: 'collision', contact, gjkIterations: 0, epaIterations: 0 } : { status: 'separated', gjkIterations: 0, epaIterations: 0 };
+  }
   let direction = sub(b.center, a.center);
   if (length(direction) <= EPSILON) direction = { x: 1, y: 0, z: 0 };
   let simplex: SimplexVertex[] = [minkowskiSupport(a, b, direction)];

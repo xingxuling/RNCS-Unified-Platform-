@@ -2,9 +2,9 @@
 
 ## Unreleased
 
-- 旋转 OBB-OBB 窄相位接入确定性三维 GJK/EPA，并将 GJK/EPA、凸体接触和退化兜底写入空间诊断；
-- 保留 Sphere/Capsule 专用窄相位作为稳定性兜底，避免实验性广义 EPA 破坏角色控制；
-- 新增旋转 OBB GJK/EPA 接触、重放和诊断回归，空间具身测试达到 54/54。
+- Sphere、Box、Capsule 常见组合接入确定性三维广义凸窄相位；球-球使用精确闭式接触，EPA 退化保留显式诊断兜底；
+- 旋转 Capsule 使用定向线段包围盒参与 broad phase，避免旋转胶囊被旧的竖直 AABB 漏检；
+- 新增旋转胶囊、球-胶囊、球-球和旋转胶囊 broad phase 回归，空间具身测试达到 59/59。
 
 ## 0.5.0-alpha.1
 
