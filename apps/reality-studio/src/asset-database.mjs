@@ -142,7 +142,7 @@ export class AssetDatabase{
     for(const item of collected.items){
       let record=item.previous??null;
       if(item.status==='added'||item.status==='changed'){
-        record=createLocalAssetRecord(item.absolute_path,{sourceRoot:item.source_root,previousRecord:item.previous??null});next.assets.registry[record.asset_id]=record;if(!next.assets.order.includes(record.asset_id))next.assets.order.push(record.asset_id);if(item.status==='added')added++;else changed++;
+        record=createLocalAssetRecord(item.absolute_path,{sourceRoot:item.source_root,previousRecord:item.previous??null,importedAt:this.clock()});next.assets.registry[record.asset_id]=record;if(!next.assets.order.includes(record.asset_id))next.assets.order.push(record.asset_id);if(item.status==='added')added++;else changed++;
       }else if(item.status==='unchanged'){record=next.assets.registry[item.asset_id]??record;unchanged++;}
       else if(item.status==='missing'&&record){const updated=clone(record);updated.status='missing';updated.import_state={...(updated.import_state??{}),last_checked_at:this.clock(),stale:true};next.assets.registry[record.asset_id]=updated;missing++;}
       if(record&&item.status!=='missing'&&materialize){for(const profile of collected.profiles){const artifact=materializeDerivedAsset(record,{cacheDir:this.cacheDir,profile});artifacts.push({asset_id:record.asset_id,...artifact});cacheEntries[`${record.asset_id}:${profile}`]={asset_id:record.asset_id,profile,cache_key:artifact.cache_key,artifact_root:artifact.manifest.artifact_root,source_sha256:record.source.sha256,payload_sha256:artifact.manifest.payload.sha256,size:artifact.manifest.payload.size,kind:record.kind??'unknown',mime:artifact.manifest.mime??null};}}

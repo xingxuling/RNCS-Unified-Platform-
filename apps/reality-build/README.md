@@ -7,6 +7,7 @@ Reality Build Fabric 把 Reality Studio 统一项目编译成可验证、可缓�
 ```text
 统一项目
 → 请求与项目验证
+→ Asset Database 增量同步与缓存命中
 → 构建工具链 / 宿主能力预检
 → 资产内容寻址烘焙
 → Behavior Runtime 编译
@@ -57,6 +58,14 @@ node src/cli.mjs build \
   --title 冰境试炼 \
   --app-id com.taowind.frosttrial
 ```
+
+启用 Reality Studio Asset Database：
+
+```bash
+node src/cli.mjs build --config examples/reality-build.json
+```
+
+启用后，构建输出会生成 `asset-database.json`、变更计划、同步收据和缓存索引；`web-release`、Windows 便携包、Android 工程、无头服务和回放包会携带这些证据，单文件 Web 则将资源数据库根和缓存制品摘要内嵌到 HTML。
 
 ## 诚实边界
 

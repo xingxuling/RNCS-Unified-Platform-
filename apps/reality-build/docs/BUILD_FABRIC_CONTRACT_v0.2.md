@@ -12,6 +12,15 @@ RBF v0.2 接受 `reality-build.request.v0.1` 规范化请求和 `reality-studio.
 - 质量档位；
 - 缺失资产与确定性政策。
 
+可选的 `asset_database` 用于把 Reality Studio 的增量资源数据库接入构建：
+
+- `cache_dir`：内容寻址缓存目录；
+- `source_roots`：相对于项目文件的资源源根；
+- `profiles`：派生缓存 profile，默认 `runtime`；
+- `materialize`：是否在同步阶段生成或命中缓存 payload。
+
+启用后，构建会先生成 `asset-change-plan.json` 和 `asset-database-sync.json`，再从缓存 payload 烘焙资产；所有非单文件目标携带同一组资源证据，单文件 Web 将其内嵌在运行时 payload 中。
+
 ## 2. 构建图
 
 ```text
@@ -59,6 +68,7 @@ v0.2 的自动 APK 是调试签名包，不冒充商店发布包。
 - `validation.json`
 - `build-preflight.json`
 - `asset-manifest.json`
+- 启用 Asset Database 时的 `asset-database.json`、`asset-change-plan.json`、`asset-database-sync.json`、`asset-cache-index.json`
 - `integrity-manifest.json`
 - 每个目标的 `target-receipt.json`
 - `build-receipt.json`

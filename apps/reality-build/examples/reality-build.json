@@ -23,5 +23,13 @@
     "embed_assets": true,
     "deterministic": true
   },
+  "asset_database": {
+    "enabled": true,
+    "cache_dir": "output/asset-cache",
+    "source_roots": ["assets"],
+    "profiles": ["runtime"],
+    "recursive": true,
+    "materialize": true
+  },
   "build_time": "2026-07-02T00:00:00.000Z"
 }
