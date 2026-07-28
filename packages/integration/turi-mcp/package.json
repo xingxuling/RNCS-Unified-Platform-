@@ -1,0 +1,37 @@
+{
+  "name": "@taowind/turi-mcp",
+  "version": "0.1.0-alpha.1",
+  "type": "module",
+  "description": "Unified TaoWind Reality Intelligence MCP for RCL, RNCS, UPDIA, WorldSeed, and GameBrain.",
+  "license": "Apache-2.0",
+  "bin": {
+    "turi-mcp": "src/cli.mjs"
+  },
+  "exports": {
+    ".": "./src/index.mjs"
+  },
+  "files": [
+    "src",
+    "examples",
+    "README.md",
+    ".env.example",
+    "Dockerfile",
+    "docker-compose.yml"
+  ],
+  "scripts": {
+    "start": "node src/cli.mjs http",
+    "start:http": "node src/cli.mjs http",
+    "start:stdio": "node src/cli.mjs stdio",
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs",
+    "smoke": "node scripts/smoke.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.29.0",
+    "@taowind/reality-one-gateway": "*",
+    "@taowind/taowind-reality-mcp": "*",
+    "zod": "3.25.76"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

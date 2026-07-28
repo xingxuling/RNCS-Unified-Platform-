@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: taowind-turi-mcp
+    runtime: node
+    plan: free
+    repo: https://github.com/xingxuling/RNCS-Unified-Platform-
+    branch: feat/turi-unified-rcl-rncs-updia-mcp-v0.1
+    buildCommand: npm ci --ignore-scripts --no-audit --no-fund
+    startCommand: npm run serve:turi-mcp
+    healthCheckPath: /health
+    autoDeployTrigger: commit
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: TURI_HOST
+        value: 0.0.0.0
+      - key: TURI_MCP_PATH
+        value: /mcp
+      - key: TURI_AUTH_MODE
+        value: bearer
+      - key: TURI_BEARER_TOKEN
+        sync: false
+      - key: TURI_ALLOWED_HOSTS
+        value: "*"
+      - key: TURI_ALLOWED_ORIGINS
+        value: https://chatgpt.com,https://chat.openai.com
+      - key: TURI_AUTHORITY_MODE
+        value: candidate
+      - key: TURI_ENABLE_AUTHORIZED_WRITES
+        value: "false"
+      - key: TURI_ENABLE_EXTERNAL_EFFECTS
+        value: "false"
+      - key: TURI_DATA_DIR
+        value: /tmp/turi-mcp

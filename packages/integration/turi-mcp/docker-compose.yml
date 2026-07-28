@@ -1,0 +1,24 @@
+services:
+  turi-mcp:
+    build:
+      context: ../../..
+      dockerfile: packages/integration/turi-mcp/Dockerfile
+    ports:
+      - "8797:8797"
+    env_file:
+      - .env
+    environment:
+      TURI_HOST: 0.0.0.0
+      TURI_PORT: 8797
+      TURI_AUTH_MODE: bearer
+      TURI_ALLOWED_HOSTS: "*"
+      TURI_AUTHORITY_MODE: candidate
+      TURI_ENABLE_AUTHORIZED_WRITES: "false"
+      TURI_ENABLE_EXTERNAL_EFFECTS: "false"
+      TURI_DATA_DIR: /var/lib/turi-mcp
+    volumes:
+      - turi-mcp-data:/var/lib/turi-mcp
+    restart: unless-stopped
+
+volumes:
+  turi-mcp-data:
