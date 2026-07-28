@@ -44,6 +44,11 @@ chain:
 - the RNCS session stores both roots in simulation outputs, commit receipts,
   and the session-root payload, then regenerates and compares them during
   commit.
+- `runtime-binding` seals those two verified artifacts into
+  `rncs.authority-presentation-binding.v0.1`; the binding checks the state-root
+  link, frame-to-packet link, time domain, object identity and body-root parity.
+  RCL and zhinao can consume this compact receipt without importing the RNCS
+  implementation.
 
 The RSR frame uses its existing semantic root format; the VSR packet seals its
 own SHA-256 packet root and points `sourcePacketRoot` at the RSR frame root.

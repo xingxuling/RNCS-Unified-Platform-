@@ -9,6 +9,7 @@ import {
   createSpatialRealityEngineSession,
   verifySpatialEngineSessionSnapshot,
 } from '../src/spatial.mjs';
+import { verifyRealityRuntimeBinding } from '../src/runtime-binding.mjs';
 
 const GENERATION_ROOT = '1'.repeat(64);
 
@@ -127,6 +128,10 @@ test('spatial RNCS session keeps RSR authoritative state inert until commit', as
   assert.equal(simulation.spatial.authorityFrame.sourceStateRoot, simulation.spatial.rsrAfterStateRoot);
   assert.equal(simulation.spatial.temporalPacket.sourceStateRoot, simulation.spatial.rsrAfterStateRoot);
   assert.equal(simulation.spatial.temporalPacket.sourcePacketRoot, simulation.spatial.authorityFrame.frameRoot);
+  assert.equal(simulation.spatial.runtimeBinding.stateRoot, simulation.spatial.rsrAfterStateRoot);
+  assert.equal(simulation.spatial.runtimeBinding.authorityFrame.frameRoot, simulation.spatial.authorityFrame.frameRoot);
+  assert.equal(simulation.spatial.runtimeBinding.temporalPacket.packetRoot, simulation.spatial.temporalPacket.packetRoot);
+  assert.equal(verifyRealityRuntimeBinding(simulation.spatial.runtimeBinding).valid, true);
   assert.equal(session.spatialSnapshot().stateRoot, before.stateRoot);
   assert.equal(resourceLog.length, 1);
 
@@ -141,6 +146,7 @@ test('spatial RNCS session keeps RSR authoritative state inert until commit', as
   assert.equal(committed.snapshot.spatial.authoritative_snapshot.stateRoot, simulation.spatial.rsrAfterStateRoot);
   assert.equal(committed.applied.authorityFrame.frameRoot, simulation.spatial.authorityFrame.frameRoot);
   assert.equal(committed.applied.temporalPacket.packetRoot, simulation.spatial.temporalPacket.packetRoot);
+  assert.equal(committed.applied.runtimeBinding.bindingRoot, simulation.spatial.runtimeBinding.bindingRoot);
   assert.equal(resourceLog.length, 2);
   assert.equal(verifySpatialEngineSessionSnapshot(committed.snapshot).valid, true);
   assert.equal(session.verify().valid, true);
@@ -157,6 +163,21 @@ test('spatial command counterfactuals change proposal, state, and frame roots', 
   assert.notEqual(leftProposal.proposal_root, rightProposal.proposal_root);
   assert.notEqual(leftSimulation.spatial.afterStateRoot, rightSimulation.spatial.afterStateRoot);
   assert.notEqual(leftSimulation.spatial.frameRoot, rightSimulation.spatial.frameRoot);
+});
+
+test('runtime authority-presentation binding rejects a forged temporal authority root', () => {
+  const { session } = createFixture({
+    id: 'command:binding-check',
+    tick: 1,
+    type: 'set-velocity',
+    bodyId: 'avatar',
+    velocity: { x: 120, y: 0, z: 0 },
+  });
+  session.propose(proposalInput());
+  const simulation = session.simulate();
+  const forged = structuredClone(simulation.spatial.runtimeBinding);
+  forged.temporalPacket.sourcePacketRoot = 'forged-authority-root';
+  assert.equal(verifyRealityRuntimeBinding(forged).valid, false);
 });
 
 test('spatial commit rejects a generation root diverging from the verified simulation', async () => {

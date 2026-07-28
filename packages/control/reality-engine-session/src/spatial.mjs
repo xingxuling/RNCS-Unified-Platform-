@@ -30,6 +30,10 @@ import {
   ZERO_ROOT,
 } from './index.mjs';
 import { createSpatialReplayBundle } from './spatial-replay.mjs';
+import {
+  createRealityRuntimeBinding,
+  verifyRealityRuntimeBinding,
+} from './runtime-binding.mjs';
 
 export const SPATIAL_ENGINE_SESSION_FORMAT = 'rncs.spatial-engine-session.v0.1';
 export const SPATIAL_ENGINE_SIMULATION_FORMAT = 'rncs.spatial-engine-simulation.v0.1';
@@ -354,12 +358,19 @@ function buildProjection(snapshot, projectionOptions) {
 
 function buildTemporalAuthority(snapshot, previousStateRoot, reason) {
   const authorityFrame = createAuthoritativeStateFrame(snapshot, { previousStateRoot, reason });
-  const temporalPacket = networkPacketToTemporalState({ rsrFrame: authorityFrame });
+  const temporalPacket = networkPacketToTemporalState({
+    rsrFrame: authorityFrame,
+    worldId: authorityFrame.worldId,
+    tick: authorityFrame.tick,
+    stepHz: authorityFrame.stepHz,
+  });
   requireCondition(verifyAuthoritativeStateFrame(authorityFrame), 'RSR_AUTHORITY_FRAME_INVALID');
   requireCondition(verifyTemporalStatePacket(temporalPacket), 'VSR_TEMPORAL_PACKET_INVALID');
   requireCondition(temporalPacket.sourceStateRoot === snapshot.stateRoot, 'VSR_TEMPORAL_STATE_ROOT_MISMATCH');
   requireCondition(temporalPacket.sourcePacketRoot === authorityFrame.frameRoot, 'VSR_TEMPORAL_AUTHORITY_ROOT_MISMATCH');
-  return { authorityFrame, temporalPacket };
+  const runtimeBinding = createRealityRuntimeBinding({ authorityFrame, temporalPacket });
+  requireCondition(verifyRealityRuntimeBinding(runtimeBinding).valid, 'RNCS_RUNTIME_BINDING_INVALID');
+  return { authorityFrame, temporalPacket, runtimeBinding };
 }
 
 function planFromInput(input, snapshot, fallback) {
@@ -520,6 +531,7 @@ export class SpatialRealityEngineSession {
       { kind: 'rsr-authoritative-state-frame', root: temporal.authorityFrame.frameRoot },
       { kind: 'vsr-frame-plan', root: projection.frameRoot },
       { kind: 'vsr-temporal-state-packet', root: temporal.temporalPacket.packetRoot },
+      { kind: 'rncs-runtime-authority-presentation-binding', root: temporal.runtimeBinding.bindingRoot },
       ...(this.foundation ? [{ kind: 'rcl-foundation-native-receipt', root: this.foundation.receiptRoot }] : []),
       ...(simulationRun.receipt ? [{ kind: 'rcl-resource-wal', root: simulationRun.receipt.succeeded_root }] : []),
     ];
@@ -532,6 +544,7 @@ export class SpatialRealityEngineSession {
         { kind: 'rsr-authoritative-state-frame', root: temporal.authorityFrame.frameRoot },
         { kind: 'vsr-spatial-frame', root: projection.frameRoot },
         { kind: 'vsr-temporal-state-packet', root: temporal.temporalPacket.packetRoot },
+        { kind: 'rncs-runtime-authority-presentation-binding', root: temporal.runtimeBinding.bindingRoot },
       ],
       receiptRefs: allReceiptRefs,
       networkCompilation,
@@ -556,6 +569,7 @@ export class SpatialRealityEngineSession {
       frameVerification: projection.frameVerification,
       authorityFrame: temporal.authorityFrame,
       temporalPacket: temporal.temporalPacket,
+      runtimeBinding: temporal.runtimeBinding,
       causalDelta,
       resourceReceipt: simulationRun.receipt,
     };
@@ -591,6 +605,7 @@ export class SpatialRealityEngineSession {
         { kind: 'rsr-authoritative-state-frame', root: this.spatialSimulation.authorityFrame.frameRoot },
         { kind: 'vsr-spatial-frame', root: this.spatialSimulation.frameRoot },
         { kind: 'vsr-temporal-state-packet', root: this.spatialSimulation.temporalPacket.packetRoot },
+        { kind: 'rncs-runtime-authority-presentation-binding', root: this.spatialSimulation.runtimeBinding.bindingRoot },
         ...(this.foundation ? [{ kind: 'rcl-foundation-native-receipt', root: this.foundation.receiptRoot }] : []),
       ],
       apply: async context => {
@@ -613,6 +628,7 @@ export class SpatialRealityEngineSession {
           authorityFrameRoot: appliedTemporal.authorityFrame.frameRoot,
           frameRoot: appliedProjection.frameRoot,
           temporalPacketRoot: appliedTemporal.temporalPacket.packetRoot,
+          runtimeBindingRoot: appliedTemporal.runtimeBinding.bindingRoot,
         }, () => ({ stateRoot: appliedSnapshot.stateRoot, frameRoot: appliedProjection.frameRoot }));
         this.world = candidateWorld;
         const applied = {
@@ -624,6 +640,7 @@ export class SpatialRealityEngineSession {
           framePlan: appliedProjection.framePlan,
           authorityFrame: appliedTemporal.authorityFrame,
           temporalPacket: appliedTemporal.temporalPacket,
+          runtimeBinding: appliedTemporal.runtimeBinding,
           resourceReceipt: resourceRun.receipt,
         };
         if (typeof externalApply === 'function') {
@@ -695,6 +712,7 @@ export class SpatialRealityEngineSession {
       authority_frame_root: this.spatialSimulation?.authorityFrame?.frameRoot ?? null,
       frame_root: this.spatialSimulation?.frameRoot ?? null,
       temporal_packet_root: this.spatialSimulation?.temporalPacket?.packetRoot ?? null,
+      runtime_binding_root: this.spatialSimulation?.runtimeBinding?.bindingRoot ?? null,
       foundation_receipt_root: this.foundation?.receiptRoot ?? null,
     };
     const snapshot = { ...base, spatial, session_root_payload: snapshotRootPayload };
@@ -728,9 +746,15 @@ export function verifySpatialEngineSessionSnapshot(snapshot) {
     if (spatial.simulation.snapshot?.stateRoot !== spatial.simulation.rsrAfterStateRoot) errors.push('SPATIAL_AFTER_STATE_ROOT_MISMATCH');
     if (!spatial.simulation.authorityFrame || !verifyAuthoritativeStateFrame(spatial.simulation.authorityFrame)) errors.push('RSR_AUTHORITY_FRAME_INVALID');
     if (!spatial.simulation.temporalPacket || !verifyTemporalStatePacket(spatial.simulation.temporalPacket)) errors.push('VSR_TEMPORAL_PACKET_INVALID');
+    const runtimeBindingVerification = spatial.simulation.runtimeBinding
+      ? verifyRealityRuntimeBinding(spatial.simulation.runtimeBinding)
+      : { valid: false, errors: ['missing'] };
+    if (!runtimeBindingVerification.valid) errors.push(...runtimeBindingVerification.errors);
     if (spatial.simulation.authorityFrame?.sourceStateRoot !== spatial.simulation.rsrAfterStateRoot) errors.push('RSR_AUTHORITY_FRAME_STATE_ROOT_MISMATCH');
     if (spatial.simulation.temporalPacket?.sourceStateRoot !== spatial.simulation.rsrAfterStateRoot) errors.push('VSR_TEMPORAL_STATE_ROOT_MISMATCH');
     if (spatial.simulation.temporalPacket?.sourcePacketRoot !== spatial.simulation.authorityFrame?.frameRoot) errors.push('VSR_TEMPORAL_AUTHORITY_ROOT_MISMATCH');
+    if (spatial.simulation.runtimeBinding?.stateRoot !== spatial.simulation.rsrAfterStateRoot) errors.push('RNCS_RUNTIME_BINDING_STATE_ROOT_MISMATCH');
+    if (spatial.simulation.runtimeBinding?.bindingRoot !== snapshot?.session_root_payload?.runtime_binding_root) errors.push('RNCS_RUNTIME_BINDING_ROOT_MISMATCH');
     if (spatial.simulation.authorityFrame?.previousStateRoot !== spatial.simulation.beforeRsrStateRoot) errors.push('RSR_AUTHORITY_FRAME_PREVIOUS_ROOT_MISMATCH');
   }
   if (snapshot?.status === 'committed' && (!spatial?.authoritative_snapshot || rncsSpatialStateRoot(spatial.authoritative_snapshot) !== snapshot.state_root)) errors.push('SPATIAL_COMMITTED_STATE_ROOT_MISMATCH');
