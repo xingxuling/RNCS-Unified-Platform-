@@ -7,6 +7,10 @@ import {
   verifySpatialEmbodimentSnapshot,
 } from '@taowind/reality-simulation-runtime/spatial-embodiment';
 import {
+  createAuthoritativeStateFrame,
+  verifyAuthoritativeStateFrame,
+} from '@taowind/reality-simulation-runtime/network-reconciliation';
+import {
   spatialEmbodimentSceneRoot,
   spatialEmbodimentSnapshotToVSRScene,
 } from '@taowind/reality-simulation-runtime/spatial-embodiment-vsr';
@@ -14,6 +18,10 @@ import {
   compileSpatialFrame,
   verifySpatialFrame,
 } from '@taowind/visual-state-runtime/spatial-reality-3d';
+import {
+  networkPacketToTemporalState,
+  verifyTemporalStatePacket,
+} from '@taowind/visual-state-runtime/temporal-presentation';
 import {
   createEngineProposalInput,
   RealityEngineSession,
@@ -344,6 +352,16 @@ function buildProjection(snapshot, projectionOptions) {
   };
 }
 
+function buildTemporalAuthority(snapshot, previousStateRoot, reason) {
+  const authorityFrame = createAuthoritativeStateFrame(snapshot, { previousStateRoot, reason });
+  const temporalPacket = networkPacketToTemporalState({ rsrFrame: authorityFrame });
+  requireCondition(verifyAuthoritativeStateFrame(authorityFrame), 'RSR_AUTHORITY_FRAME_INVALID');
+  requireCondition(verifyTemporalStatePacket(temporalPacket), 'VSR_TEMPORAL_PACKET_INVALID');
+  requireCondition(temporalPacket.sourceStateRoot === snapshot.stateRoot, 'VSR_TEMPORAL_STATE_ROOT_MISMATCH');
+  requireCondition(temporalPacket.sourcePacketRoot === authorityFrame.frameRoot, 'VSR_TEMPORAL_AUTHORITY_ROOT_MISMATCH');
+  return { authorityFrame, temporalPacket };
+}
+
 function planFromInput(input, snapshot, fallback) {
   const spatial = input.extensions?.spatial ?? {};
   return normalizePlan(snapshot, {
@@ -493,12 +511,15 @@ export class SpatialRealityEngineSession {
     const after = simulationRun.result;
     requireCondition(verifySpatialEmbodimentSnapshot(after), 'SPATIAL_SIMULATION_SNAPSHOT_INVALID');
     const projection = buildProjection(after, this.spatialProjectionOptions);
+    const temporal = buildTemporalAuthority(after, before.stateRoot, 'candidate-simulation');
     const causalDelta = spatialEmbodimentSnapshotToCausalDelta(after, before.stateRoot);
     const afterStateRoot = rncsSpatialStateRoot(after);
     const allReceiptRefs = [
       ...clone(receiptRefs),
       { kind: 'rsr-causal-delta', root: causalDelta.deltaRoot },
+      { kind: 'rsr-authoritative-state-frame', root: temporal.authorityFrame.frameRoot },
       { kind: 'vsr-frame-plan', root: projection.frameRoot },
+      { kind: 'vsr-temporal-state-packet', root: temporal.temporalPacket.packetRoot },
       ...(this.foundation ? [{ kind: 'rcl-foundation-native-receipt', root: this.foundation.receiptRoot }] : []),
       ...(simulationRun.receipt ? [{ kind: 'rcl-resource-wal', root: simulationRun.receipt.succeeded_root }] : []),
     ];
@@ -508,7 +529,9 @@ export class SpatialRealityEngineSession {
       afterStateRoot,
       outputs: [
         { kind: 'rsr-spatial-snapshot', root: after.stateRoot },
+        { kind: 'rsr-authoritative-state-frame', root: temporal.authorityFrame.frameRoot },
         { kind: 'vsr-spatial-frame', root: projection.frameRoot },
+        { kind: 'vsr-temporal-state-packet', root: temporal.temporalPacket.packetRoot },
       ],
       receiptRefs: allReceiptRefs,
       networkCompilation,
@@ -531,6 +554,8 @@ export class SpatialRealityEngineSession {
       framePlan: projection.framePlan,
       frameRoot: projection.frameRoot,
       frameVerification: projection.frameVerification,
+      authorityFrame: temporal.authorityFrame,
+      temporalPacket: temporal.temporalPacket,
       causalDelta,
       resourceReceipt: simulationRun.receipt,
     };
@@ -563,7 +588,9 @@ export class SpatialRealityEngineSession {
       generationRoot: expectedRoot,
       receiptRefs: [
         ...clone(receiptRefs),
+        { kind: 'rsr-authoritative-state-frame', root: this.spatialSimulation.authorityFrame.frameRoot },
         { kind: 'vsr-spatial-frame', root: this.spatialSimulation.frameRoot },
+        { kind: 'vsr-temporal-state-packet', root: this.spatialSimulation.temporalPacket.packetRoot },
         ...(this.foundation ? [{ kind: 'rcl-foundation-native-receipt', root: this.foundation.receiptRoot }] : []),
       ],
       apply: async context => {
@@ -575,12 +602,17 @@ export class SpatialRealityEngineSession {
         requireCondition(appliedSnapshot.stateRoot === this.spatialSimulation.rsrAfterStateRoot, 'SPATIAL_APPLY_STATE_ROOT_MISMATCH');
         const appliedProjection = buildProjection(appliedSnapshot, this.spatialProjectionOptions);
         requireCondition(appliedProjection.frameRoot === this.spatialSimulation.frameRoot, 'SPATIAL_APPLY_FRAME_ROOT_MISMATCH');
+        const appliedTemporal = buildTemporalAuthority(appliedSnapshot, authoritativeBefore.stateRoot, 'candidate-simulation');
+        requireCondition(appliedTemporal.authorityFrame.frameRoot === this.spatialSimulation.authorityFrame.frameRoot, 'SPATIAL_APPLY_AUTHORITY_FRAME_ROOT_MISMATCH');
+        requireCondition(appliedTemporal.temporalPacket.packetRoot === this.spatialSimulation.temporalPacket.packetRoot, 'SPATIAL_APPLY_TEMPORAL_PACKET_ROOT_MISMATCH');
         const resourceRun = recordResourceOperation(this.resourceRuntime, 'spatial.commit', {
           worldId: authoritativeBefore.worldId,
           beforeStateRoot: authoritativeBefore.stateRoot,
           afterStateRoot: expectedRoot,
           rsrAfterStateRoot: appliedSnapshot.stateRoot,
+          authorityFrameRoot: appliedTemporal.authorityFrame.frameRoot,
           frameRoot: appliedProjection.frameRoot,
+          temporalPacketRoot: appliedTemporal.temporalPacket.packetRoot,
         }, () => ({ stateRoot: appliedSnapshot.stateRoot, frameRoot: appliedProjection.frameRoot }));
         this.world = candidateWorld;
         const applied = {
@@ -590,6 +622,8 @@ export class SpatialRealityEngineSession {
           snapshot: appliedSnapshot,
           scene: appliedProjection.scene,
           framePlan: appliedProjection.framePlan,
+          authorityFrame: appliedTemporal.authorityFrame,
+          temporalPacket: appliedTemporal.temporalPacket,
           resourceReceipt: resourceRun.receipt,
         };
         if (typeof externalApply === 'function') {
@@ -658,7 +692,9 @@ export class SpatialRealityEngineSession {
       commit_root: base.envelope?.commit?.commit_root ?? null,
       authoritative_rsr_state_root: authoritativeSnapshot.stateRoot,
       simulated_rsr_state_root: this.spatialSimulation?.rsrAfterStateRoot ?? null,
+      authority_frame_root: this.spatialSimulation?.authorityFrame?.frameRoot ?? null,
       frame_root: this.spatialSimulation?.frameRoot ?? null,
+      temporal_packet_root: this.spatialSimulation?.temporalPacket?.packetRoot ?? null,
       foundation_receipt_root: this.foundation?.receiptRoot ?? null,
     };
     const snapshot = { ...base, spatial, session_root_payload: snapshotRootPayload };
@@ -690,6 +726,12 @@ export function verifySpatialEngineSessionSnapshot(snapshot) {
     if (!spatial.simulation.scene || spatialEmbodimentSceneRoot(spatial.simulation.scene) !== spatial.simulation.sceneRoot) errors.push('SPATIAL_SCENE_ROOT_MISMATCH');
     if (spatial.simulation.framePlan?.frameRoot !== spatial.simulation.frameRoot) errors.push('SPATIAL_FRAME_ROOT_MISMATCH');
     if (spatial.simulation.snapshot?.stateRoot !== spatial.simulation.rsrAfterStateRoot) errors.push('SPATIAL_AFTER_STATE_ROOT_MISMATCH');
+    if (!spatial.simulation.authorityFrame || !verifyAuthoritativeStateFrame(spatial.simulation.authorityFrame)) errors.push('RSR_AUTHORITY_FRAME_INVALID');
+    if (!spatial.simulation.temporalPacket || !verifyTemporalStatePacket(spatial.simulation.temporalPacket)) errors.push('VSR_TEMPORAL_PACKET_INVALID');
+    if (spatial.simulation.authorityFrame?.sourceStateRoot !== spatial.simulation.rsrAfterStateRoot) errors.push('RSR_AUTHORITY_FRAME_STATE_ROOT_MISMATCH');
+    if (spatial.simulation.temporalPacket?.sourceStateRoot !== spatial.simulation.rsrAfterStateRoot) errors.push('VSR_TEMPORAL_STATE_ROOT_MISMATCH');
+    if (spatial.simulation.temporalPacket?.sourcePacketRoot !== spatial.simulation.authorityFrame?.frameRoot) errors.push('VSR_TEMPORAL_AUTHORITY_ROOT_MISMATCH');
+    if (spatial.simulation.authorityFrame?.previousStateRoot !== spatial.simulation.beforeRsrStateRoot) errors.push('RSR_AUTHORITY_FRAME_PREVIOUS_ROOT_MISMATCH');
   }
   if (snapshot?.status === 'committed' && (!spatial?.authoritative_snapshot || rncsSpatialStateRoot(spatial.authoritative_snapshot) !== snapshot.state_root)) errors.push('SPATIAL_COMMITTED_STATE_ROOT_MISMATCH');
   return { valid: errors.length === 0, errors, session_root: snapshot?.session_root ?? null, state_root: spatial?.authoritative_snapshot?.stateRoot ?? null, frame_root: spatial?.simulation?.frameRoot ?? null };

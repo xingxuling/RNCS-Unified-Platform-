@@ -15,6 +15,7 @@ import {
   verifyAuthoritativeStateDelta,
   verifyAuthoritativeStateFrame,
 } from '../packages/network-reconciliation/src/index.js';
+import { semanticHash } from '../packages/spec/src/index.js';
 
 const config = (): SpatialEmbodimentWorldConfig => ({
   format: 'rsr.spatial-embodiment-world.v0.5',
@@ -40,6 +41,16 @@ test('authoritative frame binds presentation objects to one verified RSR state r
   assert.equal(frame.sourceStateRoot, snapshot.stateRoot);
   assert.equal(frame.objects.length, snapshot.bodies.length);
   assert.equal(verifyAuthoritativeStateFrame(frame), true);
+});
+
+test('authoritative frame verification checks nested body roots, not only the outer frame root', () => {
+  const snapshot = new SpatialEmbodimentWorld(config()).snapshot();
+  const frame = createAuthoritativeStateFrame(snapshot);
+  const tampered = structuredClone(frame);
+  tampered.objects[0]!.position.x += 1;
+  const { frameRoot: _frameRoot, ...frameBody } = tampered;
+  tampered.frameRoot = semanticHash(frameBody);
+  assert.equal(verifyAuthoritativeStateFrame(tampered), false);
 });
 
 test('authoritative delta reconstructs the exact target snapshot', () => {

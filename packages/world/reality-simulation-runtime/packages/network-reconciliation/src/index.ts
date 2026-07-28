@@ -138,8 +138,24 @@ export function createAuthoritativeStateFrame(
 }
 
 export function verifyAuthoritativeStateFrame(frame: RsrAuthoritativeStateFrame): boolean {
+  if (!frame || frame.format !== RSR_AUTHORITY_FRAME_FORMAT || frame.protocol !== RSR_AUTHORITY_PROTOCOL) return false;
+  if (typeof frame.worldId !== 'string' || frame.worldId.length === 0) return false;
+  if (!Number.isSafeInteger(frame.tick) || frame.tick < 0 || !Number.isFinite(frame.stepHz) || frame.stepHz <= 0) return false;
+  if (typeof frame.sourceStateRoot !== 'string' || frame.sourceStateRoot.length === 0) return false;
+  if (typeof frame.previousStateRoot !== 'string' || frame.previousStateRoot.length === 0) return false;
+  if (typeof frame.reason !== 'string' || frame.reason.length === 0) return false;
+  if (!Array.isArray(frame.objects) || !Array.isArray(frame.events) || !frame.diagnostics || typeof frame.diagnostics !== 'object') return false;
+  if (!frame.roots || typeof frame.roots !== 'object') return false;
+  if (['bodyRoot', 'contactRoot', 'characterRoot', 'sensoryRoot', 'jointRoot'].some(key => typeof frame.roots[key as keyof RsrAuthoritativeStateFrame['roots']] !== 'string' || frame.roots[key as keyof RsrAuthoritativeStateFrame['roots']].length === 0)) return false;
+  const ids = new Set<string>();
+  for (const object of frame.objects) {
+    if (!object || typeof object.objectId !== 'string' || object.objectId.length === 0 || ids.has(object.objectId)) return false;
+    ids.add(object.objectId);
+    const { bodyRoot, ...body } = object;
+    if (typeof bodyRoot !== 'string' || semanticHash(body) !== bodyRoot) return false;
+  }
   const { frameRoot, ...base } = frame;
-  return semanticHash(base) === frameRoot;
+  return typeof frameRoot === 'string' && semanticHash(base) === frameRoot;
 }
 
 export function createAuthoritativeStateDelta(

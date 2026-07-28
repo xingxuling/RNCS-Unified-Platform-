@@ -124,6 +124,9 @@ test('spatial RNCS session keeps RSR authoritative state inert until commit', as
   assert.equal(simulation.valid, true);
   assert.equal(simulation.spatial.frameVerification.ok, true);
   assert.notEqual(simulation.spatial.afterStateRoot, before.stateRoot);
+  assert.equal(simulation.spatial.authorityFrame.sourceStateRoot, simulation.spatial.rsrAfterStateRoot);
+  assert.equal(simulation.spatial.temporalPacket.sourceStateRoot, simulation.spatial.rsrAfterStateRoot);
+  assert.equal(simulation.spatial.temporalPacket.sourcePacketRoot, simulation.spatial.authorityFrame.frameRoot);
   assert.equal(session.spatialSnapshot().stateRoot, before.stateRoot);
   assert.equal(resourceLog.length, 1);
 
@@ -136,6 +139,8 @@ test('spatial RNCS session keeps RSR authoritative state inert until commit', as
   assert.equal(committed.applied.frameRoot, simulation.spatial.frameRoot);
   assert.equal(committed.snapshot.state_root, simulation.spatial.afterStateRoot);
   assert.equal(committed.snapshot.spatial.authoritative_snapshot.stateRoot, simulation.spatial.rsrAfterStateRoot);
+  assert.equal(committed.applied.authorityFrame.frameRoot, simulation.spatial.authorityFrame.frameRoot);
+  assert.equal(committed.applied.temporalPacket.packetRoot, simulation.spatial.temporalPacket.packetRoot);
   assert.equal(resourceLog.length, 2);
   assert.equal(verifySpatialEngineSessionSnapshot(committed.snapshot).valid, true);
   assert.equal(session.verify().valid, true);
