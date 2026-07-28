@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- 强化 `rsr.authoritative-state-frame.v0.7` 校验：验证帧身份、元数据、对象唯一性以及每个嵌套 `bodyRoot`，不再只验证外层 `frameRoot`；
+- RNCS 空间会话现在把 RSR 权威帧作为可验证的 VSR 时序输入，保留同一 `stateRoot` 的权威展示边界；
 - Sphere、Box、Capsule 常见组合接入确定性三维广义凸窄相位；球-球使用精确闭式接触，EPA 退化保留显式诊断兜底；
 - 旋转 Capsule 使用定向线段包围盒参与 broad phase，避免旋转胶囊被旧的竖直 AABB 漏检；
 - 新增旋转胶囊、球-胶囊、球-球和旋转胶囊 broad phase 回归，空间具身测试达到 59/59。

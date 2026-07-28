@@ -34,6 +34,22 @@ The session accepts an RCL Foundation/RNCS bridge value through
 through `recordOperation(type, input, fn)`. Those values remain evidence and
 provider boundaries; they do not grant model or organ output commit authority.
 
+Each spatial simulation now also emits a verified authority-to-presentation
+chain:
+
+- RSR `authoritativeFrame` binds each body to the simulated `stateRoot` and
+  verifies every nested `bodyRoot`;
+- VSR `temporalPacket` adapts that frame while preserving the authority root
+  and body metadata (`grounded`, `awake`, `enabled`, `tags`);
+- the RNCS session stores both roots in simulation outputs, commit receipts,
+  and the session-root payload, then regenerates and compares them during
+  commit.
+
+The RSR frame uses its existing semantic root format; the VSR packet seals its
+own SHA-256 packet root and points `sourcePacketRoot` at the RSR frame root.
+This keeps the hash domains explicit instead of pretending they are one
+algorithm.
+
 ## Verified spatial replay and branches
 
 `spatial-replay` turns an RSR snapshot plus fixed-point command trace into a

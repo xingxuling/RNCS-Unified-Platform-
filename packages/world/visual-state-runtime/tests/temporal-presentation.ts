@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {
   TemporalPresentationBuffer,
+  authoritativeFrameToTemporalState,
   applyTemporalCorrection,
   createTemporalCorrectionPlan,
   networkPacketToTemporalState,
@@ -8,6 +9,7 @@ import {
   verifyTemporalStatePacket,
   type TemporalObjectState,
 } from '../packages/temporal-presentation/src/index.js';
+import { semanticHash } from '../packages/spec/src/index.js';
 
 const object = (tick: number, x: number, rotationY = 0, velocityX = 6000): TemporalObjectState => ({
   objectId: 'player',
@@ -48,6 +50,83 @@ test('network snapshot packets adapt without changing authority root', () => {
   assert.equal(adapted.sourceStateRoot, 'a'.repeat(64));
   assert.equal(adapted.objects[0]!.rotationDeg.y, 1000);
   assert.equal(verifyTemporalStatePacket(adapted), true);
+});
+
+test('RSR authoritative frames preserve body authority metadata through VSR temporal packets', () => {
+  const authoritativeObject = {
+    objectId: 'player',
+    position: { x: 120, y: 1000, z: 30 },
+    rotationDeg: { x: 0, y: 9000, z: 0 },
+    velocity: { x: 6000, y: 0, z: 0 },
+    angularVelocityDeg: { x: 0, y: 0, z: 0 },
+    grounded: true,
+    awake: true,
+    enabled: true,
+    tags: ['player', 'controllable'],
+  };
+  const frame = {
+    format: 'rsr.authoritative-state-frame.v0.7' as const,
+    protocol: 'rsr.authoritative-state.v0.7' as const,
+    worldId: 'world:authority-bridge',
+    tick: 7,
+    stepHz: 60,
+    sourceStateRoot: 'fnv1a64:state-7',
+    previousStateRoot: 'fnv1a64:state-6',
+    frameRoot: 'fnv1a64:frame-7',
+    objects: [{ ...authoritativeObject, bodyRoot: semanticHash(authoritativeObject) }],
+  };
+  const packet = authoritativeFrameToTemporalState(frame);
+  assert.equal(packet.sourceStateRoot, frame.sourceStateRoot);
+  assert.equal(packet.sourcePacketRoot, frame.frameRoot);
+  assert.deepEqual(packet.objects[0]!.authority, {
+    bodyRoot: semanticHash(authoritativeObject),
+    grounded: true,
+    awake: true,
+    enabled: true,
+    tags: ['controllable', 'player'],
+  });
+  const buffer = new TemporalPresentationBuffer({ interpolationDelayTicks: 0 });
+  buffer.push(packet);
+  assert.deepEqual(buffer.sampleObject('player', 7)!.authority, packet.objects[0]!.authority);
+});
+
+test('RSR authority frame adapter rejects malformed frame identity', () => {
+  assert.throws(() => authoritativeFrameToTemporalState({
+    format: 'wrong' as never,
+    protocol: 'rsr.authoritative-state.v0.7',
+    worldId: 'world:bad',
+    tick: 1,
+    stepHz: 60,
+    sourceStateRoot: 'fnv1a64:state',
+    previousStateRoot: 'fnv1a64:previous',
+    frameRoot: 'fnv1a64:frame',
+    objects: [],
+  }), /VSR_RSR_AUTHORITY_FRAME_FORMAT_INVALID/);
+});
+
+test('RSR authority frame adapter rejects a forged nested body root', () => {
+  assert.throws(() => authoritativeFrameToTemporalState({
+    format: 'rsr.authoritative-state-frame.v0.7',
+    protocol: 'rsr.authoritative-state.v0.7',
+    worldId: 'world:bad-body-root',
+    tick: 1,
+    stepHz: 60,
+    sourceStateRoot: 'fnv1a64:state',
+    previousStateRoot: 'fnv1a64:previous',
+    frameRoot: 'fnv1a64:frame',
+    objects: [{
+      objectId: 'player',
+      position: { x: 1, y: 2, z: 3 },
+      rotationDeg: { x: 0, y: 0, z: 0 },
+      velocity: { x: 0, y: 0, z: 0 },
+      angularVelocityDeg: { x: 0, y: 0, z: 0 },
+      grounded: false,
+      awake: true,
+      enabled: true,
+      tags: [],
+      bodyRoot: 'fnv1a64:forged',
+    }],
+  }), /VSR_RSR_AUTHORITY_BODY_ROOT_INVALID/);
 });
 
 test('buffer interpolates with deterministic Hermite motion', () => {

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- `networkPacketToTemporalState` 新增 RSR v0.7 权威帧适配，时序对象保留 `bodyRoot`、grounded/awake/enabled 和 tags；
+- 新增 `authoritativeFrameToTemporalState` 强类型入口，并为时序包保留独立 VSR SHA-256 packet root，显式指向 RSR frame root；
 - WebGPU三维执行器接入五路材质纹理Bind Group与方向光GPU Shadow Map depth pass；
 - 新增空间 WebGPU adapter capability contract：`evaluateSpatialWebGPUCapabilities` / `inspectSpatialWebGPU` 收集 adapter 名称、features、limits，拒绝缺失的 required features/limits，并将设备丢失原因写入 WebGPU receipt；
 - 新增四影响骨骼蒙皮、最多四个Morph Target，以及对应的CPU参考、GPU storage buffer和Frame Root证据；

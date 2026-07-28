@@ -1,4 +1,4 @@
-import { cryptographicHash, deepClone } from '../../spec/src/index.js';
+import { cryptographicHash, deepClone, semanticHash } from '../../spec/src/index.js';
 
 export const VSR_TEMPORAL_PRESENTATION_PROTOCOL = 'vsr.temporal-presentation.v0.6' as const;
 export const VSR_TEMPORAL_PACKET_FORMAT = 'vsr.temporal-state-packet.v0.6' as const;
@@ -6,6 +6,13 @@ export const VSR_TEMPORAL_FRAME_FORMAT = 'vsr.temporal-presentation-frame.v0.6' 
 const FULL_ROTATION = 360_000;
 
 export interface TemporalVector3 { x: number; y: number; z: number }
+export interface TemporalAuthorityState {
+  bodyRoot: string;
+  grounded: boolean;
+  awake: boolean;
+  enabled: boolean;
+  tags: string[];
+}
 export interface TemporalObjectState {
   objectId: string;
   position: TemporalVector3;
@@ -14,6 +21,7 @@ export interface TemporalObjectState {
   angularVelocityDeg?: TemporalVector3;
   animationState?: string;
   characterState?: Record<string, unknown>;
+  authority?: TemporalAuthorityState;
 }
 export interface TemporalStatePacket {
   format: typeof VSR_TEMPORAL_PACKET_FORMAT;
@@ -87,6 +95,29 @@ function hermite(a: number, b: number, velocityA: number, velocityB: number, t: 
 }
 function objectRoot(object: TemporalObjectState): string { return cryptographicHash(object); }
 
+export interface RsrAuthoritativeStateFrameLike {
+  format: 'rsr.authoritative-state-frame.v0.7';
+  protocol: 'rsr.authoritative-state.v0.7';
+  worldId: string;
+  tick: number;
+  stepHz: number;
+  sourceStateRoot: string;
+  previousStateRoot: string;
+  frameRoot: string;
+  objects: Array<{
+    objectId: string;
+    position: TemporalVector3;
+    rotationDeg: TemporalVector3;
+    velocity: TemporalVector3;
+    angularVelocityDeg: TemporalVector3;
+    grounded: boolean;
+    awake: boolean;
+    enabled: boolean;
+    tags: string[];
+    bodyRoot: string;
+  }>;
+}
+
 export function sealTemporalStatePacket(input: Omit<TemporalStatePacket, 'packetRoot'>): TemporalStatePacket {
   const normalized = {
     ...deepClone(input),
@@ -107,8 +138,9 @@ export function verifyTemporalStatePacket(packet: TemporalStatePacket): boolean 
 }
 
 export function networkPacketToTemporalState(packet: Record<string, any>, fallbackStepHz = 60): TemporalStatePacket {
-  const sourceRoot = String(packet.stateRoot ?? packet.sourceStateRoot ?? packet.rsrFrame?.sourceStateRoot ?? '');
-  const packetRoot = String(packet.snapshotRoot ?? packet.deltaRoot ?? packet.rsrFrame?.frameRoot ?? packet.rsrDelta?.deltaRoot ?? sourceRoot);
+  const rsrFrame = packet.rsrFrame as RsrAuthoritativeStateFrameLike | undefined;
+  const sourceRoot = String(packet.stateRoot ?? packet.sourceStateRoot ?? rsrFrame?.sourceStateRoot ?? '');
+  const packetRoot = String(packet.snapshotRoot ?? packet.deltaRoot ?? rsrFrame?.frameRoot ?? packet.rsrDelta?.deltaRoot ?? sourceRoot);
   const objects = (packet.objects ?? packet.rsrFrame?.objects ?? []).map((object: Record<string, any>) => ({
     objectId: String(object.objectId),
     position: v3(object.position),
@@ -117,6 +149,17 @@ export function networkPacketToTemporalState(packet: Record<string, any>, fallba
     angularVelocityDeg: v3(object.angularVelocityDeg),
     animationState: object.animationState,
     characterState: deepClone(object.characterState ?? {}),
+    ...(object.bodyRoot !== undefined || object.grounded !== undefined || object.awake !== undefined || object.enabled !== undefined || object.tags !== undefined
+      ? {
+        authority: {
+          bodyRoot: String(object.bodyRoot ?? ''),
+          grounded: Boolean(object.grounded),
+          awake: Boolean(object.awake),
+          enabled: object.enabled !== false,
+          tags: Array.isArray(object.tags) ? object.tags.map(String).sort() : [],
+        },
+      }
+      : {}),
   }));
   return sealTemporalStatePacket({
     format: VSR_TEMPORAL_PACKET_FORMAT,
@@ -129,6 +172,26 @@ export function networkPacketToTemporalState(packet: Record<string, any>, fallba
     objects,
     discontinuities: [...(packet.discontinuities ?? [])],
   });
+}
+
+export function authoritativeFrameToTemporalState(frame: RsrAuthoritativeStateFrameLike): TemporalStatePacket {
+  if (frame?.format !== 'rsr.authoritative-state-frame.v0.7' || frame?.protocol !== 'rsr.authoritative-state.v0.7') {
+    throw new Error('VSR_RSR_AUTHORITY_FRAME_FORMAT_INVALID');
+  }
+  if (!frame.worldId || !Number.isSafeInteger(frame.tick) || frame.tick < 0 || !Number.isFinite(frame.stepHz) || frame.stepHz <= 0) {
+    throw new Error('VSR_RSR_AUTHORITY_FRAME_METADATA_INVALID');
+  }
+  if (!frame.sourceStateRoot || !frame.frameRoot || !Array.isArray(frame.objects)) {
+    throw new Error('VSR_RSR_AUTHORITY_FRAME_ROOTS_INVALID');
+  }
+  const ids = new Set<string>();
+  for (const object of frame.objects) {
+    if (!object.objectId || ids.has(object.objectId)) throw new Error('VSR_RSR_AUTHORITY_OBJECT_ID_INVALID');
+    ids.add(object.objectId);
+    const { bodyRoot, ...body } = object;
+    if (!bodyRoot || semanticHash(body) !== bodyRoot) throw new Error('VSR_RSR_AUTHORITY_BODY_ROOT_INVALID');
+  }
+  return networkPacketToTemporalState({ rsrFrame: frame });
 }
 
 export function createTemporalCorrectionPlan(
