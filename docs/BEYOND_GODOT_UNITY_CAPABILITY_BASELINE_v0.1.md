@@ -283,3 +283,28 @@ declared Foundation syntax lowering, a production editor, complete
 asset/render/audio/animation parity, public-WAN scale, platform distribution,
 and ecosystem depth remain open. This is measurable runtime progress, not a
 claim of complete Godot/Unity replacement.
+
+## 13. Verified Progress v0.9
+
+Reality Studio now has a real deterministic presentation timeline connected to
+the unified session rather than a standalone data module:
+
+- `reality-studio.sequence.v1.7` creates camera, animation, audio, and authority
+  behavior tracks from the authored project, while preserving content-addressed
+  sequence roots.
+- The session supports seek, frame stepping, bounded playback, clip insertion,
+  snapshots, restore, undo/redo persistence, and frame evaluation that keeps
+  authority events separate from presentation state.
+- The HTTP unified-session route exposes the same commands. Studio export carries
+  `sequence.json` plus sequence gateway capabilities, and the browser workbench
+  renders the playhead, lanes, active clips, and authority/presentation roots.
+- The current Studio regression suite is 232/232, including HTTP-level sequence
+  command coverage. This proves an executable authoring/runtime contract; it does
+  not claim real audio playback, skeletal curve editing, DCC writeback, or native
+  desktop/mobile packaging.
+
+This closes the first timeline/editor integration gap in G2. External text-to-3D
+providers, professional DCC round-tripping, generic prefab inspection, batch
+asset production, collaboration, public-WAN scale, native distribution, full RCL
+syntax lowering, and ecosystem depth remain open. The timeline is evidence of a
+working RNCS capability, not a claim that RNCS already replaces Godot or Unity.
