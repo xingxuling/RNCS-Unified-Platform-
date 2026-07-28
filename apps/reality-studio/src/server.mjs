@@ -165,6 +165,12 @@ export async function startStudioServer({host='127.0.0.1',port=17608,dataDir=pat
         else if(b.command==='spatial-snapshot')result=s.spatialSnapshot(b.label??'snapshot');
         else if(b.command==='spatial-restore')result=s.spatialRestore(b.snapshot_id);
         else if(b.command==='spatial-projection')result=s.spatialProjection({width:Number(b.width??480),height:Number(b.height??270),qualityTier:b.quality_tier??'balanced'});
+        else if(b.command==='sequence-seek')result=s.sequenceSeek(Number(b.time??0));
+        else if(b.command==='sequence-step')result=s.sequenceStep(Number(b.frames??1));
+        else if(b.command==='sequence-play')result=s.sequencePlay(Number(b.frames??1));
+        else if(b.command==='sequence-add-clip')result=s.sequenceAddClip({trackId:b.track_id,clip:b.clip});
+        else if(b.command==='sequence-snapshot')result=s.sequenceSnapshot(b.label??'snapshot');
+        else if(b.command==='sequence-restore')result=s.sequenceRestore(b.label);
         else throw Object.assign(new Error(`COMMAND_UNKNOWN:${b.command}`),{code:'COMMAND_UNKNOWN'});
         return send(res,200,result);
       }

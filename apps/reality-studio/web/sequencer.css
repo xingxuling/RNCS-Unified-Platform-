@@ -1,0 +1,27 @@
+.sequence-layout{display:grid;grid-template-rows:auto minmax(220px,1fr) 150px;gap:10px;height:100%;padding:10px}
+.sequence-toolbar,.sequence-board,.sequence-inspector{border:1px solid var(--line);border-radius:9px;background:#09131f;overflow:hidden}
+.sequence-toolbar{display:grid;grid-template-columns:auto minmax(180px,1fr) auto;align-items:center;gap:12px;padding:9px}
+.sequence-actions{display:flex;gap:5px}
+.sequence-scrub{display:grid;grid-template-columns:54px 1fr;align-items:center;gap:8px;color:#c9eaff;font:10px ui-monospace,monospace}
+.sequence-scrub input{width:100%;accent-color:#22d3ee}
+.sequence-roots{display:flex;gap:8px;color:#7890a8;font:9px ui-monospace,monospace}
+.sequence-board{min-height:220px}
+.sequence-header{display:flex;justify-content:space-between;padding:9px 11px;border-bottom:1px solid var(--line);background:#101d2a}
+.sequence-header span{color:var(--muted);font-size:10px}
+.sequence-track{display:grid;grid-template-columns:132px 1fr;min-height:48px;border-bottom:1px solid #17293c}
+.sequence-track-label{display:flex;flex-direction:column;justify-content:center;padding:7px 10px;border-right:1px solid #20364d;background:#0b1826}
+.sequence-track-label small{color:#7890a8;font-size:9px}
+.sequence-lane{position:relative;min-width:0;background:repeating-linear-gradient(90deg,transparent 0,transparent calc(10% - 1px),#17304a calc(10% - 1px),#17304a 10%)}
+.sequence-playhead{position:absolute;z-index:2;top:0;bottom:0;width:2px;background:#fbbf24;box-shadow:0 0 8px #fbbf24;pointer-events:none}
+.sequence-clip{position:absolute;top:7px;bottom:7px;min-width:34px;display:flex;flex-direction:column;align-items:flex-start;overflow:hidden;text-align:left;padding:4px 7px;border-radius:5px;color:#e8f7ff}
+.sequence-clip b,.sequence-clip small{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sequence-clip small{font-size:9px;color:#c4e4f3}
+.sequence-clip.camera{background:#155e75;border-color:#22d3ee}
+.sequence-clip.animation{background:#4c1d95;border-color:#a78bfa}
+.sequence-clip.audio{background:#166534;border-color:#4ade80}
+.sequence-clip.behavior{background:#92400e;border-color:#fbbf24}
+.sequence-empty{position:absolute;left:10px;top:15px;color:#47617a;font-size:10px}
+.sequence-inspector{padding:0}
+.sequence-inspector pre{margin:0;padding:10px;max-height:112px;overflow:auto;color:#b7dcf8;font:10px/1.45 ui-monospace,monospace}
+.sequence-actions button.on{border-color:#4ade80;color:#bbf7d0}
+@media(max-width:1100px){.sequence-toolbar{grid-template-columns:1fr}.sequence-roots{flex-wrap:wrap}.sequence-track{grid-template-columns:100px 1fr}}
