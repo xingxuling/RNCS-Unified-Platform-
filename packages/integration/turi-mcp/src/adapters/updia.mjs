@@ -286,7 +286,7 @@ export class UpdiaAdapter {
     const maxTokens = budget ?? this.config.updiaDefaultMaxTokens ?? 512;
     const model = allowedOrgans[0] ? undefined : this.config.updiaDefaultModel ?? undefined;
     const text = `${goal}\n\nTURI output contract:\n${contract}\n\nReturn a concise, complete answer within ${maxTokens} tokens. Preserve evidence ids and mark inference, hypothesis, and unknown separately.`;
-    return withoutUndefined({ text, organId: allowedOrgans[0], model, maxTokens, grounding: true, stream: false });
+    return withoutUndefined({ text, organId: allowedOrgans[0], model, maxTokens, grounding: true, think: false, stream: false });
   }
 
   async think(input = {}) { return this.call('generate', this.thinkParams(input)); }

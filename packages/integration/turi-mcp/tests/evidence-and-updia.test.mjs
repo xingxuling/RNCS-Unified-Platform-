@@ -104,6 +104,7 @@ test('UPDIA adapter submits long generation as an async bridge job and polls its
         assert.equal(request.method, 'generate');
         assert.equal(request.params.model, 'qwen3.5:latest');
         assert.equal(request.params.maxTokens, 256);
+        assert.equal(request.params.think, false);
         return new Response(JSON.stringify({
           id: requestId,
           ok: true,
@@ -166,6 +167,7 @@ test('UPDIA adapter exposes a bridge-owned research job for stateless MCP pollin
         }
         assert.equal(request.method, 'generate');
         assert.equal(options.headers.prefer, 'respond-async');
+        assert.equal(request.params.think, false);
         return new Response(JSON.stringify({
           id: request.id,
           ok: true,

@@ -50,13 +50,13 @@ $env:TURI_UPDIA_DEFAULT_MAX_TOKENS='512'
 $env:TURI_UPDIA_DEFAULT_MODEL='qwen3.5:latest'
 ```
 
-远程 `generate` 默认使用 `Prefer: respond-async` 提交任务，并轮询 bridge 的短请求状态。这避免本地模型长推理占用单个公网隧道请求；健康检查和 Native RGR 查询仍走同步短请求。bridge 不支持异步协议时，Adapter 会兼容原同步响应。
+远程 `generate` 默认使用 `Prefer: respond-async` 提交任务，并轮询 bridge 的短请求状态。这避免本地模型长推理占用单个公网隧道请求；健康检查和 Native RGR 查询仍走同步短请求。TURI 的有界输出请求会显式传递 `think: false`，使有限生成预算用于最终正文，同时不向客户端暴露模型私有思考。bridge 不支持异步协议时，Adapter 会兼容原同步响应。
 
 在 Vercel 等无状态函数平台设置 `TURI_MCP_STATELESS=true`。此模式为每个 POST 创建独立 MCP server/transport，不发放进程内 session id，避免连续请求命中不同 Lambda 后出现 `Session not found`。常驻 Node/Render 服务可保留默认 stateful 模式。
 
 ChatGPT 等单次工具调用期限较短的客户端应使用 `updia_research_start`，取得 `jobId` 和同步检索证据后，再用 `updia_research_status` 轮询。真实模型任务由 UPDIA bridge 持有，不依赖某个 Vercel Lambda 的内存；直接 `turi_research_task` 仍保留给允许长请求的客户端。
 
-bridge 的 `/health` 可以公开用于平台探针，但 `/invoke` 必须使用 Bearer token。Vercel serverless 的临时文件系统不能承担 UPDIA checkpoint、Native RGR store 或 TURI receipts 的跨重启持久性；需要持久磁盘或外部持久化存储。
+私有 bridge 的 `/health` 可以公开用于平台探针，但 `/invoke` 应使用 Bearer token；受限的公开研究 bridge 必须在服务端只允许只读研究方法并拒绝 mutation。Vercel serverless 的临时文件系统不能承担 UPDIA checkpoint、Native RGR store 或 TURI receipts 的跨重启持久性；需要持久磁盘或外部持久化存储。
 
 ## 权限默认值
 
