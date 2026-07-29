@@ -1,6 +1,6 @@
 {
   "format": "rcl.native-windows-prebuilt.v1",
-  "sourceSha256": "2bb97fdc574aaf2f22f6e5985fe0c36f6301c6bc4a22b1cc8fc0428a0181a21e",
+  "sourceSha256": "952ab61c3a6e13e1bc69c09376bbf3c972f755f77c0fb9f8c3cd30f6cf5064d0",
   "sources": [
     "native/rclvm.c",
     "native/rclvm.h",

@@ -1109,7 +1109,7 @@ export function listRclMcpTools() {
 }
 
 const TOOL_HANDLERS = Object.freeze({
-  rcl_status: () => rclStatus(),
+  rcl_status: rclStatus,
   rcl_package_metadata: () => rclPackageMetadata(),
   rcl_native_vm_status: () => rclNativeVmStatus(),
   rcl_list_examples: rclListExamples,
