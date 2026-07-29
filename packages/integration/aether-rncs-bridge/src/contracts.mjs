@@ -1,4 +1,5 @@
 import {createHash} from 'node:crypto';
+import {validateSemanticFidelityGate} from './semantic-fidelity.mjs';
 
 export const BRIDGE_VERSION='0.2.0-alpha.1';
 export const BRIDGE_PROTOCOL='rncs.aetherworld-native-runtime.v0.2';
@@ -32,9 +33,11 @@ export function validateCompilationPlan(plan){
   const actions=new Set((plan?.authority_requirements??[]).map(x=>x.action));
   for(const action of ['create_world_object','merge_candidate_branch','rollback_generation'])if(!actions.has(action))errors.push(`AUTHORITY_REQUIREMENT_MISSING:${action}`);
   if((plan?.behaviors?.length??0)>0&&!actions.has('register_behavior'))errors.push('AUTHORITY_REQUIREMENT_MISSING:register_behavior');
-  return {valid:errors.length===0,errors};
+  const semanticFidelity=validateSemanticFidelityGate(plan);
+  errors.push(...semanticFidelity.errors);
+  return {valid:errors.length===0,errors,semanticFidelity};
 }
-export function assertCompilationPlan(plan){const r=validateCompilationPlan(plan);if(!r.valid)throw new Error(`COMPILATION_PLAN_INVALID:${r.errors.join(',')}`);return plan;}
+export function assertCompilationPlan(plan){const r=validateCompilationPlan(plan);if(!r.valid)throw Object.assign(new Error(`COMPILATION_PLAN_INVALID:${r.errors.join(',')}`),{code:r.errors.some(error=>error.startsWith('SEMANTIC_FIDELITY'))?'SEMANTIC_COMPILATION_GATE_FAILED':'COMPILATION_PLAN_INVALID',details:r});return plan;}
 export function migrateCompilationPlan(plan){
   if(plan?.format===PLAN_FORMAT)return assertCompilationPlan(clone(plan));
   if(plan?.format!=='rncs.compilation-plan.v0.1')throw new Error('PLAN_VERSION_UNSUPPORTED');

@@ -14,6 +14,7 @@ import {RealityNetworkRuntime,createTwoPlayerWorldConfig} from '@taowind/reality
 import {TemporalPresentationBuffer,networkPacketToTemporalState,createTemporalCorrectionPlan} from '@taowind/visual-state-runtime/temporal-presentation';
 import {BRIDGE_VERSION,BRIDGE_PROTOCOL,clone,root,id,validateCompilationPlan,assertCompilationPlan,migrateCompilationPlan} from './contracts.mjs';
 import {compileNaturalLanguageToRNCS,compileCSLToRNCS,compileIALToRNCS} from './compiler.mjs';
+import {assertSemanticFidelityGate} from './semantic-fidelity.mjs';
 import {createBehaviorRegistration,triggerAetherIslandBehavior,triggerBehavior} from './behavior.mjs';
 
 const ZERO='0'.repeat(64);
@@ -215,7 +216,7 @@ export class AetherworldRNCSNativeRuntime{
   this.candidates.set(record.candidate_id,record);this.persistCandidates();return this.publicCandidate(record);
  }
  publicCandidate(record){const out=clone(record);out.candidate_root=record.compiled?.state_root??null;delete out.workspace;delete out.compiled;return out;}
- requireCandidate(candidateId){const record=this.candidates.get(candidateId);if(!record)throw new Error('CANDIDATE_NOT_FOUND');return record;}
+ requireCandidate(candidateId){const record=this.candidates.get(candidateId);if(!record)throw new Error('CANDIDATE_NOT_FOUND');assertSemanticFidelityGate(record.plan);return record;}
  getCandidate({candidateId}={}){return this.publicCandidate(this.requireCandidate(candidateId));}
  diffCandidate({candidateId}={}){const r=this.requireCandidate(candidateId);return{candidate_id:candidateId,baseline_root:r.baseline_root,candidate_root:r.compiled.state_root,diff:clone(r.compiled.diff)};}
  async simulateCandidate({candidateId}={}){const r=this.requireCandidate(candidateId);const simulation=simulateBranch(r.workspace,r.plan.candidate_branch.branch_id);const executionPlan=createExecutionPlan(r.workspace,simulation);const execution=await executePlan(r.workspace.base_state,executionPlan);const comparison=compareBranches(r.workspace);r.simulation={simulation,execution_receipt:execution.receipt,execution_state:execution.state,comparison,studio_projection:createStudioProjection(r.workspace,comparison),evidence_root:root({simulation,receipt:execution.receipt})};r.status=execution.receipt.status==='completed'?'simulated':'simulation_failed';r.mergeable=r.status==='simulated';this.persistCandidates();return clone(r.simulation);}

@@ -60,6 +60,7 @@ export class TuriOrchestrator {
     context.event?.('rncs.compile', { status: 'RUNNING' });
     const plan = await this.adapters.rncs.compilePlan(input);
     const validated = await this.adapters.rncs.validatePlan({ plan });
+    if (!validated?.valid) throw capabilityError('RNCS_PLAN_VALIDATION_FAILED', 'RNCS rejected the compiled plan before candidate creation.', { validation: validated, semanticFidelity: plan.semantic_fidelity ?? null });
     context.event?.('rncs.create-candidate', { status: 'RUNNING' });
     const candidate = await this.adapters.rncs.createCandidate({ plan }, { idempotencyKey: `turi-candidate:${plan.plan_id ?? sha256(plan)}` });
     context.event?.('rncs.simulate-candidate', { candidateId: candidate.candidate_id, status: 'RUNNING' });
@@ -70,7 +71,7 @@ export class TuriOrchestrator {
     if (!unchanged) throw capabilityError('AUTHORITY_INVARIANT_FAILED', 'Candidate workflow changed formal RNCS state.', { before, after });
     return {
       format: 'turi.candidate-workflow.v0.1',
-      plan: { plan_id: plan.plan_id, source: plan.source, validation: validated },
+      plan: { plan_id: plan.plan_id, source: plan.source, validation: validated, semanticFidelity: plan.semantic_fidelity ?? validated.semanticFidelity?.gate ?? null },
       candidate: { candidate_id: candidate.candidate_id, status: candidate.status, baseline_root: candidate.baseline_root, baseline_revision: candidate.baseline_revision },
       simulation: { status: simulation.execution_receipt?.status ?? simulation.status, evidence_root: simulation.evidence_root, receipt: simulation.execution_receipt },
       diff,

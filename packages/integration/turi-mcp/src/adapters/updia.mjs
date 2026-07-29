@@ -12,6 +12,16 @@ function bridgeError(code, message, details = null) {
 }
 
 const withoutUndefined = (value) => Object.fromEntries(Object.entries(value).filter(([, entry]) => entry !== undefined));
+const BRIDGE_DISCOVERY_FORMAT = 'taowind.updia-bridge-route.v0.1';
+
+function hostAllowed(hostname, suffixes) {
+  const host = String(hostname ?? '').toLowerCase();
+  return suffixes.some((entry) => {
+    const suffix = String(entry ?? '').trim().toLowerCase();
+    if (!suffix) return false;
+    return suffix.startsWith('.') ? host.endsWith(suffix) : host === suffix || host.endsWith(`.${suffix}`);
+  });
+}
 
 export class UpdiaAdapter {
   constructor({ config, spawn = defaultSpawn, fetchImpl = globalThis.fetch, invokeBridge = null } = {}) {
@@ -19,11 +29,22 @@ export class UpdiaAdapter {
     this.spawn = spawn;
     this.fetchImpl = fetchImpl;
     this.invokeBridge = invokeBridge;
+    this.remoteRouteCache = null;
+  }
+
+  remoteConfigured() {
+    return Boolean(this.config.updiaBridgeUrl || this.config.updiaBridgeDiscoveryUrl);
   }
 
   configurationStatus() {
-    if (this.config.updiaBridgeUrl) {
-      return { configured: true, mode: 'remote', bridgeUrl: this.config.updiaBridgeUrl, reasons: [] };
+    if (this.remoteConfigured()) {
+      return {
+        configured: true,
+        mode: this.config.updiaBridgeUrl ? 'remote' : 'remote-discovery',
+        bridgeUrl: this.config.updiaBridgeUrl ?? null,
+        discoveryUrl: this.config.updiaBridgeDiscoveryUrl ?? null,
+        reasons: [],
+      };
     }
     const reasons = [];
     const entry = this.config.updiaEntry ? path.resolve(this.config.updiaEntry) : null;
@@ -67,7 +88,7 @@ export class UpdiaAdapter {
 
   async call(method, params = {}, { timeoutMs = 300_000 } = {}) {
     if (this.invokeBridge) return this.invokeBridge(method, params);
-    if (this.config.updiaBridgeUrl) return this.callRemote(method, params, { timeoutMs });
+    if (this.remoteConfigured()) return this.callRemote(method, params, { timeoutMs });
     const configuration = this.configurationStatus();
     if (!configuration.configured) {
       throw bridgeError(
@@ -117,9 +138,10 @@ export class UpdiaAdapter {
   async callRemote(method, params = {}, { timeoutMs = 300_000 } = {}) {
     if (typeof this.fetchImpl !== 'function') throw bridgeError('UPDIA_REMOTE_FETCH_UNAVAILABLE', 'TURI UPDIA remote bridge requires a fetch implementation.');
     const requestId = `turi-remote-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-    const url = `${String(this.config.updiaBridgeUrl).replace(/\/+$/, '')}/invoke`;
     const startedAt = Date.now();
     try {
+      const baseUrl = await this.resolveRemoteBridgeUrl({ timeoutMs: Math.min(timeoutMs, 15_000) });
+      const url = `${baseUrl}/invoke`;
       const { response, payload } = await this.remoteJson(url, {
         method: 'POST',
         headers: {
@@ -134,7 +156,7 @@ export class UpdiaAdapter {
       if (!payload || payload.id !== requestId || typeof payload.ok !== 'boolean') throw bridgeError('UPDIA_REMOTE_PROTOCOL_ERROR', 'UPDIA remote bridge returned an invalid bridge envelope.', { payload });
       if (!payload.ok) throw bridgeError(payload.error?.code ?? 'UPDIA_REMOTE_BRIDGE_ERROR', payload.error?.message ?? 'UPDIA remote bridge request failed.', payload.error?.details);
       if (payload.result?.format === 'updia.http-bridge-async-job.v0.1') {
-        return this.pollRemoteJob(payload.result, { requestId, timeoutMs, startedAt });
+        return this.pollRemoteJob(payload.result, { requestId, timeoutMs, startedAt, baseUrl });
       }
       return payload.result;
     } catch (error) {
@@ -145,14 +167,15 @@ export class UpdiaAdapter {
   }
 
   async startRemoteJob(method, params = {}, { timeoutMs = 30_000 } = {}) {
-    if (!this.config.updiaBridgeUrl) {
-      throw bridgeError('UPDIA_REMOTE_ASYNC_REQUIRED', 'Externally pollable UPDIA jobs require TURI_UPDIA_BRIDGE_URL.');
+    if (!this.remoteConfigured()) {
+      throw bridgeError('UPDIA_REMOTE_ASYNC_REQUIRED', 'Externally pollable UPDIA jobs require a static or discovered UPDIA bridge URL.');
     }
     if (typeof this.fetchImpl !== 'function') {
       throw bridgeError('UPDIA_REMOTE_FETCH_UNAVAILABLE', 'TURI UPDIA remote bridge requires a fetch implementation.');
     }
     const requestId = `turi-remote-job-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-    const url = `${String(this.config.updiaBridgeUrl).replace(/\/+$/, '')}/invoke`;
+    const baseUrl = await this.resolveRemoteBridgeUrl({ timeoutMs: Math.min(timeoutMs, 15_000) });
+    const url = `${baseUrl}/invoke`;
     const { response, payload } = await this.remoteJson(url, {
       method: 'POST',
       headers: {
@@ -176,12 +199,12 @@ export class UpdiaAdapter {
   }
 
   async remoteJobStatus(jobId, { timeoutMs = 30_000 } = {}) {
-    if (!this.config.updiaBridgeUrl) {
-      throw bridgeError('UPDIA_REMOTE_ASYNC_REQUIRED', 'Externally pollable UPDIA jobs require TURI_UPDIA_BRIDGE_URL.');
+    if (!this.remoteConfigured()) {
+      throw bridgeError('UPDIA_REMOTE_ASYNC_REQUIRED', 'Externally pollable UPDIA jobs require a static or discovered UPDIA bridge URL.');
     }
     if (!jobId || typeof jobId !== 'string') throw bridgeError('UPDIA_JOB_ID_REQUIRED', 'UPDIA async job id is required.');
-    const baseUrl = `${String(this.config.updiaBridgeUrl).replace(/\/+$/, '')}/`;
-    const url = new URL(`/jobs/${encodeURIComponent(jobId)}`, baseUrl).toString();
+    const baseUrl = await this.resolveRemoteBridgeUrl({ timeoutMs: Math.min(timeoutMs, 15_000) });
+    const url = new URL(`/jobs/${encodeURIComponent(jobId)}`, `${baseUrl}/`).toString();
     const { response, payload } = await this.remoteJson(url, {
       method: 'GET',
       headers: {
@@ -223,11 +246,59 @@ export class UpdiaAdapter {
     }
   }
 
-  async pollRemoteJob(job, { requestId, timeoutMs, startedAt }) {
+  async resolveRemoteBridgeUrl({ timeoutMs = 15_000 } = {}) {
+    if (this.config.updiaBridgeUrl) return String(this.config.updiaBridgeUrl).replace(/\/+$/, '');
+    const discoveryUrl = this.config.updiaBridgeDiscoveryUrl;
+    if (!discoveryUrl) throw bridgeError('UPDIA_REMOTE_NOT_CONFIGURED', 'No UPDIA bridge URL or discovery URL is configured.');
+    const now = Date.now();
+    if (this.remoteRouteCache?.cachedUntil > now) return this.remoteRouteCache.url;
+    if (typeof this.fetchImpl !== 'function') throw bridgeError('UPDIA_REMOTE_FETCH_UNAVAILABLE', 'TURI UPDIA bridge discovery requires a fetch implementation.');
+    let response;
+    let payload;
+    const discoveryRequestUrl = new URL(discoveryUrl);
+    const cacheBustMs = Number(this.config.updiaBridgeDiscoveryCacheBustMs ?? 0);
+    if (cacheBustMs > 0) discoveryRequestUrl.searchParams.set('route_epoch', String(Math.floor(now / cacheBustMs)));
+    try {
+      ({ response, payload } = await this.remoteJson(discoveryRequestUrl.toString(), {
+        method: 'GET',
+        headers: { accept: 'application/json' },
+      }, timeoutMs));
+    } catch (error) {
+      if (error?.code?.startsWith('UPDIA_')) throw error;
+      throw bridgeError('UPDIA_BRIDGE_DISCOVERY_UNREACHABLE', String(error?.message ?? error), { discoveryUrl });
+    }
+    if (!response.ok) throw bridgeError('UPDIA_BRIDGE_DISCOVERY_HTTP_ERROR', `UPDIA bridge discovery returned HTTP ${response.status}.`, { status: response.status, discoveryUrl });
+    if (payload?.format !== BRIDGE_DISCOVERY_FORMAT && payload?.files) {
+      const filename = this.config.updiaBridgeDiscoveryFile ?? 'updia-bridge-route.json';
+      const content = payload.files?.[filename]?.content;
+      try { payload = JSON.parse(content); }
+      catch { throw bridgeError('UPDIA_BRIDGE_DISCOVERY_FORMAT_INVALID', 'UPDIA bridge discovery Gist does not contain a valid route document.', { filename }); }
+    }
+    if (payload?.format !== BRIDGE_DISCOVERY_FORMAT) throw bridgeError('UPDIA_BRIDGE_DISCOVERY_FORMAT_INVALID', 'UPDIA bridge discovery returned an unsupported document.', { format: payload?.format ?? null });
+    const updatedAt = Date.parse(payload.updatedAt);
+    const expiresAt = Date.parse(payload.expiresAt);
+    if (!Number.isFinite(updatedAt) || !Number.isFinite(expiresAt) || updatedAt > expiresAt || updatedAt > now + 300_000) {
+      throw bridgeError('UPDIA_BRIDGE_DISCOVERY_TIME_INVALID', 'UPDIA bridge discovery timestamps are invalid.', { updatedAt: payload.updatedAt, expiresAt: payload.expiresAt });
+    }
+    if (expiresAt <= now + 5_000) throw bridgeError('UPDIA_BRIDGE_DISCOVERY_EXPIRED', 'UPDIA bridge discovery route has expired.', { expiresAt: payload.expiresAt });
+    let target;
+    try { target = new URL(payload.url); }
+    catch { throw bridgeError('UPDIA_BRIDGE_DISCOVERY_TARGET_REJECTED', 'UPDIA bridge discovery target is not an absolute URL.'); }
+    const suffixes = this.config.updiaBridgeAllowedHostSuffixes?.length ? this.config.updiaBridgeAllowedHostSuffixes : ['.trycloudflare.com'];
+    if (target.protocol !== 'https:' || target.username || target.password || target.port || target.search || target.hash || !hostAllowed(target.hostname, suffixes)) {
+      throw bridgeError('UPDIA_BRIDGE_DISCOVERY_TARGET_REJECTED', 'UPDIA bridge discovery target failed the HTTPS host allow-list.', { hostname: target.hostname, allowedHostSuffixes: suffixes });
+    }
+    const url = target.toString().replace(/\/+$/, '');
+    const cacheMs = Math.max(1_000, Number(this.config.updiaBridgeDiscoveryCacheMs ?? 30_000));
+    this.remoteRouteCache = { url, updatedAt, expiresAt, cachedUntil: Math.min(now + cacheMs, expiresAt - 1_000) };
+    return url;
+  }
+
+  async pollRemoteJob(job, { requestId, timeoutMs, startedAt, baseUrl }) {
     if (!job.pollPath || !job.jobId) {
       throw bridgeError('UPDIA_REMOTE_PROTOCOL_ERROR', 'UPDIA async bridge job is missing its poll path or id.', { job });
     }
-    const pollUrl = new URL(job.pollPath, `${String(this.config.updiaBridgeUrl).replace(/\/+$/, '')}/`).toString();
+    const pollUrl = new URL(job.pollPath, `${baseUrl}/`).toString();
     const pollMs = Math.max(100, Number(this.config.updiaBridgePollMs ?? job.pollAfterMs ?? 1_000));
     while (Date.now() - startedAt < timeoutMs) {
       const remainingBeforeDelay = timeoutMs - (Date.now() - startedAt);

@@ -116,5 +116,8 @@
   "engines": {
     "node": ">=20"
   },
+  "devDependencies": {
+    "typescript": "5.9.3"
+  },
   "description": "RNCS + Aetherworld Unified v0.19.8-alpha.1 with Aether Earth: 100 RCL organisms, RCLpedia, accelerated spacetime, compression and collective-intelligence crystallization."
 }

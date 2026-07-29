@@ -1,4 +1,5 @@
 import {PLAN_FORMAT,PLAN_VERSION,assertCompilationPlan,root,id} from './contracts.mjs';
+import {AETHER_ISLAND_COMPILER_PROFILE,createSemanticFidelityGate} from './semantic-fidelity.mjs';
 
 export const sampleObjects=[
  {id:'island:aether-small',kind:'island',name:'小型以太岛',position:{x:0,y:0,z:0},physical:{body:'static',halfExtents:{x:8000,y:500,z:8000}}},
@@ -25,7 +26,7 @@ export function compileNaturalLanguageToRNCS(source,{subjectId='subject:aetherwo
  const text=source.normalize('NFKC').trim();const planId=id('plan',{text,baselineGeneration,language});
  const plan={
   format:PLAN_FORMAT,version:PLAN_VERSION,plan_id:planId,
-  source:{language,version:languageVersion,text,source_root:root(text)},
+  source:{language,version:languageVersion,text,source_root:root(text),compiler_profile:AETHER_ISLAND_COMPILER_PROFILE},
   subject:{subject_id:subjectId,roles,responsibility_boundary:'world-authority'},
   artifacts:sampleObjects.map(x=>({id:x.id,kind:x.kind,name:x.name,definition:x})),
   behaviors:[behavior],
@@ -54,6 +55,8 @@ export function compileNaturalLanguageToRNCS(source,{subjectId='subject:aetherwo
   rollback_policy:{mode:'generation-restore',restore_baseline:true,retain_evidence:true},
   acceptance_rules:[{rule:'candidate-before-commit'},{rule:'all-mutating-actions-authorized'},{rule:'behavior-is-runtime-registered'},{rule:'two-clients-converge-on-authority-root'},{rule:'authority-root-not-equal-presentation-root'},{rule:'rollback-and-replay-restore-state'}]
  };
+ plan.semantic_fidelity=createSemanticFidelityGate(plan);
+ if(plan.semantic_fidelity.status!=='passed')throw Object.assign(new Error(`SEMANTIC_COMPILATION_GATE_FAILED:${plan.semantic_fidelity.reasonCodes.join(',')}`),{code:'SEMANTIC_COMPILATION_GATE_FAILED',details:plan.semantic_fidelity});
  return assertCompilationPlan(plan);
 }
 export const compileCSLToRNCS=(source,options={})=>compileNaturalLanguageToRNCS(source,{...options,roles:['owner','csl-author'],language:'CSL',languageVersion:options.version??'v0.8'});

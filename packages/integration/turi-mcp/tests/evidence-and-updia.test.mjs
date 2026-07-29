@@ -83,6 +83,69 @@ test('UPDIA adapter calls a protected remote HTTP bridge with a validated envelo
   assert.equal(JSON.parse(calls[0].options.body).method, 'knowledge_query');
 });
 
+test('UPDIA adapter resolves and caches a fresh allow-listed bridge discovery route', async () => {
+  const discoveryUrl = 'https://discovery.example.test/updia-route.json';
+  const bridgeUrl = 'https://current-updia-route.trycloudflare.com';
+  let discoveryCalls = 0;
+  let bridgeCalls = 0;
+  const adapter = new UpdiaAdapter({
+    config: {
+      updiaBridgeDiscoveryUrl: discoveryUrl,
+      updiaBridgeAllowedHostSuffixes: ['.trycloudflare.com'],
+      updiaBridgeDiscoveryCacheMs: 60_000,
+    },
+    fetchImpl: async (url, options) => {
+      if (url === discoveryUrl) {
+        discoveryCalls += 1;
+        const route = {
+          format: 'taowind.updia-bridge-route.v0.1',
+          url: bridgeUrl,
+          updatedAt: new Date(Date.now() - 1_000).toISOString(),
+          expiresAt: new Date(Date.now() + 60_000).toISOString(),
+        };
+        return new Response(JSON.stringify({ files: { 'updia-bridge-route.json': { content: JSON.stringify(route) } } }), { status: 200, headers: { 'content-type': 'application/json' } });
+      }
+      bridgeCalls += 1;
+      assert.equal(url, `${bridgeUrl}/invoke`);
+      const request = JSON.parse(options.body);
+      return new Response(JSON.stringify({ id: request.id, ok: true, result: { packet: { packetId: `packet:${bridgeCalls}` } }, error: null }), { status: 200 });
+    },
+  });
+  assert.equal(adapter.configurationStatus().mode, 'remote-discovery');
+  assert.equal((await adapter.memorySearch({ query: 'first' })).packet.packetId, 'packet:1');
+  assert.equal((await adapter.memorySearch({ query: 'second' })).packet.packetId, 'packet:2');
+  assert.equal(discoveryCalls, 1);
+  assert.equal(bridgeCalls, 2);
+});
+
+test('UPDIA adapter rejects expired and non-allow-listed discovery routes', async (t) => {
+  const discoveryUrl = 'https://discovery.example.test/updia-route.json';
+  await t.test('expired route', async () => {
+    const adapter = new UpdiaAdapter({
+      config: { updiaBridgeDiscoveryUrl: discoveryUrl, updiaBridgeAllowedHostSuffixes: ['.trycloudflare.com'] },
+      fetchImpl: async () => new Response(JSON.stringify({
+        format: 'taowind.updia-bridge-route.v0.1',
+        url: 'https://expired.trycloudflare.com',
+        updatedAt: new Date(Date.now() - 120_000).toISOString(),
+        expiresAt: new Date(Date.now() - 60_000).toISOString(),
+      }), { status: 200 }),
+    });
+    await assert.rejects(() => adapter.memorySearch({ query: 'expired' }), (error) => error.code === 'UPDIA_BRIDGE_DISCOVERY_EXPIRED');
+  });
+  await t.test('disallowed host', async () => {
+    const adapter = new UpdiaAdapter({
+      config: { updiaBridgeDiscoveryUrl: discoveryUrl, updiaBridgeAllowedHostSuffixes: ['.trycloudflare.com'] },
+      fetchImpl: async () => new Response(JSON.stringify({
+        format: 'taowind.updia-bridge-route.v0.1',
+        url: 'https://127.0.0.1:8788',
+        updatedAt: new Date(Date.now() - 1_000).toISOString(),
+        expiresAt: new Date(Date.now() + 60_000).toISOString(),
+      }), { status: 200 }),
+    });
+    await assert.rejects(() => adapter.memorySearch({ query: 'ssrf' }), (error) => error.code === 'UPDIA_BRIDGE_DISCOVERY_TARGET_REJECTED');
+  });
+});
+
 test('UPDIA adapter submits long generation as an async bridge job and polls its result', async () => {
   const calls = [];
   let requestId;

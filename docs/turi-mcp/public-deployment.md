@@ -104,7 +104,19 @@ TURI_UPDIA_BRIDGE_URL=https://<updia-service>.onrender.com
 TURI_UPDIA_BRIDGE_TOKEN=<same-secret-as-UPDIA_BRIDGE_TOKEN>
 ```
 
-不要把 bridge token、模型服务密钥或真实数据提交到仓库。远程模型 endpoint 必须使用 TLS、访问控制和出站 allow-list。若 TURI 未配置这两个变量，`turi_health` 会明确返回 `updia.status=not_configured`。
+本机 research-only Quick Tunnel 只适合验收链。此时使用 WorldSeed watchdog 发布的短时发现文档，避免把临时 tunnel 域名写死：
+
+```text
+TURI_UPDIA_BRIDGE_DISCOVERY_URL=https://gist.githubusercontent.com/<owner>/<gist-id>/raw/updia-bridge-route.json
+TURI_UPDIA_BRIDGE_DISCOVERY_FILE=updia-bridge-route.json
+TURI_UPDIA_BRIDGE_ALLOWED_HOST_SUFFIXES=.trycloudflare.com
+TURI_UPDIA_BRIDGE_DISCOVERY_CACHE_MS=30000
+TURI_UPDIA_BRIDGE_DISCOVERY_CACHE_BUST_MS=60000
+```
+
+发现文档无权提升 bridge 权限；TURI 会校验 HTTPS、域名 allow-list 和有效期。电脑、Ollama 或 watchdog 离线后，路由在有效期结束时失败关闭。
+
+不要把 bridge token、模型服务密钥或真实数据提交到仓库。远程模型 endpoint 必须使用 TLS、访问控制和出站 allow-list。若 TURI 既未配置静态 bridge URL，也未配置发现 URL，`turi_health` 会明确返回 `updia.status=not_configured`。
 
 Vercel 可以承担 ChatGPT 连接的 TURI `/mcp` URL，但不要把本机 `TURI_UPDIA_ROOT` 路径填入 Vercel；serverless 临时文件系统不提供 UPDIA 状态连续性。
 

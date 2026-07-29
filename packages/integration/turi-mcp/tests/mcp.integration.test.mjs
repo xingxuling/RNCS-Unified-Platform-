@@ -70,7 +70,10 @@ test('Streamable HTTP exposes MCP initialize, tools, resources, and candidate E2
     assert.ok(resources.resources.some((item) => item.uri === 'turi://server/info'));
     const serverInfo = await client.readResource({ uri: 'turi://server/info' });
     assert.ok(serverInfo.contents.length >= 1);
-    const candidate = await client.callTool({ name: 'turi_candidate_execute', arguments: { source: '创建一座小型以太岛。' } });
+    const semanticReject = await client.callTool({ name: 'turi_candidate_execute', arguments: { source: '防止 AI copilot 将微弱、含糊的脑信号扩张成不可逆操作；要求区分神经证据与 AI 先验，支持拒答、人工确认、回滚、漂移检测和身份锚点。' } });
+    assert.equal(semanticReject.isError, true);
+    assert.match(semanticReject.content.map((item) => item.text ?? '').join('\n'), /SEMANTIC_COMPILATION_GATE_FAILED/);
+    const candidate = await client.callTool({ name: 'turi_candidate_execute', arguments: { source: '创建一座小型以太岛。岛上有两个玩家出生点、一扇可开关的门、一盏蓝色能量灯和一个感应区域。玩家进入感应区域时，门自动打开，灯光增强并产生环境声音。两个客户端必须看到一致的门状态和玩家位置。' } });
     assert.equal(candidate.isError, undefined);
     const text = candidate.content.map((item) => item.text ?? '').join('\n');
     assert.match(text, /turi\.candidate-workflow\.v0\.1/);

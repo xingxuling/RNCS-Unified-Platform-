@@ -43,12 +43,20 @@ export function loadConfig(env = process.env, overrides = {}) {
   const updiaCheckpoint = String(overrides.updiaCheckpoint ?? env.TURI_UPDIA_CHECKPOINT ?? env.TURI_UPDIA_BOOTSTRAP_CHECKPOINT ?? '').trim();
   const updiaKnowledgeStorePath = String(overrides.updiaKnowledgeStorePath ?? env.TURI_UPDIA_KNOWLEDGE_STORE ?? env.TURI_UPDIA_KNOWLEDGE_STORE_PATH ?? '').trim();
   const updiaBridgeUrl = String(overrides.updiaBridgeUrl ?? env.TURI_UPDIA_BRIDGE_URL ?? '').trim().replace(/\/+$/, '');
+  const updiaBridgeDiscoveryUrl = String(overrides.updiaBridgeDiscoveryUrl ?? env.TURI_UPDIA_BRIDGE_DISCOVERY_URL ?? '').trim();
+  const updiaBridgeDiscoveryFile = String(overrides.updiaBridgeDiscoveryFile ?? env.TURI_UPDIA_BRIDGE_DISCOVERY_FILE ?? 'updia-bridge-route.json').trim();
+  const updiaBridgeAllowedHostSuffixes = overrides.updiaBridgeAllowedHostSuffixes ?? list(env.TURI_UPDIA_BRIDGE_ALLOWED_HOST_SUFFIXES || '.trycloudflare.com');
   const updiaBridgeToken = String(overrides.updiaBridgeToken ?? env.TURI_UPDIA_BRIDGE_TOKEN ?? '').trim();
   const updiaDefaultModel = String(overrides.updiaDefaultModel ?? env.TURI_UPDIA_DEFAULT_MODEL ?? '').trim();
   if (updiaBridgeUrl) {
     let parsedBridgeUrl;
     try { parsedBridgeUrl = new URL(updiaBridgeUrl); } catch { throw new Error('TURI_UPDIA_BRIDGE_URL must be an absolute HTTP(S) URL.'); }
     if (!['http:', 'https:'].includes(parsedBridgeUrl.protocol)) throw new Error('TURI_UPDIA_BRIDGE_URL must use http or https.');
+  }
+  if (updiaBridgeDiscoveryUrl) {
+    let parsedDiscoveryUrl;
+    try { parsedDiscoveryUrl = new URL(updiaBridgeDiscoveryUrl); } catch { throw new Error('TURI_UPDIA_BRIDGE_DISCOVERY_URL must be an absolute HTTPS URL.'); }
+    if (parsedDiscoveryUrl.protocol !== 'https:') throw new Error('TURI_UPDIA_BRIDGE_DISCOVERY_URL must use https.');
   }
   const updiaEndpoints = overrides.updiaEndpoints ?? list(env.TURI_UPDIA_ENDPOINTS || 'http://127.0.0.1:11435');
   const gamebrainCli = String(overrides.gamebrainCli ?? env.TURI_GAMEBRAIN_CLI ?? (gamebrainRoot ? path.join(gamebrainRoot, 'src/cli.mjs') : '')).trim();
@@ -84,6 +92,11 @@ export function loadConfig(env = process.env, overrides = {}) {
     updiaCheckpoint: updiaCheckpoint || null,
     updiaKnowledgeStorePath: updiaKnowledgeStorePath || null,
     updiaBridgeUrl: updiaBridgeUrl || null,
+    updiaBridgeDiscoveryUrl: updiaBridgeDiscoveryUrl || null,
+    updiaBridgeDiscoveryFile: updiaBridgeDiscoveryFile || 'updia-bridge-route.json',
+    updiaBridgeAllowedHostSuffixes: [...new Set(updiaBridgeAllowedHostSuffixes.map((item) => String(item).trim().toLowerCase()).filter(Boolean))],
+    updiaBridgeDiscoveryCacheMs: integer(overrides.updiaBridgeDiscoveryCacheMs ?? env.TURI_UPDIA_BRIDGE_DISCOVERY_CACHE_MS, 30_000, 1_000, 300_000),
+    updiaBridgeDiscoveryCacheBustMs: integer(overrides.updiaBridgeDiscoveryCacheBustMs ?? env.TURI_UPDIA_BRIDGE_DISCOVERY_CACHE_BUST_MS, 0, 0, 3_600_000),
     updiaBridgeToken: updiaBridgeToken || null,
     updiaBridgeAsync: truthy(overrides.updiaBridgeAsync ?? env.TURI_UPDIA_BRIDGE_ASYNC, true),
     updiaBridgePollMs: integer(overrides.updiaBridgePollMs ?? env.TURI_UPDIA_BRIDGE_POLL_MS, 1_000, 100, 10_000),
