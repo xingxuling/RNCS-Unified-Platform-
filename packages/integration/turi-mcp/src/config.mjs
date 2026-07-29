@@ -1,8 +1,10 @@
+import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const PACKAGE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const REPO_ROOT = path.resolve(PACKAGE_ROOT, '../../..');
+const RUNTIME_REPO_ROOT = fs.existsSync(path.join(process.cwd(), 'packages')) ? process.cwd() : REPO_ROOT;
 
 const truthy = (value, fallback = false) => value === undefined ? fallback : ['1', 'true', 'yes', 'on'].includes(String(value).trim().toLowerCase());
 const list = (value) => String(value ?? '').split(',').map((item) => item.trim()).filter(Boolean);
@@ -12,7 +14,7 @@ const integer = (value, fallback, min, max) => {
 };
 
 export function loadConfig(env = process.env, overrides = {}) {
-  const repoRoot = path.resolve(overrides.repoRoot ?? env.TURI_REPO_ROOT ?? REPO_ROOT);
+  const repoRoot = path.resolve(overrides.repoRoot ?? env.TURI_REPO_ROOT ?? RUNTIME_REPO_ROOT);
   const host = String(overrides.host ?? env.TURI_HOST ?? '127.0.0.1');
   const port = integer(overrides.port ?? env.TURI_PORT ?? env.PORT, 8797, 0, 65535);
   const mcpPath = String(overrides.mcpPath ?? env.TURI_MCP_PATH ?? '/mcp');
@@ -38,10 +40,19 @@ export function loadConfig(env = process.env, overrides = {}) {
   const gamebrainRoot = String(overrides.gamebrainRoot ?? env.TURI_GAMEBRAIN_ROOT ?? updiaRoot).trim();
   const updiaEntry = String(overrides.updiaEntry ?? env.TURI_UPDIA_ENTRY ?? (updiaRoot ? path.join(updiaRoot, 'src/updia/local-interaction/cli.mjs') : '')).trim();
   const updiaStateDir = String(overrides.updiaStateDir ?? env.TURI_UPDIA_STATE_DIR ?? '').trim();
-  const updiaCheckpoint = String(overrides.updiaCheckpoint ?? env.TURI_UPDIA_CHECKPOINT ?? '').trim();
+  const updiaCheckpoint = String(overrides.updiaCheckpoint ?? env.TURI_UPDIA_CHECKPOINT ?? env.TURI_UPDIA_BOOTSTRAP_CHECKPOINT ?? '').trim();
+  const updiaKnowledgeStorePath = String(overrides.updiaKnowledgeStorePath ?? env.TURI_UPDIA_KNOWLEDGE_STORE ?? env.TURI_UPDIA_KNOWLEDGE_STORE_PATH ?? '').trim();
+  const updiaBridgeUrl = String(overrides.updiaBridgeUrl ?? env.TURI_UPDIA_BRIDGE_URL ?? '').trim().replace(/\/+$/, '');
+  const updiaBridgeToken = String(overrides.updiaBridgeToken ?? env.TURI_UPDIA_BRIDGE_TOKEN ?? '').trim();
+  if (updiaBridgeUrl) {
+    let parsedBridgeUrl;
+    try { parsedBridgeUrl = new URL(updiaBridgeUrl); } catch { throw new Error('TURI_UPDIA_BRIDGE_URL must be an absolute HTTP(S) URL.'); }
+    if (!['http:', 'https:'].includes(parsedBridgeUrl.protocol)) throw new Error('TURI_UPDIA_BRIDGE_URL must use http or https.');
+  }
   const updiaEndpoints = overrides.updiaEndpoints ?? list(env.TURI_UPDIA_ENDPOINTS || 'http://127.0.0.1:11435');
   const gamebrainCli = String(overrides.gamebrainCli ?? env.TURI_GAMEBRAIN_CLI ?? (gamebrainRoot ? path.join(gamebrainRoot, 'src/cli.mjs') : '')).trim();
   const rclRoot = path.resolve(overrides.rclRoot ?? env.TURI_RCL_ROOT ?? path.join(repoRoot, 'packages/languages/reality-computation-language'));
+  const rclControlPlaneDir = path.resolve(overrides.rclControlPlaneDir ?? env.TURI_RCL_CONTROL_PLANE_DIR ?? path.join(repoRoot, 'packages/control/rncs-rcl-control-plane'));
   const manifestDirs = (overrides.manifestDirs ?? list(env.TURI_MANIFEST_DIRS)).length
     ? (overrides.manifestDirs ?? list(env.TURI_MANIFEST_DIRS)).map((item) => path.resolve(item))
     : [path.join(repoRoot, 'packages/control/reality-one-gateway/runtimes')];
@@ -50,6 +61,7 @@ export function loadConfig(env = process.env, overrides = {}) {
     version: '0.1.0-alpha.1',
     repoRoot,
     rclRoot,
+    rclControlPlaneDir,
     host,
     port,
     mcpPath,
@@ -69,6 +81,9 @@ export function loadConfig(env = process.env, overrides = {}) {
     updiaEntry: updiaEntry || null,
     updiaStateDir: updiaStateDir || null,
     updiaCheckpoint: updiaCheckpoint || null,
+    updiaKnowledgeStorePath: updiaKnowledgeStorePath || null,
+    updiaBridgeUrl: updiaBridgeUrl || null,
+    updiaBridgeToken: updiaBridgeToken || null,
     updiaEndpoints,
     gamebrainRoot: gamebrainRoot || null,
     gamebrainCli: gamebrainCli || null,

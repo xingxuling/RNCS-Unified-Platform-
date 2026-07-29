@@ -32,3 +32,7 @@ services:
         value: "false"
       - key: TURI_DATA_DIR
         value: /tmp/turi-mcp
+      - key: TURI_UPDIA_BRIDGE_URL
+        sync: false
+      - key: TURI_UPDIA_BRIDGE_TOKEN
+        sync: false

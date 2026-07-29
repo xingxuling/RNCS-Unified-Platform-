@@ -46,9 +46,39 @@ test('UPDIA configuration requires a bootstrap or persisted checkpoint', () => {
   try {
     const adapter = new UpdiaAdapter({ config: { updiaEntry: path.join(dataDir, 'cli.mjs'), updiaStateDir: dataDir } });
     assert.equal(adapter.configured(), false);
-    fs.writeFileSync(path.join(dataDir, 'checkpoint.json'), '{}', 'utf8');
+    fs.writeFileSync(path.join(dataDir, 'checkpoint.json'), JSON.stringify({
+      format: 'updia.subject-checkpoint.v6.2',
+      identityRoot: 'a'.repeat(64),
+      lineageId: 'updia-lineage:test',
+    }), 'utf8');
+    fs.writeFileSync(path.join(dataDir, 'cli.mjs'), '// test entry\n', 'utf8');
     assert.equal(adapter.configured(), true);
   } finally {
     fs.rmSync(dataDir, { recursive: true, force: true });
   }
+});
+
+test('UPDIA adapter calls a protected remote HTTP bridge with a validated envelope', async () => {
+  const calls = [];
+  const adapter = new UpdiaAdapter({
+    config: {
+      updiaBridgeUrl: 'https://updia.example.test',
+      updiaBridgeToken: 'test-updia-bridge-token-0123456789',
+    },
+    fetchImpl: async (url, options) => {
+      calls.push({ url, options });
+      const request = JSON.parse(options.body);
+      return new Response(JSON.stringify({
+        id: request.id,
+        ok: true,
+        result: { packet: { packetId: 'packet:test' }, trace: { traceId: 'trace:test' } },
+        error: null,
+      }), { status: 200, headers: { 'content-type': 'application/json' } });
+    },
+  });
+  const result = await adapter.memorySearch({ query: '真实 UPDIA 知识检索', retrievalBudget: 5 });
+  assert.equal(result.packet.packetId, 'packet:test');
+  assert.equal(calls[0].url, 'https://updia.example.test/invoke');
+  assert.equal(calls[0].options.headers.authorization, 'Bearer test-updia-bridge-token-0123456789');
+  assert.equal(JSON.parse(calls[0].options.body).method, 'knowledge_query');
 });

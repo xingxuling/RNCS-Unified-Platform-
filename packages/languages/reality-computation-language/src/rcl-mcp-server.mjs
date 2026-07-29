@@ -16,12 +16,7 @@ import {
 
 const ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const PACKAGE_JSON_PATH = path.join(ROOT, 'package.json');
-const DEFAULT_WORKBUDDY_RNCS_ROOT = path.resolve(
-  ROOT,
-  '..',
-  'rncs-aetherworld',
-  'RNCS_Aetherworld_Unified_v0.19.7-alpha.1_AetherEarth',
-);
+const DEFAULT_RNCS_ROOT = path.resolve(ROOT, '..', '..', '..');
 const BUNDLED_RNCS_WORLD_RUNTIME_SNAPSHOT_DIR = path.join(ROOT, 'examples', 'rncs-world-runtime-snapshots');
 const RCL_TEXT_EXTENSIONS = new Set(['.rcl', '.mjs', '.js', '.json', '.md', '.txt', '.toml', '.rcltype']);
 const SKIPPED_SCAN_DIRS = new Set(['.git', 'node_modules', 'build', 'output', 'dist', '.zig-cache', 'zig-cache']);
@@ -118,7 +113,7 @@ function numberInRange(value, fallback, min, max) {
 }
 
 function resolveRncsRoot(args = {}) {
-  return path.resolve(args.rncsRoot ?? process.env.RCL_RNCS_ROOT ?? DEFAULT_WORKBUDDY_RNCS_ROOT);
+  return path.resolve(args.rncsRoot ?? process.env.RCL_RNCS_ROOT ?? DEFAULT_RNCS_ROOT);
 }
 
 function resolveInside(baseDir, relativePath, label = 'path') {
@@ -264,7 +259,7 @@ function liveFusionOrFallback(options = {}) {
   }
 }
 
-function rclStatus() {
+function rclStatus(args = {}) {
   const pkg = readPackageJson();
   const nativeVmPath = path.join(ROOT, 'native', process.platform === 'win32' ? 'rclvm.exe' : 'rclvm');
   const tools = listRclMcpTools();
@@ -272,7 +267,7 @@ function rclStatus() {
     package: { name: pkg.name, version: pkg.version, description: pkg.description },
     repo: { root: ROOT, commit: readGitCommit() },
     nativeVm: { path: nativeVmPath, exists: fs.existsSync(nativeVmPath) },
-    rncsFusion: liveFusionOrFallback(),
+    rncsFusion: liveFusionOrFallback({ controlPlaneDir: args.controlPlaneDir ? path.resolve(String(args.controlPlaneDir)) : undefined }),
     mcp: {
       name: RCL_MCP_SERVER_NAME,
       version: RCL_MCP_SERVER_VERSION,
@@ -1156,7 +1151,7 @@ function jsonRpcError(id, code, message, data) {
   return { jsonrpc: '2.0', id: id ?? null, error: { code, message, data } };
 }
 
-export async function handleRclMcpMessage(message) {
+export async function handleRclMcpMessage(message, options = {}) {
   const id = Object.hasOwn(message, 'id') ? message.id : undefined;
   try {
     if (message.jsonrpc !== '2.0') return jsonRpcError(id, -32600, 'Invalid JSON-RPC version');
@@ -1184,7 +1179,7 @@ export async function handleRclMcpMessage(message) {
       const name = String(message.params?.name ?? '');
       const handler = TOOL_HANDLERS[name];
       if (!handler) return jsonRpcError(id, -32602, `Unknown tool: ${name}`);
-      const value = await handler(message.params?.arguments ?? {});
+      const value = await handler({ ...(options.defaultArguments ?? {}), ...(message.params?.arguments ?? {}) });
       return jsonRpcResult(id, jsonTextResult(value));
     }
     return jsonRpcError(id, -32601, `Method not found: ${message.method}`);
@@ -1193,12 +1188,12 @@ export async function handleRclMcpMessage(message) {
   }
 }
 
-export async function handleRclMcpRequest(payload) {
+export async function handleRclMcpRequest(payload, options = {}) {
   if (Array.isArray(payload)) {
-    const responses = (await Promise.all(payload.map(item => handleRclMcpMessage(item)))).filter(Boolean);
+    const responses = (await Promise.all(payload.map(item => handleRclMcpMessage(item, options)))).filter(Boolean);
     return responses.length ? responses : undefined;
   }
-  return handleRclMcpMessage(payload);
+  return handleRclMcpMessage(payload, options);
 }
 
 function readRequestBody(request, maxBytes = 2 * 1024 * 1024) {

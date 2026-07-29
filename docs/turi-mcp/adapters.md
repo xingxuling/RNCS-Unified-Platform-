@@ -12,11 +12,11 @@
 
 ## UPDIA / WorldSeed
 
-`src/adapters/updia.mjs` 通过受限 Node 子进程向配置的 `local-interaction/cli.mjs` 发送单次 JSONL 请求。首次启动必须提供有效 bootstrap checkpoint；后续启动可以使用 state dir 内持久化的 `checkpoint.json`。缺少 checkpoint 时 TURI 报 `UPDIA_NOT_CONFIGURED`，不会把 entry/state-dir 存在误报成 ready。当前真实方法是：
+`src/adapters/updia.mjs` 有两种真实传输模式：本地模式通过受限 Node 子进程向配置的 `local-interaction/cli.mjs` 发送单次 JSONL 请求；公网模式通过 Bearer 保护的 `/invoke` HTTP bridge 转发同一组 `handleBridgeRequest` 方法。首次启动必须提供有效 bootstrap checkpoint；后续启动可以使用 state dir 内持久化的 `checkpoint.json`。缺少 checkpoint 时 TURI 报 `UPDIA_NOT_CONFIGURED`，不会把 entry/state-dir 存在误报成 ready。Native RGR store 通过 `TURI_UPDIA_KNOWLEDGE_STORE` 或 bridge 的 `UPDIA_KNOWLEDGE_STORE` 显式加载；bridge 首次启动会从配置的真实仓库文档建立 store，之后只复用已验证 store。当前真实方法是：
 
 `health`、`models`、`generate`、`status`、`set_model`、`adjudicate_action`、`record_execution`、`feedback`、`writebacks`、`accept`、`reject`、`knowledge_query`、`knowledge_explain`、`knowledge_conflicts`、`knowledge_verify`、`knowledge_writeback`、`shutdown`。
 
-因此 `subject_create`、generic observe/event ingest、独立 world model、goal arbitration、perception 和独立 organ scheduling 没有被虚构为可执行能力；它们在注册表中保留 `evidence_only/static` 边界。`subject_close` 只映射真实 `shutdown`，Native RGR 写回先走 candidate，commit 需要 authority token。
+因此 `subject_create`、generic observe/event ingest、独立 world model、goal arbitration、perception 和独立 organ scheduling 没有被虚构为可执行能力；它们在注册表中保留 `evidence_only/static` 边界。`subject_close` 只映射真实 `shutdown`，Native RGR 写回先走 candidate，commit 需要 authority token。没有可用 Ollama/兼容模型时，root 与 RGR 仍可健康运行，但认知状态会明确返回 `degraded-no-models`，研究工作流会返回 `grounded_degraded`，不会把检索事实冒充成模型推理。
 
 ## GameBrain / RSR / VSR
 

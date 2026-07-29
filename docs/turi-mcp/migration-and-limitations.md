@@ -8,7 +8,8 @@
 
 ## 当前限制
 
-- UPDIA 必须显式配置 WorldSeed entry/state dir；首次启动还必须提供有效 bootstrap checkpoint，未配置时不做假健康。
+- UPDIA 本地模式必须显式配置 WorldSeed entry/state dir；首次启动还必须提供有效 bootstrap checkpoint，未配置时不做假健康。公网模式应配置 `TURI_UPDIA_BRIDGE_URL` 和 `TURI_UPDIA_BRIDGE_TOKEN`，不能把本机路径当作云端 UPDIA。
+- Vercel 可承载无状态 TURI MCP 网关，但其 serverless 临时文件系统不保证 checkpoint、Native RGR store、receipt 和 session 跨重启持久化；完整 UPDIA 链需要带持久磁盘的 bridge 或外部持久化存储。
 - 当前 UPDIA bridge 没有 generic subject-create、observe、world-model、goal-arbitration 等方法；对应能力为 `evidence_only`。
 - RCL cinematic/game-rule/asset protocol 是适配器计划，未宣称原生 RCL 语法覆盖。
 - GameBrain、RSR、VSR 是可选 provider；未配置不等于已执行。

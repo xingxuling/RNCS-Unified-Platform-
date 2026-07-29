@@ -8,6 +8,17 @@ function capabilityError(code, message, details = null) {
   return error;
 }
 
+function groundedFacts(sourceEvidence) {
+  return (sourceEvidence?.packet?.claims ?? []).map((claim) => ({
+    claimId: claim.claimId,
+    statement: claim.statement,
+    claimType: claim.claimType,
+    sourceRefs: claim.sourceRefs ?? [],
+    confidence: claim.confidence ?? null,
+    status: claim.status ?? null,
+  }));
+}
+
 export class TuriOrchestrator {
   constructor({ config, adapters, artifacts }) {
     this.config = config;
@@ -124,13 +135,60 @@ export class TuriOrchestrator {
   }
 
   async researchTask(input = {}, context = {}) {
-    const result = { format: 'turi.research-workflow.v0.1', question: input.question, knownFacts: [], sourceEvidence: [], hypothesis: null, candidate: null, limitations: [] };
+    const result = {
+      format: 'turi.research-workflow.v0.1',
+      question: input.question,
+      status: 'ungrounded',
+      knownFacts: [],
+      sourceEvidence: null,
+      hypothesis: null,
+      subject: null,
+      candidate: null,
+      grounding: {
+        requested: true,
+        performed: false,
+        retrieval: { status: 'not_attempted' },
+        reasoning: { status: 'not_attempted' },
+      },
+      limitations: [],
+    };
     if (this.adapters.updia.configured()) {
       try {
+        result.subject = await this.adapters.updia.subjectStatus();
+      } catch (error) {
+        result.limitations.push(`UPDIA subject status failed: ${error.code ?? error.message}`);
+      }
+      try {
         result.sourceEvidence = await this.adapters.updia.memorySearch({ query: input.question, retrievalBudget: input.retrievalBudget ?? 12 });
+        result.knownFacts = groundedFacts(result.sourceEvidence);
+        result.grounding.retrieval = {
+          status: result.sourceEvidence?.packet?.packetId ? 'executed' : 'returned_without_packet',
+          packetId: result.sourceEvidence?.packet?.packetId ?? null,
+          traceId: result.sourceEvidence?.trace?.traceId ?? null,
+          claimCount: result.knownFacts.length,
+          storeRoot: result.sourceEvidence?.storeRoot ?? result.sourceEvidence?.index?.root ?? null,
+        };
+        result.grounding.performed = Boolean(result.sourceEvidence?.packet?.packetId);
+      } catch (error) {
+        result.grounding.retrieval = { status: 'failed', error: { code: error.code ?? error.name, message: error.message } };
+        result.limitations.push(`UPDIA memory retrieval failed: ${error.code ?? error.message}`);
+      }
+      try {
         result.hypothesis = await this.adapters.updia.think({ goal: input.question, outputContract: { type: 'research', fields: ['known_facts', 'source_evidence', 'hypotheses', 'unknowns'] } });
-      } catch (error) { result.limitations.push(`UPDIA research call failed: ${error.code ?? error.message}`); }
-    } else result.limitations.push('UPDIA is not configured; research result remains ungrounded.');
+        result.grounding.reasoning = {
+          status: 'executed',
+          outputRoot: result.hypothesis?.outputRoot ?? result.hypothesis?.root ?? null,
+        };
+      } catch (error) {
+        result.grounding.reasoning = { status: 'failed', error: { code: error.code ?? error.name, message: error.message } };
+        result.limitations.push(`UPDIA reasoning failed: ${error.code ?? error.message}`);
+      }
+      result.status = result.grounding.performed
+        ? result.grounding.reasoning.status === 'executed' ? 'grounded' : 'grounded_degraded'
+        : 'ungrounded';
+    } else {
+      result.limitations.push('UPDIA is not configured; research result remains ungrounded.');
+    }
     if (input.source) result.candidate = await this.candidateExecute({ source: input.source, language: input.language, subject_id: input.subject_id }, context);
     return result;
   }

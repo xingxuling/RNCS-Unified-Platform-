@@ -11,15 +11,11 @@ export const RCL_RNCS_FUSION_VERSION = '0.94.0-alpha.1';
 export const RCL_RNCS_FUSION_RESULT_FORMAT = 'rcl.rncs-fusion-result.v0.94';
 export const RCL_RNCS_FUSION_BUNDLE_FORMAT = 'rcl.rncs-fusion-bundle.v0.94';
 export const BUNDLED_RNCS_CONTROL_PLANE_DIR = path.join(ROOT, 'examples', 'rncs-rcl-control-plane');
-export const DEFAULT_WORKBUDDY_RNCS_CONTROL_PLANE_DIR = path.resolve(
-  ROOT,
-  '..',
-  'rncs-aetherworld',
-  'RNCS_Aetherworld_Unified_v0.19.7-alpha.1_AetherEarth',
-  'packages',
-  'control',
-  'rncs-rcl-control-plane',
-);
+export const REPO_RNCS_ROOT = path.resolve(ROOT, '..', '..', '..');
+export const REPO_RNCS_CONTROL_PLANE_DIR = path.resolve(REPO_RNCS_ROOT, 'packages', 'control', 'rncs-rcl-control-plane');
+// Backwards-compatible export name. Resolution no longer points at a versioned
+// sibling checkout that is absent from deployments.
+export const DEFAULT_WORKBUDDY_RNCS_CONTROL_PLANE_DIR = REPO_RNCS_CONTROL_PLANE_DIR;
 
 export const RNCS_CONTROL_PLANE_EDGES = Object.freeze([
   ['core', 'rfe'],
@@ -102,9 +98,12 @@ function byteEvidence(controlPlaneDir, fileName, targetBytecode) {
 
 export function resolveRclRncsControlPlaneDir(options = {}) {
   if (options.controlPlaneDir) return path.resolve(options.controlPlaneDir);
+  if (options.manifestPath) return path.dirname(path.resolve(options.manifestPath));
+  if (process.env.RCL_CONTROL_PLANE_MANIFEST) return path.dirname(path.resolve(process.env.RCL_CONTROL_PLANE_MANIFEST));
   if (process.env.RCL_RNCS_CONTROL_PLANE_DIR) return path.resolve(process.env.RCL_RNCS_CONTROL_PLANE_DIR);
+  if (fs.existsSync(path.join(REPO_RNCS_CONTROL_PLANE_DIR, 'rncs.module.json'))) return REPO_RNCS_CONTROL_PLANE_DIR;
   if (fs.existsSync(path.join(BUNDLED_RNCS_CONTROL_PLANE_DIR, 'rncs.module.json'))) return BUNDLED_RNCS_CONTROL_PLANE_DIR;
-  return DEFAULT_WORKBUDDY_RNCS_CONTROL_PLANE_DIR;
+  return REPO_RNCS_CONTROL_PLANE_DIR;
 }
 
 export function readRncsRclModule(controlPlaneDir, name, options = {}) {

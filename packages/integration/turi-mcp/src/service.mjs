@@ -27,7 +27,7 @@ export async function createTuriService(options = {}) {
   const gateway = options.gateway ?? new RealityOneGateway({ manifestDirs: config.manifestDirs, dataDir: config.dataDir });
   await gateway.discover();
   const adapters = options.adapters ?? {
-    rcl: new RclAdapter({ rclRoot: config.rclRoot }),
+    rcl: new RclAdapter({ rclRoot: config.rclRoot, controlPlaneDir: config.rclControlPlaneDir }),
     rncs: new RncsAdapter({ gateway, dataDir: config.dataDir, config }),
     updia: new UpdiaAdapter({ config }),
     gamebrain: new GameBrainAdapter({ config, dataDir: config.dataDir }),
@@ -70,6 +70,13 @@ export async function createTuriService(options = {}) {
   app.get('/healthz', async (req, res) => { try { res.status(200).json(await health()); } catch (error) { res.status(503).json({ status: 'unhealthy', error: error.code ?? error.message }); } });
   app.get('/version', (req, res) => res.json({ name: config.name, version: config.version, protocol: '2025-06-18' }));
   app.get(`${config.mcpPath}/manifest`, (req, res) => res.json({ name: config.name, version: config.version, transport: 'streamable-http', mcpEndpoint: `${config.mcpPath}`, authorityMode: config.authorityMode, toolCount: ALIAS_TO_CAPABILITY.size, registry: registry.summary() }));
+  const protectedResourceMetadata = (req) => {
+    const forwardedProtocol = String(req.headers['x-forwarded-proto'] ?? '').split(',')[0].trim();
+    const protocol = forwardedProtocol || (config.publicBinding ? 'https' : req.protocol);
+    return { resource: new URL(config.mcpPath, `${protocol}://${req.get('host')}/`).toString() };
+  };
+  app.get(`/.well-known/oauth-protected-resource${config.mcpPath}`, (req, res) => res.json(protectedResourceMetadata(req)));
+  app.get('/.well-known/oauth-protected-resource', (req, res) => res.json(protectedResourceMetadata(req)));
 
   const createSession = async (transport) => { const server = createServer(); await server.connect(transport); return server; };
   app.post(config.mcpPath, async (req, res) => {

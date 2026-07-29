@@ -33,10 +33,20 @@ $env:TURI_UPDIA_ROOT='C:\path\to\worldseed'
 $env:TURI_UPDIA_ENTRY='C:\path\to\worldseed\src\updia\local-interaction\cli.mjs'
 $env:TURI_UPDIA_STATE_DIR='C:\path\to\turi-updia-state'
 $env:TURI_UPDIA_CHECKPOINT='C:\path\to\worldseed\evidence\updia\asil\living-subject-001-v5.3.checkpoint.json'
+$env:TURI_UPDIA_KNOWLEDGE_STORE='C:\path\to\turi-updia-state\native-rgr\store.json'
 $env:TURI_UPDIA_ENDPOINTS='http://127.0.0.1:11435'
 ```
 
 首次启动必须提供有效 checkpoint；后续启动可复用 `TURI_UPDIA_STATE_DIR/checkpoint.json`。没有这些配置时，UPDIA 不会被伪造为已连接；相关工作流会返回限制或 `UPDIA_NOT_CONFIGURED`。
+
+公网部署时，TURI 只负责 MCP 网关，UPDIA 应运行在受保护的独立 HTTP bridge 上：
+
+```powershell
+$env:TURI_UPDIA_BRIDGE_URL='https://<updia-bridge>.onrender.com'
+$env:TURI_UPDIA_BRIDGE_TOKEN='<same-secret-as-the-bridge>'
+```
+
+bridge 的 `/health` 可以公开用于平台探针，但 `/invoke` 必须使用 Bearer token。Vercel serverless 的临时文件系统不能承担 UPDIA checkpoint、Native RGR store 或 TURI receipts 的跨重启持久性；需要持久磁盘或外部持久化存储。
 
 ## 权限默认值
 

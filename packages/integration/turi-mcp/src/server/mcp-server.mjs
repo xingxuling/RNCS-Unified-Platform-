@@ -80,9 +80,19 @@ export function createTuriMcpServer({ config, registry, orchestrator, receipts, 
   const health = async () => {
     const result = { status: 'degraded', turi: { status: 'ok', version: config.version }, rncs: null, rcl: null, updia: null, gamebrain: adapters.gamebrain.status() };
     try { result.rncs = await adapters.rncs.health(); } catch (error) { result.rncs = { status: 'unavailable', error: publicError(error) }; }
-    try { result.rcl = await adapters.rcl.status(); } catch (error) { result.rcl = { status: 'unavailable', error: publicError(error) }; }
-    if (adapters.updia.configured()) { try { result.updia = await adapters.updia.health(); } catch (error) { result.updia = { status: 'unavailable', error: publicError(error) }; } }
-    else result.updia = { status: 'not_configured', implementation: 'provider' };
+    try {
+      const rclStatus = await adapters.rcl.status();
+      result.rcl = { implementation: 'native-rcl-mcp', ...rclStatus, status: rclStatus?.rncsFusion?.ok === false ? 'degraded' : 'ready' };
+    } catch (error) { result.rcl = { status: 'unavailable', error: publicError(error) }; }
+    const updiaConfiguration = typeof adapters.updia.configurationStatus === 'function'
+      ? adapters.updia.configurationStatus()
+      : { configured: adapters.updia.configured() };
+    if (updiaConfiguration.configured) {
+      try { result.updia = await adapters.updia.health(); }
+      catch (error) { result.updia = { status: 'configured_but_unreachable', implementation: 'provider', configuration: updiaConfiguration, error: publicError(error) }; }
+    } else {
+      result.updia = { status: 'not_configured', implementation: 'provider', configuration: updiaConfiguration };
+    }
     const rncsHealthy = result.rncs?.status === 'healthy';
     const rclAvailable = result.rcl?.status !== 'unavailable';
     const updiaReady = result.updia?.status === 'ready';

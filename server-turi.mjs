@@ -1,11 +1,6 @@
-import {createTaoWindRealityService} from './packages/integration/taowind-reality-mcp/src/service.mjs';
-import {createTuriService} from './packages/integration/turi-mcp/src/service.mjs';
+import { createTuriService } from './packages/integration/turi-mcp/src/service.mjs';
 
-// Vercel detects this root server entry and deploys the exported Express app as one Function.
-// The existing reality MCP remains the local/default entry; the Vercel project switches to
-// TURI through TAOWIND_VERCEL_APP=turi so the public MCP target exposes the unified registry.
-const isVercelTuri = process.env.TAOWIND_VERCEL_APP === 'turi';
-const env = isVercelTuri ? {
+const env = {
   ...process.env,
   TURI_HOST: process.env.TURI_HOST ?? '0.0.0.0',
   TURI_PORT: process.env.TURI_PORT ?? process.env.PORT ?? '3000',
@@ -18,6 +13,7 @@ const env = isVercelTuri ? {
   TURI_ENABLE_AUTHORIZED_WRITES: process.env.TURI_ENABLE_AUTHORIZED_WRITES ?? 'false',
   TURI_ENABLE_EXTERNAL_EFFECTS: process.env.TURI_ENABLE_EXTERNAL_EFFECTS ?? 'false',
   TURI_DATA_DIR: process.env.TURI_DATA_DIR ?? '/tmp/turi-mcp',
-} : process.env;
-const service = isVercelTuri ? await createTuriService({env}) : await createTaoWindRealityService();
+};
+
+const service = await createTuriService({ env });
 export default service.app;

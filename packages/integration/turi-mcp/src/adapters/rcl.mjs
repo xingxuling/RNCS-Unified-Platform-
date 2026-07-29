@@ -12,12 +12,16 @@ function unwrap(response, tool) {
 }
 
 export class RclAdapter {
-  constructor({ rclRoot } = {}) {
+  constructor({ rclRoot, controlPlaneDir } = {}) {
     this.rclRoot = rclRoot;
+    this.controlPlaneDir = controlPlaneDir;
   }
 
   async call(tool, args = {}) {
-    const response = await handleRclMcpMessage({ jsonrpc: '2.0', id: `turi-${Date.now()}`, method: 'tools/call', params: { name: tool, arguments: args } });
+    const response = await handleRclMcpMessage(
+      { jsonrpc: '2.0', id: `turi-${Date.now()}`, method: 'tools/call', params: { name: tool, arguments: args } },
+      { defaultArguments: this.controlPlaneDir ? { controlPlaneDir: this.controlPlaneDir } : {} },
+    );
     return unwrap(response, tool);
   }
 

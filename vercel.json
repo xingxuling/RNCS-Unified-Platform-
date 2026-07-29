@@ -1,16 +1,37 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
+  "env": {
+    "TAOWIND_VERCEL_APP": "turi",
+    "TURI_HOST": "0.0.0.0",
+    "TURI_MCP_PATH": "/mcp",
+    "TURI_AUTH_MODE": "none",
+    "TURI_ALLOW_PUBLIC_NO_AUTH": "true",
+    "TURI_ALLOWED_HOSTS": "*",
+    "TURI_ALLOWED_ORIGINS": "https://chatgpt.com,https://chat.openai.com",
+    "TURI_TRUST_PROXY": "true",
+    "TURI_AUTHORITY_MODE": "candidate",
+    "TURI_ENABLE_AUTHORIZED_WRITES": "false",
+    "TURI_ENABLE_EXTERNAL_EFFECTS": "false",
+    "TURI_DATA_DIR": "/tmp/turi-mcp"
+  },
   "functions": {
-    "server.mjs": {
+    "api/index.mjs": {
       "maxDuration": 300,
       "includeFiles": [
-        "packages/**",
-        "docs/**",
+        "packages/control/reality-one-gateway/runtimes/**",
+        "packages/control/reality-one-gateway/src/bridges/**",
+        "packages/control/rncs-rcl-control-plane/**",
+        "packages/languages/reality-computation-language/**",
         "rncs.modules.json",
-        "RELEASE-MANIFEST.json",
-        "VERSION-MANIFEST-v0.14.json"
+        "docs/**"
       ]
     }
-  }
+  },
+  "routes": [
+    {
+      "src": "/(?<path>.*)",
+      "dest": "/api/index?__path=/$path"
+    }
+  ]
 }

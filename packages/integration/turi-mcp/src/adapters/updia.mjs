@@ -14,27 +14,72 @@ function bridgeError(code, message, details = null) {
 const withoutUndefined = (value) => Object.fromEntries(Object.entries(value).filter(([, entry]) => entry !== undefined));
 
 export class UpdiaAdapter {
-  constructor({ config, spawn = defaultSpawn, invokeBridge = null } = {}) {
+  constructor({ config, spawn = defaultSpawn, fetchImpl = globalThis.fetch, invokeBridge = null } = {}) {
     this.config = config;
     this.spawn = spawn;
+    this.fetchImpl = fetchImpl;
     this.invokeBridge = invokeBridge;
   }
 
+  configurationStatus() {
+    if (this.config.updiaBridgeUrl) {
+      return { configured: true, mode: 'remote', bridgeUrl: this.config.updiaBridgeUrl, reasons: [] };
+    }
+    const reasons = [];
+    const entry = this.config.updiaEntry ? path.resolve(this.config.updiaEntry) : null;
+    const stateDir = this.config.updiaStateDir ? path.resolve(this.config.updiaStateDir) : null;
+    if (!entry) reasons.push('TURI_UPDIA_ENTRY is missing.');
+    else if (!fs.existsSync(entry)) reasons.push(`UPDIA entry does not exist: ${entry}`);
+    else if (!entry.endsWith('.mjs')) reasons.push('UPDIA entry must be an .mjs file.');
+    if (!stateDir) reasons.push('TURI_UPDIA_STATE_DIR is missing.');
+    const checkpointPaths = [];
+    if (this.config.updiaCheckpoint) checkpointPaths.push(path.resolve(this.config.updiaCheckpoint));
+    if (stateDir) checkpointPaths.push(path.join(stateDir, 'checkpoint.json'));
+    const validCheckpoint = checkpointPaths.some((checkpointPath) => {
+      if (!fs.existsSync(checkpointPath)) return false;
+      try {
+        const checkpoint = JSON.parse(fs.readFileSync(checkpointPath, 'utf8'));
+        return Boolean(
+          checkpoint &&
+          typeof checkpoint === 'object' &&
+          String(checkpoint.format ?? '').startsWith('updia.subject-checkpoint.') &&
+          typeof checkpoint.identityRoot === 'string' &&
+          typeof checkpoint.lineageId === 'string',
+        );
+      } catch {
+        return false;
+      }
+    });
+    if (!validCheckpoint) reasons.push('A valid bootstrap checkpoint (explicit or persisted) is missing.');
+    return {
+      configured: reasons.length === 0,
+      mode: 'local-process',
+      entry,
+      stateDir,
+      checkpoint: checkpointPaths.find((checkpointPath) => fs.existsSync(checkpointPath)) ?? null,
+      reasons,
+    };
+  }
+
   configured() {
-    if (!this.config.updiaEntry || !this.config.updiaStateDir) return false;
-    const explicitCheckpoint = this.config.updiaCheckpoint && fs.existsSync(path.resolve(this.config.updiaCheckpoint));
-    const persistedCheckpoint = fs.existsSync(path.join(path.resolve(this.config.updiaStateDir), 'checkpoint.json'));
-    return Boolean(explicitCheckpoint || persistedCheckpoint);
+    return this.configurationStatus().configured;
   }
 
   async call(method, params = {}, { timeoutMs = 300_000 } = {}) {
     if (this.invokeBridge) return this.invokeBridge(method, params);
-    if (!this.configured()) throw bridgeError('UPDIA_NOT_CONFIGURED', 'TURI_UPDIA_ENTRY, TURI_UPDIA_STATE_DIR, and a bootstrap checkpoint (explicit or persisted) are required to call the real UPDIA bridge.');
+    if (this.config.updiaBridgeUrl) return this.callRemote(method, params, { timeoutMs });
+    const configuration = this.configurationStatus();
+    if (!configuration.configured) {
+      throw bridgeError(
+        'UPDIA_NOT_CONFIGURED',
+        'TURI_UPDIA_ENTRY, TURI_UPDIA_STATE_DIR, and a valid bootstrap checkpoint (explicit or persisted) are required to call the real UPDIA bridge.',
+        configuration,
+      );
+    }
     const entry = path.resolve(this.config.updiaEntry);
-    if (!fs.existsSync(entry)) throw bridgeError('UPDIA_ENTRY_NOT_FOUND', `UPDIA bridge entry does not exist: ${entry}`);
-    if (!entry.endsWith('.mjs')) throw bridgeError('UPDIA_ENTRY_INVALID', 'UPDIA bridge entry must be an .mjs file.');
     const args = [entry, '--state-dir', path.resolve(this.config.updiaStateDir)];
     if (this.config.updiaCheckpoint) args.push('--checkpoint', path.resolve(this.config.updiaCheckpoint));
+    if (this.config.updiaKnowledgeStorePath) args.push('--knowledge-store', path.resolve(this.config.updiaKnowledgeStorePath));
     for (const endpoint of this.config.updiaEndpoints ?? []) args.push('--endpoint', endpoint);
     return new Promise((resolve, reject) => {
       const child = this.spawn(process.execPath, args, { cwd: this.config.updiaRoot ?? path.dirname(entry), stdio: ['pipe', 'pipe', 'pipe'], windowsHide: true });
@@ -69,7 +114,49 @@ export class UpdiaAdapter {
     });
   }
 
-  health() { return this.call('health', {}); }
+  async callRemote(method, params = {}, { timeoutMs = 300_000 } = {}) {
+    if (typeof this.fetchImpl !== 'function') throw bridgeError('UPDIA_REMOTE_FETCH_UNAVAILABLE', 'TURI UPDIA remote bridge requires a fetch implementation.');
+    const requestId = `turi-remote-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    const url = `${String(this.config.updiaBridgeUrl).replace(/\/+$/, '')}/invoke`;
+    try {
+      const response = await this.fetchImpl(url, {
+        method: 'POST',
+        headers: {
+          accept: 'application/json',
+          'content-type': 'application/json',
+          ...(this.config.updiaBridgeToken ? { authorization: `Bearer ${this.config.updiaBridgeToken}` } : {}),
+        },
+        body: JSON.stringify({ id: requestId, method, params: withoutUndefined(params) }),
+        signal: controller.signal,
+      });
+      const raw = await response.text();
+      let payload;
+      try { payload = JSON.parse(raw); } catch { throw bridgeError('UPDIA_REMOTE_PROTOCOL_ERROR', 'UPDIA remote bridge returned invalid JSON.', { status: response.status, body: raw.slice(0, 500) }); }
+      if (!response.ok) throw bridgeError('UPDIA_REMOTE_HTTP_ERROR', `UPDIA remote bridge returned HTTP ${response.status}.`, { status: response.status, payload });
+      if (!payload || payload.id !== requestId || typeof payload.ok !== 'boolean') throw bridgeError('UPDIA_REMOTE_PROTOCOL_ERROR', 'UPDIA remote bridge returned an invalid bridge envelope.', { payload });
+      if (!payload.ok) throw bridgeError(payload.error?.code ?? 'UPDIA_REMOTE_BRIDGE_ERROR', payload.error?.message ?? 'UPDIA remote bridge request failed.', payload.error?.details);
+      return payload.result;
+    } catch (error) {
+      if (error?.name === 'AbortError') throw bridgeError('UPDIA_TIMEOUT', `UPDIA remote bridge exceeded ${timeoutMs}ms.`);
+      if (error?.code?.startsWith('UPDIA_')) throw error;
+      throw bridgeError('UPDIA_REMOTE_UNREACHABLE', String(error?.message ?? error));
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  async health() {
+    const health = await this.call('health', {});
+    if (health?.knowledge) return health;
+    try {
+      const status = await this.call('status', {});
+      return { ...health, knowledge: status?.knowledge ?? { enabled: false } };
+    } catch (error) {
+      return { ...health, knowledge: { enabled: false, error: { code: error.code ?? error.name, message: error.message } } };
+    }
+  }
   status() { return this.call('status', {}); }
   async models(input = {}) { return this.call('models', input); }
   async listOrgans(input = {}) { return this.models(input); }
