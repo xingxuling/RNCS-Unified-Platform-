@@ -17,6 +17,7 @@ const env = {
   TURI_HOST: process.env.TURI_HOST ?? '0.0.0.0',
   TURI_PORT: process.env.TURI_PORT ?? process.env.PORT ?? '3000',
   TURI_MCP_PATH: process.env.TURI_MCP_PATH ?? '/mcp',
+  TURI_MCP_STATELESS: vercelTaskRoot ? 'true' : (process.env.TURI_MCP_STATELESS ?? 'false'),
   TURI_AUTH_MODE: process.env.TURI_AUTH_MODE ?? 'none',
   TURI_ALLOW_PUBLIC_NO_AUTH: process.env.TURI_ALLOW_PUBLIC_NO_AUTH ?? 'true',
   TURI_ALLOWED_HOSTS: process.env.TURI_ALLOWED_HOSTS ?? '*',
@@ -30,6 +31,8 @@ const env = {
   // temporary tunnel is replaced by a named, stable deployment.
   TURI_UPDIA_BRIDGE_URL: process.env.TURI_UPDIA_BRIDGE_URL?.trim()
     || (vercelTaskRoot ? vercelUpdiaBridgeFallback : ''),
+  TURI_UPDIA_DEFAULT_MODEL: process.env.TURI_UPDIA_DEFAULT_MODEL?.trim()
+    || (vercelTaskRoot ? 'qwen3.5:latest' : ''),
 };
 
 let servicePromise;
