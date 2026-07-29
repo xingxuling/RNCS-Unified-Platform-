@@ -143,3 +143,54 @@ test('UPDIA adapter submits long generation as an async bridge job and polls its
   assert.equal(pollCount, 2);
   assert.equal(calls[1].url, 'https://updia.example.test/jobs/updia-job%3Atest');
 });
+
+test('UPDIA adapter exposes a bridge-owned research job for stateless MCP polling', async () => {
+  const calls = [];
+  const adapter = new UpdiaAdapter({
+    config: {
+      updiaBridgeUrl: 'https://updia.example.test',
+      updiaDefaultMaxTokens: 256,
+      updiaDefaultModel: 'qwen3.5:latest',
+    },
+    fetchImpl: async (url, options) => {
+      calls.push({ url, options });
+      if (url.endsWith('/invoke')) {
+        const request = JSON.parse(options.body);
+        if (request.method === 'knowledge_query') {
+          return new Response(JSON.stringify({
+            id: request.id,
+            ok: true,
+            result: { packet: { packetId: 'packet:research', claims: [{ claimId: 'claim:1', statement: 'evidence', claimType: 'fact', sourceRefs: ['source:1'], confidence: 0.9 }] } },
+            error: null,
+          }), { status: 200, headers: { 'content-type': 'application/json' } });
+        }
+        assert.equal(request.method, 'generate');
+        assert.equal(options.headers.prefer, 'respond-async');
+        return new Response(JSON.stringify({
+          id: request.id,
+          ok: true,
+          result: { format: 'updia.http-bridge-async-job.v0.1', jobId: 'updia-job:research', status: 'queued', pollPath: '/jobs/updia-job%3Aresearch', pollAfterMs: 1000 },
+          error: null,
+        }), { status: 202, headers: { 'content-type': 'application/json' } });
+      }
+      return new Response(JSON.stringify({
+        format: 'updia.http-bridge-async-job.v0.1',
+        jobId: 'updia-job:research',
+        requestId: 'bridge-request',
+        status: 'completed',
+        createdAt: '2026-07-29T00:00:00.000Z',
+        updatedAt: '2026-07-29T00:01:00.000Z',
+        response: { id: 'bridge-request', ok: true, result: { content: 'final grounded research', route: { provider: 'ollama', model: 'qwen3.5:latest' } }, error: null },
+      }), { status: 200, headers: { 'content-type': 'application/json' } });
+    },
+  });
+
+  const started = await adapter.researchStart({ question: '三个核心问题', retrievalBudget: 8, budget: 256 });
+  assert.equal(started.jobId, 'updia-job:research');
+  assert.equal(started.sourceEvidence.packet.packetId, 'packet:research');
+  assert.equal(started.knownFacts[0].sourceRefs[0], 'source:1');
+  const completed = await adapter.researchStatus({ jobId: started.jobId });
+  assert.equal(completed.status, 'completed');
+  assert.equal(completed.result.content, 'final grounded research');
+  assert.equal(calls[2].url, 'https://updia.example.test/jobs/updia-job%3Aresearch');
+});

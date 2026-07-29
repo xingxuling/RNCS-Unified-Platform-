@@ -206,6 +206,8 @@ export class TuriOrchestrator {
       case 'updia.think': return this.adapters.updia.think(input);
       case 'updia.plan': return this.adapters.updia.plan(input);
       case 'updia.organ_invoke': return this.adapters.updia.organInvoke(input);
+      case 'updia.research_start': return this.adapters.updia.researchStart(input);
+      case 'updia.research_status': return this.adapters.updia.researchStatus(input);
       case 'updia.memory_search': return this.adapters.updia.memorySearch(input);
       case 'updia.memory_read': return this.adapters.updia.memoryRead(input);
       case 'updia.memory_write_candidate': return this.adapters.updia.memoryWriteCandidate(input);

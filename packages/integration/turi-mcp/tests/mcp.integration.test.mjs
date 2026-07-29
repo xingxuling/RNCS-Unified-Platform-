@@ -45,9 +45,11 @@ test('Streamable HTTP exposes MCP initialize, tools, resources, and candidate E2
     assert.equal(health.rncs.status, 'healthy');
     assert.equal(health.rncs.runtimes.length, 17);
     const listed = await client.listTools();
-    assert.equal(listed.tools.length, 98);
+    assert.equal(listed.tools.length, 100);
     assert.ok(listed.tools.some((item) => item.name === 'turi_server_info'));
     assert.ok(listed.tools.some((item) => item.name === 'turi_experience_record'));
+    assert.ok(listed.tools.some((item) => item.name === 'updia_research_start'));
+    assert.ok(listed.tools.some((item) => item.name === 'updia_research_status'));
     const info = await client.callTool({ name: 'turi_server_info', arguments: {} });
     assert.equal(info.isError, undefined);
     const evidenceResource = await client.readResource({ uri: `turi://evidence/${encodeURIComponent(info.structuredContent.receipt.receiptId)}` });
@@ -99,7 +101,7 @@ test('stateless Streamable HTTP works across serverless request boundaries', asy
     await client.connect(transport);
     assert.equal(transport.sessionId, undefined);
     const listed = await client.listTools();
-    assert.equal(listed.tools.length, 98);
+    assert.equal(listed.tools.length, 100);
     const health = await client.callTool({ name: 'turi_health', arguments: {} });
     assert.equal(health.isError, undefined);
     assert.equal(health.structuredContent.data.turi.status, 'ok');

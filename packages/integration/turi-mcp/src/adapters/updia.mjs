@@ -144,6 +144,70 @@ export class UpdiaAdapter {
     }
   }
 
+  async startRemoteJob(method, params = {}, { timeoutMs = 30_000 } = {}) {
+    if (!this.config.updiaBridgeUrl) {
+      throw bridgeError('UPDIA_REMOTE_ASYNC_REQUIRED', 'Externally pollable UPDIA jobs require TURI_UPDIA_BRIDGE_URL.');
+    }
+    if (typeof this.fetchImpl !== 'function') {
+      throw bridgeError('UPDIA_REMOTE_FETCH_UNAVAILABLE', 'TURI UPDIA remote bridge requires a fetch implementation.');
+    }
+    const requestId = `turi-remote-job-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    const url = `${String(this.config.updiaBridgeUrl).replace(/\/+$/, '')}/invoke`;
+    const { response, payload } = await this.remoteJson(url, {
+      method: 'POST',
+      headers: {
+        accept: 'application/json',
+        'content-type': 'application/json',
+        prefer: 'respond-async',
+        ...(this.config.updiaBridgeToken ? { authorization: `Bearer ${this.config.updiaBridgeToken}` } : {}),
+      },
+      body: JSON.stringify({ id: requestId, method, params: withoutUndefined(params) }),
+    }, timeoutMs);
+    if (!response.ok) {
+      throw bridgeError('UPDIA_REMOTE_HTTP_ERROR', `UPDIA remote bridge returned HTTP ${response.status}.`, { status: response.status, payload });
+    }
+    if (!payload || payload.id !== requestId || payload.ok !== true) {
+      throw bridgeError(payload?.error?.code ?? 'UPDIA_REMOTE_PROTOCOL_ERROR', payload?.error?.message ?? 'UPDIA remote bridge returned an invalid async job envelope.', payload?.error?.details ?? { payload });
+    }
+    if (payload.result?.format !== 'updia.http-bridge-async-job.v0.1' || !payload.result.jobId || !payload.result.pollPath) {
+      throw bridgeError('UPDIA_REMOTE_ASYNC_UNSUPPORTED', 'UPDIA remote bridge did not return an externally pollable async job.', { payload });
+    }
+    return payload.result;
+  }
+
+  async remoteJobStatus(jobId, { timeoutMs = 30_000 } = {}) {
+    if (!this.config.updiaBridgeUrl) {
+      throw bridgeError('UPDIA_REMOTE_ASYNC_REQUIRED', 'Externally pollable UPDIA jobs require TURI_UPDIA_BRIDGE_URL.');
+    }
+    if (!jobId || typeof jobId !== 'string') throw bridgeError('UPDIA_JOB_ID_REQUIRED', 'UPDIA async job id is required.');
+    const baseUrl = `${String(this.config.updiaBridgeUrl).replace(/\/+$/, '')}/`;
+    const url = new URL(`/jobs/${encodeURIComponent(jobId)}`, baseUrl).toString();
+    const { response, payload } = await this.remoteJson(url, {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        ...(this.config.updiaBridgeToken ? { authorization: `Bearer ${this.config.updiaBridgeToken}` } : {}),
+      },
+    }, timeoutMs);
+    if (!response.ok) {
+      throw bridgeError('UPDIA_REMOTE_HTTP_ERROR', `UPDIA async job status returned HTTP ${response.status}.`, { status: response.status, payload, jobId });
+    }
+    if (!payload || payload.jobId !== jobId || typeof payload.status !== 'string') {
+      throw bridgeError('UPDIA_REMOTE_PROTOCOL_ERROR', 'UPDIA async job status returned an invalid envelope.', { payload, jobId });
+    }
+    const envelope = payload.response;
+    return {
+      format: 'updia.remote-research-job-status.v0.1',
+      jobId: payload.jobId,
+      requestId: payload.requestId ?? null,
+      status: payload.status,
+      createdAt: payload.createdAt ?? null,
+      updatedAt: payload.updatedAt ?? null,
+      result: envelope?.ok === true ? envelope.result : null,
+      error: envelope?.ok === false ? envelope.error : null,
+    };
+  }
+
   async remoteJson(url, options, timeoutMs) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), Math.max(1, timeoutMs));
@@ -217,13 +281,45 @@ export class UpdiaAdapter {
   subjectClose() { return this.call('shutdown', {}); }
   sparseSchedulerStatus() { return this.status(); }
 
-  async think({ goal, contextRefs = [], budget = null, allowedOrgans = [], evidencePolicy = {}, outputContract = {} } = {}) {
+  thinkParams({ goal, contextRefs = [], budget = null, allowedOrgans = [], evidencePolicy = {}, outputContract = {} } = {}) {
     const contract = JSON.stringify({ contextRefs, evidencePolicy, outputContract });
     const maxTokens = budget ?? this.config.updiaDefaultMaxTokens ?? 512;
     const model = allowedOrgans[0] ? undefined : this.config.updiaDefaultModel ?? undefined;
     const text = `${goal}\n\nTURI output contract:\n${contract}\n\nReturn a concise, complete answer within ${maxTokens} tokens. Preserve evidence ids and mark inference, hypothesis, and unknown separately.`;
-    return this.call('generate', withoutUndefined({ text, organId: allowedOrgans[0], model, maxTokens, grounding: true, stream: false }));
+    return withoutUndefined({ text, organId: allowedOrgans[0], model, maxTokens, grounding: true, stream: false });
   }
+
+  async think(input = {}) { return this.call('generate', this.thinkParams(input)); }
+
+  async researchStart({ question, retrievalBudget = 12, budget = null, allowedOrgans = [] } = {}) {
+    const sourceEvidence = await this.memorySearch({ query: question, retrievalBudget });
+    const reasoningJob = await this.startRemoteJob('generate', this.thinkParams({
+      goal: question,
+      budget,
+      allowedOrgans,
+      outputContract: {
+        type: 'research',
+        fields: ['known_facts', 'source_evidence', 'current_bottlenecks', 'testable_hypotheses', 'minimum_viable_experiments', 'unknowns'],
+      },
+    }));
+    return {
+      format: 'updia.public-research-job.v0.1',
+      question,
+      status: reasoningJob.status,
+      jobId: reasoningJob.jobId,
+      pollAfterMs: reasoningJob.pollAfterMs,
+      sourceEvidence,
+      knownFacts: (sourceEvidence?.packet?.claims ?? []).map((claim) => ({
+        claimId: claim.claimId,
+        statement: claim.statement,
+        claimType: claim.claimType,
+        sourceRefs: claim.sourceRefs ?? [],
+        confidence: claim.confidence ?? null,
+      })),
+    };
+  }
+
+  async researchStatus({ jobId } = {}) { return this.remoteJobStatus(jobId); }
 
   async plan(input) { return this.think({ ...input, outputContract: input.outputContract ?? { type: 'bounded-plan', fields: ['goal', 'assumptions', 'steps', 'evidence'] } }); }
   async organInvoke({ organId, text, ...rest }) { return this.call('generate', { text, organId, grounding: rest.grounding ?? true, stream: false }); }
