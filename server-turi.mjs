@@ -1,6 +1,17 @@
 import { createTuriService } from './packages/integration/turi-mcp/src/service.mjs';
 
+const vercelTaskRoot = process.env.VERCEL === '1' || process.env.VERCEL_URL ? '/var/task' : null;
+const vercelRepoDefaults = vercelTaskRoot
+  ? {
+      TURI_REPO_ROOT: `${vercelTaskRoot}`,
+      TURI_MANIFEST_DIRS: `${vercelTaskRoot}/packages/control/reality-one-gateway/runtimes`,
+      TURI_RCL_ROOT: `${vercelTaskRoot}/packages/languages/reality-computation-language`,
+      TURI_RCL_CONTROL_PLANE_DIR: `${vercelTaskRoot}/packages/control/rncs-rcl-control-plane`,
+    }
+  : {};
+
 const env = {
+  ...vercelRepoDefaults,
   ...process.env,
   TURI_HOST: process.env.TURI_HOST ?? '0.0.0.0',
   TURI_PORT: process.env.TURI_PORT ?? process.env.PORT ?? '3000',
