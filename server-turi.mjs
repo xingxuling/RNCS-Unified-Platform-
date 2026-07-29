@@ -1,7 +1,7 @@
 import { createTuriService } from './packages/integration/turi-mcp/src/service.mjs';
 
 const vercelTaskRoot = process.env.VERCEL === '1' || process.env.VERCEL_URL ? '/var/task' : null;
-const vercelUpdiaBridgeFallback = 'https://shaw-scheme-toys-project.trycloudflare.com';
+const vercelUpdiaBridgeFallback = 'https://webshots-terrace-tags-weights.trycloudflare.com';
 const vercelRepoDefaults = vercelTaskRoot
   ? {
       TURI_REPO_ROOT: `${vercelTaskRoot}`,
