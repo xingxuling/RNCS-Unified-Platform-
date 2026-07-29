@@ -2,7 +2,7 @@ import app from '../server-turi.mjs';
 
 // Vercel invokes files in /api with that prefix in some adapters. Strip it so
 // the MCP service keeps its public route contract at /mcp.
-export default function vercelHandler(request, response, next) {
+export default async function vercelHandler(request, response, next) {
   const query = request?.query ?? {};
   const routedPath = typeof query.__path === 'string' ? query.__path : null;
   if (routedPath) {

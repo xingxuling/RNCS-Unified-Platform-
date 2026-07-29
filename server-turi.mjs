@@ -15,5 +15,22 @@ const env = {
   TURI_DATA_DIR: process.env.TURI_DATA_DIR ?? '/tmp/turi-mcp',
 };
 
-const service = await createTuriService({ env });
-export default service.app;
+let servicePromise;
+
+async function getApp() {
+  servicePromise ??= createTuriService({ env }).then((service) => service.app);
+  return servicePromise;
+}
+
+export default async function turiVercelHandler(request, response, next) {
+  try {
+    const app = await getApp();
+    return app(request, response, next);
+  } catch (error) {
+    console.error('[turi-vercel-init] failed', error);
+    if (!response.headersSent) {
+      response.status(500).json({ error: 'TURI_INITIALIZATION_FAILED', message: String(error?.message ?? error).slice(0, 500) });
+    }
+    return undefined;
+  }
+}
