@@ -79,3 +79,33 @@ test('Streamable HTTP exposes MCP initialize, tools, resources, and candidate E2
     fs.rmSync(dataDir, { recursive: true, force: true });
   }
 });
+
+test('stateless Streamable HTTP works across serverless request boundaries', async () => {
+  const dataDir = tempDir();
+  const service = await createTuriService({ config: {
+    host: '127.0.0.1',
+    port: 0,
+    authMode: 'none',
+    allowedHosts: ['127.0.0.1'],
+    allowedOrigins: ['http://localhost'],
+    repoRoot,
+    dataDir,
+    statelessHttp: true,
+  } });
+  await service.start();
+  const client = new Client({ name: 'turi-stateless-test', version: '0.1.0' });
+  const transport = new StreamableHTTPClientTransport(new URL(service.mcpUrl));
+  try {
+    await client.connect(transport);
+    assert.equal(transport.sessionId, undefined);
+    const listed = await client.listTools();
+    assert.equal(listed.tools.length, 98);
+    const health = await client.callTool({ name: 'turi_health', arguments: {} });
+    assert.equal(health.isError, undefined);
+    assert.equal(health.structuredContent.data.turi.status, 'ok');
+  } finally {
+    await client.close().catch(() => {});
+    await service.stop();
+    fs.rmSync(dataDir, { recursive: true, force: true });
+  }
+});

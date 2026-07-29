@@ -99,6 +99,7 @@ export function loadConfig(env = process.env, overrides = {}) {
     sessionTtlMs: integer(overrides.sessionTtlMs ?? env.TURI_SESSION_TTL_MS, 30 * 60_000, 60_000, 24 * 60 * 60_000),
     rateLimitPerMinute: integer(overrides.rateLimitPerMinute ?? env.TURI_RATE_LIMIT_PER_MINUTE, 120, 1, 10_000),
     jsonResponses: truthy(overrides.jsonResponses ?? env.TURI_JSON_RESPONSES, true),
+    statelessHttp: truthy(overrides.statelessHttp ?? env.TURI_MCP_STATELESS, false),
   });
 }
 

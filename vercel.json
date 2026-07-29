@@ -5,6 +5,7 @@
     "TAOWIND_VERCEL_APP": "turi",
     "TURI_HOST": "0.0.0.0",
     "TURI_MCP_PATH": "/mcp",
+    "TURI_MCP_STATELESS": "true",
     "TURI_AUTH_MODE": "none",
     "TURI_ALLOW_PUBLIC_NO_AUTH": "true",
     "TURI_ALLOWED_HOSTS": "*",

@@ -95,6 +95,23 @@ export async function createTuriService(options = {}) {
   const createSession = async (transport) => { const server = createServer(); await server.connect(transport); return server; };
   app.post(config.mcpPath, async (req, res) => {
     try {
+      if (config.statelessHttp) {
+        const transport = new StreamableHTTPServerTransport({
+          sessionIdGenerator: undefined,
+          enableJsonResponse: config.jsonResponses,
+        });
+        const server = await createSession(transport);
+        let closed = false;
+        const close = async () => {
+          if (closed) return;
+          closed = true;
+          await transport.close().catch(() => {});
+          await server.close().catch(() => {});
+        };
+        res.once('close', () => { void close(); });
+        await transport.handleRequest(req, res, req.body);
+        return;
+      }
       const id = sessionIdOf(req);
       if (id) {
         const session = sessions.get(id);
@@ -115,6 +132,7 @@ export async function createTuriService(options = {}) {
     }
   });
   app.get(config.mcpPath, async (req, res) => {
+    if (config.statelessHttp) return jsonRpcError(res, 405, 'Method not allowed in stateless mode.');
     const id = sessionIdOf(req);
     const session = id ? sessions.get(id) : null;
     if (!session) return jsonRpcError(res, 400, 'Valid MCP session id required.', -32600);
@@ -122,6 +140,7 @@ export async function createTuriService(options = {}) {
     try { await session.transport.handleRequest(req, res); } catch (error) { if (!res.headersSent) jsonRpcError(res, 500, 'Internal TURI MCP server error.', -32603); }
   });
   app.delete(config.mcpPath, async (req, res) => {
+    if (config.statelessHttp) return jsonRpcError(res, 405, 'Method not allowed in stateless mode.');
     const id = sessionIdOf(req);
     const session = id ? sessions.get(id) : null;
     if (!session) return jsonRpcError(res, 404, 'Session not found.');
@@ -143,7 +162,7 @@ export async function createTuriService(options = {}) {
       const address = httpServer.address();
       service.url = `http://${config.host}:${typeof address === 'object' && address ? address.port : config.port}`;
       service.mcpUrl = `${service.url}${config.mcpPath}`;
-      cleanupTimer = setInterval(async () => { const cutoff = Date.now() - config.sessionTtlMs; for (const [id, session] of sessions) if (session.lastAccess < cutoff) { sessions.delete(id); await session.transport.close().catch(() => {}); await session.server.close().catch(() => {}); } }, Math.min(60_000, config.sessionTtlMs));
+      if (!config.statelessHttp) cleanupTimer = setInterval(async () => { const cutoff = Date.now() - config.sessionTtlMs; for (const [id, session] of sessions) if (session.lastAccess < cutoff) { sessions.delete(id); await session.transport.close().catch(() => {}); await session.server.close().catch(() => {}); } }, Math.min(60_000, config.sessionTtlMs));
       return service;
     },
     async stop() {
