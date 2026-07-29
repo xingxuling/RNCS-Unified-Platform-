@@ -24,6 +24,19 @@ test('Streamable HTTP exposes MCP initialize, tools, resources, and candidate E2
     const rootProtectedResource = await fetch(`${service.url}/.well-known/oauth-protected-resource`);
     assert.equal(rootProtectedResource.status, 200);
     assert.deepEqual(await rootProtectedResource.json(), { resource: service.mcpUrl });
+    const preflight = await fetch(service.mcpUrl, {
+      method: 'OPTIONS',
+      headers: {
+        Origin: 'http://localhost',
+        'Access-Control-Request-Method': 'POST',
+        'Access-Control-Request-Headers': 'content-type, mcp-session-id',
+      },
+    });
+    assert.equal(preflight.status, 204);
+    assert.equal(preflight.headers.get('access-control-allow-origin'), 'http://localhost');
+    assert.match(preflight.headers.get('access-control-allow-headers') ?? '', /Mcp-Session-Id/i);
+    const deniedPreflight = await fetch(service.mcpUrl, { method: 'OPTIONS', headers: { Origin: 'https://evil.example', 'Access-Control-Request-Method': 'POST' } });
+    assert.equal(deniedPreflight.status, 403);
     await client.connect(transport);
     const health = await service.health();
     assert.equal(health.rcl.status, 'ready');

@@ -64,7 +64,21 @@ export async function createTuriService(options = {}) {
   app.set('trust proxy', config.trustProxy);
   app.disable('x-powered-by');
   app.use(config.mcpPath, (req, res, next) => {
-    try { checkHttpRequest(config, req); next(); } catch (error) { res.status(error.code === 'AUTHENTICATION_REQUIRED' ? 401 : 403).json({ error: error.code, message: error.message }); }
+    try {
+      checkHttpRequest(config, req);
+      const origin = req.headers.origin;
+      if (origin) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Accept, Content-Type, Authorization, Mcp-Session-Id, Last-Event-Id');
+        res.setHeader('Access-Control-Expose-Headers', 'Mcp-Session-Id, Last-Event-Id');
+        res.setHeader('Vary', 'Origin');
+      }
+      if (req.method === 'OPTIONS') return res.status(204).end();
+      next();
+    } catch (error) {
+      res.status(error.code === 'AUTHENTICATION_REQUIRED' ? 401 : 403).json({ error: error.code, message: error.message });
+    }
   });
   app.get('/health', async (req, res) => { try { res.status(200).json(await health()); } catch (error) { res.status(503).json({ status: 'unhealthy', error: error.code ?? error.message }); } });
   app.get('/healthz', async (req, res) => { try { res.status(200).json(await health()); } catch (error) { res.status(503).json({ status: 'unhealthy', error: error.code ?? error.message }); } });
