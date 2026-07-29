@@ -1,5 +1,6 @@
-export async function createBridge({module,entryUrl}){
- const canonical=await import(new URL('./canonical.mjs',entryUrl));
+import * as canonical from '../canonical.mjs';
+
+export async function createBridge({module}){
  return{health:()=>({status:'ok',protocol:'icar.native-envelope.v0.5',functions:['prepareApplication','commitPreparedApplication']}),invoke:async(action,payload)=>{
   if(action==='health')return{status:'ok',protocol:'icar.native-envelope.v0.5'};
   if(action==='preview')return module.prepareApplication(payload);
