@@ -44,6 +44,7 @@ export function loadConfig(env = process.env, overrides = {}) {
   const updiaKnowledgeStorePath = String(overrides.updiaKnowledgeStorePath ?? env.TURI_UPDIA_KNOWLEDGE_STORE ?? env.TURI_UPDIA_KNOWLEDGE_STORE_PATH ?? '').trim();
   const updiaBridgeUrl = String(overrides.updiaBridgeUrl ?? env.TURI_UPDIA_BRIDGE_URL ?? '').trim().replace(/\/+$/, '');
   const updiaBridgeToken = String(overrides.updiaBridgeToken ?? env.TURI_UPDIA_BRIDGE_TOKEN ?? '').trim();
+  const updiaDefaultModel = String(overrides.updiaDefaultModel ?? env.TURI_UPDIA_DEFAULT_MODEL ?? '').trim();
   if (updiaBridgeUrl) {
     let parsedBridgeUrl;
     try { parsedBridgeUrl = new URL(updiaBridgeUrl); } catch { throw new Error('TURI_UPDIA_BRIDGE_URL must be an absolute HTTP(S) URL.'); }
@@ -84,6 +85,10 @@ export function loadConfig(env = process.env, overrides = {}) {
     updiaKnowledgeStorePath: updiaKnowledgeStorePath || null,
     updiaBridgeUrl: updiaBridgeUrl || null,
     updiaBridgeToken: updiaBridgeToken || null,
+    updiaBridgeAsync: truthy(overrides.updiaBridgeAsync ?? env.TURI_UPDIA_BRIDGE_ASYNC, true),
+    updiaBridgePollMs: integer(overrides.updiaBridgePollMs ?? env.TURI_UPDIA_BRIDGE_POLL_MS, 1_000, 100, 10_000),
+    updiaDefaultMaxTokens: integer(overrides.updiaDefaultMaxTokens ?? env.TURI_UPDIA_DEFAULT_MAX_TOKENS, 512, 64, 4_096),
+    updiaDefaultModel: updiaDefaultModel || null,
     updiaEndpoints,
     gamebrainRoot: gamebrainRoot || null,
     gamebrainCli: gamebrainCli || null,

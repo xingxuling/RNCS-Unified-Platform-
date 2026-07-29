@@ -44,7 +44,13 @@ $env:TURI_UPDIA_ENDPOINTS='http://127.0.0.1:11435'
 ```powershell
 $env:TURI_UPDIA_BRIDGE_URL='https://<updia-bridge>.onrender.com'
 $env:TURI_UPDIA_BRIDGE_TOKEN='<same-secret-as-the-bridge>'
+$env:TURI_UPDIA_BRIDGE_ASYNC='true'
+$env:TURI_UPDIA_BRIDGE_POLL_MS='1000'
+$env:TURI_UPDIA_DEFAULT_MAX_TOKENS='512'
+$env:TURI_UPDIA_DEFAULT_MODEL='qwen3.5:latest'
 ```
+
+远程 `generate` 默认使用 `Prefer: respond-async` 提交任务，并轮询 bridge 的短请求状态。这避免本地模型长推理占用单个公网隧道请求；健康检查和 Native RGR 查询仍走同步短请求。bridge 不支持异步协议时，Adapter 会兼容原同步响应。
 
 bridge 的 `/health` 可以公开用于平台探针，但 `/invoke` 必须使用 Bearer token。Vercel serverless 的临时文件系统不能承担 UPDIA checkpoint、Native RGR store 或 TURI receipts 的跨重启持久性；需要持久磁盘或外部持久化存储。
 

@@ -82,3 +82,64 @@ test('UPDIA adapter calls a protected remote HTTP bridge with a validated envelo
   assert.equal(calls[0].options.headers.authorization, 'Bearer test-updia-bridge-token-0123456789');
   assert.equal(JSON.parse(calls[0].options.body).method, 'knowledge_query');
 });
+
+test('UPDIA adapter submits long generation as an async bridge job and polls its result', async () => {
+  const calls = [];
+  let requestId;
+  let pollCount = 0;
+  const adapter = new UpdiaAdapter({
+    config: {
+      updiaBridgeUrl: 'https://updia.example.test',
+      updiaBridgeAsync: true,
+      updiaBridgePollMs: 100,
+      updiaDefaultMaxTokens: 256,
+      updiaDefaultModel: 'qwen3.5:latest',
+    },
+    fetchImpl: async (url, options) => {
+      calls.push({ url, options });
+      if (options.method === 'POST') {
+        const request = JSON.parse(options.body);
+        requestId = request.id;
+        assert.equal(options.headers.prefer, 'respond-async');
+        assert.equal(request.method, 'generate');
+        assert.equal(request.params.model, 'qwen3.5:latest');
+        assert.equal(request.params.maxTokens, 256);
+        return new Response(JSON.stringify({
+          id: requestId,
+          ok: true,
+          result: {
+            format: 'updia.http-bridge-async-job.v0.1',
+            jobId: 'updia-job:test',
+            status: 'queued',
+            pollPath: '/jobs/updia-job%3Atest',
+            pollAfterMs: 1,
+          },
+          error: null,
+        }), { status: 202, headers: { 'content-type': 'application/json' } });
+      }
+      pollCount += 1;
+      const completed = pollCount > 1;
+      return new Response(JSON.stringify({
+        format: 'updia.http-bridge-async-job.v0.1',
+        jobId: 'updia-job:test',
+        requestId,
+        method: 'generate',
+        status: completed ? 'completed' : 'running',
+        ...(completed ? {
+          response: {
+            id: requestId,
+            ok: true,
+            result: { content: 'grounded answer', route: { provider: 'ollama' } },
+            error: null,
+          },
+        } : {}),
+      }), { status: 200, headers: { 'content-type': 'application/json' } });
+    },
+  });
+
+  const result = await adapter.think({ goal: '研究一个需要真实模型推理的问题' });
+  assert.equal(result.content, 'grounded answer');
+  assert.equal(result.route.provider, 'ollama');
+  assert.equal(pollCount, 2);
+  assert.equal(calls[1].url, 'https://updia.example.test/jobs/updia-job%3Atest');
+});

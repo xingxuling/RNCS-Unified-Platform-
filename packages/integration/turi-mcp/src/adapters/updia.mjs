@@ -117,34 +117,83 @@ export class UpdiaAdapter {
   async callRemote(method, params = {}, { timeoutMs = 300_000 } = {}) {
     if (typeof this.fetchImpl !== 'function') throw bridgeError('UPDIA_REMOTE_FETCH_UNAVAILABLE', 'TURI UPDIA remote bridge requires a fetch implementation.');
     const requestId = `turi-remote-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), timeoutMs);
     const url = `${String(this.config.updiaBridgeUrl).replace(/\/+$/, '')}/invoke`;
+    const startedAt = Date.now();
     try {
-      const response = await this.fetchImpl(url, {
+      const { response, payload } = await this.remoteJson(url, {
         method: 'POST',
         headers: {
           accept: 'application/json',
           'content-type': 'application/json',
+          ...(method === 'generate' && this.config.updiaBridgeAsync !== false ? { prefer: 'respond-async' } : {}),
           ...(this.config.updiaBridgeToken ? { authorization: `Bearer ${this.config.updiaBridgeToken}` } : {}),
         },
         body: JSON.stringify({ id: requestId, method, params: withoutUndefined(params) }),
-        signal: controller.signal,
-      });
-      const raw = await response.text();
-      let payload;
-      try { payload = JSON.parse(raw); } catch { throw bridgeError('UPDIA_REMOTE_PROTOCOL_ERROR', 'UPDIA remote bridge returned invalid JSON.', { status: response.status, body: raw.slice(0, 500) }); }
+      }, timeoutMs);
       if (!response.ok) throw bridgeError('UPDIA_REMOTE_HTTP_ERROR', `UPDIA remote bridge returned HTTP ${response.status}.`, { status: response.status, payload });
       if (!payload || payload.id !== requestId || typeof payload.ok !== 'boolean') throw bridgeError('UPDIA_REMOTE_PROTOCOL_ERROR', 'UPDIA remote bridge returned an invalid bridge envelope.', { payload });
       if (!payload.ok) throw bridgeError(payload.error?.code ?? 'UPDIA_REMOTE_BRIDGE_ERROR', payload.error?.message ?? 'UPDIA remote bridge request failed.', payload.error?.details);
+      if (payload.result?.format === 'updia.http-bridge-async-job.v0.1') {
+        return this.pollRemoteJob(payload.result, { requestId, timeoutMs, startedAt });
+      }
       return payload.result;
     } catch (error) {
       if (error?.name === 'AbortError') throw bridgeError('UPDIA_TIMEOUT', `UPDIA remote bridge exceeded ${timeoutMs}ms.`);
       if (error?.code?.startsWith('UPDIA_')) throw error;
       throw bridgeError('UPDIA_REMOTE_UNREACHABLE', String(error?.message ?? error));
+    }
+  }
+
+  async remoteJson(url, options, timeoutMs) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), Math.max(1, timeoutMs));
+    try {
+      const response = await this.fetchImpl(url, { ...options, signal: controller.signal });
+      const raw = await response.text();
+      let payload;
+      try { payload = JSON.parse(raw); }
+      catch { throw bridgeError('UPDIA_REMOTE_PROTOCOL_ERROR', 'UPDIA remote bridge returned invalid JSON.', { status: response.status, body: raw.slice(0, 500) }); }
+      return { response, payload, raw };
     } finally {
       clearTimeout(timer);
     }
+  }
+
+  async pollRemoteJob(job, { requestId, timeoutMs, startedAt }) {
+    if (!job.pollPath || !job.jobId) {
+      throw bridgeError('UPDIA_REMOTE_PROTOCOL_ERROR', 'UPDIA async bridge job is missing its poll path or id.', { job });
+    }
+    const pollUrl = new URL(job.pollPath, `${String(this.config.updiaBridgeUrl).replace(/\/+$/, '')}/`).toString();
+    const pollMs = Math.max(100, Number(this.config.updiaBridgePollMs ?? job.pollAfterMs ?? 1_000));
+    while (Date.now() - startedAt < timeoutMs) {
+      const remainingBeforeDelay = timeoutMs - (Date.now() - startedAt);
+      await new Promise((resolve) => setTimeout(resolve, Math.min(pollMs, Math.max(1, remainingBeforeDelay))));
+      const remaining = timeoutMs - (Date.now() - startedAt);
+      if (remaining <= 0) break;
+      const { response, payload } = await this.remoteJson(pollUrl, {
+        method: 'GET',
+        headers: {
+          accept: 'application/json',
+          ...(this.config.updiaBridgeToken ? { authorization: `Bearer ${this.config.updiaBridgeToken}` } : {}),
+        },
+      }, remaining);
+      if (!response.ok) {
+        throw bridgeError('UPDIA_REMOTE_HTTP_ERROR', `UPDIA async job poll returned HTTP ${response.status}.`, { status: response.status, payload, jobId: job.jobId });
+      }
+      if (!payload || payload.jobId !== job.jobId || typeof payload.status !== 'string') {
+        throw bridgeError('UPDIA_REMOTE_PROTOCOL_ERROR', 'UPDIA async job poll returned an invalid status envelope.', { payload, jobId: job.jobId });
+      }
+      if (['queued', 'running'].includes(payload.status)) continue;
+      const envelope = payload.response;
+      if (!envelope || envelope.id !== requestId || typeof envelope.ok !== 'boolean') {
+        throw bridgeError('UPDIA_REMOTE_PROTOCOL_ERROR', 'UPDIA async job completed without a valid bridge response.', { payload, jobId: job.jobId });
+      }
+      if (!envelope.ok) {
+        throw bridgeError(envelope.error?.code ?? 'UPDIA_REMOTE_BRIDGE_ERROR', envelope.error?.message ?? 'UPDIA async bridge job failed.', envelope.error?.details);
+      }
+      return envelope.result;
+    }
+    throw bridgeError('UPDIA_TIMEOUT', `UPDIA remote bridge exceeded ${timeoutMs}ms.`, { jobId: job.jobId });
   }
 
   async health() {
@@ -170,7 +219,10 @@ export class UpdiaAdapter {
 
   async think({ goal, contextRefs = [], budget = null, allowedOrgans = [], evidencePolicy = {}, outputContract = {} } = {}) {
     const contract = JSON.stringify({ contextRefs, evidencePolicy, outputContract });
-    return this.call('generate', withoutUndefined({ text: `${goal}\n\nTURI output contract:\n${contract}`, organId: allowedOrgans[0], maxTokens: budget ?? undefined, grounding: true, stream: false }));
+    const maxTokens = budget ?? this.config.updiaDefaultMaxTokens ?? 512;
+    const model = allowedOrgans[0] ? undefined : this.config.updiaDefaultModel ?? undefined;
+    const text = `${goal}\n\nTURI output contract:\n${contract}\n\nReturn a concise, complete answer within ${maxTokens} tokens. Preserve evidence ids and mark inference, hypothesis, and unknown separately.`;
+    return this.call('generate', withoutUndefined({ text, organId: allowedOrgans[0], model, maxTokens, grounding: true, stream: false }));
   }
 
   async plan(input) { return this.think({ ...input, outputContract: input.outputContract ?? { type: 'bounded-plan', fields: ['goal', 'assumptions', 'steps', 'evidence'] } }); }
