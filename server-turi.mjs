@@ -1,6 +1,7 @@
 import { createTuriService } from './packages/integration/turi-mcp/src/service.mjs';
 
 const vercelTaskRoot = process.env.VERCEL === '1' || process.env.VERCEL_URL ? '/var/task' : null;
+const vercelUpdiaBridgeFallback = 'https://shaw-scheme-toys-project.trycloudflare.com';
 const vercelRepoDefaults = vercelTaskRoot
   ? {
       TURI_REPO_ROOT: `${vercelTaskRoot}`,
@@ -24,6 +25,11 @@ const env = {
   TURI_ENABLE_AUTHORIZED_WRITES: process.env.TURI_ENABLE_AUTHORIZED_WRITES ?? 'false',
   TURI_ENABLE_EXTERNAL_EFFECTS: process.env.TURI_ENABLE_EXTERNAL_EFFECTS ?? 'false',
   TURI_DATA_DIR: process.env.TURI_DATA_DIR ?? '/tmp/turi-mcp',
+  // Vercel project settings can contain a legacy empty value that overrides
+  // vercel.json. Keep the current research-only bridge reachable until this
+  // temporary tunnel is replaced by a named, stable deployment.
+  TURI_UPDIA_BRIDGE_URL: process.env.TURI_UPDIA_BRIDGE_URL?.trim()
+    || (vercelTaskRoot ? vercelUpdiaBridgeFallback : ''),
 };
 
 let servicePromise;
