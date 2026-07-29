@@ -18,14 +18,7 @@
   "functions": {
     "api/index.mjs": {
       "maxDuration": 300,
-      "includeFiles": [
-        "packages/control/reality-one-gateway/runtimes/**",
-        "packages/control/reality-one-gateway/src/bridges/**",
-        "packages/control/rncs-rcl-control-plane/**",
-        "packages/languages/reality-computation-language/**",
-        "rncs.modules.json",
-        "docs/**"
-      ]
+      "includeFiles": "packages/**"
     }
   },
   "routes": [
