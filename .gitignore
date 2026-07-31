@@ -4,6 +4,10 @@ dist/
 output/
 artifacts/
 evidence/
+!packages/integration/turi-mcp/src/artifacts/
+!packages/integration/turi-mcp/src/artifacts/**
+!packages/integration/turi-mcp/src/evidence/
+!packages/integration/turi-mcp/src/evidence/**
 !packages/control/rncs-rcl-control-plane/evidence/
 !packages/control/rncs-rcl-control-plane/evidence/latest/
 !packages/control/rncs-rcl-control-plane/evidence/latest/*
