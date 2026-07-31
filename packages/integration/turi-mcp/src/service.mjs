@@ -16,7 +16,7 @@ import { UpdiaAdapter } from './adapters/updia.mjs';
 import { GameBrainAdapter } from './adapters/gamebrain.mjs';
 import { ComputeRouter } from './routing/compute-router.mjs';
 import { TuriOrchestrator } from './workflows/orchestrator.mjs';
-import { ALIAS_TO_CAPABILITY, createTuriMcpServer } from './server/mcp-server.mjs';
+import { exposedToolsFor, createTuriMcpServer } from './server/mcp-server.mjs';
 import { GrowthStore } from './growth/store.mjs';
 import { GrowthEngine } from './growth/engine.mjs';
 
@@ -85,7 +85,7 @@ export async function createTuriService(options = {}) {
   app.get('/health', async (req, res) => { try { res.status(200).json(await health()); } catch (error) { res.status(503).json({ status: 'unhealthy', error: error.code ?? error.message }); } });
   app.get('/healthz', async (req, res) => { try { res.status(200).json(await health()); } catch (error) { res.status(503).json({ status: 'unhealthy', error: error.code ?? error.message }); } });
   app.get('/version', (req, res) => res.json({ name: config.name, version: config.version, protocol: '2025-06-18' }));
-  app.get(`${config.mcpPath}/manifest`, (req, res) => res.json({ name: config.name, version: config.version, transport: 'streamable-http', mcpEndpoint: `${config.mcpPath}`, authorityMode: config.authorityMode, toolCount: ALIAS_TO_CAPABILITY.size, registry: registry.summary() }));
+  app.get(`${config.mcpPath}/manifest`, (req, res) => res.json({ name: config.name, version: config.version, transport: 'streamable-http', mcpEndpoint: `${config.mcpPath}`, authorityMode: config.authorityMode, toolProfile: config.toolProfile, toolCount: exposedToolsFor(config.toolProfile).length, interactionContract: 'turi.interaction.v0.1', registry: registry.summary() }));
   const protectedResourceMetadata = (req) => {
     const forwardedProtocol = String(req.headers['x-forwarded-proto'] ?? '').split(',')[0].trim();
     const protocol = forwardedProtocol || (config.publicBinding ? 'https' : req.protocol);
@@ -157,7 +157,7 @@ export async function createTuriService(options = {}) {
   };
   const service = {
     config, gateway, adapters, registry, receipts, artifacts, jobs, resources, computeRouter, orchestrator, growth, growthStore, app,
-    get exposedTools() { return [...ALIAS_TO_CAPABILITY.keys()]; },
+    get exposedTools() { return exposedToolsFor(config.toolProfile); },
     async start() {
       if (httpServer) return service;
       await new Promise((resolve, reject) => { httpServer = app.listen(config.port, config.host, (error) => error ? reject(error) : resolve()); });

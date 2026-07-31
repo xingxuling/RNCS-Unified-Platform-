@@ -48,6 +48,7 @@ test('Streamable HTTP exposes MCP initialize, tools, resources, and candidate E2
     assert.equal(listed.tools.length, 104);
     assert.ok(listed.tools.some((item) => item.name === 'turi_server_info'));
     assert.ok(listed.tools.some((item) => item.name === 'turi_compute_route'));
+    assert.equal(listed.tools.find((item) => item.name === 'turi_health').annotations.readOnlyHint, true);
     assert.ok(listed.tools.some((item) => item.name === 'turi_experience_record'));
     assert.ok(listed.tools.some((item) => item.name === 'updia_research_start'));
     assert.ok(listed.tools.some((item) => item.name === 'updia_research_status'));
@@ -56,6 +57,8 @@ test('Streamable HTTP exposes MCP initialize, tools, resources, and candidate E2
     assert.ok(listed.tools.some((item) => item.name === 'turi_record_assisted_experience'));
     const computeRoute = await client.callTool({ name: 'turi_compute_route', arguments: { taskType: 'world_simulation', seed: 'seed.json', ticks: 5, deadlineMs: 1_000 } });
     assert.equal(computeRoute.isError, undefined);
+    assert.equal(computeRoute.structuredContent.interaction.format, 'turi.interaction.v0.1');
+    assert.equal(computeRoute.structuredContent.terminal, true);
     assert.equal(computeRoute.structuredContent.data.decision.code, 'GAMEBRAIN_NOT_CONFIGURED');
     assert.equal(computeRoute.structuredContent.data.fallbackPolicy, 'explicit_only_no_implicit_ollama');
     const info = await client.callTool({ name: 'turi_server_info', arguments: {} });
@@ -116,6 +119,36 @@ test('stateless Streamable HTTP works across serverless request boundaries', asy
     const health = await client.callTool({ name: 'turi_health', arguments: {} });
     assert.equal(health.isError, undefined);
     assert.equal(health.structuredContent.data.turi.status, 'ok');
+  } finally {
+    await client.close().catch(() => {});
+    await service.stop();
+    fs.rmSync(dataDir, { recursive: true, force: true });
+  }
+});
+
+test('core tool profile exposes focused workflow tools while preserving capability discovery', async () => {
+  const dataDir = tempDir();
+  const service = await createTuriService({ config: {
+    host: '127.0.0.1',
+    port: 0,
+    authMode: 'none',
+    allowedHosts: ['127.0.0.1'],
+    allowedOrigins: ['http://localhost'],
+    repoRoot,
+    dataDir,
+    toolProfile: 'core',
+  } });
+  await service.start();
+  const client = new Client({ name: 'turi-core-profile-test', version: '0.1.0' });
+  const transport = new StreamableHTTPClientTransport(new URL(service.mcpUrl));
+  try {
+    await client.connect(transport);
+    const listed = await client.listTools();
+    assert.equal(listed.tools.length, 20);
+    assert.ok(listed.tools.some((item) => item.name === 'turi_research_task'));
+    assert.equal(listed.tools.some((item) => item.name === 'updia_think'), false);
+    const manifest = await fetch(`${service.url}/mcp/manifest`).then((response) => response.json());
+    assert.deepEqual({ toolProfile: manifest.toolProfile, toolCount: manifest.toolCount }, { toolProfile: 'core', toolCount: 20 });
   } finally {
     await client.close().catch(() => {});
     await service.stop();

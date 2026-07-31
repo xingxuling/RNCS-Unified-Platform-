@@ -54,6 +54,8 @@ export function loadConfig(env = process.env, overrides = {}) {
   const updiaDefaultModel = String(overrides.updiaDefaultModel ?? env.TURI_UPDIA_DEFAULT_MODEL ?? '').trim();
   const reasoningMode = String(overrides.reasoningMode ?? env.TURI_REASONING_MODE ?? 'host').trim().toLowerCase();
   if (!['host', 'local'].includes(reasoningMode)) throw new Error('TURI_REASONING_MODE must be host or local.');
+  const toolProfile = String(overrides.toolProfile ?? env.TURI_TOOL_PROFILE ?? 'compat').trim().toLowerCase();
+  if (!['compat', 'core', 'research', 'engineering', 'world'].includes(toolProfile)) throw new Error('TURI_TOOL_PROFILE must be compat, core, research, engineering, or world.');
   if (updiaBridgeUrl) {
     let parsedBridgeUrl;
     try { parsedBridgeUrl = new URL(updiaBridgeUrl); } catch { throw new Error('TURI_UPDIA_BRIDGE_URL must be an absolute HTTP(S) URL.'); }
@@ -109,6 +111,7 @@ export function loadConfig(env = process.env, overrides = {}) {
     updiaDefaultMaxTokens: integer(overrides.updiaDefaultMaxTokens ?? env.TURI_UPDIA_DEFAULT_MAX_TOKENS, 512, 64, 4_096),
     updiaDefaultModel: updiaDefaultModel || null,
     reasoningMode,
+    toolProfile,
     hostResumeTtlMs: integer(overrides.hostResumeTtlMs ?? env.TURI_HOST_RESUME_TTL_MS, 2 * 60 * 60_000, 60_000, 24 * 60 * 60_000),
     hostResumeSecret,
     hostResumeSecretSource: configuredHostResumeSecret ? (bearerToken && configuredHostResumeSecret === bearerToken ? 'bearer-token' : 'configured') : 'local-derived',

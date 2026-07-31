@@ -4,6 +4,12 @@
 
 当前版本是 `0.1.0-alpha.2`。默认架构是“宿主 GPT 主推理，TURI 主调度，UPDIA 主连续性与证据，RCL 主编译，RNCS 主仿真”；生成式 Ollama 只保留为明确启用的离线后备，embedding 检索不受影响。
 
+## 交互契约与工具画像
+
+每次工具返回都包含 `status`、`terminal`、`nextAction` 和 `interaction.format=turi.interaction.v0.1`。`input_required` 表示需要宿主或用户补充输入，不是失败；长任务返回 `queued/running` 时，`nextAction` 会给出 `turi_job_status` 和 `jobId`；错误仍通过 `error + receipt` 保留可审计原因。
+
+为了减少宿主模型在 100+ 个工具中选错入口，可通过 `TURI_TOOL_PROFILE` 选择暴露画像：`compat`（默认，兼容旧接入）、`core`（统一工作流）、`research`、`engineering` 或 `world`。建议 ChatGPT 公网接入先使用 `core`，确认旧客户端不依赖直连工具后再切换；服务端仍保留完整注册表供 `turi_capability_search/describe` 查询。
+
 高阶任务的默认闭环是：
 
 ```text

@@ -4,8 +4,18 @@ import { boundedText, clone, publicError } from '../canonical.mjs';
 import { createEvidenceReceipt } from '../evidence/receipt.mjs';
 import { ExecutionPolicy } from '../security/policy.mjs';
 import { CAPABILITY_BY_ALIAS } from '../registry/manifests.mjs';
+import { INTERACTION_CONTRACT, interactionFor } from '../ux/interaction-contract.mjs';
 
-const RESULT_SCHEMA = z.object({ ok: z.boolean(), data: z.any().optional(), receipt: z.any().optional(), error: z.any().optional() });
+const RESULT_SCHEMA = z.object({
+  ok: z.boolean(),
+  status: z.string().optional(),
+  terminal: z.boolean().optional(),
+  nextAction: z.any().optional(),
+  interaction: z.any().optional(),
+  data: z.any().optional(),
+  receipt: z.any().optional(),
+  error: z.any().optional(),
+});
 
 function zodFor(descriptor) {
   if (!descriptor) return z.any();
@@ -27,13 +37,16 @@ function shapeFor(manifest) {
   return shape;
 }
 
-function toolResult(data, receipt) {
-  const value = { ok: true, data, receipt };
+function toolResult(data, receipt, capabilityId) {
+  const interaction = interactionFor({ data, capabilityId });
+  const value = { ok: true, status: interaction.status, terminal: interaction.terminal, nextAction: interaction.nextAction, interaction, data, receipt };
   return { structuredContent: value, content: [{ type: 'text', text: JSON.stringify(value, null, 2) }] };
 }
 
-function toolFailure(error, receipt = null) {
-  const value = { ok: false, error: publicError(error), ...(receipt ? { receipt } : {}) };
+function toolFailure(error, receipt = null, capabilityId) {
+  const publicFailure = publicError(error);
+  const interaction = interactionFor({ capabilityId, error: publicFailure });
+  const value = { ok: false, status: interaction.status, terminal: interaction.terminal, nextAction: interaction.nextAction, interaction, error: publicFailure, ...(receipt ? { receipt } : {}) };
   return { isError: true, structuredContent: value, content: [{ type: 'text', text: JSON.stringify(value, null, 2) }] };
 }
 
@@ -68,8 +81,47 @@ for (const [name, id] of DIRECT_DOMAIN_TO_CAPABILITY) if (EXPOSED_COMPATIBILITY_
 for (const [name, id] of CAPABILITY_BY_ALIAS) if (name.startsWith('turi_')) ALIAS_TO_CAPABILITY.set(name, id);
 ALIAS_TO_CAPABILITY.set('rncs_candidate_workflow', 'turi.candidate.execute');
 
+const unique = (...names) => [...new Set(names)];
+const CORE_PROFILE_TOOLS = [
+  'turi_server_info', 'turi_health', 'turi_compute_route',
+  'turi_capability_search', 'turi_capability_describe', 'turi_capability_invoke',
+  'turi_request_host_reasoning', 'turi_resume_with_host_contribution', 'turi_record_assisted_experience',
+  'turi_intent_to_reality', 'turi_engineering_task', 'turi_world_task', 'turi_research_task',
+  'turi_job_start', 'turi_job_status', 'turi_job_events', 'turi_job_cancel',
+  'turi_job_artifacts', 'turi_evidence_get', 'turi_artifact_export',
+];
+const PROFILE_TOOL_NAMES = Object.freeze({
+  compat: null,
+  core: CORE_PROFILE_TOOLS,
+  research: unique(...CORE_PROFILE_TOOLS, 'updia_health', 'updia_status', 'updia_list_organs', 'updia_memory_search', 'turi_subject_status'),
+  engineering: unique(...CORE_PROFILE_TOOLS, 'rcl_status', 'rcl_search', 'rcl_compile_source', 'rcl_disassemble_source', 'rncs_status', 'rncs_runtime_health', 'rncs_compile_plan', 'rncs_validate_plan', 'rncs_create_candidate', 'rncs_get_candidate', 'rncs_diff_candidate', 'rncs_simulate_candidate', 'developer_execution_status', 'workspace_apply_patch', 'execution_run_build', 'git_status'),
+  world: unique(...CORE_PROFILE_TOOLS, 'rncs_status', 'rncs_runtime_health', 'rncs_create_candidate', 'rncs_get_candidate', 'rncs_diff_candidate', 'rncs_simulate_candidate', 'gamebrain_status', 'gamebrain_simulate'),
+});
+
+function exposedToolsFor(profile = 'compat') {
+  const selected = PROFILE_TOOL_NAMES[String(profile || 'compat').toLowerCase()];
+  if (selected === undefined) throw new Error(`Unknown TURI tool profile: ${profile}`);
+  const names = selected ?? [...ALIAS_TO_CAPABILITY.keys()];
+  return names.filter((name) => ALIAS_TO_CAPABILITY.has(name));
+}
+
+function toolAnnotations(manifest) {
+  const readOnly = manifest.executionMode === 'read_only';
+  const realityEffect = manifest.executionMode === 'external_effect' || manifest.executionMode === 'authorized_write';
+  return {
+    readOnlyHint: readOnly,
+    destructiveHint: realityEffect,
+    idempotentHint: readOnly,
+    openWorldHint: realityEffect || manifest.domain === 'gamebrain',
+  };
+}
+
+const SERVER_INSTRUCTIONS = 'TURI is a control plane: discover or route first, then run a focused workflow. Research normally returns input_required when host reasoning is needed; submit the signed resumeToken with hostContribution, then compile or simulate. Jobs are not complete until status is terminal. Treat error, receipt, status, and nextAction as the executable contract. Candidate changes stay isolated until explicit authorization.';
+
 export function createTuriMcpServer({ config, registry, orchestrator, receipts, artifacts, jobs, resources, adapters, growth, computeRouter = orchestrator.computeRouter }) {
-  const server = new McpServer({ name: 'turi-unified-reality-intelligence', version: config.version }, { capabilities: { tools: { listChanged: false }, resources: { subscribe: false, listChanged: false } } });
+  const toolProfile = config.toolProfile ?? 'compat';
+  const exposedTools = exposedToolsFor(toolProfile);
+  const server = new McpServer({ name: 'turi-unified-reality-intelligence', version: config.version }, { capabilities: { tools: { listChanged: false }, resources: { subscribe: false, listChanged: false } }, instructions: SERVER_INSTRUCTIONS });
   const policy = new ExecutionPolicy(config);
 
   const serverInfo = () => ({
@@ -77,7 +129,7 @@ export function createTuriMcpServer({ config, registry, orchestrator, receipts, 
     status: 'INTEGRATION_CANDIDATE', authorityMode: config.authorityMode, candidateWrites: config.authorityMode !== 'read_only', authorizedWrites: config.authorizedWritesEnabled, externalEffects: config.externalEffectsEnabled,
     reasoning: { primary: 'host', configuredMode: config.reasoningMode, localGeneration: 'explicit_offline_or_manual', embedding: 'retained' },
     hostIntervention: { tokenIntegrity: 'hmac-sha256', authorityCeiling: 'L2', experienceRecording: 'L3-candidate', formalWritesGranted: false },
-    existingMcp: { rcl: '@taowind/reality-computation-language/src/rcl-mcp-server.mjs', rncs: '@taowind/taowind-reality-mcp' }, registry: registry.summary(), computeRouter: computeRouter.summary(), updiaConfigured: adapters.updia.configured(), gamebrain: adapters.gamebrain.status(), limitations: ['A real ChatGPT/MCP Inspector session is required before VERIFIED.'],
+    existingMcp: { rcl: '@taowind/reality-computation-language/src/rcl-mcp-server.mjs', rncs: '@taowind/taowind-reality-mcp' }, registry: registry.summary(), computeRouter: computeRouter.summary(), updiaConfigured: adapters.updia.configured(), gamebrain: adapters.gamebrain.status(), toolProfile, exposedToolCount: exposedTools.length, interactionContract: INTERACTION_CONTRACT, limitations: ['A real ChatGPT/MCP Inspector session is required before VERIFIED.'],
   });
 
   const health = async () => {
@@ -199,14 +251,15 @@ export function createTuriMcpServer({ config, registry, orchestrator, receipts, 
         const manifest = registry.get(capabilityId);
         receipt = receipts.save(createEvidenceReceipt(manifest, input, result.output, { executed: true, verified: manifest.evidenceLevel === 'verified' }));
       }
-      return toolResult(result.output, receipt);
-    } catch (error) { return toolFailure(error, error.turiReceipt ?? null); }
+      return toolResult(result.output, receipt, capabilityId);
+    } catch (error) { return toolFailure(error, error.turiReceipt ?? null, capabilityId); }
   }
 
-  for (const [toolName, capabilityId] of ALIAS_TO_CAPABILITY) {
+  for (const toolName of exposedTools) {
+    const capabilityId = ALIAS_TO_CAPABILITY.get(toolName);
     if (!registry.has(capabilityId)) continue;
     const manifest = registry.get(capabilityId);
-    server.registerTool(toolName, { title: manifest.displayName, description: `${manifest.description} [${manifest.implementation}/${manifest.evidenceLevel}/${manifest.executionMode}]`, inputSchema: shapeFor(manifest), outputSchema: RESULT_SCHEMA }, async (input) => call(capabilityId, input));
+    server.registerTool(toolName, { title: manifest.displayName, description: `${manifest.description} [${manifest.implementation}/${manifest.evidenceLevel}/${manifest.executionMode}]`, annotations: toolAnnotations(manifest), inputSchema: shapeFor(manifest), outputSchema: RESULT_SCHEMA }, async (input) => call(capabilityId, input));
   }
 
   for (const resource of resources.list().filter((item) => !item.uri.includes('{'))) {
@@ -216,8 +269,8 @@ export function createTuriMcpServer({ config, registry, orchestrator, receipts, 
     server.registerResource(`${name}-resource`, new ResourceTemplate(template, { list: undefined }), { mimeType: 'application/json' }, async (uri) => resources.read(uri.toString()));
   }
 
-  server.__turi = { invokeCapability, registry, config, computeRouter, serverInfo, health };
+  server.__turi = { invokeCapability, registry, config, computeRouter, serverInfo, health, toolProfile, exposedTools, interactionContract: INTERACTION_CONTRACT };
   return server;
 }
 
-export { ALIAS_TO_CAPABILITY, CORE_TOOLS, DIRECT_DOMAIN_TO_CAPABILITY };
+export { ALIAS_TO_CAPABILITY, CORE_TOOLS, DIRECT_DOMAIN_TO_CAPABILITY, PROFILE_TOOL_NAMES, exposedToolsFor, SERVER_INSTRUCTIONS };
