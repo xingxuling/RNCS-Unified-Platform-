@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { compileRealityToBytecode } from './bytecode.mjs';
 import { runNativeCompiler } from './native-vm.mjs';
 
-const ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+const ROOT = path.resolve(process.env.RCL_PACKAGE_ROOT ?? path.dirname(path.dirname(fileURLToPath(import.meta.url))));
 
 export const SELFHOST_COMPILER_CORE_PATH = path.join(ROOT, 'selfhost', 'compiler-core.rcl');
 export const SELFHOST_COMPILER_MAIN_PATH = path.join(ROOT, 'selfhost', 'compiler-main.rcl');

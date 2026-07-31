@@ -5,7 +5,7 @@ import readline from 'node:readline';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
-const ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+const ROOT = path.resolve(process.env.RCL_PACKAGE_ROOT ?? path.dirname(path.dirname(fileURLToPath(import.meta.url))));
 export const DEFAULT_NATIVE_DAEMON_PATH = path.join(ROOT, 'native', process.platform === 'win32' ? 'rclvmd.exe' : 'rclvmd');
 
 export class EmbeddedNativeVm {

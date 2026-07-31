@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { bootstrapCompilerStage5 } from './bootstrap.mjs';
 import { realityRoot } from './canonical.mjs';
 
-const ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+const ROOT = path.resolve(process.env.RCL_PACKAGE_ROOT ?? path.dirname(path.dirname(fileURLToPath(import.meta.url))));
 
 export const RCL_RNCS_FUSION_VERSION = '0.94.0-alpha.1';
 export const RCL_RNCS_FUSION_RESULT_FORMAT = 'rcl.rncs-fusion-result.v0.94';

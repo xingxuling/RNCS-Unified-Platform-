@@ -14,7 +14,7 @@ import {
   runRclRncsFusion,
 } from './rncs-rcl-fusion.mjs';
 
-const ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+const ROOT = path.resolve(process.env.RCL_PACKAGE_ROOT ?? path.dirname(path.dirname(fileURLToPath(import.meta.url))));
 const PACKAGE_JSON_PATH = path.join(ROOT, 'package.json');
 const DEFAULT_RNCS_ROOT = path.resolve(ROOT, '..', '..', '..');
 const BUNDLED_RNCS_WORLD_RUNTIME_SNAPSHOT_DIR = path.join(ROOT, 'examples', 'rncs-world-runtime-snapshots');

@@ -6,7 +6,7 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { compileRealityToBytecode } from './bytecode.mjs';
 
-const ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+const ROOT = path.resolve(process.env.RCL_PACKAGE_ROOT ?? path.dirname(path.dirname(fileURLToPath(import.meta.url))));
 export const RCL_NATIVE_STATE_ROOT_ALGORITHM = 'rcl.semantic-state-root.v1';
 export const DEFAULT_NATIVE_VM_PATH = path.join(ROOT, 'native', process.platform === 'win32' ? 'rclvm.exe' : 'rclvm');
 export const DEFAULT_NATIVE_COMPILER_PATH = path.join(ROOT, 'native', process.platform === 'win32' ? 'rclc.exe' : 'rclc');

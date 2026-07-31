@@ -6,7 +6,7 @@ import { compileRealityToBytecode, decodeBytecode, assembleLiteralProgram, assem
 import { runNativeBytecode } from './native-vm.mjs';
 import { realityRoot } from './canonical.mjs';
 
-const ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+const ROOT = path.resolve(process.env.RCL_PACKAGE_ROOT ?? path.dirname(path.dirname(fileURLToPath(import.meta.url))));
 export const DEFAULT_COMPILER_SEED_PATH = path.join(ROOT, 'bootstrap', 'compiler-seed.rcl');
 export const DEFAULT_COMPILER_STAGE2_PATH = path.join(ROOT, 'bootstrap', 'compiler-stage2.rcl');
 export const DEFAULT_COMPILER_STAGE3_PATH = path.join(ROOT, 'bootstrap', 'compiler-stage3.rcl');
