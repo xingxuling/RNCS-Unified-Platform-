@@ -363,6 +363,7 @@ test('UPDIA adapter exposes a bridge-owned research job for stateless MCP pollin
         assert.equal(request.params.think, false);
         assert.equal(request.params.groundingQuery, '三个核心问题');
         assert.equal(request.params.maxTokens, 256);
+        assert.equal(request.params.maxOrganAttempts, 1);
         assert.equal(request.params.profile, 'domain-research');
         assert.deepEqual(request.params.evidenceRoles, ['domain_evidence']);
         return new Response(JSON.stringify({
