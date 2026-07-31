@@ -182,7 +182,14 @@ test('UPDIA adapter submits long generation as an async bridge job and polls its
         }), { status: 202, headers: { 'content-type': 'application/json' } });
       }
       pollCount += 1;
-      const completed = pollCount > 1;
+      if (pollCount === 1) {
+        return new Response(JSON.stringify({
+          type: 'https://developers.cloudflare.com/support/troubleshooting/http-status-codes/cloudflare-5xx-errors/error-502/',
+          title: 'Error 502: Bad gateway',
+          status: 502,
+        }), { status: 502, headers: { 'content-type': 'application/json' } });
+      }
+      const completed = pollCount > 2;
       return new Response(JSON.stringify({
         format: 'updia.http-bridge-async-job.v0.1',
         jobId: 'updia-job:test',
@@ -204,7 +211,7 @@ test('UPDIA adapter submits long generation as an async bridge job and polls its
   const result = await adapter.think({ goal: '研究一个需要真实模型推理的问题' });
   assert.equal(result.content, 'grounded answer');
   assert.equal(result.route.provider, 'ollama');
-  assert.equal(pollCount, 2);
+  assert.equal(pollCount, 3);
   assert.equal(calls[1].url, 'https://updia.example.test/jobs/updia-job%3Atest');
 });
 

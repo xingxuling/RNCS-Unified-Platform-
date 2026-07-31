@@ -13,6 +13,7 @@ function bridgeError(code, message, details = null) {
 
 const withoutUndefined = (value) => Object.fromEntries(Object.entries(value).filter(([, entry]) => entry !== undefined));
 const BRIDGE_DISCOVERY_FORMAT = 'taowind.updia-bridge-route.v0.1';
+const TRANSIENT_POLL_HTTP_STATUSES = new Set([408, 425, 429, 500, 502, 503, 504]);
 
 function hostAllowed(hostname, suffixes) {
   const host = String(hostname ?? '').toLowerCase();
@@ -300,19 +301,41 @@ export class UpdiaAdapter {
     }
     const pollUrl = new URL(job.pollPath, `${baseUrl}/`).toString();
     const pollMs = Math.max(100, Number(this.config.updiaBridgePollMs ?? job.pollAfterMs ?? 1_000));
+    let lastTransientFailure = null;
     while (Date.now() - startedAt < timeoutMs) {
       const remainingBeforeDelay = timeoutMs - (Date.now() - startedAt);
       await new Promise((resolve) => setTimeout(resolve, Math.min(pollMs, Math.max(1, remainingBeforeDelay))));
       const remaining = timeoutMs - (Date.now() - startedAt);
       if (remaining <= 0) break;
-      const { response, payload } = await this.remoteJson(pollUrl, {
-        method: 'GET',
-        headers: {
-          accept: 'application/json',
-          ...(this.config.updiaBridgeToken ? { authorization: `Bearer ${this.config.updiaBridgeToken}` } : {}),
-        },
-      }, remaining);
+      let response;
+      let payload;
+      try {
+        ({ response, payload } = await this.remoteJson(pollUrl, {
+          method: 'GET',
+          headers: {
+            accept: 'application/json',
+            ...(this.config.updiaBridgeToken ? { authorization: `Bearer ${this.config.updiaBridgeToken}` } : {}),
+          },
+        }, remaining));
+      } catch (error) {
+        const status = Number(error?.details?.status);
+        const transient = TRANSIENT_POLL_HTTP_STATUSES.has(status)
+          || (error?.name === 'TypeError' && !error?.code);
+        if (transient && Date.now() - startedAt + pollMs < timeoutMs) {
+          lastTransientFailure = { status: Number.isFinite(status) ? status : null, code: error.code ?? error.name, message: error.message };
+          continue;
+        }
+        throw error;
+      }
       if (!response.ok) {
+        if (TRANSIENT_POLL_HTTP_STATUSES.has(response.status) && Date.now() - startedAt + pollMs < timeoutMs) {
+          lastTransientFailure = {
+            status: response.status,
+            code: payload?.error?.code ?? payload?.code ?? 'UPDIA_TRANSIENT_POLL_HTTP_ERROR',
+            message: payload?.error?.message ?? payload?.message ?? `Transient UPDIA async job poll HTTP ${response.status}.`,
+          };
+          continue;
+        }
         throw bridgeError('UPDIA_REMOTE_HTTP_ERROR', `UPDIA async job poll returned HTTP ${response.status}.`, { status: response.status, payload, jobId: job.jobId });
       }
       if (!payload || payload.jobId !== job.jobId || typeof payload.status !== 'string') {
@@ -328,7 +351,7 @@ export class UpdiaAdapter {
       }
       return envelope.result;
     }
-    throw bridgeError('UPDIA_TIMEOUT', `UPDIA remote bridge exceeded ${timeoutMs}ms.`, { jobId: job.jobId });
+    throw bridgeError('UPDIA_TIMEOUT', `UPDIA remote bridge exceeded ${timeoutMs}ms.`, { jobId: job.jobId, lastTransientFailure });
   }
 
   async health() {
