@@ -14,6 +14,7 @@ import { RclAdapter } from './adapters/rcl.mjs';
 import { RncsAdapter } from './adapters/rncs.mjs';
 import { UpdiaAdapter } from './adapters/updia.mjs';
 import { GameBrainAdapter } from './adapters/gamebrain.mjs';
+import { ComputeRouter } from './routing/compute-router.mjs';
 import { TuriOrchestrator } from './workflows/orchestrator.mjs';
 import { ALIAS_TO_CAPABILITY, createTuriMcpServer } from './server/mcp-server.mjs';
 import { GrowthStore } from './growth/store.mjs';
@@ -36,7 +37,8 @@ export async function createTuriService(options = {}) {
   const receipts = options.receipts ?? new ReceiptStore(config.dataDir);
   const artifacts = options.artifacts ?? new ArtifactStore(config.dataDir, config.maxArtifactBytes);
   const growthStore = options.growthStore ?? new GrowthStore(config.dataDir);
-  const orchestrator = options.orchestrator ?? new TuriOrchestrator({ config, adapters, artifacts, growthStore });
+  const computeRouter = options.computeRouter ?? new ComputeRouter({ config, adapters });
+  const orchestrator = options.orchestrator ?? new TuriOrchestrator({ config, adapters, artifacts, growthStore, computeRouter });
   const growth = options.growth ?? new GrowthEngine({ store: growthStore, registry, orchestrator, rcl: adapters.rcl, config });
   const jobStore = options.jobStore ?? new JobStore(config.dataDir);
   const workflowAliases = {
@@ -54,7 +56,7 @@ export async function createTuriService(options = {}) {
   const jobs = options.jobs ?? new JobManager({ store: jobStore, workflows: workflowAliases, maxTimeoutMs: config.jobTimeoutMs });
   const resources = options.resources ?? new ResourceRegistry({ config, registry, adapters, receipts, artifacts, jobs, docs: { integration: 'TURI v0.1 reuses the RCL MCP JSON-RPC handler and RNCS Reality One Gateway. UPDIA is called through the WorldSeed LocalInteractionRoot JSONL bridge when configured.' } });
 
-  const createServer = () => createTuriMcpServer({ config, registry, orchestrator, receipts, artifacts, jobs, resources, adapters, growth });
+  const createServer = () => createTuriMcpServer({ config, registry, orchestrator, receipts, artifacts, jobs, resources, adapters, growth, computeRouter });
   // The MCP SDK performs exact Host matching and does not understand '*'.
   // Keep wildcard handling in TURI's Bearer/Origin policy for cloud platforms
   // whose public hostname is assigned after deployment.
@@ -154,7 +156,7 @@ export async function createTuriService(options = {}) {
     try { return await server.__turi.health(); } finally { await server.close().catch(() => {}); }
   };
   const service = {
-    config, gateway, adapters, registry, receipts, artifacts, jobs, resources, orchestrator, growth, growthStore, app,
+    config, gateway, adapters, registry, receipts, artifacts, jobs, resources, computeRouter, orchestrator, growth, growthStore, app,
     get exposedTools() { return [...ALIAS_TO_CAPABILITY.keys()]; },
     async start() {
       if (httpServer) return service;

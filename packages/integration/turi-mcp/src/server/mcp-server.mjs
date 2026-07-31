@@ -44,7 +44,7 @@ const rncsRoots = (status = null) => ({
 });
 
 const CORE_TOOLS = new Map([
-  ['turi_server_info', 'turi.server.info'], ['turi_health', 'turi.health'], ['turi_capability_search', 'turi.capability.search'], ['turi_capability_describe', 'turi.capability.describe'], ['turi_capability_invoke', 'turi.capability.invoke'],
+  ['turi_server_info', 'turi.server.info'], ['turi_health', 'turi.health'], ['turi_compute_route', 'turi.compute.route'], ['turi_capability_search', 'turi.capability.search'], ['turi_capability_describe', 'turi.capability.describe'], ['turi_capability_invoke', 'turi.capability.invoke'],
   ['turi_request_host_reasoning', 'turi.host.request-reasoning'], ['turi_resume_with_host_contribution', 'turi.host.resume-with-contribution'], ['turi_record_assisted_experience', 'turi.host.record-assisted-experience'],
   ['turi_subject_status', 'turi.subject.status'], ['turi_intent_compile', 'turi.intent.compile'], ['turi_candidate_execute', 'turi.candidate.execute'], ['turi_candidate_review', 'turi.candidate.review'], ['turi_authorize', 'turi.authorize'], ['turi_merge', 'turi.merge'], ['turi_rollback', 'turi.rollback'], ['turi_evidence_get', 'turi.evidence.get'], ['turi_artifact_export', 'turi.artifact.export'],
   ['turi_intent_to_reality', 'turi.workflow.intent-to-reality'], ['turi_engineering_task', 'turi.workflow.engineering-task'], ['turi_world_task', 'turi.workflow.world-task'], ['turi_cinematic_task', 'turi.workflow.cinematic-task'], ['turi_research_task', 'turi.workflow.research-task'],
@@ -68,7 +68,7 @@ for (const [name, id] of DIRECT_DOMAIN_TO_CAPABILITY) if (EXPOSED_COMPATIBILITY_
 for (const [name, id] of CAPABILITY_BY_ALIAS) if (name.startsWith('turi_')) ALIAS_TO_CAPABILITY.set(name, id);
 ALIAS_TO_CAPABILITY.set('rncs_candidate_workflow', 'turi.candidate.execute');
 
-export function createTuriMcpServer({ config, registry, orchestrator, receipts, artifacts, jobs, resources, adapters, growth }) {
+export function createTuriMcpServer({ config, registry, orchestrator, receipts, artifacts, jobs, resources, adapters, growth, computeRouter = orchestrator.computeRouter }) {
   const server = new McpServer({ name: 'turi-unified-reality-intelligence', version: config.version }, { capabilities: { tools: { listChanged: false }, resources: { subscribe: false, listChanged: false } } });
   const policy = new ExecutionPolicy(config);
 
@@ -77,11 +77,11 @@ export function createTuriMcpServer({ config, registry, orchestrator, receipts, 
     status: 'INTEGRATION_CANDIDATE', authorityMode: config.authorityMode, candidateWrites: config.authorityMode !== 'read_only', authorizedWrites: config.authorizedWritesEnabled, externalEffects: config.externalEffectsEnabled,
     reasoning: { primary: 'host', configuredMode: config.reasoningMode, localGeneration: 'explicit_offline_or_manual', embedding: 'retained' },
     hostIntervention: { tokenIntegrity: 'hmac-sha256', authorityCeiling: 'L2', experienceRecording: 'L3-candidate', formalWritesGranted: false },
-    existingMcp: { rcl: '@taowind/reality-computation-language/src/rcl-mcp-server.mjs', rncs: '@taowind/taowind-reality-mcp' }, registry: registry.summary(), updiaConfigured: adapters.updia.configured(), gamebrain: adapters.gamebrain.status(), limitations: ['A real ChatGPT/MCP Inspector session is required before VERIFIED.'],
+    existingMcp: { rcl: '@taowind/reality-computation-language/src/rcl-mcp-server.mjs', rncs: '@taowind/taowind-reality-mcp' }, registry: registry.summary(), computeRouter: computeRouter.summary(), updiaConfigured: adapters.updia.configured(), gamebrain: adapters.gamebrain.status(), limitations: ['A real ChatGPT/MCP Inspector session is required before VERIFIED.'],
   });
 
   const health = async () => {
-    const result = { status: 'degraded', turi: { status: 'ok', version: config.version, reasoningMode: config.reasoningMode, hostIntervention: 'ready' }, rncs: null, rcl: null, updia: null, gamebrain: adapters.gamebrain.status() };
+    const result = { status: 'degraded', turi: { status: 'ok', version: config.version, reasoningMode: config.reasoningMode, hostIntervention: 'ready' }, compute: computeRouter.health(), rncs: null, rcl: null, updia: null, gamebrain: adapters.gamebrain.status() };
     try { result.rncs = await adapters.rncs.health(); } catch (error) { result.rncs = { status: 'unavailable', error: publicError(error) }; }
     try {
       const rclStatus = await adapters.rcl.status();
@@ -216,7 +216,7 @@ export function createTuriMcpServer({ config, registry, orchestrator, receipts, 
     server.registerResource(`${name}-resource`, new ResourceTemplate(template, { list: undefined }), { mimeType: 'application/json' }, async (uri) => resources.read(uri.toString()));
   }
 
-  server.__turi = { invokeCapability, registry, config, serverInfo, health };
+  server.__turi = { invokeCapability, registry, config, computeRouter, serverInfo, health };
   return server;
 }
 

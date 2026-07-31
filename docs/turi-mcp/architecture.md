@@ -8,11 +8,12 @@ TURI 是统一协议入口，不是另一个低配聊天机器人。当前 MCP �
 Host GPT / MCP Client / stdio / Streamable HTTP
         │
         ▼
-TURI server: host intervention + registry + policy + receipts
+TURI server: host intervention + Compute Router + registry + policy + receipts
         │
         ├── RCL adapter → existing rcl-mcp-server.mjs JSON-RPC handler
         ├── RNCS adapter → existing RealityOneGateway / declared runtimes
         ├── UPDIA adapter → continuity + Native RGR evidence + experience candidates
+        ├── Compute Router → deadline/resource/evidence budget selection
         ├── GameBrain provider → bounded WorldSeed CLI subprocess
         ├── Ollama embedding → semantic retrieval (retained)
         └── Ollama generation → explicit offline fallback only
@@ -38,4 +39,4 @@ MCP 服务器不能在会话外主动唤醒宿主，因此缺少高阶贡献时�
 
 ## 默认暴露面
 
-注册表包含 150 个能力，默认 tools/list 暴露 103 个工具，其中包括三项宿主介入协议工具。其余低层兼容能力仍可通过 `turi_capability_search`、`turi_capability_describe` 和 `turi_capability_invoke` 按清单访问。所有调用都返回 TURI 统一 envelope 和 EvidenceReceipt。
+注册表包含 151 个能力，默认 tools/list 暴露 104 个工具，其中包括 Compute Router 和三项宿主介入协议工具。其余低层兼容能力仍可通过 `turi_capability_search`、`turi_capability_describe` 和 `turi_capability_invoke` 按清单访问。所有调用都返回 TURI 统一 envelope 和 EvidenceReceipt。Compute Router 只选择路径，不自动调用 Ollama；GameBrain 只有在 provider 已配置、seed 合法且预算满足时才会执行。

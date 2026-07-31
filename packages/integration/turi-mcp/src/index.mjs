@@ -11,6 +11,7 @@ export * from './adapters/rcl.mjs';
 export * from './adapters/rncs.mjs';
 export * from './adapters/updia.mjs';
 export * from './adapters/gamebrain.mjs';
+export * from './routing/compute-router.mjs';
 export * from './workflows/orchestrator.mjs';
 export * from './server/mcp-server.mjs';
 export * from './service.mjs';

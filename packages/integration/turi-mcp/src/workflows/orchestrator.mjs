@@ -7,6 +7,7 @@ import {
   readHostResumeToken,
   validateHostContribution,
 } from '../host/intervention.mjs';
+import { ComputeRouter } from '../routing/compute-router.mjs';
 
 function capabilityError(code, message, details = null) {
   const error = new Error(message);
@@ -38,11 +39,12 @@ function researchTargetCount(input = {}) {
 }
 
 export class TuriOrchestrator {
-  constructor({ config, adapters, artifacts, growthStore = null }) {
+  constructor({ config, adapters, artifacts, growthStore = null, computeRouter = null }) {
     this.config = config;
     this.adapters = adapters;
     this.artifacts = artifacts;
     this.growthStore = growthStore;
+    this.computeRouter = computeRouter ?? new ComputeRouter({ config, adapters });
     this.dynamicRoutes = new Map();
   }
 
@@ -56,6 +58,37 @@ export class TuriOrchestrator {
     const mode = String(input.reasoningMode ?? this.config.reasoningMode ?? 'host').trim().toLowerCase();
     if (!['host', 'local'].includes(mode)) throw capabilityError('REASONING_MODE_INVALID', 'reasoningMode must be host or local.');
     return mode;
+  }
+
+  computeRoute(input = {}) {
+    return this.computeRouter.route(input);
+  }
+
+  async simulateGameBrain(input = {}, route = null) {
+    const computeRoute = route ?? this.computeRoute({ ...input, taskType: 'world_simulation' });
+    if (computeRoute.decision.status !== 'selected' || computeRoute.decision.selectedResource !== 'gamebrain.world-simulator') {
+      throw capabilityError(computeRoute.decision.code, computeRoute.decision.message, { computeRoute: computeRoute.decision });
+    }
+    const startedAt = Date.now();
+    try {
+      const result = await this.adapters.gamebrain.simulate(
+        { seed: input.seed, ticks: input.ticks ?? computeRoute.budget.ticks ?? 1, actors: input.actors },
+        { timeoutMs: computeRoute.budget.deadlineMs },
+      );
+      return {
+        ...result,
+        compute: {
+          routeId: computeRoute.routeId,
+          resourceId: computeRoute.decision.selectedResource,
+          deadlineMs: computeRoute.budget.deadlineMs,
+          deadlineAt: computeRoute.budget.deadlineAt,
+          durationMs: Date.now() - startedAt,
+        },
+      };
+    } catch (error) {
+      error.details = { ...(error.details ?? {}), computeRoute: { routeId: computeRoute.routeId, ...computeRoute.decision } };
+      throw error;
+    }
   }
 
   async requestHostReasoning(input = {}) {
@@ -444,7 +477,7 @@ export class TuriOrchestrator {
 
   async worldTask(input = {}, context = {}) {
     const reasoningMode = this.reasoningMode(input);
-    const result = { format: 'turi.world-workflow.v0.2', intent: input.intent, reasoningMode, cognition: null, candidate: null, gamebrain: null, limitations: [] };
+    const result = { format: 'turi.world-workflow.v0.2', intent: input.intent, reasoningMode, cognition: null, candidate: null, gamebrain: null, computeRoute: null, limitations: [] };
     if (reasoningMode === 'host') {
       result.cognition = input.source
         ? { status: 'HOST_OR_USER_SOURCE_SUPPLIED', sourceHash: `sha256:${sha256(input.source)}` }
@@ -462,10 +495,11 @@ export class TuriOrchestrator {
     } else result.limitations.push('UPDIA is not configured.');
     if (input.source) result.candidate = await this.candidateExecute({ source: input.source, language: input.language, subject_id: input.subject_id }, context);
     else result.limitations.push('No RCL/RNCS source was supplied; no candidate world was created.');
-    if (input.run_gamebrain) {
-      if (!this.adapters.gamebrain.status().configured) result.limitations.push('GameBrain provider is not configured.');
-      else if (!input.seed) result.limitations.push('GameBrain requires a seed path inside the configured WorldSeed root.');
-      else result.gamebrain = await this.adapters.gamebrain.simulate({ seed: input.seed, ticks: input.ticks ?? 1 });
+    if (input.run_gamebrain === true || input.seed) {
+      const computeRoute = this.computeRoute({ ...input, taskType: 'world_simulation' });
+      result.computeRoute = computeRoute;
+      if (computeRoute.decision.status !== 'selected') result.limitations.push(`Compute Router: ${computeRoute.decision.code}: ${computeRoute.decision.message}`);
+      else result.gamebrain = await this.simulateGameBrain(input, computeRoute);
     }
     return result;
   }
@@ -749,8 +783,9 @@ export class TuriOrchestrator {
       case 'engineering.run_build': return this.adapters.rncs.runBuild(input);
       case 'engineering.git_status': return this.adapters.rncs.gitStatus(input);
       case 'engineering.commit': return this.adapters.rncs.gitCommit(input);
+      case 'turi.compute.route': return this.computeRoute(input);
       case 'gamebrain.status': return this.adapters.gamebrain.status();
-      case 'gamebrain.simulate': return this.adapters.gamebrain.simulate(input);
+      case 'gamebrain.simulate': return this.simulateGameBrain(input);
       case 'turi.host.request-reasoning': return this.requestHostReasoning(input);
       case 'turi.host.resume-with-contribution': return this.resumeWithHostContribution(input, context);
       case 'turi.host.record-assisted-experience': return this.recordAssistedExperience(input);
