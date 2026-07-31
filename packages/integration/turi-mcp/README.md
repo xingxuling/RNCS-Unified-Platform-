@@ -67,6 +67,8 @@ $env:TURI_UPDIA_BRIDGE_DISCOVERY_CACHE_BUST_MS='60000'
 
 ChatGPT 等单次工具调用期限较短的客户端应使用 `updia_research_start`，取得 `jobId` 和同步检索证据后，再用 `updia_research_status` 轮询。真实模型任务由 UPDIA bridge 持有，不依赖某个 Vercel Lambda 的内存；直接 `turi_research_task` 仍保留给允许长请求的客户端。
 
+研究入口使用独立的完整性预算：默认目标为 6 个结构化问题，按 `targetCount` 自适应到 1536–4096 tokens，而不是继承通用 `TURI_UPDIA_DEFAULT_MAX_TOKENS=512`。检索使用独立 `groundingQuery`，不会把输出协议文本混入检索词；默认 `domain-research` 只接收 `domain_evidence`。输出协议要求分别标记 `[FACT]`、`[INFERENCE]`、`[HYPOTHESIS]`、`[EXPERIMENT]` 和 `[UNKNOWN]`，只有事实需要直接 claim/source id，避免把研究假设伪装成来源事实。
+
 私有 bridge 的 `/health` 可以公开用于平台探针，但 `/invoke` 应使用 Bearer token；受限的公开研究 bridge 必须在服务端只允许只读研究方法并拒绝 mutation。Vercel serverless 的临时文件系统不能承担 UPDIA checkpoint、Native RGR store 或 TURI receipts 的跨重启持久性；需要持久磁盘或外部持久化存储。
 
 ## 权限默认值

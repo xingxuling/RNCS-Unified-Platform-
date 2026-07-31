@@ -14,6 +14,31 @@ function bridgeError(code, message, details = null) {
 const withoutUndefined = (value) => Object.fromEntries(Object.entries(value).filter(([, entry]) => entry !== undefined));
 const BRIDGE_DISCOVERY_FORMAT = 'taowind.updia-bridge-route.v0.1';
 const TRANSIENT_POLL_HTTP_STATUSES = new Set([408, 425, 429, 500, 502, 503, 504]);
+export const DOMAIN_RESEARCH_PROFILE = 'domain-research';
+export const DOMAIN_EVIDENCE_ROLES = Object.freeze(['domain_evidence']);
+
+export function researchTokenBudget(budget, targetCount = 6) {
+  if (Number.isInteger(budget) && budget > 0) return budget;
+  const count = Math.max(1, Math.min(12, Number(targetCount) || 6));
+  return Math.max(1_536, Math.min(4_096, Math.ceil((640 + count * 224) / 256) * 256));
+}
+
+export function researchOutputContract(targetCount = 6) {
+  const count = Math.max(1, Math.min(12, Number(targetCount) || 6));
+  return {
+    type: 'evidence-aligned-research-brief',
+    targetCount: count,
+    completenessPriority: 'complete every requested section and problem slot before adding prose',
+    sections: ['known_facts', 'source_evidence', 'current_bottlenecks', 'testable_hypotheses', 'minimum_viable_experiments', 'unknowns'],
+    itemSchema: {
+      factualClaim: '[FACT] statement; Evidence: claim:<id>, source:<id>',
+      inference: '[INFERENCE] explicitly derived statement',
+      hypothesis: '[HYPOTHESIS] testable proposition, not presented as sourced fact',
+      experiment: '[EXPERIMENT] intervention, comparison, metric, and failure condition',
+      unknown: '[UNKNOWN] unresolved boundary',
+    },
+  };
+}
 
 function hostAllowed(hostname, suffixes) {
   const host = String(hostname ?? '').toLowerCase();
@@ -375,26 +400,69 @@ export class UpdiaAdapter {
   subjectClose() { return this.call('shutdown', {}); }
   sparseSchedulerStatus() { return this.status(); }
 
-  thinkParams({ goal, contextRefs = [], budget = null, allowedOrgans = [], evidencePolicy = {}, outputContract = {} } = {}) {
+  thinkParams({
+    goal,
+    groundingQuery = goal,
+    contextRefs = [],
+    budget = null,
+    allowedOrgans = [],
+    evidencePolicy = {},
+    outputContract = {},
+    retrievalBudget = 12,
+    profile = 'research',
+    domains = [],
+    evidenceRoles = [],
+  } = {}) {
     const contract = JSON.stringify({ contextRefs, evidencePolicy, outputContract });
     const maxTokens = budget ?? this.config.updiaDefaultMaxTokens ?? 512;
     const model = allowedOrgans[0] ? undefined : this.config.updiaDefaultModel ?? undefined;
-    const text = `${goal}\n\nTURI output contract:\n${contract}\n\nReturn a concise, complete answer within ${maxTokens} tokens. Preserve evidence ids and mark inference, hypothesis, and unknown separately.`;
-    return withoutUndefined({ text, organId: allowedOrgans[0], model, maxTokens, grounding: true, think: false, stream: false });
+    const researchDirective = outputContract?.type === 'evidence-aligned-research-brief'
+      ? '\nStructural completeness is mandatory: fill every section and requested item slot before elaborating. Facts require matching claim/source ids. Never present a hypothesis, experiment design, value judgment, or unknown as a sourced fact.'
+      : '';
+    const text = `${goal}\n\nTURI output contract:\n${contract}\n\nReturn a concise, complete answer within ${maxTokens} tokens. Preserve evidence ids and mark inference, hypothesis, experiment design, value judgment, and unknown separately.${researchDirective}`;
+    return withoutUndefined({
+      text,
+      groundingQuery,
+      organId: allowedOrgans[0],
+      model,
+      maxTokens,
+      grounding: true,
+      think: false,
+      stream: false,
+      retrievalBudget,
+      profile,
+      domains,
+      evidenceRoles,
+    });
   }
 
   async think(input = {}) { return this.call('generate', this.thinkParams(input)); }
 
-  async researchStart({ question, retrievalBudget = 12, budget = null, allowedOrgans = [] } = {}) {
-    const sourceEvidence = await this.memorySearch({ query: question, retrievalBudget });
+  async researchStart({ question, retrievalBudget = 20, budget = null, targetCount = 6, allowedOrgans = [], domains = [] } = {}) {
+    const resolvedBudget = researchTokenBudget(budget, targetCount);
+    const sourceEvidence = await this.memorySearch({
+      query: question,
+      retrievalBudget,
+      profile: DOMAIN_RESEARCH_PROFILE,
+      domains,
+      evidenceRoles: DOMAIN_EVIDENCE_ROLES,
+    });
+    const contextRefs = (sourceEvidence?.packet?.claims ?? []).map((claim) => claim.claimId);
     const reasoningJob = await this.startRemoteJob('generate', this.thinkParams({
       goal: question,
-      budget,
+      groundingQuery: question,
+      contextRefs,
+      budget: resolvedBudget,
       allowedOrgans,
-      outputContract: {
-        type: 'research',
-        fields: ['known_facts', 'source_evidence', 'current_bottlenecks', 'testable_hypotheses', 'minimum_viable_experiments', 'unknowns'],
+      retrievalBudget,
+      profile: DOMAIN_RESEARCH_PROFILE,
+      domains,
+      evidenceRoles: DOMAIN_EVIDENCE_ROLES,
+      evidencePolicy: {
+        factualClaimsRequireEvidenceIds: true,
+        nonFactualTypes: ['inference', 'hypothesis', 'experiment_design', 'value_judgment', 'unknown'],
       },
+      outputContract: researchOutputContract(targetCount),
     }));
     return {
       format: 'updia.public-research-job.v0.1',
@@ -402,6 +470,7 @@ export class UpdiaAdapter {
       status: reasoningJob.status,
       jobId: reasoningJob.jobId,
       pollAfterMs: reasoningJob.pollAfterMs,
+      researchContract: { targetCount, generationBudget: resolvedBudget, profile: DOMAIN_RESEARCH_PROFILE, evidenceRoles: DOMAIN_EVIDENCE_ROLES },
       sourceEvidence,
       knownFacts: (sourceEvidence?.packet?.claims ?? []).map((claim) => ({
         claimId: claim.claimId,
@@ -417,7 +486,7 @@ export class UpdiaAdapter {
 
   async plan(input) { return this.think({ ...input, outputContract: input.outputContract ?? { type: 'bounded-plan', fields: ['goal', 'assumptions', 'steps', 'evidence'] } }); }
   async organInvoke({ organId, text, ...rest }) { return this.call('generate', { text, organId, grounding: rest.grounding ?? true, stream: false }); }
-  async memorySearch({ query, retrievalBudget = 20, profile = 'research', callerContext = {} }) { return this.call('knowledge_query', { query, retrievalBudget, profile, callerContext }); }
+  async memorySearch({ query, retrievalBudget = 20, profile = 'research', callerContext = {}, domains = [], evidenceRoles = [] }) { return this.call('knowledge_query', { query, retrievalBudget, profile, callerContext, domains, evidenceRoles }); }
   async memoryRead({ packetId }) { return this.call('knowledge_explain', { packetId }); }
   async memoryWriteCandidate({ statement, claimType, sourceRefs, packetId } = {}) { return this.call('knowledge_writeback', withoutUndefined({ operation: 'propose', statement, claimType, sourceRefs, packetId })); }
   async memoryCommit({ writebackId, actor = 'turi-authorized' }) { return this.call('knowledge_writeback', { operation: 'commit', writebackId, actor }); }

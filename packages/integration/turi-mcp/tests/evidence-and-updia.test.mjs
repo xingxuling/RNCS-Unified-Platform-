@@ -3,8 +3,9 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { UpdiaAdapter } from '../src/adapters/updia.mjs';
+import { DOMAIN_EVIDENCE_ROLES, DOMAIN_RESEARCH_PROFILE, UpdiaAdapter, researchOutputContract, researchTokenBudget } from '../src/adapters/updia.mjs';
 import { ReceiptStore, createEvidenceReceipt } from '../src/evidence/receipt.mjs';
+import { TuriOrchestrator } from '../src/workflows/orchestrator.mjs';
 
 const tempDir = () => fs.mkdtempSync(path.join(os.tmpdir(), 'turi-test-'));
 
@@ -39,6 +40,59 @@ test('UPDIA adapter maps only real bridge methods and strips undefined fields', 
     assert.equal(Object.values(call.params).some((value) => value === undefined), false);
     assert.equal(Object.hasOwn(call.params, 'confirmation_token'), false);
   }
+});
+
+test('research contracts allocate for completeness and keep grounding query separate', () => {
+  const adapter = new UpdiaAdapter({ config: { updiaDefaultMaxTokens: 512 } });
+  const budget = researchTokenBudget(null, 8);
+  const outputContract = researchOutputContract(8);
+  const params = adapter.thinkParams({
+    goal: '列出 8 个 AI 与脑机接口未解决问题',
+    budget,
+    profile: DOMAIN_RESEARCH_PROFILE,
+    evidenceRoles: DOMAIN_EVIDENCE_ROLES,
+    outputContract,
+  });
+  assert.equal(budget > 512, true);
+  assert.equal(params.maxTokens, budget);
+  assert.equal(params.groundingQuery, '列出 8 个 AI 与脑机接口未解决问题');
+  assert.equal(params.profile, 'domain-research');
+  assert.deepEqual(params.evidenceRoles, ['domain_evidence']);
+  assert.equal(outputContract.targetCount, 8);
+  assert.match(params.text, /Structural completeness is mandatory/);
+});
+
+test('TURI research workflow passes adaptive budget and domain evidence policy end to end', async () => {
+  const calls = { search: null, think: null };
+  const orchestrator = new TuriOrchestrator({
+    config: {},
+    artifacts: null,
+    adapters: {
+      updia: {
+        configured: () => true,
+        subjectStatus: async () => ({ status: 'ready' }),
+        memorySearch: async (input) => {
+          calls.search = input;
+          return { packet: { packetId: 'packet:bci', claims: [{ claimId: 'claim:bci:1', statement: 'Decoder drift remains unresolved.', claimType: 'fact', sourceRefs: ['source:bci'], confidence: 0.9 }] }, trace: { traceId: 'trace:bci' } };
+        },
+        think: async (input) => {
+          calls.think = input;
+          return { content: 'complete research brief' };
+        },
+      },
+    },
+  });
+  const result = await orchestrator.researchTask({ question: '列出 8 个 AI 与脑机接口未解决问题' });
+  assert.equal(result.format, 'turi.research-workflow.v0.2');
+  assert.equal(result.researchContract.targetCount, 8);
+  assert.equal(result.researchContract.generationBudget > 512, true);
+  assert.equal(calls.search.profile, 'domain-research');
+  assert.deepEqual(calls.search.evidenceRoles, ['domain_evidence']);
+  assert.equal(calls.think.groundingQuery, result.question);
+  assert.equal(calls.think.budget, result.researchContract.generationBudget);
+  assert.equal(calls.think.outputContract.targetCount, 8);
+  assert.deepEqual(calls.think.contextRefs, ['claim:bci:1']);
+  assert.equal(result.status, 'grounded');
 });
 
 test('UPDIA configuration requires a bootstrap or persisted checkpoint', () => {
@@ -228,6 +282,8 @@ test('UPDIA adapter exposes a bridge-owned research job for stateless MCP pollin
       if (url.endsWith('/invoke')) {
         const request = JSON.parse(options.body);
         if (request.method === 'knowledge_query') {
+          assert.equal(request.params.profile, 'domain-research');
+          assert.deepEqual(request.params.evidenceRoles, ['domain_evidence']);
           return new Response(JSON.stringify({
             id: request.id,
             ok: true,
@@ -238,6 +294,10 @@ test('UPDIA adapter exposes a bridge-owned research job for stateless MCP pollin
         assert.equal(request.method, 'generate');
         assert.equal(options.headers.prefer, 'respond-async');
         assert.equal(request.params.think, false);
+        assert.equal(request.params.groundingQuery, '三个核心问题');
+        assert.equal(request.params.maxTokens, 256);
+        assert.equal(request.params.profile, 'domain-research');
+        assert.deepEqual(request.params.evidenceRoles, ['domain_evidence']);
         return new Response(JSON.stringify({
           id: request.id,
           ok: true,

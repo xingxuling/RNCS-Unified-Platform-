@@ -1,4 +1,5 @@
 import { sha256 } from '../canonical.mjs';
+import { DOMAIN_EVIDENCE_ROLES, DOMAIN_RESEARCH_PROFILE, researchOutputContract, researchTokenBudget } from '../adapters/updia.mjs';
 
 function capabilityError(code, message, details = null) {
   const error = new Error(message);
@@ -17,6 +18,16 @@ function groundedFacts(sourceEvidence) {
     confidence: claim.confidence ?? null,
     status: claim.status ?? null,
   }));
+}
+
+function researchTargetCount(input = {}) {
+  if (Number.isInteger(input.targetCount)) return Math.max(1, Math.min(12, input.targetCount));
+  const question = String(input.question ?? '');
+  const numeric = question.match(/(?:列出|找出|识别|identify|list)?\s*(\d{1,2})\s*(?:个|项|类|条|problems?|questions?|issues?)/i);
+  if (numeric) return Math.max(1, Math.min(12, Number(numeric[1])));
+  const chinese = question.match(/(?:列出|找出|识别)?\s*([一二三四五六七八九十])\s*(?:个|项|类|条)/);
+  if (chinese) return { 一: 1, 二: 2, 三: 3, 四: 4, 五: 5, 六: 6, 七: 7, 八: 8, 九: 9, 十: 10 }[chinese[1]];
+  return 6;
 }
 
 export class TuriOrchestrator {
@@ -136,8 +147,12 @@ export class TuriOrchestrator {
   }
 
   async researchTask(input = {}, context = {}) {
+    const targetCount = researchTargetCount(input);
+    const retrievalBudget = input.retrievalBudget ?? 20;
+    const generationBudget = researchTokenBudget(input.budget, targetCount);
+    const domains = Array.isArray(input.domains) ? input.domains : [];
     const result = {
-      format: 'turi.research-workflow.v0.1',
+      format: 'turi.research-workflow.v0.2',
       question: input.question,
       status: 'ungrounded',
       knownFacts: [],
@@ -151,6 +166,13 @@ export class TuriOrchestrator {
         retrieval: { status: 'not_attempted' },
         reasoning: { status: 'not_attempted' },
       },
+      researchContract: {
+        targetCount,
+        retrievalBudget,
+        generationBudget,
+        profile: DOMAIN_RESEARCH_PROFILE,
+        evidenceRoles: DOMAIN_EVIDENCE_ROLES,
+      },
       limitations: [],
     };
     if (this.adapters.updia.configured()) {
@@ -160,7 +182,14 @@ export class TuriOrchestrator {
         result.limitations.push(`UPDIA subject status failed: ${error.code ?? error.message}`);
       }
       try {
-        result.sourceEvidence = await this.adapters.updia.memorySearch({ query: input.question, retrievalBudget: input.retrievalBudget ?? 12 });
+        result.sourceEvidence = await this.adapters.updia.memorySearch({
+          query: input.question,
+          retrievalBudget,
+          profile: DOMAIN_RESEARCH_PROFILE,
+          domains,
+          evidenceRoles: DOMAIN_EVIDENCE_ROLES,
+          callerContext: { workflow: 'turi_research_task', targetCount },
+        });
         result.knownFacts = groundedFacts(result.sourceEvidence);
         result.grounding.retrieval = {
           status: result.sourceEvidence?.packet?.packetId ? 'executed' : 'returned_without_packet',
@@ -175,7 +204,22 @@ export class TuriOrchestrator {
         result.limitations.push(`UPDIA memory retrieval failed: ${error.code ?? error.message}`);
       }
       try {
-        result.hypothesis = await this.adapters.updia.think({ goal: input.question, outputContract: { type: 'research', fields: ['known_facts', 'source_evidence', 'hypotheses', 'unknowns'] } });
+        result.hypothesis = await this.adapters.updia.think({
+          goal: input.question,
+          groundingQuery: input.question,
+          contextRefs: result.knownFacts.map((fact) => fact.claimId),
+          budget: generationBudget,
+          retrievalBudget,
+          profile: DOMAIN_RESEARCH_PROFILE,
+          domains,
+          evidenceRoles: DOMAIN_EVIDENCE_ROLES,
+          callerContext: { workflow: 'turi_research_task', targetCount },
+          evidencePolicy: {
+            factualClaimsRequireEvidenceIds: true,
+            nonFactualTypes: ['inference', 'hypothesis', 'experiment_design', 'value_judgment', 'unknown'],
+          },
+          outputContract: researchOutputContract(targetCount),
+        });
         result.grounding.reasoning = {
           status: 'executed',
           outputRoot: result.hypothesis?.outputRoot ?? result.hypothesis?.root ?? null,
