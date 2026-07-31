@@ -100,9 +100,14 @@ ChatGPT 的入口名称和可用权限取决于账号/工作区；OpenAI 的 Dev
 在 TURI 的 Vercel Project Environment Variables 或 Render Service Environment 中配置 bridge：
 
 ```text
+TURI_REASONING_MODE=host
+TURI_HOST_RESUME_TTL_MS=7200000
+TURI_HOST_RESUME_SECRET=<至少 32 个字符的随机值；只存在部署环境>
 TURI_UPDIA_BRIDGE_URL=https://<updia-service>.onrender.com
 TURI_UPDIA_BRIDGE_TOKEN=<same-secret-as-UPDIA_BRIDGE_TOKEN>
 ```
+
+Vercel 还应设置 `TURI_MCP_STATELESS=true`。Host Intervention 的续跑状态全部封装在签名令牌中，因此可以跨 Lambda 请求恢复；签名密钥必须在所有实例一致，不能在进程启动时随机生成。
 
 本机 research-only Quick Tunnel 只适合验收链。此时使用 WorldSeed watchdog 发布的短时发现文档，避免把临时 tunnel 域名写死：
 
@@ -118,7 +123,7 @@ TURI_UPDIA_BRIDGE_DISCOVERY_CACHE_BUST_MS=60000
 
 不要把 bridge token、模型服务密钥或真实数据提交到仓库。远程模型 endpoint 必须使用 TLS、访问控制和出站 allow-list。若 TURI 既未配置静态 bridge URL，也未配置发现 URL，`turi_health` 会明确返回 `updia.status=not_configured`。
 
-Vercel 可以承担 ChatGPT 连接的 TURI `/mcp` URL，但不要把本机 `TURI_UPDIA_ROOT` 路径填入 Vercel；serverless 临时文件系统不提供 UPDIA 状态连续性。
+Vercel 可以承担 ChatGPT 连接的 TURI `/mcp` URL，但不要把本机 `TURI_UPDIA_ROOT` 路径填入 Vercel；serverless 临时文件系统不提供 UPDIA 状态连续性。默认 `turi_research_task` 只经 bridge 检索证据并交还当前 ChatGPT 推理，不会让 Vercel 等待本地生成式 Ollama。
 
 ## 5. 持久化与生产限制
 

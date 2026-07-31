@@ -407,6 +407,7 @@ export class UpdiaAdapter {
     budget = null,
     allowedOrgans = [],
     maxOrganAttempts = null,
+    stream = false,
     evidencePolicy = {},
     outputContract = {},
     retrievalBudget = 12,
@@ -430,7 +431,7 @@ export class UpdiaAdapter {
       maxOrganAttempts,
       grounding: true,
       think: false,
-      stream: false,
+      stream,
       retrievalBudget,
       profile,
       domains,
@@ -466,6 +467,12 @@ export class UpdiaAdapter {
       budget: resolvedBudget,
       allowedOrgans,
       maxOrganAttempts: 1,
+      // Ollama's non-streaming HTTP response can remain header-silent for
+      // several minutes. Node/undici closes that connection at its own
+      // headers timeout before the bridge's longer generation deadline.
+      // Streaming keeps the transport alive while UPDIA still aggregates one
+      // final, contract-checked research result for the async job.
+      stream: true,
       retrievalBudget,
       profile: DOMAIN_RESEARCH_PROFILE,
       domains,

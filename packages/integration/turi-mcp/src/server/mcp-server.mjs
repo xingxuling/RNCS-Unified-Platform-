@@ -45,6 +45,7 @@ const rncsRoots = (status = null) => ({
 
 const CORE_TOOLS = new Map([
   ['turi_server_info', 'turi.server.info'], ['turi_health', 'turi.health'], ['turi_capability_search', 'turi.capability.search'], ['turi_capability_describe', 'turi.capability.describe'], ['turi_capability_invoke', 'turi.capability.invoke'],
+  ['turi_request_host_reasoning', 'turi.host.request-reasoning'], ['turi_resume_with_host_contribution', 'turi.host.resume-with-contribution'], ['turi_record_assisted_experience', 'turi.host.record-assisted-experience'],
   ['turi_subject_status', 'turi.subject.status'], ['turi_intent_compile', 'turi.intent.compile'], ['turi_candidate_execute', 'turi.candidate.execute'], ['turi_candidate_review', 'turi.candidate.review'], ['turi_authorize', 'turi.authorize'], ['turi_merge', 'turi.merge'], ['turi_rollback', 'turi.rollback'], ['turi_evidence_get', 'turi.evidence.get'], ['turi_artifact_export', 'turi.artifact.export'],
   ['turi_intent_to_reality', 'turi.workflow.intent-to-reality'], ['turi_engineering_task', 'turi.workflow.engineering-task'], ['turi_world_task', 'turi.workflow.world-task'], ['turi_cinematic_task', 'turi.workflow.cinematic-task'], ['turi_research_task', 'turi.workflow.research-task'],
   ['turi_job_start', 'turi.job.start'], ['turi_job_status', 'turi.job.status'], ['turi_job_events', 'turi.job.events'], ['turi_job_cancel', 'turi.job.cancel'], ['turi_job_artifacts', 'turi.job.artifacts'],
@@ -74,11 +75,13 @@ export function createTuriMcpServer({ config, registry, orchestrator, receipts, 
   const serverInfo = () => ({
     format: 'turi.server-info.v0.1', name: config.name, version: config.version, protocol: '2025-06-18', transports: ['stdio', 'streamable-http'],
     status: 'INTEGRATION_CANDIDATE', authorityMode: config.authorityMode, candidateWrites: config.authorityMode !== 'read_only', authorizedWrites: config.authorizedWritesEnabled, externalEffects: config.externalEffectsEnabled,
+    reasoning: { primary: 'host', configuredMode: config.reasoningMode, localGeneration: 'explicit_offline_or_manual', embedding: 'retained' },
+    hostIntervention: { tokenIntegrity: 'hmac-sha256', authorityCeiling: 'L2', experienceRecording: 'L3-candidate', formalWritesGranted: false },
     existingMcp: { rcl: '@taowind/reality-computation-language/src/rcl-mcp-server.mjs', rncs: '@taowind/taowind-reality-mcp' }, registry: registry.summary(), updiaConfigured: adapters.updia.configured(), gamebrain: adapters.gamebrain.status(), limitations: ['A real ChatGPT/MCP Inspector session is required before VERIFIED.'],
   });
 
   const health = async () => {
-    const result = { status: 'degraded', turi: { status: 'ok', version: config.version }, rncs: null, rcl: null, updia: null, gamebrain: adapters.gamebrain.status() };
+    const result = { status: 'degraded', turi: { status: 'ok', version: config.version, reasoningMode: config.reasoningMode, hostIntervention: 'ready' }, rncs: null, rcl: null, updia: null, gamebrain: adapters.gamebrain.status() };
     try { result.rncs = await adapters.rncs.health(); } catch (error) { result.rncs = { status: 'unavailable', error: publicError(error) }; }
     try {
       const rclStatus = await adapters.rcl.status();

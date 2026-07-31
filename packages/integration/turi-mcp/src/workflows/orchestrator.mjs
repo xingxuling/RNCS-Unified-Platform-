@@ -1,5 +1,12 @@
 import { sha256 } from '../canonical.mjs';
 import { DOMAIN_EVIDENCE_ROLES, DOMAIN_RESEARCH_PROFILE, researchOutputContract, researchTokenBudget } from '../adapters/updia.mjs';
+import {
+  HOST_PERMISSION_MODEL,
+  assistedExperienceCandidate,
+  createHostResumeToken,
+  readHostResumeToken,
+  validateHostContribution,
+} from '../host/intervention.mjs';
 
 function capabilityError(code, message, details = null) {
   const error = new Error(message);
@@ -31,10 +38,11 @@ function researchTargetCount(input = {}) {
 }
 
 export class TuriOrchestrator {
-  constructor({ config, adapters, artifacts }) {
+  constructor({ config, adapters, artifacts, growthStore = null }) {
     this.config = config;
     this.adapters = adapters;
     this.artifacts = artifacts;
+    this.growthStore = growthStore;
     this.dynamicRoutes = new Map();
   }
 
@@ -44,17 +52,314 @@ export class TuriOrchestrator {
 
   unregisterDynamic(capabilityId) { this.dynamicRoutes.delete(capabilityId); }
 
+  reasoningMode(input = {}) {
+    const mode = String(input.reasoningMode ?? this.config.reasoningMode ?? 'host').trim().toLowerCase();
+    if (!['host', 'local'].includes(mode)) throw capabilityError('REASONING_MODE_INVALID', 'reasoningMode must be host or local.');
+    return mode;
+  }
+
+  async requestHostReasoning(input = {}) {
+    const task = String(input.task ?? input.question ?? input.intent ?? '').trim();
+    if (!task) throw capabilityError('HOST_TASK_REQUIRED', 'A host reasoning task is required.');
+    const taskType = String(input.taskType ?? 'general');
+    const completedSteps = Array.isArray(input.completedSteps) ? [...input.completedSteps] : [];
+    const failedSteps = Array.isArray(input.failedSteps) ? [...input.failedSteps] : [];
+    const knowledgeGaps = Array.isArray(input.knowledgeGaps) ? [...input.knowledgeGaps] : [];
+    const retrievalQuery = String(input.retrievalQuery ?? task).trim();
+    const retrievalBudget = input.retrievalBudget ?? 20;
+    const domains = Array.isArray(input.domains) ? input.domains : [];
+    const evidenceRoles = Array.isArray(input.evidenceRoles) && input.evidenceRoles.length
+      ? input.evidenceRoles
+      : taskType === 'research' ? DOMAIN_EVIDENCE_ROLES : [];
+    let subject = null;
+    let sourceEvidence = null;
+
+    if (this.adapters.updia.configured()) {
+      try {
+        subject = await this.adapters.updia.subjectStatus();
+        completedSteps.push({ step: 'updia.subject_status', status: 'completed' });
+      } catch (error) {
+        failedSteps.push({ step: 'updia.subject_status', code: error.code ?? error.name, message: error.message });
+      }
+      if (retrievalQuery) {
+        try {
+          sourceEvidence = await this.adapters.updia.memorySearch({
+            query: retrievalQuery,
+            retrievalBudget,
+            profile: taskType === 'research' ? DOMAIN_RESEARCH_PROFILE : 'research',
+            domains,
+            evidenceRoles,
+            callerContext: { workflow: 'turi_request_host_reasoning', taskType },
+          });
+          completedSteps.push({
+            step: 'updia.memory_search',
+            status: 'completed',
+            packetId: sourceEvidence?.packet?.packetId ?? null,
+            traceId: sourceEvidence?.trace?.traceId ?? null,
+          });
+        } catch (error) {
+          failedSteps.push({ step: 'updia.memory_search', code: error.code ?? error.name, message: error.message });
+          knowledgeGaps.push({ gap: 'evidence_retrieval_failed', code: error.code ?? error.name });
+        }
+      }
+    } else {
+      knowledgeGaps.push({ gap: 'updia_not_configured', effect: 'No continuity or evidence packet is available.' });
+    }
+
+    const knownFacts = groundedFacts(sourceEvidence);
+    const supportingEvidence = (sourceEvidence?.packet?.supportingEvidence ?? []).map((source) => ({
+      sourceId: source.sourceId,
+      title: source.title,
+      uriOrPath: source.uriOrPath,
+      content: source.content,
+      evidenceRole: source.evidenceRole ?? source.metadata?.evidenceRole ?? null,
+      authority: source.authority ?? null,
+      root: source.root ?? null,
+    }));
+    const evidence = {
+      packetId: sourceEvidence?.packet?.packetId ?? null,
+      traceId: sourceEvidence?.trace?.traceId ?? null,
+      claimIds: knownFacts.map((fact) => fact.claimId),
+      sourceIds: supportingEvidence.map((source) => source.sourceId),
+      root: sourceEvidence?.root ?? sourceEvidence?.packet?.root ?? sourceEvidence?.index?.root ?? null,
+    };
+    const requiredOutput = input.requiredOutput && typeof input.requiredOutput === 'object'
+      ? input.requiredOutput
+      : { type: 'structured-host-contribution', fields: ['analysis', 'assumptions', 'proposal', 'unknowns'] };
+    const continuation = createHostResumeToken({
+      task,
+      taskType,
+      reason: input.reason ?? 'host_reasoning_is_primary',
+      completedSteps,
+      failedSteps,
+      knowledgeGaps,
+      requiredOutput,
+      evidence,
+      allowedActions: input.allowedActions,
+    }, { ttlMs: this.config.hostResumeTtlMs, secret: this.config.hostResumeSecret });
+
+    return {
+      format: 'turi.host-intervention-request.v0.1',
+      status: 'REQUIRES_HOST_REASONING',
+      reason: input.reason ?? 'host_reasoning_is_primary',
+      task,
+      taskType,
+      completedSteps,
+      failedSteps,
+      knowledgeGaps,
+      requiredOutput,
+      evidencePacket: {
+        packetId: evidence.packetId,
+        traceId: evidence.traceId,
+        root: evidence.root,
+        knownFacts,
+        supportingEvidence,
+      },
+      subject: subject ? {
+        subjectId: subject.subjectId ?? null,
+        identityRoot: subject.identityRoot ?? null,
+        lineageId: subject.lineageId ?? null,
+      } : null,
+      permissionBoundary: {
+        currentLevel: 'L0',
+        resumeCeiling: 'L2',
+        levels: HOST_PERMISSION_MODEL,
+        formalWritesGranted: false,
+        externalEffectsGranted: false,
+      },
+      resumeToken: continuation.token,
+      resumeTokenSecurity: continuation.security,
+      allowedActions: continuation.payload.allowedActions,
+      next: {
+        capabilityId: 'turi.host.resume-with-contribution',
+        tool: 'turi_resume_with_host_contribution',
+        arguments: { resumeToken: continuation.token },
+      },
+      limitations: [
+        'The MCP server cannot initiate a new host turn; the current host must read this request and call the resume tool.',
+        'The resume token is an integrity envelope, not an authority credential and not encrypted.',
+      ],
+    };
+  }
+
+  async resumeWithHostContribution(input = {}, context = {}) {
+    const session = readHostResumeToken(input.resumeToken, { secret: this.config.hostResumeSecret });
+    const validation = validateHostContribution(session, input);
+    if (!validation.accepted) {
+      return {
+        format: 'turi.host-intervention-resume.v0.1',
+        status: 'HOST_CONTRIBUTION_REJECTED',
+        interventionId: session.interventionId,
+        validation,
+        rcl: null,
+        rncs: null,
+        next: { action: 'correct_host_contribution', capabilityId: 'turi.host.resume-with-contribution' },
+      };
+    }
+
+    const requestedActions = validation.permissionCheck.requestedActions.length
+      ? validation.permissionCheck.requestedActions
+      : ['accept_analysis'];
+    let rcl = null;
+    let rncs = null;
+    if (requestedActions.includes('compile')) {
+      try {
+        const compiledPlan = await this.adapters.rcl.compileRealityPlan({ source: input.rclSource, language: input.language ?? 'RCL' });
+        rcl = { status: 'compiled', compiledPlan, sourceHash: `sha256:${sha256(input.rclSource)}` };
+      } catch (error) {
+        return {
+          format: 'turi.host-intervention-resume.v0.1',
+          status: 'HOST_CONTRIBUTION_REJECTED',
+          interventionId: session.interventionId,
+          validation,
+          rcl: { status: 'failed', error: { code: error.code ?? error.name, message: error.message } },
+          rncs: null,
+          next: { action: 'repair_rcl_source', capabilityId: 'turi.host.resume-with-contribution' },
+        };
+      }
+    }
+    if (requestedActions.includes('simulate')) {
+      try {
+        rncs = await this.candidateExecute({
+          source: input.rclSource,
+          language: input.language ?? 'RCL',
+          subject_id: input.subjectId,
+        }, context);
+      } catch (error) {
+        return {
+          format: 'turi.host-intervention-resume.v0.1',
+          status: 'HOST_CONTRIBUTION_REJECTED',
+          interventionId: session.interventionId,
+          validation,
+          rcl,
+          rncs: { status: 'failed', error: { code: error.code ?? error.name, message: error.message, details: error.details ?? null } },
+          next: { action: 'repair_candidate', capabilityId: 'turi.host.resume-with-contribution' },
+        };
+      }
+    }
+
+    const result = {
+      format: 'turi.host-intervention-resume.v0.1',
+      status: 'HOST_CONTRIBUTION_ACCEPTED',
+      interventionId: session.interventionId,
+      task: session.task,
+      validation,
+      hostContribution: {
+        analysis: input.analysis ?? null,
+        structuredPlan: input.structuredPlan ?? null,
+        hostEvidence: input.hostEvidence ?? [],
+        contributionHash: validation.contributionHash,
+      },
+      rcl,
+      rncs,
+      authorityBoundary: {
+        level: 'L2',
+        formalStateChanged: rncs ? rncs.authorityInvariant?.unchanged !== true : false,
+        formalWritesGranted: false,
+        externalEffectsGranted: false,
+      },
+      next: {
+        capabilityId: 'turi.host.record-assisted-experience',
+        tool: 'turi_record_assisted_experience',
+        requiresPolicyForPersistence: true,
+      },
+    };
+    result.experienceCandidate = assistedExperienceCandidate(session, {
+      hostContribution: result.hostContribution,
+      compilerVerification: rcl,
+      simulationVerification: rncs,
+      outcome: { status: 'accepted' },
+    }, result);
+    return result;
+  }
+
+  async recordAssistedExperience(input = {}) {
+    if (!this.growthStore) throw capabilityError('GROWTH_STORE_UNAVAILABLE', 'The assisted experience candidate store is unavailable.');
+    const session = readHostResumeToken(input.resumeToken, { secret: this.config.hostResumeSecret });
+    const candidate = assistedExperienceCandidate(session, input);
+    const outcomeStatus = String(candidate.components.outcome?.status ?? 'unknown');
+    const contextFingerprint = `sha256:${sha256({ interventionId: candidate.interventionId, evidence: session.evidence })}`;
+    const existing = this.growthStore.state?.experiences?.find((item) => item.contextFingerprint === contextFingerprint);
+    if (existing) {
+      return {
+        format: 'turi.assisted-experience-record.v0.1',
+        status: 'EXPERIENCE_CANDIDATE_ALREADY_RECORDED',
+        candidate,
+        experience: existing,
+        storage: { store: 'turi-growth-store', formalUpdiaMemoryCommitted: false, idempotentReplay: true },
+      };
+    }
+    const experience = this.growthStore.recordExperience({
+      taskType: candidate.taskType,
+      goal: candidate.goal,
+      contextFingerprint,
+      capabilitiesUsed: ['turi.host.request-reasoning', 'turi.host.resume-with-contribution'],
+      successfulSteps: outcomeStatus === 'success' || outcomeStatus === 'accepted'
+        ? [{ step: 'host_intervention', interventionId: candidate.interventionId }]
+        : [],
+      failedSteps: outcomeStatus === 'failed' ? [candidate.components.outcome] : [],
+      residuals: candidate.components.outcome?.residuals ?? [],
+      evidenceReceipts: candidate.evidenceReceipts,
+      reusableConfidence: candidate.evidenceReceipts.length ? 0.6 : 0.25,
+      generalizationScope: [candidate.taskType, 'host-assisted'],
+      knownFailureBoundaries: candidate.components.outcome?.failureBoundaries ?? [],
+      assistance: { interventionId: candidate.interventionId, ...candidate.components },
+    });
+    return {
+      format: 'turi.assisted-experience-record.v0.1',
+      status: 'EXPERIENCE_CANDIDATE_RECORDED',
+      candidate,
+      experience,
+      storage: {
+        store: 'turi-growth-store',
+        formalUpdiaMemoryCommitted: false,
+        durability: String(this.config.dataDir ?? '').replaceAll('\\', '/').startsWith('/tmp/') ? 'serverless-instance-ephemeral' : 'configured-filesystem',
+      },
+      next: {
+        formalMemoryWrite: 'updia.memory_write_candidate',
+        formalMemoryCommit: 'updia.memory_commit',
+        authorityRequiredForCommit: true,
+      },
+    };
+  }
+
   async intentCompile(input = {}, context = {}) {
     const limitations = [];
     const analysis = { status: 'not_configured' };
     let subject = null;
-    if (this.adapters.updia.configured()) {
+    const reasoningMode = this.reasoningMode(input);
+    if (reasoningMode === 'host') {
+      if (input.rclSource) {
+        analysis.status = 'host_source_supplied';
+        analysis.response = { status: 'HOST_CONTRIBUTION_SUPPLIED', sourceHash: `sha256:${sha256(input.rclSource)}` };
+        if (this.adapters.updia.configured()) {
+          try { subject = await this.adapters.updia.subjectStatus(); }
+          catch (error) { limitations.push(`UPDIA subject status failed: ${error.code ?? error.message}`); }
+        }
+      } else {
+        analysis.status = 'requires_host_reasoning';
+        analysis.response = await this.requestHostReasoning({
+          task: input.intent,
+          taskType: 'formal_protocol',
+          reason: 'formal_protocol_generation_requires_host_reasoning',
+          retrievalQuery: input.intent,
+          requiredOutput: {
+            type: 'intent-to-rcl-contribution',
+            fields: ['analysis', 'structuredPlan', 'rclSource'],
+            factInferenceSeparationRequired: true,
+          },
+          allowedActions: ['accept_analysis', 'compile', 'simulate', 'record_experience'],
+        });
+        subject = analysis.response.subject;
+        limitations.push('No local generation model was called; the current host must supply the missing formal contribution.');
+      }
+    } else if (this.adapters.updia.configured()) {
       try {
         subject = await this.adapters.updia.subjectStatus();
-        analysis.status = 'executed';
+        analysis.status = 'executed_local_fallback';
         analysis.response = await this.adapters.updia.think({ goal: input.intent, outputContract: { type: 'intent-analysis', fields: ['goal', 'assumptions', 'acceptance', 'risks'] } });
       } catch (error) {
-        limitations.push(`UPDIA analysis failed: ${error.code ?? error.message}`);
+        limitations.push(`UPDIA local fallback analysis failed: ${error.code ?? error.message}`);
         analysis.status = 'failed';
       }
     } else {
@@ -63,7 +368,22 @@ export class TuriOrchestrator {
     let compiledPlan = null;
     if (input.rclSource) compiledPlan = await this.adapters.rcl.compileRealityPlan({ source: input.rclSource, language: input.language ?? 'RCL' });
     else limitations.push('No rclSource was supplied; RCL compilation is pending and the intent remains a bounded proposal.');
-    return { format: 'turi.intent-compile.v0.1', intent: input.intent, mode: input.mode ?? 'read_only', subject, analysis, compiledPlan, sourceRequired: !compiledPlan, limitations, next: compiledPlan && input.mode === 'candidate' ? 'turi.candidate.execute' : compiledPlan ? 'review-plan' : 'provide-rclSource' };
+    return {
+      format: 'turi.intent-compile.v0.2',
+      intent: input.intent,
+      mode: input.mode ?? 'read_only',
+      reasoningMode,
+      subject,
+      analysis,
+      compiledPlan,
+      sourceRequired: !compiledPlan,
+      limitations,
+      next: compiledPlan && input.mode === 'candidate'
+        ? 'turi.candidate.execute'
+        : compiledPlan
+          ? 'review-plan'
+          : analysis.response?.next ?? 'provide-rclSource',
+    };
   }
 
   async candidateExecute(input = {}, context = {}) {
@@ -123,8 +443,21 @@ export class TuriOrchestrator {
   }
 
   async worldTask(input = {}, context = {}) {
-    const result = { format: 'turi.world-workflow.v0.1', intent: input.intent, cognition: null, candidate: null, gamebrain: null, limitations: [] };
-    if (this.adapters.updia.configured()) {
+    const reasoningMode = this.reasoningMode(input);
+    const result = { format: 'turi.world-workflow.v0.2', intent: input.intent, reasoningMode, cognition: null, candidate: null, gamebrain: null, limitations: [] };
+    if (reasoningMode === 'host') {
+      result.cognition = input.source
+        ? { status: 'HOST_OR_USER_SOURCE_SUPPLIED', sourceHash: `sha256:${sha256(input.source)}` }
+        : await this.requestHostReasoning({
+            task: input.intent,
+            taskType: 'world',
+            reason: 'world_hypothesis_and_protocol_require_host_reasoning',
+            retrievalQuery: input.intent,
+            requiredOutput: { type: 'world-task-contribution', fields: ['analysis', 'structuredPlan', 'rclSource'], factInferenceSeparationRequired: true },
+            allowedActions: ['accept_analysis', 'compile', 'simulate', 'record_experience'],
+          });
+      if (!input.source) result.limitations.push('No local generation model was called; RNCS execution is deferred until the host supplies a candidate source.');
+    } else if (this.adapters.updia.configured()) {
       result.cognition = await this.adapters.updia.think({ goal: input.intent, outputContract: { type: 'world-task', fields: ['hypothesis', 'action', 'evidence'] } });
     } else result.limitations.push('UPDIA is not configured.');
     if (input.source) result.candidate = await this.candidateExecute({ source: input.source, language: input.language, subject_id: input.subject_id }, context);
@@ -151,6 +484,48 @@ export class TuriOrchestrator {
     const retrievalBudget = input.retrievalBudget ?? 20;
     const generationBudget = researchTokenBudget(input.budget, targetCount);
     const domains = Array.isArray(input.domains) ? input.domains : [];
+    const reasoningMode = this.reasoningMode(input);
+    if (reasoningMode === 'host') {
+      const requiredOutput = {
+        ...researchOutputContract(targetCount),
+        hostShape: {
+          analysis: {
+            items: [{ knownFacts: [{ statement: 'string', evidenceIds: ['claim:<id> or source:<id>'] }], inference: 'string', falsifiableHypothesis: 'string', minimalExperiment: 'string', unknowns: ['string'], priority: 'P1|P2|P3' }],
+          },
+        },
+      };
+      const hostRequest = await this.requestHostReasoning({
+        task: input.question,
+        taskType: 'research',
+        reason: 'high_order_research_requires_host_reasoning',
+        retrievalQuery: input.question,
+        retrievalBudget,
+        domains,
+        evidenceRoles: DOMAIN_EVIDENCE_ROLES,
+        requiredOutput,
+        allowedActions: ['accept_analysis', 'compile', 'simulate', 'record_experience'],
+      });
+      return {
+        ...hostRequest,
+        format: 'turi.research-workflow-host.v0.1',
+        question: input.question,
+        executionMode: 'host',
+        reasoningMode,
+        researchContract: {
+          targetCount,
+          retrievalBudget,
+          generationBudget: null,
+          profile: DOMAIN_RESEARCH_PROFILE,
+          evidenceRoles: DOMAIN_EVIDENCE_ROLES,
+          requiredOutput,
+        },
+        candidate: input.source ? { status: 'deferred', reason: 'Host contribution must be validated before the optional RNCS experiment.' } : null,
+        limitations: [
+          ...(hostRequest.limitations ?? []),
+          'Generative Ollama is outside the primary path; use reasoningMode=local only for explicit offline fallback.',
+        ],
+      };
+    }
     if (
       input.waitForCompletion !== true
       && this.adapters.updia.configured()
@@ -376,6 +751,9 @@ export class TuriOrchestrator {
       case 'engineering.commit': return this.adapters.rncs.gitCommit(input);
       case 'gamebrain.status': return this.adapters.gamebrain.status();
       case 'gamebrain.simulate': return this.adapters.gamebrain.simulate(input);
+      case 'turi.host.request-reasoning': return this.requestHostReasoning(input);
+      case 'turi.host.resume-with-contribution': return this.resumeWithHostContribution(input, context);
+      case 'turi.host.record-assisted-experience': return this.recordAssistedExperience(input);
       case 'turi.intent.compile': return this.intentCompile(input, context);
       case 'turi.candidate.execute': return this.candidateExecute(input, context);
       case 'turi.candidate.review': return this.candidateReview(input);

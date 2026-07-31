@@ -27,6 +27,7 @@ export class GrowthEngine {
       inputSchema: candidate.inputSchema,
       outputSchema: candidate.outputSchema,
       executionMode: candidate.executionMode,
+      authorityLevel: candidate.authorityLevel ?? 'L2',
       rollbackSupport: candidate.rollbackSupport,
       evidenceLevel: candidate.evidenceLevel,
       implementation: candidate.implementation,

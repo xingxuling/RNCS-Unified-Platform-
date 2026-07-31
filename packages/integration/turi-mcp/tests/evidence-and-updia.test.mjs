@@ -82,7 +82,7 @@ test('TURI research workflow passes adaptive budget and domain evidence policy e
       },
     },
   });
-  const result = await orchestrator.researchTask({ question: '列出 8 个 AI 与脑机接口未解决问题', waitForCompletion: true });
+  const result = await orchestrator.researchTask({ question: '列出 8 个 AI 与脑机接口未解决问题', waitForCompletion: true, reasoningMode: 'local' });
   assert.equal(result.format, 'turi.research-workflow.v0.2');
   assert.equal(result.researchContract.targetCount, 8);
   assert.equal(result.researchContract.generationBudget > 512, true);
@@ -147,7 +147,7 @@ test('TURI research workflow returns a bridge-owned job before long reasoning co
     },
   });
 
-  const result = await orchestrator.researchTask({ question: '列出 6 个 AI 与脑机接口未解决问题', retrievalBudget: 18 });
+  const result = await orchestrator.researchTask({ question: '列出 6 个 AI 与脑机接口未解决问题', retrievalBudget: 18, reasoningMode: 'local' });
   assert.equal(result.format, 'turi.research-workflow-job.v0.3');
   assert.equal(result.executionMode, 'bridge_async');
   assert.equal(result.status, 'queued');
@@ -364,6 +364,7 @@ test('UPDIA adapter exposes a bridge-owned research job for stateless MCP pollin
         assert.equal(request.params.groundingQuery, '三个核心问题');
         assert.equal(request.params.maxTokens, 256);
         assert.equal(request.params.maxOrganAttempts, 1);
+        assert.equal(request.params.stream, true);
         assert.equal(request.params.profile, 'domain-research');
         assert.deepEqual(request.params.evidenceRoles, ['domain_evidence']);
         return new Response(JSON.stringify({

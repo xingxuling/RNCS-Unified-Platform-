@@ -22,7 +22,7 @@ test('stdio CLI completes MCP initialize and tool discovery', async () => {
   try {
     await client.connect(transport);
     const listed = await client.listTools();
-    assert.equal(listed.tools.length, 100);
+    assert.equal(listed.tools.length, 103);
     const info = await client.callTool({ name: 'turi_server_info', arguments: {} });
     assert.equal(info.isError, undefined);
   } finally {

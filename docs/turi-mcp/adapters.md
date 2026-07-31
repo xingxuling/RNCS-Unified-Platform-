@@ -16,7 +16,9 @@
 
 `health`、`models`、`generate`、`status`、`set_model`、`adjudicate_action`、`record_execution`、`feedback`、`writebacks`、`accept`、`reject`、`knowledge_query`、`knowledge_explain`、`knowledge_conflicts`、`knowledge_verify`、`knowledge_writeback`、`shutdown`。
 
-因此 `subject_create`、generic observe/event ingest、独立 world model、goal arbitration、perception 和独立 organ scheduling 没有被虚构为可执行能力；它们在注册表中保留 `evidence_only/static` 边界。`subject_close` 只映射真实 `shutdown`，Native RGR 写回先走 candidate，commit 需要 authority token。没有可用 Ollama/兼容模型时，root 与 RGR 仍可健康运行，但认知状态会明确返回 `degraded-no-models`，研究工作流会返回 `grounded_degraded`，不会把检索事实冒充成模型推理。
+因此 `subject_create`、generic observe/event ingest、独立 world model、goal arbitration、perception 和独立 organ scheduling 没有被虚构为可执行能力；它们在注册表中保留 `evidence_only/static` 边界。`subject_close` 只映射真实 `shutdown`，Native RGR 写回先走 candidate，commit 需要 authority token。
+
+高层 `turi_research_task`、`turi_intent_compile`、`turi_world_task` 默认只调用 subject/status 与 Native RGR 检索，然后返回宿主介入请求；不会隐式调用 `generate`。显式 `reasoningMode=local` 或直接调用 `updia_think` / `updia_research_start` 时才启用本地生成。没有生成模型时，root、RGR 与宿主联合模式仍可正常工作；embedding 模型仍可独立服务语义检索。
 
 ## GameBrain / RSR / VSR
 

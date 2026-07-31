@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
 const PACKAGE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -23,6 +24,7 @@ export function loadConfig(env = process.env, overrides = {}) {
   if (!['none', 'bearer'].includes(authMode)) throw new Error('TURI_AUTH_MODE must be none or bearer.');
   const bearerToken = String(overrides.bearerToken ?? env.TURI_BEARER_TOKEN ?? '');
   if (authMode === 'bearer' && bearerToken.length < 24) throw new Error('TURI_BEARER_TOKEN must contain at least 24 characters.');
+  const configuredHostResumeSecret = String(overrides.hostResumeSecret ?? env.TURI_HOST_RESUME_SECRET ?? bearerToken).trim();
   const authorityToken = String(overrides.authorityToken ?? env.TURI_AUTHORITY_TOKEN ?? '');
   const authorityMode = String(overrides.authorityMode ?? env.TURI_AUTHORITY_MODE ?? 'candidate').toLowerCase();
   if (!['read_only', 'candidate', 'authorized'].includes(authorityMode)) throw new Error('TURI_AUTHORITY_MODE must be read_only, candidate, or authorized.');
@@ -35,7 +37,9 @@ export function loadConfig(env = process.env, overrides = {}) {
   const allowedHosts = configuredHosts.length ? [...new Set(configuredHosts)] : publicBinding ? [] : ['127.0.0.1', 'localhost', '[::1]'];
   if (publicBinding && !allowedHosts.length) throw new Error('Public TURI binding requires TURI_ALLOWED_HOSTS.');
   if (publicBinding && authMode === 'none' && !truthy(overrides.allowPublicNoAuth ?? env.TURI_ALLOW_PUBLIC_NO_AUTH)) throw new Error('Public no-auth TURI requires TURI_ALLOW_PUBLIC_NO_AUTH=true.');
+  if (publicBinding && configuredHostResumeSecret.length < 32) throw new Error('Public TURI host intervention requires TURI_HOST_RESUME_SECRET with at least 32 characters.');
   const dataDir = path.resolve(overrides.dataDir ?? env.TURI_DATA_DIR ?? path.join(repoRoot, 'output/turi-mcp'));
+  const hostResumeSecret = configuredHostResumeSecret || crypto.createHash('sha256').update(`turi-local-host-resume:${repoRoot}:${dataDir}`).digest('hex');
   const updiaRoot = String(overrides.updiaRoot ?? env.TURI_UPDIA_ROOT ?? '').trim();
   const gamebrainRoot = String(overrides.gamebrainRoot ?? env.TURI_GAMEBRAIN_ROOT ?? updiaRoot).trim();
   const updiaEntry = String(overrides.updiaEntry ?? env.TURI_UPDIA_ENTRY ?? (updiaRoot ? path.join(updiaRoot, 'src/updia/local-interaction/cli.mjs') : '')).trim();
@@ -48,6 +52,8 @@ export function loadConfig(env = process.env, overrides = {}) {
   const updiaBridgeAllowedHostSuffixes = overrides.updiaBridgeAllowedHostSuffixes ?? list(env.TURI_UPDIA_BRIDGE_ALLOWED_HOST_SUFFIXES || '.trycloudflare.com');
   const updiaBridgeToken = String(overrides.updiaBridgeToken ?? env.TURI_UPDIA_BRIDGE_TOKEN ?? '').trim();
   const updiaDefaultModel = String(overrides.updiaDefaultModel ?? env.TURI_UPDIA_DEFAULT_MODEL ?? '').trim();
+  const reasoningMode = String(overrides.reasoningMode ?? env.TURI_REASONING_MODE ?? 'host').trim().toLowerCase();
+  if (!['host', 'local'].includes(reasoningMode)) throw new Error('TURI_REASONING_MODE must be host or local.');
   if (updiaBridgeUrl) {
     let parsedBridgeUrl;
     try { parsedBridgeUrl = new URL(updiaBridgeUrl); } catch { throw new Error('TURI_UPDIA_BRIDGE_URL must be an absolute HTTP(S) URL.'); }
@@ -67,7 +73,7 @@ export function loadConfig(env = process.env, overrides = {}) {
     : [path.join(repoRoot, 'packages/control/reality-one-gateway/runtimes')];
   return Object.freeze({
     name: 'TaoWind Unified Reality Intelligence MCP',
-    version: '0.1.0-alpha.1',
+    version: '0.1.0-alpha.2',
     repoRoot,
     rclRoot,
     rclControlPlaneDir,
@@ -102,6 +108,10 @@ export function loadConfig(env = process.env, overrides = {}) {
     updiaBridgePollMs: integer(overrides.updiaBridgePollMs ?? env.TURI_UPDIA_BRIDGE_POLL_MS, 1_000, 100, 10_000),
     updiaDefaultMaxTokens: integer(overrides.updiaDefaultMaxTokens ?? env.TURI_UPDIA_DEFAULT_MAX_TOKENS, 512, 64, 4_096),
     updiaDefaultModel: updiaDefaultModel || null,
+    reasoningMode,
+    hostResumeTtlMs: integer(overrides.hostResumeTtlMs ?? env.TURI_HOST_RESUME_TTL_MS, 2 * 60 * 60_000, 60_000, 24 * 60 * 60_000),
+    hostResumeSecret,
+    hostResumeSecretSource: configuredHostResumeSecret ? (bearerToken && configuredHostResumeSecret === bearerToken ? 'bearer-token' : 'configured') : 'local-derived',
     updiaEndpoints,
     gamebrainRoot: gamebrainRoot || null,
     gamebrainCli: gamebrainCli || null,

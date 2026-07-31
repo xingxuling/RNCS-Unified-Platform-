@@ -16,6 +16,12 @@ services:
         value: 0.0.0.0
       - key: TURI_MCP_PATH
         value: /mcp
+      - key: TURI_REASONING_MODE
+        value: host
+      - key: TURI_HOST_RESUME_TTL_MS
+        value: "7200000"
+      - key: TURI_HOST_RESUME_SECRET
+        sync: false
       - key: TURI_AUTH_MODE
         value: bearer
       - key: TURI_BEARER_TOKEN

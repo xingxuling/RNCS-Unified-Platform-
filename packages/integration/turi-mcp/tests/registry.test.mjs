@@ -6,7 +6,7 @@ import { CapabilityRegistry } from '../src/registry/capability-registry.mjs';
 test('every TURI manifest exposes the safety and evidence contract', () => {
   assert.ok(CAPABILITY_MANIFESTS.length >= 140);
   for (const manifest of CAPABILITY_MANIFESTS) {
-    for (const field of ['capabilityId', 'displayName', 'domain', 'inputSchema', 'outputSchema', 'executionMode', 'rollbackSupport', 'evidenceLevel', 'implementation']) {
+    for (const field of ['capabilityId', 'displayName', 'domain', 'inputSchema', 'outputSchema', 'executionMode', 'authorityLevel', 'rollbackSupport', 'evidenceLevel', 'implementation']) {
       assert.ok(manifest[field] !== undefined, `${manifest.capabilityId} is missing ${field}`);
     }
   }
@@ -26,7 +26,7 @@ test('registry searches, validates, and controls dynamic capability registration
   const dynamic = {
     capabilityId: 'research.test.dynamic', displayName: 'Dynamic Test', domain: 'research', description: 'Test route',
     inputSchema: { type: 'object', properties: {}, additionalProperties: true }, outputSchema: { type: 'object' },
-    executionMode: 'candidate', rollbackSupport: 'logical', evidenceLevel: 'declared', implementation: 'adapter',
+    executionMode: 'candidate', authorityLevel: 'L2', rollbackSupport: 'logical', evidenceLevel: 'declared', implementation: 'adapter',
   };
   registry.registerDynamic(dynamic);
   assert.equal(registry.describe(dynamic.capabilityId).implementation, 'adapter');

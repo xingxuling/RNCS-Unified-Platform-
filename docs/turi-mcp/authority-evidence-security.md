@@ -5,11 +5,13 @@
 | 模式 | 默认状态 | 例子 |
 | --- | --- | --- |
 | `read_only` | 开启 | status、search、describe、history |
-| `candidate` | 默认开启 | compile、candidate branch、simulate、UPDIA think、记忆候选 |
+| `candidate` | 默认开启 | host contribution、compile、candidate branch、simulate、经验候选 |
 | `authorized_write` | 关闭 | AAF authorize、Native RGR commit、behavior enable、能力晋升 |
 | `external_effect` | 关闭 | formal merge、rollback、push、PR、deploy |
 
 `authorized_write` 要求 `TURI_AUTHORITY_MODE=authorized`、`TURI_ENABLE_AUTHORIZED_WRITES=true` 和匹配的 `TURI_AUTHORITY_TOKEN`。`external_effect` 还要求 `TURI_ENABLE_EXTERNAL_EFFECTS=true`。HTTP 远程部署必须使用至少 24 字符 Bearer token，并设置 Host/Origin allow-list。
+
+Host Intervention 在执行模式之上增加 L0–L4 语义权限。HMAC 签名的 `resumeToken` 只允许 L0–L2 续跑，不能代替 `TURI_AUTHORITY_TOKEN`。L3 记录的是可审查经验候选，不等于 UPDIA 正式记忆；L4 仍必须显式授权。
 
 ## EvidenceReceipt
 
@@ -29,3 +31,4 @@ worldStatus.before.revision  == worldStatus.after.revision
 - 输出超限转存为 TURI artifact，服务响应只返回 metadata/summary。
 - job、receipt、artifact ID 在 Windows 上写盘前会把 `:` 等非法文件名字符转义。
 - UPDIA/GameBrain 子进程有固定 executable、cwd、超时、stderr 截断和 JSONL 响应匹配。
+- 公网 Host Intervention 必须配置 `TURI_HOST_RESUME_SECRET`；修改、过期或使用错误签名密钥的续跑令牌会被拒绝。

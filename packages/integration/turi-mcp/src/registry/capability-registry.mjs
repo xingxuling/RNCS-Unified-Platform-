@@ -43,7 +43,7 @@ export class CapabilityRegistry {
   has(capabilityId) { return this.manifests.has(capabilityId); }
 
   registerDynamic(manifest) {
-    if (!manifest?.capabilityId || !manifest?.implementation || !manifest?.evidenceLevel || !manifest?.executionMode || !manifest?.rollbackSupport) throw new CapabilityRegistryError('MANIFEST_INCOMPLETE', 'Dynamic capability manifest is missing a required safety field.');
+    if (!manifest?.capabilityId || !manifest?.implementation || !manifest?.evidenceLevel || !manifest?.executionMode || !manifest?.authorityLevel || !manifest?.rollbackSupport) throw new CapabilityRegistryError('MANIFEST_INCOMPLETE', 'Dynamic capability manifest is missing a required safety field.');
     if (this.manifests.has(manifest.capabilityId)) throw new CapabilityRegistryError('CAPABILITY_EXISTS', `Capability already exists: ${manifest.capabilityId}`);
     this.manifests.set(manifest.capabilityId, Object.freeze(clone(manifest)));
     this.dynamicIds.add(manifest.capabilityId);
