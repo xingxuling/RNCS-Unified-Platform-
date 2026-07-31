@@ -25,9 +25,21 @@ const env = {
   TURI_ENABLE_AUTHORIZED_WRITES: process.env.TURI_ENABLE_AUTHORIZED_WRITES ?? 'false',
   TURI_ENABLE_EXTERNAL_EFFECTS: process.env.TURI_ENABLE_EXTERNAL_EFFECTS ?? 'false',
   TURI_DATA_DIR: process.env.TURI_DATA_DIR ?? '/tmp/turi-mcp',
-  // Do not pin a rotating quick-tunnel URL here. The discovery document in
-  // vercel.json is the source of truth and the watchdog keeps it current.
+  // Do not pin a rotating quick-tunnel URL here. The stable discovery
+  // document is also defaulted in code because file-based Vercel API
+  // deployments do not always project vercel.json env values at runtime.
   TURI_UPDIA_BRIDGE_URL: process.env.TURI_UPDIA_BRIDGE_URL?.trim() || '',
+  TURI_UPDIA_BRIDGE_DISCOVERY_URL: process.env.TURI_UPDIA_BRIDGE_DISCOVERY_URL?.trim()
+    || (vercelTaskRoot ? 'https://gist.githubusercontent.com/xingxuling/6b9edb59043baed2488bcbe3f5031146/raw/updia-bridge-route.json' : ''),
+  TURI_UPDIA_BRIDGE_DISCOVERY_FILE: process.env.TURI_UPDIA_BRIDGE_DISCOVERY_FILE?.trim()
+    || 'updia-bridge-route.json',
+  TURI_UPDIA_BRIDGE_ALLOWED_HOST_SUFFIXES: process.env.TURI_UPDIA_BRIDGE_ALLOWED_HOST_SUFFIXES?.trim()
+    || '.trycloudflare.com',
+  TURI_UPDIA_BRIDGE_DISCOVERY_CACHE_MS: process.env.TURI_UPDIA_BRIDGE_DISCOVERY_CACHE_MS ?? '30000',
+  TURI_UPDIA_BRIDGE_DISCOVERY_CACHE_BUST_MS: process.env.TURI_UPDIA_BRIDGE_DISCOVERY_CACHE_BUST_MS ?? '60000',
+  TURI_UPDIA_BRIDGE_ASYNC: process.env.TURI_UPDIA_BRIDGE_ASYNC ?? 'true',
+  TURI_UPDIA_BRIDGE_POLL_MS: process.env.TURI_UPDIA_BRIDGE_POLL_MS ?? '1000',
+  TURI_UPDIA_DEFAULT_MAX_TOKENS: process.env.TURI_UPDIA_DEFAULT_MAX_TOKENS ?? '512',
   TURI_UPDIA_DEFAULT_MODEL: process.env.TURI_UPDIA_DEFAULT_MODEL?.trim()
     || (vercelTaskRoot ? 'qwen3.5:latest' : ''),
 };
