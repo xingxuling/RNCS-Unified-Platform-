@@ -82,7 +82,7 @@ test('TURI research workflow passes adaptive budget and domain evidence policy e
       },
     },
   });
-  const result = await orchestrator.researchTask({ question: '列出 8 个 AI 与脑机接口未解决问题' });
+  const result = await orchestrator.researchTask({ question: '列出 8 个 AI 与脑机接口未解决问题', waitForCompletion: true });
   assert.equal(result.format, 'turi.research-workflow.v0.2');
   assert.equal(result.researchContract.targetCount, 8);
   assert.equal(result.researchContract.generationBudget > 512, true);
@@ -93,6 +93,73 @@ test('TURI research workflow passes adaptive budget and domain evidence policy e
   assert.equal(calls.think.outputContract.targetCount, 8);
   assert.deepEqual(calls.think.contextRefs, ['claim:bci:1']);
   assert.equal(result.status, 'grounded');
+});
+
+test('TURI research workflow returns a bridge-owned job before long reasoning completes', async () => {
+  const calls = { start: null, think: 0 };
+  const orchestrator = new TuriOrchestrator({
+    config: {},
+    artifacts: null,
+    adapters: {
+      updia: {
+        configured: () => true,
+        researchStart: async (input) => {
+          calls.start = input;
+          return {
+            format: 'updia.public-research-job.v0.1',
+            status: 'queued',
+            jobId: 'updia-job:bci',
+            pollAfterMs: 1_000,
+            researchContract: {
+              targetCount: input.targetCount,
+              retrievalBudget: input.retrievalBudget,
+              generationBudget: input.budget,
+              profile: 'domain-research',
+              evidenceRoles: ['domain_evidence'],
+            },
+            sourceEvidence: {
+              packet: {
+                packetId: 'packet:bci',
+                claims: [{
+                  claimId: 'claim:bci:1',
+                  statement: 'Decoder drift remains unresolved.',
+                  claimType: 'fact',
+                  sourceRefs: ['source:bci'],
+                  confidence: 0.9,
+                }],
+              },
+              trace: { traceId: 'trace:bci' },
+            },
+            knownFacts: [{
+              claimId: 'claim:bci:1',
+              statement: 'Decoder drift remains unresolved.',
+              claimType: 'fact',
+              sourceRefs: ['source:bci'],
+              confidence: 0.9,
+            }],
+          };
+        },
+        think: async () => {
+          calls.think += 1;
+          return { content: 'should not wait' };
+        },
+      },
+    },
+  });
+
+  const result = await orchestrator.researchTask({ question: '列出 6 个 AI 与脑机接口未解决问题', retrievalBudget: 18 });
+  assert.equal(result.format, 'turi.research-workflow-job.v0.3');
+  assert.equal(result.executionMode, 'bridge_async');
+  assert.equal(result.status, 'queued');
+  assert.equal(result.jobId, 'updia-job:bci');
+  assert.equal(result.grounding.retrieval.status, 'executed');
+  assert.equal(result.next.tool, 'updia_research_status');
+  assert.deepEqual(result.next.arguments, { jobId: 'updia-job:bci' });
+  assert.equal(calls.start.retrievalBudget, 18);
+  assert.equal(calls.start.targetCount, 6);
+  assert.equal(calls.start.budget, result.researchContract.generationBudget);
+  assert.deepEqual(calls.start.callerContext, { workflow: 'turi_research_task', targetCount: 6 });
+  assert.equal(calls.think, 0);
 });
 
 test('UPDIA configuration requires a bootstrap or persisted checkpoint', () => {
@@ -321,6 +388,7 @@ test('UPDIA adapter exposes a bridge-owned research job for stateless MCP pollin
   assert.equal(started.jobId, 'updia-job:research');
   assert.equal(started.sourceEvidence.packet.packetId, 'packet:research');
   assert.equal(started.knownFacts[0].sourceRefs[0], 'source:1');
+  assert.equal(started.researchContract.retrievalBudget, 8);
   const completed = await adapter.researchStatus({ jobId: started.jobId });
   assert.equal(completed.status, 'completed');
   assert.equal(completed.result.content, 'final grounded research');

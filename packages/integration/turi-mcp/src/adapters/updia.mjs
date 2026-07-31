@@ -438,12 +438,21 @@ export class UpdiaAdapter {
 
   async think(input = {}) { return this.call('generate', this.thinkParams(input)); }
 
-  async researchStart({ question, retrievalBudget = 20, budget = null, targetCount = 6, allowedOrgans = [], domains = [] } = {}) {
+  async researchStart({
+    question,
+    retrievalBudget = 20,
+    budget = null,
+    targetCount = 6,
+    allowedOrgans = [],
+    domains = [],
+    callerContext = {},
+  } = {}) {
     const resolvedBudget = researchTokenBudget(budget, targetCount);
     const sourceEvidence = await this.memorySearch({
       query: question,
       retrievalBudget,
       profile: DOMAIN_RESEARCH_PROFILE,
+      callerContext,
       domains,
       evidenceRoles: DOMAIN_EVIDENCE_ROLES,
     });
@@ -470,7 +479,13 @@ export class UpdiaAdapter {
       status: reasoningJob.status,
       jobId: reasoningJob.jobId,
       pollAfterMs: reasoningJob.pollAfterMs,
-      researchContract: { targetCount, generationBudget: resolvedBudget, profile: DOMAIN_RESEARCH_PROFILE, evidenceRoles: DOMAIN_EVIDENCE_ROLES },
+      researchContract: {
+        targetCount,
+        retrievalBudget,
+        generationBudget: resolvedBudget,
+        profile: DOMAIN_RESEARCH_PROFILE,
+        evidenceRoles: DOMAIN_EVIDENCE_ROLES,
+      },
       sourceEvidence,
       knownFacts: (sourceEvidence?.packet?.claims ?? []).map((claim) => ({
         claimId: claim.claimId,

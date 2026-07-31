@@ -151,6 +151,70 @@ export class TuriOrchestrator {
     const retrievalBudget = input.retrievalBudget ?? 20;
     const generationBudget = researchTokenBudget(input.budget, targetCount);
     const domains = Array.isArray(input.domains) ? input.domains : [];
+    if (
+      input.waitForCompletion !== true
+      && this.adapters.updia.configured()
+      && typeof this.adapters.updia.researchStart === 'function'
+    ) {
+      try {
+        const started = await this.adapters.updia.researchStart({
+          question: input.question,
+          retrievalBudget,
+          budget: generationBudget,
+          targetCount,
+          allowedOrgans: input.allowedOrgans ?? [],
+          domains,
+          callerContext: { workflow: 'turi_research_task', targetCount },
+        });
+        const candidateDeferred = Boolean(input.source);
+        return {
+          format: 'turi.research-workflow-job.v0.3',
+          question: input.question,
+          status: started.status,
+          executionMode: 'bridge_async',
+          jobId: started.jobId,
+          pollAfterMs: started.pollAfterMs,
+          knownFacts: started.knownFacts ?? groundedFacts(started.sourceEvidence),
+          sourceEvidence: started.sourceEvidence ?? null,
+          candidate: candidateDeferred
+            ? {
+                status: 'deferred',
+                reason: 'The research job must complete before the optional RNCS experiment is started.',
+              }
+            : null,
+          grounding: {
+            requested: true,
+            performed: Boolean(started.sourceEvidence?.packet?.packetId),
+            retrieval: {
+              status: started.sourceEvidence?.packet?.packetId ? 'executed' : 'returned_without_packet',
+              packetId: started.sourceEvidence?.packet?.packetId ?? null,
+              traceId: started.sourceEvidence?.trace?.traceId ?? null,
+              claimCount: (started.knownFacts ?? groundedFacts(started.sourceEvidence)).length,
+              storeRoot: started.sourceEvidence?.storeRoot ?? started.sourceEvidence?.index?.root ?? null,
+            },
+            reasoning: { status: started.status, jobId: started.jobId },
+          },
+          researchContract: started.researchContract ?? {
+            targetCount,
+            retrievalBudget,
+            generationBudget,
+            profile: DOMAIN_RESEARCH_PROFILE,
+            evidenceRoles: DOMAIN_EVIDENCE_ROLES,
+          },
+          next: {
+            capabilityId: 'updia.research_status',
+            tool: 'updia_research_status',
+            arguments: { jobId: started.jobId },
+            terminalStatuses: ['completed', 'failed', 'cancelled'],
+          },
+          limitations: candidateDeferred
+            ? ['Optional RNCS experiment source was retained but not executed while research reasoning is still running.']
+            : [],
+        };
+      } catch (error) {
+        if (!['UPDIA_REMOTE_ASYNC_REQUIRED', 'UPDIA_REMOTE_ASYNC_UNSUPPORTED'].includes(error.code)) throw error;
+      }
+    }
     const result = {
       format: 'turi.research-workflow.v0.2',
       question: input.question,
