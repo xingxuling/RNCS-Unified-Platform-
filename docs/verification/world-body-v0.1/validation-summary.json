@@ -7,14 +7,21 @@
     "rsrPackageVersion": "0.9.0-alpha.1",
     "vsrPackageVersion": "0.8.0-alpha.1"
   },
-  "codegenArtifactCount": 7,
-  "evidenceRoot": "bd49d7f8bc275bb852c7db3a358b9d80b82fe4a4fa95d6158163ce348895c9d9",
+  "codeReduction": {
+    "declarationLines": 177,
+    "netAuthoredLineReductionBasisPoints": 7913,
+    "repeatedOccurrencesMovedBehindGenerator": 59,
+    "specializationLines": 848
+  },
+  "codegenArtifactCount": 9,
+  "evidenceRoot": "2170c0ceda998e2b050eff163f847b71d43f7ba27261900414faeda58eb06709",
   "format": "taowind.world-body-validation-summary.v0.1",
+  "ledgerRoot": "0e4134efccc3cc220d715db954a6cfe9c422a027a622b5d40fa6cf0d05e4eefa",
   "productionDifferentialChecks": {
     "failed": 0,
     "passed": 12
   },
-  "rclCheckCount": 10,
+  "rclCheckCount": 15,
   "status": "PASS_WITH_EXTERNAL_BOUNDARIES",
   "theoremCounts": {
     "FAIL": 0,

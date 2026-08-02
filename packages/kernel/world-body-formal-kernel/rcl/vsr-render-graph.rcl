@@ -1,0 +1,9 @@
+reality VsrRenderGraphDraft {
+  facet draft.version : Text = "0.1.0-alpha.1"
+  facet draft.status : Text = "candidate"
+  facet graph.acyclic : Truth = true
+  facet graph.reads_initialized : Truth = true
+  facet graph.write_hazards_ordered : Truth = true
+  facet graph.alias_lifetimes_disjoint : Truth = true
+  facet backend.external_unverified : Truth = true
+}

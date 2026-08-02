@@ -22,6 +22,7 @@ import {
 import { runWorldBodyProductionDifferential } from '@taowind/world-body-formal-theory/production-differential';
 import {
   generateWorldBodyArtifacts,
+  measureCodeReduction,
   verifyGeneratedArtifactBundle,
 } from '@taowind/world-body-codegen';
 import { canonicalClone, semanticHash } from '@taowind/world-body-ir';
@@ -61,7 +62,8 @@ function runRclKernelEvidence() {
 
 const declarationPath = path.join(repositoryRoot, 'packages', 'world', 'world-body-codegen', 'examples', 'minimal-world.declaration.json');
 const committedManifestPath = path.join(repositoryRoot, 'packages', 'world', 'world-body-codegen', 'examples', 'generated', 'minimal', 'manifest.json');
-const declaration = JSON.parse(await readFile(declarationPath, 'utf8'));
+const declarationSource = await readFile(declarationPath, 'utf8');
+const declaration = JSON.parse(declarationSource);
 const committedManifest = JSON.parse(await readFile(committedManifestPath, 'utf8'));
 const generatedBundle = generateWorldBodyArtifacts(declaration);
 const codegenEvidence = seal({
@@ -71,14 +73,17 @@ const codegenEvidence = seal({
   manifestRoot: generatedBundle.manifest.manifestRoot,
   generatedArtifactCount: generatedBundle.manifest.metrics.generatedArtifactCount,
   authority: generatedBundle.manifest.authority,
+  generatedRuntimeTest: generatedBundle.artifacts.some(item => item.path === 'world-body.generated.test.mjs'),
+  generatedProofReceiptTemplate: generatedBundle.artifacts.some(item => item.path === 'proof-receipt-template.generated.json'),
 });
+const codeReductionEvidence = seal(measureCodeReduction(declarationSource, generatedBundle));
 
 const [rsrBundle, vsrBundle, jointBundle] = await Promise.all([
   evaluateTheoremSuite(RSR_THEOREMS, buildRsrReferenceFixture(minimalWorldBodyIR), { domain: 'RSR' }),
   evaluateTheoremSuite(VSR_THEOREMS, buildVsrReferenceFixture(minimalWorldBodyIR), { domain: 'VSR' }),
   evaluateTheoremSuite(WORLD_BODY_THEOREMS, buildWorldBodyJointFixture(minimalWorldBodyIR), { domain: 'WORLD_BODY' }),
 ]);
-const proofBundles = canonicalClone({
+const proofBundles = seal({
   format: 'taowind.world-body-proof-bundle-set.v0.1',
   baseline,
   bundles: [rsrBundle, vsrBundle, jointBundle],
@@ -88,7 +93,7 @@ const proofBundles = canonicalClone({
     FAIL: counts.FAIL + bundle.counts.FAIL,
     UNVERIFIED: counts.UNVERIFIED + bundle.counts.UNVERIFIED,
   }), { PASS: 0, FAIL: 0, UNVERIFIED: 0 }),
-});
+}, 'proofSetRoot');
 const proofStatus = proofBundles.allBundlesVerified && proofBundles.totalCounts.FAIL === 0 ? 'PASS' : 'FAIL';
 
 const rclEvidence = runRclKernelEvidence();
@@ -112,6 +117,11 @@ const maturity = classifyFormalMaturity({
   productionDifferentials: [productionDifferential],
   externalBackends,
 });
+const externalEvidence = seal({
+  format: 'taowind.world-body-external-boundaries.v0.1',
+  status: 'UNVERIFIED',
+  backends: externalBackends,
+});
 
 const ledgerBase = {
   format: 'taowind.world-body-evidence-ledger.v0.1',
@@ -119,19 +129,15 @@ const ledgerBase = {
   authority: 'evidence-only-no-commit',
   entries: [
     { id: 'WB-E01', claim: 'World Body IR and generated example are deterministically sealed', status: codegenEvidence.status, evidenceFile: 'codegen-evidence.json', evidenceRoot: codegenEvidence.evidenceRoot },
-    { id: 'WB-E02', claim: 'RSR, VSR, and joint executable theorem receipts close their declared reference scope', status: proofStatus, evidenceFile: 'formal-proof-bundles.json', observations: { ...proofBundles.totalCounts, allBundlesVerified: proofBundles.allBundlesVerified } },
+    { id: 'WB-E02', claim: 'RSR, VSR, and joint executable theorem receipts close their declared reference scope', status: proofStatus, evidenceFile: 'formal-proof-bundles.json', evidenceRoot: proofBundles.proofSetRoot, observations: { ...proofBundles.totalCounts, allBundlesVerified: proofBundles.allBundlesVerified } },
     { id: 'WB-E03', claim: 'The exercised RCL kernel has reference and native VM parity', status: rclEvidence.status, evidenceFile: 'rcl-kernel-evidence.json', evidenceRoot: rclEvidence.evidenceRoot },
     { id: 'WB-E04', claim: 'Generated specialization matches selected real RSR/VSR observables', status: productionDifferential.status, evidenceFile: 'production-differential.json', evidenceRoot: productionDifferential.evidenceRoot },
-    { id: 'WB-E05', claim: 'External backends and target hardware are fully differentially equivalent', status: 'UNVERIFIED', evidenceFile: 'external-boundaries.json' },
+    { id: 'WB-E05', claim: 'External backends and target hardware are fully differentially equivalent', status: 'UNVERIFIED', evidenceFile: 'external-boundaries.json', evidenceRoot: externalEvidence.evidenceRoot },
+    { id: 'WB-E06', claim: 'One declaration moves measured specialization lines and repeated identifiers behind deterministic generation', status: 'PASS', evidenceFile: 'code-reduction-evidence.json', evidenceRoot: codeReductionEvidence.evidenceRoot },
   ],
   maturity,
 };
 const ledger = seal(ledgerBase, 'ledgerRoot');
-const externalEvidence = seal({
-  format: 'taowind.world-body-external-boundaries.v0.1',
-  status: 'UNVERIFIED',
-  backends: externalBackends,
-});
 const summary = seal({
   format: 'taowind.world-body-validation-summary.v0.1',
   baseline,
@@ -143,6 +149,13 @@ const summary = seal({
     failed: productionDifferential.checks.filter(item => !item.passed).length,
   },
   codegenArtifactCount: codegenEvidence.generatedArtifactCount,
+  ledgerRoot: ledger.ledgerRoot,
+  codeReduction: {
+    declarationLines: codeReductionEvidence.measuredSource.declarationLines,
+    specializationLines: codeReductionEvidence.measuredGeneratedSurface.specializationLines,
+    netAuthoredLineReductionBasisPoints: codeReductionEvidence.reduction.netAuthoredLineReductionBasisPoints,
+    repeatedOccurrencesMovedBehindGenerator: codeReductionEvidence.semanticDuplication.repeatedOccurrencesMovedBehindGenerator,
+  },
   rclCheckCount: Object.keys(rclEvidence.checks).length,
   verdict: maturity.verdict,
   verdictReason: maturity.reason,
@@ -151,6 +164,7 @@ const summary = seal({
 await mkdir(evidenceDirectory, { recursive: true });
 const outputs = {
   'codegen-evidence.json': codegenEvidence,
+  'code-reduction-evidence.json': codeReductionEvidence,
   'formal-proof-bundles.json': proofBundles,
   'rcl-kernel-evidence.json': rclEvidence,
   'production-differential.json': productionDifferential,

@@ -8,11 +8,14 @@
   "bin": { "world-body-codegen": "./src/cli.mjs" },
   "files": ["src", "schemas", "examples", "README.md", "rncs.module.json"],
   "scripts": {
-    "test": "node --test tests/*.test.mjs",
-    "generate:example": "node src/cli.mjs examples/minimal-world.declaration.json examples/generated/minimal"
+    "test": "node --test tests/*.test.mjs examples/generated/minimal/world-body.generated.test.mjs",
+    "generate:example": "node src/cli.mjs examples/minimal-world.declaration.json examples/generated/minimal",
+    "benchmark": "node benchmarks/code-reduction.mjs"
   },
   "dependencies": {
     "@taowind/reality-computation-language": "0.94.0-alpha.1",
+    "@taowind/reality-simulation-runtime": "0.9.0-alpha.1",
+    "@taowind/visual-state-runtime": "0.8.0-alpha.1",
     "@taowind/world-body-ir": "0.1.0-alpha.1"
   },
   "engines": { "node": ">=20" },

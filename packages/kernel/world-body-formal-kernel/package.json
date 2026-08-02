@@ -11,6 +11,7 @@
   "files": [
     "src",
     "rcl",
+    "docs",
     "scripts",
     "schemas",
     "README.md",

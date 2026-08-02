@@ -1,9 +1,11 @@
 {
   "authority": "candidate-artifact-generation-only-no-commit",
-  "evidenceRoot": "d75cdb1879132612b19e2b459328b5e514955c5fd79689cdd892aeb73d989650",
+  "evidenceRoot": "e759ec57e35210d8f0af5129072b085b80b5d39d3f3cc40c432d2ab0791f8d74",
   "format": "taowind.world-body-codegen-evidence.v0.1",
-  "generatedArtifactCount": 7,
-  "manifestRoot": "9cdfb211155de7385e822cd93a1c92cfcfa2056b5d460882c795132d584e4e56",
+  "generatedArtifactCount": 9,
+  "generatedProofReceiptTemplate": true,
+  "generatedRuntimeTest": true,
+  "manifestRoot": "b0f665de71603fa4fe977cd4cea57f0010d5efa078b01829915d8024d516b191",
   "status": "PASS",
   "worldBodyRoot": "72e39c0d4be74c2caafa386f61966900446687a4e7c9ab09c0cca5ab0cdae709"
 }

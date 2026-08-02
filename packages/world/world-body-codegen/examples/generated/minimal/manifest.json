@@ -6,6 +6,11 @@
       "path": "event-routes.generated.json"
     },
     {
+      "contentRoot": "238f8afaadf8338e269a4702c4d782114420e34d99f6ed5bb935e0b6fbe50afb",
+      "mediaType": "application/json",
+      "path": "proof-receipt-template.generated.json"
+    },
+    {
       "contentRoot": "a4a418a956df8e3addbeeb61fbf9c6c9c1e308016522811922c0e13f9bdc639d",
       "mediaType": "application/json",
       "path": "render-graph.generated.json"
@@ -16,7 +21,7 @@
       "path": "rsr-world-config.generated.mjs"
     },
     {
-      "contentRoot": "c4e534b05f31985929576e6b2248b4bf1daf5524a4943c0465837ff9360ad5c4",
+      "contentRoot": "369719b21ce7d424dafaf67a4345fdb24f131043061df986dc08bfecb379daa3",
       "mediaType": "text/javascript",
       "path": "temporal-network.generated.mjs"
     },
@@ -31,6 +36,11 @@
       "path": "world-body.generated.rcl"
     },
     {
+      "contentRoot": "2e083d6bcc6e29951bf3e71eef961c71d1b3bb438bbae21035dfdbd09ca56514",
+      "mediaType": "text/javascript",
+      "path": "world-body.generated.test.mjs"
+    },
+    {
       "contentRoot": "c2e3af2153a9b6a3e0cf638c3238a869b9b75352aa5bbb6113aee585019b3e1e",
       "mediaType": "application/json",
       "path": "world-body.ir.json"
@@ -39,11 +49,11 @@
   "authority": "candidate-artifact-generation-only-no-commit",
   "format": "taowind.world-body-codegen-manifest.v0.1",
   "generatorVersion": "0.1.0-alpha.1",
-  "manifestRoot": "9cdfb211155de7385e822cd93a1c92cfcfa2056b5d460882c795132d584e4e56",
+  "manifestRoot": "b0f665de71603fa4fe977cd4cea57f0010d5efa078b01829915d8024d516b191",
   "metrics": {
     "entityCount": 2,
     "eventRouteCount": 2,
-    "generatedArtifactCount": 7,
+    "generatedArtifactCount": 9,
     "generatedBindingCount": 2,
     "physicalBodyCount": 2,
     "renderPassCount": 2,

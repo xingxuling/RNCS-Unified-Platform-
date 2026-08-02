@@ -1191,6 +1191,7 @@
     }
   ],
   "format": "taowind.world-body-proof-bundle-set.v0.1",
+  "proofSetRoot": "906f5d120038a460c57f00f89d758450c3fd60565509aab587ec294a00d62bf1",
   "totalCounts": {
     "FAIL": 0,
     "PASS": 43,

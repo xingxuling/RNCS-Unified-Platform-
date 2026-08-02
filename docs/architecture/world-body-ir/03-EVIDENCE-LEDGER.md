@@ -10,13 +10,16 @@ Committed deterministic evidence lives in `docs/verification/world-body-v0.1/`:
 
 | Evidence | Current result | Meaning |
 | --- | --- | --- |
-| `codegen-evidence.json` | PASS | declaration recompiles to the committed seven-artifact manifest |
+| `codegen-evidence.json` | PASS | declaration recompiles to the committed nine-artifact manifest, including a generated runtime test and proof-receipt template |
+| `code-reduction-evidence.json` | PASS | physical source/artifact lines and stable-identifier duplication are measured from the verified bundle |
 | `formal-proof-bundles.json` | 43 PASS, 0 FAIL, 3 UNVERIFIED | all executable RSR/VSR/WB reference theorems pass; three external claims stay open |
-| `rcl-kernel-evidence.json` | PASS | the exercised RCL subset compiles and has reference/native-VM state-root parity |
+| `rcl-kernel-evidence.json` | PASS | aggregate kernel plus eight requested RCL drafts record source/RBC hashes, disassembly, and reference/native-VM state-root parity |
 | `production-differential.json` | 12 PASS, 0 FAIL | selected real RSR/VSR production path refines declared observables |
 | `external-boundaries.json` | UNVERIFIED | real GPU/pixels, external physics, lossy network, providers, and target hardware remain open |
 | `world-body-evidence-ledger.json` | sealed | claim-to-evidence index and maturity decision |
 | `validation-summary.json` | PASS_WITH_EXTERNAL_BOUNDARIES | compact machine-readable result |
+
+Every evidence file is content-bound from `world-body-evidence-ledger.json`; `validation-summary.json` then binds the ledger root, so its `evidenceRoot` is the top-level deterministic receipt for this candidate evidence set.
 
 `docs/verification/world-body-v0.1/VALIDATION.md` records the broader package and release checks from the candidate run. It is a run record, not part of the deterministic sealed theorem ledger.
 

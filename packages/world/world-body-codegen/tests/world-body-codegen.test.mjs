@@ -10,11 +10,13 @@ import {
   compileRsrWorldConfig,
   compileWorldDeclaration,
   generateWorldBodyArtifacts,
+  measureCodeReduction,
   verifyGeneratedArtifactBundle,
   writeGeneratedArtifacts,
 } from '../src/index.mjs';
 
-const declaration = JSON.parse(readFileSync(new URL('../examples/minimal-world.declaration.json', import.meta.url), 'utf8'));
+const declarationSource = readFileSync(new URL('../examples/minimal-world.declaration.json', import.meta.url), 'utf8');
+const declaration = JSON.parse(declarationSource);
 
 test('one World Declaration compiles to the audited equivalent World Body IR', () => {
   const compilation = compileWorldDeclaration(declaration);
@@ -22,14 +24,28 @@ test('one World Declaration compiles to the audited equivalent World Body IR', (
   assert.deepEqual(compilation.ir, minimalWorldBodyIR);
 });
 
-test('codegen emits seven deterministic candidate artifacts and a sealed manifest', () => {
+test('codegen emits nine deterministic candidate artifacts and a sealed manifest', () => {
   const first = generateWorldBodyArtifacts(declaration);
   const second = generateWorldBodyArtifacts(declaration);
-  assert.equal(first.artifacts.length, 7);
+  assert.equal(first.artifacts.length, 9);
   assert.equal(first.manifest.authority, 'candidate-artifact-generation-only-no-commit');
   assert.equal(first.manifest.manifestRoot, second.manifest.manifestRoot);
   assert.deepEqual(first.artifacts, second.artifacts);
   assert.equal(verifyGeneratedArtifactBundle(first), true);
+  const proofTemplate = JSON.parse(first.artifacts.find(item => item.path === 'proof-receipt-template.generated.json').content);
+  assert.equal(proofTemplate.status, 'CANDIDATE');
+  assert.equal(proofTemplate.authority, 'evidence-template-only-no-commit');
+  assert.match(first.artifacts.find(item => item.path === 'world-body.generated.test.mjs').content, /rollback\/network runtime close/);
+});
+
+test('code reduction measurement uses physical source and generated artifacts', () => {
+  const result = measureCodeReduction(declarationSource, generateWorldBodyArtifacts(declaration));
+  assert.equal(result.measuredSource.authoredRepresentationCount, 1);
+  assert.equal(result.measuredGeneratedSurface.artifactCount, 9);
+  assert.ok(result.measuredGeneratedSurface.specializationLines > result.measuredSource.declarationLines);
+  assert.ok(result.reduction.netAuthoredLineReductionBasisPoints > 0);
+  assert.ok(result.semanticDuplication.repeatedOccurrencesMovedBehindGenerator > 0);
+  assert.throws(() => measureCodeReduction(JSON.stringify({ format: 'wrong' }), generateWorldBodyArtifacts(declaration)));
 });
 
 test('semantic compilation is invariant to declaration collection order', () => {
@@ -70,7 +86,7 @@ test('writing a verified bundle stays under an explicit output directory', () =>
   try {
     const bundle = generateWorldBodyArtifacts(declaration);
     const result = writeGeneratedArtifacts(bundle, output);
-    assert.equal(result.artifactCount, 8);
+    assert.equal(result.artifactCount, 10);
     assert.equal(existsSync(path.join(output, 'manifest.json')), true);
     assert.equal(JSON.parse(readFileSync(path.join(output, 'manifest.json'), 'utf8')).manifestRoot, bundle.manifest.manifestRoot);
   } finally {

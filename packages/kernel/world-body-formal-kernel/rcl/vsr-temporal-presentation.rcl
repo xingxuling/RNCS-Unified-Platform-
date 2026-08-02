@@ -1,0 +1,9 @@
+reality VsrTemporalPresentationDraft {
+  facet draft.version : Text = "0.1.0-alpha.1"
+  facet draft.status : Text = "candidate"
+  facet temporal.interpolation_bounded : Truth = true
+  facet temporal.extrapolation_bounded : Truth = true
+  facet temporal.correction_presentation_only : Truth = true
+  facet temporal.event_exactly_once : Truth = true
+  facet authority.commit_owned_by_rncs : Truth = true
+}

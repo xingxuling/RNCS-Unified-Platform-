@@ -21,6 +21,7 @@ The implementation reduces repeated state, collision, visual-offset, interpolati
 - `02-PRODUCTION-DIFFERENTIAL-SCOPE.md` — what the real RSR/VSR differential proves and excludes.
 - `03-EVIDENCE-LEDGER.md` — reproducible evidence index and maturity rule.
 - `04-RELEASE-AND-ROLLBACK.md` — release, compatibility, and rollback route.
+- `05-CODE-REDUCTION-REPORT.md` — reproducible authored/generated surface and diagnostic runtime comparison.
 
 Formal definitions live with their executable packages:
 

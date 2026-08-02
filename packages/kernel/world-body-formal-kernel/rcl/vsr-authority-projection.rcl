@@ -1,0 +1,9 @@
+reality VsrAuthorityProjectionDraft {
+  facet draft.version : Text = "0.1.0-alpha.1"
+  facet draft.status : Text = "candidate"
+  facet projection.source_bound : Truth = true
+  facet projection.observer_relative : Truth = true
+  facet projection.authority_non_interference : Truth = true
+  facet authority.commit_owned_by_rncs : Truth = true
+  facet presentation.commit_authority : Truth = false
+}

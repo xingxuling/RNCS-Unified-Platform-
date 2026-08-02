@@ -1,0 +1,33 @@
+{
+  "evidenceRoot": "ffb96d2bef46a11452c3e9861f13190653492b6748f5c3bed1508802ab5bc2cb",
+  "format": "taowind.world-body-code-reduction-measurement.v0.1",
+  "limitations": [
+    "The generated specialization surface is the exact maintained-code proxy; this is not a claim about deleted historical lines.",
+    "Line counts are not minified and do not measure solver, shader, provider, transport, or backend code.",
+    "Runtime and build timing are measured separately because they are host dependent and are not sealed into this deterministic result."
+  ],
+  "measuredGeneratedSurface": {
+    "artifactCount": 9,
+    "generatorOwnedRepresentationCount": 9,
+    "specializationBytes": 26052,
+    "specializationLines": 848
+  },
+  "measuredSource": {
+    "authoredRepresentationCount": 1,
+    "declarationBytes": 5799,
+    "declarationLines": 177
+  },
+  "method": "physical non-blank source lines and exact stable-identifier occurrences over the verified declaration and its generated specialization bundle",
+  "reduction": {
+    "manuallyMaintainedSpecializationLinesAvoided": 848,
+    "netAuthoredLineDelta": 671,
+    "netAuthoredLineReductionBasisPoints": 7913,
+    "netAuthoredLines": 177
+  },
+  "semanticDuplication": {
+    "declarationIdentifierOccurrences": 30,
+    "generatedIdentifierOccurrences": 89,
+    "repeatedOccurrencesMovedBehindGenerator": 59,
+    "stableIdentifierCount": 23
+  }
+}

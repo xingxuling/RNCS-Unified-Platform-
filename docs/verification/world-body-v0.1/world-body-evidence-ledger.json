@@ -11,13 +11,14 @@
     {
       "claim": "World Body IR and generated example are deterministically sealed",
       "evidenceFile": "codegen-evidence.json",
-      "evidenceRoot": "d75cdb1879132612b19e2b459328b5e514955c5fd79689cdd892aeb73d989650",
+      "evidenceRoot": "e759ec57e35210d8f0af5129072b085b80b5d39d3f3cc40c432d2ab0791f8d74",
       "id": "WB-E01",
       "status": "PASS"
     },
     {
       "claim": "RSR, VSR, and joint executable theorem receipts close their declared reference scope",
       "evidenceFile": "formal-proof-bundles.json",
+      "evidenceRoot": "906f5d120038a460c57f00f89d758450c3fd60565509aab587ec294a00d62bf1",
       "id": "WB-E02",
       "observations": {
         "FAIL": 0,
@@ -30,7 +31,7 @@
     {
       "claim": "The exercised RCL kernel has reference and native VM parity",
       "evidenceFile": "rcl-kernel-evidence.json",
-      "evidenceRoot": "66beeab32d4392f4afc551809c3841dc6610586daae1bf85924bcfe60ad2ce37",
+      "evidenceRoot": "62abb1d541bbab4378d049323401796e42e0404cb9e8da241965104d39a77111",
       "id": "WB-E03",
       "status": "PASS"
     },
@@ -44,12 +45,20 @@
     {
       "claim": "External backends and target hardware are fully differentially equivalent",
       "evidenceFile": "external-boundaries.json",
+      "evidenceRoot": "6f78dd8db6e81ffd656789ab03940a39a6f840565336d39cc62239feef919bb6",
       "id": "WB-E05",
       "status": "UNVERIFIED"
+    },
+    {
+      "claim": "One declaration moves measured specialization lines and repeated identifiers behind deterministic generation",
+      "evidenceFile": "code-reduction-evidence.json",
+      "evidenceRoot": "ffb96d2bef46a11452c3e9861f13190653492b6748f5c3bed1508802ab5bc2cb",
+      "id": "WB-E06",
+      "status": "PASS"
     }
   ],
   "format": "taowind.world-body-evidence-ledger.v0.1",
-  "ledgerRoot": "e521aad7cc1b0387513f7a82377bfb8ce947f21e4a172c7740802d2df8232b32",
+  "ledgerRoot": "0e4134efccc3cc220d715db954a6cfe9c422a027a622b5d40fa6cf0d05e4eefa",
   "maturity": {
     "hasFullProductionDifferential": false,
     "missingExternalBackendIds": [

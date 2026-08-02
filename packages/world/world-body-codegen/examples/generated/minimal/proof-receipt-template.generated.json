@@ -1,0 +1,33 @@
+{
+  "authority": "evidence-template-only-no-commit",
+  "format": "taowind.world-body-generated-proof-receipt-template.v0.1",
+  "generatedArtifactPaths": [
+    "event-routes.generated.json",
+    "render-graph.generated.json",
+    "rsr-world-config.generated.mjs",
+    "temporal-network.generated.mjs",
+    "vsr-bindings.generated.mjs",
+    "world-body.generated.rcl",
+    "world-body.ir.json"
+  ],
+  "obligations": [
+    {
+      "claim": "generated artifacts preserve the declared World Body root",
+      "id": "WB-GEN-01",
+      "status": "PENDING_EXECUTION"
+    },
+    {
+      "claim": "generated RSR/VSR bindings preserve authority non-interference",
+      "id": "WB-GEN-02",
+      "status": "PENDING_EXECUTION"
+    },
+    {
+      "claim": "generated network and rollback payloads verify their roots",
+      "id": "WB-GEN-03",
+      "status": "PENDING_EXECUTION"
+    }
+  ],
+  "sourceAuthorityRoot": "830bf41ed94bdb6b2e2e1d706d32300600afd72cbe423c02781498bc74b8221a",
+  "status": "CANDIDATE",
+  "subjectRoot": "72e39c0d4be74c2caafa386f61966900446687a4e7c9ab09c0cca5ab0cdae709"
+}
