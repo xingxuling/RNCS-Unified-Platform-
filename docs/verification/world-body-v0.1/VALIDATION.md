@@ -30,6 +30,15 @@ The network suite includes deterministic fault injection for loss, reordering, r
 
 `npm run modules` listed all six new registry entries, and `npm run health` finished `healthy` across all 18 gateway-discovered runtimes after their tracked source directories were included in the sparse checkout.
 
+## Pull-request CI entrypoint repair
+
+The first PR run exposed two pre-existing workflow wiring failures rather than World Body theorem or differential failures:
+
+- the Windows job called a missing root `verify:native-boundary` script even though the RCL workspace already owned that verifier;
+- the Linux execution-plane job ran gateway tests after `npm ci --ignore-scripts` but before building the VSR distribution imported by the Aether bridge.
+
+The root scripts now delegate to the existing RCL native-boundary verifier and build VSR before gateway tests. The exact local gates then passed: gateway `26/26`, and the Windows boundary returned `NATIVE_WINDOWS_VERIFIED`. This verifies the checked native executable and smoke path; it still does not claim a local native source rebuild.
+
 `npm audit --omit=dev --audit-level=high` reported three pre-existing production dependency findings outside the six new packages: one high-severity `fast-uri 3.1.3` advisory and two moderate findings on the `@modelcontextprotocol/sdk 1.29.0 -> @hono/node-server 1.x` MCP chain. The audit dry-run offered no non-forced lock-only change; the Hono fix requires moving the MCP SDK beyond its exact declared version. This candidate does not use `npm audit fix --force` or mix an untested MCP upgrade into the World Body change. A focused MCP dependency upgrade remains a release follow-up.
 
 ## Test-environment notes

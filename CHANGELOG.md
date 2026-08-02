@@ -6,6 +6,7 @@
 - Added `@taowind/world-body-codegen`: one World Declaration deterministically emits WBIR, RSR configuration, VSR/temporal bindings, render/event plans, and an RCL candidate artifact.
 - Added a selected production differential through the actual RSR `0.9.0-alpha.1` and VSR `0.8.0-alpha.1` exports. This is F4.5 partial production parity, not real GPU, external physics, distributed-network, provider, or target-hardware equivalence.
 - Added reproducible evidence generation and `npm run verify:world-body`; no existing suite, RSR, or VSR version was rewritten.
+- Repaired two pre-existing CI entrypoint gaps exposed by the candidate: the root now delegates `verify:native-boundary` to RCL, and `test:gateway` builds its required VSR distribution before importing the Aether bridge.
 
 # v0.19.8-alpha.1 — RCL Native Gateway Fusion
 
