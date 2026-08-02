@@ -1,0 +1,37 @@
+{
+  "backends": [
+    {
+      "id": "external-physics-engine",
+      "reason": "PhysX, Jolt, Chaos, Unity, and Unreal were not executed",
+      "status": "UNVERIFIED"
+    },
+    {
+      "id": "full-world-body-native-vm",
+      "reason": "The exercised RCL subset passed, but the complete JavaScript World Body validator and provider surface are not implemented in the native VM",
+      "status": "UNVERIFIED"
+    },
+    {
+      "id": "production-asset-provider",
+      "reason": "No production asset store or streaming provider run",
+      "status": "UNVERIFIED"
+    },
+    {
+      "id": "real-distributed-network",
+      "reason": "No real lossy transport or distributed recovery run",
+      "status": "UNVERIFIED"
+    },
+    {
+      "id": "target-browser-gpu-pixels",
+      "reason": "No real browser adapter, texture path, shadow capture, or pixel oracle run",
+      "status": "UNVERIFIED"
+    },
+    {
+      "id": "target-hardware-performance",
+      "reason": "No target hardware performance budget run",
+      "status": "UNVERIFIED"
+    }
+  ],
+  "evidenceRoot": "6f78dd8db6e81ffd656789ab03940a39a6f840565336d39cc62239feef919bb6",
+  "format": "taowind.world-body-external-boundaries.v0.1",
+  "status": "UNVERIFIED"
+}

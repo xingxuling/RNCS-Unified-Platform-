@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/world-body-joint-transition.v0.1.schema.json",
+  "title": "World Body Joint Transition v0.1",
+  "type": "object",
+  "required": [
+    "format", "theoryVersion", "beforeWorldBodyRoot", "beforeAuthorityRoot",
+    "afterWorldBodyRoot", "afterAuthorityRoot", "afterPhysicalRoot", "presentationRoot",
+    "presentationSourceAuthorityRoot", "presentationSourcePhysicalRoot", "commandRoot", "transitionRoot"
+  ],
+  "properties": {
+    "format": { "const": "taowind.world-body-joint-transition.v0.1" },
+    "theoryVersion": { "const": "0.1.0-alpha.1" },
+    "beforeWorldBodyRoot": { "$ref": "#/$defs/root" },
+    "beforeAuthorityRoot": { "$ref": "#/$defs/root" },
+    "afterWorldBodyRoot": { "$ref": "#/$defs/root" },
+    "afterAuthorityRoot": { "$ref": "#/$defs/root" },
+    "afterPhysicalRoot": { "$ref": "#/$defs/root" },
+    "presentationRoot": { "$ref": "#/$defs/root" },
+    "presentationSourceAuthorityRoot": { "$ref": "#/$defs/root" },
+    "presentationSourcePhysicalRoot": { "$ref": "#/$defs/root" },
+    "commandRoot": { "$ref": "#/$defs/root" },
+    "transitionRoot": { "$ref": "#/$defs/root" }
+  },
+  "$defs": { "root": { "type": "string", "pattern": "^[a-f0-9]{64}$" } },
+  "additionalProperties": true
+}

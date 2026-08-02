@@ -1,0 +1,11 @@
+{
+  "format": "rncs.module.v0.1",
+  "id": "rsr-formal-theory",
+  "name": "RSR Five-Level Formal Theory",
+  "version": "0.1.0-alpha.1",
+  "layer": "world",
+  "runtime": "rncs.rsr-formal-theory",
+  "protocols": ["taowind.rsr-formal-theory.v0.1"],
+  "authority": "verification-only-no-commit",
+  "dependsOn": ["world-body-formal-kernel", "world-body-ir", "rsr"]
+}

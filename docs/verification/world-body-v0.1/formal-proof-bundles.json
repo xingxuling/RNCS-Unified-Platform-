@@ -1,0 +1,1199 @@
+{
+  "allBundlesVerified": true,
+  "baseline": {
+    "branch": "main-95",
+    "commit": "da9d2da3f8b46f40972c06d3f0f24b1e2b5b20f4",
+    "rncsSuiteVersion": "0.19.8-alpha.1",
+    "rsrPackageVersion": "0.9.0-alpha.1",
+    "vsrPackageVersion": "0.8.0-alpha.1"
+  },
+  "bundles": [
+    {
+      "bundleRoot": "c66a4dfe73f22a51d291b7d3d44ed798ff564b48274d91bcc6ef48c4850ce18d",
+      "counts": {
+        "FAIL": 0,
+        "PASS": 17,
+        "UNVERIFIED": 1
+      },
+      "domain": "RSR",
+      "format": "taowind.formal-proof-bundle.v0.1",
+      "kernelVersion": "0.1.0-alpha.1",
+      "receiptRoots": [
+        "ee2ba43353ef9c824b11d36e3d8d86f2a2294f06418570c6c8370b6d24b5cf2d",
+        "3628f640d61622441b70a9bad0851087d6476a26bb369a83377e454276949112",
+        "6dd016cd55e6c400e78c2b24416130affeb06e2932a47e828432f2fa25b8c279",
+        "5f12c14c2cce2eb236d051b7a3a2435e37ef45cf8df3f981c3eb1e9f66d8f4ce",
+        "e3a130c43c8fe4ee006be68a4a833eb1cd8eec8fbe8f27c9f01c2ca5aaeb5e6a",
+        "35bbec1e5b2d8a239b5041ca061ef67e9704e38738f39a19f6c877674f601be5",
+        "600daee39c9fd92afebb8279aa6e20ab4272e5640c437613942575d32caceab5",
+        "1f92cf8bb5feedcd982e6d60623e1add7d5e8a2d1a35659f99f2253d30dc348d",
+        "9c5283c5e8d60ff6c43f52347257767f83212d5751c3da9ea6dfc71933f83310",
+        "5d4bf9fa78e4e85aa67052c6bd8ffa17c099adb6cb9180646f5934165d1a6727",
+        "7e194f78858deaabd2a4397825027e1d137d7fa83587ebbd8cfe724c9bfda516",
+        "1d345280ef2c3fabdb764719cd7025d6517bc540e7b509da2807be8a6670b09d",
+        "df3a11c8dfd48c9630f8d2039165cb5acedfa68bf48879b514934c16f21fe138",
+        "9efab410c536115e3b7b909bd7323a39d98591e4e1320fa77de2d2103816d59d",
+        "6f53813c7fad209d53e11efba68f69c884eefd31163c913272444c4628521349",
+        "961a2dd5330e80a6546919d5bc428f7a693fa71b3eaccf855bd85966987f7f33",
+        "8741592a7cb0658ff0a926482552b28f8b948cf24863caa9b51320c769e9afb6",
+        "0e0932a6805a375f267f823ac73754acdb4383670fad02cac75df182db3b93a7"
+      ],
+      "receipts": [
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "worldBodyRoot": "72e39c0d4be74c2caafa386f61966900446687a4e7c9ab09c0cca5ab0cdae709"
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "d38d13c0d943cd5bf7b6f922cc3ae96bd6f1a46a330fd34ab6ea867b7c37a19f",
+          "theorem": {
+            "assumptions": [
+              "World Body IR v0.1 runtime validator is normative"
+            ],
+            "classification": "EXACT",
+            "domain": "RSR",
+            "id": "RSR-T1.1",
+            "level": 1,
+            "statement": "Every RSR reference state originates from a verified World Body IR with stable identities and roots.",
+            "title": "World-body physical well-formedness"
+          },
+          "witnessRoot": "ee2ba43353ef9c824b11d36e3d8d86f2a2294f06418570c6c8370b6d24b5cf2d"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "stateRoot": "121fe4239de5eea0f442422717062942aa7e702ac4d24780591125da83e0f0da"
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "d38d13c0d943cd5bf7b6f922cc3ae96bd6f1a46a330fd34ab6ea867b7c37a19f",
+          "theorem": {
+            "assumptions": [
+              "All quantities use safe integers or canonical strings"
+            ],
+            "classification": "EXACT",
+            "domain": "RSR",
+            "id": "RSR-T1.2",
+            "level": 1,
+            "statement": "A normalized physical state has exactly one canonical SHA-256 state root.",
+            "title": "Canonical physical state root"
+          },
+          "witnessRoot": "3628f640d61622441b70a9bad0851087d6476a26bb369a83377e454276949112"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "bodyCount": 2
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "d38d13c0d943cd5bf7b6f922cc3ae96bd6f1a46a330fd34ab6ea867b7c37a19f",
+          "theorem": {
+            "assumptions": [],
+            "classification": "EXACT",
+            "domain": "RSR",
+            "id": "RSR-T1.3",
+            "level": 1,
+            "statement": "Body identifiers and fixture identifiers are unique in their declared scopes.",
+            "title": "Unique body and fixture identity"
+          },
+          "witnessRoot": "6dd016cd55e6c400e78c2b24416130affeb06e2932a47e828432f2fa25b8c279"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "staticBodyCount": 1
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "d38d13c0d943cd5bf7b6f922cc3ae96bd6f1a46a330fd34ab6ea867b7c37a19f",
+          "theorem": {
+            "assumptions": [
+              "No authority teleport command targets static bodies"
+            ],
+            "classification": "EXACT",
+            "domain": "RSR",
+            "id": "RSR-T2.1",
+            "level": 2,
+            "statement": "A fixed-step transition does not change a static body transform.",
+            "title": "Static body immutability"
+          },
+          "witnessRoot": "5f12c14c2cce2eb236d051b7a3a2435e37ef45cf8df3f981c3eb1e9f66d8f4ce"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {},
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "d38d13c0d943cd5bf7b6f922cc3ae96bd6f1a46a330fd34ab6ea867b7c37a19f",
+          "theorem": {
+            "assumptions": [],
+            "classification": "EXACT",
+            "domain": "RSR",
+            "id": "RSR-T2.2",
+            "level": 2,
+            "statement": "Every dynamic body has strictly positive integral mass.",
+            "title": "Positive dynamic mass"
+          },
+          "witnessRoot": "e3a130c43c8fe4ee006be68a4a833eb1cd8eec8fbe8f27c9f01c2ca5aaeb5e6a"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "key": "fixture:a<->fixture:b"
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "d38d13c0d943cd5bf7b6f922cc3ae96bd6f1a46a330fd34ab6ea867b7c37a19f",
+          "theorem": {
+            "assumptions": [],
+            "classification": "EXACT",
+            "domain": "RSR",
+            "id": "RSR-T2.3",
+            "level": 2,
+            "statement": "The canonical contact identity is invariant under fixture order.",
+            "title": "Contact identity symmetry"
+          },
+          "witnessRoot": "35bbec1e5b2d8a239b5041ca061ef67e9704e38738f39a19f6c877674f601be5"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {},
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "d38d13c0d943cd5bf7b6f922cc3ae96bd6f1a46a330fd34ab6ea867b7c37a19f",
+          "theorem": {
+            "assumptions": [
+              "categoryBits and maskBits are non-negative integers"
+            ],
+            "classification": "EXACT",
+            "domain": "RSR",
+            "id": "RSR-T2.4",
+            "level": 2,
+            "statement": "A collision pair is enabled only when both category-mask directions admit the pair.",
+            "title": "Collision filter reciprocity"
+          },
+          "witnessRoot": "600daee39c9fd92afebb8279aa6e20ab4272e5640c437613942575d32caceab5"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "successorRoot": "806b31f14d70785f7c35e0f367abdcd0203a756a4bb927fd532173483f150a9a"
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "d38d13c0d943cd5bf7b6f922cc3ae96bd6f1a46a330fd34ab6ea867b7c37a19f",
+          "theorem": {
+            "assumptions": [
+              "Reference transition uses safe-integer fixed-step arithmetic"
+            ],
+            "classification": "EXACT",
+            "domain": "RSR",
+            "id": "RSR-T3.1",
+            "level": 3,
+            "statement": "Equal normalized state and command inputs produce equal successor roots.",
+            "title": "Fixed-step transition determinism"
+          },
+          "witnessRoot": "1f92cf8bb5feedcd982e6d60623e1add7d5e8a2d1a35659f99f2253d30dc348d"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "tick": 13
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "d38d13c0d943cd5bf7b6f922cc3ae96bd6f1a46a330fd34ab6ea867b7c37a19f",
+          "theorem": {
+            "assumptions": [
+              "Inputs remain within JavaScript safe-integer range"
+            ],
+            "classification": "EXACT",
+            "domain": "RSR",
+            "id": "RSR-T3.2",
+            "level": 3,
+            "statement": "The reference transition maps the integer state domain back into the integer state domain.",
+            "title": "Integer state closure"
+          },
+          "witnessRoot": "9c5283c5e8d60ff6c43f52347257767f83212d5751c3da9ea6dfc71933f83310"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "snapshotRoot": "f73277d21eb942435eecc9577d7b70664e0321f34fb1c8315f2ebc2105bd41d7"
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "d38d13c0d943cd5bf7b6f922cc3ae96bd6f1a46a330fd34ab6ea867b7c37a19f",
+          "theorem": {
+            "assumptions": [],
+            "classification": "EXACT",
+            "domain": "RSR",
+            "id": "RSR-T3.3",
+            "level": 3,
+            "statement": "A valid sealed snapshot restores the exact state root.",
+            "title": "Snapshot restoration identity"
+          },
+          "witnessRoot": "5d4bf9fa78e4e85aa67052c6bd8ffa17c099adb6cb9180646f5934165d1a6727"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "eventCount": 1
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "d38d13c0d943cd5bf7b6f922cc3ae96bd6f1a46a330fd34ab6ea867b7c37a19f",
+          "theorem": {
+            "assumptions": [],
+            "classification": "EXACT",
+            "domain": "RSR",
+            "id": "RSR-T3.4",
+            "level": 3,
+            "statement": "Authoritative event exactly-once keys are unique and bound to the active authority root.",
+            "title": "Event identity uniqueness"
+          },
+          "witnessRoot": "7e194f78858deaabd2a4397825027e1d137d7fa83587ebbd8cfe724c9bfda516"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "replayRoot": "806b31f14d70785f7c35e0f367abdcd0203a756a4bb927fd532173483f150a9a"
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "d38d13c0d943cd5bf7b6f922cc3ae96bd6f1a46a330fd34ab6ea867b7c37a19f",
+          "theorem": {
+            "assumptions": [
+              "Commands carry stable tick, sequence, and id"
+            ],
+            "classification": "EXACT",
+            "domain": "RSR",
+            "id": "RSR-T4.1",
+            "level": 4,
+            "statement": "Replay from one state with one command multiset converges to one successor root.",
+            "title": "Deterministic replay"
+          },
+          "witnessRoot": "1d345280ef2c3fabdb764719cd7025d6517bc540e7b509da2807be8a6670b09d"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "frameRoot": "5293ee6f4fab3209d6efa7cb0ac50038bfa1c31eb925859cf77ba704e07b9120",
+            "objectCount": 2
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "d38d13c0d943cd5bf7b6f922cc3ae96bd6f1a46a330fd34ab6ea867b7c37a19f",
+          "theorem": {
+            "assumptions": [],
+            "classification": "EXACT",
+            "domain": "RSR",
+            "id": "RSR-T4.2",
+            "level": 4,
+            "statement": "An authority frame root commits to every normalized body root.",
+            "title": "Nested authority body-root binding"
+          },
+          "witnessRoot": "df3a11c8dfd48c9630f8d2039165cb5acedfa68bf48879b514934c16f21fe138"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {},
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "d38d13c0d943cd5bf7b6f922cc3ae96bd6f1a46a330fd34ab6ea867b7c37a19f",
+          "theorem": {
+            "assumptions": [
+              "World Body authority and presentation roots remain separate"
+            ],
+            "classification": "EXACT",
+            "domain": "RSR",
+            "id": "RSR-T4.3",
+            "level": 4,
+            "statement": "The physical authority state contains no visual mesh, material, shader, camera, or observer fields.",
+            "title": "Presentation exclusion from authority state"
+          },
+          "witnessRoot": "9efab410c536115e3b7b909bd7323a39d98591e4e1320fa77de2d2103816d59d"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "tickHz": 60
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "d38d13c0d943cd5bf7b6f922cc3ae96bd6f1a46a330fd34ab6ea867b7c37a19f",
+          "theorem": {
+            "assumptions": [
+              "No acceleration or collision impulse in the reference step",
+              "Rounding error is at most half a millimetre per axis"
+            ],
+            "classification": "BOUNDED_NUMERIC",
+            "domain": "RSR",
+            "id": "RSR-T4.4",
+            "level": 4,
+            "statement": "Per-axis displacement equals rounded velocity divided by tick rate for a command-free dynamic step.",
+            "title": "Bounded fixed-step displacement"
+          },
+          "witnessRoot": "6f53813c7fad209d53e11efba68f69c884eefd31163c913272444c4628521349"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "toleranceMm": 0
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "d38d13c0d943cd5bf7b6f922cc3ae96bd6f1a46a330fd34ab6ea867b7c37a19f",
+          "theorem": {
+            "assumptions": [
+              "Observable scope is worldId, tick, body identity, kind, and position"
+            ],
+            "classification": "EXACT",
+            "domain": "RSR",
+            "id": "RSR-T5.1",
+            "level": 5,
+            "statement": "The declared RSR observational refinement relation is reflexive at zero positional tolerance.",
+            "title": "Refinement relation reflexivity"
+          },
+          "witnessRoot": "961a2dd5330e80a6546919d5bc428f7a693fa71b3eaccf855bd85966987f7f33"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "adapter": "reference-fixture",
+            "toleranceMm": 0
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "d38d13c0d943cd5bf7b6f922cc3ae96bd6f1a46a330fd34ab6ea867b7c37a19f",
+          "theorem": {
+            "assumptions": [
+              "The production adapter is total for the selected observable scope",
+              "Tolerance is declared, not inferred"
+            ],
+            "classification": "CONDITIONAL",
+            "domain": "RSR",
+            "id": "RSR-T5.2",
+            "level": 5,
+            "statement": "Any implementation trace satisfying the declared relation preserves the selected RSR observables within its explicit bound.",
+            "title": "Adapter refinement sufficiency"
+          },
+          "witnessRoot": "8741592a7cb0658ff0a926482552b28f8b948cf24863caa9b51320c769e9afb6"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {},
+          "reason": "external backend was not executed",
+          "status": "UNVERIFIED",
+          "subjectRoot": "d38d13c0d943cd5bf7b6f922cc3ae96bd6f1a46a330fd34ab6ea867b7c37a19f",
+          "theorem": {
+            "assumptions": [
+              "A real target backend and differential adapter are executed"
+            ],
+            "classification": "UNVERIFIED_EXTERNAL",
+            "domain": "RSR",
+            "id": "RSR-T5.3",
+            "level": 5,
+            "statement": "A target PhysX, Jolt, Chaos, Unity, or Unreal backend is observationally equivalent in the declared scope.",
+            "title": "External physics backend equivalence"
+          },
+          "witnessRoot": "0e0932a6805a375f267f823ac73754acdb4383670fad02cac75df182db3b93a7"
+        }
+      ],
+      "status": "PARTIAL",
+      "theoremCount": 18
+    },
+    {
+      "bundleRoot": "407f8943f04d3fcffead59e0a5587577e4501d280a21f257a65233926c70edba",
+      "counts": {
+        "FAIL": 0,
+        "PASS": 17,
+        "UNVERIFIED": 1
+      },
+      "domain": "VSR",
+      "format": "taowind.formal-proof-bundle.v0.1",
+      "kernelVersion": "0.1.0-alpha.1",
+      "receiptRoots": [
+        "4f7d1ec376c850dde870f22f9f00428de40f9046bf4de017a5b7784095c9f5a5",
+        "0b46e5192d66999a88b865aea599ca2a21fe6da0eaea542022fb44cbfc44a91b",
+        "e8f1296bdcb65c833c8ffce7e818db0386598f8237eb1d149773562774c3d162",
+        "dbb9313dfdeee8f03da09fd485ca3be3b4e1df31322007f73f8043849b5969ed",
+        "b0f68d0e3c75111fd3dc98e497dcaff9804e4147af7d0a77e2cf9dbb282d6831",
+        "eb5aa41a286680d388abf5705c9ee6306a0df6abf2ecb1228dab237faef7626f",
+        "426a9eeb7d9f5755416ecda317cc96658ff07c8769f29d0d8d7bc7f73bcf8f28",
+        "2b34e5b095afa0fbb0557147f2600ed10ad1bbd28f2ddc1e949a11a34f4f8e45",
+        "788c1867d0284ca5fbb2effae59904cb1a51cbfc785dd2485275db8f56dc5c17",
+        "1110d1a508df4df726663a15f7668c9c103bffd629aed1b32841f122d40e2108",
+        "428b9c43b7ddfaf647de7ef479b524aedc5710344fd9205dc3d7f60a1b91fcec",
+        "320b9ab9219d9da2fa25df6f7ad7a990a218e97ad598dd6de74b7c29c5c02b0e",
+        "511bd6e578b5b9bff6bf44d890f9df3671d455d355c2ef1b2e5ad8595a836424",
+        "b58ee2c3b45f9d85c72b113dd09184dff6b6f868cbae2897f14b8f144edcc5b4",
+        "e0cc42fe3354e54c17025f895bffa410b36c66ac5af3e064e8b0adb24a7a8a3a",
+        "d41b17fab2814fe5a006d67715a8f055d3ac2c50d4b02e28d7fcedee103ba189",
+        "11557b851855cf268b9696bfe3bab2e0912d002ca741483927229c8ad792accf",
+        "19ed7c2dbd0436530015003002333694c3e1556b67c49633f5b909605cadd8d8"
+      ],
+      "receipts": [
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "worldBodyRoot": "72e39c0d4be74c2caafa386f61966900446687a4e7c9ab09c0cca5ab0cdae709"
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "e20fe14cbda8918516b86c927a91d97d81a4b6e50ad05b65b5362b89f2018bd9",
+          "theorem": {
+            "assumptions": [
+              "World Body IR v0.1 runtime validator is normative"
+            ],
+            "classification": "EXACT",
+            "domain": "VSR",
+            "id": "VSR-T1.1",
+            "level": 1,
+            "statement": "Every VSR reference projection originates from a verified World Body IR.",
+            "title": "World-body visual well-formedness"
+          },
+          "witnessRoot": "4f7d1ec376c850dde870f22f9f00428de40f9046bf4de017a5b7784095c9f5a5"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "sourceAuthorityRoot": "1dcad4625497d3ef68436d799f0b6b7333d057a1a99e32c6c16499d07f556846"
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "e20fe14cbda8918516b86c927a91d97d81a4b6e50ad05b65b5362b89f2018bd9",
+          "theorem": {
+            "assumptions": [],
+            "classification": "EXACT",
+            "domain": "VSR",
+            "id": "VSR-T1.2",
+            "level": 1,
+            "statement": "Every projection carries the exact authority and physical source roots.",
+            "title": "Projection source binding"
+          },
+          "witnessRoot": "0b46e5192d66999a88b865aea599ca2a21fe6da0eaea542022fb44cbfc44a91b"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "assetCount": 2,
+            "objectCount": 2
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "e20fe14cbda8918516b86c927a91d97d81a4b6e50ad05b65b5362b89f2018bd9",
+          "theorem": {
+            "assumptions": [],
+            "classification": "EXACT",
+            "domain": "VSR",
+            "id": "VSR-T1.3",
+            "level": 1,
+            "statement": "Visual objects and assets have unique stable identities.",
+            "title": "Unique visual and asset identity"
+          },
+          "witnessRoot": "e8f1296bdcb65c833c8ffce7e818db0386598f8237eb1d149773562774c3d162"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "physicalRoot": "cfb0ee7220d3b3157d25e71c609b033221e00c3f12fc64a8886d21e9472b6407"
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "e20fe14cbda8918516b86c927a91d97d81a4b6e50ad05b65b5362b89f2018bd9",
+          "theorem": {
+            "assumptions": [
+              "Projection functions are pure"
+            ],
+            "classification": "EXACT",
+            "domain": "VSR",
+            "id": "VSR-T2.1",
+            "level": 2,
+            "statement": "Projection does not mutate authority or physical component roots.",
+            "title": "Authority non-interference"
+          },
+          "witnessRoot": "dbb9313dfdeee8f03da09fd485ca3be3b4e1df31322007f73f8043849b5969ed"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {},
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "e20fe14cbda8918516b86c927a91d97d81a4b6e50ad05b65b5362b89f2018bd9",
+          "theorem": {
+            "assumptions": [
+              "Presentation-only entities use the zero authority transform"
+            ],
+            "classification": "EXACT",
+            "domain": "VSR",
+            "id": "VSR-T2.2",
+            "level": 2,
+            "statement": "Every authoritative visual pose is the physical pose composed with the declared visual-only offset.",
+            "title": "BodyMap transform law"
+          },
+          "witnessRoot": "b0f68d0e3c75111fd3dc98e497dcaff9804e4147af7d0a77e2cf9dbb282d6831"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "observerCount": 1
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "e20fe14cbda8918516b86c927a91d97d81a4b6e50ad05b65b5362b89f2018bd9",
+          "theorem": {
+            "assumptions": [],
+            "classification": "EXACT",
+            "domain": "VSR",
+            "id": "VSR-T2.3",
+            "level": 2,
+            "statement": "Observer capability sets contain no write, commit, or authorization authority.",
+            "title": "Observer authority exclusion"
+          },
+          "witnessRoot": "eb5aa41a286680d388abf5705c9ee6306a0df6abf2ecb1228dab237faef7626f"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {},
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "e20fe14cbda8918516b86c927a91d97d81a4b6e50ad05b65b5362b89f2018bd9",
+          "theorem": {
+            "assumptions": [
+              "The reference frame requests only resident assets"
+            ],
+            "classification": "CONDITIONAL",
+            "domain": "VSR",
+            "id": "VSR-T2.4",
+            "level": 2,
+            "statement": "Every asset referenced by the reference projection is declared resident.",
+            "title": "Resident asset completeness"
+          },
+          "witnessRoot": "426a9eeb7d9f5755416ecda317cc96658ff07c8769f29d0d8d7bc7f73bcf8f28"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "projectionRoot": "c8889a911b14b497967c77e29c4d8f63204e4a070c6a20769718615e67587c25"
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "e20fe14cbda8918516b86c927a91d97d81a4b6e50ad05b65b5362b89f2018bd9",
+          "theorem": {
+            "assumptions": [],
+            "classification": "EXACT",
+            "domain": "VSR",
+            "id": "VSR-T3.1",
+            "level": 3,
+            "statement": "Equal World Body inputs produce equal presentation roots.",
+            "title": "Deterministic projection"
+          },
+          "witnessRoot": "2b34e5b095afa0fbb0557147f2600ed10ad1bbd28f2ddc1e949a11a34f4f8e45"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "samplePositionMm": {
+              "x": 60,
+              "y": -220,
+              "z": -15
+            }
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "e20fe14cbda8918516b86c927a91d97d81a4b6e50ad05b65b5362b89f2018bd9",
+          "theorem": {
+            "assumptions": [
+              "Sample fraction is in [0,1]"
+            ],
+            "classification": "BOUNDED_NUMERIC",
+            "domain": "VSR",
+            "id": "VSR-T3.2",
+            "level": 3,
+            "statement": "Every sampled position component lies in the closed interval between its two samples, up to integer rounding.",
+            "title": "Temporal interpolation bound"
+          },
+          "witnessRoot": "788c1867d0284ca5fbb2effae59904cb1a51cbfc785dd2485275db8f56dc5c17"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "appliedTicks": 2,
+            "maximumExtrapolationTicks": 2,
+            "requestedTicks": 8
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "e20fe14cbda8918516b86c927a91d97d81a4b6e50ad05b65b5362b89f2018bd9",
+          "theorem": {
+            "assumptions": [],
+            "classification": "EXACT",
+            "domain": "VSR",
+            "id": "VSR-T3.3",
+            "level": 3,
+            "statement": "Temporal extrapolation applies no more than maximumExtrapolationTicks.",
+            "title": "Bounded extrapolation"
+          },
+          "witnessRoot": "1110d1a508df4df726663a15f7668c9c103bffd629aed1b32841f122d40e2108"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "blendPlanRoot": "19d2b3be7fd674ad444d8d5fed7c3b22618b938eb810288ba497e0bb74a687ba",
+            "snapPlanRoot": "9930cbabf0d739b393110897bd8bd738dfbd03b8d2ef5b3842b0006f7be4e3c7"
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "e20fe14cbda8918516b86c927a91d97d81a4b6e50ad05b65b5362b89f2018bd9",
+          "theorem": {
+            "assumptions": [],
+            "classification": "EXACT",
+            "domain": "VSR",
+            "id": "VSR-T3.4",
+            "level": 3,
+            "statement": "Correction is none, blend, or snap according to the declared distance threshold.",
+            "title": "Deterministic correction partition"
+          },
+          "witnessRoot": "428b9c43b7ddfaf647de7ef479b524aedc5710344fd9205dc3d7f60a1b91fcec"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "graphCount": 1
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "e20fe14cbda8918516b86c927a91d97d81a4b6e50ad05b65b5362b89f2018bd9",
+          "theorem": {
+            "assumptions": [
+              "The World Body Render Graph validator is normative"
+            ],
+            "classification": "EXACT",
+            "domain": "VSR",
+            "id": "VSR-T4.1",
+            "level": 4,
+            "statement": "Every declared render graph is acyclic and free of initialization, ordering, and alias lifetime errors.",
+            "title": "Render graph safety"
+          },
+          "witnessRoot": "320b9ab9219d9da2fa25df6f7ad7a990a218e97ad598dd6de74b7c29c5c02b0e"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "barrierCount": 1
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "e20fe14cbda8918516b86c927a91d97d81a4b6e50ad05b65b5362b89f2018bd9",
+          "theorem": {
+            "assumptions": [],
+            "classification": "EXACT",
+            "domain": "VSR",
+            "id": "VSR-T4.2",
+            "level": 4,
+            "statement": "Every ordered read/write or write/write hazard has its deterministic declared barrier and no unjustified barrier.",
+            "title": "Barrier completeness"
+          },
+          "witnessRoot": "511bd6e578b5b9bff6bf44d890f9df3671d455d355c2ef1b2e5ad8595a836424"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "baseProjectionRoot": "c8889a911b14b497967c77e29c4d8f63204e4a070c6a20769718615e67587c25",
+            "variantProjectionRoot": "f2856dc07cc6a824692f89a757ee49f98de609a1c0a97569c05c83abaa122277"
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "e20fe14cbda8918516b86c927a91d97d81a4b6e50ad05b65b5362b89f2018bd9",
+          "theorem": {
+            "assumptions": [],
+            "classification": "EXACT",
+            "domain": "VSR",
+            "id": "VSR-T4.3",
+            "level": 4,
+            "statement": "A visual-only offset may change a projection root but cannot change its authority or physical source roots.",
+            "title": "Visual-offset source-root invariance"
+          },
+          "witnessRoot": "b58ee2c3b45f9d85c72b113dd09184dff6b6f868cbae2897f14b8f144edcc5b4"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "pbrQ": [
+              468000,
+              105300,
+              46800
+            ]
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "e20fe14cbda8918516b86c927a91d97d81a4b6e50ad05b65b5362b89f2018bd9",
+          "theorem": {
+            "assumptions": [
+              "This theorem covers only the declared diffuse reference term, not complete Cook-Torrance pixels"
+            ],
+            "classification": "BOUNDED_NUMERIC",
+            "domain": "VSR",
+            "id": "VSR-T4.4",
+            "level": 4,
+            "statement": "For normalized non-negative inputs, the scaled diffuse term is non-negative and bounded by incoming radiance.",
+            "title": "Non-negative bounded diffuse PBR"
+          },
+          "witnessRoot": "e0cc42fe3354e54c17025f895bffa410b36c66ac5af3e064e8b0adb24a7a8a3a"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "toleranceMm": 0
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "e20fe14cbda8918516b86c927a91d97d81a4b6e50ad05b65b5362b89f2018bd9",
+          "theorem": {
+            "assumptions": [
+              "Observable scope is authority root, entity identity, visual body identity, and position"
+            ],
+            "classification": "EXACT",
+            "domain": "VSR",
+            "id": "VSR-T5.1",
+            "level": 5,
+            "statement": "The declared VSR observable refinement relation is reflexive at zero positional tolerance.",
+            "title": "Projection refinement reflexivity"
+          },
+          "witnessRoot": "d41b17fab2814fe5a006d67715a8f055d3ac2c50d4b02e28d7fcedee103ba189"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "adapter": "reference-fixture",
+            "toleranceMm": 0
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "e20fe14cbda8918516b86c927a91d97d81a4b6e50ad05b65b5362b89f2018bd9",
+          "theorem": {
+            "assumptions": [
+              "The production adapter is total for the selected observable scope"
+            ],
+            "classification": "CONDITIONAL",
+            "domain": "VSR",
+            "id": "VSR-T5.2",
+            "level": 5,
+            "statement": "Any implementation projection satisfying the declared relation preserves selected VSR observables within its explicit bound.",
+            "title": "Adapter refinement sufficiency"
+          },
+          "witnessRoot": "11557b851855cf268b9696bfe3bab2e0912d002ca741483927229c8ad792accf"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {},
+          "reason": "external backend was not executed",
+          "status": "UNVERIFIED",
+          "subjectRoot": "e20fe14cbda8918516b86c927a91d97d81a4b6e50ad05b65b5362b89f2018bd9",
+          "theorem": {
+            "assumptions": [
+              "A real target adapter, texture path, shadows, pixel capture, and tolerance contract are executed"
+            ],
+            "classification": "UNVERIFIED_EXTERNAL",
+            "domain": "VSR",
+            "id": "VSR-T5.3",
+            "level": 5,
+            "statement": "A real browser/target GPU backend produces semantically and visually equivalent resources, commands, and pixels.",
+            "title": "External GPU and pixel equivalence"
+          },
+          "witnessRoot": "19ed7c2dbd0436530015003002333694c3e1556b67c49633f5b909605cadd8d8"
+        }
+      ],
+      "status": "PARTIAL",
+      "theoremCount": 18
+    },
+    {
+      "bundleRoot": "21c6f9b57e24896462580ece7763bf6e47053f184c8b9d7085c1987dc0b1020b",
+      "counts": {
+        "FAIL": 0,
+        "PASS": 9,
+        "UNVERIFIED": 1
+      },
+      "domain": "WORLD_BODY",
+      "format": "taowind.formal-proof-bundle.v0.1",
+      "kernelVersion": "0.1.0-alpha.1",
+      "receiptRoots": [
+        "05aeb86f0b04ab3fec9f2336c0ce59f99fc0fc80862356020a4ba7bc448bed19",
+        "fe1615c8bf92896f0c9feafe913b45a9ec1954ed1a3dd072253b2afecfd9a79f",
+        "3ed41265f0c46e84e5902f00fac88d880f68d1d19845d301048639b597b27288",
+        "e29377c5c5b1763443d180e63521dda7c9b1155115a4ce49c248023aa76924e9",
+        "a6de1a9daadf004c398820b79171cc01c1d9fdb3a95b3b04fc6427ec1a7571e8",
+        "4c4daa4b82e342d7d1f8205ade47714eb92ca0d76e51fe75f4990cc76aaf08aa",
+        "59d9d0cfb845b78fa4f1adc1ee986280ae487301122a55bd78b36032f6c0c874",
+        "40172fc09a3acdbe3638fc67c250484b42e43641b7b48464cba9eb53000aa08d",
+        "222f07e1a146a3c7601c342516a2633fd3918534747336b994333742b6e03199",
+        "11300fa2535eadb71da73fe7f7aea759b89e854419c254e93e0a0b3fcb3cd69d"
+      ],
+      "receipts": [
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "worldBodyRoot": "72e39c0d4be74c2caafa386f61966900446687a4e7c9ab09c0cca5ab0cdae709"
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "76725bd2c508f8b809c4c83e8e9768b7329077ecf0efc22aaec3417dcc674d79",
+          "theorem": {
+            "assumptions": [
+              "World Body IR v0.1 validator is normative"
+            ],
+            "classification": "EXACT",
+            "domain": "WORLD_BODY",
+            "id": "WB-T1",
+            "level": 1,
+            "statement": "A valid World Body document closes all seven root objects, BodyMap, Render Graph set, and the world root.",
+            "title": "Seven-root closure"
+          },
+          "witnessRoot": "05aeb86f0b04ab3fec9f2336c0ce59f99fc0fc80862356020a4ba7bc448bed19"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {},
+          "reason": "external backend was not executed",
+          "status": "UNVERIFIED",
+          "subjectRoot": "76725bd2c508f8b809c4c83e8e9768b7329077ecf0efc22aaec3417dcc674d79",
+          "theorem": {
+            "assumptions": [
+              "Real RCL VM, target physics/backend, network recovery, browser GPU, pixels, and target hardware are all executed with independent oracles"
+            ],
+            "classification": "UNVERIFIED_EXTERNAL",
+            "domain": "WORLD_BODY",
+            "id": "WB-T10",
+            "level": 5,
+            "statement": "The complete declaration-to-RSR-to-network-to-VSR-to-real-GPU/VM/backend chain is differentially equivalent in its declared production scope.",
+            "title": "Full external production differential"
+          },
+          "witnessRoot": "fe1615c8bf92896f0c9feafe913b45a9ec1954ed1a3dd072253b2afecfd9a79f"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "bindingCount": 2,
+            "physicalCoverage": 2,
+            "visualCoverage": 2
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "76725bd2c508f8b809c4c83e8e9768b7329077ecf0efc22aaec3417dcc674d79",
+          "theorem": {
+            "assumptions": [
+              "Presentation-only entities explicitly omit physicalBodyRef"
+            ],
+            "classification": "EXACT",
+            "domain": "WORLD_BODY",
+            "id": "WB-T2",
+            "level": 1,
+            "statement": "Each declared entity has at most one physical reference, exactly one visual reference, and exactly one temporal policy reference.",
+            "title": "BodyMap total functional binding"
+          },
+          "witnessRoot": "3ed41265f0c46e84e5902f00fac88d880f68d1d19845d301048639b597b27288"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "presentationRoot": "c8889a911b14b497967c77e29c4d8f63204e4a070c6a20769718615e67587c25"
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "76725bd2c508f8b809c4c83e8e9768b7329077ecf0efc22aaec3417dcc674d79",
+          "theorem": {
+            "assumptions": [
+              "Projection is pure and owns no commit capability"
+            ],
+            "classification": "EXACT",
+            "domain": "WORLD_BODY",
+            "id": "WB-T3",
+            "level": 2,
+            "statement": "Presentation binds authority and physical roots but cannot mutate either root.",
+            "title": "Authority-presentation non-interference"
+          },
+          "witnessRoot": "e29377c5c5b1763443d180e63521dda7c9b1155115a4ce49c248023aa76924e9"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "deliveryCount": 2,
+            "deliveryPlanRoot": "4f483e09163aca50683eed53da5be20f63cfec7abae63efc809be0e04b6fd963"
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "76725bd2c508f8b809c4c83e8e9768b7329077ecf0efc22aaec3417dcc674d79",
+          "theorem": {
+            "assumptions": [],
+            "classification": "EXACT",
+            "domain": "WORLD_BODY",
+            "id": "WB-T4",
+            "level": 2,
+            "statement": "Every routed event delivery has one authority source and one unique delivery key; no route owns authority.",
+            "title": "Single-source exactly-once event routing"
+          },
+          "witnessRoot": "a6de1a9daadf004c398820b79171cc01c1d9fdb3a95b3b04fc6427ec1a7571e8"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "transitionRoot": "adf1c9117a09b52d5b942d2a3961911a6683d65e98229a3c69b21612d38a37e2"
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "76725bd2c508f8b809c4c83e8e9768b7329077ecf0efc22aaec3417dcc674d79",
+          "theorem": {
+            "assumptions": [
+              "The transition adapter reseals World Body IR before projection"
+            ],
+            "classification": "EXACT",
+            "domain": "WORLD_BODY",
+            "id": "WB-T5",
+            "level": 3,
+            "statement": "After a physical transition, the projection source roots equal the new authority and physical roots.",
+            "title": "Commuting authority-to-presentation transition"
+          },
+          "witnessRoot": "4c4daa4b82e342d7d1f8205ade47714eb92ca0d76e51fe75f4990cc76aaf08aa"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "snapshotRoot": "39bf75446689405bddd457bd69a2f78662b94ebb01e7310704ad000a2546db5b"
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "76725bd2c508f8b809c4c83e8e9768b7329077ecf0efc22aaec3417dcc674d79",
+          "theorem": {
+            "assumptions": [],
+            "classification": "EXACT",
+            "domain": "WORLD_BODY",
+            "id": "WB-T6",
+            "level": 3,
+            "statement": "Restoring a sealed physical snapshot recovers the exact post-transition state root without changing the base World Body root.",
+            "title": "Snapshot rollback identity"
+          },
+          "witnessRoot": "59d9d0cfb845b78fa4f1adc1ee986280ae487301122a55bd78b36032f6c0c874"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "renderGraphRoots": [
+              "f96f8f7252e0ecc39507964f99206bba06d3e6a7edc58763f17aeb056a33cb12"
+            ]
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "76725bd2c508f8b809c4c83e8e9768b7329077ecf0efc22aaec3417dcc674d79",
+          "theorem": {
+            "assumptions": [
+              "World Body Render Graph validator is normative"
+            ],
+            "classification": "EXACT",
+            "domain": "WORLD_BODY",
+            "id": "WB-T7",
+            "level": 4,
+            "statement": "Every World Body render graph is a valid DAG with initialized resources, ordered hazards, disjoint aliases, and complete barriers.",
+            "title": "Generated render-graph safety closure"
+          },
+          "witnessRoot": "40172fc09a3acdbe3638fc67c250484b42e43641b7b48464cba9eb53000aa08d"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "branchRoots": [
+              "e7180ca87454777584bbbe1c24ce5c174e96cf06339e9c2ccb73bf3884630ca5",
+              "7f46252a5fe82af6bc9883a5dacf1bae21868b1a0d1254d0d1cee8fc724b58fc"
+            ]
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "76725bd2c508f8b809c4c83e8e9768b7329077ecf0efc22aaec3417dcc674d79",
+          "theorem": {
+            "assumptions": [
+              "Branches are candidate-only until an external authority commit"
+            ],
+            "classification": "EXACT",
+            "domain": "WORLD_BODY",
+            "id": "WB-T8",
+            "level": 4,
+            "statement": "Candidate branches share one immutable base root, diverge by their commands, and observer filtering changes no authority root.",
+            "title": "Branch and observer isolation"
+          },
+          "witnessRoot": "222f07e1a146a3c7601c342516a2633fd3918534747336b994333742b6e03199"
+        },
+        {
+          "evidenceClass": "REFERENCE_EXECUTION",
+          "format": "taowind.formal-theorem-receipt.v0.1",
+          "implementation": "reference",
+          "kernelVersion": "0.1.0-alpha.1",
+          "observations": {
+            "rsrToleranceMm": 0,
+            "vsrToleranceMm": 0
+          },
+          "reason": null,
+          "status": "PASS",
+          "subjectRoot": "76725bd2c508f8b809c4c83e8e9768b7329077ecf0efc22aaec3417dcc674d79",
+          "theorem": {
+            "assumptions": [
+              "RSR and VSR adapters are total for their declared observables",
+              "Tolerance bounds are explicit"
+            ],
+            "classification": "CONDITIONAL",
+            "domain": "WORLD_BODY",
+            "id": "WB-T9",
+            "level": 5,
+            "statement": "If RSR and VSR refinement relations hold and the VSR source authority equals the implementation authority root, the selected joint observables refine.",
+            "title": "Compositional refinement"
+          },
+          "witnessRoot": "11300fa2535eadb71da73fe7f7aea759b89e854419c254e93e0a0b3fcb3cd69d"
+        }
+      ],
+      "status": "PARTIAL",
+      "theoremCount": 10
+    }
+  ],
+  "format": "taowind.world-body-proof-bundle-set.v0.1",
+  "totalCounts": {
+    "FAIL": 0,
+    "PASS": 43,
+    "UNVERIFIED": 3
+  }
+}

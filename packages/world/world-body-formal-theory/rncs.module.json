@@ -1,0 +1,11 @@
+{
+  "format": "rncs.module.v0.1",
+  "id": "world-body-formal-theory",
+  "name": "World Body Joint Formal Theory",
+  "version": "0.1.0-alpha.1",
+  "layer": "world",
+  "runtime": "rncs.world-body-formal-theory",
+  "protocols": ["taowind.world-body-joint-theory.v0.1"],
+  "authority": "verification-only-no-commit",
+  "dependsOn": ["world-body-formal-kernel", "world-body-ir", "rsr-formal-theory", "vsr-formal-theory", "world-body-codegen", "rsr", "vsr"]
+}

@@ -1,0 +1,12 @@
+reality GeneratedWorldBody_world_body_ir_demo {
+  facet world.id : Text = "world:body-ir-demo"
+  facet world.generation : Number = 3
+  facet world.revision : Number = 12
+  facet roots.world_body : Text = "72e39c0d4be74c2caafa386f61966900446687a4e7c9ab09c0cca5ab0cdae709"
+  facet roots.authority : Text = "830bf41ed94bdb6b2e2e1d706d32300600afd72cbe423c02781498bc74b8221a"
+  facet roots.physical : Text = "cfb0ee7220d3b3157d25e71c609b033221e00c3f12fc64a8886d21e9472b6407"
+  facet roots.visual : Text = "c4bd6c412e6c1786c68a77899aaa170736a98cae4e966e62b03fc546fb5a8847"
+  facet contract.entity_count : Number = 2
+  facet contract.candidate_only : Truth = true
+  facet contract.commit_authority : Truth = false
+}

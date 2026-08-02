@@ -1,0 +1,18 @@
+{
+  "format": "rncs.module.v0.1",
+  "id": "world-body-ir",
+  "name": "World Body IR",
+  "version": "0.1.0-alpha.1",
+  "layer": "world",
+  "runtime": "rncs.world-body-ir",
+  "protocols": [
+    "taowind.world-body-ir.v0.1",
+    "taowind.world-body-render-graph.v0.1"
+  ],
+  "authority": "candidate-only-no-commit",
+  "dependsOn": [
+    "rncs-core",
+    "rsr",
+    "vsr"
+  ]
+}

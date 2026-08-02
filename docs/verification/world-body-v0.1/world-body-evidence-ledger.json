@@ -1,0 +1,66 @@
+{
+  "authority": "evidence-only-no-commit",
+  "baseline": {
+    "branch": "main-95",
+    "commit": "da9d2da3f8b46f40972c06d3f0f24b1e2b5b20f4",
+    "rncsSuiteVersion": "0.19.8-alpha.1",
+    "rsrPackageVersion": "0.9.0-alpha.1",
+    "vsrPackageVersion": "0.8.0-alpha.1"
+  },
+  "entries": [
+    {
+      "claim": "World Body IR and generated example are deterministically sealed",
+      "evidenceFile": "codegen-evidence.json",
+      "evidenceRoot": "d75cdb1879132612b19e2b459328b5e514955c5fd79689cdd892aeb73d989650",
+      "id": "WB-E01",
+      "status": "PASS"
+    },
+    {
+      "claim": "RSR, VSR, and joint executable theorem receipts close their declared reference scope",
+      "evidenceFile": "formal-proof-bundles.json",
+      "id": "WB-E02",
+      "observations": {
+        "FAIL": 0,
+        "PASS": 43,
+        "UNVERIFIED": 3,
+        "allBundlesVerified": true
+      },
+      "status": "PASS"
+    },
+    {
+      "claim": "The exercised RCL kernel has reference and native VM parity",
+      "evidenceFile": "rcl-kernel-evidence.json",
+      "evidenceRoot": "66beeab32d4392f4afc551809c3841dc6610586daae1bf85924bcfe60ad2ce37",
+      "id": "WB-E03",
+      "status": "PASS"
+    },
+    {
+      "claim": "Generated specialization matches selected real RSR/VSR observables",
+      "evidenceFile": "production-differential.json",
+      "evidenceRoot": "5136ed32c931e4915f3aab1257154988d6b2384418103412a0757bddcfe83ed1",
+      "id": "WB-E04",
+      "status": "PASS"
+    },
+    {
+      "claim": "External backends and target hardware are fully differentially equivalent",
+      "evidenceFile": "external-boundaries.json",
+      "id": "WB-E05",
+      "status": "UNVERIFIED"
+    }
+  ],
+  "format": "taowind.world-body-evidence-ledger.v0.1",
+  "ledgerRoot": "e521aad7cc1b0387513f7a82377bfb8ce947f21e4a172c7740802d2df8232b32",
+  "maturity": {
+    "hasFullProductionDifferential": false,
+    "missingExternalBackendIds": [
+      "external-physics-engine",
+      "full-world-body-native-vm",
+      "production-asset-provider",
+      "real-distributed-network",
+      "target-browser-gpu-pixels",
+      "target-hardware-performance"
+    ],
+    "reason": "targeted production differential passed without a sealed full-production differential",
+    "verdict": "F4.5 Partial Production Parity"
+  }
+}

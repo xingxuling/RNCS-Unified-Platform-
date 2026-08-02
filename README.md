@@ -1,5 +1,7 @@
 # RNCS + Aetherworld Unified v0.19.8-alpha.1
 
+> Candidate extension on the `main-95` baseline: World Body IR v0.1 now provides one deterministic declaration path across authority, RSR physical bodies, VSR visual bodies, temporal presentation, assets, observers, events, and render graphs. It includes executable RSR/VSR five-level theories, a joint formal kernel, RCL reference/native-VM parity evidence, deterministic code generation, and a selected real RSR/VSR production differential. The honest maturity verdict is **F4.5 Partial Production Parity**; real GPU/pixels, external physics engines, lossy networks, production asset providers, and target-hardware performance remain unverified. Run `npm run verify:world-body` and see `docs/architecture/world-body-ir/`.
+
 本版本交付 **Aether Earth v0.1**：把 RCL/RNCS 的世界、100 个少数据生物、RCLpedia、时间加速、现实压缩、科学证据与集体智能结晶化组合为一个可运行产品。
 
 ## 本版核心结果

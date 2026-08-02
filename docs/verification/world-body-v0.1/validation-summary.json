@@ -1,0 +1,26 @@
+{
+  "allProofBundlesVerified": true,
+  "baseline": {
+    "branch": "main-95",
+    "commit": "da9d2da3f8b46f40972c06d3f0f24b1e2b5b20f4",
+    "rncsSuiteVersion": "0.19.8-alpha.1",
+    "rsrPackageVersion": "0.9.0-alpha.1",
+    "vsrPackageVersion": "0.8.0-alpha.1"
+  },
+  "codegenArtifactCount": 7,
+  "evidenceRoot": "bd49d7f8bc275bb852c7db3a358b9d80b82fe4a4fa95d6158163ce348895c9d9",
+  "format": "taowind.world-body-validation-summary.v0.1",
+  "productionDifferentialChecks": {
+    "failed": 0,
+    "passed": 12
+  },
+  "rclCheckCount": 10,
+  "status": "PASS_WITH_EXTERNAL_BOUNDARIES",
+  "theoremCounts": {
+    "FAIL": 0,
+    "PASS": 43,
+    "UNVERIFIED": 3
+  },
+  "verdict": "F4.5 Partial Production Parity",
+  "verdictReason": "targeted production differential passed without a sealed full-production differential"
+}

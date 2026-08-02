@@ -1,0 +1,30 @@
+{
+  "checks": {
+    "externalBoundaryPreserved": true,
+    "nativeAuthorityPreserved": true,
+    "nativeCandidateBoundaryPreserved": true,
+    "nativeReferenceParity": true,
+    "nativeStateRootVerified": true,
+    "referenceAuthorityPreserved": true,
+    "referenceCandidateBoundaryPreserved": true,
+    "referenceCheckExecutedOnce": true,
+    "referenceKernelVerified": true,
+    "sourceIsRclReality": true
+  },
+  "evidenceRoot": "66beeab32d4392f4afc551809c3841dc6610586daae1bf85924bcfe60ad2ce37",
+  "format": "taowind.world-body-rcl-kernel-evidence.v0.1",
+  "limitations": [
+    "Does not prove the JavaScript World Body validator is implemented inside RCL.",
+    "Does not prove unexecuted GPU, VM Provider, physics backend, network, database, filesystem, or device behavior.",
+    "Preserves RNCS authority outside this verification kernel."
+  ],
+  "nativeStateRoot": "4bf224ac9e38f197f31509e92a83a4e179d28c6d43e8bb8979d213d8befa4a12",
+  "nativeStateRootAlgorithm": "rcl.semantic-state-root.v1",
+  "packageVersion": "0.1.0-alpha.1",
+  "programName": "WorldBodyFormalKernel",
+  "rclLanguageVersion": "0.14.0-alpha.1",
+  "referenceStateRoot": "4bf224ac9e38f197f31509e92a83a4e179d28c6d43e8bb8979d213d8befa4a12",
+  "scope": "RCL source compile plus reference/native execution parity for the exercised WorldBodyFormalKernel subset",
+  "sourceRoot": "4de1913784c13144f66c5550ad4c8143dc3eb532866c9a8339b96e4688206069",
+  "status": "PASS"
+}

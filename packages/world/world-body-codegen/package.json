@@ -1,0 +1,20 @@
+{
+  "name": "@taowind/world-body-codegen",
+  "version": "0.1.0-alpha.1",
+  "description": "Deterministic World Declaration to World Body IR and RSR/VSR specialization generator.",
+  "type": "module",
+  "main": "./src/index.mjs",
+  "exports": { ".": "./src/index.mjs" },
+  "bin": { "world-body-codegen": "./src/cli.mjs" },
+  "files": ["src", "schemas", "examples", "README.md", "rncs.module.json"],
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "generate:example": "node src/cli.mjs examples/minimal-world.declaration.json examples/generated/minimal"
+  },
+  "dependencies": {
+    "@taowind/reality-computation-language": "0.94.0-alpha.1",
+    "@taowind/world-body-ir": "0.1.0-alpha.1"
+  },
+  "engines": { "node": ">=20" },
+  "license": "Apache-2.0"
+}

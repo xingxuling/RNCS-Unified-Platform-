@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/theorem-receipt.v0.1.schema.json",
+  "title": "World Body Formal Theorem Receipt v0.1",
+  "type": "object",
+  "required": ["format", "kernelVersion", "theorem", "subjectRoot", "evidenceClass", "implementation", "status", "observations", "reason", "witnessRoot"],
+  "properties": {
+    "format": { "const": "taowind.formal-theorem-receipt.v0.1" },
+    "kernelVersion": { "const": "0.1.0-alpha.1" },
+    "theorem": {
+      "type": "object",
+      "required": ["id", "domain", "level", "title", "statement", "classification", "assumptions"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^(?:(?:RSR|VSR|RCL)-T[1-5](?:\\.[0-9]+)?|WB-T(?:[1-9]|10)(?:\\.[0-9]+)?)$" },
+        "domain": { "type": "string", "minLength": 1 },
+        "level": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "title": { "type": "string", "minLength": 1 },
+        "statement": { "type": "string", "minLength": 1 },
+        "classification": { "enum": ["EXACT", "BOUNDED_NUMERIC", "CONDITIONAL", "PROPERTY_TESTED", "UNVERIFIED_EXTERNAL"] },
+        "assumptions": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": false
+    },
+    "subjectRoot": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "evidenceClass": { "enum": ["STATIC_INSPECTION", "REFERENCE_EXECUTION", "PRODUCTION_DIFFERENTIAL", "EXTERNAL_BACKEND"] },
+    "implementation": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["PASS", "FAIL", "UNVERIFIED"] },
+    "observations": { "type": "object" },
+    "reason": { "type": ["string", "null"] },
+    "witnessRoot": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "theorem": {
+            "properties": { "classification": { "const": "UNVERIFIED_EXTERNAL" } },
+            "required": ["classification"]
+          }
+        }
+      },
+      "then": { "properties": { "status": { "const": "UNVERIFIED" } } }
+    }
+  ],
+  "additionalProperties": false
+}
