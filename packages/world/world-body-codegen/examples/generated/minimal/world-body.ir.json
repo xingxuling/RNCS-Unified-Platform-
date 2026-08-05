@@ -1,0 +1,382 @@
+{
+  "assetState": {
+    "assets": [
+      {
+        "contentRoot": "4ecad8c2dbdd2982a38b517143c726dfdd576c007ca5026696c1de7b5e687c60",
+        "id": "asset:floor-mesh",
+        "kind": "mesh",
+        "residency": "resident",
+        "version": "1.0.0"
+      },
+      {
+        "contentRoot": "747d4b05ec3ff97a818beff0f7d90c827f18a70f9aed61ac27a19e8c80bb76d5",
+        "id": "asset:hero-mesh",
+        "kind": "mesh",
+        "residency": "resident",
+        "version": "1.0.0"
+      }
+    ],
+    "format": "taowind.world-body.asset-state.v0.1"
+  },
+  "authorityState": {
+    "authorityClass": "authoritative-snapshot",
+    "authorityOwner": "rncs.rsr",
+    "capabilityScopes": [
+      "world.body.project",
+      "world.body.read"
+    ],
+    "format": "taowind.world-body.authority-state.v0.1",
+    "generation": 3,
+    "revision": 12,
+    "sourceRealityRoot": "1dcad4625497d3ef68436d799f0b6b7333d057a1a99e32c6c16499d07f556846",
+    "worldId": "world:body-ir-demo"
+  },
+  "bodyMaps": [
+    {
+      "authorityMode": "authoritative",
+      "entityId": "entity:floor",
+      "physicalBodyRef": "body:floor",
+      "temporalPolicyRef": "temporal:hero",
+      "visualBodyRef": "visual:floor",
+      "visualOnlyOffset": {
+        "authorityAffecting": false,
+        "positionMm": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "rotation": {
+          "scale": 1000000,
+          "w": 1000000,
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "scale": {
+          "scale": 1000000,
+          "x": 1000000,
+          "y": 1000000,
+          "z": 1000000
+        }
+      }
+    },
+    {
+      "authorityMode": "authoritative",
+      "entityId": "entity:hero",
+      "physicalBodyRef": "body:hero",
+      "temporalPolicyRef": "temporal:hero",
+      "visualBodyRef": "visual:hero",
+      "visualOnlyOffset": {
+        "authorityAffecting": false,
+        "positionMm": {
+          "x": 0,
+          "y": -50,
+          "z": 0
+        },
+        "rotation": {
+          "scale": 1000000,
+          "w": 1000000,
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "scale": {
+          "scale": 1000000,
+          "x": 1000000,
+          "y": 1000000,
+          "z": 1000000
+        }
+      }
+    }
+  ],
+  "format": "taowind.world-body-ir.v0.1",
+  "generation": 3,
+  "irVersion": "0.1.0-alpha.1",
+  "observerState": {
+    "format": "taowind.world-body.observer-state.v0.1",
+    "observers": [
+      {
+        "capabilities": [
+          "world.observe",
+          "world.presentation.read"
+        ],
+        "id": "observer:player",
+        "qualityTier": "balanced",
+        "visibleTags": [
+          "player-visual"
+        ]
+      }
+    ]
+  },
+  "physicalBodyState": {
+    "bodies": [
+      {
+        "entityId": "entity:floor",
+        "fixtures": [
+          {
+            "bodyZone": "zone:floor",
+            "collisionFilter": {
+              "categoryBits": 2,
+              "maskBits": 65535
+            },
+            "id": "fixture:floor",
+            "sensor": false,
+            "shape": {
+              "halfExtentsMm": {
+                "x": 10000,
+                "y": 250,
+                "z": 10000
+              },
+              "type": "box"
+            }
+          }
+        ],
+        "id": "body:floor",
+        "kind": "static",
+        "massGrams": 0,
+        "tags": [
+          "ground"
+        ],
+        "transform": {
+          "positionMm": {
+            "x": 0,
+            "y": -250,
+            "z": 0
+          },
+          "rotation": {
+            "scale": 1000000,
+            "w": 1000000,
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        }
+      },
+      {
+        "angularVelocityMilliDegPerSecond": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "entityId": "entity:hero",
+        "fixtures": [
+          {
+            "bodyZone": "zone:hero",
+            "collisionFilter": {
+              "categoryBits": 1,
+              "maskBits": 65535
+            },
+            "id": "fixture:hero",
+            "localPositionMm": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "sensor": false,
+            "shape": {
+              "halfHeightMm": 650,
+              "radiusMm": 350,
+              "type": "capsule"
+            }
+          }
+        ],
+        "id": "body:hero",
+        "kind": "dynamic",
+        "linearVelocityMmPerSecond": {
+          "x": 1000,
+          "y": 0,
+          "z": 0
+        },
+        "massGrams": 80000,
+        "tags": [
+          "player"
+        ],
+        "transform": {
+          "positionMm": {
+            "x": 0,
+            "y": 1500,
+            "z": 0
+          },
+          "rotation": {
+            "scale": 1000000,
+            "w": 923880,
+            "x": 0,
+            "y": 382683,
+            "z": 0
+          }
+        }
+      }
+    ],
+    "coordinateSystem": "right-handed-y-up",
+    "format": "taowind.world-body.physical-state.v0.1",
+    "positionUnit": "millimetre"
+  },
+  "renderGraphs": [
+    {
+      "barriers": [
+        {
+          "fromAccess": "depth-attachment",
+          "fromPassId": "pass:depth",
+          "fromQueue": "graphics",
+          "resourceId": "resource:depth",
+          "toAccess": "sampled",
+          "toPassId": "pass:main",
+          "toQueue": "graphics"
+        }
+      ],
+      "format": "taowind.world-body-render-graph.v0.1",
+      "graphRoot": "f96f8f7252e0ecc39507964f99206bba06d3e6a7edc58763f17aeb056a33cb12",
+      "id": "render-graph:main",
+      "passes": [
+        {
+          "dependsOn": [],
+          "id": "pass:depth",
+          "kind": "shadow-depth",
+          "queue": "graphics",
+          "reads": [],
+          "writes": [
+            {
+              "access": "depth-attachment",
+              "resourceId": "resource:depth"
+            }
+          ]
+        },
+        {
+          "dependsOn": [
+            "pass:depth"
+          ],
+          "id": "pass:main",
+          "kind": "scene-color",
+          "queue": "graphics",
+          "reads": [
+            {
+              "access": "sampled",
+              "resourceId": "resource:depth"
+            }
+          ],
+          "writes": [
+            {
+              "access": "color-attachment",
+              "resourceId": "resource:swapchain"
+            }
+          ]
+        }
+      ],
+      "resources": [
+        {
+          "exported": false,
+          "format": "depth24plus",
+          "id": "resource:depth",
+          "imported": false,
+          "kind": "attachment",
+          "lifetime": "transient"
+        },
+        {
+          "exported": true,
+          "format": "bgra8unorm",
+          "id": "resource:swapchain",
+          "imported": true,
+          "kind": "swapchain",
+          "lifetime": "external"
+        }
+      ]
+    }
+  ],
+  "revision": 12,
+  "roots": {
+    "assetStateRoot": "14b1910a16b259ae7c9c78a0ab1f8025d6a175098b9acb2edac0fa24e6b1e31f",
+    "authorityStateRoot": "830bf41ed94bdb6b2e2e1d706d32300600afd72cbe423c02781498bc74b8221a",
+    "bodyMapRoot": "57844bc75480c1fe717ed5b00a05c22cd9901e564c26508c2fcae1ac867956d7",
+    "observerStateRoot": "fa66a0ff47ccd8f750b0eb62f00e7f0b073102f7409679119beb704c66b9fc40",
+    "physicalBodyRoot": "cfb0ee7220d3b3157d25e71c609b033221e00c3f12fc64a8886d21e9472b6407",
+    "renderGraphSetRoot": "54814774dc560209a4259c437ccc4e45bdf181bb4331d3b280797d90b115db14",
+    "temporalPresentationRoot": "bb0ae6c64e33d94f70dd3cf3658cfa5c43505d25c775848b4923d745ada5b2c8",
+    "visualBodyRoot": "c4bd6c412e6c1786c68a77899aaa170736a98cae4e966e62b03fc546fb5a8847",
+    "worldBodyRoot": "72e39c0d4be74c2caafa386f61966900446687a4e7c9ab09c0cca5ab0cdae709",
+    "worldEventStateRoot": "55dc108d154f5583f039b47e7edd539fbfade95c949254980aed5e4aceea2828"
+  },
+  "temporalPresentationState": {
+    "clock": {
+      "tick": 12,
+      "tickHz": 60
+    },
+    "format": "taowind.world-body.temporal-presentation-state.v0.1",
+    "policies": [
+      {
+        "authorityRootBinding": "required",
+        "blendTicks": 4,
+        "id": "temporal:hero",
+        "interpolationDelayTicks": 1,
+        "maximumExtrapolationTicks": 2,
+        "mode": "interpolate",
+        "snapDistanceMm": 2500
+      }
+    ]
+  },
+  "visualBodyState": {
+    "bodies": [
+      {
+        "entityId": "entity:floor",
+        "id": "visual:floor",
+        "nodes": [
+          {
+            "assetRef": "asset:floor-mesh",
+            "castShadow": false,
+            "id": "node:floor",
+            "parentId": null,
+            "receiveShadow": true,
+            "tags": [
+              "ground-visual"
+            ]
+          }
+        ],
+        "rootNodeId": "node:floor"
+      },
+      {
+        "entityId": "entity:hero",
+        "id": "visual:hero",
+        "nodes": [
+          {
+            "assetRef": "asset:hero-mesh",
+            "castShadow": true,
+            "id": "node:hero",
+            "parentId": null,
+            "receiveShadow": true,
+            "tags": [
+              "player-visual"
+            ]
+          }
+        ],
+        "rootNodeId": "node:hero"
+      }
+    ],
+    "format": "taowind.world-body.visual-state.v0.1"
+  },
+  "worldEventState": {
+    "events": [
+      {
+        "exactlyOnceKey": "1dcad4625497d3ef68436d799f0b6b7333d057a1a99e32c6c16499d07f556846:12:0",
+        "id": "event:hero-contact:12:0",
+        "kind": "contact-begin",
+        "routes": [
+          {
+            "consumer": "animation",
+            "id": "route:hero-contact-animation",
+            "target": "animation:hero-land"
+          },
+          {
+            "consumer": "audio",
+            "id": "route:hero-contact-audio",
+            "target": "audio:hero-contact"
+          }
+        ],
+        "sequence": 0,
+        "source": "rsr",
+        "sourceAuthorityRoot": "1dcad4625497d3ef68436d799f0b6b7333d057a1a99e32c6c16499d07f556846",
+        "tick": 12
+      }
+    ],
+    "format": "taowind.world-body.event-state.v0.1"
+  },
+  "worldId": "world:body-ir-demo"
+}

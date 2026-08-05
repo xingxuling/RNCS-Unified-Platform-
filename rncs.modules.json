@@ -675,6 +675,95 @@
       "test": "npm test --workspace @taowind/open-world-rpg-runtime"
     },
     {
+      "id": "world-body-ir",
+      "name": "World Body IR",
+      "version": "0.1.0-alpha.1",
+      "path": "packages/world/world-body-ir",
+      "layer": "world",
+      "runtime": "rncs.world-body-ir",
+      "dependsOn": [
+        "rncs-core",
+        "rsr",
+        "vsr"
+      ],
+      "test": "npm test --workspace @taowind/world-body-ir"
+    },
+    {
+      "id": "world-body-formal-kernel",
+      "name": "World Body Formal Kernel",
+      "version": "0.1.0-alpha.1",
+      "path": "packages/kernel/world-body-formal-kernel",
+      "layer": "kernel",
+      "runtime": "rncs.world-body-formal-kernel",
+      "dependsOn": [
+        "rncs-core",
+        "rcl",
+        "world-body-ir"
+      ],
+      "test": "npm test --workspace @taowind/world-body-formal-kernel"
+    },
+    {
+      "id": "rsr-formal-theory",
+      "name": "RSR Five-Level Formal Theory",
+      "version": "0.1.0-alpha.1",
+      "path": "packages/world/rsr-formal-theory",
+      "layer": "world",
+      "runtime": "rncs.rsr-formal-theory",
+      "dependsOn": [
+        "world-body-formal-kernel",
+        "world-body-ir",
+        "rsr"
+      ],
+      "test": "npm test --workspace @taowind/rsr-formal-theory"
+    },
+    {
+      "id": "vsr-formal-theory",
+      "name": "VSR Five-Level Formal Theory",
+      "version": "0.1.0-alpha.1",
+      "path": "packages/world/vsr-formal-theory",
+      "layer": "world",
+      "runtime": "rncs.vsr-formal-theory",
+      "dependsOn": [
+        "world-body-formal-kernel",
+        "world-body-ir",
+        "vsr"
+      ],
+      "test": "npm test --workspace @taowind/vsr-formal-theory"
+    },
+    {
+      "id": "world-body-codegen",
+      "name": "World Body Code Generator",
+      "version": "0.1.0-alpha.1",
+      "path": "packages/world/world-body-codegen",
+      "layer": "world",
+      "runtime": "rncs.world-body-codegen",
+      "dependsOn": [
+        "world-body-ir",
+        "rcl",
+        "rsr",
+        "vsr"
+      ],
+      "test": "npm test --workspace @taowind/world-body-codegen"
+    },
+    {
+      "id": "world-body-formal-theory",
+      "name": "World Body Joint Formal Theory",
+      "version": "0.1.0-alpha.1",
+      "path": "packages/world/world-body-formal-theory",
+      "layer": "world",
+      "runtime": "rncs.world-body-formal-theory",
+      "dependsOn": [
+        "world-body-formal-kernel",
+        "world-body-ir",
+        "rsr-formal-theory",
+        "vsr-formal-theory",
+        "world-body-codegen",
+        "rsr",
+        "vsr"
+      ],
+      "test": "npm test --workspace @taowind/world-body-formal-theory"
+    },
+    {
       "id": "godot-third-person-client",
       "name": "Godot 4.7 Third Person Client",
       "version": "0.1.1-alpha.1",

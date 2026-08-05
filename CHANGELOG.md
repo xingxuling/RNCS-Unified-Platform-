@@ -1,3 +1,13 @@
+# Unreleased — World Body Formal Kernel v0.1 Candidate
+
+- Added `@taowind/world-body-ir` with seven sealed root objects, total BodyMap validation, fixed-point transform rules, and an explicit hazard/lifetime/barrier Render Graph contract.
+- Added executable five-level RSR and VSR theorem suites plus WB-T1 through WB-T10 joint theory; external-engine and real-GPU theorems stay explicitly `UNVERIFIED`.
+- Added an aggregate RCL World Body kernel plus eight requested formal drafts with source/RBC hashes, decoded instruction summaries, and real reference/native-VM parity evidence, without moving RNCS commit authority into RCL or code generation.
+- Added `@taowind/world-body-codegen`: one World Declaration deterministically emits nine candidate artifacts covering WBIR, RSR configuration, VSR/temporal/network/rollback bindings, render/event plans, RCL, a proof-receipt template, and an executable generated test. The measured example moves 671 non-blank maintained lines and 59 repeated identifier occurrences behind generation.
+- Added a selected production differential through the actual RSR `0.9.0-alpha.1` and VSR `0.8.0-alpha.1` exports. This is F4.5 partial production parity, not real GPU, external physics, distributed-network, provider, or target-hardware equivalence.
+- Added reproducible evidence generation and `npm run verify:world-body`; no existing suite, RSR, or VSR version was rewritten.
+- Repaired three pre-existing CI/build entrypoint gaps exposed by the candidate: the root delegates `verify:native-boundary` to RCL, `test:gateway` prepares RCL and RSR/VSR dependencies, and POSIX native builds clean incompatible checked artifacts before compiling.
+
 # v0.19.8-alpha.1 — RCL Native Gateway Fusion
 
 - 统一 release manifest、根 package/lockfile 与模块登记的版本契约，并新增 `npm run verify:version-contract`。

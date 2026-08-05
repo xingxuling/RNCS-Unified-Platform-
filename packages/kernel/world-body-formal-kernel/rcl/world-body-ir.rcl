@@ -1,0 +1,13 @@
+reality WorldBodyIrDraft {
+  facet draft.version : Text = "0.1.0-alpha.1"
+  facet draft.status : Text = "candidate"
+  facet roots.authority : Truth = true
+  facet roots.physical : Truth = true
+  facet roots.visual : Truth = true
+  facet roots.presentation : Truth = true
+  facet roots.asset : Truth = true
+  facet roots.observer : Truth = true
+  facet roots.event : Truth = true
+  facet roots.world_body : Truth = true
+  facet authority.commit_owned_by_rncs : Truth = true
+}

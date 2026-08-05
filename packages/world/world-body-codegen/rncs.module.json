@@ -1,0 +1,11 @@
+{
+  "format": "rncs.module.v0.1",
+  "id": "world-body-codegen",
+  "name": "World Body Code Generator",
+  "version": "0.1.0-alpha.1",
+  "layer": "world",
+  "runtime": "rncs.world-body-codegen",
+  "protocols": ["taowind.world-declaration.v0.1", "taowind.world-body-codegen-manifest.v0.1"],
+  "authority": "candidate-artifact-generation-only-no-commit",
+  "dependsOn": ["world-body-ir", "rcl", "rsr", "vsr"]
+}

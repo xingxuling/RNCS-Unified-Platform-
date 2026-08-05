@@ -1,0 +1,75 @@
+{
+  "format": "taowind.world-body-generated-render-graphs.v0.1",
+  "graphs": [
+    {
+      "barriers": [
+        {
+          "fromAccess": "depth-attachment",
+          "fromPassId": "pass:depth",
+          "fromQueue": "graphics",
+          "resourceId": "resource:depth",
+          "toAccess": "sampled",
+          "toPassId": "pass:main",
+          "toQueue": "graphics"
+        }
+      ],
+      "format": "taowind.world-body-render-graph.v0.1",
+      "graphRoot": "f96f8f7252e0ecc39507964f99206bba06d3e6a7edc58763f17aeb056a33cb12",
+      "id": "render-graph:main",
+      "passes": [
+        {
+          "dependsOn": [],
+          "id": "pass:depth",
+          "kind": "shadow-depth",
+          "queue": "graphics",
+          "reads": [],
+          "writes": [
+            {
+              "access": "depth-attachment",
+              "resourceId": "resource:depth"
+            }
+          ]
+        },
+        {
+          "dependsOn": [
+            "pass:depth"
+          ],
+          "id": "pass:main",
+          "kind": "scene-color",
+          "queue": "graphics",
+          "reads": [
+            {
+              "access": "sampled",
+              "resourceId": "resource:depth"
+            }
+          ],
+          "writes": [
+            {
+              "access": "color-attachment",
+              "resourceId": "resource:swapchain"
+            }
+          ]
+        }
+      ],
+      "resources": [
+        {
+          "exported": false,
+          "format": "depth24plus",
+          "id": "resource:depth",
+          "imported": false,
+          "kind": "attachment",
+          "lifetime": "transient"
+        },
+        {
+          "exported": true,
+          "format": "bgra8unorm",
+          "id": "resource:swapchain",
+          "imported": true,
+          "kind": "swapchain",
+          "lifetime": "external"
+        }
+      ]
+    }
+  ],
+  "sourceWorldBodyRoot": "72e39c0d4be74c2caafa386f61966900446687a4e7c9ab09c0cca5ab0cdae709"
+}

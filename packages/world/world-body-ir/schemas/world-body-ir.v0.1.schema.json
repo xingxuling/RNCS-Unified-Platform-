@@ -1,0 +1,457 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/world-body-ir.v0.1.schema.json",
+  "title": "TaoWind World Body IR v0.1",
+  "type": "object",
+  "required": [
+    "format",
+    "irVersion",
+    "worldId",
+    "generation",
+    "revision",
+    "authorityState",
+    "physicalBodyState",
+    "visualBodyState",
+    "temporalPresentationState",
+    "assetState",
+    "observerState",
+    "worldEventState",
+    "bodyMaps",
+    "renderGraphs",
+    "roots"
+  ],
+  "properties": {
+    "format": { "const": "taowind.world-body-ir.v0.1" },
+    "irVersion": { "const": "0.1.0-alpha.1" },
+    "worldId": { "$ref": "#/$defs/id" },
+    "generation": { "$ref": "#/$defs/nonnegativeInteger" },
+    "revision": { "$ref": "#/$defs/nonnegativeInteger" },
+    "authorityState": { "$ref": "#/$defs/authorityState" },
+    "physicalBodyState": { "$ref": "#/$defs/physicalBodyState" },
+    "visualBodyState": { "$ref": "#/$defs/visualBodyState" },
+    "temporalPresentationState": { "$ref": "#/$defs/temporalPresentationState" },
+    "assetState": { "$ref": "#/$defs/assetState" },
+    "observerState": { "$ref": "#/$defs/observerState" },
+    "worldEventState": { "$ref": "#/$defs/worldEventState" },
+    "bodyMaps": {
+      "type": "array",
+      "maxItems": 100000,
+      "items": { "$ref": "#/$defs/bodyMap" }
+    },
+    "renderGraphs": {
+      "type": "array",
+      "maxItems": 1024,
+      "items": { "$ref": "#/$defs/renderGraph" }
+    },
+    "roots": { "$ref": "#/$defs/roots" }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$"
+    },
+    "root": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "nonnegativeInteger": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+    "vector3": {
+      "type": "object",
+      "required": ["x", "y", "z"],
+      "properties": {
+        "x": { "type": "integer" },
+        "y": { "type": "integer" },
+        "z": { "type": "integer" }
+      },
+      "additionalProperties": false
+    },
+    "scale3": {
+      "type": "object",
+      "required": ["x", "y", "z", "scale"],
+      "properties": {
+        "x": { "type": "integer" },
+        "y": { "type": "integer" },
+        "z": { "type": "integer" },
+        "scale": { "const": 1000000 }
+      },
+      "additionalProperties": false
+    },
+    "quaternion": {
+      "type": "object",
+      "required": ["x", "y", "z", "w", "scale"],
+      "properties": {
+        "x": { "type": "integer" },
+        "y": { "type": "integer" },
+        "z": { "type": "integer" },
+        "w": { "type": "integer" },
+        "scale": { "const": 1000000 }
+      },
+      "additionalProperties": false
+    },
+    "authorityState": {
+      "type": "object",
+      "required": ["format", "worldId", "generation", "revision", "authorityClass", "authorityOwner", "sourceRealityRoot", "capabilityScopes"],
+      "properties": {
+        "format": { "const": "taowind.world-body.authority-state.v0.1" },
+        "worldId": { "$ref": "#/$defs/id" },
+        "generation": { "$ref": "#/$defs/nonnegativeInteger" },
+        "revision": { "$ref": "#/$defs/nonnegativeInteger" },
+        "authorityClass": { "enum": ["candidate", "authoritative-snapshot", "committed-generation"] },
+        "sourceRealityRoot": { "$ref": "#/$defs/root" },
+        "proposalRoot": { "$ref": "#/$defs/root" },
+        "commitRoot": { "$ref": "#/$defs/root" },
+        "authorityOwner": { "$ref": "#/$defs/id" },
+        "capabilityScopes": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+      },
+      "additionalProperties": false
+    },
+    "shape": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["type", "radiusMm"],
+          "properties": { "type": { "const": "sphere" }, "radiusMm": { "type": "integer", "minimum": 1 } },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["type", "halfExtentsMm"],
+          "properties": { "type": { "const": "box" }, "halfExtentsMm": { "$ref": "#/$defs/vector3" } },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["type", "radiusMm", "halfHeightMm"],
+          "properties": {
+            "type": { "const": "capsule" },
+            "radiusMm": { "type": "integer", "minimum": 1 },
+            "halfHeightMm": { "$ref": "#/$defs/nonnegativeInteger" }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "fixture": {
+      "type": "object",
+      "required": ["id", "shape"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "shape": { "$ref": "#/$defs/shape" },
+        "localPositionMm": { "$ref": "#/$defs/vector3" },
+        "sensor": { "type": "boolean" },
+        "bodyZone": { "$ref": "#/$defs/id" },
+        "collisionFilter": {
+          "type": "object",
+          "required": ["categoryBits", "maskBits"],
+          "properties": {
+            "categoryBits": { "type": "integer", "minimum": 0, "maximum": 4294967295 },
+            "maskBits": { "type": "integer", "minimum": 0, "maximum": 4294967295 }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "physicalBody": {
+      "type": "object",
+      "required": ["id", "entityId", "kind", "transform", "fixtures"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "entityId": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["static", "kinematic", "dynamic"] },
+        "transform": {
+          "type": "object",
+          "required": ["positionMm", "rotation"],
+          "properties": { "positionMm": { "$ref": "#/$defs/vector3" }, "rotation": { "$ref": "#/$defs/quaternion" } },
+          "additionalProperties": false
+        },
+        "linearVelocityMmPerSecond": { "$ref": "#/$defs/vector3" },
+        "angularVelocityMilliDegPerSecond": { "$ref": "#/$defs/vector3" },
+        "massGrams": { "type": "integer", "minimum": 0 },
+        "fixtures": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/fixture" } },
+        "tags": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+      },
+      "additionalProperties": false
+    },
+    "physicalBodyState": {
+      "type": "object",
+      "required": ["format", "coordinateSystem", "positionUnit", "bodies"],
+      "properties": {
+        "format": { "const": "taowind.world-body.physical-state.v0.1" },
+        "coordinateSystem": { "const": "right-handed-y-up" },
+        "positionUnit": { "const": "millimetre" },
+        "bodies": { "type": "array", "items": { "$ref": "#/$defs/physicalBody" } }
+      },
+      "additionalProperties": false
+    },
+    "visualNode": {
+      "type": "object",
+      "required": ["id"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "parentId": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+        "assetRef": { "$ref": "#/$defs/id" },
+        "materialRef": { "$ref": "#/$defs/id" },
+        "castShadow": { "type": "boolean" },
+        "receiveShadow": { "type": "boolean" },
+        "tags": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+      },
+      "additionalProperties": false
+    },
+    "visualBodyState": {
+      "type": "object",
+      "required": ["format", "bodies"],
+      "properties": {
+        "format": { "const": "taowind.world-body.visual-state.v0.1" },
+        "bodies": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "entityId", "rootNodeId", "nodes"],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "entityId": { "$ref": "#/$defs/id" },
+              "rootNodeId": { "$ref": "#/$defs/id" },
+              "nodes": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/visualNode" } }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "temporalPresentationState": {
+      "type": "object",
+      "required": ["format", "clock", "policies"],
+      "properties": {
+        "format": { "const": "taowind.world-body.temporal-presentation-state.v0.1" },
+        "clock": {
+          "type": "object",
+          "required": ["tick", "tickHz"],
+          "properties": { "tick": { "$ref": "#/$defs/nonnegativeInteger" }, "tickHz": { "type": "integer", "minimum": 1 } },
+          "additionalProperties": false
+        },
+        "policies": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "mode", "interpolationDelayTicks", "maximumExtrapolationTicks", "authorityRootBinding", "snapDistanceMm", "blendTicks"],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "mode": { "enum": ["hold", "interpolate", "extrapolate", "snap"] },
+              "interpolationDelayTicks": { "$ref": "#/$defs/nonnegativeInteger" },
+              "maximumExtrapolationTicks": { "$ref": "#/$defs/nonnegativeInteger" },
+              "authorityRootBinding": { "const": "required" },
+              "snapDistanceMm": { "$ref": "#/$defs/nonnegativeInteger" },
+              "blendTicks": { "$ref": "#/$defs/nonnegativeInteger" }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "assetState": {
+      "type": "object",
+      "required": ["format", "assets"],
+      "properties": {
+        "format": { "const": "taowind.world-body.asset-state.v0.1" },
+        "assets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "kind", "version", "contentRoot", "residency"],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "kind": { "enum": ["mesh", "material", "texture", "animation", "shader", "audio"] },
+              "version": { "type": "string", "minLength": 1 },
+              "contentRoot": { "$ref": "#/$defs/root" },
+              "residency": { "enum": ["unloaded", "requested", "resident", "evicted"] },
+              "importReceiptRoot": { "$ref": "#/$defs/root" }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "observerState": {
+      "type": "object",
+      "required": ["format", "observers"],
+      "properties": {
+        "format": { "const": "taowind.world-body.observer-state.v0.1" },
+        "observers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "capabilities", "qualityTier"],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "capabilities": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+              "qualityTier": { "enum": ["economy", "balanced", "quality", "cinematic"] },
+              "visibleTags": { "type": "array", "items": { "type": "string" }, "uniqueItems": true }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "eventRoute": {
+      "type": "object",
+      "required": ["id", "consumer", "target"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "consumer": { "enum": ["visual", "animation", "audio", "haptic", "network", "telemetry"] },
+        "target": { "$ref": "#/$defs/id" }
+      },
+      "additionalProperties": false
+    },
+    "worldEventState": {
+      "type": "object",
+      "required": ["format", "events"],
+      "properties": {
+        "format": { "const": "taowind.world-body.event-state.v0.1" },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "source", "kind", "tick", "sequence", "sourceAuthorityRoot", "exactlyOnceKey", "routes"],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "source": { "enum": ["world", "rsr", "network", "animation", "interaction"] },
+              "kind": { "$ref": "#/$defs/id" },
+              "tick": { "$ref": "#/$defs/nonnegativeInteger" },
+              "sequence": { "$ref": "#/$defs/nonnegativeInteger" },
+              "sourceAuthorityRoot": { "$ref": "#/$defs/root" },
+              "exactlyOnceKey": { "type": "string", "minLength": 1 },
+              "routes": { "type": "array", "items": { "$ref": "#/$defs/eventRoute" } }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "bodyMap": {
+      "type": "object",
+      "required": ["entityId", "authorityMode", "visualBodyRef", "temporalPolicyRef", "visualOnlyOffset"],
+      "properties": {
+        "entityId": { "$ref": "#/$defs/id" },
+        "authorityMode": { "enum": ["authoritative", "presentation-only"] },
+        "physicalBodyRef": { "anyOf": [{ "$ref": "#/$defs/id" }, { "type": "null" }] },
+        "visualBodyRef": { "$ref": "#/$defs/id" },
+        "temporalPolicyRef": { "$ref": "#/$defs/id" },
+        "visualOnlyOffset": {
+          "type": "object",
+          "required": ["positionMm", "rotation", "scale", "authorityAffecting"],
+          "properties": {
+            "positionMm": { "$ref": "#/$defs/vector3" },
+            "rotation": { "$ref": "#/$defs/quaternion" },
+            "scale": { "$ref": "#/$defs/scale3" },
+            "authorityAffecting": { "const": false }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "resourceAccess": {
+      "type": "object",
+      "required": ["resourceId", "access"],
+      "properties": {
+        "resourceId": { "$ref": "#/$defs/id" },
+        "access": { "enum": ["sampled", "uniform", "storage-read", "copy-source", "vertex", "index", "indirect", "present", "color-attachment", "depth-attachment", "storage-write", "copy-destination"] }
+      },
+      "additionalProperties": false
+    },
+    "barrier": {
+      "type": "object",
+      "required": ["resourceId", "fromPassId", "toPassId", "fromAccess", "toAccess", "fromQueue", "toQueue"],
+      "properties": {
+        "resourceId": { "$ref": "#/$defs/id" },
+        "fromPassId": { "$ref": "#/$defs/id" },
+        "toPassId": { "$ref": "#/$defs/id" },
+        "fromAccess": { "type": "string", "minLength": 1 },
+        "toAccess": { "type": "string", "minLength": 1 },
+        "fromQueue": { "enum": ["graphics", "compute", "copy"] },
+        "toQueue": { "enum": ["graphics", "compute", "copy"] }
+      },
+      "additionalProperties": false
+    },
+    "renderGraph": {
+      "type": "object",
+      "required": ["format", "id", "resources", "passes", "barriers", "graphRoot"],
+      "properties": {
+        "format": { "const": "taowind.world-body-render-graph.v0.1" },
+        "id": { "$ref": "#/$defs/id" },
+        "resources": {
+          "type": "array",
+          "maxItems": 4096,
+          "items": {
+            "type": "object",
+            "required": ["id", "kind", "lifetime", "imported", "exported"],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "kind": { "enum": ["buffer", "texture", "attachment", "swapchain"] },
+              "lifetime": { "enum": ["transient", "persistent", "external"] },
+              "imported": { "type": "boolean" },
+              "exported": { "type": "boolean" },
+              "format": { "type": "string" },
+              "aliasGroup": { "$ref": "#/$defs/id" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "passes": {
+          "type": "array",
+          "maxItems": 1024,
+          "items": {
+            "type": "object",
+            "required": ["id", "kind", "queue", "dependsOn", "reads", "writes"],
+            "properties": {
+              "id": { "$ref": "#/$defs/id" },
+              "kind": { "type": "string" },
+              "queue": { "enum": ["graphics", "compute", "copy"] },
+              "dependsOn": { "type": "array", "items": { "$ref": "#/$defs/id" }, "uniqueItems": true },
+              "reads": { "type": "array", "items": { "$ref": "#/$defs/resourceAccess" } },
+              "writes": { "type": "array", "items": { "$ref": "#/$defs/resourceAccess" } }
+            },
+            "additionalProperties": false
+          }
+        },
+        "barriers": { "type": "array", "items": { "$ref": "#/$defs/barrier" } },
+        "graphRoot": { "$ref": "#/$defs/root" }
+      },
+      "additionalProperties": false
+    },
+    "roots": {
+      "type": "object",
+      "required": [
+        "authorityStateRoot",
+        "physicalBodyRoot",
+        "visualBodyRoot",
+        "temporalPresentationRoot",
+        "assetStateRoot",
+        "observerStateRoot",
+        "worldEventStateRoot",
+        "bodyMapRoot",
+        "renderGraphSetRoot",
+        "worldBodyRoot"
+      ],
+      "properties": {
+        "authorityStateRoot": { "$ref": "#/$defs/root" },
+        "physicalBodyRoot": { "$ref": "#/$defs/root" },
+        "visualBodyRoot": { "$ref": "#/$defs/root" },
+        "temporalPresentationRoot": { "$ref": "#/$defs/root" },
+        "assetStateRoot": { "$ref": "#/$defs/root" },
+        "observerStateRoot": { "$ref": "#/$defs/root" },
+        "worldEventStateRoot": { "$ref": "#/$defs/root" },
+        "bodyMapRoot": { "$ref": "#/$defs/root" },
+        "renderGraphSetRoot": { "$ref": "#/$defs/root" },
+        "worldBodyRoot": { "$ref": "#/$defs/root" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,9 @@
+reality RsrContactConstraintDraft {
+  facet draft.version : Text = "0.1.0-alpha.1"
+  facet draft.status : Text = "candidate"
+  facet contact.identity_stable : Truth = true
+  facet contact.layer_mask_admitted : Truth = true
+  facet constraint.non_penetration_bounded : Truth = true
+  facet constraint.friction_bounded : Truth = true
+  facet authority.commit_owned_by_rncs : Truth = true
+}

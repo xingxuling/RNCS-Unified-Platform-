@@ -1,0 +1,75 @@
+{
+  "authority": "evidence-only-no-commit",
+  "baseline": {
+    "branch": "main-95",
+    "commit": "da9d2da3f8b46f40972c06d3f0f24b1e2b5b20f4",
+    "rncsSuiteVersion": "0.19.8-alpha.1",
+    "rsrPackageVersion": "0.9.0-alpha.1",
+    "vsrPackageVersion": "0.8.0-alpha.1"
+  },
+  "entries": [
+    {
+      "claim": "World Body IR and generated example are deterministically sealed",
+      "evidenceFile": "codegen-evidence.json",
+      "evidenceRoot": "e759ec57e35210d8f0af5129072b085b80b5d39d3f3cc40c432d2ab0791f8d74",
+      "id": "WB-E01",
+      "status": "PASS"
+    },
+    {
+      "claim": "RSR, VSR, and joint executable theorem receipts close their declared reference scope",
+      "evidenceFile": "formal-proof-bundles.json",
+      "evidenceRoot": "906f5d120038a460c57f00f89d758450c3fd60565509aab587ec294a00d62bf1",
+      "id": "WB-E02",
+      "observations": {
+        "FAIL": 0,
+        "PASS": 43,
+        "UNVERIFIED": 3,
+        "allBundlesVerified": true
+      },
+      "status": "PASS"
+    },
+    {
+      "claim": "The exercised RCL kernel has reference and native VM parity",
+      "evidenceFile": "rcl-kernel-evidence.json",
+      "evidenceRoot": "7020e31e82376e026b801fa7ebdb5d7142741c3d7c2a29a8606fac895f99fae0",
+      "id": "WB-E03",
+      "status": "PASS"
+    },
+    {
+      "claim": "Generated specialization matches selected real RSR/VSR observables",
+      "evidenceFile": "production-differential.json",
+      "evidenceRoot": "3d883fb31e327a2655f710fa5ab7a6468bc80029e1b7123904e4eb334de2eec2",
+      "id": "WB-E04",
+      "status": "PASS"
+    },
+    {
+      "claim": "External backends and target hardware are fully differentially equivalent",
+      "evidenceFile": "external-boundaries.json",
+      "evidenceRoot": "6f78dd8db6e81ffd656789ab03940a39a6f840565336d39cc62239feef919bb6",
+      "id": "WB-E05",
+      "status": "UNVERIFIED"
+    },
+    {
+      "claim": "One declaration moves measured specialization lines and repeated identifiers behind deterministic generation",
+      "evidenceFile": "code-reduction-evidence.json",
+      "evidenceRoot": "5bb4781159e6028a86b0dd3d6d61cd37282c3b22a11b352a4d9a3421e308080e",
+      "id": "WB-E06",
+      "status": "PASS"
+    }
+  ],
+  "format": "taowind.world-body-evidence-ledger.v0.1",
+  "ledgerRoot": "d1626135689f1ae93c5d0a7cd32b9c0f5114918b78eb716ef63fb4f11984d839",
+  "maturity": {
+    "hasFullProductionDifferential": false,
+    "missingExternalBackendIds": [
+      "external-physics-engine",
+      "full-world-body-native-vm",
+      "production-asset-provider",
+      "real-distributed-network",
+      "target-browser-gpu-pixels",
+      "target-hardware-performance"
+    ],
+    "reason": "targeted production differential passed without a sealed full-production differential",
+    "verdict": "F4.5 Partial Production Parity"
+  }
+}

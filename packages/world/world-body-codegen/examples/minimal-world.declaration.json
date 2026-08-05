@@ -1,0 +1,177 @@
+{
+  "format": "taowind.world-declaration.v0.1",
+  "declarationVersion": "0.1.0-alpha.1",
+  "world": {
+    "id": "world:body-ir-demo",
+    "generation": 3,
+    "revision": 12,
+    "tick": 12,
+    "tickHz": 60,
+    "authorityClass": "authoritative-snapshot",
+    "authorityOwner": "rncs.rsr",
+    "sourceRealityRoot": "1dcad4625497d3ef68436d799f0b6b7333d057a1a99e32c6c16499d07f556846",
+    "capabilityScopes": ["world.body.read", "world.body.project"],
+    "gravityMmPerSecondSquared": { "x": 0, "y": 0, "z": 0 },
+    "floorY": -100000,
+    "solver": {
+      "velocityIterations": 6,
+      "positionIterations": 4,
+      "maxSubsteps": 16
+    }
+  },
+  "assets": [
+    {
+      "id": "asset:hero-mesh",
+      "kind": "mesh",
+      "version": "1.0.0",
+      "contentRoot": "747d4b05ec3ff97a818beff0f7d90c827f18a70f9aed61ac27a19e8c80bb76d5",
+      "residency": "resident"
+    },
+    {
+      "id": "asset:floor-mesh",
+      "kind": "mesh",
+      "version": "1.0.0",
+      "contentRoot": "4ecad8c2dbdd2982a38b517143c726dfdd576c007ca5026696c1de7b5e687c60",
+      "residency": "resident"
+    }
+  ],
+  "observers": [
+    {
+      "id": "observer:player",
+      "capabilities": ["world.observe", "world.presentation.read"],
+      "qualityTier": "balanced",
+      "visibleTags": ["player-visual"]
+    }
+  ],
+  "entities": [
+    {
+      "id": "entity:hero",
+      "authorityMode": "authoritative",
+      "physical": {
+        "bodyId": "body:hero",
+        "kind": "dynamic",
+        "positionMm": { "x": 0, "y": 1500, "z": 0 },
+        "rotationEulerMilliDegrees": { "x": 0, "y": 45000, "z": 0 },
+        "linearVelocityMmPerSecond": { "x": 1000, "y": 0, "z": 0 },
+        "angularVelocityMilliDegPerSecond": { "x": 0, "y": 0, "z": 0 },
+        "massGrams": 80000,
+        "fixtures": [
+          {
+            "id": "fixture:hero",
+            "shape": { "type": "capsule", "radiusMm": 350, "halfHeightMm": 650 },
+            "localPositionMm": { "x": 0, "y": 0, "z": 0 },
+            "bodyZone": "zone:hero",
+            "collisionFilter": { "categoryBits": 1, "maskBits": 65535 },
+            "sensor": false
+          }
+        ],
+        "tags": ["player"]
+      },
+      "visual": {
+        "visualBodyId": "visual:hero",
+        "nodeId": "node:hero",
+        "assetRef": "asset:hero-mesh",
+        "castShadow": true,
+        "receiveShadow": true,
+        "tags": ["player-visual"],
+        "offset": {
+          "positionMm": { "x": 0, "y": -50, "z": 0 },
+          "rotationEulerMilliDegrees": { "x": 0, "y": 0, "z": 0 },
+          "scale": { "x": 1000000, "y": 1000000, "z": 1000000, "scale": 1000000 }
+        }
+      },
+      "temporal": {
+        "policyId": "temporal:hero",
+        "mode": "interpolate",
+        "interpolationDelayTicks": 1,
+        "maximumExtrapolationTicks": 2,
+        "snapDistanceMm": 2500,
+        "blendTicks": 4
+      }
+    },
+    {
+      "id": "entity:floor",
+      "authorityMode": "authoritative",
+      "physical": {
+        "bodyId": "body:floor",
+        "kind": "static",
+        "positionMm": { "x": 0, "y": -250, "z": 0 },
+        "rotationEulerMilliDegrees": { "x": 0, "y": 0, "z": 0 },
+        "massGrams": 0,
+        "fixtures": [
+          {
+            "id": "fixture:floor",
+            "shape": { "type": "box", "halfExtentsMm": { "x": 10000, "y": 250, "z": 10000 } },
+            "bodyZone": "zone:floor",
+            "collisionFilter": { "categoryBits": 2, "maskBits": 65535 },
+            "sensor": false
+          }
+        ],
+        "tags": ["ground"]
+      },
+      "visual": {
+        "visualBodyId": "visual:floor",
+        "nodeId": "node:floor",
+        "assetRef": "asset:floor-mesh",
+        "castShadow": false,
+        "receiveShadow": true,
+        "tags": ["ground-visual"],
+        "offset": {
+          "positionMm": { "x": 0, "y": 0, "z": 0 },
+          "rotationEulerMilliDegrees": { "x": 0, "y": 0, "z": 0 },
+          "scale": { "x": 1000000, "y": 1000000, "z": 1000000, "scale": 1000000 }
+        }
+      },
+      "temporal": {
+        "policyId": "temporal:hero",
+        "mode": "interpolate",
+        "interpolationDelayTicks": 1,
+        "maximumExtrapolationTicks": 2,
+        "snapDistanceMm": 2500,
+        "blendTicks": 4
+      }
+    }
+  ],
+  "events": [
+    {
+      "id": "event:hero-contact:12:0",
+      "source": "rsr",
+      "kind": "contact-begin",
+      "tick": 12,
+      "sequence": 0,
+      "sourceAuthorityRoot": "1dcad4625497d3ef68436d799f0b6b7333d057a1a99e32c6c16499d07f556846",
+      "exactlyOnceKey": "1dcad4625497d3ef68436d799f0b6b7333d057a1a99e32c6c16499d07f556846:12:0",
+      "routes": [
+        { "id": "route:hero-contact-audio", "consumer": "audio", "target": "audio:hero-contact" },
+        { "id": "route:hero-contact-animation", "consumer": "animation", "target": "animation:hero-land" }
+      ]
+    }
+  ],
+  "renderGraphs": [
+    {
+      "id": "render-graph:main",
+      "resources": [
+        { "id": "resource:depth", "kind": "attachment", "format": "depth24plus", "lifetime": "transient", "imported": false, "exported": false },
+        { "id": "resource:swapchain", "kind": "swapchain", "format": "bgra8unorm", "lifetime": "external", "imported": true, "exported": true }
+      ],
+      "passes": [
+        {
+          "id": "pass:depth",
+          "kind": "shadow-depth",
+          "queue": "graphics",
+          "dependsOn": [],
+          "reads": [],
+          "writes": [{ "resourceId": "resource:depth", "access": "depth-attachment" }]
+        },
+        {
+          "id": "pass:main",
+          "kind": "scene-color",
+          "queue": "graphics",
+          "dependsOn": ["pass:depth"],
+          "reads": [{ "resourceId": "resource:depth", "access": "sampled" }],
+          "writes": [{ "resourceId": "resource:swapchain", "access": "color-attachment" }]
+        }
+      ]
+    }
+  ]
+}
