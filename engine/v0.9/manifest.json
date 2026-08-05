@@ -1,0 +1,12 @@
+{
+  "format": "rncs.engine-release.v0.9",
+  "suiteVersion": "0.9.0-alpha.1",
+  "rsr": {"version":"0.9.0-alpha.1","tests":"183/183","features":["exact-capsule-obb","friction-warm-start","deterministic-constraint-islands","island-sleep","coyote-time","jump-buffer"]},
+  "vsr": {"version":"0.8.0-alpha.1","tests":"183/183","features":["five-channel-pbr-textures","bilinear-sampling","tangent-space-normal-map","ambient-occlusion","emissive","alpha-mask"]},
+  "network": {"version":"0.2.0-alpha.1","tests":"22/22","protocolChanged":false},
+  "directTests":"1298/1298",
+  "authorityRoot":"fnv1a64:e9907f033fd78c80",
+  "assetPresentationRoot":"ee4a90677d8f864b23afe7de4ba8ad5ef9f1c78939ca8a2820755402b28f7097",
+  "pixelRoot":"69cc66738467de58717025eade7b7b436f93ff5d7bcc113450ad7443d71ee28b",
+  "patchHashes":{"rsr":"0f89f4a3048b5fd18c8e75799dc37890902bf936ddd242f1fad441b534ad0605","vsr":"9698e728ca9f13920ca183f533547d0bfbde04cdc6f21da11474b93938b307d3"}
+}
