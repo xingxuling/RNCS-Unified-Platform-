@@ -12,6 +12,7 @@ on:
       - "packages/operations/developer-execution-runtime/**"
       - "packages/integration/taowind-reality-mcp/**"
       - "packages/control/reality-one-gateway/**"
+      - "packages/kernel/reality-kernel/**"
       - ".github/workflows/taowind-execution-ci.yml"
       - "package.json"
       - "package-lock.json"
@@ -20,12 +21,15 @@ on:
       - "CHANGELOG.md"
       - "README.md"
       - "scripts/verify-version-contract.mjs"
+      - "scripts/normalize-lockfile-registry.mjs"
+      - "scripts/build-vsr-bridge-dependencies.mjs"
   push:
     branches: [main, main-95]
     paths:
       - "packages/operations/developer-execution-runtime/**"
       - "packages/integration/taowind-reality-mcp/**"
       - "packages/control/reality-one-gateway/**"
+      - "packages/kernel/reality-kernel/**"
       - "package.json"
       - "package-lock.json"
       - "rncs.modules.json"
@@ -33,6 +37,8 @@ on:
       - "CHANGELOG.md"
       - "README.md"
       - "scripts/verify-version-contract.mjs"
+      - "scripts/normalize-lockfile-registry.mjs"
+      - "scripts/build-vsr-bridge-dependencies.mjs"
 
 jobs:
   execution-plane:
@@ -44,15 +50,19 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm ci --ignore-scripts
+      - name: Pin npm for stable monorepo installation
+        run: npm install --global npm@11.18.0 --no-audit --no-fund
+      - name: Normalize lockfile registry for public runner
+        run: node scripts/normalize-lockfile-registry.mjs
+      - run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Verify version contract
         run: npm run verify:version-contract
+      - run: npm run build --workspace @taowind/reality-simulation-runtime
+      - run: node scripts/build-vsr-bridge-dependencies.mjs
       - run: npm run test:execution
       - run: npm run test:gateway
       - run: npm run test:mcp
       - run: npm run smoke:mcp
-      - run: npm run build --workspace @taowind/reality-simulation-runtime
-      - run: npm run build --workspace @taowind/visual-state-runtime
       - name: Execute real RSR/VSR evidence
         run: |
           node --input-type=module <<'NODE'
@@ -102,6 +112,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: npm ci --ignore-scripts
+      - name: Pin npm for stable monorepo installation
+        run: npm install --global npm@11.18.0 --no-audit --no-fund
+      - name: Normalize lockfile registry for public runner
+        run: node scripts/normalize-lockfile-registry.mjs
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm run build --workspace @taowind/reality-simulation-runtime
+      - run: node scripts/build-vsr-bridge-dependencies.mjs
       - name: Verify Windows native boundary
-        run: npm run verify:native-boundary
+        run: npm run test:native

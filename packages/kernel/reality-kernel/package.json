@@ -1,0 +1,25 @@
+{
+  "name": "@taowind/reality-kernel",
+  "version": "0.2.0-alpha.1",
+  "description": "Deterministic reality object ABI, graph queries, transition VM, typed continuity, and evidence compiler.",
+  "type": "module",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "exports": {
+    ".": "./src/index.mjs"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "demo": "node examples/first-transition.mjs"
+  },
+  "files": [
+    "src",
+    "tests",
+    "examples",
+    "docs",
+    "README.md",
+    "LICENSE"
+  ]
+}
