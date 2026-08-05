@@ -1,0 +1,15 @@
+{
+  "name": "@taowind/rncs-formal-theory",
+  "version": "0.1.0-alpha.1",
+  "type": "module",
+  "license": "Apache-2.0",
+  "description": "Executable reference model for the RNCS five-level mathematical and theorem system.",
+  "exports": "./src/index.mjs",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "demo": "node examples/level5-closure.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
