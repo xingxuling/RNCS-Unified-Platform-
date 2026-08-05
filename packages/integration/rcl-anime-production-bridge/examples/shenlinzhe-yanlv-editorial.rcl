@@ -1,0 +1,97 @@
+anime 神临者言律 {
+  episode EP01 {
+    scene 无名城审判 {
+      fps 24
+      resolution 1920x1080
+      style japanese_tv_anime
+
+      cut S01 duration 5s {
+        layout medium_close_up
+        transition hard_cut
+
+        camera {
+          lens 55mm
+          angle high 10deg
+          dolly_in from 0s to 5s easing ease_in_out
+        }
+
+        background background:unnamed-city
+
+        actor 蓝天临 {
+          asset character:蓝天临
+          keypose 0f head_lowered
+          hold 0f..14f
+          keypose 15f begin_raise_head
+          keypose 28f gaze_locked
+          gaze 审判官高台 from 28f
+          blink at 34f
+
+          dialogue {
+            text "何罪之有？"
+            start 31f
+            voice 蓝天临.default
+            emotion restrained_question
+            mouth automatic_viseme
+            close_mouth_on_end true
+          }
+
+          hold_expression from dialogue.end to cut.end
+        }
+
+        animation {
+          exposure on_twos
+          hair_secondary subtle
+          coat_secondary subtle
+          motion_override hair from 31f to 48f amplitude 1.25 reason "director-held-gaze"
+        }
+
+        sound {
+          ambience cold_wind
+          foley distant_chain
+          music none
+        }
+      }
+
+      cut S02 duration 2s {
+        layout close_up
+        transition hard_cut
+
+        camera {
+          lens 70mm
+          angle high 4deg
+        }
+
+        background background:unnamed-city
+
+        actor 蓝天临 {
+          asset character:蓝天临
+          keypose 0f gaze_locked
+          keypose 20f resolve
+          gaze 审判官高台 from 0f
+          blink at 28f
+
+          dialogue {
+            text "无需多言。"
+            start 8f
+            voice 蓝天临.default
+            emotion resolve
+            mouth automatic_viseme
+            close_mouth_on_end true
+          }
+        }
+
+        animation {
+          exposure on_twos
+          hair_secondary subtle
+          coat_secondary subtle
+        }
+
+        sound {
+          ambience cold_wind
+          foley distant_chain
+          music none
+        }
+      }
+    }
+  }
+}

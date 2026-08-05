@@ -1,0 +1,191 @@
+{
+  "cut.S01.camera": {
+    "kind": "Camera",
+    "line": 12,
+    "column": 9,
+    "end_line": 16,
+    "end_column": 9,
+    "offset": 216,
+    "end_offset": 333
+  },
+  "cut.S01.background": {
+    "kind": "BackgroundLayer",
+    "line": 18,
+    "column": 9,
+    "end_line": 18,
+    "end_column": 31,
+    "offset": 343,
+    "end_offset": 377
+  },
+  "cut.S01.actor.蓝天临": {
+    "kind": "Actor",
+    "line": 20,
+    "column": 9,
+    "end_line": 39,
+    "end_column": 9,
+    "offset": 387,
+    "end_offset": 899
+  },
+  "cut.S01": {
+    "kind": "Cut",
+    "line": 8,
+    "column": 7,
+    "end_line": 53,
+    "end_column": 7,
+    "offset": 126,
+    "end_offset": 1226
+  },
+  "cut.S02.camera": {
+    "kind": "Camera",
+    "line": 59,
+    "column": 9,
+    "end_line": 62,
+    "end_column": 9,
+    "offset": 1317,
+    "end_offset": 1381
+  },
+  "cut.S02.background": {
+    "kind": "BackgroundLayer",
+    "line": 64,
+    "column": 9,
+    "end_line": 64,
+    "end_column": 31,
+    "offset": 1391,
+    "end_offset": 1425
+  },
+  "cut.S02.actor.蓝天临": {
+    "kind": "Actor",
+    "line": 66,
+    "column": 9,
+    "end_line": 81,
+    "end_column": 9,
+    "offset": 1435,
+    "end_offset": 1810
+  },
+  "cut.S02": {
+    "kind": "Cut",
+    "line": 55,
+    "column": 7,
+    "end_line": 94,
+    "end_column": 7,
+    "offset": 1234,
+    "end_offset": 2047
+  },
+  "scene.无名城审判": {
+    "kind": "Scene",
+    "line": 3,
+    "column": 5,
+    "end_line": 95,
+    "end_column": 5,
+    "offset": 35,
+    "end_offset": 2053
+  },
+  "episode.EP01": {
+    "kind": "Episode",
+    "line": 2,
+    "column": 3,
+    "end_line": 96,
+    "end_column": 3,
+    "offset": 16,
+    "end_offset": 2057
+  },
+  "anime": {
+    "kind": "AnimeProduction",
+    "line": 1,
+    "column": 1,
+    "end_line": 97,
+    "end_column": 1,
+    "offset": 0,
+    "end_offset": 2059
+  },
+  "cuts.EP01/无名城审判/S01.keypose.head_lowered": {
+    "kind": "KeyPose",
+    "line": 22,
+    "column": 11,
+    "index": 0
+  },
+  "cut.S01.keypose.head_lowered": {
+    "kind": "KeyPose",
+    "line": 22,
+    "column": 11,
+    "index": 0
+  },
+  "cuts.EP01/无名城审判/S01.keypose.begin_raise_head": {
+    "kind": "KeyPose",
+    "line": 24,
+    "column": 11,
+    "index": 1
+  },
+  "cut.S01.keypose.begin_raise_head": {
+    "kind": "KeyPose",
+    "line": 24,
+    "column": 11,
+    "index": 1
+  },
+  "cuts.EP01/无名城审判/S01.keypose.gaze_locked": {
+    "kind": "KeyPose",
+    "line": 25,
+    "column": 11,
+    "index": 2
+  },
+  "cut.S01.keypose.gaze_locked": {
+    "kind": "KeyPose",
+    "line": 25,
+    "column": 11,
+    "index": 2
+  },
+  "cuts.EP01/无名城审判/S01.dialogue.dialogue:ba60758d393fe4a4a541b039": {
+    "kind": "Dialogue",
+    "line": 29,
+    "column": 11
+  },
+  "cut.S01.dialogue.dialogue:ba60758d393fe4a4a541b039": {
+    "kind": "Dialogue",
+    "line": 29,
+    "column": 11
+  },
+  "cuts.EP01/无名城审判/S01.motion.motion:hair:31:48": {
+    "kind": "SecondaryMotionOverride",
+    "line": 45,
+    "column": 11
+  },
+  "cut.S01.motion.motion:hair:31:48": {
+    "kind": "SecondaryMotionOverride",
+    "line": 45,
+    "column": 11
+  },
+  "cuts.EP01/无名城审判/S02.keypose.gaze_locked": {
+    "kind": "KeyPose",
+    "line": 68,
+    "column": 11,
+    "index": 0
+  },
+  "cut.S02.keypose.gaze_locked": {
+    "kind": "KeyPose",
+    "line": 68,
+    "column": 11,
+    "index": 0
+  },
+  "cuts.EP01/无名城审判/S02.keypose.resolve": {
+    "kind": "KeyPose",
+    "line": 69,
+    "column": 11,
+    "index": 1
+  },
+  "cut.S02.keypose.resolve": {
+    "kind": "KeyPose",
+    "line": 69,
+    "column": 11,
+    "index": 1
+  },
+  "cuts.EP01/无名城审判/S02.dialogue.dialogue:402ae4c5d4e2aee05ad16dbe": {
+    "kind": "Dialogue",
+    "line": 73,
+    "column": 11
+  },
+  "cut.S02.dialogue.dialogue:402ae4c5d4e2aee05ad16dbe": {
+    "kind": "Dialogue",
+    "line": 73,
+    "column": 11
+  }
+}

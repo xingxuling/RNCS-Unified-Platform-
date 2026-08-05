@@ -1,0 +1,1345 @@
+{
+  "format": "rncs.anime-production-ir.v0.1",
+  "version": "0.1.0-alpha.1",
+  "production_id": "anime-production:15a426ef8a4ef4057174f9c8",
+  "series": "神临者言律",
+  "episode": "EP01",
+  "sequence": "SEQ01",
+  "scene": "无名城审判",
+  "cuts": [
+    {
+      "episode_id": "EP01",
+      "sequence_id": "SEQ01",
+      "scene_id": "无名城审判",
+      "cut_id": "S01",
+      "duration": 5,
+      "fps": 24,
+      "resolution": {
+        "width": 1920,
+        "height": 1080
+      },
+      "layout": "medium_close_up",
+      "mode": "native-2d",
+      "camera_track": [
+        {
+          "kind": "lens",
+          "lens_mm": 55,
+          "unit": "mm",
+          "source": {
+            "line": 12,
+            "column": 9
+          },
+          "start_frame": 0,
+          "end_frame": 120
+        },
+        {
+          "kind": "angle",
+          "direction": "high",
+          "angle_deg": 10,
+          "start_frame": 0,
+          "end_frame": 120
+        },
+        {
+          "kind": "dolly_in",
+          "start": 0,
+          "end": 5,
+          "easing": "ease_in_out",
+          "dolly": 0.055,
+          "start_frame": 0,
+          "end_frame": 120
+        }
+      ],
+      "background_layers": [
+        {
+          "layer_id": "background:background:unnamed-city",
+          "asset_id": "background:unnamed-city",
+          "mode": "2.5d",
+          "depth": 0.4,
+          "parallax": 0.08,
+          "family_root": "c0e042242f03e6ff6d07888fb223b42976f162116421a186fc80aced8b86ad60"
+        }
+      ],
+      "character_layers": [
+        {
+          "layer_id": "character:蓝天临",
+          "actor_id": "蓝天临",
+          "asset_id": "character:蓝天临",
+          "mode": "native-2d",
+          "family_root": "d2401a9d4b7a06a07f3d0c94a6b40634eca48b6f7a52c5bf360a99ba530916c1",
+          "identity_root": "06b3c986fe3b204e860d783f670e2e03fc19f59b4b2cb9a96d6eb56910c3937d"
+        }
+      ],
+      "key_pose_track": [
+        {
+          "frame": 0,
+          "pose_id": "head_lowered",
+          "actor_id": "蓝天临",
+          "source": {
+            "line": 22,
+            "column": 11
+          }
+        },
+        {
+          "frame": 15,
+          "pose_id": "begin_raise_head",
+          "actor_id": "蓝天临",
+          "source": {
+            "line": 24,
+            "column": 11
+          }
+        },
+        {
+          "frame": 28,
+          "pose_id": "gaze_locked",
+          "actor_id": "蓝天临",
+          "source": {
+            "line": 25,
+            "column": 11
+          }
+        }
+      ],
+      "inbetween_track": [],
+      "exposure_sheet": [],
+      "facial_track": [
+        {
+          "frame": 0,
+          "expression": "restrained_question",
+          "eye_state": "open"
+        }
+      ],
+      "gaze_track": [
+        {
+          "target": "审判官高台",
+          "start_frame": 28,
+          "authority": "director"
+        }
+      ],
+      "blink_track": [
+        {
+          "frame": 34,
+          "duration_frames": 2,
+          "authority": "director"
+        }
+      ],
+      "mouth_track": [
+        {
+          "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+          "start_frame": 31,
+          "end_frame": 36,
+          "shape": "a",
+          "authority": "final-dialogue-audio"
+        },
+        {
+          "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+          "start_frame": 37,
+          "end_frame": 42,
+          "shape": "o",
+          "authority": "final-dialogue-audio"
+        },
+        {
+          "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+          "start_frame": 42,
+          "end_frame": 48,
+          "shape": "i",
+          "authority": "final-dialogue-audio"
+        },
+        {
+          "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+          "start_frame": 48,
+          "end_frame": 53,
+          "shape": "u",
+          "authority": "final-dialogue-audio"
+        },
+        {
+          "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+          "start_frame": 56,
+          "end_frame": 56,
+          "shape": "closed",
+          "authority": "final-dialogue-audio"
+        }
+      ],
+      "dialogue_track": [
+        {
+          "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+          "actor_id": "蓝天临",
+          "text": "何罪之有？",
+          "start_frame": 31,
+          "end_frame": 56,
+          "voice_identity": "蓝天临.default",
+          "emotion": "restrained_question",
+          "mouth": "automatic_viseme",
+          "close_mouth_on_end": true,
+          "authority": "voice-performance-provider",
+          "voice_bundle_root": "96971275cc2677e53812adbbbf0f3ab7527e7c313c2c828aca37c5a57420ae71",
+          "mouth_authority": "final-dialogue-audio"
+        }
+      ],
+      "voice_track": [
+        {
+          "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+          "voice_identity": "蓝天临.default",
+          "take_id": "take:dialogue:ba60758d393fe4a4a541b039:intent",
+          "active": false
+        },
+        {
+          "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+          "voice_identity": "蓝天临.蓝天临.default",
+          "take_id": "take:dialogue:ba60758d393fe4a4a541b039:v1",
+          "voice_root": "96971275cc2677e53812adbbbf0f3ab7527e7c313c2c828aca37c5a57420ae71",
+          "active": true
+        }
+      ],
+      "ambience_track": [
+        {
+          "cue_id": "ambience:cold_wind",
+          "sound": "cold_wind",
+          "start_frame": 0,
+          "end_frame": 120
+        }
+      ],
+      "foley_track": [
+        {
+          "cue_id": "foley:distant_chain",
+          "sound": "distant_chain",
+          "start_frame": 0,
+          "end_frame": 120
+        }
+      ],
+      "sfx_track": [],
+      "music_track": [
+        {
+          "cue_id": "music:none",
+          "sound": "none",
+          "start_frame": 0,
+          "end_frame": 120
+        }
+      ],
+      "lighting_track": [],
+      "effect_track": [],
+      "composite_track": [],
+      "correction_track": [],
+      "secondary_motion_track": [
+        {
+          "layer": "hair",
+          "start_frame": 31,
+          "end_frame": 48,
+          "amplitude": 1.25,
+          "reason": "director-held-gaze",
+          "source": {
+            "line": 45,
+            "column": 11
+          }
+        }
+      ],
+      "animation": {
+        "exposure": "on_twos",
+        "hair_secondary": "subtle",
+        "coat_secondary": "subtle"
+      },
+      "transition": {
+        "type": "hard-cut",
+        "duration_frames": 0
+      },
+      "editorial_index": 0,
+      "metadata": {
+        "location": {
+          "line": 8,
+          "column": 7
+        },
+        "source_location": {
+          "line": 8,
+          "column": 7,
+          "end_line": 53,
+          "end_column": 7
+        }
+      },
+      "cut_ref": "EP01/无名城审判/S01"
+    },
+    {
+      "episode_id": "EP01",
+      "sequence_id": "SEQ01",
+      "scene_id": "无名城审判",
+      "cut_id": "S02",
+      "duration": 2,
+      "fps": 24,
+      "resolution": {
+        "width": 1920,
+        "height": 1080
+      },
+      "layout": "close_up",
+      "mode": "native-2d",
+      "camera_track": [
+        {
+          "kind": "lens",
+          "lens_mm": 70,
+          "unit": "mm",
+          "source": {
+            "line": 59,
+            "column": 9
+          },
+          "start_frame": 0,
+          "end_frame": 48
+        },
+        {
+          "kind": "angle",
+          "direction": "high",
+          "angle_deg": 4,
+          "start_frame": 0,
+          "end_frame": 48
+        }
+      ],
+      "background_layers": [
+        {
+          "layer_id": "background:background:unnamed-city",
+          "asset_id": "background:unnamed-city",
+          "mode": "2.5d",
+          "depth": 0.4,
+          "parallax": 0.08,
+          "family_root": "c0e042242f03e6ff6d07888fb223b42976f162116421a186fc80aced8b86ad60"
+        }
+      ],
+      "character_layers": [
+        {
+          "layer_id": "character:蓝天临",
+          "actor_id": "蓝天临",
+          "asset_id": "character:蓝天临",
+          "mode": "native-2d",
+          "family_root": "d2401a9d4b7a06a07f3d0c94a6b40634eca48b6f7a52c5bf360a99ba530916c1",
+          "identity_root": "06b3c986fe3b204e860d783f670e2e03fc19f59b4b2cb9a96d6eb56910c3937d"
+        }
+      ],
+      "key_pose_track": [
+        {
+          "frame": 0,
+          "pose_id": "gaze_locked",
+          "actor_id": "蓝天临",
+          "source": {
+            "line": 68,
+            "column": 11
+          }
+        },
+        {
+          "frame": 20,
+          "pose_id": "resolve",
+          "actor_id": "蓝天临",
+          "source": {
+            "line": 69,
+            "column": 11
+          }
+        }
+      ],
+      "inbetween_track": [],
+      "exposure_sheet": [],
+      "facial_track": [
+        {
+          "frame": 0,
+          "expression": "restrained_question",
+          "eye_state": "open"
+        }
+      ],
+      "gaze_track": [
+        {
+          "target": "审判官高台",
+          "start_frame": 0,
+          "authority": "director"
+        }
+      ],
+      "blink_track": [
+        {
+          "frame": 28,
+          "duration_frames": 2,
+          "authority": "director"
+        }
+      ],
+      "mouth_track": [
+        {
+          "dialogue_event_id": "dialogue:402ae4c5d4e2aee05ad16dbe",
+          "start_frame": 8,
+          "end_frame": 11,
+          "shape": "a",
+          "authority": "final-dialogue-audio"
+        },
+        {
+          "dialogue_event_id": "dialogue:402ae4c5d4e2aee05ad16dbe",
+          "start_frame": 12,
+          "end_frame": 16,
+          "shape": "o",
+          "authority": "final-dialogue-audio"
+        },
+        {
+          "dialogue_event_id": "dialogue:402ae4c5d4e2aee05ad16dbe",
+          "start_frame": 17,
+          "end_frame": 21,
+          "shape": "i",
+          "authority": "final-dialogue-audio"
+        },
+        {
+          "dialogue_event_id": "dialogue:402ae4c5d4e2aee05ad16dbe",
+          "start_frame": 21,
+          "end_frame": 26,
+          "shape": "u",
+          "authority": "final-dialogue-audio"
+        },
+        {
+          "dialogue_event_id": "dialogue:402ae4c5d4e2aee05ad16dbe",
+          "start_frame": 30,
+          "end_frame": 30,
+          "shape": "closed",
+          "authority": "final-dialogue-audio"
+        }
+      ],
+      "dialogue_track": [
+        {
+          "dialogue_event_id": "dialogue:402ae4c5d4e2aee05ad16dbe",
+          "actor_id": "蓝天临",
+          "text": "无需多言。",
+          "start_frame": 8,
+          "end_frame": 30,
+          "voice_identity": "蓝天临.default",
+          "emotion": "resolve",
+          "mouth": "automatic_viseme",
+          "close_mouth_on_end": true,
+          "authority": "voice-performance-provider",
+          "voice_bundle_root": "d77acb9e509e3678969de8cfa871ff8190e38f1ab09483f56b2d8212b1f67382",
+          "mouth_authority": "final-dialogue-audio"
+        }
+      ],
+      "voice_track": [
+        {
+          "dialogue_event_id": "dialogue:402ae4c5d4e2aee05ad16dbe",
+          "voice_identity": "蓝天临.default",
+          "take_id": "take:dialogue:402ae4c5d4e2aee05ad16dbe:intent",
+          "active": false
+        },
+        {
+          "dialogue_event_id": "dialogue:402ae4c5d4e2aee05ad16dbe",
+          "voice_identity": "蓝天临.蓝天临.default",
+          "take_id": "take:dialogue:402ae4c5d4e2aee05ad16dbe:v1",
+          "voice_root": "d77acb9e509e3678969de8cfa871ff8190e38f1ab09483f56b2d8212b1f67382",
+          "active": true
+        }
+      ],
+      "ambience_track": [
+        {
+          "cue_id": "ambience:cold_wind",
+          "sound": "cold_wind",
+          "start_frame": 0,
+          "end_frame": 48
+        }
+      ],
+      "foley_track": [
+        {
+          "cue_id": "foley:distant_chain",
+          "sound": "distant_chain",
+          "start_frame": 0,
+          "end_frame": 48
+        }
+      ],
+      "sfx_track": [],
+      "music_track": [
+        {
+          "cue_id": "music:none",
+          "sound": "none",
+          "start_frame": 0,
+          "end_frame": 48
+        }
+      ],
+      "lighting_track": [],
+      "effect_track": [],
+      "composite_track": [],
+      "correction_track": [],
+      "secondary_motion_track": [],
+      "animation": {
+        "exposure": "on_twos",
+        "hair_secondary": "subtle",
+        "coat_secondary": "subtle"
+      },
+      "transition": {
+        "type": "hard-cut",
+        "duration_frames": 0
+      },
+      "editorial_index": 1,
+      "metadata": {
+        "location": {
+          "line": 55,
+          "column": 7
+        },
+        "source_location": {
+          "line": 55,
+          "column": 7,
+          "end_line": 94,
+          "end_column": 7
+        }
+      },
+      "cut_ref": "EP01/无名城审判/S02"
+    }
+  ],
+  "active_cut_ref": "EP01/无名城审判/S01",
+  "cut": {
+    "episode_id": "EP01",
+    "sequence_id": "SEQ01",
+    "scene_id": "无名城审判",
+    "cut_id": "S01",
+    "duration": 5,
+    "fps": 24,
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    },
+    "layout": "medium_close_up",
+    "mode": "native-2d",
+    "camera_track": [
+      {
+        "kind": "lens",
+        "lens_mm": 55,
+        "unit": "mm",
+        "source": {
+          "line": 12,
+          "column": 9
+        },
+        "start_frame": 0,
+        "end_frame": 120
+      },
+      {
+        "kind": "angle",
+        "direction": "high",
+        "angle_deg": 10,
+        "start_frame": 0,
+        "end_frame": 120
+      },
+      {
+        "kind": "dolly_in",
+        "start": 0,
+        "end": 5,
+        "easing": "ease_in_out",
+        "dolly": 0.055,
+        "start_frame": 0,
+        "end_frame": 120
+      }
+    ],
+    "background_layers": [
+      {
+        "layer_id": "background:background:unnamed-city",
+        "asset_id": "background:unnamed-city",
+        "mode": "2.5d",
+        "depth": 0.4,
+        "parallax": 0.08,
+        "family_root": "c0e042242f03e6ff6d07888fb223b42976f162116421a186fc80aced8b86ad60"
+      }
+    ],
+    "character_layers": [
+      {
+        "layer_id": "character:蓝天临",
+        "actor_id": "蓝天临",
+        "asset_id": "character:蓝天临",
+        "mode": "native-2d",
+        "family_root": "d2401a9d4b7a06a07f3d0c94a6b40634eca48b6f7a52c5bf360a99ba530916c1",
+        "identity_root": "06b3c986fe3b204e860d783f670e2e03fc19f59b4b2cb9a96d6eb56910c3937d"
+      }
+    ],
+    "key_pose_track": [
+      {
+        "frame": 0,
+        "pose_id": "head_lowered",
+        "actor_id": "蓝天临",
+        "source": {
+          "line": 22,
+          "column": 11
+        }
+      },
+      {
+        "frame": 15,
+        "pose_id": "begin_raise_head",
+        "actor_id": "蓝天临",
+        "source": {
+          "line": 24,
+          "column": 11
+        }
+      },
+      {
+        "frame": 28,
+        "pose_id": "gaze_locked",
+        "actor_id": "蓝天临",
+        "source": {
+          "line": 25,
+          "column": 11
+        }
+      }
+    ],
+    "inbetween_track": [],
+    "exposure_sheet": [],
+    "facial_track": [
+      {
+        "frame": 0,
+        "expression": "restrained_question",
+        "eye_state": "open"
+      }
+    ],
+    "gaze_track": [
+      {
+        "target": "审判官高台",
+        "start_frame": 28,
+        "authority": "director"
+      }
+    ],
+    "blink_track": [
+      {
+        "frame": 34,
+        "duration_frames": 2,
+        "authority": "director"
+      }
+    ],
+    "mouth_track": [
+      {
+        "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+        "start_frame": 31,
+        "end_frame": 36,
+        "shape": "a",
+        "authority": "final-dialogue-audio"
+      },
+      {
+        "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+        "start_frame": 37,
+        "end_frame": 42,
+        "shape": "o",
+        "authority": "final-dialogue-audio"
+      },
+      {
+        "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+        "start_frame": 42,
+        "end_frame": 48,
+        "shape": "i",
+        "authority": "final-dialogue-audio"
+      },
+      {
+        "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+        "start_frame": 48,
+        "end_frame": 53,
+        "shape": "u",
+        "authority": "final-dialogue-audio"
+      },
+      {
+        "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+        "start_frame": 56,
+        "end_frame": 56,
+        "shape": "closed",
+        "authority": "final-dialogue-audio"
+      }
+    ],
+    "dialogue_track": [
+      {
+        "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+        "actor_id": "蓝天临",
+        "text": "何罪之有？",
+        "start_frame": 31,
+        "end_frame": 56,
+        "voice_identity": "蓝天临.default",
+        "emotion": "restrained_question",
+        "mouth": "automatic_viseme",
+        "close_mouth_on_end": true,
+        "authority": "voice-performance-provider",
+        "voice_bundle_root": "96971275cc2677e53812adbbbf0f3ab7527e7c313c2c828aca37c5a57420ae71",
+        "mouth_authority": "final-dialogue-audio"
+      }
+    ],
+    "voice_track": [
+      {
+        "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+        "voice_identity": "蓝天临.default",
+        "take_id": "take:dialogue:ba60758d393fe4a4a541b039:intent",
+        "active": false
+      },
+      {
+        "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+        "voice_identity": "蓝天临.蓝天临.default",
+        "take_id": "take:dialogue:ba60758d393fe4a4a541b039:v1",
+        "voice_root": "96971275cc2677e53812adbbbf0f3ab7527e7c313c2c828aca37c5a57420ae71",
+        "active": true
+      }
+    ],
+    "ambience_track": [
+      {
+        "cue_id": "ambience:cold_wind",
+        "sound": "cold_wind",
+        "start_frame": 0,
+        "end_frame": 120
+      }
+    ],
+    "foley_track": [
+      {
+        "cue_id": "foley:distant_chain",
+        "sound": "distant_chain",
+        "start_frame": 0,
+        "end_frame": 120
+      }
+    ],
+    "sfx_track": [],
+    "music_track": [
+      {
+        "cue_id": "music:none",
+        "sound": "none",
+        "start_frame": 0,
+        "end_frame": 120
+      }
+    ],
+    "lighting_track": [],
+    "effect_track": [],
+    "composite_track": [],
+    "correction_track": [],
+    "secondary_motion_track": [
+      {
+        "layer": "hair",
+        "start_frame": 31,
+        "end_frame": 48,
+        "amplitude": 1.25,
+        "reason": "director-held-gaze",
+        "source": {
+          "line": 45,
+          "column": 11
+        }
+      }
+    ],
+    "animation": {
+      "exposure": "on_twos",
+      "hair_secondary": "subtle",
+      "coat_secondary": "subtle"
+    },
+    "transition": {
+      "type": "hard-cut",
+      "duration_frames": 0
+    },
+    "editorial_index": 0,
+    "metadata": {
+      "location": {
+        "line": 8,
+        "column": 7
+      },
+      "source_location": {
+        "line": 8,
+        "column": 7,
+        "end_line": 53,
+        "end_column": 7
+      }
+    },
+    "cut_ref": "EP01/无名城审判/S01"
+  },
+  "editorial_timeline": {
+    "format": "rncs.anime-editorial-timeline.v0.1",
+    "version": "0.1.0-alpha.1",
+    "production_id": "anime-production:15a426ef8a4ef4057174f9c8",
+    "cut_order": [
+      "EP01/无名城审判/S01",
+      "EP01/无名城审判/S02"
+    ],
+    "entries": [
+      {
+        "ordinal": 0,
+        "cut_ref": "EP01/无名城审判/S01",
+        "cut_id": "S01",
+        "episode_id": "EP01",
+        "sequence_id": "SEQ01",
+        "scene_id": "无名城审判",
+        "mode": "native-2d",
+        "fps": 24,
+        "resolution": {
+          "width": 1920,
+          "height": 1080
+        },
+        "local_frame_count": 120,
+        "global_start_frame": 0,
+        "global_end_frame_exclusive": 120,
+        "transition_in": {
+          "type": "program-start",
+          "duration_frames": 0
+        },
+        "transition_out": {
+          "type": "hard-cut",
+          "duration_frames": 0
+        }
+      },
+      {
+        "ordinal": 1,
+        "cut_ref": "EP01/无名城审判/S02",
+        "cut_id": "S02",
+        "episode_id": "EP01",
+        "sequence_id": "SEQ01",
+        "scene_id": "无名城审判",
+        "mode": "native-2d",
+        "fps": 24,
+        "resolution": {
+          "width": 1920,
+          "height": 1080
+        },
+        "local_frame_count": 48,
+        "global_start_frame": 120,
+        "global_end_frame_exclusive": 168,
+        "transition_in": {
+          "type": "hard-cut",
+          "duration_frames": 0
+        },
+        "transition_out": {
+          "type": "program-end",
+          "duration_frames": 0
+        }
+      }
+    ],
+    "cut_count": 2,
+    "master_fps": 24,
+    "master_resolution": {
+      "width": 1920,
+      "height": 1080
+    },
+    "total_frame_count": 168,
+    "total_duration_seconds": 7,
+    "transition_policy": "hard-cut",
+    "render_strategy": "deterministic-hard-cut-concatenation",
+    "timeline_root": "b0a1d21e34db16b2bff87138ba409fe5a7f34324a623329cfe59710ea7eccf49"
+  },
+  "asset_bindings": {
+    "character": {
+      "蓝天临": {
+        "asset_id": "character:蓝天临",
+        "family_root": "d2401a9d4b7a06a07f3d0c94a6b40634eca48b6f7a52c5bf360a99ba530916c1",
+        "identity_root": "06b3c986fe3b204e860d783f670e2e03fc19f59b4b2cb9a96d6eb56910c3937d",
+        "provider": {
+          "id": "ragf.anime-reference-provider",
+          "version": "0.1.0",
+          "mode": "reference",
+          "quality": "reference-anime-tv-blocking",
+          "license": "Apache-2.0"
+        }
+      }
+    },
+    "background": {
+      "background:unnamed-city": {
+        "asset_id": "background:unnamed-city",
+        "family_root": "c0e042242f03e6ff6d07888fb223b42976f162116421a186fc80aced8b86ad60",
+        "provider": {
+          "id": "ragf.anime-reference-provider",
+          "version": "0.1.0",
+          "mode": "reference",
+          "quality": "reference-anime-tv-blocking",
+          "license": "Apache-2.0"
+        }
+      }
+    }
+  },
+  "provider_bindings": {
+    "asset": "ragf.anime-reference-provider",
+    "voice": "taowind.voice-forge.reference",
+    "audio": "taowind.audio-forge.reference",
+    "render": "taowind.vsr.anime-reference-renderer",
+    "motion": "taowind.rsr.director-overridable-reference"
+  },
+  "continuity_contract": {
+    "stable_identity": true,
+    "asset_roots": {
+      "character:蓝天临": "d2401a9d4b7a06a07f3d0c94a6b40634eca48b6f7a52c5bf360a99ba530916c1",
+      "background:background:unnamed-city": "c0e042242f03e6ff6d07888fb223b42976f162116421a186fc80aced8b86ad60",
+      "character": "d2401a9d4b7a06a07f3d0c94a6b40634eca48b6f7a52c5bf360a99ba530916c1",
+      "background": "c0e042242f03e6ff6d07888fb223b42976f162116421a186fc80aced8b86ad60"
+    },
+    "voice_identity": "蓝天临.default"
+  },
+  "quality_profile": {
+    "name": "anime-tv-reference-v0.1",
+    "level": "reference-not-commercial",
+    "line_stability": "deterministic",
+    "shadow_bands": 3
+  },
+  "rendering_profiles": {
+    "EP01/无名城审判/S01": {
+      "format": "vsr.anime-rendering-profile.v0.1",
+      "version": "0.1.0-alpha.1",
+      "profile_id": "神临者言律.EP01.S01",
+      "style": "japanese_tv_anime",
+      "quality_boundary": "anime-tv-reference-v0.1",
+      "coordinate_space": "anime-canvas-960x540",
+      "projection": {
+        "kind": "native-2d-and-2.5d",
+        "resolution": {
+          "width": 1920,
+          "height": 1080
+        },
+        "parallax_layers": true,
+        "depth_order": "background-character-effects-composite"
+      },
+      "camera": {
+        "lens_units": "mm",
+        "angle_units": "degrees",
+        "dolly_units": "normalized",
+        "pan_units": "normalized",
+        "easing": "stepped-or-explicit"
+      },
+      "line": {
+        "stability": "fixed-stroke-raster",
+        "stroke_model": "fixed-width",
+        "shadow_bands": 3,
+        "anti_aliasing": "deterministic"
+      },
+      "exposure": {
+        "fps": 24,
+        "implicit_interpolation": false,
+        "default_policy": "on_twos"
+      },
+      "compositing": {
+        "premultiplied_alpha": false,
+        "layer_order": [
+          "background",
+          "character",
+          "secondary-motion",
+          "effects",
+          "lighting",
+          "correction"
+        ],
+        "color_space": "srgb"
+      },
+      "authority": {
+        "source": "RNCS",
+        "external_provider_required": false,
+        "mode": "reference"
+      },
+      "profile_root": "de45917080ebb4a1e13df30e6f97c132150f9bce911549db23e3cebcda516ba4"
+    },
+    "EP01/无名城审判/S02": {
+      "format": "vsr.anime-rendering-profile.v0.1",
+      "version": "0.1.0-alpha.1",
+      "profile_id": "神临者言律.EP01.S02",
+      "style": "japanese_tv_anime",
+      "quality_boundary": "anime-tv-reference-v0.1",
+      "coordinate_space": "anime-canvas-960x540",
+      "projection": {
+        "kind": "native-2d-and-2.5d",
+        "resolution": {
+          "width": 1920,
+          "height": 1080
+        },
+        "parallax_layers": true,
+        "depth_order": "background-character-effects-composite"
+      },
+      "camera": {
+        "lens_units": "mm",
+        "angle_units": "degrees",
+        "dolly_units": "normalized",
+        "pan_units": "normalized",
+        "easing": "stepped-or-explicit"
+      },
+      "line": {
+        "stability": "fixed-stroke-raster",
+        "stroke_model": "fixed-width",
+        "shadow_bands": 3,
+        "anti_aliasing": "deterministic"
+      },
+      "exposure": {
+        "fps": 24,
+        "implicit_interpolation": false,
+        "default_policy": "on_twos"
+      },
+      "compositing": {
+        "premultiplied_alpha": false,
+        "layer_order": [
+          "background",
+          "character",
+          "secondary-motion",
+          "effects",
+          "lighting",
+          "correction"
+        ],
+        "color_space": "srgb"
+      },
+      "authority": {
+        "source": "RNCS",
+        "external_provider_required": false,
+        "mode": "reference"
+      },
+      "profile_root": "954eceb148e32866d2607035615ab46d254505ce69062d617706a97f914a4318"
+    }
+  },
+  "motion_profiles": {
+    "EP01/无名城审判/S01": {
+      "format": "rsr.anime-secondary-motion-profile.v0.1",
+      "version": "0.1.0-alpha.1",
+      "profile_id": "神临者言律.EP01.S01",
+      "seed": "rsr-anime-reference-v0.1",
+      "layer_bindings": {
+        "hair": {
+          "mode": "subtle",
+          "amplitude": 0.9,
+          "frequency": 0.27,
+          "phase": 0.11
+        },
+        "coat": {
+          "mode": "subtle",
+          "amplitude": 1.2,
+          "frequency": 0.19,
+          "phase": 0.7
+        }
+      },
+      "director_overrides": [
+        {
+          "override_id": "motion:hair:31:48",
+          "layer": "hair",
+          "start_frame": 31,
+          "end_frame": 48,
+          "amplitude": 1.25,
+          "frequency": null,
+          "phase": null,
+          "reason": "director-held-gaze",
+          "authority": "director"
+        }
+      ],
+      "override_policy": {
+        "authority": "director",
+        "bounded": true,
+        "requires_frame_range": true,
+        "requires_reason": true,
+        "unknown_layer": "reject"
+      },
+      "continuity": {
+        "stable_asset_identity": true,
+        "deterministic_seed": true
+      },
+      "quality_boundary": "reference secondary motion; physical cloth/hair simulation not claimed",
+      "profile_root": "025350baa484c99c491fd664d9b2d535fd1bfdfc1531c24bf7cd723d30a9829f"
+    },
+    "EP01/无名城审判/S02": {
+      "format": "rsr.anime-secondary-motion-profile.v0.1",
+      "version": "0.1.0-alpha.1",
+      "profile_id": "神临者言律.EP01.S02",
+      "seed": "rsr-anime-reference-v0.1",
+      "layer_bindings": {
+        "hair": {
+          "mode": "subtle",
+          "amplitude": 0.9,
+          "frequency": 0.27,
+          "phase": 0.11
+        },
+        "coat": {
+          "mode": "subtle",
+          "amplitude": 1.2,
+          "frequency": 0.19,
+          "phase": 0.7
+        }
+      },
+      "director_overrides": [],
+      "override_policy": {
+        "authority": "director",
+        "bounded": true,
+        "requires_frame_range": true,
+        "requires_reason": true,
+        "unknown_layer": "reject"
+      },
+      "continuity": {
+        "stable_asset_identity": true,
+        "deterministic_seed": true
+      },
+      "quality_boundary": "reference secondary motion; physical cloth/hair simulation not claimed",
+      "profile_root": "5c9fb1453d95cb44b06b4a3ca19509c87480dbe20c73124bcab82b6592461c82"
+    }
+  },
+  "rendering_profile": {
+    "format": "vsr.anime-rendering-profile.v0.1",
+    "version": "0.1.0-alpha.1",
+    "profile_id": "神临者言律.EP01.S01",
+    "style": "japanese_tv_anime",
+    "quality_boundary": "anime-tv-reference-v0.1",
+    "coordinate_space": "anime-canvas-960x540",
+    "projection": {
+      "kind": "native-2d-and-2.5d",
+      "resolution": {
+        "width": 1920,
+        "height": 1080
+      },
+      "parallax_layers": true,
+      "depth_order": "background-character-effects-composite"
+    },
+    "camera": {
+      "lens_units": "mm",
+      "angle_units": "degrees",
+      "dolly_units": "normalized",
+      "pan_units": "normalized",
+      "easing": "stepped-or-explicit"
+    },
+    "line": {
+      "stability": "fixed-stroke-raster",
+      "stroke_model": "fixed-width",
+      "shadow_bands": 3,
+      "anti_aliasing": "deterministic"
+    },
+    "exposure": {
+      "fps": 24,
+      "implicit_interpolation": false,
+      "default_policy": "on_twos"
+    },
+    "compositing": {
+      "premultiplied_alpha": false,
+      "layer_order": [
+        "background",
+        "character",
+        "secondary-motion",
+        "effects",
+        "lighting",
+        "correction"
+      ],
+      "color_space": "srgb"
+    },
+    "authority": {
+      "source": "RNCS",
+      "external_provider_required": false,
+      "mode": "reference"
+    },
+    "profile_root": "de45917080ebb4a1e13df30e6f97c132150f9bce911549db23e3cebcda516ba4"
+  },
+  "motion_profile": {
+    "format": "rsr.anime-secondary-motion-profile.v0.1",
+    "version": "0.1.0-alpha.1",
+    "profile_id": "神临者言律.EP01.S01",
+    "seed": "rsr-anime-reference-v0.1",
+    "layer_bindings": {
+      "hair": {
+        "mode": "subtle",
+        "amplitude": 0.9,
+        "frequency": 0.27,
+        "phase": 0.11
+      },
+      "coat": {
+        "mode": "subtle",
+        "amplitude": 1.2,
+        "frequency": 0.19,
+        "phase": 0.7
+      }
+    },
+    "director_overrides": [
+      {
+        "override_id": "motion:hair:31:48",
+        "layer": "hair",
+        "start_frame": 31,
+        "end_frame": 48,
+        "amplitude": 1.25,
+        "frequency": null,
+        "phase": null,
+        "reason": "director-held-gaze",
+        "authority": "director"
+      }
+    ],
+    "override_policy": {
+      "authority": "director",
+      "bounded": true,
+      "requires_frame_range": true,
+      "requires_reason": true,
+      "unknown_layer": "reject"
+    },
+    "continuity": {
+      "stable_asset_identity": true,
+      "deterministic_seed": true
+    },
+    "quality_boundary": "reference secondary motion; physical cloth/hair simulation not claimed",
+    "profile_root": "025350baa484c99c491fd664d9b2d535fd1bfdfc1531c24bf7cd723d30a9829f"
+  },
+  "evidence_policy": {
+    "frame_receipts": true,
+    "provider_receipts": true,
+    "hash_algorithm": "sha256-rncs-canonical-v1"
+  },
+  "export_policy": {
+    "frame_sequence": true,
+    "audio_stems": true,
+    "master_audio": true,
+    "video_format": "mp4",
+    "video_codec": "h264",
+    "audio_codec": "aac"
+  },
+  "created_at": "2026-08-06T00:00:00.000Z",
+  "source_map": {
+    "cut.S01.camera": {
+      "kind": "Camera",
+      "line": 12,
+      "column": 9,
+      "end_line": 16,
+      "end_column": 9,
+      "offset": 216,
+      "end_offset": 333
+    },
+    "cut.S01.background": {
+      "kind": "BackgroundLayer",
+      "line": 18,
+      "column": 9,
+      "end_line": 18,
+      "end_column": 31,
+      "offset": 343,
+      "end_offset": 377
+    },
+    "cut.S01.actor.蓝天临": {
+      "kind": "Actor",
+      "line": 20,
+      "column": 9,
+      "end_line": 39,
+      "end_column": 9,
+      "offset": 387,
+      "end_offset": 899
+    },
+    "cut.S01": {
+      "kind": "Cut",
+      "line": 8,
+      "column": 7,
+      "end_line": 53,
+      "end_column": 7,
+      "offset": 126,
+      "end_offset": 1226
+    },
+    "cut.S02.camera": {
+      "kind": "Camera",
+      "line": 59,
+      "column": 9,
+      "end_line": 62,
+      "end_column": 9,
+      "offset": 1317,
+      "end_offset": 1381
+    },
+    "cut.S02.background": {
+      "kind": "BackgroundLayer",
+      "line": 64,
+      "column": 9,
+      "end_line": 64,
+      "end_column": 31,
+      "offset": 1391,
+      "end_offset": 1425
+    },
+    "cut.S02.actor.蓝天临": {
+      "kind": "Actor",
+      "line": 66,
+      "column": 9,
+      "end_line": 81,
+      "end_column": 9,
+      "offset": 1435,
+      "end_offset": 1810
+    },
+    "cut.S02": {
+      "kind": "Cut",
+      "line": 55,
+      "column": 7,
+      "end_line": 94,
+      "end_column": 7,
+      "offset": 1234,
+      "end_offset": 2047
+    },
+    "scene.无名城审判": {
+      "kind": "Scene",
+      "line": 3,
+      "column": 5,
+      "end_line": 95,
+      "end_column": 5,
+      "offset": 35,
+      "end_offset": 2053
+    },
+    "episode.EP01": {
+      "kind": "Episode",
+      "line": 2,
+      "column": 3,
+      "end_line": 96,
+      "end_column": 3,
+      "offset": 16,
+      "end_offset": 2057
+    },
+    "anime": {
+      "kind": "AnimeProduction",
+      "line": 1,
+      "column": 1,
+      "end_line": 97,
+      "end_column": 1,
+      "offset": 0,
+      "end_offset": 2059
+    },
+    "cuts.EP01/无名城审判/S01.keypose.head_lowered": {
+      "kind": "KeyPose",
+      "line": 22,
+      "column": 11,
+      "index": 0
+    },
+    "cut.S01.keypose.head_lowered": {
+      "kind": "KeyPose",
+      "line": 22,
+      "column": 11,
+      "index": 0
+    },
+    "cuts.EP01/无名城审判/S01.keypose.begin_raise_head": {
+      "kind": "KeyPose",
+      "line": 24,
+      "column": 11,
+      "index": 1
+    },
+    "cut.S01.keypose.begin_raise_head": {
+      "kind": "KeyPose",
+      "line": 24,
+      "column": 11,
+      "index": 1
+    },
+    "cuts.EP01/无名城审判/S01.keypose.gaze_locked": {
+      "kind": "KeyPose",
+      "line": 25,
+      "column": 11,
+      "index": 2
+    },
+    "cut.S01.keypose.gaze_locked": {
+      "kind": "KeyPose",
+      "line": 25,
+      "column": 11,
+      "index": 2
+    },
+    "cuts.EP01/无名城审判/S01.dialogue.dialogue:ba60758d393fe4a4a541b039": {
+      "kind": "Dialogue",
+      "line": 29,
+      "column": 11
+    },
+    "cut.S01.dialogue.dialogue:ba60758d393fe4a4a541b039": {
+      "kind": "Dialogue",
+      "line": 29,
+      "column": 11
+    },
+    "cuts.EP01/无名城审判/S01.motion.motion:hair:31:48": {
+      "kind": "SecondaryMotionOverride",
+      "line": 45,
+      "column": 11
+    },
+    "cut.S01.motion.motion:hair:31:48": {
+      "kind": "SecondaryMotionOverride",
+      "line": 45,
+      "column": 11
+    },
+    "cuts.EP01/无名城审判/S02.keypose.gaze_locked": {
+      "kind": "KeyPose",
+      "line": 68,
+      "column": 11,
+      "index": 0
+    },
+    "cut.S02.keypose.gaze_locked": {
+      "kind": "KeyPose",
+      "line": 68,
+      "column": 11,
+      "index": 0
+    },
+    "cuts.EP01/无名城审判/S02.keypose.resolve": {
+      "kind": "KeyPose",
+      "line": 69,
+      "column": 11,
+      "index": 1
+    },
+    "cut.S02.keypose.resolve": {
+      "kind": "KeyPose",
+      "line": 69,
+      "column": 11,
+      "index": 1
+    },
+    "cuts.EP01/无名城审判/S02.dialogue.dialogue:402ae4c5d4e2aee05ad16dbe": {
+      "kind": "Dialogue",
+      "line": 73,
+      "column": 11
+    },
+    "cut.S02.dialogue.dialogue:402ae4c5d4e2aee05ad16dbe": {
+      "kind": "Dialogue",
+      "line": 73,
+      "column": 11
+    }
+  },
+  "production_root": "3b4bd68c83a8ad3aa137f9aed96e7d91fda711aecf705cedb31c0cac640e6b81"
+}

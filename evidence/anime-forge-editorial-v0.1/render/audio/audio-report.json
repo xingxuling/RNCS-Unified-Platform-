@@ -1,0 +1,84 @@
+{
+  "format": "rncs.audio-scene-render-report.v0.1",
+  "scene_id": "sound:anime-production:15a426ef8a4ef4057174f9c8:editorial",
+  "duration_seconds": 7,
+  "sample_rate": 22050,
+  "stems": {
+    "dialogue": {
+      "bytes": 308744,
+      "root": "5c23b2f3a8b0d3c2a84abd3892b47048ad42d6fade07e7ef3cc0dc3992f1a889",
+      "metrics": {
+        "peak": 0.20307016372680664,
+        "rms": 0.055098367523217354,
+        "lufs_estimate": -25.177225368213424
+      }
+    },
+    "ambience": {
+      "bytes": 308744,
+      "root": "1020040e56f51f440275a6b88b457d3da58ac623381788559735ed5fc1ba24dd",
+      "metrics": {
+        "peak": 0.07999999821186066,
+        "rms": 0.03678842787132582,
+        "lufs_estimate": -28.68577542108696
+      }
+    },
+    "foley": {
+      "bytes": 308744,
+      "root": "148a32efa1742d5fbab63b10e654dec18ff26dd0d364b264645bc3cbfbcc5388",
+      "metrics": {
+        "peak": 0.044999074190855026,
+        "rms": 0.030677988483906054,
+        "lufs_estimate": -30.263462398359003
+      }
+    },
+    "sfx": {
+      "bytes": 308744,
+      "root": "7726e8082593b5d053a9442dda0a9c8943edeebbcc4e0bbee1f6efc0815f48ed",
+      "metrics": {
+        "peak": 0,
+        "rms": 0,
+        "lufs_estimate": -160
+      }
+    },
+    "music": {
+      "bytes": 308744,
+      "root": "b99d1d3ff362092c24785dfc6523acc9ace5d7e85e79876ecdb5487badac7422",
+      "metrics": {
+        "peak": 0.034999992698431015,
+        "rms": 0.024583272373049192,
+        "lufs_estimate": -32.18720614016714
+      }
+    },
+    "master": {
+      "bytes": 308744,
+      "root": "90ee603b293fb6e7e3fae73e887ad4718133f3ce4e405f00d0b7fe472cf59e8f",
+      "metrics": {
+        "peak": 0.27466490864753723,
+        "rms": 0.07089669553791475,
+        "lufs_estimate": -22.987480132190193
+      }
+    }
+  },
+  "dialogue_placements": [
+    {
+      "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+      "cut_ref": "EP01/无名城审判/S01",
+      "start_seconds": 1.2916666666666667,
+      "rendered": true
+    },
+    {
+      "dialogue_event_id": "dialogue:402ae4c5d4e2aee05ad16dbe",
+      "cut_ref": "EP01/无名城审判/S02",
+      "start_seconds": 5.333333333333333,
+      "rendered": true
+    }
+  ],
+  "ducking": {
+    "enabled": true,
+    "amount_db": -7
+  },
+  "repeat_dialogue_count": 1,
+  "seed": "audio-reference-v0.1",
+  "master_root": "90ee603b293fb6e7e3fae73e887ad4718133f3ce4e405f00d0b7fe472cf59e8f",
+  "audio_root": "db06e8690a0b66b6ab6074486685d5d1d4284497dff91aa0b4b449547f4c29f8"
+}

@@ -1,0 +1,5970 @@
+{
+  "format": "rncs.anime-production-xsheets.v0.1",
+  "version": "0.1.0-alpha.1",
+  "production_id": "anime-production:15a426ef8a4ef4057174f9c8",
+  "production_root": "3b4bd68c83a8ad3aa137f9aed96e7d91fda711aecf705cedb31c0cac640e6b81",
+  "timeline_root": "b0a1d21e34db16b2bff87138ba409fe5a7f34324a623329cfe59710ea7eccf49",
+  "cut_count": 2,
+  "total_frame_count": 168,
+  "sheets": [
+    {
+      "cut_ref": "EP01/无名城审判/S01",
+      "xsheet": {
+        "format": "rncs.anime-exposure-sheet.v0.1",
+        "version": "0.1.0-alpha.1",
+        "cut_ref": "EP01/无名城审判/S01",
+        "cut_id": "S01",
+        "duration": 5,
+        "fps": 24,
+        "frame_count": 120,
+        "exposure_policy": {
+          "exposure": "on_twos",
+          "hair_secondary": "subtle",
+          "coat_secondary": "subtle"
+        },
+        "frames": [
+          {
+            "frame_number": 0,
+            "timecode": "00:00:00:00",
+            "drawing_id": "S01:drawing:head_lowered:0",
+            "key_pose_id": "head_lowered",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 1,
+            "timecode": "00:00:00:01",
+            "drawing_id": "S01:drawing:head_lowered:0",
+            "key_pose_id": "head_lowered",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 2,
+            "timecode": "00:00:00:02",
+            "drawing_id": "S01:drawing:head_lowered:2",
+            "key_pose_id": "head_lowered",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 3,
+            "timecode": "00:00:00:03",
+            "drawing_id": "S01:drawing:head_lowered:2",
+            "key_pose_id": "head_lowered",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 4,
+            "timecode": "00:00:00:04",
+            "drawing_id": "S01:drawing:head_lowered:4",
+            "key_pose_id": "head_lowered",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 5,
+            "timecode": "00:00:00:05",
+            "drawing_id": "S01:drawing:head_lowered:4",
+            "key_pose_id": "head_lowered",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 6,
+            "timecode": "00:00:00:06",
+            "drawing_id": "S01:drawing:head_lowered:6",
+            "key_pose_id": "head_lowered",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 7,
+            "timecode": "00:00:00:07",
+            "drawing_id": "S01:drawing:head_lowered:6",
+            "key_pose_id": "head_lowered",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 8,
+            "timecode": "00:00:00:08",
+            "drawing_id": "S01:drawing:head_lowered:8",
+            "key_pose_id": "head_lowered",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 9,
+            "timecode": "00:00:00:09",
+            "drawing_id": "S01:drawing:head_lowered:8",
+            "key_pose_id": "head_lowered",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 10,
+            "timecode": "00:00:00:10",
+            "drawing_id": "S01:drawing:head_lowered:10",
+            "key_pose_id": "head_lowered",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 11,
+            "timecode": "00:00:00:11",
+            "drawing_id": "S01:drawing:head_lowered:10",
+            "key_pose_id": "head_lowered",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 12,
+            "timecode": "00:00:00:12",
+            "drawing_id": "S01:drawing:head_lowered:12",
+            "key_pose_id": "head_lowered",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 13,
+            "timecode": "00:00:00:13",
+            "drawing_id": "S01:drawing:head_lowered:12",
+            "key_pose_id": "head_lowered",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 14,
+            "timecode": "00:00:00:14",
+            "drawing_id": "S01:drawing:head_lowered:14",
+            "key_pose_id": "head_lowered",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 15,
+            "timecode": "00:00:00:15",
+            "drawing_id": "S01:drawing:begin_raise_head:15",
+            "key_pose_id": "begin_raise_head",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 16,
+            "timecode": "00:00:00:16",
+            "drawing_id": "S01:drawing:begin_raise_head:15",
+            "key_pose_id": "begin_raise_head",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 17,
+            "timecode": "00:00:00:17",
+            "drawing_id": "S01:drawing:begin_raise_head:17",
+            "key_pose_id": "begin_raise_head",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 18,
+            "timecode": "00:00:00:18",
+            "drawing_id": "S01:drawing:begin_raise_head:17",
+            "key_pose_id": "begin_raise_head",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 19,
+            "timecode": "00:00:00:19",
+            "drawing_id": "S01:drawing:begin_raise_head:19",
+            "key_pose_id": "begin_raise_head",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 20,
+            "timecode": "00:00:00:20",
+            "drawing_id": "S01:drawing:begin_raise_head:19",
+            "key_pose_id": "begin_raise_head",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 21,
+            "timecode": "00:00:00:21",
+            "drawing_id": "S01:drawing:begin_raise_head:21",
+            "key_pose_id": "begin_raise_head",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 22,
+            "timecode": "00:00:00:22",
+            "drawing_id": "S01:drawing:begin_raise_head:21",
+            "key_pose_id": "begin_raise_head",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 23,
+            "timecode": "00:00:00:23",
+            "drawing_id": "S01:drawing:begin_raise_head:23",
+            "key_pose_id": "begin_raise_head",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 24,
+            "timecode": "00:00:01:00",
+            "drawing_id": "S01:drawing:begin_raise_head:23",
+            "key_pose_id": "begin_raise_head",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 25,
+            "timecode": "00:00:01:01",
+            "drawing_id": "S01:drawing:begin_raise_head:25",
+            "key_pose_id": "begin_raise_head",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 26,
+            "timecode": "00:00:01:02",
+            "drawing_id": "S01:drawing:begin_raise_head:25",
+            "key_pose_id": "begin_raise_head",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 27,
+            "timecode": "00:00:01:03",
+            "drawing_id": "S01:drawing:begin_raise_head:27",
+            "key_pose_id": "begin_raise_head",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 28,
+            "timecode": "00:00:01:04",
+            "drawing_id": "S01:drawing:gaze_locked:28",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 29,
+            "timecode": "00:00:01:05",
+            "drawing_id": "S01:drawing:gaze_locked:28",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 30,
+            "timecode": "00:00:01:06",
+            "drawing_id": "S01:drawing:gaze_locked:30",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 31,
+            "timecode": "00:00:01:07",
+            "drawing_id": "S01:drawing:gaze_locked:30",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "a",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+              "text": "何罪之有？",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 32,
+            "timecode": "00:00:01:08",
+            "drawing_id": "S01:drawing:gaze_locked:32",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "a",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+              "text": "何罪之有？",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 33,
+            "timecode": "00:00:01:09",
+            "drawing_id": "S01:drawing:gaze_locked:32",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "a",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+              "text": "何罪之有？",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 34,
+            "timecode": "00:00:01:10",
+            "drawing_id": "S01:drawing:gaze_locked:34",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "a",
+            "eye_state": "closed",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+              "text": "何罪之有？",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 35,
+            "timecode": "00:00:01:11",
+            "drawing_id": "S01:drawing:gaze_locked:34",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "a",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+              "text": "何罪之有？",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 36,
+            "timecode": "00:00:01:12",
+            "drawing_id": "S01:drawing:gaze_locked:36",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "a",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+              "text": "何罪之有？",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 37,
+            "timecode": "00:00:01:13",
+            "drawing_id": "S01:drawing:gaze_locked:36",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "o",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+              "text": "何罪之有？",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 38,
+            "timecode": "00:00:01:14",
+            "drawing_id": "S01:drawing:gaze_locked:38",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "o",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+              "text": "何罪之有？",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 39,
+            "timecode": "00:00:01:15",
+            "drawing_id": "S01:drawing:gaze_locked:38",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "o",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+              "text": "何罪之有？",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 40,
+            "timecode": "00:00:01:16",
+            "drawing_id": "S01:drawing:gaze_locked:40",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "o",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+              "text": "何罪之有？",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 41,
+            "timecode": "00:00:01:17",
+            "drawing_id": "S01:drawing:gaze_locked:40",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "o",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+              "text": "何罪之有？",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 42,
+            "timecode": "00:00:01:18",
+            "drawing_id": "S01:drawing:gaze_locked:42",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "i",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+              "text": "何罪之有？",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 43,
+            "timecode": "00:00:01:19",
+            "drawing_id": "S01:drawing:gaze_locked:42",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "i",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+              "text": "何罪之有？",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 44,
+            "timecode": "00:00:01:20",
+            "drawing_id": "S01:drawing:gaze_locked:44",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "i",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+              "text": "何罪之有？",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 45,
+            "timecode": "00:00:01:21",
+            "drawing_id": "S01:drawing:gaze_locked:44",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "i",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+              "text": "何罪之有？",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 46,
+            "timecode": "00:00:01:22",
+            "drawing_id": "S01:drawing:gaze_locked:46",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "i",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+              "text": "何罪之有？",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 47,
+            "timecode": "00:00:01:23",
+            "drawing_id": "S01:drawing:gaze_locked:46",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "i",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+              "text": "何罪之有？",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 48,
+            "timecode": "00:00:02:00",
+            "drawing_id": "S01:drawing:gaze_locked:48",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "u",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+              "text": "何罪之有？",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 49,
+            "timecode": "00:00:02:01",
+            "drawing_id": "S01:drawing:gaze_locked:48",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "u",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+              "text": "何罪之有？",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 50,
+            "timecode": "00:00:02:02",
+            "drawing_id": "S01:drawing:gaze_locked:50",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "u",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+              "text": "何罪之有？",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 51,
+            "timecode": "00:00:02:03",
+            "drawing_id": "S01:drawing:gaze_locked:50",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "u",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+              "text": "何罪之有？",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 52,
+            "timecode": "00:00:02:04",
+            "drawing_id": "S01:drawing:gaze_locked:52",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "u",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+              "text": "何罪之有？",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 53,
+            "timecode": "00:00:02:05",
+            "drawing_id": "S01:drawing:gaze_locked:52",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "u",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+              "text": "何罪之有？",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 54,
+            "timecode": "00:00:02:06",
+            "drawing_id": "S01:drawing:gaze_locked:54",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+              "text": "何罪之有？",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 55,
+            "timecode": "00:00:02:07",
+            "drawing_id": "S01:drawing:gaze_locked:54",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+              "text": "何罪之有？",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 56,
+            "timecode": "00:00:02:08",
+            "drawing_id": "S01:drawing:gaze_locked:56",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+              "text": "何罪之有？",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 57,
+            "timecode": "00:00:02:09",
+            "drawing_id": "S01:drawing:gaze_locked:56",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 58,
+            "timecode": "00:00:02:10",
+            "drawing_id": "S01:drawing:gaze_locked:58",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 59,
+            "timecode": "00:00:02:11",
+            "drawing_id": "S01:drawing:gaze_locked:58",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 60,
+            "timecode": "00:00:02:12",
+            "drawing_id": "S01:drawing:gaze_locked:60",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 61,
+            "timecode": "00:00:02:13",
+            "drawing_id": "S01:drawing:gaze_locked:60",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 62,
+            "timecode": "00:00:02:14",
+            "drawing_id": "S01:drawing:gaze_locked:62",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 63,
+            "timecode": "00:00:02:15",
+            "drawing_id": "S01:drawing:gaze_locked:62",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 64,
+            "timecode": "00:00:02:16",
+            "drawing_id": "S01:drawing:gaze_locked:64",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 65,
+            "timecode": "00:00:02:17",
+            "drawing_id": "S01:drawing:gaze_locked:64",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 66,
+            "timecode": "00:00:02:18",
+            "drawing_id": "S01:drawing:gaze_locked:66",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 67,
+            "timecode": "00:00:02:19",
+            "drawing_id": "S01:drawing:gaze_locked:66",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 68,
+            "timecode": "00:00:02:20",
+            "drawing_id": "S01:drawing:gaze_locked:68",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 69,
+            "timecode": "00:00:02:21",
+            "drawing_id": "S01:drawing:gaze_locked:68",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 70,
+            "timecode": "00:00:02:22",
+            "drawing_id": "S01:drawing:gaze_locked:70",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 71,
+            "timecode": "00:00:02:23",
+            "drawing_id": "S01:drawing:gaze_locked:70",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 72,
+            "timecode": "00:00:03:00",
+            "drawing_id": "S01:drawing:gaze_locked:72",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 73,
+            "timecode": "00:00:03:01",
+            "drawing_id": "S01:drawing:gaze_locked:72",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 74,
+            "timecode": "00:00:03:02",
+            "drawing_id": "S01:drawing:gaze_locked:74",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 75,
+            "timecode": "00:00:03:03",
+            "drawing_id": "S01:drawing:gaze_locked:74",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 76,
+            "timecode": "00:00:03:04",
+            "drawing_id": "S01:drawing:gaze_locked:76",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 77,
+            "timecode": "00:00:03:05",
+            "drawing_id": "S01:drawing:gaze_locked:76",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 78,
+            "timecode": "00:00:03:06",
+            "drawing_id": "S01:drawing:gaze_locked:78",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 79,
+            "timecode": "00:00:03:07",
+            "drawing_id": "S01:drawing:gaze_locked:78",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 80,
+            "timecode": "00:00:03:08",
+            "drawing_id": "S01:drawing:gaze_locked:80",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 81,
+            "timecode": "00:00:03:09",
+            "drawing_id": "S01:drawing:gaze_locked:80",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 82,
+            "timecode": "00:00:03:10",
+            "drawing_id": "S01:drawing:gaze_locked:82",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 83,
+            "timecode": "00:00:03:11",
+            "drawing_id": "S01:drawing:gaze_locked:82",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 84,
+            "timecode": "00:00:03:12",
+            "drawing_id": "S01:drawing:gaze_locked:84",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 85,
+            "timecode": "00:00:03:13",
+            "drawing_id": "S01:drawing:gaze_locked:84",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 86,
+            "timecode": "00:00:03:14",
+            "drawing_id": "S01:drawing:gaze_locked:86",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 87,
+            "timecode": "00:00:03:15",
+            "drawing_id": "S01:drawing:gaze_locked:86",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 88,
+            "timecode": "00:00:03:16",
+            "drawing_id": "S01:drawing:gaze_locked:88",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 89,
+            "timecode": "00:00:03:17",
+            "drawing_id": "S01:drawing:gaze_locked:88",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 90,
+            "timecode": "00:00:03:18",
+            "drawing_id": "S01:drawing:gaze_locked:90",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 91,
+            "timecode": "00:00:03:19",
+            "drawing_id": "S01:drawing:gaze_locked:90",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 92,
+            "timecode": "00:00:03:20",
+            "drawing_id": "S01:drawing:gaze_locked:92",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 93,
+            "timecode": "00:00:03:21",
+            "drawing_id": "S01:drawing:gaze_locked:92",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 94,
+            "timecode": "00:00:03:22",
+            "drawing_id": "S01:drawing:gaze_locked:94",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 95,
+            "timecode": "00:00:03:23",
+            "drawing_id": "S01:drawing:gaze_locked:94",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 96,
+            "timecode": "00:00:04:00",
+            "drawing_id": "S01:drawing:gaze_locked:96",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 97,
+            "timecode": "00:00:04:01",
+            "drawing_id": "S01:drawing:gaze_locked:96",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 98,
+            "timecode": "00:00:04:02",
+            "drawing_id": "S01:drawing:gaze_locked:98",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 99,
+            "timecode": "00:00:04:03",
+            "drawing_id": "S01:drawing:gaze_locked:98",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 100,
+            "timecode": "00:00:04:04",
+            "drawing_id": "S01:drawing:gaze_locked:100",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 101,
+            "timecode": "00:00:04:05",
+            "drawing_id": "S01:drawing:gaze_locked:100",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 102,
+            "timecode": "00:00:04:06",
+            "drawing_id": "S01:drawing:gaze_locked:102",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 103,
+            "timecode": "00:00:04:07",
+            "drawing_id": "S01:drawing:gaze_locked:102",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 104,
+            "timecode": "00:00:04:08",
+            "drawing_id": "S01:drawing:gaze_locked:104",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 105,
+            "timecode": "00:00:04:09",
+            "drawing_id": "S01:drawing:gaze_locked:104",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 106,
+            "timecode": "00:00:04:10",
+            "drawing_id": "S01:drawing:gaze_locked:106",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 107,
+            "timecode": "00:00:04:11",
+            "drawing_id": "S01:drawing:gaze_locked:106",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 108,
+            "timecode": "00:00:04:12",
+            "drawing_id": "S01:drawing:gaze_locked:108",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 109,
+            "timecode": "00:00:04:13",
+            "drawing_id": "S01:drawing:gaze_locked:108",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 110,
+            "timecode": "00:00:04:14",
+            "drawing_id": "S01:drawing:gaze_locked:110",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 111,
+            "timecode": "00:00:04:15",
+            "drawing_id": "S01:drawing:gaze_locked:110",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 112,
+            "timecode": "00:00:04:16",
+            "drawing_id": "S01:drawing:gaze_locked:112",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 113,
+            "timecode": "00:00:04:17",
+            "drawing_id": "S01:drawing:gaze_locked:112",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 114,
+            "timecode": "00:00:04:18",
+            "drawing_id": "S01:drawing:gaze_locked:114",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 115,
+            "timecode": "00:00:04:19",
+            "drawing_id": "S01:drawing:gaze_locked:114",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 116,
+            "timecode": "00:00:04:20",
+            "drawing_id": "S01:drawing:gaze_locked:116",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 117,
+            "timecode": "00:00:04:21",
+            "drawing_id": "S01:drawing:gaze_locked:116",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 118,
+            "timecode": "00:00:04:22",
+            "drawing_id": "S01:drawing:gaze_locked:118",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 119,
+            "timecode": "00:00:04:23",
+            "drawing_id": "S01:drawing:gaze_locked:118",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 0,
+              "dolly": 0.055,
+              "x": 0,
+              "y": 0,
+              "easing": "ease_in_out"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          }
+        ],
+        "finite_animation": {
+          "uses_exposure_steps": true,
+          "interpolation": "stepped",
+          "no_implicit_smoothing": true
+        },
+        "xsheet_root": "8e5c4a9cd9dab83c2785fecf75021f2663b307d4da389f5067ad1647c690b5a7"
+      }
+    },
+    {
+      "cut_ref": "EP01/无名城审判/S02",
+      "xsheet": {
+        "format": "rncs.anime-exposure-sheet.v0.1",
+        "version": "0.1.0-alpha.1",
+        "cut_ref": "EP01/无名城审判/S02",
+        "cut_id": "S02",
+        "duration": 2,
+        "fps": 24,
+        "frame_count": 48,
+        "exposure_policy": {
+          "exposure": "on_twos",
+          "hair_secondary": "subtle",
+          "coat_secondary": "subtle"
+        },
+        "frames": [
+          {
+            "frame_number": 0,
+            "timecode": "00:00:00:00",
+            "drawing_id": "S02:drawing:gaze_locked:0",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 1,
+            "timecode": "00:00:00:01",
+            "drawing_id": "S02:drawing:gaze_locked:0",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 2,
+            "timecode": "00:00:00:02",
+            "drawing_id": "S02:drawing:gaze_locked:2",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 3,
+            "timecode": "00:00:00:03",
+            "drawing_id": "S02:drawing:gaze_locked:2",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 4,
+            "timecode": "00:00:00:04",
+            "drawing_id": "S02:drawing:gaze_locked:4",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 5,
+            "timecode": "00:00:00:05",
+            "drawing_id": "S02:drawing:gaze_locked:4",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 6,
+            "timecode": "00:00:00:06",
+            "drawing_id": "S02:drawing:gaze_locked:6",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 7,
+            "timecode": "00:00:00:07",
+            "drawing_id": "S02:drawing:gaze_locked:6",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 8,
+            "timecode": "00:00:00:08",
+            "drawing_id": "S02:drawing:gaze_locked:8",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "a",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:402ae4c5d4e2aee05ad16dbe",
+              "text": "无需多言。",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 9,
+            "timecode": "00:00:00:09",
+            "drawing_id": "S02:drawing:gaze_locked:8",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "a",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:402ae4c5d4e2aee05ad16dbe",
+              "text": "无需多言。",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 10,
+            "timecode": "00:00:00:10",
+            "drawing_id": "S02:drawing:gaze_locked:10",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "a",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:402ae4c5d4e2aee05ad16dbe",
+              "text": "无需多言。",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 11,
+            "timecode": "00:00:00:11",
+            "drawing_id": "S02:drawing:gaze_locked:10",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "a",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:402ae4c5d4e2aee05ad16dbe",
+              "text": "无需多言。",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 12,
+            "timecode": "00:00:00:12",
+            "drawing_id": "S02:drawing:gaze_locked:12",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "o",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:402ae4c5d4e2aee05ad16dbe",
+              "text": "无需多言。",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 13,
+            "timecode": "00:00:00:13",
+            "drawing_id": "S02:drawing:gaze_locked:12",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "o",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:402ae4c5d4e2aee05ad16dbe",
+              "text": "无需多言。",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 14,
+            "timecode": "00:00:00:14",
+            "drawing_id": "S02:drawing:gaze_locked:14",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "o",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:402ae4c5d4e2aee05ad16dbe",
+              "text": "无需多言。",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 15,
+            "timecode": "00:00:00:15",
+            "drawing_id": "S02:drawing:gaze_locked:14",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "o",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:402ae4c5d4e2aee05ad16dbe",
+              "text": "无需多言。",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 16,
+            "timecode": "00:00:00:16",
+            "drawing_id": "S02:drawing:gaze_locked:16",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "o",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:402ae4c5d4e2aee05ad16dbe",
+              "text": "无需多言。",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 17,
+            "timecode": "00:00:00:17",
+            "drawing_id": "S02:drawing:gaze_locked:16",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "i",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:402ae4c5d4e2aee05ad16dbe",
+              "text": "无需多言。",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 18,
+            "timecode": "00:00:00:18",
+            "drawing_id": "S02:drawing:gaze_locked:18",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "i",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:402ae4c5d4e2aee05ad16dbe",
+              "text": "无需多言。",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 19,
+            "timecode": "00:00:00:19",
+            "drawing_id": "S02:drawing:gaze_locked:18",
+            "key_pose_id": "gaze_locked",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "i",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:402ae4c5d4e2aee05ad16dbe",
+              "text": "无需多言。",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 20,
+            "timecode": "00:00:00:20",
+            "drawing_id": "S02:drawing:resolve:20",
+            "key_pose_id": "resolve",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "i",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:402ae4c5d4e2aee05ad16dbe",
+              "text": "无需多言。",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 21,
+            "timecode": "00:00:00:21",
+            "drawing_id": "S02:drawing:resolve:20",
+            "key_pose_id": "resolve",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "u",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:402ae4c5d4e2aee05ad16dbe",
+              "text": "无需多言。",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 22,
+            "timecode": "00:00:00:22",
+            "drawing_id": "S02:drawing:resolve:22",
+            "key_pose_id": "resolve",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "u",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:402ae4c5d4e2aee05ad16dbe",
+              "text": "无需多言。",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 23,
+            "timecode": "00:00:00:23",
+            "drawing_id": "S02:drawing:resolve:22",
+            "key_pose_id": "resolve",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "u",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:402ae4c5d4e2aee05ad16dbe",
+              "text": "无需多言。",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 24,
+            "timecode": "00:00:01:00",
+            "drawing_id": "S02:drawing:resolve:24",
+            "key_pose_id": "resolve",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "u",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:402ae4c5d4e2aee05ad16dbe",
+              "text": "无需多言。",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 25,
+            "timecode": "00:00:01:01",
+            "drawing_id": "S02:drawing:resolve:24",
+            "key_pose_id": "resolve",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "u",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:402ae4c5d4e2aee05ad16dbe",
+              "text": "无需多言。",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 26,
+            "timecode": "00:00:01:02",
+            "drawing_id": "S02:drawing:resolve:26",
+            "key_pose_id": "resolve",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "u",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:402ae4c5d4e2aee05ad16dbe",
+              "text": "无需多言。",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 27,
+            "timecode": "00:00:01:03",
+            "drawing_id": "S02:drawing:resolve:26",
+            "key_pose_id": "resolve",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:402ae4c5d4e2aee05ad16dbe",
+              "text": "无需多言。",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 28,
+            "timecode": "00:00:01:04",
+            "drawing_id": "S02:drawing:resolve:28",
+            "key_pose_id": "resolve",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "closed",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:402ae4c5d4e2aee05ad16dbe",
+              "text": "无需多言。",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 29,
+            "timecode": "00:00:01:05",
+            "drawing_id": "S02:drawing:resolve:28",
+            "key_pose_id": "resolve",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:402ae4c5d4e2aee05ad16dbe",
+              "text": "无需多言。",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 30,
+            "timecode": "00:00:01:06",
+            "drawing_id": "S02:drawing:resolve:30",
+            "key_pose_id": "resolve",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": {
+              "dialogue_event_id": "dialogue:402ae4c5d4e2aee05ad16dbe",
+              "text": "无需多言。",
+              "active": true
+            },
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 31,
+            "timecode": "00:00:01:07",
+            "drawing_id": "S02:drawing:resolve:30",
+            "key_pose_id": "resolve",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 32,
+            "timecode": "00:00:01:08",
+            "drawing_id": "S02:drawing:resolve:32",
+            "key_pose_id": "resolve",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 33,
+            "timecode": "00:00:01:09",
+            "drawing_id": "S02:drawing:resolve:32",
+            "key_pose_id": "resolve",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 34,
+            "timecode": "00:00:01:10",
+            "drawing_id": "S02:drawing:resolve:34",
+            "key_pose_id": "resolve",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 35,
+            "timecode": "00:00:01:11",
+            "drawing_id": "S02:drawing:resolve:34",
+            "key_pose_id": "resolve",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 36,
+            "timecode": "00:00:01:12",
+            "drawing_id": "S02:drawing:resolve:36",
+            "key_pose_id": "resolve",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 37,
+            "timecode": "00:00:01:13",
+            "drawing_id": "S02:drawing:resolve:36",
+            "key_pose_id": "resolve",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 38,
+            "timecode": "00:00:01:14",
+            "drawing_id": "S02:drawing:resolve:38",
+            "key_pose_id": "resolve",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 39,
+            "timecode": "00:00:01:15",
+            "drawing_id": "S02:drawing:resolve:38",
+            "key_pose_id": "resolve",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 40,
+            "timecode": "00:00:01:16",
+            "drawing_id": "S02:drawing:resolve:40",
+            "key_pose_id": "resolve",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 41,
+            "timecode": "00:00:01:17",
+            "drawing_id": "S02:drawing:resolve:40",
+            "key_pose_id": "resolve",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 42,
+            "timecode": "00:00:01:18",
+            "drawing_id": "S02:drawing:resolve:42",
+            "key_pose_id": "resolve",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 43,
+            "timecode": "00:00:01:19",
+            "drawing_id": "S02:drawing:resolve:42",
+            "key_pose_id": "resolve",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 44,
+            "timecode": "00:00:01:20",
+            "drawing_id": "S02:drawing:resolve:44",
+            "key_pose_id": "resolve",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 45,
+            "timecode": "00:00:01:21",
+            "drawing_id": "S02:drawing:resolve:44",
+            "key_pose_id": "resolve",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 46,
+            "timecode": "00:00:01:22",
+            "drawing_id": "S02:drawing:resolve:46",
+            "key_pose_id": "resolve",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          },
+          {
+            "frame_number": 47,
+            "timecode": "00:00:01:23",
+            "drawing_id": "S02:drawing:resolve:46",
+            "key_pose_id": "resolve",
+            "exposure_count": 2,
+            "layer_id": "character:蓝天临",
+            "camera_state": {
+              "lens_mm": 55,
+              "angle_deg": 4,
+              "dolly": 0,
+              "x": 0,
+              "y": 0,
+              "easing": "linear"
+            },
+            "mouth_shape": "closed",
+            "eye_state": "open",
+            "effect_state": {
+              "smear": false,
+              "impact": false
+            },
+            "dialogue_state": null,
+            "sound_cues": [
+              "ambience:cold_wind",
+              "foley:distant_chain"
+            ],
+            "composite_cues": [],
+            "animation_policy": {
+              "exposure": "on_twos",
+              "interpolation": "stepped",
+              "camera_only_motion": false,
+              "partial_animation": true
+            }
+          }
+        ],
+        "finite_animation": {
+          "uses_exposure_steps": true,
+          "interpolation": "stepped",
+          "no_implicit_smoothing": true
+        },
+        "xsheet_root": "1d6c7845aba77ecf054e2f2440f69c83a98867fb9d0a4954ff1f08ce31ac113b"
+      }
+    }
+  ],
+  "xsheets_root": "200bb4ef6c8d34143ccd1773ac7ece39b861e4b23b1e5b25ae6ac427f365475c"
+}

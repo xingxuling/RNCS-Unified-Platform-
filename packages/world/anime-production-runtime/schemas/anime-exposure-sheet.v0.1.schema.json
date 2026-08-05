@@ -2,10 +2,11 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "rncs.anime-exposure-sheet.v0.1",
   "type": "object",
-  "required": ["format", "version", "cut_id", "duration", "fps", "frame_count", "frames", "finite_animation", "xsheet_root"],
+  "required": ["format", "version", "cut_ref", "cut_id", "duration", "fps", "frame_count", "frames", "finite_animation", "xsheet_root"],
   "properties": {
     "format": {"const": "rncs.anime-exposure-sheet.v0.1"},
     "version": {"type": "string"},
+    "cut_ref": {"type": "string", "minLength": 1},
     "cut_id": {"type": "string", "minLength": 1},
     "duration": {"type": "number", "exclusiveMinimum": 0},
     "fps": {"type": "number", "exclusiveMinimum": 0},

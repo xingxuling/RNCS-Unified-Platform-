@@ -1,0 +1,15 @@
+{
+  "format": "rncs.anime-production-render-report.v0.1",
+  "production_id": "anime-production:15a426ef8a4ef4057174f9c8",
+  "production_root": "3b4bd68c83a8ad3aa137f9aed96e7d91fda711aecf705cedb31c0cac640e6b81",
+  "timeline_root": "b0a1d21e34db16b2bff87138ba409fe5a7f34324a623329cfe59710ea7eccf49",
+  "manifest_root": "fce9958e554fb7cbc54b8b83346236baf3ec935f9648a6cc0b9cb8843e623b6e",
+  "frame_sequence_root": "056eca0b8caf5c296186750ec85275457d04dbdc75cb7ec61821bb86da452b1a",
+  "evidence_ledger_root": "84db65c00aae38b64db5266033e407ebdb8e03c69d1f8e718702a8d687bf8db4",
+  "backend": "deterministic-native-2d",
+  "status": "complete",
+  "cut_count": 2,
+  "rendered_frame_count": 168,
+  "expected_frame_count": 168,
+  "boundary": "reference procedural anime renderer; not commercial animation quality"
+}

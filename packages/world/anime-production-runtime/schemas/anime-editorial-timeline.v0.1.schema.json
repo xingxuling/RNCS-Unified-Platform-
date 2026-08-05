@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rncs.anime-editorial-timeline.v0.1",
+  "type": "object",
+  "required": ["format", "version", "production_id", "cut_order", "entries", "cut_count", "master_fps", "master_resolution", "total_frame_count", "total_duration_seconds", "transition_policy", "render_strategy", "timeline_root"],
+  "properties": {
+    "format": {"const": "rncs.anime-editorial-timeline.v0.1"},
+    "version": {"type": "string"},
+    "production_id": {"type": "string", "minLength": 1},
+    "cut_order": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "entries": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/entry"}},
+    "cut_count": {"type": "integer", "minimum": 1},
+    "master_fps": {"type": "number", "exclusiveMinimum": 0},
+    "master_resolution": {"type": "object", "required": ["width", "height"], "properties": {"width": {"type": "integer", "minimum": 16}, "height": {"type": "integer", "minimum": 16}}},
+    "total_frame_count": {"type": "integer", "minimum": 1},
+    "total_duration_seconds": {"type": "number", "exclusiveMinimum": 0},
+    "transition_policy": {"const": "hard-cut"},
+    "render_strategy": {"const": "deterministic-hard-cut-concatenation"},
+    "timeline_root": {"type": "string", "minLength": 64, "maxLength": 64}
+  },
+  "$defs": {
+    "entry": {
+      "type": "object",
+      "required": ["ordinal", "cut_ref", "cut_id", "episode_id", "sequence_id", "scene_id", "fps", "resolution", "local_frame_count", "global_start_frame", "global_end_frame_exclusive", "transition_in", "transition_out"],
+      "properties": {
+        "ordinal": {"type": "integer", "minimum": 0},
+        "cut_ref": {"type": "string", "minLength": 1},
+        "cut_id": {"type": "string", "minLength": 1},
+        "episode_id": {"type": "string", "minLength": 1},
+        "sequence_id": {"type": "string", "minLength": 1},
+        "scene_id": {"type": "string", "minLength": 1},
+        "fps": {"type": "number", "exclusiveMinimum": 0},
+        "resolution": {"type": "object"},
+        "local_frame_count": {"type": "integer", "minimum": 1},
+        "global_start_frame": {"type": "integer", "minimum": 0},
+        "global_end_frame_exclusive": {"type": "integer", "minimum": 1},
+        "transition_in": {"type": "object"},
+        "transition_out": {"type": "object"}
+      }
+    }
+  }
+}

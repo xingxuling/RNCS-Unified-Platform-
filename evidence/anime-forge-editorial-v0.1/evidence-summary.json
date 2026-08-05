@@ -1,0 +1,57 @@
+{
+  "format": "rncs.anime-editorial-evidence-summary.v0.1",
+  "version": "0.1.0-alpha.1",
+  "date": "2026-08-06",
+  "phase": "phase-3-editorial-kernel",
+  "status": "targeted-reference-evidence",
+  "source": "packages/integration/rcl-anime-production-bridge/examples/shenlinzhe-yanlv-editorial.rcl",
+  "production_id": "anime-production:15a426ef8a4ef4057174f9c8",
+  "compiled_root": "3bccfc9859c120f9880932b381bc9833b37167e5cc0ec4cfa927e97be3309bfd",
+  "production_root": "3b4bd68c83a8ad3aa137f9aed96e7d91fda711aecf705cedb31c0cac640e6b81",
+  "timeline_root": "b0a1d21e34db16b2bff87138ba409fe5a7f34324a623329cfe59710ea7eccf49",
+  "xsheets_root": "200bb4ef6c8d34143ccd1773ac7ece39b861e4b23b1e5b25ae6ac427f365475c",
+  "sequence_root": "056eca0b8caf5c296186750ec85275457d04dbdc75cb7ec61821bb86da452b1a",
+  "evidence_ledger_root": "84db65c00aae38b64db5266033e407ebdb8e03c69d1f8e718702a8d687bf8db4",
+  "audio_root": "db06e8690a0b66b6ab6074486685d5d1d4284497dff91aa0b4b449547f4c29f8",
+  "cut_count": 2,
+  "total_frame_count": 168,
+  "rendered_frame_count": 168,
+  "dialogue_count": 2,
+  "cuts": [
+    {
+      "cut_ref": "EP01/无名城审判/S01",
+      "local_frame_count": 120,
+      "global_start_frame": 0,
+      "global_end_frame_exclusive": 120,
+      "transition_in": "program-start"
+    },
+    {
+      "cut_ref": "EP01/无名城审判/S02",
+      "local_frame_count": 48,
+      "global_start_frame": 120,
+      "global_end_frame_exclusive": 168,
+      "transition_in": "hard-cut"
+    }
+  ],
+  "checks": {
+    "production_ir": true,
+    "editorial_timeline": true,
+    "xsheets": true,
+    "real_png_sequence": true,
+    "voice_non_silent": true,
+    "voice_authority": true,
+    "audio_timeline": true,
+    "deterministic_replay": true,
+    "mp4_encoder_available": false
+  },
+  "boundaries": {
+    "assets": "RAGF deterministic reference SVG families; not externally cleared commercial source art",
+    "voice": "synthetic reference performance; not a licensed human actor take",
+    "render": "deterministic CPU reference raster at evidence resolution; no GPU/provider parity claim",
+    "motion": "bounded RSR reference secondary motion; no physical cloth or hair simulation claim",
+    "editorial": "deterministic hard cuts only; dissolve and nonlinear editorial effects remain unimplemented",
+    "mp4": "FFmpeg unavailable; no fake MP4 emitted",
+    "acceptance": "no clean-machine, DCC, broadcaster, or human quality acceptance claim"
+  },
+  "evidence_root": "61b7f9a4ad5b777f60b2853ab77c89611112cd759580727ceea292dfb8c43aa5"
+}

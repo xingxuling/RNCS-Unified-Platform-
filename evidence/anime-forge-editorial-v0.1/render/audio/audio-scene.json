@@ -1,0 +1,177 @@
+{
+  "format": "rncs.audio-scene-ir.v0.1",
+  "version": "0.1.0-alpha.1",
+  "scene_id": "sound:anime-production:15a426ef8a4ef4057174f9c8:editorial",
+  "production_id": "anime-production:15a426ef8a4ef4057174f9c8",
+  "cut_ref": null,
+  "duration_seconds": 7,
+  "sample_rate": 22050,
+  "dialogue_stems": [
+    {
+      "stem_id": "dialogue:dialogue:ba60758d393fe4a4a541b039",
+      "dialogue_event_id": "dialogue:ba60758d393fe4a4a541b039",
+      "voice_root": "96971275cc2677e53812adbbbf0f3ab7527e7c313c2c828aca37c5a57420ae71",
+      "start_seconds": 1.2916666666666667,
+      "duration_seconds": 1.0359999999999998,
+      "active": true,
+      "cut_ref": "EP01/无名城审判/S01"
+    },
+    {
+      "stem_id": "dialogue:dialogue:402ae4c5d4e2aee05ad16dbe",
+      "dialogue_event_id": "dialogue:402ae4c5d4e2aee05ad16dbe",
+      "voice_root": "d77acb9e509e3678969de8cfa871ff8190e38f1ab09483f56b2d8212b1f67382",
+      "start_seconds": 5.333333333333333,
+      "duration_seconds": 0.892,
+      "active": true,
+      "cut_ref": "EP01/无名城审判/S02"
+    }
+  ],
+  "ambience_stems": [
+    {
+      "stem_id": "ambience:cold_wind",
+      "cue": "cold_wind",
+      "start_seconds": 0,
+      "end_seconds": 5,
+      "cut_ref": "EP01/无名城审判/S01"
+    },
+    {
+      "stem_id": "ambience:cold_wind",
+      "cue": "cold_wind",
+      "start_seconds": 5,
+      "end_seconds": 7,
+      "cut_ref": "EP01/无名城审判/S02"
+    }
+  ],
+  "foley_stems": [
+    {
+      "stem_id": "foley:distant_chain",
+      "cue": "distant_chain",
+      "start_seconds": 0,
+      "end_seconds": 5,
+      "cut_ref": "EP01/无名城审判/S01"
+    },
+    {
+      "stem_id": "foley:distant_chain",
+      "cue": "distant_chain",
+      "start_seconds": 5,
+      "end_seconds": 7,
+      "cut_ref": "EP01/无名城审判/S02"
+    }
+  ],
+  "sfx_stems": [],
+  "music_stems": [
+    {
+      "stem_id": "music:none",
+      "cue": "none",
+      "start_seconds": 0,
+      "end_seconds": 5,
+      "cut_ref": "EP01/无名城审判/S01"
+    },
+    {
+      "stem_id": "music:none",
+      "cue": "none",
+      "start_seconds": 5,
+      "end_seconds": 7,
+      "cut_ref": "EP01/无名城审判/S02"
+    }
+  ],
+  "bus_graph": {
+    "dialogue": {
+      "gain_db": 0
+    },
+    "ambience": {
+      "gain_db": -16,
+      "ducking_db": -7
+    },
+    "foley": {
+      "gain_db": -10
+    },
+    "sfx": {
+      "gain_db": -8
+    },
+    "music": {
+      "gain_db": -18
+    },
+    "master": {
+      "gain_db": 0
+    }
+  },
+  "spatial_layout": {
+    "dialogue": [
+      0.5,
+      0.5
+    ],
+    "ambience": [
+      0.5,
+      0.52
+    ],
+    "foley": [
+      0.62,
+      0.5
+    ],
+    "sfx": [
+      0.55,
+      0.48
+    ],
+    "music": [
+      0.5,
+      0.5
+    ]
+  },
+  "reverb_zones": [
+    {
+      "id": "reverb:EP01/无名城审判/S01",
+      "start": 0,
+      "end": 5,
+      "preset": "cold-stone-short"
+    },
+    {
+      "id": "reverb:EP01/无名城审判/S02",
+      "start": 5,
+      "end": 7,
+      "preset": "cold-stone-short"
+    }
+  ],
+  "automation": [
+    {
+      "kind": "dialogue-ducking",
+      "source": "dialogue",
+      "targets": [
+        "ambience",
+        "music"
+      ],
+      "amount_db": -7
+    }
+  ],
+  "loudness_target": {
+    "integrated_lufs": -16,
+    "true_peak_db": -1
+  },
+  "export_policy": {
+    "stems": [
+      "dialogue",
+      "ambience",
+      "foley",
+      "sfx",
+      "music"
+    ],
+    "master": true,
+    "format": "wav"
+  },
+  "seed": "audio-reference-v0.1",
+  "global_start_seconds": 0,
+  "production_root": "3b4bd68c83a8ad3aa137f9aed96e7d91fda711aecf705cedb31c0cac640e6b81",
+  "timeline_root": "b0a1d21e34db16b2bff87138ba409fe5a7f34324a623329cfe59710ea7eccf49",
+  "cut_parts": [
+    {
+      "cut_ref": "EP01/无名城审判/S01",
+      "start_seconds": 0,
+      "duration_seconds": 5
+    },
+    {
+      "cut_ref": "EP01/无名城审判/S02",
+      "start_seconds": 5,
+      "duration_seconds": 2
+    }
+  ]
+}
