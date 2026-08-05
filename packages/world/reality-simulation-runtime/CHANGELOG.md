@@ -6,7 +6,10 @@
 - RNCS 空间会话现在把 RSR 权威帧作为可验证的 VSR 时序输入，保留同一 `stateRoot` 的权威展示边界；
 - Sphere、Box、Capsule 常见组合接入确定性三维广义凸窄相位；球-球使用精确闭式接触，EPA 退化保留显式诊断兜底；
 - 旋转 Capsule 使用定向线段包围盒参与 broad phase，避免旋转胶囊被旧的竖直 AABB 漏检；
-- 新增旋转胶囊、球-胶囊、球-球和旋转胶囊 broad phase 回归，空间具身测试达到 59/59。
+- 新增作者凸包 fixture：校验非共面顶点和三角索引，接入旋转 GJK/EPA、快照重放与 VSR 网格投影；空间具身测试达到 63/63。
+- 新增 Entity Kernel -> RSR -> VSR 绑定：typed state batch 确定性物化为 authority body/fixture，并沿同一快照生成带实体标签的 scene/frame/pixel roots；Aether bridge 集成回归 3/3。
+- 新增 bounded Spatial Reality Partition：Aether bridge 从 RSR snapshot 推导 causal islands，接入 Network Observer Relevance、固定点 LWC sector/local 坐标和 VSR streaming/frame plan；`reality-cell.v0.1` 的 enter/exit、root 链和篡改拒绝集成回归 22/22。
+- 新增 Cell 驱动的 VSR asset streaming resolution：`assetCatalog` 依赖闭包、resident/queued/deferred/evicted 预算和 active-cell request 进入 Reality Cell state/frame roots；Node/真实 Chromium 根一致，异步 payload loader 与 GPU upload 仍保持显式边界。
 
 ## 0.5.0-alpha.1
 

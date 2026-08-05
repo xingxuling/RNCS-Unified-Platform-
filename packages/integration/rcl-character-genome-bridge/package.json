@@ -1,0 +1,23 @@
+{
+  "name": "@taowind/rcl-character-genome-bridge",
+  "version": "0.1.0-alpha.1",
+  "private": false,
+  "type": "module",
+  "description": "RCL Character Genome dialect, offline phenotype-provider bridge, authority candidate and CLI.",
+  "license": "Apache-2.0",
+  "exports": {".": "./src/index.mjs"},
+  "bin": {"rncs-character": "src/cli.mjs"},
+  "files": ["src", "examples", "README.md"],
+  "scripts": {
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs",
+    "demo": "node src/cli.mjs genome compile examples/lan-tianlin.character.rcl --out output/lan-tianlin"
+  },
+  "engines": {"node": ">=20"},
+  "dependencies": {
+    "@taowind/anime-production-runtime": "*",
+    "@taowind/character-genome-runtime": "*",
+    "@taowind/character-phenotype-compiler": "*",
+    "@taowind/reality-computation-language": "*",
+    "@taowind/rncs-rcl-control-plane": "*"
+  }
+}

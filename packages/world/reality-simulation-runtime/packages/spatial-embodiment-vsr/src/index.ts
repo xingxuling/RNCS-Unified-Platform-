@@ -1,10 +1,16 @@
 import { semanticHash } from '../../spec/src/index.js';
 import {
+  SpatialEmbodimentWorld,
+  materializeKernelStateBatch,
   POSITION_SCALE,
   ROTATION_SCALE,
+  type KernelStateBatch,
+  type KernelSpatialBindingOptions,
   type RuntimeSpatialBody,
+  type SpatialCommand,
   type SpatialEmbodimentSnapshot,
-  type SpatialFixtureSpec
+  type SpatialFixtureSpec,
+  type SpatialShape
 } from '../../spatial-embodiment/src/index.js';
 import {
   VSR_SPATIAL_SCENE_FORMAT,
@@ -17,7 +23,10 @@ import {
   type VSRSpatialMaterial,
   type VSRSpatialMesh,
   type VSRSpatialNode,
-  type VSRSpatialScene3D
+  type VSRSpatialScene3D,
+  type VSRSpatialAssetStreamingResolution,
+  type VSRSpatialStreamingConfig,
+  type VSRSpatialStreamingOptions
 } from './vsr-spatial-v04.js';
 
 export const SPATIAL_EMBODIMENT_VSR_VERSION = '0.5.0-alpha.1';
@@ -30,6 +39,12 @@ export interface SpatialEmbodimentProjectionOptions {
   cameraRotationDeg?: [number, number, number];
   includeContacts?: boolean;
   includeSensoryEvents?: boolean;
+  streaming?: VSRSpatialStreamingConfig;
+  streamingOptions?: VSRSpatialStreamingOptions;
+  assetStreaming?: VSRSpatialAssetStreamingResolution;
+  gpuTextureBudgetBytes?: number;
+  gpuBufferBudgetBytes?: number;
+  sceneOverride?: VSRSpatialScene3D;
 }
 
 export interface SpatialEmbodimentProjectionResult {
@@ -44,11 +59,44 @@ export interface SpatialEmbodimentProjectionResult {
   projectionRoot: string;
 }
 
+export interface KernelSpatialVSRProjectionOptions extends SpatialEmbodimentProjectionOptions, KernelSpatialBindingOptions {
+  advance_ticks?: number;
+  commands?: SpatialCommand[];
+}
+
+export interface KernelSpatialVSRProjectionResult {
+  format: 'rncs.kernel-rsr-vsr-projection.v0.1';
+  version: '0.1.0';
+  binding: ReturnType<typeof materializeKernelStateBatch>;
+  snapshot: SpatialEmbodimentSnapshot;
+  projection: SpatialEmbodimentProjectionResult;
+  roots: {
+    kernel_state_root: string;
+    kernel_batch_root: string;
+    binding_root: string;
+    rsr_state_root: string;
+    rsr_body_root: string;
+    vsr_scene_root: string;
+    vsr_frame_root: string;
+    vsr_pixel_root: string;
+  };
+  binding_root: string;
+}
+
 function materialFor(body: RuntimeSpatialBody): VSRSpatialMaterial {
   const grounded = body.grounded;
   if (body.kind === 'static') return { id: `material:${body.id}`, baseColor: '#334155', metallic: 0.05, roughness: 0.86 };
   if (body.kind === 'kinematic') return { id: `material:${body.id}`, baseColor: '#f59e0b', metallic: 0.1, roughness: 0.42 };
   return { id: `material:${body.id}`, baseColor: grounded ? '#22c55e' : '#3b82f6', metallic: 0.22, roughness: grounded ? 0.52 : 0.3 };
+}
+
+function convexFixtureMesh(id: string, shape: Extract<SpatialShape, { type: 'convex' }>): VSRSpatialMesh {
+  return {
+    id,
+    positions: shape.vertices.flatMap(vertex => [vertex.x / POSITION_SCALE, vertex.y / POSITION_SCALE, vertex.z / POSITION_SCALE]),
+    indices: [...shape.indices],
+    topology: 'triangle-list'
+  };
 }
 
 function fixtureNode(body: RuntimeSpatialBody, fixture: SpatialFixtureSpec, index: number): VSRSpatialNode {
@@ -60,15 +108,17 @@ function fixtureNode(body: RuntimeSpatialBody, fixture: SpatialFixtureSpec, inde
     transform: { translation: [position.x / POSITION_SCALE, position.y / POSITION_SCALE, position.z / POSITION_SCALE] as [number, number, number] },
     castShadow: true,
     receiveShadow: true,
-    tags: ['rsr-body-fixture', fixture.bodyZone ?? 'body', ...(fixture.tags ?? [])]
+    tags: ['rsr-body-fixture', `body:${body.id}`, fixture.bodyZone ?? 'body', ...(body.tags ?? []), ...(fixture.tags ?? [])]
   };
   if (fixture.shape.type === 'sphere') return { ...base, meshId: 'mesh:unit-sphere', transform: { ...base.transform, scale: [fixture.shape.radius * 2 / POSITION_SCALE, fixture.shape.radius * 2 / POSITION_SCALE, fixture.shape.radius * 2 / POSITION_SCALE] } };
   if (fixture.shape.type === 'capsule') return { ...base, meshId: 'mesh:unit-sphere', transform: { ...base.transform, scale: [fixture.shape.radius * 2 / POSITION_SCALE, (fixture.shape.halfHeight + fixture.shape.radius) * 2 / POSITION_SCALE, fixture.shape.radius * 2 / POSITION_SCALE] } };
+  if (fixture.shape.type === 'convex') return { ...base, meshId: `mesh:convex:${body.id}:${fixture.id}`, tags: [...base.tags, `fixture-index:${index}`] };
   return { ...base, meshId: 'mesh:unit-cube', transform: { ...base.transform, scale: [fixture.shape.halfExtents.x * 2 / POSITION_SCALE, fixture.shape.halfExtents.y * 2 / POSITION_SCALE, fixture.shape.halfExtents.z * 2 / POSITION_SCALE] }, tags: [...base.tags, `fixture-index:${index}`] };
 }
 
 export function spatialEmbodimentSnapshotToVSRScene(snapshot: SpatialEmbodimentSnapshot, options: SpatialEmbodimentProjectionOptions = {}): VSRSpatialScene3D {
-  const meshes: VSRSpatialMesh[] = [createCubeMesh('mesh:unit-cube', 1), createUVSphereMesh('mesh:unit-sphere', 0.5, 20, 12), createPlaneMesh('mesh:ground', 30, 30)];
+  const convexMeshes = snapshot.bodies.flatMap(body => body.fixtures.flatMap(fixture => fixture.shape.type === 'convex' ? [convexFixtureMesh(`mesh:convex:${body.id}:${fixture.id}`, fixture.shape)] : []));
+  const meshes: VSRSpatialMesh[] = [createCubeMesh('mesh:unit-cube', 1), createUVSphereMesh('mesh:unit-sphere', 0.5, 20, 12), createPlaneMesh('mesh:ground', 30, 30), ...convexMeshes];
   const materials: VSRSpatialMaterial[] = [
     { id: 'material:ground', baseColor: '#1e293b', metallic: 0.02, roughness: 0.92, doubleSided: true },
     { id: 'material:contact', baseColor: '#f43f5e', emissive: '#fb7185', emissiveStrength: 0.8, roughness: 0.25 },
@@ -78,7 +128,7 @@ export function spatialEmbodimentSnapshotToVSRScene(snapshot: SpatialEmbodimentS
   ];
   const nodes: VSRSpatialNode[] = [{ id: 'ground', meshId: 'mesh:ground', materialId: 'material:ground', transform: { translation: [0, snapshot.floorY / POSITION_SCALE, 0] }, castShadow: false, receiveShadow: true }];
   for (const body of snapshot.bodies) {
-    nodes.push({ id: `body:${body.id}`, transform: { translation: [body.position.x / POSITION_SCALE, body.position.y / POSITION_SCALE, body.position.z / POSITION_SCALE], rotationEulerDeg: [body.rotationDeg.x / ROTATION_SCALE, body.rotationDeg.y / ROTATION_SCALE, body.rotationDeg.z / ROTATION_SCALE] }, tags: ['rsr-body', body.kind, body.grounded ? 'grounded' : 'airborne'] });
+    nodes.push({ id: `body:${body.id}`, transform: { translation: [body.position.x / POSITION_SCALE, body.position.y / POSITION_SCALE, body.position.z / POSITION_SCALE], rotationEulerDeg: [body.rotationDeg.x / ROTATION_SCALE, body.rotationDeg.y / ROTATION_SCALE, body.rotationDeg.z / ROTATION_SCALE] }, tags: ['rsr-body', body.kind, body.grounded ? 'grounded' : 'airborne', ...(body.tags ?? [])] });
     body.fixtures.forEach((fixture, index) => nodes.push(fixtureNode(body, fixture, index)));
   }
   if (options.includeContacts ?? true) for (const [index, contact] of snapshot.contacts.entries()) nodes.push({ id: `contact:${index}`, meshId: 'mesh:unit-sphere', materialId: 'material:contact', transform: { translation: [contact.point.x / POSITION_SCALE, contact.point.y / POSITION_SCALE, contact.point.z / POSITION_SCALE], scale: [0.1, 0.1, 0.1] }, castShadow: false, tags: ['contact', contact.sensor ? 'sensor' : 'solid'] });
@@ -104,7 +154,8 @@ export function spatialEmbodimentSnapshotToVSRScene(snapshot: SpatialEmbodimentS
       { id: 'light:sun', kind: 'directional', color: '#fff4db', intensity: 2.2, direction: [-0.5, -1, -0.35], castShadow: true },
       { id: 'light:fill', kind: 'point', color: '#60a5fa', intensity: 5, position: [-3, 4, 4], range: 12 }
     ],
-    reality: { worldId: snapshot.worldId, generation: snapshot.reality.generation, realityRoot: snapshot.reality.realityRoot ?? snapshot.stateRoot, evidenceRoot: snapshot.stateRoot }
+    reality: { worldId: snapshot.worldId, generation: snapshot.reality.generation, realityRoot: snapshot.reality.realityRoot ?? snapshot.stateRoot, evidenceRoot: snapshot.stateRoot },
+    ...(options.streaming ? { streaming: options.streaming } : {})
   };
   return scene;
 }
@@ -114,9 +165,29 @@ export function spatialEmbodimentSceneRoot(scene: VSRSpatialScene3D): string {
 }
 
 export function projectSpatialEmbodiment(snapshot: SpatialEmbodimentSnapshot, options: SpatialEmbodimentProjectionOptions = {}): SpatialEmbodimentProjectionResult {
-  const scene = spatialEmbodimentSnapshotToVSRScene(snapshot, options);
-  const rendered = renderSpatialReference(scene, { width: options.width ?? 960, height: options.height ?? 540, qualityTier: options.qualityTier ?? 'balanced', enableShadows: true });
+  const scene = options.sceneOverride ?? spatialEmbodimentSnapshotToVSRScene(snapshot, options);
+  const rendered = renderSpatialReference(scene, { width: options.width ?? 960, height: options.height ?? 540, qualityTier: options.qualityTier ?? 'balanced', enableShadows: true, streaming: options.streamingOptions, assetStreaming: options.assetStreaming, gpuTextureBudgetBytes: options.gpuTextureBudgetBytes, gpuBufferBudgetBytes: options.gpuBufferBudgetBytes });
   const verification = verifySpatialFrame(rendered.framePlan);
   const base = { format: 'rsr.spatial-embodiment-vsr-projection.v0.5' as const, sourceStateRoot: snapshot.stateRoot, sourceRealityRoot: snapshot.reality.realityRoot, sceneRoot: semanticHash(scene), frameRoot: rendered.framePlan.frameRoot, pixelRoot: rendered.pixelRoot };
   return { format: base.format, sourceStateRoot: snapshot.stateRoot, sourceRealityRoot: snapshot.reality.realityRoot, scene, framePlan: rendered.framePlan, frameVerified: verification.ok, png: rendered.png, pixelRoot: rendered.pixelRoot, projectionRoot: semanticHash(base) };
+}
+
+export function projectKernelStateBatchToVSR(batch: KernelStateBatch, options: KernelSpatialVSRProjectionOptions = {}): KernelSpatialVSRProjectionResult {
+  const binding = materializeKernelStateBatch(batch, options);
+  const world = new SpatialEmbodimentWorld(binding.config);
+  if ((options.advance_ticks ?? 0) > 0) world.run(Math.floor(options.advance_ticks!), options.commands ?? []);
+  const snapshot = world.snapshot();
+  const projection = projectSpatialEmbodiment(snapshot, options);
+  const roots = {
+    kernel_state_root: batch.state_root,
+    kernel_batch_root: batch.batch_root,
+    binding_root: binding.binding_root,
+    rsr_state_root: snapshot.stateRoot,
+    rsr_body_root: snapshot.bodyRoot,
+    vsr_scene_root: semanticHash(projection.scene),
+    vsr_frame_root: projection.framePlan.frameRoot,
+    vsr_pixel_root: projection.pixelRoot
+  };
+  const base = { format: 'rncs.kernel-rsr-vsr-projection.v0.1' as const, version: '0.1.0' as const, roots };
+  return { format: base.format, version: base.version, binding, snapshot, projection, roots, binding_root: semanticHash(base) };
 }

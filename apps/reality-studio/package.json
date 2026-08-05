@@ -49,6 +49,7 @@
     "启动Reality Studio v1.4 三维具身编辑版.bat",
     "start-reality-studio-v14.sh",
     "RELEASE_NOTES_v1.5.0-alpha.1.md",
+    "RELEASE_NOTES_v1.6.0-alpha.1.md",
     "Reality_Studio_v1.5_资产创生工作台_离线版.html",
     "start-reality-studio-v15.sh"
   ],
@@ -113,6 +114,9 @@
     "node": ">=20"
   },
   "dependencies": {
+    "@taowind/anime-production-runtime": "*",
+    "@taowind/character-genome-runtime": "*",
+    "@taowind/character-phenotype-compiler": "*",
     "@taowind/reality-behavior-fabric": "*",
     "@taowind/reality-branch-fabric": "*",
     "@taowind/reality-one-gateway": "*",
@@ -121,6 +125,7 @@
     "@taowind/reality-simulation-runtime": "*",
     "@taowind/visual-state-runtime": "*",
     "@taowind/reality-asset-genesis-fabric": "*",
-    "@taowind/reality-engine-session": "*"
+    "@taowind/reality-engine-session": "*",
+    "@taowind/rcl-character-genome-bridge": "*"
   }
 }

@@ -16,10 +16,17 @@
   ],
   "scripts": {
     "test": "node --test --test-concurrency=1 tests/*.test.mjs",
-    "demo": "node examples/aether-island-demo.mjs"
+    "demo": "node examples/aether-island-demo.mjs",
+    "demo:kernel-binding": "npm run build --workspace @taowind/reality-simulation-runtime && node examples/kernel-spatial-binding-demo.mjs",
+    "demo:reality-cell": "npm run build --workspace @taowind/reality-simulation-runtime && node examples/reality-cell-demo.mjs",
+    "demo:reality-cell-assets": "npm run build --workspace @taowind/visual-state-runtime && npm run build --workspace @taowind/reality-simulation-runtime && node examples/reality-cell-asset-runtime-demo.mjs",
+    "demo:reality-cell-asset-scene": "npm run build --workspace @taowind/visual-state-runtime && npm run build --workspace @taowind/reality-simulation-runtime && node examples/reality-cell-asset-scene-demo.mjs",
+    "demo:reality-cell-asset-transition": "npm run build --workspace @taowind/visual-state-runtime && npm run build --workspace @taowind/reality-simulation-runtime && node examples/reality-cell-asset-transition-demo.mjs",
+    "test:kernel-binding": "npm run build --workspace @taowind/reality-simulation-runtime && node --test --test-concurrency=1 tests/kernel-spatial-binding.integration.mjs"
   },
   "dependencies": {
     "@taowind/agent-authority-fabric": "*",
+    "@taowind/rncs-core-contract": "*",
     "@taowind/reality-behavior-fabric": "*",
     "@taowind/reality-branch-fabric": "*",
     "@taowind/reality-network-runtime": "*",

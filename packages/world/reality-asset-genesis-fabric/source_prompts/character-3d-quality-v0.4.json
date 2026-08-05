@@ -1,0 +1,9 @@
+{
+  "format": "ragf.source-prompt.v0.1",
+  "kind": "character-3d",
+  "quality_profile": "humanoid-rounded-v0.4",
+  "prompt": "Readable stylized humanoid gameplay asset with a rounded torso, separated head and limbs, layered shoulder and chest pieces, a small held weapon, clean UVs, restrained emissive accents, and a stable humanoid rig.",
+  "negative": ["box-only silhouette", "flat constant material", "unbound animation", "unbounded triangle count", "unverified collision"],
+  "provider_policy": "deterministic-reference-or-cleared-external-provider",
+  "must_preserve": ["stable asset identity", "palette-independent geometry root", "three LOD levels", "semantic attack telegraph", "runtime adapter roots"]
+}

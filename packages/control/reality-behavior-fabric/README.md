@@ -30,6 +30,8 @@ Reality Behavior Fabric（RBF）把传统游戏引擎中彼此分散的脚本、
 - Reality Studio 导入提案
 - Reality One Gateway Runtime Manifest
 - RFE 候选因果增量
+- Evidence-aware Reality Scheduler：显式 prerequisites、read/write set、authority、budget、rollback 与 evidence policy
+- BehaviorRuntime 可选的 scheduled tick 路径
 - 可直接打开的二维浏览器样板《冰境试炼》
 
 ## 快速运行
@@ -66,7 +68,7 @@ v0.1 是确定性的参考行为运行时，不是完整 Godot 替代品。尚�
 - 图形化行为编辑器与完整 Inspector
 - 源码级断点、变量观察和调用栈
 - 网络预测、回滚和服务器权威同步
-- ECS/Job System 和多线程执行
+- Entity Kernel 的完整行为状态镜像、并行 Job 执行和跨线程调度
 - 插件、包管理与第三方生态
 - 与 Reality Studio 的原生可视化编辑界面
 

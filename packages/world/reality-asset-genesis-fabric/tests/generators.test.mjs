@@ -14,4 +14,5 @@ test('particle preset is sealed',()=>assert.equal(generateParticlePreset({genome
 test('mobile particle budget is 32 or less',()=>assert.ok(generateParticlePreset({genome:g,variant:'mobile'}).budget.max_particles<=32));
 test('collision shape is capsule',()=>assert.equal(generateCollisionShape({genome:g,variant:'balanced'}).type,'capsule'));
 test('collision includes attack sensor',()=>assert.ok(generateCollisionShape({genome:g,variant:'balanced'}).semantic_regions.some(x=>x.role==='attack-sensor')));
+test('3D collision fit exposes authored fixture regions',()=>{const x=generateCollisionShape({genome:deriveGenomeFromIntent(normalizeIntent({description:'创建一名三维角色',asset_kind:'character-3d'})),variant:'balanced'});assert.equal(x.fixtures.length,4);assert.equal(x.authoring.fit,'humanoid-rounded-v0.4')});
 test('raw PNG encoder creates valid signature',()=>{const s=surface(2,2,[255,0,0,255]);assert.equal(encodePng(2,2,s.data).subarray(1,4).toString(),'PNG')});

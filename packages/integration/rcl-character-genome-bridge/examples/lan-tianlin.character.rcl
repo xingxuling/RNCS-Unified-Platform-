@@ -1,0 +1,40 @@
+character 蓝天临 {
+  seed lan-tianlin-character-v1
+  genome extends young-male-slim
+
+  identity {
+    age young-adult
+    face slender-angular
+    jaw_definition 0.62
+    eye_shape calm-sharp
+    eye_spacing 0.48
+    nose_bridge 0.56
+    mouth_width 0.51
+    head_body_ratio 0.58
+    shoulder_width 0.55
+    build lean
+    resting_expression calm-observant
+  }
+
+  appearance {
+    hair black-wavy-medium
+    hair_color "#11151d"
+    eye_color imperial-blue
+    costume lan-default-v1
+    emblem shenlin-original-v1
+    palette deep-blue-black-cool-silver
+  }
+
+  expression_profile lan-expression-v1
+  viseme_profile mandarin-anime-v1
+  motion_profile restrained-young-male-v1
+  voice voice:lan-tianlin-default
+
+  continuity {
+    lock identity
+    allow hair_change
+    allow costume_change
+    allow palette_change
+    deny face_drift
+  }
+}

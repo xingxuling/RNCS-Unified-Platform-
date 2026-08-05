@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.local/schemas/vsr-character-visual-profile.v0.1.schema.json",
+  "title": "VSR Character Visual Profile v0.1",
+  "type": "object",
+  "required": ["format", "version", "profile_id", "character_id", "identity_root", "identity_signature_root", "modes", "authority", "profile_root"],
+  "properties": {
+    "format": {"const": "vsr.character-visual-profile.v0.1"},
+    "version": {"const": "0.1.0-alpha.1"},
+    "character_id": {"type": "string", "minLength": 1},
+    "identity_root": {"type": "string", "minLength": 32},
+    "identity_signature_root": {"type": "string", "minLength": 32},
+    "modes": {"type": "object", "required": ["native-2d", "2.5d", "3d-assisted-2d"]},
+    "profile_root": {"type": "string", "minLength": 32}
+  },
+  "additionalProperties": true
+}

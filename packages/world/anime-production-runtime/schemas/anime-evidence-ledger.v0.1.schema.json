@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rncs.anime-evidence-ledger.v0.1",
+  "type": "object",
+  "required": ["format", "version", "authority", "production_root", "cut_id", "deterministic", "frame_refs", "roots", "gates", "ledger_root"],
+  "properties": {
+    "format": {"const": "rncs.anime-evidence-ledger.v0.1"},
+    "version": {"type": "string"},
+    "authority": {"const": "RNCS"},
+    "production_root": {"type": "string", "minLength": 1},
+    "cut_id": {"type": "string", "minLength": 1},
+    "deterministic": {"const": true},
+    "frame_refs": {"type": "array", "items": {"type": "object", "required": ["frame_number", "frame_id", "state_root", "evidence_root"]}},
+    "roots": {"type": "object", "required": ["sequence_root"]},
+    "gates": {"type": "object", "required": ["production_ir", "xsheet", "frame_raster", "provider_receipts", "mp4"]}
+  }
+}

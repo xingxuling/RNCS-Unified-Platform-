@@ -111,9 +111,45 @@ candidates/<variant>/
 └─ adapters/vsr-spatial-asset.json, rsr-embodiment-profile.json
 ```
 
+## 当前运行时接入契约
+
+- `ragf.vsr-spatial-asset.v0.4` 封存主网格、完整三级 LOD 几何、节点/材质绑定、来源根和 `vsr.spatial-scene.v0.4` 兼容目标。
+- VSR 的 `compileRagfSpatialAsset(...)` 将该适配包编译成当前场景、LOD 选择和可选 Cell streaming 目录；当前桥接覆盖一个资产节点与一套材质，纹理字节上传仍走 VSR glTF 资产路径。
+- `ragf.rsr-embodiment-profile.v0.4` 同时保留 Studio 字段和运行时物理字段，以米制来源、固定点比例、胶囊形状、质量、碰撞层和角色运行时目标描述具身。
+- RSR 的 `materializeRagfEmbodimentProfile(...)` 将该 profile 转换成当前 `rsr.spatial-embodiment-world.v0.6` 配置，并验证 profile 根、固定点尺寸、动态角色控制器和 materialization 根。
+- RAGF 生产就绪门会校验两种适配包的格式、版本、兼容目标、LOD 绑定和封存根，适配包回归失败时候选不会被标为生产就绪。
+
+三模块联测入口：
+
+```bash
+npm run test:ragf-world-binding
+```
+
+## 内置 3D 质量档 v0.4
+
+- 几何从盒子拼接升级为确定性的圆润分部人体：躯干、骨盆、头部、四肢、鞋、肩甲、发束、胸甲和武器装配共享同一骨骼索引。
+- 默认质量档的代表性 LOD 三角形约为：mobile `904/636/360`、balanced `1352/1038/772`、cinematic `2080/1720/1456`；实际数量会受 `max_triangles` 预算缩放。
+- GLB 内含 8 骨骼、4 个可回放动画、1 个表情 morph target、真实 UV/法线/权重和可选四张 PBR 纹理；生产工作区默认将几何 GLB 与 PBR 包分开寻址，保持调色增量重建不污染几何根。
+- PBR 包不再是常量色块：base-color 有分层/镶嵌变化，normal 有面板起伏，ORM 有边缘遮蔽和材质区，emissive 有角色标记和饰边。
+- 3D 碰撞输出增加 torso、head、weapon sensor 等语义 fixture；主 RSR 仍以稳定胶囊为权威运行时形状。
+- 质量合同沉淀在 `art_bible/ragf-procedural-3d-v0.4.md`、`asset_manifest.json` 和 `source_prompts/character-3d-quality-v0.4.json`，后续外部 Provider 也必须对齐这些不变量。
+
+## Character Genome Reference Provider
+
+`ragf.character-genome-reference-provider` is the explicit offline provider for
+RNCS Character Genome Forge v0.1. It accepts solved Character Genome requests
+and emits deterministic Character Asset Families with GLB geometry, LODs,
+morphs, rig, collision and physics profiles, cross-media projections, stable
+roots, lineage, provider receipts and evidence. It can propose candidate assets
+but cannot mutate the RNCS identity authority or commit to the durable library.
+
+The built-in assets are Apache-2.0 reference assets for pipeline validation.
+They are not presented as commercial character art, external DCC parity, GPU
+target approval or human acceptance evidence.
+
 ## 事实边界
 
-内置Provider仍是确定性低多边形参考生产器，用于验证资产协议、家族、装配、谱系、增量影响和运行时闭环。它不等同于电影级角色生产，也未包含专业重拓扑、复杂UV、面部绑定、头发/布料、动作捕捉或通用文生3D模型。专业DCC与生成模型应作为可替换Provider接入。
+内置Provider现在是确定性的 stylized procedural 3D 参考生产器，用于验证资产协议、家族、装配、谱系、增量影响和运行时闭环。它仍不等同于电影级或 AAA 角色生产，也未包含专业重拓扑、复杂 UV 展开、面部绑定、头发/布料、动作捕捉或通用文生 3D 模型。专业 DCC 与生成模型应作为可替换 Provider 接入。
 
 ## v0.5：AI社会生态与技术创生
 

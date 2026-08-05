@@ -23,24 +23,47 @@ var VSRSpatial3D = (() => {
   __export(index_exports, {
     VSRSpatialAssetStreamer: () => VSRSpatialAssetStreamer,
     VSRSpatialWebGPUExecutor: () => VSRSpatialWebGPUExecutor,
+    VSR_RAGF_SPATIAL_ADAPTER_FORMAT: () => VSR_RAGF_SPATIAL_ADAPTER_FORMAT,
+    VSR_RAGF_SPATIAL_COMPILATION_FORMAT: () => VSR_RAGF_SPATIAL_COMPILATION_FORMAT,
     VSR_SPATIAL_ASSET_STREAMING_FORMAT: () => VSR_SPATIAL_ASSET_STREAMING_FORMAT,
     VSR_SPATIAL_ASSET_STREAMING_VERSION: () => VSR_SPATIAL_ASSET_STREAMING_VERSION,
     VSR_SPATIAL_CULL_WGSL_V04: () => VSR_SPATIAL_CULL_WGSL_V04,
     VSR_SPATIAL_FRAGMENT_WGSL_V04: () => VSR_SPATIAL_FRAGMENT_WGSL_V04,
     VSR_SPATIAL_FRAME_FORMAT: () => VSR_SPATIAL_FRAME_FORMAT,
+    VSR_SPATIAL_HLOD_CELL_GENERATION_FORMAT: () => VSR_SPATIAL_HLOD_CELL_GENERATION_FORMAT,
+    VSR_SPATIAL_HLOD_FORMAT: () => VSR_SPATIAL_HLOD_FORMAT,
+    VSR_SPATIAL_HLOD_GENERATION_FORMAT: () => VSR_SPATIAL_HLOD_GENERATION_FORMAT,
+    VSR_SPATIAL_IRRADIANCE_BAKE_FORMAT: () => VSR_SPATIAL_IRRADIANCE_BAKE_FORMAT,
+    VSR_SPATIAL_IRRADIANCE_VOLUME_FIELD_FORMAT: () => VSR_SPATIAL_IRRADIANCE_VOLUME_FIELD_FORMAT,
+    VSR_SPATIAL_IRRADIANCE_VOLUME_FORMAT: () => VSR_SPATIAL_IRRADIANCE_VOLUME_FORMAT,
+    VSR_SPATIAL_LIGHTMAP_BAKE_FORMAT: () => VSR_SPATIAL_LIGHTMAP_BAKE_FORMAT,
+    VSR_SPATIAL_MAX_DYNAMIC_LIGHTS: () => VSR_SPATIAL_MAX_DYNAMIC_LIGHTS,
+    VSR_SPATIAL_OIT_COMPOSITE_WGSL_V04: () => VSR_SPATIAL_OIT_COMPOSITE_WGSL_V04,
+    VSR_SPATIAL_OIT_FRAGMENT_WGSL_V04: () => VSR_SPATIAL_OIT_FRAGMENT_WGSL_V04,
     VSR_SPATIAL_REALITY_VERSION: () => VSR_SPATIAL_REALITY_VERSION,
     VSR_SPATIAL_SCENE_FORMAT: () => VSR_SPATIAL_SCENE_FORMAT,
     VSR_SPATIAL_SHADOW_WGSL_V04: () => VSR_SPATIAL_SHADOW_WGSL_V04,
     VSR_SPATIAL_STREAMING_FORMAT: () => VSR_SPATIAL_STREAMING_FORMAT,
+    VSR_SPATIAL_TONEMAP_WGSL_V04: () => VSR_SPATIAL_TONEMAP_WGSL_V04,
     VSR_SPATIAL_VERTEX_WGSL_V04: () => VSR_SPATIAL_VERTEX_WGSL_V04,
     VSR_SPATIAL_VISUAL_INTENT_FORMAT: () => VSR_SPATIAL_VISUAL_INTENT_FORMAT,
     VSR_SPATIAL_VISUAL_INTENT_VERSION: () => VSR_SPATIAL_VISUAL_INTENT_VERSION,
     applySpatialAnimationConstraints: () => applySpatialAnimationConstraints,
+    applySpatialIrradianceProbeBake: () => applySpatialIrradianceProbeBake,
+    applySpatialIrradianceVolume: () => applySpatialIrradianceVolume,
+    applySpatialIrradianceVolumeField: () => applySpatialIrradianceVolumeField,
+    applySpatialLightmapBake: () => applySpatialLightmapBake,
+    bakeSpatialIrradianceProbes: () => bakeSpatialIrradianceProbes,
+    bakeSpatialIrradianceVolume: () => bakeSpatialIrradianceVolume,
+    bakeSpatialIrradianceVolumeField: () => bakeSpatialIrradianceVolumeField,
+    bakeSpatialLightmap: () => bakeSpatialLightmap,
+    buildSpatialEnvironmentMipChain: () => buildSpatialEnvironmentMipChain,
     calculateMeshNormals: () => calculateMeshNormals,
     cameraForward: () => cameraForward,
     cameraPosition: () => cameraPosition,
     cameraViewMatrix: () => cameraViewMatrix,
     cameraWorldMatrix: () => cameraWorldMatrix,
+    compileRagfSpatialAsset: () => compileRagfSpatialAsset,
     compileSpatialFrame: () => compileSpatialFrame,
     compileSpatialFrameFromVisualIntent: () => compileSpatialFrameFromVisualIntent,
     createCubeMesh: () => createCubeMesh,
@@ -51,25 +74,34 @@ var VSRSpatial3D = (() => {
     evaluatePBRLighting: () => evaluatePBRLighting,
     evaluateSpatialWebGPUCapabilities: () => evaluateSpatialWebGPUCapabilities,
     fresnelSchlick: () => fresnelSchlick,
+    generateSpatialHLOD: () => generateSpatialHLOD,
+    generateSpatialHLODForStreamingCells: () => generateSpatialHLODForStreamingCells,
     geometrySchlickGGX: () => geometrySchlickGGX,
     geometrySmith: () => geometrySmith,
-    identityMat4: () => identityMat4,
+    identityMat4: () => identityMat42,
     inspectSpatialWebGPU: () => inspectSpatialWebGPU,
+    inverseMat4: () => inverseMat4,
     lookAtMat4: () => lookAtMat4,
     meshBounds: () => meshBounds,
     multiplyMat4: () => multiplyMat4,
     orthographicMat4: () => orthographicMat4,
     packSpatialCameraUniform: () => packSpatialCameraUniform,
     packSpatialDeformationUniform: () => packSpatialDeformationUniform,
+    packSpatialEnvironmentProbeBuffer: () => packSpatialEnvironmentProbeBuffer,
     packSpatialIndexBuffer: () => packSpatialIndexBuffer,
     packSpatialIndirectDrawCommand: () => packSpatialIndirectDrawCommand,
     packSpatialInstanceBoundsBuffer: () => packSpatialInstanceBoundsBuffer,
     packSpatialInstanceBuffer: () => packSpatialInstanceBuffer,
+    packSpatialIrradianceVolumeBuffer: () => packSpatialIrradianceVolumeBuffer,
+    packSpatialIrradianceVolumeFieldBuffer: () => packSpatialIrradianceVolumeFieldBuffer,
     packSpatialJointBuffer: () => packSpatialJointBuffer,
+    packSpatialLightBuffer: () => packSpatialLightBuffer,
     packSpatialMaterialUniform: () => packSpatialMaterialUniform,
     packSpatialMorphBuffer: () => packSpatialMorphBuffer,
     packSpatialObjectUniform: () => packSpatialObjectUniform,
+    packSpatialPostProcess: () => packSpatialPostProcess,
     packSpatialShadowUniform: () => packSpatialShadowUniform,
+    packSpatialTemporalUniform: () => packSpatialTemporalUniform,
     packSpatialVertexBuffer: () => packSpatialVertexBuffer,
     packSpatialVisibleInstanceIndices: () => packSpatialVisibleInstanceIndices,
     perspectiveMat4: () => perspectiveMat4,
@@ -80,21 +112,39 @@ var VSRSpatial3D = (() => {
     resolveSpatialBudget: () => resolveSpatialBudget,
     resolveSpatialShadowCamera: () => resolveSpatialShadowCamera,
     resolveSpatialStreaming: () => resolveSpatialStreaming,
+    resolveSpatialTransparencyMode: () => resolveSpatialTransparencyMode,
     sampleSpatialAnimation: () => sampleSpatialAnimation,
     sampleSpatialAnimationGraph: () => sampleSpatialAnimationGraph,
     sampleSpatialAnimationLayers: () => sampleSpatialAnimationLayers,
     sampleSpatialEnvironment: () => sampleSpatialEnvironment,
+    sampleSpatialEnvironmentProbes: () => sampleSpatialEnvironmentProbes,
+    sampleSpatialIrradianceVolume: () => sampleSpatialIrradianceVolume,
+    sampleSpatialIrradianceVolumeField: () => sampleSpatialIrradianceVolumeField,
     sampleSpatialTexture: () => sampleSpatialTexture,
     sanitizeSpatialEnvironment: () => sanitizeSpatialEnvironment,
+    sanitizeSpatialIrradianceVolume: () => sanitizeSpatialIrradianceVolume,
+    sanitizeSpatialIrradianceVolumeField: () => sanitizeSpatialIrradianceVolumeField,
+    sanitizeSpatialPostProcess: () => sanitizeSpatialPostProcess,
+    selectSpatialIrradianceVolumeField: () => selectSpatialIrradianceVolumeField,
     spatialEnvironmentUV: () => spatialEnvironmentUV,
+    spatialIrradianceVolumeSampleCount: () => spatialIrradianceVolumeSampleCount,
+    spatialIrradianceVolumeSourceRoot: () => spatialIrradianceVolumeSourceRoot,
+    spatialIrradianceVolumeTopologyRoot: () => spatialIrradianceVolumeTopologyRoot,
     transformDirection3: () => transformDirection3,
     transformPoint3: () => transformPoint3,
     transformToMat4: () => transformToMat4,
     transformVec4: () => transformVec4,
+    updateSpatialIrradianceVolume: () => updateSpatialIrradianceVolume,
+    updateSpatialIrradianceVolumeField: () => updateSpatialIrradianceVolumeField,
     verifySpatialAssetStreamingReceipt: () => verifySpatialAssetStreamingReceipt,
     verifySpatialFrame: () => verifySpatialFrame,
+    verifySpatialIrradianceProbeBake: () => verifySpatialIrradianceProbeBake,
+    verifySpatialIrradianceVolume: () => verifySpatialIrradianceVolume,
+    verifySpatialIrradianceVolumeField: () => verifySpatialIrradianceVolumeField,
+    verifySpatialLightmapBake: () => verifySpatialLightmapBake,
     verifySpatialVisualIntent: () => verifySpatialVisualIntent,
-    verifySpatialWebGPUReceipt: () => verifySpatialWebGPUReceipt
+    verifySpatialWebGPUReceipt: () => verifySpatialWebGPUReceipt,
+    weightedTransparencyWeight: () => weightedTransparencyWeight
   });
 
   // packages/spec/src/index.ts
@@ -236,13 +286,485 @@ var VSRSpatial3D = (() => {
     return sha256Hex(canonicalize(value));
   }
 
+  // packages/spatial-reality-3d/src/irradiance-volume.ts
+  var VSR_SPATIAL_IRRADIANCE_VOLUME_FORMAT = "vsr.spatial-irradiance-volume.v0.1";
+  var EPS = 1e-9;
+  var clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+  var add = (a, b) => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
+  var sub = (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+  var scale = (a, value) => [a[0] * value, a[1] * value, a[2] * value];
+  var length = (a) => Math.hypot(a[0], a[1], a[2]);
+  var distance = (a, b) => length(sub(a, b));
+  var normalize = (a) => {
+    const value = length(a);
+    return value < EPS ? [0, 1, 0] : scale(a, 1 / value);
+  };
+  function color(value) {
+    const input = (value ?? "#000000").trim(), hex = input.match(/^#([0-9a-f]{3,8})$/i);
+    if (hex) {
+      const raw = hex[1];
+      if (raw.length === 3 || raw.length === 4) return [parseInt(`${raw[0]}${raw[0]}`, 16) / 255, parseInt(`${raw[1]}${raw[1]}`, 16) / 255, parseInt(`${raw[2]}${raw[2]}`, 16) / 255];
+      if (raw.length === 6 || raw.length === 8) return [parseInt(raw.slice(0, 2), 16) / 255, parseInt(raw.slice(2, 4), 16) / 255, parseInt(raw.slice(4, 6), 16) / 255];
+    }
+    const rgb = input.match(/^rgba?\(([^)]+)\)$/i);
+    if (rgb) {
+      const values = rgb[1].split(",").map(Number);
+      return [clamp((values[0] ?? 0) / 255, 0, 1), clamp((values[1] ?? 0) / 255, 0, 1), clamp((values[2] ?? 0) / 255, 0, 1)];
+    }
+    const named = { black: [0, 0, 0], white: [1, 1, 1], red: [1, 0, 0], green: [0, 0.5, 0], blue: [0, 0, 1], yellow: [1, 1, 0] };
+    return named[input.toLowerCase()] ?? [0, 0, 0];
+  }
+  function encodeColor(value, scaleValue) {
+    return `#${value.map((channel) => Math.round(clamp(channel / Math.max(scaleValue, 1), 0, 1) * 255).toString(16).padStart(2, "0")).join("")}`;
+  }
+  function finiteVec3(value) {
+    return Array.isArray(value) && value.length === 3 && value.every((component) => typeof component === "number" && Number.isFinite(component));
+  }
+  function colorString(value) {
+    return /^#[0-9a-f]{6}$/i.test(value);
+  }
+  function identityMat4() {
+    return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+  }
+  function worldMatrices(scene) {
+    const byId = new Map(scene.nodes.map((node) => [node.id, node])), cache = /* @__PURE__ */ new Map(), visiting = /* @__PURE__ */ new Set();
+    const resolve = (id) => {
+      const cached = cache.get(id);
+      if (cached) return cached;
+      if (visiting.has(id)) throw new Error(`Node hierarchy cycle at ${id}.`);
+      const node = byId.get(id);
+      if (!node) throw new Error(`Missing node ${id}.`);
+      visiting.add(id);
+      const local = transformToMat4(node.transform ?? {}), world = node.parentId ? multiplyMat4(resolve(node.parentId), local) : local;
+      cache.set(id, world);
+      visiting.delete(id);
+      return world;
+    };
+    for (const node of scene.nodes) resolve(node.id);
+    return cache;
+  }
+  function transformBounds(mesh, world) {
+    const local = meshBounds(mesh), corners = [[local.min[0], local.min[1], local.min[2]], [local.max[0], local.min[1], local.min[2]], [local.min[0], local.max[1], local.min[2]], [local.max[0], local.max[1], local.min[2]], [local.min[0], local.min[1], local.max[2]], [local.max[0], local.min[1], local.max[2]], [local.min[0], local.max[1], local.max[2]], [local.max[0], local.max[1], local.max[2]]].map((corner) => transformPoint3(world, corner));
+    const min = [Infinity, Infinity, Infinity], max = [-Infinity, -Infinity, -Infinity];
+    for (const corner of corners) for (let axis = 0; axis < 3; axis++) {
+      min[axis] = Math.min(min[axis], corner[axis]);
+      max[axis] = Math.max(max[axis], corner[axis]);
+    }
+    return { min, max, center: [(min[0] + max[0]) / 2, (min[1] + max[1]) / 2, (min[2] + max[2]) / 2] };
+  }
+  function sceneBounds(scene, worlds2) {
+    const min = [Infinity, Infinity, Infinity], max = [-Infinity, -Infinity, -Infinity];
+    for (const node of scene.nodes) {
+      if (node.visible === false || !node.meshId) continue;
+      const mesh = scene.meshes.find((entry) => entry.id === node.meshId);
+      if (!mesh) continue;
+      const bounds = transformBounds(mesh, worlds2.get(node.id) ?? identityMat4());
+      for (let axis = 0; axis < 3; axis++) {
+        min[axis] = Math.min(min[axis], bounds.min[axis]);
+        max[axis] = Math.max(max[axis], bounds.max[axis]);
+      }
+    }
+    if (min.some((value) => !Number.isFinite(value))) return { min: [-1, -1, -1], max: [1, 1, 1] };
+    const extent = [Math.max(max[0] - min[0], 0.5), Math.max(max[1] - min[1], 0.5), Math.max(max[2] - min[2], 0.5)], padding = Math.max(0.25, Math.max(...extent) * 0.05);
+    return { min: [min[0] - padding, min[1] - padding, min[2] - padding], max: [max[0] + padding, max[1] + padding, max[2] + padding] };
+  }
+  function resolveDimensions(value) {
+    const dimensions = [value?.[0] ?? 4, value?.[1] ?? 3, value?.[2] ?? 4].map((entry) => clamp(Math.round(entry), 2, 16));
+    if (dimensions.some((entry) => !Number.isFinite(entry))) throw new Error("Irradiance volume dimensions must be finite.");
+    while (dimensions[0] * dimensions[1] * dimensions[2] > 512) {
+      const axis = dimensions[0] >= dimensions[1] && dimensions[0] >= dimensions[2] ? 0 : dimensions[1] >= dimensions[2] ? 1 : 2;
+      if (dimensions[axis] <= 2) break;
+      dimensions[axis]--;
+    }
+    return dimensions;
+  }
+  function resolveSettings(scene, options) {
+    const bounds = sceneBounds(scene, worldMatrices(scene)), boundsMin = options.boundsMin ? [...options.boundsMin] : bounds.min, boundsMax = options.boundsMax ? [...options.boundsMax] : bounds.max;
+    if (!finiteVec3(boundsMin) || !finiteVec3(boundsMax) || boundsMax.some((value, axis) => value <= boundsMin[axis])) throw new Error("Irradiance volume bounds must be finite and have positive extent.");
+    return { boundsMin, boundsMax, dimensions: resolveDimensions(options.dimensions), blendWeight: clamp(Number.isFinite(options.blendWeight) ? options.blendWeight ?? 1 : 1, 0, 1), updateAlpha: clamp(Number.isFinite(options.updateAlpha) ? options.updateAlpha ?? 0.35 : 0.35, 0.05, 1), visibilitySamples: clamp(Number.isFinite(options.visibilitySamples) ? Math.round(options.visibilitySamples ?? 4) : 4, 1, 4), shadowBias: clamp(Number.isFinite(options.shadowBias) ? options.shadowBias ?? 0.01 : 0.01, 1e-4, 1) };
+  }
+  function baseEnvironment(scene) {
+    const environment = scene.environment ?? {}, texture = environment.textureId ? scene.textures?.find((entry) => entry.id === environment.textureId) : void 0;
+    return { diffuseColor: environment.diffuseColor ?? null, specularColor: environment.specularColor ?? null, intensity: environment.intensity ?? 1, textureId: environment.textureId ?? null, texture: texture ?? null, probes: environment.probes ?? [] };
+  }
+  function sourceRepresentation(scene) {
+    const environment = scene.environment ?? {};
+    return { format: scene.format, sceneId: scene.sceneId, reality: scene.reality ?? null, meshes: scene.meshes, materials: scene.materials, nodes: scene.nodes, lights: scene.lights, environment: baseEnvironment(scene), textures: environment.textureId ? scene.textures?.filter((texture) => texture.id === environment.textureId) ?? [] : [] };
+  }
+  function topologyRepresentation(scene) {
+    return { format: scene.format, sceneId: scene.sceneId, reality: scene.reality ?? null, meshes: scene.meshes, materials: scene.materials, nodes: scene.nodes };
+  }
+  function sourceRoot(scene) {
+    return cryptographicHash(sourceRepresentation(scene));
+  }
+  function topologyRoot(scene) {
+    return cryptographicHash(topologyRepresentation(scene));
+  }
+  function spatialIrradianceVolumeSourceRoot(scene) {
+    assertScene(scene);
+    return sourceRoot(scene);
+  }
+  function spatialIrradianceVolumeTopologyRoot(scene) {
+    assertScene(scene);
+    return topologyRoot(scene);
+  }
+  function occluders(scene, worlds2) {
+    const result = [];
+    for (const node of scene.nodes) {
+      if (node.visible === false || !node.meshId || node.castShadow === false) continue;
+      const mesh = scene.meshes.find((entry) => entry.id === node.meshId), material = scene.materials.find((entry) => entry.id === node.materialId) ?? scene.materials[0];
+      if (!mesh || material?.alphaMode === "BLEND") continue;
+      const world = worlds2.get(node.id) ?? identityMat4();
+      for (let triangleIndex = 0; triangleIndex < mesh.indices.length / 3; triangleIndex++) {
+        const indices = [mesh.indices[triangleIndex * 3], mesh.indices[triangleIndex * 3 + 1], mesh.indices[triangleIndex * 3 + 2]], vertices = indices.map((index) => transformPoint3(world, [mesh.positions[index * 3], mesh.positions[index * 3 + 1], mesh.positions[index * 3 + 2]]));
+        if (length(sub(vertices[1], vertices[0])) > EPS && length(sub(vertices[2], vertices[0])) > EPS) result.push({ nodeId: node.id, triangleIndex, vertices });
+        if (result.length >= 4096) return result;
+      }
+    }
+    return result;
+  }
+  function dot(a, b) {
+    return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+  }
+  function cross(a, b) {
+    return [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+  }
+  function rayIntersects(origin, direction, maxDistance, triangle, bias) {
+    const [a, b, c] = triangle.vertices, edge1 = sub(b, a), edge22 = sub(c, a), h = cross(direction, edge22), det = dot(edge1, h);
+    if (Math.abs(det) < EPS) return false;
+    const inverseDet = 1 / det, s = sub(origin, a), u = inverseDet * dot(s, h);
+    if (u < -EPS || u > 1 + EPS) return false;
+    const q = cross(s, edge1), v = inverseDet * dot(direction, q), distanceAlongRay = inverseDet * dot(edge22, q);
+    return v >= -EPS && u + v <= 1 + EPS && distanceAlongRay > bias && distanceAlongRay < maxDistance - bias;
+  }
+  function visibility(position, direction, maxDistance, samples, bias, geometry) {
+    const offsets = [[0, 0, 0], [bias * 4, 0, 0], [0, bias * 4, 0], [0, 0, bias * 4]], count = Math.max(1, Math.min(4, samples));
+    let visible = 0;
+    for (const offset of offsets.slice(0, count)) {
+      const origin = [position[0] + offset[0], position[1] + offset[1], position[2] + offset[2]];
+      let blocked = false;
+      for (const triangle of geometry) {
+        if (rayIntersects(origin, direction, maxDistance, triangle, bias)) {
+          blocked = true;
+          break;
+        }
+      }
+      if (!blocked) visible++;
+    }
+    return visible / count;
+  }
+  function textureAverage(texture) {
+    if (!texture || texture.pixels.length < 4) return void 0;
+    const total = Math.floor(texture.pixels.length / 4), sum = [0, 0, 0];
+    for (let index = 0; index < total; index++) {
+      sum[0] += (texture.pixels[index * 4] ?? 0) / 255;
+      sum[1] += (texture.pixels[index * 4 + 1] ?? 0) / 255;
+      sum[2] += (texture.pixels[index * 4 + 2] ?? 0) / 255;
+    }
+    return scale(sum, 1 / Math.max(1, total));
+  }
+  function lightDirection(light, position) {
+    if (light.kind === "directional") {
+      return { direction: normalize(scale(light.direction ?? [-0.4, -1, -0.3], -1)), distance: 1e6 };
+    }
+    const delta = sub(light.position ?? [0, 2, 0], position), distanceValue = Math.max(EPS, length(delta));
+    return { direction: scale(delta, 1 / distanceValue), distance: distanceValue };
+  }
+  function emissiveSources(scene, worlds2) {
+    return scene.nodes.flatMap((node) => {
+      if (node.visible === false || !node.meshId) return [];
+      const mesh = scene.meshes.find((entry) => entry.id === node.meshId), material = node.materialId ? scene.materials.find((entry) => entry.id === node.materialId) : void 0;
+      if (!mesh || !material || (material.emissiveStrength ?? 0) <= 0) return [];
+      return [{ center: transformBounds(mesh, worlds2.get(node.id) ?? identityMat4()).center, radiance: scale(color(material.emissive), Math.max(0, material.emissiveStrength ?? 0)) }];
+    });
+  }
+  function irradianceAt(scene, position, settings, geometry, allGeometry, sources) {
+    const environment = scene.environment ?? {}, environmentTexture = environment.textureId ? scene.textures?.find((texture) => texture.id === environment.textureId) : void 0, environmentColor = textureAverage(environmentTexture), environmentDiffuse = scale(environmentColor ?? color(environment.diffuseColor), clamp(environment.intensity ?? 1, 0, 32)), environmentSpecular = scale(environmentColor ?? color(environment.specularColor), clamp(environment.intensity ?? 1, 0, 32));
+    let diffuse = environmentDiffuse, specular = environmentSpecular, totalVisibility = 0, visibilityCount = 0;
+    for (const light of scene.lights.slice(0, 32)) {
+      const lightColor = color(light.color ?? "#ffffff"), intensity = Math.max(0, light.intensity ?? 1);
+      if (light.kind === "ambient") {
+        diffuse = add(diffuse, scale(lightColor, intensity));
+        specular = add(specular, scale(lightColor, intensity * 0.35));
+        continue;
+      }
+      const target = lightDirection(light, position), attenuation = light.kind === "directional" ? 1 : Math.pow(clamp(1 - distance(position, light.position ?? [0, 2, 0]) / Math.max(1e-3, light.range ?? 10), 0, 1), 2), visible = visibility(position, target.direction, target.distance, settings.visibilitySamples, settings.shadowBias, allGeometry);
+      totalVisibility += visible;
+      visibilityCount++;
+      diffuse = add(diffuse, scale(lightColor, intensity * attenuation * (light.kind === "directional" ? 0.45 : 0.5) * visible));
+      specular = add(specular, scale(lightColor, intensity * attenuation * (light.kind === "directional" ? 0.2 : 0.25) * visible));
+    }
+    for (const source of sources) {
+      const influence = 1 / (1 + distance(position, source.center));
+      diffuse = add(diffuse, scale(source.radiance, influence * 0.5));
+      specular = add(specular, scale(source.radiance, influence * 0.15));
+    }
+    const radianceScale = Math.max(1, ...diffuse, ...specular), confidence = visibilityCount ? clamp(totalVisibility / visibilityCount, 0, 1) : 1;
+    return { diffuseColor: encodeColor(diffuse, radianceScale), specularColor: encodeColor(specular, radianceScale), intensity: radianceScale, visibility: confidence };
+  }
+  function gridPosition(settings, x, y, z) {
+    const [nx, ny, nz] = settings.dimensions;
+    return [settings.boundsMin[0] + (settings.boundsMax[0] - settings.boundsMin[0]) * (nx <= 1 ? 0 : x / (nx - 1)), settings.boundsMin[1] + (settings.boundsMax[1] - settings.boundsMin[1]) * (ny <= 1 ? 0 : y / (ny - 1)), settings.boundsMin[2] + (settings.boundsMax[2] - settings.boundsMin[2]) * (nz <= 1 ? 0 : z / (nz - 1))];
+  }
+  function bakeSamples(scene, settings) {
+    const worlds2 = worldMatrices(scene), geometry = occluders(scene, worlds2), sources = emissiveSources(scene, worlds2), samples = [];
+    for (let z = 0; z < settings.dimensions[2]; z++) for (let y = 0; y < settings.dimensions[1]; y++) for (let x = 0; x < settings.dimensions[0]; x++) samples.push(irradianceAt(scene, gridPosition(settings, x, y, z), settings, geometry[0] ?? { nodeId: "", triangleIndex: -1, vertices: [[0, 0, 0], [1, 0, 0], [0, 1, 0]] }, geometry, sources));
+    return samples;
+  }
+  function assertScene(scene) {
+    if (scene.format !== "vsr.spatial-scene.v0.4") throw new Error(`Unsupported spatial scene format ${String(scene.format)}.`);
+    if (!scene.sceneId) throw new Error("Irradiance volume sceneId is required.");
+    if (!Array.isArray(scene.meshes) || !Array.isArray(scene.nodes) || !Array.isArray(scene.materials) || !Array.isArray(scene.lights)) throw new Error("Irradiance volume scene collections are invalid.");
+  }
+  function bakeSpatialIrradianceVolume(scene, options = {}) {
+    assertScene(scene);
+    const settings = resolveSettings(scene, options), base = { format: VSR_SPATIAL_IRRADIANCE_VOLUME_FORMAT, version: "0.1.0", sceneId: scene.sceneId, sourceRoot: sourceRoot(scene), topologyRoot: topologyRoot(scene), settings, samples: bakeSamples(scene, settings) };
+    return { ...base, root: cryptographicHash(base) };
+  }
+  function decodeSample(sample) {
+    const intensity = Math.max(0, Number.isFinite(sample.intensity) ? sample.intensity : 0) * clamp(Number.isFinite(sample.visibility) ? sample.visibility : 0, 0, 1);
+    return { diffuse: scale(color(sample.diffuseColor), intensity), specular: scale(color(sample.specularColor), intensity) };
+  }
+  function encodeRadiance(diffuse, specular, visibilityValue) {
+    const intensity = Math.max(1, ...diffuse, ...specular);
+    return { diffuseColor: encodeColor(diffuse, intensity), specularColor: encodeColor(specular, intensity), intensity, visibility: clamp(visibilityValue, 0, 1) };
+  }
+  function updateSpatialIrradianceVolume(scene, previous, options = {}) {
+    assertScene(scene);
+    const verification = verifySpatialIrradianceVolume(previous);
+    if (!verification.ok) throw new Error(verification.diagnostics.join("; "));
+    if (previous.sceneId !== scene.sceneId) throw new Error(`Irradiance volume scene ${previous.sceneId} does not match ${scene.sceneId}.`);
+    if (topologyRoot(scene) !== previous.topologyRoot) throw new Error("Irradiance volume topology root mismatch.");
+    const current = bakeSpatialIrradianceVolume(scene, { boundsMin: previous.settings.boundsMin, boundsMax: previous.settings.boundsMax, dimensions: previous.settings.dimensions, blendWeight: options.blendWeight ?? previous.settings.blendWeight, updateAlpha: options.updateAlpha ?? previous.settings.updateAlpha, visibilitySamples: options.visibilitySamples ?? previous.settings.visibilitySamples, shadowBias: options.shadowBias ?? previous.settings.shadowBias }), alpha = clamp(options.updateAlpha ?? previous.settings.updateAlpha, 0.05, 1), samples = current.samples.map((sample, index) => {
+      const previousSample = previous.samples[index];
+      const old = decodeSample(previousSample), next = decodeSample(sample);
+      return encodeRadiance(add(scale(old.diffuse, 1 - alpha), scale(next.diffuse, alpha)), add(scale(old.specular, 1 - alpha), scale(next.specular, alpha)), previousSample.visibility + (sample.visibility - previousSample.visibility) * alpha);
+    }), { root: _currentRoot, ...currentBase } = current, base = { ...currentBase, settings: { ...current.settings, updateAlpha: alpha }, samples };
+    return { ...base, root: cryptographicHash(base) };
+  }
+  function verifySpatialIrradianceVolume(volume) {
+    const diagnostics = [];
+    if (volume.format !== VSR_SPATIAL_IRRADIANCE_VOLUME_FORMAT) diagnostics.push("irradiance volume format mismatch");
+    if (volume.version !== "0.1.0") diagnostics.push("irradiance volume version mismatch");
+    if (!volume.sceneId) diagnostics.push("irradiance volume sceneId is missing");
+    for (const root2 of [volume.sourceRoot, volume.topologyRoot, volume.root]) if (!/^[a-f0-9]{64}$/.test(root2)) diagnostics.push("irradiance volume root is invalid");
+    const settings = volume.settings;
+    if (!settings || !finiteVec3(settings.boundsMin) || !finiteVec3(settings.boundsMax) || settings.boundsMax.some((value, axis) => value <= settings.boundsMin[axis])) diagnostics.push("irradiance volume bounds are invalid");
+    if (!settings?.dimensions || settings.dimensions.length !== 3 || settings.dimensions.some((value) => !Number.isInteger(value) || value < 2 || value > 16) || settings.dimensions.reduce((product, value) => product * value, 1) > 512) diagnostics.push("irradiance volume dimensions are invalid");
+    if (!settings || !Number.isFinite(settings.blendWeight) || settings.blendWeight < 0 || settings.blendWeight > 1) diagnostics.push("irradiance volume blend weight is invalid");
+    if (!settings || !Number.isFinite(settings.updateAlpha) || settings.updateAlpha < 0.05 || settings.updateAlpha > 1) diagnostics.push("irradiance volume update alpha is invalid");
+    if (!settings || !Number.isInteger(settings.visibilitySamples) || settings.visibilitySamples < 1 || settings.visibilitySamples > 4) diagnostics.push("irradiance volume visibility sample count is invalid");
+    if (!settings || !Number.isFinite(settings.shadowBias) || settings.shadowBias <= 0 || settings.shadowBias > 1) diagnostics.push("irradiance volume shadow bias is invalid");
+    const expectedCount = settings?.dimensions?.reduce((product, value) => product * value, 1) ?? 0;
+    if (volume.samples.length !== expectedCount) diagnostics.push("irradiance volume sample count does not match dimensions");
+    if (volume.samples.some((sample) => !colorString(sample.diffuseColor) || !colorString(sample.specularColor) || !Number.isFinite(sample.intensity) || sample.intensity < 0 || sample.intensity > 64 || !Number.isFinite(sample.visibility) || sample.visibility < 0 || sample.visibility > 1)) diagnostics.push("irradiance volume contains an invalid sample");
+    const { root, ...base } = volume;
+    if (cryptographicHash(base) !== root) diagnostics.push("irradiance volume root mismatch");
+    return { ok: diagnostics.length === 0, diagnostics };
+  }
+  function applySpatialIrradianceVolume(scene, volume) {
+    const verification = verifySpatialIrradianceVolume(volume);
+    if (!verification.ok) throw new Error(verification.diagnostics.join("; "));
+    if (volume.sceneId !== scene.sceneId) throw new Error(`Irradiance volume scene ${volume.sceneId} does not match ${scene.sceneId}.`);
+    if (sourceRoot(scene) !== volume.sourceRoot) throw new Error("Irradiance volume source root mismatch.");
+    return { ...scene, environment: { ...scene.environment ?? {}, irradianceVolume: sanitizeSpatialIrradianceVolume(volume), irradianceVolumeBakeRoot: volume.root } };
+  }
+  function sanitizeSpatialIrradianceVolume(volume) {
+    if (!volume || !verifySpatialIrradianceVolume(volume).ok) return void 0;
+    return { ...volume, settings: { ...volume.settings, boundsMin: [...volume.settings.boundsMin], boundsMax: [...volume.settings.boundsMax], dimensions: [...volume.settings.dimensions] }, samples: volume.samples.map((sample) => ({ ...sample })) };
+  }
+  function volumeFromEnvironment(environment) {
+    if (!environment) return void 0;
+    if ("format" in environment) return environment.format === VSR_SPATIAL_IRRADIANCE_VOLUME_FORMAT ? environment : void 0;
+    return environment.irradianceVolume;
+  }
+  function volumeSample(volume, position) {
+    const settings = volume.settings, [nx, ny, nz] = settings.dimensions;
+    const normalized = [(position[0] - settings.boundsMin[0]) / (settings.boundsMax[0] - settings.boundsMin[0]), (position[1] - settings.boundsMin[1]) / (settings.boundsMax[1] - settings.boundsMin[1]), (position[2] - settings.boundsMin[2]) / (settings.boundsMax[2] - settings.boundsMin[2])];
+    if (normalized.some((value) => value < 0 || value > 1)) return void 0;
+    const coordinates = normalized.map((value, axis) => {
+      const size = settings.dimensions[axis];
+      return { low: Math.min(size - 1, Math.floor(value * (size - 1))), high: Math.min(size - 1, Math.ceil(value * (size - 1))), weight: value * (size - 1) - Math.floor(value * (size - 1)) };
+    }), diffuse = [0, 0, 0], specular = [0, 0, 0];
+    let visibilityValue = 0;
+    for (const z of [0, 1]) for (const y of [0, 1]) for (const x of [0, 1]) {
+      const coordinateX = x ? coordinates[0].high : coordinates[0].low, coordinateY = y ? coordinates[1].high : coordinates[1].low, coordinateZ = z ? coordinates[2].high : coordinates[2].low, weight = (x ? coordinates[0].weight : 1 - coordinates[0].weight) * (y ? coordinates[1].weight : 1 - coordinates[1].weight) * (z ? coordinates[2].weight : 1 - coordinates[2].weight), sample = volume.samples[coordinateX + nx * (coordinateY + ny * coordinateZ)], decoded = decodeSample(sample);
+      diffuse[0] += decoded.diffuse[0] * weight;
+      diffuse[1] += decoded.diffuse[1] * weight;
+      diffuse[2] += decoded.diffuse[2] * weight;
+      specular[0] += decoded.specular[0] * weight;
+      specular[1] += decoded.specular[1] * weight;
+      specular[2] += decoded.specular[2] * weight;
+      visibilityValue += sample.visibility * weight;
+    }
+    return { sample: encodeRadiance(diffuse, specular, visibilityValue), weight: clamp(settings.blendWeight, 0, 1) };
+  }
+  function sampleSpatialIrradianceVolume(volume, worldPosition, fallbackDiffuse, fallbackSpecular) {
+    const sampled = volume ? volumeSample(volume, worldPosition) : void 0;
+    if (!sampled) return { diffuse: fallbackDiffuse, specular: fallbackSpecular };
+    const decoded = decodeSample(sampled.sample), weight = sampled.weight;
+    return { diffuse: [fallbackDiffuse[0] + (decoded.diffuse[0] - fallbackDiffuse[0]) * weight, fallbackDiffuse[1] + (decoded.diffuse[1] - fallbackDiffuse[1]) * weight, fallbackDiffuse[2] + (decoded.diffuse[2] - fallbackDiffuse[2]) * weight], specular: [fallbackSpecular[0] + (decoded.specular[0] - fallbackSpecular[0]) * weight, fallbackSpecular[1] + (decoded.specular[1] - fallbackSpecular[1]) * weight, fallbackSpecular[2] + (decoded.specular[2] - fallbackSpecular[2]) * weight] };
+  }
+  function packSpatialIrradianceVolumeBuffer(environment) {
+    const volume = volumeFromEnvironment(environment), settings = volume?.settings, dimensions = settings?.dimensions ?? [0, 0, 0], samples = volume?.samples ?? [], out = new Float32Array(16 + 8 * Math.max(1, samples.length));
+    if (settings) {
+      out.set([...settings.boundsMin, 0], 0);
+      out.set([...settings.boundsMax, 0], 4);
+      out.set([...dimensions, samples.length], 8);
+      out.set([settings.blendWeight, 0, 0, 0], 12);
+      for (const [index, sample] of samples.entries()) {
+        const decoded = decodeSample(sample), base = 16 + index * 8;
+        out.set([...color(sample.diffuseColor), decoded.diffuse.reduce((sum, value) => sum + value, 0) > 0 ? sample.intensity * sample.visibility : 0], base);
+        out.set([...color(sample.specularColor), sample.intensity * sample.visibility], base + 4);
+      }
+    }
+    return out;
+  }
+
+  // packages/spatial-reality-3d/src/irradiance-volume-field.ts
+  var VSR_SPATIAL_IRRADIANCE_VOLUME_FIELD_FORMAT = "vsr.spatial-irradiance-volume-field.v0.1";
+  var clamp2 = (value, min, max) => Math.max(min, Math.min(max, value));
+  var add2 = (a, b) => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
+  var scale2 = (value, factor) => [value[0] * factor, value[1] * factor, value[2] * factor];
+  var distance3 = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
+  var finiteVec32 = (value) => Array.isArray(value) && value.length === 3 && value.every((component) => typeof component === "number" && Number.isFinite(component));
+  var zero = [0, 0, 0];
+  function fieldBase(field) {
+    const { root: _root, ...base } = field;
+    return base;
+  }
+  function volumeEntries(field) {
+    return field.volumes.map((entry) => ({ id: entry.id, ...entry.cellId ? { cellId: entry.cellId } : {}, volume: sanitizeSpatialIrradianceVolume(entry.volume) }));
+  }
+  function validateVolumeOptions(options) {
+    if (!Array.isArray(options.volumes) || options.volumes.length < 1) throw new Error("Irradiance volume field requires at least one volume.");
+    if (options.volumes.length > 8) throw new Error("Irradiance volume field supports at most eight volumes.");
+    const ids = /* @__PURE__ */ new Set();
+    for (const entry of options.volumes) {
+      if (!entry.id || ids.has(entry.id)) throw new Error(`Duplicate irradiance volume field id ${entry.id || "unknown"}.`);
+      ids.add(entry.id);
+      if (!finiteVec32(entry.boundsMin) || !finiteVec32(entry.boundsMax) || entry.boundsMax.some((value, axis) => value <= entry.boundsMin[axis])) throw new Error(`Irradiance volume field bounds are invalid for ${entry.id}.`);
+    }
+  }
+  function geometryWeight(position, volume, blendDistance) {
+    const min = volume.settings.boundsMin, max = volume.settings.boundsMax, clamped = [clamp2(position[0], min[0], max[0]), clamp2(position[1], min[1], max[1]), clamp2(position[2], min[2], max[2])], distance4 = distance3(position, clamped), weight = distance4 <= 1e-9 ? 1 : clamp2(1 - distance4 / Math.max(blendDistance, 1e-3), 0, 1);
+    return { weight, position: clamped };
+  }
+  function fieldFromEnvironment(environment) {
+    if (!environment) return void 0;
+    if ("format" in environment) {
+      if (environment.format === VSR_SPATIAL_IRRADIANCE_VOLUME_FIELD_FORMAT) return environment;
+      if (environment.format === VSR_SPATIAL_IRRADIANCE_VOLUME_FORMAT) return void 0;
+      return void 0;
+    }
+    return environment.irradianceVolumeField;
+  }
+  function singleVolumeFromEnvironment(environment) {
+    if (!environment) return void 0;
+    if ("format" in environment) return environment.format === VSR_SPATIAL_IRRADIANCE_VOLUME_FORMAT ? environment : void 0;
+    return environment.irradianceVolume;
+  }
+  function bakeSpatialIrradianceVolumeField(scene, options) {
+    validateVolumeOptions(options);
+    const maxVolumes = clamp2(Math.round(options.maxVolumes ?? options.volumes.length), 1, 8), blendDistance = clamp2(Number.isFinite(options.blendDistance) ? options.blendDistance ?? 1 : 1, 1e-3, 1e4), maxSamples = clamp2(Math.round(options.maxSamples ?? 4096), 1, 4096);
+    if (options.volumes.length > maxVolumes) throw new Error(`Irradiance volume field received ${options.volumes.length} volumes but maxVolumes is ${maxVolumes}.`);
+    const volumes = options.volumes.slice().sort((a, b) => a.id.localeCompare(b.id)).map((entry) => ({ id: entry.id, ...entry.cellId ? { cellId: entry.cellId } : {}, volume: bakeSpatialIrradianceVolume(scene, { ...entry, boundsMin: entry.boundsMin, boundsMax: entry.boundsMax }) }));
+    const sampleCount = volumes.reduce((sum, entry) => sum + entry.volume.samples.length, 0);
+    if (sampleCount > maxSamples) throw new Error(`Irradiance volume field sample budget ${sampleCount} exceeds ${maxSamples}.`);
+    const sourceRoot3 = volumes[0].volume.sourceRoot, topologyRoot2 = volumes[0].volume.topologyRoot;
+    if (volumes.some((entry) => entry.volume.sourceRoot !== sourceRoot3 || entry.volume.topologyRoot !== topologyRoot2)) throw new Error("Irradiance volume field roots are inconsistent.");
+    const base = { format: VSR_SPATIAL_IRRADIANCE_VOLUME_FIELD_FORMAT, version: "0.1.0", sceneId: scene.sceneId, sourceRoot: sourceRoot3, topologyRoot: topologyRoot2, settings: { blendDistance, maxVolumes, maxSamples }, volumes };
+    return { ...base, root: cryptographicHash(base) };
+  }
+  function updateSpatialIrradianceVolumeField(scene, previous, options = {}) {
+    const verification = verifySpatialIrradianceVolumeField(previous);
+    if (!verification.ok) throw new Error(verification.diagnostics.join("; "));
+    if (previous.sceneId !== scene.sceneId) throw new Error(`Irradiance volume field scene ${previous.sceneId} does not match ${scene.sceneId}.`);
+    const volumes = previous.volumes.map((entry) => ({ id: entry.id, ...entry.cellId ? { cellId: entry.cellId } : {}, volume: updateSpatialIrradianceVolume(scene, entry.volume, options) }));
+    if (volumes.some((entry) => entry.volume.topologyRoot !== previous.topologyRoot)) throw new Error("Irradiance volume field topology root mismatch.");
+    const base = { ...fieldBase(previous), sourceRoot: volumes[0].volume.sourceRoot, topologyRoot: previous.topologyRoot, volumes };
+    return { ...base, root: cryptographicHash(base) };
+  }
+  function verifySpatialIrradianceVolumeField(field) {
+    const diagnostics = [];
+    if (field.format !== VSR_SPATIAL_IRRADIANCE_VOLUME_FIELD_FORMAT) diagnostics.push("irradiance volume field format mismatch");
+    if (field.version !== "0.1.0") diagnostics.push("irradiance volume field version mismatch");
+    if (!field.sceneId) diagnostics.push("irradiance volume field sceneId is missing");
+    if (!/^[a-f0-9]{64}$/.test(field.sourceRoot) || !/^[a-f0-9]{64}$/.test(field.topologyRoot) || !/^[a-f0-9]{64}$/.test(field.root)) diagnostics.push("irradiance volume field root is invalid");
+    const settings = field.settings;
+    if (!settings || !Number.isFinite(settings.blendDistance) || settings.blendDistance <= 0 || !Number.isInteger(settings.maxVolumes) || settings.maxVolumes < 1 || settings.maxVolumes > 8 || !Number.isInteger(settings.maxSamples) || settings.maxSamples < 1 || settings.maxSamples > 4096) diagnostics.push("irradiance volume field settings are invalid");
+    if (!Array.isArray(field.volumes) || field.volumes.length < 1 || field.volumes.length > (settings?.maxVolumes ?? 0)) diagnostics.push("irradiance volume field volume count is invalid");
+    const ids = /* @__PURE__ */ new Set();
+    let sampleCount = 0;
+    for (const entry of field.volumes ?? []) {
+      if (!entry.id || ids.has(entry.id)) diagnostics.push("irradiance volume field ids are invalid");
+      ids.add(entry.id);
+      const result = verifySpatialIrradianceVolume(entry.volume);
+      if (!result.ok) diagnostics.push(...result.diagnostics.map((diagnostic) => `${entry.id}:${diagnostic}`));
+      if (entry.volume.sceneId !== field.sceneId || entry.volume.sourceRoot !== field.sourceRoot || entry.volume.topologyRoot !== field.topologyRoot) diagnostics.push(`${entry.id}:volume roots do not match field`);
+      sampleCount += entry.volume.samples.length;
+    }
+    if (sampleCount > (settings?.maxSamples ?? 0)) diagnostics.push("irradiance volume field sample budget is exceeded");
+    if (cryptographicHash(fieldBase(field)) !== field.root) diagnostics.push("irradiance volume field root mismatch");
+    return { ok: diagnostics.length === 0, diagnostics };
+  }
+  function applySpatialIrradianceVolumeField(scene, field) {
+    const verification = verifySpatialIrradianceVolumeField(field);
+    if (!verification.ok) throw new Error(verification.diagnostics.join("; "));
+    if (field.sceneId !== scene.sceneId) throw new Error(`Irradiance volume field scene ${field.sceneId} does not match ${scene.sceneId}.`);
+    if (field.sourceRoot !== spatialIrradianceVolumeSourceRoot(scene) || field.topologyRoot !== spatialIrradianceVolumeTopologyRoot(scene)) throw new Error("Irradiance volume field source or topology root mismatch.");
+    return { ...scene, environment: { ...scene.environment ?? {}, irradianceVolumeField: sanitizeSpatialIrradianceVolumeField(field), irradianceVolumeFieldRoot: field.root } };
+  }
+  function sanitizeSpatialIrradianceVolumeField(field) {
+    if (!field || !verifySpatialIrradianceVolumeField(field).ok) return void 0;
+    return { ...field, settings: { ...field.settings }, volumes: volumeEntries(field) };
+  }
+  function selectSpatialIrradianceVolumeField(field, activeCellIds) {
+    if (!field) return void 0;
+    if (activeCellIds === void 0) return field;
+    const active = new Set(activeCellIds), volumes = field.volumes.filter((entry) => !entry.cellId || active.has(entry.cellId)).slice(0, field.settings.maxVolumes);
+    if (!volumes.length) return void 0;
+    const selected = { ...field, volumes: volumes.map((entry) => ({ ...entry, volume: { ...entry.volume, settings: { ...entry.volume.settings, boundsMin: [...entry.volume.settings.boundsMin], boundsMax: [...entry.volume.settings.boundsMax], dimensions: [...entry.volume.settings.dimensions] }, samples: entry.volume.samples.map((sample) => ({ ...sample })) } })) };
+    return { ...selected, root: cryptographicHash(fieldBase(selected)) };
+  }
+  function sampleSpatialIrradianceVolumeField(field, worldPosition, fallbackDiffuse, fallbackSpecular) {
+    if (!field || !field.volumes.length) return { diffuse: fallbackDiffuse, specular: fallbackSpecular };
+    let weightedDiffuse = [0, 0, 0], weightedSpecular = [0, 0, 0], total = 0;
+    for (const entry of field.volumes) {
+      const geometry = geometryWeight(worldPosition, entry.volume, field.settings.blendDistance), effective = geometry.weight * clamp2(entry.volume.settings.blendWeight, 0, 1);
+      if (effective <= 0) continue;
+      const sample = sampleSpatialIrradianceVolume(entry.volume, geometry.position, zero, zero);
+      weightedDiffuse = add2(weightedDiffuse, scale2(sample.diffuse, effective));
+      weightedSpecular = add2(weightedSpecular, scale2(sample.specular, effective));
+      total += effective;
+    }
+    if (total <= 1e-9) return { diffuse: fallbackDiffuse, specular: fallbackSpecular };
+    const diffuse = scale2(weightedDiffuse, 1 / total), specular = scale2(weightedSpecular, 1 / total), blend = clamp2(total, 0, 1);
+    return { diffuse: [fallbackDiffuse[0] + (diffuse[0] - fallbackDiffuse[0]) * blend, fallbackDiffuse[1] + (diffuse[1] - fallbackDiffuse[1]) * blend, fallbackDiffuse[2] + (diffuse[2] - fallbackDiffuse[2]) * blend], specular: [fallbackSpecular[0] + (specular[0] - fallbackSpecular[0]) * blend, fallbackSpecular[1] + (specular[1] - fallbackSpecular[1]) * blend, fallbackSpecular[2] + (specular[2] - fallbackSpecular[2]) * blend] };
+  }
+  function packSpatialIrradianceVolumeFieldBuffer(environment) {
+    const field = fieldFromEnvironment(environment), single = singleVolumeFromEnvironment(environment), volumes = field?.volumes ?? (single ? [{ id: "volume:default", volume: single }] : []), sampleCount = volumes.reduce((sum, entry) => sum + entry.volume.samples.length, 0), volumeCount = volumes.length, out = new Float32Array(4 + 16 * Math.max(1, volumeCount) + 8 * Math.max(1, sampleCount));
+    out.set([volumeCount, sampleCount, field?.settings.blendDistance ?? 0, 0], 0);
+    let sampleOffset = 0;
+    for (const [index, entry] of volumes.entries()) {
+      const base = 4 + index * 16, settings = entry.volume.settings, dimensions = settings.dimensions, packed = packSpatialIrradianceVolumeBuffer(entry.volume);
+      out.set([...settings.boundsMin, 0], base);
+      out.set([...settings.boundsMax, 0], base + 4);
+      out.set([...dimensions, sampleOffset], base + 8);
+      out.set([settings.blendWeight, settings.shadowBias, 0, 0], base + 12);
+      out.set(packed.subarray(16), 4 + 16 * volumeCount + sampleOffset * 8);
+      sampleOffset += entry.volume.samples.length;
+    }
+    return out;
+  }
+
   // packages/spatial-reality-3d/src/asset-streaming.ts
   var VSR_SPATIAL_ASSET_STREAMING_FORMAT = "vsr.spatial-asset-streaming.v0.1";
   var VSR_SPATIAL_ASSET_STREAMING_VERSION = "0.1.0";
   var orderedUnique = (values) => [...new Set((values ?? []).filter((value) => typeof value === "string" && value.length > 0))];
   var unique = (values) => orderedUnique(values).sort((a, b) => a.localeCompare(b));
   var finiteBudget = (value, fallback) => value === void 0 || !Number.isFinite(value) ? fallback : Math.max(0, Math.floor(value));
-  var assetView = (asset) => ({ id: asset.id, uri: asset.uri, sha256: asset.sha256, byteLength: asset.byteLength, kind: asset.kind, dependencies: unique(asset.dependencies), cellIds: unique(asset.cellIds), priority: asset.priority ?? 0 });
+  var assetView = (asset) => ({ id: asset.id, uri: asset.uri, format: asset.format ?? null, sha256: asset.sha256, byteLength: asset.byteLength, kind: asset.kind, dependencies: unique(asset.dependencies), cellIds: unique(asset.cellIds), priority: asset.priority ?? 0, metadata: asset.metadata ?? null });
   var assertAsset = (asset) => {
     if (!asset.id || !asset.uri || !/^[a-f0-9]{64}$/i.test(asset.sha256) || !Number.isInteger(asset.byteLength) || asset.byteLength < 0) throw new Error(`Invalid spatial asset record ${asset.id || "unknown"}.`);
   };
@@ -298,13 +820,16 @@ var VSRSpatial3D = (() => {
     return ordered;
   }
   function resolveSpatialAssetStreaming(catalog, request = {}) {
-    const map = catalogMap(catalog), activeCellIds = unique(request.activeCellIds), explicit = unique(request.requestedAssetIds), cellRoots = [...map.values()].filter((asset) => asset.cellIds?.length && asset.cellIds.some((cellId) => activeCellIds.includes(cellId))).sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0) || a.id.localeCompare(b.id)).map((asset) => asset.id), requestedAssetIds = unique([...explicit, ...cellRoots]), diagnostics = [];
-    const { required, missing } = dependencyClosure(map, requestedAssetIds, diagnostics), ordered = dependencyFirstOrder(map, requestedAssetIds, diagnostics), requiredAssetIds = [...required].sort((a, b) => {
+    const map = catalogMap(catalog), activeCellIds = unique(request.activeCellIds), explicit = unique(request.requestedAssetIds), prefetchCellIds = unique(request.prefetchCellIds), cellRoots = [...map.values()].filter((asset) => asset.cellIds?.length && asset.cellIds.some((cellId) => activeCellIds.includes(cellId))).sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0) || a.id.localeCompare(b.id)).map((asset) => asset.id), prefetchCellRoots = [...map.values()].filter((asset) => asset.cellIds?.length && asset.cellIds.some((cellId) => prefetchCellIds.includes(cellId))).sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0) || a.id.localeCompare(b.id)).map((asset) => asset.id), requestedAssetIds = unique([...explicit, ...cellRoots]), prefetchAssetIds = unique([...request.prefetchAssetIds ?? [], ...prefetchCellRoots]).filter((id) => !requestedAssetIds.includes(id)), hasPrefetch = prefetchCellIds.length > 0 || prefetchAssetIds.length > 0, diagnostics = [];
+    const activeClosure = dependencyClosure(map, requestedAssetIds, diagnostics), prefetchClosure = dependencyClosure(map, prefetchAssetIds, diagnostics), required = activeClosure.required, missing = /* @__PURE__ */ new Set([...activeClosure.missing, ...prefetchClosure.missing]), ordered = dependencyFirstOrder(map, requestedAssetIds, diagnostics), prefetchOrdered = dependencyFirstOrder(map, prefetchAssetIds, diagnostics).filter((id) => !required.has(id)), requiredAssetIds = [...required].sort((a, b) => {
       const ai = ordered.indexOf(a), bi = ordered.indexOf(b);
       return (ai < 0 ? Number.MAX_SAFE_INTEGER : ai) - (bi < 0 ? Number.MAX_SAFE_INTEGER : bi) || a.localeCompare(b);
+    }), prefetchRequiredAssetIds = [...prefetchClosure.required].filter((id) => !required.has(id)).sort((a, b) => {
+      const ai = prefetchOrdered.indexOf(a), bi = prefetchOrdered.indexOf(b);
+      return (ai < 0 ? Number.MAX_SAFE_INTEGER : ai) - (bi < 0 ? Number.MAX_SAFE_INTEGER : bi) || a.localeCompare(b);
     }), residentCandidates = new Set(unique(request.residentAssetIds)), maxAssets = finiteBudget(request.maxAssets, Number.MAX_SAFE_INTEGER), maxBytes = finiteBudget(request.maxBytes, Number.MAX_SAFE_INTEGER);
-    const residentAssetIds = [], queuedAssetIds = [], deferredAssetIds = [], evictedAssetIds = [];
-    let bytesResident = 0, bytesQueued = 0, usedAssets = 0, usedBytes = 0;
+    const residentAssetIds = [], queuedAssetIds = [], deferredAssetIds = [], prefetchResidentAssetIds = [], prefetchQueuedAssetIds = [], prefetchDeferredAssetIds = [], prefetchEvictedAssetIds = [], evictedAssetIds = [];
+    let bytesResident = 0, bytesQueued = 0, prefetchBytesResident = 0, prefetchBytesQueued = 0, usedAssets = 0, usedBytes = 0;
     for (const id of ordered) {
       const asset = map.get(id);
       if (missing.has(id)) continue;
@@ -328,9 +853,36 @@ var VSRSpatial3D = (() => {
         evictedAssetIds.push(id);
       } else deferredAssetIds.push(id);
     }
-    for (const id of residentCandidates) if (!required.has(id) && map.has(id)) evictedAssetIds.push(id);
-    const base = { format: VSR_SPATIAL_ASSET_STREAMING_FORMAT, version: VSR_SPATIAL_ASSET_STREAMING_VERSION, activeCellIds, requestedAssetIds, requiredAssetIds, residentAssetIds: unique(residentAssetIds), queuedAssetIds: unique(queuedAssetIds), deferredAssetIds: unique(deferredAssetIds), missingAssetIds: unique([...missing]), evictedAssetIds: unique(evictedAssetIds), bytesResident, bytesQueued, maxAssets, maxBytes, catalogRoot: catalogRoot(catalog), requestRoot: cryptographicHash({ requestedAssetIds, activeCellIds, residentAssetIds: unique([...residentCandidates]), maxAssets, maxBytes }), diagnostics: unique(diagnostics) };
-    return { ...base, residentAssetIds: orderedUnique(residentAssetIds), queuedAssetIds: orderedUnique(queuedAssetIds), deferredAssetIds: orderedUnique(deferredAssetIds), root: cryptographicHash({ ...base, residentAssetIds: orderedUnique(residentAssetIds), queuedAssetIds: orderedUnique(queuedAssetIds), deferredAssetIds: orderedUnique(deferredAssetIds) }) };
+    const maxPrefetchAssets = hasPrefetch ? Math.min(Math.max(0, maxAssets - usedAssets), finiteBudget(request.maxPrefetchAssets, Math.max(0, maxAssets - usedAssets))) : 0, maxPrefetchBytes = hasPrefetch ? Math.min(Math.max(0, maxBytes - usedBytes), finiteBudget(request.maxPrefetchBytes, Math.max(0, maxBytes - usedBytes))) : 0;
+    let usedPrefetchAssets = 0, usedPrefetchBytes = 0;
+    for (const id of prefetchOrdered) {
+      const asset = map.get(id);
+      if (missing.has(id)) continue;
+      const dependencies = unique(asset.dependencies);
+      if (dependencies.some((dependency) => missing.has(dependency))) {
+        diagnostics.push(`blocked-by-missing:${id}`);
+        continue;
+      }
+      const fits = usedPrefetchAssets + 1 <= maxPrefetchAssets && usedPrefetchBytes + asset.byteLength <= maxPrefetchBytes && usedAssets + usedPrefetchAssets + 1 <= maxAssets && usedBytes + usedPrefetchBytes + asset.byteLength <= maxBytes;
+      if (fits) {
+        usedPrefetchAssets++;
+        usedPrefetchBytes += asset.byteLength;
+        if (residentCandidates.has(id)) {
+          prefetchResidentAssetIds.push(id);
+          prefetchBytesResident += asset.byteLength;
+        } else {
+          prefetchQueuedAssetIds.push(id);
+          prefetchBytesQueued += asset.byteLength;
+        }
+      } else if (residentCandidates.has(id)) prefetchEvictedAssetIds.push(id);
+      else prefetchDeferredAssetIds.push(id);
+    }
+    const accepted = /* @__PURE__ */ new Set([...residentAssetIds, ...queuedAssetIds, ...prefetchResidentAssetIds, ...prefetchQueuedAssetIds]);
+    for (const id of residentCandidates) if (map.has(id) && !accepted.has(id)) evictedAssetIds.push(id);
+    const requestBase = { requestedAssetIds, activeCellIds, residentAssetIds: unique([...residentCandidates]), maxAssets, maxBytes, ...hasPrefetch ? { prefetchCellIds, prefetchAssetIds, maxPrefetchAssets, maxPrefetchBytes } : {} }, prefetchBase = hasPrefetch ? { prefetchCellIds, prefetchAssetIds, prefetchRequiredAssetIds, prefetchResidentAssetIds: unique(prefetchResidentAssetIds), prefetchQueuedAssetIds: unique(prefetchQueuedAssetIds), prefetchDeferredAssetIds: unique(prefetchDeferredAssetIds), prefetchEvictedAssetIds: unique(prefetchEvictedAssetIds), prefetchBytesResident, prefetchBytesQueued, maxPrefetchAssets, maxPrefetchBytes } : {};
+    const base = { format: VSR_SPATIAL_ASSET_STREAMING_FORMAT, version: VSR_SPATIAL_ASSET_STREAMING_VERSION, activeCellIds, requestedAssetIds, requiredAssetIds, residentAssetIds: unique(residentAssetIds), queuedAssetIds: unique(queuedAssetIds), deferredAssetIds: unique(deferredAssetIds), missingAssetIds: unique([...missing]), evictedAssetIds: unique([...evictedAssetIds, ...prefetchEvictedAssetIds]), bytesResident, bytesQueued, maxAssets, maxBytes, ...prefetchBase, catalogRoot: catalogRoot(catalog), requestRoot: cryptographicHash(requestBase), diagnostics: unique(diagnostics) };
+    const resolved = { ...base, residentAssetIds: orderedUnique(residentAssetIds), queuedAssetIds: orderedUnique(queuedAssetIds), deferredAssetIds: orderedUnique(deferredAssetIds), ...hasPrefetch ? { prefetchResidentAssetIds: orderedUnique(prefetchResidentAssetIds), prefetchQueuedAssetIds: orderedUnique(prefetchQueuedAssetIds), prefetchDeferredAssetIds: orderedUnique(prefetchDeferredAssetIds), prefetchEvictedAssetIds: unique(prefetchEvictedAssetIds) } : {} };
+    return { ...resolved, root: cryptographicHash(resolved) };
   }
   var payloadBytes = (payload) => payload instanceof Uint8Array ? new Uint8Array(payload) : new Uint8Array(payload);
   var errorInfo = (error) => {
@@ -361,11 +913,12 @@ var VSRSpatial3D = (() => {
     }
     async acquire(request = {}) {
       const resolution = resolveSpatialAssetStreaming([...this.catalog.values()], { ...request, residentAssetIds: [...this.states.entries()].filter(([, state]) => state.status === "ready").map(([id]) => id) }), operations = [];
-      for (const id of resolution.queuedAssetIds) {
+      const loadIds = orderedUnique([...resolution.queuedAssetIds, ...resolution.prefetchQueuedAssetIds ?? []]);
+      for (const id of loadIds) {
         const state = this.states.get(id);
         if (state.status === "failed" || state.status === "blocked" || state.status === "evicted") state.status = "idle";
       }
-      const pending = new Set(resolution.queuedAssetIds), blocked = /* @__PURE__ */ new Set();
+      const pending = new Set(loadIds), foregroundPending = new Set(resolution.queuedAssetIds), blocked = /* @__PURE__ */ new Set();
       let bytesLoaded = 0;
       while (pending.size) {
         const newlyBlocked = [...pending].filter((id) => unique(this.catalog.get(id)?.dependencies).some((dependency) => resolution.missingAssetIds.includes(dependency) || this.states.get(dependency)?.status === "failed" || blocked.has(dependency)));
@@ -376,7 +929,7 @@ var VSRSpatial3D = (() => {
           state.status = "blocked";
           operations.push({ assetId: id, status: "blocked", errorCode: "VSR_ASSET_DEPENDENCY_BLOCKED", errorMessage: "Dependency failed or is missing." });
         }
-        const loadable = [...pending].filter((id) => unique(this.catalog.get(id)?.dependencies).every((dependency) => this.states.get(dependency)?.status === "ready")).slice(0, this.maxConcurrent);
+        const candidates = [...pending].filter((id) => unique(this.catalog.get(id)?.dependencies).every((dependency) => this.states.get(dependency)?.status === "ready")), foregroundLoadable = candidates.filter((id) => foregroundPending.has(id)), loadable = (foregroundLoadable.length ? foregroundLoadable : candidates).slice(0, this.maxConcurrent);
         if (!loadable.length) {
           for (const id of pending) {
             blocked.add(id);
@@ -418,13 +971,15 @@ var VSRSpatial3D = (() => {
           if (result.status === "loaded") bytesLoaded += result.byteLength ?? 0;
         }
       }
-      const finalResolution = resolveSpatialAssetStreaming([...this.catalog.values()], { ...request, residentAssetIds: [...this.states.entries()].filter(([, state]) => state.status === "ready").map(([id]) => id) });
-      const leasedAssetIds = finalResolution.residentAssetIds.filter((id) => {
+      const finalResolution = resolveSpatialAssetStreaming([...this.catalog.values()], { ...request, residentAssetIds: [...this.states.entries()].filter(([, state]) => state.status === "ready").map(([id]) => id) }), leasedAssetIds = request.lease === false ? [] : finalResolution.residentAssetIds.filter((id) => {
         const state = this.states.get(id);
         state.leases++;
         return true;
-      }), failedAssetIds = operations.filter((operation) => operation.status === "failed").map((operation) => operation.assetId).sort((a, b) => a.localeCompare(b)), blockedAssetIds = operations.filter((operation) => operation.status === "blocked").map((operation) => operation.assetId).sort((a, b) => a.localeCompare(b)), base = { format: VSR_SPATIAL_ASSET_STREAMING_FORMAT, version: VSR_SPATIAL_ASSET_STREAMING_VERSION, resolution: finalResolution, operations, readyAssetIds: finalResolution.residentAssetIds, failedAssetIds, blockedAssetIds, leasedAssetIds, bytesLoaded };
+      }), failedAssetIds = operations.filter((operation) => operation.status === "failed").map((operation) => operation.assetId).sort((a, b) => a.localeCompare(b)), blockedAssetIds = operations.filter((operation) => operation.status === "blocked").map((operation) => operation.assetId).sort((a, b) => a.localeCompare(b)), readyAssetIds = orderedUnique([...finalResolution.residentAssetIds, ...finalResolution.prefetchResidentAssetIds ?? []]), base = { format: VSR_SPATIAL_ASSET_STREAMING_FORMAT, version: VSR_SPATIAL_ASSET_STREAMING_VERSION, resolution: finalResolution, operations, readyAssetIds, failedAssetIds, blockedAssetIds, leasedAssetIds, bytesLoaded };
       return { ...base, receiptRoot: cryptographicHash(base) };
+    }
+    async prefetch(request = {}) {
+      return this.acquire({ ...request, lease: false });
     }
     release(assetIds) {
       const { required } = dependencyClosure(this.catalog, unique(assetIds), []), released = [];
@@ -454,9 +1009,808 @@ var VSRSpatial3D = (() => {
     return cryptographicHash(base) === receiptRoot && receipt.resolution.root === cryptographicHash({ ...receipt.resolution, ...{ root: void 0 } });
   }
 
+  // packages/spatial-reality-3d/src/hlod-generation.ts
+  var VSR_SPATIAL_HLOD_GENERATION_FORMAT = "vsr.spatial-hlod-generation.v0.1";
+  var VSR_SPATIAL_HLOD_CELL_GENERATION_FORMAT = "vsr.spatial-hlod-cell-generation.v0.1";
+  var EPS2 = 1e-9;
+  var clamp3 = (value, min, max) => Math.max(min, Math.min(max, value));
+  var add3 = (a, b) => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
+  var scale3 = (a, scale5) => [a[0] * scale5, a[1] * scale5, a[2] * scale5];
+  var sub3 = (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+  var cross3 = (a, b) => [
+    a[1] * b[2] - a[2] * b[1],
+    a[2] * b[0] - a[0] * b[2],
+    a[0] * b[1] - a[1] * b[0]
+  ];
+  var length3 = (value) => Math.hypot(value[0], value[1], value[2]);
+  var normalize3 = (value) => {
+    const length4 = length3(value);
+    return length4 < EPS2 ? [0, 1, 0] : [value[0] / length4, value[1] / length4, value[2] / length4];
+  };
+  function sceneWorldMatrices(scene) {
+    const byId = new Map(scene.nodes.map((node) => [node.id, node]));
+    const cache = /* @__PURE__ */ new Map();
+    const visiting = /* @__PURE__ */ new Set();
+    const resolve = (nodeId) => {
+      const cached = cache.get(nodeId);
+      if (cached) return cached;
+      if (visiting.has(nodeId)) throw new Error(`HLOD generation found a node hierarchy cycle at ${nodeId}.`);
+      const node = byId.get(nodeId);
+      if (!node) throw new Error(`HLOD generation references missing node ${nodeId}.`);
+      visiting.add(nodeId);
+      const local = transformToMat4(node.transform);
+      const world = node.parentId ? multiplyMat4(resolve(node.parentId), local) : local;
+      cache.set(nodeId, world);
+      visiting.delete(nodeId);
+      return world;
+    };
+    for (const node of scene.nodes) resolve(node.id);
+    return cache;
+  }
+  function sourceTriangles(scene, sourceNodeIds) {
+    const nodesById = new Map(scene.nodes.map((node) => [node.id, node]));
+    const meshesById = new Map(scene.meshes.map((mesh) => [mesh.id, mesh]));
+    const worlds2 = sceneWorldMatrices(scene);
+    const triangles = [];
+    const materialIds = /* @__PURE__ */ new Set();
+    let min = [Infinity, Infinity, Infinity];
+    let max = [-Infinity, -Infinity, -Infinity];
+    let castShadow = false;
+    let receiveShadow = false;
+    for (const nodeId of sourceNodeIds) {
+      const node = nodesById.get(nodeId);
+      if (!node) throw new Error(`HLOD generation source node ${nodeId} does not exist.`);
+      if (node.visible === false) throw new Error(`HLOD generation source node ${nodeId} is hidden.`);
+      if (!node.meshId) throw new Error(`HLOD generation source node ${nodeId} has no mesh.`);
+      if (node.skinId || node.morphWeights?.length || node.lods?.length) {
+        throw new Error(`HLOD generation only accepts static source nodes; ${nodeId} has deformation or LOD state.`);
+      }
+      const mesh = meshesById.get(node.meshId);
+      if (!mesh) throw new Error(`HLOD generation source node ${nodeId} references missing mesh ${node.meshId}.`);
+      if (mesh.jointIndices || mesh.jointWeights || mesh.morphTargets?.length) {
+        throw new Error(`HLOD generation only accepts static meshes; ${mesh.id} has deformation channels.`);
+      }
+      const world = worlds2.get(nodeId) ?? identityMat42();
+      const normals = mesh.normals ?? calculateMeshNormals(mesh);
+      const sourceBounds = meshBounds(mesh);
+      const corners = [
+        [sourceBounds.min[0], sourceBounds.min[1], sourceBounds.min[2]],
+        [sourceBounds.min[0], sourceBounds.min[1], sourceBounds.max[2]],
+        [sourceBounds.min[0], sourceBounds.max[1], sourceBounds.min[2]],
+        [sourceBounds.min[0], sourceBounds.max[1], sourceBounds.max[2]],
+        [sourceBounds.max[0], sourceBounds.min[1], sourceBounds.min[2]],
+        [sourceBounds.max[0], sourceBounds.min[1], sourceBounds.max[2]],
+        [sourceBounds.max[0], sourceBounds.max[1], sourceBounds.min[2]],
+        [sourceBounds.max[0], sourceBounds.max[1], sourceBounds.max[2]]
+      ];
+      for (const corner of corners) {
+        const point = transformPoint3(world, corner);
+        min = [Math.min(min[0], point[0]), Math.min(min[1], point[1]), Math.min(min[2], point[2])];
+        max = [Math.max(max[0], point[0]), Math.max(max[1], point[1]), Math.max(max[2], point[2])];
+      }
+      for (let index = 0; index < mesh.indices.length; index += 3) {
+        const ia = mesh.indices[index] * 3;
+        const ib = mesh.indices[index + 1] * 3;
+        const ic = mesh.indices[index + 2] * 3;
+        const a = transformPoint3(world, [mesh.positions[ia], mesh.positions[ia + 1], mesh.positions[ia + 2]]);
+        const b = transformPoint3(world, [mesh.positions[ib], mesh.positions[ib + 1], mesh.positions[ib + 2]]);
+        const c = transformPoint3(world, [mesh.positions[ic], mesh.positions[ic + 1], mesh.positions[ic + 2]]);
+        const faceNormal = normalize3(cross3(sub3(b, a), sub3(c, a)));
+        const averageNormal = normalize3(add3(
+          add3(
+            transformDirection3(world, [normals[ia], normals[ia + 1], normals[ia + 2]]),
+            transformDirection3(world, [normals[ib], normals[ib + 1], normals[ib + 2]])
+          ),
+          transformDirection3(world, [normals[ic], normals[ic + 1], normals[ic + 2]])
+        ));
+        triangles.push({ points: [a, b, c], normal: length3(averageNormal) < EPS2 ? faceNormal : averageNormal });
+      }
+      if (node.materialId) materialIds.add(node.materialId);
+      castShadow ||= node.castShadow !== false;
+      receiveShadow ||= node.receiveShadow !== false;
+    }
+    if (!triangles.length || !Number.isFinite(min[0]) || !Number.isFinite(max[0])) {
+      throw new Error("HLOD generation found no source triangles.");
+    }
+    return { triangles, sourceTriangleCount: triangles.length, bounds: { min, max }, materialIds: [...materialIds].sort(), castShadow, receiveShadow };
+  }
+  function bucketKey(point, bounds, cells) {
+    const coordinates = [0, 1, 2].map((axis) => {
+      const extent = Math.max(bounds.max[axis] - bounds.min[axis], EPS2);
+      return clamp3(Math.floor((point[axis] - bounds.min[axis]) / extent * cells), 0, cells - 1);
+    });
+    return `${coordinates[0]}:${coordinates[1]}:${coordinates[2]}`;
+  }
+  function buildBoundsProxyMesh(id, bounds, maxTriangles) {
+    const center = [
+      (bounds.min[0] + bounds.max[0]) / 2,
+      (bounds.min[1] + bounds.max[1]) / 2,
+      (bounds.min[2] + bounds.max[2]) / 2
+    ];
+    const extents = [
+      Math.max(bounds.max[0] - bounds.min[0], 1e-4),
+      Math.max(bounds.max[1] - bounds.min[1], 1e-4),
+      Math.max(bounds.max[2] - bounds.min[2], 1e-4)
+    ];
+    const min = [center[0] - extents[0] / 2, center[1] - extents[1] / 2, center[2] - extents[2] / 2];
+    const max = [center[0] + extents[0] / 2, center[1] + extents[1] / 2, center[2] + extents[2] / 2];
+    const corners = {
+      nnn: [min[0], min[1], min[2]],
+      nnp: [min[0], min[1], max[2]],
+      npn: [min[0], max[1], min[2]],
+      npp: [min[0], max[1], max[2]],
+      pnn: [max[0], min[1], min[2]],
+      pnp: [max[0], min[1], max[2]],
+      ppn: [max[0], max[1], min[2]],
+      ppp: [max[0], max[1], max[2]]
+    };
+    const faces = [
+      { normal: [0, 0, 1], triangles: [[corners.nnp, corners.pnp, corners.ppp], [corners.nnp, corners.ppp, corners.npp]] },
+      { normal: [0, 0, -1], triangles: [[corners.pnn, corners.nnn, corners.npn], [corners.pnn, corners.npn, corners.ppn]] },
+      { normal: [0, 1, 0], triangles: [[corners.npp, corners.ppp, corners.ppn], [corners.npp, corners.ppn, corners.npn]] },
+      { normal: [0, -1, 0], triangles: [[corners.nnn, corners.pnn, corners.pnp], [corners.nnn, corners.pnp, corners.nnp]] },
+      { normal: [1, 0, 0], triangles: [[corners.pnp, corners.pnn, corners.ppn], [corners.pnp, corners.ppn, corners.ppp]] },
+      { normal: [-1, 0, 0], triangles: [[corners.nnn, corners.nnp, corners.npp], [corners.nnn, corners.npp, corners.npn]] }
+    ];
+    const triangles = [];
+    if (maxTriangles <= 4) {
+      const a = corners.nnn;
+      const b = corners.pnn;
+      const c = corners.npp;
+      const d = corners.pnp;
+      triangles.push({ points: [a, b, c], normal: [0, -1, 0] }, { points: [a, d, b], normal: [0, 0, -1] }, { points: [a, c, d], normal: [-1, 0, 0] }, { points: [b, d, c], normal: [1, 1, 1] });
+    } else {
+      for (let pass = 0; pass < 2 && triangles.length < maxTriangles; pass += 1) {
+        for (const face of faces) {
+          const triangle = face.triangles[pass];
+          if (!triangle || triangles.length >= maxTriangles) continue;
+          triangles.push({ points: triangle, normal: face.normal });
+        }
+      }
+    }
+    const positions = [];
+    const normals = [];
+    const uvs = [];
+    const indices = [];
+    for (const triangle of triangles) {
+      const base = positions.length / 3;
+      for (const point of triangle.points) {
+        positions.push(...point);
+        normals.push(...normalize3(cross3(sub3(triangle.points[1], triangle.points[0]), sub3(triangle.points[2], triangle.points[0]))));
+        uvs.push(clamp3((point[0] - min[0]) / extents[0], 0, 1), clamp3((point[2] - min[2]) / extents[2], 0, 1));
+      }
+      indices.push(base, base + 1, base + 2);
+    }
+    return { id, positions, normals, uvs, indices };
+  }
+  function buildProxyMesh(id, triangles, bounds, maxTriangles) {
+    if (maxTriangles < 12) return buildBoundsProxyMesh(id, bounds, maxTriangles);
+    const cells = Math.max(1, Math.ceil(Math.cbrt(Math.max(1, maxTriangles))));
+    const buckets = /* @__PURE__ */ new Map();
+    const bucketIndices = /* @__PURE__ */ new Map();
+    const triangleIndices = [];
+    const resolveVertex = (point, normal) => {
+      const key = bucketKey(point, bounds, cells);
+      const existing = buckets.get(key);
+      if (existing) {
+        existing.position = add3(existing.position, point);
+        existing.normal = add3(existing.normal, normal);
+        existing.count += 1;
+        return bucketIndices.get(key);
+      }
+      const next = buckets.size;
+      buckets.set(key, { position: [...point], normal: [...normal], count: 1 });
+      bucketIndices.set(key, next);
+      return next;
+    };
+    for (const [order, triangle] of triangles.entries()) {
+      const first = resolveVertex(triangle.points[0], triangle.normal);
+      const second = resolveVertex(triangle.points[1], triangle.normal);
+      const third = resolveVertex(triangle.points[2], triangle.normal);
+      if (first === second || second === third || first === third) continue;
+      const area = length3(cross3(sub3(triangle.points[1], triangle.points[0]), sub3(triangle.points[2], triangle.points[0])));
+      if (area > EPS2) triangleIndices.push({ indices: [first, second, third], area, order });
+    }
+    if (!triangleIndices.length) {
+      const first = triangles[0];
+      const area = length3(cross3(sub3(first.points[1], first.points[0]), sub3(first.points[2], first.points[0])));
+      if (area <= EPS2) throw new Error(`HLOD proxy mesh ${id} contains only degenerate triangles.`);
+      triangleIndices.push({ indices: [0, 1, 2], area, order: 0 });
+    }
+    const selected = triangleIndices.length > maxTriangles ? [...triangleIndices].sort((a, b) => b.area - a.area || a.order - b.order).slice(0, maxTriangles).sort((a, b) => a.order - b.order) : triangleIndices;
+    const remap = /* @__PURE__ */ new Map();
+    const positions = [];
+    const normals = [];
+    const uvs = [];
+    const indices = [];
+    const keys = [...buckets.keys()];
+    const extentX = Math.max(bounds.max[0] - bounds.min[0], EPS2);
+    const extentY = Math.max(bounds.max[1] - bounds.min[1], EPS2);
+    const extentZ = Math.max(bounds.max[2] - bounds.min[2], EPS2);
+    const addRemappedVertex = (bucketIndex) => {
+      const existing = remap.get(bucketIndex);
+      if (existing !== void 0) return existing;
+      const key = keys[bucketIndex];
+      const bucket = key ? buckets.get(key) : void 0;
+      if (!bucket) throw new Error(`HLOD proxy mesh ${id} lost vertex bucket ${bucketIndex}.`);
+      const position = scale3(bucket.position, 1 / bucket.count);
+      const normal = normalize3(bucket.normal);
+      const uv = [
+        clamp3((position[0] - bounds.min[0]) / extentX, 0, 1),
+        clamp3((position[2] - bounds.min[2]) / extentZ, 0, 1)
+      ];
+      const next = positions.length / 3;
+      remap.set(bucketIndex, next);
+      positions.push(...position);
+      normals.push(...normal);
+      uvs.push(...uv);
+      return next;
+    };
+    for (const triangle of selected) indices.push(...triangle.indices.map(addRemappedVertex));
+    return { id, positions, normals, uvs, indices };
+  }
+  function defaultLevels(sourceTriangleCount, radius) {
+    return [
+      { maxDistance: Math.max(8, radius * 4), maxTriangles: Math.max(4, Math.ceil(sourceTriangleCount * 0.35)) },
+      { maxDistance: Math.max(24, radius * 12), maxTriangles: Math.max(4, Math.ceil(sourceTriangleCount * 0.1)) }
+    ];
+  }
+  function cloneCluster(cluster) {
+    return { id: cluster.id, sourceNodeIds: [...cluster.sourceNodeIds], levels: cluster.levels.map((level) => ({ maxDistance: level.maxDistance, proxyNodeIds: [...level.proxyNodeIds] })) };
+  }
+  function isStaticHLODSourceCandidate(node, meshesById) {
+    if (node.visible === false || !node.meshId || node.skinId || node.morphWeights?.length || node.lods?.length || node.tags?.includes("hlod-generated")) return false;
+    const mesh = meshesById.get(node.meshId);
+    return Boolean(mesh && !mesh.jointIndices && !mesh.jointWeights && !mesh.morphTargets?.length);
+  }
+  function generateSpatialHLOD(scene, options = {}) {
+    const clusterId = options.clusterId?.trim() || "hlod:auto";
+    if (scene.hlod?.clusters.some((cluster2) => cluster2.id === clusterId)) throw new Error(`HLOD cluster ${clusterId} already exists.`);
+    const nodesById = new Map(scene.nodes.map((node) => [node.id, node]));
+    const meshesById = new Map(scene.meshes.map((mesh) => [mesh.id, mesh]));
+    const sourceNodeIds = [...new Set(options.sourceNodeIds?.length ? options.sourceNodeIds : scene.nodes.filter((node) => isStaticHLODSourceCandidate(node, meshesById)).map((node) => node.id))];
+    if (!sourceNodeIds.length) throw new Error("HLOD generation requires at least one static source node.");
+    for (const nodeId of sourceNodeIds) if (!nodesById.has(nodeId)) throw new Error(`HLOD generation source node ${nodeId} does not exist.`);
+    const source = sourceTriangles(scene, sourceNodeIds);
+    const radius = Math.max(EPS2, Math.hypot(
+      source.bounds.max[0] - source.bounds.min[0],
+      source.bounds.max[1] - source.bounds.min[1],
+      source.bounds.max[2] - source.bounds.min[2]
+    ) / 2);
+    const levels = options.levels?.length ? options.levels.map((level) => ({ ...level })) : defaultLevels(source.sourceTriangleCount, radius);
+    if (!levels.length) throw new Error("HLOD generation requires at least one proxy level.");
+    for (let index = 0; index < levels.length; index += 1) {
+      const level = levels[index];
+      if (!Number.isFinite(level.maxDistance) || level.maxDistance <= 0) throw new Error(`HLOD generation level ${index} maxDistance is invalid.`);
+      if (index > 0 && level.maxDistance <= levels[index - 1].maxDistance) throw new Error("HLOD generation levels must be ordered by maxDistance.");
+      if (level.maxTriangles !== void 0 && (!Number.isFinite(level.maxTriangles) || level.maxTriangles < 4)) throw new Error(`HLOD generation level ${index} maxTriangles must be at least 4.`);
+    }
+    const proxyNodePrefix = options.proxyNodePrefix?.trim() || `${clusterId}:proxy`;
+    const materialId = options.materialId ?? source.materialIds[0];
+    if (materialId && !scene.materials.some((material) => material.id === materialId)) throw new Error(`HLOD generation material ${materialId} does not exist.`);
+    const usedNodeIds = new Set(scene.nodes.map((node) => node.id));
+    const usedMeshIds = new Set(scene.meshes.map((mesh) => mesh.id));
+    const generatedMeshes = [];
+    const generatedNodes = [];
+    const generatedLevels = [];
+    const proxyNodeIds = [];
+    const makeUnique = (base, used) => {
+      let candidate = base;
+      let suffix = 1;
+      while (used.has(candidate)) candidate = `${base}:${suffix++}`;
+      used.add(candidate);
+      return candidate;
+    };
+    for (const [index, level] of levels.entries()) {
+      const maxTriangles = Math.max(4, Math.floor(level.maxTriangles ?? Math.max(4, Math.ceil(source.sourceTriangleCount * (index === 0 ? 0.35 : 0.1)))));
+      const nodeId = makeUnique(`${proxyNodePrefix}:level:${index}`, usedNodeIds);
+      const meshId = makeUnique(`${nodeId}:mesh`, usedMeshIds);
+      const mesh = buildProxyMesh(meshId, source.triangles, source.bounds, maxTriangles);
+      const node = {
+        id: nodeId,
+        meshId,
+        materialId,
+        transform: { matrix: identityMat42() },
+        visible: true,
+        castShadow: source.castShadow,
+        receiveShadow: source.receiveShadow,
+        tags: ["hlod-generated", `hlod-cluster:${clusterId}`, `hlod-level:${index}`]
+      };
+      generatedMeshes.push(mesh);
+      generatedNodes.push(node);
+      proxyNodeIds.push(nodeId);
+      generatedLevels.push({ maxDistance: level.maxDistance, maxTriangles, meshId, nodeId, triangleCount: mesh.indices.length / 3, sourceTriangleCount: source.sourceTriangleCount });
+    }
+    const cluster = { id: clusterId, sourceNodeIds, levels: generatedLevels.map((level) => ({ maxDistance: level.maxDistance, proxyNodeIds: [level.nodeId] })) };
+    const sourceRoot3 = cryptographicHash({
+      sceneId: scene.sceneId,
+      sourceNodeIds,
+      sources: sourceNodeIds.map((nodeId) => {
+        const node = nodesById.get(nodeId);
+        const mesh = scene.meshes.find((entry) => entry.id === node.meshId);
+        return { node, mesh };
+      })
+    });
+    const reportBase = {
+      format: VSR_SPATIAL_HLOD_GENERATION_FORMAT,
+      version: "0.1.0",
+      sceneId: scene.sceneId,
+      clusterId,
+      sourceNodeIds,
+      sourceRoot: sourceRoot3,
+      settings: { proxyNodePrefix, ...materialId ? { materialId } : {} },
+      levels: generatedLevels
+    };
+    const report = { ...reportBase, root: cryptographicHash(reportBase) };
+    const nextScene = {
+      ...scene,
+      meshes: [...scene.meshes, ...generatedMeshes],
+      nodes: [...scene.nodes, ...generatedNodes],
+      hlod: { clusters: [...(scene.hlod?.clusters ?? []).map(cloneCluster), cluster] }
+    };
+    return { scene: nextScene, cluster, generatedMeshes, generatedNodes, report };
+  }
+  function generateSpatialHLODForStreamingCells(scene, options = {}) {
+    const streaming = scene.streaming;
+    if (!streaming) throw new Error("Cell-aware HLOD generation requires scene.streaming.");
+    const cellsById = new Map(streaming.cells.map((cell) => [cell.id, cell]));
+    const requestedCellIds = options.cellIds?.length ? [...new Set(options.cellIds)] : streaming.cells.map((cell) => cell.id).sort();
+    for (const cellId of requestedCellIds) if (!cellsById.has(cellId)) throw new Error(`Cell-aware HLOD generation references missing cell ${cellId}.`);
+    const meshesById = new Map(scene.meshes.map((mesh) => [mesh.id, mesh]));
+    const owners = /* @__PURE__ */ new Map();
+    const reports = [];
+    const clusterReports = [];
+    let nextScene = scene;
+    const prefix = options.clusterIdPrefix?.trim() || `${streaming.worldId}:hlod`;
+    for (const cellId of requestedCellIds.sort()) {
+      const cell = cellsById.get(cellId);
+      const sourceNodeIds = [...new Set(cell.nodeIds.filter((nodeId) => isStaticHLODSourceCandidate(nextScene.nodes.find((node) => node.id === nodeId) ?? { id: nodeId }, meshesById)))].sort();
+      if (!sourceNodeIds.length) continue;
+      for (const nodeId of sourceNodeIds) {
+        const owner = owners.get(nodeId);
+        if (owner && owner !== cellId) throw new Error(`Cell-aware HLOD source node ${nodeId} belongs to both ${owner} and ${cellId}.`);
+        owners.set(nodeId, cellId);
+      }
+      const generated = generateSpatialHLOD(nextScene, { ...options, clusterId: `${prefix}:${cellId}`, sourceNodeIds });
+      reports.push(generated.report);
+      clusterReports.push({ cellId, clusterId: generated.report.clusterId, sourceNodeIds, generatedNodeIds: generated.generatedNodes.map((node) => node.id), reportRoot: generated.report.root });
+      const generatedNodeIds = generated.generatedNodes.map((node) => node.id);
+      nextScene = {
+        ...generated.scene,
+        streaming: {
+          ...generated.scene.streaming,
+          cells: generated.scene.streaming.cells.map((entry) => entry.id === cellId ? { ...entry, nodeIds: [.../* @__PURE__ */ new Set([...entry.nodeIds, ...generatedNodeIds])].sort() } : { ...entry, nodeIds: [...entry.nodeIds] })
+        }
+      };
+    }
+    const finalCellsById = new Map(nextScene.streaming.cells.map((cell) => [cell.id, cell]));
+    const catalog = requestedCellIds.map((cellId) => {
+      const cell = finalCellsById.get(cellId);
+      return { id: cell.id, center: cell.center, radius: cell.radius, loadRadius: cell.loadRadius ?? null, unloadRadius: cell.unloadRadius ?? null, priority: cell.priority ?? null, nodeIds: [...cell.nodeIds].sort() };
+    });
+    const catalogRoot2 = cryptographicHash({ format: VSR_SPATIAL_HLOD_CELL_GENERATION_FORMAT, worldId: streaming.worldId, cells: catalog });
+    const sourceRoot3 = cryptographicHash({ format: VSR_SPATIAL_HLOD_CELL_GENERATION_FORMAT, worldId: streaming.worldId, catalogRoot: catalogRoot2, clusters: reports.map((report) => ({ clusterId: report.clusterId, sourceRoot: report.sourceRoot })) });
+    const reportBase = { format: VSR_SPATIAL_HLOD_CELL_GENERATION_FORMAT, version: "0.1.0", worldId: streaming.worldId, cellIds: requestedCellIds, catalogRoot: catalogRoot2, sourceRoot: sourceRoot3, clusters: clusterReports };
+    return { scene: nextScene, reports, report: { ...reportBase, root: cryptographicHash(reportBase) } };
+  }
+
+  // packages/spatial-reality-3d/src/ragf-adapter.ts
+  var VSR_RAGF_SPATIAL_ADAPTER_FORMAT = "ragf.vsr-spatial-asset.v0.4";
+  var VSR_RAGF_SPATIAL_COMPILATION_FORMAT = "vsr.ragf-spatial-compilation.v0.1";
+  function fail(condition, code) {
+    if (!condition) throw new Error(code);
+  }
+  function cloneMesh(mesh, id) {
+    fail(mesh && typeof mesh === "object", "VSR_RAGF_MESH_REQUIRED");
+    fail(Array.isArray(mesh.positions) && Array.isArray(mesh.indices), "VSR_RAGF_MESH_GEOMETRY_REQUIRED");
+    return {
+      ...mesh,
+      id,
+      positions: [...mesh.positions],
+      ...mesh.normals ? { normals: [...mesh.normals] } : {},
+      ...mesh.uvs ? { uvs: [...mesh.uvs] } : {},
+      ...mesh.uvs1 ? { uvs1: [...mesh.uvs1] } : {},
+      indices: [...mesh.indices],
+      ...mesh.jointIndices ? { jointIndices: [...mesh.jointIndices] } : {},
+      ...mesh.jointWeights ? { jointWeights: [...mesh.jointWeights] } : {}
+    };
+  }
+  function cloneTransform(transform) {
+    return {
+      ...transform,
+      ...transform?.matrix ? { matrix: [...transform.matrix] } : {},
+      ...transform?.translation ? { translation: [...transform.translation] } : {},
+      ...transform?.rotationEulerDeg ? { rotationEulerDeg: [...transform.rotationEulerDeg] } : {},
+      ...transform?.rotationQuaternion ? { rotationQuaternion: [...transform.rotationQuaternion] } : {},
+      ...transform?.scale ? { scale: [...transform.scale] } : {}
+    };
+  }
+  function cloneNode(node, fallbackMeshId, materialId, transform) {
+    const lods = node.lods?.map((lod) => ({ maxDistance: lod.maxDistance, meshId: lod.meshId }));
+    return {
+      ...node,
+      id: node.id,
+      meshId: node.meshId ?? fallbackMeshId,
+      materialId: node.materialId ?? materialId,
+      ...lods ? { lods } : {},
+      ...transform ? { transform: cloneTransform(transform) } : { transform: cloneTransform(node.transform) },
+      ...node.tags ? { tags: [...node.tags] } : {}
+    };
+  }
+  function cameraFor(options, sceneId) {
+    const cameraId = options.camera?.id ?? `camera:${sceneId}`;
+    return {
+      id: cameraId,
+      projection: options.camera?.projection ?? "perspective",
+      transform: cloneTransform(options.camera?.transform ?? { translation: [0, 1.35, 5] }),
+      ...options.camera?.fovYDeg !== void 0 ? { fovYDeg: options.camera.fovYDeg } : { fovYDeg: 58 },
+      ...options.camera?.orthoHeight !== void 0 ? { orthoHeight: options.camera.orthoHeight } : {},
+      near: options.camera?.near ?? 0.05,
+      far: options.camera?.far ?? 5e3
+    };
+  }
+  function compileRagfSpatialAsset(adapter, options = {}) {
+    fail(adapter?.format === VSR_RAGF_SPATIAL_ADAPTER_FORMAT, "VSR_RAGF_ADAPTER_FORMAT_INVALID");
+    fail(adapter.version === "0.4.0", "VSR_RAGF_ADAPTER_VERSION_INVALID");
+    fail(typeof adapter.asset_id === "string" && adapter.asset_id.length > 0, "VSR_RAGF_ASSET_ID_REQUIRED");
+    fail(adapter.compatibility?.target_format === "vsr.spatial-scene.v0.4", "VSR_RAGF_TARGET_FORMAT_INVALID");
+    fail(typeof adapter.adapter_root === "string" && /^[a-f0-9]{64}$/i.test(adapter.adapter_root), "VSR_RAGF_ADAPTER_ROOT_INVALID");
+    const sceneId = options.sceneId ?? `scene:${adapter.asset_id}:${adapter.variant}`;
+    const suppliedLevels = adapter.lods?.length ? adapter.lods : [{ lod: 0, meshId: adapter.mesh.id, maxDistance: 72, mesh: adapter.mesh }];
+    const levels = [...suppliedLevels].sort((a, b) => a.lod - b.lod);
+    const meshesById = /* @__PURE__ */ new Map();
+    meshesById.set(adapter.mesh.id, cloneMesh(adapter.mesh, adapter.mesh.id));
+    for (const level of levels) meshesById.set(level.meshId, cloneMesh(level.mesh, level.meshId));
+    const meshIds = [...meshesById.keys()].sort((a, b) => a.localeCompare(b));
+    const fallbackMeshId = levels.at(-1)?.meshId ?? adapter.mesh.id;
+    const node = cloneNode(adapter.node, fallbackMeshId, adapter.material.id, options.transform);
+    const adapterLods = levels.filter((level) => level.lod < levels.at(-1).lod).map((level) => ({ maxDistance: level.maxDistance, meshId: level.meshId }));
+    if (!node.lods?.length && adapterLods.length) node.lods = adapterLods;
+    fail(meshesById.has(node.meshId), "VSR_RAGF_NODE_MESH_MISSING");
+    for (const lod of node.lods ?? []) fail(meshesById.has(lod.meshId), "VSR_RAGF_LOD_MESH_MISSING");
+    const camera = cameraFor(options, sceneId);
+    const evidenceRoot = options.evidenceRoot ?? adapter.source?.lod_manifest_root ?? void 0;
+    const reality = {
+      worldId: options.worldId ?? `world:${adapter.asset_id}`,
+      ...options.generation !== void 0 ? { generation: options.generation } : {},
+      realityRoot: options.realityRoot ?? adapter.source?.asset_root ?? adapter.adapter_root,
+      ...evidenceRoot ? { evidenceRoot } : {}
+    };
+    const cell = options.cell ? {
+      id: options.cell.id,
+      center: [...options.cell.center],
+      radius: options.cell.radius,
+      nodeIds: [node.id],
+      ...options.cell.loadRadius !== void 0 ? { loadRadius: options.cell.loadRadius } : {},
+      ...options.cell.unloadRadius !== void 0 ? { unloadRadius: options.cell.unloadRadius } : {},
+      ...options.cell.priority !== void 0 ? { priority: options.cell.priority } : {}
+    } : void 0;
+    const scene = {
+      format: "vsr.spatial-scene.v0.4",
+      sceneId,
+      title: options.title ?? `${adapter.asset_id} ${adapter.variant}`,
+      background: options.background ?? "#07111f",
+      ...cell ? { streaming: { worldId: reality.worldId, cells: [cell] } } : {},
+      activeCameraId: camera.id,
+      meshes: meshIds.map((id) => meshesById.get(id)),
+      materials: [{ ...adapter.material, id: adapter.material.id }],
+      nodes: [node],
+      cameras: [camera],
+      lights: [
+        { id: `ambient:${sceneId}`, kind: "ambient", color: "#ffffff", intensity: 0.38 },
+        { id: `key:${sceneId}`, kind: "directional", color: "#d7ecff", direction: [-0.35, -0.8, -0.45], intensity: 1.2, castShadow: true }
+      ],
+      reality
+    };
+    const base = {
+      format: VSR_RAGF_SPATIAL_COMPILATION_FORMAT,
+      version: "0.1.0",
+      assetId: adapter.asset_id,
+      variant: adapter.variant,
+      adapterRoot: adapter.adapter_root,
+      scene,
+      sceneRoot: cryptographicHash(scene),
+      nodeId: node.id,
+      meshIds,
+      lodLevels: levels.length
+    };
+    return { ...base, root: cryptographicHash(base) };
+  }
+
+  // packages/spatial-reality-3d/src/lightmap-baking.ts
+  var VSR_SPATIAL_LIGHTMAP_BAKE_FORMAT = "vsr.spatial-lightmap-bake.v0.2";
+  var EPS3 = 1e-9;
+  var clamp4 = (value, min, max) => Math.max(min, Math.min(max, value));
+  var add4 = (a, b) => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
+  var sub2 = (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+  var scale4 = (a, value) => [a[0] * value, a[1] * value, a[2] * value];
+  var dot2 = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+  var cross2 = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+  var length2 = (a) => Math.hypot(a[0], a[1], a[2]);
+  var normalize2 = (a) => {
+    const value = length2(a);
+    return value < EPS3 ? [0, 1, 0] : scale4(a, 1 / value);
+  };
+  var distance2 = (a, b) => length2(sub2(a, b));
+  function color2(value) {
+    const input = (value ?? "#000000").trim(), hex = input.match(/^#([0-9a-f]{3,8})$/i);
+    if (hex) {
+      const raw = hex[1];
+      if (raw.length === 3 || raw.length === 4) return [parseInt(`${raw[0]}${raw[0]}`, 16) / 255, parseInt(`${raw[1]}${raw[1]}`, 16) / 255, parseInt(`${raw[2]}${raw[2]}`, 16) / 255];
+      if (raw.length === 6 || raw.length === 8) return [parseInt(raw.slice(0, 2), 16) / 255, parseInt(raw.slice(2, 4), 16) / 255, parseInt(raw.slice(4, 6), 16) / 255];
+    }
+    const rgb = input.match(/^rgba?\(([^)]+)\)$/i);
+    if (rgb) {
+      const values = rgb[1].split(",").map(Number);
+      return [clamp4((values[0] ?? 0) / 255, 0, 1), clamp4((values[1] ?? 0) / 255, 0, 1), clamp4((values[2] ?? 0) / 255, 0, 1)];
+    }
+    const named = { black: [0, 0, 0], white: [1, 1, 1], red: [1, 0, 0], green: [0, 0.5, 0], blue: [0, 0, 1], yellow: [1, 1, 0] };
+    return named[input.toLowerCase()] ?? [0, 0, 0];
+  }
+  function sourceRoot2(scene) {
+    return cryptographicHash({ format: scene.format, sceneId: scene.sceneId, reality: scene.reality ?? null, meshes: scene.meshes.map((mesh) => ({ id: mesh.id, positions: mesh.positions, normals: mesh.normals ?? null, uvs: mesh.uvs ?? null, uvs1: mesh.uvs1 ?? null, indices: mesh.indices, jointIndices: mesh.jointIndices ?? null, jointWeights: mesh.jointWeights ?? null, morphTargets: mesh.morphTargets ?? null })), materials: scene.materials, nodes: scene.nodes.map((node) => ({ id: node.id, parentId: node.parentId ?? null, meshId: node.meshId ?? null, materialId: node.materialId ?? null, transform: node.transform ?? null, visible: node.visible ?? true, skinId: node.skinId ?? null, morphWeights: node.morphWeights ?? null, lods: node.lods ?? null })), textures: scene.textures ?? [], lights: scene.lights, environment: scene.environment ?? null });
+  }
+  function worlds(scene) {
+    const byId = new Map(scene.nodes.map((node) => [node.id, node])), cache = /* @__PURE__ */ new Map(), visiting = /* @__PURE__ */ new Set();
+    const resolve = (id) => {
+      const cached = cache.get(id);
+      if (cached) return cached;
+      if (visiting.has(id)) throw new Error(`Node hierarchy cycle at ${id}.`);
+      const node = byId.get(id);
+      if (!node) throw new Error(`Missing node ${id}.`);
+      visiting.add(id);
+      const local = transformToMat4(node.transform ?? {}), world = node.parentId ? multiplyMat4(resolve(node.parentId), local) : local;
+      cache.set(id, world);
+      visiting.delete(id);
+      return world;
+    };
+    for (const node of scene.nodes) resolve(node.id);
+    return cache;
+  }
+  function projectionAxes(normal) {
+    const x = Math.abs(normal[0]), y = Math.abs(normal[1]), z = Math.abs(normal[2]);
+    if (x >= y && x >= z) return [1, 2];
+    if (y >= z) return [0, 2];
+    return [0, 1];
+  }
+  function projectPoint(point, axes, minimum, maximum) {
+    const spanX = Math.max(maximum[0] - minimum[0], EPS3), spanY = Math.max(maximum[1] - minimum[1], EPS3);
+    return [clamp4((point[axes[0]] - minimum[0]) / spanX, 0, 1), clamp4((point[axes[1]] - minimum[1]) / spanY, 0, 1)];
+  }
+  function edge(a, b, x, y) {
+    return (x - a[0]) * (b[1] - a[1]) - (y - a[1]) * (b[0] - a[0]);
+  }
+  function eligibleNodes(scene) {
+    return scene.nodes.filter((node) => Boolean(node.meshId) && node.visible !== false && !node.skinId && !node.lods?.length && !node.morphWeights?.some((weight) => Math.abs(weight) > EPS3)).sort((a, b) => a.id.localeCompare(b.id));
+  }
+  function staticOccluders(scene, worldById, nodes) {
+    const occluders2 = [];
+    for (const node of nodes) {
+      if (node.castShadow === false) continue;
+      const mesh = node.meshId ? scene.meshes.find((entry) => entry.id === node.meshId) : void 0;
+      if (!mesh) continue;
+      const material = scene.materials.find((entry) => entry.id === node.materialId) ?? scene.materials[0];
+      if (material?.alphaMode === "BLEND") continue;
+      const world = worldById.get(node.id);
+      for (let triangleIndex = 0; triangleIndex < mesh.indices.length / 3; triangleIndex++) {
+        const indices = [mesh.indices[triangleIndex * 3], mesh.indices[triangleIndex * 3 + 1], mesh.indices[triangleIndex * 3 + 2]], vertices = indices.map((index) => transformPoint3(world, [mesh.positions[index * 3], mesh.positions[index * 3 + 1], mesh.positions[index * 3 + 2]]));
+        if (length2(cross2(sub2(vertices[1], vertices[0]), sub2(vertices[2], vertices[0]))) > EPS3) occluders2.push({ nodeId: node.id, triangleIndex, vertices });
+      }
+    }
+    return occluders2;
+  }
+  function rayIntersectsTriangle(origin, direction, maxDistance, triangle, shadowBias) {
+    const [a, b, c] = triangle.vertices, edge1 = sub2(b, a), edge22 = sub2(c, a), h = cross2(direction, edge22), det = dot2(edge1, h);
+    if (Math.abs(det) < EPS3) return false;
+    const inverseDet = 1 / det, s = sub2(origin, a), u = inverseDet * dot2(s, h);
+    if (u < -EPS3 || u > 1 + EPS3) return false;
+    const q = cross2(s, edge1), v = inverseDet * dot2(direction, q);
+    if (v < -EPS3 || u + v > 1 + EPS3) return false;
+    const distanceAlongRay = inverseDet * dot2(edge22, q);
+    return distanceAlongRay > shadowBias && distanceAlongRay < maxDistance - shadowBias;
+  }
+  function blockedByStaticGeometry(origin, direction, maxDistance, source, occluders2, shadowBias) {
+    for (const occluder of occluders2) {
+      if (occluder.nodeId === source.nodeId && occluder.triangleIndex === source.triangleIndex) continue;
+      if (rayIntersectsTriangle(origin, direction, maxDistance, occluder, shadowBias)) return true;
+    }
+    return false;
+  }
+  function triangleSamplePositions(triangle, worldNormal, count) {
+    const weights = [[1 / 3, 1 / 3, 1 / 3], [0.6, 0.2, 0.2], [0.2, 0.6, 0.2], [0.2, 0.2, 0.6]], samples = [];
+    for (const [a, b, c] of weights.slice(0, Math.max(1, Math.min(4, count)))) {
+      const local = [triangle.local[0][0] * a + triangle.local[1][0] * b + triangle.local[2][0] * c, triangle.local[0][1] * a + triangle.local[1][1] * b + triangle.local[2][1] * c, triangle.local[0][2] * a + triangle.local[1][2] * b + triangle.local[2][2] * c];
+      samples.push(add4(transformPoint3(triangle.world, local), scale4(worldNormal, 0)));
+    }
+    return samples;
+  }
+  function lightVisibility(light, samples, worldNormal, source, occluders2, shadowBias) {
+    if (light.kind === "ambient" || light.castShadow !== true) return 1;
+    let visible = 0;
+    for (const sample of samples) {
+      const origin = add4(sample, scale4(worldNormal, shadowBias));
+      let direction, maxDistance = Infinity;
+      if (light.kind === "directional") direction = normalize2(scale4(light.direction ?? [-0.4, -1, -0.3], -1));
+      else {
+        const delta = sub2(light.position ?? [0, 2, 0], sample), distanceToLight = length2(delta);
+        if (distanceToLight <= shadowBias) {
+          visible++;
+          continue;
+        }
+        direction = scale4(delta, 1 / distanceToLight);
+        maxDistance = distanceToLight;
+      }
+      if (!blockedByStaticGeometry(origin, direction, maxDistance, source, occluders2, shadowBias)) visible++;
+    }
+    return visible / Math.max(1, samples.length);
+  }
+  function bakedLightVisibility(scene, triangle, worldNormal, occluders2, visibilitySamples, shadowBias) {
+    const samples = triangleSamplePositions(triangle, worldNormal, visibilitySamples);
+    return scene.lights.slice(0, 32).map((light) => lightVisibility(light, samples, worldNormal, triangle, occluders2, shadowBias));
+  }
+  function bakedLighting(scene, position, normal, material, ambientIntensity, visibility2 = []) {
+    const environment = scene.environment ?? {}, environmentRadiance = scale4(color2(environment.diffuseColor), clamp4(environment.intensity ?? 1, 0, 32) * ambientIntensity);
+    let result = environmentRadiance;
+    for (const probe of environment.probes ?? []) {
+      const influence = clamp4(1 - distance2(position, probe.position) / Math.max(0.01, probe.radius), 0, 1);
+      if (influence <= EPS3) continue;
+      result = add4(result, scale4(color2(probe.diffuseColor ?? environment.diffuseColor), influence * (probe.intensity ?? 1) * 0.25));
+    }
+    for (const [lightIndex, light] of scene.lights.slice(0, 32).entries()) {
+      const lightColor = color2(light.color ?? "#ffffff"), intensity = Math.max(0, light.intensity ?? 1);
+      if (light.kind === "ambient") {
+        result = add4(result, scale4(lightColor, intensity));
+        continue;
+      }
+      let direction, attenuation = 1;
+      if (light.kind === "directional") direction = normalize2(scale4(light.direction ?? [-0.4, -1, -0.3], -1));
+      else {
+        const delta = sub2(light.position ?? [0, 2, 0], position), distanceToLight = Math.max(1e-3, length2(delta));
+        direction = scale4(delta, 1 / distanceToLight);
+        attenuation = Math.pow(clamp4(1 - distanceToLight / Math.max(1e-3, light.range ?? 10), 0, 1), 2);
+      }
+      result = add4(result, scale4(lightColor, intensity * attenuation * Math.max(0, dot2(normal, direction)) * (visibility2[lightIndex] ?? 1)));
+    }
+    if ((material.emissiveStrength ?? 0) > 0) result = add4(result, scale4(color2(material.emissive), Math.max(0, material.emissiveStrength ?? 0)));
+    return result;
+  }
+  function validateBakeTexture(texture) {
+    if (!Number.isInteger(texture.width) || texture.width < 1 || !Number.isInteger(texture.height) || texture.height < 1 || texture.pixels.length !== texture.width * texture.height * 4) throw new Error("lightmap bake texture dimensions do not match pixels");
+  }
+  function bakeSpatialLightmap(scene, options = {}) {
+    const width = clamp4(Math.floor(options.width ?? 512), 32, 2048), height = clamp4(Math.floor(options.height ?? 512), 32, 2048), padding = clamp4(Math.floor(options.padding ?? 1), 0, 32), maxTriangles = clamp4(Math.floor(options.maxTriangles ?? 4096), 1, 65536), ambientIntensity = clamp4(options.ambientIntensity ?? 0.35, 0, 8), visibilitySamples = clamp4(Math.floor(options.visibilitySamples ?? 4), 1, 4), shadowBias = clamp4(options.shadowBias ?? 1e-3, 1e-5, 1), dilation = clamp4(Math.floor(options.dilation ?? padding), 0, 32), source = sourceRoot2(scene), worldById = worlds(scene), nodes = eligibleNodes(scene), occluders2 = staticOccluders(scene, worldById, nodes), triangleCount = nodes.reduce((sum, node) => sum + (scene.meshes.find((mesh) => mesh.id === node.meshId)?.indices.length ?? 0) / 3, 0);
+    if (!triangleCount) throw new Error("lightmap bake requires at least one eligible static triangle");
+    if (triangleCount > maxTriangles) throw new Error(`lightmap bake triangle budget exceeded: ${triangleCount} > ${maxTriangles}`);
+    const columns = Math.ceil(Math.sqrt(triangleCount)), rows = Math.ceil(triangleCount / columns), cellWidth = Math.floor(width / columns), cellHeight = Math.floor(height / rows);
+    if (cellWidth <= padding * 2 + 1 || cellHeight <= padding * 2 + 1) throw new Error("lightmap atlas is too small for the requested chart padding");
+    const builders = /* @__PURE__ */ new Map(), triangles = [];
+    let chartIndex = 0;
+    const charts = [];
+    for (const node of nodes) {
+      const mesh = scene.meshes.find((entry) => entry.id === node.meshId);
+      if (!mesh) continue;
+      const material = scene.materials.find((entry) => entry.id === node.materialId) ?? scene.materials[0] ?? { id: "material:default" }, bakedMeshId = `lightmap:${scene.sceneId}:${node.id}:mesh`, bakedMaterialId = `lightmap:${scene.sceneId}:${node.id}:material`, builder = { positions: [], ...mesh.normals ? { normals: [] } : {}, ...mesh.uvs ? { uvs: [] } : {}, uvs1: [], indices: [] };
+      builders.set(node.id, builder);
+      const triangleTotal = mesh.indices.length / 3;
+      for (let triangle = 0; triangle < triangleTotal; triangle++) {
+        const sourceIndices = [mesh.indices[triangle * 3], mesh.indices[triangle * 3 + 1], mesh.indices[triangle * 3 + 2]], local = sourceIndices.map((index) => [mesh.positions[index * 3], mesh.positions[index * 3 + 1], mesh.positions[index * 3 + 2]]), faceNormal = normalize2(cross2(sub2(local[1], local[0]), sub2(local[2], local[0]))), axes = projectionAxes(faceNormal), projected = local.map((point) => [point[axes[0]], point[axes[1]]]), minimum = [Math.min(...projected.map((point) => point[0])), Math.min(...projected.map((point) => point[1]))], maximum = [Math.max(...projected.map((point) => point[0])), Math.max(...projected.map((point) => point[1]))], cellX = chartIndex % columns * cellWidth, cellY = Math.floor(chartIndex / columns) * cellHeight, uv1 = local.map((point) => {
+          const projectedPoint = projectPoint(point, axes, minimum, maximum);
+          return [(cellX + padding + 0.5 + projectedPoint[0] * Math.max(1, cellWidth - padding * 2 - 1)) / width, 1 - (cellY + padding + 0.5 + projectedPoint[1] * Math.max(1, cellHeight - padding * 2 - 1)) / height];
+        }), cell = { x: cellX, y: cellY, width: cellWidth, height: cellHeight }, vertexOffset = builder.positions.length / 3;
+        for (let vertex = 0; vertex < 3; vertex++) {
+          const sourceIndex = sourceIndices[vertex], position = local[vertex], uv = uv1[vertex];
+          builder.positions.push(...position);
+          builder.uvs1.push(uv[0], uv[1]);
+          if (mesh.normals && builder.normals) builder.normals.push(mesh.normals[sourceIndex * 3], mesh.normals[sourceIndex * 3 + 1], mesh.normals[sourceIndex * 3 + 2]);
+          if (mesh.uvs && builder.uvs) builder.uvs.push(mesh.uvs[sourceIndex * 2], mesh.uvs[sourceIndex * 2 + 1]);
+        }
+        builder.indices.push(vertexOffset, vertexOffset + 1, vertexOffset + 2);
+        triangles.push({ nodeId: node.id, triangleIndex: triangle, mesh, material, world: worldById.get(node.id), local, uv1, cell });
+        chartIndex++;
+      }
+      charts.push({ nodeId: node.id, sourceMeshId: mesh.id, bakedMeshId, sourceMaterialId: material.id, bakedMaterialId, triangleCount: triangleTotal });
+    }
+    const raw = new Float64Array(width * height * 4), covered = new Uint8Array(width * height), writeRaw = (index, value) => {
+      raw[index * 4] = value[0];
+      raw[index * 4 + 1] = value[1];
+      raw[index * 4 + 2] = value[2];
+      raw[index * 4 + 3] = 1;
+    };
+    let maxRadiance = 1;
+    for (const triangle of triangles) {
+      const faceNormal = normalize2(cross2(sub2(triangle.local[1], triangle.local[0]), sub2(triangle.local[2], triangle.local[0]))), worldNormal = normalize2(transformDirection3(triangle.world, faceNormal)), centroid = [(triangle.local[0][0] + triangle.local[1][0] + triangle.local[2][0]) / 3, (triangle.local[0][1] + triangle.local[1][1] + triangle.local[2][1]) / 3, (triangle.local[0][2] + triangle.local[1][2] + triangle.local[2][2]) / 3], visibility2 = bakedLightVisibility(scene, triangle, worldNormal, occluders2, visibilitySamples, shadowBias), defaultValue = bakedLighting(scene, transformPoint3(triangle.world, centroid), worldNormal, triangle.material, ambientIntensity, visibility2), minX = Math.max(0, triangle.cell.x), maxX = Math.min(width - 1, triangle.cell.x + triangle.cell.width - 1), minY = Math.max(0, triangle.cell.y), maxY = Math.min(height - 1, triangle.cell.y + triangle.cell.height - 1);
+      maxRadiance = Math.max(maxRadiance, ...defaultValue);
+      const points = triangle.uv1.map((uv) => [uv[0] * width, (1 - uv[1]) * height]), area = edge(points[0], points[1], points[2][0], points[2][1]);
+      if (Math.abs(area) < EPS3) continue;
+      for (let y = minY; y <= maxY; y++) for (let x = minX; x <= maxX; x++) {
+        const point = [x + 0.5, y + 0.5], w0 = edge(points[1], points[2], point[0], point[1]) / area, w1 = edge(points[2], points[0], point[0], point[1]) / area, w2 = 1 - w0 - w1;
+        if (w0 < -EPS3 || w1 < -EPS3 || w2 < -EPS3) continue;
+        const local = [triangle.local[0][0] * w0 + triangle.local[1][0] * w1 + triangle.local[2][0] * w2, triangle.local[0][1] * w0 + triangle.local[1][1] * w1 + triangle.local[2][1] * w2, triangle.local[0][2] * w0 + triangle.local[1][2] * w1 + triangle.local[2][2] * w2], value = bakedLighting(scene, transformPoint3(triangle.world, local), worldNormal, triangle.material, ambientIntensity, visibility2), index = y * width + x;
+        writeRaw(index, value);
+        covered[index] = 1;
+        maxRadiance = Math.max(maxRadiance, ...value);
+      }
+      for (let y = minY; y <= maxY; y++) for (let x = minX; x <= maxX; x++) {
+        const index = y * width + x;
+        if (covered[index]) continue;
+        let copied = false;
+        for (let radius = 1; radius <= dilation && !copied; radius++) for (let offsetY = -radius; offsetY <= radius && !copied; offsetY++) for (let offsetX = -radius; offsetX <= radius && !copied; offsetX++) {
+          if (offsetX * offsetX + offsetY * offsetY > radius * radius) continue;
+          const sampleX = x + offsetX, sampleY = y + offsetY;
+          if (sampleX < minX || sampleX > maxX || sampleY < minY || sampleY > maxY) continue;
+          const sampleIndex = sampleY * width + sampleX;
+          if (!covered[sampleIndex]) continue;
+          raw[index * 4] = raw[sampleIndex * 4];
+          raw[index * 4 + 1] = raw[sampleIndex * 4 + 1];
+          raw[index * 4 + 2] = raw[sampleIndex * 4 + 2];
+          raw[index * 4 + 3] = 1;
+          covered[index] = 1;
+          copied = true;
+        }
+        if (!copied) writeRaw(index, defaultValue);
+      }
+    }
+    const radianceScale = Math.max(0.125, Math.min(1, 8 / Math.max(1, maxRadiance))), pixels = new Array(width * height * 4);
+    for (let index = 0; index < width * height; index++) {
+      pixels[index * 4] = Math.round(clamp4(raw[index * 4] * radianceScale, 0, 1) * 255);
+      pixels[index * 4 + 1] = Math.round(clamp4(raw[index * 4 + 1] * radianceScale, 0, 1) * 255);
+      pixels[index * 4 + 2] = Math.round(clamp4(raw[index * 4 + 2] * radianceScale, 0, 1) * 255);
+      pixels[index * 4 + 3] = 255;
+    }
+    const texture = { id: `lightmap:${scene.sceneId}:${source.slice(0, 16)}`, width, height, pixels, colorSpace: "linear", wrapU: "clamp", wrapV: "clamp", filter: "linear" }, bakedMeshes = [...builders.entries()].map(([nodeId, builder]) => ({ id: charts.find((chart) => chart.nodeId === nodeId).bakedMeshId, ...builder, topology: "triangle-list" })), bakedMaterials = charts.map((chart) => {
+      const sourceMaterial = scene.materials.find((material) => material.id === chart.sourceMaterialId) ?? { id: chart.sourceMaterialId };
+      return { ...sourceMaterial, id: chart.bakedMaterialId, lightmapTextureId: texture.id, lightmapIntensity: 1 / Math.max(radianceScale, 1e-4), lightmapUvSet: 1 };
+    }), base = { format: VSR_SPATIAL_LIGHTMAP_BAKE_FORMAT, version: "0.2.0", sceneId: scene.sceneId, sourceRoot: source, settings: { width, height, padding, maxTriangles, ambientIntensity, visibilitySamples, shadowBias, dilation, radianceScale }, texture, meshes: bakedMeshes, materials: bakedMaterials, charts };
+    return { ...base, root: cryptographicHash(base) };
+  }
+  function verifySpatialLightmapBake(bake) {
+    const diagnostics = [];
+    if (bake.format !== VSR_SPATIAL_LIGHTMAP_BAKE_FORMAT) diagnostics.push("lightmap bake format mismatch");
+    if (bake.version !== "0.2.0") diagnostics.push("lightmap bake version mismatch");
+    if (!Number.isInteger(bake.settings.width) || bake.settings.width < 32 || !Number.isInteger(bake.settings.height) || bake.settings.height < 32) diagnostics.push("lightmap bake atlas dimensions are invalid");
+    if (bake.texture.width !== bake.settings.width || bake.texture.height !== bake.settings.height) diagnostics.push("lightmap bake texture dimensions do not match settings");
+    if (!Number.isInteger(bake.settings.padding) || bake.settings.padding < 0 || bake.settings.padding > 32) diagnostics.push("lightmap bake padding is invalid");
+    if (!Number.isInteger(bake.settings.maxTriangles) || bake.settings.maxTriangles < 1 || bake.settings.maxTriangles > 65536) diagnostics.push("lightmap bake triangle budget is invalid");
+    if (!Number.isFinite(bake.settings.ambientIntensity) || bake.settings.ambientIntensity < 0 || bake.settings.ambientIntensity > 8) diagnostics.push("lightmap bake ambient intensity is invalid");
+    if (!Number.isInteger(bake.settings.visibilitySamples) || bake.settings.visibilitySamples < 1 || bake.settings.visibilitySamples > 4) diagnostics.push("lightmap bake visibility sample count is invalid");
+    if (!Number.isFinite(bake.settings.shadowBias) || bake.settings.shadowBias <= 0 || bake.settings.shadowBias > 1) diagnostics.push("lightmap bake shadow bias is invalid");
+    if (!Number.isInteger(bake.settings.dilation) || bake.settings.dilation < 0 || bake.settings.dilation > 32) diagnostics.push("lightmap bake dilation is invalid");
+    if (!Number.isFinite(bake.settings.radianceScale) || bake.settings.radianceScale <= 0 || bake.settings.radianceScale > 1) diagnostics.push("lightmap bake radiance scale is invalid");
+    try {
+      validateBakeTexture(bake.texture);
+    } catch (error) {
+      diagnostics.push(error instanceof Error ? error.message : "lightmap bake texture is invalid");
+    }
+    if (!bake.meshes.length || bake.meshes.some((mesh) => mesh.positions.length < 9 || mesh.positions.length % 3 !== 0 || mesh.indices.length < 3 || mesh.indices.length % 3 !== 0 || !mesh.uvs1 || mesh.uvs1.length !== mesh.positions.length / 3 * 2)) diagnostics.push("lightmap bake contains an invalid unwrapped mesh");
+    if (!bake.charts.length || bake.charts.length !== bake.meshes.length || bake.charts.length !== bake.materials.length || bake.charts.some((chart) => !chart.nodeId || !chart.bakedMeshId || !chart.bakedMaterialId || chart.triangleCount < 1)) diagnostics.push("lightmap bake contains an invalid chart");
+    const meshIds = new Set(bake.meshes.map((mesh) => mesh.id)), materialIds = new Set(bake.materials.map((material) => material.id));
+    if (meshIds.size !== bake.meshes.length || materialIds.size !== bake.materials.length) diagnostics.push("lightmap bake contains duplicate resource ids");
+    for (const chart of bake.charts) {
+      const mesh = bake.meshes.find((entry) => entry.id === chart.bakedMeshId), material = bake.materials.find((entry) => entry.id === chart.bakedMaterialId), lightmapIntensity = material?.lightmapIntensity ?? -1;
+      if (!mesh) diagnostics.push(`lightmap chart ${chart.nodeId} missing baked mesh`);
+      else if (mesh.indices.length / 3 !== chart.triangleCount) diagnostics.push(`lightmap chart ${chart.nodeId} triangle count mismatch`);
+      if (!material) diagnostics.push(`lightmap chart ${chart.nodeId} missing baked material`);
+      else if (material.lightmapUvSet !== 1 || material.lightmapTextureId !== bake.texture.id || !Number.isFinite(lightmapIntensity) || lightmapIntensity < 0 || lightmapIntensity > 8) diagnostics.push(`lightmap chart ${chart.nodeId} material binding mismatch`);
+    }
+    const { root, ...base } = bake;
+    if (cryptographicHash(base) !== root) diagnostics.push("lightmap bake root mismatch");
+    return { ok: diagnostics.length === 0, diagnostics };
+  }
+  function applySpatialLightmapBake(scene, bake) {
+    const verification = verifySpatialLightmapBake(bake);
+    if (!verification.ok) throw new Error(verification.diagnostics.join("; "));
+    if (bake.sceneId !== scene.sceneId) throw new Error(`Lightmap bake scene ${bake.sceneId} does not match ${scene.sceneId}.`);
+    if (sourceRoot2(scene) !== bake.sourceRoot) throw new Error("Lightmap bake source root mismatch.");
+    const chartByNode = new Map(bake.charts.map((chart) => [chart.nodeId, chart])), bakedMeshIds = new Set(bake.meshes.map((mesh) => mesh.id)), bakedMaterialIds = new Set(bake.materials.map((material) => material.id)), nodes = scene.nodes.map((node) => {
+      const chart = chartByNode.get(node.id);
+      return chart ? { ...node, meshId: chart.bakedMeshId, materialId: chart.bakedMaterialId } : { ...node };
+    }), meshes = [...scene.meshes.filter((mesh) => !bakedMeshIds.has(mesh.id)), ...bake.meshes.map((mesh) => ({ ...mesh, positions: [...mesh.positions], indices: [...mesh.indices], uvs1: mesh.uvs1 ? [...mesh.uvs1] : void 0, normals: mesh.normals ? [...mesh.normals] : void 0, uvs: mesh.uvs ? [...mesh.uvs] : void 0 }))], materials = [...scene.materials.filter((material) => !bakedMaterialIds.has(material.id)), ...bake.materials.map((material) => ({ ...material }))], textures = [...(scene.textures ?? []).filter((texture) => texture.id !== bake.texture.id), { ...bake.texture, pixels: [...bake.texture.pixels] }];
+    return { ...scene, meshes, materials, textures, nodes, environment: { ...scene.environment ?? {}, lightmapBakeRoot: bake.root } };
+  }
+
   // packages/spatial-reality-3d/src/index.ts
-  function parseColor(color) {
-    const input = color.trim(), hex = input.match(/^#([0-9a-f]{3,8})$/i);
+  function parseColor(color3) {
+    const input = color3.trim(), hex = input.match(/^#([0-9a-f]{3,8})$/i);
     if (hex) {
       const value = hex[1], c0 = value[0], c1 = value[1], c2 = value[2], c3 = value[3];
       if (value.length === 3 || value.length === 4) return [parseInt(c0 + c0, 16), parseInt(c1 + c1, 16), parseInt(c2 + c2, 16), value.length === 4 ? parseInt(`${c3}${c3}`, 16) : 255];
@@ -524,9 +1878,9 @@ var VSRSpatial3D = (() => {
     }
     const compressed = [new Uint8Array([120, 1])];
     for (let offset = 0; offset < raw.length; ) {
-      const length = Math.min(65535, raw.length - offset), last = offset + length === raw.length, header2 = new Uint8Array([last ? 1 : 0, length & 255, length >>> 8 & 255, ~length & 255, ~length >>> 8 & 255]);
-      compressed.push(header2, raw.subarray(offset, offset + length));
-      offset += length;
+      const length4 = Math.min(65535, raw.length - offset), last = offset + length4 === raw.length, header2 = new Uint8Array([last ? 1 : 0, length4 & 255, length4 >>> 8 & 255, ~length4 & 255, ~length4 >>> 8 & 255]);
+      compressed.push(header2, raw.subarray(offset, offset + length4));
+      offset += length4;
     }
     const checksum = adler32(raw), adler = new Uint8Array([checksum >>> 24 & 255, checksum >>> 16 & 255, checksum >>> 8 & 255, checksum & 255]);
     compressed.push(adler);
@@ -542,26 +1896,29 @@ var VSRSpatial3D = (() => {
   var VSR_SPATIAL_SCENE_FORMAT = "vsr.spatial-scene.v0.4";
   var VSR_SPATIAL_FRAME_FORMAT = "vsr.spatial-frame-plan.v0.4";
   var VSR_SPATIAL_STREAMING_FORMAT = "vsr.spatial-streaming-resolution.v0.1";
+  var VSR_SPATIAL_HLOD_FORMAT = "vsr.spatial-hlod-resolution.v0.1";
   var VSR_SPATIAL_VISUAL_INTENT_FORMAT = "taowind.rcl-rncs-visual-intent.v0.1";
   var VSR_SPATIAL_VISUAL_INTENT_VERSION = "0.1.0";
-  var EPS = 1e-9;
-  var clamp = (value, min, max) => Math.max(min, Math.min(max, value));
-  var add3 = (a, b) => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
-  var sub3 = (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
-  var scale3 = (a, s) => [a[0] * s, a[1] * s, a[2] * s];
+  var VSR_SPATIAL_IRRADIANCE_BAKE_FORMAT = "vsr.spatial-irradiance-probe-bake.v0.1";
+  var VSR_SPATIAL_MAX_DYNAMIC_LIGHTS = 32;
+  var EPS4 = 1e-9;
+  var clamp5 = (value, min, max) => Math.max(min, Math.min(max, value));
+  var add32 = (a, b) => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
+  var sub32 = (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+  var scale32 = (a, s) => [a[0] * s, a[1] * s, a[2] * s];
   var dot3 = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
-  var cross3 = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
-  var length3 = (a) => Math.hypot(a[0], a[1], a[2]);
-  var normalize3 = (a) => {
-    const l = length3(a);
-    return l < EPS ? [0, 0, 0] : [a[0] / l, a[1] / l, a[2] / l];
+  var cross32 = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+  var length32 = (a) => Math.hypot(a[0], a[1], a[2]);
+  var normalize32 = (a) => {
+    const l = length32(a);
+    return l < EPS4 ? [0, 0, 0] : [a[0] / l, a[1] / l, a[2] / l];
   };
-  var distance3 = (a, b) => length3(sub3(a, b));
+  var distance32 = (a, b) => length32(sub32(a, b));
   var radians = (deg) => deg * Math.PI / 180;
   var dot4 = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3];
   var normalizeQuaternion = (value) => {
-    const length = Math.hypot(value[0], value[1], value[2], value[3]);
-    return length < EPS ? [0, 0, 0, 1] : [value[0] / length, value[1] / length, value[2] / length, value[3] / length];
+    const length4 = Math.hypot(value[0], value[1], value[2], value[3]);
+    return length4 < EPS4 ? [0, 0, 0, 1] : [value[0] / length4, value[1] / length4, value[2] / length4, value[3] / length4];
   };
   function quaternionSlerp(a, b, t) {
     let end = normalizeQuaternion(b), start = normalizeQuaternion(a), cosine = dot4(start, end);
@@ -570,20 +1927,38 @@ var VSRSpatial3D = (() => {
       cosine = -cosine;
     }
     if (cosine > 0.9995) return normalizeQuaternion([start[0] + (end[0] - start[0]) * t, start[1] + (end[1] - start[1]) * t, start[2] + (end[2] - start[2]) * t, start[3] + (end[3] - start[3]) * t]);
-    const angle = Math.acos(clamp(cosine, -1, 1)), sinAngle = Math.sin(angle), aWeight = Math.sin((1 - t) * angle) / sinAngle, bWeight = Math.sin(t * angle) / sinAngle;
+    const angle = Math.acos(clamp5(cosine, -1, 1)), sinAngle = Math.sin(angle), aWeight = Math.sin((1 - t) * angle) / sinAngle, bWeight = Math.sin(t * angle) / sinAngle;
     return normalizeQuaternion([start[0] * aWeight + end[0] * bWeight, start[1] * aWeight + end[1] * bWeight, start[2] * aWeight + end[2] * bWeight, start[3] * aWeight + end[3] * bWeight]);
   }
   function quaternionToMat4(value) {
     const [x, y, z, w] = normalizeQuaternion(value), xx = x * x, yy = y * y, zz = z * z, xy = x * y, xz = x * z, yz = y * z, wx = w * x, wy = w * y, wz = w * z;
     return [1 - 2 * (yy + zz), 2 * (xy - wz), 2 * (xz + wy), 0, 2 * (xy + wz), 1 - 2 * (xx + zz), 2 * (yz - wx), 0, 2 * (xz - wy), 2 * (yz + wx), 1 - 2 * (xx + yy), 0, 0, 0, 0, 1];
   }
-  function identityMat4() {
+  function identityMat42() {
     return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
   }
   function multiplyMat4(a, b) {
     const out = new Array(16).fill(0);
     for (let r = 0; r < 4; r++) for (let c = 0; c < 4; c++) for (let k = 0; k < 4; k++) out[r * 4 + c] += a[r * 4 + k] * b[k * 4 + c];
     return out;
+  }
+  function inverseMat4(matrix) {
+    const augmented = Array.from({ length: 4 }, (_, row) => [...matrix.slice(row * 4, row * 4 + 4), ...Array.from({ length: 4 }, (_2, column) => row === column ? 1 : 0)]);
+    for (let column = 0; column < 4; column++) {
+      let pivot = column;
+      for (let row = column + 1; row < 4; row++) if (Math.abs(augmented[row][column]) > Math.abs(augmented[pivot][column])) pivot = row;
+      if (Math.abs(augmented[pivot][column]) < EPS4) return identityMat42();
+      [augmented[column], augmented[pivot]] = [augmented[pivot], augmented[column]];
+      const divisor = augmented[column][column];
+      for (let index = 0; index < 8; index++) augmented[column][index] /= divisor;
+      for (let row = 0; row < 4; row++) {
+        if (row === column) continue;
+        const factor = augmented[row][column];
+        if (Math.abs(factor) < EPS4) continue;
+        for (let index = 0; index < 8; index++) augmented[row][index] = augmented[row][index] - factor * augmented[column][index];
+      }
+    }
+    return augmented.flatMap((row) => row.slice(4));
   }
   function transformVec4(m, v) {
     return [
@@ -594,23 +1969,24 @@ var VSRSpatial3D = (() => {
     ];
   }
   function transformPoint3(m, p) {
-    const v = transformVec4(m, [p[0], p[1], p[2], 1]), w = Math.abs(v[3]) < EPS ? 1 : v[3];
+    const v = transformVec4(m, [p[0], p[1], p[2], 1]), w = Math.abs(v[3]) < EPS4 ? 1 : v[3];
     return [v[0] / w, v[1] / w, v[2] / w];
   }
   function transformDirection3(m, p) {
-    return normalize3([m[0] * p[0] + m[1] * p[1] + m[2] * p[2], m[4] * p[0] + m[5] * p[1] + m[6] * p[2], m[8] * p[0] + m[9] * p[1] + m[10] * p[2]]);
+    return normalize32([m[0] * p[0] + m[1] * p[1] + m[2] * p[2], m[4] * p[0] + m[5] * p[1] + m[6] * p[2], m[8] * p[0] + m[9] * p[1] + m[10] * p[2]]);
   }
   function transformToMat4(transform = {}) {
+    if (transform.matrix) return [...transform.matrix];
     const [tx, ty, tz] = transform.translation ?? [0, 0, 0], [sx, sy, sz] = transform.scale ?? [1, 1, 1];
     const [rx, ry, rz] = (transform.rotationEulerDeg ?? [0, 0, 0]).map(radians);
     const cx = Math.cos(rx), sxv = Math.sin(rx), cy = Math.cos(ry), syv = Math.sin(ry), cz = Math.cos(rz), szv = Math.sin(rz);
     const mx = [1, 0, 0, 0, 0, cx, -sxv, 0, 0, sxv, cx, 0, 0, 0, 0, 1];
     const my = [cy, 0, syv, 0, 0, 1, 0, 0, -syv, 0, cy, 0, 0, 0, 0, 1];
     const mz = [cz, -szv, 0, 0, szv, cz, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
-    const scale = [sx, 0, 0, 0, 0, sy, 0, 0, 0, 0, sz, 0, 0, 0, 0, 1];
+    const scale5 = [sx, 0, 0, 0, 0, sy, 0, 0, 0, 0, sz, 0, 0, 0, 0, 1];
     const translation = [1, 0, 0, tx, 0, 1, 0, ty, 0, 0, 1, tz, 0, 0, 0, 1];
     const rotation = transform.rotationQuaternion ? quaternionToMat4(transform.rotationQuaternion) : multiplyMat4(mz, multiplyMat4(my, mx));
-    return multiplyMat4(translation, multiplyMat4(rotation, scale));
+    return multiplyMat4(translation, multiplyMat4(rotation, scale5));
   }
   function perspectiveMat4(fovYDeg, aspect, near, far) {
     const f = 1 / Math.tan(radians(fovYDeg) / 2), nf = 1 / (near - far);
@@ -621,20 +1997,21 @@ var VSRSpatial3D = (() => {
     return [2 / width, 0, 0, 0, 0, 2 / height, 0, 0, 0, 0, -2 / (far - near), -(far + near) / (far - near), 0, 0, 0, 1];
   }
   function lookAtMat4(eye, target, up = [0, 1, 0]) {
-    const z = normalize3(sub3(eye, target)), x = normalize3(cross3(up, z)), y = cross3(z, x);
+    const z = normalize32(sub32(eye, target)), x = normalize32(cross32(up, z)), y = cross32(z, x);
     return [x[0], x[1], x[2], -dot3(x, eye), y[0], y[1], y[2], -dot3(y, eye), z[0], z[1], z[2], -dot3(z, eye), 0, 0, 0, 1];
   }
   function cameraWorldMatrix(camera) {
     return transformToMat4(camera.transform);
   }
   function cameraPosition(camera) {
-    return camera.transform.translation ?? [0, 0, 0];
+    const matrix = transformToMat4(camera.transform);
+    return camera.transform.translation ?? [matrix[3], matrix[7], matrix[11]];
   }
   function cameraForward(camera) {
     return transformDirection3(cameraWorldMatrix(camera), [0, 0, -1]);
   }
   function cameraViewMatrix(camera) {
-    const eye = cameraPosition(camera), target = add3(eye, cameraForward(camera));
+    const eye = cameraPosition(camera), target = add32(eye, cameraForward(camera));
     return lookAtMat4(eye, target, [0, 1, 0]);
   }
   function validateMesh(mesh) {
@@ -644,6 +2021,7 @@ var VSRSpatial3D = (() => {
     for (const index of mesh.indices) if (!Number.isInteger(index) || index < 0 || index >= vertices) throw new Error(`Mesh ${mesh.id} has invalid index ${index}.`);
     if (mesh.normals && mesh.normals.length !== mesh.positions.length) throw new Error(`Mesh ${mesh.id} normals length mismatch.`);
     if (mesh.uvs && mesh.uvs.length !== vertices * 2) throw new Error(`Mesh ${mesh.id} UV length mismatch.`);
+    if (mesh.uvs1 && mesh.uvs1.length !== vertices * 2) throw new Error(`Mesh ${mesh.id} lightmap UV length mismatch.`);
     if (mesh.jointIndices && mesh.jointIndices.length !== vertices * 4) throw new Error(`Mesh ${mesh.id} joint index length mismatch.`);
     if (mesh.jointWeights && mesh.jointWeights.length !== vertices * 4) throw new Error(`Mesh ${mesh.id} joint weight length mismatch.`);
     for (const index of mesh.jointIndices ?? []) if (!Number.isInteger(index) || index < 0) throw new Error(`Mesh ${mesh.id} has invalid joint index ${index}.`);
@@ -659,7 +2037,7 @@ var VSRSpatial3D = (() => {
     const normals = new Array(mesh.positions.length).fill(0);
     for (let i = 0; i < mesh.indices.length; i += 3) {
       const ia = mesh.indices[i] * 3, ib = mesh.indices[i + 1] * 3, ic = mesh.indices[i + 2] * 3;
-      const a = [mesh.positions[ia], mesh.positions[ia + 1], mesh.positions[ia + 2]], b = [mesh.positions[ib], mesh.positions[ib + 1], mesh.positions[ib + 2]], c = [mesh.positions[ic], mesh.positions[ic + 1], mesh.positions[ic + 2]], n = cross3(sub3(b, a), sub3(c, a));
+      const a = [mesh.positions[ia], mesh.positions[ia + 1], mesh.positions[ia + 2]], b = [mesh.positions[ib], mesh.positions[ib + 1], mesh.positions[ib + 2]], c = [mesh.positions[ic], mesh.positions[ic + 1], mesh.positions[ic + 2]], n = cross32(sub32(b, a), sub32(c, a));
       for (const base of [ia, ib, ic]) {
         normals[base] += n[0];
         normals[base + 1] += n[1];
@@ -667,7 +2045,7 @@ var VSRSpatial3D = (() => {
       }
     }
     for (let i = 0; i < normals.length; i += 3) {
-      const n = normalize3([normals[i], normals[i + 1], normals[i + 2]]);
+      const n = normalize32([normals[i], normals[i + 1], normals[i + 2]]);
       normals[i] = n[0];
       normals[i + 1] = n[1];
       normals[i + 2] = n[2];
@@ -684,10 +2062,10 @@ var VSRSpatial3D = (() => {
     }
     const center = [(min[0] + max[0]) / 2, (min[1] + max[1]) / 2, (min[2] + max[2]) / 2];
     let radius = 0;
-    for (let i = 0; i < mesh.positions.length; i += 3) radius = Math.max(radius, distance3(center, [mesh.positions[i], mesh.positions[i + 1], mesh.positions[i + 2]]));
+    for (let i = 0; i < mesh.positions.length; i += 3) radius = Math.max(radius, distance32(center, [mesh.positions[i], mesh.positions[i + 1], mesh.positions[i + 2]]));
     return { min, max, center, radius };
   }
-  function transformBounds(bounds, world) {
+  function transformBounds2(bounds, world) {
     const corners = [];
     for (const x of [bounds.min[0], bounds.max[0]]) for (const y of [bounds.min[1], bounds.max[1]]) for (const z of [bounds.min[2], bounds.max[2]]) corners.push(transformPoint3(world, [x, y, z]));
     let min = [Infinity, Infinity, Infinity], max = [-Infinity, -Infinity, -Infinity];
@@ -695,7 +2073,7 @@ var VSRSpatial3D = (() => {
       min = [Math.min(min[0], point[0]), Math.min(min[1], point[1]), Math.min(min[2], point[2])];
       max = [Math.max(max[0], point[0]), Math.max(max[1], point[1]), Math.max(max[2], point[2])];
     }
-    const center = [(min[0] + max[0]) / 2, (min[1] + max[1]) / 2, (min[2] + max[2]) / 2], radius = Math.max(...corners.map((point) => distance3(point, center)));
+    const center = [(min[0] + max[0]) / 2, (min[1] + max[1]) / 2, (min[2] + max[2]) / 2], radius = Math.max(...corners.map((point) => distance32(point, center)));
     return { min, max, center, radius };
   }
   function createCubeMesh(id = "mesh:cube", size = 1) {
@@ -745,33 +2123,80 @@ var VSRSpatial3D = (() => {
     return {
       id: material.id,
       baseColor: material.baseColor ?? "#b8c7e6",
-      metallic: clamp(material.metallic ?? 0, 0, 1),
-      roughness: clamp(material.roughness ?? 0.6, 0.04, 1),
+      metallic: clamp5(material.metallic ?? 0, 0, 1),
+      roughness: clamp5(material.roughness ?? 0.6, 0.04, 1),
       emissive: material.emissive ?? "#000000",
       emissiveStrength: Math.max(0, material.emissiveStrength ?? 0),
       doubleSided: material.doubleSided ?? false,
-      opacity: clamp(material.opacity ?? 1, 0, 1),
-      occlusionStrength: clamp(material.occlusionStrength ?? 1, 0, 1),
-      clearcoat: clamp(material.clearcoat ?? 0, 0, 1),
-      clearcoatRoughness: clamp(material.clearcoatRoughness ?? 0.12, 0.04, 1),
-      ior: clamp(material.ior ?? 1.5, 1, 2.5),
+      opacity: clamp5(material.opacity ?? 1, 0, 1),
+      occlusionStrength: clamp5(material.occlusionStrength ?? 1, 0, 1),
+      clearcoat: clamp5(material.clearcoat ?? 0, 0, 1),
+      clearcoatRoughness: clamp5(material.clearcoatRoughness ?? 0.12, 0.04, 1),
+      ior: clamp5(material.ior ?? 1.5, 1, 2.5),
       baseColorTextureId: material.baseColorTextureId,
       metallicRoughnessTextureId: material.metallicRoughnessTextureId,
       normalTextureId: material.normalTextureId,
       occlusionTextureId: material.occlusionTextureId,
       emissiveTextureId: material.emissiveTextureId,
+      lightmapTextureId: material.lightmapTextureId,
+      lightmapIntensity: clamp5(material.lightmapIntensity ?? 0, 0, 8),
+      lightmapUvSet: material.lightmapUvSet === 1 ? 1 : 0,
+      temporalReactive: clamp5(material.temporalReactive ?? 0, 0, 1),
+      reactiveMaskTextureId: material.reactiveMaskTextureId,
       normalScale: Math.max(0, material.normalScale ?? 1),
       alphaMode: material.alphaMode ?? "OPAQUE",
-      alphaCutoff: clamp(material.alphaCutoff ?? 0.5, 0, 1)
+      alphaCutoff: clamp5(material.alphaCutoff ?? 0.5, 0, 1)
     };
   }
-  function sanitizeSpatialEnvironment(environment) {
-    const intensity = environment?.intensity;
-    return { diffuseColor: environment?.diffuseColor ?? "#000000", specularColor: environment?.specularColor ?? "#000000", intensity: Number.isFinite(intensity) ? clamp(intensity, 0, 32) : 1, ...environment?.textureId ? { textureId: environment.textureId } : {} };
+  function sanitizeSpatialEnvironment(environment, activeCellIds) {
+    const intensity = environment?.intensity, probes = (environment?.probes ?? []).slice(0, 8).map((probe, index) => ({ id: probe.id ?? `probe:${index}`, position: [...probe.position], radius: clamp5(probe.radius, 0.01, 1e5), diffuseColor: probe.diffuseColor ?? environment?.diffuseColor ?? "#000000", specularColor: probe.specularColor ?? environment?.specularColor ?? "#000000", intensity: Number.isFinite(probe.intensity) ? clamp5(probe.intensity, 0, 32) : 1 }));
+    const irradianceVolume = sanitizeSpatialIrradianceVolume(environment?.irradianceVolume);
+    const irradianceVolumeField = selectSpatialIrradianceVolumeField(sanitizeSpatialIrradianceVolumeField(environment?.irradianceVolumeField), activeCellIds);
+    return { diffuseColor: environment?.diffuseColor ?? "#000000", specularColor: environment?.specularColor ?? "#000000", intensity: Number.isFinite(intensity) ? clamp5(intensity, 0, 32) : 1, ...environment?.textureId ? { textureId: environment.textureId } : {}, ...probes.length ? { probes } : {}, ...environment?.irradianceBakeRoot ? { irradianceBakeRoot: environment.irradianceBakeRoot } : {}, ...environment?.lightmapBakeRoot ? { lightmapBakeRoot: environment.lightmapBakeRoot } : {}, ...irradianceVolume ? { irradianceVolume, irradianceVolumeBakeRoot: environment?.irradianceVolumeBakeRoot ?? irradianceVolume.root } : {}, ...irradianceVolumeField ? { irradianceVolumeField, irradianceVolumeFieldRoot: irradianceVolumeField.root } : {} };
+  }
+  function sanitizeSpatialPostProcess(postProcess) {
+    return { exposure: clamp5(postProcess?.exposure ?? 0, -8, 8), contrast: clamp5(postProcess?.contrast ?? 1, 0, 2), saturation: clamp5(postProcess?.saturation ?? 1, 0, 2), vignette: clamp5(postProcess?.vignette ?? 0, 0, 1), bloomThreshold: clamp5(postProcess?.bloomThreshold ?? 1, 0, 16), bloomIntensity: clamp5(postProcess?.bloomIntensity ?? 0, 0, 4), bloomRadius: clamp5(postProcess?.bloomRadius ?? 1, 0, 4), dofFocus: clamp5(postProcess?.dofFocus ?? 0.5, 0, 1), dofRange: clamp5(postProcess?.dofRange ?? 0.25, 1e-3, 1), dofIntensity: clamp5(postProcess?.dofIntensity ?? 0, 0, 1), dofRadius: clamp5(postProcess?.dofRadius ?? 2, 0, 8), temporalBlend: clamp5(postProcess?.temporalBlend ?? 0, 0, 1), temporalReset: Boolean(postProcess?.temporalReset), temporalClamp: clamp5(postProcess?.temporalClamp ?? 0.25, 0, 1), temporalReactive: clamp5(postProcess?.temporalReactive ?? 0, 0, 1), temporalReactiveThreshold: clamp5(postProcess?.temporalReactiveThreshold ?? 1, 0, 16), temporalVelocityThreshold: clamp5(postProcess?.temporalVelocityThreshold ?? 1e-3, 0, 0.5), temporalVelocityDilation: clamp5(postProcess?.temporalVelocityDilation ?? 1, 0, 4), ssaoIntensity: clamp5(postProcess?.ssaoIntensity ?? 0, 0, 1), ssaoRadius: clamp5(postProcess?.ssaoRadius ?? 2, 0, 8), ssgiIntensity: clamp5(postProcess?.ssgiIntensity ?? 0, 0, 2), ssgiRadius: clamp5(postProcess?.ssgiRadius ?? 3, 0, 16), ssgiSteps: clamp5(Math.round(postProcess?.ssgiSteps ?? 6), 1, 8), ssgiThickness: clamp5(postProcess?.ssgiThickness ?? 0.12, 1e-3, 0.5) };
+  }
+  function resolveSpatialTransparencyMode(mode) {
+    return mode === "sorted" ? "sorted" : "weighted-blended-oit";
+  }
+  function textureLevelCount(texture) {
+    return 1 + (texture.mipmaps?.length ?? 0);
+  }
+  function textureByteLength(texture) {
+    return texture.pixels.length + (texture.mipmaps ?? []).reduce((sum, level) => sum + level.pixels.length, 0);
+  }
+  function validateTextureLevel(textureId, level) {
+    if (level.width < 1 || level.height < 1 || level.pixels.length !== level.width * level.height * 4) throw new Error(`Texture ${textureId} RGBA length mismatch.`);
+  }
+  function buildSpatialEnvironmentMipChain(texture, maxLevels = 12) {
+    validateTextureLevel(texture.id, texture);
+    const limit = Math.max(1, Math.min(12, Math.floor(maxLevels))), mipmaps = [], srgbToLinear = (value) => value <= 0.04045 ? value / 12.92 : Math.pow((value + 0.055) / 1.055, 2.4);
+    let source = texture;
+    while (mipmaps.length < limit - 1 && (source.width > 1 || source.height > 1)) {
+      const width = Math.max(1, Math.floor(source.width / 2)), height = Math.max(1, Math.floor(source.height / 2)), pixels = new Array(width * height * 4).fill(0), toStored = (value) => source.colorSpace === "srgb" ? Math.round(clamp5(linearToSrgb(value), 0, 1) * 255) : Math.round(clamp5(value, 0, 1) * 255);
+      for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
+        const samples = [];
+        for (let oy = 0; oy < 2; oy++) for (let ox = 0; ox < 2; ox++) {
+          const sx = Math.min(source.width - 1, x * 2 + ox), sy = Math.min(source.height - 1, y * 2 + oy), index = (sy * source.width + sx) * 4;
+          samples.push([source.pixels[index] ?? 255, source.pixels[index + 1] ?? 255, source.pixels[index + 2] ?? 255, source.pixels[index + 3] ?? 255]);
+        }
+        const output = (y * width + x) * 4;
+        for (let channel = 0; channel < 3; channel++) {
+          const average = samples.reduce((sum, sample) => sum + (source.colorSpace === "srgb" ? srgbToLinear(sample[channel] / 255) : sample[channel] / 255), 0) / samples.length;
+          pixels[output + channel] = toStored(average);
+        }
+        pixels[output + 3] = Math.round(samples.reduce((sum, sample) => sum + sample[3], 0) / samples.length);
+      }
+      const next = { width, height, pixels, colorSpace: source.colorSpace, wrapU: source.wrapU, wrapV: source.wrapV, filter: "linear" };
+      mipmaps.push(next);
+      source = next;
+    }
+    return { ...texture, mipmaps };
   }
   function resolveSpatialBudget(options = {}) {
-    const qualityTier = options.qualityTier ?? "balanced", defaults = { economy: { width: 640, height: 360, maxLights: 4, shadowMapSize: 128, shadows: false, lodBias: 0.8 }, balanced: { width: 960, height: 540, maxLights: 8, shadowMapSize: 256, shadows: true, lodBias: 1 }, quality: { width: 1280, height: 720, maxLights: 16, shadowMapSize: 512, shadows: true, lodBias: 1.2 }, cinematic: { width: 1920, height: 1080, maxLights: 32, shadowMapSize: 1024, shadows: true, lodBias: 1.5 } }[qualityTier];
-    return { qualityTier, width: Math.max(16, Math.floor(options.width ?? defaults.width)), height: Math.max(16, Math.floor(options.height ?? defaults.height)), maxLights: Math.max(1, Math.floor(options.maxLights ?? defaults.maxLights)), shadowMapSize: Math.max(32, Math.floor(options.shadowMapSize ?? defaults.shadowMapSize)), shadows: options.enableShadows ?? defaults.shadows, lodBias: Math.max(0.1, options.lodBias ?? defaults.lodBias) };
+    const qualityTier = options.qualityTier ?? "balanced", defaults = { economy: { width: 640, height: 360, maxLights: 4, shadowMapSize: 128, shadows: false, lodBias: 0.8, gpuTextureBudgetBytes: 16 * 1024 * 1024, gpuBufferBudgetBytes: 32 * 1024 * 1024 }, balanced: { width: 960, height: 540, maxLights: 8, shadowMapSize: 256, shadows: true, lodBias: 1, gpuTextureBudgetBytes: 64 * 1024 * 1024, gpuBufferBudgetBytes: 128 * 1024 * 1024 }, quality: { width: 1280, height: 720, maxLights: 16, shadowMapSize: 512, shadows: true, lodBias: 1.2, gpuTextureBudgetBytes: 128 * 1024 * 1024, gpuBufferBudgetBytes: 256 * 1024 * 1024 }, cinematic: { width: 1920, height: 1080, maxLights: 32, shadowMapSize: 1024, shadows: true, lodBias: 1.5, gpuTextureBudgetBytes: 256 * 1024 * 1024, gpuBufferBudgetBytes: 512 * 1024 * 1024 } }[qualityTier];
+    return { qualityTier, width: Math.max(16, Math.floor(options.width ?? defaults.width)), height: Math.max(16, Math.floor(options.height ?? defaults.height)), maxLights: Math.max(1, Math.floor(options.maxLights ?? defaults.maxLights)), shadowMapSize: Math.max(32, Math.floor(options.shadowMapSize ?? defaults.shadowMapSize)), shadows: options.enableShadows ?? defaults.shadows, lodBias: Math.max(0.1, options.lodBias ?? defaults.lodBias), gpuTextureBudgetBytes: Math.max(4, Math.floor(options.gpuTextureBudgetBytes ?? defaults.gpuTextureBudgetBytes)), gpuBufferBudgetBytes: Math.max(4, Math.floor(options.gpuBufferBudgetBytes ?? defaults.gpuBufferBudgetBytes)) };
   }
   function validateScene(scene) {
     if (scene.format !== VSR_SPATIAL_SCENE_FORMAT) throw new Error(`Unsupported spatial scene format ${String(scene.format)}.`);
@@ -786,7 +2211,14 @@ var VSRSpatial3D = (() => {
     for (const texture of scene.textures ?? []) {
       if (ids.has(texture.id)) throw new Error(`Duplicate id ${texture.id}.`);
       ids.add(texture.id);
-      if (texture.width < 1 || texture.height < 1 || texture.pixels.length !== texture.width * texture.height * 4) throw new Error(`Texture ${texture.id} RGBA length mismatch.`);
+      validateTextureLevel(texture.id, texture);
+      let previousWidth = texture.width, previousHeight = texture.height;
+      for (const level of texture.mipmaps ?? []) {
+        validateTextureLevel(texture.id, level);
+        if (level.width > previousWidth || level.height > previousHeight) throw new Error(`Texture ${texture.id} mip levels must not grow.`);
+        previousWidth = level.width;
+        previousHeight = level.height;
+      }
     }
     for (const skin of scene.skins ?? []) {
       if (ids.has(skin.id)) throw new Error(`Duplicate id ${skin.id}.`);
@@ -798,6 +2230,34 @@ var VSRSpatial3D = (() => {
     else ids.add(node.id);
     if (!scene.cameras.some((camera) => camera.id === scene.activeCameraId)) throw new Error(`Missing active camera ${scene.activeCameraId}.`);
     const nodeIds = new Set(scene.nodes.map((node) => node.id)), textureIds = new Set((scene.textures ?? []).map((texture) => texture.id)), skinIds = new Set((scene.skins ?? []).map((skin) => skin.id));
+    if (scene.hlod) {
+      const clusterIds = /* @__PURE__ */ new Set(), sourceNodeIds = /* @__PURE__ */ new Set(), proxyNodeIds = /* @__PURE__ */ new Set();
+      for (const cluster of scene.hlod.clusters) {
+        if (!cluster.id || clusterIds.has(cluster.id)) throw new Error(`Duplicate HLOD cluster ${cluster.id}.`);
+        clusterIds.add(cluster.id);
+        if (!cluster.sourceNodeIds.length) throw new Error(`HLOD cluster ${cluster.id} must contain source nodes.`);
+        for (const nodeId of cluster.sourceNodeIds) {
+          if (!nodeIds.has(nodeId)) throw new Error(`HLOD cluster ${cluster.id} missing source node ${nodeId}.`);
+          if (sourceNodeIds.has(nodeId)) throw new Error(`HLOD source node ${nodeId} belongs to multiple clusters.`);
+          sourceNodeIds.add(nodeId);
+        }
+        if (!cluster.levels.length) throw new Error(`HLOD cluster ${cluster.id} must contain proxy levels.`);
+        const levelProxyIds = /* @__PURE__ */ new Set();
+        for (let index = 0; index < cluster.levels.length; index++) {
+          const level = cluster.levels[index];
+          if (!Number.isFinite(level.maxDistance) || level.maxDistance <= 0) throw new Error(`HLOD cluster ${cluster.id} level distance is invalid.`);
+          if (index > 0 && level.maxDistance <= cluster.levels[index - 1].maxDistance) throw new Error(`HLOD cluster ${cluster.id} levels must be ordered.`);
+          if (!level.proxyNodeIds.length) throw new Error(`HLOD cluster ${cluster.id} level ${index} must contain proxy nodes.`);
+          for (const nodeId of level.proxyNodeIds) {
+            if (!nodeIds.has(nodeId)) throw new Error(`HLOD cluster ${cluster.id} missing proxy node ${nodeId}.`);
+            if (levelProxyIds.has(nodeId) || proxyNodeIds.has(nodeId)) throw new Error(`HLOD proxy node ${nodeId} belongs to multiple levels.`);
+            levelProxyIds.add(nodeId);
+            proxyNodeIds.add(nodeId);
+          }
+        }
+      }
+      for (const nodeId of sourceNodeIds) if (proxyNodeIds.has(nodeId)) throw new Error(`HLOD node ${nodeId} cannot be both source and proxy.`);
+    }
     if (scene.streaming) {
       if (!scene.streaming.worldId) throw new Error("Spatial streaming worldId is required.");
       const cellIds = /* @__PURE__ */ new Set();
@@ -812,9 +2272,10 @@ var VSRSpatial3D = (() => {
       for (const nodeId of scene.streaming.persistentNodeIds ?? []) if (!nodeIds.has(nodeId)) throw new Error(`Streaming persistent node ${nodeId} is missing.`);
     }
     if (scene.environment?.textureId && !textureIds.has(scene.environment.textureId)) throw new Error(`Environment missing texture ${scene.environment.textureId}.`);
+    for (const probe of scene.environment?.probes ?? []) if (!validVec3(probe.position) || !Number.isFinite(probe.radius) || probe.radius <= 0) throw new Error(`Environment probe ${probe.id ?? "unnamed"} bounds are invalid.`);
     for (const skin of scene.skins ?? []) for (const joint of skin.joints) if (!nodeIds.has(joint)) throw new Error(`Skin ${skin.id} missing joint ${joint}.`);
     for (const material of scene.materials) {
-      const bindings = [material.baseColorTextureId, material.metallicRoughnessTextureId, material.normalTextureId, material.occlusionTextureId, material.emissiveTextureId].filter((value) => Boolean(value));
+      const bindings = [material.baseColorTextureId, material.metallicRoughnessTextureId, material.normalTextureId, material.occlusionTextureId, material.emissiveTextureId, material.lightmapTextureId, material.reactiveMaskTextureId].filter((value) => Boolean(value));
       for (const textureId of bindings) if (!textureIds.has(textureId)) throw new Error(`Material ${material.id} missing texture ${textureId}.`);
     }
     for (const node of scene.nodes) {
@@ -849,7 +2310,7 @@ var VSRSpatial3D = (() => {
     const previousActiveCellIds = [...options.previousActiveCellIds ?? []].filter((id, index, array) => cellIds.has(id) && array.indexOf(id) === index).sort(), forcedCellIds = [...options.forcedCellIds ?? []].filter((id, index, array) => cellIds.has(id) && array.indexOf(id) === index).sort(), previous = new Set(previousActiveCellIds), forced = new Set(forcedCellIds), activeCellIds = [];
     for (const cell of cells) {
       const loadRadius = Math.max(0, cell.loadRadius ?? defaultLoadRadius), unloadRadius = Math.max(loadRadius, cell.unloadRadius ?? defaultUnloadRadius), threshold = previous.has(cell.id) ? unloadRadius : loadRadius;
-      if (forced.has(cell.id) || distance3(observerPosition, cell.center) <= cell.radius + threshold) activeCellIds.push(cell.id);
+      if (forced.has(cell.id) || distance32(observerPosition, cell.center) <= cell.radius + threshold) activeCellIds.push(cell.id);
     }
     const active = new Set(activeCellIds), enteredCellIds = activeCellIds.filter((id) => !previous.has(id)).sort(), exitedCellIds = previousActiveCellIds.filter((id) => !active.has(id)).sort(), persistentNodeIds = [...config.persistentNodeIds ?? []].filter((id, index, array) => array.indexOf(id) === index).sort(), streamedNodeSet = new Set(persistentNodeIds);
     for (const cell of cells) if (active.has(cell.id)) for (const nodeId of cell.nodeIds) streamedNodeSet.add(nodeId);
@@ -880,11 +2341,11 @@ var VSRSpatial3D = (() => {
   function sampleSpatialAnimation(scene, clipId, timeSeconds, loop = true) {
     const clip = (scene.animations ?? []).find((entry) => entry.id === clipId);
     if (!clip) throw new Error(`Missing animation ${clipId}.`);
-    const t = clip.duration > 0 ? loop ? (timeSeconds % clip.duration + clip.duration) % clip.duration : clamp(timeSeconds, 0, clip.duration) : 0, out = /* @__PURE__ */ new Map();
+    const t = clip.duration > 0 ? loop ? (timeSeconds % clip.duration + clip.duration) % clip.duration : clamp5(timeSeconds, 0, clip.duration) : 0, out = /* @__PURE__ */ new Map();
     for (const channel of clip.channels) {
       let index = 0;
       while (index < channel.times.length - 2 && t >= channel.times[index + 1]) index++;
-      const nextIndex = Math.min(index + 1, channel.times.length - 1), aTime = channel.times[index], bTime = channel.times[nextIndex], span = Math.max(EPS, bTime - aTime), alpha = channel.interpolation === "STEP" ? 0 : clamp((t - aTime) / span, 0, 1), value = sampleAnimationValue(channel, index, nextIndex, alpha, span), current = out.get(channel.nodeId) ?? {};
+      const nextIndex = Math.min(index + 1, channel.times.length - 1), aTime = channel.times[index], bTime = channel.times[nextIndex], span = Math.max(EPS4, bTime - aTime), alpha = channel.interpolation === "STEP" ? 0 : clamp5((t - aTime) / span, 0, 1), value = sampleAnimationValue(channel, index, nextIndex, alpha, span), current = out.get(channel.nodeId) ?? {};
       if (channel.path === "translation") current.translation = value;
       else if (channel.path === "scale") current.scale = value;
       else if (channel.path === "rotationQuaternion") current.rotationQuaternion = value;
@@ -911,13 +2372,13 @@ var VSRSpatial3D = (() => {
     accumulator.set(nodeId, current);
   }
   function blendVec3(base, target, defaultValue) {
-    if (!target || target.weight <= EPS) return void 0;
+    if (!target || target.weight <= EPS4) return void 0;
     const baseWeight = Math.max(0, 1 - target.weight), total = baseWeight + target.weight, source = base ?? defaultValue;
     return [(source[0] * baseWeight + target.sum[0]) / total, (source[1] * baseWeight + target.sum[1]) / total, (source[2] * baseWeight + target.sum[2]) / total];
   }
   function blendQuaternion(base, target) {
     if (!target || !target.entries.length) return void 0;
-    const weight = target.entries.reduce((sum, entry) => sum + entry.weight, 0), entries = [{ value: normalizeQuaternion(base ?? identityQuaternion), weight: Math.max(0, 1 - weight) }, ...target.entries].filter((entry) => entry.weight > EPS);
+    const weight = target.entries.reduce((sum, entry) => sum + entry.weight, 0), entries = [{ value: normalizeQuaternion(base ?? identityQuaternion), weight: Math.max(0, 1 - weight) }, ...target.entries].filter((entry) => entry.weight > EPS4);
     if (!entries.length) return void 0;
     let result = entries[0].value, total = entries[0].weight;
     for (const entry of entries.slice(1)) {
@@ -944,7 +2405,7 @@ var VSRSpatial3D = (() => {
     }
     if (sample.scale) {
       const base = result.scale ?? one3, rest = reference.scale ?? one3;
-      result.scale = base.map((value, index) => value * (sample.scale[index] / (Math.abs(rest[index]) < EPS ? 1 : rest[index])) ** weight);
+      result.scale = base.map((value, index) => value * (sample.scale[index] / (Math.abs(rest[index]) < EPS4 ? 1 : rest[index])) ** weight);
     }
     if (sample.rotationEulerDeg) {
       const base = result.rotationEulerDeg ?? [0, 0, 0], rest = reference.rotationEulerDeg ?? [0, 0, 0];
@@ -960,8 +2421,8 @@ var VSRSpatial3D = (() => {
   function sampleSpatialAnimationLayers(scene, layers) {
     const overrides = /* @__PURE__ */ new Map(), additives = /* @__PURE__ */ new Map();
     for (const layer of layers) {
-      const weight = clamp(layer.weight ?? 1, 0, 1);
-      if (weight <= EPS) continue;
+      const weight = clamp5(layer.weight ?? 1, 0, 1);
+      if (weight <= EPS4) continue;
       const sample = sampleSpatialAnimation(scene, layer.clipId, layer.timeSeconds, layer.loop ?? true), reference = layer.mode === "additive" ? sampleSpatialAnimation(scene, layer.clipId, 0, false) : void 0;
       for (const [nodeId, transform] of sample) {
         if (!masked(layer, nodeId)) continue;
@@ -980,9 +2441,9 @@ var VSRSpatial3D = (() => {
     const nodeById = new Map(scene.nodes.map((node) => [node.id, node])), nodeIds = /* @__PURE__ */ new Set([...overrides.keys(), ...additives.keys()]), result = /* @__PURE__ */ new Map();
     for (const nodeId of nodeIds) {
       const base = nodeById.get(nodeId)?.transform ?? {}, accumulator = overrides.get(nodeId), transform = { ...base };
-      const translation = blendVec3(base.translation, accumulator?.translation, zero3), rotationEulerDeg = blendVec3(base.rotationEulerDeg, accumulator?.rotationEulerDeg, zero3), scale = blendVec3(base.scale, accumulator?.scale, one3), rotationQuaternion = blendQuaternion(base.rotationQuaternion, accumulator?.rotationQuaternion);
+      const translation = blendVec3(base.translation, accumulator?.translation, zero3), rotationEulerDeg = blendVec3(base.rotationEulerDeg, accumulator?.rotationEulerDeg, zero3), scale5 = blendVec3(base.scale, accumulator?.scale, one3), rotationQuaternion = blendQuaternion(base.rotationQuaternion, accumulator?.rotationQuaternion);
       if (translation) transform.translation = translation;
-      if (scale) transform.scale = scale;
+      if (scale5) transform.scale = scale5;
       if (rotationQuaternion) {
         transform.rotationQuaternion = rotationQuaternion;
         delete transform.rotationEulerDeg;
@@ -1000,7 +2461,7 @@ var VSRSpatial3D = (() => {
     if (transition) {
       const from = states.get(transition.fromStateId), to = states.get(transition.toStateId);
       if (!from || !to) throw new Error("Animation graph transition references an unknown state.");
-      const progress = clamp(transition.progress, 0, 1), time = input.timeSeconds;
+      const progress = clamp5(transition.progress, 0, 1), time = input.timeSeconds;
       return sampleSpatialAnimationLayers(scene, [{ clipId: from.clipId, timeSeconds: time * (from.speed ?? 1), loop: from.loop ?? true, weight: 1 - progress, nodeIds: from.nodeIds }, { clipId: to.clipId, timeSeconds: time * (to.speed ?? 1), loop: to.loop ?? true, weight: progress, nodeIds: to.nodeIds }]);
     }
     const state = states.get(input.stateId ?? input.graph.initialState);
@@ -1010,6 +2471,7 @@ var VSRSpatial3D = (() => {
   function cloneSpatialTransform(transform = {}) {
     return {
       ...transform,
+      ...transform.matrix ? { matrix: [...transform.matrix] } : {},
       ...transform.translation ? { translation: [...transform.translation] } : {},
       ...transform.rotationEulerDeg ? { rotationEulerDeg: [...transform.rotationEulerDeg] } : {},
       ...transform.rotationQuaternion ? { rotationQuaternion: [...transform.rotationQuaternion] } : {},
@@ -1017,38 +2479,38 @@ var VSRSpatial3D = (() => {
     };
   }
   function quaternionFromRotationMatrix(matrix) {
-    const x = normalize3([matrix[0], matrix[4], matrix[8]]), y = normalize3([matrix[1], matrix[5], matrix[9]]), z = normalize3([matrix[2], matrix[6], matrix[10]]), m00 = x[0], m01 = y[0], m02 = z[0], m10 = x[1], m11 = y[1], m12 = z[1], m20 = x[2], m21 = y[2], m22 = z[2], trace = m00 + m11 + m22;
+    const x = normalize32([matrix[0], matrix[4], matrix[8]]), y = normalize32([matrix[1], matrix[5], matrix[9]]), z = normalize32([matrix[2], matrix[6], matrix[10]]), m00 = x[0], m01 = y[0], m02 = z[0], m10 = x[1], m11 = y[1], m12 = z[1], m20 = x[2], m21 = y[2], m22 = z[2], trace = m00 + m11 + m22;
     if (trace > 0) {
-      const scale2 = Math.sqrt(trace + 1) * 2;
-      return normalizeQuaternion([(m21 - m12) / scale2, (m02 - m20) / scale2, (m10 - m01) / scale2, 0.25 * scale2]);
+      const scale6 = Math.sqrt(trace + 1) * 2;
+      return normalizeQuaternion([(m21 - m12) / scale6, (m02 - m20) / scale6, (m10 - m01) / scale6, 0.25 * scale6]);
     }
     if (m00 > m11 && m00 > m22) {
-      const scale2 = Math.sqrt(1 + m00 - m11 - m22) * 2;
-      return normalizeQuaternion([0.25 * scale2, (m01 + m10) / scale2, (m02 + m20) / scale2, (m21 - m12) / scale2]);
+      const scale6 = Math.sqrt(1 + m00 - m11 - m22) * 2;
+      return normalizeQuaternion([0.25 * scale6, (m01 + m10) / scale6, (m02 + m20) / scale6, (m21 - m12) / scale6]);
     }
     if (m11 > m22) {
-      const scale2 = Math.sqrt(1 + m11 - m00 - m22) * 2;
-      return normalizeQuaternion([(m01 + m10) / scale2, 0.25 * scale2, (m12 + m21) / scale2, (m02 - m20) / scale2]);
+      const scale6 = Math.sqrt(1 + m11 - m00 - m22) * 2;
+      return normalizeQuaternion([(m01 + m10) / scale6, 0.25 * scale6, (m12 + m21) / scale6, (m02 - m20) / scale6]);
     }
-    const scale = Math.sqrt(1 + m22 - m00 - m11) * 2;
-    return normalizeQuaternion([(m02 + m20) / scale, (m12 + m21) / scale, 0.25 * scale, (m10 - m01) / scale]);
+    const scale5 = Math.sqrt(1 + m22 - m00 - m11) * 2;
+    return normalizeQuaternion([(m02 + m20) / scale5, (m12 + m21) / scale5, 0.25 * scale5, (m10 - m01) / scale5]);
   }
   function quaternionFromBasis(right, up, back) {
     return quaternionFromRotationMatrix([right[0], up[0], back[0], 0, right[1], up[1], back[1], 0, right[2], up[2], back[2], 0, 0, 0, 0, 1]);
   }
   function quaternionFromAxisAngle(axis, angle) {
-    const half = angle / 2, s = Math.sin(half), unit = normalize3(axis);
+    const half = angle / 2, s = Math.sin(half), unit = normalize32(axis);
     return normalizeQuaternion([unit[0] * s, unit[1] * s, unit[2] * s, Math.cos(half)]);
   }
   function quaternionFromTo(fromValue, toValue) {
-    const from = normalize3(fromValue), to = normalize3(toValue), cosine = clamp(dot3(from, to), -1, 1);
-    if (length3(from) < EPS || length3(to) < EPS || cosine > 1 - EPS) return identityQuaternion;
-    if (cosine < -1 + EPS) {
-      const axis2 = normalize3(cross3(from, Math.abs(from[0]) < 0.9 ? [1, 0, 0] : [0, 1, 0]));
+    const from = normalize32(fromValue), to = normalize32(toValue), cosine = clamp5(dot3(from, to), -1, 1);
+    if (length32(from) < EPS4 || length32(to) < EPS4 || cosine > 1 - EPS4) return identityQuaternion;
+    if (cosine < -1 + EPS4) {
+      const axis2 = normalize32(cross32(from, Math.abs(from[0]) < 0.9 ? [1, 0, 0] : [0, 1, 0]));
       return quaternionFromAxisAngle(axis2, Math.PI);
     }
-    const axis = cross3(from, to), scale = Math.sqrt((1 + cosine) * 2), inverseScale = 1 / scale;
-    return normalizeQuaternion([axis[0] * inverseScale, axis[1] * inverseScale, axis[2] * inverseScale, scale * 0.5]);
+    const axis = cross32(from, to), scale5 = Math.sqrt((1 + cosine) * 2), inverseScale = 1 / scale5;
+    return normalizeQuaternion([axis[0] * inverseScale, axis[1] * inverseScale, axis[2] * inverseScale, scale5 * 0.5]);
   }
   function effectiveNodeTransform(scene, overrides, nodeId) {
     const node = scene.nodes.find((candidate) => candidate.id === nodeId);
@@ -1056,39 +2518,39 @@ var VSRSpatial3D = (() => {
     return cloneSpatialTransform({ ...node.transform, ...overrides.get(nodeId) ?? {} });
   }
   function setWorldRotation(scene, overrides, nodeId, desiredWorldRotation, weight) {
-    if (weight <= EPS) return;
+    if (weight <= EPS4) return;
     const node = scene.nodes.find((candidate) => candidate.id === nodeId);
     if (!node) throw new Error(`Animation constraint references missing node ${nodeId}.`);
-    const matrices = worldMatrices(scene, overrides), currentWorldRotation = quaternionFromRotationMatrix(matrices.get(nodeId)), blendedWorldRotation = quaternionSlerp(currentWorldRotation, desiredWorldRotation, clamp(weight, 0, 1)), parentWorldRotation = node.parentId ? quaternionFromRotationMatrix(matrices.get(node.parentId)) : identityQuaternion, next = effectiveNodeTransform(scene, overrides, nodeId);
+    const matrices = worldMatrices2(scene, overrides), currentWorldRotation = quaternionFromRotationMatrix(matrices.get(nodeId)), blendedWorldRotation = quaternionSlerp(currentWorldRotation, desiredWorldRotation, clamp5(weight, 0, 1)), parentWorldRotation = node.parentId ? quaternionFromRotationMatrix(matrices.get(node.parentId)) : identityQuaternion, next = effectiveNodeTransform(scene, overrides, nodeId);
     next.rotationQuaternion = quaternionMultiply(quaternionInverse(parentWorldRotation), blendedWorldRotation);
     delete next.rotationEulerDeg;
     overrides.set(nodeId, next);
   }
   function applyLookAtConstraint(scene, overrides, constraint) {
-    const matrices = worldMatrices(scene, overrides), nodeWorld = matrices.get(constraint.nodeId), position = transformPoint3(nodeWorld, [0, 0, 0]), direction = normalize3(sub3(constraint.target, position));
-    if (length3(direction) < EPS) return;
-    const requestedUp = normalize3(constraint.up ?? [0, 1, 0]);
-    let right = normalize3(cross3(direction, requestedUp));
-    if (length3(right) < EPS) right = normalize3(cross3(direction, Math.abs(direction[1]) < 0.9 ? [0, 1, 0] : [1, 0, 0]));
-    const up = normalize3(cross3(right, direction)), desiredWorldRotation = quaternionFromBasis(right, up, scale3(direction, -1));
+    const matrices = worldMatrices2(scene, overrides), nodeWorld = matrices.get(constraint.nodeId), position = transformPoint3(nodeWorld, [0, 0, 0]), direction = normalize32(sub32(constraint.target, position));
+    if (length32(direction) < EPS4) return;
+    const requestedUp = normalize32(constraint.up ?? [0, 1, 0]);
+    let right = normalize32(cross32(direction, requestedUp));
+    if (length32(right) < EPS4) right = normalize32(cross32(direction, Math.abs(direction[1]) < 0.9 ? [0, 1, 0] : [1, 0, 0]));
+    const up = normalize32(cross32(right, direction)), desiredWorldRotation = quaternionFromBasis(right, up, scale32(direction, -1));
     setWorldRotation(scene, overrides, constraint.nodeId, desiredWorldRotation, constraint.weight ?? 1);
   }
   function applyTwoBoneIKConstraint(scene, overrides, constraint) {
     const nodeById = new Map(scene.nodes.map((node) => [node.id, node])), root = nodeById.get(constraint.rootNodeId), mid = nodeById.get(constraint.midNodeId), end = nodeById.get(constraint.endNodeId);
     if (!root || !mid || !end) throw new Error("Animation two-bone IK references a missing node.");
     if (mid.parentId !== root.id || end.parentId !== mid.id) throw new Error("Animation two-bone IK requires a root -> mid -> end chain.");
-    const matrices = worldMatrices(scene, overrides), rootPosition = transformPoint3(matrices.get(root.id), [0, 0, 0]), midPosition = transformPoint3(matrices.get(mid.id), [0, 0, 0]), endPosition = transformPoint3(matrices.get(end.id), [0, 0, 0]), rootLength = distance3(rootPosition, midPosition), midLength = distance3(midPosition, endPosition);
-    if (rootLength < EPS || midLength < EPS) throw new Error("Animation two-bone IK requires non-zero bone lengths.");
-    const rawTargetVector = sub3(constraint.target, rootPosition), rawTargetDistance = length3(rawTargetVector), targetDirection = rawTargetDistance < EPS ? normalize3(sub3(endPosition, rootPosition)) : normalize3(rawTargetVector), minimumDistance = Math.abs(rootLength - midLength) + EPS, maximumDistance = Math.max(minimumDistance, rootLength + midLength - EPS), targetDistance = clamp(rawTargetDistance, minimumDistance, maximumDistance), solvedEnd = add3(rootPosition, scale3(targetDirection, targetDistance));
-    const poleDirection = normalize3(sub3(constraint.pole ?? midPosition, rootPosition));
-    let planeNormal = normalize3(cross3(targetDirection, poleDirection));
-    if (length3(planeNormal) < EPS) planeNormal = normalize3(cross3(targetDirection, normalize3(sub3(midPosition, rootPosition))));
-    if (length3(planeNormal) < EPS) planeNormal = normalize3(cross3(targetDirection, Math.abs(targetDirection[1]) < 0.9 ? [0, 1, 0] : [1, 0, 0]));
-    const bendDirection = normalize3(cross3(planeNormal, targetDirection)), cosine = clamp((rootLength * rootLength + targetDistance * targetDistance - midLength * midLength) / (2 * rootLength * targetDistance), -1, 1), sine = Math.sqrt(Math.max(0, 1 - cosine * cosine)), solvedMid = add3(rootPosition, scale3(add3(scale3(targetDirection, cosine), scale3(bendDirection, sine)), rootLength)), currentRootDirection = normalize3(sub3(midPosition, rootPosition)), desiredRootDirection = normalize3(sub3(solvedMid, rootPosition));
+    const matrices = worldMatrices2(scene, overrides), rootPosition = transformPoint3(matrices.get(root.id), [0, 0, 0]), midPosition = transformPoint3(matrices.get(mid.id), [0, 0, 0]), endPosition = transformPoint3(matrices.get(end.id), [0, 0, 0]), rootLength = distance32(rootPosition, midPosition), midLength = distance32(midPosition, endPosition);
+    if (rootLength < EPS4 || midLength < EPS4) throw new Error("Animation two-bone IK requires non-zero bone lengths.");
+    const rawTargetVector = sub32(constraint.target, rootPosition), rawTargetDistance = length32(rawTargetVector), targetDirection = rawTargetDistance < EPS4 ? normalize32(sub32(endPosition, rootPosition)) : normalize32(rawTargetVector), minimumDistance = Math.abs(rootLength - midLength) + EPS4, maximumDistance = Math.max(minimumDistance, rootLength + midLength - EPS4), targetDistance = clamp5(rawTargetDistance, minimumDistance, maximumDistance), solvedEnd = add32(rootPosition, scale32(targetDirection, targetDistance));
+    const poleDirection = normalize32(sub32(constraint.pole ?? midPosition, rootPosition));
+    let planeNormal = normalize32(cross32(targetDirection, poleDirection));
+    if (length32(planeNormal) < EPS4) planeNormal = normalize32(cross32(targetDirection, normalize32(sub32(midPosition, rootPosition))));
+    if (length32(planeNormal) < EPS4) planeNormal = normalize32(cross32(targetDirection, Math.abs(targetDirection[1]) < 0.9 ? [0, 1, 0] : [1, 0, 0]));
+    const bendDirection = normalize32(cross32(planeNormal, targetDirection)), cosine = clamp5((rootLength * rootLength + targetDistance * targetDistance - midLength * midLength) / (2 * rootLength * targetDistance), -1, 1), sine = Math.sqrt(Math.max(0, 1 - cosine * cosine)), solvedMid = add32(rootPosition, scale32(add32(scale32(targetDirection, cosine), scale32(bendDirection, sine)), rootLength)), currentRootDirection = normalize32(sub32(midPosition, rootPosition)), desiredRootDirection = normalize32(sub32(solvedMid, rootPosition));
     const rootDelta = quaternionFromTo(currentRootDirection, desiredRootDirection), rootWorldRotation = quaternionFromRotationMatrix(matrices.get(root.id));
     setWorldRotation(scene, overrides, root.id, quaternionMultiply(rootDelta, rootWorldRotation), constraint.weight ?? 1);
-    const afterRoot = worldMatrices(scene, overrides), afterMidPosition = transformPoint3(afterRoot.get(mid.id), [0, 0, 0]), afterEndPosition = transformPoint3(afterRoot.get(end.id), [0, 0, 0]), currentEndDirection = normalize3(sub3(afterEndPosition, afterMidPosition)), desiredEndDirection = normalize3(sub3(solvedEnd, afterMidPosition));
-    if (length3(currentEndDirection) >= EPS && length3(desiredEndDirection) >= EPS) {
+    const afterRoot = worldMatrices2(scene, overrides), afterMidPosition = transformPoint3(afterRoot.get(mid.id), [0, 0, 0]), afterEndPosition = transformPoint3(afterRoot.get(end.id), [0, 0, 0]), currentEndDirection = normalize32(sub32(afterEndPosition, afterMidPosition)), desiredEndDirection = normalize32(sub32(solvedEnd, afterMidPosition));
+    if (length32(currentEndDirection) >= EPS4 && length32(desiredEndDirection) >= EPS4) {
       const midDelta = quaternionFromTo(currentEndDirection, desiredEndDirection), midWorldRotation = quaternionFromRotationMatrix(afterRoot.get(mid.id));
       setWorldRotation(scene, overrides, mid.id, quaternionMultiply(midDelta, midWorldRotation), constraint.weight ?? 1);
     }
@@ -1171,7 +2633,7 @@ var VSRSpatial3D = (() => {
   function validDeformation(value) {
     return typeof value.nodeId === "string" && value.nodeId.length > 0 && (value.skinId === void 0 || value.skinId === null || typeof value.skinId === "string" && value.skinId.length > 0) && (value.morphWeights === void 0 || value.morphWeights === null || value.morphWeights.length <= 4 && value.morphWeights.every((weight) => Number.isFinite(weight) && weight >= -1 && weight <= 1)) && (Boolean(value.skinId) || Boolean(value.morphWeights));
   }
-  function worldMatrices(scene, overrides = /* @__PURE__ */ new Map()) {
+  function worldMatrices2(scene, overrides = /* @__PURE__ */ new Map()) {
     const byId = new Map(scene.nodes.map((node) => [node.id, node])), cache = /* @__PURE__ */ new Map(), visiting = /* @__PURE__ */ new Set();
     const resolve = (id) => {
       const cached = cache.get(id);
@@ -1187,19 +2649,23 @@ var VSRSpatial3D = (() => {
     return cache;
   }
   function resolveSpatialMorphWeights(mesh, node) {
-    return (mesh.morphTargets ?? []).slice(0, 4).map((target, index) => clamp(node.morphWeights?.[index] ?? target.defaultWeight ?? 0, -1, 1));
+    return (mesh.morphTargets ?? []).slice(0, 4).map((target, index) => clamp5(node.morphWeights?.[index] ?? target.defaultWeight ?? 0, -1, 1));
   }
   function resolveSpatialDeformation(mesh, node, skinById, world) {
-    const skin = node.skinId ? skinById.get(node.skinId) : void 0, jointMatrices = skin ? skin.joints.map((joint, index) => multiplyMat4(world.get(joint), skin.inverseBindMatrices?.[index] ?? identityMat4())) : [identityMat4()], morphWeights = resolveSpatialMorphWeights(mesh, node), base = { skinId: skin?.id ?? null, jointMatrices, morphWeights };
+    const skin = node.skinId ? skinById.get(node.skinId) : void 0, jointMatrices = skin ? skin.joints.map((joint, index) => multiplyMat4(world.get(joint), skin.inverseBindMatrices?.[index] ?? identityMat42())) : [identityMat42()], morphWeights = resolveSpatialMorphWeights(mesh, node), base = { skinId: skin?.id ?? null, jointMatrices, morphWeights };
     return { skinId: skin?.id, jointMatrices, morphWeights, deformationRoot: cryptographicHash(base) };
   }
+  function resolveSpatialTemporalReactive(node, material, deformation) {
+    const animated = Boolean(deformation.skinId) || deformation.morphWeights.some((weight) => Math.abs(weight) > EPS4);
+    return clamp5(Math.max(node.temporalReactive ?? 0, material.temporalReactive ?? 0, animated ? 1 : 0), 0, 1);
+  }
   function deformSpatialMesh(mesh, packet) {
-    const targets = mesh.morphTargets?.slice(0, 4) ?? [], weights = packet.morphWeights, hasMorph = targets.some((target, index) => Math.abs(weights[index] ?? 0) > EPS), hasSkin = Boolean(packet.skinId), hasDeformation = hasMorph || hasSkin;
+    const targets = mesh.morphTargets?.slice(0, 4) ?? [], weights = packet.morphWeights, hasMorph = targets.some((target, index) => Math.abs(weights[index] ?? 0) > EPS4), hasSkin = Boolean(packet.skinId), hasDeformation = hasMorph || hasSkin;
     if (!hasDeformation) return mesh;
     const positions = mesh.positions.slice(), normals = (mesh.normals ?? calculateMeshNormals({ ...mesh, morphTargets: void 0 })).slice();
     for (let targetIndex = 0; targetIndex < targets.length; targetIndex++) {
       const weight = weights[targetIndex] ?? 0;
-      if (Math.abs(weight) < EPS) continue;
+      if (Math.abs(weight) < EPS4) continue;
       const target = targets[targetIndex];
       for (let index = 0; index < positions.length; index++) positions[index] += target.positions[index] * weight;
       for (let index = 0; index < (target.normals?.length ?? 0); index++) normals[index] += target.normals[index] * weight;
@@ -1209,10 +2675,10 @@ var VSRSpatial3D = (() => {
         const position = [positions[vertex * 3], positions[vertex * 3 + 1], positions[vertex * 3 + 2]], normal = [normals[vertex * 3], normals[vertex * 3 + 1], normals[vertex * 3 + 2]], indices = mesh.jointIndices?.slice(vertex * 4, vertex * 4 + 4) ?? [0, 0, 0, 0], jointWeights = mesh.jointWeights?.slice(vertex * 4, vertex * 4 + 4) ?? [1, 0, 0, 0];
         let skinnedPosition = [0, 0, 0], skinnedNormal = [0, 0, 0];
         for (let influence = 0; influence < 4; influence++) {
-          const weight = jointWeights[influence] ?? 0, matrix = packet.jointMatrices[indices[influence] ?? 0] ?? identityMat4();
-          if (weight <= EPS) continue;
-          skinnedPosition = add3(skinnedPosition, scale3(transformPoint3(matrix, position), weight));
-          skinnedNormal = add3(skinnedNormal, scale3(transformDirection3(matrix, normal), weight));
+          const weight = jointWeights[influence] ?? 0, matrix = packet.jointMatrices[indices[influence] ?? 0] ?? identityMat42();
+          if (weight <= EPS4) continue;
+          skinnedPosition = add32(skinnedPosition, scale32(transformPoint3(matrix, position), weight));
+          skinnedNormal = add32(skinnedNormal, scale32(transformDirection3(matrix, normal), weight));
         }
         positions[vertex * 3] = skinnedPosition[0];
         positions[vertex * 3 + 1] = skinnedPosition[1];
@@ -1224,10 +2690,53 @@ var VSRSpatial3D = (() => {
     }
     return { ...mesh, positions, normals, morphTargets: void 0 };
   }
-  function chooseLOD(node, distance, bias) {
+  function chooseLOD(node, distance4, bias) {
     const lods = [...node.lods ?? []].sort((a, b) => a.maxDistance - b.maxDistance);
-    for (let i = 0; i < lods.length; i++) if (distance <= lods[i].maxDistance * bias) return { meshId: lods[i].meshId, level: i };
+    for (let i = 0; i < lods.length; i++) if (distance4 <= lods[i].maxDistance * bias) return { meshId: lods[i].meshId, level: i };
     return { meshId: node.meshId ?? lods.at(-1)?.meshId, level: lods.length };
+  }
+  function nodeHasRenderableGeometry(node, meshById) {
+    return Boolean(node.meshId && meshById.has(node.meshId) || node.lods?.some((lod) => meshById.has(lod.meshId)));
+  }
+  function resolveSpatialHLOD(scene, cameraPosition2, world, meshById, streamedNodeIds, bias) {
+    const config = scene.hlod;
+    if (!config?.clusters.length) return void 0;
+    const nodesById = new Map(scene.nodes.map((node) => [node.id, node])), proxyNodeIds = /* @__PURE__ */ new Set(), selectedProxyNodeIds = /* @__PURE__ */ new Set(), suppressedNodeIds = /* @__PURE__ */ new Set(), clusters = [];
+    for (const cluster of [...config.clusters].sort((a, b) => a.id.localeCompare(b.id))) {
+      let bounds;
+      for (const nodeId of cluster.sourceNodeIds) {
+        const node = nodesById.get(nodeId), meshId = node?.meshId ?? node?.lods?.[0]?.meshId, mesh = meshId ? meshById.get(meshId) : void 0;
+        if (!node || !mesh) continue;
+        const transformed = transformBounds2(meshBounds(mesh), world.get(nodeId) ?? identityMat42());
+        bounds = bounds ? mergeSpatialBounds(bounds, transformed) : transformed;
+      }
+      const distanceToCamera = distance32(cameraPosition2, bounds?.center ?? [0, 0, 0]), levels = [...cluster.levels].sort((a, b) => a.maxDistance - b.maxDistance);
+      let desiredLevel = -1;
+      for (let index = 0; index < levels.length; index++) {
+        if (distanceToCamera <= levels[index].maxDistance * bias) break;
+        desiredLevel = index;
+      }
+      let selectedLevel = "source", selectedNodeIds = [...cluster.sourceNodeIds], proxyAvailable = false;
+      for (let index = desiredLevel; index >= 0; index--) {
+        const candidates = levels[index].proxyNodeIds, available = candidates.every((nodeId) => {
+          const node = nodesById.get(nodeId);
+          return Boolean(node && node.visible !== false && nodeHasRenderableGeometry(node, meshById) && (!streamedNodeIds || streamedNodeIds.has(nodeId)));
+        });
+        if (!available) continue;
+        selectedLevel = index;
+        selectedNodeIds = [...candidates];
+        proxyAvailable = true;
+        break;
+      }
+      if (selectedLevel !== "source") {
+        for (const nodeId of cluster.sourceNodeIds) suppressedNodeIds.add(nodeId);
+        for (const nodeId of selectedNodeIds) selectedProxyNodeIds.add(nodeId);
+      }
+      for (const level of levels) for (const nodeId of level.proxyNodeIds) proxyNodeIds.add(nodeId);
+      clusters.push({ id: cluster.id, distanceToCamera, selectedLevel, selectedNodeIds, suppressedNodeIds: selectedLevel === "source" ? [] : [...cluster.sourceNodeIds], proxyAvailable });
+    }
+    const base = { format: VSR_SPATIAL_HLOD_FORMAT, clusters };
+    return { resolution: { ...base, root: cryptographicHash(base) }, suppressedNodeIds, proxyNodeIds, selectedProxyNodeIds };
   }
   function sphereInFrustum(bounds, viewProjection) {
     const clip = transformVec4(viewProjection, [bounds.center[0], bounds.center[1], bounds.center[2], 1]);
@@ -1236,16 +2745,98 @@ var VSRSpatial3D = (() => {
     return clip[0] >= -clip[3] - margin && clip[0] <= clip[3] + margin && clip[1] >= -clip[3] - margin && clip[1] <= clip[3] + margin && clip[2] >= -clip[3] - margin && clip[2] <= clip[3] + margin;
   }
   function packetInstances(packet) {
-    return packet.instances?.length ? packet.instances : [{ nodeId: packet.nodeId, worldMatrix: packet.worldMatrix, worldBounds: packet.worldBounds, distanceToCamera: packet.distanceToCamera }];
+    return packet.instances?.length ? packet.instances : [{ nodeId: packet.nodeId, worldMatrix: packet.worldMatrix, previousWorldMatrix: packet.worldMatrix, worldBounds: packet.worldBounds, distanceToCamera: packet.distanceToCamera }];
   }
   function packetInstanceCount(packet) {
     return packet.instanceCount ?? packetInstances(packet).length;
   }
   function mergeSpatialBounds(a, b) {
     const min = [Math.min(a.min[0], b.min[0]), Math.min(a.min[1], b.min[1]), Math.min(a.min[2], b.min[2])], max = [Math.max(a.max[0], b.max[0]), Math.max(a.max[1], b.max[1]), Math.max(a.max[2], b.max[2])], center = [(min[0] + max[0]) / 2, (min[1] + max[1]) / 2, (min[2] + max[2]) / 2];
-    return { min, max, center, radius: Math.max(distance3(min, center), distance3(max, center)) };
+    return { min, max, center, radius: Math.max(distance32(min, center), distance32(max, center)) };
   }
-  var VSR_SPATIAL_VERTEX_WGSL_V04 = `struct Camera { viewProjection: mat4x4<f32>, cameraPosition:vec4<f32>, ambient:vec4<f32>, sunDirection:vec4<f32>, sunColor:vec4<f32>, environmentDiffuse:vec4<f32>, environmentSpecular:vec4<f32>, environmentParams:vec4<f32> }; @group(0) @binding(0) var<uniform> camera: Camera; struct Object { world:mat4x4<f32> }; @group(1) @binding(0) var<uniform> object:Object; @group(1) @binding(1) var<storage,read> jointMatrices:array<mat4x4<f32>>; struct Deformation { skinEnabled:f32, vertexCount:f32, morphCount:f32, _pad:f32, morphWeights:vec4<f32> }; @group(1) @binding(2) var<uniform> deformation:Deformation; @group(1) @binding(3) var<storage,read> morphDeltas:array<vec4<f32>>; @group(1) @binding(4) var<storage,read> instanceMatrices:array<mat4x4<f32>>; @group(1) @binding(5) var<storage,read> visibleInstanceIndices:array<u32>; struct VSIn { @location(0) position:vec3<f32>, @location(1) normal:vec3<f32>, @location(2) uv:vec2<f32>, @location(3) joints:vec4<f32>, @location(4) weights:vec4<f32>, @builtin(vertex_index) vertexIndex:u32, @builtin(instance_index) instanceIndex:u32 }; struct VSOut { @builtin(position) position:vec4<f32>, @location(0) worldPosition:vec3<f32>, @location(1) normal:vec3<f32>, @location(2) uv:vec2<f32> }; fn morphPosition(position:vec3<f32>,vertexIndex:u32)->vec3<f32>{var result=position;let vertexCount=u32(deformation.vertexCount);for(var morph:u32=0u;morph<4u;morph=morph+1u){if(morph<u32(deformation.morphCount)){result=result+morphDeltas[morph*vertexCount+vertexIndex].xyz*deformation.morphWeights[morph];}}return result;} fn skinPosition(position:vec3<f32>,joints:vec4<f32>,weights:vec4<f32>)->vec3<f32>{if(deformation.skinEnabled<0.5){return position;}let total=weights.x+weights.y+weights.z+weights.w;if(total<=0.0001){return position;}return(jointMatrices[u32(joints.x)]*vec4<f32>(position,1.0)*weights.x+jointMatrices[u32(joints.y)]*vec4<f32>(position,1.0)*weights.y+jointMatrices[u32(joints.z)]*vec4<f32>(position,1.0)*weights.z+jointMatrices[u32(joints.w)]*vec4<f32>(position,1.0)*weights.w).xyz/total;} fn skinNormal(normal:vec3<f32>,joints:vec4<f32>,weights:vec4<f32>)->vec3<f32>{if(deformation.skinEnabled<0.5){return normal;}let total=weights.x+weights.y+weights.z+weights.w;if(total<=0.0001){return normal;}return normalize((jointMatrices[u32(joints.x)]*vec4<f32>(normal,0.0)*weights.x+jointMatrices[u32(joints.y)]*vec4<f32>(normal,0.0)*weights.y+jointMatrices[u32(joints.z)]*vec4<f32>(normal,0.0)*weights.z+jointMatrices[u32(joints.w)]*vec4<f32>(normal,0.0)*weights.w).xyz);} @vertex fn vs_main(input:VSIn)->VSOut{var out:VSOut;let localPosition=skinPosition(morphPosition(input.position,input.vertexIndex),input.joints,input.weights);let instanceWorld=object.world*instanceMatrices[visibleInstanceIndices[input.instanceIndex]];let worldPosition=instanceWorld*vec4<f32>(localPosition,1.0);out.position=camera.viewProjection*worldPosition;out.worldPosition=worldPosition.xyz;out.normal=normalize((instanceWorld*vec4<f32>(skinNormal(input.normal,input.joints,input.weights),0.0)).xyz);out.uv=input.uv;return out;}`;
+  function spatialIrradianceSource(scene) {
+    return { format: scene.format, sceneId: scene.sceneId, meshes: scene.meshes.map((mesh) => ({ id: mesh.id, positions: mesh.positions, normals: mesh.normals ?? null, indices: mesh.indices })), materials: scene.materials.map((material) => ({ id: material.id, baseColor: material.baseColor ?? null, emissive: material.emissive ?? null, emissiveStrength: material.emissiveStrength ?? 0 })), nodes: scene.nodes.map((node) => ({ id: node.id, parentId: node.parentId ?? null, meshId: node.meshId ?? null, materialId: node.materialId ?? null, transform: node.transform ?? null })), lights: scene.lights, environment: { diffuseColor: scene.environment?.diffuseColor ?? null, specularColor: scene.environment?.specularColor ?? null, intensity: scene.environment?.intensity ?? 1, textureId: scene.environment?.textureId ?? null, texture: scene.environment?.textureId ? scene.textures?.find((texture) => texture.id === scene.environment?.textureId) ?? null : null } };
+  }
+  function irradianceBakeColor(value, scale5) {
+    const channels = value.map((channel) => Math.round(clamp5(channel / Math.max(scale5, 1), 0, 1) * 255).toString(16).padStart(2, "0"));
+    return `#${channels.join("")}`;
+  }
+  function irradianceBakePositions(scene, options) {
+    const worlds2 = worldMatrices2(scene);
+    let bounds;
+    for (const node of scene.nodes) {
+      if (!node.meshId) continue;
+      const mesh = scene.meshes.find((entry) => entry.id === node.meshId);
+      if (!mesh) continue;
+      const transformed = transformBounds2(meshBounds(mesh), worlds2.get(node.id) ?? identityMat42());
+      bounds = bounds ? mergeSpatialBounds(bounds, transformed) : transformed;
+    }
+    const requested = options.positions?.slice(0, 8).map((position) => {
+      if (position.length !== 3 || position.some((component) => !Number.isFinite(component))) throw new Error("Irradiance probe positions must be finite XYZ triples.");
+      return [...position];
+    });
+    if (requested?.length) return { positions: requested, radius: clamp5(Number.isFinite(options.radius) ? options.radius : Math.max(1, bounds?.radius ?? 1), 0.01, 1e5) };
+    const count = clamp5(Math.floor(options.count ?? 4), 1, 8), min = bounds?.min ?? [-1, -1, -1], max = bounds?.max ?? [1, 1, 1], extent = [Math.max(max[0] - min[0], 1), Math.max(max[1] - min[1], 1), Math.max(max[2] - min[2], 1)], coordinates = [[0.5, 0.5, 0.5], [0.25, 0.5, 0.25], [0.75, 0.5, 0.25], [0.25, 0.5, 0.75], [0.75, 0.5, 0.75], [0.25, 0.25, 0.5], [0.75, 0.25, 0.5], [0.5, 0.75, 0.5]], positions = coordinates.slice(0, count).map((coordinate) => [min[0] + extent[0] * coordinate[0], min[1] + extent[1] * coordinate[1], min[2] + extent[2] * coordinate[2]]);
+    return { positions, radius: clamp5(Number.isFinite(options.radius) ? options.radius : Math.max(1, bounds?.radius ?? 1) * 1.5, 0.01, 1e5) };
+  }
+  function bakeSpatialIrradianceProbes(scene, options = {}) {
+    validateScene(scene);
+    const sourceRoot3 = cryptographicHash(spatialIrradianceSource(scene)), layout = irradianceBakePositions(scene, options), idPrefix = options.idPrefix?.trim() || "irradiance", worlds2 = worldMatrices2(scene), environment = scene.environment ?? {}, environmentTexture = environment.textureId ? scene.textures?.find((texture) => texture.id === environment.textureId) : void 0, environmentDiffuse = environmentTexture ? sampleSpatialEnvironment(environmentTexture, [0, 1, 0], 1) : materialColor(environment.diffuseColor ?? "#000000"), environmentSpecular = environmentTexture ? sampleSpatialEnvironment(environmentTexture, [0, 0, 1], 0) : materialColor(environment.specularColor ?? "#000000"), environmentIntensity = clamp5(environment.intensity ?? 1, 0, 32), emissiveSources2 = scene.nodes.flatMap((node) => {
+      const mesh = node.meshId ? scene.meshes.find((entry) => entry.id === node.meshId) : void 0, material = node.materialId ? scene.materials.find((entry) => entry.id === node.materialId) : void 0;
+      if (!mesh || !material || (material.emissiveStrength ?? 0) <= 0) return [];
+      return [{ center: transformBounds2(meshBounds(mesh), worlds2.get(node.id) ?? identityMat42()).center, radiance: scale32(materialColor(material.emissive ?? "#000000"), Math.max(0, material.emissiveStrength ?? 0)) }];
+    }), probes = layout.positions.map((position, index) => {
+      let diffuse = scale32(environmentDiffuse, environmentIntensity), specular = scale32(environmentSpecular, environmentIntensity);
+      for (const light of scene.lights.slice(0, VSR_SPATIAL_MAX_DYNAMIC_LIGHTS)) {
+        const color3 = materialColor(light.color ?? "#ffffff"), intensity = Math.max(0, light.intensity ?? 1);
+        if (light.kind === "ambient") {
+          diffuse = add32(diffuse, scale32(color3, intensity));
+          specular = add32(specular, scale32(color3, intensity * 0.35));
+          continue;
+        }
+        if (light.kind === "directional") {
+          diffuse = add32(diffuse, scale32(color3, intensity * 0.45));
+          specular = add32(specular, scale32(color3, intensity * 0.2));
+          continue;
+        }
+        const distance4 = distance32(position, light.position ?? [0, 2, 0]), range = Math.max(1e-3, light.range ?? 10), attenuation = Math.pow(clamp5(1 - distance4 / range, 0, 1), 2);
+        diffuse = add32(diffuse, scale32(color3, intensity * attenuation * 0.5));
+        specular = add32(specular, scale32(color3, intensity * attenuation * 0.25));
+      }
+      for (const source of emissiveSources2) {
+        const influence = 1 / (1 + distance32(position, source.center));
+        diffuse = add32(diffuse, scale32(source.radiance, influence * 0.5));
+        specular = add32(specular, scale32(source.radiance, influence * 0.15));
+      }
+      const scale5 = Math.max(1, ...diffuse, ...specular);
+      return { id: `${idPrefix}:${index}`, position, radius: layout.radius, diffuseColor: irradianceBakeColor(diffuse, scale5), specularColor: irradianceBakeColor(specular, scale5), intensity: scale5 };
+    }), settings = { count: probes.length, radius: layout.radius, positions: layout.positions.map((position) => [...position]), idPrefix }, base = { format: VSR_SPATIAL_IRRADIANCE_BAKE_FORMAT, version: "0.1.0", sceneId: scene.sceneId, sourceRoot: sourceRoot3, settings, probes };
+    return { ...base, root: cryptographicHash(base) };
+  }
+  function verifySpatialIrradianceProbeBake(bake) {
+    const diagnostics = [];
+    if (bake.format !== VSR_SPATIAL_IRRADIANCE_BAKE_FORMAT) diagnostics.push("irradiance bake format mismatch");
+    if (bake.version !== "0.1.0") diagnostics.push("irradiance bake version mismatch");
+    if (!Number.isInteger(bake.settings.count) || bake.settings.count < 1 || bake.settings.count > 8) diagnostics.push("irradiance bake settings count is outside 1..8");
+    if (!Number.isFinite(bake.settings.radius) || bake.settings.radius <= 0) diagnostics.push("irradiance bake settings radius is invalid");
+    if (bake.settings.positions.length !== bake.settings.count) diagnostics.push("irradiance bake settings positions do not match count");
+    if (bake.probes.length !== bake.settings.count) diagnostics.push("irradiance bake probes do not match settings count");
+    if (bake.probes.length < 1 || bake.probes.length > 8) diagnostics.push("irradiance bake probe count is outside 1..8");
+    if (bake.settings.positions.some((position) => position.length !== 3 || position.some((component) => !Number.isFinite(component)))) diagnostics.push("irradiance bake settings contain an invalid position");
+    if (bake.probes.some((probe) => !probe.id || probe.position.length !== 3 || probe.position.some((component) => !Number.isFinite(component)) || !Number.isFinite(probe.radius) || probe.radius <= 0)) diagnostics.push("irradiance bake contains an invalid probe");
+    const { root, ...base } = bake;
+    if (cryptographicHash(base) !== root) diagnostics.push("irradiance bake root mismatch");
+    return { ok: diagnostics.length === 0, diagnostics };
+  }
+  function applySpatialIrradianceProbeBake(scene, bake) {
+    const verification = verifySpatialIrradianceProbeBake(bake);
+    if (!verification.ok) throw new Error(verification.diagnostics.join("; "));
+    if (bake.sceneId !== scene.sceneId) throw new Error(`Irradiance bake scene ${bake.sceneId} does not match ${scene.sceneId}.`);
+    const sourceRoot3 = cryptographicHash(spatialIrradianceSource(scene));
+    if (sourceRoot3 !== bake.sourceRoot) throw new Error("Irradiance bake source root mismatch.");
+    return { ...scene, environment: { ...scene.environment ?? {}, probes: bake.probes.map((probe) => ({ ...probe, position: [...probe.position] })), irradianceBakeRoot: bake.root } };
+  }
+  var VSR_SPATIAL_VERTEX_WGSL_V04 = `struct Camera { viewProjection: mat4x4<f32>, cameraPosition:vec4<f32>, ambient:vec4<f32>, sunDirection:vec4<f32>, sunColor:vec4<f32>, environmentDiffuse:vec4<f32>, environmentSpecular:vec4<f32>, environmentParams:vec4<f32> }; @group(0) @binding(0) var<uniform> camera: Camera; struct TemporalCamera { currentInverseViewProjection:mat4x4<f32>, previousViewProjection:mat4x4<f32> }; @group(0) @binding(9) var<uniform> temporalCamera:TemporalCamera; struct Object { world:mat4x4<f32>, reactive:vec4<f32> }; @group(1) @binding(0) var<uniform> object:Object; @group(1) @binding(1) var<storage,read> jointMatrices:array<mat4x4<f32>>; struct Deformation { skinEnabled:f32, vertexCount:f32, morphCount:f32, _pad:f32, morphWeights:vec4<f32> }; @group(1) @binding(2) var<uniform> deformation:Deformation; @group(1) @binding(3) var<storage,read> morphDeltas:array<vec4<f32>>; struct InstanceTransform { current:mat4x4<f32>, previous:mat4x4<f32> }; @group(1) @binding(4) var<storage,read> instanceTransforms:array<InstanceTransform>; @group(1) @binding(5) var<storage,read> visibleInstanceIndices:array<u32>; struct VSIn { @location(0) position:vec3<f32>, @location(1) normal:vec3<f32>, @location(2) uv:vec2<f32>, @location(3) uv1:vec2<f32>, @location(4) joints:vec4<f32>, @location(5) weights:vec4<f32>, @builtin(vertex_index) vertexIndex:u32, @builtin(instance_index) instanceIndex:u32 }; struct VSOut { @builtin(position) position:vec4<f32>, @location(0) worldPosition:vec3<f32>, @location(1) normal:vec3<f32>, @location(2) uv:vec2<f32>, @location(3) lightmapUv:vec2<f32>, @location(4) temporalReactive:f32, @location(5) motion:vec3<f32> }; fn morphPosition(position:vec3<f32>,vertexIndex:u32)->vec3<f32>{var result=position;let vertexCount=u32(deformation.vertexCount);for(var morph:u32=0u;morph<4u;morph=morph+1u){if(morph<u32(deformation.morphCount)){result=result+morphDeltas[morph*vertexCount+vertexIndex].xyz*deformation.morphWeights[morph];}}return result;} fn skinPosition(position:vec3<f32>,joints:vec4<f32>,weights:vec4<f32>)->vec3<f32>{if(deformation.skinEnabled<0.5){return position;}let total=weights.x+weights.y+weights.z+weights.w;if(total<=0.0001){return position;}return(jointMatrices[u32(joints.x)]*vec4<f32>(position,1.0)*weights.x+jointMatrices[u32(joints.y)]*vec4<f32>(position,1.0)*weights.y+jointMatrices[u32(joints.z)]*vec4<f32>(position,1.0)*weights.z+jointMatrices[u32(joints.w)]*vec4<f32>(position,1.0)*weights.w).xyz/total;} fn skinNormal(normal:vec3<f32>,joints:vec4<f32>,weights:vec4<f32>)->vec3<f32>{if(deformation.skinEnabled<0.5){return normal;}let total=weights.x+weights.y+weights.z+weights.w;if(total<=0.0001){return normal;}return normalize((jointMatrices[u32(joints.x)]*vec4<f32>(normal,0.0)*weights.x+jointMatrices[u32(joints.y)]*vec4<f32>(normal,0.0)*weights.y+jointMatrices[u32(joints.z)]*vec4<f32>(normal,0.0)*weights.z+jointMatrices[u32(joints.w)]*vec4<f32>(normal,0.0)*weights.w).xyz);} @vertex fn vs_main(input:VSIn)->VSOut{var out:VSOut;let localPosition=skinPosition(morphPosition(input.position,input.vertexIndex),input.joints,input.weights);let instanceTransform=instanceTransforms[visibleInstanceIndices[input.instanceIndex]];let instanceWorld=object.world*instanceTransform.current;let worldPosition=instanceWorld*vec4<f32>(localPosition,1.0);let currentClip=camera.viewProjection*worldPosition;let previousWorldPosition=object.world*instanceTransform.previous*vec4<f32>(localPosition,1.0);let previousClip=temporalCamera.previousViewProjection*previousWorldPosition;let currentNdc=currentClip.xy/max(abs(currentClip.w),0.0001);let previousNdc=previousClip.xy/max(abs(previousClip.w),0.0001);out.position=currentClip;out.worldPosition=worldPosition.xyz;out.normal=normalize((instanceWorld*vec4<f32>(skinNormal(input.normal,input.joints,input.weights),0.0)).xyz);out.uv=input.uv;out.lightmapUv=input.uv1;out.temporalReactive=object.reactive.x;out.motion=vec3<f32>(currentNdc-previousNdc,previousClip.z/max(abs(previousClip.w),0.0001)*0.5+0.5);return out;}`;
   var VSR_SPATIAL_FRAGMENT_WGSL_V04 = `
  struct ShadowCamera { lightViewProjection:mat4x4<f32>, params:vec4<f32> };
  @group(0) @binding(1) var shadowSampler:sampler;
@@ -1253,7 +2844,13 @@ var VSRSpatial3D = (() => {
  @group(0) @binding(3) var<uniform> shadowCamera:ShadowCamera;
  @group(0) @binding(4) var environmentSampler:sampler;
  @group(0) @binding(5) var environmentTexture:texture_2d<f32>;
- struct Material { baseColor: vec4<f32>, params:vec4<f32>, emissive:vec4<f32>, advanced:vec4<f32> };
+ struct SpatialLight { positionOrDirection:vec4<f32>, colorIntensity:vec4<f32>, params:vec4<f32> };
+ @group(0) @binding(6) var<storage,read> spatialLights:array<SpatialLight>;
+ struct EnvironmentProbe { positionRadius:vec4<f32>, diffuseIntensity:vec4<f32>, specularIntensity:vec4<f32> };
+ @group(0) @binding(7) var<storage,read> environmentProbes:array<EnvironmentProbe>;
+  struct EnvironmentVolumeField { header:vec4<f32>, data:array<vec4<f32>> };
+  @group(0) @binding(8) var<storage,read> environmentVolume:EnvironmentVolumeField;
+ struct Material { baseColor: vec4<f32>, params:vec4<f32>, emissive:vec4<f32>, advanced:vec4<f32>, lightmap:vec4<f32>, reactive:vec4<f32> };
  @group(2) @binding(0) var<uniform> material:Material;
  @group(2) @binding(1) var baseColorSampler:sampler;
  @group(2) @binding(2) var baseColorTexture:texture_2d<f32>;
@@ -1263,36 +2860,83 @@ var VSRSpatial3D = (() => {
  @group(2) @binding(6) var normalTexture:texture_2d<f32>;
  @group(2) @binding(7) var occlusionSampler:sampler;
  @group(2) @binding(8) var occlusionTexture:texture_2d<f32>;
- @group(2) @binding(9) var emissiveSampler:sampler;
- @group(2) @binding(10) var emissiveTexture:texture_2d<f32>;
+  @group(2) @binding(9) var emissiveSampler:sampler;
+  @group(2) @binding(10) var emissiveTexture:texture_2d<f32>;
+   @group(2) @binding(11) var lightmapSampler:sampler;
+   @group(2) @binding(12) var lightmapTexture:texture_2d<f32>;
+   @group(2) @binding(13) var reactiveSampler:sampler;
+   @group(2) @binding(14) var reactiveTexture:texture_2d<f32>;
  const PI:f32=3.14159265359;
 fn distributionGGX(nDotH:f32,roughness:f32)->f32{let a=roughness*roughness;let a2=a*a;let d=nDotH*nDotH*(a2-1.0)+1.0;return a2/max(PI*d*d,0.000001);}
 fn geometrySchlickGGX(nDotV:f32,roughness:f32)->f32{let r=roughness+1.0;let k=(r*r)/8.0;return nDotV/max(nDotV*(1.0-k)+k,0.000001);}
 fn geometrySmith(nDotV:f32,nDotL:f32,roughness:f32)->f32{return geometrySchlickGGX(nDotV,roughness)*geometrySchlickGGX(nDotL,roughness);}
 fn fresnelSchlick(cosTheta:f32,f0:vec3<f32>)->vec3<f32>{return f0+(vec3<f32>(1.0)-f0)*pow(clamp(1.0-cosTheta,0.0,1.0),5.0);}
 fn environmentUv(direction:vec3<f32>)->vec2<f32>{let d=normalize(direction);return vec2<f32>(0.5+atan2(d.z,d.x)/(PI*2.0),0.5+asin(clamp(d.y,-1.0,1.0))/PI);}
-fn environmentSample(direction:vec3<f32>,fallback:vec3<f32>)->vec3<f32>{return select(fallback,textureSample(environmentTexture,environmentSampler,environmentUv(direction)).rgb,camera.environmentParams.x>0.5);}
+fn environmentSample(direction:vec3<f32>,fallback:vec3<f32>,roughness:f32)->vec3<f32>{return select(fallback,textureSampleLevel(environmentTexture,environmentSampler,environmentUv(direction),clamp(roughness,0.0,1.0)*camera.environmentParams.y).rgb,camera.environmentParams.x>0.5);}
+ fn volumeIndex(x:u32,y:u32,z:u32,dimensions:vec3<u32>)->u32{return x+dimensions.x*(y+dimensions.y*z);}
+ fn environmentVolumeSample(worldPosition:vec3<f32>,fallback:vec3<f32>,specular:bool)->vec3<f32>{let volumeCount=min(u32(environmentVolume.header.x),arrayLength(&environmentVolume.data)/4u);if(volumeCount==0u){return fallback;}var fieldWeighted=vec3<f32>(0.0);var fieldTotal=0.0;let blendDistance=max(environmentVolume.header.z,0.001);for(var volumeIndexValue:u32=0u;volumeIndexValue<volumeCount;volumeIndexValue=volumeIndexValue+1u){let record=volumeIndexValue*4u;let boundsMin=environmentVolume.data[record].xyz;let boundsMax=environmentVolume.data[record+1u].xyz;let dimensions=vec3<u32>(u32(environmentVolume.data[record+2u].x),u32(environmentVolume.data[record+2u].y),u32(environmentVolume.data[record+2u].z));let sampleOffset=u32(environmentVolume.data[record+2u].w);if(dimensions.x<2u||dimensions.y<2u||dimensions.z<2u){continue;}let clampedPosition=clamp(worldPosition,boundsMin,boundsMax);let distanceToBounds=distance(worldPosition,clampedPosition);let geometryWeight=select(clamp(1.0-distanceToBounds/blendDistance,0.0,1.0),1.0,distanceToBounds<=0.0001);let volumeBlend=geometryWeight*clamp(environmentVolume.data[record+3u].x,0.0,1.0);if(volumeBlend<=0.0001){continue;}let span=boundsMax-boundsMin;let safeSpan=vec3<f32>(max(span.x,0.0001),max(span.y,0.0001),max(span.z,0.0001));let normalized=clamp((clampedPosition-boundsMin)/safeSpan,vec3<f32>(0.0),vec3<f32>(1.0));let coordinate=normalized*vec3<f32>(f32(dimensions.x-1u),f32(dimensions.y-1u),f32(dimensions.z-1u));let low=vec3<u32>(u32(floor(coordinate.x)),u32(floor(coordinate.y)),u32(floor(coordinate.z)));let high=vec3<u32>(min(low.x+1u,dimensions.x-1u),min(low.y+1u,dimensions.y-1u),min(low.z+1u,dimensions.z-1u));let weights=coordinate-vec3<f32>(f32(low.x),f32(low.y),f32(low.z));var volumeWeighted=vec3<f32>(0.0);var sampleTotal=0.0;for(var z:u32=0u;z<2u;z=z+1u){for(var y:u32=0u;y<2u;y=y+1u){for(var x:u32=0u;x<2u;x=x+1u){let sampleIndex=volumeCount*4u+(sampleOffset+volumeIndex(select(low.x,high.x,x==1u),select(low.y,high.y,y==1u),select(low.z,high.z,z==1u),dimensions))*2u;let sampleColor=select(environmentVolume.data[sampleIndex].xyz,environmentVolume.data[sampleIndex+1u].xyz,specular);let sampleIntensity=select(environmentVolume.data[sampleIndex].w,environmentVolume.data[sampleIndex+1u].w,specular);let sampleWeight=select(1.0-weights.x,weights.x,x==1u)*select(1.0-weights.y,weights.y,y==1u)*select(1.0-weights.z,weights.z,z==1u);volumeWeighted=volumeWeighted+sampleColor*sampleIntensity*sampleWeight;sampleTotal=sampleTotal+sampleWeight;}}}if(sampleTotal>0.0001){fieldWeighted=fieldWeighted+(volumeWeighted/max(sampleTotal,0.0001))*volumeBlend;fieldTotal=fieldTotal+volumeBlend;}}if(fieldTotal<=0.0001){return fallback;}return mix(fallback,fieldWeighted/max(fieldTotal,0.0001),clamp(fieldTotal,0.0,1.0));}
+fn environmentProbeSample(worldPosition:vec3<f32>,fallback:vec3<f32>,specular:bool)->vec3<f32>{var weighted=vec3<f32>(0.0);var total=0.0;let count=min(u32(camera.environmentParams.w),arrayLength(&environmentProbes));for(var index:u32=0u;index<count;index=index+1u){let probe=environmentProbes[index];let influence=clamp(1.0-distance(worldPosition,probe.positionRadius.xyz)/max(probe.positionRadius.w,0.0001),0.0,1.0);let color=select(probe.diffuseIntensity.rgb,probe.specularIntensity.rgb,specular);let intensity=select(probe.diffuseIntensity.a,probe.specularIntensity.a,specular);weighted=weighted+color*intensity*influence;total=total+influence;}if(total<=0.0001){return fallback;}return mix(fallback,weighted/max(total,0.0001),clamp(total,0.0,1.0));}
  fn shadowVisibility(worldPosition:vec3<f32>)->f32{
    if(shadowCamera.params.x<0.5){return 1.0;}
    let clip=shadowCamera.lightViewProjection*vec4<f32>(worldPosition,1.0);if(clip.w<=0.0){return 1.0;}
    let uv=vec2<f32>(clip.x/clip.w*0.5+0.5,1.0-(clip.y/clip.w*0.5+0.5));if(any(uv<vec2<f32>(0.0))||any(uv>vec2<f32>(1.0))){return 1.0;}
    let depth=clip.z/clip.w*0.5+0.5;let shadowDepth=textureSampleLevel(shadowMap,shadowSampler,uv,0u);let visible=select(0.0,1.0,depth-shadowCamera.params.y<=shadowDepth);return mix(0.2,1.0,visible);
  }
- @fragment fn fs_main(@location(0) worldPosition:vec3<f32>,@location(1) normal:vec3<f32>,@location(2) uv:vec2<f32>)->@location(0) vec4<f32>{
+  struct SpatialFragmentOut { @location(0) color:vec4<f32>, @location(1) depth:f32, @location(2) reactive:vec4<f32>, @location(3) velocity:vec4<f32> };
+ @fragment fn fs_main(@builtin(position) fragPosition:vec4<f32>,@location(0) worldPosition:vec3<f32>,@location(1) normal:vec3<f32>,@location(2) uv:vec2<f32>,@location(3) lightmapUv:vec2<f32>,@location(4) temporalReactive:f32,@location(5) motion:vec3<f32>)->SpatialFragmentOut{
    let n0=normalize(normal);let tangent=normalize(cross(select(vec3<f32>(1.0,0.0,0.0),vec3<f32>(0.0,1.0,0.0),abs(n0.y)>0.9),n0));let bitangent=normalize(cross(n0,tangent));let normalSample=textureSample(normalTexture,normalSampler,uv);let n=normalize(tangent*((normalSample.x*2.0-1.0))+bitangent*((normalSample.y*2.0-1.0))+n0*(normalSample.z*2.0-1.0));
-   let baseSample=textureSample(baseColorTexture,baseColorSampler,uv);let baseColor=material.baseColor*baseSample;let metallicRoughness=textureSample(metallicRoughnessTexture,metallicRoughnessSampler,uv);let metallic=clamp(material.params.x*metallicRoughness.b,0.0,1.0);let roughness=max(material.params.y*metallicRoughness.g,0.04);let emissiveSample=textureSample(emissiveTexture,emissiveSampler,uv);let aoSample=textureSample(occlusionTexture,occlusionSampler,uv);
-   let l=normalize(-camera.sunDirection.xyz);let v=normalize(camera.cameraPosition.xyz-worldPosition);let h=normalize(l+v);let emissiveStrength=material.params.z;let opacity=material.params.w*baseColor.a;
+   let baseSample=textureSample(baseColorTexture,baseColorSampler,uv);let baseColor=material.baseColor*baseSample;let metallicRoughness=textureSample(metallicRoughnessTexture,metallicRoughnessSampler,uv);let metallic=clamp(material.params.x*metallicRoughness.b,0.0,1.0);let roughness=max(material.params.y*metallicRoughness.g,0.04);let emissiveSample=textureSample(emissiveTexture,emissiveSampler,uv);let selectedLightmapUv=select(uv,lightmapUv,material.lightmap.y>0.5);let lightmapSample=textureSample(lightmapTexture,lightmapSampler,selectedLightmapUv);let aoSample=textureSample(occlusionTexture,occlusionSampler,uv);let reactiveSample=textureSample(reactiveTexture,reactiveSampler,uv);
+   let v=normalize(camera.cameraPosition.xyz-worldPosition);let emissiveStrength=material.params.z;let opacity=material.params.w*baseColor.a;if(material.lightmap.z>0.5&&material.lightmap.z<1.5&&opacity<material.lightmap.w){discard;}let reactive=clamp(max(max(material.reactive.x,temporalReactive),reactiveSample.r),0.0,1.0);
    let ao=mix(1.0,aoSample.r,material.advanced.x);let clearcoat=material.advanced.y;let clearcoatRoughness=max(material.advanced.z,0.04);let ior=max(material.advanced.w,1.0);
-   let nDotL=max(dot(n,l),0.0);let nDotV=max(dot(n,v),0.0001);let nDotH=max(dot(n,h),0.0);let vDotH=max(dot(v,h),0.0);
-   let dielectric=pow((ior-1.0)/(ior+1.0),2.0);let f0=mix(vec3<f32>(dielectric),baseColor.rgb,vec3<f32>(metallic));
-   let f=fresnelSchlick(vDotH,f0);let environmentF=fresnelSchlick(nDotV,f0);let environmentKd=(vec3<f32>(1.0)-environmentF)*(1.0-metallic);let reflection=normalize(2.0*nDotV*n-v);let environmentDiffuseColor=environmentSample(n,camera.environmentDiffuse.rgb);let environmentSpecularColor=mix(environmentSample(reflection,camera.environmentSpecular.rgb),environmentDiffuseColor,roughness*roughness);let environmentDiffuse=environmentKd*baseColor.rgb/PI*environmentDiffuseColor*camera.environmentDiffuse.a*ao;let environmentSpecular=environmentSpecularColor*camera.environmentSpecular.a*environmentF*(0.35+0.65*(1.0-roughness));let d=distributionGGX(nDotH,roughness);let g=geometrySmith(nDotV,nDotL,roughness);
-   let specular=f*(d*g/max(4.0*nDotV*nDotL,0.0001));let kd=(vec3<f32>(1.0)-f)*(1.0-metallic);let diffuse=kd*baseColor.rgb/PI;
-   let coatF=fresnelSchlick(vDotH,vec3<f32>(0.04));let coatD=distributionGGX(nDotH,clearcoatRoughness);let coatG=geometrySmith(nDotV,nDotL,clearcoatRoughness);let coat=coatF*(coatD*coatG/max(4.0*nDotV*nDotL,0.0001))*clearcoat;
-   let direct=(diffuse+specular+coat)*camera.sunColor.rgb*camera.sunColor.a*nDotL*shadowVisibility(worldPosition);
+   let nDotV=max(dot(n,v),0.0001);let dielectric=pow((ior-1.0)/(ior+1.0),2.0);let f0=mix(vec3<f32>(dielectric),baseColor.rgb,vec3<f32>(metallic));
+   let environmentF=fresnelSchlick(nDotV,f0);let environmentKd=(vec3<f32>(1.0)-environmentF)*(1.0-metallic);let reflection=normalize(2.0*nDotV*n-v);let environmentDiffuseColor=environmentProbeSample(worldPosition,environmentVolumeSample(worldPosition,environmentSample(n,camera.environmentDiffuse.rgb,1.0),false),false);let environmentSpecularColor=environmentProbeSample(worldPosition,environmentVolumeSample(worldPosition,environmentSample(reflection,camera.environmentSpecular.rgb,roughness),true),true);let environmentDiffuse=environmentKd*baseColor.rgb/PI*environmentDiffuseColor*camera.environmentDiffuse.a*ao;let environmentSpecular=environmentSpecularColor*camera.environmentSpecular.a*environmentF*(0.35+0.65*(1.0-roughness));
+   var direct=vec3<f32>(0.0);let lightCount=min(u32(camera.environmentParams.z),arrayLength(&spatialLights));
+   for(var lightIndex:u32=0u;lightIndex<lightCount;lightIndex=lightIndex+1u){let light=spatialLights[lightIndex];let directional=light.params.y>0.5;let delta=light.positionOrDirection.xyz-worldPosition;let distance=max(length(delta),0.0001);let l=select(normalize(delta),normalize(-light.positionOrDirection.xyz),directional);let attenuation=select(pow(clamp(1.0-distance/max(light.params.x,0.0001),0.0,1.0),2.0),1.0,directional);let h=normalize(l+v);let nDotL=max(dot(n,l),0.0);let nDotH=max(dot(n,h),0.0);let vDotH=max(dot(v,h),0.0);let f=fresnelSchlick(vDotH,f0);let d=distributionGGX(nDotH,roughness);let g=geometrySmith(nDotV,nDotL,roughness);let specular=f*(d*g/max(4.0*nDotV*nDotL,0.0001));let kd=(vec3<f32>(1.0)-f)*(1.0-metallic);let diffuse=kd*baseColor.rgb/PI;let coatF=fresnelSchlick(vDotH,vec3<f32>(0.04));let coatD=distributionGGX(nDotH,clearcoatRoughness);let coatG=geometrySmith(nDotV,nDotL,clearcoatRoughness);let coat=coatF*(coatD*coatG/max(4.0*nDotV*nDotL,0.0001))*clearcoat;let shadowed=directional&&light.params.z>0.5;let visibility=select(1.0,shadowVisibility(worldPosition),shadowed);direct=direct+(diffuse+specular+coat)*light.colorIntensity.rgb*light.colorIntensity.a*nDotL*attenuation*visibility;}
    let ambient=baseColor.rgb*camera.ambient.rgb*camera.ambient.a*ao;
-   return vec4<f32>(environmentDiffuse+environmentSpecular+ambient+direct+material.emissive.rgb*emissiveSample.rgb*emissiveStrength,opacity);
+   let shadedColor=environmentDiffuse+environmentSpecular+ambient+direct+lightmapSample.rgb*baseColor.rgb*material.lightmap.x*ao+material.emissive.rgb*emissiveSample.rgb*emissiveStrength;var output:SpatialFragmentOut;output.color=vec4<f32>(shadedColor,opacity);output.depth=fragPosition.z;output.reactive=vec4<f32>(reactive,0.0,0.0,1.0);output.velocity=vec4<f32>(motion,1.0);return output;
  }`;
-  var VSR_SPATIAL_SHADOW_WGSL_V04 = `struct ShadowCamera { lightViewProjection:mat4x4<f32> }; @group(0) @binding(0) var<uniform> shadowCamera:ShadowCamera; struct Object { world:mat4x4<f32> }; @group(1) @binding(0) var<uniform> object:Object; @group(1) @binding(1) var<storage,read> jointMatrices:array<mat4x4<f32>>; struct Deformation { skinEnabled:f32, vertexCount:f32, morphCount:f32, _pad:f32, morphWeights:vec4<f32> }; @group(1) @binding(2) var<uniform> deformation:Deformation; @group(1) @binding(3) var<storage,read> morphDeltas:array<vec4<f32>>; @group(1) @binding(4) var<storage,read> instanceMatrices:array<mat4x4<f32>>; @group(1) @binding(5) var<storage,read> visibleInstanceIndices:array<u32>; struct ShadowIn { @location(0) position:vec3<f32>, @location(3) joints:vec4<f32>, @location(4) weights:vec4<f32>, @builtin(vertex_index) vertexIndex:u32, @builtin(instance_index) instanceIndex:u32 }; fn morphPosition(position:vec3<f32>,vertexIndex:u32)->vec3<f32>{var result=position;let vertexCount=u32(deformation.vertexCount);for(var morph:u32=0u;morph<4u;morph=morph+1u){if(morph<u32(deformation.morphCount)){result=result+morphDeltas[morph*vertexCount+vertexIndex].xyz*deformation.morphWeights[morph];}}return result;} fn skinPosition(position:vec3<f32>,joints:vec4<f32>,weights:vec4<f32>)->vec3<f32>{if(deformation.skinEnabled<0.5){return position;}let total=weights.x+weights.y+weights.z+weights.w;if(total<=0.0001){return position;}return(jointMatrices[u32(joints.x)]*vec4<f32>(position,1.0)*weights.x+jointMatrices[u32(joints.y)]*vec4<f32>(position,1.0)*weights.y+jointMatrices[u32(joints.z)]*vec4<f32>(position,1.0)*weights.z+jointMatrices[u32(joints.w)]*vec4<f32>(position,1.0)*weights.w).xyz/total;} @vertex fn vs_shadow(input:ShadowIn)->@builtin(position) vec4<f32>{let localPosition=skinPosition(morphPosition(input.position,input.vertexIndex),input.joints,input.weights);return shadowCamera.lightViewProjection*object.world*instanceMatrices[visibleInstanceIndices[input.instanceIndex]]*vec4<f32>(localPosition,1.0);}`;
+  var VSR_SPATIAL_OIT_FRAGMENT_WGSL_V04 = VSR_SPATIAL_FRAGMENT_WGSL_V04.replace("struct SpatialFragmentOut { @location(0) color:vec4<f32>, @location(1) depth:f32, @location(2) reactive:vec4<f32>, @location(3) velocity:vec4<f32> };", "struct SpatialOITFragmentOut { @location(0) accum:vec4<f32>, @location(1) reveal:vec4<f32>, @location(2) reactive:vec4<f32>, @location(3) velocity:vec4<f32> };").replace(")->SpatialFragmentOut{", ")->SpatialOITFragmentOut{").replace("var output:SpatialFragmentOut;output.color=vec4<f32>(shadedColor,opacity);output.depth=fragPosition.z;output.reactive=vec4<f32>(reactive,0.0,0.0,1.0);output.velocity=vec4<f32>(motion,1.0);return output;", "var output:SpatialOITFragmentOut;let weight=clamp(0.03/(0.00001+pow(fragPosition.z,4.0)),0.01,3000.0);output.accum=vec4<f32>(shadedColor*opacity*weight,opacity*weight);output.reveal=vec4<f32>(0.0,0.0,0.0,opacity);output.reactive=vec4<f32>(reactive*opacity,0.0,0.0,1.0);output.velocity=vec4<f32>(motion*opacity*weight,opacity*weight);return output;");
+  var VSR_SPATIAL_OIT_COMPOSITE_WGSL_V04 = `struct OITCompositeOut { @builtin(position) position:vec4<f32>, @location(0) uv:vec2<f32> };
+@group(0) @binding(0) var oitSampler:sampler;
+@group(0) @binding(1) var sceneColor:texture_2d<f32>;
+@group(0) @binding(2) var oitAccumulation:texture_2d<f32>;
+@group(0) @binding(3) var oitRevealage:texture_2d<f32>;
+@group(0) @binding(4) var sceneReactive:texture_2d<f32>;
+@group(0) @binding(5) var oitReactive:texture_2d<f32>;
+@group(0) @binding(6) var sceneVelocity:texture_2d<f32>;
+@group(0) @binding(7) var oitVelocity:texture_2d<f32>;
+@vertex fn vs_composite(@builtin(vertex_index) index:u32)->OITCompositeOut{var positions=array<vec2<f32>,3>(vec2<f32>(-1.0,-1.0),vec2<f32>(3.0,-1.0),vec2<f32>(-1.0,3.0));let position=positions[index];var out:OITCompositeOut;out.position=vec4<f32>(position,0.0,1.0);out.uv=vec2<f32>(position.x*.5+.5,1.0-(position.y*.5+.5));return out;}
+ struct OITCompositeResult { @location(0) color:vec4<f32>, @location(1) reactive:vec4<f32>, @location(2) velocity:vec4<f32> };
+ @fragment fn fs_composite(input:OITCompositeOut)->OITCompositeResult{let opaque=textureSampleLevel(sceneColor,oitSampler,input.uv,0.0);let accumulation=textureSampleLevel(oitAccumulation,oitSampler,input.uv,0.0);let revealage=textureSampleLevel(oitRevealage,oitSampler,input.uv,0.0).r;let alpha=clamp(1.0-revealage,0.0,1.0);let weightedColor=accumulation.rgb/max(accumulation.a,0.0001);let opaqueVelocity=textureSampleLevel(sceneVelocity,oitSampler,input.uv,0.0);let velocityAccumulation=textureSampleLevel(oitVelocity,oitSampler,input.uv,0.0);let weightedVelocity=velocityAccumulation.xyz/max(velocityAccumulation.w,0.0001);let authoredReactive=max(textureSampleLevel(sceneReactive,oitSampler,input.uv,0.0).r,clamp(textureSampleLevel(oitReactive,oitSampler,input.uv,0.0).r,0.0,1.0));var output:OITCompositeResult;output.color=vec4<f32>(mix(opaque.rgb,weightedColor,alpha),1.0);output.reactive=vec4<f32>(authoredReactive,0.0,0.0,1.0);output.velocity=vec4<f32>(mix(opaqueVelocity.xyz,weightedVelocity,alpha),max(opaqueVelocity.a,alpha));return output;}`;
+  var VSR_SPATIAL_TONEMAP_WGSL_V04 = `struct ToneMapOut { @builtin(position) position:vec4<f32>, @location(0) uv:vec2<f32> };
+@group(0) @binding(0) var sceneSampler:sampler;
+ @group(0) @binding(1) var sceneColor:texture_2d<f32>;
+ @group(0) @binding(3) var sceneDepth:texture_depth_2d;
+ @group(0) @binding(4) var historyColor:texture_2d<f32>;
+ struct TemporalCamera { currentInverseViewProjection:mat4x4<f32>, previousViewProjection:mat4x4<f32> };
+ @group(0) @binding(5) var<uniform> temporalCamera:TemporalCamera;
+  @group(0) @binding(6) var historyDepth:texture_2d<f32>;
+  @group(0) @binding(7) var reactiveMask:texture_2d<f32>;
+  @group(0) @binding(8) var sceneVelocity:texture_2d<f32>;
+  @group(0) @binding(9) var historyVelocity:texture_2d<f32>;
+  struct PostProcess { exposure:f32, contrast:f32, saturation:f32, vignette:f32, bloomThreshold:f32, bloomIntensity:f32, bloomRadius:f32, temporalClamp:f32, dofFocus:f32, dofRange:f32, dofIntensity:f32, dofRadius:f32, temporalBlend:f32, temporalValid:f32, ssaoIntensity:f32, ssaoRadius:f32, ssgiIntensity:f32, ssgiRadius:f32, ssgiSteps:f32, ssgiThickness:f32, temporalReactive:f32, temporalReactiveThreshold:f32, temporalVelocityThreshold:f32, temporalVelocityDilation:f32 };
+@group(0) @binding(2) var<uniform> post:PostProcess;
+fn aces(value:vec3<f32>)->vec3<f32>{let a=2.51;let b=.03;let c=2.43;let d=.59;let e=.14;return clamp((value*(a*value+b))/(value*(c*value+d)+e),vec3<f32>(0.0),vec3<f32>(1.0));}
+fn linearToSrgb(value:vec3<f32>)->vec3<f32>{return select(value*12.92,1.055*pow(value,vec3<f32>(1.0/2.4))-vec3<f32>(.055),value>vec3<f32>(.0031308));}
+@vertex fn vs_fullscreen(@builtin(vertex_index) index:u32)->ToneMapOut{var positions=array<vec2<f32>,3>(vec2<f32>(-1.0,-1.0),vec2<f32>(3.0,-1.0),vec2<f32>(-1.0,3.0));let position=positions[index];var out:ToneMapOut;out.position=vec4<f32>(position,0.0,1.0);out.uv=vec2<f32>(position.x*.5+.5,1.0-(position.y*.5+.5));return out;}
+fn depthAt(uv:vec2<f32>)->f32{let dimensions=vec2<i32>(textureDimensions(sceneDepth));let maxPixel=dimensions-vec2<i32>(1,1);let pixel=vec2<i32>(clamp(uv*vec2<f32>(dimensions),vec2<f32>(0.0),vec2<f32>(maxPixel)));return textureLoad(sceneDepth,pixel,0);}
+fn depthOfField(uv:vec2<f32>,base:vec3<f32>)->vec3<f32>{let coc=clamp(abs(depthAt(uv)-post.dofFocus)/max(post.dofRange,0.0001)*post.dofIntensity,0.0,1.0);if(coc<=0.0001||post.dofRadius<=0.0){return base;}let dimensions=vec2<f32>(textureDimensions(sceneColor));let texel=post.dofRadius/max(dimensions,vec2<f32>(1.0));let weights=array<f32,9>(.32,.12,.05,.12,.05,.12,.05,.12,.05);let offsets=array<vec2<f32>,9>(vec2<f32>(0.0,0.0),vec2<f32>(1.0,0.0),vec2<f32>(1.0,1.0),vec2<f32>(0.0,1.0),vec2<f32>(-1.0,1.0),vec2<f32>(-1.0,0.0),vec2<f32>(-1.0,-1.0),vec2<f32>(0.0,-1.0),vec2<f32>(1.0,-1.0));var blurred=vec3<f32>(0.0);for(var index:u32=0u;index<9u;index=index+1u){blurred=blurred+textureSampleLevel(sceneColor,sceneSampler,uv+offsets[index]*texel,0.0).rgb*weights[index];}return mix(base,blurred,coc);}
+fn bloomContribution(uv:vec2<f32>)->vec3<f32>{let dimensions=vec2<f32>(textureDimensions(sceneColor));let texel=post.bloomRadius/max(dimensions,vec2<f32>(1.0));let weights=array<f32,9>(.32,.12,.05,.12,.05,.12,.05,.12,.05);let offsets=array<vec2<f32>,9>(vec2<f32>(0.0,0.0),vec2<f32>(1.0,0.0),vec2<f32>(1.0,1.0),vec2<f32>(0.0,1.0),vec2<f32>(-1.0,1.0),vec2<f32>(-1.0,0.0),vec2<f32>(-1.0,-1.0),vec2<f32>(0.0,-1.0),vec2<f32>(1.0,-1.0));var result=vec3<f32>(0.0);for(var index:u32=0u;index<9u;index=index+1u){let sampleColor=textureSampleLevel(sceneColor,sceneSampler,uv+offsets[index]*texel,0.0).rgb;let luminance=dot(sampleColor,vec3<f32>(.2126,.7152,.0722));let threshold=max((luminance-post.bloomThreshold)/max(luminance,0.0001),0.0);result=result+sampleColor*threshold*weights[index];}return result*post.bloomIntensity;}
+fn screenSpaceAmbientOcclusion(uv:vec2<f32>)->f32{if(post.ssaoIntensity<=0.0||post.ssaoRadius<=0.0){return 1.0;}let dimensions=vec2<f32>(textureDimensions(sceneDepth));let texel=post.ssaoRadius/max(dimensions,vec2<f32>(1.0));let current=depthAt(uv);if(current>=1.0){return 1.0;}let offsets=array<vec2<f32>,8>(vec2<f32>(-1.0,-1.0),vec2<f32>(0.0,-1.0),vec2<f32>(1.0,-1.0),vec2<f32>(-1.0,0.0),vec2<f32>(1.0,0.0),vec2<f32>(-1.0,1.0),vec2<f32>(0.0,1.0),vec2<f32>(1.0,1.0));var occluded:f32=0.0;var samples:f32=0.0;for(var index:u32=0u;index<8u;index=index+1u){let neighbor=depthAt(uv+offsets[index]*texel);if(neighbor<1.0){samples=samples+1.0;if(neighbor>current+0.0005){occluded=occluded+1.0;}}}return 1.0-post.ssaoIntensity*0.65*occluded/max(samples,1.0);}
+fn screenSpaceGlobalIllumination(uv:vec2<f32>)->vec3<f32>{if(post.ssgiIntensity<=0.0||post.ssgiRadius<=0.0){return vec3<f32>(0.0);}let dimensions=vec2<f32>(textureDimensions(sceneColor));let texel=post.ssgiRadius/max(dimensions,vec2<f32>(1.0));let current=depthAt(uv);if(current>=1.0){return vec3<f32>(0.0);}let offsets=array<vec2<f32>,8>(vec2<f32>(-1.0,-1.0),vec2<f32>(0.0,-1.0),vec2<f32>(1.0,-1.0),vec2<f32>(-1.0,0.0),vec2<f32>(1.0,0.0),vec2<f32>(-1.0,1.0),vec2<f32>(0.0,1.0),vec2<f32>(1.0,1.0));var indirect=vec3<f32>(0.0);var weightTotal:f32=0.0;let steps=min(8u,max(1u,u32(post.ssgiSteps)));for(var index:u32=0u;index<8u;index=index+1u){if(index>=steps){continue;}let sampleUv=uv+offsets[index]*texel;let sampleDepth=depthAt(sampleUv);if(sampleDepth>=1.0){continue;}let separation=clamp(abs(sampleDepth-current)/max(post.ssgiThickness,0.0001),0.0,1.0);let sampleWeight=separation/(1.0+length(offsets[index]));indirect=indirect+textureSampleLevel(sceneColor,sceneSampler,sampleUv,0.0).rgb*sampleWeight;weightTotal=weightTotal+sampleWeight;}return indirect/max(weightTotal,0.0001)*post.ssgiIntensity*0.18;}
+fn historyDepthAt(uv:vec2<f32>)->f32{let dimensions=vec2<i32>(textureDimensions(historyDepth));let maxPixel=dimensions-vec2<i32>(1,1);let pixel=vec2<i32>(clamp(uv*vec2<f32>(dimensions),vec2<f32>(0.0),vec2<f32>(maxPixel)));return textureLoad(historyDepth,pixel,0).r;}
+fn temporalHistoryUv(uv:vec2<f32>,depth:f32)->vec3<f32>{let clip=temporalCamera.currentInverseViewProjection*vec4<f32>(uv.x*2.0-1.0,1.0-uv.y*2.0,depth*2.0-1.0,1.0);let world=clip/max(abs(clip.w),0.0001);let previous=temporalCamera.previousViewProjection*vec4<f32>(world.xyz,1.0);let ndc=previous.xyz/max(abs(previous.w),0.0001);return vec3<f32>(ndc.x*.5+.5,1.0-(ndc.y*.5+.5),ndc.z*.5+.5);}
+fn temporalNeighborhoodClamp(uv:vec2<f32>,history:vec3<f32>)->vec3<f32>{if(post.temporalClamp<=0.0){return history;}let dimensions=vec2<f32>(textureDimensions(sceneColor));let texel=1.0/max(dimensions,vec2<f32>(1.0));let offsets=array<vec2<f32>,9>(vec2<f32>(-1.0,-1.0),vec2<f32>(0.0,-1.0),vec2<f32>(1.0,-1.0),vec2<f32>(-1.0,0.0),vec2<f32>(0.0,0.0),vec2<f32>(1.0,0.0),vec2<f32>(-1.0,1.0),vec2<f32>(0.0,1.0),vec2<f32>(1.0,1.0));var minimum=textureSampleLevel(sceneColor,sceneSampler,uv,0.0).rgb;var maximum=minimum;for(var index:u32=0u;index<9u;index=index+1u){let sampleColor=textureSampleLevel(sceneColor,sceneSampler,uv+offsets[index]*texel,0.0).rgb;minimum=min(minimum,sampleColor);maximum=max(maximum,sampleColor);}let expansion=(maximum-minimum)*post.temporalClamp;return clamp(history,minimum-expansion,maximum+expansion);}
+ fn temporalVelocityAt(uv:vec2<f32>)->vec4<f32>{return textureSampleLevel(sceneVelocity,sceneSampler,uv,0.0);}
+ fn dilatedTemporalVelocity(uv:vec2<f32>)->vec4<f32>{let dimensions=vec2<f32>(textureDimensions(sceneVelocity));let texel=1.0/max(dimensions,vec2<f32>(1.0));let radius=i32(ceil(post.temporalVelocityDilation));var best=temporalVelocityAt(uv);var bestLength=select(-1.0,length(best.xy),best.a>0.5);for(var offsetY:i32=-4;offsetY<=4;offsetY=offsetY+1){for(var offsetX:i32=-4;offsetX<=4;offsetX=offsetX+1){if(abs(offsetX)>radius||abs(offsetY)>radius){continue;}let candidate=temporalVelocityAt(uv+vec2<f32>(f32(offsetX),f32(offsetY))*texel);let candidateLength=select(-1.0,length(candidate.xy),candidate.a>0.5);if(candidateLength>bestLength){best=candidate;bestLength=candidateLength;}}}return best;}
+ fn temporalResolve(uv:vec2<f32>,current:vec3<f32>)->vec3<f32>{if(post.temporalValid<0.5||post.temporalBlend<=0.0){return current;}let currentDepth=depthAt(uv);if(currentDepth>=1.0){return current;}let currentVelocity=dilatedTemporalVelocity(uv);let velocityLength=length(currentVelocity.xy);let velocityActive=currentVelocity.a>0.5&&velocityLength>post.temporalVelocityThreshold;let velocityUv=uv+vec2<f32>(-currentVelocity.x*.5,currentVelocity.y*.5);let projection=temporalHistoryUv(uv,currentDepth);let historyUv=select(projection.xy,velocityUv,velocityActive);if(historyUv.x<0.0||historyUv.x>1.0||historyUv.y<0.0||historyUv.y>1.0){return current;}let previousDepth=select(projection.z,currentVelocity.z,velocityActive&&currentVelocity.z>=0.0&&currentVelocity.z<=1.0);let storedDepth=historyDepthAt(historyUv);let historyVelocitySample=textureSampleLevel(historyVelocity,sceneSampler,historyUv,0.0);if(storedDepth>=0.999||abs(storedDepth-previousDepth)>.035||(velocityActive&&historyVelocitySample.a>0.5&&length(historyVelocitySample.xy-currentVelocity.xy)>.25)){return current;}let history=temporalNeighborhoodClamp(historyUv,textureSampleLevel(historyColor,sceneSampler,historyUv,0.0).rgb);let luminance=max(dot(max(current,vec3<f32>(0.0)),vec3<f32>(.2126,.7152,.0722)),0.0);let luminanceReactive=clamp(max(luminance-post.temporalReactiveThreshold,0.0)*post.temporalReactive,0.0,1.0);let authoredReactive=clamp(textureSampleLevel(reactiveMask,sceneSampler,uv,0.0).r,0.0,1.0);let velocityReactive=select(0.0,clamp((velocityLength-post.temporalVelocityThreshold)*4.0/max(post.temporalVelocityDilation,1.0),0.0,1.0),velocityActive);let reactive=max(max(luminanceReactive,authoredReactive),velocityReactive);let effectiveBlend=clamp(post.temporalBlend,0.0,1.0)*(1.0-reactive);return mix(current,history,effectiveBlend);}
+ @fragment fn fs_tonemap(input:ToneMapOut)->@location(0) vec4<f32>{let scene=textureSample(sceneColor,sceneSampler,input.uv);let current=depthOfField(input.uv,scene.rgb*screenSpaceAmbientOcclusion(input.uv)+screenSpaceGlobalIllumination(input.uv))+bloomContribution(input.uv);let hdr=temporalResolve(input.uv,current);let mapped=aces(hdr*post.exposure);let luminance=dot(mapped,vec3<f32>(.2126,.7152,.0722));let graded=(mix(vec3<f32>(luminance),mapped,post.saturation)-vec3<f32>(.5))*post.contrast+vec3<f32>(.5);let edge=smoothstep(.25,.85,distance(input.uv,vec2<f32>(.5)));return vec4<f32>(linearToSrgb(clamp(graded*(1.0-post.vignette*edge),vec3<f32>(0.0),vec3<f32>(1.0))),scene.a);}`;
+  var VSR_SPATIAL_SHADOW_WGSL_V04 = `struct ShadowCamera { lightViewProjection:mat4x4<f32> }; @group(0) @binding(0) var<uniform> shadowCamera:ShadowCamera; struct Object { world:mat4x4<f32> }; @group(1) @binding(0) var<uniform> object:Object; @group(1) @binding(1) var<storage,read> jointMatrices:array<mat4x4<f32>>; struct Deformation { skinEnabled:f32, vertexCount:f32, morphCount:f32, _pad:f32, morphWeights:vec4<f32> }; @group(1) @binding(2) var<uniform> deformation:Deformation; @group(1) @binding(3) var<storage,read> morphDeltas:array<vec4<f32>>; struct InstanceTransform { current:mat4x4<f32>, previous:mat4x4<f32> }; @group(1) @binding(4) var<storage,read> instanceTransforms:array<InstanceTransform>; @group(1) @binding(5) var<storage,read> visibleInstanceIndices:array<u32>; struct ShadowIn { @location(0) position:vec3<f32>, @location(4) joints:vec4<f32>, @location(5) weights:vec4<f32>, @builtin(vertex_index) vertexIndex:u32, @builtin(instance_index) instanceIndex:u32 }; fn morphPosition(position:vec3<f32>,vertexIndex:u32)->vec3<f32>{var result=position;let vertexCount=u32(deformation.vertexCount);for(var morph:u32=0u;morph<4u;morph=morph+1u){if(morph<u32(deformation.morphCount)){result=result+morphDeltas[morph*vertexCount+vertexIndex].xyz*deformation.morphWeights[morph];}}return result;} fn skinPosition(position:vec3<f32>,joints:vec4<f32>,weights:vec4<f32>)->vec3<f32>{if(deformation.skinEnabled<0.5){return position;}let total=weights.x+weights.y+weights.z+weights.w;if(total<=0.0001){return position;}return(jointMatrices[u32(joints.x)]*vec4<f32>(position,1.0)*weights.x+jointMatrices[u32(joints.y)]*vec4<f32>(position,1.0)*weights.y+jointMatrices[u32(joints.z)]*vec4<f32>(position,1.0)*weights.z+jointMatrices[u32(joints.w)]*vec4<f32>(position,1.0)*weights.w).xyz/total;} @vertex fn vs_shadow(input:ShadowIn)->@builtin(position) vec4<f32>{let localPosition=skinPosition(morphPosition(input.position,input.vertexIndex),input.joints,input.weights);return shadowCamera.lightViewProjection*object.world*instanceTransforms[visibleInstanceIndices[input.instanceIndex]].current*vec4<f32>(localPosition,1.0);}`;
   var VSR_SPATIAL_CULL_WGSL_V04 = `struct CullCamera { viewProjection:mat4x4<f32> };
 @group(0) @binding(0) var<uniform> camera:CullCamera;
 struct Bounds { centerRadius:vec4<f32> };
@@ -1306,24 +2950,25 @@ fn visible(centerRadius:vec4<f32>)->bool{let clip=camera.viewProjection*vec4<f32
 @compute @workgroup_size(64) fn cs_finalize(@builtin(global_invocation_id) id:vec3<u32>){if(id.x==0u){indirectArgs[1]=atomicLoad(&visibleCount);}}`;
   function compileSpatialFrame(scene, options = {}) {
     validateScene(scene);
-    const budget = resolveSpatialBudget(options), baseAnimationOverrides = options.animationGraph ? sampleSpatialAnimationGraph(scene, options.animationGraph) : options.animationLayers ? sampleSpatialAnimationLayers(scene, options.animationLayers) : options.animation ? sampleSpatialAnimation(scene, options.animation.clipId, options.animation.timeSeconds, options.animation.loop ?? true) : /* @__PURE__ */ new Map(), animationConstraints = options.animationConstraints ?? [], animationOverrides = applySpatialAnimationConstraints(scene, baseAnimationOverrides, animationConstraints), visualIntentRoot = options.visualIntentRoot ?? null, animationRoot = cryptographicHash({ selection: options.animation ?? null, layers: options.animationLayers ?? null, graph: options.animationGraph ?? null, ...animationConstraints.length ? { animationConstraints } : {}, ...visualIntentRoot ? { visualIntentRoot } : {}, overrides: [...animationOverrides.entries()] }), camera = scene.cameras.find((entry) => entry.id === scene.activeCameraId), aspect = budget.width / budget.height, near = Math.max(1e-3, camera.near ?? 0.1), far = Math.max(near + 0.01, camera.far ?? 1e3), view = cameraViewMatrix(camera), projection = camera.projection === "orthographic" ? orthographicMat4(camera.orthoHeight ?? 10, aspect, near, far) : perspectiveMat4(camera.fovYDeg ?? 60, aspect, near, far), viewProjection = multiplyMat4(projection, view), cameraPos = cameraPosition(camera), streaming = scene.streaming ? resolveSpatialStreaming(scene, cameraPos, options.streaming) : void 0, streamedNodeIds = streaming ? new Set(streaming.nodeIds) : void 0, world = worldMatrices(scene, animationOverrides), meshById = new Map(scene.meshes.map((mesh) => [mesh.id, mesh])), materialById = new Map(scene.materials.map((material) => [material.id, sanitizeMaterial(material)])), skinById = new Map((scene.skins ?? []).map((skin) => [skin.id, skin]));
+    const transparencyMode = resolveSpatialTransparencyMode(options.transparencyMode), budget = resolveSpatialBudget(options), postProcess = sanitizeSpatialPostProcess(options.postProcess), baseAnimationOverrides = options.animationGraph ? sampleSpatialAnimationGraph(scene, options.animationGraph) : options.animationLayers ? sampleSpatialAnimationLayers(scene, options.animationLayers) : options.animation ? sampleSpatialAnimation(scene, options.animation.clipId, options.animation.timeSeconds, options.animation.loop ?? true) : /* @__PURE__ */ new Map(), animationConstraints = options.animationConstraints ?? [], animationOverrides = applySpatialAnimationConstraints(scene, baseAnimationOverrides, animationConstraints), visualIntentRoot = options.visualIntentRoot ?? null, animationRoot = cryptographicHash({ selection: options.animation ?? null, layers: options.animationLayers ?? null, graph: options.animationGraph ?? null, ...animationConstraints.length ? { animationConstraints } : {}, ...visualIntentRoot ? { visualIntentRoot } : {}, overrides: [...animationOverrides.entries()] }), camera = scene.cameras.find((entry) => entry.id === scene.activeCameraId), aspect = budget.width / budget.height, near = Math.max(1e-3, camera.near ?? 0.1), far = Math.max(near + 0.01, camera.far ?? 1e3), view = cameraViewMatrix(camera), projection = camera.projection === "orthographic" ? orthographicMat4(camera.orthoHeight ?? 10, aspect, near, far) : perspectiveMat4(camera.fovYDeg ?? 60, aspect, near, far), viewProjection = multiplyMat4(projection, view), cameraPos = cameraPosition(camera), streaming = scene.streaming ? resolveSpatialStreaming(scene, cameraPos, options.streaming) : void 0, streamedNodeIds = streaming ? new Set(streaming.nodeIds) : void 0, world = worldMatrices2(scene, animationOverrides), meshById = new Map(scene.meshes.map((mesh) => [mesh.id, mesh])), materialById = new Map(scene.materials.map((material) => [material.id, sanitizeMaterial(material)])), skinById = new Map((scene.skins ?? []).map((skin) => [skin.id, skin])), hlodSelection = resolveSpatialHLOD(scene, cameraPos, world, meshById, streamedNodeIds, budget.lodBias);
     const visiblePackets = [];
     let culled = 0;
-    const streamingCulledCells = streaming ? scene.streaming.cells.length - streaming.activeCellIds.length : 0, lodHistogram = {};
+    const streamingCulledCells = streaming ? scene.streaming.cells.length - streaming.activeCellIds.length : 0, hlodSuppressedNodeIds = hlodSelection?.suppressedNodeIds ?? /* @__PURE__ */ new Set(), hlodProxyNodeIds = hlodSelection?.proxyNodeIds ?? /* @__PURE__ */ new Set(), hlodSelectedProxyNodeIds = hlodSelection?.selectedProxyNodeIds ?? /* @__PURE__ */ new Set(), lodHistogram = {};
     for (const node of scene.nodes) {
       if (streamedNodeIds && !streamedNodeIds.has(node.id)) continue;
+      if (hlodSuppressedNodeIds.has(node.id) || hlodProxyNodeIds.has(node.id) && !hlodSelectedProxyNodeIds.has(node.id)) continue;
       if (node.visible === false || !node.meshId && !node.lods?.length) continue;
       const matrix = world.get(node.id), baseMeshId = node.meshId ?? node.lods?.[0]?.meshId, baseMesh = baseMeshId ? meshById.get(baseMeshId) : void 0;
       if (!baseMesh) {
         culled++;
         continue;
       }
-      const baseWorldBounds = transformBounds(meshBounds(baseMesh), matrix), distance = distance3(cameraPos, baseWorldBounds.center), selected = chooseLOD(node, distance, budget.lodBias), mesh = selected.meshId ? meshById.get(selected.meshId) : void 0;
+      const baseWorldBounds = transformBounds2(meshBounds(baseMesh), matrix), distance4 = distance32(cameraPos, baseWorldBounds.center), selected = chooseLOD(node, distance4, budget.lodBias), mesh = selected.meshId ? meshById.get(selected.meshId) : void 0;
       if (!mesh) {
         culled++;
         continue;
       }
-      const bounds = transformBounds(meshBounds(mesh), matrix);
+      const bounds = transformBounds2(meshBounds(mesh), matrix);
       if (!options.gpuDrivenCulling && !sphereInFrustum(bounds, viewProjection)) {
         culled++;
         continue;
@@ -1331,12 +2976,12 @@ fn visible(centerRadius:vec4<f32>)->bool{let clip=camera.viewProjection*vec4<f32
       const materialId = node.materialId ?? scene.materials[0]?.id ?? "material:default";
       if (!materialById.has(materialId)) materialById.set(materialId, sanitizeMaterial({ id: materialId }));
       lodHistogram[String(selected.level)] = (lodHistogram[String(selected.level)] ?? 0) + 1;
-      const material = materialById.get(materialId), textureBindings = { baseColor: material.baseColorTextureId, metallicRoughness: material.metallicRoughnessTextureId, normal: material.normalTextureId, occlusion: material.occlusionTextureId, emissive: material.emissiveTextureId }, deformation = resolveSpatialDeformation(mesh, node, skinById, world), instance = { nodeId: node.id, worldMatrix: matrix, worldBounds: bounds, distanceToCamera: distance }, packetBase = { nodeId: node.id, meshId: mesh.id, materialId, worldMatrix: matrix, worldBounds: bounds, distanceToCamera: distance, lodLevel: selected.level, indexCount: mesh.indices.length, castShadow: node.castShadow ?? true, receiveShadow: node.receiveShadow ?? true, textureBindings, ...deformation, instances: [instance], instanceCount: 1 };
+      const material = materialById.get(materialId), textureBindings = { baseColor: material.baseColorTextureId, metallicRoughness: material.metallicRoughnessTextureId, normal: material.normalTextureId, occlusion: material.occlusionTextureId, emissive: material.emissiveTextureId, lightmap: material.lightmapTextureId, reactive: material.reactiveMaskTextureId }, deformation = resolveSpatialDeformation(mesh, node, skinById, world), temporalReactive = resolveSpatialTemporalReactive(node, material, deformation), instance = { nodeId: node.id, worldMatrix: matrix, previousWorldMatrix: options.previousWorldMatrices?.[node.id] ?? options.temporalHistory?.previousWorldMatrices?.[node.id] ?? matrix, worldBounds: bounds, distanceToCamera: distance4 }, packetBase = { nodeId: node.id, meshId: mesh.id, materialId, worldMatrix: matrix, worldBounds: bounds, distanceToCamera: distance4, lodLevel: selected.level, indexCount: mesh.indices.length, castShadow: node.castShadow ?? true, receiveShadow: node.receiveShadow ?? true, temporalReactive, textureBindings, ...deformation, instances: [instance], instanceCount: 1 };
       visiblePackets.push({ ...packetBase, packetRoot: cryptographicHash(packetBase) });
     }
     const groupedPackets = /* @__PURE__ */ new Map();
     for (const packet of visiblePackets) {
-      const key = cryptographicHash({ meshId: packet.meshId, materialId: packet.materialId, lodLevel: packet.lodLevel, castShadow: packet.castShadow, receiveShadow: packet.receiveShadow, textureBindings: packet.textureBindings, deformationRoot: packet.deformationRoot }), existing = groupedPackets.get(key);
+      const key = cryptographicHash({ meshId: packet.meshId, materialId: packet.materialId, lodLevel: packet.lodLevel, castShadow: packet.castShadow, receiveShadow: packet.receiveShadow, temporalReactive: packet.temporalReactive, textureBindings: packet.textureBindings, deformationRoot: packet.deformationRoot }), existing = groupedPackets.get(key);
       if (!existing) {
         groupedPackets.set(key, packet);
         continue;
@@ -1351,14 +2996,19 @@ fn visible(centerRadius:vec4<f32>)->bool{let clip=camera.viewProjection*vec4<f32
       const { packetRoot: _packetRoot, ...base2 } = packet;
       return { ...base2, packetRoot: cryptographicHash(base2) };
     });
-    const lights = scene.lights.slice(0, budget.maxLights).map((light) => ({ ...light, color: light.color ?? "#ffffff", intensity: Math.max(0, light.intensity ?? 1), range: Math.max(1e-3, light.range ?? 10) })), environment = sanitizeSpatialEnvironment(scene.environment);
-    const shadowCasterCount = drawPackets.reduce((sum, packet) => sum + (packet.castShadow ? packetInstanceCount(packet) : 0), 0), passes = [];
+    const lights = scene.lights.slice(0, budget.maxLights).map((light) => ({ ...light, color: light.color ?? "#ffffff", intensity: Math.max(0, light.intensity ?? 1), range: Math.max(1e-3, light.range ?? 10) })), environment = sanitizeSpatialEnvironment(scene.environment, streaming?.activeCellIds), environmentTexture = environment.textureId ? scene.textures?.find((texture) => texture.id === environment.textureId) : void 0;
+    if (environmentTexture) environment.mipLevelCount = textureLevelCount(environmentTexture);
+    const transparentDraws = drawPackets.filter((packet) => (materialById.get(packet.materialId)?.alphaMode ?? "OPAQUE") === "BLEND").length, hasOit = transparencyMode === "weighted-blended-oit" && transparentDraws > 0, shadowCasterCount = drawPackets.reduce((sum, packet) => sum + (packet.castShadow ? packetInstanceCount(packet) : 0), 0), passes = [];
     if (budget.shadows && lights.some((light) => light.kind === "directional" && light.castShadow) && shadowCasterCount) passes.push({ id: "shadow-depth", kind: "shadow-depth", dependsOn: [], resourceIds: ["shadow-depth"] });
-    passes.push({ id: "scene-depth-color", kind: "scene-depth-color", dependsOn: passes.length ? ["shadow-depth"] : [], resourceIds: ["scene-color", "scene-depth", ...passes.length ? ["shadow-depth"] : []] }, { id: "tone-map", kind: "tone-map", dependsOn: ["scene-depth-color"], resourceIds: ["scene-color", "present-color"] });
+    passes.push({ id: "scene-depth-color", kind: "scene-depth-color", dependsOn: passes.length ? ["shadow-depth"] : [], resourceIds: ["scene-color", "scene-depth", "reactive-mask", "temporal-velocity", ...passes.length ? ["shadow-depth"] : []] }, { id: "tone-map", kind: "tone-map", dependsOn: ["scene-depth-color"], resourceIds: ["scene-color", "reactive-mask", "temporal-velocity", "temporal-velocity-history", "present-color"] });
+    if (hasOit) {
+      passes.pop();
+      passes.push({ id: "transparent-oit", kind: "transparent-oit", dependsOn: ["scene-depth-color"], resourceIds: ["scene-depth", "oit-accumulation", "oit-revealage", "oit-reactive", "oit-velocity"] }, { id: "oit-composite", kind: "oit-composite", dependsOn: ["transparent-oit"], resourceIds: ["scene-color", "reactive-mask", "temporal-velocity", "oit-accumulation", "oit-revealage", "oit-reactive", "oit-velocity", "resolved-color", "resolved-reactive", "resolved-velocity"] }, { id: "tone-map", kind: "tone-map", dependsOn: ["oit-composite"], resourceIds: ["resolved-color", "resolved-reactive", "resolved-velocity", "temporal-velocity-history", "present-color"] });
+    }
     const resources = [], activeSkinIds = new Set(drawPackets.map((packet) => packet.skinId).filter((id) => Boolean(id)));
     for (const mesh of scene.meshes) {
       const vertexCount = mesh.positions.length / 3;
-      resources.push({ id: `mesh:${mesh.id}:vertices`, kind: "vertex-buffer", byteLength: vertexCount * 16 * 4, resourceRoot: cryptographicHash({ positions: mesh.positions, normals: mesh.normals ?? calculateMeshNormals(mesh), uvs: mesh.uvs ?? [], jointIndices: mesh.jointIndices ?? [], jointWeights: mesh.jointWeights ?? [], morphTargets: mesh.morphTargets ?? [] }) }, { id: `mesh:${mesh.id}:indices`, kind: "index-buffer", byteLength: mesh.indices.length * 4, resourceRoot: cryptographicHash(mesh.indices) });
+      resources.push({ id: `mesh:${mesh.id}:vertices`, kind: "vertex-buffer", byteLength: vertexCount * 18 * 4, resourceRoot: cryptographicHash({ positions: mesh.positions, normals: mesh.normals ?? calculateMeshNormals(mesh), uvs: mesh.uvs ?? [], uvs1: mesh.uvs1 ?? [], jointIndices: mesh.jointIndices ?? [], jointWeights: mesh.jointWeights ?? [], morphTargets: mesh.morphTargets ?? [] }) }, { id: `mesh:${mesh.id}:indices`, kind: "index-buffer", byteLength: mesh.indices.length * 4, resourceRoot: cryptographicHash(mesh.indices) });
       if (mesh.morphTargets?.length) resources.push({ id: `mesh:${mesh.id}:morphs`, kind: "morph-buffer", byteLength: mesh.morphTargets.length * vertexCount * 4 * 4, resourceRoot: cryptographicHash(mesh.morphTargets) });
     }
     for (const skin of scene.skins ?? []) if (activeSkinIds.has(skin.id)) resources.push({ id: `skin:${skin.id}:joints`, kind: "joint-buffer", byteLength: skin.joints.length * 64, resourceRoot: cryptographicHash(skin) });
@@ -1367,12 +3017,16 @@ fn visible(centerRadius:vec4<f32>)->bool{let clip=camera.viewProjection*vec4<f32
       resources.push({ id: `instances:${packet.nodeId}`, kind: "instance-buffer", byteLength: instanceCount * 64, resourceRoot: cryptographicHash(packetInstances(packet)) });
       if (options.gpuDrivenCulling) resources.push({ id: `indirect:${packet.nodeId}`, kind: "indirect-buffer", byteLength: 20, format: "draw-indexed-indirect", resourceRoot: cryptographicHash(packSpatialIndirectDrawCommand(packet)) }, { id: `culling-bounds:${packet.nodeId}`, kind: "culling-bounds-buffer", byteLength: instanceCount * 16, format: "vec4-center-radius", resourceRoot: cryptographicHash(packSpatialInstanceBoundsBuffer(packet)) }, { id: `visible-indices:${packet.nodeId}`, kind: "visible-index-buffer", byteLength: instanceCount * 4, format: "u32", resourceRoot: cryptographicHash(packSpatialVisibleInstanceIndices(packet)) }, { id: `culling-counter:${packet.nodeId}`, kind: "culling-counter-buffer", byteLength: 4, format: "atomic-u32", resourceRoot: cryptographicHash({ packet: packet.nodeId, kind: "visible-counter" }) });
     }
-    for (const texture of scene.textures ?? []) resources.push({ id: `texture:${texture.id}`, kind: "texture-2d", byteLength: texture.pixels.length, format: "rgba8unorm", resourceRoot: cryptographicHash(texture) });
-    resources.push({ id: "materials", kind: "material-buffer", byteLength: materialById.size * 64, resourceRoot: cryptographicHash([...materialById.values()]) }, { id: "lights", kind: "light-buffer", byteLength: lights.length * 64, resourceRoot: cryptographicHash(lights) }, { id: "scene-depth", kind: "depth-texture", byteLength: budget.width * budget.height * 4, format: "depth24plus", resourceRoot: cryptographicHash({ width: budget.width, height: budget.height, format: "depth24plus" }) }, { id: "scene-color", kind: "color-texture", byteLength: budget.width * budget.height * 8, format: "rgba16float", resourceRoot: cryptographicHash({ width: budget.width, height: budget.height, format: "rgba16float" }) }, { id: "present-color", kind: "color-texture", byteLength: budget.width * budget.height * 4, format: "bgra8unorm", resourceRoot: cryptographicHash({ width: budget.width, height: budget.height, format: "bgra8unorm" }) });
+    for (const texture of scene.textures ?? []) resources.push({ id: `texture:${texture.id}`, kind: "texture-2d", byteLength: textureByteLength(texture), format: "rgba8unorm", mipLevelCount: textureLevelCount(texture), resourceRoot: cryptographicHash(texture) });
+    resources.push({ id: "materials", kind: "material-buffer", byteLength: materialById.size * 96, resourceRoot: cryptographicHash([...materialById.values()]) }, { id: "lights", kind: "light-buffer", byteLength: packSpatialLightBuffer(lights).byteLength, resourceRoot: cryptographicHash(lights) }, { id: "environment-probes", kind: "environment-probe-buffer", byteLength: packSpatialEnvironmentProbeBuffer(environment).byteLength, format: "position-radius-diffuse-specular", resourceRoot: cryptographicHash({ probes: environment.probes ?? [], irradianceBakeRoot: environment.irradianceBakeRoot ?? null }) }, { id: "post-process", kind: "post-process-buffer", byteLength: 96, format: "exposure-contrast-saturation-vignette-bloom-dof-temporal-clamp-ssao-ssgi-reactive-luminance", resourceRoot: cryptographicHash(postProcess) }, { id: "temporal-camera", kind: "temporal-uniform-buffer", byteLength: 128, format: "current-inverse-previous-view-projection", resourceRoot: cryptographicHash({ current: viewProjection, previous: options.temporalHistory?.viewProjectionMatrix ?? viewProjection }) }, { id: "temporal-history", kind: "color-texture", byteLength: budget.width * budget.height * 8, format: "rgba16float", resourceRoot: cryptographicHash({ historyRoot: options.temporalHistory?.root ?? "0".repeat(64), depthRoot: cryptographicHash(options.temporalHistory?.depth ? Array.from(options.temporalHistory.depth, (value) => Number.isFinite(value) ? value : null) : []), viewProjectionMatrix: options.temporalHistory?.viewProjectionMatrix ?? null, width: budget.width, height: budget.height }) }, { id: "temporal-depth-history", kind: "color-texture", byteLength: budget.width * budget.height * 4, format: "r32float", resourceRoot: cryptographicHash({ historyRoot: options.temporalHistory?.root ?? "0".repeat(64), depthRoot: cryptographicHash(options.temporalHistory?.depth ? Array.from(options.temporalHistory.depth, (value) => Number.isFinite(value) ? value : null) : []), width: budget.width, height: budget.height }) }, { id: "scene-depth", kind: "depth-texture", byteLength: budget.width * budget.height * 4, format: "depth32float", resourceRoot: cryptographicHash({ width: budget.width, height: budget.height, format: "depth32float" }) }, { id: "scene-color", kind: "color-texture", byteLength: budget.width * budget.height * 8, format: "rgba16float", resourceRoot: cryptographicHash({ width: budget.width, height: budget.height, format: "rgba16float" }) }, { id: "reactive-mask", kind: "color-texture", byteLength: budget.width * budget.height * 8, format: "rgba16float", resourceRoot: cryptographicHash({ width: budget.width, height: budget.height, format: "rgba16float", role: "authored-reactive-mask" }) }, { id: "present-color", kind: "color-texture", byteLength: budget.width * budget.height * 4, format: "bgra8unorm", resourceRoot: cryptographicHash({ width: budget.width, height: budget.height, format: "bgra8unorm" }) });
     if (passes.some((pass) => pass.id === "shadow-depth")) resources.push({ id: "shadow-depth", kind: "shadow-texture", byteLength: budget.shadowMapSize ** 2 * 4, format: "depth32float", resourceRoot: cryptographicHash({ size: budget.shadowMapSize, format: "depth32float" }) });
-    const sourceRealityRoot = cryptographicHash({ format: scene.format, sceneId: scene.sceneId, reality: scene.reality ?? null }), geometryRoot = cryptographicHash(scene.meshes.map((mesh) => ({ id: mesh.id, positions: mesh.positions, normals: mesh.normals ?? null, uvs: mesh.uvs ?? null, indices: mesh.indices, jointIndices: mesh.jointIndices ?? null, jointWeights: mesh.jointWeights ?? null, morphTargets: mesh.morphTargets ?? null }))), materialRoot = cryptographicHash([...materialById.values()]), textureRoot = cryptographicHash(scene.textures ?? []), environmentRoot = cryptographicHash(environment), commandRoot = cryptographicHash({ drawPackets, passes, lights, budget, textureRoot, environmentRoot, animationRoot, streaming: streaming ?? null, gpuDrivenCulling: Boolean(options.gpuDrivenCulling), assetStreaming: options.assetStreaming ?? null }), shaders = { vertex: VSR_SPATIAL_VERTEX_WGSL_V04, fragment: VSR_SPATIAL_FRAGMENT_WGSL_V04, shadowVertex: VSR_SPATIAL_SHADOW_WGSL_V04, ...options.gpuDrivenCulling ? { compute: VSR_SPATIAL_CULL_WGSL_V04 } : {}, sourceRoot: cryptographicHash([VSR_SPATIAL_VERTEX_WGSL_V04, VSR_SPATIAL_FRAGMENT_WGSL_V04, VSR_SPATIAL_SHADOW_WGSL_V04, ...options.gpuDrivenCulling ? [VSR_SPATIAL_CULL_WGSL_V04] : []]) };
-    const stats = { meshCount: scene.meshes.length, nodeCount: scene.nodes.length, textureCount: (scene.textures ?? []).length, materialTextureBindings: drawPackets.reduce((sum, packet) => sum + Object.values(packet.textureBindings).filter(Boolean).length, 0), animationClipCount: (scene.animations ?? []).length, visibleDraws: drawPackets.length, visibleInstances: visiblePackets.length, instancedDraws: drawPackets.filter((packet) => packetInstanceCount(packet) > 1).length, gpuDrivenDraws: options.gpuDrivenCulling ? drawPackets.length : 0, activeCells: streaming?.activeCellIds.length ?? 0, streamedNodes: streaming?.nodeIds.length ?? scene.nodes.length, streamingCulledCells, culledDraws: culled, triangleCount: drawPackets.reduce((sum, packet) => sum + packet.indexCount / 3 * packetInstanceCount(packet), 0), lightCount: lights.length, shadowCasterCount, skinnedDraws: drawPackets.reduce((sum, packet) => sum + (packet.skinId ? packetInstanceCount(packet) : 0), 0), morphedDraws: drawPackets.reduce((sum, packet) => sum + (packet.morphWeights.some((weight) => Math.abs(weight) > EPS) ? packetInstanceCount(packet) : 0), 0), lodHistogram };
-    const base = { format: VSR_SPATIAL_FRAME_FORMAT, version: VSR_SPATIAL_REALITY_VERSION, sceneId: scene.sceneId, viewport: { width: budget.width, height: budget.height }, budget, camera: { id: camera.id, viewMatrix: view, projectionMatrix: projection, viewProjectionMatrix: viewProjection, position: cameraPos }, environment, drawPackets, lights, passes, resources, shaders, stats, sourceRealityRoot, geometryRoot, materialRoot, textureRoot, animationRoot, environmentRoot, ...streaming ? { streaming } : {}, ...options.gpuDrivenCulling ? { gpuDrivenCulling: true } : {}, ...options.assetStreaming ? { assetStreaming: options.assetStreaming } : {}, ...visualIntentRoot ? { visualIntentRoot } : {}, commandRoot };
+    if (hasOit) resources.push({ id: "oit-accumulation", kind: "oit-accumulation-texture", byteLength: budget.width * budget.height * 8, format: "rgba16float", resourceRoot: cryptographicHash({ width: budget.width, height: budget.height, format: "rgba16float", role: "weighted-accumulation" }) }, { id: "oit-revealage", kind: "oit-revealage-texture", byteLength: budget.width * budget.height * 8, format: "rgba16float", resourceRoot: cryptographicHash({ width: budget.width, height: budget.height, format: "rgba16float", role: "revealage" }) }, { id: "oit-reactive", kind: "color-texture", byteLength: budget.width * budget.height * 8, format: "rgba16float", resourceRoot: cryptographicHash({ width: budget.width, height: budget.height, format: "rgba16float", role: "oit-reactive-mask" }) }, { id: "resolved-color", kind: "color-texture", byteLength: budget.width * budget.height * 8, format: "rgba16float", resourceRoot: cryptographicHash({ width: budget.width, height: budget.height, format: "rgba16float", role: "oit-resolved" }) }, { id: "resolved-reactive", kind: "color-texture", byteLength: budget.width * budget.height * 8, format: "rgba16float", resourceRoot: cryptographicHash({ width: budget.width, height: budget.height, format: "rgba16float", role: "oit-resolved-reactive-mask" }) }, { id: "oit-velocity", kind: "color-texture", byteLength: budget.width * budget.height * 8, format: "rgba16float", resourceRoot: cryptographicHash({ width: budget.width, height: budget.height, format: "rgba16float", role: "oit-velocity" }) }, { id: "resolved-velocity", kind: "color-texture", byteLength: budget.width * budget.height * 8, format: "rgba16float", resourceRoot: cryptographicHash({ width: budget.width, height: budget.height, format: "rgba16float", role: "oit-resolved-velocity" }) });
+    resources.push({ id: "environment-volume", kind: "environment-volume-buffer", byteLength: packSpatialIrradianceVolumeFieldBuffer(environment).byteLength, format: "multi-volume-bounds-grid-trilinear-diffuse-specular", resourceRoot: cryptographicHash({ irradianceVolume: environment.irradianceVolume ?? null, irradianceVolumeBakeRoot: environment.irradianceVolumeBakeRoot ?? null, irradianceVolumeField: environment.irradianceVolumeField ?? null, irradianceVolumeFieldRoot: environment.irradianceVolumeFieldRoot ?? null }) });
+    for (const resource of resources) if (resource.kind === "instance-buffer") resource.byteLength *= 2;
+    resources.push({ id: "temporal-velocity", kind: "color-texture", byteLength: budget.width * budget.height * 8, format: "rgba16float", resourceRoot: cryptographicHash({ width: budget.width, height: budget.height, format: "rgba16float", role: "temporal-velocity" }) }, { id: "temporal-velocity-history", kind: "color-texture", byteLength: budget.width * budget.height * 8, format: "rgba16float", resourceRoot: cryptographicHash({ historyRoot: options.temporalHistory?.root ?? "0".repeat(64), velocityRoot: cryptographicHash(options.temporalHistory?.velocity ? [...options.temporalHistory.velocity] : []), width: budget.width, height: budget.height, format: "rgba16float", role: "temporal-velocity-history" }) });
+    const sourceRealityRoot = cryptographicHash({ format: scene.format, sceneId: scene.sceneId, reality: scene.reality ?? null }), geometryRoot = cryptographicHash(scene.meshes.map((mesh) => ({ id: mesh.id, positions: mesh.positions, normals: mesh.normals ?? null, uvs: mesh.uvs ?? null, uvs1: mesh.uvs1 ?? null, indices: mesh.indices, jointIndices: mesh.jointIndices ?? null, jointWeights: mesh.jointWeights ?? null, morphTargets: mesh.morphTargets ?? null }))), materialRoot = cryptographicHash([...materialById.values()]), textureRoot = cryptographicHash(scene.textures ?? []), environmentRoot = cryptographicHash(environment), temporalRoot = cryptographicHash({ blend: postProcess.temporalBlend, reset: postProcess.temporalReset, neighborhoodClamp: postProcess.temporalClamp, reactive: postProcess.temporalReactive, reactiveThreshold: postProcess.temporalReactiveThreshold, historyRoot: options.temporalHistory?.root ?? "0".repeat(64), historyViewProjectionMatrix: options.temporalHistory?.viewProjectionMatrix ?? null }), commandRoot = cryptographicHash({ drawPackets, passes, lights, budget, postProcess, textureRoot, environmentRoot, temporalRoot, animationRoot, streaming: streaming ?? null, gpuDrivenCulling: Boolean(options.gpuDrivenCulling), assetStreaming: options.assetStreaming ?? null, ...hlodSelection ? { hlod: hlodSelection.resolution } : {} }), shaders = { vertex: VSR_SPATIAL_VERTEX_WGSL_V04, fragment: VSR_SPATIAL_FRAGMENT_WGSL_V04, ...hasOit ? { oitFragment: VSR_SPATIAL_OIT_FRAGMENT_WGSL_V04, oitComposite: VSR_SPATIAL_OIT_COMPOSITE_WGSL_V04 } : {}, shadowVertex: VSR_SPATIAL_SHADOW_WGSL_V04, toneMap: VSR_SPATIAL_TONEMAP_WGSL_V04, ...options.gpuDrivenCulling ? { compute: VSR_SPATIAL_CULL_WGSL_V04 } : {}, sourceRoot: cryptographicHash([VSR_SPATIAL_VERTEX_WGSL_V04, VSR_SPATIAL_FRAGMENT_WGSL_V04, ...hasOit ? [VSR_SPATIAL_OIT_FRAGMENT_WGSL_V04, VSR_SPATIAL_OIT_COMPOSITE_WGSL_V04] : [], VSR_SPATIAL_SHADOW_WGSL_V04, VSR_SPATIAL_TONEMAP_WGSL_V04, ...options.gpuDrivenCulling ? [VSR_SPATIAL_CULL_WGSL_V04] : []]) };
+    const stats = { meshCount: scene.meshes.length, nodeCount: scene.nodes.length, textureCount: (scene.textures ?? []).length, materialTextureBindings: drawPackets.reduce((sum, packet) => sum + Object.values(packet.textureBindings).filter(Boolean).length, 0), animationClipCount: (scene.animations ?? []).length, visibleDraws: drawPackets.length, transparentDraws, visibleInstances: visiblePackets.length, instancedDraws: drawPackets.filter((packet) => packetInstanceCount(packet) > 1).length, gpuDrivenDraws: options.gpuDrivenCulling ? drawPackets.length : 0, activeCells: streaming?.activeCellIds.length ?? 0, streamedNodes: streaming?.nodeIds.length ?? scene.nodes.length, streamingCulledCells, culledDraws: culled, triangleCount: drawPackets.reduce((sum, packet) => sum + packet.indexCount / 3 * packetInstanceCount(packet), 0), lightCount: lights.length, shadowCasterCount, skinnedDraws: drawPackets.reduce((sum, packet) => sum + (packet.skinId ? packetInstanceCount(packet) : 0), 0), morphedDraws: drawPackets.reduce((sum, packet) => sum + (packet.morphWeights.some((weight) => Math.abs(weight) > EPS4) ? packetInstanceCount(packet) : 0), 0), lodHistogram, ...hlodSelection ? { hlodProxyDraws: hlodSelectedProxyNodeIds.size, hlodSuppressedNodes: hlodSuppressedNodeIds.size } : {} };
+    const base = { format: VSR_SPATIAL_FRAME_FORMAT, version: VSR_SPATIAL_REALITY_VERSION, sceneId: scene.sceneId, viewport: { width: budget.width, height: budget.height }, budget, camera: { id: camera.id, viewMatrix: view, projectionMatrix: projection, viewProjectionMatrix: viewProjection, position: cameraPos }, environment, postProcess, transparencyMode, drawPackets, lights, passes, resources, shaders, stats, sourceRealityRoot, geometryRoot, materialRoot, textureRoot, animationRoot, environmentRoot, temporalRoot, ...streaming ? { streaming } : {}, ...hlodSelection ? { hlod: hlodSelection.resolution } : {}, ...options.gpuDrivenCulling ? { gpuDrivenCulling: true } : {}, ...options.assetStreaming ? { assetStreaming: options.assetStreaming } : {}, ...visualIntentRoot ? { visualIntentRoot } : {}, commandRoot };
     return { ...base, frameRoot: cryptographicHash(base) };
   }
   function verifySpatialFrame(plan) {
@@ -1382,9 +3036,18 @@ fn visible(centerRadius:vec4<f32>)->bool{let clip=camera.viewProjection*vec4<f32
       const { root, ...streamingBase } = plan.streaming;
       if (cryptographicHash(streamingBase) !== root) diagnostics.push("streaming root mismatch");
     }
+    if (plan.hlod) {
+      const { root, ...hlodBase } = plan.hlod;
+      if (cryptographicHash(hlodBase) !== root) diagnostics.push("HLOD root mismatch");
+    }
     if (plan.assetStreaming) {
       const { root, ...assetStreamingBase } = plan.assetStreaming;
       if (cryptographicHash(assetStreamingBase) !== root) diagnostics.push("asset streaming root mismatch");
+    }
+    if (plan.environment.irradianceVolumeField) {
+      const verification = verifySpatialIrradianceVolumeField(plan.environment.irradianceVolumeField);
+      if (!verification.ok) diagnostics.push(...verification.diagnostics.map((diagnostic) => `environment irradiance volume field: ${diagnostic}`));
+      if (plan.environment.irradianceVolumeFieldRoot !== plan.environment.irradianceVolumeField.root) diagnostics.push("environment irradiance volume field root mismatch");
     }
     const resourceIds = new Set(plan.resources.map((resource) => resource.id));
     for (const pass of plan.passes) {
@@ -1398,14 +3061,14 @@ fn visible(centerRadius:vec4<f32>)->bool{let clip=camera.viewProjection*vec4<f32
       const { packetRoot, ...base2 } = packet;
       if (cryptographicHash(base2) !== packetRoot) diagnostics.push(`draw packet ${packet.nodeId} root mismatch`);
     }
-    const commandRoot = cryptographicHash({ drawPackets: plan.drawPackets, passes: plan.passes, lights: plan.lights, budget: plan.budget, textureRoot: plan.textureRoot, environmentRoot: plan.environmentRoot, animationRoot: plan.animationRoot, streaming: plan.streaming ?? null, gpuDrivenCulling: Boolean(plan.gpuDrivenCulling), assetStreaming: plan.assetStreaming ?? null });
+    const commandRoot = cryptographicHash({ drawPackets: plan.drawPackets, passes: plan.passes, lights: plan.lights, budget: plan.budget, postProcess: plan.postProcess, textureRoot: plan.textureRoot, environmentRoot: plan.environmentRoot, temporalRoot: plan.temporalRoot, animationRoot: plan.animationRoot, streaming: plan.streaming ?? null, gpuDrivenCulling: Boolean(plan.gpuDrivenCulling), assetStreaming: plan.assetStreaming ?? null, ...plan.hlod ? { hlod: plan.hlod } : {} });
     if (commandRoot !== plan.commandRoot) diagnostics.push("command root mismatch");
     const { frameRoot, ...base } = plan;
     if (cryptographicHash(base) !== frameRoot) diagnostics.push("frame root mismatch");
     return { ok: diagnostics.length === 0, diagnostics };
   }
-  function materialColor(color) {
-    const parsed = parseColor(color);
+  function materialColor(color3) {
+    const parsed = parseColor(color3);
     return [parsed[0] / 255, parsed[1] / 255, parsed[2] / 255];
   }
   var mix3 = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
@@ -1422,28 +3085,32 @@ fn visible(centerRadius:vec4<f32>)->bool{let clip=camera.viewProjection*vec4<f32
     return geometrySchlickGGX(nDotV, roughness) * geometrySchlickGGX(nDotL, roughness);
   }
   function fresnelSchlick(cosTheta, f0) {
-    const factor = Math.pow(clamp(1 - cosTheta, 0, 1), 5);
+    const factor = Math.pow(clamp5(1 - cosTheta, 0, 1), 5);
     return [f0[0] + (1 - f0[0]) * factor, f0[1] + (1 - f0[1]) * factor, f0[2] + (1 - f0[2]) * factor];
   }
   function evaluatePBRLighting(input) {
-    const n = normalize3(input.normal), v = normalize3(input.view), l = normalize3(input.light), h = normalize3(add3(v, l)), nDotL = Math.max(0, dot3(n, l)), nDotV = Math.max(1e-4, dot3(n, v)), nDotH = Math.max(0, dot3(n, h)), vDotH = Math.max(0, dot3(v, h)), metallic = clamp(input.metallic, 0, 1), roughness = clamp(input.roughness, 0.04, 1), dielectric = Math.pow((clamp(input.ior, 1, 2.5) - 1) / (clamp(input.ior, 1, 2.5) + 1), 2), f0 = mix3([dielectric, dielectric, dielectric], input.baseColor, metallic), f = fresnelSchlick(vDotH, f0), d = distributionGGX(nDotH, roughness), g = geometrySmith(nDotV, nDotL, roughness), specular = scale3(f, d * g / Math.max(4 * nDotV * nDotL, 1e-4)), kd = scale3([1 - f[0], 1 - f[1], 1 - f[2]], 1 - metallic), diffuse = scale3(mul3(kd, input.baseColor), 1 / Math.PI), coatRoughness = clamp(input.clearcoatRoughness, 0.04, 1), coatF = fresnelSchlick(vDotH, [0.04, 0.04, 0.04]), coat = scale3(coatF, distributionGGX(nDotH, coatRoughness) * geometrySmith(nDotV, nDotL, coatRoughness) / Math.max(4 * nDotV * nDotL, 1e-4) * clamp(input.clearcoat, 0, 1));
-    return scale3(mul3(add3(add3(diffuse, specular), coat), input.radiance), nDotL);
+    const n = normalize32(input.normal), v = normalize32(input.view), l = normalize32(input.light), h = normalize32(add32(v, l)), nDotL = Math.max(0, dot3(n, l)), nDotV = Math.max(1e-4, dot3(n, v)), nDotH = Math.max(0, dot3(n, h)), vDotH = Math.max(0, dot3(v, h)), metallic = clamp5(input.metallic, 0, 1), roughness = clamp5(input.roughness, 0.04, 1), dielectric = Math.pow((clamp5(input.ior, 1, 2.5) - 1) / (clamp5(input.ior, 1, 2.5) + 1), 2), f0 = mix3([dielectric, dielectric, dielectric], input.baseColor, metallic), f = fresnelSchlick(vDotH, f0), d = distributionGGX(nDotH, roughness), g = geometrySmith(nDotV, nDotL, roughness), specular = scale32(f, d * g / Math.max(4 * nDotV * nDotL, 1e-4)), kd = scale32([1 - f[0], 1 - f[1], 1 - f[2]], 1 - metallic), diffuse = scale32(mul3(kd, input.baseColor), 1 / Math.PI), coatRoughness = clamp5(input.clearcoatRoughness, 0.04, 1), coatF = fresnelSchlick(vDotH, [0.04, 0.04, 0.04]), coat = scale32(coatF, distributionGGX(nDotH, coatRoughness) * geometrySmith(nDotV, nDotL, coatRoughness) / Math.max(4 * nDotV * nDotL, 1e-4) * clamp5(input.clearcoat, 0, 1));
+    return scale32(mul3(add32(add32(diffuse, specular), coat), input.radiance), nDotL);
   }
   function linearToSrgb(value) {
     return value <= 31308e-7 ? 12.92 * value : 1.055 * Math.pow(value, 1 / 2.4) - 0.055;
   }
   function aces(value) {
     const a = 2.51, b = 0.03, c = 2.43, d = 0.59, e = 0.14;
-    return clamp(value * (a * value + b) / (value * (c * value + d) + e), 0, 1);
+    return clamp5(value * (a * value + b) / (value * (c * value + d) + e), 0, 1);
   }
-  function edge(a, b, x, y) {
+  function weightedTransparencyWeight(depth) {
+    return clamp5(0.03 / (1e-5 + Math.pow(Math.abs(depth), 4)), 0.01, 3e3);
+  }
+  function edge2(a, b, x, y) {
     return (x - a.x) * (b.y - a.y) - (y - a.y) * (b.x - a.x);
   }
-  function projectVertex(position, normal, uv, world, viewProjection, width, height) {
+  function projectVertex(position, normal, uv, world, viewProjection, width, height, lightmapUv = [0, 0], previousWorld = world, previousViewProjection = viewProjection) {
     const world4 = transformVec4(world, [...position, 1]), clip = transformVec4(viewProjection, world4);
-    if (clip[3] <= EPS) return null;
-    const invW = 1 / clip[3], ndcX = clip[0] * invW, ndcY = clip[1] * invW, ndcZ = clip[2] * invW;
-    return { x: (ndcX * 0.5 + 0.5) * (width - 1), y: (1 - (ndcY * 0.5 + 0.5)) * (height - 1), depth: ndcZ * 0.5 + 0.5, world: [world4[0], world4[1], world4[2]], normal: transformDirection3(world, normal), uv, invW };
+    if (clip[3] <= EPS4) return null;
+    const invW = 1 / clip[3], ndcX = clip[0] * invW, ndcY = clip[1] * invW, ndcZ = clip[2] * invW, previousClip = transformVec4(previousViewProjection, transformVec4(previousWorld, [...position, 1]));
+    const previousInvW = Math.abs(previousClip[3]) > EPS4 ? 1 / previousClip[3] : 0, previousNdcX = previousClip[0] * previousInvW, previousNdcY = previousClip[1] * previousInvW, previousDepth = previousClip[2] * previousInvW * 0.5 + 0.5;
+    return { x: (ndcX * 0.5 + 0.5) * (width - 1), y: (1 - (ndcY * 0.5 + 0.5)) * (height - 1), depth: ndcZ * 0.5 + 0.5, world: [world4[0], world4[1], world4[2]], local: [...position], normal: transformDirection3(world, normal), uv, lightmapUv, invW, motion: { x: ndcX - previousNdcX, y: ndcY - previousNdcY, previousDepth, alpha: previousInvW > 0 ? 1 : 0 } };
   }
   function resolveSpatialShadowCamera(plan) {
     const light = plan.lights.find((entry) => entry.kind === "directional" && entry.castShadow), packets = plan.drawPackets.filter((packet) => packet.castShadow);
@@ -1453,7 +3120,7 @@ fn visible(centerRadius:vec4<f32>)->bool{let clip=camera.viewProjection*vec4<f32
       min = [Math.min(min[0], instance.worldBounds.min[0]), Math.min(min[1], instance.worldBounds.min[1]), Math.min(min[2], instance.worldBounds.min[2])];
       max = [Math.max(max[0], instance.worldBounds.max[0]), Math.max(max[1], instance.worldBounds.max[1]), Math.max(max[2], instance.worldBounds.max[2])];
     }
-    const center = [(min[0] + max[0]) / 2, (min[1] + max[1]) / 2, (min[2] + max[2]) / 2], radius = Math.max(1, distance3(min, max) / 2), direction = normalize3(light.direction ?? [-0.5, -1, -0.35]), eye = sub3(center, scale3(direction, radius * 2.5)), view = lookAtMat4(eye, center, [0, 1, 0]), projection = orthographicMat4(radius * 2.4, 1, 0.01, radius * 6);
+    const center = [(min[0] + max[0]) / 2, (min[1] + max[1]) / 2, (min[2] + max[2]) / 2], radius = Math.max(1, distance32(min, max) / 2), direction = normalize32(light.direction ?? [-0.5, -1, -0.35]), eye = sub32(center, scale32(direction, radius * 2.5)), view = lookAtMat4(eye, center, [0, 1, 0]), projection = orthographicMat4(radius * 2.4, 1, 0.01, radius * 6);
     return { size: plan.budget.shadowMapSize, viewProjection: multiplyMat4(projection, view), bias: 25e-4 };
   }
   function buildShadow(scene, plan, meshById) {
@@ -1470,11 +3137,11 @@ fn visible(centerRadius:vec4<f32>)->bool{let clip=camera.viewProjection*vec4<f32
           if (v) vertices.push(v);
         }
         if (vertices.length !== 3) continue;
-        const [a, b, c] = vertices, area = edge(a, b, c.x, c.y);
-        if (Math.abs(area) < EPS) continue;
+        const [a, b, c] = vertices, area = edge2(a, b, c.x, c.y);
+        if (Math.abs(area) < EPS4) continue;
         const minX = Math.max(0, Math.floor(Math.min(a.x, b.x, c.x))), maxX = Math.min(camera.size - 1, Math.ceil(Math.max(a.x, b.x, c.x))), minY = Math.max(0, Math.floor(Math.min(a.y, b.y, c.y))), maxY = Math.min(camera.size - 1, Math.ceil(Math.max(a.y, b.y, c.y)));
         for (let y = minY; y <= maxY; y++) for (let x = minX; x <= maxX; x++) {
-          const px = x + 0.5, py = y + 0.5, w0 = edge(b, c, px, py) / area, w1 = edge(c, a, px, py) / area, w2 = 1 - w0 - w1;
+          const px = x + 0.5, py = y + 0.5, w0 = edge2(b, c, px, py) / area, w1 = edge2(c, a, px, py) / area, w2 = 1 - w0 - w1;
           if (w0 < 0 || w1 < 0 || w2 < 0) continue;
           const z = w0 * a.depth + w1 * b.depth + w2 * c.depth, idx = y * camera.size + x;
           if (z < depth[idx]) depth[idx] = z;
@@ -1502,38 +3169,57 @@ fn visible(centerRadius:vec4<f32>)->bool{let clip=camera.viewProjection*vec4<f32
     return [toLinear((texture.pixels[index] ?? 255) / 255), toLinear((texture.pixels[index + 1] ?? 255) / 255), toLinear((texture.pixels[index + 2] ?? 255) / 255), (texture.pixels[index + 3] ?? 255) / 255];
   }
   function sampleSpatialTexture(texture, uv, colorSpace = texture.colorSpace ?? "srgb") {
-    const wrap = (value, mode) => mode === "repeat" ? (value % 1 + 1) % 1 : clamp(value, 0, 1), u = wrap(uv[0], texture.wrapU ?? "repeat"), v = wrap(uv[1], texture.wrapV ?? "repeat"), fx = u * (texture.width - 1), fy = (1 - v) * (texture.height - 1);
+    const wrap = (value, mode) => mode === "repeat" ? (value % 1 + 1) % 1 : clamp5(value, 0, 1), u = wrap(uv[0], texture.wrapU ?? "repeat"), v = wrap(uv[1], texture.wrapV ?? "repeat"), fx = u * (texture.width - 1), fy = (1 - v) * (texture.height - 1);
     if ((texture.filter ?? "nearest") === "nearest") return textureTexel(texture, Math.round(fx), Math.round(fy), colorSpace);
     const x0 = Math.floor(fx), y0 = Math.floor(fy), x1 = Math.min(texture.width - 1, x0 + 1), y1 = Math.min(texture.height - 1, y0 + 1), tx = fx - x0, ty = fy - y0;
     const a = textureTexel(texture, x0, y0, colorSpace), b = textureTexel(texture, x1, y0, colorSpace), c = textureTexel(texture, x0, y1, colorSpace), d = textureTexel(texture, x1, y1, colorSpace), mix = (p, q, t) => p + (q - p) * t;
     return [0, 1, 2, 3].map((channel) => mix(mix(a[channel], b[channel], tx), mix(c[channel], d[channel], tx), ty));
   }
   function spatialEnvironmentUV(direction) {
-    const d = normalize3(direction);
-    return [0.5 + Math.atan2(d[2], d[0]) / (Math.PI * 2), 0.5 + Math.asin(clamp(d[1], -1, 1)) / Math.PI];
+    const d = normalize32(direction);
+    return [0.5 + Math.atan2(d[2], d[0]) / (Math.PI * 2), 0.5 + Math.asin(clamp5(d[1], -1, 1)) / Math.PI];
   }
-  function sampleSpatialEnvironment(texture, direction) {
-    const sample = sampleSpatialTexture({ ...texture, wrapU: texture.wrapU ?? "repeat", wrapV: texture.wrapV ?? "clamp" }, spatialEnvironmentUV(direction));
+  function sampleSpatialEnvironment(texture, direction, roughness = 0) {
+    const maxMip = texture.mipmaps?.length ?? 0, level = Math.min(maxMip, Math.max(0, Math.round(clamp5(roughness, 0, 1) * maxMip))), mip = level > 0 ? texture.mipmaps[level - 1] : void 0, sampled = mip ? { ...texture, ...mip, mipmaps: void 0 } : texture, sample = sampleSpatialTexture({ ...sampled, wrapU: sampled.wrapU ?? texture.wrapU ?? "repeat", wrapV: sampled.wrapV ?? texture.wrapV ?? "clamp" }, spatialEnvironmentUV(direction));
     return [sample[0], sample[1], sample[2]];
   }
-  function triangleTangentFrame(a, b, c, normal) {
-    const edge1 = sub3(b.world, a.world), edge2 = sub3(c.world, a.world), du1 = b.uv[0] - a.uv[0], dv1 = b.uv[1] - a.uv[1], du2 = c.uv[0] - a.uv[0], dv2 = c.uv[1] - a.uv[1], det = du1 * dv2 - du2 * dv1;
-    if (Math.abs(det) < EPS) {
-      const axis = Math.abs(normal[1]) < 0.95 ? [0, 1, 0] : [1, 0, 0], tangent2 = normalize3(cross3(axis, normal));
-      return { tangent: tangent2, bitangent: normalize3(cross3(normal, tangent2)) };
+  function sampleSpatialEnvironmentProbes(environment, worldPosition, fallbackDiffuse, fallbackSpecular) {
+    const volume = environment?.irradianceVolumeField ? sampleSpatialIrradianceVolumeField(environment.irradianceVolumeField, worldPosition, fallbackDiffuse, fallbackSpecular) : sampleSpatialIrradianceVolume(environment?.irradianceVolume, worldPosition, fallbackDiffuse, fallbackSpecular), probes = environment?.probes ?? [];
+    if (!probes.length) return volume;
+    let total = 0, diffuseWeighted = [0, 0, 0], specularWeighted = [0, 0, 0];
+    for (const probe of probes.slice(0, 8)) {
+      const influence = clamp5(1 - distance32(worldPosition, probe.position) / Math.max(0.01, probe.radius), 0, 1), intensity = Number.isFinite(probe.intensity) ? clamp5(probe.intensity ?? 1, 0, 32) : 1;
+      if (influence <= EPS4 || intensity <= EPS4) continue;
+      const weight = influence * intensity;
+      total += influence;
+      diffuseWeighted = add32(diffuseWeighted, scale32(materialColor(probe.diffuseColor ?? environment?.diffuseColor ?? "#000000"), weight));
+      specularWeighted = add32(specularWeighted, scale32(materialColor(probe.specularColor ?? environment?.specularColor ?? "#000000"), weight));
     }
-    const inv = 1 / det, tangent = normalize3(sub3(scale3(edge1, dv2 * inv), scale3(edge2, dv1 * inv))), bitangent = normalize3(sub3(scale3(edge2, du1 * inv), scale3(edge1, du2 * inv)));
+    if (total <= EPS4) return volume;
+    const blend = clamp5(total, 0, 1), diffuse = scale32(diffuseWeighted, 1 / Math.max(total, EPS4)), specular = scale32(specularWeighted, 1 / Math.max(total, EPS4));
+    return { diffuse: mix3(volume.diffuse, diffuse, blend), specular: mix3(volume.specular, specular, blend) };
+  }
+  function spatialIrradianceVolumeSampleCount(environment) {
+    return environment?.irradianceVolumeField?.volumes.reduce((sum, entry) => sum + entry.volume.samples.length, 0) ?? environment?.irradianceVolume?.samples.length ?? 0;
+  }
+  function triangleTangentFrame(a, b, c, normal) {
+    const edge1 = sub32(b.world, a.world), edge22 = sub32(c.world, a.world), du1 = b.uv[0] - a.uv[0], dv1 = b.uv[1] - a.uv[1], du2 = c.uv[0] - a.uv[0], dv2 = c.uv[1] - a.uv[1], det = du1 * dv2 - du2 * dv1;
+    if (Math.abs(det) < EPS4) {
+      const axis = Math.abs(normal[1]) < 0.95 ? [0, 1, 0] : [1, 0, 0], tangent2 = normalize32(cross32(axis, normal));
+      return { tangent: tangent2, bitangent: normalize32(cross32(normal, tangent2)) };
+    }
+    const inv = 1 / det, tangent = normalize32(sub32(scale32(edge1, dv2 * inv), scale32(edge22, dv1 * inv))), bitangent = normalize32(sub32(scale32(edge22, du1 * inv), scale32(edge1, du2 * inv)));
     return { tangent, bitangent };
   }
-  function sampleSpatialMaterial(material, textures, uv, geometricNormal, tangent, bitangent) {
+  function sampleSpatialMaterial(material, textures, uv, lightmapUv, geometricNormal, tangent, bitangent) {
     const m = sanitizeMaterial(material), baseFactor = materialColor(m.baseColor), baseTexture = m.baseColorTextureId ? textures.get(m.baseColorTextureId) : void 0, baseSample = baseTexture ? sampleSpatialTexture(baseTexture, uv, "srgb") : [1, 1, 1, 1];
     let metallic = m.metallic, roughness = m.roughness;
     if (m.metallicRoughnessTextureId) {
       const texture = textures.get(m.metallicRoughnessTextureId);
       if (texture) {
         const sample = sampleSpatialTexture(texture, uv, "linear");
-        roughness = clamp(roughness * sample[1], 0.04, 1);
-        metallic = clamp(metallic * sample[2], 0, 1);
+        roughness = clamp5(roughness * sample[1], 0.04, 1);
+        metallic = clamp5(metallic * sample[2], 0, 1);
       }
     }
     let occlusion = 1;
@@ -1545,110 +3231,281 @@ fn visible(centerRadius:vec4<f32>)->bool{let clip=camera.viewProjection*vec4<f32
       }
     }
     const emissiveFactor = materialColor(m.emissive), emissiveTexture = m.emissiveTextureId ? textures.get(m.emissiveTextureId) : void 0, emissiveSample = emissiveTexture ? sampleSpatialTexture(emissiveTexture, uv, "srgb") : [1, 1, 1, 1];
-    let normal = normalize3(geometricNormal);
+    let normal = normalize32(geometricNormal);
     if (m.normalTextureId) {
       const texture = textures.get(m.normalTextureId);
       if (texture) {
-        const sample = sampleSpatialTexture(texture, uv, "linear"), local = normalize3([(sample[0] * 2 - 1) * m.normalScale, (sample[1] * 2 - 1) * m.normalScale, sample[2] * 2 - 1]);
-        normal = normalize3(add3(add3(scale3(tangent, local[0]), scale3(bitangent, local[1])), scale3(normal, local[2])));
+        const sample = sampleSpatialTexture(texture, uv, "linear"), local = normalize32([(sample[0] * 2 - 1) * m.normalScale, (sample[1] * 2 - 1) * m.normalScale, sample[2] * 2 - 1]);
+        normal = normalize32(add32(add32(scale32(tangent, local[0]), scale32(bitangent, local[1])), scale32(normal, local[2])));
       }
     }
-    const opacity = clamp(m.opacity * baseSample[3], 0, 1), discarded = m.alphaMode === "MASK" && opacity < m.alphaCutoff;
-    return { baseColor: mul3(baseFactor, [baseSample[0], baseSample[1], baseSample[2]]), metallic, roughness, emissive: scale3(mul3(emissiveFactor, [emissiveSample[0], emissiveSample[1], emissiveSample[2]]), m.emissiveStrength), occlusion, normal, opacity: m.alphaMode === "MASK" ? 1 : opacity, discarded };
+    const lightmapTexture = m.lightmapTextureId ? textures.get(m.lightmapTextureId) : void 0, lightmapSample = lightmapTexture ? sampleSpatialTexture(lightmapTexture, m.lightmapUvSet === 1 ? lightmapUv : uv, "linear") : [0, 0, 0, 1], reactiveTexture = m.reactiveMaskTextureId ? textures.get(m.reactiveMaskTextureId) : void 0, reactiveSample = reactiveTexture ? sampleSpatialTexture(reactiveTexture, uv, "linear") : [0, 0, 0, 1], opacity = clamp5(m.opacity * baseSample[3], 0, 1), discarded = m.alphaMode === "MASK" && opacity < m.alphaCutoff;
+    return { baseColor: mul3(baseFactor, [baseSample[0], baseSample[1], baseSample[2]]), metallic, roughness, emissive: scale32(mul3(emissiveFactor, [emissiveSample[0], emissiveSample[1], emissiveSample[2]]), m.emissiveStrength), lightmap: scale32([lightmapSample[0], lightmapSample[1], lightmapSample[2]], m.lightmapIntensity), occlusion, normal, opacity: m.alphaMode === "MASK" ? 1 : opacity, reactive: clamp5(Math.max(m.temporalReactive, reactiveSample[0] ?? 0), 0, 1), discarded };
   }
   function shade(material, sample, world, camera, environment, textures, lights, shadow, receiveShadow) {
-    const m = sanitizeMaterial(material), v = normalize3(sub3(camera, world)), n = normalize3(sample.normal), nDotV = Math.max(1e-4, dot3(n, v)), dielectric = Math.pow((m.ior - 1) / (m.ior + 1), 2), f0 = mix3([dielectric, dielectric, dielectric], sample.baseColor, sample.metallic), environmentF = fresnelSchlick(nDotV, f0), environmentKd = scale3([1 - environmentF[0], 1 - environmentF[1], 1 - environmentF[2]], 1 - sample.metallic), reflection = normalize3(sub3(scale3(n, 2 * nDotV), v)), environmentTexture = environment.textureId ? textures.get(environment.textureId) : void 0, environmentDiffuseColor = environmentTexture ? sampleSpatialEnvironment(environmentTexture, n) : materialColor(environment.diffuseColor), environmentSpecularColor = environmentTexture ? mix3(sampleSpatialEnvironment(environmentTexture, reflection), environmentDiffuseColor, sample.roughness * sample.roughness) : materialColor(environment.specularColor), environmentDiffuse = scale3(mul3(mul3(environmentKd, sample.baseColor), environmentDiffuseColor), environment.intensity * sample.occlusion / Math.PI), environmentSpecular = scale3(mul3(environmentSpecularColor, environmentF), environment.intensity * (0.35 + 0.65 * (1 - sample.roughness)));
-    let color = add3([sample.emissive[0], sample.emissive[1], sample.emissive[2]], add3(environmentDiffuse, environmentSpecular));
+    const m = sanitizeMaterial(material), v = normalize32(sub32(camera, world)), n = normalize32(sample.normal), nDotV = Math.max(1e-4, dot3(n, v)), dielectric = Math.pow((m.ior - 1) / (m.ior + 1), 2), f0 = mix3([dielectric, dielectric, dielectric], sample.baseColor, sample.metallic), environmentF = fresnelSchlick(nDotV, f0), environmentKd = scale32([1 - environmentF[0], 1 - environmentF[1], 1 - environmentF[2]], 1 - sample.metallic), reflection = normalize32(sub32(scale32(n, 2 * nDotV), v)), environmentTexture = environment.textureId ? textures.get(environment.textureId) : void 0, baseEnvironmentDiffuseColor = environmentTexture ? sampleSpatialEnvironment(environmentTexture, n, 1) : materialColor(environment.diffuseColor), baseEnvironmentSpecularColor = environmentTexture ? sampleSpatialEnvironment(environmentTexture, reflection, sample.roughness) : materialColor(environment.specularColor), probeEnvironment = sampleSpatialEnvironmentProbes(environment, world, baseEnvironmentDiffuseColor, baseEnvironmentSpecularColor), environmentDiffuse = scale32(mul3(mul3(environmentKd, sample.baseColor), probeEnvironment.diffuse), environment.intensity * sample.occlusion / Math.PI), environmentSpecular = scale32(mul3(probeEnvironment.specular, environmentF), environment.intensity * (0.35 + 0.65 * (1 - sample.roughness))), lightmapIndirect = scale32(mul3(sample.baseColor, sample.lightmap), sample.occlusion);
+    let color3 = add32(lightmapIndirect, add32([sample.emissive[0], sample.emissive[1], sample.emissive[2]], add32(environmentDiffuse, environmentSpecular)));
     for (const light of lights) {
       const lc = materialColor(light.color ?? "#ffffff"), intensity = Math.max(0, light.intensity ?? 1);
       if (light.kind === "ambient") {
-        color = add3(color, scale3(mul3(sample.baseColor, lc), intensity * sample.occlusion));
+        color3 = add32(color3, scale32(mul3(sample.baseColor, lc), intensity * sample.occlusion));
         continue;
       }
       let l, attenuation = 1;
-      if (light.kind === "directional") l = normalize3(scale3(light.direction ?? [-0.4, -1, -0.3], -1));
+      if (light.kind === "directional") l = normalize32(scale32(light.direction ?? [-0.4, -1, -0.3], -1));
       else {
-        const delta = sub3(light.position ?? [0, 2, 0], world), distance = Math.max(1e-3, length3(delta));
-        l = scale3(delta, 1 / distance);
+        const delta = sub32(light.position ?? [0, 2, 0], world), distance4 = Math.max(1e-3, length32(delta));
+        l = scale32(delta, 1 / distance4);
         const range = Math.max(1e-3, light.range ?? 10);
-        attenuation = Math.pow(clamp(1 - distance / range, 0, 1), 2);
+        attenuation = Math.pow(clamp5(1 - distance4 / range, 0, 1), 2);
       }
-      const visibility = receiveShadow && light.kind === "directional" && light.castShadow ? shadowFactor(shadow, world) : 1, direct = evaluatePBRLighting({ baseColor: sample.baseColor, metallic: sample.metallic, roughness: sample.roughness, ior: m.ior, clearcoat: m.clearcoat, clearcoatRoughness: m.clearcoatRoughness, normal: sample.normal, view: v, light: l, radiance: scale3(lc, intensity * attenuation * visibility) });
-      color = add3(color, direct);
+      const visibility2 = receiveShadow && light.kind === "directional" && light.castShadow ? shadowFactor(shadow, world) : 1, direct = evaluatePBRLighting({ baseColor: sample.baseColor, metallic: sample.metallic, roughness: sample.roughness, ior: m.ior, clearcoat: m.clearcoat, clearcoatRoughness: m.clearcoatRoughness, normal: sample.normal, view: v, light: l, radiance: scale32(lc, intensity * attenuation * visibility2) });
+      color3 = add32(color3, direct);
     }
-    return color;
+    return color3;
+  }
+  function sampleSpatialBloom(color3, width, height, x, y, postProcess) {
+    if (postProcess.bloomIntensity <= 0) return [0, 0, 0];
+    let result = [0, 0, 0];
+    for (let offsetY = -1; offsetY <= 1; offsetY++) for (let offsetX = -1; offsetX <= 1; offsetX++) {
+      const weight = offsetX === 0 && offsetY === 0 ? 0.32 : offsetX === 0 || offsetY === 0 ? 0.12 : 0.05, sampleX = Math.max(0, Math.min(width - 1, Math.round(x + offsetX * postProcess.bloomRadius))), sampleY = Math.max(0, Math.min(height - 1, Math.round(y + offsetY * postProcess.bloomRadius))), index = (sampleY * width + sampleX) * 4, sample = [color3[index] ?? 0, color3[index + 1] ?? 0, color3[index + 2] ?? 0], luminance = dot3(sample, [0.2126, 0.7152, 0.0722]), threshold = clamp5((luminance - postProcess.bloomThreshold) / Math.max(luminance, 1e-4), 0, 1);
+      result = add32(result, scale32(sample, weight * threshold));
+    }
+    return scale32(result, postProcess.bloomIntensity);
+  }
+  function sampleSpatialDepthOfField(color3, depth, width, height, x, y, postProcess) {
+    const index = (y * width + x) * 4, base = [color3[index] ?? 0, color3[index + 1] ?? 0, color3[index + 2] ?? 0];
+    if (postProcess.dofIntensity <= 0 || postProcess.dofRadius <= 0) return base;
+    const currentDepth = Number.isFinite(depth[y * width + x]) ? depth[y * width + x] : 1, coc = clamp5(Math.abs(currentDepth - postProcess.dofFocus) / Math.max(postProcess.dofRange, 1e-4) * postProcess.dofIntensity, 0, 1);
+    if (coc <= 0) return base;
+    let blurred = [0, 0, 0];
+    for (let offsetY = -1; offsetY <= 1; offsetY++) for (let offsetX = -1; offsetX <= 1; offsetX++) {
+      const weight = offsetX === 0 && offsetY === 0 ? 0.32 : offsetX === 0 || offsetY === 0 ? 0.12 : 0.05, sampleX = Math.max(0, Math.min(width - 1, Math.round(x + offsetX * postProcess.dofRadius))), sampleY = Math.max(0, Math.min(height - 1, Math.round(y + offsetY * postProcess.dofRadius))), sampleIndex = (sampleY * width + sampleX) * 4;
+      blurred = add32(blurred, scale32([color3[sampleIndex] ?? 0, color3[sampleIndex + 1] ?? 0, color3[sampleIndex + 2] ?? 0], weight));
+    }
+    return mix3(base, blurred, coc);
+  }
+  function applySpatialAmbientOcclusion(color3, depth, width, height, postProcess) {
+    const output = new Float32Array(color3);
+    if (postProcess.ssaoIntensity <= 0 || postProcess.ssaoRadius <= 0) return output;
+    const offsets = [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]], radius = Math.max(1, postProcess.ssaoRadius);
+    for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
+      const currentDepth = depth[y * width + x];
+      if (!Number.isFinite(currentDepth) || currentDepth >= 1) continue;
+      let occluded = 0, samples = 0;
+      for (const [offsetX, offsetY] of offsets) {
+        const sampleX = Math.max(0, Math.min(width - 1, Math.round(x + offsetX * radius))), sampleY = Math.max(0, Math.min(height - 1, Math.round(y + offsetY * radius))), sampleDepth = depth[sampleY * width + sampleX];
+        if (!Number.isFinite(sampleDepth) || sampleDepth >= 1) continue;
+        samples++;
+        if (sampleDepth > currentDepth + 5e-4) occluded++;
+      }
+      if (samples === 0) continue;
+      const factor = 1 - postProcess.ssaoIntensity * 0.65 * occluded / samples, index = (y * width + x) * 4;
+      output[index] = output[index] * factor;
+      output[index + 1] = output[index + 1] * factor;
+      output[index + 2] = output[index + 2] * factor;
+    }
+    return output;
+  }
+  function applySpatialScreenSpaceGlobalIllumination(color3, depth, width, height, postProcess) {
+    const output = new Float32Array(color3);
+    if (postProcess.ssgiIntensity <= 0 || postProcess.ssgiRadius <= 0) return output;
+    const offsets = [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]], radius = Math.max(1, postProcess.ssgiRadius), steps = Math.min(8, Math.max(1, Math.round(postProcess.ssgiSteps))), thickness = Math.max(1e-3, postProcess.ssgiThickness), scale5 = postProcess.ssgiIntensity * 0.18;
+    for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
+      const currentDepth = depth[y * width + x];
+      if (!Number.isFinite(currentDepth) || currentDepth >= 1) continue;
+      let indirect = [0, 0, 0], weightTotal = 0;
+      for (let step = 0; step < steps; step++) {
+        const [offsetX, offsetY] = offsets[step], sampleX = Math.max(0, Math.min(width - 1, Math.round(x + offsetX * radius))), sampleY = Math.max(0, Math.min(height - 1, Math.round(y + offsetY * radius))), sampleDepth = depth[sampleY * width + sampleX];
+        if (!Number.isFinite(sampleDepth) || sampleDepth >= 1) continue;
+        const separation = clamp5(Math.abs(sampleDepth - currentDepth) / thickness, 0, 1), weight = separation / (1 + Math.hypot(offsetX, offsetY)), sampleIndex = (sampleY * width + sampleX) * 4;
+        indirect = add32(indirect, scale32([color3[sampleIndex] ?? 0, color3[sampleIndex + 1] ?? 0, color3[sampleIndex + 2] ?? 0], weight));
+        weightTotal += weight;
+      }
+      if (weightTotal <= EPS4) continue;
+      const index = (y * width + x) * 4, normalized = scale32(indirect, scale5 / weightTotal);
+      output[index] = output[index] + normalized[0];
+      output[index + 1] = output[index + 1] + normalized[1];
+      output[index + 2] = output[index + 2] + normalized[2];
+    }
+    return output;
+  }
+  function sampleSpatialTemporalHistory(history, uv) {
+    const x = clamp5(uv[0], 0, 1) * (history.width - 1), y = clamp5(uv[1], 0, 1) * (history.height - 1), x0 = Math.floor(x), y0 = Math.floor(y), x1 = Math.min(history.width - 1, x0 + 1), y1 = Math.min(history.height - 1, y0 + 1), tx = x - x0, ty = y - y0, index = (sampleX, sampleY) => (sampleY * history.width + sampleX) * 4, mixValue = (channel) => {
+      const top = (history.pixels[index(x0, y0) + channel] ?? 0) * (1 - tx) + (history.pixels[index(x1, y0) + channel] ?? 0) * tx, bottom = (history.pixels[index(x0, y1) + channel] ?? 0) * (1 - tx) + (history.pixels[index(x1, y1) + channel] ?? 0) * tx;
+      return top * (1 - ty) + bottom * ty;
+    };
+    return [mixValue(0), mixValue(1), mixValue(2)];
+  }
+  function clampSpatialTemporalHistoryColor(color3, historyColor, x, y, width, height, amount) {
+    if (amount <= 0) return historyColor;
+    const minimum = [Infinity, Infinity, Infinity], maximum = [-Infinity, -Infinity, -Infinity];
+    for (let offsetY = -1; offsetY <= 1; offsetY++) for (let offsetX = -1; offsetX <= 1; offsetX++) {
+      const sampleX = Math.max(0, Math.min(width - 1, x + offsetX)), sampleY = Math.max(0, Math.min(height - 1, y + offsetY)), index = (sampleY * width + sampleX) * 4;
+      for (let channel = 0; channel < 3; channel++) {
+        const value = color3[index + channel] ?? 0;
+        minimum[channel] = Math.min(minimum[channel], value);
+        maximum[channel] = Math.max(maximum[channel], value);
+      }
+    }
+    return [0, 1, 2].map((channel) => clamp5(historyColor[channel], minimum[channel] - (maximum[channel] - minimum[channel]) * amount, maximum[channel] + (maximum[channel] - minimum[channel]) * amount));
+  }
+  function projectTemporalHistoryUv(x, y, currentDepth, width, height, inverseViewProjection, previousViewProjection) {
+    const clip = transformVec4(inverseViewProjection, [x / width * 2 - 1, 1 - y / height * 2, currentDepth * 2 - 1, 1]);
+    if (Math.abs(clip[3]) < EPS4) return null;
+    const world = transformVec4(previousViewProjection, [clip[0] / clip[3], clip[1] / clip[3], clip[2] / clip[3], 1]);
+    if (Math.abs(world[3]) < EPS4) return null;
+    const ndcX = world[0] / world[3], ndcY = world[1] / world[3], ndcZ = world[2] / world[3], uv = [ndcX * 0.5 + 0.5, 1 - (ndcY * 0.5 + 0.5)];
+    if (uv[0] < 0 || uv[0] > 1 || uv[1] < 0 || uv[1] > 1) return null;
+    return { uv, depth: ndcZ * 0.5 + 0.5 };
+  }
+  function sampleSpatialTemporalVelocity(velocity, width, height, x, y) {
+    const sampleX = Math.max(0, Math.min(width - 1, Math.round(x))), sampleY = Math.max(0, Math.min(height - 1, Math.round(y))), index = (sampleY * width + sampleX) * 4;
+    return { x: velocity[index] ?? 0, y: velocity[index + 1] ?? 0, previousDepth: velocity[index + 2] ?? 0, alpha: velocity[index + 3] ?? 0 };
+  }
+  function dilateSpatialTemporalVelocity(velocity, width, height, x, y, radius) {
+    const center = sampleSpatialTemporalVelocity(velocity, width, height, x, y), searchRadius = Math.min(4, Math.max(0, Math.round(radius)));
+    let best = center, bestLength = center.alpha > 0.5 ? Math.hypot(center.x, center.y) : -1;
+    for (let offsetY = -searchRadius; offsetY <= searchRadius; offsetY++) for (let offsetX = -searchRadius; offsetX <= searchRadius; offsetX++) {
+      const candidate = sampleSpatialTemporalVelocity(velocity, width, height, x + offsetX, y + offsetY), length4 = candidate.alpha > 0.5 ? Math.hypot(candidate.x, candidate.y) : -1;
+      if (length4 > bestLength) {
+        best = candidate;
+        bestLength = length4;
+      }
+    }
+    return best;
+  }
+  function resolveSpatialTemporalColor(color3, depth, viewProjection, postProcess, history, width, height, reactiveMask, velocity = new Float32Array(width * height * 4)) {
+    const output = new Float32Array(color3), blend = postProcess.temporalBlend;
+    if (blend <= 0 || postProcess.temporalReset || !history || history.width !== width || history.height !== height || history.pixels.length !== output.length) return output;
+    const inverseViewProjection = history.viewProjectionMatrix ? inverseMat4(viewProjection) : void 0, historyDepth = history.depth && history.depth.length === width * height ? history.depth : void 0;
+    for (let pixel = 0; pixel < width * height; pixel++) {
+      const currentDepth = depth[pixel], x = pixel % width, y = Math.floor(pixel / width), index = pixel * 4, currentLuminance = Math.max(0, color3[index] * 0.2126 + color3[index + 1] * 0.7152 + color3[index + 2] * 0.0722), luminanceReactive = clamp5((currentLuminance - postProcess.temporalReactiveThreshold) * postProcess.temporalReactive, 0, 1), authoredReactive = clamp5(reactiveMask?.[pixel] ?? 0, 0, 1), currentVelocity = dilateSpatialTemporalVelocity(velocity, width, height, x, y, postProcess.temporalVelocityDilation), velocityLength = Math.hypot(currentVelocity.x, currentVelocity.y), velocityActive = currentVelocity.alpha > 0.5 && velocityLength > postProcess.temporalVelocityThreshold, velocityUv = [(x + 0.5) / width - currentVelocity.x * 0.5, (y + 0.5) / height + currentVelocity.y * 0.5], velocityReactive = velocityActive ? clamp5((velocityLength - postProcess.temporalVelocityThreshold) * 4 / Math.max(postProcess.temporalVelocityDilation, 1), 0, 1) : 0, reactive = Math.max(luminanceReactive, authoredReactive), effectiveBlend = blend * (1 - reactive) * (1 - velocityReactive);
+      if (!Number.isFinite(currentDepth) || effectiveBlend <= 0) continue;
+      const cameraProjected = inverseViewProjection && history.viewProjectionMatrix ? projectTemporalHistoryUv(x + 0.5, y + 0.5, currentDepth, width, height, inverseViewProjection, history.viewProjectionMatrix) : { uv: [(x + 0.5) / width, (y + 0.5) / height], depth: currentDepth }, projected = velocityActive && currentVelocity.previousDepth >= 0 && currentVelocity.previousDepth <= 1 ? { uv: velocityUv, depth: currentVelocity.previousDepth } : cameraProjected;
+      if (!projected || projected.uv[0] < 0 || projected.uv[0] > 1 || projected.uv[1] < 0 || projected.uv[1] > 1) continue;
+      if (historyDepth) {
+        const historyX = Math.max(0, Math.min(width - 1, Math.round(projected.uv[0] * (width - 1)))), historyY = Math.max(0, Math.min(height - 1, Math.round(projected.uv[1] * (height - 1)))), previousDepth = historyDepth[historyY * width + historyX];
+        if (Number.isFinite(previousDepth) && Math.abs(previousDepth - projected.depth) > 0.035) continue;
+      }
+      const previous = clampSpatialTemporalHistoryColor(color3, sampleSpatialTemporalHistory(history, projected.uv), x, y, width, height, postProcess.temporalClamp);
+      output[index] = output[index] * (1 - effectiveBlend) + previous[0] * effectiveBlend;
+      output[index + 1] = output[index + 1] * (1 - effectiveBlend) + previous[1] * effectiveBlend;
+      output[index + 2] = output[index + 2] * (1 - effectiveBlend) + previous[2] * effectiveBlend;
+    }
+    return output;
+  }
+  function applySpatialPostProcess(color3, postProcess, x, y, width, height, bloom = [0, 0, 0]) {
+    const hdr = add32(color3, bloom), exposure = Math.pow(2, postProcess.exposure), mapped = [aces(hdr[0] * exposure), aces(hdr[1] * exposure), aces(hdr[2] * exposure)], luminance = mapped[0] * 0.2126 + mapped[1] * 0.7152 + mapped[2] * 0.0722, saturated = [luminance + (mapped[0] - luminance) * postProcess.saturation, luminance + (mapped[1] - luminance) * postProcess.saturation, luminance + (mapped[2] - luminance) * postProcess.saturation], graded = saturated.map((value) => clamp5((value - 0.5) * postProcess.contrast + 0.5, 0, 1)), distance4 = Math.hypot((x + 0.5) / width - 0.5, (y + 0.5) / height - 0.5), t = clamp5((distance4 - 0.25) / 0.6, 0, 1), edge3 = t * t * (3 - 2 * t), factor = 1 - postProcess.vignette * edge3;
+    return scale32(graded, factor);
   }
   function renderSpatialReference(scene, options = {}) {
     const plan = compileSpatialFrame(scene, options), verification = verifySpatialFrame(plan);
     if (!verification.ok) throw new Error(verification.diagnostics.join("; "));
-    const width = plan.viewport.width, height = plan.viewport.height, color = new Float32Array(width * height * 4), depth = new Float32Array(width * height);
+    const width = plan.viewport.width, height = plan.viewport.height, color3 = new Float32Array(width * height * 4), depth = new Float32Array(width * height), velocity = new Float32Array(width * height * 4);
     depth.fill(Infinity);
     const bg = parseColor(scene.background ?? "#0b1020");
     for (let i = 0; i < width * height; i++) {
-      color[i * 4] = bg[0] / 255;
-      color[i * 4 + 1] = bg[1] / 255;
-      color[i * 4 + 2] = bg[2] / 255;
-      color[i * 4 + 3] = 1;
+      color3[i * 4] = bg[0] / 255;
+      color3[i * 4 + 1] = bg[1] / 255;
+      color3[i * 4 + 2] = bg[2] / 255;
+      color3[i * 4 + 3] = 1;
     }
+    const oitAccumulation = plan.transparencyMode === "weighted-blended-oit" ? new Float32Array(width * height * 4) : void 0, oitRevealage = plan.transparencyMode === "weighted-blended-oit" ? new Float32Array(width * height).fill(1) : void 0, oitVelocity = plan.transparencyMode === "weighted-blended-oit" ? new Float32Array(width * height * 4) : void 0, reactiveMask = new Float32Array(width * height);
     const meshById = new Map(scene.meshes.map((mesh) => [mesh.id, { ...mesh, normals: mesh.normals ?? calculateMeshNormals(mesh) }])), materialById = new Map(scene.materials.map((material) => [material.id, material])), textureById = new Map((scene.textures ?? []).map((texture) => [texture.id, texture])), shadow = buildShadow(scene, plan, new Map([...meshById.entries()].map(([id, mesh]) => [id, mesh])));
-    for (const packet of [...plan.drawPackets].sort((a, b) => a.distanceToCamera - b.distanceToCamera || a.nodeId.localeCompare(b.nodeId))) {
+    for (const packet of [...plan.drawPackets].sort((a, b) => {
+      const aBlend = (materialById.get(a.materialId)?.alphaMode ?? "OPAQUE") === "BLEND", bBlend = (materialById.get(b.materialId)?.alphaMode ?? "OPAQUE") === "BLEND";
+      if (aBlend !== bBlend) return aBlend ? 1 : -1;
+      if (plan.transparencyMode === "weighted-blended-oit") return a.nodeId.localeCompare(b.nodeId);
+      return (aBlend ? b.distanceToCamera - a.distanceToCamera : a.distanceToCamera - b.distanceToCamera) || a.nodeId.localeCompare(b.nodeId);
+    })) {
       const mesh = deformSpatialMesh(meshById.get(packet.meshId), packet), material = materialById.get(packet.materialId) ?? { id: packet.materialId }, sanitized = sanitizeMaterial(material);
       for (const instance of packetInstances(packet)) {
         const worldMatrix = instance.worldMatrix;
         for (let i = 0; i < mesh.indices.length; i += 3) {
           const vertices = [];
           for (const index of [mesh.indices[i], mesh.indices[i + 1], mesh.indices[i + 2]]) {
-            const p = index * 3, n = index * 3, v = projectVertex([mesh.positions[p], mesh.positions[p + 1], mesh.positions[p + 2]], [mesh.normals[n], mesh.normals[n + 1], mesh.normals[n + 2]], [mesh.uvs?.[index * 2] ?? 0, mesh.uvs?.[index * 2 + 1] ?? 0], worldMatrix, plan.camera.viewProjectionMatrix, width, height);
+            const p = index * 3, n = index * 3, v = projectVertex([mesh.positions[p], mesh.positions[p + 1], mesh.positions[p + 2]], [mesh.normals[n], mesh.normals[n + 1], mesh.normals[n + 2]], [mesh.uvs?.[index * 2] ?? 0, mesh.uvs?.[index * 2 + 1] ?? 0], worldMatrix, plan.camera.viewProjectionMatrix, width, height, [mesh.uvs1?.[index * 2] ?? mesh.uvs?.[index * 2] ?? 0, mesh.uvs1?.[index * 2 + 1] ?? mesh.uvs?.[index * 2 + 1] ?? 0], instance.previousWorldMatrix ?? worldMatrix, options.temporalHistory?.viewProjectionMatrix ?? plan.camera.viewProjectionMatrix);
             if (v) vertices.push(v);
           }
           if (vertices.length !== 3) continue;
-          const [a, b, c] = vertices, area = edge(a, b, c.x, c.y);
-          if (Math.abs(area) < EPS) continue;
+          const [a, b, c] = vertices, area = edge2(a, b, c.x, c.y);
+          if (Math.abs(area) < EPS4) continue;
           if (area < 0 && !sanitized.doubleSided) continue;
-          const faceNormal = normalize3(cross3(sub3(b.world, a.world), sub3(c.world, a.world))), basis = triangleTangentFrame(a, b, c, faceNormal), minX = Math.max(0, Math.floor(Math.min(a.x, b.x, c.x))), maxX = Math.min(width - 1, Math.ceil(Math.max(a.x, b.x, c.x))), minY = Math.max(0, Math.floor(Math.min(a.y, b.y, c.y))), maxY = Math.min(height - 1, Math.ceil(Math.max(a.y, b.y, c.y)));
+          const transparent = sanitized.alphaMode === "BLEND";
+          const faceNormal = normalize32(cross32(sub32(b.world, a.world), sub32(c.world, a.world))), basis = triangleTangentFrame(a, b, c, faceNormal), minX = Math.max(0, Math.floor(Math.min(a.x, b.x, c.x))), maxX = Math.min(width - 1, Math.ceil(Math.max(a.x, b.x, c.x))), minY = Math.max(0, Math.floor(Math.min(a.y, b.y, c.y))), maxY = Math.min(height - 1, Math.ceil(Math.max(a.y, b.y, c.y)));
           for (let y = minY; y <= maxY; y++) for (let x = minX; x <= maxX; x++) {
-            const px = x + 0.5, py = y + 0.5, w0 = edge(b, c, px, py) / area, w1 = edge(c, a, px, py) / area, w2 = 1 - w0 - w1;
+            const px = x + 0.5, py = y + 0.5, w0 = edge2(b, c, px, py) / area, w1 = edge2(c, a, px, py) / area, w2 = 1 - w0 - w1;
             if (w0 < 0 || w1 < 0 || w2 < 0) continue;
             const inv = w0 * a.invW + w1 * b.invW + w2 * c.invW;
             if (inv <= 0) continue;
             const p0 = w0 * a.invW / inv, p1 = w1 * b.invW / inv, p2 = w2 * c.invW / inv, z = p0 * a.depth + p1 * b.depth + p2 * c.depth, index = y * width + x;
             if (z < 0 || z > 1 || z >= depth[index]) continue;
-            const world = [p0 * a.world[0] + p1 * b.world[0] + p2 * c.world[0], p0 * a.world[1] + p1 * b.world[1] + p2 * c.world[1], p0 * a.world[2] + p1 * b.world[2] + p2 * c.world[2]], normal = normalize3([p0 * a.normal[0] + p1 * b.normal[0] + p2 * c.normal[0], p0 * a.normal[1] + p1 * b.normal[1] + p2 * c.normal[1], p0 * a.normal[2] + p1 * b.normal[2] + p2 * c.normal[2]]), uv = [p0 * a.uv[0] + p1 * b.uv[0] + p2 * c.uv[0], p0 * a.uv[1] + p1 * b.uv[1] + p2 * c.uv[1]], sample = sampleSpatialMaterial(material, textureById, uv, normal, basis.tangent, basis.bitangent);
+            const world = [p0 * a.world[0] + p1 * b.world[0] + p2 * c.world[0], p0 * a.world[1] + p1 * b.world[1] + p2 * c.world[1], p0 * a.world[2] + p1 * b.world[2] + p2 * c.world[2]], normal = normalize32([p0 * a.normal[0] + p1 * b.normal[0] + p2 * c.normal[0], p0 * a.normal[1] + p1 * b.normal[1] + p2 * c.normal[1], p0 * a.normal[2] + p1 * b.normal[2] + p2 * c.normal[2]]), uv = [p0 * a.uv[0] + p1 * b.uv[0] + p2 * c.uv[0], p0 * a.uv[1] + p1 * b.uv[1] + p2 * c.uv[1]], lightmapUv = [p0 * a.lightmapUv[0] + p1 * b.lightmapUv[0] + p2 * c.lightmapUv[0], p0 * a.lightmapUv[1] + p1 * b.lightmapUv[1] + p2 * c.lightmapUv[1]], motion = { x: p0 * a.motion.x + p1 * b.motion.x + p2 * c.motion.x, y: p0 * a.motion.y + p1 * b.motion.y + p2 * c.motion.y, previousDepth: p0 * a.motion.previousDepth + p1 * b.motion.previousDepth + p2 * c.motion.previousDepth, alpha: p0 * a.motion.alpha + p1 * b.motion.alpha + p2 * c.motion.alpha }, sample = sampleSpatialMaterial(material, textureById, uv, lightmapUv, normal, basis.tangent, basis.bitangent);
+            sample.reactive = Math.max(sample.reactive, packet.temporalReactive);
             if (sample.discarded) continue;
-            depth[index] = z;
+            reactiveMask[index] = Math.max(reactiveMask[index], sample.reactive * sample.opacity);
+            if (!transparent) depth[index] = z;
             const rgb = shade(material, sample, world, plan.camera.position, plan.environment, textureById, plan.lights, shadow, packet.receiveShadow), opacity = sample.opacity;
-            color[index * 4] = rgb[0] * opacity + color[index * 4] * (1 - opacity);
-            color[index * 4 + 1] = rgb[1] * opacity + color[index * 4 + 1] * (1 - opacity);
-            color[index * 4 + 2] = rgb[2] * opacity + color[index * 4 + 2] * (1 - opacity);
-            color[index * 4 + 3] = 1;
+            if (transparent && plan.transparencyMode === "weighted-blended-oit" && oitAccumulation && oitRevealage && oitVelocity) {
+              const weight = weightedTransparencyWeight(z);
+              oitAccumulation[index * 4] = oitAccumulation[index * 4] + rgb[0] * opacity * weight;
+              oitAccumulation[index * 4 + 1] = oitAccumulation[index * 4 + 1] + rgb[1] * opacity * weight;
+              oitAccumulation[index * 4 + 2] = oitAccumulation[index * 4 + 2] + rgb[2] * opacity * weight;
+              oitAccumulation[index * 4 + 3] = oitAccumulation[index * 4 + 3] + opacity * weight;
+              oitVelocity[index * 4] = oitVelocity[index * 4] + motion.x * opacity * weight;
+              oitVelocity[index * 4 + 1] = oitVelocity[index * 4 + 1] + motion.y * opacity * weight;
+              oitVelocity[index * 4 + 2] = oitVelocity[index * 4 + 2] + motion.previousDepth * opacity * weight;
+              oitVelocity[index * 4 + 3] = oitVelocity[index * 4 + 3] + opacity * weight;
+              oitRevealage[index] = oitRevealage[index] * Math.max(0, 1 - opacity);
+            } else {
+              color3[index * 4] = rgb[0] * opacity + color3[index * 4] * (1 - opacity);
+              color3[index * 4 + 1] = rgb[1] * opacity + color3[index * 4 + 1] * (1 - opacity);
+              color3[index * 4 + 2] = rgb[2] * opacity + color3[index * 4 + 2] * (1 - opacity);
+              color3[index * 4 + 3] = 1;
+              velocity[index * 4] = motion.x * opacity + velocity[index * 4] * (1 - opacity);
+              velocity[index * 4 + 1] = motion.y * opacity + velocity[index * 4 + 1] * (1 - opacity);
+              velocity[index * 4 + 2] = motion.previousDepth * opacity + velocity[index * 4 + 2] * (1 - opacity);
+              velocity[index * 4 + 3] = Math.max(velocity[index * 4 + 3], motion.alpha * opacity);
+            }
           }
         }
       }
     }
-    const surface = new PixelSurface(width, height);
+    if (oitAccumulation && oitRevealage && oitVelocity) for (let i = 0; i < width * height; i++) {
+      const alpha = clamp5(1 - oitRevealage[i], 0, 1), weight = oitAccumulation[i * 4 + 3], weighted = weight > EPS4 ? [oitAccumulation[i * 4] / weight, oitAccumulation[i * 4 + 1] / weight, oitAccumulation[i * 4 + 2] / weight] : [0, 0, 0], weightedVelocity = weight > EPS4 ? [oitVelocity[i * 4] / weight, oitVelocity[i * 4 + 1] / weight, oitVelocity[i * 4 + 2] / weight] : [0, 0, 0], opaqueVelocity = [velocity[i * 4], velocity[i * 4 + 1], velocity[i * 4 + 2]];
+      color3[i * 4] = weighted[0] * alpha + color3[i * 4] * (1 - alpha);
+      color3[i * 4 + 1] = weighted[1] * alpha + color3[i * 4 + 1] * (1 - alpha);
+      color3[i * 4 + 2] = weighted[2] * alpha + color3[i * 4 + 2] * (1 - alpha);
+      velocity[i * 4] = weightedVelocity[0] * alpha + opaqueVelocity[0] * (1 - alpha);
+      velocity[i * 4 + 1] = weightedVelocity[1] * alpha + opaqueVelocity[1] * (1 - alpha);
+      velocity[i * 4 + 2] = weightedVelocity[2] * alpha + opaqueVelocity[2] * (1 - alpha);
+      velocity[i * 4 + 3] = Math.max(velocity[i * 4 + 3], alpha);
+    }
+    const postProcess = plan.postProcess, ambientColor = applySpatialAmbientOcclusion(color3, depth, width, height, postProcess), indirectColor = applySpatialScreenSpaceGlobalIllumination(ambientColor, depth, width, height, postProcess), temporalColor = resolveSpatialTemporalColor(indirectColor, depth, plan.camera.viewProjectionMatrix, postProcess, options.temporalHistory, width, height, reactiveMask, velocity), surface = new PixelSurface(width, height);
     let minDepth = Infinity, maxDepth = -Infinity;
     for (let i = 0; i < width * height; i++) {
-      const d = depth[i];
+      const d = depth[i], x = i % width, y = Math.floor(i / width), defocused = sampleSpatialDepthOfField(temporalColor, depth, width, height, x, y, postProcess), bloom = sampleSpatialBloom(temporalColor, width, height, x, y, postProcess), graded = applySpatialPostProcess(defocused, postProcess, x, y, width, height, bloom);
       if (Number.isFinite(d)) {
         minDepth = Math.min(minDepth, d);
         maxDepth = Math.max(maxDepth, d);
       }
-      surface.data[i * 4] = Math.round(clamp(linearToSrgb(aces(color[i * 4])), 0, 1) * 255);
-      surface.data[i * 4 + 1] = Math.round(clamp(linearToSrgb(aces(color[i * 4 + 1])), 0, 1) * 255);
-      surface.data[i * 4 + 2] = Math.round(clamp(linearToSrgb(aces(color[i * 4 + 2])), 0, 1) * 255);
+      surface.data[i * 4] = Math.round(clamp5(linearToSrgb(graded[0]), 0, 1) * 255);
+      surface.data[i * 4 + 1] = Math.round(clamp5(linearToSrgb(graded[1]), 0, 1) * 255);
+      surface.data[i * 4 + 2] = Math.round(clamp5(linearToSrgb(graded[2]), 0, 1) * 255);
       surface.data[i * 4 + 3] = 255;
     }
-    const png = encodePng(surface, { compressionLevel: 6 });
-    return { png, pixelRoot: cryptographicHash([...surface.data]), framePlan: plan, depthRange: { min: Number.isFinite(minDepth) ? minDepth : 1, max: Number.isFinite(maxDepth) ? maxDepth : 1 } };
+    const temporalHistory = { width, height, pixels: temporalColor, depth: new Float32Array(depth), velocity: new Float32Array(velocity), viewProjectionMatrix: [...plan.camera.viewProjectionMatrix], previousWorldMatrices: Object.fromEntries(plan.drawPackets.flatMap((packet) => packetInstances(packet).map((instance) => [instance.nodeId, [...instance.worldMatrix]]))), root: cryptographicHash({ width, height, pixels: [...temporalColor], depth: Array.from(depth, (value) => Number.isFinite(value) ? value : null), velocity: [...velocity], viewProjectionMatrix: plan.camera.viewProjectionMatrix }) }, png = encodePng(surface, { compressionLevel: 6 });
+    return { png, pixelRoot: cryptographicHash([...surface.data]), framePlan: plan, depthRange: { min: Number.isFinite(minDepth) ? minDepth : 1, max: Number.isFinite(maxDepth) ? maxDepth : 1 }, temporalHistory };
   }
   function transposeMat4(matrix) {
     return new Float32Array([matrix[0], matrix[4], matrix[8], matrix[12], matrix[1], matrix[5], matrix[9], matrix[13], matrix[2], matrix[6], matrix[10], matrix[14], matrix[3], matrix[7], matrix[11], matrix[15]]);
   }
   function packSpatialVertexBuffer(mesh) {
     validateMesh(mesh);
-    const normals = mesh.normals ?? calculateMeshNormals(mesh), uvs = mesh.uvs ?? new Array(mesh.positions.length / 3 * 2).fill(0), vertices = mesh.positions.length / 3, joints = mesh.jointIndices ?? new Array(vertices * 4).fill(0), weights = mesh.jointWeights ?? Array.from({ length: vertices * 4 }, (_, index) => index % 4 === 0 ? 1 : 0), out = new Float32Array(vertices * 16);
+    const normals = mesh.normals ?? calculateMeshNormals(mesh), uvs = mesh.uvs ?? new Array(mesh.positions.length / 3 * 2).fill(0), uvs1 = mesh.uvs1 ?? uvs, vertices = mesh.positions.length / 3, joints = mesh.jointIndices ?? new Array(vertices * 4).fill(0), weights = mesh.jointWeights ?? Array.from({ length: vertices * 4 }, (_, index) => index % 4 === 0 ? 1 : 0), out = new Float32Array(vertices * 18);
     for (let index = 0; index < vertices; index++) {
-      const base = index * 16;
+      const base = index * 18;
       out[base] = mesh.positions[index * 3];
       out[base + 1] = mesh.positions[index * 3 + 1];
       out[base + 2] = mesh.positions[index * 3 + 2];
@@ -1657,14 +3514,16 @@ fn visible(centerRadius:vec4<f32>)->bool{let clip=camera.viewProjection*vec4<f32
       out[base + 5] = normals[index * 3 + 2];
       out[base + 6] = uvs[index * 2] ?? 0;
       out[base + 7] = uvs[index * 2 + 1] ?? 0;
-      out[base + 8] = joints[index * 4] ?? 0;
-      out[base + 9] = joints[index * 4 + 1] ?? 0;
-      out[base + 10] = joints[index * 4 + 2] ?? 0;
-      out[base + 11] = joints[index * 4 + 3] ?? 0;
-      out[base + 12] = weights[index * 4] ?? 1;
-      out[base + 13] = weights[index * 4 + 1] ?? 0;
-      out[base + 14] = weights[index * 4 + 2] ?? 0;
-      out[base + 15] = weights[index * 4 + 3] ?? 0;
+      out[base + 8] = uvs1[index * 2] ?? 0;
+      out[base + 9] = uvs1[index * 2 + 1] ?? 0;
+      out[base + 10] = joints[index * 4] ?? 0;
+      out[base + 11] = joints[index * 4 + 1] ?? 0;
+      out[base + 12] = joints[index * 4 + 2] ?? 0;
+      out[base + 13] = joints[index * 4 + 3] ?? 0;
+      out[base + 14] = weights[index * 4] ?? 1;
+      out[base + 15] = weights[index * 4 + 1] ?? 0;
+      out[base + 16] = weights[index * 4 + 2] ?? 0;
+      out[base + 17] = weights[index * 4 + 3] ?? 0;
     }
     return out;
   }
@@ -1673,11 +3532,15 @@ fn visible(centerRadius:vec4<f32>)->bool{let clip=camera.viewProjection*vec4<f32
     return new Uint32Array(mesh.indices);
   }
   function packSpatialObjectUniform(packet) {
-    return transposeMat4(packet.worldMatrix);
+    return new Float32Array([...transposeMat4(packet.worldMatrix), packet.temporalReactive, 0, 0, 0]);
   }
   function packSpatialInstanceBuffer(packet) {
-    const instances = packetInstances(packet), out = new Float32Array(instances.length * 16);
-    for (let index = 0; index < instances.length; index++) out.set(transposeMat4(instances[index].worldMatrix), index * 16);
+    const instances = packetInstances(packet), out = new Float32Array(instances.length * 32);
+    for (let index = 0; index < instances.length; index++) {
+      const instance = instances[index];
+      out.set(transposeMat4(instance.worldMatrix), index * 32);
+      out.set(transposeMat4(instance.previousWorldMatrix ?? instance.worldMatrix), index * 32 + 16);
+    }
     return out;
   }
   function packSpatialInstanceBoundsBuffer(packet) {
@@ -1695,7 +3558,7 @@ fn visible(centerRadius:vec4<f32>)->bool{let clip=camera.viewProjection*vec4<f32
     return new Uint32Array([packet.indexCount, packetInstanceCount(packet), 0, 0, 0]);
   }
   function packSpatialJointBuffer(packet) {
-    const joints = packet.jointMatrices.length ? packet.jointMatrices : [identityMat4()], out = new Float32Array(joints.length * 16);
+    const joints = packet.jointMatrices.length ? packet.jointMatrices : [identityMat42()], out = new Float32Array(joints.length * 16);
     for (let index = 0; index < joints.length; index++) out.set(transposeMat4(joints[index]), index * 16);
     return out;
   }
@@ -1717,15 +3580,22 @@ fn visible(centerRadius:vec4<f32>)->bool{let clip=camera.viewProjection*vec4<f32
     return new Float32Array([packet.skinId ? 1 : 0, vertexCount, morphCount, 0, ...packet.morphWeights.slice(0, 4), ...new Array(Math.max(0, 4 - packet.morphWeights.length)).fill(0)]);
   }
   function packSpatialMaterialUniform(material) {
-    const m = sanitizeMaterial(material), base = parseColor(m.baseColor), emissive = parseColor(m.emissive);
-    return new Float32Array([base[0] / 255, base[1] / 255, base[2] / 255, base[3] / 255, m.metallic, m.roughness, m.emissiveStrength, m.opacity, emissive[0] / 255, emissive[1] / 255, emissive[2] / 255, emissive[3] / 255, m.occlusionStrength, m.clearcoat, m.clearcoatRoughness, m.ior]);
+    const m = sanitizeMaterial(material), base = parseColor(m.baseColor), emissive = parseColor(m.emissive), alphaMode = m.alphaMode === "MASK" ? 1 : m.alphaMode === "BLEND" ? 2 : 0;
+    return new Float32Array([base[0] / 255, base[1] / 255, base[2] / 255, base[3] / 255, m.metallic, m.roughness, m.emissiveStrength, m.opacity, emissive[0] / 255, emissive[1] / 255, emissive[2] / 255, emissive[3] / 255, m.occlusionStrength, m.clearcoat, m.clearcoatRoughness, m.ior, m.lightmapIntensity, m.lightmapUvSet, alphaMode, m.alphaCutoff, m.temporalReactive, 0, 0, 0]);
   }
   function packSpatialShadowUniform(camera) {
-    const matrix = transposeMat4(camera?.viewProjection ?? identityMat4());
+    const matrix = transposeMat4(camera?.viewProjection ?? identityMat42());
     return new Float32Array([...matrix, camera ? 1 : 0, camera?.bias ?? 0, camera ? 1 / camera.size : 0, 0]);
   }
+  function packSpatialPostProcess(postProcess, temporalHistoryValid = false) {
+    const post = sanitizeSpatialPostProcess(postProcess);
+    return new Float32Array([Math.pow(2, post.exposure), post.contrast, post.saturation, post.vignette, post.bloomThreshold, post.bloomIntensity, post.bloomRadius, post.temporalClamp, post.dofFocus, post.dofRange, post.dofIntensity, post.dofRadius, post.temporalBlend, temporalHistoryValid && !post.temporalReset ? 1 : 0, post.ssaoIntensity, post.ssaoRadius, post.ssgiIntensity, post.ssgiRadius, post.ssgiSteps, post.ssgiThickness, post.temporalReactive, post.temporalReactiveThreshold, post.temporalVelocityThreshold, post.temporalVelocityDilation]);
+  }
+  function packSpatialTemporalUniform(viewProjection, previousViewProjection) {
+    return new Float32Array([...transposeMat4(inverseMat4(viewProjection)), ...transposeMat4(previousViewProjection)]);
+  }
   function packSpatialCameraUniform(plan) {
-    const ambient = plan.lights.find((light) => light.kind === "ambient"), sun = plan.lights.find((light) => light.kind === "directional"), ambientColor = materialColor(ambient?.color ?? "#ffffff"), sunColor = materialColor(sun?.color ?? "#ffffff"), sunDirection = normalize3(sun?.direction ?? [-0.4, -1, -0.3]), environment = plan.environment ?? sanitizeSpatialEnvironment(void 0), environmentDiffuse = materialColor(environment.diffuseColor), environmentSpecular = materialColor(environment.specularColor), matrix = transposeMat4(plan.camera.viewProjectionMatrix), out = new Float32Array(44);
+    const ambient = plan.lights.find((light) => light.kind === "ambient"), sun = plan.lights.find((light) => light.kind === "directional"), ambientColor = materialColor(ambient?.color ?? "#ffffff"), sunColor = materialColor(sun?.color ?? "#ffffff"), sunDirection = normalize32(sun?.direction ?? [-0.4, -1, -0.3]), environment = plan.environment ?? sanitizeSpatialEnvironment(void 0), environmentDiffuse = materialColor(environment.diffuseColor), environmentSpecular = materialColor(environment.specularColor), dynamicCount = Math.min(VSR_SPATIAL_MAX_DYNAMIC_LIGHTS, plan.lights.filter((light) => light.kind !== "ambient").length), probeCount = Math.min(8, environment.probes?.length ?? 0), matrix = transposeMat4(plan.camera.viewProjectionMatrix), out = new Float32Array(44);
     out.set(matrix, 0);
     out.set([...plan.camera.position, 1], 16);
     out.set([...ambientColor, ambient?.intensity ?? 0.12], 20);
@@ -1733,7 +3603,27 @@ fn visible(centerRadius:vec4<f32>)->bool{let clip=camera.viewProjection*vec4<f32
     out.set([...sunColor, sun?.intensity ?? 1], 28);
     out.set([...environmentDiffuse, environment.intensity], 32);
     out.set([...environmentSpecular, environment.intensity], 36);
-    out.set([environment.textureId ? 1 : 0, 0, 0, 0], 40);
+    out.set([environment.textureId ? 1 : 0, Math.max(0, (environment.mipLevelCount ?? 1) - 1), dynamicCount, probeCount], 40);
+    return out;
+  }
+  function packSpatialEnvironmentProbeBuffer(environment) {
+    const probes = environment?.probes ?? [], out = new Float32Array(Math.max(1, Math.min(8, probes.length)) * 12);
+    for (const [index, probe] of probes.slice(0, 8).entries()) {
+      const base = index * 12, diffuse = materialColor(probe.diffuseColor ?? environment?.diffuseColor ?? "#000000"), specular = materialColor(probe.specularColor ?? environment?.specularColor ?? "#000000"), intensity = Number.isFinite(probe.intensity) ? Math.max(0, probe.intensity ?? 1) : 1;
+      out.set([...probe.position, Math.max(0.01, probe.radius)], base);
+      out.set([...diffuse, intensity], base + 4);
+      out.set([...specular, intensity], base + 8);
+    }
+    return out;
+  }
+  function packSpatialLightBuffer(lights) {
+    const dynamic = lights.filter((light) => light.kind !== "ambient").slice(0, VSR_SPATIAL_MAX_DYNAMIC_LIGHTS), out = new Float32Array(Math.max(1, dynamic.length) * 12);
+    for (const [index, light] of dynamic.entries()) {
+      const color3 = materialColor(light.color ?? "#ffffff"), direction = normalize32(light.direction ?? [-0.4, -1, -0.3]), position = light.position ?? [0, 0, 0], directional = light.kind === "directional";
+      out.set([...directional ? direction : position, directional ? 1 : 0], index * 12);
+      out.set([...color3, Math.max(0, light.intensity ?? 1)], index * 12 + 4);
+      out.set([Math.max(1e-3, light.range ?? 10), directional ? 1 : 0, light.castShadow ? 1 : 0, 0], index * 12 + 8);
+    }
     return out;
   }
   function spatialAdapterName(adapter) {
@@ -1790,27 +3680,69 @@ fn visible(centerRadius:vec4<f32>)->bool{let clip=camera.viewProjection*vec4<f32
   }
   var GPU_BUFFER_USAGE = { COPY_DST: 8, INDEX: 16, VERTEX: 32, UNIFORM: 64, STORAGE: 128, INDIRECT: 256 };
   var GPU_SHADER_STAGE = { COMPUTE: 4 };
-  var GPU_TEXTURE_USAGE = { COPY_DST: 2, TEXTURE_BINDING: 4, RENDER_ATTACHMENT: 16 };
+  var GPU_TEXTURE_USAGE = { COPY_DST: 2, TEXTURE_BINDING: 4, RENDER_ATTACHMENT: 16, COPY_SRC: 1 };
   var now = () => typeof performance !== "undefined" ? performance.now() : Date.now();
   var VSRSpatialWebGPUExecutor = class _VSRSpatialWebGPUExecutor {
+    temporalVelocitySize = "";
+    historyVelocitySize = "";
     canvas;
     adapter;
     device;
     context;
     format;
+    oitPipeline;
+    oitCompositePipeline;
+    oitAccumulationTexture;
+    oitRevealageTexture;
+    oitReactiveTexture;
+    oitVelocityTexture;
+    resolvedColorTexture;
+    resolvedReactiveTexture;
+    resolvedVelocityTexture;
+    oitSize = "";
+    oitEnabled = false;
     pipeline;
+    blendPipeline;
     shadowPipeline;
+    toneMapPipeline;
     cullingPipelines;
     cullingBindGroupLayout;
     depthTexture;
+    sceneColorTexture;
+    temporalDepthTexture;
+    temporalReactiveTexture;
+    temporalVelocityTexture;
+    historyTexture;
+    historyDepthTexture;
+    historyVelocityTexture;
     shadowTexture;
     depthSize = "";
+    sceneColorSize = "";
+    historySize = "";
     shadowSize = 0;
+    historyValid = false;
     shadowSampler;
+    toneMapSampler;
     shadowUniformBuffer;
+    lightBuffer;
+    lightBufferSize = 0;
+    environmentProbeBuffer;
+    environmentProbeBufferSize = 0;
+    environmentVolumeBuffer;
+    environmentVolumeBufferSize = 0;
+    postBuffer;
+    temporalBuffer;
+    previousViewProjection;
+    previousWorldMatrices;
     lost = false;
     lostReason;
     adapterName = "unknown";
+    renderSerial = 0;
+    textureUploadsThisFrame = 0;
+    textureEvictionsThisFrame = 0;
+    bufferUploadsThisFrame = 0;
+    bufferEvictionsThisFrame = 0;
+    bufferResidency = /* @__PURE__ */ new Map();
     meshBuffers = /* @__PURE__ */ new Map();
     materialBuffers = /* @__PURE__ */ new Map();
     objectBuffers = /* @__PURE__ */ new Map();
@@ -1862,13 +3794,69 @@ fn visible(centerRadius:vec4<f32>)->bool{let clip=camera.viewProjection*vec4<f32
       if (this.pipeline) return this.pipeline;
       const module = this.device.createShaderModule({ code: `${VSR_SPATIAL_VERTEX_WGSL_V04}
 ${VSR_SPATIAL_FRAGMENT_WGSL_V04}` });
-      this.pipeline = this.device.createRenderPipeline({ layout: "auto", vertex: { module, entryPoint: "vs_main", buffers: [{ arrayStride: 64, attributes: [{ shaderLocation: 0, offset: 0, format: "float32x3" }, { shaderLocation: 1, offset: 12, format: "float32x3" }, { shaderLocation: 2, offset: 24, format: "float32x2" }, { shaderLocation: 3, offset: 32, format: "float32x4" }, { shaderLocation: 4, offset: 48, format: "float32x4" }] }] }, fragment: { module, entryPoint: "fs_main", targets: [{ format: this.format }] }, primitive: { topology: "triangle-list", frontFace: "ccw", cullMode: "back" }, depthStencil: { format: "depth24plus", depthWriteEnabled: true, depthCompare: "less" } });
+      this.pipeline = this.device.createRenderPipeline({ layout: "auto", vertex: { module, entryPoint: "vs_main", buffers: [{ arrayStride: 72, attributes: [{ shaderLocation: 0, offset: 0, format: "float32x3" }, { shaderLocation: 1, offset: 12, format: "float32x3" }, { shaderLocation: 2, offset: 24, format: "float32x2" }, { shaderLocation: 3, offset: 32, format: "float32x2" }, { shaderLocation: 4, offset: 40, format: "float32x4" }, { shaderLocation: 5, offset: 56, format: "float32x4" }] }] }, fragment: { module, entryPoint: "fs_main", targets: [{ format: "rgba16float" }, { format: "r32float" }, { format: "rgba16float" }, { format: "rgba16float" }] }, primitive: { topology: "triangle-list", frontFace: "ccw", cullMode: "back" }, depthStencil: { format: "depth32float", depthWriteEnabled: true, depthCompare: "less" } });
       return this.pipeline;
+    }
+    ensureBlendPipeline() {
+      if (this.blendPipeline) return this.blendPipeline;
+      const module = this.device.createShaderModule({ code: `${VSR_SPATIAL_VERTEX_WGSL_V04}
+${VSR_SPATIAL_FRAGMENT_WGSL_V04}` });
+      this.blendPipeline = this.device.createRenderPipeline({ layout: "auto", vertex: { module, entryPoint: "vs_main", buffers: [{ arrayStride: 72, attributes: [{ shaderLocation: 0, offset: 0, format: "float32x3" }, { shaderLocation: 1, offset: 12, format: "float32x3" }, { shaderLocation: 2, offset: 24, format: "float32x2" }, { shaderLocation: 3, offset: 32, format: "float32x2" }, { shaderLocation: 4, offset: 40, format: "float32x4" }, { shaderLocation: 5, offset: 56, format: "float32x4" }] }] }, fragment: { module, entryPoint: "fs_main", targets: [{ format: "rgba16float", blend: { color: { srcFactor: "src-alpha", dstFactor: "one-minus-src-alpha", operation: "add" }, alpha: { srcFactor: "one", dstFactor: "one-minus-src-alpha", operation: "add" } } }, { format: "r32float" }, { format: "rgba16float", blend: { color: { srcFactor: "one", dstFactor: "one", operation: "add" }, alpha: { srcFactor: "one", dstFactor: "one", operation: "add" } } }, { format: "rgba16float", blend: { color: { srcFactor: "src-alpha", dstFactor: "one-minus-src-alpha", operation: "add" }, alpha: { srcFactor: "one", dstFactor: "one-minus-src-alpha", operation: "add" } } }] }, primitive: { topology: "triangle-list", frontFace: "ccw", cullMode: "back" }, depthStencil: { format: "depth32float", depthWriteEnabled: false, depthCompare: "less-equal" } });
+      return this.blendPipeline;
+    }
+    ensureOitPipeline() {
+      if (this.oitPipeline) return this.oitPipeline;
+      const module = this.device.createShaderModule({ code: `${VSR_SPATIAL_VERTEX_WGSL_V04}
+${VSR_SPATIAL_OIT_FRAGMENT_WGSL_V04}` });
+      this.oitPipeline = this.device.createRenderPipeline({ layout: "auto", vertex: { module, entryPoint: "vs_main", buffers: [{ arrayStride: 72, attributes: [{ shaderLocation: 0, offset: 0, format: "float32x3" }, { shaderLocation: 1, offset: 12, format: "float32x3" }, { shaderLocation: 2, offset: 24, format: "float32x2" }, { shaderLocation: 3, offset: 32, format: "float32x2" }, { shaderLocation: 4, offset: 40, format: "float32x4" }, { shaderLocation: 5, offset: 56, format: "float32x4" }] }] }, fragment: { module, entryPoint: "fs_main", targets: [{ format: "rgba16float", blend: { color: { srcFactor: "one", dstFactor: "one", operation: "add" }, alpha: { srcFactor: "one", dstFactor: "one", operation: "add" } } }, { format: "rgba16float", blend: { color: { srcFactor: "zero", dstFactor: "one-minus-src-alpha", operation: "add" }, alpha: { srcFactor: "zero", dstFactor: "one-minus-src-alpha", operation: "add" } } }, { format: "rgba16float", blend: { color: { srcFactor: "one", dstFactor: "one", operation: "add" }, alpha: { srcFactor: "one", dstFactor: "one", operation: "add" } } }, { format: "rgba16float", blend: { color: { srcFactor: "one", dstFactor: "one", operation: "add" }, alpha: { srcFactor: "one", dstFactor: "one", operation: "add" } } }] }, primitive: { topology: "triangle-list", frontFace: "ccw", cullMode: "back" }, depthStencil: { format: "depth32float", depthWriteEnabled: false, depthCompare: "less-equal" } });
+      return this.oitPipeline;
+    }
+    ensureOitCompositePipeline() {
+      if (this.oitCompositePipeline) return this.oitCompositePipeline;
+      const module = this.device.createShaderModule({ code: VSR_SPATIAL_OIT_COMPOSITE_WGSL_V04 });
+      this.oitCompositePipeline = this.device.createRenderPipeline({ layout: "auto", vertex: { module, entryPoint: "vs_composite" }, fragment: { module, entryPoint: "fs_composite", targets: [{ format: "rgba16float" }, { format: "rgba16float", blend: { color: { srcFactor: "one", dstFactor: "one", operation: "add" }, alpha: { srcFactor: "one", dstFactor: "one", operation: "add" } } }, { format: "rgba16float", blend: { color: { srcFactor: "one", dstFactor: "one", operation: "add" }, alpha: { srcFactor: "one", dstFactor: "one", operation: "add" } } }] }, primitive: { topology: "triangle-list" } });
+      return this.oitCompositePipeline;
+    }
+    ensureOitFrameBuffers(plan) {
+      this.ensureTemporalVelocityBuffers(plan);
+      const enabled = plan.transparencyMode === "weighted-blended-oit" && plan.stats.transparentDraws > 0, size = `${plan.viewport.width}x${plan.viewport.height}`;
+      if (this.oitSize === size && this.oitEnabled === enabled) return;
+      this.oitAccumulationTexture?.destroy?.();
+      this.oitRevealageTexture?.destroy?.();
+      this.oitReactiveTexture?.destroy?.();
+      this.oitVelocityTexture?.destroy?.();
+      this.resolvedColorTexture?.destroy?.();
+      this.resolvedReactiveTexture?.destroy?.();
+      this.resolvedVelocityTexture?.destroy?.();
+      this.oitAccumulationTexture = void 0;
+      this.oitRevealageTexture = void 0;
+      this.oitReactiveTexture = void 0;
+      this.oitVelocityTexture = void 0;
+      this.resolvedColorTexture = void 0;
+      this.resolvedReactiveTexture = void 0;
+      this.resolvedVelocityTexture = void 0;
+      this.oitSize = size;
+      this.oitEnabled = enabled;
+      if (!enabled) return;
+      const renderAndSample = GPU_TEXTURE_USAGE.RENDER_ATTACHMENT | GPU_TEXTURE_USAGE.TEXTURE_BINDING;
+      this.oitAccumulationTexture = this.device.createTexture({ size: [plan.viewport.width, plan.viewport.height, 1], format: "rgba16float", usage: renderAndSample });
+      this.oitRevealageTexture = this.device.createTexture({ size: [plan.viewport.width, plan.viewport.height, 1], format: "rgba16float", usage: renderAndSample });
+      this.oitReactiveTexture = this.device.createTexture({ size: [plan.viewport.width, plan.viewport.height, 1], format: "rgba16float", usage: renderAndSample });
+      this.oitVelocityTexture = this.device.createTexture({ size: [plan.viewport.width, plan.viewport.height, 1], format: "rgba16float", usage: renderAndSample });
+      this.resolvedColorTexture = this.device.createTexture({ size: [plan.viewport.width, plan.viewport.height, 1], format: "rgba16float", usage: renderAndSample | GPU_TEXTURE_USAGE.COPY_SRC });
+      this.resolvedReactiveTexture = this.device.createTexture({ size: [plan.viewport.width, plan.viewport.height, 1], format: "rgba16float", usage: renderAndSample });
+      this.resolvedVelocityTexture = this.device.createTexture({ size: [plan.viewport.width, plan.viewport.height, 1], format: "rgba16float", usage: renderAndSample | GPU_TEXTURE_USAGE.COPY_SRC });
+    }
+    ensureToneMapPipeline() {
+      if (this.toneMapPipeline) return this.toneMapPipeline;
+      const module = this.device.createShaderModule({ code: VSR_SPATIAL_TONEMAP_WGSL_V04 });
+      this.toneMapPipeline = this.device.createRenderPipeline({ layout: "auto", vertex: { module, entryPoint: "vs_fullscreen" }, fragment: { module, entryPoint: "fs_tonemap", targets: [{ format: this.format }] }, primitive: { topology: "triangle-list" } });
+      return this.toneMapPipeline;
     }
     ensureShadowPipeline() {
       if (this.shadowPipeline) return this.shadowPipeline;
       const module = this.device.createShaderModule({ code: VSR_SPATIAL_SHADOW_WGSL_V04 });
-      this.shadowPipeline = this.device.createRenderPipeline({ layout: "auto", vertex: { module, entryPoint: "vs_shadow", buffers: [{ arrayStride: 64, attributes: [{ shaderLocation: 0, offset: 0, format: "float32x3" }, { shaderLocation: 3, offset: 32, format: "float32x4" }, { shaderLocation: 4, offset: 48, format: "float32x4" }] }] }, primitive: { topology: "triangle-list", frontFace: "ccw", cullMode: "back" }, depthStencil: { format: "depth32float", depthWriteEnabled: true, depthCompare: "less" } });
+      this.shadowPipeline = this.device.createRenderPipeline({ layout: "auto", vertex: { module, entryPoint: "vs_shadow", buffers: [{ arrayStride: 72, attributes: [{ shaderLocation: 0, offset: 0, format: "float32x3" }, { shaderLocation: 4, offset: 40, format: "float32x4" }, { shaderLocation: 5, offset: 56, format: "float32x4" }] }] }, primitive: { topology: "triangle-list", frontFace: "ccw", cullMode: "back" }, depthStencil: { format: "depth32float", depthWriteEnabled: true, depthCompare: "less" } });
       return this.shadowPipeline;
     }
     ensureCullingPipelines() {
@@ -1883,34 +3871,110 @@ ${VSR_SPATIAL_FRAGMENT_WGSL_V04}` });
       if (data.byteLength) this.device.queue.writeBuffer(buffer, 0, data.buffer, data.byteOffset, data.byteLength);
       return buffer;
     }
+    trackBuffer(key, buffers, byteLength, onEvict) {
+      this.bufferResidency.delete(key);
+      this.bufferResidency.set(key, { buffers, byteLength, lastUsedFrame: this.renderSerial, onEvict });
+      this.bufferUploadsThisFrame++;
+    }
+    touchBuffer(key) {
+      const entry = this.bufferResidency.get(key);
+      if (entry) entry.lastUsedFrame = this.renderSerial;
+    }
+    trimBufferResidency(maxBytes) {
+      let residentBytes = [...this.bufferResidency.values()].reduce((sum, entry) => sum + entry.byteLength, 0);
+      if (residentBytes <= maxBytes) return residentBytes;
+      const candidates = [...this.bufferResidency.entries()].filter(([, entry]) => entry.lastUsedFrame !== this.renderSerial).sort(([a, left], [b, right]) => left.lastUsedFrame - right.lastUsedFrame || a.localeCompare(b));
+      for (const [key, entry] of candidates) {
+        if (residentBytes <= maxBytes) break;
+        for (const buffer of entry.buffers) buffer.destroy?.();
+        entry.onEvict();
+        this.bufferResidency.delete(key);
+        residentBytes -= entry.byteLength;
+        this.bufferEvictionsThisFrame++;
+      }
+      return residentBytes;
+    }
     mesh(scene, meshId) {
       const source = scene.meshes.find((mesh) => mesh.id === meshId);
       if (!source) throw new Error(`Missing mesh ${meshId}`);
-      const root = cryptographicHash(source), cached = this.meshBuffers.get(meshId);
-      if (cached?.root === root) return cached;
+      const root = cryptographicHash(source), key = `mesh:${meshId}`, cached = this.meshBuffers.get(meshId);
+      if (cached?.root === root && this.bufferResidency.has(key)) {
+        this.touchBuffer(key);
+        return cached;
+      }
       cached?.vertex.destroy?.();
       cached?.index.destroy?.();
-      const value = { vertex: this.uploadBuffer(packSpatialVertexBuffer(source), GPU_BUFFER_USAGE.VERTEX), index: this.uploadBuffer(packSpatialIndexBuffer(source), GPU_BUFFER_USAGE.INDEX), indexCount: source.indices.length, root };
+      const vertexData = packSpatialVertexBuffer(source), indexData = packSpatialIndexBuffer(source), value = { vertex: this.uploadBuffer(vertexData, GPU_BUFFER_USAGE.VERTEX), index: this.uploadBuffer(indexData, GPU_BUFFER_USAGE.INDEX), indexCount: source.indices.length, root };
       this.meshBuffers.set(meshId, value);
+      this.trackBuffer(key, [value.vertex, value.index], vertexData.byteLength + indexData.byteLength, () => {
+        if (this.meshBuffers.get(meshId)?.root === root) this.meshBuffers.delete(meshId);
+      });
       return value;
     }
     material(scene, materialId) {
-      const source = scene.materials.find((material) => material.id === materialId) ?? { id: materialId }, root = cryptographicHash(source), cached = this.materialBuffers.get(materialId);
-      if (cached?.root === root) return cached.buffer;
+      const source = scene.materials.find((material) => material.id === materialId) ?? { id: materialId }, root = cryptographicHash(source), key = `material:${materialId}`, cached = this.materialBuffers.get(materialId);
+      if (cached?.root === root && this.bufferResidency.has(key)) {
+        this.touchBuffer(key);
+        return cached.buffer;
+      }
       cached?.buffer.destroy?.();
-      const buffer = this.uploadBuffer(packSpatialMaterialUniform(source), GPU_BUFFER_USAGE.UNIFORM);
+      const data = packSpatialMaterialUniform(source), buffer = this.uploadBuffer(data, GPU_BUFFER_USAGE.UNIFORM);
       this.materialBuffers.set(materialId, { buffer, root });
+      this.trackBuffer(key, [buffer], data.byteLength, () => {
+        if (this.materialBuffers.get(materialId)?.root === root) this.materialBuffers.delete(materialId);
+      });
       return buffer;
     }
-    ensureFrameBuffers(plan) {
+    ensureFrameBuffers(plan, temporalHistoryValid, previousViewProjection) {
       const cameraBytes = packSpatialCameraUniform(plan);
       if (!this.cameraBuffer) this.cameraBuffer = this.uploadBuffer(cameraBytes, GPU_BUFFER_USAGE.UNIFORM);
       else this.device.queue.writeBuffer(this.cameraBuffer, 0, cameraBytes.buffer, cameraBytes.byteOffset, cameraBytes.byteLength);
+      const lightBytes = packSpatialLightBuffer(plan.lights);
+      if (!this.lightBuffer || this.lightBufferSize !== lightBytes.byteLength) {
+        this.lightBuffer?.destroy?.();
+        this.lightBuffer = this.uploadBuffer(lightBytes, GPU_BUFFER_USAGE.STORAGE);
+        this.lightBufferSize = lightBytes.byteLength;
+      } else this.device.queue.writeBuffer(this.lightBuffer, 0, lightBytes.buffer, lightBytes.byteOffset, lightBytes.byteLength);
+      const probeBytes = packSpatialEnvironmentProbeBuffer(plan.environment);
+      if (!this.environmentProbeBuffer || this.environmentProbeBufferSize !== probeBytes.byteLength) {
+        this.environmentProbeBuffer?.destroy?.();
+        this.environmentProbeBuffer = this.uploadBuffer(probeBytes, GPU_BUFFER_USAGE.STORAGE);
+        this.environmentProbeBufferSize = probeBytes.byteLength;
+      } else this.device.queue.writeBuffer(this.environmentProbeBuffer, 0, probeBytes.buffer, probeBytes.byteOffset, probeBytes.byteLength);
+      const volumeBytes = packSpatialIrradianceVolumeFieldBuffer(plan.environment);
+      if (!this.environmentVolumeBuffer || this.environmentVolumeBufferSize !== volumeBytes.byteLength) {
+        this.environmentVolumeBuffer?.destroy?.();
+        this.environmentVolumeBuffer = this.uploadBuffer(volumeBytes, GPU_BUFFER_USAGE.STORAGE);
+        this.environmentVolumeBufferSize = volumeBytes.byteLength;
+      } else this.device.queue.writeBuffer(this.environmentVolumeBuffer, 0, volumeBytes.buffer, volumeBytes.byteOffset, volumeBytes.byteLength);
+      const postBytes = packSpatialPostProcess(plan.postProcess, temporalHistoryValid);
+      if (!this.postBuffer) this.postBuffer = this.uploadBuffer(postBytes, GPU_BUFFER_USAGE.UNIFORM);
+      else this.device.queue.writeBuffer(this.postBuffer, 0, postBytes.buffer, postBytes.byteOffset, postBytes.byteLength);
+      const temporalBytes = packSpatialTemporalUniform(plan.camera.viewProjectionMatrix, previousViewProjection);
+      if (!this.temporalBuffer) this.temporalBuffer = this.uploadBuffer(temporalBytes, GPU_BUFFER_USAGE.UNIFORM);
+      else this.device.queue.writeBuffer(this.temporalBuffer, 0, temporalBytes.buffer, temporalBytes.byteOffset, temporalBytes.byteLength);
       const size = `${plan.viewport.width}x${plan.viewport.height}`;
       if (size !== this.depthSize) {
         this.depthTexture?.destroy?.();
-        this.depthTexture = this.device.createTexture({ size: [plan.viewport.width, plan.viewport.height, 1], format: "depth24plus", usage: GPU_TEXTURE_USAGE.RENDER_ATTACHMENT | GPU_TEXTURE_USAGE.TEXTURE_BINDING });
+        this.depthTexture = this.device.createTexture({ size: [plan.viewport.width, plan.viewport.height, 1], format: "depth32float", usage: GPU_TEXTURE_USAGE.RENDER_ATTACHMENT | GPU_TEXTURE_USAGE.TEXTURE_BINDING });
         this.depthSize = size;
+      }
+      if (size !== this.sceneColorSize) {
+        this.sceneColorTexture?.destroy?.();
+        this.sceneColorTexture = this.device.createTexture({ size: [plan.viewport.width, plan.viewport.height, 1], format: "rgba16float", usage: GPU_TEXTURE_USAGE.RENDER_ATTACHMENT | GPU_TEXTURE_USAGE.TEXTURE_BINDING | GPU_TEXTURE_USAGE.COPY_SRC });
+        this.sceneColorSize = size;
+      }
+      if (size !== this.historySize) {
+        this.temporalDepthTexture?.destroy?.();
+        this.temporalReactiveTexture?.destroy?.();
+        this.historyTexture?.destroy?.();
+        this.historyDepthTexture?.destroy?.();
+        this.temporalDepthTexture = this.device.createTexture({ size: [plan.viewport.width, plan.viewport.height, 1], format: "r32float", usage: GPU_TEXTURE_USAGE.RENDER_ATTACHMENT | GPU_TEXTURE_USAGE.TEXTURE_BINDING | GPU_TEXTURE_USAGE.COPY_SRC });
+        this.temporalReactiveTexture = this.device.createTexture({ size: [plan.viewport.width, plan.viewport.height, 1], format: "rgba16float", usage: GPU_TEXTURE_USAGE.RENDER_ATTACHMENT | GPU_TEXTURE_USAGE.TEXTURE_BINDING });
+        this.historyTexture = this.device.createTexture({ size: [plan.viewport.width, plan.viewport.height, 1], format: "rgba16float", usage: GPU_TEXTURE_USAGE.TEXTURE_BINDING | GPU_TEXTURE_USAGE.COPY_DST });
+        this.historyDepthTexture = this.device.createTexture({ size: [plan.viewport.width, plan.viewport.height, 1], format: "r32float", usage: GPU_TEXTURE_USAGE.TEXTURE_BINDING | GPU_TEXTURE_USAGE.COPY_DST });
+        this.historySize = size;
+        this.historyValid = false;
       }
       const shadowCamera = resolveSpatialShadowCamera(plan), shadowSize = shadowCamera?.size ?? Math.max(1, plan.budget.shadowMapSize);
       if (shadowSize !== this.shadowSize) {
@@ -1922,61 +3986,111 @@ ${VSR_SPATIAL_FRAGMENT_WGSL_V04}` });
       if (!this.shadowUniformBuffer) this.shadowUniformBuffer = this.uploadBuffer(shadowBytes, GPU_BUFFER_USAGE.UNIFORM);
       else this.device.queue.writeBuffer(this.shadowUniformBuffer, 0, shadowBytes.buffer, shadowBytes.byteOffset, shadowBytes.byteLength);
       if (!this.shadowSampler) this.shadowSampler = this.device.createSampler({ magFilter: "nearest", minFilter: "nearest", addressModeU: "clamp-to-edge", addressModeV: "clamp-to-edge" });
+      if (!this.toneMapSampler) this.toneMapSampler = this.device.createSampler({ magFilter: "linear", minFilter: "linear", addressModeU: "clamp-to-edge", addressModeV: "clamp-to-edge" });
+      this.ensureOitFrameBuffers(plan);
+    }
+    ensureTemporalVelocityBuffers(plan) {
+      const size = `${plan.viewport.width}x${plan.viewport.height}x1`;
+      if (this.temporalVelocitySize !== size) {
+        this.temporalVelocityTexture?.destroy?.();
+        this.temporalVelocityTexture = this.device.createTexture({ size: [plan.viewport.width, plan.viewport.height, 1], format: "rgba16float", usage: GPU_TEXTURE_USAGE.RENDER_ATTACHMENT | GPU_TEXTURE_USAGE.TEXTURE_BINDING | GPU_TEXTURE_USAGE.COPY_SRC });
+        this.temporalVelocitySize = size;
+      }
+      if (this.historyVelocitySize !== size) {
+        this.historyVelocityTexture?.destroy?.();
+        this.historyVelocityTexture = this.device.createTexture({ size: [plan.viewport.width, plan.viewport.height, 1], format: "rgba16float", usage: GPU_TEXTURE_USAGE.TEXTURE_BINDING | GPU_TEXTURE_USAGE.COPY_DST });
+        this.historyVelocitySize = size;
+        this.historyValid = false;
+      }
     }
     textureResource(scene, textureId, fallback) {
-      const source = textureId ? scene.textures?.find((texture2) => texture2.id === textureId) : void 0, key = source ? `texture:${source.id}:${fallback}` : `fallback:${fallback}`, width = source?.width ?? 1, height = source?.height ?? 1, root = cryptographicHash(source ?? { fallback }), cached = this.textures.get(key);
+      const source = textureId ? scene.textures?.find((texture2) => texture2.id === textureId) : void 0, key = source ? `texture:${source.id}:${fallback}` : `fallback:${fallback}`, root = cryptographicHash(source ?? { fallback }), cached = this.textures.get(key);
       let texture = cached?.texture;
+      const fallbackPixels = fallback === "normal" ? [128, 128, 255, 255] : fallback === "metallic-roughness" ? [255, 255, 0, 255] : fallback === "reactive" ? [0, 0, 0, 255] : [255, 255, 255, 255], levels = source ? [source, ...source.mipmaps ?? []] : [{ width: 1, height: 1, pixels: fallbackPixels }];
       if (!cached || cached.root !== root) {
         cached?.texture.destroy?.();
-        texture = this.device.createTexture({ size: [width, height, 1], format: (fallback === "base" || fallback === "emissive" || fallback === "environment") && source?.colorSpace !== "linear" ? "rgba8unorm-srgb" : "rgba8unorm", usage: GPU_TEXTURE_USAGE.COPY_DST | GPU_TEXTURE_USAGE.TEXTURE_BINDING });
-        const pixels = source ? source.pixels : fallback === "normal" ? [128, 128, 255, 255] : fallback === "metallic-roughness" ? [255, 255, 0, 255] : [255, 255, 255, 255], bytesPerRow = Math.max(256, Math.ceil(width * 4 / 256) * 256), data = new Uint8Array(bytesPerRow * height);
-        for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
-          const sourceIndex = (y * width + x) * 4, dataIndex = y * bytesPerRow + x * 4;
-          data[dataIndex] = pixels[sourceIndex] ?? 255;
-          data[dataIndex + 1] = pixels[sourceIndex + 1] ?? 255;
-          data[dataIndex + 2] = pixels[sourceIndex + 2] ?? 255;
-          data[dataIndex + 3] = pixels[sourceIndex + 3] ?? 255;
+        texture = this.device.createTexture({ size: [levels[0].width, levels[0].height, 1], mipLevelCount: levels.length, format: (fallback === "base" || fallback === "emissive" || fallback === "environment") && source?.colorSpace !== "linear" ? "rgba8unorm-srgb" : "rgba8unorm", usage: GPU_TEXTURE_USAGE.COPY_DST | GPU_TEXTURE_USAGE.TEXTURE_BINDING });
+        for (const [mipIndex, level] of levels.entries()) {
+          const bytesPerRow = Math.max(256, Math.ceil(level.width * 4 / 256) * 256), data = new Uint8Array(bytesPerRow * level.height);
+          for (let y = 0; y < level.height; y++) for (let x = 0; x < level.width; x++) {
+            const sourceIndex = (y * level.width + x) * 4, dataIndex = y * bytesPerRow + x * 4;
+            data[dataIndex] = level.pixels[sourceIndex] ?? 255;
+            data[dataIndex + 1] = level.pixels[sourceIndex + 1] ?? 255;
+            data[dataIndex + 2] = level.pixels[sourceIndex + 2] ?? 255;
+            data[dataIndex + 3] = level.pixels[sourceIndex + 3] ?? 255;
+          }
+          this.device.queue.writeTexture({ texture, mipLevel: mipIndex }, data, { bytesPerRow, rowsPerImage: level.height }, [level.width, level.height, 1]);
         }
-        this.device.queue.writeTexture({ texture }, data, { bytesPerRow, rowsPerImage: height }, [width, height, 1]);
-        this.textures.set(key, { texture, root });
+        this.textures.set(key, { texture, root, byteLength: levels.reduce((sum, level) => sum + level.pixels.length, 0), lastUsedFrame: this.renderSerial });
+        this.textureUploadsThisFrame++;
       }
-      const filter = source?.filter ?? (fallback === "environment" ? "linear" : "nearest"), samplerKey = source ? `${source.id}:${filter}:${source.wrapU ?? "repeat"}:${source.wrapV ?? (fallback === "environment" ? "clamp" : "repeat")}` : `fallback:${fallback}`;
+      const entry = this.textures.get(key);
+      entry.lastUsedFrame = this.renderSerial;
+      texture = entry.texture;
+      const filter = source?.filter ?? (fallback === "environment" ? "linear" : "nearest"), hasMipmaps = levels.length > 1, samplerKey = source ? `${source.id}:${filter}:${source.wrapU ?? "repeat"}:${source.wrapV ?? (fallback === "environment" ? "clamp" : "repeat")}:${levels.length}` : `fallback:${fallback}`;
       let sampler = this.samplers.get(samplerKey);
       if (!sampler) {
-        sampler = this.device.createSampler({ magFilter: filter === "nearest" ? "nearest" : "linear", minFilter: filter === "nearest" ? "nearest" : "linear", addressModeU: source?.wrapU === "clamp" ? "clamp-to-edge" : "repeat", addressModeV: source?.wrapV === "clamp" || fallback === "environment" && source?.wrapV === void 0 ? "clamp-to-edge" : "repeat" });
+        sampler = this.device.createSampler({ magFilter: filter === "nearest" ? "nearest" : "linear", minFilter: filter === "nearest" ? "nearest" : "linear", ...hasMipmaps ? { mipmapFilter: "linear" } : {}, addressModeU: source?.wrapU === "clamp" ? "clamp-to-edge" : "repeat", addressModeV: source?.wrapV === "clamp" || fallback === "environment" && source?.wrapV === void 0 ? "clamp-to-edge" : "repeat" });
         this.samplers.set(samplerKey, sampler);
       }
       return { view: texture.createView(), sampler };
     }
+    trimTextureResidency(maxBytes) {
+      let residentBytes = [...this.textures.values()].reduce((sum, entry) => sum + entry.byteLength, 0);
+      if (residentBytes <= maxBytes) return residentBytes;
+      const candidates = [...this.textures.entries()].filter(([, entry]) => entry.lastUsedFrame !== this.renderSerial).sort(([a, left], [b, right]) => left.lastUsedFrame - right.lastUsedFrame || a.localeCompare(b));
+      for (const [key, entry] of candidates) {
+        if (residentBytes <= maxBytes) break;
+        entry.texture.destroy?.();
+        this.textures.delete(key);
+        residentBytes -= entry.byteLength;
+        this.textureEvictionsThisFrame++;
+      }
+      return residentBytes;
+    }
     objectBuffer(packet) {
-      const data = transposeMat4(identityMat4());
+      const data = packSpatialObjectUniform({ ...packet, worldMatrix: identityMat42() }), key = `object:${packet.nodeId}`;
       let buffer = this.objectBuffers.get(packet.nodeId);
-      if (!buffer) {
+      if (!buffer || !this.bufferResidency.has(key)) {
         buffer = this.uploadBuffer(data, GPU_BUFFER_USAGE.UNIFORM);
         this.objectBuffers.set(packet.nodeId, buffer);
+        this.trackBuffer(key, [buffer], data.byteLength, () => this.objectBuffers.delete(packet.nodeId));
+      } else {
+        this.device.queue.writeBuffer(buffer, 0, data.buffer, data.byteOffset, data.byteLength);
+        this.touchBuffer(key);
       }
       return buffer;
     }
     instanceBuffer(packet) {
-      const data = packSpatialInstanceBuffer(packet), root = cryptographicHash(packetInstances(packet)), cached = this.instanceBuffers.get(packet.nodeId);
-      if (!cached || cached.byteLength !== data.byteLength) {
+      const data = packSpatialInstanceBuffer(packet), root = cryptographicHash(packetInstances(packet)), key = `instance:${packet.nodeId}`, cached = this.instanceBuffers.get(packet.nodeId);
+      if (!cached || !this.bufferResidency.has(key) || cached.byteLength !== data.byteLength) {
         cached?.buffer.destroy?.();
-        const buffer = this.uploadBuffer(data, GPU_BUFFER_USAGE.STORAGE);
-        this.instanceBuffers.set(packet.nodeId, { buffer, root, byteLength: data.byteLength });
+        const buffer = this.uploadBuffer(data, GPU_BUFFER_USAGE.STORAGE), value = { buffer, root, byteLength: data.byteLength };
+        this.instanceBuffers.set(packet.nodeId, value);
+        this.trackBuffer(key, [buffer], data.byteLength, () => {
+          if (this.instanceBuffers.get(packet.nodeId)?.root === root) this.instanceBuffers.delete(packet.nodeId);
+        });
         return buffer;
       }
-      if (cached.root !== root) this.device.queue.writeBuffer(cached.buffer, 0, data.buffer, data.byteOffset, data.byteLength);
-      if (cached.root !== root) this.instanceBuffers.set(packet.nodeId, { ...cached, root });
+      if (cached.root !== root) {
+        this.device.queue.writeBuffer(cached.buffer, 0, data.buffer, data.byteOffset, data.byteLength);
+        this.instanceBuffers.set(packet.nodeId, { ...cached, root });
+      }
+      this.touchBuffer(key);
       return cached.buffer;
     }
     identityIndexBuffer(packet) {
-      const data = packSpatialVisibleInstanceIndices(packet), root = cryptographicHash(data), cached = this.identityIndexBuffers.get(packet.nodeId);
-      if (!cached || cached.byteLength !== data.byteLength) {
+      const data = packSpatialVisibleInstanceIndices(packet), root = cryptographicHash(data), key = `identity:${packet.nodeId}`, cached = this.identityIndexBuffers.get(packet.nodeId);
+      if (!cached || !this.bufferResidency.has(key) || cached.byteLength !== data.byteLength) {
         cached?.buffer.destroy?.();
-        const buffer = this.uploadBuffer(data, GPU_BUFFER_USAGE.STORAGE);
-        this.identityIndexBuffers.set(packet.nodeId, { buffer, root, byteLength: data.byteLength });
+        const buffer = this.uploadBuffer(data, GPU_BUFFER_USAGE.STORAGE), value = { buffer, root, byteLength: data.byteLength };
+        this.identityIndexBuffers.set(packet.nodeId, value);
+        this.trackBuffer(key, [buffer], data.byteLength, () => {
+          if (this.identityIndexBuffers.get(packet.nodeId)?.root === root) this.identityIndexBuffers.delete(packet.nodeId);
+        });
         return buffer;
       }
+      this.touchBuffer(key);
       return cached.buffer;
     }
     shadowCullingCamera(camera) {
@@ -1986,14 +4100,17 @@ ${VSR_SPATIAL_FRAGMENT_WGSL_V04}` });
       return this.shadowCullingCameraBuffer;
     }
     culling(packet, buffers = this.cullingBuffers) {
-      const boundsData = packSpatialInstanceBoundsBuffer(packet), identity = packSpatialVisibleInstanceIndices(packet), command = packSpatialIndirectDrawCommand(packet), root = cryptographicHash({ bounds: [...boundsData], command: [...command] }), cached = buffers.get(packet.nodeId);
-      if (!cached || cached.byteLength !== boundsData.byteLength) {
+      const boundsData = packSpatialInstanceBoundsBuffer(packet), identity = packSpatialVisibleInstanceIndices(packet), command = packSpatialIndirectDrawCommand(packet), root = cryptographicHash({ bounds: [...boundsData], command: [...command] }), cached = buffers.get(packet.nodeId), key = `${buffers === this.cullingBuffers ? "culling" : "shadow-culling"}:${packet.nodeId}`;
+      if (!cached || !this.bufferResidency.has(key) || cached.byteLength !== boundsData.byteLength) {
         cached?.bounds.destroy?.();
         cached?.visible.destroy?.();
         cached?.counter.destroy?.();
         cached?.indirect.destroy?.();
-        const value = { bounds: this.uploadBuffer(boundsData, GPU_BUFFER_USAGE.STORAGE), visible: this.uploadBuffer(identity, GPU_BUFFER_USAGE.STORAGE), counter: this.uploadBuffer(new Uint32Array([0]), GPU_BUFFER_USAGE.STORAGE), indirect: this.uploadBuffer(command, GPU_BUFFER_USAGE.STORAGE | GPU_BUFFER_USAGE.INDIRECT), root, byteLength: boundsData.byteLength };
+        const counter = new Uint32Array([0]), value = { bounds: this.uploadBuffer(boundsData, GPU_BUFFER_USAGE.STORAGE), visible: this.uploadBuffer(identity, GPU_BUFFER_USAGE.STORAGE), counter: this.uploadBuffer(counter, GPU_BUFFER_USAGE.STORAGE), indirect: this.uploadBuffer(command, GPU_BUFFER_USAGE.STORAGE | GPU_BUFFER_USAGE.INDIRECT), root, byteLength: boundsData.byteLength };
         buffers.set(packet.nodeId, value);
+        this.trackBuffer(key, [value.bounds, value.visible, value.counter, value.indirect], boundsData.byteLength + identity.byteLength + counter.byteLength + command.byteLength, () => {
+          if (buffers.get(packet.nodeId) === value) buffers.delete(packet.nodeId);
+        });
         return value;
       }
       if (cached.root !== root) {
@@ -2003,37 +4120,47 @@ ${VSR_SPATIAL_FRAGMENT_WGSL_V04}` });
         this.device.queue.writeBuffer(cached.indirect, 0, command.buffer, command.byteOffset, command.byteLength);
         buffers.set(packet.nodeId, { ...cached, root });
       }
+      this.touchBuffer(key);
       return cached;
     }
     deformation(scene, packet) {
       const mesh = scene.meshes.find((entry) => entry.id === packet.meshId);
       if (!mesh) throw new Error(`Missing mesh ${packet.meshId}`);
-      const root = cryptographicHash({ deformation: packet.deformationRoot, morphTargets: mesh.morphTargets ?? [] }), cached = this.deformationBuffers.get(packet.nodeId);
-      if (cached?.root === root) return cached;
+      const root = cryptographicHash({ deformation: packet.deformationRoot, morphTargets: mesh.morphTargets ?? [] }), key = `deformation:${packet.nodeId}`, cached = this.deformationBuffers.get(packet.nodeId);
+      if (cached?.root === root && this.bufferResidency.has(key)) {
+        this.touchBuffer(key);
+        return cached;
+      }
       cached?.joint.destroy?.();
       cached?.morph.destroy?.();
       cached?.uniform.destroy?.();
-      const joint = this.uploadBuffer(packSpatialJointBuffer(packet), GPU_BUFFER_USAGE.STORAGE), morph = this.uploadBuffer(packSpatialMorphBuffer(mesh), GPU_BUFFER_USAGE.STORAGE), uniform = this.uploadBuffer(packSpatialDeformationUniform(packet, mesh.positions.length / 3, mesh.morphTargets?.length ?? 0), GPU_BUFFER_USAGE.UNIFORM), value = { joint, morph, uniform, root };
+      const jointData = packSpatialJointBuffer(packet), morphData = packSpatialMorphBuffer(mesh), uniformData = packSpatialDeformationUniform(packet, mesh.positions.length / 3, mesh.morphTargets?.length ?? 0), joint = this.uploadBuffer(jointData, GPU_BUFFER_USAGE.STORAGE), morph = this.uploadBuffer(morphData, GPU_BUFFER_USAGE.STORAGE), uniform = this.uploadBuffer(uniformData, GPU_BUFFER_USAGE.UNIFORM), value = { joint, morph, uniform, root };
       this.deformationBuffers.set(packet.nodeId, value);
+      this.trackBuffer(key, [joint, morph, uniform], jointData.byteLength + morphData.byteLength + uniformData.byteLength, () => {
+        if (this.deformationBuffers.get(packet.nodeId)?.root === root) this.deformationBuffers.delete(packet.nodeId);
+      });
       return value;
     }
     objectGroup(pipeline, buffer, instanceBuffer, deformation, visibleIndexBuffer) {
       return this.device.createBindGroup({ layout: pipeline.getBindGroupLayout(1), entries: [{ binding: 0, resource: { buffer } }, { binding: 1, resource: { buffer: deformation.joint } }, { binding: 2, resource: { buffer: deformation.uniform } }, { binding: 3, resource: { buffer: deformation.morph } }, { binding: 4, resource: { buffer: instanceBuffer } }, { binding: 5, resource: { buffer: visibleIndexBuffer } }] });
     }
     materialGroup(pipeline, scene, packet) {
-      const material = scene.materials.find((entry) => entry.id === packet.materialId), base = this.textureResource(scene, material?.baseColorTextureId, "base"), metallicRoughness = this.textureResource(scene, material?.metallicRoughnessTextureId, "metallic-roughness"), normal = this.textureResource(scene, material?.normalTextureId, "normal"), occlusion = this.textureResource(scene, material?.occlusionTextureId, "occlusion"), emissive = this.textureResource(scene, material?.emissiveTextureId, "emissive");
-      return this.device.createBindGroup({ layout: pipeline.getBindGroupLayout(2), entries: [{ binding: 0, resource: { buffer: this.material(scene, packet.materialId) } }, { binding: 1, resource: base.sampler }, { binding: 2, resource: base.view }, { binding: 3, resource: metallicRoughness.sampler }, { binding: 4, resource: metallicRoughness.view }, { binding: 5, resource: normal.sampler }, { binding: 6, resource: normal.view }, { binding: 7, resource: occlusion.sampler }, { binding: 8, resource: occlusion.view }, { binding: 9, resource: emissive.sampler }, { binding: 10, resource: emissive.view }] });
+      const material = scene.materials.find((entry) => entry.id === packet.materialId), base = this.textureResource(scene, material?.baseColorTextureId, "base"), metallicRoughness = this.textureResource(scene, material?.metallicRoughnessTextureId, "metallic-roughness"), normal = this.textureResource(scene, material?.normalTextureId, "normal"), occlusion = this.textureResource(scene, material?.occlusionTextureId, "occlusion"), emissive = this.textureResource(scene, material?.emissiveTextureId, "emissive"), lightmap = this.textureResource(scene, material?.lightmapTextureId, "lightmap"), reactive = this.textureResource(scene, material?.reactiveMaskTextureId, "reactive");
+      return this.device.createBindGroup({ layout: pipeline.getBindGroupLayout(2), entries: [{ binding: 0, resource: { buffer: this.material(scene, packet.materialId) } }, { binding: 1, resource: base.sampler }, { binding: 2, resource: base.view }, { binding: 3, resource: metallicRoughness.sampler }, { binding: 4, resource: metallicRoughness.view }, { binding: 5, resource: normal.sampler }, { binding: 6, resource: normal.view }, { binding: 7, resource: occlusion.sampler }, { binding: 8, resource: occlusion.view }, { binding: 9, resource: emissive.sampler }, { binding: 10, resource: emissive.view }, { binding: 11, resource: lightmap.sampler }, { binding: 12, resource: lightmap.view }, { binding: 13, resource: reactive.sampler }, { binding: 14, resource: reactive.view }] });
     }
-    async render(scene, options = {}) {
-      const compileStart = now(), plan = compileSpatialFrame(scene, options), verification = verifySpatialFrame(plan);
-      if (!verification.ok) throw new Error(verification.diagnostics.join("; "));
-      const compileMs = now() - compileStart;
+    async renderWeightedOit(scene, plan, compileMs) {
       if (this.lost) throw new Error("WebGPU device is lost.");
       this.canvas.width = plan.viewport.width;
       this.canvas.height = plan.viewport.height;
-      const pipeline = this.ensurePipeline(), shadowCamera = resolveSpatialShadowCamera(plan), gpuDriven = Boolean(plan.gpuDrivenCulling), uploadStart = now();
-      this.ensureFrameBuffers(plan);
-      const environmentResource = this.textureResource(scene, plan.environment.textureId, "environment"), cameraGroup = this.device.createBindGroup({ layout: pipeline.getBindGroupLayout(0), entries: [{ binding: 0, resource: { buffer: this.cameraBuffer } }, { binding: 1, resource: this.shadowSampler }, { binding: 2, resource: this.shadowTexture.createView() }, { binding: 3, resource: { buffer: this.shadowUniformBuffer } }, { binding: 4, resource: environmentResource.sampler }, { binding: 5, resource: environmentResource.view }] }), shadowPackets = plan.drawPackets.filter((entry) => entry.castShadow), cullingRecords = /* @__PURE__ */ new Map(), shadowCullingRecords = /* @__PURE__ */ new Map();
+      const pipeline = this.ensurePipeline(), oitPipeline = this.ensureOitPipeline(), shadowCamera = resolveSpatialShadowCamera(plan), gpuDriven = Boolean(plan.gpuDrivenCulling), uploadStart = now(), temporalSize = `${plan.viewport.width}x${plan.viewport.height}`;
+      if (temporalSize !== this.historySize || plan.postProcess.temporalReset) {
+        this.historyValid = false;
+        this.previousViewProjection = void 0;
+      }
+      const previousViewProjection = this.previousViewProjection ?? plan.camera.viewProjectionMatrix;
+      this.ensureFrameBuffers(plan, this.historyValid, previousViewProjection);
+      if (!this.oitAccumulationTexture || !this.oitRevealageTexture || !this.oitReactiveTexture || !this.oitVelocityTexture || !this.resolvedColorTexture || !this.resolvedReactiveTexture || !this.resolvedVelocityTexture) throw new Error("Weighted OIT resources were not created.");
+      const environmentResource = this.textureResource(scene, plan.environment.textureId, "environment"), cameraEntries = [{ binding: 0, resource: { buffer: this.cameraBuffer } }, { binding: 1, resource: this.shadowSampler }, { binding: 2, resource: this.shadowTexture.createView() }, { binding: 3, resource: { buffer: this.shadowUniformBuffer } }, { binding: 4, resource: environmentResource.sampler }, { binding: 5, resource: environmentResource.view }, { binding: 6, resource: { buffer: this.lightBuffer } }, { binding: 7, resource: { buffer: this.environmentProbeBuffer } }, { binding: 8, resource: { buffer: this.environmentVolumeBuffer } }, { binding: 9, resource: { buffer: this.temporalBuffer } }], cameraGroup = this.device.createBindGroup({ layout: pipeline.getBindGroupLayout(0), entries: cameraEntries }), oitCameraGroup = this.device.createBindGroup({ layout: oitPipeline.getBindGroupLayout(0), entries: cameraEntries }), isTransparent = (packet) => (scene.materials.find((material) => material.id === packet.materialId)?.alphaMode ?? "OPAQUE") === "BLEND", opaquePackets = plan.drawPackets.filter((packet) => !isTransparent(packet)), transparentPackets = plan.drawPackets.filter(isTransparent), shadowPackets = opaquePackets.filter((packet) => packet.castShadow), cullingRecords = /* @__PURE__ */ new Map(), shadowCullingRecords = /* @__PURE__ */ new Map();
       if (gpuDriven) for (const packet of plan.drawPackets) cullingRecords.set(packet.nodeId, this.culling(packet));
       if (gpuDriven && shadowCamera) for (const packet of shadowPackets) shadowCullingRecords.set(packet.nodeId, this.culling(packet, this.shadowCullingBuffers));
       const uploadMs = now() - uploadStart, encodeStart = now(), encoder = this.device.createCommandEncoder();
@@ -2068,26 +4195,164 @@ ${VSR_SPATIAL_FRAGMENT_WGSL_V04}` });
         }
         shadowPass.end();
       }
-      const pass = encoder.beginRenderPass({ colorAttachments: [{ view: this.context.getCurrentTexture().createView(), clearValue: { r: 0.02, g: 0.035, b: 0.075, a: 1 }, loadOp: "clear", storeOp: "store" }], depthStencilAttachment: { view: this.depthTexture.createView(), depthClearValue: 1, depthLoadOp: "clear", depthStoreOp: "store" } });
-      pass.setPipeline(pipeline);
-      pass.setBindGroup(0, cameraGroup);
-      for (const packet of plan.drawPackets) {
+      const scenePass = encoder.beginRenderPass({ colorAttachments: [{ view: this.sceneColorTexture.createView(), clearValue: { r: 0.02, g: 0.035, b: 0.075, a: 1 }, loadOp: "clear", storeOp: "store" }, { view: this.temporalDepthTexture.createView(), clearValue: { r: 1, g: 0, b: 0, a: 1 }, loadOp: "clear", storeOp: "store" }, { view: this.temporalReactiveTexture.createView(), clearValue: { r: 0, g: 0, b: 0, a: 1 }, loadOp: "clear", storeOp: "store" }, { view: this.temporalVelocityTexture.createView(), clearValue: { r: 0, g: 0, b: 0, a: 0 }, loadOp: "clear", storeOp: "store" }], depthStencilAttachment: { view: this.depthTexture.createView(), depthClearValue: 1, depthLoadOp: "clear", depthStoreOp: "store" } });
+      scenePass.setPipeline(pipeline);
+      scenePass.setBindGroup(0, cameraGroup);
+      for (const packet of opaquePackets.sort((a, b) => a.nodeId.localeCompare(b.nodeId))) {
         const mesh = this.mesh(scene, packet.meshId), objectBuffer = this.objectBuffer(packet), instanceBuffer = this.instanceBuffer(packet), deformation = this.deformation(scene, packet), culling = gpuDriven ? cullingRecords.get(packet.nodeId) : void 0;
-        pass.setBindGroup(1, this.objectGroup(pipeline, objectBuffer, instanceBuffer, deformation, culling?.visible ?? this.identityIndexBuffer(packet)));
-        pass.setBindGroup(2, this.materialGroup(pipeline, scene, packet));
+        scenePass.setBindGroup(1, this.objectGroup(pipeline, objectBuffer, instanceBuffer, deformation, culling?.visible ?? this.identityIndexBuffer(packet)));
+        scenePass.setBindGroup(2, this.materialGroup(pipeline, scene, packet));
+        scenePass.setVertexBuffer(0, mesh.vertex);
+        scenePass.setIndexBuffer(mesh.index, "uint32");
+        if (culling) scenePass.drawIndexedIndirect(culling.indirect, 0);
+        else scenePass.drawIndexed(mesh.indexCount, packetInstanceCount(packet), 0, 0, 0);
+      }
+      scenePass.end();
+      const oitPass = encoder.beginRenderPass({ colorAttachments: [{ view: this.oitAccumulationTexture.createView(), clearValue: { r: 0, g: 0, b: 0, a: 0 }, loadOp: "clear", storeOp: "store" }, { view: this.oitRevealageTexture.createView(), clearValue: { r: 1, g: 1, b: 1, a: 1 }, loadOp: "clear", storeOp: "store" }, { view: this.oitReactiveTexture.createView(), clearValue: { r: 0, g: 0, b: 0, a: 1 }, loadOp: "clear", storeOp: "store" }, { view: this.oitVelocityTexture.createView(), clearValue: { r: 0, g: 0, b: 0, a: 0 }, loadOp: "clear", storeOp: "store" }], depthStencilAttachment: { view: this.depthTexture.createView(), depthLoadOp: "load", depthStoreOp: "store" } });
+      oitPass.setPipeline(oitPipeline);
+      oitPass.setBindGroup(0, oitCameraGroup);
+      for (const packet of transparentPackets.sort((a, b) => a.nodeId.localeCompare(b.nodeId))) {
+        const mesh = this.mesh(scene, packet.meshId), objectBuffer = this.objectBuffer(packet), instanceBuffer = this.instanceBuffer(packet), deformation = this.deformation(scene, packet), culling = gpuDriven ? cullingRecords.get(packet.nodeId) : void 0;
+        oitPass.setBindGroup(1, this.objectGroup(oitPipeline, objectBuffer, instanceBuffer, deformation, culling?.visible ?? this.identityIndexBuffer(packet)));
+        oitPass.setBindGroup(2, this.materialGroup(oitPipeline, scene, packet));
+        oitPass.setVertexBuffer(0, mesh.vertex);
+        oitPass.setIndexBuffer(mesh.index, "uint32");
+        if (culling) oitPass.drawIndexedIndirect(culling.indirect, 0);
+        else oitPass.drawIndexed(mesh.indexCount, packetInstanceCount(packet), 0, 0, 0);
+      }
+      oitPass.end();
+      const compositePipeline = this.ensureOitCompositePipeline(), compositePass = encoder.beginRenderPass({ colorAttachments: [{ view: this.resolvedColorTexture.createView(), clearValue: { r: 0.02, g: 0.035, b: 0.075, a: 1 }, loadOp: "clear", storeOp: "store" }, { view: this.resolvedReactiveTexture.createView(), clearValue: { r: 0, g: 0, b: 0, a: 1 }, loadOp: "clear", storeOp: "store" }, { view: this.resolvedVelocityTexture.createView(), clearValue: { r: 0, g: 0, b: 0, a: 0 }, loadOp: "clear", storeOp: "store" }] });
+      compositePass.setPipeline(compositePipeline);
+      compositePass.setBindGroup(0, this.device.createBindGroup({ layout: compositePipeline.getBindGroupLayout(0), entries: [{ binding: 0, resource: this.toneMapSampler }, { binding: 1, resource: this.sceneColorTexture.createView() }, { binding: 2, resource: this.oitAccumulationTexture.createView() }, { binding: 3, resource: this.oitRevealageTexture.createView() }, { binding: 4, resource: this.temporalReactiveTexture.createView() }, { binding: 5, resource: this.oitReactiveTexture.createView() }, { binding: 6, resource: this.temporalVelocityTexture.createView() }, { binding: 7, resource: this.oitVelocityTexture.createView() }] }));
+      compositePass.draw(3);
+      compositePass.end();
+      const toneMapPipeline = this.ensureToneMapPipeline(), toneMapPass = encoder.beginRenderPass({ colorAttachments: [{ view: this.context.getCurrentTexture().createView(), clearValue: { r: 0.02, g: 0.035, b: 0.075, a: 1 }, loadOp: "clear", storeOp: "store" }] });
+      toneMapPass.setPipeline(toneMapPipeline);
+      toneMapPass.setBindGroup(0, this.device.createBindGroup({ layout: toneMapPipeline.getBindGroupLayout(0), entries: [{ binding: 0, resource: this.toneMapSampler }, { binding: 1, resource: this.resolvedColorTexture.createView() }, { binding: 2, resource: { buffer: this.postBuffer } }, { binding: 3, resource: this.depthTexture.createView() }, { binding: 4, resource: this.historyTexture.createView() }, { binding: 5, resource: { buffer: this.temporalBuffer } }, { binding: 6, resource: this.historyDepthTexture.createView() }, { binding: 7, resource: this.resolvedReactiveTexture.createView() }, { binding: 8, resource: this.resolvedVelocityTexture.createView() }, { binding: 9, resource: this.historyVelocityTexture.createView() }] }));
+      toneMapPass.draw(3);
+      toneMapPass.end();
+      encoder.copyTextureToTexture?.({ texture: this.resolvedColorTexture }, { texture: this.historyTexture }, [plan.viewport.width, plan.viewport.height, 1]);
+      encoder.copyTextureToTexture?.({ texture: this.temporalDepthTexture }, { texture: this.historyDepthTexture }, [plan.viewport.width, plan.viewport.height, 1]);
+      encoder.copyTextureToTexture?.({ texture: this.resolvedVelocityTexture }, { texture: this.historyVelocityTexture }, [plan.viewport.width, plan.viewport.height, 1]);
+      const commands = encoder.finish(), encodeMs = now() - encodeStart, submitStart = now();
+      this.device.queue.submit([commands]);
+      await this.device.queue.onSubmittedWorkDone?.();
+      this.historyValid = true;
+      this.previousViewProjection = [...plan.camera.viewProjectionMatrix];
+      this.previousWorldMatrices = Object.fromEntries(plan.drawPackets.flatMap((packet) => packetInstances(packet).map((instance) => [instance.nodeId, [...instance.worldMatrix]])));
+      const textureBytesResident = this.trimTextureResidency(plan.budget.gpuTextureBudgetBytes), bufferBytesResident = this.trimBufferResidency(plan.budget.gpuBufferBudgetBytes), submitMs = now() - submitStart, base = { format: "vsr.spatial-webgpu-receipt.v0.4", frameRoot: plan.frameRoot, sceneId: scene.sceneId, adapterName: this.adapterName, drawCalls: plan.drawPackets.length, triangles: plan.stats.triangleCount, submitted: true, deviceLost: this.lost, ...this.lostReason ? { deviceLostReason: this.lostReason } : {}, compileMs, uploadMs, encodeMs, submitMs, materialTextureBindings: plan.stats.materialTextureBindings, shadowPasses: shadowCamera ? 1 : 0, oitPasses: 2, velocityPasses: 1, toneMapPasses: 1, ssgiPasses: plan.postProcess.ssgiIntensity > 0 ? 1 : 0, irradianceCacheProbes: plan.environment.irradianceBakeRoot ? plan.environment.probes?.length ?? 0 : 0, transparentDraws: plan.stats.transparentDraws, visibleInstances: plan.stats.visibleInstances ?? plan.drawPackets.reduce((sum, packet) => sum + packetInstanceCount(packet), 0), instancedDraws: plan.stats.instancedDraws ?? plan.drawPackets.filter((packet) => packetInstanceCount(packet) > 1).length, gpuDrivenDraws: gpuDriven ? plan.drawPackets.length : 0, gpuDrivenShadowDraws: gpuDriven && shadowCamera ? shadowPackets.length : 0, textureBytesResident, textureUploads: this.textureUploadsThisFrame, textureEvictions: this.textureEvictionsThisFrame, bufferBytesResident, bufferUploads: this.bufferUploadsThisFrame, bufferEvictions: this.bufferEvictionsThisFrame };
+      return { ...base, receiptRoot: cryptographicHash(base) };
+    }
+    async render(scene, options = {}) {
+      this.renderSerial++;
+      this.textureUploadsThisFrame = 0;
+      this.textureEvictionsThisFrame = 0;
+      this.bufferUploadsThisFrame = 0;
+      this.bufferEvictionsThisFrame = 0;
+      const compileOptions = this.previousWorldMatrices ? { ...options, previousWorldMatrices: this.previousWorldMatrices } : options, compileStart = now(), plan = compileSpatialFrame(scene, compileOptions), verification = verifySpatialFrame(plan);
+      if (!verification.ok) throw new Error(verification.diagnostics.join("; "));
+      const compileMs = now() - compileStart;
+      if (plan.transparencyMode === "weighted-blended-oit" && plan.stats.transparentDraws > 0) return this.renderWeightedOit(scene, plan, compileMs).then((receipt) => {
+        const { receiptRoot: _receiptRoot, ...base2 } = receipt, enriched2 = { ...base2, irradianceVolumeSamples: spatialIrradianceVolumeSampleCount(plan.environment) };
+        return { ...enriched2, receiptRoot: cryptographicHash(enriched2) };
+      });
+      if (this.lost) throw new Error("WebGPU device is lost.");
+      this.canvas.width = plan.viewport.width;
+      this.canvas.height = plan.viewport.height;
+      const pipeline = this.ensurePipeline(), blendPipeline = this.ensureBlendPipeline(), shadowCamera = resolveSpatialShadowCamera(plan), gpuDriven = Boolean(plan.gpuDrivenCulling), uploadStart = now(), temporalSize = `${plan.viewport.width}x${plan.viewport.height}`;
+      if (temporalSize !== this.historySize || plan.postProcess.temporalReset) {
+        this.historyValid = false;
+        this.previousViewProjection = void 0;
+      }
+      const previousViewProjection = this.previousViewProjection ?? plan.camera.viewProjectionMatrix;
+      this.ensureFrameBuffers(plan, this.historyValid, previousViewProjection);
+      this.ensureTemporalVelocityBuffers(plan);
+      const environmentResource = this.textureResource(scene, plan.environment.textureId, "environment"), cameraEntries = [{ binding: 0, resource: { buffer: this.cameraBuffer } }, { binding: 1, resource: this.shadowSampler }, { binding: 2, resource: this.shadowTexture.createView() }, { binding: 3, resource: { buffer: this.shadowUniformBuffer } }, { binding: 4, resource: environmentResource.sampler }, { binding: 5, resource: environmentResource.view }, { binding: 6, resource: { buffer: this.lightBuffer } }, { binding: 7, resource: { buffer: this.environmentProbeBuffer } }, { binding: 8, resource: { buffer: this.environmentVolumeBuffer } }, { binding: 9, resource: { buffer: this.temporalBuffer } }], cameraGroup = this.device.createBindGroup({ layout: pipeline.getBindGroupLayout(0), entries: cameraEntries }), blendCameraGroup = this.device.createBindGroup({ layout: blendPipeline.getBindGroupLayout(0), entries: cameraEntries }), shadowPackets = plan.drawPackets.filter((entry) => entry.castShadow), cullingRecords = /* @__PURE__ */ new Map(), shadowCullingRecords = /* @__PURE__ */ new Map();
+      if (gpuDriven) for (const packet of plan.drawPackets) cullingRecords.set(packet.nodeId, this.culling(packet));
+      if (gpuDriven && shadowCamera) for (const packet of shadowPackets) shadowCullingRecords.set(packet.nodeId, this.culling(packet, this.shadowCullingBuffers));
+      const uploadMs = now() - uploadStart, encodeStart = now(), encoder = this.device.createCommandEncoder();
+      const encodeCulling = (cameraBuffer, records, packets) => {
+        const cullingPipelines = this.ensureCullingPipelines(), computePass = encoder.beginComputePass();
+        for (const packet of packets) {
+          const culling = records.get(packet.nodeId);
+          const group = this.device.createBindGroup({ layout: this.cullingBindGroupLayout, entries: [{ binding: 0, resource: { buffer: cameraBuffer } }, { binding: 1, resource: { buffer: culling.bounds } }, { binding: 2, resource: { buffer: culling.visible } }, { binding: 3, resource: { buffer: culling.counter } }, { binding: 4, resource: { buffer: culling.indirect } }] });
+          computePass.setBindGroup(0, group);
+          computePass.setPipeline(cullingPipelines.reset);
+          computePass.dispatchWorkgroups(1);
+          computePass.setPipeline(cullingPipelines.cull);
+          computePass.dispatchWorkgroups(Math.max(1, Math.ceil(packetInstanceCount(packet) / 64)));
+          computePass.setPipeline(cullingPipelines.finalize);
+          computePass.dispatchWorkgroups(1);
+        }
+        computePass.end();
+      };
+      if (gpuDriven && shadowCamera) encodeCulling(this.shadowCullingCamera(shadowCamera), shadowCullingRecords, shadowPackets);
+      if (gpuDriven) encodeCulling(this.cameraBuffer, cullingRecords, plan.drawPackets);
+      if (shadowCamera) {
+        const shadowPipeline = this.ensureShadowPipeline(), shadowGroup = this.device.createBindGroup({ layout: shadowPipeline.getBindGroupLayout(0), entries: [{ binding: 0, resource: { buffer: this.shadowUniformBuffer } }] }), shadowPass = encoder.beginRenderPass({ colorAttachments: [], depthStencilAttachment: { view: this.shadowTexture.createView(), depthClearValue: 1, depthLoadOp: "clear", depthStoreOp: "store" } });
+        shadowPass.setPipeline(shadowPipeline);
+        shadowPass.setBindGroup(0, shadowGroup);
+        for (const packet of shadowPackets) {
+          const mesh = this.mesh(scene, packet.meshId), objectBuffer = this.objectBuffer(packet), instanceBuffer = this.instanceBuffer(packet), deformation = this.deformation(scene, packet), culling = gpuDriven ? shadowCullingRecords.get(packet.nodeId) : void 0;
+          shadowPass.setBindGroup(1, this.objectGroup(shadowPipeline, objectBuffer, instanceBuffer, deformation, culling?.visible ?? this.identityIndexBuffer(packet)));
+          shadowPass.setVertexBuffer(0, mesh.vertex);
+          shadowPass.setIndexBuffer(mesh.index, "uint32");
+          if (culling) shadowPass.drawIndexedIndirect(culling.indirect, 0);
+          else shadowPass.drawIndexed(mesh.indexCount, packetInstanceCount(packet), 0, 0, 0);
+        }
+        shadowPass.end();
+      }
+      const pass = encoder.beginRenderPass({ colorAttachments: [{ view: this.sceneColorTexture.createView(), clearValue: { r: 0.02, g: 0.035, b: 0.075, a: 1 }, loadOp: "clear", storeOp: "store" }, { view: this.temporalDepthTexture.createView(), clearValue: { r: 1, g: 0, b: 0, a: 1 }, loadOp: "clear", storeOp: "store" }, { view: this.temporalReactiveTexture.createView(), clearValue: { r: 0, g: 0, b: 0, a: 1 }, loadOp: "clear", storeOp: "store" }, { view: this.temporalVelocityTexture.createView(), clearValue: { r: 0, g: 0, b: 0, a: 0 }, loadOp: "clear", storeOp: "store" }], depthStencilAttachment: { view: this.depthTexture.createView(), depthClearValue: 1, depthLoadOp: "clear", depthStoreOp: "store" } });
+      let activePipeline = pipeline, activeCameraGroup = cameraGroup;
+      pass.setPipeline(activePipeline);
+      pass.setBindGroup(0, activeCameraGroup);
+      for (const packet of [...plan.drawPackets].sort((a, b) => {
+        const aBlend = (scene.materials.find((material) => material.id === a.materialId)?.alphaMode ?? "OPAQUE") === "BLEND", bBlend = (scene.materials.find((material) => material.id === b.materialId)?.alphaMode ?? "OPAQUE") === "BLEND";
+        if (aBlend !== bBlend) return aBlend ? 1 : -1;
+        return (aBlend ? b.distanceToCamera - a.distanceToCamera : a.distanceToCamera - b.distanceToCamera) || a.nodeId.localeCompare(b.nodeId);
+      })) {
+        const transparent = (scene.materials.find((material) => material.id === packet.materialId)?.alphaMode ?? "OPAQUE") === "BLEND", packetPipeline = transparent ? blendPipeline : pipeline;
+        if (packetPipeline !== activePipeline) {
+          activePipeline = packetPipeline;
+          activeCameraGroup = transparent ? blendCameraGroup : cameraGroup;
+          pass.setPipeline(activePipeline);
+          pass.setBindGroup(0, activeCameraGroup);
+        }
+        const mesh = this.mesh(scene, packet.meshId), objectBuffer = this.objectBuffer(packet), instanceBuffer = this.instanceBuffer(packet), deformation = this.deformation(scene, packet), culling = gpuDriven ? cullingRecords.get(packet.nodeId) : void 0;
+        pass.setBindGroup(1, this.objectGroup(packetPipeline, objectBuffer, instanceBuffer, deformation, culling?.visible ?? this.identityIndexBuffer(packet)));
+        pass.setBindGroup(2, this.materialGroup(packetPipeline, scene, packet));
         pass.setVertexBuffer(0, mesh.vertex);
         pass.setIndexBuffer(mesh.index, "uint32");
         if (culling) pass.drawIndexedIndirect(culling.indirect, 0);
         else pass.drawIndexed(mesh.indexCount, packetInstanceCount(packet), 0, 0, 0);
       }
       pass.end();
+      const toneMapPipeline = this.ensureToneMapPipeline(), toneMapPass = encoder.beginRenderPass({ colorAttachments: [{ view: this.context.getCurrentTexture().createView(), clearValue: { r: 0.02, g: 0.035, b: 0.075, a: 1 }, loadOp: "clear", storeOp: "store" }] });
+      toneMapPass.setPipeline(toneMapPipeline);
+      toneMapPass.setBindGroup(0, this.device.createBindGroup({ layout: toneMapPipeline.getBindGroupLayout(0), entries: [{ binding: 0, resource: this.toneMapSampler }, { binding: 1, resource: this.sceneColorTexture.createView() }, { binding: 2, resource: { buffer: this.postBuffer } }, { binding: 3, resource: this.depthTexture.createView() }, { binding: 4, resource: this.historyTexture.createView() }, { binding: 5, resource: { buffer: this.temporalBuffer } }, { binding: 6, resource: this.historyDepthTexture.createView() }, { binding: 7, resource: this.temporalReactiveTexture.createView() }, { binding: 8, resource: this.temporalVelocityTexture.createView() }, { binding: 9, resource: this.historyVelocityTexture.createView() }] }));
+      toneMapPass.draw(3);
+      toneMapPass.end();
+      encoder.copyTextureToTexture?.({ texture: this.sceneColorTexture }, { texture: this.historyTexture }, [plan.viewport.width, plan.viewport.height, 1]);
+      encoder.copyTextureToTexture?.({ texture: this.temporalDepthTexture }, { texture: this.historyDepthTexture }, [plan.viewport.width, plan.viewport.height, 1]);
+      encoder.copyTextureToTexture?.({ texture: this.temporalVelocityTexture }, { texture: this.historyVelocityTexture }, [plan.viewport.width, plan.viewport.height, 1]);
       const commands = encoder.finish(), encodeMs = now() - encodeStart, submitStart = now();
       this.device.queue.submit([commands]);
       await this.device.queue.onSubmittedWorkDone?.();
-      const submitMs = now() - submitStart, base = { format: "vsr.spatial-webgpu-receipt.v0.4", frameRoot: plan.frameRoot, sceneId: scene.sceneId, adapterName: this.adapterName, drawCalls: plan.drawPackets.length, triangles: plan.stats.triangleCount, submitted: true, deviceLost: this.lost, ...this.lostReason ? { deviceLostReason: this.lostReason } : {}, compileMs, uploadMs, encodeMs, submitMs, materialTextureBindings: plan.stats.materialTextureBindings, shadowPasses: shadowCamera ? 1 : 0, visibleInstances: plan.stats.visibleInstances ?? plan.drawPackets.reduce((sum, packet) => sum + packetInstanceCount(packet), 0), instancedDraws: plan.stats.instancedDraws ?? plan.drawPackets.filter((packet) => packetInstanceCount(packet) > 1).length, gpuDrivenDraws: gpuDriven ? plan.drawPackets.length : 0, gpuDrivenShadowDraws: gpuDriven && shadowCamera ? shadowPackets.length : 0 };
-      return { ...base, receiptRoot: cryptographicHash(base) };
+      this.historyValid = true;
+      this.previousViewProjection = [...plan.camera.viewProjectionMatrix];
+      this.previousWorldMatrices = Object.fromEntries(plan.drawPackets.flatMap((packet) => packetInstances(packet).map((instance) => [instance.nodeId, [...instance.worldMatrix]])));
+      const textureBytesResident = this.trimTextureResidency(plan.budget.gpuTextureBudgetBytes), bufferBytesResident = this.trimBufferResidency(plan.budget.gpuBufferBudgetBytes), submitMs = now() - submitStart, base = { format: "vsr.spatial-webgpu-receipt.v0.4", frameRoot: plan.frameRoot, sceneId: scene.sceneId, adapterName: this.adapterName, drawCalls: plan.drawPackets.length, triangles: plan.stats.triangleCount, submitted: true, deviceLost: this.lost, ...this.lostReason ? { deviceLostReason: this.lostReason } : {}, compileMs, uploadMs, encodeMs, submitMs, materialTextureBindings: plan.stats.materialTextureBindings, shadowPasses: shadowCamera ? 1 : 0, velocityPasses: 1, toneMapPasses: 1, ssgiPasses: plan.postProcess.ssgiIntensity > 0 ? 1 : 0, irradianceCacheProbes: plan.environment.irradianceBakeRoot ? plan.environment.probes?.length ?? 0 : 0, visibleInstances: plan.stats.visibleInstances ?? plan.drawPackets.reduce((sum, packet) => sum + packetInstanceCount(packet), 0), instancedDraws: plan.stats.instancedDraws ?? plan.drawPackets.filter((packet) => packetInstanceCount(packet) > 1).length, gpuDrivenDraws: gpuDriven ? plan.drawPackets.length : 0, gpuDrivenShadowDraws: gpuDriven && shadowCamera ? shadowPackets.length : 0, textureBytesResident, textureUploads: this.textureUploadsThisFrame, textureEvictions: this.textureEvictionsThisFrame, bufferBytesResident, bufferUploads: this.bufferUploadsThisFrame, bufferEvictions: this.bufferEvictionsThisFrame };
+      const enriched = { ...base, irradianceVolumeSamples: spatialIrradianceVolumeSampleCount(plan.environment) };
+      return { ...enriched, receiptRoot: cryptographicHash(enriched) };
     }
     destroy() {
+      this.oitReactiveTexture?.destroy?.();
+      this.oitVelocityTexture?.destroy?.();
+      this.resolvedReactiveTexture?.destroy?.();
+      this.resolvedVelocityTexture?.destroy?.();
+      this.temporalReactiveTexture?.destroy?.();
+      this.temporalVelocityTexture?.destroy?.();
+      this.historyVelocityTexture?.destroy?.();
       for (const mesh of this.meshBuffers.values()) {
         mesh.vertex.destroy?.();
         mesh.index.destroy?.();
@@ -2108,10 +4373,24 @@ ${VSR_SPATIAL_FRAGMENT_WGSL_V04}` });
         deformation.uniform.destroy?.();
       }
       for (const entry of this.textures.values()) entry.texture.destroy?.();
+      this.oitAccumulationTexture?.destroy?.();
+      this.oitRevealageTexture?.destroy?.();
+      this.oitVelocityTexture?.destroy?.();
+      this.resolvedColorTexture?.destroy?.();
+      this.resolvedVelocityTexture?.destroy?.();
       this.cameraBuffer?.destroy?.();
+      this.lightBuffer?.destroy?.();
+      this.environmentProbeBuffer?.destroy?.();
+      this.environmentVolumeBuffer?.destroy?.();
+      this.postBuffer?.destroy?.();
+      this.temporalBuffer?.destroy?.();
       this.shadowCullingCameraBuffer?.destroy?.();
       this.shadowUniformBuffer?.destroy?.();
       this.depthTexture?.destroy?.();
+      this.sceneColorTexture?.destroy?.();
+      this.temporalDepthTexture?.destroy?.();
+      this.historyTexture?.destroy?.();
+      this.historyDepthTexture?.destroy?.();
       this.shadowTexture?.destroy?.();
       this.meshBuffers.clear();
       this.materialBuffers.clear();
@@ -2121,12 +4400,43 @@ ${VSR_SPATIAL_FRAGMENT_WGSL_V04}` });
       this.cullingBuffers.clear();
       this.shadowCullingBuffers.clear();
       this.deformationBuffers.clear();
+      this.bufferResidency.clear();
       this.textures.clear();
       this.samplers.clear();
       this.pipeline = void 0;
+      this.blendPipeline = void 0;
+      this.oitPipeline = void 0;
+      this.oitCompositePipeline = void 0;
       this.shadowPipeline = void 0;
+      this.toneMapPipeline = void 0;
       this.cullingPipelines = void 0;
       this.cullingBindGroupLayout = void 0;
+      this.oitAccumulationTexture = void 0;
+      this.oitRevealageTexture = void 0;
+      this.oitReactiveTexture = void 0;
+      this.oitVelocityTexture = void 0;
+      this.resolvedColorTexture = void 0;
+      this.resolvedReactiveTexture = void 0;
+      this.resolvedVelocityTexture = void 0;
+      this.oitSize = "";
+      this.oitEnabled = false;
+      this.sceneColorTexture = void 0;
+      this.sceneColorSize = "";
+      this.temporalDepthTexture = void 0;
+      this.temporalReactiveTexture = void 0;
+      this.temporalVelocityTexture = void 0;
+      this.historyTexture = void 0;
+      this.historyDepthTexture = void 0;
+      this.historyVelocityTexture = void 0;
+      this.historySize = "";
+      this.temporalVelocitySize = "";
+      this.historyVelocitySize = "";
+      this.historyValid = false;
+      this.temporalBuffer = void 0;
+      this.environmentVolumeBuffer = void 0;
+      this.environmentVolumeBufferSize = 0;
+      this.previousViewProjection = void 0;
+      this.previousWorldMatrices = void 0;
     }
   };
   function verifySpatialWebGPUReceipt(receipt) {

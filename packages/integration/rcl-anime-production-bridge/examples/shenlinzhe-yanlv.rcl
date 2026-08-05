@@ -1,0 +1,56 @@
+anime 神临者言律 {
+  episode EP01 {
+    scene 无名城审判 {
+      fps 24
+      resolution 1920x1080
+      style japanese_tv_anime
+
+      cut S01 duration 5s {
+        layout medium_close_up
+
+        camera {
+          lens 55mm
+          angle high 10deg
+          dolly_in from 0s to 5s easing ease_in_out
+        }
+
+        actor 蓝天临 {
+          asset character:蓝天临
+
+          keypose 0f head_lowered
+          hold 0f..14f
+
+          keypose 15f begin_raise_head
+          keypose 28f gaze_locked
+
+          gaze 审判官高台 from 28f
+          blink at 34f
+
+          dialogue {
+            text "何罪之有？"
+            start 31f
+            voice 蓝天临.default
+            emotion restrained_question
+            mouth automatic_viseme
+            close_mouth_on_end true
+          }
+
+          hold_expression from dialogue.end to cut.end
+        }
+
+        animation {
+          exposure on_twos
+          hair_secondary subtle
+          coat_secondary subtle
+          motion_override hair from 31f to 48f amplitude 1.25 reason "director-held-gaze"
+        }
+
+        sound {
+          ambience cold_wind
+          foley distant_chain
+          music none
+        }
+      }
+    }
+  }
+}

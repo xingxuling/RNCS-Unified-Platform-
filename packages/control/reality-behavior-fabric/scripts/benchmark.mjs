@@ -1,6 +1,6 @@
-import fs from 'node:fs';import path from 'node:path';import {performance} from 'node:perf_hooks';
+import fs from 'node:fs';import path from 'node:path';import {fileURLToPath} from 'node:url';import {performance} from 'node:perf_hooks';
 import {BehaviorRuntime,replayProgram} from '../src/runtime.mjs';import {normalizeProgram} from '../src/contracts.mjs';import {rootHash} from '../src/canonical.mjs';
-const root=path.resolve(path.dirname(new URL(import.meta.url).pathname),'..');
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const sample=JSON.parse(fs.readFileSync(path.join(root,'examples/frost-trial.behavior.json'),'utf8'));
 const providers={'experience.audio.emit':({inputs})=>inputs,'experience.effect.emit':({inputs})=>inputs};
 function run(name,fn,iterations=5){const values=[];let result;for(let i=0;i<iterations;i++){const t=performance.now();result=fn();values.push(performance.now()-t);}values.sort((a,b)=>a-b);return{name,iterations,median_ms:+values[Math.floor(values.length/2)].toFixed(3),p95_ms:+values[Math.min(values.length-1,Math.floor(values.length*.95))].toFixed(3),result};}

@@ -45,7 +45,15 @@
     "release:audit:v05": "npm run typecheck && npm run lint && npm test && npm run test:e2e && npm run verify:spatial-3d && npm run benchmark:spatial-3d && node scripts/release-audit-v05.mjs",
     "test:temporal": "npm run build && node dist/tests/temporal-presentation.js",
     "test:gltf": "npm run build && node dist/tests/gltf-asset.js",
-    "build:spatial-browser": "node scripts/build-spatial-browser.mjs"
+    "build:spatial-browser": "node scripts/build-spatial-browser.mjs",
+    "evidence:irradiance-bake": "npm run build && node scripts/generate-irradiance-probe-bake.mjs",
+    "evidence:irradiance-volume": "npm run build && node scripts/generate-irradiance-volume.mjs",
+    "evidence:irradiance-volume-field": "npm run build && node scripts/generate-irradiance-volume-field.mjs",
+    "evidence:lightmap-bake": "npm run build && node scripts/generate-lightmap-bake.mjs",
+    "evidence:hlod": "npm run build && node scripts/generate-hlod-evidence.mjs",
+    "evidence:hlod-auto": "npm run build && node scripts/generate-hlod-generation-evidence.mjs",
+    "evidence:hlod-cell": "npm run build && node scripts/generate-hlod-cell-evidence.mjs",
+    "generate:files": "node scripts/generate-file-manifest.mjs"
   },
   "engines": {
     "node": ">=20"

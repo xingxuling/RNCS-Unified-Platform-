@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rncs.dev/schemas/rncs-kernel-rsr-vsr-binding.v0.1.schema.json",
+  "title": "RNCS Entity Kernel to RSR and VSR Binding v0.1",
+  "type": "object",
+  "required": [
+    "format",
+    "version",
+    "binding",
+    "snapshot",
+    "projection",
+    "roots",
+    "binding_root"
+  ],
+  "properties": {
+    "format": {
+      "const": "rncs.kernel-rsr-vsr-projection.v0.1"
+    },
+    "version": {
+      "const": "0.1.0"
+    },
+    "binding": {
+      "type": "object",
+      "required": ["format", "version", "source", "entity_bindings", "config", "binding_root"],
+      "properties": {
+        "format": { "const": "rncs.kernel-rsr-binding.v0.1" },
+        "version": { "const": "0.1.0" },
+        "source": {
+          "type": "object",
+          "required": ["world_id", "generation", "generation_root", "tick", "state_root", "batch_root"],
+          "properties": {
+            "world_id": { "type": "string", "minLength": 1 },
+            "generation": { "type": "integer", "minimum": 0 },
+            "generation_root": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+            "tick": { "type": "integer", "minimum": 0 },
+            "state_root": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+            "batch_root": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+          }
+        },
+        "entity_bindings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["entity_id", "entity_root", "body_id", "fixture_id", "body_fragment_id", "fixture_fragment_id"],
+            "properties": {
+              "entity_id": { "type": "string", "minLength": 1 },
+              "entity_root": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+              "body_id": { "type": "string", "minLength": 1 },
+              "fixture_id": { "type": "string", "minLength": 1 },
+              "body_fragment_id": { "type": "string", "minLength": 1 },
+              "fixture_fragment_id": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "config": { "type": "object" },
+        "binding_root": { "type": "string", "pattern": "^fnv1a64:[0-9a-f]{16}$" }
+      }
+    },
+    "snapshot": {
+      "type": "object",
+      "required": ["format", "worldId", "tick", "bodies", "stateRoot", "bodyRoot"],
+      "properties": {
+        "format": { "const": "rsr.spatial-embodiment-snapshot.v0.6" },
+        "worldId": { "type": "string", "minLength": 1 },
+        "tick": { "type": "integer", "minimum": 0 },
+        "bodies": { "type": "array" },
+        "stateRoot": { "type": "string", "minLength": 1 },
+        "bodyRoot": { "type": "string", "minLength": 1 }
+      }
+    },
+    "projection": {
+      "type": "object",
+      "required": ["format", "sourceStateRoot", "scene", "framePlan", "frameVerified", "pixelRoot", "projectionRoot"],
+      "properties": {
+        "format": { "const": "rsr.spatial-embodiment-vsr-projection.v0.5" },
+        "sourceStateRoot": { "type": "string", "minLength": 1 },
+        "scene": { "type": "object" },
+        "framePlan": { "type": "object" },
+        "frameVerified": { "const": true },
+        "pixelRoot": { "type": "string", "minLength": 1 },
+        "projectionRoot": { "type": "string", "minLength": 1 }
+      }
+    },
+    "roots": {
+      "type": "object",
+      "required": ["kernel_state_root", "kernel_batch_root", "binding_root", "rsr_state_root", "rsr_body_root", "vsr_scene_root", "vsr_frame_root", "vsr_pixel_root"],
+      "properties": {
+        "kernel_state_root": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "kernel_batch_root": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "binding_root": { "type": "string", "minLength": 1 },
+        "rsr_state_root": { "type": "string", "minLength": 1 },
+        "rsr_body_root": { "type": "string", "minLength": 1 },
+        "vsr_scene_root": { "type": "string", "minLength": 1 },
+        "vsr_frame_root": { "type": "string", "minLength": 1 },
+        "vsr_pixel_root": { "type": "string", "minLength": 1 }
+      }
+    },
+    "binding_root": { "type": "string", "pattern": "^fnv1a64:[0-9a-f]{16}$" }
+  }
+}

@@ -1,0 +1,171 @@
+{
+  "format": "rsr.release-audit.v0.6",
+  "version": "0.9.0-alpha.1",
+  "ok": true,
+  "failures": [],
+  "sourceFileCount": 33,
+  "packageRuntimeDependencies": [
+    "@taowind/visual-state-runtime"
+  ],
+  "testSummary": {
+    "vsr": "29/29",
+    "simulationV01": "11/11",
+    "constraintPhysicsV02": "19/19",
+    "embodiedDynamicsV03": "30/30",
+    "temporalExperienceV04": "35/35",
+    "spatialEmbodimentV06": "63/63",
+    "networkReconciliationV07": "7/7",
+    "total": "194/194"
+  },
+  "spatialRoots": {
+    "bodyRoot": "fnv1a64:0a131dd2b2291dc8",
+    "contactRoot": "fnv1a64:5767bdd3eb32743a",
+    "characterRoot": "fnv1a64:981d1b0224eb2ab6",
+    "jointRoot": "fnv1a64:4a3093a13d6fed1d",
+    "sensoryRoot": "fnv1a64:09612b07b5ecb5a5",
+    "causalDeltaRoot": "fnv1a64:090c4ebfac941d7e"
+  },
+  "spatialReality": {
+    "generation": 12,
+    "realityRoot": "rfe:world:embodied-courtyard:g12",
+    "evidenceRoot": "rfe:evidence:embodied-courtyard:g12"
+  },
+  "compatibilityRoots": {
+    "v04StateRoot": "fnv1a64:abc7024fa1e4f94a",
+    "v03StateRoot": "fnv1a64:6323fdceeab7e9f0",
+    "v02StateRoot": "fnv1a64:674a4a0a0ac58310",
+    "v01StateRoot": "fnv1a64:ae339aab5727a0ae"
+  },
+  "spatialArtifacts": [
+    {
+      "path": "outputs/spatial-embodiment-verify/causal-delta.json",
+      "sha256": "89915432e141315b60a77c90068207851f48496da19fbf8aadbb5114077d8c09",
+      "bytes": 3876
+    },
+    {
+      "path": "outputs/spatial-embodiment-verify/checkpoint-snapshot.json",
+      "sha256": "bcf131107d2f027f1f2f1106bb2f6886ea8dad1cf77c66bf7a158db65e57bcb4",
+      "bytes": 16984
+    },
+    {
+      "path": "outputs/spatial-embodiment-verify/commands.json",
+      "sha256": "0ebcba8a8ec8ea42046ca0ca162b532344e0e4e4a883d3b4cec3efd308a3cb9c",
+      "bytes": 1090
+    },
+    {
+      "path": "outputs/spatial-embodiment-verify/demo-evidence.json",
+      "sha256": "e742815e8cbf29930b20d59b66fdc87b6c2149fe82cf9eb275e4884bdfd07d5d",
+      "bytes": 3022
+    },
+    {
+      "path": "outputs/spatial-embodiment-verify/final-sensory-events.json",
+      "sha256": "0203b58e47206378782c055b1b4c1b4d29fba34b00216db6167a65268d570e0a",
+      "bytes": 83948
+    },
+    {
+      "path": "outputs/spatial-embodiment-verify/final-snapshot.json",
+      "sha256": "911dac73da6f6d1156a2351d186d1cfcc682ddefc962b238fe919b3cdbaaedde",
+      "bytes": 17512
+    },
+    {
+      "path": "outputs/spatial-embodiment-verify/final.frame-plan.json",
+      "sha256": "38912ba65f28bf1f4e662ef5da7c9d4a61607be421d85dd41089c5c801fb2227",
+      "bytes": 18366
+    },
+    {
+      "path": "outputs/spatial-embodiment-verify/final.png",
+      "sha256": "0761153d21ac4f0202b3a033bf691f9f472a02bc5f29430b19de755bdf90ce56",
+      "bytes": 21450
+    },
+    {
+      "path": "outputs/spatial-embodiment-verify/final.scene.vsr3d.json",
+      "sha256": "3ef8484b663088e04af42d4db1b4abdd962fecf5186fb8487e65fe4e75ea40e0",
+      "bytes": 90270
+    },
+    {
+      "path": "outputs/spatial-embodiment-verify/initial.frame-plan.json",
+      "sha256": "0d114ca9c31301baa173bab3278db256dfbf12933084c3d4bcda4be9e640096b",
+      "bytes": 15056
+    },
+    {
+      "path": "outputs/spatial-embodiment-verify/initial.png",
+      "sha256": "a01047991ed7a625e0a1f3703a63461ed8fb1a4193a2ae0e2ed05844ad15c550",
+      "bytes": 21009
+    },
+    {
+      "path": "outputs/spatial-embodiment-verify/initial.scene.vsr3d.json",
+      "sha256": "8f116b70f0ef48e6dd2b2b4686466a5a5ef5fcfd04ec28c203920d0ccffefad7",
+      "bytes": 88987
+    },
+    {
+      "path": "outputs/spatial-embodiment-verify/world.json",
+      "sha256": "1ea41d261b6d9f66c275b76260783fe9a9cbdf74b890b4e1bb9a885c04858434",
+      "bytes": 5929
+    }
+  ],
+  "benchmark": {
+    "format": "rsr.spatial-embodiment-benchmark.v0.5",
+    "node": "v22.16.0",
+    "cases": [
+      {
+        "bodyCount": 64,
+        "ticks": 90,
+        "elapsedMs": 908.181,
+        "millisecondsPerTick": 10.0909,
+        "ticksPerSecond": 99.1,
+        "averageCandidatePairs": 224,
+        "averageNarrowPhaseTests": 0,
+        "averageContacts": 42.46,
+        "averageSensoryEvents": 19.91,
+        "broadPhaseCompression": 0.888889,
+        "maxSubsteps": 1,
+        "stateRoot": "fnv1a64:d5c8234bd6edc225"
+      },
+      {
+        "bodyCount": 144,
+        "ticks": 60,
+        "elapsedMs": 1099.233,
+        "millisecondsPerTick": 18.3206,
+        "ticksPerSecond": 54.58,
+        "averageCandidatePairs": 792,
+        "averageNarrowPhaseTests": 0,
+        "averageContacts": 83.2,
+        "averageSensoryEvents": 43.2,
+        "broadPhaseCompression": 0.923077,
+        "maxSubsteps": 1,
+        "stateRoot": "fnv1a64:b10e059c67fe75b7"
+      },
+      {
+        "bodyCount": 256,
+        "ticks": 30,
+        "elapsedMs": 865.036,
+        "millisecondsPerTick": 28.8345,
+        "ticksPerSecond": 34.68,
+        "averageCandidatePairs": 1920,
+        "averageNarrowPhaseTests": 0,
+        "averageContacts": 82.57,
+        "averageSensoryEvents": 68.27,
+        "broadPhaseCompression": 0.941176,
+        "maxSubsteps": 1,
+        "stateRoot": "fnv1a64:aa6c822d8feec52d"
+      }
+    ],
+    "characters": {
+      "characters": 32,
+      "ticks": 180,
+      "elapsedMs": 995.998,
+      "millisecondsPerTick": 5.5333,
+      "footstepEventsLastTick": 1,
+      "groundedBodies": 32,
+      "stateRoot": "fnv1a64:62ceedd2309df495"
+    },
+    "projection": {
+      "bodies": 48,
+      "drawCalls": 81,
+      "triangles": 30914,
+      "elapsedMs": 352.029,
+      "frameVerified": true,
+      "pixelRoot": "fnv1a64:6e62a2c3aed726f0"
+    }
+  }
+}

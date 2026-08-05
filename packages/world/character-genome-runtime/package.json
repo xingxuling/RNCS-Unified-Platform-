@@ -1,0 +1,24 @@
+{
+  "name": "@taowind/character-genome-runtime",
+  "version": "0.1.0-alpha.1",
+  "type": "module",
+  "description": "RNCS authority contracts, semantic morph graph, constraints and continuity for parameterized digital actors.",
+  "license": "Apache-2.0",
+  "exports": {
+    ".": "./src/index.mjs"
+  },
+  "files": [
+    "src",
+    "schemas",
+    "README.md",
+    "STATUS.md",
+    "CHANGELOG.md",
+    "RELEASE_NOTES.md"
+  ],
+  "scripts": {
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

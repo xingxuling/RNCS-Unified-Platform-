@@ -6,7 +6,9 @@
   "entry":"src/index.mjs",
   "capabilities":[
     {"capability_id":"behavior.program.validate","method":"validateProgram","risk":"low","reversible":true},
-    {"capability_id":"behavior.simulate","method":"BehaviorRuntime.run","risk":"low","reversible":true},
+   {"capability_id":"behavior.simulate","method":"BehaviorRuntime.run","risk":"low","reversible":true},
+    {"capability_id":"behavior.schedule","method":"RealityScheduler.run","risk":"low","reversible":true},
+    {"capability_id":"behavior.tick-scheduled","method":"BehaviorRuntime.tickScheduled","risk":"low","reversible":true},
     {"capability_id":"behavior.snapshot","method":"BehaviorRuntime.snapshot","risk":"low","reversible":true},
     {"capability_id":"behavior.hot-reload","method":"BehaviorRuntime.hotReload","risk":"medium","reversible":true},
     {"capability_id":"behavior.commit-delta","method":"BehaviorRuntime.causalDelta","risk":"medium","reversible":true}

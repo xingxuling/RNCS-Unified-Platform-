@@ -1,0 +1,33 @@
+{
+  "format": "rncs.character-benchmark.v0.1",
+  "runs": [
+    {
+      "full_ms": 2491.221,
+      "incremental_ms": 2731.738,
+      "cache_hit_rate": 0.5285714285714286,
+      "geometry_rebuilt": false,
+      "receipt_valid": true
+    },
+    {
+      "full_ms": 2406.615,
+      "incremental_ms": 1798.866,
+      "cache_hit_rate": 0.5285714285714286,
+      "geometry_rebuilt": false,
+      "receipt_valid": true
+    },
+    {
+      "full_ms": 2360.79,
+      "incremental_ms": 2379.1,
+      "cache_hit_rate": 0.5285714285714286,
+      "geometry_rebuilt": false,
+      "receipt_valid": true
+    }
+  ],
+  "median_full_ms": 2406.615,
+  "median_recolor_ms": 2379.1,
+  "speedup": 1.0115652978016896,
+  "recolor_faster": true,
+  "geometry_preserved": true,
+  "receipts_valid": true,
+  "boundary": "Local Node.js offline reference provider; not a target-device or commercial DCC benchmark"
+}

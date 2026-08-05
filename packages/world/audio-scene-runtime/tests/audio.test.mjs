@@ -1,0 +1,7 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createSoundScene,renderAudioScene,validateAudioScene} from '../src/index.mjs';
+import {generateVoicePerformance} from '../../voice-performance-runtime/src/index.mjs';
+
+test('Audio Forge writes dialogue, ambience, foley, sfx, music and master stems',()=>{const voice=generateVoicePerformance({dialogue_event_id:'dialogue:one',character_id:'character:blue',voice_identity:'default',text:'何罪之有？'});const cut={cut_id:'S01',duration:5,voice_track:[{dialogue_event_id:'dialogue:one',active:true}],ambience_track:[{cue_id:'ambience:cold-wind',sound:'cold_wind'}],foley_track:[{cue_id:'foley:chain',sound:'distant_chain'}],sfx_track:[],music_track:[]};const scene=createSoundScene({productionId:'production:one',cut,voiceBundle:voice.bundle});const result=renderAudioScene(scene,{voiceWav:voice.wav});assert.equal(validateAudioScene(scene,result.report).valid,true);assert.deepEqual(Object.keys(result.buffers).sort(),['ambience','dialogue','foley','master','music','sfx']);assert.notEqual(result.report.stems.master.root,result.report.stems.dialogue.root)});
+test('Audio Forge rejects two active dialogue authorities',()=>{assert.throws(()=>createSoundScene({productionId:'production:one',cut:{duration:1,voice_track:[{dialogue_event_id:'a',active:true},{dialogue_event_id:'b',active:true}]},voiceBundle:null}),/MULTIPLE_DIALOGUE_AUTHORITY/)});

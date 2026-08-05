@@ -8,3 +8,4 @@ export {generatePbrTexturePack} from './pbr.mjs';
 export {generateSkeletonRig,generateAnimationClips} from './rig.mjs';
 export {generateVsrSpatialAsset,generateRsrEmbodimentProfile} from './adapters3d.mjs';
 export * from './family.mjs';
+export {generateAnimeCharacterFamily,generateAnimeBackgroundFamily,validateAnimeCharacterFamily,validateAnimeBackgroundFamily} from './anime-family.mjs';

@@ -1,10 +1,12 @@
 # Changelog
 
 ## Unreleased
+- Added the live Character Genome workbench, generated mesh and cross-media previews, parameter editing, recovery actions and Anime Forge binding.
+- Added responsive evidence panels for desktop, compact desktop and mobile.
 - Added the deterministic `reality-studio.sequence.v1.7` multi-track timeline for camera, animation, audio and authority behavior clips.
 - Added sequence seek, frame stepping, bounded playback, snapshot/restore, undo/redo persistence, server commands and `sequence.json` build export.
 - Added the browser sequence workbench with playhead, track lanes, authority/presentation separation and offline fallback rendering.
-- Added HTTP-level regression coverage for sequence editing, frame evaluation, snapshot restore and export integration; the full Studio suite is now 232/232.
+- Added HTTP-level regression coverage for sequence editing, frame evaluation, snapshot restore and export integration; the full Studio suite is now 237/237.
 - Added VSR-backed runtime asset streaming from the v1.4 content-addressed cache, with dependency-first loading, SHA-256 verification, CLI/API entry points and explicit failure receipts.
 - Added a governed behavior live-update transaction for unified sessions.
 - Added deterministic candidate replay, explicit resolver authorization and commit confirmation.

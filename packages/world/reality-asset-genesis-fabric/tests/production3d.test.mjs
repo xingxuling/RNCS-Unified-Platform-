@@ -9,7 +9,9 @@ test('every candidate has 18 output families',()=>assert.ok(ws.candidates.every(
 test('every candidate has primary GLB',()=>assert.ok(ws.candidates.every(c=>c.artifacts['mesh-glb'])));
 test('every candidate has PBR pack',()=>assert.ok(ws.candidates.every(c=>c.artifacts['pbr-texture-pack'])));
 test('every candidate has rig and clips',()=>assert.ok(ws.candidates.every(c=>c.artifacts['skeleton-rig']&&c.artifacts['animation-clips'])));
+test('every candidate meets rounded geometry and material quality gates',()=>assert.ok(ws.candidates.every(c=>c.artifacts['mesh-glb'].metadata.triangle_count>700&&c.artifacts['mesh-glb'].metadata.morph_target_count===1&&c.artifacts['mesh-glb'].metadata.animation_count===4&&c.artifacts['pbr-texture-pack'].metadata.material_model==='stylized-pbr-v0.4')));
 test('every candidate has VSR and RSR adapters',()=>assert.ok(ws.candidates.every(c=>c.artifacts['vsr-spatial-asset']&&c.artifacts['rsr-embodiment-profile'])));
+test('runtime adapter validation is part of production readiness',()=>assert.ok(ws.reports.every(report=>report.runtime_validation?.valid===true)));
 test('all candidate production scores pass',()=>assert.ok(ws.reports.every(r=>r.scores.production>=6500&&r.eligible)));
 test('selected continuity bundle has 27 files',()=>assert.equal(ws.continuity_bundle.files.length,27));
 test('workspace and selected files verify',()=>assert.equal(verifyWorkspace(ws,{baseDir:dir,verifyFiles:true}).valid,true));
@@ -21,7 +23,8 @@ test('PBR maps are written',()=>{for(const n of ['base-color.png','normal.png','
 test('Studio import contains v1.4 asset record',()=>{const x=JSON.parse(fs.readFileSync(path.join(dir,'reality-studio-import.json')));assert.equal(x.asset_record.format,'reality-studio.asset-record.v1.4')});
 test('Studio record preserves stable asset id',()=>{const x=JSON.parse(fs.readFileSync(path.join(dir,'reality-studio-import.json')));assert.equal(x.asset_record.asset_id,ws.genome.identity.asset_id)});
 test('VSR adapter file targets v0.4',()=>{const x=JSON.parse(fs.readFileSync(path.join(dir,'candidates',selected.variant,'adapters','vsr-spatial-asset.json')));assert.equal(x.compatibility.target_format,'vsr.spatial-scene.v0.4')});
-test('RSR adapter file targets v0.5',()=>{const x=JSON.parse(fs.readFileSync(path.join(dir,'candidates',selected.variant,'adapters','rsr-embodiment-profile.json')));assert.equal(x.compatibility.target_format,'rsr.spatial-embodiment-world.v0.5')});
+test('RSR adapter file targets current v0.6',()=>{const x=JSON.parse(fs.readFileSync(path.join(dir,'candidates',selected.variant,'adapters','rsr-embodiment-profile.json')));assert.equal(x.compatibility.target_format,'rsr.spatial-embodiment-world.v0.6');assert.equal(x.body.runtime_kind,'dynamic')});
+test('VSR adapter file contains generated LOD bindings',()=>{const x=JSON.parse(fs.readFileSync(path.join(dir,'candidates',selected.variant,'adapters','vsr-spatial-asset.json')));assert.equal(x.version,'0.4.0');assert.equal(x.lods.length,3);assert.equal(x.node.lods.length,2)});
 test('continuity provenance records providers',()=>assert.ok(ws.continuity_bundle.provenance.providers.length>=2));
 test('continuity provider licenses are explicit',()=>assert.ok(ws.continuity_bundle.provenance.providers.every(p=>p.license&&p.license!=='unspecified')));
 test('Reality Branch workspace remains valid',()=>assert.equal(validateRealityBranchWorkspace(ws.reality_branch_workspace).valid,true));

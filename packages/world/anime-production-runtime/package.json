@@ -1,0 +1,17 @@
+{
+  "name": "@taowind/anime-production-runtime",
+  "version": "0.1.0-alpha.1",
+  "private": false,
+  "type": "module",
+  "description": "Deterministic Anime Production IR, exposure sheets, frame evidence and native 2D/2.5D render primitives for RNCS Anime Forge.",
+  "license": "Apache-2.0",
+  "exports": {
+    ".": "./src/index.mjs"
+  },
+  "scripts": {
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

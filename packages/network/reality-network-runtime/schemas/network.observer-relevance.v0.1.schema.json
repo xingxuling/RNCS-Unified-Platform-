@@ -1,0 +1,27 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://taowind.dev/schemas/network.observer-relevance.v0.1.schema.json",
+  "title":"RNCS Observer Relevance View v0.1",
+  "type":"object",
+  "required":["format","protocol","sessionId","observerId","worldId","tick","sourceStateRoot","authorityFrameRoot","profile","selectedObjects","priorities","omittedBodyIds","viewRoot"],
+  "properties":{
+    "format":{"const":"network.observer-relevance.v0.1"},
+    "protocol":{"type":"string","minLength":1},
+    "sessionId":{"type":"string","minLength":1},
+    "observerId":{"type":"string","minLength":1},
+    "worldId":{"type":"string","minLength":1},
+    "tick":{"type":"integer","minimum":0},
+    "sourceStateRoot":{"type":"string","minLength":1},
+    "authorityFrameRoot":{"type":"string","minLength":1},
+    "profile":{"type":"object"},
+    "selectedObjects":{"type":"array"},
+    "priorities":{"type":"array"},
+    "omittedBodyIds":{"type":"array","items":{"type":"string"}},
+    "missingRequiredBodyIds":{"type":"array","items":{"type":"string"}},
+    "eventIds":{"type":"array","items":{"type":"string"}},
+    "summary":{"type":"object"},
+    "authority":{"type":"object"},
+    "viewRoot":{"type":"string","minLength":1}
+  },
+  "additionalProperties":true
+}

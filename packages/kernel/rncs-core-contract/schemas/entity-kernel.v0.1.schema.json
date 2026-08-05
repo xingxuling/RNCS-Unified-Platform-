@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/rncs/entity-kernel.v0.1.schema.json",
+  "title": "RNCS Entity Kernel v0.1",
+  "type": "object",
+  "required": ["format", "version", "world_id", "generation", "generation_root", "tick", "schemas", "entities"],
+  "properties": {
+    "format": {"const": "rncs.entity-kernel.v0.1"},
+    "version": {"const": "0.1.0"},
+    "world_id": {"type": "string", "minLength": 1},
+    "generation": {"type": "integer", "minimum": 0},
+    "generation_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "tick": {"type": "integer", "minimum": 0},
+    "schemas": {"type": "array", "items": {"$ref": "#/$defs/fragmentSchema"}},
+    "entities": {"type": "array", "items": {"$ref": "#/$defs/entity"}},
+    "state_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "ledger_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "$defs": {
+    "fragmentSchema": {
+      "type": "object",
+      "required": ["format", "version", "fragment_id", "fields", "fragment_root"],
+      "properties": {
+        "format": {"const": "rncs.fragment-schema.v0.1"},
+        "version": {"type": "string"},
+        "fragment_id": {"type": "string", "minLength": 1},
+        "fields": {"type": "object", "additionalProperties": {"$ref": "#/$defs/field"}},
+        "fragment_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": false
+    },
+    "field": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {"enum": ["integer", "decimal", "boolean", "string", "json"]},
+        "default": {}
+      },
+      "additionalProperties": false
+    },
+    "entity": {
+      "type": "object",
+      "required": ["entity_id", "tags", "fragments", "composition", "entity_root"],
+      "properties": {
+        "entity_id": {"type": "string", "minLength": 1},
+        "tags": {"type": "array", "items": {"type": "string"}},
+        "fragments": {"type": "object"},
+        "composition": {"$ref": "#/$defs/composition"},
+        "entity_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": false
+    },
+    "composition": {
+      "type": "object",
+      "required": ["format", "version", "fragment_ids", "fragment_refs", "composition_root"],
+      "properties": {
+        "format": {"const": "rncs.entity-composition.v0.1"},
+        "version": {"type": "string"},
+        "fragment_ids": {"type": "array", "items": {"type": "string"}},
+        "fragment_refs": {"type": "array", "items": {"type": "object"}},
+        "composition_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

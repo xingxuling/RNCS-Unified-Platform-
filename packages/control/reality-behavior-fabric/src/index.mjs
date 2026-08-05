@@ -10,3 +10,4 @@ export * from './runtime.mjs';
 export * from './adapters.mjs';
 export * from './render.mjs';
 export * from './production.mjs';
+export * from './reality-scheduler.mjs';

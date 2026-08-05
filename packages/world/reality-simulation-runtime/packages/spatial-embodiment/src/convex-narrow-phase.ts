@@ -3,7 +3,8 @@ export interface FloatVector3 { x: number; y: number; z: number }
 export type ConvexProxy =
   | { kind: 'sphere'; center: FloatVector3; radius: number }
   | { kind: 'capsule'; center: FloatVector3; segment: [FloatVector3, FloatVector3]; radius: number }
-  | { kind: 'box'; center: FloatVector3; axes: [FloatVector3, FloatVector3, FloatVector3]; halfExtents: FloatVector3 };
+  | { kind: 'box'; center: FloatVector3; axes: [FloatVector3, FloatVector3, FloatVector3]; halfExtents: FloatVector3 }
+  | { kind: 'convex'; center: FloatVector3; vertices: FloatVector3[] };
 
 export interface ConvexContact {
   point: FloatVector3;
@@ -65,6 +66,15 @@ function support(proxy: ConvexProxy, direction: FloatVector3): FloatVector3 {
   if (proxy.kind === 'capsule') {
     const first = dot(proxy.segment[0], direction) >= dot(proxy.segment[1], direction) ? proxy.segment[0] : proxy.segment[1];
     return add(first, scale(unit, proxy.radius));
+  }
+  if (proxy.kind === 'convex') {
+    let best = proxy.vertices[0] ?? proxy.center;
+    let bestProjection = dot(best, direction);
+    for (const vertex of proxy.vertices.slice(1)) {
+      const projection = dot(vertex, direction);
+      if (projection > bestProjection + SUPPORT_EPSILON) { best = vertex; bestProjection = projection; }
+    }
+    return best;
   }
   let result = proxy.center;
   for (let index = 0; index < 3; index++) {

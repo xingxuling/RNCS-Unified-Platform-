@@ -1,0 +1,11 @@
+{
+  "name": "@taowind/audio-scene-runtime",
+  "version": "0.1.0-alpha.1",
+  "private": false,
+  "type": "module",
+  "description": "Deterministic Audio Scene IR, stem mixing and loudness evidence for RNCS Anime Forge.",
+  "license": "Apache-2.0",
+  "exports": {".": "./src/index.mjs"},
+  "scripts": {"test": "node --test --test-concurrency=1 tests/*.test.mjs"},
+  "engines": {"node": ">=20"}
+}

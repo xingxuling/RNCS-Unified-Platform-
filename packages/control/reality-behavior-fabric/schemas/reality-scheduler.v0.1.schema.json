@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/rncs/reality-scheduler.v0.1.schema.json",
+  "title": "Reality Scheduler Task Graph v0.1",
+  "type": "object",
+  "required": ["format", "version", "tasks", "edges", "order", "graph_root"],
+  "properties": {
+    "format": {"const": "reality.scheduler.task-graph.v0.1"},
+    "version": {"const": "0.1.0"},
+    "tasks": {"type": "array", "items": {"$ref": "#/$defs/task"}},
+    "edges": {"type": "array", "items": {"type": "object", "required": ["from", "to"]}},
+    "order": {"type": "array", "items": {"type": "string"}},
+    "graph_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "$defs": {
+    "task": {
+      "type": "object",
+      "required": ["format", "version", "task_id", "system_id", "prerequisites", "reads", "writes", "authority", "budget", "retry", "rollback", "evidence", "task_root"],
+      "properties": {
+        "format": {"const": "reality.scheduler.task-graph.v0.1"},
+        "version": {"const": "0.1.0"},
+        "task_id": {"type": "string", "minLength": 1},
+        "system_id": {"type": "string", "minLength": 1},
+        "priority": {"type": "integer"},
+        "prerequisites": {"type": "array", "items": {"type": "string"}},
+        "input_roots": {"type": "array", "items": {"type": "string"}},
+        "reads": {"type": "array", "items": {"type": "string"}},
+        "writes": {"type": "array", "items": {"type": "string"}},
+        "authority": {"enum": ["read", "candidate", "simulation", "authority"]},
+        "budget": {"type": "object", "required": ["max_operations"], "properties": {"max_operations": {"type": "integer", "minimum": 1}}, "additionalProperties": false},
+        "retry": {"type": "object", "required": ["max_attempts"], "properties": {"max_attempts": {"type": "integer", "minimum": 1}}, "additionalProperties": false},
+        "rollback": {"type": "object", "required": ["mode"], "properties": {"mode": {"enum": ["none", "snapshot"]}}, "additionalProperties": false},
+        "evidence": {"type": "object", "required": ["policy", "required"], "properties": {"policy": {"enum": ["none", "optional", "required"]}, "required": {"type": "array", "items": {"type": "string"}}}, "additionalProperties": false},
+        "metadata": {"type": "object"},
+        "task_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
