@@ -14,7 +14,8 @@ export type SpatialBodyKind = 'static' | 'dynamic' | 'kinematic';
 export type SpatialShape =
   | { type: 'sphere'; radius: number }
   | { type: 'box'; halfExtents: IntVector3 }
-  | { type: 'capsule'; radius: number; halfHeight: number };
+  | { type: 'capsule'; radius: number; halfHeight: number }
+  | { type: 'convex'; vertices: IntVector3[]; indices: number[] };
 
 export interface SpatialMaterialSpec {
   id: string;
@@ -339,7 +340,32 @@ export const fromDegrees = (value: number): number => value / ROTATION_SCALE;
 
 function cloneVec(value: IntVector3 | undefined, fallback = v3()): IntVector3 { return value ? v3(value.x, value.y, value.z) : v3(fallback.x, fallback.y, fallback.z); }
 function validateFiniteVec(name: string, value: IntVector3): void { for (const key of ['x', 'y', 'z'] as const) if (!Number.isFinite(value[key])) throw new Error(`${name}.${key} must be finite`); }
-function shapeRadius(shape: SpatialShape): number { if (shape.type === 'sphere') return shape.radius; if (shape.type === 'capsule') return shape.radius + shape.halfHeight; return Math.hypot(shape.halfExtents.x, shape.halfExtents.y, shape.halfExtents.z); }
+function shapeRadius(shape: SpatialShape): number { if (shape.type === 'sphere') return shape.radius; if (shape.type === 'capsule') return shape.radius + shape.halfHeight; if (shape.type === 'box') return Math.hypot(shape.halfExtents.x, shape.halfExtents.y, shape.halfExtents.z); return Math.max(...shape.vertices.map(vertex => Math.hypot(vertex.x, vertex.y, vertex.z))); }
+function validateShape(name: string, shape: SpatialShape): void {
+  if (shape.type === 'sphere' || shape.type === 'capsule') {
+    if (!Number.isFinite(shape.radius) || shape.radius <= 0) throw new Error(`${name}.radius must be positive`);
+    if (shape.type === 'capsule' && (!Number.isFinite(shape.halfHeight) || shape.halfHeight < 0)) throw new Error(`${name}.halfHeight must be non-negative`);
+    return;
+  }
+  if (shape.type === 'box') {
+    validateFiniteVec(`${name}.halfExtents`, shape.halfExtents);
+    if (shape.halfExtents.x <= 0 || shape.halfExtents.y <= 0 || shape.halfExtents.z <= 0) throw new Error(`${name}.halfExtents must be positive`);
+    return;
+  }
+  if (shape.vertices.length < 4 || shape.vertices.some(vertex => !Number.isFinite(vertex.x) || !Number.isFinite(vertex.y) || !Number.isFinite(vertex.z))) throw new Error(`${name}.vertices must contain at least four finite points`);
+  if (shape.indices.length < 12 || shape.indices.length % 3 !== 0 || shape.indices.some(index => !Number.isInteger(index) || index < 0 || index >= shape.vertices.length)) throw new Error(`${name}.indices must contain valid triangle indices`);
+  const base = shape.vertices[0]!, second = shape.vertices.find(vertex => vertex.x !== base.x || vertex.y !== base.y || vertex.z !== base.z), third = second && shape.vertices.find(vertex => {
+    const ab = { x: second.x - base.x, y: second.y - base.y, z: second.z - base.z }, ac = { x: vertex.x - base.x, y: vertex.y - base.y, z: vertex.z - base.z };
+    return Math.hypot(ab.y * ac.z - ab.z * ac.y, ab.z * ac.x - ab.x * ac.z, ab.x * ac.y - ab.y * ac.x) > 1e-9;
+  });
+  if (!second || !third) throw new Error(`${name}.vertices must span an area`);
+  const ab = { x: second.x - base.x, y: second.y - base.y, z: second.z - base.z }, ac = { x: third.x - base.x, y: third.y - base.y, z: third.z - base.z };
+  const fourth = shape.vertices.find(vertex => {
+    const ad = { x: vertex.x - base.x, y: vertex.y - base.y, z: vertex.z - base.z };
+    return Math.abs(ab.x * (ac.y * ad.z - ac.z * ad.y) - ab.y * (ac.x * ad.z - ac.z * ad.x) + ab.z * (ac.x * ad.y - ac.y * ad.x)) > 1e-9;
+  });
+  if (!fourth) throw new Error(`${name}.vertices must span a volume`);
+}
 function bodyMassInverseQ(body: SpatialBodySpec): number { if (body.kind !== 'dynamic') return 0; if (body.inverseMassQ !== undefined) return clamp(Math.round(body.inverseMassQ), 0, Q); const massQ = Math.max(1, body.massQ ?? Q); return clamp(Math.round(Q * Q / massQ), 1, Q * 1000); }
 interface OrientedBox3 { center: FloatVector3; axes: [FloatVector3, FloatVector3, FloatVector3]; halfExtents: FloatVector3 }
 const toFloat3 = (value: IntVector3): FloatVector3 => ({ x: value.x, y: value.y, z: value.z });
@@ -366,6 +392,7 @@ function rotateLocal(body: RuntimeSpatialBody, local: IntVector3): IntVector3 {
   return fromFloat3(fadd(fadd(fscale(axes[0], point.x), fscale(axes[1], point.y)), fscale(axes[2], point.z)));
 }
 function fixtureWorldPosition(body: RuntimeSpatialBody, fixture: RuntimeSpatialFixture): IntVector3 { return add(body.position, rotateLocal(body, fixture.localPosition)); }
+function convexHullWorldVertices(body: RuntimeSpatialBody, fixture: RuntimeSpatialFixture & { shape: Extract<SpatialShape, { type: 'convex' }> }): FloatVector3[] { const center = toFloat3(fixtureWorldPosition(body, fixture)), axes = rotationAxes(body.rotationDeg); return fixture.shape.vertices.map(vertex => fadd(center, fadd(fadd(fscale(axes[0], vertex.x), fscale(axes[1], vertex.y)), fscale(axes[2], vertex.z)))); }
 function fixtureObb(body: RuntimeSpatialBody, fixture: RuntimeSpatialFixture & { shape: Extract<SpatialShape, { type: 'box' }> }): OrientedBox3 {
   return { center: toFloat3(fixtureWorldPosition(body, fixture)), axes: rotationAxes(body.rotationDeg), halfExtents: toFloat3(fixture.shape.halfExtents) };
 }
@@ -398,6 +425,7 @@ function convexProxy(body: RuntimeSpatialBody, fixture: RuntimeSpatialFixture): 
     const offset = fscale(axes[1], shape.halfHeight);
     return { kind: 'capsule', center, segment: [fsub(center, offset), fadd(center, offset)], radius: shape.radius };
   }
+  if (shape.type === 'convex') return { kind: 'convex', center, vertices: convexHullWorldVertices(body, fixture as RuntimeSpatialFixture & {shape:Extract<SpatialShape,{type:'convex'}>}) };
   return { kind: 'box', center, axes, halfExtents: toFloat3(shape.halfExtents) };
 }
 function collideFixtures(bodyA: RuntimeSpatialBody, fixtureA: RuntimeSpatialFixture, bodyB: RuntimeSpatialBody, fixtureB: RuntimeSpatialFixture, stats?: CollisionStats): CollisionResult | undefined {
@@ -433,6 +461,7 @@ function fixtureAabb(body: RuntimeSpatialBody, fixture: RuntimeSpatialFixture): 
   const p = fixtureWorldPosition(body, fixture), s = fixture.shape;
   if (s.type === 'sphere') return { min: v3(p.x - s.radius, p.y - s.radius, p.z - s.radius), max: v3(p.x + s.radius, p.y + s.radius, p.z + s.radius) };
   if (s.type === 'capsule') { const [start, end] = capsuleSegment(p, s, rotationAxes(body.rotationDeg)); return { min: v3(Math.min(start.x, end.x) - s.radius, Math.min(start.y, end.y) - s.radius, Math.min(start.z, end.z) - s.radius), max: v3(Math.max(start.x, end.x) + s.radius, Math.max(start.y, end.y) + s.radius, Math.max(start.z, end.z) + s.radius) }; }
+  if (s.type === 'convex') { const vertices=convexHullWorldVertices(body,fixture as RuntimeSpatialFixture & {shape:Extract<SpatialShape,{type:'convex'}>});return{min:v3(Math.floor(Math.min(...vertices.map(vertex=>vertex.x))),Math.floor(Math.min(...vertices.map(vertex=>vertex.y))),Math.floor(Math.min(...vertices.map(vertex=>vertex.z)))),max:v3(Math.ceil(Math.max(...vertices.map(vertex=>vertex.x))),Math.ceil(Math.max(...vertices.map(vertex=>vertex.y))),Math.ceil(Math.max(...vertices.map(vertex=>vertex.z))))}; }
   return obbAabb(fixtureObb(body, fixture as RuntimeSpatialFixture & { shape: Extract<SpatialShape, { type: 'box' }> }));
 }
 function overlaps(a: Aabb3, b: Aabb3): boolean { return a.min.x <= b.max.x && a.max.x >= b.min.x && a.min.y <= b.max.y && a.max.y >= b.min.y && a.min.z <= b.max.z && a.max.z >= b.min.z; }
@@ -498,6 +527,7 @@ function canonicalBody(body: RuntimeSpatialBody): RuntimeSpatialBody {
 function makeRuntimeBody(spec: SpatialBodySpec): RuntimeSpatialBody {
   validateFiniteVec(`body:${spec.id}.position`, spec.position);
   if (!spec.fixtures.length) throw new Error(`body ${spec.id} must have at least one fixture`);
+  spec.fixtures.forEach((fixture,index)=>validateShape(`body:${spec.id}.fixtures[${index}].shape`,fixture.shape));
   return {
     ...deepClone(spec), rotationDeg: cloneVec(spec.rotationDeg), velocity: cloneVec(spec.velocity), angularVelocityDeg: cloneVec(spec.angularVelocityDeg),
     fixtures: spec.fixtures.map(f => ({ ...deepClone(f), localPosition: cloneVec(f.localPosition), categoryBits: f.categoryBits ?? 1, maskBits: f.maskBits ?? 0xffff_ffff })),
@@ -895,3 +925,6 @@ export function spatialEmbodimentSnapshotToCausalDelta(snapshot: SpatialEmbodime
   const evidence = { stateRoot: snapshot.stateRoot, bodyRoot: snapshot.bodyRoot, contactRoot: snapshot.contactRoot, characterRoot: snapshot.characterRoot, sensoryRoot: snapshot.sensoryRoot, jointRoot: snapshot.jointRoot };
   const base = { format: 'rfe.spatial-embodiment-causal-delta.v0.6' as const, worldId: snapshot.worldId, baseRealityRoot, tick: snapshot.tick, facts, evidence }; return { ...base, deltaRoot: semanticHash(base) };
 }
+
+export * from './kernel-binding.js';
+export * from './ragf-binding.js';

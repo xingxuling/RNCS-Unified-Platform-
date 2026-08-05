@@ -1,6 +1,10 @@
-# Reality Studio v1.5
+# Reality Studio v1.6
 
-**资产创生与统一制造原生版**：将RAGF v0.4资产生产会话、RSR v0.9稳定具身和VSR v0.8完整PBR投影接入同一制造环境。
+**资产创生与统一制造原生版**：将 RAGF v0.5 资产生产与角色基因 Provider、RSR v0.9 稳定具身和 VSR v0.8 完整 PBR 投影接入同一制造环境。
+
+## Character Genome Forge v0.1
+
+运行中的 Studio 服务在 `/character-genome.html` 提供角色基因工作台。控件直接调用 Character Genome Runtime 与 Phenotype Compiler，中央视口绘制生成网格，右侧显示影响范围、验证、证据、谱系和许可证，并可把同一个封存 Character Asset Family 绑定到 Anime Forge。这是实时工作台，不是静态页面。
 
 ## 核心闭环
 

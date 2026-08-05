@@ -1,5 +1,5 @@
 {
-  "evidenceRoot": "ffb96d2bef46a11452c3e9861f13190653492b6748f5c3bed1508802ab5bc2cb",
+  "evidenceRoot": "5bb4781159e6028a86b0dd3d6d61cd37282c3b22a11b352a4d9a3421e308080e",
   "format": "taowind.world-body-code-reduction-measurement.v0.1",
   "limitations": [
     "The generated specialization surface is the exact maintained-code proxy; this is not a claim about deleted historical lines.",
@@ -14,7 +14,7 @@
   },
   "measuredSource": {
     "authoredRepresentationCount": 1,
-    "declarationBytes": 5799,
+    "declarationBytes": 5976,
     "declarationLines": 177
   },
   "method": "physical non-blank source lines and exact stable-identifier occurrences over the verified declaration and its generated specialization bundle",

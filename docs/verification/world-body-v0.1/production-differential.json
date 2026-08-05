@@ -52,9 +52,9 @@
     {
       "id": "WB-PD-07-VSR-FRAME-VERIFIED",
       "observations": {
-        "commandRoot": "dcb2d55ab94a3015335b4a26840656f0d4aef3b1515fb003203cf79209a24763",
+        "commandRoot": "0caf5e57c39a561cb335ac7d92734d37ef611f4bee4aeeeeb9da735f375f39b0",
         "diagnosticCount": 0,
-        "frameRoot": "9742cda8049e4d0c4ff747c6420ece64e8d1a478054bd3ad43c95d910a5ed001"
+        "frameRoot": "8c8f9dcfe5b45d5ce9402983010e812c89499186d2c33fa87a4eb97d80f022b0"
       },
       "passed": true
     },
@@ -103,7 +103,7 @@
     }
   ],
   "evidenceClass": "PARTIAL_PRODUCTION_DIFFERENTIAL",
-  "evidenceRoot": "5136ed32c931e4915f3aab1257154988d6b2384418103412a0757bddcfe83ed1",
+  "evidenceRoot": "3d883fb31e327a2655f710fa5ab7a6468bc80029e1b7123904e4eb334de2eec2",
   "excludedScope": [
     "real browser or target GPU execution",
     "pixel equivalence",

@@ -1,11 +1,24 @@
 # VSR Status
 
 - 当前版本：`0.8.0-alpha.1`
-- Spatial Reality：48/48 PASS
-- glTF Asset：7/7 PASS
+- Core contract：122/122 PASS
+- Spatial Reality：94/94 PASS
+- Spatial Asset Streaming：4/4 PASS
+- glTF Asset：21/21 PASS
+- Temporal Presentation：11/11 PASS
 - Base Color / Metallic-Roughness / Normal / AO / Emissive：PASS
 - Bilinear Sampling：PASS
 - Alpha Mask：PASS
+- Weighted-blended OIT：CPU reference、frame plan、fake-device contract、真实 Chromium WebGPU：PASS
 - Authority / Presentation分离：PASS
-- WebGPU纹理Bind Group：NOT YET EXECUTED
-- GPU Shadow Map：NOT YET EXECUTED
+- WebGPU纹理Bind Group：七路材质纹理真实 Chromium 已执行
+- GPU Shadow Map：真实 Chromium 已执行
+- OIT/SSGI receipt：`oitPasses=2`、`ssgiPasses=1`、`transparentDraws=2`、`submitted=true`、`deviceLost=false`
+- 屏幕空间动态间接光照：CPU参考、frame root、fake-device、真实 Chromium WebGPU：PASS；完整 DDGI/Lumen 动态 GI 仍未验收
+- 确定性 irradiance probe bake：source/root 校验、CPU像素、fake-device probe buffer、真实 Chromium：PASS；当前是最多八个 probe 的有界 cache
+- 确定性静态 lightmap bake v0.2：triangle chart、UV1、线性 atlas、最多四点几何可见性采样、padding dilation、节点材质绑定、CPU reference、真实 Chromium WebGPU：PASS；工业 chart packing、完整漏光治理和动态 GI 仍未验收
+- 有界 irradiance volume/field v0.1：持久化 3D 网格、多体积 field、source/topology root、三线性 CPU 采样、静态几何可见性、光源变化后的增量 update、按 streaming cell 选区与 AABB 混合、WebGPU binding 8、真实 Chromium：PASS；跨体积漏光/遮挡治理和 DDGI/Lumen 仍未验收
+- Temporal reactive mask 与 velocity-aware resolve：CPU/WebGPU 共享 96 字节后处理 uniform，亮度阈值/强度、材质标量、作者纹理、skin/morph 保守覆盖、当前/上一实例变换、velocity attachment、bounded velocity dilation 和 previous-depth/history-velocity reject 均有界，默认关闭；普通/亮部混合、材质 1x1 mask 绑定、完全抑制、对象运动 CPU 回归与真实 Chromium velocity 帧：PASS；高阶 disocclusion/TAA history heuristics 仍未验收
+- OIT/SSGI/irradiance receipt：`oitPasses=2`、`ssgiPasses=1`、`irradianceCacheProbes=4`、`transparentDraws=2`、`submitted=true`、`deviceLost=false`
+- OIT/SSGI/irradiance volume/velocity receipt：常规烘焙帧 `irradianceVolumeSamples=48`，多体积 field 帧 `irradianceVolumeSamples=36`，velocity 路径 `velocityPasses=1`；低预算非烘焙 residency 帧为 `0`，真实 Chromium 十三个时序/field/residency/velocity 帧均 `submitted=true`、`deviceLost=false`
+- 性能边界：目标硬件帧率、移动/XR、精确 per-pixel OIT、完整 DDGI/Lumen 动态 GI 仍未验收

@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rncs.dev/schemas/reality-cell.v0.1.schema.json",
+  "title": "RNCS Reality Cell State v0.1",
+  "type": "object",
+  "required": [
+    "format",
+    "version",
+    "worldId",
+    "tick",
+    "coordinate",
+    "observer",
+    "persistentNodeIds",
+    "cells",
+    "causalIslands",
+    "activeCellIds",
+    "enteredCellIds",
+    "exitedCellIds",
+    "forcedCellIds",
+    "selectedCellIds",
+    "relevance",
+    "catalogRoot",
+    "causalRoot",
+    "vsrConfigRoot",
+    "vsrResolutionRoot",
+    "stateRoot",
+    "root"
+  ],
+  "properties": {
+    "format": {"const": "rncs.reality-cell-state.v0.1"},
+    "version": {"const": "0.1.0"},
+    "worldId": {"type": "string", "minLength": 1},
+    "tick": {"type": "integer", "minimum": 0},
+    "coordinate": {
+      "type": "object",
+      "required": ["scale", "sectorSizeQ"],
+      "properties": {
+        "scale": {"type": "integer", "minimum": 1},
+        "sectorSizeQ": {"type": "integer", "minimum": 1}
+      },
+      "additionalProperties": false
+    },
+    "observer": {
+      "type": "object",
+      "required": ["id", "positionQ", "rsrPositionQ", "lwc", "relevanceRadiusQ"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "positionQ": {"$ref": "#/$defs/intVec3"},
+        "rsrPositionQ": {"$ref": "#/$defs/intVec3"},
+        "lwc": {"$ref": "#/$defs/lwc"},
+        "relevanceRadiusQ": {"type": ["integer", "null"], "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "persistentNodeIds": {"type": "array", "items": {"type": "string"}},
+    "cells": {"type": "array", "items": {"$ref": "#/$defs/cell"}},
+    "causalIslands": {"type": "array", "items": {"$ref": "#/$defs/island"}},
+    "activeCellIds": {"type": "array", "items": {"type": "string"}},
+    "enteredCellIds": {"type": "array", "items": {"type": "string"}},
+    "exitedCellIds": {"type": "array", "items": {"type": "string"}},
+    "forcedCellIds": {"type": "array", "items": {"type": "string"}},
+    "selectedCellIds": {"type": "array", "items": {"type": "string"}},
+    "relevance": {"type": "object"},
+    "catalogRoot": {"$ref": "#/$defs/root"},
+    "causalRoot": {"$ref": "#/$defs/root"},
+    "vsrConfigRoot": {"$ref": "#/$defs/root"},
+    "vsrResolutionRoot": {"$ref": "#/$defs/root"},
+    "assetStreaming": {"$ref": "#/$defs/assetStreaming"},
+    "stateRoot": {"$ref": "#/$defs/root"},
+    "root": {"$ref": "#/$defs/root"},
+    "vsr": {"type": "object"},
+    "relevanceView": {"type": "object"}
+  },
+  "$defs": {
+    "root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "intVec3": {
+      "type": "array",
+      "prefixItems": [{"type": "integer"}, {"type": "integer"}, {"type": "integer"}],
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "lwc": {
+      "type": "object",
+      "required": ["sector", "localQ"],
+      "properties": {"sector": {"$ref": "#/$defs/intVec3"}, "localQ": {"$ref": "#/$defs/intVec3"}},
+      "additionalProperties": false
+    },
+    "cell": {
+      "type": "object",
+      "required": ["id", "state", "transition", "reason", "centerQ", "radiusQ", "loadRadiusQ", "unloadRadiusQ", "priority", "nodeIds", "bodyIds", "causalIslandIds", "lwc"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "state": {"enum": ["active", "unloaded"]},
+        "transition": {"enum": ["enter", "retain", "exit"]},
+        "reason": {"type": "string", "minLength": 1},
+        "centerQ": {"$ref": "#/$defs/intVec3"},
+        "radiusQ": {"type": "integer", "minimum": 1},
+        "loadRadiusQ": {"type": "integer", "minimum": 0},
+        "unloadRadiusQ": {"type": "integer", "minimum": 0},
+        "priority": {"type": "integer"},
+        "nodeIds": {"type": "array", "items": {"type": "string"}},
+        "bodyIds": {"type": "array", "items": {"type": "string"}},
+        "causalIslandIds": {"type": "array", "items": {"type": "string"}},
+        "lwc": {"$ref": "#/$defs/lwc"}
+      },
+      "additionalProperties": false
+    },
+    "island": {
+      "type": "object",
+      "required": ["id", "bodyIds", "edgeIds", "root", "cellIds"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "bodyIds": {"type": "array", "items": {"type": "string"}},
+        "edgeIds": {"type": "array", "items": {"type": "string"}},
+        "root": {"$ref": "#/$defs/root"},
+        "cellIds": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "assetStreaming": {
+      "type": "object",
+      "required": ["format", "version", "activeCellIds", "requestedAssetIds", "requiredAssetIds", "residentAssetIds", "queuedAssetIds", "deferredAssetIds", "missingAssetIds", "evictedAssetIds", "bytesResident", "bytesQueued", "maxAssets", "maxBytes", "catalogRoot", "requestRoot", "diagnostics", "root"],
+      "properties": {
+        "format": {"const": "vsr.spatial-asset-streaming.v0.1"},
+        "version": {"const": "0.1.0"},
+        "activeCellIds": {"type": "array", "items": {"type": "string"}},
+        "requestedAssetIds": {"type": "array", "items": {"type": "string"}},
+        "requiredAssetIds": {"type": "array", "items": {"type": "string"}},
+        "residentAssetIds": {"type": "array", "items": {"type": "string"}},
+        "queuedAssetIds": {"type": "array", "items": {"type": "string"}},
+        "deferredAssetIds": {"type": "array", "items": {"type": "string"}},
+        "missingAssetIds": {"type": "array", "items": {"type": "string"}},
+        "evictedAssetIds": {"type": "array", "items": {"type": "string"}},
+        "bytesResident": {"type": "integer", "minimum": 0},
+        "bytesQueued": {"type": "integer", "minimum": 0},
+        "maxAssets": {"type": "integer", "minimum": 0},
+        "maxBytes": {"type": "integer", "minimum": 0},
+        "prefetchCellIds": {"type": "array", "items": {"type": "string"}},
+        "prefetchAssetIds": {"type": "array", "items": {"type": "string"}},
+        "prefetchRequiredAssetIds": {"type": "array", "items": {"type": "string"}},
+        "prefetchResidentAssetIds": {"type": "array", "items": {"type": "string"}},
+        "prefetchQueuedAssetIds": {"type": "array", "items": {"type": "string"}},
+        "prefetchDeferredAssetIds": {"type": "array", "items": {"type": "string"}},
+        "prefetchEvictedAssetIds": {"type": "array", "items": {"type": "string"}},
+        "prefetchBytesResident": {"type": "integer", "minimum": 0},
+        "prefetchBytesQueued": {"type": "integer", "minimum": 0},
+        "maxPrefetchAssets": {"type": "integer", "minimum": 0},
+        "maxPrefetchBytes": {"type": "integer", "minimum": 0},
+        "catalogRoot": {"$ref": "#/$defs/root"},
+        "requestRoot": {"$ref": "#/$defs/root"},
+        "diagnostics": {"type": "array", "items": {"type": "string"}},
+        "root": {"$ref": "#/$defs/root"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": true
+}

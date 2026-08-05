@@ -12,7 +12,10 @@ test('server exposes project and behavior native endpoints',async()=>{
   const {server,url}=await startStudioServer({port:0,dataDir:dir});
   try{
     const h=await fetch(url+'/api/health').then(r=>r.json());
-    assert.equal(h.status,'healthy');assert.equal(h.behavior_native,true);assert.equal(h.webgpu_viewport,true);assert.equal(h.studio_version,'1.5.0-alpha.1');assert.equal(h.ui_native,true);assert.equal(h.input_native,true);assert.equal(h.asset_continuity_native,true);assert.equal(h.asset_reimport,true);assert.equal(h.dependency_graph,true);
+    assert.equal(h.status,'healthy');assert.equal(h.behavior_native,true);assert.equal(h.webgpu_viewport,true);assert.equal(h.studio_version,'1.6.0-alpha.1');assert.equal(h.ui_native,true);assert.equal(h.input_native,true);assert.equal(h.asset_continuity_native,true);assert.equal(h.asset_reimport,true);assert.equal(h.dependency_graph,true);
+    assert.equal(h.character_genome_forge_native,true);assert.equal(h.character_genome_version,'0.1.0-alpha.1');assert.equal(h.character_genome_reference_provider,true);
+    const asset=await fetch(url+'/assets/%E9%9C%9C%E7%92%83/concept.svg');assert.equal(asset.status,200);assert.equal(asset.headers.get('content-type'),'image/svg+xml');assert.ok((await asset.text()).includes('<svg'));
+    const gltfBrowser=await fetch(url+'/vsr-gltf-browser.js');assert.equal(gltfBrowser.status,200);assert.match(await gltfBrowser.text(),/VSRGltfAsset/);
     assert.equal(h.runtime_timeline,true);assert.equal(h.runtime_replay,true);assert.equal(h.runtime_time_travel,true);assert.equal(h.live_update_native,true);assert.equal(h.live_update_version,'0.1.0-alpha.1');assert.equal(h.asset_database,true);assert.equal(h.asset_incremental_cache,true);assert.equal(h.asset_watch,true);assert.equal(h.asset_streaming_native,true);assert.equal(h.asset_streaming_receipts,true);
     const p=await fetch(url+'/api/project/new').then(r=>r.json());
     assert.equal(p.format,'reality-studio.project.v0.8');

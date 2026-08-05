@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rncs.anime-exposure-sheet.v0.1",
+  "type": "object",
+  "required": ["format", "version", "cut_id", "duration", "fps", "frame_count", "frames", "finite_animation", "xsheet_root"],
+  "properties": {
+    "format": {"const": "rncs.anime-exposure-sheet.v0.1"},
+    "version": {"type": "string"},
+    "cut_id": {"type": "string", "minLength": 1},
+    "duration": {"type": "number", "exclusiveMinimum": 0},
+    "fps": {"type": "number", "exclusiveMinimum": 0},
+    "frame_count": {"type": "integer", "minimum": 1},
+    "frames": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/frame"}},
+    "finite_animation": {"type": "object", "required": ["uses_exposure_steps", "interpolation", "no_implicit_smoothing"]}
+  },
+  "$defs": {
+    "frame": {
+      "type": "object",
+      "required": ["frame_number", "timecode", "drawing_id", "exposure_count", "camera_state", "mouth_shape", "eye_state", "animation_policy"],
+      "properties": {
+        "frame_number": {"type": "integer", "minimum": 0},
+        "timecode": {"type": "string"},
+        "drawing_id": {"type": "string"},
+        "key_pose_id": {"type": ["string", "null"]},
+        "exposure_count": {"type": "integer", "minimum": 1},
+        "camera_state": {"type": "object"},
+        "mouth_shape": {"type": "string"},
+        "eye_state": {"type": "string"},
+        "animation_policy": {"type": "object", "required": ["interpolation", "camera_only_motion"]}
+      }
+    }
+  }
+}

@@ -6,6 +6,7 @@ import {AuthorityResolver} from './authority.mjs';
 import {initializeMachines,tickStateMachine,transitionStateMachine} from './state-machine.mjs';
 import {initializeTrees,tickBehaviorTree} from './behavior-tree.mjs';
 import {applyRules} from './rules.mjs';
+import {RealityScheduler} from './reality-scheduler.mjs';
 
 function initialEntity(e){return{entity_id:e.entity_id,prefab_id:e.prefab_id??null,tags:[...(e.tags??[])],active:e.active!==false,alive:e.alive!==false,variables:clone(e.variables??{}),components:clone(e.components??{}),created_tick:0};}
 function initialState(program){const entities={};for(const e of program.entities??[])entities[e.entity_id]=initialEntity(e);return{tick:0,time:0,globals:clone(program.globals??{}),entities,machines:initializeMachines(program),trees:initializeTrees(program),rule_memory:{},input:{},previous_input:{},events_processed:0,command_log:[],input_log:[],proposals:[],diagnostics:[],hot_reload_count:0};}
@@ -22,6 +23,14 @@ export class BehaviorRuntime{
     for(const m of this.program.state_machines??[]){const def=m.states.find(x=>x.state_id===m.initial_state);this.executeActions(def?.on_enter??[],this.context(m.entity_id,null));}
   }
   context(entityId,event){return{runtime:this,state:this.state,entityId,event,random:()=>this.prng.next()};}
+  tickScheduled(input={}, {taskId='behavior.tick',authority='simulation',evidenceKind='behavior.state-root'}={}){
+    const scheduler=new RealityScheduler({authorityLevel:authority,snapshot:()=>this.snapshot(),restore:snapshot=>this.restore(snapshot),stateRoot:()=>this.stateRoot()});
+    scheduler.registerTask({task_id:taskId,system_id:'behavior-runtime.tick',reads:['behavior.input','behavior.program'],writes:['behavior.state','behavior.trace'],authority,budget:{max_operations:1},rollback:'snapshot',evidence:{policy:'required',required:[evidenceKind]}},({context})=>{
+      const result=this.tick(context.input??{});
+      return{operations:1,reads:['behavior.input','behavior.program'],writes:['behavior.state','behavior.trace'],evidence:[{kind:evidenceKind,root:result.root}],result};
+    });
+    return scheduler.run({tick:this.state.tick+1,context:{input}});
+  }
   stateRoot(){return rootHash({program_root:this.program.program_root,state:this.state,prng_state:this.prng.state,bus:this.bus.snapshot()});}
   trace(type,payload={}){const entry={sequence:this.traceEntries.length+1,tick:this.state.tick,time:this.state.time,type,...clone(payload)};this.traceEntries.push(entry);if(this.breakpoints.has(type)){this.paused=true;entry.breakpoint=true;}return entry;}
   addBreakpoint(type){this.breakpoints.add(type);}removeBreakpoint(type){this.breakpoints.delete(type);}resume(){this.paused=false;}

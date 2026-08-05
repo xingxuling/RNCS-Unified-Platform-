@@ -11,3 +11,5 @@ export async function realtimeWebGPU(){return import('../dist/packages/realtime-
 export async function temporalPresentation(){return import('../dist/packages/temporal-presentation/src/index.js');}
 
 export async function gltfAsset(){return import('../dist/packages/gltf-asset/src/index.js');}
+export * from './anime-profile.mjs';
+export * from './character-profile.mjs';

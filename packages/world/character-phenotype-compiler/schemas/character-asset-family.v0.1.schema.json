@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.local/schemas/character-asset-family.v0.1.schema.json",
+  "title": "RAGF Character Asset Family v0.1",
+  "type": "object",
+  "required": ["format", "asset_family_id", "character_id", "genome_root", "identity_signature", "asset_root", "lods", "manifest", "provider_receipt", "family_root"],
+  "properties": {
+    "format": {"const": "ragf.character-asset-family.v0.1"},
+    "asset_family_id": {"type": "string"},
+    "character_id": {"type": "string"},
+    "asset_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "lods": {"type": "array", "minItems": 3},
+    "counts": {"type": "object"},
+    "provider_receipt": {"type": "object"},
+    "family_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rsr.anime-secondary-motion-profile.v0.1",
+  "type": "object",
+  "required": ["format", "version", "profile_id", "layer_bindings", "director_overrides", "override_policy", "profile_root"],
+  "properties": {
+    "format": {"const": "rsr.anime-secondary-motion-profile.v0.1"},
+    "version": {"type": "string"},
+    "profile_id": {"type": "string"},
+    "layer_bindings": {"type": "object", "required": ["hair", "coat"]},
+    "director_overrides": {"type": "array", "items": {"type": "object", "required": ["override_id", "layer", "start_frame", "end_frame", "authority"]}},
+    "override_policy": {"type": "object", "required": ["authority", "bounded", "requires_frame_range", "requires_reason"]},
+    "profile_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

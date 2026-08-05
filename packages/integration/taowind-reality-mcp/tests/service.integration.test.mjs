@@ -162,6 +162,15 @@ test('knowledge search and fetch use opaque ids',async()=>withClient(async({clie
  assert.ok(fetched.structuredContent.text.length>0);
 }));
 
+test('MCP search can isolate an injected external research source packet',async()=>withClient(async({service,client})=>{
+ service.knowledge.ingestSourcePacket({packet_id:'ue5-8-mcp-test',namespace:'ue5-8-official-research',sources:[{id:'iris',title:'Iris Notes',text:'Iris relevance filtering selects state for an observer.',uri:'https://dev.epicgames.com/documentation/en-us/unreal-engine/iris-replication-system-in-unreal-engine'}]});
+ const search=await client.callTool({name:'search',arguments:{query:'Iris relevance',namespace:'ue5-8-official-research',source_only:true}});
+ assert.equal(search.isError,undefined);
+ assert.equal(search.structuredContent.results.length,1);
+ assert.equal(search.structuredContent.results[0].metadata.persistent,false);
+ assert.equal(search.structuredContent.results[0].metadata.packet_id,'ue5-8-mcp-test');
+}));
+
 test('invalid browser origins are rejected',async()=>{
  const dataDir=fs.mkdtempSync(path.join(os.tmpdir(),'taowind-mcp-origin-'));
  const config=loadConfig({}, {repoRoot,host:'127.0.0.1',port:0,dataDir,allowedOrigins:['https://chatgpt.com'],allowedHosts:['127.0.0.1','localhost']});

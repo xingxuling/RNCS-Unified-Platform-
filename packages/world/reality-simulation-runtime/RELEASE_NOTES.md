@@ -1,3 +1,10 @@
+# RSR v0.9.0-alpha.1 Release Notes
+
+- Added authored convex-hull fixtures with finite, non-coplanar vertex validation and deterministic triangle-index validation.
+- Routed convex-hull fixtures through rotated world-space support points, GJK/EPA contacts, broad-phase AABBs, snapshots, replay roots and VSR triangle-mesh projection.
+- Added regression coverage for rotated hull-hull contact, separated hulls and authored geometry preservation: Spatial Embodiment `63/63 PASS`.
+- Added the `rncs.entity-state-batch.v0.1` to RSR authority body/fixture materializer and the deterministic RSR snapshot to VSR scene/frame/pixel projection path; Aether bridge integration `3/3 PASS`, including sealed-batch tamper rejection.
+
 # RSR v0.6.0-alpha.1 Release Notes
 
 - Rotated box fixtures now use oriented bounds.
@@ -31,7 +38,7 @@
 
 ## 已知限制
 
-- 精确旋转碰撞、3D GJK/EPA 和完整接触流形尚未实现；
+- Convex Hull 当前是作者提供的单个凸网格 fixture；自动凸分解、地形高度场、车辆轮胎接触和完整接触流形尚未实现；
 - 角色身体仍是直立胶囊；
 - 关节为参考求解器；
 - 感知事件没有连接真实空间音频和触觉硬件；

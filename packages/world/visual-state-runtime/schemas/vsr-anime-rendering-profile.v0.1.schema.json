@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "vsr.anime-rendering-profile.v0.1",
+  "type": "object",
+  "required": ["format", "version", "profile_id", "projection", "camera", "line", "exposure", "compositing", "authority", "profile_root"],
+  "properties": {
+    "format": {"const": "vsr.anime-rendering-profile.v0.1"},
+    "version": {"type": "string"},
+    "profile_id": {"type": "string"},
+    "line": {"type": "object", "required": ["stability", "stroke_model", "shadow_bands"]},
+    "exposure": {"type": "object", "required": ["fps", "implicit_interpolation", "default_policy"]},
+    "authority": {"type": "object", "required": ["source", "external_provider_required", "mode"]},
+    "profile_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

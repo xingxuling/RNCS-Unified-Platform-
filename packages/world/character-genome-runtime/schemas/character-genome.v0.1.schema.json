@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.local/schemas/character-genome.v0.1.schema.json",
+  "title": "RNCS Character Genome v0.1",
+  "type": "object",
+  "required": ["format", "genome_id", "character_id", "topology_family", "identity_genome", "morphology_genome", "appearance_loadout", "semantic_morph_graph", "identity_root", "genome_root"],
+  "properties": {
+    "format": {"const": "rncs.character-genome.v0.1"},
+    "version": {"type": "string"},
+    "genome_id": {"type": "string", "minLength": 1},
+    "character_id": {"type": "string", "minLength": 1},
+    "topology_family": {"enum": ["young-male-slim", "young-male-standard", "young-female-standard", "youth-standard"]},
+    "identity_genome": {"type": "object"},
+    "morphology_genome": {"type": "object"},
+    "appearance_loadout": {"type": "object"},
+    "state_overlays": {"type": "object"},
+    "semantic_morph_graph": {"type": "object"},
+    "identity_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "genome_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,2319 @@
+{
+  "format": "rsr.release-manifest.v0.6",
+  "name": "Reality Simulation Runtime",
+  "version": "0.9.0-alpha.1",
+  "releaseDate": "2026-08-01",
+  "versionTheme": "Spatial Embodiment Fabric: Convex Hull Contact, Replay and Sensory Projection",
+  "embeddedVisualRuntime": "VSR v0.8 GGX PBR runtime + VSR v0.4 spatial frame compatibility",
+  "runtimeDependencies": 1,
+  "capabilities": [
+    "reality-native-spatial-embodiment-fabric",
+    "deterministic-3d-position-velocity-and-contact",
+    "sphere-oriented-box-upright-capsule-shapes",
+    "authored-convex-hull-fixtures",
+    "non-coplanar-convex-validation",
+    "15-axis-obb-sat-narrowphase",
+    "deterministic-gjk-epa-sphere-box-capsule-hull-narrowphase",
+    "oriented-capsule-broad-phase",
+    "rotated-fixture-local-offsets",
+    "grounded-character-motion-air-control-and-jump",
+    "distance-ball-hinge-joints-and-motors",
+    "joint-break-evidence",
+    "spatial-audio-event-plans",
+    "body-zone-haptic-event-plans",
+    "alternating-footstep-events",
+    "point-aabb-and-ray-spatial-queries",
+    "bullet-adaptive-microsteps",
+    "sleep-and-wake",
+    "body-contact-character-joint-sensory-roots",
+    "snapshot-recovery-and-root-equivalent-replay",
+    "provisional-rfe-spatial-embodiment-causal-delta",
+    "entity-kernel-body-fixture-materialization",
+    "kernel-rsr-vsr-scene-frame-pixel-binding",
+    "vsr-v04-spatial-scene-frame-and-pixel-projection",
+    "vsr-convex-mesh-projection",
+    "v0.4-v0.3-v0.2-v0.1-compatibility"
+  ],
+  "verification": {
+    "typecheck": "PASS",
+    "lint": "PASS",
+    "vsrTests": "29/29 PASS",
+    "simulationTests": "11/11 PASS",
+    "constraintPhysicsTests": "19/19 PASS",
+    "embodiedDynamicsTests": "30/30 PASS",
+    "temporalExperienceTests": "35/35 PASS",
+    "spatialEmbodimentTests": "63/63 PASS",
+    "networkReconciliationTests": "7/7 PASS",
+    "totalTests": "194/194 PASS",
+    "releaseAudit": "PASS",
+    "replay": "PASS",
+    "recovery": "PASS",
+    "spatialFrame": "PASS",
+    "v04AudioVideoCompatibility": "PASS"
+  },
+  "roots": {
+    "finalStateRoot": "fnv1a64:e86cf73300988b3f",
+    "bodyRoot": "fnv1a64:0a131dd2b2291dc8",
+    "contactRoot": "fnv1a64:5767bdd3eb32743a",
+    "characterRoot": "fnv1a64:981d1b0224eb2ab6",
+    "jointRoot": "fnv1a64:4a3093a13d6fed1d",
+    "sensoryRoot": "fnv1a64:09612b07b5ecb5a5",
+    "causalDeltaRoot": "fnv1a64:090c4ebfac941d7e",
+    "finalFrameRoot": "fnv1a64:d6623661bae71d3f",
+    "finalPixelRoot": "fnv1a64:56d00c129f3094ff",
+    "v04StateRoot": "fnv1a64:abc7024fa1e4f94a",
+    "v03StateRoot": "fnv1a64:6323fdceeab7e9f0",
+    "v02StateRoot": "fnv1a64:674a4a0a0ac58310",
+    "v01StateRoot": "fnv1a64:ae339aab5727a0ae"
+  },
+  "benchmark": {
+    "format": "rsr.spatial-embodiment-benchmark.v0.5",
+    "node": "v22.16.0",
+    "cases": [
+      {
+        "bodyCount": 64,
+        "ticks": 90,
+        "elapsedMs": 908.181,
+        "millisecondsPerTick": 10.0909,
+        "ticksPerSecond": 99.1,
+        "averageCandidatePairs": 224,
+        "averageNarrowPhaseTests": 0,
+        "averageContacts": 42.46,
+        "averageSensoryEvents": 19.91,
+        "broadPhaseCompression": 0.888889,
+        "maxSubsteps": 1,
+        "stateRoot": "fnv1a64:d5c8234bd6edc225"
+      },
+      {
+        "bodyCount": 144,
+        "ticks": 60,
+        "elapsedMs": 1099.233,
+        "millisecondsPerTick": 18.3206,
+        "ticksPerSecond": 54.58,
+        "averageCandidatePairs": 792,
+        "averageNarrowPhaseTests": 0,
+        "averageContacts": 83.2,
+        "averageSensoryEvents": 43.2,
+        "broadPhaseCompression": 0.923077,
+        "maxSubsteps": 1,
+        "stateRoot": "fnv1a64:b10e059c67fe75b7"
+      },
+      {
+        "bodyCount": 256,
+        "ticks": 30,
+        "elapsedMs": 865.036,
+        "millisecondsPerTick": 28.8345,
+        "ticksPerSecond": 34.68,
+        "averageCandidatePairs": 1920,
+        "averageNarrowPhaseTests": 0,
+        "averageContacts": 82.57,
+        "averageSensoryEvents": 68.27,
+        "broadPhaseCompression": 0.941176,
+        "maxSubsteps": 1,
+        "stateRoot": "fnv1a64:aa6c822d8feec52d"
+      }
+    ],
+    "characters": {
+      "characters": 32,
+      "ticks": 180,
+      "elapsedMs": 995.998,
+      "millisecondsPerTick": 5.5333,
+      "footstepEventsLastTick": 1,
+      "groundedBodies": 32,
+      "stateRoot": "fnv1a64:62ceedd2309df495"
+    },
+    "projection": {
+      "bodies": 48,
+      "drawCalls": 81,
+      "triangles": 30914,
+      "elapsedMs": 352.029,
+      "frameVerified": true,
+      "pixelRoot": "fnv1a64:6e62a2c3aed726f0"
+    }
+  },
+  "limitations": [
+    "authored-convex-hull-only-no-automatic-decomposition",
+    "character-controller-upright-y-axis-capsule-default",
+    "single-point-convex-contact-manifold",
+    "reference-joint-solver-not-production-ragdoll",
+    "sensory-events-not-real-device-output",
+    "cpu-reference-vsr-projection-not-gpu-fps",
+    "no-skinned-mesh-motion-matching-cloth-muscle",
+    "single-threaded-typescript-reference-runtime"
+  ],
+  "fileCount": 434,
+  "contentBytes": 4824422,
+  "contentRoot": "04e7c1599a3a5f20e2fb3aedc3d857a73fa8b56bab268b46c49e4f9560e40a6d",
+  "files": [
+    {
+      "path": "CHANGELOG.md",
+      "sha256": "deaf60dd21bcfe730626ebc6c26282442d0e677f058563a9cd2165e6123c1435",
+      "bytes": 3070
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "4cc57b28830e652b74cb1ae60f0ef3adfeab3bef744ee671325ecfc5b05a6b69",
+      "bytes": 607
+    },
+    {
+      "path": "README.md",
+      "sha256": "eb5ab02bba4d4de661e9aa035a69af75d977b112b505881a5c58f935d242a181",
+      "bytes": 2975
+    },
+    {
+      "path": "RELEASE_NOTES.md",
+      "sha256": "24c15a1d2507c5d505918814d6abc53a7184f99a7d51864fdb70179ac60651d1",
+      "bytes": 2257
+    },
+    {
+      "path": "STATUS.md",
+      "sha256": "8581887c2b79c856afe2bfdad89cb16dabc1907425222e88bcaaf07208908ac5",
+      "bytes": 644
+    },
+    {
+      "path": "apps/studio/app.js",
+      "sha256": "41cabdfc34467ead403f2d744eabb766ca804b991fa09d24eaf5d927df772386",
+      "bytes": 15686
+    },
+    {
+      "path": "apps/studio/index.html",
+      "sha256": "3e0e61a60d3c8131315e30287e243e937823f49ac6a9dd3eaecf919bd6ef0dc5",
+      "bytes": 4965
+    },
+    {
+      "path": "apps/studio/style.css",
+      "sha256": "6be274fe9ba412b78195e9ad0634a72e76b5a2043ebe68f2714eb8ae45880576",
+      "bytes": 4948
+    },
+    {
+      "path": "benchmarks/constraint-physics.ts",
+      "sha256": "200a52d3eaa00443ba40ba55a7a363b484f85a4204f7a22b1d572d724d71e1ab",
+      "bytes": 3635
+    },
+    {
+      "path": "benchmarks/embodied-dynamics.ts",
+      "sha256": "455f9f2bcdad40b55fda06c914f3aa8ebbc68e608089c088201f931e4bf6b06f",
+      "bytes": 3898
+    },
+    {
+      "path": "benchmarks/experience-fabric.ts",
+      "sha256": "bcbc9ce27f26b03f6190b311247548e4c3a590551a75769b668275a560ed1b40",
+      "bytes": 3770
+    },
+    {
+      "path": "benchmarks/observer-projection.ts",
+      "sha256": "90721e74c7a01e87470e1fc0ee23df39014f9910775dc44c352cff1c340cec40",
+      "bytes": 4527
+    },
+    {
+      "path": "benchmarks/reality-one-live.ts",
+      "sha256": "9546c620e2297526f56f8c4280d5e9b82e0f3def27a0fd89e3fe590ab599b7c3",
+      "bytes": 2086
+    },
+    {
+      "path": "benchmarks/run.ts",
+      "sha256": "c62568d3d92b12d28423e9e715287fd6c8d97e5b3f504a1250a189d0bc51e8d4",
+      "bytes": 3030
+    },
+    {
+      "path": "benchmarks/simulation.ts",
+      "sha256": "ac503feb637952c4cc23073bbb3d1aafef92d10f25b45d6a3c46d900660d9069",
+      "bytes": 5048
+    },
+    {
+      "path": "benchmarks/spatial-embodiment.ts",
+      "sha256": "26256d1f67550ff3c0c6a4f3d461a6fa6b6ce962df05c1247ae3d4fac4038a08",
+      "bytes": 5305
+    },
+    {
+      "path": "dist/apps/studio/app.js",
+      "sha256": "41cabdfc34467ead403f2d744eabb766ca804b991fa09d24eaf5d927df772386",
+      "bytes": 15686
+    },
+    {
+      "path": "dist/apps/studio/index.html",
+      "sha256": "3e0e61a60d3c8131315e30287e243e937823f49ac6a9dd3eaecf919bd6ef0dc5",
+      "bytes": 4965
+    },
+    {
+      "path": "dist/apps/studio/style.css",
+      "sha256": "6be274fe9ba412b78195e9ad0634a72e76b5a2043ebe68f2714eb8ae45880576",
+      "bytes": 4948
+    },
+    {
+      "path": "dist/benchmarks/constraint-physics.d.ts",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "bytes": 11
+    },
+    {
+      "path": "dist/benchmarks/constraint-physics.js",
+      "sha256": "d95f5d6f8c8a0bc4b35dda06e15b8d355e423c725214f6afa613204374e3fbb7",
+      "bytes": 3654
+    },
+    {
+      "path": "dist/benchmarks/constraint-physics.js.map",
+      "sha256": "994217cc0be96ee3763f0b28207cbae962e82f40d84ff630a576be6c29df34f9",
+      "bytes": 4139
+    },
+    {
+      "path": "dist/benchmarks/embodied-dynamics.d.ts",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "bytes": 11
+    },
+    {
+      "path": "dist/benchmarks/embodied-dynamics.js",
+      "sha256": "3139be37b84abace9575a9b99f805611b1df3ae454af46adc6f3622a3e4681de",
+      "bytes": 3872
+    },
+    {
+      "path": "dist/benchmarks/embodied-dynamics.js.map",
+      "sha256": "403b69ed077becceb71ae5c2aee5d29eb1f4b1b2ce1b8cecdcf213a3cc3ae985",
+      "bytes": 5476
+    },
+    {
+      "path": "dist/benchmarks/experience-fabric.d.ts",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "bytes": 11
+    },
+    {
+      "path": "dist/benchmarks/experience-fabric.js",
+      "sha256": "811867b38aacd3e8a7ca6545232639b049d10d42187d9fd33586d4ca0968307b",
+      "bytes": 3556
+    },
+    {
+      "path": "dist/benchmarks/experience-fabric.js.map",
+      "sha256": "23c003eef15bd6813a1d6a10027aa9a64b04a032db771fc66fa5b55af0b5bf3b",
+      "bytes": 4493
+    },
+    {
+      "path": "dist/benchmarks/observer-projection.d.ts",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "bytes": 11
+    },
+    {
+      "path": "dist/benchmarks/observer-projection.js",
+      "sha256": "4e2d90e061ba3c10f049efe9b53bc21008969a844c199efa0a9ed5436f19086e",
+      "bytes": 4453
+    },
+    {
+      "path": "dist/benchmarks/observer-projection.js.map",
+      "sha256": "9792f04efd50f4409f9f9fdc522469cedf8e3d47f3ff03406750c2d5db3b70f9",
+      "bytes": 5169
+    },
+    {
+      "path": "dist/benchmarks/reality-one-live.d.ts",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "bytes": 11
+    },
+    {
+      "path": "dist/benchmarks/reality-one-live.js",
+      "sha256": "004f81a36f24e97724b141c3997fb5841a9c52d8bbb6b62efafc519a2e5b82e8",
+      "bytes": 2340
+    },
+    {
+      "path": "dist/benchmarks/reality-one-live.js.map",
+      "sha256": "7afc7fb396e7d22f7d7b94fa99598d9180214bd0afa79cefb5490e4705a60f69",
+      "bytes": 2659
+    },
+    {
+      "path": "dist/benchmarks/run.d.ts",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "bytes": 11
+    },
+    {
+      "path": "dist/benchmarks/run.js",
+      "sha256": "86d6b17399dad8ca34c10afa6240dc04194815a7c246a39fe5a256dafac2bbef",
+      "bytes": 3285
+    },
+    {
+      "path": "dist/benchmarks/run.js.map",
+      "sha256": "64427e11aad1516d63d5a39fa8fa122c247808206abcd5bd85ff039697fee130",
+      "bytes": 3879
+    },
+    {
+      "path": "dist/benchmarks/simulation.d.ts",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "bytes": 11
+    },
+    {
+      "path": "dist/benchmarks/simulation.js",
+      "sha256": "eab23564828f70cb1912ae9aeec3b800350994507239b7d27fe821dce6c4d141",
+      "bytes": 4984
+    },
+    {
+      "path": "dist/benchmarks/simulation.js.map",
+      "sha256": "5a4a70d79fd317f0923390e48b9c24e0d135fb9c122636b3cec6ad6841e77294",
+      "bytes": 5332
+    },
+    {
+      "path": "dist/benchmarks/spatial-embodiment.d.ts",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "bytes": 11
+    },
+    {
+      "path": "dist/benchmarks/spatial-embodiment.js",
+      "sha256": "a909a43ef2525a10dbea68b6b0300535d9c11d4bb95e3d38983cab2488a50e06",
+      "bytes": 5265
+    },
+    {
+      "path": "dist/benchmarks/spatial-embodiment.js.map",
+      "sha256": "f79768b875a416c34c3d4e0e371434d96b09c92c2cf27418bcd67932a2d8e11f",
+      "bytes": 7015
+    },
+    {
+      "path": "dist/packages/adapter-reality-one/src/index.d.ts",
+      "sha256": "b6d03c0780386c1a7d8e5a51f6725e3e12314e0e3544e376a5f4df14f46cebb0",
+      "bytes": 4907
+    },
+    {
+      "path": "dist/packages/adapter-reality-one/src/index.js",
+      "sha256": "3e3dea66489d26965a2b95d7c79f8ee5b4db18842245f797b1bf63761751dd6e",
+      "bytes": 32225
+    },
+    {
+      "path": "dist/packages/adapter-reality-one/src/index.js.map",
+      "sha256": "733d800b110666d34f0958c8511ef437ed32cfc905d32f0ebb6b1f6dd077223d",
+      "bytes": 34517
+    },
+    {
+      "path": "dist/packages/adapter-rfe/src/index.d.ts",
+      "sha256": "0fde0b3c45d37b1196ce42076ff3be7a10ee98ad1d5ae639d1b7acc91428dd11",
+      "bytes": 2127
+    },
+    {
+      "path": "dist/packages/adapter-rfe/src/index.js",
+      "sha256": "b117eb58c6b9784246cd9bba27c35c0f2196b0322d9428266a3e9cf22e30e430",
+      "bytes": 1786
+    },
+    {
+      "path": "dist/packages/adapter-rfe/src/index.js.map",
+      "sha256": "e02467c735d5eafeb3b01cfa86c62113632a76d6efd387cca14edc4b3f58599f",
+      "bytes": 2126
+    },
+    {
+      "path": "dist/packages/agent-protocol/src/index.d.ts",
+      "sha256": "e3231d47767db559173edfe947caa6540fa535c87e75fc1895cdff9397abc243",
+      "bytes": 3024
+    },
+    {
+      "path": "dist/packages/agent-protocol/src/index.js",
+      "sha256": "d93964d6ef8a653ca1677a381b44e5b5864c9ec429a37a3f6766992d58a0b279",
+      "bytes": 10235
+    },
+    {
+      "path": "dist/packages/agent-protocol/src/index.js.map",
+      "sha256": "4357f62e9b729b3389aaf7840865e927f7fbc3e358b1e27310e69f49de5f6729",
+      "bytes": 13649
+    },
+    {
+      "path": "dist/packages/backend-canvas/src/browser.d.ts",
+      "sha256": "9f188b8af2dd2619460366326b3056ba958c02f9d4cb2f17c0283dde7a81102f",
+      "bytes": 171
+    },
+    {
+      "path": "dist/packages/backend-canvas/src/browser.js",
+      "sha256": "ec1879f7bc64ad6d3d5e5f627da9912802c3964cc344811eee38e3dab3b7dd92",
+      "bytes": 7516
+    },
+    {
+      "path": "dist/packages/backend-canvas/src/browser.js.map",
+      "sha256": "4bacebdcb391603a82a1747e277b57ca810f7c60f11bdf65b239e6a00c24b522",
+      "bytes": 9618
+    },
+    {
+      "path": "dist/packages/backend-canvas/src/index.d.ts",
+      "sha256": "cff384db586eef11b0c4592821d9cb80cb098ad37164bbb8c5161d220d1e9578",
+      "bytes": 3500
+    },
+    {
+      "path": "dist/packages/backend-canvas/src/index.js",
+      "sha256": "9354f1a43f08dd3eb8d37614de0ad4241c26919191d66397b6db65b98ae0d819",
+      "bytes": 30959
+    },
+    {
+      "path": "dist/packages/backend-canvas/src/index.js.map",
+      "sha256": "365031ae7fb0f1c95ff6cef2f736ea26745028c728d01e1f557c0f17fe9e0ce1",
+      "bytes": 45372
+    },
+    {
+      "path": "dist/packages/backend-null/src/index.d.ts",
+      "sha256": "c5b3325a1dbf845c13d01bf2e4310520d1abe30d72dbe021b4cb2ec6f23a01fb",
+      "bytes": 1121
+    },
+    {
+      "path": "dist/packages/backend-null/src/index.js",
+      "sha256": "f79a73a4344ab2a9a76a829765ab93a54993138989e584ad2071de6794441893",
+      "bytes": 1095
+    },
+    {
+      "path": "dist/packages/backend-null/src/index.js.map",
+      "sha256": "3a62f93f44bb864b7705f2d4cc901ad8689e2eb242f174332481de21c3e6fc76",
+      "bytes": 1442
+    },
+    {
+      "path": "dist/packages/build-pipeline/src/index.d.ts",
+      "sha256": "d5b4a5575f47171c1cc96e73c0d4aeae7d544710228ae7c7bec644ddc500214e",
+      "bytes": 1323
+    },
+    {
+      "path": "dist/packages/build-pipeline/src/index.js",
+      "sha256": "66d94501da4133d960039bf15a3f284a78a8549332e61bfca4480d296615e932",
+      "bytes": 6310
+    },
+    {
+      "path": "dist/packages/build-pipeline/src/index.js.map",
+      "sha256": "ef756ced41dc589a2a64d07c20234cde4fec0eca30560627fd75854567de8968",
+      "bytes": 6731
+    },
+    {
+      "path": "dist/packages/cli/src/cli.d.ts",
+      "sha256": "43e818adf60173644896298637f47b01d5819b17eda46eaa32d0c7d64724d012",
+      "bytes": 31
+    },
+    {
+      "path": "dist/packages/cli/src/cli.js",
+      "sha256": "e283839fe7a9f94e9ccda2926af2ac1122d08ef08a62b0db15f01b5a7a545155",
+      "bytes": 19289
+    },
+    {
+      "path": "dist/packages/cli/src/cli.js.map",
+      "sha256": "834f72e2d6f337bbe6f41a91629740a54b02fbec21081ff426c86cbc1ce81127",
+      "bytes": 21551
+    },
+    {
+      "path": "dist/packages/constraint-physics-cli/src/cli.d.ts",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "bytes": 11
+    },
+    {
+      "path": "dist/packages/constraint-physics-cli/src/cli.js",
+      "sha256": "470cfaaadcf1e247f6cb10a869eef287e922df90257e66f82ee8c66447ef4052",
+      "bytes": 4768
+    },
+    {
+      "path": "dist/packages/constraint-physics-cli/src/cli.js.map",
+      "sha256": "ca1a090f09fe24d06630e90bf987330d6d5d6b34ed8f6d2e9be621ae06e34fd2",
+      "bytes": 4752
+    },
+    {
+      "path": "dist/packages/constraint-physics-vsr/src/index.d.ts",
+      "sha256": "7f3e0da4821e13f6072cc64d100bfeba1eb0002cd883b0888a9d011cec71bb59",
+      "bytes": 2059
+    },
+    {
+      "path": "dist/packages/constraint-physics-vsr/src/index.js",
+      "sha256": "300449081807156a0fa33ca04a19ddc60e498d3a4733a4dc5cd55c4e43a24a80",
+      "bytes": 11549
+    },
+    {
+      "path": "dist/packages/constraint-physics-vsr/src/index.js.map",
+      "sha256": "bc1dd00a5db89ffbd4ecb5ac2a5bafbb8eb060445dca89db4070c1aca135b739",
+      "bytes": 12117
+    },
+    {
+      "path": "dist/packages/constraint-physics/src/index.d.ts",
+      "sha256": "3d51ca8961705374fb4be5fcf2a3549b192d1fcff5d80304c671de47cffe48ea",
+      "bytes": 9607
+    },
+    {
+      "path": "dist/packages/constraint-physics/src/index.js",
+      "sha256": "1f7b2c2eb7ea09f9feea47825c28820290ef27d9239badd851224241dd6bd5eb",
+      "bytes": 53639
+    },
+    {
+      "path": "dist/packages/constraint-physics/src/index.js.map",
+      "sha256": "059eb587a237cca7b3044eef6fc0c7e6d57a3798024b0aae57d1b731fb9388fb",
+      "bytes": 59954
+    },
+    {
+      "path": "dist/packages/core/src/index.d.ts",
+      "sha256": "1e81220fbc7d0c7a2c0da1efec2bda3effdd1c3a37f544d4efb2e69f75ae81e4",
+      "bytes": 6098
+    },
+    {
+      "path": "dist/packages/core/src/index.js",
+      "sha256": "73f7ec4deed8f9971ed13d44f4d3055ea8695c0d74b61bfbf46252374be073cd",
+      "bytes": 36877
+    },
+    {
+      "path": "dist/packages/core/src/index.js.map",
+      "sha256": "3dfa97b81fd45c390af603fe806e80da00b9498d6592893586d553c64706d8eb",
+      "bytes": 46762
+    },
+    {
+      "path": "dist/packages/embodied-dynamics-cli/src/cli.d.ts",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "bytes": 11
+    },
+    {
+      "path": "dist/packages/embodied-dynamics-cli/src/cli.js",
+      "sha256": "6f82bad9064ee48e6cefb178da2f5ec6ddc3cdb366ddd3c831d17c5ef3c6eb4a",
+      "bytes": 5588
+    },
+    {
+      "path": "dist/packages/embodied-dynamics-cli/src/cli.js.map",
+      "sha256": "477f6da9b23d66bb9e02c77d274d120310da52c0fcb969d51ce3bdb1562c14cf",
+      "bytes": 6243
+    },
+    {
+      "path": "dist/packages/embodied-dynamics-vsr/src/index.d.ts",
+      "sha256": "cfac262413b2733519bf1ea8809f9cc7f0d4dbe4614742b6311d360b11e2b8a7",
+      "bytes": 1995
+    },
+    {
+      "path": "dist/packages/embodied-dynamics-vsr/src/index.js",
+      "sha256": "75b431e4412524651d85ab8d458ed3effe4dab9be1c37f229e9db4d94ce9e410",
+      "bytes": 13313
+    },
+    {
+      "path": "dist/packages/embodied-dynamics-vsr/src/index.js.map",
+      "sha256": "64aa22c6c7d4a526304392a4fe7b4c3f6dca7bc35ef6d988b7c6c00f1403b594",
+      "bytes": 17238
+    },
+    {
+      "path": "dist/packages/embodied-dynamics/src/index.d.ts",
+      "sha256": "7e288d6dea54e86ee6ef0d5459deeb979916893c004ece23b75ca1cf63e44e08",
+      "bytes": 15053
+    },
+    {
+      "path": "dist/packages/embodied-dynamics/src/index.js",
+      "sha256": "46031892ee3675f9fd14fb2a4f66c0505a81251eeabe60559ba64cf431c8eea3",
+      "bytes": 71123
+    },
+    {
+      "path": "dist/packages/embodied-dynamics/src/index.js.map",
+      "sha256": "bc22104dbcf4e942f2314b73acc3fe6728e2af70436b674f587e96f019561a0e",
+      "bytes": 91869
+    },
+    {
+      "path": "dist/packages/experience-fabric-audio/src/index.d.ts",
+      "sha256": "284716beb532d57832a7869b0513700f8fd99e70b02358727d52d23052f6bbd8",
+      "bytes": 832
+    },
+    {
+      "path": "dist/packages/experience-fabric-audio/src/index.js",
+      "sha256": "de21e383fbb92a46383e826e5e4c36679b744f090a313d51d6614a4041ff9203",
+      "bytes": 10691
+    },
+    {
+      "path": "dist/packages/experience-fabric-audio/src/index.js.map",
+      "sha256": "f83fc62bf52ac038fb73376fb5374af5404ae2508ef0f695ddce8c8de5cee345",
+      "bytes": 15636
+    },
+    {
+      "path": "dist/packages/experience-fabric-cli/src/cli.d.ts",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "bytes": 11
+    },
+    {
+      "path": "dist/packages/experience-fabric-cli/src/cli.js",
+      "sha256": "56cff916205c3e2a6fbbb0b57c2c70ee78697d93784438a200f23ce12c2ec226",
+      "bytes": 6616
+    },
+    {
+      "path": "dist/packages/experience-fabric-cli/src/cli.js.map",
+      "sha256": "48e2bc9b7c9d56479782a9435555b7988783f015ba0326d136d72f824dc2dbf1",
+      "bytes": 7054
+    },
+    {
+      "path": "dist/packages/experience-fabric-vsr/src/index.d.ts",
+      "sha256": "b8551a3cba3a681b6d3fe94725c2c84b3f7c26762e3e73363eb408e83a93cc39",
+      "bytes": 1506
+    },
+    {
+      "path": "dist/packages/experience-fabric-vsr/src/index.js",
+      "sha256": "3d42225a4cdaf5b40b1ca107fff2bc07719f2bdbe19688316d123736ee8df9de",
+      "bytes": 9688
+    },
+    {
+      "path": "dist/packages/experience-fabric-vsr/src/index.js.map",
+      "sha256": "bfd1124f72f4f469ed5e257b9dd06e16b1cdc79bc018fa33cdd7d8b27fc5e959",
+      "bytes": 12975
+    },
+    {
+      "path": "dist/packages/experience-fabric/src/index.d.ts",
+      "sha256": "3bf40c67d5882e1f2ccb15175314b84d1137f1fa8f29f4782e454ab92b01d478",
+      "bytes": 11292
+    },
+    {
+      "path": "dist/packages/experience-fabric/src/index.js",
+      "sha256": "24c3cfa0505e1bded7bf2027104048762473806698ec673a7bafef4458514316",
+      "bytes": 33417
+    },
+    {
+      "path": "dist/packages/experience-fabric/src/index.js.map",
+      "sha256": "5ce6fa1577bdff6ba5e98464a1e2c9d6fa45173d4f236661a16c180b6f550c1b",
+      "bytes": 41670
+    },
+    {
+      "path": "dist/packages/expression/src/index.d.ts",
+      "sha256": "fadf8e9898578d8017baec40cee6f123600c40354c07aaa73bf038d31b1a01d1",
+      "bytes": 1580
+    },
+    {
+      "path": "dist/packages/expression/src/index.js",
+      "sha256": "034f22453613006c847ef76c8152193e6041f9a39e56d165e1155926193f5f65",
+      "bytes": 17824
+    },
+    {
+      "path": "dist/packages/expression/src/index.js.map",
+      "sha256": "efdc17c64d003c851fe7cffc54d5a3ecf2197d5dc3d323e6fab22d0bb29dfd93",
+      "bytes": 22084
+    },
+    {
+      "path": "dist/packages/network-reconciliation/src/index.d.ts",
+      "sha256": "0d85716baa9b0be452fd3495bf10ccd07d1a5fb9706eaa361506163575a873ef",
+      "bytes": 4083
+    },
+    {
+      "path": "dist/packages/network-reconciliation/src/index.js",
+      "sha256": "9232a0d49b08a8d89461e14f55a1899da271bf3854fc7bac16103ccd3b4fd778",
+      "bytes": 10048
+    },
+    {
+      "path": "dist/packages/network-reconciliation/src/index.js.map",
+      "sha256": "4563acd9a0bdc0f69890a357d6bc12fd97aaba4bef87c20de3e28cee592f104c",
+      "bytes": 10396
+    },
+    {
+      "path": "dist/packages/observer-projection/src/index.d.ts",
+      "sha256": "a2f452554ed88c993cf2bf00d5bf9cc9afcb7c0ef6d766e015217ac0b5265598",
+      "bytes": 3249
+    },
+    {
+      "path": "dist/packages/observer-projection/src/index.js",
+      "sha256": "a4dfc0fa08f4267136c73bd4032218403e84dc3b813c24e1e7ac079310477de1",
+      "bytes": 12902
+    },
+    {
+      "path": "dist/packages/observer-projection/src/index.js.map",
+      "sha256": "a8e6ba56f710c400ce56d27eb50dc93135fb232a05d316b58fa843711b29c20f",
+      "bytes": 12742
+    },
+    {
+      "path": "dist/packages/renderer/src/index.d.ts",
+      "sha256": "42e53b52267f101f40c401e481d461487926e73c92b3ef38d20e87d6755f47b7",
+      "bytes": 1467
+    },
+    {
+      "path": "dist/packages/renderer/src/index.js",
+      "sha256": "b2a792e466db6c5993093be0743851024605edcec1b29671b5138d97c41045ea",
+      "bytes": 4297
+    },
+    {
+      "path": "dist/packages/renderer/src/index.js.map",
+      "sha256": "beae507c4123ead1b083439236379da9d594c4b0d33401be05129cd89f33b54e",
+      "bytes": 4952
+    },
+    {
+      "path": "dist/packages/simulation-cli/src/cli.d.ts",
+      "sha256": "43e818adf60173644896298637f47b01d5819b17eda46eaa32d0c7d64724d012",
+      "bytes": 31
+    },
+    {
+      "path": "dist/packages/simulation-cli/src/cli.js",
+      "sha256": "4b12f61fefc486e32f5d55ec9163d0274f688cee3e3b4d102d4ea2469a2421e4",
+      "bytes": 6850
+    },
+    {
+      "path": "dist/packages/simulation-cli/src/cli.js.map",
+      "sha256": "504d7f80cf5a4c4fbfea5e4bd03b29825046f664fc12fe8e0140583b8bb89e51",
+      "bytes": 6723
+    },
+    {
+      "path": "dist/packages/simulation-core/src/index.d.ts",
+      "sha256": "b970097dd2a4b4b17f3d190aec560d40563357589bae9cb7e4f8bf6a44ca2ce8",
+      "bytes": 5095
+    },
+    {
+      "path": "dist/packages/simulation-core/src/index.js",
+      "sha256": "864caaf9ab6610646ff523a639a64384b27d0e3363b480ed94f312d48af07320",
+      "bytes": 20463
+    },
+    {
+      "path": "dist/packages/simulation-core/src/index.js.map",
+      "sha256": "6e12290bed80a5e48031576115103d4cf83c81adc88a35e2feca5c9e29851d16",
+      "bytes": 24031
+    },
+    {
+      "path": "dist/packages/simulation-vsr/src/index.d.ts",
+      "sha256": "d5443d27bb33bd30b4fda0a36d250264c36ef07d80b3f82624536004870dc061",
+      "bytes": 1874
+    },
+    {
+      "path": "dist/packages/simulation-vsr/src/index.js",
+      "sha256": "967dcc2a9b818c6ade60748190f60897edf2f9db230cc5161fcfb8a2a1f891a2",
+      "bytes": 8524
+    },
+    {
+      "path": "dist/packages/simulation-vsr/src/index.js.map",
+      "sha256": "33f16a502f5c1a949841892d4396f4f2771955c8628c01aa933b73ac84372701",
+      "bytes": 8934
+    },
+    {
+      "path": "dist/packages/spatial-embodiment-cli/src/cli.d.ts",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "bytes": 11
+    },
+    {
+      "path": "dist/packages/spatial-embodiment-cli/src/cli.js",
+      "sha256": "c9865feeb62ce22ec7ed6d4478f8b2092f6c1af29b83202a16eb8cce3f04c4f2",
+      "bytes": 6412
+    },
+    {
+      "path": "dist/packages/spatial-embodiment-cli/src/cli.js.map",
+      "sha256": "91160ea29ea07e044cef8033801f63e1df19c1448b4e1d360a862fcc349531b2",
+      "bytes": 7326
+    },
+    {
+      "path": "dist/packages/spatial-embodiment-vsr/src/index.d.ts",
+      "sha256": "825efcd5f33063feea8e6a389d8a121ed8dad54fd5ceb861b4895a6a1980e492",
+      "bytes": 2545
+    },
+    {
+      "path": "dist/packages/spatial-embodiment-vsr/src/index.js",
+      "sha256": "0590c221b19483cf37987259a5c53f87e63d887337860c77c541fd261c39f11e",
+      "bytes": 9093
+    },
+    {
+      "path": "dist/packages/spatial-embodiment-vsr/src/index.js.map",
+      "sha256": "bcce4e12e491a41fd9aed4e354ba5ffe62e32161698d974ba044e0d7ebb04da1",
+      "bytes": 10195
+    },
+    {
+      "path": "dist/packages/spatial-embodiment-vsr/src/vsr-spatial-v04.d.ts",
+      "sha256": "7ced050f6bf2c39b83c42a0e0976ccbf3fd7c3ebb79835955882000d81af8808",
+      "bytes": 275
+    },
+    {
+      "path": "dist/packages/spatial-embodiment-vsr/src/vsr-spatial-v04.js",
+      "sha256": "d5d2c25cd6ff83844023eba68fbf3084ebd72fa0cb086f9d6f4ab42b769e8cd6",
+      "bytes": 318
+    },
+    {
+      "path": "dist/packages/spatial-embodiment-vsr/src/vsr-spatial-v04.js.map",
+      "sha256": "418cc8554c390251a07c850959ee1348ea743013fefbd6c08e71168cd3064a47",
+      "bytes": 197
+    },
+    {
+      "path": "dist/packages/spatial-embodiment/src/convex-narrow-phase.d.ts",
+      "sha256": "830e2498906230db382eaff1b84bcee7948779d75d09edc4eaea3f079871c546",
+      "bytes": 889
+    },
+    {
+      "path": "dist/packages/spatial-embodiment/src/convex-narrow-phase.js",
+      "sha256": "8e1ebd39b492730ed17721254a3de8b3d0410c594dddaa3d1796acdca2a1aa83",
+      "bytes": 11986
+    },
+    {
+      "path": "dist/packages/spatial-embodiment/src/convex-narrow-phase.js.map",
+      "sha256": "2b6322c58466837104ae5736ef3d1a03e861c3a322438f35ce7290cfcadfb0a0",
+      "bytes": 18167
+    },
+    {
+      "path": "dist/packages/spatial-embodiment/src/index.d.ts",
+      "sha256": "7653d9cf37108e2768a3d3465cd73db1ac381ba528f04665b6b9b10b0927e5a9",
+      "bytes": 14350
+    },
+    {
+      "path": "dist/packages/spatial-embodiment/src/index.js",
+      "sha256": "a3f97e68fb1f9a7e3e56cc330f7b99ad94c60cce14cefa5c8afdbe026dfe3988",
+      "bytes": 74353
+    },
+    {
+      "path": "dist/packages/spatial-embodiment/src/index.js.map",
+      "sha256": "427a24c8c0380ae8ff2c5d1b55410102f3b18ecfc4ec9d1cd865855f0bd2e103",
+      "bytes": 96453
+    },
+    {
+      "path": "dist/packages/spatial-embodiment/src/kernel-binding.d.ts",
+      "sha256": "677e404e1da1a5b7363250593026faa5a126ad095d45ff125a73d2059d83797b",
+      "bytes": 2271
+    },
+    {
+      "path": "dist/packages/spatial-embodiment/src/kernel-binding.js",
+      "sha256": "de90e0762da9668be6fa18b767e58d190ef5482da8a644a9750d2a40598a22f8",
+      "bytes": 9980
+    },
+    {
+      "path": "dist/packages/spatial-embodiment/src/kernel-binding.js.map",
+      "sha256": "3a4a3d901e0cad61f06dd7c52552c3ac7e8a89f5e93b55769b32869e3de0b12f",
+      "bytes": 11057
+    },
+    {
+      "path": "dist/packages/spec/src/index.d.ts",
+      "sha256": "d0fcecf4bd910dc053cef264eaf8aea67fd33c961ca1f01a1f6781f0a244d146",
+      "bytes": 9776
+    },
+    {
+      "path": "dist/packages/spec/src/index.js",
+      "sha256": "4a35f29b820b7e8bc568d1910964126b936726d19b1d4a7717c090d9b72a02a1",
+      "bytes": 6412
+    },
+    {
+      "path": "dist/packages/spec/src/index.js.map",
+      "sha256": "ca5707f21c8c359fe6fb6ddec8c530982b1ef34ffac6314f2b5a8394e2001ab0",
+      "bytes": 6940
+    },
+    {
+      "path": "dist/schemas/reality-one-lifecycle-event.v0.1.schema.json",
+      "sha256": "16d4b07c02657f916f271b4c869b91e3ee1ffd6f7344c85af3b38ab6de15fc4c",
+      "bytes": 1204
+    },
+    {
+      "path": "dist/schemas/rncs-kernel-rsr-vsr-binding.v0.1.schema.json",
+      "sha256": "f0ac630b0f46c9933295dcc447ad6b0299ac51f1444e4ebcaffd7b332e18d184",
+      "bytes": 4187
+    },
+    {
+      "path": "dist/schemas/rsr-constraint-world.v0.2.schema.json",
+      "sha256": "4d736a13e8fb4da4dbbcf72f313e096c70247a00321ade540fb38457b267efc5",
+      "bytes": 3209
+    },
+    {
+      "path": "dist/schemas/rsr-embodied-dynamics-world.v0.3.schema.json",
+      "sha256": "1536cfaefb5a0cded3b0c8044ee6d15a55ecbf3a155fbc9e448d595716286500",
+      "bytes": 7415
+    },
+    {
+      "path": "dist/schemas/rsr-experience-fabric.v0.4.schema.json",
+      "sha256": "a87bf0b81ed410e8f3460068ab9ac938efe51b5ceb9f9c6bc7bda5b33aa1ed92",
+      "bytes": 10982
+    },
+    {
+      "path": "dist/schemas/rsr-spatial-embodiment.v0.5.schema.json",
+      "sha256": "f73ecd80f9c8bd1385fb492748106f6f9d4e3038b4d35210e74c57caa7ecba17",
+      "bytes": 757
+    },
+    {
+      "path": "dist/schemas/rsr-spatial-embodiment.v0.6.schema.json",
+      "sha256": "c412b671708fc08bde2c45b6a30c6214300454bb947cf902e740e6acb818981e",
+      "bytes": 2814
+    },
+    {
+      "path": "dist/schemas/vsr-0.1.schema.json",
+      "sha256": "1f6f5567b12bee7b81ec83e1257e0c4861a9d079471b7b98dcdfc870402f794e",
+      "bytes": 5805
+    },
+    {
+      "path": "dist/schemas/vsr-observer-policy.v0.1.schema.json",
+      "sha256": "4ab0f8754c251f9e3c6a64bcb93bbdb8b3c93e62dbeef50cb1e93d45deaddbf3",
+      "bytes": 1148
+    },
+    {
+      "path": "dist/schemas/vsr-observer-profile.v0.1.schema.json",
+      "sha256": "b42a4f49b9680985376dafad94a2b83ba97c7a563cc92086a9beecbad94e6706",
+      "bytes": 832
+    },
+    {
+      "path": "dist/tests/constraint-physics.d.ts",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "bytes": 11
+    },
+    {
+      "path": "dist/tests/constraint-physics.js",
+      "sha256": "00a20afb2c9491c44d077c00ebc0d8cd2b31ac03613d90ac2e8f4fa55f65edfd",
+      "bytes": 16448
+    },
+    {
+      "path": "dist/tests/constraint-physics.js.map",
+      "sha256": "8dfa787ad12ca9f8cd11c56b6552dd927cd9b00f67e315bad37926d3deda6892",
+      "bytes": 20796
+    },
+    {
+      "path": "dist/tests/embodied-dynamics.d.ts",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "bytes": 11
+    },
+    {
+      "path": "dist/tests/embodied-dynamics.js",
+      "sha256": "1eb262b7a0b26235d078fc192c5db88a7d9c1200f75dcee32dedd62814c2a64c",
+      "bytes": 13807
+    },
+    {
+      "path": "dist/tests/embodied-dynamics.js.map",
+      "sha256": "e4d2c84ccd3603c22ab233fd88f9c7c324762632fc7a578ef4b77d84e32647b0",
+      "bytes": 21449
+    },
+    {
+      "path": "dist/tests/experience-fabric.d.ts",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "bytes": 11
+    },
+    {
+      "path": "dist/tests/experience-fabric.js",
+      "sha256": "d6df975e758acb7d137bc333603028e53373adae5d7cfaf3f5693007dca58e05",
+      "bytes": 14484
+    },
+    {
+      "path": "dist/tests/experience-fabric.js.map",
+      "sha256": "b379ec5ae951a78efdf3c3748a028815f9ce268a3d809fc383d6f2b8f424b81e",
+      "bytes": 21414
+    },
+    {
+      "path": "dist/tests/network-reconciliation.d.ts",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "bytes": 11
+    },
+    {
+      "path": "dist/tests/network-reconciliation.js",
+      "sha256": "aea785080fcc6e1a6ec72eaee8bc70f2940d2e9d9e47ba2e66b6edc30d420952",
+      "bytes": 5839
+    },
+    {
+      "path": "dist/tests/network-reconciliation.js.map",
+      "sha256": "19751cdb707ce01374580bec2a7786ad4b4e8f1b899201bc31f4c645169c09b3",
+      "bytes": 6488
+    },
+    {
+      "path": "dist/tests/run.d.ts",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "bytes": 11
+    },
+    {
+      "path": "dist/tests/run.js",
+      "sha256": "8fa79f92c4e360a307161d735ffd13cb33f7f40a24eca656fa70cbf8158de91b",
+      "bytes": 29326
+    },
+    {
+      "path": "dist/tests/run.js.map",
+      "sha256": "61cabb7167a688e411bcde4ae1c5af72a86ea2aded18425f5e6038f0b3a65e32",
+      "bytes": 35357
+    },
+    {
+      "path": "dist/tests/simulation.d.ts",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "bytes": 11
+    },
+    {
+      "path": "dist/tests/simulation.js",
+      "sha256": "f420a43a5b9c25fb9ec61c30facc833f21ae0a8dfa01149d8bbfb6269090580f",
+      "bytes": 8776
+    },
+    {
+      "path": "dist/tests/simulation.js.map",
+      "sha256": "f5ccada5f830666b27704178916adad08c843f93a8a0268a9700c336e3f48afb",
+      "bytes": 10029
+    },
+    {
+      "path": "dist/tests/spatial-embodiment.d.ts",
+      "sha256": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "bytes": 11
+    },
+    {
+      "path": "dist/tests/spatial-embodiment.js",
+      "sha256": "93ec6dc49ee2d2fa4b8022d4cefda9090c106c5bf5528caef67f39e2bb452587",
+      "bytes": 34347
+    },
+    {
+      "path": "dist/tests/spatial-embodiment.js.map",
+      "sha256": "bfcfa4ef03cb7dc48d25750d9123ddecbbc63931e3bd188913f858aa1899beff",
+      "bytes": 53951
+    },
+    {
+      "path": "docs/ANIMATION_AUDIO_EFFECTS_API_v0.4.md",
+      "sha256": "66432286a6d6e9c8d1715f52fadd9c885886fc1192722da1bd4475bb84ad9688",
+      "bytes": 3544
+    },
+    {
+      "path": "docs/CONSTRAINT_CAUSAL_PHYSICS_CONTRACT_v0.2.md",
+      "sha256": "f6555d5b2679234afd47cbac99f01aa943983e8e4a1f77ee79bb7ba917167ce5",
+      "bytes": 2657
+    },
+    {
+      "path": "docs/EMBODIED_DYNAMICS_API_v0.3.md",
+      "sha256": "e83116e41adc6a9990a27a3d9327d1ba37bb0ccdf8fa6cf9f70d045de53e26e6",
+      "bytes": 1291
+    },
+    {
+      "path": "docs/EMBODIED_DYNAMICS_CONTRACT_v0.3.md",
+      "sha256": "c2f4ce34d408f08c7004efe66c3cc9b0cd9cd45627f2d87fbe329e59f8e850dd",
+      "bytes": 1690
+    },
+    {
+      "path": "docs/EMBODIED_DYNAMICS_TEST_REPORT_v0.3.md",
+      "sha256": "c65cb3edf8a7ba749cf098f7d33d0fe9eeab9afc1e1ce9281594c93a2c71c75c",
+      "bytes": 1386
+    },
+    {
+      "path": "docs/IAL_三维具身动力学命名边界反演开发提示词_v0.5.md",
+      "sha256": "97602838d6768959bf0c06706b888a0f786d4b2083c710daf74e3b3f376f45c8",
+      "bytes": 715
+    },
+    {
+      "path": "docs/IAL_具身动力学极限开发提示词_v0.3.md",
+      "sha256": "60c039926fdc4fbd4ed9b5a3fca6d7f2062c481e35c1480496539e5941bb258e",
+      "bytes": 1264
+    },
+    {
+      "path": "docs/IAL_动画音频特效命名边界反演开发提示词_v0.4.md",
+      "sha256": "b898981841dbd8ad0576ca276ab0f4eac8ef82b6675cadb98d69b61370fa0b03",
+      "bytes": 1732
+    },
+    {
+      "path": "docs/IAL_物理系统命名边界反演开发提示词_v0.2.md",
+      "sha256": "fcf244c68a22f1968b2fae308c2ad1e8b97fff46b20643f060ff0966c6764910",
+      "bytes": 2851
+    },
+    {
+      "path": "docs/NAMING_BOUNDARY_INVERSION_EMBODIED_DYNAMICS_v0.3.md",
+      "sha256": "4c476a4faaa3a173b5df15be02d762c622b8bed29c69689dec7b7096cfe78c21",
+      "bytes": 3910
+    },
+    {
+      "path": "docs/NAMING_BOUNDARY_INVERSION_PHYSICS_v0.2.md",
+      "sha256": "12e4858863b7584b1e89f54bcf3b2ad63693ba120426ec7b41e71ccc17ed15fa",
+      "bytes": 3825
+    },
+    {
+      "path": "docs/NAMING_BOUNDARY_INVERSION_SPATIAL_EMBODIMENT_v0.5.md",
+      "sha256": "688c6c48c24b3ec9efe145c4599ddfcc8d81195551a0ca126d5b70370c57d97a",
+      "bytes": 1077
+    },
+    {
+      "path": "docs/NAMING_BOUNDARY_INVERSION_TEMPORAL_EXPERIENCE_v0.4.md",
+      "sha256": "54a3156ca252957c9c53bd8df2f37740489e0c3517b0ae2800360aa6974d1255",
+      "bytes": 4787
+    },
+    {
+      "path": "docs/PHYSICS_API_v0.2.md",
+      "sha256": "4d515ba14f38257912b828efd2df7eddcf858955f60e0fb70d03a32e2bef16ff",
+      "bytes": 1826
+    },
+    {
+      "path": "docs/PHYSICS_TEST_REPORT_v0.2.md",
+      "sha256": "179c73e650e27bb71f49ee53782e929fe9edab6d24a6a65a48c273d0bee9eade",
+      "bytes": 2037
+    },
+    {
+      "path": "docs/REALITY_BUILD_PIPELINE_v0.1.md",
+      "sha256": "cbcd8073462ca0a64f7304c22fb81d91c456a1cb761576559f91ece05c3e5002",
+      "bytes": 1131
+    },
+    {
+      "path": "docs/RFE_RSR_VSR_PIPELINE_ARCHITECTURE.md",
+      "sha256": "b1abab6f1f25309f9bfeaffeb691198c89d1fc7bf626a5300d8829ef48195259",
+      "bytes": 1433
+    },
+    {
+      "path": "docs/RSR_TEST_REPORT.md",
+      "sha256": "8905be9e197432803d29c018c8f55b6274081feeccf003cc292f913433dcc8e1",
+      "bytes": 1369
+    },
+    {
+      "path": "docs/RSR_v0.1_DETERMINISTIC_SIMULATION_CONTRACT.md",
+      "sha256": "3e4cb5466aa024f5314ba56b8d846bbc5c0e3a66a78b281cb6cff372b7c856a9",
+      "bytes": 1801
+    },
+    {
+      "path": "docs/Reality_Native_Computing_Stack_发现文档_v0.1.md",
+      "sha256": "b2f36eb941467a0c21785b1ef1089b0b2ae864d2f662e6a0b162c25f4ef2eef1",
+      "bytes": 22829
+    },
+    {
+      "path": "docs/Reality_Native_Discovery_Map_v0.2.md",
+      "sha256": "87fbb5819ff4a9ee13741926c98a825275553934014b9881b4f49866a4b179a4",
+      "bytes": 35807
+    },
+    {
+      "path": "docs/SPATIAL_EMBODIMENT_API_v0.5.md",
+      "sha256": "04fac80a18b7ee95cdc1ca3cf9d18bd745e865903c8552dff15bee1d8f1136f1",
+      "bytes": 536
+    },
+    {
+      "path": "docs/SPATIAL_EMBODIMENT_CONTRACT_v0.5.md",
+      "sha256": "1b67cd99d3099ee3772463be44681f17f05324f3e51427c7b76a05fbff98d961",
+      "bytes": 611
+    },
+    {
+      "path": "docs/SPATIAL_EMBODIMENT_TEST_REPORT_v0.5.md",
+      "sha256": "5dcc2f74b72afd2db9bbde5d550e1587140fb7e1b3f78b869bf9d59e40549ce1",
+      "bytes": 1211
+    },
+    {
+      "path": "docs/TEMPORAL_EXPERIENCE_CONTRACT_v0.4.md",
+      "sha256": "4f700ef7d2cee2b326f5a515885ffbf577b4866d25a845f8e86c4f746cd22814",
+      "bytes": 3016
+    },
+    {
+      "path": "docs/TEMPORAL_EXPERIENCE_TEST_REPORT_v0.4.md",
+      "sha256": "5145284f87bafcfba77ac6b837c0972ca9334e3d8731c7ccbf8f5134d978b410",
+      "bytes": 2519
+    },
+    {
+      "path": "docs/TEST_REPORT.md",
+      "sha256": "1cf254740971f5b28e6e5c944acfea6e685e1ebfdaae2afd2755f72a52a6de73",
+      "bytes": 1318
+    },
+    {
+      "path": "docs/VSR_ALPHA5_BASELINE_README.md",
+      "sha256": "6346326bdb422c799cac928f2f96f9394c4b712c61cd215d981230d89ab027ce",
+      "bytes": 5116
+    },
+    {
+      "path": "docs/VSR_ALPHA5_CHANGELOG.md",
+      "sha256": "3d2833b8016df4ec3fc95d6af370a0fd6c1b9798d9b06f0a5eb1f17677451c1f",
+      "bytes": 3358
+    },
+    {
+      "path": "docs/VSR_v0.1_开发基线.md",
+      "sha256": "ca26855bcf995cb4da5227c0f124787c38803a4bcde60e3c9076706e2fde855e",
+      "bytes": 16330
+    },
+    {
+      "path": "docs/VSR_v0.1_技术基线.md",
+      "sha256": "5faba52e9038b01ad4b391de2647ef84ebcffb4f71acb532e5b8bff5e75802aa",
+      "bytes": 34618
+    },
+    {
+      "path": "docs/agent-protocol.md",
+      "sha256": "53657befea24ffcbe98fa6b73f8aa9b07fd5f6e9b55d156a53afbc2600b51214",
+      "bytes": 432
+    },
+    {
+      "path": "docs/architecture.md",
+      "sha256": "eed9b5c120bd79b277049793bf9715d2ac5c5721a7ba21de9473ea6fe0b6f6e0",
+      "bytes": 1446
+    },
+    {
+      "path": "docs/dependency-graph.md",
+      "sha256": "c50bebc56f2662389bb1a6336b7feff865427f8e2fb609017cba23640981dd39",
+      "bytes": 1363
+    },
+    {
+      "path": "docs/determinism.md",
+      "sha256": "e5336441a6c070c0f08bcd87e31997752dbc642461a281a6564bb426ea561f1e",
+      "bytes": 614
+    },
+    {
+      "path": "docs/observer-projection.md",
+      "sha256": "f09f57573222ec256ad38e4f7691f201fc9917e713c360d7047541aba769e0e6",
+      "bytes": 3386
+    },
+    {
+      "path": "docs/projection-cache.md",
+      "sha256": "5a33678e9a923dbcbf2ea305f2320c6ba208780b65ea3016ba66c3c9587f5a38",
+      "bytes": 871
+    },
+    {
+      "path": "docs/raster-resources.md",
+      "sha256": "b62f04d50055331ebf1d37da79e791b0a330f529532d16200663e4e51b05365d",
+      "bytes": 1312
+    },
+    {
+      "path": "docs/reality-one-adapter.md",
+      "sha256": "c3448bfc7640115366f8079487bef6c06fd181d791fa66f94396e98a82078fd1",
+      "bytes": 1133
+    },
+    {
+      "path": "docs/reality-one-lifecycle.md",
+      "sha256": "7de98d5bf457dab78d7c30a563c482e5611a67765456b8f4fe4b31e0730e305a",
+      "bytes": 1393
+    },
+    {
+      "path": "docs/rfe-adapter.md",
+      "sha256": "3dfe06618cac991f79d764ab7aeb739458f68b1f9e094eb2dfc58e4656f94b31",
+      "bytes": 423
+    },
+    {
+      "path": "evidence/RELEASE_AUDIT.json",
+      "sha256": "fe836d82e9c2572862353f95a68528be2c8d596570fc8bed3ff33046357d46d8",
+      "bytes": 5510
+    },
+    {
+      "path": "examples/alpha2-affine-clip-image.vsr.json",
+      "sha256": "9b76c2b66b23ef4fc7429720de6f8aff907632183e4a972a2f0ab2934e53a573",
+      "bytes": 4524
+    },
+    {
+      "path": "examples/assets/vsr-grid.png",
+      "sha256": "523f0f605ce306139baf44c71625ef9a92d01b6286080e0ad657caa3129a5f68",
+      "bytes": 2923
+    },
+    {
+      "path": "examples/assets/vsr-neon.vsrfont.json",
+      "sha256": "a63199bd84de19cb2f904656883c070b700c08f00e8bcd133115fe1707e5cf48",
+      "bytes": 2372
+    },
+    {
+      "path": "examples/constraint-physics/constraint-playground.world.json",
+      "sha256": "cc87d14c195bb55637f90fea0072a3519402298d969d80ca5a9da8c1d5cfdbd8",
+      "bytes": 4413
+    },
+    {
+      "path": "examples/data-dashboard.vsr.json",
+      "sha256": "f04bf4350df00a4a38d0ffdf9537651fe07f0ad14e69f1ade388067ef2eeb20d",
+      "bytes": 2136
+    },
+    {
+      "path": "examples/deterministic-particles-lite.vsr.json",
+      "sha256": "74ab33b288f89dc1a1e31a7e897aecbd8989c1aa33855924fda4b28f9f9d0faf",
+      "bytes": 1371
+    },
+    {
+      "path": "examples/embodied-dynamics/advanced-playground.world.json",
+      "sha256": "02b916fe0fc97f6e7b9151a0dad0fc68f81892a155524927c7a20a47fe588ac1",
+      "bytes": 5469
+    },
+    {
+      "path": "examples/experience-fabric/cinematic-showcase.experience.json",
+      "sha256": "9db9eb0a83b73eada1b4a91b9a564279aea5ec9090c04bcb4f80079207c22630",
+      "bytes": 28344
+    },
+    {
+      "path": "examples/hello-title.vsr.json",
+      "sha256": "19d8b342b02f828258f52fa126ed82d351be01fb9e81cf24684532e0acef1995",
+      "bytes": 2512
+    },
+    {
+      "path": "examples/interactive-card.vsr.json",
+      "sha256": "c2d693a9ebd50e8ef78e06baa59ad117d1cbd891efae40d3649ebea0eb01d071",
+      "bytes": 1609
+    },
+    {
+      "path": "examples/observers/auditor.observer.json",
+      "sha256": "8373cd67d478bb5168ae5bbc071c01f3b173eba98596ca8b6ef9ebe62c722ca9",
+      "bytes": 228
+    },
+    {
+      "path": "examples/observers/guest.observer.json",
+      "sha256": "437950ae4578147fa88ce43ea8bd78e86726c88706fab0dbe24945d372dd2a8e",
+      "bytes": 173
+    },
+    {
+      "path": "examples/observers/owner.observer.json",
+      "sha256": "f362253df0d92f6a0e14afe5ba50c7c29fadeecb9e01274f5dcbc14998b31db4",
+      "bytes": 264
+    },
+    {
+      "path": "examples/reality-one-application-result.json",
+      "sha256": "b21c555e6cba8abe5aea2c4833500baaf3833c9c0a3de2ded92b3e86b98473a9",
+      "bytes": 1954
+    },
+    {
+      "path": "examples/reality-one-lifecycle.events.json",
+      "sha256": "642befeecb2220c15c9de118f53cf108c6d69a12588e927f61d6335b2b3a3054",
+      "bytes": 7731
+    },
+    {
+      "path": "examples/reality-one-result.vsr.json",
+      "sha256": "24445d79887a2bf509201773d3d997e614f28bba4db8903e720ed53f49a7a9cd",
+      "bytes": 38948
+    },
+    {
+      "path": "examples/rfe-door-projection.vsr.json",
+      "sha256": "66b8161af4f5fb20c3eaf58e8c7de7d5e9c1603596e0dd63067eaacb170d672e",
+      "bytes": 1677
+    },
+    {
+      "path": "examples/simulation-assets/falling-box.world.json",
+      "sha256": "a0c723e2eb46610a0783bc3490b86cef459cfd70c1665f92b689df4d71d2b774",
+      "bytes": 825
+    },
+    {
+      "path": "examples/simulation-assets/render-style.json",
+      "sha256": "5f364d3ac9fbcc5dc12e1ec93b5798b3cabaf52a7385c433c668d7434a50ef91",
+      "bytes": 244
+    },
+    {
+      "path": "examples/spatial-embodiment/embodied-world.world.json",
+      "sha256": "7e64deab29ee611869a8789c1bafe5b1526c3c3c570f0166f24a9a3ebca1c350",
+      "bytes": 4058
+    },
+    {
+      "path": "outputs/benchmark-spatial-embodiment-alpha1.json",
+      "sha256": "1096ce6d1bd47f8c11485c52a027f53f9abc47aafc71c6e6f76559cbea07ce1e",
+      "bytes": 1783
+    },
+    {
+      "path": "outputs/constraint-physics-verify/causal-delta.json",
+      "sha256": "4785387430bb0cbb6469ca22347dc69bd2b833021f79cb01d67d028ce5a4d7c3",
+      "bytes": 6002
+    },
+    {
+      "path": "outputs/constraint-physics-verify/checkpoint-snapshot.json",
+      "sha256": "95102f97d6fcf1083da0416bfd2274aa120f11510b98229c7cba36869d62224e",
+      "bytes": 9835
+    },
+    {
+      "path": "outputs/constraint-physics-verify/demo-evidence.json",
+      "sha256": "78c8d2c2edaa279a83308187b2fc5e923bb702fe64e20d1cc033a9dc7fb384b0",
+      "bytes": 1807
+    },
+    {
+      "path": "outputs/constraint-physics-verify/final-debugger.png",
+      "sha256": "340d92a08041a0a412596a4a0aa02aa65c4f1f42945023f284ab51338588fe1e",
+      "bytes": 5961
+    },
+    {
+      "path": "outputs/constraint-physics-verify/final-player.png",
+      "sha256": "f182f4cfc2306160bebfd06cc3395a0d71d48afeefd6ab8181650a6de5beac39",
+      "bytes": 3356
+    },
+    {
+      "path": "outputs/constraint-physics-verify/final-snapshot.json",
+      "sha256": "1e2dd2b42529c64e73415ade67df7bb61a3caa0be95f6ca0c45bf4ced4e66733",
+      "bytes": 10947
+    },
+    {
+      "path": "outputs/constraint-physics-verify/initial-debugger.png",
+      "sha256": "cc56d725db5bb648542d9a18bdb45a219648cded2723bac3d493ad029a199964",
+      "bytes": 6118
+    },
+    {
+      "path": "outputs/constraint-physics-verify/initial-player.png",
+      "sha256": "0732b1692fe84ee928e218e596396651ffaccb9e019c5a12103d0a9718b09684",
+      "bytes": 3478
+    },
+    {
+      "path": "outputs/constraint-physics-verify/render-document.vsr.json",
+      "sha256": "a5cb5750bd4b9a5d9e490ec83c705bb96906f27ed8b6459e8ed91b65660b40c9",
+      "bytes": 45910
+    },
+    {
+      "path": "outputs/constraint-physics-verify/world.json",
+      "sha256": "233d352860e31c9c0bdbae35033a28cefc06e5aea2402032e723c512624961c3",
+      "bytes": 5856
+    },
+    {
+      "path": "outputs/embodied-dynamics-verify/causal-delta.json",
+      "sha256": "9c41b20803d21d79e8331937d55fb20127cb6b98f682c7bcb859da3dca295cfa",
+      "bytes": 10624
+    },
+    {
+      "path": "outputs/embodied-dynamics-verify/checkpoint-snapshot.json",
+      "sha256": "28fcc325daad0ab7a1e40ef3b913ecd002954a5a41ad03be0c9ced8dfbe50978",
+      "bytes": 23246
+    },
+    {
+      "path": "outputs/embodied-dynamics-verify/demo-evidence.json",
+      "sha256": "4124805cf1073568a0192479301025b0af537ed956aa076b337dc4706b6495a3",
+      "bytes": 3789
+    },
+    {
+      "path": "outputs/embodied-dynamics-verify/final-debugger.png",
+      "sha256": "99c99ef2d712920410eaea4b93ffdc42f5cb87419252c393571e3af6f7cc05d9",
+      "bytes": 9321
+    },
+    {
+      "path": "outputs/embodied-dynamics-verify/final-player.png",
+      "sha256": "38c6b1225a247c369b3201bf222a01f66dd79eda7a65f9ca3d924208aae54903",
+      "bytes": 5855
+    },
+    {
+      "path": "outputs/embodied-dynamics-verify/final-snapshot.json",
+      "sha256": "0554eb9e7d8638d9b279d74e5ee60ce05bf5e2ff602916ea26426c3e3f6c6bc5",
+      "bytes": 23241
+    },
+    {
+      "path": "outputs/embodied-dynamics-verify/initial-debugger.png",
+      "sha256": "db08f513dfd2be897a3b31fb698c98773e5fbcce95d24684ec13f29895c35c7b",
+      "bytes": 9490
+    },
+    {
+      "path": "outputs/embodied-dynamics-verify/initial-player.png",
+      "sha256": "4d9abd25dd9c6b953d2f4bf49a453cfa40856bc44a96c6e0900263c8b581f375",
+      "bytes": 5842
+    },
+    {
+      "path": "outputs/embodied-dynamics-verify/queried-snapshot.json",
+      "sha256": "7bed82cc25ae52728607352eb2878b34fd67e84e8e426a0f879ee25ee9a89668",
+      "bytes": 23242
+    },
+    {
+      "path": "outputs/embodied-dynamics-verify/render-document.vsr.json",
+      "sha256": "28446fa3b34e56dc233726a6bf3bb028457288d7cec327149be23595b9327985",
+      "bytes": 79993
+    },
+    {
+      "path": "outputs/embodied-dynamics-verify/world.json",
+      "sha256": "e0fa0d07572271252adf7dfadc3186d24a15acc3676048733421910e65fe1a74",
+      "bytes": 7868
+    },
+    {
+      "path": "outputs/experience-fabric-verify/causal-delta.json",
+      "sha256": "778b6a532aa08019c8d54dee2267f70abfa359782eade354815ee1eac332238d",
+      "bytes": 3746
+    },
+    {
+      "path": "outputs/experience-fabric-verify/checkpoint-snapshot.json",
+      "sha256": "1fb9a3837453a0cd5fbfed99469077af5c4e743d247746eb48517d4455fb2c86",
+      "bytes": 37394
+    },
+    {
+      "path": "outputs/experience-fabric-verify/demo-evidence.json",
+      "sha256": "6f98d3a7ccc0b8a2d75c7b0fc63ca7d0157a7f5e1afd9c1aadc32dc73b914e8e",
+      "bytes": 2256
+    },
+    {
+      "path": "outputs/experience-fabric-verify/experience-audio.wav",
+      "sha256": "3c98452ac22ec8ace1643a754ec8df319423ca3c8249d24be311e5e16436e216",
+      "bytes": 768044
+    },
+    {
+      "path": "outputs/experience-fabric-verify/experience-config.json",
+      "sha256": "9db9eb0a83b73eada1b4a91b9a564279aea5ec9090c04bcb4f80079207c22630",
+      "bytes": 28344
+    },
+    {
+      "path": "outputs/experience-fabric-verify/experience-showcase.mp4",
+      "sha256": "60508c8859c532b09d7bbef2dad327a035cf9d814d6894f9b8d31f97b04bde02",
+      "bytes": 96321
+    },
+    {
+      "path": "outputs/experience-fabric-verify/final-accessibility.png",
+      "sha256": "2d3019344e48b4dc6dbf6986c695fd3e9d0e8c2a352ab33ee232a6bc9731a502",
+      "bytes": 2402
+    },
+    {
+      "path": "outputs/experience-fabric-verify/final-debugger.png",
+      "sha256": "b5f6b43366eb63407354590ec72a9f708567a64879c5bbc69e04401cd5b58399",
+      "bytes": 4577
+    },
+    {
+      "path": "outputs/experience-fabric-verify/final-player.png",
+      "sha256": "6fadee7cbc5c5850cf92e9783762b6450348a3a615ea1cf9a830e0bdf091f53b",
+      "bytes": 2261
+    },
+    {
+      "path": "outputs/experience-fabric-verify/final-render-document.vsr.json",
+      "sha256": "d23780e459dea010699816eee829c07dc04297233bb04441563af150400ff7c7",
+      "bytes": 35313
+    },
+    {
+      "path": "outputs/experience-fabric-verify/final-snapshot.json",
+      "sha256": "ae5e31b0330ecaff0453e904c501d8b3cfe5dc51343480fe0e626e925c3999a3",
+      "bytes": 29471
+    },
+    {
+      "path": "outputs/experience-fabric-verify/frames/frame_000000.png",
+      "sha256": "da53668439ac621be6ed8c1a09063b06a72182bc8ea0f6c64f0f10babee51961",
+      "bytes": 1935
+    },
+    {
+      "path": "outputs/experience-fabric-verify/frames/frame_000001.png",
+      "sha256": "8b2b87865efbe9f238f7a41d47682d79feed10d7e7e48d0e11ad497ca0a54f88",
+      "bytes": 1933
+    },
+    {
+      "path": "outputs/experience-fabric-verify/frames/frame_000002.png",
+      "sha256": "b09ac5370add998d00811fceb6631f54dbdc7690f979982e4349666764822f5a",
+      "bytes": 1965
+    },
+    {
+      "path": "outputs/experience-fabric-verify/frames/frame_000003.png",
+      "sha256": "3c3e4db69cdcebc2c3825578d29c2f08e38e7fe0f81b76c6cc65d8090a77382a",
+      "bytes": 2596
+    },
+    {
+      "path": "outputs/experience-fabric-verify/frames/frame_000004.png",
+      "sha256": "f75a1189e5968577e580bc2f00150f04fa527fc533cdb441509514deca5b4834",
+      "bytes": 3638
+    },
+    {
+      "path": "outputs/experience-fabric-verify/frames/frame_000005.png",
+      "sha256": "43de7d32dda2083482c203285c5225f0aaaa09d3acd0c5bc5a6be7bf66320dde",
+      "bytes": 3224
+    },
+    {
+      "path": "outputs/experience-fabric-verify/frames/frame_000006.png",
+      "sha256": "5004e9519046b22892f6fea74074b7308277bb2ddb703863483374f70ae59c6b",
+      "bytes": 4106
+    },
+    {
+      "path": "outputs/experience-fabric-verify/frames/frame_000007.png",
+      "sha256": "2ca8a93bc46a3bcedb17e989d0b4de926bbed4212cbd5b107d79f8b568cfb30d",
+      "bytes": 3597
+    },
+    {
+      "path": "outputs/experience-fabric-verify/frames/frame_000008.png",
+      "sha256": "d370436e3f6fde3d49d1436a747218560e1569aad0149e983366923821fd4158",
+      "bytes": 2912
+    },
+    {
+      "path": "outputs/experience-fabric-verify/frames/frame_000009.png",
+      "sha256": "ecc2db56c37353816d22436e7567b272cb8ecea710b4a6bbff0719c925cb0685",
+      "bytes": 2539
+    },
+    {
+      "path": "outputs/experience-fabric-verify/frames/frame_000010.png",
+      "sha256": "06d8446e4df0cdd6adf481e2b075d4334cfd48ee94dd3cc4b98e5b8cb8cdd00b",
+      "bytes": 2191
+    },
+    {
+      "path": "outputs/experience-fabric-verify/frames/frame_000011.png",
+      "sha256": "42a5fed15c5a72d5642a33cb039e722d942389f0f9c1afed234b53187f4adedd",
+      "bytes": 1965
+    },
+    {
+      "path": "outputs/experience-fabric-verify/frames/frame_000012.png",
+      "sha256": "8258e0f1a7e64e2b025848139dd166781de6170f28e0ef4b1c81840876290a59",
+      "bytes": 1930
+    },
+    {
+      "path": "outputs/experience-fabric-verify/frames/frame_000013.png",
+      "sha256": "642cbcd98a47be1515e1e97d74c85761237dac10e9fd5275ed2511b735966423",
+      "bytes": 2137
+    },
+    {
+      "path": "outputs/experience-fabric-verify/frames/frame_000014.png",
+      "sha256": "de52a4d0268df23c11ad4abd87852715078585e318cd2944df5ad66e6ec8e3d4",
+      "bytes": 2545
+    },
+    {
+      "path": "outputs/experience-fabric-verify/frames/frame_000015.png",
+      "sha256": "81e2d9a2ac8fb21ace59966fefabcc6299ecf2615b9900da33897b7bf0da5168",
+      "bytes": 3003
+    },
+    {
+      "path": "outputs/experience-fabric-verify/frames/frame_000016.png",
+      "sha256": "aaf5d9862faee1b1d88e0197d50e5330582cddedc6b1083bcf6b9d02e6366740",
+      "bytes": 3347
+    },
+    {
+      "path": "outputs/experience-fabric-verify/frames/frame_000017.png",
+      "sha256": "cc811209fbac33923fc2cca580e242dfd2d99ac4dc4ae78f2c8d2ad4a9c7ac09",
+      "bytes": 3530
+    },
+    {
+      "path": "outputs/experience-fabric-verify/frames/frame_000018.png",
+      "sha256": "be033d69d5bd378c851305bf9384f460daa63a83338e07057b0c9be1eeba9ceb",
+      "bytes": 3708
+    },
+    {
+      "path": "outputs/experience-fabric-verify/frames/frame_000019.png",
+      "sha256": "2bad673b83f7f61d1d02dff42af1933d90a8a58507660907db7b74f4a4375794",
+      "bytes": 3887
+    },
+    {
+      "path": "outputs/experience-fabric-verify/frames/frame_000020.png",
+      "sha256": "710db47fbf676fc40234982c89b3f757638a8d631bf393181e3618d7ecf83e05",
+      "bytes": 3807
+    },
+    {
+      "path": "outputs/experience-fabric-verify/frames/frame_000021.png",
+      "sha256": "a2bc667b9d72ff3602adda0402c309f22117f07063bf84184adfe39074c7f41e",
+      "bytes": 4001
+    },
+    {
+      "path": "outputs/experience-fabric-verify/frames/frame_000022.png",
+      "sha256": "2f94fdf8370f89b5df218c3ac1fa898857cc17a945b2e75641f66461f11e01dd",
+      "bytes": 3806
+    },
+    {
+      "path": "outputs/experience-fabric-verify/frames/frame_000023.png",
+      "sha256": "6256e69b33023b167e16f3c7deebf4e0583fa757bf9a91173298217ee579eb0e",
+      "bytes": 3629
+    },
+    {
+      "path": "outputs/experience-fabric-verify/frames/frame_000024.png",
+      "sha256": "7fbd0d144cb0502f3b77f2862b8e4f31f2297ff911cdf0ec6f8d4062596c3d90",
+      "bytes": 3597
+    },
+    {
+      "path": "outputs/experience-fabric-verify/frames/frame_000025.png",
+      "sha256": "cae8ab2bb0b63950070a588b76ab250fd0d5096cba3a6888a4d90e94917899e3",
+      "bytes": 3650
+    },
+    {
+      "path": "outputs/experience-fabric-verify/frames/frame_000026.png",
+      "sha256": "8a3b62f458841f5ccaf01b304c82d4e25d67e1692fc9da220ae0634181e8bb64",
+      "bytes": 3620
+    },
+    {
+      "path": "outputs/experience-fabric-verify/frames/frame_000027.png",
+      "sha256": "ee1d07bb627e458f361b35468a54c7ffa0cbdf27abc9e9e2e21cf8c0d7e45fa5",
+      "bytes": 3264
+    },
+    {
+      "path": "outputs/experience-fabric-verify/frames/frame_000028.png",
+      "sha256": "f8a0a968d7bb1d46056440df45bbd2857018d9cf30b18bdf2117449e57ab2c14",
+      "bytes": 2833
+    },
+    {
+      "path": "outputs/experience-fabric-verify/frames/frame_000029.png",
+      "sha256": "3421d90dc9be542c34b67d8522ccf3cfded219d995c0ab0ff503f509ea6fe56d",
+      "bytes": 2432
+    },
+    {
+      "path": "outputs/experience-fabric-verify/initial-snapshot.json",
+      "sha256": "8daf920ab7923dc104e73137de7f635e6395da9df2545cb411f6f1e8c3d6c287",
+      "bytes": 3778
+    },
+    {
+      "path": "outputs/font-test/rendered.png",
+      "sha256": "24e5d5a1ac7ddbb28e8f9f1ed983aa9014515e04bdf5d143b0395bee1b116573",
+      "bytes": 86
+    },
+    {
+      "path": "outputs/font-test/solid.vsrfont.json",
+      "sha256": "5e253290e38f29dcca6352e6ec6ce4b08afb811ba47b6c3a9d0ed1d4a5d79c64",
+      "bytes": 225
+    },
+    {
+      "path": "outputs/resource-test/rendered.png",
+      "sha256": "f96998af8c64afa5a003c52a02dfc0d1dd12866e3dd344f751429c1580c5fd10",
+      "bytes": 87
+    },
+    {
+      "path": "outputs/resource-test/source.png",
+      "sha256": "331e72196baee1e45822c4f169870f75a5f50643ea53ef1c4060186769aba832",
+      "bytes": 74
+    },
+    {
+      "path": "outputs/simulation-verify/causal-delta.json",
+      "sha256": "1a14fb297fda22144d7ca46bcb982f0adebed9fa574a730ad6324cd97a36b990",
+      "bytes": 1025
+    },
+    {
+      "path": "outputs/simulation-verify/checkpoint-snapshot.json",
+      "sha256": "7f0b34a930c0059df123b08a8c654085d4c813f5178e294c90cac885f5eafcb9",
+      "bytes": 2693
+    },
+    {
+      "path": "outputs/simulation-verify/collision-debugger.png",
+      "sha256": "224d2cbd24f3639aa393846a9ae5999a6a4b0a047dee22573e2f959dd656cb30",
+      "bytes": 2561
+    },
+    {
+      "path": "outputs/simulation-verify/collision-player.png",
+      "sha256": "c3d31d6b15fa9d8344374e63a2a248b5ee4143fc514fc90be53da39708f33e98",
+      "bytes": 1662
+    },
+    {
+      "path": "outputs/simulation-verify/collision-snapshot.json",
+      "sha256": "20871203bc31f15b6741e320989f715b0de43b337244ba2e23ee1301536d14f8",
+      "bytes": 2692
+    },
+    {
+      "path": "outputs/simulation-verify/debugger.png",
+      "sha256": "f9171a5140d281e058e7566a7791b8967a40a47026cdfa77071e10be11fa949a",
+      "bytes": 2526
+    },
+    {
+      "path": "outputs/simulation-verify/debugger.projection.json",
+      "sha256": "67d98d444f3ef3ede760829cf4aaf996f021f0b6f636c43d28b5b3ff6d212302",
+      "bytes": 4107
+    },
+    {
+      "path": "outputs/simulation-verify/demo-evidence.json",
+      "sha256": "5d5913898471d00097c5ec4c348064dae859d5ccbc43640b557c60713125a1de",
+      "bytes": 2793
+    },
+    {
+      "path": "outputs/simulation-verify/final-snapshot.json",
+      "sha256": "1db207b11cbaab8cfcf345afde8c0cc6708d17fb612af9792a6c0921e770c496",
+      "bytes": 1736
+    },
+    {
+      "path": "outputs/simulation-verify/player.png",
+      "sha256": "c3d31d6b15fa9d8344374e63a2a248b5ee4143fc514fc90be53da39708f33e98",
+      "bytes": 1662
+    },
+    {
+      "path": "outputs/simulation-verify/player.projection.json",
+      "sha256": "0b12542c67bd946bd214e921f602c94212db2e4bcd518e7ffa2282c3c9eec515",
+      "bytes": 4276
+    },
+    {
+      "path": "outputs/simulation-verify/render-document.vsr.json",
+      "sha256": "390332912f544976376143c732ccea095d1e3133c799343774b45df96e30e517",
+      "bytes": 18403
+    },
+    {
+      "path": "outputs/spatial-embodiment-verify/causal-delta.json",
+      "sha256": "89915432e141315b60a77c90068207851f48496da19fbf8aadbb5114077d8c09",
+      "bytes": 3876
+    },
+    {
+      "path": "outputs/spatial-embodiment-verify/checkpoint-snapshot.json",
+      "sha256": "bcf131107d2f027f1f2f1106bb2f6886ea8dad1cf77c66bf7a158db65e57bcb4",
+      "bytes": 16984
+    },
+    {
+      "path": "outputs/spatial-embodiment-verify/commands.json",
+      "sha256": "0ebcba8a8ec8ea42046ca0ca162b532344e0e4e4a883d3b4cec3efd308a3cb9c",
+      "bytes": 1090
+    },
+    {
+      "path": "outputs/spatial-embodiment-verify/demo-evidence.json",
+      "sha256": "e742815e8cbf29930b20d59b66fdc87b6c2149fe82cf9eb275e4884bdfd07d5d",
+      "bytes": 3022
+    },
+    {
+      "path": "outputs/spatial-embodiment-verify/final-sensory-events.json",
+      "sha256": "0203b58e47206378782c055b1b4c1b4d29fba34b00216db6167a65268d570e0a",
+      "bytes": 83948
+    },
+    {
+      "path": "outputs/spatial-embodiment-verify/final-snapshot.json",
+      "sha256": "911dac73da6f6d1156a2351d186d1cfcc682ddefc962b238fe919b3cdbaaedde",
+      "bytes": 17512
+    },
+    {
+      "path": "outputs/spatial-embodiment-verify/final.frame-plan.json",
+      "sha256": "38912ba65f28bf1f4e662ef5da7c9d4a61607be421d85dd41089c5c801fb2227",
+      "bytes": 18366
+    },
+    {
+      "path": "outputs/spatial-embodiment-verify/final.png",
+      "sha256": "0761153d21ac4f0202b3a033bf691f9f472a02bc5f29430b19de755bdf90ce56",
+      "bytes": 21450
+    },
+    {
+      "path": "outputs/spatial-embodiment-verify/final.scene.vsr3d.json",
+      "sha256": "3ef8484b663088e04af42d4db1b4abdd962fecf5186fb8487e65fe4e75ea40e0",
+      "bytes": 90270
+    },
+    {
+      "path": "outputs/spatial-embodiment-verify/initial.frame-plan.json",
+      "sha256": "0d114ca9c31301baa173bab3278db256dfbf12933084c3d4bcda4be9e640096b",
+      "bytes": 15056
+    },
+    {
+      "path": "outputs/spatial-embodiment-verify/initial.png",
+      "sha256": "a01047991ed7a625e0a1f3703a63461ed8fb1a4193a2ae0e2ed05844ad15c550",
+      "bytes": 21009
+    },
+    {
+      "path": "outputs/spatial-embodiment-verify/initial.scene.vsr3d.json",
+      "sha256": "8f116b70f0ef48e6dd2b2b4686466a5a5ef5fcfd04ec28c203920d0ccffefad7",
+      "bytes": 88987
+    },
+    {
+      "path": "outputs/spatial-embodiment-verify/world.json",
+      "sha256": "1ea41d261b6d9f66c275b76260783fe9a9cbdf74b890b4e1bb9a885c04858434",
+      "bytes": 5929
+    },
+    {
+      "path": "outputs/test-range-2/frame_000000.png",
+      "sha256": "e0e15bf29f0f8fe9cf543247808818a338362ea7bb423b7c3efec810bc84ddbd",
+      "bytes": 820
+    },
+    {
+      "path": "outputs/test-range-2/frame_000001.png",
+      "sha256": "59cd87ea783ff0f6d7c4a44977e0f524da7c271f08242c8cc45b7956c838af43",
+      "bytes": 1387
+    },
+    {
+      "path": "outputs/test-range-2/frames-manifest.json",
+      "sha256": "d48c80bdce3de0423b63f32cb80b0bfbd26b7619df3a8e0bdc2f5216682a5367",
+      "bytes": 896
+    },
+    {
+      "path": "outputs/test-range.mp4",
+      "sha256": "69f154493126a262e9fd1bfc3c2c3f0a472509e42f0b3e1e1976948d24a9ad3e",
+      "bytes": 2129
+    },
+    {
+      "path": "outputs/test-range/frame_000000.png",
+      "sha256": "e0e15bf29f0f8fe9cf543247808818a338362ea7bb423b7c3efec810bc84ddbd",
+      "bytes": 820
+    },
+    {
+      "path": "outputs/test-range/frame_000001.png",
+      "sha256": "59cd87ea783ff0f6d7c4a44977e0f524da7c271f08242c8cc45b7956c838af43",
+      "bytes": 1387
+    },
+    {
+      "path": "outputs/test-range/frames-manifest.json",
+      "sha256": "f28f977ec9f162bfe987aa38bb6ec0bb75628fcc7369fe738ad347ce515f440b",
+      "bytes": 892
+    },
+    {
+      "path": "outputs/test-simulation-pipeline-tamper/cache/549bc641bc9b8f427760ec9f106bef7cb953d96acaef66a81640a4ca40fa22d0.json",
+      "sha256": "d121be3103007b41edf96f8262925f8c7d61894afe9a041843b631f69445bc57",
+      "bytes": 8
+    },
+    {
+      "path": "outputs/test-simulation-pipeline-tamper/manifest.json",
+      "sha256": "57f914f11b4da9be618596af2b877fd61b3176c240595a835da9988c52213884",
+      "bytes": 605
+    },
+    {
+      "path": "outputs/test-simulation-pipeline/cache/1945ecab26adb4ccca7bab901cd268d1463f17b09a5a646d70078ae490565aa6.json",
+      "sha256": "1945ecab26adb4ccca7bab901cd268d1463f17b09a5a646d70078ae490565aa6",
+      "bytes": 182
+    },
+    {
+      "path": "outputs/test-simulation-pipeline/cache/549bc641bc9b8f427760ec9f106bef7cb953d96acaef66a81640a4ca40fa22d0.json",
+      "sha256": "549bc641bc9b8f427760ec9f106bef7cb953d96acaef66a81640a4ca40fa22d0",
+      "bytes": 565
+    },
+    {
+      "path": "outputs/test-simulation-pipeline/manifest.json",
+      "sha256": "4b09740ea1db5fa9e60432f94839c55461cbedf0d1833eb26da1e38d820fb2ad",
+      "bytes": 1083
+    },
+    {
+      "path": "package.json",
+      "sha256": "1ba1d2c12dff9bf55c4d751a9effba512fbf0b9cf5a36ea9de58ce3732d69c24",
+      "bytes": 4456
+    },
+    {
+      "path": "packages/adapter-reality-one/README.md",
+      "sha256": "cea5a6ae362c39135d38cbce72d5ed998dfca7db8a872a1e3d04a5c130e2454e",
+      "bytes": 966
+    },
+    {
+      "path": "packages/adapter-reality-one/src/index.ts",
+      "sha256": "a038b0600f599c7818583ed06c8b4cd0077ec0e34d9b986bad829847e75d598e",
+      "bytes": 35816
+    },
+    {
+      "path": "packages/adapter-rfe/README.md",
+      "sha256": "3d9b638fc9987f32029f01a2b1aa3629de5c87877eed0858dd96b297210fd763",
+      "bytes": 140
+    },
+    {
+      "path": "packages/adapter-rfe/src/index.ts",
+      "sha256": "a4b259b0210897250eed4ad85113af138dbe970d78b3e507c81b8aa1435d49e4",
+      "bytes": 3228
+    },
+    {
+      "path": "packages/agent-protocol/README.md",
+      "sha256": "54e70a625da2cff5280c36b2de841a93376803be8380d3b79993d30596f34733",
+      "bytes": 111
+    },
+    {
+      "path": "packages/agent-protocol/src/index.ts",
+      "sha256": "82f564157720f82164ad46b02c4d854814f6f4ac883c52e2595448e1eee7e55c",
+      "bytes": 10907
+    },
+    {
+      "path": "packages/backend-canvas/README.md",
+      "sha256": "d782622be2e4b79778921545667f591790c75885778c8e9097672b93a5351be9",
+      "bytes": 115
+    },
+    {
+      "path": "packages/backend-canvas/src/browser.ts",
+      "sha256": "261f815c8b8dcd4bad83cda200dc032a0090300a6dd5fde375ce80a7fd717161",
+      "bytes": 6109
+    },
+    {
+      "path": "packages/backend-canvas/src/index.ts",
+      "sha256": "1be8d2ffa4e1f39dc7e88fdcccc23d4a3669c7bccf1a74b3c1b428bdc6919803",
+      "bytes": 26704
+    },
+    {
+      "path": "packages/backend-null/README.md",
+      "sha256": "bad875c6167eeaa0f11033ad136f86e8ddc9097d045291c37bcb1de803da8dec",
+      "bytes": 126
+    },
+    {
+      "path": "packages/backend-null/src/index.ts",
+      "sha256": "0e075805a7e18bf6b1ec864459b76c7f1fbd65c381f685ff285586ba931b8b74",
+      "bytes": 1444
+    },
+    {
+      "path": "packages/build-pipeline/src/index.ts",
+      "sha256": "d873a8dda51c4ec0e1c06123c1f4810c44495330fafe9b8720c3b40a15462940",
+      "bytes": 7479
+    },
+    {
+      "path": "packages/cli/README.md",
+      "sha256": "d2654ad047db259604495c21a1de8cfe2603609d2435f11992875139d2ec27ec",
+      "bytes": 137
+    },
+    {
+      "path": "packages/cli/src/cli.ts",
+      "sha256": "8b0dddaf2f15c5ead78aa517bc1c40486ad8b5ae85333acb312ae20ffcb9b727",
+      "bytes": 16496
+    },
+    {
+      "path": "packages/constraint-physics-cli/src/cli.ts",
+      "sha256": "bfa8e97d00b97c4225f4e4df6c9252b9661801b16b0283dc804c3250181d9913",
+      "bytes": 5079
+    },
+    {
+      "path": "packages/constraint-physics-vsr/src/index.ts",
+      "sha256": "27b28056f7fa34e411831a58c497506ff84b3351e7ad429574b3926ce6fad95a",
+      "bytes": 12481
+    },
+    {
+      "path": "packages/constraint-physics/src/index.ts",
+      "sha256": "8718c7e7fc213770ed2757e02d23bfd0087ee5e8abe36d1c39db18f309b169d1",
+      "bytes": 59917
+    },
+    {
+      "path": "packages/core/README.md",
+      "sha256": "4084a8f66dabd13b50d6ff984cbd2e50b129064008ba4e419db7a3a2d51b9c12",
+      "bytes": 134
+    },
+    {
+      "path": "packages/core/src/index.ts",
+      "sha256": "f342e2785e0bcd7656572795604fc0a1b5cce9380ef092b715c02fded34ea0c1",
+      "bytes": 37377
+    },
+    {
+      "path": "packages/embodied-dynamics-cli/src/cli.ts",
+      "sha256": "b9ac24bb69f0d4574e95b46e3c87ec9c059deaaac2dd0ad441215cebfab8a371",
+      "bytes": 5863
+    },
+    {
+      "path": "packages/embodied-dynamics-vsr/src/index.ts",
+      "sha256": "3b0fad1b029a4cbd4e68823ad4a69530e699b5d3e704b13ac0e4f6426aba2c8a",
+      "bytes": 14725
+    },
+    {
+      "path": "packages/embodied-dynamics/src/index.ts",
+      "sha256": "e4e3ca3262e8cc5df09fb8b5194d73312c74dbaa9e27c231be26b61afdb5ae0e",
+      "bytes": 77982
+    },
+    {
+      "path": "packages/experience-fabric-audio/src/index.ts",
+      "sha256": "9b86fef72b53d1447b412532c5090f0bab4e3e9d408172f4de91df2e39822a8a",
+      "bytes": 11247
+    },
+    {
+      "path": "packages/experience-fabric-cli/src/cli.ts",
+      "sha256": "faac7170e1752b730ff2af1db8ea0658c3f8d4626ef89d961d51ad3ac5d1ae6f",
+      "bytes": 6834
+    },
+    {
+      "path": "packages/experience-fabric-vsr/src/index.ts",
+      "sha256": "1f2984e6ff42c23e6a0b5903a71cc7dff56a90a0221d87ddb77dd3f19e82b8f7",
+      "bytes": 10541
+    },
+    {
+      "path": "packages/experience-fabric/src/index.ts",
+      "sha256": "3843b6bbb4aa84796ff811ecbb716cf618598b6078a6f0d416faa72c1878ce05",
+      "bytes": 40360
+    },
+    {
+      "path": "packages/expression/README.md",
+      "sha256": "b5fac4a9e4aef22ae3bc06fc7b8d081d08fbce911564cad6bb27aa4bdd4aab06",
+      "bytes": 106
+    },
+    {
+      "path": "packages/expression/src/index.ts",
+      "sha256": "df0cb040634c80a94cc70878c8216f2fc77352a3282e1b4fd20a0caa8cc5e20c",
+      "bytes": 17400
+    },
+    {
+      "path": "packages/network-reconciliation/src/index.ts",
+      "sha256": "0e010c925af05fdecf238b92732420979d09af93e216802ba7148a0623a59a1d",
+      "bytes": 12823
+    },
+    {
+      "path": "packages/observer-projection/README.md",
+      "sha256": "acd1cab78e09732e735203f87ed0ad3579f4373425445af1fde9aa64ac64aa93",
+      "bytes": 257
+    },
+    {
+      "path": "packages/observer-projection/src/index.ts",
+      "sha256": "59b40f2163ac92a2e37b2a5fd08433e1afd9f390d2a3a60a5d7d84ebaaef3455",
+      "bytes": 16129
+    },
+    {
+      "path": "packages/renderer/src/index.ts",
+      "sha256": "55c3bc8f9232f503bb0f110c05fe49f9d6878753b613432bd65bad664448f15f",
+      "bytes": 4761
+    },
+    {
+      "path": "packages/simulation-cli/src/cli.ts",
+      "sha256": "26df6034154ea33b401903a988d4db03204ee163ee7ace45eba934abe98c736e",
+      "bytes": 6789
+    },
+    {
+      "path": "packages/simulation-core/src/index.ts",
+      "sha256": "65bb9ecc7792363243d0c269bd94417a7650b5056d87fe31574f88ee1beb9cbf",
+      "bytes": 23579
+    },
+    {
+      "path": "packages/simulation-vsr/src/index.ts",
+      "sha256": "f701ee0caca62639edcab2d66b9a3a57d709b53b515848f8909a3f9e1613a3a6",
+      "bytes": 9179
+    },
+    {
+      "path": "packages/spatial-embodiment-cli/src/cli.ts",
+      "sha256": "945f0b90e75a03c77868a82a9fe00765d85af6557b56c19fd09330d63693200c",
+      "bytes": 6648
+    },
+    {
+      "path": "packages/spatial-embodiment-vsr/src/index.ts",
+      "sha256": "46d382b2a9cce26e20cb3400fde7efc07dd4649f200ba6e77ff2a8943b83df19",
+      "bytes": 11273
+    },
+    {
+      "path": "packages/spatial-embodiment-vsr/src/vsr-spatial-v04.ts",
+      "sha256": "347f3218751f134850d225d0ca61b5f2a3a542257bc1722fc9abf349e7161050",
+      "bytes": 281
+    },
+    {
+      "path": "packages/spatial-embodiment/src/convex-narrow-phase.ts",
+      "sha256": "c8165d462e71dfa099dce182b8308c487ae24aa6a284ecbc5ec949406aa8345b",
+      "bytes": 13485
+    },
+    {
+      "path": "packages/spatial-embodiment/src/index.ts",
+      "sha256": "52cc1c38e833d62997bf1b11c4c0ecf13d43e1aaf87288a585726e39a548eca1",
+      "bytes": 81614
+    },
+    {
+      "path": "packages/spatial-embodiment/src/kernel-binding.ts",
+      "sha256": "f29d4d13fe54b09cee0167681317533f7badbee07aadc156b5392acc9776dfb3",
+      "bytes": 12503
+    },
+    {
+      "path": "packages/spec/README.md",
+      "sha256": "164c8ebaf6ef686f3e1870b77e92a6daa39648ea0c730809d3bf234e2fa4a2fe",
+      "bytes": 102
+    },
+    {
+      "path": "packages/spec/src/index.ts",
+      "sha256": "fd66e25afba293aca5482854923eae38e672acd7b1cd29641a066dcd19c121c4",
+      "bytes": 14334
+    },
+    {
+      "path": "schemas/reality-one-lifecycle-event.v0.1.schema.json",
+      "sha256": "16d4b07c02657f916f271b4c869b91e3ee1ffd6f7344c85af3b38ab6de15fc4c",
+      "bytes": 1204
+    },
+    {
+      "path": "schemas/rncs-kernel-rsr-vsr-binding.v0.1.schema.json",
+      "sha256": "f0ac630b0f46c9933295dcc447ad6b0299ac51f1444e4ebcaffd7b332e18d184",
+      "bytes": 4187
+    },
+    {
+      "path": "schemas/rsr-constraint-world.v0.2.schema.json",
+      "sha256": "4d736a13e8fb4da4dbbcf72f313e096c70247a00321ade540fb38457b267efc5",
+      "bytes": 3209
+    },
+    {
+      "path": "schemas/rsr-embodied-dynamics-world.v0.3.schema.json",
+      "sha256": "1536cfaefb5a0cded3b0c8044ee6d15a55ecbf3a155fbc9e448d595716286500",
+      "bytes": 7415
+    },
+    {
+      "path": "schemas/rsr-experience-fabric.v0.4.schema.json",
+      "sha256": "a87bf0b81ed410e8f3460068ab9ac938efe51b5ceb9f9c6bc7bda5b33aa1ed92",
+      "bytes": 10982
+    },
+    {
+      "path": "schemas/rsr-spatial-embodiment.v0.5.schema.json",
+      "sha256": "f73ecd80f9c8bd1385fb492748106f6f9d4e3038b4d35210e74c57caa7ecba17",
+      "bytes": 757
+    },
+    {
+      "path": "schemas/rsr-spatial-embodiment.v0.6.schema.json",
+      "sha256": "c412b671708fc08bde2c45b6a30c6214300454bb947cf902e740e6acb818981e",
+      "bytes": 2814
+    },
+    {
+      "path": "schemas/vsr-0.1.schema.json",
+      "sha256": "1f6f5567b12bee7b81ec83e1257e0c4861a9d079471b7b98dcdfc870402f794e",
+      "bytes": 5805
+    },
+    {
+      "path": "schemas/vsr-observer-policy.v0.1.schema.json",
+      "sha256": "4ab0f8754c251f9e3c6a64bcb93bbdb8b3c93e62dbeef50cb1e93d45deaddbf3",
+      "bytes": 1148
+    },
+    {
+      "path": "schemas/vsr-observer-profile.v0.1.schema.json",
+      "sha256": "b42a4f49b9680985376dafad94a2b83ba97c7a563cc92086a9beecbad94e6706",
+      "bytes": 832
+    },
+    {
+      "path": "scripts/build.mjs",
+      "sha256": "8ee94677c6ce9a23e4f10cfe74696ff1f8575adde02e6c6374f38b5ed7ce0f58",
+      "bytes": 1361
+    },
+    {
+      "path": "scripts/clean.mjs",
+      "sha256": "adefe1b3dd9639427702839f92df409c40aee2fab53fd6b3cb560092346c7dd8",
+      "bytes": 124
+    },
+    {
+      "path": "scripts/generate-release-manifest.mjs",
+      "sha256": "99cdd567b1e6c9f81832cc4ae80d93dfbe5b3301f571ddf6dedfb702e8181435",
+      "bytes": 5513
+    },
+    {
+      "path": "scripts/lint.mjs",
+      "sha256": "9121eb094ac1df76e4bd55b8f7332f289d26e4dbcad8dbf233d06a2cd3f6da07",
+      "bytes": 938
+    },
+    {
+      "path": "scripts/release-audit.mjs",
+      "sha256": "583c6e1f54e4b1efbf20c42109b9ca94443c787d4115df4d1b4fb70190ecea53",
+      "bytes": 6248
+    },
+    {
+      "path": "scripts/studio-smoke.mjs",
+      "sha256": "0080f086f705dd4e3599c5b2441b2f7e5ac21d3fdeba558585c314dd82187514",
+      "bytes": 771
+    },
+    {
+      "path": "scripts/verify-release.mjs",
+      "sha256": "4b5dba19b58177f181bb2daa24851babe5c2647bf56c36b898684532278f5d72",
+      "bytes": 1308
+    },
+    {
+      "path": "src/unified-index.mjs",
+      "sha256": "f8668854cb6a61eddcb25b0744f6af0baa1a62e6a9fb7b792b5f6b41bf38c212",
+      "bytes": 563
+    },
+    {
+      "path": "tests/constraint-physics.ts",
+      "sha256": "bdd16830706a8e58bcbc6bd663063b93700255e90058cb2fe7c54b0d7ca10a22",
+      "bytes": 16596
+    },
+    {
+      "path": "tests/embodied-dynamics.ts",
+      "sha256": "1a9d4c97461c4667e522274bb65263871650a0a7715dc0c3c2da5ed329816a2b",
+      "bytes": 13857
+    },
+    {
+      "path": "tests/experience-fabric.ts",
+      "sha256": "16b9ec72643ed7825bd16d3bb4b53c3bdcc62bd7dfd6d7dbc20f80c32a9896d4",
+      "bytes": 14701
+    },
+    {
+      "path": "tests/network-reconciliation.ts",
+      "sha256": "8d9c9f107bba15f54ae099327eb8364d5954140bfdaa3f4898ea67a772726c52",
+      "bytes": 5984
+    },
+    {
+      "path": "tests/run.ts",
+      "sha256": "211a77b7371603b0850d1e2682f78531962ae502f68d21499a16693b01068d44",
+      "bytes": 26958
+    },
+    {
+      "path": "tests/simulation.ts",
+      "sha256": "e916951c16d567c5ad4406522c793f58eb819f5d2f6b77e72fd15d5e1871caab",
+      "bytes": 8821
+    },
+    {
+      "path": "tests/spatial-embodiment.ts",
+      "sha256": "fc56fc0f644506faed800afc175a9c5a2e8901ccc954e62497854d155ee25279",
+      "bytes": 35027
+    },
+    {
+      "path": "tsconfig.json",
+      "sha256": "a0897c07d3478b26f2ec8031bd0067db46dd00c1c4b6f92bad1d220958486c13",
+      "bytes": 628
+    },
+    {
+      "path": "types/node-shim.d.ts",
+      "sha256": "06ce6e663ccc65765724c94715321ec4facdfc0c01b66ef796e1b07de44703bd",
+      "bytes": 2444
+    },
+    {
+      "path": "启动VSR-Studio.bat",
+      "sha256": "33deb79513e4f4be94889b7bdd3428c64672becf5729564f18a1e7748b08e1ba",
+      "bytes": 238
+    },
+    {
+      "path": "启动VSR-Studio.sh",
+      "sha256": "df8d02ba99ed2005d9f1019de27b8e464e3e3e480f59abe4450d66c6bf561679",
+      "bytes": 132
+    },
+    {
+      "path": "运行RSR演示.bat",
+      "sha256": "024c65bac181b298c8d8ccfcf5641c7991978b9f66f009f5412bf437ec1e2e3d",
+      "bytes": 80
+    },
+    {
+      "path": "运行RSR演示.sh",
+      "sha256": "6ecb7cd2f6cf93900ae273108e3c3f3e3acc58d9a45e87541056ee0ed55bfbd6",
+      "bytes": 75
+    },
+    {
+      "path": "运行RSR验收.bat",
+      "sha256": "148a8d88f638edb8aa400e6278233ad941e06e50ea573e1c89031ad784ca3899",
+      "bytes": 79
+    },
+    {
+      "path": "运行RSR验收.sh",
+      "sha256": "e90f23448fa9cda4e6b22b8a57dc4f69bc04b9719c6fc0925c01c1a8614af2b4",
+      "bytes": 74
+    },
+    {
+      "path": "运行三维具身演示.bat",
+      "sha256": "76bd10c8104009180515106a91fe796b9c576ebed5bc30d4f3d7ce6f7a2f25b7",
+      "bytes": 56
+    },
+    {
+      "path": "运行三维具身演示.sh",
+      "sha256": "c709a8aa7dec31ab91ad37cec96275f1a996397e410eab02986830e75b0066aa",
+      "bytes": 61
+    },
+    {
+      "path": "运行三维具身验收.bat",
+      "sha256": "d7b45e48a0dcdc7a1767e0febc397d74240490de2b7f92366aca2ac7487b4376",
+      "bytes": 58
+    },
+    {
+      "path": "运行三维具身验收.sh",
+      "sha256": "afa592d06b10115c153b145da17b504e1f737457298bc102b6895b42ec1d5d09",
+      "bytes": 63
+    },
+    {
+      "path": "运行具身动力学演示.bat",
+      "sha256": "3f1f509f27783650040c8ddd65fa51c8b6cec1043af9634c84f3e1ade26166db",
+      "bytes": 87
+    },
+    {
+      "path": "运行具身动力学演示.sh",
+      "sha256": "ced2f9bb274cd7d55d9221b49ca9b9956d2e85e21ed3a25b65a74e609b7d47c8",
+      "bytes": 82
+    },
+    {
+      "path": "运行具身动力学验收.bat",
+      "sha256": "aaad9d68e629076f2e4954f5359a81db0ae44c0a7531c977e43c14a0d208e71f",
+      "bytes": 89
+    },
+    {
+      "path": "运行具身动力学验收.sh",
+      "sha256": "28c970940cc12136f4e62f1a7cc26f82d53f4a768218142e52dad8078522f464",
+      "bytes": 84
+    },
+    {
+      "path": "运行时序体验演示.bat",
+      "sha256": "eef4197c52a912f317ab60117a79362dfb95653a2e5b59e23f330142e5dba80f",
+      "bytes": 70
+    },
+    {
+      "path": "运行时序体验演示.sh",
+      "sha256": "04524cd8eb5a430b84e2da67d5fb3ee55510f16e8e286418ea6d21c505b0ce76",
+      "bytes": 82
+    },
+    {
+      "path": "运行时序体验验收.bat",
+      "sha256": "f673c60d6a815bc54b511112415a9356999b8b5267e3346eef758a2f021615ce",
+      "bytes": 72
+    },
+    {
+      "path": "运行时序体验验收.sh",
+      "sha256": "c07c3bbf7472013834f123450e8fef1b34ec2b131cba78baa846276c3bbb7e15",
+      "bytes": 84
+    },
+    {
+      "path": "运行约束物理演示.bat",
+      "sha256": "2c2dcf2f5a88195f35d201e9fde257b15d9f56906d3551ecee806f7a7b0daca3",
+      "bytes": 304
+    },
+    {
+      "path": "运行约束物理演示.sh",
+      "sha256": "0c4263652ab5ef7690d366f805e5ad037f29d17c5670c87ec01fa7de99ef75c5",
+      "bytes": 138
+    },
+    {
+      "path": "运行约束物理验收.bat",
+      "sha256": "1dabad64cee2e4b52bb6257be79b6097861663dfa0e0de3b67288a69a3802edd",
+      "bytes": 302
+    },
+    {
+      "path": "运行约束物理验收.sh",
+      "sha256": "171df98fcbf2a33f97a9c4a48cb20116c7bf39e0d50b961be2140fe5e6fe3dd2",
+      "bytes": 132
+    },
+    {
+      "path": "运行验收.bat",
+      "sha256": "4cb4c1468ee8ae01b571fa18d3516e2b16b0cf37090e8a7028f3d8f207a31907",
+      "bytes": 372
+    }
+  ]
+}

@@ -19,7 +19,7 @@ export function clean(value){ if(Array.isArray(value)) return value.map(item=>it
 export const hash = value => rootHash(clean(value));
 export const seal = (value, field = 'root') => withIntegrity(clean(value), field);
 
-const frameObjectProjection = object => ({
+export const frameObjectProjection = object => ({
   objectId: object.objectId,
   position: clone(object.position),
   rotation: clone(object.rotationDeg),

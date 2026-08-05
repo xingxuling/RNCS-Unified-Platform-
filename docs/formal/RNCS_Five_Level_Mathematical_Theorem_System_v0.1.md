@@ -1,9 +1,9 @@
 # RNCS 五级数学化与定理化体系 v0.1
 
-**英文名：** RNCS Five-Level Mathematical & Theorem System  
-**状态：** 有限参考模型 + 可执行定理见证  
-**对应工程：** `@taowind/rncs-formal-theory`  
-**日期：** 2026-08-02
+- **英文名：** RNCS Five-Level Mathematical & Theorem System
+- **状态：** 有限参考模型 + 可执行定理见证
+- **对应工程：** `@taowind/rncs-formal-theory`
+- **日期：** 2026-08-02
 
 > RNCS 的数学化对象不是“整个现实本身”，而是：**现实状态怎样被声明、授权、分支、执行、同步、投影、演化和闭合。**
 
@@ -95,8 +95,8 @@ C(u)=C(v)
 u \equiv_s v
 \]
 
-**证明：** 由 A1 直接得到。  
-**工程见证：** `canonicalJson()` 与 `semanticRoot()` 的键序无关测试。
+- **证明：** 由 A1 直接得到。
+- **工程见证：** `canonicalJson()` 与 `semanticRoot()` 的键序无关测试。
 
 ### 定理 T1.2：单次正式提交的代际单调性
 
@@ -212,8 +212,8 @@ a'=a,\qquad i'=i
 
 则不存在合法正式转换。
 
-**证明：** 由 A3。  
-**工程见证：** denied、proposal mismatch、subject mismatch、missing scope 均拒绝。
+- **证明：** 由 A3。
+- **工程见证：** denied、proposal mismatch、subject mismatch、missing scope 均拒绝。
 
 ### 定理 T2.2：授权不变量保持
 
@@ -235,8 +235,8 @@ Auth(\alpha,\delta),\quad \sigma\models\mathcal I,\quad P_\alpha(\sigma)
 \sigma'=F_\alpha(\sigma)\Rightarrow \sigma'\models\mathcal I
 \]
 
-**证明：** 由 Hoare 三元组定义。  
-**工程见证：** 转换前后分别执行 invariant checks；任一失败即拒绝生成目标状态。
+- **证明：** 由 Hoare 三元组定义。
+- **工程见证：** 转换前后分别执行 invariant checks；任一失败即拒绝生成目标状态。
 
 ---
 

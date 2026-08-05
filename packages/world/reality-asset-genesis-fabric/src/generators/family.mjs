@@ -22,7 +22,7 @@ export function generatePrefabBlueprint({genome,variant,context}){
     components,
     dependencies:['mesh-glb','lod-manifest','pbr-texture-pack','skeleton-rig','animation-clips','retarget-profile','collision-shape','rsr-embodiment-profile','particle-preset','sfx-wav','projection-manifest','vsr-spatial-asset'],
     instancing:{allowed:true,shared_immutable_roles:['mesh-glb','pbr-texture-pack','skeleton-rig','animation-clips'],per_instance_state:['transform','animation_state','health','authority']},
-    runtime_contract:{studio:'reality-studio.prefab.v1.4',vsr:'vsr.spatial-scene.v0.4',rsr:'rsr.spatial-embodiment-world.v0.5'},
+    runtime_contract:{studio:'reality-studio.prefab.v1.4',vsr:'vsr.spatial-scene.v0.4',rsr:'rsr.spatial-embodiment-world.v0.6'},
     statistics:{triangles:context?.meshes?.[0]?.metadata?.triangle_count??0,bones:context?.rig?.bones?.length??0,clips:context?.animations?.clips?.length??0},
     prefab_root:''
   },'prefab_root');
@@ -35,13 +35,13 @@ export function generateRetargetProfile({genome,variant,rig,animations}){
   return seal({
     format:'reality-asset.animation-retarget-profile.v0.3',version:'0.3.0',
     profile_id:stableId('retarget',{asset:genome.identity.asset_id,variant,rig:rig?.rig_root}),asset_id:genome.identity.asset_id,variant,
-    source_profile:rig?.profile??'humanoid-lite',canonical_profile:'rncs.humanoid-lite.v0.3',bone_map,
+    source_profile:rig?.profile??'humanoid-rounded-v0.4',canonical_profile:'rncs.humanoid-rounded.v0.4',bone_map,
     required_bones:['hips','spine','head'],optional_bones:['left_arm','right_arm','left_leg','right_leg'],
     sockets:clone(rig?.sockets??[]),
     scale_policy:{mode:'normalized-height',reference_height:2.55,root_motion:'extract-horizontal'},
     rotation_policy:{coordinate_system:'right-handed-y-up',quaternion_order:'xyzw',preserve_joint_limits:true},
     clips:(animations?.clips??[]).map(c=>({name:c.name,duration:c.duration,loop:c.loop,semantic_events:clone(c.events??[]),retargetable:true})),
-    compatibility:{accepted_sources:['rncs.humanoid-lite.v0.3','mixamo-compatible','gltf-humanoid-lite'],target_runtime:'rsr.v0.5+'},
+    compatibility:{accepted_sources:['rncs.humanoid-rounded.v0.4','rncs.humanoid-lite.v0.3','mixamo-compatible','gltf-humanoid-lite'],target_runtime:'rsr.v0.6+'},
     retarget_root:''
   },'retarget_root');
 }

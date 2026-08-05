@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- 新增 `rncs.entity-kernel.v0.1`：typed Fragment Schema、Entity Composition、State Batch、Deferred Mutation Ledger 和快照恢复。
+
 ## v0.1.0 — 2026-06-30
 
 - 定义 Reality Transition Envelope。

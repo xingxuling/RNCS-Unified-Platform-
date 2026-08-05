@@ -11,11 +11,39 @@
     "floorY":{"type":"number"},
     "broadPhaseCellSize":{"type":"integer","minimum":1},
     "contactPersistenceDistance":{"type":"integer","minimum":0},
-    "bodies":{"type":"array","minItems":1},
+    "bodies":{"type":"array","minItems":1,"items":{"$ref":"#/$defs/body"}},
     "characters":{"type":"array"},
     "joints":{"type":"array"},
     "listeners":{"type":"array"},
     "reality":{"type":"object"}
+  },
+  "$defs":{
+    "vector3":{
+      "type":"object",
+      "required":["x","y","z"],
+      "properties":{"x":{"type":"number"},"y":{"type":"number"},"z":{"type":"number"}},
+      "additionalProperties":true
+    },
+    "shape":{
+      "oneOf":[
+        {"type":"object","required":["type","radius"],"properties":{"type":{"const":"sphere"},"radius":{"type":"number","exclusiveMinimum":0}},"additionalProperties":true},
+        {"type":"object","required":["type","halfExtents"],"properties":{"type":{"const":"box"},"halfExtents":{"$ref":"#/$defs/vector3"}},"additionalProperties":true},
+        {"type":"object","required":["type","radius","halfHeight"],"properties":{"type":{"const":"capsule"},"radius":{"type":"number","exclusiveMinimum":0},"halfHeight":{"type":"number","minimum":0}},"additionalProperties":true},
+        {"type":"object","required":["type","vertices","indices"],"properties":{"type":{"const":"convex"},"vertices":{"type":"array","minItems":4,"items":{"$ref":"#/$defs/vector3"}},"indices":{"type":"array","minItems":12,"items":{"type":"integer","minimum":0}}},"additionalProperties":true}
+      ]
+    },
+    "fixture":{
+      "type":"object",
+      "required":["id","shape"],
+      "properties":{"id":{"type":"string","minLength":1},"shape":{"$ref":"#/$defs/shape"},"localPosition":{"$ref":"#/$defs/vector3"},"sensor":{"type":"boolean"},"categoryBits":{"type":"integer","minimum":0},"maskBits":{"type":"integer","minimum":0},"bodyZone":{"type":"string"},"tags":{"type":"array","items":{"type":"string"}}},
+      "additionalProperties":true
+    },
+    "body":{
+      "type":"object",
+      "required":["id","kind","position","fixtures"],
+      "properties":{"id":{"type":"string","minLength":1},"kind":{"enum":["static","dynamic","kinematic"]},"position":{"$ref":"#/$defs/vector3"},"rotationDeg":{"$ref":"#/$defs/vector3"},"fixtures":{"type":"array","minItems":1,"items":{"$ref":"#/$defs/fixture"}}},
+      "additionalProperties":true
+    }
   },
   "additionalProperties":true
 }

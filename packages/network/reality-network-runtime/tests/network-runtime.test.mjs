@@ -6,7 +6,7 @@ import fs from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {
   RealityNetworkRuntime, issuePlayerDelegation, FORMATS, SnapshotInterpolator,
-  createTwoPlayerWorldConfig, hash, NETWORK_PROTOCOL, verifyNetworkWorldCompilationEnvelope
+  createTwoPlayerWorldConfig, hash, NETWORK_PROTOCOL, OBSERVER_RELEVANCE_FORMAT, verifyNetworkWorldCompilationEnvelope
 } from '../src/index.mjs';
 import {RealityOneGateway} from '../../../control/reality-one-gateway/src/index.mjs';
 import {createStudioNetworkWorld} from '../../../../examples/studio-authored-network-world-v03/project.mjs';
@@ -210,4 +210,19 @@ test('server rejects nonexistent, mismatched, duplicate and occupied player bind
   await runtime.joinSession({sessionId:id,subjectId:'subject:a',playerId:'a',characterId:'character:blue',bodyId:'player-blue'});
   await assert.rejects(runtime.joinSession({sessionId:id,subjectId:'subject:a',playerId:'a',characterId:'character:blue',bodyId:'player-blue'}),/PLAYER_ALREADY_JOINED/);
   await assert.rejects(runtime.joinSession({sessionId:id,subjectId:'subject:c',playerId:'c',characterId:'character:blue',bodyId:'player-blue'}),/PLAYER_SLOT_OCCUPIED/);
+});
+
+// 26
+test('observer relevance selects deterministic bounded views without mutating authority',async()=>{
+  const {runtime,ctx,id}=await setup({id:'session:t26'}),sourceRoot=ctx.server.lastSnapshot.stateRoot;
+  const profile={observerId:'observer:blue',position:{x:-2500,y:900,z:-1200},radius:3000,focusBodyIds:['player-blue'],maxObjects:2};
+  const first=runtime.pullObserverView({sessionId:id,...profile}),second=runtime.pullObserverView({sessionId:id,...profile});
+  assert.equal(first.format,OBSERVER_RELEVANCE_FORMAT);assert.equal(first.sourceStateRoot,sourceRoot);assert.equal(first.viewRoot,second.viewRoot);assert.equal(first.selectedObjects.length,2);assert.equal(first.selectedObjects.some(object=>object.objectId==='player-blue'),true);assert.equal(first.omittedBodyIds.includes('player-red'),true);assert.equal(ctx.server.lastSnapshot.stateRoot,sourceRoot);assert.equal(first.authority.authorityOnly,true);assert.equal(first.summary.budget,2);
+});
+
+// 27
+test('observer relevance preserves causal focus beyond the object budget',async()=>{
+  const {runtime,ctx,id}=await setup({id:'session:t27'}),sourceRoot=ctx.server.lastSnapshot.stateRoot;
+  const view=runtime.pullObserverView({sessionId:id,observerId:'observer:causal',position:{x:0,y:0,z:0},radius:1,maxObjects:1,causalBodyIds:['player-blue','player-red']});
+  assert.equal(view.selectedObjects.length,2);assert.deepEqual(view.selectedObjects.map(object=>object.objectId).sort(),['player-blue','player-red']);assert.equal(view.summary.budget,1);assert.deepEqual(view.missingRequiredBodyIds,[]);assert.equal(view.sourceStateRoot,sourceRoot);
 });

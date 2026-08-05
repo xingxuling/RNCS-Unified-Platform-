@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/vsr-spatial-irradiance-volume-field.v0.1.schema.json",
+  "title": "VSR Spatial Irradiance Volume Field v0.1",
+  "type": "object",
+  "required": ["format", "version", "sceneId", "sourceRoot", "topologyRoot", "settings", "volumes", "root"],
+  "properties": {
+    "format": {"const": "vsr.spatial-irradiance-volume-field.v0.1"},
+    "version": {"const": "0.1.0"},
+    "sceneId": {"type": "string", "minLength": 1},
+    "sourceRoot": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "topologyRoot": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "settings": {
+      "type": "object",
+      "required": ["blendDistance", "maxVolumes", "maxSamples"],
+      "properties": {
+        "blendDistance": {"type": "number", "exclusiveMinimum": 0, "maximum": 10000},
+        "maxVolumes": {"type": "integer", "minimum": 1, "maximum": 8},
+        "maxSamples": {"type": "integer", "minimum": 1, "maximum": 4096}
+      },
+      "additionalProperties": false
+    },
+    "volumes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "required": ["id", "volume"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "cellId": {"type": "string", "minLength": 1},
+          "volume": {"$ref": "vsr-spatial-irradiance-volume.v0.1.schema.json"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "root": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "additionalProperties": false
+}

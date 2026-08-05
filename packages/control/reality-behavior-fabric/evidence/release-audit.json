@@ -1,0 +1,17 @@
+{
+  "format": "reality-behavior.release-audit.v0.1",
+  "status": "PASS",
+  "errors": [],
+  "warnings": [
+    "PNG_RASTERIZATION_SKIPPED"
+  ],
+  "checks": {
+    "required_files": 14,
+    "program_valid": true,
+    "workspace_valid": true,
+    "victory": true,
+    "deterministic_random": true,
+    "dynamic_code": false,
+    "test_count": 81
+  }
+}

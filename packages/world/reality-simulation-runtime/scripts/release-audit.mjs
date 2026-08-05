@@ -10,6 +10,8 @@ const required = [
   'packages/spatial-embodiment-cli/src/cli.ts',
   'examples/spatial-embodiment/embodied-world.world.json',
   'schemas/rsr-spatial-embodiment.v0.5.schema.json',
+  'schemas/rsr-spatial-embodiment.v0.6.schema.json',
+  'schemas/rncs-kernel-rsr-vsr-binding.v0.1.schema.json',
   'docs/NAMING_BOUNDARY_INVERSION_SPATIAL_EMBODIMENT_v0.5.md',
   'docs/SPATIAL_EMBODIMENT_CONTRACT_v0.5.md',
   'docs/SPATIAL_EMBODIMENT_API_v0.5.md',
@@ -67,7 +69,7 @@ const spatialArtifacts = walk('outputs/spatial-embodiment-verify').filter(path =
 const audit = {
   format: 'rsr.release-audit.v0.6', version: pkg.version, ok: failures.length === 0, failures,
   sourceFileCount: sourceFiles.length, packageRuntimeDependencies: runtimeDependencies,
-  testSummary: { vsr: '29/29', simulationV01: '11/11', constraintPhysicsV02: '19/19', embodiedDynamicsV03: '30/30', temporalExperienceV04: '35/35', spatialEmbodimentV06: '59/59', total: '189/189' },
+  testSummary: { vsr: '29/29', simulationV01: '11/11', constraintPhysicsV02: '19/19', embodiedDynamicsV03: '30/30', temporalExperienceV04: '35/35', spatialEmbodimentV06: '63/63', networkReconciliationV07: '7/7', total: '194/194' },
   spatialRoots: spatial.roots,
   spatialReality: spatial.reality,
   compatibilityRoots: { v04StateRoot: experience.finalStateRoot, v03StateRoot: embodied.finalStateRoot, v02StateRoot: constraint.finalStateRoot, v01StateRoot: simulation.finalStateRoot },

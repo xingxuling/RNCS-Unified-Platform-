@@ -139,11 +139,11 @@ export function createTaoWindMcpServer({gateway,knowledge,config}){
 
  server.registerTool('search',{
   title:'Search TaoWind Knowledge',
-  description:'Search authoritative RNCS/Aetherworld documentation, runtime manifests, release manifests, and verification reports.',
-  inputSchema:{query:z.string().min(1).max(500),limit:z.number().int().min(1).max(20).optional()},
+  description:'Search RNCS/Aetherworld artifacts and optionally constrain retrieval to an evidence namespace, source packet, or persistent repository evidence.',
+  inputSchema:{query:z.string().min(1).max(500),limit:z.number().int().min(1).max(20).optional(),namespace:z.string().min(1).max(120).optional(),excluded_namespaces:z.array(z.string().min(1).max(120)).max(20).optional(),evidence_roles:z.array(z.string().min(1).max(120)).max(20).optional(),source_only:z.boolean().optional(),persistent_only:z.boolean().optional(),include_ephemeral:z.boolean().optional()},
   outputSchema:z.object({results:z.array(z.object({id:z.string(),title:z.string(),url:z.string(),snippet:z.string().optional(),metadata:z.record(z.any()).optional()}))}),
   annotations:readAnnotations
- },safe(async({query,limit=8})=>{const value={results:knowledge.search(query,{limit})};return{structuredContent:value,content:[{type:'text',text:json(value)}]};}));
+ },safe(async({query,limit=8,namespace,excluded_namespaces,evidence_roles,source_only,persistent_only,include_ephemeral})=>{const value={results:knowledge.search(query,{limit,namespace,excludedNamespaces:excluded_namespaces,evidenceRoles:evidence_roles,sourceOnly:source_only,persistentOnly:persistent_only,includeEphemeral:include_ephemeral})};return{structuredContent:value,content:[{type:'text',text:json(value)}]};}));
 
  server.registerTool('fetch',{
   title:'Fetch TaoWind Artifact',

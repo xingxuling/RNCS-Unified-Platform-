@@ -26,7 +26,7 @@ const write=(p,v)=>{fs.mkdirSync(path.dirname(p),{recursive:true});fs.writeFileS
 
 try{
   if(cmd==='serve'){
-    const {url}=await startStudioServer({port:Number(opt('--port')??17608),host:opt('--host')??'127.0.0.1'});console.log(`Reality Studio v1.5 Asset Forge Native Manufacturing: ${url}`);
+    const {url}=await startStudioServer({port:Number(opt('--port')??17608),host:opt('--host')??'127.0.0.1'});console.log(`Reality Studio v1.6 Character Genome + Asset Forge: ${url}`);
   }else if(cmd==='new'){
     const p=sealProject(createProject({title:opt('--title')??'RNCS原生项目'}));const out=path.resolve(opt('--out')??'reality-studio-v08-project.json');write(out,p);console.log(out);
   }else if(cmd==='validate'){

@@ -1,0 +1,11 @@
+{
+  "name": "@taowind/voice-performance-runtime",
+  "version": "0.1.0-alpha.1",
+  "private": false,
+  "type": "module",
+  "description": "Deterministic Voice Forge contract with single dialogue authority and reference WAV/viseme provider.",
+  "license": "Apache-2.0",
+  "exports": {".": "./src/index.mjs"},
+  "scripts": {"test": "node --test --test-concurrency=1 tests/*.test.mjs"},
+  "engines": {"node": ">=20"}
+}

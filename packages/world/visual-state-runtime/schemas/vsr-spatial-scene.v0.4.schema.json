@@ -44,6 +44,69 @@
         "textureId": {
           "type": "string",
           "minLength": 1
+        },
+        "irradianceBakeRoot": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "lightmapBakeRoot": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "irradianceVolumeBakeRoot": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "irradianceVolume": {
+          "$ref": "vsr-spatial-irradiance-volume.v0.1.schema.json"
+        },
+        "irradianceVolumeFieldRoot": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "irradianceVolumeField": {
+          "$ref": "vsr-spatial-irradiance-volume-field.v0.1.schema.json"
+        },
+        "probes": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "type": "object",
+            "required": [
+              "position",
+              "radius"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "position": {
+                "type": "array",
+                "minItems": 3,
+                "maxItems": 3,
+                "items": {
+                  "type": "number"
+                }
+              },
+              "radius": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "diffuseColor": {
+                "type": "string"
+              },
+              "specularColor": {
+                "type": "string"
+              },
+              "intensity": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 32
+              }
+            },
+            "additionalProperties": false
+          }
         }
       },
       "additionalProperties": false
@@ -118,6 +181,68 @@
       },
       "additionalProperties": false
     },
+    "hlod": {
+      "type": "object",
+      "required": [
+        "clusters"
+      ],
+      "properties": {
+        "clusters": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "sourceNodeIds",
+              "levels"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sourceNodeIds": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "levels": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "maxDistance",
+                    "proxyNodeIds"
+                  ],
+                  "properties": {
+                    "maxDistance": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
+                    "proxyNodeIds": {
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
     "activeCameraId": {
       "type": "string",
       "minLength": 1
@@ -148,6 +273,12 @@
             }
           },
           "uvs": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "uvs1": {
             "type": "array",
             "items": {
               "type": "number"
@@ -237,6 +368,28 @@
           "emissiveTextureId": {
             "type": "string"
           },
+          "lightmapTextureId": {
+            "type": "string"
+          },
+          "lightmapIntensity": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 8
+          },
+          "lightmapUvSet": {
+            "enum": [
+              0,
+              1
+            ]
+          },
+          "temporalReactive": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "reactiveMaskTextureId": {
+            "type": "string"
+          },
           "normalScale": {
             "type": "number",
             "minimum": 0
@@ -284,6 +437,11 @@
           },
           "receiveShadow": {
             "type": "boolean"
+          },
+          "temporalReactive": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
           }
         }
       }

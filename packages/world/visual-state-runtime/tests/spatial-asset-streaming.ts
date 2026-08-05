@@ -59,6 +59,35 @@ test('asset streaming schema and frame binding stay explicit',()=>{
   assert.match(plan.root,/^[a-f0-9]{64}$/);
 });
 
+test('asset format and external-resource metadata participate in catalog identity',()=>{
+  const base=record('asset:scene','scene'),glb=resolveSpatialAssetStreaming([{...base,format:'glb'}],{requestedAssetIds:['asset:scene']}),gltf=resolveSpatialAssetStreaming([{...base,format:'gltf',metadata:{resourceUri:'scene.bin'}}],{requestedAssetIds:['asset:scene']});
+  assert.notEqual(glb.catalogRoot,gltf.catalogRoot);
+  assert.notEqual(glb.root,gltf.root);
+});
+
+test('foreground assets get priority over a bounded Cell prefetch plan',async()=>{
+  const catalog=[record('asset:near','near',{cellIds:['cell:near'],priority:10}),record('asset:far','far',{cellIds:['cell:far'],priority:1})],plan=resolveSpatialAssetStreaming(catalog,{activeCellIds:['cell:near'],prefetchCellIds:['cell:far'],maxAssets:2,maxBytes:8,maxPrefetchAssets:1,maxPrefetchBytes:3});
+  assert.deepEqual(plan.requestedAssetIds,['asset:near']);
+  assert.deepEqual(plan.requiredAssetIds,['asset:near']);
+  assert.deepEqual(plan.prefetchAssetIds,['asset:far']);
+  assert.deepEqual(plan.queuedAssetIds,['asset:near']);
+  assert.deepEqual(plan.prefetchQueuedAssetIds,['asset:far']);
+  assert.equal(plan.bytesQueued,4);
+  assert.equal(plan.prefetchBytesQueued,3);
+  const starts:string[]=[],streamer=new VSRSpatialAssetStreamer(catalog,async asset=>{starts.push(asset.id);return bytes(asset.id.replace('asset:',''))});
+  const prefetched=await streamer.prefetch({prefetchCellIds:['cell:far'],maxAssets:2,maxBytes:8,maxPrefetchAssets:1,maxPrefetchBytes:3});
+  assert.deepEqual(prefetched.readyAssetIds,['asset:far']);
+  assert.deepEqual(prefetched.leasedAssetIds,[]);
+  const near=await streamer.acquire({activeCellIds:['cell:near'],maxAssets:2,maxBytes:8});
+  assert.deepEqual(near.leasedAssetIds,['asset:near']);
+  assert.deepEqual(starts,['asset:far','asset:near']);
+  const far=await streamer.acquire({activeCellIds:['cell:far'],maxAssets:2,maxBytes:8});
+  assert.deepEqual(far.operations,[]);
+  assert.deepEqual(far.leasedAssetIds,['asset:far']);
+  streamer.release(near.leasedAssetIds);streamer.release(far.leasedAssetIds);
+  assert.deepEqual(streamer.evict(),['asset:far','asset:near']);
+});
+
 let passed=0;
 for(const entry of tests){try{await entry.fn();passed++;console.log(`PASS ${entry.name}`)}catch(error){console.error(`FAIL ${entry.name}`);throw error}}
 console.log(`VSR spatial asset streaming tests: ${passed}/${tests.length} PASS`);

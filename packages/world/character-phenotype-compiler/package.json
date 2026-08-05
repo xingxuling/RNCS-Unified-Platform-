@@ -1,0 +1,31 @@
+{
+  "name": "@taowind/character-phenotype-compiler",
+  "version": "0.1.0-alpha.1",
+  "type": "module",
+  "description": "Deterministic RAGF reference compiler from RNCS Character Genome to cross-media digital actor asset families.",
+  "license": "Apache-2.0",
+  "exports": {
+    ".": "./src/index.mjs"
+  },
+  "files": [
+    "src",
+    "schemas",
+    "README.md",
+    "STATUS.md",
+    "CHANGELOG.md",
+    "RELEASE_NOTES.md"
+  ],
+  "scripts": {
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs",
+    "benchmark": "node scripts/benchmark.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@taowind/character-genome-runtime": "*",
+    "@taowind/reality-asset-genesis-fabric": "*",
+    "@taowind/reality-simulation-runtime": "*",
+    "@taowind/visual-state-runtime": "*"
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "format": "rncs.character-genome-forge-evidence.v0.1",
+  "version": "0.1.0-alpha.1",
+  "sample": {
+    "name": "蓝天临",
+    "cut_id": "S01",
+    "dialogue": "何罪之有？",
+    "character_id": "character:59f8bfa0a7eaaacfe59312db",
+    "genome_root": "347c1798b72d9140f56d8b8e9cfd75d03d80c6abe4807758b3deef64b4f2e440",
+    "identity_root": "6791a89700d61f78ff7dc9f861bebfcc0f0b47367ff2ddeddb6890ffe3038d7f",
+    "identity_signature_root": "2e7239fd014166f1b86bf344e7457fbc3e293348f0d0a7ab816fa4d04e6baa0d",
+    "asset_root": "2f38971c95f21c4ff14c11f476048e1f125d07e13c121a9aa320ad46c3faa75f",
+    "family_root": "aaef3281e6cb172b7f6c15f4c31964236c3e5912ba5c39f7a615b0d6b3c3c2c9"
+  },
+  "counts": {
+    "identity_parameters": 28,
+    "identity_morphs": 28,
+    "expressions": 8,
+    "visemes": 14,
+    "bones": 21,
+    "hair_families": 6,
+    "costume_families": 3,
+    "topology_families": 4
+  },
+  "outputs": {
+    "manifest_root": "efd0c8bcb3ac1b4aba897ec84ffb4d10eb60b12fea48e5773a755cbcfbad922c",
+    "file_count": 70,
+    "lod_roots": [
+      "0e682d5c421e07e219e7c00d8a55abdeff083542ed43570e35e1bcea1a268aed",
+      "d7ff243bd8f06fba234792419d121f7a796892094f862a3046880f1fb32c9c19",
+      "a0a5aa979e2d52956412091491bafb403c899d6431c9e2f15d67fcf3e80c2346"
+    ],
+    "cross_media": [
+      {
+        "mode": "native-2d",
+        "projection_root": "8a785afb78eba34bdc6367292c84fe4fd8695d41df2d8940f06750b02439e131"
+      },
+      {
+        "mode": "2.5d",
+        "projection_root": "59d048f5658a3b406884dbe0988c37c2e1b6cf6aa1763b6201b032d453baad0b"
+      },
+      {
+        "mode": "3d-assisted-2d",
+        "projection_root": "dfc55703043879f9d77e08502e42b607a2c23789a56339ae8549af30f20e71c9"
+      }
+    ],
+    "vsr_profile_root": "5e4c0c95fee8d4989ceab032ea36bcd6ae38402f84e0f448fc6c1fd71dcce946",
+    "rsr_profile_root": "c0a185b7468f4fb56c331249e875f93fc2665b0bdb81848bb3876ecaa253246b",
+    "anime_production_root": "ced6a3eb248219cfb0b57fe77208fa13ae7c0f6e8edaea595dcb5e357296486c",
+    "anime_binding_root": "c3a682ca9b99142cb4ee3f1a2e7186f9445830eb17b31e29093e26a3cf6df3d8",
+    "frame_sequence_root": "a77201983d758388d30b182568c5a223379c82d9622e522df8e9204381022150",
+    "frame_count": 120,
+    "anime_evidence_ledger_root": "eb4e0cae37e2410bf460691d6029125b635b00630060ad9db0b5423daf0bd1d0",
+    "voice_root": "61722bf0bbc646fde3d4174aa68bd84e8327cb7bd2699944eb65eaca095b9378",
+    "audio_root": "0d26b8f69f35da493772b9d3cfcb0038f2a43a064c13e9f3f408dd9b47e5c7ab"
+  },
+  "gates": {
+    "character_valid": true,
+    "character_replay": true,
+    "incremental_recolor": true,
+    "incremental_geometry_rebuilt": false,
+    "rollback_identity_restored": true,
+    "anime_ir": true,
+    "anime_replay": true,
+    "voice": true,
+    "audio": true,
+    "cross_media": true,
+    "cut_character_binding": true
+  },
+  "receipts": {
+    "provider": "6b5d0da82babaa8448204bf511261be4c1baf706f8d6f6b0666c1a1c6af0bbec",
+    "build": "c1d8ab1911c32f2ecff2daf0500226d35601e200ac06c06097d8132df0898488",
+    "snapshot": "2207c21dfa50b7414ac4bd56a92b282c991540fa77cc41c7dd84f529eabe620c",
+    "incremental": "26d7decd51b53686fb909fc8a20516a8421bfd51dcb5335c6461a1c42bf21cd2",
+    "rollback": "b35a09413fd634fec3c4e0815d3c22eb4410432258e1f3428c2b20a631a9c1ec",
+    "character_verification": "00414f9f28c3e0a4c60a19cb642e3a0ae1a45a700e53d5a9634f1576c96b1e0b"
+  },
+  "boundaries": {
+    "provider": "Offline deterministic reference provider only",
+    "quality": "reference-digital-actor-v0.1; not commercial final art",
+    "render": "procedural reference raster; no external GPU or human acceptance evidence",
+    "audio": "reference synthesis and mix; formal casting remains external"
+  },
+  "evidence_root": "495f03c621067984b12f441203970eb64a6b413daafa07e5fee768d50d9990ca"
+}

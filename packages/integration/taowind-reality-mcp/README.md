@@ -80,3 +80,12 @@ RSR/VSR证据由 Developer Execution Runtime 直接调用实际 CLI 生成。
 - GitHub Actions：`.github/workflows/taowind-execution-ci.yml`
 
 源码推送并重新部署前，当前线上 MCP 不会自动获得新工具。
+
+## 研究证据命名空间
+
+知识索引把工作区文件标记为 `repository` 持久证据。UE5/外部研究资料可以通过 `KnowledgeIndex.ingestSourcePacket(...)` 以
+`rncs.ephemeral-source-packet.v0.1` 注入内存，结果带有 `namespace`、`evidence_role`、`persistent`、`packet_id` 和 `source_uri`。
+它不会写入权威世界，也不会自动被当成已验证工程能力；完成检索后可以用 `dropSourcePacket(packet_id)` 撤销整包。
+
+MCP `search` 支持 `namespace`、`excluded_namespaces`、`evidence_roles`、`source_only`、`persistent_only` 和
+`include_ephemeral`，用于把“外部研究来源”和“当前仓库验证结果”分开检索。

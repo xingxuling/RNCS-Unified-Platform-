@@ -1,16 +1,16 @@
 {
   "format": "reality-behavior.benchmark.v0.1",
   "environment": {
-    "node": "v22.16.0",
-    "platform": "linux",
+    "node": "v24.15.0",
+    "platform": "win32",
     "arch": "x64"
   },
   "reports": [
     {
       "name": "sample_1000_ticks",
       "iterations": 7,
-      "median_ms": 560.705,
-      "p95_ms": 679.229,
+      "median_ms": 903.609,
+      "p95_ms": 1120.041,
       "result": {
         "tick": 1000,
         "root": "5c59c45c603aa95842594c2e06aeae5581d1c0efe1b996563ca67096022c1617",
@@ -20,8 +20,8 @@
     {
       "name": "agents_50_300_ticks",
       "iterations": 5,
-      "median_ms": 172.963,
-      "p95_ms": 186.121,
+      "median_ms": 320.708,
+      "p95_ms": 333.516,
       "result": {
         "tick": 300,
         "root": "868b81c2e5cbf936818d59c48fc66864476d7a8165480d6280f0543be9f413db",
@@ -31,8 +31,8 @@
     {
       "name": "agents_100_300_ticks",
       "iterations": 5,
-      "median_ms": 314.556,
-      "p95_ms": 322.957,
+      "median_ms": 554.886,
+      "p95_ms": 809.261,
       "result": {
         "tick": 300,
         "root": "29fc06b99f2716150cf6537866adc68ac5631997fd141bd48de33963c3280c3e",
@@ -42,8 +42,8 @@
     {
       "name": "agents_250_300_ticks",
       "iterations": 5,
-      "median_ms": 816.726,
-      "p95_ms": 830.435,
+      "median_ms": 1686.031,
+      "p95_ms": 1722.973,
       "result": {
         "tick": 300,
         "root": "bfb7323717ddb5b9866e1ab7173905f899ec9c8340c5f24a958aa501815f3637",
@@ -53,8 +53,8 @@
     {
       "name": "snapshot_restore_200",
       "iterations": 7,
-      "median_ms": 65.657,
-      "p95_ms": 74.171,
+      "median_ms": 158.795,
+      "p95_ms": 181.584,
       "result": {
         "root": "461c96b88b320858cddf12a0de1020ee24235c21d494b20ac58b46708af2c749",
         "snapshot_root": "b7f52ff1e0ff6047f344077373d1e27b178e26c467150f6ae7d927802ef58bc5"
@@ -63,13 +63,13 @@
     {
       "name": "replay_500_ticks",
       "iterations": 5,
-      "median_ms": 333.033,
-      "p95_ms": 347.44,
+      "median_ms": 616.141,
+      "p95_ms": 674.44,
       "result": {
         "equal": true,
         "root": "08d9b1070b2907168e7cca373dac1d77441db24776f01756cd8e2ecfa71b9ccf"
       }
     }
   ],
-  "benchmark_root": "710efb70a9433a2e3e780709cf1782e032fa6f75c6708f3a51cdecfaf38fd5f0"
+  "benchmark_root": "7d718c64f06b62f1520197b570c6c739c95846d3486c47924639e3b4cf0a6d3d"
 }

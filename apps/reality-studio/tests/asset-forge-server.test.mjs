@@ -13,14 +13,14 @@ const post=async(url,route,value)=>{
 };
 const intent={description:'创建一名冰属性三维女剑士，名字叫霜璃，属于北境守望者。',subject_id:'subject:asset-forge-server-test',asset_kind:'character-3d',functional_role:'player-character',target_platforms:['desktop','mobile','web','xr'],constraints:{palette:['#1c4fa3','#f2f6ff','#9ddcff','#17305a'],style:'stylized-readable-pbr',max_texture_size:512,max_sprite_frames:6,audio_seconds:.8,max_particles:96,max_triangles:2400,pbr_texture_size:256,max_bones:64,animation_fps:30,lod_ratios:[1,.55,.25],license_policy:'generated-or-cleared'}};
 
-test('Studio v1.5 server closes native Asset Forge workflow',async()=>{
+test('Studio v1.6 server closes native Asset Forge workflow',async()=>{
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'studio-forge-server-'));
   const {server,url}=await startStudioServer({port:0,dataDir:dir});
   try{
     const health=await fetch(url+'/api/health').then(r=>r.json());
-    assert.equal(health.studio_version,'1.5.0-alpha.1');
+    assert.equal(health.studio_version,'1.6.0-alpha.1');
     assert.equal(health.asset_forge_native,true);
-    assert.equal(health.ragf_version,'0.4.0-alpha.1');
+    assert.equal(health.ragf_version,'0.5.0-alpha.1');
     assert.equal(health.rsr_version,'0.9.0-alpha.1');
     assert.equal(health.vsr_version,'0.8.0-alpha.1');
     const project=await fetch(url+'/api/unified/sample').then(r=>r.json());

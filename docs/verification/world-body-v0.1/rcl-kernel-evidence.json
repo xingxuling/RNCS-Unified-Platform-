@@ -257,7 +257,7 @@
     "236:COMMIT_TX:0:0:0",
     "237:HALT:0:0:0"
   ],
-  "draftSuiteRoot": "0731c3cc4588a66db69d80722357d5dd03b0de4f8eaa0e2be85afe10aaab7764",
+  "draftSuiteRoot": "dafe9dab12bd0ca2b635714a3e3bb4f1670f1e13411c84635288fa230f8fe7a2",
   "drafts": [
     {
       "bytecodeVersion": "1.1",
@@ -304,7 +304,7 @@
       "rbcBytes": 732,
       "rbcSha256": "173e0ac27f38cb96013dee2e8ec3f782459d6199cc58e96d1bf40509ad4f9c6f",
       "referenceStateRoot": "b719a9544c3564350bdba593c2635be308244d4b337572e89ba60edbd38e3c94",
-      "sourceSha256": "26b826f30fb4950229e3051167a6fa63e3c2b8f31e6966ff8bf9fbb00d94bfe9",
+      "sourceSha256": "d743a8d33489798c506c5c24ca32723f0dcfae253669a278a4f4739b721ea3e1",
       "status": "PASS"
     },
     {
@@ -344,7 +344,7 @@
       "rbcBytes": 589,
       "rbcSha256": "656fc92911dd78c027933f1417d8f75c9d0c239540a352e01ceeb6f65817e51f",
       "referenceStateRoot": "ff10d7bc6c355b08b561ae80cdf741dd35c5cffc71f87f00c9c1b640b21b5ffb",
-      "sourceSha256": "bc3090caff603dc3c14c5b8de28efb5382c05c012ea895bc35a58fa21fc4b448",
+      "sourceSha256": "662e9f9791b37c5d65a97a80a4939b317ca8f8016cebf733ace8fbcadf087487",
       "status": "PASS"
     },
     {
@@ -384,7 +384,7 @@
       "rbcBytes": 597,
       "rbcSha256": "042476f10383da9659ae0b35e08b70560345060c0cc8b4709344d458bfbd05f0",
       "referenceStateRoot": "e264e759aa430c067ec0146a2b53195950a9c8f8ac0dee5e493b9ff1f3b168cb",
-      "sourceSha256": "a8c0119d352647cd88f09483e5a87038320af64c04a75ada3a8ee4e931c650f4",
+      "sourceSha256": "c1d9c33eded744fbaf044fc0b06bfa2cfb99f47631d26b7cd245d3502bb19c3d",
       "status": "PASS"
     },
     {
@@ -424,7 +424,7 @@
       "rbcBytes": 584,
       "rbcSha256": "14472265ccaf80c4312432f2652ef2f645eabfef7566de076709869d32571312",
       "referenceStateRoot": "cfcf206c615be29c3df0831c4c2594212d48abd5c63120f27d9f552896394e14",
-      "sourceSha256": "743d271f0af6e9fa60b7acd60cbe20bbaa2fec551bc70ae4bc2ac946982fe85c",
+      "sourceSha256": "01697f8141304ed194882c5e7a6434e385891e61c71a9ad5ddeb20dbb24013c6",
       "status": "PASS"
     },
     {
@@ -464,7 +464,7 @@
       "rbcBytes": 605,
       "rbcSha256": "679769ab0e45bf4c27c44209b3f037d2d02a7a82b79d4b0b189d3d322fd9c697",
       "referenceStateRoot": "1e625c2df05648e06328d114a1f8949d5e4ef9b62149b728622ff204e8ae8431",
-      "sourceSha256": "1391fba296acf80adbae7a93aec8dba8c7d52d61d8ebf1ac10be68309c3b0ea4",
+      "sourceSha256": "bfe64245ec5d84abf29b4294ebc739255ad566ad5823591403e2ed660ea5bb4d",
       "status": "PASS"
     },
     {
@@ -504,7 +504,7 @@
       "rbcBytes": 613,
       "rbcSha256": "5b684d8d9d691123ad2b19ad9bc1adc6b8ad1b98c3af74a803b5e502d316a234",
       "referenceStateRoot": "00dba1d62e8eabe9844ed7dfb319e9173ebc71405e41d62f082ca030c530b3e2",
-      "sourceSha256": "0cfda479ceb995601693475d943a588c24a3d085dda9b783e02795ba1a24e4d0",
+      "sourceSha256": "90a7c03222275f395a751e51adbf8f69b761d2e33f2cdb41c27d9d3b90cd24fb",
       "status": "PASS"
     },
     {
@@ -544,7 +544,7 @@
       "rbcBytes": 570,
       "rbcSha256": "0451aabc31afa935da06c19aae008baa2ff0723854f46d9171c3542937c454a7",
       "referenceStateRoot": "780f86d8a08bcb1448bb5bae37e214d8c234fcfec3a24c160a14c5a903d014cb",
-      "sourceSha256": "ae4066240b9f30bcc2846b4c17e435c8c3019255dfc6ed9f2eb606094389ac77",
+      "sourceSha256": "72a91d65ae98dc53f7db9737ecb7e354c26e0ae27e6bdce5032f2c1dca592855",
       "status": "PASS"
     },
     {
@@ -588,11 +588,11 @@
       "rbcBytes": 697,
       "rbcSha256": "431995f60951c7c0a82b4f816576176efe336543a44d12f7a1d25a014e85cffb",
       "referenceStateRoot": "f23be1df9f6c7dd930a0ce555600e63c3bcc8d111b485116fe6d909b144c2055",
-      "sourceSha256": "57e075537a63bf7a28539c5b0c50c9704a5b25373620bd999053da4db7240fe2",
+      "sourceSha256": "706235e002c62a32da8062f79f762f1001a24bf5262426250b59c701f9a6dd3a",
       "status": "PASS"
     }
   ],
-  "evidenceRoot": "62abb1d541bbab4378d049323401796e42e0404cb9e8da241965104d39a77111",
+  "evidenceRoot": "7020e31e82376e026b801fa7ebdb5d7142741c3d7c2a29a8606fac895f99fae0",
   "format": "taowind.world-body-rcl-kernel-evidence.v0.1",
   "limitations": [
     "Does not prove the JavaScript World Body validator is implemented inside RCL.",
@@ -609,7 +609,7 @@
   "rclLanguageVersion": "0.14.0-alpha.1",
   "referenceStateRoot": "4bf224ac9e38f197f31509e92a83a4e179d28c6d43e8bb8979d213d8befa4a12",
   "scope": "aggregate RCL kernel plus eight requested formal drafts compiled to RBC, decoded, and executed with reference/native state-root parity",
-  "sourceRoot": "4de1913784c13144f66c5550ad4c8143dc3eb532866c9a8339b96e4688206069",
-  "sourceSha256": "9a7db5eb79d469f68cb94f439ac3afe13c929390e80fce3570fcb3962a0dba60",
+  "sourceRoot": "bc1f9eea2da17588c36ceb47e26ca59228443f31fe43c62d6ad253d2bcb2ab44",
+  "sourceSha256": "35596cfc630cfbd931a1144eeb885e2fc4a558cc868804e89ddc9ed7b486cbf8",
   "status": "PASS"
 }

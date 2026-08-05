@@ -79,6 +79,7 @@ export class RealityNetworkRuntime {
       results.push(result);}return results.at(-1);}
   pullSnapshot({sessionId,reason='manual'}={}){return this.require(sessionId).server.pullSnapshot(reason);}
   pullDelta({sessionId,tick}={}){return this.require(sessionId).server.pullDelta(tick);}
+  pullObserverView({sessionId,...profile}={}){return this.require(sessionId).server.pullObserverView(profile);}
   acknowledge({sessionId,playerId,inputSequence}={}){const ctx=this.require(sessionId),client=ctx.clients.get(playerId);return {known:client?.unacknowledged.some(x=>x.input.inputSequence===inputSequence)===false,inputSequence};}
   reconcile({sessionId,playerId}={}){const ctx=this.require(sessionId);return ctx.clients.get(playerId).reconcile(ctx.server.pullSnapshot('reconcile'));}
   disconnect({sessionId,playerId}={}){const ctx=this.require(sessionId);ctx.transport.disconnect(`client:${playerId}`);ctx.clients.get(playerId).connected=false;return ctx.server.disconnect(playerId);}

@@ -8,3 +8,5 @@ export const health=()=>({
 export async function spatial(){return import('../dist/packages/spatial-embodiment/src/index.js');}
 export async function spatialVsr(){return import('../dist/packages/spatial-embodiment-vsr/src/index.js');}
 export async function networkReconciliation(){return import('../dist/packages/network-reconciliation/src/index.js');}
+export * from './anime-motion.mjs';
+export * from './character-body.mjs';

@@ -1,0 +1,28 @@
+{
+  "name": "@taowind/rcl-anime-production-bridge",
+  "version": "0.1.0-alpha.1",
+  "private": false,
+  "type": "module",
+  "description": "Compatibility RCL Anime dialect compiler and RNCS Anime Forge CLI.",
+  "license": "Apache-2.0",
+  "exports": {
+    ".": "./src/index.mjs"
+  },
+  "bin": {
+    "rncs-anime": "src/cli.mjs",
+    "rncs-anime-control-plane": "src/control-plane-cli.mjs"
+  },
+  "scripts": {
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs",
+    "demo": "node src/cli.mjs compile examples/shenlinzhe-yanlv.rcl --out output/anime-forge-demo",
+    "control-plane": "node src/control-plane-cli.mjs examples/shenlinzhe-yanlv.rcl --out output/anime-control-plane"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@taowind/anime-production-runtime": "*",
+    "@taowind/reality-computation-language": "*",
+    "@taowind/rncs-rcl-control-plane": "*"
+  }
+}

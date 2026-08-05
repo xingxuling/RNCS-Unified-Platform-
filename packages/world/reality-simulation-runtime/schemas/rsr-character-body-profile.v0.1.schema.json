@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.local/schemas/rsr-character-body-profile.v0.1.schema.json",
+  "title": "RSR Character Body Profile v0.1",
+  "type": "object",
+  "required": ["format", "version", "profile_id", "character_id", "identity_root", "body", "bindings", "secondary_motion", "director_override", "profile_root"],
+  "properties": {
+    "format": {"const": "rsr.character-body-profile.v0.1"},
+    "version": {"const": "0.1.0-alpha.1"},
+    "character_id": {"type": "string", "minLength": 1},
+    "identity_root": {"type": "string", "minLength": 32},
+    "body": {"type": "object", "required": ["height_m", "mass_kg", "units"]},
+    "bindings": {"type": "object", "required": ["collision_profile_root", "physics_profile_root", "retarget_profile_root", "rig_root", "bones"]},
+    "profile_root": {"type": "string", "minLength": 32}
+  },
+  "additionalProperties": true
+}

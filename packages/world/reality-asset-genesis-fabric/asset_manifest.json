@@ -1,0 +1,27 @@
+{
+  "format": "ragf.asset-manifest.v0.4",
+  "generator": "provider:taowind:procedural-3d",
+  "quality_profile": "humanoid-rounded-v0.4",
+  "roles": {
+    "geometry": ["mesh-glb", "mesh-lod1-glb", "mesh-lod2-glb", "lod-manifest"],
+    "material": ["pbr-texture-pack"],
+    "motion": ["skeleton-rig", "animation-clips", "retarget-profile"],
+    "embodiment": ["collision-shape", "rsr-embodiment-profile"],
+    "presentation": ["vsr-spatial-asset", "projection-manifest", "prefab-blueprint"]
+  },
+  "quality_gates": {
+    "minimum_morph_targets": 1,
+    "minimum_embedded_animations": 4,
+    "minimum_skeleton_bones": 8,
+    "required_pbr_maps": ["base-color", "normal", "occlusion-roughness-metallic", "emissive"],
+    "required_collision_fixtures": ["body", "torso", "weapon-reach", "head"],
+    "lod_levels": 3,
+    "geometry_palette_independent": true
+  },
+  "authority": {
+    "identity": "genome.identity.asset_id",
+    "geometry": "mesh-glb.glb_root",
+    "material": "pbr-texture-pack.pack_root",
+    "runtime": ["vsr-spatial-asset.adapter_root", "rsr-embodiment-profile.profile_root"]
+  }
+}
