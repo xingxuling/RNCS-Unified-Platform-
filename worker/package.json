@@ -1,0 +1,13 @@
+{
+  "name": "@taowind/manufact-execution-worker",
+  "version": "0.3.0-alpha.2",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test --test-concurrency=1 test/*.test.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
