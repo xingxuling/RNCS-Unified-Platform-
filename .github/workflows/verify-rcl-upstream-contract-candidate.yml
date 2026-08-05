@@ -26,15 +26,25 @@ jobs:
         run: npm ci --ignore-scripts
       - name: Verify upstream authority contract directly
         run: node --test packages/languages/reality-computation-language/tests/rcl-upstream-authority-contract.test.mjs
-      - name: Verify embedded RCL full package suite with bounded diagnostics
+      - name: Verify embedded RCL full package suite with exact failure extraction
         shell: bash
         run: |
           set +e
           npm test --workspace @taowind/reality-computation-language > /tmp/rcl-package-suite.log 2>&1
           status=$?
           if [ "$status" -ne 0 ]; then
-            echo '--- RCL package-suite failure tail (last 300 lines) ---'
-            tail -n 300 /tmp/rcl-package-suite.log
+            echo '--- Exact TAP failure headings ---'
+            grep -n '^not ok ' /tmp/rcl-package-suite.log || true
+            echo '--- Exact TAP failure blocks ---'
+            while IFS=: read -r line rest; do
+              [ -n "$line" ] || continue
+              start=$((line > 8 ? line - 8 : 1))
+              end=$((line + 45))
+              echo "--- failure around line $line ---"
+              sed -n "${start},${end}p" /tmp/rcl-package-suite.log
+            done < <(grep -n '^not ok ' /tmp/rcl-package-suite.log || true)
+            echo '--- Suite summary ---'
+            grep -E '^# (tests|pass|fail|cancelled|skipped|todo|duration_ms)' /tmp/rcl-package-suite.log | tail -n 10 || true
             exit "$status"
           fi
           tail -n 80 /tmp/rcl-package-suite.log
