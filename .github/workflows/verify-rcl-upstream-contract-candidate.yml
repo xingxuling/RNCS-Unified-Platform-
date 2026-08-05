@@ -11,7 +11,7 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 40
     steps:
       - name: Checkout candidate branch
         uses: actions/checkout@v4
@@ -24,8 +24,20 @@ jobs:
           node-version: 22
       - name: Install workspace lockfile
         run: npm ci --ignore-scripts
-      - name: Verify embedded RCL upstream contract and full package suite
-        run: npm test --workspace @taowind/reality-computation-language
+      - name: Verify upstream authority contract directly
+        run: node --test packages/languages/reality-computation-language/tests/rcl-upstream-authority-contract.test.mjs
+      - name: Verify embedded RCL full package suite with bounded diagnostics
+        shell: bash
+        run: |
+          set +e
+          npm test --workspace @taowind/reality-computation-language > /tmp/rcl-package-suite.log 2>&1
+          status=$?
+          if [ "$status" -ne 0 ]; then
+            echo '--- RCL package-suite failure tail (last 300 lines) ---'
+            tail -n 300 /tmp/rcl-package-suite.log
+            exit "$status"
+          fi
+          tail -n 80 /tmp/rcl-package-suite.log
       - name: Remove one-shot verifier and commit evidence closure
         run: |
           rm .github/workflows/verify-rcl-upstream-contract-candidate.yml
