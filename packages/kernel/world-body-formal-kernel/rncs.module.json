@@ -1,0 +1,18 @@
+{
+  "format": "rncs.module.v0.1",
+  "id": "world-body-formal-kernel",
+  "name": "World Body Formal Kernel",
+  "version": "0.1.0-alpha.1",
+  "layer": "kernel",
+  "runtime": "rncs.world-body-formal-kernel",
+  "protocols": [
+    "taowind.formal-theorem-receipt.v0.1",
+    "taowind.formal-proof-bundle.v0.1"
+  ],
+  "authority": "verification-only-no-commit",
+  "dependsOn": [
+    "rncs-core",
+    "rcl",
+    "world-body-ir"
+  ]
+}

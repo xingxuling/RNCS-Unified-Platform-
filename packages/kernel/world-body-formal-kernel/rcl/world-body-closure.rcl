@@ -1,0 +1,11 @@
+reality WorldBodyClosureDraft {
+  facet draft.version : Text = "0.1.0-alpha.1"
+  facet draft.status : Text = "candidate"
+  facet closure.rsr_valid : Truth = true
+  facet closure.vsr_valid : Truth = true
+  facet closure.body_map_valid : Truth = true
+  facet closure.event_root_unified : Truth = true
+  facet closure.snapshot_restorable : Truth = true
+  facet closure.external_backends_verified : Truth = false
+  facet authority.commit_owned_by_rncs : Truth = true
+}

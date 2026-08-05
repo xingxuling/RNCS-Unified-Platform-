@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/vsr-refinement-result.v0.1.schema.json",
+  "title": "VSR Observational Refinement Result v0.1",
+  "type": "object",
+  "required": ["ok", "errors", "toleranceMm"],
+  "properties": {
+    "ok": { "type": "boolean" },
+    "errors": { "type": "array", "items": { "type": "object", "required": ["code"] } },
+    "toleranceMm": { "type": "integer", "minimum": 0 }
+  },
+  "additionalProperties": false
+}

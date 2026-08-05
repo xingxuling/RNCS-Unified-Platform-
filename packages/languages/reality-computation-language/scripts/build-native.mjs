@@ -14,7 +14,7 @@ if (process.platform === 'win32') {
   process.exit(run.status ?? 1);
 }
 
-const run = spawnSync('make', ['-C', path.join(root, 'native'), 'all'], {
+const run = spawnSync('make', ['-C', path.join(root, 'native'), 'clean', 'all'], {
   cwd: root,
   encoding: 'utf8',
   stdio: 'inherit',

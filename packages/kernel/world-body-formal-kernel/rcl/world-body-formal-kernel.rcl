@@ -1,0 +1,37 @@
+reality WorldBodyFormalKernel {
+  facet kernel.version : Text = "0.1.0-alpha.1"
+  facet kernel.status : Text = "candidate"
+  facet kernel.reference_checks : Number = 0
+
+  facet authority.owned_by_rncs : Truth = true
+  facet authority.presentation_non_interference : Truth = true
+  facet physical.fixed_step_bounded : Truth = true
+  facet physical.replay_deterministic : Truth = true
+  facet visual.projection_source_bound : Truth = true
+  facet visual.render_graph_acyclic : Truth = true
+  facet temporal.extrapolation_bounded : Truth = true
+  facet event.exactly_once_keyed : Truth = true
+  facet codegen.candidate_only : Truth = true
+  facet backend.external_unverified : Truth = true
+
+  subject verifier {
+    facet awareness : Number = 0
+    warrant world.verify on world
+  }
+
+  emergence verify_reference_kernel {
+    cause verifier
+    when authority.owned_by_rncs == true and authority.presentation_non_interference == true and physical.fixed_step_bounded == true and physical.replay_deterministic == true and visual.projection_source_bound == true and visual.render_graph_acyclic == true and temporal.extrapolation_bounded == true and event.exactly_once_keyed == true and codegen.candidate_only == true and backend.external_unverified == true
+    needs world.verify on world
+    alter kernel.status <- "reference-verified"
+    alter kernel.reference_checks <- kernel.reference_checks + 1
+    alter verifier.awareness <- verifier.awareness + 1
+    preserve authority.owned_by_rncs == true
+    preserve codegen.candidate_only == true
+    preserve backend.external_unverified == true
+    witness "rcl:world-body-formal-kernel:v0.1"
+  }
+
+  foresee verify_reference_kernel
+  realize verify_reference_kernel
+}

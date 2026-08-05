@@ -1,0 +1,9 @@
+reality RsrSpatialStateDraft {
+  facet draft.version : Text = "0.1.0-alpha.1"
+  facet draft.status : Text = "candidate"
+  facet spatial.units_declared : Truth = true
+  facet spatial.quaternion_normalized : Truth = true
+  facet spatial.body_identity_stable : Truth = true
+  facet spatial.static_not_integrated : Truth = true
+  facet authority.commit_owned_by_rncs : Truth = true
+}

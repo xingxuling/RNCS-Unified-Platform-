@@ -1,0 +1,11 @@
+{
+  "format": "rncs.module.v0.1",
+  "id": "vsr-formal-theory",
+  "name": "VSR Five-Level Formal Theory",
+  "version": "0.1.0-alpha.1",
+  "layer": "world",
+  "runtime": "rncs.vsr-formal-theory",
+  "protocols": ["taowind.vsr-formal-theory.v0.1"],
+  "authority": "presentation-verification-only-no-commit",
+  "dependsOn": ["world-body-formal-kernel", "world-body-ir", "vsr"]
+}

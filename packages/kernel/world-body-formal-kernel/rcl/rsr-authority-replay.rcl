@@ -1,0 +1,9 @@
+reality RsrAuthorityReplayDraft {
+  facet draft.version : Text = "0.1.0-alpha.1"
+  facet draft.status : Text = "candidate"
+  facet replay.fixed_step : Truth = true
+  facet replay.baseline_bound : Truth = true
+  facet replay.duplicate_idempotent : Truth = true
+  facet replay.prediction_non_authoritative : Truth = true
+  facet authority.commit_owned_by_rncs : Truth = true
+}
