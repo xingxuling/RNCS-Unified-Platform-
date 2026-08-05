@@ -1,0 +1,21 @@
+{
+  "format": "rncs.engine-release.v0.10",
+  "suiteVersion": "0.10.0-alpha.1",
+  "ragf": {"version":"0.4.0-alpha.1","tests":"146/146","features":["production-session","three-candidate-review","ten-readiness-gates","targeted-regeneration","selection-and-acceptance-receipts"]},
+  "realityStudio": {"version":"1.5.0-alpha.1","tests":"204/204","features":["asset-forge","real-structure-preview","strict-continuity-import","scene-instantiation","rsr-body-character-binding"]},
+  "gateway": {"tests":"12/12","protocol":"reality-asset-genesis.v0.4"},
+  "rsr":"0.9.0-alpha.1",
+  "vsr":"0.8.0-alpha.1",
+  "network":"0.2.0-alpha.1",
+  "currentRunTests":"949/949",
+  "sourceBoundUnchanged":{"csl":"162/162","aetherfusion":"344/344"},
+  "combinedEvidenceCoverage":"1455/1455",
+  "assetId":"asset:ffdeebce846b016459b11e16",
+  "productionRoot":"e6c034895228b68eeb74f97ac74e2c4bb2ada846ce28ec178eeaa5de5dc00bb6",
+  "previewRoot":"0102389a805dfbc592c5bc5b27390ae89592d3b02c94db663456f990faa81296",
+  "acceptanceRoot":"86cac80bcc631516e9eb9d0326f6847bb6bc634d1391309a846aab362f928745",
+  "projectRoot":"45d9838bb27545ec889fa1d01f5b6ad619032ee1a8b4adf3375e62f522efc19a",
+  "spatialStateRoot":"fnv1a64:e0353fb59b875930",
+  "frameRoot":"fnv1a64:d00705d06571d2ea",
+  "pixelRoot":"fnv1a64:0d23eed0f44448fe"
+}

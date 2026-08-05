@@ -1,0 +1,12 @@
+{
+  "format":"rncs.engine-release.v0.11",
+  "suiteVersion":"0.11.0-alpha.1",
+  "realityBehavior":{"version":"0.9.0-alpha.1","tests":"74/74","features":["quest-runtime","cooperative-task-runtime","deterministic-replay-receipts","snapshot-restore"]},
+  "realityStudio":{"version":"1.6.0-alpha.1","tests":"207/207","features":["multi-track-sequencer","seek-step-play","clip-editing","trace-recording","authority-presentation-root-separation"]},
+  "vertical":"1/1",
+  "focusedCurrentRun":"282/282",
+  "questRoot":"3139a5a1e8d121f3f2b550ccabe21e43feaebbb46a509f90b1c843b663c987ec",
+  "taskRoot":"ae56eadd4227eca57a561d4c8bcb5002a2bc06be29a1ee79f6f8f4d61ad469d2",
+  "replayRoot":"22d4c0e0da4e07d0bf47bcc2ab4505296075db5f2f675238bbbfd648d7fd73ec",
+  "sequenceRoot":"a93e0680abcb95b7bd63bb360ec54660d77da117964314a482d8835382f11ff7"
+}
