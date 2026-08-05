@@ -1,5 +1,6 @@
 import {clone,rootHash,seal} from './canonical.mjs';
 import {ANIME_XSHEET_FORMAT,normalizeCut} from './contracts.mjs';
+import {ANIME_PRODUCTION_XSHEETS_FORMAT,canonicalCutRef,listProductionCuts} from './editorial.mjs';
 
 const exposureSteps={on_ones:1,on_twos:2,on_threes:3,hold:Infinity,stepped:2};
 const pad=n=>String(n).padStart(2,'0');
@@ -16,15 +17,31 @@ function dialogueState(cut,frame){const active=activeRange(cut.dialogue_track,fr
 
 export function buildExposureSheet(input){
   const cut=normalizeCut(input),frameCount=Math.round(cut.duration*cut.fps),step=exposureSteps[cut.animation.exposure]??2,frames=[];
+  const layerId=cut.character_layers[0]?.layer_id??(cut.character_layers[0]?.actor_id?`character:${cut.character_layers[0].actor_id}`:'character:unassigned');
   for(let frame=0;frame<frameCount;frame++){
     const pose=atOrBefore(cut.key_pose_track,frame),poseFrame=frameOf(pose?.frame??0),drawingFrame=step===Infinity?poseFrame:Math.floor(Math.max(0,frame-poseFrame)/step)*step+poseFrame;
     const drawingPose=atOrBefore(cut.key_pose_track,drawingFrame)??pose;
     const smear=activeRange(cut.effect_track,frame).find(item=>item.kind==='smear'||item.type==='smear');
     const impact=activeRange(cut.effect_track,frame).find(item=>item.kind==='impact'||item.type==='impact');
-    frames.push({frame_number:frame,timecode:timecode(frame,cut.fps),drawing_id:drawingPose?`${cut.cut_id}:drawing:${drawingPose.pose_id??drawingPose.pose??'hold'}:${drawingFrame}`:`${cut.cut_id}:drawing:hold:0`,key_pose_id:drawingPose?.pose_id??drawingPose?.pose??null,exposure_count:step===Infinity?Math.max(1,frame-(frames.at(-1)?.frame_number??frame)+1):step,layer_id:'character:blue-tianlin',camera_state:cameraState(cut,frame),mouth_shape:mouthState(cut,frame),eye_state:eyeState(cut,frame),effect_state:{smear:Boolean(smear),impact:Boolean(impact)},dialogue_state:dialogueState(cut,frame),sound_cues:[...activeRange(cut.ambience_track,frame),...activeRange(cut.foley_track,frame),...activeRange(cut.sfx_track,frame)].map(item=>item.cue_id??item.sound??item.kind).filter(Boolean),composite_cues:clone(activeRange(cut.composite_track,frame)),animation_policy:{exposure:cut.animation.exposure,interpolation:'stepped',camera_only_motion:!pose,partial_animation:true}});
+    frames.push({frame_number:frame,timecode:timecode(frame,cut.fps),drawing_id:drawingPose?`${cut.cut_id}:drawing:${drawingPose.pose_id??drawingPose.pose??'hold'}:${drawingFrame}`:`${cut.cut_id}:drawing:hold:0`,key_pose_id:drawingPose?.pose_id??drawingPose?.pose??null,exposure_count:step===Infinity?Math.max(1,frame-(frames.at(-1)?.frame_number??frame)+1):step,layer_id:layerId,camera_state:cameraState(cut,frame),mouth_shape:mouthState(cut,frame),eye_state:eyeState(cut,frame),effect_state:{smear:Boolean(smear),impact:Boolean(impact)},dialogue_state:dialogueState(cut,frame),sound_cues:[...activeRange(cut.ambience_track,frame),...activeRange(cut.foley_track,frame),...activeRange(cut.sfx_track,frame)].map(item=>item.cue_id??item.sound??item.kind).filter(Boolean),composite_cues:clone(activeRange(cut.composite_track,frame)),animation_policy:{exposure:cut.animation.exposure,interpolation:'stepped',camera_only_motion:!pose,partial_animation:true}});
   }
-  const result={format:ANIME_XSHEET_FORMAT,version:'0.1.0-alpha.1',cut_id:cut.cut_id,duration:cut.duration,fps:cut.fps,frame_count:frames.length,exposure_policy:clone(cut.animation),frames,finite_animation:{uses_exposure_steps:true,interpolation:'stepped',no_implicit_smoothing:true}};
+  const result={format:ANIME_XSHEET_FORMAT,version:'0.1.0-alpha.1',cut_ref:canonicalCutRef(cut),cut_id:cut.cut_id,duration:cut.duration,fps:cut.fps,frame_count:frames.length,exposure_policy:clone(cut.animation),frames,finite_animation:{uses_exposure_steps:true,interpolation:'stepped',no_implicit_smoothing:true}};
   return seal(result,'xsheet_root');
+}
+
+export function buildProductionExposureSheets(production){
+  const sheets=listProductionCuts(production).map(cut=>({cut_ref:canonicalCutRef(cut),xsheet:buildExposureSheet(cut)}));
+  return seal({format:ANIME_PRODUCTION_XSHEETS_FORMAT,version:'0.1.0-alpha.1',production_id:production.production_id,production_root:production.production_root,timeline_root:production.editorial_timeline?.timeline_root??null,cut_count:sheets.length,total_frame_count:sheets.reduce((sum,item)=>sum+item.xsheet.frame_count,0),sheets},'xsheets_root');
+}
+
+export function validateProductionExposureSheets(collection){
+  const errors=[];
+  if(collection?.format!==ANIME_PRODUCTION_XSHEETS_FORMAT)errors.push('PRODUCTION_XSHEETS_FORMAT_INVALID');
+  if(collection?.cut_count!==collection?.sheets?.length)errors.push('PRODUCTION_XSHEETS_CUT_COUNT_MISMATCH');
+  let total=0;const refs=new Set();
+  for(const item of collection?.sheets??[]){if(refs.has(item.cut_ref))errors.push(`PRODUCTION_XSHEET_DUPLICATE:${item.cut_ref}`);refs.add(item.cut_ref);const validation=validateExposureSheet(item.xsheet);errors.push(...validation.errors.map(error=>`${item.cut_ref}:${error}`));total+=item.xsheet?.frame_count??0}
+  if(total!==collection?.total_frame_count)errors.push('PRODUCTION_XSHEETS_FRAME_COUNT_MISMATCH');
+  return{valid:errors.length===0,errors,xsheets_root:collection?.xsheets_root??null,total_frame_count:total};
 }
 
 export function validateExposureSheet(sheet){

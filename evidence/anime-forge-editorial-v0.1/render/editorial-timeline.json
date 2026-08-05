@@ -1,0 +1,72 @@
+{
+  "format": "rncs.anime-editorial-timeline.v0.1",
+  "version": "0.1.0-alpha.1",
+  "production_id": "anime-production:15a426ef8a4ef4057174f9c8",
+  "cut_order": [
+    "EP01/无名城审判/S01",
+    "EP01/无名城审判/S02"
+  ],
+  "entries": [
+    {
+      "ordinal": 0,
+      "cut_ref": "EP01/无名城审判/S01",
+      "cut_id": "S01",
+      "episode_id": "EP01",
+      "sequence_id": "SEQ01",
+      "scene_id": "无名城审判",
+      "mode": "native-2d",
+      "fps": 24,
+      "resolution": {
+        "width": 1920,
+        "height": 1080
+      },
+      "local_frame_count": 120,
+      "global_start_frame": 0,
+      "global_end_frame_exclusive": 120,
+      "transition_in": {
+        "type": "program-start",
+        "duration_frames": 0
+      },
+      "transition_out": {
+        "type": "hard-cut",
+        "duration_frames": 0
+      }
+    },
+    {
+      "ordinal": 1,
+      "cut_ref": "EP01/无名城审判/S02",
+      "cut_id": "S02",
+      "episode_id": "EP01",
+      "sequence_id": "SEQ01",
+      "scene_id": "无名城审判",
+      "mode": "native-2d",
+      "fps": 24,
+      "resolution": {
+        "width": 1920,
+        "height": 1080
+      },
+      "local_frame_count": 48,
+      "global_start_frame": 120,
+      "global_end_frame_exclusive": 168,
+      "transition_in": {
+        "type": "hard-cut",
+        "duration_frames": 0
+      },
+      "transition_out": {
+        "type": "program-end",
+        "duration_frames": 0
+      }
+    }
+  ],
+  "cut_count": 2,
+  "master_fps": 24,
+  "master_resolution": {
+    "width": 1920,
+    "height": 1080
+  },
+  "total_frame_count": 168,
+  "total_duration_seconds": 7,
+  "transition_policy": "hard-cut",
+  "render_strategy": "deterministic-hard-cut-concatenation",
+  "timeline_root": "b0a1d21e34db16b2bff87138ba409fe5a7f34324a623329cfe59710ea7eccf49"
+}

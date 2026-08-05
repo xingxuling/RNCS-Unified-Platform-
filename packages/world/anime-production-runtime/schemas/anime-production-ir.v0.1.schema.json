@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "rncs.anime-production-ir.v0.1",
   "type": "object",
-  "required": ["format", "version", "production_id", "series", "episode", "scene", "cut", "asset_bindings", "provider_bindings", "quality_profile", "rendering_profile", "motion_profile", "evidence_policy", "export_policy"],
+  "required": ["format", "version", "production_id", "series", "episode", "scene", "cut", "cuts", "active_cut_ref", "editorial_timeline", "asset_bindings", "provider_bindings", "quality_profile", "rendering_profile", "rendering_profiles", "motion_profile", "motion_profiles", "evidence_policy", "export_policy"],
   "properties": {
     "format": {"const": "rncs.anime-production-ir.v0.1"},
     "version": {"type": "string"},
@@ -11,24 +11,35 @@
     "episode": {"type": "string", "minLength": 1},
     "scene": {"type": "string", "minLength": 1},
     "cut": {"$ref": "#/$defs/cut"},
+    "cuts": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/cut"}},
+    "active_cut_ref": {"type": "string", "minLength": 1},
+    "editorial_timeline": {"$ref": "anime-editorial-timeline.v0.1.schema.json"},
     "asset_bindings": {"type": "object"},
     "provider_bindings": {"type": "object"},
     "quality_profile": {"type": "object"},
     "rendering_profile": {"type": "object", "required": ["format", "profile_root"]},
+    "rendering_profiles": {"type": "object", "additionalProperties": {"type": "object", "required": ["format", "profile_root"]}},
     "motion_profile": {"type": "object", "required": ["format", "profile_root"]},
+    "motion_profiles": {"type": "object", "additionalProperties": {"type": "object", "required": ["format", "profile_root"]}},
     "evidence_policy": {"type": "object"},
     "export_policy": {"type": "object"}
   },
   "$defs": {
     "cut": {
       "type": "object",
-      "required": ["cut_id", "duration", "fps", "resolution", "mode", "camera_track", "background_layers", "character_layers", "key_pose_track", "dialogue_track", "voice_track", "mouth_track", "secondary_motion_track", "animation"],
+      "required": ["cut_ref", "episode_id", "sequence_id", "scene_id", "cut_id", "duration", "fps", "resolution", "mode", "transition", "editorial_index", "camera_track", "background_layers", "character_layers", "key_pose_track", "dialogue_track", "voice_track", "mouth_track", "secondary_motion_track", "animation"],
       "properties": {
+        "cut_ref": {"type": "string", "minLength": 1},
+        "episode_id": {"type": "string", "minLength": 1},
+        "sequence_id": {"type": "string", "minLength": 1},
+        "scene_id": {"type": "string", "minLength": 1},
         "cut_id": {"type": "string"},
         "duration": {"type": "number", "exclusiveMinimum": 0},
         "fps": {"type": "number", "exclusiveMinimum": 0},
         "resolution": {"type": "object", "required": ["width", "height"], "properties": {"width": {"type": "integer", "minimum": 16}, "height": {"type": "integer", "minimum": 16}}},
         "mode": {"enum": ["native-2d", "2.5d", "3d-assisted-2d"]},
+        "transition": {"type": "object", "required": ["type", "duration_frames"], "properties": {"type": {"const": "hard-cut"}, "duration_frames": {"const": 0}}},
+        "editorial_index": {"type": "integer", "minimum": 0},
         "animation": {"type": "object", "required": ["exposure"]}
       }
     }

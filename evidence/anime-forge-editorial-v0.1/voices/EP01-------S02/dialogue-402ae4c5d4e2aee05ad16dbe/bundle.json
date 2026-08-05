@@ -1,0 +1,186 @@
+{
+  "format": "rncs.voice-performance-bundle.v0.1",
+  "version": "0.1.0-alpha.1",
+  "dialogue_event_id": "dialogue:402ae4c5d4e2aee05ad16dbe",
+  "voice_identity": "蓝天临.蓝天临.default",
+  "character_id": "蓝天临",
+  "text": "无需多言。",
+  "language": "zh-CN",
+  "start_seconds": 0.3333333333333333,
+  "performance": {
+    "pronunciation": "default",
+    "emotion": "resolve",
+    "intensity": 0.62,
+    "pace": 1,
+    "pitch": 0,
+    "pause_policy": "short",
+    "breath_policy": "reference"
+  },
+  "duration_seconds": 0.892,
+  "sample_rate": 22050,
+  "transcript": {
+    "text": "无需多言。",
+    "language": "zh-CN"
+  },
+  "word_timeline": [
+    {
+      "index": 0,
+      "text": "无",
+      "start": 0.3333333333333333,
+      "end": 0.4933333333333333
+    },
+    {
+      "index": 1,
+      "text": "需",
+      "start": 0.5183333333333333,
+      "end": 0.6963333333333332
+    },
+    {
+      "index": 2,
+      "text": "多",
+      "start": 0.7213333333333333,
+      "end": 0.8813333333333333
+    },
+    {
+      "index": 3,
+      "text": "言",
+      "start": 0.9063333333333333,
+      "end": 1.1203333333333334
+    }
+  ],
+  "phoneme_timeline": [
+    {
+      "index": 0,
+      "phoneme": "p1",
+      "start": 0.3333333333333333,
+      "end": 0.4933333333333333
+    },
+    {
+      "index": 1,
+      "phoneme": "p2",
+      "start": 0.5183333333333333,
+      "end": 0.6963333333333332
+    },
+    {
+      "index": 2,
+      "phoneme": "p3",
+      "start": 0.7213333333333333,
+      "end": 0.8813333333333333
+    },
+    {
+      "index": 3,
+      "phoneme": "p4",
+      "start": 0.9063333333333333,
+      "end": 1.1203333333333334
+    }
+  ],
+  "viseme_timeline": [
+    {
+      "index": 0,
+      "shape": "a",
+      "start": 0.3333333333333333,
+      "end": 0.4933333333333333,
+      "authority": "final-dialogue-audio"
+    },
+    {
+      "index": 1,
+      "shape": "o",
+      "start": 0.5183333333333333,
+      "end": 0.6963333333333332,
+      "authority": "final-dialogue-audio"
+    },
+    {
+      "index": 2,
+      "shape": "i",
+      "start": 0.7213333333333333,
+      "end": 0.8813333333333333,
+      "authority": "final-dialogue-audio"
+    },
+    {
+      "index": 3,
+      "shape": "u",
+      "start": 0.9063333333333333,
+      "end": 1.1203333333333334,
+      "authority": "final-dialogue-audio"
+    }
+  ],
+  "emotion_curve": [
+    {
+      "time": 0.3333333333333333,
+      "value": "resolve"
+    },
+    {
+      "time": 1.2253333333333334,
+      "value": "resolve"
+    }
+  ],
+  "prosody_curve": [
+    {
+      "time": 0.3333333333333333,
+      "pitch_hz": 310
+    },
+    {
+      "time": 1.2253333333333334,
+      "pitch_hz": 200
+    }
+  ],
+  "breath_timeline": [
+    {
+      "time": 0.3333333333333333,
+      "kind": "breath-in"
+    },
+    {
+      "time": 1.2253333333333334,
+      "kind": "breath-out"
+    }
+  ],
+  "waveform_summary": {
+    "peak": 0.20306256413459778,
+    "rms": 0.1026534879888987,
+    "sample_count": 19669
+  },
+  "provider_receipt": {
+    "provider_id": "taowind.voice-forge.reference-synthetic-v0.1",
+    "version": "0.1.0",
+    "mode": "reference",
+    "authority": "candidate",
+    "quality_boundary": "synthetic voiced reference; not a professional Japanese/Chinese actor performance"
+  },
+  "identity": {
+    "voice_identity": "蓝天临.蓝天临.default",
+    "character_id": "蓝天临",
+    "language": "zh-CN",
+    "seed": "voice-reference-v0.1",
+    "provider": "taowind.voice-forge.reference-synthetic-v0.1",
+    "continuity": {
+      "base_voiceprint_root": "328d261cb48b6765a6d47a32704ce65909a5acaed7b3bf3bbc51867cff98708b",
+      "pronunciation_profile": "deterministic-reference",
+      "pace_range": [
+        0.86,
+        1.12
+      ],
+      "pitch_range_hz": [
+        140,
+        320
+      ],
+      "emotion_map": [
+        "neutral",
+        "restrained_question",
+        "resolve"
+      ],
+      "performance_boundary": "reference-synthetic-not-human-performance"
+    }
+  },
+  "authority": {
+    "single_active_take": true,
+    "dialogue_event_id": "dialogue:402ae4c5d4e2aee05ad16dbe",
+    "mouth_driver": "viseme_timeline",
+    "close_mouth_on_end": true
+  },
+  "evidence": {
+    "source_root": "32afe8049cee4a5226a51f195b0230e79f4c5a7b22b77e48e75d253ee293306c",
+    "audio_root": "775733919c27d0592e50cab9525c9e524964e57ee86ab9d402ece44cb2b7318c",
+    "identity_root": "95c34d8dbc9ae2a5d9505e172478549fb83fe8467e7ddfb6be83358c19244949"
+  },
+  "bundle_root": "d77acb9e509e3678969de8cfa871ff8190e38f1ab09483f56b2d8212b1f67382"
+}

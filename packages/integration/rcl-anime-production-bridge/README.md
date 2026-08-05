@@ -13,3 +13,5 @@ npm run anime:control-plane
 ```
 
 The first sample is `examples/shenlinzhe-yanlv.rcl`. Its five-second Cut is the Phase 1 evidence case, not the total Anime Forge scope.
+
+The Phase 3 sample is `examples/shenlinzhe-yanlv-editorial.rcl`. The compiler traverses every episode, scene and Cut, emits a sealed hard-cut editorial timeline, reuses RAGF families by asset ID and creates per-Cut VSR/RSR profiles. `inspect`, `select-cut`, `xsheet --cut`, `xsheet --all`, `render`, `mix`, `verify` and `replay` operate on this production contract.
