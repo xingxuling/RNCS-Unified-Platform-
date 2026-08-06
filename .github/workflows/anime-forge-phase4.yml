@@ -70,6 +70,8 @@ jobs:
           ffmpeg -version | head -n 1
           ffprobe -version | head -n 1
       - run: npm ci --ignore-scripts
+      - name: Build the native RCL compiler
+        run: npm run build:native --workspace @taowind/reality-computation-language
       - name: Run Phase 4 tests
         shell: bash
         run: |
