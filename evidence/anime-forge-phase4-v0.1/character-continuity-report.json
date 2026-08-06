@@ -1,0 +1,73 @@
+{
+  "format": "rncs.anime-character-continuity-report.v0.1",
+  "version": "0.1.0-alpha.1",
+  "production_id": "anime-production:5072931f6b9031050ae8a4d4",
+  "production_root": "0e85a8a60bca9a61e8c99260861a6fd8fdfc98c43b55a257bea31ba461abca79",
+  "episode_intent_root": "88dbeccb650b44ece778b54c4958c1743e6dca1f879e2f5350a6d28cafed1b89",
+  "status": "pass",
+  "programme_continuous_actor": true,
+  "stable_identity": true,
+  "stable_appearance": true,
+  "actors": [
+    {
+      "actor_id": "蓝天临",
+      "cut_count": 3,
+      "spans_programme": true,
+      "pass": true,
+      "field_checks": {
+        "asset_id": true,
+        "family_root": true,
+        "asset_root": true,
+        "genome_root": true,
+        "identity_root": true,
+        "identity_signature_root": true,
+        "palette_root": true,
+        "proportion_root": true,
+        "appearance_root": true
+      },
+      "cuts": [
+        {
+          "cut_ref": "EP01/无名城审判终局/S01",
+          "actor_id": "蓝天临",
+          "asset_id": "character:蓝天临",
+          "family_root": "d58bd103b7c73411cd843b30f41d4d687ced3e539af6d760523cfd30d080063d",
+          "asset_root": "b635dc6cf7cc3f8acb93c93968a70c13ecd03a9712736d465849efef8e5617cf",
+          "genome_root": "959c7e3a39bdd82364fa79716dfa60f3a8f6fda82d237306c02d0e4b8bc8b4fa",
+          "identity_root": "682362679be55dca2700dc6146b92a48014170e40b5d851bda53e00f656cff5f",
+          "identity_signature_root": "1777f4ca2de3095b7ea0dae0100b1ea8f5f03da6e282910450c4222a7675a4a5",
+          "palette_root": "29350ee5987450467eb25c4d274504e5f1bd8cf6f12456a4881cc728d58a7103",
+          "proportion_root": "0623f2e69a3bc56b0a015fddd07e68dd49dd5fd242781423f900aa98e478d0eb",
+          "appearance_root": "de905c98256ab091884ae62946372159db338027403acbe345f7a54febe37a57"
+        },
+        {
+          "cut_ref": "EP01/无名城审判终局/S02",
+          "actor_id": "蓝天临",
+          "asset_id": "character:蓝天临",
+          "family_root": "d58bd103b7c73411cd843b30f41d4d687ced3e539af6d760523cfd30d080063d",
+          "asset_root": "b635dc6cf7cc3f8acb93c93968a70c13ecd03a9712736d465849efef8e5617cf",
+          "genome_root": "959c7e3a39bdd82364fa79716dfa60f3a8f6fda82d237306c02d0e4b8bc8b4fa",
+          "identity_root": "682362679be55dca2700dc6146b92a48014170e40b5d851bda53e00f656cff5f",
+          "identity_signature_root": "1777f4ca2de3095b7ea0dae0100b1ea8f5f03da6e282910450c4222a7675a4a5",
+          "palette_root": "29350ee5987450467eb25c4d274504e5f1bd8cf6f12456a4881cc728d58a7103",
+          "proportion_root": "0623f2e69a3bc56b0a015fddd07e68dd49dd5fd242781423f900aa98e478d0eb",
+          "appearance_root": "de905c98256ab091884ae62946372159db338027403acbe345f7a54febe37a57"
+        },
+        {
+          "cut_ref": "EP01/无名城审判终局/S03",
+          "actor_id": "蓝天临",
+          "asset_id": "character:蓝天临",
+          "family_root": "d58bd103b7c73411cd843b30f41d4d687ced3e539af6d760523cfd30d080063d",
+          "asset_root": "b635dc6cf7cc3f8acb93c93968a70c13ecd03a9712736d465849efef8e5617cf",
+          "genome_root": "959c7e3a39bdd82364fa79716dfa60f3a8f6fda82d237306c02d0e4b8bc8b4fa",
+          "identity_root": "682362679be55dca2700dc6146b92a48014170e40b5d851bda53e00f656cff5f",
+          "identity_signature_root": "1777f4ca2de3095b7ea0dae0100b1ea8f5f03da6e282910450c4222a7675a4a5",
+          "palette_root": "29350ee5987450467eb25c4d274504e5f1bd8cf6f12456a4881cc728d58a7103",
+          "proportion_root": "0623f2e69a3bc56b0a015fddd07e68dd49dd5fd242781423f900aa98e478d0eb",
+          "appearance_root": "de905c98256ab091884ae62946372159db338027403acbe345f7a54febe37a57"
+        }
+      ]
+    }
+  ],
+  "boundary": "exact rooted continuity for generated assets; human likeness and commercial character-design quality are not proven",
+  "report_root": "5d3f6e2757c94651426998103500b42b8d83a4467411ebe1557daae75e21a7ea"
+}

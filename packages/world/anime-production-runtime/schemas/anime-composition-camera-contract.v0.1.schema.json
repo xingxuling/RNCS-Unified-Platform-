@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/anime-composition-camera-contract.v0.1.schema.json",
+  "title": "RNCS Anime Composition and Camera Contract v0.1",
+  "type": "object",
+  "required": ["format", "version", "production_id", "output", "layer_order", "layers", "camera", "transitions", "seam_policy", "cut_contracts", "composition_root"],
+  "properties": {
+    "format": {"const": "rncs.anime-composition-camera-contract.v0.1"},
+    "output": {"type": "object", "required": ["width", "height", "fps", "color_space", "pixel_format", "alpha_mode"]},
+    "layer_order": {"type": "array", "minItems": 4, "items": {"type": "string"}, "uniqueItems": true},
+    "layers": {"type": "object"},
+    "camera": {"type": "object"},
+    "transitions": {"type": "object"},
+    "seam_policy": {"type": "object"},
+    "cut_contracts": {"type": "array", "minItems": 1},
+    "composition_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "additionalProperties": true
+}

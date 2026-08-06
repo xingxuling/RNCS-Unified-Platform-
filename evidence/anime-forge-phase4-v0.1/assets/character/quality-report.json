@@ -1,0 +1,37 @@
+{
+  "format": "ragf.anime-asset-quality-report.v0.1",
+  "valid": true,
+  "level": "experimental-built-in-anime",
+  "meaningful_character": true,
+  "flat_test_card": false,
+  "semantic_role_count": 9,
+  "view_count": 3,
+  "expression_count": 4,
+  "viseme_count": 5,
+  "pose_count": 4,
+  "palette_contrast": {
+    "ink_to_skin": 11.163,
+    "costume_to_trim": 10.264
+  },
+  "continuity_fields": [
+    "identity_root",
+    "genome_root",
+    "palette_root",
+    "proportion_root",
+    "hair_family",
+    "costume_family"
+  ],
+  "media_roots": {
+    "model-sheet.svg": "11a00257ee8196062b9cf05cec631a5101a476c74372d867b348ca139fc2c7dc",
+    "front-view.svg": "11a00257ee8196062b9cf05cec631a5101a476c74372d867b348ca139fc2c7dc",
+    "side-view.svg": "d7909bdc32e29f4ca37ede1be557e0152ded2c4fd057e76f99eec2e29e96fbd6",
+    "back-view.svg": "27577c0da8b82893ff7f5b37df29d7a8d326c6d69244e1f91686abbf29321052",
+    "expression-sheet.svg": "a7ed80160ecf0e7281e7ff0ee410b6427a52a561a5d2e3c62cf37bf8a804347a",
+    "mouth-chart.svg": "5decfe2fa730f37cad05248bf7f91f91d5b6cda165a3631a67aa94f3e38d0b1d",
+    "eye-chart.svg": "5c05ad6df712e3443a101ef86c0b867c8e650e5f0f4cc7c9d144c107a3700fb1",
+    "hand-chart.svg": "7f959e8b6f876e6d87972689a8d5a7bf9bc4b7f32a362f5069efba9dd769ac10",
+    "pose-library.svg": "6c1b596b3d0b96299595823fe6a8a895f362c8b5cba5e31db1e462ba953feb20"
+  },
+  "boundary": "deterministic experimental character asset; commercial Anime source-art quality not proven",
+  "quality_root": "5c9eaa2e430c60d9a238af2c5eef0856f9294804ea18642ee9424e8582641469"
+}

@@ -1,66 +1,78 @@
 # RNCS Anime Forge v0.1 Phase Status
 
 - Date: 2026-08-06
-- Branch: `codex/rncs-anime-forge-phase3-v01`
-- Status: **Phase 1 evidence and Phase 2 runtime contracts remain intact; Phase 3 multi-Cut editorial kernel is implemented and locally evidenced. The overall Anime Forge foundation remains in progress.**
+- Branch: `codex/rncs-anime-forge-phase4-v01`
+- Baseline: `origin/main-95@ef81e8fa311a029db5540c5af90ab1f4a283a141`
+- Status: **Phase 4 closes a real experimental media loop. Anime Forge is not claimed to have commercial broadcast quality.**
+
+## Authority contract
+
+`Episode is authoritative. Cut is derived. Clip is reusable. Patch is local. Continuity is global.`
+
+Reality Studio Cut selection is inspection-only and does not mutate `production_root` or `episode_intent_root`. Voice and character edits invalidate stale media and are recompiled through the Episode Production IR.
 
 ## Runnable production chain
 
-The reference program `《神临者言律》/EP01` now executes two Cuts through one deterministic local chain:
+The 20-second `shenlinzhe-yanlv-micro-episode.rcl` runs through one programme-level chain:
 
-`Anime RCL -> core RCL shadow program/bytecode -> multi-Cut Anime Production IR -> Editorial Timeline -> per-Cut X-Sheets -> RAGF Anime Asset Families -> per-Cut VSR/RSR profiles -> Voice/Viseme -> production Audio Scene -> global PNG sequence -> Evidence Ledger -> replay`
+`Anime RCL -> Episode Production IR -> Editorial Timeline -> Character Genome/RAGF lineage -> Provider Manifests -> per-Cut X-Sheets -> RSR secondary motion -> VSR layered composition -> Voice/Viseme -> Audio mix -> PNG sequence -> FFmpeg VideoMuxProvider -> ffprobe -> Evidence Ledger`
 
-`S01` contains 120 frames and `S02` contains 48 frames. The global hard-cut sequence contains 168 real PNG frames. The original five-second `S01` remains the first proof, not the scope ceiling.
+The derived Cuts are `S01` (168 frames), `S02` (168 frames), and `S03` (144 frames). They share one character identity, appearance, palette and proportion root. The final sequence has 480 real 960x540 PNG frames at 24 fps, with 480 unique state roots and 480 unique PNG hashes.
 
-Reality Studio exposes Cut selection, editorial inspection, per-Cut X-Sheets, voice replacement, full-sequence render/mix/verify/replay, snapshot and rollback at `/anime-forge.html`. The CLI entrypoint is `packages/integration/rcl-anime-production-bridge/src/cli.mjs`.
+## Delivered modules
 
-## Phase 3 gates
-
-- Production IR: `cuts`, stable `cut_ref`, `active_cut_ref`, per-Cut VSR/RSR profile maps and a sealed editorial timeline are implemented. Legacy `production.cut` remains available for compatibility.
-- Editorial: deterministic hard-cut concatenation, global/local frame mapping, total duration and impact analysis are implemented. Mixed FPS, mixed resolution, duplicate Cut refs and unsupported transitions fail validation.
-- Continuity: a recurring actor cannot silently change its identity or asset family between Cuts.
-- Compiler: every episode, scene and Cut is lowered. RAGF character/background families are deduplicated by asset ID and bound across Cuts.
-- X-Sheet: one sealed sheet per Cut plus a sealed production collection is generated.
-- VSR/RSR: each Cut resolves its own Anime rendering and director-overridable secondary-motion profile.
-- Voice Forge: delayed dialogue now generates non-silent local WAV data while retaining authoritative Cut-local timestamps. Replacement remains one active take per dialogue event.
-- Audio Forge: distinct dialogue events may coexist; each WAV is placed at its authoritative Cut-local start plus editorial offset. Long-program metrics use bounded linear scans.
-- Rendering: each Cut keeps an independent manifest and Ledger, while the production renderer writes a globally numbered frame sequence, aggregate manifest and aggregate Evidence Ledger.
-- Studio/CLI: Cut browsing, selection, full production render, mix, verification and replay are wired to the same runtime contracts.
-- Tests: positive paths and negative gates cover duplicate refs, profile mismatch, unsupported transition, identity drift, duplicate dialogue authority, delayed voice, audio placement and deterministic replay.
+- Provider Manifest schema and runtime validation for inputs, outputs, resolution, frame rate, determinism, Seed support, continuity, motion, resources, timeout, cost, failures and evidence.
+- RAGF built-in Anime asset families with identity and appearance seed, stable palette, proportions, facial features, hair, costume, expression/pose state, lineage, version and quality roots.
+- Episode-level Composition/Camera contract with stable layer order, opacity, masks/crops, camera movement, transitions, colour/exposure anchors and Cut seam validation.
+- Frame-aligned hair, coat, breathing, foreground parallax and camera easing in X-Sheets and Motion Tracks.
+- Voice-authoritative phoneme/viseme mouth timing, non-silent programme audio, stems and final WAV.
+- Real FFmpeg H.264/AAC MP4 mux and real ffprobe validation. Missing tools, timeout and invalid output fail closed.
+- Reality Studio Phase 4 quality workspace with playback, Provider use, lineage, continuity, seams, sync, secondary motion, MP4 status, failure reason and Evidence Ledger entry.
+- CLI `media` command, double-build comparison, negative tests, browser regressions and deterministic source packaging.
 
 ## Reproducible evidence
 
-Evidence lives in `evidence/anime-forge-editorial-v0.1` and is generated by `npm run evidence:anime-editorial`.
+Evidence is generated by `npm run evidence:anime-phase4` in `evidence/anime-forge-phase4-v0.1`.
 
-- Compiled root: `3bccfc9859c120f9880932b381bc9833b37167e5cc0ec4cfa927e97be3309bfd`
-- Voice-bound production root: `3b4bd68c83a8ad3aa137f9aed96e7d91fda711aecf705cedb31c0cac640e6b81`
-- Editorial timeline root: `b0a1d21e34db16b2bff87138ba409fe5a7f34324a623329cfe59710ea7eccf49`
-- Production X-Sheets root: `200bb4ef6c8d34143ccd1773ac7ece39b861e4b23b1e5b25ae6ac427f365475c`
-- Frame sequence root: `056eca0b8caf5c296186750ec85275457d04dbdc75cb7ec61821bb86da452b1a`
-- Evidence Ledger root: `84db65c00aae38b64db5266033e407ebdb8e03c69d1f8e718702a8d687bf8db4`
-- Audio root: `db06e8690a0b66b6ab6074486685d5d1d4284497dff91aa0b4b449547f4c29f8`
-- Evidence summary root: `61b7f9a4ad5b777f60b2853ab77c89611112cd759580727ceea292dfb8c43aa5`
+- Production root: `0e85a8a60bca9a61e8c99260861a6fd8fdfc98c43b55a257bea31ba461abca79`
+- X-Sheets root: `47e9f7c9ab6fb47d9cc59e56f4e9a107c071300b87aaee16c9eddecb3edcf876`
+- Frame sequence root: `972c98b3705ac6867c4682a968bb537a8bc2785f651bdaa2e43e35dc950b042e`
+- Audio root: `c6ce6786e2f54a184fadb8fe725ccb6cac926126b6367f598d1e8d485778bd10`
+- Evidence Ledger root: `fd802746592470d8f8d6e374e25c351849d8e0b3b51ba3e4105fc8dea1baf9c0`
+- Deterministic comparison root: `f60ab5ac4c43f25f00c8b12eab499fd5291bafd73cf8ac050dc26a7466d87a87`
+- Evidence summary root: `044d5490e95ac0178a2fd09ddb68c0a85ceda5cdb8aad5426e20c5e7af1d0096`
+- MP4 SHA-256: `a63a1a1aa37e4565b8bbf8c7a6e5bb523b4204776c2c9e6cf564393515cb8e81`
+- WAV SHA-256: `866c51f082fb6baf81f1ba2348a5e118183dff912d6e6040256b828bd3996147`
+
+The MP4 probes as H.264/yuv420p 960x540, 24 fps, 480 frames and 20 seconds, with a 20-second AAC mono audio stream. Both evidence builds match across every declared deterministic root. FFmpeg output is separately scoped to the recorded FFmpeg version.
 
 ## Verification
 
 ```text
-npm run build:world
-npm run test:anime-editorial
-npm run test:anime-forge
-npm run evidence:anime-editorial
+npm run test:anime-phase4
+npm run evidence:anime-phase4
+npm run browser:anime-phase4
 npm run package:anime-forge
 ```
 
-The focused evidence is targeted local reference evidence. Full Reality Studio regression, clean-machine packaging and human acceptance remain separate gates.
+The browser evidence covers 1440x900 desktop and 390x844 mobile layouts, real video metadata, nonblank preview pixels, no horizontal overflow and no Production Root change when selecting a Cut.
+
+The focused Phase 4 matrix passes `677/677` checks with `0` failures and `0` skips. Test report root: `4feea98453c05bac876dd0f1ce2dfae448bd8e044e5347da112ff8f4e2870dda`.
+
+## Rollback
+
+- Source and authoring state: use the existing Anime Forge snapshot/rollback contract.
+- Local patches: restore the prior snapshot and rebuild the affected programme media.
+- Git delivery: revert the Phase 4 merge commit on `main-95`; Phase 3 contracts remain backward compatible.
+- Failed media: retain IR, frames, WAV and reports; do not publish or rename a non-MP4 artifact as MP4.
 
 ## Remaining boundaries
 
-- RAGF assets are deterministic reference SVG families, not externally cleared commercial source art.
-- Voice is deterministic synthetic reference audio, not a licensed Japanese/Chinese actor performance.
-- The CPU renderer is a reference rasterizer, not TV/film final quality, DCC interoperability or GPU/provider parity.
-- RSR secondary motion is bounded procedural motion, not physical cloth or hair simulation.
-- Full 3D-assisted Anime production, nonlinear transitions, compositing interchange and external provider parity remain open.
-- FFmpeg is unavailable on the current machine. MP4 export remains explicitly blocked and no fake/static MP4 is emitted.
-- No clean-machine, broadcaster or human quality acceptance claim has been made.
+- Built-in Anime assets are experimental procedural assets, not externally cleared commercial final art.
+- Voice is deterministic synthetic reference performance, not a licensed actor recording.
+- Hair, cloth and parallax are bounded procedural tracks, not physical simulation.
+- The CPU layered rasterizer does not prove GPU, Godot, Unity, Blender or DCC parity.
+- Nonlinear editorial effects, production colour management and interchange remain bounded.
+- Clean-machine, broadcaster and human direction/art acceptance remain open.
 
-Phase 3 closes the first real multi-Cut production loop. It does not declare the complete RNCS Anime Forge task finished.
+Phase 4 proves media closure and evidence reproducibility. It does not finish the full Anime Forge quality programme.

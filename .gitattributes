@@ -1,0 +1,6 @@
+evidence/anime-forge-phase4-v0.1/** -text
+evidence/anime-forge-phase4-v0.1/**/*.json text eol=lf
+evidence/anime-forge-phase4-v0.1/**/*.txt text eol=lf
+evidence/anime-forge-phase4-v0.1/**/*.rcl text eol=lf
+evidence/anime-forge-phase4-v0.1/**/*.svg text eol=lf
+packages/integration/rcl-anime-production-bridge/examples/shenlinzhe-yanlv-micro-episode.rcl text eol=lf

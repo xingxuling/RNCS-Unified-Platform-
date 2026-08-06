@@ -1,0 +1,735 @@
+{
+  "format": "rncs.anime-provider-manifest-set.v0.1",
+  "version": "0.1.0-alpha.1",
+  "production_root": "0e85a8a60bca9a61e8c99260861a6fd8fdfc98c43b55a257bea31ba461abca79",
+  "manifests": [
+    {
+      "format": "rncs.anime-provider-manifest.v0.1",
+      "version": "0.1.0-alpha.1",
+      "provider_id": "ragf.anime-builtin-generator",
+      "provider_version": "0.1.0",
+      "role": "asset",
+      "display_name": "RAGF Built-in Anime Asset Generator",
+      "execution": {
+        "kind": "builtin",
+        "binary": null,
+        "cpu": true,
+        "gpu": false,
+        "network": false,
+        "platforms": [
+          "win32",
+          "linux",
+          "darwin"
+        ]
+      },
+      "inputs": [
+        "character-genome",
+        "episode-intent",
+        "seed"
+      ],
+      "outputs": [
+        "anime-character-family",
+        "anime-background-family",
+        "svg-model-sheets",
+        "asset-quality-report"
+      ],
+      "media": {
+        "produces_media": true,
+        "media_types": [
+          "image/svg+xml"
+        ],
+        "fixture": false,
+        "mock": false
+      },
+      "resolution": {
+        "minimum": {
+          "width": 16,
+          "height": 16
+        },
+        "maximum": {
+          "width": 1920,
+          "height": 1080
+        },
+        "supported": [
+          {
+            "width": 960,
+            "height": 540
+          },
+          {
+            "width": 1280,
+            "height": 720
+          },
+          {
+            "width": 1920,
+            "height": 1080
+          }
+        ]
+      },
+      "frame_rate": {
+        "minimum": 1,
+        "maximum": 60,
+        "supported": [
+          24
+        ]
+      },
+      "determinism": {
+        "deterministic": true,
+        "seed_support": true,
+        "declaration": "deterministic-for-sealed-inputs"
+      },
+      "character_continuity": {
+        "level": "identity-root-and-appearance-root",
+        "identity_root_required": true,
+        "cross_cut": true,
+        "cross_episode": true
+      },
+      "motion": {
+        "capabilities": [
+          "pose-library",
+          "expression-library",
+          "layered-2d-rig"
+        ],
+        "xsheet_track_required": false
+      },
+      "resources": {
+        "cpu": "required",
+        "gpu": "not-required",
+        "memory_mb": 256,
+        "disk_mb": 64
+      },
+      "limits": {
+        "timeout_ms": 30000,
+        "maximum_cost": 0,
+        "cost_unit": "local-compute"
+      },
+      "failures": [
+        "UNAVAILABLE",
+        "INVALID_INPUT",
+        "TIMEOUT",
+        "EXECUTION_FAILED",
+        "OUTPUT_INVALID"
+      ],
+      "evidence": {
+        "outputs": [
+          "provider-receipt",
+          "asset-lineage",
+          "quality-report",
+          "media-roots"
+        ],
+        "tool_version": true,
+        "input_root": true,
+        "output_root": true
+      },
+      "authority": {
+        "media_candidate_only": true,
+        "identity_write": false,
+        "episode_write": false,
+        "commit_write": false
+      },
+      "quality_boundary": "deterministic experimental Anime assets; commercial source-art quality not proven",
+      "manifest_root": "19a61fd664bbf5c33f15b280c01d92a7bbb7ed48e809e8a43f2f5ed0a9d58e11"
+    },
+    {
+      "format": "rncs.anime-provider-manifest.v0.1",
+      "version": "0.1.0-alpha.1",
+      "provider_id": "vsr.anime-builtin-rasterizer",
+      "provider_version": "0.1.0",
+      "role": "frame-render",
+      "display_name": "VSR Built-in Anime Raster Provider",
+      "execution": {
+        "kind": "builtin",
+        "binary": null,
+        "cpu": true,
+        "gpu": false,
+        "network": false,
+        "platforms": [
+          "win32",
+          "linux",
+          "darwin"
+        ]
+      },
+      "inputs": [
+        "anime-production-ir",
+        "xsheet",
+        "asset-families",
+        "composition-contract"
+      ],
+      "outputs": [
+        "png-frame-sequence",
+        "frame-manifest",
+        "render-receipts"
+      ],
+      "media": {
+        "produces_media": true,
+        "media_types": [
+          "image/png",
+          "image/png-sequence"
+        ],
+        "fixture": false,
+        "mock": false
+      },
+      "resolution": {
+        "minimum": {
+          "width": 16,
+          "height": 16
+        },
+        "maximum": {
+          "width": 1920,
+          "height": 1080
+        },
+        "supported": [
+          {
+            "width": 960,
+            "height": 540
+          },
+          {
+            "width": 1280,
+            "height": 720
+          },
+          {
+            "width": 1920,
+            "height": 1080
+          }
+        ]
+      },
+      "frame_rate": {
+        "minimum": 1,
+        "maximum": 60,
+        "supported": [
+          24
+        ]
+      },
+      "determinism": {
+        "deterministic": true,
+        "seed_support": true,
+        "declaration": "deterministic-for-sealed-inputs"
+      },
+      "character_continuity": {
+        "level": "bound-family-root",
+        "identity_root_required": true,
+        "cross_cut": true,
+        "cross_episode": false
+      },
+      "motion": {
+        "capabilities": [
+          "stepped-pose",
+          "camera",
+          "viseme",
+          "blink",
+          "layered-composition"
+        ],
+        "xsheet_track_required": true
+      },
+      "resources": {
+        "cpu": "required",
+        "gpu": "not-required",
+        "memory_mb": 512,
+        "disk_mb": 2048
+      },
+      "limits": {
+        "timeout_ms": 900000,
+        "maximum_cost": 0,
+        "cost_unit": "local-compute"
+      },
+      "failures": [
+        "UNAVAILABLE",
+        "INVALID_INPUT",
+        "TIMEOUT",
+        "EXECUTION_FAILED",
+        "OUTPUT_INVALID"
+      ],
+      "evidence": {
+        "outputs": [
+          "frame-manifest",
+          "frame-receipts",
+          "layer-roots",
+          "sequence-root"
+        ],
+        "tool_version": true,
+        "input_root": true,
+        "output_root": true
+      },
+      "authority": {
+        "media_candidate_only": true,
+        "identity_write": false,
+        "episode_write": false,
+        "commit_write": false
+      },
+      "quality_boundary": "deterministic CPU experimental Anime raster; GPU and commercial final quality not proven",
+      "manifest_root": "fafd7a9ad5f898107a0298224ce6fdb542677098ca5298ebf628690b10273654"
+    },
+    {
+      "format": "rncs.anime-provider-manifest.v0.1",
+      "version": "0.1.0-alpha.1",
+      "provider_id": "rsr.anime-secondary-motion-reference",
+      "provider_version": "0.1.0",
+      "role": "motion",
+      "display_name": "RSR Anime Secondary Motion",
+      "execution": {
+        "kind": "builtin",
+        "binary": null,
+        "cpu": true,
+        "gpu": false,
+        "network": false,
+        "platforms": [
+          "win32",
+          "linux",
+          "darwin"
+        ]
+      },
+      "inputs": [
+        "motion-profile",
+        "xsheet-frame",
+        "director-overrides"
+      ],
+      "outputs": [
+        "resolved-motion-track"
+      ],
+      "media": {
+        "produces_media": false,
+        "media_types": [],
+        "fixture": false,
+        "mock": false
+      },
+      "resolution": {
+        "minimum": {
+          "width": 16,
+          "height": 16
+        },
+        "maximum": {
+          "width": 1920,
+          "height": 1080
+        },
+        "supported": [
+          {
+            "width": 960,
+            "height": 540
+          },
+          {
+            "width": 1280,
+            "height": 720
+          },
+          {
+            "width": 1920,
+            "height": 1080
+          }
+        ]
+      },
+      "frame_rate": {
+        "minimum": 1,
+        "maximum": 60,
+        "supported": [
+          24
+        ]
+      },
+      "determinism": {
+        "deterministic": true,
+        "seed_support": true,
+        "declaration": "deterministic-for-sealed-inputs"
+      },
+      "character_continuity": {
+        "level": "asset-root-preserving",
+        "identity_root_required": false,
+        "cross_cut": true,
+        "cross_episode": false
+      },
+      "motion": {
+        "capabilities": [
+          "hair",
+          "coat",
+          "breathing",
+          "camera-ease",
+          "foreground-parallax"
+        ],
+        "xsheet_track_required": true
+      },
+      "resources": {
+        "cpu": "required",
+        "gpu": "not-required",
+        "memory_mb": 32,
+        "disk_mb": 1
+      },
+      "limits": {
+        "timeout_ms": 30000,
+        "maximum_cost": 0,
+        "cost_unit": "local-compute"
+      },
+      "failures": [
+        "UNAVAILABLE",
+        "INVALID_INPUT",
+        "TIMEOUT",
+        "EXECUTION_FAILED",
+        "OUTPUT_INVALID"
+      ],
+      "evidence": {
+        "outputs": [
+          "motion-root",
+          "override-receipts"
+        ],
+        "tool_version": true,
+        "input_root": true,
+        "output_root": true
+      },
+      "authority": {
+        "media_candidate_only": true,
+        "identity_write": false,
+        "episode_write": false,
+        "commit_write": false
+      },
+      "quality_boundary": "bounded procedural secondary motion; physical cloth and hair are not claimed",
+      "manifest_root": "0c9f8a902ff0fa3752b00a02784fb5342f93859da9a4ce4c4f6dbc5669f8620f"
+    },
+    {
+      "format": "rncs.anime-provider-manifest.v0.1",
+      "version": "0.1.0-alpha.1",
+      "provider_id": "taowind.voice-forge.reference-synthetic-v0.1",
+      "provider_version": "0.1.0",
+      "role": "voice",
+      "display_name": "Voice Forge Reference Synthetic Provider",
+      "execution": {
+        "kind": "builtin",
+        "binary": null,
+        "cpu": true,
+        "gpu": false,
+        "network": false,
+        "platforms": [
+          "win32",
+          "linux",
+          "darwin"
+        ]
+      },
+      "inputs": [
+        "dialogue-intent",
+        "voice-identity",
+        "seed"
+      ],
+      "outputs": [
+        "pcm-wav",
+        "phoneme-timeline",
+        "viseme-timeline",
+        "voice-receipt"
+      ],
+      "media": {
+        "produces_media": true,
+        "media_types": [
+          "audio/wav"
+        ],
+        "fixture": false,
+        "mock": false
+      },
+      "resolution": {
+        "minimum": {
+          "width": 16,
+          "height": 16
+        },
+        "maximum": {
+          "width": 1920,
+          "height": 1080
+        },
+        "supported": []
+      },
+      "frame_rate": {
+        "minimum": 1,
+        "maximum": 192000,
+        "supported": [
+          22050
+        ]
+      },
+      "determinism": {
+        "deterministic": true,
+        "seed_support": true,
+        "declaration": "deterministic-for-sealed-inputs"
+      },
+      "character_continuity": {
+        "level": "voice-identity-root",
+        "identity_root_required": true,
+        "cross_cut": true,
+        "cross_episode": true
+      },
+      "motion": {
+        "capabilities": [
+          "viseme-driver"
+        ],
+        "xsheet_track_required": true
+      },
+      "resources": {
+        "cpu": "required",
+        "gpu": "not-required",
+        "memory_mb": 128,
+        "disk_mb": 64
+      },
+      "limits": {
+        "timeout_ms": 30000,
+        "maximum_cost": 0,
+        "cost_unit": "local-compute"
+      },
+      "failures": [
+        "UNAVAILABLE",
+        "INVALID_INPUT",
+        "TIMEOUT",
+        "EXECUTION_FAILED",
+        "OUTPUT_INVALID"
+      ],
+      "evidence": {
+        "outputs": [
+          "voice-bundle",
+          "waveform-report",
+          "audio-root"
+        ],
+        "tool_version": true,
+        "input_root": true,
+        "output_root": true
+      },
+      "authority": {
+        "media_candidate_only": true,
+        "identity_write": false,
+        "episode_write": false,
+        "commit_write": false
+      },
+      "quality_boundary": "non-silent synthetic reference performance; licensed human performance not proven",
+      "manifest_root": "14ba6d0b6f1611550b74431b82e75baaa486cc1d4396df3424b9f3a2024a09e4"
+    },
+    {
+      "format": "rncs.anime-provider-manifest.v0.1",
+      "version": "0.1.0-alpha.1",
+      "provider_id": "taowind.audio-forge.reference-mixer-v0.1",
+      "provider_version": "0.1.0",
+      "role": "audio-mix",
+      "display_name": "Audio Forge Reference Mixer",
+      "execution": {
+        "kind": "builtin",
+        "binary": null,
+        "cpu": true,
+        "gpu": false,
+        "network": false,
+        "platforms": [
+          "win32",
+          "linux",
+          "darwin"
+        ]
+      },
+      "inputs": [
+        "audio-scene-ir",
+        "voice-wavs",
+        "sound-cues"
+      ],
+      "outputs": [
+        "master-wav",
+        "audio-stems",
+        "mix-report"
+      ],
+      "media": {
+        "produces_media": true,
+        "media_types": [
+          "audio/wav"
+        ],
+        "fixture": false,
+        "mock": false
+      },
+      "resolution": {
+        "minimum": {
+          "width": 16,
+          "height": 16
+        },
+        "maximum": {
+          "width": 1920,
+          "height": 1080
+        },
+        "supported": []
+      },
+      "frame_rate": {
+        "minimum": 1,
+        "maximum": 192000,
+        "supported": [
+          22050
+        ]
+      },
+      "determinism": {
+        "deterministic": true,
+        "seed_support": true,
+        "declaration": "deterministic-for-sealed-inputs"
+      },
+      "character_continuity": {
+        "level": "dialogue-event-authority",
+        "identity_root_required": false,
+        "cross_cut": true,
+        "cross_episode": false
+      },
+      "motion": {
+        "capabilities": [],
+        "xsheet_track_required": false
+      },
+      "resources": {
+        "cpu": "required",
+        "gpu": "not-required",
+        "memory_mb": 256,
+        "disk_mb": 512
+      },
+      "limits": {
+        "timeout_ms": 120000,
+        "maximum_cost": 0,
+        "cost_unit": "local-compute"
+      },
+      "failures": [
+        "UNAVAILABLE",
+        "INVALID_INPUT",
+        "TIMEOUT",
+        "EXECUTION_FAILED",
+        "OUTPUT_INVALID"
+      ],
+      "evidence": {
+        "outputs": [
+          "audio-scene",
+          "mix-report",
+          "master-root",
+          "stem-roots"
+        ],
+        "tool_version": true,
+        "input_root": true,
+        "output_root": true
+      },
+      "authority": {
+        "media_candidate_only": true,
+        "identity_write": false,
+        "episode_write": false,
+        "commit_write": false
+      },
+      "quality_boundary": "deterministic reference mix; professional sound-stage mastering not proven",
+      "manifest_root": "23536a5da3532bb2a609fd10a252eea1759cc6db8d5ed02facac519125ac57b0"
+    },
+    {
+      "format": "rncs.anime-provider-manifest.v0.1",
+      "version": "0.1.0-alpha.1",
+      "provider_id": "rncs.video-mux.ffmpeg",
+      "provider_version": "ffmpeg version 9.0-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers",
+      "role": "video-mux",
+      "display_name": "RNCS FFmpeg VideoMuxProvider",
+      "execution": {
+        "kind": "external-process",
+        "binary": "ffmpeg.exe",
+        "cpu": true,
+        "gpu": false,
+        "network": false,
+        "platforms": [
+          "win32",
+          "linux",
+          "darwin"
+        ]
+      },
+      "inputs": [
+        "image/png-sequence",
+        "audio/wav",
+        "frame-manifest",
+        "episode-composition-contract"
+      ],
+      "outputs": [
+        "video/mp4",
+        "ffprobe-report",
+        "video-mux-receipt"
+      ],
+      "media": {
+        "produces_media": true,
+        "media_types": [
+          "video/mp4"
+        ],
+        "fixture": false,
+        "mock": false
+      },
+      "resolution": {
+        "minimum": {
+          "width": 16,
+          "height": 16
+        },
+        "maximum": {
+          "width": 1920,
+          "height": 1080
+        },
+        "supported": [
+          {
+            "width": 160,
+            "height": 90
+          },
+          {
+            "width": 960,
+            "height": 540
+          },
+          {
+            "width": 1280,
+            "height": 720
+          },
+          {
+            "width": 1920,
+            "height": 1080
+          }
+        ]
+      },
+      "frame_rate": {
+        "minimum": 1,
+        "maximum": 60,
+        "supported": [
+          24
+        ]
+      },
+      "determinism": {
+        "deterministic": false,
+        "seed_support": false,
+        "declaration": "records FFmpeg version, codec parameters, input roots and command argument root"
+      },
+      "character_continuity": {
+        "level": "input-preserving",
+        "identity_root_required": false,
+        "cross_cut": true,
+        "cross_episode": false
+      },
+      "motion": {
+        "capabilities": [
+          "frame-sequence-mux"
+        ],
+        "xsheet_track_required": false
+      },
+      "resources": {
+        "cpu": "required",
+        "gpu": "optional",
+        "memory_mb": 512,
+        "disk_mb": 4096
+      },
+      "limits": {
+        "timeout_ms": 900000,
+        "maximum_cost": 0,
+        "cost_unit": "local-compute"
+      },
+      "failures": [
+        "UNAVAILABLE",
+        "FFPROBE_UNAVAILABLE",
+        "INVALID_INPUT",
+        "TIMEOUT",
+        "EXECUTION_FAILED",
+        "OUTPUT_MISSING",
+        "PROBE_INVALID",
+        "MEDIA_VALIDATION_FAILED"
+      ],
+      "evidence": {
+        "outputs": [
+          "tool-versions",
+          "command-argument-root",
+          "input-roots",
+          "mp4-sha256",
+          "ffprobe-report",
+          "provider-receipt"
+        ],
+        "tool_version": true,
+        "input_root": true,
+        "output_root": true
+      },
+      "authority": {
+        "media_candidate_only": true,
+        "identity_write": false,
+        "episode_write": false,
+        "commit_write": false
+      },
+      "quality_boundary": "real FFmpeg process required; discovered ffmpeg=true, ffprobe=true",
+      "manifest_root": "45a3d30286efc0078795830bfc47191d4d7403c511d12736578d7d85ae603b83"
+    }
+  ],
+  "manifest_set_root": "00bfa40e5de914723e1ebdd6bfdcf93ef7b2bd76d0ab6d2f3158b8aae95221ca"
+}

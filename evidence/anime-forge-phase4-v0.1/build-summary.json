@@ -1,0 +1,101 @@
+{
+  "format": "rncs.anime-phase4-build-summary.v0.1",
+  "version": "0.1.0-alpha.1",
+  "status": "complete",
+  "production_id": "anime-production:5072931f6b9031050ae8a4d4",
+  "production_root": "0e85a8a60bca9a61e8c99260861a6fd8fdfc98c43b55a257bea31ba461abca79",
+  "duration_seconds": 20,
+  "frame_count": 480,
+  "cut_count": 3,
+  "dialogue_count": 3,
+  "width": 960,
+  "height": 540,
+  "fps": 24,
+  "providers": [
+    {
+      "provider_id": "ragf.anime-builtin-generator",
+      "role": "asset",
+      "produces_media": true,
+      "deterministic": true
+    },
+    {
+      "provider_id": "vsr.anime-builtin-rasterizer",
+      "role": "frame-render",
+      "produces_media": true,
+      "deterministic": true
+    },
+    {
+      "provider_id": "rsr.anime-secondary-motion-reference",
+      "role": "motion",
+      "produces_media": false,
+      "deterministic": true
+    },
+    {
+      "provider_id": "taowind.voice-forge.reference-synthetic-v0.1",
+      "role": "voice",
+      "produces_media": true,
+      "deterministic": true
+    },
+    {
+      "provider_id": "taowind.audio-forge.reference-mixer-v0.1",
+      "role": "audio-mix",
+      "produces_media": true,
+      "deterministic": true
+    },
+    {
+      "provider_id": "rncs.video-mux.ffmpeg",
+      "role": "video-mux",
+      "produces_media": true,
+      "deterministic": false
+    }
+  ],
+  "deterministic_roots": {
+    "compiled_root": "ee1f1e8aeb91dfb094187ef39fed6eebb24e0dfbb3a896001e2302f732161f32",
+    "production_root": "0e85a8a60bca9a61e8c99260861a6fd8fdfc98c43b55a257bea31ba461abca79",
+    "timeline_root": "6c99035542064300da7fd2db028c67f582a380a5f1304b605ec24ae71ff3b677",
+    "composition_root": "72a6bdf2b5fe9f54057e350898ee1df3c0bbc3750f7cfd341222d2d26fff2377",
+    "provider_manifest_root": "16cd0b4ab1a73baabc86cf47c926bfa7e9ee2a75100013d1b954bc15ef2646bd",
+    "xsheets_root": "47e9f7c9ab6fb47d9cc59e56f4e9a107c071300b87aaee16c9eddecb3edcf876",
+    "sequence_root": "972c98b3705ac6867c4682a968bb537a8bc2785f651bdaa2e43e35dc950b042e",
+    "audio_root": "c6ce6786e2f54a184fadb8fe725ccb6cac926126b6367f598d1e8d485778bd10",
+    "character_continuity_root": "5d3f6e2757c94651426998103500b42b8d83a4467411ebe1557daae75e21a7ea",
+    "cut_continuity_root": "406dd3fb595df35f828a8adc46f1ed85090f028977787f6ff1c5090081f1461a",
+    "frame_integrity_root": "d8e674e02f5e8e4a76afa5ad065fa244813a260475136309fc05d99b30b2a31a",
+    "replay_root": "77d15fb19552e2b09435f10decd0af25cefbfa16d10cd0cd972c21666634583c"
+  },
+  "mp4": {
+    "path": "episode.mp4",
+    "sha256": "a63a1a1aa37e4565b8bbf8c7a6e5bb523b4204776c2c9e6cf564393515cb8e81",
+    "bytes": 1016889
+  },
+  "wav": {
+    "path": "episode.wav",
+    "sha256": "866c51f082fb6baf81f1ba2348a5e118183dff912d6e6040256b828bd3996147",
+    "bytes": 882044
+  },
+  "evidence_ledger_root": "fd802746592470d8f8d6e374e25c351849d8e0b3b51ba3e4105fc8dea1baf9c0",
+  "gates": {
+    "episode_authority": true,
+    "three_derived_cuts": true,
+    "duration_20_to_40": true,
+    "character_continuity": true,
+    "cut_continuity": true,
+    "xsheet_motion_alignment": true,
+    "frame_sequence": true,
+    "voice": true,
+    "audio": true,
+    "deterministic_replay": true,
+    "real_provider_media": true,
+    "mp4": true,
+    "ffprobe": true,
+    "audio_video_sync": true
+  },
+  "boundaries": {
+    "assets": "experimental built-in Anime assets, not commercial source art",
+    "voice": "synthetic reference voice, not licensed actor performance",
+    "motion": "bounded procedural motion, not physical cloth or hair",
+    "video": "real FFmpeg MP4 when complete; codec bytes are tool-version scoped",
+    "acceptance": "human direction, clean-machine and broadcaster acceptance remain open"
+  },
+  "summary_root": "cae6001ef3be51c3ae09ff2a133f6909ba6c3ceadd7051f5365e7c82535ebae9"
+}

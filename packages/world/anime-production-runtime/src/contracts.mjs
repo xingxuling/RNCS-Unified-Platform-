@@ -1,5 +1,7 @@
 import {clone,rootHash,seal,stableId,nowIso,verifySeal} from './canonical.mjs';
 import {buildEditorialTimeline,canonicalCutRef,listProductionCuts,resolveProductionCut,validateEditorialTimeline} from './editorial.mjs';
+import {createEpisodeAuthorityContract,createEpisodeCompositionContract,validateEpisodeAuthorityContract,validateEpisodeCompositionContract} from './composition.mjs';
+import {createBuiltinAnimeProviderManifests,validateAnimeProviderManifest} from './provider.mjs';
 
 export const ANIME_PRODUCTION_IR_FORMAT='rncs.anime-production-ir.v0.1';
 export const ANIME_PRODUCTION_IR_VERSION='0.1.0-alpha.1';
@@ -38,6 +40,7 @@ export function normalizeCut(input={}){
     animation:{exposure:input.animation?.exposure??'on_twos',hair_secondary:input.animation?.hair_secondary??'subtle',coat_secondary:input.animation?.coat_secondary??'subtle',...clone(input.animation??{})},
     transition:{type:String(input.transition?.type??'hard-cut'),duration_frames:Number(input.transition?.duration_frames??0)},
     editorial_index:Number(input.editorial_index??0),
+    authority:{derived_from_episode:true,creative_authority:false,local_patch_scope:true,...clone(input.authority??{})},
     metadata:{...clone(input.metadata??{})},
   };
   return{...cut,cut_ref:canonicalCutRef({...cut,cut_ref:input.cut_ref})};
@@ -56,12 +59,18 @@ export function createAnimeProduction(input={}){
     if(!motionProfiles[cutRef]&&input.motion_profile)motionProfiles[cutRef]=clone(input.motion_profile);
   }
   const editorialTimeline=buildEditorialTimeline(cuts,{productionId:provisionalId,transitionPolicy:input.editorial_timeline?.transition_policy??'hard-cut'});
+  const episodeIntentRoot=String(input.episode_intent_root??rootHash({series:input.series??'Untitled Series',episode:input.episode??cuts[0]?.episode_id??'EP01',cut_refs:cuts.map(canonicalCutRef)}));
+  const authorityContract=createEpisodeAuthorityContract({episode_id:input.episode??cuts[0]?.episode_id??'EP01',source_intent_root:episodeIntentRoot});
+  const compositionContract=createEpisodeCompositionContract({production_id:provisionalId,cuts,editorial_timeline:editorialTimeline,rendering_profiles:renderingProfiles,rendering_profile:input.rendering_profile});
+  const providerManifests=clone(input.provider_manifests??createBuiltinAnimeProviderManifests());
   const production={
     format:ANIME_PRODUCTION_IR_FORMAT,version:ANIME_PRODUCTION_IR_VERSION,
     production_id:provisionalId,
     series:String(input.series??'Untitled Series'),episode:String(input.episode??cuts[0]?.episode_id??'EP01'),sequence:String(input.sequence??cuts[0]?.sequence_id??'SEQ01'),scene:String(input.scene??cuts[0]?.scene_id??'Scene'),
     cuts,active_cut_ref:activeCutRef,cut:clone(activeCut),editorial_timeline:editorialTimeline,
+    episode_intent_root:episodeIntentRoot,authority_contract:authorityContract,composition_contract:compositionContract,
     asset_bindings:clone(input.asset_bindings??{}),provider_bindings:clone(input.provider_bindings??{}),
+    provider_manifests:providerManifests,provider_manifest_root:rootHash(providerManifests.map(item=>item.manifest_root)),
     continuity_contract:{stable_identity:true,asset_roots:clone(input.continuity_contract?.asset_roots??{}),voice_identity:input.continuity_contract?.voice_identity??null, ...clone(input.continuity_contract??{})},
     quality_profile:{name:input.quality_profile?.name??ANIME_RENDER_PROFILE,level:input.quality_profile?.level??'reference',line_stability:'deterministic',shadow_bands:3,...clone(input.quality_profile??{})},
     rendering_profiles:renderingProfiles,motion_profiles:motionProfiles,
@@ -92,6 +101,11 @@ export function validateAnimeProduction(production){
   const errors=[],warnings=[];
   if(production?.format!==ANIME_PRODUCTION_IR_FORMAT)errors.push('PRODUCTION_FORMAT_INVALID');
   if(!production?.production_id)errors.push('PRODUCTION_ID_REQUIRED');
+  if(!production?.episode_intent_root)errors.push('EPISODE_INTENT_ROOT_REQUIRED');
+  const authorityValidation=validateEpisodeAuthorityContract(production?.authority_contract);errors.push(...authorityValidation.errors);
+  const compositionValidation=validateEpisodeCompositionContract(production?.composition_contract,production);errors.push(...compositionValidation.errors);
+  for(const manifest of production?.provider_manifests??[]){const validation=validateAnimeProviderManifest(manifest);errors.push(...validation.errors.map(error=>`${manifest?.provider_id??'unknown'}:${error}`))}
+  if(production?.provider_manifest_root!==rootHash((production?.provider_manifests??[]).map(item=>item.manifest_root)))errors.push('PROVIDER_MANIFEST_ROOT_MISMATCH');
   const cuts=listProductionCuts(production),cutSummaries=[],dialogueIds=new Set(),identityByActor=new Map(),familyByActor=new Map();
   if(!cuts.length)errors.push('CUT_REQUIRED');
   for(const cut of cuts){
@@ -101,6 +115,7 @@ export function validateAnimeProduction(production){
     if(!(Number(cut?.fps)>0))errors.push(`CUT_FPS_INVALID:${cutRef}`);
     if(resolution.width<16||resolution.height<16)errors.push(`CUT_RESOLUTION_INVALID:${cutRef}`);
     if(!ANIME_MODES.includes(cut?.mode))errors.push(`CUT_MODE_UNSUPPORTED:${cutRef}:${cut?.mode}`);
+    if(cut?.authority?.derived_from_episode!==true||cut?.authority?.creative_authority!==false)errors.push(`CUT_AUTHORITY_INVALID:${cutRef}`);
     if(!['on_ones','on_twos','on_threes','hold','stepped'].includes(cut?.animation?.exposure))errors.push(`EXPOSURE_MODE_INVALID:${cutRef}`);
     if(frameCount<1)errors.push(`FRAME_COUNT_INVALID:${cutRef}`);
     for(const event of cut.dialogue_track??[]){if(dialogueIds.has(event.dialogue_event_id))errors.push(`DIALOGUE_EVENT_ID_DUPLICATE:${event.dialogue_event_id}`);dialogueIds.add(event.dialogue_event_id)}

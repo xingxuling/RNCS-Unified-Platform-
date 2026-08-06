@@ -1,0 +1,53 @@
+{
+  "format": "rncs.anime-cut-continuity-report.v0.1",
+  "version": "0.1.0-alpha.1",
+  "production_id": "anime-production:5072931f6b9031050ae8a4d4",
+  "production_root": "0e85a8a60bca9a61e8c99260861a6fd8fdfc98c43b55a257bea31ba461abca79",
+  "timeline_root": "6c99035542064300da7fd2db028c67f582a380a5f1304b605ec24ae71ff3b677",
+  "status": "pass",
+  "seam_count": 2,
+  "seams": [
+    {
+      "seam_id": "EP01/无名城审判终局/S01->EP01/无名城审判终局/S02",
+      "before_cut_ref": "EP01/无名城审判终局/S01",
+      "after_cut_ref": "EP01/无名城审判终局/S02",
+      "checks": {
+        "identity_root": true,
+        "palette_root": true,
+        "proportion_root": true,
+        "resolution": true,
+        "fps": true,
+        "colour_anchor": true,
+        "exposure_anchor": true,
+        "shot_change": true,
+        "transition": true
+      },
+      "pass": true,
+      "before_frame_root": "05f5af2092a50e4ee1283c1a561d0680838ff809ee23a6f644564f5aaa05751d",
+      "after_frame_root": "1d0fab7c77825d73838f52fa59136ee555297dcebcf8bfe3d66d4f98130888a3",
+      "visible_change": true
+    },
+    {
+      "seam_id": "EP01/无名城审判终局/S02->EP01/无名城审判终局/S03",
+      "before_cut_ref": "EP01/无名城审判终局/S02",
+      "after_cut_ref": "EP01/无名城审判终局/S03",
+      "checks": {
+        "identity_root": true,
+        "palette_root": true,
+        "proportion_root": true,
+        "resolution": true,
+        "fps": true,
+        "colour_anchor": true,
+        "exposure_anchor": true,
+        "shot_change": true,
+        "transition": true
+      },
+      "pass": true,
+      "before_frame_root": "ccb4dc6f92b78e59967288c52951741a9151a0b537491420278dd0c54fab49cd",
+      "after_frame_root": "f61181c239b817e7c036435b8e9857a73f7f6451b6bacc88a836c8670ab0d39c",
+      "visible_change": true
+    }
+  ],
+  "boundary": "rooted technical seam checks; director and human visual acceptance remain separate",
+  "report_root": "406dd3fb595df35f828a8adc46f1ed85090f028977787f6ff1c5090081f1461a"
+}

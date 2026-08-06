@@ -1,0 +1,262 @@
+{
+  "format": "rncs.voice-performance-bundle.v0.1",
+  "version": "0.1.0-alpha.1",
+  "dialogue_event_id": "dialogue:864d801e6baef105d4436e48",
+  "voice_identity": "蓝天临.蓝天临.default",
+  "character_id": "蓝天临",
+  "text": "风记得每一个名字。",
+  "language": "zh-CN",
+  "start_seconds": 4,
+  "performance": {
+    "pronunciation": "default",
+    "emotion": "restrained_question",
+    "intensity": 0.62,
+    "pace": 1,
+    "pitch": 0,
+    "pause_policy": "short",
+    "breath_policy": "reference"
+  },
+  "duration_seconds": 1.8480000000000043,
+  "sample_rate": 22050,
+  "transcript": {
+    "text": "风记得每一个名字。",
+    "language": "zh-CN"
+  },
+  "word_timeline": [
+    {
+      "index": 0,
+      "text": "风",
+      "start": 4,
+      "end": 4.214
+    },
+    {
+      "index": 1,
+      "text": "记",
+      "start": 4.239000000000001,
+      "end": 4.399000000000001
+    },
+    {
+      "index": 2,
+      "text": "得",
+      "start": 4.424000000000001,
+      "end": 4.602000000000001
+    },
+    {
+      "index": 3,
+      "text": "每",
+      "start": 4.627000000000002,
+      "end": 4.859000000000002
+    },
+    {
+      "index": 4,
+      "text": "一",
+      "start": 4.884000000000002,
+      "end": 5.0980000000000025
+    },
+    {
+      "index": 5,
+      "text": "个",
+      "start": 5.123000000000003,
+      "end": 5.283000000000003
+    },
+    {
+      "index": 6,
+      "text": "名",
+      "start": 5.308000000000003,
+      "end": 5.504000000000003
+    },
+    {
+      "index": 7,
+      "text": "字",
+      "start": 5.5290000000000035,
+      "end": 5.743000000000004
+    }
+  ],
+  "phoneme_timeline": [
+    {
+      "index": 0,
+      "phoneme": "p1",
+      "start": 4,
+      "end": 4.214
+    },
+    {
+      "index": 1,
+      "phoneme": "p2",
+      "start": 4.239000000000001,
+      "end": 4.399000000000001
+    },
+    {
+      "index": 2,
+      "phoneme": "p3",
+      "start": 4.424000000000001,
+      "end": 4.602000000000001
+    },
+    {
+      "index": 3,
+      "phoneme": "p4",
+      "start": 4.627000000000002,
+      "end": 4.859000000000002
+    },
+    {
+      "index": 4,
+      "phoneme": "p5",
+      "start": 4.884000000000002,
+      "end": 5.0980000000000025
+    },
+    {
+      "index": 5,
+      "phoneme": "p6",
+      "start": 5.123000000000003,
+      "end": 5.283000000000003
+    },
+    {
+      "index": 6,
+      "phoneme": "p7",
+      "start": 5.308000000000003,
+      "end": 5.504000000000003
+    },
+    {
+      "index": 7,
+      "phoneme": "p8",
+      "start": 5.5290000000000035,
+      "end": 5.743000000000004
+    }
+  ],
+  "viseme_timeline": [
+    {
+      "index": 0,
+      "shape": "a",
+      "start": 4,
+      "end": 4.214,
+      "authority": "final-dialogue-audio"
+    },
+    {
+      "index": 1,
+      "shape": "o",
+      "start": 4.239000000000001,
+      "end": 4.399000000000001,
+      "authority": "final-dialogue-audio"
+    },
+    {
+      "index": 2,
+      "shape": "i",
+      "start": 4.424000000000001,
+      "end": 4.602000000000001,
+      "authority": "final-dialogue-audio"
+    },
+    {
+      "index": 3,
+      "shape": "u",
+      "start": 4.627000000000002,
+      "end": 4.859000000000002,
+      "authority": "final-dialogue-audio"
+    },
+    {
+      "index": 4,
+      "shape": "a",
+      "start": 4.884000000000002,
+      "end": 5.0980000000000025,
+      "authority": "final-dialogue-audio"
+    },
+    {
+      "index": 5,
+      "shape": "o",
+      "start": 5.123000000000003,
+      "end": 5.283000000000003,
+      "authority": "final-dialogue-audio"
+    },
+    {
+      "index": 6,
+      "shape": "i",
+      "start": 5.308000000000003,
+      "end": 5.504000000000003,
+      "authority": "final-dialogue-audio"
+    },
+    {
+      "index": 7,
+      "shape": "u",
+      "start": 5.5290000000000035,
+      "end": 5.743000000000004,
+      "authority": "final-dialogue-audio"
+    }
+  ],
+  "emotion_curve": [
+    {
+      "time": 4,
+      "value": "restrained_question"
+    },
+    {
+      "time": 5.848000000000004,
+      "value": "restrained_question"
+    }
+  ],
+  "prosody_curve": [
+    {
+      "time": 4,
+      "pitch_hz": 208
+    },
+    {
+      "time": 5.848000000000004,
+      "pitch_hz": 200
+    }
+  ],
+  "breath_timeline": [
+    {
+      "time": 4,
+      "kind": "breath-in"
+    },
+    {
+      "time": 5.848000000000004,
+      "kind": "breath-out"
+    }
+  ],
+  "waveform_summary": {
+    "peak": 0.20306257903575897,
+    "rms": 0.10723463278742673,
+    "sample_count": 40749
+  },
+  "provider_receipt": {
+    "provider_id": "taowind.voice-forge.reference-synthetic-v0.1",
+    "version": "0.1.0",
+    "mode": "reference",
+    "authority": "candidate",
+    "quality_boundary": "synthetic voiced reference; not a professional Japanese/Chinese actor performance"
+  },
+  "identity": {
+    "voice_identity": "蓝天临.蓝天临.default",
+    "character_id": "蓝天临",
+    "language": "zh-CN",
+    "seed": "voice-reference-v0.1",
+    "provider": "taowind.voice-forge.reference-synthetic-v0.1",
+    "continuity": {
+      "base_voiceprint_root": "328d261cb48b6765a6d47a32704ce65909a5acaed7b3bf3bbc51867cff98708b",
+      "pronunciation_profile": "deterministic-reference",
+      "pace_range": [
+        0.86,
+        1.12
+      ],
+      "pitch_range_hz": [
+        140,
+        320
+      ],
+      "emotion_map": [
+        "neutral",
+        "restrained_question",
+        "resolve"
+      ],
+      "performance_boundary": "reference-synthetic-not-human-performance"
+    }
+  },
+  "authority": {
+    "single_active_take": true,
+    "dialogue_event_id": "dialogue:864d801e6baef105d4436e48",
+    "mouth_driver": "viseme_timeline",
+    "close_mouth_on_end": true
+  },
+  "evidence": {
+    "source_root": "85112253fd538eb7a391ee3e1a37e02690d3edbd075961c157c54aad0dfbe7d4",
+    "audio_root": "826972e50e2c42da258d42858682e601e801f76736820c2c59fb375308588d28",
+    "identity_root": "95c34d8dbc9ae2a5d9505e172478549fb83fe8467e7ddfb6be83358c19244949"
+  },
+  "bundle_root": "9e205894724f13b6272342d815689780abab49b13138bac6d96b9ae27b6882fc"
+}

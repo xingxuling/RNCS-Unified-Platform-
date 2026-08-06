@@ -1,0 +1,31 @@
+{
+  "format": "rncs.anime-deterministic-build-comparison.v0.1",
+  "version": "0.1.0-alpha.1",
+  "status": "pass",
+  "checks": {
+    "compiled_root": true,
+    "production_root": true,
+    "timeline_root": true,
+    "composition_root": true,
+    "provider_manifest_root": true,
+    "xsheets_root": true,
+    "sequence_root": true,
+    "audio_root": true,
+    "character_continuity_root": true,
+    "cut_continuity_root": true,
+    "frame_integrity_root": true,
+    "replay_root": true
+  },
+  "first_summary_root": "cae6001ef3be51c3ae09ff2a133f6909ba6c3ceadd7051f5365e7c82535ebae9",
+  "second_summary_root": "cae6001ef3be51c3ae09ff2a133f6909ba6c3ceadd7051f5365e7c82535ebae9",
+  "scope": "declared deterministic roots only; FFmpeg codec bytes are tool-version scoped",
+  "comparison_root": "f60ab5ac4c43f25f00c8b12eab499fd5291bafd73cf8ac050dc26a7466d87a87",
+  "local_tool_scoped_bytes": {
+    "mp4_equal": true,
+    "mp4_sha256_a": "a63a1a1aa37e4565b8bbf8c7a6e5bb523b4204776c2c9e6cf564393515cb8e81",
+    "mp4_sha256_b": "a63a1a1aa37e4565b8bbf8c7a6e5bb523b4204776c2c9e6cf564393515cb8e81",
+    "wav_equal": true,
+    "wav_sha256_a": "866c51f082fb6baf81f1ba2348a5e118183dff912d6e6040256b828bd3996147",
+    "wav_sha256_b": "866c51f082fb6baf81f1ba2348a5e118183dff912d6e6040256b828bd3996147"
+  }
+}
