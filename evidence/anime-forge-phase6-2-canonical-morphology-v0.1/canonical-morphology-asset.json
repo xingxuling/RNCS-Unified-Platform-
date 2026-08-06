@@ -1,0 +1,2814 @@
+{
+  "format": "rncs.canonical-morphology-asset.v0.1",
+  "version": "0.1.0-alpha.1",
+  "character_id": "lan-tianlin",
+  "genome_root": "3095558d5cdcb5611053b1919f0aeaa05ee08463b3cc63d11deca8eb9b539ffc",
+  "identity_root": "54896ce178f2c233ee4a1190c9ad366c11b80d4d3244c03e997d1d5a201a42d8",
+  "profile": "anime-npr-clean-v0.1",
+  "law_set": {
+    "format": "rncs.morphology-law-set.v0.1",
+    "profile": "anime-npr-clean-v0.1",
+    "units": "normalized-body",
+    "inputs": {
+      "shoulder_width": 0.55,
+      "head_body_ratio": 0.58,
+      "neck_length": 0.54,
+      "limb_ratio": 0.56,
+      "torso_length": 0.5,
+      "jaw_width": 0.42
+    },
+    "hard_constraints": {
+      "minimum_head_unit": 0.105,
+      "minimum_neck_length": 0.075,
+      "minimum_ribcage_height": 0.12,
+      "minimum_pelvis_height": 0.09,
+      "minimum_limb_length": 0.11,
+      "maximum_body_height": 0.92,
+      "minimum_body_height": 0.58,
+      "maximum_face_feature_depth": 0.18
+    },
+    "anime_stylization_ranges": {
+      "head_to_body": [
+        0.18,
+        0.28
+      ],
+      "shoulder_to_head": [
+        1.35,
+        2.2
+      ],
+      "waist_to_shoulder": [
+        0.42,
+        0.78
+      ],
+      "hand_to_forearm": [
+        0.3,
+        0.72
+      ],
+      "jaw_rounding": [
+        0.25,
+        0.8
+      ]
+    },
+    "relational_constraints": [
+      "head_center_above_neck_end",
+      "neck_end_inside_ribcage_girdle",
+      "shoulder_width_greater_than_neck_width",
+      "pelvis_width_less_than_shoulder_width",
+      "upper_arm_plus_forearm_reaches_below_pelvis",
+      "face_features_inside_skull_surface",
+      "garment_offset_positive"
+    ],
+    "symmetry_rules": {
+      "default": "bilateral",
+      "allowed_asymmetry": [
+        "pose",
+        "expression",
+        "gaze",
+        "secondary_motion"
+      ],
+      "identity_asymmetry_budget": 0.035
+    },
+    "identity_invariants": [
+      "character_id",
+      "topology_family",
+      "identity_root",
+      "palette_anchor",
+      "face_feature_order",
+      "hair_root_topology"
+    ],
+    "derivation_coefficients": {
+      "head_unit_base": 0.105,
+      "head_unit_ratio": 0.055,
+      "shoulder_base": 0.17,
+      "shoulder_ratio": 0.1,
+      "torso_base": 0.12,
+      "torso_ratio": 0.08,
+      "limb_base": 0.12,
+      "limb_ratio": 0.09,
+      "depth_ratio": 0.45
+    },
+    "law_root": "624abf5b990b79f0cba03c5e356dacab1b9a8e372ff71f6a7aff4b4025d52ede"
+  },
+  "proportions": {
+    "format": "rncs.morphology-proportion-solution.v0.1",
+    "units": "normalized-body",
+    "coordinate_system": {
+      "origin": "pelvis-root",
+      "up": "positive-y",
+      "front": "positive-z"
+    },
+    "head_unit": 0.1369,
+    "height": 0.684469,
+    "landmarks": {
+      "pelvis_root": [
+        0,
+        0,
+        0
+      ],
+      "pelvis_center": [
+        0,
+        0.056249999999999994,
+        0
+      ],
+      "waist": [
+        0,
+        0.2005,
+        0
+      ],
+      "ribcage_base": [
+        0,
+        0.27249999999999996,
+        0
+      ],
+      "ribcage_center": [
+        0,
+        0.35,
+        0
+      ],
+      "shoulder_line": [
+        0,
+        0.3903,
+        0
+      ],
+      "neck_base": [
+        0,
+        0.4275,
+        0
+      ],
+      "head_base": [
+        0,
+        0.5267999999999999,
+        0
+      ],
+      "head_center": [
+        0,
+        0.6202337024,
+        0
+      ]
+    },
+    "widths": {
+      "shoulder": 0.225,
+      "ribcage": 0.2394,
+      "waist": 0.12375,
+      "pelvis": 0.16434,
+      "neck": 0.075575
+    },
+    "bone_lengths": {
+      "pelvis": 0.1125,
+      "spine": 0.16,
+      "ribcage": 0.155,
+      "neck": 0.0993,
+      "clavicle": 0.117,
+      "upper_arm": 0.1704,
+      "forearm": 0.1598,
+      "hand": 0.059
+    },
+    "radii": {
+      "skull": [
+        0.121896,
+        0.14599,
+        0.116967
+      ],
+      "neck": [
+        0.039007,
+        0.029255
+      ],
+      "ribcage": [
+        0.1197,
+        0.0775,
+        0.052668
+      ],
+      "pelvis": [
+        0.08217,
+        0.05625,
+        0.04788
+      ],
+      "upper_arm": 0.030474,
+      "forearm": 0.025598,
+      "elbow": 0.034131,
+      "hand": [
+        0.032912,
+        0.03894
+      ]
+    },
+    "identity_drivers": {
+      "shoulder_width": 0.55,
+      "head_body_ratio": 0.58,
+      "neck_length": 0.54,
+      "limb_ratio": 0.56,
+      "torso_length": 0.5,
+      "jaw_width": 0.42
+    },
+    "proportion_root": "416c34956a5ee6b4533bcca7c6fbb1dd8247779d94f4bf99af4e132c182dc93a"
+  },
+  "skeleton": {
+    "format": "rncs.hierarchical-skeleton.v0.1",
+    "root_bone": "root",
+    "bone_order": [
+      "root",
+      "pelvis",
+      "spine",
+      "ribcage",
+      "clavicle-left",
+      "shoulder-left",
+      "upper-arm-left",
+      "elbow-left",
+      "forearm-left",
+      "wrist-left",
+      "hand-left",
+      "clavicle-right",
+      "shoulder-right",
+      "upper-arm-right",
+      "elbow-right",
+      "forearm-right",
+      "wrist-right",
+      "hand-right",
+      "neck",
+      "skull"
+    ],
+    "bones": [
+      {
+        "id": "root",
+        "parent": null,
+        "length": 0,
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "rest_local": {
+          "translation": [
+            0,
+            0,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "local_transform": {
+          "translation": [
+            0,
+            0,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "joint_limits": {
+          "pitch": [
+            -1.5707963267948966,
+            1.5707963267948966
+          ],
+          "yaw": [
+            -3.141592653589793,
+            3.141592653589793
+          ],
+          "roll": [
+            -1.5707963267948966,
+            1.5707963267948966
+          ]
+        }
+      },
+      {
+        "id": "pelvis",
+        "parent": "root",
+        "length": 0.1125,
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "rest_local": {
+          "translation": [
+            0,
+            0,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "local_transform": {
+          "translation": [
+            0,
+            0,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "joint_limits": {
+          "pitch": [
+            -1.5707963267948966,
+            1.5707963267948966
+          ],
+          "yaw": [
+            -3.141592653589793,
+            3.141592653589793
+          ],
+          "roll": [
+            -1.5707963267948966,
+            1.5707963267948966
+          ]
+        }
+      },
+      {
+        "id": "spine",
+        "parent": "pelvis",
+        "length": 0.16,
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "rest_local": {
+          "translation": [
+            0,
+            0.1125,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "local_transform": {
+          "translation": [
+            0,
+            0.1125,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "joint_limits": {
+          "pitch": [
+            -1.5707963267948966,
+            1.5707963267948966
+          ],
+          "yaw": [
+            -3.141592653589793,
+            3.141592653589793
+          ],
+          "roll": [
+            -0.25,
+            0.25
+          ]
+        }
+      },
+      {
+        "id": "ribcage",
+        "parent": "spine",
+        "length": 0.155,
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "rest_local": {
+          "translation": [
+            0,
+            0.16,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "local_transform": {
+          "translation": [
+            0,
+            0.16,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "joint_limits": {
+          "pitch": [
+            -1.5707963267948966,
+            1.5707963267948966
+          ],
+          "yaw": [
+            -3.141592653589793,
+            3.141592653589793
+          ],
+          "roll": [
+            -0.3,
+            0.3
+          ]
+        }
+      },
+      {
+        "id": "clavicle-left",
+        "parent": "ribcage",
+        "length": 0.117,
+        "axis": [
+          -1,
+          0,
+          0
+        ],
+        "rest_local": {
+          "translation": [
+            0,
+            0.1178,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "local_transform": {
+          "translation": [
+            0,
+            0.1178,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "joint_limits": {
+          "pitch": [
+            -1.5707963267948966,
+            1.5707963267948966
+          ],
+          "yaw": [
+            -3.141592653589793,
+            3.141592653589793
+          ],
+          "roll": [
+            -0.35,
+            0.35
+          ]
+        }
+      },
+      {
+        "id": "shoulder-left",
+        "parent": "clavicle-left",
+        "length": 0,
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "rest_local": {
+          "translation": [
+            -0.117,
+            0,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "local_transform": {
+          "translation": [
+            -0.117,
+            0,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "joint_limits": {
+          "pitch": [
+            -1.5707963267948966,
+            1.5707963267948966
+          ],
+          "yaw": [
+            -3.141592653589793,
+            3.141592653589793
+          ],
+          "roll": [
+            -0.5,
+            0.5
+          ]
+        }
+      },
+      {
+        "id": "upper-arm-left",
+        "parent": "shoulder-left",
+        "length": 0.1704,
+        "axis": [
+          0,
+          -1,
+          0
+        ],
+        "rest_local": {
+          "translation": [
+            0,
+            0,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "local_transform": {
+          "translation": [
+            0,
+            0,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "joint_limits": {
+          "pitch": [
+            -1.5707963267948966,
+            1.5707963267948966
+          ],
+          "yaw": [
+            -0.65,
+            0.65
+          ],
+          "roll": [
+            -1.75,
+            1.75
+          ]
+        }
+      },
+      {
+        "id": "elbow-left",
+        "parent": "upper-arm-left",
+        "length": 0,
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "rest_local": {
+          "translation": [
+            0,
+            -0.1704,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "local_transform": {
+          "translation": [
+            0,
+            -0.1704,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "joint_limits": {
+          "pitch": [
+            -1.5707963267948966,
+            1.5707963267948966
+          ],
+          "yaw": [
+            -3.141592653589793,
+            3.141592653589793
+          ],
+          "roll": [
+            -2.2,
+            2.2
+          ]
+        }
+      },
+      {
+        "id": "forearm-left",
+        "parent": "elbow-left",
+        "length": 0.1598,
+        "axis": [
+          0,
+          -1,
+          0
+        ],
+        "rest_local": {
+          "translation": [
+            0,
+            0,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "local_transform": {
+          "translation": [
+            0,
+            0,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "joint_limits": {
+          "pitch": [
+            -1.5707963267948966,
+            1.5707963267948966
+          ],
+          "yaw": [
+            -0.5,
+            0.5
+          ],
+          "roll": [
+            -2.45,
+            2.45
+          ]
+        }
+      },
+      {
+        "id": "wrist-left",
+        "parent": "forearm-left",
+        "length": 0,
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "rest_local": {
+          "translation": [
+            0,
+            -0.1598,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "local_transform": {
+          "translation": [
+            0,
+            -0.1598,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "joint_limits": {
+          "pitch": [
+            -1.5707963267948966,
+            1.5707963267948966
+          ],
+          "yaw": [
+            -3.141592653589793,
+            3.141592653589793
+          ],
+          "roll": [
+            -0.7,
+            0.7
+          ]
+        }
+      },
+      {
+        "id": "hand-left",
+        "parent": "wrist-left",
+        "length": 0.059,
+        "axis": [
+          0,
+          -1,
+          0
+        ],
+        "rest_local": {
+          "translation": [
+            0,
+            0,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "local_transform": {
+          "translation": [
+            0,
+            0,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "joint_limits": {
+          "pitch": [
+            -1.5707963267948966,
+            1.5707963267948966
+          ],
+          "yaw": [
+            -3.141592653589793,
+            3.141592653589793
+          ],
+          "roll": [
+            -0.7,
+            0.7
+          ]
+        }
+      },
+      {
+        "id": "clavicle-right",
+        "parent": "ribcage",
+        "length": 0.117,
+        "axis": [
+          1,
+          0,
+          0
+        ],
+        "rest_local": {
+          "translation": [
+            0,
+            0.1178,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "local_transform": {
+          "translation": [
+            0,
+            0.1178,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "joint_limits": {
+          "pitch": [
+            -1.5707963267948966,
+            1.5707963267948966
+          ],
+          "yaw": [
+            -3.141592653589793,
+            3.141592653589793
+          ],
+          "roll": [
+            -0.35,
+            0.35
+          ]
+        }
+      },
+      {
+        "id": "shoulder-right",
+        "parent": "clavicle-right",
+        "length": 0,
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "rest_local": {
+          "translation": [
+            0.117,
+            0,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "local_transform": {
+          "translation": [
+            0.117,
+            0,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "joint_limits": {
+          "pitch": [
+            -1.5707963267948966,
+            1.5707963267948966
+          ],
+          "yaw": [
+            -3.141592653589793,
+            3.141592653589793
+          ],
+          "roll": [
+            -0.5,
+            0.5
+          ]
+        }
+      },
+      {
+        "id": "upper-arm-right",
+        "parent": "shoulder-right",
+        "length": 0.1704,
+        "axis": [
+          0,
+          -1,
+          0
+        ],
+        "rest_local": {
+          "translation": [
+            0,
+            0,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "local_transform": {
+          "translation": [
+            0,
+            0,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "joint_limits": {
+          "pitch": [
+            -1.5707963267948966,
+            1.5707963267948966
+          ],
+          "yaw": [
+            -0.65,
+            0.65
+          ],
+          "roll": [
+            -1.75,
+            1.75
+          ]
+        }
+      },
+      {
+        "id": "elbow-right",
+        "parent": "upper-arm-right",
+        "length": 0,
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "rest_local": {
+          "translation": [
+            0,
+            -0.1704,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "local_transform": {
+          "translation": [
+            0,
+            -0.1704,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "joint_limits": {
+          "pitch": [
+            -1.5707963267948966,
+            1.5707963267948966
+          ],
+          "yaw": [
+            -3.141592653589793,
+            3.141592653589793
+          ],
+          "roll": [
+            -2.2,
+            2.2
+          ]
+        }
+      },
+      {
+        "id": "forearm-right",
+        "parent": "elbow-right",
+        "length": 0.1598,
+        "axis": [
+          0,
+          -1,
+          0
+        ],
+        "rest_local": {
+          "translation": [
+            0,
+            0,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "local_transform": {
+          "translation": [
+            0,
+            0,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "joint_limits": {
+          "pitch": [
+            -1.5707963267948966,
+            1.5707963267948966
+          ],
+          "yaw": [
+            -0.5,
+            0.5
+          ],
+          "roll": [
+            -2.45,
+            2.45
+          ]
+        }
+      },
+      {
+        "id": "wrist-right",
+        "parent": "forearm-right",
+        "length": 0,
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "rest_local": {
+          "translation": [
+            0,
+            -0.1598,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "local_transform": {
+          "translation": [
+            0,
+            -0.1598,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "joint_limits": {
+          "pitch": [
+            -1.5707963267948966,
+            1.5707963267948966
+          ],
+          "yaw": [
+            -3.141592653589793,
+            3.141592653589793
+          ],
+          "roll": [
+            -0.7,
+            0.7
+          ]
+        }
+      },
+      {
+        "id": "hand-right",
+        "parent": "wrist-right",
+        "length": 0.059,
+        "axis": [
+          0,
+          -1,
+          0
+        ],
+        "rest_local": {
+          "translation": [
+            0,
+            0,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "local_transform": {
+          "translation": [
+            0,
+            0,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "joint_limits": {
+          "pitch": [
+            -1.5707963267948966,
+            1.5707963267948966
+          ],
+          "yaw": [
+            -3.141592653589793,
+            3.141592653589793
+          ],
+          "roll": [
+            -0.7,
+            0.7
+          ]
+        }
+      },
+      {
+        "id": "neck",
+        "parent": "ribcage",
+        "length": 0.0993,
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "rest_local": {
+          "translation": [
+            0,
+            0.155,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "local_transform": {
+          "translation": [
+            0,
+            0.155,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "joint_limits": {
+          "pitch": [
+            -0.6,
+            0.6
+          ],
+          "yaw": [
+            -0.65,
+            0.65
+          ],
+          "roll": [
+            -0.45,
+            0.45
+          ]
+        }
+      },
+      {
+        "id": "skull",
+        "parent": "neck",
+        "length": 0,
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "rest_local": {
+          "translation": [
+            0,
+            0.0993,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "local_transform": {
+          "translation": [
+            0,
+            0.0993,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "joint_limits": {
+          "pitch": [
+            -0.35,
+            0.35
+          ],
+          "yaw": [
+            -1.45,
+            1.45
+          ],
+          "roll": [
+            -0.35,
+            0.35
+          ]
+        }
+      }
+    ],
+    "rest_pose": "canonical-neutral",
+    "bone_length_source": "Canonical Proportion Solver",
+    "joint_transform_policy": "pose-may-change-local-transform-not-length",
+    "law_root": "624abf5b990b79f0cba03c5e356dacab1b9a8e372ff71f6a7aff4b4025d52ede",
+    "landmarks": {
+      "pelvis_root": [
+        0,
+        0,
+        0
+      ],
+      "pelvis_center": [
+        0,
+        0.056249999999999994,
+        0
+      ],
+      "waist": [
+        0,
+        0.2005,
+        0
+      ],
+      "ribcage_base": [
+        0,
+        0.27249999999999996,
+        0
+      ],
+      "ribcage_center": [
+        0,
+        0.35,
+        0
+      ],
+      "shoulder_line": [
+        0,
+        0.3903,
+        0
+      ],
+      "neck_base": [
+        0,
+        0.4275,
+        0
+      ],
+      "head_base": [
+        0,
+        0.5267999999999999,
+        0
+      ],
+      "head_center": [
+        0,
+        0.6202337024,
+        0
+      ]
+    },
+    "skeleton_root": "6e1470c667047bcc878606abf7a06fefb2d1bbf015a5c08eece6bb5278463672"
+  },
+  "volumes": [
+    {
+      "id": "pelvis-volume",
+      "bone_id": "pelvis",
+      "kind": "ellipsoid",
+      "dimensions": {
+        "radii": [
+          0.08217,
+          0.05625,
+          0.04788
+        ]
+      },
+      "local_center": [
+        0,
+        0.05625,
+        0
+      ],
+      "source": "canonical-anatomical-volume-layer"
+    },
+    {
+      "id": "ribcage-volume",
+      "bone_id": "ribcage",
+      "kind": "superellipsoid",
+      "dimensions": {
+        "radii": [
+          0.1197,
+          0.0775,
+          0.052668
+        ]
+      },
+      "local_center": [
+        0,
+        0.0775,
+        0
+      ],
+      "source": "canonical-anatomical-volume-layer"
+    },
+    {
+      "id": "neck-volume",
+      "bone_id": "neck",
+      "kind": "tapered-cylinder",
+      "dimensions": {
+        "radius": [
+          0.039007,
+          0.029255
+        ],
+        "length": 0.0993
+      },
+      "local_center": [
+        0,
+        0.04965,
+        0
+      ],
+      "source": "canonical-anatomical-volume-layer"
+    },
+    {
+      "id": "skull-volume",
+      "bone_id": "skull",
+      "kind": "ellipsoid",
+      "dimensions": {
+        "radii": [
+          0.121896,
+          0.14599,
+          0.116967
+        ]
+      },
+      "local_center": [
+        0,
+        0.0934336,
+        0
+      ],
+      "surface": "skull-local",
+      "source": "canonical-anatomical-volume-layer"
+    },
+    {
+      "id": "deltoid-left",
+      "bone_id": "shoulder-left",
+      "kind": "volume-cap",
+      "dimensions": {
+        "radius": 0.04113990000000001
+      },
+      "local_center": [
+        0,
+        0,
+        0
+      ],
+      "source": "canonical-anatomical-volume-layer"
+    },
+    {
+      "id": "deltoid-right",
+      "bone_id": "shoulder-right",
+      "kind": "volume-cap",
+      "dimensions": {
+        "radius": 0.04113990000000001
+      },
+      "local_center": [
+        0,
+        0,
+        0
+      ],
+      "source": "canonical-anatomical-volume-layer"
+    },
+    {
+      "id": "upper-arm-left",
+      "bone_id": "upper-arm-left",
+      "kind": "tapered-capsule",
+      "dimensions": {
+        "length": 0.1704,
+        "radius_top": 0.035045099999999996,
+        "radius_bottom": 0.027426600000000002
+      },
+      "local_center": [
+        0,
+        -0.0852,
+        0
+      ],
+      "source": "canonical-anatomical-volume-layer"
+    },
+    {
+      "id": "upper-arm-right",
+      "bone_id": "upper-arm-right",
+      "kind": "tapered-capsule",
+      "dimensions": {
+        "length": 0.1704,
+        "radius_top": 0.035045099999999996,
+        "radius_bottom": 0.027426600000000002
+      },
+      "local_center": [
+        0,
+        -0.0852,
+        0
+      ],
+      "source": "canonical-anatomical-volume-layer"
+    },
+    {
+      "id": "elbow-left",
+      "bone_id": "elbow-left",
+      "kind": "blended-volume",
+      "dimensions": {
+        "radius": 0.034131,
+        "bulge": 0.01228716
+      },
+      "local_center": [
+        0,
+        0,
+        0
+      ],
+      "continuity_group": "left-arm",
+      "source": "canonical-anatomical-volume-layer"
+    },
+    {
+      "id": "elbow-right",
+      "bone_id": "elbow-right",
+      "kind": "blended-volume",
+      "dimensions": {
+        "radius": 0.034131,
+        "bulge": 0.01228716
+      },
+      "local_center": [
+        0,
+        0,
+        0
+      ],
+      "continuity_group": "right-arm",
+      "source": "canonical-anatomical-volume-layer"
+    },
+    {
+      "id": "forearm-left",
+      "bone_id": "forearm-left",
+      "kind": "tapered-capsule",
+      "dimensions": {
+        "length": 0.1598,
+        "radius_top": 0.028950299999999998,
+        "radius_bottom": 0.025598
+      },
+      "local_center": [
+        0,
+        -0.0799,
+        0
+      ],
+      "source": "canonical-anatomical-volume-layer"
+    },
+    {
+      "id": "forearm-right",
+      "bone_id": "forearm-right",
+      "kind": "tapered-capsule",
+      "dimensions": {
+        "length": 0.1598,
+        "radius_top": 0.028950299999999998,
+        "radius_bottom": 0.025598
+      },
+      "local_center": [
+        0,
+        -0.0799,
+        0
+      ],
+      "source": "canonical-anatomical-volume-layer"
+    },
+    {
+      "id": "palm-left",
+      "bone_id": "hand-left",
+      "kind": "rounded-wedge",
+      "dimensions": {
+        "radii": [
+          0.032912,
+          0.03894
+        ]
+      },
+      "local_center": [
+        0,
+        -0.02655,
+        0
+      ],
+      "source": "canonical-anatomical-volume-layer"
+    },
+    {
+      "id": "palm-right",
+      "bone_id": "hand-right",
+      "kind": "rounded-wedge",
+      "dimensions": {
+        "radii": [
+          0.032912,
+          0.03894
+        ]
+      },
+      "local_center": [
+        0,
+        -0.02655,
+        0
+      ],
+      "source": "canonical-anatomical-volume-layer"
+    }
+  ],
+  "surface_templates": {
+    "format": "rncs.canonical-surface-template-set.v0.1",
+    "coordinate_system": {
+      "origin": "pelvis-root",
+      "up": "positive-y",
+      "front": "positive-z"
+    },
+    "torso_sections": [
+      {
+        "id": "pelvis",
+        "bone_id": "pelvis",
+        "local_y": 0.04725,
+        "radius_x": 0.08217,
+        "radius_z": 0.04788
+      },
+      {
+        "id": "waist",
+        "bone_id": "spine",
+        "local_y": 0.07200000000000001,
+        "radius_x": 0.061875,
+        "radius_z": 0.0368676
+      },
+      {
+        "id": "lower-ribcage",
+        "bone_id": "ribcage",
+        "local_y": 0.0186,
+        "radius_x": 0.1197,
+        "radius_z": 0.052668
+      },
+      {
+        "id": "upper-ribcage",
+        "bone_id": "ribcage",
+        "local_y": 0.11159999999999999,
+        "radius_x": 0.124488,
+        "radius_z": 0.0553014
+      }
+    ],
+    "face_surface": {
+      "format": "rncs.skull-local-face-surface.v0.1",
+      "skull_bone": "skull",
+      "origin": [
+        0,
+        0.0934336,
+        0.09123426
+      ],
+      "normal": [
+        0,
+        0,
+        1
+      ],
+      "feature_anchors": {
+        "left_brow": [
+          -0.05851008,
+          0.0321178,
+          0.09591294
+        ],
+        "right_brow": [
+          0.05851008,
+          0.0321178,
+          0.09591294
+        ],
+        "left_eye": [
+          -0.05119632,
+          0.0029198,
+          0.10293096
+        ],
+        "right_eye": [
+          0.05119632,
+          0.0029198,
+          0.10293096
+        ],
+        "nose_bridge": [
+          0,
+          -0.0043797,
+          0.10760964
+        ],
+        "nose_tip": [
+          0,
+          -0.0321178,
+          0.11930634
+        ],
+        "mouth_left": [
+          -0.041444640000000005,
+          -0.0510965,
+          0.10293096
+        ],
+        "mouth_center": [
+          0,
+          -0.0540163,
+          0.1052703
+        ],
+        "mouth_right": [
+          0.041444640000000005,
+          -0.0510965,
+          0.10293096
+        ],
+        "chin": [
+          0,
+          -0.0905138,
+          0.07251954000000001
+        ]
+      },
+      "regions": {
+        "brow_surface": "skull-local",
+        "eye_sockets": "skull-local",
+        "cheek_planes": "skull-local",
+        "mouth_plane": "skull-local",
+        "jaw": "skull-local",
+        "ears": "skull-local"
+      },
+      "feature_order": [
+        "brow",
+        "eye",
+        "nose",
+        "mouth",
+        "jaw"
+      ],
+      "allowed_depth": [
+        0.05263515,
+        0.13100304000000002
+      ]
+    },
+    "scalp_surface": {
+      "format": "rncs.scalp-surface.v0.1",
+      "skull_bone": "skull",
+      "surface_type": "ellipsoid-parametric",
+      "tolerance": 0.008,
+      "uv_domain": {
+        "u": [
+          0,
+          1
+        ],
+        "v": [
+          0,
+          1
+        ]
+      },
+      "anchors": [
+        {
+          "id": "scalp-0",
+          "uv": [
+            0.08,
+            0.1
+          ],
+          "local_position": [
+            -0.09816424822178631,
+            0.1386905,
+            0.025156481636158773
+          ]
+        },
+        {
+          "id": "scalp-1",
+          "uv": [
+            0.25,
+            0.02
+          ],
+          "local_position": [
+            -0.11497305463269872,
+            0.14686594,
+            0.07435828754968407
+          ]
+        },
+        {
+          "id": "scalp-2",
+          "uv": [
+            0.5,
+            0
+          ],
+          "local_position": [
+            0,
+            0.1489098,
+            0.116967
+          ]
+        },
+        {
+          "id": "scalp-3",
+          "uv": [
+            0.75,
+            0.02
+          ],
+          "local_position": [
+            0.11497305463269872,
+            0.14686594,
+            0.07435828754968407
+          ]
+        },
+        {
+          "id": "scalp-4",
+          "uv": [
+            0.92,
+            0.1
+          ],
+          "local_position": [
+            0.09816424822178628,
+            0.1386905,
+            0.025156481636158745
+          ]
+        },
+        {
+          "id": "scalp-5",
+          "uv": [
+            0.04,
+            0.55
+          ],
+          "local_position": [
+            -0.08204785258720965,
+            0.09270365000000001,
+            0.015976846207696724
+          ]
+        },
+        {
+          "id": "scalp-6",
+          "uv": [
+            0.96,
+            0.55
+          ],
+          "local_position": [
+            0.08204785258720969,
+            0.09270365000000001,
+            0.01597684620769674
+          ]
+        }
+      ],
+      "root_policy": "hair-roots-must-reference-scalp-uv"
+    },
+    "hair_field": {
+      "format": "rncs.scalp-hair-field.v0.1",
+      "root_anchors": [
+        {
+          "anchor_id": "scalp-0",
+          "surface_coordinates": {
+            "surface": "scalp",
+            "uv": [
+              0.08,
+              0.1
+            ]
+          },
+          "local_root": [
+            -0.09816424822178631,
+            0.1386905,
+            0.025156481636158773
+          ]
+        },
+        {
+          "anchor_id": "scalp-1",
+          "surface_coordinates": {
+            "surface": "scalp",
+            "uv": [
+              0.25,
+              0.02
+            ]
+          },
+          "local_root": [
+            -0.11497305463269872,
+            0.14686594,
+            0.07435828754968407
+          ]
+        },
+        {
+          "anchor_id": "scalp-2",
+          "surface_coordinates": {
+            "surface": "scalp",
+            "uv": [
+              0.5,
+              0
+            ]
+          },
+          "local_root": [
+            0,
+            0.1489098,
+            0.116967
+          ]
+        },
+        {
+          "anchor_id": "scalp-3",
+          "surface_coordinates": {
+            "surface": "scalp",
+            "uv": [
+              0.75,
+              0.02
+            ]
+          },
+          "local_root": [
+            0.11497305463269872,
+            0.14686594,
+            0.07435828754968407
+          ]
+        },
+        {
+          "anchor_id": "scalp-4",
+          "surface_coordinates": {
+            "surface": "scalp",
+            "uv": [
+              0.92,
+              0.1
+            ]
+          },
+          "local_root": [
+            0.09816424822178628,
+            0.1386905,
+            0.025156481636158745
+          ]
+        },
+        {
+          "anchor_id": "scalp-5",
+          "surface_coordinates": {
+            "surface": "scalp",
+            "uv": [
+              0.04,
+              0.55
+            ]
+          },
+          "local_root": [
+            -0.08204785258720965,
+            0.09270365000000001,
+            0.015976846207696724
+          ]
+        },
+        {
+          "anchor_id": "scalp-6",
+          "surface_coordinates": {
+            "surface": "scalp",
+            "uv": [
+              0.96,
+              0.55
+            ]
+          },
+          "local_root": [
+            0.08204785258720969,
+            0.09270365000000001,
+            0.01597684620769674
+          ]
+        }
+      ],
+      "main_masses": [
+        {
+          "id": "crown",
+          "root_ids": [
+            "scalp-0",
+            "scalp-1",
+            "scalp-2",
+            "scalp-3",
+            "scalp-4"
+          ],
+          "local_offsets": [
+            [
+              -0.035,
+              0.025,
+              0
+            ],
+            [
+              -0.02,
+              0.015,
+              0.006
+            ],
+            [
+              0,
+              0.012,
+              0.01
+            ],
+            [
+              0.02,
+              0.015,
+              0.006
+            ],
+            [
+              0.035,
+              0.025,
+              0
+            ]
+          ],
+          "silhouette_policy": "surface-following-rounded-mass"
+        },
+        {
+          "id": "side-left",
+          "root_ids": [
+            "scalp-5"
+          ],
+          "local_offsets": [
+            [
+              -0.025,
+              -0.025,
+              0
+            ],
+            [
+              -0.045,
+              -0.11,
+              -0.01
+            ],
+            [
+              -0.03,
+              -0.19,
+              0
+            ]
+          ],
+          "silhouette_policy": "surface-following-lock"
+        },
+        {
+          "id": "side-right",
+          "root_ids": [
+            "scalp-6"
+          ],
+          "local_offsets": [
+            [
+              0.025,
+              -0.025,
+              0
+            ],
+            [
+              0.045,
+              -0.11,
+              -0.01
+            ],
+            [
+              0.03,
+              -0.19,
+              0
+            ]
+          ],
+          "silhouette_policy": "surface-following-lock"
+        }
+      ],
+      "secondary_motion": {
+        "space": "scalp-local",
+        "max_root_displacement": 0.006,
+        "max_angle_deg": 7,
+        "root_preservation": true
+      }
+    },
+    "garment_surface": {
+      "format": "rncs.garment-offset-surface.v0.1",
+      "body_surface": "torso-sections",
+      "offset": 0.012,
+      "panels": [
+        {
+          "id": "coat-front",
+          "anchor_ids": [
+            "pelvis",
+            "waist",
+            "lower-ribcage",
+            "upper-ribcage"
+          ],
+          "layer": 1,
+          "overlap": "collar-over-ribcage"
+        },
+        {
+          "id": "coat-sleeve-left",
+          "anchor_ids": [
+            "shoulder-left",
+            "upper-arm-left",
+            "forearm-left"
+          ],
+          "layer": 1,
+          "overlap": "sleeve-over-skin"
+        },
+        {
+          "id": "coat-sleeve-right",
+          "anchor_ids": [
+            "shoulder-right",
+            "upper-arm-right",
+            "forearm-right"
+          ],
+          "layer": 1,
+          "overlap": "sleeve-over-skin"
+        }
+      ],
+      "secondary_deformation": {
+        "space": "body-local",
+        "breath_weight": 0.35,
+        "pose_weight": 0.65
+      }
+    },
+    "law_root": "624abf5b990b79f0cba03c5e356dacab1b9a8e372ff71f6a7aff4b4025d52ede",
+    "genome_root": "3095558d5cdcb5611053b1919f0aeaa05ee08463b3cc63d11deca8eb9b539ffc",
+    "landmark_policy": {
+      "source": "proportion-solver",
+      "snapshot": {
+        "pelvis_root": [
+          0,
+          0,
+          0
+        ],
+        "pelvis_center": [
+          0,
+          0.056249999999999994,
+          0
+        ],
+        "waist": [
+          0,
+          0.2005,
+          0
+        ],
+        "ribcage_base": [
+          0,
+          0.27249999999999996,
+          0
+        ],
+        "ribcage_center": [
+          0,
+          0.35,
+          0
+        ],
+        "shoulder_line": [
+          0,
+          0.3903,
+          0
+        ],
+        "neck_base": [
+          0,
+          0.4275,
+          0
+        ],
+        "head_base": [
+          0,
+          0.5267999999999999,
+          0
+        ],
+        "head_center": [
+          0,
+          0.6202337024,
+          0
+        ]
+      }
+    }
+  },
+  "surfaces": {
+    "format": "rncs.canonical-surface-template-set.v0.1",
+    "coordinate_system": {
+      "origin": "pelvis-root",
+      "up": "positive-y",
+      "front": "positive-z"
+    },
+    "torso_sections": [
+      {
+        "id": "pelvis",
+        "bone_id": "pelvis",
+        "local_y": 0.04725,
+        "radius_x": 0.08217,
+        "radius_z": 0.04788
+      },
+      {
+        "id": "waist",
+        "bone_id": "spine",
+        "local_y": 0.07200000000000001,
+        "radius_x": 0.061875,
+        "radius_z": 0.0368676
+      },
+      {
+        "id": "lower-ribcage",
+        "bone_id": "ribcage",
+        "local_y": 0.0186,
+        "radius_x": 0.1197,
+        "radius_z": 0.052668
+      },
+      {
+        "id": "upper-ribcage",
+        "bone_id": "ribcage",
+        "local_y": 0.11159999999999999,
+        "radius_x": 0.124488,
+        "radius_z": 0.0553014
+      }
+    ],
+    "face_surface": {
+      "format": "rncs.skull-local-face-surface.v0.1",
+      "skull_bone": "skull",
+      "origin": [
+        0,
+        0.0934336,
+        0.09123426
+      ],
+      "normal": [
+        0,
+        0,
+        1
+      ],
+      "feature_anchors": {
+        "left_brow": [
+          -0.05851008,
+          0.0321178,
+          0.09591294
+        ],
+        "right_brow": [
+          0.05851008,
+          0.0321178,
+          0.09591294
+        ],
+        "left_eye": [
+          -0.05119632,
+          0.0029198,
+          0.10293096
+        ],
+        "right_eye": [
+          0.05119632,
+          0.0029198,
+          0.10293096
+        ],
+        "nose_bridge": [
+          0,
+          -0.0043797,
+          0.10760964
+        ],
+        "nose_tip": [
+          0,
+          -0.0321178,
+          0.11930634
+        ],
+        "mouth_left": [
+          -0.041444640000000005,
+          -0.0510965,
+          0.10293096
+        ],
+        "mouth_center": [
+          0,
+          -0.0540163,
+          0.1052703
+        ],
+        "mouth_right": [
+          0.041444640000000005,
+          -0.0510965,
+          0.10293096
+        ],
+        "chin": [
+          0,
+          -0.0905138,
+          0.07251954000000001
+        ]
+      },
+      "regions": {
+        "brow_surface": "skull-local",
+        "eye_sockets": "skull-local",
+        "cheek_planes": "skull-local",
+        "mouth_plane": "skull-local",
+        "jaw": "skull-local",
+        "ears": "skull-local"
+      },
+      "feature_order": [
+        "brow",
+        "eye",
+        "nose",
+        "mouth",
+        "jaw"
+      ],
+      "allowed_depth": [
+        0.05263515,
+        0.13100304000000002
+      ]
+    },
+    "scalp_surface": {
+      "format": "rncs.scalp-surface.v0.1",
+      "skull_bone": "skull",
+      "surface_type": "ellipsoid-parametric",
+      "tolerance": 0.008,
+      "uv_domain": {
+        "u": [
+          0,
+          1
+        ],
+        "v": [
+          0,
+          1
+        ]
+      },
+      "anchors": [
+        {
+          "id": "scalp-0",
+          "uv": [
+            0.08,
+            0.1
+          ],
+          "local_position": [
+            -0.09816424822178631,
+            0.1386905,
+            0.025156481636158773
+          ]
+        },
+        {
+          "id": "scalp-1",
+          "uv": [
+            0.25,
+            0.02
+          ],
+          "local_position": [
+            -0.11497305463269872,
+            0.14686594,
+            0.07435828754968407
+          ]
+        },
+        {
+          "id": "scalp-2",
+          "uv": [
+            0.5,
+            0
+          ],
+          "local_position": [
+            0,
+            0.1489098,
+            0.116967
+          ]
+        },
+        {
+          "id": "scalp-3",
+          "uv": [
+            0.75,
+            0.02
+          ],
+          "local_position": [
+            0.11497305463269872,
+            0.14686594,
+            0.07435828754968407
+          ]
+        },
+        {
+          "id": "scalp-4",
+          "uv": [
+            0.92,
+            0.1
+          ],
+          "local_position": [
+            0.09816424822178628,
+            0.1386905,
+            0.025156481636158745
+          ]
+        },
+        {
+          "id": "scalp-5",
+          "uv": [
+            0.04,
+            0.55
+          ],
+          "local_position": [
+            -0.08204785258720965,
+            0.09270365000000001,
+            0.015976846207696724
+          ]
+        },
+        {
+          "id": "scalp-6",
+          "uv": [
+            0.96,
+            0.55
+          ],
+          "local_position": [
+            0.08204785258720969,
+            0.09270365000000001,
+            0.01597684620769674
+          ]
+        }
+      ],
+      "root_policy": "hair-roots-must-reference-scalp-uv"
+    },
+    "hair_field": {
+      "format": "rncs.scalp-hair-field.v0.1",
+      "root_anchors": [
+        {
+          "anchor_id": "scalp-0",
+          "surface_coordinates": {
+            "surface": "scalp",
+            "uv": [
+              0.08,
+              0.1
+            ]
+          },
+          "local_root": [
+            -0.09816424822178631,
+            0.1386905,
+            0.025156481636158773
+          ]
+        },
+        {
+          "anchor_id": "scalp-1",
+          "surface_coordinates": {
+            "surface": "scalp",
+            "uv": [
+              0.25,
+              0.02
+            ]
+          },
+          "local_root": [
+            -0.11497305463269872,
+            0.14686594,
+            0.07435828754968407
+          ]
+        },
+        {
+          "anchor_id": "scalp-2",
+          "surface_coordinates": {
+            "surface": "scalp",
+            "uv": [
+              0.5,
+              0
+            ]
+          },
+          "local_root": [
+            0,
+            0.1489098,
+            0.116967
+          ]
+        },
+        {
+          "anchor_id": "scalp-3",
+          "surface_coordinates": {
+            "surface": "scalp",
+            "uv": [
+              0.75,
+              0.02
+            ]
+          },
+          "local_root": [
+            0.11497305463269872,
+            0.14686594,
+            0.07435828754968407
+          ]
+        },
+        {
+          "anchor_id": "scalp-4",
+          "surface_coordinates": {
+            "surface": "scalp",
+            "uv": [
+              0.92,
+              0.1
+            ]
+          },
+          "local_root": [
+            0.09816424822178628,
+            0.1386905,
+            0.025156481636158745
+          ]
+        },
+        {
+          "anchor_id": "scalp-5",
+          "surface_coordinates": {
+            "surface": "scalp",
+            "uv": [
+              0.04,
+              0.55
+            ]
+          },
+          "local_root": [
+            -0.08204785258720965,
+            0.09270365000000001,
+            0.015976846207696724
+          ]
+        },
+        {
+          "anchor_id": "scalp-6",
+          "surface_coordinates": {
+            "surface": "scalp",
+            "uv": [
+              0.96,
+              0.55
+            ]
+          },
+          "local_root": [
+            0.08204785258720969,
+            0.09270365000000001,
+            0.01597684620769674
+          ]
+        }
+      ],
+      "main_masses": [
+        {
+          "id": "crown",
+          "root_ids": [
+            "scalp-0",
+            "scalp-1",
+            "scalp-2",
+            "scalp-3",
+            "scalp-4"
+          ],
+          "local_offsets": [
+            [
+              -0.035,
+              0.025,
+              0
+            ],
+            [
+              -0.02,
+              0.015,
+              0.006
+            ],
+            [
+              0,
+              0.012,
+              0.01
+            ],
+            [
+              0.02,
+              0.015,
+              0.006
+            ],
+            [
+              0.035,
+              0.025,
+              0
+            ]
+          ],
+          "silhouette_policy": "surface-following-rounded-mass"
+        },
+        {
+          "id": "side-left",
+          "root_ids": [
+            "scalp-5"
+          ],
+          "local_offsets": [
+            [
+              -0.025,
+              -0.025,
+              0
+            ],
+            [
+              -0.045,
+              -0.11,
+              -0.01
+            ],
+            [
+              -0.03,
+              -0.19,
+              0
+            ]
+          ],
+          "silhouette_policy": "surface-following-lock"
+        },
+        {
+          "id": "side-right",
+          "root_ids": [
+            "scalp-6"
+          ],
+          "local_offsets": [
+            [
+              0.025,
+              -0.025,
+              0
+            ],
+            [
+              0.045,
+              -0.11,
+              -0.01
+            ],
+            [
+              0.03,
+              -0.19,
+              0
+            ]
+          ],
+          "silhouette_policy": "surface-following-lock"
+        }
+      ],
+      "secondary_motion": {
+        "space": "scalp-local",
+        "max_root_displacement": 0.006,
+        "max_angle_deg": 7,
+        "root_preservation": true
+      }
+    },
+    "garment_surface": {
+      "format": "rncs.garment-offset-surface.v0.1",
+      "body_surface": "torso-sections",
+      "offset": 0.012,
+      "panels": [
+        {
+          "id": "coat-front",
+          "anchor_ids": [
+            "pelvis",
+            "waist",
+            "lower-ribcage",
+            "upper-ribcage"
+          ],
+          "layer": 1,
+          "overlap": "collar-over-ribcage"
+        },
+        {
+          "id": "coat-sleeve-left",
+          "anchor_ids": [
+            "shoulder-left",
+            "upper-arm-left",
+            "forearm-left"
+          ],
+          "layer": 1,
+          "overlap": "sleeve-over-skin"
+        },
+        {
+          "id": "coat-sleeve-right",
+          "anchor_ids": [
+            "shoulder-right",
+            "upper-arm-right",
+            "forearm-right"
+          ],
+          "layer": 1,
+          "overlap": "sleeve-over-skin"
+        }
+      ],
+      "secondary_deformation": {
+        "space": "body-local",
+        "breath_weight": 0.35,
+        "pose_weight": 0.65
+      }
+    },
+    "law_root": "624abf5b990b79f0cba03c5e356dacab1b9a8e372ff71f6a7aff4b4025d52ede",
+    "genome_root": "3095558d5cdcb5611053b1919f0aeaa05ee08463b3cc63d11deca8eb9b539ffc",
+    "landmark_policy": {
+      "source": "proportion-solver",
+      "snapshot": {
+        "pelvis_root": [
+          0,
+          0,
+          0
+        ],
+        "pelvis_center": [
+          0,
+          0.056249999999999994,
+          0
+        ],
+        "waist": [
+          0,
+          0.2005,
+          0
+        ],
+        "ribcage_base": [
+          0,
+          0.27249999999999996,
+          0
+        ],
+        "ribcage_center": [
+          0,
+          0.35,
+          0
+        ],
+        "shoulder_line": [
+          0,
+          0.3903,
+          0
+        ],
+        "neck_base": [
+          0,
+          0.4275,
+          0
+        ],
+        "head_base": [
+          0,
+          0.5267999999999999,
+          0
+        ],
+        "head_center": [
+          0,
+          0.6202337024,
+          0
+        ]
+      }
+    }
+  },
+  "face_surface": {
+    "format": "rncs.skull-local-face-surface.v0.1",
+    "skull_bone": "skull",
+    "origin": [
+      0,
+      0.0934336,
+      0.09123426
+    ],
+    "normal": [
+      0,
+      0,
+      1
+    ],
+    "feature_anchors": {
+      "left_brow": [
+        -0.05851008,
+        0.0321178,
+        0.09591294
+      ],
+      "right_brow": [
+        0.05851008,
+        0.0321178,
+        0.09591294
+      ],
+      "left_eye": [
+        -0.05119632,
+        0.0029198,
+        0.10293096
+      ],
+      "right_eye": [
+        0.05119632,
+        0.0029198,
+        0.10293096
+      ],
+      "nose_bridge": [
+        0,
+        -0.0043797,
+        0.10760964
+      ],
+      "nose_tip": [
+        0,
+        -0.0321178,
+        0.11930634
+      ],
+      "mouth_left": [
+        -0.041444640000000005,
+        -0.0510965,
+        0.10293096
+      ],
+      "mouth_center": [
+        0,
+        -0.0540163,
+        0.1052703
+      ],
+      "mouth_right": [
+        0.041444640000000005,
+        -0.0510965,
+        0.10293096
+      ],
+      "chin": [
+        0,
+        -0.0905138,
+        0.07251954000000001
+      ]
+    },
+    "regions": {
+      "brow_surface": "skull-local",
+      "eye_sockets": "skull-local",
+      "cheek_planes": "skull-local",
+      "mouth_plane": "skull-local",
+      "jaw": "skull-local",
+      "ears": "skull-local"
+    },
+    "feature_order": [
+      "brow",
+      "eye",
+      "nose",
+      "mouth",
+      "jaw"
+    ],
+    "allowed_depth": [
+      0.05263515,
+      0.13100304000000002
+    ]
+  },
+  "scalp_surface": {
+    "format": "rncs.scalp-surface.v0.1",
+    "skull_bone": "skull",
+    "surface_type": "ellipsoid-parametric",
+    "tolerance": 0.008,
+    "uv_domain": {
+      "u": [
+        0,
+        1
+      ],
+      "v": [
+        0,
+        1
+      ]
+    },
+    "anchors": [
+      {
+        "id": "scalp-0",
+        "uv": [
+          0.08,
+          0.1
+        ],
+        "local_position": [
+          -0.09816424822178631,
+          0.1386905,
+          0.025156481636158773
+        ]
+      },
+      {
+        "id": "scalp-1",
+        "uv": [
+          0.25,
+          0.02
+        ],
+        "local_position": [
+          -0.11497305463269872,
+          0.14686594,
+          0.07435828754968407
+        ]
+      },
+      {
+        "id": "scalp-2",
+        "uv": [
+          0.5,
+          0
+        ],
+        "local_position": [
+          0,
+          0.1489098,
+          0.116967
+        ]
+      },
+      {
+        "id": "scalp-3",
+        "uv": [
+          0.75,
+          0.02
+        ],
+        "local_position": [
+          0.11497305463269872,
+          0.14686594,
+          0.07435828754968407
+        ]
+      },
+      {
+        "id": "scalp-4",
+        "uv": [
+          0.92,
+          0.1
+        ],
+        "local_position": [
+          0.09816424822178628,
+          0.1386905,
+          0.025156481636158745
+        ]
+      },
+      {
+        "id": "scalp-5",
+        "uv": [
+          0.04,
+          0.55
+        ],
+        "local_position": [
+          -0.08204785258720965,
+          0.09270365000000001,
+          0.015976846207696724
+        ]
+      },
+      {
+        "id": "scalp-6",
+        "uv": [
+          0.96,
+          0.55
+        ],
+        "local_position": [
+          0.08204785258720969,
+          0.09270365000000001,
+          0.01597684620769674
+        ]
+      }
+    ],
+    "root_policy": "hair-roots-must-reference-scalp-uv"
+  },
+  "garment_surface": {
+    "format": "rncs.garment-offset-surface.v0.1",
+    "body_surface": "torso-sections",
+    "offset": 0.012,
+    "panels": [
+      {
+        "id": "coat-front",
+        "anchor_ids": [
+          "pelvis",
+          "waist",
+          "lower-ribcage",
+          "upper-ribcage"
+        ],
+        "layer": 1,
+        "overlap": "collar-over-ribcage"
+      },
+      {
+        "id": "coat-sleeve-left",
+        "anchor_ids": [
+          "shoulder-left",
+          "upper-arm-left",
+          "forearm-left"
+        ],
+        "layer": 1,
+        "overlap": "sleeve-over-skin"
+      },
+      {
+        "id": "coat-sleeve-right",
+        "anchor_ids": [
+          "shoulder-right",
+          "upper-arm-right",
+          "forearm-right"
+        ],
+        "layer": 1,
+        "overlap": "sleeve-over-skin"
+      }
+    ],
+    "secondary_deformation": {
+      "space": "body-local",
+      "breath_weight": 0.35,
+      "pose_weight": 0.65
+    }
+  },
+  "identity_invariants": {
+    "character_id": "lan-tianlin",
+    "topology_family": "young-male-slim",
+    "genome_root": "3095558d5cdcb5611053b1919f0aeaa05ee08463b3cc63d11deca8eb9b539ffc",
+    "face_feature_order": [
+      "brow",
+      "eye",
+      "nose",
+      "mouth",
+      "jaw"
+    ],
+    "hair_root_count": 7
+  },
+  "morphology_root": "1e476e0d225ec1f3b38e62ff6df024c5f434fabd310385641a4109be430d0d33",
+  "certificate": {
+    "format": "rncs.morphology-certificate.v0.1",
+    "asset_root": "1e476e0d225ec1f3b38e62ff6df024c5f434fabd310385641a4109be430d0d33",
+    "gates": {
+      "proportion_valid": true,
+      "bone_length_valid": true,
+      "joint_limit_valid": true,
+      "surface_continuity_valid": true,
+      "face_surface_valid": true,
+      "feature_attachment_valid": true,
+      "scalp_attachment_valid": true,
+      "hair_overlap_valid": true,
+      "garment_attachment_valid": true,
+      "self_intersection_valid": true,
+      "silhouette_connected": true,
+      "camera_projection_valid": true
+    },
+    "failures": [],
+    "core_gates": [
+      "proportion_valid",
+      "bone_length_valid",
+      "joint_limit_valid",
+      "surface_continuity_valid",
+      "face_surface_valid",
+      "feature_attachment_valid",
+      "scalp_attachment_valid",
+      "hair_overlap_valid",
+      "garment_attachment_valid",
+      "self_intersection_valid",
+      "silhouette_connected",
+      "camera_projection_valid"
+    ],
+    "tolerances": {
+      "scalp_root_distance": 0.008,
+      "garment_offset_min": 0.001,
+      "feature_depth_min": 0.001
+    },
+    "rejection_policy": "any-core-gate-false-rejects-candidate",
+    "human_visual_acceptance": "not-automated",
+    "certificate_root": "e158e51376d02d262605c560e8c3071e3fd1907abfb57e0fa4e198ed8fd57ce8"
+  },
+  "certificate_root": "e158e51376d02d262605c560e8c3071e3fd1907abfb57e0fa4e198ed8fd57ce8"
+}

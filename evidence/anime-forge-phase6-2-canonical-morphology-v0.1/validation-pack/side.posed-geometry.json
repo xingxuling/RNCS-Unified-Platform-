@@ -1,0 +1,1480 @@
+{
+  "format": "rncs.posed-hierarchical-skeleton.v0.1",
+  "asset_root": "1e476e0d225ec1f3b38e62ff6df024c5f434fabd310385641a4109be430d0d33",
+  "performance_root": "14861b6fc08c20f2b1ccc8ba6e8fce653d076ad227706951985142ae2eb31942",
+  "performance": {
+    "format": "rncs.performance-state.v0.1",
+    "frame": 0,
+    "total_frames": 120,
+    "progress": 0,
+    "view": "side",
+    "pose": "neutral",
+    "view_yaw": 1.361356816555577,
+    "root_rotation": {
+      "pitch": 0,
+      "yaw": 0,
+      "roll": 0
+    },
+    "joint_rotations": {
+      "root": {
+        "pitch": 0,
+        "yaw": 0,
+        "roll": 0
+      },
+      "upper-arm-left": {
+        "pitch": 0,
+        "yaw": 0,
+        "roll": 0
+      },
+      "forearm-left": {
+        "pitch": 0,
+        "yaw": 0,
+        "roll": 0
+      },
+      "upper-arm-right": {
+        "pitch": 0,
+        "yaw": 0,
+        "roll": 0
+      },
+      "forearm-right": {
+        "pitch": 0,
+        "yaw": 0,
+        "roll": 0
+      },
+      "skull": {
+        "pitch": 0,
+        "yaw": 0,
+        "roll": 0
+      }
+    },
+    "expression": "neutral",
+    "gaze": "center",
+    "blink": false,
+    "mouth": "closed",
+    "secondary": {
+      "hair_lag": 0.010097651817694758,
+      "costume_lag": 0,
+      "breath": 0,
+      "overshoot": 0
+    },
+    "source": "Director performance state; no bone lengths or body dimensions"
+  },
+  "bones": [
+    {
+      "id": "root",
+      "parent": null,
+      "length": 0,
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "rest_local": {
+        "translation": [
+          0,
+          0,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "local_transform": {
+        "translation": [
+          0,
+          0,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "joint_limits": {
+        "pitch": [
+          -1.5707963267948966,
+          1.5707963267948966
+        ],
+        "yaw": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "roll": [
+          -1.5707963267948966,
+          1.5707963267948966
+        ]
+      },
+      "world_transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "world_start": [
+        0,
+        0,
+        0
+      ],
+      "world_end": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "pelvis",
+      "parent": "root",
+      "length": 0.1125,
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "rest_local": {
+        "translation": [
+          0,
+          0,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "local_transform": {
+        "translation": [
+          0,
+          0,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "joint_limits": {
+        "pitch": [
+          -1.5707963267948966,
+          1.5707963267948966
+        ],
+        "yaw": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "roll": [
+          -1.5707963267948966,
+          1.5707963267948966
+        ]
+      },
+      "world_transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "world_start": [
+        0,
+        0,
+        0
+      ],
+      "world_end": [
+        0,
+        0.1125,
+        0
+      ]
+    },
+    {
+      "id": "spine",
+      "parent": "pelvis",
+      "length": 0.16,
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "rest_local": {
+        "translation": [
+          0,
+          0.1125,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "local_transform": {
+        "translation": [
+          0,
+          0.1125,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "joint_limits": {
+        "pitch": [
+          -1.5707963267948966,
+          1.5707963267948966
+        ],
+        "yaw": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "roll": [
+          -0.25,
+          0.25
+        ]
+      },
+      "world_transform": {
+        "position": [
+          0,
+          0.1125,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "world_start": [
+        0,
+        0.1125,
+        0
+      ],
+      "world_end": [
+        0,
+        0.2725,
+        0
+      ]
+    },
+    {
+      "id": "ribcage",
+      "parent": "spine",
+      "length": 0.155,
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "rest_local": {
+        "translation": [
+          0,
+          0.16,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "local_transform": {
+        "translation": [
+          0,
+          0.16,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "joint_limits": {
+        "pitch": [
+          -1.5707963267948966,
+          1.5707963267948966
+        ],
+        "yaw": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "roll": [
+          -0.3,
+          0.3
+        ]
+      },
+      "world_transform": {
+        "position": [
+          0,
+          0.2725,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "world_start": [
+        0,
+        0.2725,
+        0
+      ],
+      "world_end": [
+        0,
+        0.4275,
+        0
+      ]
+    },
+    {
+      "id": "clavicle-left",
+      "parent": "ribcage",
+      "length": 0.117,
+      "axis": [
+        -1,
+        0,
+        0
+      ],
+      "rest_local": {
+        "translation": [
+          0,
+          0.1178,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "local_transform": {
+        "translation": [
+          0,
+          0.1178,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "joint_limits": {
+        "pitch": [
+          -1.5707963267948966,
+          1.5707963267948966
+        ],
+        "yaw": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "roll": [
+          -0.35,
+          0.35
+        ]
+      },
+      "world_transform": {
+        "position": [
+          0,
+          0.39030000000000004,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "world_start": [
+        0,
+        0.39030000000000004,
+        0
+      ],
+      "world_end": [
+        -0.117,
+        0.39030000000000004,
+        0
+      ]
+    },
+    {
+      "id": "shoulder-left",
+      "parent": "clavicle-left",
+      "length": 0,
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "rest_local": {
+        "translation": [
+          -0.117,
+          0,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "local_transform": {
+        "translation": [
+          -0.117,
+          0,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "joint_limits": {
+        "pitch": [
+          -1.5707963267948966,
+          1.5707963267948966
+        ],
+        "yaw": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "roll": [
+          -0.5,
+          0.5
+        ]
+      },
+      "world_transform": {
+        "position": [
+          -0.117,
+          0.39030000000000004,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "world_start": [
+        -0.117,
+        0.39030000000000004,
+        0
+      ],
+      "world_end": [
+        -0.117,
+        0.39030000000000004,
+        0
+      ]
+    },
+    {
+      "id": "upper-arm-left",
+      "parent": "shoulder-left",
+      "length": 0.1704,
+      "axis": [
+        0,
+        -1,
+        0
+      ],
+      "rest_local": {
+        "translation": [
+          0,
+          0,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "local_transform": {
+        "translation": [
+          0,
+          0,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "joint_limits": {
+        "pitch": [
+          -1.5707963267948966,
+          1.5707963267948966
+        ],
+        "yaw": [
+          -0.65,
+          0.65
+        ],
+        "roll": [
+          -1.75,
+          1.75
+        ]
+      },
+      "world_transform": {
+        "position": [
+          -0.117,
+          0.39030000000000004,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "world_start": [
+        -0.117,
+        0.39030000000000004,
+        0
+      ],
+      "world_end": [
+        -0.117,
+        0.21990000000000004,
+        0
+      ]
+    },
+    {
+      "id": "elbow-left",
+      "parent": "upper-arm-left",
+      "length": 0,
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "rest_local": {
+        "translation": [
+          0,
+          -0.1704,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "local_transform": {
+        "translation": [
+          0,
+          -0.1704,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "joint_limits": {
+        "pitch": [
+          -1.5707963267948966,
+          1.5707963267948966
+        ],
+        "yaw": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "roll": [
+          -2.2,
+          2.2
+        ]
+      },
+      "world_transform": {
+        "position": [
+          -0.117,
+          0.21990000000000004,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "world_start": [
+        -0.117,
+        0.21990000000000004,
+        0
+      ],
+      "world_end": [
+        -0.117,
+        0.21990000000000004,
+        0
+      ]
+    },
+    {
+      "id": "forearm-left",
+      "parent": "elbow-left",
+      "length": 0.1598,
+      "axis": [
+        0,
+        -1,
+        0
+      ],
+      "rest_local": {
+        "translation": [
+          0,
+          0,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "local_transform": {
+        "translation": [
+          0,
+          0,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "joint_limits": {
+        "pitch": [
+          -1.5707963267948966,
+          1.5707963267948966
+        ],
+        "yaw": [
+          -0.5,
+          0.5
+        ],
+        "roll": [
+          -2.45,
+          2.45
+        ]
+      },
+      "world_transform": {
+        "position": [
+          -0.117,
+          0.21990000000000004,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "world_start": [
+        -0.117,
+        0.21990000000000004,
+        0
+      ],
+      "world_end": [
+        -0.117,
+        0.06010000000000004,
+        0
+      ]
+    },
+    {
+      "id": "wrist-left",
+      "parent": "forearm-left",
+      "length": 0,
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "rest_local": {
+        "translation": [
+          0,
+          -0.1598,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "local_transform": {
+        "translation": [
+          0,
+          -0.1598,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "joint_limits": {
+        "pitch": [
+          -1.5707963267948966,
+          1.5707963267948966
+        ],
+        "yaw": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "roll": [
+          -0.7,
+          0.7
+        ]
+      },
+      "world_transform": {
+        "position": [
+          -0.117,
+          0.06010000000000004,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "world_start": [
+        -0.117,
+        0.06010000000000004,
+        0
+      ],
+      "world_end": [
+        -0.117,
+        0.06010000000000004,
+        0
+      ]
+    },
+    {
+      "id": "hand-left",
+      "parent": "wrist-left",
+      "length": 0.059,
+      "axis": [
+        0,
+        -1,
+        0
+      ],
+      "rest_local": {
+        "translation": [
+          0,
+          0,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "local_transform": {
+        "translation": [
+          0,
+          0,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "joint_limits": {
+        "pitch": [
+          -1.5707963267948966,
+          1.5707963267948966
+        ],
+        "yaw": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "roll": [
+          -0.7,
+          0.7
+        ]
+      },
+      "world_transform": {
+        "position": [
+          -0.117,
+          0.06010000000000004,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "world_start": [
+        -0.117,
+        0.06010000000000004,
+        0
+      ],
+      "world_end": [
+        -0.117,
+        0.0011000000000000454,
+        0
+      ]
+    },
+    {
+      "id": "clavicle-right",
+      "parent": "ribcage",
+      "length": 0.117,
+      "axis": [
+        1,
+        0,
+        0
+      ],
+      "rest_local": {
+        "translation": [
+          0,
+          0.1178,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "local_transform": {
+        "translation": [
+          0,
+          0.1178,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "joint_limits": {
+        "pitch": [
+          -1.5707963267948966,
+          1.5707963267948966
+        ],
+        "yaw": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "roll": [
+          -0.35,
+          0.35
+        ]
+      },
+      "world_transform": {
+        "position": [
+          0,
+          0.39030000000000004,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "world_start": [
+        0,
+        0.39030000000000004,
+        0
+      ],
+      "world_end": [
+        0.117,
+        0.39030000000000004,
+        0
+      ]
+    },
+    {
+      "id": "shoulder-right",
+      "parent": "clavicle-right",
+      "length": 0,
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "rest_local": {
+        "translation": [
+          0.117,
+          0,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "local_transform": {
+        "translation": [
+          0.117,
+          0,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "joint_limits": {
+        "pitch": [
+          -1.5707963267948966,
+          1.5707963267948966
+        ],
+        "yaw": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "roll": [
+          -0.5,
+          0.5
+        ]
+      },
+      "world_transform": {
+        "position": [
+          0.117,
+          0.39030000000000004,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "world_start": [
+        0.117,
+        0.39030000000000004,
+        0
+      ],
+      "world_end": [
+        0.117,
+        0.39030000000000004,
+        0
+      ]
+    },
+    {
+      "id": "upper-arm-right",
+      "parent": "shoulder-right",
+      "length": 0.1704,
+      "axis": [
+        0,
+        -1,
+        0
+      ],
+      "rest_local": {
+        "translation": [
+          0,
+          0,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "local_transform": {
+        "translation": [
+          0,
+          0,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "joint_limits": {
+        "pitch": [
+          -1.5707963267948966,
+          1.5707963267948966
+        ],
+        "yaw": [
+          -0.65,
+          0.65
+        ],
+        "roll": [
+          -1.75,
+          1.75
+        ]
+      },
+      "world_transform": {
+        "position": [
+          0.117,
+          0.39030000000000004,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "world_start": [
+        0.117,
+        0.39030000000000004,
+        0
+      ],
+      "world_end": [
+        0.117,
+        0.21990000000000004,
+        0
+      ]
+    },
+    {
+      "id": "elbow-right",
+      "parent": "upper-arm-right",
+      "length": 0,
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "rest_local": {
+        "translation": [
+          0,
+          -0.1704,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "local_transform": {
+        "translation": [
+          0,
+          -0.1704,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "joint_limits": {
+        "pitch": [
+          -1.5707963267948966,
+          1.5707963267948966
+        ],
+        "yaw": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "roll": [
+          -2.2,
+          2.2
+        ]
+      },
+      "world_transform": {
+        "position": [
+          0.117,
+          0.21990000000000004,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "world_start": [
+        0.117,
+        0.21990000000000004,
+        0
+      ],
+      "world_end": [
+        0.117,
+        0.21990000000000004,
+        0
+      ]
+    },
+    {
+      "id": "forearm-right",
+      "parent": "elbow-right",
+      "length": 0.1598,
+      "axis": [
+        0,
+        -1,
+        0
+      ],
+      "rest_local": {
+        "translation": [
+          0,
+          0,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "local_transform": {
+        "translation": [
+          0,
+          0,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "joint_limits": {
+        "pitch": [
+          -1.5707963267948966,
+          1.5707963267948966
+        ],
+        "yaw": [
+          -0.5,
+          0.5
+        ],
+        "roll": [
+          -2.45,
+          2.45
+        ]
+      },
+      "world_transform": {
+        "position": [
+          0.117,
+          0.21990000000000004,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "world_start": [
+        0.117,
+        0.21990000000000004,
+        0
+      ],
+      "world_end": [
+        0.117,
+        0.06010000000000004,
+        0
+      ]
+    },
+    {
+      "id": "wrist-right",
+      "parent": "forearm-right",
+      "length": 0,
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "rest_local": {
+        "translation": [
+          0,
+          -0.1598,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "local_transform": {
+        "translation": [
+          0,
+          -0.1598,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "joint_limits": {
+        "pitch": [
+          -1.5707963267948966,
+          1.5707963267948966
+        ],
+        "yaw": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "roll": [
+          -0.7,
+          0.7
+        ]
+      },
+      "world_transform": {
+        "position": [
+          0.117,
+          0.06010000000000004,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "world_start": [
+        0.117,
+        0.06010000000000004,
+        0
+      ],
+      "world_end": [
+        0.117,
+        0.06010000000000004,
+        0
+      ]
+    },
+    {
+      "id": "hand-right",
+      "parent": "wrist-right",
+      "length": 0.059,
+      "axis": [
+        0,
+        -1,
+        0
+      ],
+      "rest_local": {
+        "translation": [
+          0,
+          0,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "local_transform": {
+        "translation": [
+          0,
+          0,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "joint_limits": {
+        "pitch": [
+          -1.5707963267948966,
+          1.5707963267948966
+        ],
+        "yaw": [
+          -3.141592653589793,
+          3.141592653589793
+        ],
+        "roll": [
+          -0.7,
+          0.7
+        ]
+      },
+      "world_transform": {
+        "position": [
+          0.117,
+          0.06010000000000004,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "world_start": [
+        0.117,
+        0.06010000000000004,
+        0
+      ],
+      "world_end": [
+        0.117,
+        0.0011000000000000454,
+        0
+      ]
+    },
+    {
+      "id": "neck",
+      "parent": "ribcage",
+      "length": 0.0993,
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "rest_local": {
+        "translation": [
+          0,
+          0.155,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "local_transform": {
+        "translation": [
+          0,
+          0.155,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "joint_limits": {
+        "pitch": [
+          -0.6,
+          0.6
+        ],
+        "yaw": [
+          -0.65,
+          0.65
+        ],
+        "roll": [
+          -0.45,
+          0.45
+        ]
+      },
+      "world_transform": {
+        "position": [
+          0,
+          0.4275,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "world_start": [
+        0,
+        0.4275,
+        0
+      ],
+      "world_end": [
+        0,
+        0.5267999999999999,
+        0
+      ]
+    },
+    {
+      "id": "skull",
+      "parent": "neck",
+      "length": 0,
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "rest_local": {
+        "translation": [
+          0,
+          0.0993,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "local_transform": {
+        "translation": [
+          0,
+          0.0993,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "joint_limits": {
+        "pitch": [
+          -0.35,
+          0.35
+        ],
+        "yaw": [
+          -1.45,
+          1.45
+        ],
+        "roll": [
+          -0.35,
+          0.35
+        ]
+      },
+      "world_transform": {
+        "position": [
+          0,
+          0.5267999999999999,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "world_start": [
+        0,
+        0.5267999999999999,
+        0
+      ],
+      "world_end": [
+        0,
+        0.5267999999999999,
+        0
+      ]
+    }
+  ],
+  "bone_length_errors": [],
+  "bone_lengths_pose_invariant": true,
+  "root_transform": {
+    "position": [
+      0,
+      0,
+      0
+    ],
+    "rotation": {
+      "pitch": 0,
+      "yaw": 0,
+      "roll": 0
+    }
+  },
+  "kinematic_policy": "FK-derived-world-positions-with-joint-limit-clamping",
+  "pose_root": "0acddc7886d6bcb5609f1e40451fb137fac3ce1674c815ebb3fe722d13091456"
+}

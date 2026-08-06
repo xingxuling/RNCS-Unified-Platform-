@@ -1,0 +1,26 @@
+{
+  "format": "rncs.anime-forge-morphology-regression-fixture.v0.1",
+  "fixture_id": "phase6-1-supplied-frame-2026-08-07",
+  "source_asset": "morphology-regression-fixture/phase6-1-supplied-frame.png",
+  "source_sha256": "5c91c372662bfefa99c8386659d99958e5f906e0a861fd7f3088c4fc7945369c",
+  "source_kind": "user-supplied-phase6-1-output-screenshot",
+  "failure_classification": "multiple-competing-morphology-authorities",
+  "observed_failures": [
+    "head-face attachment is not a single skull-local surface",
+    "hair mass and scalp attachment are not one canonical field",
+    "neck, shoulder girdle, ribcage and garment read as separate primitives",
+    "elbow and forearm read as a mechanical capsule junction",
+    "hand and wrist are not derived from the same posed surface",
+    "camera and style choices visibly expose geometry discontinuity"
+  ],
+  "red_gates": [
+    "genome_actually_drives_geometry",
+    "canonical_morphology_asset_exists",
+    "hierarchical_skeleton_drives_world_positions",
+    "volume_layer_exists_between_skeleton_and_surface",
+    "face_surface_projection_is_canonical",
+    "scalp_hair_attachment_is_surface_bound",
+    "renderer_has_no_anatomy_authority"
+  ],
+  "review_boundary": "This fixture records a failure reality. It is not an Anime Quality Score and does not automate human visual acceptance."
+}

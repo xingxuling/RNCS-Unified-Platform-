@@ -1,0 +1,14 @@
+{
+  "format": "rncs.anime-forge-morphology-red-feedback.v0.1",
+  "status": "red",
+  "baseline_commit": "ffa5866a76ee7215ee78a3c1d499bb58246c3eca",
+  "fixture_id": "phase6-1-supplied-frame-2026-08-07",
+  "failures": [
+    "GENOME_DOES_NOT_DRIVE_GEOMETRY",
+    "POSE_OWNS_BODY_LANDMARKS",
+    "RENDERER_OWNS_ANATOMY",
+    "CANONICAL_MORPHOLOGY_MODULE_MISSING"
+  ],
+  "interpretation": "The Phase 6.1 output is a real regression fixture for competing morphology authorities. No visual quality score is inferred from this result.",
+  "next_gate": "Canonical morphology compiler and geometry certificate must turn every listed failure green."
+}

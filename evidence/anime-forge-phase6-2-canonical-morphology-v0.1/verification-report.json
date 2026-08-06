@@ -1,0 +1,28 @@
+{
+  "format": "rncs.anime-forge-phase6-2-verification-report.v0.1",
+  "status": "blocked",
+  "checks": {
+    "anatomy_system": true,
+    "morphology_certificate": true,
+    "validation_pack": true,
+    "frame_sequence": true,
+    "frame_roots_unique": true,
+    "three_derived_cuts": true,
+    "audio_wav": true,
+    "mp4": false,
+    "ffprobe": false,
+    "continuity": true,
+    "renderer_anatomy_independent": true,
+    "human_acceptance_not_automated": true,
+    "commercial_quality_not_claimed": true
+  },
+  "negative_gates": {
+    "missing_ffmpeg_blocks_media": true,
+    "fake_mp4_not_emitted": true
+  },
+  "failure": {
+    "code": "MEDIA_TOOL_NOT_FOUND",
+    "message": "MEDIA_TOOL_NOT_FOUND:ffmpeg:ffmpeg"
+  },
+  "verification_root": "5b6c9815538cd9625112b0c60a9a885936aa33f2faa31a198ed008b6172796e5"
+}

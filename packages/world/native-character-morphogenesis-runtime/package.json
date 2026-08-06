@@ -7,7 +7,9 @@
   "exports": {
     ".": "./src/index.mjs",
     "./anatomy": "./src/anatomy.mjs",
-    "./renderer": "./src/renderer.mjs"
+    "./renderer": "./src/renderer.mjs",
+    "./canonical-morphology": "./src/canonical-morphology.mjs",
+    "./build62": "./src/build62.mjs"
   },
   "files": ["src", "schemas", "tests", "README.md", "STATUS.md"],
   "scripts": {

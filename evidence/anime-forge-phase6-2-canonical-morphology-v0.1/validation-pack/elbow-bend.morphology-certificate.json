@@ -1,0 +1,41 @@
+{
+  "format": "rncs.morphology-certificate.v0.1",
+  "asset_root": "1e476e0d225ec1f3b38e62ff6df024c5f434fabd310385641a4109be430d0d33",
+  "gates": {
+    "proportion_valid": true,
+    "bone_length_valid": true,
+    "joint_limit_valid": true,
+    "surface_continuity_valid": true,
+    "face_surface_valid": true,
+    "feature_attachment_valid": true,
+    "scalp_attachment_valid": true,
+    "hair_overlap_valid": true,
+    "garment_attachment_valid": true,
+    "self_intersection_valid": true,
+    "silhouette_connected": true,
+    "camera_projection_valid": true
+  },
+  "failures": [],
+  "core_gates": [
+    "proportion_valid",
+    "bone_length_valid",
+    "joint_limit_valid",
+    "surface_continuity_valid",
+    "face_surface_valid",
+    "feature_attachment_valid",
+    "scalp_attachment_valid",
+    "hair_overlap_valid",
+    "garment_attachment_valid",
+    "self_intersection_valid",
+    "silhouette_connected",
+    "camera_projection_valid"
+  ],
+  "tolerances": {
+    "scalp_root_distance": 0.008,
+    "garment_offset_min": 0.001,
+    "feature_depth_min": 0.001
+  },
+  "rejection_policy": "any-core-gate-false-rejects-candidate",
+  "human_visual_acceptance": "not-automated",
+  "certificate_root": "e158e51376d02d262605c560e8c3071e3fd1907abfb57e0fa4e198ed8fd57ce8"
+}

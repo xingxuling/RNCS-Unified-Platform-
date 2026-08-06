@@ -1,0 +1,41 @@
+{
+  "format": "rncs.anime-forge-phase6-2-visual-review.v0.1",
+  "reviewer": "Codex visual inspection",
+  "review_mode": "image-backed engineering review",
+  "status": "candidate-pending-human-review",
+  "human_visual_acceptance": "pending",
+  "creative_production_review": "candidate-pending-human-review",
+  "assets_reviewed": {
+    "contact_sheet": "validation-contact-sheet.png",
+    "front": "validation-pack/front-neutral.png",
+    "three_quarter": "validation-pack/three-quarter-right.png",
+    "side": "validation-pack/side.png",
+    "action": "episode-frames/frame-000069.png"
+  },
+  "observations": {
+    "body_readability": "candidate-readable-experimental-2.5d",
+    "face_head_attachment": "candidate-pass-pending-human",
+    "scalp_hair_attachment": "candidate-pass-pending-human",
+    "shoulder_neck_chest": "candidate-pass-pending-human",
+    "elbow_continuity": "candidate-pass-pending-human-after-polyline-sleeve-fix",
+    "hand_attachment": "candidate-pass-pending-human",
+    "pose_weight": "candidate-pass-pending-human",
+    "multi_view_identity": "candidate-pass-pending-human"
+  },
+  "initial_regression": {
+    "fixture": "morphology-regression-fixture/phase6-1-supplied-frame.png",
+    "status": "red-baseline-recorded",
+    "findings": [
+      "separate primitive anatomy",
+      "renderer-owned body landmarks",
+      "renderer-owned face and hair decisions"
+    ]
+  },
+  "post_fix_boundary": "This review confirms that diagnostic images were inspected and the known Phase 6.1 visual failure is reduced in the candidate pack. It does not grant human acceptance, commercial anime quality, or professional production parity.",
+  "roots": {
+    "morphology_root": "1e476e0d225ec1f3b38e62ff6df024c5f434fabd310385641a4109be430d0d33",
+    "validation_pack_root": "6e7a693743c7b36b195ceb507da5887d681f9e341d2494ddb597882ea8a1b5df",
+    "frame_manifest_root": "f8902d185e3ea6303f69495352fe584c66f593b1524bfcfe040ee54bc113b2d6"
+  },
+  "review_root": "1512f2cebd30a456f79392ed8eb770cf0a17fe5461f17c6040786a98f3d29663"
+}

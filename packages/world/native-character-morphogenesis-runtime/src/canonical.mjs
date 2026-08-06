@@ -49,3 +49,34 @@ export function samplePolyline(points, count = 8) {
   }
   return output;
 }
+
+export const add3 = (a, b) => [(a[0] ?? 0) + (b[0] ?? 0), (a[1] ?? 0) + (b[1] ?? 0), (a[2] ?? 0) + (b[2] ?? 0)];
+export const sub3 = (a, b) => [(a[0] ?? 0) - (b[0] ?? 0), (a[1] ?? 0) - (b[1] ?? 0), (a[2] ?? 0) - (b[2] ?? 0)];
+export const scale3 = (a, scalar) => [(a[0] ?? 0) * scalar, (a[1] ?? 0) * scalar, (a[2] ?? 0) * scalar];
+export const length3 = value => Math.hypot(value[0] ?? 0, value[1] ?? 0, value[2] ?? 0);
+export const distance3 = (a, b) => length3(sub3(a, b));
+export const normalize3 = value => { const length = length3(value) || 1; return scale3(value, 1 / length); };
+
+export function rotateEuler(pointValue, rotation = {}) {
+  let [x, y, z] = [pointValue[0] ?? 0, pointValue[1] ?? 0, pointValue[2] ?? 0];
+  const pitch = Number(rotation.pitch ?? rotation.x ?? 0);
+  const yaw = Number(rotation.yaw ?? rotation.y ?? 0);
+  const roll = Number(rotation.roll ?? rotation.z ?? 0);
+  let cosine = Math.cos(pitch), sine = Math.sin(pitch);
+  [y, z] = [y * cosine - z * sine, y * sine + z * cosine];
+  cosine = Math.cos(yaw); sine = Math.sin(yaw);
+  [x, z] = [x * cosine - z * sine, x * sine + z * cosine];
+  cosine = Math.cos(roll); sine = Math.sin(roll);
+  [x, y] = [x * cosine - y * sine, x * sine + y * cosine];
+  return [x, y, z];
+}
+
+export function addRotation(a = {}, b = {}) {
+  return {pitch: Number(a.pitch ?? a.x ?? 0) + Number(b.pitch ?? b.x ?? 0), yaw: Number(a.yaw ?? a.y ?? 0) + Number(b.yaw ?? b.y ?? 0), roll: Number(a.roll ?? a.z ?? 0) + Number(b.roll ?? b.z ?? 0)};
+}
+
+export function composeTransform(parent = {position: [0, 0, 0], rotation: {pitch: 0, yaw: 0, roll: 0}}, local = {translation: [0, 0, 0], rotation: {pitch: 0, yaw: 0, roll: 0}}) {
+  return {position: add3(parent.position, rotateEuler(local.translation ?? [0, 0, 0], parent.rotation)), rotation: addRotation(parent.rotation, local.rotation)};
+}
+
+export const transformPoint = (transform, pointValue) => add3(transform.position, rotateEuler(pointValue, transform.rotation));

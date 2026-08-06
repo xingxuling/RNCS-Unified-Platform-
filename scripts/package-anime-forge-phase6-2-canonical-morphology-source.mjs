@@ -1,0 +1,12 @@
+import crypto from 'node:crypto';
+import fs from 'node:fs';
+import path from 'node:path';
+import {spawnSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
+
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),outIndex=process.argv.indexOf('--out'),out=path.resolve(outIndex>=0?process.argv[outIndex+1]??'tmp/RNCS-Anime-Forge-v0.1-phase6-2-canonical-morphology-source.zip':'tmp/RNCS-Anime-Forge-v0.1-phase6-2-canonical-morphology-source.zip');
+const include=['docs/execution/ENGINEERING-CONTRACT.yaml','docs/execution/IMPLEMENTATION-PLAN.md','docs/execution/VERIFICATION-MATRIX.md','packages/world/native-character-morphogenesis-runtime','evidence/anime-forge-phase6-2-canonical-morphology-v0.1/morphology-regression-fixture','scripts/build-anime-forge-phase6-2-canonical-morphology.mjs','scripts/verify-anime-forge-phase6-2-canonical-morphology.mjs','scripts/package-anime-forge-phase6-2-canonical-morphology-source.mjs','.github/workflows/anime-forge-phase6-2-canonical-morphology.yml'];
+fs.mkdirSync(path.join(root,'tmp'),{recursive:true});
+const stage=fs.mkdtempSync(path.join(root,'tmp','phase6-2-source-')),files=[];
+function copy(relative){const source=path.join(root,relative);if(!fs.existsSync(source))return;const stat=fs.statSync(source);if(stat.isDirectory()){for(const entry of fs.readdirSync(source))copy(path.join(relative,entry));return;}const destination=path.join(stage,relative);fs.mkdirSync(path.dirname(destination),{recursive:true});fs.copyFileSync(source,destination);files.push({path:relative.replaceAll('\\','/'),sha256:crypto.createHash('sha256').update(fs.readFileSync(source)).digest('hex'),bytes:stat.size});}
+for(const entry of include)copy(entry);const manifest={format:'rncs.anime-forge-phase6-2-source-package.v0.1',created_at:'2026-08-07T00:00:00.000Z',file_count:files.length,files:files.sort((a,b)=>a.path.localeCompare(b.path)),source_root:crypto.createHash('sha256').update(JSON.stringify(files)).digest('hex')};fs.writeFileSync(path.join(stage,'SOURCE-MANIFEST.json'),`${JSON.stringify(manifest,null,2)}\n`);fs.mkdirSync(path.dirname(out),{recursive:true});const tar=spawnSync('tar',['-a','-c','-f',out,'-C',stage,'.'],{encoding:'utf8'});if(tar.status!==0)throw new Error(`SOURCE_PACKAGE_FAILED:${tar.stderr??''}`);console.log(JSON.stringify({out,sha256:crypto.createHash('sha256').update(fs.readFileSync(out)).digest('hex'),bytes:fs.statSync(out).size,source_root:manifest.source_root,file_count:manifest.file_count},null,2));

@@ -1,0 +1,50 @@
+{
+  "format": "rncs.anime-forge-phase6-2-composition-contract.v0.1",
+  "episode_intent_root": "2c1b0cedea495b485ebc6bfd046450ce9e03790e3ada1f2f815ab854a5a7413b",
+  "resolution": {
+    "width": 1280,
+    "height": 720
+  },
+  "fps": 24,
+  "layer_order": [
+    "background",
+    "body-surface",
+    "skin-limb",
+    "joint-surface",
+    "hand-surface",
+    "garment-surface",
+    "hair",
+    "face-outline",
+    "face-feature"
+  ],
+  "camera": {
+    "projection": "orthographic-perspective-hybrid",
+    "cut_local_yaw": true,
+    "style_after_projection": true
+  },
+  "transitions": [
+    {
+      "from": "CUT-PHASE6-2-FRONT",
+      "to": "CUT-PHASE6-2-THREE-QUARTER",
+      "type": "cut",
+      "frame": 40
+    },
+    {
+      "from": "CUT-PHASE6-2-THREE-QUARTER",
+      "to": "CUT-PHASE6-2-HEAD-TURN",
+      "type": "cut",
+      "frame": 80
+    }
+  ],
+  "cut_seam_check": {
+    "status": "pass",
+    "checks": [
+      "frame-count",
+      "shared-genome-root",
+      "shared-morphology-root",
+      "layer-order",
+      "exposure-contract"
+    ]
+  },
+  "composition_root": "5c6ec9f3c11345e5d433596818b5eaa2797f6afa0c9680101f8e2a63c78c47bf"
+}

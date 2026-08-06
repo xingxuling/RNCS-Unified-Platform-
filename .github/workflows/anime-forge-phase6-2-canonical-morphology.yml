@@ -1,0 +1,46 @@
+name: anime-forge-phase6-2-canonical-morphology
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main-95]
+    paths:
+      - "packages/world/native-character-morphogenesis-runtime/**"
+      - "scripts/*anime-forge-phase6-2*"
+      - "docs/execution/**"
+      - "evidence/anime-forge-phase6-2-canonical-morphology-v0.1/**"
+      - ".github/workflows/anime-forge-phase6-2-canonical-morphology.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install FFmpeg and ffprobe
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Install workspace dependencies
+        run: npm ci
+      - name: Run Phase 6.2 focused tests
+        run: npm run test:anime-phase6-2-morphology
+      - name: Build canonical validation pack and MP4
+        run: npm run build:anime-phase6-2-morphology
+      - name: Verify morphology, media and evidence
+        run: npm run verify:anime-phase6-2-morphology
+      - name: Package Phase 6.2 source
+        run: npm run package:anime-phase6-2-morphology
+      - name: Upload Phase 6.2 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: rncs-anime-forge-phase6-2-canonical-morphology-evidence
+          path: |
+            evidence/anime-forge-phase6-2-canonical-morphology-v0.1
+            tmp/RNCS-Anime-Forge-v0.1-phase6-2-canonical-morphology-source.zip
+          if-no-files-found: error
