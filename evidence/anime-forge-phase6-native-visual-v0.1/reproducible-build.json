@@ -1,0 +1,29 @@
+{
+  "format": "rncs.native-reproducible-build.v0.1",
+  "version": "0.1.0-alpha.1",
+  "source": "native-visual-genesis-runtime",
+  "inputs": {
+    "episode_intent_root": "c57563c58810e6cefe13209a78597b2c3ed0a5a7a917644f6f9ed92355fec01d",
+    "shot_intent_root": "77048c712e9f446e3fcf19e3efef4321b1a4d6b6a04ec8395a26b9f0dfe74dda",
+    "character_genome_root": "6a347e8be5de30cfc151db5236aeee67691eb1b2bdf4dd1cad04ed8a401d9b26",
+    "seed": "native-visual-genesis-v0.1",
+    "width": 1280,
+    "height": 720,
+    "fps": 24,
+    "frameCount": 120
+  },
+  "deterministic_roots": {
+    "visual_genome_root": "b1399ff82a9b45bd2f1a61f673642f487adeeee63a66ae9dd287a6a3f407ffb1",
+    "body_graph_root": "f7772c6ae8257b493ca1235f1738525b91fab193ff1939117df9390cd6aedb3e",
+    "performance_root": "606cdfabc9de92a86c3358a465cebac8ec8926dc8145e40ced86169dd705923e",
+    "scene_root": "b0792cc958f91045c31dc11451c3419752975fd185367996047f2990d767a8b4",
+    "style_root": "9e4c926f426235bc7ceb7c3f3679fa46cf6f5e6bea23f053b9d48d5bd7b9e1db",
+    "render_plan_root": "d1c93d466a149682fcf3e8340ef4d4a241ca4464ee0832881e5c6ab80d7e630b",
+    "sequence_root": "eaedf668236f54f9a78fed633748ad1af01189450d9f52294f4a54a26b60578c"
+  },
+  "media_tool_version_scoped": true,
+  "ffmpeg_version": "ffmpeg version 9.0-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers",
+  "ffprobe_version": "ffprobe version 9.0-full_build-www.gyan.dev Copyright (c) 2007-2026 the FFmpeg developers",
+  "status": "complete",
+  "boundary": "MP4 bytes may vary by FFmpeg build; authoritative state/frame roots are deterministic"
+}

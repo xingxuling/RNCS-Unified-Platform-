@@ -1,0 +1,74 @@
+{
+  "format": "rncs.anime-forge-phase6-native-evidence-verification.v0.1",
+  "version": "0.1.0-alpha.1",
+  "evidence_dir": "C:\\Users\\User\\Documents\\RCL\\_worktrees\\rncs-anime-forge-phase6-native-visual-genesis-v01\\evidence\\anime-forge-phase6-native-visual-v0.1",
+  "status": "complete",
+  "phase_status": {
+    "format": "rncs.anime-forge-phase6-status.v0.1",
+    "version": "0.1.0-alpha.1",
+    "native_visual_architecture_status": "complete",
+    "visual_genome_status": "complete",
+    "morphogenesis_status": "complete",
+    "performance_status": "complete",
+    "scene_camera_status": "complete",
+    "style_law_status": "complete",
+    "native_renderer_status": "complete",
+    "native_five_second_shot_status": "passed",
+    "visual_uplift_versus_phase4": "pending-human-review",
+    "human_visual_acceptance": "pending",
+    "commercial_anime_quality": "not-proven",
+    "external_visual_model_required": false,
+    "boundary": "Experimental RNCS-native visual genesis; human visual acceptance and commercial Anime quality are not proven."
+  },
+  "checks": {
+    "required_files": true,
+    "native_chain": true,
+    "frame_sequence": true,
+    "frame_variation": true,
+    "character_continuity": true,
+    "cut_continuity": true,
+    "audio_video_sync": true,
+    "mp4": true,
+    "ffprobe": true,
+    "repair_scope": true,
+    "provider_manifest": true,
+    "ledger": true
+  },
+  "programme": {
+    "duration_seconds": 5,
+    "width": 1280,
+    "height": 720,
+    "fps": 24,
+    "expected_frame_count": 120,
+    "rendered_frame_count": 120,
+    "unique_color_sha256": 120,
+    "cut_count": 1,
+    "native_provider": "rncs.native-2d25d-cpu"
+  },
+  "media": {
+    "mp4": {
+      "path": "episode.mp4",
+      "sha256": "f48a8deb3524ce84d88eef511a8d4b346ce143c82b4624feaee15ad16a4a6444",
+      "bytes": 413874
+    },
+    "wav": {
+      "path": "episode.wav",
+      "sha256": "391176f19cc65dad9bee5b0b2a9ca7a67a49e13ecebb03da44083cd44ca2b42c",
+      "bytes": 480044
+    },
+    "ffprobe_report": "ffprobe-report.json"
+  },
+  "roots": {
+    "ledger_root": "ee37147626c04aedf835cf2d514267fd39d96af6e3fc3a9ae61ae51b5038bca4",
+    "evidence_bundle_root": "9cf69c2717bf4e1db2933b2b8c8a3770d387e869ed5def9756d5468fa3db993c",
+    "sequence_root": "eaedf668236f54f9a78fed633748ad1af01189450d9f52294f4a54a26b60578c",
+    "character_report_root": "dff0e5f31cc451cabe6655e25173335042f0fd6cc34f91d9d41398fb289b655a",
+    "cut_report_root": "1d0f9bf842351529bb88b59f147d0a3b0b96cfd668658ede7da01f82f7c95bd7",
+    "audio_video_sync_root": "57f100a6dc7de81fc3028252654e78d73fb99d57cc19ce74ee5f19e5eb357505",
+    "repair_receipt_root": "c78d99e0e04c56e4fb66b54bf4d420ae5879b02879f9fecc7625ebfcbbb61fb2"
+  },
+  "source_package_sha256": "c5ebedef4f7008f1b48b508529a18d34bc6344a7191a6f3f4e3633ae959f0e69",
+  "artifact_file_count": 634,
+  "artifact_files_root": "1f9383d191b7e32f3499a2cba0693a76f36722ce09f02305e7b959e3941c5e13",
+  "boundary": "This verifies an experimental RNCS-native shot and its media/evidence closure. Human visual acceptance and commercial Anime quality remain separate gates."
+}

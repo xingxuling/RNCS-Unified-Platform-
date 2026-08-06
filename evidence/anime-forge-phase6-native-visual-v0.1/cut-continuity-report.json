@@ -1,0 +1,19 @@
+{
+  "format": "rncs.native-cut-continuity-report.v0.1",
+  "version": "0.1.0-alpha.1",
+  "status": "pass",
+  "cut_count": 1,
+  "seam_count": 0,
+  "continuous_shot": true,
+  "camera_root": "0b80c135729ed09b66dc18517183ead8833f2391fc50dcadbd31dba3839e5492",
+  "scene_root": "b0792cc958f91045c31dc11451c3419752975fd185367996047f2990d767a8b4",
+  "checks": {
+    "identity": true,
+    "topology": true,
+    "depth": true,
+    "occlusion": true,
+    "contact": true,
+    "camera": true
+  },
+  "report_root": "1d0f9bf842351529bb88b59f147d0a3b0b96cfd668658ede7da01f82f7c95bd7"
+}

@@ -18,3 +18,4 @@ export * from './spatial-studio.mjs';
 export * from './asset-forge.mjs';
 export * from './sequencer.mjs';
 export * from './network-world-compiler.mjs';
+export * from './native-visual-genesis-studio.mjs';

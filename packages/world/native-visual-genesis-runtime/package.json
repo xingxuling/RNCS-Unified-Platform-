@@ -1,0 +1,26 @@
+{
+  "name": "@taowind/native-visual-genesis-runtime",
+  "version": "0.1.0-alpha.1",
+  "type": "module",
+  "description": "RNCS-native Visual Genome, body morphogenesis, performance, scene, style and deterministic Anime frame execution.",
+  "license": "Apache-2.0",
+  "bin": {
+    "native-visual-shot": "src/cli.mjs"
+  },
+  "exports": {
+    ".": "./src/index.mjs"
+  },
+  "files": [
+    "src",
+    "schemas",
+    "README.md",
+    "STATUS.md"
+  ],
+  "scripts": {
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs",
+    "shot": "node src/cli.mjs build-shot"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

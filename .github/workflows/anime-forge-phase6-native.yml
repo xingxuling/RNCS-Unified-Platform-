@@ -1,0 +1,78 @@
+name: RNCS Anime Forge Phase 6 Native Visual Genesis
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main-95]
+    paths:
+      - "packages/world/native-visual-genesis-runtime/**"
+      - "apps/reality-studio/src/native-visual-genesis-studio.mjs"
+      - "apps/reality-studio/src/server.mjs"
+      - "apps/reality-studio/src/index.mjs"
+      - "apps/reality-studio/web/anime-forge.html"
+      - "apps/reality-studio/tests/native-visual-genesis.test.mjs"
+      - "scripts/build-anime-forge-phase6-native-shot.mjs"
+      - "scripts/verify-anime-forge-phase6-native-evidence.mjs"
+      - "scripts/package-anime-forge-phase6-native-source.mjs"
+      - "docs/architecture/adr/ADR-native-visual-render-backend-v0.1.md"
+      - "docs/verification/anime-forge-phase6-native-visual-v0.1/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/anime-forge-phase6-native.yml"
+  push:
+    branches: [main-95]
+    paths:
+      - "packages/world/native-visual-genesis-runtime/**"
+      - "apps/reality-studio/src/native-visual-genesis-studio.mjs"
+      - "apps/reality-studio/src/server.mjs"
+      - "apps/reality-studio/src/index.mjs"
+      - "apps/reality-studio/web/anime-forge.html"
+      - "apps/reality-studio/tests/native-visual-genesis.test.mjs"
+      - "scripts/build-anime-forge-phase6-native-shot.mjs"
+      - "scripts/verify-anime-forge-phase6-native-evidence.mjs"
+      - "scripts/package-anime-forge-phase6-native-source.mjs"
+      - "docs/architecture/adr/ADR-native-visual-render-backend-v0.1.md"
+      - "docs/verification/anime-forge-phase6-native-visual-v0.1/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/anime-forge-phase6-native.yml"
+
+jobs:
+  native-visual-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install FFmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - run: npm ci --ignore-scripts
+      - name: Run native runtime and Studio workspace tests
+        run: |
+          npm run test:anime-phase6-native
+          node --test apps/reality-studio/tests/native-visual-genesis.test.mjs
+          node --check packages/world/native-visual-genesis-runtime/src/*.mjs
+      - name: Build native shot
+        env:
+          FFMPEG_PATH: ffmpeg
+          FFPROBE_PATH: ffprobe
+          RNCS_NATIVE_SHOT_OUT: tmp/anime-forge-phase6-native-evidence
+          RNCS_KEEP_NATIVE_WORKING: "0"
+        run: npm run build:anime-phase6-native
+      - name: Verify media and evidence gates
+        run: npm run verify:anime-phase6-native -- --evidence tmp/anime-forge-phase6-native-evidence
+      - name: Package source
+        run: npm run package:anime-phase6-native -- --evidence tmp/anime-forge-phase6-native-evidence --out tmp/RNCS-Anime-Forge-v0.1-phase6-native-source.zip
+      - name: Re-verify after source hash binding
+        run: npm run verify:anime-phase6-native -- --evidence tmp/anime-forge-phase6-native-evidence
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rncs-anime-forge-phase6-native-${{ github.sha }}
+          if-no-files-found: error
+          retention-days: 30
+          path: |
+            tmp/anime-forge-phase6-native-evidence
+            tmp/RNCS-Anime-Forge-v0.1-phase6-native-source.zip

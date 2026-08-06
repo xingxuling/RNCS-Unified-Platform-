@@ -1,0 +1,37 @@
+{
+  "format": "rncs.visual-repair-candidate.v0.1",
+  "version": "0.1.0-alpha.1",
+  "candidate_id": "repair:ef3a4ffa92294e78225b96c5",
+  "status": "candidate",
+  "reason": "hair-face-clearance",
+  "source_body_graph_root": "f7772c6ae8257b493ca1235f1738525b91fab193ff1939117df9390cd6aedb3e",
+  "candidate_body_graph_root": "f273af7f351875ef0c2ea907a85ecc821678657ad97a214951cdd2e70d6eeab8",
+  "target": "hair_rig.clearance",
+  "frame_range": {
+    "start": 55,
+    "end": 86
+  },
+  "scope": "local-frame-rebuild",
+  "roots_unchanged": {
+    "episode_intent": true,
+    "character_identity": true
+  },
+  "provenance": {
+    "source": "VisualResidualReport",
+    "residual_report_root": "c735d207bc2df3e9016916549695d6cd192b03cede952edc09a7286d8d1e8780"
+  },
+  "dependencies": [
+    "f7772c6ae8257b493ca1235f1738525b91fab193ff1939117df9390cd6aedb3e",
+    "c735d207bc2df3e9016916549695d6cd192b03cede952edc09a7286d8d1e8780"
+  ],
+  "lifecycle": "derived",
+  "authority": "RNCS candidate repair",
+  "rollback": {
+    "strategy": "reject-candidate-and-restore-source-body",
+    "parent_roots": [
+      "f7772c6ae8257b493ca1235f1738525b91fab193ff1939117df9390cd6aedb3e",
+      "c735d207bc2df3e9016916549695d6cd192b03cede952edc09a7286d8d1e8780"
+    ]
+  },
+  "repair_candidate_root": "2e38eef0d7b897fc148203c02c12aaa31a59a4613145de3c2d02e1a7e31e0408"
+}

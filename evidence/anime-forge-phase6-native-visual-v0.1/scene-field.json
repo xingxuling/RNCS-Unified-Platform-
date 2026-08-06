@@ -1,0 +1,195 @@
+{
+  "format": "rncs.scene-structure-field.v0.1",
+  "version": "0.1.0-alpha.1",
+  "scene_field_id": "scene:native-shot-001",
+  "shot_id": "native-shot-001",
+  "coordinate_system": {
+    "up": "y",
+    "right": "x",
+    "forward": "z",
+    "units": "meters"
+  },
+  "bounds": {
+    "min": [
+      -2,
+      0,
+      -1
+    ],
+    "max": [
+      2,
+      2.2,
+      1
+    ]
+  },
+  "projection": {
+    "kind": "perspective-2.5d",
+    "focal_depth": 0.2,
+    "vanishing_point": [
+      0.52,
+      0.45
+    ]
+  },
+  "camera": {
+    "format": "rncs.camera-program.v0.1",
+    "version": "0.1.0-alpha.1",
+    "camera_id": "camera:native-shot-001",
+    "projection": "perspective-2.5d",
+    "resolution": {
+      "width": 1280,
+      "height": 720
+    },
+    "fps": 24,
+    "lens_mm": 52,
+    "start": {
+      "x": -0.02,
+      "y": 0.03,
+      "z": 4.2,
+      "yaw": -0.025,
+      "pitch": 0.01,
+      "zoom": 1
+    },
+    "end": {
+      "x": 0.045,
+      "y": 0.045,
+      "z": 4.05,
+      "yaw": 0.035,
+      "pitch": 0.005,
+      "zoom": 1.06
+    },
+    "easing": "smoothstep",
+    "camera_root": "0b80c135729ed09b66dc18517183ead8833f2391fc50dcadbd31dba3839e5492"
+  },
+  "depth_layers": [
+    {
+      "layer_id": "sky",
+      "role": "background",
+      "depth": 1.2,
+      "parallax": 0.04
+    },
+    {
+      "layer_id": "city",
+      "role": "midground",
+      "depth": 0.8,
+      "parallax": 0.16
+    },
+    {
+      "layer_id": "platform",
+      "role": "contact-receiver",
+      "depth": 0.4,
+      "parallax": 0.48
+    },
+    {
+      "layer_id": "character",
+      "role": "actor",
+      "depth": 0.2,
+      "parallax": 1
+    },
+    {
+      "layer_id": "foreground-occluder",
+      "role": "occlusion",
+      "depth": 0.08,
+      "parallax": 1.12
+    }
+  ],
+  "anchors": {
+    "character_contact": [
+      0,
+      0,
+      0.2
+    ],
+    "character_head": [
+      0,
+      1.7,
+      0.2
+    ],
+    "platform_horizon": [
+      0,
+      0.08,
+      0.4
+    ],
+    "occlusion_path": [
+      -0.82,
+      0.3,
+      0.08
+    ]
+  },
+  "occlusion": [
+    {
+      "occluder_id": "foreground-occluder",
+      "z": 0.08,
+      "active_frames": [
+        54,
+        96
+      ],
+      "shape": "left-rail-crossing",
+      "coverage": 0.16
+    }
+  ],
+  "atmosphere": {
+    "fog": 0.08,
+    "depth_desaturation": 0.2,
+    "wind_direction": [
+      -0.25,
+      0,
+      0.1
+    ]
+  },
+  "lights": [
+    {
+      "light_id": "key-cold",
+      "type": "directional",
+      "direction": [
+        -0.35,
+        0.65,
+        0.7
+      ],
+      "intensity": 0.92,
+      "color": "#d8e8ff"
+    },
+    {
+      "light_id": "rim-silver",
+      "type": "directional",
+      "direction": [
+        0.6,
+        0.3,
+        -0.25
+      ],
+      "intensity": 0.25,
+      "color": "#8bb0cf"
+    }
+  ],
+  "shadow_receivers": [
+    "platform",
+    "character-contact"
+  ],
+  "composition": {
+    "shot_size": "medium-upper-body",
+    "view": "three-quarter",
+    "safe_area": [
+      0.08,
+      0.06,
+      0.84,
+      0.88
+    ],
+    "contact_required": true,
+    "perspective_required": true
+  },
+  "provenance": {
+    "source": "Episode Shot Intent",
+    "shot_id": "native-shot-001"
+  },
+  "dependencies": [
+    "native-shot-001",
+    "0b80c135729ed09b66dc18517183ead8833f2391fc50dcadbd31dba3839e5492"
+  ],
+  "lifecycle": "derived",
+  "authority": "RNCS derived scene structure",
+  "rollback": {
+    "strategy": "restore-shot-intent-root",
+    "parent_roots": [
+      "native-shot-001",
+      "0b80c135729ed09b66dc18517183ead8833f2391fc50dcadbd31dba3839e5492"
+    ]
+  },
+  "scene_root": "b0792cc958f91045c31dc11451c3419752975fd185367996047f2990d767a8b4"
+}

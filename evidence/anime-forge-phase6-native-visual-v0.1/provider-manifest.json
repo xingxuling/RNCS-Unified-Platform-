@@ -1,0 +1,240 @@
+{
+  "format": "rncs.native-provider-manifest.v0.1",
+  "version": "0.1.0-alpha.1",
+  "authority": "RNCS",
+  "providers": [
+    {
+      "provider_id": "rncs.character-genome-runtime",
+      "version": "0.1.0-alpha.1",
+      "role": "identity-input",
+      "input_types": [
+        "CharacterGenome"
+      ],
+      "output_types": [
+        "identity-root"
+      ],
+      "resolution": null,
+      "fps": null,
+      "deterministic": true,
+      "seed_support": true,
+      "character_continuity": "authoritative-input",
+      "motion": "none",
+      "gpu": "none",
+      "cpu": "required",
+      "timeout_ms": 30000,
+      "cost": "local",
+      "failure_types": [
+        "invalid-genome",
+        "constraint-failure"
+      ],
+      "evidence_output": [
+        "genome_root",
+        "identity_root"
+      ],
+      "input_root": "6a347e8be5de30cfc151db5236aeee67691eb1b2bdf4dd1cad04ed8a401d9b26",
+      "output_root": "1059bc9acb922576c453ac163a19d956f32bc5d2179da3b7078b0c260f823c77",
+      "real_media": false
+    },
+    {
+      "provider_id": "rncs.native-morphogenesis-runtime",
+      "version": "0.1.0-alpha.1",
+      "role": "visual-body-generation",
+      "input_types": [
+        "CharacterVisualGenome"
+      ],
+      "output_types": [
+        "CharacterBodyGraph",
+        "SkeletonRig",
+        "FacialRig",
+        "HairRig",
+        "CostumeRig"
+      ],
+      "resolution": null,
+      "fps": null,
+      "deterministic": true,
+      "seed_support": true,
+      "character_continuity": "identity-root-locked",
+      "motion": "body-graph",
+      "gpu": "optional",
+      "cpu": "required",
+      "timeout_ms": 30000,
+      "cost": "local",
+      "failure_types": [
+        "topology-invalid",
+        "constraint-failure"
+      ],
+      "evidence_output": [
+        "body_graph_root",
+        "topology_root",
+        "skeleton_root"
+      ],
+      "input_root": "b1399ff82a9b45bd2f1a61f673642f487adeeee63a66ae9dd287a6a3f407ffb1",
+      "output_root": "f7772c6ae8257b493ca1235f1738525b91fab193ff1939117df9390cd6aedb3e",
+      "real_media": false
+    },
+    {
+      "provider_id": "rncs.native-performance-runtime",
+      "version": "0.1.0-alpha.1",
+      "role": "performance",
+      "input_types": [
+        "PerformanceIntent"
+      ],
+      "output_types": [
+        "PerformanceFrame",
+        "MotionTrack"
+      ],
+      "resolution": null,
+      "fps": 24,
+      "deterministic": true,
+      "seed_support": false,
+      "character_continuity": "body-root-locked",
+      "motion": "anticipation-overshoot-settle",
+      "gpu": "none",
+      "cpu": "required",
+      "timeout_ms": 30000,
+      "cost": "local",
+      "failure_types": [
+        "curve-invalid",
+        "joint-limit"
+      ],
+      "evidence_output": [
+        "performance_root",
+        "curve_root"
+      ],
+      "input_root": "606cdfabc9de92a86c3358a465cebac8ec8926dc8145e40ced86169dd705923e",
+      "output_root": "606cdfabc9de92a86c3358a465cebac8ec8926dc8145e40ced86169dd705923e",
+      "real_media": false
+    },
+    {
+      "provider_id": "rncs.native-scene-style-runtime",
+      "version": "0.1.0-alpha.1",
+      "role": "scene-style",
+      "input_types": [
+        "SceneStructureField",
+        "StyleLawSet"
+      ],
+      "output_types": [
+        "NativeRenderPlan"
+      ],
+      "resolution": {
+        "width": 1280,
+        "height": 720
+      },
+      "fps": 24,
+      "deterministic": true,
+      "seed_support": false,
+      "character_continuity": "identity-root-locked",
+      "motion": "camera-and-secondary",
+      "gpu": "none",
+      "cpu": "required",
+      "timeout_ms": 30000,
+      "cost": "local",
+      "failure_types": [
+        "scene-invalid",
+        "style-invalid"
+      ],
+      "evidence_output": [
+        "scene_root",
+        "style_root",
+        "render_plan_root"
+      ],
+      "input_root": "123df6a9876d847801ac4cf209c194918acd9d19c4a24f8f718f6ea770df96c0",
+      "output_root": "d1c93d466a149682fcf3e8340ef4d4a241ca4464ee0832881e5c6ab80d7e630b",
+      "real_media": false
+    },
+    {
+      "provider_id": "rncs.native-2d25d-cpu",
+      "version": "0.1.0-alpha.1",
+      "role": "native-frame-render",
+      "input_types": [
+        "NativeRenderPlan",
+        "NativeFrameState"
+      ],
+      "output_types": [
+        "PNG",
+        "depth-PNG",
+        "mask-PNG",
+        "line-PNG",
+        "light-PNG"
+      ],
+      "resolution": {
+        "width": 1280,
+        "height": 720
+      },
+      "fps": 24,
+      "deterministic": true,
+      "seed_support": false,
+      "character_continuity": "identity-root-locked",
+      "motion": "body-space-performance",
+      "gpu": "optional",
+      "cpu": "required",
+      "timeout_ms": 180000,
+      "cost": "local",
+      "failure_types": [
+        "blank-frame",
+        "topology-drift",
+        "raster-failure"
+      ],
+      "evidence_output": [
+        "frame_root",
+        "depth_root",
+        "mask_root",
+        "line_root",
+        "light_root"
+      ],
+      "input_root": "d1c93d466a149682fcf3e8340ef4d4a241ca4464ee0832881e5c6ab80d7e630b",
+      "output_root": null,
+      "real_media": true
+    },
+    {
+      "provider_id": "rncs.video-mux.ffmpeg",
+      "version": "ffmpeg version 9.0-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers",
+      "role": "video-mux",
+      "input_types": [
+        "PNG-sequence",
+        "WAV"
+      ],
+      "output_types": [
+        "MP4"
+      ],
+      "resolution": {
+        "width": 1280,
+        "height": 720
+      },
+      "fps": 24,
+      "deterministic": false,
+      "seed_support": false,
+      "character_continuity": "receipt-only",
+      "motion": "none",
+      "gpu": "optional",
+      "cpu": "required",
+      "timeout_ms": 180000,
+      "cost": "local",
+      "failure_types": [
+        "missing-executable",
+        "encode-failure",
+        "incomplete-input"
+      ],
+      "evidence_output": [
+        "command_argument_root",
+        "media_sha256",
+        "ffprobe_root"
+      ],
+      "input_root": "d1c93d466a149682fcf3e8340ef4d4a241ca4464ee0832881e5c6ab80d7e630b",
+      "output_root": null,
+      "real_media": true
+    }
+  ],
+  "toolchain": {
+    "ffmpeg": {
+      "path": "C:\\Users\\User\\AppData\\Local\\Microsoft\\WinGet\\Packages\\Gyan.FFmpeg.Shared_Microsoft.Winget.Source_8wekyb3d8bbwe\\ffmpeg-9.0-full_build-shared\\bin\\ffmpeg.exe",
+      "version": "ffmpeg version 9.0-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers"
+    },
+    "ffprobe": {
+      "path": "C:\\Users\\User\\AppData\\Local\\Microsoft\\WinGet\\Packages\\Gyan.FFmpeg.Shared_Microsoft.Winget.Source_8wekyb3d8bbwe\\ffmpeg-9.0-full_build-shared\\bin\\ffprobe.exe",
+      "version": "ffprobe version 9.0-full_build-www.gyan.dev Copyright (c) 2007-2026 the FFmpeg developers"
+    }
+  },
+  "external_visual_model_required": false,
+  "manifest_root": "6cf199a9e25d647dd7563ede94426ec2ae95bd96b6c26c1a16967dfebeff0df2"
+}

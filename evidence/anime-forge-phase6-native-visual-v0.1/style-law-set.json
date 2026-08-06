@@ -1,0 +1,167 @@
+{
+  "format": "rncs.style-law-set.v0.1",
+  "version": "0.1.0-alpha.1",
+  "style_law_id": "style:anime-npr-native-v0.1",
+  "profile": "anime-npr-native-v0.1",
+  "laws": {
+    "contour": {
+      "base_width_px": 4,
+      "depth_falloff": 0.32,
+      "silhouette_priority": 1
+    },
+    "internal_line": {
+      "base_width_px": 2,
+      "curvature_gain": 0.18,
+      "facial_priority": 0.92
+    },
+    "palette": {
+      "skin": "#d8c7bd",
+      "skin_shadow": "#a67f78",
+      "hair": "#11151d",
+      "hair_light": "#5d7287",
+      "eye": "#6ea5d4",
+      "coat": "#101827",
+      "coat_shadow": "#253653",
+      "coat_light": "#b9c6d8",
+      "accent": "#5d91ce",
+      "ink": "#0b111b",
+      "background": "#d9e1e5",
+      "background_deep": "#566875",
+      "foreground": "#162431"
+    },
+    "cel_shade": {
+      "bands": [
+        {
+          "threshold": 0.28,
+          "role": "shadow"
+        },
+        {
+          "threshold": 0.62,
+          "role": "mid"
+        },
+        {
+          "threshold": 0.86,
+          "role": "light"
+        }
+      ],
+      "light_threshold": 0.62,
+      "shadow_threshold": 0.28
+    },
+    "rim_light": {
+      "enabled": true,
+      "intensity": 0.16,
+      "color": "#5d7287"
+    },
+    "material_response": {
+      "skin": {
+        "response": "soft-cel",
+        "shadow_mix": 0.28
+      },
+      "hair": {
+        "response": "graphic-highlight",
+        "shadow_mix": 0.44
+      },
+      "cloth": {
+        "response": "matte-cel",
+        "shadow_mix": 0.36
+      },
+      "metal": {
+        "response": "sharp-accent",
+        "shadow_mix": 0.55
+      }
+    },
+    "facial_simplification": {
+      "eye_scale": 1,
+      "mouth_scale": 1,
+      "nose_line": true,
+      "preserve_anchor_root": "581f99e937b429a93830b87ef38b63ed38c9972895bea2ce55a7fe5e3f22dd89"
+    },
+    "hair_highlight": {
+      "direction": "key-light",
+      "bands": 2,
+      "temporal_stability": "rooted"
+    },
+    "costume_fold": {
+      "direction": "bone-and-light",
+      "panels": [
+        "collar",
+        "chest",
+        "sleeve_l",
+        "sleeve_r",
+        "coat_tail"
+      ]
+    },
+    "background_detail": {
+      "foreground": 1,
+      "midground": 0.72,
+      "background": 0.38
+    },
+    "depth_desaturation": 0.2,
+    "composition": {
+      "shot_size": "medium-upper-body",
+      "three_quarter": true
+    },
+    "exposure": {
+      "fps": 24,
+      "no_implicit_frame_rewrite": true
+    },
+    "temporal_stability": {
+      "max_palette_delta": 0.04,
+      "max_line_width_delta": 0.8,
+      "preserve_identity_root": true
+    }
+  },
+  "compiled": {
+    "profile": "anime-npr-native-v0.1",
+    "contour_width_px": 4,
+    "internal_width_px": 2,
+    "cel_thresholds": [
+      0.28,
+      0.62,
+      0.86
+    ],
+    "palette": {
+      "skin": "#d8c7bd",
+      "skin_shadow": "#a67f78",
+      "hair": "#11151d",
+      "hair_light": "#5d7287",
+      "eye": "#6ea5d4",
+      "coat": "#101827",
+      "coat_shadow": "#253653",
+      "coat_light": "#b9c6d8",
+      "accent": "#5d91ce",
+      "ink": "#0b111b",
+      "background": "#d9e1e5",
+      "background_deep": "#566875",
+      "foreground": "#162431"
+    },
+    "light_direction": [
+      -0.35,
+      0.65,
+      0.7
+    ],
+    "shader_policy": "cpu-raster-cel-quantized",
+    "post_policy": "depth-desaturate-and-rim",
+    "compiled_root": "6f30d1b4c5ecdd01a93be7dbb68fb44eb447ce695578f71fb7d963225e1f112d"
+  },
+  "identity_anchor_root": "1059bc9acb922576c453ac163a19d956f32bc5d2179da3b7078b0c260f823c77",
+  "provenance": {
+    "source": "Visual Genome Style Law",
+    "visual_genome_root": "b1399ff82a9b45bd2f1a61f673642f487adeeee63a66ae9dd287a6a3f407ffb1",
+    "identity_root": "1059bc9acb922576c453ac163a19d956f32bc5d2179da3b7078b0c260f823c77"
+  },
+  "dependencies": [
+    "b1399ff82a9b45bd2f1a61f673642f487adeeee63a66ae9dd287a6a3f407ffb1",
+    "f2cc4b982b0e78e9c8d7991b6ae9b8de486fbd8cef5f2e965ebcdc1fdfe8257c"
+  ],
+  "lifecycle": "derived",
+  "authority": "RNCS visual projection law",
+  "rollback": {
+    "strategy": "restore-visual-genome-style-root",
+    "parent_roots": [
+      "b1399ff82a9b45bd2f1a61f673642f487adeeee63a66ae9dd287a6a3f407ffb1",
+      "f2cc4b982b0e78e9c8d7991b6ae9b8de486fbd8cef5f2e965ebcdc1fdfe8257c"
+    ]
+  },
+  "style_root": "9e4c926f426235bc7ceb7c3f3679fa46cf6f5e6bea23f053b9d48d5bd7b9e1db"
+}

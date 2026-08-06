@@ -1,0 +1,33 @@
+{
+  "format": "rncs.native-audio-video-sync-report.v0.1",
+  "version": "0.1.0-alpha.1",
+  "status": "pass",
+  "expected": {
+    "duration_seconds": 5,
+    "fps": 24,
+    "frame_count": 120
+  },
+  "video": {
+    "codec": "h264",
+    "width": 1280,
+    "height": 720,
+    "fps": "24/1",
+    "frame_count": 120,
+    "duration_seconds": 5
+  },
+  "audio": {
+    "codec": "aac",
+    "sample_rate": "48000",
+    "channels": 1,
+    "duration_seconds": 5
+  },
+  "checks": {
+    "video_stream": true,
+    "audio_stream": true,
+    "frame_count": true,
+    "video_duration": true,
+    "audio_duration": true
+  },
+  "source": "ffprobe-report.json",
+  "report_root": "57f100a6dc7de81fc3028252654e78d73fb99d57cc19ce74ee5f19e5eb357505"
+}

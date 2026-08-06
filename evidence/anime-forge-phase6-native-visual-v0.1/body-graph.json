@@ -1,0 +1,957 @@
+{
+  "format": "rncs.character-body-graph.v0.1",
+  "version": "0.1.0-alpha.1",
+  "body_graph_id": "body:visual-genome:87f205a1f423dc8ff31f4f09",
+  "character_id": "character:8de0ed5681eb6872bde2a125",
+  "identity_root": "1059bc9acb922576c453ac163a19d956f32bc5d2179da3b7078b0c260f823c77",
+  "visual_genome_root": "b1399ff82a9b45bd2f1a61f673642f487adeeee63a66ae9dd287a6a3f407ffb1",
+  "dimensions": {
+    "height_m": 1.82,
+    "head_radius": 0.251,
+    "shoulder_half_width": 0.3916,
+    "chest_y": 1.3290000000000002,
+    "pelvis_y": 0.78,
+    "arm_length": 0.8196000000000001,
+    "eye_size": 0.52,
+    "mouth_width": 0.51,
+    "pelvis_width": 0.28959999999999997
+  },
+  "rest_landmarks": {
+    "pelvis": [
+      0,
+      0.78,
+      0
+    ],
+    "chest": [
+      0,
+      1.329,
+      0
+    ],
+    "head": [
+      0,
+      1.61215,
+      0
+    ],
+    "contact": [
+      0,
+      0,
+      0
+    ]
+  },
+  "regions": [
+    {
+      "region_id": "hair_back",
+      "layer": 10,
+      "material": "hair",
+      "topology": "ribbon-cluster",
+      "depth": -0.08
+    },
+    {
+      "region_id": "torso",
+      "layer": 20,
+      "material": "cloth",
+      "topology": "volume-polygon",
+      "depth": 0.02
+    },
+    {
+      "region_id": "sleeves",
+      "layer": 30,
+      "material": "cloth",
+      "topology": "capsule-chain",
+      "depth": 0.04
+    },
+    {
+      "region_id": "neck",
+      "layer": 40,
+      "material": "skin",
+      "topology": "capsule",
+      "depth": 0.07
+    },
+    {
+      "region_id": "head",
+      "layer": 50,
+      "material": "skin",
+      "topology": "ellipsoid",
+      "depth": 0.1
+    },
+    {
+      "region_id": "face_features",
+      "layer": 60,
+      "material": "face",
+      "topology": "anchor-glyphs",
+      "depth": 0.13
+    },
+    {
+      "region_id": "hair_front",
+      "layer": 70,
+      "material": "hair",
+      "topology": "ribbon-cluster",
+      "depth": 0.16
+    },
+    {
+      "region_id": "costume_detail",
+      "layer": 80,
+      "material": "cloth-light",
+      "topology": "panel-lines",
+      "depth": 0.18
+    }
+  ],
+  "topology": {
+    "format": "rncs.body-topology.v0.1",
+    "version": "0.1.0-alpha.1",
+    "topology_id": "topology:visual-genome:87f205a1f423dc8ff31f4f09",
+    "family": "young-male-slim",
+    "nodes": [
+      "root",
+      "pelvis",
+      "spine",
+      "neck",
+      "head",
+      "face",
+      "eyes",
+      "brows",
+      "mouth",
+      "hair_back",
+      "hair_front",
+      "collar",
+      "coat",
+      "sleeves",
+      "hands"
+    ],
+    "edges": [
+      {
+        "from": "root",
+        "to": "pelvis"
+      },
+      {
+        "from": "pelvis",
+        "to": "spine"
+      },
+      {
+        "from": "spine",
+        "to": "neck"
+      },
+      {
+        "from": "neck",
+        "to": "head"
+      },
+      {
+        "from": "spine",
+        "to": "shoulder_l"
+      },
+      {
+        "from": "shoulder_l",
+        "to": "upper_arm_l"
+      },
+      {
+        "from": "upper_arm_l",
+        "to": "forearm_l"
+      },
+      {
+        "from": "forearm_l",
+        "to": "hand_l"
+      },
+      {
+        "from": "spine",
+        "to": "shoulder_r"
+      },
+      {
+        "from": "shoulder_r",
+        "to": "upper_arm_r"
+      },
+      {
+        "from": "upper_arm_r",
+        "to": "forearm_r"
+      },
+      {
+        "from": "forearm_r",
+        "to": "hand_r"
+      }
+    ],
+    "invariants": {
+      "connected": true,
+      "manifold_regions": true,
+      "preserve_identity_root": "1059bc9acb922576c453ac163a19d956f32bc5d2179da3b7078b0c260f823c77"
+    },
+    "topology_root": "f7584aa23150b516f532bf2a0f825d172d40075f091833f572923a3002cbea0f"
+  },
+  "skeleton": {
+    "format": "rncs.skeleton-rig.v0.1",
+    "version": "0.1.0-alpha.1",
+    "rig_id": "skeleton:visual-genome:87f205a1f423dc8ff31f4f09",
+    "root_bone_id": "root",
+    "bones": [
+      {
+        "bone_id": "root",
+        "parent_bone_id": null,
+        "rest_start": [
+          0,
+          0,
+          0
+        ],
+        "rest_end": [
+          0,
+          0.06,
+          0
+        ],
+        "length": 0.06,
+        "limits": {
+          "min": -0.62,
+          "max": 0.62,
+          "axes": [
+            "z"
+          ]
+        }
+      },
+      {
+        "bone_id": "pelvis",
+        "parent_bone_id": "root",
+        "rest_start": [
+          0,
+          0.06,
+          0
+        ],
+        "rest_end": [
+          0,
+          0.78,
+          0
+        ],
+        "length": 0.72,
+        "limits": {
+          "min": -0.62,
+          "max": 0.62,
+          "axes": [
+            "z"
+          ]
+        }
+      },
+      {
+        "bone_id": "spine",
+        "parent_bone_id": "pelvis",
+        "rest_start": [
+          0,
+          0.78,
+          0
+        ],
+        "rest_end": [
+          0,
+          1.329,
+          0
+        ],
+        "length": 0.549,
+        "limits": {
+          "min": -0.62,
+          "max": 0.62,
+          "axes": [
+            "z"
+          ]
+        }
+      },
+      {
+        "bone_id": "neck",
+        "parent_bone_id": "spine",
+        "rest_start": [
+          0,
+          1.329,
+          0
+        ],
+        "rest_end": [
+          0,
+          1.449,
+          0
+        ],
+        "length": 0.12,
+        "limits": {
+          "min": -0.62,
+          "max": 0.62,
+          "axes": [
+            "z"
+          ]
+        }
+      },
+      {
+        "bone_id": "head",
+        "parent_bone_id": "neck",
+        "rest_start": [
+          0,
+          1.449,
+          0
+        ],
+        "rest_end": [
+          0,
+          1.61215,
+          0
+        ],
+        "length": 0.16315,
+        "limits": {
+          "min": -0.48,
+          "max": 0.48,
+          "axes": [
+            "z"
+          ]
+        }
+      },
+      {
+        "bone_id": "shoulder_l",
+        "parent_bone_id": "spine",
+        "rest_start": [
+          -0.04,
+          1.309,
+          0
+        ],
+        "rest_end": [
+          -0.3916,
+          1.339,
+          0
+        ],
+        "length": 0.352878,
+        "limits": {
+          "min": -0.62,
+          "max": 0.62,
+          "axes": [
+            "z",
+            "y"
+          ]
+        }
+      },
+      {
+        "bone_id": "upper_arm_l",
+        "parent_bone_id": "shoulder_l",
+        "rest_start": [
+          -0.3916,
+          1.339,
+          0
+        ],
+        "rest_end": [
+          -0.4516,
+          0.887,
+          0.01
+        ],
+        "length": 0.456075,
+        "limits": {
+          "min": -0.85,
+          "max": 0.65,
+          "axes": [
+            "z"
+          ]
+        }
+      },
+      {
+        "bone_id": "forearm_l",
+        "parent_bone_id": "upper_arm_l",
+        "rest_start": [
+          -0.4516,
+          0.887,
+          0.01
+        ],
+        "rest_end": [
+          -0.4316,
+          0.5094,
+          0.02
+        ],
+        "length": 0.378261,
+        "limits": {
+          "min": -0.95,
+          "max": 0.15,
+          "axes": [
+            "z"
+          ]
+        }
+      },
+      {
+        "bone_id": "hand_l",
+        "parent_bone_id": "forearm_l",
+        "rest_start": [
+          -0.4316,
+          0.5094,
+          0.02
+        ],
+        "rest_end": [
+          -0.4216,
+          0.4194,
+          0.02
+        ],
+        "length": 0.090554,
+        "limits": {
+          "min": -0.62,
+          "max": 0.62,
+          "axes": [
+            "z"
+          ]
+        }
+      },
+      {
+        "bone_id": "shoulder_r",
+        "parent_bone_id": "spine",
+        "rest_start": [
+          0.04,
+          1.309,
+          0
+        ],
+        "rest_end": [
+          0.3916,
+          1.339,
+          0
+        ],
+        "length": 0.352878,
+        "limits": {
+          "min": -0.62,
+          "max": 0.62,
+          "axes": [
+            "z",
+            "y"
+          ]
+        }
+      },
+      {
+        "bone_id": "upper_arm_r",
+        "parent_bone_id": "shoulder_r",
+        "rest_start": [
+          0.3916,
+          1.339,
+          0
+        ],
+        "rest_end": [
+          0.4516,
+          0.887,
+          0.01
+        ],
+        "length": 0.456075,
+        "limits": {
+          "min": -0.65,
+          "max": 0.85,
+          "axes": [
+            "z"
+          ]
+        }
+      },
+      {
+        "bone_id": "forearm_r",
+        "parent_bone_id": "upper_arm_r",
+        "rest_start": [
+          0.4516,
+          0.887,
+          0.01
+        ],
+        "rest_end": [
+          0.4316,
+          0.5094,
+          0.02
+        ],
+        "length": 0.378261,
+        "limits": {
+          "min": -0.15,
+          "max": 0.95,
+          "axes": [
+            "z"
+          ]
+        }
+      },
+      {
+        "bone_id": "hand_r",
+        "parent_bone_id": "forearm_r",
+        "rest_start": [
+          0.4316,
+          0.5094,
+          0.02
+        ],
+        "rest_end": [
+          0.4216,
+          0.4194,
+          0.02
+        ],
+        "length": 0.090554,
+        "limits": {
+          "min": -0.62,
+          "max": 0.62,
+          "axes": [
+            "z"
+          ]
+        }
+      }
+    ],
+    "joints": [
+      {
+        "joint_id": "neck-turn",
+        "bone_id": "head",
+        "type": "ball",
+        "limits": {
+          "yaw": [
+            -0.62,
+            0.62
+          ],
+          "pitch": [
+            -0.35,
+            0.35
+          ]
+        }
+      },
+      {
+        "joint_id": "shoulder-l",
+        "bone_id": "shoulder_l",
+        "type": "hinge",
+        "limits": {
+          "swing": [
+            -0.75,
+            0.45
+          ]
+        }
+      },
+      {
+        "joint_id": "shoulder-r",
+        "bone_id": "shoulder_r",
+        "type": "hinge",
+        "limits": {
+          "swing": [
+            -0.45,
+            0.75
+          ]
+        }
+      },
+      {
+        "joint_id": "elbow-l",
+        "bone_id": "forearm_l",
+        "type": "hinge",
+        "limits": {
+          "bend": [
+            0,
+            0.95
+          ]
+        }
+      },
+      {
+        "joint_id": "elbow-r",
+        "bone_id": "forearm_r",
+        "type": "hinge",
+        "limits": {
+          "bend": [
+            0,
+            0.95
+          ]
+        }
+      }
+    ],
+    "sockets": [
+      {
+        "socket_id": "face-root",
+        "bone_id": "head"
+      },
+      {
+        "socket_id": "hair-root",
+        "bone_id": "head"
+      },
+      {
+        "socket_id": "costume-root",
+        "bone_id": "spine"
+      }
+    ],
+    "rig_root": "6e8b8897ebcfdef8ddbe1e8e4be5d39f6259cea6d25c59c7010f435d3f5c508a"
+  },
+  "facial_rig": {
+    "format": "rncs.facial-rig.v0.1",
+    "version": "0.1.0-alpha.1",
+    "rig_id": "face-rig:visual-genome:87f205a1f423dc8ff31f4f09",
+    "head_bone_id": "head",
+    "anchors": {
+      "left_eye": [
+        -0.075,
+        1.6471500000000001,
+        0.05
+      ],
+      "right_eye": [
+        0.065,
+        1.6471500000000001,
+        0.05
+      ],
+      "left_brow": [
+        -0.075,
+        1.6971500000000002,
+        0.045
+      ],
+      "right_brow": [
+        0.065,
+        1.6971500000000002,
+        0.045
+      ],
+      "nose": [
+        0.01,
+        1.5971500000000003,
+        0.09
+      ],
+      "mouth": [
+        0.015,
+        1.5271500000000002,
+        0.065
+      ],
+      "jaw": [
+        0,
+        1.4671500000000002,
+        0
+      ]
+    },
+    "controls": [
+      "gaze_x",
+      "gaze_y",
+      "blink",
+      "brow_raise",
+      "jaw_open",
+      "mouth_shape",
+      "alertness"
+    ],
+    "facial_anchor_root": "827588ffd4d371072391f490185c456ddc98cec24f58b0cfed943692a75274c5"
+  },
+  "hair_rig": {
+    "format": "rncs.hair-rig.v0.1",
+    "version": "0.1.0-alpha.1",
+    "rig_id": "hair-rig:visual-genome:87f205a1f423dc8ff31f4f09",
+    "parent_bone_id": "head",
+    "groups": [
+      {
+        "group_id": "hair_back_l",
+        "points": [
+          [
+            -0.12,
+            1.7121500000000003,
+            -0.04
+          ],
+          [
+            -0.2,
+            1.4321500000000003,
+            -0.03
+          ],
+          [
+            -0.17,
+            1.3121500000000001,
+            -0.02
+          ]
+        ],
+        "stiffness": 0.65
+      },
+      {
+        "group_id": "hair_back_r",
+        "points": [
+          [
+            0.12,
+            1.7121500000000003,
+            -0.04
+          ],
+          [
+            0.2,
+            1.4321500000000003,
+            -0.03
+          ],
+          [
+            0.17,
+            1.3121500000000001,
+            -0.02
+          ]
+        ],
+        "stiffness": 0.65
+      },
+      {
+        "group_id": "bangs_center",
+        "points": [
+          [
+            -0.08,
+            1.7721500000000001,
+            0.05
+          ],
+          [
+            0,
+            1.6521500000000002,
+            0.08
+          ],
+          [
+            0.07,
+            1.7321500000000003,
+            0.05
+          ]
+        ],
+        "stiffness": 0.72
+      },
+      {
+        "group_id": "bangs_l",
+        "points": [
+          [
+            -0.16,
+            1.7521500000000003,
+            0.04
+          ],
+          [
+            -0.09,
+            1.6021500000000002,
+            0.07
+          ],
+          [
+            -0.12,
+            1.51215,
+            0.06
+          ]
+        ],
+        "stiffness": 0.68
+      },
+      {
+        "group_id": "bangs_r",
+        "points": [
+          [
+            0.15,
+            1.7521500000000003,
+            0.04
+          ],
+          [
+            0.08,
+            1.6221500000000002,
+            0.07
+          ],
+          [
+            0.12,
+            1.5221500000000001,
+            0.06
+          ]
+        ],
+        "stiffness": 0.68
+      }
+    ],
+    "clearance": 0.024,
+    "secondary_motion_chain_id": "hair-follow-through",
+    "hair_rig_root": "2b8fef12be59c15835080e2f5b531c7da6d23201bab364e0b85d6341eba4fb83"
+  },
+  "costume_rig": {
+    "format": "rncs.costume-rig.v0.1",
+    "version": "0.1.0-alpha.1",
+    "rig_id": "costume-rig:visual-genome:87f205a1f423dc8ff31f4f09",
+    "parent_bone_id": "spine",
+    "panels": [
+      {
+        "panel_id": "collar",
+        "anchors": [
+          "neck",
+          "shoulder_l",
+          "shoulder_r"
+        ],
+        "stiffness": 0.88
+      },
+      {
+        "panel_id": "chest",
+        "anchors": [
+          "shoulder_l",
+          "shoulder_r",
+          "pelvis"
+        ],
+        "stiffness": 0.92
+      },
+      {
+        "panel_id": "sleeve_l",
+        "anchors": [
+          "shoulder_l",
+          "upper_arm_l",
+          "forearm_l"
+        ],
+        "stiffness": 0.7
+      },
+      {
+        "panel_id": "sleeve_r",
+        "anchors": [
+          "shoulder_r",
+          "upper_arm_r",
+          "forearm_r"
+        ],
+        "stiffness": 0.7
+      },
+      {
+        "panel_id": "coat_tail",
+        "anchors": [
+          "pelvis",
+          "spine"
+        ],
+        "stiffness": 0.58,
+        "lag_frames": 5
+      }
+    ],
+    "costume_rig_root": "ffabc4a15c6709b4ae0568521536865bd756340f8b785ab1b8890ef2392410eb"
+  },
+  "deformation_graph": {
+    "format": "rncs.deformation-graph.v0.1",
+    "version": "0.1.0-alpha.1",
+    "graph_id": "deformation:visual-genome:87f205a1f423dc8ff31f4f09",
+    "regions": [
+      {
+        "region_id": "torso",
+        "influences": [
+          "pelvis",
+          "spine"
+        ],
+        "mode": "volume-preserving"
+      },
+      {
+        "region_id": "head",
+        "influences": [
+          "neck",
+          "head"
+        ],
+        "mode": "ellipsoid-preserving"
+      },
+      {
+        "region_id": "sleeves",
+        "influences": [
+          "shoulder_l",
+          "upper_arm_l",
+          "forearm_l",
+          "shoulder_r",
+          "upper_arm_r",
+          "forearm_r"
+        ],
+        "mode": "capsule-chain"
+      },
+      {
+        "region_id": "hair",
+        "influences": [
+          "head"
+        ],
+        "mode": "secondary-chain"
+      },
+      {
+        "region_id": "coat_tail",
+        "influences": [
+          "pelvis",
+          "spine"
+        ],
+        "mode": "secondary-chain"
+      }
+    ],
+    "constraints": [
+      "preserve-head-eye-line",
+      "avoid-joint-gap",
+      "preserve-contact-shadow",
+      "preserve-identity-silhouette"
+    ],
+    "deformation_root": "250d7e4fdbf15f442c1dd9f367f40530b78a8e13a855c65b9f012835bd2bbd47"
+  },
+  "material_bindings": [
+    {
+      "region_id": "hair_back",
+      "material": "hair",
+      "palette_root": "f2cc4b982b0e78e9c8d7991b6ae9b8de486fbd8cef5f2e965ebcdc1fdfe8257c"
+    },
+    {
+      "region_id": "torso",
+      "material": "cloth",
+      "palette_root": "f2cc4b982b0e78e9c8d7991b6ae9b8de486fbd8cef5f2e965ebcdc1fdfe8257c"
+    },
+    {
+      "region_id": "sleeves",
+      "material": "cloth",
+      "palette_root": "f2cc4b982b0e78e9c8d7991b6ae9b8de486fbd8cef5f2e965ebcdc1fdfe8257c"
+    },
+    {
+      "region_id": "neck",
+      "material": "skin",
+      "palette_root": "f2cc4b982b0e78e9c8d7991b6ae9b8de486fbd8cef5f2e965ebcdc1fdfe8257c"
+    },
+    {
+      "region_id": "head",
+      "material": "skin",
+      "palette_root": "f2cc4b982b0e78e9c8d7991b6ae9b8de486fbd8cef5f2e965ebcdc1fdfe8257c"
+    },
+    {
+      "region_id": "face_features",
+      "material": "face",
+      "palette_root": "f2cc4b982b0e78e9c8d7991b6ae9b8de486fbd8cef5f2e965ebcdc1fdfe8257c"
+    },
+    {
+      "region_id": "hair_front",
+      "material": "hair",
+      "palette_root": "f2cc4b982b0e78e9c8d7991b6ae9b8de486fbd8cef5f2e965ebcdc1fdfe8257c"
+    },
+    {
+      "region_id": "costume_detail",
+      "material": "cloth-light",
+      "palette_root": "f2cc4b982b0e78e9c8d7991b6ae9b8de486fbd8cef5f2e965ebcdc1fdfe8257c"
+    }
+  ],
+  "line_bindings": [
+    {
+      "region_id": "hair_back",
+      "law": "contour"
+    },
+    {
+      "region_id": "torso",
+      "law": "contour"
+    },
+    {
+      "region_id": "sleeves",
+      "law": "contour"
+    },
+    {
+      "region_id": "neck",
+      "law": "contour"
+    },
+    {
+      "region_id": "head",
+      "law": "contour"
+    },
+    {
+      "region_id": "face_features",
+      "law": "facial-internal"
+    },
+    {
+      "region_id": "hair_front",
+      "law": "contour"
+    },
+    {
+      "region_id": "costume_detail",
+      "law": "contour"
+    }
+  ],
+  "secondary_motion_chains": [
+    {
+      "chain_id": "hair-follow-through",
+      "target": "hair_rig",
+      "driver": "head_yaw_velocity",
+      "lag_frames": 3,
+      "damping": 0.72
+    },
+    {
+      "chain_id": "costume-follow-through",
+      "target": "costume_rig",
+      "driver": "torso_yaw_velocity",
+      "lag_frames": 5,
+      "damping": 0.58
+    }
+  ],
+  "invariants": {
+    "identity_root": "1059bc9acb922576c453ac163a19d956f32bc5d2179da3b7078b0c260f823c77",
+    "topology_root": "f7584aa23150b516f532bf2a0f825d172d40075f091833f572923a3002cbea0f",
+    "skeleton_root": "6e8b8897ebcfdef8ddbe1e8e4be5d39f6259cea6d25c59c7010f435d3f5c508a",
+    "connected": true,
+    "rest_pose_stable": true
+  },
+  "provenance": {
+    "source": "CharacterVisualGenome",
+    "visual_genome_root": "b1399ff82a9b45bd2f1a61f673642f487adeeee63a66ae9dd287a6a3f407ffb1"
+  },
+  "dependencies": [
+    "b1399ff82a9b45bd2f1a61f673642f487adeeee63a66ae9dd287a6a3f407ffb1",
+    "f7584aa23150b516f532bf2a0f825d172d40075f091833f572923a3002cbea0f",
+    "6e8b8897ebcfdef8ddbe1e8e4be5d39f6259cea6d25c59c7010f435d3f5c508a",
+    "827588ffd4d371072391f490185c456ddc98cec24f58b0cfed943692a75274c5",
+    "2b8fef12be59c15835080e2f5b531c7da6d23201bab364e0b85d6341eba4fb83",
+    "ffabc4a15c6709b4ae0568521536865bd756340f8b785ab1b8890ef2392410eb",
+    "250d7e4fdbf15f442c1dd9f367f40530b78a8e13a855c65b9f012835bd2bbd47"
+  ],
+  "lifecycle": "derived",
+  "authority": "RNCS derived renderable body",
+  "rollback": {
+    "strategy": "restore-visual-genome-root",
+    "parent_roots": [
+      "b1399ff82a9b45bd2f1a61f673642f487adeeee63a66ae9dd287a6a3f407ffb1",
+      "f7584aa23150b516f532bf2a0f825d172d40075f091833f572923a3002cbea0f",
+      "6e8b8897ebcfdef8ddbe1e8e4be5d39f6259cea6d25c59c7010f435d3f5c508a",
+      "827588ffd4d371072391f490185c456ddc98cec24f58b0cfed943692a75274c5",
+      "2b8fef12be59c15835080e2f5b531c7da6d23201bab364e0b85d6341eba4fb83",
+      "ffabc4a15c6709b4ae0568521536865bd756340f8b785ab1b8890ef2392410eb",
+      "250d7e4fdbf15f442c1dd9f367f40530b78a8e13a855c65b9f012835bd2bbd47"
+    ]
+  },
+  "body_graph_root": "f7772c6ae8257b493ca1235f1738525b91fab193ff1939117df9390cd6aedb3e"
+}

@@ -1,0 +1,65 @@
+{
+  "format": "rncs.native-visual-uplift-report.v0.1",
+  "version": "0.1.0-alpha.1",
+  "status": "pending-human-review",
+  "phase4_baseline": "C:\\Users\\User\\Documents\\RCL\\_worktrees\\rncs-anime-forge-phase6-native-visual-genesis-v01\\evidence\\anime-forge-phase4-v0.1\\representative-frames\\frame-000096-S01.png",
+  "phase6_backend": "rncs-native-2d25d-cpu",
+  "dimensions": {
+    "character_structure": {
+      "phase4": "front-facing layered polygon body",
+      "phase6": "explicit torso, neck, head, shoulder, arm, hand and rig nodes",
+      "automated": true
+    },
+    "face": {
+      "phase4": "simplified facial symbols",
+      "phase6": "3/4 head, asymmetric eye spacing, brows, nose and jaw controls",
+      "automated": true
+    },
+    "hair_costume": {
+      "phase4": "named layers with bounded scalar motion",
+      "phase6": "hair groups and costume panels with lagged chains and occlusion order",
+      "automated": true
+    },
+    "space_contact": {
+      "phase4": "layered background and foreground",
+      "phase6": "perspective camera, depth layers, contact receiver and active occluder",
+      "automated": true
+    },
+    "lighting_line_color": {
+      "phase4": "fixed layer lighting and palette",
+      "phase6": "compiled contour/cel/rim/material laws and light layer",
+      "automated": true
+    },
+    "performance": {
+      "phase4": "partial stepped pose/camera reference motion",
+      "phase6": "gaze-first head/shoulder/weight turn with anticipation, overshoot and settle",
+      "automated": true
+    },
+    "temporal_continuity": {
+      "phase4": "unique frame roots and replay",
+      "phase6": "body/performance/scene/style/frame roots plus local repair scope",
+      "automated": true
+    }
+  },
+  "automated_structural_checks": {
+    "character_structure": true,
+    "face": true,
+    "hair_costume": true,
+    "space_contact": true,
+    "lighting_line_color": true,
+    "performance": true,
+    "temporal_continuity": true
+  },
+  "boundary": "Automated structural checks do not decide human visual acceptance or commercial Anime quality.",
+  "uplift_report_root": "803adc09b1040c90d9d21acc0194bdf7b207d038ff43d967d848eec836bf5a17",
+  "ab_comparison": {
+    "baseline_frame": "C:\\Users\\User\\Documents\\RCL\\_worktrees\\rncs-anime-forge-phase6-native-visual-genesis-v01\\evidence\\anime-forge-phase6-native-visual-v0.1\\phase4-baseline-frame.png",
+    "native_frames": {
+      "start": "C:\\Users\\User\\Documents\\RCL\\_worktrees\\rncs-anime-forge-phase6-native-visual-genesis-v01\\evidence\\anime-forge-phase6-native-visual-v0.1\\phase6-native-frame-start.png",
+      "action": "C:\\Users\\User\\Documents\\RCL\\_worktrees\\rncs-anime-forge-phase6-native-visual-genesis-v01\\evidence\\anime-forge-phase6-native-visual-v0.1\\phase6-native-frame-action.png",
+      "settle": "C:\\Users\\User\\Documents\\RCL\\_worktrees\\rncs-anime-forge-phase6-native-visual-genesis-v01\\evidence\\anime-forge-phase6-native-visual-v0.1\\phase6-native-frame-settle.png"
+    },
+    "contact_sheet": "C:\\Users\\User\\Documents\\RCL\\_worktrees\\rncs-anime-forge-phase6-native-visual-genesis-v01\\evidence\\anime-forge-phase6-native-visual-v0.1\\phase4-phase6-contact-sheet.png",
+    "status": "ready-for-human-review"
+  }
+}
