@@ -1,0 +1,86 @@
+{
+  "format": "rncs.anime-visual-ledger-file-sha256.v0.1",
+  "files": [
+    {
+      "path": "candidate-visual-branch.json",
+      "bytes": 4765,
+      "sha256": "3521a0ad4ae8b7f5b7189f4439002d2a2d567ecfdccc7578a6340fb4d7459008"
+    },
+    {
+      "path": "character-reference-pack.json",
+      "bytes": 1417,
+      "sha256": "00776a0dbbab5c1d511192a52b4243d0dd3e8c72267c753fa4fdbf21b1d1d219"
+    },
+    {
+      "path": "condition-pack.json",
+      "bytes": 2374,
+      "sha256": "288611c20ae3a834dcd58b37f205d4147af930235904db78b2cb4d6029a33a12"
+    },
+    {
+      "path": "environment-report.json",
+      "bytes": 1360,
+      "sha256": "5476e69de3a04a22fb1ddda2b953aeb75f21979b48b6a9536a69a5bf26d766fa"
+    },
+    {
+      "path": "model-manifest.json",
+      "bytes": 956,
+      "sha256": "2e6d7f395e6e206951d331e65b8d1fd6688ed8d69832cee4067946e63a91b717"
+    },
+    {
+      "path": "phase-status.json",
+      "bytes": 453,
+      "sha256": "18626a34611445db7933458f2e99ad660485a4e1d63981f6ae65296ed9f69b46"
+    },
+    {
+      "path": "phase4-phase5-contact-sheet.png",
+      "bytes": 120778,
+      "sha256": "481a905890070a0120286c2dcd07c4ab3ac0ab1dbadcc38bdf212ebd2076c807"
+    },
+    {
+      "path": "provider-execution-receipt.json",
+      "bytes": 1369,
+      "sha256": "17543028f93dfb69e7ae9c9c2b9bc37e9138f94787d56c2255c4acd7b7385f0c"
+    },
+    {
+      "path": "source.anime.rcl",
+      "bytes": 3713,
+      "sha256": "88dbeccb650b44ece778b54c4958c1743e6dca1f879e2f5350a6d28cafed1b89"
+    },
+    {
+      "path": "spatial-consistency-report.json",
+      "bytes": 690,
+      "sha256": "5d4f96e0fba162a9566b6a72dd527bdd5b4e2f81f28e43584fbff222c509d600"
+    },
+    {
+      "path": "temporal-consistency-report.json",
+      "bytes": 508,
+      "sha256": "49429afe8794947438bc880f2715a133b3ba1bbecc2af00286f9e477e7eb576b"
+    },
+    {
+      "path": "visual-baseline-comparison.json",
+      "bytes": 836,
+      "sha256": "dfe557433ec691b7f0212c1845a6b293dd399ab0dcc38022e8009033c981e948"
+    },
+    {
+      "path": "visual-baseline-comparison.md",
+      "bytes": 341,
+      "sha256": "1c7a5ebaf68795f3b16086395843e0ccf7a0664e86b220805b31694c229f7604"
+    },
+    {
+      "path": "visual-evidence-ledger.json",
+      "bytes": 2338,
+      "sha256": "035fd902ea4950fe0d9ec702a973a0b2eacebd98e673dd6aded822cf401081a9"
+    },
+    {
+      "path": "visual-provider-manifest.json",
+      "bytes": 3479,
+      "sha256": "24745cebb75ecc220c47efebb04760f33ad624175e0816e59c78ae9426625a04"
+    },
+    {
+      "path": "visual-quality-report.json",
+      "bytes": 1469,
+      "sha256": "5c03c6417562ec79ac75f7d3ac1ca647edbc1621986bdf0064affaa2f5c730d4"
+    }
+  ],
+  "ledger_file_sha256": "7e4533b0f2e719ebf93247b1f68c85349b98f74fd00e2417a80adc6c1f65664a"
+}

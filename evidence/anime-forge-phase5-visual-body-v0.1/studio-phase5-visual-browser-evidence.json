@@ -1,0 +1,267 @@
+{
+  "format": "reality-studio.anime-forge-phase5-visual-browser-evidence.v0.1",
+  "ready": true,
+  "route": "/anime-forge.html",
+  "health": {
+    "anime_forge_visual_phase": "phase-5-visual-body-replacement-blocked",
+    "anime_forge_visual_provider": "rncs.visual.local-diffusion-video-worker",
+    "anime_forge_human_visual_acceptance": "pending"
+  },
+  "viewports": {
+    "desktop": {
+      "width": 1440,
+      "body_scroll_width": 1440,
+      "document_scroll_width": 1440,
+      "visual": [
+        {
+          "left": 0,
+          "right": 248.265625,
+          "top": 146,
+          "bottom": 218.71875,
+          "width": 248.265625,
+          "height": 72.71875
+        },
+        {
+          "left": 248.265625,
+          "right": 533.78125,
+          "top": 146,
+          "bottom": 218.71875,
+          "width": 285.515625,
+          "height": 72.71875
+        },
+        {
+          "left": 533.78125,
+          "right": 782.0625,
+          "top": 146,
+          "bottom": 218.71875,
+          "width": 248.28125,
+          "height": 72.71875
+        },
+        {
+          "left": 782.0625,
+          "right": 1079.984375,
+          "top": 146,
+          "bottom": 218.71875,
+          "width": 297.921875,
+          "height": 72.71875
+        },
+        {
+          "left": 1079.984375,
+          "right": 1439.984375,
+          "top": 146,
+          "bottom": 218.71875,
+          "width": 360,
+          "height": 72.71875
+        }
+      ],
+      "buttons": [
+        {
+          "id": "compileBtn",
+          "fits": true
+        },
+        {
+          "id": "visualQualityBtn",
+          "fits": true
+        },
+        {
+          "id": "xsheetBtn",
+          "fits": true
+        },
+        {
+          "id": "voiceBtn",
+          "fits": true
+        },
+        {
+          "id": "renderBtn",
+          "fits": true
+        },
+        {
+          "id": "mixBtn",
+          "fits": true
+        },
+        {
+          "id": "mediaBtn",
+          "fits": true
+        },
+        {
+          "id": "verifyBtn",
+          "fits": true
+        },
+        {
+          "id": "replayBtn",
+          "fits": true
+        },
+        {
+          "id": "controlPlaneBtn",
+          "fits": true
+        },
+        {
+          "id": "sampleBtn",
+          "fits": true
+        },
+        {
+          "id": "snapshotBtn",
+          "fits": true
+        },
+        {
+          "id": "rollbackBtn",
+          "fits": true
+        },
+        {
+          "id": "clearBtn",
+          "fits": true
+        },
+        {
+          "id": "",
+          "fits": true
+        },
+        {
+          "id": "",
+          "fits": true
+        },
+        {
+          "id": "",
+          "fits": true
+        },
+        {
+          "id": "",
+          "fits": true
+        }
+      ],
+      "visual_status": "blocked",
+      "visual_failure": "MODEL_MISSING",
+      "human_status": "pending",
+      "screenshot": "tmp/playwright/anime-forge-phase5-visual/ANIME_FORGE_PHASE5_VISUAL_desktop.png",
+      "screenshot_bytes": 120603
+    },
+    "mobile": {
+      "width": 390,
+      "body_scroll_width": 390,
+      "document_scroll_width": 390,
+      "visual": [
+        {
+          "left": 0,
+          "right": 195,
+          "top": 395.9375,
+          "bottom": 471.65625,
+          "width": 195,
+          "height": 75.71875
+        },
+        {
+          "left": 195,
+          "right": 390,
+          "top": 395.9375,
+          "bottom": 471.65625,
+          "width": 195,
+          "height": 75.71875
+        },
+        {
+          "left": 0,
+          "right": 195,
+          "top": 471.65625,
+          "bottom": 541.65625,
+          "width": 195,
+          "height": 70
+        },
+        {
+          "left": 195,
+          "right": 390,
+          "top": 471.65625,
+          "bottom": 541.65625,
+          "width": 195,
+          "height": 70
+        },
+        {
+          "left": 0,
+          "right": 195,
+          "top": 541.65625,
+          "bottom": 611.65625,
+          "width": 195,
+          "height": 70
+        }
+      ],
+      "buttons": [
+        {
+          "id": "compileBtn",
+          "fits": true
+        },
+        {
+          "id": "visualQualityBtn",
+          "fits": true
+        },
+        {
+          "id": "xsheetBtn",
+          "fits": true
+        },
+        {
+          "id": "voiceBtn",
+          "fits": true
+        },
+        {
+          "id": "renderBtn",
+          "fits": true
+        },
+        {
+          "id": "mixBtn",
+          "fits": true
+        },
+        {
+          "id": "mediaBtn",
+          "fits": true
+        },
+        {
+          "id": "verifyBtn",
+          "fits": true
+        },
+        {
+          "id": "replayBtn",
+          "fits": true
+        },
+        {
+          "id": "controlPlaneBtn",
+          "fits": true
+        },
+        {
+          "id": "sampleBtn",
+          "fits": true
+        },
+        {
+          "id": "snapshotBtn",
+          "fits": true
+        },
+        {
+          "id": "rollbackBtn",
+          "fits": true
+        },
+        {
+          "id": "clearBtn",
+          "fits": true
+        },
+        {
+          "id": "",
+          "fits": true
+        },
+        {
+          "id": "",
+          "fits": true
+        },
+        {
+          "id": "",
+          "fits": true
+        },
+        {
+          "id": "",
+          "fits": true
+        }
+      ],
+      "visual_status": "blocked",
+      "visual_failure": "MODEL_MISSING",
+      "human_status": "pending",
+      "screenshot": "tmp/playwright/anime-forge-phase5-visual/ANIME_FORGE_PHASE5_VISUAL_mobile.png",
+      "screenshot_bytes": 33734
+    }
+  },
+  "page_errors": [],
+  "failed_requests": [],
+  "boundary": "Local Chromium UI regression for blocked visual-provider evidence; not visual quality acceptance."
+}

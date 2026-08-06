@@ -1,0 +1,21 @@
+{
+  "ok": true,
+  "status": "blocked",
+  "phase": "visual-body-replacement",
+  "provider_id": "rncs.visual.local-diffusion-video-worker",
+  "provider_code": "MODEL_MISSING",
+  "production_root": "2d75ecf89aa2e711bf8d70f037e3fd918498e99120706643b5014856025f84d7",
+  "episode_intent_root": "88dbeccb650b44ece778b54c4958c1743e6dca1f879e2f5350a6d28cafed1b89",
+  "candidate_branch_root": "74c0cdc3089a4b01c4362464136ce2ea724bcd17e7daeb16ef77161004e2d988",
+  "temporal_stability_root": "605a465f6165e99c788a18dd767ff6619627d598cae67228b19fc09f8d39b20d",
+  "spatial_consistency_root": "64f64a6067eed5864e34ec7e30b8ec1f00fa880e8bc09eb482d00da0b844ca52",
+  "visual_ledger_internal_root": "bac94ba23def3c26025d5ef4b6f4bd7d58052381a58175b5d612995375a382ed",
+  "ledger_file_sha256": "7e4533b0f2e719ebf93247b1f68c85349b98f74fd00e2417a80adc6c1f65664a",
+  "contact_sheet": "phase4-phase5-contact-sheet.png",
+  "human_visual_acceptance": "pending",
+  "media": {
+    "mp4": null,
+    "wav": null
+  },
+  "boundary": "Phase 5 visual replacement is blocked; Phase 4 media remains a negative baseline only"
+}

@@ -1,0 +1,148 @@
+anime 神临者言律微剧集 {
+  episode EP01 {
+    scene 无名城审判终局 {
+      fps 24
+      resolution 960x540
+      style japanese_tv_anime
+
+      cut S01 duration 7s {
+        layout wide_establishing
+        transition hard_cut
+
+        camera {
+          lens 38mm
+          angle high 9deg
+          pan from 0s to 7s
+          dolly_in from 0s to 7s easing ease_in_out
+        }
+
+        background background:unnamed-city-court
+
+        actor 蓝天临 {
+          asset character:蓝天临
+          keypose 0f head_lowered
+          keypose 44f begin_raise_head
+          keypose 92f gaze_locked
+          gaze 审判官高台 from 72f
+          blink at 106f
+
+          dialogue {
+            text "风记得每一个名字。"
+            start 96f
+            voice 蓝天临.default
+            emotion restrained_question
+            mouth automatic_viseme
+            close_mouth_on_end true
+          }
+        }
+
+        animation {
+          exposure on_twos
+          hair_secondary subtle
+          coat_secondary subtle
+          motion_override foreground from 0f to 167f amplitude 2.1 reason "establishing-parallax"
+        }
+
+        sound {
+          ambience cold_wind
+          foley distant_chain
+          sfx court_bell
+          music low_drone
+        }
+      }
+
+      cut S02 duration 7s {
+        layout medium_close_up
+        transition hard_cut
+
+        camera {
+          lens 55mm
+          angle high 4deg
+          dolly_in from 0s to 7s easing ease_in_out
+        }
+
+        background background:unnamed-city-court
+
+        actor 蓝天临 {
+          asset character:蓝天临
+          keypose 0f gaze_locked
+          keypose 54f hand_to_sigil
+          keypose 118f yanlv_awaken
+          gaze 审判官高台 from 0f
+          blink at 70f
+
+          dialogue {
+            text "罪若无证，判词便不是真理。"
+            start 38f
+            voice 蓝天临.default
+            emotion resolve
+            mouth automatic_viseme
+            close_mouth_on_end true
+          }
+        }
+
+        animation {
+          exposure on_twos
+          hair_secondary subtle
+          coat_secondary subtle
+          motion_override hair from 38f to 150f amplitude 1.55 reason "yanlv-pressure-rise"
+          motion_override breathing from 0f to 167f amplitude 1.7 reason "held-performance-breath"
+        }
+
+        sound {
+          ambience cold_wind
+          foley coat_shift
+          sfx yanlv_chime
+          music low_drone
+        }
+      }
+
+      cut S03 duration 6s {
+        layout close_up
+        transition hard_cut
+
+        camera {
+          lens 72mm
+          angle high 1deg
+          pan from 0s to 6s
+        }
+
+        background background:unnamed-city-court
+
+        actor 蓝天临 {
+          asset character:蓝天临
+          keypose 0f yanlv_awaken
+          keypose 58f resolve
+          keypose 118f verdict_reversed
+          gaze 审判官高台 from 0f
+          blink at 44f
+          blink at 126f
+
+          dialogue {
+            text "此判，撤回。"
+            start 52f
+            voice 蓝天临.default
+            emotion resolve
+            mouth automatic_viseme
+            close_mouth_on_end true
+          }
+        }
+
+        animation {
+          exposure on_twos
+          hair_secondary subtle
+          coat_secondary subtle
+          motion_override coat from 40f to 132f amplitude 1.4 reason "verdict-release"
+          motion_override breathing from 0f to 143f amplitude 1.2 reason "closeup-performance-breath"
+        }
+
+        sound {
+          ambience cold_wind
+          foley chain_release
+          sfx verdict_reverse
+          music low_drone
+        }
+      }
+    }
+  }
+}

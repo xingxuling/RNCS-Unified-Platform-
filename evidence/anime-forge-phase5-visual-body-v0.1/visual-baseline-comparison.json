@@ -1,0 +1,30 @@
+{
+  "format": "rncs.anime-visual-baseline-comparison.v0.1",
+  "phase4": {
+    "status": "negative-baseline",
+    "frames": [
+      "frame-000096-S01.png",
+      "frame-000250-S02.png",
+      "frame-000390-S03.png"
+    ],
+    "visual_class": "procedural-geometric-raster"
+  },
+  "phase5": {
+    "status": "blocked",
+    "frames": [],
+    "visual_class": null,
+    "blocking_reason": "MODEL_MISSING"
+  },
+  "criteria": {
+    "first_impression": "not-compared",
+    "character_detail": "not-compared",
+    "composition": "not-compared",
+    "space": "not-compared",
+    "lighting": "not-compared",
+    "performance": "not-compared",
+    "temporal_stability": "not-compared",
+    "motion": "not-compared"
+  },
+  "human_visual_acceptance": "pending",
+  "comparison_root": "9cb0ce0b8359121a5664b4f89d55799f0fd6601ef50c1300f7331a0b36637ca0"
+}

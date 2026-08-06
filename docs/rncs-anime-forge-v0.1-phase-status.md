@@ -1,9 +1,40 @@
 # RNCS Anime Forge v0.1 Phase Status
 
 - Date: 2026-08-06
-- Branch: `codex/rncs-anime-forge-phase4-v01`
-- Baseline: `origin/main-95@ef81e8fa311a029db5540c5af90ab1f4a283a141`
-- Status: **Phase 4 closes a real experimental media loop. Anime Forge is not claimed to have commercial broadcast quality.**
+- Branch: `codex/rncs-anime-forge-phase5-visual-body-v01`
+- Baseline: `origin/main-95@085a365d002907b17dd87ded56e9ebb5cb26c409`
+- Status: **Phase 4 remains the experimental media baseline; Phase 5 visual body replacement engineering is incomplete and the visual gate is blocked.**
+
+## Phase 5 visual body replacement status
+
+`Episode is authoritative. Cut is derived. Clip is reusable. Patch is local. Continuity is global.`
+
+| Field | Status |
+| --- | --- |
+| Engineering status | Incomplete but runnable at the contract and fail-closed adapter layer |
+| Visual pipeline status | Blocked: `MODEL_MISSING` |
+| Selected Provider route | `rncs.visual.local-diffusion-video-worker` (local Diffusion/Video external-process route) |
+| Provider execution | Blocked: no local visual model, Diffusers/ComfyUI runtime, usable GPU backend or FFmpeg/ffprobe |
+| Candidate visual branch | `blocked`; automatic score cannot select or commit |
+| Character Reference Asset Pack | Blocked: RAGF roots are present, required raster reference views are not available |
+| Temporal/spatial reports | Contract and blocked reports generated; no generated frames were accepted |
+| Human visual acceptance | `pending` |
+| Phase 5 MP4/WAV | Not generated; no static frame, GIF, JSON or Phase 4 raster is relabeled as MP4 |
+| Commercial Anime quality | Not proven |
+
+Phase 5 evidence is under `evidence/anime-forge-phase5-visual-body-v0.1/`. The blocked run records the local environment, selected Provider manifest, missing model/license state, candidate branch, temporal/spatial reports, A/B baseline comparison and a Phase 4/Phase 5 contact sheet. The contact sheet intentionally shows the Phase 5 panel as blocked rather than fabricating a visual result.
+
+Key blocked-run roots:
+
+- Production root: `2d75ecf89aa2e711bf8d70f037e3fd918498e99120706643b5014856025f84d7`
+- Episode Intent root: `88dbeccb650b44ece778b54c4958c1743e6dca1f879e2f5350a6d28cafed1b89`
+- Candidate Branch root: `74c0cdc3089a4b01c4362464136ce2ea724bcd17e7daeb16ef77161004e2d988`
+- Temporal Stability root: `605a465f6165e99c788a18dd767ff6619627d598cae67228b19fc09f8d39b20d`
+- Spatial Consistency root: `64f64a6067eed5864e34ec7e30b8ec1f00fa880e8bc09eb482d00da0b844ca52`
+- Internal visual ledger root: `bac94ba23def3c26025d5ef4b6f4bd7d58052381a58175b5d612995375a382ed`
+- Latest ledger file SHA-256: `7e4533b0f2e719ebf93247b1f68c85349b98f74fd00e2417a80adc6c1f65664a` (the environment report includes instantaneous free memory, so this file hash is expected to vary between audits)
+
+Phase 5 adds Visual Provider/Model manifests, Character Reference Pack and Condition Pack schemas, Candidate Visual Branch states, fail-closed local execution, temporal/spatial/patch evidence, human acceptance immutability, a Reality Studio visual-quality endpoint and desktop/mobile blocked-state regression. It does not alter Episode authority or automatically accept generated pixels.
 
 ## Authority contract
 
@@ -58,6 +89,12 @@ npm run package:anime-forge
 The browser evidence covers 1440x900 desktop and 390x844 mobile layouts, real video metadata, nonblank preview pixels, no horizontal overflow and no Production Root change when selecting a Cut.
 
 The focused Phase 4 matrix passes `677/677` checks with `0` failures and `0` skips. Test report root: `4feea98453c05bac876dd0f1ce2dfae448bd8e044e5347da112ff8f4e2870dda`.
+
+## Phase 5 verification
+
+The Phase 5 contract and blocked-provider matrix passes `24` Anime Production Runtime tests with `23` passes and `1` expected FFmpeg skip, `13/13` RCL bridge tests, `2/2` targeted Studio Anime Forge tests plus the expected real-media skip, and the full `npm run test:anime-phase4` command exits successfully. The complete Reality Studio workspace run reports `237` passes, `0` failures and `1` expected media skip. The desktop/mobile blocked-state browser evidence reports no page errors, no failed requests and no horizontal overflow at `1440x900` and `390x844`.
+
+`npm run verify:anime-phase5-visual-evidence` builds the blocked evidence twice and confirms stable Production, Episode Intent, Candidate Branch, Temporal, Spatial and internal visual Ledger roots. The environment file SHA is intentionally volatile because it retains instantaneous free-memory observation; it is kept separate from stable roots. The final Phase 5 source package contains `205` manifest-listed files plus the embedded manifest and is tagged `blocked-visual-provider`. Package root: `ed1f529cf4d538ae902e258cacd6477903a6049020fd5b8ceca1dfcb68084da6`; ZIP SHA-256: `b9b5bb3b1b6df3da15dc3e5e5db52abeac34ea239bc8ee79bc04438a0adcff94`.
 
 ## Rollback
 

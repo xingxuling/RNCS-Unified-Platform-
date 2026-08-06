@@ -1,0 +1,33 @@
+{
+  "format": "rncs.anime-visual-provider-execution-receipt.v0.1",
+  "version": "0.1.0-alpha.1",
+  "provider_id": "rncs.visual.local-diffusion-video-worker",
+  "provider_manifest_root": "2023748512c6a05d9ca8f0c984c859697d4ef99a0a4b3afb2d0c3ea58bb6fabd",
+  "model_manifest_root": "417d10951e04c058e1f331a6986f4225d4237fd23ec78441e0209bc390aa3634",
+  "input_root": "37ba69c3be7bbeb1d1841ccfe90598ebe67e3d529220ee82678ce22323d7e366",
+  "output_root": null,
+  "status": "blocked",
+  "code": "MODEL_MISSING",
+  "command": [
+    "<missing-provider>",
+    "--input",
+    "C:\\Users\\User\\Documents\\RCL\\_worktrees\\rncs-anime-forge-phase5-visual-body-v01\\tmp\\anime-forge-phase5-visual-provider-blocked\\visual-provider-input.json",
+    "--output",
+    "C:\\Users\\User\\Documents\\RCL\\_worktrees\\rncs-anime-forge-phase5-visual-body-v01\\tmp\\anime-forge-phase5-visual-provider-blocked\\frames"
+  ],
+  "tool_version": null,
+  "started_at": "2026-08-06T00:00:00.000Z",
+  "ended_at": "2026-08-06T00:00:00.000Z",
+  "elapsed_ms": 0,
+  "stdout_tail": "",
+  "stderr_tail": "",
+  "frames": [],
+  "authority": {
+    "episode_intent_write": false,
+    "character_identity_write": false,
+    "selection_write": false,
+    "commit_write": false
+  },
+  "failure_classification": "MODEL_MISSING",
+  "receipt_root": "8b48d8e3d17fb249b494cb3ba23f87d450b919a8cc4a9c7386912f09211c2f08"
+}

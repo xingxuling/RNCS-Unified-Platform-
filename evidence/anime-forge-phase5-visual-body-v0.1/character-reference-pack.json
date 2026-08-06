@@ -1,0 +1,51 @@
+{
+  "format": "rncs.anime-character-reference-pack.v0.1",
+  "version": "0.1.0-alpha.1",
+  "character_id": "character:蓝天临",
+  "identity_root": "682362679be55dca2700dc6146b92a48014170e40b5d851bda53e00f656cff5f",
+  "genome_root": "959c7e3a39bdd82364fa79716dfa60f3a8f6fda82d237306c02d0e4b8bc8b4fa",
+  "appearance_root": "de905c98256ab091884ae62946372159db338027403acbe345f7a54febe37a57",
+  "lineage_root": "d58bd103b7c73411cd843b30f41d4d687ced3e539af6d760523cfd30d080063d",
+  "references": [],
+  "reference_views": [
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  "hair_structure": {},
+  "costume_structure": {},
+  "fixed_palette": {},
+  "facial_features": {},
+  "materials": {},
+  "expressions": {
+    "neutral": null,
+    "target": null
+  },
+  "forbidden_variation": [],
+  "variable_states": [],
+  "identity_anchors": [],
+  "source": {
+    "kind": "blocked-reference-audit",
+    "ref": "high-quality-reference-not-available"
+  },
+  "license": {
+    "status": "pending",
+    "spdx": null,
+    "source": null
+  },
+  "model_parameters": {},
+  "human_character_acceptance": "pending",
+  "status": "blocked",
+  "created_at": "2026-08-06T00:00:00.000Z",
+  "history": [
+    {
+      "state": "created",
+      "actor": "rncs:visual-runtime",
+      "reason": "created",
+      "at": "2026-08-06T00:00:00.000Z"
+    }
+  ],
+  "reference_pack_root": "cea53f5fc89b4bc74cd3dff0201753fcdb1f5e1155109bcc49cf3829217325b2"
+}

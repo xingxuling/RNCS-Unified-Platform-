@@ -1,0 +1,55 @@
+{
+  "format": "rncs.anime-visual-quality-report.v0.1",
+  "version": "0.1.0-alpha.1",
+  "candidate_branch_root": "74c0cdc3089a4b01c4362464136ce2ea724bcd17e7daeb16ef77161004e2d988",
+  "metrics": {
+    "first_impression": "not-executed",
+    "identity": "not-executed",
+    "temporal": "not-executed",
+    "space": "not-executed",
+    "performance": "not-executed",
+    "motion": "not-executed"
+  },
+  "rules": [
+    {
+      "id": "qualified-provider",
+      "pass": false,
+      "reason": "MODEL_MISSING"
+    },
+    {
+      "id": "real-model-license",
+      "pass": false,
+      "reason": "model and license missing"
+    },
+    {
+      "id": "real-media",
+      "pass": false,
+      "reason": "no candidate frames"
+    }
+  ],
+  "representative_frames": [],
+  "failed_intervals": [
+    {
+      "start_frame": 0,
+      "end_frame": 143,
+      "code": "MODEL_MISSING"
+    }
+  ],
+  "identity_checks": {},
+  "temporal_checks": {},
+  "spatial_checks": {},
+  "motion_checks": {},
+  "human_review_items": [
+    "human_visual_acceptance remains pending"
+  ],
+  "automatic_score": {
+    "value": null,
+    "meaning": "triage-only",
+    "cannot_authorize_selection": true,
+    "cannot_authorize_commit": true
+  },
+  "status": "fail",
+  "boundary": "image metrics are supporting evidence, not a single truth and not human aesthetic acceptance",
+  "created_at": "2026-08-06T00:00:00.000Z",
+  "quality_report_root": "2ea12be9fec2d24c09a3852fbec9032d0151d5e81c1a4c1750e99260858a5bab"
+}

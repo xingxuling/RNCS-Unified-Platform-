@@ -48,3 +48,13 @@ test('Anime Forge Studio closes real Phase 4 media and exposes read-only evidenc
     const ledger=await fetch(started.url+built.value.evidence_ledger_url).then(response=>response.json());assert.equal(ledger.status,'complete');assert.equal(ledger.gates.mp4,true);assert.equal(ledger.gates.ffprobe,true);
   }finally{await new Promise(resolve=>started.server.close(resolve))}
 });
+
+test('Anime Forge Studio exposes a blocked Phase 5 visual quality workspace without commit authority',async()=>{
+  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'anime-forge-studio-visual-')),started=await startStudioServer({port:0,dataDir:dir});
+  try{
+    const compiled=await post(started.url,'/api/anime-forge/compile',{source:microEpisodeSource});assert.equal(compiled.value.ok,true);const visual=compiled.value.visual_quality;
+    assert.equal(visual.phase,'phase-5-visual-body-replacement');assert.equal(visual.provider.provider_id,'rncs.visual.local-diffusion-video-worker');assert.equal(visual.provider.status,'blocked');assert.equal(visual.candidate.status,'blocked');assert.equal(visual.candidate.commit_available,false);assert.equal(visual.human_visual_acceptance,'pending');assert.equal(visual.worst_problem,'MODEL_MISSING');assert.equal(visual.visual_uplift_vs_phase4,'blocked:not-compared');assert.equal(visual.final_media.mp4,null);
+    const route=await post(started.url,'/api/anime-forge/visual-quality',{session_id:compiled.value.session_id});assert.equal(route.status,200);assert.equal(route.value.ok,true);assert.equal(route.value.candidate.root,visual.candidate.root);assert.equal(route.value.authority.automatic_score_can_commit,false);assert.equal(route.value.authority.commit_requires_authorized_selection,true);
+    const health=await fetch(started.url+'/api/health').then(response=>response.json());assert.equal(health.anime_forge_visual_phase,'phase-5-visual-body-replacement-blocked');assert.equal(health.anime_forge_human_visual_acceptance,'pending');
+  }finally{await new Promise(resolve=>started.server.close(resolve))}
+});

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rncs.anime-character-reference-pack.v0.1",
+  "type": "object",
+  "required": ["format", "character_id", "identity_root", "genome_root", "appearance_root", "lineage_root", "references", "human_character_acceptance", "reference_pack_root"],
+  "properties": {
+    "format": {"const": "rncs.anime-character-reference-pack.v0.1"},
+    "human_character_acceptance": {"enum": ["pending", "accepted", "rejected", "revision-requested"]},
+    "references": {"type": "array", "minItems": 5},
+    "reference_pack_root": {"type": "string", "minLength": 32}
+  },
+  "additionalProperties": true
+}

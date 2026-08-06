@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rncs.anime-visual-provider-manifest.v0.1",
+  "type": "object",
+  "required": ["format", "version", "provider_id", "provider_version", "roles", "inputs", "outputs", "execution", "determinism", "character_continuity", "temporal_consistency", "limits", "license", "authority", "manifest_root"],
+  "properties": {
+    "format": {"const": "rncs.anime-visual-provider-manifest.v0.1"},
+    "roles": {"type": "array", "items": {"enum": ["condition", "keyframe", "motion-video", "temporal-repair"]}},
+    "manifest_root": {"type": "string", "minLength": 32},
+    "authority": {"type": "object", "properties": {"episode_intent_write": {"const": false}, "character_identity_write": {"const": false}, "selection_write": {"const": false}, "commit_write": {"const": false}}}
+  },
+  "additionalProperties": true
+}

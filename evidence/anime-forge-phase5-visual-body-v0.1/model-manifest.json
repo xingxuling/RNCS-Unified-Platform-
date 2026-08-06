@@ -1,0 +1,37 @@
+{
+  "format": "rncs.anime-visual-model-manifest.v0.1",
+  "version": "0.1.0-alpha.1",
+  "model_id": "missing-model",
+  "model_revision": "missing-revision",
+  "model_family": "diffusion-video",
+  "weight_path": null,
+  "weight_sha256": null,
+  "weight_bytes": 0,
+  "license": {
+    "status": "missing",
+    "spdx": null,
+    "source": null
+  },
+  "license_root": "35c82e6a4c92f4e7bfb7ed9ab6969148d264f816954edcee10148299a842406e",
+  "source": {
+    "kind": "environment-audit",
+    "ref": "no-local-visual-model"
+  },
+  "parameters": {},
+  "status": "missing",
+  "runtime": {
+    "framework": "diffusers",
+    "version": null,
+    "device": "cpu-only"
+  },
+  "created_at": "2026-08-06T00:00:00.000Z",
+  "history": [
+    {
+      "state": "created",
+      "actor": "rncs:visual-runtime",
+      "reason": "created",
+      "at": "2026-08-06T00:00:00.000Z"
+    }
+  ],
+  "model_manifest_root": "417d10951e04c058e1f331a6986f4225d4237fd23ec78441e0209bc390aa3634"
+}

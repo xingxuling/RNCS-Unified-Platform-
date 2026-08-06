@@ -1,0 +1,171 @@
+{
+  "format": "rncs.anime-visual-candidate-branch.v0.1",
+  "version": "0.1.0-alpha.1",
+  "candidate_id": "phase5-visual-blocked-candidate",
+  "candidate_status": "blocked",
+  "episode_intent_root": "88dbeccb650b44ece778b54c4958c1743e6dca1f879e2f5350a6d28cafed1b89",
+  "shot_intent_root": "cad9607a6d83e3ec917100ee7db16aaa93077edf57a881029f8d2593b90038b6",
+  "character_identity_root": "682362679be55dca2700dc6146b92a48014170e40b5d851bda53e00f656cff5f",
+  "character_reference_pack_root": "cea53f5fc89b4bc74cd3dff0201753fcdb1f5e1155109bcc49cf3829217325b2",
+  "condition_pack_root": "4f61fa08f9090877b6a162af19b45b05b96464d9f2b372f0bdfdda3a03bf9c43",
+  "provider_id": "rncs.visual.local-diffusion-video-worker",
+  "provider_version": "0.1.0-alpha.1",
+  "provider_manifest_root": "2023748512c6a05d9ca8f0c984c859697d4ef99a0a4b3afb2d0c3ea58bb6fabd",
+  "model_id": "missing-model",
+  "model_revision": "missing-revision",
+  "model_license": {
+    "status": "missing",
+    "spdx": null,
+    "source": null
+  },
+  "model_license_root": "35c82e6a4c92f4e7bfb7ed9ab6969148d264f816954edcee10148299a842406e",
+  "model_manifest_root": "417d10951e04c058e1f331a6986f4225d4237fd23ec78441e0209bc390aa3634",
+  "seed": 0,
+  "sampler": "not-configured",
+  "scheduler": "not-configured",
+  "reconstruction_parameters": {
+    "width": 1280,
+    "height": 720,
+    "fps": 24,
+    "frame_count": 144
+  },
+  "input_reference_roots": {},
+  "output_frame_root": null,
+  "output_video_root": null,
+  "output_media": {
+    "produces_media": false,
+    "mock": false,
+    "fixture": false
+  },
+  "environment": {
+    "format": "rncs.anime-visual-environment-report.v0.1",
+    "date": "2026-08-06",
+    "platform": "win32",
+    "arch": "x64",
+    "node": "v24.15.0",
+    "cpus": 16,
+    "total_memory_bytes": 25008918528,
+    "free_memory_bytes": null,
+    "tools": {
+      "python": {
+        "available": true
+      },
+      "node": {
+        "available": true
+      },
+      "ffmpeg": {
+        "available": false
+      },
+      "ffprobe": {
+        "available": false
+      },
+      "blender": {
+        "available": false
+      },
+      "godot": {
+        "available": false
+      },
+      "ollama": {
+        "available": true
+      },
+      "nvidia-smi": {
+        "available": false
+      },
+      "rocminfo": {
+        "available": false
+      },
+      "hipconfig": {
+        "available": false
+      }
+    },
+    "torch": {
+      "status": "audited externally",
+      "device": "cpu-only"
+    },
+    "gpu": {
+      "status": "not-proven",
+      "model": "AMD Radeon 860M reported by machine audit",
+      "vram_mb": 512,
+      "cuda": false,
+      "rocm": false
+    },
+    "models": {
+      "diffusers": false,
+      "comfyui": false,
+      "visual_model_present": false
+    },
+    "api_environment_names": [],
+    "boundary": "environment names only; secret values are never recorded"
+  },
+  "gpu": {
+    "status": "not-proven",
+    "model": "AMD Radeon 860M reported by machine audit",
+    "vram_mb": 512,
+    "cuda": false,
+    "rocm": false
+  },
+  "timing": {
+    "started_at": "2026-08-06T00:00:00.000Z",
+    "ended_at": "2026-08-06T00:00:00.000Z",
+    "elapsed_ms": 0
+  },
+  "errors": [
+    "MODEL_MISSING"
+  ],
+  "identity_continuity_root": null,
+  "temporal_stability_root": null,
+  "spatial_consistency_root": null,
+  "continuity_report": null,
+  "quality_report": null,
+  "human_visual_acceptance": "pending",
+  "selection_receipt_root": null,
+  "commit_receipt_root": null,
+  "authority": {
+    "media_candidate_only": true,
+    "episode_intent_write": false,
+    "character_identity_write": false,
+    "automatic_commit": false,
+    "commit_requires_authorized_selection": true
+  },
+  "state_history": [
+    {
+      "state": "requested",
+      "actor": "rncs:visual-runtime",
+      "reason": "candidate-requested",
+      "at": "2026-08-06T00:00:00.000Z"
+    },
+    {
+      "state": "conditioning",
+      "actor": "rncs:visual-runtime",
+      "reason": "visual-provider-contract-validated",
+      "at": "2026-08-06T00:00:00.000Z"
+    },
+    {
+      "state": "generating",
+      "actor": "rncs:visual-runtime",
+      "reason": "external-provider-attempted",
+      "at": "2026-08-06T00:00:00.000Z"
+    },
+    {
+      "state": "blocked",
+      "actor": "rncs:visual-runtime",
+      "reason": "MODEL_MISSING",
+      "at": "2026-08-06T00:00:00.000Z"
+    }
+  ],
+  "created_at": "2026-08-06T00:00:00.000Z",
+  "source": {
+    "kind": "rncs-visual-runtime",
+    "ref": "phase5"
+  },
+  "history": [
+    {
+      "state": "created",
+      "actor": "rncs:visual-runtime",
+      "reason": "created",
+      "at": "2026-08-06T00:00:00.000Z"
+    }
+  ],
+  "candidate_branch_root": "74c0cdc3089a4b01c4362464136ce2ea724bcd17e7daeb16ef77161004e2d988",
+  "updated_at": "2026-08-06T00:00:00.000Z"
+}

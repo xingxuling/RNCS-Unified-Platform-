@@ -1,0 +1,84 @@
+{
+  "format": "rncs.anime-visual-condition-pack.v0.1",
+  "version": "0.1.0-alpha.1",
+  "episode_intent_root": "88dbeccb650b44ece778b54c4958c1743e6dca1f879e2f5350a6d28cafed1b89",
+  "shot_intent_root": "cad9607a6d83e3ec917100ee7db16aaa93077edf57a881029f8d2593b90038b6",
+  "character_identity_root": "682362679be55dca2700dc6146b92a48014170e40b5d851bda53e00f656cff5f",
+  "reference_pack_root": "cea53f5fc89b4bc74cd3dff0201753fcdb1f5e1155109bcc49cf3829217325b2",
+  "conditions": [
+    {
+      "type": "pose-skeleton",
+      "status": "missing",
+      "root": "6615040a6ad8c8936d95cb5b8a16696b063956ff2faf6d0405148d77394db5b2"
+    },
+    {
+      "type": "depth",
+      "status": "missing",
+      "root": "bdc5b43bb2eb87df73359a50519659400c4bdd3e6f567b8ed6685c72035a83ef"
+    },
+    {
+      "type": "normal",
+      "status": "missing",
+      "root": "1acf49687a7154f055448bef48314faca10fda3970c222a2bc054159c386bf93"
+    },
+    {
+      "type": "edge",
+      "status": "missing",
+      "root": "315f9fb844563a394fa6feed69127f313f8925e3d9e2a7616d4496872554cd17"
+    },
+    {
+      "type": "semantic-mask",
+      "status": "missing",
+      "root": "e019e4712471f61a6fc5551f3cad2a1e7d79a78fa029bf22e249d3d6341b7e4c"
+    },
+    {
+      "type": "camera",
+      "status": "missing",
+      "root": "1d133f1c575c23f968a59be19d0e3fb25e99476442e2b860d9a6a9efd5d06ebd"
+    },
+    {
+      "type": "layer-order",
+      "status": "missing",
+      "root": "105b6517b826c09e24df6ccdbde6f3a11caeaa68b41f8e988030ee539d59093c"
+    },
+    {
+      "type": "temporal-context",
+      "status": "missing",
+      "root": "227f1642d4b07443b524e036800f6b532a45583542f137aa5e0c05a73e51b8d2"
+    }
+  ],
+  "condition_types": [
+    "pose-skeleton",
+    "depth",
+    "normal",
+    "edge",
+    "semantic-mask",
+    "camera",
+    "layer-order",
+    "temporal-context"
+  ],
+  "camera": {},
+  "layers": [
+    "background",
+    "midground",
+    "character",
+    "foreground",
+    "lighting"
+  ],
+  "temporal_context": {},
+  "status": "blocked",
+  "created_at": "2026-08-06T00:00:00.000Z",
+  "source": {
+    "kind": "rncs-visual-runtime",
+    "ref": "phase5"
+  },
+  "history": [
+    {
+      "state": "created",
+      "actor": "rncs:visual-runtime",
+      "reason": "created",
+      "at": "2026-08-06T00:00:00.000Z"
+    }
+  ],
+  "condition_pack_root": "4f61fa08f9090877b6a162af19b45b05b96464d9f2b372f0bdfdda3a03bf9c43"
+}
