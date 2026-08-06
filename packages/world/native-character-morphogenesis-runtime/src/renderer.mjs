@@ -1,56 +1,33 @@
-import {rootHash,rotateXZ} from './canonical.mjs';
-import {poseForFrame,projectPoint} from './anatomy.mjs';
+import {rootHash} from './canonical.mjs';
 import {Canvas,color} from './raster.mjs';
 
-const palette={skin:color('#e7c9b8'),skinShadow:color('#bb8e82'),hair:color('#111923'),hairLight:color('#6e879b'),ink:color('#14202b'),coat:color('#1d3553'),coatDark:color('#12223a'),trim:color('#c6d7de'),eye:color('#4f86c6'),skyTop:color('#dbe7eb'),skyBottom:color('#8e9da8'),building:color('#687984'),buildingDark:color('#52616d'),platform:color('#455764'),platformLine:color('#98aab1'),shadow:color('#18232e',150),overlay:color('#63d6d0',210),repair:color('#f5bd63',220)};
-const view=(pointValue,pose,options)=>projectPoint(pointValue,{width:options.width,height:options.height,cameraYaw:pose.view_yaw,scale:options.scale??1});
-const bodyPoint=(pointValue,pose)=>rotateXZ(pointValue,pose.body_yaw);
-const P=(pointValue,pose,options)=>{const value=view(bodyPoint(pointValue,pose),pose,options);return[value[0],value[1]]};
-const headP=(local,pose,options)=>{const head=pose.landmarks.head_center,headLocal=bodyPoint(rotateXZ(local,pose.head_yaw),pose);return view([head[0]+headLocal[0],head[1]+headLocal[1],(head[2]??0)+(headLocal[2]??0)],pose,{...options,cameraYaw:pose.view_yaw}) .slice(0,2)};
-const hairP=(raw,pose,options,lag=0)=>{const head=pose.landmarks.head_center,local=bodyPoint(rotateXZ([raw[0]*.62,raw[1]-.19,raw[2]-.02],pose.head_yaw),pose);return view([head[0]+local[0],head[1]+local[1]+lag,head[2]+local[2]],pose,options).slice(0,2)};
-const faceP=(local,pose,options)=>{const base=headP([0,0,.07],pose,options),headLocal=rotateXZ(local,pose.head_yaw),cameraScale=Math.cos(pose.view_yaw-pose.body_yaw)*.9;return[Math.round(base[0]+headLocal[0]*1.26*options.width*cameraScale),Math.round(base[1]+headLocal[1]*.9*options.height)]};
+const layerOrder=['background','body-surface','skin-limb','joint-surface','hand-surface','garment-surface','hair','face-outline','face-feature'];
+const fallbackPalette={skin:'#e7c9b8',skin_shadow:'#bb8e82',hair:'#111923',hair_light:'#6e879b',ink:'#14202b',coat:'#1d3553',coat_dark:'#12223a',trim:'#c6d7de',eye:'#4f86c6',mouth_inner:'#9b5963',sky_top:'#dbe7eb',sky_bottom:'#8e9da8',building:'#687984',platform:'#455764',platform_line:'#98aab1',shadow:'#18232e'};
 
-function drawScene(canvas,pose,options){
-  canvas.gradient(palette.skyTop,palette.skyBottom);
-  for(let index=0;index<12;index+=1){const x=(index*119-Number(pose.progress)*70)%1450-100,height=70+(index%5)*25;canvas.rect(x,330-height,78,height,palette.building);for(let window=0;window<3;window+=1)canvas.rect(x+12+window*20,350-height,8,12,color('#bfd0d4',190))}
-  canvas.polygon([[0,430],[140,385],[295,420],[450,372],[620,420],[770,382],[960,420],[1280,390],[1280,720],[0,720]],palette.platform);
-  canvas.line(0,460,1280,445,palette.platformLine,2);canvas.line(0,550,1280,548,color('#768991',120),1);canvas.line(0,640,1280,650,color('#768991',100),1);
-  const foregroundX=-120+Number(pose.progress)*110+Number(pose.secondary.costume_lag)*1200;canvas.polygon([[foregroundX,120],[foregroundX+78,95],[foregroundX+170,720],[foregroundX-30,720]],color('#111923',215));canvas.line(foregroundX+55,118,foregroundX+130,700,color('#b2c0c4',95),3);
-  canvas.ellipse(640,642,112,18,palette.shadow);
+function paletteFor(style={}){return{...fallbackPalette,...(style.palette??{})};}
+function rgba(value,alpha=255){return Array.isArray(value)?value:color(value??'#000000',alpha);}
+
+function drawEnvironment(canvas,style,progress=0){
+  const palette=paletteFor(style);canvas.gradient(rgba(palette.sky_top),rgba(palette.sky_bottom));
+  for(let index=0;index<12;index+=1){const x=(index*119-progress*70)%1450-100,height=70+(index%5)*25;canvas.rect(x,330-height,78,height,rgba(palette.building));for(let window=0;window<3;window+=1)canvas.rect(x+12+window*20,350-height,8,12,rgba('#bfd0d4',190));}
+  canvas.polygon([[0,430],[140,385],[295,420],[450,372],[620,420],[770,382],[960,420],[1280,390],[1280,720],[0,720]],rgba(palette.platform));canvas.line(0,460,1280,445,rgba(palette.platform_line),2);canvas.line(0,550,1280,548,rgba('#768991',120),1);canvas.line(0,640,1280,650,rgba('#768991',100),1);
+  const foregroundX=-120+progress*110;canvas.polygon([[foregroundX,120],[foregroundX+78,95],[foregroundX+170,720],[foregroundX-30,720]],rgba(palette.ink,215));canvas.line(foregroundX+55,118,foregroundX+130,700,rgba('#b2c0c4',95),3);canvas.ellipse(640,642,112,18,rgba(palette.shadow,150));
 }
 
-function drawBackHair(canvas,system,pose,options){
-  const topology=system.hair_topology,transform=raw=>hairP([raw[0],raw[1],raw[2]-.015],pose,options,pose.secondary.hair_lag*.34);for(const mass of topology.back_hair_groups){const points=mass.silhouette.map(transform);canvas.outline(points,palette.hair,palette.ink,4)}const crown=topology.main_hair_masses[0].silhouette.map(transform);canvas.outline(crown,palette.hair,palette.ink,4);}
-
-function drawTorso(canvas,system,pose,options){
-  const sections=system.body_surface.torso_surface.cross_sections,left=[],right=[];for(const section of sections){const leftPoint=P([-section.radius,section.y,0],pose,options),rightPoint=P([section.radius,section.y,0],pose,options);left.push(leftPoint);right.unshift(rightPoint)}const body=[...left,...right];canvas.outline(body,palette.coat,palette.ink,5);
-  const rib=P([0,.475,.103],pose,options),waist=P([0,.585,.08],pose,options);canvas.polygon([[rib[0]-72,rib[1]-36],[rib[0],rib[1]-12],[rib[0]+72,rib[1]-36],[rib[0]+52,waist[1]-2],[rib[0],waist[1]+14],[rib[0]-52,waist[1]-2]],palette.coatDark);canvas.line(rib[0],rib[1]-14,waist[0],waist[1]+12,palette.trim,3);canvas.line(rib[0]-45,rib[1]+12,rib[0]+45,rib[1]+12,palette.trim,2);
-  const clavicleLeft=P([-.175,.382,.11],pose,options),clavicleRight=P([.175,.382,.11],pose,options),sternum=P([0,.438,.115],pose,options);canvas.line(clavicleLeft[0],clavicleLeft[1],sternum[0],sternum[1],palette.trim,3);canvas.line(clavicleRight[0],clavicleRight[1],sternum[0],sternum[1],palette.trim,3);
-  const pelvis=P([0,.68,.07],pose,options);canvas.line(pelvis[0]-76,pelvis[1],pelvis[0],pelvis[1]+21,palette.ink,3);canvas.line(pelvis[0]+76,pelvis[1],pelvis[0],pelvis[1]+21,palette.ink,3);
+function drawPrimitive(canvas,primitive){
+  if(primitive.visible===false)return;
+  const fill=primitive.fill?rgba(primitive.fill):null,stroke=primitive.stroke?rgba(primitive.stroke):null,width=Number(primitive.line_width??3),points=primitive.points??[];
+  if(primitive.kind==='polygon'){if(fill)canvas.polygon(points,fill);if(stroke)for(let index=0;index<points.length;index+=1){const a=points[index],b=points[(index+1)%points.length];canvas.line(a[0],a[1],b[0],b[1],stroke,width);}return;}
+  if(primitive.kind==='line'){for(let index=0;index<points.length-1;index+=1)canvas.line(points[index][0],points[index][1],points[index+1][0],points[index+1][1],stroke??fill??rgba('#000000'),width);return;}
+  if(primitive.kind==='ellipse'){const [cx,cy]=primitive.center,[rx,ry]=primitive.radii;if(stroke)canvas.ellipse(cx,cy,rx+width*.5,ry+width*.5,stroke);if(fill)canvas.ellipse(cx,cy,rx,ry,fill);}
 }
 
-function drawNeckAndHead(canvas,system,pose,options){
-  const neckLeft=P([-.055,.30,.045],pose,options),neckRight=P([.055,.30,.045],pose,options),baseLeft=P([-.1,.385,.04],pose,options),baseRight=P([.1,.385,.04],pose,options);canvas.outline([neckLeft,neckRight,baseRight,baseLeft],palette.skin,palette.ink,4);
-  const head=headP([0,0,.07],pose,options),headScale=Math.max(.5,Math.abs(Math.cos(pose.head_yaw))),viewDepth=Math.abs(Math.sin(pose.view_yaw-pose.body_yaw)),rx=(78+48*viewDepth)*headScale,ry=88;canvas.ellipse(head[0],head[1],rx,ry,palette.skin);canvas.ellipse(head[0]+rx*.28,head[1]+18,rx*.36,ry*.55,palette.skinShadow);
-  const jaw=[faceP([-.11,.04,.08],pose,options),faceP([-.095,.11,.09],pose,options),faceP([0,.135,.085],pose,options),faceP([.095,.11,.09],pose,options),faceP([.11,.04,.08],pose,options)];canvas.line(jaw[0][0],jaw[0][1],jaw[1][0],jaw[1][1],palette.ink,2);canvas.line(jaw[1][0],jaw[1][1],jaw[2][0],jaw[2][1],palette.ink,2);canvas.line(jaw[2][0],jaw[2][1],jaw[3][0],jaw[3][1],palette.ink,2);canvas.line(jaw[3][0],jaw[3][1],jaw[4][0],jaw[4][1],palette.ink,2);
+export function renderFrame(projectedFrameGeometry,renderStyle={}){
+  const width=Number(projectedFrameGeometry?.camera?.width??renderStyle.width??1280),height=Number(projectedFrameGeometry?.camera?.height??renderStyle.height??720),canvas=new Canvas(width,height),style=renderStyle?.palette?renderStyle:(projectedFrameGeometry?.style??renderStyle),progress=Number(projectedFrameGeometry?.performance?.progress??0);
+  drawEnvironment(canvas,style,progress);
+  const primitives=[...(projectedFrameGeometry?.primitives??[])].filter(item=>item.visible!==false).sort((a,b)=>(layerOrder.indexOf(a.layer)-layerOrder.indexOf(b.layer))||String(a.id).localeCompare(String(b.id)));
+  for(const primitive of primitives)drawPrimitive(canvas,primitive);
+  const png=canvas.png();return{format:'rncs.raster-frame.v0.1',width,height,source_projection_root:projectedFrameGeometry?.projection_root??null,styled_root:projectedFrameGeometry?.styled_root??null,png,frame_root:rootHash({projection_root:projectedFrameGeometry?.projection_root??null,styled_root:projectedFrameGeometry?.styled_root??null,bytes:png.toString('base64')}),diagnostics:{renderer_role:'rasterize-projected-frame-geometry-only',anatomy_authority:false,style_after_projection:true,primitive_count:primitives.length}};
 }
 
-function drawFace(canvas,system,pose,options){
-  const anchors=pose.face.local_anchors,near=Math.cos(pose.head_yaw)>=0?1:-1;const left=faceP(anchors.left_eye,pose,options),right=faceP(anchors.right_eye,pose,options),browLeft=faceP(anchors.left_brow,pose,options),browRight=faceP(anchors.right_brow,pose,options);const eyeSize=clampEye(pose,options);const drawEye=(pointValue,scale)=>{canvas.ellipse(pointValue[0],pointValue[1],18*scale,8*scale,pose.face.blink?palette.skin:palette.ink);if(!pose.face.blink)canvas.ellipse(pointValue[0]+(pose.face.gaze==='left'?-5:pose.face.gaze==='right'?5:0),pointValue[1],6*scale,7*scale,palette.eye)};drawEye(left,near>0?1:Math.max(.42,eyeSize));drawEye(right,near<0?1:Math.max(.42,eyeSize));canvas.line(browLeft[0]-15,browLeft[1]-4,browLeft[0]+15,browLeft[1]-7,palette.hairLight,4);canvas.line(browRight[0]-15,browRight[1]-7,browRight[0]+15,browRight[1]-4,palette.hairLight,4);
-  const nose=faceP(anchors.nose_bridge,pose,options),tip=faceP(anchors.nose_tip,pose,options);canvas.line(nose[0],nose[1],tip[0],tip[1],palette.skinShadow,3);canvas.line(tip[0],tip[1],tip[0]+(pose.head_yaw>0?-8:8),tip[1]+3,palette.skinShadow,2);
-  const mouthLeft=faceP(anchors.mouth_left,pose,options),mouthCenter=faceP(anchors.mouth_center,pose,options),mouthRight=faceP(anchors.mouth_right,pose,options);if(pose.face.mouth==='closed'){canvas.line(mouthLeft[0],mouthLeft[1],mouthCenter[0],mouthCenter[1]-2,palette.ink,3);canvas.line(mouthCenter[0],mouthCenter[1]-2,mouthRight[0],mouthRight[1],palette.ink,3)}else{canvas.ellipse(mouthCenter[0],mouthCenter[1],24,12,palette.ink);canvas.ellipse(mouthCenter[0],mouthCenter[1]-2,15,5,color('#9b5963'))}
-}
-
-function clampEye(pose,options){return Math.max(.45,Math.abs(Math.cos(pose.head_yaw))*(options.scale??1));}
-
-function drawHair(canvas,system,pose,options){
-  const transform=raw=>hairP([raw[0],Math.min(.14,raw[1]),raw[2]+.02],pose,options,pose.secondary.hair_lag*.25);for(const group of system.hair_topology.side_locks)canvas.outline(group.points.map(transform),palette.hair,palette.ink,4);for(const group of system.hair_topology.front_bangs_groups)canvas.outline(group.points.map(transform),palette.hair,palette.ink,3);const head=view(pose.landmarks.head_center,pose,options);canvas.line(head[0]-42,head[1]-59,head[0]-18,head[1]-86,palette.hairLight,4);canvas.line(head[0]-12,head[1]-77,head[0]+16,head[1]-94,palette.hairLight,3);canvas.line(head[0]+13,head[1]-75,head[0]+40,head[1]-84,palette.hairLight,2);}
-
-function drawArmsAndHands(canvas,system,pose,options){
-  const drawSide=(side)=>{const upper=pose.segments[`${side}_upper_arm`].map(pointValue=>view(pointValue,pose,options)),fore=pose.segments[`${side}_forearm`].map(pointValue=>view(pointValue,pose,options));const sign=side==='left'?-1:1,envelope=system.body_surface.elbow_envelopes[side],elbowBulge=Number(envelope?.bulge??0),elbowRadius=33+Math.round(elbowBulge*110);canvas.ellipse(upper[0][0],upper[0][1],34,36,palette.coat);canvas.capsule(upper[0],upper[1],29,palette.coat,palette.ink,5);canvas.ellipse(upper[1][0],upper[1][1],elbowRadius,elbowRadius,palette.coatDark);canvas.capsule(fore[0],fore[1],24,palette.coat,palette.ink,5);const hand=fore[1],angle=Math.atan2(fore[1][1]-fore[0][1],fore[1][0]-fore[0][0]);const dx=Math.cos(angle),dy=Math.sin(angle),nx=-dy,ny=dx;const palm=[[hand[0]+nx*22,hand[1]+ny*22],[hand[0]+dx*31+nx*18,hand[1]+dy*31+ny*18],[hand[0]+dx*40+nx*5,hand[1]+dy*40+ny*5],[hand[0]+dx*38-nx*16,hand[1]+dy*38-ny*16],[hand[0]-nx*20,hand[1]-ny*20]];canvas.outline(palm,palette.skin,palette.ink,4);canvas.line(hand[0]+dx*20+nx*5,hand[1]+dy*20+ny*5,hand[0]+dx*37+nx*3,hand[1]+dy*37+ny*3,palette.skinShadow,2);canvas.line(hand[0]+dx*21-nx*5,hand[1]+dy*21-ny*5,hand[0]+dx*34-nx*8,hand[1]+dy*34-ny*8,palette.skinShadow,2);canvas.line(hand[0]+dx*15+sign*nx*8,hand[1]+dy*15+sign*ny*8,hand[0]+dx*27+sign*nx*13,hand[1]+dy*27+sign*ny*13,palette.skinShadow,2)};drawSide('left');drawSide('right');}
-
-function drawOverlays(canvas,system,pose,options){const p=pointValue=>view(pointValue,pose,options);if(options.skeleton){for(const line of [[pose.skeleton.root,pose.skeleton.spine[1]],[pose.skeleton.spine[1],pose.skeleton.spine[2]],[pose.skeleton.spine[2],pose.skeleton.head],[pose.landmarks.shoulder_left,pose.landmarks.elbow_left],[pose.landmarks.elbow_left,pose.landmarks.wrist_left],[pose.landmarks.shoulder_right,pose.landmarks.elbow_right],[pose.landmarks.elbow_right,pose.landmarks.wrist_right]]){const a=p(line[0]),b=p(line[1]);canvas.line(a[0],a[1],b[0],b[1],palette.overlay,3)}for(const joint of [pose.landmarks.shoulder_left,pose.landmarks.elbow_left,pose.landmarks.wrist_left,pose.landmarks.shoulder_right,pose.landmarks.elbow_right,pose.landmarks.wrist_right]){const pointValue=p(joint);canvas.ellipse(pointValue[0],pointValue[1],7,7,palette.overlay)}}if(options.faceAnchors)for(const anchor of Object.values(pose.face.anchors)){const pointValue=p(anchor);canvas.ellipse(pointValue[0],pointValue[1],5,5,palette.repair)}if(options.jointEnvelope){for(const joint of [pose.landmarks.elbow_left,pose.landmarks.elbow_right]){const pointValue=p(joint);canvas.ellipse(pointValue[0],pointValue[1],45,45,color('#f5bd63',55));canvas.line(pointValue[0]-45,pointValue[1],pointValue[0]+45,pointValue[1],palette.repair,2)}}if(options.contourOnly){canvas.line(180,690,1100,690,palette.overlay,2)}}
-
-export function renderAnatomyFrame(system,options={}){const width=Number(options.width??1280),height=Number(options.height??720),frame=Number(options.frame??0),pose=options.poseObject??poseForFrame(system,{view:options.view??'front',pose:options.pose??'neutral',frame,totalFrames:Number(options.totalFrames??120)}),canvas=new Canvas(width,height);drawScene(canvas,pose,options);drawBackHair(canvas,system,pose,options);drawTorso(canvas,system,pose,options);drawNeckAndHead(canvas,system,pose,options);drawFace(canvas,system,pose,options);drawHair(canvas,system,pose,options);drawArmsAndHands(canvas,system,pose,options);if(options.mode!=='contour')drawSceneLighting(canvas,pose);drawOverlays(canvas,system,pose,options);const png=canvas.png();return{png,pose,frame_root:rootHash({pose_root:pose.pose_root,bytes:png.toString('base64')}),diagnostics:{continuous_torso:true,face_coordinates_shared:true,scalp_attached:true,joint_envelopes:true,hand_mass:true}}}
-
-function drawSceneLighting(canvas,pose){const alpha=30+Math.round(Math.sin(pose.progress*Math.PI*2)*8);canvas.polygon([[0,0],[460,0],[220,720],[0,720]],color('#f3fbff',alpha));canvas.polygon([[820,0],[1280,0],[1280,720],[1050,720]],color('#0e1d2d',24));}
+export {renderAnatomyFrame} from './legacy-primitive-renderer.mjs';

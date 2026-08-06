@@ -1,0 +1,401 @@
+{
+  "format": "rncs.anime-forge-phase6-2-validation-pack.v0.1",
+  "status": "complete",
+  "character_id": "lan-tianlin",
+  "genome_root": "3095558d5cdcb5611053b1919f0aeaa05ee08463b3cc63d11deca8eb9b539ffc",
+  "identity_root": "54896ce178f2c233ee4a1190c9ad366c11b80d4d3244c03e997d1d5a201a42d8",
+  "morphology_root": "1e476e0d225ec1f3b38e62ff6df024c5f434fabd310385641a4109be430d0d33",
+  "certificate_root": "e158e51376d02d262605c560e8c3071e3fd1907abfb57e0fa4e198ed8fd57ce8",
+  "views": [
+    {
+      "view": "front",
+      "pose": "neutral",
+      "name": "front-neutral",
+      "files": {
+        "canonical_geometry": {
+          "path": "validation-pack\\front-neutral.canonical-geometry.json",
+          "sha256": "3dfc8947e3183fa80754fff3d738b7124894ce1f2186425311550952d321c839",
+          "bytes": 37911
+        },
+        "posed_geometry": {
+          "path": "validation-pack\\front-neutral.posed-geometry.json",
+          "sha256": "1c8089dabdecd5bdcee7a89bef173fd31e05ba83f9e67d9967d69a85bba3dc4e",
+          "bytes": 25654
+        },
+        "projected_geometry": {
+          "path": "validation-pack\\front-neutral.projected-geometry.json",
+          "sha256": "8e45a1b54c6a0fd12e6b3b36ab12d3b411c0031868b50115aceda62ff0cdb9bd",
+          "bytes": 27232
+        },
+        "morphology_certificate": {
+          "path": "validation-pack\\front-neutral.morphology-certificate.json",
+          "sha256": "410906a87d676c534bf5f7df2305360186ad7bf2e5cdefee50818cc032941d0c",
+          "bytes": 1268
+        },
+        "raster": {
+          "path": "validation-pack\\front-neutral.png",
+          "sha256": "5a785cb558f0d5e98c5b9f1ad63bcced337866fb9107a4f4337ab474644c99e1",
+          "bytes": 8213
+        }
+      },
+      "asset_root": "1e476e0d225ec1f3b38e62ff6df024c5f434fabd310385641a4109be430d0d33",
+      "frame_root": "4bddb4ff7bcf9d27c2194354bc757d84f36fe091dea39d6ffede851feb5da2e1",
+      "pose_root": "def79cad53f09242a22d5f1865677931e7e157f54cde5cd2cd94545b3029748a",
+      "geometry_root": "cc024209d09488d63cf3d5e169d3c02b283cb12e0d5365a482ea57ea0e1231dc",
+      "projection_root": "684524462c24d1dccc3d6a9c32756c6582523f62e6a1b1e9434bcc8738450387"
+    },
+    {
+      "view": "three-quarter-left",
+      "pose": "neutral",
+      "name": "three-quarter-left",
+      "files": {
+        "canonical_geometry": {
+          "path": "validation-pack\\three-quarter-left.canonical-geometry.json",
+          "sha256": "3dfc8947e3183fa80754fff3d738b7124894ce1f2186425311550952d321c839",
+          "bytes": 37911
+        },
+        "posed_geometry": {
+          "path": "validation-pack\\three-quarter-left.posed-geometry.json",
+          "sha256": "1a6bc1e310adf92b6501a93da1b6b9dd35bc53c237ca9fb23bd8bf18a472d325",
+          "bytes": 25683
+        },
+        "projected_geometry": {
+          "path": "validation-pack\\three-quarter-left.projected-geometry.json",
+          "sha256": "7e10cefff316bc520ba98018e0c25e3cc0f59100efc58292bc41e50009fad5b6",
+          "bytes": 28453
+        },
+        "morphology_certificate": {
+          "path": "validation-pack\\three-quarter-left.morphology-certificate.json",
+          "sha256": "410906a87d676c534bf5f7df2305360186ad7bf2e5cdefee50818cc032941d0c",
+          "bytes": 1268
+        },
+        "raster": {
+          "path": "validation-pack\\three-quarter-left.png",
+          "sha256": "181d7d7f633459ac0ca46984ba64f87d9a84e9e5c8e42870e11fa353f952b7b3",
+          "bytes": 8162
+        }
+      },
+      "asset_root": "1e476e0d225ec1f3b38e62ff6df024c5f434fabd310385641a4109be430d0d33",
+      "frame_root": "8b830b5ef3606eeb7008787b120ccb552d0da2ffe0770ae5d84e32b5d2c9ef12",
+      "pose_root": "5a3440e7ad5d340d9f766a77f8abf7f9a8a4b450c18440d5a93a5df5f83cc408",
+      "geometry_root": "fb9e292bad9c1f53b46e65df9940ac8381812fa7dbfd711989b81d6f1ca89c71",
+      "projection_root": "bc95aa8328b200bed41b90b28bf3972c2e90627441e06330f10615fd3d3d7c3f"
+    },
+    {
+      "view": "three-quarter-right",
+      "pose": "neutral",
+      "name": "three-quarter-right",
+      "files": {
+        "canonical_geometry": {
+          "path": "validation-pack\\three-quarter-right.canonical-geometry.json",
+          "sha256": "3dfc8947e3183fa80754fff3d738b7124894ce1f2186425311550952d321c839",
+          "bytes": 37911
+        },
+        "posed_geometry": {
+          "path": "validation-pack\\three-quarter-right.posed-geometry.json",
+          "sha256": "187b3c7082c7ba08a77ec80eb89b4904b4e04e71d74bdc98322356b6ca592cbf",
+          "bytes": 25684
+        },
+        "projected_geometry": {
+          "path": "validation-pack\\three-quarter-right.projected-geometry.json",
+          "sha256": "d53c6411a7322d803abcbc12ab5020cd346685f9b5ed682f20240d95a71c0698",
+          "bytes": 28452
+        },
+        "morphology_certificate": {
+          "path": "validation-pack\\three-quarter-right.morphology-certificate.json",
+          "sha256": "410906a87d676c534bf5f7df2305360186ad7bf2e5cdefee50818cc032941d0c",
+          "bytes": 1268
+        },
+        "raster": {
+          "path": "validation-pack\\three-quarter-right.png",
+          "sha256": "d0aa5bc7df995f0113012d90efaa143b1906aa93b1ed2d939b74fc04645c09a0",
+          "bytes": 8170
+        }
+      },
+      "asset_root": "1e476e0d225ec1f3b38e62ff6df024c5f434fabd310385641a4109be430d0d33",
+      "frame_root": "3faf2a739226cfd655e0e2d17a50f798946b537f38e17a04ea28ec4f110819f4",
+      "pose_root": "009bd454236fccdf4a3b571905ff4c2a9598bedb44853bdc9c2683f6519e81e4",
+      "geometry_root": "02e7900d52c0a4347057bc6c55b268b41210ef394997deed0cf1249e4d907c13",
+      "projection_root": "4af0c557b8e223cdd972b8d8c32f674be2f3d7b71b646bafaff34f8eadbec5b9"
+    },
+    {
+      "view": "side",
+      "pose": "neutral",
+      "name": "side",
+      "files": {
+        "canonical_geometry": {
+          "path": "validation-pack\\side.canonical-geometry.json",
+          "sha256": "3dfc8947e3183fa80754fff3d738b7124894ce1f2186425311550952d321c839",
+          "bytes": 37911
+        },
+        "posed_geometry": {
+          "path": "validation-pack\\side.posed-geometry.json",
+          "sha256": "52ed7761e491564ee75d5c04e9ddee0fd141ca3a8b5a9b445a5de935a97563ef",
+          "bytes": 25669
+        },
+        "projected_geometry": {
+          "path": "validation-pack\\side.projected-geometry.json",
+          "sha256": "90d20b708c3e63a4a42a87775d7021055510cf02e4a902026943a17d3bab92f7",
+          "bytes": 28427
+        },
+        "morphology_certificate": {
+          "path": "validation-pack\\side.morphology-certificate.json",
+          "sha256": "410906a87d676c534bf5f7df2305360186ad7bf2e5cdefee50818cc032941d0c",
+          "bytes": 1268
+        },
+        "raster": {
+          "path": "validation-pack\\side.png",
+          "sha256": "1b340408557c3c6659f52c4f949a77c945465f9171bdef8ebaf5b4431555d73a",
+          "bytes": 7421
+        }
+      },
+      "asset_root": "1e476e0d225ec1f3b38e62ff6df024c5f434fabd310385641a4109be430d0d33",
+      "frame_root": "4eadb7cf4f93d0881081c8a8f59c8a7334c5fbde9f4be7006b1f61f1c8960dde",
+      "pose_root": "0acddc7886d6bcb5609f1e40451fb137fac3ce1674c815ebb3fe722d13091456",
+      "geometry_root": "09514eb8d666c80a87d7eb5561b49809e4a53a70a59a7e2202a87afb8925a08e",
+      "projection_root": "3212ca7c1a5c84138473334d62ebc414bb54c2e90e2fe32d92479da63d042cd9"
+    },
+    {
+      "view": "head-turn",
+      "pose": "alert",
+      "name": "head-turn",
+      "files": {
+        "canonical_geometry": {
+          "path": "validation-pack\\head-turn.canonical-geometry.json",
+          "sha256": "3dfc8947e3183fa80754fff3d738b7124894ce1f2186425311550952d321c839",
+          "bytes": 37911
+        },
+        "posed_geometry": {
+          "path": "validation-pack\\head-turn.posed-geometry.json",
+          "sha256": "8e5586519ac8cfc65844f2ef1d0eb943ff10cce562d4ac7e8cf8df0174789e09",
+          "bytes": 27514
+        },
+        "projected_geometry": {
+          "path": "validation-pack\\head-turn.projected-geometry.json",
+          "sha256": "9e9964bbf4a905fe76ae3a83d7751236626c5accfe4a21af85ce20da65e9831c",
+          "bytes": 28579
+        },
+        "morphology_certificate": {
+          "path": "validation-pack\\head-turn.morphology-certificate.json",
+          "sha256": "410906a87d676c534bf5f7df2305360186ad7bf2e5cdefee50818cc032941d0c",
+          "bytes": 1268
+        },
+        "raster": {
+          "path": "validation-pack\\head-turn.png",
+          "sha256": "a1c1c06f9787c7fedf32eec9a6afc0e4165ec1684576b8f43a67b24261500dfc",
+          "bytes": 8406
+        }
+      },
+      "asset_root": "1e476e0d225ec1f3b38e62ff6df024c5f434fabd310385641a4109be430d0d33",
+      "frame_root": "020794ec986c7418fa71bf9e97ea4a602330d5627e9f7c0beecdffc3cead7174",
+      "pose_root": "6f54061dfce9a54a5982cc80dcb021103e353d35e366fdb1409c51ee8107c05f",
+      "geometry_root": "2a8bdabfc057c085b7f40d3d43debb0c68312097a76c0d9512e415eed9cef017",
+      "projection_root": "cc2d1c187ae3c7df7b41bb76049e66998d9daab43d0b367e80c907124e616b15"
+    },
+    {
+      "view": "shoulder-turn",
+      "pose": "alert",
+      "name": "shoulder-turn",
+      "files": {
+        "canonical_geometry": {
+          "path": "validation-pack\\shoulder-turn.canonical-geometry.json",
+          "sha256": "3dfc8947e3183fa80754fff3d738b7124894ce1f2186425311550952d321c839",
+          "bytes": 37911
+        },
+        "posed_geometry": {
+          "path": "validation-pack\\shoulder-turn.posed-geometry.json",
+          "sha256": "d20e3dbff6fdb4a24e84685d45d3bca36d05618929841264aaa9e2de9af92b82",
+          "bytes": 27522
+        },
+        "projected_geometry": {
+          "path": "validation-pack\\shoulder-turn.projected-geometry.json",
+          "sha256": "22482bea737785e04529fd19eb37d3d617326fbe28254260cf9d92d0bcf245f4",
+          "bytes": 28604
+        },
+        "morphology_certificate": {
+          "path": "validation-pack\\shoulder-turn.morphology-certificate.json",
+          "sha256": "410906a87d676c534bf5f7df2305360186ad7bf2e5cdefee50818cc032941d0c",
+          "bytes": 1268
+        },
+        "raster": {
+          "path": "validation-pack\\shoulder-turn.png",
+          "sha256": "29a24938b07b593843a2ad3cae41530de126037b893eecf48deb8cba148cc5b4",
+          "bytes": 8480
+        }
+      },
+      "asset_root": "1e476e0d225ec1f3b38e62ff6df024c5f434fabd310385641a4109be430d0d33",
+      "frame_root": "db2b62a8b7726580da0759f9f4cfcde5cf33eda906dadc90830c2ba8527f1fa5",
+      "pose_root": "8030c06244a85fdfae17a77a82bcd8d4f3d90b6e4ab33b912eace10c85d98da7",
+      "geometry_root": "ff2a118c9671b1ec2a210aa277eb914116612fb860709fe968c976693924efaa",
+      "projection_root": "5a657b320c3a362a61c72081ba6cc6328f168c784d5f0b235ba05590af92d82e"
+    },
+    {
+      "view": "elbow-bend",
+      "pose": "action",
+      "name": "elbow-bend",
+      "files": {
+        "canonical_geometry": {
+          "path": "validation-pack\\elbow-bend.canonical-geometry.json",
+          "sha256": "3dfc8947e3183fa80754fff3d738b7124894ce1f2186425311550952d321c839",
+          "bytes": 37911
+        },
+        "posed_geometry": {
+          "path": "validation-pack\\elbow-bend.posed-geometry.json",
+          "sha256": "90e37de42f83ddd66152ead25e533fbb32d1e3f763156693c9efca46e000ab9e",
+          "bytes": 27632
+        },
+        "projected_geometry": {
+          "path": "validation-pack\\elbow-bend.projected-geometry.json",
+          "sha256": "1a9a7d051099f46eb180f35408582e572d3bd2d514d94fbfcd7bc23d986d5b4b",
+          "bytes": 28304
+        },
+        "morphology_certificate": {
+          "path": "validation-pack\\elbow-bend.morphology-certificate.json",
+          "sha256": "410906a87d676c534bf5f7df2305360186ad7bf2e5cdefee50818cc032941d0c",
+          "bytes": 1268
+        },
+        "raster": {
+          "path": "validation-pack\\elbow-bend.png",
+          "sha256": "e1fcec971ab854ecd787d319be23d4aabed5cdc4a0d5c2620672671b488f9310",
+          "bytes": 9540
+        }
+      },
+      "asset_root": "1e476e0d225ec1f3b38e62ff6df024c5f434fabd310385641a4109be430d0d33",
+      "frame_root": "96011b09f32f43da9f663773d2b8c0feee3cb09a99167c6d78e1f26e38f819e2",
+      "pose_root": "565286749652c9f506fe7dd8fc4422d50c01276a7abe4f5635a7b40988a84532",
+      "geometry_root": "9b9056967ff1e3bb6cb3c0009bc69f5790d441f528dc50773df4c6ae7575c4f7",
+      "projection_root": "8e5d367fe42ba387f8f0af5af51cf360670d6f5084c54dfac43c77adca972013"
+    },
+    {
+      "view": "front",
+      "pose": "neutral",
+      "name": "neutral",
+      "files": {
+        "canonical_geometry": {
+          "path": "validation-pack\\neutral.canonical-geometry.json",
+          "sha256": "3dfc8947e3183fa80754fff3d738b7124894ce1f2186425311550952d321c839",
+          "bytes": 37911
+        },
+        "posed_geometry": {
+          "path": "validation-pack\\neutral.posed-geometry.json",
+          "sha256": "1c8089dabdecd5bdcee7a89bef173fd31e05ba83f9e67d9967d69a85bba3dc4e",
+          "bytes": 25654
+        },
+        "projected_geometry": {
+          "path": "validation-pack\\neutral.projected-geometry.json",
+          "sha256": "8e45a1b54c6a0fd12e6b3b36ab12d3b411c0031868b50115aceda62ff0cdb9bd",
+          "bytes": 27232
+        },
+        "morphology_certificate": {
+          "path": "validation-pack\\neutral.morphology-certificate.json",
+          "sha256": "410906a87d676c534bf5f7df2305360186ad7bf2e5cdefee50818cc032941d0c",
+          "bytes": 1268
+        },
+        "raster": {
+          "path": "validation-pack\\neutral.png",
+          "sha256": "5a785cb558f0d5e98c5b9f1ad63bcced337866fb9107a4f4337ab474644c99e1",
+          "bytes": 8213
+        }
+      },
+      "asset_root": "1e476e0d225ec1f3b38e62ff6df024c5f434fabd310385641a4109be430d0d33",
+      "frame_root": "4bddb4ff7bcf9d27c2194354bc757d84f36fe091dea39d6ffede851feb5da2e1",
+      "pose_root": "def79cad53f09242a22d5f1865677931e7e157f54cde5cd2cd94545b3029748a",
+      "geometry_root": "cc024209d09488d63cf3d5e169d3c02b283cb12e0d5365a482ea57ea0e1231dc",
+      "projection_root": "684524462c24d1dccc3d6a9c32756c6582523f62e6a1b1e9434bcc8738450387"
+    },
+    {
+      "view": "front",
+      "pose": "alert",
+      "name": "alert",
+      "files": {
+        "canonical_geometry": {
+          "path": "validation-pack\\alert.canonical-geometry.json",
+          "sha256": "3dfc8947e3183fa80754fff3d738b7124894ce1f2186425311550952d321c839",
+          "bytes": 37911
+        },
+        "posed_geometry": {
+          "path": "validation-pack\\alert.posed-geometry.json",
+          "sha256": "7d92428324a03314b1d56f5e4437ea0855fe27d02ccb429f924bad70060e3ae6",
+          "bytes": 27496
+        },
+        "projected_geometry": {
+          "path": "validation-pack\\alert.projected-geometry.json",
+          "sha256": "92517a1fb703b137a22947f757b182962faf71df08c1d57c5c4e3ba18f082484",
+          "bytes": 28147
+        },
+        "morphology_certificate": {
+          "path": "validation-pack\\alert.morphology-certificate.json",
+          "sha256": "410906a87d676c534bf5f7df2305360186ad7bf2e5cdefee50818cc032941d0c",
+          "bytes": 1268
+        },
+        "raster": {
+          "path": "validation-pack\\alert.png",
+          "sha256": "8c3e0e645a99423b166cbde764225572f62124fe4908caba4a86e07074d27df2",
+          "bytes": 8428
+        }
+      },
+      "asset_root": "1e476e0d225ec1f3b38e62ff6df024c5f434fabd310385641a4109be430d0d33",
+      "frame_root": "3bd85db34ea5607b71ac3361b8f401c40bd0c1239345680d5b2b3f4a41a99b03",
+      "pose_root": "2cb125af3157686aa205f56b7350bb5216fbc344ab342f74f005bd3d69e9ca91",
+      "geometry_root": "3ab2eea1b8b7c35f35beedfa4d18de777af29ffffec11b9a8bc8d17c9a5693dc",
+      "projection_root": "294056d96ff0bc985934384eb407b134218e06daf426caeddf8bd5fc1a939ed3"
+    },
+    {
+      "view": "front",
+      "pose": "action",
+      "name": "action",
+      "files": {
+        "canonical_geometry": {
+          "path": "validation-pack\\action.canonical-geometry.json",
+          "sha256": "3dfc8947e3183fa80754fff3d738b7124894ce1f2186425311550952d321c839",
+          "bytes": 37911
+        },
+        "posed_geometry": {
+          "path": "validation-pack\\action.posed-geometry.json",
+          "sha256": "f95adb3268d5bc537af87430620fce5c76c2c50da6cd94db4dfea1f9968a960b",
+          "bytes": 27627
+        },
+        "projected_geometry": {
+          "path": "validation-pack\\action.projected-geometry.json",
+          "sha256": "4d9ecd28e3784582fa8c7108c9b01e2a7b628950af55901ee5b91503ac64557c",
+          "bytes": 28330
+        },
+        "morphology_certificate": {
+          "path": "validation-pack\\action.morphology-certificate.json",
+          "sha256": "410906a87d676c534bf5f7df2305360186ad7bf2e5cdefee50818cc032941d0c",
+          "bytes": 1268
+        },
+        "raster": {
+          "path": "validation-pack\\action.png",
+          "sha256": "ab5801c091a7d044a9c324b983625f8a6a6767a5ba0bebe1f7767bd5f9d32698",
+          "bytes": 9544
+        }
+      },
+      "asset_root": "1e476e0d225ec1f3b38e62ff6df024c5f434fabd310385641a4109be430d0d33",
+      "frame_root": "5c88d1e1ab5d50173fd53f55453d0b5edcdf6e739642aacace13560fe0740069",
+      "pose_root": "c47511b5a5151043bb465f2b0342e44baf21d223290f7781caa172b26ebb2dd4",
+      "geometry_root": "a96462953badf0985cf64a17cebc8878306b365bb8e1ea88158e5f443d46c286",
+      "projection_root": "8a74bfc8204f96124c298f1ab7ac94e9b25d8c856f885b134973eb7bf8b72ea6"
+    }
+  ],
+  "contact_sheet": {
+    "path": "validation-contact-sheet.png",
+    "sha256": "b0bcbe0a04932b5a9bf46bd7dc97af79eb479697c7e63413b174b32e3443d0fe",
+    "width": 2400,
+    "height": 540
+  },
+  "coverage": [
+    "front",
+    "three-quarter-left",
+    "three-quarter-right",
+    "side",
+    "head-turn",
+    "shoulder-turn",
+    "elbow-bend",
+    "neutral",
+    "alert",
+    "action"
+  ],
+  "human_visual_acceptance": "pending",
+  "pack_root": "6e7a693743c7b36b195ceb507da5887d681f9e341d2494ddb597882ea8a1b5df"
+}

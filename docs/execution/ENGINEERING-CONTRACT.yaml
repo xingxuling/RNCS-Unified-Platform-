@@ -1,45 +1,76 @@
-version: 1
-project: RNCS_Aetherworld_Unified_v0.8.0-alpha.1
+format: rncs.anime-forge-phase6-2-engineering-contract.v0.1
+phase: 6.2
+title: Canonical Morphology Kernel Refactor
 baseline:
-  mother_project: 0.7.0-alpha.1
-  rsr: 0.7.0-alpha.1
-  vsr: 0.6.0-alpha.1
-  github_main: a340a2839786f0409616645fe0aa5cd612e9892c
-results_required:
-  - RSR provides deterministic persistent contact warm-starting.
-  - RSR broad phase uses deterministic spatial partitioning.
-  - Character controller supports step-up, ground snap, moving-platform inheritance and one-way platforms.
-  - VSR imports a real glTF 2.0 asset into native scene objects.
-  - Texture resources affect material and rendered pixel roots.
-  - Animation sampling changes presentation transforms without changing authority root.
-  - Existing RSR, VSR and Network authority protocols remain valid.
+  branch: main-95
+  commit: ffa5866a76ee7215ee78a3c1d499bb58246c3eca
+  red_fixture: evidence/anime-forge-phase6-2-canonical-morphology-v0.1/morphology-regression-fixture/fixture.json
 authority:
-  physical_truth: RSR
-  multiplayer_truth: RSR_via_Network
-  presentation: VSR
-allowed_changes:
-  - packages/world/reality-simulation-runtime
-  - packages/world/visual-state-runtime
-  - packages/integration/aether-rncs-bridge
-  - tests
-  - examples
-  - docs
-  - version and release manifests
-forbidden_changes:
-  - replace RFE authority with frontend state
-  - create a second network physics model
-  - delete or weaken existing tests
-  - claim real GPU performance without target hardware evidence
+  character_genome: identity_and_stable_morphology_parameters
+  canonical_morphology_asset: static_body_structure
+  kinematic_solver: joint_transforms_and_pose
+  deformation_solver: pose_driven_surface_change
+  camera: projection_only
+  style: visual_simplification_after_projection
+  renderer: rasterization_only
+must_change:
+  - create_a_single_canonical_morphology_compiler
+  - derive_proportions_from_genome_and_morphology_laws
+  - generate_hierarchical_skeleton_with_fk
+  - insert_anatomical_volume_layer_between_skeleton_and_surface
+  - bind_face_features_to_skull_local_face_surface
+  - bind_hair_roots_to_scalp_surface_coordinates
+  - bind_current_coat_to_body_anchors_and_offset_surface
+  - make_main_renderer_accept_projected_frame_geometry
+  - emit_morphology_certificate_and_reject_core_gate_failures
+must_not_change:
+  - episode_authority
+  - cut_derived_role
+  - clip_reusability
+  - patch_locality
+  - continuity_globality
+  - character_genome_identity_authority
+  - phase_6_and_6_1_legacy_evidence
+seams:
+  compile: compileMorphology(genome, morphologyProfile)
+  pose: solveKinematics(canonicalAsset, performanceState)
+  deform: solveDeformation(canonicalAsset, posedSkeleton)
+  project: projectFrameGeometry(posedGeometry, camera)
+  style: simplifyProjectedGeometry(projectedGeometry, renderStyle)
+  render: renderFrame(projectedFrameGeometry, renderStyle)
 vertical_slices:
-  - id: rsr-contact-partition
-    evidence: deterministic warm-start and spatial partition tests
-  - id: rsr-character-playability
-    evidence: step, snap, moving platform and one-way platform tests
-  - id: vsr-gltf-texture
-    evidence: glTF import and textured reference render tests
-  - id: vsr-animation-projection
-    evidence: animation changes Presentation Root but not Authority Root
-  - id: integrated-playable-island
-    evidence: two-client authority convergence and independent VSR projection
+  - id: A
+    name: genome-proportion-skeleton
+  - id: B
+    name: skeleton-volume-surface
+  - id: C
+    name: face-surface-camera
+  - id: D
+    name: scalp-hair-field
+  - id: E
+    name: garment-surface
+  - id: F
+    name: renderer-adapter
+  - id: G
+    name: performance-integration
+  - id: H
+    name: rebuilt-five-second-shot
+failure_injection:
+  - malformed_genome
+  - illegal_bone_length
+  - joint_limit_violation
+  - detached_face_anchor
+  - detached_hair_root
+  - garment_anchor_drift
+  - self_intersection
+  - renderer_anatomy_dependency
+property_tests:
+  minimum_genomes: 1000
+  poses_per_genome: multiple
+  camera_variants: front-three-quarter-side-yaw-pitch
+visual_acceptance:
+  automated: geometry_and_contract_gates_only
+  human: required_after_green_rendered_validation_pack
 rollback:
-  method: restore v0.7 source archive or git baseline commit
+  source: revert_phase_6_2_commits
+  runtime: preserve_phase_6_1_legacy_primitive_renderer_and_evidence

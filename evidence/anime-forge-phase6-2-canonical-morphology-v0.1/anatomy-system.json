@@ -1,0 +1,21 @@
+{
+  "format": "rncs.native-character-anatomy-system.v0.2",
+  "version": "0.2.0-alpha.1",
+  "character_id": "lan-tianlin",
+  "genome_root": "3095558d5cdcb5611053b1919f0aeaa05ee08463b3cc63d11deca8eb9b539ffc",
+  "character_identity_root": "54896ce178f2c233ee4a1190c9ad366c11b80d4d3244c03e997d1d5a201a42d8",
+  "canonical_morphology_root": "1e476e0d225ec1f3b38e62ff6df024c5f434fabd310385641a4109be430d0d33",
+  "body_surface_root": "fd3428524a7a402895b21a6eef439388ca1e32cce5c882c2bedfc185de5959f9",
+  "face_rig_root": "bb30ebdd722cb26d04f88b1805e6111ffb12534d344880cfdc08402291b57c71",
+  "hair_topology_root": "2da6f288673eed8d119b6cc8b158f472cec61433d81799593a33d13630e63dbd",
+  "anatomy_system_root": "963024b475739a7208ab520a55bf1b0308954b7c2c1f99606b969510eca830f5",
+  "authority_flow": [
+    "Character Genome",
+    "Canonical Morphology Compiler",
+    "Kinematic Solver",
+    "Deformation Solver",
+    "Camera Projection",
+    "Style Projection",
+    "Raster Renderer"
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "format": "rncs.anime-provider-manifest.v0.2",
+  "provider_id": "rncs.native-canonical-morphology.cpu",
+  "display_name": "RNCS Canonical Morphology CPU Provider",
+  "input_types": [
+    "Character Genome",
+    "Morphology Profile",
+    "Performance State",
+    "Camera Contract",
+    "Render Style"
+  ],
+  "output_types": [
+    "Canonical Morphology Asset",
+    "Posed Character Geometry",
+    "RGBA PNG",
+    "WAV",
+    "MP4 via FFmpeg"
+  ],
+  "resolution": {
+    "width": 1280,
+    "height": 720
+  },
+  "fps": 24,
+  "deterministic": true,
+  "seed_support": true,
+  "character_continuity": true,
+  "motion_capability": [
+    "hierarchical-fk",
+    "head-turn",
+    "shoulder-turn",
+    "elbow-bend",
+    "hair-secondary-motion",
+    "garment-secondary-deformation",
+    "breathing"
+  ],
+  "gpu_required": false,
+  "cpu_required": true,
+  "timeout_seconds": 120,
+  "cost": "local-zero",
+  "failure_types": [
+    "GENOME_INVALID",
+    "MORPHOLOGY_CERTIFICATE_REJECTED",
+    "GEOMETRY_VALIDATION_FAILED",
+    "MEDIA_TOOL_NOT_FOUND",
+    "FFMPEG_FAILED",
+    "FFPROBE_FAILED"
+  ],
+  "evidence_outputs": [
+    "canonical-morphology-asset",
+    "morphology-certificate",
+    "validation-pack",
+    "frame-manifest",
+    "provider-manifest",
+    "ffprobe-report",
+    "sha256"
+  ],
+  "authority": "candidate provider; Character Genome remains identity authority",
+  "genome_root": "3095558d5cdcb5611053b1919f0aeaa05ee08463b3cc63d11deca8eb9b539ffc",
+  "provider_root": "4cb0e78e2c330772788c48ffe64a1606a94c0525772728b615c808179cf527ed"
+}

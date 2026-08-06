@@ -1,0 +1,52 @@
+{
+  "format": "rncs.anime-production-episode-intent.v0.1",
+  "episode_id": "EP01-PHASE6-2",
+  "authority": "Episode is authoritative",
+  "character_id": "lan-tianlin",
+  "genome_root": "3095558d5cdcb5611053b1919f0aeaa05ee08463b3cc63d11deca8eb9b539ffc",
+  "cut_policy": "cuts-are-derived",
+  "cuts": [
+    {
+      "cut_id": "CUT-PHASE6-2-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "label": "front-neutral",
+      "start": 0,
+      "end": 39,
+      "start_frame": 1,
+      "end_frame_exclusive": 41,
+      "frame_count": 40,
+      "duration_seconds": 1.666667,
+      "derived_from": "episode-intent"
+    },
+    {
+      "cut_id": "CUT-PHASE6-2-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "label": "three-quarter-action",
+      "start": 40,
+      "end": 79,
+      "start_frame": 41,
+      "end_frame_exclusive": 81,
+      "frame_count": 40,
+      "duration_seconds": 1.666667,
+      "derived_from": "episode-intent"
+    },
+    {
+      "cut_id": "CUT-PHASE6-2-HEAD-TURN",
+      "view": "head-turn",
+      "pose": "alert",
+      "label": "head-turn-alert",
+      "start": 80,
+      "end": 119,
+      "start_frame": 81,
+      "end_frame_exclusive": 121,
+      "frame_count": 40,
+      "duration_seconds": 1.666667,
+      "derived_from": "episode-intent"
+    }
+  ],
+  "continuity_policy": "global-character-and-morphology-roots",
+  "audio_authority": "Voice Forge/Audio Forge boundary recorded",
+  "episode_intent_root": "2c1b0cedea495b485ebc6bfd046450ce9e03790e3ada1f2f815ab854a5a7413b"
+}

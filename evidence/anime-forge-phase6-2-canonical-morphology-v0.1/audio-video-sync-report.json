@@ -1,0 +1,12 @@
+{
+  "format": "rncs.anime-forge-phase6-2-audio-video-sync-report.v0.1",
+  "status": "blocked",
+  "video_duration_seconds": null,
+  "audio_duration_seconds": 5,
+  "duration_delta_seconds": null,
+  "audio_authority": "deterministic component WAV; final dialogue authority remains Voice Forge",
+  "failure": {
+    "code": "MEDIA_TOOL_NOT_FOUND",
+    "message": "MEDIA_TOOL_NOT_FOUND:ffmpeg:ffmpeg"
+  }
+}

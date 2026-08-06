@@ -15,6 +15,8 @@ evidence/*
 !evidence/anime-forge-phase5-visual-body-v0.1/**
 !evidence/anime-forge-phase6-1-morphogenesis-surgery-v0.1/
 !evidence/anime-forge-phase6-1-morphogenesis-surgery-v0.1/**
+!evidence/anime-forge-phase6-2-canonical-morphology-v0.1/
+!evidence/anime-forge-phase6-2-canonical-morphology-v0.1/**
 !packages/languages/reality-computation-language/examples/rncs-rcl-control-plane/evidence/
 !packages/languages/reality-computation-language/examples/rncs-rcl-control-plane/evidence/latest/
 !packages/languages/reality-computation-language/examples/rncs-rcl-control-plane/evidence/latest/**

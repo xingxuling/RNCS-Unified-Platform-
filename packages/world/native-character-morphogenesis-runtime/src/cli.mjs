@@ -1,6 +1,7 @@
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {buildPhase61Evidence,validatePhase61Evidence} from './build.mjs';
+import {buildPhase62Evidence,validatePhase62Evidence} from './build62.mjs';
 
 const repoRoot=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../../../..');
 const argument=(name,fallback)=>{const index=process.argv.indexOf(name);return index>=0?process.argv[index+1]??fallback:fallback;};
@@ -12,4 +13,8 @@ if(command==='build'){
   console.log(JSON.stringify({status:result.phaseStatus.media_status==='complete'?'pending-human-review':'blocked',out_dir:outDir,media:result.shot.media,frames:result.shot.frameManifest.frame_count,pack:result.pack.pack_root,ledger:result.ledger.ledger_internal_root},null,2));
 }else if(command==='validate'){
   const result=validatePhase61Evidence(outDir);console.log(JSON.stringify(result,null,2));if(!result.valid)process.exitCode=1;
+}else if(command==='build62'){
+  const result=buildPhase62Evidence({outDir});console.log(JSON.stringify({status:result.phaseStatus.status,out_dir:outDir,media:result.episode.media,frames:result.episode.frameManifest.frame_count,cuts:result.episode.cuts.length,pack:result.validationPack.pack_root,ledger:result.ledger.ledger_internal_root},null,2));
+}else if(command==='validate62'){
+  const result=validatePhase62Evidence(outDir);console.log(JSON.stringify(result,null,2));if(!result.valid)process.exitCode=1;
 }else{console.error(`Unknown command: ${command}`);process.exitCode=2;}
