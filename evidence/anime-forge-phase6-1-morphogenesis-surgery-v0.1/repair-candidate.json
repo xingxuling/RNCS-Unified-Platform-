@@ -1,0 +1,8 @@
+{
+  "format": "rncs.anime-forge-repair-candidate.v0.1",
+  "status": "candidate",
+  "region": "elbow-left",
+  "before_root": "595fdb93d468924dd3b05ceb28846b614392782fafcc574a72de66b0b7ab9c41",
+  "after_root": "15b796ca4255980dc7a4528fcd54f7556a7df5924c87359adbc4f33a8bda6ade",
+  "repair_root": "a3dffbf36de73fd086b8c82ccb3491dd46de04250f1dde985ada54f22e674855"
+}

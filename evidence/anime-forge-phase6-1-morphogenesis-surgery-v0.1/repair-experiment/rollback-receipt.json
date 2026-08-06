@@ -1,0 +1,14 @@
+{
+  "format": "rncs.anime-forge-rollback-receipt.v0.1",
+  "status": "available",
+  "restores": {
+    "body_surface_root": "6a163516f8d07935181373a4374ff9481cfbd358278255a05af1d875ee5b05a4",
+    "joint_deformation_root": "b61b300ada5a78357afa43d0850ffc2bf6390b2995edcb013a7e02e6405ee2f2",
+    "anatomy_system_root": "595fdb93d468924dd3b05ceb28846b614392782fafcc574a72de66b0b7ab9c41"
+  },
+  "preserves": {
+    "episode_intent_root": "7619892a33b6b5a00d9f1673c59c574bbee9335fbeedd7e7a032c6fdaeed3c83",
+    "character_identity_root": "1167172880d5ef94219524366c4d33af86f90f99f39b459c5d2b401c6b213efd"
+  },
+  "reason": "local repair remains a candidate until human acceptance"
+}

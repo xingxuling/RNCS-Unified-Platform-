@@ -1,0 +1,28 @@
+{
+  "format": "rncs.anime-forge-phase6-1-verification-report.v0.1",
+  "status": "pending-human-review",
+  "checks": {
+    "genome_valid": true,
+    "body_surface_roots": true,
+    "face_rig_roots": true,
+    "hair_topology_roots": true,
+    "joint_graph": true,
+    "hand_states": true,
+    "anatomy_pack": true,
+    "frame_sequence": true,
+    "deterministic_frame_roots": true,
+    "audio_wav": true,
+    "ffmpeg_mp4": true,
+    "ffprobe": true,
+    "repair_root_preserved": true,
+    "cut_seam": true
+  },
+  "negative_gates": {
+    "missing_ffmpeg_is_blocked": true,
+    "single_frame_repeat_rejected": true,
+    "human_acceptance_not_automated": true,
+    "commercial_quality_not_claimed": true
+  },
+  "failure": null,
+  "verification_root": "17118865aa65d93baca3ce8308f5e979bc5e4d1ec7f33283c80a99eab7eea383"
+}

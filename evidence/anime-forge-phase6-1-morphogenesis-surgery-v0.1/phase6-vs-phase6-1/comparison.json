@@ -1,0 +1,8 @@
+{
+  "format": "rncs.anime-forge-ab-comparison.v0.1",
+  "before": "phase6-vs-phase6-1/phase6-before.png",
+  "after": "phase6-vs-phase6-1/phase6-1-after.png",
+  "before_sha256": "4a9fe598ffd16d31e17ab7ae1798bc3dc3ac41bff92988df0cbf1c1854b0f329",
+  "after_sha256": "54e18543dc8c4af169ce81558b81756a942f1da73768c33ab9ed8a1cd49f1f7c",
+  "human_judgement": "pending"
+}

@@ -1,0 +1,37 @@
+{
+  "format": "rncs.hand-abstraction",
+  "version": "1.0.0-alpha.1",
+  "body_surface_root": "6a163516f8d07935181373a4374ff9481cfbd358278255a05af1d875ee5b05a4",
+  "states": {
+    "open": {
+      "palm": 0.8,
+      "thumb": 0.9,
+      "finger_spread": 0.7
+    },
+    "relaxed": {
+      "palm": 0.9,
+      "thumb": 0.65,
+      "finger_spread": 0.28
+    },
+    "mild-tense": {
+      "palm": 1,
+      "thumb": 0.8,
+      "finger_spread": 0.12
+    }
+  },
+  "geometry": {
+    "palm_mass": "rounded-quad",
+    "thumb_indication": "tapered-wedge",
+    "finger_block_simplification": "three-ridged-fan",
+    "minimum_finger_separation": 0.008
+  },
+  "angle_rules": {
+    "front": "fan-visible",
+    "three_quarter": "near-finger-priority",
+    "side": "thumb-and-palm-priority"
+  },
+  "provenance": {
+    "body_surface_root": "6a163516f8d07935181373a4374ff9481cfbd358278255a05af1d875ee5b05a4"
+  },
+  "hand_abstraction_root": "8e4ab0f308d08b1de9d8e3d85d89ce25f7cbe84f1ae46ff0694714b3ebc99fe1"
+}

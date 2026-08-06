@@ -1,0 +1,49 @@
+{
+  "format": "rncs.anime-forge-provider-manifest.v0.1",
+  "provider_id": "rncs.native-character-morphogenesis.cpu",
+  "display_name": "RNCS Native Character Morphogenesis CPU",
+  "input_types": [
+    "Character Genome",
+    "Body Surface 2.0",
+    "Face Rig 2.0",
+    "Hair Topology 2.0",
+    "Pose Track"
+  ],
+  "output_types": [
+    "RGBA PNG",
+    "WAV",
+    "MP4 via FFmpeg"
+  ],
+  "resolution": {
+    "width": 1280,
+    "height": 720
+  },
+  "fps": 24,
+  "deterministic": true,
+  "seed_support": true,
+  "character_continuity": true,
+  "motion_capability": [
+    "head-turn",
+    "shoulder-turn",
+    "elbow-bend",
+    "hair-lag",
+    "breathing"
+  ],
+  "gpu_required": false,
+  "cpu_required": true,
+  "timeout_seconds": 120,
+  "cost": "local",
+  "failure_types": [
+    "GENOME_INVALID",
+    "TOOL_NOT_FOUND",
+    "FFMPEG_FAILED",
+    "FFPROBE_FAILED"
+  ],
+  "evidence_outputs": [
+    "anatomy-pack",
+    "frame-manifest",
+    "ffprobe-report",
+    "sha256"
+  ],
+  "provider_root": "5cfa103b4c9ea6b06a7c17c8694a2b82b23608dd5b9d3228357849c3c7a5238f"
+}

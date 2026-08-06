@@ -1,0 +1,262 @@
+{
+  "format": "rncs.joint-deformation-graph",
+  "version": "2.0.0-alpha.1",
+  "body_surface_root": "6a163516f8d07935181373a4374ff9481cfbd358278255a05af1d875ee5b05a4",
+  "joints": [
+    {
+      "joint_id": "neck",
+      "parent_segment": "torso",
+      "child_segment": "head",
+      "pivot": [
+        0,
+        0.4,
+        0
+      ],
+      "bend_range": [
+        -35,
+        35
+      ],
+      "volume_preservation_rule": {
+        "enabled": true,
+        "minimum": 0.88,
+        "bulge_weight": 0.1
+      },
+      "contour_blend_rule": {
+        "method": "cubic-capsule",
+        "blend_frames": 6,
+        "line_continuity": true
+      },
+      "overlap_rule": {
+        "front_segment": "child",
+        "behind_segment": "parent",
+        "seam_hidden": true
+      },
+      "style_simplification_rule": "preserve-silhouette-before-cel-band",
+      "repair_rule": {
+        "local_only": true,
+        "expand_frames": 4,
+        "root_scope": "joint-region"
+      }
+    },
+    {
+      "joint_id": "shoulder-left",
+      "parent_segment": "ribcage",
+      "child_segment": "upper-arm",
+      "pivot": [
+        -0.235,
+        0.395,
+        0
+      ],
+      "bend_range": [
+        -115,
+        115
+      ],
+      "volume_preservation_rule": {
+        "enabled": true,
+        "minimum": 0.88,
+        "bulge_weight": 0.1
+      },
+      "contour_blend_rule": {
+        "method": "cubic-capsule",
+        "blend_frames": 6,
+        "line_continuity": true
+      },
+      "overlap_rule": {
+        "front_segment": "child",
+        "behind_segment": "parent",
+        "seam_hidden": true
+      },
+      "style_simplification_rule": "preserve-silhouette-before-cel-band",
+      "repair_rule": {
+        "local_only": true,
+        "expand_frames": 4,
+        "root_scope": "joint-region"
+      }
+    },
+    {
+      "joint_id": "shoulder-right",
+      "parent_segment": "ribcage",
+      "child_segment": "upper-arm",
+      "pivot": [
+        0.235,
+        0.395,
+        0
+      ],
+      "bend_range": [
+        -115,
+        115
+      ],
+      "volume_preservation_rule": {
+        "enabled": true,
+        "minimum": 0.88,
+        "bulge_weight": 0.1
+      },
+      "contour_blend_rule": {
+        "method": "cubic-capsule",
+        "blend_frames": 6,
+        "line_continuity": true
+      },
+      "overlap_rule": {
+        "front_segment": "child",
+        "behind_segment": "parent",
+        "seam_hidden": true
+      },
+      "style_simplification_rule": "preserve-silhouette-before-cel-band",
+      "repair_rule": {
+        "local_only": true,
+        "expand_frames": 4,
+        "root_scope": "joint-region"
+      }
+    },
+    {
+      "joint_id": "elbow-left",
+      "parent_segment": "upper-arm",
+      "child_segment": "forearm",
+      "pivot": [
+        -0.305,
+        0.56,
+        0.01
+      ],
+      "bend_range": [
+        -115,
+        115
+      ],
+      "volume_preservation_rule": {
+        "enabled": true,
+        "minimum": 0.88,
+        "bulge_weight": 0.18
+      },
+      "contour_blend_rule": {
+        "method": "cubic-capsule",
+        "blend_frames": 6,
+        "line_continuity": true
+      },
+      "overlap_rule": {
+        "front_segment": "child",
+        "behind_segment": "parent",
+        "seam_hidden": true
+      },
+      "style_simplification_rule": "preserve-silhouette-before-cel-band",
+      "repair_rule": {
+        "local_only": true,
+        "expand_frames": 4,
+        "root_scope": "joint-region"
+      }
+    },
+    {
+      "joint_id": "elbow-right",
+      "parent_segment": "upper-arm",
+      "child_segment": "forearm",
+      "pivot": [
+        0.305,
+        0.56,
+        0.01
+      ],
+      "bend_range": [
+        -115,
+        115
+      ],
+      "volume_preservation_rule": {
+        "enabled": true,
+        "minimum": 0.88,
+        "bulge_weight": 0.18
+      },
+      "contour_blend_rule": {
+        "method": "cubic-capsule",
+        "blend_frames": 6,
+        "line_continuity": true
+      },
+      "overlap_rule": {
+        "front_segment": "child",
+        "behind_segment": "parent",
+        "seam_hidden": true
+      },
+      "style_simplification_rule": "preserve-silhouette-before-cel-band",
+      "repair_rule": {
+        "local_only": true,
+        "expand_frames": 4,
+        "root_scope": "joint-region"
+      }
+    },
+    {
+      "joint_id": "wrist-left",
+      "parent_segment": "forearm",
+      "child_segment": "hand",
+      "pivot": [
+        -0.275,
+        0.72,
+        0.02
+      ],
+      "bend_range": [
+        -40,
+        40
+      ],
+      "volume_preservation_rule": {
+        "enabled": true,
+        "minimum": 0.88,
+        "bulge_weight": 0.1
+      },
+      "contour_blend_rule": {
+        "method": "cubic-capsule",
+        "blend_frames": 6,
+        "line_continuity": true
+      },
+      "overlap_rule": {
+        "front_segment": "hand",
+        "behind_segment": "parent",
+        "seam_hidden": true
+      },
+      "style_simplification_rule": "preserve-silhouette-before-cel-band",
+      "repair_rule": {
+        "local_only": true,
+        "expand_frames": 4,
+        "root_scope": "joint-region"
+      }
+    },
+    {
+      "joint_id": "wrist-right",
+      "parent_segment": "forearm",
+      "child_segment": "hand",
+      "pivot": [
+        0.275,
+        0.72,
+        0.02
+      ],
+      "bend_range": [
+        -40,
+        40
+      ],
+      "volume_preservation_rule": {
+        "enabled": true,
+        "minimum": 0.88,
+        "bulge_weight": 0.1
+      },
+      "contour_blend_rule": {
+        "method": "cubic-capsule",
+        "blend_frames": 6,
+        "line_continuity": true
+      },
+      "overlap_rule": {
+        "front_segment": "hand",
+        "behind_segment": "parent",
+        "seam_hidden": true
+      },
+      "style_simplification_rule": "preserve-silhouette-before-cel-band",
+      "repair_rule": {
+        "local_only": true,
+        "expand_frames": 4,
+        "root_scope": "joint-region"
+      }
+    }
+  ],
+  "invariants": [
+    "elbow_envelope_nonzero",
+    "volume_preservation_ge_0.88",
+    "contour_continuity",
+    "unaffected_region_preserved"
+  ],
+  "provenance": {
+    "body_surface_root": "6a163516f8d07935181373a4374ff9481cfbd358278255a05af1d875ee5b05a4"
+  },
+  "joint_deformation_root": "b61b300ada5a78357afa43d0850ffc2bf6390b2995edcb013a7e02e6405ee2f2"
+}

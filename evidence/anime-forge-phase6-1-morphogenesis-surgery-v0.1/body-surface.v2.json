@@ -1,0 +1,723 @@
+{
+  "surface_format": "rncs.character-body-surface",
+  "version": "2.0.0-alpha.1",
+  "character_id": "lan-tianlin",
+  "visual_genome_root": "a6052148c9db40ed583ec810b3c3448ccad59f6b2b6e7d38ac26f2aecc61bcd9",
+  "coordinate_system": {
+    "name": "canonical-body",
+    "units": "normalized-body",
+    "origin": "pelvis-center",
+    "up": "positive-y",
+    "front": "positive-z"
+  },
+  "body_landmarks": {
+    "head_top": [
+      0,
+      0.035,
+      0
+    ],
+    "brow_line": [
+      0,
+      0.145,
+      0
+    ],
+    "eye_line": [
+      0,
+      0.175,
+      0
+    ],
+    "nose_axis": [
+      0,
+      0.218,
+      0
+    ],
+    "mouth_axis": [
+      0,
+      0.262,
+      0
+    ],
+    "chin": [
+      0,
+      0.315,
+      0
+    ],
+    "jaw_left": [
+      -0.115,
+      0.267,
+      0
+    ],
+    "jaw_right": [
+      0.115,
+      0.267,
+      0
+    ],
+    "neck_base": [
+      0,
+      0.375,
+      0
+    ],
+    "clavicle_left": [
+      -0.175,
+      0.382,
+      0
+    ],
+    "clavicle_right": [
+      0.175,
+      0.382,
+      0
+    ],
+    "sternum": [
+      0,
+      0.438,
+      0
+    ],
+    "ribcage_center": [
+      0,
+      0.475,
+      0
+    ],
+    "waist": [
+      0,
+      0.585,
+      0
+    ],
+    "pelvis_center": [
+      0,
+      0.675,
+      0
+    ],
+    "shoulder_left": [
+      -0.235,
+      0.395,
+      0
+    ],
+    "shoulder_right": [
+      0.235,
+      0.395,
+      0
+    ],
+    "elbow_left": [
+      -0.305,
+      0.56,
+      0.01
+    ],
+    "elbow_right": [
+      0.305,
+      0.56,
+      0.01
+    ],
+    "wrist_left": [
+      -0.275,
+      0.72,
+      0.02
+    ],
+    "wrist_right": [
+      0.275,
+      0.72,
+      0.02
+    ],
+    "hand_base_left": [
+      -0.27,
+      0.755,
+      0.03
+    ],
+    "hand_base_right": [
+      0.27,
+      0.755,
+      0.03
+    ]
+  },
+  "contour_curves": [
+    {
+      "id": "head-outline",
+      "region": "head",
+      "kind": "bezier",
+      "points": [
+        [
+          -0.11,
+          0.16,
+          0
+        ],
+        [
+          -0.14,
+          0.23,
+          0
+        ],
+        [
+          -0.1,
+          0.305,
+          0
+        ],
+        [
+          0,
+          0.325,
+          0
+        ],
+        [
+          0.1,
+          0.305,
+          0
+        ],
+        [
+          0.14,
+          0.23,
+          0
+        ],
+        [
+          0.11,
+          0.16,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "neck-left",
+      "region": "neck",
+      "kind": "bezier",
+      "points": [
+        [
+          -0.055,
+          0.3,
+          0
+        ],
+        [
+          -0.065,
+          0.335,
+          0
+        ],
+        [
+          -0.075,
+          0.36,
+          0
+        ],
+        [
+          -0.1,
+          0.385,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "neck-right",
+      "region": "neck",
+      "kind": "bezier",
+      "points": [
+        [
+          0.055,
+          0.3,
+          0
+        ],
+        [
+          0.065,
+          0.335,
+          0
+        ],
+        [
+          0.075,
+          0.36,
+          0
+        ],
+        [
+          0.1,
+          0.385,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "torso-left",
+      "region": "torso",
+      "kind": "spline",
+      "points": [
+        [
+          -0.24,
+          0.392,
+          0
+        ],
+        [
+          -0.225,
+          0.47,
+          0
+        ],
+        [
+          -0.19,
+          0.535,
+          0
+        ],
+        [
+          -0.13,
+          0.585,
+          0
+        ],
+        [
+          -0.18,
+          0.715,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "torso-right",
+      "region": "torso",
+      "kind": "spline",
+      "points": [
+        [
+          0.24,
+          0.392,
+          0
+        ],
+        [
+          0.225,
+          0.47,
+          0
+        ],
+        [
+          0.19,
+          0.535,
+          0
+        ],
+        [
+          0.13,
+          0.585,
+          0
+        ],
+        [
+          0.18,
+          0.715,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "arm-left",
+      "region": "upper-arm",
+      "kind": "capsule",
+      "points": [
+        [
+          -0.235,
+          0.395,
+          0
+        ],
+        [
+          -0.305,
+          0.56,
+          0.01
+        ],
+        [
+          -0.275,
+          0.72,
+          0.02
+        ]
+      ]
+    },
+    {
+      "id": "arm-right",
+      "region": "upper-arm",
+      "kind": "capsule",
+      "points": [
+        [
+          0.235,
+          0.395,
+          0
+        ],
+        [
+          0.305,
+          0.56,
+          0.01
+        ],
+        [
+          0.275,
+          0.72,
+          0.02
+        ]
+      ]
+    },
+    {
+      "id": "pelvis",
+      "region": "pelvis",
+      "kind": "spline",
+      "points": [
+        [
+          -0.18,
+          0.64,
+          0
+        ],
+        [
+          -0.21,
+          0.685,
+          0
+        ],
+        [
+          -0.17,
+          0.735,
+          0
+        ],
+        [
+          0,
+          0.755,
+          0
+        ],
+        [
+          0.17,
+          0.735,
+          0
+        ],
+        [
+          0.21,
+          0.685,
+          0
+        ],
+        [
+          0.18,
+          0.64,
+          0
+        ]
+      ]
+    }
+  ],
+  "silhouette_segments": [
+    "head",
+    "hair",
+    "neck",
+    "shoulder-girdle",
+    "torso",
+    "pelvis",
+    "upper-arm-left",
+    "upper-arm-right",
+    "forearm-left",
+    "forearm-right",
+    "hand-left",
+    "hand-right"
+  ],
+  "torso_surface": {
+    "method": "cross-section-spline",
+    "cross_sections": [
+      {
+        "id": "shoulder-line",
+        "y": 0.392,
+        "radius": 0.24,
+        "depth": 0.075
+      },
+      {
+        "id": "upper-ribcage",
+        "y": 0.445,
+        "radius": 0.225,
+        "depth": 0.09
+      },
+      {
+        "id": "lower-ribcage",
+        "y": 0.515,
+        "radius": 0.19,
+        "depth": 0.075
+      },
+      {
+        "id": "waist",
+        "y": 0.585,
+        "radius": 0.13,
+        "depth": 0.055
+      },
+      {
+        "id": "pelvis-top",
+        "y": 0.64,
+        "radius": 0.18,
+        "depth": 0.07
+      },
+      {
+        "id": "pelvis-base",
+        "y": 0.715,
+        "radius": 0.17,
+        "depth": 0.075
+      }
+    ],
+    "ribcage": {
+      "center": [
+        0,
+        0.475,
+        0.02
+      ],
+      "width": 0.225,
+      "height": 0.16,
+      "depth": 0.09
+    },
+    "waist_narrowing": 0.42,
+    "twist_axis": "sternum-to-pelvis"
+  },
+  "shoulder_caps": {
+    "left": {
+      "center": [
+        -0.235,
+        0.4,
+        0
+      ],
+      "radius": 0.065,
+      "blend_to": "clavicle-left"
+    },
+    "right": {
+      "center": [
+        0.235,
+        0.4,
+        0
+      ],
+      "radius": 0.065,
+      "blend_to": "clavicle-right"
+    },
+    "girdle_width": 0.48
+  },
+  "upper_arm_surface": {
+    "left": {
+      "length": 0.18,
+      "radius_top": 0.052,
+      "radius_bottom": 0.044,
+      "soft_region": "deltoid"
+    },
+    "right": {
+      "length": 0.18,
+      "radius_top": 0.052,
+      "radius_bottom": 0.044,
+      "soft_region": "deltoid"
+    },
+    "method": "continuous-capsule-spline"
+  },
+  "elbow_envelopes": {
+    "left": {
+      "center": [
+        -0.305,
+        0.56,
+        0.01
+      ],
+      "radius": 0.058,
+      "bulge": 0.022,
+      "blend_frames": 6
+    },
+    "right": {
+      "center": [
+        0.305,
+        0.56,
+        0.01
+      ],
+      "radius": 0.058,
+      "bulge": 0.022,
+      "blend_frames": 6
+    },
+    "volume_preservation": 0.92
+  },
+  "forearm_surface": {
+    "left": {
+      "length": 0.16,
+      "radius_top": 0.045,
+      "radius_bottom": 0.034
+    },
+    "right": {
+      "length": 0.16,
+      "radius_top": 0.045,
+      "radius_bottom": 0.034
+    },
+    "method": "tapered-capsule-spline"
+  },
+  "wrist_transition": {
+    "radius": 0.032,
+    "blend": "cubic",
+    "line_continuity": true
+  },
+  "hand_surface": {
+    "left": {
+      "palm_center": [
+        -0.275,
+        0.755,
+        0.03
+      ],
+      "palm_width": 0.065,
+      "palm_length": 0.075,
+      "thumb_angle": -0.65,
+      "finger_block_count": 3
+    },
+    "right": {
+      "palm_center": [
+        0.275,
+        0.755,
+        0.03
+      ],
+      "palm_width": 0.065,
+      "palm_length": 0.075,
+      "thumb_angle": 0.65,
+      "finger_block_count": 3
+    },
+    "states": [
+      "open",
+      "relaxed",
+      "mild-tense"
+    ],
+    "angle_aware": true
+  },
+  "neck_surface": {
+    "left": [
+      [
+        -0.055,
+        0.3,
+        0
+      ],
+      [
+        -0.085,
+        0.365,
+        0
+      ],
+      [
+        -0.12,
+        0.405,
+        0
+      ]
+    ],
+    "right": [
+      [
+        0.055,
+        0.3,
+        0
+      ],
+      [
+        0.085,
+        0.365,
+        0
+      ],
+      [
+        0.12,
+        0.405,
+        0
+      ]
+    ],
+    "depth": 0.06,
+    "shoulder_blend": true
+  },
+  "head_surface": {
+    "method": "ellipsoid-with-cheek-planes",
+    "skull_center": [
+      0,
+      0.19,
+      0.015
+    ],
+    "radius_x": 0.145,
+    "radius_y": 0.16,
+    "depth": 0.13,
+    "jaw_width": 0.23,
+    "cheek_plane_left": [
+      -0.085,
+      0.235,
+      0.1
+    ],
+    "cheek_plane_right": [
+      0.085,
+      0.235,
+      0.1
+    ]
+  },
+  "pelvis_surface": {
+    "method": "belted-ellipsoid",
+    "center": [
+      0,
+      0.68,
+      -0.005
+    ],
+    "width": 0.36,
+    "height": 0.12,
+    "depth": 0.075,
+    "hip_blend": true
+  },
+  "deformation_regions": [
+    {
+      "id": "neck-soft",
+      "type": "soft",
+      "weights": [
+        "neck",
+        "clavicle"
+      ]
+    },
+    {
+      "id": "shoulder-cap",
+      "type": "soft",
+      "weights": [
+        "deltoid",
+        "girdle"
+      ]
+    },
+    {
+      "id": "elbow-envelope-left",
+      "type": "soft",
+      "weights": [
+        "upper-arm-left",
+        "forearm-left"
+      ]
+    },
+    {
+      "id": "elbow-envelope-right",
+      "type": "soft",
+      "weights": [
+        "upper-arm-right",
+        "forearm-right"
+      ]
+    },
+    {
+      "id": "torso-twist",
+      "type": "soft",
+      "weights": [
+        "ribcage",
+        "waist",
+        "pelvis"
+      ]
+    },
+    {
+      "id": "hand-palm",
+      "type": "soft",
+      "weights": [
+        "wrist",
+        "palm"
+      ]
+    }
+  ],
+  "rigid_regions": [
+    "skull-frame",
+    "sternum-emblem",
+    "palm-core"
+  ],
+  "soft_regions": [
+    "cheeks",
+    "neck",
+    "shoulder-caps",
+    "elbows",
+    "waist",
+    "hips",
+    "hair-locks"
+  ],
+  "overlap_rules": [
+    {
+      "front": "face",
+      "behind": "back-hair",
+      "condition": "head-depth"
+    },
+    {
+      "front": "bangs",
+      "behind": "face",
+      "condition": "hairline-occlusion"
+    },
+    {
+      "front": "forearm",
+      "behind": "upper-arm",
+      "condition": "elbow-bend"
+    },
+    {
+      "front": "hand",
+      "behind": "forearm",
+      "condition": "wrist-transition"
+    }
+  ],
+  "style_bindings": {
+    "contour": "stable-ink-after-surface",
+    "cel_bands": "three-band-after-surface",
+    "face": "canonical-feature-simplification",
+    "hair": "mass-first-highlight-second"
+  },
+  "provenance": {
+    "source": "RNCS Character Genome",
+    "genome_root": "bb7b19fb23a61c96fd931e4b8c5b46370b8e64d619e37e92e02b52cbddb09782",
+    "visual_genome_root": "a6052148c9db40ed583ec810b3c3448ccad59f6b2b6e7d38ac26f2aecc61bcd9"
+  },
+  "body_surface_root": "6a163516f8d07935181373a4374ff9481cfbd358278255a05af1d875ee5b05a4"
+}

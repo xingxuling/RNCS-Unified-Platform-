@@ -1,0 +1,75 @@
+{
+  "format": "rncs.character-visual-genome.v0.2",
+  "version": "0.2.0-alpha.1",
+  "character_id": "lan-tianlin",
+  "genome_root": "bb7b19fb23a61c96fd931e4b8c5b46370b8e64d619e37e92e02b52cbddb09782",
+  "identity_root": "1167172880d5ef94219524366c4d33af86f90f99f39b459c5d2b401c6b213efd",
+  "identity_signature": {
+    "character_id": "lan-tianlin",
+    "topology_family": "young-male-slim",
+    "face_profile": "slender-angular",
+    "palette_anchor": "#4f86c6"
+  },
+  "stable_palette": {
+    "skin": "#e7c9b8",
+    "hair": "#11151d",
+    "ink": "#17202d",
+    "coat": "#1c3554",
+    "trim": "#c6d7de",
+    "eye": "#4f86c6",
+    "accent": "#6aa7c6",
+    "shadow": "#7e8790"
+  },
+  "body_proportions": {
+    "head_to_body": 0.21,
+    "shoulder_width": 0.44,
+    "neck_width": 0.105,
+    "waist_width": 0.24,
+    "pelvis_width": 0.34,
+    "upper_arm_length": 0.17,
+    "forearm_length": 0.16,
+    "hand_length": 0.085
+  },
+  "facial_key_features": [
+    "balanced_cheek_planes",
+    "calm_sharp_eyes",
+    "straight_brow",
+    "short_nose_bridge",
+    "small_closed_mouth",
+    "defined_jaw"
+  ],
+  "hair_continuity": {
+    "family": "black-wavy-medium",
+    "scalp_attached": true,
+    "primary_masses": 3,
+    "secondary_locks": 4
+  },
+  "costume_continuity": {
+    "family": "lan-default-v1",
+    "emblem": "shenlin-original-v1",
+    "layered_collar": true
+  },
+  "expression_states": [
+    "neutral",
+    "look-left",
+    "look-right",
+    "mild-concern",
+    "alert",
+    "blink",
+    "mouth-open",
+    "mouth-closed"
+  ],
+  "invariant_rules": [
+    "character_id_immutable",
+    "identity_root_immutable",
+    "palette_anchor_stable",
+    "face_landmark_order_stable",
+    "hair_scalp_attachment_required"
+  ],
+  "provenance": {
+    "source": "RNCS Character Genome",
+    "provider": "rncs.native-character-morphogenesis",
+    "seed": "lan-tianlin-character-v1"
+  },
+  "visual_genome_root": "a6052148c9db40ed583ec810b3c3448ccad59f6b2b6e7d38ac26f2aecc61bcd9"
+}

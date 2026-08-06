@@ -1,0 +1,15 @@
+{
+  "format": "rncs.native-character-anatomy-system.v0.1",
+  "version": "0.1.0-alpha.1",
+  "character_id": "lan-tianlin",
+  "genome_root": "bb7b19fb23a61c96fd931e4b8c5b46370b8e64d619e37e92e02b52cbddb09782",
+  "character_identity_root": "1167172880d5ef94219524366c4d33af86f90f99f39b459c5d2b401c6b213efd",
+  "visual_genome_root": "a6052148c9db40ed583ec810b3c3448ccad59f6b2b6e7d38ac26f2aecc61bcd9",
+  "body_surface_root": "6a163516f8d07935181373a4374ff9481cfbd358278255a05af1d875ee5b05a4",
+  "face_rig_root": "61d3f6a3f852f153e08d2b04e2ab46fc94123bc4f78fffac63344c874160191e",
+  "hair_topology_root": "d6d39115fe8a378d8e9f1bb9700e0d267cfcb6d48fa89070b5b61871048d67cc",
+  "shoulder_torso_pelvis_root": "85adfdb70ab7c9e6eee0fed23fd3d749f64b6643ae4d3eedfccf4f895173cbf8",
+  "joint_deformation_root": "b61b300ada5a78357afa43d0850ffc2bf6390b2995edcb013a7e02e6405ee2f2",
+  "hand_abstraction_root": "8e4ab0f308d08b1de9d8e3d85d89ce25f7cbe84f1ae46ff0694714b3ebc99fe1",
+  "anatomy_system_root": "595fdb93d468924dd3b05ceb28846b614392782fafcc574a72de66b0b7ab9c41"
+}

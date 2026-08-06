@@ -1,0 +1,1396 @@
+{
+  "format": "rncs.character-genome.v0.1",
+  "version": "0.1.0-alpha.1",
+  "genome_id": "character-genome:a0ff6cf6590a051dd4c09edd",
+  "character_id": "lan-tianlin",
+  "species_family": "human",
+  "topology_family": "young-male-slim",
+  "authority_layers": {
+    "identity": "identity_genome",
+    "morphology": "morphology_genome",
+    "appearance": "appearance_loadout",
+    "state": "state_overlays"
+  },
+  "identity_genome": {
+    "authority": "RNCS Character Genome",
+    "character_id": "lan-tianlin",
+    "name": "Lan Tianlin",
+    "age_band": "young-adult",
+    "species_family": "human",
+    "topology_family": "young-male-slim",
+    "face_profile": "slender-angular",
+    "resting_expression": "calm-observant",
+    "descriptors": {},
+    "identity_parameters": {
+      "face.face_width": 0.47,
+      "face.face_length": 0.56,
+      "face.forehead_height": 0.52,
+      "face.temple_width": 0.46,
+      "face.cheek_width": 0.43,
+      "face.cheek_height": 0.55,
+      "face.jaw_width": 0.42,
+      "face.jaw_angle": 0.62,
+      "face.jaw_definition": 0.62,
+      "face.chin_length": 0.52,
+      "face.chin_width": 0.42,
+      "face.chin_projection": 0.48,
+      "face.eye_size": 0.48,
+      "face.eye_spacing": 0.48,
+      "face.eye_angle": 0.56,
+      "face.eye_depth": 0.48,
+      "face.brow_height": 0.5,
+      "face.brow_angle": 0.54,
+      "face.nose_bridge": 0.56,
+      "face.nose_width": 0.42,
+      "face.nose_length": 0.5,
+      "face.mouth_width": 0.51,
+      "face.upper_lip": 0.42,
+      "face.lower_lip": 0.46,
+      "face.lip_projection": 0.4,
+      "face.philtrum_length": 0.5,
+      "face.ear_height": 0.5,
+      "face.ear_angle": 0.46
+    },
+    "immutable_fields": [
+      "character_id",
+      "species_family",
+      "topology_family",
+      "identity_parameters"
+    ],
+    "palette_anchor": "#4f86c6"
+  },
+  "morphology_genome": {
+    "body_parameters": {
+      "body.head_body_ratio": 0.52,
+      "body.shoulder_width": 0.55,
+      "body.neck_length": 0.54,
+      "body.limb_ratio": 0.56,
+      "body.torso_length": 0.5
+    },
+    "topology_root": "be1955393b316fbbbafdca6595e35d420cee3c144b95be6c5995e4e4e73a520e",
+    "skeleton_profile": "rncs.anime-humanoid-v0.1",
+    "semantic_parameter_graph_root": "ba6226b64b4c3ba7fdc2896baf2d570a677aab6dcb073274ff0d996f3ee65cf1"
+  },
+  "body_genome": {
+    "parameters": {
+      "body.head_body_ratio": 0.52,
+      "body.shoulder_width": 0.55,
+      "body.neck_length": 0.54,
+      "body.limb_ratio": 0.56,
+      "body.torso_length": 0.5
+    }
+  },
+  "face_genome": {
+    "parameters": {
+      "face.face_width": 0.47,
+      "face.face_length": 0.56,
+      "face.forehead_height": 0.52,
+      "face.temple_width": 0.46,
+      "face.cheek_width": 0.43,
+      "face.cheek_height": 0.55,
+      "face.jaw_width": 0.42,
+      "face.jaw_angle": 0.62,
+      "face.jaw_definition": 0.62,
+      "face.chin_length": 0.52,
+      "face.chin_width": 0.42,
+      "face.chin_projection": 0.48,
+      "face.eye_size": 0.48,
+      "face.eye_spacing": 0.48,
+      "face.eye_angle": 0.56,
+      "face.eye_depth": 0.48,
+      "face.brow_height": 0.5,
+      "face.brow_angle": 0.54,
+      "face.nose_bridge": 0.56,
+      "face.nose_width": 0.42,
+      "face.nose_length": 0.5,
+      "face.mouth_width": 0.51,
+      "face.upper_lip": 0.42,
+      "face.lower_lip": 0.46,
+      "face.lip_projection": 0.4,
+      "face.philtrum_length": 0.5,
+      "face.ear_height": 0.5,
+      "face.ear_angle": 0.46
+    }
+  },
+  "semantic_morph_graph": {
+    "format": "rncs.character-semantic-morph-graph.v0.1",
+    "version": "0.1.0-alpha.1",
+    "parameters": [
+      {
+        "parameter_id": "face.face_width",
+        "semantic_name": "face_width",
+        "region": "face",
+        "default": 0.47,
+        "safe_min": 0.15,
+        "safe_max": 0.85,
+        "unit": "normalized",
+        "affected_morphs": [
+          "face_width"
+        ],
+        "affected_bones": [],
+        "dependent_parameters": [],
+        "incompatible_parameters": [],
+        "rebuild_scope": [
+          "face_mesh",
+          "face_normals",
+          "face_lod",
+          "2d_face_projection",
+          "portrait_preview"
+        ],
+        "identity_weight": 0.95,
+        "silhouette_weight": 0.8,
+        "media_projection_policy": {
+          "native_2d": true,
+          "2.5d": true,
+          "3d-assisted-2d": true,
+          "game_runtime": true,
+          "closeup": true
+        },
+        "normalized_value": 0.47
+      },
+      {
+        "parameter_id": "face.face_length",
+        "semantic_name": "face_length",
+        "region": "face",
+        "default": 0.56,
+        "safe_min": 0.15,
+        "safe_max": 0.85,
+        "unit": "normalized",
+        "affected_morphs": [
+          "face_length"
+        ],
+        "affected_bones": [],
+        "dependent_parameters": [],
+        "incompatible_parameters": [],
+        "rebuild_scope": [
+          "face_mesh",
+          "face_normals",
+          "face_lod",
+          "2d_face_projection",
+          "portrait_preview"
+        ],
+        "identity_weight": 0.95,
+        "silhouette_weight": 0.8,
+        "media_projection_policy": {
+          "native_2d": true,
+          "2.5d": true,
+          "3d-assisted-2d": true,
+          "game_runtime": true,
+          "closeup": true
+        },
+        "normalized_value": 0.56
+      },
+      {
+        "parameter_id": "face.forehead_height",
+        "semantic_name": "forehead_height",
+        "region": "forehead",
+        "default": 0.52,
+        "safe_min": 0.15,
+        "safe_max": 0.85,
+        "unit": "normalized",
+        "affected_morphs": [
+          "forehead_height"
+        ],
+        "affected_bones": [],
+        "dependent_parameters": [],
+        "incompatible_parameters": [],
+        "rebuild_scope": [
+          "face_mesh",
+          "face_normals",
+          "face_lod",
+          "2d_face_projection",
+          "portrait_preview"
+        ],
+        "identity_weight": 0.8,
+        "silhouette_weight": 0.35,
+        "media_projection_policy": {
+          "native_2d": true,
+          "2.5d": true,
+          "3d-assisted-2d": true,
+          "game_runtime": true,
+          "closeup": true
+        },
+        "normalized_value": 0.52
+      },
+      {
+        "parameter_id": "face.temple_width",
+        "semantic_name": "temple_width",
+        "region": "temple",
+        "default": 0.46,
+        "safe_min": 0.15,
+        "safe_max": 0.85,
+        "unit": "normalized",
+        "affected_morphs": [
+          "temple_width"
+        ],
+        "affected_bones": [],
+        "dependent_parameters": [],
+        "incompatible_parameters": [],
+        "rebuild_scope": [
+          "face_mesh",
+          "face_normals",
+          "face_lod",
+          "2d_face_projection",
+          "portrait_preview"
+        ],
+        "identity_weight": 0.8,
+        "silhouette_weight": 0.35,
+        "media_projection_policy": {
+          "native_2d": true,
+          "2.5d": true,
+          "3d-assisted-2d": true,
+          "game_runtime": true,
+          "closeup": true
+        },
+        "normalized_value": 0.46
+      },
+      {
+        "parameter_id": "face.cheek_width",
+        "semantic_name": "cheek_width",
+        "region": "cheek",
+        "default": 0.43,
+        "safe_min": 0.15,
+        "safe_max": 0.85,
+        "unit": "normalized",
+        "affected_morphs": [
+          "cheek_width"
+        ],
+        "affected_bones": [],
+        "dependent_parameters": [],
+        "incompatible_parameters": [],
+        "rebuild_scope": [
+          "face_mesh",
+          "face_normals",
+          "face_lod",
+          "2d_face_projection",
+          "portrait_preview"
+        ],
+        "identity_weight": 0.8,
+        "silhouette_weight": 0.35,
+        "media_projection_policy": {
+          "native_2d": true,
+          "2.5d": true,
+          "3d-assisted-2d": true,
+          "game_runtime": true,
+          "closeup": true
+        },
+        "normalized_value": 0.43
+      },
+      {
+        "parameter_id": "face.cheek_height",
+        "semantic_name": "cheek_height",
+        "region": "cheek",
+        "default": 0.55,
+        "safe_min": 0.15,
+        "safe_max": 0.85,
+        "unit": "normalized",
+        "affected_morphs": [
+          "cheek_height"
+        ],
+        "affected_bones": [],
+        "dependent_parameters": [],
+        "incompatible_parameters": [],
+        "rebuild_scope": [
+          "face_mesh",
+          "face_normals",
+          "face_lod",
+          "2d_face_projection",
+          "portrait_preview"
+        ],
+        "identity_weight": 0.8,
+        "silhouette_weight": 0.35,
+        "media_projection_policy": {
+          "native_2d": true,
+          "2.5d": true,
+          "3d-assisted-2d": true,
+          "game_runtime": true,
+          "closeup": true
+        },
+        "normalized_value": 0.55
+      },
+      {
+        "parameter_id": "face.jaw_width",
+        "semantic_name": "jaw_width",
+        "region": "jaw",
+        "default": 0.42,
+        "safe_min": 0.15,
+        "safe_max": 0.85,
+        "unit": "normalized",
+        "affected_morphs": [
+          "jaw_width"
+        ],
+        "affected_bones": [],
+        "dependent_parameters": [],
+        "incompatible_parameters": [],
+        "rebuild_scope": [
+          "face_mesh",
+          "face_normals",
+          "face_lod",
+          "2d_face_projection",
+          "portrait_preview"
+        ],
+        "identity_weight": 1,
+        "silhouette_weight": 0.9,
+        "media_projection_policy": {
+          "native_2d": true,
+          "2.5d": true,
+          "3d-assisted-2d": true,
+          "game_runtime": true,
+          "closeup": true
+        },
+        "normalized_value": 0.42
+      },
+      {
+        "parameter_id": "face.jaw_angle",
+        "semantic_name": "jaw_angle",
+        "region": "jaw",
+        "default": 0.62,
+        "safe_min": 0.15,
+        "safe_max": 0.85,
+        "unit": "normalized",
+        "affected_morphs": [
+          "jaw_angle"
+        ],
+        "affected_bones": [],
+        "dependent_parameters": [
+          "face.jaw_width"
+        ],
+        "incompatible_parameters": [],
+        "rebuild_scope": [
+          "face_mesh",
+          "face_normals",
+          "face_lod",
+          "2d_face_projection",
+          "portrait_preview"
+        ],
+        "identity_weight": 1,
+        "silhouette_weight": 0.8,
+        "media_projection_policy": {
+          "native_2d": true,
+          "2.5d": true,
+          "3d-assisted-2d": true,
+          "game_runtime": true,
+          "closeup": true
+        },
+        "normalized_value": 0.62
+      },
+      {
+        "parameter_id": "face.jaw_definition",
+        "semantic_name": "jaw_definition",
+        "region": "jaw",
+        "default": 0.62,
+        "safe_min": 0.15,
+        "safe_max": 0.85,
+        "unit": "normalized",
+        "affected_morphs": [
+          "jaw_definition"
+        ],
+        "affected_bones": [],
+        "dependent_parameters": [
+          "face.jaw_angle"
+        ],
+        "incompatible_parameters": [],
+        "rebuild_scope": [
+          "face_mesh",
+          "face_normals",
+          "face_lod",
+          "2d_face_projection",
+          "portrait_preview"
+        ],
+        "identity_weight": 1,
+        "silhouette_weight": 0.7,
+        "media_projection_policy": {
+          "native_2d": true,
+          "2.5d": true,
+          "3d-assisted-2d": true,
+          "game_runtime": true,
+          "closeup": true
+        },
+        "normalized_value": 0.62
+      },
+      {
+        "parameter_id": "face.chin_length",
+        "semantic_name": "chin_length",
+        "region": "chin",
+        "default": 0.52,
+        "safe_min": 0.15,
+        "safe_max": 0.85,
+        "unit": "normalized",
+        "affected_morphs": [
+          "chin_length"
+        ],
+        "affected_bones": [],
+        "dependent_parameters": [],
+        "incompatible_parameters": [],
+        "rebuild_scope": [
+          "face_mesh",
+          "face_normals",
+          "face_lod",
+          "2d_face_projection",
+          "portrait_preview"
+        ],
+        "identity_weight": 0.8,
+        "silhouette_weight": 0.35,
+        "media_projection_policy": {
+          "native_2d": true,
+          "2.5d": true,
+          "3d-assisted-2d": true,
+          "game_runtime": true,
+          "closeup": true
+        },
+        "normalized_value": 0.52
+      },
+      {
+        "parameter_id": "face.chin_width",
+        "semantic_name": "chin_width",
+        "region": "chin",
+        "default": 0.42,
+        "safe_min": 0.15,
+        "safe_max": 0.85,
+        "unit": "normalized",
+        "affected_morphs": [
+          "chin_width"
+        ],
+        "affected_bones": [],
+        "dependent_parameters": [],
+        "incompatible_parameters": [],
+        "rebuild_scope": [
+          "face_mesh",
+          "face_normals",
+          "face_lod",
+          "2d_face_projection",
+          "portrait_preview"
+        ],
+        "identity_weight": 0.8,
+        "silhouette_weight": 0.35,
+        "media_projection_policy": {
+          "native_2d": true,
+          "2.5d": true,
+          "3d-assisted-2d": true,
+          "game_runtime": true,
+          "closeup": true
+        },
+        "normalized_value": 0.42
+      },
+      {
+        "parameter_id": "face.chin_projection",
+        "semantic_name": "chin_projection",
+        "region": "chin",
+        "default": 0.48,
+        "safe_min": 0.15,
+        "safe_max": 0.85,
+        "unit": "normalized",
+        "affected_morphs": [
+          "chin_projection"
+        ],
+        "affected_bones": [],
+        "dependent_parameters": [],
+        "incompatible_parameters": [],
+        "rebuild_scope": [
+          "face_mesh",
+          "face_normals",
+          "face_lod",
+          "2d_face_projection",
+          "portrait_preview"
+        ],
+        "identity_weight": 0.8,
+        "silhouette_weight": 0.35,
+        "media_projection_policy": {
+          "native_2d": true,
+          "2.5d": true,
+          "3d-assisted-2d": true,
+          "game_runtime": true,
+          "closeup": true
+        },
+        "normalized_value": 0.48
+      },
+      {
+        "parameter_id": "face.eye_size",
+        "semantic_name": "eye_size",
+        "region": "eyes",
+        "default": 0.48,
+        "safe_min": 0.22,
+        "safe_max": 0.75,
+        "unit": "normalized",
+        "affected_morphs": [
+          "eye_size"
+        ],
+        "affected_bones": [],
+        "dependent_parameters": [],
+        "incompatible_parameters": [],
+        "rebuild_scope": [
+          "face_mesh",
+          "face_normals",
+          "face_lod",
+          "2d_face_projection",
+          "portrait_preview"
+        ],
+        "identity_weight": 0.8,
+        "silhouette_weight": 0.35,
+        "media_projection_policy": {
+          "native_2d": true,
+          "2.5d": true,
+          "3d-assisted-2d": true,
+          "game_runtime": true,
+          "closeup": true
+        },
+        "normalized_value": 0.48
+      },
+      {
+        "parameter_id": "face.eye_spacing",
+        "semantic_name": "eye_spacing",
+        "region": "eyes",
+        "default": 0.48,
+        "safe_min": 0.28,
+        "safe_max": 0.7,
+        "unit": "normalized",
+        "affected_morphs": [
+          "eye_spacing"
+        ],
+        "affected_bones": [],
+        "dependent_parameters": [],
+        "incompatible_parameters": [],
+        "rebuild_scope": [
+          "face_mesh",
+          "face_normals",
+          "face_lod",
+          "2d_face_projection",
+          "portrait_preview"
+        ],
+        "identity_weight": 0.95,
+        "silhouette_weight": 0.35,
+        "media_projection_policy": {
+          "native_2d": true,
+          "2.5d": true,
+          "3d-assisted-2d": true,
+          "game_runtime": true,
+          "closeup": true
+        },
+        "normalized_value": 0.48
+      },
+      {
+        "parameter_id": "face.eye_angle",
+        "semantic_name": "eye_angle",
+        "region": "eyes",
+        "default": 0.56,
+        "safe_min": 0.15,
+        "safe_max": 0.85,
+        "unit": "normalized",
+        "affected_morphs": [
+          "eye_angle"
+        ],
+        "affected_bones": [],
+        "dependent_parameters": [],
+        "incompatible_parameters": [],
+        "rebuild_scope": [
+          "face_mesh",
+          "face_normals",
+          "face_lod",
+          "2d_face_projection",
+          "portrait_preview"
+        ],
+        "identity_weight": 0.8,
+        "silhouette_weight": 0.35,
+        "media_projection_policy": {
+          "native_2d": true,
+          "2.5d": true,
+          "3d-assisted-2d": true,
+          "game_runtime": true,
+          "closeup": true
+        },
+        "normalized_value": 0.56
+      },
+      {
+        "parameter_id": "face.eye_depth",
+        "semantic_name": "eye_depth",
+        "region": "eyes",
+        "default": 0.48,
+        "safe_min": 0.15,
+        "safe_max": 0.85,
+        "unit": "normalized",
+        "affected_morphs": [
+          "eye_depth"
+        ],
+        "affected_bones": [],
+        "dependent_parameters": [],
+        "incompatible_parameters": [],
+        "rebuild_scope": [
+          "face_mesh",
+          "face_normals",
+          "face_lod",
+          "2d_face_projection",
+          "portrait_preview"
+        ],
+        "identity_weight": 0.8,
+        "silhouette_weight": 0.35,
+        "media_projection_policy": {
+          "native_2d": true,
+          "2.5d": true,
+          "3d-assisted-2d": true,
+          "game_runtime": true,
+          "closeup": true
+        },
+        "normalized_value": 0.48
+      },
+      {
+        "parameter_id": "face.brow_height",
+        "semantic_name": "brow_height",
+        "region": "brows",
+        "default": 0.5,
+        "safe_min": 0.15,
+        "safe_max": 0.85,
+        "unit": "normalized",
+        "affected_morphs": [
+          "brow_height"
+        ],
+        "affected_bones": [],
+        "dependent_parameters": [],
+        "incompatible_parameters": [],
+        "rebuild_scope": [
+          "face_mesh",
+          "face_normals",
+          "face_lod",
+          "2d_face_projection",
+          "portrait_preview"
+        ],
+        "identity_weight": 0.8,
+        "silhouette_weight": 0.35,
+        "media_projection_policy": {
+          "native_2d": true,
+          "2.5d": true,
+          "3d-assisted-2d": true,
+          "game_runtime": true,
+          "closeup": true
+        },
+        "normalized_value": 0.5
+      },
+      {
+        "parameter_id": "face.brow_angle",
+        "semantic_name": "brow_angle",
+        "region": "brows",
+        "default": 0.54,
+        "safe_min": 0.15,
+        "safe_max": 0.85,
+        "unit": "normalized",
+        "affected_morphs": [
+          "brow_angle"
+        ],
+        "affected_bones": [],
+        "dependent_parameters": [],
+        "incompatible_parameters": [],
+        "rebuild_scope": [
+          "face_mesh",
+          "face_normals",
+          "face_lod",
+          "2d_face_projection",
+          "portrait_preview"
+        ],
+        "identity_weight": 0.8,
+        "silhouette_weight": 0.35,
+        "media_projection_policy": {
+          "native_2d": true,
+          "2.5d": true,
+          "3d-assisted-2d": true,
+          "game_runtime": true,
+          "closeup": true
+        },
+        "normalized_value": 0.54
+      },
+      {
+        "parameter_id": "face.nose_bridge",
+        "semantic_name": "nose_bridge",
+        "region": "nose",
+        "default": 0.56,
+        "safe_min": 0.15,
+        "safe_max": 0.85,
+        "unit": "normalized",
+        "affected_morphs": [
+          "nose_bridge"
+        ],
+        "affected_bones": [],
+        "dependent_parameters": [],
+        "incompatible_parameters": [],
+        "rebuild_scope": [
+          "face_mesh",
+          "face_normals",
+          "face_lod",
+          "2d_face_projection",
+          "portrait_preview"
+        ],
+        "identity_weight": 0.8,
+        "silhouette_weight": 0.35,
+        "media_projection_policy": {
+          "native_2d": true,
+          "2.5d": true,
+          "3d-assisted-2d": true,
+          "game_runtime": true,
+          "closeup": true
+        },
+        "normalized_value": 0.56
+      },
+      {
+        "parameter_id": "face.nose_width",
+        "semantic_name": "nose_width",
+        "region": "nose",
+        "default": 0.42,
+        "safe_min": 0.15,
+        "safe_max": 0.85,
+        "unit": "normalized",
+        "affected_morphs": [
+          "nose_width"
+        ],
+        "affected_bones": [],
+        "dependent_parameters": [],
+        "incompatible_parameters": [],
+        "rebuild_scope": [
+          "face_mesh",
+          "face_normals",
+          "face_lod",
+          "2d_face_projection",
+          "portrait_preview"
+        ],
+        "identity_weight": 0.8,
+        "silhouette_weight": 0.35,
+        "media_projection_policy": {
+          "native_2d": true,
+          "2.5d": true,
+          "3d-assisted-2d": true,
+          "game_runtime": true,
+          "closeup": true
+        },
+        "normalized_value": 0.42
+      },
+      {
+        "parameter_id": "face.nose_length",
+        "semantic_name": "nose_length",
+        "region": "nose",
+        "default": 0.5,
+        "safe_min": 0.15,
+        "safe_max": 0.85,
+        "unit": "normalized",
+        "affected_morphs": [
+          "nose_length"
+        ],
+        "affected_bones": [],
+        "dependent_parameters": [],
+        "incompatible_parameters": [],
+        "rebuild_scope": [
+          "face_mesh",
+          "face_normals",
+          "face_lod",
+          "2d_face_projection",
+          "portrait_preview"
+        ],
+        "identity_weight": 0.8,
+        "silhouette_weight": 0.35,
+        "media_projection_policy": {
+          "native_2d": true,
+          "2.5d": true,
+          "3d-assisted-2d": true,
+          "game_runtime": true,
+          "closeup": true
+        },
+        "normalized_value": 0.5
+      },
+      {
+        "parameter_id": "face.mouth_width",
+        "semantic_name": "mouth_width",
+        "region": "mouth",
+        "default": 0.51,
+        "safe_min": 0.25,
+        "safe_max": 0.72,
+        "unit": "normalized",
+        "affected_morphs": [
+          "mouth_width"
+        ],
+        "affected_bones": [],
+        "dependent_parameters": [
+          "face.jaw_width"
+        ],
+        "incompatible_parameters": [],
+        "rebuild_scope": [
+          "face_mesh",
+          "face_normals",
+          "face_lod",
+          "2d_face_projection",
+          "portrait_preview"
+        ],
+        "identity_weight": 0.8,
+        "silhouette_weight": 0.35,
+        "media_projection_policy": {
+          "native_2d": true,
+          "2.5d": true,
+          "3d-assisted-2d": true,
+          "game_runtime": true,
+          "closeup": true
+        },
+        "normalized_value": 0.51
+      },
+      {
+        "parameter_id": "face.upper_lip",
+        "semantic_name": "upper_lip",
+        "region": "mouth",
+        "default": 0.42,
+        "safe_min": 0.2,
+        "safe_max": 0.7,
+        "unit": "normalized",
+        "affected_morphs": [
+          "upper_lip"
+        ],
+        "affected_bones": [],
+        "dependent_parameters": [],
+        "incompatible_parameters": [],
+        "rebuild_scope": [
+          "face_mesh",
+          "face_normals",
+          "face_lod",
+          "2d_face_projection",
+          "portrait_preview"
+        ],
+        "identity_weight": 0.8,
+        "silhouette_weight": 0.35,
+        "media_projection_policy": {
+          "native_2d": true,
+          "2.5d": true,
+          "3d-assisted-2d": true,
+          "game_runtime": true,
+          "closeup": true
+        },
+        "normalized_value": 0.42
+      },
+      {
+        "parameter_id": "face.lower_lip",
+        "semantic_name": "lower_lip",
+        "region": "mouth",
+        "default": 0.46,
+        "safe_min": 0.2,
+        "safe_max": 0.72,
+        "unit": "normalized",
+        "affected_morphs": [
+          "lower_lip"
+        ],
+        "affected_bones": [],
+        "dependent_parameters": [],
+        "incompatible_parameters": [],
+        "rebuild_scope": [
+          "face_mesh",
+          "face_normals",
+          "face_lod",
+          "2d_face_projection",
+          "portrait_preview"
+        ],
+        "identity_weight": 0.8,
+        "silhouette_weight": 0.35,
+        "media_projection_policy": {
+          "native_2d": true,
+          "2.5d": true,
+          "3d-assisted-2d": true,
+          "game_runtime": true,
+          "closeup": true
+        },
+        "normalized_value": 0.46
+      },
+      {
+        "parameter_id": "face.lip_projection",
+        "semantic_name": "lip_projection",
+        "region": "mouth",
+        "default": 0.4,
+        "safe_min": 0.15,
+        "safe_max": 0.68,
+        "unit": "normalized",
+        "affected_morphs": [
+          "lip_projection"
+        ],
+        "affected_bones": [],
+        "dependent_parameters": [],
+        "incompatible_parameters": [],
+        "rebuild_scope": [
+          "face_mesh",
+          "face_normals",
+          "face_lod",
+          "2d_face_projection",
+          "portrait_preview"
+        ],
+        "identity_weight": 0.8,
+        "silhouette_weight": 0.35,
+        "media_projection_policy": {
+          "native_2d": true,
+          "2.5d": true,
+          "3d-assisted-2d": true,
+          "game_runtime": true,
+          "closeup": true
+        },
+        "normalized_value": 0.4
+      },
+      {
+        "parameter_id": "face.philtrum_length",
+        "semantic_name": "philtrum_length",
+        "region": "mouth",
+        "default": 0.5,
+        "safe_min": 0.15,
+        "safe_max": 0.85,
+        "unit": "normalized",
+        "affected_morphs": [
+          "philtrum_length"
+        ],
+        "affected_bones": [],
+        "dependent_parameters": [],
+        "incompatible_parameters": [],
+        "rebuild_scope": [
+          "face_mesh",
+          "face_normals",
+          "face_lod",
+          "2d_face_projection",
+          "portrait_preview"
+        ],
+        "identity_weight": 0.8,
+        "silhouette_weight": 0.35,
+        "media_projection_policy": {
+          "native_2d": true,
+          "2.5d": true,
+          "3d-assisted-2d": true,
+          "game_runtime": true,
+          "closeup": true
+        },
+        "normalized_value": 0.5
+      },
+      {
+        "parameter_id": "face.ear_height",
+        "semantic_name": "ear_height",
+        "region": "ears",
+        "default": 0.5,
+        "safe_min": 0.15,
+        "safe_max": 0.85,
+        "unit": "normalized",
+        "affected_morphs": [
+          "ear_height"
+        ],
+        "affected_bones": [],
+        "dependent_parameters": [],
+        "incompatible_parameters": [],
+        "rebuild_scope": [
+          "face_mesh",
+          "face_normals",
+          "face_lod",
+          "2d_face_projection",
+          "portrait_preview"
+        ],
+        "identity_weight": 0.8,
+        "silhouette_weight": 0.35,
+        "media_projection_policy": {
+          "native_2d": true,
+          "2.5d": true,
+          "3d-assisted-2d": true,
+          "game_runtime": true,
+          "closeup": true
+        },
+        "normalized_value": 0.5
+      },
+      {
+        "parameter_id": "face.ear_angle",
+        "semantic_name": "ear_angle",
+        "region": "ears",
+        "default": 0.46,
+        "safe_min": 0.15,
+        "safe_max": 0.85,
+        "unit": "normalized",
+        "affected_morphs": [
+          "ear_angle"
+        ],
+        "affected_bones": [],
+        "dependent_parameters": [],
+        "incompatible_parameters": [],
+        "rebuild_scope": [
+          "face_mesh",
+          "face_normals",
+          "face_lod",
+          "2d_face_projection",
+          "portrait_preview"
+        ],
+        "identity_weight": 0.8,
+        "silhouette_weight": 0.35,
+        "media_projection_policy": {
+          "native_2d": true,
+          "2.5d": true,
+          "3d-assisted-2d": true,
+          "game_runtime": true,
+          "closeup": true
+        },
+        "normalized_value": 0.46
+      },
+      {
+        "parameter_id": "body.head_body_ratio",
+        "semantic_name": "head-body ratio",
+        "region": "body",
+        "default": 0.52,
+        "safe_min": 0.35,
+        "safe_max": 0.72,
+        "unit": "normalized",
+        "affected_morphs": [
+          "body_head_ratio"
+        ],
+        "affected_bones": [
+          "hips",
+          "spine",
+          "neck",
+          "head"
+        ],
+        "dependent_parameters": [],
+        "incompatible_parameters": [],
+        "rebuild_scope": [
+          "body_mesh",
+          "skeleton",
+          "collision",
+          "lod",
+          "cross_media_projection"
+        ],
+        "identity_weight": 0.9,
+        "silhouette_weight": 1,
+        "media_projection_policy": {
+          "native_2d": true,
+          "2.5d": true,
+          "3d-assisted-2d": true,
+          "game_runtime": true,
+          "closeup": false
+        },
+        "normalized_value": 0.52
+      },
+      {
+        "parameter_id": "body.shoulder_width",
+        "semantic_name": "shoulder width",
+        "region": "body",
+        "default": 0.55,
+        "safe_min": 0.28,
+        "safe_max": 0.76,
+        "unit": "normalized",
+        "affected_morphs": [
+          "shoulder_width"
+        ],
+        "affected_bones": [
+          "clavicle_l",
+          "clavicle_r"
+        ],
+        "dependent_parameters": [],
+        "incompatible_parameters": [],
+        "rebuild_scope": [
+          "body_mesh",
+          "costume_fit",
+          "collision",
+          "cross_media_projection"
+        ],
+        "identity_weight": 0.82,
+        "silhouette_weight": 1,
+        "media_projection_policy": {
+          "native_2d": true,
+          "2.5d": true,
+          "3d-assisted-2d": true,
+          "game_runtime": true,
+          "closeup": false
+        },
+        "normalized_value": 0.55
+      },
+      {
+        "parameter_id": "body.neck_length",
+        "semantic_name": "neck length",
+        "region": "body",
+        "default": 0.54,
+        "safe_min": 0.28,
+        "safe_max": 0.72,
+        "unit": "normalized",
+        "affected_morphs": [
+          "neck_length"
+        ],
+        "affected_bones": [
+          "neck",
+          "head"
+        ],
+        "dependent_parameters": [],
+        "incompatible_parameters": [],
+        "rebuild_scope": [
+          "body_mesh",
+          "skeleton",
+          "costume_fit",
+          "cross_media_projection"
+        ],
+        "identity_weight": 0.65,
+        "silhouette_weight": 0.55,
+        "media_projection_policy": {
+          "native_2d": true,
+          "2.5d": true,
+          "3d-assisted-2d": true,
+          "game_runtime": true,
+          "closeup": true
+        },
+        "normalized_value": 0.54
+      },
+      {
+        "parameter_id": "body.limb_ratio",
+        "semantic_name": "limb ratio",
+        "region": "body",
+        "default": 0.56,
+        "safe_min": 0.32,
+        "safe_max": 0.72,
+        "unit": "normalized",
+        "affected_morphs": [
+          "limb_ratio"
+        ],
+        "affected_bones": [
+          "arm_l",
+          "arm_r",
+          "leg_l",
+          "leg_r"
+        ],
+        "dependent_parameters": [],
+        "incompatible_parameters": [],
+        "rebuild_scope": [
+          "body_mesh",
+          "skeleton",
+          "collision",
+          "retarget",
+          "cross_media_projection"
+        ],
+        "identity_weight": 0.72,
+        "silhouette_weight": 0.82,
+        "media_projection_policy": {
+          "native_2d": true,
+          "2.5d": true,
+          "3d-assisted-2d": true,
+          "game_runtime": true,
+          "closeup": false
+        },
+        "normalized_value": 0.56
+      },
+      {
+        "parameter_id": "body.torso_length",
+        "semantic_name": "torso length",
+        "region": "body",
+        "default": 0.5,
+        "safe_min": 0.3,
+        "safe_max": 0.7,
+        "unit": "normalized",
+        "affected_morphs": [
+          "torso_length"
+        ],
+        "affected_bones": [
+          "hips",
+          "spine",
+          "chest"
+        ],
+        "dependent_parameters": [],
+        "incompatible_parameters": [],
+        "rebuild_scope": [
+          "body_mesh",
+          "skeleton",
+          "collision",
+          "costume_fit",
+          "cross_media_projection"
+        ],
+        "identity_weight": 0.72,
+        "silhouette_weight": 0.8,
+        "media_projection_policy": {
+          "native_2d": true,
+          "2.5d": true,
+          "3d-assisted-2d": true,
+          "game_runtime": true,
+          "closeup": false
+        },
+        "normalized_value": 0.5
+      }
+    ],
+    "dependencies": [
+      {
+        "from": "face.jaw_width",
+        "to": "face.jaw_angle",
+        "kind": "semantic-constraint"
+      },
+      {
+        "from": "face.jaw_angle",
+        "to": "face.jaw_definition",
+        "kind": "semantic-constraint"
+      },
+      {
+        "from": "face.jaw_width",
+        "to": "face.mouth_width",
+        "kind": "semantic-constraint"
+      }
+    ],
+    "graph_root": "ba6226b64b4c3ba7fdc2896baf2d570a677aab6dcb073274ff0d996f3ee65cf1"
+  },
+  "constraint_report": {
+    "format": "rncs.character-constraint-report.v0.1",
+    "valid": true,
+    "strict": true,
+    "topology_family": "young-male-slim",
+    "hair_family": "black-wavy-medium",
+    "costume_family": "lan-default-v1",
+    "errors": [],
+    "warnings": [],
+    "adjustments": [],
+    "input_graph_root": "ba6226b64b4c3ba7fdc2896baf2d570a677aab6dcb073274ff0d996f3ee65cf1",
+    "solved_graph_root": "ba6226b64b4c3ba7fdc2896baf2d570a677aab6dcb073274ff0d996f3ee65cf1",
+    "report_root": "dedc5145a4d0258e1f6b4cfc0b0ace9168067e0ce378eeadd16aa458007424fb"
+  },
+  "identity_root": "1167172880d5ef94219524366c4d33af86f90f99f39b459c5d2b401c6b213efd",
+  "style_genome": {
+    "style_profile": "anime-npr-clean-v0.1",
+    "line_profile": "stable-ink-v0.1",
+    "palette": {
+      "skin": "#d8c7bd",
+      "hair": "#11151d",
+      "eye": "#4f86c6",
+      "base": "#101827",
+      "secondary": "#253653",
+      "trim": "#b9c6d8",
+      "emblem": "#5d91ce"
+    },
+    "material_language": "anime-npr-plus-stylized-pbr"
+  },
+  "appearance_loadout": {
+    "hair_family": "black-wavy-medium",
+    "hair_color": "#11151d",
+    "eye_style": "calm-sharp",
+    "brow_style": "restrained-straight",
+    "eye_color": "#4f86c6",
+    "costume_family": "lan-default-v1",
+    "accessory": null,
+    "weapon_slot": "weapon-back-right",
+    "emblem_slot": "shenlin-original-v1",
+    "palette_family": "deep-blue-black-cool-silver",
+    "costume_variant": "default"
+  },
+  "expression_profile": {
+    "profile_id": "lan-expression-v1",
+    "morphs": [
+      "neutral",
+      "calm",
+      "puzzled",
+      "restrained_smile",
+      "focused",
+      "angry",
+      "sad",
+      "surprised"
+    ],
+    "eye_states": [
+      "eye_open",
+      "eye_half",
+      "eye_closed",
+      "blink_left",
+      "blink_right",
+      "look_up",
+      "look_down",
+      "look_left",
+      "look_right"
+    ],
+    "composition_policy": "identity-plus-expression"
+  },
+  "voice_binding": {
+    "voice_identity": "voice:lan-tianlin-default",
+    "authority": "Voice Forge",
+    "mouth_timeline_authority": "final-dialogue-audio",
+    "close_mouth_on_end": true,
+    "viseme_profile": "mandarin-anime-v1",
+    "visemes": [
+      "closed",
+      "rest",
+      "A",
+      "I",
+      "U",
+      "E",
+      "O",
+      "M_B_P",
+      "F_V",
+      "L",
+      "S_Z",
+      "SH_CH",
+      "R",
+      "N_D_T"
+    ]
+  },
+  "motion_profile": {
+    "profile_id": "restrained-young-actor-v1",
+    "retarget_profile": "rncs.humanoid-retarget-v0.1",
+    "director_override": true,
+    "secondary_motion": {
+      "hair": "profile-bound",
+      "costume": "profile-bound"
+    }
+  },
+  "physical_profile": {
+    "body_type": "dynamic-character",
+    "collision_profile": "rsr.character-semantic-fixtures.v0.1",
+    "mass_kg": 62,
+    "height_m": 1.82,
+    "units": "SI"
+  },
+  "state_overlays": {
+    "expression": "neutral",
+    "emotion_intensity": 0,
+    "fatigue": 0,
+    "injury": 0,
+    "soiling": 0,
+    "age_delta": 0,
+    "combat_state": "idle",
+    "ability_state": "inactive",
+    "yanlv_state": "inactive",
+    "lighting_state": "neutral"
+  },
+  "cross_media_policy": {
+    "modes": [
+      "native-2d",
+      "2.5d",
+      "3d-assisted-2d",
+      "game-runtime"
+    ],
+    "identity_anchor_required": true,
+    "shared_signature": "1167172880d5ef94219524366c4d33af86f90f99f39b459c5d2b401c6b213efd",
+    "closeup_face_lod": true
+  },
+  "continuity_contract": {
+    "lock_identity": true,
+    "allow": [
+      "hair_change",
+      "costume_change",
+      "palette_change",
+      "state_overlay"
+    ],
+    "deny": [
+      "character_id_change",
+      "topology_change_without_migration",
+      "face_drift",
+      "voice_identity_rewrite_by_asset_provider"
+    ],
+    "max_identity_drift": 0.035,
+    "cross_cut": true,
+    "cross_episode": true
+  },
+  "provider_policy": {
+    "identity_authority": "RNCS Character Genome",
+    "identity_writers": [
+      "RNCS Character Genome"
+    ],
+    "allowed_providers": [
+      "ragf.character-genome-reference-provider"
+    ],
+    "provider_must_be_explicit": true,
+    "license_required": true,
+    "multiple_identity_writers": "deny",
+    "cloud_calls": "deny-by-default"
+  },
+  "lineage": {
+    "seed": "lan-tianlin-character-v1",
+    "parents": [],
+    "source_assets": [],
+    "user_asset_paths": [],
+    "core_package_contamination": "deny"
+  },
+  "evidence_policy": {
+    "hash_algorithm": "sha256-rncs-canonical-v1",
+    "manifest": true,
+    "provider_receipts": true,
+    "build_receipt": true,
+    "continuity_report": true,
+    "negative_gates": true
+  },
+  "reference_catalog_root": "f83e0d0152dcb3b78b6191107a6785fcc5bcd04da5c01a34c1187949640d9e53",
+  "genome_root": "bb7b19fb23a61c96fd931e4b8c5b46370b8e64d619e37e92e02b52cbddb09782"
+}

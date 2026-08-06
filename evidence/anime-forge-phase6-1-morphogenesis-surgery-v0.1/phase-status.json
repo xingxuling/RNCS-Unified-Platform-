@@ -1,0 +1,25 @@
+{
+  "format": "rncs.anime-forge-phase6-1-status.v0.1",
+  "body_surface_status": "complete",
+  "face_rig_status": "complete",
+  "hair_topology_status": "complete",
+  "shoulder_torso_pelvis_status": "complete",
+  "joint_deformation_status": "complete",
+  "hand_abstraction_status": "complete",
+  "anatomy_validation_pack_status": "complete",
+  "rebuilt_native_shot_status": "complete",
+  "visual_surgery_uplift_vs_phase_6": "pending-human-review",
+  "human_visual_acceptance": "pending",
+  "commercial_anime_quality": "not-proven",
+  "external_visual_model_required": false,
+  "media_status": "complete",
+  "media_failure": null,
+  "boundary": "Experimental deterministic RNCS-native 2D/2.5D structural reconstruction. Anatomy contracts and CPU raster output are verified; human visual acceptance and commercial animation quality are not proven.",
+  "roots": {
+    "anatomy_system_root": "595fdb93d468924dd3b05ceb28846b614392782fafcc574a72de66b0b7ab9c41",
+    "pack_root": "eb00133dab07bf2b40df2089451840336c0b8005ace16a7273577fbd289a2ab5",
+    "frame_manifest_root": "333c14d68f2d345477ca7129b75ac7d52af7cdf925201a0eabb187648b39717a",
+    "repair_root": "a3dffbf36de73fd086b8c82ccb3491dd46de04250f1dde985ada54f22e674855",
+    "ledger_internal_root": "793f24266a86c0e66be84b10ceae2c89848f302605e456cd8fa1b0e93fa77a72"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rncs://schemas/character-face-rig.v2",
+  "type": "object",
+  "required": ["rig_format", "version", "face_rig_root", "skull_frame", "face_plane", "brow_line", "eye_line", "eye_socket_left", "eye_socket_right", "nose_bridge", "nose_tip", "mouth_axis", "jaw_curve", "hairline", "face_projection_rules", "viseme_bindings", "expression_bindings"],
+  "properties": {
+    "rig_format": {"const": "rncs.character-face-rig"},
+    "version": {"const": "2.0.0-alpha.1"},
+    "face_rig_root": {"type": "string", "minLength": 16},
+    "face_projection_rules": {"type": "object"},
+    "viseme_bindings": {"type": "object", "minProperties": 4},
+    "expression_bindings": {"type": "object", "minProperties": 4}
+  },
+  "additionalProperties": true
+}
