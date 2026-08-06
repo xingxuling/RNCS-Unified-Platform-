@@ -1,0 +1,16 @@
+{
+  "format": "rncs.native-character-continuity-report.v0.1",
+  "version": "0.1.0-alpha.1",
+  "status": "pass",
+  "character_id": "character:8de0ed5681eb6872bde2a125",
+  "identity_root": "1059bc9acb922576c453ac163a19d956f32bc5d2179da3b7078b0c260f823c77",
+  "visual_genome_root": "b1399ff82a9b45bd2f1a61f673642f487adeeee63a66ae9dd287a6a3f407ffb1",
+  "body_graph_root": "f7772c6ae8257b493ca1235f1738525b91fab193ff1939117df9390cd6aedb3e",
+  "frame_count": 120,
+  "identity_roots": [
+    "1059bc9acb922576c453ac163a19d956f32bc5d2179da3b7078b0c260f823c77"
+  ],
+  "topology_root": "f7584aa23150b516f532bf2a0f825d172d40075f091833f572923a3002cbea0f",
+  "stable_across_frames": true,
+  "report_root": "dff0e5f31cc451cabe6655e25173335042f0fd6cc34f91d9d41398fb289b655a"
+}

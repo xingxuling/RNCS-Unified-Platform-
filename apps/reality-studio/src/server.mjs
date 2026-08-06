@@ -11,6 +11,7 @@ import {normalizeProgram,validateProgram} from '@taowind/reality-behavior-fabric
 import {UnifiedSessionRegistry,validateUnifiedProject,ensureUIInputProject} from './scene-studio.mjs';
 import {AssetForgeRegistry} from './asset-forge.mjs';
 import {AnimeForgeSessionRegistry} from './anime-forge-studio.mjs';
+import {NativeVisualGenesisWorkspace} from './native-visual-genesis-studio.mjs';
 import {CharacterGenomeSessionRegistry} from './character-genome-studio.mjs';
 
 const here=path.dirname(fileURLToPath(import.meta.url));
@@ -33,19 +34,20 @@ function loadSampleUnified(){
   return ensureUIInputProject(JSON.parse(fs.readFileSync(path.join(root,'examples','冰境试炼.unified-project.json'),'utf8')));
 }
 
-export async function startStudioServer({host='127.0.0.1',port=17608,dataDir=path.join(root,'output/server'),ffmpegPath=process.env.FFMPEG_PATH??'ffmpeg',ffprobePath=process.env.FFPROBE_PATH??'ffprobe'}={}){
+export async function startStudioServer({host='127.0.0.1',port=17608,dataDir=path.join(root,'output/server'),ffmpegPath=process.env.FFMPEG_PATH??'ffmpeg',ffprobePath=process.env.FFPROBE_PATH??'ffprobe',nativeVisualEvidenceDir=process.env.RNCS_PHASE6_NATIVE_EVIDENCE??path.resolve(root,'../../evidence/anime-forge-phase6-native-visual-v0.1')}={}){
   const runtime=await new StudioRuntime({dataDir}).init();
   const behaviorSessions=new BehaviorSessionRegistry();
   const unifiedSessions=new UnifiedSessionRegistry();
   const assetForgeSessions=new AssetForgeRegistry();
   const animeForgeSessions=new AnimeForgeSessionRegistry({dataDir,ffmpegPath,ffprobePath});
+  const nativeVisualWorkspace=new NativeVisualGenesisWorkspace({evidenceDir:nativeVisualEvidenceDir});
   const characterSample=fs.readFileSync(path.resolve(root,'../../packages/integration/rcl-character-genome-bridge/examples/lan-tianlin.character.rcl'),'utf8');
   const characterGenomeSessions=new CharacterGenomeSessionRegistry({dataDir,sampleSource:characterSample});
   const server=http.createServer(async(req,res)=>{
     try{
       const u=new URL(req.url,`http://${req.headers.host||'localhost'}`);
       if(req.method==='OPTIONS')return send(res,204,'','text/plain');
-      if(req.method==='GET'&&u.pathname==='/api/health')return send(res,200,{...(await runtime.health()),studio_version:'1.6.0-alpha.1',behavior_native:true,scene_asset_behavior_unified:true,webgpu_viewport:true,tilemap_native:true,navigation_native:true,ui_native:true,input_native:true,runtime_timeline:true,runtime_replay:true,runtime_time_travel:true,live_update_native:true,live_update_version:'0.1.0-alpha.1',asset_continuity_native:true,asset_reimport:true,dependency_graph:true,asset_ledger:true,asset_database:true,asset_incremental_cache:true,asset_change_plan:true,asset_watch:true,asset_streaming_native:true,asset_streaming_receipts:true,spatial_editor:true,spatial_bodies:true,spatial_characters:true,spatial_joints:true,spatial_audio_events:true,spatial_haptic_events:true,keyboard_input:true,gamepad_input:true,touch_input:true,asset_forge_native:true,ragf_version:'0.5.0-alpha.1',asset_candidate_review:true,targeted_asset_regeneration:true,asset_acceptance_to_scene:true,vsr_version:'0.8.0-alpha.1',rsr_version:'0.9.0-alpha.1',anime_forge_native:true,anime_forge_phase:'phase-4-media-closure-active',anime_forge_visual_phase:'phase-5-visual-body-replacement-blocked',anime_forge_visual_provider:'rncs.visual.local-diffusion-video-worker',anime_forge_human_visual_acceptance:'pending',anime_forge_mp4:'real-ffmpeg-fail-closed',character_genome_forge_native:true,character_genome_version:'0.1.0-alpha.1',character_genome_reference_provider:true});
+      if(req.method==='GET'&&u.pathname==='/api/health')return send(res,200,{...(await runtime.health()),studio_version:'1.6.0-alpha.1',behavior_native:true,scene_asset_behavior_unified:true,webgpu_viewport:true,tilemap_native:true,navigation_native:true,ui_native:true,input_native:true,runtime_timeline:true,runtime_replay:true,runtime_time_travel:true,live_update_native:true,live_update_version:'0.1.0-alpha.1',asset_continuity_native:true,asset_reimport:true,dependency_graph:true,asset_ledger:true,asset_database:true,asset_incremental_cache:true,asset_change_plan:true,asset_watch:true,asset_streaming_native:true,asset_streaming_receipts:true,spatial_editor:true,spatial_bodies:true,spatial_characters:true,spatial_joints:true,spatial_audio_events:true,spatial_haptic_events:true,keyboard_input:true,gamepad_input:true,touch_input:true,asset_forge_native:true,ragf_version:'0.5.0-alpha.1',asset_candidate_review:true,targeted_asset_regeneration:true,asset_acceptance_to_scene:true,vsr_version:'0.8.0-alpha.1',rsr_version:'0.9.0-alpha.1',anime_forge_native:true,anime_forge_phase:'phase-4-media-closure-active',anime_forge_visual_phase:'phase-5-visual-body-replacement-blocked',anime_forge_visual_provider:'rncs.visual.local-diffusion-video-worker',anime_forge_human_visual_acceptance:'pending',anime_forge_mp4:'real-ffmpeg-fail-closed',anime_forge_phase6_native_visual_workspace:true,anime_forge_phase6_native_visual_evidence:nativeVisualWorkspace.available()?'available':'missing',anime_forge_phase6_native_visual_status:nativeVisualWorkspace.inspect().first_screen?.episode_playable?'complete':'blocked',anime_forge_phase6_native_visual_human_acceptance:nativeVisualWorkspace.inspect().first_screen?.human_visual_acceptance??'pending',anime_forge_phase6_native_visual_commercial_quality:nativeVisualWorkspace.inspect().phase_status?.commercial_anime_quality??'not-proven',character_genome_forge_native:true,character_genome_version:'0.1.0-alpha.1',character_genome_reference_provider:true});
       if(req.method==='GET'&&u.pathname==='/api/project/new')return send(res,200,createProject({}));
       if(req.method==='POST'&&u.pathname==='/api/project/validate'){const b=await body(req);return send(res,200,validateProject(b.project??b));}
       if(req.method==='POST'&&u.pathname==='/api/project/seal'){const b=await body(req);return send(res,200,sealProject(b.project??b));}
@@ -203,6 +205,18 @@ export async function startStudioServer({host='127.0.0.1',port=17608,dataDir=pat
       if(req.method==='POST'&&u.pathname==='/api/anime-forge/session/inspect'){const b=await body(req);return send(res,200,animeForgeSessions.get(b.session_id).inspect());}
       if(req.method==='POST'&&u.pathname==='/api/anime-forge/visual-quality'){const b=await body(req),session=animeForgeSessions.get(b.session_id),workspace=session.visualQuality();return send(res,200,{ok:true,...workspace,candidate_review:session.visualCandidateReview(workspace)});}
       if(req.method==='POST'&&u.pathname==='/api/anime-forge/visual-candidate-action'){const b=await body(req),session=animeForgeSessions.get(b.session_id);return send(res,200,session.visualCandidateAction(String(b.action??'')));}
+      if(req.method==='GET'&&u.pathname==='/api/anime-forge/native-visual-workspace'){
+        const command=String(u.searchParams.get('command')??'inspect'),result=nativeVisualWorkspace.command(command,{disclosure:u.searchParams.get('disclosure')??'summary',frame:Number(u.searchParams.get('frame')??0),layer:u.searchParams.get('layer')??'color',viewport:u.searchParams.get('viewport')??'desktop'});
+        return send(res,200,{ok:true,...result});
+      }
+      if(req.method==='POST'&&u.pathname==='/api/anime-forge/native-visual-workspace'){
+        const b=await body(req),result=nativeVisualWorkspace.command(String(b.command??'inspect'),{...b,disclosure:b.disclosure??'summary',frame:Number(b.frame??0),layer:b.layer??'color',viewport:b.viewport??'desktop'});
+        return send(res,200,{ok:true,...result});
+      }
+      if(req.method==='GET'&&u.pathname==='/api/anime-forge/native-visual-workspace/asset'){
+        const file=nativeVisualWorkspace.asset(u.searchParams.get('path')),type=mime[path.extname(file)]??'application/octet-stream';
+        return send(res,200,fs.readFileSync(file),type);
+      }
       if(req.method==='POST'&&u.pathname==='/api/anime-forge/select-cut'){const b=await body(req),session=animeForgeSessions.get(b.session_id),selection=session.selectCut(b.cut_ref??b.cut_id);return send(res,200,{ok:true,...selection,session:session.inspect()});}
       if(req.method==='POST'&&u.pathname==='/api/anime-forge/xsheet'){const b=await body(req);const session=animeForgeSessions.get(b.session_id);return send(res,200,{ok:true,...session.inspect(),xsheet:session.xsheet(b.cut_ref??b.cut_id)});}
       if(req.method==='POST'&&u.pathname==='/api/anime-forge/xsheets'){const b=await body(req);const session=animeForgeSessions.get(b.session_id);return send(res,200,{ok:true,session_id:session.session_id,xsheets:session.xsheets()});}
@@ -240,5 +254,5 @@ export async function startStudioServer({host='127.0.0.1',port=17608,dataDir=pat
     }catch(e){send(res,500,{error:{code:e.code??'ERROR',message:e.message,details:e.details??{}}});}
   });
   await new Promise(r=>server.listen(port,host,r));
-  return{server,url:`http://${host}:${server.address().port}`,runtime,behaviorSessions,unifiedSessions,assetForgeSessions,animeForgeSessions,characterGenomeSessions};
+  return{server,url:`http://${host}:${server.address().port}`,runtime,behaviorSessions,unifiedSessions,assetForgeSessions,animeForgeSessions,nativeVisualWorkspace,characterGenomeSessions};
 }

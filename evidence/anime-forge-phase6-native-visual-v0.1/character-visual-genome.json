@@ -1,0 +1,225 @@
+{
+  "format": "rncs.character-visual-genome.v0.1",
+  "version": "0.1.0-alpha.1",
+  "visual_genome_id": "visual-genome:87f205a1f423dc8ff31f4f09",
+  "character_id": "character:8de0ed5681eb6872bde2a125",
+  "genome_id": "character-genome:ad2a8735dbc4b0bcd8eed58f",
+  "source_genome_root": "6a347e8be5de30cfc151db5236aeee67691eb1b2bdf4dd1cad04ed8a401d9b26",
+  "identity_root": "1059bc9acb922576c453ac163a19d956f32bc5d2179da3b7078b0c260f823c77",
+  "identity_signature": {
+    "format": "rncs.character-identity-signature.v0.1",
+    "version": "0.1.0-alpha.1",
+    "character_id": "character:8de0ed5681eb6872bde2a125",
+    "genome_id": "character-genome:ad2a8735dbc4b0bcd8eed58f",
+    "identity_root": "1059bc9acb922576c453ac163a19d956f32bc5d2179da3b7078b0c260f823c77",
+    "topology_family": "young-male-slim",
+    "face_proportion_vector": [
+      0.54,
+      0.5,
+      0.55,
+      0.43,
+      0.52,
+      0.48,
+      0.42,
+      0.46,
+      0.5,
+      0.56,
+      0.48,
+      0.52,
+      0.5,
+      0.56,
+      0.47,
+      0.52,
+      0.62,
+      0.62,
+      0.42,
+      0.4,
+      0.46,
+      0.51,
+      0.56,
+      0.5,
+      0.42,
+      0.5,
+      0.46,
+      0.42
+    ],
+    "body_proportion_vector": [
+      0.52,
+      0.61,
+      0.54,
+      0.62,
+      0.55
+    ],
+    "silhouette_vector": [
+      0.47,
+      0.56,
+      0.42,
+      0.42,
+      0.52,
+      0.62,
+      0.61
+    ],
+    "eye_signature": [
+      0.52,
+      0.5,
+      0.56,
+      0.48
+    ],
+    "jaw_signature": [
+      0.42,
+      0.62,
+      0.62,
+      0.52,
+      0.48
+    ],
+    "nose_signature": [
+      0.56,
+      0.42,
+      0.5
+    ],
+    "mouth_signature": [
+      0.51,
+      0.42,
+      0.46,
+      0.4
+    ],
+    "palette_anchor": "#6ea5d4",
+    "canonical_landmarks": {
+      "eye_line": 0.69,
+      "nose_tip": 0.61,
+      "mouth_line": 0.55,
+      "chin": 0.47,
+      "shoulder_line": 0.39
+    },
+    "immutable_identity_fields": [
+      "character_id",
+      "species_family",
+      "topology_family",
+      "identity_parameters"
+    ],
+    "signature_root": "581f99e937b429a93830b87ef38b63ed38c9972895bea2ce55a7fe5e3f22dd89"
+  },
+  "seed": "native-visual-genesis-v0.1",
+  "proportions": {
+    "height_m": 1.82,
+    "head_body_ratio": 0.52,
+    "shoulder_width": 0.62,
+    "torso_length": 0.55,
+    "limb_ratio": 0.61,
+    "neck_length": 0.1016,
+    "pelvis_width": 0.28959999999999997,
+    "arm_thickness": 0.0605,
+    "face_width": 0.47,
+    "face_length": 0.56,
+    "eye_size": 0.52,
+    "eye_spacing": 0.5,
+    "jaw_width": 0.42,
+    "mouth_width": 0.51
+  },
+  "face": {
+    "eye_style": "calm-sharp",
+    "brow_style": "restrained-straight",
+    "face_profile": "semantic-parameterized",
+    "eye_depth": 0.48,
+    "nose_bridge": 0.56,
+    "jaw_definition": 0.62,
+    "chin_projection": 0.48
+  },
+  "hair": {
+    "family": "black-wavy-medium",
+    "color": "#11151d",
+    "front_groups": 5,
+    "back_groups": 3,
+    "follow_through": "lagged-angle-spring",
+    "front_strand_clearance": 0.024
+  },
+  "costume": {
+    "family": "lan-default-v1",
+    "variant": "default",
+    "panels": [
+      "collar",
+      "chest",
+      "sleeve_l",
+      "sleeve_r",
+      "coat_tail"
+    ],
+    "follow_through": "delayed-body-chain"
+  },
+  "palette": {
+    "skin": "#d8c7bd",
+    "skin_shadow": "#a67f78",
+    "hair": "#11151d",
+    "hair_light": "#5d7287",
+    "eye": "#6ea5d4",
+    "coat": "#101827",
+    "coat_shadow": "#253653",
+    "coat_light": "#b9c6d8",
+    "accent": "#5d91ce",
+    "ink": "#0b111b",
+    "background": "#d9e1e5",
+    "background_deep": "#566875",
+    "foreground": "#162431"
+  },
+  "materials": {
+    "skin": {
+      "response": "soft-cel",
+      "shadow_mix": 0.28
+    },
+    "hair": {
+      "response": "graphic-highlight",
+      "shadow_mix": 0.44
+    },
+    "cloth": {
+      "response": "matte-cel",
+      "shadow_mix": 0.36
+    },
+    "metal": {
+      "response": "sharp-accent",
+      "shadow_mix": 0.55
+    }
+  },
+  "line_law": {
+    "profile": "stable-ink-v0.1",
+    "base_px": 4,
+    "depth_falloff": 0.32,
+    "curvature_gain": 0.18
+  },
+  "deformation_law": {
+    "mode": "bounded-joint-deformation",
+    "max_joint_angle_rad": 0.62,
+    "preserve_identity": true
+  },
+  "invariants": {
+    "character_id": "character:8de0ed5681eb6872bde2a125",
+    "identity_root": "1059bc9acb922576c453ac163a19d956f32bc5d2179da3b7078b0c260f823c77",
+    "topology_family": "young-male-slim",
+    "palette_root": "f2cc4b982b0e78e9c8d7991b6ae9b8de486fbd8cef5f2e965ebcdc1fdfe8257c",
+    "immutable": [
+      "character_id",
+      "identity_root",
+      "topology_family",
+      "identity_signature.signature_root"
+    ]
+  },
+  "provenance": {
+    "source": "Character Genome Runtime",
+    "source_genome_root": "6a347e8be5de30cfc151db5236aeee67691eb1b2bdf4dd1cad04ed8a401d9b26",
+    "generator": "native-visual-genesis-runtime"
+  },
+  "dependencies": [
+    "6a347e8be5de30cfc151db5236aeee67691eb1b2bdf4dd1cad04ed8a401d9b26",
+    "1059bc9acb922576c453ac163a19d956f32bc5d2179da3b7078b0c260f823c77",
+    "581f99e937b429a93830b87ef38b63ed38c9972895bea2ce55a7fe5e3f22dd89"
+  ],
+  "lifecycle": "derived",
+  "authority": "RNCS derived visual projection",
+  "rollback": {
+    "strategy": "restore-character-genome-root",
+    "parent_roots": [
+      "6a347e8be5de30cfc151db5236aeee67691eb1b2bdf4dd1cad04ed8a401d9b26",
+      "1059bc9acb922576c453ac163a19d956f32bc5d2179da3b7078b0c260f823c77",
+      "581f99e937b429a93830b87ef38b63ed38c9972895bea2ce55a7fe5e3f22dd89"
+    ]
+  },
+  "visual_genome_root": "b1399ff82a9b45bd2f1a61f673642f487adeeee63a66ae9dd287a6a3f407ffb1"
+}

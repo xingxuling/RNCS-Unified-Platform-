@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rncs.native-visual-genesis.v0.1",
+  "title": "RNCS Native Visual Genesis Bundle",
+  "type": "object",
+  "required": ["format", "version", "authority", "episode_intent_root", "character_visual_genome", "body_graph", "performance_plan", "scene_field", "style_law_set", "render_plan"],
+  "properties": {
+    "format": {"const": "rncs.native-visual-genesis-bundle.v0.1"},
+    "version": {"type": "string"},
+    "authority": {"const": "RNCS"},
+    "episode_intent_root": {"type": "string", "minLength": 16},
+    "character_visual_genome": {"$ref": "#/$defs/rooted"},
+    "body_graph": {"$ref": "#/$defs/rooted"},
+    "performance_plan": {"$ref": "#/$defs/rooted"},
+    "scene_field": {"$ref": "#/$defs/rooted"},
+    "style_law_set": {"$ref": "#/$defs/rooted"},
+    "render_plan": {"$ref": "#/$defs/rooted"}
+  },
+  "$defs": {
+    "rooted": {
+      "type": "object",
+      "required": ["format", "version", "provenance", "dependencies", "lifecycle", "authority", "rollback"],
+      "properties": {
+        "format": {"type": "string"},
+        "version": {"type": "string"},
+        "provenance": {"type": "object"},
+        "dependencies": {"type": "array"},
+        "lifecycle": {"type": "string"},
+        "authority": {"type": "string"},
+        "rollback": {"type": "object"}
+      }
+    }
+  }
+}

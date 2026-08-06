@@ -1,0 +1,62 @@
+{
+  "format": "rncs.native-visual-ledger.v0.1",
+  "version": "0.1.0-alpha.1",
+  "authority": "RNCS",
+  "ledger_internal_root": "7f036769dfa19a187e2b3fb3bcb576cbc4507d2243316bf754de12655a966740",
+  "ledger_file_sha256": "0558476651b94c72d13de81b33731b1e70c3c7b149391152830eec240840800d",
+  "evidence_bundle_root": "9cf69c2717bf4e1db2933b2b8c8a3770d387e869ed5def9756d5468fa3db993c",
+  "artifact_sha256": {
+    "mp4": "f48a8deb3524ce84d88eef511a8d4b346ce143c82b4624feaee15ad16a4a6444",
+    "wav": "391176f19cc65dad9bee5b0b2a9ca7a67a49e13ecebb03da44083cd44ca2b42c"
+  },
+  "source_package_sha256": "c5ebedef4f7008f1b48b508529a18d34bc6344a7191a6f3f4e3633ae959f0e69",
+  "media_sha256": {
+    "mp4": "f48a8deb3524ce84d88eef511a8d4b346ce143c82b4624feaee15ad16a4a6444",
+    "wav": "391176f19cc65dad9bee5b0b2a9ca7a67a49e13ecebb03da44083cd44ca2b42c"
+  },
+  "roots": {
+    "episode_intent_root": "c57563c58810e6cefe13209a78597b2c3ed0a5a7a917644f6f9ed92355fec01d",
+    "shot_intent_root": "77048c712e9f446e3fcf19e3efef4321b1a4d6b6a04ec8395a26b9f0dfe74dda",
+    "character_identity_root": "1059bc9acb922576c453ac163a19d956f32bc5d2179da3b7078b0c260f823c77",
+    "visual_genome_root": "b1399ff82a9b45bd2f1a61f673642f487adeeee63a66ae9dd287a6a3f407ffb1",
+    "body_graph_root": "f7772c6ae8257b493ca1235f1738525b91fab193ff1939117df9390cd6aedb3e",
+    "candidate_body_graph_root": "f273af7f351875ef0c2ea907a85ecc821678657ad97a214951cdd2e70d6eeab8",
+    "topology_root": "f7584aa23150b516f532bf2a0f825d172d40075f091833f572923a3002cbea0f",
+    "skeleton_root": "6e8b8897ebcfdef8ddbe1e8e4be5d39f6259cea6d25c59c7010f435d3f5c508a",
+    "facial_rig_root": "827588ffd4d371072391f490185c456ddc98cec24f58b0cfed943692a75274c5",
+    "hair_rig_root": "2b8fef12be59c15835080e2f5b531c7da6d23201bab364e0b85d6341eba4fb83",
+    "costume_rig_root": "ffabc4a15c6709b4ae0568521536865bd756340f8b785ab1b8890ef2392410eb",
+    "scene_field_root": "b0792cc958f91045c31dc11451c3419752975fd185367996047f2990d767a8b4",
+    "camera_program_root": "0b80c135729ed09b66dc18517183ead8833f2391fc50dcadbd31dba3839e5492",
+    "performance_root": "606cdfabc9de92a86c3358a465cebac8ec8926dc8145e40ced86169dd705923e",
+    "style_law_root": "9e4c926f426235bc7ceb7c3f3679fa46cf6f5e6bea23f053b9d48d5bd7b9e1db",
+    "backend_root": "547029637201e90cbf3f1ba02b385b9710e970532351ee28da9e12a9a8ac1f1e",
+    "render_plan_root": "d1c93d466a149682fcf3e8340ef4d4a241ca4464ee0832881e5c6ab80d7e630b",
+    "frame_sequence_root": "eaedf668236f54f9a78fed633748ad1af01189450d9f52294f4a54a26b60578c",
+    "motion_root": "d05cb9f80d68a6345b57a902ee87bd77663d6092f4e0f9131f7a2512fe377ca4",
+    "depth_root": "fe12abbb2d261eb5ce58f7b870161db2afac7e0073c19aaedbdf7638e61a5636",
+    "mask_root": "c2e2a127787f488c5842ee18fc160186874ec3d8a2b9f317bb11ec71f65b61ed",
+    "residual_report_root": "8680f5b5740452caf7d0b2a475f202c54e50ae445517dc97461d2a458914bd53",
+    "repair_candidate_root": "2e38eef0d7b897fc148203c02c12aaa31a59a4613145de3c2d02e1a7e31e0408",
+    "repair_receipt_root": "c78d99e0e04c56e4fb66b54bf4d420ae5879b02879f9fecc7625ebfcbbb61fb2",
+    "audio_root": "391176f19cc65dad9bee5b0b2a9ca7a67a49e13ecebb03da44083cd44ca2b42c",
+    "audio_video_sync_root": "57f100a6dc7de81fc3028252654e78d73fb99d57cc19ce74ee5f19e5eb357505",
+    "mp4_sha256": "f48a8deb3524ce84d88eef511a8d4b346ce143c82b4624feaee15ad16a4a6444",
+    "ffprobe_root": "78a3aeb16494a1b292a41268c0882f560e97c60799b8b76a92eac1d5ca9cab7a",
+    "ab_comparison_root": "803adc09b1040c90d9d21acc0194bdf7b207d038ff43d967d848eec836bf5a17"
+  },
+  "gates": {
+    "native_chain": true,
+    "frame_sequence": true,
+    "nonblank": true,
+    "topology_continuity": true,
+    "repair_scope": true,
+    "audio_video_sync": true,
+    "mp4": true,
+    "ffprobe": true,
+    "human_visual_acceptance": "pending",
+    "commercial_quality": "not-proven"
+  },
+  "boundary": "experimental RNCS-native visual genesis; not commercial Anime quality",
+  "ledger_root": "ee37147626c04aedf835cf2d514267fd39d96af6e3fc3a9ae61ae51b5038bca4"
+}

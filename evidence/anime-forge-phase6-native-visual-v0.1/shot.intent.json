@@ -1,0 +1,11 @@
+{
+  "format": "rncs.shot-intent.v0.1",
+  "shot_id": "native-shot-001",
+  "episode_intent_root": "c57563c58810e6cefe13209a78597b2c3ed0a5a7a917644f6f9ed92355fec01d",
+  "view": "three-quarter",
+  "shot_size": "medium-upper-body",
+  "fps": 24,
+  "width": 1280,
+  "height": 720,
+  "frame_count": 120
+}

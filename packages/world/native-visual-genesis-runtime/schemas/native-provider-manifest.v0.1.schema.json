@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rncs.native-provider-manifest.v0.1",
+  "title": "RNCS Native Visual Provider Manifest",
+  "type": "object",
+  "required": ["format", "version", "authority", "providers", "toolchain", "external_visual_model_required"],
+  "properties": {
+    "format": {"const": "rncs.native-provider-manifest.v0.1"},
+    "version": {"type": "string"},
+    "authority": {"const": "RNCS"},
+    "manifest_root": {"type": "string", "minLength": 16},
+    "external_visual_model_required": {"type": "boolean"},
+    "toolchain": {"type": "object"},
+    "providers": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["provider_id", "version", "role", "input_types", "output_types", "resolution", "fps", "deterministic", "seed_support", "character_continuity", "motion", "gpu", "cpu", "timeout_ms", "cost", "failure_types", "evidence_output", "real_media"],
+        "properties": {
+          "provider_id": {"type": "string", "minLength": 1},
+          "version": {"type": ["string", "null"]},
+          "role": {"type": "string", "minLength": 1},
+          "input_types": {"type": "array", "items": {"type": "string"}},
+          "output_types": {"type": "array", "items": {"type": "string"}},
+          "resolution": {"type": ["object", "null"]},
+          "fps": {"type": ["number", "null"]},
+          "deterministic": {"type": "boolean"},
+          "seed_support": {"type": "boolean"},
+          "character_continuity": {"type": "string"},
+          "motion": {"type": "string"},
+          "gpu": {"type": "string"},
+          "cpu": {"type": "string"},
+          "timeout_ms": {"type": "integer", "minimum": 1},
+          "cost": {"type": "string"},
+          "failure_types": {"type": "array", "items": {"type": "string"}},
+          "evidence_output": {"type": "array", "items": {"type": "string"}},
+          "real_media": {"type": "boolean"}
+        }
+      }
+    }
+  }
+}

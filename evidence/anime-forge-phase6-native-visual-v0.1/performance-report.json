@@ -1,0 +1,17 @@
+{
+  "format": "rncs.native-render-performance-report.v0.1",
+  "version": "0.1.0-alpha.1",
+  "backend": "rncs-native-2d25d-cpu",
+  "cpu": "AMD Ryzen AI 7 350 w/ Radeon 860M",
+  "logical_processors": 16,
+  "gpu": "AMD Radeon 860M (audit baseline; shared memory)",
+  "ram_total_bytes": 25008918528,
+  "ram_free_after_build_bytes": 1658699776,
+  "base_render_ms": 200741,
+  "candidate_render_ms": 53551,
+  "total_render_ms": 254292,
+  "single_frame_ms": 1672.8416666666667,
+  "output_bytes": 413874,
+  "measured_at": "excluded-from-deterministic-roots",
+  "report_root": "7ed67c98d4f84b4d47d95351a17d1744264e04f043ea9bdf841a80f0c4cd97da"
+}

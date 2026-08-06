@@ -1,0 +1,314 @@
+{
+  "format": "rncs.performance-plan.v0.1",
+  "version": "0.1.0-alpha.1",
+  "performance_id": "performance:native-shot-001",
+  "fps": 24,
+  "frame_count": 120,
+  "intent": {
+    "format": "rncs.performance-intent.v0.1",
+    "version": "0.1.0-alpha.1",
+    "shot_id": "native-shot-001",
+    "start_state": "looking-offscreen-calm",
+    "end_state": "alert-confirmed",
+    "beats": [
+      "hear-signal",
+      "eyes-lead",
+      "head-follows",
+      "weight-follows",
+      "settle"
+    ],
+    "gaze_leads_head_by_frames": 10,
+    "constraints": [
+      "feet-contact",
+      "identity-locked",
+      "joint-limits",
+      "face-anchor-stable"
+    ]
+  },
+  "stages": [
+    {
+      "stage_id": "prep",
+      "start_frame": 0,
+      "end_frame": 16,
+      "easing": "smoothstep"
+    },
+    {
+      "stage_id": "rise",
+      "start_frame": 17,
+      "end_frame": 38,
+      "easing": "smoothstep"
+    },
+    {
+      "stage_id": "main-action",
+      "start_frame": 39,
+      "end_frame": 72,
+      "easing": "smoothstep"
+    },
+    {
+      "stage_id": "decelerate",
+      "start_frame": 73,
+      "end_frame": 91,
+      "easing": "smoothstep"
+    },
+    {
+      "stage_id": "overshoot",
+      "start_frame": 92,
+      "end_frame": 103,
+      "easing": "smoothstep"
+    },
+    {
+      "stage_id": "settle",
+      "start_frame": 104,
+      "end_frame": 119,
+      "easing": "smoothstep"
+    }
+  ],
+  "curves": [
+    {
+      "curve_id": "gaze-x",
+      "law": "smootherstep",
+      "points": [
+        {
+          "frame": 0,
+          "value": -0.55
+        },
+        {
+          "frame": 25,
+          "value": -0.5
+        },
+        {
+          "frame": 48,
+          "value": 0.38
+        },
+        {
+          "frame": 72,
+          "value": 0.54
+        },
+        {
+          "frame": 100,
+          "value": 0.58
+        },
+        {
+          "frame": 119,
+          "value": 0.56
+        }
+      ]
+    },
+    {
+      "curve_id": "head-yaw",
+      "law": "smootherstep",
+      "points": [
+        {
+          "frame": 0,
+          "value": -0.28
+        },
+        {
+          "frame": 34,
+          "value": -0.27
+        },
+        {
+          "frame": 59,
+          "value": 0.13
+        },
+        {
+          "frame": 82,
+          "value": 0.3
+        },
+        {
+          "frame": 98,
+          "value": 0.34
+        },
+        {
+          "frame": 119,
+          "value": 0.31
+        }
+      ]
+    },
+    {
+      "curve_id": "torso-yaw",
+      "law": "smootherstep",
+      "points": [
+        {
+          "frame": 0,
+          "value": -0.06
+        },
+        {
+          "frame": 45,
+          "value": -0.05
+        },
+        {
+          "frame": 74,
+          "value": 0.08
+        },
+        {
+          "frame": 99,
+          "value": 0.14
+        },
+        {
+          "frame": 119,
+          "value": 0.11
+        }
+      ]
+    },
+    {
+      "curve_id": "shoulder-follow",
+      "law": "smootherstep",
+      "points": [
+        {
+          "frame": 0,
+          "value": 0
+        },
+        {
+          "frame": 52,
+          "value": 0
+        },
+        {
+          "frame": 78,
+          "value": 0.12
+        },
+        {
+          "frame": 102,
+          "value": 0.18
+        },
+        {
+          "frame": 119,
+          "value": 0.15
+        }
+      ]
+    },
+    {
+      "curve_id": "weight-shift",
+      "law": "smootherstep",
+      "points": [
+        {
+          "frame": 0,
+          "value": -0.02
+        },
+        {
+          "frame": 38,
+          "value": -0.03
+        },
+        {
+          "frame": 72,
+          "value": 0.08
+        },
+        {
+          "frame": 96,
+          "value": 0.14
+        },
+        {
+          "frame": 119,
+          "value": 0.1
+        }
+      ]
+    },
+    {
+      "curve_id": "alertness",
+      "law": "smootherstep",
+      "points": [
+        {
+          "frame": 0,
+          "value": 0.12
+        },
+        {
+          "frame": 35,
+          "value": 0.16
+        },
+        {
+          "frame": 70,
+          "value": 0.72
+        },
+        {
+          "frame": 99,
+          "value": 0.9
+        },
+        {
+          "frame": 119,
+          "value": 0.82
+        }
+      ]
+    },
+    {
+      "curve_id": "breath",
+      "law": "smootherstep",
+      "points": [
+        {
+          "frame": 0,
+          "value": 0.18
+        },
+        {
+          "frame": 25,
+          "value": 0.26
+        },
+        {
+          "frame": 50,
+          "value": 0.16
+        },
+        {
+          "frame": 78,
+          "value": 0.3
+        },
+        {
+          "frame": 105,
+          "value": 0.17
+        },
+        {
+          "frame": 119,
+          "value": 0.22
+        }
+      ]
+    }
+  ],
+  "secondary_motion_chains": [
+    {
+      "chain_id": "hair-follow-through",
+      "driver_curve_id": "head-yaw",
+      "lag_frames": 3,
+      "damping": 0.72,
+      "amplitude": 0.11,
+      "mode": "velocity-lag"
+    },
+    {
+      "chain_id": "costume-follow-through",
+      "driver_curve_id": "torso-yaw",
+      "lag_frames": 5,
+      "damping": 0.58,
+      "amplitude": 0.08,
+      "mode": "delayed-settle"
+    },
+    {
+      "chain_id": "shoulder-inertia",
+      "driver_curve_id": "weight-shift",
+      "lag_frames": 2,
+      "damping": 0.66,
+      "amplitude": 0.05,
+      "mode": "weight-follow"
+    }
+  ],
+  "dialogue_timeline": null,
+  "receipt": {
+    "format": "rncs.performance-receipt.v0.1",
+    "version": "0.1.0-alpha.1",
+    "anticipation": true,
+    "overshoot": true,
+    "settle": true,
+    "curve_root": "30b26a4c6c20c316c33a84089a1e844a64a2a608ac6324e1b63ffe01ef472527",
+    "stage_root": "c640bc4b6023252ead292f6b0a032e34b9e077457ff57787f9bef63386250ddd"
+  },
+  "provenance": {
+    "source": "Episode Shot Intent",
+    "shot_id": "native-shot-001"
+  },
+  "dependencies": [
+    "native-shot-001"
+  ],
+  "lifecycle": "derived",
+  "authority": "RNCS derived performance state",
+  "rollback": {
+    "strategy": "restore-shot-intent-root",
+    "parent_roots": [
+      "native-shot-001"
+    ]
+  },
+  "performance_root": "606cdfabc9de92a86c3358a465cebac8ec8926dc8145e40ced86169dd705923e"
+}

@@ -13,6 +13,8 @@ evidence/*
 !evidence/anime-forge-phase4-v0.1/**
 !evidence/anime-forge-phase5-visual-body-v0.1/
 !evidence/anime-forge-phase5-visual-body-v0.1/**
+!evidence/anime-forge-phase6-native-visual-v0.1/
+!evidence/anime-forge-phase6-native-visual-v0.1/**
 !packages/languages/reality-computation-language/examples/rncs-rcl-control-plane/evidence/
 !packages/languages/reality-computation-language/examples/rncs-rcl-control-plane/evidence/latest/
 !packages/languages/reality-computation-language/examples/rncs-rcl-control-plane/evidence/latest/**
