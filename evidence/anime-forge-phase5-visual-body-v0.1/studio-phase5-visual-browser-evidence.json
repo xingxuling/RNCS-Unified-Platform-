@@ -258,7 +258,7 @@
       "visual_failure": "MODEL_MISSING",
       "human_status": "pending",
       "screenshot": "tmp/playwright/anime-forge-phase5-visual/ANIME_FORGE_PHASE5_VISUAL_mobile.png",
-      "screenshot_bytes": 33734
+      "screenshot_bytes": 33806
     }
   },
   "page_errors": [],
