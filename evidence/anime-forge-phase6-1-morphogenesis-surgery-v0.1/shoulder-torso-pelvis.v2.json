@@ -1,0 +1,66 @@
+{
+  "format": "rncs.shoulder-torso-pelvis-structure",
+  "version": "2.0.0-alpha.1",
+  "body_surface_root": "6a163516f8d07935181373a4374ff9481cfbd358278255a05af1d875ee5b05a4",
+  "clavicle_layer": {
+    "left": [
+      -0.175,
+      0.382,
+      0
+    ],
+    "right": [
+      0.175,
+      0.382,
+      0
+    ],
+    "depth": 0.105
+  },
+  "shoulder_girdle": {
+    "center": [
+      0,
+      0.475,
+      0
+    ],
+    "width": 0.48,
+    "rotation_coupling": 0.36
+  },
+  "ribcage_volume": {
+    "center": [
+      0,
+      0.475,
+      0.02
+    ],
+    "width": 0.225,
+    "height": 0.16,
+    "depth": 0.09
+  },
+  "waist_narrowing": 0.42,
+  "pelvis_base": {
+    "method": "belted-ellipsoid",
+    "center": [
+      0,
+      0.68,
+      -0.005
+    ],
+    "width": 0.36,
+    "height": 0.12,
+    "depth": 0.075,
+    "hip_blend": true
+  },
+  "torso_twist_relation": {
+    "sternum_to_pelvis": true,
+    "max_degrees": 18,
+    "weight_transfer": 0.42
+  },
+  "transitions": [
+    "neck-to-clavicle",
+    "clavicle-to-shoulder-cap",
+    "shoulder-to-ribcage",
+    "ribcage-to-waist",
+    "waist-to-pelvis"
+  ],
+  "provenance": {
+    "body_surface_root": "6a163516f8d07935181373a4374ff9481cfbd358278255a05af1d875ee5b05a4"
+  },
+  "shoulder_torso_pelvis_root": "85adfdb70ab7c9e6eee0fed23fd3d749f64b6643ae4d3eedfccf4f895173cbf8"
+}

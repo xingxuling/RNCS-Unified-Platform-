@@ -1,0 +1,17 @@
+{
+  "name": "@taowind/native-character-morphogenesis-runtime",
+  "version": "0.1.0-alpha.1",
+  "type": "module",
+  "description": "RNCS-native Character Body Surface, Face Rig, Hair Topology and joint deformation runtime.",
+  "license": "Apache-2.0",
+  "exports": {
+    ".": "./src/index.mjs",
+    "./anatomy": "./src/anatomy.mjs",
+    "./renderer": "./src/renderer.mjs"
+  },
+  "files": ["src", "schemas", "tests", "README.md", "STATUS.md"],
+  "scripts": {
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs"
+  },
+  "engines": {"node": ">=20"}
+}

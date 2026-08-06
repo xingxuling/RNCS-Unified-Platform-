@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rncs://schemas/anime-provider-manifest.v0.1",
+  "title": "RNCS Anime Provider Manifest",
+  "type": "object",
+  "required": ["format", "provider_id", "input_types", "output_types", "resolution", "fps", "deterministic", "seed_support", "character_continuity", "motion_capability", "compute", "timeout_seconds", "failure_types", "evidence_outputs"],
+  "properties": {
+    "format": {"const": "rncs.anime-forge-provider-manifest.v0.1"},
+    "provider_id": {"type": "string", "minLength": 3},
+    "display_name": {"type": "string"},
+    "input_types": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "output_types": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "resolution": {"type": "object", "required": ["width", "height"], "properties": {"width": {"type": "integer", "minimum": 1}, "height": {"type": "integer", "minimum": 1}}, "additionalProperties": false},
+    "fps": {"type": "number", "exclusiveMinimum": 0},
+    "deterministic": {"type": "boolean"},
+    "seed_support": {"type": "boolean"},
+    "character_continuity": {"type": "boolean"},
+    "motion_capability": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "gpu_required": {"type": "boolean"},
+    "cpu_required": {"type": "boolean"},
+    "timeout_seconds": {"type": "number", "exclusiveMinimum": 0},
+    "cost": {"type": "string"},
+    "failure_types": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "evidence_outputs": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "provider_root": {"type": "string", "minLength": 16}
+  },
+  "additionalProperties": true
+}

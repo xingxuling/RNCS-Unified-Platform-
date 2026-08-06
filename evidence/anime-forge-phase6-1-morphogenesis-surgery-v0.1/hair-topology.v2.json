@@ -1,0 +1,437 @@
+{
+  "topology_format": "rncs.character-hair-topology",
+  "version": "2.0.0-alpha.1",
+  "character_id": "lan-tianlin",
+  "visual_genome_root": "a6052148c9db40ed583ec810b3c3448ccad59f6b2b6e7d38ac26f2aecc61bcd9",
+  "face_rig_root": "61d3f6a3f852f153e08d2b04e2ab46fc94123bc4f78fffac63344c874160191e",
+  "scalp_anchors": [
+    [
+      -0.11,
+      0.135,
+      0.04
+    ],
+    [
+      -0.07,
+      0.115,
+      0.09
+    ],
+    [
+      0,
+      0.105,
+      0.115
+    ],
+    [
+      0.07,
+      0.115,
+      0.09
+    ],
+    [
+      0.11,
+      0.135,
+      0.04
+    ],
+    [
+      -0.12,
+      0.205,
+      0.03
+    ],
+    [
+      0.12,
+      0.205,
+      0.03
+    ]
+  ],
+  "hairline_curve": [
+    [
+      -0.125,
+      0.13,
+      0.06
+    ],
+    [
+      -0.06,
+      0.112,
+      0.105
+    ],
+    [
+      0,
+      0.105,
+      0.125
+    ],
+    [
+      0.06,
+      0.112,
+      0.105
+    ],
+    [
+      0.125,
+      0.13,
+      0.06
+    ]
+  ],
+  "main_hair_masses": [
+    {
+      "id": "crown-mass",
+      "attach": "scalp-0..4",
+      "shape": "rounded-cap",
+      "silhouette": [
+        [
+          -0.15,
+          0.17,
+          0
+        ],
+        [
+          -0.16,
+          0.075,
+          0
+        ],
+        [
+          -0.08,
+          0.025,
+          0.01
+        ],
+        [
+          0,
+          0.01,
+          0.02
+        ],
+        [
+          0.08,
+          0.025,
+          0.01
+        ],
+        [
+          0.16,
+          0.075,
+          0
+        ],
+        [
+          0.15,
+          0.17,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "back-mass",
+      "attach": "scalp-0..6",
+      "shape": "rounded-curtain",
+      "silhouette": [
+        [
+          -0.16,
+          0.14,
+          -0.02
+        ],
+        [
+          -0.18,
+          0.28,
+          -0.015
+        ],
+        [
+          -0.12,
+          0.36,
+          -0.01
+        ],
+        [
+          0,
+          0.38,
+          -0.005
+        ],
+        [
+          0.12,
+          0.36,
+          -0.01
+        ],
+        [
+          0.18,
+          0.28,
+          -0.015
+        ],
+        [
+          0.16,
+          0.14,
+          -0.02
+        ]
+      ]
+    }
+  ],
+  "front_bangs_groups": [
+    {
+      "id": "bang-left",
+      "attach": "scalp-1..2",
+      "shape": "soft-taper",
+      "points": [
+        [
+          -0.105,
+          0.112,
+          0.14
+        ],
+        [
+          -0.058,
+          0.105,
+          0.15
+        ],
+        [
+          -0.045,
+          0.155,
+          0.145
+        ],
+        [
+          -0.078,
+          0.168,
+          0.135
+        ]
+      ]
+    },
+    {
+      "id": "bang-center",
+      "attach": "scalp-2",
+      "shape": "soft-taper",
+      "points": [
+        [
+          -0.035,
+          0.105,
+          0.15
+        ],
+        [
+          -0.012,
+          0.102,
+          0.17
+        ],
+        [
+          0.012,
+          0.15,
+          0.17
+        ],
+        [
+          0.035,
+          0.11,
+          0.145
+        ]
+      ]
+    },
+    {
+      "id": "bang-right",
+      "attach": "scalp-2..3",
+      "shape": "soft-taper",
+      "points": [
+        [
+          0.035,
+          0.11,
+          0.145
+        ],
+        [
+          0.062,
+          0.105,
+          0.15
+        ],
+        [
+          0.08,
+          0.155,
+          0.145
+        ],
+        [
+          0.095,
+          0.115,
+          0.14
+        ]
+      ]
+    }
+  ],
+  "side_locks": [
+    {
+      "id": "side-left",
+      "attach": "scalp-5",
+      "points": [
+        [
+          -0.13,
+          0.16,
+          0.04
+        ],
+        [
+          -0.18,
+          0.23,
+          0.02
+        ],
+        [
+          -0.15,
+          0.34,
+          0
+        ],
+        [
+          -0.105,
+          0.285,
+          0.04
+        ]
+      ]
+    },
+    {
+      "id": "side-right",
+      "attach": "scalp-6",
+      "points": [
+        [
+          0.13,
+          0.16,
+          0.04
+        ],
+        [
+          0.18,
+          0.23,
+          0.02
+        ],
+        [
+          0.15,
+          0.34,
+          0
+        ],
+        [
+          0.105,
+          0.285,
+          0.04
+        ]
+      ]
+    }
+  ],
+  "back_hair_groups": [
+    {
+      "id": "back-left",
+      "attach": "scalp-0..2",
+      "silhouette": [
+        [
+          -0.15,
+          0.16,
+          -0.02
+        ],
+        [
+          -0.19,
+          0.25,
+          -0.02
+        ],
+        [
+          -0.15,
+          0.37,
+          -0.01
+        ],
+        [
+          -0.05,
+          0.35,
+          0
+        ],
+        [
+          -0.09,
+          0.2,
+          0.02
+        ]
+      ]
+    },
+    {
+      "id": "back-right",
+      "attach": "scalp-2..4",
+      "silhouette": [
+        [
+          0.15,
+          0.16,
+          -0.02
+        ],
+        [
+          0.19,
+          0.25,
+          -0.02
+        ],
+        [
+          0.15,
+          0.37,
+          -0.01
+        ],
+        [
+          0.05,
+          0.35,
+          0
+        ],
+        [
+          0.09,
+          0.2,
+          0.02
+        ]
+      ]
+    }
+  ],
+  "silhouette_curves": [
+    "crown-mass",
+    "back-mass",
+    "side-left",
+    "side-right",
+    "bang-left",
+    "bang-center",
+    "bang-right"
+  ],
+  "overlap_order": [
+    "back-mass",
+    "back-left",
+    "back-right",
+    "head",
+    "side-left",
+    "side-right",
+    "face",
+    "bang-left",
+    "bang-center",
+    "bang-right",
+    "hair-highlight"
+  ],
+  "motion_chains": [
+    {
+      "id": "side-lock-left",
+      "parent": "scalp-5",
+      "lag": 0.16,
+      "max_angle_deg": 9,
+      "collision": "face-clearance"
+    },
+    {
+      "id": "side-lock-right",
+      "parent": "scalp-6",
+      "lag": 0.16,
+      "max_angle_deg": 9,
+      "collision": "face-clearance"
+    },
+    {
+      "id": "bangs",
+      "parent": "scalp-1..3",
+      "lag": 0.09,
+      "max_angle_deg": 5,
+      "collision": "forehead-only"
+    },
+    {
+      "id": "back-mass",
+      "parent": "scalp-0..6",
+      "lag": 0.2,
+      "max_angle_deg": 7,
+      "collision": "body-clearance"
+    }
+  ],
+  "lag_constraints": {
+    "max_frame_delta": 8,
+    "max_screen_displacement": 0.035,
+    "settle_frames": 12
+  },
+  "collision_or_face_avoidance": {
+    "face_clearance": 0.018,
+    "eye_clearance": 0.012,
+    "mouth_clearance": 0.01,
+    "scalp_attachment_required": true
+  },
+  "style_law_bindings": {
+    "mass": "rounded-anime-mass",
+    "line": "stable-contour",
+    "highlight": "single-following-band"
+  },
+  "highlight_regions": [
+    "crown-left",
+    "bang-center-edge",
+    "side-lock-edge"
+  ],
+  "provenance": {
+    "source": "Face Rig 2.0 scalp anchors",
+    "genome_root": "bb7b19fb23a61c96fd931e4b8c5b46370b8e64d619e37e92e02b52cbddb09782",
+    "face_rig_root": "61d3f6a3f852f153e08d2b04e2ab46fc94123bc4f78fffac63344c874160191e"
+  },
+  "hair_topology_root": "d6d39115fe8a378d8e9f1bb9700e0d267cfcb6d48fa89070b5b61871048d67cc"
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rncs://schemas/character-body-surface.v2",
+  "type": "object",
+  "required": ["surface_format", "version", "body_surface_root", "body_landmarks", "contour_curves", "torso_surface", "shoulder_caps", "upper_arm_surface", "elbow_envelopes", "forearm_surface", "wrist_transition", "hand_surface", "neck_surface", "head_surface", "pelvis_surface", "deformation_regions", "overlap_rules", "provenance"],
+  "properties": {
+    "surface_format": {"const": "rncs.character-body-surface"},
+    "version": {"const": "2.0.0-alpha.1"},
+    "body_surface_root": {"type": "string", "minLength": 16},
+    "body_landmarks": {"type": "object", "minProperties": 18},
+    "contour_curves": {"type": "array", "minItems": 8},
+    "torso_surface": {"type": "object"},
+    "shoulder_caps": {"type": "object"},
+    "upper_arm_surface": {"type": "object"},
+    "elbow_envelopes": {"type": "object"},
+    "forearm_surface": {"type": "object"},
+    "wrist_transition": {"type": "object"},
+    "hand_surface": {"type": "object"},
+    "neck_surface": {"type": "object"},
+    "head_surface": {"type": "object"},
+    "pelvis_surface": {"type": "object"},
+    "deformation_regions": {"type": "array", "minItems": 5},
+    "overlap_rules": {"type": "array", "minItems": 3},
+    "provenance": {"type": "object"}
+  },
+  "additionalProperties": true
+}

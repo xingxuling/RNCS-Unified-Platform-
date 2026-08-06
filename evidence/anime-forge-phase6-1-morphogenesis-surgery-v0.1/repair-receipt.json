@@ -1,0 +1,39 @@
+{
+  "format": "rncs.anime-forge-local-repair-receipt.v0.1",
+  "status": "candidate",
+  "episode_intent_root": "7619892a33b6b5a00d9f1673c59c574bbee9335fbeedd7e7a032c6fdaeed3c83",
+  "character_id": "lan-tianlin",
+  "region": "elbow-left",
+  "frame_range": {
+    "start": 55,
+    "end": 86
+  },
+  "before": {
+    "anatomy_system_root": "595fdb93d468924dd3b05ceb28846b614392782fafcc574a72de66b0b7ab9c41",
+    "body_surface_root": "6a163516f8d07935181373a4374ff9481cfbd358278255a05af1d875ee5b05a4",
+    "joint_deformation_root": "b61b300ada5a78357afa43d0850ffc2bf6390b2995edcb013a7e02e6405ee2f2",
+    "frame_root": "793037d3991b340a0b8dd38f678a6626a185c94963622faf86df392c750cec51",
+    "file": "repair-experiment/repair-before.png",
+    "file_sha256": "34b7bc519c1f3df0a289e38e7de73b7524698a5db2ff1f1a7633c112122b0633"
+  },
+  "after": {
+    "anatomy_system_root": "15b796ca4255980dc7a4528fcd54f7556a7df5924c87359adbc4f33a8bda6ade",
+    "body_surface_root": "5e6dddf9bdd09740f9e4bc5923cf1e11a6f77519c1555852360d9428bd24cb58",
+    "joint_deformation_root": "03e85097b82ce22199a07004c9f2e96679866bb7f7a35a4e4f0c7fb39ba65847",
+    "frame_root": "b5edfe7103929e5bd6138b2b63778e807232c382712a5b4dbde938405294f08b",
+    "file": "repair-experiment/repair-after.png",
+    "file_sha256": "5057bb42c915fb21b125a9980480409b46016332b7ff5df907e0a32a721462ef"
+  },
+  "root_preservation": {
+    "identity_and_unaffected_roots_preserved": true,
+    "unaffected_frames_preserved": true,
+    "global_episode_intent_preserved": true
+  },
+  "rollback": {
+    "allowed": true,
+    "method": "restore before body_surface and joint_deformation roots",
+    "rollback_receipt": "repair-experiment/rollback-receipt.json"
+  },
+  "human_visual_acceptance": "pending",
+  "repair_root": "a3dffbf36de73fd086b8c82ccb3491dd46de04250f1dde985ada54f22e674855"
+}

@@ -1,0 +1,41 @@
+{
+  "format": "rncs.anime-forge-morphogenesis-surgery-report.v0.1",
+  "phase": "6.1",
+  "baseline": {
+    "file": "phase6-baseline-frame.png",
+    "sha256": "4a9fe598ffd16d31e17ab7ae1798bc3dc3ac41bff92988df0cbf1c1854b0f329",
+    "source_commit": "65d808679827b60786407a5a04cf499bdda67f04",
+    "source": "Phase 6 audit-only evidence"
+  },
+  "after": {
+    "pack_root": "eb00133dab07bf2b40df2089451840336c0b8005ace16a7273577fbd289a2ab5",
+    "shot_frame_manifest_root": "333c14d68f2d345477ca7129b75ac7d52af7cdf925201a0eabb187648b39717a",
+    "frames": [
+      {
+        "file": "phase6-1-frame-start.png",
+        "sha256": "4833156fff2a930089702a49881bd0f4075caaa116b915b5d701a9ffee58a68c"
+      },
+      {
+        "file": "phase6-1-frame-action.png",
+        "sha256": "54e18543dc8c4af169ce81558b81756a942f1da73768c33ab9ed8a1cd49f1f7c"
+      },
+      {
+        "file": "phase6-1-frame-settle.png",
+        "sha256": "c5afabdedd1b0828a37225dce6131f40309796f5d5564d071ce96f9dd3caafa0"
+      }
+    ]
+  },
+  "criteria": {
+    "head_face_coordinate_stability": "complete",
+    "hair_scalp_attachment": "complete",
+    "shoulder_torso_pelvis_surface": "complete",
+    "joint_volume_preservation": "complete",
+    "hand_abstraction": "complete",
+    "style_after_anatomy": "complete",
+    "media_closure": "complete"
+  },
+  "visual_surgery_uplift_vs_phase6": "pending-human-review",
+  "human_visual_acceptance": "pending",
+  "commercial_quality": "not-proven",
+  "comparison_root": "7ef1d0e64562b64af87e1dd10739c7b3b375054ff7908e742064028bbf895c88"
+}

@@ -1,0 +1,21 @@
+{
+  "format": "rncs.anime-forge-residual-report.v0.1",
+  "before": {
+    "head_face": "structural-residual",
+    "hair_scalp": "structural-residual",
+    "shoulder_torso_pelvis": "structural-residual",
+    "elbow": "local-contour-residual",
+    "hands": "experimental-blocks",
+    "continuous_surface": "improved-experimental"
+  },
+  "after": {
+    "head_face": "shared-coordinate-stable",
+    "hair_scalp": "scalp-attached-topology",
+    "shoulder_torso_pelvis": "continuous-cross-section",
+    "elbow": "local-repair-candidate",
+    "hands": "angle-aware-blocks",
+    "continuous_surface": "experimental"
+  },
+  "comparison": "pending-human-review",
+  "repair_root": "a3dffbf36de73fd086b8c82ccb3491dd46de04250f1dde985ada54f22e674855"
+}

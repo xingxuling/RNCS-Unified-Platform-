@@ -1,0 +1,12 @@
+{
+  "format": "rncs.anime-forge-audio-video-sync-report.v0.1",
+  "status": "pass",
+  "video_duration_seconds": 5,
+  "audio_duration_seconds": 5,
+  "duration_delta_seconds": 0,
+  "dialogue_frames": [
+    34,
+    98
+  ],
+  "failure": null
+}

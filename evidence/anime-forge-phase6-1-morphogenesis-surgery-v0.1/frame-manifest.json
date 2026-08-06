@@ -1,0 +1,3139 @@
+{
+  "format": "rncs.anime-forge-native-shot-frame-manifest.v0.1",
+  "episode_id": "EP01",
+  "cut_ids": [
+    "CUT-PHASE6-1-NATIVE"
+  ],
+  "shot_id": "EP01-Q01",
+  "fps": 24,
+  "width": 1280,
+  "height": 720,
+  "frame_count": 120,
+  "duration_seconds": 5,
+  "provider_id": "rncs.native-character-morphogenesis.cpu",
+  "deterministic": true,
+  "seed": "lan-tianlin-character-v1",
+  "frames": [
+    {
+      "frame_number": 1,
+      "global_frame_number": 1,
+      "time_seconds": 0,
+      "filename": "rebuilt-native-shot/frames/frame-000001.png",
+      "file_sha256": "4833156fff2a930089702a49881bd0f4075caaa116b915b5d701a9ffee58a68c",
+      "frame_root": "da6caedaf1893de3f4604495faf7ca049858e6e35988a228748ce44a04053424",
+      "pose_root": "pose:6d950e4d8af74a92",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.010097651817694758,
+        "costume_lag": 0,
+        "breath": 0,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 2,
+      "global_frame_number": 2,
+      "time_seconds": 0.041667,
+      "filename": "rebuilt-native-shot/frames/frame-000002.png",
+      "file_sha256": "747291b146af4ac1fb0e93d98adc85f0a29e3db09d9254828c787dfccc1ba66b",
+      "frame_root": "32856c2dc9bb1d20ad39c935f73272009549db00fc38ed8c84e5cb1329573a03",
+      "pose_root": "pose:94a8f34423a65d30",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.010425755535315837,
+        "costume_lag": 0.00042220277704369896,
+        "breath": 0.0005264667993175739,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 3,
+      "global_frame_number": 3,
+      "time_seconds": 0.083333,
+      "filename": "rebuilt-native-shot/frames/frame-000003.png",
+      "file_sha256": "b5113fde0d85b74c636ff8ea9d830e683883da98aebc5b0d23926adb3bfced84",
+      "frame_root": "6b33c30aa2ba83f11b3b058b093bc41a429134309130d1cbb2f645eef79fb6e5",
+      "pose_root": "pose:ea7c54fc515159e1",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.010724800802328453,
+        "costume_lag": 0.000843228799222782,
+        "breath": 0.001043773795592067,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 4,
+      "global_frame_number": 4,
+      "time_seconds": 0.125,
+      "filename": "rebuilt-native-shot/frames/frame-000004.png",
+      "file_sha256": "d332594cd870232f3472c5d696e4fcfa59bb4110c6634e4396071409b4f4c9dd",
+      "frame_root": "2903d2e846bdcfa015e38b76919fcf6666692edb42c2927bf39a377ba48a3c4b",
+      "pose_root": "pose:a00051f0712c2c51",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.010993954125937606,
+        "costume_lag": 0.0012619045914995003,
+        "breath": 0.0015429205538391184,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 5,
+      "global_frame_number": 5,
+      "time_seconds": 0.166667,
+      "filename": "rebuilt-native-shot/frames/frame-000005.png",
+      "file_sha256": "fef2665866ff1b243847e2408aceeb73cafd3f4d26150438e0493926f80184e2",
+      "frame_root": "c4e1d0ad308c31eb29a5e16eb2c50a14ebb75865534a4073de413b56025ba0a9",
+      "pose_root": "pose:34f4cd9217b5343d",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.01123246532755588,
+        "costume_lag": 0.0016770632293483722,
+        "breath": 0.002015222602405318,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 6,
+      "global_frame_number": 6,
+      "time_seconds": 0.208333,
+      "filename": "rebuilt-native-shot/frames/frame-000006.png",
+      "file_sha256": "2f018522f306e80667fe23f5a78bdfa7b4105a39d9ff2b26e7e2604d00e93209",
+      "frame_root": "30e3e0765675034873cc08c9dd1399f2ac3a1f3a9508cdd4894e0b39c38d9f12",
+      "pose_root": "pose:aac120d4af4be120",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.011439669633685727,
+        "costume_lag": 0.002087547591184134,
+        "breath": 0.0024524625309101486,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 7,
+      "global_frame_number": 7,
+      "time_seconds": 0.25,
+      "filename": "rebuilt-native-shot/frames/frame-000007.png",
+      "file_sha256": "c453e43ed218065a9e5ee4f9522ff9d0f7431346fcdb3d64f1bf467f39451ba2",
+      "frame_root": "c8b58615a9865bf5df6a6b86e17bfd27efce0f9bb8b95d8f722f0752f4530570",
+      "pose_root": "pose:b4a2e23a3f037716",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.011614989528762436,
+        "costume_lag": 0.0024922135834671323,
+        "breath": 0.0028470329619598844,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 8,
+      "global_frame_number": 8,
+      "time_seconds": 0.291667,
+      "filename": "rebuilt-native-shot/frames/frame-000008.png",
+      "file_sha256": "c3f3a1903192557f925ea68b1e21f182f78cd5dc227ea6b63c8104676243a1eb",
+      "frame_root": "ba9727aca96f3b73983a335f318f1c67da3135a70a623183d1ea13894c843cd8",
+      "pose_root": "pose:4bf0b39fad3e2709",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.011757936364793588,
+        "costume_lag": 0.0028899333294972233,
+        "breath": 0.003192068909120958,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 9,
+      "global_frame_number": 9,
+      "time_seconds": 0.333333,
+      "filename": "rebuilt-native-shot/frames/frame-000009.png",
+      "file_sha256": "11f4252fd0ca87f3ba923657e9063820d7f8b17f090d939848066f0eb5d03040",
+      "frame_root": "e4a3162c4d2ac97ee4efedcb92a1cf75ea2d41d9052dda1168e996b1a9a8ea53",
+      "pose_root": "pose:603f88f0bdf089a7",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.011868111723308658,
+        "costume_lag": 0.0032795983130084285,
+        "breath": 0.0034815672183048786,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 10,
+      "global_frame_number": 10,
+      "time_seconds": 0.375,
+      "filename": "rebuilt-native-shot/frames/frame-000010.png",
+      "file_sha256": "85e7ab7ed7639abc7b0ab44a2d9e894a9163bda031c643a7e5731837be949b8e",
+      "frame_root": "8282c296a5957bde3d54a6a9c981e2df501656b2ed9a61407b5db1317539c6fe",
+      "pose_root": "pose:7503e0bf133753b1",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.011945208525822752,
+        "costume_lag": 0.0036601224678025845,
+        "breath": 0.0037104910144477913,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 11,
+      "global_frame_number": 11,
+      "time_seconds": 0.416667,
+      "filename": "rebuilt-native-shot/frames/frame-000011.png",
+      "file_sha256": "b5bf1d28a9304f741553ebdb70a66e997e1515471401bd475a6a1b9e2cacb349",
+      "frame_root": "49b3ecd79d0d4f9753a3952a7163215d3a443cb27a780172aa792053e86d9b33",
+      "pose_root": "pose:89df9a323a645599",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.011989011889719415,
+        "costume_lag": 0.004030445204810636,
+        "breath": 0.0038748573362551546,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 12,
+      "global_frame_number": 12,
+      "time_seconds": 0.458333,
+      "filename": "rebuilt-native-shot/frames/frame-000012.png",
+      "file_sha256": "0178f239b96b55a7ee2b6b13da2e78a6878b94bff5be1b409f856b7d6ea6810f",
+      "frame_root": "d1b9bf437f4620df3706e9272e0b4f401f7686e4a2b5b64e9d7d706034530ea3",
+      "pose_root": "pose:6ffd7f5631e7d260",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.01199939972716703,
+        "costume_lag": 0.004389534368144591,
+        "breath": 0.003971806434286694,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 13,
+      "global_frame_number": 13,
+      "time_seconds": 0.5,
+      "filename": "rebuilt-native-shot/frames/frame-000013.png",
+      "file_sha256": "0bbcba431258b3e4947ae79833ea9d8753a5e4a3ec631dacce66620d3f171e13",
+      "frame_root": "0a06872847851ad9a97ec81244dcf20294dbec7a56447249ec763ed0bf5dceff",
+      "pose_root": "pose:960caa1268f990e9",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.011976343085399502,
+        "costume_lag": 0.004736389111901106,
+        "breath": 0.003999651526689642,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 14,
+      "global_frame_number": 14,
+      "time_seconds": 0.541667,
+      "filename": "rebuilt-native-shot/frames/frame-000014.png",
+      "file_sha256": "76b2b22778a92a1709bb53143b67aa562fdfb688b982dea896d372e524867bd2",
+      "frame_root": "8256d9e22f78b753f11f44f9eaad12b5e11b98dcc2eccee0e3ae6f469ba048bc",
+      "pose_root": "pose:5e0dd7a448c56aaa",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.011919906227412805,
+        "costume_lag": 0.0050700426896985295,
+        "breath": 0.003957908146898478,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 15,
+      "global_frame_number": 15,
+      "time_seconds": 0.583333,
+      "filename": "rebuilt-native-shot/frames/frame-000015.png",
+      "file_sha256": "b40d57f65caee82bbc1b613622753789afc0d13531198e3c7e01229b89298435",
+      "frame_root": "200ff5d37680d95e1b990036863bb21fd75833d7e749cef09ff146be3fdf72cf",
+      "pose_root": "pose:8c8cbd23a464b080",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.011830246452852489,
+        "costume_lag": 0.005389565149172458,
+        "breath": 0.0038473025726912763,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 16,
+      "global_frame_number": 16,
+      "time_seconds": 0.625,
+      "filename": "rebuilt-native-shot/frames/frame-000016.png",
+      "file_sha256": "0c237f73e75a465afb96e2362d25807089e6429ce5f6b1403e3d9bc8a11e355e",
+      "frame_root": "7fed1aeb49e9e3b75fc98d6074415cc4d821ec88a46cf7e55eab06fc1460294e",
+      "pose_root": "pose:4094b8ea8c8c0ff0",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.011707613659591356,
+        "costume_lag": 0.005694065923919769,
+        "breath": 0.0036697591899486253,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 17,
+      "global_frame_number": 17,
+      "time_seconds": 0.666667,
+      "filename": "rebuilt-native-shot/frames/frame-000017.png",
+      "file_sha256": "7158de8950943d19ab830bf4247cdfb4b3da1d01de38f77d2830f88d43de5b56",
+      "frame_root": "dbcef65a37426f9e99d25ded988390f6eae4a6c9bba4978ef0c38649de37df91",
+      "pose_root": "pose:d51115233c96f1f3",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.011552349647219266,
+        "costume_lag": 0.005982696315666915,
+        "breath": 0.0034283670109684183,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 18,
+      "global_frame_number": 18,
+      "time_seconds": 0.708333,
+      "filename": "rebuilt-native-shot/frames/frame-000018.png",
+      "file_sha256": "c96b2b8f2a04999d4fd393035298006ccbce192c2446e1d97ca482d356279a2b",
+      "frame_root": "32fb773d11f79c0982a0321227449e241ba48a6552ecf9fbfbf1acb7ab9eff5b",
+      "pose_root": "pose:cd9ccb8d4e90c77c",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.011364887164386377,
+        "costume_lag": 0.0062546518597442384,
+        "breath": 0.0031273259298721197,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 19,
+      "global_frame_number": 19,
+      "time_seconds": 0.75,
+      "filename": "rebuilt-native-shot/frames/frame-000019.png",
+      "file_sha256": "3e47146494a0c0ad401cd7c969c6f24140a3461ce91a50e55e50cf6f31851f4b",
+      "frame_root": "545a607559497512f74eeb3c60f33d14bc433bbd2369dc55a66762578906cdf4",
+      "pose_root": "pose:6208b0f70d1df828",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.01114574870265504,
+        "costume_lag": 0.006509174567273281,
+        "breath": 0.002771873650184988,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 20,
+      "global_frame_number": 20,
+      "time_seconds": 0.791667,
+      "filename": "rebuilt-native-shot/frames/frame-000020.png",
+      "file_sha256": "869297b624f6b458f8d38a66f2649aa1b47bf6879d4f4012d9ad627d32e72b2e",
+      "frame_root": "29be53ca8e997b303f7c4f84c1c3e8bf66387c46013bbb55676ece8ea5571895",
+      "pose_root": "pose:48d22573201aa3b0",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.010895545040222103,
+        "costume_lag": 0.006745555037817748,
+        "breath": 0.002368194555950553,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 21,
+      "global_frame_number": 21,
+      "time_seconds": 0.833333,
+      "filename": "rebuilt-native-shot/frames/frame-000021.png",
+      "file_sha256": "4dcdcdce4dba0ce2085508318eeb3f95a9462cb56402049b627582eccd81a90a",
+      "frame_root": "3ba5bc0cc4a941700bc859d7c85d471c260dbc95ed035726c17a9ac4fd2cf380",
+      "pose_root": "pose:f40ee3d618271894",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.010614973539570529,
+        "costume_lag": 0.006963134436609757,
+        "breath": 0.0019233121118974366,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 22,
+      "global_frame_number": 22,
+      "time_seconds": 0.875,
+      "filename": "rebuilt-native-shot/frames/frame-000022.png",
+      "file_sha256": "684270e9d5913dfdec1b5f6e13ffc0cd2e1a7581dc22f931e8c768e03040f75f",
+      "frame_root": "b4bc1807625d9a3fed20d63d7252d02a982fb2fc36912802e43554f81f3211cf",
+      "pose_root": "pose:bb6753405eb01e3e",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.010304816203795078,
+        "costume_lag": 0.007161306330840499,
+        "breath": 0.0014449666647486116,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 23,
+      "global_frame_number": 23,
+      "time_seconds": 0.916667,
+      "filename": "rebuilt-native-shot/frames/frame-000023.png",
+      "file_sha256": "a96c8a4fc046d697519d3325fa884aa44931ba0b2be4d29041a529ff2e781e46",
+      "frame_root": "4179d926cd6cfe969ad035ba4e5bad66a225ef82cc476dc72a1c446c2363aceb",
+      "pose_root": "pose:2cdf342e2c27d81d",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.010223970121834054,
+        "costume_lag": 0.0073395183798972505,
+        "breath": 0.0009414807717633688,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 24,
+      "global_frame_number": 24,
+      "time_seconds": 0.958333,
+      "filename": "rebuilt-native-shot/frames/frame-000024.png",
+      "file_sha256": "80821e17b21006e447ebafda0296ab36509d1d0990262014abd20c4f67c86dbe",
+      "frame_root": "7741914dadb68719b75ecaec8d99bab8a59ae459a365e4c76b4277393c39e880",
+      "pose_root": "pose:c71b0d9e02b654e2",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.01030219839568152,
+        "costume_lag": 0.0074972738748357234,
+        "breath": 0.0004216143996113924,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 25,
+      "global_frame_number": 25,
+      "time_seconds": 1,
+      "filename": "rebuilt-native-shot/frames/frame-000025.png",
+      "file_sha256": "26bf221028b5e5c8c479f8c8a509eb152c5a0d2cfd85138f09bb2b0edd0777f9",
+      "frame_root": "ec5c5d3f6b4ee8f188b8e3a58b97b2cfdb5b1ec308153709a7f3fc09e558e751",
+      "pose_root": "pose:ff29a29eeaa4c35a",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.010353671749078435,
+        "costume_lag": 0.007634133122796985,
+        "breath": -0.00010558748707934508,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 26,
+      "global_frame_number": 26,
+      "time_seconds": 1.041667,
+      "filename": "rebuilt-native-shot/frames/frame-000026.png",
+      "file_sha256": "7051ee1f3ec1bd964f0f7a7102ba6e112cd117913a13e1f9ab7e30a844fa6bfd",
+      "frame_root": "a48ee2990a7b6fb482943ddd8b60f7b896cd180e9ad9d653cc94018e0a48c293",
+      "pose_root": "pose:17be5602798d450d",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.010379486687600392,
+        "costume_lag": 0.007749714672510308,
+        "breath": -0.0006309522957497491,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 27,
+      "global_frame_number": 27,
+      "time_seconds": 1.083333,
+      "filename": "rebuilt-native-shot/frames/frame-000027.png",
+      "file_sha256": "05d2d3697261d0ca5684a88d70d08fb0d43d20722bbee7e27c8d604296707914",
+      "frame_root": "0e71efa6007d18db31ce9ca847cb3762ed2ce9d7c0928d129a79c375a914595a",
+      "pose_root": "pose:71e19412c274aeff",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.010380811231427266,
+        "costume_lag": 0.007843696377466293,
+        "breath": -0.0011453393964884506,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 28,
+      "global_frame_number": 28,
+      "time_seconds": 1.125,
+      "filename": "rebuilt-native-shot/frames/frame-000028.png",
+      "file_sha256": "9bcdbb1c871e643640c171ff6bbf0fc2e9b3f21c8d20185c9f42be8fdb23b13d",
+      "frame_root": "414f2597812c2921e6e1a734e2d6a1b9e30ba548ec7c20379da82c583adb9cab",
+      "pose_root": "pose:be31b048623d93a1",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.010358881659861461,
+        "costume_lag": 0.007915816293796956,
+        "breath": -0.0016397991565042136,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 29,
+      "global_frame_number": 29,
+      "time_seconds": 1.166667,
+      "filename": "rebuilt-native-shot/frames/frame-000029.png",
+      "file_sha256": "3eb28878c90f5a541d3bb4f6c09427fef398df020d3844d3e5e9c74a42d1052c",
+      "frame_root": "88d38116858edc5936064a4b833fe916e4e8fda182df820f1f8bb91aaba3f30b",
+      "pose_root": "pose:7c167a7ceff3e8d2",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.01031499906559577,
+        "costume_lag": 0.007965873410360275,
+        "breath": -0.0021057286515094235,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 30,
+      "global_frame_number": 30,
+      "time_seconds": 1.208333,
+      "filename": "rebuilt-native-shot/frames/frame-000030.png",
+      "file_sha256": "d0de6d6622c62aa516e131c353766b71b16f6f29f5cf628fe6247db404391a24",
+      "frame_root": "92e74b876d7906fae6b07fd38ed89a9d608134b5703d6df0a0d5fca1679d5b4b",
+      "pose_root": "pose:c343634e9cc9932e",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.01025052572833468,
+        "costume_lag": 0.007993728208994301,
+        "breath": -0.002535021344849263,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 31,
+      "global_frame_number": 31,
+      "time_seconds": 1.25,
+      "filename": "rebuilt-native-shot/frames/frame-000031.png",
+      "file_sha256": "3303c8fbd80e166d2992fed8ca0404795f19e229fdaa51e6b04c53d70b7816f5",
+      "frame_root": "f8b75810b9910868642733676cf0cdf01cb34575f364e94b5d3196083827ead5",
+      "pose_root": "pose:4ea459781f645554",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.01016688131787649,
+        "costume_lag": 0.007999303053379285,
+        "breath": -0.0029202081301642796,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 32,
+      "global_frame_number": 32,
+      "time_seconds": 1.291667,
+      "filename": "rebuilt-native-shot/frames/frame-000032.png",
+      "file_sha256": "9e0555c2689107e18dd5501ce29a538b9076eed395833e7c9867a840b0c461e4",
+      "frame_root": "35f2d85260d6fbc0f436e13e041d9afa6f97d50f1f25292bbfe9d1c8bbb0fab9",
+      "pose_root": "pose:dc9d4b40692cff29",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.010065538937238976,
+        "costume_lag": 0.007982582405424044,
+        "breath": -0.003254587283636641,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 33,
+      "global_frame_number": 33,
+      "time_seconds": 1.333333,
+      "filename": "rebuilt-native-shot/frames/frame-000033.png",
+      "file_sha256": "d83774f535af9b241c48363f54ed1fb962b4eb26478d0198a6f93c69cc88b557",
+      "frame_root": "322ceb696231589ae4e83a28ef80d1bca86de937724b19546ae98c404ac8a79e",
+      "pose_root": "pose:b0a1337703589aa6",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.009948021016857048,
+        "costume_lag": 0.007943612868573388,
+        "breath": -0.003532341064828603,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 34,
+      "global_frame_number": 34,
+      "time_seconds": 1.375,
+      "filename": "rebuilt-native-shot/frames/frame-000034.png",
+      "file_sha256": "6d71670081075032d768a99a9362722454b95e008d3e47441e73d5ed97ca58b1",
+      "frame_root": "6ae3a6d5c9298e6287541a600da1852ba38858e849e813fb18e65108d459da67",
+      "pose_root": "pose:d3be5ccd146b85c0",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.009815895071296082,
+        "costume_lag": 0.00788250305791598,
+        "breath": -0.003748636937417863,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 35,
+      "global_frame_number": 35,
+      "time_seconds": 1.416667,
+      "filename": "rebuilt-native-shot/frames/frame-000035.png",
+      "file_sha256": "22021e76880abb4365d456ef8edb4c96129f197bf3db77022a946aa0c4975c9e",
+      "frame_root": "fa3d2d7c5d8690a63c4af32180d7c6800d19ee8eb29aeaf588c6c7c21958ecf1",
+      "pose_root": "pose:8038dd401fef81db",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.009670769330307676,
+        "costume_lag": 0.007799423297454589,
+        "breath": -0.0038997116487272947,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 36,
+      "global_frame_number": 36,
+      "time_seconds": 1.458333,
+      "filename": "rebuilt-native-shot/frames/frame-000036.png",
+      "file_sha256": "385c58231221cb54c711b2a13b7ef61af08a85790658525bc60918560dbfacce",
+      "frame_root": "7f655947e7bb835056b45d4ef661bd4aa380f904246af2776c542ee119b1d7cf",
+      "pose_root": "pose:2ebdbf63ca36263e",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.009514288256404898,
+        "costume_lag": 0.0076946051453825525,
+        "breath": -0.0039829367051801385,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 37,
+      "global_frame_number": 37,
+      "time_seconds": 1.5,
+      "filename": "rebuilt-native-shot/frames/frame-000037.png",
+      "file_sha256": "c690c790452c1d39ff6ca48f476229ffd3e0dc52fb7f32dc2539b182a857cb34",
+      "frame_root": "e896937ac767cb7784514164ad5754f2f5faf1c4d934dbe0a1657db88409fa95",
+      "pose_root": "pose:df2778df80321c29",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.009348127961450299,
+        "costume_lag": 0.007568340748689559,
+        "breath": -0.003996864104497151,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 38,
+      "global_frame_number": 38,
+      "time_seconds": 1.541667,
+      "filename": "rebuilt-native-shot/frames/frame-000038.png",
+      "file_sha256": "18cdcfee79531c9e24144d119e184fa8a59bc5e8d820a095815ce915d81a4d64",
+      "frame_root": "fc9e1dee7b0a18811d2c1f39f9cba77538542b2b2be7be407e803882b6d9f12e",
+      "pose_root": "pose:408eb4ee08704605",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.00917399153503152,
+        "costume_lag": 0.0074209820288955826,
+        "breath": -0.00394125152895799,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 39,
+      "global_frame_number": 39,
+      "time_seconds": 1.583333,
+      "filename": "rebuilt-native-shot/frames/frame-000039.png",
+      "file_sha256": "6a2fefac4b9dbc9fb567d9490552890e70009cce1d09883fdd37a28aafc8f82d",
+      "frame_root": "7913ee470550d20a1ee629367d670c8114a8c6ccbc58a38f746341bcc499d60e",
+      "pose_root": "pose:80bcda95628e2305",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.008993604297645208,
+        "costume_lag": 0.007252939701182501,
+        "breath": -0.0038170665613984924,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 40,
+      "global_frame_number": 40,
+      "time_seconds": 1.625,
+      "filename": "rebuilt-native-shot/frames/frame-000040.png",
+      "file_sha256": "0adfa38ecf481366481d6f92ffce080c0e5a968f7d8cf1976508d32a27ba023c",
+      "frame_root": "a0cc4e4761519583890097aabf5b0e22f78d2a7ea7f96da2101c30dbfdf3a689",
+      "pose_root": "pose:51bcfe4d8e102098",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.008808708991919262,
+        "costume_lag": 0.007064682129657205,
+        "breath": -0.00362646985059125,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 41,
+      "global_frame_number": 41,
+      "time_seconds": 1.666667,
+      "filename": "rebuilt-native-shot/frames/frame-000041.png",
+      "file_sha256": "22c48c3341caa4f4cfe88291ef26becaf12d626f49c3aed83aa1a3ed8697583e",
+      "frame_root": "f4eb34763ebf71bcd781659d659d6761d1049a08ba1fbfb4f5e6c3a329e62523",
+      "pose_root": "pose:72ad405b8382d4e7",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.008621060925276616,
+        "costume_lag": 0.006856734021936837,
+        "breath": -0.0033727775189088733,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 42,
+      "global_frame_number": 42,
+      "time_seconds": 1.708333,
+      "filename": "rebuilt-native-shot/frames/frame-000042.png",
+      "file_sha256": "b25775811eca0808a61033d49853cec1cb173af4119aa5731a26ed51a6e29674",
+      "frame_root": "85e95ae00ba88d513e67b027451db9bcf6a2fe6d9b3b817e7b7f0585da4870f6",
+      "pose_root": "pose:17084c0fa78bfadf",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.00843242307757861,
+        "costume_lag": 0.00662967496669455,
+        "breath": -0.0030604034663252355,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 43,
+      "global_frame_number": 43,
+      "time_seconds": 1.75,
+      "filename": "rebuilt-native-shot/frames/frame-000043.png",
+      "file_sha256": "0d7b4fc357cc1e53268589c05ea0357a3990a8966b6c1a0928fc2ab304ed19b1",
+      "frame_root": "dd39be6a75cf779abccccaaa7f9101a93ad2d1827b0d287c584934e0a83e81ef",
+      "pose_root": "pose:ab38619b7ea73796",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.008244561187383889,
+        "costume_lag": 0.006384137818241917,
+        "breath": -0.0026947825745862286,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 44,
+      "global_frame_number": 44,
+      "time_seconds": 1.791667,
+      "filename": "rebuilt-native-shot/frames/frame-000044.png",
+      "file_sha256": "d6ca4356067c9766698dd119b5d3d1f22f2390a13c52bc8c3af68a6d2f55e12f",
+      "frame_root": "ba285590e229ee8d5aeaf02cd3d2b1c361c10c4f0f3e6c2fe84cf00876ba6ba3",
+      "pose_root": "pose:31f4e6c06a6ddcab",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.008059238830518385,
+        "costume_lag": 0.006120806932650465,
+        "breath": -0.0022822761476926218,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 45,
+      "global_frame_number": 45,
+      "time_seconds": 1.833333,
+      "filename": "rebuilt-native-shot/frames/frame-000045.png",
+      "file_sha256": "116724189fa51b533557d91d2e46a3730ad63f070117c381d554e2fce03391b9",
+      "frame_root": "bacfeca8968a70be6125e813a1f1971ed1d3d4d99451b66bbc7413e011d27714",
+      "pose_root": "pose:dd21c4757183e681",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.007878212504673151,
+        "costume_lag": 0.005840416260328561,
+        "breath": -0.0018300612339012903,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 46,
+      "global_frame_number": 46,
+      "time_seconds": 1.875,
+      "filename": "rebuilt-native-shot/frames/frame-000046.png",
+      "file_sha256": "5172a5466f84de3231ea7ebe9d5b5df53d7151baa6f7e414b285c2306d3890d4",
+      "frame_root": "cf4af972007363dce85a6b94c1ab1b84328ee23e1c19844f40957123f4342a77",
+      "pose_root": "pose:567f7607559fe768",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.007703226733730263,
+        "costume_lag": 0.005543747300369976,
+        "breath": -0.0013460057548909602,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 47,
+      "global_frame_number": 47,
+      "time_seconds": 1.916667,
+      "filename": "rebuilt-native-shot/frames/frame-000047.png",
+      "file_sha256": "31a81abd8eeeb6c2eebb6fdcbfa6fe8468b24b79cea32bda338581440fda98e2",
+      "frame_root": "e63f05220dd6aa5339513e3b1f04fc666c9c7b91a67886d894d451cbbd7564d1",
+      "pose_root": "pose:06d5d71758439a18",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.007536009205461859,
+        "costume_lag": 0.005231626922375746,
+        "breath": -0.0008385316146741888,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 48,
+      "global_frame_number": 48,
+      "time_seconds": 1.958333,
+      "filename": "rebuilt-native-shot/frames/frame-000048.png",
+      "file_sha256": "53eadba645d57b1b2b30d51f38a9df755b646a6858fba689932b3f4ba0387504",
+      "frame_root": "2bece01bcd92a8bdbc78dfdba40fe870cb6f91f4616b791d0ec8c6609f4f79c0",
+      "pose_root": "pose:2b34c2f899f9c092",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.00737826595615447,
+        "costume_lag": 0.004904925061820297,
+        "breath": -0.0003164681699736997,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 49,
+      "global_frame_number": 49,
+      "time_seconds": 2,
+      "filename": "rebuilt-native-shot/frames/frame-000049.png",
+      "file_sha256": "a736e21c2a96fc65e0f9303a13106d6fb5f1ac4b04ccb7ce910ca5a53f733805",
+      "frame_root": "f4aae82e5890ed1b074f9976dddd3e46202873a884b4d73189c58cd486685e64",
+      "pose_root": "pose:8c7228b1f046c4fd",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.007231676615579882,
+        "costume_lag": 0.00456455229538524,
+        "breath": 0.00021110138852184894,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 50,
+      "global_frame_number": 50,
+      "time_seconds": 2.041667,
+      "filename": "rebuilt-native-shot/frames/frame-000050.png",
+      "file_sha256": "10df2077639cef8f78f47df367d8e58b41dd644627966912073fef39c0948c7a",
+      "frame_root": "628e7a79716db0627f7b550f89b85eb7c155808624dda9123cd678583cfe6457",
+      "pose_root": "pose:795d7fc19a67529e",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.007097889725565708,
+        "costume_lag": 0.004211457303018849,
+        "breath": 0.0007349980712662783,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 51,
+      "global_frame_number": 51,
+      "time_seconds": 2.083333,
+      "filename": "rebuilt-native-shot/frames/frame-000051.png",
+      "file_sha256": "554c0089417a52da02eb8257432e1bd1627df97a22fd775322fbe8f2a3a987ef",
+      "frame_root": "6278b26e822877a215f649234596ecc5413c9cf451918e56a235f3adb0935765",
+      "pose_root": "pose:3c99ce55076695d8",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.0069785181452136375,
+        "costume_lag": 0.003846624223794876,
+        "breath": 0.0012461067917335642,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 52,
+      "global_frame_number": 52,
+      "time_seconds": 2.125,
+      "filename": "rebuilt-native-shot/frames/frame-000052.png",
+      "file_sha256": "c677d385499556672b99968f134e802eb5db71237844cfd65cda1523498c9a11",
+      "frame_root": "b34633d397e395da3c2d3d5fd61b83d9a7830373654b2877251c9949805dcbe9",
+      "pose_root": "pose:fa479538613ded2d",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.00687513455557185,
+        "costume_lag": 0.003471069912940466,
+        "breath": 0.0017355349564702315,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 53,
+      "global_frame_number": 53,
+      "time_seconds": 2.166667,
+      "filename": "rebuilt-native-shot/frames/frame-000053.png",
+      "file_sha256": "43918eaa2f7b72eb798890ceb23dd5c9310aa057774801836f02f6f66af4c03b",
+      "frame_root": "b8807ddf44dd7b164b7011b72a66d28b1cf5c97ad608a665d7e6f18a666b18c9",
+      "pose_root": "pose:d91f79c28d35784d",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.006789267076290865,
+        "costume_lag": 0.003085841107678237,
+        "breath": 0.0021947671840722954,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 54,
+      "global_frame_number": 54,
+      "time_seconds": 2.208333,
+      "filename": "rebuilt-native-shot/frames/frame-000054.png",
+      "file_sha256": "420185d2b4ff337227093d595300f5399dc6c3925cd45b34196b2d79ceb702dd",
+      "frame_root": "f9522d829bf1f26337bdf238d0b01b67afe8048b3a359b113ff8ae8c74381114",
+      "pose_root": "pose:b081be0c3dcf12de",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.006722395006479981,
+        "costume_lag": 0.002692011509781913,
+        "breath": 0.0026158134611878733,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 55,
+      "global_frame_number": 55,
+      "time_seconds": 2.25,
+      "filename": "rebuilt-native-shot/frames/frame-000055.png",
+      "file_sha256": "968fc48d70094325b40a60f2c2482f4b9a57f274dcf79bdaa95bed6dc33fda25",
+      "frame_root": "e23e215cace67bb9d000766b1c98ccf0993c4d57bd1e070cadc85ef82e3c51b3",
+      "pose_root": "pose:722cdd0ade548514",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.00667594470163535,
+        "costume_lag": 0.002290678792976903,
+        "breath": 0.002991348157833457,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 56,
+      "global_frame_number": 56,
+      "time_seconds": 2.291667,
+      "filename": "rebuilt-native-shot/frames/frame-000056.png",
+      "file_sha256": "8775fe7f1b964534a8d8dec6fff73c92956a4f6d1ca4297813e34b774ca2ab36",
+      "frame_root": "ad9a5115be2ea1f46849ffb4e7a71d4f16f53882fb6c6a02ce416de794ddf3fb",
+      "pose_root": "pose:0f73e58775b0bc93",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.006651285598131376,
+        "costume_lag": 0.001882961543526741,
+        "breath": 0.0033148374833472743,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 57,
+      "global_frame_number": 57,
+      "time_seconds": 2.333333,
+      "filename": "rebuilt-native-shot/frames/frame-000057.png",
+      "file_sha256": "eff2e4835e8e14a72da1ef0646f1c14d7d98427fe3a6e7704da48877b0ba9500",
+      "frame_root": "fc832d1913222a4a6c6b047f290ce31adaaa37fdcd8d475dc6bbb81500997577",
+      "pose_root": "pose:6999d4c0c452f97b",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.006649726396355917,
+        "costume_lag": 0.001469996142532563,
+        "breath": 0.0035806531654202496,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 58,
+      "global_frame_number": 58,
+      "time_seconds": 2.375,
+      "filename": "rebuilt-native-shot/frames/frame-000058.png",
+      "file_sha256": "c412cc41c72c7c111661c1d042c87d70856bb2daa5184e3e9851fd43d18b04f9",
+      "frame_root": "9c8186fecc353f2acdffe0f025cddd881730adbc43137fab05fa97715f7a1b06",
+      "pose_root": "pose:815a1a25beb12f17",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.006672511413127599,
+        "costume_lag": 0.0010529335986351473,
+        "breath": 0.0037841703743447795,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 59,
+      "global_frame_number": 59,
+      "time_seconds": 2.416667,
+      "filename": "rebuilt-native-shot/frames/frame-000059.png",
+      "file_sha256": "54e18543dc8c4af169ce81558b81756a942f1da73768c33ab9ed8a1cd49f1f7c",
+      "frame_root": "97cd89f5c5a3c3d98592a7f6303ee2a7e5bf2416923a1e482f50a6e5897ee2ef",
+      "pose_root": "pose:80ab792d60c1cfbd",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.006720817113561654,
+        "costume_lag": 0.0006329363399473984,
+        "breath": 0.003921848188733146,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 60,
+      "global_frame_number": 60,
+      "time_seconds": 2.458333,
+      "filename": "rebuilt-native-shot/frames/frame-000060.png",
+      "file_sha256": "1729d379b3af5fe0b31aa87e4741890a10d0da6f4f3e2f44c1d5da9e620ead81",
+      "frame_root": "6759dd0289df87a94a5ea1f0d1061f09aa3bb8056376beacf1f6f64daaa2e11b",
+      "pose_root": "pose:9f3688559c05a791",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.006795748832050615,
+        "costume_lag": 0.00021117497415869212,
+        "breath": 0.003991291202712022,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 61,
+      "global_frame_number": 61,
+      "time_seconds": 2.5,
+      "filename": "rebuilt-native-shot/frames/frame-000061.png",
+      "file_sha256": "6db019b1b13d020b30ddf813a07cb8698cbefb618b48141a9905ac547601d6a5",
+      "frame_root": "ce94500cb88b4082fbd493483e20fee1084dd075f076f925e191de61b36cda92",
+      "pose_root": "pose:c5822c47c8a0f8f6",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.0068983376914991505,
+        "costume_lag": -0.00021117497415869016,
+        "breath": 0.003991291202712022,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 62,
+      "global_frame_number": 62,
+      "time_seconds": 2.541667,
+      "filename": "rebuilt-native-shot/frames/frame-000062.png",
+      "file_sha256": "a19f5fd0e31076f747f04ca56daa5b789854897888fe8d76a790259ecd398d9b",
+      "frame_root": "d2a0adab488847f802d4eb9f0b1a819ee5e1afa1ace2a037649ba97e55dcb85b",
+      "pose_root": "pose:7d58a321ad7ef9ff",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.0070295377293995865,
+        "costume_lag": -0.000632936339947393,
+        "breath": 0.0039218481887331475,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 63,
+      "global_frame_number": 63,
+      "time_seconds": 2.583333,
+      "filename": "rebuilt-native-shot/frames/frame-000063.png",
+      "file_sha256": "97c3eed8b764847c5d05930882cc27c5458ee9c2222153b2522e0b16e9e70d4b",
+      "frame_root": "a39370aebdda27cd210e13290ce55cff76d0a901ec8364bf27f43a0f799a531d",
+      "pose_root": "pose:9900fc07b177d400",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.007136837178451781,
+        "costume_lag": -0.0010529335986351489,
+        "breath": 0.003784170374344779,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 64,
+      "global_frame_number": 64,
+      "time_seconds": 2.625,
+      "filename": "rebuilt-native-shot/frames/frame-000064.png",
+      "file_sha256": "2524626c8ffd0f1a30013f57ff7fc6897c4efa5dc71840b24ab2157c4ab58a09",
+      "frame_root": "221069f6ca97986c1a6b2f299513726ea9c59f914e68e89bb7f5c1e39adcc612",
+      "pose_root": "pose:d09563ae7bbae26f",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.006882916435090378,
+        "costume_lag": -0.001469996142532561,
+        "breath": 0.003580653165420251,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 65,
+      "global_frame_number": 65,
+      "time_seconds": 2.666667,
+      "filename": "rebuilt-native-shot/frames/frame-000065.png",
+      "file_sha256": "8a351d1cf58f0e8c0c652459b00e6e5d5b09a2c103adc67735cf4cfcd59de9e2",
+      "frame_root": "b251a300f43109eeebc1f737c50c2bddb36c11b82b7671eb59655cc06755286b",
+      "pose_root": "pose:d6ba90281777c18a",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.006659980997550385,
+        "costume_lag": -0.001882961543526739,
+        "breath": 0.003314837483347274,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 66,
+      "global_frame_number": 66,
+      "time_seconds": 2.708333,
+      "filename": "rebuilt-native-shot/frames/frame-000066.png",
+      "file_sha256": "99f07e3a491a65f88974fea7dcfa968de02248548a26005b091dbea8df97fadf",
+      "frame_root": "19b222fd647f00c6048580afc5957dc625afa4598e51f1a9b21fa6a0bea56d8e",
+      "pose_root": "pose:d231d1de7e37129c",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.006468652226881243,
+        "costume_lag": -0.002290678792976898,
+        "breath": 0.0029913481578334633,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 67,
+      "global_frame_number": 67,
+      "time_seconds": 2.75,
+      "filename": "rebuilt-native-shot/frames/frame-000067.png",
+      "file_sha256": "1953e78bef07696617aa9f520a707f1c0b78bd91b935d6525772c3946b0189b1",
+      "frame_root": "54b55126ac406685ba7c03042f5c382bc440b0cbe7e4de569bdb895f6f77d59d",
+      "pose_root": "pose:aadc68c1584967f8",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.006309463390682951,
+        "costume_lag": -0.002692011509781915,
+        "breath": 0.00261581346118787,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 68,
+      "global_frame_number": 68,
+      "time_seconds": 2.791667,
+      "filename": "rebuilt-native-shot/frames/frame-000068.png",
+      "file_sha256": "87627c22940195a844d2eb6369802feb806abcffc7185c8c1a30018b6165e124",
+      "frame_root": "51d9aae2415b0ea8068d0ed8b064d4a79b0d677ffc25e3c758621d306ac3c275",
+      "pose_root": "pose:248537beb0391569",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.006182858176793614,
+        "costume_lag": -0.003085841107678235,
+        "breath": 0.0021947671840722945,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 69,
+      "global_frame_number": 69,
+      "time_seconds": 2.833333,
+      "filename": "rebuilt-native-shot/frames/frame-000069.png",
+      "file_sha256": "3b327e03e28383427d277c9ac3419b053e138fc296aba162e38d8019cea1807a",
+      "frame_root": "e5e55261dc91422b8ef70c50c2b9351f36260aad70739736cd07ce3aecd0212e",
+      "pose_root": "pose:3f66a2a6a977fa0f",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.006089189456651864,
+        "costume_lag": -0.0034710699129404643,
+        "breath": 0.001735534956470234,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 70,
+      "global_frame_number": 70,
+      "time_seconds": 2.875,
+      "filename": "rebuilt-native-shot/frames/frame-000070.png",
+      "file_sha256": "45f8daff586fd80489799fe6b2f462e5938b73c1af9659639679646432281dfa",
+      "frame_root": "cd2cf8d7fbfb18742c1c3b012362f7f0c917a15cd65abbe49f8b76b1ce6f442b",
+      "pose_root": "pose:8c647cc17b538746",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.00602871830178087,
+        "costume_lag": -0.0038466242237948744,
+        "breath": 0.0012461067917335698,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 71,
+      "global_frame_number": 71,
+      "time_seconds": 2.916667,
+      "filename": "rebuilt-native-shot/frames/frame-000071.png",
+      "file_sha256": "53315ca2f141067ab055f4943dcf6522cd227bcfce955a891b40f91bee9503d4",
+      "frame_root": "e0123ce9ef10b284803ba2045f1faac381a8847baddca4380f615b0a47f56a4f",
+      "pose_root": "pose:c4d24e44118b8fd8",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.00600161325613518,
+        "costume_lag": -0.004211457303018847,
+        "breath": 0.0007349980712662807,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 72,
+      "global_frame_number": 72,
+      "time_seconds": 2.958333,
+      "filename": "rebuilt-native-shot/frames/frame-000072.png",
+      "file_sha256": "8008520f5ce5148d01f42e08bd9c7007704475380e97cb01e2406ec5c1c1edb2",
+      "frame_root": "cbd576b213c029a0af10e5702d0936c5eed3fb3d8c87fdf7d43d3482144efcd1",
+      "pose_root": "pose:43bc5f090f7fe0b8",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.006007949866338484,
+        "costume_lag": -0.004564552295385238,
+        "breath": 0.00021110138852185138,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 73,
+      "global_frame_number": 73,
+      "time_seconds": 3,
+      "filename": "rebuilt-native-shot/frames/frame-000073.png",
+      "file_sha256": "2af9d636fdfb5ff0553fb515039a17b28808d531d7d1b1502742ce6eb744a0c7",
+      "frame_root": "6f310f16e0dcf49af56cf4c9d5ce67c78007667a8dd9cd71a96347857943cb62",
+      "pose_root": "pose:523fe84c01f98fc9",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.006047710471121633,
+        "costume_lag": -0.004904925061820293,
+        "breath": -0.0003164681699736938,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 74,
+      "global_frame_number": 74,
+      "time_seconds": 3.041667,
+      "filename": "rebuilt-native-shot/frames/frame-000074.png",
+      "file_sha256": "d5fb1e049fa742673152b331bac04e389ead0a3b7d39aa8f0ba105f6b9270b2d",
+      "frame_root": "010f4aea20813a0d82732d5dd330940ebd8bf7635733fc543dfe3e2e9af2eb57",
+      "pose_root": "pose:d240b879ea3a225d",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.006120784250547757,
+        "costume_lag": -0.005231626922375744,
+        "breath": -0.0008385316146741863,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 75,
+      "global_frame_number": 75,
+      "time_seconds": 3.083333,
+      "filename": "rebuilt-native-shot/frames/frame-000075.png",
+      "file_sha256": "a8d26e194a4a78f32fa452cf52092ee699594753969170e8e27c31fa2ea2a1f5",
+      "frame_root": "c74c543d14b5ba53415999aef1fc1f2477b5d18873e959e667cff1223e8758b0",
+      "pose_root": "pose:00dfc19b2daf825e",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.006226967534887301,
+        "costume_lag": -0.0055437473003699745,
+        "breath": -0.0013460057548909548,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 76,
+      "global_frame_number": 76,
+      "time_seconds": 3.125,
+      "filename": "rebuilt-native-shot/frames/frame-000076.png",
+      "file_sha256": "f9e3ac707fd79a6af52aacadd9688115a3f04f32c0e2505a43abbb331ee1724f",
+      "frame_root": "3b35001b157b09c800e72f9029e3046c36bcec6131889bb0a2b7cab9a945cf15",
+      "pose_root": "pose:7504c916e709ca9d",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.006365964372282108,
+        "costume_lag": -0.005840416260328559,
+        "breath": -0.0018300612339012881,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 77,
+      "global_frame_number": 77,
+      "time_seconds": 3.166667,
+      "filename": "rebuilt-native-shot/frames/frame-000077.png",
+      "file_sha256": "375b4a2b54ff10ea513a8a1dc9198989e3157ca80b659a1523b02fcca5a119ce",
+      "frame_root": "fadb99802771572267ea6538640cb804736db1676aeb1132a236697cc4c0aad6",
+      "pose_root": "pose:1a07399d89a54b39",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.0065373873536163085,
+        "costume_lag": -0.006120806932650464,
+        "breath": -0.00228227614769262,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 78,
+      "global_frame_number": 78,
+      "time_seconds": 3.208333,
+      "filename": "rebuilt-native-shot/frames/frame-000078.png",
+      "file_sha256": "c39b081ccbf62be51c175d31a8637a54f6986d3b90121c82f3a7e70f3ffbe3e7",
+      "frame_root": "5f29ebbff65509968c044e96cc19bcb51be23611069855318af04ac5e4cb8aa8",
+      "pose_root": "pose:a1f1f48e1e5689ca",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.006740758692295026,
+        "costume_lag": -0.006384137818241916,
+        "breath": -0.002694782574586227,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 79,
+      "global_frame_number": 79,
+      "time_seconds": 3.25,
+      "filename": "rebuilt-native-shot/frames/frame-000079.png",
+      "file_sha256": "5bfdbfe14e16abde865911d38b528a6f1837d608645063c6a53615d214f4d93b",
+      "frame_root": "9a64dd9971906a6a94696944d0f22fb4114f84cd07dd9a9fce1722a5762049db",
+      "pose_root": "pose:4247ec51ddd7c8c7",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.006975511555921306,
+        "costume_lag": -0.006629674966694549,
+        "breath": -0.0030604034663252342,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 80,
+      "global_frame_number": 80,
+      "time_seconds": 3.291667,
+      "filename": "rebuilt-native-shot/frames/frame-000080.png",
+      "file_sha256": "9cda893b01630ac760a43e3f38b2389b38a0f8e450a3b10f44edbeaeb230edd7",
+      "frame_root": "b98b95c1abcb9b12497f03ea7abc9f66d1437701fd0df414b759b87c8db07379",
+      "pose_root": "pose:a4956fa34359980c",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.007240991646159663,
+        "costume_lag": -0.0068567340219368375,
+        "breath": -0.0033727775189088737,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 81,
+      "global_frame_number": 81,
+      "time_seconds": 3.333333,
+      "filename": "rebuilt-native-shot/frames/frame-000081.png",
+      "file_sha256": "ef3afe3d0b93499709b2070a74fec40a8fc1a79a96f98a29e6a8122ea093c087",
+      "frame_root": "f1dd99dbfb0c8516f28398c6f68a79a6418bbc825d973f26870c07502a3938c5",
+      "pose_root": "pose:d9fcade50f661655",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.007536459022382912,
+        "costume_lag": -0.007064682129657206,
+        "breath": -0.0036264698505912517,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 82,
+      "global_frame_number": 82,
+      "time_seconds": 3.375,
+      "filename": "rebuilt-native-shot/frames/frame-000082.png",
+      "file_sha256": "c2913ebce4f307b652214a25b94d6fdd00d8662bb0ab955396037dd203d45378",
+      "frame_root": "92219b2e2dfb15157d0fdf61735ef28f4b55814549bfbfc4ed8e716faedd1a02",
+      "pose_root": "pose:6ca5889c2c81766a",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.007861090164019395,
+        "costume_lag": -0.007252939701182502,
+        "breath": -0.003817066561398493,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 83,
+      "global_frame_number": 83,
+      "time_seconds": 3.416667,
+      "filename": "rebuilt-native-shot/frames/frame-000083.png",
+      "file_sha256": "c9decc2f21d6b288ab8f55f45f64e9638322aea60bb4ccf3df4dc00cbbef268e",
+      "frame_root": "1348a1658eb40ac67e0414f89fbf0c534728cbe9f4daa767876c80f261c4648a",
+      "pose_root": "pose:bb1eb5d42931e2f5",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.00821398026585252,
+        "costume_lag": -0.007420982028895581,
+        "breath": -0.003941251528957988,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 84,
+      "global_frame_number": 84,
+      "time_seconds": 3.458333,
+      "filename": "rebuilt-native-shot/frames/frame-000084.png",
+      "file_sha256": "1153ec1fae982beec5fdfdec398a475647b73f29cb4e0d170484ae554d66a13e",
+      "frame_root": "4dd4fe5db25a320543a38fd5ed357795232452386d0b3fd37cf118d6a99bcd66",
+      "pose_root": "pose:40f9eef9a465c4f3",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.008594145759875202,
+        "costume_lag": -0.007568340748689557,
+        "breath": -0.003996864104497151,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 85,
+      "global_frame_number": 85,
+      "time_seconds": 3.5,
+      "filename": "rebuilt-native-shot/frames/frame-000085.png",
+      "file_sha256": "ae87914e696e916e401fc60e6fbed58a4440af482d51dec1d0b60da9c877777c",
+      "frame_root": "2643cf5348f2f8decc5aa7e9ed9d611edfc3aeb9d232109227e0015152c4e788",
+      "pose_root": "pose:7b5d4bd8e261efe6",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.009000527056670277,
+        "costume_lag": -0.0076946051453825525,
+        "breath": -0.003982936705180138,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 86,
+      "global_frame_number": 86,
+      "time_seconds": 3.541667,
+      "filename": "rebuilt-native-shot/frames/frame-000086.png",
+      "file_sha256": "40a1de1dc367dead96428ef38f2658ea6471d3952893d6e628152586be6023cd",
+      "frame_root": "bd3c3e1427c9b92a50e865bcd3b80ba8d24b757d100fce5c3483960e4f2150b3",
+      "pose_root": "pose:4618f334462de7ac",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.009431991498676278,
+        "costume_lag": -0.007799423297454589,
+        "breath": -0.003899711648727295,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 87,
+      "global_frame_number": 87,
+      "time_seconds": 3.583333,
+      "filename": "rebuilt-native-shot/frames/frame-000087.png",
+      "file_sha256": "1b941979ddfa512c554d93ae72064c6cb87ff8db932a170d9c3c68b2ee8208c9",
+      "frame_root": "c79762d6f600cc8b9e75837ccffbf2e50904348d25a8d42107e813f69da9f0f4",
+      "pose_root": "pose:a2e0a3e8d92424fc",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.009887336517107192,
+        "costume_lag": -0.00788250305791598,
+        "breath": -0.0037486369374178635,
+        "overshoot": 0.0003016678067361437
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 88,
+      "global_frame_number": 88,
+      "time_seconds": 3.625,
+      "filename": "rebuilt-native-shot/frames/frame-000088.png",
+      "file_sha256": "d42e55c9f1131564b64dab287ce74eb59ba989b99f61ea59c3d5cbb8c65177ff",
+      "frame_root": "d7804dc095f55c49551b1cc2f93bef682a80f71affd91952b6a0ba8b41d47a74",
+      "pose_root": "pose:05f3bf9ea5d8ff15",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.010365292983727356,
+        "costume_lag": -0.007943612868573386,
+        "breath": -0.0035323410648286056,
+        "overshoot": 0.001241358046672889
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 89,
+      "global_frame_number": 89,
+      "time_seconds": 3.666667,
+      "filename": "rebuilt-native-shot/frames/frame-000089.png",
+      "file_sha256": "41c92cab440815f6f39657ab01f0d7ca3f78107e6870c91a3de1d429e5c881cc",
+      "frame_root": "790783ad5653f59eecf77662390beab01c6b012089bd02179045efcb78a9cbec",
+      "pose_root": "pose:139e5a06811fa57c",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.010864528748139524,
+        "costume_lag": -0.007982582405424044,
+        "breath": -0.003254587283636638,
+        "overshoot": 0.002170021091244641
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 90,
+      "global_frame_number": 90,
+      "time_seconds": 3.708333,
+      "filename": "rebuilt-native-shot/frames/frame-000090.png",
+      "file_sha256": "22c4e79c4fa56a6ddbe418281e38bd806006b9e428f9ca31cf76606ea365c8d6",
+      "frame_root": "78c738d836bcb4fcd3ec6b92f04771219979959b0d92a6038b60244ed7f7cfc3",
+      "pose_root": "pose:a97605ef2dd01f87",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.011383652350726855,
+        "costume_lag": -0.007999303053379285,
+        "breath": -0.002920208130164279,
+        "overshoot": 0.003079407468151098
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 91,
+      "global_frame_number": 91,
+      "time_seconds": 3.75,
+      "filename": "rebuilt-native-shot/frames/frame-000091.png",
+      "file_sha256": "62a0abfc6d68f811cc4d326f2245381ccb949afeb29aa3e6784b0706c74bc8ce",
+      "frame_root": "db5a62e92934ce1329fc782adbe5c6676b4a3cc06c77a63c566cff261277657c",
+      "pose_root": "pose:bd4af17463b78ebd",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.011921216900900523,
+        "costume_lag": -0.007993728208994301,
+        "breath": -0.0025350213448492704,
+        "overshoot": 0.003961438943020409
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 92,
+      "global_frame_number": 92,
+      "time_seconds": 3.791667,
+      "filename": "rebuilt-native-shot/frames/frame-000092.png",
+      "file_sha256": "61d0b66143d59e82d22326e54d290ef068e56ee686c263e08310094533aa2129",
+      "frame_root": "15c0d24feaeecc30ae0239832effb7a99aebe7f01d885942be158ace52dbef56",
+      "pose_root": "pose:9ff0950b5aeaa72f",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.01247572410984328,
+        "costume_lag": -0.007965873410360277,
+        "breath": -0.0021057286515094257,
+        "overshoot": 0.00480828027974359
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 93,
+      "global_frame_number": 93,
+      "time_seconds": 3.833333,
+      "filename": "rebuilt-native-shot/frames/frame-000093.png",
+      "file_sha256": "e43c5a150caa13a7369982a8ac92513e312bc1af5df420faaa1b9becb7e0f82c",
+      "frame_root": "0d0290679eceec19f8d5ec539cd5ef4dbe51131570736edff053d55836253158",
+      "pose_root": "pose:489b8029f2e414cd",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.013045628466509083,
+        "costume_lag": -0.007915816293796956,
+        "breath": -0.001639799156504219,
+        "overshoot": 0.005612408842213982
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 94,
+      "global_frame_number": 94,
+      "time_seconds": 3.875,
+      "filename": "rebuilt-native-shot/frames/frame-000094.png",
+      "file_sha256": "8abb9d2a4ec6edef1ce7429c56174e3ae3036f8904ca098143f92e2bda3f1c61",
+      "frame_root": "e3fb77ce951fee15f008ac62bd9170ec89f0b536f042b11ea4ce06b719c78b07",
+      "pose_root": "pose:a1ec602d496329ba",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.013629341545239607,
+        "costume_lag": -0.007843696377466293,
+        "breath": -0.0011453393964884512,
+        "overshoot": 0.006366681419187467
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 95,
+      "global_frame_number": 95,
+      "time_seconds": 3.916667,
+      "filename": "rebuilt-native-shot/frames/frame-000095.png",
+      "file_sha256": "d09d6cb9aff0172959c454be276660b99f2c5118b963a2787c74b0ba9b1a3557",
+      "frame_root": "6f61aaa984fbfbb4b866b664110129e7c98ed12c8bfb68cb2469ba089c603e4a",
+      "pose_root": "pose:b219bf69627af1fb",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.014225236432991444,
+        "costume_lag": -0.007749714672510309,
+        "breath": -0.0006309522957497533,
+        "overshoot": 0.007064397678646998
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 96,
+      "global_frame_number": 96,
+      "time_seconds": 3.958333,
+      "filename": "rebuilt-native-shot/frames/frame-000096.png",
+      "file_sha256": "d8a4135e182962c24ca33bb2ce110a64060f992269b1ec9771c3ed8bb9bfbb8a",
+      "frame_root": "990dbe1e9d2f62f33ec430d81c1a99f367b23c6add5ca78bc54a3d00c20c4091",
+      "pose_root": "pose:2a8e946f9caa16e3",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.014831652263834549,
+        "costume_lag": -0.007634133122796985,
+        "breath": -0.00010558748707934397,
+        "overshoot": 0.007699359687995277
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 97,
+      "global_frame_number": 97,
+      "time_seconds": 4,
+      "filename": "rebuilt-native-shot/frames/frame-000097.png",
+      "file_sha256": "7c189ae42a111fd20ca18831e252f053237278c6bf309ec6984ca6845addb3ce",
+      "frame_root": "310698dab2a84e76aeef89e8526b6f31e5ea550cbc8a1d6346fda0172e484968",
+      "pose_root": "pose:a71029c1f087431b",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.015446898848083477,
+        "costume_lag": -0.0074972738748357234,
+        "breath": 0.00042161439961138994,
+        "overshoot": 0.008265926971347672
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 98,
+      "global_frame_number": 98,
+      "time_seconds": 4.041667,
+      "filename": "rebuilt-native-shot/frames/frame-000098.png",
+      "file_sha256": "9c99b8e0cdac15244c668ab7d1373657cbd8bab294dbf9b6742e7799e23fbeff",
+      "frame_root": "4f1924342ca84a751755fc702c18826c3da6d3592c75a200348f5eced9eb1de1",
+      "pose_root": "pose:851a9c727082695f",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.01606926138315919,
+        "costume_lag": -0.00733951837989725,
+        "breath": 0.0009414807717633733,
+        "overshoot": 0.008759066614842069
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": true,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 99,
+      "global_frame_number": 99,
+      "time_seconds": 4.083333,
+      "filename": "rebuilt-native-shot/frames/frame-000099.png",
+      "file_sha256": "373d47269894bd330b511105da05f3688871efe6786a05a9b65ff7781d1c4cff",
+      "frame_root": "3822c92feb499b606350278773e6b6823041e9ee72c6da978f3cec0d562ea2b9",
+      "pose_root": "pose:375b0bf6ad454129",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.016697005233051385,
+        "costume_lag": -0.007161306330840501,
+        "breath": 0.001444966664748606,
+        "overshoot": 0.009174397974871561
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 100,
+      "global_frame_number": 100,
+      "time_seconds": 4.125,
+      "filename": "rebuilt-native-shot/frames/frame-000100.png",
+      "file_sha256": "ceb33ecbeb82a1cb4bda4dedb704d17b5389afbd269471cdc3f3bbdaa22c419e",
+      "frame_root": "344c92c6af27320458f0af743993d5ca285770e886d764aaf55e44354055fc00",
+      "pose_root": "pose:d1c38d1a14ae9174",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.017328380763060227,
+        "costume_lag": -0.006963134436609755,
+        "breath": 0.0019233121118974424,
+        "overshoot": 0.009508231592089167
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 101,
+      "global_frame_number": 101,
+      "time_seconds": 4.166667,
+      "filename": "rebuilt-native-shot/frames/frame-000101.png",
+      "file_sha256": "0ad446270efe709b658262fcc671e46b0f4e04628db5884a802fc254d5968538",
+      "frame_root": "6b92e9e9cbc3cf94ed22dba84b401ca118e5c7b0d66754f25723d91678cf7774",
+      "pose_root": "pose:6e3a55dc21335bce",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.01796162821634197,
+        "costume_lag": -0.00674555503781775,
+        "breath": 0.0023681945559505496,
+        "overshoot": 0.009757601965504781
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 102,
+      "global_frame_number": 102,
+      "time_seconds": 4.208333,
+      "filename": "rebuilt-native-shot/frames/frame-000102.png",
+      "file_sha256": "5514b521d00343abbb02637b4d4aefa64187507e42f8e2c6e99baf877d435469",
+      "frame_root": "e9ca30cd39135feb75976901b94e17ad9ebf9d2d29d4f8c583445c996bd32bd7",
+      "pose_root": "pose:ae7f3980454d7b4c",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.01859498261866702,
+        "costume_lag": -0.0065091745672732826,
+        "breath": 0.0027718736501849877,
+        "overshoot": 0.009920293895536577
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 103,
+      "global_frame_number": 103,
+      "time_seconds": 4.25,
+      "filename": "rebuilt-native-shot/frames/frame-000103.png",
+      "file_sha256": "4b80a8f782fa4abf088034ee0d9c4c08a9690d1e21aea0542d799076cd65b190",
+      "frame_root": "c2704bdec700f65e4761fb28577505a0c3bab012827dcc7d4246f86616a7ba08",
+      "pose_root": "pose:df35f4bc8d4b6717",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.01922667869771959,
+        "costume_lag": -0.006254651859744239,
+        "breath": 0.003127325929872118,
+        "overshoot": 0.009994862162006879
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 104,
+      "global_frame_number": 104,
+      "time_seconds": 4.291667,
+      "filename": "rebuilt-native-shot/frames/frame-000104.png",
+      "file_sha256": "e7f261ebe9542bef048304812d5adf30c42ecb9c5ceb1d250a5d5ac8e0e1df77",
+      "frame_root": "747170d4c6eb84ad54dc5ae1d5753d35629653053aa43ed3fa4b633299799ce5",
+      "pose_root": "pose:bd8be9298b6577d4",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.019854955803228286,
+        "costume_lag": -0.005982696315666915,
+        "breath": 0.0034283670109684166,
+        "overshoot": 0.009980644362279635
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 105,
+      "global_frame_number": 105,
+      "time_seconds": 4.333333,
+      "filename": "rebuilt-native-shot/frames/frame-000105.png",
+      "file_sha256": "00e377a3d04209e543e3f71845ca706725a42e992ba9f6d167b090bc7d6c7329",
+      "frame_root": "3fc411339d9cf9d810e22a252450f1f4e688c6d396b008ae75dc3951fe199633",
+      "pose_root": "pose:d84cd209451bdc30",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.0204780628142142,
+        "costume_lag": -0.005694065923919769,
+        "breath": 0.003669759189948625,
+        "overshoot": 0.009877766795496077
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 106,
+      "global_frame_number": 106,
+      "time_seconds": 4.375,
+      "filename": "rebuilt-native-shot/frames/frame-000106.png",
+      "file_sha256": "6297541ba9e468e94bd13e91afd436dfab999a8794c68787d55fbf32a1230161",
+      "frame_root": "c2c5fc8f77ba417c25bdb3ae1f440ace51b7356a5c71199a69ef48e6f95af5b3",
+      "pose_root": "pose:7a66a25aa0e560f8",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.02109426301967915,
+        "costume_lag": -0.005389565149172462,
+        "breath": 0.0038473025726912737,
+        "overshoot": 0.009687143340637886
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 107,
+      "global_frame_number": 107,
+      "time_seconds": 4.416667,
+      "filename": "rebuilt-native-shot/frames/frame-000107.png",
+      "file_sha256": "34aeeb0a9180c7837bc8d7aea3acbee635217ec9ed1eba5d78309c5284031422",
+      "frame_root": "06aab92b53cc66e06f068cda6add14888c521e413479686764056b697f0fd189",
+      "pose_root": "pose:797a76a4891b015f",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.021701838959130745,
+        "costume_lag": -0.005070042689698529,
+        "breath": 0.003957908146898478,
+        "overshoot": 0.009410467338384255
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 108,
+      "global_frame_number": 108,
+      "time_seconds": 4.458333,
+      "filename": "rebuilt-native-shot/frames/frame-000108.png",
+      "file_sha256": "18a8640d3c672b9c80760354b3a4f87c97cdff5444a3e23c8d731adbacbc9d2d",
+      "frame_root": "fdbf8b1fcf1430e929fc766da2d69b9f17285d6440b4de36ab8dbad78aa0a4d3",
+      "pose_root": "pose:8e63e266f08c0867",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.02229909720945275,
+        "costume_lag": -0.004736389111901104,
+        "breath": 0.003999651526689642,
+        "overshoot": 0.009050196548877665
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 109,
+      "global_frame_number": 109,
+      "time_seconds": 4.5,
+      "filename": "rebuilt-native-shot/frames/frame-000109.png",
+      "file_sha256": "66760374dcddfe00bd2905069cf3dd8044657532dbbebe7454137c38ba70de5b",
+      "frame_root": "07db5a3d5e5f63b3d6caf9fff4af3819846b8957d02ee0f3c72b75430371728f",
+      "pose_root": "pose:4ab53ca43584760d",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.022884373104779115,
+        "costume_lag": -0.004389534368144594,
+        "breath": 0.003971806434286694,
+        "overshoot": 0.008609531319021127
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 110,
+      "global_frame_number": 110,
+      "time_seconds": 4.541667,
+      "filename": "rebuilt-native-shot/frames/frame-000110.png",
+      "file_sha256": "37d03ed07e4d0318f2f48ec6b096d1e1fdd4af0673cef210922a682f64c93715",
+      "frame_root": "0d3884fffebe4101cc398dbb3b8588729254c9cee2f435db9f8d6a79de01d012",
+      "pose_root": "pose:4dd6bd96d52896d2",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.023456035376216287,
+        "costume_lag": -0.004030445204810639,
+        "breath": 0.003874857336255156,
+        "overshoot": 0.008092386153250499
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 111,
+      "global_frame_number": 111,
+      "time_seconds": 4.583333,
+      "filename": "rebuilt-native-shot/frames/frame-000111.png",
+      "file_sha256": "7ee089f4be949735f71833d21a7ded3dec608acf23c1782e53109b0ec37b67eb",
+      "frame_root": "b935f09fbbe005ea62217b22727bb06ea87c9e4129971e3060dac8de9b772b1a",
+      "pose_root": "pose:da65a6a8f882e5e2",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.02401249069848218,
+        "costume_lag": -0.0036601224678025866,
+        "breath": 0.0037104910144477917,
+        "overshoot": 0.007503354940323577
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 112,
+      "global_frame_number": 112,
+      "time_seconds": 4.625,
+      "filename": "rebuilt-native-shot/frames/frame-000112.png",
+      "file_sha256": "2f9cdded750d6a01a01f30d1a9e8588825fde877ee164e3bf43954399bf04b63",
+      "frame_root": "667ff2bf4508b64055de3914302c2094071723796d9799c15eeb287d349aaa4b",
+      "pose_root": "pose:9e8a667fb3f1d5a9",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.02455218813078951,
+        "costume_lag": -0.00327959831300843,
+        "breath": 0.00348156721830488,
+        "overshoot": 0.0068476701450223484
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 113,
+      "global_frame_number": 113,
+      "time_seconds": 4.666667,
+      "filename": "rebuilt-native-shot/frames/frame-000113.png",
+      "file_sha256": "04bc7b28d65669165d2b547b548141f2cb4f423df362963008de6fc77d9915ab",
+      "frame_root": "ff2829a2d111e1a1bdbeee6509b0a300cbe3e1cba08ba4f4a4c9b709fd179521",
+      "pose_root": "pose:182b411561dddeed",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.025073623439595964,
+        "costume_lag": -0.002889933329497224,
+        "breath": 0.0031920689091209575,
+        "overshoot": 0.006131156327275371
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 114,
+      "global_frame_number": 114,
+      "time_seconds": 4.708333,
+      "filename": "rebuilt-native-shot/frames/frame-000114.png",
+      "file_sha256": "beac25fd579d9dfce6ca94de5ee09a9ed2c7a17c1aa49ecead1c39e07e86e963",
+      "frame_root": "3e8701190cf3d7925911a790385cdd6cafe5805bba19f6f54a0aa9a619368a1a",
+      "pose_root": "pose:ac7ce23b48f04678",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.025575343291172854,
+        "costume_lag": -0.002492213583467139,
+        "breath": 0.00284703296195989,
+        "overshoot": 0.005360178401597998
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 115,
+      "global_frame_number": 115,
+      "time_seconds": 4.75,
+      "filename": "rebuilt-native-shot/frames/frame-000115.png",
+      "file_sha256": "6462eaf958bdcbd3b422749b9a8f4a0b6ef674708de9cd6a80c4a4d1c4d8335d",
+      "frame_root": "bf5dfd5052e37688779f6be1aae1cf23adf8513f11391683cb4c086b28d2e635",
+      "pose_root": "pose:40499f8f6e0123ad",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.026055949302306924,
+        "costume_lag": -0.002087547591184133,
+        "breath": 0.002452462530910146,
+        "overshoot": 0.004541585096470564
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 116,
+      "global_frame_number": 116,
+      "time_seconds": 4.791667,
+      "filename": "rebuilt-native-shot/frames/frame-000116.png",
+      "file_sha256": "a8c3c51089b04cbbf0c7d7d81147796435344a6730851fa3d12fc2bb2d3ed6e9",
+      "frame_root": "3681910fd467ff5050fc8e245933b0660d9648f5932122f5eec3b9ec5730c42c",
+      "pose_root": "pose:e16416b7d546c64b",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.0265141019378451,
+        "costume_lag": -0.0016770632293483705,
+        "breath": 0.0020152226024053176,
+        "overshoot": 0.003682648115914597
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 117,
+      "global_frame_number": 117,
+      "time_seconds": 4.833333,
+      "filename": "rebuilt-native-shot/frames/frame-000117.png",
+      "file_sha256": "4da75a92eff64a7c92c882f994c2b32dcccbd83b423db802e92faa827eb771ac",
+      "frame_root": "dd17414698206ba22339b20bd95a25605f51fe18c03022cdf76a79d81e21df5f",
+      "pose_root": "pose:79346e06f043d657",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.02694852424421928,
+        "costume_lag": -0.0012619045914995046,
+        "breath": 0.0015429205538391268,
+        "overshoot": 0.002790997543705035
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 118,
+      "global_frame_number": 118,
+      "time_seconds": 4.875,
+      "filename": "rebuilt-native-shot/frames/frame-000118.png",
+      "file_sha256": "538bb28c59ff015bd4235e9946123b1a83ce1acfdbea3564f7db0efa76d3b9e1",
+      "frame_root": "229ab02e41c2fa41543566c83495d474cf02dbd240c49c26d96247d501fe64f9",
+      "pose_root": "pose:1e229c1888d30f4b",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.027358005408544973,
+        "costume_lag": -0.0008432287992227856,
+        "breath": 0.0010437737955920712,
+        "overshoot": 0.0018745540640340236
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 119,
+      "global_frame_number": 119,
+      "time_seconds": 4.916667,
+      "filename": "rebuilt-native-shot/frames/frame-000119.png",
+      "file_sha256": "86ab3318f0b25d50538d7167518e0ce8a3b89291f9d074abca3b529e5b80ee1f",
+      "frame_root": "9c9c1a16f12ae689de93fb3def408d6b5cf9fd03dda9a9b8f196bc63b4e0fc17",
+      "pose_root": "pose:1200f6ff99e73953",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.027741404133373906,
+        "costume_lag": -0.00042220277704370173,
+        "breath": 0.0005264667993175739,
+        "overshoot": 0.0009414586007215575
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 120,
+      "global_frame_number": 120,
+      "time_seconds": 4.958333,
+      "filename": "rebuilt-native-shot/frames/frame-000120.png",
+      "file_sha256": "c5afabdedd1b0828a37225dce6131f40309796f5d5564d071ce96f9dd3caafa0",
+      "frame_root": "78c5135d117b813c913f418dc73af20bec9980bf9d3febfccc3b1977473729bf",
+      "pose_root": "pose:fa7d91387f75cbdc",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "secondary_motion": {
+        "hair_lag": 0.028097651817694753,
+        "costume_lag": -1.959434878635765e-18,
+        "breath": 2.4492935982947064e-18,
+        "overshoot": 0
+      },
+      "layer_order": [
+        "background",
+        "midground",
+        "character",
+        "foreground",
+        "lighting"
+      ],
+      "dialogue_state": false,
+      "mouth_shape": "o"
+    }
+  ],
+  "frame_manifest_root": "333c14d68f2d345477ca7129b75ac7d52af7cdf925201a0eabb187648b39717a"
+}

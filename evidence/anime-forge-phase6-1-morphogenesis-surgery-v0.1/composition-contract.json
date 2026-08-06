@@ -1,0 +1,43 @@
+{
+  "format": "rncs.anime-forge-composition-contract.v0.1",
+  "episode_authority": "Episode Production IR",
+  "cut_role": "derived-browse-qa-repair-evidence-clip",
+  "shot_id": "EP01-Q01",
+  "resolution": {
+    "width": 1280,
+    "height": 720
+  },
+  "fps": 24,
+  "layer_order": [
+    "background",
+    "midground",
+    "character",
+    "foreground",
+    "lighting"
+  ],
+  "camera": {
+    "projection": "orthographic-perspective-hybrid",
+    "yaw_degrees": 34,
+    "scale": 1,
+    "transition": "ease-in-out"
+  },
+  "occlusion": {
+    "foreground_left": true,
+    "character_contact_shadow": true,
+    "mask_policy": "raster-layer-order"
+  },
+  "cut_seam_check": {
+    "status": "pass",
+    "checks": [
+      "frame-count",
+      "pose-root-continuity",
+      "exposure-profile",
+      "layer-order"
+    ]
+  },
+  "color_consistency": {
+    "status": "pass",
+    "method": "stable-palette-plus-frame-independent-cel-bands"
+  },
+  "composition_root": "e21598016255932bb632daacbbb4eb3ad368a98a40976e5d6b73faff57805ffb"
+}

@@ -1,0 +1,191 @@
+{
+  "format": "rncs.anime-forge-anatomy-validation-pack.v0.1",
+  "version": "0.1.0-alpha.1",
+  "status": "complete",
+  "character_id": "lan-tianlin",
+  "genome_root": "bb7b19fb23a61c96fd931e4b8c5b46370b8e64d619e37e92e02b52cbddb09782",
+  "character_identity_root": "1167172880d5ef94219524366c4d33af86f90f99f39b459c5d2b401c6b213efd",
+  "visual_genome_root": "a6052148c9db40ed583ec810b3c3448ccad59f6b2b6e7d38ac26f2aecc61bcd9",
+  "body_surface_root": "6a163516f8d07935181373a4374ff9481cfbd358278255a05af1d875ee5b05a4",
+  "face_rig_root": "61d3f6a3f852f153e08d2b04e2ab46fc94123bc4f78fffac63344c874160191e",
+  "hair_topology_root": "d6d39115fe8a378d8e9f1bb9700e0d267cfcb6d48fa89070b5b61871048d67cc",
+  "shoulder_torso_pelvis_root": "85adfdb70ab7c9e6eee0fed23fd3d749f64b6643ae4d3eedfccf4f895173cbf8",
+  "joint_deformation_root": "b61b300ada5a78357afa43d0850ffc2bf6390b2995edcb013a7e02e6405ee2f2",
+  "hand_abstraction_root": "8e4ab0f308d08b1de9d8e3d85d89ce25f7cbe84f1ae46ff0694714b3ebc99fe1",
+  "source_contract": "one-character-genome-to-one-morphogenesis-system",
+  "views": [
+    {
+      "view": "front",
+      "pose": "neutral",
+      "file": "anatomy-validation-pack/anatomy-front.png",
+      "file_sha256": "7339733212709eed796ef27217c207227f09197879d00f55d31810737b0dd445",
+      "frame_root": "efffb8ef4c85b255312c583e94dd442dbe984f6fec872aa0f28b1c80f38391ec",
+      "pose_root": "pose:9a266522a3bd4a84",
+      "diagnostics": {
+        "continuous_torso": true,
+        "face_coordinates_shared": true,
+        "scalp_attached": true,
+        "joint_envelopes": true,
+        "hand_mass": true
+      }
+    },
+    {
+      "view": "three-quarter-left",
+      "pose": "neutral",
+      "file": "anatomy-validation-pack/anatomy-34-left.png",
+      "file_sha256": "89678db1de8869d76961bd45f8b57f35969e7dc636b107599746e4cd75af1a26",
+      "frame_root": "7a1af182fa7fcf2026ff5e8bdac6d7ec4a19a4abb25190b7a64cb41eff26ede4",
+      "pose_root": "pose:b598b090874d5571",
+      "diagnostics": {
+        "continuous_torso": true,
+        "face_coordinates_shared": true,
+        "scalp_attached": true,
+        "joint_envelopes": true,
+        "hand_mass": true
+      }
+    },
+    {
+      "view": "three-quarter-right",
+      "pose": "neutral",
+      "file": "anatomy-validation-pack/anatomy-34-right.png",
+      "file_sha256": "b74ce2ccaa01639f48765ec65375bcc4f91e50d4256e3566d74d905e55712ec4",
+      "frame_root": "7ad5651df10e38d3cf4ce7d8123f51dd244d884387b62646bf23590a8b7b5726",
+      "pose_root": "pose:4a38a53f77285e8d",
+      "diagnostics": {
+        "continuous_torso": true,
+        "face_coordinates_shared": true,
+        "scalp_attached": true,
+        "joint_envelopes": true,
+        "hand_mass": true
+      }
+    },
+    {
+      "view": "side",
+      "pose": "neutral",
+      "file": "anatomy-validation-pack/anatomy-side.png",
+      "file_sha256": "f5b19d0d7e9a6abd6c5b7ec8aa76f2d1eaf6479058f3a41e8bec1708e9040a71",
+      "frame_root": "6620d790d9b02880c65db722d56a41f6180b62ba0e151b8970c3980ae1805ade",
+      "pose_root": "pose:de96f31399df6b40",
+      "diagnostics": {
+        "continuous_torso": true,
+        "face_coordinates_shared": true,
+        "scalp_attached": true,
+        "joint_envelopes": true,
+        "hand_mass": true
+      }
+    },
+    {
+      "view": "head-turn",
+      "pose": "alert",
+      "file": "anatomy-validation-pack/anatomy-head-turn.png",
+      "file_sha256": "e47b14ccfde9903c1af4fe0ec3ea861f97b5bcfcecd85b5379375da11bad5b03",
+      "frame_root": "07cc67f5045b2bb44f859e79a5419fa603ddfe508757ab60cfa19ecaccfd9235",
+      "pose_root": "pose:597fefffce0a7d00",
+      "diagnostics": {
+        "continuous_torso": true,
+        "face_coordinates_shared": true,
+        "scalp_attached": true,
+        "joint_envelopes": true,
+        "hand_mass": true
+      }
+    },
+    {
+      "view": "shoulder-turn",
+      "pose": "alert",
+      "file": "anatomy-validation-pack/anatomy-shoulder-turn.png",
+      "file_sha256": "1697bee1ded4a4c67e3f9b0d3ce18d3ab2f19b2b9927578094285f6368f27348",
+      "frame_root": "114fbacfd5ddee8a679d0600cead8aeaea05172ec47ba5e0d99742a12c9a7846",
+      "pose_root": "pose:9470b3d5e8407a54",
+      "diagnostics": {
+        "continuous_torso": true,
+        "face_coordinates_shared": true,
+        "scalp_attached": true,
+        "joint_envelopes": true,
+        "hand_mass": true
+      }
+    },
+    {
+      "view": "elbow-bend",
+      "pose": "action",
+      "file": "anatomy-validation-pack/anatomy-elbow-bend.png",
+      "file_sha256": "6baacc36a13f6fcc62d534f8cfc4e321177c4925edf51a4acb9e0f19d09a5a14",
+      "frame_root": "80530043141956551385a8ce430d4d8e32e7de9ae428d7aa301c070a08d02fe6",
+      "pose_root": "pose:e70e811a146b9f85",
+      "diagnostics": {
+        "continuous_torso": true,
+        "face_coordinates_shared": true,
+        "scalp_attached": true,
+        "joint_envelopes": true,
+        "hand_mass": true
+      }
+    },
+    {
+      "view": "front",
+      "pose": "neutral",
+      "file": "anatomy-validation-pack/anatomy-neutral-pose.png",
+      "file_sha256": "7339733212709eed796ef27217c207227f09197879d00f55d31810737b0dd445",
+      "frame_root": "efffb8ef4c85b255312c583e94dd442dbe984f6fec872aa0f28b1c80f38391ec",
+      "pose_root": "pose:9a266522a3bd4a84",
+      "diagnostics": {
+        "continuous_torso": true,
+        "face_coordinates_shared": true,
+        "scalp_attached": true,
+        "joint_envelopes": true,
+        "hand_mass": true
+      }
+    },
+    {
+      "view": "front",
+      "pose": "alert",
+      "file": "anatomy-validation-pack/anatomy-alert-pose.png",
+      "file_sha256": "7bda0c21e1cc895099e0a57583d8a96d6a2bdeb5eb8e01e40ed3d991f490848f",
+      "frame_root": "fdf01019376d733ce62e9148e427094c6ffddd7cccf454624e559f3e49a2abb7",
+      "pose_root": "pose:7a10c3bd306c2563",
+      "diagnostics": {
+        "continuous_torso": true,
+        "face_coordinates_shared": true,
+        "scalp_attached": true,
+        "joint_envelopes": true,
+        "hand_mass": true
+      }
+    },
+    {
+      "view": "front",
+      "pose": "action",
+      "file": "anatomy-validation-pack/anatomy-action-pose.png",
+      "file_sha256": "51c29e81a133829f1869e064122004c4b265d3fc8fffa1039f48d7cf6b2881c4",
+      "frame_root": "b59072d05761d81c82119c9feaaa31c3b6bb57169d12780ff0fe2e8f8d8fc5aa",
+      "pose_root": "pose:3216b029bbbd8f0b",
+      "diagnostics": {
+        "continuous_torso": true,
+        "face_coordinates_shared": true,
+        "scalp_attached": true,
+        "joint_envelopes": true,
+        "hand_mass": true
+      }
+    }
+  ],
+  "contact_sheet": {
+    "file": "anatomy-contact-sheet.png",
+    "file_sha256": "32ec0b166e42bd1d1b1716a7164639f0b8e8f881c456c6d9235b3d0b0b14e019",
+    "width": 2400,
+    "height": 540
+  },
+  "acceptance": {
+    "front": true,
+    "three_quarter_left": true,
+    "three_quarter_right": true,
+    "side": true,
+    "head_turn": true,
+    "shoulder_turn": true,
+    "elbow_bend": true,
+    "neutral_pose": true,
+    "alert_pose": true,
+    "action_pose": true,
+    "same_genome": true,
+    "shared_landmark_order": true,
+    "shared_hair_scalp_anchors": true,
+    "human_visual_acceptance": "pending"
+  },
+  "pack_root": "eb00133dab07bf2b40df2089451840336c0b8005ace16a7273577fbd289a2ab5"
+}

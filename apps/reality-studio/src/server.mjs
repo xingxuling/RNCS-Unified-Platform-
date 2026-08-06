@@ -12,6 +12,7 @@ import {UnifiedSessionRegistry,validateUnifiedProject,ensureUIInputProject} from
 import {AssetForgeRegistry} from './asset-forge.mjs';
 import {AnimeForgeSessionRegistry} from './anime-forge-studio.mjs';
 import {CharacterGenomeSessionRegistry} from './character-genome-studio.mjs';
+import {NativeCharacterSurgeryWorkspace} from './native-character-surgery-studio.mjs';
 
 const here=path.dirname(fileURLToPath(import.meta.url));
 const root=path.resolve(here,'..');
@@ -33,12 +34,13 @@ function loadSampleUnified(){
   return ensureUIInputProject(JSON.parse(fs.readFileSync(path.join(root,'examples','冰境试炼.unified-project.json'),'utf8')));
 }
 
-export async function startStudioServer({host='127.0.0.1',port=17608,dataDir=path.join(root,'output/server'),ffmpegPath=process.env.FFMPEG_PATH??'ffmpeg',ffprobePath=process.env.FFPROBE_PATH??'ffprobe'}={}){
+export async function startStudioServer({host='127.0.0.1',port=17608,dataDir=path.join(root,'output/server'),ffmpegPath=process.env.FFMPEG_PATH??'ffmpeg',ffprobePath=process.env.FFPROBE_PATH??'ffprobe',nativeCharacterSurgeryEvidenceDir=path.resolve(root,'../../evidence/anime-forge-phase6-1-morphogenesis-surgery-v0.1')}={}){
   const runtime=await new StudioRuntime({dataDir}).init();
   const behaviorSessions=new BehaviorSessionRegistry();
   const unifiedSessions=new UnifiedSessionRegistry();
   const assetForgeSessions=new AssetForgeRegistry();
   const animeForgeSessions=new AnimeForgeSessionRegistry({dataDir,ffmpegPath,ffprobePath});
+  const nativeCharacterSurgery=new NativeCharacterSurgeryWorkspace({evidenceDir:nativeCharacterSurgeryEvidenceDir});
   const characterSample=fs.readFileSync(path.resolve(root,'../../packages/integration/rcl-character-genome-bridge/examples/lan-tianlin.character.rcl'),'utf8');
   const characterGenomeSessions=new CharacterGenomeSessionRegistry({dataDir,sampleSource:characterSample});
   const server=http.createServer(async(req,res)=>{
@@ -223,6 +225,10 @@ export async function startStudioServer({host='127.0.0.1',port=17608,dataDir=pat
       if(req.method==='POST'&&u.pathname==='/api/anime-forge/rollback'){const b=await body(req);return send(res,200,animeForgeSessions.get(b.session_id).rollback(b.snapshot_id));}
       const animeMediaMatch=u.pathname.match(/^\/api\/anime-forge\/media\/([^/]+)\/(episode\.mp4|episode\.wav|evidence-ledger\.json|ffprobe-report\.json|build-summary\.json)$/);if(req.method==='GET'&&animeMediaMatch){const session=animeForgeSessions.get(decodeURIComponent(animeMediaMatch[1])),file=path.join(session.out_dir,'media',animeMediaMatch[2]);if(!fs.existsSync(file))return send(res,404,{error:{code:'ANIME_MEDIA_NOT_BUILT',message:'Requested media evidence is not available'}});return send(res,200,fs.readFileSync(file),mime[path.extname(file)]??'application/octet-stream');}
 
+      if(req.method==='GET'&&u.pathname==='/api/anime-forge/native-character-surgery')return send(res,200,nativeCharacterSurgery.inspect());
+      if(req.method==='POST'&&u.pathname==='/api/anime-forge/native-character-surgery'){const b=await body(req),command=String(b.command??'inspect');if(command==='inspect')return send(res,200,nativeCharacterSurgery.inspect());if(command==='compare')return send(res,200,nativeCharacterSurgery.compare());if(command==='repair-preview')return send(res,200,nativeCharacterSurgery.repairPreview());if(command==='rollback-preview')return send(res,200,nativeCharacterSurgery.rollbackPreview());if(command==='frame')return send(res,200,nativeCharacterSurgery.frame({name:b.name,overlay:b.overlay}));throw Object.assign(new Error(`NATIVE_SURGERY_COMMAND_UNKNOWN:${command}`),{code:'NATIVE_SURGERY_COMMAND_UNKNOWN'});}
+      const nativeSurgeryAsset=u.pathname.match(/^\/api\/anime-forge\/native-character-surgery\/asset\/(.+)$/);if(req.method==='GET'&&nativeSurgeryAsset){const asset=nativeCharacterSurgery.frame({name:decodeURIComponent(nativeSurgeryAsset[1])});return send(res,200,fs.readFileSync(asset.file),mime[path.extname(asset.file)]??'application/octet-stream');}
+
       if(req.method==='GET'&&u.pathname==='/api/character-genome/sample')return send(res,200,{source:characterSample,catalog:characterGenomeSessions.catalog()});
       if(req.method==='POST'&&u.pathname==='/api/character-genome/session/new'){const b=await body(req),session=characterGenomeSessions.create(String(b.source??characterSample));return send(res,200,{ok:true,...session.inspect()});}
       if(req.method==='POST'&&u.pathname==='/api/character-genome/session/inspect'){const b=await body(req);return send(res,200,{ok:true,...characterGenomeSessions.get(b.session_id).inspect()});}
@@ -240,5 +246,5 @@ export async function startStudioServer({host='127.0.0.1',port=17608,dataDir=pat
     }catch(e){send(res,500,{error:{code:e.code??'ERROR',message:e.message,details:e.details??{}}});}
   });
   await new Promise(r=>server.listen(port,host,r));
-  return{server,url:`http://${host}:${server.address().port}`,runtime,behaviorSessions,unifiedSessions,assetForgeSessions,animeForgeSessions,characterGenomeSessions};
+  return{server,url:`http://${host}:${server.address().port}`,runtime,behaviorSessions,unifiedSessions,assetForgeSessions,animeForgeSessions,characterGenomeSessions,nativeCharacterSurgery};
 }
