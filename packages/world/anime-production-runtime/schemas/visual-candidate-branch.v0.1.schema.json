@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rncs.anime-visual-candidate-branch.v0.1",
+  "type": "object",
+  "required": ["format", "candidate_id", "candidate_status", "episode_intent_root", "shot_intent_root", "character_identity_root", "character_reference_pack_root", "condition_pack_root", "provider_manifest_root", "model_manifest_root", "seed", "reconstruction_parameters", "human_visual_acceptance", "candidate_branch_root"],
+  "properties": {
+    "format": {"const": "rncs.anime-visual-candidate-branch.v0.1"},
+    "candidate_status": {"enum": ["requested", "conditioning", "generating", "generated", "validation-failed", "rejected", "shortlisted", "revision-requested", "selected", "committed", "superseded", "blocked"]},
+    "human_visual_acceptance": {"enum": ["pending", "accepted", "rejected", "revision-requested"]},
+    "candidate_branch_root": {"type": "string", "minLength": 32}
+  },
+  "additionalProperties": true
+}

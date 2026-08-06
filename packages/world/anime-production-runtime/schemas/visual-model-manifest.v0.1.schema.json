@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rncs.anime-visual-model-manifest.v0.1",
+  "type": "object",
+  "required": ["format", "model_id", "model_revision", "model_manifest_root", "license", "runtime", "status"],
+  "properties": {
+    "format": {"const": "rncs.anime-visual-model-manifest.v0.1"},
+    "model_id": {"type": "string"},
+    "model_revision": {"type": "string"},
+    "license": {"type": "object", "required": ["status"]},
+    "model_manifest_root": {"type": "string", "minLength": 32}
+  },
+  "additionalProperties": true
+}

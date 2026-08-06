@@ -1,0 +1,118 @@
+name: RNCS Anime Forge Phase 5 Visual Body
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_external_visual:
+        description: Run the separate self-hosted GPU visual evidence gate
+        required: true
+        default: false
+        type: boolean
+  pull_request:
+    branches: [main-95]
+    paths:
+      - "packages/world/anime-production-runtime/**"
+      - "packages/integration/rcl-anime-production-bridge/**"
+      - "apps/reality-studio/**"
+      - "scripts/generate-anime-phase5-visual-evidence.mjs"
+      - "scripts/verify-anime-phase5-visual-evidence.mjs"
+      - "scripts/build-visual-contact-sheet.py"
+      - "scripts/package-anime-forge-phase5-visual-source.mjs"
+      - "docs/verification/anime-forge-phase5-v0.1/**"
+      - "evidence/anime-forge-phase5-visual-body-v0.1/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/anime-forge-phase5-visual.yml"
+  push:
+    branches: [main-95]
+    paths:
+      - "packages/world/anime-production-runtime/**"
+      - "packages/integration/rcl-anime-production-bridge/**"
+      - "apps/reality-studio/**"
+      - "scripts/generate-anime-phase5-visual-evidence.mjs"
+      - "scripts/verify-anime-phase5-visual-evidence.mjs"
+      - "scripts/build-visual-contact-sheet.py"
+      - "scripts/package-anime-forge-phase5-visual-source.mjs"
+      - "docs/verification/anime-forge-phase5-v0.1/**"
+      - "evidence/anime-forge-phase5-visual-body-v0.1/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/anime-forge-phase5-visual.yml"
+
+jobs:
+  visual-contracts-and-blocked-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install ordinary evidence tools
+        run: |
+          python -m pip install "playwright>=1.45,<2" pillow
+          python -m playwright install --with-deps chromium
+      - run: npm ci --ignore-scripts
+      - name: Build the native RCL compiler
+        run: npm run build:native --workspace @taowind/reality-computation-language
+      - run: npm run build:world
+      - name: Run Phase 5 contracts and blocked provider tests
+        run: |
+          npm test --workspace @taowind/anime-production-runtime
+          npm test --workspace @taowind/rcl-anime-production-bridge
+          npm test --workspace @taowind/reality-studio-native
+      - name: Run blocked visual evidence
+        run: npm run evidence:anime-phase5-visual
+      - name: Verify stable roots across two evidence builds
+        run: npm run verify:anime-phase5-visual-evidence
+      - name: Run desktop and mobile blocked-state regression
+        run: python apps/reality-studio/tests/browser_anime_forge_phase5_visual_test.py
+      - name: Package Phase 5 source and evidence
+        run: npm run package:anime-phase5-visual
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rncs-anime-forge-phase5-visual-${{ github.sha }}
+          if-no-files-found: error
+          retention-days: 30
+          path: |
+            evidence/anime-forge-phase5-visual-body-v0.1
+            tmp/RNCS-Anime-Forge-v0.1-phase5-visual-source.zip
+
+  external-gpu-visual-evidence:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_external_visual == true }}
+    runs-on: [self-hosted, gpu, anime-forge]
+    timeout-minutes: 180
+    env:
+      VISUAL_PROVIDER_EXECUTABLE: ${{ secrets.VISUAL_PROVIDER_EXECUTABLE }}
+      VISUAL_PROVIDER_ARGS_JSON: ${{ secrets.VISUAL_PROVIDER_ARGS_JSON }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Require explicit external Provider configuration
+        shell: bash
+        run: |
+          test -n "${VISUAL_PROVIDER_EXECUTABLE:-}" || { echo "VISUAL_PROVIDER_EXECUTABLE is required"; exit 1; }
+          test -x "$VISUAL_PROVIDER_EXECUTABLE" || { echo "Configured Provider executable is not executable"; exit 1; }
+          command -v ffmpeg
+          command -v ffprobe
+      - run: npm ci --ignore-scripts
+      - run: npm run build:world
+      - name: Run external visual evidence entry
+        run: npm run evidence:anime-phase5-visual
+      - name: Preserve external evidence for review
+        uses: actions/upload-artifact@v4
+        with:
+          name: rncs-anime-forge-phase5-visual-external-${{ github.sha }}
+          if-no-files-found: error
+          retention-days: 30
+          path: evidence/anime-forge-phase5-visual-body-v0.1

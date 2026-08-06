@@ -1,6 +1,16 @@
-# RNCS Anime Forge v0.1 Phase 4 Release Notes
+# RNCS Anime Forge v0.1 Phase 4 Baseline and Phase 5 Engineering Notes
 
 Date: 2026-08-06
+
+## Phase 5 engineering status
+
+Phase 5 Visual Body Replacement is **blocked, not complete**. The new branch is based on `origin/main-95@085a365d002907b17dd87ded56e9ebb5cb26c409` and selects one real execution boundary, `rncs.visual.local-diffusion-video-worker`, as the future local Diffusion/Video route. Its external-process adapter records model, license, input roots, seed, parameters, runtime, GPU, timing, output frames and failure classification, and fails closed when the runtime, model, reference pack, condition pack or output is unavailable.
+
+The current machine audit found no usable visual model, Diffusers/ComfyUI runtime, CUDA/ROCm backend, Blender/Godot visual Provider, remote visual API configuration, FFmpeg or ffprobe. Therefore this phase produces no Phase 5 MP4/WAV and makes no visual-quality acceptance claim. The candidate is `blocked` with `MODEL_MISSING`, human visual acceptance is `pending`, and automatic scores cannot select or commit it. Phase 4 media remains the negative visual baseline only.
+
+Delivered Phase 5 engineering artifacts include Visual Provider/Model Manifest schemas, Character Reference Pack and Condition Pack contracts, Candidate Visual Branch state transitions, temporal/spatial/patch evidence, distinct ledger hash namespaces, a blocked-run evidence bundle and the Reality Studio visual-quality workspace/API with desktop/mobile regression coverage.
+
+Evidence: `evidence/anime-forge-phase5-visual-body-v0.1/evidence-summary.json`, `visual-evidence-ledger.json`, `visual-baseline-comparison.md` and `phase4-phase5-contact-sheet.png`.
 
 ## Delivered
 

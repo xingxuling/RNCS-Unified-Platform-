@@ -1,0 +1,165 @@
+{
+  "format": "rncs.anime-visual-provider-manifest.v0.1",
+  "version": "0.1.0-alpha.1",
+  "provider_id": "rncs.visual.local-diffusion-video-worker",
+  "provider_version": "0.1.0-alpha.1",
+  "display_name": "RNCS Local Diffusion / Video Worker",
+  "roles": [
+    "condition",
+    "keyframe",
+    "motion-video",
+    "temporal-repair"
+  ],
+  "execution": {
+    "kind": "external-process",
+    "binary": null,
+    "command": [
+      "--input",
+      "<contract>",
+      "--output",
+      "<media>"
+    ],
+    "cpu": true,
+    "gpu": true,
+    "network": false,
+    "platforms": [
+      "win32",
+      "linux",
+      "darwin"
+    ]
+  },
+  "inputs": [
+    "episode-shot-intent",
+    "character-genome",
+    "character-reference-pack",
+    "condition-pack",
+    "temporal-context",
+    "model-manifest",
+    "seed"
+  ],
+  "outputs": [
+    "condition-pack",
+    "keyframe-sequence",
+    "video-clip",
+    "temporal-repair-report",
+    "provider-receipt"
+  ],
+  "capabilities": {
+    "condition": [
+      "pose",
+      "skeleton",
+      "depth",
+      "normal",
+      "edge",
+      "semantic-mask",
+      "camera",
+      "layers"
+    ],
+    "keyframe": [
+      "face",
+      "hair",
+      "costume",
+      "lighting",
+      "composition"
+    ],
+    "motion_video": [
+      "temporal-context",
+      "camera-motion",
+      "expression-motion"
+    ],
+    "temporal_repair": [
+      "flicker",
+      "identity-drift",
+      "costume-drift",
+      "seam-repair"
+    ]
+  },
+  "media": {
+    "produces_media": true,
+    "media_types": [
+      "image/png-sequence",
+      "video/mp4"
+    ],
+    "mock": false,
+    "fixture": false
+  },
+  "resolution": {
+    "supported": [
+      {
+        "width": 1280,
+        "height": 720
+      }
+    ]
+  },
+  "frame_rate": {
+    "supported": [
+      24
+    ]
+  },
+  "determinism": {
+    "deterministic": false,
+    "seed_support": true,
+    "declaration": "records model family, model revision, model license, sampler, scheduler, parameters, seed, input roots, runtime and GPU"
+  },
+  "character_continuity": {
+    "identity_root_required": true,
+    "reference_pack_required": true,
+    "cross_frame": true,
+    "cross_shot": true
+  },
+  "temporal_consistency": {
+    "required": true,
+    "repair_capable": false
+  },
+  "resources": {
+    "cpu": "required",
+    "gpu": "required",
+    "vram_mb": 8192,
+    "memory_mb": 16384,
+    "disk_mb": 4096
+  },
+  "limits": {
+    "timeout_ms": 3600000,
+    "maximum_cost": 0,
+    "cost_unit": "local-compute"
+  },
+  "failures": [
+    "UNAVAILABLE",
+    "MODEL_MISSING",
+    "LICENSE_MISSING",
+    "INVALID_INPUT",
+    "TIMEOUT",
+    "OOM",
+    "CRASH",
+    "OUTPUT_MISSING",
+    "OUTPUT_INVALID",
+    "TEMPORAL_VALIDATION_FAILED"
+  ],
+  "evidence": {
+    "outputs": [
+      "provider-receipt",
+      "model-manifest",
+      "condition-pack",
+      "candidate-branch",
+      "frame-manifest"
+    ],
+    "tool_version": true,
+    "model_root": true,
+    "input_root": true,
+    "output_root": true
+  },
+  "license": {
+    "status": "model-dependent",
+    "spdx": null,
+    "source": null
+  },
+  "authority": {
+    "media_candidate_only": true,
+    "episode_intent_write": false,
+    "character_identity_write": false,
+    "selection_write": false,
+    "commit_write": false
+  },
+  "quality_boundary": "diffusion-video worker output requires temporal, identity, spatial and human visual review; commercial quality is not proven",
+  "manifest_root": "2023748512c6a05d9ca8f0c984c859697d4ef99a0a4b3afb2d0c3ea58bb6fabd"
+}

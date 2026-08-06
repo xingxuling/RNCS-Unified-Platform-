@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rncs.anime-visual-condition-pack.v0.1",
+  "type": "object",
+  "required": ["format", "episode_intent_root", "shot_intent_root", "character_identity_root", "reference_pack_root", "conditions", "condition_pack_root"],
+  "properties": {
+    "format": {"const": "rncs.anime-visual-condition-pack.v0.1"},
+    "conditions": {"type": "array", "minItems": 8},
+    "condition_pack_root": {"type": "string", "minLength": 32}
+  },
+  "additionalProperties": true
+}

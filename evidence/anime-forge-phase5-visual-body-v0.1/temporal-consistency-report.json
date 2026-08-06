@@ -1,0 +1,16 @@
+{
+  "format": "rncs.anime-temporal-consistency-report.v0.1",
+  "version": "0.1.0-alpha.1",
+  "expected_frame_count": 144,
+  "actual_frame_count": 0,
+  "complete": false,
+  "errors": [],
+  "blank_frames": [],
+  "consecutive_duplicate_frames": [],
+  "duplicate_ratio": 1,
+  "high_frequency_flicker_intervals": [],
+  "motion_anomaly_intervals": [],
+  "status": "fail",
+  "created_at": "2026-08-06T00:00:00.000Z",
+  "temporal_stability_root": "605a465f6165e99c788a18dd767ff6619627d598cae67228b19fc09f8d39b20d"
+}
