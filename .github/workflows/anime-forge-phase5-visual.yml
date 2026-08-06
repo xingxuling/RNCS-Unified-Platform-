@@ -57,6 +57,8 @@ jobs:
           python -m pip install "playwright>=1.45,<2" pillow
           python -m playwright install --with-deps chromium
       - run: npm ci --ignore-scripts
+      - name: Build the native RCL compiler
+        run: npm run build:native --workspace @taowind/reality-computation-language
       - run: npm run build:world
       - name: Run Phase 5 contracts and blocked provider tests
         run: |
