@@ -1,0 +1,37 @@
+{
+  "format": "rncs.anime-forge-phase5b-real-execution-evidence.v0.1",
+  "status": "blocked",
+  "block_code": "MODEL_EXECUTION_UNAVAILABLE",
+  "baseline_commit": "4d42442855a371903563f644b0f24ee9a9defc4d",
+  "branch": "codex/rncs-anime-forge-phase5b-real-execution-v01",
+  "worktree": "C:\\Users\\User\\Documents\\RCL\\_worktrees\\rncs-anime-forge-phase5b-real-execution-v01",
+  "ffmpeg_gate": "passed",
+  "real_provider_execution": "blocked",
+  "comfyui_workflow_submitted": false,
+  "smoke_shot": "not-run",
+  "quality_shot": "not-run",
+  "patch": "not-run",
+  "candidate_root": null,
+  "patch_root": null,
+  "mp4": null,
+  "human_character_acceptance": "pending",
+  "human_visual_acceptance": "pending",
+  "commercial_license_status": "pending",
+  "authoritative_boundary": {
+    "episode_write": false,
+    "candidate_selection": false,
+    "episode_commit": false
+  },
+  "evidence_files": [
+    "docs/verification/anime-forge-phase5b-v0.1/environment-audit.json",
+    "docs/verification/anime-forge-phase5b-v0.1/environment-audit.md",
+    "docs/verification/anime-forge-phase5b-v0.1/federation-review.md",
+    "docs/verification/anime-forge-phase5b-v0.1/handoff.md"
+  ],
+  "ffmpeg_smoke": {
+    "path": "tmp/phase5b-ffmpeg-smoke-20260807/episode.mp4",
+    "sha256": "6550138cfbb2da66654d0c920c7c9161fc7529bd3cccd47330053f916002c183",
+    "is_visual_provider_output": false
+  },
+  "merge_allowed": false
+}

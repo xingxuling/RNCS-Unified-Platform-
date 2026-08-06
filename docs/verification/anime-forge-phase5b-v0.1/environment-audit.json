@@ -1,0 +1,159 @@
+{
+  "format": "rncs.anime-forge-phase5b-environment-audit.v0.1",
+  "phase": "RNCS Anime Forge v0.1 Phase 5B",
+  "baseline": {
+    "repository": "xingxuling/RNCS-Unified-Platform-",
+    "branch": "codex/rncs-anime-forge-phase5b-real-execution-v01",
+    "worktree": "C:\\Users\\User\\Documents\\RCL\\_worktrees\\rncs-anime-forge-phase5b-real-execution-v01",
+    "origin_main_95": "4d42442855a371903563f644b0f24ee9a9defc4d",
+    "audit_date": "2026-08-07"
+  },
+  "stability_boundary": {
+    "stable_root_allowed": false,
+    "excluded_from_deterministic_roots": [
+      "captured_at",
+      "free_memory_gb",
+      "free_disk_gb",
+      "process_list",
+      "network_latency",
+      "machine_local_absolute_paths"
+    ],
+    "note": "This report records machine facts for execution gating. Transient facts must not seed Episode, Candidate, Provider, or Evidence Ledger deterministic roots."
+  },
+  "machine": {
+    "os": {
+      "caption": "Microsoft Windows 11 Home",
+      "version": "10.0.26200",
+      "build": "26200"
+    },
+    "cpu": {
+      "name": "AMD Ryzen AI 7 350 w/ Radeon 860M",
+      "cores": 8,
+      "logical_processors": 16
+    },
+    "memory": {
+      "total_gb": 23.29,
+      "free_gb_at_audit": 3.68,
+      "free_gb_is_transient": true
+    },
+    "gpu": [
+      {
+        "name": "AMD Radeon(TM) 860M Graphics",
+        "vendor": "AMD",
+        "adapter_ram_bytes": 536870912,
+        "adapter_ram_is_not_dedicated_vram": true,
+        "driver_version": "32.0.22024.3004"
+      }
+    ],
+    "nvidia_driver": null,
+    "cuda": {
+      "nvidia_smi": false,
+      "nvcc": false,
+      "torch_cuda_available": false,
+      "torch_device_count": 0
+    },
+    "disk": {
+      "volume": "C:",
+      "free_gb_at_audit": 307.9,
+      "free_gb_is_transient": true
+    }
+  },
+  "toolchain": {
+    "python": {
+      "version": "3.11.6",
+      "path": "C:\\Users\\User\\AppData\\Local\\Programs\\Python\\Python311\\python.exe"
+    },
+    "node": {
+      "version": "24.15.0",
+      "path": "C:\\Program Files\\nodejs\\node.exe"
+    },
+    "npm": {
+      "version": "11.12.1",
+      "path": "C:\\Program Files\\nodejs\\npm.ps1"
+    },
+    "git": {
+      "version": "2.55.0.windows.2",
+      "path": "C:\\Program Files\\Git\\cmd\\git.exe"
+    },
+    "torch": {
+      "version": "2.10.0+cpu",
+      "cuda_available": false
+    }
+  },
+  "ffmpeg": {
+    "status": "passed",
+    "package_manager": "winget",
+    "package_id": "Gyan.FFmpeg.Shared",
+    "version": "9.0",
+    "license": "GPL-3.0",
+    "source_url": "https://github.com/GyanD/codexffmpeg/releases/download/9.0/ffmpeg-9.0-full_build-shared.zip",
+    "installer_sha256": "18c9aa44ae38749eb59596ff5a0474144cafe20726001123956cd7e6f5c6af35",
+    "ffmpeg_path": "C:\\Users\\User\\AppData\\Local\\Microsoft\\WinGet\\Packages\\Gyan.FFmpeg.Shared_Microsoft.Winget.Source_8wekyb3d8bbwe\\ffmpeg-9.0-full_build-shared\\bin\\ffmpeg.exe",
+    "ffmpeg_sha256": "a5a39c26af5925b33d277e12fa338d68380d94a06c3b0b5184018226bf89e2f1",
+    "ffprobe_path": "C:\\Users\\User\\AppData\\Local\\Microsoft\\WinGet\\Packages\\Gyan.FFmpeg.Shared_Microsoft.Winget.Source_8wekyb3d8bbwe\\ffmpeg-9.0-full_build-shared\\bin\\ffprobe.exe",
+    "ffprobe_sha256": "35dab4c6bee96f80632d0759922d1b21e61a71fcad4fe1f2eb49a86bb2680fc5",
+    "smoke_test": {
+      "status": "passed",
+      "input": "real PNG frame sequence plus existing real WAV",
+      "output": "tmp/phase5b-ffmpeg-smoke-20260807/episode.mp4",
+      "output_sha256": "6550138cfbb2da66654d0c920c7c9161fc7529bd3cccd47330053f916002c183",
+      "output_bytes": 121030,
+      "video_codec": "h264",
+      "audio_codec": "aac",
+      "width": 960,
+      "height": 540,
+      "fps": "24/1",
+      "frame_count": 48,
+      "duration_seconds": 2.0,
+      "audio_duration_seconds": 2.0,
+      "is_phase5b_visual_provider_output": false,
+      "note": "This proves the local media mux toolchain only. It is not a visual-model execution result."
+    }
+  },
+  "comfyui": {
+    "preferred_shell": "ComfyUI Local Server API",
+    "server_executable_found": false,
+    "data_directory_found": true,
+    "data_directory": "C:\\Users\\User\\Documents\\ComfyUI",
+    "models_found": false,
+    "custom_nodes_found": false,
+    "health_endpoint_checked": false,
+    "workflow_submitted": false
+  },
+  "provider_configuration": {
+    "remote_gpu_configured": false,
+    "comfy_cloud_configured": false,
+    "provider_api_configured": false,
+    "secret_values_read": false,
+    "secret_names_checked": [
+      "COMFYUI_*",
+      "VISUAL_*",
+      "GPU_*",
+      "PROVIDER_*",
+      "HUGGINGFACE_*",
+      "HF_*",
+      "WAN_*",
+      "HUNYUAN_*",
+      "LTX_*"
+    ]
+  },
+  "network": {
+    "github_https_reachable": true,
+    "model_download_attempted": false,
+    "model_download_reason": "No compatible local GPU/runtime and no approved remote Provider configuration."
+  },
+  "human_gates": {
+    "human_character_acceptance": "pending",
+    "human_visual_acceptance": "pending",
+    "commercial_license_status": "pending"
+  },
+  "execution_decision": {
+    "ffmpeg_gate": "passed",
+    "real_provider_gate": "blocked: MODEL_EXECUTION_UNAVAILABLE",
+    "smoke_shot": "not-run",
+    "quality_shot": "not-run",
+    "patch": "not-run",
+    "phase5b_engineering_status": "blocked",
+    "merge_allowed": false
+  }
+}
