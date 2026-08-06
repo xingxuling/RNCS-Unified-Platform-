@@ -1,0 +1,430 @@
+{
+  "format": "ragf.anime-character-family.v0.1",
+  "version": "0.2.0-alpha.1",
+  "identity": {
+    "asset_id": "character:蓝天临",
+    "character_id": "character:蓝天临",
+    "name": "蓝天临",
+    "seed": "anime-forge:character:蓝天临",
+    "genome_root": "959c7e3a39bdd82364fa79716dfa60f3a8f6fda82d237306c02d0e4b8bc8b4fa",
+    "identity_root": "682362679be55dca2700dc6146b92a48014170e40b5d851bda53e00f656cff5f"
+  },
+  "asset_root": "b635dc6cf7cc3f8acb93c93968a70c13ecd03a9712736d465849efef8e5617cf",
+  "version_root": "834be582de2335890c4d44b821c124f7ab39bcc31ee1dd0676f125a4d8eace27",
+  "genome_root": "959c7e3a39bdd82364fa79716dfa60f3a8f6fda82d237306c02d0e4b8bc8b4fa",
+  "identity_root": "682362679be55dca2700dc6146b92a48014170e40b5d851bda53e00f656cff5f",
+  "identity_signature": {
+    "format": "rncs.character-identity-signature.v0.1",
+    "version": "0.1.0-alpha.1",
+    "character_id": "character:蓝天临",
+    "genome_id": "character-genome:182f1b0c383f237946a8a5b0",
+    "identity_root": "682362679be55dca2700dc6146b92a48014170e40b5d851bda53e00f656cff5f",
+    "topology_family": "young-male-slim",
+    "face_proportion_vector": [
+      0.54,
+      0.5,
+      0.55,
+      0.43,
+      0.52,
+      0.48,
+      0.42,
+      0.46,
+      0.5,
+      0.56,
+      0.48,
+      0.48,
+      0.48,
+      0.56,
+      0.47,
+      0.52,
+      0.62,
+      0.62,
+      0.42,
+      0.4,
+      0.46,
+      0.51,
+      0.56,
+      0.5,
+      0.42,
+      0.5,
+      0.46,
+      0.42
+    ],
+    "body_proportion_vector": [
+      0.52,
+      0.56,
+      0.54,
+      0.55,
+      0.5
+    ],
+    "silhouette_vector": [
+      0.47,
+      0.56,
+      0.42,
+      0.42,
+      0.52,
+      0.55,
+      0.56
+    ],
+    "eye_signature": [
+      0.48,
+      0.48,
+      0.56,
+      0.48
+    ],
+    "jaw_signature": [
+      0.42,
+      0.62,
+      0.62,
+      0.52,
+      0.48
+    ],
+    "nose_signature": [
+      0.56,
+      0.42,
+      0.5
+    ],
+    "mouth_signature": [
+      0.51,
+      0.42,
+      0.46,
+      0.4
+    ],
+    "palette_anchor": "#4f86c6",
+    "canonical_landmarks": {
+      "eye_line": 0.69,
+      "nose_tip": 0.61,
+      "mouth_line": 0.55,
+      "chin": 0.47,
+      "shoulder_line": 0.39
+    },
+    "immutable_identity_fields": [
+      "character_id",
+      "species_family",
+      "topology_family",
+      "identity_parameters"
+    ],
+    "signature_root": "1777f4ca2de3095b7ea0dae0100b1ea8f5f03da6e282910450c4222a7675a4a5"
+  },
+  "appearance": {
+    "hair_family": "black-wavy-medium",
+    "costume_family": "lan-default-v1",
+    "costume_variant": "default",
+    "eye_style": "calm-sharp",
+    "brow_style": "restrained-straight",
+    "emblem_slot": "shenlin-original-v1"
+  },
+  "proportions": {
+    "head_body_ratio": 0.52,
+    "shoulder_width": 0.55,
+    "limb_ratio": 0.56,
+    "torso_length": 0.5,
+    "face_width": 0.47,
+    "face_length": 0.56,
+    "eye_size": 0.48,
+    "eye_spacing": 0.48,
+    "jaw_width": 0.42,
+    "mouth_width": 0.51
+  },
+  "face_features": {
+    "eye_style": "calm-sharp",
+    "brow_style": "restrained-straight",
+    "eye_signature": [
+      0.48,
+      0.48,
+      0.56,
+      0.48
+    ],
+    "jaw_signature": [
+      0.42,
+      0.62,
+      0.62,
+      0.52,
+      0.48
+    ],
+    "nose_signature": [
+      0.56,
+      0.42,
+      0.5
+    ],
+    "mouth_signature": [
+      0.51,
+      0.42,
+      0.46,
+      0.4
+    ]
+  },
+  "state": {
+    "expression": "neutral",
+    "pose": "restrained-stand"
+  },
+  "character_bible": {
+    "silhouette": "slender-judge",
+    "line_style": "stable-ink-5px",
+    "palette": {
+      "skin": "#d8c7bd",
+      "hair": "#11151d",
+      "eye": "#4f86c6",
+      "base": "#101827",
+      "secondary": "#253653",
+      "trim": "#b9c6d8",
+      "emblem": "#5d91ce"
+    },
+    "proportions": {
+      "head_body_ratio": 0.52,
+      "shoulder_width": 0.55,
+      "limb_ratio": 0.56,
+      "torso_length": 0.5,
+      "face_width": 0.47,
+      "face_length": 0.56,
+      "eye_size": 0.48,
+      "eye_spacing": 0.48,
+      "jaw_width": 0.42,
+      "mouth_width": 0.51
+    },
+    "costume": {
+      "family": "lan-default-v1",
+      "variant": "default",
+      "primary": "#101827",
+      "secondary": "#253653",
+      "accent": "#5d91ce"
+    },
+    "hair": {
+      "family": "black-wavy-medium",
+      "color": "#11151d"
+    }
+  },
+  "model_sheet": {
+    "views": [
+      "front",
+      "side",
+      "back"
+    ],
+    "files": [
+      "model-sheet.svg",
+      "front-view.svg",
+      "side-view.svg",
+      "back-view.svg"
+    ]
+  },
+  "expression_sheet": {
+    "file": "expression-sheet.svg",
+    "expressions": [
+      "neutral",
+      "restrained",
+      "question",
+      "resolve"
+    ]
+  },
+  "mouth_chart": {
+    "file": "mouth-chart.svg",
+    "shapes": [
+      "closed",
+      "a",
+      "i",
+      "o",
+      "u"
+    ]
+  },
+  "eye_chart": {
+    "file": "eye-chart.svg",
+    "states": [
+      "open",
+      "blink",
+      "gaze",
+      "soft"
+    ]
+  },
+  "hand_chart": {
+    "file": "hand-chart.svg",
+    "states": [
+      "rest",
+      "point",
+      "grip",
+      "open"
+    ]
+  },
+  "pose_library": {
+    "file": "pose-library.svg",
+    "poses": [
+      "head_lowered",
+      "begin_raise_head",
+      "gaze_locked",
+      "hold"
+    ]
+  },
+  "palette": {
+    "skin": "#d8c7bd",
+    "hair": "#11151d",
+    "eye": "#4f86c6",
+    "base": "#101827",
+    "secondary": "#253653",
+    "trim": "#b9c6d8",
+    "emblem": "#5d91ce"
+  },
+  "palette_root": "29350ee5987450467eb25c4d274504e5f1bd8cf6f12456a4881cc728d58a7103",
+  "proportion_root": "0623f2e69a3bc56b0a015fddd07e68dd49dd5fd242781423f900aa98e478d0eb",
+  "line_style": {
+    "name": "stable-ink-5px",
+    "outline_px": 5,
+    "internal_line_px": 3,
+    "temporal_stability": "deterministic"
+  },
+  "costume_variants": [
+    {
+      "id": "default",
+      "palette": {
+        "skin": "#d8c7bd",
+        "hair": "#11151d",
+        "eye": "#4f86c6",
+        "base": "#101827",
+        "secondary": "#253653",
+        "trim": "#b9c6d8",
+        "emblem": "#5d91ce"
+      }
+    }
+  ],
+  "layered_2d_rig": {
+    "format": "ragf.layered-2d-rig.v0.1",
+    "layers": [
+      "back-hair",
+      "face",
+      "eyes",
+      "mouth",
+      "front-hair",
+      "inner-costume",
+      "outer-costume",
+      "hands",
+      "effects"
+    ],
+    "anchors": {
+      "head": [
+        0,
+        0
+      ],
+      "mouth": [
+        0,
+        0.12
+      ],
+      "gaze": [
+        0,
+        0.03
+      ]
+    }
+  },
+  "optional_3d_proxy": {
+    "provider": null,
+    "status": "not-implemented",
+    "quality_boundary": "No 3D proxy artifact is emitted or claimed in Phase 4."
+  },
+  "facial_rig": {
+    "format": "ragf.facial-rig.v0.1",
+    "controls": [
+      "head_pitch",
+      "gaze_x",
+      "gaze_y",
+      "blink",
+      "mouth_open",
+      "mouth_shape",
+      "expression_weight"
+    ]
+  },
+  "viseme_map": {
+    "sil": "closed",
+    "a": "a",
+    "i": "i",
+    "u": "u",
+    "e": "i",
+    "o": "o"
+  },
+  "retarget_profile": {
+    "profile": "rncs.anime-humanoid-v0.1",
+    "bones": [
+      "root",
+      "head",
+      "spine",
+      "arm_l",
+      "arm_r",
+      "leg_l",
+      "leg_r"
+    ]
+  },
+  "continuity_bundle": {
+    "asset_root": "b635dc6cf7cc3f8acb93c93968a70c13ecd03a9712736d465849efef8e5617cf",
+    "identity_root": "682362679be55dca2700dc6146b92a48014170e40b5d851bda53e00f656cff5f",
+    "genome_root": "959c7e3a39bdd82364fa79716dfa60f3a8f6fda82d237306c02d0e4b8bc8b4fa",
+    "palette_root": "29350ee5987450467eb25c4d274504e5f1bd8cf6f12456a4881cc728d58a7103",
+    "proportion_root": "0623f2e69a3bc56b0a015fddd07e68dd49dd5fd242781423f900aa98e478d0eb",
+    "appearance_root": "de905c98256ab091884ae62946372159db338027403acbe345f7a54febe37a57",
+    "stable_across_cuts": true
+  },
+  "quality": {
+    "format": "ragf.anime-asset-quality-report.v0.1",
+    "valid": true,
+    "level": "experimental-built-in-anime",
+    "meaningful_character": true,
+    "flat_test_card": false,
+    "semantic_role_count": 9,
+    "view_count": 3,
+    "expression_count": 4,
+    "viseme_count": 5,
+    "pose_count": 4,
+    "palette_contrast": {
+      "ink_to_skin": 11.163,
+      "costume_to_trim": 10.264
+    },
+    "continuity_fields": [
+      "identity_root",
+      "genome_root",
+      "palette_root",
+      "proportion_root",
+      "hair_family",
+      "costume_family"
+    ],
+    "media_roots": {
+      "model-sheet.svg": "11a00257ee8196062b9cf05cec631a5101a476c74372d867b348ca139fc2c7dc",
+      "front-view.svg": "11a00257ee8196062b9cf05cec631a5101a476c74372d867b348ca139fc2c7dc",
+      "side-view.svg": "d7909bdc32e29f4ca37ede1be557e0152ded2c4fd057e76f99eec2e29e96fbd6",
+      "back-view.svg": "27577c0da8b82893ff7f5b37df29d7a8d326c6d69244e1f91686abbf29321052",
+      "expression-sheet.svg": "a7ed80160ecf0e7281e7ff0ee410b6427a52a561a5d2e3c62cf37bf8a804347a",
+      "mouth-chart.svg": "5decfe2fa730f37cad05248bf7f91f91d5b6cda165a3631a67aa94f3e38d0b1d",
+      "eye-chart.svg": "5c05ad6df712e3443a101ef86c0b867c8e650e5f0f4cc7c9d144c107a3700fb1",
+      "hand-chart.svg": "7f959e8b6f876e6d87972689a8d5a7bf9bc4b7f32a362f5069efba9dd769ac10",
+      "pose-library.svg": "6c1b596b3d0b96299595823fe6a8a895f362c8b5cba5e31db1e462ba953feb20"
+    },
+    "boundary": "deterministic experimental character asset; commercial Anime source-art quality not proven",
+    "quality_root": "5c9eaa2e430c60d9a238af2c5eef0856f9294804ea18642ee9424e8582641469"
+  },
+  "lineage_graph": {
+    "source": "ragf.anime-builtin-generator",
+    "parents": [],
+    "source_assets": [],
+    "input_root": "959c7e3a39bdd82364fa79716dfa60f3a8f6fda82d237306c02d0e4b8bc8b4fa",
+    "provider_root": "7c2bae4e403513866aca5419e8f05c2a63e0cf1bff7228efa742d7b736cf366a",
+    "version_root": "834be582de2335890c4d44b821c124f7ab39bcc31ee1dd0676f125a4d8eace27"
+  },
+  "provider_receipt": {
+    "provider_id": "ragf.anime-builtin-generator",
+    "provider_version": "0.2.0",
+    "mode": "builtin-deterministic",
+    "capability": "anime-character-family",
+    "input_root": "959c7e3a39bdd82364fa79716dfa60f3a8f6fda82d237306c02d0e4b8bc8b4fa",
+    "output_root": "b635dc6cf7cc3f8acb93c93968a70c13ecd03a9712736d465849efef8e5617cf",
+    "seed": "anime-forge:character:蓝天临",
+    "real_media": true,
+    "media_types": [
+      "image/svg+xml"
+    ],
+    "authority": "candidate-only",
+    "quality_boundary": "deterministic experimental character asset; commercial Anime source-art quality not proven",
+    "receipt_root": "7c2bae4e403513866aca5419e8f05c2a63e0cf1bff7228efa742d7b736cf366a"
+  },
+  "provider": {
+    "id": "ragf.anime-builtin-generator",
+    "version": "0.2.0",
+    "mode": "builtin-deterministic",
+    "quality": "experimental-built-in-anime",
+    "license": "Apache-2.0"
+  },
+  "family_root": "d58bd103b7c73411cd843b30f41d4d687ced3e539af6d760523cfd30d080063d"
+}

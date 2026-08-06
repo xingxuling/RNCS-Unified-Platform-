@@ -1,0 +1,6 @@
+{
+  "kind": "generated-raster-reference-pack",
+  "path": "references/",
+  "render_backend": "vsr.anime-builtin-rasterizer",
+  "human_character_acceptance": "pending"
+}

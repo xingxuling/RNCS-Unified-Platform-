@@ -1,0 +1,40 @@
+{
+  "format": "rncs.anime-visual-patch-receipt.v0.1",
+  "version": "0.1.0-alpha.1",
+  "patch_id": "visual-patch:a0e1381d18e4ddb2cf3071684ccf385e8b1a63e57aee17f2da15428537e177a1",
+  "before_candidate_branch_root": "35d2798c733c8a16e48d93a26d737b96c1d7ddebba4ba634f9fa5ad8abb5a6ea",
+  "after_candidate_branch_root": "7c07f217ce5a0d081626848ea4d1fac00857544e40c1289c2d8aa70d644648fa",
+  "episode_intent_root": "d962fa2c7644d759243e467aa61d83f024c671952b7c6ba20df26d006e816e7c",
+  "character_identity_root": "682362679be55dca2700dc6146b92a48014170e40b5d851bda53e00f656cff5f",
+  "interval": {
+    "start_frame": 72,
+    "end_frame": 108
+  },
+  "expanded_interval": {
+    "start_frame": 64,
+    "end_frame": 116
+  },
+  "region": {
+    "kind": "face-hair-coat",
+    "mask_root": "77c4eeaafd17c52db3f4613ca67421d77a07c14d74bcb1f43c00ae977b9c2df0"
+  },
+  "reason": "local patch experiment for attention turn and follow-through",
+  "unaffected_frame_roots": [],
+  "seam_checks": {
+    "start_match": true,
+    "end_match": true
+  },
+  "status": "blocked",
+  "rollback_allowed": true,
+  "created_at": "2026-08-06T00:00:00.000Z",
+  "patch_root": "415800a18efd503f2a4669739f27790996053b333ce69fcf6b17f7b27c9b3358",
+  "history": [
+    {
+      "state": "blocked",
+      "actor": "rncs:visual-patch-runtime",
+      "reason": "provider output unavailable; local patch was not executed",
+      "at": "2026-08-06T00:00:00.000Z"
+    }
+  ],
+  "updated_at": "2026-08-06T00:00:00.000Z"
+}

@@ -126,6 +126,26 @@
         {
           "id": "",
           "fits": true
+        },
+        {
+          "id": "",
+          "fits": true
+        },
+        {
+          "id": "",
+          "fits": true
+        },
+        {
+          "id": "",
+          "fits": true
+        },
+        {
+          "id": "",
+          "fits": true
+        },
+        {
+          "id": "",
+          "fits": true
         }
       ],
       "visual_status": "blocked",
@@ -235,6 +255,26 @@
         },
         {
           "id": "clearBtn",
+          "fits": true
+        },
+        {
+          "id": "",
+          "fits": true
+        },
+        {
+          "id": "",
+          "fits": true
+        },
+        {
+          "id": "",
+          "fits": true
+        },
+        {
+          "id": "",
+          "fits": true
+        },
+        {
+          "id": "",
           "fits": true
         },
         {

@@ -1,11 +1,11 @@
 {
   "format": "rncs.anime-visual-quality-report.v0.1",
   "version": "0.1.0-alpha.1",
-  "candidate_branch_root": "74c0cdc3089a4b01c4362464136ce2ea724bcd17e7daeb16ef77161004e2d988",
+  "candidate_branch_root": "35d2798c733c8a16e48d93a26d737b96c1d7ddebba4ba634f9fa5ad8abb5a6ea",
   "metrics": {
     "first_impression": "not-executed",
     "identity": "not-executed",
-    "temporal": "not-executed",
+    "temporal": "fail",
     "space": "not-executed",
     "performance": "not-executed",
     "motion": "not-executed"
@@ -19,12 +19,32 @@
     {
       "id": "real-model-license",
       "pass": false,
-      "reason": "model and license missing"
+      "reason": "model or license missing"
+    },
+    {
+      "id": "reference-pack",
+      "pass": false,
+      "reason": "human-reviewed raster reference pack required"
+    },
+    {
+      "id": "condition-pack",
+      "pass": true,
+      "reason": "complete"
     },
     {
       "id": "real-media",
       "pass": false,
-      "reason": "no candidate frames"
+      "reason": "VISUAL_PROVIDER_BLOCKED"
+    },
+    {
+      "id": "temporal-stability",
+      "pass": false,
+      "reason": "fail"
+    },
+    {
+      "id": "human-visual-acceptance",
+      "pass": false,
+      "reason": "pending-human-review"
     }
   ],
   "representative_frames": [],
@@ -40,7 +60,7 @@
   "spatial_checks": {},
   "motion_checks": {},
   "human_review_items": [
-    "human_visual_acceptance remains pending"
+    "human visual acceptance is never written by automation"
   ],
   "automatic_score": {
     "value": null,
@@ -51,5 +71,5 @@
   "status": "fail",
   "boundary": "image metrics are supporting evidence, not a single truth and not human aesthetic acceptance",
   "created_at": "2026-08-06T00:00:00.000Z",
-  "quality_report_root": "2ea12be9fec2d24c09a3852fbec9032d0151d5e81c1a4c1750e99260858a5bab"
+  "quality_report_root": "7cc9064ce85c7abf6e0ac2c0fb6b4cc0668b14c6e9032711d1405968d5828d91"
 }

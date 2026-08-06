@@ -1,0 +1,8 @@
+{
+  "format": "rncs.anime-audio-video-sync-report.v0.1",
+  "version": "0.1.0-alpha.1",
+  "status": "blocked",
+  "code": "FFMPEG_UNAVAILABLE",
+  "production_root": "e4b6388c2229f75c0b646ed7c30dfe314a4ff498ab84390a0b6cf310b4440132",
+  "report_root": "c66bdbc5bfaab0187d6be7d34de49cb992ac87d40b38ed1b2114c96a4e077664"
+}

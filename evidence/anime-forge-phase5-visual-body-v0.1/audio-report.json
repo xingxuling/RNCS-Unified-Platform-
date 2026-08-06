@@ -1,0 +1,78 @@
+{
+  "format": "rncs.audio-scene-render-report.v0.1",
+  "scene_id": "sound:anime-production:19687dcb4b8e872114acf704:editorial",
+  "duration_seconds": 6,
+  "sample_rate": 22050,
+  "stems": {
+    "dialogue": {
+      "bytes": 264644,
+      "root": "23fc72925d5725e54ac2ff09f80fb303814c67a30cc57033ab6c0b3b21deb3b4",
+      "metrics": {
+        "peak": 0.20307016372680664,
+        "rms": 0.05821091565158561,
+        "lufs_estimate": -24.699911385096627
+      }
+    },
+    "ambience": {
+      "bytes": 264644,
+      "root": "d6b355bb9f550ffdc1fe1a1a7e420ed5124cfa9546e786ea18ac5eb68e976a4a",
+      "metrics": {
+        "peak": 0.07999999821186066,
+        "rms": 0.03689296922928152,
+        "lufs_estimate": -28.66112780736453
+      }
+    },
+    "foley": {
+      "bytes": 264644,
+      "root": "5c73531578a0338b55d52b8ca70d394faf18bb9de8345ff393231c1063cc8ae1",
+      "metrics": {
+        "peak": 0.044999074190855026,
+        "rms": 0.031158830849560195,
+        "lufs_estimate": -30.128376928276033
+      }
+    },
+    "sfx": {
+      "bytes": 264644,
+      "root": "a99240a79d5c7db1ace7c9907a0361ec5f156f2855e09e8c877c260cf8f55d5f",
+      "metrics": {
+        "peak": 0.17999958992004395,
+        "rms": 0.01452675867349779,
+        "lufs_estimate": -36.756625562972566
+      }
+    },
+    "music": {
+      "bytes": 264644,
+      "root": "33d6cb423a67e45e3abd5263f35122a48093912487322e1e80709583586eb1f0",
+      "metrics": {
+        "peak": 0.034999992698431015,
+        "rms": 0.024652351086741093,
+        "lufs_estimate": -32.16283311774937
+      }
+    },
+    "master": {
+      "bytes": 264644,
+      "root": "fa3f746a47cdcbeb225b3dc94eb3d47821b088045656c7917b1125a148a3e8ad",
+      "metrics": {
+        "peak": 0.2812344431877136,
+        "rms": 0.07422285874866671,
+        "lufs_estimate": -22.58924644979554
+      }
+    }
+  },
+  "dialogue_placements": [
+    {
+      "dialogue_event_id": "dialogue:adbc9d6877ab83be6946e8ec",
+      "cut_ref": "EP01/无名城审判质量镜头/Q01",
+      "start_seconds": 2.5416666666666665,
+      "rendered": true
+    }
+  ],
+  "ducking": {
+    "enabled": true,
+    "amount_db": -7
+  },
+  "repeat_dialogue_count": 1,
+  "seed": "audio-reference-v0.1",
+  "master_root": "fa3f746a47cdcbeb225b3dc94eb3d47821b088045656c7917b1125a148a3e8ad",
+  "audio_root": "bdc88344f59ff42d0f248b7d449adbfbb0356c190da4df9ec105f1a2cd791969"
+}

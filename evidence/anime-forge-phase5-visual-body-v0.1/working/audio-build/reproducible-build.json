@@ -1,0 +1,52 @@
+{
+  "format": "rncs.anime-reproducible-build.v0.1",
+  "version": "0.1.0-alpha.1",
+  "source": "inline-source",
+  "created_at": "2026-08-06T00:00:00.000Z",
+  "commands": [
+    "npm run build:world",
+    "npm run test:anime-phase4",
+    "npm run evidence:anime-phase4"
+  ],
+  "render": {
+    "provider": "vsr.anime-builtin-rasterizer",
+    "quality": "preview",
+    "width": 1280,
+    "height": 720,
+    "fps": 24,
+    "frame_count": 144
+  },
+  "audio": {
+    "provider": "taowind.audio-forge.reference-mixer-v0.1",
+    "sample_rate": 22050
+  },
+  "video": {
+    "provider": "rncs.video-mux.ffmpeg",
+    "ffmpeg_version": null,
+    "ffprobe_version": null,
+    "command_argument_root": null,
+    "deterministic": false
+  },
+  "deterministic_roots": {
+    "compiled_root": "2a89d7a2384fe98345a679a2a31d4a2e37005117eceeba6713773d88acadf907",
+    "production_root": "e4b6388c2229f75c0b646ed7c30dfe314a4ff498ab84390a0b6cf310b4440132",
+    "timeline_root": "1874486700e28456d9c7c58e3708c516c9a963d2b9c0266a1368d22a68bb1586",
+    "composition_root": "67bb3e5ee22b584308bc15b1e3977bb9fc04a0e9f1e6b95f4d0f14310512f253",
+    "provider_manifest_root": "16cd0b4ab1a73baabc86cf47c926bfa7e9ee2a75100013d1b954bc15ef2646bd",
+    "xsheets_root": "36281711a353590e187dc241aeb3cccb640c16ceac0fe1ac8eef7c385dbf4359",
+    "sequence_root": "2a624826833dc32f31c7c3351f002182f85a00a98daded766251928a7ccb2d91",
+    "audio_root": "bdc88344f59ff42d0f248b7d449adbfbb0356c190da4df9ec105f1a2cd791969",
+    "character_continuity_root": "3acbb2f1f1e0902c095cdad55a63c0d400f3c4db8a1a135cd676ac3b0f1065e6",
+    "cut_continuity_root": "b117ca5e22b690900dfbfdf395ea42a3656a6c19f67fce093f959720d5351369",
+    "frame_integrity_root": "e4b78efc4614854bc326b3beba8ebd37910dda76524318531f33c203f68ebb25",
+    "replay_root": "01f765952eb3b5924909084c901a984dc7c760bb4f1ee96e56fd0d0303a98b11"
+  },
+  "boundaries": {
+    "assets": "experimental built-in Anime assets, not commercial source art",
+    "voice": "synthetic reference voice, not licensed actor performance",
+    "motion": "bounded procedural motion, not physical cloth or hair",
+    "video": "real FFmpeg MP4 when complete; codec bytes are tool-version scoped",
+    "acceptance": "human direction, clean-machine and broadcaster acceptance remain open"
+  },
+  "build_root": "8e7cebc3fe0b3b87ab238377655d378ec492a86aeb5702d0c99e3202a5fd6e4d"
+}

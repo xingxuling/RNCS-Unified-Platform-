@@ -1,0 +1,12 @@
+{
+  "format": "rncs.anime-cut-continuity-report.v0.1",
+  "version": "0.1.0-alpha.1",
+  "production_id": "anime-production:19687dcb4b8e872114acf704",
+  "production_root": "e4b6388c2229f75c0b646ed7c30dfe314a4ff498ab84390a0b6cf310b4440132",
+  "timeline_root": "1874486700e28456d9c7c58e3708c516c9a963d2b9c0266a1368d22a68bb1586",
+  "status": "pass",
+  "seam_count": 0,
+  "seams": [],
+  "boundary": "rooted technical seam checks; director and human visual acceptance remain separate",
+  "report_root": "b117ca5e22b690900dfbfdf395ea42a3656a6c19f67fce093f959720d5351369"
+}

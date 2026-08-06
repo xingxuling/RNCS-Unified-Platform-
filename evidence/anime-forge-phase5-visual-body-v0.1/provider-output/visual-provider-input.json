@@ -1,0 +1,45 @@
+{
+  "format": "rncs.anime-visual-generation-contract.v0.1",
+  "version": "0.1.0-alpha.1",
+  "episode_intent_root": "d962fa2c7644d759243e467aa61d83f024c671952b7c6ba20df26d006e816e7c",
+  "shot_intent_root": "1874b26ec312373187954023ccf456deb646ea52d56a6cab014f3c21f48373b4",
+  "character_identity_root": "682362679be55dca2700dc6146b92a48014170e40b5d851bda53e00f656cff5f",
+  "reference_pack_root": "600906f9f4ae6e404c892bb4de5e43e6fe6f62f572587347ef14a708cb3b195d",
+  "condition_pack_root": "5ef240f1f136ad1e8e09fb363f36001ac41cbfceeb66bf3ac05910f3352eff85",
+  "model_manifest_root": "8acccee5fc4a772584e0e5a08abbca81277951798e500d483d22ba644c6a6abb",
+  "reference_root": "C:\\Users\\User\\Documents\\RCL\\_worktrees\\rncs-anime-forge-phase5-visual-body-v02\\evidence\\anime-forge-phase5-visual-body-v0.1",
+  "condition_root": "C:\\Users\\User\\Documents\\RCL\\_worktrees\\rncs-anime-forge-phase5-visual-body-v02\\evidence\\anime-forge-phase5-visual-body-v0.1",
+  "reference_paths": [
+    "references/front.png",
+    "references/three-quarter.png",
+    "references/side.png",
+    "references/full-body.png",
+    "references/face-closeup.png"
+  ],
+  "condition_paths": [
+    "conditions/pose-skeleton.json",
+    "conditions/depth.json",
+    "conditions/normal.json",
+    "conditions/edge.json",
+    "conditions/semantic-mask.json",
+    "conditions/camera.json",
+    "conditions/layer-order.json",
+    "conditions/temporal-context.json"
+  ],
+  "seed": 17,
+  "sampler": "external-configured",
+  "scheduler": "external-configured",
+  "parameters": {
+    "width": 1280,
+    "height": 720,
+    "fps": 24,
+    "frame_count": 144,
+    "shot_intent_root": "1874b26ec312373187954023ccf456deb646ea52d56a6cab014f3c21f48373b4"
+  },
+  "width": 1280,
+  "height": 720,
+  "fps": 24,
+  "frame_count": 144,
+  "output_dir": "C:\\Users\\User\\Documents\\RCL\\_worktrees\\rncs-anime-forge-phase5-visual-body-v02\\evidence\\anime-forge-phase5-visual-body-v0.1\\provider-output\\frames",
+  "mode": "keyframe-and-motion-video-with-temporal-repair"
+}

@@ -1,0 +1,147 @@
+{
+  "format": "rncs.anime-shot-intent.v0.2",
+  "version": "0.1.0-alpha.1",
+  "production_root": "41eddb4897eef04571e7de9d2821a9cb5f97a436311f00e01a017478f6fc0a39",
+  "episode_intent_root": "d962fa2c7644d759243e467aa61d83f024c671952b7c6ba20df26d006e816e7c",
+  "cut_ref": "EP01/无名城审判质量镜头/Q01",
+  "shot_id": "EP01-Q01",
+  "purpose": "quality-priority visual body replacement",
+  "duration_seconds": 6,
+  "fps": 24,
+  "resolution": {
+    "width": 1280,
+    "height": 720
+  },
+  "character_identity_root": "682362679be55dca2700dc6146b92a48014170e40b5d851bda53e00f656cff5f",
+  "attention": {
+    "from": "lowered head",
+    "to": "judge platform",
+    "beat_frame": 72
+  },
+  "emotion": {
+    "from": "restrained uncertainty",
+    "to": "quiet resolve",
+    "dialogue_frame": 61
+  },
+  "blocking": {
+    "camera": "three-quarter perspective",
+    "weight_shift": "head and torso raise with held finish",
+    "follow_through": [
+      "hair",
+      "coat",
+      "breathing"
+    ]
+  },
+  "space": {
+    "layers": [
+      "background",
+      "midground",
+      "character",
+      "foreground",
+      "lighting"
+    ],
+    "occlusion": [
+      "foreground-left",
+      "foreground-right"
+    ],
+    "depth": "perspective contact with parallax"
+  },
+  "camera": [
+    {
+      "kind": "lens",
+      "lens_mm": 42,
+      "unit": "mm",
+      "source": {
+        "line": 12,
+        "column": 9
+      },
+      "start_frame": 0,
+      "end_frame": 144
+    },
+    {
+      "kind": "angle",
+      "direction": "three_quarter",
+      "angle_deg": 12,
+      "start_frame": 0,
+      "end_frame": 144
+    },
+    {
+      "kind": "pan",
+      "start": 0,
+      "end": 6,
+      "x": 0.08,
+      "start_frame": 0,
+      "end_frame": 144
+    },
+    {
+      "kind": "dolly_in",
+      "start": 0,
+      "end": 6,
+      "easing": "ease_in_out",
+      "dolly": 0.055,
+      "start_frame": 0,
+      "end_frame": 144
+    }
+  ],
+  "secondary_motion": [
+    {
+      "layer": "hair",
+      "start_frame": 42,
+      "end_frame": 132,
+      "amplitude": 2.2,
+      "reason": "head-turn-wind-follow-through",
+      "source": {
+        "line": 46,
+        "column": 11
+      }
+    },
+    {
+      "layer": "coat",
+      "start_frame": 52,
+      "end_frame": 138,
+      "amplitude": 1.8,
+      "reason": "weight-shift-coat-lag",
+      "source": {
+        "line": 47,
+        "column": 11
+      }
+    },
+    {
+      "layer": "breathing",
+      "start_frame": 0,
+      "end_frame": 143,
+      "amplitude": 1.25,
+      "reason": "held-performance-breath",
+      "source": {
+        "line": 48,
+        "column": 11
+      }
+    },
+    {
+      "layer": "foreground",
+      "start_frame": 0,
+      "end_frame": 143,
+      "amplitude": 2.4,
+      "reason": "three-plane-parallax",
+      "source": {
+        "line": 49,
+        "column": 11
+      }
+    }
+  ],
+  "audio": {
+    "dialogue": true,
+    "ambience": true,
+    "foley": true,
+    "sfx": true,
+    "music": true
+  },
+  "acceptance": {
+    "no_debug_text": true,
+    "no_test_card": true,
+    "real_raster_frames": true,
+    "real_mp4": true,
+    "human_review_required": true
+  },
+  "shot_intent_root": "1874b26ec312373187954023ccf456deb646ea52d56a6cab014f3c21f48373b4"
+}

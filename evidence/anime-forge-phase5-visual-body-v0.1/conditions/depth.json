@@ -1,0 +1,52 @@
+{
+  "episode_intent_root": "d962fa2c7644d759243e467aa61d83f024c671952b7c6ba20df26d006e816e7c",
+  "shot_intent_root": "1874b26ec312373187954023ccf456deb646ea52d56a6cab014f3c21f48373b4",
+  "cut_ref": "EP01/无名城审判质量镜头/Q01",
+  "fps": 24,
+  "resolution": {
+    "width": 1280,
+    "height": 720
+  },
+  "type": "depth",
+  "data": {
+    "layers": [
+      "background",
+      "midground",
+      "character",
+      "foreground",
+      "lighting"
+    ],
+    "parallax": [
+      {
+        "layer_id": "background:background:unnamed-city-court",
+        "asset_id": "background:unnamed-city-court",
+        "mode": "2.5d",
+        "depth": 0.4,
+        "parallax": 0.08,
+        "family_root": "53b7be8d0c14e4323d67ffc4f0c4423f68140ec4b527ed47192b227c6e936282"
+      },
+      {
+        "composite_id": "composite:EP01/无名城审判质量镜头/Q01",
+        "start_frame": 0,
+        "end_frame": 143,
+        "layers": [
+          "background",
+          "atmosphere",
+          "character",
+          "foreground",
+          "effects",
+          "lighting",
+          "correction"
+        ],
+        "opacity": {
+          "atmosphere": 0.34,
+          "foreground": 0.78,
+          "effects": 0.72
+        },
+        "crop": "programme-canvas",
+        "mask": "bounded-layer-masks",
+        "authority": "episode-composition-contract"
+      }
+    ]
+  }
+}

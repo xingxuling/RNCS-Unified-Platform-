@@ -201,7 +201,8 @@ export async function startStudioServer({host='127.0.0.1',port=17608,dataDir=pat
         const session=animeForgeSessions.create(source);return send(res,200,{ok:true,...session.inspect()});
       }
       if(req.method==='POST'&&u.pathname==='/api/anime-forge/session/inspect'){const b=await body(req);return send(res,200,animeForgeSessions.get(b.session_id).inspect());}
-      if(req.method==='POST'&&u.pathname==='/api/anime-forge/visual-quality'){const b=await body(req),session=animeForgeSessions.get(b.session_id),workspace=session.visualQuality();return send(res,200,{ok:true,...workspace});}
+      if(req.method==='POST'&&u.pathname==='/api/anime-forge/visual-quality'){const b=await body(req),session=animeForgeSessions.get(b.session_id),workspace=session.visualQuality();return send(res,200,{ok:true,...workspace,candidate_review:session.visualCandidateReview(workspace)});}
+      if(req.method==='POST'&&u.pathname==='/api/anime-forge/visual-candidate-action'){const b=await body(req),session=animeForgeSessions.get(b.session_id);return send(res,200,session.visualCandidateAction(String(b.action??'')));}
       if(req.method==='POST'&&u.pathname==='/api/anime-forge/select-cut'){const b=await body(req),session=animeForgeSessions.get(b.session_id),selection=session.selectCut(b.cut_ref??b.cut_id);return send(res,200,{ok:true,...selection,session:session.inspect()});}
       if(req.method==='POST'&&u.pathname==='/api/anime-forge/xsheet'){const b=await body(req);const session=animeForgeSessions.get(b.session_id);return send(res,200,{ok:true,...session.inspect(),xsheet:session.xsheet(b.cut_ref??b.cut_id)});}
       if(req.method==='POST'&&u.pathname==='/api/anime-forge/xsheets'){const b=await body(req);const session=animeForgeSessions.get(b.session_id);return send(res,200,{ok:true,session_id:session.session_id,xsheets:session.xsheets()});}

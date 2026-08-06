@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import {
   CHARACTER_REFERENCE_PACK_FORMAT,
@@ -11,10 +12,13 @@ import {
   createVisualConditionPack,
   createVisualEvidenceLedger,
   createVisualModelManifest,
+  createVisualModelManifestFromEnvironment,
   createVisualProviderManifest,
   createVisualQualityReport,
   createVisualSelectionReceipt,
   createVisualPatchReceipt,
+  transitionVisualPatch,
+  rollbackVisualPatch,
   analyzeVisualFrameSequence,
   commitVisualCandidate,
   selectVisualCandidate,
@@ -25,6 +29,7 @@ import {
   validateVisualConditionPack,
   validateVisualModelManifest,
   validateVisualProviderManifest,
+  validateVisualBaselineComparison,
   rootHash,
 } from '../src/index.mjs';
 
@@ -63,5 +68,11 @@ test('temporal report rejects incomplete, blank and mostly repeated output',()=>
 
 test('local visual patch preserves global roots and records rollback scope',()=>{const before=candidate({candidate_id:'before',output_frame_root:'before-frame'}),after=candidate({candidate_id:'after',output_frame_root:'after-frame'}),patch=createVisualPatchReceipt({beforeCandidate:before,afterCandidate:after,interval:{start_frame:40,end_frame:52},region:{kind:'face',mask_root:'mask-root'},reason:'eye drift',episodeIntentRoot:roots.episode,characterIdentityRoot:roots.identity,unaffectedFrameRoots:['f0','f1']});assert.equal(patch.status,'pending-human-review');assert.equal(patch.rollback_allowed,true);assert.equal(patch.episode_intent_root,roots.episode);assert.deepEqual(patch.unaffected_frame_roots,['f0','f1']);
 });
+
+test('local visual patch has an explicit validation and authorized rollback path',()=>{const before=candidate({candidate_id:'before',output_frame_root:'before-frame'}),after=candidate({candidate_id:'after',output_frame_root:'after-frame'}),patch=createVisualPatchReceipt({beforeCandidate:before,afterCandidate:after,interval:{start_frame:40,end_frame:52},region:{kind:'face',mask_root:'mask-root'},reason:'eye drift',episodeIntentRoot:roots.episode,characterIdentityRoot:roots.identity,unaffectedFrameRoots:['f0']});const validating=transitionVisualPatch(patch,'validating',{reason:'local-worker-ready'});assert.equal(validating.status,'validating');assert.throws(()=>rollbackVisualPatch({beforeCandidate:before,afterCandidate:after,patch:validating,unaffectedFrameRoots:['f0']}),/VISUAL_PATCH_ROLLBACK_AUTHORIZATION_REQUIRED/);const rollback=rollbackVisualPatch({beforeCandidate:before,afterCandidate:after,patch:validating,unaffectedFrameRoots:['f0'],authorized:true});assert.equal(rollback.status,'rolled-back');assert.equal(rollback.restored_candidate_branch_root,before.candidate_branch_root)});
+
+test('environment model discovery binds a real weight path without recording secret values',()=>{const dir=fs.mkdtempSync(path.join(os.tmpdir(),'anime-visual-model-')),file=path.join(dir,'weights.bin');fs.writeFileSync(file,Buffer.from('weights'));const modelFromEnv=createVisualModelManifestFromEnvironment({env:{VISUAL_MODEL_PATH:file,VISUAL_MODEL_ID:'model-a',VISUAL_MODEL_REVISION:'rev-a',VISUAL_MODEL_LICENSE_SPDX:'Apache-2.0',VISUAL_MODEL_LICENSE_SOURCE:'local-ledger'}});assert.equal(validateVisualModelManifest(modelFromEnv,{requireRealWeights:true}).valid,true);assert.equal(modelFromEnv.model_id,'model-a');assert.equal(modelFromEnv.weight_bytes,7);assert.equal(modelFromEnv.license.source,'local-ledger')});
+
+test('A/B comparison cannot promote a missing Phase 5 candidate',()=>{const blocked={format:'rncs.anime-visual-baseline-comparison.v0.1',phase4:{frames:['phase4-a.png']},phase5:{status:'blocked',frames:[]},human_visual_acceptance:'pending',comparison_root:''};blocked.comparison_root=rootHash({...blocked,comparison_root:''});assert.equal(validateVisualBaselineComparison(blocked).valid,true);const invalid={...blocked,phase4:{frames:[]},comparison_root:''};invalid.comparison_root=rootHash({...invalid,comparison_root:''});assert.equal(validateVisualBaselineComparison(invalid).valid,false)});
 
 test('visual ledger keeps media, file and internal roots distinct',()=>{const ledger=createVisualEvidenceLedger({status:'blocked',episode_intent_root:roots.episode,human_visual_acceptance:'pending',gates:{provider_execution:false}});assert.equal(ledger.format,'rncs.anime-visual-evidence-ledger.v0.1');assert.ok(ledger.ledger_internal_root);assert.equal(ledger.media_sha256,null);assert.equal(ledger.gates.provider_execution,false)});

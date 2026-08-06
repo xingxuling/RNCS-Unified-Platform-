@@ -1,0 +1,126 @@
+{
+  "format": "ragf.anime-background-family.v0.1",
+  "version": "0.2.0-alpha.1",
+  "identity": {
+    "asset_id": "background:unnamed-city-court",
+    "name": "无名城审判质量镜头",
+    "seed": "anime-background-reference-v0.1"
+  },
+  "asset_root": "1ea0635a03a64f0bbe298a9f7f53f3f1c3c3ebbd072c000ee588091221212e31",
+  "layout": {
+    "file": "layout.svg",
+    "projection": "2.5d",
+    "camera_projection": "orthographic"
+  },
+  "perspective": {
+    "vanishing_point": [
+      0.5,
+      0.54
+    ],
+    "safe_area": [
+      0.05,
+      0.05,
+      0.9,
+      0.9
+    ]
+  },
+  "depth_layers": [
+    {
+      "layer_id": "sky",
+      "depth": 1,
+      "color": "#cbd2d8"
+    },
+    {
+      "layer_id": "city",
+      "depth": 0.7,
+      "color": "#77828d"
+    },
+    {
+      "layer_id": "platform",
+      "depth": 0.4,
+      "color": "#3d4651"
+    },
+    {
+      "layer_id": "foreground",
+      "depth": 0.1,
+      "color": "#1e2630"
+    }
+  ],
+  "matte_layers": [
+    {
+      "layer_id": "sky",
+      "alpha": true,
+      "mask": null
+    },
+    {
+      "layer_id": "city",
+      "alpha": true,
+      "mask": null
+    },
+    {
+      "layer_id": "platform",
+      "alpha": true,
+      "mask": null
+    },
+    {
+      "layer_id": "foreground",
+      "alpha": true,
+      "mask": "edge-occlusion"
+    }
+  ],
+  "light_variants": [
+    "cold-overcast",
+    "judge-platform-key"
+  ],
+  "day_state": "overcast",
+  "weather_state": "cold-wind",
+  "camera_projection": {
+    "kind": "2.5d",
+    "parallax": true
+  },
+  "continuity_bundle": {
+    "asset_root": "1ea0635a03a64f0bbe298a9f7f53f3f1c3c3ebbd072c000ee588091221212e31",
+    "appearance_root": "afcf1a25e375cc8175146bcdc83f6b745928180a573f8eab101f451f542f1dda",
+    "stable_across_cuts": true
+  },
+  "quality": {
+    "format": "ragf.anime-background-quality-report.v0.1",
+    "valid": true,
+    "level": "experimental-built-in-anime",
+    "semantic_layers": 4,
+    "foreground_present": true,
+    "parallax_ready": true,
+    "flat_test_card": false,
+    "boundary": "commercial environment art not proven",
+    "quality_root": "320b5e676ce85da6af6a759903b3e570fbf69e002981b1dadc76cd2f83ffd116"
+  },
+  "provider_receipt": {
+    "provider_id": "ragf.anime-builtin-generator",
+    "provider_version": "0.2.0",
+    "mode": "builtin-deterministic",
+    "capability": "anime-background-family",
+    "input_root": "121566ba587e80e149a24821fc47e4a28fafa997ea478853bb1151e555d82247",
+    "output_root": "1ea0635a03a64f0bbe298a9f7f53f3f1c3c3ebbd072c000ee588091221212e31",
+    "seed": "anime-background-reference-v0.1",
+    "real_media": true,
+    "media_types": [
+      "image/svg+xml"
+    ],
+    "authority": "candidate-only",
+    "quality_boundary": "deterministic experimental background; commercial environment art not proven",
+    "receipt_root": "cd52d7a682ef007259f3b7dcf1fefd4990769cf7a50ec939487dd6cff43d0c5d"
+  },
+  "provider": {
+    "id": "ragf.anime-builtin-generator",
+    "version": "0.2.0",
+    "mode": "builtin-deterministic",
+    "quality": "experimental-built-in-anime",
+    "license": "Apache-2.0"
+  },
+  "lineage_graph": {
+    "source": "ragf.anime-builtin-generator",
+    "parents": [],
+    "provider_root": "cd52d7a682ef007259f3b7dcf1fefd4990769cf7a50ec939487dd6cff43d0c5d"
+  },
+  "family_root": "53b7be8d0c14e4323d67ffc4f0c4423f68140ec4b527ed47192b227c6e936282"
+}

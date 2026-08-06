@@ -17,7 +17,7 @@
       "--input",
       "<contract>",
       "--output",
-      "<media>"
+      "<frame-directory>"
     ],
     "cpu": true,
     "gpu": true,
@@ -161,5 +161,5 @@
     "commit_write": false
   },
   "quality_boundary": "diffusion-video worker output requires temporal, identity, spatial and human visual review; commercial quality is not proven",
-  "manifest_root": "2023748512c6a05d9ca8f0c984c859697d4ef99a0a4b3afb2d0c3ea58bb6fabd"
+  "manifest_root": "6d13e26b1dff67f863c512a15311505322846ce6bb94192c3fe8c14ce03a6040"
 }

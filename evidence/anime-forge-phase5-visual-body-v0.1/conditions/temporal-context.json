@@ -1,0 +1,104 @@
+{
+  "episode_intent_root": "d962fa2c7644d759243e467aa61d83f024c671952b7c6ba20df26d006e816e7c",
+  "shot_intent_root": "1874b26ec312373187954023ccf456deb646ea52d56a6cab014f3c21f48373b4",
+  "cut_ref": "EP01/无名城审判质量镜头/Q01",
+  "fps": 24,
+  "resolution": {
+    "width": 1280,
+    "height": 720
+  },
+  "type": "temporal-context",
+  "data": {
+    "frame_count": 144,
+    "keyframes": [
+      {
+        "frame": 0,
+        "pose_id": "head_lowered",
+        "actor_id": "蓝天临",
+        "source": {
+          "line": 23,
+          "column": 11
+        }
+      },
+      {
+        "frame": 38,
+        "pose_id": "begin_raise_head",
+        "actor_id": "蓝天临",
+        "source": {
+          "line": 24,
+          "column": 11
+        }
+      },
+      {
+        "frame": 78,
+        "pose_id": "gaze_locked",
+        "actor_id": "蓝天临",
+        "source": {
+          "line": 25,
+          "column": 11
+        }
+      },
+      {
+        "frame": 116,
+        "pose_id": "resolve",
+        "actor_id": "蓝天临",
+        "source": {
+          "line": 26,
+          "column": 11
+        }
+      }
+    ],
+    "secondary_motion": [
+      {
+        "layer": "hair",
+        "start_frame": 42,
+        "end_frame": 132,
+        "amplitude": 2.2,
+        "reason": "head-turn-wind-follow-through",
+        "source": {
+          "line": 46,
+          "column": 11
+        }
+      },
+      {
+        "layer": "coat",
+        "start_frame": 52,
+        "end_frame": 138,
+        "amplitude": 1.8,
+        "reason": "weight-shift-coat-lag",
+        "source": {
+          "line": 47,
+          "column": 11
+        }
+      },
+      {
+        "layer": "breathing",
+        "start_frame": 0,
+        "end_frame": 143,
+        "amplitude": 1.25,
+        "reason": "held-performance-breath",
+        "source": {
+          "line": 48,
+          "column": 11
+        }
+      },
+      {
+        "layer": "foreground",
+        "start_frame": 0,
+        "end_frame": 143,
+        "amplitude": 2.4,
+        "reason": "three-plane-parallax",
+        "source": {
+          "line": 49,
+          "column": 11
+        }
+      }
+    ],
+    "dialogue": [
+      {
+        "event_id": "dialogue:adbc9d6877ab83be6946e8ec",
+        "start_frame": 61
+      }
+    ]
+  }
+}

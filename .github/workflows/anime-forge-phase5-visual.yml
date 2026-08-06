@@ -89,6 +89,18 @@ jobs:
     env:
       VISUAL_PROVIDER_EXECUTABLE: ${{ secrets.VISUAL_PROVIDER_EXECUTABLE }}
       VISUAL_PROVIDER_ARGS_JSON: ${{ secrets.VISUAL_PROVIDER_ARGS_JSON }}
+      VISUAL_MODEL_PATH: ${{ secrets.VISUAL_MODEL_PATH }}
+      VISUAL_MODEL_ID: ${{ vars.VISUAL_MODEL_ID }}
+      VISUAL_MODEL_REVISION: ${{ vars.VISUAL_MODEL_REVISION }}
+      VISUAL_MODEL_FAMILY: ${{ vars.VISUAL_MODEL_FAMILY }}
+      VISUAL_MODEL_LICENSE_SPDX: ${{ vars.VISUAL_MODEL_LICENSE_SPDX }}
+      VISUAL_MODEL_LICENSE_SOURCE: ${{ vars.VISUAL_MODEL_LICENSE_SOURCE }}
+      VISUAL_MODEL_SOURCE_REF: ${{ vars.VISUAL_MODEL_SOURCE_REF }}
+      VISUAL_MODEL_RUNTIME: ${{ vars.VISUAL_MODEL_RUNTIME }}
+      VISUAL_MODEL_RUNTIME_VERSION: ${{ vars.VISUAL_MODEL_RUNTIME_VERSION }}
+      VISUAL_MODEL_DEVICE: ${{ vars.VISUAL_MODEL_DEVICE }}
+      VISUAL_MODEL_SAMPLER: ${{ vars.VISUAL_MODEL_SAMPLER }}
+      VISUAL_MODEL_SCHEDULER: ${{ vars.VISUAL_MODEL_SCHEDULER }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -103,6 +115,12 @@ jobs:
         run: |
           test -n "${VISUAL_PROVIDER_EXECUTABLE:-}" || { echo "VISUAL_PROVIDER_EXECUTABLE is required"; exit 1; }
           test -x "$VISUAL_PROVIDER_EXECUTABLE" || { echo "Configured Provider executable is not executable"; exit 1; }
+          test -n "${VISUAL_MODEL_PATH:-}" || { echo "VISUAL_MODEL_PATH is required"; exit 1; }
+          test -f "$VISUAL_MODEL_PATH" || test -d "$VISUAL_MODEL_PATH" || { echo "Configured visual model path does not exist"; exit 1; }
+          test -n "${VISUAL_MODEL_ID:-}" || { echo "VISUAL_MODEL_ID is required"; exit 1; }
+          test -n "${VISUAL_MODEL_REVISION:-}" || { echo "VISUAL_MODEL_REVISION is required"; exit 1; }
+          test -n "${VISUAL_MODEL_LICENSE_SPDX:-}" || { echo "VISUAL_MODEL_LICENSE_SPDX is required"; exit 1; }
+          test -n "${VISUAL_MODEL_LICENSE_SOURCE:-}" || { echo "VISUAL_MODEL_LICENSE_SOURCE is required"; exit 1; }
           command -v ffmpeg
           command -v ffprobe
       - run: npm ci --ignore-scripts

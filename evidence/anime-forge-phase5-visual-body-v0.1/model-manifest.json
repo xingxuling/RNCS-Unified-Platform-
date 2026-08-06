@@ -14,15 +14,18 @@
   },
   "license_root": "35c82e6a4c92f4e7bfb7ed9ab6969148d264f816954edcee10148299a842406e",
   "source": {
-    "kind": "environment-audit",
-    "ref": "no-local-visual-model"
+    "kind": "environment-configured-model",
+    "ref": "visual-provider-runner"
   },
-  "parameters": {},
+  "parameters": {
+    "sampler": null,
+    "scheduler": null
+  },
   "status": "missing",
   "runtime": {
-    "framework": "diffusers",
+    "framework": "external-worker",
     "version": null,
-    "device": "cpu-only"
+    "device": "unverified"
   },
   "created_at": "2026-08-06T00:00:00.000Z",
   "history": [
@@ -33,5 +36,5 @@
       "at": "2026-08-06T00:00:00.000Z"
     }
   ],
-  "model_manifest_root": "417d10951e04c058e1f331a6986f4225d4237fd23ec78441e0209bc390aa3634"
+  "model_manifest_root": "8acccee5fc4a772584e0e5a08abbca81277951798e500d483d22ba644c6a6abb"
 }

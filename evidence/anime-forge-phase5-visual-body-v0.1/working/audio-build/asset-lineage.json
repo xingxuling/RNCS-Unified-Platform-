@@ -1,0 +1,27 @@
+{
+  "format": "rncs.anime-asset-lineage-set.v0.1",
+  "production_root": "e4b6388c2229f75c0b646ed7c30dfe314a4ff498ab84390a0b6cf310b4440132",
+  "assets": [
+    {
+      "name": "character",
+      "family_root": "d58bd103b7c73411cd843b30f41d4d687ced3e539af6d760523cfd30d080063d",
+      "asset_root": "b635dc6cf7cc3f8acb93c93968a70c13ecd03a9712736d465849efef8e5617cf",
+      "identity_root": "682362679be55dca2700dc6146b92a48014170e40b5d851bda53e00f656cff5f",
+      "genome_root": "959c7e3a39bdd82364fa79716dfa60f3a8f6fda82d237306c02d0e4b8bc8b4fa",
+      "quality_root": "5c9eaa2e430c60d9a238af2c5eef0856f9294804ea18642ee9424e8582641469",
+      "provider_receipt_root": "7c2bae4e403513866aca5419e8f05c2a63e0cf1bff7228efa742d7b736cf366a",
+      "lineage_root": "61601a0d5c21939ddcf9c7ce97b2633e2ce9e4351d6db8b1076bfa07de76cf3a"
+    },
+    {
+      "name": "background",
+      "family_root": "53b7be8d0c14e4323d67ffc4f0c4423f68140ec4b527ed47192b227c6e936282",
+      "asset_root": "1ea0635a03a64f0bbe298a9f7f53f3f1c3c3ebbd072c000ee588091221212e31",
+      "identity_root": null,
+      "genome_root": null,
+      "quality_root": "320b5e676ce85da6af6a759903b3e570fbf69e002981b1dadc76cd2f83ffd116",
+      "provider_receipt_root": "cd52d7a682ef007259f3b7dcf1fefd4990769cf7a50ec939487dd6cff43d0c5d",
+      "lineage_root": "4a04cca30f774f0889fc0a716f6c2b1c73a12cc46657cf13f7d35605f0be4c15"
+    }
+  ],
+  "lineage_root": "2d99554bda549f944a4743949764ec6afa5f9c9372857a2078d6c5207747b205"
+}
