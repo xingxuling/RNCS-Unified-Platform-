@@ -6,38 +6,152 @@
   "genome_root": "959c7e3a39bdd82364fa79716dfa60f3a8f6fda82d237306c02d0e4b8bc8b4fa",
   "appearance_root": "de905c98256ab091884ae62946372159db338027403acbe345f7a54febe37a57",
   "lineage_root": "d58bd103b7c73411cd843b30f41d4d687ced3e539af6d760523cfd30d080063d",
-  "references": [],
-  "reference_views": [
-    null,
-    null,
-    null,
-    null,
-    null
+  "references": [
+    {
+      "view_id": "front",
+      "path": "references/front.png",
+      "media_type": "image/png",
+      "sha256": "e3665062823516cd824d04e008cce8f85a4ac62276c882965423ac9be5a596f0",
+      "bytes": 36240,
+      "width": 1280,
+      "height": 720,
+      "placeholder": false,
+      "source_frame": 0
+    },
+    {
+      "view_id": "three-quarter",
+      "path": "references/three-quarter.png",
+      "media_type": "image/png",
+      "sha256": "863cde8a3d93cbb009819d88e6e6d920c33cbec0836826f9e20f2f25e80decff",
+      "bytes": 36083,
+      "width": 1280,
+      "height": 720,
+      "placeholder": false,
+      "source_frame": 36
+    },
+    {
+      "view_id": "side",
+      "path": "references/side.png",
+      "media_type": "image/png",
+      "sha256": "457c58b5bfea11f500d1e0d01c80ec73a9348cacdcf58a49aacff3b5fcb35b15",
+      "bytes": 35656,
+      "width": 1280,
+      "height": 720,
+      "placeholder": false,
+      "source_frame": 72
+    },
+    {
+      "view_id": "full-body",
+      "path": "references/full-body.png",
+      "media_type": "image/png",
+      "sha256": "2b26e0a4d9e093f9eec8c9daad90bb9f60f89010d1369488ca73291de05683d6",
+      "bytes": 35244,
+      "width": 1280,
+      "height": 720,
+      "placeholder": false,
+      "source_frame": 108
+    },
+    {
+      "view_id": "face-closeup",
+      "path": "references/face-closeup.png",
+      "media_type": "image/png",
+      "sha256": "a0eaf2366e439a282afaaaf552660246d28eb778af932b0e340b147c6767620a",
+      "bytes": 34924,
+      "width": 1280,
+      "height": 720,
+      "placeholder": false,
+      "source_frame": 132
+    }
   ],
-  "hair_structure": {},
-  "costume_structure": {},
-  "fixed_palette": {},
-  "facial_features": {},
+  "reference_views": [
+    "front",
+    "three-quarter",
+    "side",
+    "full-body",
+    "face-closeup"
+  ],
+  "hair_structure": {
+    "family": "black-wavy-medium"
+  },
+  "costume_structure": {
+    "family": "lan-default-v1",
+    "variant": "default"
+  },
+  "fixed_palette": {
+    "skin": "#d8c7bd",
+    "hair": "#11151d",
+    "eye": "#4f86c6",
+    "base": "#101827",
+    "secondary": "#253653",
+    "trim": "#b9c6d8",
+    "emblem": "#5d91ce"
+  },
+  "facial_features": {
+    "eye_style": "calm-sharp",
+    "brow_style": "restrained-straight",
+    "eye_signature": [
+      0.48,
+      0.48,
+      0.56,
+      0.48
+    ],
+    "jaw_signature": [
+      0.42,
+      0.62,
+      0.62,
+      0.52,
+      0.48
+    ],
+    "nose_signature": [
+      0.56,
+      0.42,
+      0.5
+    ],
+    "mouth_signature": [
+      0.51,
+      0.42,
+      0.46,
+      0.4
+    ]
+  },
   "materials": {},
   "expressions": {
     "neutral": null,
     "target": null
   },
-  "forbidden_variation": [],
-  "variable_states": [],
-  "identity_anchors": [],
+  "forbidden_variation": [
+    "identity-root change",
+    "palette drift",
+    "hair-family change",
+    "costume-family change"
+  ],
+  "variable_states": [
+    "neutral",
+    "restrained_question",
+    "resolve",
+    "blink",
+    "gaze_locked"
+  ],
+  "identity_anchors": [
+    "face geometry",
+    "hair mass",
+    "costume emblem",
+    "stable palette",
+    "body proportion"
+  ],
   "source": {
-    "kind": "blocked-reference-audit",
-    "ref": "high-quality-reference-not-available"
+    "kind": "ragf-vsr-reference-render",
+    "ref": "d58bd103b7c73411cd843b30f41d4d687ced3e539af6d760523cfd30d080063d",
+    "shot_intent_root": "1874b26ec312373187954023ccf456deb646ea52d56a6cab014f3c21f48373b4"
   },
   "license": {
-    "status": "pending",
-    "spdx": null,
-    "source": null
+    "status": "inherited",
+    "spdx": "Apache-2.0",
+    "source": "RNCS built-in generator"
   },
   "model_parameters": {},
   "human_character_acceptance": "pending",
-  "status": "blocked",
+  "status": "ready",
   "created_at": "2026-08-06T00:00:00.000Z",
   "history": [
     {
@@ -47,5 +161,5 @@
       "at": "2026-08-06T00:00:00.000Z"
     }
   ],
-  "reference_pack_root": "cea53f5fc89b4bc74cd3dff0201753fcdb1f5e1155109bcc49cf3829217325b2"
+  "reference_pack_root": "600906f9f4ae6e404c892bb4de5e43e6fe6f62f572587347ef14a708cb3b195d"
 }

@@ -1,0 +1,24 @@
+{
+  "episode_intent_root": "d962fa2c7644d759243e467aa61d83f024c671952b7c6ba20df26d006e816e7c",
+  "shot_intent_root": "1874b26ec312373187954023ccf456deb646ea52d56a6cab014f3c21f48373b4",
+  "cut_ref": "EP01/无名城审判质量镜头/Q01",
+  "fps": 24,
+  "resolution": {
+    "width": 1280,
+    "height": 720
+  },
+  "type": "semantic-mask",
+  "data": {
+    "classes": [
+      "background",
+      "midground",
+      "character",
+      "foreground",
+      "lighting"
+    ],
+    "occlusion": [
+      "foreground-left",
+      "foreground-right"
+    ]
+  }
+}

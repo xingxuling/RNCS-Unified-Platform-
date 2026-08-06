@@ -1,9 +1,9 @@
 # RNCS Anime Forge v0.1 Phase Status
 
 - Date: 2026-08-06
-- Branch: `codex/rncs-anime-forge-phase5-visual-body-v01`
-- Baseline: `origin/main-95@085a365d002907b17dd87ded56e9ebb5cb26c409`
-- Status: **Phase 4 remains the experimental media baseline; Phase 5 visual body replacement engineering is incomplete and the visual gate is blocked.**
+- Branch: `codex/rncs-anime-forge-phase5-visual-body-v02`
+- Baseline: `origin/main-95@52fe4463a59a5fda1f75a50e117ca697d7777ed0`
+- Status: **Phase 5 v02 improves the real visual-provider and media boundary, but the current machine still fails the visual replacement gate at `MODEL_MISSING`.**
 
 ## Phase 5 visual body replacement status
 
@@ -11,30 +11,33 @@
 
 | Field | Status |
 | --- | --- |
-| Engineering status | Incomplete but runnable at the contract and fail-closed adapter layer |
-| Visual pipeline status | Blocked: `MODEL_MISSING` |
+| Engineering status | Incomplete: the external route, frame gate, media closure and local Patch contract are runnable; qualified Provider execution is absent |
+| Visual pipeline status | Failed / blocked at `MODEL_MISSING` on the audited machine |
 | Selected Provider route | `rncs.visual.local-diffusion-video-worker` (local Diffusion/Video external-process route) |
-| Provider execution | Blocked: no local visual model, Diffusers/ComfyUI runtime, usable GPU backend or FFmpeg/ffprobe |
+| Provider execution | Blocked before process launch: no configured real visual model or license; FFmpeg/ffprobe are also absent |
 | Candidate visual branch | `blocked`; automatic score cannot select or commit |
-| Character Reference Asset Pack | Blocked: RAGF roots are present, required raster reference views are not available |
-| Temporal/spatial reports | Contract and blocked reports generated; no generated frames were accepted |
+| Character Reference Asset Pack | Five real PNG views are generated from the built-in raster reference path; human character acceptance remains `pending` |
+| Condition Pack | Eight structured raster-conditioning inputs are present and the sealed pack validates `complete`; external execution is still blocked by the model gate |
+| Temporal/spatial reports | Contract, empty-output failure and Patch reports generated; no external frames were accepted |
 | Human visual acceptance | `pending` |
-| Phase 5 MP4/WAV | Not generated; no static frame, GIF, JSON or Phase 4 raster is relabeled as MP4 |
+| Phase 5 MP4/WAV | No MP4; a real 6-second component WAV is retained, but it is not called final program media |
 | Commercial Anime quality | Not proven |
 
-Phase 5 evidence is under `evidence/anime-forge-phase5-visual-body-v0.1/`. The blocked run records the local environment, selected Provider manifest, missing model/license state, candidate branch, temporal/spatial reports, A/B baseline comparison and a Phase 4/Phase 5 contact sheet. The contact sheet intentionally shows the Phase 5 panel as blocked rather than fabricating a visual result.
+Phase 5 evidence is under `evidence/anime-forge-phase5-visual-body-v0.1/`. The v02 run uses the independent 6-second, 1280x720, 24 fps quality-shot source, records the actual environment, model/provider/reference/condition contracts, real PNG reference pack, component WAV, missing-model failure, candidate branch, temporal/spatial/Patch reports, A/B baseline comparison and a Phase 4/Phase 5 contact sheet. The contact sheet keeps the Phase 5 candidate panel blocked; it does not relabel the reference renders as generated replacement video.
 
 Key blocked-run roots:
 
-- Production root: `2d75ecf89aa2e711bf8d70f037e3fd918498e99120706643b5014856025f84d7`
-- Episode Intent root: `88dbeccb650b44ece778b54c4958c1743e6dca1f879e2f5350a6d28cafed1b89`
-- Candidate Branch root: `74c0cdc3089a4b01c4362464136ce2ea724bcd17e7daeb16ef77161004e2d988`
-- Temporal Stability root: `605a465f6165e99c788a18dd767ff6619627d598cae67228b19fc09f8d39b20d`
-- Spatial Consistency root: `64f64a6067eed5864e34ec7e30b8ec1f00fa880e8bc09eb482d00da0b844ca52`
-- Internal visual ledger root: `bac94ba23def3c26025d5ef4b6f4bd7d58052381a58175b5d612995375a382ed`
-- Latest ledger file SHA-256: `7e4533b0f2e719ebf93247b1f68c85349b98f74fd00e2417a80adc6c1f65664a` (the environment report includes instantaneous free memory, so this file hash is expected to vary between audits)
+- Production root: `41eddb4897eef04571e7de9d2821a9cb5f97a436311f00e01a017478f6fc0a39`
+- Episode Intent root: `d962fa2c7644d759243e467aa61d83f024c671952b7c6ba20df26d006e816e7c`
+- Shot Intent root: `1874b26ec312373187954023ccf456deb646ea52d56a6cab014f3c21f48373b4`
+- Candidate Branch root: `35d2798c733c8a16e48d93a26d737b96c1d7ddebba4ba634f9fa5ad8abb5a6ea`
+- Temporal Stability root: `19c1bda7abcd4317da29e471199dce4dfc1fb9b4f81afbeb0fb6ea8656350543`
+- Spatial Consistency root: `5ab30a840fa3a4cbc1d85a315645a8c3307b63a511129f1731fbcf6d026ac216`
+- Patch root: `415800a18efd503f2a4669739f27790996053b333ce69fcf6b17f7b27c9b3358`
+- Internal visual ledger root: `d3ba31cf47d6793193f4674ab5d5fd67b08a1a96ffcfaaabcb8cfa2ead9d4f70`
+- Latest ledger file SHA-256: `b81feaa9f7b42c2790c75ad7dc5a77a30350e9d2b79d54cd99960242689a6de1` (the environment report includes instantaneous free memory, so this file hash is expected to vary between audits)
 
-Phase 5 adds Visual Provider/Model manifests, Character Reference Pack and Condition Pack schemas, Candidate Visual Branch states, fail-closed local execution, temporal/spatial/patch evidence, human acceptance immutability, a Reality Studio visual-quality endpoint and desktop/mobile blocked-state regression. It does not alter Episode authority or automatically accept generated pixels.
+Phase 5 v02 adds environment-bound model manifests, real raster reference-pack generation, structured Shot Intent conditions, PNG content/duplicate/flicker checks, a real external-worker frame contract, FFmpeg/ffprobe candidate closure, A/B candidate contact-sheet support, Patch validation/rollback receipts, human acceptance immutability and a Reality Studio candidate-review entry point. It does not alter Episode authority or automatically accept generated pixels.
 
 ## Authority contract
 
@@ -49,6 +52,8 @@ The 20-second `shenlinzhe-yanlv-micro-episode.rcl` runs through one programme-le
 `Anime RCL -> Episode Production IR -> Editorial Timeline -> Character Genome/RAGF lineage -> Provider Manifests -> per-Cut X-Sheets -> RSR secondary motion -> VSR layered composition -> Voice/Viseme -> Audio mix -> PNG sequence -> FFmpeg VideoMuxProvider -> ffprobe -> Evidence Ledger`
 
 The derived Cuts are `S01` (168 frames), `S02` (168 frames), and `S03` (144 frames). They share one character identity, appearance, palette and proportion root. The final sequence has 480 real 960x540 PNG frames at 24 fps, with 480 unique state roots and 480 unique PNG hashes.
+
+The Phase 5 quality-shot source is `packages/integration/rcl-anime-production-bridge/examples/shenlinzhe-yanlv-phase5-quality-shot.rcl`: one 6-second Cut, 144 frames, 1280x720 at 24 fps, three-quarter camera, dialogue, foreground/mid/background conditions and hair/coat/breathing/foreground motion tracks. It is independent of the 20-second Phase 4 programme and is not itself a successful visual replacement.
 
 ## Delivered modules
 
@@ -92,15 +97,17 @@ The focused Phase 4 matrix passes `677/677` checks with `0` failures and `0` ski
 
 ## Phase 5 verification
 
-The Phase 5 contract and blocked-provider matrix passes `24` Anime Production Runtime tests with `23` passes and `1` expected FFmpeg skip, `13/13` RCL bridge tests, `2/2` targeted Studio Anime Forge tests plus the expected real-media skip, and the full `npm run test:anime-phase4` command exits successfully. The complete Reality Studio workspace run reports `237` passes, `0` failures and `1` expected media skip. The desktop/mobile blocked-state browser evidence reports no page errors, no failed requests and no horizontal overflow at `1440x900` and `390x844`.
+The Phase 5 contract matrix covers model/environment binding, real reference and condition files, candidate authority, temporal PNG content, external-worker output, Patch rollback and A/B completeness: runtime `26 pass / 1 expected skip`, Bridge `16/16 pass`, and Reality Studio `2 pass / 1 expected real-media skip`. The current machine still skips the real FFmpeg test because `ffmpeg` and `ffprobe` are absent; visual-provider execution remains an explicit `MODEL_MISSING` failure. Phase 3/4 tests remain required and are not lowered. Browser evidence passes on desktop and mobile as a separate UI gate, not visual-quality acceptance.
 
-`npm run verify:anime-phase5-visual-evidence` builds the blocked evidence twice and confirms stable Production, Episode Intent, Candidate Branch, Temporal, Spatial and internal visual Ledger roots. The environment file SHA is intentionally volatile because it retains instantaneous free-memory observation; it is kept separate from stable roots. The final Phase 5 source package contains `205` manifest-listed files plus the embedded manifest and is tagged `blocked-visual-provider`. Package root: `ed1f529cf4d538ae902e258cacd6477903a6049020fd5b8ceca1dfcb68084da6`; ZIP SHA-256: `b9b5bb3b1b6df3da15dc3e5e5db52abeac34ea239bc8ee79bc04438a0adcff94`.
+`npm run verify:anime-phase5-visual-evidence` builds the 6-second blocked evidence twice and confirms stable Production, Episode Intent, Candidate Branch, Temporal, Spatial, Patch and internal visual Ledger roots. The environment file SHA is intentionally volatile because it retains instantaneous free-memory observation; it is kept separate from stable roots. The Phase 5 source package is regenerated after the final source/evidence changes and remains tagged `blocked-visual-provider` until a real Provider candidate and human review exist.
+
+The source/evidence package is reproducible with `npm run package:anime-phase5-visual`; its terminal package root and ZIP SHA-256 are recorded in the delivery receipt rather than embedded in the package itself.
 
 ## Rollback
 
 - Source and authoring state: use the existing Anime Forge snapshot/rollback contract.
 - Local patches: restore the prior snapshot and rebuild the affected programme media.
-- Git delivery: revert the Phase 4 merge commit on `main-95`; Phase 3 contracts remain backward compatible.
+- Git delivery: revert the Phase 5 merge commit on `main-95` if the external-provider contract must be withdrawn; Phase 3/4 contracts remain backward compatible.
 - Failed media: retain IR, frames, WAV and reports; do not publish or rename a non-MP4 artifact as MP4.
 
 ## Remaining boundaries

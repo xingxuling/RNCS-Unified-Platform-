@@ -1,21 +1,31 @@
 {
   "ok": true,
-  "status": "blocked",
+  "status": "failed",
   "phase": "visual-body-replacement",
   "provider_id": "rncs.visual.local-diffusion-video-worker",
   "provider_code": "MODEL_MISSING",
-  "production_root": "2d75ecf89aa2e711bf8d70f037e3fd918498e99120706643b5014856025f84d7",
-  "episode_intent_root": "88dbeccb650b44ece778b54c4958c1743e6dca1f879e2f5350a6d28cafed1b89",
-  "candidate_branch_root": "74c0cdc3089a4b01c4362464136ce2ea724bcd17e7daeb16ef77161004e2d988",
-  "temporal_stability_root": "605a465f6165e99c788a18dd767ff6619627d598cae67228b19fc09f8d39b20d",
-  "spatial_consistency_root": "64f64a6067eed5864e34ec7e30b8ec1f00fa880e8bc09eb482d00da0b844ca52",
-  "visual_ledger_internal_root": "bac94ba23def3c26025d5ef4b6f4bd7d58052381a58175b5d612995375a382ed",
-  "ledger_file_sha256": "7e4533b0f2e719ebf93247b1f68c85349b98f74fd00e2417a80adc6c1f65664a",
+  "media_code": "VISUAL_PROVIDER_BLOCKED",
+  "production_root": "41eddb4897eef04571e7de9d2821a9cb5f97a436311f00e01a017478f6fc0a39",
+  "episode_intent_root": "d962fa2c7644d759243e467aa61d83f024c671952b7c6ba20df26d006e816e7c",
+  "shot_intent_root": "1874b26ec312373187954023ccf456deb646ea52d56a6cab014f3c21f48373b4",
+  "candidate_branch_root": "35d2798c733c8a16e48d93a26d737b96c1d7ddebba4ba634f9fa5ad8abb5a6ea",
+  "temporal_stability_root": "19c1bda7abcd4317da29e471199dce4dfc1fb9b4f81afbeb0fb6ea8656350543",
+  "spatial_consistency_root": "5ab30a840fa3a4cbc1d85a315645a8c3307b63a511129f1731fbcf6d026ac216",
+  "patch_root": "415800a18efd503f2a4669739f27790996053b333ce69fcf6b17f7b27c9b3358",
+  "visual_ledger_internal_root": "d3ba31cf47d6793193f4674ab5d5fd67b08a1a96ffcfaaabcb8cfa2ead9d4f70",
+  "ledger_file_sha256": "b81feaa9f7b42c2790c75ad7dc5a77a30350e9d2b79d54cd99960242689a6de1",
   "contact_sheet": "phase4-phase5-contact-sheet.png",
   "human_visual_acceptance": "pending",
   "media": {
     "mp4": null,
-    "wav": null
+    "wav": {
+      "path": "episode.wav",
+      "sha256": "f41339b74eb52f54fdb1556c19f19b37b8030c11f48a730aa10f1a927398d9f8",
+      "status": "component-only"
+    }
   },
-  "boundary": "Phase 5 visual replacement is blocked; Phase 4 media remains a negative baseline only"
+  "phase5_engineering_status": "incomplete",
+  "phase5_visual_replacement_status": "failed",
+  "boundary": "Phase 5 visual replacement is blocked or failed; Phase 4 media remains a negative baseline only",
+  "next_phase": "supply a licensed visual model/provider and human-reviewed raster reference pack, then review candidate and patch evidence"
 }

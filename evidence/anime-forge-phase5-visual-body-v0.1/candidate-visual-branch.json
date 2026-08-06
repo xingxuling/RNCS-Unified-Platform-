@@ -1,16 +1,16 @@
 {
   "format": "rncs.anime-visual-candidate-branch.v0.1",
   "version": "0.1.0-alpha.1",
-  "candidate_id": "phase5-visual-blocked-candidate",
+  "candidate_id": "phase5-quality-shot-candidate",
   "candidate_status": "blocked",
-  "episode_intent_root": "88dbeccb650b44ece778b54c4958c1743e6dca1f879e2f5350a6d28cafed1b89",
-  "shot_intent_root": "cad9607a6d83e3ec917100ee7db16aaa93077edf57a881029f8d2593b90038b6",
+  "episode_intent_root": "d962fa2c7644d759243e467aa61d83f024c671952b7c6ba20df26d006e816e7c",
+  "shot_intent_root": "1874b26ec312373187954023ccf456deb646ea52d56a6cab014f3c21f48373b4",
   "character_identity_root": "682362679be55dca2700dc6146b92a48014170e40b5d851bda53e00f656cff5f",
-  "character_reference_pack_root": "cea53f5fc89b4bc74cd3dff0201753fcdb1f5e1155109bcc49cf3829217325b2",
-  "condition_pack_root": "4f61fa08f9090877b6a162af19b45b05b96464d9f2b372f0bdfdda3a03bf9c43",
+  "character_reference_pack_root": "600906f9f4ae6e404c892bb4de5e43e6fe6f62f572587347ef14a708cb3b195d",
+  "condition_pack_root": "5ef240f1f136ad1e8e09fb363f36001ac41cbfceeb66bf3ac05910f3352eff85",
   "provider_id": "rncs.visual.local-diffusion-video-worker",
   "provider_version": "0.1.0-alpha.1",
-  "provider_manifest_root": "2023748512c6a05d9ca8f0c984c859697d4ef99a0a4b3afb2d0c3ea58bb6fabd",
+  "provider_manifest_root": "6d13e26b1dff67f863c512a15311505322846ce6bb94192c3fe8c14ce03a6040",
   "model_id": "missing-model",
   "model_revision": "missing-revision",
   "model_license": {
@@ -19,17 +19,24 @@
     "source": null
   },
   "model_license_root": "35c82e6a4c92f4e7bfb7ed9ab6969148d264f816954edcee10148299a842406e",
-  "model_manifest_root": "417d10951e04c058e1f331a6986f4225d4237fd23ec78441e0209bc390aa3634",
-  "seed": 0,
-  "sampler": "not-configured",
-  "scheduler": "not-configured",
+  "model_manifest_root": "8acccee5fc4a772584e0e5a08abbca81277951798e500d483d22ba644c6a6abb",
+  "seed": 17,
+  "sampler": "external-configured",
+  "scheduler": "external-configured",
   "reconstruction_parameters": {
     "width": 1280,
     "height": 720,
     "fps": 24,
-    "frame_count": 144
+    "frame_count": 144,
+    "shot_intent_root": "1874b26ec312373187954023ccf456deb646ea52d56a6cab014f3c21f48373b4"
   },
-  "input_reference_roots": {},
+  "input_reference_roots": {
+    "front": "e3665062823516cd824d04e008cce8f85a4ac62276c882965423ac9be5a596f0",
+    "three-quarter": "863cde8a3d93cbb009819d88e6e6d920c33cbec0836826f9e20f2f25e80decff",
+    "side": "457c58b5bfea11f500d1e0d01c80ec73a9348cacdcf58a49aacff3b5fcb35b15",
+    "full-body": "2b26e0a4d9e093f9eec8c9daad90bb9f60f89010d1369488ca73291de05683d6",
+    "face-closeup": "a0eaf2366e439a282afaaaf552660246d28eb778af932b0e340b147c6767620a"
+  },
   "output_frame_root": null,
   "output_video_root": null,
   "output_media": {
@@ -84,22 +91,23 @@
     },
     "gpu": {
       "status": "not-proven",
-      "model": "AMD Radeon 860M reported by machine audit",
+      "model": "machine-reported adapter",
       "vram_mb": 512,
       "cuda": false,
       "rocm": false
     },
     "models": {
+      "visual_model_present": false,
+      "model_path_configured": false,
       "diffusers": false,
-      "comfyui": false,
-      "visual_model_present": false
+      "comfyui": false
     },
     "api_environment_names": [],
-    "boundary": "environment names only; secret values are never recorded"
+    "boundary": "environment names and capability facts only; secret values are never recorded"
   },
   "gpu": {
     "status": "not-proven",
-    "model": "AMD Radeon 860M reported by machine audit",
+    "model": "machine-reported adapter",
     "vram_mb": 512,
     "cuda": false,
     "rocm": false
@@ -137,13 +145,13 @@
     {
       "state": "conditioning",
       "actor": "rncs:visual-runtime",
-      "reason": "visual-provider-contract-validated",
+      "reason": "visual-contracts-validated",
       "at": "2026-08-06T00:00:00.000Z"
     },
     {
       "state": "generating",
       "actor": "rncs:visual-runtime",
-      "reason": "external-provider-attempted",
+      "reason": "external-provider-requested",
       "at": "2026-08-06T00:00:00.000Z"
     },
     {
@@ -166,6 +174,6 @@
       "at": "2026-08-06T00:00:00.000Z"
     }
   ],
-  "candidate_branch_root": "74c0cdc3089a4b01c4362464136ce2ea724bcd17e7daeb16ef77161004e2d988",
+  "candidate_branch_root": "35d2798c733c8a16e48d93a26d737b96c1d7ddebba4ba634f9fa5ad8abb5a6ea",
   "updated_at": "2026-08-06T00:00:00.000Z"
 }

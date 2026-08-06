@@ -1,0 +1,44 @@
+{
+  "format": "rncs.video-mux-report.v0.1",
+  "version": "0.1.0-alpha.1",
+  "provider_manifest_root": "0cc1d42353a06debc0e8e5077e6365fea367d5efe406356d08b8c515ac8265ef",
+  "provider_id": "rncs.video-mux.ffmpeg",
+  "input": {
+    "sequence_root": "2a624826833dc32f31c7c3351f002182f85a00a98daded766251928a7ccb2d91",
+    "audio_sha256": "f41339b74eb52f54fdb1556c19f19b37b8030c11f48a730aa10f1a927398d9f8",
+    "frame_count": 144,
+    "width": 1280,
+    "height": 720,
+    "fps": 24,
+    "duration_seconds": 6
+  },
+  "tools": {
+    "ffmpeg": {
+      "available": false,
+      "executable": "ffmpeg",
+      "kind": "ffmpeg",
+      "version": null,
+      "code": "PROVIDER_UNAVAILABLE",
+      "stderr": "spawnSync ffmpeg ENOENT"
+    },
+    "ffprobe": {
+      "available": false,
+      "executable": "ffprobe",
+      "kind": "ffprobe",
+      "version": null,
+      "code": "PROVIDER_UNAVAILABLE",
+      "stderr": "spawnSync ffprobe ENOENT"
+    }
+  },
+  "output": {
+    "path": "episode.mp4",
+    "sha256": null,
+    "bytes": 0
+  },
+  "status": "blocked",
+  "code": "FFMPEG_UNAVAILABLE",
+  "command_argument_root": null,
+  "probe_root": null,
+  "elapsed_ms": 0,
+  "report_root": "08be09f2423b4ad5c08c66b6dc2d248f7207486cba57be05c1ce4f0e1fc851d9"
+}

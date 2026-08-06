@@ -1,0 +1,92 @@
+{
+  "format": "rncs.sha256-inventory.v0.1",
+  "algorithm": "sha256",
+  "files": [
+    {
+      "path": "anime-provider-manifest.json",
+      "bytes": 17998,
+      "sha256": "0755a3696a8a9623dfbdf52ccab950d5247105bf2fec62761bf1654d02a98c2f"
+    },
+    {
+      "path": "asset-lineage.json",
+      "bytes": 1472,
+      "sha256": "15a0a62561f9819beb4d634be53b7d8c228feed5e3031cdc45ffbafbe10e0e39"
+    },
+    {
+      "path": "audio-video-sync-report.json",
+      "bytes": 317,
+      "sha256": "fa8a3e220be625a9a5a7721fb92eefafc1d83271436ef9047463420614658ab7"
+    },
+    {
+      "path": "build-summary.json",
+      "bytes": 3654,
+      "sha256": "a5251e9102a95262a3c6be72ab41b1abe828b2b867c8fedd09e4f80af9736f58"
+    },
+    {
+      "path": "character-continuity-report.json",
+      "bytes": 2067,
+      "sha256": "4c9a7ddf55e7ab9d1fe39829e97467ede18029e19433ec2936e34e3225746936"
+    },
+    {
+      "path": "cut-continuity-report.json",
+      "bytes": 565,
+      "sha256": "1c28d4b47640a3de573d02895ab0ca1302802740e3e2c54fbd91c87a2f2c85d9"
+    },
+    {
+      "path": "episode.wav",
+      "bytes": 264644,
+      "sha256": "f41339b74eb52f54fdb1556c19f19b37b8030c11f48a730aa10f1a927398d9f8"
+    },
+    {
+      "path": "evidence-ledger.json",
+      "bytes": 2619,
+      "sha256": "5c18043eb9b35141a70ca0fbe163becb854b1e81f9a8f18389aa8331d9c2f45d"
+    },
+    {
+      "path": "frame-integrity-report.json",
+      "bytes": 571,
+      "sha256": "c701c02a036d5201a9c6de0b7af475d934600f58ded3cccb38b4f0c976811f14"
+    },
+    {
+      "path": "production.ir.json",
+      "bytes": 60606,
+      "sha256": "3e39c8e2e3b4769901ab9e1ad7a8f91de3bb1547f68b18f0fa3d5373f83a475c"
+    },
+    {
+      "path": "render/audio/audio-report.json",
+      "bytes": 2356,
+      "sha256": "3711e1e89783ff658d4cafc19077aba9b43fadebf4439343933fba71cde8ca4f"
+    },
+    {
+      "path": "render/frames-manifest.json",
+      "bytes": 781092,
+      "sha256": "885ec95677a240f75d5174c901e59431706598869646bba5b05b23dc63746f4c"
+    },
+    {
+      "path": "render/xsheets.json",
+      "bytes": 789611,
+      "sha256": "6b4124f4c35cbb5fcca529d37ddd7a4e368ea5b60487d05df8610e7383c1cf14"
+    },
+    {
+      "path": "replay-report.json",
+      "bytes": 10625,
+      "sha256": "da043dbff5d0740aaf3512246056da3714742f9880909eeca04fa2a2563d6592"
+    },
+    {
+      "path": "reproducible-build.json",
+      "bytes": 2359,
+      "sha256": "2e1513c2efe3c2961af1f400d3e488fe4a2165c698353098a4f5dca24781d275"
+    },
+    {
+      "path": "source.anime.rcl",
+      "bytes": 1746,
+      "sha256": "d962fa2c7644d759243e467aa61d83f024c671952b7c6ba20df26d006e816e7c"
+    },
+    {
+      "path": "video-mux-report.json",
+      "bytes": 1239,
+      "sha256": "7be431c08655d2027540e70ded5682db33f04d306487d1195c3846ad5d4fc6d6"
+    }
+  ],
+  "inventory_root": "717b250437beb6887e4bb43095d7fe81099293b11bb7852aeb842cb3b5d2d342"
+}

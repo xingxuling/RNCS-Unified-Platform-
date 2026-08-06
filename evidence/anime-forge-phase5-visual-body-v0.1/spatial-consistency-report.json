@@ -1,7 +1,7 @@
 {
   "format": "rncs.anime-spatial-consistency-report.v0.1",
   "version": "0.1.0-alpha.1",
-  "candidate_branch_root": "74c0cdc3089a4b01c4362464136ce2ea724bcd17e7daeb16ef77161004e2d988",
+  "candidate_branch_root": "35d2798c733c8a16e48d93a26d737b96c1d7ddebba4ba634f9fa5ad8abb5a6ea",
   "checks": {
     "provider_output": "missing",
     "foreground_midground_background": "not-executed",
@@ -14,7 +14,7 @@
   "contact_consistency": {},
   "status": "blocked",
   "human_review_items": [
-    "visual shot must be watched by an authorized human"
+    "watch the complete shot; metrics cannot accept acting or visual quality"
   ],
-  "spatial_consistency_root": "64f64a6067eed5864e34ec7e30b8ec1f00fa880e8bc09eb482d00da0b844ca52"
+  "spatial_consistency_root": "5ab30a840fa3a4cbc1d85a315645a8c3307b63a511129f1731fbcf6d026ac216"
 }

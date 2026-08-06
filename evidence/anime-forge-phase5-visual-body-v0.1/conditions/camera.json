@@ -1,0 +1,51 @@
+{
+  "episode_intent_root": "d962fa2c7644d759243e467aa61d83f024c671952b7c6ba20df26d006e816e7c",
+  "shot_intent_root": "1874b26ec312373187954023ccf456deb646ea52d56a6cab014f3c21f48373b4",
+  "cut_ref": "EP01/无名城审判质量镜头/Q01",
+  "fps": 24,
+  "resolution": {
+    "width": 1280,
+    "height": 720
+  },
+  "type": "camera",
+  "data": {
+    "track": [
+      {
+        "kind": "lens",
+        "lens_mm": 42,
+        "unit": "mm",
+        "source": {
+          "line": 12,
+          "column": 9
+        },
+        "start_frame": 0,
+        "end_frame": 144
+      },
+      {
+        "kind": "angle",
+        "direction": "three_quarter",
+        "angle_deg": 12,
+        "start_frame": 0,
+        "end_frame": 144
+      },
+      {
+        "kind": "pan",
+        "start": 0,
+        "end": 6,
+        "x": 0.08,
+        "start_frame": 0,
+        "end_frame": 144
+      },
+      {
+        "kind": "dolly_in",
+        "start": 0,
+        "end": 6,
+        "easing": "ease_in_out",
+        "dolly": 0.055,
+        "start_frame": 0,
+        "end_frame": 144
+      }
+    ],
+    "layout": "perspective_medium"
+  }
+}

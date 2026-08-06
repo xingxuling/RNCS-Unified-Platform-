@@ -2,34 +2,94 @@
   "format": "rncs.anime-visual-ledger-file-sha256.v0.1",
   "files": [
     {
+      "path": "audio-media.json",
+      "bytes": 193,
+      "sha256": "43e43e7b5b7d6781e5380b69449893a0b576f121c2e8d5563b6feb05349f2830"
+    },
+    {
+      "path": "audio-report.json",
+      "bytes": 2357,
+      "sha256": "292dfd2981be281d2b057cf35129b02e1bc48644d82bc7f8e7a3b64e2721d401"
+    },
+    {
       "path": "candidate-visual-branch.json",
-      "bytes": 4765,
-      "sha256": "3521a0ad4ae8b7f5b7189f4439002d2a2d567ecfdccc7578a6340fb4d7459008"
+      "bytes": 5308,
+      "sha256": "3b054f0ec4a0ff4f8af0b81b920dfe5a0b447e599de3e4776d1a0e67f1c60dde"
     },
     {
       "path": "character-reference-pack.json",
-      "bytes": 1417,
-      "sha256": "00776a0dbbab5c1d511192a52b4243d0dd3e8c72267c753fa4fdbf21b1d1d219"
+      "bytes": 4148,
+      "sha256": "481e18adf858744bb763d06059cc36608aff1fe09a8cb57fc39dd0d65f071534"
     },
     {
       "path": "condition-pack.json",
-      "bytes": 2374,
-      "sha256": "288611c20ae3a834dcd58b37f205d4147af930235904db78b2cb4d6029a33a12"
+      "bytes": 3737,
+      "sha256": "deec5be9096bde72203561fdda8d14ae7fc6c18744d0c891236f07a3b35d79d8"
+    },
+    {
+      "path": "conditions/camera.json",
+      "bytes": 1112,
+      "sha256": "2c294ded188cf3ed39ee8429abc35f642affb0baff9eb5d02e0e50b54fb3275a"
+    },
+    {
+      "path": "conditions/depth.json",
+      "bytes": 1365,
+      "sha256": "b60ff5c97c0f5f73830a1cc46e6aa65f63307cdc576c8131ce52b9d9145f071f"
+    },
+    {
+      "path": "conditions/edge.json",
+      "bytes": 516,
+      "sha256": "d1e64f73dce0c535426839d26fdd6ca3c1ff8114b7d0959e59fd484347eb117a"
+    },
+    {
+      "path": "conditions/layer-order.json",
+      "bytes": 599,
+      "sha256": "32bafa5238fe0a7f8e7c810ffbb3980a229dd3b1d2625e9125b762732eef0fd5"
+    },
+    {
+      "path": "conditions/normal.json",
+      "bytes": 477,
+      "sha256": "43299113dd5a36f3326d54e939a0cd07dc12b373aa0f299341bb1e4988ab6d8f"
+    },
+    {
+      "path": "conditions/pose-skeleton.json",
+      "bytes": 1453,
+      "sha256": "804f9e8ea3f84550785938235e2795b7095d31512a7c52174074a1938eb2c180"
+    },
+    {
+      "path": "conditions/semantic-mask.json",
+      "bytes": 550,
+      "sha256": "daa94bb2747b1103c26a079aa590f11f6647ba82a7d4f3cceeb21afb5a6195dc"
+    },
+    {
+      "path": "conditions/temporal-context.json",
+      "bytes": 2260,
+      "sha256": "cda29a0eb9b8e269b9687efb2789c2871f259863af6a02c23800ccea47f071fc"
     },
     {
       "path": "environment-report.json",
-      "bytes": 1360,
-      "sha256": "5476e69de3a04a22fb1ddda2b953aeb75f21979b48b6a9536a69a5bf26d766fa"
+      "bytes": 1401,
+      "sha256": "8e2f0ff4c4f1619fd6e50fae334a6703bfc78536d99cf908abcc0859b8610254"
+    },
+    {
+      "path": "episode.wav",
+      "bytes": 264644,
+      "sha256": "f41339b74eb52f54fdb1556c19f19b37b8030c11f48a730aa10f1a927398d9f8"
     },
     {
       "path": "model-manifest.json",
-      "bytes": 956,
-      "sha256": "2e6d7f395e6e206951d331e65b8d1fd6688ed8d69832cee4067946e63a91b717"
+      "bytes": 1022,
+      "sha256": "59ee7ba29c3d85d3ee02e4349b17e9a604e0e987f4cb279e45649084aa919c38"
+    },
+    {
+      "path": "patch-experiment.json",
+      "bytes": 1465,
+      "sha256": "cd66978ef932af0c0126963759f87d9442ffe5a09d495ec2debeb28a69cff84a"
     },
     {
       "path": "phase-status.json",
-      "bytes": 453,
-      "sha256": "18626a34611445db7933458f2e99ad660485a4e1d63981f6ae65296ed9f69b46"
+      "bytes": 642,
+      "sha256": "8d808455705383dc11b6d6cd502bf02a9881292b765c098b2491fd6efea99541"
     },
     {
       "path": "phase4-phase5-contact-sheet.png",
@@ -38,23 +98,63 @@
     },
     {
       "path": "provider-execution-receipt.json",
-      "bytes": 1369,
-      "sha256": "17543028f93dfb69e7ae9c9c2b9bc37e9138f94787d56c2255c4acd7b7385f0c"
+      "bytes": 1434,
+      "sha256": "0aece2ad4d6675cad96d857d65997a67af56dabc6f26d17bd1e5387403752c31"
+    },
+    {
+      "path": "provider-output/visual-provider-input.json",
+      "bytes": 2022,
+      "sha256": "fc26a5d2caea26d85027913683afadb40b85069cde454d4e37d1cad78895ca3c"
+    },
+    {
+      "path": "reference-source.json",
+      "bytes": 168,
+      "sha256": "c29aff0d7b05608ec6a395d71e051a46d7f140dd6650ee7accd2643467ab57e7"
+    },
+    {
+      "path": "references/face-closeup.png",
+      "bytes": 34924,
+      "sha256": "a0eaf2366e439a282afaaaf552660246d28eb778af932b0e340b147c6767620a"
+    },
+    {
+      "path": "references/front.png",
+      "bytes": 36240,
+      "sha256": "e3665062823516cd824d04e008cce8f85a4ac62276c882965423ac9be5a596f0"
+    },
+    {
+      "path": "references/full-body.png",
+      "bytes": 35244,
+      "sha256": "2b26e0a4d9e093f9eec8c9daad90bb9f60f89010d1369488ca73291de05683d6"
+    },
+    {
+      "path": "references/side.png",
+      "bytes": 35656,
+      "sha256": "457c58b5bfea11f500d1e0d01c80ec73a9348cacdcf58a49aacff3b5fcb35b15"
+    },
+    {
+      "path": "references/three-quarter.png",
+      "bytes": 36083,
+      "sha256": "863cde8a3d93cbb009819d88e6e6d920c33cbec0836826f9e20f2f25e80decff"
+    },
+    {
+      "path": "shot-intent.json",
+      "bytes": 3199,
+      "sha256": "2df145f9b872ae6274cd26410437d8aa3262c72733954edb8abdeeaa74da5bc1"
     },
     {
       "path": "source.anime.rcl",
-      "bytes": 3713,
-      "sha256": "88dbeccb650b44ece778b54c4958c1743e6dca1f879e2f5350a6d28cafed1b89"
+      "bytes": 1746,
+      "sha256": "d962fa2c7644d759243e467aa61d83f024c671952b7c6ba20df26d006e816e7c"
     },
     {
       "path": "spatial-consistency-report.json",
-      "bytes": 690,
-      "sha256": "5d4f96e0fba162a9566b6a72dd527bdd5b4e2f81f28e43584fbff222c509d600"
+      "bytes": 711,
+      "sha256": "b909cc64b50243a58dc517a75647db208b3100e5fbfe0e72011858e086b5f55a"
     },
     {
       "path": "temporal-consistency-report.json",
-      "bytes": 508,
-      "sha256": "49429afe8794947438bc880f2715a133b3ba1bbecc2af00286f9e477e7eb576b"
+      "bytes": 559,
+      "sha256": "5a085ea6f4ac969e66a7efa715040d7a6a6e6c970c720b0de55b49aeeb1377b7"
     },
     {
       "path": "visual-baseline-comparison.json",
@@ -63,24 +163,249 @@
     },
     {
       "path": "visual-baseline-comparison.md",
-      "bytes": 341,
-      "sha256": "1c7a5ebaf68795f3b16086395843e0ccf7a0664e86b220805b31694c229f7604"
+      "bytes": 351,
+      "sha256": "120bd3546f149bd97c34125b4feea68680249b700876842ce8be8f9c3ed3ed9e"
     },
     {
       "path": "visual-evidence-ledger.json",
-      "bytes": 2338,
-      "sha256": "035fd902ea4950fe0d9ec702a973a0b2eacebd98e673dd6aded822cf401081a9"
+      "bytes": 2960,
+      "sha256": "95f9749008fe6ea6d041df43908c64e97308b0ea0e6ad8c240c8075b70bdf30d"
     },
     {
       "path": "visual-provider-manifest.json",
-      "bytes": 3479,
-      "sha256": "24745cebb75ecc220c47efebb04760f33ad624175e0816e59c78ae9426625a04"
+      "bytes": 3489,
+      "sha256": "929c980de2ff56431ad2c29e67d126dd1f770c86f20601d473a8fb6e51878717"
     },
     {
       "path": "visual-quality-report.json",
-      "bytes": 1469,
-      "sha256": "5c03c6417562ec79ac75f7d3ac1ca647edbc1621986bdf0064affaa2f5c730d4"
+      "bytes": 1900,
+      "sha256": "1545711874a1e0590d0537acd9aad0150fda1567b1f6aba69969d27733f7392b"
+    },
+    {
+      "path": "working/audio-build/anime-provider-manifest.json",
+      "bytes": 17998,
+      "sha256": "0755a3696a8a9623dfbdf52ccab950d5247105bf2fec62761bf1654d02a98c2f"
+    },
+    {
+      "path": "working/audio-build/asset-lineage.json",
+      "bytes": 1472,
+      "sha256": "15a0a62561f9819beb4d634be53b7d8c228feed5e3031cdc45ffbafbe10e0e39"
+    },
+    {
+      "path": "working/audio-build/assets/background/family.json",
+      "bytes": 3331,
+      "sha256": "ba17622eb910571033505ecbebdc45eb0191374ed19f8ed3433696688ff63ebf"
+    },
+    {
+      "path": "working/audio-build/assets/background/layout.svg",
+      "bytes": 409,
+      "sha256": "738cbf6a476928c8f11725cbe5c6f28cd3acf56378571c0a74f89277047c8bfa"
+    },
+    {
+      "path": "working/audio-build/assets/background/lineage.json",
+      "bytes": 151,
+      "sha256": "771661de08646a0bfc0d98b956b8e4a03f3c4952e68d94a2014a0503f38b4f2b"
+    },
+    {
+      "path": "working/audio-build/assets/background/quality-report.json",
+      "bytes": 367,
+      "sha256": "5c468bb9ede44081e482ea54cf3c9259a1fd6a44ed24692a7ca312ceca592188"
+    },
+    {
+      "path": "working/audio-build/assets/character/back-view.svg",
+      "bytes": 939,
+      "sha256": "034180ee2085b12b11b9fc9038a1c97fd5ab4ed7bd4b2b51847ae4a62d198f8d"
+    },
+    {
+      "path": "working/audio-build/assets/character/expression-sheet.svg",
+      "bytes": 1172,
+      "sha256": "4d778f144e486429e8900d7623a117304e634405fbe9655c9dad7cd57c71db62"
+    },
+    {
+      "path": "working/audio-build/assets/character/eye-chart.svg",
+      "bytes": 1143,
+      "sha256": "76ab448dadb523bcfb05afe6c5af203814f02b780e4e16a73fab9c98a8276134"
+    },
+    {
+      "path": "working/audio-build/assets/character/family.json",
+      "bytes": 10748,
+      "sha256": "911ccbcda50325f1231b75642aa6c7e9be128df27203e0b2b4e01fe9331931c6"
+    },
+    {
+      "path": "working/audio-build/assets/character/front-view.svg",
+      "bytes": 914,
+      "sha256": "00e955cd91195d6e06dc6f64aeaecc3ba91eb0a525776b5dbc2b59d9ed5d9081"
+    },
+    {
+      "path": "working/audio-build/assets/character/hand-chart.svg",
+      "bytes": 1145,
+      "sha256": "e5d4c7bd71742264970d37b2757d9034ece37404184bc8134e1562cbf010ea68"
+    },
+    {
+      "path": "working/audio-build/assets/character/lineage.json",
+      "bytes": 344,
+      "sha256": "9cfe739804b3435f1c8bb278ff9360e49e0a67d74c75d162e1fe6e3bc11f9e74"
+    },
+    {
+      "path": "working/audio-build/assets/character/model-sheet.svg",
+      "bytes": 914,
+      "sha256": "00e955cd91195d6e06dc6f64aeaecc3ba91eb0a525776b5dbc2b59d9ed5d9081"
+    },
+    {
+      "path": "working/audio-build/assets/character/mouth-chart.svg",
+      "bytes": 1361,
+      "sha256": "5f985eb5485157bd60fa401ae406a7785246f9eb943ed7f8381a6097dce32918"
+    },
+    {
+      "path": "working/audio-build/assets/character/pose-library.svg",
+      "bytes": 1154,
+      "sha256": "89d926f0eeb1c1defca3c844cdfa10a32f99a9236557080d2741e53f3df4c29b"
+    },
+    {
+      "path": "working/audio-build/assets/character/quality-report.json",
+      "bytes": 1558,
+      "sha256": "e2b1841d408e439be2e5ac9e16068e79b903e5e93b90180d95ae1b7758b756c5"
+    },
+    {
+      "path": "working/audio-build/assets/character/side-view.svg",
+      "bytes": 940,
+      "sha256": "56aaf590f4aa95e1af3b062a585837fb1d540e0b9d459ec972b49a9058c98446"
+    },
+    {
+      "path": "working/audio-build/audio-video-sync-report.json",
+      "bytes": 317,
+      "sha256": "fa8a3e220be625a9a5a7721fb92eefafc1d83271436ef9047463420614658ab7"
+    },
+    {
+      "path": "working/audio-build/build-summary.json",
+      "bytes": 3654,
+      "sha256": "a5251e9102a95262a3c6be72ab41b1abe828b2b867c8fedd09e4f80af9736f58"
+    },
+    {
+      "path": "working/audio-build/character-continuity-report.json",
+      "bytes": 2067,
+      "sha256": "4c9a7ddf55e7ab9d1fe39829e97467ede18029e19433ec2936e34e3225746936"
+    },
+    {
+      "path": "working/audio-build/cut-continuity-report.json",
+      "bytes": 565,
+      "sha256": "1c28d4b47640a3de573d02895ab0ca1302802740e3e2c54fbd91c87a2f2c85d9"
+    },
+    {
+      "path": "working/audio-build/episode.wav",
+      "bytes": 264644,
+      "sha256": "f41339b74eb52f54fdb1556c19f19b37b8030c11f48a730aa10f1a927398d9f8"
+    },
+    {
+      "path": "working/audio-build/evidence-ledger.json",
+      "bytes": 2619,
+      "sha256": "5c18043eb9b35141a70ca0fbe163becb854b1e81f9a8f18389aa8331d9c2f45d"
+    },
+    {
+      "path": "working/audio-build/frame-integrity-report.json",
+      "bytes": 571,
+      "sha256": "c701c02a036d5201a9c6de0b7af475d934600f58ded3cccb38b4f0c976811f14"
+    },
+    {
+      "path": "working/audio-build/production.ir.json",
+      "bytes": 60606,
+      "sha256": "3e39c8e2e3b4769901ab9e1ad7a8f91de3bb1547f68b18f0fa3d5373f83a475c"
+    },
+    {
+      "path": "working/audio-build/replay-report.json",
+      "bytes": 10625,
+      "sha256": "da043dbff5d0740aaf3512246056da3714742f9880909eeca04fa2a2563d6592"
+    },
+    {
+      "path": "working/audio-build/reproducible-build.json",
+      "bytes": 2359,
+      "sha256": "2e1513c2efe3c2961af1f400d3e488fe4a2165c698353098a4f5dca24781d275"
+    },
+    {
+      "path": "working/audio-build/SHA256SUMS.json",
+      "bytes": 2856,
+      "sha256": "74dc0f39d8ee15dc368fddcdb90378791eac8ab0ca60f813d8115620cb4beea0"
+    },
+    {
+      "path": "working/audio-build/SHA256SUMS.txt",
+      "bytes": 1519,
+      "sha256": "2144ddc9a6be06f7e7cba56c8f26bfd734cf371a4882d7652d9b4b035ad48150"
+    },
+    {
+      "path": "working/audio-build/source.anime.rcl",
+      "bytes": 1746,
+      "sha256": "d962fa2c7644d759243e467aa61d83f024c671952b7c6ba20df26d006e816e7c"
+    },
+    {
+      "path": "working/audio-build/video-mux-report.json",
+      "bytes": 1239,
+      "sha256": "7be431c08655d2027540e70ded5682db33f04d306487d1195c3846ad5d4fc6d6"
+    },
+    {
+      "path": "working/audio-build/voices/EP01-----------Q01/dialogue-adbc9d6877ab83be6946e8ec/breath_timeline.json",
+      "bytes": 132,
+      "sha256": "2c7b433abb64c086173ab0bdc0c2b944592404730fd9761c0f4c54cd9d1d0d60"
+    },
+    {
+      "path": "working/audio-build/voices/EP01-----------Q01/dialogue-adbc9d6877ab83be6946e8ec/bundle.json",
+      "bytes": 6153,
+      "sha256": "3d75347f10b7362c4bc9dcf7d0d5e052b1a751b9542957dc045521741fb5bd1e"
+    },
+    {
+      "path": "working/audio-build/voices/EP01-----------Q01/dialogue-adbc9d6877ab83be6946e8ec/dialogue.wav",
+      "bytes": 79160,
+      "sha256": "2ee16f356fbfef7976d9a6a048a337e8cfd90900faf239d86869557f9592b73a"
+    },
+    {
+      "path": "working/audio-build/voices/EP01-----------Q01/dialogue-adbc9d6877ab83be6946e8ec/emotion_curve.json",
+      "bytes": 153,
+      "sha256": "d3b4de83b494f5242f812170c5ae89584963554553eed76f794213631e531a35"
+    },
+    {
+      "path": "working/audio-build/voices/EP01-----------Q01/dialogue-adbc9d6877ab83be6946e8ec/evidence.json",
+      "bytes": 258,
+      "sha256": "28df20c96281034429bad21789db54396876ebf04e88ab15cc1c6573570aedf4"
+    },
+    {
+      "path": "working/audio-build/voices/EP01-----------Q01/dialogue-adbc9d6877ab83be6946e8ec/phoneme_timeline.json",
+      "bytes": 873,
+      "sha256": "78dea43127a6b9908ef0d0c351e05a2cd6e4276aa89acbdd90db7f9efaf45aa8"
+    },
+    {
+      "path": "working/audio-build/voices/EP01-----------Q01/dialogue-adbc9d6877ab83be6946e8ec/prosody_curve.json",
+      "bytes": 123,
+      "sha256": "05d221bff31c6c6333688b095240aa7c96d519bfd2788350786a37f34d2b097f"
+    },
+    {
+      "path": "working/audio-build/voices/EP01-----------Q01/dialogue-adbc9d6877ab83be6946e8ec/provider_receipt.json",
+      "bytes": 247,
+      "sha256": "e3c8f875a10509a0a4afcc20620e55ea1bec0dfba8571e2ba42f23d14a311301"
+    },
+    {
+      "path": "working/audio-build/voices/EP01-----------Q01/dialogue-adbc9d6877ab83be6946e8ec/transcript.json",
+      "bytes": 66,
+      "sha256": "89e67145de67f237249564c3d3c8ba0e0264332fb46a78911b0600e5ca49c3e7"
+    },
+    {
+      "path": "working/audio-build/voices/EP01-----------Q01/dialogue-adbc9d6877ab83be6946e8ec/viseme_timeline.json",
+      "bytes": 1177,
+      "sha256": "b1487c0772e44c6d792b0a8c91206b8ecfb13fdb3e43f109ded5a09de57c77cb"
+    },
+    {
+      "path": "working/audio-build/voices/EP01-----------Q01/dialogue-adbc9d6877ab83be6946e8ec/voice_identity.json",
+      "bytes": 29,
+      "sha256": "27b1d0feeabf6e95f40b7dc6ceab3aacf02d9ec30693d582c7cdb32351205de2"
+    },
+    {
+      "path": "working/audio-build/voices/EP01-----------Q01/dialogue-adbc9d6877ab83be6946e8ec/waveform_summary.json",
+      "bytes": 87,
+      "sha256": "b3a791caf25e3fe0d1b3a39b33d0285be58443975b6a1791b640b183534e368a"
+    },
+    {
+      "path": "working/audio-build/voices/EP01-----------Q01/dialogue-adbc9d6877ab83be6946e8ec/word_timeline.json",
+      "bytes": 857,
+      "sha256": "977ce5332819668fb12482dd9736e6b05ab94152116213177b9aa6b507dbe6c4"
     }
   ],
-  "ledger_file_sha256": "7e4533b0f2e719ebf93247b1f68c85349b98f74fd00e2417a80adc6c1f65664a"
+  "ledger_file_sha256": "b81feaa9f7b42c2790c75ad7dc5a77a30350e9d2b79d54cd99960242689a6de1"
 }

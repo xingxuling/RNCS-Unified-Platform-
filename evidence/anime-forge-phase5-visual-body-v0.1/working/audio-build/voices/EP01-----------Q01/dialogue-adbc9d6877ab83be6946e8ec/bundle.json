@@ -1,0 +1,262 @@
+{
+  "format": "rncs.voice-performance-bundle.v0.1",
+  "version": "0.1.0-alpha.1",
+  "dialogue_event_id": "dialogue:adbc9d6877ab83be6946e8ec",
+  "voice_identity": "蓝天临.蓝天临.default",
+  "character_id": "蓝天临",
+  "text": "风会记住你的判词。",
+  "language": "zh-CN",
+  "start_seconds": 2.5416666666666665,
+  "performance": {
+    "pronunciation": "default",
+    "emotion": "restrained_question",
+    "intensity": 0.62,
+    "pace": 1,
+    "pitch": 0,
+    "pause_policy": "short",
+    "breath_policy": "reference"
+  },
+  "duration_seconds": 1.794,
+  "sample_rate": 22050,
+  "transcript": {
+    "text": "风会记住你的判词。",
+    "language": "zh-CN"
+  },
+  "word_timeline": [
+    {
+      "index": 0,
+      "text": "风",
+      "start": 2.5416666666666665,
+      "end": 2.7556666666666665
+    },
+    {
+      "index": 1,
+      "text": "会",
+      "start": 2.7806666666666664,
+      "end": 2.9406666666666665
+    },
+    {
+      "index": 2,
+      "text": "记",
+      "start": 2.9656666666666665,
+      "end": 3.1256666666666666
+    },
+    {
+      "index": 3,
+      "text": "住",
+      "start": 3.1506666666666665,
+      "end": 3.3646666666666665
+    },
+    {
+      "index": 4,
+      "text": "你",
+      "start": 3.3896666666666664,
+      "end": 3.5496666666666665
+    },
+    {
+      "index": 5,
+      "text": "的",
+      "start": 3.5746666666666664,
+      "end": 3.7346666666666666
+    },
+    {
+      "index": 6,
+      "text": "判",
+      "start": 3.7596666666666665,
+      "end": 3.9736666666666665
+    },
+    {
+      "index": 7,
+      "text": "词",
+      "start": 3.9986666666666664,
+      "end": 4.230666666666666
+    }
+  ],
+  "phoneme_timeline": [
+    {
+      "index": 0,
+      "phoneme": "p1",
+      "start": 2.5416666666666665,
+      "end": 2.7556666666666665
+    },
+    {
+      "index": 1,
+      "phoneme": "p2",
+      "start": 2.7806666666666664,
+      "end": 2.9406666666666665
+    },
+    {
+      "index": 2,
+      "phoneme": "p3",
+      "start": 2.9656666666666665,
+      "end": 3.1256666666666666
+    },
+    {
+      "index": 3,
+      "phoneme": "p4",
+      "start": 3.1506666666666665,
+      "end": 3.3646666666666665
+    },
+    {
+      "index": 4,
+      "phoneme": "p5",
+      "start": 3.3896666666666664,
+      "end": 3.5496666666666665
+    },
+    {
+      "index": 5,
+      "phoneme": "p6",
+      "start": 3.5746666666666664,
+      "end": 3.7346666666666666
+    },
+    {
+      "index": 6,
+      "phoneme": "p7",
+      "start": 3.7596666666666665,
+      "end": 3.9736666666666665
+    },
+    {
+      "index": 7,
+      "phoneme": "p8",
+      "start": 3.9986666666666664,
+      "end": 4.230666666666666
+    }
+  ],
+  "viseme_timeline": [
+    {
+      "index": 0,
+      "shape": "a",
+      "start": 2.5416666666666665,
+      "end": 2.7556666666666665,
+      "authority": "final-dialogue-audio"
+    },
+    {
+      "index": 1,
+      "shape": "o",
+      "start": 2.7806666666666664,
+      "end": 2.9406666666666665,
+      "authority": "final-dialogue-audio"
+    },
+    {
+      "index": 2,
+      "shape": "i",
+      "start": 2.9656666666666665,
+      "end": 3.1256666666666666,
+      "authority": "final-dialogue-audio"
+    },
+    {
+      "index": 3,
+      "shape": "u",
+      "start": 3.1506666666666665,
+      "end": 3.3646666666666665,
+      "authority": "final-dialogue-audio"
+    },
+    {
+      "index": 4,
+      "shape": "a",
+      "start": 3.3896666666666664,
+      "end": 3.5496666666666665,
+      "authority": "final-dialogue-audio"
+    },
+    {
+      "index": 5,
+      "shape": "o",
+      "start": 3.5746666666666664,
+      "end": 3.7346666666666666,
+      "authority": "final-dialogue-audio"
+    },
+    {
+      "index": 6,
+      "shape": "i",
+      "start": 3.7596666666666665,
+      "end": 3.9736666666666665,
+      "authority": "final-dialogue-audio"
+    },
+    {
+      "index": 7,
+      "shape": "u",
+      "start": 3.9986666666666664,
+      "end": 4.230666666666666,
+      "authority": "final-dialogue-audio"
+    }
+  ],
+  "emotion_curve": [
+    {
+      "time": 2.5416666666666665,
+      "value": "restrained_question"
+    },
+    {
+      "time": 4.335666666666667,
+      "value": "restrained_question"
+    }
+  ],
+  "prosody_curve": [
+    {
+      "time": 2.5416666666666665,
+      "pitch_hz": 208
+    },
+    {
+      "time": 4.335666666666667,
+      "pitch_hz": 200
+    }
+  ],
+  "breath_timeline": [
+    {
+      "time": 2.5416666666666665,
+      "kind": "breath-in"
+    },
+    {
+      "time": 4.335666666666667,
+      "kind": "breath-out"
+    }
+  ],
+  "waveform_summary": {
+    "peak": 0.20306257903575897,
+    "rms": 0.1064552419554309,
+    "sample_count": 39558
+  },
+  "provider_receipt": {
+    "provider_id": "taowind.voice-forge.reference-synthetic-v0.1",
+    "version": "0.1.0",
+    "mode": "reference",
+    "authority": "candidate",
+    "quality_boundary": "synthetic voiced reference; not a professional Japanese/Chinese actor performance"
+  },
+  "identity": {
+    "voice_identity": "蓝天临.蓝天临.default",
+    "character_id": "蓝天临",
+    "language": "zh-CN",
+    "seed": "voice-reference-v0.1",
+    "provider": "taowind.voice-forge.reference-synthetic-v0.1",
+    "continuity": {
+      "base_voiceprint_root": "328d261cb48b6765a6d47a32704ce65909a5acaed7b3bf3bbc51867cff98708b",
+      "pronunciation_profile": "deterministic-reference",
+      "pace_range": [
+        0.86,
+        1.12
+      ],
+      "pitch_range_hz": [
+        140,
+        320
+      ],
+      "emotion_map": [
+        "neutral",
+        "restrained_question",
+        "resolve"
+      ],
+      "performance_boundary": "reference-synthetic-not-human-performance"
+    }
+  },
+  "authority": {
+    "single_active_take": true,
+    "dialogue_event_id": "dialogue:adbc9d6877ab83be6946e8ec",
+    "mouth_driver": "viseme_timeline",
+    "close_mouth_on_end": true
+  },
+  "evidence": {
+    "source_root": "1f142c81b3c61d41b212d21e3da46e3243d2438a08300bec686dd235dad845ff",
+    "audio_root": "82fa54fc78cea8f7b9352da203bb9f01551272991acbad6aca35dae0b06bd1e3",
+    "identity_root": "95c34d8dbc9ae2a5d9505e172478549fb83fe8467e7ddfb6be83358c19244949"
+  },
+  "bundle_root": "6255d8a54b7b6104a675d85b0baa8e885b7ec5e9580474c82652ab926adad5a9"
+}

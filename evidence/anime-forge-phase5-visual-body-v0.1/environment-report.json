@@ -6,7 +6,7 @@
   "node": "v24.15.0",
   "cpus": 16,
   "total_memory_bytes": 25008918528,
-  "free_memory_bytes": 953929728,
+  "free_memory_bytes": 3199102976,
   "tools": {
     "python": {
       "available": true
@@ -45,18 +45,19 @@
   },
   "gpu": {
     "status": "not-proven",
-    "model": "AMD Radeon 860M reported by machine audit",
+    "model": "machine-reported adapter",
     "vram_mb": 512,
     "cuda": false,
     "rocm": false
   },
   "models": {
+    "visual_model_present": false,
+    "model_path_configured": false,
     "diffusers": false,
-    "comfyui": false,
-    "visual_model_present": false
+    "comfyui": false
   },
   "api_environment_names": [],
-  "boundary": "environment names only; secret values are never recorded",
-  "environment_root": "77c28a34083a6c24b59550cda0493b5f945d9204471570c55c525fabd256df8c",
+  "boundary": "environment names and capability facts only; secret values are never recorded",
+  "environment_root": "8ebdc30d8e2cbea3cc1a4602d61c7cbd56b41ab4a4e334ebf7ab670f41160b6d",
   "environment_root_basis": "capability fields with instantaneous free_memory_bytes excluded"
 }

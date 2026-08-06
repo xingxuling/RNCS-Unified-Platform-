@@ -6,11 +6,13 @@
   "complete": false,
   "errors": [],
   "blank_frames": [],
+  "invalid_png_frames": [],
   "consecutive_duplicate_frames": [],
   "duplicate_ratio": 1,
+  "pixel_metrics": [],
   "high_frequency_flicker_intervals": [],
   "motion_anomaly_intervals": [],
   "status": "fail",
   "created_at": "2026-08-06T00:00:00.000Z",
-  "temporal_stability_root": "605a465f6165e99c788a18dd767ff6619627d598cae67228b19fc09f8d39b20d"
+  "temporal_stability_root": "19c1bda7abcd4317da29e471199dce4dfc1fb9b4f81afbeb0fb6ea8656350543"
 }

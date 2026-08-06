@@ -1,50 +1,74 @@
 {
   "format": "rncs.anime-visual-condition-pack.v0.1",
   "version": "0.1.0-alpha.1",
-  "episode_intent_root": "88dbeccb650b44ece778b54c4958c1743e6dca1f879e2f5350a6d28cafed1b89",
-  "shot_intent_root": "cad9607a6d83e3ec917100ee7db16aaa93077edf57a881029f8d2593b90038b6",
+  "episode_intent_root": "d962fa2c7644d759243e467aa61d83f024c671952b7c6ba20df26d006e816e7c",
+  "shot_intent_root": "1874b26ec312373187954023ccf456deb646ea52d56a6cab014f3c21f48373b4",
   "character_identity_root": "682362679be55dca2700dc6146b92a48014170e40b5d851bda53e00f656cff5f",
-  "reference_pack_root": "cea53f5fc89b4bc74cd3dff0201753fcdb1f5e1155109bcc49cf3829217325b2",
+  "reference_pack_root": "600906f9f4ae6e404c892bb4de5e43e6fe6f62f572587347ef14a708cb3b195d",
   "conditions": [
     {
       "type": "pose-skeleton",
-      "status": "missing",
-      "root": "6615040a6ad8c8936d95cb5b8a16696b063956ff2faf6d0405148d77394db5b2"
+      "status": "ready",
+      "root": "b51ea6f356be15dde1ddc181828d1b8b4b3048d038d2fc2369c7b1e0084798d3",
+      "path": "conditions/pose-skeleton.json",
+      "file_sha256": "804f9e8ea3f84550785938235e2795b7095d31512a7c52174074a1938eb2c180",
+      "media_type": "application/json"
     },
     {
       "type": "depth",
-      "status": "missing",
-      "root": "bdc5b43bb2eb87df73359a50519659400c4bdd3e6f567b8ed6685c72035a83ef"
+      "status": "ready",
+      "root": "0be6e75aa210aabde856e182d137f5702c091e8c0a492b69150407b16838d531",
+      "path": "conditions/depth.json",
+      "file_sha256": "b60ff5c97c0f5f73830a1cc46e6aa65f63307cdc576c8131ce52b9d9145f071f",
+      "media_type": "application/json"
     },
     {
       "type": "normal",
-      "status": "missing",
-      "root": "1acf49687a7154f055448bef48314faca10fda3970c222a2bc054159c386bf93"
+      "status": "ready",
+      "root": "791cc2b37889edecdfc9b7bf3b74067ed7f54cfa68d9fdbd3a467fadea59dd28",
+      "path": "conditions/normal.json",
+      "file_sha256": "43299113dd5a36f3326d54e939a0cd07dc12b373aa0f299341bb1e4988ab6d8f",
+      "media_type": "application/json"
     },
     {
       "type": "edge",
-      "status": "missing",
-      "root": "315f9fb844563a394fa6feed69127f313f8925e3d9e2a7616d4496872554cd17"
+      "status": "ready",
+      "root": "0a63b0613b14d39ca83606c07df97f40f0ecf582a0ca73b48a90af287b58f6c6",
+      "path": "conditions/edge.json",
+      "file_sha256": "d1e64f73dce0c535426839d26fdd6ca3c1ff8114b7d0959e59fd484347eb117a",
+      "media_type": "application/json"
     },
     {
       "type": "semantic-mask",
-      "status": "missing",
-      "root": "e019e4712471f61a6fc5551f3cad2a1e7d79a78fa029bf22e249d3d6341b7e4c"
+      "status": "ready",
+      "root": "e0cb552dff0567f7ce354e216342a1b87645afde2df4523e625d3249a4475df5",
+      "path": "conditions/semantic-mask.json",
+      "file_sha256": "daa94bb2747b1103c26a079aa590f11f6647ba82a7d4f3cceeb21afb5a6195dc",
+      "media_type": "application/json"
     },
     {
       "type": "camera",
-      "status": "missing",
-      "root": "1d133f1c575c23f968a59be19d0e3fb25e99476442e2b860d9a6a9efd5d06ebd"
+      "status": "ready",
+      "root": "a2cda293946cb31b1ebee9e0fc7f71aabc2a1d4cc4e6bdb3414fca444a6b8c7f",
+      "path": "conditions/camera.json",
+      "file_sha256": "2c294ded188cf3ed39ee8429abc35f642affb0baff9eb5d02e0e50b54fb3275a",
+      "media_type": "application/json"
     },
     {
       "type": "layer-order",
-      "status": "missing",
-      "root": "105b6517b826c09e24df6ccdbde6f3a11caeaa68b41f8e988030ee539d59093c"
+      "status": "ready",
+      "root": "b1dc442a8551a944cafa3b8bfb135c3bc3b60682fed7550667dd13f4dc1146a5",
+      "path": "conditions/layer-order.json",
+      "file_sha256": "32bafa5238fe0a7f8e7c810ffbb3980a229dd3b1d2625e9125b762732eef0fd5",
+      "media_type": "application/json"
     },
     {
       "type": "temporal-context",
-      "status": "missing",
-      "root": "227f1642d4b07443b524e036800f6b532a45583542f137aa5e0c05a73e51b8d2"
+      "status": "ready",
+      "root": "e13b5910669f98342fabdff7f88153791f85d0ae9a33405dc3793e66ba6191bc",
+      "path": "conditions/temporal-context.json",
+      "file_sha256": "cda29a0eb9b8e269b9687efb2789c2871f259863af6a02c23800ccea47f071fc",
+      "media_type": "application/json"
     }
   ],
   "condition_types": [
@@ -66,7 +90,7 @@
     "lighting"
   ],
   "temporal_context": {},
-  "status": "blocked",
+  "status": "complete",
   "created_at": "2026-08-06T00:00:00.000Z",
   "source": {
     "kind": "rncs-visual-runtime",
@@ -80,5 +104,5 @@
       "at": "2026-08-06T00:00:00.000Z"
     }
   ],
-  "condition_pack_root": "4f61fa08f9090877b6a162af19b45b05b96464d9f2b372f0bdfdda3a03bf9c43"
+  "condition_pack_root": "5ef240f1f136ad1e8e09fb363f36001ac41cbfceeb66bf3ac05910f3352eff85"
 }

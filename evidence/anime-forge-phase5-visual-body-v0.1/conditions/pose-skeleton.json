@@ -1,0 +1,70 @@
+{
+  "episode_intent_root": "d962fa2c7644d759243e467aa61d83f024c671952b7c6ba20df26d006e816e7c",
+  "shot_intent_root": "1874b26ec312373187954023ccf456deb646ea52d56a6cab014f3c21f48373b4",
+  "cut_ref": "EP01/无名城审判质量镜头/Q01",
+  "fps": 24,
+  "resolution": {
+    "width": 1280,
+    "height": 720
+  },
+  "type": "pose-skeleton",
+  "data": {
+    "track": [
+      {
+        "frame": 0,
+        "pose_id": "head_lowered",
+        "actor_id": "蓝天临",
+        "source": {
+          "line": 23,
+          "column": 11
+        }
+      },
+      {
+        "frame": 38,
+        "pose_id": "begin_raise_head",
+        "actor_id": "蓝天临",
+        "source": {
+          "line": 24,
+          "column": 11
+        }
+      },
+      {
+        "frame": 78,
+        "pose_id": "gaze_locked",
+        "actor_id": "蓝天临",
+        "source": {
+          "line": 25,
+          "column": 11
+        }
+      },
+      {
+        "frame": 116,
+        "pose_id": "resolve",
+        "actor_id": "蓝天临",
+        "source": {
+          "line": 26,
+          "column": 11
+        }
+      }
+    ],
+    "gaze": [
+      {
+        "target": "审判官高台",
+        "start_frame": 72,
+        "authority": "director"
+      }
+    ],
+    "blink": [
+      {
+        "frame": 84,
+        "duration_frames": 2,
+        "authority": "director"
+      },
+      {
+        "frame": 127,
+        "duration_frames": 2,
+        "authority": "director"
+      }
+    ]
+  }
+}

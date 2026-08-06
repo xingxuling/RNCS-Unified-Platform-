@@ -175,3 +175,121 @@ The final ledger must keep these distinct:
 - `media_sha256`
 
 The blocked engineering run will still produce the federation review, environment report, manifest validation, negative receipts, Phase 4 baseline references, and source package hashes. It will not invent `generated_frame_root`, `generated_clip_root`, or `mp4_sha256` for media that did not execute.
+
+## 14. Phase 5 v02 re-audit from the merged main-95 baseline
+
+This section records the second execution of the federation before new implementation work. It does not replace the prior blocked evidence or promote it to visual acceptance.
+
+### 14.1 Target decision
+
+The real problem remains visual-body replacement, not another control-panel expansion. Phase 4 proves that RNCS can compile and replay a real program-level media pipeline; its frames do not yet prove modern Anime visual quality. The Phase 5 v02 objective is therefore a single quality-first 5-8 second, 1280x720, 24 fps shot with a persistent original character, reference-conditioned appearance, perspective staging, readable attention/emotion change, secondary motion, motivated camera motion, spatial occlusion, real audio, and human review. A generated frame remains a candidate and never becomes Episode or Character Genome authority by itself.
+
+### 14.2 Actual repository baseline
+
+- Actual worktree: `C:\Users\User\Documents\RCL\_worktrees\rncs-anime-forge-phase5-visual-body-v02`.
+- Actual branch: `codex/rncs-anime-forge-phase5-visual-body-v02`.
+- Actual baseline: `origin/main-95@52fe4463a59a5fda1f75a50e117ca697d7777ed0`, the merge of the previous Phase 5 engineering boundary.
+- The supplied attachment contained the Phase 5 task text but no standalone image file in its attachment directory. The repository-bound Phase 4 representative frames are therefore the available visual baseline, and that absence is not inferred away.
+- Existing Phase 5 evidence is explicitly `blocked` with `MODEL_MISSING`; its MP4 and WAV fields are null, its human visual status is `pending`, and its baseline comparison correctly does not invent a Phase 5 frame.
+- The checked-in Phase Status metadata still points at the pre-merge `085a365` baseline and the previous branch. It must be corrected in this worktree before release evidence is regenerated.
+
+### 14.3 Phase 4 representative-frame review
+
+Reviewed:
+
+- `evidence/anime-forge-phase4-v0.1/representative-frames/frame-000096-S01.png`
+- `evidence/anime-forge-phase4-v0.1/representative-frames/frame-000250-S02.png`
+- `evidence/anime-forge-phase4-v0.1/representative-frames/frame-000390-S03.png`
+
+Visual findings:
+
+- First impression: the three frames read as a deterministic engineering sample rather than a watchable Anime shot.
+- Body and costume: the character is a centered flat silhouette with hard polygon boundaries, uniform costume planes, symbolic hands, and no convincing cloth or body volume.
+- Face and identity: the palette, hair block, emblem, eyes and mouth are rooted, but facial construction, hair mass, nose/mouth structure and age/character specificity remain schematic.
+- Space: the skyline, floor lines, side structures and translucent light wedges share a canvas but do not establish reliable perspective contact, depth cues, material response or character-ground interaction.
+- Composition: the sequence is primarily a scale progression toward the same central pose. It lacks 3/4 staging, motivated blocking, foreground occlusion and a meaningful spatial turn.
+- Acting and motion: mouth/eye state changes are present as program evidence, but the body does not communicate weight shift, anticipation, follow-through, attention redirection or a readable emotional beat.
+- Lighting: the large translucent wedges establish color regions, not light reacting to face, hair, costume and environment as one space.
+- Temporal implication: deterministic repeated geometry is useful for the control baseline, but it cannot prove generated face, costume, hand, hair or background stability.
+
+The frames remain a negative baseline. No crop or single flattering frame may be used to erase these deficiencies.
+
+### 14.4 Environment re-audit
+
+| Area | Observed fact in v02 worktree | Decision consequence |
+| --- | --- | --- |
+| OS | Windows 11 Home 64-bit, build `10.0.26200` | Windows orchestration is available. |
+| CPU | AMD Ryzen AI 7 350, 8 cores / 16 logical processors | Suitable for orchestration and contracts, not assumed suitable for high-quality video diffusion. |
+| RAM | `25008918528` bytes physical RAM | Model loading must be controlled; free-memory headroom was not treated as a visual capability claim. |
+| GPU | AMD Radeon 860M Graphics, reported adapter memory `536870912` bytes shared | No high-resolution diffusion/video budget is proven. |
+| CUDA / ROCm / DirectML | `nvidia-smi`, `rocminfo`, `hipconfig` absent; Torch `2.10.0+cpu`, CUDA false, MPS false | Local GPU route is blocked. |
+| Python / Node | Python `3.11.6`; Node `v24.15.0`; npm `11.12.1` | Contracts and orchestration can run. |
+| Visual libraries | Torch, Transformers, ONNX Runtime and Pillow present; Diffusers and ComfyUI absent | No complete local visual generation stack exists. |
+| Existing model runner | Ollama executable present, but no visual model evidence was found | Language/embedding availability cannot count as a visual Provider. |
+| Blender / Godot | `blender`, `godot`, and `godot4` absent from PATH | No qualified DCC/conditional visual route is available locally. |
+| FFmpeg / ffprobe | Both absent from PATH | Local final-media generation is not available without an explicit tool install. |
+| Disk | `339483947008` bytes free on `C:` at audit time | Storage is sufficient for a controlled model attempt, subject to license and runtime checks. |
+| Remote API configuration | No matching visual Provider environment variable names were present; no secret values were read | No remote route is configured or authorized. |
+| GitHub Actions | Ordinary runner workflow has no GPU label or model cache | CI can test contracts and compact evidence only; it cannot silently become visual proof. |
+
+### 14.5 Provider candidate comparison and final route
+
+| Route | Quality potential | Control / continuity | Actual v02 readiness | Decision |
+| --- | --- | --- | --- | --- |
+| A. Local Diffusion/Video external worker | Highest potential for the required visual jump if a licensed model, reference conditioning, temporal repair and suitable GPU are supplied | Can bind Character Genome roots, conditions, seeds, model revision and patch windows | No Diffusers/ComfyUI, no usable GPU backend, no model or license evidence | **Only main acceptance route; blocked until an external execution machine is supplied** |
+| B. Blender/Godot conditional render | Good camera/depth determinism but insufficient by itself for the requested modern Anime visual body | Strong geometry control, weak generated facial/costume quality without another art Provider | Tools absent and the existing procedural route is not a visual replacement | Not selected; no half-integration |
+| C. Remote visual API | Potentially high quality and avoids local GPU | Depends on reference/video controls and durable artifact storage | No configured endpoint or approved secret environment | Not selected; no remote call |
+
+Only Route A is selected for eventual visual acceptance. The existing local fail-closed adapter is an interface and evidence boundary, not a successful high-quality Provider execution. No old vector output, mock, fixture, static image loop or test card may be used as a substitute.
+
+### 14.6 Federation Gate record
+
+The mandated order was executed for this v02 audit:
+
+| # | Gate | Judgment | Binding decision |
+| ---: | --- | --- | --- |
+| 1 | Founder Twin | Pass | Keep the visual-quality objective and use a fresh worktree. |
+| 2 | 柳清莲 Gate | Pass | Generated pixels are candidates; they cannot rewrite Episode or identity authority. |
+| 3 | 洞哥 Grounding | Pass | Bind every claim to current hardware, source, receipt, media or explicit blocker. |
+| 4 | 产品文明 | Pass with blocker | The shippable product is a reviewable candidate pipeline; the quality shot is not accepted without a real Provider. |
+| 5 | UX / 设计文明 | Pass | Studio must answer playability, Provider, worst issue, uplift and human status first. |
+| 6 | 编剧文明 | Pass | Shot Intent owns attention, emotion, action and space; it is not delegated to a prompt. |
+| 7 | 动画导演文明 | Pass | Use 3/4 staging, anticipation, eye/head turn, weight, follow-through, camera motivation and repairable intervals. |
+| 8 | 角色设计文明 | Pass with blocker | Character Genome remains immutable; a human-accepted raster reference pack is still missing. |
+| 9 | 角色表演文明 | Pass | Acting evidence requires attention/emotion change and human review; metrics cannot accept performance. |
+| 10 | 美术指导文明 | Pass | Volume, material, line policy, light and depth are hard requirements; Phase 4 is the negative baseline. |
+| 11 | 摄影文明 | Pass | Conditions require 3/4 perspective, foreground/mid/background, occlusion and motivated camera motion. |
+| 12 | 技术美术文明 | Pass | Pose, skeleton, depth, normal, edge, masks, camera and layer conditions need complete roots. |
+| 13 | 生成模型文明 | Blocked | No executable visual model, suitable GPU or license evidence is available. |
+| 14 | 图形与合成文明 | Pass with blocker | Candidate output must be real frames/clip with temporal and spatial reports; procedural frames do not count. |
+| 15 | 声音文明 | Pass | Existing Voice/Audio authority remains; an original environment WAV is allowed for this shot. |
+| 16 | 数学与形式方法文明 | Pass | Ledger root, file SHA, artifact, source package and media hashes remain separate namespaces. |
+| 17 | 工程文明 | Pass | Reuse contracts, typed receipts, negative tests, local patches, rollback and no model/binary commits. |
+| 18 | 代码文明 | Pass-to-implement | Extend the existing boundary without making the old raster Provider an acceptance fallback. |
+| 19 | 测试文明 | Pass-to-implement | Add real-media and negative tests without weakening Phase 3/4 coverage. |
+| 20 | 安全文明 | Pass | Do not read secrets; constrain external commands, paths, model files, licenses and artifact roots. |
+| 21 | 发布文明 | Pass with blocker | Publish compact evidence and explicit incomplete status; do not publish a false visual completion claim. |
+| 22 | Integration Court | Blocked | A real 1280x720 shot, MP4/WAV and human review are absent. |
+| 23 | Evidence Ledger | Blocked | The schemas exist, but final visual/media roots cannot be bound before Provider execution. |
+
+### 14.7 Implementation plan, acceptance, risks and rollback
+
+1. Correct Phase Status and re-audit metadata to the actual merged main-95 baseline.
+2. Audit and strengthen the existing Reference Pack, Condition Pack, Candidate Branch, temporal/spatial reports and Patch Receipt so missing raster/model/media roots are explicit and no authority can be escalated.
+3. Keep one real external-process Route A adapter. When a qualified runner is supplied, execute a 5-8 second 1280x720 shot and preserve model, license, GPU, parameters, inputs, outputs and failures.
+4. Add or verify the real-media acceptance path: frame sequence, audio, MP4/ffprobe, A/B contact sheet, before/after patch comparison and human review state.
+5. Run ordinary CI for schemas, authority, negative cases, candidate/Patch isolation, evidence and Studio. Run GPU evidence only on a real configured machine.
+
+Acceptance remains hard-gated by first-look Anime watchability, identity continuity, temporal stability, spatial coherence, readable acting, weight/follow-through motion, real MP4/WAV, A/B evidence and explicit human review. The automatic score must never write `accepted` or `committed`.
+
+Risks are model weight/license uncertainty, insufficient GPU memory, temporal identity drift, external-process secret leakage, remote artifact retention, patch-window expansion and stale provenance metadata. Rollback removes the Provider/model binding, marks the candidate blocked or superseded, restores pre-patch roots, and never changes Episode Intent Root, Character Identity Root or Character Genome Root.
+
+Unprovable in v02 until a real Provider run exists: commercial Anime quality, professional animator/director replacement, full-episode stability, automatic art-quality proof, human acceptance, commercial model/asset rights, broadcast clearance and Provider authority.
+
+### 14.8 v02 interim裁决
+
+`Phase 5 engineering status = incomplete`
+
+`Phase 5 visual replacement status = pending-human-review` only after a real candidate exists; current execution remains blocked.
+
+The implementation permission is limited to evidence-preserving code and documentation that moves the system toward the selected Route A. No code change in this worktree may label the current Phase 4 vector frames as the Phase 5 visual replacement.

@@ -1,0 +1,7 @@
+{
+  "provider_id": "taowind.voice-forge.reference-synthetic-v0.1",
+  "version": "0.1.0",
+  "mode": "reference",
+  "authority": "candidate",
+  "quality_boundary": "synthetic voiced reference; not a professional Japanese/Chinese actor performance"
+}
