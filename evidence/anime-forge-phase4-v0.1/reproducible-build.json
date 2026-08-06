@@ -1,0 +1,52 @@
+{
+  "format": "rncs.anime-reproducible-build.v0.1",
+  "version": "0.1.0-alpha.1",
+  "source": "packages/integration/rcl-anime-production-bridge/examples/shenlinzhe-yanlv-micro-episode.rcl",
+  "created_at": "2026-08-06T00:00:00.000Z",
+  "commands": [
+    "npm run build:world",
+    "npm run test:anime-phase4",
+    "npm run evidence:anime-phase4"
+  ],
+  "render": {
+    "provider": "vsr.anime-builtin-rasterizer",
+    "quality": "preview",
+    "width": 960,
+    "height": 540,
+    "fps": 24,
+    "frame_count": 480
+  },
+  "audio": {
+    "provider": "taowind.audio-forge.reference-mixer-v0.1",
+    "sample_rate": 22050
+  },
+  "video": {
+    "provider": "rncs.video-mux.ffmpeg",
+    "ffmpeg_version": "ffmpeg version 9.0-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers",
+    "ffprobe_version": "ffprobe version 9.0-full_build-www.gyan.dev Copyright (c) 2007-2026 the FFmpeg developers",
+    "command_argument_root": "bb90728a90dbabcb7bc3f0e3ac2e13b02f89f548d11d8f3d9fc8e3420014d4fb",
+    "deterministic": false
+  },
+  "deterministic_roots": {
+    "compiled_root": "ee1f1e8aeb91dfb094187ef39fed6eebb24e0dfbb3a896001e2302f732161f32",
+    "production_root": "0e85a8a60bca9a61e8c99260861a6fd8fdfc98c43b55a257bea31ba461abca79",
+    "timeline_root": "6c99035542064300da7fd2db028c67f582a380a5f1304b605ec24ae71ff3b677",
+    "composition_root": "72a6bdf2b5fe9f54057e350898ee1df3c0bbc3750f7cfd341222d2d26fff2377",
+    "provider_manifest_root": "16cd0b4ab1a73baabc86cf47c926bfa7e9ee2a75100013d1b954bc15ef2646bd",
+    "xsheets_root": "47e9f7c9ab6fb47d9cc59e56f4e9a107c071300b87aaee16c9eddecb3edcf876",
+    "sequence_root": "972c98b3705ac6867c4682a968bb537a8bc2785f651bdaa2e43e35dc950b042e",
+    "audio_root": "c6ce6786e2f54a184fadb8fe725ccb6cac926126b6367f598d1e8d485778bd10",
+    "character_continuity_root": "5d3f6e2757c94651426998103500b42b8d83a4467411ebe1557daae75e21a7ea",
+    "cut_continuity_root": "406dd3fb595df35f828a8adc46f1ed85090f028977787f6ff1c5090081f1461a",
+    "frame_integrity_root": "d8e674e02f5e8e4a76afa5ad065fa244813a260475136309fc05d99b30b2a31a",
+    "replay_root": "77d15fb19552e2b09435f10decd0af25cefbfa16d10cd0cd972c21666634583c"
+  },
+  "boundaries": {
+    "assets": "experimental built-in Anime assets, not commercial source art",
+    "voice": "synthetic reference voice, not licensed actor performance",
+    "motion": "bounded procedural motion, not physical cloth or hair",
+    "video": "real FFmpeg MP4 when complete; codec bytes are tool-version scoped",
+    "acceptance": "human direction, clean-machine and broadcaster acceptance remain open"
+  },
+  "build_root": "a18734eb1392940c2c144d40c4747703008f1888a5d3baad91d315aced9038bc"
+}

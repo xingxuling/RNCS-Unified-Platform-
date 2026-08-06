@@ -1,0 +1,186 @@
+{
+  "format": "rncs.voice-performance-bundle.v0.1",
+  "version": "0.1.0-alpha.1",
+  "dialogue_event_id": "dialogue:72eb55eb4e4e19d701572d7d",
+  "voice_identity": "蓝天临.蓝天临.default",
+  "character_id": "蓝天临",
+  "text": "此判，撤回。",
+  "language": "zh-CN",
+  "start_seconds": 2.1666666666666665,
+  "performance": {
+    "pronunciation": "default",
+    "emotion": "resolve",
+    "intensity": 0.62,
+    "pace": 1,
+    "pitch": 0,
+    "pause_policy": "short",
+    "breath_policy": "reference"
+  },
+  "duration_seconds": 1.0359999999999996,
+  "sample_rate": 22050,
+  "transcript": {
+    "text": "此判，撤回。",
+    "language": "zh-CN"
+  },
+  "word_timeline": [
+    {
+      "index": 0,
+      "text": "此",
+      "start": 2.1666666666666665,
+      "end": 2.3626666666666667
+    },
+    {
+      "index": 1,
+      "text": "判",
+      "start": 2.3876666666666666,
+      "end": 2.6016666666666666
+    },
+    {
+      "index": 2,
+      "text": "撤",
+      "start": 2.6266666666666665,
+      "end": 2.8586666666666662
+    },
+    {
+      "index": 3,
+      "text": "回",
+      "start": 2.883666666666666,
+      "end": 3.097666666666666
+    }
+  ],
+  "phoneme_timeline": [
+    {
+      "index": 0,
+      "phoneme": "p1",
+      "start": 2.1666666666666665,
+      "end": 2.3626666666666667
+    },
+    {
+      "index": 1,
+      "phoneme": "p2",
+      "start": 2.3876666666666666,
+      "end": 2.6016666666666666
+    },
+    {
+      "index": 2,
+      "phoneme": "p3",
+      "start": 2.6266666666666665,
+      "end": 2.8586666666666662
+    },
+    {
+      "index": 3,
+      "phoneme": "p4",
+      "start": 2.883666666666666,
+      "end": 3.097666666666666
+    }
+  ],
+  "viseme_timeline": [
+    {
+      "index": 0,
+      "shape": "a",
+      "start": 2.1666666666666665,
+      "end": 2.3626666666666667,
+      "authority": "final-dialogue-audio"
+    },
+    {
+      "index": 1,
+      "shape": "o",
+      "start": 2.3876666666666666,
+      "end": 2.6016666666666666,
+      "authority": "final-dialogue-audio"
+    },
+    {
+      "index": 2,
+      "shape": "i",
+      "start": 2.6266666666666665,
+      "end": 2.8586666666666662,
+      "authority": "final-dialogue-audio"
+    },
+    {
+      "index": 3,
+      "shape": "u",
+      "start": 2.883666666666666,
+      "end": 3.097666666666666,
+      "authority": "final-dialogue-audio"
+    }
+  ],
+  "emotion_curve": [
+    {
+      "time": 2.1666666666666665,
+      "value": "resolve"
+    },
+    {
+      "time": 3.202666666666666,
+      "value": "resolve"
+    }
+  ],
+  "prosody_curve": [
+    {
+      "time": 2.1666666666666665,
+      "pitch_hz": 282
+    },
+    {
+      "time": 3.202666666666666,
+      "pitch_hz": 200
+    }
+  ],
+  "breath_timeline": [
+    {
+      "time": 2.1666666666666665,
+      "kind": "breath-in"
+    },
+    {
+      "time": 3.202666666666666,
+      "kind": "breath-out"
+    }
+  ],
+  "waveform_summary": {
+    "peak": 0.20306257903575897,
+    "rms": 0.10695189533860544,
+    "sample_count": 22844
+  },
+  "provider_receipt": {
+    "provider_id": "taowind.voice-forge.reference-synthetic-v0.1",
+    "version": "0.1.0",
+    "mode": "reference",
+    "authority": "candidate",
+    "quality_boundary": "synthetic voiced reference; not a professional Japanese/Chinese actor performance"
+  },
+  "identity": {
+    "voice_identity": "蓝天临.蓝天临.default",
+    "character_id": "蓝天临",
+    "language": "zh-CN",
+    "seed": "voice-reference-v0.1",
+    "provider": "taowind.voice-forge.reference-synthetic-v0.1",
+    "continuity": {
+      "base_voiceprint_root": "328d261cb48b6765a6d47a32704ce65909a5acaed7b3bf3bbc51867cff98708b",
+      "pronunciation_profile": "deterministic-reference",
+      "pace_range": [
+        0.86,
+        1.12
+      ],
+      "pitch_range_hz": [
+        140,
+        320
+      ],
+      "emotion_map": [
+        "neutral",
+        "restrained_question",
+        "resolve"
+      ],
+      "performance_boundary": "reference-synthetic-not-human-performance"
+    }
+  },
+  "authority": {
+    "single_active_take": true,
+    "dialogue_event_id": "dialogue:72eb55eb4e4e19d701572d7d",
+    "mouth_driver": "viseme_timeline",
+    "close_mouth_on_end": true
+  },
+  "evidence": {
+    "source_root": "6e99af0b21dc42e3627cab89309ac2a58eb8dfbbc3fb29a44a092f4e78c12788",
+    "audio_root": "3b4dfcffb257e07caeeddbc928d615809ae3ae4c951a289b787df11672e516d2",
+    "identity_root": "95c34d8dbc9ae2a5d9505e172478549fb83fe8467e7ddfb6be83358c19244949"
+  },
+  "bundle_root": "dce48a5715ef431cd64217f4adb5fa279db670fcde1eb3ec728dd24f918437b9"
+}

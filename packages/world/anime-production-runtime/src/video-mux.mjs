@@ -1,0 +1,55 @@
+import crypto from 'node:crypto';
+import fs from 'node:fs';
+import path from 'node:path';
+import {spawnSync} from 'node:child_process';
+import {rootHash,seal} from './canonical.mjs';
+import {createAnimeProviderManifest} from './provider.mjs';
+
+const sha256=file=>crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+const firstLine=value=>String(value??'').split(/\r?\n/u).find(Boolean)??'';
+const fraction=value=>{const [a,b]=String(value??'0/1').split('/').map(Number);return b? a/b:Number(a)||0};
+const within=(root,target)=>{const base=path.resolve(root),absolute=path.resolve(target);if(absolute!==base&&!absolute.startsWith(`${base}${path.sep}`))throw Object.assign(new Error(`VIDEO_MUX_PATH_ESCAPE:${target}`),{code:'VIDEO_MUX_PATH_ESCAPE'});return absolute};
+
+export function runMediaTool(executable,args,{cwd,timeoutMs=120000,maxBuffer=16*1024*1024}={}){
+  const started=Date.now(),result=spawnSync(executable,args,{cwd,encoding:'utf8',windowsHide:true,shell:false,timeout:timeoutMs,maxBuffer});
+  const timedOut=result.error?.code==='ETIMEDOUT',missing=result.error?.code==='ENOENT';
+  return{ok:result.status===0&&!result.error,status:result.status,signal:result.signal??null,code:timedOut?'PROVIDER_TIMEOUT':missing?'PROVIDER_UNAVAILABLE':result.error?'PROVIDER_EXECUTION_ERROR':result.status===0?'OK':'PROVIDER_EXIT_NONZERO',stdout:String(result.stdout??''),stderr:String(result.stderr??result.error?.message??''),elapsed_ms:Date.now()-started};
+}
+
+export function discoverMediaTool(executable,kind='ffmpeg'){
+  const result=runMediaTool(executable,['-version'],{timeoutMs:10000,maxBuffer:1024*1024});
+  return{available:result.ok,executable:String(executable),kind,version:result.ok?firstLine(result.stdout):null,code:result.code,stderr:firstLine(result.stderr)};
+}
+
+export function createFfmpegVideoMuxManifest({ffmpegPath='ffmpeg',ffprobePath='ffprobe'}={}){
+  const ffmpeg=discoverMediaTool(ffmpegPath,'ffmpeg'),ffprobe=discoverMediaTool(ffprobePath,'ffprobe');
+  return createAnimeProviderManifest({provider_id:'rncs.video-mux.ffmpeg',provider_version:ffmpeg.version??'unavailable',display_name:'RNCS FFmpeg VideoMuxProvider',role:'video-mux',execution:{kind:'external-process',binary:path.basename(String(ffmpegPath)),cpu:true,gpu:false,network:false,platforms:['win32','linux','darwin']},inputs:['image/png-sequence','audio/wav','frame-manifest','episode-composition-contract'],outputs:['video/mp4','ffprobe-report','video-mux-receipt'],media:{produces_media:true,media_types:['video/mp4'],mock:false,fixture:false},resolution:{supported:[{width:160,height:90},{width:960,height:540},{width:1280,height:720},{width:1920,height:1080}]},frame_rate:{supported:[24]},determinism:{deterministic:false,seed_support:false,declaration:'records FFmpeg version, codec parameters, input roots and command argument root'},character_continuity:{level:'input-preserving',identity_root_required:false,cross_cut:true,cross_episode:false},motion:{capabilities:['frame-sequence-mux'],xsheet_track_required:false},resources:{cpu:'required',gpu:'optional',memory_mb:512,disk_mb:4096},limits:{timeout_ms:900000,maximum_cost:0},failures:['UNAVAILABLE','FFPROBE_UNAVAILABLE','INVALID_INPUT','TIMEOUT','EXECUTION_FAILED','OUTPUT_MISSING','PROBE_INVALID','MEDIA_VALIDATION_FAILED'],evidence:{outputs:['tool-versions','command-argument-root','input-roots','mp4-sha256','ffprobe-report','provider-receipt']},quality_boundary:`real FFmpeg process required; discovered ffmpeg=${ffmpeg.available}, ffprobe=${ffprobe.available}`});
+}
+
+export function normalizeFfprobe(raw={}){
+  const video=(raw.streams??[]).find(item=>item.codec_type==='video'),audio=(raw.streams??[]).find(item=>item.codec_type==='audio'),formatDuration=Number(raw.format?.duration??0);
+  return{format:{name:raw.format?.format_name??null,duration_seconds:formatDuration,size_bytes:Number(raw.format?.size??0),bit_rate:Number(raw.format?.bit_rate??0)},video:video?{codec:video.codec_name??null,width:Number(video.width??0),height:Number(video.height??0),pixel_format:video.pix_fmt??null,frame_rate:fraction(video.avg_frame_rate??video.r_frame_rate),frame_count:Number(video.nb_read_frames??video.nb_frames??0),duration_seconds:Number(video.duration??formatDuration)}:null,audio:audio?{codec:audio.codec_name??null,sample_rate:Number(audio.sample_rate??0),channels:Number(audio.channels??0),channel_layout:audio.channel_layout??null,duration_seconds:Number(audio.duration??formatDuration)}:null};
+}
+
+export function validateProbedEpisode(probe,{width,height,fps,frameCount,durationSeconds}={}){
+  const errors=[];if(!probe?.video)errors.push('MP4_VIDEO_STREAM_MISSING');if(!probe?.audio)errors.push('MP4_AUDIO_STREAM_MISSING');if(probe?.video?.width!==Number(width)||probe?.video?.height!==Number(height))errors.push('MP4_RESOLUTION_MISMATCH');if(Math.abs(Number(probe?.video?.frame_rate??0)-Number(fps))>.001)errors.push('MP4_FRAME_RATE_MISMATCH');if(Number(probe?.video?.frame_count)!==Number(frameCount))errors.push('MP4_FRAME_COUNT_MISMATCH');if(Math.abs(Number(probe?.video?.duration_seconds??0)-Number(durationSeconds))>Math.max(.1,1/Number(fps||24)))errors.push('MP4_VIDEO_DURATION_MISMATCH');if(Math.abs(Number(probe?.audio?.duration_seconds??0)-Number(durationSeconds))>.12)errors.push('MP4_AUDIO_DURATION_MISMATCH');if(!['h264','avc1'].includes(probe?.video?.codec))errors.push(`MP4_VIDEO_CODEC_INVALID:${probe?.video?.codec}`);if(probe?.audio?.codec!=='aac')errors.push(`MP4_AUDIO_CODEC_INVALID:${probe?.audio?.codec}`);return{valid:errors.length===0,errors};
+}
+
+export function muxEpisodeWithFfmpeg({buildDir,framesDir,audioFile,outFile,frameManifest,ffmpegPath='ffmpeg',ffprobePath='ffprobe',timeoutMs=900000}={}){
+  const root=path.resolve(buildDir??path.dirname(outFile??'.')),frames=within(root,framesDir),audio=within(root,audioFile),output=within(root,outFile),ffmpeg=discoverMediaTool(ffmpegPath,'ffmpeg'),ffprobe=discoverMediaTool(ffprobePath,'ffprobe'),providerManifest=createFfmpegVideoMuxManifest({ffmpegPath,ffprobePath}),toolEvidence={ffmpeg:{...ffmpeg,executable:path.basename(ffmpeg.executable)},ffprobe:{...ffprobe,executable:path.basename(ffprobe.executable)}},base={format:'rncs.video-mux-report.v0.1',version:'0.1.0-alpha.1',provider_manifest_root:providerManifest.manifest_root,provider_id:providerManifest.provider_id,input:{sequence_root:frameManifest?.sequence_root??null,audio_sha256:fs.existsSync(audio)?sha256(audio):null,frame_count:frameManifest?.expected_frame_count??null,width:frameManifest?.width??null,height:frameManifest?.height??null,fps:frameManifest?.fps??null,duration_seconds:frameManifest?.duration??null},tools:toolEvidence,output:{path:path.relative(root,output).replaceAll('\\','/'),sha256:null,bytes:0},status:'blocked',code:null,command_argument_root:null,probe_root:null,elapsed_ms:0,report_root:''};
+  const finish=(value)=>seal(value,'report_root',['elapsed_ms']);
+  if(!ffmpeg.available)return{ok:false,provider_manifest:providerManifest,report:finish({...base,code:'FFMPEG_UNAVAILABLE'})};
+  if(!ffprobe.available)return{ok:false,provider_manifest:providerManifest,report:finish({...base,code:'FFPROBE_UNAVAILABLE'})};
+  if(frameManifest?.status!=='complete'||frameManifest?.rendered_frame_count!==frameManifest?.expected_frame_count)return{ok:false,provider_manifest:providerManifest,report:finish({...base,code:'FRAME_SEQUENCE_INCOMPLETE'})};
+  if(!fs.existsSync(path.join(frames,'frame-000001.png'))||!fs.existsSync(path.join(frames,`frame-${String(frameManifest.expected_frame_count).padStart(6,'0')}.png`)))return{ok:false,provider_manifest:providerManifest,report:finish({...base,code:'FRAME_SEQUENCE_FILES_MISSING'})};
+  if(!fs.existsSync(audio)||fs.readFileSync(audio).subarray(0,4).toString()!=='RIFF')return{ok:false,provider_manifest:providerManifest,report:finish({...base,code:'MASTER_WAV_INVALID'})};
+  fs.mkdirSync(path.dirname(output),{recursive:true});fs.rmSync(output,{force:true});
+  const pattern=path.join(frames,'frame-%06d.png'),args=['-hide_banner','-loglevel','error','-y','-framerate',String(frameManifest.fps),'-start_number','1','-i',pattern,'-i',audio,'-frames:v',String(frameManifest.expected_frame_count),'-c:v','libx264','-preset','medium','-crf','18','-pix_fmt','yuv420p','-c:a','aac','-b:a','160k','-ar','22050','-movflags','+faststart','-shortest',output],commandArgumentRoot=rootHash({provider:'rncs.video-mux.ffmpeg',args:args.map(value=>path.isAbsolute(value)?path.basename(value):value),sequence_root:frameManifest.sequence_root,audio_sha256:base.input.audio_sha256});
+  const encoded=runMediaTool(ffmpegPath,args,{cwd:root,timeoutMs});if(!encoded.ok){fs.rmSync(output,{force:true});return{ok:false,provider_manifest:providerManifest,report:finish({...base,code:encoded.code==='PROVIDER_TIMEOUT'?'FFMPEG_TIMEOUT':'FFMPEG_EXECUTION_FAILED',command_argument_root:commandArgumentRoot,elapsed_ms:encoded.elapsed_ms,stderr:firstLine(encoded.stderr)})}}
+  if(!fs.existsSync(output)||fs.statSync(output).size<256)return{ok:false,provider_manifest:providerManifest,report:finish({...base,code:'MP4_OUTPUT_MISSING',command_argument_root:commandArgumentRoot,elapsed_ms:encoded.elapsed_ms})};
+  const probed=runMediaTool(ffprobePath,['-v','error','-count_frames','-show_streams','-show_format','-of','json',output],{cwd:root,timeoutMs:60000});if(!probed.ok){fs.rmSync(output,{force:true});return{ok:false,provider_manifest:providerManifest,report:finish({...base,code:'FFPROBE_EXECUTION_FAILED',command_argument_root:commandArgumentRoot,elapsed_ms:encoded.elapsed_ms+probed.elapsed_ms,stderr:firstLine(probed.stderr)})}}
+  let raw;try{raw=JSON.parse(probed.stdout)}catch{fs.rmSync(output,{force:true});return{ok:false,provider_manifest:providerManifest,report:finish({...base,code:'FFPROBE_JSON_INVALID',command_argument_root:commandArgumentRoot,elapsed_ms:encoded.elapsed_ms+probed.elapsed_ms})}}
+  const probe=normalizeFfprobe(raw),validation=validateProbedEpisode(probe,{width:frameManifest.width,height:frameManifest.height,fps:frameManifest.fps,frameCount:frameManifest.expected_frame_count,durationSeconds:frameManifest.duration});
+  const probeReport=seal({format:'rncs.ffprobe-report.v0.1',version:'0.1.0-alpha.1',media_sha256:sha256(output),probe,validation,ffprobe_version:ffprobe.version,report_root:''},'report_root');if(!validation.valid){fs.rmSync(output,{force:true});return{ok:false,provider_manifest:providerManifest,probe_report:probeReport,report:finish({...base,code:'MP4_VALIDATION_FAILED',command_argument_root:commandArgumentRoot,probe_root:probeReport.report_root,elapsed_ms:encoded.elapsed_ms+probed.elapsed_ms,validation})}}
+  const bytes=fs.statSync(output).size,mediaSha=sha256(output),report=finish({...base,status:'complete',code:'OK',command_argument_root:commandArgumentRoot,probe_root:probeReport.report_root,elapsed_ms:encoded.elapsed_ms+probed.elapsed_ms,output:{...base.output,sha256:mediaSha,bytes},validation});return{ok:true,provider_manifest:providerManifest,probe_report:probeReport,report};
+}

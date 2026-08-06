@@ -1,0 +1,319 @@
+{
+  "format": "rncs.voice-performance-bundle.v0.1",
+  "version": "0.1.0-alpha.1",
+  "dialogue_event_id": "dialogue:efe07a793f51332d955f240f",
+  "voice_identity": "蓝天临.蓝天临.default",
+  "character_id": "蓝天临",
+  "text": "罪若无证，判词便不是真理。",
+  "language": "zh-CN",
+  "start_seconds": 1.5833333333333333,
+  "performance": {
+    "pronunciation": "default",
+    "emotion": "resolve",
+    "intensity": 0.62,
+    "pace": 1,
+    "pitch": 0,
+    "pause_policy": "short",
+    "breath_policy": "reference"
+  },
+  "duration_seconds": 2.529,
+  "sample_rate": 22050,
+  "transcript": {
+    "text": "罪若无证，判词便不是真理。",
+    "language": "zh-CN"
+  },
+  "word_timeline": [
+    {
+      "index": 0,
+      "text": "罪",
+      "start": 1.5833333333333333,
+      "end": 1.7973333333333332
+    },
+    {
+      "index": 1,
+      "text": "若",
+      "start": 1.8223333333333331,
+      "end": 2.054333333333333
+    },
+    {
+      "index": 2,
+      "text": "无",
+      "start": 2.079333333333333,
+      "end": 2.239333333333333
+    },
+    {
+      "index": 3,
+      "text": "证",
+      "start": 2.264333333333333,
+      "end": 2.4603333333333333
+    },
+    {
+      "index": 4,
+      "text": "判",
+      "start": 2.485333333333333,
+      "end": 2.699333333333333
+    },
+    {
+      "index": 5,
+      "text": "词",
+      "start": 2.724333333333333,
+      "end": 2.9563333333333333
+    },
+    {
+      "index": 6,
+      "text": "便",
+      "start": 2.981333333333333,
+      "end": 3.1413333333333333
+    },
+    {
+      "index": 7,
+      "text": "不",
+      "start": 3.166333333333333,
+      "end": 3.344333333333333
+    },
+    {
+      "index": 8,
+      "text": "是",
+      "start": 3.369333333333333,
+      "end": 3.601333333333333
+    },
+    {
+      "index": 9,
+      "text": "真",
+      "start": 3.6263333333333327,
+      "end": 3.786333333333333
+    },
+    {
+      "index": 10,
+      "text": "理",
+      "start": 3.811333333333333,
+      "end": 4.0073333333333325
+    }
+  ],
+  "phoneme_timeline": [
+    {
+      "index": 0,
+      "phoneme": "p1",
+      "start": 1.5833333333333333,
+      "end": 1.7973333333333332
+    },
+    {
+      "index": 1,
+      "phoneme": "p2",
+      "start": 1.8223333333333331,
+      "end": 2.054333333333333
+    },
+    {
+      "index": 2,
+      "phoneme": "p3",
+      "start": 2.079333333333333,
+      "end": 2.239333333333333
+    },
+    {
+      "index": 3,
+      "phoneme": "p4",
+      "start": 2.264333333333333,
+      "end": 2.4603333333333333
+    },
+    {
+      "index": 4,
+      "phoneme": "p5",
+      "start": 2.485333333333333,
+      "end": 2.699333333333333
+    },
+    {
+      "index": 5,
+      "phoneme": "p6",
+      "start": 2.724333333333333,
+      "end": 2.9563333333333333
+    },
+    {
+      "index": 6,
+      "phoneme": "p7",
+      "start": 2.981333333333333,
+      "end": 3.1413333333333333
+    },
+    {
+      "index": 7,
+      "phoneme": "p8",
+      "start": 3.166333333333333,
+      "end": 3.344333333333333
+    },
+    {
+      "index": 8,
+      "phoneme": "p9",
+      "start": 3.369333333333333,
+      "end": 3.601333333333333
+    },
+    {
+      "index": 9,
+      "phoneme": "p10",
+      "start": 3.6263333333333327,
+      "end": 3.786333333333333
+    },
+    {
+      "index": 10,
+      "phoneme": "p11",
+      "start": 3.811333333333333,
+      "end": 4.0073333333333325
+    }
+  ],
+  "viseme_timeline": [
+    {
+      "index": 0,
+      "shape": "a",
+      "start": 1.5833333333333333,
+      "end": 1.7973333333333332,
+      "authority": "final-dialogue-audio"
+    },
+    {
+      "index": 1,
+      "shape": "o",
+      "start": 1.8223333333333331,
+      "end": 2.054333333333333,
+      "authority": "final-dialogue-audio"
+    },
+    {
+      "index": 2,
+      "shape": "i",
+      "start": 2.079333333333333,
+      "end": 2.239333333333333,
+      "authority": "final-dialogue-audio"
+    },
+    {
+      "index": 3,
+      "shape": "u",
+      "start": 2.264333333333333,
+      "end": 2.4603333333333333,
+      "authority": "final-dialogue-audio"
+    },
+    {
+      "index": 4,
+      "shape": "a",
+      "start": 2.485333333333333,
+      "end": 2.699333333333333,
+      "authority": "final-dialogue-audio"
+    },
+    {
+      "index": 5,
+      "shape": "o",
+      "start": 2.724333333333333,
+      "end": 2.9563333333333333,
+      "authority": "final-dialogue-audio"
+    },
+    {
+      "index": 6,
+      "shape": "i",
+      "start": 2.981333333333333,
+      "end": 3.1413333333333333,
+      "authority": "final-dialogue-audio"
+    },
+    {
+      "index": 7,
+      "shape": "u",
+      "start": 3.166333333333333,
+      "end": 3.344333333333333,
+      "authority": "final-dialogue-audio"
+    },
+    {
+      "index": 8,
+      "shape": "a",
+      "start": 3.369333333333333,
+      "end": 3.601333333333333,
+      "authority": "final-dialogue-audio"
+    },
+    {
+      "index": 9,
+      "shape": "o",
+      "start": 3.6263333333333327,
+      "end": 3.786333333333333,
+      "authority": "final-dialogue-audio"
+    },
+    {
+      "index": 10,
+      "shape": "i",
+      "start": 3.811333333333333,
+      "end": 4.0073333333333325,
+      "authority": "final-dialogue-audio"
+    }
+  ],
+  "emotion_curve": [
+    {
+      "time": 1.5833333333333333,
+      "value": "resolve"
+    },
+    {
+      "time": 4.112333333333333,
+      "value": "resolve"
+    }
+  ],
+  "prosody_curve": [
+    {
+      "time": 1.5833333333333333,
+      "pitch_hz": 188
+    },
+    {
+      "time": 4.112333333333333,
+      "pitch_hz": 200
+    }
+  ],
+  "breath_timeline": [
+    {
+      "time": 1.5833333333333333,
+      "kind": "breath-in"
+    },
+    {
+      "time": 4.112333333333333,
+      "kind": "breath-out"
+    }
+  ],
+  "waveform_summary": {
+    "peak": 0.20306257903575897,
+    "rms": 0.10804788074154334,
+    "sample_count": 55765
+  },
+  "provider_receipt": {
+    "provider_id": "taowind.voice-forge.reference-synthetic-v0.1",
+    "version": "0.1.0",
+    "mode": "reference",
+    "authority": "candidate",
+    "quality_boundary": "synthetic voiced reference; not a professional Japanese/Chinese actor performance"
+  },
+  "identity": {
+    "voice_identity": "蓝天临.蓝天临.default",
+    "character_id": "蓝天临",
+    "language": "zh-CN",
+    "seed": "voice-reference-v0.1",
+    "provider": "taowind.voice-forge.reference-synthetic-v0.1",
+    "continuity": {
+      "base_voiceprint_root": "328d261cb48b6765a6d47a32704ce65909a5acaed7b3bf3bbc51867cff98708b",
+      "pronunciation_profile": "deterministic-reference",
+      "pace_range": [
+        0.86,
+        1.12
+      ],
+      "pitch_range_hz": [
+        140,
+        320
+      ],
+      "emotion_map": [
+        "neutral",
+        "restrained_question",
+        "resolve"
+      ],
+      "performance_boundary": "reference-synthetic-not-human-performance"
+    }
+  },
+  "authority": {
+    "single_active_take": true,
+    "dialogue_event_id": "dialogue:efe07a793f51332d955f240f",
+    "mouth_driver": "viseme_timeline",
+    "close_mouth_on_end": true
+  },
+  "evidence": {
+    "source_root": "9b67b0e63570cf6719eb03cf8d7f9eab3892c9d8af3f1622b1b02d74923b40f7",
+    "audio_root": "3ebe8b0aceeff061a1e603e913dc7130710edafe426a5ad096a84ebb1839d249",
+    "identity_root": "95c34d8dbc9ae2a5d9505e172478549fb83fe8467e7ddfb6be83358c19244949"
+  },
+  "bundle_root": "b7114e10ab5c7f80d998c5841ce8bbd76b403513c5f4f99eda4fd1b629f872d7"
+}

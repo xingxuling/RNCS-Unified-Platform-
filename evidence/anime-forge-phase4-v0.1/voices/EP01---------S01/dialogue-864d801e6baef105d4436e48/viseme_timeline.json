@@ -1,0 +1,58 @@
+[
+  {
+    "index": 0,
+    "shape": "a",
+    "start": 4,
+    "end": 4.214,
+    "authority": "final-dialogue-audio"
+  },
+  {
+    "index": 1,
+    "shape": "o",
+    "start": 4.239000000000001,
+    "end": 4.399000000000001,
+    "authority": "final-dialogue-audio"
+  },
+  {
+    "index": 2,
+    "shape": "i",
+    "start": 4.424000000000001,
+    "end": 4.602000000000001,
+    "authority": "final-dialogue-audio"
+  },
+  {
+    "index": 3,
+    "shape": "u",
+    "start": 4.627000000000002,
+    "end": 4.859000000000002,
+    "authority": "final-dialogue-audio"
+  },
+  {
+    "index": 4,
+    "shape": "a",
+    "start": 4.884000000000002,
+    "end": 5.0980000000000025,
+    "authority": "final-dialogue-audio"
+  },
+  {
+    "index": 5,
+    "shape": "o",
+    "start": 5.123000000000003,
+    "end": 5.283000000000003,
+    "authority": "final-dialogue-audio"
+  },
+  {
+    "index": 6,
+    "shape": "i",
+    "start": 5.308000000000003,
+    "end": 5.504000000000003,
+    "authority": "final-dialogue-audio"
+  },
+  {
+    "index": 7,
+    "shape": "u",
+    "start": 5.5290000000000035,
+    "end": 5.743000000000004,
+    "authority": "final-dialogue-audio"
+  }
+]

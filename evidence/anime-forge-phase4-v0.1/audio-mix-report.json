@@ -1,0 +1,90 @@
+{
+  "format": "rncs.audio-scene-render-report.v0.1",
+  "scene_id": "sound:anime-production:5072931f6b9031050ae8a4d4:editorial",
+  "duration_seconds": 20,
+  "sample_rate": 22050,
+  "stems": {
+    "dialogue": {
+      "bytes": 882044,
+      "root": "06abcc3eb7c2d0c75eae0bad817687f5fe73638d15ed52a9ac80e12a386bb890",
+      "metrics": {
+        "peak": 0.20307016372680664,
+        "rms": 0.05595819498712338,
+        "lufs_estimate": -25.042726055074883
+      }
+    },
+    "ambience": {
+      "bytes": 882044,
+      "root": "ce7a885669756d94bd9013a794f89d57412b1f6950c41cfb983607d3bb821252",
+      "metrics": {
+        "peak": 0.07999999821186066,
+        "rms": 0.03690758105117432,
+        "lufs_estimate": -28.657688356749382
+      }
+    },
+    "foley": {
+      "bytes": 882044,
+      "root": "02027209e04e461d9843623a3532b576081e84e1467bbdc8193131880a3d7de6",
+      "metrics": {
+        "peak": 0.044999074190855026,
+        "rms": 0.031225557907909884,
+        "lufs_estimate": -30.10979586665886
+      }
+    },
+    "sfx": {
+      "bytes": 882044,
+      "root": "577b3458d1b78313da786cd30ede773e044da55dc3db152de94ba04cf628a843",
+      "metrics": {
+        "peak": 0.17999958992004395,
+        "rms": 0.01378129332835786,
+        "lufs_estimate": -37.21420046857928
+      }
+    },
+    "music": {
+      "bytes": 882044,
+      "root": "e4a56e31759db52554e4a4bbf8ca8a4b855458d1ef50eb6a8fa19d6ec6c9f95f",
+      "metrics": {
+        "peak": 0.034999992698431015,
+        "rms": 0.024662006666110094,
+        "lufs_estimate": -32.1594317838708
+      }
+    },
+    "master": {
+      "bytes": 882044,
+      "root": "c098a920eee7b0ef316253660b10ac9c6ac801b1b89de98fe93c9cc011728fe1",
+      "metrics": {
+        "peak": 0.28195351362228394,
+        "rms": 0.07304841810345396,
+        "lufs_estimate": -22.72778368942725
+      }
+    }
+  },
+  "dialogue_placements": [
+    {
+      "dialogue_event_id": "dialogue:864d801e6baef105d4436e48",
+      "cut_ref": "EP01/无名城审判终局/S01",
+      "start_seconds": 4,
+      "rendered": true
+    },
+    {
+      "dialogue_event_id": "dialogue:efe07a793f51332d955f240f",
+      "cut_ref": "EP01/无名城审判终局/S02",
+      "start_seconds": 8.583333333333334,
+      "rendered": true
+    },
+    {
+      "dialogue_event_id": "dialogue:72eb55eb4e4e19d701572d7d",
+      "cut_ref": "EP01/无名城审判终局/S03",
+      "start_seconds": 16.166666666666668,
+      "rendered": true
+    }
+  ],
+  "ducking": {
+    "enabled": true,
+    "amount_db": -7
+  },
+  "repeat_dialogue_count": 1,
+  "seed": "audio-reference-v0.1",
+  "master_root": "c098a920eee7b0ef316253660b10ac9c6ac801b1b89de98fe93c9cc011728fe1",
+  "audio_root": "c6ce6786e2f54a184fadb8fe725ccb6cac926126b6367f598d1e8d485778bd10"
+}

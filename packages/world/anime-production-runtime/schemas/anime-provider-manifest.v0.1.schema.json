@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/anime-provider-manifest.v0.1.schema.json",
+  "title": "RNCS Anime Provider Manifest v0.1",
+  "type": "object",
+  "required": ["format", "version", "provider_id", "provider_version", "role", "execution", "inputs", "outputs", "media", "resolution", "frame_rate", "determinism", "character_continuity", "motion", "resources", "limits", "failures", "evidence", "authority", "quality_boundary", "manifest_root"],
+  "properties": {
+    "format": {"const": "rncs.anime-provider-manifest.v0.1"},
+    "version": {"type": "string"},
+    "provider_id": {"type": "string", "minLength": 1},
+    "provider_version": {"type": "string", "minLength": 1},
+    "role": {"enum": ["asset", "frame-render", "motion", "voice", "audio-mix", "video-mux"]},
+    "execution": {"type": "object", "required": ["kind", "cpu", "gpu", "network", "platforms"]},
+    "inputs": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "outputs": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "media": {"type": "object", "required": ["produces_media", "media_types", "fixture", "mock"], "properties": {"fixture": {"const": false}, "mock": {"const": false}}},
+    "resolution": {"type": "object"},
+    "frame_rate": {"type": "object"},
+    "determinism": {"type": "object", "required": ["deterministic", "seed_support", "declaration"]},
+    "character_continuity": {"type": "object"},
+    "motion": {"type": "object"},
+    "resources": {"type": "object", "required": ["cpu", "gpu", "memory_mb", "disk_mb"]},
+    "limits": {"type": "object", "required": ["timeout_ms", "maximum_cost", "cost_unit"]},
+    "failures": {"type": "array", "minItems": 3, "items": {"type": "string"}},
+    "evidence": {"type": "object"},
+    "authority": {"type": "object", "required": ["media_candidate_only", "identity_write", "episode_write", "commit_write"], "properties": {"identity_write": {"const": false}, "episode_write": {"const": false}, "commit_write": {"const": false}}},
+    "quality_boundary": {"type": "string", "minLength": 1},
+    "manifest_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "additionalProperties": true
+}

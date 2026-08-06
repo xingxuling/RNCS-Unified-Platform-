@@ -1,0 +1,30 @@
+[
+  {
+    "index": 0,
+    "shape": "a",
+    "start": 2.1666666666666665,
+    "end": 2.3626666666666667,
+    "authority": "final-dialogue-audio"
+  },
+  {
+    "index": 1,
+    "shape": "o",
+    "start": 2.3876666666666666,
+    "end": 2.6016666666666666,
+    "authority": "final-dialogue-audio"
+  },
+  {
+    "index": 2,
+    "shape": "i",
+    "start": 2.6266666666666665,
+    "end": 2.8586666666666662,
+    "authority": "final-dialogue-audio"
+  },
+  {
+    "index": 3,
+    "shape": "u",
+    "start": 2.883666666666666,
+    "end": 3.097666666666666,
+    "authority": "final-dialogue-audio"
+  }
+]

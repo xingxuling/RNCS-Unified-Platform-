@@ -9,7 +9,7 @@
     "build": "node scripts/build.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "node scripts/lint.mjs",
-    "test": "npm run build && node dist/tests/run.js && node dist/tests/spatial-reality-3d.js && node dist/tests/spatial-asset-streaming.js && node dist/tests/gltf-asset.js && node dist/tests/temporal-presentation.js",
+    "test": "npm run build && node dist/tests/run.js && node dist/tests/spatial-reality-3d.js && node dist/tests/spatial-asset-streaming.js && node dist/tests/gltf-asset.js && node dist/tests/temporal-presentation.js && node --test tests/anime-profile.test.mjs",
     "test:e2e": "npm run build && node scripts/studio-smoke.mjs",
     "demo": "npm run build && node dist/packages/cli/src/cli.js render-frame examples/hello-title.vsr.json --time 1.5 --out outputs/hello-title.png",
     "benchmark": "npm run build && node dist/benchmarks/run.js",

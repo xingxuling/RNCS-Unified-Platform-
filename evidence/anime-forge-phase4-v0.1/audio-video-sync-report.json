@@ -1,0 +1,33 @@
+{
+  "format": "rncs.anime-audio-video-sync-report.v0.1",
+  "version": "0.1.0-alpha.1",
+  "production_root": "0e85a8a60bca9a61e8c99260861a6fd8fdfc98c43b55a257bea31ba461abca79",
+  "timeline_root": "6c99035542064300da7fd2db028c67f582a380a5f1304b605ec24ae71ff3b677",
+  "status": "pass",
+  "checks": {
+    "timeline_to_frames": true,
+    "timeline_to_audio": true,
+    "timeline_to_video": true,
+    "container_duration": true,
+    "audio_stream": true,
+    "video_stream": true,
+    "frame_count": true
+  },
+  "tolerance": {
+    "frame_seconds": 0.041666666666666664,
+    "audio_seconds": 0.08,
+    "container_seconds": 0.12
+  },
+  "duration_seconds": {
+    "expected": 20,
+    "frames": 20,
+    "audio": 20,
+    "video": 20,
+    "container": 20
+  },
+  "frame_count": {
+    "expected": 480,
+    "probed": 480
+  },
+  "report_root": "f0f22f4a0a77641a558b03dc1393462a4b1852677183c8e276f44c7643a0b594"
+}

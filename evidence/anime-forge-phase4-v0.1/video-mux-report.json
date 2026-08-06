@@ -1,0 +1,48 @@
+{
+  "format": "rncs.video-mux-report.v0.1",
+  "version": "0.1.0-alpha.1",
+  "provider_manifest_root": "45a3d30286efc0078795830bfc47191d4d7403c511d12736578d7d85ae603b83",
+  "provider_id": "rncs.video-mux.ffmpeg",
+  "input": {
+    "sequence_root": "972c98b3705ac6867c4682a968bb537a8bc2785f651bdaa2e43e35dc950b042e",
+    "audio_sha256": "866c51f082fb6baf81f1ba2348a5e118183dff912d6e6040256b828bd3996147",
+    "frame_count": 480,
+    "width": 960,
+    "height": 540,
+    "fps": 24,
+    "duration_seconds": 20
+  },
+  "tools": {
+    "ffmpeg": {
+      "available": true,
+      "executable": "ffmpeg.exe",
+      "kind": "ffmpeg",
+      "version": "ffmpeg version 9.0-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers",
+      "code": "OK",
+      "stderr": ""
+    },
+    "ffprobe": {
+      "available": true,
+      "executable": "ffprobe.exe",
+      "kind": "ffprobe",
+      "version": "ffprobe version 9.0-full_build-www.gyan.dev Copyright (c) 2007-2026 the FFmpeg developers",
+      "code": "OK",
+      "stderr": ""
+    }
+  },
+  "output": {
+    "path": "episode.mp4",
+    "sha256": "a63a1a1aa37e4565b8bbf8c7a6e5bb523b4204776c2c9e6cf564393515cb8e81",
+    "bytes": 1016889
+  },
+  "status": "complete",
+  "code": "OK",
+  "command_argument_root": "bb90728a90dbabcb7bc3f0e3ac2e13b02f89f548d11d8f3d9fc8e3420014d4fb",
+  "probe_root": "a7f3f5e36e629a9484e7274027b59fa368bb52e5b0852496ad7b3644ada1ac45",
+  "elapsed_ms": 7802,
+  "report_root": "35957aa9a20bc0e667f712ace843804b9b08dfdca977e309b68ea6f613c7204e",
+  "validation": {
+    "valid": true,
+    "errors": []
+  }
+}

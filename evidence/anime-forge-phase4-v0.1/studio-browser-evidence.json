@@ -1,0 +1,271 @@
+{
+  "format": "reality-studio.anime-forge-phase4-browser-evidence.v0.1",
+  "ready": true,
+  "route": "/anime-forge.html",
+  "media_built": true,
+  "production_root_preserved_across_cut_selection": true,
+  "health": {
+    "anime_forge_native": true,
+    "anime_forge_phase": "phase-4-media-closure-active",
+    "anime_forge_mp4": "real-ffmpeg-fail-closed"
+  },
+  "viewports": {
+    "desktop": {
+      "width": 1440,
+      "body_scroll_width": 1440,
+      "document_scroll_width": 1440,
+      "preview": {
+        "top": 146,
+        "bottom": 507.90625,
+        "height": 361.90625
+      },
+      "video": {
+        "top": 164,
+        "bottom": 488.890625,
+        "width": 576.046875,
+        "height": 324.890625
+      },
+      "quality_boxes": [
+        {
+          "left": 0,
+          "right": 288,
+          "top": 58,
+          "bottom": 145,
+          "width": 288,
+          "height": 87
+        },
+        {
+          "left": 288,
+          "right": 576,
+          "top": 58,
+          "bottom": 145,
+          "width": 288,
+          "height": 87
+        },
+        {
+          "left": 576,
+          "right": 964.796875,
+          "top": 58,
+          "bottom": 145,
+          "width": 388.796875,
+          "height": 87
+        },
+        {
+          "left": 964.796875,
+          "right": 1440,
+          "top": 58,
+          "bottom": 145,
+          "width": 475.203125,
+          "height": 87
+        }
+      ],
+      "buttons": [
+        {
+          "id": "compileBtn",
+          "fits": true
+        },
+        {
+          "id": "xsheetBtn",
+          "fits": true
+        },
+        {
+          "id": "voiceBtn",
+          "fits": true
+        },
+        {
+          "id": "renderBtn",
+          "fits": true
+        },
+        {
+          "id": "mixBtn",
+          "fits": true
+        },
+        {
+          "id": "mediaBtn",
+          "fits": true
+        },
+        {
+          "id": "verifyBtn",
+          "fits": true
+        },
+        {
+          "id": "replayBtn",
+          "fits": true
+        },
+        {
+          "id": "controlPlaneBtn",
+          "fits": true
+        },
+        {
+          "id": "sampleBtn",
+          "fits": true
+        },
+        {
+          "id": "snapshotBtn",
+          "fits": true
+        },
+        {
+          "id": "rollbackBtn",
+          "fits": true
+        },
+        {
+          "id": "clearBtn",
+          "fits": true
+        },
+        {
+          "id": "",
+          "fits": true
+        },
+        {
+          "id": "",
+          "fits": true
+        },
+        {
+          "id": "",
+          "fits": true
+        },
+        {
+          "id": "",
+          "fits": true
+        }
+      ],
+      "screenshot": "tmp/playwright/anime-forge-phase4/ANIME_FORGE_PHASE4_desktop.png",
+      "screenshot_bytes": 162160,
+      "preview_non_background_pixels": 156001,
+      "episode_status": "可播放",
+      "media_status": "MP4 · 0.97 MB",
+      "failure_status": "无",
+      "quality_text": "角色连续性passCut 接缝pass · 0 issues音画同步pass二级运动5 tracksMP4 / ffprobecomplete · PASS资产谱系22a3bc68dc53c7c52daccd7a56498651b5dddbc3a9a112cec308b511ce4ce7d1"
+    },
+    "mobile": {
+      "width": 390,
+      "body_scroll_width": 390,
+      "document_scroll_width": 390,
+      "preview": {
+        "top": 352.09375,
+        "bottom": 622.09375,
+        "height": 270
+      },
+      "video": {
+        "top": 386.59375,
+        "bottom": 586.59375,
+        "width": 354,
+        "height": 200
+      },
+      "quality_boxes": [
+        {
+          "left": 0,
+          "right": 195,
+          "top": 198.5625,
+          "bottom": 270.5625,
+          "width": 195,
+          "height": 72
+        },
+        {
+          "left": 195,
+          "right": 390,
+          "top": 198.5625,
+          "bottom": 270.5625,
+          "width": 195,
+          "height": 72
+        },
+        {
+          "left": 0,
+          "right": 195,
+          "top": 270.5625,
+          "bottom": 351.09375,
+          "width": 195,
+          "height": 80.53125
+        },
+        {
+          "left": 195,
+          "right": 390,
+          "top": 270.5625,
+          "bottom": 351.09375,
+          "width": 195,
+          "height": 80.53125
+        }
+      ],
+      "buttons": [
+        {
+          "id": "compileBtn",
+          "fits": true
+        },
+        {
+          "id": "xsheetBtn",
+          "fits": true
+        },
+        {
+          "id": "voiceBtn",
+          "fits": true
+        },
+        {
+          "id": "renderBtn",
+          "fits": true
+        },
+        {
+          "id": "mixBtn",
+          "fits": true
+        },
+        {
+          "id": "mediaBtn",
+          "fits": true
+        },
+        {
+          "id": "verifyBtn",
+          "fits": true
+        },
+        {
+          "id": "replayBtn",
+          "fits": true
+        },
+        {
+          "id": "controlPlaneBtn",
+          "fits": true
+        },
+        {
+          "id": "sampleBtn",
+          "fits": true
+        },
+        {
+          "id": "snapshotBtn",
+          "fits": true
+        },
+        {
+          "id": "rollbackBtn",
+          "fits": true
+        },
+        {
+          "id": "clearBtn",
+          "fits": true
+        },
+        {
+          "id": "",
+          "fits": true
+        },
+        {
+          "id": "",
+          "fits": true
+        },
+        {
+          "id": "",
+          "fits": true
+        },
+        {
+          "id": "",
+          "fits": true
+        }
+      ],
+      "screenshot": "tmp/playwright/anime-forge-phase4/ANIME_FORGE_PHASE4_mobile.png",
+      "screenshot_bytes": 55322,
+      "preview_non_background_pixels": 54328,
+      "episode_status": "可播放",
+      "media_status": "MP4 · 0.97 MB",
+      "failure_status": "无",
+      "quality_text": "角色连续性passCut 接缝pass · 0 issues音画同步pass二级运动5 tracksMP4 / ffprobecomplete · PASS资产谱系22a3bc68dc53c7c52daccd7a56498651b5dddbc3a9a112cec308b511ce4ce7d1"
+    }
+  },
+  "page_errors": [],
+  "failed_requests": [],
+  "boundary": "Local Chromium UI regression; not clean-machine or human art-direction acceptance."
+}

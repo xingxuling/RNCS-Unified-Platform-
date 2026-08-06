@@ -1,0 +1,108 @@
+name: RNCS Anime Forge Phase 4
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main-95]
+    paths:
+      - "packages/world/anime-production-runtime/**"
+      - "packages/world/reality-asset-genesis-fabric/**"
+      - "packages/world/reality-simulation-runtime/**"
+      - "packages/world/visual-state-runtime/**"
+      - "packages/world/voice-performance-runtime/**"
+      - "packages/world/audio-scene-runtime/**"
+      - "packages/integration/rcl-anime-production-bridge/**"
+      - "apps/reality-studio/**"
+      - "scripts/generate-anime-phase4-evidence.mjs"
+      - "scripts/package-anime-forge-source.mjs"
+      - "docs/rncs-anime-forge-v0.1-phase-status.md"
+      - "docs/releases/rncs-anime-forge-v0.1-release-notes.md"
+      - "docs/verification/anime-forge-phase4-v0.1/**"
+      - "evidence/anime-forge-phase4-v0.1/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/anime-forge-phase4.yml"
+  push:
+    branches: [main-95]
+    paths:
+      - "packages/world/anime-production-runtime/**"
+      - "packages/world/reality-asset-genesis-fabric/**"
+      - "packages/world/reality-simulation-runtime/**"
+      - "packages/world/visual-state-runtime/**"
+      - "packages/world/voice-performance-runtime/**"
+      - "packages/world/audio-scene-runtime/**"
+      - "packages/integration/rcl-anime-production-bridge/**"
+      - "apps/reality-studio/**"
+      - "scripts/generate-anime-phase4-evidence.mjs"
+      - "scripts/package-anime-forge-source.mjs"
+      - "docs/rncs-anime-forge-v0.1-phase-status.md"
+      - "docs/releases/rncs-anime-forge-v0.1-release-notes.md"
+      - "docs/verification/anime-forge-phase4-v0.1/**"
+      - "evidence/anime-forge-phase4-v0.1/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/anime-forge-phase4.yml"
+
+jobs:
+  phase4-media-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      FFMPEG_PATH: /usr/bin/ffmpeg
+      FFPROBE_PATH: /usr/bin/ffprobe
+      ANIME_REQUIRE_FFMPEG: "1"
+      ANIME_BROWSER_BUILD_MEDIA: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install media and browser tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          python -m pip install "playwright>=1.45,<2" pillow
+          python -m playwright install --with-deps chromium
+          ffmpeg -version | head -n 1
+          ffprobe -version | head -n 1
+      - run: npm ci --ignore-scripts
+      - name: Build the native RCL compiler
+        run: npm run build:native --workspace @taowind/reality-computation-language
+      - name: Run Phase 4 tests
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p tmp
+          npm run test:anime-phase4 2>&1 | tee tmp/anime-phase4-tests.log
+          npm run summarize:anime-phase4-tests
+      - name: Run desktop and mobile Studio regression
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run browser:anime-phase4 2>&1 | tee tmp/anime-phase4-browser.log
+      - name: Build deterministic evidence twice
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run evidence:anime-phase4 2>&1 | tee tmp/anime-phase4-evidence.log
+      - name: Package source and evidence
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run package:anime-forge 2>&1 | tee tmp/anime-phase4-package.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rncs-anime-forge-phase4-${{ github.sha }}
+          if-no-files-found: error
+          retention-days: 30
+          path: |
+            evidence/anime-forge-phase4-v0.1
+            tmp/RNCS-Anime-Forge-v0.1-source.zip
+            tmp/anime-phase4-tests.log
+            tmp/anime-phase4-evidence.log
+            tmp/anime-phase4-browser.log
+            tmp/anime-phase4-package.log

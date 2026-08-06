@@ -1,6 +1,9 @@
 import {clone,rootHash,seal} from './canonical.mjs';
 import {ANIME_XSHEET_FORMAT,normalizeCut} from './contracts.mjs';
 import {ANIME_PRODUCTION_XSHEETS_FORMAT,canonicalCutRef,listProductionCuts} from './editorial.mjs';
+import {resolveCompositionFrame} from './composition.mjs';
+import {createAnimeRenderingProfile,resolveAnimeCamera} from '../../visual-state-runtime/src/anime-profile.mjs';
+import {createAnimeSecondaryMotionProfile,resolveAnimeSecondaryMotion} from '../../reality-simulation-runtime/src/anime-motion.mjs';
 
 const exposureSteps={on_ones:1,on_twos:2,on_threes:3,hold:Infinity,stepped:2};
 const pad=n=>String(n).padStart(2,'0');
@@ -15,22 +18,25 @@ function mouthState(cut,frame){const active=activeRange(cut.mouth_track,frame).a
 function eyeState(cut,frame){const blink=activeRange(cut.blink_track,frame).at(-1);return blink?'closed':(atOrBefore(cut.facial_track,frame)?.eye_state??'open')}
 function dialogueState(cut,frame){const active=activeRange(cut.dialogue_track,frame).at(-1);return active?{dialogue_event_id:active.dialogue_event_id,text:active.text,active:true}:null}
 
-export function buildExposureSheet(input){
+export function buildExposureSheet(input,{motionProfile=null,renderProfile=null,compositionContract=null}={}){
   const cut=normalizeCut(input),frameCount=Math.round(cut.duration*cut.fps),step=exposureSteps[cut.animation.exposure]??2,frames=[];
+  motionProfile=motionProfile?.format?motionProfile:createAnimeSecondaryMotionProfile({hair:cut.animation.hair_secondary,coat:cut.animation.coat_secondary});
+  renderProfile=renderProfile?.format?renderProfile:createAnimeRenderingProfile({fps:cut.fps,resolution:cut.resolution});
   const layerId=cut.character_layers[0]?.layer_id??(cut.character_layers[0]?.actor_id?`character:${cut.character_layers[0].actor_id}`:'character:unassigned');
   for(let frame=0;frame<frameCount;frame++){
     const pose=atOrBefore(cut.key_pose_track,frame),poseFrame=frameOf(pose?.frame??0),drawingFrame=step===Infinity?poseFrame:Math.floor(Math.max(0,frame-poseFrame)/step)*step+poseFrame;
     const drawingPose=atOrBefore(cut.key_pose_track,drawingFrame)??pose;
     const smear=activeRange(cut.effect_track,frame).find(item=>item.kind==='smear'||item.type==='smear');
     const impact=activeRange(cut.effect_track,frame).find(item=>item.kind==='impact'||item.type==='impact');
-    frames.push({frame_number:frame,timecode:timecode(frame,cut.fps),drawing_id:drawingPose?`${cut.cut_id}:drawing:${drawingPose.pose_id??drawingPose.pose??'hold'}:${drawingFrame}`:`${cut.cut_id}:drawing:hold:0`,key_pose_id:drawingPose?.pose_id??drawingPose?.pose??null,exposure_count:step===Infinity?Math.max(1,frame-(frames.at(-1)?.frame_number??frame)+1):step,layer_id:layerId,camera_state:cameraState(cut,frame),mouth_shape:mouthState(cut,frame),eye_state:eyeState(cut,frame),effect_state:{smear:Boolean(smear),impact:Boolean(impact)},dialogue_state:dialogueState(cut,frame),sound_cues:[...activeRange(cut.ambience_track,frame),...activeRange(cut.foley_track,frame),...activeRange(cut.sfx_track,frame)].map(item=>item.cue_id??item.sound??item.kind).filter(Boolean),composite_cues:clone(activeRange(cut.composite_track,frame)),animation_policy:{exposure:cut.animation.exposure,interpolation:'stepped',camera_only_motion:!pose,partial_animation:true}});
+    const camera=resolveAnimeCamera(renderProfile,cut.camera_track,{frame,totalFrames:frameCount}),secondaryMotion=resolveAnimeSecondaryMotion(motionProfile,{frame}),composition=resolveCompositionFrame(compositionContract,cut,{frame,totalFrames:frameCount,camera,secondary:secondaryMotion});
+    frames.push({frame_number:frame,timecode:timecode(frame,cut.fps),drawing_id:drawingPose?`${cut.cut_id}:drawing:${drawingPose.pose_id??drawingPose.pose??'hold'}:${drawingFrame}`:`${cut.cut_id}:drawing:hold:0`,key_pose_id:drawingPose?.pose_id??drawingPose?.pose??null,exposure_count:step===Infinity?Math.max(1,frame-(frames.at(-1)?.frame_number??frame)+1):step,layer_id:layerId,camera_state:camera,mouth_shape:mouthState(cut,frame),eye_state:eyeState(cut,frame),effect_state:{smear:Boolean(smear),impact:Boolean(impact),active:clone(activeRange(cut.effect_track,frame))},dialogue_state:dialogueState(cut,frame),secondary_motion_state:secondaryMotion,composition_state:composition,sound_cues:[...activeRange(cut.ambience_track,frame),...activeRange(cut.foley_track,frame),...activeRange(cut.sfx_track,frame)].map(item=>item.cue_id??item.sound??item.kind).filter(Boolean),composite_cues:clone(activeRange(cut.composite_track,frame)),animation_policy:{exposure:cut.animation.exposure,interpolation:'stepped',camera_only_motion:!pose,partial_animation:true}});
   }
   const result={format:ANIME_XSHEET_FORMAT,version:'0.1.0-alpha.1',cut_ref:canonicalCutRef(cut),cut_id:cut.cut_id,duration:cut.duration,fps:cut.fps,frame_count:frames.length,exposure_policy:clone(cut.animation),frames,finite_animation:{uses_exposure_steps:true,interpolation:'stepped',no_implicit_smoothing:true}};
   return seal(result,'xsheet_root');
 }
 
 export function buildProductionExposureSheets(production){
-  const sheets=listProductionCuts(production).map(cut=>({cut_ref:canonicalCutRef(cut),xsheet:buildExposureSheet(cut)}));
+  const sheets=listProductionCuts(production).map(cut=>{const cutRef=canonicalCutRef(cut);return{cut_ref:cutRef,xsheet:buildExposureSheet(cut,{motionProfile:production.motion_profiles?.[cutRef],renderProfile:production.rendering_profiles?.[cutRef],compositionContract:production.composition_contract})}});
   return seal({format:ANIME_PRODUCTION_XSHEETS_FORMAT,version:'0.1.0-alpha.1',production_id:production.production_id,production_root:production.production_root,timeline_root:production.editorial_timeline?.timeline_root??null,cut_count:sheets.length,total_frame_count:sheets.reduce((sum,item)=>sum+item.xsheet.frame_count,0),sheets},'xsheets_root');
 }
 
@@ -45,5 +51,5 @@ export function validateProductionExposureSheets(collection){
 }
 
 export function validateExposureSheet(sheet){
-  const errors=[];if(sheet?.format!==ANIME_XSHEET_FORMAT)errors.push('XSHEET_FORMAT_INVALID');if(sheet?.frame_count!==sheet?.frames?.length)errors.push('XSHEET_FRAME_COUNT_MISMATCH');for(const [index,frame] of (sheet?.frames??[]).entries()){if(frame.frame_number!==index)errors.push(`XSHEET_FRAME_ORDER:${index}`);if(!frame.drawing_id)errors.push(`XSHEET_DRAWING_MISSING:${index}`);if(frame.animation_policy?.interpolation!=='stepped')errors.push(`XSHEET_IMPLICIT_INTERPOLATION:${index}`)}return{valid:errors.length===0,errors,xsheet_root:sheet?.xsheet_root??null};
+  const errors=[];if(sheet?.format!==ANIME_XSHEET_FORMAT)errors.push('XSHEET_FORMAT_INVALID');if(sheet?.frame_count!==sheet?.frames?.length)errors.push('XSHEET_FRAME_COUNT_MISMATCH');for(const [index,frame] of (sheet?.frames??[]).entries()){if(frame.frame_number!==index)errors.push(`XSHEET_FRAME_ORDER:${index}`);if(!frame.drawing_id)errors.push(`XSHEET_DRAWING_MISSING:${index}`);if(frame.animation_policy?.interpolation!=='stepped')errors.push(`XSHEET_IMPLICIT_INTERPOLATION:${index}`);if(frame.secondary_motion_state?.frame!==index||!frame.secondary_motion_state?.motion_root)errors.push(`XSHEET_MOTION_ALIGNMENT:${index}`);if(frame.composition_state?.frame!==index||!frame.composition_state?.composition_state_root)errors.push(`XSHEET_COMPOSITION_ALIGNMENT:${index}`);if(frame.camera_state?.frame!==index)errors.push(`XSHEET_CAMERA_ALIGNMENT:${index}`)}return{valid:errors.length===0,errors,xsheet_root:sheet?.xsheet_root??null};
 }

@@ -1,0 +1,11 @@
+{
+  "format": "ragf.anime-background-quality-report.v0.1",
+  "valid": true,
+  "level": "experimental-built-in-anime",
+  "semantic_layers": 4,
+  "foreground_present": true,
+  "parallax_ready": true,
+  "flat_test_card": false,
+  "boundary": "commercial environment art not proven",
+  "quality_root": "320b5e676ce85da6af6a759903b3e570fbf69e002981b1dadc76cd2f83ffd116"
+}

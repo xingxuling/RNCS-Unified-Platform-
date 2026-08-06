@@ -1,0 +1,47 @@
+{
+  "format": "rncs.anime-phase4-test-report.v0.1",
+  "version": "0.1.0-alpha.1",
+  "status": "pass",
+  "command": "npm run test:anime-phase4",
+  "node": {
+    "blocks": 8,
+    "tests": 224,
+    "passed": 224,
+    "failed": 0,
+    "skipped": 0
+  },
+  "native": {
+    "passed": 453,
+    "failed": 0
+  },
+  "total": {
+    "tests": 677,
+    "passed": 677,
+    "failed": 0,
+    "skipped": 0
+  },
+  "coverage": [
+    "Anime Provider Manifest",
+    "Episode authority",
+    "Character Genome continuity",
+    "X-Sheet and Motion Track alignment",
+    "Cut seams",
+    "phoneme and viseme timeline",
+    "frame integrity",
+    "audio mix",
+    "FFmpeg missing and timeout negatives",
+    "real MP4 and ffprobe",
+    "Provider fallback",
+    "deterministic rebuild",
+    "Reality Studio API",
+    "RAGF",
+    "RSR",
+    "VSR"
+  ],
+  "log": {
+    "path": "tmp/anime-phase4-tests.log",
+    "sha256": "cf924bfa93d8b16f5841633fbe2ccfa7ecee2563df52f9f7793aff734fdf042d"
+  },
+  "boundary": "local focused and package regression evidence; GitHub Actions and human media review remain separate gates",
+  "report_root": "4feea98453c05bac876dd0f1ce2dfae448bd8e044e5347da112ff8f4e2870dda"
+}

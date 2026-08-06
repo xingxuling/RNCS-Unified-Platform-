@@ -1,0 +1,22 @@
+{
+  "format": "rncs.anime-frame-integrity-report.v0.1",
+  "version": "0.1.0-alpha.1",
+  "status": "pass",
+  "errors": [],
+  "frame_count": 480,
+  "expected_frame_count": 480,
+  "cut_count": 3,
+  "cut_refs": [
+    "EP01/无名城审判终局/S01",
+    "EP01/无名城审判终局/S02",
+    "EP01/无名城审判终局/S03"
+  ],
+  "unique_frame_root_count": 480,
+  "visual_variation_ratio": 1,
+  "dimensions": [
+    "960x540"
+  ],
+  "single_placeholder_repeat": false,
+  "sequence_root": "972c98b3705ac6867c4682a968bb537a8bc2785f651bdaa2e43e35dc950b042e",
+  "report_root": "d8e674e02f5e8e4a76afa5ad065fa244813a260475136309fc05d99b30b2a31a"
+}
