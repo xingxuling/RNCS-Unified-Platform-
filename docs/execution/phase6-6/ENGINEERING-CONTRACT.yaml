@@ -1,0 +1,60 @@
+phase: "RNCS Anime Forge v0.1 Phase 6.6 — Native Anime Drawing Infrastructure"
+status: candidate
+base_pr: 65
+pr: 66
+authority:
+  identity: Character Genome
+  geometry: Canonical Morphology
+  semantic_anatomy: Semantic Morphology Layer
+  drawing: CharacterDrawingCompiler / FullBodyCharacterDrawing
+  deformation: DrawingMeshIR bounded cage
+  raster: backend-only
+must_change:
+  - replace primitive-only final drawing representation with backend-neutral cubic-Bezier DrawingIR
+  - support bounded 2D drawing-surface deformation without anatomy authority
+  - represent lower body through canonical skeleton/field/mesh before drawing
+  - bind lower-body evidence into frame manifest and Evidence Ledger
+must_not_change:
+  - Character Genome identity_root or genome_root
+  - Phase 6.3 single morphology authority
+  - renderer_anatomy_authority=false
+  - human_visual_acceptance must not be automated
+  - Phase 6.5 and Phase 6.6 must remain unmerged while clean-runner verification is blocked
+vertical_slices:
+  - id: drawing-ir
+    chain: "CharacterDrawingModel -> AnimeDrawingIR -> SVG"
+  - id: drawing-mesh
+    chain: "AnimeDrawingIR -> DrawingMeshIR -> bounded cage -> AnimeDrawingIR"
+  - id: lower-body
+    chain: "Genome leg parameter -> skeleton -> field -> mesh -> lower-body certificate"
+  - id: full-body-drawing
+    chain: "Canonical lower body -> FullBodyCharacterDrawing -> DrawingIR"
+  - id: media
+    chain: "120 frames -> SVG/librsvg -> PNG -> FFmpeg -> ffprobe -> Evidence Ledger"
+negative_gates:
+  - upper-body-only asset cannot enter FullBodyCharacterDrawing
+  - missing canonical lower-body bone chain rejects
+  - missing lower-body field/mesh evidence rejects
+  - drawing mesh triangle inversion rejects
+  - Human/Creative approval remains pending until real artifact review
+verification:
+  focused_tests:
+    - character-drawing-compiler.test.mjs
+    - drawing-ir.test.mjs
+    - drawing-mesh-deformation.test.mjs
+    - lower-body-morphology.test.mjs
+    - full-body-drawing.test.mjs
+  full_regression: "npm test --workspace @taowind/native-character-morphogenesis-runtime"
+  build: "node scripts/build-anime-forge-phase6-6-native-drawing-infrastructure.mjs"
+  verify: "node scripts/verify-anime-forge-phase6-6-native-drawing-infrastructure.mjs --evidence <dir>"
+external_blockers:
+  github_actions: CI_BLOCKED_BY_BILLING
+  container_network: unavailable
+rollback:
+  - close PR 66 without merging
+  - preserve PR 65 as independent stacked candidate
+  - keep main-95 at Phase 6.4 baseline
+completion_gate:
+  engineering: clean runner executes tests + build + verifier
+  visual: user reviews actual Phase 6.6 media artifact
+  commercial: not-proven
