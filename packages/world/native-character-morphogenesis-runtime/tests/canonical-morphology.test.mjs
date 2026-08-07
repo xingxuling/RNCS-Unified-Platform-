@@ -8,6 +8,8 @@ test('Canonical Morphology Compiler is the only source of static body dimensions
   const system=createAnatomySystem(),asset=system.canonical_morphology_asset;
   assert.equal(validateAnatomySystem(system).valid,true);
   assert.equal(asset.skeleton.bone_length_source,'Canonical Proportion Solver');
+  assert.equal(asset.mesh_validation.valid,true);
+  assert.ok(asset.canonical_surface_mesh.mesh_root);
   assert.equal(asset.surface_templates.landmark_policy.source,'proportion-solver');
   assert.deepEqual(system.authority_flow,['Character Genome','Canonical Morphology Compiler','Kinematic Solver','Deformation Solver','Camera Projection','Style Projection','Raster Renderer']);
   assert.deepEqual(validateMorphologyCertificate(asset.certificate).failures,[]);

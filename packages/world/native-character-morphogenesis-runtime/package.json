@@ -10,6 +10,7 @@
     "./renderer": "./src/renderer.mjs",
     "./canonical-morphology": "./src/canonical-morphology.mjs",
     "./build62": "./src/build62.mjs"
+    ,"./canonical-surface-mesh": "./src/canonical-surface-mesh.mjs"
   },
   "files": ["src", "schemas", "tests", "README.md", "STATUS.md"],
   "scripts": {

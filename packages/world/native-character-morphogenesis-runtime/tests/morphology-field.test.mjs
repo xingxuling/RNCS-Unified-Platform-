@@ -13,7 +13,7 @@ test('implicit field operators are deterministic and signed',()=>{
 test('canonical volumes compile into a validated continuous morphology field',()=>{
   const asset=createAnatomySystem().canonical_morphology_asset,field=asset.continuous_morphology_field;
   assert.ok(field.field_root);
-  assert.equal(field.fields.length,14);
+  assert.equal(field.fields.length,15);
   for(const descriptor of field.fields)for(const key of ['field_id','attached_bone','local_transform','shape_parameters','field_function','blend_group','material_region','semantic_region','identity_weight','deformation_policy'])assert.ok(descriptor[key]!==undefined,`${descriptor.field_id}:${key}`);
   assert.ok(field.fields.some(item=>item.field_id==='SkullField'));
   assert.ok(field.fields.some(item=>item.field_id==='NeckField'));

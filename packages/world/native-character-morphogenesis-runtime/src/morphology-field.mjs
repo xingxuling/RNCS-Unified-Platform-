@@ -10,6 +10,7 @@ function fieldFamily(volume){
   if(volume.id.includes('neck'))return['NeckField','shared','capsule'];
   if(volume.id.includes('ribcage'))return['RibcageField','shared','superellipsoid'];
   if(volume.id.includes('pelvis'))return['PelvisField','shared','ellipsoid'];
+  if(volume.id.includes('spine'))return['SpineField','shared','ellipsoid'];
   if(volume.id.includes('deltoid'))return['DeltoidField',volume.id.endsWith('left')?'left':'right','sphere'];
   if(volume.id.includes('upper-arm'))return['UpperArmField',volume.id.endsWith('left')?'left':'right','tapered_capsule'];
   if(volume.id.includes('elbow'))return['ElbowField',volume.id.endsWith('left')?'left':'right','blended_sphere'];
@@ -93,7 +94,7 @@ function inverseRotate(value,rotationValue={}){
 function inverseTransform(transformValue,value){return inverseRotate(sub3(value,transformValue?.position??[0,0,0]),transformValue?.rotation);}
 
 export function buildContinuousMorphologyField({proportions,skeleton,volumes,genome_root=null,law_root=null}={}){
-  const boneTransforms=restBoneTransforms(skeleton),fields=(volumes??[]).map(volume=>{
+  const boneTransforms=restBoneTransforms(skeleton),spineBridge={id:'spine-bridge',bone_id:'spine',kind:'ellipsoid',dimensions:{radii:[proportions.widths.waist*.5,proportions.bone_lengths.spine*.6,proportions.radii.ribcage[2]*.82]},local_center:[0,proportions.bone_lengths.spine*.5,0],source:'canonical-spine-continuity-bridge'},sourceVolumes=[...(volumes??[]),spineBridge],fields=sourceVolumes.map(volume=>{
     const [family,side,primitiveFamily]=fieldFamily(volume),shape=shapeParameters(volume),fieldFunction=primitiveFamily==='ellipsoid'?'ellipsoid_sdf':primitiveFamily==='superellipsoid'?'superellipsoid_sdf':primitiveFamily==='capsule'?'capsule_sdf':primitiveFamily==='tapered_capsule'?'tapered_capsule_sdf':primitiveFamily==='sphere'?'sphere_sdf':primitiveFamily==='blended_sphere'?'blended_sphere_sdf':'rounded_wedge_sdf';
     return{field_id:side==='shared'?family:`${family}:${side}`,source_volume_id:volume.id,attached_bone:volume.bone_id,local_transform:{translation:[...(volume.local_center??[0,0,0])],rotation:{...rotation}},shape_parameters:shape,field_function:fieldFunction,blend_group:blendGroup(volume),blend_radius:round(volume.id.includes('elbow')?.014:.018),material_region:volume.id.includes('pelvis')||volume.id.includes('ribcage')?'body':'skin',semantic_region:semanticRegion(volume),identity_weight:1,deformation_policy:{mode:'bone-transform-plus-field-preservation',pose_changes_bone_transform_only:true,volume_preservation:true},rest_center:transformPoint(boneTransforms[volume.bone_id]??{position:[0,0,0],rotation},volume.local_center??[0,0,0]),extent:round(extentForField({shape_parameters:shape}))};
   });
