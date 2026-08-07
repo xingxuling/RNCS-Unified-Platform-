@@ -33,6 +33,7 @@ jobs:
           packages/world/native-character-morphogenesis-runtime/tests/drawing-mesh-deformation.test.mjs
           packages/world/native-character-morphogenesis-runtime/tests/lower-body-morphology.test.mjs
           packages/world/native-character-morphogenesis-runtime/tests/full-body-drawing.test.mjs
+          packages/world/native-character-morphogenesis-runtime/tests/drawing-presentation.test.mjs
       - name: Full native morphology regression
         run: npm test --workspace @taowind/native-character-morphogenesis-runtime
       - name: Build Phase 6.6 full-body evidence
