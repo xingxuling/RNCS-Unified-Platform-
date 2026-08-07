@@ -23,6 +23,9 @@
     "./semantic-anatomy": "./src/semantic-anatomy.mjs",
     "./semantic-anime-visual-grammar": "./src/semantic-anime-visual-grammar.mjs",
     "./character-drawing-compiler": "./src/character-drawing-compiler.mjs",
+    "./lower-body-morphology": "./src/lower-body-morphology.mjs",
+    "./full-body-drawing": "./src/full-body-drawing.mjs",
+    "./full-body-drawing-ir": "./src/full-body-drawing-ir.mjs",
     "./drawing-ir": "./src/drawing-ir.mjs",
     "./drawing-mesh-deformation": "./src/drawing-mesh-deformation.mjs",
     "./semantic-anime-renderer": "./src/semantic-anime-renderer.mjs"
