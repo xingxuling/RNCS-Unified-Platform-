@@ -2,13 +2,13 @@
 
 ## Phase 6.6 candidate — Native Anime Drawing Infrastructure
 
-Current stacked branch adds a backend-neutral drawing stack on top of the Phase 6.5 Character Drawing Compiler:
+Current stacked branch extends the Phase 6.5 Character Drawing Compiler into a backend-neutral, full-body native drawing candidate:
 
 ```text
 Character Genome
-→ Canonical Morphology
-→ Semantic Anatomy
-→ CharacterDrawingCompiler
+→ Canonical / Semantic Morphology
+→ Lower-Body Morphology Extension (candidate)
+→ FullBodyCharacterDrawing
 → AnimeDrawingIR (cubic Bezier)
 → DrawingMeshIR / 3×3 quadratic cage
 → bounded 2D deformation
@@ -23,20 +23,30 @@ Candidate capabilities:
 - DrawingMeshIR generated from closed drawing paths.
 - Deterministic 3×3 cage weights for each mesh vertex.
 - Bounded cage deformation with triangle-inversion rejection.
-- Performance-driven candidate controls for hair lag, garment lag, breathing and sleeve follow-through.
+- Performance-driven controls for hair lag, garment lag, breathing and sleeve follow-through.
 - Deformed mesh can be compiled back into DrawingIR without granting the renderer identity or anatomy authority.
-- Lower body remains explicitly absent because Canonical Skeleton v0.1 does not represent it.
+- Existing `body.leg_length` genome input now drives a candidate canonical lower-body proportion solution.
+- Candidate bilateral skeleton: `pelvis → hip → thigh → knee → shin → ankle → foot`.
+- Candidate implicit lower-body fields: Hip / Thigh / Knee / Shin / Foot, then canonical mesh extraction and CPU skinning.
+- LowerBodyMorphologyCertificate measures bone-chain presence, field-chain presence, mesh connectivity, bilateral canonical symmetry, leg proportion, foot surface evidence and self-intersection.
+- FullBodyCharacterDrawing rejects upper-body-only assets instead of letting the renderer invent legs.
+- Full-body DrawingIR emits canonical leg and foot silhouettes and can pass through the same DrawingMesh/Cage layer.
+- Full-body-only performance state adds bounded weight shift, knee relaxation and ankle compensation through the existing FK path; upper-body assets retain their previous performance state.
+- Phase 6.6 build script is wired for 120 frames / 5 seconds / 1280×720 through full-body morphology → DrawingIR → cage deformation → SVG/librsvg → FFmpeg.
 
 Verification boundary:
 
 - implementation status: `candidate`
 - CI status: `blocked-by-billing`
+- GitHub runner status: `not-started-by-provider`
+- full-body morphology status: `implemented-unverified-on-clean-runner`
 - drawing mesh deformation status: `implemented-unverified-on-clean-runner`
+- current-head media artifact: `not-produced`
 - human visual acceptance: `pending`
 - creative production review: `pending-human-review`
 - commercial anime quality: `not-proven`
 
-GitHub Actions is currently blocked before runner start by an account-level billing/spending-limit condition. No Phase 6.6 completion or visual-quality PASS may be claimed until a real runner executes the tests/build and the resulting artifact is reviewed.
+GitHub Actions is currently blocked before runner start by an account-level billing/spending-limit condition. No Phase 6.6 completion, lower-body PASS or visual-quality PASS may be claimed until a real runner executes the focused tests/full regression/build and the resulting artifact is reviewed.
 
 ## Phase 6.2
 
