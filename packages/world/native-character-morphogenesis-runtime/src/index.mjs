@@ -25,6 +25,7 @@ export * from './full-body-drawing.mjs';
 export * from './full-body-drawing-ir.mjs';
 export * from './drawing-ir.mjs';
 export * from './drawing-mesh-deformation.mjs';
+export * from './drawing-presentation.mjs';
 export * from './semantic-anime-renderer.mjs';
 export * from './style.mjs';
 export * from './raster.mjs';
