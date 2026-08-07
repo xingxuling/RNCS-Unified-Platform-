@@ -22,6 +22,9 @@
     "./semantic-certificate": "./src/semantic-certificate.mjs",
     "./semantic-anatomy": "./src/semantic-anatomy.mjs",
     "./semantic-anime-visual-grammar": "./src/semantic-anime-visual-grammar.mjs",
+    "./character-drawing-compiler": "./src/character-drawing-compiler.mjs",
+    "./drawing-ir": "./src/drawing-ir.mjs",
+    "./drawing-mesh-deformation": "./src/drawing-mesh-deformation.mjs",
     "./semantic-anime-renderer": "./src/semantic-anime-renderer.mjs"
   },
   "files": ["src", "schemas", "tests", "README.md", "STATUS.md"],
