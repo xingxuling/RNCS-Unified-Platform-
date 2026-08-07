@@ -10,6 +10,8 @@ on:
       - "packages/world/native-character-morphogenesis-runtime/**"
       - "scripts/build-anime-forge-phase6-6-native-drawing-infrastructure.mjs"
       - "scripts/verify-anime-forge-phase6-6-native-drawing-infrastructure.mjs"
+      - "scripts/build-anime-forge-phase6-6-head-surface-evidence.mjs"
+      - "scripts/verify-anime-forge-phase6-6-head-surface-evidence.mjs"
       - "scripts/build-anime-forge-phase6-6-face-surface-evidence.mjs"
       - "scripts/verify-anime-forge-phase6-6-face-surface-evidence.mjs"
       - "scripts/build-anime-forge-phase6-6-hair-surface-evidence.mjs"
@@ -42,6 +44,7 @@ jobs:
           packages/world/native-character-morphogenesis-runtime/tests/lower-body-performance.test.mjs
           packages/world/native-character-morphogenesis-runtime/tests/surface-weighting.test.mjs
           packages/world/native-character-morphogenesis-runtime/tests/mesh-silhouette-drawing.test.mjs
+          packages/world/native-character-morphogenesis-runtime/tests/head-surface-drawing.test.mjs
           packages/world/native-character-morphogenesis-runtime/tests/face-surface-drawing.test.mjs
           packages/world/native-character-morphogenesis-runtime/tests/hair-surface-drawing.test.mjs
           packages/world/native-character-morphogenesis-runtime/tests/full-body-drawing.test.mjs
@@ -55,6 +58,12 @@ jobs:
           FFPROBE_PATH: ffprobe
           ANIME_PHASE6_6_EVIDENCE_DIR: tmp/anime-forge-phase6-6-native-drawing-evidence
         run: node scripts/build-anime-forge-phase6-6-native-drawing-infrastructure.mjs
+      - name: Prove head DrawingIR follows weighted skull visibility
+        env:
+          ANIME_PHASE6_6_EVIDENCE_DIR: tmp/anime-forge-phase6-6-native-drawing-evidence
+        run: node scripts/build-anime-forge-phase6-6-head-surface-evidence.mjs
+      - name: Verify head surface and face containment root chain
+        run: node scripts/verify-anime-forge-phase6-6-head-surface-evidence.mjs --evidence tmp/anime-forge-phase6-6-native-drawing-evidence
       - name: Prove face DrawingIR follows SurfaceAttachment visibility
         env:
           ANIME_PHASE6_6_EVIDENCE_DIR: tmp/anime-forge-phase6-6-native-drawing-evidence
