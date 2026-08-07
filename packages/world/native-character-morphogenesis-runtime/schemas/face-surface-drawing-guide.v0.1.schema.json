@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rncs.face-surface-drawing-guide.v0.1",
+  "title": "RNCS Face Surface Drawing Guide v0.1",
+  "type": "object",
+  "required": ["format", "version", "visibility_root", "pose_root", "view", "features", "visible_eyes", "missing_features", "unresolved_features", "guide_root"],
+  "properties": {
+    "format": {"const": "rncs.face-surface-drawing-guide.v0.1"},
+    "version": {"type": "string"},
+    "native_surface_root": {"type": ["string", "null"]},
+    "visibility_root": {"type": "string", "minLength": 1},
+    "posed_mesh_root": {"type": ["string", "null"]},
+    "pose_root": {"type": "string", "minLength": 1},
+    "view": {"type": "string"},
+    "visible_eyes": {"type": "array", "items": {"enum": ["left_eye", "right_eye"]}},
+    "missing_features": {"type": "array", "items": {"type": "string"}},
+    "unresolved_features": {"type": "array", "items": {"type": "string"}},
+    "features": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["id", "attachment_id", "screen_position", "visible", "occluded", "out_of_view", "unresolved", "entry_root"],
+        "properties": {
+          "id": {"type": "string"},
+          "attachment_id": {"type": "string"},
+          "screen_position": {"type": "array", "prefixItems": [{"type": "number"}, {"type": "number"}], "minItems": 2, "maxItems": 2},
+          "feature_depth": {"type": "number"},
+          "buffer_depth": {"type": "number"},
+          "visible": {"type": "boolean"},
+          "occluded": {"type": "boolean"},
+          "out_of_view": {"type": "boolean"},
+          "unresolved": {"type": "boolean"},
+          "occlusion_reason": {"type": "string"},
+          "entry_root": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "guide_root": {"type": "string", "minLength": 1}
+  }
+}
