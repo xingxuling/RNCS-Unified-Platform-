@@ -15,7 +15,7 @@ on:
 jobs:
   native-vector-evidence:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -25,11 +25,17 @@ jobs:
       - name: Install vector and media tools
         run: sudo apt-get update && sudo apt-get install -y librsvg2-bin ffmpeg
       - run: npm ci --ignore-scripts
-      - name: Drawing IR vector gates
-        run: node --test packages/world/native-character-morphogenesis-runtime/tests/drawing-ir.test.mjs packages/world/native-character-morphogenesis-runtime/tests/character-drawing-compiler.test.mjs
+      - name: Phase 6.6 focused RED/GREEN gates
+        run: >-
+          node --test
+          packages/world/native-character-morphogenesis-runtime/tests/character-drawing-compiler.test.mjs
+          packages/world/native-character-morphogenesis-runtime/tests/drawing-ir.test.mjs
+          packages/world/native-character-morphogenesis-runtime/tests/drawing-mesh-deformation.test.mjs
+          packages/world/native-character-morphogenesis-runtime/tests/lower-body-morphology.test.mjs
+          packages/world/native-character-morphogenesis-runtime/tests/full-body-drawing.test.mjs
       - name: Full native morphology regression
         run: npm test --workspace @taowind/native-character-morphogenesis-runtime
-      - name: Build Phase 6.6 evidence
+      - name: Build Phase 6.6 full-body evidence
         env:
           RSVG_CONVERT_PATH: rsvg-convert
           FFMPEG_PATH: ffmpeg
