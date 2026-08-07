@@ -5,9 +5,27 @@ const modes={neutral:{bodyYaw:0,headYaw:0,weight:.5,leftShoulder:0,rightShoulder
 
 const rotation=(pitch=0,yaw=0,roll=0)=>({pitch:Number(pitch),yaw:Number(yaw),roll:Number(roll)});
 
+function lowerBodyRotations(asset,{pose,progress,shotRise,weight}){
+  const hasLowerBody=(asset?.skeleton?.bones??[]).some(bone=>bone.id==='thigh-left')&&(asset?.skeleton?.bones??[]).some(bone=>bone.id==='thigh-right');
+  if(!hasLowerBody)return null;
+  const sway=Math.sin(progress*Math.PI*2)*.014,weightBias=(.5-Number(weight??.5))*.16+sway,action=pose==='action'?shotRise:0,alert=pose==='alert'?1:0;
+  return{
+    'hip-left':rotation(-.012-action*.045,0,weightBias),
+    'thigh-left':rotation(-.008-action*.035,0,weightBias*.55),
+    'knee-left':rotation(-.032-action*.055-alert*.012,0,0),
+    'ankle-left':rotation(.018+action*.020,0,-weightBias*.32),
+    'foot-left':rotation(-.008,0,0),
+    'hip-right':rotation(.008+action*.018,0,-weightBias),
+    'thigh-right':rotation(-.006+action*.012,0,-weightBias*.55),
+    'knee-right':rotation(-.028-action*.018-alert*.008,0,0),
+    'ankle-right':rotation(.016+action*.008,0,weightBias*.32),
+    'foot-right':rotation(-.006,0,0)
+  };
+}
+
 export function performanceStateForFrame(asset,{view='front',pose='neutral',frame=0,totalFrames=120}={}){
-  const progress=clamp(totalFrames<=1?0:Number(frame)/Number(totalFrames-1)),mode=modes[pose]??modes.neutral,shotRise=clamp((progress-.18)/.34),settle=clamp((progress-.72)/.28),bodyYaw=deg(mode.bodyYaw+Math.sin(progress*Math.PI*2)*3),headYaw=deg(mode.headYaw+(view==='head-turn'?28*Math.sin(progress*Math.PI):0)+(view==='front'?12*shotRise:0));
-  return{format:'rncs.performance-state.v0.1',frame,total_frames:totalFrames,progress,view,pose,view_yaw:deg(viewYaw[view]??0),root_rotation:rotation(0,bodyYaw,0),joint_rotations:{root:rotation(0,bodyYaw,0),'upper-arm-left':rotation(0,0,mode.leftShoulder+(pose==='action'?shotRise*.38:0)),'forearm-left':rotation(0,0,mode.leftElbow+(pose==='action'?shotRise*.48:0)),'upper-arm-right':rotation(0,0,mode.rightShoulder+(pose==='action'?shotRise*.14:0)),'forearm-right':rotation(0,0,mode.rightElbow),'skull':rotation(0,headYaw,0)},expression:mode.expression,gaze:view==='three-quarter-left'?'left':view==='three-quarter-right'?'right':view==='head-turn'?'right':'center',blink:pose==='action'&&frame%37===0,mouth:pose==='action'&&frame%19<7?'o':'closed',secondary:{hair_lag:Math.sin(progress*Math.PI*2+1)*.012+(pose==='action'?shotRise*.018:0),costume_lag:Math.sin(progress*Math.PI*2)*.008,breath:Math.sin(progress*Math.PI*5)*.004,overshoot:settle<1?Math.sin(settle*Math.PI)*.01:0},source:'Director performance state; no bone lengths or body dimensions'};
+  const progress=clamp(totalFrames<=1?0:Number(frame)/Number(totalFrames-1)),mode=modes[pose]??modes.neutral,shotRise=clamp((progress-.18)/.34),settle=clamp((progress-.72)/.28),bodyYaw=deg(mode.bodyYaw+Math.sin(progress*Math.PI*2)*3),headYaw=deg(mode.headYaw+(view==='head-turn'?28*Math.sin(progress*Math.PI):0)+(view==='front'?12*shotRise:0)),lower=lowerBodyRotations(asset,{pose,progress,shotRise,weight:mode.weight});
+  return{format:'rncs.performance-state.v0.1',frame,total_frames:totalFrames,progress,view,pose,view_yaw:deg(viewYaw[view]??0),root_rotation:rotation(0,bodyYaw,0),joint_rotations:{root:rotation(0,bodyYaw,0),'upper-arm-left':rotation(0,0,mode.leftShoulder+(pose==='action'?shotRise*.38:0)),'forearm-left':rotation(0,0,mode.leftElbow+(pose==='action'?shotRise*.48:0)),'upper-arm-right':rotation(0,0,mode.rightShoulder+(pose==='action'?shotRise*.14:0)),'forearm-right':rotation(0,0,mode.rightElbow),'skull':rotation(0,headYaw,0),...(lower??{})},expression:mode.expression,gaze:view==='three-quarter-left'?'left':view==='three-quarter-right'?'right':view==='head-turn'?'right':'center',blink:pose==='action'&&frame%37===0,mouth:pose==='action'&&frame%19<7?'o':'closed',secondary:{hair_lag:Math.sin(progress*Math.PI*2+1)*.012+(pose==='action'?shotRise*.018:0),costume_lag:Math.sin(progress*Math.PI*2)*.008,breath:Math.sin(progress*Math.PI*5)*.004,overshoot:settle<1?Math.sin(settle*Math.PI)*.01:0},lower_body_active:Boolean(lower),source:lower?'Director performance state; canonical lower-body FK enabled; no bone lengths or body dimensions':'Director performance state; no bone lengths or body dimensions'};
 }
 
 function clampRotation(value,limits){return{pitch:clamp(value.pitch??0,limits.pitch[0],limits.pitch[1]),yaw:clamp(value.yaw??0,limits.yaw[0],limits.yaw[1]),roll:clamp(value.roll??0,limits.roll[0],limits.roll[1])};}
