@@ -1,0 +1,35 @@
+{
+  "format": "rncs.anime-forge-human-rejection-regression-report.v0.1",
+  "review_id": "AF-PHASE6-3-GEOMETRIC-TRUTH-001",
+  "formal_review": {
+    "status": "revision-requested",
+    "decision": "rejected-for-phase6-3-acceptance",
+    "basis": [
+      "phase6-2-supplied-frame",
+      "measured-old-kernel-red",
+      "missing-canonical-surface",
+      "missing-depth-visibility"
+    ]
+  },
+  "fixture_id": "phase6-1-supplied-frame-2026-08-07",
+  "phase62_failure_measurements": "phase6-2-failure-measurements.json",
+  "red_metrics": [
+    "projected_head_to_shoulder_ratio",
+    "head_to_torso_ratio",
+    "neck_to_skull_connectivity",
+    "neck_to_ribcage_connectivity",
+    "face_feature_surface_containment",
+    "eye_depth_order_under_yaw",
+    "hair_mass_connected_to_root",
+    "hand_to_wrist_connectivity",
+    "limb_surface_connected_components",
+    "whole_body_connected_components",
+    "surface_self_intersection_count",
+    "silhouette_disconnected_islands",
+    "visible_feature_occlusion_correctness",
+    "projected_anatomical_ratio_validity"
+  ],
+  "required_next_gate": "native-field-mesh-visibility-static-gates",
+  "human_visual_acceptance": "pending",
+  "commercial_animation_quality": "not-proven"
+}

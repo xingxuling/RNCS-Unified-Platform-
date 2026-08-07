@@ -4,6 +4,7 @@ export * from './anatomy.mjs';
 export * from './kinematics.mjs';
 export * from './deformation.mjs';
 export * from './projection.mjs';
+export * from './geometric-truth.mjs';
 export * from './style.mjs';
 export * from './raster.mjs';
 export * from './renderer.mjs';
