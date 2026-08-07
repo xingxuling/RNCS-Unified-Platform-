@@ -5,6 +5,16 @@ import {compileMorphology} from '../src/canonical-morphology.mjs';
 import {createCharacterDesignTarget,compileArtDirectedMorphology,buildSemanticMorphologyCertificate,validateSemanticMorphologyCertificate} from '../src/semantic-anatomy.mjs';
 import {createSemanticAnimeVisualGrammar,validateSemanticAnimeVisualGrammar} from '../src/semantic-anime-visual-grammar.mjs';
 
+function compileSemanticOrReport(genome,options={}){
+  try{return compileArtDirectedMorphology(genome,options);}catch(error){
+    const ratio=error?.certificate?.gates?.projected_anatomical_ratio_validity;
+    if(ratio)console.error('PHASE6_4_RATIO_DIAGNOSTIC',JSON.stringify(ratio));
+    const semantic=error?.certificate?.gates&&error?.certificate?.format==='rncs.semantic-morphology-certificate.v0.1'?error.certificate.gates:null;
+    if(semantic)console.error('PHASE6_4_SEMANTIC_DIAGNOSTIC',JSON.stringify(Object.fromEntries(Object.entries(semantic).filter(([,gate])=>gate?.pass!==true))));
+    throw error;
+  }
+}
+
 test('Phase 6.3 geometric truth asset is RED under semantic character oracle',()=>{
   const system=createAnatomySystem({seed:'phase6-4-red-baseline'}),asset=compileMorphology(system.genome,{surface_resolution:'property',certificate_mode:'property'}),target=createCharacterDesignTarget(),certificate=buildSemanticMorphologyCertificate(asset,target,{evidence_root:'phase6-3-human-rejection-v01'}),validation=validateSemanticMorphologyCertificate(certificate);
   assert.equal(validation.valid,false,'Phase 6.3 baseline must not silently pass the new semantic oracle');
@@ -12,12 +22,12 @@ test('Phase 6.3 geometric truth asset is RED under semantic character oracle',()
 });
 
 test('art-directed semantic compiler preserves identity while producing measured GREEN semantic certificate',()=>{
-  const system=createAnatomySystem({seed:'phase6-4-semantic-green'}),target=createCharacterDesignTarget(),asset=compileArtDirectedMorphology(system.genome,{target,surface_resolution:'property',certificate_mode:'property'}),validation=validateSemanticMorphologyCertificate(asset.semantic_certificate);
+  const system=createAnatomySystem({seed:'phase6-4-semantic-green'}),target=createCharacterDesignTarget(),asset=compileSemanticOrReport(system.genome,{target,surface_resolution:'property',certificate_mode:'property'}),validation=validateSemanticMorphologyCertificate(asset.semantic_certificate);
   assert.equal(asset.genome_root,system.genome_root);assert.equal(asset.identity_root,system.character_identity_root);assert.equal(validation.valid,true,validation.failures.join(','));assert.ok(asset.semantic_morphology_root);assert.equal(asset.semantic_target_root,target.target_root);
 });
 
 test('semantic certificate core gates are measurements, never naked booleans',()=>{
-  const system=createAnatomySystem({seed:'phase6-4-certificate'}),asset=compileArtDirectedMorphology(system.genome,{surface_resolution:'property',certificate_mode:'property'});
+  const system=createAnatomySystem({seed:'phase6-4-certificate'}),asset=compileSemanticOrReport(system.genome,{surface_resolution:'property',certificate_mode:'property'});
   for(const [name,gate] of Object.entries(asset.semantic_certificate.gates)){assert.equal(typeof gate,'object',name);assert.ok(Object.hasOwn(gate,'measurement'),name);assert.ok(Object.hasOwn(gate,'allowed'),name);assert.equal(typeof gate.method,'string',name);assert.ok(gate.evidence_root,name);assert.equal(typeof gate.pass,'boolean',name);}
 });
 
