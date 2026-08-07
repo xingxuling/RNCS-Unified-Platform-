@@ -95,6 +95,7 @@ try:
                         width,
                         body_scroll_width: document.body.scrollWidth,
                         document_scroll_width: document.documentElement.scrollWidth,
+                        strip_display: getComputedStyle(document.querySelector('.geometric-truth-strip')).display,
                         strip,
                         buttons,
                         geometric_status: document.querySelector('#geometricStatus').textContent,
@@ -108,7 +109,10 @@ try:
             metrics['screenshot_bytes'] = screenshot.stat().st_size
             assert metrics['body_scroll_width'] <= width + 1, metrics
             assert metrics['document_scroll_width'] <= width + 1, metrics
-            assert all(box['width'] > 0 and box['height'] > 0 for box in metrics['strip']), metrics
+            if width <= 760:
+                assert metrics['strip_display'] == 'none', metrics
+            else:
+                assert all(box['width'] > 0 and box['height'] > 0 for box in metrics['strip']), metrics
             assert all(button['fits'] for button in metrics['buttons']), metrics
             assert metrics['geometric_status'] in ('静态几何通过', '几何门受阻'), metrics
             assert metrics['screenshot_bytes'] > 10000, metrics
