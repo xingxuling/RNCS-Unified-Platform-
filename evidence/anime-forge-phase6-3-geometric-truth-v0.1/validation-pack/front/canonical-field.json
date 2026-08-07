@@ -1,0 +1,1001 @@
+{
+  "format": "rncs.phase6-3-canonical-field-evidence.v0.1",
+  "asset_root": "40861a9db10d51f5fc1ee4fa65e6d189dd23bcae1328a55df285058f8b5f5779",
+  "field": {
+    "format": "rncs.continuous-morphology-field.v0.1",
+    "version": "0.1.0-alpha.1",
+    "units": "normalized-body",
+    "coordinate_system": {
+      "origin": "pelvis-root",
+      "up": "positive-y",
+      "front": "positive-z"
+    },
+    "genome_root": "5b540dff18beb3ae8e358836c016b2a9c6770583c27ff59979ed5be0fdba4b0a",
+    "law_root": "e5f0b9e223fda5e661233293f417cb13f3e1f06933a66537f604a40865c6b128",
+    "fields": [
+      {
+        "field_id": "PelvisField",
+        "source_volume_id": "pelvis-volume",
+        "attached_bone": "pelvis",
+        "local_transform": {
+          "translation": [
+            0,
+            0.05625,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "shape_parameters": {
+          "radii": [
+            0.120194,
+            0.05625,
+            0.070036
+          ]
+        },
+        "field_function": "ellipsoid_sdf",
+        "blend_group": "trunk",
+        "blend_radius": 0.018,
+        "material_region": "body",
+        "semantic_region": "pelvis_volume",
+        "identity_weight": 1,
+        "deformation_policy": {
+          "mode": "bone-transform-plus-field-preservation",
+          "pose_changes_bone_transform_only": true,
+          "volume_preservation": true
+        },
+        "rest_center": [
+          0,
+          0.05625,
+          0
+        ],
+        "extent": 0.120194
+      },
+      {
+        "field_id": "RibcageField",
+        "source_volume_id": "ribcage-volume",
+        "attached_bone": "ribcage",
+        "local_transform": {
+          "translation": [
+            0,
+            0.0775,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "shape_parameters": {
+          "radii": [
+            0.175091,
+            0.0775,
+            0.07704
+          ]
+        },
+        "field_function": "superellipsoid_sdf",
+        "blend_group": "trunk",
+        "blend_radius": 0.018,
+        "material_region": "body",
+        "semantic_region": "ribcage_volume",
+        "identity_weight": 1,
+        "deformation_policy": {
+          "mode": "bone-transform-plus-field-preservation",
+          "pose_changes_bone_transform_only": true,
+          "volume_preservation": true
+        },
+        "rest_center": [
+          0,
+          0.35000000000000003,
+          0
+        ],
+        "extent": 0.175091
+      },
+      {
+        "field_id": "NeckField",
+        "source_volume_id": "neck-volume",
+        "attached_bone": "neck",
+        "local_transform": {
+          "translation": [
+            0,
+            0.04965,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "shape_parameters": {
+          "radius": 0.039007,
+          "length": 0.0993
+        },
+        "field_function": "capsule_sdf",
+        "blend_group": "trunk",
+        "blend_radius": 0.018,
+        "material_region": "skin",
+        "semantic_region": "neck_volume",
+        "identity_weight": 1,
+        "deformation_policy": {
+          "mode": "bone-transform-plus-field-preservation",
+          "pose_changes_bone_transform_only": true,
+          "volume_preservation": true
+        },
+        "rest_center": [
+          0,
+          0.47714999999999996,
+          0
+        ],
+        "extent": 0.088657
+      },
+      {
+        "field_id": "SkullField",
+        "source_volume_id": "skull-volume",
+        "attached_bone": "skull",
+        "local_transform": {
+          "translation": [
+            0,
+            0.0934336,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "shape_parameters": {
+          "radii": [
+            0.121896,
+            0.14599,
+            0.116967
+          ]
+        },
+        "field_function": "ellipsoid_sdf",
+        "blend_group": "trunk",
+        "blend_radius": 0.018,
+        "material_region": "skin",
+        "semantic_region": "skull_volume",
+        "identity_weight": 1,
+        "deformation_policy": {
+          "mode": "bone-transform-plus-field-preservation",
+          "pose_changes_bone_transform_only": true,
+          "volume_preservation": true
+        },
+        "rest_center": [
+          0,
+          0.6202335999999999,
+          0
+        ],
+        "extent": 0.14599
+      },
+      {
+        "field_id": "DeltoidField:left",
+        "source_volume_id": "deltoid-left",
+        "attached_bone": "shoulder-left",
+        "local_transform": {
+          "translation": [
+            0,
+            0,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "shape_parameters": {
+          "radius": 0.04113990000000001,
+          "length": 0.08227980000000001
+        },
+        "field_function": "sphere_sdf",
+        "blend_group": "left-arm",
+        "blend_radius": 0.018,
+        "material_region": "skin",
+        "semantic_region": "deltoid",
+        "identity_weight": 1,
+        "deformation_policy": {
+          "mode": "bone-transform-plus-field-preservation",
+          "pose_changes_bone_transform_only": true,
+          "volume_preservation": true
+        },
+        "rest_center": [
+          -0.171142,
+          0.39030000000000004,
+          0
+        ],
+        "extent": 0.08228
+      },
+      {
+        "field_id": "DeltoidField:right",
+        "source_volume_id": "deltoid-right",
+        "attached_bone": "shoulder-right",
+        "local_transform": {
+          "translation": [
+            0,
+            0,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "shape_parameters": {
+          "radius": 0.04113990000000001,
+          "length": 0.08227980000000001
+        },
+        "field_function": "sphere_sdf",
+        "blend_group": "right-arm",
+        "blend_radius": 0.018,
+        "material_region": "skin",
+        "semantic_region": "deltoid",
+        "identity_weight": 1,
+        "deformation_policy": {
+          "mode": "bone-transform-plus-field-preservation",
+          "pose_changes_bone_transform_only": true,
+          "volume_preservation": true
+        },
+        "rest_center": [
+          0.171142,
+          0.39030000000000004,
+          0
+        ],
+        "extent": 0.08228
+      },
+      {
+        "field_id": "UpperArmField:left",
+        "source_volume_id": "upper-arm-left",
+        "attached_bone": "upper-arm-left",
+        "local_transform": {
+          "translation": [
+            0,
+            -0.0852,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "shape_parameters": {
+          "length": 0.1704,
+          "radius_top": 0.035045099999999996,
+          "radius_bottom": 0.027426600000000002
+        },
+        "field_function": "tapered_capsule_sdf",
+        "blend_group": "left-arm",
+        "blend_radius": 0.018,
+        "material_region": "skin",
+        "semantic_region": "upper_arm",
+        "identity_weight": 1,
+        "deformation_policy": {
+          "mode": "bone-transform-plus-field-preservation",
+          "pose_changes_bone_transform_only": true,
+          "volume_preservation": true
+        },
+        "rest_center": [
+          -0.171142,
+          0.30510000000000004,
+          0
+        ],
+        "extent": 0.120245
+      },
+      {
+        "field_id": "UpperArmField:right",
+        "source_volume_id": "upper-arm-right",
+        "attached_bone": "upper-arm-right",
+        "local_transform": {
+          "translation": [
+            0,
+            -0.0852,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "shape_parameters": {
+          "length": 0.1704,
+          "radius_top": 0.035045099999999996,
+          "radius_bottom": 0.027426600000000002
+        },
+        "field_function": "tapered_capsule_sdf",
+        "blend_group": "right-arm",
+        "blend_radius": 0.018,
+        "material_region": "skin",
+        "semantic_region": "upper_arm",
+        "identity_weight": 1,
+        "deformation_policy": {
+          "mode": "bone-transform-plus-field-preservation",
+          "pose_changes_bone_transform_only": true,
+          "volume_preservation": true
+        },
+        "rest_center": [
+          0.171142,
+          0.30510000000000004,
+          0
+        ],
+        "extent": 0.120245
+      },
+      {
+        "field_id": "ElbowField:left",
+        "source_volume_id": "elbow-left",
+        "attached_bone": "elbow-left",
+        "local_transform": {
+          "translation": [
+            0,
+            0,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "shape_parameters": {
+          "radius": 0.034131,
+          "length": 0.068262
+        },
+        "field_function": "blended_sphere_sdf",
+        "blend_group": "left-arm",
+        "blend_radius": 0.014,
+        "material_region": "skin",
+        "semantic_region": "elbow",
+        "identity_weight": 1,
+        "deformation_policy": {
+          "mode": "bone-transform-plus-field-preservation",
+          "pose_changes_bone_transform_only": true,
+          "volume_preservation": true
+        },
+        "rest_center": [
+          -0.171142,
+          0.21990000000000004,
+          0
+        ],
+        "extent": 0.068262
+      },
+      {
+        "field_id": "ElbowField:right",
+        "source_volume_id": "elbow-right",
+        "attached_bone": "elbow-right",
+        "local_transform": {
+          "translation": [
+            0,
+            0,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "shape_parameters": {
+          "radius": 0.034131,
+          "length": 0.068262
+        },
+        "field_function": "blended_sphere_sdf",
+        "blend_group": "right-arm",
+        "blend_radius": 0.014,
+        "material_region": "skin",
+        "semantic_region": "elbow",
+        "identity_weight": 1,
+        "deformation_policy": {
+          "mode": "bone-transform-plus-field-preservation",
+          "pose_changes_bone_transform_only": true,
+          "volume_preservation": true
+        },
+        "rest_center": [
+          0.171142,
+          0.21990000000000004,
+          0
+        ],
+        "extent": 0.068262
+      },
+      {
+        "field_id": "ForearmField:left",
+        "source_volume_id": "forearm-left",
+        "attached_bone": "forearm-left",
+        "local_transform": {
+          "translation": [
+            0,
+            -0.0799,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "shape_parameters": {
+          "length": 0.1598,
+          "radius_top": 0.028950299999999998,
+          "radius_bottom": 0.025598
+        },
+        "field_function": "tapered_capsule_sdf",
+        "blend_group": "left-arm",
+        "blend_radius": 0.018,
+        "material_region": "skin",
+        "semantic_region": "forearm",
+        "identity_weight": 1,
+        "deformation_policy": {
+          "mode": "bone-transform-plus-field-preservation",
+          "pose_changes_bone_transform_only": true,
+          "volume_preservation": true
+        },
+        "rest_center": [
+          -0.171142,
+          0.14000000000000004,
+          0
+        ],
+        "extent": 0.10885
+      },
+      {
+        "field_id": "ForearmField:right",
+        "source_volume_id": "forearm-right",
+        "attached_bone": "forearm-right",
+        "local_transform": {
+          "translation": [
+            0,
+            -0.0799,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "shape_parameters": {
+          "length": 0.1598,
+          "radius_top": 0.028950299999999998,
+          "radius_bottom": 0.025598
+        },
+        "field_function": "tapered_capsule_sdf",
+        "blend_group": "right-arm",
+        "blend_radius": 0.018,
+        "material_region": "skin",
+        "semantic_region": "forearm",
+        "identity_weight": 1,
+        "deformation_policy": {
+          "mode": "bone-transform-plus-field-preservation",
+          "pose_changes_bone_transform_only": true,
+          "volume_preservation": true
+        },
+        "rest_center": [
+          0.171142,
+          0.14000000000000004,
+          0
+        ],
+        "extent": 0.10885
+      },
+      {
+        "field_id": "PalmField:left",
+        "source_volume_id": "palm-left",
+        "attached_bone": "hand-left",
+        "local_transform": {
+          "translation": [
+            0,
+            -0.02655,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "shape_parameters": {
+          "radii": [
+            0.032912,
+            0.03894,
+            0.024683999999999998
+          ]
+        },
+        "field_function": "rounded_wedge_sdf",
+        "blend_group": "left-arm",
+        "blend_radius": 0.018,
+        "material_region": "skin",
+        "semantic_region": "palm",
+        "identity_weight": 1,
+        "deformation_policy": {
+          "mode": "bone-transform-plus-field-preservation",
+          "pose_changes_bone_transform_only": true,
+          "volume_preservation": true
+        },
+        "rest_center": [
+          -0.171142,
+          0.03355000000000004,
+          0
+        ],
+        "extent": 0.03894
+      },
+      {
+        "field_id": "PalmField:right",
+        "source_volume_id": "palm-right",
+        "attached_bone": "hand-right",
+        "local_transform": {
+          "translation": [
+            0,
+            -0.02655,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "shape_parameters": {
+          "radii": [
+            0.032912,
+            0.03894,
+            0.024683999999999998
+          ]
+        },
+        "field_function": "rounded_wedge_sdf",
+        "blend_group": "right-arm",
+        "blend_radius": 0.018,
+        "material_region": "skin",
+        "semantic_region": "palm",
+        "identity_weight": 1,
+        "deformation_policy": {
+          "mode": "bone-transform-plus-field-preservation",
+          "pose_changes_bone_transform_only": true,
+          "volume_preservation": true
+        },
+        "rest_center": [
+          0.171142,
+          0.03355000000000004,
+          0
+        ],
+        "extent": 0.03894
+      },
+      {
+        "field_id": "SpineField",
+        "source_volume_id": "spine-bridge",
+        "attached_bone": "spine",
+        "local_transform": {
+          "translation": [
+            0,
+            0.08,
+            0
+          ],
+          "rotation": {
+            "pitch": 0,
+            "yaw": 0,
+            "roll": 0
+          }
+        },
+        "shape_parameters": {
+          "radii": [
+            0.0905075,
+            0.096,
+            0.06317279999999999
+          ]
+        },
+        "field_function": "ellipsoid_sdf",
+        "blend_group": "trunk",
+        "blend_radius": 0.018,
+        "material_region": "skin",
+        "semantic_region": "spine_bridge",
+        "identity_weight": 1,
+        "deformation_policy": {
+          "mode": "bone-transform-plus-field-preservation",
+          "pose_changes_bone_transform_only": true,
+          "volume_preservation": true
+        },
+        "rest_center": [
+          0,
+          0.1925,
+          0
+        ],
+        "extent": 0.096
+      }
+    ],
+    "bone_transforms": {
+      "root": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "pelvis": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "spine": {
+        "position": [
+          0,
+          0.1125,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "ribcage": {
+        "position": [
+          0,
+          0.2725,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "clavicle-left": {
+        "position": [
+          0,
+          0.39030000000000004,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "shoulder-left": {
+        "position": [
+          -0.171142,
+          0.39030000000000004,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "upper-arm-left": {
+        "position": [
+          -0.171142,
+          0.39030000000000004,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "elbow-left": {
+        "position": [
+          -0.171142,
+          0.21990000000000004,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "forearm-left": {
+        "position": [
+          -0.171142,
+          0.21990000000000004,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "wrist-left": {
+        "position": [
+          -0.171142,
+          0.06010000000000004,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "hand-left": {
+        "position": [
+          -0.171142,
+          0.06010000000000004,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "clavicle-right": {
+        "position": [
+          0,
+          0.39030000000000004,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "shoulder-right": {
+        "position": [
+          0.171142,
+          0.39030000000000004,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "upper-arm-right": {
+        "position": [
+          0.171142,
+          0.39030000000000004,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "elbow-right": {
+        "position": [
+          0.171142,
+          0.21990000000000004,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "forearm-right": {
+        "position": [
+          0.171142,
+          0.21990000000000004,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "wrist-right": {
+        "position": [
+          0.171142,
+          0.06010000000000004,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "hand-right": {
+        "position": [
+          0.171142,
+          0.06010000000000004,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "neck": {
+        "position": [
+          0,
+          0.4275,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      },
+      "skull": {
+        "position": [
+          0,
+          0.5267999999999999,
+          0
+        ],
+        "rotation": {
+          "pitch": 0,
+          "yaw": 0,
+          "roll": 0
+        }
+      }
+    },
+    "composition": {
+      "operator": "smooth-union-by-blend-group",
+      "smooth_union": "polynomial-smooth-min",
+      "smooth_intersection": "negated-smooth-union",
+      "bounded_subtraction": "smooth-max-with-negated-field"
+    },
+    "sampling_policy": {
+      "domain": "canonical-body-bounds",
+      "camera_independent": true,
+      "resolution_independent": true,
+      "deterministic_cpu": true
+    },
+    "field_root": "b22b861dd3bf84e9b7b9d1b4f7fe85e469bca3b1047f541984e13135037d4823"
+  },
+  "field_validation": {
+    "format": "rncs.morphology-field-validation.v0.1",
+    "field_root": "b22b861dd3bf84e9b7b9d1b4f7fe85e469bca3b1047f541984e13135037d4823",
+    "field_count": 15,
+    "field_breaks": 0,
+    "illegal_overlap_pairs": [],
+    "joint_collapse_count": 0,
+    "connected_components": [
+      [
+        "DeltoidField:left",
+        "DeltoidField:right",
+        "ElbowField:left",
+        "ElbowField:right",
+        "ForearmField:left",
+        "ForearmField:right",
+        "NeckField",
+        "PalmField:left",
+        "PalmField:right",
+        "PelvisField",
+        "RibcageField",
+        "SkullField",
+        "SpineField",
+        "UpperArmField:left",
+        "UpperArmField:right"
+      ]
+    ],
+    "adjacency": {
+      "PelvisField": [
+        "ForearmField:left",
+        "ForearmField:right",
+        "PalmField:left",
+        "PalmField:right",
+        "RibcageField",
+        "SpineField"
+      ],
+      "RibcageField": [
+        "DeltoidField:left",
+        "DeltoidField:right",
+        "ElbowField:left",
+        "ElbowField:right",
+        "ForearmField:left",
+        "ForearmField:right",
+        "NeckField",
+        "PelvisField",
+        "SkullField",
+        "SpineField",
+        "UpperArmField:left",
+        "UpperArmField:right"
+      ],
+      "NeckField": [
+        "RibcageField",
+        "SkullField"
+      ],
+      "SkullField": [
+        "NeckField",
+        "RibcageField"
+      ],
+      "DeltoidField:left": [
+        "RibcageField",
+        "UpperArmField:left"
+      ],
+      "DeltoidField:right": [
+        "RibcageField",
+        "UpperArmField:right"
+      ],
+      "UpperArmField:left": [
+        "DeltoidField:left",
+        "ElbowField:left",
+        "ForearmField:left",
+        "RibcageField",
+        "SpineField"
+      ],
+      "UpperArmField:right": [
+        "DeltoidField:right",
+        "ElbowField:right",
+        "ForearmField:right",
+        "RibcageField",
+        "SpineField"
+      ],
+      "ElbowField:left": [
+        "ForearmField:left",
+        "RibcageField",
+        "SpineField",
+        "UpperArmField:left"
+      ],
+      "ElbowField:right": [
+        "ForearmField:right",
+        "RibcageField",
+        "SpineField",
+        "UpperArmField:right"
+      ],
+      "ForearmField:left": [
+        "ElbowField:left",
+        "PalmField:left",
+        "PelvisField",
+        "RibcageField",
+        "SpineField",
+        "UpperArmField:left"
+      ],
+      "ForearmField:right": [
+        "ElbowField:right",
+        "PalmField:right",
+        "PelvisField",
+        "RibcageField",
+        "SpineField",
+        "UpperArmField:right"
+      ],
+      "PalmField:left": [
+        "ForearmField:left",
+        "PelvisField"
+      ],
+      "PalmField:right": [
+        "ForearmField:right",
+        "PelvisField"
+      ],
+      "SpineField": [
+        "ElbowField:left",
+        "ElbowField:right",
+        "ForearmField:left",
+        "ForearmField:right",
+        "PelvisField",
+        "RibcageField",
+        "UpperArmField:left",
+        "UpperArmField:right"
+      ]
+    },
+    "sample_count": 15,
+    "errors": [],
+    "valid": true,
+    "validation_root": "3bac54c88bf1271324b4b9d4bc5f18d85a6a5b450fd1c2a87ee2e6851f360d15"
+  },
+  "field_policy": {
+    "camera_independent": true,
+    "resolution_independent": true,
+    "style_independent": true
+  }
+}

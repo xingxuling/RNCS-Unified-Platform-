@@ -1,0 +1,160 @@
+format: rncs.anime-forge-phase6-3-engineering-contract.v0.1
+phase: 6.3
+title: Native Morphology Field and Geometric Truth Kernel
+baseline:
+  branch: main-95
+  commit: 34b4e3825091890961e7a222506c3f3e21eb183e
+  previous_pr: 62
+  previous_status: merged
+authority:
+  episode: authoritative
+  cut: derived
+  clip: reusable
+  patch: local
+  continuity: global
+  morphology_compiler: packages/world/native-character-morphogenesis-runtime/src/canonical-morphology.mjs
+  public_api: compileMorphology(genome, profile)
+  renderer_anatomy_authority: false
+  phase63_geometry_authority: canonical_morphology_compiler
+representation:
+  pipeline:
+    - skeleton
+    - anatomical_implicit_volumes
+    - continuous_morphology_field
+    - canonical_surface_mesh
+    - surface_skinning
+    - posed_3d_surface
+    - camera_visibility
+    - anime_projection
+  field_strategy: deterministic_cpu_analytic_sdf_like_fields
+  mesh_strategy: deterministic_cpu_bounded_surface_extraction
+  accepted_mesh_inputs: camera_resolution_style_independent
+  legacy_contours: regression_only
+invariants:
+  - geometry_before_projection
+  - surface_before_silhouette
+  - measurement_before_certification
+  - visibility_before_stylization
+field_contract:
+  primitive_fields:
+    - SkullField
+    - NeckField
+    - RibcageField
+    - PelvisField
+    - DeltoidField
+    - UpperArmField
+    - ElbowField
+    - ForearmField
+    - PalmField
+  required_keys:
+    - field_id
+    - attached_bone
+    - local_transform
+    - shape_parameters
+    - field_function
+    - blend_group
+    - material_region
+    - semantic_region
+    - identity_weight
+    - deformation_policy
+  operations:
+    - smooth_union
+    - smooth_intersection
+    - bounded_subtraction
+  failure_modes:
+    - field_break
+    - disconnected_component
+    - illegal_overlap
+    - joint_collapse
+mesh_contract:
+  required_keys:
+    - vertices
+    - normals
+    - triangles
+    - region_ids
+    - bone_weights
+    - material_ids
+    - surface_groups
+    - adjacency
+    - boundary_edges
+    - connected_components
+    - mesh_root
+  pixel_units_forbidden: true
+  camera_independence_required: true
+attachment_contract:
+  required_keys:
+    - surface_id
+    - triangle_or_patch
+    - barycentric_or_param_uv
+    - normal_offset
+    - tangent
+    - orientation
+visibility_contract:
+  buffers:
+    - VisibilityBuffer
+    - DepthBuffer
+    - SurfaceIdBuffer
+    - RegionIdBuffer
+    - NormalBuffer
+  must_measure:
+    - backface
+    - clipping
+    - self_occlusion
+    - body_occlusion
+    - hair_occlusion
+    - face_occlusion
+certificate:
+  version: 0.2
+  required_gates:
+    - proportion_valid
+    - bone_length_valid
+    - joint_limit_valid
+    - mesh_connected
+    - surface_manifold_or_bounded_nonmanifold
+    - surface_continuity_valid
+    - neck_connection_valid
+    - limb_connection_valid
+    - hand_attachment_valid
+    - face_attachment_valid
+    - face_feature_containment_valid
+    - scalp_attachment_valid
+    - hair_root_distance_valid
+    - garment_attachment_valid
+    - garment_penetration_valid
+    - self_intersection_valid
+    - silhouette_connected
+    - depth_order_valid
+    - camera_projection_valid
+  direct_boolean_only_forbidden: true
+ground_truth:
+  character_visual_ground_truth_pack: candidate
+  human_character_ground_truth: pending
+  auto_accept_forbidden: true
+verification:
+  required_red_before_implementation: true
+  static_views:
+    - front_neutral
+    - three_quarter_neutral
+    - side_neutral
+  property_cases: 9000
+  media_gate_after_static_green: true
+  ffmpeg_missing_is_failure: true
+evidence:
+  required:
+    - phase6-2-failure-measurements.json
+    - phase6-3-after-measurements.json
+    - human-rejection-regression-report.json
+    - canonical-field.json
+    - canonical-mesh.json
+    - posed-mesh.json
+    - visibility-report.json
+    - depth.png
+    - normal.png
+    - surface-id.png
+    - region-id.png
+    - styled-frame.png
+    - morphology-certificate.json
+rollback:
+  strategy: profile_gate_and_revert_phase63_commits
+  phase62_api_preserved: true
+  evidence_preservation_required: true

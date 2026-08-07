@@ -1,0 +1,311 @@
+{
+  "format": "rncs.anime-forge-geometric-truth-measurements.v0.2",
+  "source": {
+    "kind": "native-field-mesh-visibility-static-pack",
+    "asset_root": "40861a9db10d51f5fc1ee4fa65e6d189dd23bcae1328a55df285058f8b5f5779",
+    "certificate_root": "3d00c9c56464ef632ee361bd779869b3c58b1fdce77fc407d63a0e1a6b0fb52a",
+    "frame_roots": [
+      "7190e6235fce9fa1bd59d8b8abe5c5a474ecd97aadcc901209fb0404b27402ce",
+      "97c759ab48472280a7ecc3c87ba5d7f985cb6c1ba7a4c9c89ec657b6a6a32b34",
+      "a795504cd05ef28800ee45265f61b9f4439ca0c5cfcb52846e4b4a1609aabc76"
+    ]
+  },
+  "metrics": [
+    {
+      "metric": "projected_head_to_shoulder_ratio",
+      "measurement": {
+        "value": 0.7121097326996031,
+        "source": "MorphologyCertificateV2"
+      },
+      "allowed": {
+        "min": 0.35,
+        "max": 0.82
+      },
+      "method": "projected canonical mesh region bounds divided by projected shoulder landmarks",
+      "evidence_root": "evidence/anime-forge-phase6-3-geometric-truth-v0.1/phase6-3-after-measurements.json",
+      "pass": true
+    },
+    {
+      "metric": "head_to_torso_ratio",
+      "measurement": {
+        "value": 0.6589719799591761,
+        "source": "MorphologyCertificateV2"
+      },
+      "allowed": {
+        "min": 0.45,
+        "max": 0.74
+      },
+      "method": "projected canonical mesh skull bounds divided by torso region bounds",
+      "evidence_root": "evidence/anime-forge-phase6-3-geometric-truth-v0.1/phase6-3-after-measurements.json",
+      "pass": true
+    },
+    {
+      "metric": "neck_to_skull_connectivity",
+      "measurement": {
+        "required_fields": [
+          "NeckField",
+          "SpineField",
+          "RibcageField"
+        ],
+        "present": true,
+        "components": 1
+      },
+      "allowed": {
+        "required": "one canonical field and mesh component"
+      },
+      "method": "NeckField to SkullField continuity and canonical mesh adjacency",
+      "evidence_root": "evidence/anime-forge-phase6-3-geometric-truth-v0.1/phase6-3-after-measurements.json",
+      "pass": true
+    },
+    {
+      "metric": "neck_to_ribcage_connectivity",
+      "measurement": {
+        "field_components": 1,
+        "gate": {
+          "required_fields": [
+            "NeckField",
+            "SpineField",
+            "RibcageField"
+          ],
+          "present": true,
+          "components": 1
+        }
+      },
+      "allowed": {
+        "required": "NeckField to SpineField to RibcageField bridge"
+      },
+      "method": "NeckField, SpineField and RibcageField continuous morphology field bridge",
+      "evidence_root": "evidence/anime-forge-phase6-3-geometric-truth-v0.1/phase6-3-after-measurements.json",
+      "pass": true
+    },
+    {
+      "metric": "shoulder_symmetry_at_neutral",
+      "measurement": {
+        "vertical_delta_px": 0,
+        "separation_px": 293.54280000000006,
+        "value": 0
+      },
+      "allowed": {
+        "max": 0.02
+      },
+      "method": "neutral posed skeleton shoulder landmarks projected into the front camera",
+      "evidence_root": "evidence/anime-forge-phase6-3-geometric-truth-v0.1/phase6-3-after-measurements.json",
+      "pass": true
+    },
+    {
+      "metric": "face_feature_surface_containment",
+      "measurement": {
+        "attachment_count": 10,
+        "max_normalized_ellipsoid_value": 1
+      },
+      "allowed": {
+        "max_normalized_ellipsoid_value": 1.001
+      },
+      "method": "SurfaceAttachment feature bases evaluated on skull surface before pose and visibility",
+      "evidence_root": "evidence/anime-forge-phase6-3-geometric-truth-v0.1/phase6-3-after-measurements.json",
+      "pass": true
+    },
+    {
+      "metric": "eye_depth_order_under_yaw",
+      "measurement": {
+        "left_depth": 0.0804,
+        "right_depth": 0.0804,
+        "depth_delta": 0
+      },
+      "allowed": {
+        "depth_delta_abs_min": 0.00001
+      },
+      "method": "real DepthBuffer feature sample and projected eye depth under three-quarter yaw",
+      "evidence_root": "evidence/anime-forge-phase6-3-geometric-truth-v0.1/phase6-3-after-measurements.json",
+      "pass": true
+    },
+    {
+      "metric": "nose_depth_relative_to_face",
+      "measurement": {
+        "nose_bridge_z": 0.09331447481730493,
+        "nose_tip_z": 0.10476220895515133,
+        "mouth_z": 0.06891828486395415,
+        "tip_minus_bridge": 0.011447734137846402,
+        "bridge_minus_mouth": 0.024396189953350772
+      },
+      "allowed": {
+        "tip_minus_bridge_min": 0.002,
+        "bridge_minus_mouth_min": -0.02
+      },
+      "method": "SurfaceAttachment local depth order for nose bridge, tip and mouth plane",
+      "evidence_root": "evidence/anime-forge-phase6-3-geometric-truth-v0.1/phase6-3-after-measurements.json",
+      "pass": true
+    },
+    {
+      "metric": "mouth_plane_alignment",
+      "measurement": {
+        "screen_y_min": 122.9513,
+        "screen_y_max": 122.9557,
+        "deviation_px": 0.0043999999999897454
+      },
+      "allowed": {
+        "max_deviation_px": 4
+      },
+      "method": "mouth SurfaceAttachment samples projected into one feature plane",
+      "evidence_root": "evidence/anime-forge-phase6-3-geometric-truth-v0.1/phase6-3-after-measurements.json",
+      "pass": true
+    },
+    {
+      "metric": "hair_root_to_scalp_distance",
+      "measurement": {
+        "root_count": 7,
+        "max_root_distance": 0
+      },
+      "allowed": {
+        "max_distance": 0.008
+      },
+      "method": "scalp surface root attachment distance and epsilon",
+      "evidence_root": "evidence/anime-forge-phase6-3-geometric-truth-v0.1/phase6-3-after-measurements.json",
+      "pass": true
+    },
+    {
+      "metric": "hair_mass_connected_to_root",
+      "measurement": {
+        "mass_count": 3,
+        "curves": 7,
+        "all_curves_connected": true
+      },
+      "allowed": {
+        "required": "every HairRoot reaches guide curve and mass envelope"
+      },
+      "method": "HairRoot to guide curve to mass envelope topology",
+      "evidence_root": "evidence/anime-forge-phase6-3-geometric-truth-v0.1/phase6-3-after-measurements.json",
+      "pass": true
+    },
+    {
+      "metric": "hand_to_wrist_connectivity",
+      "measurement": {
+        "hand_weight_vertices": 199,
+        "mesh_components": 1
+      },
+      "allowed": {
+        "required": "hand and wrist in same canonical surface component"
+      },
+      "method": "hand bone weights and canonical surface component connectivity",
+      "evidence_root": "evidence/anime-forge-phase6-3-geometric-truth-v0.1/phase6-3-after-measurements.json",
+      "pass": true
+    },
+    {
+      "metric": "limb_surface_connected_components",
+      "measurement": {
+        "components": 1,
+        "mesh_components": 1
+      },
+      "allowed": {
+        "max_components": 1
+      },
+      "method": "bilateral limb regions in canonical surface adjacency",
+      "evidence_root": "evidence/anime-forge-phase6-3-geometric-truth-v0.1/phase6-3-after-measurements.json",
+      "pass": true
+    },
+    {
+      "metric": "whole_body_connected_components",
+      "measurement": {
+        "components": 1
+      },
+      "allowed": {
+        "max_components": 1
+      },
+      "method": "full canonical surface triangle adjacency components",
+      "evidence_root": "evidence/anime-forge-phase6-3-geometric-truth-v0.1/phase6-3-after-measurements.json",
+      "pass": true
+    },
+    {
+      "metric": "surface_self_intersection_count",
+      "measurement": {
+        "count": 0
+      },
+      "allowed": {
+        "max": 0
+      },
+      "method": "canonical surface non-adjacent triangle intersection measurement",
+      "evidence_root": "evidence/anime-forge-phase6-3-geometric-truth-v0.1/phase6-3-after-measurements.json",
+      "pass": true
+    },
+    {
+      "metric": "silhouette_disconnected_islands",
+      "measurement": {
+        "views": [
+          {
+            "islands": 0
+          },
+          {
+            "islands": 0
+          },
+          {
+            "islands": 0
+          }
+        ],
+        "max": 0
+      },
+      "allowed": {
+        "max": 0
+      },
+      "method": "visible silhouette component count after native depth rasterization",
+      "evidence_root": "evidence/anime-forge-phase6-3-geometric-truth-v0.1/phase6-3-after-measurements.json",
+      "pass": true
+    },
+    {
+      "metric": "visible_feature_occlusion_correctness",
+      "measurement": {
+        "views": [
+          {
+            "pass": true
+          },
+          {
+            "pass": true
+          },
+          {
+            "pass": true
+          }
+        ],
+        "tested_buffers": [
+          "VisibilityBuffer",
+          "DepthBuffer",
+          "SurfaceIdBuffer",
+          "RegionIdBuffer"
+        ]
+      },
+      "allowed": {
+        "required": "all tested feature samples visible or correctly occluded"
+      },
+      "method": "feature visibility resolved against native depth and surface ID buffers",
+      "evidence_root": "evidence/anime-forge-phase6-3-geometric-truth-v0.1/phase6-3-after-measurements.json",
+      "pass": true
+    },
+    {
+      "metric": "projected_anatomical_ratio_validity",
+      "measurement": {
+        "head_to_shoulder": 0.7121097326996031,
+        "head_to_torso": 0.6589719799591761,
+        "shoulder_symmetry": 0
+      },
+      "allowed": {
+        "head_to_shoulder": [
+          0.35,
+          0.82
+        ],
+        "head_to_torso": [
+          0.45,
+          0.74
+        ],
+        "shoulder_symmetry": [
+          0,
+          0.02
+        ]
+      },
+      "method": "aggregate measured projected anatomy ratios without stylization factors",
+      "evidence_root": "evidence/anime-forge-phase6-3-geometric-truth-v0.1/phase6-3-after-measurements.json",
+      "pass": true
+    }
+  ],
+  "red_metrics": [],
+  "status": "green",
+  "evidence_root": "evidence/anime-forge-phase6-3-geometric-truth-v0.1/phase6-3-after-measurements.json",
+  "measurement_policy": "all metrics require measured field, mesh, attachment, depth, or projection evidence; human visual acceptance remains separate"
+}

@@ -1,0 +1,9 @@
+{
+  "format": "rncs.anime-forge-phase6-3-audio-video-sync-report.v0.1",
+  "status": "blocked",
+  "video_duration_seconds": null,
+  "audio_duration_seconds": 5,
+  "duration_delta_seconds": null,
+  "audio_authority": "deterministic WAV placeholder for pipeline verification; final Voice Forge authority remains separate",
+  "failure": "MEDIA_TOOL_NOT_FOUND"
+}

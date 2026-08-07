@@ -5,6 +5,7 @@ import {compileMorphology} from '../src/canonical-morphology.mjs';
 import {performanceStateForFrame,solveKinematics,validateKinematics,boneMap} from '../src/kinematics.mjs';
 import {solveDeformation,validateDeformedGeometry} from '../src/deformation.mjs';
 import {projectFrameGeometry,validateProjection} from '../src/projection.mjs';
+import {validateCanonicalSurfaceMesh} from '../src/canonical-surface-mesh.mjs';
 
 const views=['front','three-quarter-left','three-quarter-right','head-turn'];
 const poses=['neutral','alert','action'];
@@ -23,13 +24,16 @@ function assertGeometry(asset,posed,geometry,projected){
   assert.deepEqual(elbow.world_start,upper.world_end);assert.deepEqual(wrist.world_start,fore.world_end);assert.deepEqual(hand.world_start,wrist.world_start);assert.deepEqual(neck.world_start,rib.world_end);
   for(const anchor of asset.surface_templates.scalp_surface.anchors)assert.ok(anchor.local_position.every(Number.isFinite));
   assert.equal(validateKinematics(posed).valid,true);assert.equal(validateDeformedGeometry(geometry).valid,true);assert.equal(validateProjection(projected).valid,true);
+  assert.equal(asset.field_validation.valid,true);assert.equal(asset.mesh_validation.valid,true);assert.equal(validateCanonicalSurfaceMesh(asset.canonical_surface_mesh).valid,true);
+  assert.equal(asset.canonical_surface_mesh.connected_components.length,1);assert.equal(asset.canonical_surface_mesh.vertices.length,asset.canonical_surface_mesh.normals.length);
+  assert.deepEqual(asset.proportions.constraint_solution.violations,[]);
   assert.ok(geometry.surfaces.primitives.some(item=>item.id==='garment-coat'));assert.ok(geometry.surfaces.primitives.some(item=>item.id==='hair-crown'));
 }
 
 test('1000 genomes x poses x camera yaw/pitch never silently emit malformed geometry',()=>{
   let checked=0;
   for(let index=0;index<1000;index+=1){
-    const asset=compileMorphology(fuzzGenome(index));
+    const asset=compileMorphology(fuzzGenome(index),{surface_resolution:'property',certificate_mode:'property'});
     assert.equal(Object.values(asset.certificate.gates).every(Boolean),true,`certificate ${index}`);
     for(let poseIndex=0;poseIndex<poses.length;poseIndex+=1){
       const performance=performanceStateForFrame(asset,{view:views[(index+poseIndex)%views.length],pose:poses[poseIndex],frame:37,totalFrames:120}),posed=solveKinematics(asset,performance),geometry=solveDeformation(asset,posed,performance);

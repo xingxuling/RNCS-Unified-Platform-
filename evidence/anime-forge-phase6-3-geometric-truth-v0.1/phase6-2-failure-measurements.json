@@ -1,0 +1,432 @@
+{
+  "format": "rncs.anime-forge-phase6-2-failure-measurements.v0.1",
+  "phase": "6.2",
+  "baseline_commit": "34b4e3825091890961e7a222506c3f3e21eb183e",
+  "source_fixture": {
+    "fixture_id": "phase6-1-supplied-frame-2026-08-07",
+    "source_asset": "morphology-regression-fixture/phase6-1-supplied-frame.png",
+    "source_sha256": "5c91c372662bfefa99c8386659d99958e5f906e0a861fd7f3088c4fc7945369c",
+    "observed_image_sha256": "5c91c372662bfefa99c8386659d99958e5f906e0a861fd7f3088c4fc7945369c",
+    "source_kind": "user-supplied-phase6-1-output-screenshot",
+    "observed_failures": [
+      "head-face attachment is not a single skull-local surface",
+      "hair mass and scalp attachment are not one canonical field",
+      "neck, shoulder girdle, ribcage and garment read as separate primitives",
+      "elbow and forearm read as a mechanical capsule junction",
+      "hand and wrist are not derived from the same posed surface",
+      "camera and style choices visibly expose geometry discontinuity"
+    ]
+  },
+  "phase62_visual_review": {
+    "status": "candidate-pending-human-review",
+    "human_visual_acceptance": "pending",
+    "review_root": "1512f2cebd30a456f79392ed8eb770cf0a17fe5461f17c6040786a98f3d29663",
+    "post_fix_boundary": "This review confirms that diagnostic images were inspected and the known Phase 6.1 visual failure is reduced in the candidate pack. It does not grant human acceptance, commercial anime quality, or professional production parity."
+  },
+  "measurement_input": {
+    "view": "three-quarter-right",
+    "pose": "neutral",
+    "frame": 0,
+    "camera": {
+      "width": 640,
+      "height": 360,
+      "yaw": 0.5934119456780721,
+      "pitch": 0,
+      "scale": 1,
+      "projection": "orthographic-perspective-hybrid"
+    }
+  },
+  "old_kernel": {
+    "format": "rncs.anime-forge-geometric-truth-measurements.v0.1",
+    "source": {
+      "kind": "phase6-2-human-rejection-fixture-plus-old-kernel",
+      "image": "morphology-regression-fixture/phase6-1-supplied-frame.png",
+      "asset_root": "1e476e0d225ec1f3b38e62ff6df024c5f434fabd310385641a4109be430d0d33",
+      "pose_root": "009bd454236fccdf4a3b571905ff4c2a9598bedb44853bdc9c2683f6519e81e4",
+      "projection_root": "4af0c557b8e223cdd972b8d8c32f674be2f3d7b71b646bafaff34f8eadbec5b9"
+    },
+    "representation": {
+      "mesh_present": false,
+      "field_present": false,
+      "mesh_root": null,
+      "field_root": null
+    },
+    "metrics": [
+      {
+        "metric": "projected_head_to_shoulder_ratio",
+        "measurement": {
+          "value": 1.0418587320380062,
+          "head_width_px": 173.358,
+          "shoulder_distance_px": 166.39300000000003
+        },
+        "allowed": {
+          "min": 0.35,
+          "max": 0.82
+        },
+        "method": "projected head-surface bounds divided by projected neutral shoulder landmark distance",
+        "evidence_root": "c6c2a1c67581dc2979227bc46250e575a97b6513677729c636a579c2169c3535",
+        "pass": false
+      },
+      {
+        "metric": "head_to_torso_ratio",
+        "measurement": {
+          "value": 0.8385334731288012,
+          "head_height_px": 91.094,
+          "torso_height_px": 108.63489999999999
+        },
+        "allowed": {
+          "min": 0.45,
+          "max": 0.74
+        },
+        "method": "projected head-surface height divided by garment torso bounds height",
+        "evidence_root": "c6c2a1c67581dc2979227bc46250e575a97b6513677729c636a579c2169c3535",
+        "pass": false
+      },
+      {
+        "metric": "neck_to_skull_connectivity",
+        "measurement": {
+          "available": false,
+          "value": null,
+          "required_representation": "canonical_surface_mesh"
+        },
+        "allowed": {
+          "required": "one_connected_surface_component"
+        },
+        "method": "canonical mesh adjacency between neck and skull regions",
+        "evidence_root": "c6c2a1c67581dc2979227bc46250e575a97b6513677729c636a579c2169c3535",
+        "pass": false
+      },
+      {
+        "metric": "neck_to_ribcage_connectivity",
+        "measurement": {
+          "available": false,
+          "value": null,
+          "required_representation": "canonical_surface_mesh"
+        },
+        "allowed": {
+          "required": "one_connected_surface_component"
+        },
+        "method": "canonical mesh adjacency between neck and ribcage regions",
+        "evidence_root": "c6c2a1c67581dc2979227bc46250e575a97b6513677729c636a579c2169c3535",
+        "pass": false
+      },
+      {
+        "metric": "shoulder_symmetry_at_neutral",
+        "measurement": {
+          "vertical_delta_px": 0,
+          "separation_px": 166.39300000000003,
+          "value": 0
+        },
+        "allowed": {
+          "max": 0.02
+        },
+        "method": "neutral projected shoulder vertical delta divided by shoulder separation",
+        "evidence_root": "c6c2a1c67581dc2979227bc46250e575a97b6513677729c636a579c2169c3535",
+        "pass": true
+      },
+      {
+        "metric": "face_feature_surface_containment",
+        "measurement": {
+          "available": true,
+          "contained": 0,
+          "total": 10,
+          "ratio": 0,
+          "values": [
+            {
+              "id": "left_brow",
+              "value": 1.0792000000000002
+            },
+            {
+              "id": "right_brow",
+              "value": 1.0792000000000002
+            },
+            {
+              "id": "left_eye",
+              "value": 1.3352
+            },
+            {
+              "id": "right_eye",
+              "value": 1.3352
+            },
+            {
+              "id": "nose_bridge",
+              "value": 1.2953000000000001
+            },
+            {
+              "id": "nose_tip",
+              "value": 1.7799999999999998
+            },
+            {
+              "id": "mouth_left",
+              "value": 1.8700999999999997
+            },
+            {
+              "id": "mouth_center",
+              "value": 1.8300999999999998
+            },
+            {
+              "id": "mouth_right",
+              "value": 1.8700999999999997
+            },
+            {
+              "id": "chin",
+              "value": 1.9720000000000002
+            }
+          ]
+        },
+        "allowed": {
+          "min_ratio": 0.95,
+          "max_normalized_ellipsoid_value": 1
+        },
+        "method": "skull-local feature points evaluated against the canonical skull ellipsoid before projection",
+        "evidence_root": "c6c2a1c67581dc2979227bc46250e575a97b6513677729c636a579c2169c3535",
+        "pass": false
+      },
+      {
+        "metric": "eye_depth_order_under_yaw",
+        "measurement": {
+          "visibility_buffer_present": false,
+          "eye_depths": [
+            0.10293096,
+            0.10293096
+          ]
+        },
+        "allowed": {
+          "required": "measured_near_eye_and_far_eye"
+        },
+        "method": "VisibilityBuffer and depth comparison under three-quarter yaw",
+        "evidence_root": "c6c2a1c67581dc2979227bc46250e575a97b6513677729c636a579c2169c3535",
+        "pass": false
+      },
+      {
+        "metric": "nose_depth_relative_to_face",
+        "measurement": {
+          "nose_bridge_z": 0.10760964,
+          "nose_tip_z": 0.11930634,
+          "mouth_z": 0.1052703,
+          "tip_minus_bridge": 0.01169669999999999,
+          "bridge_minus_mouth": 0.002339340000000009
+        },
+        "allowed": {
+          "tip_minus_bridge_min": 0.002,
+          "bridge_minus_mouth_min": -0.02
+        },
+        "method": "world-space face anchor depth ordering before camera projection",
+        "evidence_root": "c6c2a1c67581dc2979227bc46250e575a97b6513677729c636a579c2169c3535",
+        "pass": true
+      },
+      {
+        "metric": "mouth_plane_alignment",
+        "measurement": {
+          "available": true,
+          "deviation": 0.6166666666666742,
+          "point_count": 3,
+          "value": 0.6166666666666742
+        },
+        "allowed": {
+          "max_deviation_px": 4
+        },
+        "method": "maximum mouth feature point deviation from its projected center plane",
+        "evidence_root": "c6c2a1c67581dc2979227bc46250e575a97b6513677729c636a579c2169c3535",
+        "pass": true
+      },
+      {
+        "metric": "hair_root_to_scalp_distance",
+        "measurement": {
+          "available": true,
+          "distances": [
+            {
+              "anchor_id": "scalp-0",
+              "distance": 0,
+              "source": "legacy-contour-root-equals-scalp-anchor"
+            },
+            {
+              "anchor_id": "scalp-1",
+              "distance": 0,
+              "source": "legacy-contour-root-equals-scalp-anchor"
+            },
+            {
+              "anchor_id": "scalp-2",
+              "distance": 0,
+              "source": "legacy-contour-root-equals-scalp-anchor"
+            },
+            {
+              "anchor_id": "scalp-3",
+              "distance": 0,
+              "source": "legacy-contour-root-equals-scalp-anchor"
+            },
+            {
+              "anchor_id": "scalp-4",
+              "distance": 0,
+              "source": "legacy-contour-root-equals-scalp-anchor"
+            },
+            {
+              "anchor_id": "scalp-5",
+              "distance": 0,
+              "source": "legacy-contour-root-equals-scalp-anchor"
+            },
+            {
+              "anchor_id": "scalp-6",
+              "distance": 0,
+              "source": "legacy-contour-root-equals-scalp-anchor"
+            }
+          ],
+          "max_distance": 0,
+          "root_count": 7
+        },
+        "allowed": {
+          "max_distance": 0.008
+        },
+        "method": "distance from each legacy hair root to its paired scalp anchor; a future field must replace this equality proxy",
+        "evidence_root": "c6c2a1c67581dc2979227bc46250e575a97b6513677729c636a579c2169c3535",
+        "pass": true
+      },
+      {
+        "metric": "hair_mass_connected_to_root",
+        "measurement": {
+          "field_present": false,
+          "root_id_count": 7,
+          "mass_count": 3
+        },
+        "allowed": {
+          "required": "field_root_to_mass_connected_component"
+        },
+        "method": "field topology and mesh adjacency from scalp roots to hair mass",
+        "evidence_root": "c6c2a1c67581dc2979227bc46250e575a97b6513677729c636a579c2169c3535",
+        "pass": false
+      },
+      {
+        "metric": "hand_to_wrist_connectivity",
+        "measurement": {
+          "available": false,
+          "value": null,
+          "required_representation": "canonical_surface_mesh"
+        },
+        "allowed": {
+          "required": "hand_and_wrist_in_same_surface_component"
+        },
+        "method": "canonical mesh adjacency from hand region to wrist region",
+        "evidence_root": "c6c2a1c67581dc2979227bc46250e575a97b6513677729c636a579c2169c3535",
+        "pass": false
+      },
+      {
+        "metric": "limb_surface_connected_components",
+        "measurement": {
+          "available": false,
+          "value": null,
+          "required_representation": "canonical_surface_mesh"
+        },
+        "allowed": {
+          "max_components": 2
+        },
+        "method": "connected-component count for left and right limb surface regions",
+        "evidence_root": "c6c2a1c67581dc2979227bc46250e575a97b6513677729c636a579c2169c3535",
+        "pass": false
+      },
+      {
+        "metric": "whole_body_connected_components",
+        "measurement": {
+          "available": false,
+          "value": null,
+          "required_representation": "canonical_surface_mesh"
+        },
+        "allowed": {
+          "max_components": 1
+        },
+        "method": "connected-component count for the full posed canonical surface",
+        "evidence_root": "c6c2a1c67581dc2979227bc46250e575a97b6513677729c636a579c2169c3535",
+        "pass": false
+      },
+      {
+        "metric": "surface_self_intersection_count",
+        "measurement": {
+          "mesh_present": false,
+          "count": null
+        },
+        "allowed": {
+          "max": 0
+        },
+        "method": "triangle-triangle and bounded field overlap checks on the canonical surface",
+        "evidence_root": "c6c2a1c67581dc2979227bc46250e575a97b6513677729c636a579c2169c3535",
+        "pass": false
+      },
+      {
+        "metric": "silhouette_disconnected_islands",
+        "measurement": {
+          "visibility_buffer_present": false,
+          "islands": null
+        },
+        "allowed": {
+          "max": 0
+        },
+        "method": "connected components of the visible silhouette mask after depth resolution",
+        "evidence_root": "c6c2a1c67581dc2979227bc46250e575a97b6513677729c636a579c2169c3535",
+        "pass": false
+      },
+      {
+        "metric": "visible_feature_occlusion_correctness",
+        "measurement": {
+          "visibility_buffer_present": false,
+          "tested_features": [
+            "eyes",
+            "nose",
+            "mouth",
+            "hairline"
+          ]
+        },
+        "allowed": {
+          "required": "depth_and_surface_id_evidence"
+        },
+        "method": "feature visibility compared against DepthBuffer, SurfaceIdBuffer, and RegionIdBuffer",
+        "evidence_root": "c6c2a1c67581dc2979227bc46250e575a97b6513677729c636a579c2169c3535",
+        "pass": false
+      },
+      {
+        "metric": "projected_anatomical_ratio_validity",
+        "measurement": {
+          "head_to_shoulder": 1.0418587320380062,
+          "head_to_torso": 0.8385334731288012,
+          "shoulder_symmetry": 0
+        },
+        "allowed": {
+          "head_to_shoulder": [
+            0.35,
+            0.82
+          ],
+          "head_to_torso": [
+            0.45,
+            0.74
+          ],
+          "shoulder_symmetry": [
+            0,
+            0.02
+          ]
+        },
+        "method": "aggregate of measured projected anatomy ratios; no style factor is used",
+        "evidence_root": "c6c2a1c67581dc2979227bc46250e575a97b6513677729c636a579c2169c3535",
+        "pass": false
+      }
+    ],
+    "red_metrics": [
+      "projected_head_to_shoulder_ratio",
+      "head_to_torso_ratio",
+      "neck_to_skull_connectivity",
+      "neck_to_ribcage_connectivity",
+      "face_feature_surface_containment",
+      "eye_depth_order_under_yaw",
+      "hair_mass_connected_to_root",
+      "hand_to_wrist_connectivity",
+      "limb_surface_connected_components",
+      "whole_body_connected_components",
+      "surface_self_intersection_count",
+      "silhouette_disconnected_islands",
+      "visible_feature_occlusion_correctness",
+      "projected_anatomical_ratio_validity"
+    ],
+    "status": "red",
+    "evidence_root": "c6c2a1c67581dc2979227bc46250e575a97b6513677729c636a579c2169c3535",
+    "measurement_policy": "missing-geometric-authority-is-a-measured-RED-result"
+  },
+  "interpretation": "Measured RED feedback for the supplied Phase 6.2 rejection fixture and the current contour output. This is not an anime quality score and does not automate human acceptance.",
+  "status": "red"
+}

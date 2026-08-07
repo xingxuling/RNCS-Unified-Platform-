@@ -1,0 +1,20 @@
+{
+  "format": "rncs.anime-forge-phase6-3-status.v0.1",
+  "phase": "6.3",
+  "status": "static-geometric-gates-pass-media-candidate-pending-human-review",
+  "static_validation": {
+    "valid": true,
+    "failures": []
+  },
+  "geometric_truth": {
+    "status": "green",
+    "red_metrics": []
+  },
+  "five_second_episode_allowed": true,
+  "media_status": "blocked",
+  "media_reason": "MEDIA_TOOL_NOT_FOUND",
+  "human_visual_acceptance": "pending",
+  "commercial_animation_quality": "not-proven",
+  "next_entry": "provide-ffmpeg-and-rerun-media-evidence",
+  "status_root": "d70dce62c2c2edc0b96341d3400d6d3cc68c1102f0dabc1569164e97735051c6"
+}

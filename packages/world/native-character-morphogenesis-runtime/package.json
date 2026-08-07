@@ -10,6 +10,14 @@
     "./renderer": "./src/renderer.mjs",
     "./canonical-morphology": "./src/canonical-morphology.mjs",
     "./build62": "./src/build62.mjs"
+    ,"./canonical-surface-mesh": "./src/canonical-surface-mesh.mjs",
+    "./surface-attachments": "./src/surface-attachments.mjs"
+    ,"./surface-skinning": "./src/surface-skinning.mjs",
+    "./native-visibility": "./src/native-visibility.mjs",
+    "./native-surface-runtime": "./src/native-surface-runtime.mjs",
+    "./morphology-certificate-v2": "./src/morphology-certificate-v2.mjs",
+    "./anime-visual-grammar": "./src/anime-visual-grammar.mjs",
+    "./native-anime-renderer": "./src/native-anime-renderer.mjs"
   },
   "files": ["src", "schemas", "tests", "README.md", "STATUS.md"],
   "scripts": {

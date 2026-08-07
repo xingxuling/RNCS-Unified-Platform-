@@ -1,0 +1,2176 @@
+{
+  "format": "rncs.anime-forge-phase6-3-frame-manifest.v0.1",
+  "episode_id": "EP01-PHASE6-3-GEOMETRIC-TRUTH",
+  "authority": "Episode Production IR",
+  "fps": 24,
+  "width": 640,
+  "height": 360,
+  "frame_count": 120,
+  "duration_seconds": 5,
+  "provider_id": "rncs.native-surface-visibility-cpu",
+  "deterministic": true,
+  "seed": "phase6-3-native-geometric-truth",
+  "frames": [
+    {
+      "frame_number": 1,
+      "time_seconds": 0,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000001.png",
+      "file_sha256": "0c2daf301d7e853e5325ad60cf444ec65821123c54f59a8cb9a4f6a5ec1b0d44",
+      "frame_root": "bb11288dab690ff9cf8be083dba2aa29aa3b650efdfe20324c0bd0b00f4c7585",
+      "visibility_root": "7d6fbb844aaa63fc26231e389d31730b2d9a43f4f4a951e7de6399e57b682511",
+      "secondary_motion": {
+        "hair_lag": 0.010097651817694758,
+        "costume_lag": 0,
+        "breath": 0,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 2,
+      "time_seconds": 0.041667,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000002.png",
+      "file_sha256": "67c56382445dbd58fca29e30a9deec434ea81a25e0a113a5929f5baa40106952",
+      "frame_root": "a8347b4df70f99693e985f7c61dfba1a008e31c9fcd9de167c7c1590929b108e",
+      "visibility_root": "d9fef147d65f99a7f5938b66a9ffe25b7a8ba8dcb50f0931b95a5a9b0e69a74f",
+      "secondary_motion": {
+        "hair_lag": 0.010425755535315837,
+        "costume_lag": 0.00042220277704369896,
+        "breath": 0.0005264667993175739,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 3,
+      "time_seconds": 0.083333,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000003.png",
+      "file_sha256": "95a34866e5d8cbf6a473912992d8e2571b7c80c603cc437329f94ea8481b2a10",
+      "frame_root": "c4faf3ec094e0fe6fcf187fe73e2c8cdb96fd9ab7b5e7cd093e2b44a488cc124",
+      "visibility_root": "ffa99c0c359fd04720ffbedc28f84c45ca9ddda73de68fc1ce99c3300d683a3a",
+      "secondary_motion": {
+        "hair_lag": 0.010724800802328453,
+        "costume_lag": 0.000843228799222782,
+        "breath": 0.001043773795592067,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 4,
+      "time_seconds": 0.125,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000004.png",
+      "file_sha256": "41e070d3966732a78e8b2aa53c10494952ec6faccf6a35acff6df403456ad5ec",
+      "frame_root": "277883cbec36ee5410898a9d5717d87e20b779b2460df4f6e2aa5f9580f0d617",
+      "visibility_root": "afdac3886a3d4e3946bd6565a002bbfccf8de3607a3dc6876b7d466ae5239260",
+      "secondary_motion": {
+        "hair_lag": 0.010993954125937606,
+        "costume_lag": 0.0012619045914995003,
+        "breath": 0.0015429205538391184,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 5,
+      "time_seconds": 0.166667,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000005.png",
+      "file_sha256": "aa98aefca0652669c17676f841e51bbc000e3fdc4c8a4f9b27019440990b830d",
+      "frame_root": "26656bcaba5a2b0aba3d73c654912bd6d966bd2ef8c719c0fb692369352afa6d",
+      "visibility_root": "d86f68e1b0c28a75ad992fed7eded803348636f45ae4183507450992e1f86867",
+      "secondary_motion": {
+        "hair_lag": 0.01123246532755588,
+        "costume_lag": 0.0016770632293483722,
+        "breath": 0.002015222602405318,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 6,
+      "time_seconds": 0.208333,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000006.png",
+      "file_sha256": "45ccb7f7e3db4493e96aa70d160d9225e446cea7fe1a3ce42a3725d539b8e39d",
+      "frame_root": "aae7938b483ef9029c00792ec997b8e92fd8bc8fb2a6f1bc8e3ea16f0ea825df",
+      "visibility_root": "1db220273227747270644b3ee5fd14fa4ca59d5dc3120c0e949806a3a7797c23",
+      "secondary_motion": {
+        "hair_lag": 0.011439669633685727,
+        "costume_lag": 0.002087547591184134,
+        "breath": 0.0024524625309101486,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 7,
+      "time_seconds": 0.25,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000007.png",
+      "file_sha256": "67f24ffeda2bd96d68ca4e7f2497a9e2f522b52c14768560524af0ce2b4fc5a7",
+      "frame_root": "184fb28a80962192850dd3e2c18f77e5294701ff04381049967c01a53d039a00",
+      "visibility_root": "44b817eb9e420ca43d7c35be6f83d25ecb623e3c455063e13839981137902526",
+      "secondary_motion": {
+        "hair_lag": 0.011614989528762436,
+        "costume_lag": 0.0024922135834671323,
+        "breath": 0.0028470329619598844,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 8,
+      "time_seconds": 0.291667,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000008.png",
+      "file_sha256": "35300ecce3220c38a0101bed270708d73085d79551387838be924312eb54884f",
+      "frame_root": "d19c4da07162f35698f353ca1e450648c3feb699856747250bca392fb3dcd39b",
+      "visibility_root": "f5af64d273dda9d3a6c2bb788d1a5a1f0f8748fb597eedbbbd42989eca22d82e",
+      "secondary_motion": {
+        "hair_lag": 0.011757936364793588,
+        "costume_lag": 0.0028899333294972233,
+        "breath": 0.003192068909120958,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 9,
+      "time_seconds": 0.333333,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000009.png",
+      "file_sha256": "b18f777390afe66579accb2edde04eeef69fde25ffcc23de1f70017a74bbbe84",
+      "frame_root": "847a199e243c447c9ae3c4ea72bbc60b1dca1010006e0e932271df38677d5fcb",
+      "visibility_root": "002573bac84f2344e3d81d3f8ac6b82a9928fcdbe56ba07ad73d268ccc5081c6",
+      "secondary_motion": {
+        "hair_lag": 0.011868111723308658,
+        "costume_lag": 0.0032795983130084285,
+        "breath": 0.0034815672183048786,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 10,
+      "time_seconds": 0.375,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000010.png",
+      "file_sha256": "2633862c8f919d87c626f25fa191fc305626abc6b8fdc51556ba3f9e4febfba9",
+      "frame_root": "9372a5f66daf35df1ea2d6c6092368eaf6dc3aa2073710f8b18509d636765efb",
+      "visibility_root": "587549c2e5f1a248c72036acb555924f9ea02ad9d4b679f48c3a1af689943008",
+      "secondary_motion": {
+        "hair_lag": 0.011945208525822752,
+        "costume_lag": 0.0036601224678025845,
+        "breath": 0.0037104910144477913,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 11,
+      "time_seconds": 0.416667,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000011.png",
+      "file_sha256": "41cf1b1fbff100e730e84249f293da6474e86a34a69158417fb65da44f0b2c5b",
+      "frame_root": "abcbc287fa5ebd53f94a27012907682147dd721c586917d7e38ba5e8a4f060ec",
+      "visibility_root": "cd9f56416c35536af55e37d27ea503d0ae953cb385ee3ad5c2ff6b6f20d6d79f",
+      "secondary_motion": {
+        "hair_lag": 0.011989011889719415,
+        "costume_lag": 0.004030445204810636,
+        "breath": 0.0038748573362551546,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 12,
+      "time_seconds": 0.458333,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000012.png",
+      "file_sha256": "e86d5b7f307258509c5a6f6473ddb25068063828631e6cceaa155fcf65c053b0",
+      "frame_root": "5a6413687921efa89c11b1580e1a78c3f7b50fc13ca1cb854205bce433687586",
+      "visibility_root": "176afe7562ad0f58c1f9761b2d8893339515a028e1f407f43aa53d2262dbeabb",
+      "secondary_motion": {
+        "hair_lag": 0.01199939972716703,
+        "costume_lag": 0.004389534368144591,
+        "breath": 0.003971806434286694,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 13,
+      "time_seconds": 0.5,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000013.png",
+      "file_sha256": "470c133caa001c3c64ed62bfd0730783f8a9fbe57863dfd43e52a2089afc63ac",
+      "frame_root": "76560452e89a614ad91f62502b7f4ec129a51c2cbbf99d3827d57a8eca67d72e",
+      "visibility_root": "f763f0f85548fe581ecfc38798c311b060764fb31097514786f57d838147327e",
+      "secondary_motion": {
+        "hair_lag": 0.011976343085399502,
+        "costume_lag": 0.004736389111901106,
+        "breath": 0.003999651526689642,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 14,
+      "time_seconds": 0.541667,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000014.png",
+      "file_sha256": "59bcc16528b79fe0d25683599c1cef61308e74df366d3aa13b4426b2bd5e8e75",
+      "frame_root": "a8542cd6fb3ce6aefb89ce7e94640f4689838b2ebe6bc10d6dd73ccd1b6130ad",
+      "visibility_root": "f2bab5104e61e96d1b2717276c4fd7b5c58170cbff573d7d72ba2bfb738811a4",
+      "secondary_motion": {
+        "hair_lag": 0.011919906227412805,
+        "costume_lag": 0.0050700426896985295,
+        "breath": 0.003957908146898478,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 15,
+      "time_seconds": 0.583333,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000015.png",
+      "file_sha256": "c97660037d1d48ac4be6e3804fc770430e2defe12f5a00bdd7ad91cf7f349aa3",
+      "frame_root": "ddcfbe41ea1cd86d1aab32082383c2d2783297829894ac5b5f8f162514bde26b",
+      "visibility_root": "9a27e7b171b092b9c6364bb770ec8757ef3a3cf782e1781b7e20837de9e4eab8",
+      "secondary_motion": {
+        "hair_lag": 0.011830246452852489,
+        "costume_lag": 0.005389565149172458,
+        "breath": 0.0038473025726912763,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 16,
+      "time_seconds": 0.625,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000016.png",
+      "file_sha256": "d19e034bfb7fabd492b89b3ca317ef51cf634c8ec66f465cb11fbf173360fd47",
+      "frame_root": "994d0ab3e45a1c8c881634391bb7fda19d03d48b6969c8a0116c796f75d832f3",
+      "visibility_root": "b40d97908c4ecd00a4ff047009978093d949940626d47ea5ee95d0e94ad6ceb0",
+      "secondary_motion": {
+        "hair_lag": 0.011707613659591356,
+        "costume_lag": 0.005694065923919769,
+        "breath": 0.0036697591899486253,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 17,
+      "time_seconds": 0.666667,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000017.png",
+      "file_sha256": "db28c389ce0643628e251075c5c62d039a87caf6518e7e3b80f2d4f95bc954c2",
+      "frame_root": "f50ab4a7c262d9cefd969aba3774466f168084b8472c7c379b81f513ffdf7cb2",
+      "visibility_root": "2534af28b97237167e5fa31807913ac02c73d9614b7eb7cde6804fcf4f767d9d",
+      "secondary_motion": {
+        "hair_lag": 0.011552349647219266,
+        "costume_lag": 0.005982696315666915,
+        "breath": 0.0034283670109684183,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 18,
+      "time_seconds": 0.708333,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000018.png",
+      "file_sha256": "3dd1aaf8978abf23af47846783c5048298d52d2dbfc28779955f847c95fd05cf",
+      "frame_root": "e27e20f7ea0a00b5cffb48b64e5256265910b0dd0f0f13b24b74683302a55d40",
+      "visibility_root": "724b5762518afdc1999c634bb8ac5c9cdc6dc4615ad00914ec256725034cd2f9",
+      "secondary_motion": {
+        "hair_lag": 0.011364887164386377,
+        "costume_lag": 0.0062546518597442384,
+        "breath": 0.0031273259298721197,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 19,
+      "time_seconds": 0.75,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000019.png",
+      "file_sha256": "544607fd3188a2c38d06d7b1cd0998ff05e367dca7939ac582cb1ff9177385f3",
+      "frame_root": "2ffddbeb0b4768842053ed9312739c8d5df4130719eed5b7f3563f70d572dbbc",
+      "visibility_root": "ad0cf355a02f63aa242826617503dfde51924f9b80d4f6c598caeb01c30f1c5f",
+      "secondary_motion": {
+        "hair_lag": 0.01114574870265504,
+        "costume_lag": 0.006509174567273281,
+        "breath": 0.002771873650184988,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 20,
+      "time_seconds": 0.791667,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000020.png",
+      "file_sha256": "608648f7cc2f88768fcfe9347a24390e32625e7b094d3c44b2e3f01625fa6e72",
+      "frame_root": "00b696ec205a9fa8e548c52082d40d5e269661daa6aa5ea55d994fb09e03a9a9",
+      "visibility_root": "466b8949a46ff6e6dba90d73031d086d85f078ab640b07a21bc9fd3e9591d9e6",
+      "secondary_motion": {
+        "hair_lag": 0.010895545040222103,
+        "costume_lag": 0.006745555037817748,
+        "breath": 0.002368194555950553,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 21,
+      "time_seconds": 0.833333,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000021.png",
+      "file_sha256": "b4f10f494631c656e8f16591238048fbba27b401f91f0d0e8c57db0de9b9c808",
+      "frame_root": "811065a9008c61de4cd1c72ad165bb4cdad627a6656f1449abf9975044d58db6",
+      "visibility_root": "1e9a30257190b23829e6bc522095d412c9939e0b8943a1c8a659f3b0a1cdfe5c",
+      "secondary_motion": {
+        "hair_lag": 0.010614973539570529,
+        "costume_lag": 0.006963134436609757,
+        "breath": 0.0019233121118974366,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 22,
+      "time_seconds": 0.875,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000022.png",
+      "file_sha256": "065a93228777242f4084b847213a800789837224f84a99d0727e519ed0b3bf97",
+      "frame_root": "15b7d0368815849b77c5a69bf5d97dd5a083989c9168dd3e1062c496fe6edffd",
+      "visibility_root": "e07f7aa39f9df363d34b236a20a2987186bf6653effb87745204ff5c0e7b8f2e",
+      "secondary_motion": {
+        "hair_lag": 0.010304816203795078,
+        "costume_lag": 0.007161306330840499,
+        "breath": 0.0014449666647486116,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 23,
+      "time_seconds": 0.916667,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000023.png",
+      "file_sha256": "d77879be68dc1212b09db07983a0e25b608f85ec6cf99e371cc77fc9381c55ad",
+      "frame_root": "e171425981bbc46e9fdd441e6bdc1d2215f22e13ad8de0de22495fc384035777",
+      "visibility_root": "51bee43b3d2e9760a67ddc0010c686524839c349648451979fde58fce7f509bd",
+      "secondary_motion": {
+        "hair_lag": 0.009965937497019422,
+        "costume_lag": 0.0073395183798972505,
+        "breath": 0.0009414807717633688,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 24,
+      "time_seconds": 0.958333,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000024.png",
+      "file_sha256": "780273f08df8cdbcb5684c58a306161985aec6a650d51a4804a9a0d1147058b1",
+      "frame_root": "f1ff1d3c19cbb73e547fb0b0ebabdd349a638c4a74c5aec7c40efcefd4205919",
+      "visibility_root": "1f70212c03633767f928d991178534cbfee18b3ec28d1f4d8dfad26025e866f1",
+      "secondary_motion": {
+        "hair_lag": 0.009599281934979593,
+        "costume_lag": 0.0074972738748357234,
+        "breath": 0.0004216143996113924,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 25,
+      "time_seconds": 1,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000025.png",
+      "file_sha256": "509c8bd7acab88c32b4d90d23deabbdbf2d57c1277efcfe630a926d7207e6759",
+      "frame_root": "d08c780be2962f839f2f8cc76392c4c55d40c47565066371f72be2f039d78874",
+      "visibility_root": "eba510d9e77cbebe10d32646e2178ae44387d66689e192aa3e2803eb96728c31",
+      "secondary_motion": {
+        "hair_lag": 0.00920587145248921,
+        "costume_lag": 0.007634133122796985,
+        "breath": -0.00010558748707934508,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 26,
+      "time_seconds": 1.041667,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000026.png",
+      "file_sha256": "4ea2ec98f1380e37c8e56b0d0a0c660452252171fa900c6e12b97a8a5cd1658d",
+      "frame_root": "2b818121fb1eafcdf3d5632461957c15c68b59b7b852218659991f617a5fb2bc",
+      "visibility_root": "819a5d1d25a2705b1e3836b0ddb50a9a606d5f5fcdcf6781da42c9203903e9df",
+      "secondary_motion": {
+        "hair_lag": 0.008786802555123872,
+        "costume_lag": 0.007749714672510308,
+        "breath": -0.0006309522957497491,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 27,
+      "time_seconds": 1.083333,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000027.png",
+      "file_sha256": "5bdc1866a571f7368bf8b5bcbf1a49919b089e56fc7c82de8bd07af23ee30226",
+      "frame_root": "31a0fb584c25666e844295803c9e51b97f3f222ea5a7d9981937c6314aff42fa",
+      "visibility_root": "22849e056c8da9dd84e96723c415f762611db442f29e80aff0370e924137d70a",
+      "secondary_motion": {
+        "hair_lag": 0.00834324326306345,
+        "costume_lag": 0.007843696377466293,
+        "breath": -0.0011453393964884506,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 28,
+      "time_seconds": 1.125,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000028.png",
+      "file_sha256": "232e1acc4571f2d1ea3e3c6cad62b3bbfaa224ed24be1db0f6287bb2660523f8",
+      "frame_root": "4490fe7f53b50fa3b0d4cc8606fe32d736e69d2b20a962b4e950ece564dc1144",
+      "visibility_root": "54dd2e20bc4f980383d4c99ffcf1f2c6e571245189d9425827c3f3f80efdcc8a",
+      "secondary_motion": {
+        "hair_lag": 0.007876429855610349,
+        "costume_lag": 0.007915816293796956,
+        "breath": -0.0016397991565042136,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 29,
+      "time_seconds": 1.166667,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000029.png",
+      "file_sha256": "12530447c6500ff6b8b1b835bbafd9e68b37267080ab4f1efd112c52ee6b0406",
+      "frame_root": "239e7da9422da5d41f412b4b40e2aa521b0b9d2e270a0a78d8db757c5a7496cb",
+      "visibility_root": "a446c218e03260adcf741631e41b56d4d69eabbbcfdf184ba57158d32edea7c0",
+      "secondary_motion": {
+        "hair_lag": 0.007387663425457361,
+        "costume_lag": 0.007965873410360275,
+        "breath": -0.0021057286515094235,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 30,
+      "time_seconds": 1.208333,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000030.png",
+      "file_sha256": "a6ef72099f48417c72c327ab3641650600993e1c0834f386985b36e1657a914a",
+      "frame_root": "526214663da7065c2c02c0609d4b09ee8d39a595ebce9ddde2c136be71355a17",
+      "visibility_root": "dff7f8bafecd508bc2668e5b55347236ac9e669dbf62e188756057d5c67354c0",
+      "secondary_motion": {
+        "hair_lag": 0.006878306252308977,
+        "costume_lag": 0.007993728208994301,
+        "breath": -0.002535021344849263,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 31,
+      "time_seconds": 1.25,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000031.png",
+      "file_sha256": "f02f124fa5315d4f4db091fd82ab77a96be9f8dd30459dc106900662efb39039",
+      "frame_root": "72b78429c573f9ce10faa175a95aa9a187c07cdc78b2d12d3f87fb8b69d0f98d",
+      "visibility_root": "00f899d422219961606b97a26c848a46269a4df1365ebcfd599d45a578b1a71a",
+      "secondary_motion": {
+        "hair_lag": 0.0063497780059634905,
+        "costume_lag": 0.007999303053379285,
+        "breath": -0.0029202081301642796,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 32,
+      "time_seconds": 1.291667,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000032.png",
+      "file_sha256": "2df0829e9f6890b602cafe79a7b72ebfed44722b3cdcc1e86954a3d83d67f316",
+      "frame_root": "bcd109146898ca20d5dbe63579a267efcd1fce7772415d46ea079a19e36e49c2",
+      "visibility_root": "830441687a663ba4349640e7e991c299079198a9568622fa5eb9948b6771be4f",
+      "secondary_motion": {
+        "hair_lag": 0.005803551789438679,
+        "costume_lag": 0.007982582405424044,
+        "breath": -0.003254587283636641,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 33,
+      "time_seconds": 1.333333,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000033.png",
+      "file_sha256": "3c0e65fe391bc7713104f73586198ae05346df7329c02d439a8dacb87f3bbc80",
+      "frame_root": "5a334f7e7a17785cf05810fa3343839c5f3bb158604f71193a90244f50adeedd",
+      "visibility_root": "bf7ed87b8c9d55ffde676f7172962d14edf5af37ae642347339156d4c075930e",
+      "secondary_motion": {
+        "hair_lag": 0.005241150033169458,
+        "costume_lag": 0.007943612868573388,
+        "breath": -0.003532341064828603,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 34,
+      "time_seconds": 1.375,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000034.png",
+      "file_sha256": "d4d0c7ba2f615a6d9869d3a338e204f6b8253a893c91af5c316ed85eda19fe2f",
+      "frame_root": "355937de58d45ac9dd9e857f4b88a77615c2e73874a11114164be9446ab05924",
+      "visibility_root": "bca01811971d107e1a6ed98435c9d047913a9649cf6425ff35ab75cb2bb974b3",
+      "secondary_motion": {
+        "hair_lag": 0.004664140251721193,
+        "costume_lag": 0.00788250305791598,
+        "breath": -0.003748636937417863,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 35,
+      "time_seconds": 1.416667,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000035.png",
+      "file_sha256": "0e9cdc37f6f2790b81f98d16b8201b2ed7c4362d7d1cd1ded575c0e6d8840a52",
+      "frame_root": "e1f78eefaa603d33cb61add2f592e5bb170cc821033f68e7b56082c6e6b7cb1a",
+      "visibility_root": "56479071f13e11dbb9ab652a78b3a60897c3b731dd3c42b16ad00e1701e2ddf8",
+      "secondary_motion": {
+        "hair_lag": 0.004074130674845493,
+        "costume_lag": 0.007799423297454589,
+        "breath": -0.0038997116487272947,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 36,
+      "time_seconds": 1.458333,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000036.png",
+      "file_sha256": "d40d15caa42c443e6267409a709063a8fa7c6f22e5c7831f882a86814c6b57cc",
+      "frame_root": "41362e9370582ac4d68fdbf7e348fd645138971886e638fcfcbc0efe6eb1b1d4",
+      "visibility_root": "9272569f894ac9893e9a370cda8e6a6ee5d1c315387a8dba45ee743baf473ee4",
+      "secondary_motion": {
+        "hair_lag": 0.003472765765055418,
+        "costume_lag": 0.0076946051453825525,
+        "breath": -0.0039829367051801385,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 37,
+      "time_seconds": 1.5,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000037.png",
+      "file_sha256": "6537437f0a88db0d1f6541afb89e01086c32cf48a4bd13ab3668af38fa1fad56",
+      "frame_root": "510509a6bb81d3fcb2df753f9fa376b0a1c792641dfba225043d2aaf89ef9031",
+      "visibility_root": "843edc5f412a42f0e40afc2968e5d782296ecd81158c3f97b46d206358a77bd5",
+      "secondary_motion": {
+        "hair_lag": 0.002861721634213522,
+        "costume_lag": 0.007568340748689559,
+        "breath": -0.003996864104497151,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 38,
+      "time_seconds": 1.541667,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000038.png",
+      "file_sha256": "788957db36759ff324cab2480d3c021010a7a5edc4a796c6ce5f36bf216eaa27",
+      "frame_root": "3d37edf72d2f9349768f9e9fdf79614ea56166f2585e79eedf51bf9ffa7def16",
+      "visibility_root": "692c06ea3c40ab69551409610be3b562a982714dad83310422e4f20766b2aaf6",
+      "secondary_motion": {
+        "hair_lag": 0.0022427013719074486,
+        "costume_lag": 0.0074209820288955826,
+        "breath": -0.00394125152895799,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 39,
+      "time_seconds": 1.583333,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000039.png",
+      "file_sha256": "262599063b3dc7d301d2d571b1603ff2718214c4d883a1bb0b77fd829db15ad6",
+      "frame_root": "9ff046e3edc0c1920e690e178f1fe3c5d6dff0babf762ce2f30a263d63ee5b89",
+      "visibility_root": "18e5e16157794d00474c0f65ba21771f35365f9a4eca8d5faea3de570fe18e9b",
+      "secondary_motion": {
+        "hair_lag": 0.0016174302986338399,
+        "costume_lag": 0.007252939701182501,
+        "breath": -0.0038170665613984924,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 40,
+      "time_seconds": 1.625,
+      "cut_id": "CUT-PHASE6-3-FRONT",
+      "view": "front",
+      "pose": "neutral",
+      "filename": "episode-frames/frame-000040.png",
+      "file_sha256": "1937d674a7aca99f4edf885f3144d322b037710f78628b25bccb504d86a510b9",
+      "frame_root": "52c07a5478a5d642d64e76af7a112b767c8129f6a3f07263f0dddb20ae4f75fa",
+      "visibility_root": "e1d3d0dd4a69ef3c11d6f005467884ea6352db95006cad7bcf4dc8bbfca88baf",
+      "secondary_motion": {
+        "hair_lag": 0.0009876511570205966,
+        "costume_lag": 0.007064682129657205,
+        "breath": -0.00362646985059125,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 41,
+      "time_seconds": 1.666667,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000041.png",
+      "file_sha256": "18482d01f90e953325d93c88ede10def6e547fa731df78265910f52e9de6bccc",
+      "frame_root": "381b58b7e52a2bfac23809479497aef1bf09c8eb99609f99788ede5c50ee95a2",
+      "visibility_root": "7ddf0fdf52bc4b64a379aa52885fd45685ba48529809dab72a25a9da7f743631",
+      "secondary_motion": {
+        "hair_lag": 0.008621060925276616,
+        "costume_lag": 0.006856734021936837,
+        "breath": -0.0033727775189088733,
+        "overshoot": 0
+      },
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 42,
+      "time_seconds": 1.708333,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000042.png",
+      "file_sha256": "a130eff42d7d9370fd2fbd4524b1df2cead6e5da30044a76da04969848075be4",
+      "frame_root": "7f23d035fc93a6b08a9470ae5766d23621a2f1d805871ba9965f03da49eb6d87",
+      "visibility_root": "4c470c2c1079690d45b0ac557f75f602d7e4563a1b8b9990314e801bac7e7eb6",
+      "secondary_motion": {
+        "hair_lag": 0.00843242307757861,
+        "costume_lag": 0.00662967496669455,
+        "breath": -0.0030604034663252355,
+        "overshoot": 0
+      },
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 43,
+      "time_seconds": 1.75,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000043.png",
+      "file_sha256": "4448e2bd52fdd3f1d015df4364cf64de14fe6b5803f587f7fa7dd2bb9d4cbabf",
+      "frame_root": "665ec1c0a0af09b6ec0644ae17cd7256eca32ccf38e0e37ea2afbf1f487886d5",
+      "visibility_root": "ae45f15ac2d755e4fe292bf712314414914af935c3511d2d282c4142064bdb2b",
+      "secondary_motion": {
+        "hair_lag": 0.008244561187383889,
+        "costume_lag": 0.006384137818241917,
+        "breath": -0.0026947825745862286,
+        "overshoot": 0
+      },
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 44,
+      "time_seconds": 1.791667,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000044.png",
+      "file_sha256": "d58974425e2fd5509874acdac2ed9fd3c41bddc9facacbe35be3da0980b73c1f",
+      "frame_root": "f0d047fffed24191b670bf47a4df13d5286853f2fca195571266953c7a4f13d3",
+      "visibility_root": "6753eee9663dd73275cf08364a80d00f6decdc4191d17531a6abac48207ff4aa",
+      "secondary_motion": {
+        "hair_lag": 0.008059238830518385,
+        "costume_lag": 0.006120806932650465,
+        "breath": -0.0022822761476926218,
+        "overshoot": 0
+      },
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 45,
+      "time_seconds": 1.833333,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000045.png",
+      "file_sha256": "26def577049b06ec27f552c70b2c0e5553a9fa7637362038679c7a45ef257060",
+      "frame_root": "8e932f32f0b3dca6a7b155ef8c890e74f95f7c7e9e1c72ea2bd9a52260c1f429",
+      "visibility_root": "66cd1a116ede27fd58bca0e56288a5203a75afcc24f0fa9dfe65deacbc72b23d",
+      "secondary_motion": {
+        "hair_lag": 0.007878212504673151,
+        "costume_lag": 0.005840416260328561,
+        "breath": -0.0018300612339012903,
+        "overshoot": 0
+      },
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 46,
+      "time_seconds": 1.875,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000046.png",
+      "file_sha256": "6f91d22e2159fb2226289da51c654f4466c13d7719031f2d608a7597d72297a1",
+      "frame_root": "6f8583ebc314c5cf54adf4f592598336dac9e7d9a94bbb9422600ae9b6de14c2",
+      "visibility_root": "e16605d3f711812b9bc280b50cd38d682ed8e39ef8a0730fedcc43c6724ec58f",
+      "secondary_motion": {
+        "hair_lag": 0.007703226733730263,
+        "costume_lag": 0.005543747300369976,
+        "breath": -0.0013460057548909602,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 47,
+      "time_seconds": 1.916667,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000047.png",
+      "file_sha256": "b26adcde2aa576cb14cfc49d443393e64ec140c757fdec576f194b6f0d2ea203",
+      "frame_root": "0d213290463e18c3cc9ad8fdced91dea4d9c02d6ba6b4e0ef2dfb2de1d88ac14",
+      "visibility_root": "c50ffa3d2c097a50d2c3c79143533064209e88cec0edb00ee07f11ab79b1dc01",
+      "secondary_motion": {
+        "hair_lag": 0.007536009205461859,
+        "costume_lag": 0.005231626922375746,
+        "breath": -0.0008385316146741888,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 48,
+      "time_seconds": 1.958333,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000048.png",
+      "file_sha256": "6cabf49de92ff503de229093c9bcb233e6ac5fa2e71a0da2f04855479edf98d5",
+      "frame_root": "3b39124ca650044bfed6db9de7ead936ff1453554dfd44d5b59aa0be809b7f14",
+      "visibility_root": "d39717ab728fab38557b67e69671fb757161aa2d5a51b73f81e7a36914791f0d",
+      "secondary_motion": {
+        "hair_lag": 0.00737826595615447,
+        "costume_lag": 0.004904925061820297,
+        "breath": -0.0003164681699736997,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 49,
+      "time_seconds": 2,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000049.png",
+      "file_sha256": "5d31d9664214455bb567af387c0329a5cac30d83023f5855711a3889e9fd8d53",
+      "frame_root": "c728494a86f197fd81c31340c4f43e277969ae289703113ef796e2e300be8324",
+      "visibility_root": "e0b021c977818a79c19382c6c854af9e5e51ba50169d9217b2b7ffd9deca2e14",
+      "secondary_motion": {
+        "hair_lag": 0.007231676615579882,
+        "costume_lag": 0.00456455229538524,
+        "breath": 0.00021110138852184894,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 50,
+      "time_seconds": 2.041667,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000050.png",
+      "file_sha256": "103fe3c7c127f870dea1ceb7d28d9dadde585ab10b4f7279ddcb2a913ebc8af9",
+      "frame_root": "b0b5b8e3fb9d6accf7fe0e58116787ea2e353e3bd93e3f21c89ef73fb7e9599d",
+      "visibility_root": "2a2878bdd643077ec3c1f628950d95cab70e3a7881746633e7cdfc6777b70c80",
+      "secondary_motion": {
+        "hair_lag": 0.007097889725565708,
+        "costume_lag": 0.004211457303018849,
+        "breath": 0.0007349980712662783,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 51,
+      "time_seconds": 2.083333,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000051.png",
+      "file_sha256": "886ca931e2e1f5f06c24cfe9173b6bdab657ed672e8d31aacae7ccfa5286f285",
+      "frame_root": "316697e9ae457398c4c8bc17ba35255335bffd8db3fb41c3d7c3bfc9018b9fde",
+      "visibility_root": "f724d94aef2d0c4874ef2eb436dee0531000a7cee778dc29a8f9dc012e155a2c",
+      "secondary_motion": {
+        "hair_lag": 0.0069785181452136375,
+        "costume_lag": 0.003846624223794876,
+        "breath": 0.0012461067917335642,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 52,
+      "time_seconds": 2.125,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000052.png",
+      "file_sha256": "3a334b051241d0294429f17a2da8787cd825c6f8f19b69b08467a64a21102764",
+      "frame_root": "0625af981ab4aa2a878b42f400ee2fad50004c74cb50b1a47b8c16597aa2705e",
+      "visibility_root": "73e1b56e1c0c27612048aeed3c290a497f7d1f5085c2f025c0762e346e82e47b",
+      "secondary_motion": {
+        "hair_lag": 0.00687513455557185,
+        "costume_lag": 0.003471069912940466,
+        "breath": 0.0017355349564702315,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 53,
+      "time_seconds": 2.166667,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000053.png",
+      "file_sha256": "e3bb29ede18a7bdd5f645e95af76657a36ac8af3551f5d652fb9f18a14d09627",
+      "frame_root": "9dda352ec1ecea334a18316cc6324bfb5eb18102fc87ee4de9890a6aa3bc4498",
+      "visibility_root": "2bd2dabd5d221d67fa4eea7bb53d6151f003dd0eb96f0004023020714d34a0dc",
+      "secondary_motion": {
+        "hair_lag": 0.006789267076290865,
+        "costume_lag": 0.003085841107678237,
+        "breath": 0.0021947671840722954,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 54,
+      "time_seconds": 2.208333,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000054.png",
+      "file_sha256": "a33ef48748941c803addee4c210e7a692582060205d9816d9cd9f76b6c3dfbaa",
+      "frame_root": "c757226577470bcbe6ff496d165d61ff3663cce64e68c5b12af0315071ea128d",
+      "visibility_root": "c095da9831bee950d2a5e4573b94ee3dda7f68e423b24335baa11e1b029ca87d",
+      "secondary_motion": {
+        "hair_lag": 0.006722395006479981,
+        "costume_lag": 0.002692011509781913,
+        "breath": 0.0026158134611878733,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 55,
+      "time_seconds": 2.25,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000055.png",
+      "file_sha256": "e938a3a7581258a6d021e601c6f915578ce45b9fff2341e79b6c5cf2db20a055",
+      "frame_root": "4dc90290135898db03e2c30c4825bb075108fb66369dac184cda8cbe46c6bfdd",
+      "visibility_root": "1428fb4508b12bc13cc31f4e1d9124a98af24acfc8c1cc7208b0602c0b7f0c3e",
+      "secondary_motion": {
+        "hair_lag": 0.00667594470163535,
+        "costume_lag": 0.002290678792976903,
+        "breath": 0.002991348157833457,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 56,
+      "time_seconds": 2.291667,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000056.png",
+      "file_sha256": "6998ea0aff7abb657dada647130fd00ed74666931b28ddd6a587da26fc245c59",
+      "frame_root": "5ebdc9e31f0f95e6d6e19f79396093fa31337c464f0b3171436121cae7ba028e",
+      "visibility_root": "e510ad947a994b93302918ab7cd66ebc3c31fff7a05e9e9333738830e3a85b8a",
+      "secondary_motion": {
+        "hair_lag": 0.006651285598131376,
+        "costume_lag": 0.001882961543526741,
+        "breath": 0.0033148374833472743,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 57,
+      "time_seconds": 2.333333,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000057.png",
+      "file_sha256": "8b4c0fc639ff9f5c47b72bb2bf62556d2c821020ef1e8ea8186e7383f1eeb1ec",
+      "frame_root": "3f7a140b331acc630c210b80f65dd75b9ac26a32fc04efc82bc031e9f2ae6516",
+      "visibility_root": "bd237fc2728d94dac9eda50e089133935bea57e05f49ad2c9453e3c153eabcf5",
+      "secondary_motion": {
+        "hair_lag": 0.006649726396355917,
+        "costume_lag": 0.001469996142532563,
+        "breath": 0.0035806531654202496,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 58,
+      "time_seconds": 2.375,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000058.png",
+      "file_sha256": "169324332e8069ff0e3f2babbb3e65f7a18b9270b39cb3857a52ae5db5c10fb2",
+      "frame_root": "470abb13f1343f71e095c0b040a080af8c5ba77a35892ab1a74fcfb36d56f406",
+      "visibility_root": "d7005dd6a989125769ee7bb8a71d69133d163dec3cce56abf22536fc6317bf45",
+      "secondary_motion": {
+        "hair_lag": 0.006672511413127599,
+        "costume_lag": 0.0010529335986351473,
+        "breath": 0.0037841703743447795,
+        "overshoot": 0
+      },
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 59,
+      "time_seconds": 2.416667,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000059.png",
+      "file_sha256": "dd91efe2c886ba6039bc134ac4a8180a10f7b06e6c85a10aa2968445813b9391",
+      "frame_root": "26279e2b284ed87932ec26d77fd64c00c627890fb54617bfa35f4c08091ef62a",
+      "visibility_root": "7e0beec010ea13c68467ec9f1e9d00061f7f23017d4c70cc53ad958c8e021c95",
+      "secondary_motion": {
+        "hair_lag": 0.006720817113561654,
+        "costume_lag": 0.0006329363399473984,
+        "breath": 0.003921848188733146,
+        "overshoot": 0
+      },
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 60,
+      "time_seconds": 2.458333,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000060.png",
+      "file_sha256": "b75bca22956093b00646f8cff59c16be82d37e380c1e8c9a3ea165d652bd1660",
+      "frame_root": "28d22deef44a830ac2c00f0246c4b62015a0abd1d6d22a006953250fc85514ed",
+      "visibility_root": "97032fa905a69f5cef10e994ab49e1ab955f5fcbd79bdd78153c4c756c677735",
+      "secondary_motion": {
+        "hair_lag": 0.006795748832050615,
+        "costume_lag": 0.00021117497415869212,
+        "breath": 0.003991291202712022,
+        "overshoot": 0
+      },
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 61,
+      "time_seconds": 2.5,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000061.png",
+      "file_sha256": "6ec2ec9fa59def7923cb153966fac100d6f44a2ff0a7796f62976b7e75a47f15",
+      "frame_root": "5712367b34920041ee18385679ba6f87bc83fa516d4893e3176e73e5f3d38482",
+      "visibility_root": "0bb73638bd27484e9ed4ceae3a6477ef07fe6ccdbd2a33f0f6ce85ad7d9d1e1e",
+      "secondary_motion": {
+        "hair_lag": 0.0068983376914991505,
+        "costume_lag": -0.00021117497415869016,
+        "breath": 0.003991291202712022,
+        "overshoot": 0
+      },
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 62,
+      "time_seconds": 2.541667,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000062.png",
+      "file_sha256": "41babf351058260bfe55b70141be6cdbdf9e8c7fa1b3f810befa825c0a0cd93a",
+      "frame_root": "5d9a025453c92c5a82177c740c96c24cb0e39b0d3444c0e30a08f477fe0f2999",
+      "visibility_root": "910832d6ee1330e7ce15eab0d5a127b13898b808954c8c00dd735ec45a413e47",
+      "secondary_motion": {
+        "hair_lag": 0.0070295377293995865,
+        "costume_lag": -0.000632936339947393,
+        "breath": 0.0039218481887331475,
+        "overshoot": 0
+      },
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 63,
+      "time_seconds": 2.583333,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000063.png",
+      "file_sha256": "0ce731795c3e0fc185e3b7b72af259d1ed2b06985ed2260d0d2f8ba4d37e1f62",
+      "frame_root": "d2ea1ede5f00b0dbe8ba0011967d3d3c079164118776b2c9e35569670886be82",
+      "visibility_root": "41c56c4965a09336633e605e7f46bf91e6b0a37d372d97615ca2d1fe795f8c2e",
+      "secondary_motion": {
+        "hair_lag": 0.007136837178451781,
+        "costume_lag": -0.0010529335986351489,
+        "breath": 0.003784170374344779,
+        "overshoot": 0
+      },
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 64,
+      "time_seconds": 2.625,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000064.png",
+      "file_sha256": "b03308a5809490c63844c418220dbc4237e504dcca65f0d272ccec04959d1e13",
+      "frame_root": "218db2ecb922fe36e756a60036d5199e3dc3aa39e19f6f45304583bd7569b078",
+      "visibility_root": "788a49a85460577d2af79f2541ff9e43d474d6998bb943aea2939e1f46982ebe",
+      "secondary_motion": {
+        "hair_lag": 0.006882916435090378,
+        "costume_lag": -0.001469996142532561,
+        "breath": 0.003580653165420251,
+        "overshoot": 0
+      },
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 65,
+      "time_seconds": 2.666667,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000065.png",
+      "file_sha256": "675faf7aba3eeac50959b79d853b7b96758006eb43951b0dcf9008e4dba4d64d",
+      "frame_root": "eef82f2722fafaf6f7b797f01d66d428360514fb58aaad06ef9a569af24146b4",
+      "visibility_root": "b48ed369cb04c31fcf87e89be02feaa5ea56b140791761862af97f32a64f3951",
+      "secondary_motion": {
+        "hair_lag": 0.006659980997550385,
+        "costume_lag": -0.001882961543526739,
+        "breath": 0.003314837483347274,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 66,
+      "time_seconds": 2.708333,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000066.png",
+      "file_sha256": "00383145314c2abc1652743c78eb2fc8d9d39685543e975bdd1c5b158660680d",
+      "frame_root": "bbf46d047479c95f63de4a248924946465ce94f29ef59e1c9f39690ee25634aa",
+      "visibility_root": "0cdc5c077eeb5ef1b7657b3fb86ea9217677ec9a84e9ad5008ab657d0c12b594",
+      "secondary_motion": {
+        "hair_lag": 0.006468652226881243,
+        "costume_lag": -0.002290678792976898,
+        "breath": 0.0029913481578334633,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 67,
+      "time_seconds": 2.75,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000067.png",
+      "file_sha256": "b7da382e730bedccfaa0047d5a1830b65a01655420edee62ce745cdd99fb3e7c",
+      "frame_root": "bc5671d4f6639a889e1b7671013acbf70231f5d7011ffcf7821c482b633b91c1",
+      "visibility_root": "e13d1b3780d97573052f058543d0e22208b3eb11ff59cbf0da9061992a93a4d6",
+      "secondary_motion": {
+        "hair_lag": 0.006309463390682951,
+        "costume_lag": -0.002692011509781915,
+        "breath": 0.00261581346118787,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 68,
+      "time_seconds": 2.791667,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000068.png",
+      "file_sha256": "c5ae2df7ee5876f8b852fe20b3eb9706bc5d70eda6b66fd0a8c48df73c4c89f1",
+      "frame_root": "de9893023e5e679f76f2a55fb612bc8cad7354f56840bcc0f2c3b0c92e0469ab",
+      "visibility_root": "3bcf64db897dba074e531194678aa62c9c84052fc4b9ce52c003c2478ab06cd9",
+      "secondary_motion": {
+        "hair_lag": 0.006182858176793614,
+        "costume_lag": -0.003085841107678235,
+        "breath": 0.0021947671840722945,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 69,
+      "time_seconds": 2.833333,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000069.png",
+      "file_sha256": "10b59fa4d7e24c8d2555920da9fe530a41ddcc811d26bd19e89b3cc41ee3b822",
+      "frame_root": "dbe4889866173a9d7ab7711de8ea5239b3f1e2ceaca8114cdb46126a0ef0c6f6",
+      "visibility_root": "3666c6530396cf175e57e5c03fce4c509afe4bf6c41ace1dfe5de449c8d0b3bb",
+      "secondary_motion": {
+        "hair_lag": 0.006089189456651864,
+        "costume_lag": -0.0034710699129404643,
+        "breath": 0.001735534956470234,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 70,
+      "time_seconds": 2.875,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000070.png",
+      "file_sha256": "4a9b88f5d7ce98a4eaba08526d3cabc2b51f052ca391d422dde6fa437022dae9",
+      "frame_root": "be44f309d61bfb12362ce29ffef57f570fb42327f41f171a7b248ba80c6039f5",
+      "visibility_root": "ecef841a0bcc44cfe3c4f1a870af1170a78b8607f5d7e1daa713e12b1abc25fa",
+      "secondary_motion": {
+        "hair_lag": 0.00602871830178087,
+        "costume_lag": -0.0038466242237948744,
+        "breath": 0.0012461067917335698,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 71,
+      "time_seconds": 2.916667,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000071.png",
+      "file_sha256": "03b85b0c3cedc1fe8a3a4612c793b6cfd552706887523146bcb1d7c197cbec54",
+      "frame_root": "c2024247a701450e2cd1748f75d628b769fa12c03de16cabe5f7e9edd8451d09",
+      "visibility_root": "fd348ebc40a1da2e735a6b1f08617c3f012469e9a983302ebe262a19a12bfdb4",
+      "secondary_motion": {
+        "hair_lag": 0.00600161325613518,
+        "costume_lag": -0.004211457303018847,
+        "breath": 0.0007349980712662807,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 72,
+      "time_seconds": 2.958333,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000072.png",
+      "file_sha256": "5a3f32701a3e97907901cbc66f41d3530ff2cbf82f6726096d99b2abb79b67d8",
+      "frame_root": "0982bac9b77ec62b118bb91d312bcb85ff0342204daeb5bcf5cba0043f78196f",
+      "visibility_root": "a94954071e27c5b5696d25a247e3f9e8f78f01b5d7f474ac45f28820f67d1db3",
+      "secondary_motion": {
+        "hair_lag": 0.006007949866338484,
+        "costume_lag": -0.004564552295385238,
+        "breath": 0.00021110138852185138,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 73,
+      "time_seconds": 3,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000073.png",
+      "file_sha256": "21eb0223cdd7bae76b178b458132c25d27cc058f0aac3210bd0a79e0aeeb752b",
+      "frame_root": "fb704a73f4d6653aeafe630b7f22dbbab955048077999c4a1863790a58d5a45e",
+      "visibility_root": "3ef23d6111e36b96d4b3cc0d54fe263bb785066b310adb521d417b7e8205e46f",
+      "secondary_motion": {
+        "hair_lag": 0.006047710471121633,
+        "costume_lag": -0.004904925061820293,
+        "breath": -0.0003164681699736938,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 74,
+      "time_seconds": 3.041667,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000074.png",
+      "file_sha256": "cc5362bbfec56b7930bc67a19da2d52c6f1a6c5a7adad93e7bcfa180b57ef4da",
+      "frame_root": "5408c1c628fca4c2a707cb58bf19deb37eb64312abb4a91f326d436c3ae37d8b",
+      "visibility_root": "03222c1c91d3fe54fc29d126eb61d35d4109b17f0c656f651b706fb533a92074",
+      "secondary_motion": {
+        "hair_lag": 0.006120784250547757,
+        "costume_lag": -0.005231626922375744,
+        "breath": -0.0008385316146741863,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 75,
+      "time_seconds": 3.083333,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000075.png",
+      "file_sha256": "630d8c1b3aaa2ce737ab08b7bd9ce4372a372901550b7bb30865fe3e274a107e",
+      "frame_root": "98b37a02129ff61e0062bf1764c25bf4fc05025b4397fb0139c693a3a3a5482d",
+      "visibility_root": "e83f0a3f2420e5489f00da73a2e24f26ef020376e17cc027ea581874910648a9",
+      "secondary_motion": {
+        "hair_lag": 0.006226967534887301,
+        "costume_lag": -0.0055437473003699745,
+        "breath": -0.0013460057548909548,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 76,
+      "time_seconds": 3.125,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000076.png",
+      "file_sha256": "1bd109d2e7904624915ea0833cb02fa1e1e7a65ab6147c03ff4ce7a9e7655805",
+      "frame_root": "905acdde692f4aaf77455229050aecfd93feacb78c748f4e663ed5a91b316b3a",
+      "visibility_root": "9e26330d852ff674c55de4da8fca82f9b250c1801786313950716ac7ef9343d2",
+      "secondary_motion": {
+        "hair_lag": 0.006365964372282108,
+        "costume_lag": -0.005840416260328559,
+        "breath": -0.0018300612339012881,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 77,
+      "time_seconds": 3.166667,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000077.png",
+      "file_sha256": "b047498864d959c6748f6e1e6b1e89839e130f9b30048db78cc2688281cd5b0d",
+      "frame_root": "bfc257b0c005a06a564c1135e42d9d0888099c8f5632377d8e856dd9c174b7b5",
+      "visibility_root": "615c1f3796fb937709aa8fe9c51050421b033edf9490ccbf1ae13b6e2e5afee2",
+      "secondary_motion": {
+        "hair_lag": 0.0065373873536163085,
+        "costume_lag": -0.006120806932650464,
+        "breath": -0.00228227614769262,
+        "overshoot": 0
+      },
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 78,
+      "time_seconds": 3.208333,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000078.png",
+      "file_sha256": "b85d882e96472b33705955b7fc659d6c822cecceda8d288cfe153870e68aac16",
+      "frame_root": "3a707c0aadd79f826cb03fa316c064284fb4afa354073be3064dbbce0ebe8b2a",
+      "visibility_root": "346c3950a545320dc1ed74868f50b8bb17d89bfc426c5b52483db74bb069f350",
+      "secondary_motion": {
+        "hair_lag": 0.006740758692295026,
+        "costume_lag": -0.006384137818241916,
+        "breath": -0.002694782574586227,
+        "overshoot": 0
+      },
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 79,
+      "time_seconds": 3.25,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000079.png",
+      "file_sha256": "26b3909881ef4cf4ee64033c45d4d08dfd452a42083816ab2056c3686d410162",
+      "frame_root": "4ee17a6b8ef7e6dfeddb092f692f54d8efae0925078f6ed84523e5ec98ff7c8a",
+      "visibility_root": "2545e10d084ec45cb3fd89cca49ebe0a0ae34020ebbf8baa8887a915b02cfb2b",
+      "secondary_motion": {
+        "hair_lag": 0.006975511555921306,
+        "costume_lag": -0.006629674966694549,
+        "breath": -0.0030604034663252342,
+        "overshoot": 0
+      },
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 80,
+      "time_seconds": 3.291667,
+      "cut_id": "CUT-PHASE6-3-THREE-QUARTER",
+      "view": "three-quarter-right",
+      "pose": "action",
+      "filename": "episode-frames/frame-000080.png",
+      "file_sha256": "faead37f6b70c42ffcf37b9856da7e00a8cf3d6cdf2780b96873e44a82f9d3fd",
+      "frame_root": "bfeba8abe60e6e0a0041cb5b6e68d92eb56e96d910e148e5c0fb38e463b26967",
+      "visibility_root": "36b4cd8b1cab2d176d1a9f8c36e25e597c6fcb050b62519005002efe91b01069",
+      "secondary_motion": {
+        "hair_lag": 0.007240991646159663,
+        "costume_lag": -0.0068567340219368375,
+        "breath": -0.0033727775189088737,
+        "overshoot": 0
+      },
+      "mouth_shape": "o"
+    },
+    {
+      "frame_number": 81,
+      "time_seconds": 3.333333,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000081.png",
+      "file_sha256": "60805f0c16950e4423d8f8afd9217b5f7e8662767490ce6b7cae98a485dbdb72",
+      "frame_root": "9e4541105c5e688c9fd2b59dc55581f30f1d87e14aff8fe790f20d390ea47ef8",
+      "visibility_root": "3ab17a90e26a1ccdc2aaafe72ab1700a6e5f566c8a4d04446ffb5aca339f9e35",
+      "secondary_motion": {
+        "hair_lag": -0.010463540977617087,
+        "costume_lag": -0.007064682129657206,
+        "breath": -0.0036264698505912517,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 82,
+      "time_seconds": 3.375,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000082.png",
+      "file_sha256": "d5ba97e973a1df825706db3622d490c3b07b7e761c6f2c701448c10713dca334",
+      "frame_root": "1bec96d5d3823e174d00050442590370dd005712dfd8fe1ef721cfb65750df9a",
+      "visibility_root": "aef8a57abdce2660e370e06d849ebe083fe755d50e7a5e2f8d649ca650e8fae5",
+      "secondary_motion": {
+        "hair_lag": -0.010138909835980604,
+        "costume_lag": -0.007252939701182502,
+        "breath": -0.003817066561398493,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 83,
+      "time_seconds": 3.416667,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000083.png",
+      "file_sha256": "60cc83a2194e9beeed41b688a03000618f70e55d684915f78c5af9addfaf6cba",
+      "frame_root": "5b3310ebc9fed5e5361cba624989d626970dfa2e4a8ffc69ce5e788c21cdfa56",
+      "visibility_root": "0fbf64070a31c68bcf0f1fae87e1fc99fcb59e4f2a4d388087d66f15442303ef",
+      "secondary_motion": {
+        "hair_lag": -0.009786019734147479,
+        "costume_lag": -0.007420982028895581,
+        "breath": -0.003941251528957988,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 84,
+      "time_seconds": 3.458333,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000084.png",
+      "file_sha256": "238ac73b6ed5e8152bb213c7c980b8183896bdc555f82c5f3a115902659b9d89",
+      "frame_root": "7c0281d01ce1ef5209c1581f4660498c5a5e80dac87945f18b9dfb4401cfe46f",
+      "visibility_root": "352da7bc0b2786c811b4924893361af7d02540166b06c7e2cb8d5dcc207adf7c",
+      "secondary_motion": {
+        "hair_lag": -0.009405854240124797,
+        "costume_lag": -0.007568340748689557,
+        "breath": -0.003996864104497151,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 85,
+      "time_seconds": 3.5,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000085.png",
+      "file_sha256": "cfdd9e34bfc040b721da57eb7362d832d490be4a937e41082ad34145746b7c63",
+      "frame_root": "889659b1358ffe38e8b3c2faffc8cde9bf443ecbef2e1574cdf973af0aa5245b",
+      "visibility_root": "71c70c2f05057336ae14b5664ca154ab0a28cd07f9640c52cd74aabb7466e3f1",
+      "secondary_motion": {
+        "hair_lag": -0.008999472943329721,
+        "costume_lag": -0.0076946051453825525,
+        "breath": -0.003982936705180138,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 86,
+      "time_seconds": 3.541667,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000086.png",
+      "file_sha256": "eac222d30b64de6e300f52e8b039b46a3d6f2a9c07d44c1eb331570332e14e4b",
+      "frame_root": "799f6149c316cd0424d478f4e37f63fb791bb6578967eca2edb7b35deb8439c6",
+      "visibility_root": "ee97f2df726cccb50ba560e1b8be223346020a4f70f48125ee427e68ce5c1c33",
+      "secondary_motion": {
+        "hair_lag": -0.00856800850132372,
+        "costume_lag": -0.007799423297454589,
+        "breath": -0.003899711648727295,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 87,
+      "time_seconds": 3.583333,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000087.png",
+      "file_sha256": "278ab8f289e4273299c7868718476047a8a3ff815683ace95ca19bb6a17f6880",
+      "frame_root": "08184945d78afe3cbeff7510fe8ff831cdff4fe8974bb1dace3d3c53e0b260d3",
+      "visibility_root": "f44fab97f4661bc40e2485be7ba936f1d61455ac339e021c6663248b32426f9f",
+      "secondary_motion": {
+        "hair_lag": -0.008112663482892806,
+        "costume_lag": -0.00788250305791598,
+        "breath": -0.0037486369374178635,
+        "overshoot": 0.0003016678067361437
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 88,
+      "time_seconds": 3.625,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000088.png",
+      "file_sha256": "20d7401bbe4b1a319add26310a417e8b2504facce8868df231b2fdd47c25c84b",
+      "frame_root": "689008501628912474dd0992a5f309fb7ebae9cce08b95ea914f353fa94d4c88",
+      "visibility_root": "7457bee92cc91ec5a703d59e7bc87f3a488498d115c35b0cad72ab85ffd79a1e",
+      "secondary_motion": {
+        "hair_lag": -0.007634707016272642,
+        "costume_lag": -0.007943612868573386,
+        "breath": -0.0035323410648286056,
+        "overshoot": 0.001241358046672889
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 89,
+      "time_seconds": 3.666667,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000089.png",
+      "file_sha256": "3d896c3bca65f78b91e65851af8da624567e0a476045c7a494d2f0126a16fe63",
+      "frame_root": "14d334268f02b2c9eab2abe9191ee72e9fe917745ef35d5d307e564da436b992",
+      "visibility_root": "ba85fd1f2b4736384a4af93c2758c2bb4098c0fb2d316f1d6956b5452ebd2890",
+      "secondary_motion": {
+        "hair_lag": -0.007135471251860474,
+        "costume_lag": -0.007982582405424044,
+        "breath": -0.003254587283636638,
+        "overshoot": 0.002170021091244641
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 90,
+      "time_seconds": 3.708333,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000090.png",
+      "file_sha256": "94c6e2f4a8793087b9f4d88f07315200299c71fb460afaa4ce114165919597ef",
+      "frame_root": "805e25dc46a223f2275c0784561988fae4ac36ce0126908a3aa429d3cbffaabd",
+      "visibility_root": "e72fb8c19bb6322b38e24a0f58ec0e0fc3328003441aaa46334ac002f66c7190",
+      "secondary_motion": {
+        "hair_lag": -0.006616347649273143,
+        "costume_lag": -0.007999303053379285,
+        "breath": -0.002920208130164279,
+        "overshoot": 0.003079407468151098
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 91,
+      "time_seconds": 3.75,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000091.png",
+      "file_sha256": "3f72622ff0c8bd3eed1b79d5fba2811905d9332e4689efeacb67370d58519135",
+      "frame_root": "46746689aedaf182f1e15173815f796df2b89cea69d6f9e1c2f5b43ef259fffc",
+      "visibility_root": "69eadab07c9cb69c02283e13fce1a7191054d0f265801fe8314a6f3c3381c094",
+      "secondary_motion": {
+        "hair_lag": -0.006078783099099476,
+        "costume_lag": -0.007993728208994301,
+        "breath": -0.0025350213448492704,
+        "overshoot": 0.003961438943020409
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 92,
+      "time_seconds": 3.791667,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000092.png",
+      "file_sha256": "5c31c95cdbee275161495acb687f10b4af90b7bfc992b6d805b59de62f20cb69",
+      "frame_root": "69a61bd478814ac60c4fb0d88cecd4ead7f641751caa2bcd49319733aba98f32",
+      "visibility_root": "fbc02c321bcee51d825ac903d080af35b05c5e7aadac0129af30f43b7f32af2b",
+      "secondary_motion": {
+        "hair_lag": -0.005524275890156719,
+        "costume_lag": -0.007965873410360277,
+        "breath": -0.0021057286515094257,
+        "overshoot": 0.00480828027974359
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 93,
+      "time_seconds": 3.833333,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000093.png",
+      "file_sha256": "6f16adb1c2903232929bcfd68fc831a602edc0e4e14a88815f550966beacf7d4",
+      "frame_root": "c6c57736299f06cf585fb3bdb8af05c11c40750f5c421220f756564ca9d5b3b4",
+      "visibility_root": "e47ef9c9398a49290bfd396ab0fa1c03aa2096276021255259961981ef190b79",
+      "secondary_motion": {
+        "hair_lag": -0.0049543715334909155,
+        "costume_lag": -0.007915816293796956,
+        "breath": -0.001639799156504219,
+        "overshoot": 0.005612408842213982
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 94,
+      "time_seconds": 3.875,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000094.png",
+      "file_sha256": "cda27b1302f715b6540b1bfce2437951893a43b60b203f00d6fa85f10649d0eb",
+      "frame_root": "2051a44b606f0b4e2e6a7cca8322075c71f93c11f83845f3879c99be3e3cc46f",
+      "visibility_root": "8e661910973401a398f0621e5941a3989ab9eba91fd320482eb397ae2c79f77d",
+      "secondary_motion": {
+        "hair_lag": -0.004370658454760391,
+        "costume_lag": -0.007843696377466293,
+        "breath": -0.0011453393964884512,
+        "overshoot": 0.006366681419187467
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 95,
+      "time_seconds": 3.916667,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000095.png",
+      "file_sha256": "8dff61b1c5cb404fb18140740f52b29bb846e4da1e6a019062875c344cba5534",
+      "frame_root": "d88602e71fc98d66596082e855948110b87c813f62e6793d51a5522f03fac173",
+      "visibility_root": "55d84f5306acb6cb1e1c0f60f76eac9379ecb69459d36da3e706b67d8a8f10a5",
+      "secondary_motion": {
+        "hair_lag": -0.0037747635670085542,
+        "costume_lag": -0.007749714672510309,
+        "breath": -0.0006309522957497533,
+        "overshoot": 0.007064397678646998
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 96,
+      "time_seconds": 3.958333,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000096.png",
+      "file_sha256": "aa2fd87abdeb1778c9a6baa9c4d944962eb80d39ec1db31c4483127da87a4b38",
+      "frame_root": "64ac6745411303e2a05036dabf6bbda87563005055686e1b273ab90492be613d",
+      "visibility_root": "482c39fd4d970241f177a335890f17bde7cbbdcbcdea3826c83668c8d8c6271c",
+      "secondary_motion": {
+        "hair_lag": -0.00316834773616545,
+        "costume_lag": -0.007634133122796985,
+        "breath": -0.00010558748707934397,
+        "overshoot": 0.007699359687995277
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 97,
+      "time_seconds": 4,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000097.png",
+      "file_sha256": "64f64b8718b2d3499f4ae794b143b80d7cf2d88139d1e20e9e6389730c149ac0",
+      "frame_root": "693ec979b8babb45d991de0f11edaf85a401844a22e87d749ca9b07d14a767e0",
+      "visibility_root": "3da9b8e282b0478dd900b730058e6d26be088781b253d932b5de5f7ae1068bb4",
+      "secondary_motion": {
+        "hair_lag": -0.0025531011519165214,
+        "costume_lag": -0.0074972738748357234,
+        "breath": 0.00042161439961138994,
+        "overshoot": 0.008265926971347672
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 98,
+      "time_seconds": 4.041667,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000098.png",
+      "file_sha256": "d9332a119f6b94d12b09c6e218717c322cd25f9258e554986986d90a7adfb4f4",
+      "frame_root": "431f0844b057a58ad4bc0a8be972dfe18a269c3605136a2aa267f56c50fe4707",
+      "visibility_root": "4ea885b97f7618088048e81efc1ff551ffa761f3e63ce4d13236208a5c8ed5e5",
+      "secondary_motion": {
+        "hair_lag": -0.0019307386168408089,
+        "costume_lag": -0.00733951837989725,
+        "breath": 0.0009414807717633733,
+        "overshoot": 0.008759066614842069
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 99,
+      "time_seconds": 4.083333,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000099.png",
+      "file_sha256": "d5786a347d766dff68d5964bc59534b3821ccb9f3cd75ed30e5d6445cb3b10d3",
+      "frame_root": "7158e502900915da0729a3d597c70399f1ff94bd215d15ddd9a2914f7c1736f2",
+      "visibility_root": "28e5d3c6af48623d7b8b9c707e59cf213a5fac18734e1a7044a9e350c5756bd7",
+      "secondary_motion": {
+        "hair_lag": -0.0013029947669486158,
+        "costume_lag": -0.007161306330840501,
+        "breath": 0.001444966664748606,
+        "overshoot": 0.009174397974871561
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 100,
+      "time_seconds": 4.125,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000100.png",
+      "file_sha256": "5522c85636d7808c72f15a714c465a1525556e0acb97d971c0274abcde5fc85d",
+      "frame_root": "59a8c940766b6a6dafd7a311851cae8c0554aef06b508b3c1611b399a09becea",
+      "visibility_root": "c18ccd42e49baba7f449528c87375ffe4ce8c9a82e0b9f4e797cc1eecd20619d",
+      "secondary_motion": {
+        "hair_lag": -0.0006716192369397708,
+        "costume_lag": -0.006963134436609755,
+        "breath": 0.0019233121118974424,
+        "overshoot": 0.009508231592089167
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 101,
+      "time_seconds": 4.166667,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000101.png",
+      "file_sha256": "2de9f9feeef9d17ec2894ee8c6847879d21e1e41d0dad36cdd34b00e0ce9bc77",
+      "frame_root": "36ddd56af80bb6b0c701d266d85d02ac2085be82eb705433423c7c98c9f1c91a",
+      "visibility_root": "17d2afb8346638bd3b6284c8fb69995c74209a0109387bf63c51046700ffb944",
+      "secondary_motion": {
+        "hair_lag": -0.000038371783658029645,
+        "costume_lag": -0.00674555503781775,
+        "breath": 0.0023681945559505496,
+        "overshoot": 0.009757601965504781
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 102,
+      "time_seconds": 4.208333,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000102.png",
+      "file_sha256": "e0b621d9c0a2b5394ea23363fd092cb211cf46073797050d0be9b5680637852f",
+      "frame_root": "8489037bdcb87f46429dcc22c5b717594ab33043b4a4631119fcf672fdf012d8",
+      "visibility_root": "d0bd97f4035b1d42adce2af59a5ef3ad4ba2512e8e90fc577033fe529a6938b7",
+      "secondary_motion": {
+        "hair_lag": 0.0005949826186670224,
+        "costume_lag": -0.0065091745672732826,
+        "breath": 0.0027718736501849877,
+        "overshoot": 0.009920293895536577
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 103,
+      "time_seconds": 4.25,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000103.png",
+      "file_sha256": "d9e3c12b36d562b009e7ce98f41fec9ecc94b68a2246c4ff4bf1d854e592da7d",
+      "frame_root": "c39f7328345c1b4601a41974ca5c4c349e14e78a118c706b533b0708c4caeac2",
+      "visibility_root": "7844479a158bd78578f608d9cfbb199dd8806c741fce479fd37f1d31fa9af4e6",
+      "secondary_motion": {
+        "hair_lag": 0.001226678697719592,
+        "costume_lag": -0.006254651859744239,
+        "breath": 0.003127325929872118,
+        "overshoot": 0.009994862162006879
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 104,
+      "time_seconds": 4.291667,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000104.png",
+      "file_sha256": "af0f0aae5ed6b5817891d679f616e74f045879e22cc00368b0a0745fd808bdad",
+      "frame_root": "804ee982c68d1feae7ac4921cc6e505bd6a3509fdb21b1cb1a83d8e25eefe104",
+      "visibility_root": "df51f82f8f88ce27d8072097a42c51f5112b2f32f78cf492efd1e2ed960bea2c",
+      "secondary_motion": {
+        "hair_lag": 0.0018549558032282885,
+        "costume_lag": -0.005982696315666915,
+        "breath": 0.0034283670109684166,
+        "overshoot": 0.009980644362279635
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 105,
+      "time_seconds": 4.333333,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000105.png",
+      "file_sha256": "630534d4e672887b57cd7efe5b56d62ea4214c90cab2ca142082d51350451a47",
+      "frame_root": "e212e38c5f2697638a9569f5ea7ffab7712b70a7be9e10f88c9a108cfa5b622f",
+      "visibility_root": "4dfd2b3546600a9d422a2e73ead3ddcbd8e2cab42a5c797206271fc8535f4920",
+      "secondary_motion": {
+        "hair_lag": 0.0024780628142142044,
+        "costume_lag": -0.005694065923919769,
+        "breath": 0.003669759189948625,
+        "overshoot": 0.009877766795496077
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 106,
+      "time_seconds": 4.375,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000106.png",
+      "file_sha256": "27e0da2252c0f8c89a9bbb3bcfe93c8cf9cef62fd9b5afc0b402ca0a2d4d4f6c",
+      "frame_root": "f7a54e6e8b78265ce10cd1661f453f67053034171059c77af66a0c81d659ebe7",
+      "visibility_root": "de8621bca0091c9614ac88132a8ff5508d331054aa1390852583abc59d14302f",
+      "secondary_motion": {
+        "hair_lag": 0.0030942630196791497,
+        "costume_lag": -0.005389565149172462,
+        "breath": 0.0038473025726912737,
+        "overshoot": 0.009687143340637886
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 107,
+      "time_seconds": 4.416667,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000107.png",
+      "file_sha256": "f4e212a9a1f722559aeca3134364495b299ac616a4549266b90fc32e8bc3bc82",
+      "frame_root": "34c7651790b9aa11b8e05bd73e22c6b3eea54c7f913ee9012fab0db0d921db83",
+      "visibility_root": "56457eafcbdc67748a3f46d8820a6383b72c8d1c9ae2cffe6e075342a25ace9c",
+      "secondary_motion": {
+        "hair_lag": 0.0037018389591307447,
+        "costume_lag": -0.005070042689698529,
+        "breath": 0.003957908146898478,
+        "overshoot": 0.009410467338384255
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 108,
+      "time_seconds": 4.458333,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000108.png",
+      "file_sha256": "545e5b44132bb9e126f7aaedff112f0efd06088c752bac88a0039c80abcef406",
+      "frame_root": "d723611eb3a8b83a1b3b629ac434830b3a2e4a600bd6f528f5fdf6fe436a689f",
+      "visibility_root": "9e4685db839c90d9d7aaaac30fa795a30c2aa05d5d2a2ea66dd5a8d044b9ed36",
+      "secondary_motion": {
+        "hair_lag": 0.004299097209452752,
+        "costume_lag": -0.004736389111901104,
+        "breath": 0.003999651526689642,
+        "overshoot": 0.009050196548877665
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 109,
+      "time_seconds": 4.5,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000109.png",
+      "file_sha256": "80b79b14b6c3611aa8fa05e79a1f00382d63f2e874e5844a957364538d849423",
+      "frame_root": "f38fc9d843ef2e7ee79594f287a5a200fe8eca05df2cbb2ebbada96390f685cd",
+      "visibility_root": "4993dcda974fdc07182cc8c97aba2cfedbcd3b35b533978ba5da29403c0a974e",
+      "secondary_motion": {
+        "hair_lag": 0.004884373104779115,
+        "costume_lag": -0.004389534368144594,
+        "breath": 0.003971806434286694,
+        "overshoot": 0.008609531319021127
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 110,
+      "time_seconds": 4.541667,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000110.png",
+      "file_sha256": "b50ce28e0d15c84788f81a9f158ae99e535bfe2d48b0261b97453b47fb15b9c8",
+      "frame_root": "34b2abba807d312dc6765917476f4510ff06c4c23a48c8457932687830dbedff",
+      "visibility_root": "52a26f6369cde933cfa85fde090db9cad6307f16725a48e6b67c40b557fc01e9",
+      "secondary_motion": {
+        "hair_lag": 0.0054560353762162905,
+        "costume_lag": -0.004030445204810639,
+        "breath": 0.003874857336255156,
+        "overshoot": 0.008092386153250499
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 111,
+      "time_seconds": 4.583333,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000111.png",
+      "file_sha256": "e7437410bbba06f6ffcb300420e280d4ed4b9f300a337fee9bb17f652823fd49",
+      "frame_root": "5cc6660083745f553432d12dff4ae5129b9b316c9f9854e3caa4db2840194eed",
+      "visibility_root": "0b788bed8008b7bd6c7531e71f973908e3d7c4114bd74a5fe3cb2833bc8f78c7",
+      "secondary_motion": {
+        "hair_lag": 0.006012490698482181,
+        "costume_lag": -0.0036601224678025866,
+        "breath": 0.0037104910144477917,
+        "overshoot": 0.007503354940323577
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 112,
+      "time_seconds": 4.625,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000112.png",
+      "file_sha256": "9b151abeecedeb1078c4b5730a9c818f10059be22c05c0ab44bdfe6b65969c05",
+      "frame_root": "9602efb44c4174b85d63d4b88285bd9539cc2dab064a7aaf817ac0454a8f8444",
+      "visibility_root": "b83dcd48111463f960fc281f881a751cc927984e56f97dc1da2944fccc194840",
+      "secondary_motion": {
+        "hair_lag": 0.006552188130789512,
+        "costume_lag": -0.00327959831300843,
+        "breath": 0.00348156721830488,
+        "overshoot": 0.0068476701450223484
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 113,
+      "time_seconds": 4.666667,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000113.png",
+      "file_sha256": "81f61d368297eb97f1b64828719f904b88484a69ca36951aa2ca368d20a510e2",
+      "frame_root": "50f1ef4fe854ad6429dc25f0cc3c82805cfa63288ef76eafbe2e3ac3d4c23c59",
+      "visibility_root": "b3b084ce452db708b6728fc1ee5a667d3e65c23384b471a0db4b3afb98fe1d6a",
+      "secondary_motion": {
+        "hair_lag": 0.007073623439595966,
+        "costume_lag": -0.002889933329497224,
+        "breath": 0.0031920689091209575,
+        "overshoot": 0.006131156327275371
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 114,
+      "time_seconds": 4.708333,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000114.png",
+      "file_sha256": "fc5d948507d69693fe665a5ae50ec258fced2f289f9a324700cc24aee8d3d7bc",
+      "frame_root": "2f6bd57afd7a9c31608f9801e1f1a88466884fd4bec8f67e2f0abeaf2d880e7d",
+      "visibility_root": "7b7215c6c1ed59acbadca1849191556e4ae45d027ccb82e6915a83c786900bac",
+      "secondary_motion": {
+        "hair_lag": 0.007575343291172855,
+        "costume_lag": -0.002492213583467139,
+        "breath": 0.00284703296195989,
+        "overshoot": 0.005360178401597998
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 115,
+      "time_seconds": 4.75,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000115.png",
+      "file_sha256": "8ba61cd18b8cebd9ab44e38afcc48d980492999e0cb9dd93d931cbdf76387432",
+      "frame_root": "bfe4c558b632adb7d126756b7c8ba3aa3cacc091a31245de69772c13e776a4c8",
+      "visibility_root": "182ba24d1ab5ec67b11def2b546051c489c8d452037ae64677389f14ca7fb5bc",
+      "secondary_motion": {
+        "hair_lag": 0.008055949302306924,
+        "costume_lag": -0.002087547591184133,
+        "breath": 0.002452462530910146,
+        "overshoot": 0.004541585096470564
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 116,
+      "time_seconds": 4.791667,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000116.png",
+      "file_sha256": "8ce706754b05e8cb41ccf075776b9ec9ea9aa73ab671320cc77cca3b695b537d",
+      "frame_root": "f16bdcdb8037b895ae87790241b1afe111805f96a8234afd7e114ccff18a603b",
+      "visibility_root": "13c2641ea3e01e9f010cefdfc8eb7f26ac2722455fc05cdaab03384c0aff58c0",
+      "secondary_motion": {
+        "hair_lag": 0.008514101937845098,
+        "costume_lag": -0.0016770632293483705,
+        "breath": 0.0020152226024053176,
+        "overshoot": 0.003682648115914597
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 117,
+      "time_seconds": 4.833333,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000117.png",
+      "file_sha256": "450ea83b5cfe337ad0c47c0c07cf6df4cab3f48764c25d194d4782805237baaa",
+      "frame_root": "4f89b5132a66dc1c7c75f53b53320c42dd224beeb1c38ec53d9c024c1064f472",
+      "visibility_root": "2243eb0e98ec55072f49a88930648cf5e39a210fb818d5b6be7873b2d65fc9bd",
+      "secondary_motion": {
+        "hair_lag": 0.008948524244219283,
+        "costume_lag": -0.0012619045914995046,
+        "breath": 0.0015429205538391268,
+        "overshoot": 0.002790997543705035
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 118,
+      "time_seconds": 4.875,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000118.png",
+      "file_sha256": "5eeb76dffd49f84853768982370065ccc1aa10366339ace910f8744be5186cae",
+      "frame_root": "cd3b0cdc1766625971e59c70476a9447159b16fcaa349a0e0ac52d69a4908a63",
+      "visibility_root": "673304fceb99b3154b87dbd1746cfa549dc859571f726e6bd45ca03bd3bd497d",
+      "secondary_motion": {
+        "hair_lag": 0.009358005408544975,
+        "costume_lag": -0.0008432287992227856,
+        "breath": 0.0010437737955920712,
+        "overshoot": 0.0018745540640340236
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 119,
+      "time_seconds": 4.916667,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000119.png",
+      "file_sha256": "0534187b051028a611fb5cc028feedc10da087b22699c344e7332ea934a35830",
+      "frame_root": "1f064731a33e5b0d046afd85bcabc3f153f0f6755a279105f0ab588991e7db0c",
+      "visibility_root": "a6da0a314e818f010088e164aa2400cb3ff5d2191b28df1ad8c1aa5b0fc5399c",
+      "secondary_motion": {
+        "hair_lag": 0.009741404133373906,
+        "costume_lag": -0.00042220277704370173,
+        "breath": 0.0005264667993175739,
+        "overshoot": 0.0009414586007215575
+      },
+      "mouth_shape": "closed"
+    },
+    {
+      "frame_number": 120,
+      "time_seconds": 4.958333,
+      "cut_id": "CUT-PHASE6-3-SIDE",
+      "view": "side",
+      "pose": "alert",
+      "filename": "episode-frames/frame-000120.png",
+      "file_sha256": "d9f71a98dee851a35310a0d198d4d1c8735b5f282c6e8cae4545007e7a0e0bd1",
+      "frame_root": "3aa2d5384c6e2d21c2c63aadf9e42c41c37431bb518d51e713734feade2677fa",
+      "visibility_root": "fedcd3b5929caf183e0e6ec44140c5d61b887fbe7c2fa8bba4ae91b540829517",
+      "secondary_motion": {
+        "hair_lag": 0.010097651817694757,
+        "costume_lag": -1.959434878635765e-18,
+        "breath": 2.4492935982947064e-18,
+        "overshoot": 0
+      },
+      "mouth_shape": "closed"
+    }
+  ],
+  "frame_manifest_root": "09140aeef2005daa006febb137d5c2b421525bacdcd086f503e2c44e4e23d22a"
+}

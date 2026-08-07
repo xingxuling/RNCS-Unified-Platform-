@@ -1,0 +1,44 @@
+{
+  "format": "rncs.anime-forge-phase6-3-composition-contract.v0.1",
+  "episode_intent_root": "30f2abea20b5009318f7f59eb740bb0d2e250ef939695d7eccd2ea5ae5277636",
+  "resolution": {
+    "width": 640,
+    "height": 360
+  },
+  "fps": 24,
+  "layer_order": [
+    "background",
+    "canonical-surface",
+    "hair-guide-mass",
+    "face-feature",
+    "surface-outline"
+  ],
+  "camera": {
+    "projection": "orthographic-perspective-hybrid",
+    "depth_buffer": true,
+    "style_after_visibility": true
+  },
+  "transitions": [
+    {
+      "from": "CUT-PHASE6-3-FRONT",
+      "to": "CUT-PHASE6-3-THREE-QUARTER",
+      "frame": 40
+    },
+    {
+      "from": "CUT-PHASE6-3-THREE-QUARTER",
+      "to": "CUT-PHASE6-3-SIDE",
+      "frame": 80
+    }
+  ],
+  "cut_seam_check": {
+    "status": "pass",
+    "checks": [
+      "frame-count",
+      "shared-genome-root",
+      "shared-morphology-root",
+      "visibility-contract",
+      "layer-order"
+    ]
+  },
+  "composition_root": "b933d31dabef988596ec8d78ccdd959d85b0d718f96730ed5c36c5d26f32239a"
+}

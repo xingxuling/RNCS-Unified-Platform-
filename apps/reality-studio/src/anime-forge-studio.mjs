@@ -1,14 +1,31 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import {fileURLToPath} from 'node:url';
 import {compileAnimeSource,bindVoicePerformance,replaceDialogueTake,buildAnimeControlPlaneCandidate,buildAnimeEpisodeMedia,createLocalDiffusionProviderManifest} from '../../../packages/integration/rcl-anime-production-bridge/src/index.mjs';
 import {bindCharacterAssetFamily,buildExposureSheet,buildProductionExposureSheets,canonicalCutRef,listProductionCuts,resolveProductionCut,validateAnimeProduction,validateExposureSheet,validateProductionExposureSheets,renderCut,renderProduction,replayCut,replayProduction,CONDITION_TYPES,createCharacterReferencePack,createVisualConditionPack,createVisualModelManifest,createVisualCandidateBranch,rootHash} from '../../../packages/world/anime-production-runtime/src/index.mjs';
 import {generateVoicePerformance,validateVoicePerformance} from '../../../packages/world/voice-performance-runtime/src/index.mjs';
 import {createProductionSoundScene,createSoundScene,renderAudioScene,validateAudioScene} from '../../../packages/world/audio-scene-runtime/src/index.mjs';
+import {validateGeometricTruthMeasurements} from '../../../packages/world/native-character-morphogenesis-runtime/src/geometric-truth.mjs';
+import {validateMorphologyCertificateV2} from '../../../packages/world/native-character-morphogenesis-runtime/src/morphology-certificate-v2.mjs';
 
 const writeJson=(file,value)=>{fs.mkdirSync(path.dirname(file),{recursive:true});fs.writeFileSync(file,JSON.stringify(value,null,2))};
 const readJson=file=>JSON.parse(fs.readFileSync(file,'utf8'));
+const readOptionalJson=file=>{try{return fs.existsSync(file)?readJson(file):null}catch{return null}};
+const repoRoot=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../../..');
+const defaultGeometricTruthEvidenceDir=path.join(repoRoot,'evidence/anime-forge-phase6-3-geometric-truth-v0.1');
+const relativeRepoPath=file=>path.relative(repoRoot,file).split(path.sep).join('/');
 const safeSegment=value=>String(value).replace(/[^a-zA-Z0-9_-]/g,'-').slice(0,80)||'anime-forge';
 function assetFamilyEntries(families={}){const entries=[],seen=new Set();const visit=(value,name)=>{if(value?.family?.family_root){if(!seen.has(value.family.family_root)){seen.add(value.family.family_root);entries.push([name,value])}return}if(value&&typeof value==='object')for(const[key,child]of Object.entries(value))visit(child,`${name}-${key}`)};for(const[name,value]of Object.entries(families))visit(value,name);return entries}
+
+function buildGeometricTruthWorkspace({evidenceDir=defaultGeometricTruthEvidenceDir,sessionId=null}={}){
+  const root=path.resolve(evidenceDir),read=name=>readOptionalJson(path.join(root,name)),status=read('phase6-3-status.json'),certificate=read('strict-morphology-certificate.json'),measurements=read('phase6-3-after-measurements.json'),provider=read('provider-manifest.json'),media=read('media-result.json'),sync=read('audio-video-sync-report.json'),ledger=read('evidence-ledger.json'),frameManifest=read('frame-manifest.json'),episodeIntent=read('episode-intent.json'),composition=read('composition-contract.json'),certificateValidation=certificate?validateMorphologyCertificateV2(certificate):{valid:false,failures:['CERTIFICATE_NOT_BUILT'],gates:{}},measurementValidation=measurements?validateGeometricTruthMeasurements(measurements):{valid:false,errors:['MEASUREMENTS_NOT_BUILT'],status:'missing',red_metrics:[]},mp4Path=path.join(root,'episode.mp4'),mp4Exists=fs.existsSync(mp4Path),staticPass=certificateValidation.valid&&status?.static_validation?.valid===true,geometricPass=measurementValidation.valid&&measurementValidation.status==='green',mediaComplete=media?.status==='complete'&&mp4Exists;
+  const failures=[];if(!status)failures.push('PHASE6_3_EVIDENCE_NOT_BUILT');if(!staticPass)failures.push(...(status?.static_validation?.failures??certificateValidation.failures).map(item=>`STATIC:${item}`));if(!geometricPass)failures.push(...(measurementValidation.red_metrics??[]).map(item=>`GEOMETRIC:${item}`));if(media?.reason)failures.push(media.reason);if(media?.status==='complete'&&!mp4Exists)failures.push('MP4_FILE_MISSING');
+  const motionChannels=new Set();for(const frame of frameManifest?.frames??[])for(const key of Object.keys(frame.secondary_motion??{}))motionChannels.add(key);
+  const cuts=episodeIntent?.cuts??[];
+  const gateStatus=gate=>certificate?.gates?.[gate]?.pass===true?'pass':certificate?.gates?.[gate]?'blocked':'missing';
+  const artifact=name=>fs.existsSync(path.join(root,name))?relativeRepoPath(path.join(root,name)):null;
+  return{format:'reality-studio.anime-geometric-truth-workspace.v0.1',version:'0.1.0-alpha.1',phase:'phase-6.3-native-morphology-field-geometric-truth',session_id:sessionId,evidence_root:relativeRepoPath(root),episode_status:mediaComplete?'complete':status?.status??'not-built',playable:mediaComplete,final_media:mediaComplete?{path:artifact('episode.mp4'),sha256:media.mp4?.sha256??null,duration_seconds:media.video?.duration??null}:null,static_validation:{status:staticPass?'pass':'blocked',valid:staticPass,failures:certificateValidation.failures,views:(certificate?.static_views??[]).map(view=>({view:view.view,visible_pixels:view.visibility?.visible_pixel_count??0,silhouette_islands:view.visibility?.silhouette_disconnected_islands??null,styled_frame:artifact(`validation-pack/${view.view}/styled-frame.png`)}))},geometric_truth:{status:measurements?.status??'missing',valid:geometricPass,red_metrics:measurements?.red_metrics??[],measurement_root:measurements?.evidence_root??null},provider_usage:[provider?{provider_id:provider.provider_id,role:'native-visual',status:geometricPass?'complete':'blocked',deterministic:provider.deterministic===true,seed:provider.seed??null,outputs:provider.output_types??[],root:provider.provider_root}:null,media?{provider_id:'rncs.video-mux.ffmpeg',role:'video-mux',status:media.status,deterministic:false,reason:media.reason??null,root:null}:null].filter(Boolean),asset_lineage:{genome_root:provider?.genome_root??null,morphology_root:provider?.morphology_root??null,field_root:certificate?.asset_root??null,certificate_root:certificate?.certificate_root??null},character_continuity:{status:gateStatus('mesh_connected')==='pass'&&gateStatus('surface_continuity_valid')==='pass'?'pass':'blocked',mesh_connected:gateStatus('mesh_connected'),surface_continuity:gateStatus('surface_continuity_valid'),face_attachment:gateStatus('face_attachment_valid'),scalp_attachment:gateStatus('scalp_attachment_valid'),report_root:certificate?.certificate_root??null},cut_continuity:{status:composition?.cut_seam_check?.status??'missing',cut_count:cuts.length,cuts:cuts.map(cut=>({cut_id:cut.cut_id,view:cut.view,start_frame:cut.start_frame,end_frame_exclusive:cut.end_frame_exclusive,frame_count:cut.frame_count})),report_root:composition?.composition_root??null},audio_video_sync:sync?{status:sync.status,video_duration_seconds:sync.video_duration_seconds,audio_duration_seconds:sync.audio_duration_seconds,delta_seconds:sync.duration_delta_seconds,report_root:artifact('audio-video-sync-report.json')}:null,secondary_motion_tracks:[...motionChannels].map(channel=>({channel,frame_count:frameManifest?.frames?.filter(frame=>frame.secondary_motion&&Object.hasOwn(frame.secondary_motion,channel)).length??0,source:'Episode Production IR frame manifest'})),mp4_build:{status:media?.status??'not-built',reason:media?.reason??null,file:artifact('episode.mp4'),ffprobe_valid:mediaComplete&&Boolean(media.ffprobe),report:artifact('ffprobe-report.json')},evidence_ledger:ledger?{status:ledger.status,ledger_root:ledger.ledger_root,path:artifact('evidence-ledger.json'),file_sha256:ledger.ledger_file_sha256??null}:null,failures,next_human_judgement:mediaComplete?'Review the three derived Cuts, character acting, camera rhythm and experimental visual quality.':!staticPass?'Repair the first failed static geometric gate before media review.':media?.reason==='MEDIA_TOOL_NOT_FOUND'?'Provide a verified FFmpeg/ffprobe runtime and rerun the deterministic media evidence build.':'Resolve the first failed media gate before human review.',authority:{episode:'authoritative',cut:'derived inspection and QA view',clip:'reusable',patch:'local',continuity:'global',automatic_visual_acceptance:false},boundary:'Native field, canonical surface, CPU skinning and depth visibility are measured. Human visual acceptance and commercial animation quality remain unproven.',artifacts:{status:artifact('phase6-3-status.json'),certificate:artifact('strict-morphology-certificate.json'),measurements:artifact('phase6-3-after-measurements.json'),frame_manifest:artifact('frame-manifest.json'),episode_intent:artifact('episode-intent.json'),composition:artifact('composition-contract.json')}};
+}
 
 function writeCompiledArtifacts(outDir,source,compiled){
   fs.mkdirSync(outDir,{recursive:true});
@@ -32,9 +49,9 @@ function writeCompiledArtifacts(outDir,source,compiled){
 }
 
 export class AnimeForgeSession{
-  constructor({sessionId,source,compiled,outDir,mediaTools={}}){
+  constructor({sessionId,source,compiled,outDir,mediaTools={},geometricTruthEvidenceDir=defaultGeometricTruthEvidenceDir}){
     this.session_id=sessionId;this.source=source;this.compiled=compiled;this.out_dir=outDir;
-    this.production=compiled.production;this.active_cut_ref=this.production.active_cut_ref;this.voices=new Map();this.voice=null;this.last_render=null;this.last_audio=null;this.last_media=null;this.media_tools=mediaTools;
+    this.production=compiled.production;this.active_cut_ref=this.production.active_cut_ref;this.voices=new Map();this.voice=null;this.last_render=null;this.last_audio=null;this.last_media=null;this.media_tools=mediaTools;this.geometric_truth_evidence_dir=geometricTruthEvidenceDir;
     this.snapshots=new Map();writeCompiledArtifacts(outDir,source,compiled);
   }
   inspect(){
@@ -53,9 +70,10 @@ export class AnimeForgeSession{
       voice:this.voice?{bundle_root:this.voice.bundle.bundle_root,voice_identity:this.voice.bundle.voice_identity,duration_seconds:this.voice.bundle.duration_seconds}:null,voices:[...this.voices.values()].map(value=>({dialogue_event_id:value.bundle.dialogue_event_id,bundle_root:value.bundle.bundle_root,voice_identity:value.bundle.voice_identity,duration_seconds:value.bundle.duration_seconds})),
       render:this.last_render?.manifest?{sequence_root:this.last_render.manifest.sequence_root,rendered_frame_count:this.last_render.manifest.rendered_frame_count,quality:this.last_render.manifest.quality}:null,
       audio:this.last_audio?.report?{audio_root:this.last_audio.report.audio_root,master_root:this.last_audio.report.master_root}:null,
-      quality,visual_quality:this.visualQuality(),validation,boundary:quality.boundary,
+      quality,visual_quality:this.visualQuality(),geometric_truth:this.geometricTruthWorkspace(),validation,boundary:quality.boundary,
     };
   }
+  geometricTruthWorkspace(){return buildGeometricTruthWorkspace({evidenceDir:this.geometric_truth_evidence_dir,sessionId:this.session_id})}
   visualQuality(){
     const cut=resolveProductionCut(this.production,this.active_cut_ref),binding=Object.values(this.production.asset_bindings?.character??{})[0]??null;
     const characterId=binding?.character_id??binding?.actor_id??'character:unbound',shotIntentRoot=rootHash({format:'rncs.anime-shot-intent.v0.1',production_root:this.production.production_root,cut_ref:canonicalCutRef(cut),purpose:'phase-5-visual-body-replacement'});
@@ -130,10 +148,11 @@ export class AnimeForgeSession{
 }
 
 export class AnimeForgeSessionRegistry{
-  constructor({dataDir,ffmpegPath=process.env.FFMPEG_PATH??'ffmpeg',ffprobePath=process.env.FFPROBE_PATH??'ffprobe'}){this.dataDir=dataDir;this.mediaTools={ffmpegPath,ffprobePath};this.sessions=new Map()}
+  constructor({dataDir,ffmpegPath=process.env.FFMPEG_PATH??'ffmpeg',ffprobePath=process.env.FFPROBE_PATH??'ffprobe',geometricTruthEvidenceDir=defaultGeometricTruthEvidenceDir}){this.dataDir=dataDir;this.mediaTools={ffmpegPath,ffprobePath};this.geometric_truth_evidence_dir=geometricTruthEvidenceDir;this.sessions=new Map()}
   create(source){
     const compiled=compileAnimeSource(source),sessionId=`anime-${compiled.production.production_root.slice(0,16)}`,outDir=path.join(this.dataDir,'anime-forge',sessionId);
-    const session=new AnimeForgeSession({sessionId,source,compiled,outDir,mediaTools:this.mediaTools});this.sessions.set(sessionId,session);return session;
+    const session=new AnimeForgeSession({sessionId,source,compiled,outDir,mediaTools:this.mediaTools,geometricTruthEvidenceDir:this.geometric_truth_evidence_dir});this.sessions.set(sessionId,session);return session;
   }
+  geometricTruthWorkspace(){return buildGeometricTruthWorkspace({evidenceDir:this.geometric_truth_evidence_dir})}
   get(sessionId){const session=this.sessions.get(String(sessionId));if(!session)throw Object.assign(new Error(`ANIME_SESSION_NOT_FOUND:${sessionId}`),{code:'ANIME_SESSION_NOT_FOUND'});return session}
 }
