@@ -1,0 +1,36 @@
+format: rncs.engineering-contract.v0.1
+phase: anime-forge-phase6-4-semantic-anatomy
+baseline: main-95@cce234d7ec2d4eb00cd0e92726c7be2fc866b0ab
+authority:
+  identity: Character Genome
+  geometry: Canonical Morphology / Field / Mesh
+  semantic_target: CharacterDesignTarget
+  visual_acceptance: human review
+must_change:
+  - add CharacterDesignTarget and SemanticMorphologyProfile
+  - add measured SemanticMorphologyCertificate independent of geometry certificate
+  - add human-rejection semantic RED regression
+  - add readability-first AnimeVisualGrammar v0.3
+  - add semantic renderer with head-relative feature/hair sizing
+  - add deterministic static gates and 5-second candidate evidence
+must_not_change:
+  - Character Genome identity authority
+  - Phase 6.3 geometric truth kernel ownership
+  - renderer anatomy_authority=false
+  - external visual models remain non-required compatibility paths
+vertical_slices:
+  - red-semantic-oracle
+  - semantic-target-and-profile
+  - semantic-certificate
+  - anime-grammar-v0.3
+  - static-front-three-quarter-side
+  - five-second-candidate
+verification:
+  - existing native morphogenesis tests
+  - semantic anatomy focused tests
+  - static semantic gates
+  - real ffmpeg/ffprobe media on CI
+  - human visual review remains pending until user decision
+rollback:
+  - branch can be dropped without changing main-95
+  - Phase 6.3 renderer and compiler remain available
