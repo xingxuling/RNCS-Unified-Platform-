@@ -21,6 +21,7 @@
     "./head-surface-drawing": "./src/head-surface-drawing.mjs",
     "./face-surface-drawing": "./src/face-surface-drawing.mjs",
     "./hair-surface-drawing": "./src/hair-surface-drawing.mjs",
+    "./garment-surface-drawing": "./src/garment-surface-drawing.mjs",
     "./morphology-certificate-v2": "./src/morphology-certificate-v2.mjs",
     "./anime-visual-grammar": "./src/anime-visual-grammar.mjs",
     "./native-anime-renderer": "./src/native-anime-renderer.mjs",
