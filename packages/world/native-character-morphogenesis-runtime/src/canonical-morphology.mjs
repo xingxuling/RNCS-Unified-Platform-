@@ -1,9 +1,11 @@
 import {clone,clamp,add3,rootHash,seal,stableId} from './canonical.mjs';
 import {buildContinuousMorphologyField,validateMorphologyField} from './morphology-field.mjs';
 import {buildCanonicalSurfaceMesh,validateCanonicalSurfaceMesh} from './canonical-surface-mesh.mjs';
+import {buildSurfaceAttachmentSet,validateSurfaceAttachmentSet} from './surface-attachments.mjs';
+import {buildMorphologyCertificateV2,validateMorphologyCertificateV2,REQUIRED_GATES} from './morphology-certificate-v2.mjs';
 
 const FORMAT='rncs.canonical-morphology-asset.v0.1';
-const CERTIFICATE_FORMAT='rncs.morphology-certificate.v0.1';
+const CERTIFICATE_FORMAT='rncs.morphology-certificate.v0.2';
 const CORE_GATES=['proportion_valid','bone_length_valid','joint_limit_valid','surface_continuity_valid','face_surface_valid','feature_attachment_valid','scalp_attachment_valid','hair_overlap_valid','garment_attachment_valid','self_intersection_valid','silhouette_connected','camera_projection_valid'];
 
 const bodyParameter=(genome,id,fallback)=>Number(genome?.morphology_genome?.body_parameters?.[id]??genome?.semantic_morph_graph?.parameters?.find(item=>item.parameter_id===id)?.normalized_value??fallback);
@@ -132,13 +134,13 @@ export function buildSurfaceTemplates(genome,proportions,lawSet){
   return{format:'rncs.canonical-surface-template-set.v0.1',coordinate_system:proportions.coordinate_system,torso_sections:torsoSections,face_surface:face,scalp_surface:scalp,hair_field:hair,garment_surface:garment,law_root:lawSet.law_root,genome_root:genome.genome_root,landmark_policy:{source:'proportion-solver',snapshot:{...p}}};
 }
 
-function certificateFor(asset){
-  const gates={proportion_valid:Boolean(asset.proportions.height>=asset.law_set.hard_constraints.minimum_body_height&&asset.proportions.height<=asset.law_set.hard_constraints.maximum_body_height),bone_length_valid:asset.skeleton.bones.filter(item=>item.length>0).every(item=>item.length>=asset.law_set.hard_constraints.minimum_limb_length*.35),joint_limit_valid:asset.skeleton.bones.every(item=>Object.values(item.joint_limits).every(range=>range[0]<=range[1])),surface_continuity_valid:asset.surface_templates.torso_sections.length>=4&&asset.volumes.length>=14,face_surface_valid:Object.keys(asset.surface_templates.face_surface.feature_anchors).length>=10,feature_attachment_valid:asset.surface_templates.face_surface.feature_order.join(',')==='brow,eye,nose,mouth,jaw',scalp_attachment_valid:asset.surface_templates.scalp_surface.anchors.every(anchor=>Array.isArray(anchor.local_position)&&Array.isArray(anchor.uv)),hair_overlap_valid:asset.surface_templates.hair_field.main_masses.length>=3,garment_attachment_valid:asset.surface_templates.garment_surface.panels.length>=3&&asset.surface_templates.garment_surface.offset>0,self_intersection_valid:true,silhouette_connected:true,camera_projection_valid:true};
-  const failures=Object.entries(gates).filter(([,value])=>value!==true).map(([key])=>key);
-  return seal({format:CERTIFICATE_FORMAT,asset_root:asset.morphology_root,gates,failures,core_gates:CORE_GATES,tolerances:{scalp_root_distance:asset.surface_templates.scalp_surface.tolerance,garment_offset_min:.001,feature_depth_min:.001},rejection_policy:'any-core-gate-false-rejects-candidate',human_visual_acceptance:'not-automated'},'certificate_root');
-}
+function certificateFor(asset,options={}){return buildMorphologyCertificateV2(asset,options);}
 
-export function validateMorphologyCertificate(certificate){const gates=certificate?.gates??{};const failures=[...new Set([...(certificate?.failures??[]),...CORE_GATES.filter(key=>gates[key]!==true)])];return{valid:Boolean(certificate&&failures.length===0),failures,gates};}
+export function validateMorphologyCertificate(certificate){
+  if(certificate?.format===CERTIFICATE_FORMAT)return validateMorphologyCertificateV2(certificate);
+  const gates=certificate?.gates??{},failures=[...new Set([...(certificate?.failures??[]),...CORE_GATES.filter(key=>gates[key]!==true)])];
+  return{valid:Boolean(certificate&&failures.length===0),failures,gates};
+}
 
 export function compileMorphology(genome,morphologyProfile={}){
   if(!genome?.genome_root)throw Object.assign(new Error('MORPHOLOGY_GENOME_REQUIRED'),{code:'MORPHOLOGY_GENOME_REQUIRED'});
@@ -146,8 +148,10 @@ export function compileMorphology(genome,morphologyProfile={}){
   if(!fieldValidation.valid)throw Object.assign(new Error(`MORPHOLOGY_FIELD_REJECTED:${fieldValidation.errors.join(',')}`),{code:'MORPHOLOGY_FIELD_REJECTED',fieldValidation});
   const meshProfile=morphologyProfile.surface_resolution??'property',canonicalSurfaceMesh=meshProfile==='none'?null:buildCanonicalSurfaceMesh({field:continuousMorphologyField,profile:meshProfile}),meshValidation=canonicalSurfaceMesh?validateCanonicalSurfaceMesh(canonicalSurfaceMesh):{valid:false,errors:['MESH_BUILD_DEFERRED'],mesh_root:null};
   if(canonicalSurfaceMesh&&!meshValidation.valid)throw Object.assign(new Error(`MORPHOLOGY_MESH_REJECTED:${meshValidation.errors.join(',')}`),{code:'MORPHOLOGY_MESH_REJECTED',meshValidation});
-  const base={format:FORMAT,version:'0.1.0-alpha.1',character_id:genome.character_id,genome_root:genome.genome_root,identity_root:genome.identity_root,profile:morphologyProfile.profile??'anime-npr-clean-v0.1',law_set:lawSet,proportions,skeleton,volumes,continuous_morphology_field:continuousMorphologyField,field_validation:fieldValidation,canonical_surface_mesh:canonicalSurfaceMesh,mesh_validation:meshValidation,mesh_profile:meshProfile,surface_templates:surfaceTemplates,surfaces:surfaceTemplates,face_surface:surfaceTemplates.face_surface,scalp_surface:surfaceTemplates.scalp_surface,garment_surface:surfaceTemplates.garment_surface,identity_invariants:{character_id:genome.character_id,topology_family:genome.topology_family,genome_root:genome.genome_root,face_feature_order:surfaceTemplates.face_surface.feature_order,hair_root_count:surfaceTemplates.hair_field.root_anchors.length},morphology_root:''};
-  const assetRoot=rootHash({...base,morphology_root:''}),asset={...base,morphology_root:assetRoot},certificate=certificateFor(asset),sealedAsset={...asset,certificate,certificate_root:certificate.certificate_root};
+  const baseWithoutAttachments={format:FORMAT,version:'0.1.0-alpha.1',character_id:genome.character_id,genome_root:genome.genome_root,identity_root:genome.identity_root,profile:morphologyProfile.profile??'anime-npr-clean-v0.1',law_set:lawSet,proportions,skeleton,volumes,continuous_morphology_field:continuousMorphologyField,field_validation:fieldValidation,canonical_surface_mesh:canonicalSurfaceMesh,mesh_validation:meshValidation,mesh_profile:meshProfile,surface_templates:surfaceTemplates,surfaces:surfaceTemplates,face_surface:surfaceTemplates.face_surface,scalp_surface:surfaceTemplates.scalp_surface,garment_surface:surfaceTemplates.garment_surface,identity_invariants:{character_id:genome.character_id,topology_family:genome.topology_family,genome_root:genome.genome_root,face_feature_order:surfaceTemplates.face_surface.feature_order,hair_root_count:surfaceTemplates.hair_field.root_anchors.length},morphology_root:''};
+  const preAttachmentRoot=rootHash(baseWithoutAttachments),surfaceAttachments=buildSurfaceAttachmentSet({...baseWithoutAttachments,morphology_root:preAttachmentRoot}),attachmentValidation=validateSurfaceAttachmentSet(surfaceAttachments,{asset:{...baseWithoutAttachments,morphology_root:preAttachmentRoot}});
+  if(!attachmentValidation.valid)throw Object.assign(new Error(`MORPHOLOGY_ATTACHMENT_REJECTED:${attachmentValidation.errors.join(',')}`),{code:'MORPHOLOGY_ATTACHMENT_REJECTED',attachmentValidation});
+  const base={...baseWithoutAttachments,surface_attachments:surfaceAttachments,attachment_validation:attachmentValidation},assetRoot=rootHash({...base,morphology_root:''}),asset={...base,morphology_root:assetRoot},certificateMode=morphologyProfile.certificate_mode??'canonical',certificateOptions=certificateMode==='property'?{raster_width:32,raster_height:18,validation_mode:'property'}:{},certificate=certificateFor(asset,certificateOptions),sealedAsset={...asset,certificate,certificate_root:certificate.certificate_root};
   const validation=validateMorphologyCertificate(certificate);if(!validation.valid)throw Object.assign(new Error(`MORPHOLOGY_CERTIFICATE_REJECTED:${validation.failures.join(',')}`),{code:'MORPHOLOGY_CERTIFICATE_REJECTED',certificate,validation});
   return sealedAsset;
 }

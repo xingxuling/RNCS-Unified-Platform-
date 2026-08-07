@@ -1,0 +1,13 @@
+{
+  "status": "blocked",
+  "error": {
+    "code": "MEDIA_TOOL_NOT_FOUND",
+    "message": "MEDIA_TOOL_NOT_FOUND:ffmpeg:ffmpeg"
+  },
+  "contract": {
+    "width": 640,
+    "height": 360,
+    "fps": 24,
+    "audio_required": true
+  }
+}

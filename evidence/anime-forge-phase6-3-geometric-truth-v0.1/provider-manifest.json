@@ -1,0 +1,72 @@
+{
+  "format": "rncs.anime-provider-manifest.v0.2",
+  "provider_id": "rncs.native-surface-visibility-cpu",
+  "display_name": "RNCS Native Morphology Field and Visibility CPU Provider",
+  "input_types": [
+    "Character Genome",
+    "Morphology Law Set",
+    "Performance State",
+    "Camera Contract",
+    "AnimeVisualGrammar"
+  ],
+  "output_types": [
+    "Continuous Morphology Field",
+    "Canonical Surface Mesh",
+    "Posed Surface Mesh",
+    "VisibilityBuffer",
+    "DepthBuffer",
+    "SurfaceIdBuffer",
+    "RegionIdBuffer",
+    "RGBA PNG"
+  ],
+  "resolution": {
+    "width": 640,
+    "height": 360
+  },
+  "fps": 24,
+  "deterministic": true,
+  "seed_support": true,
+  "character_continuity": true,
+  "motion_capability": [
+    "surface-skinning",
+    "head-turn",
+    "shoulder-turn",
+    "elbow-bend",
+    "hair-guide-secondary-motion",
+    "camera-yaw"
+  ],
+  "gpu_required": false,
+  "cpu_required": true,
+  "timeout_seconds": 120,
+  "cost": "local-zero",
+  "failure_types": [
+    "GENOME_INVALID",
+    "MORPHOLOGY_CONSTRAINTS_UNSATISFIABLE",
+    "MORPHOLOGY_FIELD_REJECTED",
+    "MORPHOLOGY_MESH_REJECTED",
+    "MORPHOLOGY_ATTACHMENT_REJECTED",
+    "MORPHOLOGY_CERTIFICATE_REJECTED",
+    "NATIVE_SURFACE_ASSET_REQUIRED",
+    "NATIVE_RENDER_GEOMETRY_GATE_REJECTED",
+    "MEDIA_TOOL_NOT_FOUND",
+    "FFMPEG_FAILED",
+    "FFPROBE_FAILED"
+  ],
+  "evidence_outputs": [
+    "canonical-field.json",
+    "canonical-mesh.json",
+    "posed-mesh.json",
+    "visibility-report.json",
+    "depth.png",
+    "normal.png",
+    "surface-id.png",
+    "region-id.png",
+    "styled-frame.png",
+    "morphology-certificate.json",
+    "phase6-3-after-measurements.json"
+  ],
+  "authority": "candidate deterministic provider; Character Genome and Episode Intent remain authoritative",
+  "genome_root": "5b540dff18beb3ae8e358836c016b2a9c6770583c27ff59979ed5be0fdba4b0a",
+  "morphology_root": "40861a9db10d51f5fc1ee4fa65e6d189dd23bcae1328a55df285058f8b5f5779",
+  "provider_root": "4c84d36adb36de933c31bd6221216ed5fabba56e9c4203abf2a65900c9fbc57d"
+}

@@ -33,7 +33,7 @@ function assertGeometry(asset,posed,geometry,projected){
 test('1000 genomes x poses x camera yaw/pitch never silently emit malformed geometry',()=>{
   let checked=0;
   for(let index=0;index<1000;index+=1){
-    const asset=compileMorphology(fuzzGenome(index));
+    const asset=compileMorphology(fuzzGenome(index),{surface_resolution:'property',certificate_mode:'property'});
     assert.equal(Object.values(asset.certificate.gates).every(Boolean),true,`certificate ${index}`);
     for(let poseIndex=0;poseIndex<poses.length;poseIndex+=1){
       const performance=performanceStateForFrame(asset,{view:views[(index+poseIndex)%views.length],pose:poses[poseIndex],frame:37,totalFrames:120}),posed=solveKinematics(asset,performance),geometry=solveDeformation(asset,posed,performance);

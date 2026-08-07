@@ -1,0 +1,567 @@
+{
+  "format": "rncs.morphology-certificate.v0.2",
+  "version": "0.2.0-alpha.1",
+  "asset_root": "40861a9db10d51f5fc1ee4fa65e6d189dd23bcae1328a55df285058f8b5f5779",
+  "certificate_evidence_root": "evidence/anime-forge-phase6-3-geometric-truth-v0.1",
+  "enforcement_scope": "strict_static_views",
+  "validation_mode": "canonical",
+  "gates": {
+    "proportion_valid": {
+      "measurement": {
+        "head_to_body": 0.200009,
+        "shoulder_to_head": 1.35,
+        "waist_to_shoulder": 0.55,
+        "hand_to_forearm": 0.369212,
+        "shoulder_width_greater_than_neck_width": true,
+        "neck_end_inside_ribcage_girdle": true,
+        "upper_arm_plus_forearm_reaches_below_pelvis": true,
+        "pelvis_width_less_than_shoulder_width": true
+      },
+      "allowed": {
+        "head_to_body": [
+          0.18,
+          0.28
+        ],
+        "shoulder_to_head": [
+          1.35,
+          2.2
+        ],
+        "waist_to_shoulder": [
+          0.42,
+          0.78
+        ],
+        "hand_to_forearm": [
+          0.3,
+          0.72
+        ],
+        "jaw_rounding": [
+          0.25,
+          0.8
+        ]
+      },
+      "method": "canonical relational constraint solution",
+      "evidence_root": "c81007bff49c1101a1824a42f119f91925d86da7dc95e181ed55d9324c6cbb1f",
+      "pass": true
+    },
+    "bone_length_valid": {
+      "measurement": [
+        {
+          "bone_id": "pelvis",
+          "declared": 0.1125,
+          "measured": 0.1125,
+          "delta": 0
+        },
+        {
+          "bone_id": "spine",
+          "declared": 0.16,
+          "measured": 0.16,
+          "delta": 0
+        },
+        {
+          "bone_id": "ribcage",
+          "declared": 0.155,
+          "measured": 0.155,
+          "delta": 0
+        },
+        {
+          "bone_id": "clavicle-left",
+          "declared": 0.171142,
+          "measured": 0.171142,
+          "delta": 0
+        },
+        {
+          "bone_id": "upper-arm-left",
+          "declared": 0.1704,
+          "measured": 0.1704,
+          "delta": 0
+        },
+        {
+          "bone_id": "forearm-left",
+          "declared": 0.1598,
+          "measured": 0.1598,
+          "delta": 0
+        },
+        {
+          "bone_id": "hand-left",
+          "declared": 0.059,
+          "measured": 0.059,
+          "delta": 0
+        },
+        {
+          "bone_id": "clavicle-right",
+          "declared": 0.171142,
+          "measured": 0.171142,
+          "delta": 0
+        },
+        {
+          "bone_id": "upper-arm-right",
+          "declared": 0.1704,
+          "measured": 0.1704,
+          "delta": 0
+        },
+        {
+          "bone_id": "forearm-right",
+          "declared": 0.1598,
+          "measured": 0.1598,
+          "delta": 0
+        },
+        {
+          "bone_id": "hand-right",
+          "declared": 0.059,
+          "measured": 0.059,
+          "delta": 0
+        },
+        {
+          "bone_id": "neck",
+          "declared": 0.0993,
+          "measured": 0.0993,
+          "delta": 0
+        }
+      ],
+      "allowed": {
+        "minimum": 0.0385
+      },
+      "method": "skeleton declared length versus canonical rest length",
+      "evidence_root": "7a94c5259711d1be1090b53dc666ebf80b2a2e4c03f66595f687ceeb1861467d",
+      "pass": true
+    },
+    "joint_limit_valid": {
+      "measurement": {
+        "bone_count": 20
+      },
+      "allowed": {
+        "all_ranges_ordered": true
+      },
+      "method": "joint limit interval validation on canonical skeleton",
+      "evidence_root": "c26f661439c4cb159ba0cf0d2d6c652dcc67dd351c8a872bc909c8a1ddf8c4ac",
+      "pass": true
+    },
+    "mesh_connected": {
+      "measurement": {
+        "connected_components": 1,
+        "triangle_count": 9792
+      },
+      "allowed": {
+        "max_components": 1
+      },
+      "method": "canonical mesh triangle adjacency components",
+      "evidence_root": "3040f95bf7f52d3989d98cd535e51f99afbd4e45c8c81ea30bf4b0575c31c62c",
+      "pass": true
+    },
+    "surface_manifold_or_bounded_nonmanifold": {
+      "measurement": {
+        "manifold": false,
+        "bounded_nonmanifold": true,
+        "boundary_edge_count": 4086,
+        "non_manifold_edge_count": 1318
+      },
+      "allowed": {
+        "manifold_or_bounded_nonmanifold": true
+      },
+      "method": "mesh edge incidence and bounded extraction policy",
+      "evidence_root": "c9da66bea68edb3de71f299e2cc92da43e44aec1dcaaae2b492099cca62c3984",
+      "pass": true
+    },
+    "surface_continuity_valid": {
+      "measurement": {
+        "field_breaks": 0,
+        "field_components": 1,
+        "mesh_components": 1
+      },
+      "allowed": {
+        "field_breaks": 0,
+        "mesh_components": 1
+      },
+      "method": "implicit field samples plus canonical mesh component continuity",
+      "evidence_root": "69e506600832fb9e5a6a5b0a67e09f68e8d17bd291be92c3fde3b583920bd012",
+      "pass": true
+    },
+    "neck_connection_valid": {
+      "measurement": {
+        "required_fields": [
+          "NeckField",
+          "SpineField",
+          "RibcageField"
+        ],
+        "present": true,
+        "components": 1
+      },
+      "allowed": {
+        "present": true,
+        "components": 1
+      },
+      "method": "field adjacency through neck-spine-ribcage continuity bridge",
+      "evidence_root": "5dad0d0c68bbe627f485a1287b3fa1d69fcee9c8a9f8d7e6210dd0c26cb5ac2d",
+      "pass": true
+    },
+    "limb_connection_valid": {
+      "measurement": {
+        "required_fields": [
+          "UpperArmField",
+          "ElbowField",
+          "ForearmField",
+          "PalmField"
+        ],
+        "present": true,
+        "components": 1
+      },
+      "allowed": {
+        "present": true,
+        "components": 1
+      },
+      "method": "field and mesh region continuity for bilateral limbs",
+      "evidence_root": "637d3c57cb21147f1f67bea68d2bf6790adb5b5e247ce4ad20027e4136a918b4",
+      "pass": true
+    },
+    "hand_attachment_valid": {
+      "measurement": {
+        "hand_weight_vertices": 199,
+        "palm_region_vertices": 199
+      },
+      "allowed": {
+        "hand_weight_vertices_min": 1,
+        "palm_region_vertices_min": 1
+      },
+      "method": "hand bone weights and palm surface region cardinality",
+      "evidence_root": "89d261c0381e315d068fade088fa03113044fd2ae94328143e10604659ec2c36",
+      "pass": true
+    },
+    "face_attachment_valid": {
+      "measurement": {
+        "face_attachment_count": 10,
+        "attachment_root": "148f1f052795bba7c1db5ee80e6fd397eb8623feb6e4956cd519303f51c1dc19"
+      },
+      "allowed": {
+        "minimum_face_attachments": 10
+      },
+      "method": "SurfaceAttachment skull patch contract",
+      "evidence_root": "9b52addf1e54ad4c7e097be5dd6fff0259f68ba66631e9202f1f55a067d5ea6f",
+      "pass": true
+    },
+    "face_feature_containment_valid": {
+      "measurement": {
+        "max_normalized_ellipsoid_value": 1,
+        "feature_count": 10
+      },
+      "allowed": {
+        "max_normalized_ellipsoid_value": 1.001
+      },
+      "method": "feature base positions evaluated on skull parametric surface before normal offset",
+      "evidence_root": "a4c82719af6dbcfc4528f67cfc703646d89f05f42fa781c4ed84853be0ad9e3a",
+      "pass": true
+    },
+    "scalp_attachment_valid": {
+      "measurement": {
+        "scalp_attachment_count": 7
+      },
+      "allowed": {
+        "minimum_scalp_attachments": 6
+      },
+      "method": "scalp UV attachment and surface root sampling",
+      "evidence_root": "52bae1130417a6a6cd0a400e7f519f09b53c6c308ae0c1246717ef8ffd7cad81",
+      "pass": true
+    },
+    "hair_root_distance_valid": {
+      "measurement": {
+        "mass_count": 3,
+        "root_count": 7,
+        "max_root_distance": 0
+      },
+      "allowed": {
+        "max_root_distance": 0.008
+      },
+      "method": "hair root to scalp surface attachment distance",
+      "evidence_root": "9ac88bd43c95bccc68356812b013adf5ce5532395b826bc48259662e8ccf3ace",
+      "pass": true
+    },
+    "garment_attachment_valid": {
+      "measurement": {
+        "panel_count": 3,
+        "min_clearance": 0.012
+      },
+      "allowed": {
+        "min_clearance_gt": 0
+      },
+      "method": "garment panel surface attachment and clearance measurement",
+      "evidence_root": "2821a37194c995070621875c5378037c8ff702173e633d89f16491aeccdbebb5",
+      "pass": true
+    },
+    "garment_penetration_valid": {
+      "measurement": {
+        "penetration_depths": [
+          0,
+          0,
+          0
+        ]
+      },
+      "allowed": {
+        "max_penetration_depth": 0
+      },
+      "method": "garment offset surface penetration check",
+      "evidence_root": "e805162c456d41f2104633b2d5d9dce0f8f15dcd6b1ac9e55db0c93dfd8acf18",
+      "pass": true
+    },
+    "self_intersection_valid": {
+      "measurement": {
+        "surface_self_intersection_count": 0,
+        "method": "marching-tetrahedra-deterministic-cpu"
+      },
+      "allowed": {
+        "max": 0
+      },
+      "method": "non-adjacent triangle segment intersection test on canonical mesh",
+      "evidence_root": "530c049e02ab4b69d0e9da72c8b143399d5d2fe4e39415642468b59e3d570409",
+      "pass": true
+    },
+    "silhouette_connected": {
+      "measurement": {
+        "mesh_components": 1,
+        "static_views": [
+          {
+            "view": "front",
+            "islands": 0
+          },
+          {
+            "view": "three-quarter-right",
+            "islands": 0
+          },
+          {
+            "view": "side",
+            "islands": 0
+          }
+        ]
+      },
+      "allowed": {
+        "max_mesh_components": 1,
+        "max_visible_islands": 0
+      },
+      "method": "visible depth-resolved silhouette mask components in strict static views",
+      "evidence_root": "5bab5a477d4d7d7939fc298e2e0af24dfd9b4286b14610204f51d1dc0389a02d",
+      "pass": true
+    },
+    "depth_order_valid": {
+      "measurement": {
+        "three_quarter_eye_depth": {
+          "left_depth": 0.0963,
+          "right_depth": 0.037,
+          "depth_delta": 0.0593
+        },
+        "feature_occlusion": true,
+        "feature_occlusion_status": "required",
+        "visibility_evidence": true
+      },
+      "allowed": {
+        "eye_depth_delta_abs_min": 0.00001,
+        "feature_occlusion": true
+      },
+      "method": "DepthBuffer and feature attachment visibility under three-quarter yaw",
+      "evidence_root": "6317f0469a314a46779a6c94c4fef914f46023b644a82f058143d27d76fc3562",
+      "pass": true
+    },
+    "camera_projection_valid": {
+      "measurement": [
+        {
+          "view": "front",
+          "visible_pixels": 54087,
+          "rasterized_triangles": 8526
+        },
+        {
+          "view": "three-quarter-right",
+          "visible_pixels": 51344,
+          "rasterized_triangles": 8158
+        },
+        {
+          "view": "side",
+          "visible_pixels": 31042,
+          "rasterized_triangles": 7158
+        }
+      ],
+      "allowed": {
+        "visible_pixels_gt": 0,
+        "rasterized_triangles_gt": 0
+      },
+      "method": "camera projection plus depth raster output in static validation samples",
+      "evidence_root": "03d516b7cd5d253ccbac02ea973f2df995d3b47c89cc305ae1403ab8f104abdb",
+      "pass": true
+    },
+    "projected_anatomical_ratio_validity": {
+      "measurement": {
+        "head_to_shoulder": 0.7121097326996031,
+        "head_to_torso": 0.6589719799591761,
+        "head_bounds": {
+          "left": 53.8707,
+          "right": 106.1293,
+          "top": 9.5151,
+          "bottom": 32.5979,
+          "width": 52.2586,
+          "height": 23.082800000000002
+        },
+        "torso_bounds": {
+          "left": 37.1899,
+          "right": 117.1347,
+          "top": 35.1715,
+          "bottom": 70.2,
+          "width": 79.94479999999999,
+          "height": 35.0285
+        },
+        "shoulder_distance_px": 73.38560000000001
+      },
+      "allowed": {
+        "head_to_shoulder": [
+          0.35,
+          0.82
+        ],
+        "head_to_torso": [
+          0.45,
+          0.74
+        ]
+      },
+      "method": "projected canonical mesh region bounds divided by projected skeleton landmarks",
+      "evidence_root": "01e9528365a03ef00a4440965b913b3d00e9b4e6ede77db6f2f1bcfbafce7fd6",
+      "pass": true
+    }
+  },
+  "required_gates": [
+    "proportion_valid",
+    "bone_length_valid",
+    "joint_limit_valid",
+    "mesh_connected",
+    "surface_manifold_or_bounded_nonmanifold",
+    "surface_continuity_valid",
+    "neck_connection_valid",
+    "limb_connection_valid",
+    "hand_attachment_valid",
+    "face_attachment_valid",
+    "face_feature_containment_valid",
+    "scalp_attachment_valid",
+    "hair_root_distance_valid",
+    "garment_attachment_valid",
+    "garment_penetration_valid",
+    "self_intersection_valid",
+    "silhouette_connected",
+    "depth_order_valid",
+    "camera_projection_valid",
+    "projected_anatomical_ratio_validity"
+  ],
+  "failures": [],
+  "rejection_policy": "any-gate-with-measured-pass-false-rejects-candidate",
+  "human_visual_acceptance": "not-automated",
+  "commercial_animation_quality": "not-proven",
+  "static_views": [
+    {
+      "view": "front",
+      "pose_root": "43fcf6b4d8ae8e091a0ecac70f7c130a83d4f8bb5b94ffe8c667fdd3bf798004",
+      "ratios": {
+        "head_to_shoulder": 0.7121097326996031,
+        "head_to_torso": 0.6589719799591761,
+        "head_bounds": {
+          "left": 53.8707,
+          "right": 106.1293,
+          "top": 9.5151,
+          "bottom": 32.5979,
+          "width": 52.2586,
+          "height": 23.082800000000002
+        },
+        "torso_bounds": {
+          "left": 37.1899,
+          "right": 117.1347,
+          "top": 35.1715,
+          "bottom": 70.2,
+          "width": 79.94479999999999,
+          "height": 35.0285
+        },
+        "shoulder_distance_px": 73.38560000000001
+      },
+      "visibility": {
+        "width": 640,
+        "height": 360,
+        "visible_pixel_count": 54087,
+        "rasterized_triangle_count": 8526,
+        "silhouette_disconnected_islands": 0,
+        "feature_occlusion_correctness": true,
+        "eye_depth_order_under_yaw": {
+          "left_depth": 0.0804,
+          "right_depth": 0.0804,
+          "depth_delta": 0
+        }
+      }
+    },
+    {
+      "view": "three-quarter-right",
+      "pose_root": "cca6c5061e5ade2e6c6d10c729c786abd328d50629b76eaf6b4af14d018eb7da",
+      "ratios": {
+        "head_to_shoulder": 0.8473534940582607,
+        "head_to_torso": 0.6589719799591761,
+        "head_bounds": {
+          "left": 54.2568,
+          "right": 105.8247,
+          "top": 9.5151,
+          "bottom": 32.5979,
+          "width": 51.56790000000001,
+          "height": 23.082800000000002
+        },
+        "torso_bounds": {
+          "left": 41.8095,
+          "right": 113.8203,
+          "top": 35.1715,
+          "bottom": 70.2,
+          "width": 72.0108,
+          "height": 35.0285
+        },
+        "shoulder_distance_px": 60.857600000000005
+      },
+      "visibility": {
+        "width": 640,
+        "height": 360,
+        "visible_pixel_count": 51344,
+        "rasterized_triangle_count": 8158,
+        "silhouette_disconnected_islands": 0,
+        "feature_occlusion_correctness": true,
+        "eye_depth_order_under_yaw": {
+          "left_depth": 0.0963,
+          "right_depth": 0.037,
+          "depth_delta": 0.0593
+        }
+      }
+    },
+    {
+      "view": "side",
+      "pose_root": "84b406e69a5355cf739641b6eae597cb5a8b9837a21215dec2471ab0543ac4d4",
+      "ratios": {
+        "head_to_shoulder": 3.2890397862699405,
+        "head_to_torso": 0.6589719799591761,
+        "head_bounds": {
+          "left": 54.8968,
+          "right": 105.1257,
+          "top": 9.5151,
+          "bottom": 32.5979,
+          "width": 50.228899999999996,
+          "height": 23.082800000000002
+        },
+        "torso_bounds": {
+          "left": 62.2566,
+          "right": 98.1281,
+          "top": 35.1715,
+          "bottom": 70.2,
+          "width": 35.871500000000005,
+          "height": 35.0285
+        },
+        "shoulder_distance_px": 15.271599999999992
+      },
+      "visibility": {
+        "width": 640,
+        "height": 360,
+        "visible_pixel_count": 31042,
+        "rasterized_triangle_count": 7158,
+        "silhouette_disconnected_islands": 0,
+        "feature_occlusion_correctness": true,
+        "eye_depth_order_under_yaw": {
+          "left_depth": 0.0685,
+          "right_depth": -0.0351,
+          "depth_delta": 0.1036
+        }
+      }
+    }
+  ],
+  "certificate_root": "3d00c9c56464ef632ee361bd779869b3c58b1fdce77fc407d63a0e1a6b0fb52a"
+}

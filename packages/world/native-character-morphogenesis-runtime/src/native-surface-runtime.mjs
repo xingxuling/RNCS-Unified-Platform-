@@ -1,0 +1,15 @@
+import {rootHash} from './canonical.mjs';
+import {performanceStateForFrame,solveKinematics} from './kinematics.mjs';
+import {skinCanonicalSurfaceMesh,validateSkinnedSurfaceMesh} from './surface-skinning.mjs';
+import {buildVisibilityBuffers,validateVisibilityBuffers} from './native-visibility.mjs';
+
+export function buildNativeSurfaceFrame(system,{view='front',pose='neutral',frame=0,totalFrames=120,width=320,height=180,cameraYaw=null,cameraPitch=0,scale=1}={}){
+  const asset=system?.canonical_morphology_asset;if(!asset?.canonical_surface_mesh||!asset?.surface_attachments)throw Object.assign(new Error('NATIVE_SURFACE_ASSET_REQUIRED'),{code:'NATIVE_SURFACE_ASSET_REQUIRED'});
+  const performance=performanceStateForFrame(asset,{view,pose,frame,totalFrames}),posedSkeleton=solveKinematics(asset,performance),posedMesh=skinCanonicalSurfaceMesh(asset.canonical_surface_mesh,{bind_transforms:asset.continuous_morphology_field.bone_transforms,posed_skeleton:posedSkeleton,pose_root:posedSkeleton.pose_root}),camera={width,height,yaw:cameraYaw??performance.view_yaw,pitch:cameraPitch,scale},visibility=buildVisibilityBuffers({mesh:posedMesh,attachments:asset.surface_attachments,posed_skeleton:posedSkeleton,camera}),skinValidation=validateSkinnedSurfaceMesh(posedMesh,asset.canonical_surface_mesh),visibilityValidation=validateVisibilityBuffers(visibility),base={format:'rncs.native-surface-frame.v0.1',version:'0.1.0-alpha.1',asset_root:asset.morphology_root,field_root:asset.continuous_morphology_field.field_root,mesh_root:asset.canonical_surface_mesh.mesh_root,asset,performance,posed_skeleton:posedSkeleton,posed_mesh:posedMesh,visibility,skin_validation:skinValidation,visibility_validation:visibilityValidation,authority_flow:['Character Genome','Canonical Morphology Compiler','Implicit Morphology Field','Canonical Surface Mesh','Surface Skinning','Camera Visibility','Anime Projection'],native_surface_root:''};
+  const nativeRoot=rootHash({format:base.format,version:base.version,asset_root:base.asset_root,field_root:base.field_root,mesh_root:base.mesh_root,performance,pose_root:posedSkeleton.pose_root,posed_mesh_root:posedMesh.posed_mesh_root,visibility_root:visibility.visibility_root,skin_validation:skinValidation,visibility_validation:visibilityValidation,authority_flow:base.authority_flow,native_surface_root:''});
+  return{...base,native_surface_root:nativeRoot};
+}
+
+export function validateNativeSurfaceFrame(frame){
+  const errors=[];if(frame?.skin_validation?.valid!==true)errors.push(...(frame?.skin_validation?.errors??['SKIN_VALIDATION_FAILED']));if(frame?.visibility_validation?.valid!==true)errors.push(...(frame?.visibility_validation?.errors??['VISIBILITY_VALIDATION_FAILED']));if(!frame?.native_surface_root)errors.push('NATIVE_SURFACE_ROOT_MISSING');return{valid:errors.length===0,errors,native_surface_root:frame?.native_surface_root??null,skin:frame?.skin_validation??null,visibility:frame?.visibility_validation??null};
+}

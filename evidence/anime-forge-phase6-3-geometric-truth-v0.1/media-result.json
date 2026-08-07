@@ -1,0 +1,11 @@
+{
+  "status": "blocked",
+  "reason": "MEDIA_TOOL_NOT_FOUND",
+  "wav": {
+    "path": "episode.wav",
+    "sha256": "36d3f7006b11b6488d0c39970de454deea7c33ac585684d715f645fa025d87fb",
+    "duration": 5
+  },
+  "mp4": null,
+  "ffprobe": null
+}
