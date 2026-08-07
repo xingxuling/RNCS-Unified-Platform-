@@ -3,7 +3,7 @@
   "$id": "rncs.hair-surface-drawing-guide.v0.1",
   "title": "RNCS Hair Surface Drawing Guide v0.1",
   "type": "object",
-  "required": ["format", "version", "pose_root", "visibility_root", "scalp_attachment_root", "scalp_roots", "masses", "roots_preserved", "crown", "fringe", "side_near", "side_far", "guide_root"],
+  "required": ["format", "version", "pose_root", "visibility_root", "scalp_attachment_root", "secondary_motion_authority", "scalp_roots", "masses", "roots_preserved", "crown", "fringe", "side_near", "side_far", "guide_root"],
   "properties": {
     "format": {"const": "rncs.hair-surface-drawing-guide.v0.1"},
     "version": {"type": "string"},
@@ -14,6 +14,7 @@
     "view": {"type": "string"},
     "camera_yaw": {"type": "number"},
     "hair_lag": {"type": "number"},
+    "secondary_motion_authority": {"const": "HairSurfaceDrawingGuide"},
     "roots_preserved": {"const": true},
     "near_side": {"enum": ["left", "right"]},
     "far_side": {"enum": ["left", "right"]},
