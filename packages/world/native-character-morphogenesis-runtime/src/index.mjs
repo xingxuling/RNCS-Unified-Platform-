@@ -14,6 +14,7 @@ export * from './native-visibility.mjs';
 export * from './native-surface-runtime.mjs';
 export * from './weighted-native-surface-runtime.mjs';
 export * from './mesh-silhouette-drawing.mjs';
+export * from './face-surface-drawing.mjs';
 export * from './morphology-certificate-v2.mjs';
 export * from './anime-visual-grammar.mjs';
 export * from './native-anime-renderer.mjs';
