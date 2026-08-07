@@ -17,6 +17,7 @@ export * from './mesh-silhouette-drawing.mjs';
 export * from './head-surface-drawing.mjs';
 export * from './face-surface-drawing.mjs';
 export * from './hair-surface-drawing.mjs';
+export * from './garment-surface-drawing.mjs';
 export * from './morphology-certificate-v2.mjs';
 export * from './anime-visual-grammar.mjs';
 export * from './native-anime-renderer.mjs';
