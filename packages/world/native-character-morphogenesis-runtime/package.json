@@ -17,6 +17,7 @@
     "./native-visibility": "./src/native-visibility.mjs",
     "./native-surface-runtime": "./src/native-surface-runtime.mjs",
     "./weighted-native-surface-runtime": "./src/weighted-native-surface-runtime.mjs",
+    "./mesh-silhouette-drawing": "./src/mesh-silhouette-drawing.mjs",
     "./morphology-certificate-v2": "./src/morphology-certificate-v2.mjs",
     "./anime-visual-grammar": "./src/anime-visual-grammar.mjs",
     "./native-anime-renderer": "./src/native-anime-renderer.mjs",
