@@ -13,7 +13,7 @@ export function createCharacterDesignTarget(input={}){
     authority:'art-direction-target-not-character-identity-authority',
     human_status:input.human_status??'pending',
     silhouette:{
-      head_to_shoulder:input.silhouette?.head_to_shoulder??range(.46,.58),
+      head_to_shoulder:input.silhouette?.head_to_shoulder??range(.42,.52),
       head_to_torso:input.silhouette?.head_to_torso??range(.24,.40),
       ribcage_to_shoulder:input.silhouette?.ribcage_to_shoulder??range(.72,.88),
       waist_to_shoulder:input.silhouette?.waist_to_shoulder??range(.48,.62),
