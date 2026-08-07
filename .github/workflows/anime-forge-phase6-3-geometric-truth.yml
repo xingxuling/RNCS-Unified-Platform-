@@ -45,7 +45,10 @@ jobs:
       - name: Verify geometric truth, media and evidence
         run: npm run verify:anime-phase6-3-geometric-truth
       - name: Run Reality Studio API and authority regression
-        run: node --test --test-concurrency=1 apps/reality-studio/tests/geometric-truth-workspace.test.mjs apps/reality-studio/tests/anime-forge.test.mjs apps/reality-studio/tests/native-character-surgery.test.mjs
+        run: |
+          node --test --test-concurrency=1 apps/reality-studio/tests/anime-forge.test.mjs
+          node --test --test-concurrency=1 apps/reality-studio/tests/geometric-truth-workspace.test.mjs
+          node --test --test-concurrency=1 apps/reality-studio/tests/native-character-surgery.test.mjs
       - name: Install Chromium browser regression dependencies
         run: |
           python -m pip install "playwright>=1.45,<2"
