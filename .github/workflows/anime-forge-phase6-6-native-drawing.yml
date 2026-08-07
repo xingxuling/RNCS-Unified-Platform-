@@ -10,6 +10,8 @@ on:
       - "packages/world/native-character-morphogenesis-runtime/**"
       - "scripts/build-anime-forge-phase6-6-native-drawing-infrastructure.mjs"
       - "scripts/verify-anime-forge-phase6-6-native-drawing-infrastructure.mjs"
+      - "scripts/build-anime-forge-phase6-6-mesh-silhouette-evidence.mjs"
+      - "scripts/verify-anime-forge-phase6-6-mesh-silhouette-evidence.mjs"
       - ".github/workflows/anime-forge-phase6-6-native-drawing.yml"
 
 jobs:
@@ -39,6 +41,12 @@ jobs:
           packages/world/native-character-morphogenesis-runtime/tests/drawing-presentation.test.mjs
       - name: Full native morphology regression
         run: npm test --workspace @taowind/native-character-morphogenesis-runtime
+      - name: Prove weighted mesh reaches final limb drawing paths
+        env:
+          ANIME_PHASE6_6_EVIDENCE_DIR: tmp/anime-forge-phase6-6-native-drawing-evidence
+        run: node scripts/build-anime-forge-phase6-6-mesh-silhouette-evidence.mjs
+      - name: Verify mesh silhouette root chain
+        run: node scripts/verify-anime-forge-phase6-6-mesh-silhouette-evidence.mjs --evidence tmp/anime-forge-phase6-6-native-drawing-evidence
       - name: Build Phase 6.6 full-body evidence
         env:
           RSVG_CONVERT_PATH: rsvg-convert
