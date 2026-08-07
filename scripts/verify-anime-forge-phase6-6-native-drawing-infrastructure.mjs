@@ -7,12 +7,11 @@ const repoRoot=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const arg=process.argv.indexOf('--evidence');
 const dir=arg>=0?path.resolve(process.argv[arg+1]):path.join(repoRoot,'evidence/anime-forge-phase6-6-native-drawing-infrastructure-v0.1');
 const read=name=>JSON.parse(fs.readFileSync(path.join(dir,name),'utf8'));
-const required=['static-gates.json','frame-manifest.json','lower-body-certificate.json','episode.wav','episode.mp4','ffprobe-report.json','backend-receipt.json','phase-status.json','evidence-ledger.json','evidence-summary.json'];
-const failures=[];
-for(const name of required)if(!fs.existsSync(path.join(dir,name)))failures.push(`MISSING:${name}`);
+const required=['static-gates.json','frame-manifest.json','lower-body-certificate.json','episode.wav','episode.mp4','ffprobe-report.json','backend-receipt.json','phase-status.json','face-surface-evidence.json','hair-surface-evidence.json','mesh-silhouette-evidence.json','direct-visual-bridge.json','evidence-ledger.json','evidence-summary.json'];
+const failures=[];for(const name of required)if(!fs.existsSync(path.join(dir,name)))failures.push(`MISSING:${name}`);
 
 if(!failures.length){
-  const gates=read('static-gates.json'),frames=read('frame-manifest.json'),lower=read('lower-body-certificate.json'),backend=read('backend-receipt.json'),status=read('phase-status.json'),ledger=read('evidence-ledger.json'),summary=read('evidence-summary.json');
+  const gates=read('static-gates.json'),frames=read('frame-manifest.json'),lower=read('lower-body-certificate.json'),backend=read('backend-receipt.json'),status=read('phase-status.json'),face=read('face-surface-evidence.json'),hair=read('hair-surface-evidence.json'),mesh=read('mesh-silhouette-evidence.json'),bridge=read('direct-visual-bridge.json'),ledger=read('evidence-ledger.json'),summary=read('evidence-summary.json');
   if(gates.status!=='passed'||gates.entries?.length!==3)failures.push('STATIC_VECTOR_GATES_FAILED');
   if(gates.lower_body_status!=='represented-in-canonical-morphology-v0.2-candidate'||!gates.lower_body_certificate_root)failures.push('STATIC_LOWER_BODY_EVIDENCE_MISSING');
   if(gates.surface_weighting_backend!=='rncs.field-guided-surface-weighting.v0.1')failures.push('STATIC_SURFACE_WEIGHTING_BACKEND_MISSING');
@@ -25,10 +24,12 @@ if(!failures.length){
   if(lower.failures?.length||!lower.certificate_root||!Object.values(lower.gates??{}).every(gate=>gate?.pass===true&&gate.measurement!==undefined&&gate.method&&gate.evidence_root))failures.push('LOWER_BODY_CERTIFICATE_INVALID');
   if(backend.supersample_factor!==2||backend.external_visual_model!==false||backend.surface_weighting_backend!=='rncs.field-guided-surface-weighting.v0.1'||backend.surface_weighting_root!==frames.surface_weighting_root||backend.drawing_mesh_ir!=='rncs.anime-drawing-mesh-ir.v0.1'||backend.deformation_backend!=='rncs.quadratic-3x3-drawing-cage.v0.1'||backend.presentation_backend!=='rncs.drawing-presentation-transform.v0.1'||backend.presentation_transform?.translate_y!==summary.presentation_translate_y)failures.push('BACKEND_RECEIPT_INVALID');
   if(status.lower_body_status!=='represented-in-canonical-morphology-v0.2-candidate'||status.human_visual_acceptance!=='pending'||status.creative_production_review!=='pending-human-review')failures.push('HUMAN_OR_LOWER_BODY_GATE_INVALID');
+  for(const [name,value] of Object.entries({face,hair,mesh}))if(value.status!=='passed'||value.human_visual_acceptance!=='pending'||value.evidence_root!==rootHash({...value,evidence_root:''}))failures.push(`DIRECT_VISUAL_EVIDENCE_INVALID:${name}`);
+  if(bridge.format!=='rncs.phase6-6-direct-visual-bridge.v0.1'||bridge.human_visual_acceptance!=='pending'||bridge.face_surface_evidence_root!==face.evidence_root||bridge.hair_surface_evidence_root!==hair.evidence_root||bridge.mesh_silhouette_evidence_root!==mesh.evidence_root||bridge.bridge_root!==rootHash({...bridge,bridge_root:''}))failures.push('DIRECT_VISUAL_BRIDGE_INVALID');
+  if(ledger.face_surface_evidence_root!==face.evidence_root||ledger.hair_surface_evidence_root!==hair.evidence_root||ledger.mesh_silhouette_evidence_root!==mesh.evidence_root||ledger.direct_visual_bridge_root!==bridge.bridge_root)failures.push('LEDGER_DIRECT_VISUAL_ROOT_MISMATCH');
+  if(summary.face_surface_evidence_root!==ledger.face_surface_evidence_root||summary.hair_surface_evidence_root!==ledger.hair_surface_evidence_root||summary.mesh_silhouette_evidence_root!==ledger.mesh_silhouette_evidence_root||summary.direct_visual_bridge_root!==ledger.direct_visual_bridge_root||summary.ledger_root!==ledger.ledger_root)failures.push('SUMMARY_DIRECT_VISUAL_ROOT_MISMATCH');
   if(summary.lower_body_certificate_root!==ledger.lower_body_certificate_root||summary.surface_weighting_root!==ledger.surface_weighting_root||summary.mp4_sha256!==ledger.media_sha256)failures.push('SUMMARY_LEDGER_BINDING_MISMATCH');
   if(ledger.surface_weighting_root!==frames.surface_weighting_root)failures.push('LEDGER_WEIGHTING_ROOT_MISMATCH');
   if(ledger.ledger_root!==rootHash({...ledger,ledger_root:''}))failures.push('LEDGER_ROOT_MISMATCH');
 }
-
-console.log(JSON.stringify({format:'rncs.phase6-6-verification.v0.4',passed:failures.length===0,failures,evidence_dir:dir},null,2));
-if(failures.length)process.exit(1);
+console.log(JSON.stringify({format:'rncs.phase6-6-verification.v0.5',passed:failures.length===0,failures,evidence_dir:dir},null,2));if(failures.length)process.exit(1);
