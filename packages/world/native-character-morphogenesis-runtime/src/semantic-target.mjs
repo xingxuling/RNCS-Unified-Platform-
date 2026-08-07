@@ -14,7 +14,7 @@ export function createCharacterDesignTarget(input={}){
     human_status:input.human_status??'pending',
     silhouette:{
       head_to_shoulder:input.silhouette?.head_to_shoulder??range(.46,.58),
-      head_to_torso:input.silhouette?.head_to_torso??range(.30,.46),
+      head_to_torso:input.silhouette?.head_to_torso??range(.45,.58),
       ribcage_to_shoulder:input.silhouette?.ribcage_to_shoulder??range(.72,.88),
       waist_to_shoulder:input.silhouette?.waist_to_shoulder??range(.48,.62),
       pelvis_to_shoulder:input.silhouette?.pelvis_to_shoulder??range(.56,.72),
@@ -43,9 +43,9 @@ export function createSemanticMorphologyProfile(targetInput={}){
     profile_id:'anime-semantic-young-adult-v0.1',
     target_root:target.target_root,
     morphology_law_overrides:{
-      hard_constraints:{minimum_head_unit:.075,maximum_head_unit:.16,minimum_body_height:.62,maximum_body_height:1.02},
-      anime_stylization_ranges:{head_to_body:[.135,.19],shoulder_to_head:[1.75,2.15],waist_to_shoulder:[.48,.62],hand_to_forearm:[.34,.52]},
-      derivation_coefficients:{head_unit_base:.082,head_unit_ratio:.035,shoulder_base:.20,shoulder_ratio:.12,torso_base:.16,torso_ratio:.12,limb_base:.14,limb_ratio:.10,depth_ratio:.45}
+      hard_constraints:{minimum_head_unit:.09,maximum_head_unit:.18,minimum_body_height:.62,maximum_body_height:1.02},
+      anime_stylization_ranges:{head_to_body:[.18,.22],shoulder_to_head:[1.75,2.15],waist_to_shoulder:[.48,.62],hand_to_forearm:[.34,.52]},
+      derivation_coefficients:{head_unit_base:.09,head_unit_ratio:.04,shoulder_base:.20,shoulder_ratio:.12,torso_base:.16,torso_ratio:.12,limb_base:.14,limb_ratio:.10,depth_ratio:.45}
     },
     semantic_refinement:{ribcage_to_shoulder:.80,waist_to_shoulder:.55,pelvis_to_shoulder:.64,neck_to_head:.31,forearm_to_upper_radius:.78},
     region_intents:[
