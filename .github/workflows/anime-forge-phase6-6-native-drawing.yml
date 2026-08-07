@@ -22,6 +22,8 @@ on:
       - "scripts/verify-anime-forge-phase6-6-cel-shading-evidence.mjs"
       - "scripts/build-anime-forge-phase6-6-mesh-silhouette-evidence.mjs"
       - "scripts/verify-anime-forge-phase6-6-mesh-silhouette-evidence.mjs"
+      - "scripts/build-anime-forge-phase6-6-temporal-stability-evidence.mjs"
+      - "scripts/verify-anime-forge-phase6-6-temporal-stability-evidence.mjs"
       - "scripts/bind-anime-forge-phase6-6-direct-visual-evidence.mjs"
       - ".github/workflows/anime-forge-phase6-6-native-drawing.yml"
 
@@ -54,6 +56,7 @@ jobs:
           packages/world/native-character-morphogenesis-runtime/tests/hair-surface-drawing.test.mjs
           packages/world/native-character-morphogenesis-runtime/tests/garment-surface-drawing.test.mjs
           packages/world/native-character-morphogenesis-runtime/tests/cel-shading-drawing.test.mjs
+          packages/world/native-character-morphogenesis-runtime/tests/temporal-drawing-stability.test.mjs
           packages/world/native-character-morphogenesis-runtime/tests/full-body-drawing.test.mjs
           packages/world/native-character-morphogenesis-runtime/tests/drawing-presentation.test.mjs
 
@@ -110,6 +113,13 @@ jobs:
         run: node scripts/build-anime-forge-phase6-6-mesh-silhouette-evidence.mjs
       - name: Verify mesh silhouette root chain
         run: node scripts/verify-anime-forge-phase6-6-mesh-silhouette-evidence.mjs --evidence tmp/anime-forge-phase6-6-native-drawing-evidence
+
+      - name: Measure final SVG temporal stability
+        env:
+          ANIME_PHASE6_6_EVIDENCE_DIR: tmp/anime-forge-phase6-6-native-drawing-evidence
+        run: node scripts/build-anime-forge-phase6-6-temporal-stability-evidence.mjs
+      - name: Verify temporal DrawingIR stability
+        run: node scripts/verify-anime-forge-phase6-6-temporal-stability-evidence.mjs --evidence tmp/anime-forge-phase6-6-native-drawing-evidence
 
       - name: Bind six direct visual evidence roots into main Evidence Ledger
         run: node scripts/bind-anime-forge-phase6-6-direct-visual-evidence.mjs --evidence tmp/anime-forge-phase6-6-native-drawing-evidence
