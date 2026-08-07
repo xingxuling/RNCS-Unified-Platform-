@@ -19,3 +19,4 @@ export * from './asset-forge.mjs';
 export * from './sequencer.mjs';
 export * from './network-world-compiler.mjs';
 export * from './native-character-surgery-studio.mjs';
+export * from './semantic-anatomy-studio.mjs';

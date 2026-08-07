@@ -1,0 +1,52 @@
+name: RNCS Anime Forge Phase 6.4 Semantic Anatomy
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main-95]
+    paths:
+      - "packages/world/native-character-morphogenesis-runtime/**"
+      - "apps/reality-studio/src/semantic-anatomy-studio.mjs"
+      - "apps/reality-studio/src/index.mjs"
+      - "apps/reality-studio/tests/semantic-anatomy-studio.test.mjs"
+      - "scripts/build-anime-forge-phase6-4-semantic-anatomy.mjs"
+      - "scripts/verify-anime-forge-phase6-4-semantic-anatomy.mjs"
+      - "docs/execution/phase6-4/**"
+      - "docs/verification/anime-forge-phase6-4-semantic-anatomy-v0.1/**"
+      - "docs/production/PHASE6-4-ART-DIRECTION-BIBLE.md"
+      - "docs/production/PHASE6-4-CREATIVE-PRODUCTION-REVIEW.md"
+      - ".github/workflows/anime-forge-phase6-4-semantic-anatomy.yml"
+
+jobs:
+  semantic-anatomy-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install FFmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - run: npm ci --ignore-scripts
+      - name: Fast semantic RED / GREEN gate
+        run: node --test packages/world/native-character-morphogenesis-runtime/tests/semantic-anatomy.test.mjs
+      - name: Reality Studio semantic workspace
+        run: node --test apps/reality-studio/tests/semantic-anatomy-studio.test.mjs
+      - name: Full native morphology regression
+        run: npm test --workspace @taowind/native-character-morphogenesis-runtime
+      - name: Build Phase 6.4 evidence
+        env:
+          FFMPEG_PATH: ffmpeg
+          FFPROBE_PATH: ffprobe
+          ANIME_PHASE6_4_EVIDENCE_DIR: tmp/anime-forge-phase6-4-semantic-anatomy-evidence
+        run: node scripts/build-anime-forge-phase6-4-semantic-anatomy.mjs
+      - name: Verify Phase 6.4 evidence
+        run: node scripts/verify-anime-forge-phase6-4-semantic-anatomy.mjs --evidence tmp/anime-forge-phase6-4-semantic-anatomy-evidence
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rncs-anime-forge-phase6-4-semantic-anatomy-${{ github.sha }}
+          if-no-files-found: error
+          retention-days: 30
+          path: tmp/anime-forge-phase6-4-semantic-anatomy-evidence
