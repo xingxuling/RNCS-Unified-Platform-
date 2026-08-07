@@ -28,6 +28,7 @@
     "./full-body-drawing-ir": "./src/full-body-drawing-ir.mjs",
     "./drawing-ir": "./src/drawing-ir.mjs",
     "./drawing-mesh-deformation": "./src/drawing-mesh-deformation.mjs",
+    "./drawing-presentation": "./src/drawing-presentation.mjs",
     "./semantic-anime-renderer": "./src/semantic-anime-renderer.mjs"
   },
   "files": ["src", "schemas", "tests", "README.md", "STATUS.md"],
