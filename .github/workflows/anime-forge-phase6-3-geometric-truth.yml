@@ -36,6 +36,8 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y ffmpeg
       - name: Install workspace dependencies
         run: npm ci
+      - name: Build the native RCL compiler
+        run: npm run build:native --workspace @taowind/reality-computation-language
       - name: Build VSR and RSR generated imports
         run: npm run build:world
       - name: Run Phase 6.3 morphology and property tests
