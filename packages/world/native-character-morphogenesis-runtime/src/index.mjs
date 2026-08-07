@@ -18,6 +18,7 @@ export * from './semantic-target.mjs';
 export * from './semantic-certificate.mjs';
 export * from './semantic-anatomy.mjs';
 export * from './semantic-anime-visual-grammar.mjs';
+export * from './semantic-art-projection.mjs';
 export * from './semantic-anime-renderer.mjs';
 export * from './style.mjs';
 export * from './raster.mjs';
