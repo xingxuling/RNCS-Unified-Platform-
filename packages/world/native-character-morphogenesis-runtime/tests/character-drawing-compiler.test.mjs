@@ -14,12 +14,12 @@ const frame=(value,view='front',pose='neutral')=>buildNativeSurfaceFrame({canoni
 test('Phase 6.4 primitive projection is a RED baseline for the Character Drawing Compiler',()=>{
   const value=asset(),legacy=buildSemanticArtProjection(frame(value,'front'));
   assert.equal(legacy.format,'rncs.semantic-art-projection.v0.3');
-  assert.equal(Object.hasOwn(legacy,'drawing_certificate'),false,'legacy projection must not be mistaken for a validated drawing model');
-  assert.equal(Object.hasOwn(legacy.torso??{},'armpit_left'),false,'legacy torso has no explicit armpit contour contract');
-  assert.equal(Object.hasOwn(legacy.arms?.[0]?.upper??{},'contour'),false,'legacy arm is still radius/capsule oriented');
+  assert.equal(Object.hasOwn(legacy,'drawing_certificate'),false);
+  assert.equal(Object.hasOwn(legacy.torso??{},'armpit_left'),false);
+  assert.equal(Object.hasOwn(legacy.arms?.[0]?.upper??{},'contour'),false);
 });
 
-test('front drawing compiles shoulder socket, armpit, torso hierarchy, tapered limbs and readable hands',()=>{
+test('front drawing compiles shoulder, armpit, torso hierarchy, continuous sleeves and attached hands',()=>{
   const drawing=compileCharacterDrawing(frame(asset(),'front')),validation=validateCharacterDrawing(drawing),g=drawing.drawing_certificate.gates;
   assert.equal(validation.valid,true,validation.failures.join(','));
   assert.equal(g.shoulder_socket_continuity.pass,true);
@@ -27,6 +27,8 @@ test('front drawing compiles shoulder socket, armpit, torso hierarchy, tapered l
   assert.equal(g.ribcage_waist_pelvis_hierarchy.pass,true);
   assert.equal(g.limb_taper_continuity.pass,true);
   assert.equal(g.hand_scale_validity.pass,true);
+  assert.equal(g.hand_wrist_attachment.pass,true);
+  assert.ok(drawing.limbs.every(limb=>limb.full_contour.length>=8));
   assert.equal(drawing.face.eyes.length,2);
   assert.equal(drawing.view.kind,'front');
 });
@@ -37,6 +39,7 @@ test('3/4 drawing is asymmetric and keeps face features inside the constructed h
   assert.equal(drawing.view.kind,'three-quarter');
   assert.equal(g.three_quarter_asymmetry_validity.pass,true);
   assert.equal(g.face_feature_surface_containment.pass,true);
+  assert.equal(g.hand_wrist_attachment.pass,true);
   assert.equal(drawing.face.eyes.length,2);
   assert.notEqual(drawing.face.eyes[0].scale,drawing.face.eyes[1].scale);
 });
@@ -48,12 +51,14 @@ test('profile drawing exposes only the near eye and preserves a coherent charact
   assert.equal(drawing.face.eyes.length,1);
   assert.equal(g.profile_feature_visibility.pass,true);
   assert.equal(g.whole_character_silhouette_plausibility.pass,true);
+  assert.equal(g.hand_wrist_attachment.pass,true);
 });
 
-test('action pose stays on the same drawing model contract instead of falling back to capsule-body rendering',()=>{
+test('action pose stays on the same drawing model contract instead of falling back to primitive body rendering',()=>{
   const value=asset(),surface=frame(value,'three-quarter-right','action'),rendered=renderSemanticAnimeFrame(surface),drawing=rendered.drawing;
-  assert.equal(rendered.format,'rncs.native-anime-frame.v0.5');
+  assert.equal(rendered.format,'rncs.native-anime-frame.v0.5.1');
   assert.equal(rendered.diagnostics.primitive_body_final_path,false);
+  assert.equal(rendered.diagnostics.continuous_sleeve_contour,true);
   assert.equal(rendered.diagnostics.renderer_role,'character-drawing-raster-only');
   assert.equal(validateCharacterDrawing(drawing).valid,true);
   assert.ok(rendered.png.length>1000);
@@ -61,6 +66,7 @@ test('action pose stays on the same drawing model contract instead of falling ba
 
 test('renderer source no longer uses capsule primitive as the final character-body path',()=>{
   const source=fs.readFileSync(new URL('../src/semantic-anime-renderer.mjs',import.meta.url),'utf8');
-  assert.equal(source.includes('.capsule('),false,'Phase 6.5 renderer must consume drawing contours, not draw capsule limbs');
+  assert.equal(source.includes('.capsule('),false);
   assert.equal(source.includes('compileCharacterDrawing'),true);
+  assert.equal(source.includes('full_contour'),true);
 });
