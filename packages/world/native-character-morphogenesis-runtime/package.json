@@ -2,26 +2,29 @@
   "name": "@taowind/native-character-morphogenesis-runtime",
   "version": "0.1.0-alpha.1",
   "type": "module",
-  "description": "RNCS-native Character Body Surface, Face Rig, Hair Topology and joint deformation runtime.",
+  "description": "RNCS-native Character Morphology, Semantic Anatomy, Surface/Visibility and Anime projection runtime.",
   "license": "Apache-2.0",
   "exports": {
     ".": "./src/index.mjs",
     "./anatomy": "./src/anatomy.mjs",
     "./renderer": "./src/renderer.mjs",
     "./canonical-morphology": "./src/canonical-morphology.mjs",
-    "./build62": "./src/build62.mjs"
-    ,"./canonical-surface-mesh": "./src/canonical-surface-mesh.mjs",
-    "./surface-attachments": "./src/surface-attachments.mjs"
-    ,"./surface-skinning": "./src/surface-skinning.mjs",
+    "./build62": "./src/build62.mjs",
+    "./canonical-surface-mesh": "./src/canonical-surface-mesh.mjs",
+    "./surface-attachments": "./src/surface-attachments.mjs",
+    "./surface-skinning": "./src/surface-skinning.mjs",
     "./native-visibility": "./src/native-visibility.mjs",
     "./native-surface-runtime": "./src/native-surface-runtime.mjs",
     "./morphology-certificate-v2": "./src/morphology-certificate-v2.mjs",
     "./anime-visual-grammar": "./src/anime-visual-grammar.mjs",
-    "./native-anime-renderer": "./src/native-anime-renderer.mjs"
+    "./native-anime-renderer": "./src/native-anime-renderer.mjs",
+    "./semantic-target": "./src/semantic-target.mjs",
+    "./semantic-certificate": "./src/semantic-certificate.mjs",
+    "./semantic-anatomy": "./src/semantic-anatomy.mjs",
+    "./semantic-anime-visual-grammar": "./src/semantic-anime-visual-grammar.mjs",
+    "./semantic-anime-renderer": "./src/semantic-anime-renderer.mjs"
   },
   "files": ["src", "schemas", "tests", "README.md", "STATUS.md"],
-  "scripts": {
-    "test": "node --test --test-concurrency=1 tests/*.test.mjs"
-  },
+  "scripts": {"test": "node --test --test-concurrency=1 tests/*.test.mjs"},
   "engines": {"node": ">=20"}
 }
