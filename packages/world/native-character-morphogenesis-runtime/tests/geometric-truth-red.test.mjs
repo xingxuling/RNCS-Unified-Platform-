@@ -11,6 +11,7 @@ const packageRoot=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'
 const repoRoot=path.resolve(packageRoot,'../../..');
 const fixtureRoot=path.join(repoRoot,'evidence/anime-forge-phase6-2-canonical-morphology-v0.1/morphology-regression-fixture');
 const fixture=JSON.parse(fs.readFileSync(path.join(fixtureRoot,'fixture.json'),'utf8'));
+const archivedFailure=JSON.parse(fs.readFileSync(path.join(repoRoot,'evidence/anime-forge-phase6-3-geometric-truth-v0.1/phase6-2-failure-measurements.json'),'utf8'));
 
 function oldKernelReport(){
   const system=createAnatomySystem(),pose=poseForFrame(system,{view:'three-quarter-right',pose:'neutral',frame:0,totalFrames:120});
@@ -19,7 +20,7 @@ function oldKernelReport(){
 }
 
 test('Phase 6.2 old contour output is measured RED before Phase 6.3 implementation',()=>{
-  const report=oldKernelReport(),validation=validateGeometricTruthMeasurements(report);
+  const report=archivedFailure.old_kernel,validation=validateGeometricTruthMeasurements(report);
   assert.equal(validation.valid,true,validation.errors.join(','));
   assert.equal(report.status,'red');
   assert.ok(report.red_metrics.length>=8,`expected a material RED baseline, got ${report.red_metrics.length}`);
