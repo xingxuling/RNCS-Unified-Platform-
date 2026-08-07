@@ -14,7 +14,7 @@ Character Genome
 → HeadSurfaceDrawingGuide
 → FaceSurfaceDrawingGuide
 → HairSurfaceDrawingGuide
-→ MeshSilhouetteDrawingGuide (torso + limbs, multipart occlusion)
+→ MeshSilhouetteDrawingGuide (torso + neck + bilateral arms/hands/legs/feet, multipart occlusion)
 → FullBodyCharacterDrawing / AnimeDrawingIR
 → DrawingMeshIR / 3×3 quadratic cage
 → bounded no-inversion 2D deformation
@@ -27,19 +27,18 @@ Candidate capabilities:
 
 - Cubic-Bezier drawing IR with explicit layer/z semantics.
 - SVG serializer and `librsvg` CPU backend contract.
-- DrawingMeshIR generated from closed drawing paths.
-- Deterministic 3×3 cage weights and bounded no-inversion drawing deformation.
+- DrawingMeshIR generated from closed drawing paths with deterministic 3×3 cage weights and bounded no-inversion deformation.
 - Existing `body.leg_length` Genome input drives a candidate canonical lower-body proportion solution and bilateral `pelvis → hip → thigh → knee → shin → ankle → foot` chains.
 - Hip / Thigh / Knee / Shin / Foot implicit fields rebuild the Canonical Surface Mesh; LowerBodyMorphologyCertificate binds bones, fields, mesh connectivity, skin-weight evidence and self-intersection.
-- Full-body-only performance adds bounded weight shift, knee relaxation and ankle compensation through the existing FK path; upper-body assets keep their previous behavior.
-- FieldGuidedSurfaceWeights preserves Canonical Mesh authority while producing a separately rooted ≤4-influence weighted mesh for the existing LBS runtime.
-- MeshSilhouetteDrawingGuide consumes the weighted posed mesh plus Visibility/SurfaceId buffers. Torso, bilateral arms, legs and feet now derive their large-form drawing contours from the actually visible deformed surface rather than only projected skeleton points.
+- Full-body-only performance adds bounded weight shift, knee relaxation and ankle compensation through the existing FK path; upper-body assets keep previous behavior.
+- FieldGuidedSurfaceWeights preserves Canonical Mesh authority while producing a separately rooted, normalized, maximum-four-influence weighted mesh for the existing LBS runtime.
+- MeshSilhouetteDrawingGuide consumes the weighted posed mesh plus Visibility/SurfaceId buffers. Torso, neck, bilateral arms, hands, legs and feet now derive large-form drawing contours from the actually visible deformed surface rather than only projected skeleton points.
 - Mesh silhouette extraction is semantic-region-first with bone-weight fallback and preserves multiple significant visible parts through occlusion instead of forcing disconnected visible segments into one polygon.
 - HeadSurfaceDrawingGuide extracts the visible weighted skull silhouette and applies only a bounded Anime jaw/chin taper.
 - FaceSurfaceDrawingGuide places/hides eyes, brows, nose and mouth from skull SurfaceAttachment feature samples and real depth/visibility rather than front/3Q/profile screen-ratio guesses.
-- HairSurfaceDrawingGuide projects scalp attachments and hair guide curves through the posed skull. Hair secondary motion can modify non-root guide points, while scalp roots are required to remain unchanged.
+- HairSurfaceDrawingGuide projects scalp attachments and hair guide curves through the posed skull. Hair secondary motion can modify non-root guide points while scalp roots remain invariant.
 - DrawingPresentationTransform performs framing after validated DrawingIR and cannot alter identity, canonical morphology or drawing authority roots.
-- Direct Head / Face / Hair / Mesh evidence scripts prove that these surface-derived organs actually change final DrawingIR paths; a DirectVisualBridge binds all four evidence roots into the main Evidence Ledger.
+- Direct Head / Face / Hair / Mesh evidence scripts prove that these surface-derived organs actually change final DrawingIR paths; DirectVisualBridge binds all four evidence roots into the main Evidence Ledger.
 - Phase 6.6 build path is wired for 120 frames / 5 seconds / 1280×720 through weighted full-body surfaces → surface-driven DrawingIR → cage deformation → presentation → SVG/librsvg → FFmpeg.
 
 Verification boundary:
@@ -52,7 +51,7 @@ Verification boundary:
 - head surface drawing: `implemented-unverified-on-clean-runner`
 - face surface drawing: `implemented-unverified-on-clean-runner`
 - scalp hair surface drawing: `implemented-unverified-on-clean-runner`
-- weighted mesh silhouette drawing: `implemented-unverified-on-clean-runner`
+- weighted torso/neck/limb/hand/foot mesh silhouette drawing: `implemented-unverified-on-clean-runner`
 - DrawingMesh/Cage deformation: `implemented-unverified-on-clean-runner`
 - DrawingPresentation: `implemented-unverified-on-clean-runner`
 - current-head media artifact: `not-produced`
