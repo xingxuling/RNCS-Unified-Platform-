@@ -1,5 +1,43 @@
 # Status
 
+## Phase 6.6 candidate — Native Anime Drawing Infrastructure
+
+Current stacked branch adds a backend-neutral drawing stack on top of the Phase 6.5 Character Drawing Compiler:
+
+```text
+Character Genome
+→ Canonical Morphology
+→ Semantic Anatomy
+→ CharacterDrawingCompiler
+→ AnimeDrawingIR (cubic Bezier)
+→ DrawingMeshIR / 3×3 quadratic cage
+→ bounded 2D deformation
+→ SVG/librsvg first backend
+→ future Skia / Godot / Blender adapters
+```
+
+Candidate capabilities:
+
+- Cubic-Bezier drawing IR with explicit layer/z semantics.
+- SVG serializer and `librsvg` CPU backend contract.
+- DrawingMeshIR generated from closed drawing paths.
+- Deterministic 3×3 cage weights for each mesh vertex.
+- Bounded cage deformation with triangle-inversion rejection.
+- Performance-driven candidate controls for hair lag, garment lag, breathing and sleeve follow-through.
+- Deformed mesh can be compiled back into DrawingIR without granting the renderer identity or anatomy authority.
+- Lower body remains explicitly absent because Canonical Skeleton v0.1 does not represent it.
+
+Verification boundary:
+
+- implementation status: `candidate`
+- CI status: `blocked-by-billing`
+- drawing mesh deformation status: `implemented-unverified-on-clean-runner`
+- human visual acceptance: `pending`
+- creative production review: `pending-human-review`
+- commercial anime quality: `not-proven`
+
+GitHub Actions is currently blocked before runner start by an account-level billing/spending-limit condition. No Phase 6.6 completion or visual-quality PASS may be claimed until a real runner executes the tests/build and the resulting artifact is reviewed.
+
 ## Phase 6.2
 
 - Canonical Morphology Compiler: implemented, genome-driven and certificate-gated
