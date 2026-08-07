@@ -27,7 +27,9 @@ jobs:
       - name: Install FFmpeg
         run: sudo apt-get update && sudo apt-get install -y ffmpeg
       - run: npm ci --ignore-scripts
-      - name: Test native morphology and semantic layer
+      - name: Fast semantic RED / GREEN gate
+        run: node --test packages/world/native-character-morphogenesis-runtime/tests/semantic-anatomy.test.mjs
+      - name: Full native morphology regression
         run: npm test --workspace @taowind/native-character-morphogenesis-runtime
       - name: Build Phase 6.4 evidence
         env:
