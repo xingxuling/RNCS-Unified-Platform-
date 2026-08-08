@@ -141,9 +141,12 @@ if (-not (Test-Path $Bridge)) { throw "DIRECT_VISUAL_BRIDGE_MISSING:$Bridge" }
 $LedgerJson = Get-Content -Raw $Ledger | ConvertFrom-Json
 $TemporalJson = Get-Content -Raw $Temporal | ConvertFrom-Json
 $Mp4Hash = (Get-FileHash -Algorithm SHA256 $Mp4).Hash.ToLowerInvariant()
+$FullValidation = (-not $SkipFullRegression) -and (-not $SkipBrowserReviewRegression)
+$ValidationStatus = if ($FullValidation) { "engineering-evidence-passed-awaiting-human-review" } else { "development-partial-pass-not-release-evidence" }
 $Summary = [ordered]@{
-  format = "rncs.phase6-6-local-validation-summary.v0.2"
-  status = "engineering-evidence-passed-awaiting-human-review"
+  format = "rncs.phase6-6-local-validation-summary.v0.3"
+  status = $ValidationStatus
+  full_validation = $FullValidation
   evidence_dir = $EvidenceDir
   mp4 = [ordered]@{ path = $Mp4; sha256 = $Mp4Hash; bytes = (Get-Item $Mp4).Length }
   ledger_root = $LedgerJson.ledger_root
@@ -156,12 +159,16 @@ $Summary = [ordered]@{
   human_visual_acceptance = "pending"
   review_workspace = "apps/reality-studio/web/native-drawing-review.html"
   automatic_commit = $false
-  boundary = "Local execution can prove engineering evidence. Human visual acceptance remains a separate manual gate. Any skip flag produces a development result, not full Phase 6.6 validation."
+  boundary = "Local execution can prove engineering evidence. Human visual acceptance remains separate. Any skip flag forces a development-only summary and cannot be used as full Phase 6.6 validation."
 }
 $SummaryFile = Join-Path $EvidenceDir "local-validation-summary.json"
 $Summary | ConvertTo-Json -Depth 8 | Set-Content -Encoding UTF8 $SummaryFile
 
-Write-Host "`n=== Phase 6.6 local engineering evidence PASS ===" -ForegroundColor Green
+if ($FullValidation) {
+  Write-Host "`n=== Phase 6.6 local engineering evidence PASS ===" -ForegroundColor Green
+} else {
+  Write-Host "`n=== Phase 6.6 development partial pass — NOT release evidence ===" -ForegroundColor Yellow
+}
 Write-Host "MP4:        $Mp4"
 Write-Host "SHA-256:    $Mp4Hash"
 Write-Host "Ledger:     $($LedgerJson.ledger_root)"
