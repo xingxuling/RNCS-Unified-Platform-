@@ -53,6 +53,12 @@ if (-not $SkipBrowserReviewRegression) {
   $Python = Resolve-Tool "PHASE66_PYTHON_PATH" @("python.exe","python","py.exe","py")
 }
 
+# Propagate the resolved Node executable to browser regression child processes.
+$env:PHASE66_NODE_PATH = $Node
+$NodeDir = Split-Path -Parent $Node
+if (-not [string]::IsNullOrWhiteSpace($NodeDir)) {
+  $env:PATH = "$NodeDir;$env:PATH"
+}
 $env:RSVG_CONVERT_PATH = $Rsvg
 $env:FFMPEG_PATH = $Ffmpeg
 $env:FFPROBE_PATH = $Ffprobe
@@ -96,17 +102,31 @@ if (-not $SkipFullRegression) {
 }
 
 if (-not $SkipBrowserReviewRegression) {
-  $PlaywrightAvailable = $false
+  $PlaywrightPackageAvailable = $false
   & $Python -c "import playwright" *> $null
-  if ($LASTEXITCODE -eq 0) { $PlaywrightAvailable = $true }
-  if (-not $PlaywrightAvailable -and $Install) {
+  if ($LASTEXITCODE -eq 0) { $PlaywrightPackageAvailable = $true }
+
+  if (-not $PlaywrightPackageAvailable -and $Install) {
     Invoke-Step "Install Python Playwright package" { & $Python -m pip install "playwright>=1.45,<2" }
+    $PlaywrightPackageAvailable = $true
+  }
+  if (-not $PlaywrightPackageAvailable) {
+    throw "PLAYWRIGHT_MISSING: install with '$Python -m pip install playwright', or use -Install. -SkipBrowserReviewRegression is development-only and not equivalent to full Phase 6.6 validation."
+  }
+
+  $ChromiumAvailable = $false
+  $ChromiumProbe = 'import os,sys; from playwright.sync_api import sync_playwright; p=sync_playwright().start(); path=p.chromium.executable_path; p.stop(); print(path); sys.exit(0 if path and os.path.isfile(path) else 2)'
+  & $Python -c $ChromiumProbe *> $null
+  if ($LASTEXITCODE -eq 0) { $ChromiumAvailable = $true }
+  if (-not $ChromiumAvailable -and $Install) {
     Invoke-Step "Install Chromium browser for Human Review regression" { & $Python -m playwright install chromium }
-    $PlaywrightAvailable = $true
+    & $Python -c $ChromiumProbe *> $null
+    if ($LASTEXITCODE -eq 0) { $ChromiumAvailable = $true }
   }
-  if (-not $PlaywrightAvailable) {
-    throw "PLAYWRIGHT_MISSING: install with '$Python -m pip install playwright' and '$Python -m playwright install chromium', or use -Install. -SkipBrowserReviewRegression is development-only and not equivalent to full Phase 6.6 validation."
+  if (-not $ChromiumAvailable) {
+    throw "PLAYWRIGHT_CHROMIUM_MISSING: install with '$Python -m playwright install chromium', or use -Install. -SkipBrowserReviewRegression is development-only and not equivalent to full Phase 6.6 validation."
   }
+
   Invoke-Step "Reality Studio Human Review browser regression" { & $Python apps/reality-studio/tests/browser_native_drawing_review_test.py }
 }
 
@@ -145,7 +165,7 @@ $Mp4Hash = (Get-FileHash -Algorithm SHA256 $Mp4).Hash.ToLowerInvariant()
 $FullValidation = (-not $SkipFullRegression) -and (-not $SkipBrowserReviewRegression)
 $ValidationStatus = if ($FullValidation) { "engineering-evidence-passed-awaiting-human-review" } else { "development-partial-pass-not-release-evidence" }
 $Summary = [ordered]@{
-  format = "rncs.phase6-6-local-validation-summary.v0.3"
+  format = "rncs.phase6-6-local-validation-summary.v0.4"
   status = $ValidationStatus
   full_validation = $FullValidation
   evidence_dir = $EvidenceDir
