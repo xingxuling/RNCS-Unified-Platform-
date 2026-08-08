@@ -9,6 +9,7 @@ Local execution is an independent execution body for engineering evidence. It do
 ```text
 focused tests
 → full native morphology regression
+→ Reality Studio Human Review browser regression
 → 120-frame media build
 → six spatial evidence proofs
 → temporal stability proof
@@ -17,13 +18,13 @@ focused tests
 → Human Visual Review
 ```
 
-A local engineering PASS still leaves:
+A full local engineering PASS still leaves:
 
 ```text
 human_visual_acceptance = pending
 ```
 
-until the real output is reviewed.
+until the actual output is reviewed.
 
 ---
 
@@ -41,11 +42,19 @@ scripts\run-anime-forge-phase6-6-local.cmd
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts\run-anime-forge-phase6-6-local.ps1
 ```
 
-### Force dependency reinstall
+### Force dependency / browser dependency install
 
 ```powershell
 scripts\run-anime-forge-phase6-6-local.ps1 -Install
 ```
+
+When needed, `-Install` may install:
+
+- npm workspace dependencies
+- Python Playwright package
+- Playwright Chromium
+
+It does not replace the formal librsvg raster backend.
 
 ### Custom evidence directory
 
@@ -53,19 +62,29 @@ scripts\run-anime-forge-phase6-6-local.ps1 -Install
 scripts\run-anime-forge-phase6-6-local.ps1 -EvidenceDir tmp\phase66-local
 ```
 
-### Development-only faster pass
+Absolute evidence paths are also supported.
+
+### Development-only skip flags
 
 ```powershell
 scripts\run-anime-forge-phase6-6-local.ps1 -SkipFullRegression
+scripts\run-anime-forge-phase6-6-local.ps1 -SkipBrowserReviewRegression
 ```
 
-`-SkipFullRegression` is not equivalent to the full verification workflow and must not be used as release evidence.
+Either skip flag forces:
+
+```text
+status = development-partial-pass-not-release-evidence
+full_validation = false
+```
+
+A skipped run must not be presented as full Phase 6.6 validation.
 
 ---
 
-## Required tools
+## Required core tools
 
-The local runner requires:
+The media/evidence runner requires:
 
 - Node.js
 - npm
@@ -73,11 +92,28 @@ The local runner requires:
 - FFmpeg
 - ffprobe
 
+The full local validation additionally requires:
+
+- Python
+- Python Playwright
+- Chromium available to Playwright
+
 Run the doctor directly:
 
 ```powershell
 node scripts\phase6-6-doctor.mjs
 ```
+
+Doctor v0.2 reports two separate readiness states:
+
+```text
+ready
+full_local_validation_ready
+```
+
+`ready` covers core media/evidence prerequisites.
+
+`full_local_validation_ready` additionally requires the browser-review regression stack.
 
 The doctor only validates prerequisites. It does not prove Phase 6.6 correctness.
 
@@ -90,6 +126,7 @@ If a tool is not on `PATH`, set one of these environment variables:
 ```text
 PHASE66_NODE_PATH
 PHASE66_NPM_PATH
+PHASE66_PYTHON_PATH
 RSVG_CONVERT_PATH
 FFMPEG_PATH
 FFPROBE_PATH
@@ -98,6 +135,7 @@ FFPROBE_PATH
 Example:
 
 ```powershell
+$env:PHASE66_PYTHON_PATH = 'C:\Python312\python.exe'
 $env:FFMPEG_PATH = 'C:\tools\ffmpeg\bin\ffmpeg.exe'
 $env:FFPROBE_PATH = 'C:\tools\ffmpeg\bin\ffprobe.exe'
 $env:RSVG_CONVERT_PATH = 'C:\tools\librsvg\rsvg-convert.exe'
@@ -120,7 +158,9 @@ AnimeDrawingIR
 → FFmpeg media
 ```
 
-Reality Studio already uses Playwright/Chromium for browser regression elsewhere in the repository, but Chromium is **not** silently substituted for librsvg in Phase 6.6 evidence.
+Playwright/Chromium is used only for the **Reality Studio Human Review browser regression**.
+
+Chromium is not silently substituted for librsvg in media evidence.
 
 A future raster backend may be added behind the same DrawingIR contract, but it must receive its own backend receipt and A/B evidence before becoming an accepted Phase 6.6 backend.
 
@@ -130,7 +170,7 @@ A future raster backend may be added behind the same DrawingIR contract, but it 
 
 ### Focused gates
 
-The script runs the Phase 6.6 focused tests for:
+The script runs Phase 6.6 focused tests for:
 
 - Character Drawing Compiler
 - DrawingIR
@@ -147,7 +187,7 @@ The script runs the Phase 6.6 focused tests for:
 - Temporal drawing stability
 - Full-body drawing
 - Drawing presentation
-- Reality Studio Native Drawing Review Model
+- Reality Studio Native Drawing Review Model / Schema / page contract
 
 ### Full regression
 
@@ -156,6 +196,28 @@ Unless `-SkipFullRegression` is supplied:
 ```powershell
 npm test --workspace @taowind/native-character-morphogenesis-runtime
 ```
+
+### Human Review browser regression
+
+Unless `-SkipBrowserReviewRegression` is supplied:
+
+```powershell
+python apps/reality-studio/tests/browser_native_drawing_review_test.py
+```
+
+The browser regression starts a real Reality Studio server and verifies:
+
+- Artifact directory upload through `webkitdirectory`
+- Spatial / Temporal / Integrity status
+- Accept button gating
+- visible / occluded / canonical-missing display
+- Front / 3/4 / Side preview wiring
+- Human Review export
+- replacement semantics when loading a different artifact
+- stale accepted review rejection
+- desktop and mobile layout screenshots
+
+The browser test uses a synthetic evidence bundle because its purpose is to validate the **review product and authority boundaries**. Real Phase 6.6 media/evidence is validated separately by the actual build and evidence verifiers.
 
 ### Media build
 
@@ -214,14 +276,20 @@ static-gates/three-quarter-right.png
 static-gates/side.png
 ```
 
-The local summary records:
+A full local summary records:
 
+- `status = engineering-evidence-passed-awaiting-human-review`
+- `full_validation = true`
 - MP4 SHA-256
 - Ledger root
 - DirectVisualBridge root
 - Temporal evidence root
 - Temporal report root
+- Browser Review regression = passed
+- Full regression = passed
 - Human Gate = pending
+
+If any dev-only skip flag is used, the summary is downgraded and cannot be used as full validation evidence.
 
 ---
 
@@ -267,10 +335,11 @@ The review is bound to the exact Ledger / Spatial Bridge / Temporal roots. A rev
 
 ## Evidence boundary
 
-A successful local run means:
+A **full** successful local run means:
 
 ```text
 local engineering evidence = PASS
+local Human Review browser regression = PASS
 ```
 
 It does **not** mean:
