@@ -1,13 +1,14 @@
 import fs from 'node:fs';
 import {spawnSync} from 'node:child_process';
 import {createRequire} from 'node:module';
-import {rootHash,seal} from './canonical.mjs';
+import {createHash} from 'node:crypto';
+import {seal} from './canonical.mjs';
 
 const require=createRequire(import.meta.url);
 const FORMAT='rncs.svg-raster-provider-receipt.v0.1';
 const BACKENDS=new Set(['librsvg','resvg-js']);
 
-function sha256LikeRecord(file){const stat=fs.statSync(file);return{path:file,bytes:stat.size};}
+function fileRecord(file){const stat=fs.statSync(file),sha256=createHash('sha256').update(fs.readFileSync(file)).digest('hex');return{path:file,sha256,bytes:stat.size};}
 function commandVersion(command,args){const result=spawnSync(command,args,{encoding:'utf8'});if(result.error?.code==='ENOENT')throw Object.assign(new Error(`SVG_RASTER_TOOL_NOT_FOUND:${command}`),{code:'SVG_RASTER_TOOL_NOT_FOUND',command});if(result.status!==0)throw Object.assign(new Error(`SVG_RASTER_TOOL_VERSION_FAILED:${command}:${result.stderr??result.stdout??''}`),{code:'SVG_RASTER_TOOL_VERSION_FAILED',command,status:result.status});return String(result.stdout||result.stderr||'').trim().split(/\r?\n/)[0]||'unknown';}
 
 export function normalizeSvgRasterBackend(value=process.env.PHASE66_RASTER_BACKEND??'librsvg'){
@@ -41,7 +42,7 @@ export function rasterizeSvgFile(svgFile,pngFile,{backend=normalizeSvgRasterBack
     fs.writeFileSync(pngFile,rendered.asPng());
   }
   if(!fs.existsSync(pngFile)||fs.statSync(pngFile).size<=0)throw Object.assign(new Error(`SVG_RASTER_OUTPUT_MISSING:${pngFile}`),{code:'SVG_RASTER_OUTPUT_MISSING'});
-  const receipt={format:FORMAT,version:'0.1.0-alpha.1',backend,provider_id:provider.provider_id,provider_version:provider.version,system_library_dependency:provider.system_library_dependency,node_module:provider.node_module,svg_file:svgFile,png_file:pngFile,width:w,height:h,output:sha256LikeRecord(pngFile),authority:{identity:false,canonical_geometry:false,drawing_ir:false,art_direction:false},receipt_root:''};
+  const receipt={format:FORMAT,version:'0.1.0-alpha.1',backend,provider_id:provider.provider_id,provider_version:provider.version,system_library_dependency:provider.system_library_dependency,node_module:provider.node_module,svg_file:svgFile,png_file:pngFile,width:w,height:h,output:fileRecord(pngFile),authority:{identity:false,canonical_geometry:false,drawing_ir:false,art_direction:false},receipt_root:''};
   return seal(receipt,'receipt_root');
 }
 
@@ -51,9 +52,9 @@ export function validateSvgRasterReceipt(receipt,{allowedBackends=['librsvg','re
   if(!allowedBackends.includes(receipt?.backend))errors.push(`SVG_RASTER_RECEIPT_BACKEND_INVALID:${receipt?.backend}`);
   if(!receipt?.provider_id||!receipt?.provider_version||!receipt?.receipt_root)errors.push('SVG_RASTER_RECEIPT_ROOT_CHAIN_MISSING');
   if(!Number.isInteger(Number(receipt?.width))||Number(receipt.width)<=0||!Number.isInteger(Number(receipt?.height))||Number(receipt.height)<=0)errors.push('SVG_RASTER_RECEIPT_DIMENSIONS_INVALID');
-  if(Number(receipt?.output?.bytes??0)<=0)errors.push('SVG_RASTER_RECEIPT_OUTPUT_INVALID');
+  if(Number(receipt?.output?.bytes??0)<=0||!/^[a-f0-9]{64}$/i.test(String(receipt?.output?.sha256??'')))errors.push('SVG_RASTER_RECEIPT_OUTPUT_INVALID');
   if(receipt?.authority?.identity!==false||receipt?.authority?.canonical_geometry!==false||receipt?.authority?.drawing_ir!==false||receipt?.authority?.art_direction!==false)errors.push('SVG_RASTER_RECEIPT_AUTHORITY_INVALID');
-  return{valid:errors.length===0,errors,receipt_root:receipt?.receipt_root??null,backend:receipt?.backend??null};
+  return{valid:errors.length===0,errors,receipt_root:receipt?.receipt_root??null,backend:receipt?.backend??null,output_sha256:receipt?.output?.sha256??null};
 }
 
 export const SVG_RASTER_PROVIDER_FORMAT=FORMAT;
