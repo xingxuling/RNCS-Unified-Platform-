@@ -11,6 +11,7 @@ on:
       - "apps/reality-studio/web/native-drawing-review.html"
       - "apps/reality-studio/web/native-drawing-review-model.js"
       - "apps/reality-studio/tests/native-drawing-review-model.test.mjs"
+      - "apps/reality-studio/schemas/human-visual-review.v0.1.schema.json"
       - "scripts/build-anime-forge-phase6-6-native-drawing-infrastructure.mjs"
       - "scripts/verify-anime-forge-phase6-6-native-drawing-infrastructure.mjs"
       - "scripts/build-anime-forge-phase6-6-head-surface-evidence.mjs"
