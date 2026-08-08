@@ -2,7 +2,8 @@ param(
   [string]$EvidenceDir = "",
   [switch]$Install,
   [switch]$SkipFullRegression,
-  [switch]$SkipBrowserReviewRegression
+  [switch]$SkipBrowserReviewRegression,
+  [switch]$OpenReview
 )
 
 $ErrorActionPreference = "Stop"
@@ -177,3 +178,8 @@ Write-Host "Browser QA: $($Summary.browser_review_regression)"
 Write-Host "Review UI:  apps/reality-studio/web/native-drawing-review.html"
 Write-Host "Human Gate: pending"
 Write-Host "Summary:    $SummaryFile"
+
+if ($OpenReview) {
+  Write-Host "`nOpening Reality Studio Human Review..." -ForegroundColor Cyan
+  & (Join-Path $ScriptRoot "open-anime-forge-phase6-6-review.ps1") -EvidenceDir $EvidenceDir
+}
