@@ -11,7 +11,7 @@ const commandVersion=(command,args=['--version'])=>{const result=spawnSync(comma
 const resolveCommand=(envName,fallback,args=['--version'])=>{const command=process.env[envName]||fallback;return{env:envName,...commandVersion(command,args)};};
 const checks={
   node:{required:true,...commandVersion(process.execPath,['--version'])},
-  npm:{required:true,...resolveCommand('NPM_PATH',process.platform==='win32'?'npm.cmd':'npm',['--version'])},
+  npm:{required:true,...resolveCommand('PHASE66_NPM_PATH',process.platform==='win32'?'npm.cmd':'npm',['--version'])},
   rsvg:{required:true,...resolveCommand('RSVG_CONVERT_PATH','rsvg-convert',['--version'])},
   ffmpeg:{required:true,...resolveCommand('FFMPEG_PATH','ffmpeg',['-version'])},
   ffprobe:{required:true,...resolveCommand('FFPROBE_PATH','ffprobe',['-version'])},
