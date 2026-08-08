@@ -215,11 +215,15 @@ try:
 
     complete = artifacts / 'bundle-complete'
     media_missing = artifacts / 'bundle-media-missing'
-    stale_review = artifacts / 'stale-human-visual-review.json'
+    stale_root = artifacts / 'bundle-stale-review'
+    supplemental = artifacts / 'supplemental'
     make_bundle(complete, include_media=True)
     make_bundle(media_missing, include_media=False)
-    stale_root = artifacts / 'bundle-stale-review'
     make_bundle(stale_root, include_media=True, stale_review=True)
+    if supplemental.exists():
+        shutil.rmtree(supplemental)
+    supplemental.mkdir(parents=True)
+    stale_review = supplemental / 'human-visual-review.json'
     shutil.copy2(stale_root / 'human-visual-review.json', stale_review)
 
     with sync_playwright() as playwright:
