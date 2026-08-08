@@ -39,8 +39,8 @@ function Invoke-Step([string]$Name,[scriptblock]$Action) {
   }
 }
 
-$Node = Resolve-Tool "NODE_PATH" @("node.exe","node")
-$Npm = Resolve-Tool "NPM_PATH" @("npm.cmd","npm")
+$Node = Resolve-Tool "PHASE66_NODE_PATH" @("node.exe","node")
+$Npm = Resolve-Tool "PHASE66_NPM_PATH" @("npm.cmd","npm")
 $Rsvg = Resolve-Tool "RSVG_CONVERT_PATH" @("rsvg-convert.exe","rsvg-convert")
 $Ffmpeg = Resolve-Tool "FFMPEG_PATH" @("ffmpeg.exe","ffmpeg")
 $Ffprobe = Resolve-Tool "FFPROBE_PATH" @("ffprobe.exe","ffprobe")
