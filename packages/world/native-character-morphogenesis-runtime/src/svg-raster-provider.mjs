@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import path from 'node:path';
 import {spawnSync} from 'node:child_process';
 import {createRequire} from 'node:module';
 import {createHash} from 'node:crypto';
@@ -11,6 +12,7 @@ const RESVG_JS_PIN='2.6.2';
 
 function fileRecord(file){const stat=fs.statSync(file),sha256=createHash('sha256').update(fs.readFileSync(file)).digest('hex');return{path:file,sha256,bytes:stat.size};}
 function commandVersion(command,args){const result=spawnSync(command,args,{encoding:'utf8'});if(result.error?.code==='ENOENT')throw Object.assign(new Error(`SVG_RASTER_TOOL_NOT_FOUND:${command}`),{code:'SVG_RASTER_TOOL_NOT_FOUND',command});if(result.status!==0)throw Object.assign(new Error(`SVG_RASTER_TOOL_VERSION_FAILED:${command}:${result.stderr??result.stdout??''}`),{code:'SVG_RASTER_TOOL_VERSION_FAILED',command,status:result.status});return String(result.stdout||result.stderr||'').trim().split(/\r?\n/)[0]||'unknown';}
+function packageVersionFromEntry(entry){let dir=path.dirname(entry);for(let i=0;i<8;i++){const candidate=path.join(dir,'package.json');if(fs.existsSync(candidate)){try{const pkg=JSON.parse(fs.readFileSync(candidate,'utf8'));if(pkg?.name==='@resvg/resvg-js'&&pkg?.version)return String(pkg.version);}catch{}}const parent=path.dirname(dir);if(parent===dir)break;dir=parent;}throw Object.assign(new Error(`SVG_RASTER_RESVG_JS_PACKAGE_JSON_NOT_FOUND:${entry}`),{code:'SVG_RASTER_RESVG_JS_PACKAGE_JSON_NOT_FOUND'});}
 
 export function normalizeSvgRasterBackend(value=process.env.PHASE66_RASTER_BACKEND??'librsvg'){
   const backend=String(value||'librsvg').trim().toLowerCase();
@@ -20,11 +22,11 @@ export function normalizeSvgRasterBackend(value=process.env.PHASE66_RASTER_BACKE
 
 export function inspectSvgRasterBackend({backend=normalizeSvgRasterBackend(),rsvgPath=process.env.RSVG_CONVERT_PATH??'rsvg-convert'}={}){
   if(backend==='librsvg')return{backend,provider_id:'rncs.svg-raster.librsvg',version:commandVersion(rsvgPath,['--version']),command:rsvgPath,system_library_dependency:true,node_module:null,pinned_version:null,pin_match:true};
-  let pkg,Resvg;
-  try{pkg=require('@resvg/resvg-js/package.json');({Resvg}=require('@resvg/resvg-js'));}catch(error){throw Object.assign(new Error(`SVG_RASTER_RESVG_JS_MISSING:${error?.message??error}`),{code:'SVG_RASTER_RESVG_JS_MISSING',cause:error});}
+  let Resvg,entry;
+  try{entry=require.resolve('@resvg/resvg-js');({Resvg}=require('@resvg/resvg-js'));}catch(error){throw Object.assign(new Error(`SVG_RASTER_RESVG_JS_MISSING:${error?.message??error}`),{code:'SVG_RASTER_RESVG_JS_MISSING',cause:error});}
   if(typeof Resvg!=='function')throw Object.assign(new Error('SVG_RASTER_RESVG_JS_API_INVALID'),{code:'SVG_RASTER_RESVG_JS_API_INVALID'});
-  const version=String(pkg?.version??'unknown');
-  return{backend,provider_id:'rncs.svg-raster.resvg-js',version,command:null,system_library_dependency:false,node_module:'@resvg/resvg-js',pinned_version:RESVG_JS_PIN,pin_match:version===RESVG_JS_PIN};
+  const version=packageVersionFromEntry(entry);
+  return{backend,provider_id:'rncs.svg-raster.resvg-js',version,command:null,module_entry:entry,system_library_dependency:false,node_module:'@resvg/resvg-js',pinned_version:RESVG_JS_PIN,pin_match:version===RESVG_JS_PIN};
 }
 
 export function rasterizeSvgFile(svgFile,pngFile,{backend=null,provider=null,width,height,rsvgPath=process.env.RSVG_CONVERT_PATH??'rsvg-convert'}={}){
