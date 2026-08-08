@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.company/schemas/rncs.human-visual-review.v0.1.schema.json",
+  "title": "RNCS Human Visual Review v0.1",
+  "type": "object",
+  "required": ["format","version","review_id","reviewer","source","status","observations","engineering_snapshot","automatic_selection","automatic_commit","episode_authority_unchanged"],
+  "properties": {
+    "format": {"const": "rncs.human-visual-review.v0.1"},
+    "version": {"type": "string"},
+    "review_id": {"type": "string", "minLength": 1},
+    "reviewer": {"type": "string", "minLength": 1},
+    "source": {"type": "string", "minLength": 1},
+    "status": {"enum": ["pending","accepted","rejected","revision-requested"]},
+    "severity": {"type": "string"},
+    "observations": {"type": "array", "items": {"type": "string"}},
+    "engineering_snapshot": {
+      "type": "object",
+      "required": ["overall_status","spatial_status","temporal_status","integrity_valid","media_present","direct_visual_bridge_root","temporal_evidence_root","ledger_root"],
+      "properties": {
+        "overall_status": {"type": "string"},
+        "spatial_status": {"type": "string"},
+        "temporal_status": {"type": "string"},
+        "integrity_valid": {"type": "boolean"},
+        "media_present": {"type": "boolean"},
+        "direct_visual_bridge_root": {"type": ["string","null"]},
+        "temporal_evidence_root": {"type": ["string","null"]},
+        "ledger_root": {"type": ["string","null"]}
+      },
+      "additionalProperties": true
+    },
+    "automatic_selection": {"const": false},
+    "automatic_commit": {"const": false},
+    "episode_authority_unchanged": {"const": true}
+  },
+  "additionalProperties": true
+}

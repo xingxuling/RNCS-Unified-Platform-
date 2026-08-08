@@ -1,0 +1,150 @@
+name: RNCS Anime Forge Phase 6.6 Native Drawing Infrastructure
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - chatgpt/rncs-anime-forge-phase6-5-character-drawing-compiler-v01
+      - main-95
+    paths:
+      - "packages/world/native-character-morphogenesis-runtime/**"
+      - "apps/reality-studio/web/native-drawing-review.html"
+      - "apps/reality-studio/web/native-drawing-review-model.js"
+      - "apps/reality-studio/tests/native-drawing-review-model.test.mjs"
+      - "apps/reality-studio/tests/browser_native_drawing_review_test.py"
+      - "apps/reality-studio/schemas/human-visual-review.v0.1.schema.json"
+      - "scripts/build-anime-forge-phase6-6-native-drawing-infrastructure.mjs"
+      - "scripts/verify-anime-forge-phase6-6-native-drawing-infrastructure.mjs"
+      - "scripts/build-anime-forge-phase6-6-head-surface-evidence.mjs"
+      - "scripts/verify-anime-forge-phase6-6-head-surface-evidence.mjs"
+      - "scripts/build-anime-forge-phase6-6-face-surface-evidence.mjs"
+      - "scripts/verify-anime-forge-phase6-6-face-surface-evidence.mjs"
+      - "scripts/build-anime-forge-phase6-6-hair-surface-evidence.mjs"
+      - "scripts/verify-anime-forge-phase6-6-hair-surface-evidence.mjs"
+      - "scripts/build-anime-forge-phase6-6-garment-surface-evidence.mjs"
+      - "scripts/verify-anime-forge-phase6-6-garment-surface-evidence.mjs"
+      - "scripts/build-anime-forge-phase6-6-cel-shading-evidence.mjs"
+      - "scripts/verify-anime-forge-phase6-6-cel-shading-evidence.mjs"
+      - "scripts/build-anime-forge-phase6-6-mesh-silhouette-evidence.mjs"
+      - "scripts/verify-anime-forge-phase6-6-mesh-silhouette-evidence.mjs"
+      - "scripts/build-anime-forge-phase6-6-temporal-stability-evidence.mjs"
+      - "scripts/verify-anime-forge-phase6-6-temporal-stability-evidence.mjs"
+      - "scripts/bind-anime-forge-phase6-6-direct-visual-evidence.mjs"
+      - ".github/workflows/anime-forge-phase6-6-native-drawing.yml"
+
+jobs:
+  native-vector-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install vector and media tools
+        run: sudo apt-get update && sudo apt-get install -y librsvg2-bin ffmpeg
+      - run: npm ci --ignore-scripts
+
+      - name: Phase 6.6 focused RED/GREEN gates
+        run: >-
+          node --test
+          packages/world/native-character-morphogenesis-runtime/tests/character-drawing-compiler.test.mjs
+          packages/world/native-character-morphogenesis-runtime/tests/drawing-ir.test.mjs
+          packages/world/native-character-morphogenesis-runtime/tests/drawing-mesh-deformation.test.mjs
+          packages/world/native-character-morphogenesis-runtime/tests/lower-body-morphology.test.mjs
+          packages/world/native-character-morphogenesis-runtime/tests/lower-body-performance.test.mjs
+          packages/world/native-character-morphogenesis-runtime/tests/surface-weighting.test.mjs
+          packages/world/native-character-morphogenesis-runtime/tests/mesh-silhouette-drawing.test.mjs
+          packages/world/native-character-morphogenesis-runtime/tests/head-surface-drawing.test.mjs
+          packages/world/native-character-morphogenesis-runtime/tests/face-surface-drawing.test.mjs
+          packages/world/native-character-morphogenesis-runtime/tests/hair-surface-drawing.test.mjs
+          packages/world/native-character-morphogenesis-runtime/tests/garment-surface-drawing.test.mjs
+          packages/world/native-character-morphogenesis-runtime/tests/cel-shading-drawing.test.mjs
+          packages/world/native-character-morphogenesis-runtime/tests/temporal-drawing-stability.test.mjs
+          packages/world/native-character-morphogenesis-runtime/tests/full-body-drawing.test.mjs
+          packages/world/native-character-morphogenesis-runtime/tests/drawing-presentation.test.mjs
+          apps/reality-studio/tests/native-drawing-review-model.test.mjs
+
+      - name: Full native morphology regression
+        run: npm test --workspace @taowind/native-character-morphogenesis-runtime
+
+      - name: Install Human Review browser regression dependencies
+        run: |
+          python -m pip install "playwright>=1.45,<2"
+          python -m playwright install --with-deps chromium
+      - name: Run Reality Studio Native Drawing Review browser regression
+        run: python apps/reality-studio/tests/browser_native_drawing_review_test.py
+
+      # Main build runs first because it intentionally clears the evidence directory.
+      - name: Build Phase 6.6 full-body media evidence
+        env:
+          RSVG_CONVERT_PATH: rsvg-convert
+          FFMPEG_PATH: ffmpeg
+          FFPROBE_PATH: ffprobe
+          ANIME_PHASE6_6_EVIDENCE_DIR: tmp/anime-forge-phase6-6-native-drawing-evidence
+        run: node scripts/build-anime-forge-phase6-6-native-drawing-infrastructure.mjs
+
+      - name: Prove head DrawingIR follows weighted skull visibility
+        env:
+          ANIME_PHASE6_6_EVIDENCE_DIR: tmp/anime-forge-phase6-6-native-drawing-evidence
+        run: node scripts/build-anime-forge-phase6-6-head-surface-evidence.mjs
+      - name: Verify head surface and face containment root chain
+        run: node scripts/verify-anime-forge-phase6-6-head-surface-evidence.mjs --evidence tmp/anime-forge-phase6-6-native-drawing-evidence
+
+      - name: Prove face DrawingIR follows SurfaceAttachment visibility
+        env:
+          ANIME_PHASE6_6_EVIDENCE_DIR: tmp/anime-forge-phase6-6-native-drawing-evidence
+        run: node scripts/build-anime-forge-phase6-6-face-surface-evidence.mjs
+      - name: Verify face surface root chain
+        run: node scripts/verify-anime-forge-phase6-6-face-surface-evidence.mjs --evidence tmp/anime-forge-phase6-6-native-drawing-evidence
+
+      - name: Prove hair DrawingIR follows ScalpAttachment and root-preserving guides
+        env:
+          ANIME_PHASE6_6_EVIDENCE_DIR: tmp/anime-forge-phase6-6-native-drawing-evidence
+        run: node scripts/build-anime-forge-phase6-6-hair-surface-evidence.mjs
+      - name: Verify hair surface root chain
+        run: node scripts/verify-anime-forge-phase6-6-hair-surface-evidence.mjs --evidence tmp/anime-forge-phase6-6-native-drawing-evidence
+
+      - name: Prove garment large form follows weighted body surface
+        env:
+          ANIME_PHASE6_6_EVIDENCE_DIR: tmp/anime-forge-phase6-6-native-drawing-evidence
+        run: node scripts/build-anime-forge-phase6-6-garment-surface-evidence.mjs
+      - name: Verify garment surface authority split
+        run: node scripts/verify-anime-forge-phase6-6-garment-surface-evidence.mjs --evidence tmp/anime-forge-phase6-6-native-drawing-evidence
+
+      - name: Prove NormalBuffer reaches final vector cel shading
+        env:
+          ANIME_PHASE6_6_EVIDENCE_DIR: tmp/anime-forge-phase6-6-native-drawing-evidence
+        run: node scripts/build-anime-forge-phase6-6-cel-shading-evidence.mjs
+      - name: Verify cel shading root chain and deformation isolation
+        run: node scripts/verify-anime-forge-phase6-6-cel-shading-evidence.mjs --evidence tmp/anime-forge-phase6-6-native-drawing-evidence
+
+      - name: Prove weighted mesh reaches final body drawing paths
+        env:
+          ANIME_PHASE6_6_EVIDENCE_DIR: tmp/anime-forge-phase6-6-native-drawing-evidence
+        run: node scripts/build-anime-forge-phase6-6-mesh-silhouette-evidence.mjs
+      - name: Verify mesh silhouette root chain
+        run: node scripts/verify-anime-forge-phase6-6-mesh-silhouette-evidence.mjs --evidence tmp/anime-forge-phase6-6-native-drawing-evidence
+
+      - name: Measure final SVG temporal stability
+        env:
+          ANIME_PHASE6_6_EVIDENCE_DIR: tmp/anime-forge-phase6-6-native-drawing-evidence
+        run: node scripts/build-anime-forge-phase6-6-temporal-stability-evidence.mjs
+      - name: Verify temporal DrawingIR stability
+        run: node scripts/verify-anime-forge-phase6-6-temporal-stability-evidence.mjs --evidence tmp/anime-forge-phase6-6-native-drawing-evidence
+
+      - name: Bind six direct visual evidence roots into main Evidence Ledger
+        run: node scripts/bind-anime-forge-phase6-6-direct-visual-evidence.mjs --evidence tmp/anime-forge-phase6-6-native-drawing-evidence
+
+      - name: Verify Phase 6.6 bound evidence
+        run: node scripts/verify-anime-forge-phase6-6-native-drawing-infrastructure.mjs --evidence tmp/anime-forge-phase6-6-native-drawing-evidence
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rncs-anime-forge-phase6-6-native-drawing-${{ github.sha }}
+          if-no-files-found: error
+          retention-days: 30
+          path: |
+            tmp/anime-forge-phase6-6-native-drawing-evidence
+            tmp/playwright/native-drawing-review

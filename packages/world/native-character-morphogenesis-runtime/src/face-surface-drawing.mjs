@@ -1,0 +1,32 @@
+import {rootHash,seal} from './canonical.mjs';
+
+const FORMAT='rncs.face-surface-drawing-guide.v0.1';
+const round=value=>Number(Number(value).toFixed(3));
+const p2=value=>[round(value?.[0]??0),round(value?.[1]??0)];
+const required=['left_brow','right_brow','left_eye','right_eye','nose_bridge','nose_tip','mouth_left','mouth_center','mouth_right','chin'];
+const sampleId=id=>`face:${id}`;
+
+function featureMap(frame){return new Map((frame?.visibility?.report?.feature_samples??[]).map(sample=>[String(sample.attachment_id).replace(/^face:/,''),sample]));}
+function faceGuideEntry(id,sample){return{id,attachment_id:sample?.attachment_id??sampleId(id),screen_position:p2(sample?.screen_position),feature_depth:Number(sample?.feature_depth??0),buffer_depth:Number(sample?.buffer_depth??0),visible:Boolean(sample?.visible),occluded:Boolean(sample?.occluded),out_of_view:Boolean(sample?.out_of_view),unresolved:Boolean(sample?.unresolved),occlusion_reason:sample?.occlusion_reason??'missing',entry_root:rootHash({id,screen_position:p2(sample?.screen_position),feature_depth:Number(sample?.feature_depth??0),visible:Boolean(sample?.visible),occluded:Boolean(sample?.occluded),out_of_view:Boolean(sample?.out_of_view),occlusion_reason:sample?.occlusion_reason??'missing'})};}
+
+export function buildFaceSurfaceDrawingGuide(frame){const samples=featureMap(frame),features=Object.fromEntries(required.map(id=>[id,faceGuideEntry(id,samples.get(id))])),view=frame?.performance?.view??'front',visibleEyes=['left_eye','right_eye'].filter(id=>features[id].visible),missing=required.filter(id=>!samples.has(id)),unresolved=required.filter(id=>features[id].unresolved),base={format:FORMAT,version:'0.1.0-alpha.1',native_surface_root:frame?.native_surface_root??null,visibility_root:frame?.visibility?.visibility_root??null,posed_mesh_root:frame?.posed_mesh?.posed_mesh_root??null,pose_root:frame?.posed_skeleton?.pose_root??null,view,features,visible_eyes:visibleEyes,missing_features:missing,unresolved_features:unresolved,projection_policy:'surface-attachment-depth-visibility-before-anime-feature-shape',guide_root:''};return seal(base,'guide_root');}
+export function validateFaceSurfaceDrawingGuide(guide){const errors=[];if(guide?.format!==FORMAT)errors.push('FACE_SURFACE_DRAWING_FORMAT_INVALID');if(!guide?.visibility_root||!guide?.pose_root||!guide?.guide_root)errors.push('FACE_SURFACE_DRAWING_ROOT_CHAIN_MISSING');if(guide?.missing_features?.length)errors.push(`FACE_SURFACE_DRAWING_FEATURES_MISSING:${guide.missing_features.join(',')}`);if(guide?.unresolved_features?.length)errors.push(`FACE_SURFACE_DRAWING_FEATURES_UNRESOLVED:${guide.unresolved_features.join(',')}`);const profile=String(guide?.view).includes('side'),minimumEyes=profile?1:2;if((guide?.visible_eyes?.length??0)<minimumEyes)errors.push(`FACE_SURFACE_DRAWING_EYE_VISIBILITY_INVALID:${guide?.visible_eyes?.length??0}`);for(const id of required){const item=guide?.features?.[id];if(!item||!Array.isArray(item.screen_position)||item.screen_position.some(value=>!Number.isFinite(value))||!item.entry_root)errors.push(`FACE_SURFACE_DRAWING_ENTRY_INVALID:${id}`);}return{valid:errors.length===0,errors,guide_root:guide?.guide_root??null};}
+
+function midpoint(a,b){return[(Number(a[0])+Number(b[0]))*.5,(Number(a[1])+Number(b[1]))*.5];}
+function translatedLine(op,target){const mid=midpoint(op.a,op.b),dx=target[0]-mid[0],dy=target[1]-mid[1];return{...op,a:[round(op.a[0]+dx),round(op.a[1]+dy)],b:[round(op.b[0]+dx),round(op.b[1]+dy)]};}
+function mouthPath(left,center,right){return `M ${round(left[0])} ${round(left[1])} C ${round((left[0]+center[0])*0.5)} ${round(center[1]+0.5)} ${round((right[0]+center[0])*0.5)} ${round(center[1]+0.5)} ${round(right[0])} ${round(right[1])}`;}
+
+export function applyFaceSurfaceDrawingGuide(ir,frame,{requireValid=true}={}){
+  const guide=buildFaceSurfaceDrawingGuide(frame),validation=validateFaceSurfaceDrawingGuide(guide);if(requireValid&&!validation.valid)throw Object.assign(new Error(`FACE_SURFACE_DRAWING_REJECTED:${validation.errors.join(',')}`),{code:'FACE_SURFACE_DRAWING_REJECTED',validation,guide});
+  const f=guide.features,eyeVisible=side=>Boolean(f[`${side}_eye`]?.visible),ops=[];
+  for(const op of ir?.operations??[]){
+    if(op.id==='eye-white-left'||op.id==='eye-white-right'){const side=op.id.endsWith('left')?'left':'right';if(!eyeVisible(side))continue;ops.push({...op,cx:f[`${side}_eye`].screen_position[0],cy:f[`${side}_eye`].screen_position[1],face_surface_entry_root:f[`${side}_eye`].entry_root});continue;}
+    if(op.id==='eye-pupil-left'||op.id==='eye-pupil-right'){const side=op.id.endsWith('left')?'left':'right';if(!eyeVisible(side))continue;const white=(ir.operations??[]).find(item=>item.id===`eye-white-${side}`),dx=Number(op.cx??0)-Number(white?.cx??op.cx??0),dy=Number(op.cy??0)-Number(white?.cy??op.cy??0);ops.push({...op,cx:round(f[`${side}_eye`].screen_position[0]+dx),cy:round(f[`${side}_eye`].screen_position[1]+dy),face_surface_entry_root:f[`${side}_eye`].entry_root});continue;}
+    if(op.id==='brow-left'||op.id==='brow-right'){const side=op.id.endsWith('left')?'left':'right',entry=f[`${side}_brow`];if(!entry.visible&&entry.occluded)continue;ops.push({...translatedLine(op,entry.screen_position),face_surface_entry_root:entry.entry_root});continue;}
+    if(op.id==='nose-bridge'){ops.push({...op,a:f.nose_bridge.screen_position,b:f.nose_tip.screen_position,face_surface_entry_root:rootHash({bridge:f.nose_bridge.entry_root,tip:f.nose_tip.entry_root})});continue;}
+    if(op.id==='mouth-open'){const left=f.mouth_left.screen_position,center=f.mouth_center.screen_position,right=f.mouth_right.screen_position,width=Math.hypot(right[0]-left[0],right[1]-left[1]);ops.push({...op,cx:center[0],cy:center[1],rx:round(Math.max(1.2,width*.42)),face_surface_entry_root:rootHash({left:f.mouth_left.entry_root,center:f.mouth_center.entry_root,right:f.mouth_right.entry_root})});continue;}
+    if(op.id==='mouth-line'){ops.push({...op,d:mouthPath(f.mouth_left.screen_position,f.mouth_center.screen_position,f.mouth_right.screen_position),face_surface_entry_root:rootHash({left:f.mouth_left.entry_root,center:f.mouth_center.entry_root,right:f.mouth_right.entry_root})});continue;}
+    ops.push(op);
+  }
+  const payload={...ir,operations:ops,face_surface_drawing_guide_root:guide.guide_root,face_surface_visibility_root:guide.visibility_root,face_surface_policy:'surface-attachment-screen-position-with-depth-visibility',drawing_ir_root:''};return seal(payload,'drawing_ir_root');
+}

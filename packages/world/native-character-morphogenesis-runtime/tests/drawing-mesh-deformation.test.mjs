@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import {createAnatomySystem} from '../src/anatomy.mjs';
+import {compileArtDirectedMorphology} from '../src/semantic-anatomy.mjs';
+import {buildNativeSurfaceFrame} from '../src/native-surface-runtime.mjs';
+import {compileAnimeDrawingIR,validateAnimeDrawingIR} from '../src/drawing-ir.mjs';
+import {compileDrawingMeshIR,validateDrawingMeshIR,applyDrawingCageDeformation,drawingMeshToDrawingIR,createPerformanceDrawingControls} from '../src/drawing-mesh-deformation.mjs';
+
+function build(view='three-quarter-right',pose='action',frameNumber=60){const system=createAnatomySystem({seed:`phase6-6-mesh-${view}-${pose}`}),asset=compileArtDirectedMorphology(system.genome,{surface_resolution:'validation',certificate_mode:'canonical'}),frame=buildNativeSurfaceFrame({canonical_morphology_asset:asset},{view,pose,frame:frameNumber,totalFrames:120,width:640,height:360,scale:1.18}),ir=compileAnimeDrawingIR(frame);return{frame,ir};}
+
+test('DrawingMeshIR builds 3x3 weighted cages from closed Bezier drawing layers',()=>{const{ir}=build(),meshIr=compileDrawingMeshIR(ir,{samplesPerCubic:3}),validation=validateDrawingMeshIR(meshIr);assert.equal(validation.valid,true,validation.errors.join(','));assert.ok(meshIr.meshes.length>=6);for(const mesh of meshIr.meshes){assert.equal(mesh.cage.control_points.length,9);assert.ok(mesh.vertices.length>mesh.boundary_count);assert.equal(mesh.triangles.length,mesh.boundary_count);for(const vertex of mesh.vertices){const sum=vertex.weights.reduce((a,b)=>a+b,0);assert.ok(Math.abs(sum-1)<.005,`${mesh.mesh_id}:${vertex.vertex_id}:${sum}`);}}});
+
+test('Performance cage deformation is bounded, inversion-free and recompiles to valid DrawingIR',()=>{const{frame,ir}=build(),meshIr=compileDrawingMeshIR(ir),controls=createPerformanceDrawingControls(meshIr,frame.performance),deformed=applyDrawingCageDeformation(meshIr,controls),validation=validateDrawingMeshIR(deformed);assert.equal(validation.valid,true,validation.errors.join(','));assert.notEqual(deformed.mesh_ir_root,meshIr.mesh_ir_root);assert.ok(deformed.meshes.every(mesh=>mesh.deformation_summary.triangle_inversions===0));assert.ok(deformed.meshes.some(mesh=>mesh.deformation_summary.max_offset>0));const rebuilt=drawingMeshToDrawingIR(ir,deformed),rebuiltValidation=validateAnimeDrawingIR(rebuilt);assert.equal(rebuiltValidation.valid,true,rebuiltValidation.errors.join(','));assert.equal(rebuilt.drawing_mesh_root,deformed.mesh_ir_root);assert.notEqual(rebuilt.drawing_ir_root,ir.drawing_ir_root);assert.ok(rebuilt.operations.some(op=>op.kind==='path'&&op.mesh_root));});
+
+test('Mesh deformation preserves explicit lower-body boundary instead of inventing missing anatomy',()=>{const{frame,ir}=build('front','neutral',0),meshIr=compileDrawingMeshIR(ir),deformed=applyDrawingCageDeformation(meshIr,createPerformanceDrawingControls(meshIr,frame.performance)),rebuilt=drawingMeshToDrawingIR(ir,deformed);assert.equal(rebuilt.lower_body_status,'not-represented-in-canonical-skeleton-v0.1');});

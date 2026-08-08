@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.company/schemas/rncs/lower-body-morphology-certificate.v0.1.schema.json",
+  "title": "RNCS Lower Body Morphology Certificate v0.1",
+  "type": "object",
+  "required": ["format", "version", "asset_root", "gates", "failures", "required_gates", "certificate_root"],
+  "properties": {
+    "format": {"const": "rncs.lower-body-morphology-certificate.v0.1"},
+    "version": {"type": "string"},
+    "asset_root": {"type": "string", "minLength": 1},
+    "certificate_root": {"type": "string", "minLength": 1},
+    "human_visual_acceptance": {"type": "string"},
+    "failures": {"type": "array", "items": {"type": "string"}},
+    "required_gates": {"type": "array", "minItems": 7, "items": {"type": "string"}},
+    "gates": {
+      "type": "object",
+      "required": [
+        "lower_body_bone_chain",
+        "lower_body_field_chain",
+        "lower_body_mesh_connected",
+        "lower_body_leg_proportion",
+        "lower_body_bilateral_symmetry",
+        "lower_body_foot_attachment",
+        "lower_body_self_intersection"
+      ],
+      "additionalProperties": {"$ref": "#/$defs/measuredGate"}
+    }
+  },
+  "$defs": {
+    "measuredGate": {
+      "type": "object",
+      "required": ["measurement", "allowed", "method", "evidence_root", "pass"],
+      "properties": {
+        "measurement": {},
+        "allowed": {},
+        "method": {"type": "string", "minLength": 1},
+        "evidence_root": {"type": "string", "minLength": 1},
+        "pass": {"type": "boolean"}
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
