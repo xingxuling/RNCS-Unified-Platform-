@@ -27,14 +27,15 @@ export function inspectSvgRasterBackend({backend=normalizeSvgRasterBackend(),rsv
   return{backend,provider_id:'rncs.svg-raster.resvg-js',version,command:null,system_library_dependency:false,node_module:'@resvg/resvg-js',pinned_version:RESVG_JS_PIN,pin_match:version===RESVG_JS_PIN};
 }
 
-export function rasterizeSvgFile(svgFile,pngFile,{backend=normalizeSvgRasterBackend(),width,height,rsvgPath=process.env.RSVG_CONVERT_PATH??'rsvg-convert'}={}){
-  const w=Number(width),h=Number(height);
+export function rasterizeSvgFile(svgFile,pngFile,{backend=null,provider=null,width,height,rsvgPath=process.env.RSVG_CONVERT_PATH??'rsvg-convert'}={}){
+  const w=Number(width),h=Number(height),resolvedBackend=backend?normalizeSvgRasterBackend(backend):provider?.backend?normalizeSvgRasterBackend(provider.backend):normalizeSvgRasterBackend();
   if(!Number.isInteger(w)||w<=0||!Number.isInteger(h)||h<=0)throw Object.assign(new Error(`SVG_RASTER_DIMENSIONS_INVALID:${width}x${height}`),{code:'SVG_RASTER_DIMENSIONS_INVALID'});
-  const provider=inspectSvgRasterBackend({backend,rsvgPath});
-  if(backend==='resvg-js'&&!provider.pin_match)throw Object.assign(new Error(`SVG_RASTER_RESVG_JS_VERSION_UNPINNED:${provider.version}:expected:${RESVG_JS_PIN}`),{code:'SVG_RASTER_RESVG_JS_VERSION_UNPINNED',provider});
-  if(backend==='librsvg'){
-    const result=spawnSync(rsvgPath,['--width',String(w),'--height',String(h),'--output',pngFile,svgFile],{encoding:'utf8'});
-    if(result.error?.code==='ENOENT')throw Object.assign(new Error(`SVG_RASTER_TOOL_NOT_FOUND:${rsvgPath}`),{code:'SVG_RASTER_TOOL_NOT_FOUND'});
+  const resolvedProvider=provider??inspectSvgRasterBackend({backend:resolvedBackend,rsvgPath});
+  if(resolvedProvider.backend!==resolvedBackend)throw Object.assign(new Error(`SVG_RASTER_PROVIDER_BACKEND_MISMATCH:${resolvedProvider.backend}:${resolvedBackend}`),{code:'SVG_RASTER_PROVIDER_BACKEND_MISMATCH'});
+  if(resolvedBackend==='resvg-js'&&!resolvedProvider.pin_match)throw Object.assign(new Error(`SVG_RASTER_RESVG_JS_VERSION_UNPINNED:${resolvedProvider.version}:expected:${RESVG_JS_PIN}`),{code:'SVG_RASTER_RESVG_JS_VERSION_UNPINNED',provider:resolvedProvider});
+  if(resolvedBackend==='librsvg'){
+    const command=resolvedProvider.command??rsvgPath,result=spawnSync(command,['--width',String(w),'--height',String(h),'--output',pngFile,svgFile],{encoding:'utf8'});
+    if(result.error?.code==='ENOENT')throw Object.assign(new Error(`SVG_RASTER_TOOL_NOT_FOUND:${command}`),{code:'SVG_RASTER_TOOL_NOT_FOUND'});
     if(result.status!==0)throw Object.assign(new Error(`SVG_RASTER_LIBRSVG_FAILED:${result.stderr??result.stdout??''}`),{code:'SVG_RASTER_LIBRSVG_FAILED',status:result.status});
   }else{
     const {Resvg}=require('@resvg/resvg-js');
@@ -45,7 +46,7 @@ export function rasterizeSvgFile(svgFile,pngFile,{backend=normalizeSvgRasterBack
     fs.writeFileSync(pngFile,rendered.asPng());
   }
   if(!fs.existsSync(pngFile)||fs.statSync(pngFile).size<=0)throw Object.assign(new Error(`SVG_RASTER_OUTPUT_MISSING:${pngFile}`),{code:'SVG_RASTER_OUTPUT_MISSING'});
-  const receipt={format:FORMAT,version:'0.1.0-alpha.1',backend,provider_id:provider.provider_id,provider_version:provider.version,pinned_provider_version:provider.pinned_version,pin_match:provider.pin_match,system_library_dependency:provider.system_library_dependency,node_module:provider.node_module,svg_file:svgFile,png_file:pngFile,width:w,height:h,output:fileRecord(pngFile),authority:{identity:false,canonical_geometry:false,drawing_ir:false,art_direction:false},receipt_root:''};
+  const receipt={format:FORMAT,version:'0.1.0-alpha.1',backend:resolvedBackend,provider_id:resolvedProvider.provider_id,provider_version:resolvedProvider.version,pinned_provider_version:resolvedProvider.pinned_version,pin_match:resolvedProvider.pin_match,system_library_dependency:resolvedProvider.system_library_dependency,node_module:resolvedProvider.node_module,svg_file:svgFile,png_file:pngFile,width:w,height:h,output:fileRecord(pngFile),authority:{identity:false,canonical_geometry:false,drawing_ir:false,art_direction:false},receipt_root:''};
   return seal(receipt,'receipt_root');
 }
 
