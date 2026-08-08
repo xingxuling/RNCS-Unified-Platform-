@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {buildNativeDrawingReviewModel,createHumanVisualReview,SPATIAL_EVIDENCE_SPECS} from '../web/native-drawing-review-model.js';
+import {buildNativeDrawingReviewModel,createHumanVisualReview,validateHumanVisualReview,SPATIAL_EVIDENCE_SPECS} from '../web/native-drawing-review-model.js';
 
-function fixture({temporalPass=true,rootMismatch=false,withMp4=true}={}){
+function fixture({temporalPass=true,rootMismatch=false,withMp4=true,humanReview=null}={}){
   const files={};
   for(const [index,spec] of SPATIAL_EVIDENCE_SPECS.entries())files[spec.file]={status:'passed',human_visual_acceptance:'pending',evidence_root:`spatial-${index+1}`,entries:spec.key==='mesh'?[{view:'front',visible_groups:['torso','arm-left'],occluded_groups:['arm-right'],missing_canonical_groups:[]}]:[]};
   files['direct-visual-bridge.json']={format:'rncs.phase6-6-direct-visual-bridge.v0.4',bridge_root:'visual-bridge'};
@@ -14,10 +14,11 @@ function fixture({temporalPass=true,rootMismatch=false,withMp4=true}={}){
   files['evidence-summary.json']={ledger_root:'ledger',direct_visual_bridge_root:'visual-bridge',temporal_drawing_stability_evidence_root:'temporal-evidence',frame_count:120,fps:24,resolution:{width:1280,height:720},provider:'rncs.native-fullbody-svg-librsvg.cpu',human_visual_acceptance:'pending'};
   files['phase-status.json']={human_visual_acceptance:'pending',creative_production_review:'pending-human-review',commercial_anime_quality:'not-proven'};
   files['frame-manifest.json']={frame_count:120,fps:24,width:1280,height:720,provider_id:'rncs.native-fullbody-svg-librsvg.cpu'};
+  if(humanReview)files['human-visual-review.json']=humanReview;
   return{jsonFiles:files,assetNames:withMp4?['episode.mp4','static-gates/front.png']:[]};
 }
 
-test('complete spatial + temporal evidence authorizes human review but never auto-accepts',()=>{const model=buildNativeDrawingReviewModel(fixture());assert.equal(model.overall_status,'ready-for-human-review');assert.equal(model.ready_for_human_review,true);assert.equal(model.spatial.status,'pass');assert.equal(model.temporal.status,'pass');assert.equal(model.automatic_visual_acceptance,false);assert.equal(model.human.status,'pending');const review=createHumanVisualReview({model,status:'accepted',reviewId:'human-1',reviewer:'reviewer'});assert.equal(review.status,'accepted');assert.equal(review.automatic_commit,false);assert.equal(review.episode_authority_unchanged,true);});
+test('complete spatial + temporal evidence authorizes human review but never auto-accepts',()=>{const model=buildNativeDrawingReviewModel(fixture());assert.equal(model.overall_status,'ready-for-human-review');assert.equal(model.ready_for_human_review,true);assert.equal(model.spatial.status,'pass');assert.equal(model.temporal.status,'pass');assert.equal(model.automatic_visual_acceptance,false);assert.equal(model.human.status,'pending');const review=createHumanVisualReview({model,status:'accepted',reviewId:'human-1',reviewer:'reviewer'});assert.equal(review.status,'accepted');assert.equal(review.automatic_commit,false);assert.equal(review.episode_authority_unchanged,true);assert.equal(validateHumanVisualReview(review,model).valid,true);});
 
 test('temporal failure blocks acceptance even when all six spatial roots pass',()=>{const model=buildNativeDrawingReviewModel(fixture({temporalPass:false}));assert.equal(model.spatial.status,'pass');assert.equal(model.temporal.status,'blocked');assert.equal(model.overall_status,'blocked-temporal');assert.throws(()=>createHumanVisualReview({model,status:'accepted'}),/HUMAN_REVIEW_ACCEPT_BLOCKED/);const revision=createHumanVisualReview({model,status:'revision-requested',observations:['line jitter']});assert.equal(revision.status,'revision-requested');});
 
@@ -26,3 +27,5 @@ test('root mismatch becomes integrity failure and blocks acceptance',()=>{const 
 test('missing media keeps engineering evidence visible but does not authorize accepted',()=>{const model=buildNativeDrawingReviewModel(fixture({withMp4:false}));assert.equal(model.spatial.status,'pass');assert.equal(model.temporal.status,'pass');assert.equal(model.overall_status,'engineering-pass-media-missing');assert.equal(model.media.mp4_present,false);assert.throws(()=>createHumanVisualReview({model,status:'accepted'}),/HUMAN_REVIEW_ACCEPT_BLOCKED/);});
 
 test('mesh visibility preserves visible, occluded and canonical-missing semantics',()=>{const model=buildNativeDrawingReviewModel(fixture());assert.equal(model.visibility.length,1);assert.deepEqual(model.visibility[0].visible_groups,['torso','arm-left']);assert.deepEqual(model.visibility[0].occluded_groups,['arm-right']);assert.deepEqual(model.visibility[0].missing_canonical_groups,[]);});
+
+test('reloaded human accepted review is valid only when bound roots match current artifact',()=>{const current=buildNativeDrawingReviewModel(fixture()),review=createHumanVisualReview({model:current,status:'accepted',reviewId:'review-current'}),loaded=buildNativeDrawingReviewModel(fixture({humanReview:review}));assert.equal(loaded.human.status,'accepted');assert.equal(loaded.human.review_valid,true);assert.deepEqual(loaded.human.review_errors,[]);const stale=structuredClone(review);stale.engineering_snapshot.ledger_root='old-ledger';const staleModel=buildNativeDrawingReviewModel(fixture({humanReview:stale}));assert.equal(staleModel.human.status,'pending');assert.equal(staleModel.human.review_valid,false);assert.ok(staleModel.human.review_errors.includes('HUMAN_REVIEW_LEDGER_ROOT_STALE'));assert.ok(staleModel.reasons.includes('HUMAN_REVIEW:HUMAN_REVIEW_LEDGER_ROOT_STALE'));});
