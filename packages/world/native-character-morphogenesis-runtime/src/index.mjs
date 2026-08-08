@@ -21,6 +21,7 @@ export * from './hair-surface-drawing.mjs';
 export * from './garment-surface-drawing.mjs';
 export * from './cel-shading-drawing.mjs';
 export * from './temporal-drawing-stability.mjs';
+export * from './svg-raster-provider.mjs';
 export * from './morphology-certificate-v2.mjs';
 export * from './anime-visual-grammar.mjs';
 export * from './native-anime-renderer.mjs';
