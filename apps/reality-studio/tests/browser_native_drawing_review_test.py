@@ -45,7 +45,14 @@ def write_json(path, value):
     path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
 
 
-def make_bundle(root: Path, *, include_media=True, stale_review=False):
+def server_exit_error(proc):
+    if proc.poll() is None:
+        return None
+    output = proc.stdout.read() if proc.stdout else ''
+    return f'Reality Studio server exited before health check (code={proc.returncode}): {output[-4000:]}'
+
+
+def make_bundle(root: Path, *, include_media=True, stale_review=False, raster_mismatch=False):
     if root.exists():
         shutil.rmtree(root)
     root.mkdir(parents=True)
@@ -126,6 +133,7 @@ def make_bundle(root: Path, *, include_media=True, stale_review=False):
         'direct_visual_bridge_root': 'visual-bridge',
         'temporal_drawing_stability_evidence_root': 'temporal-evidence',
         'temporal_evidence_bridge_root': 'temporal-bridge',
+        'raster_provider_receipt_set_root': 'raster-root',
     }
     for _, root_field, evidence_root in spatial:
         ledger[root_field] = evidence_root
@@ -134,6 +142,10 @@ def make_bundle(root: Path, *, include_media=True, stale_review=False):
         'ledger_root': 'ledger',
         'direct_visual_bridge_root': 'visual-bridge',
         'temporal_drawing_stability_evidence_root': 'temporal-evidence',
+        'raster_backend': 'librsvg',
+        'raster_provider_id': 'rncs.svg-raster-provider.librsvg',
+        'raster_backend_version': '2.0.0',
+        'raster_provider_receipt_set_root': 'raster-root',
         'frame_count': 120,
         'fps': 24,
         'resolution': {'width': 1280, 'height': 720},
@@ -151,12 +163,33 @@ def make_bundle(root: Path, *, include_media=True, stale_review=False):
         'width': 1280,
         'height': 720,
         'provider_id': 'rncs.native-fullbody-svg-librsvg.cpu',
+        'raster_backend': 'librsvg',
+        'raster_provider_id': 'rncs.svg-raster-provider.librsvg',
+        'raster_provider_version': '2.0.0',
+    })
+    write_json(root / 'raster-provider-receipts.json', {
+        'format': 'rncs.phase6-6-raster-provider-receipts.v0.1',
+        'backend': 'librsvg',
+        'provider_id': 'rncs.svg-raster-provider.librsvg',
+        'provider_version': '2.0.0',
+        'static_count': 3,
+        'frame_count': 120,
+        'receipt_count': 123,
+        'receipt_roots': [f'receipt-{index}' for index in range(123)],
+        'receipt_set_root': 'raster-root',
+    })
+    write_json(root / 'backend-receipt.json', {
+        'format': 'rncs.native-drawing-backend-receipt.v0.5',
+        'raster_backend': 'resvg-js' if raster_mismatch else 'librsvg',
+        'raster_provider_id': 'rncs.svg-raster-provider.librsvg',
+        'raster_backend_version': '2.0.0',
+        'raster_provider_receipt_set_root': 'raster-root',
     })
 
     if stale_review:
         write_json(root / 'human-visual-review.json', {
-            'format': 'rncs.human-visual-review.v0.1',
-            'version': '0.1.0-alpha.1',
+            'format': 'rncs.human-visual-review.v0.2',
+            'version': '0.2.0-alpha.1',
             'review_id': 'stale-review',
             'reviewer': 'human',
             'source': 'browser-test',
@@ -167,6 +200,11 @@ def make_bundle(root: Path, *, include_media=True, stale_review=False):
                 'overall_status': 'ready-for-human-review',
                 'spatial_status': 'pass',
                 'temporal_status': 'pass',
+                'raster_status': 'pass',
+                'raster_backend': 'librsvg',
+                'raster_provider_version': '2.0.0',
+                'raster_receipt_count': 123,
+                'raster_provider_receipt_set_root': 'old-raster-root',
                 'integrity_valid': True,
                 'media_present': True,
                 'direct_visual_bridge_root': 'visual-bridge',
@@ -204,6 +242,9 @@ proc = subprocess.Popen(
 try:
     health = None
     for _ in range(160):
+        failure = server_exit_error(proc)
+        if failure:
+            raise RuntimeError(failure)
         try:
             health = request_json(base + '/api/health')
             if health:
@@ -215,10 +256,12 @@ try:
 
     complete = artifacts / 'bundle-complete'
     media_missing = artifacts / 'bundle-media-missing'
+    raster_mismatch = artifacts / 'bundle-raster-mismatch'
     stale_root = artifacts / 'bundle-stale-review'
     supplemental = artifacts / 'supplemental'
     make_bundle(complete, include_media=True)
     make_bundle(media_missing, include_media=False)
+    make_bundle(raster_mismatch, include_media=True, raster_mismatch=True)
     make_bundle(stale_root, include_media=True, stale_review=True)
     if supplemental.exists():
         shutil.rmtree(supplemental)
@@ -231,68 +274,84 @@ try:
         executable = browser_executable()
         if executable:
             launch['executable_path'] = executable
-        browser = playwright.chromium.launch(**launch)
-        page = browser.new_page(viewport={'width': 1440, 'height': 900}, device_scale_factor=1)
-        page_errors = []
-        page.on('pageerror', lambda error: page_errors.append(str(error)))
-        page.goto(base + '/native-drawing-review.html', wait_until='load')
-        expect(page.locator('body')).to_contain_text('Native Drawing Review')
+        browser = playwright.chromium.launch(**launch, timeout=30000)
+        try:
+            page = browser.new_page(viewport={'width': 1440, 'height': 900}, device_scale_factor=1)
+            page.set_default_timeout(10000)
+            page.set_default_navigation_timeout(30000)
+            page_errors = []
+            page.on('pageerror', lambda error: page_errors.append(str(error)))
+            page.goto(base + '/native-drawing-review.html', wait_until='load')
+            expect(page.locator('body')).to_contain_text('Native Drawing Review')
 
-        # Directory load must replace the current bundle and reach the manual Human Gate.
-        page.locator('#bundle').set_input_files(str(complete))
-        expect(page.locator('#bundleStatus')).to_have_text('ready-for-human-review')
-        expect(page.locator('#spatialStatus')).to_have_text('pass')
-        expect(page.locator('#temporalStatus')).to_have_text('pass')
-        expect(page.locator('#integrityStatus')).to_have_text('valid')
-        expect(page.locator('#acceptBtn')).to_be_enabled()
-        expect(page.locator('#visibility')).to_contain_text('arm-right')
-        assert page.locator('.pill.occluded').count() >= 1
+            # Directory load must replace the current bundle and reach the manual Human Gate.
+            page.locator('#bundle').set_input_files(str(complete))
+            expect(page.locator('#bundleStatus')).to_have_text('ready-for-human-review')
+            expect(page.locator('#spatialStatus')).to_have_text('pass')
+            expect(page.locator('#temporalStatus')).to_have_text('pass')
+            expect(page.locator('#rasterStatus')).to_have_text('pass')
+            expect(page.locator('#integrityStatus')).to_have_text('valid')
+            expect(page.locator('#acceptBtn')).to_be_enabled()
+            expect(page.locator('#visibility')).to_contain_text('arm-right')
+            assert page.locator('.pill.occluded').count() >= 1
 
-        # Static view switching must use the current bundle.
-        page.get_by_role('button', name='3⁄4').click()
-        expect(page.locator('#preview img')).to_be_visible()
+            # Raster backend/provider disagreement is integrity-fatal and cannot enable Accept.
+            page.locator('#bundle').set_input_files(str(raster_mismatch))
+            expect(page.locator('#bundleStatus')).to_have_text('integrity-failed')
+            expect(page.locator('#rasterStatus')).to_have_text('blocked')
+            expect(page.locator('#acceptBtn')).to_be_disabled()
 
-        # Human review is export-only and remains bound to engineering roots.
-        page.locator('#observations').fill('Browser regression review')
-        page.get_by_role('button', name='Revision Requested').click()
-        expect(page.locator('#humanStatus')).to_have_text('revision-requested')
-        expect(page.locator('#exportReview')).to_be_enabled()
-        with page.expect_download() as download_info:
-            page.locator('#exportReview').click()
-        download = download_info.value
-        exported = artifacts / 'human-visual-review-export.json'
-        download.save_as(exported)
-        exported_review = json.loads(exported.read_text(encoding='utf-8'))
-        assert exported_review['status'] == 'revision-requested'
-        assert exported_review['automatic_selection'] is False
-        assert exported_review['automatic_commit'] is False
-        assert exported_review['episode_authority_unchanged'] is True
-        assert exported_review['engineering_snapshot']['ledger_root'] == 'ledger'
+            page.locator('#bundle').set_input_files(str(complete))
+            expect(page.locator('#bundleStatus')).to_have_text('ready-for-human-review')
 
-        # Loading a new directory replaces prior media; old episode.mp4 must not survive.
-        page.locator('#bundle').set_input_files(str(media_missing))
-        expect(page.locator('#bundleStatus')).to_have_text('engineering-pass-media-missing')
-        expect(page.locator('#acceptBtn')).to_be_disabled()
-        expect(page.locator('#reasons')).to_contain_text('MEDIA:episode.mp4')
+            # Static view switching must use the current bundle.
+            page.get_by_role('button', name='3⁄4').click()
+            expect(page.locator('#preview img')).to_be_visible()
 
-        # Supplemental stale acceptance is rejected by root binding instead of being reused.
-        page.locator('#bundle').set_input_files(str(complete))
-        expect(page.locator('#bundleStatus')).to_have_text('ready-for-human-review')
-        page.locator('#extra').set_input_files(str(stale_review))
-        expect(page.locator('#humanStatus')).to_have_text('pending')
-        expect(page.locator('#reasons')).to_contain_text('HUMAN_REVIEW_LEDGER_ROOT_STALE')
+            # Human review is export-only and remains bound to engineering roots.
+            page.locator('#observations').fill('Browser regression review')
+            page.get_by_role('button', name='Revision Requested').click()
+            expect(page.locator('#humanStatus')).to_have_text('revision-requested')
+            expect(page.locator('#exportReview')).to_be_enabled()
+            with page.expect_download() as download_info:
+                page.locator('#exportReview').click()
+            download = download_info.value
+            exported = artifacts / 'human-visual-review-export.json'
+            download.save_as(exported)
+            exported_review = json.loads(exported.read_text(encoding='utf-8'))
+            assert exported_review['status'] == 'revision-requested'
+            assert exported_review['format'] == 'rncs.human-visual-review.v0.2'
+            assert exported_review['automatic_selection'] is False
+            assert exported_review['automatic_commit'] is False
+            assert exported_review['episode_authority_unchanged'] is True
+            assert exported_review['engineering_snapshot']['ledger_root'] == 'ledger'
 
-        # Responsive layout smoke checks.
-        for label, width, height in [('desktop', 1440, 900), ('mobile', 390, 844)]:
-            page.set_viewport_size({'width': width, 'height': height})
-            page.wait_for_timeout(150)
-            screenshot = artifacts / f'NATIVE_DRAWING_REVIEW_{label}.png'
-            page.screenshot(path=str(screenshot), full_page=False)
-            assert screenshot.stat().st_size > 5000
-            assert page.evaluate('document.documentElement.scrollWidth') <= max(width + 2, page.evaluate('document.body.scrollWidth'))
+            # Loading a new directory replaces prior media; old episode.mp4 must not survive.
+            page.locator('#bundle').set_input_files(str(media_missing))
+            expect(page.locator('#bundleStatus')).to_have_text('engineering-pass-media-missing')
+            expect(page.locator('#acceptBtn')).to_be_disabled()
+            expect(page.locator('#reasons')).to_contain_text('MEDIA:episode.mp4')
 
-        assert not page_errors, page_errors
-        browser.close()
+            # Supplemental stale acceptance is rejected by root binding instead of being reused.
+            page.locator('#bundle').set_input_files(str(complete))
+            expect(page.locator('#bundleStatus')).to_have_text('ready-for-human-review')
+            page.locator('#extra').set_input_files(str(stale_review))
+            expect(page.locator('#humanStatus')).to_have_text('pending')
+            expect(page.locator('#reasons')).to_contain_text('HUMAN_REVIEW_LEDGER_ROOT_STALE')
+            expect(page.locator('#reasons')).to_contain_text('HUMAN_REVIEW_RASTER_ROOT_STALE')
+
+            # Responsive layout smoke checks.
+            for label, width, height in [('desktop', 1440, 900), ('mobile', 390, 844)]:
+                page.set_viewport_size({'width': width, 'height': height})
+                page.wait_for_timeout(150)
+                screenshot = artifacts / f'NATIVE_DRAWING_REVIEW_{label}.png'
+                page.screenshot(path=str(screenshot), full_page=False)
+                assert screenshot.stat().st_size > 5000
+                assert page.evaluate('document.documentElement.scrollWidth') <= max(width + 2, page.evaluate('document.body.scrollWidth'))
+
+            assert not page_errors, page_errors
+        finally:
+            browser.close()
 finally:
     proc.terminate()
     try:

@@ -19,14 +19,21 @@ if ([string]::IsNullOrWhiteSpace($EvidenceDir)) {
 
 if (-not (Test-Path $EvidenceDir)) { throw "EVIDENCE_DIR_MISSING:$EvidenceDir" }
 $Required = @(
+  "local-validation-summary.json",
   "evidence-ledger.json",
   "evidence-summary.json",
   "direct-visual-bridge.json",
   "temporal-drawing-stability-evidence.json",
-  "temporal-evidence-bridge.json"
+  "temporal-evidence-bridge.json",
+  "raster-provider-receipts.json",
+  "backend-receipt.json"
 )
 $Missing = @($Required | Where-Object { -not (Test-Path (Join-Path $EvidenceDir $_)) })
 if ($Missing.Count -gt 0) { throw "REVIEW_EVIDENCE_INCOMPLETE:$($Missing -join ',')" }
+$Summary = Get-Content -Raw (Join-Path $EvidenceDir "local-validation-summary.json") | ConvertFrom-Json
+if ($Summary.full_validation -ne $true -or $Summary.status -ne "engineering-evidence-passed-awaiting-human-review") {
+  throw "HUMAN_REVIEW_REQUIRES_FULL_VALIDATION:$($Summary.status)"
+}
 
 $NodeConfigured = [Environment]::GetEnvironmentVariable("PHASE66_NODE_PATH")
 if ($NodeConfigured) {

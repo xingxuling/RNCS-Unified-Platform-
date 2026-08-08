@@ -10,7 +10,7 @@ const projectedBone=(bones,id,camera)=>{const bone=bones.get(id);return bone?{st
 const gazeValue=value=>typeof value==='number'?Math.max(-1,Math.min(1,value)):({left:-1,center:0,right:1}[String(value??'center')]??0);
 const normalize2=(x,y)=>{const l=Math.hypot(x,y)||1;return[x/l,y/l];};
 
-function viewState(frame){const yaw=Number(frame?.visibility?.camera?.yaw??0),abs=Math.min(1,Math.abs(yaw)/(Math.PI/2)),sign=Math.sign(yaw)||1;return{yaw,abs,sign,kind:abs<.22?'front':abs<.72?'three-quarter':'profile',near_side:sign>0?'right':'left',far_side:sign>0?'left':'right'};}
+function viewState(frame){const yaw=Number(frame?.visibility?.camera?.yaw??0),abs=Math.min(1,Math.abs(yaw)/(Math.PI/2)),sign=Math.sign(yaw)||1;return{yaw,abs,sign,kind:abs<.22?'front':abs<.72?'three-quarter':'profile',near_side:sign>0?'left':'right',far_side:sign>0?'right':'left'};}
 
 function projectedHead(frame,bones,view){
   const skull=bones.get('skull'),camera=frame.visibility.camera,r=frame.asset.proportions.radii.skull,tx=skull?.world_transform??{position:frame.asset.proportions.landmarks.head_base,rotation:{}},localCy=r[1]*.64,localPoints=[[-r[0],localCy,0],[r[0],localCy,0],[0,localCy,-r[2]],[0,localCy,r[2]],[0,localCy-r[1],0],[0,localCy+r[1],0]],projected=localPoints.map(local=>projectPoint3(transformPoint(tx,local),camera)),horizontal=projected.slice(0,4),vertical=projected.slice(4),baseSpan=Math.max(...horizontal.map(p=>p[0]))-Math.min(...horizontal.map(p=>p[0])),depthSpan=Math.abs(projected[3][0]-projected[2][0]),width=Math.max(24,baseSpan,depthSpan),height=Math.max(34,Math.abs(vertical[1][1]-vertical[0][1])),center=projectPoint3(transformPoint(tx,[0,localCy,0]),camera).slice(0,2),cx=center[0],cy=center[1],s=view.sign;

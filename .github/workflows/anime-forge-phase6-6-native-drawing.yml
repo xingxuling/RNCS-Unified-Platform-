@@ -13,6 +13,7 @@ on:
       - "apps/reality-studio/tests/native-drawing-review-model.test.mjs"
       - "apps/reality-studio/tests/browser_native_drawing_review_test.py"
       - "apps/reality-studio/schemas/human-visual-review.v0.1.schema.json"
+      - "apps/reality-studio/schemas/human-visual-review.v0.2.schema.json"
       - "scripts/build-anime-forge-phase6-6-native-drawing-infrastructure.mjs"
       - "scripts/verify-anime-forge-phase6-6-native-drawing-infrastructure.mjs"
       - "scripts/build-anime-forge-phase6-6-head-surface-evidence.mjs"
@@ -30,6 +31,12 @@ on:
       - "scripts/build-anime-forge-phase6-6-temporal-stability-evidence.mjs"
       - "scripts/verify-anime-forge-phase6-6-temporal-stability-evidence.mjs"
       - "scripts/bind-anime-forge-phase6-6-direct-visual-evidence.mjs"
+      - "scripts/build-anime-forge-phase6-6-raster-parity-evidence.mjs"
+      - "scripts/verify-anime-forge-phase6-6-raster-parity-evidence.mjs"
+      - "scripts/phase6-6-doctor.mjs"
+      - "scripts/run-anime-forge-phase6-6-local.ps1"
+      - "scripts/open-anime-forge-phase6-6-review.ps1"
+      - "scripts/package-anime-forge-phase6-6-local-evidence.ps1"
       - ".github/workflows/anime-forge-phase6-6-native-drawing.yml"
 
 jobs:
@@ -45,6 +52,8 @@ jobs:
       - name: Install vector and media tools
         run: sudo apt-get update && sudo apt-get install -y librsvg2-bin ffmpeg
       - run: npm ci --ignore-scripts
+      - name: Install pinned optional resvg compatibility provider
+        run: npm install --no-save --package-lock=false --ignore-scripts @resvg/resvg-js@2.6.2
 
       - name: Phase 6.6 focused RED/GREEN gates
         run: >-
@@ -64,10 +73,14 @@ jobs:
           packages/world/native-character-morphogenesis-runtime/tests/temporal-drawing-stability.test.mjs
           packages/world/native-character-morphogenesis-runtime/tests/full-body-drawing.test.mjs
           packages/world/native-character-morphogenesis-runtime/tests/drawing-presentation.test.mjs
+          packages/world/native-character-morphogenesis-runtime/tests/svg-raster-provider.test.mjs
           apps/reality-studio/tests/native-drawing-review-model.test.mjs
 
       - name: Full native morphology regression
         run: npm test --workspace @taowind/native-character-morphogenesis-runtime
+
+      - name: Build VSR and RSR runtime bundles required by Reality Studio
+        run: npm run build:world
 
       - name: Install Human Review browser regression dependencies
         run: |
@@ -79,11 +92,23 @@ jobs:
       # Main build runs first because it intentionally clears the evidence directory.
       - name: Build Phase 6.6 full-body media evidence
         env:
+          PHASE66_RASTER_BACKEND: librsvg
           RSVG_CONVERT_PATH: rsvg-convert
           FFMPEG_PATH: ffmpeg
           FFPROBE_PATH: ffprobe
           ANIME_PHASE6_6_EVIDENCE_DIR: tmp/anime-forge-phase6-6-native-drawing-evidence
         run: node scripts/build-anime-forge-phase6-6-native-drawing-infrastructure.mjs
+
+      - name: Build real-character librsvg/resvg raster parity evidence
+        env:
+          PHASE66_RASTER_BACKEND: librsvg
+          RSVG_CONVERT_PATH: rsvg-convert
+          FFMPEG_PATH: ffmpeg
+          FFPROBE_PATH: ffprobe
+          ANIME_PHASE6_6_EVIDENCE_DIR: tmp/anime-forge-phase6-6-native-drawing-evidence
+        run: node scripts/build-anime-forge-phase6-6-raster-parity-evidence.mjs
+      - name: Verify real-character librsvg/resvg raster parity evidence
+        run: node scripts/verify-anime-forge-phase6-6-raster-parity-evidence.mjs --evidence tmp/anime-forge-phase6-6-native-drawing-evidence
 
       - name: Prove head DrawingIR follows weighted skull visibility
         env:

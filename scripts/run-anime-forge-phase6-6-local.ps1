@@ -1,5 +1,6 @@
 param(
   [string]$EvidenceDir = "",
+  [string]$RasterBackend = "",
   [switch]$Install,
   [switch]$SkipFullRegression,
   [switch]$SkipBrowserReviewRegression,
@@ -10,6 +11,12 @@ $ErrorActionPreference = "Stop"
 $ScriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 $RepoRoot = Split-Path -Parent $ScriptRoot
 Set-Location $RepoRoot
+
+if ([string]::IsNullOrWhiteSpace($RasterBackend)) {
+  $RasterBackend = if ($env:OS -eq "Windows_NT") { "resvg-js" } else { "librsvg" }
+}
+$RasterBackend = $RasterBackend.ToLowerInvariant()
+if ($RasterBackend -notin @("librsvg","resvg-js")) { throw "RASTER_BACKEND_UNSUPPORTED:$RasterBackend" }
 
 if ([string]::IsNullOrWhiteSpace($EvidenceDir)) {
   $EvidenceDir = Join-Path $RepoRoot "tmp/anime-forge-phase6-6-local-evidence"
@@ -45,7 +52,10 @@ function Invoke-Step([string]$Name,[scriptblock]$Action) {
 
 $Node = Resolve-Tool "PHASE66_NODE_PATH" @("node.exe","node")
 $Npm = Resolve-Tool "PHASE66_NPM_PATH" @("npm.cmd","npm")
-$Rsvg = Resolve-Tool "RSVG_CONVERT_PATH" @("rsvg-convert.exe","rsvg-convert")
+$Rsvg = $null
+if ($RasterBackend -eq "librsvg") {
+  $Rsvg = Resolve-Tool "RSVG_CONVERT_PATH" @("rsvg-convert.exe","rsvg-convert")
+}
 $Ffmpeg = Resolve-Tool "FFMPEG_PATH" @("ffmpeg.exe","ffmpeg")
 $Ffprobe = Resolve-Tool "FFPROBE_PATH" @("ffprobe.exe","ffprobe")
 $Python = $null
@@ -55,11 +65,12 @@ if (-not $SkipBrowserReviewRegression) {
 
 # Propagate the resolved Node executable to browser regression child processes.
 $env:PHASE66_NODE_PATH = $Node
+$env:PHASE66_RASTER_BACKEND = $RasterBackend
 $NodeDir = Split-Path -Parent $Node
 if (-not [string]::IsNullOrWhiteSpace($NodeDir)) {
   $env:PATH = "$NodeDir;$env:PATH"
 }
-$env:RSVG_CONVERT_PATH = $Rsvg
+if ($Rsvg) { $env:RSVG_CONVERT_PATH = $Rsvg } else { Remove-Item Env:RSVG_CONVERT_PATH -ErrorAction SilentlyContinue }
 $env:FFMPEG_PATH = $Ffmpeg
 $env:FFPROBE_PATH = $Ffprobe
 $env:ANIME_PHASE6_6_EVIDENCE_DIR = $EvidenceDir
@@ -67,7 +78,8 @@ $env:ANIME_PHASE6_6_EVIDENCE_DIR = $EvidenceDir
 Write-Host "Repo:     $RepoRoot"
 Write-Host "Evidence: $EvidenceDir"
 Write-Host "Node:     $Node"
-Write-Host "rsvg:     $Rsvg"
+Write-Host "Raster:   $RasterBackend"
+if ($Rsvg) { Write-Host "rsvg:     $Rsvg" }
 Write-Host "ffmpeg:   $Ffmpeg"
 if ($Python) { Write-Host "Python:   $Python" }
 
@@ -75,7 +87,18 @@ if ($Install -or -not (Test-Path (Join-Path $RepoRoot "node_modules"))) {
   Invoke-Step "Install npm dependencies" { & $Npm ci --ignore-scripts }
 }
 
-Invoke-Step "Phase 6.6 local execution doctor" { & $Node scripts/phase6-6-doctor.mjs --evidence $EvidenceDir }
+if ($RasterBackend -eq "resvg-js") {
+  $ResvgVersion = & $Node -e "try { const p=require('./node_modules/@resvg/resvg-js/package.json'); console.log(p.version) } catch { process.exit(2) }"
+  if ($LASTEXITCODE -ne 0 -or $ResvgVersion.Trim() -ne "2.6.2") {
+    if ($Install) {
+      Invoke-Step "Install pinned resvg-js 2.6.2 without manifest pollution" { & $Npm install --no-save --package-lock=false --ignore-scripts "@resvg/resvg-js@2.6.2" }
+    } else {
+      throw "SVG_RASTER_RESVG_JS_MISSING_OR_UNPINNED: install with -Install or npm install --no-save --package-lock=false --ignore-scripts @resvg/resvg-js@2.6.2"
+    }
+  }
+}
+
+Invoke-Step "Phase 6.6 local execution doctor" { & $Node scripts/phase6-6-doctor.mjs --raster-backend $RasterBackend --evidence $EvidenceDir }
 
 $focusedTests = @(
   "packages/world/native-character-morphogenesis-runtime/tests/character-drawing-compiler.test.mjs",
@@ -93,6 +116,7 @@ $focusedTests = @(
   "packages/world/native-character-morphogenesis-runtime/tests/temporal-drawing-stability.test.mjs",
   "packages/world/native-character-morphogenesis-runtime/tests/full-body-drawing.test.mjs",
   "packages/world/native-character-morphogenesis-runtime/tests/drawing-presentation.test.mjs",
+  "packages/world/native-character-morphogenesis-runtime/tests/svg-raster-provider.test.mjs",
   "apps/reality-studio/tests/native-drawing-review-model.test.mjs"
 )
 Invoke-Step "Focused RED/GREEN gates" { & $Node --test @focusedTests }
@@ -102,6 +126,8 @@ if (-not $SkipFullRegression) {
 }
 
 if (-not $SkipBrowserReviewRegression) {
+  Invoke-Step "Build VSR and RSR runtime bundles for Reality Studio" { & $Npm run build:world }
+
   $PlaywrightPackageAvailable = $false
   & $Python -c "import playwright" *> $null
   if ($LASTEXITCODE -eq 0) { $PlaywrightPackageAvailable = $true }
@@ -132,6 +158,13 @@ if (-not $SkipBrowserReviewRegression) {
 
 Invoke-Step "Build 120-frame Phase 6.6 media" { & $Node scripts/build-anime-forge-phase6-6-native-drawing-infrastructure.mjs }
 
+if ($RasterBackend -eq "librsvg") {
+  Invoke-Step "Official librsvg/resvg raster parity evidence" { & $Node scripts/build-anime-forge-phase6-6-raster-parity-evidence.mjs }
+  Invoke-Step "Verify official librsvg/resvg raster parity evidence" { & $Node scripts/verify-anime-forge-phase6-6-raster-parity-evidence.mjs --evidence $EvidenceDir }
+} else {
+  Write-Host "Raster parity: CROSS_PLATFORM_CANDIDATE (Windows resvg-js local run; librsvg baseline remains CI/Linux evidence)." -ForegroundColor Yellow
+}
+
 $evidenceSteps = @(
   @{ Name = "Head surface evidence"; Build = "scripts/build-anime-forge-phase6-6-head-surface-evidence.mjs"; Verify = "scripts/verify-anime-forge-phase6-6-head-surface-evidence.mjs" },
   @{ Name = "Face surface evidence"; Build = "scripts/build-anime-forge-phase6-6-face-surface-evidence.mjs"; Verify = "scripts/verify-anime-forge-phase6-6-face-surface-evidence.mjs" },
@@ -154,13 +187,19 @@ $Mp4 = Join-Path $EvidenceDir "episode.mp4"
 $Ledger = Join-Path $EvidenceDir "evidence-ledger.json"
 $Temporal = Join-Path $EvidenceDir "temporal-drawing-stability-evidence.json"
 $Bridge = Join-Path $EvidenceDir "direct-visual-bridge.json"
+$Raster = Join-Path $EvidenceDir "raster-provider-receipts.json"
+$Backend = Join-Path $EvidenceDir "backend-receipt.json"
 if (-not (Test-Path $Mp4)) { throw "FINAL_MEDIA_MISSING:$Mp4" }
 if (-not (Test-Path $Ledger)) { throw "LEDGER_MISSING:$Ledger" }
 if (-not (Test-Path $Temporal)) { throw "TEMPORAL_EVIDENCE_MISSING:$Temporal" }
 if (-not (Test-Path $Bridge)) { throw "DIRECT_VISUAL_BRIDGE_MISSING:$Bridge" }
+if (-not (Test-Path $Raster)) { throw "RASTER_PROVIDER_RECEIPTS_MISSING:$Raster" }
+if (-not (Test-Path $Backend)) { throw "RASTER_BACKEND_RECEIPT_MISSING:$Backend" }
 
 $LedgerJson = Get-Content -Raw $Ledger | ConvertFrom-Json
 $TemporalJson = Get-Content -Raw $Temporal | ConvertFrom-Json
+$RasterJson = Get-Content -Raw $Raster | ConvertFrom-Json
+$BackendJson = Get-Content -Raw $Backend | ConvertFrom-Json
 $Mp4Hash = (Get-FileHash -Algorithm SHA256 $Mp4).Hash.ToLowerInvariant()
 $FullValidation = (-not $SkipFullRegression) -and (-not $SkipBrowserReviewRegression)
 $ValidationStatus = if ($FullValidation) { "engineering-evidence-passed-awaiting-human-review" } else { "development-partial-pass-not-release-evidence" }
@@ -174,6 +213,11 @@ $Summary = [ordered]@{
   direct_visual_bridge_root = $LedgerJson.direct_visual_bridge_root
   temporal_evidence_root = $LedgerJson.temporal_drawing_stability_evidence_root
   temporal_report_root = $LedgerJson.temporal_report_root
+  raster_backend = $RasterJson.backend
+  raster_provider_id = $RasterJson.provider_id
+  raster_provider_version = $RasterJson.provider_version
+  raster_provider_receipt_set_root = $RasterJson.receipt_set_root
+  raster_provider_receipt_count = $RasterJson.receipt_count
   temporal_status = $TemporalJson.status
   browser_review_regression = $(if ($SkipBrowserReviewRegression) { "skipped-development-only" } else { "passed" })
   full_regression = $(if ($SkipFullRegression) { "skipped-development-only" } else { "passed" })
@@ -194,6 +238,7 @@ Write-Host "MP4:        $Mp4"
 Write-Host "SHA-256:    $Mp4Hash"
 Write-Host "Ledger:     $($LedgerJson.ledger_root)"
 Write-Host "Temporal:   $($TemporalJson.status)"
+Write-Host "Raster:     $($RasterJson.backend) $($RasterJson.provider_version) receipts=$($RasterJson.receipt_count)"
 Write-Host "Browser QA: $($Summary.browser_review_regression)"
 Write-Host "Review UI:  apps/reality-studio/web/native-drawing-review.html"
 Write-Host "Human Gate: pending"

@@ -37,7 +37,7 @@ function fieldInfluence(vertex,descriptor,{padding=.025,falloff=2}={}){const ext
 
 export function applyFieldGuidedSurfaceWeights(mesh,field,{maxInfluences=4,padding=.025,falloff=2,primaryBias=1.35,minWeight=.015}={}){
   if(!mesh?.vertices?.length||!Array.isArray(mesh?.bone_weights)||mesh.bone_weights.length!==mesh.vertices.length)throw Object.assign(new Error('SURFACE_WEIGHTING_MESH_INVALID'),{code:'SURFACE_WEIGHTING_MESH_INVALID'});
-  const descriptors=(field?.fields??[]).filter(item=>item?.attached_bone&&Array.isArray(item?.rest_center)&&item.rest_center.length===3),boneWeights=[],sourcePrimaryBones=[],multiInfluenceVertices=0,maxObservedInfluences=0;let rejectedIncompatibleInfluences=0,verticesWithRejectedInfluences=0;
+  const descriptors=(field?.fields??[]).filter(item=>item?.attached_bone&&Array.isArray(item?.rest_center)&&item.rest_center.length===3),boneWeights=[],sourcePrimaryBones=[];let multiInfluenceVertices=0,maxObservedInfluences=0,rejectedIncompatibleInfluences=0,verticesWithRejectedInfluences=0;
   for(let index=0;index<mesh.vertices.length;index+=1){const vertex=mesh.vertices[index],original=mesh.bone_weights[index]??{},primary=primaryBone(original),scores=new Map();sourcePrimaryBones.push(primary);if(primary)scores.set(primary,Number(primaryBias));let rejectedHere=0;
     for(const descriptor of descriptors){const influence=fieldInfluence(vertex,descriptor,{padding,falloff});if(influence<=0)continue;if(primary&&!anatomicalWeightCompatibility(primary,descriptor.attached_bone)){rejectedIncompatibleInfluences+=1;rejectedHere+=1;continue;}const prior=scores.get(descriptor.attached_bone)??0;scores.set(descriptor.attached_bone,Math.max(prior,influence));}
     if(rejectedHere)verticesWithRejectedInfluences+=1;
