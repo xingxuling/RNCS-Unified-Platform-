@@ -12,7 +12,7 @@ const resolveCommand=(envName,fallback,args=['--version'])=>{const command=proce
 const resolveFirst=(envName,candidates,args=['--version'])=>{const configured=process.env[envName];if(configured)return{env:envName,...commandVersion(configured,args)};for(const candidate of candidates){const check=commandVersion(candidate,args);if(check.available)return{env:envName,...check};}return{env:envName,command:candidates[0],available:false,status:null,error:'ENOENT',version:null};};
 const python=resolveFirst('PHASE66_PYTHON_PATH',process.platform==='win32'?['python.exe','python','py.exe','py']:['python3','python'],['--version']);
 const playwright=python.available?(()=>{const result=spawnSync(python.command,['-c','import playwright; print("playwright")'],{encoding:'utf8'});return{available:!result.error&&result.status===0,status:result.status,error:result.error?.code??null,version:result.status===0?'installed':null};})():{available:false,status:null,error:'PYTHON_MISSING',version:null};
-const chromium=python.available&&playwright.available?(()=>{const result=spawnSync(python.command,['-c','from playwright.sync_api import sync_playwright\nwith sync_playwright() as p:\n print(p.chromium.executable_path)'],{encoding:'utf8'});const executable=String(result.stdout??'').trim().split(/\r?\n/).at(-1)||null;return{available:!result.error&&result.status===0&&Boolean(executable),status:result.status,error:result.error?.code??null,executable};})():{available:false,status:null,error:'PLAYWRIGHT_MISSING',executable:null};
+const chromium=python.available&&playwright.available?(()=>{const probe='import os,sys\nfrom playwright.sync_api import sync_playwright\nwith sync_playwright() as p:\n path=p.chromium.executable_path\n print(path)\n sys.exit(0 if path and os.path.isfile(path) else 2)';const result=spawnSync(python.command,['-c',probe],{encoding:'utf8'}),executable=String(result.stdout??'').trim().split(/\r?\n/).at(-1)||null;return{available:!result.error&&result.status===0&&Boolean(executable),status:result.status,error:result.error?.code??null,executable,exists:Boolean(executable&&fs.existsSync(executable))};})():{available:false,status:null,error:'PLAYWRIGHT_MISSING',executable:null,exists:false};
 const checks={
   node:{required:true,...commandVersion(process.execPath,['--version'])},
   npm:{required:true,...resolveCommand('PHASE66_NPM_PATH',process.platform==='win32'?'npm.cmd':'npm',['--version'])},
@@ -46,7 +46,7 @@ for(const file of files)if(!file.exists)failures.push(`FILE_MISSING:${file.path}
 if(!packageLock)failures.push('PACKAGE_LOCK_MISSING');
 const evidenceDir=path.resolve(arg('--evidence')??process.env.ANIME_PHASE6_6_EVIDENCE_DIR??path.join(repoRoot,'tmp/anime-forge-phase6-6-local-evidence'));
 const report={
-  format:'rncs.phase6-6-local-execution-doctor.v0.2',
+  format:'rncs.phase6-6-local-execution-doctor.v0.3',
   repo_root:repoRoot,
   platform:process.platform,
   arch:process.arch,
@@ -60,8 +60,8 @@ const report={
   ready:failures.length===0,
   full_local_validation_ready:failures.length===0&&browserChecks.ready,
   failures,
-  browser_review_advice:browserChecks.ready?[]:['Install Python Playwright and Chromium, or run the local runner with -Install. Skipping browser review downgrades the result to development-only.'],
-  boundary:'Doctor validates local execution prerequisites only. Core media prerequisites determine ready; browser_review determines whether a full local Phase 6.6 validation can include Human Review browser regression. It does not prove engineering or visual acceptance.'
+  browser_review_advice:browserChecks.ready?[]:['Install Python Playwright and its Chromium binary, or run the local runner with -Install. Skipping browser review downgrades the result to development-only.'],
+  boundary:'Doctor validates local execution prerequisites only. Core media prerequisites determine ready; browser_review additionally verifies that the Playwright Chromium executable actually exists before declaring full_local_validation_ready. It does not prove engineering or visual acceptance.'
 };
 console.log(JSON.stringify(report,null,2));
 if(!report.ready)process.exitCode=1;
