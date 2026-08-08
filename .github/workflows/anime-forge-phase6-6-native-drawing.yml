@@ -8,6 +8,9 @@ on:
       - main-95
     paths:
       - "packages/world/native-character-morphogenesis-runtime/**"
+      - "apps/reality-studio/web/native-drawing-review.html"
+      - "apps/reality-studio/web/native-drawing-review-model.js"
+      - "apps/reality-studio/tests/native-drawing-review-model.test.mjs"
       - "scripts/build-anime-forge-phase6-6-native-drawing-infrastructure.mjs"
       - "scripts/verify-anime-forge-phase6-6-native-drawing-infrastructure.mjs"
       - "scripts/build-anime-forge-phase6-6-head-surface-evidence.mjs"
@@ -59,6 +62,7 @@ jobs:
           packages/world/native-character-morphogenesis-runtime/tests/temporal-drawing-stability.test.mjs
           packages/world/native-character-morphogenesis-runtime/tests/full-body-drawing.test.mjs
           packages/world/native-character-morphogenesis-runtime/tests/drawing-presentation.test.mjs
+          apps/reality-studio/tests/native-drawing-review-model.test.mjs
 
       - name: Full native morphology regression
         run: npm test --workspace @taowind/native-character-morphogenesis-runtime
