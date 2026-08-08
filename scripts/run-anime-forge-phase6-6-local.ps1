@@ -11,8 +11,10 @@ Set-Location $RepoRoot
 
 if ([string]::IsNullOrWhiteSpace($EvidenceDir)) {
   $EvidenceDir = Join-Path $RepoRoot "tmp/anime-forge-phase6-6-local-evidence"
+} elseif ([System.IO.Path]::IsPathRooted($EvidenceDir)) {
+  $EvidenceDir = [System.IO.Path]::GetFullPath($EvidenceDir)
 } else {
-  $EvidenceDir = [System.IO.Path]::GetFullPath((Join-Path (Get-Location) $EvidenceDir))
+  $EvidenceDir = [System.IO.Path]::GetFullPath((Join-Path $RepoRoot $EvidenceDir))
 }
 
 function Resolve-Tool([string]$EnvName,[string[]]$Fallbacks) {
