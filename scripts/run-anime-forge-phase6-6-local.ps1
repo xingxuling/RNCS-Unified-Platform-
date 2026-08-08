@@ -4,6 +4,8 @@ param(
   [switch]$Install,
   [switch]$SkipFullRegression,
   [switch]$SkipBrowserReviewRegression,
+  [switch]$SkipPackage,
+  [switch]$NoOpenReview,
   [switch]$OpenReview
 )
 
@@ -244,7 +246,15 @@ Write-Host "Review UI:  apps/reality-studio/web/native-drawing-review.html"
 Write-Host "Human Gate: pending"
 Write-Host "Summary:    $SummaryFile"
 
-if ($OpenReview) {
+if ($SkipPackage) {
+  Write-Host "`nEvidence package: skipped-development-only" -ForegroundColor Yellow
+} elseif ($FullValidation) {
+  Invoke-Step "Package full local evidence" { & (Join-Path $ScriptRoot "package-anime-forge-phase6-6-local-evidence.ps1") -EvidenceDir $EvidenceDir }
+} else {
+  Write-Host "`nEvidence package: blocked because validation is partial" -ForegroundColor Yellow
+}
+
+if (-not $NoOpenReview) {
   Write-Host "`nOpening Reality Studio Human Review..." -ForegroundColor Cyan
   & (Join-Path $ScriptRoot "open-anime-forge-phase6-6-review.ps1") -EvidenceDir $EvidenceDir
 }
