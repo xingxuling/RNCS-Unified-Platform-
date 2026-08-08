@@ -25,6 +25,7 @@
     "./garment-surface-drawing": "./src/garment-surface-drawing.mjs",
     "./cel-shading-drawing": "./src/cel-shading-drawing.mjs",
     "./temporal-drawing-stability": "./src/temporal-drawing-stability.mjs",
+    "./svg-raster-provider": "./src/svg-raster-provider.mjs",
     "./morphology-certificate-v2": "./src/morphology-certificate-v2.mjs",
     "./anime-visual-grammar": "./src/anime-visual-grammar.mjs",
     "./native-anime-renderer": "./src/native-anime-renderer.mjs",
