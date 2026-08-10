@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/ragf-motion-xsheet-binding.v0.1.schema.json",
+  "title": "RNCS RAGF Motion to X-Sheet Binding v0.1",
+  "type": "object",
+  "required": [
+    "format",
+    "version",
+    "cut_ref",
+    "original_xsheet_root",
+    "bound_xsheet_root",
+    "motion_root",
+    "source_fps",
+    "destination_fps",
+    "frame_offset",
+    "missing_frame_policy",
+    "mapping",
+    "frame_count",
+    "source_frame_count",
+    "frame_map",
+    "director_overrides",
+    "continuity",
+    "deterministic",
+    "authority",
+    "creative_authority",
+    "binding_root"
+  ],
+  "properties": {
+    "format": {"const": "rncs.ragf-motion-xsheet-binding.v0.1"},
+    "version": {"type": "string"},
+    "cut_ref": {"type": "string", "minLength": 1},
+    "cut_id": {"type": "string"},
+    "original_xsheet_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "bound_xsheet_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "motion_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "source_fps": {"type": "number", "exclusiveMinimum": 0},
+    "destination_fps": {"type": "number", "exclusiveMinimum": 0},
+    "frame_offset": {"type": "integer", "minimum": 0},
+    "missing_frame_policy": {"enum": ["strict", "hold-first", "hold-last"]},
+    "mapping": {"const": "floor-by-timebase"},
+    "frame_count": {"type": "integer", "minimum": 1},
+    "source_frame_count": {"type": "integer", "minimum": 2},
+    "frame_map": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["target_frame", "source_frame", "motion_state_root", "bound_motion_root"],
+        "properties": {
+          "target_frame": {"type": "integer", "minimum": 0},
+          "source_frame": {"type": "integer", "minimum": 0},
+          "source_file": {"type": ["string", "null"]},
+          "motion_state_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "bound_motion_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "eye_state": {"type": "string"},
+          "binding_state_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+        }
+      }
+    },
+    "director_overrides": {"type": "array"},
+    "continuity": {
+      "type": "object",
+      "required": ["identity_root", "palette_root", "proportion_root", "appearance_root", "stable_identity", "stable_palette", "stable_proportions", "stable_appearance"]
+    },
+    "deterministic": {"const": true},
+    "authority": {"const": "episode-derived-runtime"},
+    "creative_authority": {"const": false},
+    "boundary": {"type": "string"},
+    "binding_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "additionalProperties": true
+}

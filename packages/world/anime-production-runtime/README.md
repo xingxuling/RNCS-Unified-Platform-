@@ -5,3 +5,7 @@ RNCS Anime Production IR, exposure-sheet/X-Sheet contract, deterministic frame e
 The runtime keeps exposure policy explicit, records provider receipts, and writes an Evidence Ledger for every rendered sequence. It is a reference implementation with a clear boundary around commercial animation quality, GPU parity and external providers.
 
 Phase 3 adds stable multi-Cut references, a sealed hard-cut editorial timeline, per-Cut X-Sheets and profiles, global frame scheduling, full-production manifests and deterministic production replay. Unsupported transitions, mixed master formats and silent actor identity/asset drift fail validation.
+
+RAGF motion binding adds a derived runtime bridge from `ragf.anime-motion-track.v0.1` to the X-Sheet. The bridge maps source and destination timebases explicitly, carries the source motion-state roots and continuity roots, resolves blink into the X-Sheet eye track, and records bounded RSR-compatible director overrides. `Episode` remains authoritative; the binding only produces a replayable derived X-Sheet.
+
+Use `buildExposureSheet(cut, {ragfMotionTrack, ragfMotionBindingOptions})` for one Cut or `buildProductionExposureSheets(production, {ragfMotionTracks})` for a programme. The executable evidence command is `npm run evidence:ragf-motion-binding --workspace @taowind/anime-production-runtime`. It emits real PNG frames, RAGF source media, bound X-Sheets, a binding ledger, replay results and SHA-256 evidence. The output is experimental candidate evidence, not commercial Anime quality or physical cloth/hair simulation proof.

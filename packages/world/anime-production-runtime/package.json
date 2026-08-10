@@ -9,8 +9,10 @@
     ".": "./src/index.mjs"
   },
   "scripts": {
-    "test": "node --test --test-concurrency=1 tests/*.test.mjs"
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs",
+    "evidence:ragf-motion-binding": "node scripts/generate-ragf-motion-binding-evidence.mjs"
   },
+  "files": ["src", "schemas", "scripts", "tests", "README.md"],
   "engines": {
     "node": ">=20"
   }

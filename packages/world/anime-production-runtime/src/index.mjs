@@ -6,5 +6,6 @@ export * from './video-mux.mjs';
 export * from './contracts.mjs';
 export * from './editorial.mjs';
 export * from './xsheet.mjs';
+export * from './ragf-motion-binding.mjs';
 export * from './renderer.mjs';
 export * from './visual-quality.mjs';
