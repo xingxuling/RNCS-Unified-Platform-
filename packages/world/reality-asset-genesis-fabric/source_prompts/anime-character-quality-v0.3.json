@@ -1,0 +1,9 @@
+{
+  "format": "ragf.source-prompt.v0.1",
+  "kind": "anime-character-family",
+  "quality_profile": "anime-character-family-v0.3",
+  "prompt": "Readable art-directed Anime character family with a stable silhouette, face landmarks, hair mass, costume construction, hands, feet, authored expression and mouth states, and the same Character Genome driving vector and raster views.",
+  "negative": ["pure-color rectangle", "text-only card", "identity drift between states", "missing raster media", "unsealed provider output", "commercial-quality claim without human review"],
+  "provider_policy": "deterministic-reference-or-cleared-external-provider",
+  "must_preserve": ["identity root", "palette root", "proportion root", "appearance root", "state root", "media roots", "candidate-only authority"]
+}
