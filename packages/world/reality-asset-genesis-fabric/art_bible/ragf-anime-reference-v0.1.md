@@ -17,9 +17,10 @@ Readable cold-gray supernatural courtroom Anime blocking: stable silhouette, res
 
 - `front-view.svg`, `side-view.svg` and `back-view.svg` must contain a readable body silhouette, costume mass, face or hair treatment, hands and feet.
 - `front-view.png` must be a valid non-empty RGBA PNG with a recorded byte length and media root.
+- The motion family must include a real PNG frame sequence and `motion-track.json`; hair, coat, breathing and blink channels must be explainable from the track and produce more than one frame root.
 - Provider receipts must declare both `image/svg+xml` and `image/png` for the upgraded built-in character provider.
 - Human visual acceptance remains separate from deterministic machine gates.
 
 ## Boundary
 
-The built-in family is deterministic experimental SVG and PNG reference output. It does not claim finished production drawings, licensed external art, a complete facial/cloth simulation or commercial TV quality.
+The built-in family is deterministic experimental SVG, PNG and reference motion output. It does not claim finished production drawings, licensed external art, a complete facial/cloth simulation or commercial TV quality.

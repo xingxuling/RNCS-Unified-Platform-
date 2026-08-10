@@ -21,6 +21,10 @@
       "required_media": ["front-view.svg", "front-view.png", "side-view.svg", "back-view.svg"],
       "required_state_fields": ["expression", "pose", "mouth_shape", "eye_state", "gaze_x", "gaze_y"],
       "required_continuity_roots": ["identity_root", "palette_root", "proportion_root", "appearance_root"],
+      "required_motion_outputs": ["motion-track.json", "motion/frame-####.png"],
+      "minimum_motion_frames": 2,
+      "required_motion_channels": ["hair", "coat", "breathing", "blink"],
+      "temporal_variation_required": true,
       "non_placeholder_raster": true,
       "commercial_quality_proven": false
     }

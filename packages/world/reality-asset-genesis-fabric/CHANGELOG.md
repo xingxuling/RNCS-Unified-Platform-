@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.7.0-alpha.1
+
+- Anime Character Family Provider 升级至 v0.4，输出确定性的多帧 PNG 角色动作序列与 `motion-track.json`
+- 将头发、衣物、呼吸和眨眼绑定到逐帧状态，保留 identity、palette、proportion 和 appearance 根连续
+- 新增 motion sequence、frame roots、temporal variation 和 motion track 验证门
+- Provider Manifest 声明 `image/png-sequence`、`application/json` 与 secondary-motion-track 能力
+- Evidence Ledger 可复现 idle/resolve 多帧媒体、运动轨道和 SHA-256 清单
+
 ## v0.6.0-alpha.1
 
 - 升级内置 Anime Character Family Provider 至 v0.3

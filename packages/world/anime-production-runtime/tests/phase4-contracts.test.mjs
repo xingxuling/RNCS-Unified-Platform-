@@ -14,6 +14,11 @@ test('Anime Provider Manifest schema and built-in real-media declarations are se
   const manifests=createBuiltinAnimeProviderManifests();
   assert.equal(manifests.every(item=>validateAnimeProviderManifest(item).valid),true);
   assert.equal(manifests.some(item=>item.role==='asset'&&item.media.produces_media),true);
+  const ragf=manifests.find(item=>item.provider_id==='ragf.anime-builtin-generator');
+  assert.ok(ragf.outputs.includes('png-character-sequence'));
+  assert.ok(ragf.outputs.includes('motion-track.json'));
+  assert.ok(ragf.media.media_types.includes('image/png-sequence'));
+  assert.ok(ragf.motion.capabilities.includes('secondary-motion-track'));
   assert.equal(manifests.some(item=>item.role==='frame-render'&&item.outputs.includes('png-frame-sequence')),true);
 });
 

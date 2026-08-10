@@ -63,10 +63,20 @@ RAGF回答：
 - identity、palette、proportion、appearance roots 在状态变化间保持连续
 - 新增 `render_contract`、`media_manifest`、PNG byte length、media roots 和非占位质量门
 - Provider Manifest 真实声明 `image/svg+xml` 与 `image/png`
-- `npm run evidence:anime-quality` 可重复生成 idle/resolve 两个状态、真实 PNG/SVG、Evidence Ledger 与 SHA-256 清单
-- 当前包测试：184/184 通过；证据输出默认为 `packages/world/reality-asset-genesis-fabric/tmp/ragf-anime-quality-evidence-v0.3`
+- `npm run evidence:anime-quality` 可重复生成 idle/resolve 两个状态、真实 PNG/SVG、多帧动作、Evidence Ledger 与 SHA-256 清单
+- 当前包测试：见 CI 与本地回归；证据输出默认为 `packages/world/reality-asset-genesis-fabric/tmp/ragf-anime-quality-evidence-v0.4`
 
 这仍是确定性的实验级参考媒体。它不等同于商业番剧原画、专业 DCC、面部绑定、布料/头发模拟或人工审美验收。
+
+## v0.7 新增：原生 Anime 多帧动作资产
+
+- `ragf.anime-builtin-generator` 升级到 v0.4
+- 同一 Character Genome 生成真实 `motion/frame-####.png` 帧序列和 `motion-track.json`
+- 头发、衣物、呼吸和眨眼进入逐帧 secondary motion / facial track，并保留帧级 state root
+- `render_contract`、`media_manifest` 和质量报告记录 fps、帧数、运动根、帧根和时间变化
+- `npm run evidence:anime-quality` 同时生成 idle/resolve 的多帧媒体、运动轨道、Evidence Ledger 与 SHA-256 清单
+
+这是确定性的实验级二级运动参考，不等同于物理布料/头发模拟、专业动作捕捉、商业番剧质量或人工表演验收。
 
 ## 快速运行
 
