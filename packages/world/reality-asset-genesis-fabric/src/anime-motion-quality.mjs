@@ -1,11 +1,36 @@
+import {rootHash} from './canonical.mjs';
+
 export const RAGF_MOTION_QUALITY_FORMAT='ragf.anime-motion-quality.v0.1';
 export const RAGF_MOTION_QUALITY_VERSION='0.1.0';
 export const RAGF_MOTION_QUALITY_CONTRACT_FORMAT='ragf.anime-motion-quality-contract.v0.1';
+export const RAGF_MOTION_VISUAL_QUALITY_FORMAT='ragf.anime-motion-visual-quality.v0.1';
+export const RAGF_MOTION_VISUAL_QUALITY_VERSION='0.1.0';
+export const RAGF_RGBA8_PIXEL_ROOT_ALGORITHM='sha256-rgba8-canonical';
 
 const motionChannels=['hair','coat','breathing','foreground'];
 const defaultTrackIds=['secondary-motion.hair','secondary-motion.coat','secondary-motion.breathing','facial.blink'];
 const round=value=>Math.round(Number(value||0)*1000)/1000;
 const number=value=>Number.isFinite(Number(value))?Number(value):0;
+const pixelRoot=value=>typeof value==='string'&&/^[a-f0-9]{64}$/.test(value);
+
+export function rgbaPixelRoot(width,height,rgba){
+  const buffer=Buffer.from(rgba??[]);
+  if(!Number.isInteger(width)||!Number.isInteger(height)||width<1||height<1||buffer.length!==width*height*4)throw new Error('RAGF_RGBA8_SIZE_MISMATCH');
+  return rootHash({algorithm:RAGF_RGBA8_PIXEL_ROOT_ALGORITHM,width,height,byte_length:buffer.length,rgba:buffer.toString('base64')});
+}
+
+export function measureRgbaDelta(previous,next){
+  const before=Buffer.from(previous??[]),after=Buffer.from(next??[]);
+  if(before.length!==after.length||before.length%4!==0)throw new Error('RAGF_RGBA8_DELTA_SIZE_MISMATCH');
+  const pixelCount=before.length/4;let changedPixels=0,totalChannelDelta=0,maxChannelDelta=0;
+  for(let offset=0;offset<before.length;offset+=4){let changed=false;for(let channel=0;channel<4;channel++){const delta=Math.abs(before[offset+channel]-after[offset+channel]);if(delta){changed=true;totalChannelDelta+=delta;maxChannelDelta=Math.max(maxChannelDelta,delta);}}if(changed)changedPixels++;}
+  return{pixel_count:pixelCount,changed_pixels:changedPixels,changed_pixel_ratio:round(pixelCount?changedPixels/pixelCount:0),mean_channel_delta:round(before.length?totalChannelDelta/before.length:0),max_channel_delta:maxChannelDelta};
+}
+
+export function analyzeAnimeMotionVisualFrames({frames=[],loopMode='hold',loopPeriodFrames=frames.length,seamTolerance=0,minimumUniqueRatio=.75,minimumAdjacentChangeRatio=.5,minimumChangedPixelRatio=.001}={}){
+  const source=Array.isArray(frames)?frames:[],mode=loopMode==='cycle'?'cycle':'hold',period=Math.max(0,Math.min(source.length,Number(loopPeriodFrames??source.length))),active=source.slice(0,mode==='cycle'?period:source.length),first=active[0],last=active.at(-1),pixelDataComplete=active.length>=2&&active.every(frame=>pixelRoot(frame?.pixel_root)),pixelRoots=active.map(frame=>frame?.pixel_root).filter(pixelRoot),uniquePixelRoots=new Set(pixelRoots),uniquePixelRatio=round(active.length?uniquePixelRoots.size/active.length:0),deltas=active.slice(1).map(frame=>frame?.visual_delta_from_previous),deltaDataComplete=deltas.length>0&&deltas.every(delta=>delta&&Number.isFinite(Number(delta.changed_pixel_ratio))),changedDeltas=deltas.filter(delta=>Number(delta?.changed_pixel_ratio??0)>=minimumChangedPixelRatio),changedAdjacentFrameCount=changedDeltas.length,adjacentFrameCount=deltas.length,changedAdjacentRatio=round(adjacentFrameCount?changedAdjacentFrameCount/adjacentFrameCount:0),minimumObservedChangedPixelRatio=round(deltas.length?Math.min(...deltas.map(delta=>Number(delta?.changed_pixel_ratio??0))):0),cycleDelta=mode==='cycle'&&last?.cycle_seam_delta&&Number.isFinite(Number(last.cycle_seam_delta.changed_pixel_ratio))?last.cycle_seam_delta:null,cycleEndpointEqual=Boolean(first?.pixel_root&&last?.pixel_root&&first.pixel_root===last.pixel_root),cycleValid=mode!=='cycle'||Boolean(cycleEndpointEqual&&cycleDelta&&Number(cycleDelta.changed_pixel_ratio)<=Number(seamTolerance)&&Number(cycleDelta.max_channel_delta??0)<=0),blinkFrames=active.map((frame,index)=>({frame,index})).filter(item=>item.frame?.eye_state==='blink'||item.frame?.eye_state==='closed'),blinkVisualFrames=blinkFrames.filter(({frame,index})=>active.slice(Math.max(0,index-1),Math.min(active.length,index+2)).some(neighbor=>neighbor!==frame&&neighbor?.eye_state!==frame?.eye_state&&neighbor?.pixel_root!==frame?.pixel_root)),blinkValid=blinkFrames.length===0||blinkVisualFrames.length===blinkFrames.length,uniqueValid=pixelDataComplete&&uniquePixelRatio>=Number(minimumUniqueRatio),adjacentValid=pixelDataComplete&&deltaDataComplete&&changedAdjacentRatio>=Number(minimumAdjacentChangeRatio)&&minimumObservedChangedPixelRatio>=Number(minimumChangedPixelRatio),valid=uniqueValid&&adjacentValid&&cycleValid&&blinkValid,qualityScore=(pixelDataComplete?2000:0)+(uniqueValid?2000:0)+(adjacentValid?2500:0)+(cycleValid?2000:0)+(blinkValid?1500:0);
+  return{format:RAGF_MOTION_VISUAL_QUALITY_FORMAT,version:RAGF_MOTION_VISUAL_QUALITY_VERSION,status:valid?'pass':'fail',loop_mode:mode,loop_period_frames:period,active_frame_count:active.length,pixel_data_complete:pixelDataComplete,pixel_root_count:pixelRoots.length,unique_pixel_roots:uniquePixelRoots.size,unique_pixel_ratio:uniquePixelRatio,adjacent_frame_count:adjacentFrameCount,changed_adjacent_frame_count:changedAdjacentFrameCount,changed_adjacent_ratio:changedAdjacentRatio,minimum_changed_pixel_ratio:minimumObservedChangedPixelRatio,thresholds:{minimum_unique_ratio:Number(minimumUniqueRatio),minimum_adjacent_change_ratio:Number(minimumAdjacentChangeRatio),minimum_changed_pixel_ratio:Number(minimumChangedPixelRatio),seam_tolerance:Number(seamTolerance)},cycle_endpoint:{equal:mode==='cycle'?cycleEndpointEqual:null,delta:cycleDelta},blink:{frame_count:blinkFrames.length,visual_change_count:blinkVisualFrames.length,valid:blinkValid},quality_score:qualityScore,boundary:'pixel roots and RGBA8 deltas prove deterministic state-driven visual coverage; commercial Anime source-art quality is not proven'};
+}
 
 export function analyzeAnimeMotionTrack(track,{tolerance}={}){
   const frames=Array.isArray(track?.frames)?track.frames:[],loopMode=track?.loop_mode==='cycle'?'cycle':'hold',period=Math.max(0,Math.min(frames.length,Number(track?.loop_period_frames??frames.length))),active=frames.slice(0,loopMode==='cycle'?period:frames.length),first=active[0],last=active.at(-1),seamTolerance=Number.isFinite(Number(tolerance))?Math.max(0,Number(tolerance)):Math.max(0,Number(track?.quality_contract?.seam_tolerance??0.001)),channels=Object.fromEntries(motionChannels.map(layer=>{

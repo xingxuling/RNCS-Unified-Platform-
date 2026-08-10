@@ -57,3 +57,4 @@ test('Provider timeout is recorded and an explicit fallback may be accepted',asy
   assert.equal(result.attempts[0].timeout_ms,5);
   assert.equal(result.attempts[1].status,'accepted');
 });
+test('RAGF provider manifest declares pixel-verified visual state evidence',()=>{const ragf=createBuiltinAnimeProviderManifests().find(item=>item.provider_id==='ragf.anime-builtin-generator');assert.ok(ragf.outputs.includes('motion-visual-quality-report'));assert.ok(ragf.motion.capabilities.includes('pixel-verified-state-coverage'));assert.ok(ragf.evidence.outputs.includes('pixel-roots'));});

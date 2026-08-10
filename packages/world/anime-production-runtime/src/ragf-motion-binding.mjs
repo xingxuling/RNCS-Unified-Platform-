@@ -1,5 +1,5 @@
 import {clone,rootHash,seal,verifySeal} from './canonical.mjs';
-import {analyzeAnimeMotionTrack,RAGF_MOTION_QUALITY_CONTRACT_FORMAT} from '../../reality-asset-genesis-fabric/src/anime-motion-quality.mjs';
+import {analyzeAnimeMotionTrack,analyzeAnimeMotionVisualFrames,RAGF_MOTION_QUALITY_CONTRACT_FORMAT} from '../../reality-asset-genesis-fabric/src/anime-motion-quality.mjs';
 
 export const RAGF_MOTION_TRACK_FORMAT='ragf.anime-motion-track.v0.1';
 export const RAGF_MOTION_TRACK_VERSION='0.1.0';
@@ -39,10 +39,12 @@ export function validateRagfMotionTrack(track){
   if(!(Number(track?.fps)>0))errors.push('RAGF_MOTION_TRACK_FPS_INVALID');
   const loopMode=track?.loop_mode??'hold',loopPeriod=Number(track?.loop_period_frames??track?.frame_count);
   if(!['cycle','hold'].includes(loopMode)||!Number.isInteger(loopPeriod)||loopPeriod<2||loopPeriod>Number(track?.frame_count??0))errors.push('RAGF_MOTION_TRACK_LOOP_CONTRACT_INVALID');
-  if(track?.quality_contract?.format!==RAGF_MOTION_QUALITY_CONTRACT_FORMAT||track?.quality_contract?.version!=='0.1.0'||!Number.isFinite(Number(track?.quality_contract?.seam_tolerance))||track?.quality_contract?.seam_policy!=='terminal-frame-equals-first-frame')errors.push('RAGF_MOTION_QUALITY_CONTRACT_INVALID');
-  const motionQuality=analyzeAnimeMotionTrack(track),motionQualityRoot=rootHash(motionQuality);
+  if(track?.quality_contract?.format!==RAGF_MOTION_QUALITY_CONTRACT_FORMAT||track?.quality_contract?.version!=='0.1.0'||!Number.isFinite(Number(track?.quality_contract?.seam_tolerance))||track?.quality_contract?.seam_policy!=='terminal-frame-equals-first-frame'||track?.quality_contract?.pixel_format!=='rgba8'||track?.quality_contract?.pixel_root_algorithm!=='sha256-rgba8-canonical'||!/^[a-f0-9]{64}$/.test(track?.quality_contract?.visual_quality_root??''))errors.push('RAGF_MOTION_QUALITY_CONTRACT_INVALID');
+  const motionQuality=analyzeAnimeMotionTrack(track),motionQualityRoot=rootHash(motionQuality),motionVisualQuality=analyzeAnimeMotionVisualFrames({frames:track?.frames,loopMode,loopPeriodFrames:loopPeriod}),motionVisualQualityRoot=rootHash(motionVisualQuality);
   if(motionQuality.status!=='pass')errors.push(loopMode==='cycle'?'RAGF_MOTION_SEAM_INVALID':'RAGF_MOTION_QUALITY_INVALID');
   if(track?.quality_contract?.quality_root&&track.quality_contract.quality_root!==motionQualityRoot)errors.push('RAGF_MOTION_QUALITY_ROOT_INVALID');
+  if(motionVisualQuality.status!=='pass')errors.push('RAGF_MOTION_VISUAL_QUALITY_INVALID');
+  if(track?.quality_contract?.visual_quality_root&&track.quality_contract.visual_quality_root!==motionVisualQualityRoot)errors.push('RAGF_MOTION_VISUAL_QUALITY_ROOT_INVALID');
   const frames=Array.isArray(track?.frames)?track.frames:[];
   if(frames.length<2||track?.frame_count!==frames.length)errors.push('RAGF_MOTION_TRACK_FRAME_COUNT_INVALID');
   const trackIds=new Set((Array.isArray(track?.tracks)?track.tracks:[]).map(item=>item?.track_id));
@@ -51,13 +53,14 @@ export function validateRagfMotionTrack(track){
   for(const [index,frame] of frames.entries()){
     if(frame?.frame_number!==index)errors.push(`RAGF_MOTION_TRACK_FRAME_ORDER:${index}`);
     if(!frame?.motion_state_root)errors.push(`RAGF_MOTION_TRACK_STATE_ROOT_MISSING:${index}`);
+    if(!frame?.pixel_root)errors.push(`RAGF_MOTION_TRACK_PIXEL_ROOT_MISSING:${index}`);
     if(!['open','blink','closed'].includes(frame?.eye_state))errors.push(`RAGF_MOTION_TRACK_EYE_STATE_INVALID:${index}`);
     const motion=frame?.secondary_motion;
     if(!motion||motion.frame!==index)errors.push(`RAGF_MOTION_TRACK_SECONDARY_FRAME_INVALID:${index}`);
     for(const layer of layers)if(!numeric(motion?.[layer]))errors.push(`RAGF_MOTION_TRACK_SECONDARY_VALUE_INVALID:${layer}:${index}`);
-    if(frame?.motion_state_root&&rootHash({frame:index,eye_state:frame.eye_state,secondary_motion:motion})!==frame.motion_state_root)errors.push(`RAGF_MOTION_TRACK_STATE_ROOT_INVALID:${index}`);
+    const stateRootInput={frame:index,eye_state:frame.eye_state,secondary_motion:motion};if(frame?.pixel_root)stateRootInput.pixel_root=frame.pixel_root;if(frame?.motion_state_root&&rootHash(stateRootInput)!==frame.motion_state_root)errors.push(`RAGF_MOTION_TRACK_STATE_ROOT_INVALID:${index}`);
   }
-  return{valid:errors.length===0,errors,motion_root:track?.motion_root??null,motion_quality_root:motionQualityRoot,seam:motionQuality.seam,frame_count:frames.length,fps:Number(track?.fps)||null};
+  return{valid:errors.length===0,errors,motion_root:track?.motion_root??null,motion_quality_root:motionQualityRoot,motion_visual_quality_root:motionVisualQualityRoot,visual_quality:motionVisualQuality,seam:motionQuality.seam,frame_count:frames.length,fps:Number(track?.fps)||null};
 }
 
 export function validateRagfMotionBinding(binding){
@@ -72,11 +75,12 @@ export function validateRagfMotionBinding(binding){
   for(const [index,item] of map.entries()){
     if(item?.target_frame!==index)errors.push(`RAGF_MOTION_BINDING_TARGET_ORDER:${index}`);
     if(!numeric(item?.source_frame)||item.source_frame<0)errors.push(`RAGF_MOTION_BINDING_SOURCE_FRAME_INVALID:${index}`);
-    if(!item?.motion_state_root||!item?.bound_motion_root)errors.push(`RAGF_MOTION_BINDING_FRAME_ROOT_MISSING:${index}`);
+    if(!item?.motion_state_root||!item?.bound_motion_root||!item?.pixel_root)errors.push(`RAGF_MOTION_BINDING_FRAME_ROOT_MISSING:${index}`);
   }
   if(binding?.authority!=='episode-derived-runtime'||binding?.creative_authority!==false)errors.push('RAGF_MOTION_BINDING_AUTHORITY_INVALID');
   if(binding?.missing_frame_policy==='loop'&&binding?.loop_mode!=='cycle')errors.push('RAGF_MOTION_BINDING_LOOP_CONTRACT_INVALID');
   if(!binding?.motion_quality_root)errors.push('RAGF_MOTION_BINDING_QUALITY_ROOT_MISSING');
+  if(!binding?.motion_visual_quality_root)errors.push('RAGF_MOTION_BINDING_VISUAL_QUALITY_ROOT_MISSING');
   return{valid:errors.length===0,errors,binding_root:binding?.binding_root??null,frame_count:map.length};
 }
 
@@ -122,7 +126,7 @@ function bindFrame(track,sourceFrame,targetFrame,directorOverrides){
   const secondaryMotion={...resolved,profile_root:track.motion_root,authority:'ragf-track-bound-rsr',motion_source:'ragf.anime-motion-track.v0.1'};
   secondaryMotion.motion_root=rootHash(secondaryMotion);
   const eyeState=sourceFrame.eye_state==='blink'||sourceFrame.eye_state==='closed'?'closed':'open';
-  const ragfState=seal({format:'rncs.ragf-motion-state.v0.1',version:'0.1.0-alpha.1',source_track_root:track.motion_root,source_frame_number:sourceFrame.frame_number,target_frame_number:targetFrame,source_time_seconds:sourceFrame.time_seconds??null,file:sourceFrame.file??null,motion_state_root:sourceFrame.motion_state_root,eye_state:sourceFrame.eye_state,secondary_motion:clone(rawMotion),bound_secondary_motion_root:secondaryMotion.motion_root,authority:'episode-derived-runtime',binding_state_root:''},'binding_state_root');
+  const ragfState=seal({format:'rncs.ragf-motion-state.v0.1',version:'0.1.0-alpha.1',source_track_root:track.motion_root,source_frame_number:sourceFrame.frame_number,target_frame_number:targetFrame,source_time_seconds:sourceFrame.time_seconds??null,file:sourceFrame.file??null,motion_state_root:sourceFrame.motion_state_root,pixel_root:sourceFrame.pixel_root??null,eye_state:sourceFrame.eye_state,secondary_motion:clone(rawMotion),bound_secondary_motion_root:secondaryMotion.motion_root,authority:'episode-derived-runtime',binding_state_root:''},'binding_state_root');
   return{eyeState,secondaryMotion,ragfState};
 }
 
@@ -135,10 +139,10 @@ export function bindRagfMotionTrackToXSheet(xsheet,track,{frame_offset=0,frameOf
   const overrides=[...(directorOverrides??director_overrides??[])].map(normalizeOverride),frames=[],frameMap=[];
   for(const frame of sheetValidation.frames){
     const {sourceIndex,sourceFrame,loopIteration}=resolveSourceFrame(track,xsheet,frame.frame_number,offset,policy),resolved=bindFrame(track,sourceFrame,frame.frame_number,overrides),next={...clone(frame),eye_state:resolved.eyeState,secondary_motion_state:resolved.secondaryMotion,ragf_motion_state:resolved.ragfState,motion_source:'ragf.anime-motion-track.v0.1'};
-    frames.push(next);frameMap.push({target_frame:frame.frame_number,source_frame:sourceIndex,source_file:sourceFrame.file??null,motion_state_root:sourceFrame.motion_state_root,bound_motion_root:resolved.secondaryMotion.motion_root,eye_state:resolved.eyeState,loop_iteration:loopIteration,binding_state_root:resolved.ragfState.binding_state_root});
+    frames.push(next);frameMap.push({target_frame:frame.frame_number,source_frame:sourceIndex,source_file:sourceFrame.file??null,motion_state_root:sourceFrame.motion_state_root,pixel_root:sourceFrame.pixel_root??null,bound_motion_root:resolved.secondaryMotion.motion_root,eye_state:resolved.eyeState,loop_iteration:loopIteration,binding_state_root:resolved.ragfState.binding_state_root});
   }
-  const motionQualityRoot=track.quality_contract?.quality_root??rootHash(analyzeAnimeMotionTrack(track)),boundXsheet=seal({...clone(xsheet),frames,ragf_motion_source:'ragf.anime-motion-track.v0.1',ragf_motion_track_root:track.motion_root,ragf_motion_binding:{format:RAGF_MOTION_XSHEET_BINDING_FORMAT,version:RAGF_MOTION_XSHEET_BINDING_VERSION,source_fps:Number(track.fps),destination_fps:Number(xsheet.fps),frame_offset:offset,missing_frame_policy:policy,loop_mode:track.loop_mode??'hold',loop_period_frames:Number(track.loop_period_frames??track.frame_count),motion_quality_root:motionQualityRoot,mapping:'floor-by-timebase',authority:'episode-derived-runtime'}},'xsheet_root');
-  const binding=seal({format:RAGF_MOTION_XSHEET_BINDING_FORMAT,version:RAGF_MOTION_XSHEET_BINDING_VERSION,cut_ref:xsheet.cut_ref,cut_id:xsheet.cut_id,original_xsheet_root:xsheet.xsheet_root,bound_xsheet_root:boundXsheet.xsheet_root,motion_root:track.motion_root,motion_quality_root:motionQualityRoot,source_fps:Number(track.fps),destination_fps:Number(xsheet.fps),frame_offset:offset,missing_frame_policy:policy,loop_mode:track.loop_mode??'hold',loop_period_frames:Number(track.loop_period_frames??track.frame_count),mapping:'floor-by-timebase',frame_count:frames.length,source_frame_count:track.frame_count,frame_map:frameMap,director_overrides:clone(overrides),continuity:{identity_root:track.identity_root,palette_root:track.palette_root,proportion_root:track.proportion_root,appearance_root:track.appearance_root,stable_identity:track.continuity?.stable_identity===true,stable_palette:track.continuity?.stable_palette===true,stable_proportions:track.continuity?.stable_proportions===true,stable_appearance:track.continuity?.stable_appearance===true},deterministic:track.deterministic===true,authority:'episode-derived-runtime',creative_authority:false,boundary:'RAGF motion is a derived runtime track with terminal seam quality; Episode remains creative authority and commercial physical simulation is not claimed'},'binding_root');
+  const motionQualityRoot=track.quality_contract?.quality_root??rootHash(analyzeAnimeMotionTrack(track)),motionVisualQualityRoot=track.quality_contract?.visual_quality_root??rootHash(analyzeAnimeMotionVisualFrames({frames:track.frames,loopMode:track.loop_mode,loopPeriodFrames:track.loop_period_frames})),boundXsheet=seal({...clone(xsheet),frames,ragf_motion_source:'ragf.anime-motion-track.v0.1',ragf_motion_track_root:track.motion_root,ragf_motion_binding:{format:RAGF_MOTION_XSHEET_BINDING_FORMAT,version:RAGF_MOTION_XSHEET_BINDING_VERSION,source_fps:Number(track.fps),destination_fps:Number(xsheet.fps),frame_offset:offset,missing_frame_policy:policy,loop_mode:track.loop_mode??'hold',loop_period_frames:Number(track.loop_period_frames??track.frame_count),motion_quality_root:motionQualityRoot,motion_visual_quality_root:motionVisualQualityRoot,mapping:'floor-by-timebase',authority:'episode-derived-runtime'}},'xsheet_root');
+  const binding=seal({format:RAGF_MOTION_XSHEET_BINDING_FORMAT,version:RAGF_MOTION_XSHEET_BINDING_VERSION,cut_ref:xsheet.cut_ref,cut_id:xsheet.cut_id,original_xsheet_root:xsheet.xsheet_root,bound_xsheet_root:boundXsheet.xsheet_root,motion_root:track.motion_root,motion_quality_root:motionQualityRoot,motion_visual_quality_root:motionVisualQualityRoot,source_fps:Number(track.fps),destination_fps:Number(xsheet.fps),frame_offset:offset,missing_frame_policy:policy,loop_mode:track.loop_mode??'hold',loop_period_frames:Number(track.loop_period_frames??track.frame_count),mapping:'floor-by-timebase',frame_count:frames.length,source_frame_count:track.frame_count,frame_map:frameMap,director_overrides:clone(overrides),continuity:{identity_root:track.identity_root,palette_root:track.palette_root,proportion_root:track.proportion_root,appearance_root:track.appearance_root,stable_identity:track.continuity?.stable_identity===true,stable_palette:track.continuity?.stable_palette===true,stable_proportions:track.continuity?.stable_proportions===true,stable_appearance:track.continuity?.stable_appearance===true},deterministic:track.deterministic===true,authority:'episode-derived-runtime',creative_authority:false,boundary:'RAGF motion is a derived runtime track with pixel-verified state coverage and terminal seam quality; Episode remains creative authority and commercial physical simulation is not claimed'},'binding_root');
   return{xsheet:boundXsheet,binding};
 }
 

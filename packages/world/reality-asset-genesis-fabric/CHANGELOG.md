@@ -6,6 +6,8 @@
 - 新增 `ragf.anime-motion-quality-contract.v0.1` 与逐通道 terminal seam 报告
 - RAGF、X-Sheet binding 和桥接 Coverage 报告记录共享 `motion_quality_root`
 - 新增破坏端点的运行时负例与 Schema/Provider 能力断言
+- 新增 RGBA8 像素根、相邻帧差异、眨眼视觉变化与循环像素端点质量门
+- `motion_visual_quality_root` 贯通 RAGF Character Family、X-Sheet binding、Provider Manifest 与三 Cut 桥接证据
 
 ## v0.7.0-alpha.1
 
