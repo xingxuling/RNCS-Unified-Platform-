@@ -75,6 +75,8 @@ RAGF回答：
 - 头发、衣物、呼吸和眨眼进入逐帧 secondary motion / facial track，并保留帧级 state root
 - `render_contract`、`media_manifest` 和质量报告记录 fps、帧数、运动根、帧根和时间变化
 - `npm run evidence:anime-quality` 同时生成 idle/resolve 的多帧媒体、运动轨道、Evidence Ledger 与 SHA-256 清单
+- motion track 新增 `loop_mode`、`loop_period_frames` 与周期时间根；内置 Provider 可在长 Cut 上按目标时间基循环覆盖，而不是把最后一帧静态保持到节目结束
+- 循环能力只延长确定性参考动作，不改变 Character Genome 身份权威，也不宣称物理头发/布料模拟或商业动画质量
 
 这是确定性的实验级二级运动参考，不等同于物理布料/头发模拟、专业动作捕捉、商业番剧质量或人工表演验收。
 

@@ -2,6 +2,9 @@
 
 ## v0.7.0-alpha.1
 
+- Anime motion contract 增加显式 cycle coverage：`loop_mode`、`loop_period_frames`、`loop_period_seconds` 与 `coverage_policy`
+- Provider Manifest 声明 loopable-motion-sequence；运行时默认使用 `loop`，legacy 轨道仍可显式使用 `hold-last`
+- RAGF/RNCS 绑定证据记录每个 Cut 的周期覆盖率、可达源帧数和 loop iterations
 - Anime Character Family Provider 升级至 v0.4，输出确定性的多帧 PNG 角色动作序列与 `motion-track.json`
 - 将头发、衣物、呼吸和眨眼绑定到逐帧状态，保留 identity、palette、proportion 和 appearance 根连续
 - 新增 motion sequence、frame roots、temporal variation 和 motion track 验证门

@@ -21,6 +21,9 @@ test('Anime Provider Manifest schema and built-in real-media declarations are se
   assert.ok(ragf.motion.capabilities.includes('secondary-motion-track'));
   assert.equal(ragf.motion.binding_contract.format,'rncs.ragf-motion-xsheet-binding.v0.1');
   assert.equal(ragf.motion.binding_contract.mapping,'floor-by-timebase');
+  assert.equal(ragf.motion.binding_contract.default_policy,'loop');
+  assert.ok(ragf.motion.binding_contract.policies.includes('loop'));
+  assert.ok(ragf.motion.capabilities.includes('loopable-motion-sequence'));
   assert.equal(manifests.some(item=>item.role==='frame-render'&&item.outputs.includes('png-frame-sequence')),true);
 });
 
