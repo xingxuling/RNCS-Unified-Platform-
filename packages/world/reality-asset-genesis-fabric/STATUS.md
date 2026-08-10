@@ -2,7 +2,7 @@
 
 - 版本：v0.7.0-alpha.1
 - 定位：现实资产生产会话、资产家族编译器与持续资产运行时
-- 自动测试：188/188通过
+- 自动测试：190/190通过
 - 三候选：balanced、mobile、cinematic真实生成并可独立接受
 - 生产就绪：技术、语义、平台、生产、几何、材质、骨骼、动画、运行时、来源十类门已实现
 - 定点再生成：Generation历史、稳定Asset ID、选择/再生/接受回执已实现
@@ -19,5 +19,6 @@
 - Anime 时间性：头发、衣物、呼吸、眨眼进入逐帧 motion track，并验证真实帧根差异与确定性回放
 - Anime 长 Cut 覆盖：内置 motion track 已声明周期与 `loop` 时间基映射，桥接报告记录源帧覆盖率和循环次数；旧轨道的 `hold-last` 仍需显式指定
 - Anime 周期质量：默认 cycle 包含闭环末帧；hair、coat、breathing、foreground 与 eye state 通过 terminal seam 质量门，并以 `motion_quality_root` 贯穿资产、绑定和桥接证据
+- Anime 视觉状态质量：每个运动帧记录 RGBA8 像素根和相邻帧差异；唯一画面根、眨眼视觉变化、循环首尾零像素差与 `motion_visual_quality_root` 已进入生成器、运行时和三 Cut 桥接门
 - 专业重拓扑、复杂UV、面部绑定、布料、动作捕捉：未实现
 - Provider级真正跳过未受影响生成步骤：仍不完整；当前提供计划与复用证据
