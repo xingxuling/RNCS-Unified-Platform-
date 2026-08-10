@@ -81,6 +81,26 @@ test('Strict frame mapping fails closed and hold-last is explicit',()=>{
   assert.equal(held.frames.at(-1).ragf_motion_state.source_frame_number,7);
 });
 
+test('Loop mapping keeps a long Cut moving and records cycle iterations',()=>{
+  const track=source().family.motion_track,sheet=buildExposureSheet(cut({duration:2,fps:24}),{ragfMotionTrack:track,ragfMotionBindingOptions:{missing_frame_policy:'loop'}}),validation=validateExposureSheet(sheet);
+  assert.equal(validation.valid,true);
+  assert.equal(sheet.ragf_motion_binding.missing_frame_policy,'loop');
+  assert.equal(sheet.ragf_motion_binding.loop_mode,'cycle');
+  assert.equal(sheet.frames[0].ragf_motion_state.source_frame_number,0);
+  assert.equal(sheet.frames[14].ragf_motion_state.source_frame_number,0);
+  assert.equal(sheet.frames[14].ragf_motion_state.binding_state_root.length,64);
+  assert.equal(sheet.frames[14].ragf_motion_state.target_frame_number,14);
+  assert.equal(sheet.frames[14].ragf_motion_state.source_track_root,track.motion_root);
+  assert.equal(sheet.frames[14].secondary_motion_state.hair,sheet.frames[0].secondary_motion_state.hair);
+  assert.equal(sheet.frames[14].secondary_motion_state.frame,14);
+  assert.equal(sheet.frames[14].secondary_motion_state.motion_source,'ragf.anime-motion-track.v0.1');
+});
+
+test('Loop policy rejects a non-loopable track instead of silently holding',()=>{
+  const generated=source(),track={...generated.family.motion_track,loop_mode:'hold'},tampered={...track,motion_root:generated.family.motion_track.motion_root};
+  assert.throws(()=>buildExposureSheet(cut({duration:1,fps:24}),{ragfMotionTrack:tampered,ragfMotionBindingOptions:{missing_frame_policy:'loop'}}),/RAGF_MOTION_TRACK_INVALID/);
+});
+
 test('Tampered RAGF track and unsupported override layer are rejected',()=>{
   const generated=source(),tampered=structuredClone(generated.family.motion_track);tampered.frames[0].secondary_motion.hair+=1;
   assert.equal(validateRagfMotionTrack(tampered).valid,false);

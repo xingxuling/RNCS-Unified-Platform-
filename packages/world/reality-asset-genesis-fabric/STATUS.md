@@ -17,5 +17,6 @@
 - Anime 内置 Provider：v0.4 状态驱动 SVG/PNG 角色媒体、多帧 PNG 序列、motion track、媒体清单、state root 与非占位质量门已实现
 - Anime 连续性：同一身份在表情、口型、视线、姿势和二级运动帧间保持 identity、palette、proportion 与 appearance roots
 - Anime 时间性：头发、衣物、呼吸、眨眼进入逐帧 motion track，并验证真实帧根差异与确定性回放
+- Anime 长 Cut 覆盖：内置 motion track 已声明周期与 `loop` 时间基映射，桥接报告记录源帧覆盖率和循环次数；旧轨道的 `hold-last` 仍需显式指定
 - 专业重拓扑、复杂UV、面部绑定、布料、动作捕捉：未实现
 - Provider级真正跳过未受影响生成步骤：仍不完整；当前提供计划与复用证据
