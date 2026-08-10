@@ -80,6 +80,15 @@ RAGF回答：
 
 这是确定性的实验级二级运动参考，不等同于物理布料/头发模拟、专业动作捕捉、商业番剧质量或人工表演验收。
 
+## 当前增量：周期 seam 质量闭合
+
+- 默认 cycle 周期包含末端闭环帧：8 帧轨道使用 8 帧周期，末帧与首帧进入同一时间基验证
+- `ragf.anime-motion-quality-contract.v0.1` 逐通道检查 hair、coat、breathing 与 foreground 的端点差值，并检查眨眼状态、轨道覆盖和确定性
+- motion track、Character Family、X-Sheet binding 与桥接报告共享 `motion_quality_root`
+- 破坏周期端点的轨道在 RAGF 生成验证和运行时绑定前失败关闭；`hold-last` 仍是显式兼容策略
+
+本增量只证明确定性参考动作的时间边界质量，不宣称物理头发/布料模拟或商业动画最终质量。
+
 ## 快速运行
 
 需要 Node.js 20 或以上，无第三方运行时依赖。

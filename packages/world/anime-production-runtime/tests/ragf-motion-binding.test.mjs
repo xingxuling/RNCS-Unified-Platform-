@@ -13,6 +13,7 @@ test('RAGF motion binding schema keeps roots, timebase and authority explicit',(
   assert.equal(schema.properties.format.const,'rncs.ragf-motion-xsheet-binding.v0.1');
   assert.ok(schema.required.includes('original_xsheet_root'));
   assert.ok(schema.required.includes('motion_root'));
+  assert.ok(schema.required.includes('motion_quality_root'));
   assert.ok(schema.required.includes('frame_map'));
   assert.equal(schema.properties.authority.const,'episode-derived-runtime');
   assert.equal(schema.properties.creative_authority.const,false);
@@ -27,6 +28,9 @@ test('RAGF motion track validation preserves sealed continuity and motion state 
   assert.equal(result.valid,true);
   assert.equal(result.frame_count,8);
   assert.equal(result.fps,12);
+  assert.equal(track.loop_period_frames,8);
+  assert.equal(result.seam.valid,true);
+  assert.equal(result.motion_quality_root,track.quality_contract.quality_root);
   assert.equal(track.continuity.stable_identity,true);
   assert.equal(track.frames[3].eye_state,'blink');
 });
@@ -86,14 +90,17 @@ test('Loop mapping keeps a long Cut moving and records cycle iterations',()=>{
   assert.equal(validation.valid,true);
   assert.equal(sheet.ragf_motion_binding.missing_frame_policy,'loop');
   assert.equal(sheet.ragf_motion_binding.loop_mode,'cycle');
+  assert.equal(sheet.ragf_motion_binding.loop_period_frames,8);
+  assert.equal(sheet.ragf_motion_binding.motion_quality_root,track.quality_contract.quality_root);
   assert.equal(sheet.frames[0].ragf_motion_state.source_frame_number,0);
-  assert.equal(sheet.frames[14].ragf_motion_state.source_frame_number,0);
-  assert.equal(sheet.frames[14].ragf_motion_state.binding_state_root.length,64);
-  assert.equal(sheet.frames[14].ragf_motion_state.target_frame_number,14);
-  assert.equal(sheet.frames[14].ragf_motion_state.source_track_root,track.motion_root);
-  assert.equal(sheet.frames[14].secondary_motion_state.hair,sheet.frames[0].secondary_motion_state.hair);
-  assert.equal(sheet.frames[14].secondary_motion_state.frame,14);
-  assert.equal(sheet.frames[14].secondary_motion_state.motion_source,'ragf.anime-motion-track.v0.1');
+  assert.equal(sheet.frames[15].ragf_motion_state.source_frame_number,7);
+  assert.equal(sheet.frames[16].ragf_motion_state.source_frame_number,0);
+  assert.equal(sheet.frames[16].ragf_motion_state.binding_state_root.length,64);
+  assert.equal(sheet.frames[16].ragf_motion_state.target_frame_number,16);
+  assert.equal(sheet.frames[16].ragf_motion_state.source_track_root,track.motion_root);
+  assert.equal(sheet.frames[16].secondary_motion_state.hair,sheet.frames[0].secondary_motion_state.hair);
+  assert.equal(sheet.frames[16].secondary_motion_state.frame,16);
+  assert.equal(sheet.frames[16].secondary_motion_state.motion_source,'ragf.anime-motion-track.v0.1');
 });
 
 test('Loop policy rejects a non-loopable track instead of silently holding',()=>{
@@ -107,4 +114,13 @@ test('Tampered RAGF track and unsupported override layer are rejected',()=>{
   assert.throws(()=>buildExposureSheet(cut(),{ragfMotionTrack:tampered}),/RAGF_MOTION_TRACK_INVALID/);
   const track=generated.family.motion_track,base=buildExposureSheet(cut());
   assert.throws(()=>bindRagfMotionTrackToXSheet(base,track,{director_overrides:[{layer:'face',start_frame:0,end_frame:1,amplitude:1,reason:'invalid'}]}),/RAGF_MOTION_OVERRIDE_LAYER_UNSUPPORTED/);
+});
+
+test('RAGF runtime rejects a re-sealed cycle with a broken terminal seam',()=>{
+  const generated=source(),tampered=structuredClone(generated.family.motion_track);
+  tampered.frames[7].secondary_motion.hair+=.5;
+  const result=validateRagfMotionTrack(tampered);
+  assert.equal(result.valid,false);
+  assert.ok(result.errors.includes('RAGF_MOTION_SEAM_INVALID'));
+  assert.throws(()=>buildExposureSheet(cut({duration:2,fps:24}),{ragfMotionTrack:tampered,ragfMotionBindingOptions:{missing_frame_policy:'loop'}}),/RAGF_MOTION_TRACK_INVALID/);
 });

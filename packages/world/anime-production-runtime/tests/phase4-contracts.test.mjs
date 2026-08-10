@@ -24,6 +24,9 @@ test('Anime Provider Manifest schema and built-in real-media declarations are se
   assert.equal(ragf.motion.binding_contract.default_policy,'loop');
   assert.ok(ragf.motion.binding_contract.policies.includes('loop'));
   assert.ok(ragf.motion.capabilities.includes('loopable-motion-sequence'));
+  assert.ok(ragf.motion.capabilities.includes('seam-continuity-quality'));
+  assert.ok(ragf.outputs.includes('motion-seam-quality-report'));
+  assert.ok(ragf.evidence.outputs.includes('seam-quality'));
   assert.equal(manifests.some(item=>item.role==='frame-render'&&item.outputs.includes('png-frame-sequence')),true);
 });
 
