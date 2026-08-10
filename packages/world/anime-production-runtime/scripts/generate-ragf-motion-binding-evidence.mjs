@@ -1,0 +1,55 @@
+import {createHash} from 'node:crypto';
+import {mkdir,readdir,readFile,writeFile} from 'node:fs/promises';
+import {dirname,join,relative,resolve} from 'node:path';
+import {generateAnimeCharacterFamily,validateAnimeCharacterFamily} from '../../reality-asset-genesis-fabric/src/index.mjs';
+import {buildExposureSheet,buildProductionExposureSheets,createAnimeProduction,createBuiltinAnimeProviderManifests,bindRagfMotionTrackToXSheet,replayProduction,replayRagfMotionBinding,renderProduction,rootHash,seal,validateAnimeProduction,validateExposureSheet,validateProductionExposureSheets,validateRagfMotionBinding,validateRagfMotionTrack} from '../src/index.mjs';
+
+const DEFAULT_OUT='tmp/ragf-motion-binding-evidence-v0.1';
+const option=name=>{const index=process.argv.indexOf(name);return index>=0?process.argv[index+1]:null};
+const outputDirectory=resolve(process.cwd(),option('--out')??DEFAULT_OUT);
+const writeJson=async(file,value)=>{await mkdir(dirname(file),{recursive:true});await writeFile(file,`${JSON.stringify(value,null,2)}\n`,'utf8')};
+const sha256=content=>createHash('sha256').update(content).digest('hex');
+
+async function writeRagfFiles(directory,result){
+  const artifacts=[];
+  for(const [name,file] of Object.entries(result.files)){
+    const target=join(directory,name),content=file.encoding==='base64'?Buffer.from(file.content,'base64'):Buffer.from(file.content,'utf8');
+    await mkdir(dirname(target),{recursive:true});await writeFile(target,content);artifacts.push({path:relative(outputDirectory,target).replaceAll('\\','/'),mime:file.mime,bytes:content.length,sha256:sha256(content)});
+  }
+  const familyPath=join(directory,'family.json'),familyContent=Buffer.from(`${JSON.stringify(result.family,null,2)}\n`,'utf8');await writeFile(familyPath,familyContent);artifacts.push({path:relative(outputDirectory,familyPath).replaceAll('\\','/'),mime:'application/json',bytes:familyContent.length,sha256:sha256(familyContent)});
+  return artifacts;
+}
+
+async function filesUnder(directory){
+  const output=[];
+  async function visit(current){for(const entry of await readdir(current,{withFileTypes:true})){const target=join(current,entry.name);if(entry.isDirectory())await visit(target);else output.push(target)}}
+  await visit(directory);return output.sort((a,b)=>relative(directory,a).localeCompare(relative(directory,b)));
+}
+
+const familyResult=generateAnimeCharacterFamily({assetId:'character:ragf-xsheet-binding',name:'蓝天临',seed:'ragf-xsheet-binding-v0.1',motion:{fps:12,frame_count:8,blink_frames:[3,6]},state:{expression:'resolve',pose:'raise',mouth_shape:'o',eye_state:'open',gaze_x:.35,gaze_y:-.1}});
+const family=familyResult.family,track=family.motion_track,actor={layer_id:'character:ragf-xsheet-binding',actor_id:'binding',asset_id:family.identity.asset_id,character_id:family.identity.character_id,family_root:family.family_root,asset_root:family.asset_root,genome_root:family.genome_root,identity_root:family.identity_root,identity_signature_root:family.identity_signature?.signature_root??null,palette_root:family.palette_root,proportion_root:family.proportion_root,appearance_root:family.continuity_bundle.appearance_root,palette:family.palette,proportions:family.proportions,appearance:family.appearance,face_features:family.face_features};
+const cutTemplate=(cutId,layout)=>({episode_id:'EP01',scene_id:'court',cut_id:cutId,duration:2/3,fps:24,resolution:{width:320,height:180},mode:'native-2d',layout,background_layers:[{layer_id:'background:court',asset_id:'background:court'}],character_layers:[actor],key_pose_track:[{frame:0,pose_id:'hold'}],animation:{exposure:'on_ones',hair_secondary:'subtle',coat_secondary:'subtle'},transition:{type:'hard-cut',duration_frames:0}});
+const production=createAnimeProduction({series:'神临者言律',episode:'EP01',scene:'无名城审判',cuts:[cutTemplate('S01','wide_establishing'),cutTemplate('S02','medium'),cutTemplate('S03','close_up')],asset_bindings:{character:{binding:actor}},provider_bindings:{asset:'ragf.anime-builtin-generator'}});
+const ragfMotionTracks=Object.fromEntries(production.cuts.map(cut=>[cut.cut_ref,track]));
+const directorOverride={override_id:'motion:hair:4:10',layer:'hair',start_frame:4,end_frame:10,amplitude:4,frequency:.2,phase:0,reason:'binding-evidence-director-timing',authority:'director'};
+const ragfMotionBindingOptions={director_overrides:[directorOverride]};
+
+const productionValidation=validateAnimeProduction(production),familyValidation=validateAnimeCharacterFamily(family),trackValidation=validateRagfMotionTrack(track),xsheets=buildProductionExposureSheets(production,{ragfMotionTracks,ragfMotionBindingOptions}),xsheetsValidation=validateProductionExposureSheets(xsheets),baseSheet=buildExposureSheet(production.cuts[0]),bound=bindRagfMotionTrackToXSheet(baseSheet,track,ragfMotionBindingOptions),bindingValidation=validateRagfMotionBinding(bound.binding),bindingReplay=replayRagfMotionBinding(baseSheet,track,bound.binding);
+if(!productionValidation.valid||!familyValidation.valid||!trackValidation.valid||!xsheetsValidation.valid||!bindingValidation.valid||!bindingReplay.valid)throw new Error('RAGF_MOTION_BINDING_EVIDENCE_INPUT_INVALID');
+
+await mkdir(outputDirectory,{recursive:true});
+const ragfArtifacts=await writeRagfFiles(join(outputDirectory,'ragf'),familyResult);
+const rendered=renderProduction(production,{outDir:outputDirectory,quality:'preview',width:320,height:180,ragfMotionTracks,ragfMotionBindingOptions});
+const renderedXSheets=JSON.parse(await readFile(join(outputDirectory,'xsheets.json'),'utf8'));
+if(renderedXSheets.sheets.some(item=>item.xsheet.ragf_motion_track_root!==track.motion_root))throw new Error('RAGF_MOTION_RENDER_XSHEET_NOT_BOUND');
+const productionReplay=replayProduction(production,rendered.manifest,{quality:'preview',ragfMotionTracks,ragfMotionBindingOptions});
+const frameFiles=await filesUnder(join(outputDirectory,'frames')),frameBytes=await Promise.all(frameFiles.map(file=>readFile(file))),pngFrames=frameBytes.filter(content=>content.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10]))),uniqueRenderRoots=new Set(rendered.manifest.frames.map(frame=>frame.render_output_root));
+const stableReport={format:'rncs.ragf-motion-binding-render-report.v0.1',version:'0.1.0',production_root:production.production_root,timeline_root:production.editorial_timeline.timeline_root,xsheets_root:xsheets.xsheets_root,binding_root:bound.binding.binding_root,bound_xsheet_root:bound.xsheet.xsheet_root,rendered_frame_count:rendered.manifest.rendered_frame_count,expected_frame_count:rendered.manifest.expected_frame_count,sequence_root:rendered.manifest.sequence_root,production_replay:productionReplay,backend:'deterministic-native-2d-layered',deterministic:true,boundary:'experimental built-in layered Anime raster evidence; commercial animation quality and external GPU parity are not proven'};
+await writeJson(join(outputDirectory,'render-report.json'),stableReport);
+for(const item of rendered.cut_results)await writeJson(join(outputDirectory,item.out_dir,'render-report.json'),{format:'rncs.ragf-motion-binding-cut-render-report.v0.1',version:'0.1.0',cut_ref:item.cut_ref,manifest_root:rootHash(item.manifest),ledger_root:item.ledger.ledger_root,rendered_frame_count:item.manifest.rendered_frame_count,expected_frame_count:item.manifest.expected_frame_count,deterministic:true});
+const providerManifest=createBuiltinAnimeProviderManifests().find(item=>item.provider_id==='ragf.anime-builtin-generator');
+const evidence=seal({format:'rncs.ragf-motion-binding-evidence.v0.1',version:'0.1.0',status:'CANDIDATE',evidence_class:'EXECUTABLE_EVIDENCE',human_review:'REQUIRED',authority:'RNCS',production:{production_root:production.production_root,timeline_root:production.editorial_timeline.timeline_root,cut_count:production.cuts.length,cut_refs:production.cuts.map(cut=>cut.cut_ref),frame_count:rendered.manifest.rendered_frame_count,expected_frame_count:rendered.manifest.expected_frame_count},provider:{provider_id:providerManifest.provider_id,provider_version:providerManifest.provider_version,manifest_root:providerManifest.manifest_root,receipt_root:family.provider_receipt.receipt_root,mode:'builtin-deterministic',real_media:true,media_types:providerManifest.media.media_types},validation:{production:productionValidation,family:familyValidation,motion_track:trackValidation,xsheets:xsheetsValidation,binding:bindingValidation,production_replay:productionReplay,binding_replay:bindingReplay},binding:{binding_root:bound.binding.binding_root,bound_xsheet_root:bound.xsheet.xsheet_root,motion_root:track.motion_root,source_fps:track.fps,destination_fps:baseSheet.fps,frame_map_count:bound.binding.frame_map.length,director_override_ids:bound.binding.director_overrides.map(item=>item.override_id),continuity:bound.binding.continuity},media:{rendered_frame_directory:'frames',rendered_frame_count:rendered.manifest.rendered_frame_count,unique_render_output_roots:uniqueRenderRoots.size,png_frame_count:pngFrames.length,placeholder_frame:false,ragf_media_directory:'ragf',motion_sequence:'ragf/motion/frame-####.png'},roots:{sequence_root:rendered.manifest.sequence_root,xsheets_root:xsheets.xsheets_root,evidence_frame_roots:rendered.manifest.frames.map(frame=>frame.evidence_root)},gates:{real_ragf_media:'pass',ragf_track_validation:'pass',xsheet_binding:'pass',director_override:'pass',production_replay:productionReplay.valid?'pass':'fail',mp4:'not-run-in-this-slice'},boundaries:{episode_authority_preserved:true,cut_is_derived:true,commercial_anime_quality_proven:false,physical_hair_or_cloth_simulation_proven:false,human_visual_acceptance_required:true},reproduction:{command:'npm run evidence:ragf-motion-binding --workspace @taowind/anime-production-runtime -- --out tmp/ragf-motion-binding-evidence-v0.1'},artifacts:{ragf_artifacts:ragfArtifacts.length,rendered_frames:rendered.manifest.rendered_frame_count},evidence_root:''},'evidence_root');
+await writeJson(join(outputDirectory,'motion-binding.json'),bound.binding);
+await writeJson(join(outputDirectory,'evidence-ledger.json'),evidence);
+const allFiles=(await filesUnder(outputDirectory)).filter(file=>!file.endsWith('sha256-manifest.json')),manifestFiles=[];for(const file of allFiles){const content=await readFile(file);manifestFiles.push({path:relative(outputDirectory,file).replaceAll('\\','/'),bytes:content.length,sha256:sha256(content)})}manifestFiles.sort((a,b)=>a.path.localeCompare(b.path));await writeJson(join(outputDirectory,'sha256-manifest.json'),{format:'rncs.ragf-motion-binding-sha256-manifest.v0.1',files:manifestFiles,manifest_root:rootHash(manifestFiles)});
+console.log(JSON.stringify({output:relative(process.cwd(),outputDirectory),evidence_root:evidence.evidence_root,binding_root:bound.binding.binding_root,bound_xsheet_root:bound.xsheet.xsheet_root,production_root:production.production_root,frames:rendered.manifest.rendered_frame_count,cuts:production.cuts.length,png_frames:pngFrames.length,unique_render_output_roots:uniqueRenderRoots.size,production_replay:productionReplay.valid,artifacts:manifestFiles.length},null,2));

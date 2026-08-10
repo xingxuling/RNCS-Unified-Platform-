@@ -19,6 +19,8 @@ test('Anime Provider Manifest schema and built-in real-media declarations are se
   assert.ok(ragf.outputs.includes('motion-track.json'));
   assert.ok(ragf.media.media_types.includes('image/png-sequence'));
   assert.ok(ragf.motion.capabilities.includes('secondary-motion-track'));
+  assert.equal(ragf.motion.binding_contract.format,'rncs.ragf-motion-xsheet-binding.v0.1');
+  assert.equal(ragf.motion.binding_contract.mapping,'floor-by-timebase');
   assert.equal(manifests.some(item=>item.role==='frame-render'&&item.outputs.includes('png-frame-sequence')),true);
 });
 

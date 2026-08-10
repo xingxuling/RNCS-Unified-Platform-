@@ -4,6 +4,7 @@ import {ANIME_PRODUCTION_XSHEETS_FORMAT,canonicalCutRef,listProductionCuts} from
 import {resolveCompositionFrame} from './composition.mjs';
 import {createAnimeRenderingProfile,resolveAnimeCamera} from '../../visual-state-runtime/src/anime-profile.mjs';
 import {createAnimeSecondaryMotionProfile,resolveAnimeSecondaryMotion} from '../../reality-simulation-runtime/src/anime-motion.mjs';
+import {bindRagfMotionTrackToXSheet} from './ragf-motion-binding.mjs';
 
 const exposureSteps={on_ones:1,on_twos:2,on_threes:3,hold:Infinity,stepped:2};
 const pad=n=>String(n).padStart(2,'0');
@@ -18,7 +19,7 @@ function mouthState(cut,frame){const active=activeRange(cut.mouth_track,frame).a
 function eyeState(cut,frame){const blink=activeRange(cut.blink_track,frame).at(-1);return blink?'closed':(atOrBefore(cut.facial_track,frame)?.eye_state??'open')}
 function dialogueState(cut,frame){const active=activeRange(cut.dialogue_track,frame).at(-1);return active?{dialogue_event_id:active.dialogue_event_id,text:active.text,active:true}:null}
 
-export function buildExposureSheet(input,{motionProfile=null,renderProfile=null,compositionContract=null}={}){
+export function buildExposureSheet(input,{motionProfile=null,renderProfile=null,compositionContract=null,ragfMotionTrack=null,ragfMotionBindingOptions=null}={}){
   const cut=normalizeCut(input),frameCount=Math.round(cut.duration*cut.fps),step=exposureSteps[cut.animation.exposure]??2,frames=[];
   motionProfile=motionProfile?.format?motionProfile:createAnimeSecondaryMotionProfile({hair:cut.animation.hair_secondary,coat:cut.animation.coat_secondary});
   renderProfile=renderProfile?.format?renderProfile:createAnimeRenderingProfile({fps:cut.fps,resolution:cut.resolution});
@@ -32,11 +33,12 @@ export function buildExposureSheet(input,{motionProfile=null,renderProfile=null,
     frames.push({frame_number:frame,timecode:timecode(frame,cut.fps),drawing_id:drawingPose?`${cut.cut_id}:drawing:${drawingPose.pose_id??drawingPose.pose??'hold'}:${drawingFrame}`:`${cut.cut_id}:drawing:hold:0`,key_pose_id:drawingPose?.pose_id??drawingPose?.pose??null,exposure_count:step===Infinity?Math.max(1,frame-(frames.at(-1)?.frame_number??frame)+1):step,layer_id:layerId,camera_state:camera,mouth_shape:mouthState(cut,frame),eye_state:eyeState(cut,frame),effect_state:{smear:Boolean(smear),impact:Boolean(impact),active:clone(activeRange(cut.effect_track,frame))},dialogue_state:dialogueState(cut,frame),secondary_motion_state:secondaryMotion,composition_state:composition,sound_cues:[...activeRange(cut.ambience_track,frame),...activeRange(cut.foley_track,frame),...activeRange(cut.sfx_track,frame)].map(item=>item.cue_id??item.sound??item.kind).filter(Boolean),composite_cues:clone(activeRange(cut.composite_track,frame)),animation_policy:{exposure:cut.animation.exposure,interpolation:'stepped',camera_only_motion:!pose,partial_animation:true}});
   }
   const result={format:ANIME_XSHEET_FORMAT,version:'0.1.0-alpha.1',cut_ref:canonicalCutRef(cut),cut_id:cut.cut_id,duration:cut.duration,fps:cut.fps,frame_count:frames.length,exposure_policy:clone(cut.animation),frames,finite_animation:{uses_exposure_steps:true,interpolation:'stepped',no_implicit_smoothing:true}};
-  return seal(result,'xsheet_root');
+  const xsheet=seal(result,'xsheet_root');
+  return ragfMotionTrack?bindRagfMotionTrackToXSheet(xsheet,ragfMotionTrack,ragfMotionBindingOptions??{}).xsheet:xsheet;
 }
 
-export function buildProductionExposureSheets(production){
-  const sheets=listProductionCuts(production).map(cut=>{const cutRef=canonicalCutRef(cut);return{cut_ref:cutRef,xsheet:buildExposureSheet(cut,{motionProfile:production.motion_profiles?.[cutRef],renderProfile:production.rendering_profiles?.[cutRef],compositionContract:production.composition_contract})}});
+export function buildProductionExposureSheets(production,{ragfMotionTracks=production.ragf_motion_tracks??null,ragfMotionBindingOptions=production.ragf_motion_binding_options??null}={}){
+  const sheets=listProductionCuts(production).map(cut=>{const cutRef=canonicalCutRef(cut);return{cut_ref:cutRef,xsheet:buildExposureSheet(cut,{motionProfile:production.motion_profiles?.[cutRef],renderProfile:production.rendering_profiles?.[cutRef],compositionContract:production.composition_contract,ragfMotionTrack:ragfMotionTracks?.[cutRef]??null,ragfMotionBindingOptions:ragfMotionBindingOptions?.[cutRef]??ragfMotionBindingOptions})}});
   return seal({format:ANIME_PRODUCTION_XSHEETS_FORMAT,version:'0.1.0-alpha.1',production_id:production.production_id,production_root:production.production_root,timeline_root:production.editorial_timeline?.timeline_root??null,cut_count:sheets.length,total_frame_count:sheets.reduce((sum,item)=>sum+item.xsheet.frame_count,0),sheets},'xsheets_root');
 }
 
@@ -51,5 +53,5 @@ export function validateProductionExposureSheets(collection){
 }
 
 export function validateExposureSheet(sheet){
-  const errors=[];if(sheet?.format!==ANIME_XSHEET_FORMAT)errors.push('XSHEET_FORMAT_INVALID');if(sheet?.frame_count!==sheet?.frames?.length)errors.push('XSHEET_FRAME_COUNT_MISMATCH');for(const [index,frame] of (sheet?.frames??[]).entries()){if(frame.frame_number!==index)errors.push(`XSHEET_FRAME_ORDER:${index}`);if(!frame.drawing_id)errors.push(`XSHEET_DRAWING_MISSING:${index}`);if(frame.animation_policy?.interpolation!=='stepped')errors.push(`XSHEET_IMPLICIT_INTERPOLATION:${index}`);if(frame.secondary_motion_state?.frame!==index||!frame.secondary_motion_state?.motion_root)errors.push(`XSHEET_MOTION_ALIGNMENT:${index}`);if(frame.composition_state?.frame!==index||!frame.composition_state?.composition_state_root)errors.push(`XSHEET_COMPOSITION_ALIGNMENT:${index}`);if(frame.camera_state?.frame!==index)errors.push(`XSHEET_CAMERA_ALIGNMENT:${index}`)}return{valid:errors.length===0,errors,xsheet_root:sheet?.xsheet_root??null};
+  const errors=[];if(sheet?.format!==ANIME_XSHEET_FORMAT)errors.push('XSHEET_FORMAT_INVALID');if(sheet?.frame_count!==sheet?.frames?.length)errors.push('XSHEET_FRAME_COUNT_MISMATCH');for(const [index,frame] of (sheet?.frames??[]).entries()){if(frame.frame_number!==index)errors.push(`XSHEET_FRAME_ORDER:${index}`);if(!frame.drawing_id)errors.push(`XSHEET_DRAWING_MISSING:${index}`);if(frame.animation_policy?.interpolation!=='stepped')errors.push(`XSHEET_IMPLICIT_INTERPOLATION:${index}`);if(frame.secondary_motion_state?.frame!==index||!frame.secondary_motion_state?.motion_root)errors.push(`XSHEET_MOTION_ALIGNMENT:${index}`);if(frame.composition_state?.frame!==index||!frame.composition_state?.composition_state_root)errors.push(`XSHEET_COMPOSITION_ALIGNMENT:${index}`);if(frame.camera_state?.frame!==index)errors.push(`XSHEET_CAMERA_ALIGNMENT:${index}`);if(sheet?.ragf_motion_track_root&&(frame.ragf_motion_state?.source_track_root!==sheet.ragf_motion_track_root||frame.motion_source!=='ragf.anime-motion-track.v0.1'))errors.push(`XSHEET_RAGF_MOTION_ALIGNMENT:${index}`)}return{valid:errors.length===0,errors,xsheet_root:sheet?.xsheet_root??null};
 }

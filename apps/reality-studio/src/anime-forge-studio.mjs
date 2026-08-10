@@ -9,6 +9,7 @@ import {validateGeometricTruthMeasurements} from '../../../packages/world/native
 import {validateMorphologyCertificateV2} from '../../../packages/world/native-character-morphogenesis-runtime/src/morphology-certificate-v2.mjs';
 
 const writeJson=(file,value)=>{fs.mkdirSync(path.dirname(file),{recursive:true});fs.writeFileSync(file,JSON.stringify(value,null,2))};
+const writeMediaFile=(directory,fileName,file)=>{const target=path.join(directory,fileName);fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,file.encoding==='base64'?Buffer.from(file.content,'base64'):Buffer.from(file.content,'utf8'))};
 const readJson=file=>JSON.parse(fs.readFileSync(file,'utf8'));
 const readOptionalJson=file=>{try{return fs.existsSync(file)?readJson(file):null}catch{return null}};
 const repoRoot=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../../..');
@@ -36,7 +37,7 @@ function writeCompiledArtifacts(outDir,source,compiled){
   fs.writeFileSync(path.join(outDir,'shadow.rcl'),compiled.shadow_rcl);
   for(const [familyName,family] of assetFamilyEntries(compiled.asset_families)){
     const familyDir=path.join(outDir,'assets',safeSegment(familyName));fs.mkdirSync(familyDir,{recursive:true});
-    for(const [fileName,file] of Object.entries(family.files??{}))fs.writeFileSync(path.join(familyDir,fileName),file.content);
+    for(const [fileName,file] of Object.entries(family.files??{}))writeMediaFile(familyDir,fileName,file);
     writeJson(path.join(familyDir,'family.json'),family.family);
   }
   writeJson(path.join(outDir,'compile-report.json'),{
