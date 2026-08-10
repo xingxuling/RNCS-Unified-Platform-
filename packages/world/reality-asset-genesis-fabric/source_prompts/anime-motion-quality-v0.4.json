@@ -1,0 +1,8 @@
+{
+  "format": "ragf.anime-motion-source-contract.v0.1",
+  "asset_family": "ragf.anime-character-family.v0.1",
+  "prompt": "Use one canonical Character Genome to produce a readable Anime character with deterministic secondary motion. Preserve identity, palette, proportions, hair family and costume family across every frame.",
+  "motion_channels": ["hair", "coat", "breathing", "blink"],
+  "must_preserve": ["identity_root", "palette_root", "proportion_root", "appearance_root", "frame_order", "frame_roots"],
+  "negative": ["single-frame-only", "repeated-identical-frames", "unbound-motion-values", "placeholder-frame", "commercial-quality-claim"]
+}

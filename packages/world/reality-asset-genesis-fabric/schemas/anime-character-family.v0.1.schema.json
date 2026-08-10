@@ -6,11 +6,12 @@
   "required": ["format", "version", "identity", "asset_root", "identity_root", "palette_root", "proportion_root", "render_contract", "media_manifest", "quality", "provider_receipt", "family_root"],
   "properties": {
     "format": {"const": "ragf.anime-character-family.v0.1"},
-    "version": {"const": "0.3.0-alpha.1"},
+    "version": {"const": "0.4.0-alpha.1"},
     "identity": {"type": "object", "required": ["asset_id", "name", "seed"]},
-    "render_contract": {"type": "object", "required": ["canvas", "primary_media", "raster_media", "state_fields", "deterministic"]},
-    "media_manifest": {"type": "object", "required": ["primary_vector", "primary_raster", "views", "state_root"]},
-    "quality": {"type": "object", "required": ["valid", "meaningful_character", "flat_test_card", "rendered_media", "continuity_score"]},
+    "render_contract": {"type": "object", "required": ["canvas", "primary_media", "raster_media", "state_fields", "deterministic", "frame_rate", "frame_count", "motion_track", "motion_sequence_pattern"]},
+    "media_manifest": {"type": "object", "required": ["primary_vector", "primary_raster", "views", "state_root", "motion_root", "motion_sequence"]},
+    "motion_track": {"type": "object", "required": ["format", "version", "fps", "frame_count", "tracks", "frames", "motion_root"]},
+    "quality": {"type": "object", "required": ["valid", "meaningful_character", "flat_test_card", "rendered_media", "continuity_score", "temporal"]},
     "provider_receipt": {"type": "object", "required": ["provider_id", "provider_version", "real_media", "media_types", "receipt_root"]},
     "family_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
   },
