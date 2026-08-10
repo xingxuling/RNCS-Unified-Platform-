@@ -16,7 +16,14 @@
     "required_pbr_maps": ["base-color", "normal", "occlusion-roughness-metallic", "emissive"],
     "required_collision_fixtures": ["body", "torso", "weapon-reach", "head"],
     "lod_levels": 3,
-    "geometry_palette_independent": true
+    "geometry_palette_independent": true,
+    "anime_character": {
+      "required_media": ["front-view.svg", "front-view.png", "side-view.svg", "back-view.svg"],
+      "required_state_fields": ["expression", "pose", "mouth_shape", "eye_state", "gaze_x", "gaze_y"],
+      "required_continuity_roots": ["identity_root", "palette_root", "proportion_root", "appearance_root"],
+      "non_placeholder_raster": true,
+      "commercial_quality_proven": false
+    }
   },
   "authority": {
     "identity": "genome.identity.asset_id",

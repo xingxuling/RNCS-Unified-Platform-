@@ -55,6 +55,19 @@ RAGF回答：
 - Reality Studio v1.4资产家族导入操作
 - 自动测试扩展至146项
 
+## v0.6 新增：原生 Anime 角色媒体质量
+
+- `ragf.anime-builtin-generator` 升级到 v0.3
+- 同一 Character Genome 生成 SVG 模型视图和真实 RGBA PNG 角色媒体
+- 表情、口型、眼睛状态、视线和姿势进入可见状态输入，并生成独立 `state_root`
+- identity、palette、proportion、appearance roots 在状态变化间保持连续
+- 新增 `render_contract`、`media_manifest`、PNG byte length、media roots 和非占位质量门
+- Provider Manifest 真实声明 `image/svg+xml` 与 `image/png`
+- `npm run evidence:anime-quality` 可重复生成 idle/resolve 两个状态、真实 PNG/SVG、Evidence Ledger 与 SHA-256 清单
+- 当前包测试：184/184 通过；证据输出默认为 `packages/world/reality-asset-genesis-fabric/tmp/ragf-anime-quality-evidence-v0.3`
+
+这仍是确定性的实验级参考媒体。它不等同于商业番剧原画、专业 DCC、面部绑定、布料/头发模拟或人工审美验收。
+
 ## 快速运行
 
 需要 Node.js 20 或以上，无第三方运行时依赖。

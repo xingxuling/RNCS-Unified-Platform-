@@ -1,6 +1,6 @@
 {
   "name": "@taowind/reality-asset-genesis-fabric",
-  "version": "0.5.0-alpha.1",
+  "version": "0.6.0-alpha.1",
   "type": "module",
   "description": "Reality-native production and society genesis fabric: deterministic 2D/3D assets, social ecology seeds, historical simulation, technology concept emergence, engineering pathways, player branches and Studio acceptance without LLM dependency.",
   "license": "Apache-2.0",
@@ -14,14 +14,18 @@
     "src",
     "schemas",
     "examples",
+    "scripts",
     "docs",
+    "art_bible",
+    "source_prompts",
     "web",
     "README.md",
     "LICENSE",
     "CHANGELOG.md",
     "STATUS.md",
     "RELEASE_NOTES_v0.4.0-alpha.1.md",
-    "RELEASE_NOTES_v0.5.0-alpha.1.md"
+    "RELEASE_NOTES_v0.5.0-alpha.1.md",
+    "RELEASE_NOTES_v0.6.0-alpha.1.md"
   ],
   "scripts": {
     "test": "node --test --test-concurrency=1 tests/*.test.mjs",
@@ -35,7 +39,8 @@
     "production-demo": "node src/cli.mjs production-demo --intent examples/ice-swordswoman-3d.intent.json --out outputs/production-demo",
     "verify:v04": "npm test && npm run production-demo && npm run audit:release",
     "demo:society": "node src/cli.mjs generate-society --intent examples/ai-society-ecosystem.intent.json --out outputs/ai-society-ecosystem",
-    "verify:society": "node src/cli.mjs verify-society --workspace outputs/ai-society-ecosystem/workspace.json --files"
+    "verify:society": "node src/cli.mjs verify-society --workspace outputs/ai-society-ecosystem/workspace.json --files",
+    "evidence:anime-quality": "node scripts/generate-anime-quality-evidence.mjs"
   },
   "engines": {
     "node": ">=20"

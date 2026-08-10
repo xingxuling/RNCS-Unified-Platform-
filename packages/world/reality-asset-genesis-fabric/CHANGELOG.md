@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.6.0-alpha.1
+
+- 升级内置 Anime Character Family Provider 至 v0.3
+- 同一 Character Genome 生成具备身份、比例、面部、发型、服装和状态绑定的角色 SVG 与真实 PNG 媒体
+- 新增 state root、render contract、PNG media manifest 和非占位媒体质量门
+- 表情、口型、眨眼、视线与姿势状态进入可见角色画面，并保持跨状态身份、配色和比例根连续
+- Anime Provider Manifest 声明 image/png 输出与 state-driven raster 能力
+- 修正 stdio 外部 Provider 测试对当前工作目录的隐式依赖
+
 ## v0.4.0-alpha.1
 
 - 新增AssetProductionSession与生产会话HTTP API
