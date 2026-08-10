@@ -7,5 +7,6 @@ export * from './contracts.mjs';
 export * from './editorial.mjs';
 export * from './xsheet.mjs';
 export * from './ragf-motion-binding.mjs';
+export * from '../../reality-asset-genesis-fabric/src/anime-motion-quality.mjs';
 export * from './renderer.mjs';
 export * from './visual-quality.mjs';

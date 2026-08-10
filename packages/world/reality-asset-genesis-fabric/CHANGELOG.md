@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- 修正默认 cycle 周期端点：周期包含末端闭环帧，避免长 Cut 在源帧边界跳变
+- 新增 `ragf.anime-motion-quality-contract.v0.1` 与逐通道 terminal seam 报告
+- RAGF、X-Sheet binding 和桥接 Coverage 报告记录共享 `motion_quality_root`
+- 新增破坏端点的运行时负例与 Schema/Provider 能力断言
+
 ## v0.7.0-alpha.1
 
 - Anime motion contract 增加显式 cycle coverage：`loop_mode`、`loop_period_frames`、`loop_period_seconds` 与 `coverage_policy`

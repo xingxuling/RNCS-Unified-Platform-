@@ -11,6 +11,7 @@ export * from './gltf.mjs';
 export * from './png.mjs';
 export * from './generators/index.mjs';
 export * from './lineage.mjs';
+export * from './anime-motion-quality.mjs';
 
 export * from './production-session.mjs';
 
