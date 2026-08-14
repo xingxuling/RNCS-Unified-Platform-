@@ -6,7 +6,7 @@ import test from 'node:test';
 import {applyLocalRepair,createAnatomySystem,poseForFrame,projectPoint,validateAnatomySystem} from '../src/anatomy.mjs';
 import {rootHash} from '../src/canonical.mjs';
 import {renderAnatomyFrame} from '../src/renderer.mjs';
-import {muxMp4} from '../src/media.mjs';
+import {canonicalizeFfprobeReport,muxMp4} from '../src/media.mjs';
 
 const rootCheck=(value,key)=>{const copy=JSON.parse(JSON.stringify(value));const actual=copy[key];copy[key]='';return actual===rootHash(copy)};
 
@@ -51,4 +51,12 @@ test('renderer is deterministic and emits a non-empty raster with optional overl
 
 test('missing FFmpeg is a hard media failure, never a fake MP4',()=>{
   const temp=fs.mkdtempSync(path.join(os.tmpdir(),'rncs-phase6-1-media-')),frames=path.join(temp,'frames');fs.mkdirSync(frames);fs.writeFileSync(path.join(frames,'frame-000001.png'),Buffer.from('not-a-png'));const wav=path.join(temp,'audio.wav');fs.writeFileSync(wav,Buffer.alloc(4));assert.throws(()=>muxMp4({framesDir:frames,wavFile:wav,outFile:path.join(temp,'episode.mp4'),ffmpegPath:path.join(temp,'missing-ffmpeg.exe'),ffprobePath:path.join(temp,'missing-ffprobe.exe')}),error=>error.code==='MEDIA_TOOL_NOT_FOUND');assert.equal(fs.existsSync(path.join(temp,'episode.mp4')),false);
+});
+
+test('ffprobe evidence replaces machine output paths with a stable logical media path',()=>{
+  const report={format:{filename:'C:/one/worktree/episode.mp4',duration:'5.000000'},streams:[]};
+  const canonical=canonicalizeFfprobeReport(report,{logicalMediaPath:'episode.mp4'});
+  assert.equal(canonical.format.filename,'episode.mp4');
+  assert.throws(()=>canonicalizeFfprobeReport(report,{logicalMediaPath:'C:/one/worktree/episode.mp4'}),error=>error.code==='FFPROBE_LOGICAL_PATH_INVALID');
+  assert.throws(()=>canonicalizeFfprobeReport(report,{logicalMediaPath:'../episode.mp4'}),error=>error.code==='FFPROBE_LOGICAL_PATH_INVALID');
 });

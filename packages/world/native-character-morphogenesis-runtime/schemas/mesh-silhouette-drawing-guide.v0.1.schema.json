@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rncs.mesh-silhouette-drawing-guide.v0.1",
+  "title": "RNCS Mesh Silhouette Drawing Guide v0.1",
+  "type": "object",
+  "required": ["format", "version", "posed_mesh_root", "visibility_root", "width", "height", "guides", "required_groups", "missing_groups", "guide_set_root"],
+  "properties": {
+    "format": {"const": "rncs.mesh-silhouette-drawing-guide.v0.1"},
+    "version": {"type": "string"},
+    "native_surface_root": {"type": ["string", "null"]},
+    "posed_mesh_root": {"type": "string", "minLength": 1},
+    "visibility_root": {"type": "string", "minLength": 1},
+    "canonical_mesh_root": {"type": ["string", "null"]},
+    "weighted_mesh_root": {"type": ["string", "null"]},
+    "surface_weighting_root": {"type": ["string", "null"]},
+    "width": {"type": "number", "exclusiveMinimum": 0},
+    "height": {"type": "number", "exclusiveMinimum": 0},
+    "classification_policy": {"type": "string"},
+    "extraction_policy": {"type": "string"},
+    "required_groups": {"type": "array", "items": {"type": "string"}},
+    "missing_groups": {"type": "array", "items": {"type": "string"}},
+    "guides": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["group", "source_pixel_count", "contour", "area", "bounds", "guide_root"],
+        "properties": {
+          "group": {"type": "string"},
+          "source_pixel_count": {"type": "integer", "minimum": 1},
+          "raw_boundary_points": {"type": "integer", "minimum": 4},
+          "contour": {
+            "type": "array",
+            "minItems": 6,
+            "items": {"type": "array", "prefixItems": [{"type": "number"}, {"type": "number"}], "minItems": 2, "maxItems": 2}
+          },
+          "area": {"type": "number", "exclusiveMinimum": 0},
+          "bounds": {
+            "type": "object",
+            "required": ["left", "right", "top", "bottom", "width", "height"],
+            "properties": {
+              "left": {"type": "number"}, "right": {"type": "number"}, "top": {"type": "number"}, "bottom": {"type": "number"},
+              "width": {"type": "number", "exclusiveMinimum": 0}, "height": {"type": "number", "exclusiveMinimum": 0}
+            }
+          },
+          "guide_root": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "guide_set_root": {"type": "string", "minLength": 1}
+  }
+}
