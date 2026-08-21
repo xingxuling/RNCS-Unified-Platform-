@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.example/schemas/asset-generation-job.v0.1.schema.json",
+  "title": "RAGF Asset Generation Job v0.1",
+  "type": "object",
+  "required": ["format", "version", "job_id", "provider_id", "state", "operation", "quality_tier", "seed", "compute_requirement", "history", "job_root"],
+  "properties": {
+    "format": {"const": "ragf.asset-generation-job.v0.1"},
+    "version": {"const": "0.1.0"},
+    "state": {"enum": ["QUEUED", "PREPARING", "RUNNING", "VALIDATING", "COMPLETED", "FAILED", "CANCELLED"]},
+    "quality_tier": {"enum": ["PREVIEW", "PRODUCTION", "REFINEMENT", "RIG"]},
+    "compute_requirement": {"type": "object"},
+    "history": {"type": "array", "minItems": 1},
+    "job_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "additionalProperties": true
+}

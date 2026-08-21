@@ -1,0 +1,51 @@
+{
+  "format": "ragf.external-asset-provider-registry.v0.1",
+  "version": "0.1.0",
+  "authority": {
+    "provider_can_write_authoritative_world_state": false,
+    "rncs_commit_required": true
+  },
+  "providers": [
+    {
+      "provider_id": "provider:external:trellis-2",
+      "role": "production-3d",
+      "runtime": "external-process",
+      "quality_tier": "PRODUCTION",
+      "install_policy": "user-installed",
+      "capabilities": ["asset.generate.3d.production", "asset.generate.mesh", "asset.generate.pbr"]
+    },
+    {
+      "provider_id": "provider:external:infinigen",
+      "role": "procedural-environment",
+      "runtime": "external-process",
+      "quality_tier": "PRODUCTION",
+      "install_policy": "user-installed",
+      "capabilities": ["world.asset.generate.procedural", "world.asset.terrain", "world.asset.vegetation", "world.asset.rock", "world.asset.building", "world.asset.room", "world.asset.furniture", "world.asset.environment"]
+    },
+    {
+      "provider_id": "provider:external:make-it-animatable",
+      "role": "auto-rig-skin-pose",
+      "runtime": "external-process",
+      "quality_tier": "RIG",
+      "install_policy": "user-installed",
+      "capabilities": ["asset.rig.predict", "asset.skin.predict", "asset.pose.initial"]
+    },
+    {
+      "provider_id": "provider:external:triposr",
+      "role": "fast-preview-3d",
+      "runtime": "external-process",
+      "quality_tier": "PREVIEW",
+      "install_policy": "user-installed",
+      "promotion_target": "provider:external:trellis-2",
+      "capabilities": ["asset.generate.3d.preview", "asset.generate.mesh"]
+    },
+    {
+      "provider_id": "provider:external:triposf",
+      "role": "geometry-refinement",
+      "runtime": "external-process",
+      "quality_tier": "REFINEMENT",
+      "install_policy": "user-installed",
+      "capabilities": ["asset.refine.geometry"]
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.example/schemas/asset-production-court.v0.1.schema.json",
+  "title": "RNCS Asset Production Court v0.1",
+  "type": "object",
+  "required": ["format", "version", "candidate_id", "gates", "failures", "status", "pass", "promotion_allowed", "authority", "court_root"],
+  "properties": {
+    "format": {"const": "ragf.asset-production-court.v0.1"},
+    "version": {"const": "0.1.0"},
+    "status": {"enum": ["PASS", "PREVIEW_ONLY", "FAIL"]},
+    "pass": {"type": "boolean"},
+    "promotion_allowed": {"type": "boolean"},
+    "gates": {"type": "object", "required": ["geometry_gate", "topology_gate", "material_pbr_gate", "rig_gate", "animation_gate", "collision_gate", "lod_platform_budget_gate", "license_gate", "provenance_gate", "vsr_projection_gate", "rsr_simulation_gate"]},
+    "authority": {"type": "object", "properties": {"provider_can_commit": {"const": false}, "rncs_authority_required": {"const": true}}},
+    "court_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "additionalProperties": true
+}
