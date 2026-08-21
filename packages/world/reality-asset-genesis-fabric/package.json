@@ -1,6 +1,6 @@
 {
   "name": "@taowind/reality-asset-genesis-fabric",
-  "version": "0.7.0-alpha.1",
+  "version": "0.8.0-alpha.1",
   "type": "module",
   "description": "Reality-native production and society genesis fabric: deterministic 2D/3D assets, social ecology seeds, historical simulation, technology concept emergence, engineering pathways, player branches and Studio acceptance without LLM dependency.",
   "license": "Apache-2.0",
@@ -26,7 +26,8 @@
     "RELEASE_NOTES_v0.4.0-alpha.1.md",
     "RELEASE_NOTES_v0.5.0-alpha.1.md",
     "RELEASE_NOTES_v0.6.0-alpha.1.md",
-    "RELEASE_NOTES_v0.7.0-alpha.1.md"
+    "RELEASE_NOTES_v0.7.0-alpha.1.md",
+    "RELEASE_NOTES_v0.8.0-alpha.1.md"
   ],
   "scripts": {
     "test": "node --test --test-concurrency=1 tests/*.test.mjs",

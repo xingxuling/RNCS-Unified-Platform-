@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.example/schemas/asset-provider-result.v0.1.schema.json",
+  "title": "RAGF Asset Provider Result v0.1",
+  "type": "object",
+  "required": ["format", "version", "provider_id", "candidate_id", "files", "provenance", "license", "evidence", "authoritative", "result_root"],
+  "properties": {
+    "format": {"const": "ragf.asset-provider-result.v0.1"},
+    "version": {"const": "0.1.0"},
+    "files": {"type": "array", "items": {"type": "object", "required": ["path", "role", "format", "sha256"]}},
+    "provenance": {"type": "object", "required": ["provider_id", "source_revision", "generator_version", "seed"]},
+    "license": {"type": "object", "required": ["status", "identifier"]},
+    "evidence": {"type": "object", "required": ["candidate_only", "vsr_projection", "rsr_simulation"]},
+    "authoritative": {"const": false},
+    "result_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "additionalProperties": true
+}
