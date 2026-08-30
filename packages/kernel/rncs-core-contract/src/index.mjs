@@ -31,3 +31,4 @@ export function adaptHnacSnapshot(s,host_id='unknown-host'){const state=s.state?
 export * from './entity-kernel.mjs';
 export * from './representation-ref.mjs';
 export * from './representation-transition.mjs';
+export * from './world-truth.mjs';

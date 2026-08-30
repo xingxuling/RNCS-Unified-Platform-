@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rncs.world-event.v0.3",
+  "title": "RNCS Canonical World Event v0.3",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "version", "event_id", "world_id", "branch_id", "world_time", "causal_parents", "subjects", "objects", "mutation", "mutation_ref", "authority_receipt", "previous_state_root", "next_state_root", "evidence_ref", "event_root"],
+  "properties": {
+    "format": {"const": "rncs.world-event.v0.3"},
+    "version": {"const": "0.3.0"},
+    "event_id": {"type": "string", "minLength": 1},
+    "world_id": {"type": "string", "minLength": 1},
+    "branch_id": {"type": "string", "minLength": 1},
+    "world_time": {"$ref": "rncs.world-time.v0.3"},
+    "causal_parents": {"type": "array", "items": {"type": "string"}},
+    "subjects": {"type": "array", "items": {"type": "string"}},
+    "objects": {"type": "array", "items": {"type": "string"}},
+    "mutation": {"type": "object", "required": ["operations"], "properties": {"operations": {"type": "array"}}},
+    "mutation_ref": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "authority_receipt": {"type": "object", "required": ["status", "receipt_root", "decision_root", "lease_id", "epoch"], "properties": {"status": {"const": "committed"}, "receipt_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}, "decision_root": {"type": ["string", "null"]}, "lease_id": {"type": ["string", "null"]}, "epoch": {"type": "integer", "minimum": 0}}},
+    "previous_state_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "next_state_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "evidence_ref": {"type": ["object", "null"]},
+    "event_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

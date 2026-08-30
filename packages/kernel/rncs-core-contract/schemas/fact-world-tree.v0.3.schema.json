@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rncs.fact-world-tree.v0.3",
+  "title": "RNCS Fact World Tree v0.3",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "version", "world_id", "reality_root", "branch_id", "epochs", "accepted_events", "canonical_facts", "candidate_facts", "facts", "current_canonical_canopy", "memory_world_tree_ref", "tree_root"],
+  "properties": {
+    "format": {"const": "rncs.fact-world-tree.v0.3"},
+    "version": {"const": "0.3.0"},
+    "world_id": {"type": "string", "minLength": 1},
+    "reality_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "branch_id": {"type": "string", "minLength": 1},
+    "epochs": {"type": "array", "items": {"type": "integer", "minimum": 0}},
+    "accepted_events": {"type": "array", "items": {"type": "object", "required": ["event_id", "event_root", "epoch", "logical_clock"]}},
+    "canonical_facts": {"type": "array", "items": {"type": "string"}},
+    "candidate_facts": {"type": "array", "items": {"type": "string"}},
+    "facts": {"type": "array", "items": {"$ref": "rncs.world-fact.v0.3"}},
+    "current_canonical_canopy": {"type": "object", "required": ["event_ids", "fact_ids"], "properties": {"event_ids": {"type": "array"}, "fact_ids": {"type": "array"}}},
+    "memory_world_tree_ref": {"type": "null"},
+    "tree_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

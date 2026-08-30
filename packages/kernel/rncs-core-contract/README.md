@@ -16,6 +16,7 @@
 - 离线审阅工作台
 - Entity Kernel v0.1：typed Fragment、Composition Signature、确定性 State Batch 与 Deferred Mutation Ledger
 - Representation Transition Candidate v0.1：跨表示 identity、authority、equivalence、residency/detail policy 与 candidate rollback；不会绕过 RFE commit
+- v0.3 Truth Layer Candidate：WorldTime、authority-receipted WorldEvent、deterministic event-log replay 与 provenance-bound Fact World Tree；不把 Subject Memory 当作 Canonical Fact
 
 ## 快速运行
 

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rncs.world-time.v0.3",
+  "title": "RNCS Canonical World Time v0.3",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "version", "world_id", "epoch", "logical_clock", "simulation_tick", "causal_sequence", "simulation_rate", "time_scale", "status", "causal_root", "historical_reference", "time_root"],
+  "properties": {
+    "format": {"const": "rncs.world-time.v0.3"},
+    "version": {"const": "0.3.0"},
+    "world_id": {"type": "string", "minLength": 1},
+    "epoch": {"type": "integer", "minimum": 0},
+    "logical_clock": {"type": "integer", "minimum": 0},
+    "simulation_tick": {"type": "integer", "minimum": 0},
+    "causal_sequence": {"type": "integer", "minimum": 0},
+    "simulation_rate": {"type": "string", "minLength": 1},
+    "time_scale": {"type": "string", "pattern": "^(?:0|[1-9]\\d*)(?:\\.\\d+)?$"},
+    "status": {"enum": ["running", "paused", "resuming", "stopped"]},
+    "causal_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "historical_reference": {"type": ["object", "null"]},
+    "time_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}
