@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:taowind:urrf:materialization-plan:v0.1",
+  "title": "URRF Materialization Plan v0.1",
+  "type": "object",
+  "required": ["format", "version", "plan_id", "object_id", "state_root", "content_root", "representation", "resource_decision", "authority", "plan_root"],
+  "properties": {
+    "format": {"const": "urrf.materialization-plan.v0.1"},
+    "version": {"const": "0.1.0"},
+    "plan_id": {"type": "string", "minLength": 1},
+    "object_id": {"type": "string", "minLength": 1},
+    "state_root": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"},
+    "content_root": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"},
+    "representation": {"type": "object"},
+    "resource_decision": {"type": "object", "required": ["selected_representation_root", "detail_policy_root", "residency_policy_root"]},
+    "authority": {"type": "object", "required": ["provider_can_write_authoritative_world_state", "rncs_authority_required"]},
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "commit_status": {"const": "NOT_COMMITTED"},
+    "plan_root": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"}
+  },
+  "additionalProperties": true
+}

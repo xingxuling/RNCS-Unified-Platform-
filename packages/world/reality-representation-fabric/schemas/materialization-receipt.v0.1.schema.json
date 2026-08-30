@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:taowind:urrf:materialization-receipt:v0.1",
+  "title": "URRF Materialization Receipt v0.1",
+  "type": "object",
+  "required": ["format", "version", "receipt_id", "status", "object_id", "state_root", "content_root", "representation_root", "provider_root", "authority", "receipt_root"],
+  "properties": {
+    "format": {"const": "urrf.materialization-receipt.v0.1"},
+    "version": {"const": "0.1.0"},
+    "receipt_id": {"type": "string", "minLength": 1},
+    "status": {"enum": ["EXECUTED", "NOT_EXECUTED", "FAILED"]},
+    "object_id": {"type": "string", "minLength": 1},
+    "state_root": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"},
+    "content_root": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"},
+    "representation_root": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"},
+    "provider_root": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"},
+    "authority": {"type": "object", "required": ["provider_can_write_authoritative_world_state", "rncs_authority_required"]},
+    "canonical_state_mutated": {"const": false},
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "commit_status": {"const": "NOT_COMMITTED"},
+    "receipt_root": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"}
+  },
+  "additionalProperties": true
+}
