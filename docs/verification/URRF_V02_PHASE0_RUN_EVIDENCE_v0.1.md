@@ -85,4 +85,53 @@ The implementation itself records this boundary as `CONTRACT_VERIFIED_RUNTIME_NO
 
 ## Next executable gate
 
-Install and pin Spark 2.1 plus its `three` peer, provide a real RAD fixture, and run a browser/WebGL or WebGPU harness that records load, render, page streaming, raycast, and rollback/equivalence evidence. Only that run can upgrade the runtime line from `NOT_EXECUTED` to a runtime-qualified result.
+The isolated continuation below upgrades only the bounded load/render/raycast portion. A real RAD/page-stream fixture and the default asynchronous GPU depth-readback path are still open.
+
+## Continuation: isolated Spark 2.1 browser proof
+
+Date: 2026-08-31
+
+This is an external-runtime probe, not a dependency or source change in the RNCS workspace. The package was unpacked into a temporary directory and was not copied into the repository.
+
+### Inputs and environment
+
+- Supplied archive: `C:\Users\User\Downloads\spark-2.1.0.zip`.
+- Archive SHA-256: `b84591632a623b9db9fa227473fa2ea03f48f03b3239caaa599d085962fdaed3`.
+- Provider package: `@sparkjsdev/spark@2.1.0`, MIT, peer `three >=0.180.0`.
+- Peer package: `three@0.180.0`.
+- Host runtime: Node `v24.15.0`; Playwright Node API `1.62.1`.
+- Browser: Chrome for Testing `151.0.7922.34`, launched from the existing local Chromium cache.
+- Context: `WebGL 2.0 (OpenGL ES 3.0 Chromium)`, renderer `WebKit WebGL` (headless SwiftShader).
+
+### Minimal fixture and harness
+
+The probe built an in-memory binary little-endian PLY with exactly one vertex and the 14 Gaussian fields (`x/y/z`, three scales, four quaternion fields, opacity and three DC color fields). It loaded the bytes through the actual browser Worker path:
+
+```text
+SplatMesh({fileBytes, fileType: "ply", nonLod: true, raycastable: true})
+-> await mesh.initialized
+-> SparkRenderer.update/render
+```
+
+The default `readRenderTargetPixelsAsync` depth-readback did not complete within the bounded headless run. For this one-splat case, the harness used a deterministic zero-depth readback only to provide the ordering input; the Spark Worker sort, packed texture generation, shader draw and pixel readback remained real. This is recorded as an explicit compatibility limitation, not as production GPU proof.
+
+### Observed result
+
+`RUNTIME_MINIMAL_LOAD_RENDER_RAYCAST_PASS`:
+
+- Worker decode and initialization: `isInitialized=true`, `numSplats=1`, packed capacity `2048`.
+- Spark update/sort stage: `activeSplats=1`, `currentNumSplats=1`, `displayNumSplats=1`, ordering texture length `16384`, generated target present, mesh generator present.
+- Bounds: min `[-0.9882584527, -0.9882584527, -0.9882584527]`; max `[0.9882584527, 0.9882584527, 0.9882584527]`.
+- Raycast: `1` hit at distance `4.0117411613`.
+- GPU render pixels: `12160/16384` pixels differed from the `[16,32,48]` clear color; RGB sum `2432264`; center pixel `[128,128,128,255]`; max RGB `128`; all `16384` pixels had non-zero alpha.
+- Renderer statistics: `1` render call and `2` triangles.
+- Browser page errors: none; request failures: none. The only console entries were a favicon `404` and a non-fatal shader signed/unsigned warning.
+
+### Remaining gates
+
+- `STREAM_NOT_EXECUTED`: no real `.rad`/`.radc` fixture or chunked/page-stream input was supplied, so Spark streaming/paging was not executed.
+- `ASYNC_DEPTH_READBACK_BLOCKED`: the standard async depth-readback path needs a follow-up on a non-headless/browser-GPU environment; the zero-depth adapter is bounded evidence for a one-splat ordering case only.
+- `RNCS_WORKSPACE_RUNTIME_NOT_INSTALLED`: the repository still intentionally has no Spark dependency; its contract test remains `CONTRACT_VERIFIED_RUNTIME_NOT_EXECUTED` when run without the external package.
+- No production deployment, CI success, GPU hardware certification, canonical-state mutation, authority promotion or commit was performed.
+
+The RCL owner, auxiliary Spark provider boundary, `RCL_GAP_REPRESENTATION_POLICY_V0_1`, and `UNMAPPED_PENDING_CANONICAL_MATRIX` status remain unchanged.
