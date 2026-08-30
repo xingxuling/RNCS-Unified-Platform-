@@ -1,4 +1,5 @@
 import {clone, clamp, GenesisError, rootHash, seal, stableId} from './canonical.mjs';
+import {REPRESENTATION_AUTHORITY_SCOPES, createRepresentationRef, verifyRepresentationRef} from '@taowind/rncs-core-contract';
 
 export const ASSET_PROVIDER_CONTRACT_VERSION = '0.1.0';
 export const ASSET_PROVIDER_MANIFEST_FORMAT = 'ragf.asset-provider-manifest.v0.1';
@@ -22,6 +23,7 @@ export const PROVIDER_TYPES = Object.freeze([
   'rigging',
   '3d-preview',
   'geometry-refinement',
+  'representation',
   'generic'
 ]);
 
@@ -73,6 +75,36 @@ const asLicenseRecord = license => {
   };
 };
 
+const normalizeRepresentationDescriptor = input => {
+  if (input === undefined || input === null) return null;
+  const value = input && typeof input === 'object' && !Array.isArray(input) ? input : {};
+  const kinds = uniqueSorted(value.kinds ?? (value.kind ? [value.kind] : []));
+  if (!kinds.length) throw new GenesisError('REPRESENTATION_KINDS_REQUIRED');
+  const profiles = (value.profiles ?? []).map((profile, index) => {
+    const item = profile && typeof profile === 'object' ? clone(profile) : {};
+    const profileId = nonEmpty(item.profile_id ?? item.profileId, 'profile-' + index);
+    return {...item, profile_id: profileId, formats: uniqueSorted(item.formats ?? item.representation_formats)};
+  }).sort((left, right) => left.profile_id.localeCompare(right.profile_id));
+  return {
+    kinds,
+    profiles,
+    detail_policy: clone(value.detail_policy ?? null),
+    residency_policy: clone(value.residency_policy ?? null)
+  };
+};
+
+const normalizeAuthorityScope = input => {
+  const scope = uniqueSorted(Array.isArray(input)
+    ? input
+    : input === undefined || input === null
+      ? ['asset_generation_candidate']
+      : [input]);
+  if (!scope.length || !scope.every(value => REPRESENTATION_AUTHORITY_SCOPES.includes(value))) {
+    throw new GenesisError('ASSET_PROVIDER_AUTHORITY_SCOPE_INVALID');
+  }
+  return scope;
+};
+
 export function createComputeRequirement(input = {}) {
   const requirement = {
     cpu: nonEmpty(input.cpu, 'unspecified'),
@@ -95,6 +127,8 @@ export function createAssetProviderManifest(input = {}) {
     : 'generic';
   const license = asLicenseRecord(input.license);
   const capabilities = uniqueSorted(input.capabilities);
+  const representation = normalizeRepresentationDescriptor(input.representation);
+  const authorityScope = normalizeAuthorityScope(input.authority_scope ?? input.authorityScope ?? input.authority?.scope ?? input.representation?.authority_scope);
   if (!capabilities.length) throw new GenesisError('ASSET_PROVIDER_CAPABILITIES_REQUIRED', id);
   const manifest = {
     format: ASSET_PROVIDER_MANIFEST_FORMAT,
@@ -128,12 +162,14 @@ export function createAssetProviderManifest(input = {}) {
     runtimeStatus: input.runtimeStatus ?? 'CONTRACT_ONLY',
     upstream: clone(input.upstream ?? {}),
     command: clone(input.command ?? null),
+    representation,
     endpoint: input.endpoint ?? null,
     authority: {
       owns_asset_identity: false,
       owns_living_asset_family: false,
       owns_authoritative_world_state: false,
-      may_emit_candidate: true
+      may_emit_candidate: true,
+      scope: authorityScope
     },
     metadata: clone(input.metadata ?? {})
   };
@@ -151,6 +187,8 @@ export function validateAssetProviderManifest(manifest) {
   if (!EXECUTION_MODES.includes(manifest?.executionMode)) errors.push('EXECUTION_MODE_INVALID');
   if (!Array.isArray(manifest?.capabilities) || !manifest.capabilities.length) errors.push('CAPABILITIES_REQUIRED');
   if (manifest?.authority?.owns_authoritative_world_state) errors.push('PROVIDER_AUTHORITY_ESCALATION');
+  if (!Array.isArray(manifest?.authority?.scope) || !manifest.authority.scope.length || !manifest.authority.scope.every(scope => REPRESENTATION_AUTHORITY_SCOPES.includes(scope))) errors.push('PROVIDER_AUTHORITY_SCOPE_INVALID');
+  if (manifest?.representation && (!Array.isArray(manifest.representation.kinds) || !manifest.representation.kinds.length)) errors.push('REPRESENTATION_KINDS_REQUIRED');
   if (!LICENSE_STATUSES.includes(manifest?.license?.status)) errors.push('LICENSE_STATUS_INVALID');
   const copy = clone(manifest ?? {});
   const actual = copy.manifest_root;
@@ -229,10 +267,46 @@ export function failAssetGenerationJob(job, error) {
   return transitionAssetGenerationJob(current, 'FAILED', error);
 }
 
+const normalizeRepresentationRefs = (raw, {provider, providerId} = {}) => {
+  const source = raw.representation_refs ?? (raw.representation_ref ? [raw.representation_ref] : []);
+  if (!Array.isArray(source)) throw new GenesisError('REPRESENTATION_REFS_INVALID');
+  return source.map((reference, index) => {
+    const value = reference && typeof reference === 'object' ? clone(reference) : {};
+    if (value.provider_id && value.provider_id !== providerId) throw new GenesisError('REPRESENTATION_REF_PROVIDER_MISMATCH', String(index));
+    if (value.provider_root && provider?.manifest_root && value.provider_root !== provider.manifest_root) throw new GenesisError('REPRESENTATION_REF_PROVIDER_ROOT_MISMATCH', String(index));
+    if (value.representation_root) {
+      const validation = verifyRepresentationRef(value);
+      if (!validation.valid) throw new GenesisError('REPRESENTATION_REF_INVALID', validation.errors.join(','));
+      return value;
+    }
+    const normalized = createRepresentationRef({
+      ...value,
+      provider_id: providerId,
+      provider_root: provider?.manifest_root ?? value.provider_root ?? raw.provider_root,
+      availability: value.availability ?? provider?.runtimeStatus ?? 'CONTRACT_ONLY',
+      provenance: {
+        ...clone(value.provenance ?? {}),
+        upstream_url: value.provenance?.upstream_url ?? provider?.upstream?.url ?? null,
+        source_revision: value.provenance?.source_revision ?? provider?.upstream?.revision ?? null,
+        source_archive_sha256: value.provenance?.source_archive_sha256 ?? provider?.upstream?.source_archive_sha256 ?? null,
+        generator_version: value.provenance?.generator_version ?? provider?.version ?? null
+      },
+      evidence: {
+        ...clone(value.evidence ?? {}),
+        provider_manifest_root: value.evidence?.provider_manifest_root ?? provider?.manifest_root ?? null
+      }
+    });
+    const validation = verifyRepresentationRef(normalized);
+    if (!validation.valid) throw new GenesisError('REPRESENTATION_REF_INVALID', validation.errors.join(','));
+    return normalized;
+  });
+};
+
 export function normalizeAssetProviderResult(raw = {}, {job, provider, stage = null} = {}) {
   const providerId = provider?.id ?? provider?.provider_id ?? job?.provider_id ?? raw.provider_id;
   if (!providerId) throw new GenesisError('ASSET_RESULT_PROVIDER_REQUIRED');
   const rawFiles = raw.files ?? raw.artifact?.files ?? [];
+  const representation_refs = normalizeRepresentationRefs(raw, {provider, providerId});
   const files = rawFiles.map((file, index) => {
     const content = file.content ?? file.base64 ?? null;
     const size = Number(file.size ?? (content ? Buffer.from(content, 'base64').byteLength : 0));
@@ -260,6 +334,7 @@ export function normalizeAssetProviderResult(raw = {}, {job, provider, stage = n
     quality_tier: raw.quality_tier ?? job?.quality_tier ?? 'PRODUCTION',
     files,
     format_output: raw.format ?? raw.format_output ?? 'glTF/GLB',
+    representation_refs,
     metadata: clone(raw.metadata ?? {}),
     geometry: clone(raw.geometry ?? raw.metadata?.geometry ?? {}),
     materials: clone(raw.materials ?? raw.metadata?.materials ?? {}),
@@ -291,6 +366,7 @@ export function normalizeAssetProviderResult(raw = {}, {job, provider, stage = n
       lod_platform: clone(raw.evidence?.lod_platform ?? {}),
       license: clone(raw.evidence?.license ?? {}),
       provenance: clone(raw.evidence?.provenance ?? {}),
+      representation: clone(raw.evidence?.representation ?? {}),
       vsr_projection: raw.evidence?.vsr_projection ?? 'UNVERIFIED',
       rsr_simulation: raw.evidence?.rsr_simulation ?? 'UNVERIFIED',
       evidence_root: raw.evidence?.evidence_root ?? null

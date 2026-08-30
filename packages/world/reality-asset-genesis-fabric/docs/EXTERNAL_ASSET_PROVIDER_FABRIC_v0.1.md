@@ -33,8 +33,11 @@ QUEUED → PREPARING → RUNNING → VALIDATING → COMPLETED
 - Make-It-Animatable：rig、skin、initial pose；Rig Quality Gate 与 Animation Smoke Test 必须通过。
 - TripoSR：PREVIEW 3D；不能把 preview candidate 标记为 production。
 - TripoSF：geometry refinement；不是主 generator。
+- Spark 2.1.0：Gaussian representation ingress/conversion、procedural splat、SDF edit、LoD build、RAD/RADC packaging，以及纯视觉的 render/stream/paged residency/raycast/XR/portal capability。它通过现有 Provider Fabric 产出 `RepresentationRef` candidate；不拥有 canonical world state，也不被标记为已执行 runtime。
 
 当前仓库只提交 adapter、manifest、contract、test runner seam 和 provenance，不 vendoring 外部 Python/CUDA/Blender/model weights。
+
+`RepresentationRef` 是 RNCS Core 密封的 candidate-only 引用，可携带 representation kind/profile、detail policy、residency policy、provider/provenance/evidence root。VSR 只把它消费成 visual binding；RSR 只能提出 ingress/raycast/bounds/LoD/residency observation candidate。二者都不能把 Spark 输出升级成 canonical geometry、physics、semantic state 或世界提交。
 
 ## Production Court
 

@@ -39,6 +39,13 @@ const UPSTREAMS = {
     license_url: 'https://github.com/VAST-AI-Research/TripoSF/blob/main/LICENSE',
     revision: 'b97b749aa5726fb64ceec359a4ef8e61e79279c7',
     code_license: 'MIT'
+  },
+  spark: {
+    url: 'https://github.com/sparkjsdev/spark',
+    license_url: 'https://github.com/sparkjsdev/spark/blob/main/LICENSE',
+    revision: '2.1.0-source-archive',
+    source_archive_sha256: 'b84591632a623b9db9fa227473fa2ea03f48f03b3239caaa599d085962fdaed3',
+    code_license: 'MIT'
   }
 };
 
@@ -71,6 +78,72 @@ const commonPolicy = notes => ({
 
 export function externalAssetProviderManifests() {
   return [
+    createAssetProviderManifest({
+      id: 'provider:external:spark-2.1.0',
+      name: 'Spark 2.1.0 Gaussian Representation Provider',
+      version: '2.1.0',
+      providerType: 'representation',
+      capabilities: [
+        'asset.gaussian.ingress',
+        'asset.gaussian.convert',
+        'asset.gaussian.procedural-generate',
+        'asset.gaussian.edit-sdf',
+        'asset.gaussian.build-lod',
+        'asset.gaussian.package-rad',
+        'representation.visual.render',
+        'representation.visual.stream',
+        'representation.visual.paged-residency',
+        'representation.visual.raycast',
+        'representation.visual.xr',
+        'representation.visual.portal'
+      ],
+      capability_descriptors: [
+        capability('asset.gaussian.ingress', 'gaussian-representation-candidate', 'PRODUCTION'),
+        capability('asset.gaussian.convert', 'gaussian-representation-candidate', 'PRODUCTION'),
+        capability('asset.gaussian.procedural-generate', 'gaussian-representation-candidate', 'PRODUCTION'),
+        capability('asset.gaussian.edit-sdf', 'gaussian-representation-candidate', 'PRODUCTION'),
+        capability('asset.gaussian.build-lod', 'rad-or-radc-candidate', 'PRODUCTION'),
+        capability('asset.gaussian.package-rad', 'rad-or-radc-candidate', 'PRODUCTION'),
+        capability('representation.visual.render', 'visual-projection', 'PRODUCTION'),
+        capability('representation.visual.stream', 'streamed-visual-projection', 'PRODUCTION'),
+        capability('representation.visual.paged-residency', 'paged-visual-working-set', 'PRODUCTION'),
+        capability('representation.visual.raycast', 'observation-candidate', 'PRODUCTION'),
+        capability('representation.visual.xr', 'xr-visual-projection', 'PRODUCTION'),
+        capability('representation.visual.portal', 'portal-visual-projection', 'PRODUCTION')
+      ],
+      inputFormats: ['model/ply', 'application/x-spz', 'application/x-splat', 'application/x-ksplat', 'application/x-sog', 'application/vnd.spark.rad', 'application/vnd.spark.radc'],
+      outputFormats: ['application/vnd.spark.rad', 'application/vnd.spark.radc', 'application/json'],
+      executionMode: 'local',
+      hardwareRequirements: {cpu: 'host supplied', ram: 'host supplied', gpu: 'WebGL2-compatible host', vram: 'provider-configured', accelerator: 'THREE.js + @sparkjsdev/spark runtime'},
+      license: license('MIT', UPSTREAMS.spark, {
+        dependency_status: 'NOT_AUDITED',
+        model_weights_status: 'NOT_APPLICABLE',
+        data_status: 'REMOTE_EXAMPLE_ASSETS_NOT_AUDITED',
+        notes: 'The supplied Spark 2.1.0 source archive was inspected locally. No Spark code, model weights, or example assets are vendored by this manifest.'
+      }),
+      commercialPolicy: commonPolicy('Adapter and manifest only. Audit Spark/THREE.js dependencies and any selected assets before a release dependency is allowed.'),
+      runtimeStatus: 'CONTRACT_ONLY',
+      upstream: UPSTREAMS.spark,
+      authority_scope: ['asset_generation_candidate', 'representation_candidate', 'visual_projection', 'observation_candidate'],
+      representation: {
+        kinds: ['gaussian-splats'],
+        profiles: [
+          {profile_id: 'spark.packed-splats', encoding: 'PackedSplats', fidelity: 'compact', precision: 'packed-16-byte-splat', formats: ['application/vnd.spark.rad', 'application/vnd.spark.radc']},
+          {profile_id: 'spark.ext-splats', encoding: 'ExtSplats', fidelity: 'high', precision: 'float32-centers', formats: ['application/vnd.spark.rad', 'application/vnd.spark.radc']}
+        ],
+        detail_policy: {mode: 'hierarchical-lod', selectors: ['viewpoint', 'frustum', 'screen-space-size', 'foveation', 'global-splat-budget'], budget: {scope: 'provider-configured'}},
+        residency_policy: {mode: 'paged-streaming', selectors: ['viewpoint', 'fetch-priority'], budget: {working_set: 'provider-configured'}, metadata: {page_unit: 'splat-page', eviction: 'lru', transport: 'http-range'}},
+        authority_scope: ['asset_generation_candidate', 'representation_candidate', 'visual_projection', 'observation_candidate']
+      },
+      metadata: {
+        quality_tier: 'PRODUCTION',
+        source_archive_sha256: UPSTREAMS.spark.source_archive_sha256,
+        runtime_evidence: 'NOT_RUN',
+        visual_only: true,
+        canonical_world_owner: 'RNCS',
+        unsupported_claims: ['image-to-gaussian-training', 'COLMAP-or-SfM', 'camera-pose-reconstruction', 'complete-semantic-reconstruction']
+      }
+    }),
     createAssetProviderManifest({
       id: 'provider:external:trellis-2',
       name: 'Microsoft TRELLIS.2',
@@ -402,6 +475,10 @@ const providerFactory = (id, options = {}) => {
   if (!manifest) throw new GenesisError('ASSET_PROVIDER_NOT_FOUND', id);
   return new AssetProviderAdapter(manifest, options);
 };
+
+export function createSpark3DGSProvider(options = {}) {
+  return providerFactory('provider:external:spark-2.1.0', options);
+}
 
 export function createTrellis2Provider(options = {}) {
   return providerFactory('provider:external:trellis-2', options);

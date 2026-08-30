@@ -17,11 +17,13 @@ import {
   createInfinigenProvider,
   createMakeItAnimatableProvider,
   createMockAssetProvider,
+  createSpark3DGSProvider,
   createTripoSFProvider,
   createTripoSRProvider,
   createTrellis2Provider,
   externalAssetProviderManifests
 } from '../src/index.mjs';
+import {createRepresentationRef} from '@taowind/rncs-core-contract';
 import {
   createAssetCandidateFromProviderResult,
   createLivingAssetFamilyCandidate,
@@ -70,12 +72,13 @@ function mockPipeline() {
   return {provider, execution, candidate, court};
 }
 
-test('external manifests expose the five required provider organs', () => {
+test('external manifests expose the six required provider organs', () => {
   const manifests = externalAssetProviderManifests();
-  assert.equal(manifests.length, 5);
+  assert.equal(manifests.length, 6);
   assert.deepEqual(manifests.map(item => item.id).sort(), [
     'provider:external:infinigen',
     'provider:external:make-it-animatable',
+    'provider:external:spark-2.1.0',
     'provider:external:trellis-2',
     'provider:external:triposf',
     'provider:external:triposr'
@@ -96,6 +99,8 @@ test('provider capabilities preserve the intended architectural roles', () => {
   assert.ok(byId['provider:external:make-it-animatable'].capabilities.includes('asset.skin.predict'));
   assert.ok(byId['provider:external:triposr'].capabilities.includes('asset.generate.3d.preview'));
   assert.ok(byId['provider:external:triposf'].capabilities.includes('asset.refine.geometry'));
+  assert.ok(byId['provider:external:spark-2.1.0'].capabilities.includes('representation.visual.render'));
+  assert.ok(byId['provider:external:spark-2.1.0'].capabilities.includes('asset.gaussian.build-lod'));
   assert.equal(byId['provider:external:triposr'].metadata.quality_tier, 'PREVIEW');
   assert.equal(byId['provider:external:triposf'].metadata.main_generator, false);
 });
@@ -114,8 +119,9 @@ test('AssetProviderRegistry performs capability negotiation without granting aut
 
 test('license audit verifies upstream code licenses but blocks default commercial dependencies', () => {
   const audit = auditExternalProviderLicenses();
-  assert.equal(audit.entries.length, 5);
+  assert.equal(audit.entries.length, 6);
   assert.deepEqual(Object.fromEntries(audit.entries.map(item => [item.provider_id, item.code_license])), {
+    'provider:external:spark-2.1.0': 'MIT',
     'provider:external:trellis-2': 'MIT',
     'provider:external:infinigen': 'BSD-3-Clause',
     'provider:external:make-it-animatable': 'MIT',
@@ -140,7 +146,7 @@ test('job lifecycle is explicit and rejects invalid transitions', () => {
 
 test('external adapters are contract verified but do not claim runtime execution', () => {
   const adapters = createExternalAssetProviderAdapters();
-  assert.equal(adapters.length, 5);
+  assert.equal(adapters.length, 6);
   for (const adapter of adapters) {
     assert.equal(adapter.healthCheck().status, 'CONTRACT_ONLY');
     const result = adapter.generate({asset_id: 'asset:test', seed: 'seed'});
@@ -152,11 +158,63 @@ test('external adapters are contract verified but do not claim runtime execution
 });
 
 test('named provider factories preserve provider identity', () => {
+  assert.equal(createSpark3DGSProvider().manifest.id, 'provider:external:spark-2.1.0');
   assert.equal(createTrellis2Provider().manifest.id, 'provider:external:trellis-2');
   assert.equal(createInfinigenProvider().manifest.id, 'provider:external:infinigen');
   assert.equal(createMakeItAnimatableProvider().manifest.id, 'provider:external:make-it-animatable');
   assert.equal(createTripoSRProvider().manifest.id, 'provider:external:triposr');
   assert.equal(createTripoSFProvider().manifest.id, 'provider:external:triposf');
+});
+
+test('Spark manifest exposes a bounded Gaussian representation contract', () => {
+  const manifest = createSpark3DGSProvider().manifest;
+  assert.equal(manifest.providerType, 'representation');
+  assert.equal(manifest.runtimeStatus, 'CONTRACT_ONLY');
+  assert.deepEqual(manifest.representation.kinds, ['gaussian-splats']);
+  assert.ok(manifest.authority.scope.includes('visual_projection'));
+  assert.equal(manifest.authority.owns_authoritative_world_state, false);
+  assert.ok(manifest.representation.profiles.some(profile => profile.profile_id === 'spark.packed-splats'));
+  assert.ok(manifest.metadata.unsupported_claims.includes('COLMAP-or-SfM'));
+  assert.equal(manifest.license.data_status, 'REMOTE_EXAMPLE_ASSETS_NOT_AUDITED');
+});
+
+test('Spark representation reference persists through the existing RAGF candidate path', () => {
+  const provider = createSpark3DGSProvider().manifest;
+  const reference = createRepresentationRef({
+    provider_id: provider.id,
+    provider_root: provider.manifest_root,
+    representation_kind: 'gaussian-splats',
+    representation_formats: ['application/vnd.spark.rad'],
+    content_root: 'c'.repeat(64),
+    representation_profile: {profile_id: 'spark.packed-splats', encoding: 'PackedSplats', formats: ['application/vnd.spark.rad']},
+    detail_policy: provider.representation.detail_policy,
+    residency_policy: provider.representation.residency_policy,
+    authority_scope: ['representation_candidate', 'visual_projection', 'observation_candidate'],
+    availability: 'CONTRACT_ONLY',
+    provenance: {upstream_url: provider.upstream.url, source_revision: provider.upstream.revision, source_archive_sha256: provider.upstream.source_archive_sha256},
+    evidence: {provider_manifest_root: provider.manifest_root, notes: 'contract-only test fixture'}
+  });
+  const result = normalizeAssetProviderResult({
+    asset_id: 'asset:spark-representation-fixture',
+    format: 'application/vnd.spark.rad',
+    files: [{name: 'fixture.rad', role: 'gaussian-rad', format: 'application/vnd.spark.rad', base64: Buffer.from('spark-contract-fixture').toString('base64')}],
+    representation_refs: [reference],
+    provenance: {upstream_url: provider.upstream.url, source_revision: provider.upstream.revision, generator_version: provider.version, seed: 'spark-contract-fixture'},
+    license: provider.license
+  }, {provider});
+  const candidate = createAssetCandidateFromProviderResult({result, provider});
+  assert.equal(result.authoritative, false);
+  assert.equal(result.representation_refs[0].availability, 'CONTRACT_ONLY');
+  assert.equal(candidate.authoritative, false);
+  assert.equal(candidate.representation_refs[0].representation_root, reference.representation_root);
+});
+
+test('Spark absent runtime reports CONTRACT_ONLY instead of a false execution success', () => {
+  const execution = createSpark3DGSProvider().generate({asset_id: 'asset:spark-runtime-absent', seed: 'spark-runtime-absent'});
+  assert.equal(execution.status, 'CONTRACT_VERIFIED_RUNTIME_NOT_EXECUTED');
+  assert.equal(execution.result, null);
+  assert.equal(execution.job.state, 'FAILED');
+  assert.equal(execution.failure.code, 'PROVIDER_RUNTIME_NOT_EXECUTED');
 });
 
 test('mock provider completes normalized result with provenance and evidence', () => {
@@ -316,6 +374,8 @@ test('schemas for the new contracts are present and declare the authority bounda
   }
   const providerSchema = JSON.parse(fs.readFileSync(new URL('../schemas/asset-provider-manifest.v0.1.schema.json', import.meta.url), 'utf8'));
   assert.equal(providerSchema.properties.authority.properties.owns_authoritative_world_state.const, false);
+  const resultSchema = JSON.parse(fs.readFileSync(new URL('../schemas/asset-provider-result.v0.1.schema.json', import.meta.url), 'utf8'));
+  assert.equal(resultSchema.properties.representation_refs.items.$ref, '../../../kernel/rncs-core-contract/schemas/representation-reference.v0.1.schema.json');
 });
 
 test('standalone result normalization records warnings instead of asserting provider authority', () => {
