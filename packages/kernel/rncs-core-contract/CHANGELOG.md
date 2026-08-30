@@ -4,6 +4,7 @@
 
 - 新增 `rncs.entity-kernel.v0.1`：typed Fragment Schema、Entity Composition、State Batch、Deferred Mutation Ledger 和快照恢复。
 - 新增 `rncs.representation-transition.v0.1` 候选契约：跨表示 identity、authority、equivalence、resource decision 与可回滚候选态；保持 `NOT_COMMITTED`，不替代 RFE 权威提交。
+- 新增 v0.3 Truth Layer Candidate：Canonical World Time、authority-receipted World Event、确定性 Event Log Replay 与 Fact World Tree schema/test；Subject Memory 保持独立。
 
 ## v0.1.0 — 2026-06-30
 

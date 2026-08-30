@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rncs.world-fact.v0.3",
+  "title": "RNCS Fact World Fact v0.3",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "version", "fact_id", "world_id", "branch_id", "subject_scope", "object_scope", "claim", "validity_interval", "source_events", "authority_domain", "confidence", "version_root"],
+  "properties": {
+    "format": {"const": "rncs.world-fact.v0.3"},
+    "version": {"const": "0.3.0"},
+    "fact_id": {"type": "string", "minLength": 1},
+    "world_id": {"type": "string", "minLength": 1},
+    "branch_id": {"type": "string", "minLength": 1},
+    "subject_scope": {},
+    "object_scope": {},
+    "claim": {},
+    "validity_interval": {"type": "object", "required": ["start", "end", "semantics"], "properties": {"start": {}, "end": {}, "semantics": {"type": "string"}}},
+    "source_events": {"type": "array", "items": {"type": "string"}},
+    "authority_domain": {"type": "string", "minLength": 1},
+    "confidence": {"enum": ["canonical", "candidate", "disputed"]},
+    "version_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

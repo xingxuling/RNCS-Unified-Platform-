@@ -81,6 +81,7 @@
     "check:fusion": "npm run build:world && npm run build:products && npm run typecheck:products && npm run health && npm run test:integration",
     "validate:release": "npm run verify:version-contract && npm run check:fusion && npm run health --prefix apps/aetherworld",
     "test:network": "npm test --workspace @taowind/reality-network-runtime",
+    "test:urrf-v03": "npm test --workspace @taowind/rncs-core-contract && node --test tests/urrf-v03-world-truth.integration.test.mjs",
     "benchmark:network": "npm run benchmark --workspace @taowind/reality-network-runtime",
     "demo:network": "node examples/two-player-loopback/demo-server.mjs",
     "test:gateway": "npm run build:native --workspace @taowind/reality-computation-language && npm run build --workspace @taowind/reality-simulation-runtime && npm test --workspace @taowind/reality-one-gateway",

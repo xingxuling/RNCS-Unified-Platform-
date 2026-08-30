@@ -7,7 +7,7 @@
     "rncs-contract": "./src/cli.mjs"
   },
   "scripts": {
-    "test": "node tests/run.mjs && node tests/representation-ref.mjs && node tests/representation-transition.mjs && node tests/foundation-governance.mjs && node --test tests/entity-kernel.mjs"
+    "test": "node tests/run.mjs && node tests/representation-ref.mjs && node tests/representation-transition.mjs && node tests/world-truth.mjs && node tests/foundation-governance.mjs && node --test tests/entity-kernel.mjs"
   },
   "exports": "./src/index.mjs"
 }
