@@ -16,7 +16,40 @@ import {
 } from '../packages/world/reality-asset-genesis-fabric/src/index.mjs';
 import {createSpark3DGSVisualBinding, createVisualRepresentationBinding, verifyVisualRepresentationBinding} from '../packages/world/visual-state-runtime/dist/packages/representation-provider/src/index.js';
 import {comparePerceptualPlans, compileVisualRealityPlan} from '../packages/world/visual-state-runtime/dist/packages/visual-reality-compiler/src/index.js';
+import {importGltfToSpatialScene, verifyGltfImportReceipt} from '../packages/world/visual-state-runtime/dist/packages/gltf-asset/src/index.js';
+import {compileSpatialFrame, renderSpatialReference, verifySpatialFrame} from '../packages/world/visual-state-runtime/dist/packages/spatial-reality-3d/src/index.js';
 import {createRepresentationObservationCandidate, verifyRepresentationObservationCandidate} from '../packages/world/reality-simulation-runtime/dist/packages/representation-observation/src/index.js';
+
+function meshGltfFixture() {
+  const positions = new Float32Array([-0.7, -0.6, 0, 0.7, -0.6, 0, 0, 0.8, 0]);
+  const normals = new Float32Array([0, 0, 1, 0, 0, 1, 0, 0, 1]);
+  const indices = new Uint16Array([0, 1, 2]);
+  const chunks = [positions, normals, indices];
+  const offsets = [];
+  let length = 0;
+  for (const chunk of chunks) {
+    while (length % 4) length++;
+    offsets.push(length);
+    length += chunk.byteLength;
+  }
+  const binary = Buffer.alloc(length);
+  chunks.forEach((chunk, index) => Buffer.from(chunk.buffer, chunk.byteOffset, chunk.byteLength).copy(binary, offsets[index]));
+  return {
+    asset: {version: '2.0', generator: 'URRF phase3 mesh runtime fixture'},
+    buffers: [{byteLength: binary.length, uri: `data:application/octet-stream;base64,${binary.toString('base64')}`}],
+    bufferViews: chunks.map((chunk, index) => ({buffer: 0, byteOffset: offsets[index], byteLength: chunk.byteLength})),
+    accessors: [
+      {bufferView: 0, componentType: 5126, count: 3, type: 'VEC3'},
+      {bufferView: 1, componentType: 5126, count: 3, type: 'VEC3'},
+      {bufferView: 2, componentType: 5123, count: 3, type: 'SCALAR'}
+    ],
+    materials: [{pbrMetallicRoughness: {baseColorFactor: [0.2, 0.7, 1, 1], metallicFactor: 0.1, roughnessFactor: 0.65}}],
+    meshes: [{primitives: [{attributes: {POSITION: 0, NORMAL: 1}, indices: 2, material: 0}]}],
+    nodes: [{mesh: 0}],
+    scenes: [{nodes: [0]}],
+    scene: 0
+  };
+}
 
 test('Spark contract flows through RAGF to visual binding and RSR observation without authority promotion', async () => {
   const provider = createSpark3DGSProvider().manifest;
@@ -231,4 +264,45 @@ test('Gaussian-to-mesh transition keeps identity, records independent equivalenc
   assert.equal(rolledBack.active_representation_root, source.representation_root);
   assert.equal(rolledBack.rollback.status, 'ROLLED_BACK');
   assert.equal(rolledBack.authority.provider_can_write_authoritative_world_state, false);
+});
+
+test('Mesh glTF implementation executes a bounded reference frame without promoting provider authority', () => {
+  const provider = {
+    id: 'provider:external:gltf-mesh-0.2',
+    version: '0.2.0',
+    manifest_root: 'd'.repeat(64),
+    runtimeStatus: 'CONTRACT_ONLY',
+    capabilities: ['representation.visual.render', 'representation.visual.query'],
+    authority: {owns_authoritative_world_state: false, scope: ['representation_candidate', 'visual_projection', 'observation_candidate']},
+    representation: {kinds: ['mesh'], profiles: [{profile_id: 'gltf.mesh', formats: ['model/gltf+json']}]}
+  };
+  const imported = importGltfToSpatialScene(meshGltfFixture(), {sceneId: 'urrf-phase3-mesh-runtime'});
+  assert.equal(verifyGltfImportReceipt(imported.receipt), true);
+  assert.equal(imported.scene.meshes.length, 1);
+  const frame = compileSpatialFrame(imported.scene, {width: 64, height: 64, enableShadows: false});
+  assert.equal(verifySpatialFrame(frame).ok, true);
+  const rendered = renderSpatialReference(imported.scene, {width: 64, height: 64, enableShadows: false});
+  assert.equal(rendered.framePlan.frameRoot, frame.frameRoot);
+  assert.equal(rendered.framePlan.stats.meshCount, 1);
+  assert.equal(rendered.framePlan.stats.triangleCount, 1);
+  assert.ok(rendered.png.length > 100);
+  assert.deepEqual([...rendered.png.slice(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10]);
+  const reference = createRepresentationRef({
+    provider_id: provider.id,
+    provider_root: provider.manifest_root,
+    representation_kind: 'mesh',
+    representation_formats: ['model/gltf+json'],
+    content_root: imported.receipt.sceneRoot,
+    representation_profile: {profile_id: 'gltf.mesh', formats: ['model/gltf+json']},
+    detail_policy: {mode: 'distance-lod', selectors: ['screen-space-size']},
+    residency_policy: {mode: 'asset-resident', selectors: ['vram-budget']},
+    authority_scope: ['representation_candidate', 'visual_projection', 'observation_candidate'],
+    availability: 'CONTRACT_ONLY',
+    evidence: {provider_manifest_root: provider.manifest_root, provider_result_root: imported.receipt.receiptRoot, notes: 'VSR reference runtime only'}
+  });
+  const binding = createVisualRepresentationBinding({provider, reference});
+  assert.equal(verifyRepresentationRef(reference).valid, true);
+  assert.equal(verifyVisualRepresentationBinding(binding), true);
+  assert.equal(binding.execution_status, 'NOT_EXECUTED');
+  assert.equal(binding.authority.provider_can_write_authoritative_world_state, false);
 });

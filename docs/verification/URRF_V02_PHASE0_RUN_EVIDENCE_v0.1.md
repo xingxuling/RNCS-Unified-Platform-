@@ -163,10 +163,21 @@ The next Phase 3 gate uses the generic RNCS representation-transition contract t
 - RNCS contract suite after the change: `representation transition tests: 5/5 PASS`; focused cross-package command after rebuilding VSR: `node --test tests/spark-representation-provider.integration.test.mjs` -> `4/4 PASS`.
 - This is a deterministic contract/equivalence-plan candidate gate. It is not a Mesh runtime receipt, a geometry conversion, a collision/behavior equivalence proof, or a canonical-state transition.
 
+### Continuation: bounded Mesh reference runtime
+
+The repository already contains a glTF importer and VSR spatial reference renderer. I ran the same one-triangle glTF fixture used by the new integration probe through that path and then bound its sealed scene root to the generic Mesh `RepresentationRef`.
+
+`MESH_REFERENCE_RUNTIME_PASS`:
+
+- glTF import receipt verified; one Mesh and one triangle were materialized.
+- VSR spatial frame verification passed at `64x64` with shadows disabled; the CPU reference renderer emitted a valid PNG and a stable pixel root.
+- Observed roots: `sceneRoot=133b65520077c287cdb79ea8dfc91f649b8ecce01e270856126c065064e9ea5f`, `receiptRoot=261bd6b12ad18158da01e9ec4d69294530f2843a868ce2978f558f45a29932f0`, `frameRoot=64649713e385ba14240ce6ba6a1115106c76eafb805132b2dc2e22830bc9a7c1`, `pixelRoot=52ae4f50cfa7f80b213d71eb9c7a51db51eff9791207fb726af0a3c3f9e72d5e`.
+- The provider binding still reports `execution_status=NOT_EXECUTED`; this run proves the local VSR Mesh implementation/reference path, not an independent external Mesh Provider execution receipt or GPU/browser provider handoff.
+
 ### Remaining gates
 
 - `REAL_RAD_PAGE_STREAM_NOT_EXECUTED`: the synthetic chunked PLY stream passed, but no real `.rad`/`.radc` fixture or Spark page-stream input was supplied, so production-format streaming/paging remains open.
-- `SECOND_PROVIDER_RUNTIME_NOT_EXECUTED`: the generic Mesh contract passed, but no separate Mesh provider GPU/browser execution receipt has been produced.
+- `SECOND_PROVIDER_RUNTIME_NOT_EXECUTED`: the generic Mesh contract and local VSR reference implementation passed, but no separate Mesh provider execution receipt or GPU/browser provider handoff has been produced.
 - `CROSS_REPRESENTATION_RUNTIME_NOT_EXECUTED`: the candidate transition, VSR perceptual comparator and rollback contract pass, but no provider-side Gaussian-to-Mesh materialization or target-runtime handoff has executed.
 - `CROSS_REPRESENTATION_DOMAIN_EQUIVALENCE_PARTIAL`: identity, authority, perceptual-plan and resource-policy evidence pass for the fixture; constraint, behavioral and temporal equivalence remain `UNKNOWN` / `NOT_RUN`.
 - `ASYNC_DEPTH_READBACK_BLOCKED`: the standard async depth-readback path needs a follow-up on a non-headless/browser-GPU environment; the zero-depth adapter is bounded evidence for a one-splat ordering case only.
