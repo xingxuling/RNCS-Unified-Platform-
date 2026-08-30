@@ -8,6 +8,7 @@
     "format": {"const": "ragf.asset-provider-result.v0.1"},
     "version": {"const": "0.1.0"},
     "files": {"type": "array", "items": {"type": "object", "required": ["path", "role", "format", "sha256"]}},
+    "representation_refs": {"type": "array", "items": {"$ref": "../../../kernel/rncs-core-contract/schemas/representation-reference.v0.1.schema.json"}},
     "provenance": {"type": "object", "required": ["provider_id", "source_revision", "generator_version", "seed"]},
     "license": {"type": "object", "required": ["status", "identifier"]},
     "evidence": {"type": "object", "required": ["candidate_only", "vsr_projection", "rsr_simulation"]},
