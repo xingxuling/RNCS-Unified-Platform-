@@ -66,12 +66,12 @@ The direct root test was first attempted before the workspace build and correctl
 
 ## What is not proven
 
-`SPARK_RUNTIME_NOT_EXECUTED` / `BLOCKED`:
+`SPARK_RUNTIME_PARTIAL` / `BLOCKED`:
 
 - No `@sparkjsdev/spark` package is installed in the RNCS workspace dependency graph.
 - The supplied `spark-2.1.0.zip` was inspected as source/dist/type evidence (version 2.1.0, MIT, `three >=0.180.0` peer), but was not silently copied into the repository or treated as an installed runtime.
-- This host has no verified Spark browser harness, `three` peer installation, WebGL/WebGPU context, GPU render, RAD fixture load, page streaming, or raycast execution.
-- Consequently the Phase 0 `load / render / stream / raycast` runtime part remains `NOT_EXECUTED`; no visual, GPU, production, deployment, or CI evidence is claimed.
+- The isolated external probe below verifies a synthetic PLY load/render/raycast route and a synthetic chunked `ReadableStream`; it does not verify a real RAD/RADC fixture, Spark paging, or the default asynchronous GPU depth-readback path.
+- Consequently the Phase 0 runtime part is `PARTIAL`; no production, deployment, hardware-GPU, or CI success evidence is claimed.
 
 The implementation itself records this boundary as `CONTRACT_VERIFIED_RUNTIME_NOT_EXECUTED` with failure code `PROVIDER_RUNTIME_NOT_EXECUTED` when the runtime is absent. The VSR binding likewise remains `execution_status: NOT_EXECUTED` in the contract test.
 
@@ -85,7 +85,7 @@ The implementation itself records this boundary as `CONTRACT_VERIFIED_RUNTIME_NO
 
 ## Next executable gate
 
-The isolated continuation below upgrades only the bounded load/render/raycast portion. A real RAD/page-stream fixture and the default asynchronous GPU depth-readback path are still open.
+The isolated continuations below upgrade the bounded load/render/raycast portion and a synthetic chunked stream. A real RAD/page-stream fixture and the default asynchronous GPU depth-readback path are still open.
 
 ## Continuation: isolated Spark 2.1 browser proof
 
@@ -127,9 +127,21 @@ The default `readRenderTargetPixelsAsync` depth-readback did not complete within
 - Renderer statistics: `1` render call and `2` triangles.
 - Browser page errors: none; request failures: none. The only console entries were a favicon `404` and a non-fatal shader signed/unsigned warning.
 
+### Continuation: synthetic chunked stream proof
+
+The same 413-byte PLY fixture was delivered through Spark's `stream`/`streamLength` input as eight `ReadableStream` chunks (`[1, 7, 13, 29, 61, 97, 131, 74]` bytes). All eight chunks and all 413 bytes were consumed by the browser Worker decoder. A parallel direct-byte decode produced identical center, scale, quaternion, opacity and color values.
+
+`RUNTIME_SYNTHETIC_STREAM_LOAD_RENDER_RAYCAST_PASS`:
+
+- Stream decode and initialization: `isInitialized=true`, `numSplats=1`, `deliveredChunks=8`, `deliveredBytes=413`.
+- Spark update/sort stage: `activeSplats=1`, `currentNumSplats=1`, `displayNumSplats=1`, ordering texture length `16384`.
+- GPU render pixels: `16384/16384` pixels differed from the clear color; center pixel `[128,128,128,255]`; all `16384` pixels had non-zero alpha.
+- Renderer statistics: `1` render call and `2` triangles.
+- Raycast: `1` hit at distance `3.0117416382`.
+
 ### Remaining gates
 
-- `STREAM_NOT_EXECUTED`: no real `.rad`/`.radc` fixture or chunked/page-stream input was supplied, so Spark streaming/paging was not executed.
+- `REAL_RAD_PAGE_STREAM_NOT_EXECUTED`: the synthetic chunked PLY stream passed, but no real `.rad`/`.radc` fixture or Spark page-stream input was supplied, so production-format streaming/paging remains open.
 - `ASYNC_DEPTH_READBACK_BLOCKED`: the standard async depth-readback path needs a follow-up on a non-headless/browser-GPU environment; the zero-depth adapter is bounded evidence for a one-splat ordering case only.
 - `RNCS_WORKSPACE_RUNTIME_NOT_INSTALLED`: the repository still intentionally has no Spark dependency; its contract test remains `CONTRACT_VERIFIED_RUNTIME_NOT_EXECUTED` when run without the external package.
 - No production deployment, CI success, GPU hardware certification, canonical-state mutation, authority promotion or commit was performed.
