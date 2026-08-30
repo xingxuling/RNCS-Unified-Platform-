@@ -28,6 +28,7 @@ export function createAssetEvidenceLedger({
     entry('job-lifecycle', job?.state === 'COMPLETED' ? 'PASS' : (job?.state ?? 'NOT_PROVIDED'), job?.job_root, {history: job?.history ?? []}),
     entry('provider-result', result?.result_root ? 'PASS' : 'NOT_PROVIDED', result?.result_root, {candidate_id: result?.candidate_id ?? null}),
     entry('candidate', candidate?.candidate_root ? 'PASS' : 'NOT_PROVIDED', candidate?.candidate_root, {candidate_only: candidate?.candidate_only ?? true}),
+    entry('representation-references', candidate?.representation_refs?.length ? 'CANDIDATE_ONLY' : 'NOT_PROVIDED', candidate?.representation_refs?.length ? rootHash(candidate.representation_refs) : null, {count: candidate?.representation_refs?.length ?? 0, provider_ids: [...new Set((candidate?.representation_refs ?? []).map(reference => reference.provider_id))].sort()}),
     entry('production-court', court?.pass ? 'PASS' : (court ? 'FAIL' : 'NOT_PROVIDED'), court?.court_root, {gates: court?.gates ?? null, failures: court?.failures ?? []}),
     entry('world-placement', placement?.status === 'READY_FOR_WORLD_COMMIT' ? 'PASS' : (placement ? placement.status : 'NOT_PROVIDED'), placement?.placement_root, {role: placement?.role ?? null})
   ];

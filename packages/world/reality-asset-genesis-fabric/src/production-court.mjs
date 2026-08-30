@@ -1,5 +1,6 @@
 import {clone, GenesisError, rootHash, seal, stableId} from './canonical.mjs';
 import {ASSET_PROVIDER_CONTRACT_VERSION, normalizeAssetProviderResult} from './asset-provider-contract.mjs';
+import {verifyRepresentationRef} from '@taowind/rncs-core-contract';
 
 export const ASSET_PRODUCTION_COURT_VERSION = '0.1.0';
 export const ASSET_PRODUCTION_COURT_FORMAT = 'ragf.asset-production-court.v0.1';
@@ -11,6 +12,12 @@ const hasRole = (result, roles) => (result?.files ?? []).some(file => roles.incl
 
 export function createAssetCandidateFromProviderResult({result, provider, job, genome, assetIntent = null} = {}) {
   if (!result?.result_root) throw new GenesisError('ASSET_CANDIDATE_RESULT_REQUIRED');
+  const representation_refs = clone(result.representation_refs ?? []);
+  for (const reference of representation_refs) {
+    const validation = verifyRepresentationRef(reference);
+    if (!validation.valid) throw new GenesisError('ASSET_CANDIDATE_REPRESENTATION_REF_INVALID', validation.errors.join(','));
+    if (reference.provider_id !== (result.provider_id ?? provider?.id)) throw new GenesisError('ASSET_CANDIDATE_REPRESENTATION_PROVIDER_MISMATCH');
+  }
   const candidate = {
     format: 'ragf.asset-candidate.v0.1',
     version: ASSET_PROVIDER_CONTRACT_VERSION,
@@ -25,6 +32,7 @@ export function createAssetCandidateFromProviderResult({result, provider, job, g
     stage: result.stage ?? 'generate',
     files: clone(result.files ?? []),
     format_output: result.format_output,
+    representation_refs,
     geometry: clone(result.geometry ?? {}),
     materials: clone(result.materials ?? {}),
     pbr_channels: clone(result.pbr_channels ?? []),
@@ -148,6 +156,7 @@ export function createLivingAssetFamilyCandidate({candidate, court, assetIntent 
     candidate_root: candidate.candidate_root,
     court_root: court.court_root,
     provider_roots: [candidate.provider_root].filter(Boolean),
+    representation_refs: clone(candidate.representation_refs ?? []),
     lineage: {
       source_result_root: candidate.result_root,
       source_job_id: candidate.job_id,

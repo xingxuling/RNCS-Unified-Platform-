@@ -24,6 +24,7 @@
     "workbench": "node scripts/build-workbench.mjs",
     "build:world": "npm run build --workspace @taowind/visual-state-runtime && npm run build --workspace @taowind/reality-simulation-runtime",
     "test:world": "npm test --workspace @taowind/reality-asset-genesis-fabric && npm test --workspace @taowind/reality-simulation-runtime && npm test --workspace @taowind/visual-state-runtime",
+    "test:spark-representation-provider": "npm test --workspace @taowind/rncs-core-contract && npm test --workspace @taowind/reality-asset-genesis-fabric && npm test --workspace @taowind/visual-state-runtime && npm test --workspace @taowind/reality-simulation-runtime && node --test tests/spark-representation-provider.integration.test.mjs",
     "test:ragf-world-binding": "npm run build:world && npm test --workspace @taowind/reality-asset-genesis-fabric && node --test tests/ragf-vsr-rsr-runtime.integration.test.mjs",
     "test:anime-forge": "npm test --workspace @taowind/anime-production-runtime && npm test --workspace @taowind/rcl-anime-production-bridge && npm test --workspace @taowind/voice-performance-runtime && npm test --workspace @taowind/audio-scene-runtime && node --test apps/reality-studio/tests/anime-forge.test.mjs",
     "test:anime-editorial": "node --test packages/world/anime-production-runtime/tests/runtime.test.mjs packages/integration/rcl-anime-production-bridge/tests/bridge.test.mjs packages/world/voice-performance-runtime/tests/voice.test.mjs packages/world/audio-scene-runtime/tests/audio.test.mjs",

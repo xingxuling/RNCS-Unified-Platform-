@@ -44,6 +44,9 @@
     "verify:society": "node src/cli.mjs verify-society --workspace outputs/ai-society-ecosystem/workspace.json --files",
     "evidence:anime-quality": "node scripts/generate-anime-quality-evidence.mjs"
   },
+  "dependencies": {
+    "@taowind/rncs-core-contract": "*"
+  },
   "engines": {
     "node": ">=20"
   }

@@ -7,6 +7,15 @@
   },
   "providers": [
     {
+      "provider_id": "provider:external:spark-2.1.0",
+      "role": "gaussian-visual-representation",
+      "runtime": "CONTRACT_ONLY",
+      "quality_tier": "PRODUCTION",
+      "install_policy": "user-installed",
+      "authority_scope": ["asset_generation_candidate", "representation_candidate", "visual_projection", "observation_candidate"],
+      "capabilities": ["asset.gaussian.ingress", "asset.gaussian.convert", "asset.gaussian.procedural-generate", "asset.gaussian.edit-sdf", "asset.gaussian.build-lod", "asset.gaussian.package-rad", "representation.visual.render", "representation.visual.stream", "representation.visual.paged-residency", "representation.visual.raycast", "representation.visual.xr", "representation.visual.portal"]
+    },
+    {
       "provider_id": "provider:external:trellis-2",
       "role": "production-3d",
       "runtime": "external-process",
