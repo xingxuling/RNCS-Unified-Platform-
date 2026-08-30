@@ -1,12 +1,21 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {createRepresentationRef, verifyRepresentationRef} from '../packages/kernel/rncs-core-contract/src/index.mjs';
+import {
+  applyRepresentationTransition,
+  createRepresentationRef,
+  createRepresentationTransitionCandidate,
+  rootHash,
+  rollbackRepresentationTransition,
+  verifyRepresentationRef,
+  verifyRepresentationTransition
+} from '../packages/kernel/rncs-core-contract/src/index.mjs';
 import {
   createAssetCandidateFromProviderResult,
   createSpark3DGSProvider,
   normalizeAssetProviderResult
 } from '../packages/world/reality-asset-genesis-fabric/src/index.mjs';
 import {createSpark3DGSVisualBinding, createVisualRepresentationBinding, verifyVisualRepresentationBinding} from '../packages/world/visual-state-runtime/dist/packages/representation-provider/src/index.js';
+import {comparePerceptualPlans, compileVisualRealityPlan} from '../packages/world/visual-state-runtime/dist/packages/visual-reality-compiler/src/index.js';
 import {createRepresentationObservationCandidate, verifyRepresentationObservationCandidate} from '../packages/world/reality-simulation-runtime/dist/packages/representation-observation/src/index.js';
 
 test('Spark contract flows through RAGF to visual binding and RSR observation without authority promotion', async () => {
@@ -119,4 +128,107 @@ test('Mesh provider enters the generic RNCS/VSR representation path without Spar
   assert.equal(meshBinding.execution_status, 'NOT_EXECUTED');
   assert.equal(meshBinding.authority.provider_can_write_authoritative_world_state, false);
   assert.equal(verifyVisualRepresentationBinding(meshBinding), true);
+});
+
+test('Gaussian-to-mesh transition keeps identity, records independent equivalence and rolls back', () => {
+  const spark = createSpark3DGSProvider().manifest;
+  const mesh = {
+    id: 'provider:external:gltf-mesh-0.2',
+    version: '0.2.0',
+    manifest_root: 'd'.repeat(64),
+    runtimeStatus: 'CONTRACT_ONLY',
+    capabilities: ['representation.visual.render', 'representation.visual.query'],
+    authority: {
+      owns_authoritative_world_state: false,
+      scope: ['representation_candidate', 'visual_projection', 'observation_candidate']
+    },
+    representation: {kinds: ['mesh'], profiles: [{profile_id: 'gltf.mesh', formats: ['model/gltf-binary']}]}
+  };
+  const source = createRepresentationRef({
+    provider_id: spark.id,
+    provider_root: spark.manifest_root,
+    representation_kind: 'gaussian-splats',
+    representation_formats: ['application/vnd.spark.rad'],
+    content_root: 'f'.repeat(64),
+    representation_profile: {profile_id: 'spark.ext-splats', formats: ['application/vnd.spark.rad']},
+    detail_policy: spark.representation.detail_policy,
+    residency_policy: spark.representation.residency_policy,
+    authority_scope: ['representation_candidate', 'visual_projection', 'observation_candidate'],
+    availability: 'CONTRACT_ONLY'
+  });
+  const target = createRepresentationRef({
+    provider_id: mesh.id,
+    provider_root: mesh.manifest_root,
+    representation_kind: 'mesh',
+    representation_formats: ['model/gltf-binary'],
+    content_root: source.content_root,
+    representation_profile: {profile_id: 'gltf.mesh', formats: ['model/gltf-binary']},
+    detail_policy: {mode: 'distance-lod', selectors: ['screen-space-size', 'triangle-budget']},
+    residency_policy: {mode: 'asset-resident', selectors: ['vram-budget']},
+    authority_scope: ['representation_candidate', 'visual_projection', 'observation_candidate'],
+    availability: 'CONTRACT_ONLY'
+  });
+  const state = {
+    documentId: 'urrf-phase3-fixture',
+    documentHash: 'a'.repeat(64),
+    runtimeVersion: '0.8.0',
+    time: 0,
+    frame: 0,
+    viewport: {width: 64, height: 64, dpr: 1},
+    items: [{
+      id: 'object:phase3-fixture',
+      nodeId: 'object:phase3-fixture',
+      type: 'rect',
+      orderKey: 'order:0',
+      worldTransform: [1, 0, 0, 0, 1, 0, 0, 0, 1],
+      localBounds: {x: 8, y: 8, width: 32, height: 32},
+      worldBounds: {x: 8, y: 8, width: 32, height: 32},
+      opacity: 1,
+      appearance: {fill: {type: 'solid', color: '#ffffff'}, opacity: 1},
+      content: {},
+      tags: ['semantic']
+    }],
+    diagnostics: [],
+    semanticHash: 'b'.repeat(64)
+  };
+  const gaussianPlan = compileVisualRealityPlan(state, {quality: 'quality', observer: {id: 'observer:gaussian', purpose: 'player'}, device: {class: 'desktop', gpuTier: 2}});
+  const meshPlan = compileVisualRealityPlan(state, {quality: 'economy', observer: {id: 'observer:mesh', purpose: 'player'}, device: {class: 'mobile', gpuTier: 1}});
+  const perceptualReport = comparePerceptualPlans(gaussianPlan, meshPlan);
+  assert.equal(perceptualReport.ok, true);
+  assert.equal(perceptualReport.sharedSourceReality, true);
+  const transition = createRepresentationTransitionCandidate({
+    transition_id: 'transition:phase3:gaussian-mesh',
+    operation: 'handoff',
+    object_id: 'reality-object:phase3-fixture',
+    branch: 'main',
+    state_root: rootHash({object_id: 'reality-object:phase3-fixture', semantic: state.semanticHash}),
+    source_representation: source,
+    target_representation: target,
+    equivalence: {
+      identity: {status: 'PASS', evidence_root: rootHash({content_root: source.content_root, object_id: 'reality-object:phase3-fixture'})},
+      authority: 'PASS',
+      constraint: 'UNKNOWN',
+      semantic: 'PASS',
+      spatial: 'PASS',
+      perceptual: {status: 'PASS', evidence_root: perceptualReport.reportRoot},
+      behavioral: 'NOT_RUN',
+      temporal: 'NOT_RUN',
+      task: 'PASS'
+    },
+    resource_decision: {
+      mode: 'handoff',
+      selected_representation_root: target.representation_root,
+      resource_budget: {working_set: 'mesh-resident', vram_mb: 128},
+      reason: 'mobile edit task selects the mesh candidate under the declared budget'
+    }
+  });
+  assert.equal(verifyRepresentationTransition(transition).valid, true);
+  const applied = applyRepresentationTransition(transition);
+  assert.equal(applied.active_representation_root, target.representation_root);
+  assert.equal(applied.commit_status, 'NOT_COMMITTED');
+  const rolledBack = rollbackRepresentationTransition(applied, 'resource budget changed');
+  assert.equal(verifyRepresentationTransition(rolledBack).valid, true);
+  assert.equal(rolledBack.active_representation_root, source.representation_root);
+  assert.equal(rolledBack.rollback.status, 'ROLLED_BACK');
+  assert.equal(rolledBack.authority.provider_can_write_authoritative_world_state, false);
 });

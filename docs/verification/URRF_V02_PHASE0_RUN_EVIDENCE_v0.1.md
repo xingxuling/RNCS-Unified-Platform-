@@ -150,11 +150,25 @@ The Phase 2 contract gate was exercised with a second, non-Gaussian `mesh` provi
 - Verification command after rebuilding VSR: `node --test tests/spark-representation-provider.integration.test.mjs` -> `3/3 PASS` (the existing two Spark cases plus the Mesh case).
 - This is a contract/identity gate only. It does not claim a Mesh GPU/browser provider runtime, cross-representation transition, equivalence proof or rollback.
 
+### Continuation: cross-representation transition candidate
+
+The next Phase 3 gate uses the generic RNCS representation-transition contract together with the existing VSR perceptual-plan comparator. It is deliberately candidate-only: applying the transition changes only the candidate's active representation root, and does not call RNCS `commit` or mutate canonical reality.
+
+`PHASE3_CROSS_REPRESENTATION_CANDIDATE_PASS`:
+
+- `createRepresentationTransitionCandidate` accepted the same `content_root` and stable object/state identity for the Spark Gaussian and Mesh references.
+- VSR compiled two deterministic plans under different quality/device resource policies, and `comparePerceptualPlans` returned `ok=true` with `sharedSourceReality=true`; its report root was bound into the transition's perceptual evidence.
+- `applyRepresentationTransition` selected the Mesh candidate under the declared working-set budget while preserving `commit_status=NOT_COMMITTED` and provider write authority `false`.
+- `rollbackRepresentationTransition` restored the Gaussian source root and sealed `rollback.status=ROLLED_BACK`, still with no canonical commit.
+- RNCS contract suite after the change: `representation transition tests: 5/5 PASS`; focused cross-package command after rebuilding VSR: `node --test tests/spark-representation-provider.integration.test.mjs` -> `4/4 PASS`.
+- This is a deterministic contract/equivalence-plan candidate gate. It is not a Mesh runtime receipt, a geometry conversion, a collision/behavior equivalence proof, or a canonical-state transition.
+
 ### Remaining gates
 
 - `REAL_RAD_PAGE_STREAM_NOT_EXECUTED`: the synthetic chunked PLY stream passed, but no real `.rad`/`.radc` fixture or Spark page-stream input was supplied, so production-format streaming/paging remains open.
 - `SECOND_PROVIDER_RUNTIME_NOT_EXECUTED`: the generic Mesh contract passed, but no separate Mesh provider GPU/browser execution receipt has been produced.
-- `CROSS_REPRESENTATION_TRANSITION_NOT_EXECUTED`: Gaussian-to-Mesh transition, equivalence validation, rollback and resource-policy switching remain open Phase 3 gates.
+- `CROSS_REPRESENTATION_RUNTIME_NOT_EXECUTED`: the candidate transition, VSR perceptual comparator and rollback contract pass, but no provider-side Gaussian-to-Mesh materialization or target-runtime handoff has executed.
+- `CROSS_REPRESENTATION_DOMAIN_EQUIVALENCE_PARTIAL`: identity, authority, perceptual-plan and resource-policy evidence pass for the fixture; constraint, behavioral and temporal equivalence remain `UNKNOWN` / `NOT_RUN`.
 - `ASYNC_DEPTH_READBACK_BLOCKED`: the standard async depth-readback path needs a follow-up on a non-headless/browser-GPU environment; the zero-depth adapter is bounded evidence for a one-splat ordering case only.
 - `RNCS_WORKSPACE_RUNTIME_NOT_INSTALLED`: the repository still intentionally has no Spark dependency; its contract test remains `CONTRACT_VERIFIED_RUNTIME_NOT_EXECUTED` when run without the external package.
 - No production deployment, CI success, GPU hardware certification, canonical-state mutation, authority promotion or canonical commit was performed.
