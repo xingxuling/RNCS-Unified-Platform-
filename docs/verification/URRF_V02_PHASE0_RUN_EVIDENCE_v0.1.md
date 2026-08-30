@@ -139,9 +139,22 @@ The same 413-byte PLY fixture was delivered through Spark's `stream`/`streamLeng
 - Renderer statistics: `1` render call and `2` triangles.
 - Raycast: `1` hit at distance `3.0117416382`.
 
+### Continuation: second-provider generic contract gate
+
+The Phase 2 contract gate was exercised with a second, non-Gaussian `mesh` provider (`provider:external:gltf-mesh-0.2`). The test used the existing generic RNCS `createRepresentationRef` and VSR `createVisualRepresentationBinding` paths; no Spark- or Mesh-specific branch was added to RNCS Core.
+
+`SECOND_PROVIDER_GENERIC_CONTRACT_PASS`:
+
+- RNCS verified both the Spark Gaussian reference and the Mesh reference with the same `content_root` while keeping distinct provider IDs, representation kinds and profiles.
+- VSR accepted the Mesh manifest through the generic projection-only binding; `execution_status=NOT_EXECUTED`, `provider_can_write_authoritative_world_state=false`, and binding integrity verification passed.
+- Verification command after rebuilding VSR: `node --test tests/spark-representation-provider.integration.test.mjs` -> `3/3 PASS` (the existing two Spark cases plus the Mesh case).
+- This is a contract/identity gate only. It does not claim a Mesh GPU/browser provider runtime, cross-representation transition, equivalence proof or rollback.
+
 ### Remaining gates
 
 - `REAL_RAD_PAGE_STREAM_NOT_EXECUTED`: the synthetic chunked PLY stream passed, but no real `.rad`/`.radc` fixture or Spark page-stream input was supplied, so production-format streaming/paging remains open.
+- `SECOND_PROVIDER_RUNTIME_NOT_EXECUTED`: the generic Mesh contract passed, but no separate Mesh provider GPU/browser execution receipt has been produced.
+- `CROSS_REPRESENTATION_TRANSITION_NOT_EXECUTED`: Gaussian-to-Mesh transition, equivalence validation, rollback and resource-policy switching remain open Phase 3 gates.
 - `ASYNC_DEPTH_READBACK_BLOCKED`: the standard async depth-readback path needs a follow-up on a non-headless/browser-GPU environment; the zero-depth adapter is bounded evidence for a one-splat ordering case only.
 - `RNCS_WORKSPACE_RUNTIME_NOT_INSTALLED`: the repository still intentionally has no Spark dependency; its contract test remains `CONTRACT_VERIFIED_RUNTIME_NOT_EXECUTED` when run without the external package.
 - No production deployment, CI success, GPU hardware certification, canonical-state mutation, authority promotion or canonical commit was performed.
