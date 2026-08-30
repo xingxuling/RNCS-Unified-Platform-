@@ -144,6 +144,6 @@ The same 413-byte PLY fixture was delivered through Spark's `stream`/`streamLeng
 - `REAL_RAD_PAGE_STREAM_NOT_EXECUTED`: the synthetic chunked PLY stream passed, but no real `.rad`/`.radc` fixture or Spark page-stream input was supplied, so production-format streaming/paging remains open.
 - `ASYNC_DEPTH_READBACK_BLOCKED`: the standard async depth-readback path needs a follow-up on a non-headless/browser-GPU environment; the zero-depth adapter is bounded evidence for a one-splat ordering case only.
 - `RNCS_WORKSPACE_RUNTIME_NOT_INSTALLED`: the repository still intentionally has no Spark dependency; its contract test remains `CONTRACT_VERIFIED_RUNTIME_NOT_EXECUTED` when run without the external package.
-- No production deployment, CI success, GPU hardware certification, canonical-state mutation, authority promotion or commit was performed.
+- No production deployment, CI success, GPU hardware certification, canonical-state mutation, authority promotion or canonical commit was performed.
 
 The RCL owner, auxiliary Spark provider boundary, `RCL_GAP_REPRESENTATION_POLICY_V0_1`, and `UNMAPPED_PENDING_CANONICAL_MATRIX` status remain unchanged.
