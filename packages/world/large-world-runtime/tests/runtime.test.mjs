@@ -125,6 +125,46 @@ test('snapshot and replay seal deterministic streaming evidence', () => {
   assert.equal(replayLargeWorldTrace({worldId: 'world:replay', seed: 'seed:replay', loadRadius: 1, maxActiveChunks: 9}, runtime.trace).ok, true);
 });
 
+test('binds canonical world time, authority-gated events, and Fact World Tree roots', () => {
+  const runtime = new LargeWorldRuntime({worldId: 'world:truth', seed: 'seed:truth', loadRadius: 0, maxActiveChunks: 1});
+  const authorityReceipt = {status: 'committed', receipt_root: 'a'.repeat(64), decision_root: null, epoch: 0};
+  const first = runtime.recordWorldEvent({
+    authorityReceipt,
+    subjects: ['subject:weather-system'],
+    objects: ['object:region'],
+    mutation: {operations: [{op: 'set', path: 'weather', value: 'rain'}]},
+    fact: {claim: {weather: 'rain'}, authority_domain: 'world.weather', confidence: 'canonical'}
+  });
+  assert.equal(first.event.world_time.simulation_tick, 1);
+  assert.equal(first.event.authority_receipt.status, 'committed');
+  assert.equal(first.canonical_state_mutated, true);
+  assert.equal(first.fact.source_events.includes(first.event.event_id), true);
+  assert.equal(runtime.eventLog.event_count, 1);
+  assert.equal(runtime.factTree.canonical_facts.length, 1);
+  assert.equal(runtime.verify().world_truth.time.valid, true);
+  assert.equal(runtime.verify().world_truth.event_log.valid, true);
+  assert.equal(runtime.verify().world_truth.fact_tree.valid, true);
+
+  const second = runtime.recordWorldEvent({
+    authorityReceipt,
+    mutation: {operations: [{op: 'set', path: 'weather', value: 'clear'}]}
+  });
+  assert.ok(second.world_time.simulation_tick > first.world_time.simulation_tick);
+  assert.equal(runtime.eventLog.event_count, 2);
+  assert.equal(runtime.eventLog.head_event_id, second.event.event_id);
+  assert.equal(runtime.verify().world_truth.event_log.valid, true);
+  const snapshot = runtime.snapshot();
+  assert.equal(snapshot.event_log_root, runtime.eventLog.log_root);
+  assert.equal(snapshot.fact_tree_root, runtime.factTree.tree_root);
+  assert.equal(verifyRuntimeSnapshot(snapshot).valid, true);
+});
+
+test('does not create a canonical world event without an explicit committed authority receipt', () => {
+  const runtime = new LargeWorldRuntime({worldId: 'world:truth-gate', seed: 'seed:truth-gate'});
+  assert.throws(() => runtime.recordWorldEvent({mutation: {operations: [{op: 'set', path: 'weather', value: 'storm'}]}}), /LARGE_WORLD_EVENT_AUTHORITY_RECEIPT_REQUIRED/);
+  assert.equal(runtime.eventLog.event_count, 0);
+});
+
 test('rejects invalid world dimensions and verifies tamper evidence', () => {
   assert.throws(() => generateRegion({width: 0}), /LARGE_WORLD_INTEGER_INVALID/);
   const region = generateRegion({worldId: 'world:tamper', seed: 'seed:tamper'});
