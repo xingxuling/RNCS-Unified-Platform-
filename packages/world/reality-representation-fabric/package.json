@@ -1,0 +1,26 @@
+{
+  "name": "@taowind/reality-representation-fabric",
+  "version": "0.1.0-alpha.1",
+  "type": "module",
+  "description": "Generic RNCS reality-representation registry, materialization planner, provider execution boundary, and reversible transition runtime.",
+  "license": "Apache-2.0",
+  "exports": {
+    ".": "./src/index.mjs"
+  },
+  "files": [
+    "src",
+    "schemas",
+    "tests",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs"
+  },
+  "dependencies": {
+    "@taowind/rncs-core-contract": "*"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
