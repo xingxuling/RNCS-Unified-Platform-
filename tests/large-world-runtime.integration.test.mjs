@@ -73,6 +73,14 @@ test('generates a 9x9 RNCS region, materializes the active 3D working set, and r
     maxActiveChunks: 9,
     materializeChunk: async ({chunk}) => ({status: 'EXECUTED', runtime: 'large-world-procedural-grid-reference', output_root: chunk.content_root, evidence_root: rootHash({chunk_root: chunk.chunk_root, renderer: 'vsr-cpu-reference'})})
   });
+  const truth = runtime.recordWorldEvent({
+    authorityReceipt: {status: 'committed', receipt_root: 'a'.repeat(64), decision_root: null, epoch: 0},
+    mutation: {operations: [{op: 'set', path: 'weather', value: 'clear'}]},
+    fact: {claim: {region_ready: true}, authority_domain: 'world.region', confidence: 'canonical'}
+  });
+  assert.equal(runtime.verify().world_truth.event_log.valid, true);
+  assert.equal(runtime.verify().world_truth.fact_tree.valid, true);
+  assert.equal(truth.event.world_time.simulation_tick, 1);
   const stream = runtime.observe({x: 0, z: 0});
   assert.equal(stream.active_chunk_ids.length, 9);
   assert.equal(verifyStreamResolutionReceipt(stream).valid, true);

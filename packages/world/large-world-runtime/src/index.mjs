@@ -1,4 +1,21 @@
-import {createRepresentationRef, rootHash} from '@taowind/rncs-core-contract';
+import {
+  ZERO_ROOT,
+  advanceWorldTime,
+  appendWorldEvent,
+  applyWorldMutation,
+  createFactWorldTree,
+  createRepresentationRef,
+  createWorldEvent,
+  createWorldEventLog,
+  createWorldFact,
+  createWorldTime,
+  rebuildFactWorldTree,
+  rootHash,
+  verifyFactWorldTree,
+  verifyWorldEventLog,
+  verifyWorldTime,
+  worldStateRoot
+} from '@taowind/rncs-core-contract';
 import {RealityRepresentationFabric} from '@taowind/reality-representation-fabric';
 
 export const LARGE_WORLD_RUNTIME_FORMAT = 'rncs.large-world-runtime.v0.1';
@@ -365,6 +382,35 @@ export class LargeWorldRuntime {
     this.activeChunkIds = [];
     this.observer = {x: 0, z: 0};
     this.trace = [];
+    this.canonicalState = {
+      format: 'rncs.large-world-state.v0.1',
+      world_id: this.options.worldId,
+      generation: this.options.generation,
+      region_root: this.region.region_root,
+      world_root: this.region.world_root,
+      weather: 'clear',
+      world_time_tick: 0
+    };
+    this.worldTime = createWorldTime({
+      world_id: this.options.worldId,
+      epoch: 0,
+      logical_clock: 0,
+      simulation_tick: 0,
+      causal_sequence: 0,
+      simulation_rate: '1hz',
+      time_scale: '1',
+      status: 'running',
+      causal_root: ZERO_ROOT,
+      historical_reference: null
+    });
+    this.eventLog = createWorldEventLog({
+      world_id: this.options.worldId,
+      branch_id: 'main',
+      initial_state: this.canonicalState,
+      initial_world_time: this.worldTime
+    });
+    this.facts = [];
+    this.factTree = createFactWorldTree({world_id: this.options.worldId, reality_root: this.region.world_root, branch_id: 'main'});
     this.materializeChunk = typeof value.materializeChunk === 'function' ? value.materializeChunk : null;
     this.provider = providerManifest(Boolean(this.materializeChunk));
     this.chunksByObjectId = new Map(this.region.chunks.map(chunk => [chunk.object_id, chunk]));
@@ -470,6 +516,72 @@ export class LargeWorldRuntime {
     return clone(resolution);
   }
 
+  recordWorldEvent(input = {}) {
+    const value = record(input);
+    const authorityReceipt = value.authorityReceipt ?? value.authority_receipt;
+    fail(authorityReceipt !== undefined && authorityReceipt !== null, 'LARGE_WORLD_EVENT_AUTHORITY_RECEIPT_REQUIRED');
+    const rawMutation = clone(value.mutation ?? {operations: []});
+    const mutation = Array.isArray(rawMutation)
+      ? {operations: rawMutation}
+      : {...record(rawMutation), operations: [...(record(rawMutation).operations ?? [])]};
+    const logicalDelta = integer(value.logicalClockDelta ?? value.logical_clock_delta, 1, {min: 0});
+    const simulationDelta = integer(value.simulationTickDelta ?? value.simulation_tick_delta, 1, {min: 0});
+    const causalDelta = integer(value.causalSequenceDelta ?? value.causal_sequence_delta, 1, {min: 0});
+    fail(logicalDelta > 0 || simulationDelta > 0 || causalDelta > 0, 'LARGE_WORLD_EVENT_TIME_DELTA_REQUIRED');
+    const nextTime = advanceWorldTime(this.worldTime, {
+      logical_clock_delta: logicalDelta,
+      simulation_tick_delta: simulationDelta,
+      causal_sequence_delta: causalDelta,
+      causal_root: rootHash({previous_time_root: this.worldTime.time_root, event_index: this.eventLog.event_count + 1})
+    });
+    mutation.operations.push({op: 'set', path: 'world_time_tick', value: nextTime.simulation_tick});
+    const nextState = applyWorldMutation(this.canonicalState, mutation);
+    const event = createWorldEvent({
+      world_id: this.options.worldId,
+      branch_id: 'main',
+      event_id: value.eventId ?? value.event_id,
+      world_time: nextTime,
+      causal_parents: this.eventLog.head_event_id ? [this.eventLog.head_event_id] : [],
+      subjects: value.subjects ?? [],
+      objects: value.objects ?? [],
+      mutation,
+      previous_state_root: worldStateRoot(this.canonicalState),
+      next_state_root: worldStateRoot(nextState),
+      authority_receipt: authorityReceipt,
+      evidence_ref: value.evidenceRef ?? value.evidence_ref ?? null
+    });
+    this.eventLog = appendWorldEvent(this.eventLog, event);
+    this.canonicalState = nextState;
+    this.worldTime = nextTime;
+    let fact = null;
+    if (value.fact !== undefined && value.fact !== null) {
+      const factInput = record(value.fact);
+      fact = createWorldFact({
+        ...factInput,
+        world_id: this.options.worldId,
+        branch_id: 'main',
+        source_events: [...(factInput.source_events ?? factInput.sourceEvents ?? []), event.event_id]
+      });
+      this.facts = [...this.facts, fact];
+    }
+    this.factTree = rebuildFactWorldTree({eventLog: this.eventLog, reality_root: this.region.world_root, facts: this.facts});
+    return {
+      format: 'rncs.large-world-event-receipt.v0.1',
+      version: LARGE_WORLD_RUNTIME_VERSION,
+      world_id: this.options.worldId,
+      event: clone(event),
+      fact: clone(fact),
+      world_time: clone(this.worldTime),
+      event_log_root: this.eventLog.log_root,
+      fact_tree_root: this.factTree.tree_root,
+      canonical_state_root: worldStateRoot(this.canonicalState),
+      canonical_state_mutated: true,
+      authority_receipt: clone(authorityReceipt),
+      commit_status: 'COMMITTED',
+      receipt_root: rootHash({event_root: event.event_root, event_log_root: this.eventLog.log_root, fact_tree_root: this.factTree.tree_root, canonical_state_root: worldStateRoot(this.canonicalState)})
+    };
+  }
+
   async materializeActive(input = {}) {
     const value = record(input);
     const latestStream = this.trace[this.trace.length - 1];
@@ -483,7 +595,7 @@ export class LargeWorldRuntime {
         detail_mode: value.detailMode ?? value.detail_mode ?? 'distance-lod',
         residency_mode: value.residencyMode ?? value.residency_mode ?? 'paged-streaming',
         resource_budget: clone(value.resourceBudget ?? value.resource_budget ?? {})
-      }, {context: {world_id: this.options.worldId, stream_root: streamRootValue, chunk: clone(chunk)}});
+      }, {context: {world_id: this.options.worldId, stream_root: streamRootValue, world_time_root: this.worldTime.time_root, chunk: clone(chunk)}});
       receipts.push(receipt);
     }
     const statuses = receipts.map(receipt => receipt.status);
@@ -520,6 +632,10 @@ export class LargeWorldRuntime {
       active_chunk_ids: [...this.activeChunkIds],
       active_chunk_roots: this.activeChunkIds.map(id => ({chunk_id: id, chunk_root: this.chunks.get(id).chunk_root})),
       trace: clone(this.trace),
+      canonical_state_root: worldStateRoot(this.canonicalState),
+      world_time: clone(this.worldTime),
+      event_log_root: this.eventLog.log_root,
+      fact_tree_root: this.factTree.tree_root,
       fabric_root: fabricSnapshot.fabric_root,
       canonical_state_mutated: false,
       authority: {provider_can_write_authoritative_world_state: false, rncs_authority_required: true},
@@ -542,7 +658,17 @@ export class LargeWorldRuntime {
   }
 
   verify() {
-    return {region: verifyRegion(this.region), snapshot: verifyRuntimeSnapshot(this.snapshot()), fabric_root: this.fabric.snapshot().fabric_root};
+    return {
+      region: verifyRegion(this.region),
+      snapshot: verifyRuntimeSnapshot(this.snapshot()),
+      world_truth: {
+        time: verifyWorldTime(this.worldTime),
+        event_log: verifyWorldEventLog(this.eventLog),
+        fact_tree: verifyFactWorldTree(this.factTree),
+        canonical_state_root: worldStateRoot(this.canonicalState)
+      },
+      fabric_root: this.fabric.snapshot().fabric_root
+    };
   }
 }
 
