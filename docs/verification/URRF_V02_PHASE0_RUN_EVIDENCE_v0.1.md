@@ -173,6 +173,7 @@ The repository already contains a glTF importer and VSR spatial reference render
 - VSR spatial frame verification passed at `64x64` with shadows disabled; the CPU reference renderer emitted a valid PNG and a stable pixel root.
 - Observed roots: `sceneRoot=133b65520077c287cdb79ea8dfc91f649b8ecce01e270856126c065064e9ea5f`, `receiptRoot=261bd6b12ad18158da01e9ec4d69294530f2843a868ce2978f558f45a29932f0`, `frameRoot=64649713e385ba14240ce6ba6a1115106c76eafb805132b2dc2e22830bc9a7c1`, `pixelRoot=52ae4f50cfa7f80b213d71eb9c7a51db51eff9791207fb726af0a3c3f9e72d5e`.
 - The provider binding still reports `execution_status=NOT_EXECUTED`; this run proves the local VSR Mesh implementation/reference path, not an independent external Mesh Provider execution receipt or GPU/browser provider handoff.
+- Final rerun from the fast-forwarded `origin/main-95` runner: `npm run test:spark-representation-provider` exited `0`; RNCS Core, RAGF `211/211`, VSR `122/122 + 98/98 + 6/6 + 4/4 + 21/21 + 11/11`, RSR `29/29 + 11/11 + 19/19 + 30/30 + 35/35 + 64/64 + 7/7 + 3/3`, and the root integration `5/5` all passed.
 
 ### Remaining gates
 
