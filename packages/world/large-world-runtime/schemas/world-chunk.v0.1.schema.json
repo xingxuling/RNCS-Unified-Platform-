@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.org/schemas/rncs.large-world-chunk.v0.1.schema.json",
+  "title": "RNCS Large World Chunk v0.1",
+  "type": "object",
+  "required": ["format", "version", "world_id", "seed", "generation", "chunk_id", "coordinates", "mesh", "chunk_root", "state_root", "content_root"],
+  "properties": {
+    "format": {"const": "rncs.large-world-chunk.v0.1"},
+    "version": {"const": "0.1.0"},
+    "world_id": {"type": "string", "minLength": 1},
+    "seed": {"type": "string"},
+    "generation": {"type": "integer", "minimum": 0},
+    "chunk_id": {"type": "string", "minLength": 1},
+    "coordinates": {"type": "object", "required": ["x", "z"], "properties": {"x": {"type": "integer"}, "z": {"type": "integer"}}, "additionalProperties": false},
+    "mesh": {"type": "object", "required": ["positions", "indices", "mesh_root"], "properties": {"positions": {"type": "array", "items": {"type": "integer"}}, "indices": {"type": "array", "items": {"type": "integer", "minimum": 0}}, "mesh_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}, "additionalProperties": true},
+    "chunk_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "state_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "content_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}

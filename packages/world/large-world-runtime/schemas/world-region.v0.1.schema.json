@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.org/schemas/rncs.large-world-region.v0.1.schema.json",
+  "title": "RNCS Large World Region v0.1",
+  "type": "object",
+  "required": ["format", "version", "world_id", "seed", "generation", "dimensions", "chunk_roots", "chunks", "region_root", "world_root"],
+  "properties": {
+    "format": {"const": "rncs.large-world-region.v0.1"},
+    "version": {"const": "0.1.0"},
+    "world_id": {"type": "string", "minLength": 1},
+    "seed": {"type": "string"},
+    "generation": {"type": "integer", "minimum": 0},
+    "dimensions": {"type": "object", "required": ["width", "depth"], "properties": {"width": {"type": "integer", "minimum": 1}, "depth": {"type": "integer", "minimum": 1}}, "additionalProperties": false},
+    "chunk_roots": {"type": "array"},
+    "chunks": {"type": "array", "items": {"$ref": "world-chunk.v0.1.schema.json"}},
+    "region_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "world_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}

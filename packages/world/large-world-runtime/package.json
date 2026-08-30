@@ -1,0 +1,28 @@
+{
+  "name": "@taowind/large-world-runtime",
+  "version": "0.1.0-alpha.1",
+  "type": "module",
+  "license": "Apache-2.0",
+  "description": "Deterministic RNCS region/chunk world runtime with bounded streaming, URRF representation materialization, and replay evidence.",
+  "exports": {
+    ".": "./src/index.mjs"
+  },
+  "files": [
+    "src",
+    "schemas",
+    "tests",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs",
+    "verify": "npm test"
+  },
+  "dependencies": {
+    "@taowind/rncs-core-contract": "*",
+    "@taowind/reality-representation-fabric": "*"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
