@@ -88,6 +88,7 @@
     "test:large-world-gltf-provider": "npm run build --workspace @taowind/visual-state-runtime && npm test --workspace @taowind/large-world-runtime && node --test tests/large-world-gltf-provider.integration.test.mjs",
     "test:large-world-glb-provider": "npm run build --workspace @taowind/visual-state-runtime && npm test --workspace @taowind/large-world-runtime && node --test tests/large-world-glb-provider.integration.test.mjs",
     "test:large-world-texture-residency": "npm run build --workspace @taowind/visual-state-runtime && npm test --workspace @taowind/reality-asset-genesis-fabric && npm test --workspace @taowind/large-world-runtime && node --test tests/large-world-texture-residency.integration.test.mjs",
+    "test:large-world-pbr-texture-residency": "npm run build --workspace @taowind/visual-state-runtime && npm test --workspace @taowind/reality-asset-genesis-fabric && npm test --workspace @taowind/large-world-runtime && node --test tests/large-world-pbr-texture-residency.integration.test.mjs",
     "test:large-world-portfolio": "npm run build --workspace @taowind/visual-state-runtime && node --test tests/large-world-portfolio.integration.test.mjs",
     "benchmark:network": "npm run benchmark --workspace @taowind/reality-network-runtime",
     "demo:network": "node examples/two-player-loopback/demo-server.mjs",
