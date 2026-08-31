@@ -1,5 +1,6 @@
 # Unreleased — World Body Formal Kernel v0.1 Candidate
 
+- Added fake-device WebGPU evidence for URRF selected-mip execution: near mip0 and far mip2 reach the VSR executor with one-level textures and a lower resident-byte receipt, while real-GPU claims remain closed.
 - Added a candidate-only URRF → VSR texture-residency lowering seam: selected mip levels now become rooted VSR textures with deferred levels excluded from executor input, plus near/far large-world PBR frame and pixel evidence.
 - Added `@taowind/world-body-ir` with seven sealed root objects, total BodyMap validation, fixed-point transform rules, and an explicit hazard/lifetime/barrier Render Graph contract.
 - Added executable five-level RSR and VSR theorem suites plus WB-T1 through WB-T10 joint theory; external-engine and real-GPU theorems stay explicitly `UNVERIFIED`.
