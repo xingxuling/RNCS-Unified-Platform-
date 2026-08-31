@@ -72,9 +72,9 @@
       "height": 180,
       "triangles": 2138,
       "draw_calls": 5,
-      "pixel_root": "185fee7f9e9bc4c009f3f2fa7d77c2faf97029ad51a927f9c0e634add0221388",
-      "frame_root": "1bb10895a0e4b900ca4817485532e2222c1847cf06e794c559409a8a248b1644",
-      "evidence_root": "d180295d417ac52ac85b91de478c46f29c8cfc2b84edd18620ffb1e6b1c48199",
+      "pixel_root": "5789c65404cc33745a7924b56a3f0c24e7bf2fb05a6260778d7e4cf7f5cbdb3e",
+      "frame_root": "0bdacf1305f97c797c378d6d1550832f670fc77d3bdb75a33f7d74b6e576b56c",
+      "evidence_root": "e2f31ef3766a2f27625f9e478973ce3b0013436968a8c1d896527f5260978702",
       "quality_status": "OBSERVED_NOT_GRADED",
       "visual_status": "LOCAL_RENDERED"
     },
@@ -96,9 +96,9 @@
       "height": 270,
       "triangles": 2138,
       "draw_calls": 5,
-      "pixel_root": "c6bf5b83e6455bf04b2e70a7580b0bd590ccb610beb8e589a57ba91eb2b969dc",
-      "frame_root": "5ada572613762e5723c6f38861eafc1d9411ae153449d065b62f15d8f2652ec1",
-      "evidence_root": "0a70b7f044994792d76ac6134fac6540091b675432c33f2cc3c2d0ce6dea108e",
+      "pixel_root": "d406b11711e788a26be96a2dc4bcb3c90db1edd623986b54aad5bda1bcaa70ed",
+      "frame_root": "1732118028a5a9f2da4d6cfae23b12343ce927d0b71c5967369ac5ab239b505c",
+      "evidence_root": "d47b68388a61c9c7ecf04a2d330948fd88e22e2e4c4e33f0d7e325772978d0a0",
       "quality_status": "OBSERVED_NOT_GRADED",
       "visual_status": "LOCAL_RENDERED"
     },
@@ -120,9 +120,9 @@
       "height": 360,
       "triangles": 2138,
       "draw_calls": 5,
-      "pixel_root": "77dd8eeb342d6cbccaa3c709c0d11bbbef3df49ea923a3b00e53294666883857",
-      "frame_root": "4d328e9f8a655ebf419f1ca98e155ebd5ace42b61a268eac91e98ef6956ec5e6",
-      "evidence_root": "245d10e68c4de87d32cc7736ec39a211d7967da9110392902cf3bf1d103872c6",
+      "pixel_root": "48146dcb8e3f2513f8563c38fb87216ccc4966d19697337d09992693aec660ff",
+      "frame_root": "db5bef1173a4f3f674923a494e012b9b8e03764e19b86d7ebcfcc1fc2f664ed3",
+      "evidence_root": "ecaa8b830e33d03a6801005184ee121342dffb710fb4a2a4bbfa263d0f28ce87",
       "quality_status": "OBSERVED_NOT_GRADED",
       "visual_status": "LOCAL_RENDERED"
     },
@@ -175,11 +175,11 @@
       "visual_status": "LOCAL_RENDERED"
     }
   ],
-  "runtime_root": "f7ffb10077d68e9eba3fc4dd9bdd6d4f876ee3ca69fae2c01238ead749a34711",
+  "runtime_root": "a7e2e4fba1fd0edb29c706aad581c2679b7e7dd9ae0047519ad60ca0c5b5c98d",
   "status": "LOCAL_RENDERED_OBSERVED_NOT_GRADED",
   "authority": {
     "canonical_write_authorized": false,
     "candidate_only": true
   },
-  "report_root": "adeffee734162c19d6f13238ba68dbe9c71ab63d0c4237af69da1ee6f7180696"
+  "report_root": "ce6267eaf3cefc844b2bedd67976997a472282903217af7866bca54957244975"
 }

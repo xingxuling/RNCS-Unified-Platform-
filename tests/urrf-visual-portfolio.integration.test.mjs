@@ -144,7 +144,7 @@ function createPortfolioShowcaseScene() {
       {id: 'probe:platform', position: [0, 1.4, 0], radius: 8, diffuseColor: '#54749b', specularColor: '#dbeafe', intensity: 1.15},
       {id: 'probe:trees', position: [-3, 1.5, -1], radius: 5, diffuseColor: '#355f5a', specularColor: '#8bd5ca', intensity: 0.85}
     ]},
-    cameras: [{id: 'camera:main', projection: 'perspective', fovYDeg: 52, near: 0.1, far: 100, transform: {translation: [8.2, 5.2, 10.6], rotationEulerDeg: [-18, 38, 0]}}]
+    cameras: [{id: 'camera:main', projection: 'perspective', fovYDeg: 52, near: 0.1, far: 100, transform: {translation: [5.8, 3.8, 7.6], rotationEulerDeg: [-18, 38, 0]}}]
   };
 }
 
@@ -165,7 +165,7 @@ function variantScene(profile) {
     return light;
   });
   if (profile.view === 'ORBIT') scene.cameras[0].transform = {translation: [5.8, 2.8, 4.8], rotationEulerDeg: [-14, 50, 0]};
-  if (profile.view === 'WIDE') scene.cameras[0].transform = {translation: [5.8, 4.2, 8.2], rotationEulerDeg: [-18, 35, 0]};
+  if (profile.view === 'WIDE') scene.cameras[0].transform = {translation: [5.8, 3.4, 7.8], rotationEulerDeg: [-18, 35, 0]};
   if (profile.view === 'DYNAMIC-HERO') scene.cameras[0].transform = {translation: [4.2, 2.7, 5.4], rotationEulerDeg: [-14, 38, 0]};
   scene.reality = {...scene.reality, realityRoot: rootHash({profile: profile.id, base: scene.reality?.realityRoot ?? null})};
   return scene;
