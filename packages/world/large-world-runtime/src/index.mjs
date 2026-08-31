@@ -29,6 +29,7 @@ import {
   verifyCognitiveWorkingSet,
   verifyRealityHorizon,
   verifyRealityInterestGraph,
+  verifyRealityLoadSheddingPlan,
   verifyRealityQuery,
   verifyRealityQueryResult,
   verifyWorldEvent,
@@ -82,12 +83,51 @@ export const LARGE_WORLD_RESOURCE_KINDS = Object.freeze(['crystal', 'iron', 'sal
 export const LARGE_WORLD_PROCEDURAL_PROVIDER_ID = 'provider:taowind:large-world-procedural-mesh:v0.1';
 export const LARGE_WORLD_WIREFRAME_PROVIDER_ID = 'provider:taowind:large-world-wireframe-mesh:v0.1';
 
+const POWER_BINDABLE_CANDIDATE_KINDS = new Set(['VISUAL', 'REFINEMENT', 'MINIMUM_REALITY']);
+const POWER_QUALITY_LOWERING = Object.freeze({
+  KEEP: {qualityProfile: null, effect: 'KEEP'},
+  REDUCE_DETAIL: {qualityProfile: 'PROXY', effect: 'MINIMUM_REALITY_PROXY'},
+  REDUCE_FREQUENCY: {qualityProfile: null, effect: 'REDUCE_FREQUENCY'},
+  FREEZE: {qualityProfile: null, effect: 'FREEZE'},
+  OFFLOAD: {qualityProfile: 'PROXY', effect: 'OFFLOAD_TO_MINIMUM_REALITY'},
+  DEFER: {qualityProfile: 'PROXY', effect: 'MINIMUM_REALITY_PROXY'},
+  DROP: {qualityProfile: 'PROXY', effect: 'MINIMUM_REALITY_PROXY'},
+  RECOVER_MINIMUM: {qualityProfile: 'PROXY', effect: 'RECOVER_MINIMUM'}
+});
+
 const clone = value => structuredClone(value);
 const record = value => value && typeof value === 'object' && !Array.isArray(value) ? value : {};
 const keySort = (a, b) => Buffer.compare(Buffer.from(String(a), 'utf8'), Buffer.from(String(b), 'utf8'));
 const strings = values => [...new Set((Array.isArray(values) ? values : []).map(String).filter(Boolean))].sort(keySort);
 const hex64 = value => typeof value === 'string' && /^[0-9a-f]{64}$/i.test(value);
 const fail = (condition, code) => { if (!condition) throw new Error(code); };
+
+function normalizeResourceGovernorPlan(input) {
+  if (input === undefined || input === null) return null;
+  const plan = clone(input);
+  const verification = verifyRealityLoadSheddingPlan(plan);
+  fail(verification.valid, `LARGE_WORLD_RESOURCE_GOVERNOR_PLAN_INVALID:${verification.errors.join(',')}`);
+  return plan;
+}
+
+function resourceGovernorDecisionForChunk(plan, chunk) {
+  if (!plan) return null;
+  const candidateIds = [
+    `visual:${chunk.chunk_id}`,
+    `visual:${chunk.object_id}`,
+    `refinement:${chunk.chunk_id}`,
+    `refinement:${chunk.object_id}`,
+    `minimum:${chunk.chunk_id}`,
+    `minimum:${chunk.object_id}`,
+    chunk.chunk_id,
+    chunk.object_id
+  ];
+  for (const candidateId of candidateIds) {
+    const decision = plan.decisions.find(entry => POWER_BINDABLE_CANDIDATE_KINDS.has(entry.candidate_kind) && entry.candidate_id === candidateId);
+    if (decision) return decision;
+  }
+  return null;
+}
 const integer = (value, fallback, {min = Number.MIN_SAFE_INTEGER, max = Number.MAX_SAFE_INTEGER} = {}) => {
   const number = value === undefined ? fallback : Number(value);
   fail(Number.isSafeInteger(number) && number >= min && number <= max, 'LARGE_WORLD_INTEGER_INVALID');
@@ -1788,6 +1828,11 @@ export function createLargeWorldSpatialScene(input = {}) {
       region_root: region.region_root,
       world_root: region.world_root,
       selection_root: selectionRoot,
+      resource_governor_plan_root: selection.resource_governor_plan_root ?? null,
+      resource_governor_power_mode: selection.resource_governor_power_mode ?? null,
+      resource_governor_load_shedding_level: selection.resource_governor_load_shedding_level ?? null,
+      power_downgrade_count: selection.power_downgrade_count ?? 0,
+      unbound_governor_chunk_ids: clone(selection.unbound_governor_chunk_ids ?? []),
       active_chunk_ids: chunks.map(chunk => chunk.chunk_id).sort(keySort),
       presentation_scale: presentationScale,
       visual_prototype_profile: LARGE_WORLD_SPATIAL_VISUAL_PROFILE,
@@ -1815,6 +1860,11 @@ export function verifyLargeWorldSpatialScene(scene) {
     check(Number.isFinite(scene.large_world?.presentation_scale) && scene.large_world.presentation_scale >= .25 && scene.large_world.presentation_scale <= 8, 'LARGE_WORLD_SPATIAL_PRESENTATION_SCALE_INVALID');
     check(scene.large_world?.visual_prototype_profile === LARGE_WORLD_SPATIAL_VISUAL_PROFILE, 'LARGE_WORLD_SPATIAL_VISUAL_PROFILE_INVALID');
     check(Array.isArray(scene.large_world?.visual_prototype_ids) && scene.large_world.visual_prototype_ids.length > 0, 'LARGE_WORLD_SPATIAL_VISUAL_PROTOTYPES_MISSING');
+    if (scene.large_world?.resource_governor_plan_root !== undefined) check(scene.large_world.resource_governor_plan_root === null || hex64(scene.large_world.resource_governor_plan_root), 'LARGE_WORLD_SPATIAL_GOVERNOR_ROOT_INVALID');
+    if (scene.large_world?.resource_governor_power_mode !== undefined) check(scene.large_world.resource_governor_power_mode === null || typeof scene.large_world.resource_governor_power_mode === 'string', 'LARGE_WORLD_SPATIAL_GOVERNOR_POWER_MODE_INVALID');
+    if (scene.large_world?.resource_governor_load_shedding_level !== undefined) check(scene.large_world.resource_governor_load_shedding_level === null || typeof scene.large_world.resource_governor_load_shedding_level === 'string', 'LARGE_WORLD_SPATIAL_GOVERNOR_LOAD_LEVEL_INVALID');
+    if (scene.large_world?.power_downgrade_count !== undefined) check(Number.isSafeInteger(scene.large_world.power_downgrade_count) && scene.large_world.power_downgrade_count >= 0, 'LARGE_WORLD_SPATIAL_POWER_DOWNGRADE_COUNT_INVALID');
+    if (scene.large_world?.unbound_governor_chunk_ids !== undefined) check(Array.isArray(scene.large_world.unbound_governor_chunk_ids), 'LARGE_WORLD_SPATIAL_UNBOUND_GOVERNOR_IDS_INVALID');
     check(scene.large_world?.candidate_only === true && scene.large_world?.authoritative === false && scene.large_world?.canonical_write_authorized === false, 'LARGE_WORLD_SPATIAL_SCENE_AUTHORITY_INVALID');
     check(scene.reality?.realityRoot === scene.large_world?.world_root, 'LARGE_WORLD_SPATIAL_SCENE_REALITY_ROOT_MISMATCH');
     check(hex64(scene.scene_root), 'LARGE_WORLD_SPATIAL_SCENE_ROOT_INVALID');
@@ -2399,12 +2449,23 @@ export class LargeWorldRuntime {
     const budgetByChunk = record(value.resourceBudgetByChunk ?? value.resource_budget_by_chunk);
     const globalBudget = value.resourceBudget ?? value.resource_budget;
     const globalDiversity = value.diversity ?? value.diversity_axes ?? value.diversityAxes;
+    const resourceGovernorPlan = normalizeResourceGovernorPlan(
+      value.resourceGovernorPlan
+        ?? value.resource_governor_plan
+        ?? value.loadSheddingPlan
+        ?? value.load_shedding_plan
+        ?? null
+    );
     const selections = this.activeChunkIds.map(chunkIdValue => {
       const chunk = this.chunks.get(chunkIdValue);
       const portfolio = this.portfolioRuntime.getPortfolio(`portfolio:${chunk.object_id}`)
         ?? this.getRepresentationPortfolio(chunk.chunk_id);
       if (!this.portfolioRuntime.getPortfolio(portfolio.portfolio_id)) this.portfolioRuntime.registerPortfolio(portfolio);
-      const requested = qualityByChunk[chunk.chunk_id] ?? requestedQuality;
+      const requestedBeforePower = qualityByChunk[chunk.chunk_id] ?? requestedQuality;
+      const powerDecision = resourceGovernorDecisionForChunk(resourceGovernorPlan, chunk);
+      const powerAction = powerDecision?.action ?? null;
+      const powerLowering = powerAction ? POWER_QUALITY_LOWERING[powerAction] : null;
+      const requested = powerLowering?.qualityProfile ?? requestedBeforePower;
       const resourceBudget = budgetByChunk[chunk.chunk_id] ?? globalBudget;
       const selection = this.portfolioRuntime.selectSlot({
         portfolio_id: portfolio.portfolio_id,
@@ -2424,6 +2485,13 @@ export class LargeWorldRuntime {
         fallback_used: selection.fallback_used,
         reason_codes: clone(selection.reason_codes),
         selection_root: selection.selection_root,
+        power_plan_root: resourceGovernorPlan?.plan_root ?? null,
+        power_decision_candidate_id: powerDecision?.candidate_id ?? null,
+        power_decision_kind: powerDecision?.candidate_kind ?? null,
+        power_action: powerAction,
+        power_action_effect: powerLowering?.effect ?? (resourceGovernorPlan ? 'UNBOUND' : null),
+        power_quality_override: powerLowering?.qualityProfile ?? null,
+        power_decision_bound: resourceGovernorPlan ? Boolean(powerDecision) : null,
         candidate_only: true,
         authoritative: false,
         canonical_write_authorized: false
@@ -2438,9 +2506,17 @@ export class LargeWorldRuntime {
       world_root: this.region.world_root,
       stream_root: this.activeChunkIds.length > 0 ? this.trace.at(-1)?.stream_root ?? null : null,
       requested_quality_profile: requestedQuality === null || requestedQuality === undefined ? null : String(requestedQuality).toUpperCase(),
+      resource_governor_plan_root: resourceGovernorPlan?.plan_root ?? null,
+      resource_governor_power_mode: resourceGovernorPlan?.power_mode ?? null,
+      resource_governor_load_shedding_level: resourceGovernorPlan?.load_shedding_level ?? null,
+      resource_governor_decision_count: resourceGovernorPlan?.decisions.length ?? 0,
       active_chunk_ids: [...this.activeChunkIds].sort(keySort),
       selections,
       fallback_count: selections.filter(selection => selection.fallback_used).length,
+      power_downgrade_count: selections.filter(selection => selection.power_quality_override === 'PROXY').length,
+      unbound_governor_chunk_ids: resourceGovernorPlan
+        ? selections.filter(selection => !selection.power_decision_bound).map(selection => selection.chunk_id).sort(keySort)
+        : [],
       candidate_only: true,
       authoritative: false,
       canonical_write_authorized: false,
@@ -3722,11 +3798,34 @@ export function verifyPortfolioSelectionEnvelope(selection) {
       check(row?.selected_quality_profile === null || typeof row?.selected_quality_profile === 'string', 'LARGE_WORLD_PORTFOLIO_SELECTION_QUALITY_INVALID');
       check(typeof row?.fallback_used === 'boolean', 'LARGE_WORLD_PORTFOLIO_SELECTION_FALLBACK_INVALID');
       check(Array.isArray(row?.reason_codes), 'LARGE_WORLD_PORTFOLIO_SELECTION_REASON_CODES_INVALID');
+      if (row?.power_plan_root !== undefined) check(row.power_plan_root === null || hex64(row.power_plan_root), 'LARGE_WORLD_PORTFOLIO_SELECTION_POWER_PLAN_ROOT_INVALID');
+      if (row?.power_decision_candidate_id !== undefined) check(row.power_decision_candidate_id === null || (typeof row.power_decision_candidate_id === 'string' && row.power_decision_candidate_id.length > 0), 'LARGE_WORLD_PORTFOLIO_SELECTION_POWER_DECISION_ID_INVALID');
+      if (row?.power_decision_kind !== undefined) check(row.power_decision_kind === null || POWER_BINDABLE_CANDIDATE_KINDS.has(row.power_decision_kind), 'LARGE_WORLD_PORTFOLIO_SELECTION_POWER_DECISION_KIND_INVALID');
+      if (row?.power_action !== undefined) check(row.power_action === null || Object.hasOwn(POWER_QUALITY_LOWERING, row.power_action), 'LARGE_WORLD_PORTFOLIO_SELECTION_POWER_ACTION_INVALID');
+      if (row?.power_action_effect !== undefined) check(row.power_action_effect === null || row.power_action_effect === 'UNBOUND' || Object.values(POWER_QUALITY_LOWERING).some(policy => policy.effect === row.power_action_effect), 'LARGE_WORLD_PORTFOLIO_SELECTION_POWER_EFFECT_INVALID');
+      if (row?.power_quality_override !== undefined) check(row.power_quality_override === null || row.power_quality_override === 'PROXY', 'LARGE_WORLD_PORTFOLIO_SELECTION_POWER_QUALITY_OVERRIDE_INVALID');
+      if (row?.power_decision_bound !== undefined) check(row.power_decision_bound === null || typeof row.power_decision_bound === 'boolean', 'LARGE_WORLD_PORTFOLIO_SELECTION_POWER_BOUND_INVALID');
       check(hex64(row?.selection_root), 'LARGE_WORLD_PORTFOLIO_SELECTION_ROW_ROOT_INVALID');
       check(row?.candidate_only === true && row?.authoritative === false && row?.canonical_write_authorized === false, 'LARGE_WORLD_PORTFOLIO_SELECTION_ROW_AUTHORITY_INVALID');
     }
     check(Number.isSafeInteger(selection.fallback_count) && selection.fallback_count >= 0, 'LARGE_WORLD_PORTFOLIO_SELECTION_FALLBACK_COUNT_INVALID');
     check(selection.fallback_count === (selection.selections ?? []).filter(row => row.fallback_used).length, 'LARGE_WORLD_PORTFOLIO_SELECTION_FALLBACK_COUNT_MISMATCH');
+    if (selection.resource_governor_plan_root !== undefined) {
+      const governorRoot = selection.resource_governor_plan_root;
+      check(governorRoot === null || hex64(governorRoot), 'LARGE_WORLD_PORTFOLIO_SELECTION_GOVERNOR_ROOT_INVALID');
+      check(governorRoot === null || typeof selection.resource_governor_power_mode === 'string', 'LARGE_WORLD_PORTFOLIO_SELECTION_GOVERNOR_POWER_MODE_INVALID');
+      check(governorRoot === null || typeof selection.resource_governor_load_shedding_level === 'string', 'LARGE_WORLD_PORTFOLIO_SELECTION_GOVERNOR_LOAD_LEVEL_INVALID');
+      check(Number.isSafeInteger(selection.resource_governor_decision_count) && selection.resource_governor_decision_count >= 0, 'LARGE_WORLD_PORTFOLIO_SELECTION_GOVERNOR_DECISION_COUNT_INVALID');
+      check(Number.isSafeInteger(selection.power_downgrade_count) && selection.power_downgrade_count >= 0, 'LARGE_WORLD_PORTFOLIO_SELECTION_POWER_DOWNGRADE_COUNT_INVALID');
+      check(selection.power_downgrade_count === (selection.selections ?? []).filter(row => row.power_quality_override === 'PROXY').length, 'LARGE_WORLD_PORTFOLIO_SELECTION_POWER_DOWNGRADE_COUNT_MISMATCH');
+      check(Array.isArray(selection.unbound_governor_chunk_ids), 'LARGE_WORLD_PORTFOLIO_SELECTION_UNBOUND_GOVERNOR_IDS_INVALID');
+      const unboundIds = [...selection.unbound_governor_chunk_ids].sort(keySort);
+      const expectedUnboundIds = (selection.selections ?? []).filter(row => row.power_decision_bound === false).map(row => row.chunk_id).sort(keySort);
+      check(JSON.stringify(unboundIds) === JSON.stringify(expectedUnboundIds), 'LARGE_WORLD_PORTFOLIO_SELECTION_UNBOUND_GOVERNOR_IDS_MISMATCH');
+      for (const row of selection.selections ?? []) {
+        check(row.power_plan_root === governorRoot, 'LARGE_WORLD_PORTFOLIO_SELECTION_ROW_GOVERNOR_ROOT_MISMATCH');
+      }
+    }
     check(selection.candidate_only === true && selection.authoritative === false && selection.canonical_write_authorized === false, 'LARGE_WORLD_PORTFOLIO_SELECTION_AUTHORITY_INVALID');
     check(selection.authority?.provider_can_write_authoritative_world_state === false, 'LARGE_WORLD_PORTFOLIO_SELECTION_PROVIDER_AUTHORITY_INVALID');
     check(selection.authority?.rncs_authority_required === true, 'LARGE_WORLD_PORTFOLIO_SELECTION_RNCS_AUTHORITY_REQUIRED');

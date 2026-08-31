@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added optional v0.3 Power Plane lowering to `selectActiveRepresentationPortfolios`: verified Resource Governor decisions now bind to active chunks, reduce visual candidates to the proxy minimum-reality slot under pressure, preserve explicit unbound decisions, and remain candidate-only with rooted evidence.
 - Added the URRF/RNCS v0.3 Reality Access to large-world streaming bridge: generated Chunks now carry deterministic query indexes, and `resolveRealityAccess()` lowers Horizon/InterestGraph/Query/WorkingSet candidates into forced bounded Chunk requests and a VSR-ready stream envelope.
 - Added `reality-access-resolution.v0.1` schema, verifier, package regression coverage, and machine-readable/visual integration evidence.
 - Added a bounded multi-asset PBR material-diversity integration and contact-sheet evidence path covering terrain, structures, resources, async KTX2 import, and rooted CPU pixels.
