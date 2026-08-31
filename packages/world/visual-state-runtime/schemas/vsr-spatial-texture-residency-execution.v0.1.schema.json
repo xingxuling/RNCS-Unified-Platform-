@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rncs.dev/schemas/vsr-spatial-texture-residency-execution.v0.1.schema.json",
+  "title": "VSR Spatial Texture Residency Execution v0.1",
+  "type": "object",
+  "required": ["format", "textureId", "sourceLevelCount", "selectedLevel", "residentLevels", "deferredLevels", "retainedLevelCount", "sourceByteLength", "retainedByteLength", "sourceRoot", "textureRoot", "root"],
+  "properties": {
+    "format": {"const": "vsr.spatial-texture-residency-execution.v0.1"},
+    "textureId": {"type": "string", "minLength": 1},
+    "sourceLevelCount": {"type": "integer", "minimum": 1},
+    "selectedLevel": {"type": "integer", "minimum": 0},
+    "residentLevels": {"type": "array", "minItems": 1, "items": {"type": "integer", "minimum": 0}},
+    "deferredLevels": {"type": "array", "items": {"type": "integer", "minimum": 0}},
+    "retainedLevelCount": {"type": "integer", "minimum": 1},
+    "sourceByteLength": {"type": "integer", "minimum": 4},
+    "retainedByteLength": {"type": "integer", "minimum": 4},
+    "sourceRoot": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "textureRoot": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "planRoot": {"type": "string", "minLength": 1},
+    "root": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "additionalProperties": false
+}

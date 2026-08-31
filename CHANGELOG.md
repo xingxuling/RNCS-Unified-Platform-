@@ -1,5 +1,6 @@
 # Unreleased — World Body Formal Kernel v0.1 Candidate
 
+- Added a candidate-only URRF → VSR texture-residency lowering seam: selected mip levels now become rooted VSR textures with deferred levels excluded from executor input, plus near/far large-world PBR frame and pixel evidence.
 - Added `@taowind/world-body-ir` with seven sealed root objects, total BodyMap validation, fixed-point transform rules, and an explicit hazard/lifetime/barrier Render Graph contract.
 - Added executable five-level RSR and VSR theorem suites plus WB-T1 through WB-T10 joint theory; external-engine and real-GPU theorems stay explicitly `UNVERIFIED`.
 - Added an aggregate RCL World Body kernel plus eight requested formal drafts with source/RBC hashes, decoded instruction summaries, and real reference/native-VM parity evidence, without moving RNCS commit authority into RCL or code generation.

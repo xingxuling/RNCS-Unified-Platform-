@@ -38,6 +38,7 @@ export const VSR_SPATIAL_HLOD_FORMAT='vsr.spatial-hlod-resolution.v0.1' as const
 export const VSR_SPATIAL_VISUAL_INTENT_FORMAT='taowind.rcl-rncs-visual-intent.v0.1' as const;
 export const VSR_SPATIAL_VISUAL_INTENT_VERSION='0.1.0';
 export const VSR_SPATIAL_IRRADIANCE_BAKE_FORMAT='vsr.spatial-irradiance-probe-bake.v0.1' as const;
+export const VSR_SPATIAL_TEXTURE_RESIDENCY_EXECUTION_FORMAT='vsr.spatial-texture-residency-execution.v0.1' as const;
 export const VSR_SPATIAL_MAX_DYNAMIC_LIGHTS=32;
 
 export type Vec2=[number,number];
@@ -102,6 +103,30 @@ export interface VSRSpatialTextureLevel {
 export interface VSRSpatialTexture extends VSRSpatialTextureLevel {
   id:string;
   mipmaps?:VSRSpatialTextureLevel[];
+}
+export interface VSRSpatialTextureResidencyPlan {
+  selectedLevel:number;
+  residentLevels?:number[];
+  planRoot?:string;
+}
+export interface VSRSpatialTextureResidencyReceipt {
+  format:typeof VSR_SPATIAL_TEXTURE_RESIDENCY_EXECUTION_FORMAT;
+  textureId:string;
+  sourceLevelCount:number;
+  selectedLevel:number;
+  residentLevels:number[];
+  deferredLevels:number[];
+  retainedLevelCount:number;
+  sourceByteLength:number;
+  retainedByteLength:number;
+  sourceRoot:string;
+  textureRoot:string;
+  planRoot?:string;
+  root:string;
+}
+export interface VSRSpatialTextureResidencyResult {
+  texture:VSRSpatialTexture;
+  receipt:VSRSpatialTextureResidencyReceipt;
 }
 export type VSRSpatialAnimationPath='translation'|'rotationEulerDeg'|'rotationQuaternion'|'scale';
 export type VSRSpatialAnimationValue=Vec3|Vec4;
@@ -479,6 +504,28 @@ export function resolveSpatialTransparencyMode(mode:VSRSpatialTransparencyMode|u
 function textureLevelCount(texture:VSRSpatialTexture):number{return 1+(texture.mipmaps?.length??0)}
 function textureByteLength(texture:VSRSpatialTexture):number{return texture.pixels.length+(texture.mipmaps??[]).reduce((sum,level)=>sum+level.pixels.length,0)}
 function validateTextureLevel(textureId:string,level:VSRSpatialTextureLevel):void{if(level.width<1||level.height<1||level.pixels.length!==level.width*level.height*4)throw new Error(`Texture ${textureId} RGBA length mismatch.`)}
+/**
+ * Lower a provider/URRF mip decision into the VSR presentation resource.
+ * The returned texture contains only the explicitly resident chain, so a
+ * WebGPU executor cannot accidentally upload deferred levels. The source
+ * texture and canonical world state remain untouched.
+ */
+export function applySpatialTextureResidency(texture:VSRSpatialTexture,plan:VSRSpatialTextureResidencyPlan):VSRSpatialTextureResidencyResult{
+  validateTextureLevel(texture.id,texture);for(const level of texture.mipmaps??[])validateTextureLevel(texture.id,level);
+  const levels:VSRSpatialTextureLevel[]=[texture,...(texture.mipmaps??[])],selectedLevel=plan.selectedLevel;
+  if(!Number.isInteger(selectedLevel)||selectedLevel<0||selectedLevel>=levels.length)throw new Error(`Texture ${texture.id} selected mip level is out of range.`);
+  if(plan.planRoot!==undefined&&typeof plan.planRoot!=='string')throw new Error(`Texture ${texture.id} residency plan root is invalid.`);
+  const residentLevels=(plan.residentLevels??[selectedLevel]).slice();
+  if(!residentLevels.length||residentLevels[0]!==selectedLevel||residentLevels.some((level,index)=>!Number.isInteger(level)||level<0||level>=levels.length||level!==selectedLevel+index))throw new Error(`Texture ${texture.id} resident mip levels must be a contiguous chain starting at the selected level.`);
+  const residentTextures=residentLevels.map(level=>levels[level]!);
+  const selected=residentTextures[0]!,mipmaps=residentTextures.slice(1),lowered:VSRSpatialTexture=mipmaps.length?{...texture,...selected,mipmaps}:{...texture,...selected,mipmaps:undefined};
+  const sourceRoot=cryptographicHash(texture),textureRoot=cryptographicHash(lowered),base={format:VSR_SPATIAL_TEXTURE_RESIDENCY_EXECUTION_FORMAT,textureId:texture.id,sourceLevelCount:levels.length,selectedLevel,residentLevels,deferredLevels:levels.map((_,index)=>index).filter(index=>!residentLevels.includes(index)),retainedLevelCount:residentTextures.length,sourceByteLength:textureByteLength(texture),retainedByteLength:textureByteLength(lowered),sourceRoot,textureRoot,...(plan.planRoot!==undefined?{planRoot:plan.planRoot}:{})};
+  return{texture:lowered,receipt:{...base,root:cryptographicHash(base)}};
+}
+export function verifySpatialTextureResidencyReceipt(receipt:VSRSpatialTextureResidencyReceipt):boolean{
+  if(!receipt||receipt.format!==VSR_SPATIAL_TEXTURE_RESIDENCY_EXECUTION_FORMAT||!Array.isArray(receipt.residentLevels)||!Array.isArray(receipt.deferredLevels)||!Number.isInteger(receipt.selectedLevel)||receipt.residentLevels[0]!==receipt.selectedLevel)return false;
+  const{root,...base}=receipt;return typeof root==='string'&&cryptographicHash(base)===root;
+}
 export function buildSpatialEnvironmentMipChain(texture:VSRSpatialTexture,maxLevels=12):VSRSpatialTexture{
   validateTextureLevel(texture.id,texture);const limit=Math.max(1,Math.min(12,Math.floor(maxLevels))),mipmaps:VSRSpatialTextureLevel[]=[],srgbToLinear=(value:number):number=>value<=.04045?value/12.92:Math.pow((value+.055)/1.055,2.4);let source:VSRSpatialTextureLevel=texture;
   while(mipmaps.length<limit-1&&(source.width>1||source.height>1)){
