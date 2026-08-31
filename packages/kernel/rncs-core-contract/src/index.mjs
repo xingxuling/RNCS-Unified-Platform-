@@ -30,6 +30,7 @@ export function verify(e){const errors=[],check=(c,x)=>{if(!c)errors.push(x)};if
 export function adaptHnacSnapshot(s,host_id='unknown-host'){const state=s.state??s;return{kind:'host-state',source_format:s.format??state.format??'hnaf.portable-state.v0.5',host_id,replica_id:String(s.replicaId??s.replica_id??'unknown-replica'),snapshot_sequence:Number(s.snapshot_sequence??s.generation??0),state_root:String(s.snapshotRoot??s.snapshot_root??state.state_root??rootHash(state)),schema_version:String(state.schema_version??'unknown'),partitions:Object.keys(state.partitions??{}).sort(keySort),continuity_class:'replica_snapshot'}}
 export * from './entity-kernel.mjs';
 export * from './representation-ref.mjs';
+export * from './representation-portfolio.mjs';
 export * from './representation-transition.mjs';
 export * from './world-truth.mjs';
 export * from './reality-property.mjs';

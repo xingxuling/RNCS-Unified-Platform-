@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/rncs/representation-slot.v0.3.schema.json",
+  "title": "RNCS Representation Portfolio Slot v0.3",
+  "type": "object",
+  "required": ["format", "version", "slot_id", "representation_id", "representation_root", "representation_kind", "quality_profile", "quality_rank", "diversity_axes", "render_profile", "resource_costs", "fallback_slot_id", "required_for_minimum", "candidate_only", "authoritative", "commit_status", "slot_root"],
+  "properties": {
+    "format": {"const": "rncs.reality-representation-slot.v0.3"},
+    "version": {"const": "0.3.0"},
+    "slot_id": {"type": "string", "minLength": 1},
+    "representation_id": {"type": "string", "minLength": 1},
+    "representation_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "representation_kind": {"type": "string", "minLength": 1},
+    "quality_profile": {"enum": ["PROXY", "MOBILE", "STANDARD", "CINEMATIC", "REFERENCE"]},
+    "quality_rank": {"type": "integer", "minimum": 0, "maximum": 4},
+    "diversity_axes": {"type": "object", "required": ["MODALITY", "DETAIL"], "additionalProperties": {"type": "string", "minLength": 1}},
+    "render_profile": {"type": "object", "required": ["renderer_id", "shading_model", "lighting_profile", "camera_profile", "resolution_class", "width", "height", "post_process"]},
+    "resource_costs": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}},
+    "fallback_slot_id": {"type": ["string", "null"]},
+    "required_for_minimum": {"type": "boolean"},
+    "evidence_refs": {"type": "array", "items": {"type": "string"}},
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "commit_status": {"const": "NOT_COMMITTED"},
+    "slot_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}
