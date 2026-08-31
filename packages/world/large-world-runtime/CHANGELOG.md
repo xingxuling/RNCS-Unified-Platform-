@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.0-alpha.6
+
+- Added a deterministic lexicographic-writer conflict court for same-base replication candidates, explicit winner/loser decisions, authoritative application receipts, and durable loser gates.
+
 ## 0.1.0-alpha.5
 
 - Added authenticated Snapshot/Delta packet envelopes and a bounded ack/retry link with transport sequence, packet-loss tolerance, duplicate handling, and explicit route validation.

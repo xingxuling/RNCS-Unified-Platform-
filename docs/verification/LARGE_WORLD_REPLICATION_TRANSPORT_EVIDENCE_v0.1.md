@@ -45,5 +45,5 @@ Expected local evidence for this revision:
 ## Open gates
 
 - Production key custody/rotation and authenticated network session integration.
-- Multi-writer conflict policy and durable replay windows.
+- Production multi-writer coordination and durable replay windows (the bounded deterministic court is covered separately in `LARGE_WORLD_REPLICATION_CONFLICT_EVIDENCE_v0.1.md`).
 - Target hardware/GPU performance and visual/manual play evidence.

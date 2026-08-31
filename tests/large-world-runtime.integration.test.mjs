@@ -20,6 +20,8 @@ import {
 } from '@taowind/visual-state-runtime/spatial-reality-3d';
 import {
   LargeWorldReplicationLink,
+  resolveReplicationConflict,
+  verifyReplicationConflictReceipt,
   verifyReplicationPacket
 } from '@taowind/large-world-runtime';
 
@@ -251,4 +253,28 @@ test('returns an authenticated rejection when a packet base is stale', () => {
   assert.equal(link.acks.at(-1).status, 'REJECTED');
   assert.equal(status.errors.length, 1);
   assert.equal(target.eventLog.event_count, 1);
+});
+
+test('routes same-base multi-writer candidates through the deterministic conflict court', () => {
+  const options = {worldId: 'world:large-integration-conflict', seed: 'seed:large-integration-conflict', loadRadius: 0, maxActiveChunks: 1};
+  const sourceA = new LargeWorldRuntime(options);
+  const sourceB = new LargeWorldRuntime(options);
+  const target = new LargeWorldRuntime(options);
+  const base = target.exportReplicationSnapshot();
+  const writerReceipt = {status: 'committed', receipt_root: '2'.repeat(64), decision_root: null, epoch: 0};
+  sourceA.recordWorldEvent({authorityReceipt: writerReceipt, mutation: {operations: [{op: 'set', path: 'season', value: 'spring'}]}});
+  sourceB.recordWorldEvent({authorityReceipt: writerReceipt, mutation: {operations: [{op: 'set', path: 'season', value: 'winter'}]}});
+  const deltaA = sourceA.createReplicationDelta(base, {deltaId: 'delta:integration-writer-a'});
+  const deltaB = sourceB.createReplicationDelta(base, {deltaId: 'delta:integration-writer-b'});
+  const candidates = [
+    {delta: deltaB, writerId: 'writer-b', writerSequence: 1},
+    {delta: deltaA, writerId: 'writer-a', writerSequence: 1}
+  ];
+  const decision = resolveReplicationConflict(candidates);
+  assert.equal(decision.winner_delta_root, deltaA.delta_root);
+  const receipt = target.applyReplicationConflict(candidates, {authorityReceipt: {status: 'committed', receipt_root: '3'.repeat(64), decision_root: decision.decision_root, epoch: 1}});
+  assert.equal(receipt.status, 'APPLIED');
+  assert.equal(verifyReplicationConflictReceipt(receipt).valid, true);
+  assert.equal(target.canonicalState.season, 'spring');
+  assert.throws(() => target.applyReplicationDelta(deltaB, {authorityReceipt: writerReceipt}), /LARGE_WORLD_REPLICATION_CONFLICT_LOSER/);
 });

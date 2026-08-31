@@ -4,7 +4,7 @@
 
 The runtime provides deterministic `WorldSeed → Region → Chunk` generation, integer-rooted terrain meshes, a bounded active chunk working set with load/unload hysteresis, URRF candidate materialization, canonical World Time/Event/Fact roots, replayable streaming evidence, and authority-gated Snapshot/Delta replication between isolated runtime instances. Each chunk exposes both a procedural-grid and a wireframe-grid representation candidate; either provider may remain contract-only or execute through an explicit adapter.
 
-This alpha proves a 9×9 region by default, a deterministic two-instance replication loop, a JSON restart boundary that restores the replication idempotency ledger, and a bounded authenticated packet link with loss/retry behavior. It does not claim an MMO-scale distributed world, production network security, GPU generation, external Spark execution, or production delivery.
+This alpha proves a 9×9 region by default, a deterministic two-instance replication loop, a JSON restart boundary that restores the replication idempotency ledger, a bounded authenticated packet link with loss/retry behavior, and a deterministic same-base multi-writer conflict court. It does not claim an MMO-scale distributed world, production network security, consensus, GPU generation, external Spark execution, or production delivery.
 
 ## Replication boundary
 
@@ -21,3 +21,5 @@ const receipt = target.applyReplicationDelta(delta, {
 `exportDurableBundle()` packages the full replication snapshot and applied-delta receipts for a restart boundary. `restoreDurableBundle(bundle, {authorityReceipt})` only restores a pristine runtime after verifying every root and an explicit committed authority receipt; a restored receipt ledger continues to reject duplicate deltas.
 
 `LargeWorldReplicationLink` wraps a transport with `register`, `send`, and optional `advance` methods. It seals packets with an HMAC tag, carries a monotonic sequence, sends authenticated acknowledgements, retries unacknowledged packets, and leaves base-root ordering to RNCS Delta application. The key is caller-supplied test/runtime configuration; it is not persisted in world state.
+
+`resolveReplicationConflict([{delta, writerId, writerSequence}, ...])` sorts same-base candidates by the explicit `lexicographic-writer-priority` policy (`writer_id`, `writer_sequence`, `delta_root`) and returns a candidate-only decision. `applyReplicationConflict(...)` applies only the winner through the normal RNCS Delta gate, records an authoritative conflict receipt, and persists a loser decision so a rejected candidate cannot be applied directly after restart. This is a deterministic local policy, not a distributed consensus protocol.

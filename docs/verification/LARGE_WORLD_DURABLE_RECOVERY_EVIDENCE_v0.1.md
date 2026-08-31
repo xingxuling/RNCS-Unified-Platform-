@@ -45,5 +45,5 @@ Expected local evidence for this revision:
 ## Open gates
 
 - Atomic durable storage adapter and crash/restart fault injection.
-- Production-authenticated network session, packet loss under real transport, and multi-writer conflict policy (bounded packet link is covered separately in `LARGE_WORLD_REPLICATION_TRANSPORT_EVIDENCE_v0.1.md`).
+- Production-authenticated network session and multi-writer coordination beyond the bounded deterministic conflict court (packet link and conflict policy are covered separately in their transport/conflict ledgers).
 - Target hardware/GPU performance and visual/manual play evidence.

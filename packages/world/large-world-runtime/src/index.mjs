@@ -35,6 +35,9 @@ export const LARGE_WORLD_DURABLE_BUNDLE_FORMAT = 'rncs.large-world-durable-bundl
 export const LARGE_WORLD_DURABLE_RESTORE_RECEIPT_FORMAT = 'rncs.large-world-durable-restore-receipt.v0.1';
 export const LARGE_WORLD_REPLICATION_PACKET_FORMAT = 'rncs.large-world-replication-packet.v0.1';
 export const LARGE_WORLD_REPLICATION_ACK_FORMAT = 'rncs.large-world-replication-ack.v0.1';
+export const LARGE_WORLD_REPLICATION_CONFLICT_DECISION_FORMAT = 'rncs.large-world-replication-conflict-decision.v0.1';
+export const LARGE_WORLD_REPLICATION_CONFLICT_RECEIPT_FORMAT = 'rncs.large-world-replication-conflict-receipt.v0.1';
+export const LARGE_WORLD_REPLICATION_CONFLICT_POLICY_ID = 'lexicographic-writer-priority';
 
 export const LARGE_WORLD_BIOMES = Object.freeze(['coast', 'desert', 'forest', 'grassland', 'tundra', 'wetland']);
 export const LARGE_WORLD_STRUCTURE_KINDS = Object.freeze(['ruin', 'grove', 'mine', 'shrine', 'watchtower']);
@@ -450,6 +453,7 @@ function durableBundleBase(runtime) {
     world_root: runtime.region.world_root,
     replication_snapshot: runtime.exportReplicationSnapshot(),
     applied_replication_receipts: [...runtime.appliedReplicationDeltas.values()].filter(Boolean).map(clone).sort((a, b) => keySort(a.delta_root, b.delta_root)),
+    replication_conflict_decisions: [...runtime.replicationConflictDecisions.values()].filter(Boolean).map(clone).sort((a, b) => keySort(a.decision_root, b.decision_root)),
     canonical_state_mutated: false,
     authority: {provider_can_write_authoritative_world_state: false, rncs_authority_required: true},
     candidate_only: true,
@@ -471,6 +475,89 @@ function authenticationTagMatches(value, authTag, authKey) {
 
 function packetId({channelId, sequence, deltaRoot}) {
   return `replication-packet:${channelId}:${sequence}:${deltaRoot.slice(0, 24)}`;
+}
+
+const replicationConflictPolicy = Object.freeze({
+  id: LARGE_WORLD_REPLICATION_CONFLICT_POLICY_ID,
+  version: 'v0.1',
+  ordering: 'writer_id,writer_sequence,delta_root',
+  winner: 'first_sorted_candidate',
+  loser_status: 'REJECTED_CONFLICT'
+});
+
+const conflictBaseFields = Object.freeze([
+  'world_id',
+  'region_root',
+  'world_root',
+  'base_snapshot_root',
+  'base_event_log_root',
+  'base_event_count',
+  'base_canonical_state_root',
+  'base_world_time_root',
+  'base_fact_tree_root',
+  'base_fact_count',
+  'base_trace_length'
+]);
+
+function normalizeReplicationConflictCandidate(input, index) {
+  const value = record(input);
+  const delta = clone(value.delta);
+  const verification = verifyReplicationDelta(delta);
+  fail(verification.valid, `LARGE_WORLD_REPLICATION_CONFLICT_DELTA_INVALID:${verification.errors.join(',')}`);
+  const writerId = String(value.writerId ?? value.writer_id ?? '');
+  fail(writerId.length > 0, 'LARGE_WORLD_REPLICATION_CONFLICT_WRITER_REQUIRED');
+  const writerSequence = integer(value.writerSequence ?? value.writer_sequence, 1, {min: 1});
+  return {index, writer_id: writerId, writer_sequence: writerSequence, delta};
+}
+
+function replicationConflictBase(delta) {
+  return Object.fromEntries(conflictBaseFields.map(field => [field, clone(delta[field])]));
+}
+
+function compareReplicationConflictCandidates(a, b) {
+  const aDeltaRoot = a.delta?.delta_root ?? a.delta_root;
+  const bDeltaRoot = b.delta?.delta_root ?? b.delta_root;
+  return keySort(a.writer_id, b.writer_id) || a.writer_sequence - b.writer_sequence || keySort(aDeltaRoot, bDeltaRoot);
+}
+
+function resolveReplicationConflictCandidates(candidatesInput) {
+  fail(Array.isArray(candidatesInput) && candidatesInput.length > 0, 'LARGE_WORLD_REPLICATION_CONFLICT_CANDIDATES_REQUIRED');
+  const candidates = candidatesInput.map((candidate, index) => normalizeReplicationConflictCandidate(candidate, index));
+  const first = candidates[0].delta;
+  const writers = new Set();
+  const deltas = new Set();
+  for (const candidate of candidates) {
+    for (const field of conflictBaseFields) fail(candidate.delta[field] === first[field], `LARGE_WORLD_REPLICATION_CONFLICT_BASE_MISMATCH:${field}`);
+    fail(!writers.has(candidate.writer_id), `LARGE_WORLD_REPLICATION_CONFLICT_WRITER_DUPLICATE:${candidate.writer_id}`);
+    fail(!deltas.has(candidate.delta.delta_root), `LARGE_WORLD_REPLICATION_CONFLICT_DELTA_DUPLICATE:${candidate.delta.delta_root}`);
+    writers.add(candidate.writer_id);
+    deltas.add(candidate.delta.delta_root);
+  }
+  const ordered = [...candidates].sort(compareReplicationConflictCandidates);
+  const summaries = ordered.map(candidate => ({
+    writer_id: candidate.writer_id,
+    writer_sequence: candidate.writer_sequence,
+    delta_id: candidate.delta.delta_id,
+    delta_root: candidate.delta.delta_root,
+    target_snapshot_root: candidate.delta.target_snapshot_root
+  }));
+  const base = {
+    format: LARGE_WORLD_REPLICATION_CONFLICT_DECISION_FORMAT,
+    version: LARGE_WORLD_RUNTIME_VERSION,
+    conflict_id: `replication-conflict:${rootHash(replicationConflictBase(first))}:${rootHash(summaries).slice(0, 24)}`,
+    policy: clone(replicationConflictPolicy),
+    ...replicationConflictBase(first),
+    candidates: summaries,
+    winner_delta_root: ordered[0].delta.delta_root,
+    rejected_delta_roots: ordered.slice(1).map(candidate => candidate.delta.delta_root),
+    status: ordered.length > 1 ? 'RESOLVED' : 'NO_CONFLICT',
+    canonical_state_mutated: false,
+    authority: {provider_can_write_authoritative_world_state: false, rncs_authority_required: true},
+    candidate_only: true,
+    authoritative: false,
+    commit_status: 'NOT_COMMITTED'
+  };
+  return {candidates: ordered, decision: {...base, decision_root: rootHash(base)}};
 }
 
 export class LargeWorldRuntime {
@@ -530,6 +617,7 @@ export class LargeWorldRuntime {
     this.fabric = new RealityRepresentationFabric({providers: [providerInput, wireframeProviderInput]});
     this.objects = new Map();
     this.appliedReplicationDeltas = new Map();
+    this.replicationConflictDecisions = new Map();
     for (const chunk of this.region.chunks) {
       const proceduralReference = createChunkReference(chunk, this.provider, Boolean(this.materializeChunk), {
         encoding: 'procedural-grid',
@@ -772,6 +860,7 @@ export class LargeWorldRuntime {
     this.observer = normalizeObserver(snapshot.observer);
     this.trace = clone(snapshot.trace);
     this.appliedReplicationDeltas = new Map(bundle.applied_replication_receipts.map(receipt => [receipt.delta_root, clone(receipt)]));
+    this.replicationConflictDecisions = new Map((bundle.replication_conflict_decisions ?? []).map(decision => [decision.decision_root, clone(decision)]));
     const restored = this.exportReplicationSnapshot();
     fail(restored.snapshot_root === snapshot.snapshot_root, 'LARGE_WORLD_DURABLE_SNAPSHOT_MISMATCH');
 
@@ -896,6 +985,8 @@ export class LargeWorldRuntime {
       delete duplicateBase.receipt_root;
       return {...duplicateBase, receipt_root: rootHash(duplicateBase)};
     }
+    const conflictDecision = [...this.replicationConflictDecisions.values()].find(decision => decision.candidates?.some(candidate => candidate.delta_root === delta.delta_root));
+    if (conflictDecision && conflictDecision.winner_delta_root !== delta.delta_root) fail(false, `LARGE_WORLD_REPLICATION_CONFLICT_LOSER:${conflictDecision.conflict_id}`);
 
     const current = this.exportReplicationSnapshot();
     fail(delta.world_id === this.options.worldId, 'LARGE_WORLD_REPLICATION_WORLD_MISMATCH');
@@ -969,6 +1060,41 @@ export class LargeWorldRuntime {
     };
     const receipt = {...receiptBase, receipt_root: rootHash(receiptBase)};
     this.appliedReplicationDeltas.set(delta.delta_root, receipt);
+    return clone(receipt);
+  }
+
+  applyReplicationConflict(candidatesInput, input = {}) {
+    const resolved = resolveReplicationConflictCandidates(candidatesInput);
+    const authorityReceipt = replicationAuthorityReceipt(input.authorityReceipt ?? input.authority_receipt);
+    if (authorityReceipt.decision_root !== undefined && authorityReceipt.decision_root !== null) fail(authorityReceipt.decision_root === resolved.decision.decision_root, 'LARGE_WORLD_REPLICATION_CONFLICT_AUTHORITY_DECISION_MISMATCH');
+    const winner = resolved.candidates[0];
+    const existingDecision = this.replicationConflictDecisions.get(resolved.decision.decision_root);
+    if (!existingDecision) {
+      const current = this.exportReplicationSnapshot();
+      fail(resolved.decision.base_snapshot_root === current.snapshot_root, 'LARGE_WORLD_REPLICATION_CONFLICT_BASE_SNAPSHOT_MISMATCH');
+    }
+    const applied = this.applyReplicationDelta(winner.delta, {authorityReceipt});
+    const receiptBase = {
+      format: LARGE_WORLD_REPLICATION_CONFLICT_RECEIPT_FORMAT,
+      version: LARGE_WORLD_RUNTIME_VERSION,
+      receipt_id: `replication-conflict-receipt:${resolved.decision.conflict_id}`,
+      conflict_id: resolved.decision.conflict_id,
+      decision_root: resolved.decision.decision_root,
+      decision: clone(resolved.decision),
+      world_id: resolved.decision.world_id,
+      base_snapshot_root: resolved.decision.base_snapshot_root,
+      winner_delta_root: resolved.decision.winner_delta_root,
+      rejected_delta_roots: [...resolved.decision.rejected_delta_roots],
+      applied_receipt_root: applied.receipt_root,
+      status: applied.status,
+      authority_receipt: authorityReceipt,
+      canonical_state_mutated: applied.canonical_state_mutated === true,
+      candidate_only: false,
+      authoritative: true,
+      commit_status: 'COMMITTED'
+    };
+    const receipt = {...receiptBase, receipt_root: rootHash(receiptBase)};
+    this.replicationConflictDecisions.set(resolved.decision.decision_root, clone(resolved.decision));
     return clone(receipt);
   }
 
@@ -1156,6 +1282,90 @@ export function verifyReplicationReceipt(receipt) {
   return {valid: errors.length === 0, errors, receipt_root: receipt.receipt_root ?? null};
 }
 
+export function resolveReplicationConflict(candidatesInput) {
+  return clone(resolveReplicationConflictCandidates(candidatesInput).decision);
+}
+
+export function verifyReplicationConflictDecision(decision) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!decision || typeof decision !== 'object') return {valid: false, errors: ['LARGE_WORLD_REPLICATION_CONFLICT_DECISION_NOT_OBJECT']};
+  try {
+    const copy = clone(decision);
+    const decisionRoot = copy.decision_root;
+    delete copy.decision_root;
+    check(decision.format === LARGE_WORLD_REPLICATION_CONFLICT_DECISION_FORMAT, 'LARGE_WORLD_REPLICATION_CONFLICT_DECISION_FORMAT_INVALID');
+    check(decision.version === LARGE_WORLD_RUNTIME_VERSION, 'LARGE_WORLD_REPLICATION_CONFLICT_DECISION_VERSION_INVALID');
+    check(typeof decision.conflict_id === 'string' && decision.conflict_id.length > 0, 'LARGE_WORLD_REPLICATION_CONFLICT_ID_REQUIRED');
+    check(decision.policy?.id === LARGE_WORLD_REPLICATION_CONFLICT_POLICY_ID && decision.policy?.version === 'v0.1', 'LARGE_WORLD_REPLICATION_CONFLICT_POLICY_INVALID');
+    check(decision.policy?.ordering === replicationConflictPolicy.ordering && decision.policy?.winner === replicationConflictPolicy.winner && decision.policy?.loser_status === replicationConflictPolicy.loser_status, 'LARGE_WORLD_REPLICATION_CONFLICT_POLICY_DRIFT');
+    check(typeof decision.world_id === 'string' && decision.world_id.length > 0, 'LARGE_WORLD_REPLICATION_CONFLICT_WORLD_ID_REQUIRED');
+    check(hex64(decision.region_root) && hex64(decision.world_root), 'LARGE_WORLD_REPLICATION_CONFLICT_REGION_ROOT_INVALID');
+    check(hex64(decision.base_snapshot_root) && hex64(decision.base_event_log_root) && hex64(decision.base_canonical_state_root) && hex64(decision.base_world_time_root) && hex64(decision.base_fact_tree_root), 'LARGE_WORLD_REPLICATION_CONFLICT_BASE_ROOT_INVALID');
+    for (const field of ['base_event_count', 'base_fact_count', 'base_trace_length']) check(Number.isSafeInteger(decision[field]) && decision[field] >= 0, `LARGE_WORLD_REPLICATION_CONFLICT_${field.toUpperCase()}_INVALID`);
+    check(Array.isArray(decision.candidates) && decision.candidates.length > 0, 'LARGE_WORLD_REPLICATION_CONFLICT_CANDIDATES_REQUIRED');
+    const writers = new Set();
+    const deltas = new Set();
+    for (const [index, candidate] of (decision.candidates ?? []).entries()) {
+      check(typeof candidate?.writer_id === 'string' && candidate.writer_id.length > 0, `LARGE_WORLD_REPLICATION_CONFLICT_WRITER_INVALID:${index}`);
+      check(Number.isSafeInteger(candidate?.writer_sequence) && candidate.writer_sequence > 0, `LARGE_WORLD_REPLICATION_CONFLICT_WRITER_SEQUENCE_INVALID:${index}`);
+      check(typeof candidate?.delta_id === 'string' && candidate.delta_id.length > 0, `LARGE_WORLD_REPLICATION_CONFLICT_DELTA_ID_INVALID:${index}`);
+      check(hex64(candidate?.delta_root) && hex64(candidate?.target_snapshot_root), `LARGE_WORLD_REPLICATION_CONFLICT_CANDIDATE_ROOT_INVALID:${index}`);
+      check(!writers.has(candidate?.writer_id), `LARGE_WORLD_REPLICATION_CONFLICT_WRITER_DUPLICATE:${candidate?.writer_id ?? 'unknown'}`);
+      check(!deltas.has(candidate?.delta_root), `LARGE_WORLD_REPLICATION_CONFLICT_DELTA_DUPLICATE:${candidate?.delta_root ?? 'unknown'}`);
+      writers.add(candidate?.writer_id);
+      deltas.add(candidate?.delta_root);
+      if (index > 0) check(compareReplicationConflictCandidates(decision.candidates[index - 1], candidate) < 0, `LARGE_WORLD_REPLICATION_CONFLICT_ORDER_INVALID:${index}`);
+    }
+    check(['RESOLVED', 'NO_CONFLICT'].includes(decision.status), 'LARGE_WORLD_REPLICATION_CONFLICT_STATUS_INVALID');
+    check(decision.status === (decision.candidates?.length > 1 ? 'RESOLVED' : 'NO_CONFLICT'), 'LARGE_WORLD_REPLICATION_CONFLICT_STATUS_MISMATCH');
+    check(decision.winner_delta_root === decision.candidates?.[0]?.delta_root, 'LARGE_WORLD_REPLICATION_CONFLICT_WINNER_INVALID');
+    check(Array.isArray(decision.rejected_delta_roots) && decision.rejected_delta_roots.every(hex64) && rootHash(decision.rejected_delta_roots) === rootHash((decision.candidates ?? []).slice(1).map(candidate => candidate.delta_root)), 'LARGE_WORLD_REPLICATION_CONFLICT_REJECTED_SET_INVALID');
+    check(decision.canonical_state_mutated === false, 'LARGE_WORLD_REPLICATION_CONFLICT_CANONICAL_MUTATION');
+    check(decision.authority?.provider_can_write_authoritative_world_state === false, 'LARGE_WORLD_REPLICATION_CONFLICT_AUTHORITY_ESCALATION');
+    check(decision.candidate_only === true && decision.authoritative === false, 'LARGE_WORLD_REPLICATION_CONFLICT_CANDIDATE_REQUIRED');
+    check(decision.commit_status === 'NOT_COMMITTED', 'LARGE_WORLD_REPLICATION_CONFLICT_COMMIT_STATUS_INVALID');
+    check(decision.conflict_id === `replication-conflict:${rootHash(replicationConflictBase(decision))}:${rootHash(decision.candidates).slice(0, 24)}`, 'LARGE_WORLD_REPLICATION_CONFLICT_ID_MISMATCH');
+    check(hex64(decisionRoot) && rootHash(copy) === decisionRoot, 'LARGE_WORLD_REPLICATION_CONFLICT_ROOT_MISMATCH');
+  } catch (error) {
+    errors.push(`LARGE_WORLD_REPLICATION_CONFLICT_VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, decision_root: decision.decision_root ?? null};
+}
+
+export function verifyReplicationConflictReceipt(receipt) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!receipt || typeof receipt !== 'object') return {valid: false, errors: ['LARGE_WORLD_REPLICATION_CONFLICT_RECEIPT_NOT_OBJECT']};
+  try {
+    const copy = clone(receipt);
+    const receiptRoot = copy.receipt_root;
+    delete copy.receipt_root;
+    const decisionVerification = verifyReplicationConflictDecision(receipt.decision);
+    check(receipt.format === LARGE_WORLD_REPLICATION_CONFLICT_RECEIPT_FORMAT, 'LARGE_WORLD_REPLICATION_CONFLICT_RECEIPT_FORMAT_INVALID');
+    check(receipt.version === LARGE_WORLD_RUNTIME_VERSION, 'LARGE_WORLD_REPLICATION_CONFLICT_RECEIPT_VERSION_INVALID');
+    check(typeof receipt.receipt_id === 'string' && receipt.receipt_id.length > 0, 'LARGE_WORLD_REPLICATION_CONFLICT_RECEIPT_ID_REQUIRED');
+    check(decisionVerification.valid, `LARGE_WORLD_REPLICATION_CONFLICT_RECEIPT_DECISION_INVALID:${decisionVerification.errors.join(',')}`);
+    check(receipt.decision_root === receipt.decision?.decision_root && hex64(receipt.decision_root), 'LARGE_WORLD_REPLICATION_CONFLICT_RECEIPT_DECISION_ROOT_INVALID');
+    check(receipt.conflict_id === receipt.decision?.conflict_id, 'LARGE_WORLD_REPLICATION_CONFLICT_RECEIPT_ID_MISMATCH');
+    check(['APPLIED', 'DUPLICATE'].includes(receipt.status), 'LARGE_WORLD_REPLICATION_CONFLICT_RECEIPT_STATUS_INVALID');
+    check(typeof receipt.world_id === 'string' && receipt.world_id === receipt.decision?.world_id, 'LARGE_WORLD_REPLICATION_CONFLICT_RECEIPT_WORLD_MISMATCH');
+    check(hex64(receipt.base_snapshot_root) && receipt.base_snapshot_root === receipt.decision?.base_snapshot_root, 'LARGE_WORLD_REPLICATION_CONFLICT_RECEIPT_BASE_ROOT_INVALID');
+    check(receipt.winner_delta_root === receipt.decision?.winner_delta_root, 'LARGE_WORLD_REPLICATION_CONFLICT_RECEIPT_WINNER_INVALID');
+    check(Array.isArray(receipt.rejected_delta_roots) && rootHash(receipt.rejected_delta_roots) === rootHash(receipt.decision?.rejected_delta_roots ?? []), 'LARGE_WORLD_REPLICATION_CONFLICT_RECEIPT_REJECTED_SET_INVALID');
+    check(hex64(receipt.applied_receipt_root), 'LARGE_WORLD_REPLICATION_CONFLICT_RECEIPT_APPLIED_ROOT_INVALID');
+    check(receipt.authority_receipt?.status === 'committed' && hex64(receipt.authority_receipt?.receipt_root), 'LARGE_WORLD_REPLICATION_CONFLICT_RECEIPT_AUTHORITY_INVALID');
+    check(receipt.authority_receipt?.decision_root === undefined || receipt.authority_receipt?.decision_root === null || receipt.authority_receipt?.decision_root === receipt.decision_root, 'LARGE_WORLD_REPLICATION_CONFLICT_RECEIPT_AUTHORITY_DECISION_MISMATCH');
+    check(typeof receipt.canonical_state_mutated === 'boolean' && (receipt.status === 'APPLIED' || receipt.canonical_state_mutated === false), 'LARGE_WORLD_REPLICATION_CONFLICT_RECEIPT_MUTATION_FLAG_INVALID');
+    check(receipt.candidate_only === false && receipt.authoritative === true, 'LARGE_WORLD_REPLICATION_CONFLICT_RECEIPT_AUTHORITY_SCOPE_INVALID');
+    check(receipt.commit_status === 'COMMITTED', 'LARGE_WORLD_REPLICATION_CONFLICT_RECEIPT_COMMIT_STATUS_INVALID');
+    check(hex64(receiptRoot) && rootHash(copy) === receiptRoot, 'LARGE_WORLD_REPLICATION_CONFLICT_RECEIPT_ROOT_MISMATCH');
+  } catch (error) {
+    errors.push(`LARGE_WORLD_REPLICATION_CONFLICT_RECEIPT_VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, receipt_root: receipt.receipt_root ?? null};
+}
+
 export function verifyDurableBundle(bundle) {
   const errors = [];
   const check = (condition, code) => { if (!condition) errors.push(code); };
@@ -1179,6 +1389,15 @@ export function verifyDurableBundle(bundle) {
       check(receiptVerification.valid, `LARGE_WORLD_DURABLE_BUNDLE_RECEIPT_INVALID:${receipt?.delta_id ?? 'unknown'}`);
       check(!deltaRoots.has(receipt?.delta_root), `LARGE_WORLD_DURABLE_BUNDLE_RECEIPT_DUPLICATE:${receipt?.delta_root ?? 'unknown'}`);
       deltaRoots.add(receipt?.delta_root);
+    }
+    check(Array.isArray(bundle.replication_conflict_decisions ?? []), 'LARGE_WORLD_DURABLE_BUNDLE_CONFLICT_DECISIONS_REQUIRED');
+    const conflictRoots = new Set();
+    for (const decision of bundle.replication_conflict_decisions ?? []) {
+      const decisionVerification = verifyReplicationConflictDecision(decision);
+      check(decisionVerification.valid, `LARGE_WORLD_DURABLE_BUNDLE_CONFLICT_DECISION_INVALID:${decision?.conflict_id ?? 'unknown'}`);
+      check(!conflictRoots.has(decision?.decision_root), `LARGE_WORLD_DURABLE_BUNDLE_CONFLICT_DECISION_DUPLICATE:${decision?.decision_root ?? 'unknown'}`);
+      conflictRoots.add(decision?.decision_root);
+      check(decision?.world_id === bundle.world_id && decision?.region_root === bundle.region_root && decision?.world_root === bundle.world_root, `LARGE_WORLD_DURABLE_BUNDLE_CONFLICT_DECISION_WORLD_MISMATCH:${decision?.conflict_id ?? 'unknown'}`);
     }
     check(bundle.canonical_state_mutated === false, 'LARGE_WORLD_DURABLE_BUNDLE_CANONICAL_MUTATION');
     check(bundle.authority?.provider_can_write_authoritative_world_state === false, 'LARGE_WORLD_DURABLE_BUNDLE_AUTHORITY_ESCALATION');
