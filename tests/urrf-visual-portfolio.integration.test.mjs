@@ -33,6 +33,9 @@ const profiles = [
     style: 'ABSTRACT',
     material: 'FLAT',
     lighting: 'DAYLIGHT',
+    environmentVariant: 'COASTAL',
+    motionVariant: 'STATIC',
+    animation: null,
     view: 'WIDE',
     resolution: [320, 180],
     renderer: {qualityTier: 'economy', enableShadows: false, shadowMapSize: 64},
@@ -49,6 +52,9 @@ const profiles = [
     style: 'CLEAN',
     material: 'PBR-LITE',
     lighting: 'DAYLIGHT',
+    environmentVariant: 'FOREST',
+    motionVariant: 'WIND-SOFT',
+    animation: {clipId: 'anim:wind', timeSeconds: 0.35, loop: false},
     view: 'HERO',
     resolution: [480, 270],
     renderer: {qualityTier: 'balanced', enableShadows: false, shadowMapSize: 128},
@@ -65,6 +71,9 @@ const profiles = [
     style: 'REALISTIC',
     material: 'PBR',
     lighting: 'GOLDEN-HOUR',
+    environmentVariant: 'DESERT',
+    motionVariant: 'WIND-GUST',
+    animation: {clipId: 'anim:wind', timeSeconds: 1.35, loop: false},
     view: 'HERO',
     resolution: [640, 360],
     renderer: {qualityTier: 'balanced', enableShadows: true, shadowMapSize: 256},
@@ -81,6 +90,9 @@ const profiles = [
     style: 'FILMIC',
     material: 'VOLUMETRIC',
     lighting: 'NOCTURNE',
+    environmentVariant: 'NOCTURNE',
+    motionVariant: 'BEACON-PULSE',
+    animation: {clipId: 'anim:pulse', timeSeconds: 0.5, loop: false},
     view: 'DYNAMIC-HERO',
     resolution: [960, 540],
     renderer: {qualityTier: 'quality', enableShadows: true, shadowMapSize: 512},
@@ -97,6 +109,9 @@ const profiles = [
     style: 'STYLIZED',
     material: 'PBR-CLEARCOAT',
     lighting: 'STUDIO',
+    environmentVariant: 'STUDIO',
+    motionVariant: 'ORBIT-HERO',
+    animation: {clipId: 'anim:orbit', timeSeconds: 0.75, loop: false},
     view: 'ORBIT',
     resolution: [800, 450],
     renderer: {qualityTier: 'quality', enableShadows: true, shadowMapSize: 512},
@@ -140,6 +155,33 @@ function createPortfolioShowcaseScene() {
       {id: 'beacon-left', meshId: 'mesh:cube', materialId: 'mat:beacon', transform: {translation: [-2.25, 0.82, 2.25], scale: [0.28, 1.18, 0.28]}, receiveShadow: true, castShadow: true},
       {id: 'beacon-right', meshId: 'mesh:cube', materialId: 'mat:beacon', transform: {translation: [2.25, 0.82, 2.25], scale: [0.28, 1.18, 0.28]}, receiveShadow: true, castShadow: true}
     ],
+    animations: [
+      {
+        id: 'anim:wind',
+        duration: 2,
+        channels: [
+          {nodeId: 'tree-left-crown', path: 'rotationEulerDeg', interpolation: 'LINEAR', times: [0, 1, 2], values: [[0, -6, -4], [0, 6, 4], [0, -6, -4]]},
+          {nodeId: 'tree-right-crown', path: 'rotationEulerDeg', interpolation: 'LINEAR', times: [0, 1, 2], values: [[0, 6, 3], [0, -6, -3], [0, 6, 3]]}
+        ]
+      },
+      {
+        id: 'anim:pulse',
+        duration: 1,
+        channels: [
+          {nodeId: 'beacon-left', path: 'scale', interpolation: 'LINEAR', times: [0, 0.5, 1], values: [[0.28, 1.18, 0.28], [0.42, 1.52, 0.42], [0.28, 1.18, 0.28]]},
+          {nodeId: 'beacon-right', path: 'scale', interpolation: 'LINEAR', times: [0, 0.5, 1], values: [[0.28, 1.18, 0.28], [0.42, 1.52, 0.42], [0.28, 1.18, 0.28]]},
+          {nodeId: 'tower-cap', path: 'scale', interpolation: 'LINEAR', times: [0, 0.5, 1], values: [[1.85, 0.18, 1.62], [2.05, 0.24, 1.8], [1.85, 0.18, 1.62]]}
+        ]
+      },
+      {
+        id: 'anim:orbit',
+        duration: 1.5,
+        channels: [
+          {nodeId: 'tower-mid', path: 'rotationEulerDeg', interpolation: 'LINEAR', times: [0, 0.75, 1.5], values: [[0, 0, 0], [0, 36, 0], [0, 72, 0]]},
+          {nodeId: 'tower-cap', path: 'rotationEulerDeg', interpolation: 'LINEAR', times: [0, 0.75, 1.5], values: [[0, 0, 0], [0, -30, 0], [0, -60, 0]]}
+        ]
+      }
+    ],
     environment: {...base.environment, probes: [
       {id: 'probe:platform', position: [0, 1.4, 0], radius: 8, diffuseColor: '#54749b', specularColor: '#dbeafe', intensity: 1.15},
       {id: 'probe:trees', position: [-3, 1.5, -1], radius: 5, diffuseColor: '#355f5a', specularColor: '#8bd5ca', intensity: 0.85}
@@ -154,6 +196,14 @@ function variantScene(profile) {
   scene.title = `URRF Portfolio ${profile.quality}`;
   scene.background = profile.background;
   scene.environment = {...scene.environment, ...profile.environment};
+  const environmentProbe = {
+    COASTAL: {id: 'probe:coastal', position: [0, 2.4, 3.4], radius: 7, diffuseColor: '#2f7aa0', specularColor: '#c6f1ff', intensity: 0.8},
+    FOREST: {id: 'probe:forest', position: [-2.8, 2.2, -1.2], radius: 6, diffuseColor: '#356b52', specularColor: '#b6e3b8', intensity: 0.9},
+    DESERT: {id: 'probe:desert', position: [2.8, 2.1, 1.5], radius: 7, diffuseColor: '#b8794f', specularColor: '#ffe0ae', intensity: 0.85},
+    NOCTURNE: {id: 'probe:nocturne', position: [0, 3.2, -2.2], radius: 8, diffuseColor: '#243d85', specularColor: '#94b8ff', intensity: 1.1},
+    STUDIO: {id: 'probe:studio', position: [0, 4.2, 2.5], radius: 8, diffuseColor: '#9bb7d9', specularColor: '#ffffff', intensity: 0.95}
+  }[profile.environmentVariant];
+  if (environmentProbe) scene.environment.probes = [...(scene.environment.probes ?? []), environmentProbe];
   const colors = profile.colors;
   const materialColors = {'mat:stone': colors.ground, 'mat:metal': colors.blue, 'mat:foliage': colors.red, 'mat:ground': colors.ground, 'mat:beacon': colors.emissive};
   scene.materials = scene.materials.map(material => ({...material, ...(materialColors[material.id] ? {baseColor: materialColors[material.id]} : {})}));
@@ -167,7 +217,7 @@ function variantScene(profile) {
   if (profile.view === 'ORBIT') scene.cameras[0].transform = {translation: [5.8, 2.8, 4.8], rotationEulerDeg: [-14, 50, 0]};
   if (profile.view === 'WIDE') scene.cameras[0].transform = {translation: [5.8, 3.4, 7.8], rotationEulerDeg: [-18, 35, 0]};
   if (profile.view === 'DYNAMIC-HERO') scene.cameras[0].transform = {translation: [4.2, 2.7, 5.4], rotationEulerDeg: [-14, 38, 0]};
-  scene.reality = {...scene.reality, realityRoot: rootHash({profile: profile.id, base: scene.reality?.realityRoot ?? null})};
+  scene.reality = {...scene.reality, realityRoot: rootHash({profile: profile.id, environment: profile.environmentVariant, motion: profile.motionVariant, base: scene.reality?.realityRoot ?? null})};
   return scene;
 }
 
@@ -179,7 +229,7 @@ function makePortfolio() {
     representation_kind: profile.kind,
     quality_profile: profile.quality,
     required_for_minimum: profile.quality === 'PROXY',
-    diversity_axes: {MODALITY: profile.kind, DETAIL: profile.quality, MATERIAL: profile.material, LIGHTING: profile.lighting, STYLE: profile.style, VIEW: profile.view},
+    diversity_axes: {MODALITY: profile.kind, DETAIL: profile.quality, MATERIAL: profile.material, LIGHTING: profile.lighting, ENVIRONMENT: profile.environmentVariant, STYLE: profile.style, MOTION: profile.motionVariant, VIEW: profile.view},
     render_profile: {renderer_id: 'vsr-spatial-reference', shading_model: 'pbr', lighting_profile: profile.lighting, camera_profile: profile.view, resolution_class: profile.quality.toLowerCase(), width: profile.resolution[0], height: profile.resolution[1], post_process: profile.id === 'proxy' ? 'none' : 'spatial-post-process', options: profile.renderer},
     resource_costs: profile.costs
   }));
@@ -196,7 +246,7 @@ function makePortfolio() {
       required_kinds: ['world-proxy', 'mesh', 'gaussian-splats'],
       required_quality_profiles: ['PROXY', 'MOBILE', 'STANDARD', 'CINEMATIC'],
       quality_ladder: ['PROXY', 'MOBILE', 'STANDARD', 'CINEMATIC', 'REFERENCE'],
-      diversity_targets: {MODALITY: 3, DETAIL: 5, MATERIAL: 4, LIGHTING: 4, STYLE: 4, VIEW: 3}
+      diversity_targets: {MODALITY: 3, DETAIL: 5, MATERIAL: 4, LIGHTING: 4, ENVIRONMENT: 4, STYLE: 4, MOTION: 4, VIEW: 3}
     },
     evidence_refs: []
   });
@@ -211,7 +261,7 @@ test('renders and records a diverse URRF representation portfolio', () => {
   const reports = [];
   for (const profile of profiles) {
     const scene = variantScene(profile);
-    const options = {...profile.renderer, width: profile.resolution[0], height: profile.resolution[1], postProcess: profile.postProcess, visualIntentRoot: rootHash({portfolio: portfolio.portfolio_root, profile: profile.id})};
+    const options = {...profile.renderer, width: profile.resolution[0], height: profile.resolution[1], postProcess: profile.postProcess, visualIntentRoot: rootHash({portfolio: portfolio.portfolio_root, profile: profile.id}), ...(profile.animation ? {animation: profile.animation} : {})};
     const rendered = renderSpatialReference(scene, options);
     assert.equal(verifySpatialFrame(rendered.framePlan).ok, true);
     const imagePath = join(outputDir, `${profile.id}.png`);
@@ -229,6 +279,8 @@ test('renders and records a diverse URRF representation portfolio', () => {
       draw_calls: rendered.framePlan.stats.visibleDraws,
       pixel_root: rendered.pixelRoot,
       frame_root: rendered.framePlan.frameRoot,
+      environment_root: rendered.framePlan.environmentRoot,
+      animation_root: rendered.framePlan.animationRoot,
       diversity_observation: portfolio.slots.find(slot => slot.slot_id === `slot:${profile.id}`).diversity_axes,
       notes: 'Deterministic CPU reference render; visual quality is observed but not subjectively graded or promoted.'
     });
@@ -246,6 +298,9 @@ test('renders and records a diverse URRF representation portfolio', () => {
       draw_calls: evidence.draw_calls,
       pixel_root: evidence.pixel_root,
       frame_root: evidence.frame_root,
+      environment_root: evidence.environment_root,
+      animation_root: evidence.animation_root,
+      animation: profile.animation ? {clip_id: profile.animation.clipId, time_seconds: String(profile.animation.timeSeconds), loop: profile.animation.loop ?? true} : null,
       evidence_root: evidence.evidence_root,
       quality_status: evidence.quality_status,
       visual_status: evidence.status
@@ -278,9 +333,9 @@ test('renders and records a diverse URRF representation portfolio', () => {
     `- composition: \`${portfolio.composition_result.composition_status}\` (${portfolio.slots.length} slots; ${portfolio.composition.min_slots}-${portfolio.composition.max_slots} allowed)`,
     '- status: `LOCAL_RENDERED / OBSERVED_NOT_GRADED`',
     '',
-    '| Profile | Kind | Size | Triangles | Draw calls | Style | Lighting | Image |',
-    '|---|---|---:|---:|---:|---|---|---|',
-    ...reports.map(item => `| ${item.quality_profile} | ${item.representation_kind} | ${item.width}×${item.height} | ${item.triangles} | ${item.draw_calls} | ${item.diversity_axes.STYLE} | ${item.diversity_axes.LIGHTING} | [${item.profile}.png](./${item.profile}.png) |`),
+    '| Profile | Kind | Size | Triangles | Draw calls | Environment | Motion | Style | Lighting | Image |',
+    '|---|---|---:|---:|---:|---|---|---|---|---|',
+    ...reports.map(item => `| ${item.quality_profile} | ${item.representation_kind} | ${item.width}×${item.height} | ${item.triangles} | ${item.draw_calls} | ${item.diversity_axes.ENVIRONMENT} | ${item.diversity_axes.MOTION} | ${item.diversity_axes.STYLE} | ${item.diversity_axes.LIGHTING} | [${item.profile}.png](./${item.profile}.png) |`),
     '',
     'The PNGs are deterministic VSR CPU-reference projections attached to candidate slots. They demonstrate renderable quality tiers and composition diversity; they do not prove production GPU/WebGPU quality, browser presentation, subjective art direction, or canonical-world promotion.'
   ];
@@ -288,4 +343,7 @@ test('renders and records a diverse URRF representation portfolio', () => {
   assert.equal(reports.length, profiles.length);
   assert.equal(reports.every(item => !item.image_path.includes('\\') && !item.image_path.includes(':')), true);
   assert.equal(new Set(reports.map(item => item.diversity_axes.STYLE)).size >= 4, true);
+  assert.equal(new Set(reports.map(item => item.diversity_axes.ENVIRONMENT)).size >= 4, true);
+  assert.equal(new Set(reports.map(item => item.diversity_axes.MOTION)).size >= 4, true);
+  assert.equal(new Set(reports.map(item => item.animation_root)).size >= 4, true);
 });
