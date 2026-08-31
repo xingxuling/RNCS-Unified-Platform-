@@ -32,6 +32,7 @@ import {
   worldStateRoot
 } from '@taowind/rncs-core-contract';
 import {RealityRepresentationFabric, RealityRepresentationPortfolioRuntime} from '@taowind/reality-representation-fabric';
+import {GlbBuilder, encodeFloat32, encodeUint16, encodeUint32, encodeGlb, encodePng, inspectGlb, minMax, normalizeIntent, deriveGenomeFromIntent, generatePbrTexturePack, generateMesh3d} from '@taowind/reality-asset-genesis-fabric';
 
 export const LARGE_WORLD_RUNTIME_FORMAT = 'rncs.large-world-runtime.v0.1';
 export const LARGE_WORLD_RUNTIME_VERSION = '0.1.0';
@@ -45,6 +46,10 @@ export const LARGE_WORLD_SPATIAL_GLTF_MANIFEST_FORMAT = 'rncs.large-world-spatia
 export const LARGE_WORLD_SPATIAL_GLTF_BUNDLE_FORMAT = 'rncs.large-world-spatial-gltf-bundle.v0.1';
 export const LARGE_WORLD_SPATIAL_GLTF_PROVIDER_ID = 'provider:taowind:large-world-gltf-prototype:v0.1';
 export const LARGE_WORLD_SPATIAL_GLTF_TEXTURE_PROFILE = 'vsr.rgba-inline.v0.1';
+export const LARGE_WORLD_SPATIAL_GLB_MANIFEST_FORMAT = 'rncs.large-world-spatial-glb-manifest.v0.1';
+export const LARGE_WORLD_SPATIAL_GLB_BUNDLE_FORMAT = 'rncs.large-world-spatial-glb-bundle.v0.1';
+export const LARGE_WORLD_SPATIAL_GLB_PROVIDER_ID = 'provider:taowind:large-world-glb-ragf:v0.1';
+export const LARGE_WORLD_SPATIAL_GLB_TEXTURE_PROFILE = 'ragf.png-embedded.v0.1';
 export const LARGE_WORLD_MATERIALIZATION_FORMAT = 'rncs.large-world-materialization.v0.1';
 export const LARGE_WORLD_REPLICATION_SNAPSHOT_FORMAT = 'rncs.large-world-replication-snapshot.v0.1';
 export const LARGE_WORLD_REPLICATION_DELTA_FORMAT = 'rncs.large-world-replication-delta.v0.1';
@@ -900,6 +905,109 @@ function largeWorldSpatialGltfForMesh(mesh, material, {lod, prototypeId}) {
   return {gltf, bytes, triangleCount: Math.floor(indices.length / 3), textureCount: 1};
 }
 
+function largeWorldSpatialGlbTexture(material, meshId, lod) {
+  const base = largeWorldSpatialColorRgba(material.baseColor, '#9ca3af');
+  const accent = largeWorldSpatialColorRgba(material.emissive, '#000000');
+  const pixels = [];
+  for (let y = 0; y < 4; y++) for (let x = 0; x < 4; x++) {
+    const stripe = ((x + y + lod) % 3) === 0;
+    const tone = stripe ? 18 : 0;
+    const pulse = (String(meshId).length + x * 7 + y * 11 + lod * 13) % 19 === 0;
+    pixels.push(
+      Math.max(0, Math.min(255, base[0] + (stripe ? tone : -tone))),
+      Math.max(0, Math.min(255, base[1] + (stripe ? tone : -tone))),
+      Math.max(0, Math.min(255, base[2] + (stripe ? tone : -tone))),
+      pulse ? Math.max(base[3], accent[3]) : base[3]
+    );
+  }
+  return {width: 4, height: 4, pixels, png: encodePng(4, 4, Buffer.from(pixels))};
+}
+
+/**
+ * Lower one RNCS spatial mesh through the RAGF GLB encoder. This keeps the
+ * large-world provider responsible for candidate materialization while the
+ * reusable GLB container/validation semantics remain owned by RAGF.
+ */
+function largeWorldSpatialGlbForMesh(mesh, material, {lod, prototypeId}) {
+  const source = largeWorldSpatialMeshForLod(mesh, lod);
+  const positions = Array.isArray(source.positions) ? source.positions : [];
+  const normals = Array.isArray(source.normals) && source.normals.length === positions.length ? source.normals : new Array(positions.length).fill(0);
+  const uvs = Array.isArray(source.uvs) && source.uvs.length === positions.length / 3 * 2 ? source.uvs : new Array(positions.length / 3 * 2).fill(0);
+  const indices = Array.isArray(source.indices) ? source.indices : [];
+  fail(positions.length >= 9 && indices.length >= 3, `LARGE_WORLD_GLB_MESH_EMPTY:${mesh.id}`);
+  const builder = new GlbBuilder();
+  const bounds = minMax(positions, 3);
+  const positionAccessor = builder.addAccessor(encodeFloat32(positions), {componentType: 5126, type: 'VEC3', count: positions.length / 3, target: 34962, min: bounds.min, max: bounds.max});
+  const normalAccessor = builder.addAccessor(encodeFloat32(normals), {componentType: 5126, type: 'VEC3', count: normals.length / 3, target: 34962});
+  const uvAccessor = builder.addAccessor(encodeFloat32(uvs), {componentType: 5126, type: 'VEC2', count: uvs.length / 2, target: 34962});
+  const maximumIndex = indices.reduce((maximum, value) => Math.max(maximum, Number(value) || 0), 0);
+  const indexComponentType = maximumIndex < 0x10000 ? 5123 : 5125;
+  const indexAccessor = builder.addAccessor(indexComponentType === 5123 ? encodeUint16(indices) : encodeUint32(indices), {componentType: indexComponentType, type: 'SCALAR', count: indices.length, target: 34963, min: [0], max: [maximumIndex]});
+  const texture = largeWorldSpatialGlbTexture(material, mesh.id, lod);
+  const imageBufferView = builder.addBuffer(texture.png);
+  const binary = builder.binary();
+  const color = largeWorldSpatialColorRgba(material.baseColor, '#9ca3af');
+  const emissive = largeWorldSpatialColorRgba(material.emissive, '#000000');
+  const gltf = {
+    asset: {version: '2.0', generator: LARGE_WORLD_SPATIAL_GLB_PROVIDER_ID},
+    scene: 0,
+    scenes: [{name: `${mesh.id}:lod${lod}`, nodes: [0]}],
+    nodes: [{name: mesh.id, mesh: 0}],
+    meshes: [{name: mesh.id, primitives: [{attributes: {POSITION: positionAccessor, NORMAL: normalAccessor, TEXCOORD_0: uvAccessor}, indices: indexAccessor, material: 0, mode: 4}]}],
+    materials: [{
+      name: String(material.id ?? 'material:large-world:default'),
+      pbrMetallicRoughness: {
+        baseColorFactor: color.map(entry => entry / 255),
+        metallicFactor: Math.max(0, Math.min(1, Number(material.metallic ?? 0))),
+        roughnessFactor: Math.max(0, Math.min(1, Number(material.roughness ?? .86))),
+        baseColorTexture: {index: 0}
+      },
+      emissiveFactor: emissive.slice(0, 3).map(entry => entry / 255),
+      alphaMode: material.alphaMode === 'BLEND' || material.alphaMode === 'MASK' ? material.alphaMode : 'OPAQUE',
+      alphaCutoff: Number.isFinite(Number(material.alphaCutoff)) ? Number(material.alphaCutoff) : .5,
+      doubleSided: material.doubleSided !== false,
+      extras: {provider_id: LARGE_WORLD_SPATIAL_GLB_PROVIDER_ID, prototype_id: prototypeId, lod}
+    }],
+    samplers: [{magFilter: 9729, minFilter: 9987, wrapS: 10497, wrapT: 10497}],
+    images: [{name: `${mesh.id}:base-color`, mimeType: 'image/png', bufferView: imageBufferView, extras: {vsrRGBA: {width: texture.width, height: texture.height, pixels: texture.pixels, colorSpace: 'srgb'}}}],
+    textures: [{sampler: 0, source: 0}],
+    buffers: [{byteLength: binary.length}],
+    bufferViews: builder.bufferViews,
+    accessors: builder.accessors,
+    extras: {
+      format: LARGE_WORLD_SPATIAL_GLB_MANIFEST_FORMAT,
+      provider_id: LARGE_WORLD_SPATIAL_GLB_PROVIDER_ID,
+      prototype_id: prototypeId,
+      lod,
+      texture_profile: LARGE_WORLD_SPATIAL_GLB_TEXTURE_PROFILE,
+      ragf: {encoder: 'GlbBuilder', index_accessor: indexAccessor, image_buffer_view: imageBufferView}
+    }
+  };
+  const glb = encodeGlb(gltf, binary);
+  const inspection = inspectGlb(glb);
+  fail(inspection.valid, `LARGE_WORLD_GLB_INVALID:${mesh.id}:lod${lod}:${inspection.errors.join(',')}`);
+  return {gltf: inspection.json ?? gltf, bytes: new Uint8Array(glb), triangleCount: Math.floor(indices.length / 3), vertexCount: positions.length / 3, textureCount: 1, inspection};
+}
+
+function largeWorldSpatialRagfShowcase(scene, {variant = 'cinematic'} = {}) {
+  const assetId = `asset:ragf:${scene.sceneId}:showcase`;
+  const intent = normalizeIntent({
+    description: `为大世界 ${scene.sceneId} 生成一个可观察的冰属性三维世界角色展示资产`,
+    asset_kind: 'character-3d',
+    seed: rootHash({scene_root: scene.scene_root, asset_id: assetId}),
+    target_platforms: ['desktop', 'web'],
+    required_outputs: ['mesh-glb'],
+    constraints: {max_triangles: 2400, pbr_texture_size: 256, max_bones: 64, style: 'stylized-readable'},
+    extensions: {asset_id: assetId}
+  });
+  const genome = deriveGenomeFromIntent(intent);
+  const pbr = generatePbrTexturePack({genome, variant});
+  const mesh = generateMesh3d({genome, variant, lod: 0, pbr});
+  const inspection = inspectGlb(mesh.glb);
+  fail(inspection.valid, `LARGE_WORLD_RAGF_SHOWCASE_GLB_INVALID:${inspection.errors.join(',')}`);
+  return {assetId, variant, genome, pbr, mesh, inspection};
+}
+
 function largeWorldSpatialMeshCellIds(scene, meshId) {
   const nodeIds = new Set(scene.nodes.filter(node => node.meshId === meshId).map(node => node.id));
   return strings((scene.streaming?.cells ?? []).filter(cell => (cell.nodeIds ?? []).some(nodeId => nodeIds.has(nodeId))).map(cell => cell.id));
@@ -1064,6 +1172,192 @@ export function verifyLargeWorldSpatialGltfBundle(bundle, input = {}) {
     check(hex64(bundle.bundle_root) && rootHash(bundleBase) === bundle.bundle_root, 'LARGE_WORLD_GLTF_BUNDLE_ROOT_MISMATCH');
   } catch (error) {
     errors.push(`LARGE_WORLD_GLTF_VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, bundle_root: bundle?.bundle_root ?? null, manifest_root: bundle?.manifest?.manifest_root ?? null};
+}
+
+/**
+ * Materialize the same spatial meshes as binary glTF 2.0 assets. Geometry and
+ * container encoding are delegated to the reusable RAGF GLB builder; this
+ * bundle remains candidate-only and is indexed by RNCS streaming cells.
+ */
+export function createLargeWorldSpatialGlbBundle(scene, input = {}) {
+  const value = record(input);
+  const sceneVerification = verifyLargeWorldSpatialScene(scene);
+  fail(sceneVerification.valid, `LARGE_WORLD_GLB_SCENE_INVALID:${sceneVerification.errors.join(',')}`);
+  const levels = [0, 1, 2];
+  const meshEntries = [...new Map((scene.meshes ?? []).map(mesh => [mesh.id, mesh])).values()].sort((a, b) => keySort(a.id, b.id));
+  fail(meshEntries.length > 0, 'LARGE_WORLD_GLB_MESHES_REQUIRED');
+  const assets = [];
+  const cellAssetIndex = {};
+  const providerId = String(value.providerId ?? value.provider_id ?? LARGE_WORLD_SPATIAL_GLB_PROVIDER_ID);
+  for (const mesh of meshEntries) {
+    const material = largeWorldSpatialMaterialForMesh(scene, mesh.id);
+    const prototypeId = largeWorldSpatialMeshPrototypeId(scene, mesh.id);
+    const cellIds = largeWorldSpatialMeshCellIds(scene, mesh.id);
+    for (const lod of levels) {
+      const generated = largeWorldSpatialGlbForMesh(mesh, material, {lod, prototypeId});
+      const assetId = `asset:glb:${scene.sceneId}:${mesh.id}:lod${lod}`;
+      const recordValue = {
+        id: assetId,
+        uri: `rncs+glb://${encodeURIComponent(scene.sceneId)}/${encodeURIComponent(mesh.id)}/lod${lod}.glb`,
+        format: 'model/gltf-binary',
+        sha256: largeWorldSpatialSha256(generated.bytes),
+        byteLength: generated.bytes.byteLength,
+        kind: 'mesh',
+        cellIds,
+        priority: lod === 0 ? 100 : lod === 1 ? 50 : 10,
+        metadata: {
+          provider_id: providerId,
+          source_scene_root: scene.scene_root,
+          source_mesh_id: mesh.id,
+          prototype_id: prototypeId,
+          lod,
+          vertex_count: generated.vertexCount,
+          triangle_count: generated.triangleCount,
+          texture_count: generated.textureCount,
+          texture_profile: LARGE_WORLD_SPATIAL_GLB_TEXTURE_PROFILE,
+          encoder: 'ragf.glb-builder.v0.1',
+          candidate_only: true,
+          authoritative: false
+        }
+      };
+      assets.push({record: recordValue, gltf: generated.gltf, payload: generated.bytes});
+      for (const cellId of cellIds) (cellAssetIndex[cellId] ??= []).push(assetId);
+    }
+  }
+  let providerAssetCount = 0;
+  if (value.includeRagfShowcase === true || value.include_ragf_showcase === true) {
+    const showcase = largeWorldSpatialRagfShowcase(scene, {variant: String(value.showcaseVariant ?? value.showcase_variant ?? 'cinematic')});
+    const payload = new Uint8Array(showcase.mesh.glb);
+    const recordValue = {
+      id: showcase.assetId,
+      uri: `rncs+glb://${encodeURIComponent(scene.sceneId)}/ragf-showcase/${showcase.variant}.glb`,
+      format: 'model/gltf-binary',
+      sha256: largeWorldSpatialSha256(payload),
+      byteLength: payload.byteLength,
+      kind: 'mesh',
+      cellIds: [],
+      priority: 200,
+      metadata: {
+        provider_id: providerId,
+        source_provider_id: 'provider:taowind:procedural-3d',
+        source_scene_root: scene.scene_root,
+        source_mesh_id: showcase.assetId,
+        prototype_id: 'prototype:ragf:character-showcase',
+        asset_role: 'ragf-showcase',
+        variant: showcase.variant,
+        genome_root: showcase.genome.genome_root,
+        lod: 0,
+        vertex_count: showcase.mesh.metadata.vertex_count,
+        triangle_count: showcase.mesh.metadata.triangle_count,
+        texture_count: showcase.mesh.metadata.embedded_texture_count,
+        texture_profile: 'ragf.pbr-embedded.v0.4',
+        encoder: 'ragf.procedural-3d.v0.4',
+        candidate_only: true,
+        authoritative: false
+      }
+    };
+    assets.push({record: recordValue, gltf: showcase.inspection.json ?? {}, payload});
+    providerAssetCount = 1;
+  }
+  assets.sort((a, b) => keySort(a.record.id, b.record.id));
+  for (const ids of Object.values(cellAssetIndex)) ids.sort(keySort);
+  const lodPolicy = [
+    {lod: 0, max_distance_m: 64, screen_coverage_percent: 100, geometric_error_mm: 0},
+    {lod: 1, max_distance_m: 192, screen_coverage_percent: 45, geometric_error_mm: 18},
+    {lod: 2, max_distance_m: 512, screen_coverage_percent: 16, geometric_error_mm: 55}
+  ];
+  const manifestBase = {
+    format: LARGE_WORLD_SPATIAL_GLB_MANIFEST_FORMAT,
+    version: '0.1.0',
+    scene_id: String(scene.sceneId),
+    scene_root: String(scene.scene_root),
+    source_reality_root: String(scene.reality?.realityRoot ?? ''),
+    provider_id: providerId,
+    encoder_provider_id: LARGE_WORLD_SPATIAL_GLB_PROVIDER_ID,
+    provider_asset_count: providerAssetCount,
+    visual_prototype_profile: String(scene.large_world.visual_prototype_profile),
+    mesh_count: meshEntries.length,
+    lod_level_count: levels.length,
+    asset_count: assets.length,
+    texture_count: assets.reduce((sum, entry) => sum + Number(entry.record.metadata.texture_count ?? 0), 0),
+    texture_profile: LARGE_WORLD_SPATIAL_GLB_TEXTURE_PROFILE,
+    lod_policy: lodPolicy,
+    asset_ids: assets.map(entry => entry.record.id),
+    cell_asset_index: cellAssetIndex,
+    candidate_only: true,
+    authoritative: false,
+    canonical_write_authorized: false,
+    authority: {provider_can_write_authoritative_world_state: false, rncs_authority_required: true}
+  };
+  const manifest = {...manifestBase, manifest_root: rootHash(manifestBase)};
+  const bundleBase = {
+    format: LARGE_WORLD_SPATIAL_GLB_BUNDLE_FORMAT,
+    version: '0.1.0',
+    manifest_root: manifest.manifest_root,
+    assets: assets.map(entry => largeWorldSpatialGltfRecordView(entry.record))
+  };
+  return {format: LARGE_WORLD_SPATIAL_GLB_BUNDLE_FORMAT, version: '0.1.0', manifest, assets, bundle_root: rootHash(bundleBase)};
+}
+
+export function verifyLargeWorldSpatialGlbBundle(bundle, input = {}) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!bundle || typeof bundle !== 'object' || Array.isArray(bundle)) return {valid: false, errors: ['LARGE_WORLD_GLB_BUNDLE_NOT_OBJECT']};
+  try {
+    check(bundle.format === LARGE_WORLD_SPATIAL_GLB_BUNDLE_FORMAT, 'LARGE_WORLD_GLB_BUNDLE_FORMAT_INVALID');
+    check(bundle.version === '0.1.0', 'LARGE_WORLD_GLB_BUNDLE_VERSION_INVALID');
+    const manifest = bundle.manifest;
+    check(manifest?.format === LARGE_WORLD_SPATIAL_GLB_MANIFEST_FORMAT, 'LARGE_WORLD_GLB_MANIFEST_FORMAT_INVALID');
+    check(manifest?.candidate_only === true && manifest?.authoritative === false && manifest?.canonical_write_authorized === false, 'LARGE_WORLD_GLB_AUTHORITY_INVALID');
+    const manifestCopy = clone(manifest ?? {});
+    const manifestRoot = manifestCopy.manifest_root;
+    delete manifestCopy.manifest_root;
+    check(hex64(manifestRoot) && rootHash(manifestCopy) === manifestRoot, 'LARGE_WORLD_GLB_MANIFEST_ROOT_MISMATCH');
+    if (input.sceneRoot !== undefined) check(manifest?.scene_root === input.sceneRoot, 'LARGE_WORLD_GLB_SCENE_ROOT_MISMATCH');
+    const entries = Array.isArray(bundle.assets) ? bundle.assets : [];
+    const ids = entries.map(entry => entry?.record?.id).sort(keySort);
+    check(ids.length === entries.length && new Set(ids).size === ids.length, 'LARGE_WORLD_GLB_ASSET_IDS_INVALID');
+    check(JSON.stringify(ids) === JSON.stringify([...(manifest?.asset_ids ?? [])].sort(keySort)), 'LARGE_WORLD_GLB_ASSET_INDEX_MISMATCH');
+    check(Number(manifest?.provider_asset_count ?? 0) === entries.filter(entry => entry?.record?.metadata?.asset_role === 'ragf-showcase').length, 'LARGE_WORLD_GLB_PROVIDER_ASSET_COUNT_INVALID');
+    for (const entry of entries) {
+      const asset = entry?.record;
+      const payload = entry?.payload;
+      check(asset && typeof asset.id === 'string' && asset.format === 'model/gltf-binary' && asset.kind === 'mesh', `LARGE_WORLD_GLB_ASSET_RECORD_INVALID:${asset?.id ?? 'unknown'}`);
+      check(payload instanceof Uint8Array, `LARGE_WORLD_GLB_ASSET_PAYLOAD_INVALID:${asset?.id ?? 'unknown'}`);
+      if (!(payload instanceof Uint8Array)) continue;
+      check(asset.byteLength === payload.byteLength, `LARGE_WORLD_GLB_ASSET_LENGTH_MISMATCH:${asset.id}`);
+      check(typeof asset.sha256 === 'string' && asset.sha256 === largeWorldSpatialSha256(payload), `LARGE_WORLD_GLB_ASSET_HASH_MISMATCH:${asset.id}`);
+      let inspection;
+      try { inspection = inspectGlb(Buffer.from(payload)); } catch (error) { check(false, `LARGE_WORLD_GLB_PARSE_FAILED:${asset.id}:${error.message}`); continue; }
+      check(inspection.valid, `LARGE_WORLD_GLB_INVALID:${asset.id}`);
+      const gltf = inspection.json ?? {};
+      const isRagfShowcase = asset.metadata?.asset_role === 'ragf-showcase';
+      check(gltf?.asset?.version === '2.0', `LARGE_WORLD_GLB_VERSION_INVALID:${asset.id}`);
+      check(isRagfShowcase ? String(gltf?.asset?.generator ?? '').includes('RAGF') : gltf?.asset?.generator === LARGE_WORLD_SPATIAL_GLB_PROVIDER_ID, `LARGE_WORLD_GLB_GENERATOR_INVALID:${asset.id}`);
+      const indexAccessor = Number(gltf?.meshes?.[0]?.primitives?.[0]?.indices ?? gltf?.extras?.ragf?.index_accessor ?? 3);
+      const triangleCount = (gltf?.accessors?.[indexAccessor]?.count ?? 0) / 3;
+      check(Number.isInteger(triangleCount) && triangleCount === Number(asset.metadata?.triangle_count), `LARGE_WORLD_GLB_TRIANGLE_COUNT_INVALID:${asset.id}`);
+      const images = Array.isArray(gltf?.images) ? gltf.images : [];
+      check(gltf?.textures?.length === (isRagfShowcase ? 4 : 1), `LARGE_WORLD_GLB_TEXTURE_COUNT_INVALID:${asset.id}`);
+      check(images.length === (isRagfShowcase ? 4 : 1), `LARGE_WORLD_GLB_TEXTURE_CHANNEL_MISSING:${asset.id}`);
+      for (const image of images) {
+        check(image?.mimeType === 'image/png', `LARGE_WORLD_GLB_TEXTURE_MIME_INVALID:${asset.id}`);
+        if (!isRagfShowcase) check(Boolean(image?.extras?.vsrRGBA), `LARGE_WORLD_GLB_TEXTURE_RGBA_MISSING:${asset.id}`);
+        const imageView = Number.isInteger(image?.bufferView) ? gltf?.bufferViews?.[image.bufferView] : null;
+        check(Boolean(imageView && imageView.byteLength > 0), `LARGE_WORLD_GLB_TEXTURE_BUFFER_MISSING:${asset.id}`);
+      }
+    }
+    const bundleBase = {
+      format: LARGE_WORLD_SPATIAL_GLB_BUNDLE_FORMAT,
+      version: '0.1.0',
+      manifest_root: manifest?.manifest_root,
+      assets: entries.map(entry => largeWorldSpatialGltfRecordView(entry.record)).sort((a, b) => keySort(a.id, b.id))
+    };
+    check(hex64(bundle.bundle_root) && rootHash(bundleBase) === bundle.bundle_root, 'LARGE_WORLD_GLB_BUNDLE_ROOT_MISMATCH');
+  } catch (error) {
+    errors.push(`LARGE_WORLD_GLB_VERIFY_EXCEPTION:${error.name}:${error.message}`);
   }
   return {valid: errors.length === 0, errors, bundle_root: bundle?.bundle_root ?? null, manifest_root: bundle?.manifest?.manifest_root ?? null};
 }

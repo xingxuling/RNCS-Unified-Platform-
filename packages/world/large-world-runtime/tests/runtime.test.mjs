@@ -12,11 +12,14 @@ import {
   LARGE_WORLD_SPATIAL_SCENE_FORMAT,
   LARGE_WORLD_PROCEDURAL_PROVIDER_ID,
   LARGE_WORLD_WIREFRAME_PROVIDER_ID,
+  LARGE_WORLD_SPATIAL_GLB_BUNDLE_FORMAT,
+  LARGE_WORLD_SPATIAL_GLB_TEXTURE_PROFILE,
   LargeWorldDurableStore,
   LargeWorldRuntime,
   createChunkRepresentationPortfolio,
   createLargeWorldSpatialScene,
   createLargeWorldSpatialGltfBundle,
+  createLargeWorldSpatialGlbBundle,
   createLargeWorldRuntime,
   generateChunk,
   generateRegion,
@@ -26,6 +29,7 @@ import {
   verifyPortfolioSelectionEnvelope,
   verifyLargeWorldSpatialScene,
   verifyLargeWorldSpatialGltfBundle,
+  verifyLargeWorldSpatialGlbBundle,
   verifyDurableBundle,
   verifyDurableRestoreReceipt,
   verifyDurableStoreReceipt,
@@ -267,6 +271,52 @@ test('materializes a deterministic glTF and inline texture candidate bundle with
   const tampered = structuredClone(bundle);
   tampered.assets[0].payload[0] ^= 1;
   assert.equal(verifyLargeWorldSpatialGltfBundle(tampered, {sceneRoot: scene.scene_root}).valid, false);
+});
+
+test('materializes deterministic RAGF-encoded binary GLB assets without escalating authority', () => {
+  const runtime = new LargeWorldRuntime({worldId: 'world:glb-provider', seed: 'seed:glb-provider', width: 5, depth: 5, chunkSize: 64, sampleResolution: 8, loadRadius: 1, maxActiveChunks: 9});
+  runtime.observe({x: 0, z: 0});
+  const active = runtime.listActiveChunks();
+  const selection = runtime.selectActiveRepresentationPortfolios({quality_by_chunk: Object.fromEntries(active.map(chunk => [chunk.chunk_id, 'STANDARD']))});
+  const scene = runtime.createSpatialScene({selection, evidence_root: rootHash({selection_root: selection.selection_root, renderer: 'glb-provider-test'})});
+  const bundle = createLargeWorldSpatialGlbBundle(scene);
+  const verification = verifyLargeWorldSpatialGlbBundle(bundle, {sceneRoot: scene.scene_root});
+  assert.equal(verification.valid, true);
+  assert.equal(bundle.format, LARGE_WORLD_SPATIAL_GLB_BUNDLE_FORMAT);
+  assert.equal(bundle.manifest.mesh_count, scene.meshes.length);
+  assert.equal(bundle.manifest.asset_count, scene.meshes.length * 3);
+  assert.equal(bundle.manifest.texture_profile, LARGE_WORLD_SPATIAL_GLB_TEXTURE_PROFILE);
+  assert.equal(bundle.assets.every(entry => entry.record.format === 'model/gltf-binary'), true);
+  assert.equal(bundle.assets.every(entry => entry.record.metadata.candidate_only && !entry.record.metadata.authoritative), true);
+  assert.equal(bundle.assets.every(entry => entry.payload[0] === 0x67 && entry.payload[1] === 0x6c && entry.payload[2] === 0x54 && entry.payload[3] === 0x46), true);
+  assert.equal(bundle.assets.every(entry => entry.gltf.asset.version === '2.0' && entry.gltf.images[0].mimeType === 'image/png'), true);
+  const repeat = createLargeWorldSpatialGlbBundle(scene);
+  assert.equal(bundle.bundle_root, repeat.bundle_root);
+  assert.equal(bundle.assets[0].record.sha256, repeat.assets[0].record.sha256);
+  const tampered = structuredClone(bundle);
+  tampered.assets[0].payload[0] ^= 1;
+  assert.equal(verifyLargeWorldSpatialGlbBundle(tampered, {sceneRoot: scene.scene_root}).valid, false);
+});
+
+test('can attach a real RAGF procedural-3d showcase candidate without changing world truth', () => {
+  const runtime = new LargeWorldRuntime({worldId: 'world:ragf-showcase', seed: 'seed:ragf-showcase', width: 5, depth: 5, chunkSize: 64, sampleResolution: 8, loadRadius: 1, maxActiveChunks: 9});
+  runtime.observe({x: 0, z: 0});
+  const active = runtime.listActiveChunks();
+  const selection = runtime.selectActiveRepresentationPortfolios({quality_by_chunk: Object.fromEntries(active.map(chunk => [chunk.chunk_id, 'STANDARD']))});
+  const scene = runtime.createSpatialScene({selection, evidence_root: rootHash({selection_root: selection.selection_root, renderer: 'ragf-showcase-test'})});
+  const bundle = createLargeWorldSpatialGlbBundle(scene, {includeRagfShowcase: true});
+  assert.equal(verifyLargeWorldSpatialGlbBundle(bundle, {sceneRoot: scene.scene_root}).valid, true);
+  const showcase = bundle.assets.find(entry => entry.record.metadata.asset_role === 'ragf-showcase');
+  assert.ok(showcase);
+  assert.equal(bundle.manifest.provider_asset_count, 1);
+  assert.ok(showcase.record.metadata.triangle_count > 700);
+  assert.equal(showcase.record.metadata.texture_count, 4);
+  assert.equal(showcase.gltf.skins?.length, 1);
+  assert.equal(showcase.gltf.animations?.length, 4);
+  assert.equal(showcase.gltf.images?.length, 4);
+  assert.equal(showcase.record.metadata.candidate_only, true);
+  assert.equal(showcase.record.metadata.authoritative, false);
+  assert.equal(bundle.bundle_root, createLargeWorldSpatialGlbBundle(scene, {includeRagfShowcase: true}).bundle_root);
 });
 
 test('snapshot and replay seal deterministic streaming evidence', () => {

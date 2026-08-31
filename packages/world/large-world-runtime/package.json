@@ -20,7 +20,8 @@
   },
   "dependencies": {
     "@taowind/rncs-core-contract": "*",
-    "@taowind/reality-representation-fabric": "*"
+    "@taowind/reality-representation-fabric": "*",
+    "@taowind/reality-asset-genesis-fabric": "*"
   },
   "engines": {
     "node": ">=20"
