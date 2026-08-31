@@ -21,6 +21,7 @@
 - v0.3 Reality Access Candidate：独立 DetailVector、主体 RealityHorizon、InterestGraph、多域 Query 结果和容量受限 CognitiveWorkingSet；查询排序不拥有 Canonical State，结果必须回源复验
 - v0.3 Reality Distribution Candidate：Consistency Profile、Authority Lease/Epoch/Fencing、Lease Revocation 与版本根绑定的 Replication Envelope；分布式输入必须经过 RNCS authority receipt 与当前 lease 复验
 - v0.3 Reality Transport Candidate：Fiber/WiFi/Bluetooth/RDN 传播 Profile、QoS、节点发现/关联/漫游与低功耗 Organ Link；设备配对不等于 Authority
+- v0.3 Reality Power/Resource Candidate：Power Profile、Thermal Envelope、跨 CPU/GPU/NPU/VRAM/RAM/Network/Energy 的 Resource Budget、Fault、Load Shedding 与 Minimum Viable Reality；所有决策保持 candidate-only
 
 ## 快速运行
 
@@ -55,6 +56,8 @@ VSR/AER State   = 观察者投影状态
 `src/reality-distribution.mjs` 提供 `RealityConsistencyProfile`、`AuthorityLease`、显式撤销和 `RealityReplicationEnvelope`。Epoch/fencing token 与当前 lease 必须精确匹配，lease 失效或 authority receipt 缺失时 admission 失败；这些合同本身保持 candidate-only。
 
 `src/reality-transport.mjs` 提供三类传播 Profile、带 profile/lease/receipt 根的 Transport Packet、WiFi-style Node Discovery/Association/Roaming 和 Bluetooth-style Organ Link。Transport 与 Organ Link 都是候选传播；只有独立 RNCS authority receipt 才能允许 world-mutation admission。
+
+`src/reality-power.mjs` 提供 Power Profile、Thermal Envelope、Resource Budget/Demand、Reality Fault、Minimum Viable Reality 和确定性的 Load Shedding Plan。Governor 的硬优先级保留 safety/authority/control 与最小现实，软资源按 power/thermal/预算压力降级、冻结、卸载或延迟；计划永远不写入 Canonical World State，也不颁发 Authority。
 
 ## Entity Kernel v0.1
 

@@ -6,6 +6,8 @@ The package deliberately does not own canonical world truth. A `RealityObject` c
 
 `RealityTransportFabric` is the bounded v0.3 propagation surface. It registers Fiber/WiFi/Bluetooth profiles, discovers and associates local nodes, records candidate roaming/fallback decisions, and sends profile-rooted packets or low-power Bluetooth Organ Links. Pairing, routing, and packet delivery never grant canonical write authority; world mutation still requires an RNCS lease and committed authority receipt.
 
+`RealityResourceGovernor` is the bounded v0.3 Power/Resource Plane. It binds node power and thermal state to CPU/GPU/NPU/VRAM/RAM/Storage/Network/Agent/Simulation/Energy budgets, records provider/network/thermal faults, and emits deterministic load-shedding decisions. Safety, authority, control and Minimum Viable Reality are protected classes; visual/physics/agent/audio/refinement work can be reduced, frozen, offloaded or deferred. The governor is candidate-only and never mutates Canonical World State or grants provider authority.
+
 The adapter interface is intentionally provider-neutral:
 
 ```js
