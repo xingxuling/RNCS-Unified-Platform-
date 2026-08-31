@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/rncs/representation-flow-sample.v0.3.schema.json",
+  "title": "RNCS Representation Flow Sample v0.3",
+  "type": "object",
+  "required": ["format", "version", "flow_root", "flow_id", "object_id", "source_state_root", "target_state_root", "sample_time_ms", "now_time_ms", "interpolation", "value", "prediction_error", "collision_safety", "canonical_state_mutated", "canonical_write_authorized", "candidate_only", "authoritative", "commit_status", "sample_root"],
+  "properties": {
+    "format": {"const": "rncs.representation-flow-sample.v0.3"},
+    "version": {"const": "0.3.0"},
+    "flow_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "flow_id": {"type": "string", "minLength": 1},
+    "object_id": {"type": "string", "minLength": 1},
+    "source_state_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "target_state_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "sample_time_ms": {"type": "integer", "minimum": 0},
+    "now_time_ms": {"type": "integer", "minimum": 0},
+    "interpolation": {"type": "object", "required": ["mode", "status", "clamped", "fraction", "alpha_milli"], "properties": {"mode": {"enum": ["STEP", "LINEAR"]}, "status": {"enum": ["STEP", "INTERPOLATED", "EXTRAPOLATED"]}, "clamped": {"type": "boolean"}, "fraction": {"type": "object", "required": ["numerator", "denominator"]}, "alpha_milli": {"type": "integer"}}},
+    "value": {"type": "array", "minItems": 1, "maxItems": 4, "items": {"type": "integer"}},
+    "prediction_error": {"type": "object", "required": ["status", "max_component_error", "allowed_error"], "properties": {"status": {"enum": ["NOT_RUN", "PASS"]}, "max_component_error": {"type": "integer", "minimum": 0}, "allowed_error": {"type": "integer", "minimum": 0}}},
+    "collision_safety": {"type": "object", "required": ["status", "max_displacement_mm", "bound_mm"], "properties": {"status": {"const": "PASS"}, "max_displacement_mm": {"type": "integer", "minimum": 0}, "bound_mm": {"type": "integer", "minimum": 0}}},
+    "canonical_state_mutated": {"const": false},
+    "canonical_write_authorized": {"const": false},
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "commit_status": {"const": "NOT_COMMITTED"},
+    "sample_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}

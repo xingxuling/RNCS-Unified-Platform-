@@ -32,7 +32,14 @@ import {
   rootHash,
   rollbackRepresentationTransition,
   verifyRepresentationRef,
-  verifyRepresentationTransition
+  verifyRepresentationTransition,
+  createRepresentationFlow as createCoreRepresentationFlow,
+  createRepresentationFlowSample as createCoreRepresentationFlowSample,
+  verifyRepresentationFlow,
+  verifyRepresentationFlowSample,
+  REPRESENTATION_FLOW_FORMAT,
+  REPRESENTATION_FLOW_SAMPLE_FORMAT,
+  REPRESENTATION_FLOW_VERSION
 } from '@taowind/rncs-core-contract';
 
 export const URRF_RUNTIME_FORMAT = 'urrf.reality-representation-runtime.v0.1';
@@ -47,6 +54,9 @@ export const URRF_DETAIL_VECTOR_FORMAT = REALITY_DETAIL_VECTOR_FORMAT;
 export const URRF_HORIZON_FORMAT = REALITY_HORIZON_FORMAT;
 export const URRF_INTEREST_GRAPH_FORMAT = REALITY_INTEREST_GRAPH_FORMAT;
 export const URRF_QUERY_FORMAT = REALITY_QUERY_FORMAT;
+export const URRF_REPRESENTATION_FLOW_FORMAT = REPRESENTATION_FLOW_FORMAT;
+export const URRF_REPRESENTATION_FLOW_SAMPLE_FORMAT = REPRESENTATION_FLOW_SAMPLE_FORMAT;
+export const URRF_REPRESENTATION_FLOW_VERSION = REPRESENTATION_FLOW_VERSION;
 export const URRF_MATERIALIZATION_STATUSES = Object.freeze(['EXECUTED', 'NOT_EXECUTED', 'FAILED']);
 
 const clone = value => structuredClone(value);
@@ -388,6 +398,7 @@ export class RealityRepresentationFabric {
     this.activeRoots = new Map();
     this.transitions = new Map();
     this.propertyTransitions = new Map();
+    this.flows = new Map();
     for (const provider of providers) this.registerProvider(provider);
     for (const object of objects) this.registerRealityObject(object);
   }
@@ -751,6 +762,72 @@ export class RealityRepresentationFabric {
     return rolledBack;
   }
 
+  createRepresentationFlow(input = {}) {
+    const request = record(input);
+    const objectId = String(request.object_id ?? request.objectId ?? request.id ?? '');
+    const object = this.objects.get(objectId);
+    fail(object, `URRF_OBJECT_NOT_REGISTERED:${objectId}`);
+    const activeRoot = this.activeRoots.get(objectId);
+    const defaultReference = object.representations.find(reference => reference.representation_root === activeRoot) ?? object.representations[0];
+    const sourceSelector = request.source_representation ?? request.sourceRepresentation ?? (
+      request.source_representation_id ?? request.sourceRepresentationId ?? request.source_id
+        ? {representation_id: request.source_representation_id ?? request.sourceRepresentationId ?? request.source_id}
+        : defaultReference
+    );
+    const targetSelector = request.target_representation ?? request.targetRepresentation ?? (
+      request.target_representation_id ?? request.targetRepresentationId ?? request.target_id
+        ? {representation_id: request.target_representation_id ?? request.targetRepresentationId ?? request.target_id}
+        : sourceSelector
+    );
+    const source = representationFor(object, sourceSelector);
+    const target = representationFor(object, targetSelector);
+    fail(source, 'URRF_FLOW_SOURCE_REPRESENTATION_NOT_FOUND');
+    fail(target, 'URRF_FLOW_TARGET_REPRESENTATION_NOT_FOUND');
+    const sourceStateRoot = request.source_state_root ?? request.sourceStateRoot ?? object.state_root;
+    const targetStateRoot = request.target_state_root ?? request.targetStateRoot ?? object.state_root;
+    const sourceRepresentationRoot = request.source_representation_root ?? request.sourceRepresentationRoot ?? source.representation_root;
+    const targetRepresentationRoot = request.target_representation_root ?? request.targetRepresentationRoot ?? target.representation_root;
+    fail(sourceRepresentationRoot === source.representation_root, 'URRF_FLOW_SOURCE_REPRESENTATION_ROOT_MISMATCH');
+    fail(targetRepresentationRoot === target.representation_root, 'URRF_FLOW_TARGET_REPRESENTATION_ROOT_MISMATCH');
+    const flowId = String(request.flow_id ?? request.flowId ?? `flow:${object.object_id}:${source.representation_id}:${target.representation_id}:${String(sourceStateRoot).slice(0, 16)}:${String(targetStateRoot).slice(0, 16)}`);
+    const flow = createCoreRepresentationFlow({
+      ...request,
+      flow_id: flowId,
+      object_id: object.object_id,
+      branch: object.branch,
+      source_state_root: sourceStateRoot,
+      target_state_root: targetStateRoot,
+      source_representation_root: sourceRepresentationRoot,
+      target_representation_root: targetRepresentationRoot
+    });
+    const verification = verifyRepresentationFlow(flow);
+    fail(verification.valid, `URRF_FLOW_INVALID:${verification.errors.join(',')}`);
+    this.flows.set(flow.flow_id, flow);
+    return clone(flow);
+  }
+
+  getRepresentationFlow(flowId) {
+    return clone(this.flows.get(String(flowId)) ?? null);
+  }
+
+  verifyRepresentationFlow(flow) {
+    return verifyRepresentationFlow(flow);
+  }
+
+  sampleRepresentationFlow(input = {}) {
+    const request = record(input);
+    const flow = request.flow ?? request.flow_record ?? this.flows.get(String(request.flow_id ?? request.flowId ?? ''));
+    fail(flow, `URRF_FLOW_NOT_REGISTERED:${request.flow_id ?? request.flowId ?? ''}`);
+    const sample = createCoreRepresentationFlowSample(flow, request);
+    const verification = verifyRepresentationFlowSample(sample);
+    fail(verification.valid, `URRF_FLOW_SAMPLE_INVALID:${verification.errors.join(',')}`);
+    return clone(sample);
+  }
+
+  verifyRepresentationFlowSample(sample) {
+    return verifyRepresentationFlowSample(sample);
+  }
+
   getPropertySet(objectId) {
     const object = this.objects.get(String(objectId));
     return object ? clone(object.property_set) : null;
@@ -850,7 +927,8 @@ export class RealityRepresentationFabric {
       objects: [...this.objects.values()].map(object => ({object_id: object.object_id, object_root: object.object_root, state_root: object.state_root, content_root: object.content_root, property_root: object.property_root, law_bindings_root: object.law_bindings_root, query_index_root: object.query_index_root})).sort((a, b) => Buffer.compare(Buffer.from(a.object_id, 'utf8'), Buffer.from(b.object_id, 'utf8'))),
       active_representations: [...this.activeRoots.entries()].map(([object_id, representation_root]) => ({object_id, representation_root})).sort((a, b) => Buffer.compare(Buffer.from(a.object_id, 'utf8'), Buffer.from(b.object_id, 'utf8'))),
       transitions: [...this.transitions.values()].map(transition => ({transition_id: transition.transition_id, transition_root: transition.transition_root, phase: transition.phase, active_representation_root: transition.active_representation_root, property_root: transition.property_root ?? null, law_bindings_root: transition.law_bindings_root ?? null})).sort((a, b) => Buffer.compare(Buffer.from(a.transition_id, 'utf8'), Buffer.from(b.transition_id, 'utf8'))),
-      property_transitions: [...this.propertyTransitions.values()].map(transition => ({transition_id: transition.transition_id, transition_root: transition.transition_root, phase: transition.phase, source_property_root: transition.source_property_root})).sort((a, b) => Buffer.compare(Buffer.from(a.transition_id, 'utf8'), Buffer.from(b.transition_id, 'utf8')))
+      property_transitions: [...this.propertyTransitions.values()].map(transition => ({transition_id: transition.transition_id, transition_root: transition.transition_root, phase: transition.phase, source_property_root: transition.source_property_root})).sort((a, b) => Buffer.compare(Buffer.from(a.transition_id, 'utf8'), Buffer.from(b.transition_id, 'utf8'))),
+      representation_flows: [...this.flows.values()].map(flow => ({flow_id: flow.flow_id, flow_root: flow.flow_root, object_id: flow.object_id, source_state_root: flow.source_state_root, target_state_root: flow.target_state_root})).sort((a, b) => Buffer.compare(Buffer.from(a.flow_id, 'utf8'), Buffer.from(b.flow_id, 'utf8')))
     };
     return {...base, fabric_root: rootHash(base)};
   }

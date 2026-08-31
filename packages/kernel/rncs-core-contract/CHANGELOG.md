@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- 新增 v0.3 `RepresentationFlow` / `RepresentationFlowSample`：绑定对象身份、状态/表示根与单调时间区间，执行插值、预算内外推、预测误差、碰撞安全、陈旧状态、回滚兼容和候选权限闸门；不会写入 Canonical World State。
 - 新增 v0.3 Reality Access Candidate：独立 `DetailVector`、`RealityHorizon`、`InterestGraph`、多域 `RealityQuery` 和受容量约束的 `CognitiveWorkingSet`；所有结果保持候选态并要求 Canonical Revalidation。
 - 新增 `rncs.reality-property-set.v0.3`、`rncs.reality-law-bindings.v0.3` 与 `rncs.reality-quantity.v0.3`：PropertySet/LawBindings 的 RNCS 权威根、来源/证据/版本绑定，以及单位—维度非法运算拒绝。
 - 新增 `rncs.reality-property-transition.v0.3` 候选契约：属性变化必须带 Law、State、Provider、Constraint 与 Authority 边界，Provider 不能直接提交 Canonical Property。
