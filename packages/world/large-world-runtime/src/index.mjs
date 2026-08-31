@@ -1,3 +1,4 @@
+import {createHmac, timingSafeEqual} from 'node:crypto';
 import {
   ZERO_ROOT,
   advanceWorldTime,
@@ -32,6 +33,8 @@ export const LARGE_WORLD_REPLICATION_DELTA_FORMAT = 'rncs.large-world-replicatio
 export const LARGE_WORLD_REPLICATION_RECEIPT_FORMAT = 'rncs.large-world-replication-receipt.v0.1';
 export const LARGE_WORLD_DURABLE_BUNDLE_FORMAT = 'rncs.large-world-durable-bundle.v0.1';
 export const LARGE_WORLD_DURABLE_RESTORE_RECEIPT_FORMAT = 'rncs.large-world-durable-restore-receipt.v0.1';
+export const LARGE_WORLD_REPLICATION_PACKET_FORMAT = 'rncs.large-world-replication-packet.v0.1';
+export const LARGE_WORLD_REPLICATION_ACK_FORMAT = 'rncs.large-world-replication-ack.v0.1';
 
 export const LARGE_WORLD_BIOMES = Object.freeze(['coast', 'desert', 'forest', 'grassland', 'tundra', 'wetland']);
 export const LARGE_WORLD_STRUCTURE_KINDS = Object.freeze(['ruin', 'grove', 'mine', 'shrine', 'watchtower']);
@@ -453,6 +456,21 @@ function durableBundleBase(runtime) {
     authoritative: false,
     commit_status: 'NOT_COMMITTED'
   };
+}
+
+function authenticationTag(value, authKey) {
+  fail(typeof authKey === 'string' && authKey.length > 0, 'LARGE_WORLD_REPLICATION_AUTH_KEY_REQUIRED');
+  return createHmac('sha256', Buffer.from(authKey, 'utf8')).update(rootHash(value), 'utf8').digest('hex');
+}
+
+function authenticationTagMatches(value, authTag, authKey) {
+  if (!hex64(authTag) || typeof authKey !== 'string' || authKey.length === 0) return false;
+  const expected = authenticationTag(value, authKey);
+  return timingSafeEqual(Buffer.from(expected, 'hex'), Buffer.from(authTag, 'hex'));
+}
+
+function packetId({channelId, sequence, deltaRoot}) {
+  return `replication-packet:${channelId}:${sequence}:${deltaRoot.slice(0, 24)}`;
 }
 
 export class LargeWorldRuntime {
@@ -1193,6 +1211,217 @@ export function verifyDurableRestoreReceipt(receipt) {
     errors.push(`LARGE_WORLD_DURABLE_RESTORE_RECEIPT_VERIFY_EXCEPTION:${error.name}:${error.message}`);
   }
   return {valid: errors.length === 0, errors, receipt_root: receipt.receipt_root ?? null};
+}
+
+export function createReplicationPacket(deltaInput, input = {}) {
+  const delta = clone(deltaInput);
+  const deltaVerification = verifyReplicationDelta(delta);
+  fail(deltaVerification.valid, `LARGE_WORLD_REPLICATION_PACKET_DELTA_INVALID:${deltaVerification.errors.join(',')}`);
+  const value = record(input);
+  const channelId = String(value.channelId ?? value.channel_id ?? 'large-world-replication');
+  const senderId = String(value.senderId ?? value.sender_id ?? 'source');
+  const recipientId = String(value.recipientId ?? value.recipient_id ?? 'target');
+  const sequence = integer(value.sequence, 1, {min: 1});
+  fail(channelId.length > 0 && senderId.length > 0 && recipientId.length > 0, 'LARGE_WORLD_REPLICATION_PACKET_ENDPOINT_REQUIRED');
+  const base = {
+    format: LARGE_WORLD_REPLICATION_PACKET_FORMAT,
+    version: LARGE_WORLD_RUNTIME_VERSION,
+    packet_id: packetId({channelId, sequence, deltaRoot: delta.delta_root}),
+    channel_id: channelId,
+    sender_id: senderId,
+    recipient_id: recipientId,
+    sequence,
+    delta_root: delta.delta_root,
+    delta,
+    reliability: {mode: 'ack-and-retry', duplicate_safe: true, ordered_base_roots: true}
+  };
+  return {...base, packet_root: rootHash(base), auth_tag: authenticationTag(base, value.authKey ?? value.auth_key)};
+}
+
+export function verifyReplicationPacket(packet, input = {}) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!packet || typeof packet !== 'object') return {valid: false, errors: ['LARGE_WORLD_REPLICATION_PACKET_NOT_OBJECT']};
+  try {
+    const copy = clone(packet);
+    const packetRoot = copy.packet_root;
+    const authTag = copy.auth_tag;
+    delete copy.packet_root;
+    delete copy.auth_tag;
+    check(packet.format === LARGE_WORLD_REPLICATION_PACKET_FORMAT, 'LARGE_WORLD_REPLICATION_PACKET_FORMAT_INVALID');
+    check(packet.version === LARGE_WORLD_RUNTIME_VERSION, 'LARGE_WORLD_REPLICATION_PACKET_VERSION_INVALID');
+    check(typeof packet.packet_id === 'string' && packet.packet_id.length > 0, 'LARGE_WORLD_REPLICATION_PACKET_ID_REQUIRED');
+    check(typeof packet.channel_id === 'string' && packet.channel_id.length > 0, 'LARGE_WORLD_REPLICATION_PACKET_CHANNEL_REQUIRED');
+    check(typeof packet.sender_id === 'string' && packet.sender_id.length > 0, 'LARGE_WORLD_REPLICATION_PACKET_SENDER_REQUIRED');
+    check(typeof packet.recipient_id === 'string' && packet.recipient_id.length > 0, 'LARGE_WORLD_REPLICATION_PACKET_RECIPIENT_REQUIRED');
+    check(Number.isSafeInteger(packet.sequence) && packet.sequence > 0, 'LARGE_WORLD_REPLICATION_PACKET_SEQUENCE_INVALID');
+    const deltaVerification = verifyReplicationDelta(packet.delta);
+    check(deltaVerification.valid, `LARGE_WORLD_REPLICATION_PACKET_DELTA_INVALID:${deltaVerification.errors.join(',')}`);
+    check(packet.delta_root === packet.delta?.delta_root, 'LARGE_WORLD_REPLICATION_PACKET_DELTA_ROOT_MISMATCH');
+    check(packet.packet_id === packetId({channelId: packet.channel_id, sequence: packet.sequence, deltaRoot: packet.delta_root ?? ''}), 'LARGE_WORLD_REPLICATION_PACKET_ID_MISMATCH');
+    check(packet.reliability?.mode === 'ack-and-retry' && packet.reliability?.duplicate_safe === true, 'LARGE_WORLD_REPLICATION_PACKET_RELIABILITY_INVALID');
+    check(hex64(packetRoot) && rootHash(copy) === packetRoot, 'LARGE_WORLD_REPLICATION_PACKET_ROOT_MISMATCH');
+    check(authenticationTagMatches(copy, authTag, input.authKey ?? input.auth_key), 'LARGE_WORLD_REPLICATION_PACKET_AUTH_INVALID');
+  } catch (error) {
+    errors.push(`LARGE_WORLD_REPLICATION_PACKET_VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, packet_root: packet.packet_root ?? null};
+}
+
+export function createReplicationAck(packetInput, input = {}) {
+  const packet = clone(packetInput);
+  const packetVerification = verifyReplicationPacket(packet, input);
+  fail(packetVerification.valid, `LARGE_WORLD_REPLICATION_ACK_PACKET_INVALID:${packetVerification.errors.join(',')}`);
+  const value = record(input);
+  const status = String(value.status ?? 'APPLIED');
+  fail(['APPLIED', 'DUPLICATE', 'REJECTED'].includes(status), 'LARGE_WORLD_REPLICATION_ACK_STATUS_INVALID');
+  const receiptRoot = value.receiptRoot ?? value.receipt_root ?? null;
+  if (status !== 'REJECTED') fail(hex64(receiptRoot), 'LARGE_WORLD_REPLICATION_ACK_RECEIPT_ROOT_REQUIRED');
+  const base = {
+    format: LARGE_WORLD_REPLICATION_ACK_FORMAT,
+    version: LARGE_WORLD_RUNTIME_VERSION,
+    ack_id: `replication-ack:${packet.packet_id}:${status}`,
+    packet_id: packet.packet_id,
+    channel_id: packet.channel_id,
+    sender_id: String(value.senderId ?? value.sender_id ?? packet.recipient_id),
+    recipient_id: String(value.recipientId ?? value.recipient_id ?? packet.sender_id),
+    sequence: packet.sequence,
+    delta_root: packet.delta_root,
+    status,
+    receipt_root: receiptRoot,
+    error: value.error === undefined || value.error === null ? null : String(value.error)
+  };
+  return {...base, ack_root: rootHash(base), auth_tag: authenticationTag(base, value.authKey ?? value.auth_key)};
+}
+
+export function verifyReplicationAck(ack, input = {}) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!ack || typeof ack !== 'object') return {valid: false, errors: ['LARGE_WORLD_REPLICATION_ACK_NOT_OBJECT']};
+  try {
+    const copy = clone(ack);
+    const ackRoot = copy.ack_root;
+    const authTag = copy.auth_tag;
+    delete copy.ack_root;
+    delete copy.auth_tag;
+    check(ack.format === LARGE_WORLD_REPLICATION_ACK_FORMAT, 'LARGE_WORLD_REPLICATION_ACK_FORMAT_INVALID');
+    check(ack.version === LARGE_WORLD_RUNTIME_VERSION, 'LARGE_WORLD_REPLICATION_ACK_VERSION_INVALID');
+    check(typeof ack.ack_id === 'string' && ack.ack_id.length > 0, 'LARGE_WORLD_REPLICATION_ACK_ID_REQUIRED');
+    check(typeof ack.packet_id === 'string' && ack.packet_id.length > 0, 'LARGE_WORLD_REPLICATION_ACK_PACKET_ID_REQUIRED');
+    check(['APPLIED', 'DUPLICATE', 'REJECTED'].includes(ack.status), 'LARGE_WORLD_REPLICATION_ACK_STATUS_INVALID');
+    check(Number.isSafeInteger(ack.sequence) && ack.sequence > 0, 'LARGE_WORLD_REPLICATION_ACK_SEQUENCE_INVALID');
+    if (ack.status !== 'REJECTED') check(hex64(ack.receipt_root), 'LARGE_WORLD_REPLICATION_ACK_RECEIPT_ROOT_INVALID');
+    check(hex64(ack.delta_root), 'LARGE_WORLD_REPLICATION_ACK_DELTA_ROOT_INVALID');
+    check(hex64(ackRoot) && rootHash(copy) === ackRoot, 'LARGE_WORLD_REPLICATION_ACK_ROOT_MISMATCH');
+    check(authenticationTagMatches(copy, authTag, input.authKey ?? input.auth_key), 'LARGE_WORLD_REPLICATION_ACK_AUTH_INVALID');
+  } catch (error) {
+    errors.push(`LARGE_WORLD_REPLICATION_ACK_VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, ack_root: ack.ack_root ?? null};
+}
+
+export class LargeWorldReplicationLink {
+  constructor({source, target, transport, authKey, channelId = 'large-world-replication', sourceEndpoint = 'source', targetEndpoint = 'target', authorityReceipt} = {}) {
+    fail(source instanceof LargeWorldRuntime && target instanceof LargeWorldRuntime, 'LARGE_WORLD_REPLICATION_LINK_RUNTIME_REQUIRED');
+    fail(transport && typeof transport.send === 'function' && typeof transport.register === 'function', 'LARGE_WORLD_REPLICATION_TRANSPORT_REQUIRED');
+    fail(typeof authKey === 'string' && authKey.length > 0, 'LARGE_WORLD_REPLICATION_AUTH_KEY_REQUIRED');
+    this.source = source;
+    this.target = target;
+    this.transport = transport;
+    this.authKey = authKey;
+    this.channelId = String(channelId);
+    this.sourceEndpoint = String(sourceEndpoint);
+    this.targetEndpoint = String(targetEndpoint);
+    this.authorityReceipt = clone(authorityReceipt ?? null);
+    this.sequence = 0;
+    this.pending = new Map();
+    this.received = new Map();
+    this.acks = [];
+    this.errors = [];
+    this.transport.register(this.targetEndpoint, message => this.receiveAtTarget(message?.payload ?? message));
+    this.transport.register(this.sourceEndpoint, message => this.receiveAtSource(message?.payload ?? message));
+  }
+
+  sendDelta(delta, input = {}) {
+    if (input.authorityReceipt !== undefined || input.authority_receipt !== undefined) this.authorityReceipt = clone(input.authorityReceipt ?? input.authority_receipt);
+    replicationAuthorityReceipt(this.authorityReceipt);
+    const packet = createReplicationPacket(delta, {
+      authKey: this.authKey,
+      channelId: this.channelId,
+      senderId: this.sourceEndpoint,
+      recipientId: this.targetEndpoint,
+      sequence: this.sequence + 1
+    });
+    this.sequence = packet.sequence;
+    this.pending.set(packet.packet_id, {packet, retries: 0});
+    this.transport.send(this.sourceEndpoint, this.targetEndpoint, 'large-world-replication', packet);
+    return clone(packet);
+  }
+
+  receiveAtTarget(packet) {
+    const verification = verifyReplicationPacket(packet, {authKey: this.authKey});
+    if (!verification.valid || packet.recipient_id !== this.targetEndpoint || packet.sender_id !== this.sourceEndpoint || packet.channel_id !== this.channelId) {
+      this.errors.push({kind: 'packet', errors: verification.errors.length ? verification.errors : ['LARGE_WORLD_REPLICATION_PACKET_ROUTE_INVALID']});
+      return {status: 'REJECTED', errors: [...this.errors.at(-1).errors]};
+    }
+    const prior = this.received.get(packet.packet_id);
+    if (prior) {
+      const ack = createReplicationAck(packet, {authKey: this.authKey, status: prior.status, receiptRoot: prior.receipt_root, senderId: this.targetEndpoint, recipientId: this.sourceEndpoint});
+      this.transport.send(this.targetEndpoint, this.sourceEndpoint, 'large-world-replication-ack', ack);
+      return clone(prior);
+    }
+    let receipt;
+    try {
+      receipt = this.target.applyReplicationDelta(packet.delta, {authorityReceipt: this.authorityReceipt});
+    } catch (error) {
+      const message = String(error.message ?? error);
+      this.errors.push({kind: 'apply', packet_id: packet.packet_id, error: message});
+      const ack = createReplicationAck(packet, {authKey: this.authKey, status: 'REJECTED', error: message, senderId: this.targetEndpoint, recipientId: this.sourceEndpoint});
+      this.transport.send(this.targetEndpoint, this.sourceEndpoint, 'large-world-replication-ack', ack);
+      return {status: 'REJECTED', error: message};
+    }
+    this.received.set(packet.packet_id, receipt);
+    const ack = createReplicationAck(packet, {authKey: this.authKey, status: receipt.status, receiptRoot: receipt.receipt_root, senderId: this.targetEndpoint, recipientId: this.sourceEndpoint});
+    this.transport.send(this.targetEndpoint, this.sourceEndpoint, 'large-world-replication-ack', ack);
+    return clone(receipt);
+  }
+
+  receiveAtSource(ack) {
+    const verification = verifyReplicationAck(ack, {authKey: this.authKey});
+    if (!verification.valid || ack.recipient_id !== this.sourceEndpoint || ack.sender_id !== this.targetEndpoint || ack.channel_id !== this.channelId) {
+      this.errors.push({kind: 'ack', errors: verification.errors.length ? verification.errors : ['LARGE_WORLD_REPLICATION_ACK_ROUTE_INVALID']});
+      return {status: 'REJECTED', errors: [...this.errors.at(-1).errors]};
+    }
+    this.acks.push(clone(ack));
+    if (ack.status === 'APPLIED' || ack.status === 'DUPLICATE') this.pending.delete(ack.packet_id);
+    return clone(ack);
+  }
+
+  retryPending() {
+    const resent = [];
+    for (const entry of this.pending.values()) {
+      entry.retries += 1;
+      resent.push(clone(entry.packet));
+      this.transport.send(this.sourceEndpoint, this.targetEndpoint, 'large-world-replication', entry.packet);
+    }
+    return resent;
+  }
+
+  advance(ticks = 1) {
+    if (typeof this.transport.advance === 'function') this.transport.advance(ticks);
+    return this.status();
+  }
+
+  status() {
+    return {
+      channel_id: this.channelId,
+      next_sequence: this.sequence + 1,
+      pending_packet_ids: [...this.pending.keys()].sort(keySort),
+      received_packet_ids: [...this.received.keys()].sort(keySort),
+      ack_count: this.acks.length,
+      errors: clone(this.errors)
+    };
+  }
 }
 
 export function verifyStreamResolutionReceipt(resolution) {

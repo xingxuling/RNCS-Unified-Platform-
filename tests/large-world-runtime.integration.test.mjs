@@ -18,6 +18,10 @@ import {
   verifySpatialFrame,
   VSR_SPATIAL_SCENE_FORMAT
 } from '@taowind/visual-state-runtime/spatial-reality-3d';
+import {
+  LargeWorldReplicationLink,
+  verifyReplicationPacket
+} from '@taowind/large-world-runtime';
 
 const biomeColors = {
   coast: '#2b8cbe',
@@ -27,6 +31,40 @@ const biomeColors = {
   tundra: '#b9d4e8',
   wetland: '#3f7f73'
 };
+
+class DeterministicLossyTransport {
+  constructor() {
+    this.handlers = new Map();
+    this.queue = [];
+    this.dropped = 0;
+    this.sent = 0;
+    this.delivered = 0;
+    this.dropNext = true;
+  }
+
+  register(endpoint, handler) { this.handlers.set(endpoint, handler); }
+
+  send(from, to, type, payload) {
+    this.sent += 1;
+    if (this.dropNext && type === 'large-world-replication') {
+      this.dropNext = false;
+      this.dropped += 1;
+      return;
+    }
+    this.queue.push({from, to, type, payload: structuredClone(payload)});
+  }
+
+  advance() {
+    const pending = this.queue;
+    this.queue = [];
+    for (const message of pending) {
+      this.handlers.get(message.to)?.(message);
+      this.delivered += 1;
+    }
+  }
+
+  getStats() { return {sent: this.sent, dropped: this.dropped, delivered: this.delivered, queued: this.queue.length}; }
+}
 
 function sceneFromChunks(region, chunks, materializationRoot) {
   const meshes = [];
@@ -157,4 +195,60 @@ test('restores the replicated truth and idempotency ledger after a JSON restart 
   assert.equal(verifyDurableRestoreReceipt(restored).valid, true);
   assert.equal(restarted.exportReplicationSnapshot().snapshot_root, target.exportReplicationSnapshot().snapshot_root);
   assert.equal(restarted.applyReplicationDelta(delta, {authorityReceipt}).status, 'DUPLICATE');
+});
+
+test('delivers an authenticated replication packet over deterministic loss and retry', () => {
+  const options = {worldId: 'world:large-integration-transport', seed: 'seed:large-integration-transport', loadRadius: 0, maxActiveChunks: 1};
+  const source = new LargeWorldRuntime(options);
+  const target = new LargeWorldRuntime(options);
+  const authorityReceipt = {status: 'committed', receipt_root: 'f'.repeat(64), decision_root: null, epoch: 0};
+  const base = target.exportReplicationSnapshot();
+  source.recordWorldEvent({authorityReceipt, mutation: {operations: [{op: 'set', path: 'weather', value: 'wind'}]}});
+  const delta = source.createReplicationDelta(base);
+  const authKey = 'large-world-transport-test-key';
+  const transport = new DeterministicLossyTransport();
+  const link = new LargeWorldReplicationLink({source, target, transport, authKey, authorityReceipt, sourceEndpoint: 'rep-source', targetEndpoint: 'rep-target'});
+  const packet = link.sendDelta(delta);
+  assert.equal(verifyReplicationPacket(packet, {authKey}).valid, true);
+  const tampered = {...packet, auth_tag: '0'.repeat(64)};
+  assert.equal(verifyReplicationPacket(tampered, {authKey}).valid, false);
+  link.advance(1);
+  assert.equal(link.status().pending_packet_ids.length, 1);
+  link.retryPending();
+  link.advance(1);
+  link.advance(1);
+  assert.equal(link.status().pending_packet_ids.length, 0);
+  assert.equal(source.exportReplicationSnapshot().snapshot_root, target.exportReplicationSnapshot().snapshot_root);
+  assert.equal(transport.getStats().dropped > 0, true);
+  assert.equal(link.status().ack_count > 0, true);
+
+  link.sendDelta(delta);
+  link.advance(1);
+  link.advance(1);
+  assert.equal(target.eventLog.event_count, 1);
+  assert.equal(link.status().pending_packet_ids.length, 0);
+  assert.equal(link.status().errors.length, 0);
+});
+
+test('returns an authenticated rejection when a packet base is stale', () => {
+  const options = {worldId: 'world:large-integration-transport-reject', seed: 'seed:large-integration-transport-reject', loadRadius: 0, maxActiveChunks: 1};
+  const source = new LargeWorldRuntime(options);
+  const target = new LargeWorldRuntime(options);
+  const base = source.exportReplicationSnapshot();
+  const authorityReceipt = {status: 'committed', receipt_root: '1'.repeat(64), decision_root: null, epoch: 0};
+  target.recordWorldEvent({authorityReceipt, mutation: {operations: [{op: 'set', path: 'target_only', value: true}]}});
+  source.recordWorldEvent({authorityReceipt, mutation: {operations: [{op: 'set', path: 'source_only', value: true}]}});
+  const delta = source.createReplicationDelta(base);
+  const transport = new DeterministicLossyTransport();
+  transport.dropNext = false;
+  const link = new LargeWorldReplicationLink({source, target, transport, authKey: 'large-world-transport-reject-key', authorityReceipt, sourceEndpoint: 'reject-source', targetEndpoint: 'reject-target'});
+  link.sendDelta(delta);
+  link.advance(1);
+  link.advance(1);
+  const status = link.status();
+  assert.equal(status.pending_packet_ids.length, 1);
+  assert.equal(status.ack_count, 1);
+  assert.equal(link.acks.at(-1).status, 'REJECTED');
+  assert.equal(status.errors.length, 1);
+  assert.equal(target.eventLog.event_count, 1);
 });

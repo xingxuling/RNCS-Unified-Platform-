@@ -1,6 +1,6 @@
 {
   "name": "@taowind/large-world-runtime",
-  "version": "0.1.0-alpha.4",
+  "version": "0.1.0-alpha.5",
   "type": "module",
   "license": "Apache-2.0",
   "description": "Deterministic RNCS region/chunk world runtime with bounded streaming, URRF representations, authority-gated truth replication, and replay evidence.",

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.org/schemas/rncs.large-world-replication-ack.v0.1.schema.json",
+  "title": "RNCS Large World Replication Ack v0.1",
+  "type": "object",
+  "required": ["format", "version", "ack_id", "packet_id", "channel_id", "sender_id", "recipient_id", "sequence", "delta_root", "status", "ack_root", "auth_tag"],
+  "properties": {
+    "format": {"const": "rncs.large-world-replication-ack.v0.1"},
+    "version": {"const": "0.1.0"},
+    "ack_id": {"type": "string", "minLength": 1},
+    "packet_id": {"type": "string", "minLength": 1},
+    "channel_id": {"type": "string", "minLength": 1},
+    "sender_id": {"type": "string", "minLength": 1},
+    "recipient_id": {"type": "string", "minLength": 1},
+    "sequence": {"type": "integer", "minimum": 1},
+    "delta_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "status": {"enum": ["APPLIED", "DUPLICATE", "REJECTED"]},
+    "ack_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "auth_tag": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}

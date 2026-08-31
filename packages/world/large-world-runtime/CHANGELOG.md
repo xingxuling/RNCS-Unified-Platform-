@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.0-alpha.5
+
+- Added authenticated Snapshot/Delta packet envelopes and a bounded ack/retry link with transport sequence, packet-loss tolerance, duplicate handling, and explicit route validation.
+
 ## 0.1.0-alpha.4
 
 - Added durable bundle export/restore across a JSON restart boundary, including applied-delta receipts for idempotency recovery and explicit restore authority.
