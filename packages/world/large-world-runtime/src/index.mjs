@@ -40,6 +40,7 @@ export const LARGE_WORLD_CHUNK_FORMAT = 'rncs.large-world-chunk.v0.1';
 export const LARGE_WORLD_STREAM_FORMAT = 'rncs.large-world-stream-resolution.v0.1';
 export const LARGE_WORLD_PORTFOLIO_SELECTION_FORMAT = 'rncs.large-world-portfolio-selection.v0.1';
 export const LARGE_WORLD_SPATIAL_SCENE_FORMAT = 'rncs.large-world-spatial-scene.v0.1';
+export const LARGE_WORLD_SPATIAL_VISUAL_PROFILE = 'large-world.visual-prototypes.v0.1';
 export const LARGE_WORLD_MATERIALIZATION_FORMAT = 'rncs.large-world-materialization.v0.1';
 export const LARGE_WORLD_REPLICATION_SNAPSHOT_FORMAT = 'rncs.large-world-replication-snapshot.v0.1';
 export const LARGE_WORLD_REPLICATION_DELTA_FORMAT = 'rncs.large-world-replication-delta.v0.1';
@@ -560,6 +561,13 @@ const LARGE_WORLD_SPATIAL_RESOURCE_COLORS = Object.freeze({
   timber: '#a16207',
   water: '#38bdf8'
 });
+const LARGE_WORLD_SPATIAL_STRUCTURE_COLORS = Object.freeze({
+  grove: '#4d9f62',
+  mine: '#a8794e',
+  ruin: '#b5a59b',
+  shrine: '#c084fc',
+  watchtower: '#f3b562'
+});
 
 function largeWorldSpatialCubeMesh(id = 'mesh:large-world:cube') {
   const faces = [
@@ -581,6 +589,112 @@ function largeWorldSpatialCubeMesh(id = 'mesh:large-world:cube') {
     indices.push(offset, offset + 1, offset + 2, offset, offset + 2, offset + 3);
   }
   return {id, positions, normals, uvs, indices, topology: 'triangle-list'};
+}
+
+function largeWorldSpatialAppendFace(target, corners) {
+  const offset = target.positions.length / 3;
+  for (let cornerIndex = 0; cornerIndex < corners.length; cornerIndex++) {
+    const [x, y, z] = corners[cornerIndex];
+    target.positions.push(x, y, z);
+    target.uvs.push(cornerIndex === 0 || cornerIndex === 3 ? 0 : 1, cornerIndex < 2 ? 0 : 1);
+  }
+  if (corners.length === 3) target.indices.push(offset, offset + 1, offset + 2);
+  else target.indices.push(offset, offset + 1, offset + 2, offset, offset + 2, offset + 3);
+}
+
+function largeWorldSpatialRingMesh(id, {sides = 6, bottomRadius = .5, topRadius = .5, height = 1} = {}) {
+  const mesh = {id, positions: [], normals: [], uvs: [], indices: [], topology: 'triangle-list'};
+  const point = (radius, index, y) => {
+    const angle = (Math.PI * 2 * index) / sides;
+    return [Math.cos(angle) * radius, y, Math.sin(angle) * radius];
+  };
+  for (let side = 0; side < sides; side++) {
+    const next = (side + 1) % sides;
+    largeWorldSpatialAppendFace(mesh, [point(bottomRadius, side, 0), point(topRadius, side, height), point(topRadius, next, height), point(bottomRadius, next, 0)]);
+  }
+  if (bottomRadius > 0) {
+    const center = [0, 0, 0];
+    for (let side = 0; side < sides; side++) largeWorldSpatialAppendFace(mesh, [center, point(bottomRadius, side, 0), point(bottomRadius, (side + 1) % sides, 0)]);
+  }
+  if (topRadius > 0) {
+    const center = [0, height, 0];
+    for (let side = 0; side < sides; side++) largeWorldSpatialAppendFace(mesh, [center, point(topRadius, (side + 1) % sides, height), point(topRadius, side, height)]);
+  }
+  return {...mesh, normals: largeWorldSpatialMeshNormals(mesh)};
+}
+
+function largeWorldSpatialCombineMeshes(id, parts) {
+  const mesh = {id, positions: [], normals: [], uvs: [], indices: [], topology: 'triangle-list'};
+  for (const part of parts) {
+    const source = part.mesh;
+    const translation = part.translation ?? [0, 0, 0];
+    const scale = part.scale ?? [1, 1, 1];
+    const offset = mesh.positions.length / 3;
+    for (let index = 0; index < source.positions.length; index += 3) {
+      mesh.positions.push(source.positions[index] * scale[0] + translation[0], source.positions[index + 1] * scale[1] + translation[1], source.positions[index + 2] * scale[2] + translation[2]);
+      mesh.uvs.push(source.uvs[index / 3 * 2] ?? 0, source.uvs[index / 3 * 2 + 1] ?? 0);
+    }
+    for (const index of source.indices) mesh.indices.push(index + offset);
+  }
+  return {...mesh, normals: largeWorldSpatialMeshNormals(mesh)};
+}
+
+function largeWorldSpatialPrototype(kind, qualityProfile) {
+  const quality = String(qualityProfile).toUpperCase();
+  const normalizedKind = String(kind ?? 'unknown').toLowerCase();
+  if (quality === 'PROXY') return {
+    prototypeId: `${LARGE_WORLD_SPATIAL_VISUAL_PROFILE}:proxy-structure`,
+    mesh: largeWorldSpatialRingMesh('mesh:large-world:prototype:proxy-structure', {sides: 6, bottomRadius: .46, topRadius: .38, height: .72})
+  };
+  const prism = (sides, bottomRadius, topRadius, height) => largeWorldSpatialRingMesh(`mesh:large-world:prototype:${normalizedKind}`, {sides, bottomRadius, topRadius, height});
+  const cone = (sides, bottomRadius, height) => largeWorldSpatialRingMesh(`mesh:large-world:prototype:${normalizedKind}:roof`, {sides, bottomRadius, topRadius: 0, height});
+  const crystal = largeWorldSpatialRingMesh(`mesh:large-world:prototype:${normalizedKind}:crystal`, {sides: 6, bottomRadius: .26, topRadius: 0, height: .95});
+  let mesh;
+  if (normalizedKind === 'grove') mesh = largeWorldSpatialCombineMeshes('mesh:large-world:prototype:grove', [
+    {mesh: prism(6, .16, .13, .58)},
+    {mesh: cone(8, .52, .72), translation: [0, .42, 0]},
+    {mesh: cone(8, .38, .52), translation: [0, .83, 0]}
+  ]);
+  else if (normalizedKind === 'watchtower') mesh = largeWorldSpatialCombineMeshes('mesh:large-world:prototype:watchtower', [
+    {mesh: prism(8, .34, .27, .95)},
+    {mesh: cone(8, .45, .34), translation: [0, .95, 0]}
+  ]);
+  else if (normalizedKind === 'mine') mesh = largeWorldSpatialCombineMeshes('mesh:large-world:prototype:mine', [
+    {mesh: prism(8, .5, .38, .38)},
+    {mesh: cone(8, .52, .42), translation: [0, .32, 0]}
+  ]);
+  else if (normalizedKind === 'shrine') mesh = largeWorldSpatialCombineMeshes('mesh:large-world:prototype:shrine', [
+    {mesh: prism(4, .46, .3, .28)},
+    {mesh: crystal, translation: [0, .25, 0], scale: [1.25, 1.05, 1.25]}
+  ]);
+  else if (normalizedKind === 'ruin') mesh = largeWorldSpatialCombineMeshes('mesh:large-world:prototype:ruin', [
+    {mesh: prism(6, .18, .16, .78), translation: [-.24, 0, -.12]},
+    {mesh: prism(6, .16, .12, .54), translation: [.25, 0, .08]},
+    {mesh: prism(6, .19, .1, .38), translation: [.02, 0, .28]}
+  ]);
+  else mesh = prism(6, .42, .34, .7);
+  return {prototypeId: `${LARGE_WORLD_SPATIAL_VISUAL_PROFILE}:${normalizedKind}`, mesh};
+}
+
+function largeWorldSpatialResourcePrototype(kind, qualityProfile) {
+  const normalizedKind = String(kind ?? 'unknown').toLowerCase();
+  const quality = String(qualityProfile).toUpperCase();
+  if (quality === 'PROXY') return {
+    prototypeId: `${LARGE_WORLD_SPATIAL_VISUAL_PROFILE}:proxy-resource`,
+    mesh: largeWorldSpatialRingMesh('mesh:large-world:prototype:proxy-resource', {sides: 5, bottomRadius: .42, topRadius: .26, height: .72})
+  };
+  if (normalizedKind === 'crystal' || normalizedKind === 'salt') return {
+    prototypeId: `${LARGE_WORLD_SPATIAL_VISUAL_PROFILE}:${normalizedKind}`,
+    mesh: largeWorldSpatialRingMesh(`mesh:large-world:prototype:resource:${normalizedKind}`, {sides: 6, bottomRadius: .36, topRadius: 0, height: 1})
+  };
+  if (normalizedKind === 'timber') return {
+    prototypeId: `${LARGE_WORLD_SPATIAL_VISUAL_PROFILE}:${normalizedKind}`,
+    mesh: largeWorldSpatialRingMesh('mesh:large-world:prototype:resource:timber', {sides: 8, bottomRadius: .3, topRadius: .22, height: 1})
+  };
+  return {
+    prototypeId: `${LARGE_WORLD_SPATIAL_VISUAL_PROFILE}:${normalizedKind}`,
+    mesh: largeWorldSpatialRingMesh(`mesh:large-world:prototype:resource:${normalizedKind}`, {sides: 8, bottomRadius: .38, topRadius: .27, height: .76})
+  };
 }
 
 function largeWorldSpatialMeshNormals(mesh) {
@@ -651,7 +765,10 @@ function largeWorldSpatialSceneRoot(scene) {
     world_root: extension.world_root,
     selection_root: extension.selection_root,
     active_chunk_ids: extension.active_chunk_ids,
+    presentation_scale: String(extension.presentation_scale),
     representation_slots: extension.representation_slots,
+    visual_prototype_profile: extension.visual_prototype_profile,
+    visual_prototype_ids: extension.visual_prototype_ids,
     reality: {
       world_id: scene.reality?.worldId,
       generation: scene.reality?.generation,
@@ -693,6 +810,8 @@ export function createLargeWorldSpatialScene(input = {}) {
 
   const meshes = [largeWorldSpatialCubeMesh()], materials = [], nodes = [], cells = [], assets = [];
   const materialIds = new Set();
+  const meshIds = new Set(meshes.map(mesh => mesh.id));
+  const visualPrototypeIds = new Set();
   const addMaterial = (material) => {
     if (!materialIds.has(material.id)) {
       materialIds.add(material.id);
@@ -700,6 +819,50 @@ export function createLargeWorldSpatialScene(input = {}) {
     }
     return material.id;
   };
+  const addMesh = (mesh) => {
+    if (!meshIds.has(mesh.id)) {
+      meshIds.add(mesh.id);
+      meshes.push(mesh);
+    }
+    return mesh.id;
+  };
+  const structureVisuals = new Map();
+  const resourceVisuals = new Map();
+  const ensureStructureVisual = (kind, qualityProfile) => {
+    const normalizedKind = String(kind ?? 'unknown').toLowerCase();
+    const quality = String(qualityProfile).toUpperCase();
+    const key = `${quality}:${normalizedKind}`;
+    const existing = structureVisuals.get(key);
+    if (existing) return existing;
+    const prototype = largeWorldSpatialPrototype(normalizedKind, quality);
+    const meshId = addMesh(prototype.mesh);
+    visualPrototypeIds.add(prototype.prototypeId);
+    const materialId = addMaterial({
+      id: `material:structure:${quality.toLowerCase()}:${normalizedKind}`,
+      baseColor: largeWorldSpatialColor(LARGE_WORLD_SPATIAL_STRUCTURE_COLORS, normalizedKind, quality === 'PROXY' ? '#b7791f' : '#f6ad55'),
+      roughness: quality === 'PROXY' ? .92 : normalizedKind === 'shrine' ? .34 : .58,
+      metallic: quality === 'PROXY' ? .05 : normalizedKind === 'watchtower' ? .18 : .08,
+      doubleSided: true
+    });
+    const value = {meshId, materialId, prototypeId: prototype.prototypeId};
+    structureVisuals.set(key, value);
+    return value;
+  };
+  const ensureResourceVisual = (kind, qualityProfile) => {
+    const normalizedKind = String(kind ?? 'water').toLowerCase();
+    const quality = String(qualityProfile).toUpperCase();
+    const key = `${quality}:${normalizedKind}`;
+    const existing = resourceVisuals.get(key);
+    if (existing) return existing;
+    const prototype = largeWorldSpatialResourcePrototype(normalizedKind, quality);
+    const meshId = addMesh(prototype.mesh);
+    visualPrototypeIds.add(prototype.prototypeId);
+    const value = {meshId, prototypeId: prototype.prototypeId};
+    resourceVisuals.set(key, value);
+    return value;
+  };
+  const presentationScale = Number(value.visualScale ?? value.visual_scale ?? 1);
+  fail(Number.isFinite(presentationScale) && presentationScale >= .25 && presentationScale <= 8, 'LARGE_WORLD_SPATIAL_PRESENTATION_SCALE_INVALID');
   let minX = Infinity, maxX = -Infinity, minZ = Infinity, maxZ = -Infinity, maxY = -Infinity;
   for (const chunk of chunks) {
     const selectionRow = rows.get(chunk.chunk_id);
@@ -707,7 +870,7 @@ export function createLargeWorldSpatialScene(input = {}) {
     fail(qualityProfile === 'STANDARD' || qualityProfile === 'PROXY', `LARGE_WORLD_SPATIAL_QUALITY_INVALID:${chunk.chunk_id}`);
     fail(typeof selectionRow.selected_slot_id === 'string' && selectionRow.selected_slot_id.length > 0, `LARGE_WORLD_SPATIAL_SLOT_REQUIRED:${chunk.chunk_id}`);
     const mesh = largeWorldSpatialTerrainMesh(chunk, qualityProfile);
-    meshes.push(mesh);
+    addMesh(mesh);
     const biome = String(chunk.biome ?? 'unknown').toLowerCase();
     const terrainMaterialId = addMaterial({
       id: `material:terrain:${qualityProfile.toLowerCase()}:${biome}`,
@@ -716,13 +879,6 @@ export function createLargeWorldSpatialScene(input = {}) {
       metallic: qualityProfile === 'PROXY' ? .02 : .04,
       doubleSided: true,
       temporalReactive: qualityProfile === 'PROXY' ? .05 : .1
-    });
-    const structureMaterialId = addMaterial({
-      id: `material:structure:${qualityProfile.toLowerCase()}`,
-      baseColor: qualityProfile === 'PROXY' ? '#b7791f' : '#f6ad55',
-      roughness: qualityProfile === 'PROXY' ? .92 : .58,
-      metallic: qualityProfile === 'PROXY' ? .05 : .18,
-      doubleSided: true
     });
     const resourceMaterialIds = new Map();
     for (const resourceKind of LARGE_WORLD_RESOURCE_KINDS) resourceMaterialIds.set(resourceKind, addMaterial({
@@ -739,15 +895,17 @@ export function createLargeWorldSpatialScene(input = {}) {
     const terrainNodeId = `node:${chunk.chunk_id}:terrain`, cellNodeIds = [terrainNodeId];
     nodes.push({id: terrainNodeId, meshId: mesh.id, materialId: terrainMaterialId, transform: {translation: [worldX, 0, worldZ]}, castShadow: qualityProfile === 'STANDARD', receiveShadow: true, temporalReactive: qualityProfile === 'PROXY' ? .05 : .1, tags: ['large-world', 'terrain', qualityProfile.toLowerCase()], representationSlotId: selectionRow.selected_slot_id});
     for (const structure of chunk.structures ?? []) {
-      const structureNodeId = `node:${structure.id}`, size = Math.max(.5, Number(structure.scale_mm) / 1000), y = Number(structure.local_position_mm.y) / 1000;
-      maxY = Math.max(maxY, y + size);
-      nodes.push({id: structureNodeId, meshId: 'mesh:large-world:cube', materialId: structureMaterialId, transform: {translation: [worldX + Number(structure.local_position_mm.x) / 1000, y + size / 2, worldZ + Number(structure.local_position_mm.z) / 1000], scale: [size, size, size]}, castShadow: qualityProfile === 'STANDARD', receiveShadow: true, tags: ['large-world', 'structure', String(structure.kind)], structureKind: structure.kind, representationSlotId: selectionRow.selected_slot_id});
+      const structureNodeId = `node:${structure.id}`, size = Math.max(.5, Number(structure.scale_mm) / 1000), renderSize = size * presentationScale, y = Number(structure.local_position_mm.y) / 1000;
+      const visual = ensureStructureVisual(structure.kind, qualityProfile);
+      maxY = Math.max(maxY, y + renderSize);
+      nodes.push({id: structureNodeId, meshId: visual.meshId, materialId: visual.materialId, transform: {translation: [worldX + Number(structure.local_position_mm.x) / 1000, y, worldZ + Number(structure.local_position_mm.z) / 1000], scale: [renderSize, renderSize, renderSize]}, castShadow: qualityProfile === 'STANDARD', receiveShadow: true, tags: ['large-world', 'structure', String(structure.kind)], structureKind: structure.kind, prototypeId: visual.prototypeId, authoredScale: size, presentationScale, representationSlotId: selectionRow.selected_slot_id});
       cellNodeIds.push(structureNodeId);
     }
     for (const resource of chunk.resources ?? []) {
-      const resourceNodeId = `node:${resource.id}`, size = .22 + Math.min(12, Number(resource.amount) || 1) * .035, y = Number(resource.local_position_mm.y) / 1000;
-      maxY = Math.max(maxY, y + size);
-      nodes.push({id: resourceNodeId, meshId: 'mesh:large-world:cube', materialId: resourceMaterialIds.get(String(resource.kind).toLowerCase()) ?? resourceMaterialIds.get('water'), transform: {translation: [worldX + Number(resource.local_position_mm.x) / 1000, y + size / 2, worldZ + Number(resource.local_position_mm.z) / 1000], scale: [size, size, size]}, castShadow: false, receiveShadow: true, tags: ['large-world', 'resource', String(resource.kind)], resourceKind: resource.kind, representationSlotId: selectionRow.selected_slot_id});
+      const resourceNodeId = `node:${resource.id}`, size = .22 + Math.min(12, Number(resource.amount) || 1) * .035, renderSize = size * Math.sqrt(presentationScale), y = Number(resource.local_position_mm.y) / 1000;
+      const visual = ensureResourceVisual(resource.kind, qualityProfile);
+      maxY = Math.max(maxY, y + renderSize);
+      nodes.push({id: resourceNodeId, meshId: visual.meshId, materialId: resourceMaterialIds.get(String(resource.kind).toLowerCase()) ?? resourceMaterialIds.get('water'), transform: {translation: [worldX + Number(resource.local_position_mm.x) / 1000, y, worldZ + Number(resource.local_position_mm.z) / 1000], scale: [renderSize, renderSize, renderSize]}, castShadow: false, receiveShadow: true, tags: ['large-world', 'resource', String(resource.kind)], resourceKind: resource.kind, prototypeId: visual.prototypeId, authoredScale: size, presentationScale, representationSlotId: selectionRow.selected_slot_id});
       cellNodeIds.push(resourceNodeId);
     }
     const cellId = `cell:${chunk.chunk_id}`;
@@ -792,6 +950,9 @@ export function createLargeWorldSpatialScene(input = {}) {
       world_root: region.world_root,
       selection_root: selectionRoot,
       active_chunk_ids: chunks.map(chunk => chunk.chunk_id).sort(keySort),
+      presentation_scale: presentationScale,
+      visual_prototype_profile: LARGE_WORLD_SPATIAL_VISUAL_PROFILE,
+      visual_prototype_ids: [...visualPrototypeIds].sort(keySort),
       representation_slots: chunks.map(chunk => {
         const row = rows.get(chunk.chunk_id);
         return {chunk_id: chunk.chunk_id, selected_slot_id: row.selected_slot_id, selected_quality_profile: row.selected_quality_profile, selected_representation_root: row.selected_representation_root, portfolio_root: row.portfolio_root};
@@ -812,6 +973,9 @@ export function verifyLargeWorldSpatialScene(scene) {
   try {
     check(scene.format === 'vsr.spatial-scene.v0.4', 'LARGE_WORLD_SPATIAL_SCENE_FORMAT_INVALID');
     check(scene.large_world?.format === LARGE_WORLD_SPATIAL_SCENE_FORMAT, 'LARGE_WORLD_SPATIAL_SCENE_EXTENSION_INVALID');
+    check(Number.isFinite(scene.large_world?.presentation_scale) && scene.large_world.presentation_scale >= .25 && scene.large_world.presentation_scale <= 8, 'LARGE_WORLD_SPATIAL_PRESENTATION_SCALE_INVALID');
+    check(scene.large_world?.visual_prototype_profile === LARGE_WORLD_SPATIAL_VISUAL_PROFILE, 'LARGE_WORLD_SPATIAL_VISUAL_PROFILE_INVALID');
+    check(Array.isArray(scene.large_world?.visual_prototype_ids) && scene.large_world.visual_prototype_ids.length > 0, 'LARGE_WORLD_SPATIAL_VISUAL_PROTOTYPES_MISSING');
     check(scene.large_world?.candidate_only === true && scene.large_world?.authoritative === false && scene.large_world?.canonical_write_authorized === false, 'LARGE_WORLD_SPATIAL_SCENE_AUTHORITY_INVALID');
     check(scene.reality?.realityRoot === scene.large_world?.world_root, 'LARGE_WORLD_SPATIAL_SCENE_REALITY_ROOT_MISMATCH');
     check(hex64(scene.scene_root), 'LARGE_WORLD_SPATIAL_SCENE_ROOT_INVALID');
