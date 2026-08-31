@@ -31,13 +31,14 @@ import {
   verifyWorldTime,
   worldStateRoot
 } from '@taowind/rncs-core-contract';
-import {RealityRepresentationFabric} from '@taowind/reality-representation-fabric';
+import {RealityRepresentationFabric, RealityRepresentationPortfolioRuntime} from '@taowind/reality-representation-fabric';
 
 export const LARGE_WORLD_RUNTIME_FORMAT = 'rncs.large-world-runtime.v0.1';
 export const LARGE_WORLD_RUNTIME_VERSION = '0.1.0';
 export const LARGE_WORLD_REGION_FORMAT = 'rncs.large-world-region.v0.1';
 export const LARGE_WORLD_CHUNK_FORMAT = 'rncs.large-world-chunk.v0.1';
 export const LARGE_WORLD_STREAM_FORMAT = 'rncs.large-world-stream-resolution.v0.1';
+export const LARGE_WORLD_PORTFOLIO_SELECTION_FORMAT = 'rncs.large-world-portfolio-selection.v0.1';
 export const LARGE_WORLD_MATERIALIZATION_FORMAT = 'rncs.large-world-materialization.v0.1';
 export const LARGE_WORLD_REPLICATION_SNAPSHOT_FORMAT = 'rncs.large-world-replication-snapshot.v0.1';
 export const LARGE_WORLD_REPLICATION_DELTA_FORMAT = 'rncs.large-world-replication-delta.v0.1';
@@ -922,6 +923,7 @@ export class LargeWorldRuntime {
       chunk: clone(this.chunksByObjectId.get(adapterInput.object.object_id) ?? null)
     });
     this.fabric = new RealityRepresentationFabric({providers: [providerInput, wireframeProviderInput]});
+    this.portfolioRuntime = new RealityRepresentationPortfolioRuntime({fabric: this.fabric});
     this.objects = new Map();
     this.appliedReplicationDeltas = new Map();
     this.replicationConflictDecisions = new Map();
@@ -944,6 +946,7 @@ export class LargeWorldRuntime {
         representations: [proceduralReference, wireframeReference]
       });
       this.objects.set(chunk.chunk_id, object);
+      this.portfolioRuntime.registerPortfolio(createChunkRepresentationPortfolio(chunk, {representationObject: object}));
     }
   }
 
@@ -963,6 +966,63 @@ export class LargeWorldRuntime {
       ...record(input),
       representationObject: this.getRepresentationObject(chunk.chunk_id)
     });
+  }
+
+  selectActiveRepresentationPortfolios(input = {}) {
+    const value = record(input);
+    const requestedQuality = value.qualityProfile ?? value.quality_profile ?? null;
+    const qualityByChunk = record(value.qualityByChunk ?? value.quality_by_chunk);
+    const budgetByChunk = record(value.resourceBudgetByChunk ?? value.resource_budget_by_chunk);
+    const globalBudget = value.resourceBudget ?? value.resource_budget;
+    const globalDiversity = value.diversity ?? value.diversity_axes ?? value.diversityAxes;
+    const selections = this.activeChunkIds.map(chunkIdValue => {
+      const chunk = this.chunks.get(chunkIdValue);
+      const portfolio = this.portfolioRuntime.getPortfolio(`portfolio:${chunk.object_id}`)
+        ?? this.getRepresentationPortfolio(chunk.chunk_id);
+      if (!this.portfolioRuntime.getPortfolio(portfolio.portfolio_id)) this.portfolioRuntime.registerPortfolio(portfolio);
+      const requested = qualityByChunk[chunk.chunk_id] ?? requestedQuality;
+      const resourceBudget = budgetByChunk[chunk.chunk_id] ?? globalBudget;
+      const selection = this.portfolioRuntime.selectSlot({
+        portfolio_id: portfolio.portfolio_id,
+        ...(requested === null || requested === undefined ? {} : {quality_profile: requested}),
+        ...(resourceBudget === undefined ? {} : {resource_budget: resourceBudget}),
+        ...(globalDiversity === undefined ? {} : {diversity: globalDiversity})
+      });
+      return {
+        chunk_id: chunk.chunk_id,
+        coordinates: clone(chunk.coordinates),
+        portfolio_id: selection.portfolio_id,
+        portfolio_root: selection.portfolio_root,
+        selected_slot_id: selection.selected_slot_id,
+        selected_slot_root: selection.selected_slot_root,
+        selected_representation_root: selection.slot?.representation_root ?? null,
+        selected_quality_profile: selection.slot?.quality_profile ?? null,
+        fallback_used: selection.fallback_used,
+        reason_codes: clone(selection.reason_codes),
+        selection_root: selection.selection_root,
+        candidate_only: true,
+        authoritative: false,
+        canonical_write_authorized: false
+      };
+    }).sort((a, b) => keySort(a.chunk_id, b.chunk_id));
+    const base = {
+      format: LARGE_WORLD_PORTFOLIO_SELECTION_FORMAT,
+      version: LARGE_WORLD_RUNTIME_VERSION,
+      world_id: this.options.worldId,
+      generation: this.options.generation,
+      region_root: this.region.region_root,
+      world_root: this.region.world_root,
+      stream_root: this.activeChunkIds.length > 0 ? this.trace.at(-1)?.stream_root ?? null : null,
+      requested_quality_profile: requestedQuality === null || requestedQuality === undefined ? null : String(requestedQuality).toUpperCase(),
+      active_chunk_ids: [...this.activeChunkIds].sort(keySort),
+      selections,
+      fallback_count: selections.filter(selection => selection.fallback_used).length,
+      candidate_only: true,
+      authoritative: false,
+      canonical_write_authorized: false,
+      authority: {provider_can_write_authoritative_world_state: false, rncs_authority_required: true}
+    };
+    return {...base, selection_root: rootHash(base)};
   }
 
   listActiveChunks() { return this.activeChunkIds.map(id => clone(this.chunks.get(id))).filter(Boolean); }
@@ -2152,6 +2212,51 @@ export function verifyStreamResolutionReceipt(resolution) {
   if (resolution?.authority?.provider_can_write_authoritative_world_state !== false) errors.push('LARGE_WORLD_STREAM_AUTHORITY_ESCALATION');
   if (resolution?.active_chunk_ids?.length > resolution?.max_active_chunks) errors.push('LARGE_WORLD_STREAM_ACTIVE_BUDGET_EXCEEDED');
   return {valid: errors.length === 0, errors, stream_root: resolution?.stream_root ?? null};
+}
+
+export function verifyPortfolioSelectionEnvelope(selection) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!selection || typeof selection !== 'object') return {valid: false, errors: ['LARGE_WORLD_PORTFOLIO_SELECTION_NOT_OBJECT']};
+  try {
+    check(selection.format === LARGE_WORLD_PORTFOLIO_SELECTION_FORMAT, 'LARGE_WORLD_PORTFOLIO_SELECTION_FORMAT_INVALID');
+    check(selection.version === LARGE_WORLD_RUNTIME_VERSION, 'LARGE_WORLD_PORTFOLIO_SELECTION_VERSION_INVALID');
+    check(typeof selection.world_id === 'string' && selection.world_id.length > 0, 'LARGE_WORLD_PORTFOLIO_SELECTION_WORLD_ID_REQUIRED');
+    check(Number.isSafeInteger(selection.generation) && selection.generation >= 0, 'LARGE_WORLD_PORTFOLIO_SELECTION_GENERATION_INVALID');
+    check(hex64(selection.region_root), 'LARGE_WORLD_PORTFOLIO_SELECTION_REGION_ROOT_INVALID');
+    check(hex64(selection.world_root), 'LARGE_WORLD_PORTFOLIO_SELECTION_WORLD_ROOT_INVALID');
+    check(selection.stream_root === null || hex64(selection.stream_root), 'LARGE_WORLD_PORTFOLIO_SELECTION_STREAM_ROOT_INVALID');
+    check(Array.isArray(selection.active_chunk_ids), 'LARGE_WORLD_PORTFOLIO_SELECTION_ACTIVE_IDS_INVALID');
+    check(Array.isArray(selection.selections), 'LARGE_WORLD_PORTFOLIO_SELECTION_ROWS_INVALID');
+    check(selection.selections.length === selection.active_chunk_ids.length, 'LARGE_WORLD_PORTFOLIO_SELECTION_ROW_COUNT_MISMATCH');
+    const activeIds = [...selection.active_chunk_ids].sort(keySort);
+    const rowIds = (selection.selections ?? []).map(row => row?.chunk_id).sort(keySort);
+    check(JSON.stringify(activeIds) === JSON.stringify(rowIds), 'LARGE_WORLD_PORTFOLIO_SELECTION_ACTIVE_IDS_MISMATCH');
+    for (const row of selection.selections ?? []) {
+      check(typeof row?.chunk_id === 'string' && row.chunk_id.length > 0, 'LARGE_WORLD_PORTFOLIO_SELECTION_CHUNK_ID_REQUIRED');
+      check(hex64(row?.portfolio_root), 'LARGE_WORLD_PORTFOLIO_SELECTION_PORTFOLIO_ROOT_INVALID');
+      check(row?.selected_slot_id === null || typeof row?.selected_slot_id === 'string', 'LARGE_WORLD_PORTFOLIO_SELECTION_SLOT_ID_INVALID');
+      check(row?.selected_slot_root === null || hex64(row?.selected_slot_root), 'LARGE_WORLD_PORTFOLIO_SELECTION_SLOT_ROOT_INVALID');
+      check(row?.selected_representation_root === null || hex64(row?.selected_representation_root), 'LARGE_WORLD_PORTFOLIO_SELECTION_REPRESENTATION_ROOT_INVALID');
+      check(row?.selected_quality_profile === null || typeof row?.selected_quality_profile === 'string', 'LARGE_WORLD_PORTFOLIO_SELECTION_QUALITY_INVALID');
+      check(typeof row?.fallback_used === 'boolean', 'LARGE_WORLD_PORTFOLIO_SELECTION_FALLBACK_INVALID');
+      check(Array.isArray(row?.reason_codes), 'LARGE_WORLD_PORTFOLIO_SELECTION_REASON_CODES_INVALID');
+      check(hex64(row?.selection_root), 'LARGE_WORLD_PORTFOLIO_SELECTION_ROW_ROOT_INVALID');
+      check(row?.candidate_only === true && row?.authoritative === false && row?.canonical_write_authorized === false, 'LARGE_WORLD_PORTFOLIO_SELECTION_ROW_AUTHORITY_INVALID');
+    }
+    check(Number.isSafeInteger(selection.fallback_count) && selection.fallback_count >= 0, 'LARGE_WORLD_PORTFOLIO_SELECTION_FALLBACK_COUNT_INVALID');
+    check(selection.fallback_count === (selection.selections ?? []).filter(row => row.fallback_used).length, 'LARGE_WORLD_PORTFOLIO_SELECTION_FALLBACK_COUNT_MISMATCH');
+    check(selection.candidate_only === true && selection.authoritative === false && selection.canonical_write_authorized === false, 'LARGE_WORLD_PORTFOLIO_SELECTION_AUTHORITY_INVALID');
+    check(selection.authority?.provider_can_write_authoritative_world_state === false, 'LARGE_WORLD_PORTFOLIO_SELECTION_PROVIDER_AUTHORITY_INVALID');
+    check(selection.authority?.rncs_authority_required === true, 'LARGE_WORLD_PORTFOLIO_SELECTION_RNCS_AUTHORITY_REQUIRED');
+    const copy = clone(selection);
+    const selectionRoot = copy.selection_root;
+    delete copy.selection_root;
+    check(hex64(selectionRoot) && rootHash(copy) === selectionRoot, 'LARGE_WORLD_PORTFOLIO_SELECTION_ROOT_MISMATCH');
+  } catch (error) {
+    errors.push(`LARGE_WORLD_PORTFOLIO_SELECTION_VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, selection_root: selection.selection_root ?? null};
 }
 
 export function verifyMaterializationBatch(batch) {
