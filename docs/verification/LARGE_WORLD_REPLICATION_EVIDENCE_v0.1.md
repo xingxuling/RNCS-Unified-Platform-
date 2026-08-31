@@ -46,7 +46,7 @@ Expected local evidence for this revision:
 
 ## Open gates
 
-- Persistent storage and restart recovery for replication receipts.
+- Atomic durable storage and crash/restart fault injection (JSON restart recovery is covered separately in `LARGE_WORLD_DURABLE_RECOVERY_EVIDENCE_v0.1.md`).
 - Network transport, authentication, packet loss, and multi-writer conflict policy.
 - Target hardware/GPU performance and visual/manual play evidence.
 - CI checks currently expose no executable steps in the repository workflow; local results must not be called CI proof.
