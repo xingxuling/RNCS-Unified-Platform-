@@ -1,10 +1,26 @@
 import {
+  createCognitiveWorkingSet,
+  createRealityDetailVector,
+  createRealityHorizon,
+  createRealityInterestGraph,
+  createRealityQuery,
+  REALITY_DETAIL_VECTOR_FORMAT,
+  REALITY_HORIZON_FORMAT,
+  REALITY_INTEREST_GRAPH_FORMAT,
+  REALITY_QUERY_FORMAT,
   createRealityLawBindings,
   createRealityPropertySet,
   createRealityPropertyTransitionCandidate,
+  evaluateRealityQuery,
   queryRealityLaw,
   queryRealityProperty,
   listRealityProperties,
+  verifyCognitiveWorkingSet,
+  verifyRealityDetailVector,
+  verifyRealityHorizon,
+  verifyRealityInterestGraph,
+  verifyRealityQuery,
+  verifyRealityQueryResult,
   REALITY_LAW_BINDINGS_FORMAT,
   REALITY_PROPERTY_SET_FORMAT,
   REALITY_PROPERTY_TRANSITION_FORMAT,
@@ -27,6 +43,10 @@ export const URRF_MATERIALIZATION_RECEIPT_FORMAT = 'urrf.materialization-receipt
 export const URRF_PROPERTY_SET_FORMAT = REALITY_PROPERTY_SET_FORMAT;
 export const URRF_LAW_BINDINGS_FORMAT = REALITY_LAW_BINDINGS_FORMAT;
 export const URRF_PROPERTY_TRANSITION_FORMAT = REALITY_PROPERTY_TRANSITION_FORMAT;
+export const URRF_DETAIL_VECTOR_FORMAT = REALITY_DETAIL_VECTOR_FORMAT;
+export const URRF_HORIZON_FORMAT = REALITY_HORIZON_FORMAT;
+export const URRF_INTEREST_GRAPH_FORMAT = REALITY_INTEREST_GRAPH_FORMAT;
+export const URRF_QUERY_FORMAT = REALITY_QUERY_FORMAT;
 export const URRF_MATERIALIZATION_STATUSES = Object.freeze(['EXECUTED', 'NOT_EXECUTED', 'FAILED']);
 
 const clone = value => structuredClone(value);
@@ -57,6 +77,39 @@ function normalizeLawBindings(input, objectId) {
   const verification = verifyRealityLawBindings(bindings);
   fail(verification.valid, `URRF_OBJECT_LAW_BINDINGS_INVALID:${verification.errors.join(',')}`);
   return bindings;
+}
+
+function normalizeDetailVector(input) {
+  const value = record(input);
+  const vector = value.vector_root ? clone(value) : createRealityDetailVector(value);
+  const verification = verifyRealityDetailVector(vector);
+  fail(verification.valid, `URRF_DETAIL_VECTOR_INVALID:${verification.errors.join(',')}`);
+  return vector;
+}
+
+function normalizeHorizon(input) {
+  const value = record(input);
+  const horizon = value.horizon_root ? clone(value) : createRealityHorizon(value);
+  const verification = verifyRealityHorizon(horizon);
+  fail(verification.valid, `URRF_HORIZON_INVALID:${verification.errors.join(',')}`);
+  return horizon;
+}
+
+function normalizeInterestGraph(input) {
+  if (input === null || input === undefined) return null;
+  const value = record(input);
+  const graph = value.graph_root ? clone(value) : createRealityInterestGraph(value);
+  const verification = verifyRealityInterestGraph(graph);
+  fail(verification.valid, `URRF_INTEREST_GRAPH_INVALID:${verification.errors.join(',')}`);
+  return graph;
+}
+
+function normalizeQuery(input) {
+  const value = record(input);
+  const query = value.query_root ? clone(value) : createRealityQuery(value);
+  const verification = verifyRealityQuery(query);
+  fail(verification.valid, `URRF_QUERY_INVALID:${verification.errors.join(',')}`);
+  return query;
 }
 
 function providerKinds(manifest) {
@@ -207,6 +260,12 @@ export function verifyMaterializationPlan(plan) {
     check(typeof plan.object_id === 'string' && plan.object_id.length > 0, 'URRF_PLAN_OBJECT_ID_REQUIRED');
     check(hex64(plan.state_root), 'URRF_PLAN_STATE_ROOT_INVALID');
     check(hex64(plan.content_root), 'URRF_PLAN_CONTENT_ROOT_INVALID');
+    if (plan.detail_vector !== undefined) {
+      check(verifyRealityDetailVector(plan.detail_vector).valid, 'URRF_PLAN_DETAIL_VECTOR_INVALID');
+      check(plan.detail_vector_root === plan.detail_vector?.vector_root, 'URRF_PLAN_DETAIL_VECTOR_ROOT_MISMATCH');
+    } else if (plan.detail_vector_root !== undefined) {
+      check(hex64(plan.detail_vector_root), 'URRF_PLAN_DETAIL_VECTOR_ROOT_INVALID');
+    }
     if (plan.property_set !== undefined) {
       check(verifyRealityPropertySet(plan.property_set).valid, 'URRF_PLAN_PROPERTY_SET_INVALID');
       check(plan.property_root === plan.property_set?.property_root, 'URRF_PLAN_PROPERTY_ROOT_MISMATCH');
@@ -227,6 +286,7 @@ export function verifyMaterializationPlan(plan) {
     if (plan.authority?.provider_can_write_canonical_property !== undefined) check(plan.authority.provider_can_write_canonical_property === false, 'URRF_PLAN_PROPERTY_AUTHORITY_ESCALATION');
     if (plan.authority?.provider_can_write_canonical_law !== undefined) check(plan.authority.provider_can_write_canonical_law === false, 'URRF_PLAN_LAW_AUTHORITY_ESCALATION');
     check(plan.authority?.rncs_authority_required === true, 'URRF_PLAN_RNCS_AUTHORITY_REQUIRED');
+    if (plan.resource_decision?.detail_vector_root !== undefined) check(plan.resource_decision.detail_vector_root === plan.detail_vector_root, 'URRF_PLAN_RESOURCE_DETAIL_VECTOR_ROOT_MISMATCH');
     check(plan.candidate_only === true, 'URRF_PLAN_MUST_BE_CANDIDATE_ONLY');
     check(plan.authoritative === false, 'URRF_PLAN_CANNOT_BE_AUTHORITATIVE');
     check(plan.commit_status === 'NOT_COMMITTED', 'URRF_PLAN_COMMIT_STATUS_INVALID');
@@ -251,6 +311,12 @@ export function verifyMaterializationReceipt(receipt) {
     check(hex64(receipt.content_root), 'URRF_RECEIPT_CONTENT_ROOT_INVALID');
     check(hex64(receipt.representation_root), 'URRF_RECEIPT_REPRESENTATION_ROOT_INVALID');
     check(hex64(receipt.provider_root), 'URRF_RECEIPT_PROVIDER_ROOT_INVALID');
+    if (receipt.detail_vector !== undefined) {
+      check(verifyRealityDetailVector(receipt.detail_vector).valid, 'URRF_RECEIPT_DETAIL_VECTOR_INVALID');
+      check(receipt.detail_vector_root === receipt.detail_vector?.vector_root, 'URRF_RECEIPT_DETAIL_VECTOR_ROOT_MISMATCH');
+    } else if (receipt.detail_vector_root !== undefined) {
+      check(hex64(receipt.detail_vector_root), 'URRF_RECEIPT_DETAIL_VECTOR_ROOT_INVALID');
+    }
     if (receipt.property_root !== undefined) check(hex64(receipt.property_root), 'URRF_RECEIPT_PROPERTY_ROOT_INVALID');
     if (receipt.law_bindings_root !== undefined) check(hex64(receipt.law_bindings_root), 'URRF_RECEIPT_LAW_BINDINGS_ROOT_INVALID');
     check(receipt.authority?.provider_can_write_authoritative_world_state === false, 'URRF_RECEIPT_AUTHORITY_ESCALATION');
@@ -297,6 +363,10 @@ export function verifyRealityObject(object) {
     check(object.law_bindings?.object_id === object.object_id, 'URRF_OBJECT_LAW_BINDINGS_OBJECT_ID_MISMATCH');
     check(object.property_root === object.property_set?.property_root, 'URRF_OBJECT_PROPERTY_ROOT_MISMATCH');
     check(object.law_bindings_root === object.law_bindings?.bindings_root, 'URRF_OBJECT_LAW_BINDINGS_ROOT_MISMATCH');
+    if (object.query_index !== null && object.query_index !== undefined) {
+      check(hex64(object.query_index_root), 'URRF_OBJECT_QUERY_INDEX_ROOT_INVALID');
+      check(rootHash(object.query_index) === object.query_index_root, 'URRF_OBJECT_QUERY_INDEX_ROOT_MISMATCH');
+    } else check(object.query_index_root === null, 'URRF_OBJECT_QUERY_INDEX_NULL_ROOT_INVALID');
     check(object.canonical_owner === 'RNCS', 'URRF_OBJECT_CANONICAL_OWNER_INVALID');
     check(object.representation_owner === 'URRF', 'URRF_OBJECT_REPRESENTATION_OWNER_INVALID');
     check(object.authority?.provider_can_write_authoritative_world_state === false, 'URRF_OBJECT_AUTHORITY_ESCALATION');
@@ -360,6 +430,9 @@ export class RealityRepresentationFabric {
     fail(references.every(reference => reference.content_root === content_root), 'URRF_OBJECT_CONTENT_ROOT_MISMATCH');
     const property_set = normalizePropertySet(value.property_set ?? value.propertySet, object_id);
     const law_bindings = normalizeLawBindings(value.law_bindings ?? value.lawBindings, object_id);
+    const rawQueryIndex = value.query_index ?? value.queryIndex ?? value.index;
+    const query_index = rawQueryIndex === undefined ? null : clone(rawQueryIndex);
+    const query_index_root = query_index === null ? null : rootHash(query_index);
     const representationIds = new Set();
     for (const reference of references) {
       fail(!representationIds.has(reference.representation_id), 'URRF_OBJECT_DUPLICATE_REPRESENTATION_ID');
@@ -378,6 +451,8 @@ export class RealityRepresentationFabric {
       property_root: property_set.property_root,
       law_bindings,
       law_bindings_root: law_bindings.bindings_root,
+      query_index,
+      query_index_root,
       canonical_owner: 'RNCS',
       representation_owner: 'URRF',
       authority: {
@@ -432,8 +507,9 @@ export class RealityRepresentationFabric {
     const reference = selected.reference;
     const detail_policy_root = rootHash(reference.detail_policy);
     const residency_policy_root = rootHash(reference.residency_policy);
+    const detail_vector = normalizeDetailVector(request.detail_vector ?? request.detailVector ?? {});
     const resource_budget = clone(request.resource_budget ?? {});
-    const fingerprint = rootHash({object_id, representation_root: reference.representation_root, detail_policy_root, residency_policy_root, resource_budget});
+    const fingerprint = rootHash({object_id, representation_root: reference.representation_root, detail_policy_root, residency_policy_root, detail_vector_root: detail_vector.vector_root, resource_budget});
     const plan_id = String(request.plan_id ?? `plan:${fingerprint.slice(0, 24)}`);
     const base = {
       format: URRF_MATERIALIZATION_PLAN_FORMAT,
@@ -447,6 +523,8 @@ export class RealityRepresentationFabric {
       property_root: object.property_root,
       law_bindings: clone(object.law_bindings),
       law_bindings_root: object.law_bindings_root,
+      detail_vector,
+      detail_vector_root: detail_vector.vector_root,
       representation: clone(reference),
       representation_id: reference.representation_id,
       representation_root: reference.representation_root,
@@ -468,6 +546,7 @@ export class RealityRepresentationFabric {
         selected_representation_root: reference.representation_root,
         detail_policy_root,
         residency_policy_root,
+        detail_vector_root: detail_vector.vector_root,
         resource_budget,
         reason: typeof selected.provider?.materialize === 'function' ? 'registered-provider-adapter' : `provider-runtime-${selected.provider?.runtime_status ?? 'unknown'}`
       },
@@ -496,12 +575,16 @@ export class RealityRepresentationFabric {
     fail(provider, `URRF_PROVIDER_NOT_REGISTERED:${plan.provider_id}`);
     const propertyRoot = plan.property_root ?? object.property_root;
     const lawBindingsRoot = plan.law_bindings_root ?? object.law_bindings_root;
+    const detailVector = plan.detail_vector ? normalizeDetailVector(plan.detail_vector) : normalizeDetailVector({});
+    const detailVectorRoot = plan.detail_vector_root ?? detailVector.vector_root;
     fail(propertyRoot === object.property_root, 'URRF_PLAN_PROPERTY_ROOT_OBJECT_MISMATCH');
     fail(lawBindingsRoot === object.law_bindings_root, 'URRF_PLAN_LAW_BINDINGS_ROOT_OBJECT_MISMATCH');
+    fail(detailVectorRoot === detailVector.vector_root, 'URRF_PLAN_DETAIL_VECTOR_ROOT_MISMATCH');
     const adapterInput = {
       object: clone(object),
       property_set: clone(object.property_set),
       law_bindings: clone(object.law_bindings),
+      detail_vector: clone(detailVector),
       reference: clone(plan.representation),
       plan: clone(plan),
       context: clone(record(options).context ?? {}),
@@ -564,6 +647,8 @@ export class RealityRepresentationFabric {
       content_root: plan.content_root,
       property_root: propertyRoot,
       law_bindings_root: lawBindingsRoot,
+      detail_vector: clone(detailVector),
+      detail_vector_root: detailVectorRoot,
       representation_id: plan.representation_id,
       representation_root: plan.representation_root,
       provider_id: plan.provider_id,
@@ -721,6 +806,38 @@ export class RealityRepresentationFabric {
     return verifyRealityPropertyTransition(transition);
   }
 
+  getQueryIndex(objectId) {
+    const object = this.objects.get(String(objectId));
+    return object ? clone(object.query_index) : null;
+  }
+
+  queryReality(input = {}) {
+    const request = record(input);
+    const query = normalizeQuery(request.query ?? request);
+    return evaluateRealityQuery(query, this.listRealityObjects());
+  }
+
+  createCognitiveWorkingSet(input = {}) {
+    const request = record(input);
+    const queryResult = request.query_result ?? request.queryResult ?? this.queryReality(request.query ?? request);
+    const workingSet = createCognitiveWorkingSet({...request, query_result: queryResult});
+    const verification = verifyCognitiveWorkingSet(workingSet);
+    fail(verification.valid, `URRF_COGNITIVE_WORKING_SET_INVALID:${verification.errors.join(',')}`);
+    return workingSet;
+  }
+
+  createDetailVector(input = {}) {
+    return normalizeDetailVector(input);
+  }
+
+  createHorizon(input = {}) {
+    return normalizeHorizon(input);
+  }
+
+  createInterestGraph(input = {}) {
+    return normalizeInterestGraph(input);
+  }
+
   getTransition(transitionId) {
     return clone(this.transitions.get(String(transitionId)) ?? null);
   }
@@ -730,7 +847,7 @@ export class RealityRepresentationFabric {
       format: URRF_RUNTIME_FORMAT,
       version: URRF_RUNTIME_VERSION,
       providers: [...this.providers.values()].map(publicProvider).sort((a, b) => Buffer.compare(Buffer.from(a.provider_id, 'utf8'), Buffer.from(b.provider_id, 'utf8'))),
-      objects: [...this.objects.values()].map(object => ({object_id: object.object_id, object_root: object.object_root, state_root: object.state_root, content_root: object.content_root, property_root: object.property_root, law_bindings_root: object.law_bindings_root})).sort((a, b) => Buffer.compare(Buffer.from(a.object_id, 'utf8'), Buffer.from(b.object_id, 'utf8'))),
+      objects: [...this.objects.values()].map(object => ({object_id: object.object_id, object_root: object.object_root, state_root: object.state_root, content_root: object.content_root, property_root: object.property_root, law_bindings_root: object.law_bindings_root, query_index_root: object.query_index_root})).sort((a, b) => Buffer.compare(Buffer.from(a.object_id, 'utf8'), Buffer.from(b.object_id, 'utf8'))),
       active_representations: [...this.activeRoots.entries()].map(([object_id, representation_root]) => ({object_id, representation_root})).sort((a, b) => Buffer.compare(Buffer.from(a.object_id, 'utf8'), Buffer.from(b.object_id, 'utf8'))),
       transitions: [...this.transitions.values()].map(transition => ({transition_id: transition.transition_id, transition_root: transition.transition_root, phase: transition.phase, active_representation_root: transition.active_representation_root, property_root: transition.property_root ?? null, law_bindings_root: transition.law_bindings_root ?? null})).sort((a, b) => Buffer.compare(Buffer.from(a.transition_id, 'utf8'), Buffer.from(b.transition_id, 'utf8'))),
       property_transitions: [...this.propertyTransitions.values()].map(transition => ({transition_id: transition.transition_id, transition_root: transition.transition_root, phase: transition.phase, source_property_root: transition.source_property_root})).sort((a, b) => Buffer.compare(Buffer.from(a.transition_id, 'utf8'), Buffer.from(b.transition_id, 'utf8')))

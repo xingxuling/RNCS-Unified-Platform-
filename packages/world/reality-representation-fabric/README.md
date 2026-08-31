@@ -20,4 +20,6 @@ The runtime can also represent a contract-only provider. In that case it emits a
 
 RealityObject registration now accepts RNCS-owned `property_set` and `law_bindings` contracts. When omitted, the runtime installs explicit empty v0.3 contracts so older representation-only callers remain deterministic. Materialization plans and receipts carry both roots; adapters receive read-only property/law views and fail closed if they claim to mutate canonical property or law state. `createPropertyTransitionCandidate()` records a candidate-only property change and does not commit it.
 
+Materialization requests may carry a v0.3 `detail_vector`; its nine axes are kept independent and sealed in the plan/receipt. Objects with `query_index` metadata can be selected through `createHorizon()`, `createInterestGraph()`, `queryReality()`, and `createCognitiveWorkingSet()`. Query results are deterministic candidates with permission/horizon filters and `canonical_revalidation_required=true`; they never mutate RealityObject state.
+
 This is an executable candidate slice: it proves the generic registry/planning/receipt/transition path, not production GPU coverage, distributed residency, or canonical authority promotion.

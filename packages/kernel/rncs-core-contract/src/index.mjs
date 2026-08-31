@@ -33,3 +33,4 @@ export * from './representation-ref.mjs';
 export * from './representation-transition.mjs';
 export * from './world-truth.mjs';
 export * from './reality-property.mjs';
+export * from './reality-access.mjs';
