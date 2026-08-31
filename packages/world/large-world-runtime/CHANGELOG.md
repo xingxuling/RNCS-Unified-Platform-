@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added `createLargeWorldSpatialGltfBundle` / `verifyLargeWorldSpatialGltfBundle`: deterministic glTF 2.0 mesh candidates with three LOD payloads, VSR-compatible inline RGBA swatches, SHA-256 streaming records, cell indexing, and explicit candidate-only authority evidence.
 - Added the candidate-only `large-world.visual-prototypes.v0.1` profile for deterministic grove, mine, ruin, shrine, watchtower, and resource meshes, plus bounded `visual_scale` presentation control that preserves authored dimensions in the lowering evidence.
 - Added `createSpatialScene` / `verifyLargeWorldSpatialScene` and the rooted `rncs.large-world-spatial-scene.v0.1` lowering contract, connecting active URRF selections to VSR spatial scenes and browser WebGPU execution evidence without changing RNCS authority.
 - Added a stream-rooted `rncs.large-world-portfolio-selection.v0.1` envelope and `selectActiveRepresentationPortfolios` API so bounded active chunks can consume URRF quality/budget selection without external glue.

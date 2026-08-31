@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/rncs.large-world-spatial-gltf-manifest.v0.1.schema.json",
+  "title": "RNCS Large World Spatial glTF Manifest v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "version",
+    "scene_id",
+    "scene_root",
+    "source_reality_root",
+    "provider_id",
+    "visual_prototype_profile",
+    "mesh_count",
+    "lod_level_count",
+    "asset_count",
+    "texture_count",
+    "texture_profile",
+    "lod_policy",
+    "asset_ids",
+    "cell_asset_index",
+    "candidate_only",
+    "authoritative",
+    "canonical_write_authorized",
+    "authority",
+    "manifest_root"
+  ],
+  "properties": {
+    "format": {"const": "rncs.large-world-spatial-gltf-manifest.v0.1"},
+    "version": {"const": "0.1.0"},
+    "scene_id": {"type": "string", "minLength": 1},
+    "scene_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "source_reality_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "provider_id": {"type": "string", "minLength": 1},
+    "visual_prototype_profile": {"type": "string", "minLength": 1},
+    "mesh_count": {"type": "integer", "minimum": 1},
+    "lod_level_count": {"type": "integer", "minimum": 1},
+    "asset_count": {"type": "integer", "minimum": 1},
+    "texture_count": {"type": "integer", "minimum": 0},
+    "texture_profile": {"type": "string", "minLength": 1},
+    "lod_policy": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["lod", "max_distance_m", "screen_coverage_percent", "geometric_error_mm"],
+        "properties": {
+          "lod": {"type": "integer", "minimum": 0},
+          "max_distance_m": {"type": "integer", "minimum": 1},
+          "screen_coverage_percent": {"type": "integer", "minimum": 0, "maximum": 100},
+          "geometric_error_mm": {"type": "integer", "minimum": 0}
+        }
+      }
+    },
+    "asset_ids": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "cell_asset_index": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "string", "minLength": 1}}},
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "canonical_write_authorized": {"const": false},
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider_can_write_authoritative_world_state", "rncs_authority_required"],
+      "properties": {
+        "provider_can_write_authoritative_world_state": {"const": false},
+        "rncs_authority_required": {"const": true}
+      }
+    },
+    "manifest_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

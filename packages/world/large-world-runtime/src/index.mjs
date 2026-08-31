@@ -1,4 +1,4 @@
-import {createHmac, timingSafeEqual} from 'node:crypto';
+import {createHash, createHmac, timingSafeEqual} from 'node:crypto';
 import {mkdir, open, readFile, rename} from 'node:fs/promises';
 import {dirname, isAbsolute} from 'node:path';
 import {
@@ -41,6 +41,10 @@ export const LARGE_WORLD_STREAM_FORMAT = 'rncs.large-world-stream-resolution.v0.
 export const LARGE_WORLD_PORTFOLIO_SELECTION_FORMAT = 'rncs.large-world-portfolio-selection.v0.1';
 export const LARGE_WORLD_SPATIAL_SCENE_FORMAT = 'rncs.large-world-spatial-scene.v0.1';
 export const LARGE_WORLD_SPATIAL_VISUAL_PROFILE = 'large-world.visual-prototypes.v0.1';
+export const LARGE_WORLD_SPATIAL_GLTF_MANIFEST_FORMAT = 'rncs.large-world-spatial-gltf-manifest.v0.1';
+export const LARGE_WORLD_SPATIAL_GLTF_BUNDLE_FORMAT = 'rncs.large-world-spatial-gltf-bundle.v0.1';
+export const LARGE_WORLD_SPATIAL_GLTF_PROVIDER_ID = 'provider:taowind:large-world-gltf-prototype:v0.1';
+export const LARGE_WORLD_SPATIAL_GLTF_TEXTURE_PROFILE = 'vsr.rgba-inline.v0.1';
 export const LARGE_WORLD_MATERIALIZATION_FORMAT = 'rncs.large-world-materialization.v0.1';
 export const LARGE_WORLD_REPLICATION_SNAPSHOT_FORMAT = 'rncs.large-world-replication-snapshot.v0.1';
 export const LARGE_WORLD_REPLICATION_DELTA_FORMAT = 'rncs.large-world-replication-delta.v0.1';
@@ -780,6 +784,288 @@ function largeWorldSpatialSceneRoot(scene) {
     canonical_write_authorized: extension.canonical_write_authorized,
     authority: extension.authority
   });
+}
+
+function largeWorldSpatialSha256(bytes) {
+  return createHash('sha256').update(bytes).digest('hex');
+}
+
+function largeWorldSpatialAppendBinary(target, values, componentType) {
+  const componentSize = componentType === 5126 || componentType === 5125 ? 4 : componentType === 5123 ? 2 : 1;
+  while (target.length % 4) target.push(0);
+  const byteOffset = target.length;
+  const bytes = new Uint8Array(values.length * componentSize);
+  const view = new DataView(bytes.buffer);
+  for (let index = 0; index < values.length; index++) {
+    const value = Number(values[index] ?? 0);
+    if (componentType === 5126) view.setFloat32(index * 4, Number.isFinite(value) ? value : 0, true);
+    else if (componentType === 5125) view.setUint32(index * 4, Math.max(0, Math.trunc(value)), true);
+    else if (componentType === 5123) view.setUint16(index * 2, Math.max(0, Math.min(0xffff, Math.trunc(value))), true);
+    else bytes[index] = Math.max(0, Math.min(0xff, Math.trunc(value)));
+  }
+  for (const byte of bytes) target.push(byte);
+  return {byteOffset, byteLength: bytes.length};
+}
+
+function largeWorldSpatialMeshForLod(mesh, lod) {
+  const stride = lod === 0 ? 1 : lod === 1 ? 2 : 4;
+  if (stride === 1) return mesh;
+  const indices = [];
+  for (let index = 0; index + 2 < mesh.indices.length; index += stride * 3) indices.push(mesh.indices[index], mesh.indices[index + 1], mesh.indices[index + 2]);
+  if (indices.length < 3 && mesh.indices.length >= 3) indices.push(mesh.indices[0], mesh.indices[1], mesh.indices[2]);
+  return {...mesh, indices};
+}
+
+function largeWorldSpatialColorRgba(value, fallback = '#9ca3af') {
+  const match = /^#([0-9a-f]{6}|[0-9a-f]{8})$/i.exec(String(value ?? ''));
+  const hex = match?.[1] ?? fallback.slice(1);
+  return [0, 1, 2].map(index => Number.parseInt(hex.slice(index * 2, index * 2 + 2), 16)).concat(hex.length === 8 ? Number.parseInt(hex.slice(6, 8), 16) : 255);
+}
+
+function largeWorldSpatialMaterialForMesh(scene, meshId) {
+  const node = scene.nodes.find(entry => entry.meshId === meshId && entry.materialId);
+  return scene.materials.find(entry => entry.id === node?.materialId) ?? scene.materials[0] ?? {id: 'material:large-world:default', baseColor: '#9ca3af', metallic: 0, roughness: .86};
+}
+
+function largeWorldSpatialGltfForMesh(mesh, material, {lod, prototypeId}) {
+  const source = largeWorldSpatialMeshForLod(mesh, lod);
+  const positions = Array.isArray(source.positions) ? source.positions : [];
+  const normals = Array.isArray(source.normals) && source.normals.length === positions.length ? source.normals : new Array(positions.length).fill(0);
+  const uvs = Array.isArray(source.uvs) && source.uvs.length === positions.length / 3 * 2 ? source.uvs : new Array(positions.length / 3 * 2).fill(0);
+  const indices = Array.isArray(source.indices) ? source.indices : [];
+  fail(positions.length >= 9 && indices.length >= 3, `LARGE_WORLD_GLTF_MESH_EMPTY:${mesh.id}`);
+  const binary = [];
+  const positionView = largeWorldSpatialAppendBinary(binary, positions, 5126);
+  const normalView = largeWorldSpatialAppendBinary(binary, normals, 5126);
+  const uvView = largeWorldSpatialAppendBinary(binary, uvs, 5126);
+  const maximumIndex = indices.reduce((maximum, value) => Math.max(maximum, Number(value) || 0), 0);
+  const indexComponentType = maximumIndex < 0x10000 ? 5123 : 5125;
+  const indexView = largeWorldSpatialAppendBinary(binary, indices, indexComponentType);
+  const color = largeWorldSpatialColorRgba(material.baseColor, '#9ca3af');
+  const emissive = largeWorldSpatialColorRgba(material.emissive, '#000000');
+  const texturePixels = [
+    ...color, ...color,
+    Math.max(0, color[0] - 24), Math.max(0, color[1] - 24), Math.max(0, color[2] - 24), color[3],
+    Math.min(255, color[0] + 24), Math.min(255, color[1] + 24), Math.min(255, color[2] + 24), color[3]
+  ];
+  const gltf = {
+    asset: {version: '2.0', generator: LARGE_WORLD_SPATIAL_GLTF_PROVIDER_ID},
+    scene: 0,
+    scenes: [{name: `${mesh.id}:lod${lod}`, nodes: [0]}],
+    nodes: [{name: mesh.id, mesh: 0}],
+    meshes: [{name: mesh.id, primitives: [{attributes: {POSITION: 0, NORMAL: 1, TEXCOORD_0: 2}, indices: 3, material: 0, mode: 4}]}],
+    materials: [{
+      name: String(material.id ?? 'material:large-world:default'),
+      pbrMetallicRoughness: {
+        baseColorFactor: color.map((entry, index) => entry / (index === 3 ? 255 : 255)),
+        metallicFactor: Math.max(0, Math.min(1, Number(material.metallic ?? 0))),
+        roughnessFactor: Math.max(0, Math.min(1, Number(material.roughness ?? .86))),
+        baseColorTexture: {index: 0}
+      },
+      emissiveFactor: emissive.slice(0, 3).map(entry => entry / 255),
+      alphaMode: material.alphaMode === 'BLEND' || material.alphaMode === 'MASK' ? material.alphaMode : 'OPAQUE',
+      alphaCutoff: Number.isFinite(Number(material.alphaCutoff)) ? Number(material.alphaCutoff) : .5,
+      doubleSided: material.doubleSided !== false,
+      extras: {provider_id: LARGE_WORLD_SPATIAL_GLTF_PROVIDER_ID, prototype_id: prototypeId, lod}
+    }],
+    samplers: [{magFilter: 9729, minFilter: 9987, wrapS: 10497, wrapT: 10497}],
+    images: [{
+      name: `${mesh.id}:swatch`,
+      mimeType: 'application/vnd.vsr.rgba',
+      extras: {vsrRGBA: {width: 2, height: 2, pixels: texturePixels, colorSpace: 'srgb'}}
+    }],
+    textures: [{sampler: 0, source: 0}],
+    buffers: [{byteLength: binary.length, uri: `data:application/octet-stream;base64,${Buffer.from(binary).toString('base64')}`}],
+    bufferViews: [
+      {...positionView, buffer: 0, target: 34962},
+      {...normalView, buffer: 0, target: 34962},
+      {...uvView, buffer: 0, target: 34962},
+      {...indexView, buffer: 0, target: 34963}
+    ],
+    accessors: [
+      {bufferView: 0, componentType: 5126, count: positions.length / 3, type: 'VEC3'},
+      {bufferView: 1, componentType: 5126, count: normals.length / 3, type: 'VEC3'},
+      {bufferView: 2, componentType: 5126, count: uvs.length / 2, type: 'VEC2'},
+      {bufferView: 3, componentType: indexComponentType, count: indices.length, type: 'SCALAR'}
+    ],
+    extras: {
+      format: LARGE_WORLD_SPATIAL_GLTF_MANIFEST_FORMAT,
+      provider_id: LARGE_WORLD_SPATIAL_GLTF_PROVIDER_ID,
+      prototype_id: prototypeId,
+      lod,
+      texture_profile: LARGE_WORLD_SPATIAL_GLTF_TEXTURE_PROFILE
+    }
+  };
+  const bytes = new TextEncoder().encode(JSON.stringify(gltf));
+  return {gltf, bytes, triangleCount: Math.floor(indices.length / 3), textureCount: 1};
+}
+
+function largeWorldSpatialMeshCellIds(scene, meshId) {
+  const nodeIds = new Set(scene.nodes.filter(node => node.meshId === meshId).map(node => node.id));
+  return strings((scene.streaming?.cells ?? []).filter(cell => (cell.nodeIds ?? []).some(nodeId => nodeIds.has(nodeId))).map(cell => cell.id));
+}
+
+function largeWorldSpatialMeshPrototypeId(scene, meshId) {
+  const node = scene.nodes.find(entry => entry.meshId === meshId && entry.prototypeId);
+  return String(node?.prototypeId ?? `${LARGE_WORLD_SPATIAL_VISUAL_PROFILE}:mesh`);
+}
+
+function largeWorldSpatialGltfRecordView(record) {
+  return {
+    id: record.id,
+    uri: record.uri,
+    format: record.format ?? null,
+    sha256: record.sha256,
+    byteLength: record.byteLength,
+    kind: record.kind,
+    dependencies: strings(record.dependencies),
+    cellIds: strings(record.cellIds),
+    priority: Number(record.priority ?? 0),
+    metadata: record.metadata ?? null
+  };
+}
+
+/**
+ * Materialize the deterministic spatial meshes in a VSR-compatible glTF
+ * candidate bundle. The bundle is a provider artifact: it never changes the
+ * RNCS scene root or grants a provider authority over world truth.
+ */
+export function createLargeWorldSpatialGltfBundle(scene, input = {}) {
+  const value = record(input);
+  const sceneVerification = verifyLargeWorldSpatialScene(scene);
+  fail(sceneVerification.valid, `LARGE_WORLD_GLTF_SCENE_INVALID:${sceneVerification.errors.join(',')}`);
+  const levels = [0, 1, 2];
+  const meshEntries = [...new Map((scene.meshes ?? []).map(mesh => [mesh.id, mesh])).values()].sort((a, b) => keySort(a.id, b.id));
+  fail(meshEntries.length > 0, 'LARGE_WORLD_GLTF_MESHES_REQUIRED');
+  const assets = [];
+  const cellAssetIndex = {};
+  const providerId = String(value.providerId ?? value.provider_id ?? LARGE_WORLD_SPATIAL_GLTF_PROVIDER_ID);
+  for (const mesh of meshEntries) {
+    const material = largeWorldSpatialMaterialForMesh(scene, mesh.id);
+    const prototypeId = largeWorldSpatialMeshPrototypeId(scene, mesh.id);
+    const cellIds = largeWorldSpatialMeshCellIds(scene, mesh.id);
+    for (const lod of levels) {
+      const generated = largeWorldSpatialGltfForMesh(mesh, material, {lod, prototypeId});
+      const assetId = `asset:gltf:${scene.sceneId}:${mesh.id}:lod${lod}`;
+      const recordValue = {
+        id: assetId,
+        uri: `rncs+gltf://${encodeURIComponent(scene.sceneId)}/${encodeURIComponent(mesh.id)}/lod${lod}.gltf`,
+        format: 'model/gltf+json',
+        sha256: largeWorldSpatialSha256(generated.bytes),
+        byteLength: generated.bytes.byteLength,
+        kind: 'mesh',
+        cellIds,
+        priority: lod === 0 ? 100 : lod === 1 ? 50 : 10,
+        metadata: {
+          provider_id: providerId,
+          source_scene_root: scene.scene_root,
+          source_mesh_id: mesh.id,
+          prototype_id: prototypeId,
+          lod,
+          triangle_count: generated.triangleCount,
+          texture_count: generated.textureCount,
+          texture_profile: LARGE_WORLD_SPATIAL_GLTF_TEXTURE_PROFILE,
+          candidate_only: true,
+          authoritative: false
+        }
+      };
+      assets.push({record: recordValue, gltf: generated.gltf, payload: generated.bytes});
+      for (const cellId of cellIds) (cellAssetIndex[cellId] ??= []).push(assetId);
+    }
+  }
+  assets.sort((a, b) => keySort(a.record.id, b.record.id));
+  for (const ids of Object.values(cellAssetIndex)) ids.sort(keySort);
+  const lodPolicy = [
+    {lod: 0, max_distance_m: 64, screen_coverage_percent: 100, geometric_error_mm: 0},
+    {lod: 1, max_distance_m: 192, screen_coverage_percent: 45, geometric_error_mm: 18},
+    {lod: 2, max_distance_m: 512, screen_coverage_percent: 16, geometric_error_mm: 55}
+  ];
+  const manifestBase = {
+    format: LARGE_WORLD_SPATIAL_GLTF_MANIFEST_FORMAT,
+    version: '0.1.0',
+    scene_id: String(scene.sceneId),
+    scene_root: String(scene.scene_root),
+    source_reality_root: String(scene.reality?.realityRoot ?? ''),
+    provider_id: providerId,
+    visual_prototype_profile: String(scene.large_world.visual_prototype_profile),
+    mesh_count: meshEntries.length,
+    lod_level_count: levels.length,
+    asset_count: assets.length,
+    texture_count: assets.reduce((sum, entry) => sum + Number(entry.record.metadata.texture_count ?? 0), 0),
+    texture_profile: LARGE_WORLD_SPATIAL_GLTF_TEXTURE_PROFILE,
+    lod_policy: lodPolicy,
+    asset_ids: assets.map(entry => entry.record.id),
+    cell_asset_index: cellAssetIndex,
+    candidate_only: true,
+    authoritative: false,
+    canonical_write_authorized: false,
+    authority: {provider_can_write_authoritative_world_state: false, rncs_authority_required: true}
+  };
+  const manifest = {...manifestBase, manifest_root: rootHash(manifestBase)};
+  const bundleBase = {
+    format: LARGE_WORLD_SPATIAL_GLTF_BUNDLE_FORMAT,
+    version: '0.1.0',
+    manifest_root: manifest.manifest_root,
+    assets: assets.map(entry => largeWorldSpatialGltfRecordView(entry.record))
+  };
+  return {
+    format: LARGE_WORLD_SPATIAL_GLTF_BUNDLE_FORMAT,
+    version: '0.1.0',
+    manifest,
+    assets,
+    bundle_root: rootHash(bundleBase)
+  };
+}
+
+export function verifyLargeWorldSpatialGltfBundle(bundle, input = {}) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!bundle || typeof bundle !== 'object' || Array.isArray(bundle)) return {valid: false, errors: ['LARGE_WORLD_GLTF_BUNDLE_NOT_OBJECT']};
+  try {
+    check(bundle.format === LARGE_WORLD_SPATIAL_GLTF_BUNDLE_FORMAT, 'LARGE_WORLD_GLTF_BUNDLE_FORMAT_INVALID');
+    check(bundle.version === '0.1.0', 'LARGE_WORLD_GLTF_BUNDLE_VERSION_INVALID');
+    const manifest = bundle.manifest;
+    check(manifest?.format === LARGE_WORLD_SPATIAL_GLTF_MANIFEST_FORMAT, 'LARGE_WORLD_GLTF_MANIFEST_FORMAT_INVALID');
+    check(manifest?.candidate_only === true && manifest?.authoritative === false && manifest?.canonical_write_authorized === false, 'LARGE_WORLD_GLTF_AUTHORITY_INVALID');
+    const manifestCopy = clone(manifest ?? {});
+    const manifestRoot = manifestCopy.manifest_root;
+    delete manifestCopy.manifest_root;
+    check(hex64(manifestRoot) && rootHash(manifestCopy) === manifestRoot, 'LARGE_WORLD_GLTF_MANIFEST_ROOT_MISMATCH');
+    if (input.sceneRoot !== undefined) check(manifest?.scene_root === input.sceneRoot, 'LARGE_WORLD_GLTF_SCENE_ROOT_MISMATCH');
+    const entries = Array.isArray(bundle.assets) ? bundle.assets : [];
+    const ids = entries.map(entry => entry?.record?.id).sort(keySort);
+    check(ids.length === entries.length && new Set(ids).size === ids.length, 'LARGE_WORLD_GLTF_ASSET_IDS_INVALID');
+    check(JSON.stringify(ids) === JSON.stringify([...(manifest?.asset_ids ?? [])].sort(keySort)), 'LARGE_WORLD_GLTF_ASSET_INDEX_MISMATCH');
+    for (const entry of entries) {
+      const asset = entry?.record;
+      const payload = entry?.payload;
+      check(asset && typeof asset.id === 'string' && asset.format === 'model/gltf+json' && asset.kind === 'mesh', `LARGE_WORLD_GLTF_ASSET_RECORD_INVALID:${asset?.id ?? 'unknown'}`);
+      check(payload instanceof Uint8Array, `LARGE_WORLD_GLTF_ASSET_PAYLOAD_INVALID:${asset?.id ?? 'unknown'}`);
+      if (!(payload instanceof Uint8Array)) continue;
+      check(asset.byteLength === payload.byteLength, `LARGE_WORLD_GLTF_ASSET_LENGTH_MISMATCH:${asset.id}`);
+      check(typeof asset.sha256 === 'string' && asset.sha256 === largeWorldSpatialSha256(payload), `LARGE_WORLD_GLTF_ASSET_HASH_MISMATCH:${asset.id}`);
+      let gltf;
+      try { gltf = JSON.parse(new TextDecoder().decode(payload)); } catch { check(false, `LARGE_WORLD_GLTF_JSON_INVALID:${asset.id}`); continue; }
+      check(gltf?.asset?.version === '2.0', `LARGE_WORLD_GLTF_VERSION_INVALID:${asset.id}`);
+      const bufferUri = gltf?.buffers?.[0]?.uri;
+      const match = typeof bufferUri === 'string' ? /^data:application\/octet-stream;base64,(.*)$/s.exec(bufferUri) : null;
+      check(Boolean(match), `LARGE_WORLD_GLTF_BUFFER_URI_INVALID:${asset.id}`);
+      if (match) check(Number(gltf.buffers[0].byteLength) === Buffer.from(match[1], 'base64').byteLength, `LARGE_WORLD_GLTF_BUFFER_LENGTH_INVALID:${asset.id}`);
+      const triangleCount = (gltf?.accessors?.[3]?.count ?? 0) / 3;
+      check(Number.isInteger(triangleCount) && triangleCount === Number(asset.metadata?.triangle_count), `LARGE_WORLD_GLTF_TRIANGLE_COUNT_INVALID:${asset.id}`);
+      check(gltf?.textures?.length === 1 && gltf?.images?.[0]?.extras?.vsrRGBA, `LARGE_WORLD_GLTF_TEXTURE_CHANNEL_MISSING:${asset.id}`);
+    }
+    const bundleBase = {
+      format: LARGE_WORLD_SPATIAL_GLTF_BUNDLE_FORMAT,
+      version: '0.1.0',
+      manifest_root: manifest?.manifest_root,
+      assets: entries.map(entry => largeWorldSpatialGltfRecordView(entry.record)).sort((a, b) => keySort(a.id, b.id))
+    };
+    check(hex64(bundle.bundle_root) && rootHash(bundleBase) === bundle.bundle_root, 'LARGE_WORLD_GLTF_BUNDLE_ROOT_MISMATCH');
+  } catch (error) {
+    errors.push(`LARGE_WORLD_GLTF_VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, bundle_root: bundle?.bundle_root ?? null, manifest_root: bundle?.manifest?.manifest_root ?? null};
 }
 
 /**
