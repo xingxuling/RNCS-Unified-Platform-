@@ -7,6 +7,7 @@
 - Added deterministic environment mip-chain generation, roughness-aware CPU IBL sampling, WebGPU mip uploads, and explicit environment mip evidence in spatial frame plans;
 - WebGPU spatial execution now renders into an HDR `rgba16float` scene target and executes the declared full-screen tone-map pass before presenting to the canvas;
 - glTF import now supports normalized and sparse accessors, node matrices, and an explicit host image-decoder resolver for encoded external images;
+- glTF skin import now transposes inverse-bind MAT4 accessors from glTF column-major storage into the VSR row-major transform contract, preserving RAGF rig geometry during CPU/GPU deformation;
 - glTF asset import now parses GLB v2 JSON/BIN chunks and seals the binary payload into the imported scene root; `parseGlb` and `importGlbToSpatialScene` are exported for host integrations;
 - glTF import now exposes async embedded/external image bytes, a browser `createImageBitmap` decoder, and a `VSRGltfAsset` browser bundle so PNG/JPEG/WebP pixels can enter the RGBA texture contract instead of remaining a warning;
 - glTF texture import now resolves `KHR_texture_basisu` and `EXT_texture_webp` alternative image sources before standard `texture.source` for both synchronous imports and asynchronous host decoding; actual KTX2/BasisU transcoding remains outside the runtime;
