@@ -1,4 +1,6 @@
 import {createHmac, timingSafeEqual} from 'node:crypto';
+import {mkdir, open, readFile, rename} from 'node:fs/promises';
+import {dirname, isAbsolute} from 'node:path';
 import {
   ZERO_ROOT,
   advanceWorldTime,
@@ -33,6 +35,7 @@ export const LARGE_WORLD_REPLICATION_DELTA_FORMAT = 'rncs.large-world-replicatio
 export const LARGE_WORLD_REPLICATION_RECEIPT_FORMAT = 'rncs.large-world-replication-receipt.v0.1';
 export const LARGE_WORLD_DURABLE_BUNDLE_FORMAT = 'rncs.large-world-durable-bundle.v0.1';
 export const LARGE_WORLD_DURABLE_RESTORE_RECEIPT_FORMAT = 'rncs.large-world-durable-restore-receipt.v0.1';
+export const LARGE_WORLD_DURABLE_STORE_RECEIPT_FORMAT = 'rncs.large-world-durable-store-receipt.v0.1';
 export const LARGE_WORLD_REPLICATION_PACKET_FORMAT = 'rncs.large-world-replication-packet.v0.1';
 export const LARGE_WORLD_REPLICATION_ACK_FORMAT = 'rncs.large-world-replication-ack.v0.1';
 export const LARGE_WORLD_REPLICATION_CONFLICT_DECISION_FORMAT = 'rncs.large-world-replication-conflict-decision.v0.1';
@@ -558,6 +561,69 @@ function resolveReplicationConflictCandidates(candidatesInput) {
     commit_status: 'NOT_COMMITTED'
   };
   return {candidates: ordered, decision: {...base, decision_root: rootHash(base)}};
+}
+
+function injectDurableStoreFault(faultAt, stage) {
+  if (faultAt === stage) throw new Error(`LARGE_WORLD_DURABLE_STORE_FAULT:${stage}`);
+}
+
+async function syncDurableStoreDirectory(directoryPath) {
+  let handle = null;
+  try {
+    handle = await open(directoryPath, 'r');
+    await handle.sync();
+    return true;
+  } catch (error) {
+    if (['EBADF', 'EISDIR', 'EINVAL', 'ENOTDIR', 'ENOTSUP', 'EPERM'].includes(error.code)) return false;
+    throw error;
+  } finally {
+    if (handle) await handle.close();
+  }
+}
+
+async function readDurableStoreCandidate(filePath) {
+  try {
+    const serialized = await readFile(filePath, 'utf8');
+    let bundle;
+    try {
+      bundle = JSON.parse(serialized);
+    } catch (error) {
+      return {exists: true, valid: false, bytes: Buffer.byteLength(serialized, 'utf8'), error: `JSON_PARSE:${error.message}`};
+    }
+    const verification = verifyDurableBundle(bundle);
+    return {
+      exists: true,
+      valid: verification.valid,
+      bundle: verification.valid ? clone(bundle) : null,
+      bundle_root: bundle?.bundle_root ?? null,
+      bytes: Buffer.byteLength(serialized, 'utf8'),
+      error: verification.valid ? null : verification.errors.join(',')
+    };
+  } catch (error) {
+    if (error.code === 'ENOENT') return {exists: false, valid: false, bundle: null, bundle_root: null, bytes: 0, error: null};
+    return {exists: true, valid: false, bundle: null, bundle_root: null, bytes: 0, error: `${error.code ?? error.name}:${error.message}`};
+  }
+}
+
+function durableStoreReceipt(input) {
+  const base = {
+    format: LARGE_WORLD_DURABLE_STORE_RECEIPT_FORMAT,
+    version: LARGE_WORLD_RUNTIME_VERSION,
+    operation: String(input.operation),
+    status: String(input.status),
+    source: String(input.source),
+    bundle_root: input.bundleRoot ?? input.bundle_root ?? null,
+    bytes: integer(input.bytes, 0, {min: 0}),
+    atomic_rename: input.atomicRename === true || input.atomic_rename === true,
+    file_synced: input.fileSynced === true || input.file_synced === true,
+    directory_synced: input.directorySynced === true || input.directory_synced === true,
+    canonical_state_mutated: false,
+    authority: {provider_can_write_authoritative_world_state: false, rncs_authority_required: true},
+    candidate_only: true,
+    authoritative: false,
+    commit_status: 'NOT_COMMITTED'
+  };
+  return {...base, receipt_root: rootHash(base)};
 }
 
 export class LargeWorldRuntime {
@@ -1152,6 +1218,106 @@ export class LargeWorldRuntime {
   }
 }
 
+export class LargeWorldDurableStore {
+  constructor({filePath, path: pathValue} = {}) {
+    const target = String(filePath ?? pathValue ?? '');
+    fail(isAbsolute(target), 'LARGE_WORLD_DURABLE_STORE_ABSOLUTE_PATH_REQUIRED');
+    this.filePath = target;
+    this.tempPath = `${target}.tmp`;
+  }
+
+  async save(bundleInput, {faultAt} = {}) {
+    const bundle = clone(bundleInput);
+    const verification = verifyDurableBundle(bundle);
+    fail(verification.valid, `LARGE_WORLD_DURABLE_STORE_BUNDLE_INVALID:${verification.errors.join(',')}`);
+    await mkdir(dirname(this.filePath), {recursive: true});
+    const serialized = JSON.stringify(bundle);
+    const handle = await open(this.tempPath, 'w');
+    let fileSynced = false;
+    try {
+      await handle.writeFile(serialized, 'utf8');
+      await handle.sync();
+      fileSynced = true;
+    } finally {
+      await handle.close();
+    }
+    injectDurableStoreFault(faultAt, 'after-temp-sync');
+    await rename(this.tempPath, this.filePath);
+    injectDurableStoreFault(faultAt, 'after-rename');
+    const directorySynced = await syncDurableStoreDirectory(dirname(this.filePath));
+    return durableStoreReceipt({
+      operation: 'SAVE',
+      status: 'COMMITTED',
+      source: 'temp_rename',
+      bundleRoot: bundle.bundle_root,
+      bytes: Buffer.byteLength(serialized, 'utf8'),
+      atomicRename: true,
+      fileSynced,
+      directorySynced
+    });
+  }
+
+  async load() {
+    const primary = await readDurableStoreCandidate(this.filePath);
+    fail(primary.exists, 'LARGE_WORLD_DURABLE_STORE_PRIMARY_MISSING');
+    fail(primary.valid, `LARGE_WORLD_DURABLE_STORE_PRIMARY_INVALID:${primary.error ?? 'unknown'}`);
+    return clone(primary.bundle);
+  }
+
+  async recover() {
+    const primary = await readDurableStoreCandidate(this.filePath);
+    const temporary = await readDurableStoreCandidate(this.tempPath);
+    if (primary.valid) {
+      return {
+        status: 'RECOVERED',
+        source: 'primary',
+        bundle: clone(primary.bundle),
+        receipt: durableStoreReceipt({
+          operation: 'RECOVER',
+          status: 'RECOVERED',
+          source: 'primary',
+          bundleRoot: primary.bundle.bundle_root,
+          bytes: primary.bytes,
+          atomicRename: true,
+          fileSynced: true,
+          directorySynced: false
+        }),
+        diagnostics: {primary: 'VALID', temporary: temporary.valid ? 'VALID_IGNORED' : temporary.exists ? 'INVALID_IGNORED' : 'MISSING'}
+      };
+    }
+    if (temporary.valid) {
+      await rename(this.tempPath, this.filePath);
+      const directorySynced = await syncDurableStoreDirectory(dirname(this.filePath));
+      return {
+        status: 'RECOVERED',
+        source: 'temporary_promoted',
+        bundle: clone(temporary.bundle),
+        receipt: durableStoreReceipt({
+          operation: 'RECOVER',
+          status: 'RECOVERED',
+          source: 'temporary_promoted',
+          bundleRoot: temporary.bundle.bundle_root,
+          bytes: temporary.bytes,
+          atomicRename: true,
+          fileSynced: true,
+          directorySynced
+        }),
+        diagnostics: {primary: primary.exists ? 'INVALID' : 'MISSING', temporary: 'VALID_PROMOTED'}
+      };
+    }
+    return {
+      status: primary.exists || temporary.exists ? 'CORRUPT' : 'EMPTY',
+      source: null,
+      bundle: null,
+      receipt: null,
+      diagnostics: {
+        primary: primary.exists ? `INVALID:${primary.error ?? 'unknown'}` : 'MISSING',
+        temporary: temporary.exists ? `INVALID:${temporary.error ?? 'unknown'}` : 'MISSING'
+      }
+    };
+  }
+}
+
 export function verifyRuntimeSnapshot(snapshot) {
   if (!snapshot || typeof snapshot !== 'object') return {valid: false, errors: ['LARGE_WORLD_SNAPSHOT_NOT_OBJECT']};
   const copy = clone(snapshot);
@@ -1428,6 +1594,34 @@ export function verifyDurableRestoreReceipt(receipt) {
     check(hex64(receiptRoot) && rootHash(copy) === receiptRoot, 'LARGE_WORLD_DURABLE_RESTORE_RECEIPT_ROOT_MISMATCH');
   } catch (error) {
     errors.push(`LARGE_WORLD_DURABLE_RESTORE_RECEIPT_VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, receipt_root: receipt.receipt_root ?? null};
+}
+
+export function verifyDurableStoreReceipt(receipt) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!receipt || typeof receipt !== 'object') return {valid: false, errors: ['LARGE_WORLD_DURABLE_STORE_RECEIPT_NOT_OBJECT']};
+  try {
+    const copy = clone(receipt);
+    const receiptRoot = copy.receipt_root;
+    delete copy.receipt_root;
+    check(receipt.format === LARGE_WORLD_DURABLE_STORE_RECEIPT_FORMAT, 'LARGE_WORLD_DURABLE_STORE_RECEIPT_FORMAT_INVALID');
+    check(receipt.version === LARGE_WORLD_RUNTIME_VERSION, 'LARGE_WORLD_DURABLE_STORE_RECEIPT_VERSION_INVALID');
+    check(['SAVE', 'RECOVER'].includes(receipt.operation), 'LARGE_WORLD_DURABLE_STORE_RECEIPT_OPERATION_INVALID');
+    check(['COMMITTED', 'RECOVERED'].includes(receipt.status), 'LARGE_WORLD_DURABLE_STORE_RECEIPT_STATUS_INVALID');
+    check(['temp_rename', 'primary', 'temporary_promoted'].includes(receipt.source), 'LARGE_WORLD_DURABLE_STORE_RECEIPT_SOURCE_INVALID');
+    check(hex64(receipt.bundle_root), 'LARGE_WORLD_DURABLE_STORE_RECEIPT_BUNDLE_ROOT_INVALID');
+    check(Number.isSafeInteger(receipt.bytes) && receipt.bytes > 0, 'LARGE_WORLD_DURABLE_STORE_RECEIPT_BYTES_INVALID');
+    check(receipt.atomic_rename === true && receipt.file_synced === true, 'LARGE_WORLD_DURABLE_STORE_RECEIPT_ATOMICITY_INVALID');
+    check(typeof receipt.directory_synced === 'boolean', 'LARGE_WORLD_DURABLE_STORE_RECEIPT_DIRECTORY_SYNC_INVALID');
+    check(receipt.canonical_state_mutated === false, 'LARGE_WORLD_DURABLE_STORE_RECEIPT_CANONICAL_MUTATION');
+    check(receipt.authority?.provider_can_write_authoritative_world_state === false, 'LARGE_WORLD_DURABLE_STORE_RECEIPT_AUTHORITY_ESCALATION');
+    check(receipt.candidate_only === true && receipt.authoritative === false, 'LARGE_WORLD_DURABLE_STORE_RECEIPT_CANDIDATE_REQUIRED');
+    check(receipt.commit_status === 'NOT_COMMITTED', 'LARGE_WORLD_DURABLE_STORE_RECEIPT_COMMIT_STATUS_INVALID');
+    check(hex64(receiptRoot) && rootHash(copy) === receiptRoot, 'LARGE_WORLD_DURABLE_STORE_RECEIPT_ROOT_MISMATCH');
+  } catch (error) {
+    errors.push(`LARGE_WORLD_DURABLE_STORE_RECEIPT_VERIFY_EXCEPTION:${error.name}:${error.message}`);
   }
   return {valid: errors.length === 0, errors, receipt_root: receipt.receipt_root ?? null};
 }

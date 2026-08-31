@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.0-alpha.7
+
+- Added an atomic temporary-file/rename durable store with file-sync receipts and deterministic crash-point recovery for durable bundles.
+
 ## 0.1.0-alpha.6
 
 - Added a deterministic lexicographic-writer conflict court for same-base replication candidates, explicit winner/loser decisions, authoritative application receipts, and durable loser gates.
