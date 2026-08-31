@@ -2,6 +2,7 @@
 
 ## 0.1.0-alpha.1
 
+- Bind RNCS-owned v0.3 PropertySet and LawBindings roots into RealityObject, MaterializationPlan/Receipt, queries, and candidate property transitions; provider property/law mutation attempts fail closed.
 - Add provider-neutral RealityObject registry and RepresentationRef selection.
 - Add deterministic materialization plans and sealed execution receipts.
 - Add candidate-only representation transitions with apply and rollback.

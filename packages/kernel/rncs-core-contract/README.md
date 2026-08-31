@@ -17,6 +17,7 @@
 - Entity Kernel v0.1：typed Fragment、Composition Signature、确定性 State Batch 与 Deferred Mutation Ledger
 - Representation Transition Candidate v0.1：跨表示 identity、authority、equivalence、residency/detail policy 与 candidate rollback；不会绕过 RFE commit
 - v0.3 Truth Layer Candidate：WorldTime、authority-receipted WorldEvent、deterministic event-log replay 与 provenance-bound Fact World Tree；不把 Subject Memory 当作 Canonical Fact
+- v0.3 Reality Property & Law Candidate：带来源、证据、版本和单位/维度的 Reality Quantity，RNCS-owned PropertySet/LawBindings，以及候选属性事务；Provider 只能计算或近似，不能改写 Canonical Property/Law
 
 ## 快速运行
 
@@ -41,6 +42,10 @@ VSR/AER State   = 观察者投影状态
 ## 当前定位
 
 这是 v0.1 合同与参考运行时，不是分布式共识实现。它负责把不同项目的语义边界冻结，实际权威提交仍由 RFE 执行。
+
+## Reality Property & Law v0.3 Candidate
+
+`src/reality-property.mjs` 提供 `RealityQuantity`、`RealityPropertySet`、`RealityLawBindings` 与 `RealityPropertyTransition`。所有属性值必须明确 `unit`、`dimension`、`provenance_ref` 和 `authority_ref`；`validateRealityQuantityOperation('+', ...)` 会拒绝不同物理维度或不同单位的相加。该模块是可验证的合同候选，不宣称已经完成分布式 Property Commit、物理 Provider 或生产级多物理仿真。
 
 ## Entity Kernel v0.1
 
