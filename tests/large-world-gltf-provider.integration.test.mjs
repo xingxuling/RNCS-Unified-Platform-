@@ -69,8 +69,11 @@ test('streams and imports the large-world glTF candidate bundle, then compiles c
   assert.equal(streamingReceipt.blockedAssetIds.length, 0);
   assert.equal(streamingReceipt.readyAssetIds.length, catalog.length);
 
-  const sourceEntry = bundle.assets.find(entry => entry.record.metadata.lod === 0 && String(entry.record.metadata.source_mesh_id).includes(':terrain')) ?? bundle.assets.find(entry => entry.record.metadata.lod === 0);
+  const sourceEntry = bundle.assets.find(entry => entry.record.metadata.lod === 0 && String(entry.record.metadata.source_mesh_id).includes(':prototype:grove'))
+    ?? bundle.assets.find(entry => entry.record.metadata.lod === 0 && String(entry.record.metadata.source_mesh_id).includes(':terrain'))
+    ?? bundle.assets.find(entry => entry.record.metadata.lod === 0);
   assert.ok(sourceEntry);
+  const showcaseIsTerrain = String(sourceEntry.record.metadata.source_mesh_id).includes(':terrain');
   const imported = importGltfToSpatialScene(JSON.parse(new TextDecoder().decode(sourceEntry.payload)), {
     sceneId: 'urrf-large-world-gltf-import-v01',
     sourceRoot: scene.scene_root
@@ -80,6 +83,14 @@ test('streams and imports the large-world glTF candidate bundle, then compiles c
   assert.equal(imported.scene.textures?.length, 1);
   assert.equal(imported.receipt.textureCount, 1);
   assert.equal(imported.receipt.meshCount, 1);
+  imported.scene.background = '#07111e';
+  imported.scene.cameras[0].transform = showcaseIsTerrain
+    ? {translation: [32, 14, 78], rotationEulerDeg: [-18, 0, 0]}
+    : {translation: [0, 1.6, 3], rotationEulerDeg: [-8, 0, 0]};
+  imported.scene.lights = [
+    {id: 'light:gltf:ambient', kind: 'ambient', color: '#d9e7ff', intensity: .35},
+    {id: 'light:gltf:sun', kind: 'directional', color: '#fff0ce', intensity: 1.2, direction: [-.45, -1, -.35], castShadow: false}
+  ];
 
   const importedFrame = compileSpatialFrame(imported.scene, {width: 320, height: 180, enableShadows: false, gpuDrivenCulling: true});
   assert.equal(verifySpatialFrame(importedFrame).ok, true);
@@ -88,7 +99,9 @@ test('streams and imports the large-world glTF candidate bundle, then compiles c
   const hlod = generateSpatialHLOD(imported.scene, {
     clusterId: 'world:urrf-large-world-gltf-provider:terrain',
     sourceNodeIds,
-    levels: [{maxDistance: 24, maxTriangles: 64}, {maxDistance: 128, maxTriangles: 16}]
+    levels: showcaseIsTerrain
+      ? [{maxDistance: 24, maxTriangles: 64}, {maxDistance: 128, maxTriangles: 16}]
+      : [{maxDistance: 3, maxTriangles: 64}, {maxDistance: 24, maxTriangles: 16}]
   });
   const hlodFrame = compileSpatialFrame(hlod.scene, {width: 320, height: 180, enableShadows: false, gpuDrivenCulling: true});
   assert.equal(hlodFrame.hlod?.clusters.length, 1);
@@ -111,7 +124,7 @@ test('streams and imports the large-world glTF candidate bundle, then compiles c
   assert.equal(cellHlodFrame.hlod?.clusters.length, scene.streaming.cells.length);
   assert.equal(cellHlodFrame.stats.hlodProxyDraws, scene.streaming.cells.length);
   assert.equal(verifySpatialFrame(cellHlodFrame).ok, true);
-  const rendered = renderSpatialReference(hlod.scene, {width: 320, height: 180, enableShadows: false, gpuDrivenCulling: true});
+  const rendered = renderSpatialReference(imported.scene, {width: 320, height: 180, enableShadows: false, gpuDrivenCulling: true});
   assert.equal(verifySpatialFrame(rendered.framePlan).ok, true);
 
   const report = {
