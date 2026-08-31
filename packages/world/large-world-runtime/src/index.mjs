@@ -6,7 +6,10 @@ import {
   advanceWorldTime,
   appendWorldEvent,
   applyWorldMutation,
+  checkAuthorityLease,
   createFactWorldTree,
+  createAuthorityLease,
+  createRealityConsistencyProfile,
   createRepresentationRef,
   createWorldEvent,
   createWorldEventLog,
@@ -16,6 +19,10 @@ import {
   rebuildFactWorldTree,
   rootHash,
   verifyFactWorldTree,
+  verifyAuthorityLease,
+  REALITY_CONSISTENCY_PROFILE_FORMAT,
+  AUTHORITY_LEASE_FORMAT,
+  verifyRealityConsistencyProfile,
   verifyWorldEvent,
   verifyWorldEventLog,
   verifyWorldFact,
@@ -41,6 +48,8 @@ export const LARGE_WORLD_REPLICATION_ACK_FORMAT = 'rncs.large-world-replication-
 export const LARGE_WORLD_REPLICATION_CONFLICT_DECISION_FORMAT = 'rncs.large-world-replication-conflict-decision.v0.1';
 export const LARGE_WORLD_REPLICATION_CONFLICT_RECEIPT_FORMAT = 'rncs.large-world-replication-conflict-receipt.v0.1';
 export const LARGE_WORLD_REPLICATION_CONFLICT_POLICY_ID = 'lexicographic-writer-priority';
+export const LARGE_WORLD_CONSISTENCY_PROFILE_FORMAT = REALITY_CONSISTENCY_PROFILE_FORMAT;
+export const LARGE_WORLD_AUTHORITY_LEASE_FORMAT = AUTHORITY_LEASE_FORMAT;
 
 export const LARGE_WORLD_BIOMES = Object.freeze(['coast', 'desert', 'forest', 'grassland', 'tundra', 'wetland']);
 export const LARGE_WORLD_STRUCTURE_KINDS = Object.freeze(['ruin', 'grove', 'mine', 'shrine', 'watchtower']);
@@ -122,6 +131,25 @@ function normalizeRuntimeOptions(input = {}) {
   const maxActiveChunks = integer(value.maxActiveChunks ?? value.max_active_chunks, Math.max(1, (loadRadius * 2 + 1) ** 2), {min: 1, max: 4096});
   const maxWorkingSetBytes = integer(value.maxWorkingSetBytes ?? value.max_working_set_bytes, 4 * 1024 * 1024, {min: 1, max: Number.MAX_SAFE_INTEGER});
   return {...base, loadRadius, unloadRadius, maxActiveChunks, maxWorkingSetBytes};
+}
+
+function normalizeDistributionProfile(input, worldId) {
+  if (input === undefined || input === null) return null;
+  const profile = record(input).profile_root ? clone(input) : createRealityConsistencyProfile({
+    profile_id: `consistency:${worldId}`,
+    ...record(input)
+  });
+  const verification = verifyRealityConsistencyProfile(profile);
+  fail(verification.valid, `LARGE_WORLD_CONSISTENCY_PROFILE_INVALID:${verification.errors.join(',')}`);
+  return profile;
+}
+
+function normalizeDistributionLease(input) {
+  if (input === undefined || input === null) return null;
+  const lease = record(input).lease_root ? clone(input) : createAuthorityLease(input);
+  const verification = verifyAuthorityLease(lease);
+  fail(verification.valid, `LARGE_WORLD_AUTHORITY_LEASE_INVALID:${verification.errors.join(',')}`);
+  return lease;
 }
 
 function gridMesh(seed, x, z, sampleResolution) {
@@ -410,6 +438,76 @@ function replicationAuthorityReceipt(input) {
   return receipt;
 }
 
+function replicationDistributionFields(runtime, input = {}) {
+  const profile = runtime.consistencyProfile;
+  if (!profile) return null;
+  const profileVerification = verifyRealityConsistencyProfile(profile);
+  fail(profileVerification.valid, `LARGE_WORLD_CONSISTENCY_PROFILE_INVALID:${profileVerification.errors.join(',')}`);
+  const lease = runtime.authorityLease;
+  if (profile.lease_required || profile.fencing_required) {
+    fail(lease, 'LARGE_WORLD_REPLICATION_LEASE_REQUIRED');
+    const leaseAdmission = checkAuthorityLease(lease, {
+      authority_id: lease.authority_id,
+      shard_id: runtime.shardId,
+      semantic_scope: lease.semantic_scope,
+      owner_node: runtime.nodeId,
+      tick: runtime.worldTime.simulation_tick,
+      current_lease: lease
+    });
+    fail(leaseAdmission.valid, `LARGE_WORLD_REPLICATION_LEASE_ADMISSION_FAILED:${leaseAdmission.errors.join(',')}`);
+  }
+  const targetNode = String(input.targetNode ?? input.target_node ?? 'node:unknown');
+  fail(targetNode.length > 0, 'LARGE_WORLD_REPLICATION_TARGET_NODE_REQUIRED');
+  const sequence = integer(input.sequence, runtime.replicationSequence + 1, {min: 0, max: Number.MAX_SAFE_INTEGER});
+  runtime.replicationSequence = Math.max(runtime.replicationSequence, sequence);
+  return {
+    consistency_profile: clone(profile),
+    consistency_profile_root: profile.profile_root,
+    authority_lease: lease ? clone(lease) : null,
+    authority_lease_root: lease?.lease_root ?? null,
+    source_node: runtime.nodeId,
+    target_node: targetNode,
+    shard_id: runtime.shardId,
+    authority_id: lease?.authority_id ?? null,
+    semantic_scope: lease?.semantic_scope ?? null,
+    sequence,
+    epoch: lease?.epoch ?? 0,
+    fencing_token: lease?.fencing_token ?? 0
+  };
+}
+
+function admitReplicationDistribution(runtime, delta, authorityReceipt) {
+  if (delta.consistency_profile === undefined) return;
+  const profile = runtime.consistencyProfile;
+  fail(profile, 'LARGE_WORLD_REPLICATION_CONSISTENCY_PROFILE_REQUIRED');
+  fail(profile.profile_root === delta.consistency_profile_root, 'LARGE_WORLD_REPLICATION_CONSISTENCY_PROFILE_MISMATCH');
+  const profileVerification = verifyRealityConsistencyProfile(delta.consistency_profile);
+  fail(profileVerification.valid, `LARGE_WORLD_REPLICATION_CONSISTENCY_PROFILE_INVALID:${profileVerification.errors.join(',')}`);
+  fail(delta.target_node === runtime.nodeId, 'LARGE_WORLD_REPLICATION_TARGET_NODE_MISMATCH');
+  fail(delta.shard_id === runtime.shardId, 'LARGE_WORLD_REPLICATION_SHARD_ID_MISMATCH');
+  if (delta.consistency_profile.authority_required || delta.consistency_profile.lease_required || delta.consistency_profile.fencing_required) {
+    fail(hex64(authorityReceipt.receipt_root), 'LARGE_WORLD_REPLICATION_AUTHORITY_RECEIPT_REQUIRED');
+  }
+  if (delta.consistency_profile.lease_required || delta.consistency_profile.fencing_required) {
+    const currentLease = runtime.acceptedAuthorityLease ?? runtime.authorityLease;
+    fail(currentLease, 'LARGE_WORLD_REPLICATION_CURRENT_LEASE_REQUIRED');
+    const leaseAdmission = checkAuthorityLease(delta.authority_lease, {
+      authority_id: delta.authority_id,
+      shard_id: runtime.shardId,
+      semantic_scope: delta.semantic_scope,
+      owner_node: delta.source_node,
+      epoch: delta.epoch,
+      fencing_token: delta.fencing_token,
+      tick: runtime.worldTime.simulation_tick,
+      current_lease: currentLease
+    });
+    fail(leaseAdmission.valid, `LARGE_WORLD_REPLICATION_LEASE_ADMISSION_FAILED:${leaseAdmission.errors.join(',')}`);
+    fail(authorityReceipt.lease_root === delta.authority_lease_root || authorityReceipt.leaseRoot === delta.authority_lease_root, 'LARGE_WORLD_REPLICATION_AUTHORITY_LEASE_RECEIPT_MISMATCH');
+    fail(authorityReceipt.fencing_token === delta.fencing_token || authorityReceipt.fencingToken === delta.fencing_token, 'LARGE_WORLD_REPLICATION_FENCING_RECEIPT_MISMATCH');
+    if (authorityReceipt.authority_id !== undefined) fail(String(authorityReceipt.authority_id) === delta.authority_id, 'LARGE_WORLD_REPLICATION_AUTHORITY_ID_RECEIPT_MISMATCH');
+  }
+}
+
 function replicationSnapshotBase(runtime) {
   const eventLog = clone(runtime.eventLog);
   const factTree = clone(runtime.factTree);
@@ -630,12 +728,33 @@ export class LargeWorldRuntime {
   constructor(input = {}) {
     const value = record(input);
     this.options = normalizeRuntimeOptions(value);
+    this.nodeId = String(value.nodeId ?? value.node_id ?? `node:${this.options.worldId}:local`);
+    fail(this.nodeId.length > 0, 'LARGE_WORLD_NODE_ID_REQUIRED');
+    this.shardId = String(value.shardId ?? value.shard_id ?? `shard:${this.options.worldId}`);
+    fail(this.shardId.length > 0, 'LARGE_WORLD_SHARD_ID_REQUIRED');
+    const leaseInput = value.authorityLease ?? value.authority_lease;
+    const acceptedLeaseInput = value.acceptedAuthorityLease ?? value.accepted_authority_lease ?? value.replicationLease ?? value.replication_lease;
+    this.consistencyProfile = normalizeDistributionProfile(value.consistencyProfile ?? value.consistency_profile, this.options.worldId);
+    if (!this.consistencyProfile && (leaseInput !== undefined || acceptedLeaseInput !== undefined)) {
+      this.consistencyProfile = createRealityConsistencyProfile({profile_id: `consistency:${this.options.worldId}`, evidence_refs: []});
+    }
+    this.authorityLease = normalizeDistributionLease(leaseInput);
+    this.acceptedAuthorityLease = normalizeDistributionLease(acceptedLeaseInput);
+    if (this.authorityLease) {
+      fail(this.authorityLease.owner_node === this.nodeId, 'LARGE_WORLD_AUTHORITY_LEASE_OWNER_NODE_MISMATCH');
+      fail(this.authorityLease.shard_id === this.shardId, 'LARGE_WORLD_AUTHORITY_LEASE_SHARD_ID_MISMATCH');
+    }
+    if (this.acceptedAuthorityLease) fail(this.acceptedAuthorityLease.shard_id === this.shardId, 'LARGE_WORLD_ACCEPTED_LEASE_SHARD_ID_MISMATCH');
+    if (this.consistencyProfile?.lease_required || this.consistencyProfile?.fencing_required) {
+      fail(this.authorityLease || this.acceptedAuthorityLease, 'LARGE_WORLD_DISTRIBUTION_LEASE_REQUIRED');
+    }
     this.region = generateRegion(this.options);
     this.chunks = new Map(this.region.chunks.map(chunk => [chunk.chunk_id, chunk]));
     this.chunkByKey = new Map(this.region.chunks.map(chunk => [chunkKey(chunk.coordinates.x, chunk.coordinates.z), chunk]));
     this.activeChunkIds = [];
     this.observer = {x: 0, z: 0};
     this.trace = [];
+    this.replicationSequence = 0;
     this.canonicalState = {
       format: 'rncs.large-world-state.v0.1',
       world_id: this.options.worldId,
@@ -983,12 +1102,22 @@ export class LargeWorldRuntime {
     }
     const traceDelta = sourceTrace.slice(baseTrace.length).map(clone);
     const value = record(input);
+    const distribution = replicationDistributionFields(this, value);
     const deltaSeed = {
       base_snapshot_root: baseSnapshot.snapshot_root,
       target_snapshot_root: target.snapshot_root,
       event_roots: sourceEvents.slice(baseEvents.length).map(event => event.event_root),
       fact_roots: newFacts.map(fact => fact.version_root),
       trace_roots: traceDelta.map(entry => rootHash(entry))
+    };
+    if (distribution) deltaSeed.distribution = {
+      consistency_profile_root: distribution.consistency_profile_root,
+      authority_lease_root: distribution.authority_lease_root,
+      source_node: distribution.source_node,
+      target_node: distribution.target_node,
+      sequence: distribution.sequence,
+      epoch: distribution.epoch,
+      fencing_token: distribution.fencing_token
     };
     const delta_id = String(value.deltaId ?? value.delta_id ?? `delta:${rootHash(deltaSeed).slice(0, 24)}`);
     fail(delta_id.length > 0, 'LARGE_WORLD_REPLICATION_DELTA_ID_REQUIRED');
@@ -1030,6 +1159,7 @@ export class LargeWorldRuntime {
       authoritative: false,
       commit_status: 'NOT_COMMITTED'
     };
+    if (distribution) Object.assign(base, distribution);
     return {...base, delta_root: rootHash(base)};
   }
 
@@ -1038,6 +1168,7 @@ export class LargeWorldRuntime {
     const verification = verifyReplicationDelta(delta);
     fail(verification.valid, `LARGE_WORLD_REPLICATION_DELTA_INVALID:${verification.errors.join(',')}`);
     const authorityReceipt = replicationAuthorityReceipt(input.authorityReceipt ?? input.authority_receipt);
+    admitReplicationDistribution(this, delta, authorityReceipt);
     const applied = this.appliedReplicationDeltas.get(delta.delta_root);
     if (applied) {
       const duplicateBase = {
@@ -1048,6 +1179,7 @@ export class LargeWorldRuntime {
         authority_receipt: authorityReceipt,
         canonical_state_mutated: false
       };
+      if (duplicateBase.consistency_profile_root !== undefined) duplicateBase.authority_receipt_root = authorityReceipt.receipt_root;
       delete duplicateBase.receipt_root;
       return {...duplicateBase, receipt_root: rootHash(duplicateBase)};
     }
@@ -1124,6 +1256,17 @@ export class LargeWorldRuntime {
       authoritative: true,
       commit_status: 'COMMITTED'
     };
+    if (delta.consistency_profile !== undefined) Object.assign(receiptBase, {
+      consistency_profile_root: delta.consistency_profile_root,
+      authority_lease_root: delta.authority_lease_root,
+      authority_receipt_root: authorityReceipt.receipt_root,
+      source_node: delta.source_node,
+      target_node: delta.target_node,
+      shard_id: delta.shard_id,
+      sequence: delta.sequence,
+      epoch: delta.epoch,
+      fencing_token: delta.fencing_token
+    });
     const receipt = {...receiptBase, receipt_root: rootHash(receiptBase)};
     this.appliedReplicationDeltas.set(delta.delta_root, receipt);
     return clone(receipt);
@@ -1390,6 +1533,29 @@ export function verifyReplicationDelta(delta) {
     for (const field of ['base_event_count', 'base_fact_count', 'base_trace_length', 'target_event_count', 'target_fact_count', 'target_trace_length']) {
       check(Number.isSafeInteger(delta[field]) && delta[field] >= 0, `LARGE_WORLD_REPLICATION_DELTA_${field.toUpperCase()}_INVALID`);
     }
+    if (delta.consistency_profile !== undefined) {
+      const profileVerification = verifyRealityConsistencyProfile(delta.consistency_profile);
+      check(profileVerification.valid, `LARGE_WORLD_REPLICATION_DELTA_CONSISTENCY_PROFILE_INVALID:${profileVerification.errors.join(',')}`);
+      check(delta.consistency_profile_root === delta.consistency_profile?.profile_root, 'LARGE_WORLD_REPLICATION_DELTA_CONSISTENCY_PROFILE_ROOT_MISMATCH');
+      check(typeof delta.source_node === 'string' && delta.source_node.length > 0, 'LARGE_WORLD_REPLICATION_DELTA_SOURCE_NODE_REQUIRED');
+      check(typeof delta.target_node === 'string' && delta.target_node.length > 0, 'LARGE_WORLD_REPLICATION_DELTA_TARGET_NODE_REQUIRED');
+      check(typeof delta.shard_id === 'string' && delta.shard_id.length > 0, 'LARGE_WORLD_REPLICATION_DELTA_SHARD_ID_REQUIRED');
+      check(Number.isSafeInteger(delta.sequence) && delta.sequence >= 0, 'LARGE_WORLD_REPLICATION_DELTA_SEQUENCE_INVALID');
+      if (delta.authority_lease !== null) {
+        const leaseVerification = verifyAuthorityLease(delta.authority_lease);
+        check(leaseVerification.valid, `LARGE_WORLD_REPLICATION_DELTA_AUTHORITY_LEASE_INVALID:${leaseVerification.errors.join(',')}`);
+        check(delta.authority_lease_root === delta.authority_lease?.lease_root, 'LARGE_WORLD_REPLICATION_DELTA_AUTHORITY_LEASE_ROOT_MISMATCH');
+        check(delta.authority_id === delta.authority_lease?.authority_id, 'LARGE_WORLD_REPLICATION_DELTA_AUTHORITY_ID_MISMATCH');
+        check(delta.semantic_scope === delta.authority_lease?.semantic_scope, 'LARGE_WORLD_REPLICATION_DELTA_SEMANTIC_SCOPE_MISMATCH');
+        check(delta.source_node === delta.authority_lease?.owner_node, 'LARGE_WORLD_REPLICATION_DELTA_OWNER_NODE_MISMATCH');
+        check(delta.epoch === delta.authority_lease?.epoch, 'LARGE_WORLD_REPLICATION_DELTA_EPOCH_MISMATCH');
+        check(delta.fencing_token === delta.authority_lease?.fencing_token, 'LARGE_WORLD_REPLICATION_DELTA_FENCING_TOKEN_MISMATCH');
+      } else {
+        check(delta.authority_lease_root === null, 'LARGE_WORLD_REPLICATION_DELTA_NULL_LEASE_ROOT_INVALID');
+        check(delta.authority_id === null && delta.semantic_scope === null, 'LARGE_WORLD_REPLICATION_DELTA_NULL_LEASE_METADATA_INVALID');
+      }
+      if (delta.consistency_profile?.lease_required || delta.consistency_profile?.fencing_required) check(delta.authority_lease !== null, 'LARGE_WORLD_REPLICATION_DELTA_LEASE_REQUIRED');
+    }
     check(Array.isArray(delta.events) && Array.isArray(delta.facts) && Array.isArray(delta.trace_delta), 'LARGE_WORLD_REPLICATION_DELTA_PAYLOAD_REQUIRED');
     check(delta.target_event_count === delta.base_event_count + delta.events.length, 'LARGE_WORLD_REPLICATION_DELTA_EVENT_COUNT_MISMATCH');
     check(delta.target_fact_count === delta.base_fact_count + delta.facts.length, 'LARGE_WORLD_REPLICATION_DELTA_FACT_COUNT_MISMATCH');
@@ -1438,6 +1604,16 @@ export function verifyReplicationReceipt(receipt) {
     check(['APPLIED', 'DUPLICATE'].includes(receipt.status), 'LARGE_WORLD_REPLICATION_RECEIPT_STATUS_INVALID');
     check(hex64(receipt.delta_root) && hex64(receipt.base_snapshot_root) && hex64(receipt.target_snapshot_root), 'LARGE_WORLD_REPLICATION_RECEIPT_ROOT_REFERENCE_INVALID');
     check(receipt.authority_receipt?.status === 'committed' && hex64(receipt.authority_receipt?.receipt_root), 'LARGE_WORLD_REPLICATION_RECEIPT_AUTHORITY_INVALID');
+    if (receipt.consistency_profile_root !== undefined) {
+      check(hex64(receipt.consistency_profile_root), 'LARGE_WORLD_REPLICATION_RECEIPT_CONSISTENCY_PROFILE_ROOT_INVALID');
+      check(hex64(receipt.authority_lease_root), 'LARGE_WORLD_REPLICATION_RECEIPT_AUTHORITY_LEASE_ROOT_INVALID');
+      check(hex64(receipt.authority_receipt_root), 'LARGE_WORLD_REPLICATION_RECEIPT_AUTHORITY_RECEIPT_ROOT_INVALID');
+      check(typeof receipt.source_node === 'string' && receipt.source_node.length > 0, 'LARGE_WORLD_REPLICATION_RECEIPT_SOURCE_NODE_REQUIRED');
+      check(typeof receipt.target_node === 'string' && receipt.target_node.length > 0, 'LARGE_WORLD_REPLICATION_RECEIPT_TARGET_NODE_REQUIRED');
+      check(typeof receipt.shard_id === 'string' && receipt.shard_id.length > 0, 'LARGE_WORLD_REPLICATION_RECEIPT_SHARD_ID_REQUIRED');
+      for (const field of ['sequence', 'epoch', 'fencing_token']) check(Number.isSafeInteger(receipt[field]) && receipt[field] >= 0, `LARGE_WORLD_REPLICATION_RECEIPT_${field.toUpperCase()}_INVALID`);
+      check(receipt.authority_receipt_root === receipt.authority_receipt.receipt_root, 'LARGE_WORLD_REPLICATION_RECEIPT_AUTHORITY_RECEIPT_ROOT_MISMATCH');
+    }
     check(receipt.canonical_state_mutated === (receipt.status === 'APPLIED' && (receipt.applied_event_ids?.length ?? 0) > 0), 'LARGE_WORLD_REPLICATION_RECEIPT_MUTATION_FLAG_INVALID');
     check(receipt.candidate_only === false && receipt.authoritative === true, 'LARGE_WORLD_REPLICATION_RECEIPT_AUTHORITY_SCOPE_INVALID');
     check(receipt.commit_status === 'COMMITTED', 'LARGE_WORLD_REPLICATION_RECEIPT_COMMIT_STATUS_INVALID');
