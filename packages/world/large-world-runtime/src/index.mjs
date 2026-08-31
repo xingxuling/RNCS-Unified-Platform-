@@ -9,6 +9,7 @@ import {
   checkAuthorityLease,
   createFactWorldTree,
   createAuthorityLease,
+  createCausalPhysicalProfile,
   createRealityQuery,
   createRealityConsistencyProfile,
   createRepresentationPortfolio,
@@ -23,8 +24,10 @@ import {
   rootHash,
   verifyFactWorldTree,
   verifyAuthorityLease,
+  verifyCausalPhysicalProfile,
   REALITY_CONSISTENCY_PROFILE_FORMAT,
   AUTHORITY_LEASE_FORMAT,
+  REALITY_CAUSAL_PHYSICAL_PROFILE_FORMAT,
   verifyRealityConsistencyProfile,
   verifyCognitiveWorkingSet,
   verifyRealityHorizon,
@@ -76,6 +79,7 @@ export const LARGE_WORLD_REPLICATION_CONFLICT_RECEIPT_FORMAT = 'rncs.large-world
 export const LARGE_WORLD_REPLICATION_CONFLICT_POLICY_ID = 'lexicographic-writer-priority';
 export const LARGE_WORLD_CONSISTENCY_PROFILE_FORMAT = REALITY_CONSISTENCY_PROFILE_FORMAT;
 export const LARGE_WORLD_AUTHORITY_LEASE_FORMAT = AUTHORITY_LEASE_FORMAT;
+export const LARGE_WORLD_CAUSAL_PHYSICAL_PROFILE_FORMAT = REALITY_CAUSAL_PHYSICAL_PROFILE_FORMAT;
 
 export const LARGE_WORLD_BIOMES = Object.freeze(['coast', 'desert', 'forest', 'grassland', 'tundra', 'wetland']);
 export const LARGE_WORLD_STRUCTURE_KINDS = Object.freeze(['ruin', 'grove', 'mine', 'shrine', 'watchtower']);
@@ -528,6 +532,46 @@ function portfolioResourceCosts(chunk, qualityProfile) {
     NETWORK_KB: proxy ? Math.max(1, Math.ceil(memory / 4096)) : Math.max(1, Math.ceil(memory / 1024)),
     ENERGY_MILLI: proxy ? 5 : 25
   };
+}
+
+function normalizeCausalPhysicalProfileForChunk(input, chunk) {
+  if (input === null || input === undefined) return null;
+  const value = record(input);
+  const profile = value.profile_root
+    ? clone(value)
+    : createCausalPhysicalProfile({
+      ...value,
+      profile_id: value.profile_id ?? value.profileId ?? `profile:${chunk.object_id}:causal-physical`,
+      object_id: chunk.object_id,
+      canonical_state_root: value.canonical_state_root ?? value.canonicalStateRoot ?? chunk.state_root,
+      demand: value.demand ?? value.requirement ?? value
+    });
+  fail(profile.object_id === chunk.object_id, 'LARGE_WORLD_CAUSAL_PHYSICAL_OBJECT_MISMATCH');
+  fail(profile.canonical_state_root === chunk.state_root, 'LARGE_WORLD_CAUSAL_PHYSICAL_STATE_ROOT_MISMATCH');
+  const verification = verifyCausalPhysicalProfile(profile);
+  fail(verification.valid, `LARGE_WORLD_CAUSAL_PHYSICAL_PROFILE_INVALID:${verification.errors.join(',')}`);
+  return profile;
+}
+
+function subtractCausalPhysicalCosts(resourceBudget, costs) {
+  if (resourceBudget === null || resourceBudget === undefined || !costs) return resourceBudget;
+  const output = clone(resourceBudget);
+  const root = record(output);
+  const target = root.available && typeof root.available === 'object' && !Array.isArray(root.available) ? root.available : output;
+  const aliases = {
+    CPU_MILLI: ['CPU_MILLI', 'CPU'],
+    GPU_MILLI: ['GPU_MILLI', 'GPU'],
+    RAM_MB: ['RAM_MB', 'RAM'],
+    VRAM_MB: ['VRAM_MB', 'VRAM'],
+    ENERGY_MILLI: ['ENERGY_MILLI', 'ENERGY']
+  };
+  for (const [key, names] of Object.entries(aliases)) {
+    const name = names.find(candidate => target[candidate] !== undefined);
+    if (!name) continue;
+    const available = Number(target[name]);
+    if (Number.isSafeInteger(available)) target[name] = Math.max(0, available - Number(costs[key] ?? 0));
+  }
+  return output;
 }
 
 function chunkPortfolioSlot(chunk, reference, qualityProfile, {proxyWidth, proxyHeight, standardWidth, standardHeight, fallbackSlotId = null} = {}) {
@@ -1833,6 +1877,9 @@ export function createLargeWorldSpatialScene(input = {}) {
       resource_governor_load_shedding_level: selection.resource_governor_load_shedding_level ?? null,
       power_downgrade_count: selection.power_downgrade_count ?? 0,
       unbound_governor_chunk_ids: clone(selection.unbound_governor_chunk_ids ?? []),
+      causal_physical_profile_roots: clone(selection.causal_physical_profile_roots ?? {}),
+      causal_physical_ready_count: selection.causal_physical_ready_count ?? 0,
+      causal_physical_blocked_count: selection.causal_physical_blocked_count ?? 0,
       active_chunk_ids: chunks.map(chunk => chunk.chunk_id).sort(keySort),
       presentation_scale: presentationScale,
       visual_prototype_profile: LARGE_WORLD_SPATIAL_VISUAL_PROFILE,
@@ -1865,6 +1912,9 @@ export function verifyLargeWorldSpatialScene(scene) {
     if (scene.large_world?.resource_governor_load_shedding_level !== undefined) check(scene.large_world.resource_governor_load_shedding_level === null || typeof scene.large_world.resource_governor_load_shedding_level === 'string', 'LARGE_WORLD_SPATIAL_GOVERNOR_LOAD_LEVEL_INVALID');
     if (scene.large_world?.power_downgrade_count !== undefined) check(Number.isSafeInteger(scene.large_world.power_downgrade_count) && scene.large_world.power_downgrade_count >= 0, 'LARGE_WORLD_SPATIAL_POWER_DOWNGRADE_COUNT_INVALID');
     if (scene.large_world?.unbound_governor_chunk_ids !== undefined) check(Array.isArray(scene.large_world.unbound_governor_chunk_ids), 'LARGE_WORLD_SPATIAL_UNBOUND_GOVERNOR_IDS_INVALID');
+    if (scene.large_world?.causal_physical_profile_roots !== undefined) check(scene.large_world.causal_physical_profile_roots && typeof scene.large_world.causal_physical_profile_roots === 'object' && !Array.isArray(scene.large_world.causal_physical_profile_roots), 'LARGE_WORLD_SPATIAL_CAUSAL_PHYSICAL_ROOTS_INVALID');
+    if (scene.large_world?.causal_physical_ready_count !== undefined) check(Number.isSafeInteger(scene.large_world.causal_physical_ready_count) && scene.large_world.causal_physical_ready_count >= 0, 'LARGE_WORLD_SPATIAL_CAUSAL_PHYSICAL_READY_COUNT_INVALID');
+    if (scene.large_world?.causal_physical_blocked_count !== undefined) check(Number.isSafeInteger(scene.large_world.causal_physical_blocked_count) && scene.large_world.causal_physical_blocked_count >= 0, 'LARGE_WORLD_SPATIAL_CAUSAL_PHYSICAL_BLOCKED_COUNT_INVALID');
     check(scene.large_world?.candidate_only === true && scene.large_world?.authoritative === false && scene.large_world?.canonical_write_authorized === false, 'LARGE_WORLD_SPATIAL_SCENE_AUTHORITY_INVALID');
     check(scene.reality?.realityRoot === scene.large_world?.world_root, 'LARGE_WORLD_SPATIAL_SCENE_REALITY_ROOT_MISMATCH');
     check(hex64(scene.scene_root), 'LARGE_WORLD_SPATIAL_SCENE_ROOT_INVALID');
@@ -2321,6 +2371,18 @@ export class LargeWorldRuntime {
 
   createCognitiveWorkingSet(input = {}) { return this.fabric.createCognitiveWorkingSet(input); }
 
+  createCausalPhysicalProfile(input = {}) {
+    const value = record(input);
+    const chunk = value.chunk_id || value.chunkId ? this.chunks.get(String(value.chunk_id ?? value.chunkId)) : null;
+    return this.fabric.createCausalPhysicalProfile({
+      ...value,
+      object_id: value.object_id ?? value.objectId ?? chunk?.object_id,
+      canonical_state_root: value.canonical_state_root ?? value.canonicalStateRoot ?? chunk?.state_root
+    });
+  }
+
+  verifyCausalPhysicalProfile(profile) { return verifyCausalPhysicalProfile(profile); }
+
   /**
    * Lower the v0.3 URRF access chain into the bounded large-world stream:
    * RealityHorizon -> InterestGraph -> RealityQuery -> CognitiveWorkingSet
@@ -2449,6 +2511,8 @@ export class LargeWorldRuntime {
     const budgetByChunk = record(value.resourceBudgetByChunk ?? value.resource_budget_by_chunk);
     const globalBudget = value.resourceBudget ?? value.resource_budget;
     const globalDiversity = value.diversity ?? value.diversity_axes ?? value.diversityAxes;
+    const causalPhysicalByChunk = record(value.causalPhysicalProfileByChunk ?? value.causal_physical_profile_by_chunk);
+    const globalCausalPhysical = value.causalPhysicalProfile ?? value.causal_physical_profile ?? null;
     const resourceGovernorPlan = normalizeResourceGovernorPlan(
       value.resourceGovernorPlan
         ?? value.resource_governor_plan
@@ -2467,10 +2531,15 @@ export class LargeWorldRuntime {
       const powerLowering = powerAction ? POWER_QUALITY_LOWERING[powerAction] : null;
       const requested = powerLowering?.qualityProfile ?? requestedBeforePower;
       const resourceBudget = budgetByChunk[chunk.chunk_id] ?? globalBudget;
+      const causalPhysicalInput = causalPhysicalByChunk[chunk.chunk_id] ?? globalCausalPhysical;
+      const causalPhysicalProfile = normalizeCausalPhysicalProfileForChunk(causalPhysicalInput, chunk);
+      const effectiveResourceBudget = causalPhysicalProfile
+        ? subtractCausalPhysicalCosts(resourceBudget, causalPhysicalProfile.resource_costs)
+        : resourceBudget;
       const selection = this.portfolioRuntime.selectSlot({
         portfolio_id: portfolio.portfolio_id,
         ...(requested === null || requested === undefined ? {} : {quality_profile: requested}),
-        ...(resourceBudget === undefined ? {} : {resource_budget: resourceBudget}),
+        ...(effectiveResourceBudget === undefined ? {} : {resource_budget: effectiveResourceBudget}),
         ...(globalDiversity === undefined ? {} : {diversity: globalDiversity})
       });
       return {
@@ -2492,6 +2561,14 @@ export class LargeWorldRuntime {
         power_action_effect: powerLowering?.effect ?? (resourceGovernorPlan ? 'UNBOUND' : null),
         power_quality_override: powerLowering?.qualityProfile ?? null,
         power_decision_bound: resourceGovernorPlan ? Boolean(powerDecision) : null,
+        causal_physical_profile_root: causalPhysicalProfile?.profile_root ?? null,
+        causal_physical_causal_level: causalPhysicalProfile?.causal_level ?? null,
+        causal_physical_physical_level: causalPhysicalProfile?.physical_level ?? null,
+        causal_physical_execution_status: causalPhysicalProfile?.execution_status ?? null,
+        causal_physical_resource_status: causalPhysicalProfile?.resource_admission?.status ?? null,
+        causal_physical_execution: clone(causalPhysicalProfile?.execution ?? null),
+        causal_physical_resource_costs: clone(causalPhysicalProfile?.resource_costs ?? null),
+        causal_physical_effective_resource_budget: clone(effectiveResourceBudget ?? null),
         candidate_only: true,
         authoritative: false,
         canonical_write_authorized: false
@@ -2514,6 +2591,9 @@ export class LargeWorldRuntime {
       selections,
       fallback_count: selections.filter(selection => selection.fallback_used).length,
       power_downgrade_count: selections.filter(selection => selection.power_quality_override === 'PROXY').length,
+      causal_physical_profile_roots: Object.fromEntries(selections.filter(selection => selection.causal_physical_profile_root).map(selection => [selection.chunk_id, selection.causal_physical_profile_root]).sort(([a], [b]) => keySort(a, b))),
+      causal_physical_ready_count: selections.filter(selection => selection.causal_physical_execution_status === 'READY').length,
+      causal_physical_blocked_count: selections.filter(selection => selection.causal_physical_execution_status === 'BLOCKED_RESOURCE').length,
       unbound_governor_chunk_ids: resourceGovernorPlan
         ? selections.filter(selection => !selection.power_decision_bound).map(selection => selection.chunk_id).sort(keySort)
         : [],
@@ -3805,6 +3885,13 @@ export function verifyPortfolioSelectionEnvelope(selection) {
       if (row?.power_action_effect !== undefined) check(row.power_action_effect === null || row.power_action_effect === 'UNBOUND' || Object.values(POWER_QUALITY_LOWERING).some(policy => policy.effect === row.power_action_effect), 'LARGE_WORLD_PORTFOLIO_SELECTION_POWER_EFFECT_INVALID');
       if (row?.power_quality_override !== undefined) check(row.power_quality_override === null || row.power_quality_override === 'PROXY', 'LARGE_WORLD_PORTFOLIO_SELECTION_POWER_QUALITY_OVERRIDE_INVALID');
       if (row?.power_decision_bound !== undefined) check(row.power_decision_bound === null || typeof row.power_decision_bound === 'boolean', 'LARGE_WORLD_PORTFOLIO_SELECTION_POWER_BOUND_INVALID');
+      if (row?.causal_physical_profile_root !== undefined) check(row.causal_physical_profile_root === null || hex64(row.causal_physical_profile_root), 'LARGE_WORLD_PORTFOLIO_SELECTION_CAUSAL_PHYSICAL_ROOT_INVALID');
+      if (row?.causal_physical_causal_level !== undefined) check(row.causal_physical_causal_level === null || /^C[0-5]$/.test(row.causal_physical_causal_level), 'LARGE_WORLD_PORTFOLIO_SELECTION_CAUSAL_LEVEL_INVALID');
+      if (row?.causal_physical_physical_level !== undefined) check(row.causal_physical_physical_level === null || /^P[0-5]$/.test(row.causal_physical_physical_level), 'LARGE_WORLD_PORTFOLIO_SELECTION_PHYSICAL_LEVEL_INVALID');
+      if (row?.causal_physical_execution_status !== undefined) check(row.causal_physical_execution_status === null || ['READY', 'BLOCKED_RESOURCE'].includes(row.causal_physical_execution_status), 'LARGE_WORLD_PORTFOLIO_SELECTION_CAUSAL_PHYSICAL_EXECUTION_STATUS_INVALID');
+      if (row?.causal_physical_resource_status !== undefined) check(row.causal_physical_resource_status === null || ['ADMITTED', 'RESOURCE_INSUFFICIENT'].includes(row.causal_physical_resource_status), 'LARGE_WORLD_PORTFOLIO_SELECTION_CAUSAL_PHYSICAL_RESOURCE_STATUS_INVALID');
+      if (row?.causal_physical_execution !== undefined) check(row.causal_physical_execution === null || (typeof row.causal_physical_execution === 'object' && !Array.isArray(row.causal_physical_execution)), 'LARGE_WORLD_PORTFOLIO_SELECTION_CAUSAL_PHYSICAL_EXECUTION_INVALID');
+      if (row?.causal_physical_resource_costs !== undefined) check(row.causal_physical_resource_costs === null || (typeof row.causal_physical_resource_costs === 'object' && !Array.isArray(row.causal_physical_resource_costs)), 'LARGE_WORLD_PORTFOLIO_SELECTION_CAUSAL_PHYSICAL_COSTS_INVALID');
       check(hex64(row?.selection_root), 'LARGE_WORLD_PORTFOLIO_SELECTION_ROW_ROOT_INVALID');
       check(row?.candidate_only === true && row?.authoritative === false && row?.canonical_write_authorized === false, 'LARGE_WORLD_PORTFOLIO_SELECTION_ROW_AUTHORITY_INVALID');
     }
@@ -3826,6 +3913,21 @@ export function verifyPortfolioSelectionEnvelope(selection) {
         check(row.power_plan_root === governorRoot, 'LARGE_WORLD_PORTFOLIO_SELECTION_ROW_GOVERNOR_ROOT_MISMATCH');
       }
     }
+    if (selection.causal_physical_profile_roots !== undefined) {
+      const profileRoots = selection.causal_physical_profile_roots;
+      check(profileRoots && typeof profileRoots === 'object' && !Array.isArray(profileRoots), 'LARGE_WORLD_PORTFOLIO_SELECTION_CAUSAL_PHYSICAL_ROOTS_INVALID');
+      const declared = Object.entries(profileRoots ?? {}).sort(([a], [b]) => keySort(a, b));
+      for (const [chunkId, profileRoot] of declared) {
+        check(typeof chunkId === 'string' && chunkId.length > 0 && hex64(profileRoot), 'LARGE_WORLD_PORTFOLIO_SELECTION_CAUSAL_PHYSICAL_ROOT_ENTRY_INVALID');
+      }
+      const expected = (selection.selections ?? [])
+        .filter(row => row.causal_physical_profile_root)
+        .map(row => [row.chunk_id, row.causal_physical_profile_root])
+        .sort(([a], [b]) => keySort(a, b));
+      check(JSON.stringify(declared) === JSON.stringify(expected), 'LARGE_WORLD_PORTFOLIO_SELECTION_CAUSAL_PHYSICAL_ROOTS_MISMATCH');
+    }
+    if (selection.causal_physical_ready_count !== undefined) check(Number.isSafeInteger(selection.causal_physical_ready_count) && selection.causal_physical_ready_count >= 0 && selection.causal_physical_ready_count === (selection.selections ?? []).filter(row => row.causal_physical_execution_status === 'READY').length, 'LARGE_WORLD_PORTFOLIO_SELECTION_CAUSAL_PHYSICAL_READY_COUNT_INVALID');
+    if (selection.causal_physical_blocked_count !== undefined) check(Number.isSafeInteger(selection.causal_physical_blocked_count) && selection.causal_physical_blocked_count >= 0 && selection.causal_physical_blocked_count === (selection.selections ?? []).filter(row => row.causal_physical_execution_status === 'BLOCKED_RESOURCE').length, 'LARGE_WORLD_PORTFOLIO_SELECTION_CAUSAL_PHYSICAL_BLOCKED_COUNT_INVALID');
     check(selection.candidate_only === true && selection.authoritative === false && selection.canonical_write_authorized === false, 'LARGE_WORLD_PORTFOLIO_SELECTION_AUTHORITY_INVALID');
     check(selection.authority?.provider_can_write_authoritative_world_state === false, 'LARGE_WORLD_PORTFOLIO_SELECTION_PROVIDER_AUTHORITY_INVALID');
     check(selection.authority?.rncs_authority_required === true, 'LARGE_WORLD_PORTFOLIO_SELECTION_RNCS_AUTHORITY_REQUIRED');

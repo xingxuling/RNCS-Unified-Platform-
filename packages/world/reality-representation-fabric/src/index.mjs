@@ -39,7 +39,11 @@ import {
   verifyRepresentationFlowSample,
   REPRESENTATION_FLOW_FORMAT,
   REPRESENTATION_FLOW_SAMPLE_FORMAT,
-  REPRESENTATION_FLOW_VERSION
+  REPRESENTATION_FLOW_VERSION,
+  createCausalPhysicalProfile as createCoreCausalPhysicalProfile,
+  verifyCausalPhysicalProfile,
+  REALITY_CAUSAL_PHYSICAL_PROFILE_FORMAT,
+  REALITY_CAUSAL_PHYSICAL_VERSION
 } from '@taowind/rncs-core-contract';
 
 export const URRF_RUNTIME_FORMAT = 'urrf.reality-representation-runtime.v0.1';
@@ -57,6 +61,8 @@ export const URRF_QUERY_FORMAT = REALITY_QUERY_FORMAT;
 export const URRF_REPRESENTATION_FLOW_FORMAT = REPRESENTATION_FLOW_FORMAT;
 export const URRF_REPRESENTATION_FLOW_SAMPLE_FORMAT = REPRESENTATION_FLOW_SAMPLE_FORMAT;
 export const URRF_REPRESENTATION_FLOW_VERSION = REPRESENTATION_FLOW_VERSION;
+export const URRF_CAUSAL_PHYSICAL_PROFILE_FORMAT = REALITY_CAUSAL_PHYSICAL_PROFILE_FORMAT;
+export const URRF_CAUSAL_PHYSICAL_VERSION = REALITY_CAUSAL_PHYSICAL_VERSION;
 export const URRF_MATERIALIZATION_STATUSES = Object.freeze(['EXECUTED', 'NOT_EXECUTED', 'FAILED']);
 
 const clone = value => structuredClone(value);
@@ -399,6 +405,7 @@ export class RealityRepresentationFabric {
     this.transitions = new Map();
     this.propertyTransitions = new Map();
     this.flows = new Map();
+    this.causalPhysicalProfiles = new Map();
     for (const provider of providers) this.registerProvider(provider);
     for (const object of objects) this.registerRealityObject(object);
   }
@@ -828,6 +835,30 @@ export class RealityRepresentationFabric {
     return verifyRepresentationFlowSample(sample);
   }
 
+  createCausalPhysicalProfile(input = {}) {
+    const request = {...record(input)};
+    const objectId = String(request.object_id ?? request.objectId ?? request.id ?? '');
+    const object = objectId ? this.objects.get(objectId) : null;
+    if (object) {
+      request.object_id = object.object_id;
+      request.branch = request.branch ?? object.branch;
+      request.canonical_state_root = request.canonical_state_root ?? request.canonicalStateRoot ?? object.state_root;
+    }
+    const profile = createCoreCausalPhysicalProfile(request);
+    const verification = verifyCausalPhysicalProfile(profile);
+    fail(verification.valid, `URRF_CAUSAL_PHYSICAL_PROFILE_INVALID:${verification.errors.join(',')}`);
+    this.causalPhysicalProfiles.set(profile.profile_id, profile);
+    return clone(profile);
+  }
+
+  getCausalPhysicalProfile(profileId) {
+    return clone(this.causalPhysicalProfiles.get(String(profileId)) ?? null);
+  }
+
+  verifyCausalPhysicalProfile(profile) {
+    return verifyCausalPhysicalProfile(profile);
+  }
+
   getPropertySet(objectId) {
     const object = this.objects.get(String(objectId));
     return object ? clone(object.property_set) : null;
@@ -928,7 +959,8 @@ export class RealityRepresentationFabric {
       active_representations: [...this.activeRoots.entries()].map(([object_id, representation_root]) => ({object_id, representation_root})).sort((a, b) => Buffer.compare(Buffer.from(a.object_id, 'utf8'), Buffer.from(b.object_id, 'utf8'))),
       transitions: [...this.transitions.values()].map(transition => ({transition_id: transition.transition_id, transition_root: transition.transition_root, phase: transition.phase, active_representation_root: transition.active_representation_root, property_root: transition.property_root ?? null, law_bindings_root: transition.law_bindings_root ?? null})).sort((a, b) => Buffer.compare(Buffer.from(a.transition_id, 'utf8'), Buffer.from(b.transition_id, 'utf8'))),
       property_transitions: [...this.propertyTransitions.values()].map(transition => ({transition_id: transition.transition_id, transition_root: transition.transition_root, phase: transition.phase, source_property_root: transition.source_property_root})).sort((a, b) => Buffer.compare(Buffer.from(a.transition_id, 'utf8'), Buffer.from(b.transition_id, 'utf8'))),
-      representation_flows: [...this.flows.values()].map(flow => ({flow_id: flow.flow_id, flow_root: flow.flow_root, object_id: flow.object_id, source_state_root: flow.source_state_root, target_state_root: flow.target_state_root})).sort((a, b) => Buffer.compare(Buffer.from(a.flow_id, 'utf8'), Buffer.from(b.flow_id, 'utf8')))
+      representation_flows: [...this.flows.values()].map(flow => ({flow_id: flow.flow_id, flow_root: flow.flow_root, object_id: flow.object_id, source_state_root: flow.source_state_root, target_state_root: flow.target_state_root})).sort((a, b) => Buffer.compare(Buffer.from(a.flow_id, 'utf8'), Buffer.from(b.flow_id, 'utf8'))),
+      causal_physical_profiles: [...this.causalPhysicalProfiles.values()].map(profile => ({profile_id: profile.profile_id, profile_root: profile.profile_root, object_id: profile.object_id, canonical_state_root: profile.canonical_state_root, causal_level: profile.causal_level, physical_level: profile.physical_level, execution_status: profile.execution_status})).sort((a, b) => Buffer.compare(Buffer.from(a.profile_id, 'utf8'), Buffer.from(b.profile_id, 'utf8')))
     };
     return {...base, fabric_root: rootHash(base)};
   }

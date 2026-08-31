@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added the candidate-only RNCS/URRF CausalPhysicalProfile bridge: demand now derives independent C0–C5 causal and P0–P5 physical detail, lowers to explicit execution behavior and resource costs, consumes the same bounded visual budget, and changes large-world STANDARD/PROXY selection without mutating canonical world truth.
+- Added `large-world-causal-physical-detail.integration.test.mjs`, rooted report/PNG evidence, and spatial-scene schema fields for profile roots and ready/blocked counts. Evidence is deterministic CPU-reference proof of cost/behavior divergence, not real physics, GPU telemetry, or AAA visual quality.
 - Added optional v0.3 Power Plane lowering to `selectActiveRepresentationPortfolios`: verified Resource Governor decisions now bind to active chunks, reduce visual candidates to the proxy minimum-reality slot under pressure, preserve explicit unbound decisions, and remain candidate-only with rooted evidence.
 - Added the URRF/RNCS v0.3 Reality Access to large-world streaming bridge: generated Chunks now carry deterministic query indexes, and `resolveRealityAccess()` lowers Horizon/InterestGraph/Query/WorkingSet candidates into forced bounded Chunk requests and a VSR-ready stream envelope.
 - Added `reality-access-resolution.v0.1` schema, verifier, package regression coverage, and machine-readable/visual integration evidence.
