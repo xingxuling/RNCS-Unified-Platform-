@@ -30,6 +30,8 @@ export const LARGE_WORLD_MATERIALIZATION_FORMAT = 'rncs.large-world-materializat
 export const LARGE_WORLD_REPLICATION_SNAPSHOT_FORMAT = 'rncs.large-world-replication-snapshot.v0.1';
 export const LARGE_WORLD_REPLICATION_DELTA_FORMAT = 'rncs.large-world-replication-delta.v0.1';
 export const LARGE_WORLD_REPLICATION_RECEIPT_FORMAT = 'rncs.large-world-replication-receipt.v0.1';
+export const LARGE_WORLD_DURABLE_BUNDLE_FORMAT = 'rncs.large-world-durable-bundle.v0.1';
+export const LARGE_WORLD_DURABLE_RESTORE_RECEIPT_FORMAT = 'rncs.large-world-durable-restore-receipt.v0.1';
 
 export const LARGE_WORLD_BIOMES = Object.freeze(['coast', 'desert', 'forest', 'grassland', 'tundra', 'wetland']);
 export const LARGE_WORLD_STRUCTURE_KINDS = Object.freeze(['ruin', 'grove', 'mine', 'shrine', 'watchtower']);
@@ -436,6 +438,23 @@ function activeChunkRoots(runtime, ids) {
   return ids.map(id => ({chunk_id: id, chunk_root: runtime.chunks.get(id)?.chunk_root ?? null}));
 }
 
+function durableBundleBase(runtime) {
+  return {
+    format: LARGE_WORLD_DURABLE_BUNDLE_FORMAT,
+    version: LARGE_WORLD_RUNTIME_VERSION,
+    world_id: runtime.options.worldId,
+    region_root: runtime.region.region_root,
+    world_root: runtime.region.world_root,
+    replication_snapshot: runtime.exportReplicationSnapshot(),
+    applied_replication_receipts: [...runtime.appliedReplicationDeltas.values()].filter(Boolean).map(clone).sort((a, b) => keySort(a.delta_root, b.delta_root)),
+    canonical_state_mutated: false,
+    authority: {provider_can_write_authoritative_world_state: false, rncs_authority_required: true},
+    candidate_only: true,
+    authoritative: false,
+    commit_status: 'NOT_COMMITTED'
+  };
+}
+
 export class LargeWorldRuntime {
   constructor(input = {}) {
     const value = record(input);
@@ -706,6 +725,58 @@ export class LargeWorldRuntime {
   }
 
   replicationSnapshot() { return this.exportReplicationSnapshot(); }
+
+  exportDurableBundle() {
+    const base = durableBundleBase(this);
+    return {...base, bundle_root: rootHash(base)};
+  }
+
+  durableBundle() { return this.exportDurableBundle(); }
+
+  restoreDurableBundle(bundleInput, input = {}) {
+    const bundle = clone(bundleInput);
+    const verification = verifyDurableBundle(bundle);
+    fail(verification.valid, `LARGE_WORLD_DURABLE_BUNDLE_INVALID:${verification.errors.join(',')}`);
+    const authorityReceipt = replicationAuthorityReceipt(input.authorityReceipt ?? input.authority_receipt);
+    fail(bundle.world_id === this.options.worldId, 'LARGE_WORLD_DURABLE_WORLD_MISMATCH');
+    fail(bundle.region_root === this.region.region_root && bundle.world_root === this.region.world_root, 'LARGE_WORLD_DURABLE_REGION_MISMATCH');
+    fail(rootHash(bundle.replication_snapshot.options) === rootHash(this.options), 'LARGE_WORLD_DURABLE_OPTIONS_MISMATCH');
+    const current = this.exportReplicationSnapshot();
+    fail(current.event_log.event_count === 0 && current.facts.length === 0 && current.trace.length === 0 && current.active_chunk_ids.length === 0, 'LARGE_WORLD_DURABLE_TARGET_NOT_PRISTINE');
+
+    const snapshot = bundle.replication_snapshot;
+    this.eventLog = clone(snapshot.event_log);
+    this.canonicalState = clone(snapshot.canonical_state);
+    this.worldTime = clone(snapshot.world_time);
+    this.facts = clone(snapshot.facts);
+    this.factTree = clone(snapshot.fact_tree);
+    this.activeChunkIds = [...snapshot.active_chunk_ids].sort(keySort);
+    this.observer = normalizeObserver(snapshot.observer);
+    this.trace = clone(snapshot.trace);
+    this.appliedReplicationDeltas = new Map(bundle.applied_replication_receipts.map(receipt => [receipt.delta_root, clone(receipt)]));
+    const restored = this.exportReplicationSnapshot();
+    fail(restored.snapshot_root === snapshot.snapshot_root, 'LARGE_WORLD_DURABLE_SNAPSHOT_MISMATCH');
+
+    const receiptBase = {
+      format: LARGE_WORLD_DURABLE_RESTORE_RECEIPT_FORMAT,
+      version: LARGE_WORLD_RUNTIME_VERSION,
+      receipt_id: `durable-restore-receipt:${bundle.bundle_root}`,
+      bundle_root: bundle.bundle_root,
+      world_id: this.options.worldId,
+      restored_snapshot_root: restored.snapshot_root,
+      restored_event_log_root: this.eventLog.log_root,
+      restored_fact_tree_root: this.factTree.tree_root,
+      restored_canonical_state_root: worldStateRoot(this.canonicalState),
+      restored_delta_count: this.appliedReplicationDeltas.size,
+      authority_receipt: authorityReceipt,
+      status: 'RESTORED',
+      canonical_state_mutated: true,
+      candidate_only: false,
+      authoritative: true,
+      commit_status: 'COMMITTED'
+    };
+    return {...receiptBase, receipt_root: rootHash(receiptBase)};
+  }
 
   createReplicationDelta(baseSnapshotInput, input = {}) {
     const baseSnapshot = clone(baseSnapshotInput);
@@ -1063,6 +1134,63 @@ export function verifyReplicationReceipt(receipt) {
     check(hex64(receiptRoot) && rootHash(copy) === receiptRoot, 'LARGE_WORLD_REPLICATION_RECEIPT_ROOT_MISMATCH');
   } catch (error) {
     errors.push(`LARGE_WORLD_REPLICATION_RECEIPT_VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, receipt_root: receipt.receipt_root ?? null};
+}
+
+export function verifyDurableBundle(bundle) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!bundle || typeof bundle !== 'object') return {valid: false, errors: ['LARGE_WORLD_DURABLE_BUNDLE_NOT_OBJECT']};
+  try {
+    const copy = clone(bundle);
+    const bundleRoot = copy.bundle_root;
+    delete copy.bundle_root;
+    check(bundle.format === LARGE_WORLD_DURABLE_BUNDLE_FORMAT, 'LARGE_WORLD_DURABLE_BUNDLE_FORMAT_INVALID');
+    check(bundle.version === LARGE_WORLD_RUNTIME_VERSION, 'LARGE_WORLD_DURABLE_BUNDLE_VERSION_INVALID');
+    check(typeof bundle.world_id === 'string' && bundle.world_id.length > 0, 'LARGE_WORLD_DURABLE_BUNDLE_WORLD_ID_REQUIRED');
+    check(hex64(bundle.region_root) && hex64(bundle.world_root), 'LARGE_WORLD_DURABLE_BUNDLE_REGION_ROOT_INVALID');
+    const snapshotVerification = verifyReplicationSnapshot(bundle.replication_snapshot);
+    check(snapshotVerification.valid, `LARGE_WORLD_DURABLE_BUNDLE_SNAPSHOT_INVALID:${snapshotVerification.errors.join(',')}`);
+    check(bundle.replication_snapshot?.world_id === bundle.world_id, 'LARGE_WORLD_DURABLE_BUNDLE_SNAPSHOT_WORLD_MISMATCH');
+    check(bundle.replication_snapshot?.region_root === bundle.region_root && bundle.replication_snapshot?.world_root === bundle.world_root, 'LARGE_WORLD_DURABLE_BUNDLE_SNAPSHOT_REGION_MISMATCH');
+    check(Array.isArray(bundle.applied_replication_receipts), 'LARGE_WORLD_DURABLE_BUNDLE_RECEIPTS_REQUIRED');
+    const deltaRoots = new Set();
+    for (const receipt of bundle.applied_replication_receipts ?? []) {
+      const receiptVerification = verifyReplicationReceipt(receipt);
+      check(receiptVerification.valid, `LARGE_WORLD_DURABLE_BUNDLE_RECEIPT_INVALID:${receipt?.delta_id ?? 'unknown'}`);
+      check(!deltaRoots.has(receipt?.delta_root), `LARGE_WORLD_DURABLE_BUNDLE_RECEIPT_DUPLICATE:${receipt?.delta_root ?? 'unknown'}`);
+      deltaRoots.add(receipt?.delta_root);
+    }
+    check(bundle.canonical_state_mutated === false, 'LARGE_WORLD_DURABLE_BUNDLE_CANONICAL_MUTATION');
+    check(bundle.authority?.provider_can_write_authoritative_world_state === false, 'LARGE_WORLD_DURABLE_BUNDLE_AUTHORITY_ESCALATION');
+    check(bundle.candidate_only === true && bundle.authoritative === false, 'LARGE_WORLD_DURABLE_BUNDLE_CANDIDATE_REQUIRED');
+    check(bundle.commit_status === 'NOT_COMMITTED', 'LARGE_WORLD_DURABLE_BUNDLE_COMMIT_STATUS_INVALID');
+    check(hex64(bundleRoot) && rootHash(copy) === bundleRoot, 'LARGE_WORLD_DURABLE_BUNDLE_ROOT_MISMATCH');
+  } catch (error) {
+    errors.push(`LARGE_WORLD_DURABLE_BUNDLE_VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, bundle_root: bundle.bundle_root ?? null};
+}
+
+export function verifyDurableRestoreReceipt(receipt) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!receipt || typeof receipt !== 'object') return {valid: false, errors: ['LARGE_WORLD_DURABLE_RESTORE_RECEIPT_NOT_OBJECT']};
+  try {
+    const copy = clone(receipt);
+    const receiptRoot = copy.receipt_root;
+    delete copy.receipt_root;
+    check(receipt.format === LARGE_WORLD_DURABLE_RESTORE_RECEIPT_FORMAT, 'LARGE_WORLD_DURABLE_RESTORE_RECEIPT_FORMAT_INVALID');
+    check(receipt.version === LARGE_WORLD_RUNTIME_VERSION, 'LARGE_WORLD_DURABLE_RESTORE_RECEIPT_VERSION_INVALID');
+    check(receipt.status === 'RESTORED', 'LARGE_WORLD_DURABLE_RESTORE_RECEIPT_STATUS_INVALID');
+    check(hex64(receipt.bundle_root) && hex64(receipt.restored_snapshot_root) && hex64(receipt.restored_event_log_root) && hex64(receipt.restored_fact_tree_root) && hex64(receipt.restored_canonical_state_root), 'LARGE_WORLD_DURABLE_RESTORE_RECEIPT_ROOT_REFERENCE_INVALID');
+    check(receipt.authority_receipt?.status === 'committed' && hex64(receipt.authority_receipt?.receipt_root), 'LARGE_WORLD_DURABLE_RESTORE_RECEIPT_AUTHORITY_INVALID');
+    check(receipt.canonical_state_mutated === true && receipt.candidate_only === false && receipt.authoritative === true, 'LARGE_WORLD_DURABLE_RESTORE_RECEIPT_AUTHORITY_SCOPE_INVALID');
+    check(receipt.commit_status === 'COMMITTED', 'LARGE_WORLD_DURABLE_RESTORE_RECEIPT_COMMIT_STATUS_INVALID');
+    check(hex64(receiptRoot) && rootHash(copy) === receiptRoot, 'LARGE_WORLD_DURABLE_RESTORE_RECEIPT_ROOT_MISMATCH');
+  } catch (error) {
+    errors.push(`LARGE_WORLD_DURABLE_RESTORE_RECEIPT_VERIFY_EXCEPTION:${error.name}:${error.message}`);
   }
   return {valid: errors.length === 0, errors, receipt_root: receipt.receipt_root ?? null};
 }

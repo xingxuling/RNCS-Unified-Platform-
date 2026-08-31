@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.org/schemas/rncs.large-world-durable-restore-receipt.v0.1.schema.json",
+  "title": "RNCS Large World Durable Restore Receipt v0.1",
+  "type": "object",
+  "required": ["format", "version", "receipt_id", "bundle_root", "world_id", "status", "authority_receipt", "receipt_root"],
+  "properties": {
+    "format": {"const": "rncs.large-world-durable-restore-receipt.v0.1"},
+    "version": {"const": "0.1.0"},
+    "receipt_id": {"type": "string", "minLength": 1},
+    "bundle_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "world_id": {"type": "string", "minLength": 1},
+    "status": {"const": "RESTORED"},
+    "authority_receipt": {"type": "object", "required": ["status", "receipt_root"]},
+    "receipt_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.org/schemas/rncs.large-world-durable-bundle.v0.1.schema.json",
+  "title": "RNCS Large World Durable Bundle v0.1",
+  "type": "object",
+  "required": ["format", "version", "world_id", "region_root", "world_root", "replication_snapshot", "applied_replication_receipts", "bundle_root"],
+  "properties": {
+    "format": {"const": "rncs.large-world-durable-bundle.v0.1"},
+    "version": {"const": "0.1.0"},
+    "world_id": {"type": "string", "minLength": 1},
+    "region_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "world_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "replication_snapshot": {"type": "object"},
+    "applied_replication_receipts": {"type": "array", "items": {"type": "object"}},
+    "bundle_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}

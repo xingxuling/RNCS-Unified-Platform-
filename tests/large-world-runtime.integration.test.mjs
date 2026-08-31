@@ -4,6 +4,8 @@ import {rootHash} from '@taowind/rncs-core-contract';
 import {
   LARGE_WORLD_WIREFRAME_PROVIDER_ID,
   LargeWorldRuntime,
+  verifyDurableBundle,
+  verifyDurableRestoreReceipt,
   verifyMaterializationBatch,
   verifyReplicationReceipt,
   verifyStreamResolutionReceipt
@@ -136,4 +138,23 @@ test('replicates world truth across two runtimes and executes an alternate URRF 
   const batch = await target.materializeActive({providerId: LARGE_WORLD_WIREFRAME_PROVIDER_ID});
   assert.equal(batch.receipts[0].provider_id, LARGE_WORLD_WIREFRAME_PROVIDER_ID);
   assert.equal(verifyMaterializationBatch(batch).valid, true);
+});
+
+test('restores the replicated truth and idempotency ledger after a JSON restart boundary', () => {
+  const options = {worldId: 'world:large-integration-restart', seed: 'seed:large-integration-restart', loadRadius: 0, maxActiveChunks: 1};
+  const source = new LargeWorldRuntime(options);
+  const target = new LargeWorldRuntime(options);
+  const base = target.exportReplicationSnapshot();
+  const authorityReceipt = {status: 'committed', receipt_root: 'd'.repeat(64), decision_root: null, epoch: 0};
+  source.recordWorldEvent({authorityReceipt, mutation: {operations: [{op: 'set', path: 'season', value: 'autumn'}]}});
+  const delta = source.createReplicationDelta(base);
+  target.applyReplicationDelta(delta, {authorityReceipt});
+  const bundle = JSON.parse(JSON.stringify(target.exportDurableBundle()));
+  assert.equal(verifyDurableBundle(bundle).valid, true);
+  const restarted = new LargeWorldRuntime(options);
+  const restored = restarted.restoreDurableBundle(bundle, {authorityReceipt: {status: 'committed', receipt_root: 'e'.repeat(64), decision_root: null, epoch: 0}});
+  assert.equal(restored.status, 'RESTORED');
+  assert.equal(verifyDurableRestoreReceipt(restored).valid, true);
+  assert.equal(restarted.exportReplicationSnapshot().snapshot_root, target.exportReplicationSnapshot().snapshot_root);
+  assert.equal(restarted.applyReplicationDelta(delta, {authorityReceipt}).status, 'DUPLICATE');
 });

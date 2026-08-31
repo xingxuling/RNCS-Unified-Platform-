@@ -13,6 +13,8 @@ import {
   replayLargeWorldTrace,
   verifyChunk,
   verifyMaterializationBatch,
+  verifyDurableBundle,
+  verifyDurableRestoreReceipt,
   verifyReplicationDelta,
   verifyReplicationReceipt,
   verifyReplicationSnapshot,
@@ -228,6 +230,29 @@ test('replicates deterministic world truth between isolated instances with idemp
   assert.equal(secondReceipt.status, 'APPLIED');
   assert.equal(source.exportReplicationSnapshot().snapshot_root, target.exportReplicationSnapshot().snapshot_root);
   const duplicate = target.applyReplicationDelta(stormDelta, {authorityReceipt});
+  assert.equal(duplicate.status, 'DUPLICATE');
+  assert.equal(verifyReplicationReceipt(duplicate).valid, true);
+});
+
+test('round-trips a durable bundle across a fresh runtime and preserves the replication ledger', () => {
+  const options = {worldId: 'world:durable', seed: 'seed:durable', loadRadius: 0, maxActiveChunks: 1};
+  const source = new LargeWorldRuntime(options);
+  const target = new LargeWorldRuntime(options);
+  const base = target.exportReplicationSnapshot();
+  const authorityReceipt = {status: 'committed', receipt_root: 'a'.repeat(64), decision_root: null, epoch: 0};
+  source.recordWorldEvent({authorityReceipt, mutation: {operations: [{op: 'set', path: 'weather', value: 'rain'}]}});
+  const delta = source.createReplicationDelta(base);
+  target.applyReplicationDelta(delta, {authorityReceipt});
+  const bundle = JSON.parse(JSON.stringify(target.exportDurableBundle()));
+  assert.equal(verifyDurableBundle(bundle).valid, true);
+
+  const restarted = new LargeWorldRuntime(options);
+  assert.throws(() => restarted.restoreDurableBundle(bundle), /LARGE_WORLD_REPLICATION_AUTHORITY_RECEIPT_REQUIRED/);
+  const restoreReceipt = restarted.restoreDurableBundle(bundle, {authorityReceipt: {status: 'committed', receipt_root: 'b'.repeat(64), decision_root: null, epoch: 0}});
+  assert.equal(restoreReceipt.status, 'RESTORED');
+  assert.equal(verifyDurableRestoreReceipt(restoreReceipt).valid, true);
+  assert.equal(restarted.exportReplicationSnapshot().snapshot_root, target.exportReplicationSnapshot().snapshot_root);
+  const duplicate = restarted.applyReplicationDelta(delta, {authorityReceipt});
   assert.equal(duplicate.status, 'DUPLICATE');
   assert.equal(verifyReplicationReceipt(duplicate).valid, true);
 });

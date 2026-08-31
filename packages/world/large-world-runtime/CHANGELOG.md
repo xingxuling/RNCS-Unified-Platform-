@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.0-alpha.4
+
+- Added durable bundle export/restore across a JSON restart boundary, including applied-delta receipts for idempotency recovery and explicit restore authority.
+
 ## 0.1.0-alpha.3
 
 - Added canonical Snapshot/Delta replication between isolated runtime instances with base-root checks, ordered event/fact replay, idempotent duplicate detection, and explicit authority receipts.
