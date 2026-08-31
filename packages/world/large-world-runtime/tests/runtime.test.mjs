@@ -7,6 +7,7 @@ import {createAuthorityLease, createRealityConsistencyProfile, rootHash, verifyR
 import {RealityRepresentationPortfolioRuntime} from '@taowind/reality-representation-fabric';
 import {
   LARGE_WORLD_CHUNK_FORMAT,
+  LARGE_WORLD_PORTFOLIO_SELECTION_FORMAT,
   LARGE_WORLD_REGION_FORMAT,
   LARGE_WORLD_PROCEDURAL_PROVIDER_ID,
   LARGE_WORLD_WIREFRAME_PROVIDER_ID,
@@ -19,6 +20,7 @@ import {
   replayLargeWorldTrace,
   verifyChunk,
   verifyMaterializationBatch,
+  verifyPortfolioSelectionEnvelope,
   verifyDurableBundle,
   verifyDurableRestoreReceipt,
   verifyDurableStoreReceipt,
@@ -189,6 +191,27 @@ test('lowers a streamed chunk into a URRF portfolio with budgeted minimum-realit
   const materialized = await portfolioRuntime.materializeSlot({portfolio_id: portfolio.portfolio_id, quality_profile: 'STANDARD'});
   assert.equal(materialized.status, 'EXECUTED');
   assert.equal(materialized.canonical_write_authorized, false);
+});
+
+test('seals active per-chunk portfolio selections against the latest stream root', () => {
+  const runtime = new LargeWorldRuntime({worldId: 'world:selection-envelope', seed: 'seed:selection-envelope', loadRadius: 1, maxActiveChunks: 9});
+  const stream = runtime.observe({x: 0, z: 0});
+  const center = runtime.listActiveChunks().find(chunk => chunk.coordinates.x === 0 && chunk.coordinates.z === 0);
+  const qualityByChunk = Object.fromEntries(runtime.listActiveChunks().map(chunk => [chunk.chunk_id, chunk.chunk_id === center.chunk_id ? 'STANDARD' : 'PROXY']));
+  const mixed = runtime.selectActiveRepresentationPortfolios({quality_by_chunk: qualityByChunk});
+  assert.equal(mixed.format, LARGE_WORLD_PORTFOLIO_SELECTION_FORMAT);
+  assert.equal(verifyPortfolioSelectionEnvelope(mixed).valid, true);
+  assert.equal(mixed.stream_root, stream.stream_root);
+  assert.equal(mixed.selections.length, 9);
+  assert.equal(mixed.fallback_count, 0);
+  assert.equal(mixed.selections.filter(selection => selection.selected_quality_profile === 'STANDARD').length, 1);
+  assert.equal(mixed.selections.filter(selection => selection.selected_quality_profile === 'PROXY').length, 8);
+  assert.equal(mixed.selections.every(selection => selection.candidate_only && !selection.authoritative && !selection.canonical_write_authorized), true);
+
+  const constrained = runtime.selectActiveRepresentationPortfolios({quality_profile: 'STANDARD', resource_budget: {CPU_MILLI: 0, GPU_MILLI: 0, VRAM_MB: 0, RAM_MB: 0, STORAGE_KB: 0, NETWORK_KB: 0, ENERGY_MILLI: 0, NPU_MILLI: 0}});
+  assert.equal(verifyPortfolioSelectionEnvelope(constrained).valid, true);
+  assert.equal(constrained.fallback_count, 9);
+  assert.equal(constrained.selections.every(selection => selection.selected_quality_profile === 'PROXY' && selection.fallback_used), true);
 });
 
 test('snapshot and replay seal deterministic streaming evidence', () => {

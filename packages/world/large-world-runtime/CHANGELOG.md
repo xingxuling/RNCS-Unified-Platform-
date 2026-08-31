@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added a stream-rooted `rncs.large-world-portfolio-selection.v0.1` envelope and `selectActiveRepresentationPortfolios` API so bounded active chunks can consume URRF quality/budget selection without external glue.
 - Added a reusable chunk-to-URRF Representation Portfolio lowering seam and a multi-region VSR CPU-reference integration with per-chunk quality selection, zero-budget minimum-reality fallback, and candidate-only visual evidence.
 - Added optional v0.3 Consistency Profile and RNCS Authority Lease/Epoch/Fencing admission to two-node Snapshot/Delta replication, with stale/expired/revoked lease rejection and receipt-bound fencing evidence.
 
