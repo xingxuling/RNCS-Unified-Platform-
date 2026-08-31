@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/rncs/server-pseudo-sovereignty.v0.3.schema.json",
+  "title": "RNCS Server Pseudo-Sovereignty Profile v0.3",
+  "type": "object",
+  "required": ["format", "version", "sovereignty_id", "world_id", "shard_id", "level", "territory", "semantic_scope", "simulation_scope", "authority_scope", "lease", "epoch", "resources", "neighbors", "replication_peers", "migration_policy", "failover_policy", "canonical_world_root", "evidence_refs", "authority", "profile_root"],
+  "properties": {
+    "format": {"const": "rncs.server-pseudo-sovereignty.v0.3"},
+    "version": {"const": "0.3.0"},
+    "sovereignty_id": {"type": "string", "minLength": 1},
+    "world_id": {"type": "string", "minLength": 1},
+    "shard_id": {"type": "string", "minLength": 1},
+    "level": {"enum": ["WORLD_FEDERATION", "SUPER_REGION", "REGIONAL_SHARD", "CITY_SHARD", "DISTRICT_SHARD", "LOCAL_EXECUTION_UNIT"]},
+    "territory": {},
+    "semantic_scope": {},
+    "simulation_scope": {},
+    "authority_scope": {},
+    "lease": {"type": "object", "required": ["format", "lease_root", "shard_id", "epoch", "fencing_token", "owner_node"]},
+    "epoch": {"type": "integer", "minimum": 0},
+    "resources": {"type": "object"},
+    "neighbors": {"type": "array", "items": {"type": "string"}},
+    "replication_peers": {"type": "array", "items": {"type": "string"}},
+    "migration_policy": {"type": "object", "required": ["enabled", "require_new_epoch", "require_fencing_advance", "drain_timeout_ticks", "allowed_targets", "evidence_refs"]},
+    "failover_policy": {"type": "object", "required": ["enabled", "require_new_epoch", "require_fencing_advance", "drain_timeout_ticks", "allowed_targets", "evidence_refs"]},
+    "canonical_world_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "evidence_refs": {"type": "array", "items": {"type": "string"}},
+    "authority": {"type": "object", "required": ["canonical_owner", "canonical_write_authorized", "execution_authority", "candidate_only", "authoritative", "commit_status"], "properties": {"canonical_owner": {"const": "RNCS"}, "canonical_write_authorized": {"const": false}, "execution_authority": {"const": "LEASE_SCOPED_AND_REVOCABLE"}, "candidate_only": {"const": true}, "authoritative": {"const": false}, "commit_status": {"const": "NOT_COMMITTED"}}},
+    "profile_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}

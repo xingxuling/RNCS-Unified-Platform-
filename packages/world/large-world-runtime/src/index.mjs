@@ -9,6 +9,9 @@ import {
   checkAuthorityLease,
   createFactWorldTree,
   createAuthorityLease,
+  createServerPseudoSovereigntyProfile,
+  createServerSovereigntyHandoffReceipt,
+  createServerSovereigntyMigration,
   createCausalPhysicalProfile,
   createRealityQuery,
   createRealityConsistencyProfile,
@@ -24,6 +27,9 @@ import {
   rootHash,
   verifyFactWorldTree,
   verifyAuthorityLease,
+  verifyServerPseudoSovereigntyProfile,
+  verifyServerSovereigntyHandoffReceipt,
+  verifyServerSovereigntyMigration,
   verifyCausalPhysicalProfile,
   REALITY_CONSISTENCY_PROFILE_FORMAT,
   AUTHORITY_LEASE_FORMAT,
@@ -80,6 +86,9 @@ export const LARGE_WORLD_REPLICATION_CONFLICT_POLICY_ID = 'lexicographic-writer-
 export const LARGE_WORLD_CONSISTENCY_PROFILE_FORMAT = REALITY_CONSISTENCY_PROFILE_FORMAT;
 export const LARGE_WORLD_AUTHORITY_LEASE_FORMAT = AUTHORITY_LEASE_FORMAT;
 export const LARGE_WORLD_CAUSAL_PHYSICAL_PROFILE_FORMAT = REALITY_CAUSAL_PHYSICAL_PROFILE_FORMAT;
+export const LARGE_WORLD_SERVER_SOVEREIGNTY_PROFILE_FORMAT = 'rncs.server-pseudo-sovereignty.v0.3';
+export const LARGE_WORLD_SERVER_SOVEREIGNTY_MIGRATION_FORMAT = 'rncs.server-sovereignty-migration.v0.3';
+export const LARGE_WORLD_SERVER_SOVEREIGNTY_HANDOFF_RECEIPT_FORMAT = 'rncs.server-sovereignty-handoff-receipt.v0.3';
 
 export const LARGE_WORLD_BIOMES = Object.freeze(['coast', 'desert', 'forest', 'grassland', 'tundra', 'wetland']);
 export const LARGE_WORLD_STRUCTURE_KINDS = Object.freeze(['ruin', 'grove', 'mine', 'shrine', 'watchtower']);
@@ -219,6 +228,30 @@ function normalizeDistributionLease(input) {
   const verification = verifyAuthorityLease(lease);
   fail(verification.valid, `LARGE_WORLD_AUTHORITY_LEASE_INVALID:${verification.errors.join(',')}`);
   return lease;
+}
+
+function normalizeServerSovereigntyProfile(input, runtime) {
+  if (input === undefined || input === null) return null;
+  const value = record(input);
+  const worldId = runtime.options?.worldId ?? runtime.worldId;
+  const shardId = runtime.shardId;
+  const worldRoot = runtime.region?.world_root ?? runtime.worldRoot;
+  const profile = value.profile_root
+    ? clone(value)
+    : createServerPseudoSovereigntyProfile({
+      ...value,
+      world_id: worldId,
+      shard_id: shardId,
+      canonical_world_root: worldRoot,
+      lease: value.lease ?? value.authority_lease ?? value.authorityLease ?? runtime.authorityLease ?? runtime.acceptedAuthorityLease
+    });
+  const verification = verifyServerPseudoSovereigntyProfile(profile);
+  fail(verification.valid, `LARGE_WORLD_SERVER_SOVEREIGNTY_PROFILE_INVALID:${verification.errors.join(',')}`);
+  fail(profile.world_id === worldId, 'LARGE_WORLD_SERVER_SOVEREIGNTY_WORLD_ID_MISMATCH');
+  fail(profile.shard_id === shardId, 'LARGE_WORLD_SERVER_SOVEREIGNTY_SHARD_ID_MISMATCH');
+  fail(profile.canonical_world_root === worldRoot, 'LARGE_WORLD_SERVER_SOVEREIGNTY_WORLD_ROOT_MISMATCH');
+  fail(profile.lease?.shard_id === shardId, 'LARGE_WORLD_SERVER_SOVEREIGNTY_LEASE_SHARD_MISMATCH');
+  return profile;
 }
 
 function gridMesh(seed, x, z, sampleResolution) {
@@ -2262,6 +2295,13 @@ export class LargeWorldRuntime {
       fail(this.authorityLease || this.acceptedAuthorityLease, 'LARGE_WORLD_DISTRIBUTION_LEASE_REQUIRED');
     }
     this.region = generateRegion(this.options);
+    this.sovereigntyProfile = normalizeServerSovereigntyProfile(
+      value.serverSovereigntyProfile
+        ?? value.server_sovereignty_profile
+        ?? value.sovereigntyProfile
+        ?? value.sovereignty_profile,
+      this
+    );
     this.chunks = new Map(this.region.chunks.map(chunk => [chunk.chunk_id, chunk]));
     this.chunkByKey = new Map(this.region.chunks.map(chunk => [chunkKey(chunk.coordinates.x, chunk.coordinates.z), chunk]));
     this.activeChunkIds = [];
@@ -2794,6 +2834,100 @@ export class LargeWorldRuntime {
   }
 
   durableBundle() { return this.exportDurableBundle(); }
+
+  createServerSovereigntyProfile(input = {}) {
+    const value = record(input);
+    const registrationRequested = value.register === true;
+    const profileInput = {...value};
+    delete profileInput.register;
+    if (Object.keys(profileInput).length === 0 && this.sovereigntyProfile) return clone(this.sovereigntyProfile);
+    const lease = profileInput.lease
+      ?? profileInput.authority_lease
+      ?? profileInput.authorityLease
+      ?? this.acceptedAuthorityLease
+      ?? this.authorityLease;
+    fail(lease, 'LARGE_WORLD_SERVER_SOVEREIGNTY_LEASE_REQUIRED');
+    const profile = createServerPseudoSovereigntyProfile({
+      ...profileInput,
+      sovereignty_id: profileInput.sovereignty_id ?? profileInput.sovereigntyId ?? `sovereignty:${this.options.worldId}:${this.shardId}`,
+      world_id: this.options.worldId,
+      shard_id: this.shardId,
+      canonical_world_root: this.region.world_root,
+      lease
+    });
+    const verification = verifyServerPseudoSovereigntyProfile(profile);
+    fail(verification.valid, `LARGE_WORLD_SERVER_SOVEREIGNTY_PROFILE_INVALID:${verification.errors.join(',')}`);
+    if (registrationRequested) this.sovereigntyProfile = clone(profile);
+    return clone(profile);
+  }
+
+  serverSovereigntyProfile() { return this.sovereigntyProfile ? clone(this.sovereigntyProfile) : null; }
+
+  createSovereigntyMigration(targetProfileInput, input = {}) {
+    const value = record(input);
+    const sourceProfile = this.sovereigntyProfile ?? this.createServerSovereigntyProfile(value.sourceProfile ?? value.source_profile ?? {});
+    const targetValue = record(targetProfileInput);
+    const targetProfile = targetValue.sovereigntyProfile
+      ?? targetValue.serverSovereigntyProfile
+      ?? targetValue.server_sovereignty_profile
+      ?? targetProfileInput;
+    const sourceSnapshot = this.exportReplicationSnapshot();
+    return createServerSovereigntyMigration({
+      ...value,
+      source_profile: sourceProfile,
+      target_profile: targetProfile,
+      source_snapshot_root: value.source_snapshot_root ?? value.sourceSnapshotRoot ?? sourceSnapshot.snapshot_root
+    });
+  }
+
+  sovereigntyMigration(targetProfileInput, input = {}) { return this.createSovereigntyMigration(targetProfileInput, input); }
+
+  executeSovereigntyHandoff(migrationInput, input = {}) {
+    const migration = clone(migrationInput);
+    const migrationVerification = verifyServerSovereigntyMigration(migration);
+    fail(migrationVerification.valid, `LARGE_WORLD_SERVER_SOVEREIGNTY_MIGRATION_INVALID:${migrationVerification.errors.join(',')}`);
+    fail(migration.target_node === this.nodeId, 'LARGE_WORLD_SERVER_SOVEREIGNTY_TARGET_NODE_MISMATCH');
+    const targetProfile = this.sovereigntyProfile;
+    fail(targetProfile, 'LARGE_WORLD_SERVER_SOVEREIGNTY_TARGET_PROFILE_REQUIRED');
+    fail(targetProfile.profile_root === migration.target_profile_root, 'LARGE_WORLD_SERVER_SOVEREIGNTY_TARGET_PROFILE_ROOT_MISMATCH');
+    const targetLease = this.acceptedAuthorityLease ?? this.authorityLease;
+    fail(targetLease?.lease_root === migration.target_lease_root, 'LARGE_WORLD_SERVER_SOVEREIGNTY_TARGET_LEASE_ROOT_MISMATCH');
+    const leaseAdmission = checkAuthorityLease(targetLease, {
+      authority_id: targetLease.authority_id,
+      shard_id: this.shardId,
+      semantic_scope: targetLease.semantic_scope,
+      owner_node: this.nodeId,
+      epoch: migration.target_epoch,
+      fencing_token: migration.target_fencing_token,
+      tick: this.worldTime.simulation_tick,
+      current_lease: targetLease
+    });
+    fail(leaseAdmission.valid, `LARGE_WORLD_SERVER_SOVEREIGNTY_TARGET_LEASE_ADMISSION_FAILED:${leaseAdmission.errors.join(',')}`);
+    const bundle = clone(input.durableBundle ?? input.durable_bundle ?? input.bundle);
+    const bundleVerification = verifyDurableBundle(bundle);
+    fail(bundleVerification.valid, `LARGE_WORLD_SERVER_SOVEREIGNTY_BUNDLE_INVALID:${bundleVerification.errors.join(',')}`);
+    fail(bundle.world_id === this.options.worldId && bundle.region_root === this.region.region_root && bundle.world_root === this.region.world_root, 'LARGE_WORLD_SERVER_SOVEREIGNTY_BUNDLE_WORLD_MISMATCH');
+    fail(bundle.replication_snapshot?.snapshot_root === migration.source_snapshot_root, 'LARGE_WORLD_SERVER_SOVEREIGNTY_BUNDLE_SNAPSHOT_MISMATCH');
+    const authorityReceipt = replicationAuthorityReceipt(input.authorityReceipt ?? input.authority_receipt);
+    if (authorityReceipt.lease_root !== undefined) fail(authorityReceipt.lease_root === targetLease.lease_root, 'LARGE_WORLD_SERVER_SOVEREIGNTY_AUTHORITY_LEASE_MISMATCH');
+    if (authorityReceipt.migration_root !== undefined) fail(authorityReceipt.migration_root === migration.migration_root, 'LARGE_WORLD_SERVER_SOVEREIGNTY_AUTHORITY_MIGRATION_MISMATCH');
+    const restoreReceipt = this.restoreDurableBundle(bundle, {authorityReceipt});
+    const targetSnapshot = this.exportReplicationSnapshot();
+    fail(targetSnapshot.snapshot_root === migration.source_snapshot_root, 'LARGE_WORLD_SERVER_SOVEREIGNTY_TARGET_SNAPSHOT_MISMATCH');
+    const handoffReceipt = createServerSovereigntyHandoffReceipt({
+      migration,
+      source_snapshot_root: migration.source_snapshot_root,
+      target_snapshot_root: targetSnapshot.snapshot_root,
+      durable_bundle_root: bundle.bundle_root,
+      restore_receipt_root: restoreReceipt.receipt_root,
+      authority_receipt: authorityReceipt,
+      evidence_refs: input.evidenceRefs ?? input.evidence_refs ?? []
+    });
+    fail(verifyServerSovereigntyHandoffReceipt(handoffReceipt).valid, 'LARGE_WORLD_SERVER_SOVEREIGNTY_HANDOFF_RECEIPT_INVALID');
+    return {status: 'COMPLETED', migration: clone(migration), restore_receipt: clone(restoreReceipt), handoff_receipt: clone(handoffReceipt)};
+  }
+
+  handoffSovereignty(migrationInput, input = {}) { return this.executeSovereigntyHandoff(migrationInput, input); }
 
   restoreDurableBundle(bundleInput, input = {}) {
     const bundle = clone(bundleInput);
