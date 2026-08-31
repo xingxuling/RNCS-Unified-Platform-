@@ -96,6 +96,7 @@
     "test:large-world-power-lowering": "npm test --workspace @taowind/rncs-core-contract && npm test --workspace @taowind/reality-representation-fabric && npm run build --workspace @taowind/visual-state-runtime && npm test --workspace @taowind/large-world-runtime && node --test tests/large-world-power-lowering.integration.test.mjs",
     "test:urrf-representation-flow-time": "npm test --workspace @taowind/rncs-core-contract && npm test --workspace @taowind/reality-representation-fabric && node --test tests/urrf-representation-flow-time.integration.test.mjs",
     "test:large-world-causal-physical-detail": "npm test --workspace @taowind/rncs-core-contract && npm test --workspace @taowind/reality-representation-fabric && npm run build --workspace @taowind/visual-state-runtime && npm test --workspace @taowind/large-world-runtime && node --test tests/large-world-causal-physical-detail.integration.test.mjs",
+    "test:large-world-server-sovereignty": "npm test --workspace @taowind/rncs-core-contract && npm test --workspace @taowind/large-world-runtime && node --test tests/large-world-server-sovereignty.integration.test.mjs",
     "test:large-world-portfolio": "npm run build --workspace @taowind/visual-state-runtime && node --test tests/large-world-portfolio.integration.test.mjs",
     "benchmark:network": "npm run benchmark --workspace @taowind/reality-network-runtime",
     "demo:network": "node examples/two-player-loopback/demo-server.mjs",

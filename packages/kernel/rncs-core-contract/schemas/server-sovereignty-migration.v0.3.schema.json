@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/rncs/server-sovereignty-migration.v0.3.schema.json",
+  "title": "RNCS Server Pseudo-Sovereignty Migration v0.3",
+  "type": "object",
+  "required": ["format", "version", "migration_id", "kind", "status", "sovereignty_id", "world_id", "shard_id", "level", "source_node", "target_node", "source_profile", "target_profile", "source_profile_root", "target_profile_root", "source_lease_root", "target_lease_root", "source_epoch", "target_epoch", "source_fencing_token", "target_fencing_token", "source_snapshot_root", "target_snapshot_root", "source_revocation", "reason", "source_status", "canonical_world_root", "canonical_owner", "authority", "evidence_refs", "migration_root"],
+  "properties": {
+    "format": {"const": "rncs.server-sovereignty-migration.v0.3"},
+    "version": {"const": "0.3.0"},
+    "kind": {"enum": ["MIGRATION", "FAILOVER"]},
+    "status": {"const": "PLANNED"},
+    "source_epoch": {"type": "integer", "minimum": 0},
+    "target_epoch": {"type": "integer", "minimum": 0},
+    "source_fencing_token": {"type": "integer", "minimum": 0},
+    "target_fencing_token": {"type": "integer", "minimum": 0},
+    "source_snapshot_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "target_snapshot_root": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "canonical_world_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "canonical_owner": {"const": "RNCS"},
+    "authority": {"type": "object", "properties": {"canonical_write_authorized": {"const": false}, "candidate_only": {"const": true}, "authoritative": {"const": false}, "commit_status": {"const": "NOT_COMMITTED"}}},
+    "evidence_refs": {"type": "array", "items": {"type": "string"}},
+    "migration_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}

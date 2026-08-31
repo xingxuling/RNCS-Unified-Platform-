@@ -1,0 +1,31 @@
+{
+  "format": "urrf.v03.server-pseudo-sovereignty-report.v0.1",
+  "world_id": "world:urrf-v03-server-sovereignty",
+  "shard_id": "shard:urrf-v03-city-01",
+  "level": "CITY_SHARD",
+  "region_root": "dcc135dce293ed31965f09de77e12e27fd490fbb10372b680b0d07f5d492c2bf",
+  "world_root": "2467aff750ffb15dc61fb00b9771a0df710604f97d1b4e512db5631eedb45012",
+  "source_profile_root": "dc2b7f074e75f680e0b38b9a8b8d4e86f30cf875d39b8b3fa287f6c3b597879d",
+  "target_profile_root": "90ce33af929365cc73436319c586e1f8792ef1d2f9a39bf891e951aa3b480200",
+  "source_lease_root": "5aaf7942c591bf1c33af59ea1d8e7f37d57a51fe748ef89cd0bcfdf6a8ba6d7a",
+  "target_lease_root": "751d5d9314aaa48a793c3607a8480ca699909bfd482018a3aae859d03c44eee7",
+  "source_snapshot_root": "734039ec4a77fb2fa68b0835c3091cb743ef4e42214f08a6b04c365b0a89eb68",
+  "target_snapshot_root": "734039ec4a77fb2fa68b0835c3091cb743ef4e42214f08a6b04c365b0a89eb68",
+  "durable_bundle_root": "f822ae0c4951b1b0fb4048a93fedcd10e309d7bffb09f5d32f3267a57a2fcc52",
+  "migration_root": "90c7f73524bc0c3aabc97785d6d71e6fae7f14768e4eb404d10202e4840c0799",
+  "revocation_root": "df09a04898890c922715445c3f329408ec90253e4f694745edf610ecda0beace",
+  "handoff_receipt_root": "d6772a11c305273e9b783213f9b3eac624a8ca03f1a274c15520eec4c81e2995",
+  "restore_receipt_root": "9cac0714be97b5e379c3637bcf4847f86567ae1d2673e275a1dcf3aa79288b5a",
+  "stale_writer_rejected": true,
+  "stale_writer_error": "LARGE_WORLD_REPLICATION_LEASE_ADMISSION_FAILED:RNCS_AUTHORITY_LEASE_STALE_EPOCH,RNCS_AUTHORITY_LEASE_STALE_FENCING_TOKEN",
+  "authority": {
+    "canonical_owner": "RNCS",
+    "regional_execution_authority": "LEASE_SCOPED_AND_REVOCABLE",
+    "canonical_write_authorized": false,
+    "world_root_unchanged": true,
+    "candidate_only": true,
+    "commit_status": "NOT_COMMITTED"
+  },
+  "notes": "Bounded local candidate: a City Shard failover hydrates a pristine standby from a durable canonical snapshot under a newer lease epoch/fencing token. The old lease is rejected after handoff. This is not distributed consensus, production cryptography, network-partition proof, or a legal/political sovereignty claim.",
+  "report_root": "c25ffacc91a6a93f6de4e5c077928bcd98fd76e1d848b9851a1acd0e5716ae7b"
+}
