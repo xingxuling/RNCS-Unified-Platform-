@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.org/schemas/rncs.large-world-replication-delta.v0.1.schema.json",
+  "title": "RNCS Large World Replication Delta v0.1",
+  "type": "object",
+  "required": ["format", "version", "delta_id", "world_id", "region_root", "world_root", "base_snapshot_root", "target_snapshot_root", "events", "facts", "trace_delta", "target_world_time", "target_canonical_state", "target_canonical_state_root", "delta_root"],
+  "properties": {
+    "format": {"const": "rncs.large-world-replication-delta.v0.1"},
+    "version": {"const": "0.1.0"},
+    "delta_id": {"type": "string", "minLength": 1},
+    "world_id": {"type": "string", "minLength": 1},
+    "region_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "world_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "base_snapshot_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "target_snapshot_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "events": {"type": "array"},
+    "facts": {"type": "array"},
+    "trace_delta": {"type": "array"},
+    "target_world_time": {"type": "object"},
+    "target_canonical_state": {"type": "object"},
+    "target_canonical_state_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "delta_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}

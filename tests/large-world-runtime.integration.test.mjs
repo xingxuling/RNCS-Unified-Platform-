@@ -2,8 +2,10 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {rootHash} from '@taowind/rncs-core-contract';
 import {
+  LARGE_WORLD_WIREFRAME_PROVIDER_ID,
   LargeWorldRuntime,
   verifyMaterializationBatch,
+  verifyReplicationReceipt,
   verifyStreamResolutionReceipt
 } from '@taowind/large-world-runtime';
 import {
@@ -109,4 +111,29 @@ test('generates a 9x9 RNCS region, materializes the active 3D working set, and r
   assert.equal(rendered.pixelRoot, repeated.pixelRoot);
   assert.equal(rendered.framePlan.sourceRealityRoot, frame.sourceRealityRoot);
   assert.match(rendered.pixelRoot, /^[a-f0-9]{64}$/);
+});
+
+test('replicates world truth across two runtimes and executes an alternate URRF representation', async () => {
+  const options = {worldId: 'world:large-integration-replication', seed: 'seed:large-integration-replication', loadRadius: 0, maxActiveChunks: 1};
+  const source = new LargeWorldRuntime(options);
+  const target = new LargeWorldRuntime({
+    ...options,
+    materializeWireframeChunk: async ({chunk}) => ({status: 'EXECUTED', runtime: 'wireframe-grid-integration', output_root: chunk.content_root, evidence_root: rootHash({chunk_root: chunk.chunk_root, renderer: 'wireframe'})})
+  });
+  const base = target.exportReplicationSnapshot();
+  source.recordWorldEvent({
+    authorityReceipt: {status: 'committed', receipt_root: 'b'.repeat(64), decision_root: null, epoch: 0},
+    mutation: {operations: [{op: 'set', path: 'season', value: 'spring'}]},
+    fact: {claim: {season: 'spring'}, authority_domain: 'world.season', confidence: 'canonical'}
+  });
+  const delta = source.createReplicationDelta(base);
+  const receipt = target.applyReplicationDelta(delta, {authorityReceipt: {status: 'committed', receipt_root: 'c'.repeat(64), decision_root: null, epoch: 0}});
+  assert.equal(receipt.status, 'APPLIED');
+  assert.equal(verifyReplicationReceipt(receipt).valid, true);
+  assert.equal(source.exportReplicationSnapshot().snapshot_root, target.exportReplicationSnapshot().snapshot_root);
+
+  target.observe({x: 0, z: 0});
+  const batch = await target.materializeActive({providerId: LARGE_WORLD_WIREFRAME_PROVIDER_ID});
+  assert.equal(batch.receipts[0].provider_id, LARGE_WORLD_WIREFRAME_PROVIDER_ID);
+  assert.equal(verifyMaterializationBatch(batch).valid, true);
 });

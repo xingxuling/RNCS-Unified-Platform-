@@ -4,6 +4,8 @@ import {rootHash} from '@taowind/rncs-core-contract';
 import {
   LARGE_WORLD_CHUNK_FORMAT,
   LARGE_WORLD_REGION_FORMAT,
+  LARGE_WORLD_PROCEDURAL_PROVIDER_ID,
+  LARGE_WORLD_WIREFRAME_PROVIDER_ID,
   LargeWorldRuntime,
   createLargeWorldRuntime,
   generateChunk,
@@ -11,6 +13,9 @@ import {
   replayLargeWorldTrace,
   verifyChunk,
   verifyMaterializationBatch,
+  verifyReplicationDelta,
+  verifyReplicationReceipt,
+  verifyReplicationSnapshot,
   verifyRegion,
   verifyRuntimeSnapshot,
   verifyStreamResolutionReceipt
@@ -112,6 +117,26 @@ test('keeps contract-only materialization explicit when no adapter is present', 
   assert.equal(verifyMaterializationBatch(batch).valid, true);
 });
 
+test('keeps procedural and wireframe representations as separate URRF candidates', async () => {
+  const runtime = new LargeWorldRuntime({
+    worldId: 'world:providers',
+    seed: 'seed:providers',
+    loadRadius: 0,
+    maxActiveChunks: 1,
+    materializeWireframeChunk: async ({chunk, authority}) => {
+      assert.equal(authority.canonical_state_mutation_allowed, false);
+      return {status: 'EXECUTED', runtime: 'wireframe-grid-test', output_root: chunk.content_root, evidence_root: rootHash({chunk_root: chunk.chunk_root, provider: 'wireframe'})};
+    }
+  });
+  const object = runtime.getRepresentationObject('chunk:world:providers:0:0');
+  assert.deepEqual(object.representations.map(reference => reference.provider_id).sort(), [LARGE_WORLD_PROCEDURAL_PROVIDER_ID, LARGE_WORLD_WIREFRAME_PROVIDER_ID].sort());
+  runtime.observe({x: 0, z: 0});
+  const batch = await runtime.materializeActive({providerId: LARGE_WORLD_WIREFRAME_PROVIDER_ID});
+  assert.equal(batch.receipts[0].provider_id, LARGE_WORLD_WIREFRAME_PROVIDER_ID);
+  assert.equal(batch.receipts[0].chunk_id, 'chunk:world:providers:0:0');
+  assert.equal(verifyMaterializationBatch(batch).valid, true);
+});
+
 test('snapshot and replay seal deterministic streaming evidence', () => {
   const runtime = new LargeWorldRuntime({worldId: 'world:replay', seed: 'seed:replay', loadRadius: 1, maxActiveChunks: 9});
   runtime.observe({x: 0, z: 0});
@@ -163,6 +188,48 @@ test('does not create a canonical world event without an explicit committed auth
   const runtime = new LargeWorldRuntime({worldId: 'world:truth-gate', seed: 'seed:truth-gate'});
   assert.throws(() => runtime.recordWorldEvent({mutation: {operations: [{op: 'set', path: 'weather', value: 'storm'}]}}), /LARGE_WORLD_EVENT_AUTHORITY_RECEIPT_REQUIRED/);
   assert.equal(runtime.eventLog.event_count, 0);
+});
+
+test('replicates deterministic world truth between isolated instances with idempotent deltas', () => {
+  const options = {worldId: 'world:replication', seed: 'seed:replication', loadRadius: 0, maxActiveChunks: 2};
+  const source = new LargeWorldRuntime(options);
+  const target = new LargeWorldRuntime(options);
+  const baseSnapshot = target.exportReplicationSnapshot();
+  assert.equal(verifyReplicationSnapshot(baseSnapshot).valid, true);
+
+  source.observe({x: 0, z: 0});
+  const authorityReceipt = {status: 'committed', receipt_root: 'a'.repeat(64), decision_root: null, epoch: 0};
+  source.recordWorldEvent({
+    authorityReceipt,
+    mutation: {operations: [{op: 'set', path: 'weather', value: 'rain'}]},
+    fact: {claim: {weather: 'rain'}, authority_domain: 'world.weather', confidence: 'canonical'}
+  });
+  const firstDelta = source.createReplicationDelta(baseSnapshot);
+  assert.equal(firstDelta.events.length, 1);
+  assert.equal(firstDelta.facts.length, 1);
+  assert.equal(verifyReplicationDelta(firstDelta).valid, true);
+  assert.throws(() => target.applyReplicationDelta(firstDelta), /LARGE_WORLD_REPLICATION_AUTHORITY_RECEIPT_REQUIRED/);
+
+  const firstReceipt = target.applyReplicationDelta(firstDelta, {authorityReceipt});
+  assert.equal(firstReceipt.status, 'APPLIED');
+  assert.equal(verifyReplicationReceipt(firstReceipt).valid, true);
+  assert.equal(source.exportReplicationSnapshot().snapshot_root, target.exportReplicationSnapshot().snapshot_root);
+
+  source.recordWorldEvent({authorityReceipt, mutation: {operations: [{op: 'set', path: 'weather', value: 'clear'}]}});
+  const clearDelta = source.createReplicationDelta(target.exportReplicationSnapshot());
+  const sourceBeforeStorm = source.exportReplicationSnapshot();
+  source.recordWorldEvent({authorityReceipt, mutation: {operations: [{op: 'set', path: 'weather', value: 'storm'}]}});
+  const stormDelta = source.createReplicationDelta(sourceBeforeStorm);
+  assert.equal(stormDelta.events.length, 1);
+  assert.throws(() => target.applyReplicationDelta(stormDelta, {authorityReceipt}), /LARGE_WORLD_REPLICATION_BASE_SNAPSHOT_MISMATCH/);
+  const clearReceipt = target.applyReplicationDelta(clearDelta, {authorityReceipt});
+  assert.equal(clearReceipt.status, 'APPLIED');
+  const secondReceipt = target.applyReplicationDelta(stormDelta, {authorityReceipt});
+  assert.equal(secondReceipt.status, 'APPLIED');
+  assert.equal(source.exportReplicationSnapshot().snapshot_root, target.exportReplicationSnapshot().snapshot_root);
+  const duplicate = target.applyReplicationDelta(stormDelta, {authorityReceipt});
+  assert.equal(duplicate.status, 'DUPLICATE');
+  assert.equal(verifyReplicationReceipt(duplicate).valid, true);
 });
 
 test('rejects invalid world dimensions and verifies tamper evidence', () => {

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.org/schemas/rncs.large-world-replication-snapshot.v0.1.schema.json",
+  "title": "RNCS Large World Replication Snapshot v0.1",
+  "type": "object",
+  "required": ["format", "version", "world_id", "region_root", "world_root", "options", "canonical_state", "canonical_state_root", "world_time", "event_log", "event_log_root", "facts", "fact_tree", "fact_tree_root", "snapshot_root"],
+  "properties": {
+    "format": {"const": "rncs.large-world-replication-snapshot.v0.1"},
+    "version": {"const": "0.1.0"},
+    "world_id": {"type": "string", "minLength": 1},
+    "region_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "world_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "options": {"type": "object"},
+    "canonical_state": {"type": "object"},
+    "canonical_state_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "world_time": {"type": "object"},
+    "event_log": {"type": "object"},
+    "event_log_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "facts": {"type": "array"},
+    "fact_tree": {"type": "object"},
+    "fact_tree_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "active_chunk_ids": {"type": "array", "items": {"type": "string"}},
+    "active_chunk_roots": {"type": "array"},
+    "trace": {"type": "array"},
+    "snapshot_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}
