@@ -35,3 +35,4 @@ export * from './world-truth.mjs';
 export * from './reality-property.mjs';
 export * from './reality-access.mjs';
 export * from './reality-distribution.mjs';
+export * from './reality-transport.mjs';

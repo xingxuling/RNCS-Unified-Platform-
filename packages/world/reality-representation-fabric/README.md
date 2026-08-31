@@ -4,6 +4,8 @@
 
 The package deliberately does not own canonical world truth. A `RealityObject` carries an RNCS `state_root` and one or more verified `RepresentationRef` candidates. A provider adapter receives a read-only candidate context and can return an execution root; the runtime seals a `MaterializationReceipt` while keeping `canonical_state_mutated=false`, `authoritative=false`, and `commit_status=NOT_COMMITTED`.
 
+`RealityTransportFabric` is the bounded v0.3 propagation surface. It registers Fiber/WiFi/Bluetooth profiles, discovers and associates local nodes, records candidate roaming/fallback decisions, and sends profile-rooted packets or low-power Bluetooth Organ Links. Pairing, routing, and packet delivery never grant canonical write authority; world mutation still requires an RNCS lease and committed authority receipt.
+
 The adapter interface is intentionally provider-neutral:
 
 ```js

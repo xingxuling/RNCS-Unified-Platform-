@@ -18,3 +18,4 @@
 - 增加证据图、投影引用、宿主状态引用。
 - 增加跨运行时一致性与篡改检测。
 - Added v0.3 Reality Distribution candidates for consistency profiles, authority leases, epoch/fencing admission, revocation, and version-rooted replication envelopes.
+- Added v0.3 Reality Transport candidates for Fiber/WiFi/Bluetooth QoS profiles, node discovery/association/roaming, and authority-gated low-power Organ Links.
