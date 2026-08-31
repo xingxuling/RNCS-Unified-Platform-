@@ -9,10 +9,13 @@ import {
   createWorldEventLog,
   createWorldFact,
   createWorldTime,
+  replayWorldEvents,
   rebuildFactWorldTree,
   rootHash,
   verifyFactWorldTree,
+  verifyWorldEvent,
   verifyWorldEventLog,
+  verifyWorldFact,
   verifyWorldTime,
   worldStateRoot
 } from '@taowind/rncs-core-contract';
@@ -24,11 +27,15 @@ export const LARGE_WORLD_REGION_FORMAT = 'rncs.large-world-region.v0.1';
 export const LARGE_WORLD_CHUNK_FORMAT = 'rncs.large-world-chunk.v0.1';
 export const LARGE_WORLD_STREAM_FORMAT = 'rncs.large-world-stream-resolution.v0.1';
 export const LARGE_WORLD_MATERIALIZATION_FORMAT = 'rncs.large-world-materialization.v0.1';
+export const LARGE_WORLD_REPLICATION_SNAPSHOT_FORMAT = 'rncs.large-world-replication-snapshot.v0.1';
+export const LARGE_WORLD_REPLICATION_DELTA_FORMAT = 'rncs.large-world-replication-delta.v0.1';
+export const LARGE_WORLD_REPLICATION_RECEIPT_FORMAT = 'rncs.large-world-replication-receipt.v0.1';
 
 export const LARGE_WORLD_BIOMES = Object.freeze(['coast', 'desert', 'forest', 'grassland', 'tundra', 'wetland']);
 export const LARGE_WORLD_STRUCTURE_KINDS = Object.freeze(['ruin', 'grove', 'mine', 'shrine', 'watchtower']);
 export const LARGE_WORLD_RESOURCE_KINDS = Object.freeze(['crystal', 'iron', 'salt', 'timber', 'water']);
 export const LARGE_WORLD_PROCEDURAL_PROVIDER_ID = 'provider:taowind:large-world-procedural-mesh:v0.1';
+export const LARGE_WORLD_WIREFRAME_PROVIDER_ID = 'provider:taowind:large-world-wireframe-mesh:v0.1';
 
 const clone = value => structuredClone(value);
 const record = value => value && typeof value === 'object' && !Array.isArray(value) ? value : {};
@@ -336,20 +343,34 @@ function providerManifest(runtimeAvailable) {
   return {...base, manifest_root: rootHash(base)};
 }
 
-function createChunkReference(chunk, providerRoot, available) {
+function wireframeProviderManifest(runtimeAvailable) {
+  const base = {
+    id: LARGE_WORLD_WIREFRAME_PROVIDER_ID,
+    version: LARGE_WORLD_RUNTIME_VERSION,
+    runtimeStatus: runtimeAvailable ? 'AVAILABLE' : 'CONTRACT_ONLY',
+    capabilities: ['representation.visual.render', 'representation.mesh.wireframe'],
+    authority: {owns_authoritative_world_state: false, scope: ['representation_candidate', 'visual_projection']},
+    representation: {kinds: ['mesh'], profiles: [{profile_id: 'large-world.wireframe-mesh.v0.1', formats: ['model/vnd.taowind.large-world-wireframe+json']}]}
+  };
+  return {...base, manifest_root: rootHash(base)};
+}
+
+function createChunkReference(chunk, provider, available, {encoding, fidelity, precision} = {}) {
+  const profile = provider.representation.profiles[0];
+  const formats = [...profile.formats];
   return createRepresentationRef({
-    provider_id: LARGE_WORLD_PROCEDURAL_PROVIDER_ID,
-    provider_root: providerRoot,
+    provider_id: provider.id,
+    provider_root: provider.manifest_root,
     representation_kind: 'mesh',
-    representation_formats: ['model/vnd.taowind.large-world-grid+json'],
+    representation_formats: formats,
     content_root: chunk.content_root,
-    representation_profile: {profile_id: 'large-world.grid-mesh.v0.1', encoding: 'procedural-grid', fidelity: 'terrain-structures', precision: 'integer-millimeter', formats: ['model/vnd.taowind.large-world-grid+json']},
+    representation_profile: {profile_id: profile.profile_id, encoding: encoding ?? profile.profile_id, fidelity: fidelity ?? 'terrain-structures', precision: precision ?? 'integer-millimeter', formats},
     detail_policy: {mode: 'distance-lod', selectors: ['screen-space-size', 'chunk-distance'], budget: {levels: 3}},
     residency_policy: {mode: 'paged-streaming', selectors: ['active-working-set', 'unload-hysteresis'], budget: {chunk_bytes: chunk.memory_bytes}},
     authority_scope: ['representation_candidate', 'visual_projection'],
     availability: available ? 'AVAILABLE' : 'CONTRACT_ONLY',
     provenance: {generator_version: LARGE_WORLD_RUNTIME_VERSION, parameters_root: chunk.chunk_root},
-    evidence: {provider_manifest_root: providerRoot}
+    evidence: {provider_manifest_root: provider.manifest_root}
   });
 }
 
@@ -370,6 +391,49 @@ function verifyStreamResolution(resolution) {
   const actual = copy.stream_root;
   delete copy.stream_root;
   return hex64(actual) && rootHash(copy) === actual;
+}
+
+function replicationAuthorityReceipt(input) {
+  const receipt = clone(record(input));
+  fail(receipt.status === 'committed' && hex64(receipt.receipt_root), 'LARGE_WORLD_REPLICATION_AUTHORITY_RECEIPT_REQUIRED');
+  return receipt;
+}
+
+function replicationSnapshotBase(runtime) {
+  const eventLog = clone(runtime.eventLog);
+  const factTree = clone(runtime.factTree);
+  const canonicalState = clone(runtime.canonicalState);
+  return {
+    format: LARGE_WORLD_REPLICATION_SNAPSHOT_FORMAT,
+    version: LARGE_WORLD_RUNTIME_VERSION,
+    world_id: runtime.options.worldId,
+    seed: runtime.options.seed,
+    generation: runtime.options.generation,
+    region_root: runtime.region.region_root,
+    world_root: runtime.region.world_root,
+    options: clone(runtime.options),
+    observer: clone(runtime.observer),
+    active_chunk_ids: [...runtime.activeChunkIds],
+    active_chunk_roots: runtime.activeChunkIds.map(id => ({chunk_id: id, chunk_root: runtime.chunks.get(id)?.chunk_root ?? null})),
+    trace: clone(runtime.trace),
+    canonical_state: canonicalState,
+    canonical_state_root: worldStateRoot(canonicalState),
+    world_time: clone(runtime.worldTime),
+    event_log: eventLog,
+    event_log_root: eventLog.log_root,
+    facts: clone(runtime.facts),
+    fact_tree: factTree,
+    fact_tree_root: factTree.tree_root,
+    canonical_state_mutated: false,
+    authority: {provider_can_write_authoritative_world_state: false, rncs_authority_required: true},
+    candidate_only: true,
+    authoritative: false,
+    commit_status: 'NOT_COMMITTED'
+  };
+}
+
+function activeChunkRoots(runtime, ids) {
+  return ids.map(id => ({chunk_id: id, chunk_root: runtime.chunks.get(id)?.chunk_root ?? null}));
 }
 
 export class LargeWorldRuntime {
@@ -412,23 +476,40 @@ export class LargeWorldRuntime {
     this.facts = [];
     this.factTree = createFactWorldTree({world_id: this.options.worldId, reality_root: this.region.world_root, branch_id: 'main'});
     this.materializeChunk = typeof value.materializeChunk === 'function' ? value.materializeChunk : null;
+    this.materializeWireframeChunk = typeof value.materializeWireframeChunk === 'function' ? value.materializeWireframeChunk : null;
     this.provider = providerManifest(Boolean(this.materializeChunk));
+    this.wireframeProvider = wireframeProviderManifest(Boolean(this.materializeWireframeChunk));
     this.chunksByObjectId = new Map(this.region.chunks.map(chunk => [chunk.object_id, chunk]));
     const providerInput = {manifest: this.provider};
     if (this.materializeChunk) providerInput.materialize = async adapterInput => this.materializeChunk({
       ...adapterInput,
       chunk: clone(this.chunksByObjectId.get(adapterInput.object.object_id) ?? null)
     });
-    this.fabric = new RealityRepresentationFabric({providers: [providerInput]});
+    const wireframeProviderInput = {manifest: this.wireframeProvider};
+    if (this.materializeWireframeChunk) wireframeProviderInput.materialize = async adapterInput => this.materializeWireframeChunk({
+      ...adapterInput,
+      chunk: clone(this.chunksByObjectId.get(adapterInput.object.object_id) ?? null)
+    });
+    this.fabric = new RealityRepresentationFabric({providers: [providerInput, wireframeProviderInput]});
     this.objects = new Map();
+    this.appliedReplicationDeltas = new Map();
     for (const chunk of this.region.chunks) {
-      const reference = createChunkReference(chunk, this.provider.manifest_root, Boolean(this.materializeChunk));
+      const proceduralReference = createChunkReference(chunk, this.provider, Boolean(this.materializeChunk), {
+        encoding: 'procedural-grid',
+        fidelity: 'terrain-structures',
+        precision: 'integer-millimeter'
+      });
+      const wireframeReference = createChunkReference(chunk, this.wireframeProvider, Boolean(this.materializeWireframeChunk), {
+        encoding: 'wireframe-grid',
+        fidelity: 'terrain-outline',
+        precision: 'integer-millimeter'
+      });
       const object = this.fabric.registerRealityObject({
         object_id: chunk.object_id,
         branch: 'main',
         state_root: chunk.state_root,
         content_root: chunk.content_root,
-        representations: [reference]
+        representations: [proceduralReference, wireframeReference]
       });
       this.objects.set(chunk.chunk_id, object);
     }
@@ -592,6 +673,7 @@ export class LargeWorldRuntime {
       const receipt = await this.fabric.materialize({
         object_id: chunk.object_id,
         representation_kind: 'mesh',
+        preferred_provider_id: value.providerId ?? value.provider_id ?? value.preferredProviderId ?? value.preferred_provider_id,
         detail_mode: value.detailMode ?? value.detail_mode ?? 'distance-lod',
         residency_mode: value.residencyMode ?? value.residency_mode ?? 'paged-streaming',
         resource_budget: clone(value.resourceBudget ?? value.resource_budget ?? {})
@@ -608,7 +690,7 @@ export class LargeWorldRuntime {
       stream_root: streamRootValue,
       active_chunk_ids: [...this.activeChunkIds],
       status,
-      receipts: receipts.map(receipt => ({receipt_id: receipt.receipt_id, chunk_id: this.chunks.get(receipt.object_id)?.chunk_id ?? null, status: receipt.status, output_root: receipt.output_root, receipt_root: receipt.receipt_root})),
+      receipts: receipts.map(receipt => ({receipt_id: receipt.receipt_id, chunk_id: this.chunksByObjectId.get(receipt.object_id)?.chunk_id ?? null, representation_id: receipt.representation_id, provider_id: receipt.provider_id, status: receipt.status, output_root: receipt.output_root, receipt_root: receipt.receipt_root})),
       canonical_state_mutated: false,
       authority: {provider_can_write_authoritative_world_state: false, rncs_authority_required: true},
       candidate_only: true,
@@ -616,6 +698,189 @@ export class LargeWorldRuntime {
       commit_status: 'NOT_COMMITTED'
     };
     return {...base, materialization_root: rootHash(base)};
+  }
+
+  exportReplicationSnapshot() {
+    const base = replicationSnapshotBase(this);
+    return {...base, snapshot_root: rootHash(base)};
+  }
+
+  replicationSnapshot() { return this.exportReplicationSnapshot(); }
+
+  createReplicationDelta(baseSnapshotInput, input = {}) {
+    const baseSnapshot = clone(baseSnapshotInput);
+    const baseVerification = verifyReplicationSnapshot(baseSnapshot);
+    fail(baseVerification.valid, `LARGE_WORLD_REPLICATION_BASE_SNAPSHOT_INVALID:${baseVerification.errors.join(',')}`);
+    const target = this.exportReplicationSnapshot();
+    fail(baseSnapshot.world_id === target.world_id, 'LARGE_WORLD_REPLICATION_WORLD_MISMATCH');
+    fail(baseSnapshot.region_root === target.region_root && baseSnapshot.world_root === target.world_root, 'LARGE_WORLD_REPLICATION_REGION_MISMATCH');
+
+    const sourceEvents = target.event_log.events;
+    const baseEvents = baseSnapshot.event_log.events;
+    fail(baseEvents.length <= sourceEvents.length, 'LARGE_WORLD_REPLICATION_BASE_AHEAD');
+    for (let index = 0; index < baseEvents.length; index += 1) {
+      fail(baseEvents[index].event_root === sourceEvents[index].event_root, `LARGE_WORLD_REPLICATION_EVENT_PREFIX_MISMATCH:${index}`);
+    }
+
+    const sourceFacts = target.facts;
+    const sourceFactsById = new Map(sourceFacts.map(fact => [fact.fact_id, fact]));
+    for (const fact of baseSnapshot.facts) {
+      const sourceFact = sourceFactsById.get(fact.fact_id);
+      fail(sourceFact?.version_root === fact.version_root, `LARGE_WORLD_REPLICATION_FACT_PREFIX_MISMATCH:${fact.fact_id}`);
+    }
+    const baseFactIds = new Set(baseSnapshot.facts.map(fact => fact.fact_id));
+    const newFacts = sourceFacts.filter(fact => !baseFactIds.has(fact.fact_id));
+
+    const baseTrace = baseSnapshot.trace;
+    const sourceTrace = target.trace;
+    fail(baseTrace.length <= sourceTrace.length, 'LARGE_WORLD_REPLICATION_TRACE_PREFIX_AHEAD');
+    for (let index = 0; index < baseTrace.length; index += 1) {
+      fail(rootHash(baseTrace[index]) === rootHash(sourceTrace[index]), `LARGE_WORLD_REPLICATION_TRACE_PREFIX_MISMATCH:${index}`);
+    }
+    const traceDelta = sourceTrace.slice(baseTrace.length).map(clone);
+    const value = record(input);
+    const deltaSeed = {
+      base_snapshot_root: baseSnapshot.snapshot_root,
+      target_snapshot_root: target.snapshot_root,
+      event_roots: sourceEvents.slice(baseEvents.length).map(event => event.event_root),
+      fact_roots: newFacts.map(fact => fact.version_root),
+      trace_roots: traceDelta.map(entry => rootHash(entry))
+    };
+    const delta_id = String(value.deltaId ?? value.delta_id ?? `delta:${rootHash(deltaSeed).slice(0, 24)}`);
+    fail(delta_id.length > 0, 'LARGE_WORLD_REPLICATION_DELTA_ID_REQUIRED');
+    const base = {
+      format: LARGE_WORLD_REPLICATION_DELTA_FORMAT,
+      version: LARGE_WORLD_RUNTIME_VERSION,
+      delta_id,
+      world_id: target.world_id,
+      seed: target.seed,
+      generation: target.generation,
+      region_root: target.region_root,
+      world_root: target.world_root,
+      base_snapshot_root: baseSnapshot.snapshot_root,
+      base_event_log_root: baseSnapshot.event_log_root,
+      base_event_count: baseEvents.length,
+      base_canonical_state_root: baseSnapshot.canonical_state_root,
+      base_world_time_root: baseSnapshot.world_time.time_root,
+      base_fact_tree_root: baseSnapshot.fact_tree_root,
+      base_fact_count: baseSnapshot.facts.length,
+      base_trace_length: baseTrace.length,
+      events: sourceEvents.slice(baseEvents.length).map(clone),
+      facts: newFacts.map(clone),
+      trace_delta: traceDelta,
+      target_snapshot_root: target.snapshot_root,
+      target_event_log_root: target.event_log_root,
+      target_event_count: sourceEvents.length,
+      target_canonical_state: clone(target.canonical_state),
+      target_canonical_state_root: target.canonical_state_root,
+      target_world_time: clone(target.world_time),
+      target_fact_tree_root: target.fact_tree_root,
+      target_fact_count: sourceFacts.length,
+      target_observer: clone(target.observer),
+      target_active_chunk_ids: [...target.active_chunk_ids],
+      target_active_chunk_roots: clone(target.active_chunk_roots),
+      target_trace_length: sourceTrace.length,
+      canonical_state_mutated: false,
+      authority: {provider_can_write_authoritative_world_state: false, rncs_authority_required: true},
+      candidate_only: true,
+      authoritative: false,
+      commit_status: 'NOT_COMMITTED'
+    };
+    return {...base, delta_root: rootHash(base)};
+  }
+
+  applyReplicationDelta(deltaInput, input = {}) {
+    const delta = clone(deltaInput);
+    const verification = verifyReplicationDelta(delta);
+    fail(verification.valid, `LARGE_WORLD_REPLICATION_DELTA_INVALID:${verification.errors.join(',')}`);
+    const authorityReceipt = replicationAuthorityReceipt(input.authorityReceipt ?? input.authority_receipt);
+    const applied = this.appliedReplicationDeltas.get(delta.delta_root);
+    if (applied) {
+      const duplicateBase = {
+        ...clone(applied),
+        status: 'DUPLICATE',
+        applied_event_ids: [],
+        applied_fact_ids: [],
+        authority_receipt: authorityReceipt,
+        canonical_state_mutated: false
+      };
+      delete duplicateBase.receipt_root;
+      return {...duplicateBase, receipt_root: rootHash(duplicateBase)};
+    }
+
+    const current = this.exportReplicationSnapshot();
+    fail(delta.world_id === this.options.worldId, 'LARGE_WORLD_REPLICATION_WORLD_MISMATCH');
+    fail(delta.region_root === this.region.region_root && delta.world_root === this.region.world_root, 'LARGE_WORLD_REPLICATION_REGION_MISMATCH');
+    fail(delta.base_snapshot_root === current.snapshot_root, 'LARGE_WORLD_REPLICATION_BASE_SNAPSHOT_MISMATCH');
+    fail(delta.base_event_log_root === this.eventLog.log_root && delta.base_event_count === this.eventLog.event_count, 'LARGE_WORLD_REPLICATION_BASE_EVENT_LOG_MISMATCH');
+    fail(delta.base_canonical_state_root === worldStateRoot(this.canonicalState), 'LARGE_WORLD_REPLICATION_BASE_STATE_MISMATCH');
+    fail(delta.base_world_time_root === this.worldTime.time_root, 'LARGE_WORLD_REPLICATION_BASE_TIME_MISMATCH');
+    fail(delta.base_fact_tree_root === this.factTree.tree_root && delta.base_fact_count === this.facts.length, 'LARGE_WORLD_REPLICATION_BASE_FACT_TREE_MISMATCH');
+    fail(delta.base_trace_length === this.trace.length, 'LARGE_WORLD_REPLICATION_BASE_TRACE_MISMATCH');
+
+    let nextEventLog = this.eventLog;
+    for (const event of delta.events) nextEventLog = appendWorldEvent(nextEventLog, event);
+    const nextReplay = replayWorldEvents(nextEventLog.initial_state, nextEventLog.events);
+    const nextFacts = [...this.facts, ...delta.facts.map(clone)];
+    const factIds = new Set();
+    for (const fact of nextFacts) {
+      fail(!factIds.has(fact.fact_id), `LARGE_WORLD_REPLICATION_FACT_DUPLICATE:${fact.fact_id}`);
+      factIds.add(fact.fact_id);
+    }
+    const nextFactTree = rebuildFactWorldTree({eventLog: nextEventLog, reality_root: this.region.world_root, facts: nextFacts});
+    const nextWorldTime = clone(delta.target_world_time);
+    fail(verifyWorldTime(nextWorldTime).valid, 'LARGE_WORLD_REPLICATION_TARGET_TIME_INVALID');
+    const expectedHeadTime = nextEventLog.events.at(-1)?.world_time ?? nextEventLog.initial_world_time;
+    fail(nextWorldTime.time_root === expectedHeadTime.time_root, 'LARGE_WORLD_REPLICATION_TARGET_TIME_MISMATCH');
+    fail(nextEventLog.log_root === delta.target_event_log_root && nextEventLog.event_count === delta.target_event_count, 'LARGE_WORLD_REPLICATION_TARGET_EVENT_LOG_MISMATCH');
+    fail(nextReplay.state_root === delta.target_canonical_state_root && worldStateRoot(delta.target_canonical_state) === delta.target_canonical_state_root, 'LARGE_WORLD_REPLICATION_TARGET_STATE_MISMATCH');
+    fail(nextFactTree.tree_root === delta.target_fact_tree_root && nextFacts.length === delta.target_fact_count, 'LARGE_WORLD_REPLICATION_TARGET_FACT_TREE_MISMATCH');
+
+    const targetActive = [...delta.target_active_chunk_ids];
+    fail(targetActive.every(id => this.chunks.has(id)), 'LARGE_WORLD_REPLICATION_TARGET_CHUNK_UNKNOWN');
+    fail(rootHash(activeChunkRoots(this, targetActive)) === rootHash(delta.target_active_chunk_roots), 'LARGE_WORLD_REPLICATION_TARGET_CHUNK_ROOT_MISMATCH');
+    const targetBytes = targetActive.reduce((sum, id) => sum + this.chunks.get(id).memory_bytes, 0);
+    fail(targetActive.length <= this.options.maxActiveChunks && targetBytes <= this.options.maxWorkingSetBytes, 'LARGE_WORLD_REPLICATION_TARGET_WORKING_SET_INVALID');
+    const targetObserver = normalizeObserver(delta.target_observer);
+    const nextTrace = [...this.trace, ...delta.trace_delta.map(clone)];
+    fail(nextTrace.length === delta.target_trace_length, 'LARGE_WORLD_REPLICATION_TARGET_TRACE_LENGTH_MISMATCH');
+
+    this.eventLog = nextEventLog;
+    this.canonicalState = clone(delta.target_canonical_state);
+    this.worldTime = nextWorldTime;
+    this.facts = nextFacts;
+    this.factTree = nextFactTree;
+    this.activeChunkIds = targetActive.sort(keySort);
+    this.observer = targetObserver;
+    this.trace = nextTrace;
+    const finalSnapshot = this.exportReplicationSnapshot();
+    fail(finalSnapshot.snapshot_root === delta.target_snapshot_root, 'LARGE_WORLD_REPLICATION_TARGET_SNAPSHOT_MISMATCH');
+
+    const receiptBase = {
+      format: LARGE_WORLD_REPLICATION_RECEIPT_FORMAT,
+      version: LARGE_WORLD_RUNTIME_VERSION,
+      receipt_id: `replication-receipt:${delta.delta_id}`,
+      delta_id: delta.delta_id,
+      delta_root: delta.delta_root,
+      world_id: this.options.worldId,
+      source_snapshot_root: delta.target_snapshot_root,
+      base_snapshot_root: delta.base_snapshot_root,
+      target_snapshot_root: finalSnapshot.snapshot_root,
+      status: 'APPLIED',
+      applied_event_ids: delta.events.map(event => event.event_id),
+      applied_fact_ids: delta.facts.map(fact => fact.fact_id),
+      target_event_log_root: this.eventLog.log_root,
+      target_fact_tree_root: this.factTree.tree_root,
+      target_canonical_state_root: worldStateRoot(this.canonicalState),
+      authority_receipt: authorityReceipt,
+      canonical_state_mutated: delta.events.length > 0,
+      candidate_only: false,
+      authoritative: true,
+      commit_status: 'COMMITTED'
+    };
+    const receipt = {...receiptBase, receipt_root: rootHash(receiptBase)};
+    this.appliedReplicationDeltas.set(delta.delta_root, receipt);
+    return clone(receipt);
   }
 
   snapshot() {
@@ -687,6 +952,119 @@ export function verifyRuntimeSnapshot(snapshot) {
   if (snapshot.candidate_only !== true || snapshot.authoritative !== false) errors.push('LARGE_WORLD_SNAPSHOT_CANDIDATE_REQUIRED');
   if (snapshot.commit_status !== 'NOT_COMMITTED') errors.push('LARGE_WORLD_SNAPSHOT_COMMIT_STATUS_INVALID');
   return {valid: errors.length === 0, errors, snapshot_root: root ?? null};
+}
+
+export function verifyReplicationSnapshot(snapshot) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!snapshot || typeof snapshot !== 'object') return {valid: false, errors: ['LARGE_WORLD_REPLICATION_SNAPSHOT_NOT_OBJECT']};
+  try {
+    const copy = clone(snapshot);
+    const snapshotRoot = copy.snapshot_root;
+    delete copy.snapshot_root;
+    check(snapshot.format === LARGE_WORLD_REPLICATION_SNAPSHOT_FORMAT, 'LARGE_WORLD_REPLICATION_SNAPSHOT_FORMAT_INVALID');
+    check(snapshot.version === LARGE_WORLD_RUNTIME_VERSION, 'LARGE_WORLD_REPLICATION_SNAPSHOT_VERSION_INVALID');
+    check(typeof snapshot.world_id === 'string' && snapshot.world_id.length > 0, 'LARGE_WORLD_REPLICATION_SNAPSHOT_WORLD_ID_REQUIRED');
+    check(hex64(snapshot.region_root) && hex64(snapshot.world_root), 'LARGE_WORLD_REPLICATION_SNAPSHOT_REGION_ROOT_INVALID');
+    check(verifyWorldTime(snapshot.world_time).valid, 'LARGE_WORLD_REPLICATION_SNAPSHOT_TIME_INVALID');
+    const eventLogVerification = verifyWorldEventLog(snapshot.event_log);
+    check(eventLogVerification.valid, `LARGE_WORLD_REPLICATION_SNAPSHOT_EVENT_LOG_INVALID:${eventLogVerification.errors.join(',')}`);
+    check(snapshot.event_log_root === snapshot.event_log?.log_root, 'LARGE_WORLD_REPLICATION_SNAPSHOT_EVENT_LOG_ROOT_MISMATCH');
+    check(snapshot.canonical_state_root === worldStateRoot(snapshot.canonical_state), 'LARGE_WORLD_REPLICATION_SNAPSHOT_STATE_ROOT_MISMATCH');
+    const factTreeVerification = verifyFactWorldTree(snapshot.fact_tree);
+    check(factTreeVerification.valid, `LARGE_WORLD_REPLICATION_SNAPSHOT_FACT_TREE_INVALID:${factTreeVerification.errors.join(',')}`);
+    check(snapshot.fact_tree_root === snapshot.fact_tree?.tree_root, 'LARGE_WORLD_REPLICATION_SNAPSHOT_FACT_TREE_ROOT_MISMATCH');
+    check(snapshot.fact_tree?.reality_root === snapshot.world_root, 'LARGE_WORLD_REPLICATION_SNAPSHOT_FACT_TREE_REALITY_MISMATCH');
+    check(Array.isArray(snapshot.facts), 'LARGE_WORLD_REPLICATION_SNAPSHOT_FACTS_REQUIRED');
+    check(Array.isArray(snapshot.active_chunk_ids) && Array.isArray(snapshot.active_chunk_roots), 'LARGE_WORLD_REPLICATION_SNAPSHOT_ACTIVE_CHUNKS_REQUIRED');
+    check(snapshot.active_chunk_ids?.length === snapshot.active_chunk_roots?.length, 'LARGE_WORLD_REPLICATION_SNAPSHOT_ACTIVE_CHUNK_ROOT_COUNT_MISMATCH');
+    check(Array.isArray(snapshot.trace), 'LARGE_WORLD_REPLICATION_SNAPSHOT_TRACE_REQUIRED');
+    check(snapshot.canonical_state_mutated === false, 'LARGE_WORLD_REPLICATION_SNAPSHOT_CANONICAL_MUTATION');
+    check(snapshot.authority?.provider_can_write_authoritative_world_state === false, 'LARGE_WORLD_REPLICATION_SNAPSHOT_AUTHORITY_ESCALATION');
+    check(snapshot.candidate_only === true && snapshot.authoritative === false, 'LARGE_WORLD_REPLICATION_SNAPSHOT_CANDIDATE_REQUIRED');
+    check(snapshot.commit_status === 'NOT_COMMITTED', 'LARGE_WORLD_REPLICATION_SNAPSHOT_COMMIT_STATUS_INVALID');
+    check(hex64(snapshotRoot) && rootHash(copy) === snapshotRoot, 'LARGE_WORLD_REPLICATION_SNAPSHOT_ROOT_MISMATCH');
+  } catch (error) {
+    errors.push(`LARGE_WORLD_REPLICATION_SNAPSHOT_VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, snapshot_root: snapshot.snapshot_root ?? null};
+}
+
+export function verifyReplicationDelta(delta) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!delta || typeof delta !== 'object') return {valid: false, errors: ['LARGE_WORLD_REPLICATION_DELTA_NOT_OBJECT']};
+  try {
+    const copy = clone(delta);
+    const deltaRoot = copy.delta_root;
+    delete copy.delta_root;
+    check(delta.format === LARGE_WORLD_REPLICATION_DELTA_FORMAT, 'LARGE_WORLD_REPLICATION_DELTA_FORMAT_INVALID');
+    check(delta.version === LARGE_WORLD_RUNTIME_VERSION, 'LARGE_WORLD_REPLICATION_DELTA_VERSION_INVALID');
+    check(typeof delta.delta_id === 'string' && delta.delta_id.length > 0, 'LARGE_WORLD_REPLICATION_DELTA_ID_REQUIRED');
+    check(typeof delta.world_id === 'string' && delta.world_id.length > 0, 'LARGE_WORLD_REPLICATION_DELTA_WORLD_ID_REQUIRED');
+    check(hex64(delta.region_root) && hex64(delta.world_root), 'LARGE_WORLD_REPLICATION_DELTA_REGION_ROOT_INVALID');
+    for (const field of ['base_snapshot_root', 'base_event_log_root', 'base_canonical_state_root', 'base_world_time_root', 'base_fact_tree_root', 'target_snapshot_root', 'target_event_log_root', 'target_canonical_state_root', 'target_fact_tree_root']) {
+      check(hex64(delta[field]), `LARGE_WORLD_REPLICATION_DELTA_${field.toUpperCase()}_INVALID`);
+    }
+    for (const field of ['base_event_count', 'base_fact_count', 'base_trace_length', 'target_event_count', 'target_fact_count', 'target_trace_length']) {
+      check(Number.isSafeInteger(delta[field]) && delta[field] >= 0, `LARGE_WORLD_REPLICATION_DELTA_${field.toUpperCase()}_INVALID`);
+    }
+    check(Array.isArray(delta.events) && Array.isArray(delta.facts) && Array.isArray(delta.trace_delta), 'LARGE_WORLD_REPLICATION_DELTA_PAYLOAD_REQUIRED');
+    check(delta.target_event_count === delta.base_event_count + delta.events.length, 'LARGE_WORLD_REPLICATION_DELTA_EVENT_COUNT_MISMATCH');
+    check(delta.target_fact_count === delta.base_fact_count + delta.facts.length, 'LARGE_WORLD_REPLICATION_DELTA_FACT_COUNT_MISMATCH');
+    check(delta.target_trace_length === delta.base_trace_length + delta.trace_delta.length, 'LARGE_WORLD_REPLICATION_DELTA_TRACE_COUNT_MISMATCH');
+    const eventIds = new Set();
+    for (const event of delta.events) {
+      const verification = verifyWorldEvent(event);
+      check(verification.valid, `LARGE_WORLD_REPLICATION_DELTA_EVENT_INVALID:${event?.event_id ?? 'unknown'}`);
+      check(event?.world_id === delta.world_id, `LARGE_WORLD_REPLICATION_DELTA_EVENT_WORLD_MISMATCH:${event?.event_id ?? 'unknown'}`);
+      check(!eventIds.has(event?.event_id), `LARGE_WORLD_REPLICATION_DELTA_EVENT_DUPLICATE:${event?.event_id ?? 'unknown'}`);
+      eventIds.add(event?.event_id);
+    }
+    const factIds = new Set();
+    for (const fact of delta.facts) {
+      const verification = verifyWorldFact(fact);
+      check(verification.valid, `LARGE_WORLD_REPLICATION_DELTA_FACT_INVALID:${fact?.fact_id ?? 'unknown'}`);
+      check(fact?.world_id === delta.world_id, `LARGE_WORLD_REPLICATION_DELTA_FACT_WORLD_MISMATCH:${fact?.fact_id ?? 'unknown'}`);
+      check(!factIds.has(fact?.fact_id), `LARGE_WORLD_REPLICATION_DELTA_FACT_DUPLICATE:${fact?.fact_id ?? 'unknown'}`);
+      factIds.add(fact?.fact_id);
+    }
+    check(delta.target_world_time && verifyWorldTime(delta.target_world_time).valid, 'LARGE_WORLD_REPLICATION_DELTA_TARGET_TIME_INVALID');
+    check(delta.target_canonical_state && worldStateRoot(delta.target_canonical_state) === delta.target_canonical_state_root, 'LARGE_WORLD_REPLICATION_DELTA_TARGET_STATE_ROOT_MISMATCH');
+    check(Array.isArray(delta.target_active_chunk_ids) && Array.isArray(delta.target_active_chunk_roots), 'LARGE_WORLD_REPLICATION_DELTA_TARGET_ACTIVE_CHUNKS_REQUIRED');
+    check(delta.target_active_chunk_ids?.length === delta.target_active_chunk_roots?.length, 'LARGE_WORLD_REPLICATION_DELTA_TARGET_ACTIVE_CHUNK_ROOT_COUNT_MISMATCH');
+    check(delta.canonical_state_mutated === false, 'LARGE_WORLD_REPLICATION_DELTA_CANONICAL_MUTATION');
+    check(delta.authority?.provider_can_write_authoritative_world_state === false, 'LARGE_WORLD_REPLICATION_DELTA_AUTHORITY_ESCALATION');
+    check(delta.candidate_only === true && delta.authoritative === false, 'LARGE_WORLD_REPLICATION_DELTA_CANDIDATE_REQUIRED');
+    check(delta.commit_status === 'NOT_COMMITTED', 'LARGE_WORLD_REPLICATION_DELTA_COMMIT_STATUS_INVALID');
+    check(hex64(deltaRoot) && rootHash(copy) === deltaRoot, 'LARGE_WORLD_REPLICATION_DELTA_ROOT_MISMATCH');
+  } catch (error) {
+    errors.push(`LARGE_WORLD_REPLICATION_DELTA_VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, delta_root: delta.delta_root ?? null};
+}
+
+export function verifyReplicationReceipt(receipt) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!receipt || typeof receipt !== 'object') return {valid: false, errors: ['LARGE_WORLD_REPLICATION_RECEIPT_NOT_OBJECT']};
+  try {
+    const copy = clone(receipt);
+    const receiptRoot = copy.receipt_root;
+    delete copy.receipt_root;
+    check(receipt.format === LARGE_WORLD_REPLICATION_RECEIPT_FORMAT, 'LARGE_WORLD_REPLICATION_RECEIPT_FORMAT_INVALID');
+    check(receipt.version === LARGE_WORLD_RUNTIME_VERSION, 'LARGE_WORLD_REPLICATION_RECEIPT_VERSION_INVALID');
+    check(['APPLIED', 'DUPLICATE'].includes(receipt.status), 'LARGE_WORLD_REPLICATION_RECEIPT_STATUS_INVALID');
+    check(hex64(receipt.delta_root) && hex64(receipt.base_snapshot_root) && hex64(receipt.target_snapshot_root), 'LARGE_WORLD_REPLICATION_RECEIPT_ROOT_REFERENCE_INVALID');
+    check(receipt.authority_receipt?.status === 'committed' && hex64(receipt.authority_receipt?.receipt_root), 'LARGE_WORLD_REPLICATION_RECEIPT_AUTHORITY_INVALID');
+    check(receipt.canonical_state_mutated === (receipt.status === 'APPLIED' && (receipt.applied_event_ids?.length ?? 0) > 0), 'LARGE_WORLD_REPLICATION_RECEIPT_MUTATION_FLAG_INVALID');
+    check(receipt.candidate_only === false && receipt.authoritative === true, 'LARGE_WORLD_REPLICATION_RECEIPT_AUTHORITY_SCOPE_INVALID');
+    check(receipt.commit_status === 'COMMITTED', 'LARGE_WORLD_REPLICATION_RECEIPT_COMMIT_STATUS_INVALID');
+    check(hex64(receiptRoot) && rootHash(copy) === receiptRoot, 'LARGE_WORLD_REPLICATION_RECEIPT_ROOT_MISMATCH');
+  } catch (error) {
+    errors.push(`LARGE_WORLD_REPLICATION_RECEIPT_VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, receipt_root: receipt.receipt_root ?? null};
 }
 
 export function verifyStreamResolutionReceipt(resolution) {
