@@ -10,6 +10,8 @@ import {
   createFactWorldTree,
   createAuthorityLease,
   createRealityConsistencyProfile,
+  createRepresentationPortfolio,
+  createRepresentationSlot,
   createRepresentationRef,
   createWorldEvent,
   createWorldEventLog,
@@ -410,6 +412,126 @@ function createChunkReference(chunk, provider, available, {encoding, fidelity, p
     availability: available ? 'AVAILABLE' : 'CONTRACT_ONLY',
     provenance: {generator_version: LARGE_WORLD_RUNTIME_VERSION, parameters_root: chunk.chunk_root},
     evidence: {provider_manifest_root: provider.manifest_root}
+  });
+}
+
+function isWireframeReference(reference) {
+  const profileId = String(reference?.representation_profile?.profile_id ?? '').toLowerCase();
+  const encoding = String(reference?.representation_profile?.encoding ?? '').toLowerCase();
+  const providerId = String(reference?.provider_id ?? '').toLowerCase();
+  return providerId === LARGE_WORLD_WIREFRAME_PROVIDER_ID.toLowerCase()
+    || profileId.includes('wireframe')
+    || encoding.includes('wireframe');
+}
+
+function portfolioResourceCosts(chunk, qualityProfile) {
+  const memory = integer(chunk.memory_bytes, 0, {min: 0});
+  const proxy = qualityProfile === 'PROXY';
+  return {
+    CPU_MILLI: (proxy ? 20 : 80) + chunk.sample_resolution * (proxy ? 2 : 6),
+    GPU_MILLI: proxy ? 15 : 90,
+    NPU_MILLI: 0,
+    VRAM_MB: proxy ? 4 : 8 + Math.max(1, Math.ceil(memory / 4096)),
+    RAM_MB: proxy ? 1 + Math.max(1, Math.ceil(memory / 8192)) : 2 + Math.max(1, Math.ceil(memory / 2048)),
+    STORAGE_KB: proxy ? Math.max(1, Math.ceil(memory / 4096)) : Math.max(1, Math.ceil(memory / 1024)),
+    NETWORK_KB: proxy ? Math.max(1, Math.ceil(memory / 4096)) : Math.max(1, Math.ceil(memory / 1024)),
+    ENERGY_MILLI: proxy ? 5 : 25
+  };
+}
+
+function chunkPortfolioSlot(chunk, reference, qualityProfile, {proxyWidth, proxyHeight, standardWidth, standardHeight, fallbackSlotId = null} = {}) {
+  const proxy = qualityProfile === 'PROXY';
+  const style = proxy ? 'WIREFRAME' : 'PROCEDURAL_GRID';
+  const biome = String(chunk.biome ?? 'UNKNOWN').toUpperCase();
+  const slot_id = `slot:${chunk.chunk_id}:${qualityProfile.toLowerCase()}`;
+  return createRepresentationSlot({
+    slot_id,
+    representation_id: reference.representation_id,
+    representation_root: reference.representation_root,
+    representation_kind: reference.representation_kind,
+    quality_profile: qualityProfile,
+    diversity_axes: {
+      MODALITY: 'MESH',
+      DETAIL: qualityProfile,
+      MATERIAL: `BIOME_${biome}`,
+      LIGHTING: 'WORLD_GRID',
+      ENVIRONMENT: biome,
+      STYLE: style,
+      MOTION: 'STATIC',
+      VIEW: 'CHUNK'
+    },
+    render_profile: {
+      renderer_id: `large-world-${qualityProfile.toLowerCase()}`,
+      shading_model: proxy ? 'wireframe' : 'pbr-lite',
+      lighting_profile: 'world-grid',
+      camera_profile: 'chunk-topdown',
+      resolution_class: qualityProfile.toLowerCase(),
+      width: integer(proxy ? proxyWidth : standardWidth, proxy ? 320 : 640, {min: 1, max: 16384}),
+      height: integer(proxy ? proxyHeight : standardHeight, proxy ? 180 : 360, {min: 1, max: 16384}),
+      post_process: 'none',
+      options: {
+        chunk_size_mm: chunk.extent_mm?.x ?? 0,
+        sample_resolution: chunk.sample_resolution
+      }
+    },
+    resource_costs: portfolioResourceCosts(chunk, qualityProfile),
+    fallback_slot_id: proxy ? null : fallbackSlotId,
+    required_for_minimum: proxy,
+    evidence_refs: [chunk.chunk_root, chunk.content_root, reference.provider_root]
+  });
+}
+
+/**
+ * Lower one large-world chunk's URRF references into the canonical RNCS
+ * Representation Portfolio contract. The portfolio is candidate-only: it
+ * describes how a renderer may select a view and never owns world truth.
+ */
+export function createChunkRepresentationPortfolio(chunkInput, input = {}) {
+  const chunk = clone(chunkInput);
+  const verification = verifyChunk(chunk);
+  fail(verification.valid, `LARGE_WORLD_CHUNK_INVALID:${verification.errors.join(',')}`);
+  const value = record(input);
+  const object = record(value.representationObject ?? value.representation_object ?? value.object);
+  const references = (Array.isArray(value.representations) ? value.representations : object.representations ?? [])
+    .map(clone)
+    .filter(reference => reference && typeof reference === 'object');
+  fail(references.length > 0, 'LARGE_WORLD_PORTFOLIO_REPRESENTATIONS_REQUIRED');
+  const wireframe = references.find(isWireframeReference) ?? null;
+  const procedural = references.find(reference => reference !== wireframe) ?? null;
+  const slots = [];
+  if (wireframe) slots.push(chunkPortfolioSlot(chunk, wireframe, 'PROXY', value));
+  if (procedural) slots.push(chunkPortfolioSlot(chunk, procedural, 'STANDARD', {
+    ...value,
+    fallbackSlotId: wireframe ? `slot:${chunk.chunk_id}:proxy` : null
+  }));
+  if (!wireframe && !procedural) slots.push(chunkPortfolioSlot(chunk, references[0], 'STANDARD', value));
+  const active_slot_id = slots.find(slot => slot.quality_profile === 'STANDARD')?.slot_id
+    ?? slots.find(slot => slot.quality_profile === 'PROXY')?.slot_id
+    ?? null;
+  return createRepresentationPortfolio({
+    portfolio_id: `portfolio:${chunk.object_id}`,
+    object_id: chunk.object_id,
+    canonical_state_root: chunk.state_root,
+    content_root: chunk.content_root,
+    slots,
+    active_slot_id,
+    composition: {
+      mode: 'BALANCED',
+      min_slots: 2,
+      max_slots: 2,
+      required_kinds: ['mesh'],
+      required_quality_profiles: ['PROXY', 'STANDARD'],
+      quality_ladder: ['PROXY', 'STANDARD'],
+      diversity_targets: {
+        MODALITY: 1,
+        DETAIL: 2,
+        ENVIRONMENT: 1,
+        STYLE: 2,
+        MOTION: 1,
+        VIEW: 1
+      }
+    },
+    evidence_refs: [chunk.chunk_root, chunk.content_root, ...references.map(reference => reference.representation_root)]
   });
 }
 
@@ -832,6 +954,15 @@ export class LargeWorldRuntime {
   getRepresentationObject(chunkIdValue) {
     const chunk = this.chunks.get(String(chunkIdValue));
     return chunk ? this.fabric.getRealityObject(chunk.object_id) : null;
+  }
+
+  getRepresentationPortfolio(chunkIdValue, input = {}) {
+    const chunk = this.chunks.get(String(chunkIdValue));
+    if (!chunk) return null;
+    return createChunkRepresentationPortfolio(chunk, {
+      ...record(input),
+      representationObject: this.getRepresentationObject(chunk.chunk_id)
+    });
   }
 
   listActiveChunks() { return this.activeChunkIds.map(id => clone(this.chunks.get(id))).filter(Boolean); }
