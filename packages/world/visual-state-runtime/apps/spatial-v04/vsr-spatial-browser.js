@@ -44,6 +44,7 @@ var VSRSpatial3D = (() => {
     VSR_SPATIAL_SCENE_FORMAT: () => VSR_SPATIAL_SCENE_FORMAT,
     VSR_SPATIAL_SHADOW_WGSL_V04: () => VSR_SPATIAL_SHADOW_WGSL_V04,
     VSR_SPATIAL_STREAMING_FORMAT: () => VSR_SPATIAL_STREAMING_FORMAT,
+    VSR_SPATIAL_TEXTURE_RESIDENCY_EXECUTION_FORMAT: () => VSR_SPATIAL_TEXTURE_RESIDENCY_EXECUTION_FORMAT,
     VSR_SPATIAL_TONEMAP_WGSL_V04: () => VSR_SPATIAL_TONEMAP_WGSL_V04,
     VSR_SPATIAL_VERTEX_WGSL_V04: () => VSR_SPATIAL_VERTEX_WGSL_V04,
     VSR_SPATIAL_VISUAL_INTENT_FORMAT: () => VSR_SPATIAL_VISUAL_INTENT_FORMAT,
@@ -53,6 +54,7 @@ var VSRSpatial3D = (() => {
     applySpatialIrradianceVolume: () => applySpatialIrradianceVolume,
     applySpatialIrradianceVolumeField: () => applySpatialIrradianceVolumeField,
     applySpatialLightmapBake: () => applySpatialLightmapBake,
+    applySpatialTextureResidency: () => applySpatialTextureResidency,
     bakeSpatialIrradianceProbes: () => bakeSpatialIrradianceProbes,
     bakeSpatialIrradianceVolume: () => bakeSpatialIrradianceVolume,
     bakeSpatialIrradianceVolumeField: () => bakeSpatialIrradianceVolumeField,
@@ -142,6 +144,7 @@ var VSRSpatial3D = (() => {
     verifySpatialIrradianceVolume: () => verifySpatialIrradianceVolume,
     verifySpatialIrradianceVolumeField: () => verifySpatialIrradianceVolumeField,
     verifySpatialLightmapBake: () => verifySpatialLightmapBake,
+    verifySpatialTextureResidencyReceipt: () => verifySpatialTextureResidencyReceipt,
     verifySpatialVisualIntent: () => verifySpatialVisualIntent,
     verifySpatialWebGPUReceipt: () => verifySpatialWebGPUReceipt,
     weightedTransparencyWeight: () => weightedTransparencyWeight
@@ -1900,6 +1903,7 @@ var VSRSpatial3D = (() => {
   var VSR_SPATIAL_VISUAL_INTENT_FORMAT = "taowind.rcl-rncs-visual-intent.v0.1";
   var VSR_SPATIAL_VISUAL_INTENT_VERSION = "0.1.0";
   var VSR_SPATIAL_IRRADIANCE_BAKE_FORMAT = "vsr.spatial-irradiance-probe-bake.v0.1";
+  var VSR_SPATIAL_TEXTURE_RESIDENCY_EXECUTION_FORMAT = "vsr.spatial-texture-residency-execution.v0.1";
   var VSR_SPATIAL_MAX_DYNAMIC_LIGHTS = 32;
   var EPS4 = 1e-9;
   var clamp5 = (value, min, max) => Math.max(min, Math.min(max, value));
@@ -2168,6 +2172,24 @@ var VSRSpatial3D = (() => {
   }
   function validateTextureLevel(textureId, level) {
     if (level.width < 1 || level.height < 1 || level.pixels.length !== level.width * level.height * 4) throw new Error(`Texture ${textureId} RGBA length mismatch.`);
+  }
+  function applySpatialTextureResidency(texture, plan) {
+    validateTextureLevel(texture.id, texture);
+    for (const level of texture.mipmaps ?? []) validateTextureLevel(texture.id, level);
+    const levels = [texture, ...texture.mipmaps ?? []], selectedLevel = plan.selectedLevel;
+    if (!Number.isInteger(selectedLevel) || selectedLevel < 0 || selectedLevel >= levels.length) throw new Error(`Texture ${texture.id} selected mip level is out of range.`);
+    if (plan.planRoot !== void 0 && typeof plan.planRoot !== "string") throw new Error(`Texture ${texture.id} residency plan root is invalid.`);
+    const residentLevels = (plan.residentLevels ?? [selectedLevel]).slice();
+    if (!residentLevels.length || residentLevels[0] !== selectedLevel || residentLevels.some((level, index) => !Number.isInteger(level) || level < 0 || level >= levels.length || level !== selectedLevel + index)) throw new Error(`Texture ${texture.id} resident mip levels must be a contiguous chain starting at the selected level.`);
+    const residentTextures = residentLevels.map((level) => levels[level]);
+    const selected = residentTextures[0], mipmaps = residentTextures.slice(1), lowered = mipmaps.length ? { ...texture, ...selected, mipmaps } : { ...texture, ...selected, mipmaps: void 0 };
+    const sourceRoot3 = cryptographicHash(texture), textureRoot = cryptographicHash(lowered), base = { format: VSR_SPATIAL_TEXTURE_RESIDENCY_EXECUTION_FORMAT, textureId: texture.id, sourceLevelCount: levels.length, selectedLevel, residentLevels, deferredLevels: levels.map((_, index) => index).filter((index) => !residentLevels.includes(index)), retainedLevelCount: residentTextures.length, sourceByteLength: textureByteLength(texture), retainedByteLength: textureByteLength(lowered), sourceRoot: sourceRoot3, textureRoot, ...plan.planRoot !== void 0 ? { planRoot: plan.planRoot } : {} };
+    return { texture: lowered, receipt: { ...base, root: cryptographicHash(base) } };
+  }
+  function verifySpatialTextureResidencyReceipt(receipt) {
+    if (!receipt || receipt.format !== VSR_SPATIAL_TEXTURE_RESIDENCY_EXECUTION_FORMAT || !Array.isArray(receipt.residentLevels) || !Array.isArray(receipt.deferredLevels) || !Number.isInteger(receipt.selectedLevel) || receipt.residentLevels[0] !== receipt.selectedLevel) return false;
+    const { root, ...base } = receipt;
+    return typeof root === "string" && cryptographicHash(base) === root;
   }
   function buildSpatialEnvironmentMipChain(texture, maxLevels = 12) {
     validateTextureLevel(texture.id, texture);

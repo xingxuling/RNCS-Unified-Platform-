@@ -1,0 +1,399 @@
+{
+  "format": "urrf.large-world-texture-residency-execution-report.v0.1",
+  "world_id": "world:urrf-large-world-texture-residency-execution",
+  "scene_root": "073e1c252ab1eef41df487c9d8dcaadb749e293315e539d6563291ebc36016fa",
+  "selection_root": "97cffc024f5167fa8fa15ee341f51315efda34eda84da54a05f808ff0768cbc8",
+  "manifest_root": "523a8b87aab5145a53cad99e9d72b832d0e5c8f58d29cd9e7f889e1d28bb5237",
+  "bundle_root": "e7602ca5f6b1c9ca09c138e8e7c69c41d3c67d9eea33c068acbda3fb02728c32",
+  "asset_count": 60,
+  "total_bytes": 1906428,
+  "texture_profile": "ragf.ktx2-pbr-mipped.v0.1",
+  "texture_residency_profile": "vsr.progressive-mip-residency.v0.1",
+  "source_asset_id": "asset:glb:urrf-large-world-texture-residency-execution-v01:mesh:chunk:world:urrf-large-world-texture-residency-execution:-1:-1:standard:lod0",
+  "source_texture_level_count": 6,
+  "source_texture_byte_length": 22736,
+  "source_texture_roles": [
+    "base-color",
+    "normal",
+    "metallic-roughness",
+    "emissive"
+  ],
+  "source_texture_color_spaces": [
+    "srgb",
+    "linear",
+    "linear",
+    "srgb"
+  ],
+  "source_imported_texture_count": 4,
+  "source_imported_mip_count": 5,
+  "source_material_texture_binding_count": 5,
+  "near": {
+    "plans": [
+      {
+        "root": "725cf51f37056ba90f0eaa8e6138e3abc98abe5490afbd87a6b75e560ec31232",
+        "selected_level": 0,
+        "resident_levels": [
+          0
+        ],
+        "prefetch_levels": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "root": "725cf51f37056ba90f0eaa8e6138e3abc98abe5490afbd87a6b75e560ec31232",
+        "selected_level": 0,
+        "resident_levels": [
+          0
+        ],
+        "prefetch_levels": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "root": "725cf51f37056ba90f0eaa8e6138e3abc98abe5490afbd87a6b75e560ec31232",
+        "selected_level": 0,
+        "resident_levels": [
+          0
+        ],
+        "prefetch_levels": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "root": "725cf51f37056ba90f0eaa8e6138e3abc98abe5490afbd87a6b75e560ec31232",
+        "selected_level": 0,
+        "resident_levels": [
+          0
+        ],
+        "prefetch_levels": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      }
+    ],
+    "receipts": [
+      {
+        "texture_id": "texture:gltf:0",
+        "root": "c0058f908b6ea3796a72814b585049fbfbc01db457d5cb4612013b5c63dbcfed",
+        "source_root": "cb9286ecffc1925c1d65263aba764548c4885e233524ffe4cdeafe5d618ab184",
+        "texture_root": "5d140961a9609d38eceaa1bd26db9140a3bb0edcde2a941ec698a830bef6e8dc",
+        "selected_level": 0,
+        "resident_levels": [
+          0
+        ],
+        "deferred_levels": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "source_level_count": 6,
+        "retained_level_count": 1,
+        "source_byte_length": 5460,
+        "retained_byte_length": 4096,
+        "plan_root": "725cf51f37056ba90f0eaa8e6138e3abc98abe5490afbd87a6b75e560ec31232"
+      },
+      {
+        "texture_id": "texture:gltf:1",
+        "root": "e937962f268f5e9065203995feaf1c38b8cfb357304488fce2710fe3d654bafb",
+        "source_root": "8cf836a3e5706d6c609070516ac0e06843d15829d2167479f94f702fbf86ba39",
+        "texture_root": "2b8dde4d48b3d9700fef636be67515442686d2d163bc619629a7dd3455fddc8c",
+        "selected_level": 0,
+        "resident_levels": [
+          0
+        ],
+        "deferred_levels": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "source_level_count": 6,
+        "retained_level_count": 1,
+        "source_byte_length": 5460,
+        "retained_byte_length": 4096,
+        "plan_root": "725cf51f37056ba90f0eaa8e6138e3abc98abe5490afbd87a6b75e560ec31232"
+      },
+      {
+        "texture_id": "texture:gltf:2",
+        "root": "1c56cc9e5b77ccc631f3151084d48c03acf20598cedd780220665fb0ca256cb2",
+        "source_root": "b3162eba4ae4b69f4a7264f7829a510425468da12e935477257eb146de636f62",
+        "texture_root": "bbc3720ea24173e133c7a0aef25ae70e7ce6061363d71db24d44ebe53d79cd79",
+        "selected_level": 0,
+        "resident_levels": [
+          0
+        ],
+        "deferred_levels": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "source_level_count": 6,
+        "retained_level_count": 1,
+        "source_byte_length": 5460,
+        "retained_byte_length": 4096,
+        "plan_root": "725cf51f37056ba90f0eaa8e6138e3abc98abe5490afbd87a6b75e560ec31232"
+      },
+      {
+        "texture_id": "texture:gltf:3",
+        "root": "a6b435613fe2527d3e53aa6caf8be0e54a7ac42fea1bb9dd0a50d49e911a5ed1",
+        "source_root": "0e0d6bd122408c609c438670004f5683626078af4efd003a09e724bf908d3b72",
+        "texture_root": "4ae0cee62dae990dee4e01c56fff10e3010371482d4748e32e0379a30dbc28d5",
+        "selected_level": 0,
+        "resident_levels": [
+          0
+        ],
+        "deferred_levels": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "source_level_count": 6,
+        "retained_level_count": 1,
+        "source_byte_length": 5460,
+        "retained_byte_length": 4096,
+        "plan_root": "725cf51f37056ba90f0eaa8e6138e3abc98abe5490afbd87a6b75e560ec31232"
+      }
+    ],
+    "frame_root": "855de33bd96c782dfe4c65c34cb47e9a0cfc5606bd8a0ac74596860cbe33d59f",
+    "texture_root": "5031e93b237e1b55f77c24101ae7c98df7656f1665e2d4c0a5d34b2ee9a299bb",
+    "texture_resources": [
+      {
+        "id": "texture:texture:gltf:0",
+        "byte_length": 4096,
+        "mip_level_count": 1,
+        "resource_root": "5d140961a9609d38eceaa1bd26db9140a3bb0edcde2a941ec698a830bef6e8dc"
+      },
+      {
+        "id": "texture:texture:gltf:1",
+        "byte_length": 4096,
+        "mip_level_count": 1,
+        "resource_root": "2b8dde4d48b3d9700fef636be67515442686d2d163bc619629a7dd3455fddc8c"
+      },
+      {
+        "id": "texture:texture:gltf:2",
+        "byte_length": 4096,
+        "mip_level_count": 1,
+        "resource_root": "bbc3720ea24173e133c7a0aef25ae70e7ce6061363d71db24d44ebe53d79cd79"
+      },
+      {
+        "id": "texture:texture:gltf:3",
+        "byte_length": 4096,
+        "mip_level_count": 1,
+        "resource_root": "4ae0cee62dae990dee4e01c56fff10e3010371482d4748e32e0379a30dbc28d5"
+      }
+    ],
+    "material_texture_bindings": 5,
+    "triangle_count": 128,
+    "pixel_root": "c8d6b6ff3e1aab16dc7f0cae949e67cf462d9a77f6d8e343ec7f01944d0e5b55"
+  },
+  "far": {
+    "plans": [
+      {
+        "root": "80906a3ac11adaa3bd7de2be43947c9af2bf837c6ba4c28ce943f95eb12d82f7",
+        "selected_level": 2,
+        "resident_levels": [
+          2
+        ],
+        "prefetch_levels": [
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "root": "80906a3ac11adaa3bd7de2be43947c9af2bf837c6ba4c28ce943f95eb12d82f7",
+        "selected_level": 2,
+        "resident_levels": [
+          2
+        ],
+        "prefetch_levels": [
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "root": "80906a3ac11adaa3bd7de2be43947c9af2bf837c6ba4c28ce943f95eb12d82f7",
+        "selected_level": 2,
+        "resident_levels": [
+          2
+        ],
+        "prefetch_levels": [
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "root": "80906a3ac11adaa3bd7de2be43947c9af2bf837c6ba4c28ce943f95eb12d82f7",
+        "selected_level": 2,
+        "resident_levels": [
+          2
+        ],
+        "prefetch_levels": [
+          3,
+          4,
+          5
+        ]
+      }
+    ],
+    "receipts": [
+      {
+        "texture_id": "texture:gltf:0",
+        "root": "3712c828c6656e57b8b6f1ccad66aef89392e3f64882065cd636b4037f6fe76c",
+        "source_root": "cb9286ecffc1925c1d65263aba764548c4885e233524ffe4cdeafe5d618ab184",
+        "texture_root": "31ea7ce04c794ecf550c04b4e74aa9b0914c0d065d81c394ab5741b828ce7d08",
+        "selected_level": 2,
+        "resident_levels": [
+          2
+        ],
+        "deferred_levels": [
+          0,
+          1,
+          3,
+          4,
+          5
+        ],
+        "source_level_count": 6,
+        "retained_level_count": 1,
+        "source_byte_length": 5460,
+        "retained_byte_length": 256,
+        "plan_root": "80906a3ac11adaa3bd7de2be43947c9af2bf837c6ba4c28ce943f95eb12d82f7"
+      },
+      {
+        "texture_id": "texture:gltf:1",
+        "root": "0dabb427def054d103885a66c73326b0701bcae9fe180724ebd5defd477638b3",
+        "source_root": "8cf836a3e5706d6c609070516ac0e06843d15829d2167479f94f702fbf86ba39",
+        "texture_root": "0815c9b5222343fc6cb90b576263c416cfe59b83c167a6867b927b187a106a81",
+        "selected_level": 2,
+        "resident_levels": [
+          2
+        ],
+        "deferred_levels": [
+          0,
+          1,
+          3,
+          4,
+          5
+        ],
+        "source_level_count": 6,
+        "retained_level_count": 1,
+        "source_byte_length": 5460,
+        "retained_byte_length": 256,
+        "plan_root": "80906a3ac11adaa3bd7de2be43947c9af2bf837c6ba4c28ce943f95eb12d82f7"
+      },
+      {
+        "texture_id": "texture:gltf:2",
+        "root": "ac08dd34fb1c4cf8d42a85a1af7b3e9d0dc83d3ec80db6132df3111432862077",
+        "source_root": "b3162eba4ae4b69f4a7264f7829a510425468da12e935477257eb146de636f62",
+        "texture_root": "229029c9b1c39727d3641241b0c71d2bb5bd4874306e81fb0d0d8dd2b81d9b10",
+        "selected_level": 2,
+        "resident_levels": [
+          2
+        ],
+        "deferred_levels": [
+          0,
+          1,
+          3,
+          4,
+          5
+        ],
+        "source_level_count": 6,
+        "retained_level_count": 1,
+        "source_byte_length": 5460,
+        "retained_byte_length": 256,
+        "plan_root": "80906a3ac11adaa3bd7de2be43947c9af2bf837c6ba4c28ce943f95eb12d82f7"
+      },
+      {
+        "texture_id": "texture:gltf:3",
+        "root": "7d473614e41ac69f555c0bd4800b15ea25936694755d504c5a56a9688f88b408",
+        "source_root": "0e0d6bd122408c609c438670004f5683626078af4efd003a09e724bf908d3b72",
+        "texture_root": "226f423e05075d52ca689d115f0a99f25d6cf9590367a2df670c74935c3a5fe5",
+        "selected_level": 2,
+        "resident_levels": [
+          2
+        ],
+        "deferred_levels": [
+          0,
+          1,
+          3,
+          4,
+          5
+        ],
+        "source_level_count": 6,
+        "retained_level_count": 1,
+        "source_byte_length": 5460,
+        "retained_byte_length": 256,
+        "plan_root": "80906a3ac11adaa3bd7de2be43947c9af2bf837c6ba4c28ce943f95eb12d82f7"
+      }
+    ],
+    "frame_root": "69b5fbbfd408b09b5be04090dd0867b10fe64fb14d7d195b7692de7c58cb8601",
+    "texture_root": "d46751a6200697632bcb3390ea0b1d60f1c2e1f59e3f1d9c2b6f24c6ecc0d07c",
+    "texture_resources": [
+      {
+        "id": "texture:texture:gltf:0",
+        "byte_length": 256,
+        "mip_level_count": 1,
+        "resource_root": "31ea7ce04c794ecf550c04b4e74aa9b0914c0d065d81c394ab5741b828ce7d08"
+      },
+      {
+        "id": "texture:texture:gltf:1",
+        "byte_length": 256,
+        "mip_level_count": 1,
+        "resource_root": "0815c9b5222343fc6cb90b576263c416cfe59b83c167a6867b927b187a106a81"
+      },
+      {
+        "id": "texture:texture:gltf:2",
+        "byte_length": 256,
+        "mip_level_count": 1,
+        "resource_root": "229029c9b1c39727d3641241b0c71d2bb5bd4874306e81fb0d0d8dd2b81d9b10"
+      },
+      {
+        "id": "texture:texture:gltf:3",
+        "byte_length": 256,
+        "mip_level_count": 1,
+        "resource_root": "226f423e05075d52ca689d115f0a99f25d6cf9590367a2df670c74935c3a5fe5"
+      }
+    ],
+    "material_texture_bindings": 5,
+    "triangle_count": 128,
+    "pixel_root": "28f57daf1dde959f67d530b81d8e388f103a46e711042ce9d79cb2bba5afac7c"
+  },
+  "texture_bytes_saved_far_vs_near": 15360,
+  "streaming_root": "65e191dd41eccdd8b2381d2017dd40a1d7a412376d09ca38fd64fcb803fe8bab",
+  "streaming_receipt_root": "26f33a1efa8b8c274fd4222140e5787a6eb145226503d39c15890670f3a3e9a9",
+  "imported_gltf_receipt_root": "0b45ae58eeae384dcd88586382a60e1e92453e316ddb975c125ce7052e1e0f9a",
+  "authority": {
+    "canonical_owner": "RNCS",
+    "representation_owner": "URRF",
+    "execution_owner": "VSR",
+    "encoder_provider": "RAGF",
+    "provider_can_write_authoritative_world_state": false,
+    "candidate_only": true,
+    "authoritative": false
+  },
+  "notes": "Candidate-only execution of URRF progressive mip plans: RAGF native RGBA8 KTX2 PBR maps are decoded to VSR, near/far selected levels are lowered into separate presentation resources, frame texture byte/mip roots change, geometry and source reality roots remain stable, and CPU reference pixels differ. The selected-only VSR resource keeps deferred levels out of the executor input; BasisU supercompression, target-device/GPU timing, CDN delivery, and production-scale performance remain unproven.",
+  "report_root": "55c0fd27246f127f18a98fca9a913ed9f449cdca8532885021e3c302a23951d4"
+}
