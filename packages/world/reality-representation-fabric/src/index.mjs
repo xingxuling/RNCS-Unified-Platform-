@@ -861,3 +861,4 @@ export function createRealityRepresentationFabric(options = {}) {
 }
 
 export * from './transport-runtime.mjs';
+export * from './resource-governor-runtime.mjs';

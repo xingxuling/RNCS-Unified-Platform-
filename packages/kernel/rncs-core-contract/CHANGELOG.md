@@ -19,3 +19,4 @@
 - 增加跨运行时一致性与篡改检测。
 - Added v0.3 Reality Distribution candidates for consistency profiles, authority leases, epoch/fencing admission, revocation, and version-rooted replication envelopes.
 - Added v0.3 Reality Transport candidates for Fiber/WiFi/Bluetooth QoS profiles, node discovery/association/roaming, and authority-gated low-power Organ Links.
+- Added v0.3 Reality Power/Resource candidates for Power Profile, Thermal Envelope, Resource Budget/Demand, Fault, Minimum Viable Reality, and deterministic load-shedding plans that preserve the RNCS authority boundary.

@@ -1,6 +1,7 @@
 # Changelog
 
 - Added v0.3 `RealityTransportFabric` runtime for profile-rooted Fiber/WiFi/Bluetooth propagation candidates, node discovery/association/roaming, and authority-gated low-power Organ Links.
+- Added v0.3 `RealityResourceGovernor` runtime for power/thermal-aware resource budgeting, fault-aware load shedding, and Minimum Viable Reality recovery candidates.
 
 ## 0.1.0-alpha.1
 
