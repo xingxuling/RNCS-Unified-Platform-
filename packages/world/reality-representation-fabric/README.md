@@ -18,4 +18,6 @@ const fabric = new RealityRepresentationFabric({
 
 The runtime can also represent a contract-only provider. In that case it emits an explicit `NOT_EXECUTED` receipt instead of fabricating provider execution.
 
+RealityObject registration now accepts RNCS-owned `property_set` and `law_bindings` contracts. When omitted, the runtime installs explicit empty v0.3 contracts so older representation-only callers remain deterministic. Materialization plans and receipts carry both roots; adapters receive read-only property/law views and fail closed if they claim to mutate canonical property or law state. `createPropertyTransitionCandidate()` records a candidate-only property change and does not commit it.
+
 This is an executable candidate slice: it proves the generic registry/planning/receipt/transition path, not production GPU coverage, distributed residency, or canonical authority promotion.

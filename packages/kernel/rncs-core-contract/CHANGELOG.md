@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- 新增 `rncs.reality-property-set.v0.3`、`rncs.reality-law-bindings.v0.3` 与 `rncs.reality-quantity.v0.3`：PropertySet/LawBindings 的 RNCS 权威根、来源/证据/版本绑定，以及单位—维度非法运算拒绝。
+- 新增 `rncs.reality-property-transition.v0.3` 候选契约：属性变化必须带 Law、State、Provider、Constraint 与 Authority 边界，Provider 不能直接提交 Canonical Property。
 - 新增 `rncs.entity-kernel.v0.1`：typed Fragment Schema、Entity Composition、State Batch、Deferred Mutation Ledger 和快照恢复。
 - 新增 `rncs.representation-transition.v0.1` 候选契约：跨表示 identity、authority、equivalence、resource decision 与可回滚候选态；保持 `NOT_COMMITTED`，不替代 RFE 权威提交。
 - 新增 v0.3 Truth Layer Candidate：Canonical World Time、authority-receipted World Event、确定性 Event Log Replay 与 Fact World Tree schema/test；Subject Memory 保持独立。

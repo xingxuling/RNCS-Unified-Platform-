@@ -1,4 +1,16 @@
 import {
+  createRealityLawBindings,
+  createRealityPropertySet,
+  createRealityPropertyTransitionCandidate,
+  queryRealityLaw,
+  queryRealityProperty,
+  listRealityProperties,
+  REALITY_LAW_BINDINGS_FORMAT,
+  REALITY_PROPERTY_SET_FORMAT,
+  REALITY_PROPERTY_TRANSITION_FORMAT,
+  verifyRealityLawBindings,
+  verifyRealityPropertySet,
+  verifyRealityPropertyTransition,
   applyRepresentationTransition,
   createRepresentationTransitionCandidate,
   rootHash,
@@ -12,6 +24,9 @@ export const URRF_RUNTIME_VERSION = '0.1.0';
 export const URRF_REALITY_OBJECT_FORMAT = 'urrf.reality-object.v0.1';
 export const URRF_MATERIALIZATION_PLAN_FORMAT = 'urrf.materialization-plan.v0.1';
 export const URRF_MATERIALIZATION_RECEIPT_FORMAT = 'urrf.materialization-receipt.v0.1';
+export const URRF_PROPERTY_SET_FORMAT = REALITY_PROPERTY_SET_FORMAT;
+export const URRF_LAW_BINDINGS_FORMAT = REALITY_LAW_BINDINGS_FORMAT;
+export const URRF_PROPERTY_TRANSITION_FORMAT = REALITY_PROPERTY_TRANSITION_FORMAT;
 export const URRF_MATERIALIZATION_STATUSES = Object.freeze(['EXECUTED', 'NOT_EXECUTED', 'FAILED']);
 
 const clone = value => structuredClone(value);
@@ -21,6 +36,28 @@ const hex64 = value => typeof value === 'string' && /^[0-9a-f]{64}$/i.test(value
 const fail = (condition, code) => { if (!condition) throw new Error(code); };
 const without = (value, field) => Object.fromEntries(Object.entries(value).filter(([key]) => key !== field));
 const rootOf = (value, field) => rootHash(without(value, field));
+
+function normalizePropertySet(input, objectId) {
+  const value = record(input);
+  const propertySet = value.property_root
+    ? clone(value)
+    : createRealityPropertySet({...value, object_id: objectId});
+  fail(propertySet.object_id === objectId, 'URRF_OBJECT_PROPERTY_SET_OBJECT_ID_MISMATCH');
+  const verification = verifyRealityPropertySet(propertySet);
+  fail(verification.valid, `URRF_OBJECT_PROPERTY_SET_INVALID:${verification.errors.join(',')}`);
+  return propertySet;
+}
+
+function normalizeLawBindings(input, objectId) {
+  const value = record(input);
+  const bindings = value.bindings_root
+    ? clone(value)
+    : createRealityLawBindings({...value, object_id: objectId});
+  fail(bindings.object_id === objectId, 'URRF_OBJECT_LAW_BINDINGS_OBJECT_ID_MISMATCH');
+  const verification = verifyRealityLawBindings(bindings);
+  fail(verification.valid, `URRF_OBJECT_LAW_BINDINGS_INVALID:${verification.errors.join(',')}`);
+  return bindings;
+}
 
 function providerKinds(manifest) {
   const representation = record(manifest.representation);
@@ -170,11 +207,25 @@ export function verifyMaterializationPlan(plan) {
     check(typeof plan.object_id === 'string' && plan.object_id.length > 0, 'URRF_PLAN_OBJECT_ID_REQUIRED');
     check(hex64(plan.state_root), 'URRF_PLAN_STATE_ROOT_INVALID');
     check(hex64(plan.content_root), 'URRF_PLAN_CONTENT_ROOT_INVALID');
+    if (plan.property_set !== undefined) {
+      check(verifyRealityPropertySet(plan.property_set).valid, 'URRF_PLAN_PROPERTY_SET_INVALID');
+      check(plan.property_root === plan.property_set?.property_root, 'URRF_PLAN_PROPERTY_ROOT_MISMATCH');
+    } else if (plan.property_root !== undefined) {
+      check(hex64(plan.property_root), 'URRF_PLAN_PROPERTY_ROOT_INVALID');
+    }
+    if (plan.law_bindings !== undefined) {
+      check(verifyRealityLawBindings(plan.law_bindings).valid, 'URRF_PLAN_LAW_BINDINGS_INVALID');
+      check(plan.law_bindings_root === plan.law_bindings?.bindings_root, 'URRF_PLAN_LAW_BINDINGS_ROOT_MISMATCH');
+    } else if (plan.law_bindings_root !== undefined) {
+      check(hex64(plan.law_bindings_root), 'URRF_PLAN_LAW_BINDINGS_ROOT_INVALID');
+    }
     check(verifyRepresentationRef(plan.representation).valid, 'URRF_PLAN_REPRESENTATION_INVALID');
     check(plan.representation?.representation_root === plan.representation_root, 'URRF_PLAN_REPRESENTATION_ROOT_MISMATCH');
     check(plan.provider_id === plan.representation?.provider_id, 'URRF_PLAN_PROVIDER_ID_MISMATCH');
     check(plan.provider_root === plan.representation?.provider_root, 'URRF_PLAN_PROVIDER_ROOT_MISMATCH');
     check(plan.authority?.provider_can_write_authoritative_world_state === false, 'URRF_PLAN_AUTHORITY_ESCALATION');
+    if (plan.authority?.provider_can_write_canonical_property !== undefined) check(plan.authority.provider_can_write_canonical_property === false, 'URRF_PLAN_PROPERTY_AUTHORITY_ESCALATION');
+    if (plan.authority?.provider_can_write_canonical_law !== undefined) check(plan.authority.provider_can_write_canonical_law === false, 'URRF_PLAN_LAW_AUTHORITY_ESCALATION');
     check(plan.authority?.rncs_authority_required === true, 'URRF_PLAN_RNCS_AUTHORITY_REQUIRED');
     check(plan.candidate_only === true, 'URRF_PLAN_MUST_BE_CANDIDATE_ONLY');
     check(plan.authoritative === false, 'URRF_PLAN_CANNOT_BE_AUTHORITATIVE');
@@ -200,7 +251,11 @@ export function verifyMaterializationReceipt(receipt) {
     check(hex64(receipt.content_root), 'URRF_RECEIPT_CONTENT_ROOT_INVALID');
     check(hex64(receipt.representation_root), 'URRF_RECEIPT_REPRESENTATION_ROOT_INVALID');
     check(hex64(receipt.provider_root), 'URRF_RECEIPT_PROVIDER_ROOT_INVALID');
+    if (receipt.property_root !== undefined) check(hex64(receipt.property_root), 'URRF_RECEIPT_PROPERTY_ROOT_INVALID');
+    if (receipt.law_bindings_root !== undefined) check(hex64(receipt.law_bindings_root), 'URRF_RECEIPT_LAW_BINDINGS_ROOT_INVALID');
     check(receipt.authority?.provider_can_write_authoritative_world_state === false, 'URRF_RECEIPT_AUTHORITY_ESCALATION');
+    if (receipt.authority?.provider_can_write_canonical_property !== undefined) check(receipt.authority.provider_can_write_canonical_property === false, 'URRF_RECEIPT_PROPERTY_AUTHORITY_ESCALATION');
+    if (receipt.authority?.provider_can_write_canonical_law !== undefined) check(receipt.authority.provider_can_write_canonical_law === false, 'URRF_RECEIPT_LAW_AUTHORITY_ESCALATION');
     check(receipt.authority?.rncs_authority_required === true, 'URRF_RECEIPT_RNCS_AUTHORITY_REQUIRED');
     check(receipt.canonical_state_mutated === false, 'URRF_RECEIPT_CANONICAL_MUTATION');
     check(receipt.candidate_only === true, 'URRF_RECEIPT_MUST_BE_CANDIDATE_ONLY');
@@ -220,12 +275,49 @@ export function verifyFabricSnapshot(snapshot) {
   return rootOf(snapshot, 'fabric_root') === snapshot.fabric_root;
 }
 
+export function verifyRealityObject(object) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!object || typeof object !== 'object') return {valid: false, errors: ['URRF_OBJECT_NOT_OBJECT']};
+  try {
+    check(object.format === URRF_REALITY_OBJECT_FORMAT, 'URRF_OBJECT_FORMAT_INVALID');
+    check(object.version === URRF_RUNTIME_VERSION, 'URRF_OBJECT_VERSION_INVALID');
+    check(typeof object.object_id === 'string' && object.object_id.length > 0, 'URRF_OBJECT_ID_REQUIRED');
+    check(typeof object.branch === 'string' && object.branch.length > 0, 'URRF_OBJECT_BRANCH_REQUIRED');
+    check(hex64(object.state_root), 'URRF_OBJECT_STATE_ROOT_INVALID');
+    check(hex64(object.content_root), 'URRF_OBJECT_CONTENT_ROOT_INVALID');
+    check(Array.isArray(object.representations) && object.representations.length > 0, 'URRF_OBJECT_REPRESENTATIONS_REQUIRED');
+    for (const reference of object.representations ?? []) {
+      check(verifyRepresentationRef(reference).valid, 'URRF_OBJECT_REPRESENTATION_INVALID');
+      check(reference.content_root === object.content_root, 'URRF_OBJECT_CONTENT_ROOT_MISMATCH');
+    }
+    check(verifyRealityPropertySet(object.property_set).valid, 'URRF_OBJECT_PROPERTY_SET_INVALID');
+    check(verifyRealityLawBindings(object.law_bindings).valid, 'URRF_OBJECT_LAW_BINDINGS_INVALID');
+    check(object.property_set?.object_id === object.object_id, 'URRF_OBJECT_PROPERTY_SET_OBJECT_ID_MISMATCH');
+    check(object.law_bindings?.object_id === object.object_id, 'URRF_OBJECT_LAW_BINDINGS_OBJECT_ID_MISMATCH');
+    check(object.property_root === object.property_set?.property_root, 'URRF_OBJECT_PROPERTY_ROOT_MISMATCH');
+    check(object.law_bindings_root === object.law_bindings?.bindings_root, 'URRF_OBJECT_LAW_BINDINGS_ROOT_MISMATCH');
+    check(object.canonical_owner === 'RNCS', 'URRF_OBJECT_CANONICAL_OWNER_INVALID');
+    check(object.representation_owner === 'URRF', 'URRF_OBJECT_REPRESENTATION_OWNER_INVALID');
+    check(object.authority?.provider_can_write_authoritative_world_state === false, 'URRF_OBJECT_AUTHORITY_ESCALATION');
+    check(object.authority?.rncs_authority_required === true, 'URRF_OBJECT_RNCS_AUTHORITY_REQUIRED');
+    check(object.candidate_only === true && object.authoritative === false && object.commit_status === 'NOT_COMMITTED', 'URRF_OBJECT_STATUS_INVALID');
+    const base = Object.fromEntries(Object.entries(object).filter(([key]) => !['object_root', 'active_representation_root'].includes(key)));
+    check(hex64(object.object_root), 'URRF_OBJECT_ROOT_INVALID');
+    check(rootHash(base) === object.object_root, 'URRF_OBJECT_ROOT_MISMATCH');
+  } catch (error) {
+    errors.push(`URRF_OBJECT_VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, object_root: object.object_root};
+}
+
 export class RealityRepresentationFabric {
   constructor({providers = [], objects = []} = {}) {
     this.providers = new Map();
     this.objects = new Map();
     this.activeRoots = new Map();
     this.transitions = new Map();
+    this.propertyTransitions = new Map();
     for (const provider of providers) this.registerProvider(provider);
     for (const object of objects) this.registerRealityObject(object);
   }
@@ -266,6 +358,8 @@ export class RealityRepresentationFabric {
     const content_root = String(value.content_root ?? references[0].content_root);
     fail(hex64(content_root), 'URRF_OBJECT_CONTENT_ROOT_INVALID');
     fail(references.every(reference => reference.content_root === content_root), 'URRF_OBJECT_CONTENT_ROOT_MISMATCH');
+    const property_set = normalizePropertySet(value.property_set ?? value.propertySet, object_id);
+    const law_bindings = normalizeLawBindings(value.law_bindings ?? value.lawBindings, object_id);
     const representationIds = new Set();
     for (const reference of references) {
       fail(!representationIds.has(reference.representation_id), 'URRF_OBJECT_DUPLICATE_REPRESENTATION_ID');
@@ -280,6 +374,10 @@ export class RealityRepresentationFabric {
       state_root,
       content_root,
       representations: sortedReferences,
+      property_set,
+      property_root: property_set.property_root,
+      law_bindings,
+      law_bindings_root: law_bindings.bindings_root,
       canonical_owner: 'RNCS',
       representation_owner: 'URRF',
       authority: {
@@ -345,6 +443,10 @@ export class RealityRepresentationFabric {
       branch: object.branch,
       state_root: object.state_root,
       content_root: object.content_root,
+      property_set: clone(object.property_set),
+      property_root: object.property_root,
+      law_bindings: clone(object.law_bindings),
+      law_bindings_root: object.law_bindings_root,
       representation: clone(reference),
       representation_id: reference.representation_id,
       representation_root: reference.representation_root,
@@ -371,6 +473,8 @@ export class RealityRepresentationFabric {
       },
       authority: {
         provider_can_write_authoritative_world_state: false,
+        provider_can_write_canonical_property: false,
+        provider_can_write_canonical_law: false,
         rncs_authority_required: true,
         candidate_only: true
       },
@@ -390,15 +494,25 @@ export class RealityRepresentationFabric {
     const provider = this.providers.get(plan.provider_id);
     fail(object, `URRF_OBJECT_NOT_REGISTERED:${plan.object_id}`);
     fail(provider, `URRF_PROVIDER_NOT_REGISTERED:${plan.provider_id}`);
+    const propertyRoot = plan.property_root ?? object.property_root;
+    const lawBindingsRoot = plan.law_bindings_root ?? object.law_bindings_root;
+    fail(propertyRoot === object.property_root, 'URRF_PLAN_PROPERTY_ROOT_OBJECT_MISMATCH');
+    fail(lawBindingsRoot === object.law_bindings_root, 'URRF_PLAN_LAW_BINDINGS_ROOT_OBJECT_MISMATCH');
     const adapterInput = {
       object: clone(object),
+      property_set: clone(object.property_set),
+      law_bindings: clone(object.law_bindings),
       reference: clone(plan.representation),
       plan: clone(plan),
       context: clone(record(options).context ?? {}),
       authority: {
         provider_can_write_authoritative_world_state: false,
+        provider_can_write_canonical_property: false,
+        provider_can_write_canonical_law: false,
         rncs_authority_required: true,
-        canonical_state_mutation_allowed: false
+        canonical_state_mutation_allowed: false,
+        canonical_property_mutation_allowed: false,
+        canonical_law_mutation_allowed: false
       }
     };
     let status = 'NOT_EXECUTED';
@@ -417,7 +531,7 @@ export class RealityRepresentationFabric {
         const value = record(result);
         runtime = String(value.runtime ?? runtime);
         output_kind = String(value.output_kind ?? output_kind);
-        if (value.authoritative === true || value.canonical_state_mutated === true || value.provider_can_write_authoritative_world_state === true) {
+        if (value.authoritative === true || value.canonical_state_mutated === true || value.provider_can_write_authoritative_world_state === true || value.canonical_property_mutated === true || value.canonical_law_mutated === true || value.provider_can_write_canonical_property === true || value.provider_can_write_canonical_law === true) {
           throw new Error('URRF_PROVIDER_AUTHORITY_ESCALATION');
         }
         if (value.status === 'FAILED' || value.execution_status === 'FAILED') {
@@ -448,6 +562,8 @@ export class RealityRepresentationFabric {
       branch: plan.branch,
       state_root: plan.state_root,
       content_root: plan.content_root,
+      property_root: propertyRoot,
+      law_bindings_root: lawBindingsRoot,
       representation_id: plan.representation_id,
       representation_root: plan.representation_root,
       provider_id: plan.provider_id,
@@ -463,8 +579,12 @@ export class RealityRepresentationFabric {
       residency_policy_root: plan.resource_decision.residency_policy_root,
       authority: {
         provider_can_write_authoritative_world_state: false,
+        provider_can_write_canonical_property: false,
+        provider_can_write_canonical_law: false,
         rncs_authority_required: true,
-        canonical_state_mutation_allowed: false
+        canonical_state_mutation_allowed: false,
+        canonical_property_mutation_allowed: false,
+        canonical_law_mutation_allowed: false
       },
       canonical_state_mutated: false,
       failure,
@@ -501,20 +621,27 @@ export class RealityRepresentationFabric {
       }
     };
     const candidate = createRepresentationTransitionCandidate(candidateInput);
+    const withRealityRoots = value => {
+      const {transition_root: _transitionRoot, ...base} = value;
+      return {...base, property_root: object.property_root, law_bindings_root: object.law_bindings_root, transition_root: rootHash({...base, property_root: object.property_root, law_bindings_root: object.law_bindings_root})};
+    };
     const materializationReceipt = request.materialization_receipt ?? request.target_materialization_receipt;
     if (materializationReceipt) {
       const receiptVerification = verifyMaterializationReceipt(materializationReceipt);
       fail(receiptVerification.valid, `URRF_TRANSITION_RECEIPT_INVALID:${receiptVerification.errors.join(',')}`);
       fail(materializationReceipt.object_id === object.object_id, 'URRF_TRANSITION_RECEIPT_OBJECT_MISMATCH');
       fail(materializationReceipt.representation_root === target.representation_root, 'URRF_TRANSITION_RECEIPT_TARGET_MISMATCH');
-      const {transition_root: _candidateRoot, ...candidateBase} = candidate;
+      if (materializationReceipt.property_root !== undefined) fail(materializationReceipt.property_root === object.property_root, 'URRF_TRANSITION_RECEIPT_PROPERTY_ROOT_MISMATCH');
+      if (materializationReceipt.law_bindings_root !== undefined) fail(materializationReceipt.law_bindings_root === object.law_bindings_root, 'URRF_TRANSITION_RECEIPT_LAW_BINDINGS_ROOT_MISMATCH');
+      const {transition_root: _candidateRoot, ...candidateBase} = withRealityRoots(candidate);
       const withEvidence = {...candidateBase, runtime_evidence: {target_materialization_receipt_root: materializationReceipt.receipt_root, status: materializationReceipt.status}};
       const evidenced = {...withEvidence, transition_root: rootHash(withEvidence)};
       this.transitions.set(transition_id, evidenced);
       return evidenced;
     }
-    this.transitions.set(transition_id, candidate);
-    return candidate;
+    const evidencedCandidate = withRealityRoots(candidate);
+    this.transitions.set(transition_id, evidencedCandidate);
+    return evidencedCandidate;
   }
 
   applyTransition(transition) {
@@ -539,6 +666,61 @@ export class RealityRepresentationFabric {
     return rolledBack;
   }
 
+  getPropertySet(objectId) {
+    const object = this.objects.get(String(objectId));
+    return object ? clone(object.property_set) : null;
+  }
+
+  queryProperty(objectId, propertyId) {
+    const propertySet = this.getPropertySet(objectId);
+    fail(propertySet, `URRF_OBJECT_NOT_REGISTERED:${objectId}`);
+    return queryRealityProperty(propertySet, propertyId);
+  }
+
+  listProperties(objectId) {
+    const propertySet = this.getPropertySet(objectId);
+    fail(propertySet, `URRF_OBJECT_NOT_REGISTERED:${objectId}`);
+    return listRealityProperties(propertySet);
+  }
+
+  getLawBindings(objectId) {
+    const object = this.objects.get(String(objectId));
+    return object ? clone(object.law_bindings) : null;
+  }
+
+  queryLaw(objectId, lawId) {
+    const bindings = this.getLawBindings(objectId);
+    fail(bindings, `URRF_OBJECT_NOT_REGISTERED:${objectId}`);
+    return queryRealityLaw(bindings, lawId);
+  }
+
+  createPropertyTransitionCandidate(input = {}) {
+    const request = record(input);
+    const objectId = String(request.object_id ?? request.id ?? '');
+    const object = this.objects.get(objectId);
+    fail(object, `URRF_OBJECT_NOT_REGISTERED:${objectId}`);
+    const requestedLaw = request.law_binding ?? request.lawBinding;
+    const lawId = String(requestedLaw?.law_id ?? request.law_id ?? request.lawId ?? '');
+    const boundLaw = lawId ? queryRealityLaw(object.law_bindings, lawId) : null;
+    fail(boundLaw || requestedLaw, 'URRF_PROPERTY_TRANSITION_LAW_NOT_BOUND');
+    const candidate = createRealityPropertyTransitionCandidate({
+      ...request,
+      property_set: request.property_set ?? request.propertySet ?? object.property_set,
+      law_binding: boundLaw ?? requestedLaw,
+      source_state_root: request.source_state_root ?? object.state_root
+    });
+    this.propertyTransitions.set(candidate.transition_id, candidate);
+    return clone(candidate);
+  }
+
+  getPropertyTransition(transitionId) {
+    return clone(this.propertyTransitions.get(String(transitionId)) ?? null);
+  }
+
+  verifyPropertyTransition(transition) {
+    return verifyRealityPropertyTransition(transition);
+  }
+
   getTransition(transitionId) {
     return clone(this.transitions.get(String(transitionId)) ?? null);
   }
@@ -548,9 +730,10 @@ export class RealityRepresentationFabric {
       format: URRF_RUNTIME_FORMAT,
       version: URRF_RUNTIME_VERSION,
       providers: [...this.providers.values()].map(publicProvider).sort((a, b) => Buffer.compare(Buffer.from(a.provider_id, 'utf8'), Buffer.from(b.provider_id, 'utf8'))),
-      objects: [...this.objects.values()].map(object => ({object_id: object.object_id, object_root: object.object_root, state_root: object.state_root, content_root: object.content_root})).sort((a, b) => Buffer.compare(Buffer.from(a.object_id, 'utf8'), Buffer.from(b.object_id, 'utf8'))),
+      objects: [...this.objects.values()].map(object => ({object_id: object.object_id, object_root: object.object_root, state_root: object.state_root, content_root: object.content_root, property_root: object.property_root, law_bindings_root: object.law_bindings_root})).sort((a, b) => Buffer.compare(Buffer.from(a.object_id, 'utf8'), Buffer.from(b.object_id, 'utf8'))),
       active_representations: [...this.activeRoots.entries()].map(([object_id, representation_root]) => ({object_id, representation_root})).sort((a, b) => Buffer.compare(Buffer.from(a.object_id, 'utf8'), Buffer.from(b.object_id, 'utf8'))),
-      transitions: [...this.transitions.values()].map(transition => ({transition_id: transition.transition_id, transition_root: transition.transition_root, phase: transition.phase, active_representation_root: transition.active_representation_root})).sort((a, b) => Buffer.compare(Buffer.from(a.transition_id, 'utf8'), Buffer.from(b.transition_id, 'utf8')))
+      transitions: [...this.transitions.values()].map(transition => ({transition_id: transition.transition_id, transition_root: transition.transition_root, phase: transition.phase, active_representation_root: transition.active_representation_root, property_root: transition.property_root ?? null, law_bindings_root: transition.law_bindings_root ?? null})).sort((a, b) => Buffer.compare(Buffer.from(a.transition_id, 'utf8'), Buffer.from(b.transition_id, 'utf8'))),
+      property_transitions: [...this.propertyTransitions.values()].map(transition => ({transition_id: transition.transition_id, transition_root: transition.transition_root, phase: transition.phase, source_property_root: transition.source_property_root})).sort((a, b) => Buffer.compare(Buffer.from(a.transition_id, 'utf8'), Buffer.from(b.transition_id, 'utf8')))
     };
     return {...base, fabric_root: rootHash(base)};
   }
