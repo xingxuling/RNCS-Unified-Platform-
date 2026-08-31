@@ -9,6 +9,7 @@ import {
   checkAuthorityLease,
   createFactWorldTree,
   createAuthorityLease,
+  createRealityQuery,
   createRealityConsistencyProfile,
   createRepresentationPortfolio,
   createRepresentationSlot,
@@ -25,6 +26,11 @@ import {
   REALITY_CONSISTENCY_PROFILE_FORMAT,
   AUTHORITY_LEASE_FORMAT,
   verifyRealityConsistencyProfile,
+  verifyCognitiveWorkingSet,
+  verifyRealityHorizon,
+  verifyRealityInterestGraph,
+  verifyRealityQuery,
+  verifyRealityQueryResult,
   verifyWorldEvent,
   verifyWorldEventLog,
   verifyWorldFact,
@@ -39,6 +45,7 @@ export const LARGE_WORLD_RUNTIME_VERSION = '0.1.0';
 export const LARGE_WORLD_REGION_FORMAT = 'rncs.large-world-region.v0.1';
 export const LARGE_WORLD_CHUNK_FORMAT = 'rncs.large-world-chunk.v0.1';
 export const LARGE_WORLD_STREAM_FORMAT = 'rncs.large-world-stream-resolution.v0.1';
+export const LARGE_WORLD_REALITY_ACCESS_FORMAT = 'rncs.large-world-reality-access-resolution.v0.1';
 export const LARGE_WORLD_PORTFOLIO_SELECTION_FORMAT = 'rncs.large-world-portfolio-selection.v0.1';
 export const LARGE_WORLD_SPATIAL_SCENE_FORMAT = 'rncs.large-world-spatial-scene.v0.1';
 export const LARGE_WORLD_SPATIAL_VISUAL_PROFILE = 'large-world.visual-prototypes.v0.1';
@@ -429,6 +436,34 @@ function createChunkReference(chunk, provider, available, {encoding, fidelity, p
     provenance: {generator_version: LARGE_WORLD_RUNTIME_VERSION, parameters_root: chunk.chunk_root},
     evidence: {provider_manifest_root: provider.manifest_root}
   });
+}
+
+function chunkRealityQueryIndex(chunk) {
+  const biome = String(chunk.biome ?? 'unknown').toLowerCase();
+  const structureTags = (chunk.structures ?? []).map(structure => `structure:${String(structure.kind ?? 'unknown').toLowerCase()}`);
+  const resourceTags = (chunk.resources ?? []).map(resource => `resource:${String(resource.kind ?? 'unknown').toLowerCase()}`);
+  return {
+    position: {
+      x: Number(chunk.origin_mm?.x ?? 0) / 1000 + Number(chunk.extent_mm?.x ?? 0) / 2000,
+      y: 0,
+      z: Number(chunk.origin_mm?.z ?? 0) / 1000 + Number(chunk.extent_mm?.z ?? 0) / 2000
+    },
+    semantic_tags: strings(['large-world', 'chunk', biome, `biome:${biome}`, `world:${chunk.world_id}`, ...structureTags, ...resourceTags]),
+    state: {
+      world_id: chunk.world_id,
+      chunk_id: chunk.chunk_id,
+      biome,
+      generation: String(chunk.generation),
+      structure_count: String((chunk.structures ?? []).length),
+      resource_count: String((chunk.resources ?? []).length),
+      memory_bytes: String(chunk.memory_bytes)
+    },
+    relations: [{type: 'world_member', from: String(chunk.world_id), to: String(chunk.chunk_id)}],
+    temporal: {from: '0', to: String(chunk.generation)},
+    authority_scope: ['public'],
+    freshness: String(chunk.generation),
+    evidence_refs: [chunk.chunk_root, chunk.content_root]
+  };
 }
 
 function isWireframeReference(reference) {
@@ -2198,6 +2233,7 @@ export class LargeWorldRuntime {
         branch: 'main',
         state_root: chunk.state_root,
         content_root: chunk.content_root,
+        query_index: chunkRealityQueryIndex(chunk),
         representations: [proceduralReference, wireframeReference]
       });
       this.objects.set(chunk.chunk_id, object);
@@ -2221,6 +2257,126 @@ export class LargeWorldRuntime {
       ...record(input),
       representationObject: this.getRepresentationObject(chunk.chunk_id)
     });
+  }
+
+  createHorizon(input = {}) { return this.fabric.createHorizon(input); }
+
+  createRealityHorizon(input = {}) { return this.createHorizon(input); }
+
+  createInterestGraph(input = {}) { return this.fabric.createInterestGraph(input); }
+
+  createRealityInterestGraph(input = {}) { return this.createInterestGraph(input); }
+
+  queryReality(input = {}) { return this.fabric.queryReality(input); }
+
+  createCognitiveWorkingSet(input = {}) { return this.fabric.createCognitiveWorkingSet(input); }
+
+  /**
+   * Lower the v0.3 URRF access chain into the bounded large-world stream:
+   * RealityHorizon -> InterestGraph -> RealityQuery -> CognitiveWorkingSet
+   * -> forced chunk requests -> candidate stream resolution.
+   *
+   * This only changes candidate streaming state. RNCS world truth remains
+   * canonical and no provider or query result receives mutation authority.
+   */
+  resolveRealityAccess(input = {}) {
+    const value = record(input);
+    const subjectId = String(value.subject_id ?? value.subjectId ?? '');
+    fail(subjectId, 'LARGE_WORLD_REALITY_ACCESS_SUBJECT_ID_REQUIRED');
+    const observer = normalizeObserver(value.observer ?? value.position ?? this.observer);
+    const radiusInput = value.radius_m ?? value.radius ?? Math.max(this.options.chunkSize * (this.options.loadRadius + 1), this.options.chunkSize);
+    const radius = Number(radiusInput);
+    fail(Number.isFinite(radius) && radius >= 0, 'LARGE_WORLD_REALITY_ACCESS_RADIUS_INVALID');
+    const permissionInput = value.permission_scope ?? value.permissionScope;
+    const permissionScope = Array.isArray(permissionInput) ? strings(permissionInput) : ['public'];
+    const horizon = value.horizon ?? value.reality_horizon ?? this.createHorizon({
+      subject_id: subjectId,
+      spatial: {radius: String(radius), unit: 'm'},
+      semantic: {tags: ['large-world', `world:${this.options.worldId}`]},
+      permission_scope: permissionScope
+    });
+    const horizonVerification = verifyRealityHorizon(horizon);
+    fail(horizonVerification.valid, `LARGE_WORLD_REALITY_ACCESS_HORIZON_INVALID:${horizonVerification.errors.join(',')}`);
+    fail(horizon.subject_id === subjectId, 'LARGE_WORLD_REALITY_ACCESS_HORIZON_SUBJECT_MISMATCH');
+    const interestGraph = value.interest_graph ?? value.interestGraph ?? null;
+    if (interestGraph !== null) {
+      const graphVerification = verifyRealityInterestGraph(interestGraph);
+      fail(graphVerification.valid, `LARGE_WORLD_REALITY_ACCESS_INTEREST_GRAPH_INVALID:${graphVerification.errors.join(',')}`);
+      fail(interestGraph.subject_id === subjectId, 'LARGE_WORLD_REALITY_ACCESS_INTEREST_GRAPH_SUBJECT_MISMATCH');
+    }
+    const rawFilters = record(value.filters);
+    const rawSpatial = record(rawFilters.spatial);
+    const filters = {
+      ...rawFilters,
+      spatial: {
+        ...rawSpatial,
+        origin: rawSpatial.origin ?? {x: observer.x, y: 0, z: observer.z},
+        radius: rawSpatial.radius ?? String(radius),
+        unit: rawSpatial.unit ?? 'm'
+      }
+    };
+    const query = createRealityQuery({
+      ...(value.query_id === undefined && value.queryId === undefined ? {} : {query_id: value.query_id ?? value.queryId}),
+      subject_id: subjectId,
+      horizon,
+      interest_graph: interestGraph,
+      filters,
+      permission_scope: permissionScope,
+      limit: value.limit ?? Math.max(1, this.options.maxActiveChunks * 2),
+      freshness_budget: value.freshness_budget ?? value.freshnessBudget,
+      revalidate_canonical: value.revalidate_canonical !== false
+    });
+    const queryVerification = verifyRealityQuery(query);
+    fail(queryVerification.valid, `LARGE_WORLD_REALITY_ACCESS_QUERY_INVALID:${queryVerification.errors.join(',')}`);
+    const queryResult = this.fabric.queryReality(query);
+    const workingSet = this.createCognitiveWorkingSet({
+      query_result: queryResult,
+      subject_id: subjectId,
+      capacity: value.capacity ?? value.max_objects ?? value.maxObjects ?? this.options.maxActiveChunks
+    });
+    const selectedObjectIds = workingSet.objects.map(row => String(row.object_id));
+    const selectedChunkIds = [];
+    const unresolvedObjectIds = [];
+    for (const objectId of selectedObjectIds) {
+      const chunk = this.chunksByObjectId.get(objectId);
+      if (chunk) selectedChunkIds.push(chunk.chunk_id);
+      else unresolvedObjectIds.push(objectId);
+    }
+    const existingForced = value.forcedChunkIds ?? value.forced_chunk_ids;
+    const forcedChunkIds = strings([...(Array.isArray(existingForced) ? existingForced : []), ...selectedChunkIds]);
+    const stream = this.observe({position: observer, forcedChunkIds});
+    const activeSelectedChunkIds = selectedChunkIds.filter(chunkId => stream.active_chunk_ids.includes(chunkId));
+    const unresolvedChunkIds = selectedChunkIds.filter(chunkId => !stream.active_chunk_ids.includes(chunkId));
+    const base = {
+      format: LARGE_WORLD_REALITY_ACCESS_FORMAT,
+      version: LARGE_WORLD_RUNTIME_VERSION,
+      world_id: this.options.worldId,
+      generation: this.options.generation,
+      region_root: this.region.region_root,
+      world_root: this.region.world_root,
+      subject_id: subjectId,
+      observer: clone(observer),
+      horizon: clone(horizon),
+      interest_graph: interestGraph ? clone(interestGraph) : null,
+      query: clone(query),
+      query_result: clone(queryResult),
+      working_set: clone(workingSet),
+      stream_resolution: clone(stream),
+      stream_root: stream.stream_root,
+      active_chunk_ids: [...stream.active_chunk_ids],
+      selected_object_ids: selectedObjectIds,
+      selected_chunk_ids: selectedChunkIds,
+      active_selected_chunk_ids: activeSelectedChunkIds,
+      unresolved_object_ids: unresolvedObjectIds,
+      unresolved_chunk_ids: unresolvedChunkIds,
+      forced_chunk_ids: forcedChunkIds,
+      canonical_state_mutated: false,
+      authority: {provider_can_write_authoritative_world_state: false, rncs_authority_required: true},
+      candidate_only: true,
+      authoritative: false,
+      commit_status: 'NOT_COMMITTED'
+    };
+    return {...base, resolution_root: rootHash(base)};
   }
 
   createSpatialScene(input = {}) {
@@ -3470,6 +3626,63 @@ export class LargeWorldReplicationLink {
       errors: clone(this.errors)
     };
   }
+}
+
+export function verifyLargeWorldRealityAccessResolution(resolution) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!resolution || typeof resolution !== 'object' || Array.isArray(resolution)) return {valid: false, errors: ['LARGE_WORLD_REALITY_ACCESS_NOT_OBJECT']};
+  try {
+    check(resolution.format === LARGE_WORLD_REALITY_ACCESS_FORMAT, 'LARGE_WORLD_REALITY_ACCESS_FORMAT_INVALID');
+    check(resolution.version === LARGE_WORLD_RUNTIME_VERSION, 'LARGE_WORLD_REALITY_ACCESS_VERSION_INVALID');
+    check(typeof resolution.world_id === 'string' && resolution.world_id.length > 0, 'LARGE_WORLD_REALITY_ACCESS_WORLD_ID_REQUIRED');
+    check(Number.isSafeInteger(resolution.generation) && resolution.generation >= 0, 'LARGE_WORLD_REALITY_ACCESS_GENERATION_INVALID');
+    check(hex64(resolution.region_root), 'LARGE_WORLD_REALITY_ACCESS_REGION_ROOT_INVALID');
+    check(hex64(resolution.world_root), 'LARGE_WORLD_REALITY_ACCESS_WORLD_ROOT_INVALID');
+    check(typeof resolution.subject_id === 'string' && resolution.subject_id.length > 0, 'LARGE_WORLD_REALITY_ACCESS_SUBJECT_ID_REQUIRED');
+    check(resolution.observer && Number.isSafeInteger(resolution.observer.x) && Number.isSafeInteger(resolution.observer.z), 'LARGE_WORLD_REALITY_ACCESS_OBSERVER_INVALID');
+    const queryVerification = verifyRealityQuery(resolution.query);
+    check(queryVerification.valid, `LARGE_WORLD_REALITY_ACCESS_QUERY_INVALID:${queryVerification.errors.join(',')}`);
+    const resultVerification = verifyRealityQueryResult(resolution.query_result);
+    check(resultVerification.valid, `LARGE_WORLD_REALITY_ACCESS_QUERY_RESULT_INVALID:${resultVerification.errors.join(',')}`);
+    const workingSetVerification = verifyCognitiveWorkingSet(resolution.working_set);
+    check(workingSetVerification.valid, `LARGE_WORLD_REALITY_ACCESS_WORKING_SET_INVALID:${workingSetVerification.errors.join(',')}`);
+    const streamVerification = verifyStreamResolutionReceipt(resolution.stream_resolution);
+    check(streamVerification.valid, `LARGE_WORLD_REALITY_ACCESS_STREAM_INVALID:${streamVerification.errors.join(',')}`);
+    check(resolution.query?.subject_id === resolution.subject_id, 'LARGE_WORLD_REALITY_ACCESS_QUERY_SUBJECT_MISMATCH');
+    check(resolution.query?.horizon?.horizon_root === resolution.horizon?.horizon_root, 'LARGE_WORLD_REALITY_ACCESS_HORIZON_ROOT_MISMATCH');
+    check((resolution.query?.interest_graph?.graph_root ?? null) === (resolution.interest_graph?.graph_root ?? null), 'LARGE_WORLD_REALITY_ACCESS_INTEREST_GRAPH_ROOT_MISMATCH');
+    check(resolution.query_result?.query_root === resolution.query?.query_root, 'LARGE_WORLD_REALITY_ACCESS_QUERY_ROOT_MISMATCH');
+    check(resolution.working_set?.source_query_root === resolution.query_result?.query_root, 'LARGE_WORLD_REALITY_ACCESS_WORKING_SET_QUERY_ROOT_MISMATCH');
+    check(resolution.working_set?.subject_id === resolution.subject_id, 'LARGE_WORLD_REALITY_ACCESS_WORKING_SET_SUBJECT_MISMATCH');
+    check(resolution.stream_resolution?.stream_root === resolution.stream_root, 'LARGE_WORLD_REALITY_ACCESS_STREAM_ROOT_MISMATCH');
+    check(Array.isArray(resolution.selected_object_ids), 'LARGE_WORLD_REALITY_ACCESS_SELECTED_OBJECTS_INVALID');
+    check(Array.isArray(resolution.selected_chunk_ids), 'LARGE_WORLD_REALITY_ACCESS_SELECTED_CHUNKS_INVALID');
+    check(Array.isArray(resolution.active_selected_chunk_ids), 'LARGE_WORLD_REALITY_ACCESS_ACTIVE_SELECTED_INVALID');
+    check(Array.isArray(resolution.unresolved_object_ids), 'LARGE_WORLD_REALITY_ACCESS_UNRESOLVED_OBJECTS_INVALID');
+    check(Array.isArray(resolution.unresolved_chunk_ids), 'LARGE_WORLD_REALITY_ACCESS_UNRESOLVED_CHUNKS_INVALID');
+    check(Array.isArray(resolution.forced_chunk_ids), 'LARGE_WORLD_REALITY_ACCESS_FORCED_CHUNKS_INVALID');
+    const workingObjectIds = (resolution.working_set?.objects ?? []).map(row => String(row.object_id));
+    check(JSON.stringify(workingObjectIds) === JSON.stringify(resolution.selected_object_ids ?? []), 'LARGE_WORLD_REALITY_ACCESS_SELECTED_OBJECTS_MISMATCH');
+    check(JSON.stringify([...(resolution.stream_resolution?.forced_chunk_ids ?? [])].sort(keySort)) === JSON.stringify([...(resolution.forced_chunk_ids ?? [])].sort(keySort)), 'LARGE_WORLD_REALITY_ACCESS_FORCED_CHUNKS_MISMATCH');
+    check((resolution.selected_chunk_ids ?? []).every(chunkId => (resolution.forced_chunk_ids ?? []).includes(chunkId)), 'LARGE_WORLD_REALITY_ACCESS_SELECTED_CHUNKS_NOT_FORCED');
+    check((resolution.active_selected_chunk_ids ?? []).every(chunkId => (resolution.stream_resolution?.active_chunk_ids ?? []).includes(chunkId)), 'LARGE_WORLD_REALITY_ACCESS_ACTIVE_SELECTED_NOT_ACTIVE');
+    check((resolution.unresolved_chunk_ids ?? []).every(chunkId => !(resolution.stream_resolution?.active_chunk_ids ?? []).includes(chunkId)), 'LARGE_WORLD_REALITY_ACCESS_UNRESOLVED_CHUNK_ACTIVE');
+    check(JSON.stringify([...(resolution.active_selected_chunk_ids ?? []), ...(resolution.unresolved_chunk_ids ?? [])].sort(keySort)) === JSON.stringify([...(resolution.selected_chunk_ids ?? [])].sort(keySort)), 'LARGE_WORLD_REALITY_ACCESS_SELECTED_CHUNK_PARTITION_MISMATCH');
+    check(JSON.stringify([...(resolution.stream_resolution?.active_chunk_ids ?? [])].sort(keySort)) === JSON.stringify([...(resolution.active_chunk_ids ?? resolution.stream_resolution?.active_chunk_ids ?? [])].sort(keySort)), 'LARGE_WORLD_REALITY_ACCESS_ACTIVE_CHUNKS_MISMATCH');
+    check(resolution.canonical_state_mutated === false, 'LARGE_WORLD_REALITY_ACCESS_CANONICAL_MUTATION');
+    check(resolution.authority?.provider_can_write_authoritative_world_state === false, 'LARGE_WORLD_REALITY_ACCESS_AUTHORITY_ESCALATION');
+    check(resolution.authority?.rncs_authority_required === true, 'LARGE_WORLD_REALITY_ACCESS_RNCS_AUTHORITY_REQUIRED');
+    check(resolution.candidate_only === true && resolution.authoritative === false, 'LARGE_WORLD_REALITY_ACCESS_STATUS_INVALID');
+    check(resolution.commit_status === 'NOT_COMMITTED', 'LARGE_WORLD_REALITY_ACCESS_COMMIT_STATUS_INVALID');
+    const copy = clone(resolution);
+    const root = copy.resolution_root;
+    delete copy.resolution_root;
+    check(hex64(root) && rootHash(copy) === root, 'LARGE_WORLD_REALITY_ACCESS_ROOT_MISMATCH');
+  } catch (error) {
+    errors.push(`LARGE_WORLD_REALITY_ACCESS_VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, resolution_root: resolution.resolution_root ?? null};
 }
 
 export function verifyStreamResolutionReceipt(resolution) {

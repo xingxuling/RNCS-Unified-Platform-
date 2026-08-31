@@ -7,6 +7,7 @@ import {createAuthorityLease, createRealityConsistencyProfile, rootHash, verifyR
 import {RealityRepresentationPortfolioRuntime} from '@taowind/reality-representation-fabric';
 import {
   LARGE_WORLD_CHUNK_FORMAT,
+  LARGE_WORLD_REALITY_ACCESS_FORMAT,
   LARGE_WORLD_PORTFOLIO_SELECTION_FORMAT,
   LARGE_WORLD_REGION_FORMAT,
   LARGE_WORLD_SPATIAL_SCENE_FORMAT,
@@ -47,7 +48,8 @@ import {
   verifyReplicationSnapshot,
   verifyRegion,
   verifyRuntimeSnapshot,
-  verifyStreamResolutionReceipt
+  verifyStreamResolutionReceipt,
+  verifyLargeWorldRealityAccessResolution
 } from '../src/index.mjs';
 
 test('generates the same chunk root for the same world seed and a different root for a different seed', () => {
@@ -111,6 +113,38 @@ test('keeps forced chunks in the working set and records unknown force requests'
   assert.equal(resolution.active_chunk_ids.includes(far.chunk_id), true);
   assert.deepEqual(resolution.unknown_forced_chunk_ids, ['chunk:unknown']);
   assert.equal(resolution.diagnostics.includes('unknown-forced-chunk:chunk:unknown'), true);
+});
+
+test('lowers URRF Reality Access into a prioritized large-world stream without changing world truth', () => {
+  const runtime = new LargeWorldRuntime({worldId: 'world:reality-access', seed: 'seed:reality-access', width: 5, depth: 5, chunkSize: 64, loadRadius: 0, unloadRadius: 1, maxActiveChunks: 2});
+  const center = runtime.getChunk('chunk:world:reality-access:0:0');
+  const far = runtime.getChunk('chunk:world:reality-access:1:0');
+  assert.ok(center && far);
+  const centerObject = runtime.getRepresentationObject(center.chunk_id);
+  assert.ok(centerObject.query_index);
+  assert.equal(centerObject.query_index.semantic_tags.includes('large-world'), true);
+  const horizon = runtime.createRealityHorizon({subject_id: 'subject:viewer', spatial: {radius: '160'}, semantic: {tags: ['large-world']}, permission_scope: ['public']});
+  const graph = runtime.createRealityInterestGraph({subject_id: 'subject:viewer', nodes: [{object_id: far.object_id, required: true, weights: {visual_interest: '100'}, reasons: ['camera-target'], evidence_refs: [far.chunk_root]}]});
+  const resolution = runtime.resolveRealityAccess({
+    subject_id: 'subject:viewer',
+    observer: {x: 0, z: 0},
+    horizon,
+    interest_graph: graph,
+    filters: {semantic: {tags: ['large-world']}, spatial: {origin: {x: 0, y: 0, z: 0}, radius: '160'}},
+    limit: 4,
+    capacity: 2
+  });
+  assert.equal(resolution.format, LARGE_WORLD_REALITY_ACCESS_FORMAT);
+  assert.equal(verifyLargeWorldRealityAccessResolution(resolution).valid, true);
+  assert.equal(resolution.query_result.selected.some(row => row.object_id === far.object_id), true);
+  assert.equal(resolution.selected_chunk_ids.includes(far.chunk_id), true);
+  assert.equal(resolution.forced_chunk_ids.includes(far.chunk_id), true);
+  assert.equal(resolution.active_selected_chunk_ids.includes(far.chunk_id), true);
+  assert.equal(resolution.canonical_state_mutated, false);
+  assert.equal(runtime.canonicalState.weather, 'clear');
+  const tampered = structuredClone(resolution);
+  tampered.stream_root = '0'.repeat(64);
+  assert.equal(verifyLargeWorldRealityAccessResolution(tampered).valid, false);
 });
 
 test('materializes active chunks through URRF without granting canonical authority', async () => {
