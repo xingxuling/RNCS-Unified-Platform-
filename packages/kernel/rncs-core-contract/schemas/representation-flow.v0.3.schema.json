@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/rncs/representation-flow.v0.3.schema.json",
+  "title": "RNCS Representation Flow Time v0.3",
+  "type": "object",
+  "required": ["format", "version", "flow_id", "object_id", "branch", "source_state_root", "target_state_root", "source_representation_root", "target_representation_root", "interval", "identity_continuity", "motion_field", "interpolation_policy", "prediction_budget", "error_budget", "safety_bound", "rollback_compatibility", "authority", "evidence_refs", "candidate_only", "authoritative", "canonical_write_authorized", "commit_status", "flow_root"],
+  "properties": {
+    "format": {"const": "rncs.representation-flow.v0.3"},
+    "version": {"const": "0.3.0"},
+    "flow_id": {"type": "string", "minLength": 1},
+    "object_id": {"type": "string", "minLength": 1},
+    "branch": {"type": "string", "minLength": 1},
+    "source_state_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "target_state_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "source_representation_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "target_representation_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "interval": {
+      "type": "object",
+      "required": ["source_time_ms", "target_time_ms", "source_tick", "target_tick", "monotonic"],
+      "properties": {
+        "source_time_ms": {"type": "integer", "minimum": 0},
+        "target_time_ms": {"type": "integer", "minimum": 0},
+        "source_tick": {"type": "integer", "minimum": 0},
+        "target_tick": {"type": "integer", "minimum": 0},
+        "monotonic": {"const": true}
+      },
+      "additionalProperties": false
+    },
+    "identity_continuity": {"type": "object", "required": ["object_id", "source_state_root", "target_state_root", "source_representation_root", "target_representation_root", "continuous"], "properties": {"continuous": {"const": true}}},
+    "motion_field": {"type": "object", "required": ["kind", "space", "unit", "source", "target"], "properties": {"kind": {"enum": ["TRANSLATION", "ROTATION", "SCALE", "DEFORMATION", "OPTICAL_FLOW", "AUDIO", "LIGHT", "PARTICLE", "CUSTOM"]}, "source": {"type": "array", "minItems": 1, "maxItems": 4, "items": {"type": "integer"}}, "target": {"type": "array", "minItems": 1, "maxItems": 4, "items": {"type": "integer"}}}},
+    "interpolation_policy": {"type": "object", "required": ["mode", "extrapolation", "max_extrapolation_ms", "max_extrapolation_ticks", "clamp_to_interval"], "properties": {"mode": {"enum": ["STEP", "LINEAR"]}, "extrapolation": {"enum": ["DISALLOW", "BOUNDED"]}, "max_extrapolation_ms": {"type": "integer", "minimum": 0}, "max_extrapolation_ticks": {"type": "integer", "minimum": 0}, "clamp_to_interval": {"type": "boolean"}}},
+    "prediction_budget": {"type": "object", "required": ["max_extrapolation_ms", "max_extrapolation_ticks", "max_prediction_error_mm", "max_prediction_error_mdeg"], "properties": {"max_extrapolation_ms": {"type": "integer", "minimum": 0}, "max_extrapolation_ticks": {"type": "integer", "minimum": 0}, "max_prediction_error_mm": {"type": "integer", "minimum": 0}, "max_prediction_error_mdeg": {"type": "integer", "minimum": 0}}},
+    "error_budget": {"type": "object", "required": ["max_position_error_mm", "max_rotation_error_mdeg", "stale_after_ms"], "properties": {"max_position_error_mm": {"type": "integer", "minimum": 0}, "max_rotation_error_mdeg": {"type": "integer", "minimum": 0}, "stale_after_ms": {"type": "integer", "minimum": 0}}},
+    "safety_bound": {"type": "object", "required": ["collision_preserving", "max_displacement_mm", "bounded"], "properties": {"collision_preserving": {"const": true}, "max_displacement_mm": {"type": "integer", "minimum": 0}, "bounded": {"const": true}}},
+    "rollback_compatibility": {"type": "object", "required": ["compatible", "source_state_root", "target_state_root", "strategy"], "properties": {"compatible": {"const": true}, "source_state_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}, "target_state_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}, "strategy": {"type": "string", "minLength": 1}}},
+    "authority": {"type": "object", "required": ["scope", "provider_can_write_authoritative_world_state", "rncs_authority_required", "candidate_only"], "properties": {"scope": {"type": "array", "items": {"type": "string"}}, "provider_can_write_authoritative_world_state": {"const": false}, "rncs_authority_required": {"const": true}, "candidate_only": {"const": true}}},
+    "evidence_refs": {"type": "array", "items": {"type": "string"}},
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "canonical_write_authorized": {"const": false},
+    "commit_status": {"const": "NOT_COMMITTED"},
+    "flow_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}

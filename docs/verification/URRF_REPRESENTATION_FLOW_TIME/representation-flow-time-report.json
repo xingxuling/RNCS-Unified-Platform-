@@ -1,0 +1,49 @@
+{
+  "format": "urrf.representation-flow-time-report.v0.1",
+  "object_id": "object:flow:integration",
+  "canonical_state_root": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "object_root": "c3ec41b44b461bb1088c1fa3ca02b94969a4f468aac9139d464be70621adabc3",
+  "flow_root": "42424806555160d230936b4c6d362a419dafa90d5c6da7fcca6f0e988e4b09fe",
+  "source_state_root": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "target_state_root": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "source_representation_root": "60f9a3946477933d32d1abc57bdb0d8d3c4a3c1d8f923eb56785a9415f9551c8",
+  "target_representation_root": "60f9a3946477933d32d1abc57bdb0d8d3c4a3c1d8f923eb56785a9415f9551c8",
+  "samples": {
+    "midpoint": {
+      "sample_root": "ec9a0aa9b3a87720e525a861b5175dd5c7e1e0f05f8ede1714041626676d6a0c",
+      "status": "INTERPOLATED",
+      "value": [
+        50,
+        0,
+        0
+      ],
+      "prediction": "PASS"
+    },
+    "extrapolated": {
+      "sample_root": "e9b569446ea67c768582351e85abc9b043a7941b09e687205905bb2aeb70a803",
+      "status": "EXTRAPOLATED",
+      "alpha_milli": 1100
+    }
+  },
+  "gate_results": {
+    "identity_continuity": true,
+    "temporal_monotonicity": true,
+    "max_extrapolation_window": true,
+    "prediction_error": true,
+    "collision_safety": true,
+    "stale_state": true,
+    "rollback_compatibility": true
+  },
+  "authority": {
+    "canonical_owner": "RNCS",
+    "representation_owner": "URRF",
+    "provider_can_write_authoritative_world_state": false,
+    "canonical_state_mutated": false,
+    "canonical_write_authorized": false,
+    "candidate_only": true,
+    "commit_status": "NOT_COMMITTED"
+  },
+  "snapshot_root": "a084fa36389e90c1ccc6a8118e44e98cd11a444b836a2125d20448b4db71da20",
+  "notes": "Candidate-only local Representation Flow Time evidence. The flow preserves object identity across a monotonic interval, permits only bounded extrapolation, records prediction/safety/stale-state checks, and never mutates canonical RNCS history. No sensor truth, real renderer timing, distributed clock synchronization, or production visual-quality claim is made.",
+  "report_root": "4c9826678969167949ce2c12b09d9325faf741d7f013281fd5e4b932e6f13df6"
+}

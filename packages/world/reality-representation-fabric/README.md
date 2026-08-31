@@ -10,6 +10,8 @@ The package deliberately does not own canonical world truth. A `RealityObject` c
 
 `RealityRepresentationPortfolioRuntime` adds the missing quantity/composition layer. A portfolio sets per-object `min_slots`/`max_slots`, a quality ladder (`PROXY` through `REFERENCE`), required representation kinds, resource costs, fallback policy, and explicit diversity targets across modality/detail/material/lighting/environment/style/motion/view. It selects a deterministic slot under quality and budget pressure and records local visual evidence with pixel/frame roots plus optional environment/animation roots. `OBSERVED_NOT_GRADED` is intentionally not a subjective art-quality or production-GPU claim.
 
+`RealityRepresentationFabric.createRepresentationFlow()` lowers the RNCS v0.3 `RepresentationFlow` contract into a registered URRF candidate. `sampleRepresentationFlow()` evaluates deterministic interpolation or budgeted extrapolation while enforcing prediction error, displacement safety and stale-state gates. The flow and sample roots remain candidate-only; the fabric snapshot records them without changing the RealityObject's canonical state root or object root.
+
 The adapter interface is intentionally provider-neutral:
 
 ```js
