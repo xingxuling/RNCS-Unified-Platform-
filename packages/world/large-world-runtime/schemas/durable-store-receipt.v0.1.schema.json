@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.org/schemas/rncs.large-world-durable-store-receipt.v0.1.schema.json",
+  "title": "RNCS Large World Durable Store Receipt v0.1",
+  "type": "object",
+  "required": ["format", "version", "operation", "status", "source", "bundle_root", "bytes", "atomic_rename", "file_synced", "directory_synced", "receipt_root"],
+  "properties": {
+    "format": {"const": "rncs.large-world-durable-store-receipt.v0.1"},
+    "version": {"const": "0.1.0"},
+    "operation": {"enum": ["SAVE", "RECOVER"]},
+    "status": {"enum": ["COMMITTED", "RECOVERED"]},
+    "source": {"enum": ["temp_rename", "primary", "temporary_promoted"]},
+    "bundle_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "bytes": {"type": "integer", "minimum": 1},
+    "atomic_rename": {"const": true},
+    "file_synced": {"const": true},
+    "directory_synced": {"type": "boolean"},
+    "receipt_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}

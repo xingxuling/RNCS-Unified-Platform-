@@ -1,11 +1,15 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import {mkdtemp, rm} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
 import {rootHash} from '@taowind/rncs-core-contract';
 import {
   LARGE_WORLD_CHUNK_FORMAT,
   LARGE_WORLD_REGION_FORMAT,
   LARGE_WORLD_PROCEDURAL_PROVIDER_ID,
   LARGE_WORLD_WIREFRAME_PROVIDER_ID,
+  LargeWorldDurableStore,
   LargeWorldRuntime,
   createLargeWorldRuntime,
   generateChunk,
@@ -15,6 +19,7 @@ import {
   verifyMaterializationBatch,
   verifyDurableBundle,
   verifyDurableRestoreReceipt,
+  verifyDurableStoreReceipt,
   resolveReplicationConflict,
   verifyReplicationConflictDecision,
   verifyReplicationConflictReceipt,
@@ -258,6 +263,43 @@ test('round-trips a durable bundle across a fresh runtime and preserves the repl
   const duplicate = restarted.applyReplicationDelta(delta, {authorityReceipt});
   assert.equal(duplicate.status, 'DUPLICATE');
   assert.equal(verifyReplicationReceipt(duplicate).valid, true);
+});
+
+test('atomically stores a durable bundle and recovers faulted temp writes', async () => {
+  const options = {worldId: 'world:durable-store', seed: 'seed:durable-store', loadRadius: 0, maxActiveChunks: 1};
+  const runtime = new LargeWorldRuntime(options);
+  const authorityReceipt = {status: 'committed', receipt_root: 'a'.repeat(64), decision_root: null, epoch: 0};
+  runtime.recordWorldEvent({authorityReceipt, mutation: {operations: [{op: 'set', path: 'weather', value: 'rain'}]}});
+  const firstBundle = runtime.exportDurableBundle();
+  const directory = await mkdtemp(join(tmpdir(), 'rncs-large-world-store-'));
+  const store = new LargeWorldDurableStore({filePath: join(directory, 'world.bundle.json')});
+  try {
+    const saveReceipt = await store.save(firstBundle);
+    assert.equal(verifyDurableStoreReceipt(saveReceipt).valid, true);
+    assert.equal((await store.load()).bundle_root, firstBundle.bundle_root);
+
+    runtime.recordWorldEvent({authorityReceipt, mutation: {operations: [{op: 'set', path: 'weather', value: 'storm'}]}});
+    const secondBundle = runtime.exportDurableBundle();
+    await assert.rejects(store.save(secondBundle, {faultAt: 'after-temp-sync'}), /LARGE_WORLD_DURABLE_STORE_FAULT:after-temp-sync/);
+    const primaryRecovery = await store.recover();
+    assert.equal(primaryRecovery.source, 'primary');
+    assert.equal(primaryRecovery.bundle.bundle_root, firstBundle.bundle_root);
+    assert.equal(verifyDurableStoreReceipt(primaryRecovery.receipt).valid, true);
+
+    await rm(store.filePath, {force: true});
+    const temporaryRecovery = await store.recover();
+    assert.equal(temporaryRecovery.source, 'temporary_promoted');
+    assert.equal(temporaryRecovery.bundle.bundle_root, secondBundle.bundle_root);
+    assert.equal(verifyDurableStoreReceipt(temporaryRecovery.receipt).valid, true);
+    assert.equal((await store.load()).bundle_root, secondBundle.bundle_root);
+
+    await assert.rejects(store.save(secondBundle, {faultAt: 'after-rename'}), /LARGE_WORLD_DURABLE_STORE_FAULT:after-rename/);
+    const renameRecovery = await store.recover();
+    assert.equal(renameRecovery.source, 'primary');
+    assert.equal(renameRecovery.bundle.bundle_root, secondBundle.bundle_root);
+  } finally {
+    await rm(directory, {recursive: true, force: true});
+  }
 });
 
 test('resolves same-base multi-writer deltas deterministically and persists the loser gate', () => {

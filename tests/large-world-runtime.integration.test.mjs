@@ -1,11 +1,16 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import {mkdtemp, rm} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
 import {rootHash} from '@taowind/rncs-core-contract';
 import {
   LARGE_WORLD_WIREFRAME_PROVIDER_ID,
+  LargeWorldDurableStore,
   LargeWorldRuntime,
   verifyDurableBundle,
   verifyDurableRestoreReceipt,
+  verifyDurableStoreReceipt,
   verifyMaterializationBatch,
   verifyReplicationReceipt,
   verifyStreamResolutionReceipt
@@ -197,6 +202,33 @@ test('restores the replicated truth and idempotency ledger after a JSON restart 
   assert.equal(verifyDurableRestoreReceipt(restored).valid, true);
   assert.equal(restarted.exportReplicationSnapshot().snapshot_root, target.exportReplicationSnapshot().snapshot_root);
   assert.equal(restarted.applyReplicationDelta(delta, {authorityReceipt}).status, 'DUPLICATE');
+});
+
+test('persists and recovers a durable bundle through the atomic file store', async () => {
+  const options = {worldId: 'world:large-integration-store', seed: 'seed:large-integration-store', loadRadius: 0, maxActiveChunks: 1};
+  const runtime = new LargeWorldRuntime(options);
+  const authorityReceipt = {status: 'committed', receipt_root: '4'.repeat(64), decision_root: null, epoch: 0};
+  runtime.recordWorldEvent({authorityReceipt, mutation: {operations: [{op: 'set', path: 'season', value: 'spring'}]}});
+  const firstBundle = runtime.exportDurableBundle();
+  const directory = await mkdtemp(join(tmpdir(), 'rncs-large-world-root-store-'));
+  const store = new LargeWorldDurableStore({filePath: join(directory, 'world.bundle.json')});
+  try {
+    const saved = await store.save(firstBundle);
+    assert.equal(verifyDurableStoreReceipt(saved).valid, true);
+    runtime.recordWorldEvent({authorityReceipt, mutation: {operations: [{op: 'set', path: 'season', value: 'summer'}]}});
+    const secondBundle = runtime.exportDurableBundle();
+    await assert.rejects(store.save(secondBundle, {faultAt: 'after-temp-sync'}), /LARGE_WORLD_DURABLE_STORE_FAULT:after-temp-sync/);
+    const primary = await store.recover();
+    assert.equal(primary.source, 'primary');
+    assert.equal(primary.bundle.bundle_root, firstBundle.bundle_root);
+    await rm(store.filePath, {force: true});
+    const promoted = await store.recover();
+    assert.equal(promoted.source, 'temporary_promoted');
+    assert.equal(promoted.bundle.bundle_root, secondBundle.bundle_root);
+    assert.equal(verifyDurableStoreReceipt(promoted.receipt).valid, true);
+  } finally {
+    await rm(directory, {recursive: true, force: true});
+  }
 });
 
 test('delivers an authenticated replication packet over deterministic loss and retry', () => {

@@ -20,15 +20,15 @@ npm run test:large-world
 
 Expected local evidence for this revision:
 
-- Large-world package tests: 14/14 passing.
-- Root integration tests: 3/3 passing.
+- Large-world package tests: 16/16 passing.
+- Root integration tests: 7/7 passing.
 - Replication, restore, and alternate URRF representation all run in the same focused command.
 
 ## Authority and durability boundary
 
 - RNCS remains the owner of restored canonical world state and truth roots.
 - Bundle export is candidate evidence; restore is a canonical mutation and requires an explicit committed authority receipt.
-- The JSON round trip proves serialization integrity only. It does not prove crash consistency, atomic commit, filesystem durability, database recovery, transport authentication, multi-writer conflict resolution, or production operations.
+- The JSON round trip and bounded file-store test prove local serialization, temporary-file/rename behavior, and injected crash-point recovery only. They do not prove database recovery, transport authentication, multi-writer conflict resolution, or production operations.
 
 ## RCL stress mapping
 
@@ -44,6 +44,6 @@ Expected local evidence for this revision:
 
 ## Open gates
 
-- Atomic durable storage adapter and crash/restart fault injection.
+- Database-grade durability, cross-process locking, and crash recovery beyond the bounded local file adapter.
 - Production-authenticated network session and multi-writer coordination beyond the bounded deterministic conflict court (packet link and conflict policy are covered separately in their transport/conflict ledgers).
 - Target hardware/GPU performance and visual/manual play evidence.
