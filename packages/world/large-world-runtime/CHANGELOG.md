@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added a bounded multi-asset PBR material-diversity integration and contact-sheet evidence path covering terrain, structures, resources, async KTX2 import, and rooted CPU pixels.
 - Added opt-in `ragf.ktx2-pbr-mipped.v0.1` GLB assets with deterministic base-color, normal, metallic-roughness/occlusion, and emissive KTX2 maps, explicit bindings, and per-map residency evidence.
 - Added an opt-in `ragf.ktx2-rgba8-mipped.v0.1` GLB provider profile with six deterministic mip levels, `KHR_texture_basisu` image bindings, and explicit `vsr.progressive-mip-residency.v0.1` candidate metadata for cell-aware progressive texture residency.
 - Added `createLargeWorldSpatialGlbBundle` / `verifyLargeWorldSpatialGlbBundle`: deterministic binary glTF 2.0 candidates encoded through the reusable RAGF `GlbBuilder`, with embedded PNG base-color bytes, VSR import compatibility, SHA-256 streaming records, cell indexing, optional real RAGF procedural-3D showcase output, and explicit candidate-only authority evidence.
