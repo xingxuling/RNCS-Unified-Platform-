@@ -9,11 +9,13 @@ import {
   LARGE_WORLD_CHUNK_FORMAT,
   LARGE_WORLD_PORTFOLIO_SELECTION_FORMAT,
   LARGE_WORLD_REGION_FORMAT,
+  LARGE_WORLD_SPATIAL_SCENE_FORMAT,
   LARGE_WORLD_PROCEDURAL_PROVIDER_ID,
   LARGE_WORLD_WIREFRAME_PROVIDER_ID,
   LargeWorldDurableStore,
   LargeWorldRuntime,
   createChunkRepresentationPortfolio,
+  createLargeWorldSpatialScene,
   createLargeWorldRuntime,
   generateChunk,
   generateRegion,
@@ -21,6 +23,7 @@ import {
   verifyChunk,
   verifyMaterializationBatch,
   verifyPortfolioSelectionEnvelope,
+  verifyLargeWorldSpatialScene,
   verifyDurableBundle,
   verifyDurableRestoreReceipt,
   verifyDurableStoreReceipt,
@@ -212,6 +215,26 @@ test('seals active per-chunk portfolio selections against the latest stream root
   assert.equal(verifyPortfolioSelectionEnvelope(constrained).valid, true);
   assert.equal(constrained.fallback_count, 9);
   assert.equal(constrained.selections.every(selection => selection.selected_quality_profile === 'PROXY' && selection.fallback_used), true);
+});
+
+test('lowers an active URRF portfolio selection into a rooted VSR spatial scene without authority escalation', () => {
+  const runtime = new LargeWorldRuntime({worldId: 'world:spatial-lowering', seed: 'seed:spatial-lowering', width: 5, depth: 5, chunkSize: 64, sampleResolution: 8, loadRadius: 1, maxActiveChunks: 9});
+  const stream = runtime.observe({x: 0, z: 0});
+  const center = runtime.listActiveChunks().find(chunk => chunk.coordinates.x === 0 && chunk.coordinates.z === 0);
+  const qualityByChunk = Object.fromEntries(runtime.listActiveChunks().map(chunk => [chunk.chunk_id, chunk.chunk_id === center.chunk_id ? 'STANDARD' : 'PROXY']));
+  const selection = runtime.selectActiveRepresentationPortfolios({quality_by_chunk: qualityByChunk});
+  const scene = runtime.createSpatialScene({selection, evidence_root: rootHash({stream_root: stream.stream_root, selection_root: selection.selection_root})});
+  assert.equal(scene.large_world.format, LARGE_WORLD_SPATIAL_SCENE_FORMAT);
+  assert.equal(scene.large_world.active_chunk_ids.length, 9);
+  assert.equal(scene.large_world.representation_slots.filter(slot => slot.selected_quality_profile === 'STANDARD').length, 1);
+  assert.equal(scene.large_world.representation_slots.filter(slot => slot.selected_quality_profile === 'PROXY').length, 8);
+  assert.equal(scene.large_world.candidate_only, true);
+  assert.equal(scene.large_world.authoritative, false);
+  assert.equal(scene.large_world.canonical_write_authorized, false);
+  assert.equal(scene.reality.realityRoot, runtime.getRegion().world_root);
+  assert.equal(verifyLargeWorldSpatialScene(scene).valid, true);
+  const repeat = createLargeWorldSpatialScene({region: runtime.getRegion(), selection, evidence_root: scene.reality.evidenceRoot});
+  assert.equal(scene.scene_root, repeat.scene_root);
 });
 
 test('snapshot and replay seal deterministic streaming evidence', () => {

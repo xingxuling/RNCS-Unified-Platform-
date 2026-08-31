@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.org/schemas/rncs.large-world-spatial-scene.v0.1.schema.json",
+  "title": "RNCS Large World Spatial Scene Lowering v0.1",
+  "type": "object",
+  "required": ["format", "sceneId", "activeCameraId", "meshes", "materials", "nodes", "cameras", "lights", "streaming", "reality", "large_world", "scene_root"],
+  "properties": {
+    "format": {"const": "vsr.spatial-scene.v0.4"},
+    "sceneId": {"type": "string", "minLength": 1},
+    "activeCameraId": {"type": "string", "minLength": 1},
+    "meshes": {"type": "array", "minItems": 1, "items": {"type": "object"}},
+    "materials": {"type": "array", "items": {"type": "object"}},
+    "nodes": {"type": "array", "items": {"type": "object"}},
+    "cameras": {"type": "array", "minItems": 1, "items": {"type": "object"}},
+    "lights": {"type": "array", "items": {"type": "object"}},
+    "streaming": {"type": "object"},
+    "reality": {"type": "object"},
+    "large_world": {
+      "type": "object",
+      "required": ["format", "version", "world_id", "generation", "region_root", "world_root", "selection_root", "active_chunk_ids", "representation_slots", "candidate_only", "authoritative", "canonical_write_authorized", "authority"],
+      "properties": {
+        "format": {"const": "rncs.large-world-spatial-scene.v0.1"},
+        "version": {"const": "0.1.0"},
+        "world_id": {"type": "string", "minLength": 1},
+        "generation": {"type": "integer", "minimum": 0},
+        "region_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "world_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "selection_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "active_chunk_ids": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "representation_slots": {"type": "array", "items": {"type": "object"}},
+        "candidate_only": {"const": true},
+        "authoritative": {"const": false},
+        "canonical_write_authorized": {"const": false},
+        "authority": {"type": "object"}
+      },
+      "additionalProperties": true
+    },
+    "scene_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}

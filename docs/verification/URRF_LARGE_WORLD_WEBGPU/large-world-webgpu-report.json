@@ -1,0 +1,48 @@
+{
+  "format": "urrf.large-world-webgpu-report.v0.1",
+  "world_id": "world:urrf-large-world-webgpu",
+  "region_root": "6bd0becfa0843fd4d78a2878a51d1e136bee76f79c03cac63eca354aa3496b51",
+  "selection_root": "e246707b21923aca286ccba044e404b7270703354d7972f854f6db47e51376e1",
+  "scene_root": "96ac813a506d17cabcafb81440ed30b94ba8646caa3ff8ece816cf8727d9633b",
+  "frame_root": "4237cfce46e3c9abcfeeec90c735c1caa0383acad183fd659442b6b81937a8dc",
+  "geometry_root": "ff0771fdc74d33322226b938078dc4b82e8a739181df1ae600cc0273d44dd3fe",
+  "material_root": "ec87cc9e6760378709a2debe630a427fda700db067e61f00a2f12d7451c5df90",
+  "environment_root": "e6bb9787bf2a5f62c6be77d8328f5a23524081e0652033b05241dd22593fea30",
+  "pixel_root": "1dc219b6f9f034ca7cde0c7c23a5f697ee921e58d45287699654b8b262e0d198",
+  "active_chunks": 9,
+  "standard_chunks": 1,
+  "proxy_chunks": 8,
+  "draw_calls": 14,
+  "triangles": 1116,
+  "gpu_driven_draws": 14,
+  "active_cells": 9,
+  "browser_probe": {
+    "format": "vsr.spatial-webgpu-capabilities.v0.4",
+    "available": false,
+    "secureContext": true,
+    "features": [],
+    "limits": {},
+    "requiredFeatures": [],
+    "requiredLimits": {},
+    "missingFeatures": [],
+    "missingLimits": {},
+    "reason": "navigator.gpu unavailable"
+  },
+  "browser_execution": "NOT_EXECUTED_IN_NODE",
+  "artifacts": {
+    "scene_json": "large-world-spatial-scene.json",
+    "cpu_reference_png": "large-world-spatial-reference.png",
+    "browser_html": "large-world-webgpu.html",
+    "browser_receipt": "large-world-webgpu-browser-receipt.json",
+    "browser_png": "large-world-webgpu-browser.png"
+  },
+  "authority": {
+    "canonical_owner": "RNCS",
+    "representation_owner": "URRF",
+    "provider_can_write_authoritative_world_state": false,
+    "candidate_only": true,
+    "authoritative": false
+  },
+  "notes": "The scene is a browser-consumable VSR spatial lowering of an RNCS active working set. The PNG is a deterministic CPU reference; browser WebGPU execution requires a secure-context host with navigator.gpu and is never inferred from this Node run.",
+  "report_root": "500d54d12f3fd117ac15c5213f72870e103254f0ddc21a69efa6d352f2d86f62"
+}

@@ -39,6 +39,7 @@ export const LARGE_WORLD_REGION_FORMAT = 'rncs.large-world-region.v0.1';
 export const LARGE_WORLD_CHUNK_FORMAT = 'rncs.large-world-chunk.v0.1';
 export const LARGE_WORLD_STREAM_FORMAT = 'rncs.large-world-stream-resolution.v0.1';
 export const LARGE_WORLD_PORTFOLIO_SELECTION_FORMAT = 'rncs.large-world-portfolio-selection.v0.1';
+export const LARGE_WORLD_SPATIAL_SCENE_FORMAT = 'rncs.large-world-spatial-scene.v0.1';
 export const LARGE_WORLD_MATERIALIZATION_FORMAT = 'rncs.large-world-materialization.v0.1';
 export const LARGE_WORLD_REPLICATION_SNAPSHOT_FORMAT = 'rncs.large-world-replication-snapshot.v0.1';
 export const LARGE_WORLD_REPLICATION_DELTA_FORMAT = 'rncs.large-world-replication-delta.v0.1';
@@ -536,6 +537,292 @@ export function createChunkRepresentationPortfolio(chunkInput, input = {}) {
   });
 }
 
+const LARGE_WORLD_SPATIAL_BIOME_COLORS = Object.freeze({
+  coast: '#2b8cbe',
+  desert: '#d9a441',
+  forest: '#2f855a',
+  grassland: '#79a83b',
+  tundra: '#b9d4e8',
+  wetland: '#3f7f73'
+});
+const LARGE_WORLD_SPATIAL_PROXY_COLORS = Object.freeze({
+  coast: '#1d4f69',
+  desert: '#765b24',
+  forest: '#214d36',
+  grassland: '#4c6726',
+  tundra: '#617481',
+  wetland: '#2a514d'
+});
+const LARGE_WORLD_SPATIAL_RESOURCE_COLORS = Object.freeze({
+  crystal: '#7dd3fc',
+  iron: '#a8a29e',
+  salt: '#f5f5f4',
+  timber: '#a16207',
+  water: '#38bdf8'
+});
+
+function largeWorldSpatialCubeMesh(id = 'mesh:large-world:cube') {
+  const faces = [
+    {normal: [0, 0, 1], corners: [[-.5, -.5, .5], [.5, -.5, .5], [.5, .5, .5], [-.5, .5, .5]]},
+    {normal: [0, 0, -1], corners: [[.5, -.5, -.5], [-.5, -.5, -.5], [-.5, .5, -.5], [.5, .5, -.5]]},
+    {normal: [1, 0, 0], corners: [[.5, -.5, .5], [.5, -.5, -.5], [.5, .5, -.5], [.5, .5, .5]]},
+    {normal: [-1, 0, 0], corners: [[-.5, -.5, -.5], [-.5, -.5, .5], [-.5, .5, .5], [-.5, .5, -.5]]},
+    {normal: [0, 1, 0], corners: [[-.5, .5, .5], [.5, .5, .5], [.5, .5, -.5], [-.5, .5, -.5]]},
+    {normal: [0, -1, 0], corners: [[-.5, -.5, -.5], [.5, -.5, -.5], [.5, -.5, .5], [-.5, -.5, .5]]}
+  ];
+  const positions = [], normals = [], uvs = [], indices = [];
+  for (const face of faces) {
+    const offset = positions.length / 3;
+    for (const [u, v, w] of face.corners) {
+      positions.push(u, v, w);
+      normals.push(...face.normal);
+    }
+    uvs.push(0, 0, 1, 0, 1, 1, 0, 1);
+    indices.push(offset, offset + 1, offset + 2, offset, offset + 2, offset + 3);
+  }
+  return {id, positions, normals, uvs, indices, topology: 'triangle-list'};
+}
+
+function largeWorldSpatialMeshNormals(mesh) {
+  const normals = new Array(mesh.positions.length).fill(0);
+  for (let index = 0; index < mesh.indices.length; index += 3) {
+    const a = mesh.indices[index] * 3, b = mesh.indices[index + 1] * 3, c = mesh.indices[index + 2] * 3;
+    const ax = mesh.positions[b] - mesh.positions[a], ay = mesh.positions[b + 1] - mesh.positions[a + 1], az = mesh.positions[b + 2] - mesh.positions[a + 2];
+    const bx = mesh.positions[c] - mesh.positions[a], by = mesh.positions[c + 1] - mesh.positions[a + 1], bz = mesh.positions[c + 2] - mesh.positions[a + 2];
+    const nx = ay * bz - az * by, ny = az * bx - ax * bz, nz = ax * by - ay * bx;
+    for (const base of [a, b, c]) {
+      normals[base] += nx;
+      normals[base + 1] += ny;
+      normals[base + 2] += nz;
+    }
+  }
+  for (let index = 0; index < normals.length; index += 3) {
+    const length = Math.hypot(normals[index], normals[index + 1], normals[index + 2]) || 1;
+    normals[index] /= length;
+    normals[index + 1] /= length;
+    normals[index + 2] /= length;
+  }
+  return normals;
+}
+
+function largeWorldSpatialTerrainMesh(chunk, qualityProfile) {
+  const resolution = integer(chunk.sample_resolution, 1, {min: 1, max: 32});
+  const source = chunk.mesh.positions;
+  const step = qualityProfile === 'PROXY' ? Math.max(1, Math.ceil(resolution / 4)) : 1;
+  const axis = [];
+  for (let coordinate = 0; coordinate <= resolution; coordinate += step) axis.push(coordinate);
+  if (axis.at(-1) !== resolution) axis.push(resolution);
+  const sourceStride = resolution + 1;
+  const positions = [], uvs = [], indices = [];
+  for (const row of axis) {
+    for (const column of axis) {
+      const sourceIndex = (row * sourceStride + column) * 3;
+      positions.push(
+        column * (chunk.extent_mm.x / 1000 / resolution),
+        Number(source[sourceIndex + 1]) / 1000,
+        row * (chunk.extent_mm.z / 1000 / resolution)
+      );
+      uvs.push(column / resolution, row / resolution);
+    }
+  }
+  for (let row = 0; row < axis.length - 1; row++) {
+    for (let column = 0; column < axis.length - 1; column++) {
+      const a = row * axis.length + column, b = a + 1, c = a + axis.length, d = c + 1;
+      indices.push(a, c, b, b, c, d);
+    }
+  }
+  const mesh = {id: `mesh:${chunk.chunk_id}:${qualityProfile.toLowerCase()}`, positions, uvs, indices, topology: 'triangle-list'};
+  return {...mesh, normals: largeWorldSpatialMeshNormals(mesh)};
+}
+
+function largeWorldSpatialColor(palette, key, fallback) {
+  return palette[String(key).toLowerCase()] ?? fallback;
+}
+
+function largeWorldSpatialSceneRoot(scene) {
+  const extension = record(scene.large_world);
+  return rootHash({
+    format: extension.format,
+    version: extension.version,
+    scene_id: scene.sceneId,
+    world_id: extension.world_id,
+    generation: extension.generation,
+    region_root: extension.region_root,
+    world_root: extension.world_root,
+    selection_root: extension.selection_root,
+    active_chunk_ids: extension.active_chunk_ids,
+    representation_slots: extension.representation_slots,
+    reality: {
+      world_id: scene.reality?.worldId,
+      generation: scene.reality?.generation,
+      reality_root: scene.reality?.realityRoot,
+      evidence_root: scene.reality?.evidenceRoot
+    },
+    candidate_only: extension.candidate_only,
+    authoritative: extension.authoritative,
+    canonical_write_authorized: extension.canonical_write_authorized,
+    authority: extension.authority
+  });
+}
+
+/**
+ * Lower an RNCS active chunk selection envelope into the VSR spatial-scene
+ * contract. This is a projection/lowering artifact only: world truth remains
+ * owned by RNCS and every selected representation stays candidate-only.
+ */
+export function createLargeWorldSpatialScene(input = {}) {
+  const value = record(input);
+  const region = clone(value.region ?? {});
+  const regionVerification = verifyRegion(region);
+  fail(regionVerification.valid, `LARGE_WORLD_SPATIAL_REGION_INVALID:${regionVerification.errors.join(',')}`);
+  const selection = clone(value.selection ?? value.selectionEnvelope ?? value.selection_envelope ?? null);
+  const selectionVerification = verifyPortfolioSelectionEnvelope(selection);
+  fail(selectionVerification.valid, `LARGE_WORLD_SPATIAL_SELECTION_INVALID:${selectionVerification.errors.join(',')}`);
+  fail(selection.world_id === region.world_id && selection.region_root === region.region_root && selection.world_root === region.world_root, 'LARGE_WORLD_SPATIAL_SELECTION_REGION_MISMATCH');
+  const activeChunkIds = new Set(selection.active_chunk_ids);
+  const sourceChunks = Array.isArray(value.chunks) ? value.chunks : region.chunks.filter(chunk => activeChunkIds.has(chunk.chunk_id));
+  const chunks = sourceChunks.map(clone).sort((a, b) => keySort(a.chunk_id, b.chunk_id));
+  const rows = new Map(selection.selections.map(row => [row.chunk_id, row]));
+  fail(chunks.length > 0, 'LARGE_WORLD_SPATIAL_CHUNKS_REQUIRED');
+  fail(chunks.length === selection.active_chunk_ids.length, 'LARGE_WORLD_SPATIAL_CHUNK_COUNT_MISMATCH');
+  for (const chunk of chunks) {
+    fail(verifyChunk(chunk).valid, `LARGE_WORLD_SPATIAL_CHUNK_INVALID:${chunk.chunk_id}`);
+    fail(selection.active_chunk_ids.includes(chunk.chunk_id), `LARGE_WORLD_SPATIAL_CHUNK_NOT_SELECTED:${chunk.chunk_id}`);
+    fail(rows.has(chunk.chunk_id), `LARGE_WORLD_SPATIAL_SELECTION_ROW_MISSING:${chunk.chunk_id}`);
+  }
+
+  const meshes = [largeWorldSpatialCubeMesh()], materials = [], nodes = [], cells = [], assets = [];
+  const materialIds = new Set();
+  const addMaterial = (material) => {
+    if (!materialIds.has(material.id)) {
+      materialIds.add(material.id);
+      materials.push(material);
+    }
+    return material.id;
+  };
+  let minX = Infinity, maxX = -Infinity, minZ = Infinity, maxZ = -Infinity, maxY = -Infinity;
+  for (const chunk of chunks) {
+    const selectionRow = rows.get(chunk.chunk_id);
+    const qualityProfile = String(selectionRow.selected_quality_profile ?? '').toUpperCase();
+    fail(qualityProfile === 'STANDARD' || qualityProfile === 'PROXY', `LARGE_WORLD_SPATIAL_QUALITY_INVALID:${chunk.chunk_id}`);
+    fail(typeof selectionRow.selected_slot_id === 'string' && selectionRow.selected_slot_id.length > 0, `LARGE_WORLD_SPATIAL_SLOT_REQUIRED:${chunk.chunk_id}`);
+    const mesh = largeWorldSpatialTerrainMesh(chunk, qualityProfile);
+    meshes.push(mesh);
+    const biome = String(chunk.biome ?? 'unknown').toLowerCase();
+    const terrainMaterialId = addMaterial({
+      id: `material:terrain:${qualityProfile.toLowerCase()}:${biome}`,
+      baseColor: largeWorldSpatialColor(qualityProfile === 'PROXY' ? LARGE_WORLD_SPATIAL_PROXY_COLORS : LARGE_WORLD_SPATIAL_BIOME_COLORS, biome, '#6b7280'),
+      roughness: qualityProfile === 'PROXY' ? .98 : .82,
+      metallic: qualityProfile === 'PROXY' ? .02 : .04,
+      doubleSided: true,
+      temporalReactive: qualityProfile === 'PROXY' ? .05 : .1
+    });
+    const structureMaterialId = addMaterial({
+      id: `material:structure:${qualityProfile.toLowerCase()}`,
+      baseColor: qualityProfile === 'PROXY' ? '#b7791f' : '#f6ad55',
+      roughness: qualityProfile === 'PROXY' ? .92 : .58,
+      metallic: qualityProfile === 'PROXY' ? .05 : .18,
+      doubleSided: true
+    });
+    const resourceMaterialIds = new Map();
+    for (const resourceKind of LARGE_WORLD_RESOURCE_KINDS) resourceMaterialIds.set(resourceKind, addMaterial({
+      id: `material:resource:${qualityProfile.toLowerCase()}:${resourceKind}`,
+      baseColor: largeWorldSpatialColor(LARGE_WORLD_SPATIAL_RESOURCE_COLORS, resourceKind, '#d1d5db'),
+      roughness: .36,
+      metallic: resourceKind === 'iron' ? .72 : .08,
+      emissive: resourceKind === 'crystal' || resourceKind === 'water' ? largeWorldSpatialColor(LARGE_WORLD_SPATIAL_RESOURCE_COLORS, resourceKind, '#d1d5db') : undefined,
+      emissiveStrength: resourceKind === 'crystal' || resourceKind === 'water' ? .16 : 0,
+      doubleSided: true
+    }));
+    const worldX = Number(chunk.origin_mm.x) / 1000, worldZ = Number(chunk.origin_mm.z) / 1000, extentX = Number(chunk.extent_mm.x) / 1000, extentZ = Number(chunk.extent_mm.z) / 1000;
+    minX = Math.min(minX, worldX); maxX = Math.max(maxX, worldX + extentX); minZ = Math.min(minZ, worldZ); maxZ = Math.max(maxZ, worldZ + extentZ);
+    const terrainNodeId = `node:${chunk.chunk_id}:terrain`, cellNodeIds = [terrainNodeId];
+    nodes.push({id: terrainNodeId, meshId: mesh.id, materialId: terrainMaterialId, transform: {translation: [worldX, 0, worldZ]}, castShadow: qualityProfile === 'STANDARD', receiveShadow: true, temporalReactive: qualityProfile === 'PROXY' ? .05 : .1, tags: ['large-world', 'terrain', qualityProfile.toLowerCase()], representationSlotId: selectionRow.selected_slot_id});
+    for (const structure of chunk.structures ?? []) {
+      const structureNodeId = `node:${structure.id}`, size = Math.max(.5, Number(structure.scale_mm) / 1000), y = Number(structure.local_position_mm.y) / 1000;
+      maxY = Math.max(maxY, y + size);
+      nodes.push({id: structureNodeId, meshId: 'mesh:large-world:cube', materialId: structureMaterialId, transform: {translation: [worldX + Number(structure.local_position_mm.x) / 1000, y + size / 2, worldZ + Number(structure.local_position_mm.z) / 1000], scale: [size, size, size]}, castShadow: qualityProfile === 'STANDARD', receiveShadow: true, tags: ['large-world', 'structure', String(structure.kind)], structureKind: structure.kind, representationSlotId: selectionRow.selected_slot_id});
+      cellNodeIds.push(structureNodeId);
+    }
+    for (const resource of chunk.resources ?? []) {
+      const resourceNodeId = `node:${resource.id}`, size = .22 + Math.min(12, Number(resource.amount) || 1) * .035, y = Number(resource.local_position_mm.y) / 1000;
+      maxY = Math.max(maxY, y + size);
+      nodes.push({id: resourceNodeId, meshId: 'mesh:large-world:cube', materialId: resourceMaterialIds.get(String(resource.kind).toLowerCase()) ?? resourceMaterialIds.get('water'), transform: {translation: [worldX + Number(resource.local_position_mm.x) / 1000, y + size / 2, worldZ + Number(resource.local_position_mm.z) / 1000], scale: [size, size, size]}, castShadow: false, receiveShadow: true, tags: ['large-world', 'resource', String(resource.kind)], resourceKind: resource.kind, representationSlotId: selectionRow.selected_slot_id});
+      cellNodeIds.push(resourceNodeId);
+    }
+    const cellId = `cell:${chunk.chunk_id}`;
+    cells.push({id: cellId, center: [worldX + extentX / 2, 0, worldZ + extentZ / 2], radius: Math.hypot(extentX, extentZ) / 2, nodeIds: cellNodeIds, loadRadius: Math.max(extentX, extentZ) * 1.1, unloadRadius: Math.max(extentX, extentZ) * 1.6, priority: qualityProfile === 'STANDARD' ? 1 : 0});
+    assets.push({id: `asset:${chunk.chunk_id}`, uri: `rncs://${chunk.chunk_id}/${qualityProfile.toLowerCase()}`, sha256: chunk.content_root, byteLength: chunk.memory_bytes, kind: 'mesh', cellIds: [cellId], priority: qualityProfile === 'STANDARD' ? 1 : 0, representationRoot: selectionRow.selected_representation_root, portfolioRoot: selectionRow.portfolio_root, candidateOnly: true, authoritative: false});
+  }
+  const centerX = (minX + maxX) / 2, centerZ = (minZ + maxZ) / 2, extent = Math.max(maxX - minX, maxZ - minZ), cameraDistance = Math.max(48, extent * .88), cameraHeight = Math.max(36, extent * .28);
+  const camera = clone(value.camera ?? {translation: [centerX, cameraHeight, centerZ + cameraDistance], rotationEulerDeg: [-18, 0, 0]});
+  const selectionRoot = selection.selection_root;
+  const evidenceRoot = String(value.evidenceRoot ?? value.evidence_root ?? rootHash({selection_root: selectionRoot, chunks: chunks.map(chunk => chunk.chunk_root)}));
+  fail(hex64(evidenceRoot), 'LARGE_WORLD_SPATIAL_EVIDENCE_ROOT_INVALID');
+  const base = {
+    format: 'vsr.spatial-scene.v0.4',
+    sceneId: String(value.sceneId ?? value.scene_id ?? `large-world:${region.world_id}:${selectionRoot.slice(0, 16)}`),
+    title: String(value.title ?? 'URRF Large World · VSR Spatial Projection'),
+    background: String(value.background ?? '#07111e'),
+    environment: {
+      diffuseColor: String(value.diffuseColor ?? '#29435c'),
+      specularColor: String(value.specularColor ?? '#d9e7ff'),
+      intensity: Number(value.environmentIntensity ?? value.environment_intensity ?? .72),
+      probes: [{id: 'probe:large-world:center', position: [centerX, Math.max(1, maxY * .35), centerZ], radius: Math.max(1, extent * .8), diffuseColor: '#52789a', specularColor: '#d9e7ff', intensity: .7}]
+    },
+    activeCameraId: 'camera:large-world',
+    meshes,
+    materials,
+    nodes,
+    streaming: {worldId: region.world_id, cells, persistentNodeIds: []},
+    cameras: [{id: 'camera:large-world', projection: 'perspective', fovYDeg: Number(value.fovYDeg ?? value.fov_y_deg ?? 55), near: .1, far: Math.max(1000, cameraDistance * 5), transform: camera}],
+    lights: [
+      {id: 'light:large-world:ambient', kind: 'ambient', color: '#b8d4ff', intensity: .28},
+      {id: 'light:large-world:sun', kind: 'directional', color: '#fff0ce', intensity: 2.2, direction: [-.45, -1, -.35], castShadow: true},
+      {id: 'light:large-world:fill', kind: 'point', color: '#60a5fa', intensity: 8, position: [centerX - extent * .2, Math.max(8, cameraHeight * .35), centerZ + extent * .15], range: Math.max(8, extent * .65)}
+    ],
+    reality: {worldId: region.world_id, generation: region.generation, realityRoot: region.world_root, evidenceRoot},
+    assets,
+    large_world: {
+      format: LARGE_WORLD_SPATIAL_SCENE_FORMAT,
+      version: LARGE_WORLD_RUNTIME_VERSION,
+      world_id: region.world_id,
+      generation: region.generation,
+      region_root: region.region_root,
+      world_root: region.world_root,
+      selection_root: selectionRoot,
+      active_chunk_ids: chunks.map(chunk => chunk.chunk_id).sort(keySort),
+      representation_slots: chunks.map(chunk => {
+        const row = rows.get(chunk.chunk_id);
+        return {chunk_id: chunk.chunk_id, selected_slot_id: row.selected_slot_id, selected_quality_profile: row.selected_quality_profile, selected_representation_root: row.selected_representation_root, portfolio_root: row.portfolio_root};
+      }).sort((a, b) => keySort(a.chunk_id, b.chunk_id)),
+      candidate_only: true,
+      authoritative: false,
+      canonical_write_authorized: false,
+      authority: {provider_can_write_authoritative_world_state: false, rncs_authority_required: true}
+    }
+  };
+  return {...base, scene_root: largeWorldSpatialSceneRoot(base)};
+}
+
+export function verifyLargeWorldSpatialScene(scene) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!scene || typeof scene !== 'object' || Array.isArray(scene)) return {valid: false, errors: ['LARGE_WORLD_SPATIAL_SCENE_NOT_OBJECT']};
+  try {
+    check(scene.format === 'vsr.spatial-scene.v0.4', 'LARGE_WORLD_SPATIAL_SCENE_FORMAT_INVALID');
+    check(scene.large_world?.format === LARGE_WORLD_SPATIAL_SCENE_FORMAT, 'LARGE_WORLD_SPATIAL_SCENE_EXTENSION_INVALID');
+    check(scene.large_world?.candidate_only === true && scene.large_world?.authoritative === false && scene.large_world?.canonical_write_authorized === false, 'LARGE_WORLD_SPATIAL_SCENE_AUTHORITY_INVALID');
+    check(scene.reality?.realityRoot === scene.large_world?.world_root, 'LARGE_WORLD_SPATIAL_SCENE_REALITY_ROOT_MISMATCH');
+    check(hex64(scene.scene_root), 'LARGE_WORLD_SPATIAL_SCENE_ROOT_INVALID');
+    check(largeWorldSpatialSceneRoot(scene) === scene.scene_root, 'LARGE_WORLD_SPATIAL_SCENE_ROOT_MISMATCH');
+    check(Array.isArray(scene.large_world?.active_chunk_ids) && scene.large_world.active_chunk_ids.length === scene.streaming?.cells?.length, 'LARGE_WORLD_SPATIAL_SCENE_CELL_COUNT_MISMATCH');
+  } catch (error) {
+    errors.push(`LARGE_WORLD_SPATIAL_SCENE_VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, scene_root: scene?.scene_root ?? null};
+}
+
 function normalizeObserver(input = {}) {
   const value = record(input.position ?? input);
   const x = Number(value.x ?? 0);
@@ -965,6 +1252,19 @@ export class LargeWorldRuntime {
     return createChunkRepresentationPortfolio(chunk, {
       ...record(input),
       representationObject: this.getRepresentationObject(chunk.chunk_id)
+    });
+  }
+
+  createSpatialScene(input = {}) {
+    const value = record(input);
+    const selection = value.selection ?? value.selectionEnvelope ?? value.selection_envelope ?? this.selectActiveRepresentationPortfolios(value);
+    const chunks = this.listActiveChunks();
+    fail(chunks.length > 0, 'LARGE_WORLD_SPATIAL_ACTIVE_CHUNKS_REQUIRED');
+    return createLargeWorldSpatialScene({
+      ...value,
+      region: this.region,
+      chunks,
+      selection
     });
   }
 
