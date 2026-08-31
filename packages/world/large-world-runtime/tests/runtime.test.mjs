@@ -15,6 +15,7 @@ import {
   LARGE_WORLD_SPATIAL_GLB_BUNDLE_FORMAT,
   LARGE_WORLD_SPATIAL_GLB_TEXTURE_PROFILE,
   LARGE_WORLD_SPATIAL_GLB_KTX2_TEXTURE_PROFILE,
+  LARGE_WORLD_SPATIAL_GLB_KTX2_PBR_TEXTURE_PROFILE,
   LARGE_WORLD_SPATIAL_GLB_TEXTURE_RESIDENCY_PROFILE,
   LARGE_WORLD_TEXTURE_RESIDENCY_FORMAT,
   LargeWorldDurableStore,
@@ -349,6 +350,30 @@ test('resolves candidate texture mip residency from distance and screen coverage
   assert.equal(verifyLargeWorldTextureResidency(far), true);
   const tampered = {...far, selected_level: 1};
   assert.equal(verifyLargeWorldTextureResidency(tampered), false);
+});
+
+test('materializes a four-map PBR KTX2 GLB candidate with explicit material bindings', () => {
+  const runtime = new LargeWorldRuntime({worldId: 'world:pbr-ktx2-provider', seed: 'seed:pbr-ktx2-provider', width: 5, depth: 5, chunkSize: 64, sampleResolution: 8, loadRadius: 1, maxActiveChunks: 9});
+  runtime.observe({x: 0, z: 0});
+  const active = runtime.listActiveChunks();
+  const selection = runtime.selectActiveRepresentationPortfolios({quality_by_chunk: Object.fromEntries(active.map(chunk => [chunk.chunk_id, 'STANDARD']))});
+  const scene = runtime.createSpatialScene({selection, evidence_root: rootHash({selection_root: selection.selection_root, renderer: 'pbr-ktx2-provider-test'})});
+  const bundle = createLargeWorldSpatialGlbBundle(scene, {texture_profile: LARGE_WORLD_SPATIAL_GLB_KTX2_PBR_TEXTURE_PROFILE, texture_size: 32});
+  assert.equal(verifyLargeWorldSpatialGlbBundle(bundle, {sceneRoot: scene.scene_root}).valid, true);
+  const asset = bundle.assets.find(entry => entry.record.metadata.asset_role === undefined);
+  assert.ok(asset);
+  assert.equal(asset.record.metadata.texture_count, 4);
+  assert.deepEqual(asset.record.metadata.texture_roles, ['base-color', 'normal', 'metallic-roughness', 'emissive']);
+  assert.deepEqual(asset.record.metadata.texture_color_spaces, ['srgb', 'linear', 'linear', 'srgb']);
+  assert.equal(asset.gltf.images.length, 4);
+  assert.equal(asset.gltf.textures.length, 4);
+  assert.deepEqual(asset.gltf.images.map(image => image.extras.color_space), ['srgb', 'linear', 'linear', 'srgb']);
+  assert.equal(asset.gltf.materials[0].pbrMetallicRoughness.metallicRoughnessTexture.index, 2);
+  assert.equal(asset.gltf.materials[0].normalTexture.index, 1);
+  assert.equal(asset.gltf.materials[0].occlusionTexture.index, 2);
+  assert.equal(asset.gltf.materials[0].emissiveTexture.index, 3);
+  assert.equal(asset.record.metadata.texture_residency.maps.length, 4);
+  assert.equal(bundle.bundle_root, createLargeWorldSpatialGlbBundle(scene, {texture_profile: LARGE_WORLD_SPATIAL_GLB_KTX2_PBR_TEXTURE_PROFILE, texture_size: 32}).bundle_root);
 });
 
 test('can attach a real RAGF procedural-3d showcase candidate without changing world truth', () => {
