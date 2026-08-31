@@ -1,7 +1,7 @@
 # URRF v0.3 Visual Representation Portfolio — Local Evidence
 
 - portfolio_root: `9429e03802e2b24959c0389aa2305d12af7d8d3293e7ffa58651f15c77d42115`
-- report_root: `adeffee734162c19d6f13238ba68dbe9c71ab63d0c4237af69da1ee6f7180696`
+- report_root: `ce6267eaf3cefc844b2bedd67976997a472282903217af7866bca54957244975`
 - composition: `READY` (5 slots; 4-5 allowed)
 - status: `LOCAL_RENDERED / OBSERVED_NOT_GRADED`
 
