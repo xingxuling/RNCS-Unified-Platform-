@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Added optional v0.3 Consistency Profile and RNCS Authority Lease/Epoch/Fencing admission to two-node Snapshot/Delta replication, with stale/expired/revoked lease rejection and receipt-bound fencing evidence.
+
 ## 0.1.0-alpha.7
 
 - Added an atomic temporary-file/rename durable store with file-sync receipts and deterministic crash-point recovery for durable bundles.

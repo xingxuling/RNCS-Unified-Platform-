@@ -19,6 +19,7 @@
 - v0.3 Truth Layer Candidate：WorldTime、authority-receipted WorldEvent、deterministic event-log replay 与 provenance-bound Fact World Tree；不把 Subject Memory 当作 Canonical Fact
 - v0.3 Reality Property & Law Candidate：带来源、证据、版本和单位/维度的 Reality Quantity，RNCS-owned PropertySet/LawBindings，以及候选属性事务；Provider 只能计算或近似，不能改写 Canonical Property/Law
 - v0.3 Reality Access Candidate：独立 DetailVector、主体 RealityHorizon、InterestGraph、多域 Query 结果和容量受限 CognitiveWorkingSet；查询排序不拥有 Canonical State，结果必须回源复验
+- v0.3 Reality Distribution Candidate：Consistency Profile、Authority Lease/Epoch/Fencing、Lease Revocation 与版本根绑定的 Replication Envelope；分布式输入必须经过 RNCS authority receipt 与当前 lease 复验
 
 ## 快速运行
 
@@ -49,6 +50,8 @@ VSR/AER State   = 观察者投影状态
 `src/reality-property.mjs` 提供 `RealityQuantity`、`RealityPropertySet`、`RealityLawBindings` 与 `RealityPropertyTransition`。所有属性值必须明确 `unit`、`dimension`、`provenance_ref` 和 `authority_ref`；`validateRealityQuantityOperation('+', ...)` 会拒绝不同物理维度或不同单位的相加。该模块是可验证的合同候选，不宣称已经完成分布式 Property Commit、物理 Provider 或生产级多物理仿真。
 
 `src/reality-access.mjs` 提供 `DetailVector`、`RealityHorizon`、`InterestGraph`、`RealityQuery`、确定性多域筛选/排序和 `CognitiveWorkingSet`。它只读取对象索引与 RNCS PropertySet，不执行 Canonical Mutation；权限、视域和容量过滤在返回候选前完成。
+
+`src/reality-distribution.mjs` 提供 `RealityConsistencyProfile`、`AuthorityLease`、显式撤销和 `RealityReplicationEnvelope`。Epoch/fencing token 与当前 lease 必须精确匹配，lease 失效或 authority receipt 缺失时 admission 失败；这些合同本身保持 candidate-only。
 
 ## Entity Kernel v0.1
 

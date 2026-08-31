@@ -3,7 +3,7 @@ import test from 'node:test';
 import {mkdtemp, rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {rootHash} from '@taowind/rncs-core-contract';
+import {createAuthorityLease, createRealityConsistencyProfile, rootHash} from '@taowind/rncs-core-contract';
 import {
   LARGE_WORLD_CHUNK_FORMAT,
   LARGE_WORLD_REGION_FORMAT,
@@ -240,6 +240,56 @@ test('replicates deterministic world truth between isolated instances with idemp
   const duplicate = target.applyReplicationDelta(stormDelta, {authorityReceipt});
   assert.equal(duplicate.status, 'DUPLICATE');
   assert.equal(verifyReplicationReceipt(duplicate).valid, true);
+});
+
+test('fences a two-node replication delta with an active lease and rejects a stale epoch', () => {
+  const world = {worldId: 'world:lease-fenced', seed: 'seed:lease-fenced', loadRadius: 0, maxActiveChunks: 1};
+  const profile = createRealityConsistencyProfile({
+    profile_id: 'consistency:simulation',
+    mode: 'causal',
+    stale_read_budget_ms: 500,
+    conflict_policy: 'reject-stale',
+    evidence_refs: ['evidence:lease-fenced']
+  });
+  const currentLease = createAuthorityLease({
+    authority_id: 'authority:world',
+    shard_id: 'shard:lease-fenced',
+    semantic_scope: 'simulation',
+    owner_node: 'node:source',
+    epoch: 7,
+    fencing_token: 99,
+    valid_from_tick: 0,
+    valid_until_tick: 100,
+    provenance_ref: 'urn:test:lease',
+    authority_ref: 'urn:test:authority',
+    evidence_refs: ['evidence:lease']
+  });
+  const source = new LargeWorldRuntime({...world, nodeId: 'node:source', shardId: currentLease.shard_id, consistencyProfile: profile, authorityLease: currentLease});
+  const target = new LargeWorldRuntime({...world, nodeId: 'node:target', shardId: currentLease.shard_id, consistencyProfile: profile, acceptedAuthorityLease: currentLease});
+  const base = target.exportReplicationSnapshot();
+  const authorityReceipt = {
+    status: 'committed',
+    receipt_root: 'a'.repeat(64),
+    lease_root: currentLease.lease_root,
+    fencing_token: currentLease.fencing_token,
+    authority_id: currentLease.authority_id
+  };
+  source.recordWorldEvent({authorityReceipt, mutation: {operations: [{op: 'set', path: 'weather', value: 'rain'}]}});
+  const delta = source.createReplicationDelta(base, {targetNode: target.nodeId, sequence: 1});
+  assert.equal(verifyReplicationDelta(delta).valid, true);
+  const receipt = target.applyReplicationDelta(delta, {authorityReceipt});
+  assert.equal(receipt.status, 'APPLIED');
+  assert.equal(receipt.authority_lease_root, currentLease.lease_root);
+  assert.equal(verifyReplicationReceipt(receipt).valid, true);
+
+  const staleLease = createAuthorityLease({...currentLease, epoch: 6, fencing_token: 98});
+  const staleSource = new LargeWorldRuntime({...world, nodeId: 'node:source', shardId: currentLease.shard_id, consistencyProfile: profile, authorityLease: staleLease});
+  const staleTarget = new LargeWorldRuntime({...world, nodeId: 'node:target', shardId: currentLease.shard_id, consistencyProfile: profile, acceptedAuthorityLease: currentLease});
+  const staleBase = staleTarget.exportReplicationSnapshot();
+  const staleAuthorityReceipt = {...authorityReceipt, lease_root: staleLease.lease_root, fencing_token: staleLease.fencing_token};
+  staleSource.recordWorldEvent({authorityReceipt: staleAuthorityReceipt, mutation: {operations: [{op: 'set', path: 'weather', value: 'storm'}]}});
+  const staleDelta = staleSource.createReplicationDelta(staleBase, {targetNode: staleTarget.nodeId, sequence: 1});
+  assert.throws(() => staleTarget.applyReplicationDelta(staleDelta, {authorityReceipt: staleAuthorityReceipt}), /LARGE_WORLD_REPLICATION_LEASE_ADMISSION_FAILED/);
 });
 
 test('round-trips a durable bundle across a fresh runtime and preserves the replication ledger', () => {
