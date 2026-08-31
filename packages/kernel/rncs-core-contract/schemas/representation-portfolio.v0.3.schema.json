@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/rncs/representation-portfolio.v0.3.schema.json",
+  "title": "RNCS Reality Representation Portfolio v0.3",
+  "type": "object",
+  "required": ["format", "version", "portfolio_id", "object_id", "canonical_state_root", "content_root", "composition", "composition_result", "slots", "active_slot_id", "fallback_policy", "authority", "candidate_only", "authoritative", "commit_status", "portfolio_root"],
+  "properties": {
+    "format": {"const": "rncs.reality-representation-portfolio.v0.3"},
+    "version": {"const": "0.3.0"},
+    "portfolio_id": {"type": "string", "minLength": 1},
+    "object_id": {"type": "string", "minLength": 1},
+    "canonical_state_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "content_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "composition": {
+      "type": "object",
+      "required": ["mode", "min_slots", "max_slots", "required_kinds", "required_quality_profiles", "quality_ladder", "diversity_targets"],
+      "properties": {
+        "mode": {"enum": ["MINIMUM", "BALANCED", "DIVERSE", "CINEMATIC", "CUSTOM"]},
+        "min_slots": {"type": "integer", "minimum": 1, "maximum": 64},
+        "max_slots": {"type": "integer", "minimum": 1, "maximum": 64},
+        "required_kinds": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "required_quality_profiles": {"type": "array", "items": {"enum": ["PROXY", "MOBILE", "STANDARD", "CINEMATIC", "REFERENCE"]}},
+        "quality_ladder": {"type": "array", "minItems": 1, "items": {"enum": ["PROXY", "MOBILE", "STANDARD", "CINEMATIC", "REFERENCE"]}},
+        "diversity_targets": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0, "maximum": 64}}
+      },
+      "additionalProperties": true
+    },
+    "composition_result": {"type": "object", "required": ["slot_count", "count_satisfied", "missing_kinds", "missing_quality_profiles", "distinct_by_axis", "diversity_satisfied", "requirements_satisfied", "composition_status"]},
+    "slots": {"type": "array", "items": {"$ref": "representation-slot.v0.3.schema.json"}},
+    "active_slot_id": {"type": ["string", "null"]},
+    "fallback_policy": {"type": "object", "required": ["enabled", "preserve_minimum_reality", "selection_order"], "properties": {"enabled": {"const": true}, "preserve_minimum_reality": {"const": true}, "selection_order": {"const": "quality-desc-then-slot-id"}}},
+    "evidence_refs": {"type": "array", "items": {"type": "string"}},
+    "authority": {"type": "object", "properties": {"portfolio_may_write_authoritative_world_state": {"const": false}, "canonical_write_authorized": {"const": false}, "rncs_authority_required": {"const": true}}},
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "commit_status": {"const": "NOT_COMMITTED"},
+    "portfolio_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}

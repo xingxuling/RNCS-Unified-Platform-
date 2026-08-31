@@ -1,0 +1,185 @@
+{
+  "format": "urrf.visual-portfolio-report.v0.3",
+  "version": "0.3.0",
+  "portfolio_id": "portfolio:urrf-visual-v03-showcase",
+  "portfolio_root": "9429e03802e2b24959c0389aa2305d12af7d8d3293e7ffa58651f15c77d42115",
+  "composition": {
+    "mode": "DIVERSE",
+    "min_slots": 4,
+    "max_slots": 5,
+    "required_kinds": [
+      "gaussian-splats",
+      "mesh",
+      "world-proxy"
+    ],
+    "required_quality_profiles": [
+      "PROXY",
+      "MOBILE",
+      "STANDARD",
+      "CINEMATIC"
+    ],
+    "quality_ladder": [
+      "PROXY",
+      "MOBILE",
+      "STANDARD",
+      "CINEMATIC",
+      "REFERENCE"
+    ],
+    "diversity_targets": {
+      "MODALITY": 3,
+      "DETAIL": 5,
+      "MATERIAL": 4,
+      "LIGHTING": 4,
+      "STYLE": 4,
+      "VIEW": 3
+    }
+  },
+  "composition_result": {
+    "slot_count": 5,
+    "count_satisfied": true,
+    "missing_kinds": [],
+    "missing_quality_profiles": [],
+    "distinct_by_axis": {
+      "MODALITY": 3,
+      "DETAIL": 5,
+      "MATERIAL": 5,
+      "LIGHTING": 4,
+      "ENVIRONMENT": 0,
+      "STYLE": 5,
+      "MOTION": 0,
+      "VIEW": 4
+    },
+    "diversity_satisfied": true,
+    "requirements_satisfied": true,
+    "composition_status": "READY"
+  },
+  "samples": [
+    {
+      "profile": "proxy",
+      "quality_profile": "PROXY",
+      "representation_kind": "world-proxy",
+      "diversity_axes": {
+        "MODALITY": "WORLD-PROXY",
+        "DETAIL": "PROXY",
+        "MATERIAL": "FLAT",
+        "LIGHTING": "DAYLIGHT",
+        "STYLE": "ABSTRACT",
+        "VIEW": "WIDE"
+      },
+      "image_path": "C:\\Users\\User\\Documents\\Codex\\2026-08-02\\referenced-chatgpt-conversation-this-is-an\\work\\RNCS-urrf-visual-portfolio-v03\\docs\\verification\\URRF_V03_VISUAL_PORTFOLIO\\proxy.png",
+      "image_bytes": 230663,
+      "width": 320,
+      "height": 180,
+      "triangles": 2138,
+      "draw_calls": 5,
+      "pixel_root": "185fee7f9e9bc4c009f3f2fa7d77c2faf97029ad51a927f9c0e634add0221388",
+      "frame_root": "1bb10895a0e4b900ca4817485532e2222c1847cf06e794c559409a8a248b1644",
+      "evidence_root": "d180295d417ac52ac85b91de478c46f29c8cfc2b84edd18620ffb1e6b1c48199",
+      "quality_status": "OBSERVED_NOT_GRADED",
+      "visual_status": "LOCAL_RENDERED"
+    },
+    {
+      "profile": "mobile",
+      "quality_profile": "MOBILE",
+      "representation_kind": "mesh",
+      "diversity_axes": {
+        "MODALITY": "MESH",
+        "DETAIL": "MOBILE",
+        "MATERIAL": "PBR-LITE",
+        "LIGHTING": "DAYLIGHT",
+        "STYLE": "CLEAN",
+        "VIEW": "HERO"
+      },
+      "image_path": "C:\\Users\\User\\Documents\\Codex\\2026-08-02\\referenced-chatgpt-conversation-this-is-an\\work\\RNCS-urrf-visual-portfolio-v03\\docs\\verification\\URRF_V03_VISUAL_PORTFOLIO\\mobile.png",
+      "image_bytes": 518773,
+      "width": 480,
+      "height": 270,
+      "triangles": 2138,
+      "draw_calls": 5,
+      "pixel_root": "c6bf5b83e6455bf04b2e70a7580b0bd590ccb610beb8e589a57ba91eb2b969dc",
+      "frame_root": "5ada572613762e5723c6f38861eafc1d9411ae153449d065b62f15d8f2652ec1",
+      "evidence_root": "0a70b7f044994792d76ac6134fac6540091b675432c33f2cc3c2d0ce6dea108e",
+      "quality_status": "OBSERVED_NOT_GRADED",
+      "visual_status": "LOCAL_RENDERED"
+    },
+    {
+      "profile": "standard",
+      "quality_profile": "STANDARD",
+      "representation_kind": "mesh",
+      "diversity_axes": {
+        "MODALITY": "MESH",
+        "DETAIL": "STANDARD",
+        "MATERIAL": "PBR",
+        "LIGHTING": "GOLDEN-HOUR",
+        "STYLE": "REALISTIC",
+        "VIEW": "HERO"
+      },
+      "image_path": "C:\\Users\\User\\Documents\\Codex\\2026-08-02\\referenced-chatgpt-conversation-this-is-an\\work\\RNCS-urrf-visual-portfolio-v03\\docs\\verification\\URRF_V03_VISUAL_PORTFOLIO\\standard.png",
+      "image_bytes": 922098,
+      "width": 640,
+      "height": 360,
+      "triangles": 2138,
+      "draw_calls": 5,
+      "pixel_root": "77dd8eeb342d6cbccaa3c709c0d11bbbef3df49ea923a3b00e53294666883857",
+      "frame_root": "4d328e9f8a655ebf419f1ca98e155ebd5ace42b61a268eac91e98ef6956ec5e6",
+      "evidence_root": "245d10e68c4de87d32cc7736ec39a211d7967da9110392902cf3bf1d103872c6",
+      "quality_status": "OBSERVED_NOT_GRADED",
+      "visual_status": "LOCAL_RENDERED"
+    },
+    {
+      "profile": "cinematic",
+      "quality_profile": "CINEMATIC",
+      "representation_kind": "gaussian-splats",
+      "diversity_axes": {
+        "MODALITY": "GAUSSIAN-SPLATS",
+        "DETAIL": "CINEMATIC",
+        "MATERIAL": "VOLUMETRIC",
+        "LIGHTING": "NOCTURNE",
+        "STYLE": "FILMIC",
+        "VIEW": "DYNAMIC-HERO"
+      },
+      "image_path": "C:\\Users\\User\\Documents\\Codex\\2026-08-02\\referenced-chatgpt-conversation-this-is-an\\work\\RNCS-urrf-visual-portfolio-v03\\docs\\verification\\URRF_V03_VISUAL_PORTFOLIO\\cinematic.png",
+      "image_bytes": 2074363,
+      "width": 960,
+      "height": 540,
+      "triangles": 2138,
+      "draw_calls": 5,
+      "pixel_root": "61e32a329f557d9e77b6869417e625585922468d71458c3ba3c5190b15a31e24",
+      "frame_root": "9eb57bd787fbbbdacbc049c5f895fed6ba159cf80f26c8087db0e332c769f95b",
+      "evidence_root": "fdb6fe4c3badff9555180bea0435e341a0a73d06ed6668ba7f231e240331e1c0",
+      "quality_status": "OBSERVED_NOT_GRADED",
+      "visual_status": "LOCAL_RENDERED"
+    },
+    {
+      "profile": "reference",
+      "quality_profile": "REFERENCE",
+      "representation_kind": "mesh",
+      "diversity_axes": {
+        "MODALITY": "MESH",
+        "DETAIL": "REFERENCE",
+        "MATERIAL": "PBR-CLEARCOAT",
+        "LIGHTING": "STUDIO",
+        "STYLE": "STYLIZED",
+        "VIEW": "ORBIT"
+      },
+      "image_path": "C:\\Users\\User\\Documents\\Codex\\2026-08-02\\referenced-chatgpt-conversation-this-is-an\\work\\RNCS-urrf-visual-portfolio-v03\\docs\\verification\\URRF_V03_VISUAL_PORTFOLIO\\reference.png",
+      "image_bytes": 1440623,
+      "width": 800,
+      "height": 450,
+      "triangles": 2138,
+      "draw_calls": 5,
+      "pixel_root": "2c2177e65633b6e2dd36ab36a5876664b9c351f15618630594224f71c0435b7b",
+      "frame_root": "874af5091d2b70648d402a703b3e9798c03fb140ae615ec9db07af8e0129274c",
+      "evidence_root": "06c93a7766d815b94a0d1ecd3342c4148223a376f5bd7c818062b18095c00557",
+      "quality_status": "OBSERVED_NOT_GRADED",
+      "visual_status": "LOCAL_RENDERED"
+    }
+  ],
+  "runtime_root": "f7ffb10077d68e9eba3fc4dd9bdd6d4f876ee3ca69fae2c01238ead749a34711",
+  "status": "LOCAL_RENDERED_OBSERVED_NOT_GRADED",
+  "authority": {
+    "canonical_write_authorized": false,
+    "candidate_only": true
+  },
+  "report_root": "3c8e25991d54f1a4406fdd38f6e58f4346b3052503b007042a55430234d22539"
+}

@@ -83,6 +83,7 @@
     "test:network": "npm test --workspace @taowind/reality-network-runtime",
     "test:urrf-v03": "npm test --workspace @taowind/rncs-core-contract && node --test tests/urrf-v03-world-truth.integration.test.mjs",
     "test:urrf-runtime": "npm test --workspace @taowind/reality-representation-fabric && npm run build --workspace @taowind/visual-state-runtime && node --test tests/urrf-representation-runtime.integration.test.mjs",
+    "test:urrf-visual-portfolio": "npm run build --workspace @taowind/visual-state-runtime && node --test tests/urrf-visual-portfolio.integration.test.mjs",
     "test:large-world": "npm test --workspace @taowind/large-world-runtime && npm run build --workspace @taowind/visual-state-runtime && node --test tests/large-world-runtime.integration.test.mjs",
     "benchmark:network": "npm run benchmark --workspace @taowind/reality-network-runtime",
     "demo:network": "node examples/two-player-loopback/demo-server.mjs",
