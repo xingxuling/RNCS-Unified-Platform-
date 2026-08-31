@@ -16,7 +16,7 @@
 
 - [large-world-gltf-provider-manifest.json](./large-world-gltf-provider-manifest.json)：资产清单、LOD policy、cell → asset 索引和 manifest root。
 - [large-world-gltf-provider-report.json](./large-world-gltf-provider-report.json)：streaming/import/frame/HLOD 根与计数。
-- [large-world-gltf-provider-reference.png](./large-world-gltf-provider-reference.png)：导入 glTF + HLOD 的确定性 CPU reference。
+- [large-world-gltf-provider-reference.png](./large-world-gltf-provider-reference.png)：导入 glTF LOD0 showcase 的确定性 CPU reference；HLOD 仍由同一集成测试单独验证。
 
 ## 边界
 
