@@ -16,6 +16,7 @@ import {
   LargeWorldRuntime,
   createChunkRepresentationPortfolio,
   createLargeWorldSpatialScene,
+  createLargeWorldSpatialGltfBundle,
   createLargeWorldRuntime,
   generateChunk,
   generateRegion,
@@ -24,6 +25,7 @@ import {
   verifyMaterializationBatch,
   verifyPortfolioSelectionEnvelope,
   verifyLargeWorldSpatialScene,
+  verifyLargeWorldSpatialGltfBundle,
   verifyDurableBundle,
   verifyDurableRestoreReceipt,
   verifyDurableStoreReceipt,
@@ -239,6 +241,32 @@ test('lowers an active URRF portfolio selection into a rooted VSR spatial scene 
   const scaled = createLargeWorldSpatialScene({region: runtime.getRegion(), selection, visual_scale: 2, evidence_root: scene.reality.evidenceRoot});
   assert.equal(scaled.large_world.presentation_scale, 2);
   assert.notEqual(scaled.scene_root, scene.scene_root);
+});
+
+test('materializes a deterministic glTF and inline texture candidate bundle without escalating authority', () => {
+  const runtime = new LargeWorldRuntime({worldId: 'world:gltf-provider', seed: 'seed:gltf-provider', width: 5, depth: 5, chunkSize: 64, sampleResolution: 8, loadRadius: 1, maxActiveChunks: 9});
+  runtime.observe({x: 0, z: 0});
+  const active = runtime.listActiveChunks();
+  const selection = runtime.selectActiveRepresentationPortfolios({quality_by_chunk: Object.fromEntries(active.map(chunk => [chunk.chunk_id, 'STANDARD']))});
+  const scene = runtime.createSpatialScene({selection, evidence_root: rootHash({selection_root: selection.selection_root, renderer: 'gltf-provider-test'})});
+  const bundle = createLargeWorldSpatialGltfBundle(scene);
+  const verification = verifyLargeWorldSpatialGltfBundle(bundle, {sceneRoot: scene.scene_root});
+  assert.equal(verification.valid, true);
+  assert.equal(bundle.manifest.mesh_count, scene.meshes.length);
+  assert.equal(bundle.manifest.asset_count, scene.meshes.length * 3);
+  assert.equal(bundle.manifest.texture_count, bundle.manifest.asset_count);
+  assert.equal(bundle.assets.every(entry => entry.record.metadata.candidate_only && !entry.record.metadata.authoritative), true);
+  assert.equal(bundle.assets.every(entry => entry.gltf.asset.version === '2.0'), true);
+  for (const meshId of scene.meshes.map(mesh => mesh.id)) {
+    const triangles = bundle.assets.filter(entry => entry.record.metadata.source_mesh_id === meshId).sort((a, b) => a.record.metadata.lod - b.record.metadata.lod).map(entry => entry.record.metadata.triangle_count);
+    assert.equal(triangles.length, 3);
+    assert.equal(triangles[0] >= triangles[1] && triangles[1] >= triangles[2], true);
+  }
+  const repeat = createLargeWorldSpatialGltfBundle(scene);
+  assert.equal(bundle.bundle_root, repeat.bundle_root);
+  const tampered = structuredClone(bundle);
+  tampered.assets[0].payload[0] ^= 1;
+  assert.equal(verifyLargeWorldSpatialGltfBundle(tampered, {sceneRoot: scene.scene_root}).valid, false);
 });
 
 test('snapshot and replay seal deterministic streaming evidence', () => {
