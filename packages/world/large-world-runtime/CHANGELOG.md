@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added the URRF/RNCS v0.3 Reality Access to large-world streaming bridge: generated Chunks now carry deterministic query indexes, and `resolveRealityAccess()` lowers Horizon/InterestGraph/Query/WorkingSet candidates into forced bounded Chunk requests and a VSR-ready stream envelope.
+- Added `reality-access-resolution.v0.1` schema, verifier, package regression coverage, and machine-readable/visual integration evidence.
 - Added a bounded multi-asset PBR material-diversity integration and contact-sheet evidence path covering terrain, structures, resources, async KTX2 import, and rooted CPU pixels.
 - Added opt-in `ragf.ktx2-pbr-mipped.v0.1` GLB assets with deterministic base-color, normal, metallic-roughness/occlusion, and emissive KTX2 maps, explicit bindings, and per-map residency evidence.
 - Added an opt-in `ragf.ktx2-rgba8-mipped.v0.1` GLB provider profile with six deterministic mip levels, `KHR_texture_basisu` image bindings, and explicit `vsr.progressive-mip-residency.v0.1` candidate metadata for cell-aware progressive texture residency.
