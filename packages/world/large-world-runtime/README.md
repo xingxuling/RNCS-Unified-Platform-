@@ -24,6 +24,12 @@ const receipt = target.applyReplicationDelta(delta, {
 
 `resolveReplicationConflict([{delta, writerId, writerSequence}, ...])` sorts same-base candidates by the explicit `lexicographic-writer-priority` policy (`writer_id`, `writer_sequence`, `delta_root`) and returns a candidate-only decision. `applyReplicationConflict(...)` applies only the winner through the normal RNCS Delta gate, records an authoritative conflict receipt, and persists a loser decision so a rejected candidate cannot be applied directly after restart. This is a deterministic local policy, not a distributed consensus protocol.
 
+## URRF representation portfolios
+
+`getRepresentationPortfolio(chunkId)` lowers the chunk's existing URRF references into one canonical RNCS Representation Portfolio. The large-world runtime currently maps its procedural-grid reference to a `STANDARD` slot and its wireframe-grid reference to a `PROXY` slot, with biome/environment/material/style axes, integer resource costs, and a proxy minimum-reality fallback. `createChunkRepresentationPortfolio(chunk, {representationObject})` exposes the same lowering seam for callers that already hold a chunk and URRF object.
+
+The portfolio is a candidate description for selection and projection. It does not mutate RNCS world truth, grant provider authority, or claim that the CPU-reference PNG is production GPU/WebGPU quality. A missing reference remains visible as an `INCOMPLETE` composition instead of being silently invented.
+
 For a fenced cross-node delta, configure the source with `consistencyProfile` and an active `authorityLease`, and configure the receiver with the same profile plus `acceptedAuthorityLease`. `createReplicationDelta(base, {targetNode})` carries the profile root, lease root, epoch, fencing token, source/target node and sequence. `applyReplicationDelta(delta, {authorityReceipt})` requires a committed authority receipt whose lease root and fencing token match the current lease; stale, expired, revoked or owner-mismatched leases fail before any world mutation.
 
 `LargeWorldDurableStore({filePath})` writes a verified durable bundle to a same-directory temporary file, syncs the file, and atomically renames it into place. `save(..., {faultAt: 'after-temp-sync' | 'after-rename'})` is a test-only crash injector; `recover()` keeps a valid primary over an unfinished temporary write or promotes a valid temporary bundle when the primary is missing. Storage receipts are candidate-only and do not replace the committed authority required by `restoreDurableBundle`.

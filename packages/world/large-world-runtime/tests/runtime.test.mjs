@@ -3,7 +3,8 @@ import test from 'node:test';
 import {mkdtemp, rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {createAuthorityLease, createRealityConsistencyProfile, rootHash} from '@taowind/rncs-core-contract';
+import {createAuthorityLease, createRealityConsistencyProfile, rootHash, verifyRepresentationPortfolio} from '@taowind/rncs-core-contract';
+import {RealityRepresentationPortfolioRuntime} from '@taowind/reality-representation-fabric';
 import {
   LARGE_WORLD_CHUNK_FORMAT,
   LARGE_WORLD_REGION_FORMAT,
@@ -11,6 +12,7 @@ import {
   LARGE_WORLD_WIREFRAME_PROVIDER_ID,
   LargeWorldDurableStore,
   LargeWorldRuntime,
+  createChunkRepresentationPortfolio,
   createLargeWorldRuntime,
   generateChunk,
   generateRegion,
@@ -145,6 +147,48 @@ test('keeps procedural and wireframe representations as separate URRF candidates
   assert.equal(batch.receipts[0].provider_id, LARGE_WORLD_WIREFRAME_PROVIDER_ID);
   assert.equal(batch.receipts[0].chunk_id, 'chunk:world:providers:0:0');
   assert.equal(verifyMaterializationBatch(batch).valid, true);
+});
+
+test('lowers a streamed chunk into a URRF portfolio with budgeted minimum-reality fallback', async () => {
+  const runtime = new LargeWorldRuntime({
+    worldId: 'world:portfolio',
+    seed: 'seed:portfolio',
+    loadRadius: 0,
+    maxActiveChunks: 1,
+    materializeChunk: async ({chunk}) => ({
+      status: 'EXECUTED',
+      runtime: 'procedural-grid-portfolio-test',
+      output_root: chunk.content_root,
+      evidence_root: rootHash({chunk_root: chunk.chunk_root, provider: 'portfolio'})
+    })
+  });
+  const chunk = runtime.getChunk('chunk:world:portfolio:0:0');
+  const portfolio = runtime.getRepresentationPortfolio(chunk.chunk_id);
+  assert.equal(verifyRepresentationPortfolio(portfolio).valid, true);
+  assert.equal(portfolio.composition_result.composition_status, 'READY');
+  assert.deepEqual(portfolio.slots.map(slot => slot.quality_profile), ['PROXY', 'STANDARD']);
+  assert.equal(portfolio.slots.every(slot => slot.candidate_only && !slot.authoritative), true);
+  const incomplete = createChunkRepresentationPortfolio(chunk, {
+    representations: runtime.getRepresentationObject(chunk.chunk_id).representations.filter(reference => reference.provider_id !== LARGE_WORLD_WIREFRAME_PROVIDER_ID)
+  });
+  assert.equal(verifyRepresentationPortfolio(incomplete).valid, true);
+  assert.equal(incomplete.composition_result.composition_status, 'INCOMPLETE');
+
+  const portfolioRuntime = new RealityRepresentationPortfolioRuntime({fabric: runtime.fabric});
+  portfolioRuntime.registerPortfolio(portfolio);
+  const standard = portfolioRuntime.selectSlot({portfolio_id: portfolio.portfolio_id, quality_profile: 'STANDARD'});
+  assert.equal(standard.slot.quality_profile, 'STANDARD');
+  assert.equal(standard.fallback_used, false);
+
+  const budget = {CPU_MILLI: 0, GPU_MILLI: 0, NPU_MILLI: 0, VRAM_MB: 0, RAM_MB: 0, STORAGE_KB: 0, NETWORK_KB: 0, ENERGY_MILLI: 0};
+  const constrained = portfolioRuntime.selectSlot({portfolio_id: portfolio.portfolio_id, quality_profile: 'STANDARD', resource_budget: budget});
+  assert.equal(constrained.slot.quality_profile, 'PROXY');
+  assert.equal(constrained.fallback_used, true);
+  assert.equal(constrained.reason_codes.includes('MINIMUM_REALITY_FALLBACK'), true);
+
+  const materialized = await portfolioRuntime.materializeSlot({portfolio_id: portfolio.portfolio_id, quality_profile: 'STANDARD'});
+  assert.equal(materialized.status, 'EXECUTED');
+  assert.equal(materialized.canonical_write_authorized, false);
 });
 
 test('snapshot and replay seal deterministic streaming evidence', () => {
