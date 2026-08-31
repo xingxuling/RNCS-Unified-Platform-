@@ -17,7 +17,8 @@ Status: `CANDIDATE / LOCAL_VERIFIED / VISUAL_OBSERVED_NOT_GRADED / NOT_PRODUCTIO
   without changing canonical state.
 - Visual evidence is stored separately from subjective grading. Each rendered
   sample carries a PNG byte count, pixel root, frame root, geometry statistics,
-  and `LOCAL_RENDERED / OBSERVED_NOT_GRADED` status.
+  environment root, animation root, and `LOCAL_RENDERED / OBSERVED_NOT_GRADED`
+  status.
 
 ## Reproducible checks
 
@@ -41,7 +42,8 @@ Observed on 2026-08-31:
 - Portfolio visual integration: `1/1 PASS`; five deterministic PNGs written.
 - Portfolio composition: `READY`; `5` slots in a `4-5` range, three
   representation kinds, five quality/detail levels, and diversity targets met
-  for modality, detail, material, lighting, style, and view.
+  for modality, detail, material, lighting, environment, style, motion, and
+  view.
 - `git diff --check`: PASS.
 
 ## Local visual sample set
@@ -50,13 +52,13 @@ The checked-in sample set is under
 [`URRF_V03_VISUAL_PORTFOLIO`](./URRF_V03_VISUAL_PORTFOLIO/README.md). Its
 report root is recorded in `visual-portfolio-report.json`.
 
-| Slot | Representation | Resolution | Visual variation |
-|---|---|---:|---|
-| PROXY | world-proxy | 320×180 | abstract / daylight / wide |
-| MOBILE | mesh | 480×270 | clean / daylight / hero |
-| STANDARD | mesh | 640×360 | realistic / golden-hour / hero |
-| CINEMATIC | gaussian-splats candidate | 960×540 | filmic / nocturne / dynamic hero |
-| REFERENCE | mesh | 800×450 | stylized / studio / orbit |
+| Slot | Representation | Resolution | Environment | Motion | Visual variation |
+|---|---|---:|---|---|---|
+| PROXY | world-proxy | 320×180 | coastal | static | abstract / daylight / wide |
+| MOBILE | mesh | 480×270 | forest | wind-soft | clean / daylight / hero |
+| STANDARD | mesh | 640×360 | desert | wind-gust | realistic / golden-hour / hero |
+| CINEMATIC | gaussian-splats candidate | 960×540 | nocturne | beacon-pulse | filmic / nocturne / dynamic hero |
+| REFERENCE | mesh | 800×450 | studio | orbit-hero | stylized / studio / orbit |
 
 ## RCL / K400 and authority boundary
 
@@ -68,9 +70,10 @@ VSR is the execution/lowering runtime.
 
 K400 mapping remains `UNMAPPED_PENDING_CANONICAL_MATRIX`; this evidence does not
 declare any K400 gate PASS. The local render proves executable CPU-reference
-projection and rooted repeatability only. It does not prove production GPU or
-WebGPU quality, browser presentation, art-direction acceptance, distributed
-residency, temporal animation quality, or canonical-world promotion.
+projection, sampled environment/motion variants, and rooted repeatability only.
+It does not prove production GPU or WebGPU quality, browser presentation,
+art-direction acceptance, distributed residency, temporal animation quality,
+or canonical-world promotion.
 
 Every portfolio, slot, selection and visual evidence record keeps
 `candidate_only=true`, `authoritative=false`, and

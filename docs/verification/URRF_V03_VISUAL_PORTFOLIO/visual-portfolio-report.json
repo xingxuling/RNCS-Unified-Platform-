@@ -2,7 +2,7 @@
   "format": "urrf.visual-portfolio-report.v0.3",
   "version": "0.3.0",
   "portfolio_id": "portfolio:urrf-visual-v03-showcase",
-  "portfolio_root": "9429e03802e2b24959c0389aa2305d12af7d8d3293e7ffa58651f15c77d42115",
+  "portfolio_root": "d96acaf9dd1c38db384e3c6f31336c52885b466dd8f58df032818d005767dfef",
   "composition": {
     "mode": "DIVERSE",
     "min_slots": 4,
@@ -30,7 +30,9 @@
       "DETAIL": 5,
       "MATERIAL": 4,
       "LIGHTING": 4,
+      "ENVIRONMENT": 4,
       "STYLE": 4,
+      "MOTION": 4,
       "VIEW": 3
     }
   },
@@ -44,9 +46,9 @@
       "DETAIL": 5,
       "MATERIAL": 5,
       "LIGHTING": 4,
-      "ENVIRONMENT": 0,
+      "ENVIRONMENT": 5,
       "STYLE": 5,
-      "MOTION": 0,
+      "MOTION": 5,
       "VIEW": 4
     },
     "diversity_satisfied": true,
@@ -63,7 +65,9 @@
         "DETAIL": "PROXY",
         "MATERIAL": "FLAT",
         "LIGHTING": "DAYLIGHT",
+        "ENVIRONMENT": "COASTAL",
         "STYLE": "ABSTRACT",
+        "MOTION": "STATIC",
         "VIEW": "WIDE"
       },
       "image_path": "proxy.png",
@@ -72,9 +76,12 @@
       "height": 180,
       "triangles": 2138,
       "draw_calls": 5,
-      "pixel_root": "5789c65404cc33745a7924b56a3f0c24e7bf2fb05a6260778d7e4cf7f5cbdb3e",
-      "frame_root": "0bdacf1305f97c797c378d6d1550832f670fc77d3bdb75a33f7d74b6e576b56c",
-      "evidence_root": "e2f31ef3766a2f27625f9e478973ce3b0013436968a8c1d896527f5260978702",
+      "pixel_root": "10597ddceff142e767897b443fd956ca5a21f457a13a2652f0ca9d57119b954d",
+      "frame_root": "a59b4ccefd00bf8d3abf1e6e657adf6f60a4ecd55f5e0db68d6fc073facadc00",
+      "environment_root": "ff8a0253a6adae771e7f32e6344d5b8a7a7bb7dfe88d7e7e7b3ade015fc071ed",
+      "animation_root": "19181414f5029b95b5d978e3a128be634b8eaef5710e3181cb11af4faae34b54",
+      "animation": null,
+      "evidence_root": "344d5e178ec8006d9cf73353874e7c053bbfbef756c352373c981e27131e426f",
       "quality_status": "OBSERVED_NOT_GRADED",
       "visual_status": "LOCAL_RENDERED"
     },
@@ -87,7 +94,9 @@
         "DETAIL": "MOBILE",
         "MATERIAL": "PBR-LITE",
         "LIGHTING": "DAYLIGHT",
+        "ENVIRONMENT": "FOREST",
         "STYLE": "CLEAN",
+        "MOTION": "WIND-SOFT",
         "VIEW": "HERO"
       },
       "image_path": "mobile.png",
@@ -96,9 +105,16 @@
       "height": 270,
       "triangles": 2138,
       "draw_calls": 5,
-      "pixel_root": "d406b11711e788a26be96a2dc4bcb3c90db1edd623986b54aad5bda1bcaa70ed",
-      "frame_root": "1732118028a5a9f2da4d6cfae23b12343ce927d0b71c5967369ac5ab239b505c",
-      "evidence_root": "d47b68388a61c9c7ecf04a2d330948fd88e22e2e4c4e33f0d7e325772978d0a0",
+      "pixel_root": "a58ea78500361c0d35bb450b8e1e7a287f9bc93cf6a14a51fba414dc7308b759",
+      "frame_root": "8afb06850d7fdf1a32e35a2cd67cd9d0e7b9ea5f8b0c63b69a5ee70c0b30d069",
+      "environment_root": "df0c34c8a3b2564220a2b3792ac8abf1097e1a733ba7a4cbe5a773ca910d8a9c",
+      "animation_root": "1397fa9a06569a9f3ff22edb941593acc4d4cb0923034bf959f9c30fba3925bb",
+      "animation": {
+        "clip_id": "anim:wind",
+        "time_seconds": "0.35",
+        "loop": false
+      },
+      "evidence_root": "d6afac9d1fa7c0cdfde23aee272714d4efdb72bd955910900cd494482cc14e01",
       "quality_status": "OBSERVED_NOT_GRADED",
       "visual_status": "LOCAL_RENDERED"
     },
@@ -111,7 +127,9 @@
         "DETAIL": "STANDARD",
         "MATERIAL": "PBR",
         "LIGHTING": "GOLDEN-HOUR",
+        "ENVIRONMENT": "DESERT",
         "STYLE": "REALISTIC",
+        "MOTION": "WIND-GUST",
         "VIEW": "HERO"
       },
       "image_path": "standard.png",
@@ -120,9 +138,16 @@
       "height": 360,
       "triangles": 2138,
       "draw_calls": 5,
-      "pixel_root": "48146dcb8e3f2513f8563c38fb87216ccc4966d19697337d09992693aec660ff",
-      "frame_root": "db5bef1173a4f3f674923a494e012b9b8e03764e19b86d7ebcfcc1fc2f664ed3",
-      "evidence_root": "ecaa8b830e33d03a6801005184ee121342dffb710fb4a2a4bbfa263d0f28ce87",
+      "pixel_root": "cfba6f6734e628c45c782aff4971e54c1450240bab0e042871ef2d0c2aa88bb4",
+      "frame_root": "ffbf8456a4e30a3f52390f54d86e189f9b447966b51d9ed0b75ad5c47137508c",
+      "environment_root": "9e2416c2e866efbcddeb335565a38777198380e2e007190608dd21ccee57d261",
+      "animation_root": "ae7de21834c5462d87e1afa86b6761ff8afca09f3ae72a967478d8e104e35baa",
+      "animation": {
+        "clip_id": "anim:wind",
+        "time_seconds": "1.35",
+        "loop": false
+      },
+      "evidence_root": "e66a71ae06f365b2052d4acfc8cf8ad510c2b0a7897b079badbe40c2c196c3d2",
       "quality_status": "OBSERVED_NOT_GRADED",
       "visual_status": "LOCAL_RENDERED"
     },
@@ -135,7 +160,9 @@
         "DETAIL": "CINEMATIC",
         "MATERIAL": "VOLUMETRIC",
         "LIGHTING": "NOCTURNE",
+        "ENVIRONMENT": "NOCTURNE",
         "STYLE": "FILMIC",
+        "MOTION": "BEACON-PULSE",
         "VIEW": "DYNAMIC-HERO"
       },
       "image_path": "cinematic.png",
@@ -144,9 +171,16 @@
       "height": 540,
       "triangles": 2138,
       "draw_calls": 5,
-      "pixel_root": "61e32a329f557d9e77b6869417e625585922468d71458c3ba3c5190b15a31e24",
-      "frame_root": "9eb57bd787fbbbdacbc049c5f895fed6ba159cf80f26c8087db0e332c769f95b",
-      "evidence_root": "fdb6fe4c3badff9555180bea0435e341a0a73d06ed6668ba7f231e240331e1c0",
+      "pixel_root": "609324abb1577f31097228e27572b554432b02415877f15bcf5c283972f2a011",
+      "frame_root": "90f4b25580d73825af6f9718db68365cd4f7da58870da22a262435120fa55205",
+      "environment_root": "d681790490a07263442f34934dde4d47dc6e726e778f6bac362ecbdbdcd170fd",
+      "animation_root": "0691d7a31c1b8068283b0c6de3fc787e5a7f0c9a813642f3c027b24c0e6e284a",
+      "animation": {
+        "clip_id": "anim:pulse",
+        "time_seconds": "0.5",
+        "loop": false
+      },
+      "evidence_root": "0e018d6580ecd165f84d93765fed776477762f04b9672dba24140dfd3cc6850a",
       "quality_status": "OBSERVED_NOT_GRADED",
       "visual_status": "LOCAL_RENDERED"
     },
@@ -159,7 +193,9 @@
         "DETAIL": "REFERENCE",
         "MATERIAL": "PBR-CLEARCOAT",
         "LIGHTING": "STUDIO",
+        "ENVIRONMENT": "STUDIO",
         "STYLE": "STYLIZED",
+        "MOTION": "ORBIT-HERO",
         "VIEW": "ORBIT"
       },
       "image_path": "reference.png",
@@ -168,18 +204,25 @@
       "height": 450,
       "triangles": 2138,
       "draw_calls": 5,
-      "pixel_root": "2c2177e65633b6e2dd36ab36a5876664b9c351f15618630594224f71c0435b7b",
-      "frame_root": "874af5091d2b70648d402a703b3e9798c03fb140ae615ec9db07af8e0129274c",
-      "evidence_root": "06c93a7766d815b94a0d1ecd3342c4148223a376f5bd7c818062b18095c00557",
+      "pixel_root": "38a24c79581d73ef8083c2ba7003ef7f423e6919d30f9cda32aecda6f3991422",
+      "frame_root": "8a5f4cafb24dea0f63e395d7d6ade126db3e7456cac1542bfd6a2041a991f511",
+      "environment_root": "f1b0ff592f5e155dcb65110cd9fe91e30fd5d914ba42a6a2ef7c4da2867573ec",
+      "animation_root": "2a9921f63a41ba7464f57224cd4cc26ec09cdc8594a8058b6944634fb6aeb9d0",
+      "animation": {
+        "clip_id": "anim:orbit",
+        "time_seconds": "0.75",
+        "loop": false
+      },
+      "evidence_root": "adb73fd949ad933e130e90ecef3ad486df6c3c95bdc01476f6cd5d24d4d3b63f",
       "quality_status": "OBSERVED_NOT_GRADED",
       "visual_status": "LOCAL_RENDERED"
     }
   ],
-  "runtime_root": "a7e2e4fba1fd0edb29c706aad581c2679b7e7dd9ae0047519ad60ca0c5b5c98d",
+  "runtime_root": "3aba3cf166cab4c2a467771f3297115dd395385b49ac2e7c111c6cd2ebdc9e93",
   "status": "LOCAL_RENDERED_OBSERVED_NOT_GRADED",
   "authority": {
     "canonical_write_authorized": false,
     "candidate_only": true
   },
-  "report_root": "ce6267eaf3cefc844b2bedd67976997a472282903217af7866bca54957244975"
+  "report_root": "b8ca3cd69bdfc240417ce3eafdadf3f0fb01438814538e2433faf979b0545e64"
 }

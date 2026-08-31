@@ -60,9 +60,13 @@ test('records actual render roots separately from subjective quality claims', ()
     triangles: 12,
     draw_calls: 3,
     pixel_root: root('b'),
-    frame_root: root('c')
+    frame_root: root('c'),
+    environment_root: root('d'),
+    animation_root: root('e')
   });
   assert.equal(verifyVisualEvidence(evidence).valid, true);
+  assert.equal(evidence.environment_root, root('d'));
+  assert.equal(evidence.animation_root, root('e'));
   assert.equal(runtime.listVisualEvidence('portfolio:runtime', 'slot:mesh').length, 1);
   const snapshot = runtime.snapshot();
   assert.equal(verifyPortfolioRuntimeSnapshot(snapshot), true);

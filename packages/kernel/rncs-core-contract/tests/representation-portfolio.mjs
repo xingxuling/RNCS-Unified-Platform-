@@ -29,10 +29,10 @@ const slot = (id, kind, quality, axes = {}) => createRepresentationSlot({
 
 test('seals a bounded portfolio with explicit count, quality ladder and diversity targets', () => {
   const slots = [
-    slot('slot:proxy', 'world-proxy', 'PROXY', {STYLE: 'ABSTRACT', MATERIAL: 'FLAT', LIGHTING: 'DAYLIGHT'}),
-    slot('slot:mesh', 'mesh', 'STANDARD', {STYLE: 'REALISTIC', MATERIAL: 'PBR', LIGHTING: 'DAYLIGHT'}),
-    slot('slot:splats', 'gaussian-splats', 'CINEMATIC', {STYLE: 'REALISTIC', MATERIAL: 'VOLUMETRIC', LIGHTING: 'GOLDEN-HOUR'}),
-    slot('slot:reference', 'mesh', 'REFERENCE', {STYLE: 'STYLIZED', MATERIAL: 'PBR', LIGHTING: 'NIGHT'})
+    slot('slot:proxy', 'world-proxy', 'PROXY', {STYLE: 'ABSTRACT', MATERIAL: 'FLAT', LIGHTING: 'DAYLIGHT', ENVIRONMENT: 'COASTAL', MOTION: 'STATIC'}),
+    slot('slot:mesh', 'mesh', 'STANDARD', {STYLE: 'REALISTIC', MATERIAL: 'PBR', LIGHTING: 'DAYLIGHT', ENVIRONMENT: 'FOREST', MOTION: 'WIND-SOFT'}),
+    slot('slot:splats', 'gaussian-splats', 'CINEMATIC', {STYLE: 'REALISTIC', MATERIAL: 'VOLUMETRIC', LIGHTING: 'GOLDEN-HOUR', ENVIRONMENT: 'DESERT', MOTION: 'WIND-GUST'}),
+    slot('slot:reference', 'mesh', 'REFERENCE', {STYLE: 'STYLIZED', MATERIAL: 'PBR', LIGHTING: 'NIGHT', ENVIRONMENT: 'STUDIO', MOTION: 'ORBIT-HERO'})
   ];
   assert.equal(slots.every(value => verifyRepresentationSlot(value).valid), true);
   const portfolio = createRepresentationPortfolio({
@@ -48,13 +48,15 @@ test('seals a bounded portfolio with explicit count, quality ladder and diversit
       required_kinds: ['world-proxy', 'mesh', 'gaussian-splats'],
       required_quality_profiles: ['PROXY', 'STANDARD', 'CINEMATIC'],
       quality_ladder: ['PROXY', 'STANDARD', 'CINEMATIC', 'REFERENCE'],
-      diversity_targets: {MODALITY: 3, STYLE: 3, LIGHTING: 3, MATERIAL: 3}
+      diversity_targets: {MODALITY: 3, STYLE: 3, LIGHTING: 3, MATERIAL: 3, ENVIRONMENT: 3, MOTION: 3}
     }
   });
   assert.deepEqual(portfolio.slots.map(value => value.slot_id), ['slot:mesh', 'slot:proxy', 'slot:reference', 'slot:splats']);
   assert.equal(portfolio.composition_result.composition_status, 'READY');
   assert.equal(portfolio.composition_result.count_satisfied, true);
   assert.equal(portfolio.composition_result.distinct_by_axis.STYLE, 3);
+  assert.equal(portfolio.composition_result.distinct_by_axis.ENVIRONMENT, 4);
+  assert.equal(portfolio.composition_result.distinct_by_axis.MOTION, 4);
   assert.equal(verifyRepresentationPortfolio(portfolio).valid, true);
 });
 

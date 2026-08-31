@@ -114,8 +114,12 @@ function normalizeVisualEvidence(input, portfolio, slot) {
   fail(URRF_VISUAL_QUALITY_STATUSES.includes(quality_status), 'URRF_VISUAL_QUALITY_STATUS_INVALID');
   const pixel_root = value.pixel_root ?? value.pixelRoot ?? null;
   const frame_root = value.frame_root ?? value.frameRoot ?? null;
+  const environment_root = value.environment_root ?? value.environmentRoot ?? null;
+  const animation_root = value.animation_root ?? value.animationRoot ?? null;
   if (pixel_root !== null) fail(hex64(pixel_root), 'URRF_VISUAL_PIXEL_ROOT_INVALID');
   if (frame_root !== null) fail(hex64(frame_root), 'URRF_VISUAL_FRAME_ROOT_INVALID');
+  if (environment_root !== null) fail(hex64(environment_root), 'URRF_VISUAL_ENVIRONMENT_ROOT_INVALID');
+  if (animation_root !== null) fail(hex64(animation_root), 'URRF_VISUAL_ANIMATION_ROOT_INVALID');
   if (status === 'LOCAL_RENDERED' || status === 'REMOTE_RENDERED') {
     fail(pixel_root !== null && frame_root !== null, 'URRF_VISUAL_RENDER_ROOTS_REQUIRED');
     fail(Number(value.png_bytes ?? value.pngBytes ?? 0) > 0, 'URRF_VISUAL_RENDER_BYTES_REQUIRED');
@@ -135,6 +139,8 @@ function normalizeVisualEvidence(input, portfolio, slot) {
     height: integer(value.height, 'URRF_VISUAL_EVIDENCE_HEIGHT_INVALID', slot.render_profile.height, {min: 1, max: 16384}),
     pixel_root: pixel_root === null ? null : String(pixel_root).toLowerCase(),
     frame_root: frame_root === null ? null : String(frame_root).toLowerCase(),
+    environment_root: environment_root === null ? null : String(environment_root).toLowerCase(),
+    animation_root: animation_root === null ? null : String(animation_root).toLowerCase(),
     png_bytes: integer(value.png_bytes ?? value.pngBytes, 'URRF_VISUAL_EVIDENCE_PNG_BYTES_INVALID', 0),
     triangles: integer(value.triangles, 'URRF_VISUAL_EVIDENCE_TRIANGLES_INVALID', 0),
     draw_calls: integer(value.draw_calls ?? value.drawCalls, 'URRF_VISUAL_EVIDENCE_DRAW_CALLS_INVALID', 0),
@@ -165,6 +171,8 @@ export function verifyVisualEvidence(evidence) {
     check(evidence.width > 0 && evidence.height > 0, 'URRF_VISUAL_EVIDENCE_DIMENSIONS_INVALID');
     check(evidence.pixel_root === null || hex64(evidence.pixel_root), 'URRF_VISUAL_PIXEL_ROOT_INVALID');
     check(evidence.frame_root === null || hex64(evidence.frame_root), 'URRF_VISUAL_FRAME_ROOT_INVALID');
+    check(evidence.environment_root === null || hex64(evidence.environment_root), 'URRF_VISUAL_ENVIRONMENT_ROOT_INVALID');
+    check(evidence.animation_root === null || hex64(evidence.animation_root), 'URRF_VISUAL_ANIMATION_ROOT_INVALID');
     if (evidence.status === 'LOCAL_RENDERED' || evidence.status === 'REMOTE_RENDERED') {
       check(hex64(evidence.pixel_root) && hex64(evidence.frame_root), 'URRF_VISUAL_RENDER_ROOTS_REQUIRED');
       check(evidence.png_bytes > 0, 'URRF_VISUAL_RENDER_BYTES_REQUIRED');
@@ -351,6 +359,8 @@ export class RealityRepresentationPortfolioRuntime {
       quality_status: evidence.quality_status,
       pixel_root: evidence.pixel_root,
       frame_root: evidence.frame_root,
+      environment_root: evidence.environment_root,
+      animation_root: evidence.animation_root,
       width: evidence.width,
       height: evidence.height
     }));
