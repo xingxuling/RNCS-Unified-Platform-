@@ -3,8 +3,8 @@ import test from 'node:test';
 import {mkdtemp, rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {createAuthorityLease, createRealityConsistencyProfile, rootHash, verifyRepresentationPortfolio} from '@taowind/rncs-core-contract';
-import {RealityRepresentationPortfolioRuntime} from '@taowind/reality-representation-fabric';
+import {createAuthorityLease, createRealityConsistencyProfile, createRealityPowerProfile, createRealityResourceBudget, rootHash, verifyRealityLoadSheddingPlan, verifyRepresentationPortfolio} from '@taowind/rncs-core-contract';
+import {RealityRepresentationPortfolioRuntime, RealityResourceGovernor} from '@taowind/reality-representation-fabric';
 import {
   LARGE_WORLD_CHUNK_FORMAT,
   LARGE_WORLD_REALITY_ACCESS_FORMAT,
@@ -261,6 +261,54 @@ test('seals active per-chunk portfolio selections against the latest stream root
   assert.equal(verifyPortfolioSelectionEnvelope(constrained).valid, true);
   assert.equal(constrained.fallback_count, 9);
   assert.equal(constrained.selections.every(selection => selection.selected_quality_profile === 'PROXY' && selection.fallback_used), true);
+});
+
+test('lowers a verified resource-governor plan into minimum-reality portfolio choices without mutating world truth', () => {
+  const runtime = new LargeWorldRuntime({worldId: 'world:power-lowering', seed: 'seed:power-lowering', width: 5, depth: 5, chunkSize: 64, sampleResolution: 8, loadRadius: 1, maxActiveChunks: 9});
+  const stream = runtime.observe({x: 0, z: 0});
+  const beforeWorldRoot = runtime.getRegion().world_root;
+  const active = runtime.listActiveChunks();
+  const power = createRealityPowerProfile({node_id: 'node:power-lowering', power_state: 'battery', grid_connected: false, battery_percent: 18, thermal_celsius_milli: 55000});
+  const budget = createRealityResourceBudget({node_id: 'node:power-lowering', power_profile_root: power.power_root, capacities: {CPU: 1000, GPU: 1000, VRAM: 1000, RAM: 1000, NETWORK: 1000, ENERGY: 1000}, used: {CPU: 100, ENERGY: 100}});
+  const governor = new RealityResourceGovernor({nodeId: 'node:power-lowering', tick: 7, powerProfile: power, resourceBudget: budget});
+  for (const [index, chunk] of active.entries()) governor.submitDemand({
+    candidate_id: `visual:${chunk.chunk_id}`,
+    candidate_kind: 'visual',
+    priority: index === 0 ? 90 : 70,
+    resource_costs: {GPU: 400, VRAM: 400, NETWORK: 50}
+  });
+  const plan = governor.plan({planId: 'plan:power-lowering'});
+  assert.equal(verifyRealityLoadSheddingPlan(plan).valid, true);
+  assert.equal(plan.decisions.every(decision => ['REDUCE_DETAIL', 'DROP'].includes(decision.action)), true);
+
+  const selection = runtime.selectActiveRepresentationPortfolios({quality_profile: 'STANDARD', resource_governor_plan: plan});
+  assert.equal(verifyPortfolioSelectionEnvelope(selection).valid, true);
+  assert.equal(selection.stream_root, stream.stream_root);
+  assert.equal(selection.resource_governor_plan_root, plan.plan_root);
+  assert.equal(selection.resource_governor_power_mode, 'CONSTRAINED');
+  assert.equal(selection.resource_governor_load_shedding_level, 'MODERATE');
+  assert.equal(selection.resource_governor_decision_count, active.length);
+  assert.equal(selection.unbound_governor_chunk_ids.length, 0);
+  assert.equal(selection.power_downgrade_count, active.length);
+  assert.equal(selection.selections.every(row => row.power_decision_bound && row.power_plan_root === plan.plan_root), true);
+  assert.equal(selection.selections.every(row => row.selected_quality_profile === 'PROXY' && row.power_quality_override === 'PROXY'), true);
+  assert.equal(selection.selections.every(row => row.candidate_only && !row.authoritative && !row.canonical_write_authorized), true);
+  assert.equal(runtime.getRegion().world_root, beforeWorldRoot);
+
+  const partialPower = createRealityPowerProfile({node_id: 'node:power-lowering-partial', power_state: 'battery', grid_connected: false, battery_percent: 18, thermal_celsius_milli: 55000});
+  const partialBudget = createRealityResourceBudget({node_id: 'node:power-lowering-partial', power_profile_root: partialPower.power_root, capacities: {CPU: 1000, GPU: 1000, VRAM: 1000, RAM: 1000, NETWORK: 1000, ENERGY: 1000}, used: {CPU: 100, ENERGY: 100}});
+  const partialGovernor = new RealityResourceGovernor({nodeId: 'node:power-lowering-partial', tick: 7, powerProfile: partialPower, resourceBudget: partialBudget});
+  partialGovernor.submitDemand({candidate_id: `visual:${active[0].chunk_id}`, candidate_kind: 'visual', priority: 70, resource_costs: {GPU: 400, VRAM: 400, NETWORK: 50}});
+  const partialPlan = partialGovernor.plan({planId: 'plan:power-lowering-partial'});
+  const partialSelection = runtime.selectActiveRepresentationPortfolios({quality_profile: 'STANDARD', resource_governor_plan: partialPlan});
+  assert.equal(verifyPortfolioSelectionEnvelope(partialSelection).valid, true);
+  assert.equal(partialSelection.unbound_governor_chunk_ids.length, active.length - 1);
+  assert.equal(partialSelection.selections.find(row => row.chunk_id === active[0].chunk_id).power_decision_bound, true);
+  assert.equal(partialSelection.selections.filter(row => row.power_decision_bound === false).every(row => row.power_action_effect === 'UNBOUND' && row.selected_quality_profile === 'STANDARD'), true);
+
+  const tampered = structuredClone(plan);
+  tampered.load_shedding_level = 'NONE';
+  assert.throws(() => runtime.selectActiveRepresentationPortfolios({quality_profile: 'STANDARD', resource_governor_plan: tampered}), /LARGE_WORLD_RESOURCE_GOVERNOR_PLAN_INVALID/);
 });
 
 test('lowers an active URRF portfolio selection into a rooted VSR spatial scene without authority escalation', () => {
