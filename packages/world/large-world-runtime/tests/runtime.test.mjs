@@ -231,10 +231,14 @@ test('lowers an active URRF portfolio selection into a rooted VSR spatial scene 
   assert.equal(scene.large_world.candidate_only, true);
   assert.equal(scene.large_world.authoritative, false);
   assert.equal(scene.large_world.canonical_write_authorized, false);
+  assert.equal(scene.large_world.presentation_scale, 1);
   assert.equal(scene.reality.realityRoot, runtime.getRegion().world_root);
   assert.equal(verifyLargeWorldSpatialScene(scene).valid, true);
   const repeat = createLargeWorldSpatialScene({region: runtime.getRegion(), selection, evidence_root: scene.reality.evidenceRoot});
   assert.equal(scene.scene_root, repeat.scene_root);
+  const scaled = createLargeWorldSpatialScene({region: runtime.getRegion(), selection, visual_scale: 2, evidence_root: scene.reality.evidenceRoot});
+  assert.equal(scaled.large_world.presentation_scale, 2);
+  assert.notEqual(scaled.scene_root, scene.scene_root);
 });
 
 test('snapshot and replay seal deterministic streaming evidence', () => {

@@ -59,15 +59,30 @@ test('lowers the active URRF large-world portfolio into a verified VSR spatial f
   const stream = runtime.observe({x: 0, z: 0});
   const active = runtime.listActiveChunks();
   const center = active.find(chunk => chunk.coordinates.x === 0 && chunk.coordinates.z === 0) ?? active[0];
-  const qualityByChunk = Object.fromEntries(active.map(chunk => [chunk.chunk_id, chunk.chunk_id === center.chunk_id ? 'STANDARD' : 'PROXY']));
+  const showcaseChunk = active.slice().sort((a, b) => {
+    const contentDelta = (b.structures.length + b.resources.length) - (a.structures.length + a.resources.length);
+    return contentDelta || (a.chunk_id === center.chunk_id ? -1 : b.chunk_id === center.chunk_id ? 1 : a.chunk_id.localeCompare(b.chunk_id));
+  })[0] ?? center;
+  const standardChunkIds = new Set(active.slice().sort((a, b) => {
+    const contentDelta = (b.structures.length + b.resources.length) - (a.structures.length + a.resources.length);
+    return contentDelta || (a.chunk_id === center.chunk_id ? -1 : b.chunk_id === center.chunk_id ? 1 : a.chunk_id.localeCompare(b.chunk_id));
+  }).slice(0, 3).map(chunk => chunk.chunk_id));
+  const qualityByChunk = Object.fromEntries(active.map(chunk => [chunk.chunk_id, standardChunkIds.has(chunk.chunk_id) ? 'STANDARD' : 'PROXY']));
   const selection = runtime.selectActiveRepresentationPortfolios({quality_by_chunk: qualityByChunk});
+  const showcaseCenterX = Number(showcaseChunk.origin_mm.x) / 1000 + Number(showcaseChunk.extent_mm.x) / 2000;
+  const showcaseCenterZ = Number(showcaseChunk.origin_mm.z) / 1000 + Number(showcaseChunk.extent_mm.z) / 2000;
   assert.equal(verifyPortfolioSelectionEnvelope(selection).valid, true);
   const scene = runtime.createSpatialScene({
     selection,
     scene_id: 'urrf-large-world-webgpu-v01',
+    visual_scale: 2.8,
+    camera: {translation: [showcaseCenterX, 18, showcaseCenterZ + 18], rotationEulerDeg: [-24, 0, 0]},
     evidence_root: rootHash({stream_root: stream.stream_root, selection_root: selection.selection_root, renderer: 'vsr-spatial'})
   });
   assert.equal(verifyLargeWorldSpatialScene(scene).valid, true);
+  assert.equal(scene.large_world.presentation_scale, 2.8);
+  assert.equal(scene.large_world.visual_prototype_profile, 'large-world.visual-prototypes.v0.1');
+  assert.ok(scene.large_world.visual_prototype_ids.length >= 5);
   const assetStreaming = resolveSpatialAssetStreaming(scene.assets, {
     activeCellIds: scene.streaming.cells.map(cell => cell.id),
     requestedAssetIds: scene.assets.map(asset => asset.id),
@@ -115,6 +130,9 @@ test('lowers the active URRF large-world portfolio into a verified VSR spatial f
     active_chunks: active.length,
     standard_chunks: selection.selections.filter(row => row.selected_quality_profile === 'STANDARD').length,
     proxy_chunks: selection.selections.filter(row => row.selected_quality_profile === 'PROXY').length,
+    presentation_scale: scene.large_world.presentation_scale,
+    visual_prototype_profile: scene.large_world.visual_prototype_profile,
+    visual_prototype_ids: scene.large_world.visual_prototype_ids,
     draw_calls: frame.stats.visibleDraws,
     triangles: frame.stats.triangleCount,
     gpu_driven_draws: frame.stats.gpuDrivenDraws,
@@ -139,6 +157,9 @@ test('lowers the active URRF large-world portfolio into a verified VSR spatial f
     active_chunks: report.active_chunks,
     standard_chunks: report.standard_chunks,
     proxy_chunks: report.proxy_chunks,
+    presentation_scale: String(report.presentation_scale),
+    visual_prototype_profile: report.visual_prototype_profile,
+    visual_prototype_ids: report.visual_prototype_ids,
     draw_calls: report.draw_calls,
     triangles: report.triangles,
     gpu_driven_draws: report.gpu_driven_draws,

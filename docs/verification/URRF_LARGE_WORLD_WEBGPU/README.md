@@ -6,8 +6,8 @@
 
 ## 结果
 
-- `LOWERING: PASS`：scene 使用 `rncs.large-world-spatial-scene.v0.1` 扩展，scene root 可复验，9 个活动 chunk 保持 1 个 `STANDARD` + 8 个 `PROXY` 的组合。
-- `FRAME: PASS`：VSR frame verifier 通过；48 个节点、14 个 GPU-driven draw groups、1116 个三角形、9 个 active cells，并保持确定性 frame root。
+- `LOWERING: PASS`：scene 使用 `rncs.large-world-spatial-scene.v0.1` 扩展，scene root 可复验，9 个活动 chunk 保持 3 个 `STANDARD` + 6 个 `PROXY` 的组合；结构/资源绑定 `large-world.visual-prototypes.v0.1`，并封存 presentation-only `visual_scale=2.8`。
+- `FRAME: PASS`：VSR frame verifier 通过；48 个节点、24 个 GPU-driven draw groups、2522 个三角形、9 个 active cells，并保持确定性 frame root。
 - `CPU_REFERENCE: PASS`：CPU reference PNG 可重复，作为跨宿主对照，不冒称生产级画质。
 - `BROWSER_WEBGPU: PASS (HOST-SPECIFIC)`：Chromium 实际报告 `available=true`，`submitted=true`，包含 1 个 shadow pass、1 个 velocity pass、1 个 tone-map pass、1 个 SSGI pass；receipt 只代表本机浏览器宿主，不代表目标硬件帧率或跨平台兼容性。
 
@@ -22,6 +22,6 @@
 
 ## 边界与下一缺口
 
-当前画面是可验证的程序化网格与低密度结构投影，证明的是表示组合、空间 lowering、GPU 执行和证据闭环，不是 AAA 资产质量。下一阶段应接入依赖完整的高密度 mesh/glTF/纹理 provider，并在同一 selection root 下补 HLOD、跨 cell 资产驻留与目标设备性能证据。
+当前画面是可验证的程序化网格与低多边形结构/资源原型投影，证明的是表示组合、空间 lowering、GPU 执行和证据闭环，不是 AAA 资产质量。`visual_scale` 只为展示可读性放大候选几何，原始毫米尺寸仍在节点 `authoredScale` 中保留。下一阶段应接入依赖完整的高密度 mesh/glTF/纹理 provider，并在同一 selection root 下补 HLOD、跨 cell 资产驻留与目标设备性能证据。
 
 RNCS 仍拥有世界真值；URRF 拥有表示组合；VSR/WebGPU 只是 projection/lowering/execution。所有 provider 与 scene 字段均保持 candidate-only，不能写入 canonical world state。

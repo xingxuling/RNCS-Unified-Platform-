@@ -17,7 +17,7 @@
     "reality": {"type": "object"},
     "large_world": {
       "type": "object",
-      "required": ["format", "version", "world_id", "generation", "region_root", "world_root", "selection_root", "active_chunk_ids", "representation_slots", "candidate_only", "authoritative", "canonical_write_authorized", "authority"],
+      "required": ["format", "version", "world_id", "generation", "region_root", "world_root", "selection_root", "active_chunk_ids", "presentation_scale", "visual_prototype_profile", "visual_prototype_ids", "representation_slots", "candidate_only", "authoritative", "canonical_write_authorized", "authority"],
       "properties": {
         "format": {"const": "rncs.large-world-spatial-scene.v0.1"},
         "version": {"const": "0.1.0"},
@@ -27,6 +27,9 @@
         "world_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
         "selection_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
         "active_chunk_ids": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "presentation_scale": {"type": "number", "minimum": 0.25, "maximum": 8},
+        "visual_prototype_profile": {"const": "large-world.visual-prototypes.v0.1"},
+        "visual_prototype_ids": {"type": "array", "items": {"type": "string", "minLength": 1}},
         "representation_slots": {"type": "array", "items": {"type": "object"}},
         "candidate_only": {"const": true},
         "authoritative": {"const": false},
