@@ -1,0 +1,64 @@
+{
+  "format": "urrf.large-world-causal-physical-detail-report.v0.1",
+  "world_id": "world:urrf-causal-physical-detail",
+  "region_root": "40df2977db662e22403d90ea922266bb50b45f7156442e22f533c5a6e88356f3",
+  "world_root": "6540014c26656e0751fa03b8d8072ce0d2122a9f94949d6e761119e7bca275ef",
+  "active_chunk_ids": [
+    "chunk:world:urrf-causal-physical-detail:-1:-1",
+    "chunk:world:urrf-causal-physical-detail:-1:0",
+    "chunk:world:urrf-causal-physical-detail:-1:1",
+    "chunk:world:urrf-causal-physical-detail:0:-1",
+    "chunk:world:urrf-causal-physical-detail:0:0",
+    "chunk:world:urrf-causal-physical-detail:0:1",
+    "chunk:world:urrf-causal-physical-detail:1:-1",
+    "chunk:world:urrf-causal-physical-detail:1:0",
+    "chunk:world:urrf-causal-physical-detail:1:1"
+  ],
+  "low_detail": {
+    "selection_root": "c1703e67294e5ace7ab44cf957627a2cb3dfb49c81661a92caa17fd3b5802765",
+    "scene_root": "fd115b7a59951aa5e75f88c35ea27604db49af1148db6813584d8c5a221b3ec8",
+    "frame_root": "d4d92c4cbbe4fce4acdac3fcf5c4d054a0a6aa3bf73455ea62b3da5f9b0a3b90",
+    "pixel_root": "e1055561059ff5b7b45bab0766ef6d47682cbf03ed4605811b488187167a33d9",
+    "causal_level": "C0",
+    "physical_level": "P0",
+    "selected_quality_profiles": [
+      "STANDARD"
+    ],
+    "resource_costs": {
+      "CPU_MILLI": 10,
+      "GPU_MILLI": 0,
+      "RAM_MB": 4,
+      "VRAM_MB": 0,
+      "ENERGY_MILLI": 1
+    }
+  },
+  "high_detail": {
+    "selection_root": "0f69587914b662b0bfc0a56e4f916f6eb5255471bbbd0fd952ea3b3abd66121b",
+    "scene_root": "85f034a7f6c4f5fe8a8053b9df7fe40d37620aa954798d095d518ddd3fedd0d9",
+    "frame_root": "eacc339e92a18614ea972e2b793bbc261e4718e0b1c400f188dcd98aa58653c0",
+    "pixel_root": "99dc3ff80c68d3346fbcba4ab5334c6282021191ba73cd12fbf112001cc1c270",
+    "causal_level": "C5",
+    "physical_level": "P5",
+    "selected_quality_profiles": [
+      "PROXY"
+    ],
+    "resource_costs": {
+      "CPU_MILLI": 880,
+      "GPU_MILLI": 160,
+      "RAM_MB": 384,
+      "VRAM_MB": 40,
+      "ENERGY_MILLI": 88
+    }
+  },
+  "authority": {
+    "canonical_owner": "RNCS",
+    "representation_owner": "URRF",
+    "execution_owner": "VSR",
+    "canonical_state_mutated": false,
+    "canonical_write_authorized": false,
+    "candidate_only": true,
+    "commit_status": "NOT_COMMITTED"
+  },
+  "notes": "Candidate-only local causal/physical lowering. Demand selects independent C/P levels; the derived execution policy and resource costs consume the same visual budget so high-risk interaction falls back to minimum-reality proxy. The CPU-reference views demonstrate a deterministic selection/render difference, not production physics, real GPU telemetry, or AAA visual quality.",
+  "report_root": "01a80e2bb7e1e1eac5a67d3afdbe03410a167a82ddd84641167e391050a3c6ab"
+}

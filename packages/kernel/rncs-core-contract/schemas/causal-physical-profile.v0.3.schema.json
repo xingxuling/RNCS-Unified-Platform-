@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/rncs/causal-physical-profile.v0.3.schema.json",
+  "title": "RNCS Causal Physical Detail Profile v0.3",
+  "type": "object",
+  "required": ["format", "version", "profile_id", "object_id", "branch", "canonical_state_root", "demand", "requirement", "selected", "causal_level", "physical_level", "execution", "resource_costs", "resource_admission", "execution_status", "fallback_policy", "evidence_refs", "authority", "candidate_only", "authoritative", "canonical_write_authorized", "commit_status", "profile_root"],
+  "properties": {
+    "format": {"const": "rncs.causal-physical-profile.v0.3"},
+    "version": {"const": "0.3.0"},
+    "profile_id": {"type": "string", "minLength": 1},
+    "object_id": {"type": "string", "minLength": 1},
+    "branch": {"type": "string", "minLength": 1},
+    "canonical_state_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "demand": {"type": "object", "required": ["task", "interaction_probability", "risk", "observation", "authority", "event_intensity", "available_resources"]},
+    "requirement": {"type": "object", "required": ["causal_level", "physical_level", "score", "rationale"], "properties": {"causal_level": {"enum": ["C0", "C1", "C2", "C3", "C4", "C5"]}, "physical_level": {"enum": ["P0", "P1", "P2", "P3", "P4", "P5"]}}},
+    "selected": {"type": "object", "required": ["causal_level", "physical_level"], "properties": {"causal_level": {"enum": ["C0", "C1", "C2", "C3", "C4", "C5"]}, "physical_level": {"enum": ["P0", "P1", "P2", "P3", "P4", "P5"]}}},
+    "causal_level": {"enum": ["C0", "C1", "C2", "C3", "C4", "C5"]},
+    "physical_level": {"enum": ["P0", "P1", "P2", "P3", "P4", "P5"]},
+    "execution": {"type": "object", "required": ["causal_mode", "physical_mode", "behavior_mode", "aggregation_mode", "collision_mode", "interaction_resolution", "event_frequency_hz", "physics_frequency_hz", "topology_mutation_allowed", "field_solver_enabled", "causal_detail", "physical_detail"]},
+    "resource_costs": {"type": "object", "required": ["CPU_MILLI", "GPU_MILLI", "RAM_MB", "VRAM_MB", "ENERGY_MILLI"], "additionalProperties": false},
+    "resource_admission": {"type": "object", "required": ["status", "missing_resources", "available_resources"], "properties": {"status": {"enum": ["ADMITTED", "RESOURCE_INSUFFICIENT"]}, "missing_resources": {"type": "array", "items": {"type": "string"}}}},
+    "execution_status": {"enum": ["READY", "BLOCKED_RESOURCE"]},
+    "fallback_policy": {"type": "object", "required": ["on_insufficient_resources", "preserves_safety", "preserves_authority"], "properties": {"preserves_safety": {"const": true}, "preserves_authority": {"const": true}}},
+    "evidence_refs": {"type": "array", "items": {"type": "string"}},
+    "authority": {"type": "object", "required": ["canonical_owner", "provider_can_write_authoritative_world_state", "rncs_authority_required", "candidate_only"], "properties": {"canonical_owner": {"const": "RNCS"}, "provider_can_write_authoritative_world_state": {"const": false}, "rncs_authority_required": {"const": true}, "candidate_only": {"const": true}}},
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "canonical_write_authorized": {"const": false},
+    "commit_status": {"const": "NOT_COMMITTED"},
+    "profile_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}

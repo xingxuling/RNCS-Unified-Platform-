@@ -7,7 +7,7 @@
     "rncs-contract": "./src/cli.mjs"
   },
   "scripts": {
-    "test": "node tests/run.mjs && node tests/representation-ref.mjs && node tests/representation-transition.mjs && node tests/world-truth.mjs && node tests/foundation-governance.mjs && node --test tests/entity-kernel.mjs tests/reality-property.mjs tests/reality-access.mjs tests/reality-distribution.mjs tests/reality-transport.mjs tests/reality-power.mjs tests/representation-portfolio.mjs tests/representation-flow.mjs"
+    "test": "node tests/run.mjs && node tests/representation-ref.mjs && node tests/representation-transition.mjs && node tests/world-truth.mjs && node tests/foundation-governance.mjs && node --test tests/entity-kernel.mjs tests/reality-property.mjs tests/reality-access.mjs tests/reality-distribution.mjs tests/reality-transport.mjs tests/reality-power.mjs tests/representation-portfolio.mjs tests/representation-flow.mjs tests/causal-physical.mjs"
   },
   "exports": "./src/index.mjs"
 }
