@@ -1,5 +1,7 @@
 # Changelog
 
+- Added v0.3 `RealityTransportFabric` runtime for profile-rooted Fiber/WiFi/Bluetooth propagation candidates, node discovery/association/roaming, and authority-gated low-power Organ Links.
+
 ## 0.1.0-alpha.1
 
 - Bind v0.3 DetailVector into materialization plans/receipts and expose deterministic Horizon/Interest/Query/Cognitive Working Set helpers with permission filtering.

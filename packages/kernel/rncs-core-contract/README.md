@@ -20,6 +20,7 @@
 - v0.3 Reality Property & Law Candidate：带来源、证据、版本和单位/维度的 Reality Quantity，RNCS-owned PropertySet/LawBindings，以及候选属性事务；Provider 只能计算或近似，不能改写 Canonical Property/Law
 - v0.3 Reality Access Candidate：独立 DetailVector、主体 RealityHorizon、InterestGraph、多域 Query 结果和容量受限 CognitiveWorkingSet；查询排序不拥有 Canonical State，结果必须回源复验
 - v0.3 Reality Distribution Candidate：Consistency Profile、Authority Lease/Epoch/Fencing、Lease Revocation 与版本根绑定的 Replication Envelope；分布式输入必须经过 RNCS authority receipt 与当前 lease 复验
+- v0.3 Reality Transport Candidate：Fiber/WiFi/Bluetooth/RDN 传播 Profile、QoS、节点发现/关联/漫游与低功耗 Organ Link；设备配对不等于 Authority
 
 ## 快速运行
 
@@ -52,6 +53,8 @@ VSR/AER State   = 观察者投影状态
 `src/reality-access.mjs` 提供 `DetailVector`、`RealityHorizon`、`InterestGraph`、`RealityQuery`、确定性多域筛选/排序和 `CognitiveWorkingSet`。它只读取对象索引与 RNCS PropertySet，不执行 Canonical Mutation；权限、视域和容量过滤在返回候选前完成。
 
 `src/reality-distribution.mjs` 提供 `RealityConsistencyProfile`、`AuthorityLease`、显式撤销和 `RealityReplicationEnvelope`。Epoch/fencing token 与当前 lease 必须精确匹配，lease 失效或 authority receipt 缺失时 admission 失败；这些合同本身保持 candidate-only。
+
+`src/reality-transport.mjs` 提供三类传播 Profile、带 profile/lease/receipt 根的 Transport Packet、WiFi-style Node Discovery/Association/Roaming 和 Bluetooth-style Organ Link。Transport 与 Organ Link 都是候选传播；只有独立 RNCS authority receipt 才能允许 world-mutation admission。
 
 ## Entity Kernel v0.1
 

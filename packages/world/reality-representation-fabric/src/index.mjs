@@ -859,3 +859,5 @@ export class RealityRepresentationFabric {
 export function createRealityRepresentationFabric(options = {}) {
   return new RealityRepresentationFabric(options);
 }
+
+export * from './transport-runtime.mjs';
