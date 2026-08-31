@@ -66,7 +66,7 @@
         "STYLE": "ABSTRACT",
         "VIEW": "WIDE"
       },
-      "image_path": "C:\\Users\\User\\Documents\\Codex\\2026-08-02\\referenced-chatgpt-conversation-this-is-an\\work\\RNCS-urrf-visual-portfolio-v03\\docs\\verification\\URRF_V03_VISUAL_PORTFOLIO\\proxy.png",
+      "image_path": "proxy.png",
       "image_bytes": 230663,
       "width": 320,
       "height": 180,
@@ -90,7 +90,7 @@
         "STYLE": "CLEAN",
         "VIEW": "HERO"
       },
-      "image_path": "C:\\Users\\User\\Documents\\Codex\\2026-08-02\\referenced-chatgpt-conversation-this-is-an\\work\\RNCS-urrf-visual-portfolio-v03\\docs\\verification\\URRF_V03_VISUAL_PORTFOLIO\\mobile.png",
+      "image_path": "mobile.png",
       "image_bytes": 518773,
       "width": 480,
       "height": 270,
@@ -114,7 +114,7 @@
         "STYLE": "REALISTIC",
         "VIEW": "HERO"
       },
-      "image_path": "C:\\Users\\User\\Documents\\Codex\\2026-08-02\\referenced-chatgpt-conversation-this-is-an\\work\\RNCS-urrf-visual-portfolio-v03\\docs\\verification\\URRF_V03_VISUAL_PORTFOLIO\\standard.png",
+      "image_path": "standard.png",
       "image_bytes": 922098,
       "width": 640,
       "height": 360,
@@ -138,7 +138,7 @@
         "STYLE": "FILMIC",
         "VIEW": "DYNAMIC-HERO"
       },
-      "image_path": "C:\\Users\\User\\Documents\\Codex\\2026-08-02\\referenced-chatgpt-conversation-this-is-an\\work\\RNCS-urrf-visual-portfolio-v03\\docs\\verification\\URRF_V03_VISUAL_PORTFOLIO\\cinematic.png",
+      "image_path": "cinematic.png",
       "image_bytes": 2074363,
       "width": 960,
       "height": 540,
@@ -162,7 +162,7 @@
         "STYLE": "STYLIZED",
         "VIEW": "ORBIT"
       },
-      "image_path": "C:\\Users\\User\\Documents\\Codex\\2026-08-02\\referenced-chatgpt-conversation-this-is-an\\work\\RNCS-urrf-visual-portfolio-v03\\docs\\verification\\URRF_V03_VISUAL_PORTFOLIO\\reference.png",
+      "image_path": "reference.png",
       "image_bytes": 1440623,
       "width": 800,
       "height": 450,
@@ -181,5 +181,5 @@
     "canonical_write_authorized": false,
     "candidate_only": true
   },
-  "report_root": "3c8e25991d54f1a4406fdd38f6e58f4346b3052503b007042a55430234d22539"
+  "report_root": "adeffee734162c19d6f13238ba68dbe9c71ab63d0c4237af69da1ee6f7180696"
 }

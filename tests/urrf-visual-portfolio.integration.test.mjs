@@ -238,7 +238,7 @@ test('renders and records a diverse URRF representation portfolio', () => {
       quality_profile: profile.quality,
       representation_kind: profile.kind,
       diversity_axes: evidence.diversity_observation,
-      image_path: imagePath,
+      image_path: `${profile.id}.png`,
       image_bytes: evidence.png_bytes,
       width: evidence.width,
       height: evidence.height,
@@ -286,5 +286,6 @@ test('renders and records a diverse URRF representation portfolio', () => {
   ];
   writeFileSync(join(outputDir, 'README.md'), `${evidenceLines.join('\n')}\n`, 'utf8');
   assert.equal(reports.length, profiles.length);
+  assert.equal(reports.every(item => !item.image_path.includes('\\') && !item.image_path.includes(':')), true);
   assert.equal(new Set(reports.map(item => item.diversity_axes.STYLE)).size >= 4, true);
 });
