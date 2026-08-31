@@ -1,0 +1,155 @@
+{
+  "format": "urrf.large-world-texture-residency-webgpu-report.v0.1",
+  "world_id": "world:urrf-large-world-texture-residency-webgpu",
+  "scene_root": "13f09d8fb7e1eaf1d8a378b318211d46293980e0bdc2f3acbc91afa03cb9007d",
+  "selection_root": "53901416b14724e0d984faae3ab81ddeed648759bd12df82c2cdaeaa2f915c88",
+  "manifest_root": "02b5aa7a63612ae4a77f3b60ca62b2c0bb59a276ba90be097cf91d501de0f9e8",
+  "bundle_root": "3698acc1701ded41814654c99a730e652e96527b91a7ebae5ce596b88e63d33d",
+  "source_asset_id": "asset:glb:urrf-large-world-texture-residency-webgpu-v01:mesh:chunk:world:urrf-large-world-texture-residency-webgpu:-1:-1:standard:lod0",
+  "source_texture_level_count": 6,
+  "source_texture_byte_length": 22736,
+  "near": {
+    "selected_levels": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "receipt_roots": [
+      "c0058f908b6ea3796a72814b585049fbfbc01db457d5cb4612013b5c63dbcfed",
+      "beac6065c4fef70440715d18184dcdaa8a947f81a2fdacb4b55f1899d5470a34",
+      "1c56cc9e5b77ccc631f3151084d48c03acf20598cedd780220665fb0ca256cb2",
+      "a6b435613fe2527d3e53aa6caf8be0e54a7ac42fea1bb9dd0a50d49e911a5ed1"
+    ],
+    "frame_root": "b3a5b95711f0479a67a131316850b2904bec1b72dd3e88030140f09275567a7c",
+    "texture_bytes_resident": 20492,
+    "texture_uploads": 8,
+    "material_texture_bindings": 5,
+    "texture_descriptors": [
+      {
+        "format": "rgba8unorm-srgb",
+        "size": [
+          32,
+          32,
+          1
+        ],
+        "mip_level_count": 1
+      },
+      {
+        "format": "rgba8unorm",
+        "size": [
+          32,
+          32,
+          1
+        ],
+        "mip_level_count": 1
+      },
+      {
+        "format": "rgba8unorm",
+        "size": [
+          32,
+          32,
+          1
+        ],
+        "mip_level_count": 1
+      },
+      {
+        "format": "rgba8unorm",
+        "size": [
+          32,
+          32,
+          1
+        ],
+        "mip_level_count": 1
+      },
+      {
+        "format": "rgba8unorm-srgb",
+        "size": [
+          32,
+          32,
+          1
+        ],
+        "mip_level_count": 1
+      }
+    ]
+  },
+  "far": {
+    "selected_levels": [
+      2,
+      2,
+      2,
+      2
+    ],
+    "receipt_roots": [
+      "3712c828c6656e57b8b6f1ccad66aef89392e3f64882065cd636b4037f6fe76c",
+      "ed85c33881d73619c0e2b6b06f37245e891d712ee6b33853e7850154aa2190bb",
+      "ac08dd34fb1c4cf8d42a85a1af7b3e9d0dc83d3ec80db6132df3111432862077",
+      "7d473614e41ac69f555c0bd4800b15ea25936694755d504c5a56a9688f88b408"
+    ],
+    "frame_root": "6a9c6180339990d4db3e0e3fa6a14503031988b586fd77680758d4823164f99f",
+    "texture_bytes_resident": 1292,
+    "texture_uploads": 5,
+    "material_texture_bindings": 5,
+    "texture_descriptors": [
+      {
+        "format": "rgba8unorm-srgb",
+        "size": [
+          8,
+          8,
+          1
+        ],
+        "mip_level_count": 1
+      },
+      {
+        "format": "rgba8unorm",
+        "size": [
+          8,
+          8,
+          1
+        ],
+        "mip_level_count": 1
+      },
+      {
+        "format": "rgba8unorm",
+        "size": [
+          8,
+          8,
+          1
+        ],
+        "mip_level_count": 1
+      },
+      {
+        "format": "rgba8unorm",
+        "size": [
+          8,
+          8,
+          1
+        ],
+        "mip_level_count": 1
+      },
+      {
+        "format": "rgba8unorm-srgb",
+        "size": [
+          8,
+          8,
+          1
+        ],
+        "mip_level_count": 1
+      }
+    ]
+  },
+  "imported_gltf_receipt_root": "07fbabf8d858d1ae11c607f595e387e2d646930e4f5b198ed99ae9516ced2199",
+  "streaming_root": "2ea35cf1bcd809c8c3afd38977836ce62207a5d52cf1ed060343764e3d394f29",
+  "streaming_receipt_root": "1b0dec6c682eca3e7269cb0a9c000c022b806087212405b588f9af430ce9b74e",
+  "authority": {
+    "canonical_owner": "RNCS",
+    "representation_owner": "URRF",
+    "execution_owner": "VSR",
+    "encoder_provider": "RAGF",
+    "fake_device_only": true,
+    "candidate_only": true,
+    "authoritative": false
+  },
+  "notes": "Candidate-only fake-device execution proves that selected URRF mip resources reach the VSR WebGPU executor and reduce uploaded texture bytes from near mip0 to far mip2. This is not real GPU/VRAM, target-device timing, BasisU transcoding, CDN delivery, or production-scale evidence.",
+  "report_root": "29578ca7fac0fad1a290e9535afbfb5569759cb07c838e5b766d81b9fb6f486b"
+}
