@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.org/schemas/rncs.large-world-replication-conflict-receipt.v0.1.schema.json",
+  "title": "RNCS Large World Replication Conflict Receipt v0.1",
+  "type": "object",
+  "required": ["format", "version", "receipt_id", "conflict_id", "decision_root", "decision", "world_id", "base_snapshot_root", "winner_delta_root", "rejected_delta_roots", "applied_receipt_root", "status", "receipt_root"],
+  "properties": {
+    "format": {"const": "rncs.large-world-replication-conflict-receipt.v0.1"},
+    "version": {"const": "0.1.0"},
+    "receipt_id": {"type": "string", "minLength": 1},
+    "conflict_id": {"type": "string", "minLength": 1},
+    "decision_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "decision": {"type": "object"},
+    "world_id": {"type": "string", "minLength": 1},
+    "base_snapshot_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "winner_delta_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "rejected_delta_roots": {"type": "array", "items": {"type": "string", "pattern": "^[0-9a-f]{64}$"}},
+    "applied_receipt_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "status": {"enum": ["APPLIED", "DUPLICATE"]},
+    "receipt_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}

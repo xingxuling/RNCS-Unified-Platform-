@@ -15,6 +15,9 @@ import {
   verifyMaterializationBatch,
   verifyDurableBundle,
   verifyDurableRestoreReceipt,
+  resolveReplicationConflict,
+  verifyReplicationConflictDecision,
+  verifyReplicationConflictReceipt,
   verifyReplicationDelta,
   verifyReplicationReceipt,
   verifyReplicationSnapshot,
@@ -255,6 +258,46 @@ test('round-trips a durable bundle across a fresh runtime and preserves the repl
   const duplicate = restarted.applyReplicationDelta(delta, {authorityReceipt});
   assert.equal(duplicate.status, 'DUPLICATE');
   assert.equal(verifyReplicationReceipt(duplicate).valid, true);
+});
+
+test('resolves same-base multi-writer deltas deterministically and persists the loser gate', () => {
+  const options = {worldId: 'world:conflict', seed: 'seed:conflict', loadRadius: 0, maxActiveChunks: 1};
+  const sourceA = new LargeWorldRuntime(options);
+  const sourceB = new LargeWorldRuntime(options);
+  const target = new LargeWorldRuntime(options);
+  const base = target.exportReplicationSnapshot();
+  const writerReceipt = {status: 'committed', receipt_root: 'c'.repeat(64), decision_root: null, epoch: 0};
+  sourceA.recordWorldEvent({authorityReceipt: writerReceipt, mutation: {operations: [{op: 'set', path: 'weather', value: 'rain'}]}});
+  sourceB.recordWorldEvent({authorityReceipt: writerReceipt, mutation: {operations: [{op: 'set', path: 'weather', value: 'storm'}]}});
+  const deltaA = sourceA.createReplicationDelta(base, {deltaId: 'delta:writer-a'});
+  const deltaB = sourceB.createReplicationDelta(base, {deltaId: 'delta:writer-b'});
+  const candidates = [
+    {delta: deltaB, writerId: 'writer-b', writerSequence: 1},
+    {delta: deltaA, writerId: 'writer-a', writerSequence: 1}
+  ];
+  const reversedDecision = resolveReplicationConflict(candidates);
+  const forwardDecision = resolveReplicationConflict([...candidates].reverse());
+  assert.equal(reversedDecision.decision_root, forwardDecision.decision_root);
+  assert.equal(reversedDecision.winner_delta_root, deltaA.delta_root);
+  assert.deepEqual(reversedDecision.rejected_delta_roots, [deltaB.delta_root]);
+  assert.equal(verifyReplicationConflictDecision(reversedDecision).valid, true);
+
+  const courtReceipt = {status: 'committed', receipt_root: 'd'.repeat(64), decision_root: reversedDecision.decision_root, epoch: 1};
+  const conflictReceipt = target.applyReplicationConflict(candidates, {authorityReceipt: courtReceipt});
+  assert.equal(conflictReceipt.status, 'APPLIED');
+  assert.equal(verifyReplicationConflictReceipt(conflictReceipt).valid, true);
+  assert.equal(target.eventLog.event_count, 1);
+  assert.equal(target.canonicalState.weather, 'rain');
+  assert.throws(() => target.applyReplicationDelta(deltaB, {authorityReceipt: courtReceipt}), /LARGE_WORLD_REPLICATION_CONFLICT_LOSER/);
+
+  const bundle = JSON.parse(JSON.stringify(target.exportDurableBundle()));
+  assert.equal(bundle.replication_conflict_decisions.length, 1);
+  const restarted = new LargeWorldRuntime(options);
+  restarted.restoreDurableBundle(bundle, {authorityReceipt: courtReceipt});
+  assert.throws(() => restarted.applyReplicationDelta(deltaB, {authorityReceipt: courtReceipt}), /LARGE_WORLD_REPLICATION_CONFLICT_LOSER/);
+  const duplicate = target.applyReplicationConflict([...candidates].reverse(), {authorityReceipt: courtReceipt});
+  assert.equal(duplicate.status, 'DUPLICATE');
+  assert.equal(verifyReplicationConflictReceipt(duplicate).valid, true);
 });
 
 test('rejects invalid world dimensions and verifies tamper evidence', () => {

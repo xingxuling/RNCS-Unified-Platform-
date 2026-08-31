@@ -12,6 +12,7 @@
     "world_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
     "replication_snapshot": {"type": "object"},
     "applied_replication_receipts": {"type": "array", "items": {"type": "object"}},
+    "replication_conflict_decisions": {"type": "array", "items": {"type": "object"}},
     "bundle_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
   },
   "additionalProperties": true

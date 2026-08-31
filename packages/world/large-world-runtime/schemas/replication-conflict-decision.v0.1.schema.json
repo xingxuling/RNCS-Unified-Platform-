@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.org/schemas/rncs.large-world-replication-conflict-decision.v0.1.schema.json",
+  "title": "RNCS Large World Replication Conflict Decision v0.1",
+  "type": "object",
+  "required": ["format", "version", "conflict_id", "policy", "world_id", "region_root", "world_root", "base_snapshot_root", "candidates", "winner_delta_root", "rejected_delta_roots", "status", "decision_root"],
+  "properties": {
+    "format": {"const": "rncs.large-world-replication-conflict-decision.v0.1"},
+    "version": {"const": "0.1.0"},
+    "conflict_id": {"type": "string", "minLength": 1},
+    "policy": {"type": "object"},
+    "world_id": {"type": "string", "minLength": 1},
+    "region_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "world_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "base_snapshot_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "candidates": {"type": "array", "minItems": 1, "items": {"type": "object"}},
+    "winner_delta_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "rejected_delta_roots": {"type": "array", "items": {"type": "string", "pattern": "^[0-9a-f]{64}$"}},
+    "status": {"enum": ["RESOLVED", "NO_CONFLICT"]},
+    "decision_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}
