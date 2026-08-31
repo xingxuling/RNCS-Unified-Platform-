@@ -14,6 +14,9 @@ import {
   LARGE_WORLD_WIREFRAME_PROVIDER_ID,
   LARGE_WORLD_SPATIAL_GLB_BUNDLE_FORMAT,
   LARGE_WORLD_SPATIAL_GLB_TEXTURE_PROFILE,
+  LARGE_WORLD_SPATIAL_GLB_KTX2_TEXTURE_PROFILE,
+  LARGE_WORLD_SPATIAL_GLB_TEXTURE_RESIDENCY_PROFILE,
+  LARGE_WORLD_TEXTURE_RESIDENCY_FORMAT,
   LargeWorldDurableStore,
   LargeWorldRuntime,
   createChunkRepresentationPortfolio,
@@ -30,6 +33,8 @@ import {
   verifyLargeWorldSpatialScene,
   verifyLargeWorldSpatialGltfBundle,
   verifyLargeWorldSpatialGlbBundle,
+  resolveLargeWorldTextureResidency,
+  verifyLargeWorldTextureResidency,
   verifyDurableBundle,
   verifyDurableRestoreReceipt,
   verifyDurableStoreReceipt,
@@ -296,6 +301,54 @@ test('materializes deterministic RAGF-encoded binary GLB assets without escalati
   const tampered = structuredClone(bundle);
   tampered.assets[0].payload[0] ^= 1;
   assert.equal(verifyLargeWorldSpatialGlbBundle(tampered, {sceneRoot: scene.scene_root}).valid, false);
+});
+
+test('materializes mipped KTX2 GLB assets with explicit progressive texture residency', () => {
+  const runtime = new LargeWorldRuntime({worldId: 'world:ktx2-provider', seed: 'seed:ktx2-provider', width: 5, depth: 5, chunkSize: 64, sampleResolution: 8, loadRadius: 1, maxActiveChunks: 9});
+  runtime.observe({x: 0, z: 0});
+  const active = runtime.listActiveChunks();
+  const selection = runtime.selectActiveRepresentationPortfolios({quality_by_chunk: Object.fromEntries(active.map(chunk => [chunk.chunk_id, 'STANDARD']))});
+  const scene = runtime.createSpatialScene({selection, evidence_root: rootHash({selection_root: selection.selection_root, renderer: 'ktx2-provider-test'})});
+  const bundle = createLargeWorldSpatialGlbBundle(scene, {texture_profile: LARGE_WORLD_SPATIAL_GLB_KTX2_TEXTURE_PROFILE, texture_size: 32});
+  assert.equal(verifyLargeWorldSpatialGlbBundle(bundle, {sceneRoot: scene.scene_root}).valid, true);
+  assert.equal(bundle.manifest.texture_profile, LARGE_WORLD_SPATIAL_GLB_KTX2_TEXTURE_PROFILE);
+  assert.equal(bundle.manifest.texture_residency_profile, LARGE_WORLD_SPATIAL_GLB_TEXTURE_RESIDENCY_PROFILE);
+  const worldAsset = bundle.assets.find(entry => entry.record.metadata.asset_role === undefined);
+  assert.ok(worldAsset);
+  assert.equal(worldAsset.gltf.images[0].mimeType, 'image/ktx2');
+  assert.equal(worldAsset.gltf.textures[0].extensions.KHR_texture_basisu.source, 0);
+  assert.equal(worldAsset.record.metadata.texture_level_count, 6);
+  assert.equal(worldAsset.record.metadata.texture_residency.levels.length, 6);
+  assert.equal(worldAsset.record.metadata.texture_residency.levels[0].residency_tier, 'vram');
+  assert.equal(worldAsset.record.metadata.texture_residency.levels[5].residency_tier, 'ram');
+  assert.equal(bundle.bundle_root, createLargeWorldSpatialGlbBundle(scene, {texture_profile: LARGE_WORLD_SPATIAL_GLB_KTX2_TEXTURE_PROFILE, texture_size: 32}).bundle_root);
+  const tampered = structuredClone(bundle);
+  tampered.assets[0].payload[140] ^= 1;
+  assert.equal(verifyLargeWorldSpatialGlbBundle(tampered, {sceneRoot: scene.scene_root}).valid, false);
+});
+
+test('resolves candidate texture mip residency from distance and screen coverage', () => {
+  const residency = {format: LARGE_WORLD_SPATIAL_GLB_TEXTURE_RESIDENCY_PROFILE, promotion: 'screen-coverage-and-distance', release: 'cell-unload-hysteresis', levels: [
+    {level: 0, width: 32, height: 32, byteLength: 4096, residency_tier: 'vram'},
+    {level: 1, width: 16, height: 16, byteLength: 1024, residency_tier: 'ram'},
+    {level: 2, width: 8, height: 8, byteLength: 256, residency_tier: 'ram'},
+    {level: 3, width: 4, height: 4, byteLength: 64, residency_tier: 'ram'},
+    {level: 4, width: 2, height: 2, byteLength: 16, residency_tier: 'ram'},
+    {level: 5, width: 1, height: 1, byteLength: 4, residency_tier: 'ram'}
+  ]};
+  const near = resolveLargeWorldTextureResidency(residency, {distance_m: 18, screen_coverage_percent: 92});
+  const far = resolveLargeWorldTextureResidency(residency, {distance_m: 260, screen_coverage_percent: 12});
+  assert.equal(near.format, LARGE_WORLD_TEXTURE_RESIDENCY_FORMAT);
+  assert.equal(near.selected_level, 0);
+  assert.deepEqual(near.prefetch_levels, [1, 2, 3, 4, 5]);
+  assert.deepEqual(near.deferred_levels, []);
+  assert.equal(far.selected_level, 2);
+  assert.deepEqual(far.resident_levels, [2]);
+  assert.deepEqual(far.deferred_levels, [0, 1]);
+  assert.equal(verifyLargeWorldTextureResidency(near), true);
+  assert.equal(verifyLargeWorldTextureResidency(far), true);
+  const tampered = {...far, selected_level: 1};
+  assert.equal(verifyLargeWorldTextureResidency(tampered), false);
 });
 
 test('can attach a real RAGF procedural-3d showcase candidate without changing world truth', () => {

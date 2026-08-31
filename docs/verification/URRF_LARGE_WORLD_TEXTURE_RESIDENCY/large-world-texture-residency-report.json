@@ -1,0 +1,82 @@
+{
+  "format": "urrf.large-world-texture-residency-report.v0.1",
+  "world_id": "world:urrf-large-world-texture-residency",
+  "scene_root": "572461472d983a263b8058c40580b8dee64539caee44ccf41102e67c40eadd96",
+  "selection_root": "cec91aaebfb09ec20d9b4a3ab35d26aeb3ab3dcd69b9ac720f3dd592bd3aaeee",
+  "manifest_root": "90b3fc135cc42bcc227ade3516391f381c1dee4453ad3bc4f2f4991293019018",
+  "bundle_root": "3d31ddee11e7ac5490a919e1e1538f3bc7609495d86e96a465c5cef6e5dd630f",
+  "asset_count": 60,
+  "total_bytes": 701728,
+  "texture_profile": "ragf.ktx2-rgba8-mipped.v0.1",
+  "texture_residency_profile": "vsr.progressive-mip-residency.v0.1",
+  "texture_level_count": 6,
+  "texture_byte_length": 5684,
+  "texture_levels": [
+    {
+      "level": 0,
+      "width": 32,
+      "height": 32,
+      "byteLength": 4096,
+      "residency_tier": "vram"
+    },
+    {
+      "level": 1,
+      "width": 16,
+      "height": 16,
+      "byteLength": 1024,
+      "residency_tier": "ram"
+    },
+    {
+      "level": 2,
+      "width": 8,
+      "height": 8,
+      "byteLength": 256,
+      "residency_tier": "ram"
+    },
+    {
+      "level": 3,
+      "width": 4,
+      "height": 4,
+      "byteLength": 64,
+      "residency_tier": "ram"
+    },
+    {
+      "level": 4,
+      "width": 2,
+      "height": 2,
+      "byteLength": 16,
+      "residency_tier": "ram"
+    },
+    {
+      "level": 5,
+      "width": 1,
+      "height": 1,
+      "byteLength": 4,
+      "residency_tier": "ram"
+    }
+  ],
+  "near_residency_root": "725cf51f37056ba90f0eaa8e6138e3abc98abe5490afbd87a6b75e560ec31232",
+  "near_selected_level": 0,
+  "far_residency_root": "80906a3ac11adaa3bd7de2be43947c9af2bf837c6ba4c28ce943f95eb12d82f7",
+  "far_selected_level": 2,
+  "streaming_root": "dc1d02ddd4e1ab3813d925c6f7a6ac7a57982679d6368d766814a42f925d598a",
+  "streaming_receipt_root": "abc11f6049beef930983c6748df41a86ee9e3d1a73df6f9e2787f5330bf4e85a",
+  "imported_asset_id": "asset:glb:urrf-large-world-texture-residency-v01:mesh:chunk:world:urrf-large-world-texture-residency:-1:-1:standard:lod0",
+  "imported_texture_width": 32,
+  "imported_texture_height": 32,
+  "imported_texture_mip_count": 5,
+  "imported_gltf_receipt_root": "c1f8d1e869255bd8aaea067d82cb4d5f1aa347e454bb459d46e0164506e8f4ed",
+  "imported_frame_root": "53dbaf2b4250dacdb4104e39fbe3dc1156b3c5f18cbac53821f481731aa56a10",
+  "imported_triangle_count": 128,
+  "pixel_root": "b7aae4aa113f2b5677e88f491771c11b0daa1b46c0e126f52fb0f6fcc3fc127c",
+  "authority": {
+    "canonical_owner": "RNCS",
+    "representation_owner": "URRF",
+    "encoder_provider": "RAGF",
+    "provider_can_write_authoritative_world_state": false,
+    "candidate_only": true,
+    "authoritative": false
+  },
+  "notes": "Candidate-only native RGBA8 KTX2 mip container embedded in binary GLB; progressive mip residency metadata, SHA-256 streaming, asynchronous VSR KTX2 decode, frame compile, and CPU reference pixels execute locally. BasisU supercompression, target-device/GPU residency, CDN delivery, and production performance remain unproven.",
+  "report_root": "177fcc77562879dca1e21e2f3ea7ed9dc0d98fdbb89d7f8f53cee61edf4a8267"
+}
