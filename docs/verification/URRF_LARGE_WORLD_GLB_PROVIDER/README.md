@@ -27,7 +27,7 @@ stretched silhouette during the CPU reference render.
 | Gate | Result | Evidence |
 | --- | --- | --- |
 | EXPRESS | PASS | `createLargeWorldSpatialGlbBundle` accepts the rooted VSR scene |
-| COMPILE | PASS | `npm test --workspace @taowind/large-world-runtime` (22/22) |
+| COMPILE | PASS | `npm test --workspace @taowind/large-world-runtime` (23/23) |
 | LOWER | PASS | RAGF `GlbBuilder` + `encodeGlb`, GLB header/JSON and PNG buffer verified |
 | EXECUTE | PASS | 58/58 assets streamed; VSR binary import succeeded |
 | CORRECT | PASS | manifest/bundle/stream/import/frame roots verify locally |

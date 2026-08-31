@@ -483,7 +483,7 @@ fn environmentProbeSample(worldPosition:vec3<f32>,fallback:vec3<f32>,specular:bo
     });
     if (!materials.length) materials.push({ id: "material:gltf:default" });
     const skins = (gltf.skins ?? []).map((skin, index) => {
-      const joints = (skin.joints ?? []).map((joint) => `node:gltf:${joint}`), flat = skin.inverseBindMatrices === void 0 ? [] : accessorValues(gltf, buffers, skin.inverseBindMatrices), inverseBindMatrices = joints.map((_, jointIndex) => flat.length ? flat.slice(jointIndex * 16, jointIndex * 16 + 16) : identityMat4());
+      const joints = (skin.joints ?? []).map((joint) => `node:gltf:${joint}`), flat = skin.inverseBindMatrices === void 0 ? [] : accessorValues(gltf, buffers, skin.inverseBindMatrices), inverseBindMatrices = joints.map((_, jointIndex) => flat.length ? matrixValue(flat.slice(jointIndex * 16, jointIndex * 16 + 16)) ?? identityMat4() : identityMat4());
       return { id: `skin:gltf:${index}`, joints, inverseBindMatrices };
     });
     const meshes = [], primitiveMaterial = /* @__PURE__ */ new Map();

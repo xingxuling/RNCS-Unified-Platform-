@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added deterministic native RGBA8 KTX2 mip encoding/inspection through `encodeKtx2Rgba8` and `inspectKtx2`; this exposes a reusable progressive-texture container without claiming BasisU supercompression.
 - 修正默认 cycle 周期端点：周期包含末端闭环帧，避免长 Cut 在源帧边界跳变
 - 新增 `ragf.anime-motion-quality-contract.v0.1` 与逐通道 terminal seam 报告
 - RAGF、X-Sheet binding 和桥接 Coverage 报告记录共享 `motion_quality_root`

@@ -43,6 +43,7 @@
     "asset_count": {"type": "integer", "minimum": 1},
     "texture_count": {"type": "integer", "minimum": 0},
     "texture_profile": {"type": "string", "minLength": 1},
+    "texture_residency_profile": {"const": "vsr.progressive-mip-residency.v0.1"},
     "lod_policy": {
       "type": "array",
       "minItems": 1,

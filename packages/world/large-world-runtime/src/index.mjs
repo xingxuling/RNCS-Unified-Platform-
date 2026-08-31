@@ -32,7 +32,7 @@ import {
   worldStateRoot
 } from '@taowind/rncs-core-contract';
 import {RealityRepresentationFabric, RealityRepresentationPortfolioRuntime} from '@taowind/reality-representation-fabric';
-import {GlbBuilder, encodeFloat32, encodeUint16, encodeUint32, encodeGlb, encodePng, inspectGlb, minMax, normalizeIntent, deriveGenomeFromIntent, generatePbrTexturePack, generateMesh3d} from '@taowind/reality-asset-genesis-fabric';
+import {GlbBuilder, encodeFloat32, encodeUint16, encodeUint32, encodeGlb, encodePng, encodeKtx2Rgba8, inspectGlb, inspectKtx2, minMax, normalizeIntent, deriveGenomeFromIntent, generatePbrTexturePack, generateMesh3d} from '@taowind/reality-asset-genesis-fabric';
 
 export const LARGE_WORLD_RUNTIME_FORMAT = 'rncs.large-world-runtime.v0.1';
 export const LARGE_WORLD_RUNTIME_VERSION = '0.1.0';
@@ -50,6 +50,9 @@ export const LARGE_WORLD_SPATIAL_GLB_MANIFEST_FORMAT = 'rncs.large-world-spatial
 export const LARGE_WORLD_SPATIAL_GLB_BUNDLE_FORMAT = 'rncs.large-world-spatial-glb-bundle.v0.1';
 export const LARGE_WORLD_SPATIAL_GLB_PROVIDER_ID = 'provider:taowind:large-world-glb-ragf:v0.1';
 export const LARGE_WORLD_SPATIAL_GLB_TEXTURE_PROFILE = 'ragf.png-embedded.v0.1';
+export const LARGE_WORLD_SPATIAL_GLB_KTX2_TEXTURE_PROFILE = 'ragf.ktx2-rgba8-mipped.v0.1';
+export const LARGE_WORLD_SPATIAL_GLB_TEXTURE_RESIDENCY_PROFILE = 'vsr.progressive-mip-residency.v0.1';
+export const LARGE_WORLD_TEXTURE_RESIDENCY_FORMAT = 'rncs.large-world-texture-residency.v0.1';
 export const LARGE_WORLD_MATERIALIZATION_FORMAT = 'rncs.large-world-materialization.v0.1';
 export const LARGE_WORLD_REPLICATION_SNAPSHOT_FORMAT = 'rncs.large-world-replication-snapshot.v0.1';
 export const LARGE_WORLD_REPLICATION_DELTA_FORMAT = 'rncs.large-world-replication-delta.v0.1';
@@ -905,22 +908,117 @@ function largeWorldSpatialGltfForMesh(mesh, material, {lod, prototypeId}) {
   return {gltf, bytes, triangleCount: Math.floor(indices.length / 3), textureCount: 1};
 }
 
-function largeWorldSpatialGlbTexture(material, meshId, lod) {
+function largeWorldSpatialGlbTexturePixels(material, meshId, lod, size) {
   const base = largeWorldSpatialColorRgba(material.baseColor, '#9ca3af');
   const accent = largeWorldSpatialColorRgba(material.emissive, '#000000');
-  const pixels = [];
-  for (let y = 0; y < 4; y++) for (let x = 0; x < 4; x++) {
-    const stripe = ((x + y + lod) % 3) === 0;
-    const tone = stripe ? 18 : 0;
-    const pulse = (String(meshId).length + x * 7 + y * 11 + lod * 13) % 19 === 0;
-    pixels.push(
-      Math.max(0, Math.min(255, base[0] + (stripe ? tone : -tone))),
-      Math.max(0, Math.min(255, base[1] + (stripe ? tone : -tone))),
-      Math.max(0, Math.min(255, base[2] + (stripe ? tone : -tone))),
-      pulse ? Math.max(base[3], accent[3]) : base[3]
-    );
+  const pixels = new Uint8Array(size * size * 4);
+  for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
+    const u = x / Math.max(1, size - 1), v = y / Math.max(1, size - 1);
+    const stripe = ((Math.floor(u * 12) + Math.floor(v * 10) + lod) % 3) === 0;
+    const wave = Math.round(Math.sin((u * 8 + v * 3 + lod) * Math.PI) * 6);
+    const tone = stripe ? 18 + wave : -6 + wave;
+    const pulse = (String(meshId).length + x * 7 + y * 11 + lod * 13) % Math.max(7, Math.floor(size * 1.2)) === 0;
+    const index = (y * size + x) * 4;
+    pixels[index] = Math.max(0, Math.min(255, base[0] + tone));
+    pixels[index + 1] = Math.max(0, Math.min(255, base[1] + tone));
+    pixels[index + 2] = Math.max(0, Math.min(255, base[2] + tone));
+    pixels[index + 3] = pulse ? Math.max(base[3], accent[3]) : base[3];
   }
-  return {width: 4, height: 4, pixels, png: encodePng(4, 4, Buffer.from(pixels))};
+  return pixels;
+}
+
+function largeWorldSpatialDownsampleRgba8(source, width, height) {
+  const nextWidth = Math.max(1, Math.floor(width / 2)), nextHeight = Math.max(1, Math.floor(height / 2)), pixels = new Uint8Array(nextWidth * nextHeight * 4);
+  for (let y = 0; y < nextHeight; y++) for (let x = 0; x < nextWidth; x++) {
+    const index = (y * nextWidth + x) * 4;
+    for (let channel = 0; channel < 4; channel++) {
+      let total = 0, count = 0;
+      for (let oy = 0; oy < 2; oy++) for (let ox = 0; ox < 2; ox++) {
+        const sx = Math.min(width - 1, x * 2 + ox), sy = Math.min(height - 1, y * 2 + oy);
+        total += source[(sy * width + sx) * 4 + channel] ?? 0;
+        count++;
+      }
+      pixels[index + channel] = Math.round(total / count);
+    }
+  }
+  return {width: nextWidth, height: nextHeight, pixels};
+}
+
+function largeWorldSpatialGlbTexture(material, meshId, lod, {profile = LARGE_WORLD_SPATIAL_GLB_TEXTURE_PROFILE, textureSize = 32} = {}) {
+  if (profile === LARGE_WORLD_SPATIAL_GLB_TEXTURE_PROFILE) {
+    const pixels = largeWorldSpatialGlbTexturePixels(material, meshId, lod, 4);
+    return {width: 4, height: 4, pixels: [...pixels], png: encodePng(4, 4, Buffer.from(pixels)), profile, levelCount: 1};
+  }
+  fail(profile === LARGE_WORLD_SPATIAL_GLB_KTX2_TEXTURE_PROFILE, `LARGE_WORLD_GLB_TEXTURE_PROFILE_UNSUPPORTED:${profile}`);
+  const requestedSize = Number(textureSize), size = Number.isFinite(requestedSize) ? Math.max(4, Math.min(256, 2 ** Math.floor(Math.log2(Math.max(4, requestedSize))))) : 32;
+  const levels = [];
+  let width = size, height = size, pixels = largeWorldSpatialGlbTexturePixels(material, meshId, lod, size);
+  while (true) {
+    levels.push({width, height, pixels});
+    if (width === 1 && height === 1) break;
+    const next = largeWorldSpatialDownsampleRgba8(pixels, width, height);
+    width = next.width; height = next.height; pixels = next.pixels;
+  }
+  const ktx2 = encodeKtx2Rgba8(levels, {colorSpace: 'srgb'});
+  return {
+    width: size,
+    height: size,
+    pixels: [...levels[0].pixels],
+    ktx2,
+    profile,
+    levelCount: levels.length,
+    levels: levels.map((level, index) => ({level: index, width: level.width, height: level.height, byteLength: level.pixels.byteLength}))
+  };
+}
+
+function largeWorldSpatialTextureResidency(texture) {
+  if (texture.profile !== LARGE_WORLD_SPATIAL_GLB_KTX2_TEXTURE_PROFILE) return undefined;
+  return {
+    format: LARGE_WORLD_SPATIAL_GLB_TEXTURE_RESIDENCY_PROFILE,
+    mode: 'progressive-mip',
+    initial_level: Math.min(2, Math.max(0, texture.levelCount - 1)),
+    promotion: 'screen-coverage-and-distance',
+    release: 'cell-unload-hysteresis',
+    levels: texture.levels.map(level => ({...level, residency_tier: level.level === 0 ? 'vram' : 'ram'}))
+  };
+}
+
+/**
+ * Resolve a candidate mip residency plan from the explicit distance and
+ * screen-coverage inputs. The plan is presentation evidence only: it does not
+ * upload, evict, or mutate any canonical world state.
+ */
+export function resolveLargeWorldTextureResidency(textureResidency, input = {}) {
+  const value = record(textureResidency), request = record(input), levels = Array.isArray(value.levels) ? value.levels.map(level => ({...level})).sort((a, b) => Number(a.level) - Number(b.level)) : [];
+  fail(value.format === LARGE_WORLD_SPATIAL_GLB_TEXTURE_RESIDENCY_PROFILE, 'LARGE_WORLD_TEXTURE_RESIDENCY_PROFILE_INVALID');
+  fail(levels.length > 0 && levels.every((level, index) => Number(level.level) === index && Number(level.width) >= 1 && Number(level.height) >= 1), 'LARGE_WORLD_TEXTURE_RESIDENCY_LEVELS_INVALID');
+  const distance = Number.isFinite(Number(request.distance_m ?? request.distanceM)) ? Math.max(0, Number(request.distance_m ?? request.distanceM)) : 0;
+  const coverage = Number.isFinite(Number(request.screen_coverage_percent ?? request.screenCoveragePercent)) ? Math.max(0, Math.min(100, Number(request.screen_coverage_percent ?? request.screenCoveragePercent))) : 100;
+  const distanceLevel = distance <= 64 ? 0 : distance <= 192 ? 1 : 2;
+  const coverageLevel = coverage >= 70 ? 0 : coverage >= 25 ? 1 : 2;
+  const selectedLevel = Math.min(levels.length - 1, Math.max(distanceLevel, coverageLevel));
+  const base = {
+    format: LARGE_WORLD_TEXTURE_RESIDENCY_FORMAT,
+    profile: value.format,
+    distance_m: distance,
+    screen_coverage_percent: coverage,
+    selected_level: selectedLevel,
+    resident_levels: [selectedLevel],
+    prefetch_levels: levels.slice(selectedLevel + 1).map(level => level.level),
+    deferred_levels: levels.slice(0, selectedLevel).map(level => level.level),
+    policy: {promotion: value.promotion ?? 'screen-coverage-and-distance', release: value.release ?? 'cell-unload-hysteresis'},
+    candidate_only: true,
+    authoritative: false,
+    canonical_write_authorized: false
+  };
+  return {...base, root: rootHash(base)};
+}
+
+export function verifyLargeWorldTextureResidency(receipt) {
+  if (!receipt || typeof receipt !== 'object' || Array.isArray(receipt) || !hex64(receipt.root)) return false;
+  const copy = clone(receipt), root = copy.root;
+  delete copy.root;
+  return rootHash(copy) === root && copy.format === LARGE_WORLD_TEXTURE_RESIDENCY_FORMAT && copy.candidate_only === true && copy.authoritative === false && copy.canonical_write_authorized === false;
 }
 
 /**
@@ -928,7 +1026,7 @@ function largeWorldSpatialGlbTexture(material, meshId, lod) {
  * large-world provider responsible for candidate materialization while the
  * reusable GLB container/validation semantics remain owned by RAGF.
  */
-function largeWorldSpatialGlbForMesh(mesh, material, {lod, prototypeId}) {
+function largeWorldSpatialGlbForMesh(mesh, material, {lod, prototypeId, textureProfile = LARGE_WORLD_SPATIAL_GLB_TEXTURE_PROFILE, textureSize = 32}) {
   const source = largeWorldSpatialMeshForLod(mesh, lod);
   const positions = Array.isArray(source.positions) ? source.positions : [];
   const normals = Array.isArray(source.normals) && source.normals.length === positions.length ? source.normals : new Array(positions.length).fill(0);
@@ -943,8 +1041,9 @@ function largeWorldSpatialGlbForMesh(mesh, material, {lod, prototypeId}) {
   const maximumIndex = indices.reduce((maximum, value) => Math.max(maximum, Number(value) || 0), 0);
   const indexComponentType = maximumIndex < 0x10000 ? 5123 : 5125;
   const indexAccessor = builder.addAccessor(indexComponentType === 5123 ? encodeUint16(indices) : encodeUint32(indices), {componentType: indexComponentType, type: 'SCALAR', count: indices.length, target: 34963, min: [0], max: [maximumIndex]});
-  const texture = largeWorldSpatialGlbTexture(material, mesh.id, lod);
-  const imageBufferView = builder.addBuffer(texture.png);
+  const texture = largeWorldSpatialGlbTexture(material, mesh.id, lod, {profile: textureProfile, textureSize});
+  const textureBytes = texture.png ?? texture.ktx2;
+  const imageBufferView = builder.addBuffer(textureBytes);
   const binary = builder.binary();
   const color = largeWorldSpatialColorRgba(material.baseColor, '#9ca3af');
   const emissive = largeWorldSpatialColorRgba(material.emissive, '#000000');
@@ -969,8 +1068,13 @@ function largeWorldSpatialGlbForMesh(mesh, material, {lod, prototypeId}) {
       extras: {provider_id: LARGE_WORLD_SPATIAL_GLB_PROVIDER_ID, prototype_id: prototypeId, lod}
     }],
     samplers: [{magFilter: 9729, minFilter: 9987, wrapS: 10497, wrapT: 10497}],
-    images: [{name: `${mesh.id}:base-color`, mimeType: 'image/png', bufferView: imageBufferView, extras: {vsrRGBA: {width: texture.width, height: texture.height, pixels: texture.pixels, colorSpace: 'srgb'}}}],
-    textures: [{sampler: 0, source: 0}],
+    ...(texture.profile === LARGE_WORLD_SPATIAL_GLB_KTX2_TEXTURE_PROFILE ? {extensionsUsed: ['KHR_texture_basisu']} : {}),
+    images: [texture.profile === LARGE_WORLD_SPATIAL_GLB_KTX2_TEXTURE_PROFILE
+      ? {name: `${mesh.id}:base-color`, mimeType: 'image/ktx2', bufferView: imageBufferView}
+      : {name: `${mesh.id}:base-color`, mimeType: 'image/png', bufferView: imageBufferView, extras: {vsrRGBA: {width: texture.width, height: texture.height, pixels: texture.pixels, colorSpace: 'srgb'}}}],
+    textures: [texture.profile === LARGE_WORLD_SPATIAL_GLB_KTX2_TEXTURE_PROFILE
+      ? {sampler: 0, extensions: {KHR_texture_basisu: {source: 0}}}
+      : {sampler: 0, source: 0}],
     buffers: [{byteLength: binary.length}],
     bufferViews: builder.bufferViews,
     accessors: builder.accessors,
@@ -979,14 +1083,15 @@ function largeWorldSpatialGlbForMesh(mesh, material, {lod, prototypeId}) {
       provider_id: LARGE_WORLD_SPATIAL_GLB_PROVIDER_ID,
       prototype_id: prototypeId,
       lod,
-      texture_profile: LARGE_WORLD_SPATIAL_GLB_TEXTURE_PROFILE,
+      texture_profile: texture.profile,
+      texture_residency: largeWorldSpatialTextureResidency(texture),
       ragf: {encoder: 'GlbBuilder', index_accessor: indexAccessor, image_buffer_view: imageBufferView}
     }
   };
   const glb = encodeGlb(gltf, binary);
   const inspection = inspectGlb(glb);
   fail(inspection.valid, `LARGE_WORLD_GLB_INVALID:${mesh.id}:lod${lod}:${inspection.errors.join(',')}`);
-  return {gltf: inspection.json ?? gltf, bytes: new Uint8Array(glb), triangleCount: Math.floor(indices.length / 3), vertexCount: positions.length / 3, textureCount: 1, inspection};
+  return {gltf: inspection.json ?? gltf, bytes: new Uint8Array(glb), triangleCount: Math.floor(indices.length / 3), vertexCount: positions.length / 3, textureCount: 1, textureProfile: texture.profile, textureByteLength: textureBytes.byteLength, textureLevelCount: texture.levelCount, textureLevels: texture.levels, inspection};
 }
 
 function largeWorldSpatialRagfShowcase(scene, {variant = 'cinematic'} = {}) {
@@ -1191,12 +1296,15 @@ export function createLargeWorldSpatialGlbBundle(scene, input = {}) {
   const assets = [];
   const cellAssetIndex = {};
   const providerId = String(value.providerId ?? value.provider_id ?? LARGE_WORLD_SPATIAL_GLB_PROVIDER_ID);
+  const textureProfile = String(value.textureProfile ?? value.texture_profile ?? LARGE_WORLD_SPATIAL_GLB_TEXTURE_PROFILE);
+  fail(textureProfile === LARGE_WORLD_SPATIAL_GLB_TEXTURE_PROFILE || textureProfile === LARGE_WORLD_SPATIAL_GLB_KTX2_TEXTURE_PROFILE, `LARGE_WORLD_GLB_TEXTURE_PROFILE_UNSUPPORTED:${textureProfile}`);
+  const textureSize = value.textureSize ?? value.texture_size ?? 32;
   for (const mesh of meshEntries) {
     const material = largeWorldSpatialMaterialForMesh(scene, mesh.id);
     const prototypeId = largeWorldSpatialMeshPrototypeId(scene, mesh.id);
     const cellIds = largeWorldSpatialMeshCellIds(scene, mesh.id);
     for (const lod of levels) {
-      const generated = largeWorldSpatialGlbForMesh(mesh, material, {lod, prototypeId});
+      const generated = largeWorldSpatialGlbForMesh(mesh, material, {lod, prototypeId, textureProfile, textureSize});
       const assetId = `asset:glb:${scene.sceneId}:${mesh.id}:lod${lod}`;
       const recordValue = {
         id: assetId,
@@ -1216,7 +1324,12 @@ export function createLargeWorldSpatialGlbBundle(scene, input = {}) {
           vertex_count: generated.vertexCount,
           triangle_count: generated.triangleCount,
           texture_count: generated.textureCount,
-          texture_profile: LARGE_WORLD_SPATIAL_GLB_TEXTURE_PROFILE,
+          texture_profile: generated.textureProfile,
+          ...(generated.textureProfile === LARGE_WORLD_SPATIAL_GLB_KTX2_TEXTURE_PROFILE ? {
+            texture_residency: largeWorldSpatialTextureResidency({profile: generated.textureProfile, levelCount: generated.textureLevelCount, levels: generated.textureLevels})
+          } : {}),
+          texture_byte_length: generated.textureByteLength,
+          texture_level_count: generated.textureLevelCount,
           encoder: 'ragf.glb-builder.v0.1',
           candidate_only: true,
           authoritative: false
@@ -1282,7 +1395,8 @@ export function createLargeWorldSpatialGlbBundle(scene, input = {}) {
     lod_level_count: levels.length,
     asset_count: assets.length,
     texture_count: assets.reduce((sum, entry) => sum + Number(entry.record.metadata.texture_count ?? 0), 0),
-    texture_profile: LARGE_WORLD_SPATIAL_GLB_TEXTURE_PROFILE,
+    texture_profile: textureProfile,
+    ...(textureProfile === LARGE_WORLD_SPATIAL_GLB_KTX2_TEXTURE_PROFILE ? {texture_residency_profile: LARGE_WORLD_SPATIAL_GLB_TEXTURE_RESIDENCY_PROFILE} : {}),
     lod_policy: lodPolicy,
     asset_ids: assets.map(entry => entry.record.id),
     cell_asset_index: cellAssetIndex,
@@ -1299,6 +1413,28 @@ export function createLargeWorldSpatialGlbBundle(scene, input = {}) {
     assets: assets.map(entry => largeWorldSpatialGltfRecordView(entry.record))
   };
   return {format: LARGE_WORLD_SPATIAL_GLB_BUNDLE_FORMAT, version: '0.1.0', manifest, assets, bundle_root: rootHash(bundleBase)};
+}
+
+function largeWorldSpatialGlbBinaryChunk(payload) {
+  const bytes = Buffer.from(payload);
+  if (bytes.length < 20 || bytes.readUInt32LE(0) !== 0x46546c67) return null;
+  const declaredLength = bytes.readUInt32LE(8);
+  if (declaredLength !== bytes.length) return null;
+  let offset = 12;
+  while (offset + 8 <= bytes.length) {
+    const length = bytes.readUInt32LE(offset), type = bytes.readUInt32LE(offset + 4), start = offset + 8, end = start + length;
+    if (end > bytes.length) return null;
+    if (type === 0x004e4942) return bytes.subarray(start, end);
+    offset = end;
+  }
+  return null;
+}
+
+function largeWorldSpatialGlbImageBytes(payload, gltf, image) {
+  const binary = largeWorldSpatialGlbBinaryChunk(payload), view = Number.isInteger(image?.bufferView) ? gltf?.bufferViews?.[image.bufferView] : null;
+  if (!binary || !view || Number(view.buffer ?? 0) !== 0) return null;
+  const start = Number(view.byteOffset ?? 0), end = start + Number(view.byteLength ?? 0);
+  return Number.isInteger(start) && Number.isInteger(end) && start >= 0 && end <= binary.length ? binary.subarray(start, end) : null;
 }
 
 export function verifyLargeWorldSpatialGlbBundle(bundle, input = {}) {
@@ -1342,9 +1478,23 @@ export function verifyLargeWorldSpatialGlbBundle(bundle, input = {}) {
       const images = Array.isArray(gltf?.images) ? gltf.images : [];
       check(gltf?.textures?.length === (isRagfShowcase ? 4 : 1), `LARGE_WORLD_GLB_TEXTURE_COUNT_INVALID:${asset.id}`);
       check(images.length === (isRagfShowcase ? 4 : 1), `LARGE_WORLD_GLB_TEXTURE_CHANNEL_MISSING:${asset.id}`);
+      const textureProfile = String(asset.metadata?.texture_profile ?? gltf?.extras?.texture_profile ?? '');
+      const isKtx2 = textureProfile === LARGE_WORLD_SPATIAL_GLB_KTX2_TEXTURE_PROFILE;
+      if (!isRagfShowcase && !isKtx2) check(textureProfile === LARGE_WORLD_SPATIAL_GLB_TEXTURE_PROFILE, `LARGE_WORLD_GLB_TEXTURE_PROFILE_INVALID:${asset.id}`);
+      if (isKtx2) {
+        check(gltf?.extensionsUsed?.includes('KHR_texture_basisu'), `LARGE_WORLD_GLB_KTX2_EXTENSION_MISSING:${asset.id}`);
+        check(gltf?.textures?.[0]?.extensions?.KHR_texture_basisu?.source === 0, `LARGE_WORLD_GLB_KTX2_SOURCE_INVALID:${asset.id}`);
+        check(gltf?.images?.[0]?.mimeType === 'image/ktx2', `LARGE_WORLD_GLB_KTX2_MIME_INVALID:${asset.id}`);
+        const ktx2 = largeWorldSpatialGlbImageBytes(payload, gltf, gltf.images?.[0]);
+        const inspection = ktx2 ? inspectKtx2(ktx2) : {valid: false, errors: ['KTX2_IMAGE_BYTES_MISSING']};
+        check(inspection.valid, `LARGE_WORLD_GLB_KTX2_INVALID:${asset.id}`);
+        check(Number(asset.metadata?.texture_level_count) === Number(inspection.level_count), `LARGE_WORLD_GLB_KTX2_LEVEL_COUNT_INVALID:${asset.id}`);
+        check(gltf?.extras?.texture_residency?.format === LARGE_WORLD_SPATIAL_GLB_TEXTURE_RESIDENCY_PROFILE, `LARGE_WORLD_GLB_TEXTURE_RESIDENCY_INVALID:${asset.id}`);
+        check(Array.isArray(gltf?.extras?.texture_residency?.levels) && gltf.extras.texture_residency.levels.length === Number(inspection.level_count), `LARGE_WORLD_GLB_TEXTURE_RESIDENCY_LEVELS_INVALID:${asset.id}`);
+      }
       for (const image of images) {
-        check(image?.mimeType === 'image/png', `LARGE_WORLD_GLB_TEXTURE_MIME_INVALID:${asset.id}`);
-        if (!isRagfShowcase) check(Boolean(image?.extras?.vsrRGBA), `LARGE_WORLD_GLB_TEXTURE_RGBA_MISSING:${asset.id}`);
+        check(isKtx2 ? image?.mimeType === 'image/ktx2' : image?.mimeType === 'image/png', `LARGE_WORLD_GLB_TEXTURE_MIME_INVALID:${asset.id}`);
+        if (!isRagfShowcase && !isKtx2) check(Boolean(image?.extras?.vsrRGBA), `LARGE_WORLD_GLB_TEXTURE_RGBA_MISSING:${asset.id}`);
         const imageView = Number.isInteger(image?.bufferView) ? gltf?.bufferViews?.[image.bufferView] : null;
         check(Boolean(imageView && imageView.byteLength > 0), `LARGE_WORLD_GLB_TEXTURE_BUFFER_MISSING:${asset.id}`);
       }
