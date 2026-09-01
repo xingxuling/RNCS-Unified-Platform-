@@ -7,6 +7,7 @@ import {
   createUniversalArtAssetGenome,
   evaluateUniversalArtAssetAcceptance,
   generateUniversalArtAsset,
+  inspectUniversalArtAssetFiles,
   resolveUniversalArtAssetProvider,
   verifyUniversalArtAssetForge,
   verifyUniversalArtAssetGenome
@@ -51,26 +52,59 @@ test('provider resolution exposes external environment capability without silent
   assert.equal(resolution.authority.provider_can_write_authoritative_world_state, false);
 });
 
-test('built-in RAGF workspace produces real candidate files but AAA gates remain closed without art evidence', () => {
+test('built-in RAGF workspace produces real candidate files and local structure gates', () => {
   const outDir = fs.mkdtempSync(path.join(os.tmpdir(), 'urrf-universal-art-reference-'));
   const result = generateUniversalArtAsset(characterInput, {outDir});
   assert.equal(result.execution.status, 'COMPLETED');
   assert.equal(result.workspaceVerification.valid, true);
   assert.equal(result.candidate.authoritative, undefined);
   assert.equal(result.acceptance.status, 'BLOCKED');
-  assert.ok(result.acceptance.failures.includes('uv_gate'));
+  assert.equal(result.acceptance.failures.includes('topology_gate'), false);
+  assert.equal(result.acceptance.failures.includes('uv_gate'), false);
+  assert.equal(result.acceptance.failures.includes('normal_gate'), false);
   assert.ok(result.acceptance.failures.includes('art_direction_gate'));
   assert.ok(result.acceptance.failures.includes('human_review_gate'));
   assert.ok(result.acceptance.failures.includes('quality_tier_gate'));
+  assert.equal(result.execution.file_inspection.status, 'PASS');
+  assert.equal(result.execution.file_inspection.aggregates.valid_file_count, 3);
   assert.equal(verifyUniversalArtAssetForge({
     forge: result.forge,
     genome: result.genome,
     acceptance: result.acceptance,
-    evidenceLedger: result.evidenceLedger
+    evidenceLedger: result.evidenceLedger,
+    fileInspection: result.execution.file_inspection
   }).valid, true);
   assert.ok(fs.existsSync(path.join(outDir, 'universal-art-asset-genome.json')));
   assert.ok(fs.existsSync(path.join(outDir, 'universal-art-asset-acceptance.json')));
+  assert.ok(fs.existsSync(path.join(outDir, 'universal-art-asset-file-inspection.json')));
   assert.ok(fs.existsSync(path.join(outDir, 'candidates', 'cinematic', 'mesh', 'lod0.glb')));
+});
+
+test('invalid local GLB inspection cannot be overridden by provider declarations', () => {
+  const outDir = fs.mkdtempSync(path.join(os.tmpdir(), 'urrf-universal-art-invalid-glb-'));
+  fs.writeFileSync(path.join(outDir, 'broken.glb'), Buffer.from('not-a-glb'));
+  const inspection = inspectUniversalArtAssetFiles({
+    baseDir: outDir,
+    files: [{path: 'broken.glb', role: 'mesh-glb', lod: 0}]
+  });
+  assert.equal(inspection.status, 'FAIL');
+  assert.equal(inspection.aggregates.topology_status, 'FAIL');
+  assert.equal(inspection.aggregates.uv_status, 'FAIL');
+  assert.equal(inspection.aggregates.normal_status, 'FAIL');
+  const acceptance = evaluateUniversalArtAssetAcceptance({
+    genome: createUniversalArtAssetGenome(characterInput),
+    execution: {mode: 'RAGF_EXTERNAL_PROVIDER', status: 'COMPLETED'},
+    providerEvidence: {
+      geometry: {status: 'PASS'},
+      topology: {status: 'PASS'},
+      uv: {status: 'PASS'},
+      normal: {status: 'PASS'}
+    },
+    fileInspection: inspection
+  });
+  assert.ok(acceptance.failures.includes('topology_gate'));
+  assert.ok(acceptance.failures.includes('uv_gate'));
+  assert.ok(acceptance.failures.includes('normal_gate'));
 });
 
 test('injected provider is normalized through job, candidate, court and evidence ledger', () => {
@@ -91,7 +125,8 @@ test('injected provider is normalized through job, candidate, court and evidence
     forge: result.forge,
     genome: result.genome,
     acceptance: result.acceptance,
-    evidenceLedger: result.evidenceLedger
+    evidenceLedger: result.evidenceLedger,
+    fileInspection: result.execution.file_inspection
   }).valid, true);
 });
 

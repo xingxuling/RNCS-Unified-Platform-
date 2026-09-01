@@ -339,6 +339,7 @@
       "geometry_gate",
       "topology_gate",
       "uv_gate",
+      "normal_gate",
       "pbr_gate",
       "lod_gate",
       "collision_gate",
@@ -396,5 +397,5 @@
     "canonical_write_authorized": false,
     "rncs_authority_required": true
   },
-  "genome_root": "608144dee90b891d4e24b98e753963ccc99a9acba6320b1a130c3890029e478c"
+  "genome_root": "6af9eacaaaae30d65296d00f0acdc93d7eae27d843d25d80cea045eafd4fd297"
 }

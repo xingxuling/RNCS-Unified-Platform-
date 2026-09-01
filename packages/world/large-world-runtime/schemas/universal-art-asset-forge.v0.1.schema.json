@@ -15,6 +15,7 @@
     "execution",
     "acceptance_root",
     "evidence_ledger_root",
+    "file_inspection_root",
     "status",
     "candidate_only",
     "authoritative",
@@ -41,6 +42,7 @@
         "provider_root": {"type": ["string", "null"]},
         "workspace_root": {"type": ["string", "null"]},
         "candidate_root": {"type": ["string", "null"]},
+        "file_inspection_root": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
         "failure_code": {"type": ["string", "null"]}
       },
       "additionalProperties": false
@@ -48,6 +50,21 @@
     "candidate_root": {"type": ["string", "null"]},
     "acceptance_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
     "evidence_ledger_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "file_inspection_root": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+    "output": {
+      "type": "object",
+      "required": ["directory", "genome", "provider_resolution", "acceptance", "evidence_ledger", "file_inspection", "workspace"],
+      "properties": {
+        "directory": {"type": "string", "minLength": 1},
+        "genome": {"type": "string", "minLength": 1},
+        "provider_resolution": {"type": "string", "minLength": 1},
+        "acceptance": {"type": "string", "minLength": 1},
+        "evidence_ledger": {"type": "string", "minLength": 1},
+        "file_inspection": {"type": ["string", "null"]},
+        "workspace": {"type": ["string", "null"]}
+      },
+      "additionalProperties": false
+    },
     "status": {"enum": ["BLOCKED", "READY_FOR_HUMAN_REVIEW"]},
     "candidate_only": {"const": true},
     "authoritative": {"const": false},

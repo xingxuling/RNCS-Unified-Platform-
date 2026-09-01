@@ -1,7 +1,7 @@
 {
   "format": "ragf.asset-evidence-ledger.v0.1",
   "version": "0.1.0",
-  "ledger_id": "asset-evidence-ledger:010b9d6dd1988c7f43a779ff",
+  "ledger_id": "asset-evidence-ledger:891f27f478a78cfef89082f8",
   "authority": {
     "provider_is_candidate_source_only": true,
     "provider_can_write_authoritative_world_state": false,
@@ -76,7 +76,7 @@
     {
       "evidence_id": "production-court",
       "status": "FAIL",
-      "root": "ef6509ce13115856a629405c28683badbf3c558f554f85a3817b92174c5185db",
+      "root": "5768ec15adb3d5594004bf2f668bae34d209df7d4443f161e01f8d2e3dae60a9",
       "details": {
         "gates": [
           {
@@ -109,23 +109,31 @@
             "status": "PASS",
             "pass": true,
             "reason": null,
-            "source": "candidate metrics"
+            "source": "local GLB inspection"
           },
           {
             "gate": "topology_gate",
             "required": true,
-            "status": "FAIL",
-            "pass": false,
-            "reason": "TOPOLOGY_NOT_EXPLICITLY_VERIFIED",
-            "source": "candidate topology status"
+            "status": "PASS",
+            "pass": true,
+            "reason": null,
+            "source": "local GLB topology inspection"
           },
           {
             "gate": "uv_gate",
             "required": true,
-            "status": "FAIL",
-            "pass": false,
-            "reason": "UV_NOT_EXPLICITLY_VERIFIED",
-            "source": "candidate UV status"
+            "status": "PASS",
+            "pass": true,
+            "reason": null,
+            "source": "local GLB UV inspection"
+          },
+          {
+            "gate": "normal_gate",
+            "required": true,
+            "status": "PASS",
+            "pass": true,
+            "reason": null,
+            "source": "local GLB normal inspection"
           },
           {
             "gate": "pbr_gate",
@@ -217,8 +225,6 @@
           }
         ],
         "failures": [
-          "topology_gate",
-          "uv_gate",
           "provenance_license_gate",
           "art_direction_gate",
           "quality_tier_gate",
@@ -244,8 +250,8 @@
     "job_root": null,
     "result_root": null,
     "candidate_root": "bb0b52afb44be19f484bccbcb1833e1da3a46e39cd2c66357334f9f91821eb16",
-    "court_root": "ef6509ce13115856a629405c28683badbf3c558f554f85a3817b92174c5185db",
+    "court_root": "5768ec15adb3d5594004bf2f668bae34d209df7d4443f161e01f8d2e3dae60a9",
     "placement_root": null
   },
-  "ledger_root": "bef0cc65e47686e7e94fdc7659f299b4679cf489b6dd980411e3ee4fc2b86eb4"
+  "ledger_root": "614781977ad254c6fb3901ec97fffa5c3a7043ba6055ad37ca1876ed88c5d53f"
 }

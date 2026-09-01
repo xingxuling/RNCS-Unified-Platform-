@@ -4,7 +4,7 @@
   "asset_id": "asset:cf644862f780b86ae2bd9e94",
   "asset_profile": "character",
   "target_quality_tier": "AAA",
-  "genome_root": "608144dee90b891d4e24b98e753963ccc99a9acba6320b1a130c3890029e478c",
+  "genome_root": "6af9eacaaaae30d65296d00f0acdc93d7eae27d843d25d80cea045eafd4fd297",
   "candidate_root": "bb0b52afb44be19f484bccbcb1833e1da3a46e39cd2c66357334f9f91821eb16",
   "provider_id": "provider:taowind:procedural-3d",
   "gates": [
@@ -38,23 +38,31 @@
       "status": "PASS",
       "pass": true,
       "reason": null,
-      "source": "candidate metrics"
+      "source": "local GLB inspection"
     },
     {
       "gate": "topology_gate",
       "required": true,
-      "status": "FAIL",
-      "pass": false,
-      "reason": "TOPOLOGY_NOT_EXPLICITLY_VERIFIED",
-      "source": "candidate topology status"
+      "status": "PASS",
+      "pass": true,
+      "reason": null,
+      "source": "local GLB topology inspection"
     },
     {
       "gate": "uv_gate",
       "required": true,
-      "status": "FAIL",
-      "pass": false,
-      "reason": "UV_NOT_EXPLICITLY_VERIFIED",
-      "source": "candidate UV status"
+      "status": "PASS",
+      "pass": true,
+      "reason": null,
+      "source": "local GLB UV inspection"
+    },
+    {
+      "gate": "normal_gate",
+      "required": true,
+      "status": "PASS",
+      "pass": true,
+      "reason": null,
+      "source": "local GLB normal inspection"
     },
     {
       "gate": "pbr_gate",
@@ -152,6 +160,7 @@
     "geometry_gate",
     "topology_gate",
     "uv_gate",
+    "normal_gate",
     "pbr_gate",
     "lod_gate",
     "collision_gate",
@@ -165,8 +174,6 @@
     "animation_gate"
   ],
   "failures": [
-    "topology_gate",
-    "uv_gate",
     "provenance_license_gate",
     "art_direction_gate",
     "quality_tier_gate",
@@ -182,7 +189,12 @@
     "rig_present": true,
     "animation_present": true,
     "lod_present": true,
-    "collision_present": true
+    "collision_present": true,
+    "file_inspection_status": "PASS",
+    "file_inspection_triangle_count": 1900,
+    "topology_status": "PASS",
+    "uv_status": "PASS",
+    "normal_status": "PASS"
   },
   "authority": {
     "provider_can_commit": false,
@@ -195,7 +207,7 @@
     "genome_verification": {
       "valid": true,
       "errors": [],
-      "genome_root": "608144dee90b891d4e24b98e753963ccc99a9acba6320b1a130c3890029e478c"
+      "genome_root": "6af9eacaaaae30d65296d00f0acdc93d7eae27d843d25d80cea045eafd4fd297"
     },
     "provider_court_root": null,
     "workspace_verification": {
@@ -207,7 +219,501 @@
       "recommended_candidate_id": "asset-candidate:23c15ae8749cbc68d6099984",
       "file_integrity_checked": 27
     },
-    "provider_evidence_root": "8f87b857cf141a921170f16b746f32b93e083bc4cfdf036286d48d3d34c738af"
+    "provider_evidence_root": "8f87b857cf141a921170f16b746f32b93e083bc4cfdf036286d48d3d34c738af",
+    "file_inspection": {
+      "format": "urrf.universal-art-asset-file-inspection.v0.1",
+      "version": "0.1.0",
+      "source": "local-glb-inspector",
+      "method": "urrf.glb-structural-inspector.v0.1",
+      "status": "PASS",
+      "files": [
+        {
+          "path": "candidates/mobile/mesh/lod0.glb",
+          "role": "mesh-glb",
+          "lod": 0,
+          "exists": true,
+          "byte_length": 59880,
+          "file_root": "b21b483ae0f8df76711b6ae53e6bb515ce86e905fe52bd66713aeeafbae49a4a",
+          "glb_valid": true,
+          "valid": true,
+          "errors": [],
+          "mesh_count": 1,
+          "primitive_count": 1,
+          "vertex_count": 686,
+          "triangle_count": 904,
+          "geometry": {
+            "status": "PASS",
+            "method": "GLB_ACCESSOR_STRUCTURE_V1"
+          },
+          "topology": {
+            "status": "PASS",
+            "method": "INDEXED_TRIANGLE_POSITION_WELD_EDGE_AUDIT_V1",
+            "primitives": [
+              {
+                "status": "PASS",
+                "manifold": true,
+                "finite_positions": true,
+                "indexed_triangle_list": true,
+                "vertex_count": 686,
+                "welded_vertex_count": 348,
+                "triangle_count": 904,
+                "non_degenerate_triangle_count": 620,
+                "degenerate_triangle_count": 284,
+                "degenerate_triangle_ratio": 0.3141592920353982,
+                "invalid_index_count": 0,
+                "repeated_index_triangle_count": 0,
+                "edge_count": 930,
+                "boundary_edge_count": 0,
+                "non_manifold_edge_count": 0,
+                "weld_tolerance": 0.0000027300000190734863,
+                "qualification": "MANIFOLD_AFTER_POSITION_WELD_WITH_GEOMETRIC_DEGENERATES",
+                "method": "INDEXED_TRIANGLE_POSITION_WELD_EDGE_AUDIT_V1"
+              }
+            ]
+          },
+          "uv": {
+            "status": "PASS",
+            "method": "FINITE_NONCONSTANT_TEXCOORD_0_V1",
+            "primitives": [
+              {
+                "status": "PASS",
+                "finite": true,
+                "min": [
+                  0,
+                  0.019999999552965164
+                ],
+                "max": [
+                  1,
+                  1
+                ],
+                "span": [
+                  1,
+                  0.9800000004470348
+                ],
+                "non_constant": true,
+                "out_of_unit_range_count": 0,
+                "method": "FINITE_NONCONSTANT_TEXCOORD_0_V1"
+              }
+            ]
+          },
+          "normals": {
+            "status": "PASS",
+            "method": "FINITE_NONZERO_UNIT_NORMALS_V1",
+            "primitives": [
+              {
+                "status": "PASS",
+                "finite": true,
+                "non_zero": true,
+                "unit_like": true,
+                "min_length": 0.9999999597534908,
+                "max_length": 1.0000000379107032,
+                "method": "FINITE_NONZERO_UNIT_NORMALS_V1"
+              }
+            ]
+          },
+          "primitives": [
+            {
+              "mesh_index": 0,
+              "primitive_index": 0,
+              "mode": 4,
+              "valid": true,
+              "errors": [],
+              "geometry": {
+                "status": "PASS",
+                "vertex_count": 686,
+                "triangle_count": 904,
+                "attribute_counts_match": true,
+                "attributes": [
+                  "JOINTS_0",
+                  "NORMAL",
+                  "POSITION",
+                  "TEXCOORD_0",
+                  "WEIGHTS_0"
+                ],
+                "method": "GLB_ACCESSOR_STRUCTURE_V1"
+              },
+              "topology": {
+                "status": "PASS",
+                "manifold": true,
+                "finite_positions": true,
+                "indexed_triangle_list": true,
+                "vertex_count": 686,
+                "welded_vertex_count": 348,
+                "triangle_count": 904,
+                "non_degenerate_triangle_count": 620,
+                "degenerate_triangle_count": 284,
+                "degenerate_triangle_ratio": 0.3141592920353982,
+                "invalid_index_count": 0,
+                "repeated_index_triangle_count": 0,
+                "edge_count": 930,
+                "boundary_edge_count": 0,
+                "non_manifold_edge_count": 0,
+                "weld_tolerance": 0.0000027300000190734863,
+                "qualification": "MANIFOLD_AFTER_POSITION_WELD_WITH_GEOMETRIC_DEGENERATES",
+                "method": "INDEXED_TRIANGLE_POSITION_WELD_EDGE_AUDIT_V1"
+              },
+              "uv": {
+                "status": "PASS",
+                "finite": true,
+                "min": [
+                  0,
+                  0.019999999552965164
+                ],
+                "max": [
+                  1,
+                  1
+                ],
+                "span": [
+                  1,
+                  0.9800000004470348
+                ],
+                "non_constant": true,
+                "out_of_unit_range_count": 0,
+                "method": "FINITE_NONCONSTANT_TEXCOORD_0_V1"
+              },
+              "normals": {
+                "status": "PASS",
+                "finite": true,
+                "non_zero": true,
+                "unit_like": true,
+                "min_length": 0.9999999597534908,
+                "max_length": 1.0000000379107032,
+                "method": "FINITE_NONZERO_UNIT_NORMALS_V1"
+              }
+            }
+          ]
+        },
+        {
+          "path": "candidates/mobile/mesh/lod1.glb",
+          "role": "mesh-lod1-glb",
+          "lod": 1,
+          "exists": true,
+          "byte_length": 44536,
+          "file_root": "73fbaf0f2a3d6d927942a473bcd7ac8988ee5c11e64ecddbdbfcde7cd28da4ef",
+          "glb_valid": true,
+          "valid": true,
+          "errors": [],
+          "mesh_count": 1,
+          "primitive_count": 1,
+          "vertex_count": 484,
+          "triangle_count": 636,
+          "geometry": {
+            "status": "PASS",
+            "method": "GLB_ACCESSOR_STRUCTURE_V1"
+          },
+          "topology": {
+            "status": "PASS",
+            "method": "INDEXED_TRIANGLE_POSITION_WELD_EDGE_AUDIT_V1",
+            "primitives": [
+              {
+                "status": "PASS",
+                "manifold": true,
+                "finite_positions": true,
+                "indexed_triangle_list": true,
+                "vertex_count": 484,
+                "welded_vertex_count": 242,
+                "triangle_count": 636,
+                "non_degenerate_triangle_count": 424,
+                "degenerate_triangle_count": 212,
+                "degenerate_triangle_ratio": 0.3333333333333333,
+                "invalid_index_count": 0,
+                "repeated_index_triangle_count": 0,
+                "edge_count": 636,
+                "boundary_edge_count": 0,
+                "non_manifold_edge_count": 0,
+                "weld_tolerance": 0.0000027300000190734863,
+                "qualification": "MANIFOLD_AFTER_POSITION_WELD_WITH_GEOMETRIC_DEGENERATES",
+                "method": "INDEXED_TRIANGLE_POSITION_WELD_EDGE_AUDIT_V1"
+              }
+            ]
+          },
+          "uv": {
+            "status": "PASS",
+            "method": "FINITE_NONCONSTANT_TEXCOORD_0_V1",
+            "primitives": [
+              {
+                "status": "PASS",
+                "finite": true,
+                "min": [
+                  0,
+                  0.019999999552965164
+                ],
+                "max": [
+                  1,
+                  1
+                ],
+                "span": [
+                  1,
+                  0.9800000004470348
+                ],
+                "non_constant": true,
+                "out_of_unit_range_count": 0,
+                "method": "FINITE_NONCONSTANT_TEXCOORD_0_V1"
+              }
+            ]
+          },
+          "normals": {
+            "status": "PASS",
+            "method": "FINITE_NONZERO_UNIT_NORMALS_V1",
+            "primitives": [
+              {
+                "status": "PASS",
+                "finite": true,
+                "non_zero": true,
+                "unit_like": true,
+                "min_length": 0.9999999690449232,
+                "max_length": 1.0000000329932732,
+                "method": "FINITE_NONZERO_UNIT_NORMALS_V1"
+              }
+            ]
+          },
+          "primitives": [
+            {
+              "mesh_index": 0,
+              "primitive_index": 0,
+              "mode": 4,
+              "valid": true,
+              "errors": [],
+              "geometry": {
+                "status": "PASS",
+                "vertex_count": 484,
+                "triangle_count": 636,
+                "attribute_counts_match": true,
+                "attributes": [
+                  "JOINTS_0",
+                  "NORMAL",
+                  "POSITION",
+                  "TEXCOORD_0",
+                  "WEIGHTS_0"
+                ],
+                "method": "GLB_ACCESSOR_STRUCTURE_V1"
+              },
+              "topology": {
+                "status": "PASS",
+                "manifold": true,
+                "finite_positions": true,
+                "indexed_triangle_list": true,
+                "vertex_count": 484,
+                "welded_vertex_count": 242,
+                "triangle_count": 636,
+                "non_degenerate_triangle_count": 424,
+                "degenerate_triangle_count": 212,
+                "degenerate_triangle_ratio": 0.3333333333333333,
+                "invalid_index_count": 0,
+                "repeated_index_triangle_count": 0,
+                "edge_count": 636,
+                "boundary_edge_count": 0,
+                "non_manifold_edge_count": 0,
+                "weld_tolerance": 0.0000027300000190734863,
+                "qualification": "MANIFOLD_AFTER_POSITION_WELD_WITH_GEOMETRIC_DEGENERATES",
+                "method": "INDEXED_TRIANGLE_POSITION_WELD_EDGE_AUDIT_V1"
+              },
+              "uv": {
+                "status": "PASS",
+                "finite": true,
+                "min": [
+                  0,
+                  0.019999999552965164
+                ],
+                "max": [
+                  1,
+                  1
+                ],
+                "span": [
+                  1,
+                  0.9800000004470348
+                ],
+                "non_constant": true,
+                "out_of_unit_range_count": 0,
+                "method": "FINITE_NONCONSTANT_TEXCOORD_0_V1"
+              },
+              "normals": {
+                "status": "PASS",
+                "finite": true,
+                "non_zero": true,
+                "unit_like": true,
+                "min_length": 0.9999999690449232,
+                "max_length": 1.0000000329932732,
+                "method": "FINITE_NONZERO_UNIT_NORMALS_V1"
+              }
+            }
+          ]
+        },
+        {
+          "path": "candidates/mobile/mesh/lod2.glb",
+          "role": "mesh-lod2-glb",
+          "lod": 2,
+          "exists": true,
+          "byte_length": 29008,
+          "file_root": "3a97d060d2a8011bbaadbf80a05c10a4baa6c4ee0ae42462023cfe46c26767fe",
+          "glb_valid": true,
+          "valid": true,
+          "errors": [],
+          "mesh_count": 1,
+          "primitive_count": 1,
+          "vertex_count": 280,
+          "triangle_count": 360,
+          "geometry": {
+            "status": "PASS",
+            "method": "GLB_ACCESSOR_STRUCTURE_V1"
+          },
+          "topology": {
+            "status": "PASS",
+            "method": "INDEXED_TRIANGLE_POSITION_WELD_EDGE_AUDIT_V1",
+            "primitives": [
+              {
+                "status": "PASS",
+                "manifold": true,
+                "finite_positions": true,
+                "indexed_triangle_list": true,
+                "vertex_count": 280,
+                "welded_vertex_count": 140,
+                "triangle_count": 360,
+                "non_degenerate_triangle_count": 240,
+                "degenerate_triangle_count": 120,
+                "degenerate_triangle_ratio": 0.3333333333333333,
+                "invalid_index_count": 0,
+                "repeated_index_triangle_count": 0,
+                "edge_count": 360,
+                "boundary_edge_count": 0,
+                "non_manifold_edge_count": 0,
+                "weld_tolerance": 0.0000026400001049041747,
+                "qualification": "MANIFOLD_AFTER_POSITION_WELD_WITH_GEOMETRIC_DEGENERATES",
+                "method": "INDEXED_TRIANGLE_POSITION_WELD_EDGE_AUDIT_V1"
+              }
+            ]
+          },
+          "uv": {
+            "status": "PASS",
+            "method": "FINITE_NONCONSTANT_TEXCOORD_0_V1",
+            "primitives": [
+              {
+                "status": "PASS",
+                "finite": true,
+                "min": [
+                  0,
+                  0.019999999552965164
+                ],
+                "max": [
+                  1,
+                  1
+                ],
+                "span": [
+                  1,
+                  0.9800000004470348
+                ],
+                "non_constant": true,
+                "out_of_unit_range_count": 0,
+                "method": "FINITE_NONCONSTANT_TEXCOORD_0_V1"
+              }
+            ]
+          },
+          "normals": {
+            "status": "PASS",
+            "method": "FINITE_NONZERO_UNIT_NORMALS_V1",
+            "primitives": [
+              {
+                "status": "PASS",
+                "finite": true,
+                "non_zero": true,
+                "unit_like": true,
+                "min_length": 0.9999999690769985,
+                "max_length": 1.0000000157396551,
+                "method": "FINITE_NONZERO_UNIT_NORMALS_V1"
+              }
+            ]
+          },
+          "primitives": [
+            {
+              "mesh_index": 0,
+              "primitive_index": 0,
+              "mode": 4,
+              "valid": true,
+              "errors": [],
+              "geometry": {
+                "status": "PASS",
+                "vertex_count": 280,
+                "triangle_count": 360,
+                "attribute_counts_match": true,
+                "attributes": [
+                  "JOINTS_0",
+                  "NORMAL",
+                  "POSITION",
+                  "TEXCOORD_0",
+                  "WEIGHTS_0"
+                ],
+                "method": "GLB_ACCESSOR_STRUCTURE_V1"
+              },
+              "topology": {
+                "status": "PASS",
+                "manifold": true,
+                "finite_positions": true,
+                "indexed_triangle_list": true,
+                "vertex_count": 280,
+                "welded_vertex_count": 140,
+                "triangle_count": 360,
+                "non_degenerate_triangle_count": 240,
+                "degenerate_triangle_count": 120,
+                "degenerate_triangle_ratio": 0.3333333333333333,
+                "invalid_index_count": 0,
+                "repeated_index_triangle_count": 0,
+                "edge_count": 360,
+                "boundary_edge_count": 0,
+                "non_manifold_edge_count": 0,
+                "weld_tolerance": 0.0000026400001049041747,
+                "qualification": "MANIFOLD_AFTER_POSITION_WELD_WITH_GEOMETRIC_DEGENERATES",
+                "method": "INDEXED_TRIANGLE_POSITION_WELD_EDGE_AUDIT_V1"
+              },
+              "uv": {
+                "status": "PASS",
+                "finite": true,
+                "min": [
+                  0,
+                  0.019999999552965164
+                ],
+                "max": [
+                  1,
+                  1
+                ],
+                "span": [
+                  1,
+                  0.9800000004470348
+                ],
+                "non_constant": true,
+                "out_of_unit_range_count": 0,
+                "method": "FINITE_NONCONSTANT_TEXCOORD_0_V1"
+              },
+              "normals": {
+                "status": "PASS",
+                "finite": true,
+                "non_zero": true,
+                "unit_like": true,
+                "min_length": 0.9999999690769985,
+                "max_length": 1.0000000157396551,
+                "method": "FINITE_NONZERO_UNIT_NORMALS_V1"
+              }
+            }
+          ]
+        }
+      ],
+      "aggregates": {
+        "geometry_status": "PASS",
+        "topology_status": "PASS",
+        "uv_status": "PASS",
+        "normal_status": "PASS",
+        "triangle_count": 1900,
+        "vertex_count": 1450,
+        "file_count": 3,
+        "valid_file_count": 3
+      },
+      "errors": [],
+      "inspection_root": "9384d7b825a7a8457cb6672762184078fec56558001ce588a6fbf16732cd0fcd"
+    },
+    "file_inspection_verification": {
+      "valid": true,
+      "errors": [],
+      "inspection_root": "9384d7b825a7a8457cb6672762184078fec56558001ce588a6fbf16732cd0fcd"
+    }
   },
-  "acceptance_root": "ef6509ce13115856a629405c28683badbf3c558f554f85a3817b92174c5185db"
+  "acceptance_root": "5768ec15adb3d5594004bf2f668bae34d209df7d4443f161e01f8d2e3dae60a9"
 }

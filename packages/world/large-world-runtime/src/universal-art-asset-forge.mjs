@@ -11,6 +11,7 @@ import {
   evaluateAssetProductionCourt,
   externalAssetProviderManifests,
   generateAssetWorkspace,
+  inspectGlb,
   normalizeIntent,
   rootHash,
   seal,
@@ -28,6 +29,7 @@ export const UNIVERSAL_ART_ASSET_FORGE_FORMAT = 'urrf.universal-art-asset-forge.
 export const UNIVERSAL_ART_ASSET_GENOME_FORMAT = 'urrf.universal-art-asset-genome.v0.1';
 export const UNIVERSAL_ART_ASSET_PROVIDER_RESOLUTION_FORMAT = 'urrf.universal-art-asset-provider-resolution.v0.1';
 export const UNIVERSAL_ART_ASSET_ACCEPTANCE_FORMAT = 'urrf.universal-art-asset-acceptance.v0.1';
+export const UNIVERSAL_ART_ASSET_FILE_INSPECTION_FORMAT = 'urrf.universal-art-asset-file-inspection.v0.1';
 export const UNIVERSAL_ART_ASSET_FORGE_VERSION = '0.1.0';
 
 export const UNIVERSAL_ART_ASSET_PROFILES = Object.freeze([
@@ -51,6 +53,7 @@ const STATIC_GATES = Object.freeze([
   'geometry_gate',
   'topology_gate',
   'uv_gate',
+  'normal_gate',
   'pbr_gate',
   'lod_gate',
   'collision_gate',
@@ -499,6 +502,403 @@ function explicitEvidence(evidence, keys) {
   return {present: value !== null, pass: statusPass(value), status: statusValue(value), value};
 }
 
+const GLB_COMPONENTS = Object.freeze({
+  5120: {bytes: 1, read: (buffer, offset) => buffer.readInt8(offset), normalize: value => Math.max(-1, value / 127)},
+  5121: {bytes: 1, read: (buffer, offset) => buffer.readUInt8(offset), normalize: value => value / 255},
+  5122: {bytes: 2, read: (buffer, offset) => buffer.readInt16LE(offset), normalize: value => Math.max(-1, value / 32767)},
+  5123: {bytes: 2, read: (buffer, offset) => buffer.readUInt16LE(offset), normalize: value => value / 65535},
+  5125: {bytes: 4, read: (buffer, offset) => buffer.readUInt32LE(offset), normalize: value => value / 4294967295},
+  5126: {bytes: 4, read: (buffer, offset) => buffer.readFloatLE(offset), normalize: value => value}
+});
+
+const GLB_ACCESSOR_COMPONENTS = Object.freeze({SCALAR: 1, VEC2: 2, VEC3: 3, VEC4: 4, MAT2: 4, MAT3: 9, MAT4: 16});
+
+function parseGlbForInspection(buffer) {
+  const bytes = Buffer.isBuffer(buffer) ? buffer : Buffer.from(buffer ?? []);
+  const base = inspectGlb(bytes);
+  const errors = [...(base.errors ?? [])];
+  let binary = null;
+  if (base.json) {
+    const jsonLength = bytes.length >= 20 ? bytes.readUInt32LE(12) : 0;
+    let cursor = 20 + jsonLength;
+    while (cursor + 8 <= bytes.length) {
+      const chunkLength = bytes.readUInt32LE(cursor);
+      const chunkType = bytes.readUInt32LE(cursor + 4);
+      const chunkEnd = cursor + 8 + chunkLength;
+      if (chunkEnd > bytes.length) {
+        errors.push('GLB_CHUNK_TRUNCATED');
+        break;
+      }
+      if (chunkType === 0x004e4942) binary = bytes.subarray(cursor + 8, chunkEnd);
+      cursor = chunkEnd;
+    }
+    if (!binary) errors.push('GLB_BINARY_CHUNK_MISSING');
+    const declaredLength = Number(base.json.buffers?.[0]?.byteLength ?? 0);
+    if (binary && declaredLength > binary.length) errors.push('GLB_BINARY_LENGTH_MISMATCH');
+  }
+  return {bytes, base, json: base.json, binary, errors};
+}
+
+function decodeGlbAccessor({json, binary, index}) {
+  const accessor = json?.accessors?.[index];
+  if (!accessor || !Number.isInteger(accessor.count) || accessor.count < 0) throw new Error(`ACCESSOR_INVALID:${index}`);
+  if (accessor.sparse) throw new Error(`ACCESSOR_SPARSE_UNSUPPORTED:${index}`);
+  const component = GLB_COMPONENTS[accessor.componentType];
+  const componentCount = GLB_ACCESSOR_COMPONENTS[accessor.type];
+  const view = json.bufferViews?.[accessor.bufferView];
+  if (!component || !componentCount || !view || view.buffer !== 0) throw new Error(`ACCESSOR_LAYOUT_INVALID:${index}`);
+  const elementBytes = component.bytes * componentCount;
+  const stride = Number(view.byteStride ?? elementBytes);
+  const viewOffset = Number(view.byteOffset ?? 0);
+  const accessorOffset = Number(accessor.byteOffset ?? 0);
+  if (!Number.isInteger(stride) || stride < elementBytes || !Number.isInteger(viewOffset) || !Number.isInteger(accessorOffset)) {
+    throw new Error(`ACCESSOR_STRIDE_INVALID:${index}`);
+  }
+  const start = viewOffset + accessorOffset;
+  const end = accessor.count ? start + (accessor.count - 1) * stride + elementBytes : start;
+  if (start < 0 || end > binary.length) throw new Error(`ACCESSOR_BINARY_RANGE_INVALID:${index}`);
+  const values = [];
+  for (let row = 0; row < accessor.count; row++) {
+    const rowValues = [];
+    for (let componentIndex = 0; componentIndex < componentCount; componentIndex++) {
+      const offset = start + row * stride + componentIndex * component.bytes;
+      const raw = component.read(binary, offset);
+      rowValues.push(accessor.normalized ? component.normalize(raw) : raw);
+    }
+    values.push(rowValues);
+  }
+  return {accessor, values};
+}
+
+function vectorStats(values, size) {
+  const min = Array(size).fill(Infinity);
+  const max = Array(size).fill(-Infinity);
+  let finite = true;
+  for (const row of values) {
+    if (!Array.isArray(row) || row.length !== size || row.some(value => !Number.isFinite(value))) finite = false;
+    for (let index = 0; index < size; index++) {
+      const value = Number(row?.[index]);
+      if (Number.isFinite(value)) {
+        min[index] = Math.min(min[index], value);
+        max[index] = Math.max(max[index], value);
+      }
+    }
+  }
+  return {finite, min: min.map(value => Number.isFinite(value) ? value : null), max: max.map(value => Number.isFinite(value) ? value : null)};
+}
+
+function normalStats(values) {
+  const lengths = values.map(value => Math.hypot(...value));
+  const finite = values.length > 0 && lengths.every(value => Number.isFinite(value));
+  const nonZero = finite && lengths.every(value => value > 0.000001);
+  const unitLike = nonZero && lengths.every(value => value >= 0.5 && value <= 1.5);
+  return {
+    status: finite && nonZero && unitLike ? 'PASS' : 'FAIL',
+    finite,
+    non_zero: nonZero,
+    unit_like: unitLike,
+    min_length: lengths.length ? Math.min(...lengths) : null,
+    max_length: lengths.length ? Math.max(...lengths) : null,
+    method: 'FINITE_NONZERO_UNIT_NORMALS_V1'
+  };
+}
+
+function uvStats(values) {
+  const summary = vectorStats(values, 2);
+  const spans = summary.finite ? summary.min.map((value, index) => summary.max[index] - value) : [0, 0];
+  const covered = spans.some(value => Number.isFinite(value) && value > 0.000001);
+  return {
+    status: summary.finite && covered ? 'PASS' : 'FAIL',
+    finite: summary.finite,
+    min: summary.min,
+    max: summary.max,
+    span: spans,
+    non_constant: covered,
+    out_of_unit_range_count: values.reduce((count, row) => count + (row.some(value => value < 0 || value > 1) ? 1 : 0), 0),
+    method: 'FINITE_NONCONSTANT_TEXCOORD_0_V1'
+  };
+}
+
+function topologyStats(positions, indices) {
+  const coordinateValues = positions.flat();
+  const finitePositions = coordinateValues.length > 0 && coordinateValues.every(value => Number.isFinite(value));
+  const extent = finitePositions
+    ? Math.max(1, ...positions.reduce((ranges, row) => row.map((value, index) => Math.max(ranges[index], Math.abs(value))), [0, 0, 0]))
+    : 1;
+  const weldTolerance = Math.max(0.0000001, extent * 0.000001);
+  const weldMap = new Map();
+  const weldedIds = [];
+  for (const position of positions) {
+    const key = position.map(value => Math.round(value / weldTolerance)).join(':');
+    let welded = weldMap.get(key);
+    if (welded === undefined) {
+      welded = weldMap.size;
+      weldMap.set(key, welded);
+    }
+    weldedIds.push(welded);
+  }
+  const edges = new Map();
+  let invalidIndexCount = 0;
+  let repeatedIndexTriangleCount = 0;
+  let geometricDegenerateTriangleCount = 0;
+  let nonDegenerateTriangleCount = 0;
+  const edge = (a, b) => {
+    const key = a < b ? `${a}:${b}` : `${b}:${a}`;
+    edges.set(key, (edges.get(key) ?? 0) + 1);
+  };
+  const triangleCount = Math.floor(indices.length / 3);
+  for (let offset = 0; offset < triangleCount * 3; offset += 3) {
+    const raw = indices.slice(offset, offset + 3);
+    if (raw.some(value => !Number.isInteger(value) || value < 0 || value >= positions.length)) {
+      invalidIndexCount++;
+      continue;
+    }
+    if (new Set(raw).size !== 3) repeatedIndexTriangleCount++;
+    const triangle = raw.map(index => weldedIds[index]);
+    const [a, b, c] = triangle;
+    const degenerate = new Set(triangle).size < 3;
+    if (!degenerate) {
+      const p0 = positions[raw[0]], p1 = positions[raw[1]], p2 = positions[raw[2]];
+      const ab = [p1[0] - p0[0], p1[1] - p0[1], p1[2] - p0[2]];
+      const ac = [p2[0] - p0[0], p2[1] - p0[1], p2[2] - p0[2]];
+      const cross = [ab[1] * ac[2] - ab[2] * ac[1], ab[2] * ac[0] - ab[0] * ac[2], ab[0] * ac[1] - ab[1] * ac[0]];
+      if (Math.hypot(...cross) <= weldTolerance * weldTolerance) geometricDegenerateTriangleCount++;
+    }
+    if (degenerate) {
+      geometricDegenerateTriangleCount++;
+      continue;
+    }
+    nonDegenerateTriangleCount++;
+    edge(a, b);
+    edge(b, c);
+    edge(c, a);
+  }
+  const boundaryEdgeCount = [...edges.values()].filter(count => count === 1).length;
+  const nonManifoldEdgeCount = [...edges.values()].filter(count => count > 2).length;
+  const degenerateRatio = triangleCount ? geometricDegenerateTriangleCount / triangleCount : 1;
+  const manifold = finitePositions && indices.length > 0 && indices.length % 3 === 0 && invalidIndexCount === 0 &&
+    repeatedIndexTriangleCount === 0 && nonDegenerateTriangleCount >= 4 && degenerateRatio <= 0.5 &&
+    boundaryEdgeCount === 0 && nonManifoldEdgeCount === 0;
+  return {
+    status: manifold ? 'PASS' : 'FAIL',
+    manifold,
+    finite_positions: finitePositions,
+    indexed_triangle_list: indices.length > 0 && indices.length % 3 === 0,
+    vertex_count: positions.length,
+    welded_vertex_count: weldMap.size,
+    triangle_count: triangleCount,
+    non_degenerate_triangle_count: nonDegenerateTriangleCount,
+    degenerate_triangle_count: geometricDegenerateTriangleCount,
+    degenerate_triangle_ratio: degenerateRatio,
+    invalid_index_count: invalidIndexCount,
+    repeated_index_triangle_count: repeatedIndexTriangleCount,
+    edge_count: edges.size,
+    boundary_edge_count: boundaryEdgeCount,
+    non_manifold_edge_count: nonManifoldEdgeCount,
+    weld_tolerance: weldTolerance,
+    qualification: manifold && geometricDegenerateTriangleCount > 0
+      ? 'MANIFOLD_AFTER_POSITION_WELD_WITH_GEOMETRIC_DEGENERATES'
+      : manifold ? 'MANIFOLD_AFTER_POSITION_WELD' : 'NOT_MANIFOLD',
+    method: 'INDEXED_TRIANGLE_POSITION_WELD_EDGE_AUDIT_V1'
+  };
+}
+
+function inspectGlbPrimitive(json, binary, meshIndex, primitiveIndex, primitive) {
+  const errors = [];
+  const mode = primitive.mode ?? 4;
+  if (mode !== 4) errors.push(`PRIMITIVE_MODE_UNSUPPORTED:${mode}`);
+  const attributes = record(primitive.attributes);
+  const requiredAttributes = ['POSITION', 'NORMAL', 'TEXCOORD_0'];
+  for (const attribute of requiredAttributes) if (!Number.isInteger(attributes[attribute])) errors.push(`ATTRIBUTE_MISSING:${attribute}`);
+  if (!Number.isInteger(primitive.indices)) errors.push('INDICES_MISSING');
+  let positions = [], normals = [], uvs = [], indices = [];
+  let positionAccessor = null, normalAccessor = null, uvAccessor = null, indexAccessor = null;
+  try {
+    if (Number.isInteger(attributes.POSITION)) {
+      const decoded = decodeGlbAccessor({json, binary, index: attributes.POSITION});
+      positionAccessor = decoded.accessor;
+      positions = decoded.values;
+    }
+    if (Number.isInteger(attributes.NORMAL)) {
+      const decoded = decodeGlbAccessor({json, binary, index: attributes.NORMAL});
+      normalAccessor = decoded.accessor;
+      normals = decoded.values;
+    }
+    if (Number.isInteger(attributes.TEXCOORD_0)) {
+      const decoded = decodeGlbAccessor({json, binary, index: attributes.TEXCOORD_0});
+      uvAccessor = decoded.accessor;
+      uvs = decoded.values;
+    }
+    if (Number.isInteger(primitive.indices)) {
+      const decoded = decodeGlbAccessor({json, binary, index: primitive.indices});
+      indexAccessor = decoded.accessor;
+      indices = decoded.values.flat();
+    }
+  } catch (error) {
+    errors.push(error.message);
+  }
+  if (positionAccessor?.type !== 'VEC3') errors.push('POSITION_ACCESSOR_TYPE_INVALID');
+  if (normalAccessor?.type !== 'VEC3') errors.push('NORMAL_ACCESSOR_TYPE_INVALID');
+  if (uvAccessor?.type !== 'VEC2') errors.push('TEXCOORD_0_ACCESSOR_TYPE_INVALID');
+  if (indexAccessor && !['SCALAR'].includes(indexAccessor.type)) errors.push('INDEX_ACCESSOR_TYPE_INVALID');
+  if (indexAccessor && ![5121, 5123, 5125].includes(indexAccessor.componentType)) errors.push('INDEX_COMPONENT_TYPE_INVALID');
+  const attributeCountsMatch = positions.length > 0 && positions.length === normals.length && positions.length === uvs.length;
+  if (!attributeCountsMatch) errors.push('ATTRIBUTE_COUNTS_MISMATCH');
+  const normal = normalStats(normals);
+  const uv = uvStats(uvs);
+  const topology = topologyStats(positions, indices);
+  const geometry = {
+    status: errors.length === 0 && positions.length > 0 && topology.finite_positions ? 'PASS' : 'FAIL',
+    vertex_count: positions.length,
+    triangle_count: Math.floor(indices.length / 3),
+    attribute_counts_match: attributeCountsMatch,
+    attributes: Object.keys(attributes).sort(),
+    method: 'GLB_ACCESSOR_STRUCTURE_V1'
+  };
+  return {
+    mesh_index: meshIndex,
+    primitive_index: primitiveIndex,
+    mode,
+    valid: errors.length === 0 && geometry.status === 'PASS' && topology.status === 'PASS' && uv.status === 'PASS' && normal.status === 'PASS',
+    errors,
+    geometry,
+    topology,
+    uv,
+    normals: normal
+  };
+}
+
+function inspectGlbBuffer(buffer, {logicalPath = null, role = null, lod = null} = {}) {
+  const parsed = parseGlbForInspection(buffer);
+  const primitiveReports = [];
+  for (const [meshIndex, mesh] of (parsed.json?.meshes ?? []).entries()) {
+    for (const [primitiveIndex, primitive] of (mesh.primitives ?? []).entries()) {
+      if (parsed.binary) primitiveReports.push(inspectGlbPrimitive(parsed.json, parsed.binary, meshIndex, primitiveIndex, primitive));
+    }
+  }
+  if (!primitiveReports.length) parsed.errors.push('MESH_PRIMITIVE_MISSING');
+  const all = key => primitiveReports.length > 0 && primitiveReports.every(report => report[key]?.status === 'PASS');
+  const geometryStatus = parsed.errors.length === 0 && all('geometry') ? 'PASS' : 'FAIL';
+  const topologyStatus = parsed.errors.length === 0 && all('topology') ? 'PASS' : 'FAIL';
+  const uvStatus = parsed.errors.length === 0 && all('uv') ? 'PASS' : 'FAIL';
+  const normalStatus = parsed.errors.length === 0 && all('normals') ? 'PASS' : 'FAIL';
+  const triangleCount = primitiveReports.reduce((sum, report) => sum + report.geometry.triangle_count, 0);
+  const vertexCount = primitiveReports.reduce((sum, report) => sum + report.geometry.vertex_count, 0);
+  return {
+    path: logicalPath,
+    role,
+    lod,
+    exists: true,
+    byte_length: Buffer.byteLength(buffer),
+    file_root: parsed.base.root ?? rootHash(Buffer.from(buffer).toString('base64')),
+    glb_valid: parsed.base.valid && parsed.errors.length === 0,
+    valid: parsed.base.valid && parsed.errors.length === 0 && primitiveReports.length > 0 &&
+      primitiveReports.every(report => report.valid),
+    errors: parsed.errors,
+    mesh_count: parsed.base.mesh_count ?? 0,
+    primitive_count: primitiveReports.length,
+    vertex_count: vertexCount,
+    triangle_count: triangleCount,
+    geometry: {status: geometryStatus, method: 'GLB_ACCESSOR_STRUCTURE_V1'},
+    topology: {status: topologyStatus, method: 'INDEXED_TRIANGLE_POSITION_WELD_EDGE_AUDIT_V1', primitives: primitiveReports.map(report => report.topology)},
+    uv: {status: uvStatus, method: 'FINITE_NONCONSTANT_TEXCOORD_0_V1', primitives: primitiveReports.map(report => report.uv)},
+    normals: {status: normalStatus, method: 'FINITE_NONZERO_UNIT_NORMALS_V1', primitives: primitiveReports.map(report => report.normals)},
+    primitives: primitiveReports
+  };
+}
+
+function inferLod(value) {
+  const match = String(value ?? '').match(/lod(\d+)/i);
+  return match ? Number(match[1]) : null;
+}
+
+function inspectionLogicalPath(baseDir, absolutePath, suppliedPath) {
+  if (suppliedPath && !path.isAbsolute(String(suppliedPath))) return String(suppliedPath).replaceAll('\\', '/');
+  if (baseDir) return path.relative(baseDir, absolutePath).replaceAll('\\', '/');
+  return path.basename(absolutePath).replaceAll('\\', '/');
+}
+
+export function inspectUniversalArtAssetFiles({baseDir = null, files = [], variant = null} = {}) {
+  const resolvedBase = baseDir ? path.resolve(String(baseDir)) : null;
+  const requested = Array.isArray(files) && files.length
+    ? files
+    : variant
+      ? [0, 1, 2].map(lod => ({path: path.join('candidates', String(variant), 'mesh', `lod${lod}.glb`), role: lod === 0 ? 'mesh-glb' : `mesh-lod${lod}-glb`, lod}))
+      : [];
+  const reports = requested.map((item, index) => {
+    const suppliedPath = String(item?.path ?? item?.name ?? '');
+    const absolutePath = path.resolve(resolvedBase ?? process.cwd(), suppliedPath);
+    const logicalPath = inspectionLogicalPath(resolvedBase, absolutePath, item?.logical_path ?? suppliedPath);
+    const lod = item?.lod ?? inferLod(logicalPath);
+    if (!suppliedPath || !fs.existsSync(absolutePath)) {
+      return {
+        path: logicalPath || `file-${index}`,
+        role: item?.role ?? null,
+        lod,
+        exists: false,
+        glb_valid: false,
+        errors: ['GLB_FILE_MISSING'],
+        geometry: {status: 'FAIL'},
+        topology: {status: 'FAIL'},
+        uv: {status: 'FAIL'},
+        normals: {status: 'FAIL'}
+      };
+    }
+    try {
+      return inspectGlbBuffer(fs.readFileSync(absolutePath), {logicalPath, role: item?.role ?? null, lod});
+    } catch (error) {
+      return {
+        path: logicalPath,
+        role: item?.role ?? null,
+        lod,
+        exists: true,
+        glb_valid: false,
+        errors: [`GLB_FILE_READ_FAILED:${error.message}`],
+        geometry: {status: 'FAIL'},
+        topology: {status: 'FAIL'},
+        uv: {status: 'FAIL'},
+        normals: {status: 'FAIL'}
+      };
+    }
+  });
+  const aggregateStatus = key => reports.length > 0 && reports.every(report => report[key]?.status === 'PASS') ? 'PASS' : reports.length ? 'FAIL' : 'NOT_RUN';
+  const inspection = {
+    format: UNIVERSAL_ART_ASSET_FILE_INSPECTION_FORMAT,
+    version: UNIVERSAL_ART_ASSET_FORGE_VERSION,
+    source: 'local-glb-inspector',
+    method: 'urrf.glb-structural-inspector.v0.1',
+    status: reports.length > 0 && reports.every(report => report.glb_valid && report.valid) ? 'PASS' : reports.length ? 'FAIL' : 'NOT_RUN',
+    files: reports,
+    aggregates: {
+      geometry_status: aggregateStatus('geometry'),
+      topology_status: aggregateStatus('topology'),
+      uv_status: aggregateStatus('uv'),
+      normal_status: aggregateStatus('normals'),
+      triangle_count: reports.reduce((sum, report) => sum + Number(report.triangle_count ?? 0), 0),
+      vertex_count: reports.reduce((sum, report) => sum + Number(report.vertex_count ?? 0), 0),
+      file_count: reports.length,
+      valid_file_count: reports.filter(report => report.glb_valid && report.valid).length
+    },
+    errors: reports.flatMap(report => (report.errors ?? []).map(error => `${report.path}:${error}`)),
+    inspection_root: ''
+  };
+  return seal(inspection, 'inspection_root');
+}
+
+export function verifyUniversalArtAssetFileInspection(inspection) {
+  const errors = [];
+  if (!inspection || typeof inspection !== 'object' || Array.isArray(inspection)) return {valid: false, errors: ['INSPECTION_NOT_OBJECT']};
+  if (inspection.format !== UNIVERSAL_ART_ASSET_FILE_INSPECTION_FORMAT) errors.push('FORMAT_INVALID');
+  if (inspection.version !== UNIVERSAL_ART_ASSET_FORGE_VERSION) errors.push('VERSION_INVALID');
+  if (!['PASS', 'FAIL', 'NOT_RUN'].includes(inspection.status)) errors.push('STATUS_INVALID');
+  if (!Array.isArray(inspection.files)) errors.push('FILES_INVALID');
+  const copy = clone(inspection);
+  const actual = copy.inspection_root;
+  delete copy.inspection_root;
+  if (!actual || actual !== rootHash(copy)) errors.push('INSPECTION_ROOT_INVALID');
+  return {valid: errors.length === 0, errors, inspection_root: inspection.inspection_root ?? null};
+}
+
 function candidateFacts({candidate, workspace, provider, providerEvidence = {}} = {}) {
   const selected = candidate ?? workspace?.candidates?.find(item => item.candidate_id === workspace.recommended_candidate_id) ?? null;
   const artifacts = selected?.artifacts ?? {};
@@ -568,6 +968,7 @@ export function evaluateUniversalArtAssetAcceptance({
   provider = null,
   providerCourt = null,
   providerEvidence = {},
+  fileInspection = null,
   humanReview = null,
   runtimeEvidence = null
 } = {}) {
@@ -576,9 +977,14 @@ export function evaluateUniversalArtAssetAcceptance({
   const required = new Set(genome.acceptance_contract.required_gates);
   const facts = candidateFacts({candidate, workspace, provider, providerEvidence: mergeRecord(providerEvidence, {runtime: runtimeEvidence})});
   const evidence = facts.providerEvidence;
+  const localFileInspection = fileInspection ?? execution.file_inspection ?? null;
+  const fileInspectionVerification = localFileInspection ? verifyUniversalArtAssetFileInspection(localFileInspection) : null;
+  const localInspectionValid = Boolean(fileInspectionVerification?.valid);
+  const localInspectionPass = key => localInspectionValid && localFileInspection?.status === 'PASS' && statusPass(localFileInspection?.aggregates?.[`${key}_status`]);
   const meshEvidence = explicitEvidence(evidence, ['geometry']);
   const topologyEvidence = explicitEvidence(evidence, ['topology']);
   const uvEvidence = explicitEvidence(evidence, ['uv', 'uv_unwrap']);
+  const normalEvidence = explicitEvidence(evidence, ['normals', 'normal']);
   const pbrEvidence = explicitEvidence(evidence, ['material_pbr', 'pbr']);
   const lodEvidence = explicitEvidence(evidence, ['lod_platform', 'lod']);
   const collisionEvidence = explicitEvidence(evidence, ['collision']);
@@ -594,13 +1000,18 @@ export function evaluateUniversalArtAssetAcceptance({
     ? runtimeProjectionEvidence.pass
     : Boolean(facts.workspaceReport?.runtime_validation?.valid === true);
   const pbrPass = (pbrEvidence.present ? pbrEvidence.pass : facts.pbrChannels >= 4) && facts.pbrChannels >= 3;
+  const localGeometryPass = !localFileInspection || localInspectionPass('geometry');
+  const localTopologyPass = !localFileInspection || localInspectionPass('topology');
+  const localUvPass = !localFileInspection || localInspectionPass('uv');
+  const localNormalPass = !localFileInspection || localInspectionPass('normal');
   const gates = [
     makeGate('intent_gate', required.has('intent_gate'), Boolean(genome.ragf_intent?.intent_root), 'INTENT_NOT_ROOTED', 'RAGF intent'),
     makeGate('genome_gate', required.has('genome_gate'), genomeVerification.valid, 'GENOME_INVALID', 'URRF/RAGF genome verification'),
     makeGate('provider_execution_gate', required.has('provider_execution_gate'), executionPass, execution.failure?.code ?? 'PROVIDER_NOT_EXECUTED', execution.mode ?? 'provider lifecycle'),
-    makeGate('geometry_gate', required.has('geometry_gate'), facts.meshValid && (meshEvidence.present ? meshEvidence.pass : true) && courtGate(providerCourt, 'geometry_gate') !== false, 'GEOMETRY_OUTPUT_INVALID_OR_MISSING', meshEvidence.present ? 'provider evidence' : 'candidate metrics'),
-    makeGate('topology_gate', required.has('topology_gate'), (topologyEvidence.present ? topologyEvidence.pass : statusPass(facts.mesh.topology_status)) && courtGate(providerCourt, 'topology_gate') !== false, 'TOPOLOGY_NOT_EXPLICITLY_VERIFIED', topologyEvidence.present ? 'provider evidence' : 'candidate topology status'),
-    makeGate('uv_gate', required.has('uv_gate'), (uvEvidence.present ? uvEvidence.pass : statusPass(facts.mesh.uv_status ?? facts.pbr.uv_status)), 'UV_NOT_EXPLICITLY_VERIFIED', uvEvidence.present ? 'provider evidence' : 'candidate UV status'),
+    makeGate('geometry_gate', required.has('geometry_gate'), facts.meshValid && localGeometryPass && (meshEvidence.present ? meshEvidence.pass : true) && courtGate(providerCourt, 'geometry_gate') !== false, 'GEOMETRY_OUTPUT_INVALID_OR_MISSING', localFileInspection ? 'local GLB inspection' : meshEvidence.present ? 'provider evidence' : 'candidate metrics'),
+    makeGate('topology_gate', required.has('topology_gate'), localTopologyPass && (topologyEvidence.present ? topologyEvidence.pass : localFileInspection ? true : statusPass(facts.mesh.topology_status)) && courtGate(providerCourt, 'topology_gate') !== false, 'TOPOLOGY_NOT_EXPLICITLY_VERIFIED', localFileInspection ? 'local GLB topology inspection' : topologyEvidence.present ? 'provider evidence' : 'candidate topology status'),
+    makeGate('uv_gate', required.has('uv_gate'), localUvPass && (uvEvidence.present ? uvEvidence.pass : localFileInspection ? true : statusPass(facts.mesh.uv_status ?? facts.pbr.uv_status)), 'UV_NOT_EXPLICITLY_VERIFIED', localFileInspection ? 'local GLB UV inspection' : uvEvidence.present ? 'provider evidence' : 'candidate UV status'),
+    makeGate('normal_gate', required.has('normal_gate'), localNormalPass && (normalEvidence.present ? normalEvidence.pass : localFileInspection ? true : statusPass(facts.mesh.normal_status)), 'NORMALS_NOT_EXPLICITLY_VERIFIED', localFileInspection ? 'local GLB normal inspection' : normalEvidence.present ? 'provider evidence' : 'candidate normal status'),
     makeGate('pbr_gate', required.has('pbr_gate'), pbrPass && courtGate(providerCourt, 'material_pbr_gate') !== false, 'PBR_CHANNELS_OR_MATERIAL_BINDING_INCOMPLETE', pbrEvidence.present ? 'provider evidence' : 'candidate PBR metadata'),
     makeGate('rig_gate', required.has('rig_gate'), facts.rigPresent && (explicitEvidence(evidence, ['rig']).present ? explicitEvidence(evidence, ['rig']).pass : !facts.direct), 'RIG_MISSING_OR_NOT_VERIFIED', facts.rigPresent ? 'candidate artifact' : 'provider evidence'),
     makeGate('animation_gate', required.has('animation_gate'), facts.animationPresent && (explicitEvidence(evidence, ['animation']).present ? explicitEvidence(evidence, ['animation']).pass : !facts.direct), 'ANIMATION_MISSING_OR_NOT_VERIFIED', facts.animationPresent ? 'candidate artifact' : 'provider evidence'),
@@ -637,7 +1048,12 @@ export function evaluateUniversalArtAssetAcceptance({
       rig_present: facts.rigPresent,
       animation_present: facts.animationPresent,
       lod_present: facts.lodPresent,
-      collision_present: facts.collisionPresent
+      collision_present: facts.collisionPresent,
+      file_inspection_status: localFileInspection?.status ?? 'NOT_RUN',
+      file_inspection_triangle_count: localFileInspection?.aggregates?.triangle_count ?? null,
+      topology_status: localFileInspection?.aggregates?.topology_status ?? null,
+      uv_status: localFileInspection?.aggregates?.uv_status ?? null,
+      normal_status: localFileInspection?.aggregates?.normal_status ?? null
     },
     authority: {
       provider_can_commit: false,
@@ -650,7 +1066,9 @@ export function evaluateUniversalArtAssetAcceptance({
       genome_verification: genomeVerification,
       provider_court_root: providerCourt?.court_root ?? null,
       workspace_verification: workspaceVerification,
-      provider_evidence_root: evidence.evidence_root ?? rootHash(evidence)
+      provider_evidence_root: evidence.evidence_root ?? rootHash(evidence),
+      file_inspection: localFileInspection,
+      file_inspection_verification: fileInspectionVerification
     },
     acceptance_root: ''
   };
@@ -732,7 +1150,8 @@ function forgeEnvelope({genome, resolution, execution, candidate, acceptance, le
       genome_root: genome.genome_root,
       candidate_root: candidate?.candidate_root ?? null,
       acceptance_root: acceptance.acceptance_root,
-      evidence_ledger_root: ledger.ledger_root
+      evidence_ledger_root: ledger.ledger_root,
+      file_inspection_root: execution.file_inspection?.inspection_root ?? null
     }),
     asset_id: genome.asset_id,
     asset_profile: genome.asset_profile,
@@ -746,17 +1165,20 @@ function forgeEnvelope({genome, resolution, execution, candidate, acceptance, le
       provider_root: execution.provider_root ?? null,
       workspace_root: execution.workspace_root ?? null,
       candidate_root: candidate?.candidate_root ?? null,
+      file_inspection_root: execution.file_inspection?.inspection_root ?? null,
       failure_code: execution.failure?.code ?? null
     },
     candidate_root: candidate?.candidate_root ?? null,
     acceptance_root: acceptance.acceptance_root,
     evidence_ledger_root: ledger.ledger_root,
+    file_inspection_root: execution.file_inspection?.inspection_root ?? null,
     output: {
       directory: outDir,
       genome: 'universal-art-asset-genome.json',
       provider_resolution: 'universal-art-asset-provider-resolution.json',
       acceptance: 'universal-art-asset-acceptance.json',
       evidence_ledger: 'universal-art-asset-evidence-ledger.json',
+      file_inspection: execution.file_inspection ? 'universal-art-asset-file-inspection.json' : null,
       workspace: execution.workspace_root ? 'workspace.json' : null
     },
     status,
@@ -786,6 +1208,7 @@ function persistForge({outDir, genome, resolution, acceptance, evidence, forge, 
     candidate_root: candidate?.candidate_root ?? null,
     workspace_verification: workspaceVerification
   });
+  if (execution.file_inspection) writeJson(outDir, 'universal-art-asset-file-inspection.json', execution.file_inspection);
   if (providerResult) writeJson(outDir, 'universal-art-asset-provider-result.json', providerResult);
 }
 
@@ -801,6 +1224,16 @@ function generateWithReferenceWorkspace({genome, resolution, outDir, options}) {
   const candidate = workspace.candidates.find(item => item.candidate_id === workspace.recommended_candidate_id) ?? null;
   const providerRegistry = new ProviderRegistry([...builtinProviders(), ...providers]);
   const provider = candidate?.provider_roots?.map(root => providerRegistry.list().find(item => item.provider_root === root)).find(Boolean) ?? null;
+  const fileInspection = candidate?.variant
+    ? inspectUniversalArtAssetFiles({
+      baseDir: outDir,
+      files: [0, 1, 2].map(lod => ({
+        path: path.join('candidates', candidate.variant, 'mesh', `lod${lod}.glb`),
+        role: lod === 0 ? 'mesh-glb' : `mesh-lod${lod}-glb`,
+        lod
+      }))
+    })
+    : null;
   const execution = {
     mode: 'RAGF_REFERENCE_WORKSPACE',
     status: workspaceVerification.valid ? 'COMPLETED' : 'FAILED',
@@ -808,14 +1241,15 @@ function generateWithReferenceWorkspace({genome, resolution, outDir, options}) {
     provider_root: provider?.provider_root ?? null,
     workspace_root: workspace.workspace_root,
     workspace_verification: workspaceVerification,
+    file_inspection: fileInspection,
     failure: workspaceVerification.valid ? null : {code: 'RAGF_WORKSPACE_VERIFICATION_FAILED', errors: workspaceVerification.errors}
   };
-  const acceptance = evaluateUniversalArtAssetAcceptance({genome, workspace, candidate, execution, provider});
+  const acceptance = evaluateUniversalArtAssetAcceptance({genome, workspace, candidate, execution, provider, fileInspection});
   const evidence = createLedger({genome, provider, candidate, acceptance});
   const status = acceptance.pass ? 'READY_FOR_HUMAN_REVIEW' : 'BLOCKED';
   const forge = forgeEnvelope({genome, resolution, execution, candidate, acceptance, ledger: evidence.ledger, outDir, status});
   persistForge({outDir, genome, resolution, acceptance, evidence, forge, execution, candidate, workspaceVerification});
-  return {status, forge, genome, resolution, execution, workspace, workspaceVerification, candidate, acceptance, evidenceLedger: evidence.ledger, evidenceVerification: evidence.verification};
+  return {status, forge, genome, resolution, execution, workspace, workspaceVerification, candidate, acceptance, fileInspection, evidenceLedger: evidence.ledger, evidenceVerification: evidence.verification};
 }
 
 function generateWithProvider({genome, resolution, outDir, options, adapterInfo}) {
@@ -845,6 +1279,10 @@ function generateWithProvider({genome, resolution, outDir, options, adapterInfo}
     providerCourt = evaluateAssetProductionCourt({candidate, provider: execution.provider, genome: genome.ragf_genome});
   }
   const materialization = execution.result ? materializeProviderFiles(outDir, execution.result) : null;
+  const glbFiles = materialization?.materialized?.filter(file => /\.glb$/i.test(file.path)) ?? [];
+  const fileInspection = glbFiles.length
+    ? inspectUniversalArtAssetFiles({baseDir: outDir, files: glbFiles.map(file => ({path: file.path, role: file.role, lod: inferLod(file.path)}))})
+    : null;
   const executionEnvelope = {
     mode: 'RAGF_EXTERNAL_PROVIDER',
     status: execution.status === 'COMPLETED' ? 'COMPLETED' : 'FAILED',
@@ -852,7 +1290,8 @@ function generateWithProvider({genome, resolution, outDir, options, adapterInfo}
     provider_root: execution.provider?.manifest_root ?? adapterInfo.manifest?.manifest_root ?? null,
     job: execution.job ?? null,
     failure: execution.failure ?? null,
-    materialization
+    materialization,
+    file_inspection: fileInspection
   };
   const acceptance = evaluateUniversalArtAssetAcceptance({
     genome,
@@ -861,6 +1300,7 @@ function generateWithProvider({genome, resolution, outDir, options, adapterInfo}
     provider: execution.provider ?? adapterInfo.manifest,
     providerCourt,
     providerEvidence: options.providerEvidence ?? {},
+    fileInspection,
     humanReview: options.humanReview ?? null,
     runtimeEvidence: options.runtimeEvidence ?? null
   });
@@ -868,7 +1308,7 @@ function generateWithProvider({genome, resolution, outDir, options, adapterInfo}
   const status = acceptance.pass ? 'READY_FOR_HUMAN_REVIEW' : 'BLOCKED';
   const forge = forgeEnvelope({genome, resolution, execution: executionEnvelope, candidate, acceptance, ledger: evidence.ledger, outDir, status});
   persistForge({outDir, genome, resolution, acceptance, evidence, forge, execution: executionEnvelope, candidate, providerResult: execution.result});
-  return {status, forge, genome, resolution, execution: executionEnvelope, providerExecution: execution, candidate, providerCourt, acceptance, evidenceLedger: evidence.ledger, evidenceVerification: evidence.verification, materialization};
+  return {status, forge, genome, resolution, execution: executionEnvelope, providerExecution: execution, candidate, providerCourt, acceptance, fileInspection, evidenceLedger: evidence.ledger, evidenceVerification: evidence.verification, materialization};
 }
 
 function generateBlocked({genome, resolution, outDir, execution}) {
@@ -876,7 +1316,7 @@ function generateBlocked({genome, resolution, outDir, execution}) {
   const evidence = createLedger({genome, provider: null, acceptance});
   const forge = forgeEnvelope({genome, resolution, execution, candidate: null, acceptance, ledger: evidence.ledger, outDir, status: 'BLOCKED'});
   persistForge({outDir, genome, resolution, acceptance, evidence, forge, execution, candidate: null});
-  return {status: 'BLOCKED', forge, genome, resolution, execution, candidate: null, acceptance, evidenceLedger: evidence.ledger, evidenceVerification: evidence.verification};
+  return {status: 'BLOCKED', forge, genome, resolution, execution, candidate: null, acceptance, fileInspection: null, evidenceLedger: evidence.ledger, evidenceVerification: evidence.verification};
 }
 
 export function generateUniversalArtAsset(input = {}, options = {}) {
@@ -926,7 +1366,7 @@ export function generateUniversalArtAsset(input = {}, options = {}) {
   });
 }
 
-export function verifyUniversalArtAssetForge({forge, genome, acceptance, evidenceLedger} = {}) {
+export function verifyUniversalArtAssetForge({forge, genome, acceptance, evidenceLedger, fileInspection} = {}) {
   const errors = [];
   if (forge?.format !== UNIVERSAL_ART_ASSET_FORGE_FORMAT) errors.push('FORGE_FORMAT_INVALID');
   if (forge?.version !== UNIVERSAL_ART_ASSET_FORGE_VERSION) errors.push('FORGE_VERSION_INVALID');
@@ -948,6 +1388,11 @@ export function verifyUniversalArtAssetForge({forge, genome, acceptance, evidenc
     const result = verifyAssetEvidenceLedger(evidenceLedger);
     if (!result.valid) errors.push(...result.errors.map(error => `EVIDENCE_${error}`));
     if (forge?.evidence_ledger_root !== evidenceLedger.ledger_root) errors.push('FORGE_EVIDENCE_ROOT_MISMATCH');
+  }
+  if (fileInspection) {
+    const result = verifyUniversalArtAssetFileInspection(fileInspection);
+    if (!result.valid) errors.push(...result.errors.map(error => `FILE_INSPECTION_${error}`));
+    if (forge?.file_inspection_root !== fileInspection.inspection_root) errors.push('FORGE_FILE_INSPECTION_ROOT_MISMATCH');
   }
   const copy = clone(forge ?? {});
   const actual = copy.forge_root;
