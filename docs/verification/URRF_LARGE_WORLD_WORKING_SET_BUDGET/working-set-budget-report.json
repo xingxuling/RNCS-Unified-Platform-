@@ -1,0 +1,109 @@
+{
+  "format": "urrf.large-world-working-set-budget-report.v0.1",
+  "version": "0.1.0",
+  "evidence_level": "LOCAL_RUNTIME_AND_CPU_REFERENCE_RENDER",
+  "world_id": "world:urrf-large-world-working-set-budget",
+  "generation": 1,
+  "region_root": "8bd1f01413aa2dd5289e4c4d803eb04594958cfb1901c897d6645f68e9564cd2",
+  "world_root": "8879d888e915ac2e3a128b9c9595097820b895440699a5480affeaed8627b804",
+  "stream_root": "a6093c15b19eb5d3a827fc1c0bdd103d2a122ac40440e3a62a643ad6cede4410",
+  "active_chunk_count": 9,
+  "budget": {
+    "format": "urrf.large-world-working-set-budget.v0.1",
+    "version": "0.1.0",
+    "available": {
+      "GPU_MILLI": 877
+    },
+    "source_budget_root": null
+  },
+  "budget_root": "802d04e217276bb0a3f624a751459546ea9140942e52f2c5a0713c53363275f1",
+  "policy": {
+    "format": "urrf.large-world-quality-allocation-policy.v0.1",
+    "version": "0.1.0",
+    "algorithm": "priority-weighted-greedy-downgrade",
+    "minimum_quality_profile": "PROXY",
+    "minimum_quality_by_chunk": {
+      "chunk:world:urrf-large-world-working-set-budget:0:0": "STANDARD"
+    },
+    "priority_by_chunk": {
+      "chunk:world:urrf-large-world-working-set-budget:0:0": 100
+    }
+  },
+  "fit_selection_root": "fe2236ead86c167e8fd15ffa1e7c3bb6fb18939f4ca3df3f501f50c8291aa661",
+  "fit_status": "DOWNGRADED_TO_FIT",
+  "fit_downgrade_count": 9,
+  "fit_quality_counts": {
+    "PROXY": 0,
+    "MOBILE": 1,
+    "STANDARD": 7,
+    "CINEMATIC": 1
+  },
+  "fit_resource_costs": {
+    "CPU_MILLI": 1154,
+    "GPU_MILLI": 852,
+    "NPU_MILLI": 0,
+    "VRAM_MB": 88,
+    "RAM_MB": 38,
+    "STORAGE_KB": 29,
+    "NETWORK_KB": 29,
+    "ENERGY_MILLI": 230
+  },
+  "fit_resource_remaining": {
+    "CPU_MILLI": null,
+    "GPU_MILLI": 25,
+    "NPU_MILLI": null,
+    "VRAM_MB": null,
+    "RAM_MB": null,
+    "STORAGE_KB": null,
+    "NETWORK_KB": null,
+    "ENERGY_MILLI": null
+  },
+  "minimum_selection_root": "1ccba5133b56c89ee39df6c49dc29a1181d014577d3fee19382e210325c1524c",
+  "minimum_status": "MINIMUM_REALITY_OVER_BUDGET",
+  "minimum_quality_counts": {
+    "PROXY": 9,
+    "MOBILE": 0,
+    "STANDARD": 0,
+    "CINEMATIC": 0
+  },
+  "minimum_resource_costs": {
+    "CPU_MILLI": 324,
+    "GPU_MILLI": 135,
+    "NPU_MILLI": 0,
+    "VRAM_MB": 36,
+    "RAM_MB": 18,
+    "STORAGE_KB": 9,
+    "NETWORK_KB": 9,
+    "ENERGY_MILLI": 45
+  },
+  "minimum_resource_remaining": {
+    "CPU_MILLI": null,
+    "GPU_MILLI": -1,
+    "NPU_MILLI": null,
+    "VRAM_MB": null,
+    "RAM_MB": null,
+    "STORAGE_KB": null,
+    "NETWORK_KB": null,
+    "ENERGY_MILLI": null
+  },
+  "render": {
+    "image_path": "large-world-working-set-budget-fit.png",
+    "image_bytes": 922098,
+    "width": 640,
+    "height": 360,
+    "triangles": 2550,
+    "draw_calls": 23,
+    "frame_root": "04fd46e93308037530cce01c52c1d5e6f7fca1e5c9937ead44be5ca161120c19",
+    "pixel_root": "10452e25c7fec214b250dd2aa8fdb37a60129cb3ea903712242f921305638306"
+  },
+  "authority": {
+    "canonical_owner": "RNCS",
+    "representation_owner": "URRF",
+    "execution_owner": "VSR",
+    "candidate_only": true,
+    "authoritative": false,
+    "canonical_write_authorized": false
+  },
+  "notes": "The bounded allocator lowers a CINEMATIC request to a deterministic mixed-quality working set under an aggregate GPU budget, protects a high-priority center chunk at CINEMATIC and keeps a declared STANDARD minimum. A second run demonstrates MINIMUM_REALITY_OVER_BUDGET when even PROXY cannot fit. The image is CPU-reference evidence, not a GPU/AAA quality grade or canonical-world promotion.",
+  "report_root": "5e58ea83975a6d24122b2de340c13102ba3cb82525c25cf4c43ea6a750fe9b55"
+}
