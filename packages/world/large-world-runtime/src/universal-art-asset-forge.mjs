@@ -31,6 +31,7 @@ export const UNIVERSAL_ART_ASSET_GENOME_FORMAT = 'urrf.universal-art-asset-genom
 export const UNIVERSAL_ART_ASSET_PROVIDER_RESOLUTION_FORMAT = 'urrf.universal-art-asset-provider-resolution.v0.1';
 export const UNIVERSAL_ART_ASSET_ACCEPTANCE_FORMAT = 'urrf.universal-art-asset-acceptance.v0.1';
 export const UNIVERSAL_ART_ASSET_FILE_INSPECTION_FORMAT = 'urrf.universal-art-asset-file-inspection.v0.1';
+export const UNIVERSAL_ART_ASSET_REVIEW_RECEIPT_FORMAT = 'urrf.universal-art-asset-review-receipt.v0.1';
 export const UNIVERSAL_ART_ASSET_FORGE_VERSION = '0.1.0';
 
 export const UNIVERSAL_ART_ASSET_PROFILES = Object.freeze([
@@ -46,6 +47,8 @@ export const UNIVERSAL_ART_ASSET_PROFILES = Object.freeze([
 ]);
 
 export const UNIVERSAL_ART_ASSET_QUALITY_TIERS = Object.freeze(['PREVIEW', 'PRODUCTION', 'AAA']);
+
+const UNIVERSAL_ART_ASSET_REVIEW_KINDS = Object.freeze(['ART_DIRECTION', 'HUMAN_ART']);
 
 const STATIC_GATES = Object.freeze([
   'intent_gate',
@@ -1123,6 +1126,83 @@ export function verifyUniversalArtAssetFileInspection(inspection) {
   return {valid: errors.length === 0, errors, inspection_root: inspection.inspection_root ?? null};
 }
 
+function nonEmptyText(value) {
+  return typeof value === 'string' && value.trim().length > 0;
+}
+
+function isHexRoot(value) {
+  return typeof value === 'string' && /^[a-f0-9]{64}$/.test(value);
+}
+
+/**
+ * Verify an externally supplied art-direction or human-art review receipt.
+ *
+ * Provider evidence is intentionally not accepted here. The receipt must be
+ * rooted, bound to the exact URRF genome/candidate/file inspection, identify a
+ * reviewer and an external verifier, and carry a review-kind-specific
+ * attestation. This verifies the contract and binding; it does not manufacture
+ * a human decision or perform identity/key custody on behalf of the caller.
+ */
+export function verifyUniversalArtAssetReviewReceipt(receipt, {
+  reviewKind = null,
+  genomeRoot = null,
+  candidateRoot = null,
+  fileInspectionRoot
+} = {}) {
+  const errors = [];
+  if (!receipt || typeof receipt !== 'object' || Array.isArray(receipt)) {
+    return {valid: false, errors: ['REVIEW_RECEIPT_NOT_OBJECT'], receipt_root: null};
+  }
+  try {
+    if (receipt.format !== UNIVERSAL_ART_ASSET_REVIEW_RECEIPT_FORMAT) errors.push('FORMAT_INVALID');
+    if (receipt.version !== UNIVERSAL_ART_ASSET_FORGE_VERSION) errors.push('VERSION_INVALID');
+    if (!UNIVERSAL_ART_ASSET_REVIEW_KINDS.includes(receipt.review_kind)) errors.push('REVIEW_KIND_INVALID');
+    if (reviewKind !== null && receipt.review_kind !== reviewKind) errors.push('REVIEW_KIND_MISMATCH');
+    if (receipt.source !== 'external-human-review') errors.push('REVIEW_SOURCE_NOT_EXTERNAL');
+    if (receipt.provider_id !== undefined) errors.push('PROVIDER_FIELD_FORBIDDEN');
+    if (receipt.receipt_status !== 'VERIFIED') errors.push('REVIEW_RECEIPT_NOT_VERIFIED');
+    if (receipt.decision !== 'APPROVED') errors.push('REVIEW_DECISION_NOT_APPROVED');
+    if (!nonEmptyText(receipt.reviewer_id)) errors.push('REVIEWER_ID_MISSING');
+    if (!nonEmptyText(receipt.reviewer_role)) errors.push('REVIEWER_ROLE_MISSING');
+    if (!isHexRoot(receipt.genome_root)) errors.push('REVIEW_GENOME_ROOT_INVALID');
+    if (genomeRoot !== null && receipt.genome_root !== genomeRoot) errors.push('REVIEW_GENOME_ROOT_MISMATCH');
+    if (!isHexRoot(receipt.candidate_root)) errors.push('REVIEW_CANDIDATE_ROOT_INVALID');
+    if (candidateRoot !== null && receipt.candidate_root !== candidateRoot) errors.push('REVIEW_CANDIDATE_ROOT_MISMATCH');
+    if (fileInspectionRoot !== undefined) {
+      const expectedInspectionRoot = fileInspectionRoot ?? null;
+      if (receipt.file_inspection_root !== expectedInspectionRoot) errors.push('REVIEW_FILE_INSPECTION_ROOT_MISMATCH');
+      if (receipt.file_inspection_root !== null && !isHexRoot(receipt.file_inspection_root)) errors.push('REVIEW_FILE_INSPECTION_ROOT_INVALID');
+    } else if (receipt.file_inspection_root !== null && !isHexRoot(receipt.file_inspection_root)) {
+      errors.push('REVIEW_FILE_INSPECTION_ROOT_INVALID');
+    }
+    if (!isHexRoot(receipt.reference_root)) errors.push('REVIEW_REFERENCE_ROOT_INVALID');
+    const comparison = record(receipt.comparison);
+    if (!isHexRoot(comparison.comparison_root)) errors.push('REVIEW_COMPARISON_ROOT_INVALID');
+    if (!Array.isArray(comparison.axes) || comparison.axes.length === 0) {
+      errors.push('REVIEW_COMPARISON_AXES_INVALID');
+    } else {
+      comparison.axes.forEach((axis, index) => {
+        if (!nonEmptyText(axis?.axis)) errors.push(`REVIEW_AXIS_${index}_NAME_MISSING`);
+        if (axis?.status !== 'PASS') errors.push(`REVIEW_AXIS_${index}_NOT_PASS`);
+      });
+    }
+    const verifier = record(receipt.verifier);
+    if (verifier.kind !== 'external-review-verifier') errors.push('REVIEW_VERIFIER_KIND_INVALID');
+    if (verifier.status !== 'PASS') errors.push('REVIEW_VERIFIER_NOT_PASS');
+    if (!nonEmptyText(verifier.verifier_id)) errors.push('REVIEW_VERIFIER_ID_MISSING');
+    if (!nonEmptyText(verifier.method)) errors.push('REVIEW_VERIFIER_METHOD_MISSING');
+    const expectedAttestation = receipt.review_kind === 'ART_DIRECTION' ? 'ART_DIRECTION_REVIEWED' : 'HUMAN_REVIEWED';
+    if (receipt.attestation !== expectedAttestation) errors.push('REVIEW_ATTESTATION_INVALID');
+    const copy = clone(receipt);
+    const actual = copy.receipt_root;
+    delete copy.receipt_root;
+    if (!isHexRoot(actual) || actual !== rootHash(copy)) errors.push('REVIEW_RECEIPT_ROOT_INVALID');
+  } catch (error) {
+    errors.push(`VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, receipt_root: receipt.receipt_root ?? null};
+}
+
 function candidateFacts({candidate, workspace, provider, providerEvidence = {}} = {}) {
   const selected = candidate ?? workspace?.candidates?.find(item => item.candidate_id === workspace.recommended_candidate_id) ?? null;
   const artifacts = selected?.artifacts ?? {};
@@ -1193,6 +1273,7 @@ export function evaluateUniversalArtAssetAcceptance({
   providerCourt = null,
   providerEvidence = {},
   fileInspection = null,
+  artDirectionReview = null,
   humanReview = null,
   runtimeEvidence = null
 } = {}) {
@@ -1214,8 +1295,21 @@ export function evaluateUniversalArtAssetAcceptance({
   const collisionEvidence = explicitEvidence(evidence, ['collision']);
   const provenanceEvidence = explicitEvidence(evidence, ['provenance']);
   const licenseEvidence = explicitEvidence(evidence, ['license']);
-  const artDirectionEvidence = explicitEvidence(evidence, ['art_direction', 'artDirection']);
-  const humanReviewEvidence = explicitEvidence(humanReview ?? evidence, ['human_review', 'humanReview']);
+  const reviewBinding = {
+    genomeRoot: genome.genome_root,
+    candidateRoot: facts.selected?.candidate_root ?? null,
+    fileInspectionRoot: localFileInspection?.inspection_root ?? null
+  };
+  const artDirectionReviewVerification = verifyUniversalArtAssetReviewReceipt(artDirectionReview, {
+    reviewKind: 'ART_DIRECTION',
+    ...reviewBinding
+  });
+  const humanReviewVerification = verifyUniversalArtAssetReviewReceipt(humanReview, {
+    reviewKind: 'HUMAN_ART',
+    ...reviewBinding
+  });
+  const artDirectionReviewPass = Boolean(reviewBinding.candidateRoot) && artDirectionReviewVerification.valid;
+  const humanReviewPass = Boolean(reviewBinding.candidateRoot) && humanReviewVerification.valid;
   const runtimeProjectionEvidence = explicitEvidence(evidence, ['vsr_projection', 'representation']);
   const qualityEvidence = explicitEvidence(evidence, ['quality_tier', 'quality']);
   const workspaceVerification = execution.workspace_verification ?? null;
@@ -1244,10 +1338,10 @@ export function evaluateUniversalArtAssetAcceptance({
     makeGate('collision_gate', required.has('collision_gate'), (collisionEvidence.present ? collisionEvidence.pass : facts.collisionPresent) && courtGate(providerCourt, 'collision_gate') !== false, 'COLLISION_NOT_VERIFIED', collisionEvidence.present ? 'provider evidence' : 'candidate artifact'),
     makeGate('platform_gate', required.has('platform_gate'), Boolean(evidence.platform?.status ? statusPass(evidence.platform) : facts.workspaceReport?.scores?.platform >= 6500), 'TARGET_PLATFORM_NOT_VERIFIED', evidence.platform ? 'provider evidence' : 'workspace report'),
     makeGate('provenance_license_gate', required.has('provenance_license_gate'), (provenanceEvidence.present ? provenanceEvidence.pass : facts.provenanceComplete) && (licenseEvidence.present ? licenseEvidence.pass : (facts.licenseVerified || facts.providerManifestLicense)) && courtGate(providerCourt, 'provenance_gate') !== false && courtGate(providerCourt, 'license_gate') !== false, 'PROVENANCE_OR_LICENSE_AUDIT_INCOMPLETE', provenanceEvidence.present || licenseEvidence.present ? 'provider evidence' : 'candidate/provider metadata'),
-    makeGate('art_direction_gate', required.has('art_direction_gate'), artDirectionEvidence.present && artDirectionEvidence.pass, 'ART_DIRECTION_REVIEW_REQUIRED', 'explicit art-direction evidence'),
+    makeGate('art_direction_gate', required.has('art_direction_gate'), artDirectionReviewPass, 'ART_DIRECTION_REVIEW_REQUIRED', 'external art-direction review receipt'),
     makeGate('runtime_projection_gate', required.has('runtime_projection_gate'), runtimePass && courtGate(providerCourt, 'vsr_projection_gate') !== false, 'VSR_PROJECTION_NOT_EXECUTED_OR_VERIFIED', runtimeProjectionEvidence.present ? 'provider evidence' : 'workspace runtime report'),
     makeGate('quality_tier_gate', required.has('quality_tier_gate'), (qualityEvidence.present ? qualityEvidence.pass : facts.candidateQualityTier === genome.quality_tier) && (genome.quality_tier !== 'AAA' || qualityEvidence.present), 'AAA_QUALITY_NOT_PROVEN', qualityEvidence.present ? 'explicit provider quality evidence' : 'candidate quality tier'),
-    makeGate('human_review_gate', required.has('human_review_gate'), humanReviewEvidence.present && humanReviewEvidence.pass, 'HUMAN_ART_REVIEW_REQUIRED', 'explicit human review receipt')
+    makeGate('human_review_gate', required.has('human_review_gate'), humanReviewPass, 'HUMAN_ART_REVIEW_REQUIRED', 'external human-art review receipt')
   ];
   const failures = gates.filter(gate => !gate.pass).map(gate => gate.gate);
   const pass = failures.length === 0;
@@ -1294,7 +1388,11 @@ export function evaluateUniversalArtAssetAcceptance({
       workspace_verification: workspaceVerification,
       provider_evidence_root: evidence.evidence_root ?? rootHash(evidence),
       file_inspection: localFileInspection,
-      file_inspection_verification: fileInspectionVerification
+      file_inspection_verification: fileInspectionVerification,
+      art_direction_review: artDirectionReview,
+      art_direction_review_verification: artDirectionReviewVerification,
+      human_review: humanReview,
+      human_review_verification: humanReviewVerification
     },
     acceptance_root: ''
   };
@@ -1484,7 +1582,17 @@ function generateWithReferenceWorkspace({genome, resolution, outDir, options}) {
     file_inspection: fileInspection,
     failure: workspaceVerification.valid ? null : {code: 'RAGF_WORKSPACE_VERIFICATION_FAILED', errors: workspaceVerification.errors}
   };
-  const acceptance = evaluateUniversalArtAssetAcceptance({genome, workspace, candidate, execution, provider, fileInspection});
+  const acceptance = evaluateUniversalArtAssetAcceptance({
+    genome,
+    workspace,
+    candidate,
+    execution,
+    provider,
+    fileInspection,
+    artDirectionReview: options.artDirectionReview ?? null,
+    humanReview: options.humanReview ?? null,
+    runtimeEvidence: options.runtimeEvidence ?? null
+  });
   const evidence = createLedger({genome, provider, candidate, acceptance});
   const status = acceptance.pass ? 'READY_FOR_HUMAN_REVIEW' : 'BLOCKED';
   const forge = forgeEnvelope({genome, resolution, execution, candidate, acceptance, ledger: evidence.ledger, outDir, status});
@@ -1545,6 +1653,7 @@ function generateWithProvider({genome, resolution, outDir, options, adapterInfo}
     providerCourt,
     providerEvidence: options.providerEvidence ?? {},
     fileInspection,
+    artDirectionReview: options.artDirectionReview ?? null,
     humanReview: options.humanReview ?? null,
     runtimeEvidence: options.runtimeEvidence ?? null
   });

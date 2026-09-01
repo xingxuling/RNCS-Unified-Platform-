@@ -9,10 +9,11 @@ import {
   generateUniversalArtAsset,
   inspectUniversalArtAssetFiles,
   resolveUniversalArtAssetProvider,
+  verifyUniversalArtAssetReviewReceipt,
   verifyUniversalArtAssetForge,
   verifyUniversalArtAssetGenome
 } from '../src/index.mjs';
-import {createMockAssetProvider, createTrellis2Provider} from '@taowind/reality-asset-genesis-fabric';
+import {createMockAssetProvider, createTrellis2Provider, rootHash, seal} from '@taowind/reality-asset-genesis-fabric';
 
 const characterInput = {
   description: '一名守护古代冰晶遗迹的三维女剑士，穿着带有冰纹的重甲。',
@@ -23,6 +24,38 @@ const characterInput = {
   target_platforms: ['desktop', 'web'],
   constraints: {max_triangles: 2400, pbr_texture_size: 128}
 };
+
+function createReviewReceipt({result, reviewKind}) {
+  const comparison = {
+    comparison_root: rootHash({asset_id: result.genome.asset_id, review_kind: reviewKind, reference: 'test-reference'}),
+    axes: [
+      {axis: 'silhouette', status: 'PASS'},
+      {axis: 'palette', status: 'PASS'}
+    ]
+  };
+  return seal({
+    format: 'urrf.universal-art-asset-review-receipt.v0.1',
+    version: '0.1.0',
+    review_kind: reviewKind,
+    source: 'external-human-review',
+    receipt_status: 'VERIFIED',
+    decision: 'APPROVED',
+    reviewer_id: reviewKind === 'ART_DIRECTION' ? 'human:art-director:test' : 'human:reviewer:test',
+    reviewer_role: reviewKind === 'ART_DIRECTION' ? 'art-director' : 'external-art-reviewer',
+    genome_root: result.genome.genome_root,
+    candidate_root: result.candidate.candidate_root,
+    file_inspection_root: result.fileInspection.inspection_root,
+    reference_root: rootHash({asset_id: result.genome.asset_id, reference: 'test-reference'}),
+    comparison,
+    verifier: {
+      kind: 'external-review-verifier',
+      status: 'PASS',
+      verifier_id: 'review-verifier:test',
+      method: 'external-human-review-receipt-v0.1'
+    },
+    attestation: reviewKind === 'ART_DIRECTION' ? 'ART_DIRECTION_REVIEWED' : 'HUMAN_REVIEWED'
+  }, 'receipt_root');
+}
 
 test('universal art genome reuses RAGF intent/genome and seals a broader profile contract', () => {
   const genome = createUniversalArtAssetGenome(characterInput);
@@ -197,9 +230,76 @@ test('acceptance gate cannot be passed by provider success alone', () => {
   const acceptance = evaluateUniversalArtAssetAcceptance({
     genome,
     execution: {mode: 'RAGF_EXTERNAL_PROVIDER', status: 'COMPLETED'},
-    providerEvidence: {provider_success: true}
+    providerEvidence: {
+      provider_success: true,
+      art_direction: {status: 'PASS'},
+      human_review: {status: 'PASS'}
+    }
   });
   assert.equal(acceptance.status, 'BLOCKED');
   assert.ok(acceptance.failures.includes('geometry_gate'));
+  assert.ok(acceptance.failures.includes('art_direction_gate'));
   assert.ok(acceptance.failures.includes('human_review_gate'));
+});
+
+test('independent review receipts bind exact roots and remain separate from Provider evidence', () => {
+  const outDir = fs.mkdtempSync(path.join(os.tmpdir(), 'urrf-universal-art-review-'));
+  const result = generateUniversalArtAsset(characterInput, {outDir});
+  const artDirectionReview = createReviewReceipt({result, reviewKind: 'ART_DIRECTION'});
+  const humanReview = createReviewReceipt({result, reviewKind: 'HUMAN_ART'});
+  assert.equal(verifyUniversalArtAssetReviewReceipt(artDirectionReview, {
+    reviewKind: 'ART_DIRECTION',
+    genomeRoot: result.genome.genome_root,
+    candidateRoot: result.candidate.candidate_root,
+    fileInspectionRoot: result.fileInspection.inspection_root
+  }).valid, true);
+  assert.equal(verifyUniversalArtAssetReviewReceipt(humanReview, {
+    reviewKind: 'HUMAN_ART',
+    genomeRoot: result.genome.genome_root,
+    candidateRoot: result.candidate.candidate_root,
+    fileInspectionRoot: result.fileInspection.inspection_root
+  }).valid, true);
+
+  const acceptance = evaluateUniversalArtAssetAcceptance({
+    genome: result.genome,
+    workspace: result.workspace,
+    candidate: result.candidate,
+    execution: result.execution,
+    provider: result.execution.provider_id,
+    fileInspection: result.fileInspection,
+    providerEvidence: {
+      art_direction: {status: 'PASS'},
+      human_review: {status: 'PASS'}
+    },
+    artDirectionReview,
+    humanReview
+  });
+  const gates = new Map(acceptance.gates.map(gate => [gate.gate, gate]));
+  assert.equal(gates.get('art_direction_gate').status, 'PASS');
+  assert.equal(gates.get('human_review_gate').status, 'PASS');
+  assert.equal(acceptance.failures.includes('art_direction_gate'), false);
+  assert.equal(acceptance.failures.includes('human_review_gate'), false);
+  assert.equal(acceptance.evidence.art_direction_review_verification.valid, true);
+  assert.equal(acceptance.evidence.human_review_verification.valid, true);
+
+  const tampered = structuredClone(artDirectionReview);
+  tampered.candidate_root = '0'.repeat(64);
+  assert.equal(verifyUniversalArtAssetReviewReceipt(tampered, {
+    reviewKind: 'ART_DIRECTION',
+    genomeRoot: result.genome.genome_root,
+    candidateRoot: result.candidate.candidate_root,
+    fileInspectionRoot: result.fileInspection.inspection_root
+  }).valid, false);
+  const providerDeclaration = {status: 'PASS', receipt_status: 'VERIFIED', decision: 'APPROVED'};
+  const declarationOnly = evaluateUniversalArtAssetAcceptance({
+    genome: result.genome,
+    workspace: result.workspace,
+    candidate: result.candidate,
+    execution: result.execution,
+    provider: result.execution.provider_id,
+    fileInspection: result.fileInspection,
+    providerEvidence: {art_direction: providerDeclaration, human_review: providerDeclaration}
+  });
+  assert.ok(declarationOnly.failures.includes('art_direction_gate'));
+  assert.ok(declarationOnly.failures.includes('human_review_gate'));
 });
