@@ -84,6 +84,8 @@ export const LARGE_WORLD_SPATIAL_VISUAL_PROFILE = 'large-world.visual-prototypes
  * bound; these four profiles are deterministic candidates only.
  */
 export const LARGE_WORLD_SPATIAL_QUALITY_PROFILES = Object.freeze(['PROXY', 'MOBILE', 'STANDARD', 'CINEMATIC']);
+export const LARGE_WORLD_WORKING_SET_BUDGET_FORMAT = 'urrf.large-world-working-set-budget.v0.1';
+export const LARGE_WORLD_QUALITY_ALLOCATION_POLICY_FORMAT = 'urrf.large-world-quality-allocation-policy.v0.1';
 export const LARGE_WORLD_SPATIAL_GLTF_MANIFEST_FORMAT = 'rncs.large-world-spatial-gltf-manifest.v0.1';
 export const LARGE_WORLD_SPATIAL_GLTF_BUNDLE_FORMAT = 'rncs.large-world-spatial-gltf-bundle.v0.1';
 export const LARGE_WORLD_SPATIAL_GLTF_PROVIDER_ID = 'provider:taowind:large-world-gltf-prototype:v0.1';
@@ -155,6 +157,137 @@ const normalizeQualityProfiles = (values, fallback = LARGE_WORLD_SPATIAL_QUALITY
   fail(normalized.length > 0 && normalized.every(value => LARGE_WORLD_SPATIAL_QUALITY_PROFILES.includes(value)), 'LARGE_WORLD_SPATIAL_QUALITY_PROFILE_INVALID');
   return normalized.sort((a, b) => LARGE_WORLD_SPATIAL_QUALITY_PROFILES.indexOf(a) - LARGE_WORLD_SPATIAL_QUALITY_PROFILES.indexOf(b));
 };
+const WORKING_SET_COST_FIELDS = Object.freeze(['CPU_MILLI', 'GPU_MILLI', 'NPU_MILLI', 'VRAM_MB', 'RAM_MB', 'STORAGE_KB', 'NETWORK_KB', 'ENERGY_MILLI']);
+const WORKING_SET_COST_TO_RESOURCE = Object.freeze({
+  CPU_MILLI: 'CPU',
+  GPU_MILLI: 'GPU',
+  NPU_MILLI: 'NPU',
+  VRAM_MB: 'VRAM',
+  RAM_MB: 'RAM',
+  STORAGE_KB: 'STORAGE',
+  NETWORK_KB: 'NETWORK',
+  ENERGY_MILLI: 'ENERGY'
+});
+
+function normalizeWorkingSetResourceBudget(input) {
+  if (input === undefined || input === null) return null;
+  const value = record(input);
+  if (value.budget_root !== undefined) {
+    const verification = verifyRealityResourceBudget(value);
+    fail(verification.valid, `LARGE_WORLD_WORKING_SET_BUDGET_INVALID:${verification.errors.join(',')}`);
+  }
+  const source = record(value.available ?? value);
+  const available = {};
+  for (const field of WORKING_SET_COST_FIELDS) {
+    const resource = WORKING_SET_COST_TO_RESOURCE[field];
+    const raw = source[field] ?? source[resource] ?? source[field.toLowerCase()] ?? source[resource.toLowerCase()];
+    if (raw === undefined || raw === null) continue;
+    const number = Number(raw);
+    fail(Number.isSafeInteger(number) && number >= 0, 'LARGE_WORLD_WORKING_SET_BUDGET_VALUE_INVALID');
+    available[field] = number;
+  }
+  fail(Object.keys(available).length > 0, 'LARGE_WORLD_WORKING_SET_BUDGET_EMPTY');
+  return {available, source_budget_root: value.budget_root === undefined ? null : String(value.budget_root).toLowerCase()};
+}
+
+function workingSetCostVector(slot) {
+  return Object.fromEntries(WORKING_SET_COST_FIELDS.map(field => [field, Number(slot?.resource_costs?.[field] ?? 0)]));
+}
+
+function sumWorkingSetCosts(rows) {
+  return Object.fromEntries(WORKING_SET_COST_FIELDS.map(field => [field, rows.reduce((sum, row) => sum + Number(row?.selected_resource_costs?.[field] ?? 0), 0)]));
+}
+
+function workingSetFits(available, costs) {
+  return Object.entries(available).every(([field, limit]) => Number(costs[field] ?? 0) <= Number(limit));
+}
+
+function workingSetRemaining(available, costs) {
+  return Object.fromEntries(WORKING_SET_COST_FIELDS.map(field => [field, Object.hasOwn(available, field) ? Number(available[field]) - Number(costs[field] ?? 0) : null]));
+}
+
+function normalizeWorkingSetQuality(value, code, fallback = 'PROXY') {
+  const normalized = String(value ?? fallback).trim().toUpperCase();
+  fail(LARGE_WORLD_SPATIAL_QUALITY_PROFILES.includes(normalized), code);
+  return normalized;
+}
+
+function normalizeWorkingSetPriorityMap(input) {
+  const source = record(input);
+  return Object.fromEntries(Object.entries(source).map(([chunkId, priority]) => [String(chunkId), integer(priority, 0, {min: 0, max: 100})]));
+}
+
+function workingSetQualityDowngradeScore(currentCosts, nextCosts, totalCosts, available) {
+  return WORKING_SET_COST_FIELDS.reduce((score, field) => {
+    const reduction = Number(currentCosts[field] ?? 0) - Number(nextCosts[field] ?? 0);
+    if (reduction <= 0) return score;
+    const deficit = Object.hasOwn(available, field) ? Math.max(Number(totalCosts[field] ?? 0) - Number(available[field]), 0) : 0;
+    return score + reduction * (deficit > 0 ? 4 : 1);
+  }, 0);
+}
+
+function allocateWorkingSetQuality({selections, budget, minimumQualityProfile, minimumQualityByChunk, priorityByChunk, selectForQuality}) {
+  let rows = selections.map(clone);
+  const initialCosts = sumWorkingSetCosts(rows);
+  let costs = initialCosts;
+  const initialFits = workingSetFits(budget.available, costs);
+  const downgrades = [];
+  while (!workingSetFits(budget.available, costs)) {
+    const candidates = [];
+    for (const [index, row] of rows.entries()) {
+      const currentQuality = String(row.selected_quality_profile ?? '').toUpperCase();
+      const currentRank = LARGE_WORLD_SPATIAL_QUALITY_PROFILES.indexOf(currentQuality);
+      const minimumQuality = minimumQualityByChunk[row.chunk_id] ?? minimumQualityProfile;
+      const minimumRank = LARGE_WORLD_SPATIAL_QUALITY_PROFILES.indexOf(minimumQuality);
+      if (currentRank <= 0 || currentRank <= minimumRank) continue;
+      const nextQuality = LARGE_WORLD_SPATIAL_QUALITY_PROFILES[currentRank - 1];
+      const next = selectForQuality(row, nextQuality);
+      if (!next?.slot || String(next.slot.quality_profile).toUpperCase() !== nextQuality) continue;
+      const nextCosts = workingSetCostVector(next.slot);
+      const currentCosts = row.selected_resource_costs;
+      candidates.push({
+        index,
+        row,
+        next,
+        nextQuality,
+        nextCosts,
+        score: workingSetQualityDowngradeScore(currentCosts, nextCosts, costs, budget.available),
+        priority: priorityByChunk[row.chunk_id] ?? 0,
+        currentRank
+      });
+    }
+    candidates.sort((a, b) => a.priority - b.priority || b.score - a.score || b.currentRank - a.currentRank || keySort(a.row.chunk_id, b.row.chunk_id));
+    const candidate = candidates[0];
+    if (!candidate) break;
+    const nextRow = {
+      ...candidate.row,
+      selected_slot_id: candidate.next.selected_slot_id,
+      selected_slot_root: candidate.next.selected_slot_root,
+      selected_representation_root: candidate.next.slot?.representation_root ?? null,
+      selected_quality_profile: candidate.next.slot?.quality_profile ?? null,
+      fallback_used: true,
+      reason_codes: strings([...candidate.row.reason_codes, ...candidate.next.reason_codes, 'WORKING_SET_RESOURCE_BUDGET_DOWNGRADE']),
+      selection_root: candidate.next.selection_root,
+      selected_resource_costs: candidate.nextCosts,
+      working_set_downgraded: true
+    };
+    rows[candidate.index] = nextRow;
+    costs = sumWorkingSetCosts(rows);
+    downgrades.push({chunk_id: candidate.row.chunk_id, from: candidate.row.selected_quality_profile, to: candidate.nextQuality});
+  }
+  const fits = workingSetFits(budget.available, costs);
+  return {
+    selections: rows,
+    initial_costs: initialCosts,
+    costs,
+    remaining: workingSetRemaining(budget.available, costs),
+    status: initialFits ? 'WITHIN_BUDGET' : fits ? 'DOWNGRADED_TO_FIT' : 'MINIMUM_REALITY_OVER_BUDGET',
+    downgrades,
+    minimum_quality_profile: minimumQualityProfile,
+    minimum_quality_by_chunk: Object.fromEntries(Object.entries(minimumQualityByChunk).sort(([a], [b]) => keySort(a, b))),
+    priority_by_chunk: Object.fromEntries(Object.entries(priorityByChunk).sort(([a], [b]) => keySort(a, b)))
+  };
+}
 
 function normalizeResourceGovernorPlan(input) {
   if (input === undefined || input === null) return null;
@@ -3026,6 +3159,21 @@ export class LargeWorldRuntime {
     const qualityByChunk = record(value.qualityByChunk ?? value.quality_by_chunk);
     const budgetByChunk = record(value.resourceBudgetByChunk ?? value.resource_budget_by_chunk);
     const globalBudget = value.resourceBudget ?? value.resource_budget;
+    const workingSetBudget = normalizeWorkingSetResourceBudget(
+      value.workingSetResourceBudget
+        ?? value.working_set_resource_budget
+        ?? value.aggregateResourceBudget
+        ?? value.aggregate_resource_budget
+    );
+    const workingSetMinimumQualityProfile = normalizeWorkingSetQuality(
+      value.workingSetMinimumQualityProfile
+        ?? value.working_set_minimum_quality_profile
+        ?? value.minimumQualityProfile
+        ?? value.minimum_quality_profile,
+      'LARGE_WORLD_WORKING_SET_MINIMUM_QUALITY_INVALID'
+    );
+    const workingSetMinimumQualityByChunk = Object.fromEntries(Object.entries(record(value.workingSetMinimumQualityByChunk ?? value.working_set_minimum_quality_by_chunk)).map(([chunkId, profile]) => [String(chunkId), normalizeWorkingSetQuality(profile, 'LARGE_WORLD_WORKING_SET_MINIMUM_QUALITY_INVALID')]));
+    const workingSetPriorityByChunk = normalizeWorkingSetPriorityMap(value.workingSetPriorityByChunk ?? value.working_set_priority_by_chunk);
     const globalDiversity = value.diversity ?? value.diversity_axes ?? value.diversityAxes;
     const causalPhysicalByChunk = record(value.causalPhysicalProfileByChunk ?? value.causal_physical_profile_by_chunk);
     const globalCausalPhysical = value.causalPhysicalProfile ?? value.causal_physical_profile ?? null;
@@ -3036,7 +3184,8 @@ export class LargeWorldRuntime {
         ?? value.load_shedding_plan
         ?? null
     );
-    const selections = this.activeChunkIds.map(chunkIdValue => {
+    const selectionContexts = new Map();
+    let selections = this.activeChunkIds.map(chunkIdValue => {
       const chunk = this.chunks.get(chunkIdValue);
       const portfolio = this.portfolioRuntime.getPortfolio(`portfolio:${chunk.object_id}`)
         ?? this.getRepresentationPortfolio(chunk.chunk_id);
@@ -3052,13 +3201,14 @@ export class LargeWorldRuntime {
       const effectiveResourceBudget = causalPhysicalProfile
         ? subtractCausalPhysicalCosts(resourceBudget, causalPhysicalProfile.resource_costs)
         : resourceBudget;
+      selectionContexts.set(chunk.chunk_id, {effectiveResourceBudget});
       const selection = this.portfolioRuntime.selectSlot({
         portfolio_id: portfolio.portfolio_id,
         ...(requested === null || requested === undefined ? {} : {quality_profile: requested}),
         ...(effectiveResourceBudget === undefined ? {} : {resource_budget: effectiveResourceBudget}),
         ...(globalDiversity === undefined ? {} : {diversity: globalDiversity})
       });
-      return {
+      const row = {
         chunk_id: chunk.chunk_id,
         coordinates: clone(chunk.coordinates),
         portfolio_id: selection.portfolio_id,
@@ -3089,7 +3239,34 @@ export class LargeWorldRuntime {
         authoritative: false,
         canonical_write_authorized: false
       };
+      if (workingSetBudget) {
+        row.working_set_requested_quality_profile = requested === null || requested === undefined ? null : String(requested).toUpperCase();
+        row.working_set_minimum_quality_profile = workingSetMinimumQualityByChunk[chunk.chunk_id] ?? workingSetMinimumQualityProfile;
+        row.selected_resource_costs = workingSetCostVector(selection.slot);
+        row.working_set_downgraded = false;
+      }
+      return row;
     }).sort((a, b) => keySort(a.chunk_id, b.chunk_id));
+    const workingSetAllocation = workingSetBudget
+      ? allocateWorkingSetQuality({
+        selections,
+        budget: workingSetBudget,
+        minimumQualityProfile: workingSetMinimumQualityProfile,
+        minimumQualityByChunk: workingSetMinimumQualityByChunk,
+        priorityByChunk: workingSetPriorityByChunk,
+        selectForQuality: (row, quality) => {
+          const context = selectionContexts.get(row.chunk_id) ?? {};
+          const selectionPortfolio = this.portfolioRuntime.getPortfolio(row.portfolio_id);
+          return this.portfolioRuntime.selectSlot({
+            portfolio_id: selectionPortfolio.portfolio_id,
+            quality_profile: quality,
+            ...(context.effectiveResourceBudget === undefined ? {} : {resource_budget: context.effectiveResourceBudget}),
+            ...(globalDiversity === undefined ? {} : {diversity: globalDiversity})
+          });
+        }
+      })
+      : null;
+    if (workingSetAllocation) selections = workingSetAllocation.selections;
     const base = {
       format: LARGE_WORLD_PORTFOLIO_SELECTION_FORMAT,
       version: LARGE_WORLD_RUNTIME_VERSION,
@@ -3113,6 +3290,35 @@ export class LargeWorldRuntime {
       unbound_governor_chunk_ids: resourceGovernorPlan
         ? selections.filter(selection => !selection.power_decision_bound).map(selection => selection.chunk_id).sort(keySort)
         : [],
+      ...(workingSetAllocation ? {
+        working_set_budget: {
+          format: LARGE_WORLD_WORKING_SET_BUDGET_FORMAT,
+          version: '0.1.0',
+          available: clone(workingSetBudget.available),
+          source_budget_root: workingSetBudget.source_budget_root
+        },
+        working_set_budget_root: rootHash({
+          format: LARGE_WORLD_WORKING_SET_BUDGET_FORMAT,
+          version: '0.1.0',
+          available: clone(workingSetBudget.available),
+          source_budget_root: workingSetBudget.source_budget_root
+        }),
+        working_set_quality_policy: {
+          format: LARGE_WORLD_QUALITY_ALLOCATION_POLICY_FORMAT,
+          version: '0.1.0',
+          algorithm: 'priority-weighted-greedy-downgrade',
+          minimum_quality_profile: workingSetAllocation.minimum_quality_profile,
+          minimum_quality_by_chunk: workingSetAllocation.minimum_quality_by_chunk,
+          priority_by_chunk: workingSetAllocation.priority_by_chunk
+        },
+        working_set_initial_resource_costs: workingSetAllocation.initial_costs,
+        working_set_resource_costs: workingSetAllocation.costs,
+        working_set_resource_remaining: workingSetAllocation.remaining,
+        working_set_budget_status: workingSetAllocation.status,
+        working_set_downgrade_count: workingSetAllocation.downgrades.length,
+        working_set_downgrade_chunk_ids: [...new Set(workingSetAllocation.downgrades.map(item => item.chunk_id))].sort(keySort),
+        working_set_downgrades: workingSetAllocation.downgrades.map(clone)
+      } : {}),
       candidate_only: true,
       authoritative: false,
       canonical_write_authorized: false,
@@ -5056,6 +5262,13 @@ export function verifyPortfolioSelectionEnvelope(selection) {
       if (row?.causal_physical_resource_status !== undefined) check(row.causal_physical_resource_status === null || ['ADMITTED', 'RESOURCE_INSUFFICIENT'].includes(row.causal_physical_resource_status), 'LARGE_WORLD_PORTFOLIO_SELECTION_CAUSAL_PHYSICAL_RESOURCE_STATUS_INVALID');
       if (row?.causal_physical_execution !== undefined) check(row.causal_physical_execution === null || (typeof row.causal_physical_execution === 'object' && !Array.isArray(row.causal_physical_execution)), 'LARGE_WORLD_PORTFOLIO_SELECTION_CAUSAL_PHYSICAL_EXECUTION_INVALID');
       if (row?.causal_physical_resource_costs !== undefined) check(row.causal_physical_resource_costs === null || (typeof row.causal_physical_resource_costs === 'object' && !Array.isArray(row.causal_physical_resource_costs)), 'LARGE_WORLD_PORTFOLIO_SELECTION_CAUSAL_PHYSICAL_COSTS_INVALID');
+      if (row?.selected_resource_costs !== undefined) {
+        check(row.selected_resource_costs && typeof row.selected_resource_costs === 'object' && !Array.isArray(row.selected_resource_costs), 'LARGE_WORLD_PORTFOLIO_SELECTION_SELECTED_COSTS_INVALID');
+        for (const field of WORKING_SET_COST_FIELDS) check(Number.isSafeInteger(row.selected_resource_costs?.[field]) && row.selected_resource_costs[field] >= 0, `LARGE_WORLD_PORTFOLIO_SELECTION_SELECTED_COST_${field}_INVALID`);
+      }
+      if (row?.working_set_requested_quality_profile !== undefined) check(row.working_set_requested_quality_profile === null || LARGE_WORLD_SPATIAL_QUALITY_PROFILES.includes(row.working_set_requested_quality_profile), 'LARGE_WORLD_PORTFOLIO_SELECTION_WORKING_SET_REQUESTED_QUALITY_INVALID');
+      if (row?.working_set_minimum_quality_profile !== undefined) check(LARGE_WORLD_SPATIAL_QUALITY_PROFILES.includes(row.working_set_minimum_quality_profile), 'LARGE_WORLD_PORTFOLIO_SELECTION_WORKING_SET_MINIMUM_QUALITY_INVALID');
+      if (row?.working_set_downgraded !== undefined) check(typeof row.working_set_downgraded === 'boolean', 'LARGE_WORLD_PORTFOLIO_SELECTION_WORKING_SET_DOWNGRADED_INVALID');
       check(hex64(row?.selection_root), 'LARGE_WORLD_PORTFOLIO_SELECTION_ROW_ROOT_INVALID');
       check(row?.candidate_only === true && row?.authoritative === false && row?.canonical_write_authorized === false, 'LARGE_WORLD_PORTFOLIO_SELECTION_ROW_AUTHORITY_INVALID');
     }
@@ -5092,6 +5305,46 @@ export function verifyPortfolioSelectionEnvelope(selection) {
     }
     if (selection.causal_physical_ready_count !== undefined) check(Number.isSafeInteger(selection.causal_physical_ready_count) && selection.causal_physical_ready_count >= 0 && selection.causal_physical_ready_count === (selection.selections ?? []).filter(row => row.causal_physical_execution_status === 'READY').length, 'LARGE_WORLD_PORTFOLIO_SELECTION_CAUSAL_PHYSICAL_READY_COUNT_INVALID');
     if (selection.causal_physical_blocked_count !== undefined) check(Number.isSafeInteger(selection.causal_physical_blocked_count) && selection.causal_physical_blocked_count >= 0 && selection.causal_physical_blocked_count === (selection.selections ?? []).filter(row => row.causal_physical_execution_status === 'BLOCKED_RESOURCE').length, 'LARGE_WORLD_PORTFOLIO_SELECTION_CAUSAL_PHYSICAL_BLOCKED_COUNT_INVALID');
+    if (selection.working_set_budget !== undefined) {
+      const budget = selection.working_set_budget;
+      check(budget && typeof budget === 'object' && !Array.isArray(budget), 'LARGE_WORLD_PORTFOLIO_SELECTION_WORKING_SET_BUDGET_INVALID');
+      check(budget?.format === LARGE_WORLD_WORKING_SET_BUDGET_FORMAT, 'LARGE_WORLD_PORTFOLIO_SELECTION_WORKING_SET_BUDGET_FORMAT_INVALID');
+      check(budget?.version === '0.1.0', 'LARGE_WORLD_PORTFOLIO_SELECTION_WORKING_SET_BUDGET_VERSION_INVALID');
+      check(budget?.available && typeof budget.available === 'object' && !Array.isArray(budget.available), 'LARGE_WORLD_PORTFOLIO_SELECTION_WORKING_SET_BUDGET_AVAILABLE_INVALID');
+      for (const [field, amount] of Object.entries(budget?.available ?? {})) check(WORKING_SET_COST_FIELDS.includes(field) && Number.isSafeInteger(amount) && amount >= 0, 'LARGE_WORLD_PORTFOLIO_SELECTION_WORKING_SET_BUDGET_VALUE_INVALID');
+      check(budget.source_budget_root === null || hex64(budget.source_budget_root), 'LARGE_WORLD_PORTFOLIO_SELECTION_WORKING_SET_SOURCE_ROOT_INVALID');
+      check(hex64(selection.working_set_budget_root) && rootHash(budget) === selection.working_set_budget_root, 'LARGE_WORLD_PORTFOLIO_SELECTION_WORKING_SET_BUDGET_ROOT_MISMATCH');
+      const policy = selection.working_set_quality_policy;
+      check(policy && typeof policy === 'object' && !Array.isArray(policy), 'LARGE_WORLD_PORTFOLIO_SELECTION_WORKING_SET_POLICY_INVALID');
+      check(policy?.format === LARGE_WORLD_QUALITY_ALLOCATION_POLICY_FORMAT && policy?.version === '0.1.0', 'LARGE_WORLD_PORTFOLIO_SELECTION_WORKING_SET_POLICY_FORMAT_INVALID');
+      check(policy?.algorithm === 'priority-weighted-greedy-downgrade', 'LARGE_WORLD_PORTFOLIO_SELECTION_WORKING_SET_POLICY_ALGORITHM_INVALID');
+      check(LARGE_WORLD_SPATIAL_QUALITY_PROFILES.includes(policy?.minimum_quality_profile), 'LARGE_WORLD_PORTFOLIO_SELECTION_WORKING_SET_POLICY_MINIMUM_INVALID');
+      check(policy?.minimum_quality_by_chunk && typeof policy.minimum_quality_by_chunk === 'object' && !Array.isArray(policy.minimum_quality_by_chunk), 'LARGE_WORLD_PORTFOLIO_SELECTION_WORKING_SET_POLICY_MINIMUM_MAP_INVALID');
+      check(policy?.priority_by_chunk && typeof policy.priority_by_chunk === 'object' && !Array.isArray(policy.priority_by_chunk), 'LARGE_WORLD_PORTFOLIO_SELECTION_WORKING_SET_POLICY_PRIORITY_MAP_INVALID');
+      for (const value of Object.values(policy?.minimum_quality_by_chunk ?? {})) check(LARGE_WORLD_SPATIAL_QUALITY_PROFILES.includes(value), 'LARGE_WORLD_PORTFOLIO_SELECTION_WORKING_SET_POLICY_MINIMUM_VALUE_INVALID');
+      for (const value of Object.values(policy?.priority_by_chunk ?? {})) check(Number.isSafeInteger(value) && value >= 0 && value <= 100, 'LARGE_WORLD_PORTFOLIO_SELECTION_WORKING_SET_POLICY_PRIORITY_VALUE_INVALID');
+      for (const field of WORKING_SET_COST_FIELDS) {
+        check(Number.isSafeInteger(selection.working_set_initial_resource_costs?.[field]) && selection.working_set_initial_resource_costs[field] >= 0, `LARGE_WORLD_PORTFOLIO_SELECTION_WORKING_SET_INITIAL_COST_${field}_INVALID`);
+        check(Number.isSafeInteger(selection.working_set_resource_costs?.[field]) && selection.working_set_resource_costs[field] >= 0, `LARGE_WORLD_PORTFOLIO_SELECTION_WORKING_SET_COST_${field}_INVALID`);
+        const remaining = selection.working_set_resource_remaining?.[field];
+        check(remaining === null || Number.isSafeInteger(remaining), `LARGE_WORLD_PORTFOLIO_SELECTION_WORKING_SET_REMAINING_${field}_INVALID`);
+      }
+      const expectedWorkingSetCosts = sumWorkingSetCosts(selection.selections ?? []);
+      for (const field of WORKING_SET_COST_FIELDS) {
+        check(selection.working_set_resource_costs[field] === expectedWorkingSetCosts[field], `LARGE_WORLD_PORTFOLIO_SELECTION_WORKING_SET_COST_${field}_MISMATCH`);
+        const available = selection.working_set_budget.available[field] ?? null;
+        const expectedRemaining = available === null ? null : available - expectedWorkingSetCosts[field];
+        check(selection.working_set_resource_remaining[field] === expectedRemaining, `LARGE_WORLD_PORTFOLIO_SELECTION_WORKING_SET_REMAINING_${field}_MISMATCH`);
+      }
+      check(['WITHIN_BUDGET', 'DOWNGRADED_TO_FIT', 'MINIMUM_REALITY_OVER_BUDGET'].includes(selection.working_set_budget_status), 'LARGE_WORLD_PORTFOLIO_SELECTION_WORKING_SET_STATUS_INVALID');
+      check(Number.isSafeInteger(selection.working_set_downgrade_count) && selection.working_set_downgrade_count >= 0, 'LARGE_WORLD_PORTFOLIO_SELECTION_WORKING_SET_DOWNGRADE_COUNT_INVALID');
+      check(Array.isArray(selection.working_set_downgrade_chunk_ids), 'LARGE_WORLD_PORTFOLIO_SELECTION_WORKING_SET_DOWNGRADE_IDS_INVALID');
+      check(Array.isArray(selection.working_set_downgrades), 'LARGE_WORLD_PORTFOLIO_SELECTION_WORKING_SET_DOWNGRADES_INVALID');
+      check(selection.working_set_downgrade_count === selection.working_set_downgrades.length, 'LARGE_WORLD_PORTFOLIO_SELECTION_WORKING_SET_DOWNGRADE_COUNT_MISMATCH');
+      const downgradeIds = [...new Set(selection.working_set_downgrades.map(item => item?.chunk_id))].sort(keySort);
+      check(JSON.stringify(downgradeIds) === JSON.stringify([...selection.working_set_downgrade_chunk_ids].sort(keySort)), 'LARGE_WORLD_PORTFOLIO_SELECTION_WORKING_SET_DOWNGRADE_IDS_MISMATCH');
+      check((selection.selections ?? []).filter(row => row.working_set_downgraded).every(row => selection.working_set_downgrade_chunk_ids.includes(row.chunk_id)), 'LARGE_WORLD_PORTFOLIO_SELECTION_WORKING_SET_ROW_DOWNGRADE_MISMATCH');
+    }
     check(selection.candidate_only === true && selection.authoritative === false && selection.canonical_write_authorized === false, 'LARGE_WORLD_PORTFOLIO_SELECTION_AUTHORITY_INVALID');
     check(selection.authority?.provider_can_write_authoritative_world_state === false, 'LARGE_WORLD_PORTFOLIO_SELECTION_PROVIDER_AUTHORITY_INVALID');
     check(selection.authority?.rncs_authority_required === true, 'LARGE_WORLD_PORTFOLIO_SELECTION_RNCS_AUTHORITY_REQUIRED');
