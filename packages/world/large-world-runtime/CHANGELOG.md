@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added candidate-only fault-aware minimum-reality recovery: verified RNCS RealityFault, MinimumViableReality, PowerProfile, ResourceBudget, Demand, and LoadSheddingPlan candidates now lower into bounded URRF PROXY selections and a rooted VSR scene through `recoverMinimumReality()`, with stale/cross-node rejection and deterministic local evidence.
 - Added the candidate-only RNCS/URRF CausalPhysicalProfile bridge: demand now derives independent C0–C5 causal and P0–P5 physical detail, lowers to explicit execution behavior and resource costs, consumes the same bounded visual budget, and changes large-world STANDARD/PROXY selection without mutating canonical world truth.
 - Added `large-world-causal-physical-detail.integration.test.mjs`, rooted report/PNG evidence, and spatial-scene schema fields for profile roots and ready/blocked counts. Evidence is deterministic CPU-reference proof of cost/behavior divergence, not real physics, GPU telemetry, or AAA visual quality.
 - Added optional v0.3 Power Plane lowering to `selectActiveRepresentationPortfolios`: verified Resource Governor decisions now bind to active chunks, reduce visual candidates to the proxy minimum-reality slot under pressure, preserve explicit unbound decisions, and remain candidate-only with rooted evidence.

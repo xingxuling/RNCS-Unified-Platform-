@@ -1,0 +1,42 @@
+{
+  "format": "urrf.large-world-reality-fault-recovery-report.v0.1",
+  "evidence_level": "LOCAL_RUNTIME_AND_CONTRACT_TEST",
+  "world_id": "world:urrf-reality-fault-recovery",
+  "node_id": "node:urrf-reality-fault-recovery",
+  "region_root": "2580586de72a986d2ee0f12489a83e52c4726cfbe321369830b32e33639171c7",
+  "world_root": "2afbfc871132492e710c32839af2490360fab1e0d23fd4e0fb3960db566990f3",
+  "canonical_state_root": "29d524306a6b4e45b42cee303ae81d083c7280e00ca9aabea8662bb815912bd8",
+  "recovery_root": "52663c7d2a17d33184b7c7a7b3068b68282e3f3e3c7e8dbb23c3d36d2f6eae6c",
+  "fault_root": "2d77bb3f1a14a5a0d5ba45b80e5a57b555a0fc32e4e1bd173feee308d73717bd",
+  "minimum_reality_root": "e03b7a3ebf05685567861832e92610dccd039870b25f072827d47cfcb4785037",
+  "load_shedding_plan_root": "25e1cb97d2142ba08646e33701eb452968a414d694e3bb1a671bc569534f1330",
+  "selection_root": "64d0f85e1d47ac56a0b3c9e96f5fc52dce099a424de5577a064652d35528ab6e",
+  "scene_root": "276fb1296befd05c1f25e1d996bba18339755bd94e58d8e013fd21a98635d85a",
+  "frame_root": "f54a6a52d02d5a09006fb805adce48a605468e2927f3a115f2fd946c35e35093",
+  "pixel_root": "2726c677e6f94eceb747e9197bcb15ad032f66933f70cea514834579ddb40312",
+  "recovery_status": "RECOVERING",
+  "power_mode": "SURVIVAL",
+  "load_shedding_level": "SURVIVAL",
+  "active_chunk_count": 9,
+  "selected_quality_profiles": {
+    "PROXY": 9
+  },
+  "power_action_counts": {
+    "RECOVER_MINIMUM": 1,
+    "REDUCE_DETAIL": 9
+  },
+  "canonical_world_root_unchanged": true,
+  "canonical_state_root_unchanged": true,
+  "authority": {
+    "canonical_owner": "RNCS",
+    "representation_owner": "URRF",
+    "execution_owner": "VSR",
+    "provider_can_write_authoritative_world_state": false,
+    "canonical_write_authorized": false,
+    "candidate_only": true,
+    "authoritative": false,
+    "commit_status": "NOT_COMMITTED"
+  },
+  "notes": "Candidate-only local recovery: a verified RNCS RealityFault, MinimumViableReality, Resource Governor plan, URRF proxy selection, and VSR CPU-reference frame share rooted evidence. This proves contract/runtime/frame behavior only; it does not prove distributed failover, physical power or thermal telemetry, provider restart, GPU execution, network delivery, production throughput, or AAA visual quality.",
+  "report_root": "653c3f9a51597ed8d92ac14d4bf77f8cde082372958bfaa71291c721af84eadb"
+}
