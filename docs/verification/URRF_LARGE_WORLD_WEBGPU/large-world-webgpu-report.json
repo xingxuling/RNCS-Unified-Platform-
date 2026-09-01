@@ -2,9 +2,9 @@
   "format": "urrf.large-world-webgpu-report.v0.1",
   "world_id": "world:urrf-large-world-webgpu",
   "region_root": "6bd0becfa0843fd4d78a2878a51d1e136bee76f79c03cac63eca354aa3496b51",
-  "selection_root": "66765ead18993e0baf1c1d9da00186034559131bde936d882836204dfae035e3",
-  "scene_root": "bc507660aa81a0d3c8846eb4d47e308c32124c2e8099262888fbb3ff0a87b0a8",
-  "frame_root": "737f64e2bf4a95c1d4cf6857b577c93afdb1085994624a367394e4235e5087b9",
+  "selection_root": "04950ee6b12793148465d5c6a289c8c6f601a887abc829aaeba7f313cd46ce64",
+  "scene_root": "c6407729d0e99557c43103fe76ed3d2f71b64097419bff6c2a80bc86662536fe",
+  "frame_root": "d98323e1541e8c43fa4553ec9415c49ee573c392322f2654e7e7bc66ff5da41b",
   "geometry_root": "161528f97b8c741bf6b8164f3fd084404e20aae609ae2789f49708ef5392f6f6",
   "material_root": "66b47f8a21b751a033aecdff4eb5f23e484f45a8e3c8ab4b4880001677d63a83",
   "environment_root": "101eb6648d6493a9c488cbec69883bfd90b19bae5e4734ac0f1c65fca36a5256",
@@ -57,5 +57,5 @@
     "authoritative": false
   },
   "notes": "The scene is a browser-consumable VSR spatial lowering of an RNCS active working set. The PNG is a deterministic CPU reference; browser WebGPU execution requires a secure-context host with navigator.gpu and is never inferred from this Node run.",
-  "report_root": "74047264872f7fe8b43e63e3cf87bb0faa2dc580056ed635ba0a03cce7a20ba2"
+  "report_root": "f1a360b017c0d7caddd6fc3ca5bd2bc3059334a345eb27df7b6fb79bea5b3845"
 }

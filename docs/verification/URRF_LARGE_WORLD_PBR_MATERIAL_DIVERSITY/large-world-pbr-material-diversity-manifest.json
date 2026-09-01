@@ -2,7 +2,7 @@
   "format": "rncs.large-world-spatial-glb-manifest.v0.1",
   "version": "0.1.0",
   "scene_id": "urrf-large-world-pbr-material-diversity-v01",
-  "scene_root": "b68d473092c38b498d5e73ba83d82f189f8849e60132affa61a22eee4295ccd7",
+  "scene_root": "004365b3f09df15635dba2f8d2071cd5b42a28e532330860e4262e30c80794ff",
   "source_reality_root": "8d7fd2ec2e06deb2858d5e0754baa830cd5597c0bafc4d62c0954f26dcdf08ca",
   "provider_id": "provider:taowind:large-world-glb-ragf:v0.1",
   "encoder_provider_id": "provider:taowind:large-world-glb-ragf:v0.1",
@@ -237,5 +237,5 @@
     "provider_can_write_authoritative_world_state": false,
     "rncs_authority_required": true
   },
-  "manifest_root": "efd7871d312de780dfb8c80597fba7934ad74b0cc085566c3737670241bd9c27"
+  "manifest_root": "5ade8ae0f19b26169c7ff9ed54c68b24995694c85adec599e46b018c3cdeb0ad"
 }

@@ -2,7 +2,7 @@
   "format": "rncs.large-world-spatial-glb-manifest.v0.1",
   "version": "0.1.0",
   "scene_id": "urrf-large-world-texture-residency-v01",
-  "scene_root": "572461472d983a263b8058c40580b8dee64539caee44ccf41102e67c40eadd96",
+  "scene_root": "bbc0638b3de915a8c5e4d3335ae0d58564931e26cd22148f3a47f2e6df8cbd85",
   "source_reality_root": "0cad10fda2024b5c0af19dfaf87eaac0b9b47c8008b4b5b5c280bb5fa2a61bdf",
   "provider_id": "provider:taowind:large-world-glb-ragf:v0.1",
   "encoder_provider_id": "provider:taowind:large-world-glb-ragf:v0.1",
@@ -216,5 +216,5 @@
     "provider_can_write_authoritative_world_state": false,
     "rncs_authority_required": true
   },
-  "manifest_root": "90b3fc135cc42bcc227ade3516391f381c1dee4453ad3bc4f2f4991293019018"
+  "manifest_root": "74143c7774274ecb4893552cd89eba8582a1114ef5f343fed11fe86e36d22bd3"
 }

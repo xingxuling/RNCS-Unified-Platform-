@@ -376,7 +376,7 @@ test('streams active chunks through per-chunk URRF portfolios and renders determ
     `| mixed | ${active.length} | PROXY×8 + STANDARD×1 | [large-world-region-mixed.png](./large-world-region-mixed.png) | \`${mixedFrame.pixelRoot}\` | \`${mixedFrame.framePlan.frameRoot}\` |`,
     `| proxy-fallback | ${active.length} | PROXY×9 (zero-budget fallback) | [large-world-region-proxy-fallback.png](./large-world-region-proxy-fallback.png) | \`${constrainedFrame.pixelRoot}\` | \`${constrainedFrame.framePlan.frameRoot}\` |`,
     '',
-    'Each chunk portfolio contains a STANDARD procedural-grid slot and a PROXY wireframe-grid slot when both URRF references are present. Selection and fallback receipts remain candidate-only; RNCS retains canonical world-state authority.',
+    'Each chunk portfolio contains the bound PROXY/MOBILE/STANDARD/CINEMATIC candidate ladder when both URRF references are present. This sample deliberately selects STANDARD and PROXY to demonstrate mixed-quality and minimum-reality fallback receipts; RNCS retains canonical world-state authority.',
     '',
     'The PNGs are deterministic CPU-reference projections. They are evidence of a runnable multi-region integration, not a production renderer-quality grade.'
   ];

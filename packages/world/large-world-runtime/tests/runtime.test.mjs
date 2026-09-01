@@ -217,7 +217,9 @@ test('lowers a streamed chunk into a URRF portfolio with budgeted minimum-realit
   const portfolio = runtime.getRepresentationPortfolio(chunk.chunk_id);
   assert.equal(verifyRepresentationPortfolio(portfolio).valid, true);
   assert.equal(portfolio.composition_result.composition_status, 'READY');
-  assert.deepEqual(portfolio.slots.map(slot => slot.quality_profile), ['PROXY', 'STANDARD']);
+  assert.deepEqual(portfolio.slots.map(slot => slot.quality_profile), ['CINEMATIC', 'MOBILE', 'PROXY', 'STANDARD']);
+  assert.deepEqual(portfolio.composition.quality_ladder, ['PROXY', 'MOBILE', 'STANDARD', 'CINEMATIC']);
+  assert.deepEqual(portfolio.composition.required_quality_profiles, ['PROXY', 'MOBILE', 'STANDARD', 'CINEMATIC']);
   assert.equal(portfolio.slots.every(slot => slot.candidate_only && !slot.authoritative), true);
   const incomplete = createChunkRepresentationPortfolio(chunk, {
     representations: runtime.getRepresentationObject(chunk.chunk_id).representations.filter(reference => reference.provider_id !== LARGE_WORLD_WIREFRAME_PROVIDER_ID)

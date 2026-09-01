@@ -1,10 +1,10 @@
 {
   "format": "urrf.large-world-pbr-material-diversity-report.v0.1",
   "world_id": "world:urrf-large-world-pbr-material-diversity",
-  "scene_root": "b68d473092c38b498d5e73ba83d82f189f8849e60132affa61a22eee4295ccd7",
-  "selection_root": "685863e54df983b4de6bc42f45c8beee0df4b128f4fccbb68cb0308c502a1faf",
-  "manifest_root": "efd7871d312de780dfb8c80597fba7934ad74b0cc085566c3737670241bd9c27",
-  "bundle_root": "2df0470c07cbf775f493b98b8becfa245604a1431c07e9cf7fcaf4913d362aad",
+  "scene_root": "004365b3f09df15635dba2f8d2071cd5b42a28e532330860e4262e30c80794ff",
+  "selection_root": "ae8267e7026961687d6564d15f855cd78a6e1e5945b1317136cd42634ddf138f",
+  "manifest_root": "5ade8ae0f19b26169c7ff9ed54c68b24995694c85adec599e46b018c3cdeb0ad",
+  "bundle_root": "1d74e1ee05071baf389560e287485db7cd04d5c22fef3114d0c780a82b09d459",
   "asset_count": 60,
   "streamed_asset_count": 60,
   "total_bytes": 1905460,
@@ -77,7 +77,7 @@
   "distinct_texture_roots": 18,
   "distinct_material_roots": 8,
   "imported_triangle_count": 466,
-  "frame_root": "eb09a12a77a8b2c372d4505bf76098c1cc20027498a14d24de32f5a38705e3b4",
+  "frame_root": "b16de7da5ef7fcc307ed0ee79cb824aad1c293ce5260ca7283d075c3319004fc",
   "pixel_root": "7879a7fba41761f0c501f450c1188b17e1440aef59db0634e113e51e6078b871",
   "authority": {
     "canonical_owner": "RNCS",
@@ -88,5 +88,5 @@
     "authoritative": false
   },
   "notes": "Candidate-only local material diversity contact scene. Eight large-world GLB assets are asynchronously decoded into a single VSR scene with four PBR maps and five material bindings per asset. Distinct texture/material roots and CPU reference pixels execute locally; target-device/GPU quality, BasisU supercompression, CDN delivery, and subjective AAA art direction remain unproven.",
-  "report_root": "91f3a15239698a98647168d7a336fd33fab0e784aca7f6dfaa25f836f9006987"
+  "report_root": "8f482712df570225bbfabb283c53ab60b5b6e487d36a948ba0c5875d91397ac6"
 }

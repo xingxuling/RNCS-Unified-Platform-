@@ -1,10 +1,10 @@
 {
   "format": "urrf.large-world-texture-residency-report.v0.1",
   "world_id": "world:urrf-large-world-texture-residency",
-  "scene_root": "572461472d983a263b8058c40580b8dee64539caee44ccf41102e67c40eadd96",
-  "selection_root": "cec91aaebfb09ec20d9b4a3ab35d26aeb3ab3dcd69b9ac720f3dd592bd3aaeee",
-  "manifest_root": "90b3fc135cc42bcc227ade3516391f381c1dee4453ad3bc4f2f4991293019018",
-  "bundle_root": "3d31ddee11e7ac5490a919e1e1538f3bc7609495d86e96a465c5cef6e5dd630f",
+  "scene_root": "bbc0638b3de915a8c5e4d3335ae0d58564931e26cd22148f3a47f2e6df8cbd85",
+  "selection_root": "a44a3c3c68d4b547d13d3d24063cd5b352344561ca66afa3c528a63ca0fa5d39",
+  "manifest_root": "74143c7774274ecb4893552cd89eba8582a1114ef5f343fed11fe86e36d22bd3",
+  "bundle_root": "7d50a921efbb8d081a6bc7bb56ff15c58c39f5187f0956a9f73ac5aeefc3af13",
   "asset_count": 60,
   "total_bytes": 701728,
   "texture_profile": "ragf.ktx2-rgba8-mipped.v0.1",
@@ -59,14 +59,14 @@
   "near_selected_level": 0,
   "far_residency_root": "80906a3ac11adaa3bd7de2be43947c9af2bf837c6ba4c28ce943f95eb12d82f7",
   "far_selected_level": 2,
-  "streaming_root": "dc1d02ddd4e1ab3813d925c6f7a6ac7a57982679d6368d766814a42f925d598a",
-  "streaming_receipt_root": "abc11f6049beef930983c6748df41a86ee9e3d1a73df6f9e2787f5330bf4e85a",
+  "streaming_root": "ed3a3007f773dbbd606c2a2ef46549af899caad84c4d4aae7c9adbeb615a47d5",
+  "streaming_receipt_root": "d2fbefa8dc9f98de2fdb916f51e05f3743a7a544ee8ccfdf82009c9abef717b4",
   "imported_asset_id": "asset:glb:urrf-large-world-texture-residency-v01:mesh:chunk:world:urrf-large-world-texture-residency:-1:-1:standard:lod0",
   "imported_texture_width": 32,
   "imported_texture_height": 32,
   "imported_texture_mip_count": 5,
-  "imported_gltf_receipt_root": "c1f8d1e869255bd8aaea067d82cb4d5f1aa347e454bb459d46e0164506e8f4ed",
-  "imported_frame_root": "53dbaf2b4250dacdb4104e39fbe3dc1156b3c5f18cbac53821f481731aa56a10",
+  "imported_gltf_receipt_root": "c088903db37a00227eb47ca8a5d9ec363e875f327ab209841a174990c4a064a4",
+  "imported_frame_root": "20d3489eb1b6e9748b8e52b92f8f18a0733c48b599e1fa72e36e550be22f32fb",
   "imported_triangle_count": 128,
   "pixel_root": "b7aae4aa113f2b5677e88f491771c11b0daa1b46c0e126f52fb0f6fcc3fc127c",
   "authority": {
@@ -78,5 +78,5 @@
     "authoritative": false
   },
   "notes": "Candidate-only native RGBA8 KTX2 mip container embedded in binary GLB; progressive mip residency metadata, SHA-256 streaming, asynchronous VSR KTX2 decode, frame compile, and CPU reference pixels execute locally. BasisU supercompression, target-device/GPU residency, CDN delivery, and production performance remain unproven.",
-  "report_root": "177fcc77562879dca1e21e2f3ea7ed9dc0d98fdbb89d7f8f53cee61edf4a8267"
+  "report_root": "7f02503ed01a489ace97c793c82a1670220d9a0e90a533a729d657888cd14bf5"
 }

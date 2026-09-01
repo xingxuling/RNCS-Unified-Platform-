@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added a candidate-only four-step large-world visual quality ladder: URRF chunk portfolios now expose `PROXY`, `MOBILE`, `STANDARD`, and `CINEMATIC` slots with explicit integer resource costs and fallback links. Spatial lowering now varies terrain sampling, deterministic prototype complexity, materials, lights, and scene evidence by profile; `REFERENCE` remains unbound. Added deterministic four-profile VSR PNG/report evidence with distinct pixel roots. This is local CPU-reference evidence, not a GPU/AAA visual-quality grade.
 - Added candidate-only fault-aware minimum-reality recovery: verified RNCS RealityFault, MinimumViableReality, PowerProfile, ResourceBudget, Demand, and LoadSheddingPlan candidates now lower into bounded URRF PROXY selections and a rooted VSR scene through `recoverMinimumReality()`, with stale/cross-node rejection and deterministic local evidence.
 - Added the candidate-only RNCS/URRF CausalPhysicalProfile bridge: demand now derives independent C0–C5 causal and P0–P5 physical detail, lowers to explicit execution behavior and resource costs, consumes the same bounded visual budget, and changes large-world STANDARD/PROXY selection without mutating canonical world truth.
 - Added `large-world-causal-physical-detail.integration.test.mjs`, rooted report/PNG evidence, and spatial-scene schema fields for profile roots and ready/blocked counts. Evidence is deterministic CPU-reference proof of cost/behavior divergence, not real physics, GPU telemetry, or AAA visual quality.

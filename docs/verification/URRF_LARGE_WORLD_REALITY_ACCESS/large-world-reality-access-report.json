@@ -30,9 +30,9 @@
     "chunk:world:urrf-reality-access:1:0"
   ],
   "stream_root": "f70982266f955a39de412407f095839a626c36f34c559c874a224071d4253b2b",
-  "selection_root": "91880b545f04d8e97dc21d17ffc4c5c5b673fde3c0177df9853e6b08c6386acc",
-  "scene_root": "608c13f14c67fe8d2e3a4552393c4df9053ae120438a1c6f3e70796039cfb83b",
-  "frame_root": "a94da95db841ede9280677951393585b0940c4812a5b8c71f3657a6329af1c46",
+  "selection_root": "36e17c5347a3f8e3120255478f0ae44e08e91aa9aac7b30ed559ec76c6c63cad",
+  "scene_root": "0ae54d3ef429398349db0cb605fb12ba5954ab292006271a8e8a6d43123c4984",
+  "frame_root": "71eeab8ba0ef89edfbff5bf704767b76e89565f8b7554c68dd95939156d2e5fe",
   "pixel_root": "2e17fdee47fd4fb7ad701ccf6426cf9e4012840e575042561516759fbbbe09e7",
   "authority": {
     "canonical_owner": "RNCS",
@@ -44,5 +44,5 @@
     "canonical_state_mutated": false
   },
   "notes": "Candidate-only v0.3 Reality Access execution: each large-world chunk is query-indexed at its deterministic center, the interest-ranked CognitiveWorkingSet becomes forced chunk requests, and the resulting bounded stream lowers into a VSR scene. Query and stream candidates never mutate canonical world truth; permission/revalidation and real GPU or production-scale claims remain outside this evidence.",
-  "report_root": "78005140134ba19c893fe6b4a84d6362a68d9780e3b44adee3f2f8efb94eb5fe"
+  "report_root": "dd99972a7d81b0ad6ae23188b956b841ef5e5f27b4bc3d73f0531b7ea6839c3c"
 }

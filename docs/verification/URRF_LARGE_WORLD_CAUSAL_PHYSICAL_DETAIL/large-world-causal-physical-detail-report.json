@@ -15,9 +15,9 @@
     "chunk:world:urrf-causal-physical-detail:1:1"
   ],
   "low_detail": {
-    "selection_root": "c1703e67294e5ace7ab44cf957627a2cb3dfb49c81661a92caa17fd3b5802765",
-    "scene_root": "fd115b7a59951aa5e75f88c35ea27604db49af1148db6813584d8c5a221b3ec8",
-    "frame_root": "d4d92c4cbbe4fce4acdac3fcf5c4d054a0a6aa3bf73455ea62b3da5f9b0a3b90",
+    "selection_root": "842565e7427c32413928ffb8c5608d31a43bbfe6dba7dea4bc14eed01148238e",
+    "scene_root": "e652d86f347b621f0c579d8cbdd751230af363d7f201bdf80b46439bad330391",
+    "frame_root": "268781139e48e7bb80a292dd326ca9b658aa33e9ef37eafe2a91014468977183",
     "pixel_root": "e1055561059ff5b7b45bab0766ef6d47682cbf03ed4605811b488187167a33d9",
     "causal_level": "C0",
     "physical_level": "P0",
@@ -33,10 +33,10 @@
     }
   },
   "high_detail": {
-    "selection_root": "0f69587914b662b0bfc0a56e4f916f6eb5255471bbbd0fd952ea3b3abd66121b",
-    "scene_root": "85f034a7f6c4f5fe8a8053b9df7fe40d37620aa954798d095d518ddd3fedd0d9",
-    "frame_root": "eacc339e92a18614ea972e2b793bbc261e4718e0b1c400f188dcd98aa58653c0",
-    "pixel_root": "99dc3ff80c68d3346fbcba4ab5334c6282021191ba73cd12fbf112001cc1c270",
+    "selection_root": "a74c2def542ff37fd29998b9eca0fd54fc429aa4bd7297e7d694303c590094b3",
+    "scene_root": "03e25b4a76129eb62424dd8350f9adf1a504170e695835fe2ad3aebb16fdc8d4",
+    "frame_root": "0e3db5a9e7436034d513d2cc77e4c1f63fa9e57e3d2ade65bd18fc9b5f93f39a",
+    "pixel_root": "7d307a9a5d9358fdd9e7359922a5540c62f8a988f4f933789813fae718ac3055",
     "causal_level": "C5",
     "physical_level": "P5",
     "selected_quality_profiles": [
@@ -60,5 +60,5 @@
     "commit_status": "NOT_COMMITTED"
   },
   "notes": "Candidate-only local causal/physical lowering. Demand selects independent C/P levels; the derived execution policy and resource costs consume the same visual budget so high-risk interaction falls back to minimum-reality proxy. The CPU-reference views demonstrate a deterministic selection/render difference, not production physics, real GPU telemetry, or AAA visual quality.",
-  "report_root": "01a80e2bb7e1e1eac5a67d3afdbe03410a167a82ddd84641167e391050a3c6ab"
+  "report_root": "9b803e8f97d6f1207409dee851d6273736790b6d3bd538c8317605e407c2e6b7"
 }
