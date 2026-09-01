@@ -3,7 +3,7 @@
   "$id": "https://taowind.org/schemas/urrf.universal-art-asset-file-inspection.v0.1.schema.json",
   "title": "URRF Universal Art Asset File Inspection v0.1",
   "type": "object",
-  "required": ["format", "version", "source", "method", "status", "files", "aggregates", "errors", "inspection_root"],
+  "required": ["format", "version", "source", "method", "status", "files", "pbr_pack", "aggregates", "errors", "inspection_root"],
   "properties": {
     "format": {"const": "urrf.universal-art-asset-file-inspection.v0.1"},
     "version": {"const": "0.1.0"},
@@ -14,7 +14,7 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["path", "exists", "glb_valid", "errors", "geometry", "topology", "uv", "normals"],
+        "required": ["path", "exists", "glb_valid", "errors", "geometry", "topology", "uv", "normals", "pbr"],
         "properties": {
           "path": {"type": "string", "minLength": 1},
           "role": {"type": ["string", "null"]},
@@ -26,11 +26,13 @@
           "geometry": {"type": "object", "required": ["status"], "properties": {"status": {"enum": ["PASS", "FAIL"]}}, "additionalProperties": true},
           "topology": {"type": "object", "required": ["status"], "properties": {"status": {"enum": ["PASS", "FAIL"]}}, "additionalProperties": true},
           "uv": {"type": "object", "required": ["status"], "properties": {"status": {"enum": ["PASS", "FAIL"]}}, "additionalProperties": true},
-          "normals": {"type": "object", "required": ["status"], "properties": {"status": {"enum": ["PASS", "FAIL"]}}, "additionalProperties": true}
+          "normals": {"type": "object", "required": ["status"], "properties": {"status": {"enum": ["PASS", "FAIL"]}}, "additionalProperties": true},
+          "pbr": {"type": "object", "required": ["status"], "properties": {"status": {"enum": ["PASS", "FAIL"]}}, "additionalProperties": true}
         },
         "additionalProperties": true
       }
     },
+    "pbr_pack": {"type": ["object", "null"], "additionalProperties": true},
     "aggregates": {
       "type": "object",
       "required": ["geometry_status", "topology_status", "uv_status", "normal_status", "triangle_count", "vertex_count", "file_count", "valid_file_count"],
@@ -39,6 +41,7 @@
         "topology_status": {"enum": ["PASS", "FAIL", "NOT_RUN"]},
         "uv_status": {"enum": ["PASS", "FAIL", "NOT_RUN"]},
         "normal_status": {"enum": ["PASS", "FAIL", "NOT_RUN"]},
+        "pbr_status": {"enum": ["PASS", "FAIL", "NOT_RUN"]},
         "triangle_count": {"type": "integer", "minimum": 0},
         "vertex_count": {"type": "integer", "minimum": 0},
         "file_count": {"type": "integer", "minimum": 0},

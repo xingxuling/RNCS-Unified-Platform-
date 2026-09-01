@@ -1,7 +1,7 @@
 {
   "format": "ragf.asset-evidence-ledger.v0.1",
   "version": "0.1.0",
-  "ledger_id": "asset-evidence-ledger:891f27f478a78cfef89082f8",
+  "ledger_id": "asset-evidence-ledger:59cbe3f2dd263f6b861697a0",
   "authority": {
     "provider_is_candidate_source_only": true,
     "provider_can_write_authoritative_world_state": false,
@@ -76,7 +76,7 @@
     {
       "evidence_id": "production-court",
       "status": "FAIL",
-      "root": "5768ec15adb3d5594004bf2f668bae34d209df7d4443f161e01f8d2e3dae60a9",
+      "root": "0a3853cd0d1299458ab5c0a67b39939fa27d3ba79cd3feff6b742b5862026a95",
       "details": {
         "gates": [
           {
@@ -141,7 +141,7 @@
             "status": "PASS",
             "pass": true,
             "reason": null,
-            "source": "candidate PBR metadata"
+            "source": "local GLB material inspection"
           },
           {
             "gate": "rig_gate",
@@ -250,8 +250,8 @@
     "job_root": null,
     "result_root": null,
     "candidate_root": "bb0b52afb44be19f484bccbcb1833e1da3a46e39cd2c66357334f9f91821eb16",
-    "court_root": "5768ec15adb3d5594004bf2f668bae34d209df7d4443f161e01f8d2e3dae60a9",
+    "court_root": "0a3853cd0d1299458ab5c0a67b39939fa27d3ba79cd3feff6b742b5862026a95",
     "placement_root": null
   },
-  "ledger_root": "614781977ad254c6fb3901ec97fffa5c3a7043ba6055ad37ca1876ed88c5d53f"
+  "ledger_root": "f63411c8666adb50b872315cbb8d85f306a2458a8eb20318eed9dbbf5b68cc61"
 }

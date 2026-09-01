@@ -12,6 +12,7 @@ import {
   externalAssetProviderManifests,
   generateAssetWorkspace,
   inspectGlb,
+  inspectKtx2,
   normalizeIntent,
   rootHash,
   seal,
@@ -619,6 +620,120 @@ function uvStats(values) {
   };
 }
 
+function inspectPbrMaterial(material, json, binary, materialIndex) {
+  const errors = [];
+  const pbr = record(material?.pbrMetallicRoughness);
+  const channels = [
+    ['base-color', pbr.baseColorTexture],
+    ['normal', material?.normalTexture],
+    ['occlusion-roughness-metallic', pbr.metallicRoughnessTexture],
+    ['emissive', material?.emissiveTexture]
+  ];
+  if (!pbr.baseColorTexture) errors.push('PBR_BASE_COLOR_TEXTURE_MISSING');
+  if (!material?.normalTexture) errors.push('PBR_NORMAL_TEXTURE_MISSING');
+  if (!pbr.metallicRoughnessTexture) errors.push('PBR_METALLIC_ROUGHNESS_TEXTURE_MISSING');
+  if (!material?.occlusionTexture) errors.push('PBR_OCCLUSION_TEXTURE_MISSING');
+  if (!material?.emissiveTexture) errors.push('PBR_EMISSIVE_TEXTURE_MISSING');
+  const references = [];
+  for (const [channel, reference] of channels) {
+    if (!reference || !Number.isInteger(reference.index)) {
+      errors.push(`PBR_TEXTURE_REFERENCE_INVALID:${channel}`);
+      continue;
+    }
+    const texture = json.textures?.[reference.index];
+    const sourceIndex = texture?.source;
+    const image = Number.isInteger(sourceIndex) ? json.images?.[sourceIndex] : null;
+    if (!texture || !Number.isInteger(sourceIndex) || !image) {
+      errors.push(`PBR_TEXTURE_SOURCE_INVALID:${channel}`);
+      continue;
+    }
+    if (!Number.isInteger(image.bufferView)) {
+      errors.push(`PBR_IMAGE_NOT_EMBEDDED:${channel}`);
+      continue;
+    }
+    const view = json.bufferViews?.[image.bufferView];
+    const offset = Number(view?.byteOffset ?? 0);
+    const length = Number(view?.byteLength ?? 0);
+    if (!view || view.buffer !== 0 || !Number.isInteger(offset) || !Number.isInteger(length) || length < 1 || offset < 0 || offset + length > binary.length) {
+      errors.push(`PBR_IMAGE_BUFFER_RANGE_INVALID:${channel}`);
+      continue;
+    }
+    references.push({channel, texture_index: reference.index, image_index: sourceIndex, image_mime: image.mimeType ?? null, byte_length: length});
+  }
+  const uniqueTextureCount = new Set(references.map(reference => reference.texture_index)).size;
+  return {
+    status: errors.length === 0 && references.length === channels.length ? 'PASS' : 'FAIL',
+    material_index: materialIndex,
+    material_name: material?.name ?? null,
+    channels: references,
+    channel_count: references.length,
+    unique_texture_count: uniqueTextureCount,
+    errors,
+    method: 'GLB_MATERIAL_TEXTURE_BINDING_V1'
+  };
+}
+
+function inspectPbrMaterialStructure(material, materialIndex) {
+  const errors = [];
+  const pbr = record(material?.pbrMetallicRoughness);
+  const baseColorFactor = Array.isArray(pbr.baseColorFactor) ? pbr.baseColorFactor : [];
+  const emissiveFactor = Array.isArray(material?.emissiveFactor) ? material.emissiveFactor : [];
+  if (baseColorFactor.length !== 4 || baseColorFactor.some(value => !Number.isFinite(value))) errors.push('PBR_BASE_COLOR_FACTOR_INVALID');
+  if (!Number.isFinite(Number(pbr.metallicFactor)) || !Number.isFinite(Number(pbr.roughnessFactor))) errors.push('PBR_METALLIC_ROUGHNESS_FACTOR_INVALID');
+  if (emissiveFactor.length && emissiveFactor.some(value => !Number.isFinite(value))) errors.push('PBR_EMISSIVE_FACTOR_INVALID');
+  return {
+    status: errors.length === 0 && Object.keys(pbr).length > 0 ? 'PASS' : 'FAIL',
+    material_index: materialIndex,
+    material_name: material?.name ?? null,
+    base_color_factor: baseColorFactor,
+    metallic_factor: pbr.metallicFactor ?? null,
+    roughness_factor: pbr.roughnessFactor ?? null,
+    emissive_factor: emissiveFactor,
+    errors,
+    method: 'GLB_PBR_MATERIAL_FACTOR_STRUCTURE_V1'
+  };
+}
+
+function inspectPbr(json, binary, externalPbr = null) {
+  const materials = Array.isArray(json?.materials) ? json.materials : [];
+  const hasEmbeddedReferences = materials.some(material => Boolean(
+    material?.pbrMetallicRoughness?.baseColorTexture ||
+    material?.pbrMetallicRoughness?.metallicRoughnessTexture ||
+    material?.normalTexture ||
+    material?.occlusionTexture ||
+    material?.emissiveTexture
+  ));
+  if (!hasEmbeddedReferences && externalPbr?.status === 'PASS') {
+    const materialReports = materials.map((material, index) => inspectPbrMaterialStructure(material, index));
+    const errors = materialReports.flatMap(report => report.errors);
+    return {
+      status: materialReports.length > 0 && materialReports.every(report => report.status === 'PASS') ? 'PASS' : 'FAIL',
+      binding: 'external-pbr-pack',
+      external_pack_root: externalPbr.pack_root ?? null,
+      material_count: materials.length,
+      texture_count: externalPbr.texture_count ?? externalPbr.files?.length ?? 0,
+      embedded_image_count: (json?.images ?? []).filter(image => Number.isInteger(image.bufferView)).length,
+      channels: clone(externalPbr.channels ?? []),
+      materials: materialReports,
+      errors,
+      method: 'GLB_MATERIAL_WITH_EXTERNAL_PBR_PACK_BINDING_V1'
+    };
+  }
+  const materialReports = materials.map((material, index) => inspectPbrMaterial(material, json, binary, index));
+  const errors = materialReports.flatMap(report => report.errors);
+  return {
+    status: materialReports.length > 0 && materialReports.every(report => report.status === 'PASS') ? 'PASS' : 'FAIL',
+    binding: 'embedded-glb',
+    material_count: materials.length,
+    texture_count: json?.textures?.length ?? 0,
+    embedded_image_count: (json?.images ?? []).filter(image => Number.isInteger(image.bufferView)).length,
+    channels: materialReports.flatMap(report => report.channels),
+    materials: materialReports,
+    errors,
+    method: 'GLB_MATERIAL_TEXTURE_BINDING_V1'
+  };
+}
+
 function topologyStats(positions, indices) {
   const coordinateValues = positions.flat();
   const finitePositions = coordinateValues.length > 0 && coordinateValues.every(value => Number.isFinite(value));
@@ -768,7 +883,7 @@ function inspectGlbPrimitive(json, binary, meshIndex, primitiveIndex, primitive)
   };
 }
 
-function inspectGlbBuffer(buffer, {logicalPath = null, role = null, lod = null} = {}) {
+function inspectGlbBuffer(buffer, {logicalPath = null, role = null, lod = null, externalPbr = null} = {}) {
   const parsed = parseGlbForInspection(buffer);
   const primitiveReports = [];
   for (const [meshIndex, mesh] of (parsed.json?.meshes ?? []).entries()) {
@@ -782,6 +897,9 @@ function inspectGlbBuffer(buffer, {logicalPath = null, role = null, lod = null} 
   const topologyStatus = parsed.errors.length === 0 && all('topology') ? 'PASS' : 'FAIL';
   const uvStatus = parsed.errors.length === 0 && all('uv') ? 'PASS' : 'FAIL';
   const normalStatus = parsed.errors.length === 0 && all('normals') ? 'PASS' : 'FAIL';
+  const pbr = parsed.json && parsed.binary ? inspectPbr(parsed.json, parsed.binary, externalPbr) : {status: 'FAIL', binding: 'unavailable', material_count: 0, texture_count: 0, embedded_image_count: 0, channels: [], materials: [], errors: ['PBR_INPUT_MISSING'], method: 'GLB_MATERIAL_TEXTURE_BINDING_V1'};
+  const pbrStatus = parsed.errors.length === 0 && pbr.status === 'PASS' ? 'PASS' : 'FAIL';
+  const primitiveErrors = primitiveReports.flatMap(report => report.errors);
   const triangleCount = primitiveReports.reduce((sum, report) => sum + report.geometry.triangle_count, 0);
   const vertexCount = primitiveReports.reduce((sum, report) => sum + report.geometry.vertex_count, 0);
   return {
@@ -793,8 +911,8 @@ function inspectGlbBuffer(buffer, {logicalPath = null, role = null, lod = null} 
     file_root: parsed.base.root ?? rootHash(Buffer.from(buffer).toString('base64')),
     glb_valid: parsed.base.valid && parsed.errors.length === 0,
     valid: parsed.base.valid && parsed.errors.length === 0 && primitiveReports.length > 0 &&
-      primitiveReports.every(report => report.valid),
-    errors: parsed.errors,
+      primitiveReports.every(report => report.valid) && pbrStatus === 'PASS',
+    errors: [...parsed.errors, ...primitiveErrors, ...pbr.errors],
     mesh_count: parsed.base.mesh_count ?? 0,
     primitive_count: primitiveReports.length,
     vertex_count: vertexCount,
@@ -803,6 +921,7 @@ function inspectGlbBuffer(buffer, {logicalPath = null, role = null, lod = null} 
     topology: {status: topologyStatus, method: 'INDEXED_TRIANGLE_POSITION_WELD_EDGE_AUDIT_V1', primitives: primitiveReports.map(report => report.topology)},
     uv: {status: uvStatus, method: 'FINITE_NONCONSTANT_TEXCOORD_0_V1', primitives: primitiveReports.map(report => report.uv)},
     normals: {status: normalStatus, method: 'FINITE_NONZERO_UNIT_NORMALS_V1', primitives: primitiveReports.map(report => report.normals)},
+    pbr: {...pbr, status: pbrStatus},
     primitives: primitiveReports
   };
 }
@@ -818,13 +937,114 @@ function inspectionLogicalPath(baseDir, absolutePath, suppliedPath) {
   return path.basename(absolutePath).replaceAll('\\', '/');
 }
 
-export function inspectUniversalArtAssetFiles({baseDir = null, files = [], variant = null} = {}) {
+const PBR_TEXTURE_ROLES = Object.freeze(['base-color', 'normal', 'occlusion-roughness-metallic', 'emissive']);
+
+function inspectTextureBytes(buffer) {
+  const bytes = Buffer.isBuffer(buffer) ? buffer : Buffer.from(buffer ?? []);
+  const pngSignature = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
+  if (bytes.length >= 33 && pngSignature.equals(bytes.subarray(0, 8))) {
+    const chunkLength = bytes.readUInt32BE(8);
+    const chunkType = bytes.subarray(12, 16).toString('ascii');
+    const width = bytes.readUInt32BE(16);
+    const height = bytes.readUInt32BE(20);
+    return {
+      status: chunkLength === 13 && chunkType === 'IHDR' && width > 0 && height > 0 ? 'PASS' : 'FAIL',
+      format: 'image/png',
+      width,
+      height,
+      byte_length: bytes.length,
+      method: 'PNG_HEADER_STRUCTURE_V1'
+    };
+  }
+  const ktx = inspectKtx2(bytes);
+  if (ktx.levels?.length || bytes.length >= 12 && bytes.subarray(0, 12).toString('hex') === 'ab4b5458203230bb0d0a1a0a') {
+    return {status: ktx.valid ? 'PASS' : 'FAIL', format: 'image/ktx2', width: ktx.width ?? null, height: ktx.height ?? null, byte_length: bytes.length, method: 'KTX2_HEADER_STRUCTURE_V1', errors: ktx.errors};
+  }
+  return {status: 'FAIL', format: null, width: null, height: null, byte_length: bytes.length, errors: ['TEXTURE_FORMAT_UNSUPPORTED'], method: 'TEXTURE_HEADER_STRUCTURE_V1'};
+}
+
+function inspectPbrPack({baseDir, files = [], metadata = null} = {}) {
+  const requiredRoles = PBR_TEXTURE_ROLES;
+  const reports = [];
+  const errors = [];
+  const byRole = new Map();
+  for (const item of files) {
+    const suppliedPath = String(item?.path ?? item?.name ?? '');
+    const absolutePath = path.resolve(baseDir ?? process.cwd(), suppliedPath);
+    const logicalPath = inspectionLogicalPath(baseDir, absolutePath, item?.logical_path ?? suppliedPath);
+    const role = String(item?.role ?? '').toLowerCase();
+    if (byRole.has(role)) errors.push(`PBR_DUPLICATE_ROLE:${role}`);
+    if (!requiredRoles.includes(role)) {
+      errors.push(`PBR_ROLE_UNSUPPORTED:${role || 'missing'}`);
+      continue;
+    }
+    byRole.set(role, {item, absolutePath, logicalPath});
+  }
+  const metadataByRole = new Map((metadata?.files ?? []).map(file => [String(file.role ?? '').toLowerCase(), file]));
+  for (const role of requiredRoles) {
+    const entry = byRole.get(role);
+    if (!entry || !fs.existsSync(entry.absolutePath)) {
+      errors.push(`PBR_FILE_MISSING:${role}`);
+      reports.push({path: entry?.logicalPath ?? role, role, exists: false, status: 'FAIL', errors: ['PBR_FILE_MISSING']});
+      continue;
+    }
+    try {
+      const bytes = fs.readFileSync(entry.absolutePath);
+      const texture = inspectTextureBytes(bytes);
+      const actualSha256 = createHash('sha256').update(bytes).digest('hex');
+      const actualRoot = rootHash(bytes.toString('base64'));
+      const expectedSha256 = entry.item?.expected_sha256 ?? null;
+      const metadataFile = metadataByRole.get(role);
+      const fileErrors = [...(texture.errors ?? [])];
+      if (expectedSha256 && expectedSha256 !== actualSha256) fileErrors.push('PBR_FILE_SHA256_MISMATCH');
+      if (metadataFile?.root && metadataFile.root !== actualRoot) fileErrors.push('PBR_FILE_ROOT_MISMATCH');
+      reports.push({
+        path: entry.logicalPath,
+        role,
+        exists: true,
+        status: texture.status === 'PASS' && fileErrors.length === 0 ? 'PASS' : 'FAIL',
+        format: texture.format,
+        width: texture.width,
+        height: texture.height,
+        byte_length: bytes.length,
+        sha256: actualSha256,
+        file_root: actualRoot,
+        errors: fileErrors,
+        method: texture.method
+      });
+      errors.push(...fileErrors.map(error => `${role}:${error}`));
+    } catch (error) {
+      errors.push(`PBR_FILE_READ_FAILED:${role}:${error.message}`);
+      reports.push({path: entry.logicalPath, role, exists: true, status: 'FAIL', errors: [`PBR_FILE_READ_FAILED:${error.message}`]});
+    }
+  }
+  if (metadata) {
+    const copy = clone(metadata);
+    const actualPackRoot = copy.pack_root;
+    delete copy.pack_root;
+    if (!actualPackRoot || actualPackRoot !== rootHash(copy)) errors.push('PBR_PACK_ROOT_INVALID');
+  }
+  return {
+    status: reports.length === requiredRoles.length && reports.every(report => report.status === 'PASS') && errors.length === 0 ? 'PASS' : 'FAIL',
+    source: 'local-pbr-pack-inspector',
+    pack_root: metadata?.pack_root ?? null,
+    material_model: metadata?.material_model ?? null,
+    texture_count: reports.filter(report => report.status === 'PASS').length,
+    channels: reports.filter(report => report.status === 'PASS').map(report => ({role: report.role, path: report.path, file_root: report.file_root})),
+    files: reports,
+    errors,
+    method: 'PBR_PACK_FILE_ROLE_ROOT_AUDIT_V1'
+  };
+}
+
+export function inspectUniversalArtAssetFiles({baseDir = null, files = [], variant = null, pbrPack: pbrPackInput = null} = {}) {
   const resolvedBase = baseDir ? path.resolve(String(baseDir)) : null;
   const requested = Array.isArray(files) && files.length
     ? files
     : variant
       ? [0, 1, 2].map(lod => ({path: path.join('candidates', String(variant), 'mesh', `lod${lod}.glb`), role: lod === 0 ? 'mesh-glb' : `mesh-lod${lod}-glb`, lod}))
       : [];
+  const pbrPack = pbrPackInput ? inspectPbrPack({baseDir: resolvedBase, files: pbrPackInput.files ?? [], metadata: pbrPackInput.metadata ?? null}) : null;
   const reports = requested.map((item, index) => {
     const suppliedPath = String(item?.path ?? item?.name ?? '');
     const absolutePath = path.resolve(resolvedBase ?? process.cwd(), suppliedPath);
@@ -841,11 +1061,12 @@ export function inspectUniversalArtAssetFiles({baseDir = null, files = [], varia
         geometry: {status: 'FAIL'},
         topology: {status: 'FAIL'},
         uv: {status: 'FAIL'},
-        normals: {status: 'FAIL'}
+        normals: {status: 'FAIL'},
+        pbr: {status: 'FAIL'}
       };
     }
     try {
-      return inspectGlbBuffer(fs.readFileSync(absolutePath), {logicalPath, role: item?.role ?? null, lod});
+      return inspectGlbBuffer(fs.readFileSync(absolutePath), {logicalPath, role: item?.role ?? null, lod, externalPbr: pbrPack});
     } catch (error) {
       return {
         path: logicalPath,
@@ -857,7 +1078,8 @@ export function inspectUniversalArtAssetFiles({baseDir = null, files = [], varia
         geometry: {status: 'FAIL'},
         topology: {status: 'FAIL'},
         uv: {status: 'FAIL'},
-        normals: {status: 'FAIL'}
+        normals: {status: 'FAIL'},
+        pbr: {status: 'FAIL'}
       };
     }
   });
@@ -867,13 +1089,15 @@ export function inspectUniversalArtAssetFiles({baseDir = null, files = [], varia
     version: UNIVERSAL_ART_ASSET_FORGE_VERSION,
     source: 'local-glb-inspector',
     method: 'urrf.glb-structural-inspector.v0.1',
-    status: reports.length > 0 && reports.every(report => report.glb_valid && report.valid) ? 'PASS' : reports.length ? 'FAIL' : 'NOT_RUN',
+    status: reports.length > 0 && reports.every(report => report.glb_valid && report.valid) && (!pbrPackInput || pbrPack?.status === 'PASS') ? 'PASS' : reports.length ? 'FAIL' : 'NOT_RUN',
     files: reports,
+    pbr_pack: pbrPack,
     aggregates: {
       geometry_status: aggregateStatus('geometry'),
       topology_status: aggregateStatus('topology'),
       uv_status: aggregateStatus('uv'),
       normal_status: aggregateStatus('normals'),
+      pbr_status: reports.length > 0 && reports.every(report => report.pbr?.status === 'PASS') && (!pbrPackInput || pbrPack?.status === 'PASS') ? 'PASS' : reports.length ? 'FAIL' : 'NOT_RUN',
       triangle_count: reports.reduce((sum, report) => sum + Number(report.triangle_count ?? 0), 0),
       vertex_count: reports.reduce((sum, report) => sum + Number(report.vertex_count ?? 0), 0),
       file_count: reports.length,
@@ -1004,6 +1228,7 @@ export function evaluateUniversalArtAssetAcceptance({
   const localTopologyPass = !localFileInspection || localInspectionPass('topology');
   const localUvPass = !localFileInspection || localInspectionPass('uv');
   const localNormalPass = !localFileInspection || localInspectionPass('normal');
+  const localPbrPass = !localFileInspection || localInspectionPass('pbr');
   const gates = [
     makeGate('intent_gate', required.has('intent_gate'), Boolean(genome.ragf_intent?.intent_root), 'INTENT_NOT_ROOTED', 'RAGF intent'),
     makeGate('genome_gate', required.has('genome_gate'), genomeVerification.valid, 'GENOME_INVALID', 'URRF/RAGF genome verification'),
@@ -1012,7 +1237,7 @@ export function evaluateUniversalArtAssetAcceptance({
     makeGate('topology_gate', required.has('topology_gate'), localTopologyPass && (topologyEvidence.present ? topologyEvidence.pass : localFileInspection ? true : statusPass(facts.mesh.topology_status)) && courtGate(providerCourt, 'topology_gate') !== false, 'TOPOLOGY_NOT_EXPLICITLY_VERIFIED', localFileInspection ? 'local GLB topology inspection' : topologyEvidence.present ? 'provider evidence' : 'candidate topology status'),
     makeGate('uv_gate', required.has('uv_gate'), localUvPass && (uvEvidence.present ? uvEvidence.pass : localFileInspection ? true : statusPass(facts.mesh.uv_status ?? facts.pbr.uv_status)), 'UV_NOT_EXPLICITLY_VERIFIED', localFileInspection ? 'local GLB UV inspection' : uvEvidence.present ? 'provider evidence' : 'candidate UV status'),
     makeGate('normal_gate', required.has('normal_gate'), localNormalPass && (normalEvidence.present ? normalEvidence.pass : localFileInspection ? true : statusPass(facts.mesh.normal_status)), 'NORMALS_NOT_EXPLICITLY_VERIFIED', localFileInspection ? 'local GLB normal inspection' : normalEvidence.present ? 'provider evidence' : 'candidate normal status'),
-    makeGate('pbr_gate', required.has('pbr_gate'), pbrPass && courtGate(providerCourt, 'material_pbr_gate') !== false, 'PBR_CHANNELS_OR_MATERIAL_BINDING_INCOMPLETE', pbrEvidence.present ? 'provider evidence' : 'candidate PBR metadata'),
+    makeGate('pbr_gate', required.has('pbr_gate'), localPbrPass && pbrPass && courtGate(providerCourt, 'material_pbr_gate') !== false, 'PBR_CHANNELS_OR_MATERIAL_BINDING_INCOMPLETE', localFileInspection ? 'local GLB material inspection' : pbrEvidence.present ? 'provider evidence' : 'candidate PBR metadata'),
     makeGate('rig_gate', required.has('rig_gate'), facts.rigPresent && (explicitEvidence(evidence, ['rig']).present ? explicitEvidence(evidence, ['rig']).pass : !facts.direct), 'RIG_MISSING_OR_NOT_VERIFIED', facts.rigPresent ? 'candidate artifact' : 'provider evidence'),
     makeGate('animation_gate', required.has('animation_gate'), facts.animationPresent && (explicitEvidence(evidence, ['animation']).present ? explicitEvidence(evidence, ['animation']).pass : !facts.direct), 'ANIMATION_MISSING_OR_NOT_VERIFIED', facts.animationPresent ? 'candidate artifact' : 'provider evidence'),
     makeGate('lod_gate', required.has('lod_gate'), (lodEvidence.present ? lodEvidence.pass : facts.lodPresent) && courtGate(providerCourt, 'lod_platform_budget_gate') !== false, 'LOD_OR_PLATFORM_BUDGET_NOT_VERIFIED', lodEvidence.present ? 'provider evidence' : 'candidate artifact'),
@@ -1053,7 +1278,8 @@ export function evaluateUniversalArtAssetAcceptance({
       file_inspection_triangle_count: localFileInspection?.aggregates?.triangle_count ?? null,
       topology_status: localFileInspection?.aggregates?.topology_status ?? null,
       uv_status: localFileInspection?.aggregates?.uv_status ?? null,
-      normal_status: localFileInspection?.aggregates?.normal_status ?? null
+      normal_status: localFileInspection?.aggregates?.normal_status ?? null,
+      pbr_file_status: localFileInspection?.aggregates?.pbr_status ?? null
     },
     authority: {
       provider_can_commit: false,
@@ -1224,6 +1450,19 @@ function generateWithReferenceWorkspace({genome, resolution, outDir, options}) {
   const candidate = workspace.candidates.find(item => item.candidate_id === workspace.recommended_candidate_id) ?? null;
   const providerRegistry = new ProviderRegistry([...builtinProviders(), ...providers]);
   const provider = candidate?.provider_roots?.map(root => providerRegistry.list().find(item => item.provider_root === root)).find(Boolean) ?? null;
+  const pbrArtifact = candidate?.artifacts?.['pbr-texture-pack'];
+  const pbrPack = candidate?.variant && pbrArtifact
+    ? {
+      metadata: pbrArtifact.metadata ?? null,
+      files: (pbrArtifact.files ?? [])
+        .filter(file => PBR_TEXTURE_ROLES.includes(String(file.role ?? '').toLowerCase()))
+        .map(file => ({
+          path: path.join('candidates', candidate.variant, file.name),
+          role: file.role,
+          expected_sha256: file.root
+        }))
+    }
+    : null;
   const fileInspection = candidate?.variant
     ? inspectUniversalArtAssetFiles({
       baseDir: outDir,
@@ -1231,7 +1470,8 @@ function generateWithReferenceWorkspace({genome, resolution, outDir, options}) {
         path: path.join('candidates', candidate.variant, 'mesh', `lod${lod}.glb`),
         role: lod === 0 ? 'mesh-glb' : `mesh-lod${lod}-glb`,
         lod
-      }))
+      })),
+      pbrPack
     })
     : null;
   const execution = {
@@ -1280,8 +1520,12 @@ function generateWithProvider({genome, resolution, outDir, options, adapterInfo}
   }
   const materialization = execution.result ? materializeProviderFiles(outDir, execution.result) : null;
   const glbFiles = materialization?.materialized?.filter(file => /\.glb$/i.test(file.path)) ?? [];
+  const pbrFiles = materialization?.materialized?.filter(file => PBR_TEXTURE_ROLES.includes(String(file.role ?? '').toLowerCase())) ?? [];
+  const pbrPack = pbrFiles.length
+    ? {files: pbrFiles.map(file => ({path: file.path, role: file.role, expected_sha256: file.sha256}))}
+    : null;
   const fileInspection = glbFiles.length
-    ? inspectUniversalArtAssetFiles({baseDir: outDir, files: glbFiles.map(file => ({path: file.path, role: file.role, lod: inferLod(file.path)}))})
+    ? inspectUniversalArtAssetFiles({baseDir: outDir, files: glbFiles.map(file => ({path: file.path, role: file.role, lod: inferLod(file.path)})), pbrPack})
     : null;
   const executionEnvelope = {
     mode: 'RAGF_EXTERNAL_PROVIDER',

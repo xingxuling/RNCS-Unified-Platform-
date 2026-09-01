@@ -4,7 +4,7 @@
 
 `CANDIDATE_ONLY` / `AAA_NOT_PROVEN`
 
-The forge now has a runnable Genome → Provider Resolution → Provider Job → Candidate → Production Court → local GLB inspection → AAA Acceptance → Evidence Ledger path. The committed report is deliberately `BLOCKED`: the deterministic RAGF reference provider produced structurally valid candidate files, but it did not supply all evidence required for an AAA production claim.
+The forge now has a runnable Genome → Provider Resolution → Provider Job → Candidate → Production Court → local GLB inspection → AAA Acceptance → Evidence Ledger path. The committed report is deliberately `BLOCKED`: the deterministic RAGF reference provider produced structurally valid candidate files with bound PBR textures, but it did not supply all evidence required for an AAA production claim.
 
 ## RCL Gap
 
@@ -27,7 +27,7 @@ The same rooted forge contract was exercised against:
 - a `vehicle` profile with a contract-only TRELLIS.2 Provider, which fails closed as `PROVIDER_RUNTIME_NOT_EXECUTED`;
 - a `vfx` profile with no matching Provider, which fails closed as `PROFILE_PROVIDER_UNRESOLVED` rather than borrowing a humanoid generator.
 
-The negative cases are part of the contract: a Provider result, a generated GLB, or a local browser/runtime receipt is not by itself AAA acceptance or RNCS authority. A malformed materialized GLB also cannot be rescued by Provider `PASS` declarations.
+The negative cases are part of the contract: a Provider result, a generated GLB, or a local browser/runtime receipt is not by itself AAA acceptance or RNCS authority. A malformed materialized GLB or an unbound PBR material also cannot be rescued by Provider `PASS` declarations.
 
 ## Donor Advantage and Reuse
 
@@ -35,9 +35,10 @@ The negative cases are part of the contract: a Provider result, a generated GLB,
 
 ## Regression Evidence
 
-- `npm test --workspace @taowind/large-world-runtime`: `47/47 PASS`.
-- `npm run test:large-world-universal-art-asset-forge`: package `47/47 PASS`, integration `1/1 PASS`.
+- `npm test --workspace @taowind/large-world-runtime`: `48/48 PASS`.
+- `npm run test:large-world-universal-art-asset-forge`: package `48/48 PASS`, integration `1/1 PASS`.
 - Existing URRF composition tests remain in the same package suite and continue to pass.
+- RAGF full package regression: `212/212 PASS`; the Forge-side PBR audit validates the external four-map pack and GLB material structure without coupling palette changes to mesh roots.
 - Schema validation: `PASS` for the Forge schema and the persisted GLB inspection schema; generated Forge and inspection receipts validate with Draft 2020-12.
 - `git diff --check`: no whitespace errors; only existing Windows LF/CRLF conversion warnings are reported.
 

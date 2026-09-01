@@ -67,6 +67,7 @@ test('built-in RAGF workspace produces real candidate files and local structure 
   assert.ok(result.acceptance.failures.includes('quality_tier_gate'));
   assert.equal(result.execution.file_inspection.status, 'PASS');
   assert.equal(result.execution.file_inspection.aggregates.valid_file_count, 3);
+  assert.equal(result.execution.file_inspection.aggregates.pbr_status, 'PASS');
   assert.equal(verifyUniversalArtAssetForge({
     forge: result.forge,
     genome: result.genome,
@@ -98,13 +99,41 @@ test('invalid local GLB inspection cannot be overridden by provider declarations
       geometry: {status: 'PASS'},
       topology: {status: 'PASS'},
       uv: {status: 'PASS'},
-      normal: {status: 'PASS'}
+      normal: {status: 'PASS'},
+      pbr: {status: 'PASS'}
     },
     fileInspection: inspection
   });
   assert.ok(acceptance.failures.includes('topology_gate'));
   assert.ok(acceptance.failures.includes('uv_gate'));
   assert.ok(acceptance.failures.includes('normal_gate'));
+  assert.ok(acceptance.failures.includes('pbr_gate'));
+});
+
+test('tampered external PBR pack cannot satisfy the local material gate', () => {
+  const outDir = fs.mkdtempSync(path.join(os.tmpdir(), 'urrf-universal-art-pbr-tamper-'));
+  const result = generateUniversalArtAsset(characterInput, {outDir});
+  const variant = result.candidate.variant;
+  const pbrArtifact = result.candidate.artifacts['pbr-texture-pack'];
+  const pbrFiles = pbrArtifact.files
+    .filter(file => ['base-color', 'normal', 'occlusion-roughness-metallic', 'emissive'].includes(file.role))
+    .map(file => ({path: path.join('candidates', variant, file.name), role: file.role, expected_sha256: file.root}));
+  fs.appendFileSync(path.join(outDir, 'candidates', variant, 'pbr', 'base-color.png'), 'tamper');
+  const inspection = inspectUniversalArtAssetFiles({
+    baseDir: outDir,
+    files: [{path: path.join('candidates', variant, 'mesh', 'lod0.glb'), role: 'mesh-glb', lod: 0}],
+    pbrPack: {metadata: pbrArtifact.metadata, files: pbrFiles}
+  });
+  assert.equal(inspection.pbr_pack.status, 'FAIL');
+  assert.equal(inspection.aggregates.pbr_status, 'FAIL');
+  const acceptance = evaluateUniversalArtAssetAcceptance({
+    genome: result.genome,
+    candidate: result.candidate,
+    execution: {...result.execution, file_inspection: inspection},
+    provider: result.execution.provider_id,
+    fileInspection: inspection
+  });
+  assert.ok(acceptance.failures.includes('pbr_gate'));
 });
 
 test('injected provider is normalized through job, candidate, court and evidence ledger', () => {
@@ -120,6 +149,7 @@ test('injected provider is normalized through job, candidate, court and evidence
   assert.equal(result.candidate.candidate_only, true);
   assert.equal(result.evidenceVerification.valid, true);
   assert.equal(result.acceptance.status, 'BLOCKED', 'mock provider evidence is not an AAA art-review receipt');
+  assert.ok(result.acceptance.failures.includes('pbr_gate'));
   assert.equal(result.resolution.selected_provider_id, 'provider:test:asset-mock');
   assert.equal(verifyUniversalArtAssetForge({
     forge: result.forge,

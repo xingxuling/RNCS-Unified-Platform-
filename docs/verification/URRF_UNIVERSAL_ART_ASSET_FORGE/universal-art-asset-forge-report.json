@@ -14,10 +14,10 @@
     "provider_resolution_root": "316d253d671be86fa25327cfe9af334c0f808915dc742ffd60bd3773fbefc9b7",
     "workspace_root": "dc97f010a63fd9ec37bda78695087f82da52170315f7f1f5e04c2c3b5936785f",
     "candidate_root": "bb0b52afb44be19f484bccbcb1833e1da3a46e39cd2c66357334f9f91821eb16",
-    "acceptance_root": "5768ec15adb3d5594004bf2f668bae34d209df7d4443f161e01f8d2e3dae60a9",
-    "evidence_ledger_root": "614781977ad254c6fb3901ec97fffa5c3a7043ba6055ad37ca1876ed88c5d53f",
-    "file_inspection_root": "9384d7b825a7a8457cb6672762184078fec56558001ce588a6fbf16732cd0fcd",
-    "forge_root": "d53182b41cda0347eccdfdafce88cf8e88d4ff47d90e6ebf769eb23f5f5fe746"
+    "acceptance_root": "0a3853cd0d1299458ab5c0a67b39939fa27d3ba79cd3feff6b742b5862026a95",
+    "evidence_ledger_root": "f63411c8666adb50b872315cbb8d85f306a2458a8eb20318eed9dbbf5b68cc61",
+    "file_inspection_root": "b226503a100abf16c01691b6196fec797ff733978632ca29c212b55109cd3283",
+    "forge_root": "bf880c69c577544b5c114adbe5b72a005930c5eb668215c6b25961725098e9ea"
   },
   "profile": "character",
   "target_quality_tier": "AAA",
@@ -33,7 +33,8 @@
     "file_inspection_triangle_count": 1900,
     "topology_status": "PASS",
     "uv_status": "PASS",
-    "normal_status": "PASS"
+    "normal_status": "PASS",
+    "pbr_file_status": "PASS"
   },
   "gates": {
     "intent_gate": {
@@ -141,6 +142,6 @@
     "acceptance_can_commit": false,
     "rncs_authority_required": true
   },
-  "notes": "Candidate-only local RAGF reference execution. The forge independently inspects generated GLB accessors, welded indexed topology, UVs and normals; AAA remains blocked on provenance/license, art-direction, quality-tier and human-review evidence. It is not AAA production art proof or canonical RNCS mutation.",
-  "report_root": "cadb3a047d28ea42d24757a05201211addb577b6a214e18068c61433351502c1"
+  "notes": "Candidate-only local RAGF reference execution. The forge independently inspects generated GLB accessors, welded indexed topology, UVs, normals, material structure and the external four-map PBR pack; AAA remains blocked on provenance/license, art-direction, quality-tier and human-review evidence. It is not AAA production art proof or canonical RNCS mutation.",
+  "report_root": "22970ec227d6419e76627b7184888b000179ae7ca526b1981adeb1c48edba692"
 }

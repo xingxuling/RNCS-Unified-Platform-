@@ -70,7 +70,7 @@
       "status": "PASS",
       "pass": true,
       "reason": null,
-      "source": "candidate PBR metadata"
+      "source": "local GLB material inspection"
     },
     {
       "gate": "rig_gate",
@@ -194,7 +194,8 @@
     "file_inspection_triangle_count": 1900,
     "topology_status": "PASS",
     "uv_status": "PASS",
-    "normal_status": "PASS"
+    "normal_status": "PASS",
+    "pbr_file_status": "PASS"
   },
   "authority": {
     "provider_can_commit": false,
@@ -310,6 +311,61 @@
                 "method": "FINITE_NONZERO_UNIT_NORMALS_V1"
               }
             ]
+          },
+          "pbr": {
+            "status": "PASS",
+            "binding": "external-pbr-pack",
+            "external_pack_root": "7fd12e06b60bb64b1a930cf7f0a3ecfb6754b11cff5aea57b546010d10b741d1",
+            "material_count": 1,
+            "texture_count": 4,
+            "embedded_image_count": 0,
+            "channels": [
+              {
+                "role": "base-color",
+                "path": "candidates/mobile/pbr/base-color.png",
+                "file_root": "8047f96ad5ca167f9a64da12287f939cc5db69d66034ad9df38d6c4db746ddcf"
+              },
+              {
+                "role": "normal",
+                "path": "candidates/mobile/pbr/normal.png",
+                "file_root": "7846a98a1055cb3d3f5c207e06ce75cc036a57ec8458ffcfae8be90997053386"
+              },
+              {
+                "role": "occlusion-roughness-metallic",
+                "path": "candidates/mobile/pbr/orm.png",
+                "file_root": "4a2ee573be2eb0b6e80381222f1885d2046ffbc3e62b8e624f8eb05ecd13f5da"
+              },
+              {
+                "role": "emissive",
+                "path": "candidates/mobile/pbr/emissive.png",
+                "file_root": "13ceff94cca7e73afcebf6b206f3b13967583dd74c8b872ff91212cecc282658"
+              }
+            ],
+            "materials": [
+              {
+                "status": "PASS",
+                "material_index": 0,
+                "material_name": "ice-stylized-pbr",
+                "base_color_factor": [
+                  1,
+                  1,
+                  1,
+                  1
+                ],
+                "metallic_factor": 0.18,
+                "roughness_factor": 0.72,
+                "emissive_factor": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "errors": [],
+                "method": "GLB_PBR_MATERIAL_FACTOR_STRUCTURE_V1"
+              }
+            ],
+            "errors": [],
+            "method": "GLB_MATERIAL_WITH_EXTERNAL_PBR_PACK_BINDING_V1"
           },
           "primitives": [
             {
@@ -467,6 +523,61 @@
               }
             ]
           },
+          "pbr": {
+            "status": "PASS",
+            "binding": "external-pbr-pack",
+            "external_pack_root": "7fd12e06b60bb64b1a930cf7f0a3ecfb6754b11cff5aea57b546010d10b741d1",
+            "material_count": 1,
+            "texture_count": 4,
+            "embedded_image_count": 0,
+            "channels": [
+              {
+                "role": "base-color",
+                "path": "candidates/mobile/pbr/base-color.png",
+                "file_root": "8047f96ad5ca167f9a64da12287f939cc5db69d66034ad9df38d6c4db746ddcf"
+              },
+              {
+                "role": "normal",
+                "path": "candidates/mobile/pbr/normal.png",
+                "file_root": "7846a98a1055cb3d3f5c207e06ce75cc036a57ec8458ffcfae8be90997053386"
+              },
+              {
+                "role": "occlusion-roughness-metallic",
+                "path": "candidates/mobile/pbr/orm.png",
+                "file_root": "4a2ee573be2eb0b6e80381222f1885d2046ffbc3e62b8e624f8eb05ecd13f5da"
+              },
+              {
+                "role": "emissive",
+                "path": "candidates/mobile/pbr/emissive.png",
+                "file_root": "13ceff94cca7e73afcebf6b206f3b13967583dd74c8b872ff91212cecc282658"
+              }
+            ],
+            "materials": [
+              {
+                "status": "PASS",
+                "material_index": 0,
+                "material_name": "ice-stylized-pbr",
+                "base_color_factor": [
+                  1,
+                  1,
+                  1,
+                  1
+                ],
+                "metallic_factor": 0.18,
+                "roughness_factor": 0.72,
+                "emissive_factor": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "errors": [],
+                "method": "GLB_PBR_MATERIAL_FACTOR_STRUCTURE_V1"
+              }
+            ],
+            "errors": [],
+            "method": "GLB_MATERIAL_WITH_EXTERNAL_PBR_PACK_BINDING_V1"
+          },
           "primitives": [
             {
               "mesh_index": 0,
@@ -623,6 +734,61 @@
               }
             ]
           },
+          "pbr": {
+            "status": "PASS",
+            "binding": "external-pbr-pack",
+            "external_pack_root": "7fd12e06b60bb64b1a930cf7f0a3ecfb6754b11cff5aea57b546010d10b741d1",
+            "material_count": 1,
+            "texture_count": 4,
+            "embedded_image_count": 0,
+            "channels": [
+              {
+                "role": "base-color",
+                "path": "candidates/mobile/pbr/base-color.png",
+                "file_root": "8047f96ad5ca167f9a64da12287f939cc5db69d66034ad9df38d6c4db746ddcf"
+              },
+              {
+                "role": "normal",
+                "path": "candidates/mobile/pbr/normal.png",
+                "file_root": "7846a98a1055cb3d3f5c207e06ce75cc036a57ec8458ffcfae8be90997053386"
+              },
+              {
+                "role": "occlusion-roughness-metallic",
+                "path": "candidates/mobile/pbr/orm.png",
+                "file_root": "4a2ee573be2eb0b6e80381222f1885d2046ffbc3e62b8e624f8eb05ecd13f5da"
+              },
+              {
+                "role": "emissive",
+                "path": "candidates/mobile/pbr/emissive.png",
+                "file_root": "13ceff94cca7e73afcebf6b206f3b13967583dd74c8b872ff91212cecc282658"
+              }
+            ],
+            "materials": [
+              {
+                "status": "PASS",
+                "material_index": 0,
+                "material_name": "ice-stylized-pbr",
+                "base_color_factor": [
+                  1,
+                  1,
+                  1,
+                  1
+                ],
+                "metallic_factor": 0.18,
+                "roughness_factor": 0.72,
+                "emissive_factor": [
+                  0,
+                  0,
+                  0,
+                  1
+                ],
+                "errors": [],
+                "method": "GLB_PBR_MATERIAL_FACTOR_STRUCTURE_V1"
+              }
+            ],
+            "errors": [],
+            "method": "GLB_MATERIAL_WITH_EXTERNAL_PBR_PACK_BINDING_V1"
+          },
           "primitives": [
             {
               "mesh_index": 0,
@@ -696,24 +862,114 @@
           ]
         }
       ],
+      "pbr_pack": {
+        "status": "PASS",
+        "source": "local-pbr-pack-inspector",
+        "pack_root": "7fd12e06b60bb64b1a930cf7f0a3ecfb6754b11cff5aea57b546010d10b741d1",
+        "material_model": "stylized-pbr-v0.4",
+        "texture_count": 4,
+        "channels": [
+          {
+            "role": "base-color",
+            "path": "candidates/mobile/pbr/base-color.png",
+            "file_root": "8047f96ad5ca167f9a64da12287f939cc5db69d66034ad9df38d6c4db746ddcf"
+          },
+          {
+            "role": "normal",
+            "path": "candidates/mobile/pbr/normal.png",
+            "file_root": "7846a98a1055cb3d3f5c207e06ce75cc036a57ec8458ffcfae8be90997053386"
+          },
+          {
+            "role": "occlusion-roughness-metallic",
+            "path": "candidates/mobile/pbr/orm.png",
+            "file_root": "4a2ee573be2eb0b6e80381222f1885d2046ffbc3e62b8e624f8eb05ecd13f5da"
+          },
+          {
+            "role": "emissive",
+            "path": "candidates/mobile/pbr/emissive.png",
+            "file_root": "13ceff94cca7e73afcebf6b206f3b13967583dd74c8b872ff91212cecc282658"
+          }
+        ],
+        "files": [
+          {
+            "path": "candidates/mobile/pbr/base-color.png",
+            "role": "base-color",
+            "exists": true,
+            "status": "PASS",
+            "format": "image/png",
+            "width": 128,
+            "height": 128,
+            "byte_length": 15231,
+            "sha256": "c12c9fdc8e32629097af8e4fcf6ca914d113d8526e76d2426321c18332982d6d",
+            "file_root": "8047f96ad5ca167f9a64da12287f939cc5db69d66034ad9df38d6c4db746ddcf",
+            "errors": [],
+            "method": "PNG_HEADER_STRUCTURE_V1"
+          },
+          {
+            "path": "candidates/mobile/pbr/normal.png",
+            "role": "normal",
+            "exists": true,
+            "status": "PASS",
+            "format": "image/png",
+            "width": 128,
+            "height": 128,
+            "byte_length": 9039,
+            "sha256": "a65e9ddc641d0902fdb46a353342491be37fb7ae26060113debc128fc452b4f9",
+            "file_root": "7846a98a1055cb3d3f5c207e06ce75cc036a57ec8458ffcfae8be90997053386",
+            "errors": [],
+            "method": "PNG_HEADER_STRUCTURE_V1"
+          },
+          {
+            "path": "candidates/mobile/pbr/orm.png",
+            "role": "occlusion-roughness-metallic",
+            "exists": true,
+            "status": "PASS",
+            "format": "image/png",
+            "width": 128,
+            "height": 128,
+            "byte_length": 19020,
+            "sha256": "433510ddf77121b4c622bd64a8d0fae01d56d8c1e56546af8f47bd0e77948b70",
+            "file_root": "4a2ee573be2eb0b6e80381222f1885d2046ffbc3e62b8e624f8eb05ecd13f5da",
+            "errors": [],
+            "method": "PNG_HEADER_STRUCTURE_V1"
+          },
+          {
+            "path": "candidates/mobile/pbr/emissive.png",
+            "role": "emissive",
+            "exists": true,
+            "status": "PASS",
+            "format": "image/png",
+            "width": 128,
+            "height": 128,
+            "byte_length": 428,
+            "sha256": "31cc57591b6b059d0186f9554328e46fffa86bb47797790fc62306ab1735f8de",
+            "file_root": "13ceff94cca7e73afcebf6b206f3b13967583dd74c8b872ff91212cecc282658",
+            "errors": [],
+            "method": "PNG_HEADER_STRUCTURE_V1"
+          }
+        ],
+        "errors": [],
+        "method": "PBR_PACK_FILE_ROLE_ROOT_AUDIT_V1"
+      },
       "aggregates": {
         "geometry_status": "PASS",
         "topology_status": "PASS",
         "uv_status": "PASS",
         "normal_status": "PASS",
+        "pbr_status": "PASS",
         "triangle_count": 1900,
         "vertex_count": 1450,
         "file_count": 3,
         "valid_file_count": 3
       },
       "errors": [],
-      "inspection_root": "9384d7b825a7a8457cb6672762184078fec56558001ce588a6fbf16732cd0fcd"
+      "inspection_root": "b226503a100abf16c01691b6196fec797ff733978632ca29c212b55109cd3283"
     },
     "file_inspection_verification": {
       "valid": true,
       "errors": [],
-      "inspection_root": "9384d7b825a7a8457cb6672762184078fec56558001ce588a6fbf16732cd0fcd"
+      "inspection_root": "b226503a100abf16c01691b6196fec797ff733978632ca29c212b55109cd3283"
     }
   },
-  "acceptance_root": "5768ec15adb3d5594004bf2f668bae34d209df7d4443f161e01f8d2e3dae60a9"
+  "acceptance_root": "0a3853cd0d1299458ab5c0a67b39939fa27d3ba79cd3feff6b742b5862026a95"
 }

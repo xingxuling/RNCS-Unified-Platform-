@@ -67,7 +67,7 @@ test('URRF Universal Art Asset Forge emits a rooted candidate and closes AAA cla
     gates: Object.fromEntries(result.acceptance.gates.map(gate => [gate.gate, {status: gate.status, required: gate.required, reason: gate.reason}])),
     failures: result.acceptance.failures,
     authority: result.forge.authority,
-    notes: 'Candidate-only local RAGF reference execution. The forge independently inspects generated GLB accessors, welded indexed topology, UVs and normals; AAA remains blocked on provenance/license, art-direction, quality-tier and human-review evidence. It is not AAA production art proof or canonical RNCS mutation.'
+    notes: 'Candidate-only local RAGF reference execution. The forge independently inspects generated GLB accessors, welded indexed topology, UVs, normals, material structure and the external four-map PBR pack; AAA remains blocked on provenance/license, art-direction, quality-tier and human-review evidence. It is not AAA production art proof or canonical RNCS mutation.'
   };
   const report = {...reportBase, report_root: rootHash(reportBase)};
   mkdirSync(evidenceDir, {recursive: true});
