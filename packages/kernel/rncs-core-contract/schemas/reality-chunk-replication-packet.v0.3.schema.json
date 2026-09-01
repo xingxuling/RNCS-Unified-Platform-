@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/rncs/reality-chunk-replication-packet.v0.3.schema.json",
+  "title": "RNCS RealityChunk Replication Packet v0.3",
+  "type": "object",
+  "required": [
+    "format", "version", "packet_id", "channel_id", "sender_id", "recipient_id",
+    "sequence", "kind", "chunk_id", "payload_root", "delta", "snapshot",
+    "resync_for_packet_id", "resync", "reliability", "packet_root", "auth_tag"
+  ],
+  "properties": {
+    "format": {"const": "rncs.reality-chunk-replication-packet.v0.3"},
+    "version": {"const": "0.3.0"},
+    "packet_id": {"type": "string", "minLength": 1},
+    "channel_id": {"type": "string", "minLength": 1},
+    "sender_id": {"type": "string", "minLength": 1},
+    "recipient_id": {"type": "string", "minLength": 1},
+    "sequence": {"type": "integer", "minimum": 1},
+    "kind": {"enum": ["DELTA", "SNAPSHOT"]},
+    "chunk_id": {"type": "string", "minLength": 1},
+    "payload_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "delta": {"type": ["object", "null"]},
+    "snapshot": {"type": ["object", "null"]},
+    "resync_for_packet_id": {"type": ["string", "null"]},
+    "resync": {"type": "boolean"},
+    "reliability": {"type": "object", "required": ["mode", "duplicate_safe", "ordered_parent_versions", "resync_supported"]},
+    "packet_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "auth_tag": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}

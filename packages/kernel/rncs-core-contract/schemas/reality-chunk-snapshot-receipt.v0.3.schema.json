@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/rncs/reality-chunk-snapshot-receipt.v0.3.schema.json",
+  "title": "RNCS RealityChunk Snapshot Receipt v0.3",
+  "type": "object",
+  "required": [
+    "format", "version", "receipt_id", "status", "chunk_id", "world_id",
+    "source_node", "target_node", "chunk_root", "version_root",
+    "canonical_state_root", "canonical_state_mutated", "authority",
+    "evidence_refs", "receipt_root"
+  ],
+  "properties": {
+    "format": {"const": "rncs.reality-chunk-snapshot-receipt.v0.3"},
+    "version": {"const": "0.3.0"},
+    "receipt_id": {"type": "string", "minLength": 1},
+    "status": {"enum": ["APPLIED", "DUPLICATE"]},
+    "chunk_id": {"type": "string", "minLength": 1},
+    "world_id": {"type": "string", "minLength": 1},
+    "source_node": {"type": "string", "minLength": 1},
+    "target_node": {"type": "string", "minLength": 1},
+    "chunk_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "version_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "canonical_state_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "canonical_state_mutated": {"const": false},
+    "authority": {
+      "type": "object",
+      "required": ["canonical_owner", "provider_can_write_authoritative_world_state", "rncs_authority_required", "candidate_only", "authoritative", "canonical_write_authorized", "commit_status"],
+      "properties": {
+        "canonical_owner": {"const": "RNCS"},
+        "provider_can_write_authoritative_world_state": {"const": false},
+        "rncs_authority_required": {"const": true},
+        "candidate_only": {"const": true},
+        "authoritative": {"const": false},
+        "canonical_write_authorized": {"const": false},
+        "commit_status": {"const": "NOT_COMMITTED"}
+      }
+    },
+    "evidence_refs": {"type": "array", "items": {"type": "string"}},
+    "receipt_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}

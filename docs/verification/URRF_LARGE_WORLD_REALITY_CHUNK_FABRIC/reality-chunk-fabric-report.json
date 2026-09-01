@@ -1,0 +1,29 @@
+{
+  "format": "urrf.v03.large-world-reality-chunk-fabric-report.v0.1",
+  "world_id": "world:urrf-v03-reality-chunk-fabric",
+  "chunk_id": "chunk:world:urrf-v03-reality-chunk-fabric:0:0",
+  "region_root": "2a28c98940fa296a8ea1872652389fb36a6f1d6faa5928e2b96e94fddb2ca14e",
+  "world_root": "b5f198ca3862b541bb1690d91495e2322bf43fe5c5d0ade31ac6d685eb9bf54f",
+  "delta_root": "a3badc47fa704eb919533f6d8334a390eb80b0dcaec3cc663a4c8e148b0b8eb7",
+  "delta_packet_root": "dfaae6ae9f7aa45fadcd036c976ecaaba8d33b5ae32c0e09a026dd98165657ec",
+  "resync_snapshot_packet_root": "3eac00a8daaf7b7288a68e2b7a19aa0532b8428b340106e27488cd6ec6908485",
+  "applied_receipt_root": "89317bce7c1b677151bb3bf5872b6ef39593d1811b1bbf96450a913ed9be16ca",
+  "duplicate_ack_root": "4358612a835727bb475604a85b319c500a5b635196f3488aba98b33cb163284c",
+  "dropped_packets": 1,
+  "delivered_messages": 8,
+  "resync_used": true,
+  "retry_used": true,
+  "duplicate_replay": true,
+  "pending_after_apply": 0,
+  "canonical_world_root_unchanged": true,
+  "authority": {
+    "canonical_owner": "RNCS",
+    "canonical_write_authorized": false,
+    "candidate_only": true,
+    "authoritative": false,
+    "commit_status": "NOT_COMMITTED"
+  },
+  "evidence_level": "LOCAL_RUNTIME_AND_CONTRACT_TEST",
+  "notes": "Authenticated local chunk transport with deliberate loss, stale-base resync, retry, and duplicate replay. This is not distributed consensus, production network proof, hardware rendering, or provider authority.",
+  "report_root": "f294f1b27cd949ee6371082d4c10641fa36c57cb42a7fd1f2170d3d0ef6b1a20"
+}
