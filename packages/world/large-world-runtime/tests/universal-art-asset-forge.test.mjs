@@ -101,6 +101,10 @@ test('built-in RAGF workspace produces real candidate files and local structure 
   assert.equal(result.execution.file_inspection.status, 'PASS');
   assert.equal(result.execution.file_inspection.aggregates.valid_file_count, 3);
   assert.equal(result.execution.file_inspection.aggregates.pbr_status, 'PASS');
+  assert.equal(result.execution.file_inspection.aggregates.lod_status, 'PASS');
+  assert.deepEqual(result.execution.file_inspection.lod.levels, [0, 1, 2]);
+  assert.ok(result.execution.file_inspection.lod.triangle_counts[0] > result.execution.file_inspection.lod.triangle_counts[1]);
+  assert.ok(result.execution.file_inspection.lod.triangle_counts[1] > result.execution.file_inspection.lod.triangle_counts[2]);
   assert.equal(verifyUniversalArtAssetForge({
     forge: result.forge,
     genome: result.genome,
@@ -133,7 +137,8 @@ test('invalid local GLB inspection cannot be overridden by provider declarations
       topology: {status: 'PASS'},
       uv: {status: 'PASS'},
       normal: {status: 'PASS'},
-      pbr: {status: 'PASS'}
+      pbr: {status: 'PASS'},
+      lod: {status: 'PASS'}
     },
     fileInspection: inspection
   });
@@ -141,6 +146,32 @@ test('invalid local GLB inspection cannot be overridden by provider declarations
   assert.ok(acceptance.failures.includes('uv_gate'));
   assert.ok(acceptance.failures.includes('normal_gate'));
   assert.ok(acceptance.failures.includes('pbr_gate'));
+  assert.ok(acceptance.failures.includes('lod_gate'));
+});
+
+test('local LOD inspection rejects duplicate or non-reducing levels despite Provider PASS evidence', () => {
+  const outDir = fs.mkdtempSync(path.join(os.tmpdir(), 'urrf-universal-art-lod-'));
+  const result = generateUniversalArtAsset(characterInput, {outDir});
+  const lod0 = path.join('candidates', result.candidate.variant, 'mesh', 'lod0.glb');
+  const inspection = inspectUniversalArtAssetFiles({
+    baseDir: outDir,
+    files: [
+      {path: lod0, role: 'mesh-glb', lod: 0},
+      {path: lod0, role: 'mesh-lod1-glb', lod: 1}
+    ]
+  });
+  assert.equal(inspection.lod.status, 'FAIL');
+  assert.ok(inspection.lod.errors.includes('LOD_TRIANGLES_NOT_REDUCED:0:1'));
+  assert.equal(inspection.aggregates.lod_status, 'FAIL');
+  const acceptance = evaluateUniversalArtAssetAcceptance({
+    genome: result.genome,
+    candidate: result.candidate,
+    execution: {...result.execution, file_inspection: inspection},
+    provider: result.execution.provider_id,
+    providerEvidence: {lod: {status: 'PASS'}},
+    fileInspection: inspection
+  });
+  assert.ok(acceptance.failures.includes('lod_gate'));
 });
 
 test('tampered external PBR pack cannot satisfy the local material gate', () => {

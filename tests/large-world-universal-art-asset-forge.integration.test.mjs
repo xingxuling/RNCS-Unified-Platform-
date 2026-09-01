@@ -29,9 +29,11 @@ test('URRF Universal Art Asset Forge emits a rooted candidate and closes AAA cla
   assert.equal(result.acceptance.status, 'BLOCKED');
   assert.equal(result.acceptance.aaa_verified, false);
   assert.equal(result.execution.file_inspection.status, 'PASS');
+  assert.equal(result.execution.file_inspection.aggregates.lod_status, 'PASS');
   assert.equal(result.acceptance.failures.includes('topology_gate'), false);
   assert.equal(result.acceptance.failures.includes('uv_gate'), false);
   assert.equal(result.acceptance.failures.includes('normal_gate'), false);
+  assert.equal(result.acceptance.failures.includes('lod_gate'), false);
   assert.equal(verifyUniversalArtAssetForge({
     forge: result.forge,
     genome: result.genome,
@@ -67,7 +69,7 @@ test('URRF Universal Art Asset Forge emits a rooted candidate and closes AAA cla
     gates: Object.fromEntries(result.acceptance.gates.map(gate => [gate.gate, {status: gate.status, required: gate.required, reason: gate.reason}])),
     failures: result.acceptance.failures,
     authority: result.forge.authority,
-    notes: 'Candidate-only local RAGF reference execution. The forge independently inspects generated GLB accessors, welded indexed topology, UVs, normals, material structure and the external four-map PBR pack; Provider art-direction or human-review declarations cannot open those gates, and independent review receipts are absent. AAA remains blocked on provenance/license, art-direction, quality-tier and human-review evidence. It is not AAA production art proof or canonical RNCS mutation.'
+    notes: 'Candidate-only local RAGF reference execution. The forge independently inspects generated GLB accessors, welded indexed topology, UVs, normals, material structure, the external four-map PBR pack, and a contiguous decreasing three-level LOD sequence; Provider art-direction or human-review declarations cannot open those gates, and independent review receipts are absent. AAA remains blocked on provenance/license, art-direction, quality-tier and human-review evidence. It is not AAA production art proof or canonical RNCS mutation.'
   };
   const report = {...reportBase, report_root: rootHash(reportBase)};
   mkdirSync(evidenceDir, {recursive: true});

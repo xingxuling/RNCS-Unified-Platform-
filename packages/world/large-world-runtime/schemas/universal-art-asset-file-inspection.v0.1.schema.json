@@ -3,7 +3,7 @@
   "$id": "https://taowind.org/schemas/urrf.universal-art-asset-file-inspection.v0.1.schema.json",
   "title": "URRF Universal Art Asset File Inspection v0.1",
   "type": "object",
-  "required": ["format", "version", "source", "method", "status", "files", "pbr_pack", "aggregates", "errors", "inspection_root"],
+  "required": ["format", "version", "source", "method", "status", "files", "lod", "pbr_pack", "aggregates", "errors", "inspection_root"],
   "properties": {
     "format": {"const": "urrf.universal-art-asset-file-inspection.v0.1"},
     "version": {"const": "0.1.0"},
@@ -32,16 +32,34 @@
         "additionalProperties": true
       }
     },
+    "lod": {
+      "type": "object",
+      "required": ["status", "method", "count", "levels", "triangle_counts", "reduction_ratios", "errors"],
+      "properties": {
+        "status": {"enum": ["PASS", "FAIL", "NOT_RUN"]},
+        "method": {"const": "LOD_LEVEL_SEQUENCE_TRIANGLE_REDUCTION_AUDIT_V1"},
+        "count": {"type": "integer", "minimum": 0},
+        "levels": {"type": "array", "items": {"type": "integer", "minimum": 0}},
+        "triangle_counts": {"type": "array", "items": {"type": "integer", "minimum": 0}},
+        "reduction_ratios": {"type": "array", "items": {"type": ["number", "null"], "minimum": 0}},
+        "errors": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
     "pbr_pack": {"type": ["object", "null"], "additionalProperties": true},
     "aggregates": {
       "type": "object",
-      "required": ["geometry_status", "topology_status", "uv_status", "normal_status", "triangle_count", "vertex_count", "file_count", "valid_file_count"],
+      "required": ["geometry_status", "topology_status", "uv_status", "normal_status", "pbr_status", "lod_status", "lod_count", "lod_levels", "lod_triangle_counts", "triangle_count", "vertex_count", "file_count", "valid_file_count"],
       "properties": {
         "geometry_status": {"enum": ["PASS", "FAIL", "NOT_RUN"]},
         "topology_status": {"enum": ["PASS", "FAIL", "NOT_RUN"]},
         "uv_status": {"enum": ["PASS", "FAIL", "NOT_RUN"]},
         "normal_status": {"enum": ["PASS", "FAIL", "NOT_RUN"]},
         "pbr_status": {"enum": ["PASS", "FAIL", "NOT_RUN"]},
+        "lod_status": {"enum": ["PASS", "FAIL", "NOT_RUN"]},
+        "lod_count": {"type": "integer", "minimum": 0},
+        "lod_levels": {"type": "array", "items": {"type": "integer", "minimum": 0}},
+        "lod_triangle_counts": {"type": "array", "items": {"type": "integer", "minimum": 0}},
         "triangle_count": {"type": "integer", "minimum": 0},
         "vertex_count": {"type": "integer", "minimum": 0},
         "file_count": {"type": "integer", "minimum": 0},

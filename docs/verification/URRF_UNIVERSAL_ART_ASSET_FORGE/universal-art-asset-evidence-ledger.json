@@ -1,7 +1,7 @@
 {
   "format": "ragf.asset-evidence-ledger.v0.1",
   "version": "0.1.0",
-  "ledger_id": "asset-evidence-ledger:db06106421fcd2e8d61cc706",
+  "ledger_id": "asset-evidence-ledger:f424290ec388dd7f5c010d0b",
   "authority": {
     "provider_is_candidate_source_only": true,
     "provider_can_write_authoritative_world_state": false,
@@ -76,7 +76,7 @@
     {
       "evidence_id": "production-court",
       "status": "FAIL",
-      "root": "c158a96e1ad973cb785bb303dea2df475bb4b5d1f9d2ac20dfc346f5a364e5ea",
+      "root": "e7f723f31ef20b9f735bddacf5afc435d5d4d313e323e19c34842d671414efb3",
       "details": {
         "gates": [
           {
@@ -165,7 +165,7 @@
             "status": "PASS",
             "pass": true,
             "reason": null,
-            "source": "candidate artifact"
+            "source": "local LOD sequence inspection"
           },
           {
             "gate": "collision_gate",
@@ -250,8 +250,8 @@
     "job_root": null,
     "result_root": null,
     "candidate_root": "bb0b52afb44be19f484bccbcb1833e1da3a46e39cd2c66357334f9f91821eb16",
-    "court_root": "c158a96e1ad973cb785bb303dea2df475bb4b5d1f9d2ac20dfc346f5a364e5ea",
+    "court_root": "e7f723f31ef20b9f735bddacf5afc435d5d4d313e323e19c34842d671414efb3",
     "placement_root": null
   },
-  "ledger_root": "4dcbedcc0c10baa2718922aaa193f781c89d3cd87622b3be0c27b3c74212bf27"
+  "ledger_root": "0289c736c2436a667e73c4daf77a33498eacf1f903310b934f9af1f8e1e0094b"
 }

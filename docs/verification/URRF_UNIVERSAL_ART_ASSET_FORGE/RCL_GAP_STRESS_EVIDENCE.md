@@ -4,7 +4,7 @@
 
 `CANDIDATE_ONLY` / `AAA_NOT_PROVEN`
 
-The forge now has a runnable Genome → Provider Resolution → Provider Job → Candidate → Production Court → local GLB inspection → AAA Acceptance → Evidence Ledger path. The committed report is deliberately `BLOCKED`: the deterministic RAGF reference provider produced structurally valid candidate files with bound PBR textures, but it did not supply all evidence required for an AAA production claim.
+The forge now has a runnable Genome → Provider Resolution → Provider Job → Candidate → Production Court → local GLB/LOD inspection → AAA Acceptance → Evidence Ledger path. The committed report is deliberately `BLOCKED`: the deterministic RAGF reference provider produced structurally valid candidate files with bound PBR textures and a decreasing three-level LOD sequence, but it did not supply all evidence required for an AAA production claim.
 
 ## RCL Gap
 
@@ -27,7 +27,7 @@ The same rooted forge contract was exercised against:
 - a `vehicle` profile with a contract-only TRELLIS.2 Provider, which fails closed as `PROVIDER_RUNTIME_NOT_EXECUTED`;
 - a `vfx` profile with no matching Provider, which fails closed as `PROFILE_PROVIDER_UNRESOLVED` rather than borrowing a humanoid generator.
 
-The negative cases are part of the contract: a Provider result, a generated GLB, a local browser/runtime receipt, or Provider `art_direction`/`human_review` declarations are not by themselves AAA acceptance or RNCS authority. A malformed materialized GLB, an unbound PBR material, an unbound review receipt, or a review receipt with a non-external verifier cannot be rescued by Provider `PASS` declarations.
+The negative cases are part of the contract: a Provider result, a generated GLB, a local browser/runtime receipt, an invalid LOD sequence, or Provider `art_direction`/`human_review` declarations are not by themselves AAA acceptance or RNCS authority. A malformed materialized GLB, an unbound PBR material, an unbound/non-external review receipt, or duplicate/non-reducing LOD geometry cannot be rescued by Provider `PASS` declarations.
 
 ## Donor Advantage and Reuse
 
@@ -35,8 +35,8 @@ The negative cases are part of the contract: a Provider result, a generated GLB,
 
 ## Regression Evidence
 
-- `npm test --workspace @taowind/large-world-runtime`: `49/49 PASS`.
-- `npm run test:large-world-universal-art-asset-forge`: package `49/49 PASS`, integration `1/1 PASS`.
+- `npm test --workspace @taowind/large-world-runtime`: `50/50 PASS`.
+- `npm run test:large-world-universal-art-asset-forge`: package `50/50 PASS`, integration `1/1 PASS`.
 - Existing URRF composition tests remain in the same package suite and continue to pass.
 - RAGF full package regression: `212/212 PASS`; the Forge-side PBR audit validates the external four-map pack and GLB material structure without coupling palette changes to mesh roots.
 - Schema validation: `PASS` for the Forge, persisted GLB inspection, and independent review-receipt schemas; generated Forge, inspection, and review receipts validate with Draft 2020-12.
@@ -61,7 +61,7 @@ For the committed reference run, the forge has:
 ## Next Promotion Blockers
 
 1. Bind a real high-resolution Provider for at least one profile and execute it on the declared hardware.
-2. Complete PBR/LOD/platform metrics on a real high-resolution Provider output and inspect every materialized LOD.
+2. Complete PBR/platform metrics on a real high-resolution Provider output and inspect every materialized LOD; the current local structural LOD audit is not device performance proof.
 3. Supply independently authored art-direction and human-art review receipts bound to the candidate and file-inspection roots; neither may be synthesized by the Provider. The current verifier checks the receipt contract and external-verifier declaration but does not prove reviewer identity or key custody.
 4. Audit dependencies, model weights, datasets and generated-asset licenses before any commercial release decision.
 5. Repeat on a holdout asset set and submit the resulting Candidate Genome and regression evidence to Integration Court.

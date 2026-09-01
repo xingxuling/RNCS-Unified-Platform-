@@ -639,6 +639,26 @@
       ]
     }
   ],
+  "lod": {
+    "status": "PASS",
+    "method": "LOD_LEVEL_SEQUENCE_TRIANGLE_REDUCTION_AUDIT_V1",
+    "count": 3,
+    "levels": [
+      0,
+      1,
+      2
+    ],
+    "triangle_counts": [
+      904,
+      636,
+      360
+    ],
+    "reduction_ratios": [
+      0.7035398230088495,
+      0.5660377358490566
+    ],
+    "errors": []
+  },
   "pbr_pack": {
     "status": "PASS",
     "source": "local-pbr-pack-inspector",
@@ -734,11 +754,23 @@
     "uv_status": "PASS",
     "normal_status": "PASS",
     "pbr_status": "PASS",
+    "lod_status": "PASS",
+    "lod_count": 3,
+    "lod_levels": [
+      0,
+      1,
+      2
+    ],
+    "lod_triangle_counts": [
+      904,
+      636,
+      360
+    ],
     "triangle_count": 1900,
     "vertex_count": 1450,
     "file_count": 3,
     "valid_file_count": 3
   },
   "errors": [],
-  "inspection_root": "b226503a100abf16c01691b6196fec797ff733978632ca29c212b55109cd3283"
+  "inspection_root": "70c831a94250e93f747a1d8320901dbc6253d1e9b014bf0eb11dcbeb0c11b253"
 }

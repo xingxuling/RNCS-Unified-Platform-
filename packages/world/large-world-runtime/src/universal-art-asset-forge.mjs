@@ -934,6 +934,59 @@ function inferLod(value) {
   return match ? Number(match[1]) : null;
 }
 
+function inspectLodReports(reports) {
+  if (!reports.length) {
+    return {
+      status: 'NOT_RUN',
+      method: 'LOD_LEVEL_SEQUENCE_TRIANGLE_REDUCTION_AUDIT_V1',
+      count: 0,
+      levels: [],
+      triangle_counts: [],
+      reduction_ratios: [],
+      errors: []
+    };
+  }
+  const errors = [];
+  const meshReports = reports.filter(report => report.lod !== null || String(report.role ?? '').toLowerCase().includes('mesh'));
+  const byLevel = new Map();
+  for (const report of meshReports) {
+    if (!Number.isInteger(report.lod) || report.lod < 0) {
+      errors.push(`LOD_LEVEL_INVALID:${report.path}`);
+      continue;
+    }
+    if (byLevel.has(report.lod)) errors.push(`LOD_LEVEL_DUPLICATE:${report.lod}`);
+    else byLevel.set(report.lod, report);
+    if (!report.glb_valid) errors.push(`LOD_FILE_INVALID:${report.path}`);
+  }
+  const levels = [...byLevel.keys()].sort((left, right) => left - right);
+  if (!levels.length) errors.push('LOD_LEVELS_MISSING');
+  else {
+    if (levels[0] !== 0) errors.push('LOD_BASE_LEVEL_MISSING');
+    if (levels.length < 2) errors.push('LOD_REDUCTION_LEVEL_MISSING');
+    for (let index = 1; index < levels.length; index += 1) {
+      if (levels[index] !== levels[index - 1] + 1) errors.push(`LOD_LEVEL_GAP:${levels[index - 1]}:${levels[index]}`);
+    }
+  }
+  const triangleCounts = levels.map(level => Number(byLevel.get(level)?.triangle_count ?? 0));
+  const reductionRatios = [];
+  for (let index = 1; index < triangleCounts.length; index += 1) {
+    const previous = triangleCounts[index - 1];
+    const current = triangleCounts[index];
+    const ratio = previous > 0 ? current / previous : null;
+    reductionRatios.push(ratio);
+    if (!(previous > 0) || !(current > 0) || current >= previous) errors.push(`LOD_TRIANGLES_NOT_REDUCED:${levels[index - 1]}:${levels[index]}`);
+  }
+  return {
+    status: errors.length === 0 ? 'PASS' : 'FAIL',
+    method: 'LOD_LEVEL_SEQUENCE_TRIANGLE_REDUCTION_AUDIT_V1',
+    count: levels.length,
+    levels,
+    triangle_counts: triangleCounts,
+    reduction_ratios: reductionRatios,
+    errors
+  };
+}
+
 function inspectionLogicalPath(baseDir, absolutePath, suppliedPath) {
   if (suppliedPath && !path.isAbsolute(String(suppliedPath))) return String(suppliedPath).replaceAll('\\', '/');
   if (baseDir) return path.relative(baseDir, absolutePath).replaceAll('\\', '/');
@@ -1086,14 +1139,16 @@ export function inspectUniversalArtAssetFiles({baseDir = null, files = [], varia
       };
     }
   });
+  const lod = inspectLodReports(reports);
   const aggregateStatus = key => reports.length > 0 && reports.every(report => report[key]?.status === 'PASS') ? 'PASS' : reports.length ? 'FAIL' : 'NOT_RUN';
   const inspection = {
     format: UNIVERSAL_ART_ASSET_FILE_INSPECTION_FORMAT,
     version: UNIVERSAL_ART_ASSET_FORGE_VERSION,
     source: 'local-glb-inspector',
     method: 'urrf.glb-structural-inspector.v0.1',
-    status: reports.length > 0 && reports.every(report => report.glb_valid && report.valid) && (!pbrPackInput || pbrPack?.status === 'PASS') ? 'PASS' : reports.length ? 'FAIL' : 'NOT_RUN',
+    status: reports.length > 0 && reports.every(report => report.glb_valid && report.valid) && lod.status === 'PASS' && (!pbrPackInput || pbrPack?.status === 'PASS') ? 'PASS' : reports.length ? 'FAIL' : 'NOT_RUN',
     files: reports,
+    lod,
     pbr_pack: pbrPack,
     aggregates: {
       geometry_status: aggregateStatus('geometry'),
@@ -1101,12 +1156,19 @@ export function inspectUniversalArtAssetFiles({baseDir = null, files = [], varia
       uv_status: aggregateStatus('uv'),
       normal_status: aggregateStatus('normals'),
       pbr_status: reports.length > 0 && reports.every(report => report.pbr?.status === 'PASS') && (!pbrPackInput || pbrPack?.status === 'PASS') ? 'PASS' : reports.length ? 'FAIL' : 'NOT_RUN',
+      lod_status: lod.status,
+      lod_count: lod.count,
+      lod_levels: lod.levels,
+      lod_triangle_counts: lod.triangle_counts,
       triangle_count: reports.reduce((sum, report) => sum + Number(report.triangle_count ?? 0), 0),
       vertex_count: reports.reduce((sum, report) => sum + Number(report.vertex_count ?? 0), 0),
       file_count: reports.length,
       valid_file_count: reports.filter(report => report.glb_valid && report.valid).length
     },
-    errors: reports.flatMap(report => (report.errors ?? []).map(error => `${report.path}:${error}`)),
+    errors: [
+      ...reports.flatMap(report => (report.errors ?? []).map(error => `${report.path}:${error}`)),
+      ...lod.errors
+    ],
     inspection_root: ''
   };
   return seal(inspection, 'inspection_root');
@@ -1323,6 +1385,7 @@ export function evaluateUniversalArtAssetAcceptance({
   const localUvPass = !localFileInspection || localInspectionPass('uv');
   const localNormalPass = !localFileInspection || localInspectionPass('normal');
   const localPbrPass = !localFileInspection || localInspectionPass('pbr');
+  const localLodPass = !localFileInspection || localInspectionPass('lod');
   const gates = [
     makeGate('intent_gate', required.has('intent_gate'), Boolean(genome.ragf_intent?.intent_root), 'INTENT_NOT_ROOTED', 'RAGF intent'),
     makeGate('genome_gate', required.has('genome_gate'), genomeVerification.valid, 'GENOME_INVALID', 'URRF/RAGF genome verification'),
@@ -1334,7 +1397,7 @@ export function evaluateUniversalArtAssetAcceptance({
     makeGate('pbr_gate', required.has('pbr_gate'), localPbrPass && pbrPass && courtGate(providerCourt, 'material_pbr_gate') !== false, 'PBR_CHANNELS_OR_MATERIAL_BINDING_INCOMPLETE', localFileInspection ? 'local GLB material inspection' : pbrEvidence.present ? 'provider evidence' : 'candidate PBR metadata'),
     makeGate('rig_gate', required.has('rig_gate'), facts.rigPresent && (explicitEvidence(evidence, ['rig']).present ? explicitEvidence(evidence, ['rig']).pass : !facts.direct), 'RIG_MISSING_OR_NOT_VERIFIED', facts.rigPresent ? 'candidate artifact' : 'provider evidence'),
     makeGate('animation_gate', required.has('animation_gate'), facts.animationPresent && (explicitEvidence(evidence, ['animation']).present ? explicitEvidence(evidence, ['animation']).pass : !facts.direct), 'ANIMATION_MISSING_OR_NOT_VERIFIED', facts.animationPresent ? 'candidate artifact' : 'provider evidence'),
-    makeGate('lod_gate', required.has('lod_gate'), (lodEvidence.present ? lodEvidence.pass : facts.lodPresent) && courtGate(providerCourt, 'lod_platform_budget_gate') !== false, 'LOD_OR_PLATFORM_BUDGET_NOT_VERIFIED', lodEvidence.present ? 'provider evidence' : 'candidate artifact'),
+    makeGate('lod_gate', required.has('lod_gate'), localLodPass && (lodEvidence.present ? lodEvidence.pass : facts.lodPresent) && courtGate(providerCourt, 'lod_platform_budget_gate') !== false, 'LOD_OR_PLATFORM_BUDGET_NOT_VERIFIED', localFileInspection ? 'local LOD sequence inspection' : lodEvidence.present ? 'provider evidence' : 'candidate artifact'),
     makeGate('collision_gate', required.has('collision_gate'), (collisionEvidence.present ? collisionEvidence.pass : facts.collisionPresent) && courtGate(providerCourt, 'collision_gate') !== false, 'COLLISION_NOT_VERIFIED', collisionEvidence.present ? 'provider evidence' : 'candidate artifact'),
     makeGate('platform_gate', required.has('platform_gate'), Boolean(evidence.platform?.status ? statusPass(evidence.platform) : facts.workspaceReport?.scores?.platform >= 6500), 'TARGET_PLATFORM_NOT_VERIFIED', evidence.platform ? 'provider evidence' : 'workspace report'),
     makeGate('provenance_license_gate', required.has('provenance_license_gate'), (provenanceEvidence.present ? provenanceEvidence.pass : facts.provenanceComplete) && (licenseEvidence.present ? licenseEvidence.pass : (facts.licenseVerified || facts.providerManifestLicense)) && courtGate(providerCourt, 'provenance_gate') !== false && courtGate(providerCourt, 'license_gate') !== false, 'PROVENANCE_OR_LICENSE_AUDIT_INCOMPLETE', provenanceEvidence.present || licenseEvidence.present ? 'provider evidence' : 'candidate/provider metadata'),
@@ -1373,6 +1436,8 @@ export function evaluateUniversalArtAssetAcceptance({
       topology_status: localFileInspection?.aggregates?.topology_status ?? null,
       uv_status: localFileInspection?.aggregates?.uv_status ?? null,
       normal_status: localFileInspection?.aggregates?.normal_status ?? null,
+      lod_inspection_status: localFileInspection?.aggregates?.lod_status ?? null,
+      lod_count: localFileInspection?.aggregates?.lod_count ?? null,
       pbr_file_status: localFileInspection?.aggregates?.pbr_status ?? null
     },
     authority: {
