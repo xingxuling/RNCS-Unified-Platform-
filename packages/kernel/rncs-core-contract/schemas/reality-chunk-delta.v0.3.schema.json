@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/rncs/reality-chunk-delta.v0.3.schema.json",
+  "title": "RNCS RealityChunk Delta v0.3",
+  "type": "object",
+  "required": [
+    "format", "version", "delta_id", "chunk_id", "world_id",
+    "source_node", "target_node", "sequence", "base_chunk", "target_chunk",
+    "base_chunk_root", "target_chunk_root", "base_version_root", "target_version_root",
+    "canonical_state_root", "content_hash", "dependency_graph_ref",
+    "consistency_profile", "authority_receipt_root", "operations",
+    "canonical_state_mutated", "authority", "delta_root"
+  ],
+  "properties": {
+    "format": {"const": "rncs.reality-chunk-delta.v0.3"},
+    "version": {"const": "0.3.0"},
+    "delta_id": {"type": "string", "minLength": 1},
+    "chunk_id": {"type": "string", "minLength": 1},
+    "world_id": {"type": "string", "minLength": 1},
+    "source_node": {"type": "string", "minLength": 1},
+    "target_node": {"type": "string", "minLength": 1},
+    "sequence": {"type": "integer", "minimum": 1},
+    "base_chunk": {"$ref": "./reality-chunk.v0.3.schema.json"},
+    "target_chunk": {"$ref": "./reality-chunk.v0.3.schema.json"},
+    "base_chunk_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "target_chunk_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "base_version_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "target_version_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "canonical_state_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "content_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "dependency_graph_ref": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "consistency_profile": {"type": ["object", "null"]},
+    "authority_receipt_root": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "operations": {"type": "array"},
+    "canonical_state_mutated": {"const": false},
+    "authority": {
+      "type": "object",
+      "required": ["canonical_owner", "provider_can_write_authoritative_world_state", "rncs_authority_required", "candidate_only", "authoritative", "canonical_write_authorized", "commit_status"],
+      "properties": {
+        "canonical_owner": {"const": "RNCS"},
+        "provider_can_write_authoritative_world_state": {"const": false},
+        "rncs_authority_required": {"const": true},
+        "candidate_only": {"const": true},
+        "authoritative": {"const": false},
+        "canonical_write_authorized": {"const": false},
+        "commit_status": {"const": "NOT_COMMITTED"}
+      }
+    },
+    "delta_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}
