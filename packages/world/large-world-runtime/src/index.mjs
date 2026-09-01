@@ -130,6 +130,8 @@ export const LARGE_WORLD_SERVER_SOVEREIGNTY_PROFILE_FORMAT = 'rncs.server-pseudo
 export const LARGE_WORLD_SERVER_SOVEREIGNTY_MIGRATION_FORMAT = 'rncs.server-sovereignty-migration.v0.3';
 export const LARGE_WORLD_SERVER_SOVEREIGNTY_HANDOFF_RECEIPT_FORMAT = 'rncs.server-sovereignty-handoff-receipt.v0.3';
 
+export * from './universal-art-asset-forge.mjs';
+
 export const LARGE_WORLD_BIOMES = Object.freeze(['coast', 'desert', 'forest', 'grassland', 'tundra', 'wetland']);
 export const LARGE_WORLD_STRUCTURE_KINDS = Object.freeze(['ruin', 'grove', 'mine', 'shrine', 'watchtower']);
 export const LARGE_WORLD_RESOURCE_KINDS = Object.freeze(['crystal', 'iron', 'salt', 'timber', 'water']);

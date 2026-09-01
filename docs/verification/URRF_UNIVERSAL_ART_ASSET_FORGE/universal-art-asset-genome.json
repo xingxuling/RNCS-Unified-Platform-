@@ -1,0 +1,400 @@
+{
+  "format": "urrf.universal-art-asset-genome.v0.1",
+  "version": "0.1.0",
+  "genome_id": "urrf-universal-art-asset-genome:cd92a7a91fbc949dd9b381ac",
+  "asset_id": "asset:cf644862f780b86ae2bd9e94",
+  "asset_profile": "character",
+  "asset_kind": "character-3d",
+  "quality_tier": "AAA",
+  "display_name": "霜刃使者",
+  "description": "一名守护远古冰晶遗迹的三维女剑士，带有冰纹重甲和可回放攻击动作。",
+  "intent_root": "5c416e72a4ba655ff684f88cd9462369a266126b7e7acc0479ac6ee974573fc2",
+  "ragf_intent": {
+    "format": "reality-asset.intent.v0.3",
+    "version": "0.3.0",
+    "intent_id": "asset-intent:a5b72b27ab9fbb37c1174259",
+    "subject_id": "subject:owner",
+    "description": "一名守护远古冰晶遗迹的三维女剑士，带有冰纹重甲和可回放攻击动作。",
+    "asset_kind": "character-3d",
+    "world_context": {},
+    "functional_role": "gameplay-entity",
+    "target_platforms": [
+      "desktop",
+      "web"
+    ],
+    "required_outputs": [
+      "animation-clips",
+      "collision-shape",
+      "concept-svg",
+      "dependency-graph",
+      "lod-manifest",
+      "mesh-glb",
+      "mesh-lod1-glb",
+      "mesh-lod2-glb",
+      "particle-preset",
+      "pbr-texture-pack",
+      "prefab-blueprint",
+      "projection-manifest",
+      "retarget-profile",
+      "rsr-embodiment-profile",
+      "sfx-wav",
+      "skeleton-rig",
+      "sprite-sheet",
+      "vsr-spatial-asset"
+    ],
+    "constraints": {
+      "palette": [
+        "#1c4fa3",
+        "#f2f6ff",
+        "#9ddcff",
+        "#17305a"
+      ],
+      "style": "stylized-readable",
+      "max_texture_size": 512,
+      "max_sprite_frames": 8,
+      "audio_seconds": 1,
+      "max_particles": 96,
+      "max_triangles": 2400,
+      "pbr_texture_size": 128,
+      "max_bones": 64,
+      "animation_fps": 30,
+      "lod_ratios": [
+        1,
+        0.55,
+        0.25
+      ],
+      "forbidden": [],
+      "semantic_requirements": [],
+      "license_policy": "generated-or-cleared"
+    },
+    "seed": "urrf-universal-art-asset-forge-integration",
+    "extensions": {
+      "urrf_universal": {
+        "asset_profile": "character",
+        "quality_tier": "AAA",
+        "generator_format": "urrf.universal-art-asset-forge.v0.1"
+      }
+    },
+    "intent_root": "5c416e72a4ba655ff684f88cd9462369a266126b7e7acc0479ac6ee974573fc2"
+  },
+  "ragf_genome": {
+    "format": "reality-asset.genome.v0.3",
+    "version": "0.3.0",
+    "genome_id": "asset-genome:41c0613d6d546a6aa702cea5",
+    "intent_root": "5c416e72a4ba655ff684f88cd9462369a266126b7e7acc0479ac6ee974573fc2",
+    "identity": {
+      "asset_id": "asset:cf644862f780b86ae2bd9e94",
+      "name": "霜刃使者",
+      "kind": "character-3d",
+      "continuity_policy": "stable-identity"
+    },
+    "semantics": {
+      "world_context": {},
+      "functional_role": "gameplay-entity",
+      "tags": [
+        "character-3d",
+        "ice",
+        "stylized-readable",
+        "剑士"
+      ],
+      "element": "ice",
+      "faction": "unassigned"
+    },
+    "visual": {
+      "style": "stylized-readable",
+      "palette": [
+        "#1c4fa3",
+        "#f2f6ff",
+        "#9ddcff",
+        "#17305a"
+      ],
+      "silhouette": "heroic",
+      "motifs": [
+        "ice-crystal",
+        "sharp-lines"
+      ],
+      "proportions": {
+        "head_ratio": 0.18
+      },
+      "material_language": "pbr-stylized"
+    },
+    "behavior": {
+      "animation_set": [
+        "idle",
+        "move",
+        "attack",
+        "hit",
+        "defeat"
+      ],
+      "affordances": [
+        "selectable",
+        "collidable",
+        "animatable",
+        "audible",
+        "effect-emitter"
+      ],
+      "gameplay_signals": [
+        "attack-telegraph",
+        "hit-confirm"
+      ]
+    },
+    "audio": {
+      "signature": "ice-blade",
+      "events": [
+        "spawn",
+        "move",
+        "attack",
+        "hit"
+      ]
+    },
+    "effects": {
+      "language": "ice-event-readable",
+      "events": [
+        "spawn",
+        "attack",
+        "hit"
+      ]
+    },
+    "physical": {
+      "body_type": "kinematic-character",
+      "collision_shape": "capsule",
+      "mass_class": "light",
+      "embodiment_profile": "humanoid-lite"
+    },
+    "budgets": {
+      "max_texture_size": 512,
+      "max_sprite_frames": 8,
+      "max_particles": 96,
+      "audio_seconds": 1,
+      "max_triangles": 2400,
+      "pbr_texture_size": 128,
+      "max_bones": 64,
+      "animation_fps": 30,
+      "lod_ratios": [
+        1,
+        0.55,
+        0.25
+      ],
+      "platforms": [
+        "desktop",
+        "web"
+      ]
+    },
+    "provenance": {
+      "policy": "generated-or-cleared",
+      "source_kind": "generated",
+      "requires_provider_evidence": true
+    },
+    "prohibitions": [],
+    "required_outputs": [
+      "animation-clips",
+      "collision-shape",
+      "concept-svg",
+      "dependency-graph",
+      "lod-manifest",
+      "mesh-glb",
+      "mesh-lod1-glb",
+      "mesh-lod2-glb",
+      "particle-preset",
+      "pbr-texture-pack",
+      "prefab-blueprint",
+      "projection-manifest",
+      "retarget-profile",
+      "rsr-embodiment-profile",
+      "sfx-wav",
+      "skeleton-rig",
+      "sprite-sheet",
+      "vsr-spatial-asset"
+    ],
+    "seed": "urrf-universal-art-asset-forge-integration",
+    "genome_root": "d81335dc81c59569be1f3fe83a620ac8d43f244c251cea5edad6fa42e8557965"
+  },
+  "semantic_genome": {
+    "identity": {
+      "asset_id": "asset:cf644862f780b86ae2bd9e94",
+      "name": "霜刃使者",
+      "kind": "character-3d",
+      "continuity_policy": "stable-identity"
+    },
+    "semantics": {
+      "world_context": {},
+      "functional_role": "gameplay-entity",
+      "tags": [
+        "character-3d",
+        "ice",
+        "stylized-readable",
+        "剑士"
+      ],
+      "element": "ice",
+      "faction": "unassigned"
+    },
+    "visual": {
+      "style": "stylized-readable",
+      "palette": [
+        "#1c4fa3",
+        "#f2f6ff",
+        "#9ddcff",
+        "#17305a"
+      ],
+      "silhouette": "heroic",
+      "motifs": [
+        "ice-crystal",
+        "sharp-lines"
+      ],
+      "proportions": {
+        "head_ratio": 0.18
+      },
+      "material_language": "pbr-stylized"
+    },
+    "behavior": {
+      "animation_set": [
+        "idle",
+        "move",
+        "attack",
+        "hit",
+        "defeat"
+      ],
+      "affordances": [
+        "selectable",
+        "collidable",
+        "animatable",
+        "audible",
+        "effect-emitter"
+      ],
+      "gameplay_signals": [
+        "attack-telegraph",
+        "hit-confirm"
+      ]
+    },
+    "physical": {
+      "body_type": "kinematic-character",
+      "collision_shape": "capsule",
+      "mass_class": "light",
+      "embodiment_profile": "humanoid-lite"
+    }
+  },
+  "representation_contract": {
+    "geometry": {
+      "representation": "mesh",
+      "topology": "manifold-or-provider-declared-exception",
+      "normals": "consistent",
+      "bounds": "finite",
+      "watertight_required": true
+    },
+    "surface": {
+      "material_model": "metallic-roughness",
+      "channels": [
+        "base-color",
+        "normal",
+        "occlusion-roughness-metallic",
+        "emissive"
+      ],
+      "uv_required": true,
+      "max_texture_size": 512,
+      "pbr_texture_size": 128
+    },
+    "rig_motion": {
+      "rig_required": true,
+      "animation_required": true,
+      "max_bones": 64,
+      "animation_fps": 30
+    },
+    "lod": {
+      "levels_required": 3,
+      "ratios": [
+        1,
+        0.55,
+        0.25
+      ]
+    },
+    "runtime": {
+      "target_platforms": [
+        "desktop",
+        "web"
+      ],
+      "vsr_projection_required": true,
+      "canonical_world_write": false
+    }
+  },
+  "provider_contract": {
+    "required_capabilities": [
+      "asset.generate.3d.production",
+      "asset.generate.mesh",
+      "asset.generate.pbr"
+    ],
+    "optional_capabilities": [
+      "asset.rig.predict",
+      "asset.skin.predict",
+      "asset.pose.initial"
+    ],
+    "candidate_only": true,
+    "external_provider_may_be_unavailable": true
+  },
+  "acceptance_contract": {
+    "target_quality_tier": "AAA",
+    "required_gates": [
+      "intent_gate",
+      "genome_gate",
+      "provider_execution_gate",
+      "geometry_gate",
+      "topology_gate",
+      "uv_gate",
+      "pbr_gate",
+      "lod_gate",
+      "collision_gate",
+      "platform_gate",
+      "provenance_license_gate",
+      "art_direction_gate",
+      "runtime_projection_gate",
+      "quality_tier_gate",
+      "human_review_gate",
+      "rig_gate",
+      "animation_gate"
+    ],
+    "human_art_review_required": true,
+    "holdout_required": true,
+    "no_provider_success_shortcut": true,
+    "notes": null
+  },
+  "target_platforms": [
+    "desktop",
+    "web"
+  ],
+  "budgets": {
+    "max_texture_size": 512,
+    "max_sprite_frames": 8,
+    "max_particles": 96,
+    "audio_seconds": 1,
+    "max_triangles": 2400,
+    "pbr_texture_size": 128,
+    "max_bones": 64,
+    "animation_fps": 30,
+    "lod_ratios": [
+      1,
+      0.55,
+      0.25
+    ],
+    "platforms": [
+      "desktop",
+      "web"
+    ]
+  },
+  "provenance_contract": {
+    "source_reference_required": true,
+    "provider_id_required": true,
+    "generator_version_required": true,
+    "seed_required": true,
+    "license_record_required": true,
+    "model_weights_audit_required": true
+  },
+  "authority": {
+    "canonical_owner": "RNCS",
+    "representation_owner": "URRF",
+    "provider_can_write_authoritative_world_state": false,
+    "candidate_only": true,
+    "authoritative": false,
+    "canonical_write_authorized": false,
+    "rncs_authority_required": true
+  },
+  "genome_root": "608144dee90b891d4e24b98e753963ccc99a9acba6320b1a130c3890029e478c"
+}

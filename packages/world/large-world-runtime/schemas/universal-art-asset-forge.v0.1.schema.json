@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.org/schemas/urrf.universal-art-asset-forge.v0.1.schema.json",
+  "title": "URRF Universal Art Asset Forge v0.1",
+  "type": "object",
+  "required": [
+    "format",
+    "version",
+    "forge_id",
+    "asset_id",
+    "asset_profile",
+    "quality_tier",
+    "genome_root",
+    "provider_resolution_root",
+    "execution",
+    "acceptance_root",
+    "evidence_ledger_root",
+    "status",
+    "candidate_only",
+    "authoritative",
+    "canonical_write_authorized",
+    "authority",
+    "forge_root"
+  ],
+  "properties": {
+    "format": {"const": "urrf.universal-art-asset-forge.v0.1"},
+    "version": {"const": "0.1.0"},
+    "forge_id": {"type": "string", "minLength": 1},
+    "asset_id": {"type": "string", "minLength": 1},
+    "asset_profile": {"enum": ["character", "creature", "prop", "vehicle", "structure", "environment", "vegetation", "resource", "vfx"]},
+    "quality_tier": {"enum": ["PREVIEW", "PRODUCTION", "AAA"]},
+    "genome_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "provider_resolution_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "execution": {
+      "type": "object",
+      "required": ["mode", "status"],
+      "properties": {
+        "mode": {"type": "string"},
+        "status": {"enum": ["COMPLETED", "FAILED"]},
+        "provider_id": {"type": ["string", "null"]},
+        "provider_root": {"type": ["string", "null"]},
+        "workspace_root": {"type": ["string", "null"]},
+        "candidate_root": {"type": ["string", "null"]},
+        "failure_code": {"type": ["string", "null"]}
+      },
+      "additionalProperties": false
+    },
+    "candidate_root": {"type": ["string", "null"]},
+    "acceptance_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "evidence_ledger_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "status": {"enum": ["BLOCKED", "READY_FOR_HUMAN_REVIEW"]},
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "canonical_write_authorized": {"const": false},
+    "authority": {
+      "type": "object",
+      "required": ["canonical_owner", "representation_owner", "provider_can_write_authoritative_world_state", "provider_can_commit", "acceptance_can_commit", "rncs_authority_required"],
+      "properties": {
+        "canonical_owner": {"const": "RNCS"},
+        "representation_owner": {"const": "URRF"},
+        "provider_can_write_authoritative_world_state": {"const": false},
+        "provider_can_commit": {"const": false},
+        "acceptance_can_commit": {"const": false},
+        "rncs_authority_required": {"const": true}
+      },
+      "additionalProperties": false
+    },
+    "forge_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "additionalProperties": false
+}

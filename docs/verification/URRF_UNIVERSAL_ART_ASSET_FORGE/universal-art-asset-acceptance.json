@@ -1,0 +1,213 @@
+{
+  "format": "urrf.universal-art-asset-acceptance.v0.1",
+  "version": "0.1.0",
+  "asset_id": "asset:cf644862f780b86ae2bd9e94",
+  "asset_profile": "character",
+  "target_quality_tier": "AAA",
+  "genome_root": "608144dee90b891d4e24b98e753963ccc99a9acba6320b1a130c3890029e478c",
+  "candidate_root": "bb0b52afb44be19f484bccbcb1833e1da3a46e39cd2c66357334f9f91821eb16",
+  "provider_id": "provider:taowind:procedural-3d",
+  "gates": [
+    {
+      "gate": "intent_gate",
+      "required": true,
+      "status": "PASS",
+      "pass": true,
+      "reason": null,
+      "source": "RAGF intent"
+    },
+    {
+      "gate": "genome_gate",
+      "required": true,
+      "status": "PASS",
+      "pass": true,
+      "reason": null,
+      "source": "URRF/RAGF genome verification"
+    },
+    {
+      "gate": "provider_execution_gate",
+      "required": true,
+      "status": "PASS",
+      "pass": true,
+      "reason": null,
+      "source": "RAGF_REFERENCE_WORKSPACE"
+    },
+    {
+      "gate": "geometry_gate",
+      "required": true,
+      "status": "PASS",
+      "pass": true,
+      "reason": null,
+      "source": "candidate metrics"
+    },
+    {
+      "gate": "topology_gate",
+      "required": true,
+      "status": "FAIL",
+      "pass": false,
+      "reason": "TOPOLOGY_NOT_EXPLICITLY_VERIFIED",
+      "source": "candidate topology status"
+    },
+    {
+      "gate": "uv_gate",
+      "required": true,
+      "status": "FAIL",
+      "pass": false,
+      "reason": "UV_NOT_EXPLICITLY_VERIFIED",
+      "source": "candidate UV status"
+    },
+    {
+      "gate": "pbr_gate",
+      "required": true,
+      "status": "PASS",
+      "pass": true,
+      "reason": null,
+      "source": "candidate PBR metadata"
+    },
+    {
+      "gate": "rig_gate",
+      "required": true,
+      "status": "PASS",
+      "pass": true,
+      "reason": null,
+      "source": "candidate artifact"
+    },
+    {
+      "gate": "animation_gate",
+      "required": true,
+      "status": "PASS",
+      "pass": true,
+      "reason": null,
+      "source": "candidate artifact"
+    },
+    {
+      "gate": "lod_gate",
+      "required": true,
+      "status": "PASS",
+      "pass": true,
+      "reason": null,
+      "source": "candidate artifact"
+    },
+    {
+      "gate": "collision_gate",
+      "required": true,
+      "status": "PASS",
+      "pass": true,
+      "reason": null,
+      "source": "candidate artifact"
+    },
+    {
+      "gate": "platform_gate",
+      "required": true,
+      "status": "PASS",
+      "pass": true,
+      "reason": null,
+      "source": "workspace report"
+    },
+    {
+      "gate": "provenance_license_gate",
+      "required": true,
+      "status": "FAIL",
+      "pass": false,
+      "reason": "PROVENANCE_OR_LICENSE_AUDIT_INCOMPLETE",
+      "source": "candidate/provider metadata"
+    },
+    {
+      "gate": "art_direction_gate",
+      "required": true,
+      "status": "FAIL",
+      "pass": false,
+      "reason": "ART_DIRECTION_REVIEW_REQUIRED",
+      "source": "explicit art-direction evidence"
+    },
+    {
+      "gate": "runtime_projection_gate",
+      "required": true,
+      "status": "PASS",
+      "pass": true,
+      "reason": null,
+      "source": "workspace runtime report"
+    },
+    {
+      "gate": "quality_tier_gate",
+      "required": true,
+      "status": "FAIL",
+      "pass": false,
+      "reason": "AAA_QUALITY_NOT_PROVEN",
+      "source": "candidate quality tier"
+    },
+    {
+      "gate": "human_review_gate",
+      "required": true,
+      "status": "FAIL",
+      "pass": false,
+      "reason": "HUMAN_ART_REVIEW_REQUIRED",
+      "source": "explicit human review receipt"
+    }
+  ],
+  "required_gates": [
+    "intent_gate",
+    "genome_gate",
+    "provider_execution_gate",
+    "geometry_gate",
+    "topology_gate",
+    "uv_gate",
+    "pbr_gate",
+    "lod_gate",
+    "collision_gate",
+    "platform_gate",
+    "provenance_license_gate",
+    "art_direction_gate",
+    "runtime_projection_gate",
+    "quality_tier_gate",
+    "human_review_gate",
+    "rig_gate",
+    "animation_gate"
+  ],
+  "failures": [
+    "topology_gate",
+    "uv_gate",
+    "provenance_license_gate",
+    "art_direction_gate",
+    "quality_tier_gate",
+    "human_review_gate"
+  ],
+  "pass": false,
+  "aaa_verified": false,
+  "status": "BLOCKED",
+  "metrics": {
+    "triangle_count": 904,
+    "pbr_channel_count": 4,
+    "pbr_model": "stylized-pbr-v0.4",
+    "rig_present": true,
+    "animation_present": true,
+    "lod_present": true,
+    "collision_present": true
+  },
+  "authority": {
+    "provider_can_commit": false,
+    "acceptance_can_commit": false,
+    "rncs_authority_required": true,
+    "candidate_only": true,
+    "authoritative": false
+  },
+  "evidence": {
+    "genome_verification": {
+      "valid": true,
+      "errors": [],
+      "genome_root": "608144dee90b891d4e24b98e753963ccc99a9acba6320b1a130c3890029e478c"
+    },
+    "provider_court_root": null,
+    "workspace_verification": {
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "workspace_root": "dc97f010a63fd9ec37bda78695087f82da52170315f7f1f5e04c2c3b5936785f",
+      "candidate_count": 3,
+      "recommended_candidate_id": "asset-candidate:23c15ae8749cbc68d6099984",
+      "file_integrity_checked": 27
+    },
+    "provider_evidence_root": "8f87b857cf141a921170f16b746f32b93e083bc4cfdf036286d48d3d34c738af"
+  },
+  "acceptance_root": "ef6509ce13115856a629405c28683badbf3c558f554f85a3817b92174c5185db"
+}

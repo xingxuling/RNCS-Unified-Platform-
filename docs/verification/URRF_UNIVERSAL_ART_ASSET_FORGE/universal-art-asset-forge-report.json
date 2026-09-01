@@ -1,0 +1,137 @@
+{
+  "format": "urrf.universal-art-asset-forge-report.v0.1",
+  "version": "0.1.0",
+  "status": "BLOCKED",
+  "execution": {
+    "mode": "RAGF_REFERENCE_WORKSPACE",
+    "status": "COMPLETED",
+    "provider_id": "provider:taowind:procedural-3d",
+    "workspace_root": "dc97f010a63fd9ec37bda78695087f82da52170315f7f1f5e04c2c3b5936785f",
+    "workspace_verified": true
+  },
+  "roots": {
+    "genome_root": "608144dee90b891d4e24b98e753963ccc99a9acba6320b1a130c3890029e478c",
+    "provider_resolution_root": "0a2ff02c7f68b17b3452f87411e28fda6f4a331d14b6b734e4c01f092a7305a3",
+    "workspace_root": "dc97f010a63fd9ec37bda78695087f82da52170315f7f1f5e04c2c3b5936785f",
+    "candidate_root": "bb0b52afb44be19f484bccbcb1833e1da3a46e39cd2c66357334f9f91821eb16",
+    "acceptance_root": "ef6509ce13115856a629405c28683badbf3c558f554f85a3817b92174c5185db",
+    "evidence_ledger_root": "bef0cc65e47686e7e94fdc7659f299b4679cf489b6dd980411e3ee4fc2b86eb4",
+    "forge_root": "6a18c3899df9ef5c209f1bf873422d7e89823c0d73117e02ab1694ca8b9a2d9b"
+  },
+  "profile": "character",
+  "target_quality_tier": "AAA",
+  "metrics": {
+    "triangle_count": 904,
+    "pbr_channel_count": 4,
+    "pbr_model": "stylized-pbr-v0.4",
+    "rig_present": true,
+    "animation_present": true,
+    "lod_present": true,
+    "collision_present": true
+  },
+  "gates": {
+    "intent_gate": {
+      "status": "PASS",
+      "required": true,
+      "reason": null
+    },
+    "genome_gate": {
+      "status": "PASS",
+      "required": true,
+      "reason": null
+    },
+    "provider_execution_gate": {
+      "status": "PASS",
+      "required": true,
+      "reason": null
+    },
+    "geometry_gate": {
+      "status": "PASS",
+      "required": true,
+      "reason": null
+    },
+    "topology_gate": {
+      "status": "FAIL",
+      "required": true,
+      "reason": "TOPOLOGY_NOT_EXPLICITLY_VERIFIED"
+    },
+    "uv_gate": {
+      "status": "FAIL",
+      "required": true,
+      "reason": "UV_NOT_EXPLICITLY_VERIFIED"
+    },
+    "pbr_gate": {
+      "status": "PASS",
+      "required": true,
+      "reason": null
+    },
+    "rig_gate": {
+      "status": "PASS",
+      "required": true,
+      "reason": null
+    },
+    "animation_gate": {
+      "status": "PASS",
+      "required": true,
+      "reason": null
+    },
+    "lod_gate": {
+      "status": "PASS",
+      "required": true,
+      "reason": null
+    },
+    "collision_gate": {
+      "status": "PASS",
+      "required": true,
+      "reason": null
+    },
+    "platform_gate": {
+      "status": "PASS",
+      "required": true,
+      "reason": null
+    },
+    "provenance_license_gate": {
+      "status": "FAIL",
+      "required": true,
+      "reason": "PROVENANCE_OR_LICENSE_AUDIT_INCOMPLETE"
+    },
+    "art_direction_gate": {
+      "status": "FAIL",
+      "required": true,
+      "reason": "ART_DIRECTION_REVIEW_REQUIRED"
+    },
+    "runtime_projection_gate": {
+      "status": "PASS",
+      "required": true,
+      "reason": null
+    },
+    "quality_tier_gate": {
+      "status": "FAIL",
+      "required": true,
+      "reason": "AAA_QUALITY_NOT_PROVEN"
+    },
+    "human_review_gate": {
+      "status": "FAIL",
+      "required": true,
+      "reason": "HUMAN_ART_REVIEW_REQUIRED"
+    }
+  },
+  "failures": [
+    "topology_gate",
+    "uv_gate",
+    "provenance_license_gate",
+    "art_direction_gate",
+    "quality_tier_gate",
+    "human_review_gate"
+  ],
+  "authority": {
+    "canonical_owner": "RNCS",
+    "representation_owner": "URRF",
+    "provider_can_write_authoritative_world_state": false,
+    "provider_can_commit": false,
+    "acceptance_can_commit": false,
+    "rncs_authority_required": true
+  },
+  "notes": "Candidate-only local RAGF reference execution. The forge proves Genome/provider/candidate/evidence orchestration and fails closed on missing AAA topology/UV/art-direction/human-review/quality evidence; it is not AAA production art proof or canonical RNCS mutation.",
+  "report_root": "3be190852dc85eea3889367e16c84bfdae9d9e7d462d4671eb1b42cb91bfe266"
+}

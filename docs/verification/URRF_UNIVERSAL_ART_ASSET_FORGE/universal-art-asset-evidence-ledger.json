@@ -1,0 +1,251 @@
+{
+  "format": "ragf.asset-evidence-ledger.v0.1",
+  "version": "0.1.0",
+  "ledger_id": "asset-evidence-ledger:010b9d6dd1988c7f43a779ff",
+  "authority": {
+    "provider_is_candidate_source_only": true,
+    "provider_can_write_authoritative_world_state": false,
+    "rncs_commit_required": true
+  },
+  "entries": [
+    {
+      "evidence_id": "asset-intent",
+      "status": "PASS",
+      "root": "5c416e72a4ba655ff684f88cd9462369a266126b7e7acc0479ac6ee974573fc2",
+      "details": {
+        "intent_id": "asset-intent:a5b72b27ab9fbb37c1174259"
+      }
+    },
+    {
+      "evidence_id": "asset-genome",
+      "status": "PASS",
+      "root": "d81335dc81c59569be1f3fe83a620ac8d43f244c251cea5edad6fa42e8557965",
+      "details": {
+        "asset_id": "asset:cf644862f780b86ae2bd9e94"
+      }
+    },
+    {
+      "evidence_id": "asset-requirement",
+      "status": "NOT_PROVIDED",
+      "root": "bac0ac473f5087f4cbcfa9648a0ce0babe18451f35ee44fd3ede1e206dfa5eab",
+      "details": {
+        "role": null
+      }
+    },
+    {
+      "evidence_id": "provider-manifest",
+      "status": "PASS",
+      "root": "82bf355a8b42fab295e1e96258e645703292ec27b20f119276e9e161cbb4b006",
+      "details": {
+        "provider_id": "provider:taowind:procedural-3d"
+      }
+    },
+    {
+      "evidence_id": "job-lifecycle",
+      "status": "NOT_PROVIDED",
+      "root": "a003d532af0a191de7cf0d12dca17c67ecf4c741ef96771fd17534982422830d",
+      "details": {
+        "history": []
+      }
+    },
+    {
+      "evidence_id": "provider-result",
+      "status": "NOT_PROVIDED",
+      "root": "bdd97093e536e0678b02e6b0e72c7282349040dc5728d78458ba23ddd088ce1d",
+      "details": {
+        "candidate_id": null
+      }
+    },
+    {
+      "evidence_id": "candidate",
+      "status": "PASS",
+      "root": "bb0b52afb44be19f484bccbcb1833e1da3a46e39cd2c66357334f9f91821eb16",
+      "details": {
+        "candidate_only": true
+      }
+    },
+    {
+      "evidence_id": "representation-references",
+      "status": "NOT_PROVIDED",
+      "root": "c6df1cf4055f28fc3301c5e94b0439f692e63a8f0d7d3ac601b68519cd0d896f",
+      "details": {
+        "count": 0,
+        "provider_ids": []
+      }
+    },
+    {
+      "evidence_id": "production-court",
+      "status": "FAIL",
+      "root": "ef6509ce13115856a629405c28683badbf3c558f554f85a3817b92174c5185db",
+      "details": {
+        "gates": [
+          {
+            "gate": "intent_gate",
+            "required": true,
+            "status": "PASS",
+            "pass": true,
+            "reason": null,
+            "source": "RAGF intent"
+          },
+          {
+            "gate": "genome_gate",
+            "required": true,
+            "status": "PASS",
+            "pass": true,
+            "reason": null,
+            "source": "URRF/RAGF genome verification"
+          },
+          {
+            "gate": "provider_execution_gate",
+            "required": true,
+            "status": "PASS",
+            "pass": true,
+            "reason": null,
+            "source": "RAGF_REFERENCE_WORKSPACE"
+          },
+          {
+            "gate": "geometry_gate",
+            "required": true,
+            "status": "PASS",
+            "pass": true,
+            "reason": null,
+            "source": "candidate metrics"
+          },
+          {
+            "gate": "topology_gate",
+            "required": true,
+            "status": "FAIL",
+            "pass": false,
+            "reason": "TOPOLOGY_NOT_EXPLICITLY_VERIFIED",
+            "source": "candidate topology status"
+          },
+          {
+            "gate": "uv_gate",
+            "required": true,
+            "status": "FAIL",
+            "pass": false,
+            "reason": "UV_NOT_EXPLICITLY_VERIFIED",
+            "source": "candidate UV status"
+          },
+          {
+            "gate": "pbr_gate",
+            "required": true,
+            "status": "PASS",
+            "pass": true,
+            "reason": null,
+            "source": "candidate PBR metadata"
+          },
+          {
+            "gate": "rig_gate",
+            "required": true,
+            "status": "PASS",
+            "pass": true,
+            "reason": null,
+            "source": "candidate artifact"
+          },
+          {
+            "gate": "animation_gate",
+            "required": true,
+            "status": "PASS",
+            "pass": true,
+            "reason": null,
+            "source": "candidate artifact"
+          },
+          {
+            "gate": "lod_gate",
+            "required": true,
+            "status": "PASS",
+            "pass": true,
+            "reason": null,
+            "source": "candidate artifact"
+          },
+          {
+            "gate": "collision_gate",
+            "required": true,
+            "status": "PASS",
+            "pass": true,
+            "reason": null,
+            "source": "candidate artifact"
+          },
+          {
+            "gate": "platform_gate",
+            "required": true,
+            "status": "PASS",
+            "pass": true,
+            "reason": null,
+            "source": "workspace report"
+          },
+          {
+            "gate": "provenance_license_gate",
+            "required": true,
+            "status": "FAIL",
+            "pass": false,
+            "reason": "PROVENANCE_OR_LICENSE_AUDIT_INCOMPLETE",
+            "source": "candidate/provider metadata"
+          },
+          {
+            "gate": "art_direction_gate",
+            "required": true,
+            "status": "FAIL",
+            "pass": false,
+            "reason": "ART_DIRECTION_REVIEW_REQUIRED",
+            "source": "explicit art-direction evidence"
+          },
+          {
+            "gate": "runtime_projection_gate",
+            "required": true,
+            "status": "PASS",
+            "pass": true,
+            "reason": null,
+            "source": "workspace runtime report"
+          },
+          {
+            "gate": "quality_tier_gate",
+            "required": true,
+            "status": "FAIL",
+            "pass": false,
+            "reason": "AAA_QUALITY_NOT_PROVEN",
+            "source": "candidate quality tier"
+          },
+          {
+            "gate": "human_review_gate",
+            "required": true,
+            "status": "FAIL",
+            "pass": false,
+            "reason": "HUMAN_ART_REVIEW_REQUIRED",
+            "source": "explicit human review receipt"
+          }
+        ],
+        "failures": [
+          "topology_gate",
+          "uv_gate",
+          "provenance_license_gate",
+          "art_direction_gate",
+          "quality_tier_gate",
+          "human_review_gate"
+        ]
+      }
+    },
+    {
+      "evidence_id": "world-placement",
+      "status": "NOT_PROVIDED",
+      "root": "86534083c3cb5d052ee1ee10296e13d4989c41a0eb03687c89ddd5ccdccb3936",
+      "details": {
+        "role": null
+      }
+    }
+  ],
+  "status": "FAIL",
+  "failures": [
+    "production-court"
+  ],
+  "roots": {
+    "provider_root": "82bf355a8b42fab295e1e96258e645703292ec27b20f119276e9e161cbb4b006",
+    "job_root": null,
+    "result_root": null,
+    "candidate_root": "bb0b52afb44be19f484bccbcb1833e1da3a46e39cd2c66357334f9f91821eb16",
+    "court_root": "ef6509ce13115856a629405c28683badbf3c558f554f85a3817b92174c5185db",
+    "placement_root": null
+  },
+  "ledger_root": "bef0cc65e47686e7e94fdc7659f299b4679cf489b6dd980411e3ee4fc2b86eb4"
+}
