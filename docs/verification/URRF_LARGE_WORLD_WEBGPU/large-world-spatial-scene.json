@@ -20727,6 +20727,7 @@
       "baseColor": "#4d9f62",
       "roughness": 0.92,
       "metallic": 0.05,
+      "emissiveStrength": 0,
       "doubleSided": true
     },
     {
@@ -20792,6 +20793,7 @@
       "baseColor": "#f3b562",
       "roughness": 0.92,
       "metallic": 0.05,
+      "emissiveStrength": 0,
       "doubleSided": true
     },
     {
@@ -20799,6 +20801,7 @@
       "baseColor": "#4d9f62",
       "roughness": 0.58,
       "metallic": 0.08,
+      "emissiveStrength": 0,
       "doubleSided": true
     },
     {
@@ -20806,6 +20809,7 @@
       "baseColor": "#c084fc",
       "roughness": 0.34,
       "metallic": 0.08,
+      "emissiveStrength": 0,
       "doubleSided": true
     },
     {
@@ -20821,6 +20825,7 @@
       "baseColor": "#f3b562",
       "roughness": 0.58,
       "metallic": 0.18,
+      "emissiveStrength": 0,
       "doubleSided": true
     },
     {
@@ -20836,6 +20841,7 @@
       "baseColor": "#c084fc",
       "roughness": 0.92,
       "metallic": 0.05,
+      "emissiveStrength": 0,
       "doubleSided": true
     },
     {
@@ -20851,6 +20857,7 @@
       "baseColor": "#a8794e",
       "roughness": 0.92,
       "metallic": 0.05,
+      "emissiveStrength": 0,
       "doubleSided": true
     },
     {
@@ -20866,6 +20873,7 @@
       "baseColor": "#b5a59b",
       "roughness": 0.92,
       "metallic": 0.05,
+      "emissiveStrength": 0,
       "doubleSided": true
     }
   ],
@@ -21937,7 +21945,7 @@
         ],
         "loadRadius": 70.4,
         "unloadRadius": 102.4,
-        "priority": 1
+        "priority": 2
       },
       {
         "id": "cell:chunk:world:urrf-large-world-webgpu:-1:1",
@@ -21976,7 +21984,7 @@
         ],
         "loadRadius": 70.4,
         "unloadRadius": 102.4,
-        "priority": 1
+        "priority": 2
       },
       {
         "id": "cell:chunk:world:urrf-large-world-webgpu:0:0",
@@ -22011,7 +22019,7 @@
         ],
         "loadRadius": 70.4,
         "unloadRadius": 102.4,
-        "priority": 1
+        "priority": 2
       },
       {
         "id": "cell:chunk:world:urrf-large-world-webgpu:1:-1",
@@ -22128,7 +22136,7 @@
     "worldId": "world:urrf-large-world-webgpu",
     "generation": 1,
     "realityRoot": "f922ee755cd39d13871c0bf8a0b21ece3d3995f96761f4d1a14e95bebe07f795",
-    "evidenceRoot": "15c101ee171836f8fb933d07d81bc20373ba8fa91aa1a13fb86f09381ed07b90"
+    "evidenceRoot": "141cf085d0066e673f4283f33a428aadf64b8fcbea9abcd9ed0868c609e8cf9b"
   },
   "assets": [
     {
@@ -22142,7 +22150,7 @@
       ],
       "priority": 0,
       "representationRoot": "8a6f08844488aa241260774a319a8ff0c81d978c561c441420bc38a954a2af6f",
-      "portfolioRoot": "72d6b0d02642f85d83ecea0f00dab849e77aa62d600e09b7d1f45931d41acf40",
+      "portfolioRoot": "64f4f78d4080c542925ee37c065fda157881cbbfc1b8e75aa583d58192ddade7",
       "candidateOnly": true,
       "authoritative": false
     },
@@ -22155,9 +22163,9 @@
       "cellIds": [
         "cell:chunk:world:urrf-large-world-webgpu:-1:0"
       ],
-      "priority": 1,
+      "priority": 2,
       "representationRoot": "007e28a39162124feae3d1594faf4e1957d71dada93671465b939fdaef010003",
-      "portfolioRoot": "f70bdf771815118b2e86dd89fe6a1ebf48a6be979d371e9fe96aad8ef623e913",
+      "portfolioRoot": "f96e78a1d7e7427ed92aeea7befb7f6c0fa61147781c60b46434fdd39ebae4a5",
       "candidateOnly": true,
       "authoritative": false
     },
@@ -22172,7 +22180,7 @@
       ],
       "priority": 0,
       "representationRoot": "b957a8b6f28f77a55548daf1710b4126d7f1816dd8923d02b7bc76e88921f106",
-      "portfolioRoot": "590e3eb763329fc848e0dedc2ca0359925417e2c59f11d2aef263f13396b849d",
+      "portfolioRoot": "b6ba4c29c61113108da404bfadb4d3af9dac1ca33e9deb939389d9558b7fca77",
       "candidateOnly": true,
       "authoritative": false
     },
@@ -22185,9 +22193,9 @@
       "cellIds": [
         "cell:chunk:world:urrf-large-world-webgpu:0:-1"
       ],
-      "priority": 1,
+      "priority": 2,
       "representationRoot": "23c0f541e414dacb251527ab31086e80fa324bbb3155d704f64a9a979e68fd1c",
-      "portfolioRoot": "3866962192556d4b2f56f437fbc380172379b7a82c3ab4b956034825d70b67b9",
+      "portfolioRoot": "e358d567cc4e46b42580ed52fa4436630932dba0847fb183d5fbf3f8d909d1a0",
       "candidateOnly": true,
       "authoritative": false
     },
@@ -22202,7 +22210,7 @@
       ],
       "priority": 0,
       "representationRoot": "41fb131568b2239bd7d8c883262817c078be22169309a19c6afee2b86510b2a3",
-      "portfolioRoot": "91ed259ca171e73ccd4c27edd9cf13123e892b655aa5cbc084d2d39b23dc87b6",
+      "portfolioRoot": "2c25a88aa9bc5b09ac341e2aff8cd2be7669c0c8690d4f66afb19729754ca32c",
       "candidateOnly": true,
       "authoritative": false
     },
@@ -22215,9 +22223,9 @@
       "cellIds": [
         "cell:chunk:world:urrf-large-world-webgpu:0:1"
       ],
-      "priority": 1,
+      "priority": 2,
       "representationRoot": "9b1e94212e07ab4b9c82562f3c7a30c59dd3862bd59c917ce12a3b78139de8ae",
-      "portfolioRoot": "89a2ee75be75a96ec3b70c137377a70cf5581109032820375f94c179beaf994a",
+      "portfolioRoot": "bdc99c76cf1abb420a4f267b4602eee066c944b7fe2434d10d8ab37e9749d3e1",
       "candidateOnly": true,
       "authoritative": false
     },
@@ -22232,7 +22240,7 @@
       ],
       "priority": 0,
       "representationRoot": "04c2a928594f5f645136a64c4c86004f6f42c96db77693dd852a04525c9ac1f5",
-      "portfolioRoot": "c8f78d12aef5fb4732390a2967ebcd9a55b9565f934ddf82e204c380519f0b85",
+      "portfolioRoot": "9895d73f9f7c556322199e1ff3bad85eec0d98186b5f8919f60dae7a7b178f8c",
       "candidateOnly": true,
       "authoritative": false
     },
@@ -22247,7 +22255,7 @@
       ],
       "priority": 0,
       "representationRoot": "12d55441f6b7729f993372dec6dcba953b232578f7afcac8d557235b908bc2d4",
-      "portfolioRoot": "13b016a41787a7ee166b62d622bdc5c05654b7ae6dca7dbbf3d4b2dc24062c21",
+      "portfolioRoot": "c87cddd2112bec1089b7971df51e00304ee0779cbe55a7d1ad6649c9c5b8d62b",
       "candidateOnly": true,
       "authoritative": false
     },
@@ -22262,7 +22270,7 @@
       ],
       "priority": 0,
       "representationRoot": "26dfd23022ba5706929794a0ce173dda3878f437495f695635d5de130b08f813",
-      "portfolioRoot": "665e023d3189b942c5e702d934d7508e205b0bcde1059409fe237f34c4acd219",
+      "portfolioRoot": "781357142f26cba022fd7adee0d0cf6d1b65efbf819f972394f06ee8bb37c433",
       "candidateOnly": true,
       "authoritative": false
     }
@@ -22274,7 +22282,15 @@
     "generation": 1,
     "region_root": "6bd0becfa0843fd4d78a2878a51d1e136bee76f79c03cac63eca354aa3496b51",
     "world_root": "f922ee755cd39d13871c0bf8a0b21ece3d3995f96761f4d1a14e95bebe07f795",
-    "selection_root": "66765ead18993e0baf1c1d9da00186034559131bde936d882836204dfae035e3",
+    "selection_root": "04950ee6b12793148465d5c6a289c8c6f601a887abc829aaeba7f313cd46ce64",
+    "resource_governor_plan_root": null,
+    "resource_governor_power_mode": null,
+    "resource_governor_load_shedding_level": null,
+    "power_downgrade_count": 0,
+    "unbound_governor_chunk_ids": [],
+    "causal_physical_profile_roots": {},
+    "causal_physical_ready_count": 0,
+    "causal_physical_blocked_count": 0,
     "active_chunk_ids": [
       "chunk:world:urrf-large-world-webgpu:-1:-1",
       "chunk:world:urrf-large-world-webgpu:-1:0",
@@ -22287,6 +22303,11 @@
       "chunk:world:urrf-large-world-webgpu:1:1"
     ],
     "presentation_scale": 2.8,
+    "quality_profile": "STANDARD",
+    "quality_profiles": [
+      "PROXY",
+      "STANDARD"
+    ],
     "visual_prototype_profile": "large-world.visual-prototypes.v0.1",
     "visual_prototype_ids": [
       "large-world.visual-prototypes.v0.1:crystal",
@@ -22305,63 +22326,63 @@
         "selected_slot_id": "slot:chunk:world:urrf-large-world-webgpu:-1:-1:proxy",
         "selected_quality_profile": "PROXY",
         "selected_representation_root": "8a6f08844488aa241260774a319a8ff0c81d978c561c441420bc38a954a2af6f",
-        "portfolio_root": "72d6b0d02642f85d83ecea0f00dab849e77aa62d600e09b7d1f45931d41acf40"
+        "portfolio_root": "64f4f78d4080c542925ee37c065fda157881cbbfc1b8e75aa583d58192ddade7"
       },
       {
         "chunk_id": "chunk:world:urrf-large-world-webgpu:-1:0",
         "selected_slot_id": "slot:chunk:world:urrf-large-world-webgpu:-1:0:standard",
         "selected_quality_profile": "STANDARD",
         "selected_representation_root": "007e28a39162124feae3d1594faf4e1957d71dada93671465b939fdaef010003",
-        "portfolio_root": "f70bdf771815118b2e86dd89fe6a1ebf48a6be979d371e9fe96aad8ef623e913"
+        "portfolio_root": "f96e78a1d7e7427ed92aeea7befb7f6c0fa61147781c60b46434fdd39ebae4a5"
       },
       {
         "chunk_id": "chunk:world:urrf-large-world-webgpu:-1:1",
         "selected_slot_id": "slot:chunk:world:urrf-large-world-webgpu:-1:1:proxy",
         "selected_quality_profile": "PROXY",
         "selected_representation_root": "b957a8b6f28f77a55548daf1710b4126d7f1816dd8923d02b7bc76e88921f106",
-        "portfolio_root": "590e3eb763329fc848e0dedc2ca0359925417e2c59f11d2aef263f13396b849d"
+        "portfolio_root": "b6ba4c29c61113108da404bfadb4d3af9dac1ca33e9deb939389d9558b7fca77"
       },
       {
         "chunk_id": "chunk:world:urrf-large-world-webgpu:0:-1",
         "selected_slot_id": "slot:chunk:world:urrf-large-world-webgpu:0:-1:standard",
         "selected_quality_profile": "STANDARD",
         "selected_representation_root": "23c0f541e414dacb251527ab31086e80fa324bbb3155d704f64a9a979e68fd1c",
-        "portfolio_root": "3866962192556d4b2f56f437fbc380172379b7a82c3ab4b956034825d70b67b9"
+        "portfolio_root": "e358d567cc4e46b42580ed52fa4436630932dba0847fb183d5fbf3f8d909d1a0"
       },
       {
         "chunk_id": "chunk:world:urrf-large-world-webgpu:0:0",
         "selected_slot_id": "slot:chunk:world:urrf-large-world-webgpu:0:0:proxy",
         "selected_quality_profile": "PROXY",
         "selected_representation_root": "41fb131568b2239bd7d8c883262817c078be22169309a19c6afee2b86510b2a3",
-        "portfolio_root": "91ed259ca171e73ccd4c27edd9cf13123e892b655aa5cbc084d2d39b23dc87b6"
+        "portfolio_root": "2c25a88aa9bc5b09ac341e2aff8cd2be7669c0c8690d4f66afb19729754ca32c"
       },
       {
         "chunk_id": "chunk:world:urrf-large-world-webgpu:0:1",
         "selected_slot_id": "slot:chunk:world:urrf-large-world-webgpu:0:1:standard",
         "selected_quality_profile": "STANDARD",
         "selected_representation_root": "9b1e94212e07ab4b9c82562f3c7a30c59dd3862bd59c917ce12a3b78139de8ae",
-        "portfolio_root": "89a2ee75be75a96ec3b70c137377a70cf5581109032820375f94c179beaf994a"
+        "portfolio_root": "bdc99c76cf1abb420a4f267b4602eee066c944b7fe2434d10d8ab37e9749d3e1"
       },
       {
         "chunk_id": "chunk:world:urrf-large-world-webgpu:1:-1",
         "selected_slot_id": "slot:chunk:world:urrf-large-world-webgpu:1:-1:proxy",
         "selected_quality_profile": "PROXY",
         "selected_representation_root": "04c2a928594f5f645136a64c4c86004f6f42c96db77693dd852a04525c9ac1f5",
-        "portfolio_root": "c8f78d12aef5fb4732390a2967ebcd9a55b9565f934ddf82e204c380519f0b85"
+        "portfolio_root": "9895d73f9f7c556322199e1ff3bad85eec0d98186b5f8919f60dae7a7b178f8c"
       },
       {
         "chunk_id": "chunk:world:urrf-large-world-webgpu:1:0",
         "selected_slot_id": "slot:chunk:world:urrf-large-world-webgpu:1:0:proxy",
         "selected_quality_profile": "PROXY",
         "selected_representation_root": "12d55441f6b7729f993372dec6dcba953b232578f7afcac8d557235b908bc2d4",
-        "portfolio_root": "13b016a41787a7ee166b62d622bdc5c05654b7ae6dca7dbbf3d4b2dc24062c21"
+        "portfolio_root": "c87cddd2112bec1089b7971df51e00304ee0779cbe55a7d1ad6649c9c5b8d62b"
       },
       {
         "chunk_id": "chunk:world:urrf-large-world-webgpu:1:1",
         "selected_slot_id": "slot:chunk:world:urrf-large-world-webgpu:1:1:proxy",
         "selected_quality_profile": "PROXY",
         "selected_representation_root": "26dfd23022ba5706929794a0ce173dda3878f437495f695635d5de130b08f813",
-        "portfolio_root": "665e023d3189b942c5e702d934d7508e205b0bcde1059409fe237f34c4acd219"
+        "portfolio_root": "781357142f26cba022fd7adee0d0cf6d1b65efbf819f972394f06ee8bb37c433"
       }
     ],
     "candidate_only": true,
@@ -22372,5 +22393,5 @@
       "rncs_authority_required": true
     }
   },
-  "scene_root": "bc507660aa81a0d3c8846eb4d47e308c32124c2e8099262888fbb3ff0a87b0a8"
+  "scene_root": "c6407729d0e99557c43103fe76ed3d2f71b64097419bff6c2a80bc86662536fe"
 }

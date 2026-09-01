@@ -1,0 +1,135 @@
+{
+  "format": "urrf.large-world-quality-ladder-report.v0.1",
+  "version": "0.1.0",
+  "evidence_level": "LOCAL_RUNTIME_AND_CPU_REFERENCE_RENDER",
+  "world_id": "world:urrf-large-world-quality-ladder",
+  "generation": 1,
+  "region_root": "78e1ae737c01f0384590a07785f60bcf07f684cd23ceac2c869d1fdbe5e62f9c",
+  "world_root": "e04c550a1371331e8a7d7d71cc0a9202de5c7e18b684c140dae6439f7a791031",
+  "stream_root": "ab34bd6f0b24fbbe61d64a64dd96d3c83cd7f0f0b0b5fceb3f280bacf2d936e8",
+  "active_chunk_count": 9,
+  "bound_quality_profiles": [
+    "PROXY",
+    "MOBILE",
+    "STANDARD",
+    "CINEMATIC"
+  ],
+  "quality_counts": {
+    "PROXY": {
+      "PROXY": 9,
+      "MOBILE": 0,
+      "STANDARD": 0,
+      "CINEMATIC": 0
+    },
+    "MOBILE": {
+      "PROXY": 0,
+      "MOBILE": 9,
+      "STANDARD": 0,
+      "CINEMATIC": 0
+    },
+    "STANDARD": {
+      "PROXY": 0,
+      "MOBILE": 0,
+      "STANDARD": 9,
+      "CINEMATIC": 0
+    },
+    "CINEMATIC": {
+      "PROXY": 0,
+      "MOBILE": 0,
+      "STANDARD": 0,
+      "CINEMATIC": 9
+    }
+  },
+  "renders": [
+    {
+      "profile": "PROXY",
+      "quality_profile": "PROXY",
+      "quality_profiles": [
+        "PROXY"
+      ],
+      "image_path": "large-world-quality-proxy.png",
+      "image_bytes": 922098,
+      "width": 640,
+      "height": 360,
+      "triangles": 824,
+      "draw_calls": 17,
+      "frame_root": "7840a414d53ee0fa511cd38790345aa414c398f5aa1899ed5d4dad81640ca11c",
+      "pixel_root": "be32b0aa600d38e51e3ec624cfc980b4d924692415c27f38d8cb1b623da1a67c",
+      "scene_root": "ca67b2d1ad535f722acf43677da6eb861271f17144bb2eb3b737af37d3ed4656",
+      "selection_root": "05838e7271f3858c826a7ad9d5390ba1c44afb92acf278ef8bfb66f8ab522c97",
+      "visual_evidence_root": "d8f0e1a63e11840a4e36fe8a1357f1323c0a280a46366e4ba45523ff48f63acc",
+      "candidate_only": true,
+      "authoritative": false
+    },
+    {
+      "profile": "MOBILE",
+      "quality_profile": "MOBILE",
+      "quality_profiles": [
+        "MOBILE"
+      ],
+      "image_path": "large-world-quality-mobile.png",
+      "image_bytes": 922098,
+      "width": 640,
+      "height": 360,
+      "triangles": 808,
+      "draw_calls": 17,
+      "frame_root": "09b4f726cd299cbd5d45c82669ba7152b0e15585786b73c3b4bbff72ed11eba7",
+      "pixel_root": "0a567a92710de713d20aebdeef3c9c82f277e9fb2df1afab0b760d199c5c7601",
+      "scene_root": "a8b4b4f956f082f792ba96a3095a2f3ea6f60e2ff838e39c28b0efadca1e94aa",
+      "selection_root": "623751b83733b07c23980f1e00c585b8e06faba98121fe2855a412f0d59d4dfd",
+      "visual_evidence_root": "28b4ced48d8153815db7c5ff5df3448161b0c7fa646077424273c9c7862bc527",
+      "candidate_only": true,
+      "authoritative": false
+    },
+    {
+      "profile": "STANDARD",
+      "quality_profile": "STANDARD",
+      "quality_profiles": [
+        "STANDARD"
+      ],
+      "image_path": "large-world-quality-standard.png",
+      "image_bytes": 922098,
+      "width": 640,
+      "height": 360,
+      "triangles": 2160,
+      "draw_calls": 17,
+      "frame_root": "fea6dcbebd456c4af4c5aea19a483f88e939ed4a850ac3a24c867f855222a652",
+      "pixel_root": "ded251f9c604ceb1afe3fe7b83df68187eab6651248da5ad7b234c7043ada6a2",
+      "scene_root": "1165dbc128d0918596e2d0e1c453e3f4c18e93fd3c0f95449504c21a20008fa0",
+      "selection_root": "8424376f687b5e113a68a9a1cb4a74de2911b27f9331176d51b31188ea546518",
+      "visual_evidence_root": "983fcd1009e45f8faef8f0c738cb94f3f44046a8851a753cbefd5e70d6584067",
+      "candidate_only": true,
+      "authoritative": false
+    },
+    {
+      "profile": "CINEMATIC",
+      "quality_profile": "CINEMATIC",
+      "quality_profiles": [
+        "CINEMATIC"
+      ],
+      "image_path": "large-world-quality-cinematic.png",
+      "image_bytes": 922098,
+      "width": 640,
+      "height": 360,
+      "triangles": 2704,
+      "draw_calls": 17,
+      "frame_root": "713864826b0f93daa495f543646a5045dca67a4d29452516268d4ac4336e7966",
+      "pixel_root": "7ba58d86387876ce345769395e96a13e6b60b490f13d2fcdc3f4fb04c1ac28fe",
+      "scene_root": "2f48b6e6883b62c8ef513f33e78a100139f03ce5315ac0155ffeeb7db6f145ee",
+      "selection_root": "3e3a7a72a98c494cc3f517480b9b9e31ec4314e7084fec1116ef526ab99e1c17",
+      "visual_evidence_root": "77f091afe8fb000aa934cd4003df4b1bd638346d0f7e63fa32de3e491b94a59b",
+      "candidate_only": true,
+      "authoritative": false
+    }
+  ],
+  "authority": {
+    "canonical_owner": "RNCS",
+    "representation_owner": "URRF",
+    "execution_owner": "VSR",
+    "candidate_only": true,
+    "authoritative": false,
+    "canonical_write_authorized": false
+  },
+  "notes": "This closes the local multi-quality lowering slice: PROXY/MOBILE/STANDARD/CINEMATIC each render from the same active RNCS chunks with distinct bounded geometry/material/presentation behavior. REFERENCE is intentionally unbound. Images are CPU-reference evidence, not a GPU/AAA quality grade, distributed streaming proof, or canonical-world promotion.",
+  "report_root": "41529969556fe2781a07cc011d40f43171b29bc4bb0da15f8b32122601d07218"
+}

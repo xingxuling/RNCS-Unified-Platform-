@@ -28,19 +28,19 @@
     }
   },
   "standard": {
-    "selection_root": "37e3a9dabd7aa3d2efc309c4f7e46695ded36c7de1c6b30d6d7c8d9e39d6fdd7",
-    "scene_root": "3bfa5b94a234f322e570ea0b9f08406cef55647de8ae1752ef7e55b38f3f34ee",
-    "frame_root": "d5e96585dd64f5ecbac00324033b1e3883cc777e6cf49b1752c6399c343e6c09",
+    "selection_root": "383ecc8195d002d01d8636ef934996bdb2d7380c185bf7a71d21408b7ebd85d2",
+    "scene_root": "0907a28a7521e49d3ab60bc2cb33fe0b07162c7e14f966455ae4c62acfd06a73",
+    "frame_root": "e061f318d0139da17d218c7737c90f838ea1f40aee0efc71d7ece1ee6affc362",
     "pixel_root": "674de2402302a114072dd6c5379260e7195b465f9ea7a43b96b7f1cbfec5a81b",
     "selected_quality_profiles": {
       "STANDARD": 9
     }
   },
   "power_lowered": {
-    "selection_root": "368fb980aa681175a5f2fad0fedd65b0b1f148fff2f3495d3463fcf65d9e15d4",
-    "scene_root": "ebf16e33c94ab6817c53166151c201dae92b5af013a2473defbc750910dda961",
-    "frame_root": "b4cf2b8dbcf1fc55adc8fb7aa077349caf6a65d901c3b46dbbababa9bac83988",
-    "pixel_root": "4cc36835c7e68843851c40d1e9b62a77b69f6746306e2a02fb8cdb2f5edce5f4",
+    "selection_root": "93ec21d7fc950d82be59125a1a8282b11ec3127c850f0fca952a79b4e332b1b3",
+    "scene_root": "323e8b579704f2b0b6012f5008856b0b04165bd971b047a2bd4e207de1d34e57",
+    "frame_root": "1c9cc1b075eb384024d5f5797c1f7fd8cad2cf2c3420d7bdce472497358757a9",
+    "pixel_root": "9cde593ec908b30d5225b14fc22fb3d7f58d03727ea1c19ca719d6922aaad0e9",
     "selected_quality_profiles": {
       "PROXY": 9
     },
@@ -57,5 +57,5 @@
     "canonical_state_mutated": false
   },
   "notes": "Candidate-only local Power Plane lowering: a verified RNCS Resource Governor plan binds explicit visual chunk demands and maps pressure actions to the URRF PROXY minimum-reality slot. The VSR CPU-reference frames show a deterministic standard-versus-proxy difference; this does not prove real GPU/VRAM telemetry, offload execution, frequency control, CDN delivery, production-scale throughput, or AAA visual quality.",
-  "report_root": "c58ae94944bbad4dd71b50626be0cd6054bcdd00e296690ab69c1ebfca85d90b"
+  "report_root": "202be900bd0908b617332196b14bc429f27c695dd15865a77e32dc893ce1294f"
 }

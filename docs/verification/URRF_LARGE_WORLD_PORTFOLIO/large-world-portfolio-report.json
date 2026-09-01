@@ -10,15 +10,15 @@
   "active_chunk_count": 9,
   "portfolio_count": 9,
   "portfolio_roots": [
-    "053a1fe4d833fc323b1e851e92d1496924bf65ac8e013915acb9bbcab97c18e9",
-    "1f67c3443f87b76949cb2ee3d7f18fe7616e923dce2c98d33bd661f50d0f2bb0",
-    "415b0b659348cd6dc208a10c0c81ce7368232ab6e6133b415263428588034c52",
-    "584758adea4c23389a89fc0e69b61ef7562d01795b6724e7dbb9ee28d93f7302",
-    "94bda8c54fa5ff588644d2210bdec08606b0e348a7bae537c99ee774ae8e76e3",
-    "c5b0b5ac6cc68cf4ea01b0dedcd310a7fecc32c792803d2ac83365c53a8d3f86",
-    "d726eb66f1f2afb4275e499d1a38523febc4466e6c80ec731bd0152731bbb598",
-    "e769c31fa5a9f16225edafa5bcd4179f1213579d13ba90463ea61e5542897fa4",
-    "e8db03e10fee7ca628854438131638ff4f50f2a9e730625765d2c03d7a09e41f"
+    "31e17f92dcb943612e33c08bfe033ed0c0e70861d3e06eb9820e0bd0fcbe77b1",
+    "73d901fd2feaf18aed396c51ee8827c191657b700b364791b9d2f1fc95c49e46",
+    "ac13ec0ee0117657c8e0ec8f23b04419882e18f73e00df2fcbf3224e3a0a629a",
+    "b7f212ac2ceeec0faa18ee50fd5c7bf7cf9089c177003e07170f60002b623fd7",
+    "d01b0e0e565881f5c8e9cafe3f964025e27e5c0b64e777a410e2eaf2e087b20f",
+    "df295c93458efe0e71cdc50d939d57508b673fc041c63bb86879ce16d1bc68ba",
+    "efdfcf1e241a02387429a1ad55f6b64aa87a093931df22c47fdd4f10607ccb62",
+    "fc117a8a290e67c6d938acbe0c7c3b1d183062f082ecd0cb8643355143804620",
+    "fc3742f9c08549a4ae9fca5c226a20da212df09b83aa459d55ddae985bef13ce"
   ],
   "composition_statuses": [
     "READY",
@@ -49,17 +49,17 @@
         "z": -1
       },
       "portfolio_id": "portfolio:reality-object:world:urrf-large-world-portfolio:chunk:-1:-1",
-      "portfolio_root": "d726eb66f1f2afb4275e499d1a38523febc4466e6c80ec731bd0152731bbb598",
+      "portfolio_root": "fc117a8a290e67c6d938acbe0c7c3b1d183062f082ecd0cb8643355143804620",
       "selected_slot_id": "slot:chunk:world:urrf-large-world-portfolio:-1:-1:proxy",
       "selected_quality_profile": "PROXY",
-      "selected_slot_root": "917e63fc494e115f9c595b4f72396fc675fe5aa643e21d26ef108ccea7d45fd8",
+      "selected_slot_root": "0e0acbf23788e42a214ec9a462fa29ad3096ca35fa47029c7a9358b753413d97",
       "selected_representation_root": "073dff2cb116b703734ec17fd5152b3af16e45c83cf97ecac885365528c4bc7a",
       "fallback_used": false,
-      "selection_root": "134c93a2f4e061d05ef85ee78a8e4d7cc61c3e13963285eb04a4c0fc25dcd7df",
+      "selection_root": "1f45385dc28863e81f184b8c5cda979f9c0ff9cf61d3b47a2cede2b7948df0ca",
       "constrained_slot_id": "slot:chunk:world:urrf-large-world-portfolio:-1:-1:proxy",
       "constrained_quality_profile": "PROXY",
       "constrained_fallback_used": true,
-      "constrained_selection_root": "f979dfee38e5bb38357338454b0df25042944d7eb77bb420351a793ddc28a84e"
+      "constrained_selection_root": "cadf00c1df8ed76d60a75a9118f134ad1a4add7c25901aa45ac3a4a4c087f14b"
     },
     {
       "chunk_id": "chunk:world:urrf-large-world-portfolio:-1:0",
@@ -68,17 +68,17 @@
         "z": 0
       },
       "portfolio_id": "portfolio:reality-object:world:urrf-large-world-portfolio:chunk:-1:0",
-      "portfolio_root": "c5b0b5ac6cc68cf4ea01b0dedcd310a7fecc32c792803d2ac83365c53a8d3f86",
+      "portfolio_root": "d01b0e0e565881f5c8e9cafe3f964025e27e5c0b64e777a410e2eaf2e087b20f",
       "selected_slot_id": "slot:chunk:world:urrf-large-world-portfolio:-1:0:proxy",
       "selected_quality_profile": "PROXY",
-      "selected_slot_root": "f485c5065e7fef6ecdbd9814935c66a254a4610c52b87f9131ce425b372e9579",
+      "selected_slot_root": "88e209bee328d91b3264c00fdc4b8622b0896193064d5647aff10419220b9d11",
       "selected_representation_root": "206bf47f85ca99fa9685df4ffcf4909f22da83b6275a715207d38d7eac5b90eb",
       "fallback_used": false,
-      "selection_root": "2663c493baa35cd0a45d7844d40f610ba1bbea9812313681e98afba361fd78c5",
+      "selection_root": "0bf5dd9c0b4f4d939c0adfcebd9991f6cc71f4816b048aaeaaf7da31dbd19eb0",
       "constrained_slot_id": "slot:chunk:world:urrf-large-world-portfolio:-1:0:proxy",
       "constrained_quality_profile": "PROXY",
       "constrained_fallback_used": true,
-      "constrained_selection_root": "b00055f6b030ab8b6d1a770f8469140e94e30b17ec55d8d5be13226fd7e9a98b"
+      "constrained_selection_root": "0b9b24bf124b13b11a7323c3cd550888ce1d5c63d048402fdded3acfafde25ee"
     },
     {
       "chunk_id": "chunk:world:urrf-large-world-portfolio:-1:1",
@@ -87,17 +87,17 @@
         "z": 1
       },
       "portfolio_id": "portfolio:reality-object:world:urrf-large-world-portfolio:chunk:-1:1",
-      "portfolio_root": "415b0b659348cd6dc208a10c0c81ce7368232ab6e6133b415263428588034c52",
+      "portfolio_root": "efdfcf1e241a02387429a1ad55f6b64aa87a093931df22c47fdd4f10607ccb62",
       "selected_slot_id": "slot:chunk:world:urrf-large-world-portfolio:-1:1:proxy",
       "selected_quality_profile": "PROXY",
-      "selected_slot_root": "9feb0a2af1e8d19ac93de74872ee5841ca7d298dc2d8d1b82541db73f86d4cc5",
+      "selected_slot_root": "cd946bc545df11f1b44b12ee761fef9a7035fde9be951bcf1476c288d63de559",
       "selected_representation_root": "d38818a994960bceb4895c205f631cd8cdacdee61a934148086af85c9879ab9d",
       "fallback_used": false,
-      "selection_root": "8ef293d97cd6172722f3079d7682b14860a1d86aa7957e9f295a7cf29f5014ac",
+      "selection_root": "4c5e6cf02092a8a9cff73fb05e8479ad35da8297a2e095a865ccdfc6e1621540",
       "constrained_slot_id": "slot:chunk:world:urrf-large-world-portfolio:-1:1:proxy",
       "constrained_quality_profile": "PROXY",
       "constrained_fallback_used": true,
-      "constrained_selection_root": "768d0f64c6cafa681734d52a0f915e40cafc27fb48af2ba1063716656cf36cb4"
+      "constrained_selection_root": "3105b22222f414268fd6197463c76f93b4e3ab0b3a486110f1f833a2ed98ab38"
     },
     {
       "chunk_id": "chunk:world:urrf-large-world-portfolio:0:-1",
@@ -106,17 +106,17 @@
         "z": -1
       },
       "portfolio_id": "portfolio:reality-object:world:urrf-large-world-portfolio:chunk:0:-1",
-      "portfolio_root": "e8db03e10fee7ca628854438131638ff4f50f2a9e730625765d2c03d7a09e41f",
+      "portfolio_root": "df295c93458efe0e71cdc50d939d57508b673fc041c63bb86879ce16d1bc68ba",
       "selected_slot_id": "slot:chunk:world:urrf-large-world-portfolio:0:-1:proxy",
       "selected_quality_profile": "PROXY",
-      "selected_slot_root": "a43af332d7553fb43f301415f7a5081412cce877221b612b4f84ce8f19846a4c",
+      "selected_slot_root": "a3fb3b23f92bc0493bdd7f68939162a75237df45cafda47358e61c49c438315d",
       "selected_representation_root": "04b5f02e598cd8c37e713c3718a9b121e098a08d990afb341056651aaa1b8861",
       "fallback_used": false,
-      "selection_root": "62699d6f9dba64affd8b1f5b2b595d97bd47d672a5eec20cca8f39a547f2e187",
+      "selection_root": "d0d944997ae29e8bf65a5ed1e8814511354b023e192d9f585f0c3359667430c9",
       "constrained_slot_id": "slot:chunk:world:urrf-large-world-portfolio:0:-1:proxy",
       "constrained_quality_profile": "PROXY",
       "constrained_fallback_used": true,
-      "constrained_selection_root": "f58ed968cb9296d426fb3f5c69a6553cd171838053e6d3087860e852092b4914"
+      "constrained_selection_root": "01d6f2602cf443f4dcd045ed50496216cf8831122432f187c4e442bd53ae58d7"
     },
     {
       "chunk_id": "chunk:world:urrf-large-world-portfolio:0:0",
@@ -125,17 +125,17 @@
         "z": 0
       },
       "portfolio_id": "portfolio:reality-object:world:urrf-large-world-portfolio:chunk:0:0",
-      "portfolio_root": "053a1fe4d833fc323b1e851e92d1496924bf65ac8e013915acb9bbcab97c18e9",
+      "portfolio_root": "fc3742f9c08549a4ae9fca5c226a20da212df09b83aa459d55ddae985bef13ce",
       "selected_slot_id": "slot:chunk:world:urrf-large-world-portfolio:0:0:standard",
       "selected_quality_profile": "STANDARD",
-      "selected_slot_root": "df05a7e90ef4fe65cd39f00129a9ec5a842b1ffac82a1b4f66fa0bffbef7671b",
+      "selected_slot_root": "54761aa55fb3f50acd1ddba09d888aaebfbec8b75d6cba19733714a03ef51c8b",
       "selected_representation_root": "5bcd6c3b43617e7ecf2876579f7c06a2d50fe9c377f6911b7729bfe29cc49110",
       "fallback_used": false,
-      "selection_root": "3ca2f69279eff929a3e3baf8ab8c44f9524ae3ff9546becbbc4601da8acd4c0b",
+      "selection_root": "f1bea2642c3200352eb1dd51c02c7bb8f042073bbddbf3226eff397bcb8bb184",
       "constrained_slot_id": "slot:chunk:world:urrf-large-world-portfolio:0:0:proxy",
       "constrained_quality_profile": "PROXY",
       "constrained_fallback_used": true,
-      "constrained_selection_root": "18aa8f0c5a7c4a1f2099de05d0297656d5afa7a88cf29120e6a69eea1e16bd8b"
+      "constrained_selection_root": "fc6119ab267fa88e75c50d773cdb75a0ab146ca071d41ceaaf8377ad9677375d"
     },
     {
       "chunk_id": "chunk:world:urrf-large-world-portfolio:0:1",
@@ -144,17 +144,17 @@
         "z": 1
       },
       "portfolio_id": "portfolio:reality-object:world:urrf-large-world-portfolio:chunk:0:1",
-      "portfolio_root": "1f67c3443f87b76949cb2ee3d7f18fe7616e923dce2c98d33bd661f50d0f2bb0",
+      "portfolio_root": "73d901fd2feaf18aed396c51ee8827c191657b700b364791b9d2f1fc95c49e46",
       "selected_slot_id": "slot:chunk:world:urrf-large-world-portfolio:0:1:proxy",
       "selected_quality_profile": "PROXY",
-      "selected_slot_root": "6dc03b55054f2cd0593247221032377b009f64294035898d408f6b935b4b2430",
+      "selected_slot_root": "8c2c3183562fe1d8531f3aadf7f4797c72b1e5b711227a605957d5b5cea50067",
       "selected_representation_root": "f6f20d39b0a0a256a67a1da56f1e567c5e60a3162f802c25669ba74453fb9304",
       "fallback_used": false,
-      "selection_root": "66a14ba890777491b188abd8c3e316d83aee56eb4f3171234b15c36bae6e0089",
+      "selection_root": "0875bd50ec46bc853703341fd10121d3c581c2f42e0eee1b8ae5e8a241d4ddf6",
       "constrained_slot_id": "slot:chunk:world:urrf-large-world-portfolio:0:1:proxy",
       "constrained_quality_profile": "PROXY",
       "constrained_fallback_used": true,
-      "constrained_selection_root": "ede39098177ef93605c63e840621cd98c2ffec7282a192190bdc3a79d7d3aeb7"
+      "constrained_selection_root": "373d3f75b2246120eddb625c89f329c701b1475e574361b04e1f53cbee6dbb67"
     },
     {
       "chunk_id": "chunk:world:urrf-large-world-portfolio:1:-1",
@@ -163,17 +163,17 @@
         "z": -1
       },
       "portfolio_id": "portfolio:reality-object:world:urrf-large-world-portfolio:chunk:1:-1",
-      "portfolio_root": "e769c31fa5a9f16225edafa5bcd4179f1213579d13ba90463ea61e5542897fa4",
+      "portfolio_root": "31e17f92dcb943612e33c08bfe033ed0c0e70861d3e06eb9820e0bd0fcbe77b1",
       "selected_slot_id": "slot:chunk:world:urrf-large-world-portfolio:1:-1:proxy",
       "selected_quality_profile": "PROXY",
-      "selected_slot_root": "893b77e011d69f9a83b919dc3a5199228bd80a0ffe20f430ba4c02ad3e4aa0ea",
+      "selected_slot_root": "c0fbb9a33e3ead21b189da52e91d3c5abf904b401c63530ffe61998ce5f79350",
       "selected_representation_root": "d7df10d846a7dd4b11d4a86b5434c555899ddd7e64312476127c313b548f3a04",
       "fallback_used": false,
-      "selection_root": "46e72590dcd4c2fce34ccef9804d2a98917b8835a42b23053ee1d7b034c00e62",
+      "selection_root": "f08a877220c39b5e00408cf0048a0d848ff571b4e969fa69a189c3e03a613149",
       "constrained_slot_id": "slot:chunk:world:urrf-large-world-portfolio:1:-1:proxy",
       "constrained_quality_profile": "PROXY",
       "constrained_fallback_used": true,
-      "constrained_selection_root": "d3ded6fbc1484608477fee4a9d8a634a6fb13f8ff9c296191e0f768b778c1647"
+      "constrained_selection_root": "8328f3ec506b0de3dd9a9bf24a24af0fc658ee6fdb3f913572b7bf9b46348180"
     },
     {
       "chunk_id": "chunk:world:urrf-large-world-portfolio:1:0",
@@ -182,17 +182,17 @@
         "z": 0
       },
       "portfolio_id": "portfolio:reality-object:world:urrf-large-world-portfolio:chunk:1:0",
-      "portfolio_root": "94bda8c54fa5ff588644d2210bdec08606b0e348a7bae537c99ee774ae8e76e3",
+      "portfolio_root": "ac13ec0ee0117657c8e0ec8f23b04419882e18f73e00df2fcbf3224e3a0a629a",
       "selected_slot_id": "slot:chunk:world:urrf-large-world-portfolio:1:0:proxy",
       "selected_quality_profile": "PROXY",
-      "selected_slot_root": "19689fdff0532b77cc8179d732fde724620af0c6274a71331c6e55ba633d33cb",
+      "selected_slot_root": "82171430ee5b2bf4bee250a8ece304a1355f6a8933498b88fc208c6d833084de",
       "selected_representation_root": "e63eb0e95e1f4a53e312753c07475059694875d3b17cfc003b29897263c01f11",
       "fallback_used": false,
-      "selection_root": "84790376b9c9da9de8ec5c1eebae40b254b69fd21a8f3c34c97232f4064f05e8",
+      "selection_root": "a702626de60d0e8fa71c2f8f4feb8f73891a7ac23c766d50afea95788d73d3a6",
       "constrained_slot_id": "slot:chunk:world:urrf-large-world-portfolio:1:0:proxy",
       "constrained_quality_profile": "PROXY",
       "constrained_fallback_used": true,
-      "constrained_selection_root": "62ddf5928f03599b1204a62c897b6576988526eb0c5029cbe9f5225b534f5101"
+      "constrained_selection_root": "762d54a45e0d8e0056579ed032e37d8b3d0dd667510de64fb9b4db1690374613"
     },
     {
       "chunk_id": "chunk:world:urrf-large-world-portfolio:1:1",
@@ -201,17 +201,17 @@
         "z": 1
       },
       "portfolio_id": "portfolio:reality-object:world:urrf-large-world-portfolio:chunk:1:1",
-      "portfolio_root": "584758adea4c23389a89fc0e69b61ef7562d01795b6724e7dbb9ee28d93f7302",
+      "portfolio_root": "b7f212ac2ceeec0faa18ee50fd5c7bf7cf9089c177003e07170f60002b623fd7",
       "selected_slot_id": "slot:chunk:world:urrf-large-world-portfolio:1:1:proxy",
       "selected_quality_profile": "PROXY",
-      "selected_slot_root": "ded4dd54215131ee0abd8e611022ef74704b68ba5e7e9716a2e6bb68d24ee8ef",
+      "selected_slot_root": "26176ee4136bb8a70dc6ed6790b56508e6fe205268a662ca1fa696181c588564",
       "selected_representation_root": "c8627d4cb2de03b82a762fb5fed34e5ce2727c8e771c0c11b5ff0c557a619d54",
       "fallback_used": false,
-      "selection_root": "a5443aa6610fc731c78a982b8f712fa0695adda4b7d629b9d5fc19becbe7751c",
+      "selection_root": "7abf9380e211a9f96ff3473171a2af0eb1c3bc75eccbbc7884424579f4cc7f06",
       "constrained_slot_id": "slot:chunk:world:urrf-large-world-portfolio:1:1:proxy",
       "constrained_quality_profile": "PROXY",
       "constrained_fallback_used": true,
-      "constrained_selection_root": "1260bdf47d9b8e659a8723cad963cdef3b0dd0744b9e10683f71bbdbc7219edc"
+      "constrained_selection_root": "0e52589972ae83ccb4ad8b3fa48c2b94fa2e2ac7de3d0d2ff49e2c8037d8dd5e"
     }
   ],
   "render_samples": [
@@ -228,7 +228,7 @@
       "material_root": "48d2374823258a33677402cb573c2e62d380717a5383175cdf7f3a6973b84e74",
       "environment_root": "e8962a49a3958e5922df263903dcb99855099e57a0d7ce939ab33df3097a3e20",
       "pixel_root": "391b156080bbced86ebb4b81ccd51b4e8ea4770e714b0c54340d9f48d049490c",
-      "selection_root": "031fefea4087082a8f6109e54e0c7e543908d0850ecb03afc4e3b8372b31926d"
+      "selection_root": "e4bc54976fafc5a32a3e70e00bc93ac010af7ab9e89aaced980028626c98c531"
     },
     {
       "id": "proxy-fallback",
@@ -243,15 +243,15 @@
       "material_root": "731fd5c1fa1719b4d7359d3f25bbf1238a39854aff835e3143c166c653c300e6",
       "environment_root": "e8962a49a3958e5922df263903dcb99855099e57a0d7ce939ab33df3097a3e20",
       "pixel_root": "f45e9e5baa2c46a2e86f646e2da0a5f959c4d9fbe6cfe7a7930cf260d4a2bda3",
-      "selection_root": "9742980fc726680fb6d0d0889db242423213a97fbf150ac8a2f60c8947c41c3b"
+      "selection_root": "8dfa2732739a815475435d42717cf6c4947526930ca2b3fb31b10bc09c041398"
     }
   ],
   "visual_evidence_roots": [
-    "88e32f291e184a3c44ea6663442fbd7d05d794024dfbf1ce94d5f3b5de6ca3c8",
-    "388d163e62cfde1aa41e02d63090f2c360cc02aebcac4ef4b3ba8563f89bf9ed",
-    "8ae95c1798f6bdf8615e9817c70f5d2855a6d832084904591956784f0ed4659d"
+    "3ae7ad8ef6c41982c5607d8e9e91b073ac0cb48f07916bbb5e31e974cba94b5d",
+    "4f0989c1b580333288bfc2d03a15e05f2b8b7fc44ea2b4a46e985ae75cd4f6b1",
+    "8a088ba33f3a904d79adcc242912d4fc817f305ce831ba9fa894655b9e6c21ea"
   ],
-  "runtime_root": "826fb4094ec7531d9ff939c28c7adfe4c732de541cdb81a39873efad0797c09f",
+  "runtime_root": "64c31c153dd720c8ff545ab805866de7ef15bbdb0d9f693230d4e76d8b6dfac1",
   "status": "LOCAL_RENDERED_OBSERVED_NOT_GRADED",
   "authority": {
     "canonical_write_authorized": false,
@@ -259,5 +259,5 @@
     "authoritative": false
   },
   "notes": "The render is a deterministic VSR CPU-reference projection of the RNCS active working set. It demonstrates per-chunk URRF portfolio selection and minimum-reality fallback; it does not prove production GPU/WebGPU quality, MMO-scale streaming, browser delivery, subjective art direction, or canonical-world promotion.",
-  "report_root": "0a172e1b185bcbc75629bc4de05e0f8e1b74e998c25ccd3700264bb36d634b08"
+  "report_root": "9bf35a4661f61c5df276647e6dbc2d03c44c9316067844c6124d6ce7e8e521bd"
 }

@@ -78,6 +78,12 @@ export const LARGE_WORLD_REALITY_ACCESS_FORMAT = 'rncs.large-world-reality-acces
 export const LARGE_WORLD_PORTFOLIO_SELECTION_FORMAT = 'rncs.large-world-portfolio-selection.v0.1';
 export const LARGE_WORLD_SPATIAL_SCENE_FORMAT = 'rncs.large-world-spatial-scene.v0.1';
 export const LARGE_WORLD_SPATIAL_VISUAL_PROFILE = 'large-world.visual-prototypes.v0.1';
+/**
+ * Quality profiles lowered by the large-world renderer. REFERENCE remains
+ * outside this list until a real reference-grade provider and renderer are
+ * bound; these four profiles are deterministic candidates only.
+ */
+export const LARGE_WORLD_SPATIAL_QUALITY_PROFILES = Object.freeze(['PROXY', 'MOBILE', 'STANDARD', 'CINEMATIC']);
 export const LARGE_WORLD_SPATIAL_GLTF_MANIFEST_FORMAT = 'rncs.large-world-spatial-gltf-manifest.v0.1';
 export const LARGE_WORLD_SPATIAL_GLTF_BUNDLE_FORMAT = 'rncs.large-world-spatial-gltf-bundle.v0.1';
 export const LARGE_WORLD_SPATIAL_GLTF_PROVIDER_ID = 'provider:taowind:large-world-gltf-prototype:v0.1';
@@ -143,6 +149,12 @@ const keySort = (a, b) => Buffer.compare(Buffer.from(String(a), 'utf8'), Buffer.
 const strings = values => [...new Set((Array.isArray(values) ? values : []).map(String).filter(Boolean))].sort(keySort);
 const hex64 = value => typeof value === 'string' && /^[0-9a-f]{64}$/i.test(value);
 const fail = (condition, code) => { if (!condition) throw new Error(code); };
+const normalizeQualityProfiles = (values, fallback = LARGE_WORLD_SPATIAL_QUALITY_PROFILES) => {
+  const raw = Array.isArray(values) && values.length > 0 ? values : fallback;
+  const normalized = [...new Set(raw.map(value => String(value).trim().toUpperCase()).filter(Boolean))];
+  fail(normalized.length > 0 && normalized.every(value => LARGE_WORLD_SPATIAL_QUALITY_PROFILES.includes(value)), 'LARGE_WORLD_SPATIAL_QUALITY_PROFILE_INVALID');
+  return normalized.sort((a, b) => LARGE_WORLD_SPATIAL_QUALITY_PROFILES.indexOf(a) - LARGE_WORLD_SPATIAL_QUALITY_PROFILES.indexOf(b));
+};
 
 function normalizeResourceGovernorPlan(input) {
   if (input === undefined || input === null) return null;
@@ -583,16 +595,19 @@ function isWireframeReference(reference) {
 
 function portfolioResourceCosts(chunk, qualityProfile) {
   const memory = integer(chunk.memory_bytes, 0, {min: 0});
-  const proxy = qualityProfile === 'PROXY';
+  const quality = String(qualityProfile).toUpperCase();
+  const proxy = quality === 'PROXY';
+  const mobile = quality === 'MOBILE';
+  const cinematic = quality === 'CINEMATIC';
   return {
-    CPU_MILLI: (proxy ? 20 : 80) + chunk.sample_resolution * (proxy ? 2 : 6),
-    GPU_MILLI: proxy ? 15 : 90,
+    CPU_MILLI: (proxy ? 20 : mobile ? 42 : cinematic ? 128 : 80) + chunk.sample_resolution * (proxy ? 2 : mobile ? 3 : cinematic ? 8 : 6),
+    GPU_MILLI: proxy ? 15 : mobile ? 42 : cinematic ? 180 : 90,
     NPU_MILLI: 0,
-    VRAM_MB: proxy ? 4 : 8 + Math.max(1, Math.ceil(memory / 4096)),
-    RAM_MB: proxy ? 1 + Math.max(1, Math.ceil(memory / 8192)) : 2 + Math.max(1, Math.ceil(memory / 2048)),
-    STORAGE_KB: proxy ? Math.max(1, Math.ceil(memory / 4096)) : Math.max(1, Math.ceil(memory / 1024)),
-    NETWORK_KB: proxy ? Math.max(1, Math.ceil(memory / 4096)) : Math.max(1, Math.ceil(memory / 1024)),
-    ENERGY_MILLI: proxy ? 5 : 25
+    VRAM_MB: proxy ? 4 : mobile ? 6 + Math.max(1, Math.ceil(memory / 8192)) : cinematic ? 16 + Math.max(1, Math.ceil(memory / 2048)) : 8 + Math.max(1, Math.ceil(memory / 4096)),
+    RAM_MB: proxy ? 1 + Math.max(1, Math.ceil(memory / 8192)) : mobile ? 2 + Math.max(1, Math.ceil(memory / 4096)) : cinematic ? 4 + Math.max(1, Math.ceil(memory / 1024)) : 2 + Math.max(1, Math.ceil(memory / 2048)),
+    STORAGE_KB: proxy ? Math.max(1, Math.ceil(memory / 4096)) : mobile ? Math.max(1, Math.ceil(memory / 2048)) : cinematic ? Math.max(1, Math.ceil(memory / 512)) : Math.max(1, Math.ceil(memory / 1024)),
+    NETWORK_KB: proxy ? Math.max(1, Math.ceil(memory / 4096)) : mobile ? Math.max(1, Math.ceil(memory / 2048)) : cinematic ? Math.max(1, Math.ceil(memory / 512)) : Math.max(1, Math.ceil(memory / 1024)),
+    ENERGY_MILLI: proxy ? 5 : mobile ? 10 : cinematic ? 45 : 25
   };
 }
 
@@ -636,42 +651,65 @@ function subtractCausalPhysicalCosts(resourceBudget, costs) {
   return output;
 }
 
-function chunkPortfolioSlot(chunk, reference, qualityProfile, {proxyWidth, proxyHeight, standardWidth, standardHeight, fallbackSlotId = null} = {}) {
-  const proxy = qualityProfile === 'PROXY';
-  const style = proxy ? 'WIREFRAME' : 'PROCEDURAL_GRID';
+function chunkPortfolioSlot(chunk, reference, qualityProfile, {
+  proxyWidth,
+  proxyHeight,
+  mobileWidth,
+  mobileHeight,
+  standardWidth,
+  standardHeight,
+  cinematicWidth,
+  cinematicHeight,
+  fallbackSlotId = null
+} = {}) {
+  const quality = String(qualityProfile).toUpperCase();
+  const proxy = quality === 'PROXY';
+  const mobile = quality === 'MOBILE';
+  const cinematic = quality === 'CINEMATIC';
+  const style = proxy ? 'WIREFRAME' : `PROCEDURAL_GRID_${quality}`;
+  const dimensions = proxy
+    ? [proxyWidth, proxyHeight, 320, 180]
+    : mobile
+      ? [mobileWidth, mobileHeight, 480, 270]
+      : cinematic
+        ? [cinematicWidth, cinematicHeight, 1280, 720]
+        : [standardWidth, standardHeight, 640, 360];
   const biome = String(chunk.biome ?? 'UNKNOWN').toUpperCase();
-  const slot_id = `slot:${chunk.chunk_id}:${qualityProfile.toLowerCase()}`;
+  const slot_id = `slot:${chunk.chunk_id}:${quality.toLowerCase()}`;
   return createRepresentationSlot({
     slot_id,
     representation_id: reference.representation_id,
     representation_root: reference.representation_root,
     representation_kind: reference.representation_kind,
-    quality_profile: qualityProfile,
+    quality_profile: quality,
     diversity_axes: {
       MODALITY: 'MESH',
-      DETAIL: qualityProfile,
-      MATERIAL: `BIOME_${biome}`,
-      LIGHTING: 'WORLD_GRID',
+      DETAIL: quality,
+      MATERIAL: `${quality}_BIOME_${biome}`,
+      LIGHTING: proxy ? 'WORLD_GRID_PROXY' : mobile ? 'WORLD_GRID_MOBILE' : cinematic ? 'WORLD_GRID_CINEMATIC' : 'WORLD_GRID_STANDARD',
       ENVIRONMENT: biome,
       STYLE: style,
       MOTION: 'STATIC',
       VIEW: 'CHUNK'
     },
     render_profile: {
-      renderer_id: `large-world-${qualityProfile.toLowerCase()}`,
-      shading_model: proxy ? 'wireframe' : 'pbr-lite',
-      lighting_profile: 'world-grid',
+      renderer_id: `large-world-${quality.toLowerCase()}`,
+      shading_model: proxy ? 'wireframe' : cinematic ? 'pbr-lite-cinematic-candidate' : mobile ? 'pbr-lite-mobile' : 'pbr-lite',
+      lighting_profile: proxy ? 'world-grid-proxy' : mobile ? 'world-grid-mobile' : cinematic ? 'world-grid-cinematic-candidate' : 'world-grid-standard',
       camera_profile: 'chunk-topdown',
-      resolution_class: qualityProfile.toLowerCase(),
-      width: integer(proxy ? proxyWidth : standardWidth, proxy ? 320 : 640, {min: 1, max: 16384}),
-      height: integer(proxy ? proxyHeight : standardHeight, proxy ? 180 : 360, {min: 1, max: 16384}),
-      post_process: 'none',
+      resolution_class: quality.toLowerCase(),
+      width: integer(dimensions[0], dimensions[2], {min: 1, max: 16384}),
+      height: integer(dimensions[1], dimensions[3], {min: 1, max: 16384}),
+      post_process: cinematic ? 'filmic-tonemap-candidate' : 'none',
       options: {
         chunk_size_mm: chunk.extent_mm?.x ?? 0,
-        sample_resolution: chunk.sample_resolution
+        sample_resolution: chunk.sample_resolution,
+        quality_tier: quality.toLowerCase(),
+        geometry_source: 'chunk-procedural-grid',
+        presentation_variant: `large-world-${quality.toLowerCase()}`
       }
     },
-    resource_costs: portfolioResourceCosts(chunk, qualityProfile),
+    resource_costs: portfolioResourceCosts(chunk, quality),
     fallback_slot_id: proxy ? null : fallbackSlotId,
     required_for_minimum: proxy,
     evidence_refs: [chunk.chunk_root, chunk.content_root, reference.provider_root]
@@ -695,14 +733,26 @@ export function createChunkRepresentationPortfolio(chunkInput, input = {}) {
   fail(references.length > 0, 'LARGE_WORLD_PORTFOLIO_REPRESENTATIONS_REQUIRED');
   const wireframe = references.find(isWireframeReference) ?? null;
   const procedural = references.find(reference => reference !== wireframe) ?? null;
+  const qualityProfiles = normalizeQualityProfiles(value.quality_profiles ?? value.qualityProfiles);
+  const requiredQualityProfiles = normalizeQualityProfiles(
+    value.required_quality_profiles ?? value.requiredQualityProfiles,
+    qualityProfiles
+  );
+  fail(requiredQualityProfiles.every(profile => qualityProfiles.includes(profile)), 'LARGE_WORLD_PORTFOLIO_REQUIRED_QUALITY_NOT_IN_LADDER');
   const slots = [];
-  if (wireframe) slots.push(chunkPortfolioSlot(chunk, wireframe, 'PROXY', value));
-  if (procedural) slots.push(chunkPortfolioSlot(chunk, procedural, 'STANDARD', {
-    ...value,
-    fallbackSlotId: wireframe ? `slot:${chunk.chunk_id}:proxy` : null
-  }));
-  if (!wireframe && !procedural) slots.push(chunkPortfolioSlot(chunk, references[0], 'STANDARD', value));
+  if (wireframe && qualityProfiles.includes('PROXY')) slots.push(chunkPortfolioSlot(chunk, wireframe, 'PROXY', value));
+  if (procedural) {
+    for (const quality of qualityProfiles.filter(profile => profile !== 'PROXY')) {
+      slots.push(chunkPortfolioSlot(chunk, procedural, quality, {
+        ...value,
+        fallbackSlotId: slots.at(-1)?.slot_id ?? null
+      }));
+    }
+  }
+  if (slots.length === 0) slots.push(chunkPortfolioSlot(chunk, references[0], qualityProfiles[0], value));
   const active_slot_id = slots.find(slot => slot.quality_profile === 'STANDARD')?.slot_id
+    ?? slots.find(slot => slot.quality_profile === 'MOBILE')?.slot_id
+    ?? slots.find(slot => slot.quality_profile === 'CINEMATIC')?.slot_id
     ?? slots.find(slot => slot.quality_profile === 'PROXY')?.slot_id
     ?? null;
   return createRepresentationPortfolio({
@@ -714,16 +764,17 @@ export function createChunkRepresentationPortfolio(chunkInput, input = {}) {
     active_slot_id,
     composition: {
       mode: 'BALANCED',
-      min_slots: 2,
-      max_slots: 2,
+      min_slots: integer(value.min_slots ?? value.minSlots, qualityProfiles.length, {min: 1, max: 64}),
+      max_slots: integer(value.max_slots ?? value.maxSlots, qualityProfiles.length, {min: 1, max: 64}),
       required_kinds: ['mesh'],
-      required_quality_profiles: ['PROXY', 'STANDARD'],
-      quality_ladder: ['PROXY', 'STANDARD'],
+      required_quality_profiles: requiredQualityProfiles,
+      quality_ladder: qualityProfiles,
       diversity_targets: {
         MODALITY: 1,
-        DETAIL: 2,
+        DETAIL: Math.min(qualityProfiles.length, 4),
+        MATERIAL: Math.min(qualityProfiles.length, 4),
         ENVIRONMENT: 1,
-        STYLE: 2,
+        STYLE: Math.min(qualityProfiles.length, 4),
         MOTION: 1,
         VIEW: 1
       }
@@ -747,6 +798,22 @@ const LARGE_WORLD_SPATIAL_PROXY_COLORS = Object.freeze({
   grassland: '#4c6726',
   tundra: '#617481',
   wetland: '#2a514d'
+});
+const LARGE_WORLD_SPATIAL_MOBILE_COLORS = Object.freeze({
+  coast: '#347da1',
+  desert: '#bd8f3a',
+  forest: '#397450',
+  grassland: '#6f9639',
+  tundra: '#a6c5d9',
+  wetland: '#467f74'
+});
+const LARGE_WORLD_SPATIAL_CINEMATIC_COLORS = Object.freeze({
+  coast: '#3ea9d4',
+  desert: '#e6b34c',
+  forest: '#3ba56a',
+  grassland: '#8fbe48',
+  tundra: '#d5efff',
+  wetland: '#4ea99a'
 });
 const LARGE_WORLD_SPATIAL_RESOURCE_COLORS = Object.freeze({
   crystal: '#7dd3fc',
@@ -840,34 +907,36 @@ function largeWorldSpatialPrototype(kind, qualityProfile) {
     prototypeId: `${LARGE_WORLD_SPATIAL_VISUAL_PROFILE}:proxy-structure`,
     mesh: largeWorldSpatialRingMesh('mesh:large-world:prototype:proxy-structure', {sides: 6, bottomRadius: .46, topRadius: .38, height: .72})
   };
-  const prism = (sides, bottomRadius, topRadius, height) => largeWorldSpatialRingMesh(`mesh:large-world:prototype:${normalizedKind}`, {sides, bottomRadius, topRadius, height});
-  const cone = (sides, bottomRadius, height) => largeWorldSpatialRingMesh(`mesh:large-world:prototype:${normalizedKind}:roof`, {sides, bottomRadius, topRadius: 0, height});
-  const crystal = largeWorldSpatialRingMesh(`mesh:large-world:prototype:${normalizedKind}:crystal`, {sides: 6, bottomRadius: .26, topRadius: 0, height: .95});
+  const variantSuffix = quality === 'STANDARD' ? '' : `:${quality.toLowerCase()}`;
+  const sidesFor = sides => quality === 'MOBILE' ? Math.max(4, sides - 2) : quality === 'CINEMATIC' ? sides + 4 : sides;
+  const prism = (sides, bottomRadius, topRadius, height) => largeWorldSpatialRingMesh(`mesh:large-world:prototype:${normalizedKind}${variantSuffix}`, {sides: sidesFor(sides), bottomRadius, topRadius, height});
+  const cone = (sides, bottomRadius, height) => largeWorldSpatialRingMesh(`mesh:large-world:prototype:${normalizedKind}:roof${variantSuffix}`, {sides: sidesFor(sides), bottomRadius, topRadius: 0, height});
+  const crystal = largeWorldSpatialRingMesh(`mesh:large-world:prototype:${normalizedKind}:crystal${variantSuffix}`, {sides: sidesFor(6), bottomRadius: .26, topRadius: 0, height: .95});
   let mesh;
-  if (normalizedKind === 'grove') mesh = largeWorldSpatialCombineMeshes('mesh:large-world:prototype:grove', [
+  if (normalizedKind === 'grove') mesh = largeWorldSpatialCombineMeshes(`mesh:large-world:prototype:grove${variantSuffix}`, [
     {mesh: prism(6, .16, .13, .58)},
     {mesh: cone(8, .52, .72), translation: [0, .42, 0]},
     {mesh: cone(8, .38, .52), translation: [0, .83, 0]}
   ]);
-  else if (normalizedKind === 'watchtower') mesh = largeWorldSpatialCombineMeshes('mesh:large-world:prototype:watchtower', [
+  else if (normalizedKind === 'watchtower') mesh = largeWorldSpatialCombineMeshes(`mesh:large-world:prototype:watchtower${variantSuffix}`, [
     {mesh: prism(8, .34, .27, .95)},
     {mesh: cone(8, .45, .34), translation: [0, .95, 0]}
   ]);
-  else if (normalizedKind === 'mine') mesh = largeWorldSpatialCombineMeshes('mesh:large-world:prototype:mine', [
+  else if (normalizedKind === 'mine') mesh = largeWorldSpatialCombineMeshes(`mesh:large-world:prototype:mine${variantSuffix}`, [
     {mesh: prism(8, .5, .38, .38)},
     {mesh: cone(8, .52, .42), translation: [0, .32, 0]}
   ]);
-  else if (normalizedKind === 'shrine') mesh = largeWorldSpatialCombineMeshes('mesh:large-world:prototype:shrine', [
+  else if (normalizedKind === 'shrine') mesh = largeWorldSpatialCombineMeshes(`mesh:large-world:prototype:shrine${variantSuffix}`, [
     {mesh: prism(4, .46, .3, .28)},
     {mesh: crystal, translation: [0, .25, 0], scale: [1.25, 1.05, 1.25]}
   ]);
-  else if (normalizedKind === 'ruin') mesh = largeWorldSpatialCombineMeshes('mesh:large-world:prototype:ruin', [
+  else if (normalizedKind === 'ruin') mesh = largeWorldSpatialCombineMeshes(`mesh:large-world:prototype:ruin${variantSuffix}`, [
     {mesh: prism(6, .18, .16, .78), translation: [-.24, 0, -.12]},
     {mesh: prism(6, .16, .12, .54), translation: [.25, 0, .08]},
     {mesh: prism(6, .19, .1, .38), translation: [.02, 0, .28]}
   ]);
   else mesh = prism(6, .42, .34, .7);
-  return {prototypeId: `${LARGE_WORLD_SPATIAL_VISUAL_PROFILE}:${normalizedKind}`, mesh};
+  return {prototypeId: `${LARGE_WORLD_SPATIAL_VISUAL_PROFILE}:${normalizedKind}${variantSuffix}`, mesh};
 }
 
 function largeWorldSpatialResourcePrototype(kind, qualityProfile) {
@@ -877,17 +946,19 @@ function largeWorldSpatialResourcePrototype(kind, qualityProfile) {
     prototypeId: `${LARGE_WORLD_SPATIAL_VISUAL_PROFILE}:proxy-resource`,
     mesh: largeWorldSpatialRingMesh('mesh:large-world:prototype:proxy-resource', {sides: 5, bottomRadius: .42, topRadius: .26, height: .72})
   };
+  const variantSuffix = quality === 'STANDARD' ? '' : `:${quality.toLowerCase()}`;
+  const sidesFor = sides => quality === 'MOBILE' ? Math.max(4, sides - 2) : quality === 'CINEMATIC' ? sides + 4 : sides;
   if (normalizedKind === 'crystal' || normalizedKind === 'salt') return {
-    prototypeId: `${LARGE_WORLD_SPATIAL_VISUAL_PROFILE}:${normalizedKind}`,
-    mesh: largeWorldSpatialRingMesh(`mesh:large-world:prototype:resource:${normalizedKind}`, {sides: 6, bottomRadius: .36, topRadius: 0, height: 1})
+    prototypeId: `${LARGE_WORLD_SPATIAL_VISUAL_PROFILE}:${normalizedKind}${variantSuffix}`,
+    mesh: largeWorldSpatialRingMesh(`mesh:large-world:prototype:resource:${normalizedKind}${variantSuffix}`, {sides: sidesFor(6), bottomRadius: .36, topRadius: 0, height: 1})
   };
   if (normalizedKind === 'timber') return {
-    prototypeId: `${LARGE_WORLD_SPATIAL_VISUAL_PROFILE}:${normalizedKind}`,
-    mesh: largeWorldSpatialRingMesh('mesh:large-world:prototype:resource:timber', {sides: 8, bottomRadius: .3, topRadius: .22, height: 1})
+    prototypeId: `${LARGE_WORLD_SPATIAL_VISUAL_PROFILE}:${normalizedKind}${variantSuffix}`,
+    mesh: largeWorldSpatialRingMesh(`mesh:large-world:prototype:resource:timber${variantSuffix}`, {sides: sidesFor(8), bottomRadius: .3, topRadius: .22, height: 1})
   };
   return {
-    prototypeId: `${LARGE_WORLD_SPATIAL_VISUAL_PROFILE}:${normalizedKind}`,
-    mesh: largeWorldSpatialRingMesh(`mesh:large-world:prototype:resource:${normalizedKind}`, {sides: 8, bottomRadius: .38, topRadius: .27, height: .76})
+    prototypeId: `${LARGE_WORLD_SPATIAL_VISUAL_PROFILE}:${normalizedKind}${variantSuffix}`,
+    mesh: largeWorldSpatialRingMesh(`mesh:large-world:prototype:resource:${normalizedKind}${variantSuffix}`, {sides: sidesFor(8), bottomRadius: .38, topRadius: .27, height: .76})
   };
 }
 
@@ -916,7 +987,12 @@ function largeWorldSpatialMeshNormals(mesh) {
 function largeWorldSpatialTerrainMesh(chunk, qualityProfile) {
   const resolution = integer(chunk.sample_resolution, 1, {min: 1, max: 32});
   const source = chunk.mesh.positions;
-  const step = qualityProfile === 'PROXY' ? Math.max(1, Math.ceil(resolution / 4)) : 1;
+  const quality = String(qualityProfile).toUpperCase();
+  const step = quality === 'PROXY'
+    ? Math.max(1, Math.ceil(resolution / 4))
+    : quality === 'MOBILE'
+      ? Math.max(1, Math.ceil(resolution / 2))
+      : 1;
   const axis = [];
   for (let coordinate = 0; coordinate <= resolution; coordinate += step) axis.push(coordinate);
   if (axis.at(-1) !== resolution) axis.push(resolution);
@@ -961,6 +1037,8 @@ function largeWorldSpatialSceneRoot(scene) {
     active_chunk_ids: extension.active_chunk_ids,
     presentation_scale: String(extension.presentation_scale),
     representation_slots: extension.representation_slots,
+    quality_profile: extension.quality_profile,
+    quality_profiles: extension.quality_profiles,
     visual_prototype_profile: extension.visual_prototype_profile,
     visual_prototype_ids: extension.visual_prototype_ids,
     reality: {
@@ -1841,6 +1919,14 @@ export function createLargeWorldSpatialScene(input = {}) {
   };
   const structureVisuals = new Map();
   const resourceVisuals = new Map();
+  const activeQualityProfiles = new Set(selection.selections.map(row => String(row.selected_quality_profile ?? '').toUpperCase()));
+  const sceneLightingQuality = activeQualityProfiles.has('CINEMATIC')
+    ? 'CINEMATIC'
+    : activeQualityProfiles.has('STANDARD')
+      ? 'STANDARD'
+      : activeQualityProfiles.has('MOBILE')
+        ? 'MOBILE'
+        : 'PROXY';
   const ensureStructureVisual = (kind, qualityProfile) => {
     const normalizedKind = String(kind ?? 'unknown').toLowerCase();
     const quality = String(qualityProfile).toUpperCase();
@@ -1852,9 +1938,15 @@ export function createLargeWorldSpatialScene(input = {}) {
     visualPrototypeIds.add(prototype.prototypeId);
     const materialId = addMaterial({
       id: `material:structure:${quality.toLowerCase()}:${normalizedKind}`,
-      baseColor: largeWorldSpatialColor(LARGE_WORLD_SPATIAL_STRUCTURE_COLORS, normalizedKind, quality === 'PROXY' ? '#b7791f' : '#f6ad55'),
-      roughness: quality === 'PROXY' ? .92 : normalizedKind === 'shrine' ? .34 : .58,
-      metallic: quality === 'PROXY' ? .05 : normalizedKind === 'watchtower' ? .18 : .08,
+      baseColor: largeWorldSpatialColor(
+        LARGE_WORLD_SPATIAL_STRUCTURE_COLORS,
+        normalizedKind,
+        quality === 'PROXY' ? '#b7791f' : quality === 'CINEMATIC' ? '#ffd18a' : quality === 'MOBILE' ? '#d69a4a' : '#f6ad55'
+      ),
+      roughness: quality === 'PROXY' ? .92 : quality === 'MOBILE' ? .72 : quality === 'CINEMATIC' ? (normalizedKind === 'shrine' ? .24 : .42) : normalizedKind === 'shrine' ? .34 : .58,
+      metallic: quality === 'PROXY' ? .05 : quality === 'MOBILE' ? .1 : quality === 'CINEMATIC' ? (normalizedKind === 'watchtower' ? .28 : .12) : normalizedKind === 'watchtower' ? .18 : .08,
+      emissive: quality === 'CINEMATIC' && normalizedKind === 'shrine' ? '#d8b4fe' : undefined,
+      emissiveStrength: quality === 'CINEMATIC' && normalizedKind === 'shrine' ? .22 : 0,
       doubleSided: true
     });
     const value = {meshId, materialId, prototypeId: prototype.prototypeId};
@@ -1880,38 +1972,46 @@ export function createLargeWorldSpatialScene(input = {}) {
   for (const chunk of chunks) {
     const selectionRow = rows.get(chunk.chunk_id);
     const qualityProfile = String(selectionRow.selected_quality_profile ?? '').toUpperCase();
-    fail(qualityProfile === 'STANDARD' || qualityProfile === 'PROXY', `LARGE_WORLD_SPATIAL_QUALITY_INVALID:${chunk.chunk_id}`);
+    fail(LARGE_WORLD_SPATIAL_QUALITY_PROFILES.includes(qualityProfile), `LARGE_WORLD_SPATIAL_QUALITY_INVALID:${chunk.chunk_id}`);
     fail(typeof selectionRow.selected_slot_id === 'string' && selectionRow.selected_slot_id.length > 0, `LARGE_WORLD_SPATIAL_SLOT_REQUIRED:${chunk.chunk_id}`);
     const mesh = largeWorldSpatialTerrainMesh(chunk, qualityProfile);
     addMesh(mesh);
     const biome = String(chunk.biome ?? 'unknown').toLowerCase();
+    const terrainPalette = qualityProfile === 'PROXY'
+      ? LARGE_WORLD_SPATIAL_PROXY_COLORS
+      : qualityProfile === 'MOBILE'
+        ? LARGE_WORLD_SPATIAL_MOBILE_COLORS
+        : qualityProfile === 'CINEMATIC'
+          ? LARGE_WORLD_SPATIAL_CINEMATIC_COLORS
+          : LARGE_WORLD_SPATIAL_BIOME_COLORS;
+    const temporalReactive = qualityProfile === 'PROXY' ? .05 : qualityProfile === 'MOBILE' ? .08 : qualityProfile === 'CINEMATIC' ? .14 : .1;
     const terrainMaterialId = addMaterial({
       id: `material:terrain:${qualityProfile.toLowerCase()}:${biome}`,
-      baseColor: largeWorldSpatialColor(qualityProfile === 'PROXY' ? LARGE_WORLD_SPATIAL_PROXY_COLORS : LARGE_WORLD_SPATIAL_BIOME_COLORS, biome, '#6b7280'),
-      roughness: qualityProfile === 'PROXY' ? .98 : .82,
-      metallic: qualityProfile === 'PROXY' ? .02 : .04,
+      baseColor: largeWorldSpatialColor(terrainPalette, biome, '#6b7280'),
+      roughness: qualityProfile === 'PROXY' ? .98 : qualityProfile === 'MOBILE' ? .9 : qualityProfile === 'CINEMATIC' ? .68 : .82,
+      metallic: qualityProfile === 'PROXY' ? .02 : qualityProfile === 'CINEMATIC' ? .06 : .04,
       doubleSided: true,
-      temporalReactive: qualityProfile === 'PROXY' ? .05 : .1
+      temporalReactive
     });
     const resourceMaterialIds = new Map();
     for (const resourceKind of LARGE_WORLD_RESOURCE_KINDS) resourceMaterialIds.set(resourceKind, addMaterial({
       id: `material:resource:${qualityProfile.toLowerCase()}:${resourceKind}`,
       baseColor: largeWorldSpatialColor(LARGE_WORLD_SPATIAL_RESOURCE_COLORS, resourceKind, '#d1d5db'),
-      roughness: .36,
-      metallic: resourceKind === 'iron' ? .72 : .08,
+      roughness: qualityProfile === 'CINEMATIC' ? .28 : qualityProfile === 'MOBILE' ? .46 : .36,
+      metallic: resourceKind === 'iron' ? (qualityProfile === 'CINEMATIC' ? .82 : .72) : qualityProfile === 'CINEMATIC' ? .12 : .08,
       emissive: resourceKind === 'crystal' || resourceKind === 'water' ? largeWorldSpatialColor(LARGE_WORLD_SPATIAL_RESOURCE_COLORS, resourceKind, '#d1d5db') : undefined,
-      emissiveStrength: resourceKind === 'crystal' || resourceKind === 'water' ? .16 : 0,
+      emissiveStrength: resourceKind === 'crystal' || resourceKind === 'water' ? (qualityProfile === 'CINEMATIC' ? .3 : qualityProfile === 'MOBILE' ? .08 : .16) : 0,
       doubleSided: true
     }));
     const worldX = Number(chunk.origin_mm.x) / 1000, worldZ = Number(chunk.origin_mm.z) / 1000, extentX = Number(chunk.extent_mm.x) / 1000, extentZ = Number(chunk.extent_mm.z) / 1000;
     minX = Math.min(minX, worldX); maxX = Math.max(maxX, worldX + extentX); minZ = Math.min(minZ, worldZ); maxZ = Math.max(maxZ, worldZ + extentZ);
     const terrainNodeId = `node:${chunk.chunk_id}:terrain`, cellNodeIds = [terrainNodeId];
-    nodes.push({id: terrainNodeId, meshId: mesh.id, materialId: terrainMaterialId, transform: {translation: [worldX, 0, worldZ]}, castShadow: qualityProfile === 'STANDARD', receiveShadow: true, temporalReactive: qualityProfile === 'PROXY' ? .05 : .1, tags: ['large-world', 'terrain', qualityProfile.toLowerCase()], representationSlotId: selectionRow.selected_slot_id});
+    nodes.push({id: terrainNodeId, meshId: mesh.id, materialId: terrainMaterialId, transform: {translation: [worldX, 0, worldZ]}, castShadow: qualityProfile === 'STANDARD' || qualityProfile === 'CINEMATIC', receiveShadow: true, temporalReactive, tags: ['large-world', 'terrain', qualityProfile.toLowerCase()], representationSlotId: selectionRow.selected_slot_id});
     for (const structure of chunk.structures ?? []) {
       const structureNodeId = `node:${structure.id}`, size = Math.max(.5, Number(structure.scale_mm) / 1000), renderSize = size * presentationScale, y = Number(structure.local_position_mm.y) / 1000;
       const visual = ensureStructureVisual(structure.kind, qualityProfile);
       maxY = Math.max(maxY, y + renderSize);
-      nodes.push({id: structureNodeId, meshId: visual.meshId, materialId: visual.materialId, transform: {translation: [worldX + Number(structure.local_position_mm.x) / 1000, y, worldZ + Number(structure.local_position_mm.z) / 1000], scale: [renderSize, renderSize, renderSize]}, castShadow: qualityProfile === 'STANDARD', receiveShadow: true, tags: ['large-world', 'structure', String(structure.kind)], structureKind: structure.kind, prototypeId: visual.prototypeId, authoredScale: size, presentationScale, representationSlotId: selectionRow.selected_slot_id});
+      nodes.push({id: structureNodeId, meshId: visual.meshId, materialId: visual.materialId, transform: {translation: [worldX + Number(structure.local_position_mm.x) / 1000, y, worldZ + Number(structure.local_position_mm.z) / 1000], scale: [renderSize, renderSize, renderSize]}, castShadow: qualityProfile === 'STANDARD' || qualityProfile === 'CINEMATIC', receiveShadow: true, tags: ['large-world', 'structure', String(structure.kind)], structureKind: structure.kind, prototypeId: visual.prototypeId, authoredScale: size, presentationScale, representationSlotId: selectionRow.selected_slot_id});
       cellNodeIds.push(structureNodeId);
     }
     for (const resource of chunk.resources ?? []) {
@@ -1921,25 +2021,33 @@ export function createLargeWorldSpatialScene(input = {}) {
       nodes.push({id: resourceNodeId, meshId: visual.meshId, materialId: resourceMaterialIds.get(String(resource.kind).toLowerCase()) ?? resourceMaterialIds.get('water'), transform: {translation: [worldX + Number(resource.local_position_mm.x) / 1000, y, worldZ + Number(resource.local_position_mm.z) / 1000], scale: [renderSize, renderSize, renderSize]}, castShadow: false, receiveShadow: true, tags: ['large-world', 'resource', String(resource.kind)], resourceKind: resource.kind, prototypeId: visual.prototypeId, authoredScale: size, presentationScale, representationSlotId: selectionRow.selected_slot_id});
       cellNodeIds.push(resourceNodeId);
     }
-    const cellId = `cell:${chunk.chunk_id}`;
-    cells.push({id: cellId, center: [worldX + extentX / 2, 0, worldZ + extentZ / 2], radius: Math.hypot(extentX, extentZ) / 2, nodeIds: cellNodeIds, loadRadius: Math.max(extentX, extentZ) * 1.1, unloadRadius: Math.max(extentX, extentZ) * 1.6, priority: qualityProfile === 'STANDARD' ? 1 : 0});
-    assets.push({id: `asset:${chunk.chunk_id}`, uri: `rncs://${chunk.chunk_id}/${qualityProfile.toLowerCase()}`, sha256: chunk.content_root, byteLength: chunk.memory_bytes, kind: 'mesh', cellIds: [cellId], priority: qualityProfile === 'STANDARD' ? 1 : 0, representationRoot: selectionRow.selected_representation_root, portfolioRoot: selectionRow.portfolio_root, candidateOnly: true, authoritative: false});
-  }
+     const cellId = `cell:${chunk.chunk_id}`;
+     const qualityPriority = LARGE_WORLD_SPATIAL_QUALITY_PROFILES.indexOf(qualityProfile);
+     cells.push({id: cellId, center: [worldX + extentX / 2, 0, worldZ + extentZ / 2], radius: Math.hypot(extentX, extentZ) / 2, nodeIds: cellNodeIds, loadRadius: Math.max(extentX, extentZ) * 1.1, unloadRadius: Math.max(extentX, extentZ) * 1.6, priority: qualityPriority});
+     assets.push({id: `asset:${chunk.chunk_id}`, uri: `rncs://${chunk.chunk_id}/${qualityProfile.toLowerCase()}`, sha256: chunk.content_root, byteLength: chunk.memory_bytes, kind: 'mesh', cellIds: [cellId], priority: qualityPriority, representationRoot: selectionRow.selected_representation_root, portfolioRoot: selectionRow.portfolio_root, candidateOnly: true, authoritative: false});
+   }
   const centerX = (minX + maxX) / 2, centerZ = (minZ + maxZ) / 2, extent = Math.max(maxX - minX, maxZ - minZ), cameraDistance = Math.max(48, extent * .88), cameraHeight = Math.max(36, extent * .28);
   const camera = clone(value.camera ?? {translation: [centerX, cameraHeight, centerZ + cameraDistance], rotationEulerDeg: [-18, 0, 0]});
   const selectionRoot = selection.selection_root;
   const evidenceRoot = String(value.evidenceRoot ?? value.evidence_root ?? rootHash({selection_root: selectionRoot, chunks: chunks.map(chunk => chunk.chunk_root)}));
   fail(hex64(evidenceRoot), 'LARGE_WORLD_SPATIAL_EVIDENCE_ROOT_INVALID');
+  const lighting = sceneLightingQuality === 'CINEMATIC'
+    ? {diffuse: '#3d5e78', specular: '#fff3d6', probe: '#6f9fc1', ambient: .36, sun: 2.6, fill: 12}
+    : sceneLightingQuality === 'MOBILE'
+      ? {diffuse: '#28465d', specular: '#d7e4f1', probe: '#527b98', ambient: .3, sun: 2, fill: 7}
+      : sceneLightingQuality === 'PROXY'
+        ? {diffuse: '#1c2e3f', specular: '#b7c7d8', probe: '#405e73', ambient: .22, sun: 1.4, fill: 5}
+        : {diffuse: '#29435c', specular: '#d9e7ff', probe: '#52789a', ambient: .28, sun: 2.2, fill: 8};
   const base = {
     format: 'vsr.spatial-scene.v0.4',
     sceneId: String(value.sceneId ?? value.scene_id ?? `large-world:${region.world_id}:${selectionRoot.slice(0, 16)}`),
     title: String(value.title ?? 'URRF Large World · VSR Spatial Projection'),
     background: String(value.background ?? '#07111e'),
     environment: {
-      diffuseColor: String(value.diffuseColor ?? '#29435c'),
-      specularColor: String(value.specularColor ?? '#d9e7ff'),
+      diffuseColor: String(value.diffuseColor ?? lighting.diffuse),
+      specularColor: String(value.specularColor ?? lighting.specular),
       intensity: Number(value.environmentIntensity ?? value.environment_intensity ?? .72),
-      probes: [{id: 'probe:large-world:center', position: [centerX, Math.max(1, maxY * .35), centerZ], radius: Math.max(1, extent * .8), diffuseColor: '#52789a', specularColor: '#d9e7ff', intensity: .7}]
+      probes: [{id: 'probe:large-world:center', position: [centerX, Math.max(1, maxY * .35), centerZ], radius: Math.max(1, extent * .8), diffuseColor: lighting.probe, specularColor: lighting.specular, intensity: sceneLightingQuality === 'CINEMATIC' ? .9 : .7}]
     },
     activeCameraId: 'camera:large-world',
     meshes,
@@ -1948,9 +2056,9 @@ export function createLargeWorldSpatialScene(input = {}) {
     streaming: {worldId: region.world_id, cells, persistentNodeIds: []},
     cameras: [{id: 'camera:large-world', projection: 'perspective', fovYDeg: Number(value.fovYDeg ?? value.fov_y_deg ?? 55), near: .1, far: Math.max(1000, cameraDistance * 5), transform: camera}],
     lights: [
-      {id: 'light:large-world:ambient', kind: 'ambient', color: '#b8d4ff', intensity: .28},
-      {id: 'light:large-world:sun', kind: 'directional', color: '#fff0ce', intensity: 2.2, direction: [-.45, -1, -.35], castShadow: true},
-      {id: 'light:large-world:fill', kind: 'point', color: '#60a5fa', intensity: 8, position: [centerX - extent * .2, Math.max(8, cameraHeight * .35), centerZ + extent * .15], range: Math.max(8, extent * .65)}
+      {id: 'light:large-world:ambient', kind: 'ambient', color: sceneLightingQuality === 'CINEMATIC' ? '#cfe4ff' : '#b8d4ff', intensity: lighting.ambient},
+      {id: 'light:large-world:sun', kind: 'directional', color: sceneLightingQuality === 'CINEMATIC' ? '#fff1cf' : '#fff0ce', intensity: lighting.sun, direction: [-.45, -1, -.35], castShadow: true},
+      {id: 'light:large-world:fill', kind: 'point', color: sceneLightingQuality === 'CINEMATIC' ? '#7dd3fc' : '#60a5fa', intensity: lighting.fill, position: [centerX - extent * .2, Math.max(8, cameraHeight * .35), centerZ + extent * .15], range: Math.max(8, extent * .65)}
     ],
     reality: {worldId: region.world_id, generation: region.generation, realityRoot: region.world_root, evidenceRoot},
     assets,
@@ -1972,6 +2080,8 @@ export function createLargeWorldSpatialScene(input = {}) {
       causal_physical_blocked_count: selection.causal_physical_blocked_count ?? 0,
       active_chunk_ids: chunks.map(chunk => chunk.chunk_id).sort(keySort),
       presentation_scale: presentationScale,
+      quality_profile: sceneLightingQuality,
+      quality_profiles: [...activeQualityProfiles].sort((a, b) => LARGE_WORLD_SPATIAL_QUALITY_PROFILES.indexOf(a) - LARGE_WORLD_SPATIAL_QUALITY_PROFILES.indexOf(b)),
       visual_prototype_profile: LARGE_WORLD_SPATIAL_VISUAL_PROFILE,
       visual_prototype_ids: [...visualPrototypeIds].sort(keySort),
       representation_slots: chunks.map(chunk => {
@@ -1995,6 +2105,8 @@ export function verifyLargeWorldSpatialScene(scene) {
     check(scene.format === 'vsr.spatial-scene.v0.4', 'LARGE_WORLD_SPATIAL_SCENE_FORMAT_INVALID');
     check(scene.large_world?.format === LARGE_WORLD_SPATIAL_SCENE_FORMAT, 'LARGE_WORLD_SPATIAL_SCENE_EXTENSION_INVALID');
     check(Number.isFinite(scene.large_world?.presentation_scale) && scene.large_world.presentation_scale >= .25 && scene.large_world.presentation_scale <= 8, 'LARGE_WORLD_SPATIAL_PRESENTATION_SCALE_INVALID');
+    check(LARGE_WORLD_SPATIAL_QUALITY_PROFILES.includes(scene.large_world?.quality_profile), 'LARGE_WORLD_SPATIAL_QUALITY_PROFILE_INVALID');
+    check(Array.isArray(scene.large_world?.quality_profiles) && scene.large_world.quality_profiles.length > 0 && scene.large_world.quality_profiles.every(profile => LARGE_WORLD_SPATIAL_QUALITY_PROFILES.includes(profile)), 'LARGE_WORLD_SPATIAL_QUALITY_PROFILES_INVALID');
     check(scene.large_world?.visual_prototype_profile === LARGE_WORLD_SPATIAL_VISUAL_PROFILE, 'LARGE_WORLD_SPATIAL_VISUAL_PROFILE_INVALID');
     check(Array.isArray(scene.large_world?.visual_prototype_ids) && scene.large_world.visual_prototype_ids.length > 0, 'LARGE_WORLD_SPATIAL_VISUAL_PROTOTYPES_MISSING');
     if (scene.large_world?.resource_governor_plan_root !== undefined) check(scene.large_world.resource_governor_plan_root === null || hex64(scene.large_world.resource_governor_plan_root), 'LARGE_WORLD_SPATIAL_GOVERNOR_ROOT_INVALID');

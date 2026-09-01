@@ -1,10 +1,10 @@
 {
   "format": "urrf.large-world-texture-residency-execution-report.v0.1",
   "world_id": "world:urrf-large-world-texture-residency-execution",
-  "scene_root": "073e1c252ab1eef41df487c9d8dcaadb749e293315e539d6563291ebc36016fa",
-  "selection_root": "97cffc024f5167fa8fa15ee341f51315efda34eda84da54a05f808ff0768cbc8",
-  "manifest_root": "523a8b87aab5145a53cad99e9d72b832d0e5c8f58d29cd9e7f889e1d28bb5237",
-  "bundle_root": "e7602ca5f6b1c9ca09c138e8e7c69c41d3c67d9eea33c068acbda3fb02728c32",
+  "scene_root": "27b227e4fdb7704ca734ee4d60376efdc62fca64bbc6f8265134da7aa85685d5",
+  "selection_root": "ee736c1c0da284850818bc1579515620b945188676a895c0ead77cf6cf467a1f",
+  "manifest_root": "547e946a46a12b1f907d46b0ffd98b1f2761faa2837642d3e90e38e82eb8da72",
+  "bundle_root": "adc71cbc33196e0c10e0aea5199866cf3d3d8b4f8661a073d5b6d46052df2638",
   "asset_count": 60,
   "total_bytes": 1906428,
   "texture_profile": "ragf.ktx2-pbr-mipped.v0.1",
@@ -176,7 +176,7 @@
         "plan_root": "725cf51f37056ba90f0eaa8e6138e3abc98abe5490afbd87a6b75e560ec31232"
       }
     ],
-    "frame_root": "855de33bd96c782dfe4c65c34cb47e9a0cfc5606bd8a0ac74596860cbe33d59f",
+    "frame_root": "a41ef233a27181c7c48af5207208e0ddd5be65c132dcaa1d7ffded5e3809051e",
     "texture_root": "5031e93b237e1b55f77c24101ae7c98df7656f1665e2d4c0a5d34b2ee9a299bb",
     "texture_resources": [
       {
@@ -349,7 +349,7 @@
         "plan_root": "80906a3ac11adaa3bd7de2be43947c9af2bf837c6ba4c28ce943f95eb12d82f7"
       }
     ],
-    "frame_root": "69b5fbbfd408b09b5be04090dd0867b10fe64fb14d7d195b7692de7c58cb8601",
+    "frame_root": "414ab45cc7cfd7a450c9aaea5e853fb5f7833d1863f1e17aa3d4a3a51a9cd70c",
     "texture_root": "d46751a6200697632bcb3390ea0b1d60f1c2e1f59e3f1d9c2b6f24c6ecc0d07c",
     "texture_resources": [
       {
@@ -382,9 +382,9 @@
     "pixel_root": "28f57daf1dde959f67d530b81d8e388f103a46e711042ce9d79cb2bba5afac7c"
   },
   "texture_bytes_saved_far_vs_near": 15360,
-  "streaming_root": "65e191dd41eccdd8b2381d2017dd40a1d7a412376d09ca38fd64fcb803fe8bab",
-  "streaming_receipt_root": "26f33a1efa8b8c274fd4222140e5787a6eb145226503d39c15890670f3a3e9a9",
-  "imported_gltf_receipt_root": "0b45ae58eeae384dcd88586382a60e1e92453e316ddb975c125ce7052e1e0f9a",
+  "streaming_root": "7f8ab92b45ac00e8ac3e2ef9618d405f3aed652e69fc7bcb147a78efb9999405",
+  "streaming_receipt_root": "2ddc657921263da46ad302004f0cd2114ad424faf2127eb87a73d9c2cf10ebc5",
+  "imported_gltf_receipt_root": "84d3f46ed375464c1c281f5b3b1ab87169f8e90aad6be6b3a6ee35ec6065afea",
   "authority": {
     "canonical_owner": "RNCS",
     "representation_owner": "URRF",
@@ -395,5 +395,5 @@
     "authoritative": false
   },
   "notes": "Candidate-only execution of URRF progressive mip plans: RAGF native RGBA8 KTX2 PBR maps are decoded to VSR, near/far selected levels are lowered into separate presentation resources, frame texture byte/mip roots change, geometry and source reality roots remain stable, and CPU reference pixels differ. The selected-only VSR resource keeps deferred levels out of the executor input; BasisU supercompression, target-device/GPU timing, CDN delivery, and production-scale performance remain unproven.",
-  "report_root": "55c0fd27246f127f18a98fca9a913ed9f449cdca8532885021e3c302a23951d4"
+  "report_root": "10027ec999398b366d2f956d22545a5c58b2da41195f61fbf3a14f37a316814b"
 }

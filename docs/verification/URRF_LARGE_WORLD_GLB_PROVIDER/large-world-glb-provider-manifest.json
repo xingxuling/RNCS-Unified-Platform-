@@ -2,7 +2,7 @@
   "format": "rncs.large-world-spatial-glb-manifest.v0.1",
   "version": "0.1.0",
   "scene_id": "urrf-large-world-glb-provider-v01",
-  "scene_root": "32092888f8a6158673e3ebfad20d55c857201734eb26c31f371dbc87999c6380",
+  "scene_root": "8937a35b2103e3cc87bbaea9f2509ab6b8b3ea9681f040714fba67ee077207b0",
   "source_reality_root": "546e3fe635f21cb213f044d247734a6219dd423ab5b55f4f96a03961f96a2aa9",
   "provider_id": "provider:taowind:large-world-glb-ragf:v0.1",
   "encoder_provider_id": "provider:taowind:large-world-glb-ragf:v0.1",
@@ -225,5 +225,5 @@
     "provider_can_write_authoritative_world_state": false,
     "rncs_authority_required": true
   },
-  "manifest_root": "4234f4587134415e040f225dcd100ac1191b39787862b5c7c31d5c7e0a584d56"
+  "manifest_root": "01de155c838571edef8698dcde7bfa75931fd9a778fb312c7bf46e18bbd12d9b"
 }
