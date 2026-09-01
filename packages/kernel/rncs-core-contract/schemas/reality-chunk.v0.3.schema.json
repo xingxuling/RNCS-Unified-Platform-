@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/rncs/reality-chunk.v0.3.schema.json",
+  "title": "RNCS RealityChunk v0.3",
+  "type": "object",
+  "required": [
+    "format", "version", "chunk_id", "world_id", "branch_id",
+    "spatial_bounds", "temporal_bounds", "semantic_bounds",
+    "canonical_state_root", "representation_refs", "authority_scope",
+    "dependencies", "residency", "content_hash", "delta_root",
+    "parent_version", "dependency_graph_ref", "compression_profile",
+    "replication_class", "consistency_profile", "retention_policy",
+    "reconstruction_cost", "priority_class", "evidence_refs", "evidence_root",
+    "authority", "version_root", "chunk_root"
+  ],
+  "properties": {
+    "format": {"const": "rncs.reality-chunk.v0.3"},
+    "version": {"const": "0.3.0"},
+    "chunk_id": {"type": "string", "minLength": 1},
+    "world_id": {"type": "string", "minLength": 1},
+    "branch_id": {"type": "string", "minLength": 1},
+    "spatial_bounds": {"type": "object"},
+    "temporal_bounds": {"type": "object"},
+    "semantic_bounds": {"type": "object"},
+    "canonical_state_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "representation_refs": {"type": "array", "items": {"type": "string", "pattern": "^[0-9a-f]{64}$"}},
+    "authority_scope": {"type": "array", "items": {"type": "string"}},
+    "dependencies": {"type": "array", "items": {"type": "string"}},
+    "residency": {"type": "object"},
+    "content_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "delta_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "parent_version": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "dependency_graph_ref": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "compression_profile": {"type": "object"},
+    "replication_class": {"enum": ["PRIMARY", "REPLICA", "EDGE_CACHE", "ARCHIVE"]},
+    "consistency_profile": {"type": ["object", "null"]},
+    "retention_policy": {
+      "type": "object",
+      "required": ["mode", "ttl_ticks", "evictable"],
+      "properties": {
+        "mode": {"enum": ["HOLD", "TTL", "LRU", "PINNED"]},
+        "ttl_ticks": {"type": "integer", "minimum": 0},
+        "evictable": {"type": "boolean"}
+      }
+    },
+    "reconstruction_cost": {
+      "type": "object",
+      "required": ["CPU_MILLI", "RAM_MB", "NETWORK_KB", "ENERGY_MILLI"],
+      "properties": {
+        "CPU_MILLI": {"type": "integer", "minimum": 0},
+        "RAM_MB": {"type": "integer", "minimum": 0},
+        "NETWORK_KB": {"type": "integer", "minimum": 0},
+        "ENERGY_MILLI": {"type": "integer", "minimum": 0}
+      }
+    },
+    "priority_class": {"enum": ["AUTHORITY", "STATE", "REPRESENTATION", "BACKGROUND"]},
+    "evidence_refs": {"type": "array", "items": {"type": "string"}},
+    "evidence_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "authority": {
+      "type": "object",
+      "required": ["canonical_owner", "provider_can_write_authoritative_world_state", "rncs_authority_required", "candidate_only", "authoritative", "canonical_write_authorized", "commit_status"],
+      "properties": {
+        "canonical_owner": {"const": "RNCS"},
+        "provider_can_write_authoritative_world_state": {"const": false},
+        "rncs_authority_required": {"const": true},
+        "candidate_only": {"const": true},
+        "authoritative": {"const": false},
+        "canonical_write_authorized": {"const": false},
+        "commit_status": {"const": "NOT_COMMITTED"}
+      }
+    },
+    "version_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "chunk_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}

@@ -18,6 +18,9 @@ import {
   createRepresentationPortfolio,
   createRepresentationSlot,
   createRepresentationRef,
+  createRealityChunk as createCoreRealityChunk,
+  createRealityChunkDelta as createCoreRealityChunkDelta,
+  createRealityChunkDeltaReceipt as createCoreRealityChunkDeltaReceipt,
   createWorldEvent,
   createWorldEventLog,
   createWorldFact,
@@ -31,6 +34,9 @@ import {
   verifyServerSovereigntyHandoffReceipt,
   verifyServerSovereigntyMigration,
   verifyCausalPhysicalProfile,
+  verifyRealityChunk,
+  verifyRealityChunkDelta,
+  verifyRealityChunkDeltaReceipt,
   REALITY_CONSISTENCY_PROFILE_FORMAT,
   AUTHORITY_LEASE_FORMAT,
   REALITY_CAUSAL_PHYSICAL_PROFILE_FORMAT,
@@ -82,6 +88,9 @@ export const LARGE_WORLD_REPLICATION_PACKET_FORMAT = 'rncs.large-world-replicati
 export const LARGE_WORLD_REPLICATION_ACK_FORMAT = 'rncs.large-world-replication-ack.v0.1';
 export const LARGE_WORLD_REPLICATION_CONFLICT_DECISION_FORMAT = 'rncs.large-world-replication-conflict-decision.v0.1';
 export const LARGE_WORLD_REPLICATION_CONFLICT_RECEIPT_FORMAT = 'rncs.large-world-replication-conflict-receipt.v0.1';
+export const LARGE_WORLD_REALITY_CHUNK_FORMAT = 'rncs.reality-chunk.v0.3';
+export const LARGE_WORLD_REALITY_CHUNK_DELTA_FORMAT = 'rncs.reality-chunk-delta.v0.3';
+export const LARGE_WORLD_REALITY_CHUNK_RECEIPT_FORMAT = 'rncs.reality-chunk-delta-receipt.v0.3';
 export const LARGE_WORLD_REPLICATION_CONFLICT_POLICY_ID = 'lexicographic-writer-priority';
 export const LARGE_WORLD_CONSISTENCY_PROFILE_FORMAT = REALITY_CONSISTENCY_PROFILE_FORMAT;
 export const LARGE_WORLD_AUTHORITY_LEASE_FORMAT = AUTHORITY_LEASE_FORMAT;
@@ -2054,6 +2063,74 @@ function admitReplicationDistribution(runtime, delta, authorityReceipt) {
   }
 }
 
+function realityChunkNeighborIds(runtime, chunk) {
+  const x = Number(chunk.coordinates?.x ?? 0);
+  const z = Number(chunk.coordinates?.z ?? 0);
+  return runtime.region.chunks
+    .filter(candidate => candidate.chunk_id !== chunk.chunk_id
+      && Math.max(Math.abs(Number(candidate.coordinates?.x ?? 0) - x), Math.abs(Number(candidate.coordinates?.z ?? 0) - z)) === 1)
+    .map(candidate => candidate.chunk_id)
+    .sort(keySort);
+}
+
+function realityChunkInput(runtime, chunk, input = {}) {
+  const value = record(input);
+  const pick = (...keys) => {
+    for (const key of keys) if (value[key] !== undefined) return value[key];
+    return undefined;
+  };
+  const dependencies = pick('dependencies', 'dependency_ids', 'dependencyIds') ?? realityChunkNeighborIds(runtime, chunk);
+  const evidenceRefs = pick('evidence_refs', 'evidenceRefs') ?? [chunk.chunk_root, chunk.content_root];
+  const consistencyProfile = value.consistency_profile !== undefined
+    ? value.consistency_profile
+    : value.consistencyProfile !== undefined
+      ? value.consistencyProfile
+      : runtime.consistencyProfile ?? null;
+  const active = runtime.activeChunkIds.includes(chunk.chunk_id);
+  const defaultCost = {
+    CPU_MILLI: Math.max(1, Math.ceil(Number(chunk.memory_bytes ?? 0) / 1024)),
+    RAM_MB: Math.max(1, Math.ceil(Number(chunk.memory_bytes ?? 0) / (1024 * 1024))),
+    NETWORK_KB: Math.max(1, Math.ceil(Number(chunk.memory_bytes ?? 0) / 1024)),
+    ENERGY_MILLI: Math.max(1, Math.ceil(Number(chunk.memory_bytes ?? 0) / 4096))
+  };
+  return {
+    chunk_id: chunk.chunk_id,
+    world_id: runtime.options.worldId,
+    branch_id: pick('branch_id', 'branchId') ?? 'main',
+    spatial_bounds: pick('spatial_bounds', 'spatialBounds') ?? {
+      coordinates: clone(chunk.coordinates),
+      origin_mm: clone(chunk.origin_mm),
+      extent_mm: clone(chunk.extent_mm)
+    },
+    temporal_bounds: pick('temporal_bounds', 'temporalBounds') ?? {
+      from_tick: 0,
+      to_tick: runtime.worldTime?.simulation_tick ?? 0
+    },
+    semantic_bounds: pick('semantic_bounds', 'semanticBounds') ?? {
+      biome: chunk.biome,
+      world_id: runtime.options.worldId,
+      generation: chunk.generation
+    },
+    canonical_state_root: chunk.state_root,
+    representation_refs: pick('representation_refs', 'representationRefs') ?? [chunk.content_root],
+    authority_scope: pick('authority_scope', 'authorityScope') ?? ['read', 'replicate'],
+    dependencies,
+    residency: pick('residency') ?? {tier: 'RAM', status: active ? 'HOT' : 'COLD'},
+    content_hash: pick('content_hash', 'contentHash') ?? chunk.content_root,
+    delta_root: pick('delta_root', 'deltaRoot') ?? ZERO_ROOT,
+    parent_version: pick('parent_version', 'parentVersion') ?? null,
+    dependency_graph_ref: pick('dependency_graph_ref', 'dependencyGraphRef') ?? rootHash({chunk_id: chunk.chunk_id, dependencies}),
+    compression_profile: pick('compression_profile', 'compressionProfile') ?? {codec: 'none', level: 0},
+    replication_class: pick('replication_class', 'replicationClass') ?? 'PRIMARY',
+    consistency_profile: consistencyProfile,
+    retention_policy: pick('retention_policy', 'retentionPolicy') ?? {mode: 'HOLD', ttl_ticks: 0, evictable: false},
+    reconstruction_cost: pick('reconstruction_cost', 'reconstructionCost') ?? defaultCost,
+    priority_class: pick('priority_class', 'priorityClass') ?? 'REPRESENTATION',
+    evidence_refs: evidenceRefs,
+    evidence_root: pick('evidence_root', 'evidenceRoot')
+  };
+}
+
 function replicationSnapshotBase(runtime) {
   const eventLog = clone(runtime.eventLog);
   const factTree = clone(runtime.factTree);
@@ -2308,6 +2385,9 @@ export class LargeWorldRuntime {
     this.observer = {x: 0, z: 0};
     this.trace = [];
     this.replicationSequence = 0;
+    this.realityChunkSequence = 0;
+    this.realityChunkReplicas = new Map();
+    this.appliedRealityChunkDeltas = new Map();
     this.canonicalState = {
       format: 'rncs.large-world-state.v0.1',
       world_id: this.options.worldId,
@@ -2819,6 +2899,128 @@ export class LargeWorldRuntime {
       commit_status: 'NOT_COMMITTED'
     };
     return {...base, materialization_root: rootHash(base)};
+  }
+
+  exportRealityChunkSnapshot(chunkIdInput, input = {}) {
+    const chunkIdValue = String(chunkIdInput ?? '');
+    fail(chunkIdValue.length > 0, 'LARGE_WORLD_REALITY_CHUNK_ID_REQUIRED');
+    const canonicalChunk = this.chunks.get(chunkIdValue);
+    fail(canonicalChunk, 'LARGE_WORLD_REALITY_CHUNK_UNKNOWN');
+    const value = record(input);
+    const replica = this.realityChunkReplicas.get(chunkIdValue);
+    if (replica && value.forceCanonical !== true) return clone(replica);
+    const requestedCanonicalRoot = value.canonical_state_root ?? value.canonicalStateRoot;
+    if (requestedCanonicalRoot !== undefined) fail(requestedCanonicalRoot === canonicalChunk.state_root, 'LARGE_WORLD_REALITY_CHUNK_CANONICAL_ROOT_MISMATCH');
+    const snapshot = createCoreRealityChunk(realityChunkInput(this, canonicalChunk, value));
+    const verification = verifyRealityChunk(snapshot);
+    fail(verification.valid, `LARGE_WORLD_REALITY_CHUNK_SNAPSHOT_INVALID:${verification.errors.join(',')}`);
+    return clone(snapshot);
+  }
+
+  realityChunkSnapshot(chunkIdInput, input = {}) { return this.exportRealityChunkSnapshot(chunkIdInput, input); }
+
+  listRealityChunkReplicas() {
+    return [...this.realityChunkReplicas.entries()]
+      .sort(([a], [b]) => keySort(a, b))
+      .map(([chunkId, chunk]) => ({chunk_id: chunkId, chunk_root: chunk.chunk_root, version_root: chunk.version_root}));
+  }
+
+  createRealityChunkDelta(baseChunkInput, input = {}) {
+    const value = record(input);
+    const baseChunk = clone(value.base_chunk ?? value.baseChunk ?? baseChunkInput);
+    const baseVerification = verifyRealityChunk(baseChunk);
+    fail(baseVerification.valid, `LARGE_WORLD_REALITY_CHUNK_BASE_INVALID:${baseVerification.errors.join(',')}`);
+    fail(baseChunk.world_id === this.options.worldId, 'LARGE_WORLD_REALITY_CHUNK_WORLD_MISMATCH');
+    fail(this.chunks.has(baseChunk.chunk_id), 'LARGE_WORLD_REALITY_CHUNK_UNKNOWN');
+    const operations = clone(value.operations ?? value.ops ?? []);
+    fail(Array.isArray(operations), 'LARGE_WORLD_REALITY_CHUNK_DELTA_OPERATIONS_REQUIRED');
+    const targetChunkInput = clone(value.target_chunk ?? value.targetChunk);
+    let targetChunk = targetChunkInput;
+    if (!targetChunk) {
+      const overrides = record(value.target ?? value.target_overrides ?? value.targetOverrides);
+      const overrideContentHash = overrides.content_hash ?? overrides.contentHash;
+      const contentHash = value.content_hash ?? value.contentHash ?? overrideContentHash
+        ?? rootHash({base_content_hash: baseChunk.content_hash, operations});
+      const overrideDeltaRoot = overrides.delta_root ?? overrides.deltaRoot;
+      const deltaRoot = value.delta_root ?? value.deltaRoot ?? overrideDeltaRoot
+        ?? rootHash({base_version_root: baseChunk.version_root, content_hash: contentHash, operations});
+      const parentVersion = overrides.parent_version ?? overrides.parentVersion ?? baseChunk.version_root;
+      targetChunk = this.exportRealityChunkSnapshot(baseChunk.chunk_id, {
+        ...overrides,
+        parent_version: parentVersion,
+        content_hash: contentHash,
+        delta_root: deltaRoot,
+        replication_class: overrides.replication_class ?? overrides.replicationClass ?? 'REPLICA'
+      });
+    }
+    const targetVerification = verifyRealityChunk(targetChunk);
+    fail(targetVerification.valid, `LARGE_WORLD_REALITY_CHUNK_TARGET_INVALID:${targetVerification.errors.join(',')}`);
+    const sourceNode = String(value.source_node ?? value.sourceNode ?? this.nodeId);
+    const targetNode = String(value.target_node ?? value.targetNode ?? 'node:unknown');
+    fail(sourceNode.length > 0, 'LARGE_WORLD_REALITY_CHUNK_SOURCE_NODE_REQUIRED');
+    fail(sourceNode === this.nodeId, 'LARGE_WORLD_REALITY_CHUNK_SOURCE_NODE_MISMATCH');
+    fail(targetNode.length > 0, 'LARGE_WORLD_REALITY_CHUNK_TARGET_NODE_REQUIRED');
+    const sequenceValue = integer(value.sequence, this.realityChunkSequence + 1, {min: 1, max: Number.MAX_SAFE_INTEGER});
+    this.realityChunkSequence = Math.max(this.realityChunkSequence, sequenceValue);
+    const delta = createCoreRealityChunkDelta({
+      ...value,
+      base_chunk: baseChunk,
+      target_chunk: targetChunk,
+      source_node: sourceNode,
+      target_node: targetNode,
+      sequence: sequenceValue,
+      operations
+    });
+    const verification = verifyRealityChunkDelta(delta);
+    fail(verification.valid, `LARGE_WORLD_REALITY_CHUNK_DELTA_INVALID:${verification.errors.join(',')}`);
+    return clone(delta);
+  }
+
+  realityChunkDelta(baseChunkInput, input = {}) { return this.createRealityChunkDelta(baseChunkInput, input); }
+
+  applyRealityChunkDelta(deltaInput, input = {}) {
+    const delta = clone(deltaInput);
+    const verification = verifyRealityChunkDelta(delta);
+    fail(verification.valid, `LARGE_WORLD_REALITY_CHUNK_DELTA_INVALID:${verification.errors.join(',')}`);
+    fail(delta.target_node === this.nodeId, 'LARGE_WORLD_REALITY_CHUNK_TARGET_NODE_MISMATCH');
+    fail(delta.world_id === this.options.worldId, 'LARGE_WORLD_REALITY_CHUNK_WORLD_MISMATCH');
+    const canonicalChunk = this.chunks.get(delta.chunk_id);
+    fail(canonicalChunk, 'LARGE_WORLD_REALITY_CHUNK_UNKNOWN');
+    fail(delta.canonical_state_root === canonicalChunk.state_root, 'LARGE_WORLD_REALITY_CHUNK_CANONICAL_ROOT_MISMATCH');
+    const profile = delta.consistency_profile;
+    if (profile) {
+      const profileVerification = verifyRealityConsistencyProfile(profile);
+      fail(profileVerification.valid, `LARGE_WORLD_REALITY_CHUNK_CONSISTENCY_PROFILE_INVALID:${profileVerification.errors.join(',')}`);
+      fail(this.consistencyProfile, 'LARGE_WORLD_REALITY_CHUNK_CONSISTENCY_PROFILE_REQUIRED');
+      fail(profile.profile_root === this.consistencyProfile.profile_root, 'LARGE_WORLD_REALITY_CHUNK_CONSISTENCY_PROFILE_MISMATCH');
+      if (profile.authority_required || profile.lease_required || profile.fencing_required) {
+        const authorityReceipt = clone(record(input.authorityReceipt ?? input.authority_receipt));
+        fail(hex64(authorityReceipt.receipt_root), 'LARGE_WORLD_REALITY_CHUNK_AUTHORITY_RECEIPT_REQUIRED');
+        fail(delta.authority_receipt_root === authorityReceipt.receipt_root, 'LARGE_WORLD_REALITY_CHUNK_AUTHORITY_RECEIPT_MISMATCH');
+      }
+    }
+    const applied = this.appliedRealityChunkDeltas.get(delta.delta_root);
+    if (applied) {
+      const duplicate = createCoreRealityChunkDeltaReceipt({
+        delta,
+        status: 'DUPLICATE',
+        evidence_refs: input.evidenceRefs ?? input.evidence_refs ?? []
+      });
+      fail(verifyRealityChunkDeltaReceipt(duplicate).valid, 'LARGE_WORLD_REALITY_CHUNK_DUPLICATE_RECEIPT_INVALID');
+      return clone(duplicate);
+    }
+    const current = this.realityChunkReplicas.get(delta.chunk_id)
+      ?? this.exportRealityChunkSnapshot(delta.chunk_id, {forceCanonical: true});
+    fail(current.chunk_root === delta.base_chunk_root && current.version_root === delta.base_version_root, 'LARGE_WORLD_REALITY_CHUNK_BASE_VERSION_MISMATCH');
+    const receipt = createCoreRealityChunkDeltaReceipt({
+      delta,
+      status: 'APPLIED',
+      evidence_refs: input.evidenceRefs ?? input.evidence_refs ?? []
+    });
+    fail(verifyRealityChunkDeltaReceipt(receipt).valid, 'LARGE_WORLD_REALITY_CHUNK_RECEIPT_INVALID');
+    this.realityChunkReplicas.set(delta.chunk_id, clone(delta.target_chunk));
+    this.appliedRealityChunkDeltas.set(delta.delta_root, clone(receipt));
+    return clone(receipt);
   }
 
   exportReplicationSnapshot() {

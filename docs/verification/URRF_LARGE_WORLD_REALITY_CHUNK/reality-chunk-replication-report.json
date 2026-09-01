@@ -1,0 +1,29 @@
+{
+  "format": "urrf.v03.large-world-reality-chunk-report.v0.1",
+  "world_id": "world:urrf-v03-reality-chunk",
+  "region_root": "ff1038b05b86c01e7a1504b323d169cd38fbb4816f5cad625e4e5697a8895a01",
+  "world_root": "67b94aa105158c42f93fe3ffb8a09ac273ca27ef1e4231a28fa048ddf6afb34d",
+  "chunk_id": "chunk:world:urrf-v03-reality-chunk:0:0",
+  "base_chunk_root": "537284e2a71cbaf34612a0f6ee1cc6cf01a8ca22491d9358fd8d346cdb089ecf",
+  "base_version_root": "9fba6e3993233ef5052ccb6b8b17b89552e9ca369877cfb57aea24d01ed31d3b",
+  "target_chunk_root": "3e977fa27e4c5226ce7ba95fc376c806689259401ef44eca3e6b91430a7d5352",
+  "target_version_root": "0b6111fbcf344f957ae1e1179802d24ce23558bca842d52878114787da5e3b56",
+  "delta_root": "b8989c25afb6d0d2a1de40106251187ecc89c64d22805c6adc659e5fc859970b",
+  "applied_receipt_root": "bad155be7b332660c20e6a700627dd7e5ddbd7c5adde3fab3d0ece13447db832",
+  "duplicate_receipt_root": "d630e909a04f7e1e7080f65e19e18241ad28b3705fe3244cf7ffd182e7b21b1f",
+  "source_node": "node:urrf-chunk-source",
+  "target_node": "node:urrf-chunk-target",
+  "canonical_world_root_unchanged": true,
+  "canonical_chunk_state_unchanged": true,
+  "replica_status": "APPLIED_THEN_DUPLICATE",
+  "authority": {
+    "canonical_owner": "RNCS",
+    "canonical_write_authorized": false,
+    "candidate_only": true,
+    "authoritative": false,
+    "commit_status": "NOT_COMMITTED"
+  },
+  "evidence_level": "LOCAL_RUNTIME_AND_CONTRACT_TEST",
+  "notes": "This proves deterministic local snapshot/delta replication and idempotent candidate replica application. It does not prove distributed consensus, production transport, hardware rendering, or provider authority.",
+  "report_root": "ad5308c184c68e1d0cce9993e24c9b7adcdb58e5737f534cf5ea075954320787"
+}
