@@ -1,0 +1,96 @@
+{
+  "format": "urrf.large-world-working-set-budget-webgpu-report.v0.1",
+  "version": "0.1.0",
+  "evidence_level": "LOCAL_RUNTIME_CPU_REFERENCE_AND_CHROMIUM_WEBGPU",
+  "world_id": "world:urrf-large-world-working-set-budget-webgpu",
+  "region_root": "d226deae7ec65f5190241d95402869b229e88cbd7255ce427aa6ebc99de9e666",
+  "stream_root": "c255f792f50c2122f2ff45b8532b6b5aadd6a66ffac5b9e0c7d627188096304a",
+  "selection_root": "c3a56f4857a1f5a1a51d393bc2ec90ce476c61c78001558f2300552a880cca8e",
+  "scene_root": "49879c9e48e28f62dddc6e30a5c23c4a0e9567f5a81314964608814755d6e384",
+  "frame_root": "0ff1611f5cc60373d8ad038f9a1bfadfa7ddf4ebcbc1fa966b2ec7d978e5af50",
+  "geometry_root": "9921168c1098da3754ef9d8b81f193904d3475cf3f17f1ce6d06ce4a049954a2",
+  "material_root": "a32c35a665fc4e50645894c0a5833ba1cdc01515ce3b5c04fba29248f2282d9a",
+  "environment_root": "99ca6bd99b30d6a0f724a842c8fc2161a0354464b4158a42adf120063a333154",
+  "pixel_root": "5743c24c2bc226db26d4fc49550e6e7d3fb5ecd86c8791bdad4c9b6c08e09b74",
+  "active_chunks": 9,
+  "quality_profiles": [
+    "MOBILE",
+    "STANDARD",
+    "CINEMATIC"
+  ],
+  "quality_counts": {
+    "PROXY": 0,
+    "MOBILE": 1,
+    "STANDARD": 7,
+    "CINEMATIC": 1
+  },
+  "working_set_budget": {
+    "format": "urrf.large-world-working-set-budget.v0.1",
+    "version": "0.1.0",
+    "available": {
+      "GPU_MILLI": 877
+    },
+    "source_budget_root": null
+  },
+  "working_set_budget_root": "802d04e217276bb0a3f624a751459546ea9140942e52f2c5a0713c53363275f1",
+  "working_set_budget_status": "DOWNGRADED_TO_FIT",
+  "working_set_resource_costs": {
+    "CPU_MILLI": 1154,
+    "GPU_MILLI": 852,
+    "NPU_MILLI": 0,
+    "VRAM_MB": 88,
+    "RAM_MB": 38,
+    "STORAGE_KB": 28,
+    "NETWORK_KB": 28,
+    "ENERGY_MILLI": 230
+  },
+  "working_set_resource_remaining": {
+    "CPU_MILLI": null,
+    "GPU_MILLI": 25,
+    "NPU_MILLI": null,
+    "VRAM_MB": null,
+    "RAM_MB": null,
+    "STORAGE_KB": null,
+    "NETWORK_KB": null,
+    "ENERGY_MILLI": null
+  },
+  "working_set_downgrade_count": 9,
+  "cpu_reference": {
+    "image_path": "large-world-working-set-budget-webgpu-reference.png",
+    "image_bytes": 2074363,
+    "width": 960,
+    "height": 540,
+    "triangles": 2336,
+    "draw_calls": 23,
+    "frame_root": "0ff1611f5cc60373d8ad038f9a1bfadfa7ddf4ebcbc1fa966b2ec7d978e5af50",
+    "pixel_root": "5743c24c2bc226db26d4fc49550e6e7d3fb5ecd86c8791bdad4c9b6c08e09b74"
+  },
+  "browser_execution": "EXECUTED",
+  "browser_receipt": {
+    "path": "large-world-working-set-budget-webgpu-browser-receipt.json",
+    "frame_root": "0ff1611f5cc60373d8ad038f9a1bfadfa7ddf4ebcbc1fa966b2ec7d978e5af50",
+    "draw_calls": 23,
+    "triangles": 2336,
+    "receipt_root": "bfda05a12b6980eed042cb9e0d32ac9800e9456b89e80f39b5e61cd684db653d",
+    "submitted": true,
+    "device_lost": false
+  },
+  "artifacts": {
+    "scene_json": "large-world-working-set-budget-webgpu-scene.json",
+    "html": "large-world-working-set-budget-webgpu.html",
+    "cpu_reference_png": "large-world-working-set-budget-webgpu-reference.png",
+    "browser_receipt": "large-world-working-set-budget-webgpu-browser-receipt.json",
+    "browser_png": "large-world-working-set-budget-webgpu-browser.png"
+  },
+  "authority": {
+    "canonical_owner": "RNCS",
+    "representation_owner": "URRF",
+    "execution_owner": "VSR",
+    "browser_executor": "Chromium",
+    "candidate_only": true,
+    "authoritative": false,
+    "canonical_write_authorized": false
+  },
+  "notes": "The same rooted mixed-quality working-set selection is lowered to a VSR CPU reference and, when the committed local receipt is present, an actual Chromium WebGPU executor. This is machine-local execution evidence; it is not a target-device performance grade, distributed scheduler proof, AAA asset claim, or canonical-world write.",
+  "report_root": "19eadf3f943d912795780978bb75ce0d2c0c6194a7380c498c21b52a8f60297c"
+}
