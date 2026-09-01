@@ -5,9 +5,11 @@ import {
   createRealityChunk,
   createRealityChunkDelta,
   createRealityChunkDeltaReceipt,
+  createRealityChunkSnapshotReceipt,
   verifyRealityChunk,
   verifyRealityChunkDelta,
-  verifyRealityChunkDeltaReceipt
+  verifyRealityChunkDeltaReceipt,
+  verifyRealityChunkSnapshotReceipt
 } from '../src/index.mjs';
 
 const root = letter => letter.repeat(64);
@@ -100,16 +102,34 @@ test('publishes RealityChunk v0.3 schemas with the same candidate-only formats',
   const schemas = [
     ['reality-chunk.v0.3.schema.json', 'rncs.reality-chunk.v0.3'],
     ['reality-chunk-delta.v0.3.schema.json', 'rncs.reality-chunk-delta.v0.3'],
-    ['reality-chunk-delta-receipt.v0.3.schema.json', 'rncs.reality-chunk-delta-receipt.v0.3']
+    ['reality-chunk-delta-receipt.v0.3.schema.json', 'rncs.reality-chunk-delta-receipt.v0.3'],
+    ['reality-chunk-snapshot-receipt.v0.3.schema.json', 'rncs.reality-chunk-snapshot-receipt.v0.3'],
+    ['reality-chunk-replication-packet.v0.3.schema.json', 'rncs.reality-chunk-replication-packet.v0.3'],
+    ['reality-chunk-replication-ack.v0.3.schema.json', 'rncs.reality-chunk-replication-ack.v0.3']
   ];
   for (const [name, format] of schemas) {
     const schema = JSON.parse(fs.readFileSync(new URL(`../schemas/${name}`, import.meta.url), 'utf8'));
     assert.equal(schema.type, 'object');
     assert.ok(schema.required.length > 0);
     assert.equal(schema.properties.format.const, format);
-    assert.equal(schema.properties.authority.properties.candidate_only.const, true);
-    assert.equal(schema.properties.authority.properties.canonical_write_authorized.const, false);
+    if (schema.properties.authority) {
+      assert.equal(schema.properties.authority.properties.candidate_only.const, true);
+      assert.equal(schema.properties.authority.properties.canonical_write_authorized.const, false);
+    } else {
+      assert.ok(schema.properties.auth_tag);
+      assert.ok(schema.properties.packet_root || schema.properties.ack_root);
+    }
   }
 });
 
-console.log('reality chunk contract tests: 5 PASS');
+test('seals a candidate snapshot receipt for resync without canonical mutation', () => {
+  const snapshot = chunk();
+  const receipt = createRealityChunkSnapshotReceipt({snapshot, source_node: 'node:source', target_node: 'node:target', evidence_refs: [snapshot.chunk_root]});
+  assert.equal(verifyRealityChunkSnapshotReceipt(receipt).valid, true);
+  assert.equal(receipt.canonical_state_mutated, false);
+  const tampered = structuredClone(receipt);
+  tampered.version_root = root('a');
+  assert.equal(verifyRealityChunkSnapshotReceipt(tampered).valid, false);
+});
+
+console.log('reality chunk contract tests: 6 PASS');

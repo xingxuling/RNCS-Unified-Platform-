@@ -9,10 +9,12 @@ export const REALITY_CHUNK_VERSION = '0.3.0';
 export const REALITY_CHUNK_FORMAT = 'rncs.reality-chunk.v0.3';
 export const REALITY_CHUNK_DELTA_FORMAT = 'rncs.reality-chunk-delta.v0.3';
 export const REALITY_CHUNK_DELTA_RECEIPT_FORMAT = 'rncs.reality-chunk-delta-receipt.v0.3';
+export const REALITY_CHUNK_SNAPSHOT_RECEIPT_FORMAT = 'rncs.reality-chunk-snapshot-receipt.v0.3';
 
 export const REALITY_CHUNK_REPLICATION_CLASSES = Object.freeze(['PRIMARY', 'REPLICA', 'EDGE_CACHE', 'ARCHIVE']);
 export const REALITY_CHUNK_PRIORITY_CLASSES = Object.freeze(['AUTHORITY', 'STATE', 'REPRESENTATION', 'BACKGROUND']);
 export const REALITY_CHUNK_DELTA_STATUSES = Object.freeze(['APPLIED', 'DUPLICATE']);
+export const REALITY_CHUNK_SNAPSHOT_STATUSES = Object.freeze(['APPLIED', 'DUPLICATE']);
 
 const ZERO_ROOT = '0'.repeat(64);
 const clone = value => structuredClone(value);
@@ -317,6 +319,56 @@ export function verifyRealityChunkDeltaReceipt(receipt) {
     check(hex64(receiptRoot) && rootHash(copy) === receiptRoot, 'RNCS_REALITY_CHUNK_DELTA_RECEIPT_ROOT_MISMATCH');
   } catch (error) {
     errors.push(`RNCS_REALITY_CHUNK_DELTA_RECEIPT_VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, receipt_root: receipt.receipt_root ?? null};
+}
+
+export function createRealityChunkSnapshotReceipt(input = {}) {
+  const value = record(input);
+  const snapshot = clone(value.snapshot);
+  const verification = verifyRealityChunk(snapshot);
+  fail(verification.valid, `RNCS_REALITY_CHUNK_SNAPSHOT_RECEIPT_SNAPSHOT_INVALID:${verification.errors.join(',')}`);
+  const status = String(value.status ?? 'APPLIED').toUpperCase();
+  fail(REALITY_CHUNK_SNAPSHOT_STATUSES.includes(status), 'RNCS_REALITY_CHUNK_SNAPSHOT_RECEIPT_STATUS_INVALID');
+  const base = {
+    format: REALITY_CHUNK_SNAPSHOT_RECEIPT_FORMAT,
+    version: REALITY_CHUNK_VERSION,
+    receipt_id: text(value.receipt_id ?? value.receiptId, 'RNCS_REALITY_CHUNK_SNAPSHOT_RECEIPT_ID_REQUIRED', `chunk-snapshot-receipt:${snapshot.chunk_root}`),
+    status,
+    chunk_id: snapshot.chunk_id,
+    world_id: snapshot.world_id,
+    source_node: text(value.source_node ?? value.sourceNode, 'RNCS_REALITY_CHUNK_SNAPSHOT_RECEIPT_SOURCE_NODE_REQUIRED'),
+    target_node: text(value.target_node ?? value.targetNode, 'RNCS_REALITY_CHUNK_SNAPSHOT_RECEIPT_TARGET_NODE_REQUIRED'),
+    chunk_root: snapshot.chunk_root,
+    version_root: snapshot.version_root,
+    canonical_state_root: snapshot.canonical_state_root,
+    canonical_state_mutated: false,
+    authority: authorityBoundary(),
+    evidence_refs: strings(value.evidence_refs ?? value.evidenceRefs)
+  };
+  return {...base, receipt_root: rootHash(base)};
+}
+
+export function verifyRealityChunkSnapshotReceipt(receipt) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!receipt || typeof receipt !== 'object' || Array.isArray(receipt)) return {valid: false, errors: ['RNCS_REALITY_CHUNK_SNAPSHOT_RECEIPT_NOT_OBJECT']};
+  try {
+    const copy = clone(receipt);
+    const receiptRoot = copy.receipt_root;
+    delete copy.receipt_root;
+    check(receipt.format === REALITY_CHUNK_SNAPSHOT_RECEIPT_FORMAT, 'RNCS_REALITY_CHUNK_SNAPSHOT_RECEIPT_FORMAT_INVALID');
+    check(receipt.version === REALITY_CHUNK_VERSION, 'RNCS_REALITY_CHUNK_SNAPSHOT_RECEIPT_VERSION_INVALID');
+    check(REALITY_CHUNK_SNAPSHOT_STATUSES.includes(receipt.status), 'RNCS_REALITY_CHUNK_SNAPSHOT_RECEIPT_STATUS_INVALID');
+    for (const field of ['chunk_root', 'version_root', 'canonical_state_root']) check(hex64(receipt[field]), `RNCS_REALITY_CHUNK_SNAPSHOT_RECEIPT_${field.toUpperCase()}_INVALID`);
+    for (const field of ['receipt_id', 'chunk_id', 'world_id', 'source_node', 'target_node']) check(typeof receipt[field] === 'string' && receipt[field].length > 0, `RNCS_REALITY_CHUNK_SNAPSHOT_RECEIPT_${field.toUpperCase()}_REQUIRED`);
+    check(receipt.canonical_state_mutated === false, 'RNCS_REALITY_CHUNK_SNAPSHOT_RECEIPT_CANONICAL_MUTATION');
+    check(receipt.authority?.canonical_owner === 'RNCS' && receipt.authority?.canonical_write_authorized === false, 'RNCS_REALITY_CHUNK_SNAPSHOT_RECEIPT_AUTHORITY_INVALID');
+    check(receipt.authority?.candidate_only === true && receipt.authority?.authoritative === false && receipt.authority?.commit_status === 'NOT_COMMITTED', 'RNCS_REALITY_CHUNK_SNAPSHOT_RECEIPT_CANDIDATE_REQUIRED');
+    check(Array.isArray(receipt.evidence_refs), 'RNCS_REALITY_CHUNK_SNAPSHOT_RECEIPT_EVIDENCE_REQUIRED');
+    check(hex64(receiptRoot) && rootHash(copy) === receiptRoot, 'RNCS_REALITY_CHUNK_SNAPSHOT_RECEIPT_ROOT_MISMATCH');
+  } catch (error) {
+    errors.push(`RNCS_REALITY_CHUNK_SNAPSHOT_RECEIPT_VERIFY_EXCEPTION:${error.name}:${error.message}`);
   }
   return {valid: errors.length === 0, errors, receipt_root: receipt.receipt_root ?? null};
 }
