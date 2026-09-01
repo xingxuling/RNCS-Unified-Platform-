@@ -13,8 +13,14 @@ import {
   createServerSovereigntyHandoffReceipt,
   createServerSovereigntyMigration,
   createCausalPhysicalProfile,
+  createMinimumViableReality as createCoreMinimumViableReality,
   createRealityQuery,
   createRealityConsistencyProfile,
+  createRealityFault as createCoreRealityFault,
+  createRealityLoadSheddingPlan as createCoreRealityLoadSheddingPlan,
+  createRealityPowerProfile as createCoreRealityPowerProfile,
+  createRealityResourceBudget as createCoreRealityResourceBudget,
+  createRealityResourceDemand as createCoreRealityResourceDemand,
   createRepresentationPortfolio,
   createRepresentationSlot,
   createRepresentationRef,
@@ -35,6 +41,8 @@ import {
   verifyServerSovereigntyHandoffReceipt,
   verifyServerSovereigntyMigration,
   verifyCausalPhysicalProfile,
+  verifyMinimumViableReality,
+  verifyRealityFault,
   verifyRealityChunk,
   verifyRealityChunkDelta,
   verifyRealityChunkDeltaReceipt,
@@ -47,6 +55,9 @@ import {
   verifyRealityHorizon,
   verifyRealityInterestGraph,
   verifyRealityLoadSheddingPlan,
+  verifyRealityPowerProfile,
+  verifyRealityResourceBudget,
+  verifyRealityResourceDemand,
   verifyRealityQuery,
   verifyRealityQueryResult,
   verifyWorldEvent,
@@ -96,6 +107,10 @@ export const LARGE_WORLD_REALITY_CHUNK_RECEIPT_FORMAT = 'rncs.reality-chunk-delt
 export const LARGE_WORLD_REALITY_CHUNK_SNAPSHOT_RECEIPT_FORMAT = 'rncs.reality-chunk-snapshot-receipt.v0.3';
 export const LARGE_WORLD_REALITY_CHUNK_PACKET_FORMAT = 'rncs.reality-chunk-replication-packet.v0.3';
 export const LARGE_WORLD_REALITY_CHUNK_ACK_FORMAT = 'rncs.reality-chunk-replication-ack.v0.3';
+export const LARGE_WORLD_REALITY_FAULT_FORMAT = 'rncs.reality-fault.v0.3';
+export const LARGE_WORLD_MINIMUM_REALITY_FORMAT = 'rncs.minimum-viable-reality.v0.3';
+export const LARGE_WORLD_LOAD_SHEDDING_PLAN_FORMAT = 'rncs.reality-load-shedding-plan.v0.3';
+export const LARGE_WORLD_MINIMUM_REALITY_RECOVERY_FORMAT = 'rncs.large-world-minimum-reality-recovery.v0.1';
 export const LARGE_WORLD_REPLICATION_CONFLICT_POLICY_ID = 'lexicographic-writer-priority';
 export const LARGE_WORLD_CONSISTENCY_PROFILE_FORMAT = REALITY_CONSISTENCY_PROFILE_FORMAT;
 export const LARGE_WORLD_AUTHORITY_LEASE_FORMAT = AUTHORITY_LEASE_FORMAT;
@@ -958,6 +973,34 @@ function largeWorldSpatialSceneRoot(scene) {
     authoritative: extension.authoritative,
     canonical_write_authorized: extension.canonical_write_authorized,
     authority: extension.authority
+  });
+}
+
+function largeWorldMinimumRealityRecoveryRoot(recovery) {
+  return rootHash({
+    format: recovery.format,
+    version: recovery.version,
+    world_id: recovery.world_id,
+    node_id: recovery.node_id,
+    generation: recovery.generation,
+    region_root: recovery.region_root,
+    world_root: recovery.world_root,
+    canonical_state_root: recovery.canonical_state_root,
+    world_time_tick: recovery.world_time_tick,
+    fault_roots: recovery.fault_roots,
+    faults: (recovery.faults ?? []).map(fault => ({fault_id: fault.fault_id, fault_root: fault.fault_root, status: fault.status})).sort((a, b) => keySort(a.fault_id, b.fault_id)),
+    minimum_reality_root: recovery.minimum_reality?.minimum_reality_root ?? null,
+    load_shedding_plan_root: recovery.load_shedding_plan?.plan_root ?? null,
+    selection_root: recovery.selection?.selection_root ?? null,
+    scene_root: recovery.scene?.scene_root ?? null,
+    active_chunk_ids: recovery.active_chunk_ids,
+    recovery_status: recovery.recovery_status,
+    canonical_state_mutated: recovery.canonical_state_mutated,
+    authority: recovery.authority,
+    candidate_only: recovery.candidate_only,
+    authoritative: recovery.authoritative,
+    canonical_write_authorized: recovery.canonical_write_authorized,
+    commit_status: recovery.commit_status
   });
 }
 
@@ -2394,6 +2437,8 @@ export class LargeWorldRuntime {
     this.realityChunkReplicas = new Map();
     this.appliedRealityChunkDeltas = new Map();
     this.appliedRealityChunkSnapshots = new Map();
+    this.realityFaults = new Map();
+    this.minimumReality = null;
     this.canonicalState = {
       format: 'rncs.large-world-state.v0.1',
       world_id: this.options.worldId,
@@ -2508,6 +2553,239 @@ export class LargeWorldRuntime {
   }
 
   verifyCausalPhysicalProfile(profile) { return verifyCausalPhysicalProfile(profile); }
+
+  createRealityFault(input = {}) {
+    const value = record(input.fault ?? input);
+    const fault = value.fault_root
+      ? clone(value)
+      : createCoreRealityFault({
+        ...value,
+        node_id: value.node_id ?? value.nodeId ?? this.nodeId,
+        opened_at_tick: value.opened_at_tick ?? value.openedAtTick ?? this.worldTime.simulation_tick
+      });
+    const verification = verifyRealityFault(fault);
+    fail(verification.valid, `LARGE_WORLD_REALITY_FAULT_INVALID:${verification.errors.join(',')}`);
+    fail(fault.node_id === this.nodeId, 'LARGE_WORLD_REALITY_FAULT_NODE_ID_MISMATCH');
+    return clone(fault);
+  }
+
+  registerRealityFault(input = {}) {
+    const fault = this.createRealityFault(input);
+    this.realityFaults.set(fault.fault_id, clone(fault));
+    return clone(fault);
+  }
+
+  getRealityFault(faultIdValue) {
+    return clone(this.realityFaults.get(String(faultIdValue)) ?? null);
+  }
+
+  listRealityFaults() {
+    return [...this.realityFaults.values()].sort((a, b) => keySort(a.fault_id, b.fault_id)).map(clone);
+  }
+
+  clearRealityFault(faultIdValue, recoveredAtTick = this.worldTime.simulation_tick) {
+    const faultId = String(faultIdValue);
+    const current = this.realityFaults.get(faultId);
+    fail(current, 'LARGE_WORLD_REALITY_FAULT_NOT_FOUND');
+    const tick = integer(recoveredAtTick, this.worldTime.simulation_tick, {min: current.opened_at_tick});
+    const {fault_root: _faultRoot, ...faultFields} = current;
+    const recovered = this.createRealityFault({
+      ...faultFields,
+      status: 'RECOVERED',
+      recovered_at_tick: tick
+    });
+    this.realityFaults.set(faultId, clone(recovered));
+    return clone(recovered);
+  }
+
+  createMinimumViableReality(input = {}) {
+    const value = record(input.minimum_reality ?? input.minimumReality ?? input);
+    const currentRoot = worldStateRoot(this.canonicalState);
+    const currentTick = this.worldTime.simulation_tick;
+    const reality = value.minimum_reality_root
+      ? clone(value)
+      : createCoreMinimumViableReality({
+        ...value,
+        reality_id: value.reality_id ?? value.realityId ?? `reality:${this.options.worldId}`,
+        scope_id: value.scope_id ?? value.scopeId ?? `scope:${this.options.worldId}`,
+        canonical_state_root: value.canonical_state_root ?? value.canonicalStateRoot ?? currentRoot,
+        world_time_tick: value.world_time_tick ?? value.worldTimeTick ?? currentTick
+      });
+    const verification = verifyMinimumViableReality(reality);
+    fail(verification.valid, `LARGE_WORLD_MINIMUM_REALITY_INVALID:${verification.errors.join(',')}`);
+    fail(reality.canonical_state_root === currentRoot, 'LARGE_WORLD_MINIMUM_REALITY_CANONICAL_ROOT_STALE');
+    fail(reality.world_time_tick === currentTick, 'LARGE_WORLD_MINIMUM_REALITY_WORLD_TIME_STALE');
+    return clone(reality);
+  }
+
+  getMinimumReality() { return clone(this.minimumReality); }
+
+  /**
+   * Build a candidate-only minimum-reality recovery envelope. Faults and
+   * resource plans are verified RNCS contracts; LargeWorldRuntime only lowers
+   * the result into proxy representation selections and a VSR scene. No
+   * canonical world state is mutated and no provider receives write authority.
+   */
+  recoverMinimumReality(input = {}) {
+    const value = record(input);
+    const currentRoot = worldStateRoot(this.canonicalState);
+    const currentTick = this.worldTime.simulation_tick;
+    const faultValue = value.faults ?? value.fault ?? this.listRealityFaults();
+    const faultInputs = Array.isArray(faultValue) ? faultValue : [faultValue];
+    const faults = faultInputs.filter(Boolean).map(faultInput => this.createRealityFault(faultInput));
+    for (const fault of faults) this.realityFaults.set(fault.fault_id, clone(fault));
+    faults.sort((a, b) => keySort(a.fault_id, b.fault_id));
+    const faultRoots = faults.map(fault => fault.fault_root).sort(keySort);
+    const activeCriticalFault = faults.some(fault => fault.status !== 'RECOVERED' && (fault.severity >= 70 || fault.affects_minimum_reality));
+
+    if (this.activeChunkIds.length === 0) {
+      this.observe({
+        position: value.position ?? value.observer ?? this.observer,
+        forcedChunkIds: value.forced_chunk_ids ?? value.forcedChunkIds ?? []
+      });
+    }
+    const activeChunks = this.listActiveChunks();
+    fail(activeChunks.length > 0, 'LARGE_WORLD_MINIMUM_REALITY_ACTIVE_CHUNKS_REQUIRED');
+
+    const minimumInput = record(value.minimum_reality ?? value.minimumReality);
+    const requiredLayers = minimumInput.required_layers ?? minimumInput.requiredLayers ?? value.required_layers ?? value.requiredLayers;
+    const explicitAvailableLayers = minimumInput.available_layers
+      ?? minimumInput.availableLayers
+      ?? value.available_layers
+      ?? value.availableLayers;
+    const defaultAvailableLayers = activeCriticalFault
+      ? ['WORLD_PROXY']
+      : requiredLayers ?? ['WORLD_PROXY', 'COLLISION', 'SEMANTIC'];
+    const minimum = this.createMinimumViableReality({
+      ...minimumInput,
+      reality_id: minimumInput.reality_id ?? minimumInput.realityId ?? value.reality_id ?? value.realityId ?? `reality:${this.options.worldId}`,
+      scope_id: minimumInput.scope_id ?? minimumInput.scopeId ?? value.scope_id ?? value.scopeId ?? `scope:${this.options.worldId}`,
+      canonical_state_root: minimumInput.canonical_state_root ?? minimumInput.canonicalStateRoot ?? currentRoot,
+      world_time_tick: minimumInput.world_time_tick ?? minimumInput.worldTimeTick ?? currentTick,
+      required_layers: requiredLayers ?? ['WORLD_PROXY', 'COLLISION', 'SEMANTIC'],
+      available_layers: explicitAvailableLayers ?? defaultAvailableLayers,
+      fault_roots: minimumInput.fault_roots ?? minimumInput.faultRoots ?? faultRoots
+    });
+    fail(JSON.stringify(minimum.fault_roots) === JSON.stringify(faultRoots), 'LARGE_WORLD_MINIMUM_REALITY_FAULT_ROOTS_MISMATCH');
+
+    const powerInput = value.power_profile ?? value.powerProfile;
+    const power = record(powerInput).power_root
+      ? clone(powerInput)
+      : createCoreRealityPowerProfile({node_id: this.nodeId, ...record(powerInput)});
+    const powerVerification = verifyRealityPowerProfile(power);
+    fail(powerVerification.valid, `LARGE_WORLD_MINIMUM_REALITY_POWER_INVALID:${powerVerification.errors.join(',')}`);
+    fail(power.node_id === this.nodeId, 'LARGE_WORLD_MINIMUM_REALITY_POWER_NODE_ID_MISMATCH');
+
+    const budgetInput = value.resource_budget ?? value.resourceBudget;
+    const budget = record(budgetInput).budget_root
+      ? clone(budgetInput)
+      : createCoreRealityResourceBudget({node_id: this.nodeId, power_profile_root: power.power_root, ...record(budgetInput)});
+    const budgetVerification = verifyRealityResourceBudget(budget);
+    fail(budgetVerification.valid, `LARGE_WORLD_MINIMUM_REALITY_RESOURCE_BUDGET_INVALID:${budgetVerification.errors.join(',')}`);
+    fail(budget.node_id === this.nodeId, 'LARGE_WORLD_MINIMUM_REALITY_RESOURCE_BUDGET_NODE_ID_MISMATCH');
+    fail(budget.power_profile_root === power.power_root, 'LARGE_WORLD_MINIMUM_REALITY_RESOURCE_BUDGET_POWER_ROOT_MISMATCH');
+
+    const demandInput = value.demands ?? value.resource_demands ?? value.resourceDemands;
+    const demands = (Array.isArray(demandInput) ? demandInput : [
+      {
+        candidate_id: `minimum:${minimum.scope_id}`,
+        candidate_kind: 'MINIMUM_REALITY',
+        priority: 100,
+        authority_critical: true,
+        preserve_minimum_reality: true,
+        canonical_state_root: currentRoot,
+        resource_costs: {CPU: 40, RAM: 32, ENERGY: 5}
+      },
+      ...activeChunks.map(chunk => ({
+        candidate_id: `visual:${chunk.chunk_id}`,
+        candidate_kind: 'VISUAL',
+        priority: 50,
+        canonical_state_root: currentRoot,
+        resource_costs: {GPU: 400, VRAM: 256, NETWORK: 32}
+      }))
+    ]).map(demandInputValue => {
+      const demand = record(demandInputValue).demand_root
+        ? clone(demandInputValue)
+        : createCoreRealityResourceDemand(demandInputValue);
+      const verification = verifyRealityResourceDemand(demand);
+      fail(verification.valid, `LARGE_WORLD_MINIMUM_REALITY_DEMAND_INVALID:${verification.errors.join(',')}`);
+      fail(demand.canonical_state_root === null || demand.canonical_state_root === currentRoot, 'LARGE_WORLD_MINIMUM_REALITY_DEMAND_CANONICAL_ROOT_STALE');
+      return demand;
+    });
+
+    const planInput = value.resource_governor_plan
+      ?? value.resourceGovernorPlan
+      ?? value.load_shedding_plan
+      ?? value.loadSheddingPlan;
+    const plan = record(planInput).plan_root
+      ? clone(planInput)
+      : createCoreRealityLoadSheddingPlan({
+        ...record(planInput),
+        plan_id: record(planInput).plan_id ?? record(planInput).planId ?? `plan:${this.nodeId}:${currentTick}`,
+        tick: record(planInput).tick ?? currentTick,
+        power_profile: power,
+        resource_budget: budget,
+        minimum_reality: minimum,
+        faults,
+        demands,
+        evidence_refs: value.evidence_refs ?? value.evidenceRefs ?? []
+      });
+    const planVerification = verifyRealityLoadSheddingPlan(plan);
+    fail(planVerification.valid, `LARGE_WORLD_MINIMUM_REALITY_PLAN_INVALID:${planVerification.errors.join(',')}`);
+    fail(plan.node_id === this.nodeId, 'LARGE_WORLD_MINIMUM_REALITY_PLAN_NODE_ID_MISMATCH');
+    fail(plan.tick === currentTick, 'LARGE_WORLD_MINIMUM_REALITY_PLAN_TICK_STALE');
+    fail(plan.minimum_reality_root === minimum.minimum_reality_root, 'LARGE_WORLD_MINIMUM_REALITY_PLAN_MINIMUM_ROOT_MISMATCH');
+    fail(JSON.stringify(plan.fault_roots) === JSON.stringify(faultRoots), 'LARGE_WORLD_MINIMUM_REALITY_PLAN_FAULT_ROOTS_MISMATCH');
+    if (powerInput !== undefined) fail(plan.power_profile_root === power.power_root, 'LARGE_WORLD_MINIMUM_REALITY_PLAN_POWER_ROOT_MISMATCH');
+    if (budgetInput !== undefined) fail(plan.resource_budget_root === budget.budget_root, 'LARGE_WORLD_MINIMUM_REALITY_PLAN_RESOURCE_BUDGET_ROOT_MISMATCH');
+
+    const selection = this.selectActiveRepresentationPortfolios({
+      quality_profile: 'PROXY',
+      resource_governor_plan: plan,
+      diversity: value.diversity ?? value.diversity_axes ?? value.diversityAxes
+    });
+    const evidenceRoot = rootHash({
+      canonical_state_root: currentRoot,
+      minimum_reality_root: minimum.minimum_reality_root,
+      plan_root: plan.plan_root,
+      selection_root: selection.selection_root,
+      fault_roots: faultRoots
+    });
+    const sceneInput = record(value.scene);
+    const scene = this.createSpatialScene({
+      ...sceneInput,
+      title: sceneInput.title ?? 'URRF Minimum Viable Reality',
+      selection,
+      evidence_root: evidenceRoot
+    });
+    const base = {
+      format: LARGE_WORLD_MINIMUM_REALITY_RECOVERY_FORMAT,
+      version: LARGE_WORLD_RUNTIME_VERSION,
+      world_id: this.options.worldId,
+      node_id: this.nodeId,
+      generation: this.options.generation,
+      region_root: this.region.region_root,
+      world_root: this.region.world_root,
+      canonical_state_root: currentRoot,
+      world_time_tick: currentTick,
+      fault_roots: faultRoots,
+      faults: faults.map(clone),
+      minimum_reality: clone(minimum),
+      load_shedding_plan: clone(plan),
+      selection: clone(selection),
+      scene: clone(scene),
+      active_chunk_ids: [...this.activeChunkIds].sort(keySort),
+      recovery_status: minimum.recovery_status,
+      canonical_state_mutated: false,
+      authority: {provider_can_write_authoritative_world_state: false, rncs_authority_required: true},
+      candidate_only: true,
+      authoritative: false,
+      canonical_write_authorized: false,
+      commit_status: 'NOT_COMMITTED'
+    };
+    this.minimumReality = clone(minimum);
+    return {...base, recovery_root: largeWorldMinimumRealityRecoveryRoot(base)};
+  }
 
   /**
    * Lower the v0.3 URRF access chain into the bounded large-world stream:
@@ -3634,6 +3912,76 @@ export function verifyRuntimeSnapshot(snapshot) {
   if (snapshot.candidate_only !== true || snapshot.authoritative !== false) errors.push('LARGE_WORLD_SNAPSHOT_CANDIDATE_REQUIRED');
   if (snapshot.commit_status !== 'NOT_COMMITTED') errors.push('LARGE_WORLD_SNAPSHOT_COMMIT_STATUS_INVALID');
   return {valid: errors.length === 0, errors, snapshot_root: root ?? null};
+}
+
+export function verifyLargeWorldMinimumRealityRecovery(recovery) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!recovery || typeof recovery !== 'object' || Array.isArray(recovery)) return {valid: false, errors: ['LARGE_WORLD_MINIMUM_REALITY_RECOVERY_NOT_OBJECT']};
+  try {
+    const copy = clone(recovery);
+    const recoveryRoot = copy.recovery_root;
+    delete copy.recovery_root;
+    check(recovery.format === LARGE_WORLD_MINIMUM_REALITY_RECOVERY_FORMAT, 'LARGE_WORLD_MINIMUM_REALITY_RECOVERY_FORMAT_INVALID');
+    check(recovery.version === LARGE_WORLD_RUNTIME_VERSION, 'LARGE_WORLD_MINIMUM_REALITY_RECOVERY_VERSION_INVALID');
+    check(typeof recovery.world_id === 'string' && recovery.world_id.length > 0, 'LARGE_WORLD_MINIMUM_REALITY_RECOVERY_WORLD_ID_REQUIRED');
+    check(typeof recovery.node_id === 'string' && recovery.node_id.length > 0, 'LARGE_WORLD_MINIMUM_REALITY_RECOVERY_NODE_ID_REQUIRED');
+    check(Number.isSafeInteger(recovery.generation) && recovery.generation >= 0, 'LARGE_WORLD_MINIMUM_REALITY_RECOVERY_GENERATION_INVALID');
+    check(hex64(recovery.region_root) && hex64(recovery.world_root), 'LARGE_WORLD_MINIMUM_REALITY_RECOVERY_WORLD_ROOT_INVALID');
+    check(hex64(recovery.canonical_state_root), 'LARGE_WORLD_MINIMUM_REALITY_RECOVERY_CANONICAL_ROOT_INVALID');
+    check(Number.isSafeInteger(recovery.world_time_tick) && recovery.world_time_tick >= 0, 'LARGE_WORLD_MINIMUM_REALITY_RECOVERY_WORLD_TIME_INVALID');
+    check(Array.isArray(recovery.fault_roots) && recovery.fault_roots.every(hex64), 'LARGE_WORLD_MINIMUM_REALITY_RECOVERY_FAULT_ROOTS_INVALID');
+    check(Array.isArray(recovery.faults), 'LARGE_WORLD_MINIMUM_REALITY_RECOVERY_FAULTS_REQUIRED');
+    const faultIds = new Set();
+    const actualFaultRoots = [];
+    for (const fault of recovery.faults ?? []) {
+      const verification = verifyRealityFault(fault);
+      check(verification.valid, `LARGE_WORLD_MINIMUM_REALITY_RECOVERY_FAULT_INVALID:${fault?.fault_id ?? 'unknown'}:${verification.errors.join(',')}`);
+      check(fault?.node_id === recovery.node_id, `LARGE_WORLD_MINIMUM_REALITY_RECOVERY_FAULT_NODE_MISMATCH:${fault?.fault_id ?? 'unknown'}`);
+      check(!faultIds.has(fault?.fault_id), `LARGE_WORLD_MINIMUM_REALITY_RECOVERY_FAULT_DUPLICATE:${fault?.fault_id ?? 'unknown'}`);
+      faultIds.add(fault?.fault_id);
+      if (hex64(fault?.fault_root)) actualFaultRoots.push(fault.fault_root);
+    }
+    actualFaultRoots.sort(keySort);
+    const declaredFaultRoots = [...(recovery.fault_roots ?? [])].sort(keySort);
+    check(JSON.stringify(declaredFaultRoots) === JSON.stringify(actualFaultRoots), 'LARGE_WORLD_MINIMUM_REALITY_RECOVERY_FAULT_ROOTS_MISMATCH');
+
+    const minimumVerification = verifyMinimumViableReality(recovery.minimum_reality);
+    check(minimumVerification.valid, `LARGE_WORLD_MINIMUM_REALITY_RECOVERY_MINIMUM_INVALID:${minimumVerification.errors.join(',')}`);
+    check(recovery.minimum_reality?.canonical_state_root === recovery.canonical_state_root, 'LARGE_WORLD_MINIMUM_REALITY_RECOVERY_MINIMUM_CANONICAL_ROOT_MISMATCH');
+    check(recovery.minimum_reality?.world_time_tick === recovery.world_time_tick, 'LARGE_WORLD_MINIMUM_REALITY_RECOVERY_MINIMUM_WORLD_TIME_MISMATCH');
+    check(JSON.stringify([...(recovery.minimum_reality?.fault_roots ?? [])].sort(keySort)) === JSON.stringify(declaredFaultRoots), 'LARGE_WORLD_MINIMUM_REALITY_RECOVERY_MINIMUM_FAULT_ROOTS_MISMATCH');
+    check(recovery.recovery_status === recovery.minimum_reality?.recovery_status, 'LARGE_WORLD_MINIMUM_REALITY_RECOVERY_STATUS_MISMATCH');
+
+    const planVerification = verifyRealityLoadSheddingPlan(recovery.load_shedding_plan);
+    check(planVerification.valid, `LARGE_WORLD_MINIMUM_REALITY_RECOVERY_PLAN_INVALID:${planVerification.errors.join(',')}`);
+    check(recovery.load_shedding_plan?.node_id === recovery.node_id, 'LARGE_WORLD_MINIMUM_REALITY_RECOVERY_PLAN_NODE_MISMATCH');
+    check(recovery.load_shedding_plan?.minimum_reality_root === recovery.minimum_reality?.minimum_reality_root, 'LARGE_WORLD_MINIMUM_REALITY_RECOVERY_PLAN_MINIMUM_ROOT_MISMATCH');
+    check(JSON.stringify([...(recovery.load_shedding_plan?.fault_roots ?? [])].sort(keySort)) === JSON.stringify(declaredFaultRoots), 'LARGE_WORLD_MINIMUM_REALITY_RECOVERY_PLAN_FAULT_ROOTS_MISMATCH');
+
+    const selectionVerification = verifyPortfolioSelectionEnvelope(recovery.selection);
+    check(selectionVerification.valid, `LARGE_WORLD_MINIMUM_REALITY_RECOVERY_SELECTION_INVALID:${selectionVerification.errors.join(',')}`);
+    check(recovery.selection?.world_id === recovery.world_id && recovery.selection?.region_root === recovery.region_root && recovery.selection?.world_root === recovery.world_root, 'LARGE_WORLD_MINIMUM_REALITY_RECOVERY_SELECTION_WORLD_MISMATCH');
+    check(recovery.selection?.resource_governor_plan_root === recovery.load_shedding_plan?.plan_root, 'LARGE_WORLD_MINIMUM_REALITY_RECOVERY_SELECTION_PLAN_ROOT_MISMATCH');
+    check((recovery.selection?.selections ?? []).every(row => row.selected_quality_profile === 'PROXY'), 'LARGE_WORLD_MINIMUM_REALITY_RECOVERY_PROXY_REQUIRED');
+
+    const sceneVerification = verifyLargeWorldSpatialScene(recovery.scene);
+    check(sceneVerification.valid, `LARGE_WORLD_MINIMUM_REALITY_RECOVERY_SCENE_INVALID:${sceneVerification.errors.join(',')}`);
+    check(recovery.scene?.large_world?.world_id === recovery.world_id && recovery.scene?.large_world?.region_root === recovery.region_root && recovery.scene?.large_world?.world_root === recovery.world_root, 'LARGE_WORLD_MINIMUM_REALITY_RECOVERY_SCENE_WORLD_MISMATCH');
+    check(recovery.scene?.large_world?.selection_root === recovery.selection?.selection_root, 'LARGE_WORLD_MINIMUM_REALITY_RECOVERY_SCENE_SELECTION_ROOT_MISMATCH');
+    check(recovery.scene?.large_world?.resource_governor_plan_root === recovery.load_shedding_plan?.plan_root, 'LARGE_WORLD_MINIMUM_REALITY_RECOVERY_SCENE_PLAN_ROOT_MISMATCH');
+    const activeIds = [...(recovery.active_chunk_ids ?? [])].sort(keySort);
+    check(JSON.stringify(activeIds) === JSON.stringify([...(recovery.selection?.active_chunk_ids ?? [])].sort(keySort)), 'LARGE_WORLD_MINIMUM_REALITY_RECOVERY_ACTIVE_CHUNKS_SELECTION_MISMATCH');
+    check(JSON.stringify(activeIds) === JSON.stringify([...(recovery.scene?.large_world?.active_chunk_ids ?? [])].sort(keySort)), 'LARGE_WORLD_MINIMUM_REALITY_RECOVERY_ACTIVE_CHUNKS_SCENE_MISMATCH');
+    check(recovery.canonical_state_mutated === false, 'LARGE_WORLD_MINIMUM_REALITY_RECOVERY_CANONICAL_MUTATION');
+    check(recovery.authority?.provider_can_write_authoritative_world_state === false && recovery.authority?.rncs_authority_required === true, 'LARGE_WORLD_MINIMUM_REALITY_RECOVERY_AUTHORITY_ESCALATION');
+    check(recovery.candidate_only === true && recovery.authoritative === false && recovery.canonical_write_authorized === false, 'LARGE_WORLD_MINIMUM_REALITY_RECOVERY_CANDIDATE_REQUIRED');
+    check(recovery.commit_status === 'NOT_COMMITTED', 'LARGE_WORLD_MINIMUM_REALITY_RECOVERY_COMMIT_STATUS_INVALID');
+    check(hex64(recoveryRoot) && largeWorldMinimumRealityRecoveryRoot(copy) === recoveryRoot, 'LARGE_WORLD_MINIMUM_REALITY_RECOVERY_ROOT_MISMATCH');
+  } catch (error) {
+    errors.push(`LARGE_WORLD_MINIMUM_REALITY_RECOVERY_VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, recovery_root: recovery.recovery_root ?? null};
 }
 
 export function verifyReplicationSnapshot(snapshot) {

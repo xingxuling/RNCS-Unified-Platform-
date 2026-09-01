@@ -99,6 +99,7 @@
     "test:large-world-server-sovereignty": "npm test --workspace @taowind/rncs-core-contract && npm test --workspace @taowind/large-world-runtime && node --test tests/large-world-server-sovereignty.integration.test.mjs",
     "test:large-world-reality-chunk": "npm test --workspace @taowind/rncs-core-contract && npm test --workspace @taowind/large-world-runtime && node --test tests/large-world-reality-chunk.integration.test.mjs",
     "test:large-world-reality-chunk-fabric": "npm test --workspace @taowind/rncs-core-contract && npm test --workspace @taowind/large-world-runtime && node --test tests/large-world-reality-chunk-fabric.integration.test.mjs",
+    "test:large-world-reality-fault-recovery": "npm test --workspace @taowind/rncs-core-contract && npm test --workspace @taowind/reality-representation-fabric && npm run build --workspace @taowind/visual-state-runtime && npm test --workspace @taowind/large-world-runtime && node --test tests/large-world-reality-fault-recovery.integration.test.mjs",
     "test:large-world-portfolio": "npm run build --workspace @taowind/visual-state-runtime && node --test tests/large-world-portfolio.integration.test.mjs",
     "benchmark:network": "npm run benchmark --workspace @taowind/reality-network-runtime",
     "demo:network": "node examples/two-player-loopback/demo-server.mjs",
