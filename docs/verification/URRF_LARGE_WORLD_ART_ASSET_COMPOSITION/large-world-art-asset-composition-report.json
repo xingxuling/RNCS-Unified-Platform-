@@ -1,0 +1,172 @@
+{
+  "format": "urrf.large-world-art-asset-composition-report.v0.1",
+  "composition_format": "urrf.large-world-art-asset-composition.v0.1",
+  "source_root": "d741cf934e4931d2d12f4c144f8b3d62899b29a9c9b362a72f0c4e79d400704a",
+  "asset_count": 5,
+  "part_count": 9,
+  "distinct_geometry_axes": [
+    "resource:crystal",
+    "resource:iron",
+    "resource:salt",
+    "resource:water",
+    "structure:grove",
+    "structure:ruin",
+    "structure:shrine",
+    "structure:watchtower"
+  ],
+  "distinct_material_axes": [
+    "ancient:wetland",
+    "arcane:tundra",
+    "industrial:coast",
+    "industrial:desert",
+    "natural:forest"
+  ],
+  "distinct_style_axes": [
+    "ancient",
+    "arcane",
+    "industrial",
+    "natural"
+  ],
+  "compositions": [
+    {
+      "asset_id": "art-asset:c499cc77edbef6e59b66fa81",
+      "composition_root": "c499cc77edbef6e59b66fa81455442bbc8e3fff075ba34105644d821dd07745a",
+      "fragment_root": "9c725d39a3a4148dc3c11b1970718520168265fc74fb036aecab56f6969446ca",
+      "name": "Forest Natural Grove",
+      "semantic_kind": "structure",
+      "biome": "forest",
+      "style_id": "natural",
+      "quality_profile": "STANDARD",
+      "part_count": 1,
+      "geometry": [
+        "structure:grove"
+      ],
+      "material_ids": [
+        "material:urrf-art-asset:art-asset:c499cc77edbef6e59b66fa81:canopy"
+      ],
+      "mesh_ids": [
+        "mesh:large-world:prototype:grove"
+      ]
+    },
+    {
+      "asset_id": "art-asset:6d8cd0407163e26e0347cc22",
+      "composition_root": "6d8cd0407163e26e0347cc220e2b8119b9fe5a384fe3f8c38e3eecb9f91c207a",
+      "fragment_root": "1e4a6c40f21552c35d05a2a9dba9a3b1a4c7a77bca0f1c596e3f19f131792a66",
+      "name": "Tundra Arcane Grove",
+      "semantic_kind": "structure",
+      "biome": "tundra",
+      "style_id": "arcane",
+      "quality_profile": "CINEMATIC",
+      "part_count": 1,
+      "geometry": [
+        "structure:grove"
+      ],
+      "material_ids": [
+        "material:urrf-art-asset:art-asset:6d8cd0407163e26e0347cc22:canopy"
+      ],
+      "mesh_ids": [
+        "mesh:large-world:prototype:grove:cinematic"
+      ]
+    },
+    {
+      "asset_id": "art-asset:ba01ab5e146b7fc0e0301e44",
+      "composition_root": "ba01ab5e146b7fc0e0301e44fcc12f9f83696bafc8faa8e1107589cc83e908f1",
+      "fragment_root": "ab1a5c411d1e09fee25106dd9b8f0996b6ed41f756d9e1a22d12889d62356b90",
+      "name": "Desert Industrial Shrine",
+      "semantic_kind": "hybrid",
+      "biome": "desert",
+      "style_id": "industrial",
+      "quality_profile": "CINEMATIC",
+      "part_count": 3,
+      "geometry": [
+        "structure:shrine",
+        "resource:iron",
+        "resource:crystal"
+      ],
+      "material_ids": [
+        "material:urrf-art-asset:art-asset:ba01ab5e146b7fc0e0301e44:core",
+        "material:urrf-art-asset:art-asset:ba01ab5e146b7fc0e0301e44:ore",
+        "material:urrf-art-asset:art-asset:ba01ab5e146b7fc0e0301e44:spark"
+      ],
+      "mesh_ids": [
+        "mesh:large-world:prototype:shrine:cinematic",
+        "mesh:large-world:prototype:resource:iron:cinematic",
+        "mesh:large-world:prototype:resource:crystal:cinematic"
+      ]
+    },
+    {
+      "asset_id": "art-asset:cbeb9bfb4e5bf287fc476900",
+      "composition_root": "cbeb9bfb4e5bf287fc4769008a8e0b9839b51453205818255c1df0300c0cb97f",
+      "fragment_root": "58ed6e23584c5fac05ffa1f471c8ce0c944235f49907505fb1f42f38d45c7eba",
+      "name": "Wetland Ancient Ruin",
+      "semantic_kind": "hybrid",
+      "biome": "wetland",
+      "style_id": "ancient",
+      "quality_profile": "STANDARD",
+      "part_count": 3,
+      "geometry": [
+        "resource:water",
+        "resource:salt",
+        "structure:ruin"
+      ],
+      "material_ids": [
+        "material:urrf-art-asset:art-asset:cbeb9bfb4e5bf287fc476900:pool",
+        "material:urrf-art-asset:art-asset:cbeb9bfb4e5bf287fc476900:salt",
+        "material:urrf-art-asset:art-asset:cbeb9bfb4e5bf287fc476900:walls"
+      ],
+      "mesh_ids": [
+        "mesh:large-world:prototype:resource:water",
+        "mesh:large-world:prototype:resource:salt",
+        "mesh:large-world:prototype:ruin"
+      ]
+    },
+    {
+      "asset_id": "art-asset:b5dfcaa77be60a495020e9c6",
+      "composition_root": "b5dfcaa77be60a495020e9c6ba15f67b1f7fc0938b08e538e16a23470989255e",
+      "fragment_root": "8919a354f2f557842a4c0e8cccde07e4716ff30cda98d759b6abd71be239e754",
+      "name": "Coast Mobile Watchtower",
+      "semantic_kind": "structure",
+      "biome": "coast",
+      "style_id": "industrial",
+      "quality_profile": "MOBILE",
+      "part_count": 1,
+      "geometry": [
+        "structure:watchtower"
+      ],
+      "material_ids": [
+        "material:urrf-art-asset:art-asset:b5dfcaa77be60a495020e9c6:tower"
+      ],
+      "mesh_ids": [
+        "mesh:large-world:prototype:watchtower:mobile"
+      ]
+    }
+  ],
+  "scene": {
+    "scene_id": "urrf-large-world-art-asset-composition-v01",
+    "scene_root": "f8cb34fd8b6a18d981716e0e6d1a0e9ed351e65941670205ef3a6d8cf8014015",
+    "node_count": 9,
+    "mesh_count": 9,
+    "material_count": 9
+  },
+  "frame_root": "6545ffb6d4fc49eb4ba30e65fb780ccdb744e9aa74ee9688c51fb99cea74dbc6",
+  "pixel_root": "6e665855e4fa5945ba7960e3c5b143a673881b67601c53a03982d54653bdb16c",
+  "triangles": 488,
+  "draw_calls": 9,
+  "glb": {
+    "bundle_root": "1b70061c49c78e043a7c07f51bf536bb7f05694b2b0694efcba48e3bc24db932",
+    "manifest_root": "edf96a2c9211a6d9694cc82d1d9522802b57d71f1741005e66821ed2a8b5a75f",
+    "asset_count": 27,
+    "lod0_count": 9,
+    "texture_profile": "ragf.ktx2-pbr-mipped.v0.1"
+  },
+  "authority": {
+    "canonical_owner": "RNCS",
+    "representation_owner": "URRF",
+    "lowering_runtime": "VSR",
+    "provider_can_write_authoritative_world_state": false,
+    "candidate_only": true,
+    "authoritative": false
+  },
+  "notes": "Candidate-only local composition proof. Existing deterministic low-poly large-world prototypes are reused across explicit geometry/material/style/biome/quality axes, including multi-part hybrid assets. The public composition scene is lowered into PBR KTX2 GLB candidates and CPU reference pixels execute deterministically. A separate browser receipt records one real Chromium WebGPU submission for this scene; target-device performance, photorealism, generated high-resolution textures, and AAA art direction remain unproven.",
+  "report_root": "ea496325482b420c7ff21e211362a1907e79ac07450ff13acaf6f9acdd602814"
+}

@@ -1,0 +1,113 @@
+{
+  "format": "rncs.large-world-spatial-glb-manifest.v0.1",
+  "version": "0.1.0",
+  "scene_id": "urrf-large-world-art-asset-composition-v01",
+  "scene_root": "f8cb34fd8b6a18d981716e0e6d1a0e9ed351e65941670205ef3a6d8cf8014015",
+  "source_reality_root": "d741cf934e4931d2d12f4c144f8b3d62899b29a9c9b362a72f0c4e79d400704a",
+  "provider_id": "provider:taowind:large-world-glb-ragf:v0.1",
+  "encoder_provider_id": "provider:taowind:large-world-glb-ragf:v0.1",
+  "provider_asset_count": 0,
+  "visual_prototype_profile": "large-world.visual-prototypes.v0.1",
+  "mesh_count": 9,
+  "lod_level_count": 3,
+  "asset_count": 27,
+  "texture_count": 108,
+  "texture_profile": "ragf.ktx2-pbr-mipped.v0.1",
+  "texture_residency_profile": "vsr.progressive-mip-residency.v0.1",
+  "lod_policy": [
+    {
+      "lod": 0,
+      "max_distance_m": 64,
+      "screen_coverage_percent": 100,
+      "geometric_error_mm": 0
+    },
+    {
+      "lod": 1,
+      "max_distance_m": 192,
+      "screen_coverage_percent": 45,
+      "geometric_error_mm": 18
+    },
+    {
+      "lod": 2,
+      "max_distance_m": 512,
+      "screen_coverage_percent": 16,
+      "geometric_error_mm": 55
+    }
+  ],
+  "asset_ids": [
+    "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:grove:cinematic:lod0",
+    "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:grove:cinematic:lod1",
+    "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:grove:cinematic:lod2",
+    "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:grove:lod0",
+    "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:grove:lod1",
+    "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:grove:lod2",
+    "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:resource:crystal:cinematic:lod0",
+    "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:resource:crystal:cinematic:lod1",
+    "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:resource:crystal:cinematic:lod2",
+    "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:resource:iron:cinematic:lod0",
+    "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:resource:iron:cinematic:lod1",
+    "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:resource:iron:cinematic:lod2",
+    "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:resource:salt:lod0",
+    "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:resource:salt:lod1",
+    "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:resource:salt:lod2",
+    "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:resource:water:lod0",
+    "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:resource:water:lod1",
+    "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:resource:water:lod2",
+    "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:ruin:lod0",
+    "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:ruin:lod1",
+    "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:ruin:lod2",
+    "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:shrine:cinematic:lod0",
+    "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:shrine:cinematic:lod1",
+    "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:shrine:cinematic:lod2",
+    "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:watchtower:mobile:lod0",
+    "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:watchtower:mobile:lod1",
+    "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:watchtower:mobile:lod2"
+  ],
+  "cell_asset_index": {
+    "cell:art-asset:c499cc77edbef6e59b66fa81": [
+      "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:grove:lod0",
+      "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:grove:lod1",
+      "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:grove:lod2"
+    ],
+    "cell:art-asset:6d8cd0407163e26e0347cc22": [
+      "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:grove:cinematic:lod0",
+      "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:grove:cinematic:lod1",
+      "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:grove:cinematic:lod2"
+    ],
+    "cell:art-asset:ba01ab5e146b7fc0e0301e44": [
+      "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:resource:crystal:cinematic:lod0",
+      "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:resource:crystal:cinematic:lod1",
+      "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:resource:crystal:cinematic:lod2",
+      "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:resource:iron:cinematic:lod0",
+      "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:resource:iron:cinematic:lod1",
+      "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:resource:iron:cinematic:lod2",
+      "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:shrine:cinematic:lod0",
+      "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:shrine:cinematic:lod1",
+      "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:shrine:cinematic:lod2"
+    ],
+    "cell:art-asset:cbeb9bfb4e5bf287fc476900": [
+      "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:resource:salt:lod0",
+      "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:resource:salt:lod1",
+      "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:resource:salt:lod2",
+      "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:resource:water:lod0",
+      "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:resource:water:lod1",
+      "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:resource:water:lod2",
+      "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:ruin:lod0",
+      "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:ruin:lod1",
+      "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:ruin:lod2"
+    ],
+    "cell:art-asset:b5dfcaa77be60a495020e9c6": [
+      "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:watchtower:mobile:lod0",
+      "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:watchtower:mobile:lod1",
+      "asset:glb:urrf-large-world-art-asset-composition-v01:mesh:large-world:prototype:watchtower:mobile:lod2"
+    ]
+  },
+  "candidate_only": true,
+  "authoritative": false,
+  "canonical_write_authorized": false,
+  "authority": {
+    "provider_can_write_authoritative_world_state": false,
+    "rncs_authority_required": true
+  },
+  "manifest_root": "edf96a2c9211a6d9694cc82d1d9522802b57d71f1741005e66821ed2a8b5a75f"
+}

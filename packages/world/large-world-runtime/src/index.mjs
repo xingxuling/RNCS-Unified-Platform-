@@ -78,6 +78,9 @@ export const LARGE_WORLD_REALITY_ACCESS_FORMAT = 'rncs.large-world-reality-acces
 export const LARGE_WORLD_PORTFOLIO_SELECTION_FORMAT = 'rncs.large-world-portfolio-selection.v0.1';
 export const LARGE_WORLD_SPATIAL_SCENE_FORMAT = 'rncs.large-world-spatial-scene.v0.1';
 export const LARGE_WORLD_SPATIAL_VISUAL_PROFILE = 'large-world.visual-prototypes.v0.1';
+export const LARGE_WORLD_ART_ASSET_COMPOSITION_FORMAT = 'urrf.large-world-art-asset-composition.v0.1';
+export const LARGE_WORLD_ART_ASSET_COMPOSITION_VERSION = '0.1.0';
+export const LARGE_WORLD_ART_ASSET_STYLE_IDS = Object.freeze(['natural', 'ancient', 'industrial', 'arcane']);
 /**
  * Quality profiles lowered by the large-world renderer. REFERENCE remains
  * outside this list until a real reference-grade provider and renderer are
@@ -962,6 +965,12 @@ const LARGE_WORLD_SPATIAL_STRUCTURE_COLORS = Object.freeze({
   shrine: '#c084fc',
   watchtower: '#f3b562'
 });
+const LARGE_WORLD_ART_ASSET_STYLE_PALETTES = Object.freeze({
+  natural: Object.freeze({structure: '#5f8f59', resource: '#4bb6a5', accent: '#c7f36b', roughness: .72, metallic: .08, emissiveStrength: .04}),
+  ancient: Object.freeze({structure: '#a87855', resource: '#d2a84e', accent: '#ffe3a1', roughness: .58, metallic: .18, emissiveStrength: .08}),
+  industrial: Object.freeze({structure: '#53657a', resource: '#3b82b4', accent: '#f7b955', roughness: .4, metallic: .72, emissiveStrength: .06}),
+  arcane: Object.freeze({structure: '#7650a3', resource: '#37c6df', accent: '#efd1ff', roughness: .3, metallic: .24, emissiveStrength: .28})
+});
 
 function largeWorldSpatialCubeMesh(id = 'mesh:large-world:cube') {
   const faces = [
@@ -1154,6 +1163,450 @@ function largeWorldSpatialTerrainMesh(chunk, qualityProfile) {
 
 function largeWorldSpatialColor(palette, key, fallback) {
   return palette[String(key).toLowerCase()] ?? fallback;
+}
+
+function largeWorldArtAssetHexRgb(value) {
+  const match = /^#([0-9a-f]{6})$/i.exec(String(value ?? ''));
+  if (!match) return [128, 128, 128];
+  const number = Number.parseInt(match[1], 16);
+  return [(number >> 16) & 0xff, (number >> 8) & 0xff, number & 0xff];
+}
+
+function largeWorldArtAssetBlendHex(primary, secondary, secondaryWeight = .2) {
+  const weight = Math.max(0, Math.min(1, Number(secondaryWeight)));
+  const a = largeWorldArtAssetHexRgb(primary), b = largeWorldArtAssetHexRgb(secondary);
+  const channels = a.map((channel, index) => Math.round(channel * (1 - weight) + b[index] * weight));
+  return `#${channels.map(channel => channel.toString(16).padStart(2, '0')).join('')}`;
+}
+
+function largeWorldArtAssetVector(value, fallback, {min, max, field}) {
+  const source = value === undefined || value === null ? fallback : value;
+  const raw = Array.isArray(source)
+    ? source
+    : source && typeof source === 'object'
+      ? [source.x, source.y, source.z]
+      : [source, source, source];
+  fail(raw.length === 3, `${field}_LENGTH_INVALID`);
+  return raw.map(component => {
+    const number = Number(component);
+    fail(Number.isSafeInteger(number) && number >= min && number <= max, `${field}_VALUE_INVALID`);
+    return number;
+  });
+}
+
+function normalizeLargeWorldArtAssetGeometry(value) {
+  const raw = String(value ?? '').trim().toLowerCase();
+  const separator = raw.indexOf(':');
+  const explicitDomain = separator > 0 ? raw.slice(0, separator) : null;
+  const primitiveKind = separator > 0 ? raw.slice(separator + 1) : raw;
+  const domain = explicitDomain ?? (LARGE_WORLD_RESOURCE_KINDS.includes(primitiveKind) ? 'resource' : 'structure');
+  const allowed = domain === 'resource' ? LARGE_WORLD_RESOURCE_KINDS : domain === 'structure' ? LARGE_WORLD_STRUCTURE_KINDS : [];
+  fail(allowed.includes(primitiveKind), 'LARGE_WORLD_ART_ASSET_GEOMETRY_INVALID');
+  return {domain, primitive_kind: primitiveKind, geometry_kind: `${domain}:${primitiveKind}`};
+}
+
+function normalizeLargeWorldArtAssetRecipe(input = {}) {
+  const value = record(input);
+  const rawParts = Array.isArray(value.parts)
+    ? value.parts
+    : [value];
+  fail(rawParts.length >= 1 && rawParts.length <= 8, 'LARGE_WORLD_ART_ASSET_PART_COUNT_INVALID');
+  const parts = rawParts.map((rawInput, index) => {
+    const raw = record(rawInput);
+    const geometry = normalizeLargeWorldArtAssetGeometry(raw.geometry_kind ?? raw.geometry ?? raw.kind);
+    const partId = String(raw.part_id ?? raw.partId ?? raw.id ?? `part-${index + 1}`).trim();
+    const role = String(raw.role ?? `${geometry.domain}:${geometry.primitive_kind}`).trim();
+    fail(partId.length > 0 && partId.length <= 96, 'LARGE_WORLD_ART_ASSET_PART_ID_INVALID');
+    fail(role.length > 0 && role.length <= 96, 'LARGE_WORLD_ART_ASSET_PART_ROLE_INVALID');
+    return {
+      part_id: partId,
+      role,
+      domain: geometry.domain,
+      primitive_kind: geometry.primitive_kind,
+      geometry_kind: geometry.geometry_kind,
+      offset_mm: largeWorldArtAssetVector(raw.offset_mm ?? raw.offsetMm ?? raw.translation_mm ?? raw.translation, [0, 0, 0], {min: -100000, max: 100000, field: 'LARGE_WORLD_ART_ASSET_OFFSET_MM'}),
+      scale_milli: largeWorldArtAssetVector(raw.scale_milli ?? raw.scaleMilli ?? raw.scale, [1000, 1000, 1000], {min: 1, max: 100000, field: 'LARGE_WORLD_ART_ASSET_SCALE_MILLI'}),
+      rotation_deg: largeWorldArtAssetVector(raw.rotation_deg ?? raw.rotationDeg ?? raw.rotation, [0, 0, 0], {min: -360, max: 360, field: 'LARGE_WORLD_ART_ASSET_ROTATION_DEG'}),
+      variant: integer(raw.variant ?? raw.material_variant ?? raw.materialVariant, 0, {min: 0, max: 255})
+    };
+  }).sort((a, b) => keySort(a.part_id, b.part_id));
+  const partIds = new Set();
+  for (const part of parts) {
+    fail(!partIds.has(part.part_id), 'LARGE_WORLD_ART_ASSET_PART_ID_DUPLICATE');
+    partIds.add(part.part_id);
+  }
+  const domains = new Set(parts.map(part => part.domain));
+  const semanticKind = String(value.semantic_kind ?? value.semanticKind ?? value.semantic ?? (domains.size > 1 ? 'hybrid' : [...domains][0])).trim().toLowerCase();
+  fail(['structure', 'resource', 'hybrid'].includes(semanticKind), 'LARGE_WORLD_ART_ASSET_SEMANTIC_KIND_INVALID');
+  fail(semanticKind === 'hybrid' || parts.every(part => part.domain === semanticKind), 'LARGE_WORLD_ART_ASSET_SEMANTIC_KIND_MISMATCH');
+  const biome = String(value.biome ?? 'grassland').trim().toLowerCase();
+  fail(LARGE_WORLD_BIOMES.includes(biome), 'LARGE_WORLD_ART_ASSET_BIOME_INVALID');
+  const styleId = String(value.style_id ?? value.styleId ?? value.style ?? 'natural').trim().toLowerCase();
+  fail(LARGE_WORLD_ART_ASSET_STYLE_IDS.includes(styleId), 'LARGE_WORLD_ART_ASSET_STYLE_INVALID');
+  const qualityProfile = String(value.quality_profile ?? value.qualityProfile ?? 'STANDARD').trim().toUpperCase();
+  fail(LARGE_WORLD_SPATIAL_QUALITY_PROFILES.includes(qualityProfile), 'LARGE_WORLD_ART_ASSET_QUALITY_INVALID');
+  const name = String(value.name ?? value.label ?? `URRF ${semanticKind} art asset`).trim();
+  const assetKey = String(value.asset_key ?? value.assetKey ?? '').trim();
+  const seed = String(value.seed ?? 'seed:urrf-art-asset-composition').trim();
+  fail(name.length > 0 && name.length <= 160, 'LARGE_WORLD_ART_ASSET_NAME_INVALID');
+  fail(assetKey.length <= 160, 'LARGE_WORLD_ART_ASSET_KEY_INVALID');
+  fail(seed.length > 0 && seed.length <= 256, 'LARGE_WORLD_ART_ASSET_SEED_INVALID');
+  return {name, asset_key: assetKey, seed, semantic_kind: semanticKind, biome, style_id: styleId, quality_profile: qualityProfile, parts};
+}
+
+function largeWorldArtAssetAxes(recipe) {
+  return {
+    semantic: recipe.semantic_kind,
+    geometry: recipe.parts.map(part => part.geometry_kind),
+    material: `${recipe.style_id}:${recipe.biome}`,
+    style: recipe.style_id,
+    quality: recipe.quality_profile,
+    composition: recipe.parts.length > 1 ? 'multi-part' : 'single-part'
+  };
+}
+
+function largeWorldArtAssetRootInput(recipe, axes) {
+  return {
+    format: LARGE_WORLD_ART_ASSET_COMPOSITION_FORMAT,
+    version: LARGE_WORLD_ART_ASSET_COMPOSITION_VERSION,
+    recipe,
+    axes,
+    candidate_only: true,
+    authoritative: false,
+    canonical_write_authorized: false,
+    authority: {provider_can_write_authoritative_world_state: false, rncs_authority_required: true}
+  };
+}
+
+function largeWorldArtAssetMaterial(part, recipe, assetId) {
+  const style = LARGE_WORLD_ART_ASSET_STYLE_PALETTES[recipe.style_id];
+  const prototypePalette = part.domain === 'resource' ? LARGE_WORLD_SPATIAL_RESOURCE_COLORS : LARGE_WORLD_SPATIAL_STRUCTURE_COLORS;
+  const prototypeColor = largeWorldSpatialColor(prototypePalette, part.primitive_kind, style[part.domain]);
+  const biomeColor = largeWorldSpatialColor(LARGE_WORLD_SPATIAL_BIOME_COLORS, recipe.biome, '#6b7280');
+  const variantWeight = .42 + (part.variant % 4) * .04;
+  const baseColor = largeWorldArtAssetBlendHex(largeWorldArtAssetBlendHex(style[part.domain], prototypeColor, variantWeight), biomeColor, .14);
+  const roughness = Math.max(.12, Math.min(.96, style.roughness + ((part.variant % 3) - 1) * .035));
+  const metallic = Math.max(.02, Math.min(.94, style.metallic + (part.domain === 'resource' && part.primitive_kind === 'iron' ? .12 : 0)));
+  const emissiveStrength = part.domain === 'resource' || recipe.style_id === 'arcane' ? Math.max(.04, style.emissiveStrength + (part.variant % 3) * .03) : 0;
+  return {
+    id: `material:urrf-art-asset:${assetId}:${part.part_id}`,
+    baseColor,
+    roughness,
+    metallic,
+    emissive: emissiveStrength > 0 ? largeWorldArtAssetBlendHex(style.accent, prototypeColor, .28) : undefined,
+    emissiveStrength,
+    doubleSided: true
+  };
+}
+
+/**
+ * Normalize and root a reusable URRF art-asset recipe. Geometry, material,
+ * style, biome, quality and multi-part composition are explicit axes. The
+ * result is a candidate description; it never owns RNCS world truth.
+ */
+export function createLargeWorldArtAssetComposition(input = {}) {
+  const recipe = normalizeLargeWorldArtAssetRecipe(input);
+  const axes = largeWorldArtAssetAxes(recipe);
+  const rootInput = largeWorldArtAssetRootInput(recipe, axes);
+  const compositionRoot = rootHash(rootInput);
+  return {
+    ...rootInput,
+    asset_id: `art-asset:${compositionRoot.slice(0, 24)}`,
+    composition_root: compositionRoot
+  };
+}
+
+export function verifyLargeWorldArtAssetComposition(composition) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!composition || typeof composition !== 'object' || Array.isArray(composition)) return {valid: false, errors: ['LARGE_WORLD_ART_ASSET_COMPOSITION_NOT_OBJECT']};
+  try {
+    check(composition.format === LARGE_WORLD_ART_ASSET_COMPOSITION_FORMAT, 'LARGE_WORLD_ART_ASSET_COMPOSITION_FORMAT_INVALID');
+    check(composition.version === LARGE_WORLD_ART_ASSET_COMPOSITION_VERSION, 'LARGE_WORLD_ART_ASSET_COMPOSITION_VERSION_INVALID');
+    const recipe = normalizeLargeWorldArtAssetRecipe(composition.recipe);
+    const axes = largeWorldArtAssetAxes(recipe);
+    check(JSON.stringify(composition.recipe) === JSON.stringify(recipe), 'LARGE_WORLD_ART_ASSET_RECIPE_NOT_NORMALIZED');
+    check(JSON.stringify(composition.axes) === JSON.stringify(axes), 'LARGE_WORLD_ART_ASSET_AXES_MISMATCH');
+    check(composition.candidate_only === true && composition.authoritative === false && composition.canonical_write_authorized === false, 'LARGE_WORLD_ART_ASSET_AUTHORITY_INVALID');
+    check(composition.authority?.provider_can_write_authoritative_world_state === false, 'LARGE_WORLD_ART_ASSET_PROVIDER_AUTHORITY_INVALID');
+    check(composition.authority?.rncs_authority_required === true, 'LARGE_WORLD_ART_ASSET_RNCS_AUTHORITY_REQUIRED');
+    check(typeof composition.asset_id === 'string' && composition.asset_id === `art-asset:${composition.composition_root?.slice(0, 24)}`, 'LARGE_WORLD_ART_ASSET_ID_INVALID');
+    check(hex64(composition.composition_root), 'LARGE_WORLD_ART_ASSET_ROOT_INVALID');
+    check(hex64(composition.composition_root) && rootHash(largeWorldArtAssetRootInput(recipe, axes)) === composition.composition_root, 'LARGE_WORLD_ART_ASSET_ROOT_MISMATCH');
+  } catch (error) {
+    errors.push(`LARGE_WORLD_ART_ASSET_COMPOSITION_VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, composition_root: composition.composition_root ?? null};
+}
+
+/**
+ * Lower a rooted recipe into a VSR spatial-scene fragment. Existing
+ * deterministic large-world prototypes are reused; the recipe controls
+ * part transforms and style/biome material derivation, so the same geometry
+ * can produce many distinct candidate assets without duplicating prototypes.
+ */
+export function lowerLargeWorldArtAssetComposition(input = {}) {
+  const composition = record(input).format === LARGE_WORLD_ART_ASSET_COMPOSITION_FORMAT
+    ? clone(input)
+    : createLargeWorldArtAssetComposition(input);
+  const verification = verifyLargeWorldArtAssetComposition(composition);
+  fail(verification.valid, `LARGE_WORLD_ART_ASSET_COMPOSITION_INVALID:${verification.errors.join(',')}`);
+  const meshes = [], materials = [], nodes = [];
+  const meshIds = new Set(), materialIds = new Set();
+  const addMesh = mesh => { if (!meshIds.has(mesh.id)) { meshIds.add(mesh.id); meshes.push(mesh); } return mesh.id; };
+  const addMaterial = material => { if (!materialIds.has(material.id)) { materialIds.add(material.id); materials.push(material); } return material.id; };
+  for (const part of composition.recipe.parts) {
+    const prototype = part.domain === 'resource'
+      ? largeWorldSpatialResourcePrototype(part.primitive_kind, composition.recipe.quality_profile)
+      : largeWorldSpatialPrototype(part.primitive_kind, composition.recipe.quality_profile);
+    const meshId = addMesh(prototype.mesh);
+    const material = largeWorldArtAssetMaterial(part, composition.recipe, composition.asset_id);
+    const materialId = addMaterial(material);
+    nodes.push({
+      id: `node:${composition.asset_id}:${part.part_id}`,
+      meshId,
+      materialId,
+      transform: {
+        translation: part.offset_mm.map(value => value / 1000),
+        rotationEulerDeg: [...part.rotation_deg],
+        scale: part.scale_milli.map(value => value / 1000)
+      },
+      castShadow: composition.recipe.quality_profile === 'STANDARD' || composition.recipe.quality_profile === 'CINEMATIC',
+      receiveShadow: true,
+      tags: ['urrf', 'art-asset-composition', composition.recipe.semantic_kind, part.domain, part.primitive_kind, composition.recipe.style_id, composition.recipe.biome],
+      artAssetId: composition.asset_id,
+      compositionRoot: composition.composition_root,
+      componentRole: part.role,
+      geometryKind: part.geometry_kind,
+      prototypeId: prototype.prototypeId,
+      materialVariant: part.variant
+    });
+  }
+  const fragmentBase = {
+    format: 'vsr.spatial-scene-fragment.v0.1',
+    version: '0.1.0',
+    asset_id: composition.asset_id,
+    composition_root: composition.composition_root,
+    recipe: clone(composition.recipe),
+    axes: clone(composition.axes),
+    mesh_ids: meshes.map(mesh => mesh.id).sort(keySort),
+    material_ids: materials.map(material => material.id).sort(keySort),
+    node_ids: nodes.map(node => node.id).sort(keySort),
+    candidate_only: true,
+    authoritative: false,
+    canonical_write_authorized: false,
+    authority: clone(composition.authority)
+  };
+  return {
+    ...fragmentBase,
+    meshes,
+    materials,
+    nodes,
+    fragment_root: rootHash(fragmentBase)
+  };
+}
+
+function normalizeLargeWorldArtAssetPlacement(value, fallback, field) {
+  return largeWorldArtAssetVector(value, fallback, {min: -1000000, max: 1000000, field});
+}
+
+function largeWorldArtAssetSceneQualityProfile(compositions) {
+  return [...compositions]
+    .map(composition => composition.recipe.quality_profile)
+    .sort((a, b) => LARGE_WORLD_SPATIAL_QUALITY_PROFILES.indexOf(b) - LARGE_WORLD_SPATIAL_QUALITY_PROFILES.indexOf(a))[0] ?? 'STANDARD';
+}
+
+/**
+ * Lower several rooted art-asset compositions into one reusable VSR scene.
+ * Mesh prototypes are deduplicated by their deterministic prototype id while
+ * each asset keeps its own material and placement. The scene is still a
+ * projection candidate: it carries RNCS/URRF roots but cannot write world
+ * truth or promote a provider result.
+ */
+export function createLargeWorldArtAssetCompositionScene(input = {}, options = {}) {
+  const value = Array.isArray(input) ? {...record(options), compositions: input} : record(input);
+  const rawCompositions = value.compositions ?? value.assets ?? value.recipes;
+  fail(Array.isArray(rawCompositions) && rawCompositions.length > 0 && rawCompositions.length <= 64, 'LARGE_WORLD_ART_ASSET_SCENE_COMPOSITION_COUNT_INVALID');
+  const compositions = rawCompositions.map(raw => {
+    const composition = record(raw).format === LARGE_WORLD_ART_ASSET_COMPOSITION_FORMAT
+      ? clone(raw)
+      : createLargeWorldArtAssetComposition(raw);
+    const verification = verifyLargeWorldArtAssetComposition(composition);
+    fail(verification.valid, `LARGE_WORLD_ART_ASSET_SCENE_COMPOSITION_INVALID:${verification.errors.join(',')}`);
+    return composition;
+  }).sort((a, b) => keySort(a.asset_id, b.asset_id));
+  const assetIds = new Set();
+  for (const composition of compositions) {
+    fail(!assetIds.has(composition.asset_id), `LARGE_WORLD_ART_ASSET_SCENE_DUPLICATE_ASSET:${composition.asset_id}`);
+    assetIds.add(composition.asset_id);
+  }
+  const rawPlacements = Array.isArray(value.placements_mm ?? value.placementsMm)
+    ? (value.placements_mm ?? value.placementsMm)
+    : [];
+  const placements = new Map();
+  for (const rawPlacement of rawPlacements) {
+    const placement = record(rawPlacement);
+    const assetId = String(placement.asset_id ?? placement.assetId ?? '').trim();
+    fail(assetIds.has(assetId), `LARGE_WORLD_ART_ASSET_SCENE_UNKNOWN_PLACEMENT:${assetId}`);
+    fail(!placements.has(assetId), `LARGE_WORLD_ART_ASSET_SCENE_DUPLICATE_PLACEMENT:${assetId}`);
+    placements.set(assetId, normalizeLargeWorldArtAssetPlacement(
+      placement.translation_mm ?? placement.translationMm ?? placement.offset_mm ?? placement.offsetMm,
+      [0, 0, 0],
+      'LARGE_WORLD_ART_ASSET_SCENE_TRANSLATION_MM'
+    ));
+  }
+  const columns = Math.max(1, Math.ceil(Math.sqrt(compositions.length)));
+  const rowCount = Math.ceil(compositions.length / columns);
+  const defaultPlacement = index => [
+    (index % columns) * 6000 - Math.floor((columns - 1) * 6000 / 2),
+    0,
+    Math.floor(index / columns) * 6000 - Math.floor((rowCount - 1) * 6000 / 2)
+  ];
+  const scenePlacements = compositions.map((composition, index) => ({
+    asset_id: composition.asset_id,
+    composition_root: composition.composition_root,
+    translation_mm: placements.get(composition.asset_id) ?? defaultPlacement(index)
+  }));
+  const placementRoot = rootHash({
+    format: LARGE_WORLD_ART_ASSET_COMPOSITION_FORMAT,
+    version: LARGE_WORLD_ART_ASSET_COMPOSITION_VERSION,
+    compositions: compositions.map(composition => composition.composition_root),
+    placements: scenePlacements
+  });
+  const sourceRealityRoot = value.source_reality_root ?? value.sourceRealityRoot ?? rootHash({
+    format: 'urrf.large-world-art-asset-composition-scene.v0.1',
+    composition_roots: compositions.map(composition => composition.composition_root),
+    placement_root: placementRoot
+  });
+  fail(hex64(sourceRealityRoot), 'LARGE_WORLD_ART_ASSET_SCENE_SOURCE_ROOT_INVALID');
+  const worldId = String(value.world_id ?? value.worldId ?? 'world:urrf-art-asset-composition').trim();
+  const generation = integer(value.generation, 0, {min: 0});
+  const sceneId = String(value.scene_id ?? value.sceneId ?? `urrf-art-asset-composition:${placementRoot.slice(0, 16)}`).trim();
+  const title = String(value.title ?? 'URRF Art Asset Composition · VSR Spatial Projection').trim();
+  const presentationScale = Number(value.visual_scale ?? value.visualScale ?? 1);
+  fail(Number.isFinite(presentationScale) && presentationScale >= .25 && presentationScale <= 8, 'LARGE_WORLD_ART_ASSET_SCENE_PRESENTATION_SCALE_INVALID');
+  const streamingLoadRadius = Number(value.streaming_load_radius ?? value.streamingLoadRadius ?? 64);
+  const streamingUnloadRadius = Number(value.streaming_unload_radius ?? value.streamingUnloadRadius ?? Math.max(streamingLoadRadius, streamingLoadRadius * 1.25));
+  fail(Number.isFinite(streamingLoadRadius) && streamingLoadRadius >= 0, 'LARGE_WORLD_ART_ASSET_SCENE_STREAMING_LOAD_RADIUS_INVALID');
+  fail(Number.isFinite(streamingUnloadRadius) && streamingUnloadRadius >= streamingLoadRadius, 'LARGE_WORLD_ART_ASSET_SCENE_STREAMING_UNLOAD_RADIUS_INVALID');
+  const meshes = [], materials = [], nodes = [], cells = [], assets = [];
+  const meshIds = new Set(), materialIds = new Set(), prototypeIds = new Set();
+  const addMesh = mesh => {
+    if (!meshIds.has(mesh.id)) {
+      meshIds.add(mesh.id);
+      meshes.push(clone(mesh));
+    }
+    return mesh.id;
+  };
+  const addMaterial = material => {
+    if (!materialIds.has(material.id)) {
+      materialIds.add(material.id);
+      materials.push(clone(material));
+    }
+    return material.id;
+  };
+  const fragments = compositions.map(composition => lowerLargeWorldArtAssetComposition(composition));
+  for (let compositionIndex = 0; compositionIndex < compositions.length; compositionIndex++) {
+    const composition = compositions[compositionIndex];
+    const fragment = fragments[compositionIndex];
+    const placement = scenePlacements[compositionIndex].translation_mm.map(component => component / 1000);
+    const cellId = `cell:${composition.asset_id}`;
+    const cellNodeIds = [];
+    for (const node of fragment.nodes) {
+      const transformed = clone(node);
+      transformed.transform.translation = [
+        Number(node.transform?.translation?.[0] ?? 0) + placement[0],
+        Number(node.transform?.translation?.[1] ?? 0) + placement[1],
+        Number(node.transform?.translation?.[2] ?? 0) + placement[2]
+      ];
+      transformed.id = `node:${sceneId}:${composition.asset_id}:${node.id.split(':').at(-1)}`;
+      transformed.tags = [...new Set([...(transformed.tags ?? []), 'urrf-scene', worldId])];
+      transformed.cellId = cellId;
+      cellNodeIds.push(transformed.id);
+      nodes.push(transformed);
+    }
+    for (const mesh of fragment.meshes) addMesh(mesh);
+    for (const material of fragment.materials) addMaterial(material);
+    for (const node of fragment.nodes) prototypeIds.add(node.prototypeId);
+    const center = placement;
+    cells.push({id: cellId, center: [center[0], 0, center[2]], radius: 3.5, nodeIds: cellNodeIds, loadRadius: streamingLoadRadius, unloadRadius: streamingUnloadRadius, priority: compositions.length - compositionIndex});
+    assets.push({
+      id: `asset:${composition.asset_id}`,
+      uri: `urrf+asset://${encodeURIComponent(composition.asset_id)}`,
+      sha256: composition.composition_root,
+      byteLength: 0,
+      kind: 'mesh',
+      cellIds: [cellId],
+      priority: compositions.length - compositionIndex,
+      representationRoot: composition.composition_root,
+      candidateOnly: true,
+      authoritative: false
+    });
+  }
+  const qualityProfiles = [...new Set(compositions.map(composition => composition.recipe.quality_profile))]
+    .sort((a, b) => LARGE_WORLD_SPATIAL_QUALITY_PROFILES.indexOf(a) - LARGE_WORLD_SPATIAL_QUALITY_PROFILES.indexOf(b));
+  const qualityProfile = largeWorldArtAssetSceneQualityProfile(compositions);
+  const evidenceRoot = value.evidence_root ?? value.evidenceRoot ?? rootHash({placement_root: placementRoot, source_reality_root: sourceRealityRoot});
+  fail(hex64(evidenceRoot), 'LARGE_WORLD_ART_ASSET_SCENE_EVIDENCE_ROOT_INVALID');
+  const centerX = scenePlacements.reduce((sum, placement) => sum + placement.translation_mm[0] / 1000, 0) / scenePlacements.length;
+  const centerZ = scenePlacements.reduce((sum, placement) => sum + placement.translation_mm[2] / 1000, 0) / scenePlacements.length;
+  const cameraDistance = Math.max(14, (Math.max(columns, rowCount) - 1) * 4 + 12);
+  const camera = clone(value.camera ?? {translation: [centerX, Math.max(8, cameraDistance * .46), centerZ + cameraDistance], rotationEulerDeg: [-17, 0, 0]});
+  const base = {
+    format: 'vsr.spatial-scene.v0.4',
+    sceneId,
+    title,
+    background: String(value.background ?? '#07111e'),
+    environment: clone(value.environment ?? {diffuseColor: '#35546d', specularColor: '#fff0d0', intensity: .72}),
+    activeCameraId: 'camera:urrf-art-asset-composition',
+    meshes,
+    materials,
+    nodes,
+    streaming: {worldId, cells: cells.sort((a, b) => keySort(a.id, b.id)), persistentNodeIds: []},
+    cameras: [{id: 'camera:urrf-art-asset-composition', projection: 'perspective', fovYDeg: Number(value.fov_y_deg ?? value.fovYDeg ?? 52), near: .1, far: Math.max(200, cameraDistance * 12), transform: camera}],
+    lights: clone(value.lights ?? [
+      {id: 'light:urrf-art-asset:ambient', kind: 'ambient', color: '#b8d9ff', intensity: .42},
+      {id: 'light:urrf-art-asset:key', kind: 'directional', color: '#fff0cf', intensity: 1.55, direction: [-.45, -1, -.35], castShadow: false},
+      {id: 'light:urrf-art-asset:fill', kind: 'point', color: '#6fc8ff', intensity: 8, position: [centerX, 10, centerZ + 8], range: 24}
+    ]),
+    reality: {worldId, generation, realityRoot: sourceRealityRoot, evidenceRoot},
+    assets: assets.sort((a, b) => keySort(a.id, b.id)),
+    large_world: {
+      format: LARGE_WORLD_SPATIAL_SCENE_FORMAT,
+      version: LARGE_WORLD_RUNTIME_VERSION,
+      world_id: worldId,
+      generation,
+      region_root: sourceRealityRoot,
+      world_root: sourceRealityRoot,
+      selection_root: placementRoot,
+      resource_governor_plan_root: null,
+      resource_governor_power_mode: null,
+      resource_governor_load_shedding_level: null,
+      power_downgrade_count: 0,
+      unbound_governor_chunk_ids: [],
+      causal_physical_profile_roots: {},
+      causal_physical_ready_count: 0,
+      causal_physical_blocked_count: 0,
+      active_chunk_ids: scenePlacements.map(placement => placement.asset_id).sort(keySort),
+      presentation_scale: presentationScale,
+      quality_profile: qualityProfile,
+      quality_profiles: qualityProfiles,
+      visual_prototype_profile: LARGE_WORLD_SPATIAL_VISUAL_PROFILE,
+      visual_prototype_ids: [...prototypeIds].sort(keySort),
+      representation_slots: scenePlacements.map(placement => ({
+        chunk_id: placement.asset_id,
+        selected_slot_id: `slot:${placement.asset_id}`,
+        selected_quality_profile: compositions.find(composition => composition.asset_id === placement.asset_id).recipe.quality_profile,
+        selected_representation_root: placement.composition_root,
+        portfolio_root: placement.composition_root
+      })).sort((a, b) => keySort(a.chunk_id, b.chunk_id)),
+      candidate_only: true,
+      authoritative: false,
+      canonical_write_authorized: false,
+      authority: {provider_can_write_authoritative_world_state: false, rncs_authority_required: true}
+    }
+  };
+  return {...base, scene_root: largeWorldSpatialSceneRoot(base)};
 }
 
 function largeWorldSpatialSceneRoot(scene) {
