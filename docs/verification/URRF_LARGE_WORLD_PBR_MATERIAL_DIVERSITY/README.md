@@ -37,3 +37,27 @@ and production-scale performance remain unproven.
 
 `large-world-pbr-material-diversity-report.json` is the machine-readable receipt
 and `large-world-pbr-material-diversity-reference.png` is the visual artifact.
+
+## Chromium WebGPU execution
+
+The same rooted contact scene is also shipped as a browser fixture. Chromium
+executed the real VSR WebGPU path with `available=true`, `submitted=true`, and
+`deviceLost=false`; eight selected assets uploaded 32 PBR textures (40 material
+texture bindings) into eight draw calls. The CPU and browser frame roots match.
+
+| Field | Value |
+| --- | --- |
+| source reality root | `7a7614b10e51ec8c43a6f45e7bed4e7310884d061d73d7038e904ebd75f1f0c2` |
+| frame root | `b16de7da5ef7fcc307ed0ee79cb824aad1c293ce5260ca7283d075c3319004fc` |
+| browser receipt root | `d07e78559078130f61a560d5f6089671c834d852c574e0048c1b6f0a9dec0da6` |
+| browser PNG SHA-256 | `fef797206b99cde0f4d8702d2000800c793f10135298d616e150b0fb3701ea3f` |
+
+- `large-world-pbr-material-diversity-scene.json`: browser-consumable contact scene.
+- `large-world-pbr-material-diversity-webgpu.html`: static Chromium entry point.
+- `large-world-pbr-material-diversity-webgpu-browser-receipt.json`: host-specific WebGPU receipt and error ledger.
+- `large-world-pbr-material-diversity-webgpu-browser.png`: actual browser screenshot.
+- `large-world-pbr-material-diversity-webgpu-report.json`: rooted CPU/browser comparison report.
+
+This closes local browser execution for textured material diversity only. It is
+not a target-device performance grade, physical VRAM measurement, distributed
+streaming proof, or AAA art-quality claim.
