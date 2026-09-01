@@ -1,4 +1,4 @@
-import {mkdirSync, readFileSync, writeFileSync} from 'node:fs';
+import {existsSync, mkdirSync, readFileSync, writeFileSync} from 'node:fs';
 import {dirname, join, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import test from 'node:test';
@@ -17,7 +17,8 @@ import {
   compileSpatialFrame,
   renderSpatialReference,
   verifySpatialAssetStreamingReceipt,
-  verifySpatialFrame
+  verifySpatialFrame,
+  verifySpatialWebGPUReceipt
 } from '@taowind/visual-state-runtime/spatial-reality-3d';
 import {decodeGltfImageToSpatialTexture, importGlbToSpatialSceneAsync, verifyGltfImportReceipt} from '@taowind/visual-state-runtime/gltf-asset';
 
@@ -104,6 +105,19 @@ function composePbrMaterialContactScene(importedEntries, sourceRoot) {
   return scene;
 }
 
+function browserPage(scene, sourceRealityRoot, referencePath, options) {
+  const sceneJson = JSON.stringify(scene).replaceAll('<', '\\u003c');
+  const optionsJson = JSON.stringify(options);
+  return `<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>URRF PBR Material Diversity · WebGPU</title>
+<style>:root{font-family:Inter,"Noto Sans SC",system-ui,sans-serif;color:#e8f0ff;background:#050914;color-scheme:dark}*{box-sizing:border-box}body{margin:0;padding:24px;background:radial-gradient(circle at 20% 0,#173c63,#050914 52%)}main{width:min(1180px,100%);margin:auto;display:grid;grid-template-columns:minmax(0,1fr) 286px;gap:18px}.card{border:1px solid #274468;border-radius:18px;background:rgba(5,12,25,.9);overflow:hidden;box-shadow:0 24px 80px #0008}header{padding:18px 20px;border-bottom:1px solid #203a5d}h1{font-size:20px;margin:0 0 6px}p{font-size:13px;line-height:1.55;color:#9fb6d5;margin:0}canvas,img{display:block;width:100%;aspect-ratio:32/21;object-fit:cover;background:#07101e}.bar{display:flex;gap:8px;align-items:center;padding:12px 16px;border-top:1px solid #203a5d;flex-wrap:wrap}.badge{padding:5px 9px;border-radius:999px;background:#102843;color:#9ed0ff;font-size:12px}.ok{background:#123a2c;color:#8ff0bf}.warn{background:#4b3012;color:#ffd188}.panel{padding:18px}.panel h2{font-size:15px;margin:0 0 14px}.metric{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #1d3351;font-size:13px}.metric span{color:#8ba4c6}.metric strong{text-align:right;word-break:break-all;font-weight:600}code{font-size:11px;color:#8fd5ff}@media(max-width:850px){main{grid-template-columns:1fr}.panel{order:-1}}</style></head>
+<body><main><section class="card"><header><h1>URRF PBR Material Diversity · VSR Spatial WebGPU</h1><p>八个 GLB 候选、四张 PBR 纹理图、五个材质绑定进入同一接触场景；WebGPU 不可用时保留 CPU reference。</p></header><canvas id="gpu"></canvas><img id="fallback" src="${referencePath}" alt="CPU reference"><div class="bar"><span id="mode" class="badge">探测中</span><span id="receipt" class="badge">Receipt：—</span><span id="root" class="badge">Reality Root：${sourceRealityRoot.slice(0, 12)}</span></div></section><aside class="card panel"><h2>执行状态</h2><div class="metric"><span>选中资产</span><strong>${scene.nodes.length}</strong></div><div class="metric"><span>纹理 / 材质</span><strong>${scene.textures.length} / ${scene.materials.length}</strong></div><div class="metric"><span>Reality source root</span><strong><code>${sourceRealityRoot}</code></strong></div><div class="metric"><span>浏览器 API</span><strong id="capability">—</strong></div><div class="metric"><span>GPU frame root</span><strong><code id="frame">—</code></strong></div></aside></main>
+<script src="../../../packages/world/visual-state-runtime/apps/spatial-v04/vsr-spatial-browser.js"></script><script>
+const scene=${sceneJson};const options=${optionsJson};const sourceRealityRoot='${sourceRealityRoot}';const canvas=document.querySelector('#gpu'),fallback=document.querySelector('#fallback'),mode=document.querySelector('#mode'),capability=document.querySelector('#capability'),receipt=document.querySelector('#receipt'),frame=document.querySelector('#frame');
+async function start(){const api=window.VSRSpatial3D;const probe=api.probeSpatialWebGPU();window.__URRF_LARGE_WORLD_PBR_MATERIAL_DIVERSITY_WEBGPU__={capability:probe,status:'PROBE_ONLY',sourceRealityRoot};capability.textContent=probe.available?'available':'unavailable';if(!probe.available){mode.textContent='CPU reference · 未执行 GPU';mode.classList.add('warn');return}try{const executor=await api.VSRSpatialWebGPUExecutor.create(canvas);const result=await executor.render(scene,options);window.__URRF_LARGE_WORLD_PBR_MATERIAL_DIVERSITY_WEBGPU__={capability:probe,status:'EXECUTED',sourceRealityRoot,frameRoot:result.frameRoot,receipt:result};fallback.style.display='none';mode.textContent='真实 WebGPU 执行';mode.classList.add('ok');receipt.textContent='Draws：'+result.drawCalls+' · Textures：'+result.textureUploads;frame.textContent=result.frameRoot}catch(error){window.__URRF_LARGE_WORLD_PBR_MATERIAL_DIVERSITY_WEBGPU__={capability:probe,status:'FAILED',sourceRealityRoot,error:String(error.message??error)};mode.textContent='WebGPU 失败：'+error.message;mode.classList.add('warn')}}start();
+</script></body></html>`;
+}
+
 test('imports and renders a diverse multi-material PBR contact scene from large-world GLB candidates', async () => {
   mkdirSync(outputDir, {recursive: true});
   const runtime = new LargeWorldRuntime({
@@ -179,13 +193,14 @@ test('imports and renders a diverse multi-material PBR contact scene from large-
     importedEntries.push({id: selectedEntry.id, imported, transform: selectedEntry.transform, entry: selectedEntry.entry});
   }
   const contactScene = composePbrMaterialContactScene(importedEntries, sourceScene.scene_root);
-  const frame = compileSpatialFrame(contactScene, {width: 640, height: 420, enableShadows: false, gpuDrivenCulling: true});
+  const renderOptions = {width: 640, height: 420, enableShadows: false, gpuDrivenCulling: true};
+  const frame = compileSpatialFrame(contactScene, renderOptions);
   assert.equal(verifySpatialFrame(frame).ok, true);
   assert.ok(frame.stats.triangleCount > 0);
   assert.equal(frame.stats.materialTextureBindings, selected.length * 5);
-  const rendered = renderSpatialReference(contactScene, {width: 640, height: 420, enableShadows: false, gpuDrivenCulling: true});
+  const rendered = renderSpatialReference(contactScene, renderOptions);
   assert.equal(verifySpatialFrame(rendered.framePlan).ok, true);
-  const repeated = renderSpatialReference(contactScene, {width: 640, height: 420, enableShadows: false, gpuDrivenCulling: true});
+  const repeated = renderSpatialReference(contactScene, renderOptions);
   assert.equal(repeated.pixelRoot, rendered.pixelRoot);
   const textureRoots = importedEntries.flatMap(entry => entry.imported.scene.textures.map(textureRoot));
   const materialRoots = importedEntries.map(entry => materialRoot(entry.imported.scene.materials));
@@ -220,6 +235,50 @@ test('imports and renders a diverse multi-material PBR contact scene from large-
   writeFileSync(join(outputDir, 'large-world-pbr-material-diversity-manifest.json'), `${JSON.stringify(bundle.manifest, null, 2)}\n`, 'utf8');
   writeFileSync(join(outputDir, 'large-world-pbr-material-diversity-report.json'), `${JSON.stringify(report, null, 2)}\n`, 'utf8');
   writeFileSync(join(outputDir, 'large-world-pbr-material-diversity-reference.png'), rendered.png);
+  const webgpuReportBase = {
+    format: 'urrf.large-world-pbr-material-diversity-webgpu-report.v0.1',
+    world_id: sourceScene.large_world.world_id,
+    source_scene_root: sourceScene.scene_root,
+    contact_source_reality_root: frame.sourceRealityRoot,
+    selection_root: selection.selection_root,
+    bundle_root: bundle.bundle_root,
+    selected_asset_count: selected.length,
+    texture_count: contactScene.textures.length,
+    material_count: contactScene.materials.length,
+    material_texture_bindings: frame.stats.materialTextureBindings,
+    frame_root: frame.frameRoot,
+    pixel_root: rendered.pixelRoot,
+    draw_calls: frame.stats.visibleDraws,
+    triangles: frame.stats.triangleCount,
+    browser_execution: 'NOT_EXECUTED_IN_NODE',
+    artifacts: {
+      scene_json: 'large-world-pbr-material-diversity-scene.json',
+      cpu_reference_png: 'large-world-pbr-material-diversity-reference.png',
+      browser_html: 'large-world-pbr-material-diversity-webgpu.html',
+      browser_receipt: 'large-world-pbr-material-diversity-webgpu-browser-receipt.json',
+      browser_png: 'large-world-pbr-material-diversity-webgpu-browser.png'
+    },
+    authority: {canonical_owner: 'RNCS', representation_owner: 'URRF', execution_owner: 'VSR', encoder_provider: 'RAGF', candidate_only: true, authoritative: false},
+    notes: 'Candidate-only local Chromium WebGPU execution of the same multi-asset PBR contact scene. Browser receipt is host-specific and does not prove target-device performance, physical VRAM residency, BasisU supercompression, CDN delivery, or AAA art quality.'
+  };
+  const webgpuReport = {...webgpuReportBase, report_root: rootHash(webgpuReportBase)};
+  writeFileSync(join(outputDir, 'large-world-pbr-material-diversity-scene.json'), `${JSON.stringify(contactScene)}\n`, 'utf8');
+  writeFileSync(join(outputDir, 'large-world-pbr-material-diversity-webgpu-report.json'), `${JSON.stringify(webgpuReport, null, 2)}\n`, 'utf8');
+  writeFileSync(join(outputDir, 'large-world-pbr-material-diversity-webgpu.html'), browserPage(contactScene, frame.sourceRealityRoot, './large-world-pbr-material-diversity-reference.png', renderOptions), 'utf8');
   assert.match(report.report_root, /^[a-f0-9]{64}$/);
+  assert.match(webgpuReport.report_root, /^[a-f0-9]{64}$/);
   assert.ok(readFileSync(join(outputDir, 'large-world-pbr-material-diversity-reference.png')).byteLength > 1000);
+});
+
+test('verifies the committed Chromium WebGPU receipt against the deterministic PBR contact frame', {skip: !existsSync(join(outputDir, 'large-world-pbr-material-diversity-webgpu-browser-receipt.json'))}, () => {
+  const report = JSON.parse(readFileSync(join(outputDir, 'large-world-pbr-material-diversity-webgpu-report.json'), 'utf8'));
+  const browserEvidence = JSON.parse(readFileSync(join(outputDir, 'large-world-pbr-material-diversity-webgpu-browser-receipt.json'), 'utf8'));
+  assert.equal(browserEvidence.status, 'EXECUTED');
+  assert.equal(browserEvidence.capability.available, true);
+  assert.equal(browserEvidence.receipt.submitted, true);
+  assert.equal(browserEvidence.receipt.deviceLost, false);
+  assert.equal(browserEvidence.receipt.frameRoot, report.frame_root);
+  assert.equal(browserEvidence.frame_root, report.frame_root);
+  assert.equal(browserEvidence.source_reality_root, report.contact_source_reality_root);
+  assert.equal(verifySpatialWebGPUReceipt(browserEvidence.receipt), true);
 });

@@ -1,0 +1,34 @@
+{
+  "format": "urrf.large-world-pbr-material-diversity-webgpu-report.v0.1",
+  "world_id": "world:urrf-large-world-pbr-material-diversity",
+  "source_scene_root": "004365b3f09df15635dba2f8d2071cd5b42a28e532330860e4262e30c80794ff",
+  "contact_source_reality_root": "7a7614b10e51ec8c43a6f45e7bed4e7310884d061d73d7038e904ebd75f1f0c2",
+  "selection_root": "ae8267e7026961687d6564d15f855cd78a6e1e5945b1317136cd42634ddf138f",
+  "bundle_root": "1d74e1ee05071baf389560e287485db7cd04d5c22fef3114d0c780a82b09d459",
+  "selected_asset_count": 8,
+  "texture_count": 32,
+  "material_count": 8,
+  "material_texture_bindings": 40,
+  "frame_root": "b16de7da5ef7fcc307ed0ee79cb824aad1c293ce5260ca7283d075c3319004fc",
+  "pixel_root": "7879a7fba41761f0c501f450c1188b17e1440aef59db0634e113e51e6078b871",
+  "draw_calls": 8,
+  "triangles": 466,
+  "browser_execution": "NOT_EXECUTED_IN_NODE",
+  "artifacts": {
+    "scene_json": "large-world-pbr-material-diversity-scene.json",
+    "cpu_reference_png": "large-world-pbr-material-diversity-reference.png",
+    "browser_html": "large-world-pbr-material-diversity-webgpu.html",
+    "browser_receipt": "large-world-pbr-material-diversity-webgpu-browser-receipt.json",
+    "browser_png": "large-world-pbr-material-diversity-webgpu-browser.png"
+  },
+  "authority": {
+    "canonical_owner": "RNCS",
+    "representation_owner": "URRF",
+    "execution_owner": "VSR",
+    "encoder_provider": "RAGF",
+    "candidate_only": true,
+    "authoritative": false
+  },
+  "notes": "Candidate-only local Chromium WebGPU execution of the same multi-asset PBR contact scene. Browser receipt is host-specific and does not prove target-device performance, physical VRAM residency, BasisU supercompression, CDN delivery, or AAA art quality.",
+  "report_root": "712fdbc321b61f8e1fb92fce757a772e8cf920f19bb0e9228fddd2c66138b9a8"
+}

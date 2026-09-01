@@ -104,6 +104,8 @@
     "test:large-world-working-set-budget": "npm test --workspace @taowind/rncs-core-contract && npm test --workspace @taowind/reality-representation-fabric && npm run build --workspace @taowind/visual-state-runtime && npm test --workspace @taowind/large-world-runtime && node --test tests/large-world-working-set-budget.integration.test.mjs",
     "test:large-world-working-set-budget-webgpu": "npm run build --workspace @taowind/visual-state-runtime && node --test tests/large-world-working-set-budget-webgpu.integration.test.mjs",
     "verify:large-world-working-set-budget-webgpu-browser": "python tests/large_world_working_set_budget_webgpu_browser_test.py",
+    "test:large-world-pbr-material-diversity-webgpu": "npm run build --workspace @taowind/visual-state-runtime && npm test --workspace @taowind/reality-asset-genesis-fabric && npm test --workspace @taowind/large-world-runtime && node --test tests/large-world-pbr-material-diversity.integration.test.mjs",
+    "verify:large-world-pbr-material-diversity-webgpu-browser": "python tests/large_world_pbr_material_diversity_webgpu_browser_test.py",
     "test:large-world-portfolio": "npm run build --workspace @taowind/visual-state-runtime && node --test tests/large-world-portfolio.integration.test.mjs",
     "benchmark:network": "npm run benchmark --workspace @taowind/reality-network-runtime",
     "demo:network": "node examples/two-player-loopback/demo-server.mjs",
