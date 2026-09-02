@@ -7,6 +7,7 @@ import {
   createUniversalArtAssetAssembly,
   createUniversalArtAssetEvidenceBundle,
   createUniversalArtAssetGenome,
+  createUniversalArtAssetHoldoutReport,
   evaluateUniversalArtAssetAcceptance,
   generateUniversalArtAssetBatch,
   generateUniversalArtAsset,
@@ -17,6 +18,7 @@ import {
   verifyUniversalArtAssetAssembly,
   verifyUniversalArtAssetBatch,
   verifyUniversalArtAssetEvidenceBundle,
+  verifyUniversalArtAssetHoldoutReport,
   verifyUniversalArtAssetProvenanceLicenseReceipt,
   verifyUniversalArtAssetQualityProof,
   verifyUniversalArtAssetReviewReceipt,
@@ -613,6 +615,66 @@ test('batch Forge isolates multiple assets and verifies a cross-asset artifact r
     {...characterInput, asset_key: 'duplicate'},
     {...characterInput, asset_key: 'duplicate', seed: 'duplicate-seed-2'}
   ], {outDir: fs.mkdtempSync(path.join(os.tmpdir(), 'urrf-universal-art-batch-duplicate-'))}), /UNIVERSAL_ART_ASSET_BATCH_DUPLICATE_ASSET_KEY/);
+});
+
+test('holdout report binds new-seed structural candidates and fails closed on root reuse', () => {
+  const baseline = generateUniversalArtAssetBatch([
+    {...characterInput, asset_key: 'baseline-guardian-character', seed: 'universal-art-forge-holdout-baseline-character-seed'},
+    {
+      ...characterInput,
+      asset_key: 'baseline-ice-relic-prop',
+      description: '一枚用于冰晶遗迹祭坛的三维古代护符。',
+      asset_profile: 'prop',
+      asset_kind: 'prop-3d',
+      seed: 'universal-art-forge-holdout-baseline-prop-seed'
+    }
+  ], {outDir: fs.mkdtempSync(path.join(os.tmpdir(), 'urrf-universal-art-holdout-baseline-'))});
+  const holdout = generateUniversalArtAssetBatch([
+    {
+      ...characterInput,
+      asset_key: 'holdout-aurora-guardian-character',
+      description: '一名在极光废墟巡逻的三维女守卫，穿着带有冰纹的轻型护甲。',
+      seed: 'universal-art-forge-holdout-character-seed'
+    },
+    {
+      ...characterInput,
+      asset_key: 'holdout-observatory-prop',
+      description: '一枚用于荒原观测塔的三维晶体测距仪，具有可复用的材质与碰撞边界。',
+      asset_profile: 'prop',
+      asset_kind: 'prop-3d',
+      seed: 'universal-art-forge-holdout-prop-seed'
+    }
+  ], {outDir: fs.mkdtempSync(path.join(os.tmpdir(), 'urrf-universal-art-holdout-candidate-'))});
+  const report = createUniversalArtAssetHoldoutReport({
+    holdout_id: 'urrf-holdout-unit-v01',
+    batch: holdout,
+    expected_profiles: ['character', 'prop'],
+    baseline_roots: {
+      batch_root: baseline.batch.batch_root,
+      genome_roots: baseline.batch.assets.map(asset => asset.genome_root),
+      candidate_roots: baseline.batch.assets.map(asset => asset.candidate_root),
+      forge_roots: baseline.batch.assets.map(asset => asset.forge_root)
+    }
+  });
+  assert.equal(report.status, 'CANDIDATE_HOLDOUT_PASS');
+  assert.equal(report.summary.structural_pass_count, 2);
+  assert.equal(report.summary.acceptance_pass_count, 0);
+  assert.deepEqual(report.coverage.observed_profiles, ['character', 'prop']);
+  assert.deepEqual(report.coverage.missing_profiles, []);
+  assert.equal(report.coverage.baseline_overlap_roots.length, 0);
+  assert.equal(verifyUniversalArtAssetHoldoutReport(report).valid, true);
+  assert.equal(verifyUniversalArtAssetHoldoutReport(report, {batch: holdout}).valid, true);
+
+  const tampered = structuredClone(report);
+  tampered.assets[0].candidate_root = tampered.assets[1].candidate_root;
+  const resealedTamper = seal(tampered, 'holdout_root');
+  assert.equal(verifyUniversalArtAssetHoldoutReport(resealedTamper).valid, false);
+  assert.equal(verifyUniversalArtAssetHoldoutReport(resealedTamper, {batch: holdout}).valid, false);
+  assert.throws(() => createUniversalArtAssetHoldoutReport({
+    batch: holdout,
+    expected_profiles: ['character', 'prop'],
+    baseline_roots: {}
+  }), /UNIVERSAL_ART_ASSET_HOLDOUT_BASELINE_BATCH_ROOT_REQUIRED/);
 });
 
 test('assembly binds materialized batch GLBs and lowers selected LODs into a VSR projection envelope', () => {

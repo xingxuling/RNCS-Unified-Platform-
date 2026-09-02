@@ -39,6 +39,7 @@ export const UNIVERSAL_ART_ASSET_BATCH_FORMAT = 'urrf.universal-art-asset-batch.
 export const UNIVERSAL_ART_ASSET_ASSEMBLY_FORMAT = 'urrf.universal-art-asset-assembly.v0.1';
 export const UNIVERSAL_ART_ASSET_VSR_PROJECTION_FORMAT = 'urrf.universal-art-asset-vsr-projection.v0.1';
 export const UNIVERSAL_ART_ASSET_VSR_MATERIALIZATION_FORMAT = 'urrf.universal-art-asset-vsr-materialization.v0.1';
+export const UNIVERSAL_ART_ASSET_HOLDOUT_FORMAT = 'urrf.universal-art-asset-holdout.v0.1';
 export const UNIVERSAL_ART_ASSET_FORGE_VERSION = '0.1.0';
 
 export const UNIVERSAL_ART_ASSET_PROFILES = Object.freeze([
@@ -2456,6 +2457,296 @@ export function verifyUniversalArtAssetBatch(batch, {assetResults = null} = {}) 
     errors.push(`VERIFY_EXCEPTION:${error.name}:${error.message}`);
   }
   return {valid: errors.length === 0, errors, batch_root: batch.batch_root ?? null};
+}
+
+function normalizeUniversalArtAssetHoldoutProfiles(value) {
+  if (!Array.isArray(value) || value.length === 0 || value.length > UNIVERSAL_ART_ASSET_PROFILES.length) {
+    throw new GenesisError('UNIVERSAL_ART_ASSET_HOLDOUT_PROFILES_INVALID');
+  }
+  const profiles = [...new Set(value.map(profile => String(profile).trim().toLowerCase()))].sort((left, right) => left.localeCompare(right, 'en'));
+  if (profiles.length === 0 || profiles.some(profile => !UNIVERSAL_ART_ASSET_PROFILES.includes(profile))) {
+    throw new GenesisError('UNIVERSAL_ART_ASSET_HOLDOUT_PROFILE_INVALID');
+  }
+  return profiles;
+}
+
+function normalizeUniversalArtAssetHoldoutRootList(value, field) {
+  const roots = value === undefined || value === null ? [] : value;
+  if (!Array.isArray(roots)) throw new GenesisError('UNIVERSAL_ART_ASSET_HOLDOUT_ROOT_LIST_INVALID', field);
+  const normalized = [...new Set(roots.map(root => String(root)))].sort((left, right) => left.localeCompare(right, 'en'));
+  if (normalized.some(root => !isHexRoot(root))) throw new GenesisError('UNIVERSAL_ART_ASSET_HOLDOUT_ROOT_INVALID', field);
+  return normalized;
+}
+
+function normalizeUniversalArtAssetHoldoutBaselineRoots(value = {}) {
+  const source = record(value);
+  const batchRoot = source.batch_root ?? source.batchRoot ?? null;
+  if (!isHexRoot(batchRoot)) throw new GenesisError('UNIVERSAL_ART_ASSET_HOLDOUT_BASELINE_BATCH_ROOT_REQUIRED');
+  return {
+    batch_root: batchRoot,
+    genome_roots: normalizeUniversalArtAssetHoldoutRootList(source.genome_roots ?? source.genomeRoots, 'genome_roots'),
+    candidate_roots: normalizeUniversalArtAssetHoldoutRootList(source.candidate_roots ?? source.candidateRoots, 'candidate_roots'),
+    forge_roots: normalizeUniversalArtAssetHoldoutRootList(source.forge_roots ?? source.forgeRoots, 'forge_roots')
+  };
+}
+
+function universalArtAssetHoldoutBatchInput(batch, assetResults = null) {
+  const {envelope, assetResults: embeddedResults} = universalArtAssetAssemblyBatchInput(batch, assetResults);
+  if (envelope?.format !== UNIVERSAL_ART_ASSET_BATCH_FORMAT) throw new GenesisError('UNIVERSAL_ART_ASSET_HOLDOUT_BATCH_INVALID');
+  const entries = Array.isArray(assetResults) ? assetResults : embeddedResults;
+  if (!Array.isArray(entries) || entries.length !== envelope.assets?.length) {
+    throw new GenesisError('UNIVERSAL_ART_ASSET_HOLDOUT_ASSET_RESULTS_REQUIRED');
+  }
+  return {envelope, entries};
+}
+
+function universalArtAssetHoldoutMetric(value) {
+  const number = Number(value);
+  return Number.isSafeInteger(number) && number >= 0 ? number : null;
+}
+
+function universalArtAssetHoldoutAssetSummary(entry, index) {
+  const selected = record(entry);
+  const result = record(selected.result);
+  const genome = record(result.genome);
+  const candidate = record(result.candidate);
+  const acceptance = record(result.acceptance);
+  const inspection = result.fileInspection ?? result.execution?.file_inspection ?? null;
+  const inspectionRecord = record(inspection);
+  const aggregates = record(inspectionRecord.aggregates);
+  const inspectionVerification = verifyUniversalArtAssetFileInspection(inspection);
+  const structuralChecks = {
+    candidate_root: isHexRoot(candidate.candidate_root),
+    file_inspection: inspectionVerification.valid && inspectionRecord.status === 'PASS',
+    geometry: statusPass(aggregates.geometry_status),
+    topology: statusPass(aggregates.topology_status),
+    uv: statusPass(aggregates.uv_status),
+    normal: statusPass(aggregates.normal_status),
+    pbr: statusPass(aggregates.pbr_status),
+    lod: statusPass(aggregates.lod_status)
+  };
+  return {
+    asset_key: String(selected.asset_key ?? ''),
+    index,
+    asset_id: genome.asset_id ?? null,
+    asset_profile: genome.asset_profile ?? null,
+    quality_tier: genome.quality_tier ?? null,
+    status: result.status ?? 'BLOCKED',
+    structural_pass: Object.values(structuralChecks).every(Boolean),
+    structural_checks: structuralChecks,
+    structural_failures: Object.keys(structuralChecks).filter(key => !structuralChecks[key]),
+    acceptance_pass: acceptance.pass === true,
+    genome_root: genome.genome_root ?? null,
+    candidate_root: candidate.candidate_root ?? null,
+    forge_root: result.forge?.forge_root ?? null,
+    file_inspection_root: inspectionRecord.inspection_root ?? null,
+    triangle_count: universalArtAssetHoldoutMetric(aggregates.triangle_count),
+    lod_count: universalArtAssetHoldoutMetric(aggregates.lod_count),
+    pbr_channel_count: universalArtAssetHoldoutMetric(inspectionRecord.pbr_pack?.texture_count),
+    acceptance_failures: [...(Array.isArray(acceptance.failures) ? acceptance.failures : [])].map(String)
+  };
+}
+
+function universalArtAssetHoldoutRootOverlap(assets, baseline) {
+  const baselineRoots = new Set([
+    baseline.batch_root,
+    ...baseline.genome_roots,
+    ...baseline.candidate_roots,
+    ...baseline.forge_roots
+  ].filter(isHexRoot));
+  const holdoutRoots = assets.flatMap(asset => [asset.genome_root, asset.candidate_root, asset.forge_root]).filter(isHexRoot);
+  return [...new Set(holdoutRoots.filter(root => baselineRoots.has(root)))].sort((left, right) => left.localeCompare(right, 'en'));
+}
+
+function universalArtAssetHoldoutRootSet(assets, field) {
+  return assets.map(asset => asset[field]).filter(isHexRoot);
+}
+
+function universalArtAssetHoldoutUniqueRoots(assets, field) {
+  const roots = universalArtAssetHoldoutRootSet(assets, field);
+  return roots.length === assets.length && new Set(roots).size === assets.length;
+}
+
+function buildUniversalArtAssetHoldoutReport({holdoutId = null, batch, assetResults = null, expectedProfiles, baselineRoots} = {}) {
+  const {envelope, entries} = universalArtAssetHoldoutBatchInput(batch, assetResults);
+  const expected = normalizeUniversalArtAssetHoldoutProfiles(expectedProfiles);
+  const baseline = normalizeUniversalArtAssetHoldoutBaselineRoots(baselineRoots);
+  const assets = entries.map((entry, index) => universalArtAssetHoldoutAssetSummary(entry, index));
+  const batchAssets = Array.isArray(envelope.assets) ? envelope.assets : [];
+  if (assets.some((asset, index) => !nonEmptyText(asset.asset_key) || asset.asset_key !== batchAssets[index]?.asset_key)) {
+    throw new GenesisError('UNIVERSAL_ART_ASSET_HOLDOUT_ASSET_BINDING_INVALID');
+  }
+  const observed = [...new Set(assets.map(asset => asset.asset_profile).filter(nonEmptyText))].sort((left, right) => left.localeCompare(right, 'en'));
+  const missing = expected.filter(profile => !observed.includes(profile));
+  const rootOverlap = universalArtAssetHoldoutRootOverlap(assets, baseline);
+  const batchVerification = verifyUniversalArtAssetBatch(envelope, {assetResults: entries});
+  const checks = {
+    batch_verification: batchVerification.valid,
+    asset_count: assets.length > 0 && assets.length === envelope.asset_count,
+    asset_keys_unique: assets.every(asset => nonEmptyText(asset.asset_key)) && new Set(assets.map(asset => asset.asset_key)).size === assets.length,
+    expected_profile_coverage: expected.length > 0 && missing.length === 0,
+    unique_genome_roots: universalArtAssetHoldoutUniqueRoots(assets, 'genome_root'),
+    unique_candidate_roots: universalArtAssetHoldoutUniqueRoots(assets, 'candidate_root'),
+    unique_forge_roots: universalArtAssetHoldoutUniqueRoots(assets, 'forge_root'),
+    structural_inspection: assets.length > 0 && assets.every(asset => asset.structural_pass),
+    baseline_batch_root_distinct: envelope.batch_root !== baseline.batch_root,
+    baseline_root_isolation: rootOverlap.length === 0
+  };
+  const status = Object.values(checks).every(Boolean) ? 'CANDIDATE_HOLDOUT_PASS' : 'CANDIDATE_HOLDOUT_FAIL';
+  const resolvedHoldoutId = holdoutId === null || holdoutId === undefined
+    ? stableId('urrf-universal-art-asset-holdout', {batch_root: envelope.batch_root, expected_profiles: expected, baseline_roots: baseline})
+    : String(holdoutId).trim();
+  if (!nonEmptyText(resolvedHoldoutId)) throw new GenesisError('UNIVERSAL_ART_ASSET_HOLDOUT_ID_INVALID');
+  return {
+    format: UNIVERSAL_ART_ASSET_HOLDOUT_FORMAT,
+    version: UNIVERSAL_ART_ASSET_FORGE_VERSION,
+    holdout_id: resolvedHoldoutId,
+    source: 'urrf-holdout-evaluator',
+    batch_root: envelope.batch_root,
+    baseline_roots: baseline,
+    asset_count: assets.length,
+    assets,
+    summary: {
+      asset_count: assets.length,
+      structural_pass_count: assets.filter(asset => asset.structural_pass).length,
+      acceptance_pass_count: assets.filter(asset => asset.acceptance_pass).length,
+      blocked_count: assets.filter(asset => asset.status === 'BLOCKED').length
+    },
+    coverage: {
+      expected_profiles: expected,
+      observed_profiles: observed,
+      missing_profiles: missing,
+      unique_genome_root_count: new Set(universalArtAssetHoldoutRootSet(assets, 'genome_root')).size,
+      unique_candidate_root_count: new Set(universalArtAssetHoldoutRootSet(assets, 'candidate_root')).size,
+      unique_forge_root_count: new Set(universalArtAssetHoldoutRootSet(assets, 'forge_root')).size,
+      baseline_overlap_roots: rootOverlap
+    },
+    checks,
+    status,
+    candidate_only: true,
+    authoritative: false,
+    canonical_write_authorized: false,
+    authority: {
+      canonical_owner: 'RNCS',
+      representation_owner: 'URRF',
+      provider_can_write_authoritative_world_state: false,
+      provider_can_commit: false,
+      acceptance_can_commit: false,
+      rncs_authority_required: true
+    },
+    holdout_root: ''
+  };
+}
+
+/**
+ * Evaluate a new-seed asset batch against an explicit baseline batch.
+ * A passing holdout report means that the candidate-only structural and root
+ * regression protocol passed; it never upgrades a blocked AAA acceptance.
+ */
+export function createUniversalArtAssetHoldoutReport({holdout_id = null, holdoutId = null, batch, assetResults = null, expected_profiles = null, expectedProfiles = null, baseline_roots = null, baselineRoots = null} = {}) {
+  const base = buildUniversalArtAssetHoldoutReport({
+    holdoutId: holdout_id ?? holdoutId,
+    batch,
+    assetResults,
+    expectedProfiles: expected_profiles ?? expectedProfiles,
+    baselineRoots: baseline_roots ?? baselineRoots
+  });
+  return seal(base, 'holdout_root');
+}
+
+/**
+ * Verify a persisted holdout report and, when supplied, recompute it from the
+ * actual batch/results so a self-resealed summary cannot hide root reuse.
+ */
+export function verifyUniversalArtAssetHoldoutReport(report, {batch = null, assetResults = null} = {}) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!report || typeof report !== 'object' || Array.isArray(report)) return {valid: false, errors: ['HOLDOUT_REPORT_NOT_OBJECT'], holdout_root: null};
+  try {
+    check(report.format === UNIVERSAL_ART_ASSET_HOLDOUT_FORMAT, 'HOLDOUT_FORMAT_INVALID');
+    check(report.version === UNIVERSAL_ART_ASSET_FORGE_VERSION, 'HOLDOUT_VERSION_INVALID');
+    check(nonEmptyText(report.holdout_id), 'HOLDOUT_ID_MISSING');
+    check(report.source === 'urrf-holdout-evaluator', 'HOLDOUT_SOURCE_INVALID');
+    check(isHexRoot(report.batch_root), 'HOLDOUT_BATCH_ROOT_INVALID');
+    const assets = Array.isArray(report.assets) ? report.assets : [];
+    check(assets.length > 0 && assets.length <= 64, 'HOLDOUT_ASSETS_INVALID');
+    check(report.asset_count === assets.length, 'HOLDOUT_ASSET_COUNT_MISMATCH');
+    const indexes = assets.map(asset => asset?.index);
+    check(indexes.every(index => Number.isSafeInteger(index) && index >= 0 && index < assets.length) && new Set(indexes).size === assets.length && [...indexes].sort((left, right) => left - right).every((index, position) => index === position), 'HOLDOUT_ASSET_INDEX_SET_INVALID');
+    const keys = assets.map(asset => asset?.asset_key);
+    check(keys.every(nonEmptyText) && new Set(keys).size === assets.length, 'HOLDOUT_ASSET_KEYS_INVALID');
+    for (const asset of assets) {
+      check(nonEmptyText(asset?.asset_id), `HOLDOUT_ASSET_ID_INVALID:${asset?.asset_key ?? 'unknown'}`);
+      check(UNIVERSAL_ART_ASSET_PROFILES.includes(asset?.asset_profile), `HOLDOUT_ASSET_PROFILE_INVALID:${asset?.asset_key ?? 'unknown'}`);
+      check(UNIVERSAL_ART_ASSET_QUALITY_TIERS.includes(asset?.quality_tier), `HOLDOUT_ASSET_QUALITY_TIER_INVALID:${asset?.asset_key ?? 'unknown'}`);
+      check(['BLOCKED', 'READY_FOR_HUMAN_REVIEW'].includes(asset?.status), `HOLDOUT_ASSET_STATUS_INVALID:${asset?.asset_key ?? 'unknown'}`);
+      check(typeof asset?.structural_pass === 'boolean', `HOLDOUT_ASSET_STRUCTURAL_STATUS_INVALID:${asset?.asset_key ?? 'unknown'}`);
+      const structuralChecks = record(asset?.structural_checks);
+      const structuralCheckKeys = ['candidate_root', 'file_inspection', 'geometry', 'topology', 'uv', 'normal', 'pbr', 'lod'];
+      check(structuralCheckKeys.every(key => typeof structuralChecks[key] === 'boolean'), `HOLDOUT_ASSET_STRUCTURAL_CHECKS_INVALID:${asset?.asset_key ?? 'unknown'}`);
+      check(asset?.structural_pass === structuralCheckKeys.every(key => structuralChecks[key] === true), `HOLDOUT_ASSET_STRUCTURAL_STATUS_MISMATCH:${asset?.asset_key ?? 'unknown'}`);
+      const structuralFailures = structuralCheckKeys.filter(key => structuralChecks[key] !== true);
+      check(rootHash(structuralFailures) === rootHash(asset?.structural_failures ?? []), `HOLDOUT_ASSET_STRUCTURAL_FAILURES_MISMATCH:${asset?.asset_key ?? 'unknown'}`);
+      check(isHexRoot(asset?.genome_root), `HOLDOUT_ASSET_GENOME_ROOT_INVALID:${asset?.asset_key ?? 'unknown'}`);
+      check(asset?.candidate_root === null || isHexRoot(asset?.candidate_root), `HOLDOUT_ASSET_CANDIDATE_ROOT_INVALID:${asset?.asset_key ?? 'unknown'}`);
+      check(isHexRoot(asset?.forge_root), `HOLDOUT_ASSET_FORGE_ROOT_INVALID:${asset?.asset_key ?? 'unknown'}`);
+      check(asset?.file_inspection_root === null || isHexRoot(asset?.file_inspection_root), `HOLDOUT_ASSET_INSPECTION_ROOT_INVALID:${asset?.asset_key ?? 'unknown'}`);
+    }
+    const expected = normalizeUniversalArtAssetHoldoutProfiles(report.coverage?.expected_profiles);
+    const observed = [...new Set(assets.map(asset => asset.asset_profile))].sort((left, right) => left.localeCompare(right, 'en'));
+    const missing = expected.filter(profile => !observed.includes(profile));
+    check(rootHash(observed) === rootHash(report.coverage?.observed_profiles ?? []), 'HOLDOUT_OBSERVED_PROFILES_MISMATCH');
+    check(rootHash(missing) === rootHash(report.coverage?.missing_profiles ?? []), 'HOLDOUT_MISSING_PROFILES_MISMATCH');
+    const baseline = normalizeUniversalArtAssetHoldoutBaselineRoots(report.baseline_roots);
+    const overlap = universalArtAssetHoldoutRootOverlap(assets, baseline);
+    check(rootHash(overlap) === rootHash(report.coverage?.baseline_overlap_roots ?? []), 'HOLDOUT_BASELINE_OVERLAP_MISMATCH');
+    check(report.summary?.asset_count === assets.length, 'HOLDOUT_SUMMARY_ASSET_COUNT_MISMATCH');
+    check(report.summary?.structural_pass_count === assets.filter(asset => asset.structural_pass).length, 'HOLDOUT_SUMMARY_STRUCTURAL_COUNT_MISMATCH');
+    check(report.summary?.acceptance_pass_count === assets.filter(asset => asset.acceptance_pass === true).length, 'HOLDOUT_SUMMARY_ACCEPTANCE_COUNT_MISMATCH');
+    check(report.summary?.blocked_count === assets.filter(asset => asset.status === 'BLOCKED').length, 'HOLDOUT_SUMMARY_BLOCKED_COUNT_MISMATCH');
+    check(report.coverage?.unique_genome_root_count === new Set(universalArtAssetHoldoutRootSet(assets, 'genome_root')).size, 'HOLDOUT_UNIQUE_GENOME_ROOT_COUNT_MISMATCH');
+    check(report.coverage?.unique_candidate_root_count === new Set(universalArtAssetHoldoutRootSet(assets, 'candidate_root')).size, 'HOLDOUT_UNIQUE_CANDIDATE_ROOT_COUNT_MISMATCH');
+    check(report.coverage?.unique_forge_root_count === new Set(universalArtAssetHoldoutRootSet(assets, 'forge_root')).size, 'HOLDOUT_UNIQUE_FORGE_ROOT_COUNT_MISMATCH');
+    const checks = record(report.checks);
+    const checkNames = ['batch_verification', 'asset_count', 'asset_keys_unique', 'expected_profile_coverage', 'unique_genome_roots', 'unique_candidate_roots', 'unique_forge_roots', 'structural_inspection', 'baseline_batch_root_distinct', 'baseline_root_isolation'];
+    check(checkNames.every(key => typeof checks[key] === 'boolean'), 'HOLDOUT_CHECKS_INVALID');
+    const expectedChecks = {
+      asset_count: assets.length > 0 && report.asset_count === assets.length,
+      asset_keys_unique: keys.every(nonEmptyText) && new Set(keys).size === assets.length,
+      expected_profile_coverage: expected.length > 0 && missing.length === 0,
+      unique_genome_roots: universalArtAssetHoldoutUniqueRoots(assets, 'genome_root'),
+      unique_candidate_roots: universalArtAssetHoldoutUniqueRoots(assets, 'candidate_root'),
+      unique_forge_roots: universalArtAssetHoldoutUniqueRoots(assets, 'forge_root'),
+      structural_inspection: assets.length > 0 && assets.every(asset => asset.structural_pass),
+      baseline_batch_root_distinct: report.batch_root !== baseline.batch_root,
+      baseline_root_isolation: overlap.length === 0
+    };
+    for (const [key, value] of Object.entries(expectedChecks)) check(checks[key] === value, `HOLDOUT_CHECK_${key.toUpperCase()}_MISMATCH`);
+    check(checks.batch_verification === true, 'HOLDOUT_BATCH_VERIFICATION_NOT_PASS');
+    const expectedStatus = Object.values(checks).every(Boolean) ? 'CANDIDATE_HOLDOUT_PASS' : 'CANDIDATE_HOLDOUT_FAIL';
+    check(report.status === expectedStatus, 'HOLDOUT_STATUS_MISMATCH');
+    check(report.candidate_only === true && report.authoritative === false && report.canonical_write_authorized === false, 'HOLDOUT_AUTHORITY_INVALID');
+    check(report.authority?.canonical_owner === 'RNCS' && report.authority?.representation_owner === 'URRF', 'HOLDOUT_OWNER_INVALID');
+    check(report.authority?.provider_can_write_authoritative_world_state === false && report.authority?.provider_can_commit === false && report.authority?.acceptance_can_commit === false && report.authority?.rncs_authority_required === true, 'HOLDOUT_PROVIDER_AUTHORITY_INVALID');
+    const copy = clone(report);
+    const actual = copy.holdout_root;
+    delete copy.holdout_root;
+    check(isHexRoot(actual) && actual === rootHash(copy), 'HOLDOUT_ROOT_INVALID');
+    if (batch !== null || assetResults !== null) {
+      const expectedReport = buildUniversalArtAssetHoldoutReport({
+        holdoutId: report.holdout_id,
+        batch,
+        assetResults,
+        expectedProfiles: expected,
+        baselineRoots: baseline
+      });
+      delete expectedReport.holdout_root;
+      check(rootHash(copy) === rootHash(expectedReport), 'HOLDOUT_CONTENT_MISMATCH');
+    }
+  } catch (error) {
+    errors.push(`VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, holdout_root: report.holdout_root ?? null};
 }
 
 function universalArtAssetAssemblyBatchInput(batch, assetResults = null) {

@@ -8,12 +8,14 @@ import {rootHash} from '@taowind/rncs-core-contract';
 import {
   createUniversalArtAssetAssembly,
   createUniversalArtAssetEvidenceBundle,
+  createUniversalArtAssetHoldoutReport,
   generateUniversalArtAssetBatch,
   generateUniversalArtAsset,
   lowerUniversalArtAssetAssemblyToVsr,
   materializeUniversalArtAssetVsrProjection,
   verifyUniversalArtAssetAssembly,
   verifyUniversalArtAssetBatch,
+  verifyUniversalArtAssetHoldoutReport,
   verifyUniversalArtAssetVsrMaterialization,
   verifyUniversalArtAssetVsrProjection,
   verifyUniversalArtAssetForge
@@ -218,6 +220,81 @@ test('URRF Universal Art Asset Forge emits a rooted candidate and closes AAA cla
   writeFileSync(join(evidenceDir, 'universal-art-asset-file-inspection.json'), `${JSON.stringify(result.execution.file_inspection, null, 2)}\n`, 'utf8');
   writeFileSync(join(evidenceDir, 'universal-art-asset-evidence-bundle.json'), `${JSON.stringify(incompleteEvidenceBundle, null, 2)}\n`, 'utf8');
   assert.match(report.report_root, /^[a-f0-9]{64}$/);
+});
+
+test('URRF holdout regression evaluates new seeds across the exercised profile set', () => {
+  const baselineOutDir = join(tmpdir(), 'taowind-urrf-universal-art-holdout-baseline-v01');
+  const holdoutOutDir = join(tmpdir(), 'taowind-urrf-universal-art-holdout-candidate-v01');
+  const baseline = generateUniversalArtAssetBatch([
+    {
+      description: '一名守护古代冰晶遗迹的三维女剑士，穿着带有冰纹的重甲。',
+      asset_profile: 'character',
+      asset_kind: 'character-3d',
+      quality_tier: 'AAA',
+      asset_key: 'baseline-guardian-character',
+      seed: 'urrf-holdout-baseline-character-seed',
+      target_platforms: ['desktop', 'web'],
+      constraints: {max_triangles: 2400, pbr_texture_size: 128}
+    },
+    {
+      description: '一枚用于冰晶遗迹祭坛的三维古代护符。',
+      asset_profile: 'prop',
+      asset_kind: 'prop-3d',
+      quality_tier: 'AAA',
+      asset_key: 'baseline-ice-relic-prop',
+      seed: 'urrf-holdout-baseline-prop-seed',
+      target_platforms: ['desktop', 'web'],
+      constraints: {max_triangles: 2400, pbr_texture_size: 128}
+    }
+  ], {outDir: baselineOutDir});
+  const holdout = generateUniversalArtAssetBatch([
+    {
+      description: '一名在极光废墟巡逻的三维女守卫，穿着带有冰纹的轻型护甲。',
+      asset_profile: 'character',
+      asset_kind: 'character-3d',
+      quality_tier: 'AAA',
+      asset_key: 'holdout-aurora-guardian-character',
+      seed: 'urrf-holdout-character-seed',
+      target_platforms: ['desktop', 'web'],
+      constraints: {max_triangles: 2400, pbr_texture_size: 128}
+    },
+    {
+      description: '一枚用于荒原观测塔的三维晶体测距仪，具有可复用的材质与碰撞边界。',
+      asset_profile: 'prop',
+      asset_kind: 'prop-3d',
+      quality_tier: 'AAA',
+      asset_key: 'holdout-observatory-prop',
+      seed: 'urrf-holdout-prop-seed',
+      target_platforms: ['desktop', 'web'],
+      constraints: {max_triangles: 2400, pbr_texture_size: 128}
+    }
+  ], {outDir: holdoutOutDir});
+  const report = createUniversalArtAssetHoldoutReport({
+    holdout_id: 'urrf-universal-art-holdout-integration-v01',
+    batch: holdout,
+    expected_profiles: ['character', 'prop'],
+    baseline_roots: {
+      batch_root: baseline.batch.batch_root,
+      genome_roots: baseline.batch.assets.map(asset => asset.genome_root),
+      candidate_roots: baseline.batch.assets.map(asset => asset.candidate_root),
+      forge_roots: baseline.batch.assets.map(asset => asset.forge_root)
+    }
+  });
+  assert.equal(report.status, 'CANDIDATE_HOLDOUT_PASS');
+  assert.equal(report.summary.structural_pass_count, 2);
+  assert.equal(report.summary.acceptance_pass_count, 0);
+  assert.equal(report.checks.baseline_batch_root_distinct, true);
+  assert.equal(report.checks.baseline_root_isolation, true);
+  assert.deepEqual(report.coverage.missing_profiles, []);
+  assert.equal(verifyUniversalArtAssetHoldoutReport(report, {batch: holdout}).valid, true);
+  mkdirSync(evidenceDir, {recursive: true});
+  writeFileSync(join(evidenceDir, 'universal-art-asset-holdout.json'), `${JSON.stringify(report, null, 2)}\n`, 'utf8');
+
+  const tamperedBase = structuredClone(report);
+  tamperedBase.assets[0].candidate_root = tamperedBase.assets[1].candidate_root;
+  delete tamperedBase.holdout_root;
+  const tamperedReport = {...tamperedBase, holdout_root: rootHash(tamperedBase)};
+  assert.equal(verifyUniversalArtAssetHoldoutReport(tamperedReport, {batch: holdout}).valid, false);
 });
 
 test('URRF Universal Art Asset Forge isolates a multi-asset candidate batch and indexes reusable roots', async () => {

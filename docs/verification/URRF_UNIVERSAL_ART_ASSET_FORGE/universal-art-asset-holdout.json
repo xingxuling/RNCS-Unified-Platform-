@@ -1,0 +1,139 @@
+{
+  "format": "urrf.universal-art-asset-holdout.v0.1",
+  "version": "0.1.0",
+  "holdout_id": "urrf-universal-art-holdout-integration-v01",
+  "source": "urrf-holdout-evaluator",
+  "batch_root": "b909b98d21f29f5d9533a88e9e894d4a37df23032e0125244db7c3ed5db149eb",
+  "baseline_roots": {
+    "batch_root": "9bc5b6cf18877a377a133faf50dc83948de4fb25cd5148f2bcd813d040814a80",
+    "genome_roots": [
+      "51853de353bacd18acf841e51d8d46d42a752f4c2d6141f20284f2bbae49d238",
+      "cb1e1368254dbee1aa5f311a86842ecee418f4eaadf13231f7ea640541cc371c"
+    ],
+    "candidate_roots": [
+      "667693f39632fe10a041829b165a001ed70c7af2c63d8e82707cfdd23b43db9f",
+      "bd1019b85569e3407e42a6a433ce1122f571c4daf252a79d240b7aa050004b42"
+    ],
+    "forge_roots": [
+      "e139b170eacd6481bd860e2d2c9ab4b892046fd54befefae4bf7b3aa81292906",
+      "f0f93222ab7febc68262f95dda7d04225af6cd1cf60e1741564500f23cabb055"
+    ]
+  },
+  "asset_count": 2,
+  "assets": [
+    {
+      "asset_key": "holdout-aurora-guardian-character",
+      "index": 0,
+      "asset_id": "asset:bee9c89fc156fb19e0ee4bcc",
+      "asset_profile": "character",
+      "quality_tier": "AAA",
+      "status": "BLOCKED",
+      "structural_pass": true,
+      "structural_checks": {
+        "candidate_root": true,
+        "file_inspection": true,
+        "geometry": true,
+        "topology": true,
+        "uv": true,
+        "normal": true,
+        "pbr": true,
+        "lod": true
+      },
+      "structural_failures": [],
+      "acceptance_pass": false,
+      "genome_root": "7d2ec078dc50c70362724710578b1abbc3282e2c16de8a3b79661d3e4b6da4ac",
+      "candidate_root": "4046daa054e2eccff7d012d6f2f0580fbbaa691db3aa9dfaa113943b793c2886",
+      "forge_root": "cf87da2ed1dd6745e659dd7a697fa38f603f51bb6b0ae1c3ca44d19b44c28c47",
+      "file_inspection_root": "9a4ab984167359f2982fc118c5947f647f22dab371820edbca6cc58f72a8eae0",
+      "triangle_count": 1900,
+      "lod_count": 3,
+      "pbr_channel_count": 4,
+      "acceptance_failures": [
+        "provenance_license_gate",
+        "art_direction_gate",
+        "quality_tier_gate",
+        "human_review_gate"
+      ]
+    },
+    {
+      "asset_key": "holdout-observatory-prop",
+      "index": 1,
+      "asset_id": "asset:b2ad102fafa8c41329732bd3",
+      "asset_profile": "prop",
+      "quality_tier": "AAA",
+      "status": "BLOCKED",
+      "structural_pass": true,
+      "structural_checks": {
+        "candidate_root": true,
+        "file_inspection": true,
+        "geometry": true,
+        "topology": true,
+        "uv": true,
+        "normal": true,
+        "pbr": true,
+        "lod": true
+      },
+      "structural_failures": [],
+      "acceptance_pass": false,
+      "genome_root": "54fe4a2c96c2003832e4b139acded3a0083a8b028b3160b4073cd57f295d298f",
+      "candidate_root": "3b4fbcf0882e93f8734c053574841cfeb8192ad78dcb50007b783d14999ba998",
+      "forge_root": "253f7fa8c2537ab627acdbc841675970db654958119ed8cad4b42b89d2e4efa1",
+      "file_inspection_root": "05e0bd522834c1aacb525d520e53081548c2edc9b0f573d44aae1798b98f8548",
+      "triangle_count": 1900,
+      "lod_count": 3,
+      "pbr_channel_count": 4,
+      "acceptance_failures": [
+        "provenance_license_gate",
+        "art_direction_gate",
+        "quality_tier_gate",
+        "human_review_gate"
+      ]
+    }
+  ],
+  "summary": {
+    "asset_count": 2,
+    "structural_pass_count": 2,
+    "acceptance_pass_count": 0,
+    "blocked_count": 2
+  },
+  "coverage": {
+    "expected_profiles": [
+      "character",
+      "prop"
+    ],
+    "observed_profiles": [
+      "character",
+      "prop"
+    ],
+    "missing_profiles": [],
+    "unique_genome_root_count": 2,
+    "unique_candidate_root_count": 2,
+    "unique_forge_root_count": 2,
+    "baseline_overlap_roots": []
+  },
+  "checks": {
+    "batch_verification": true,
+    "asset_count": true,
+    "asset_keys_unique": true,
+    "expected_profile_coverage": true,
+    "unique_genome_roots": true,
+    "unique_candidate_roots": true,
+    "unique_forge_roots": true,
+    "structural_inspection": true,
+    "baseline_batch_root_distinct": true,
+    "baseline_root_isolation": true
+  },
+  "status": "CANDIDATE_HOLDOUT_PASS",
+  "candidate_only": true,
+  "authoritative": false,
+  "canonical_write_authorized": false,
+  "authority": {
+    "canonical_owner": "RNCS",
+    "representation_owner": "URRF",
+    "provider_can_write_authoritative_world_state": false,
+    "provider_can_commit": false,
+    "acceptance_can_commit": false,
+    "rncs_authority_required": true
+  },
+  "holdout_root": "f11dd16c4bfbd607ddfefd658292f343231981015d64a936c3b15fc2b6a19967"
+}
