@@ -1,12 +1,12 @@
 {
   "format": "urrf.universal-art-asset-assembly.v0.1",
   "version": "0.1.0",
-  "assembly_id": "urrf-universal-art-asset-assembly:b4fe3c23f89fc06761e57cc0",
-  "batch_root": "9cc977b8ff1cc6ae1ccd6ef3a7b962df1c5a2a638f61aab67bfa8e472f286cbe",
-  "source_reality_root": "9cc977b8ff1cc6ae1ccd6ef3a7b962df1c5a2a638f61aab67bfa8e472f286cbe",
+  "assembly_id": "urrf-universal-art-asset-assembly:4f1c967221d1728fa4ba66c6",
+  "batch_root": "b5c175139b778e9d7c3fa87942fcb34b8aed5a8cfa50af5f7fdaaea41f03c6a6",
+  "source_reality_root": "b5c175139b778e9d7c3fa87942fcb34b8aed5a8cfa50af5f7fdaaea41f03c6a6",
   "scene_id": "urrf-universal-art-assembly-integration",
   "world_id": "world:urrf-universal-art-assembly-integration",
-  "placement_root": "f27174eefe2229f9e2f9d9c96d95157325f17b3670594c955b92abe7e328872c",
+  "placement_root": "84d1362129c9bca29a53f8705f8186d27a334353cf10b60fef1efd364db37245",
   "asset_count": 2,
   "status": "BLOCKED",
   "lod_policy": {
@@ -30,7 +30,7 @@
       "genome_root": "8c49cccb28253fa46b1141f9c7d79c2d140c791137f01ff55517e26c0704ca96",
       "candidate_root": "7b927b6e736cb2fad8e019f067a2b8db7b96779b3b30f1a758f1db2c3e12578a",
       "acceptance_root": "a41089c423c51f6261487301c5eda5b158087a200a708954ca895cf66d30f5ae",
-      "forge_root": "057d1f0a43fb090ee1663155ae67235c6b63b5f5263f34ca44992493aa71387e",
+      "forge_root": "1fcabaef7023914da439829c7a497011d569deeb751bc880f0982edfc82628e6",
       "selected_lod": 0,
       "placement_mm": [
         1200,
@@ -46,7 +46,7 @@
         "human_review_gate"
       ],
       "source": {
-        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-hoKLYg\\assets\\001-guardian-character",
+        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-batch-v01\\assets\\001-guardian-character",
         "mesh": {
           "role": "mesh-glb",
           "relative_path": "candidates/mobile/mesh/lod0.glb",
@@ -96,7 +96,7 @@
           ]
         }
       },
-      "asset_root": "ca9d3ad2e290b4e65656786633fb1d1c2381388e2b3ec86687f3d9537f5ec40a"
+      "asset_root": "fce3f5344c2501b04b7826ebd33a28001a099494637b1f58a328af17ab9f6c8c"
     },
     {
       "asset_key": "ice-relic-prop",
@@ -109,7 +109,7 @@
       "genome_root": "ae74fd8d418a9f9e920318e3a200eda78181dd5b4ef7b4878b4c36d9e22528d1",
       "candidate_root": "fd51e5755fb38c8f5a91e8940656ca919933c5b4901964153b3a70fe74818572",
       "acceptance_root": "3795cfe307bb5e4c64b0acd3c8d5d74ccfe5ecbfe7aec768dfe365b139f01120",
-      "forge_root": "972a8ed9306aeb1718dc78d6c5c233df758f255a117327624831ff0cf92efa8f",
+      "forge_root": "4c91011b43cd2e6d0f668f4dd35b14e1d749085937101b978dd04cd5e0ea2c2b",
       "selected_lod": 1,
       "placement_mm": [
         -1200,
@@ -125,7 +125,7 @@
         "human_review_gate"
       ],
       "source": {
-        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-hoKLYg\\assets\\002-ice-relic-prop",
+        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-batch-v01\\assets\\002-ice-relic-prop",
         "mesh": {
           "role": "mesh-lod1-glb",
           "relative_path": "candidates/mobile/mesh/lod1.glb",
@@ -175,7 +175,7 @@
           ]
         }
       },
-      "asset_root": "8e26ab92e02927a5d4456172c3d8efe37164d0d1f1bac4624f5dca26c65369d9"
+      "asset_root": "6405cb82cf0a925d3e0cde40535fa2b7da39a4486e1dd42e4624e00fe586f2ad"
     }
   ],
   "artifact_root_index": {
@@ -237,5 +237,5 @@
     "acceptance_can_commit": false,
     "rncs_authority_required": true
   },
-  "assembly_root": "e7ac57ad98a5b29a395681e042ab4d6eb3fde4b2b8e70d437e03b86d763f7969"
+  "assembly_root": "d5d7a753ba47e0bf1b6184a72e6cc5d6c9cf17cf69b9dd275aa74bfbd0605099"
 }

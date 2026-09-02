@@ -52,12 +52,13 @@
     "actual_gpu_execution": {"const": false},
     "artifacts": {
       "type": "object",
-      "required": ["scene_json", "cpu_reference_png", "browser_html", "browser_receipt", "browser_png"],
+      "required": ["scene_json", "cpu_reference_png", "browser_html", "browser_receipt", "browser_performance", "browser_png"],
       "properties": {
         "scene_json": {"type": "string", "minLength": 1},
         "cpu_reference_png": {"type": "string", "minLength": 1},
         "browser_html": {"type": "string", "minLength": 1},
         "browser_receipt": {"type": "string", "minLength": 1},
+        "browser_performance": {"type": "string", "minLength": 1},
         "browser_png": {"type": "string", "minLength": 1}
       },
       "additionalProperties": false

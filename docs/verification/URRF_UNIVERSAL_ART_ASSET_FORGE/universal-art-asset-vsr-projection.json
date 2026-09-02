@@ -1,11 +1,11 @@
 {
   "format": "urrf.universal-art-asset-vsr-projection.v0.1",
   "version": "0.1.0",
-  "projection_id": "urrf-universal-art-asset-vsr-projection:0a580fec92e9ee003fa157cb",
-  "assembly_root": "e7ac57ad98a5b29a395681e042ab4d6eb3fde4b2b8e70d437e03b86d763f7969",
-  "batch_root": "9cc977b8ff1cc6ae1ccd6ef3a7b962df1c5a2a638f61aab67bfa8e472f286cbe",
-  "source_reality_root": "9cc977b8ff1cc6ae1ccd6ef3a7b962df1c5a2a638f61aab67bfa8e472f286cbe",
-  "placement_root": "f27174eefe2229f9e2f9d9c96d95157325f17b3670594c955b92abe7e328872c",
+  "projection_id": "urrf-universal-art-asset-vsr-projection:88a93cf57345e9e2ebd9a960",
+  "assembly_root": "d5d7a753ba47e0bf1b6184a72e6cc5d6c9cf17cf69b9dd275aa74bfbd0605099",
+  "batch_root": "b5c175139b778e9d7c3fa87942fcb34b8aed5a8cfa50af5f7fdaaea41f03c6a6",
+  "source_reality_root": "b5c175139b778e9d7c3fa87942fcb34b8aed5a8cfa50af5f7fdaaea41f03c6a6",
+  "placement_root": "84d1362129c9bca29a53f8705f8186d27a334353cf10b60fef1efd364db37245",
   "scene_id": "urrf-universal-art-assembly-integration",
   "world_id": "world:urrf-universal-art-assembly-integration",
   "status": "BLOCKED",
@@ -42,8 +42,8 @@
         ]
       },
       "metadata": {
-        "assembly_root": "e7ac57ad98a5b29a395681e042ab4d6eb3fde4b2b8e70d437e03b86d763f7969",
-        "batch_root": "9cc977b8ff1cc6ae1ccd6ef3a7b962df1c5a2a638f61aab67bfa8e472f286cbe",
+        "assembly_root": "d5d7a753ba47e0bf1b6184a72e6cc5d6c9cf17cf69b9dd275aa74bfbd0605099",
+        "batch_root": "b5c175139b778e9d7c3fa87942fcb34b8aed5a8cfa50af5f7fdaaea41f03c6a6",
         "asset_key": "guardian-character",
         "asset_id": "asset:cf644862f780b86ae2bd9e94",
         "candidate_root": "7b927b6e736cb2fad8e019f067a2b8db7b96779b3b30f1a758f1db2c3e12578a",
@@ -51,7 +51,7 @@
         "candidate_file_root": "c4ad66b4ecf4051c28c642848075eeeba8a634fdcb3d363d50901ff06e165d32",
         "file_root": "b21b483ae0f8df76711b6ae53e6bb515ce86e905fe52bd66713aeeafbae49a4a",
         "relative_path": "candidates/mobile/mesh/lod0.glb",
-        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-hoKLYg\\assets\\001-guardian-character",
+        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-batch-v01\\assets\\001-guardian-character",
         "selected_lod": 0,
         "quality_tier": "AAA",
         "pbr_pack_root": "7fd12e06b60bb64b1a930cf7f0a3ecfb6754b11cff5aea57b546010d10b741d1",
@@ -90,8 +90,8 @@
         ]
       },
       "metadata": {
-        "assembly_root": "e7ac57ad98a5b29a395681e042ab4d6eb3fde4b2b8e70d437e03b86d763f7969",
-        "batch_root": "9cc977b8ff1cc6ae1ccd6ef3a7b962df1c5a2a638f61aab67bfa8e472f286cbe",
+        "assembly_root": "d5d7a753ba47e0bf1b6184a72e6cc5d6c9cf17cf69b9dd275aa74bfbd0605099",
+        "batch_root": "b5c175139b778e9d7c3fa87942fcb34b8aed5a8cfa50af5f7fdaaea41f03c6a6",
         "asset_key": "ice-relic-prop",
         "asset_id": "asset:795500e07f30c1152d3638b3",
         "candidate_root": "fd51e5755fb38c8f5a91e8940656ca919933c5b4901964153b3a70fe74818572",
@@ -99,7 +99,7 @@
         "candidate_file_root": "fd21db04bb2a9361bbb29b3e2fb5bf1dc1b32756591bce8b5ccf9a3dfc47675e",
         "file_root": "85e157ff631d314e13d83820a5784f49925e93063dc84afd6a52966ee005faa3",
         "relative_path": "candidates/mobile/mesh/lod1.glb",
-        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-hoKLYg\\assets\\002-ice-relic-prop",
+        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-batch-v01\\assets\\002-ice-relic-prop",
         "selected_lod": 1,
         "quality_tier": "AAA",
         "pbr_pack_root": "de37a08b457695ba75207a58c5569016de0d51c74644c979ffe54648f57a6f59",
@@ -123,8 +123,8 @@
       ],
       "priority": 1000,
       "metadata": {
-        "assembly_root": "e7ac57ad98a5b29a395681e042ab4d6eb3fde4b2b8e70d437e03b86d763f7969",
-        "batch_root": "9cc977b8ff1cc6ae1ccd6ef3a7b962df1c5a2a638f61aab67bfa8e472f286cbe",
+        "assembly_root": "d5d7a753ba47e0bf1b6184a72e6cc5d6c9cf17cf69b9dd275aa74bfbd0605099",
+        "batch_root": "b5c175139b778e9d7c3fa87942fcb34b8aed5a8cfa50af5f7fdaaea41f03c6a6",
         "asset_key": "guardian-character",
         "asset_id": "asset:cf644862f780b86ae2bd9e94",
         "candidate_root": "7b927b6e736cb2fad8e019f067a2b8db7b96779b3b30f1a758f1db2c3e12578a",
@@ -132,7 +132,7 @@
         "pbr_role": "base-color",
         "file_root": "8047f96ad5ca167f9a64da12287f939cc5db69d66034ad9df38d6c4db746ddcf",
         "relative_path": "candidates/mobile/pbr/base-color.png",
-        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-hoKLYg\\assets\\001-guardian-character",
+        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-batch-v01\\assets\\001-guardian-character",
         "candidate_only": true,
         "authoritative": false
       }
@@ -149,8 +149,8 @@
       ],
       "priority": 1000,
       "metadata": {
-        "assembly_root": "e7ac57ad98a5b29a395681e042ab4d6eb3fde4b2b8e70d437e03b86d763f7969",
-        "batch_root": "9cc977b8ff1cc6ae1ccd6ef3a7b962df1c5a2a638f61aab67bfa8e472f286cbe",
+        "assembly_root": "d5d7a753ba47e0bf1b6184a72e6cc5d6c9cf17cf69b9dd275aa74bfbd0605099",
+        "batch_root": "b5c175139b778e9d7c3fa87942fcb34b8aed5a8cfa50af5f7fdaaea41f03c6a6",
         "asset_key": "guardian-character",
         "asset_id": "asset:cf644862f780b86ae2bd9e94",
         "candidate_root": "7b927b6e736cb2fad8e019f067a2b8db7b96779b3b30f1a758f1db2c3e12578a",
@@ -158,7 +158,7 @@
         "pbr_role": "emissive",
         "file_root": "13ceff94cca7e73afcebf6b206f3b13967583dd74c8b872ff91212cecc282658",
         "relative_path": "candidates/mobile/pbr/emissive.png",
-        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-hoKLYg\\assets\\001-guardian-character",
+        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-batch-v01\\assets\\001-guardian-character",
         "candidate_only": true,
         "authoritative": false
       }
@@ -175,8 +175,8 @@
       ],
       "priority": 1000,
       "metadata": {
-        "assembly_root": "e7ac57ad98a5b29a395681e042ab4d6eb3fde4b2b8e70d437e03b86d763f7969",
-        "batch_root": "9cc977b8ff1cc6ae1ccd6ef3a7b962df1c5a2a638f61aab67bfa8e472f286cbe",
+        "assembly_root": "d5d7a753ba47e0bf1b6184a72e6cc5d6c9cf17cf69b9dd275aa74bfbd0605099",
+        "batch_root": "b5c175139b778e9d7c3fa87942fcb34b8aed5a8cfa50af5f7fdaaea41f03c6a6",
         "asset_key": "guardian-character",
         "asset_id": "asset:cf644862f780b86ae2bd9e94",
         "candidate_root": "7b927b6e736cb2fad8e019f067a2b8db7b96779b3b30f1a758f1db2c3e12578a",
@@ -184,7 +184,7 @@
         "pbr_role": "normal",
         "file_root": "7846a98a1055cb3d3f5c207e06ce75cc036a57ec8458ffcfae8be90997053386",
         "relative_path": "candidates/mobile/pbr/normal.png",
-        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-hoKLYg\\assets\\001-guardian-character",
+        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-batch-v01\\assets\\001-guardian-character",
         "candidate_only": true,
         "authoritative": false
       }
@@ -201,8 +201,8 @@
       ],
       "priority": 1000,
       "metadata": {
-        "assembly_root": "e7ac57ad98a5b29a395681e042ab4d6eb3fde4b2b8e70d437e03b86d763f7969",
-        "batch_root": "9cc977b8ff1cc6ae1ccd6ef3a7b962df1c5a2a638f61aab67bfa8e472f286cbe",
+        "assembly_root": "d5d7a753ba47e0bf1b6184a72e6cc5d6c9cf17cf69b9dd275aa74bfbd0605099",
+        "batch_root": "b5c175139b778e9d7c3fa87942fcb34b8aed5a8cfa50af5f7fdaaea41f03c6a6",
         "asset_key": "guardian-character",
         "asset_id": "asset:cf644862f780b86ae2bd9e94",
         "candidate_root": "7b927b6e736cb2fad8e019f067a2b8db7b96779b3b30f1a758f1db2c3e12578a",
@@ -210,7 +210,7 @@
         "pbr_role": "occlusion-roughness-metallic",
         "file_root": "4a2ee573be2eb0b6e80381222f1885d2046ffbc3e62b8e624f8eb05ecd13f5da",
         "relative_path": "candidates/mobile/pbr/orm.png",
-        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-hoKLYg\\assets\\001-guardian-character",
+        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-batch-v01\\assets\\001-guardian-character",
         "candidate_only": true,
         "authoritative": false
       }
@@ -227,8 +227,8 @@
       ],
       "priority": 999,
       "metadata": {
-        "assembly_root": "e7ac57ad98a5b29a395681e042ab4d6eb3fde4b2b8e70d437e03b86d763f7969",
-        "batch_root": "9cc977b8ff1cc6ae1ccd6ef3a7b962df1c5a2a638f61aab67bfa8e472f286cbe",
+        "assembly_root": "d5d7a753ba47e0bf1b6184a72e6cc5d6c9cf17cf69b9dd275aa74bfbd0605099",
+        "batch_root": "b5c175139b778e9d7c3fa87942fcb34b8aed5a8cfa50af5f7fdaaea41f03c6a6",
         "asset_key": "ice-relic-prop",
         "asset_id": "asset:795500e07f30c1152d3638b3",
         "candidate_root": "fd51e5755fb38c8f5a91e8940656ca919933c5b4901964153b3a70fe74818572",
@@ -236,7 +236,7 @@
         "pbr_role": "base-color",
         "file_root": "299fa704969b7053dbb5183249a50147aa4600f4ba12ec99bc406ab7177f197b",
         "relative_path": "candidates/mobile/pbr/base-color.png",
-        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-hoKLYg\\assets\\002-ice-relic-prop",
+        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-batch-v01\\assets\\002-ice-relic-prop",
         "candidate_only": true,
         "authoritative": false
       }
@@ -253,8 +253,8 @@
       ],
       "priority": 999,
       "metadata": {
-        "assembly_root": "e7ac57ad98a5b29a395681e042ab4d6eb3fde4b2b8e70d437e03b86d763f7969",
-        "batch_root": "9cc977b8ff1cc6ae1ccd6ef3a7b962df1c5a2a638f61aab67bfa8e472f286cbe",
+        "assembly_root": "d5d7a753ba47e0bf1b6184a72e6cc5d6c9cf17cf69b9dd275aa74bfbd0605099",
+        "batch_root": "b5c175139b778e9d7c3fa87942fcb34b8aed5a8cfa50af5f7fdaaea41f03c6a6",
         "asset_key": "ice-relic-prop",
         "asset_id": "asset:795500e07f30c1152d3638b3",
         "candidate_root": "fd51e5755fb38c8f5a91e8940656ca919933c5b4901964153b3a70fe74818572",
@@ -262,7 +262,7 @@
         "pbr_role": "emissive",
         "file_root": "13ceff94cca7e73afcebf6b206f3b13967583dd74c8b872ff91212cecc282658",
         "relative_path": "candidates/mobile/pbr/emissive.png",
-        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-hoKLYg\\assets\\002-ice-relic-prop",
+        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-batch-v01\\assets\\002-ice-relic-prop",
         "candidate_only": true,
         "authoritative": false
       }
@@ -279,8 +279,8 @@
       ],
       "priority": 999,
       "metadata": {
-        "assembly_root": "e7ac57ad98a5b29a395681e042ab4d6eb3fde4b2b8e70d437e03b86d763f7969",
-        "batch_root": "9cc977b8ff1cc6ae1ccd6ef3a7b962df1c5a2a638f61aab67bfa8e472f286cbe",
+        "assembly_root": "d5d7a753ba47e0bf1b6184a72e6cc5d6c9cf17cf69b9dd275aa74bfbd0605099",
+        "batch_root": "b5c175139b778e9d7c3fa87942fcb34b8aed5a8cfa50af5f7fdaaea41f03c6a6",
         "asset_key": "ice-relic-prop",
         "asset_id": "asset:795500e07f30c1152d3638b3",
         "candidate_root": "fd51e5755fb38c8f5a91e8940656ca919933c5b4901964153b3a70fe74818572",
@@ -288,7 +288,7 @@
         "pbr_role": "normal",
         "file_root": "d1622a7a34f56df8c31e95c7afab59a2f553d6bcfd07b8939d210fb881654f21",
         "relative_path": "candidates/mobile/pbr/normal.png",
-        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-hoKLYg\\assets\\002-ice-relic-prop",
+        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-batch-v01\\assets\\002-ice-relic-prop",
         "candidate_only": true,
         "authoritative": false
       }
@@ -305,8 +305,8 @@
       ],
       "priority": 999,
       "metadata": {
-        "assembly_root": "e7ac57ad98a5b29a395681e042ab4d6eb3fde4b2b8e70d437e03b86d763f7969",
-        "batch_root": "9cc977b8ff1cc6ae1ccd6ef3a7b962df1c5a2a638f61aab67bfa8e472f286cbe",
+        "assembly_root": "d5d7a753ba47e0bf1b6184a72e6cc5d6c9cf17cf69b9dd275aa74bfbd0605099",
+        "batch_root": "b5c175139b778e9d7c3fa87942fcb34b8aed5a8cfa50af5f7fdaaea41f03c6a6",
         "asset_key": "ice-relic-prop",
         "asset_id": "asset:795500e07f30c1152d3638b3",
         "candidate_root": "fd51e5755fb38c8f5a91e8940656ca919933c5b4901964153b3a70fe74818572",
@@ -314,7 +314,7 @@
         "pbr_role": "occlusion-roughness-metallic",
         "file_root": "29389f27f1d2fb5b7f0e767d8c0a4f76cf3299b6c8da26920ce285841b909995",
         "relative_path": "candidates/mobile/pbr/orm.png",
-        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-hoKLYg\\assets\\002-ice-relic-prop",
+        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-batch-v01\\assets\\002-ice-relic-prop",
         "candidate_only": true,
         "authoritative": false
       }
@@ -367,5 +367,5 @@
     "acceptance_can_commit": false,
     "rncs_authority_required": true
   },
-  "projection_root": "65de82f9193b3e300b36ad1b0e7aadec9f9f4c0a3260905843a85fb3577de1f4"
+  "projection_root": "75aa544ca194f3f4878689a87194e5e15a67b03803775ddd0762192fae0c49f9"
 }

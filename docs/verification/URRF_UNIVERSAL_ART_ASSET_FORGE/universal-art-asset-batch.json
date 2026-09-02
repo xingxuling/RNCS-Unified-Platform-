@@ -2,13 +2,13 @@
   "format": "urrf.universal-art-asset-batch.v0.1",
   "version": "0.1.0",
   "batch_id": "urrf-universal-art-asset-batch:cc79578e66a2a29b4d437d70",
-  "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-hoKLYg",
+  "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-batch-v01",
   "asset_count": 2,
   "assets": [
     {
       "asset_key": "guardian-character",
       "index": 0,
-      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-hoKLYg\\assets\\001-guardian-character",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-batch-v01\\assets\\001-guardian-character",
       "asset_id": "asset:cf644862f780b86ae2bd9e94",
       "asset_profile": "character",
       "quality_tier": "AAA",
@@ -17,7 +17,7 @@
       "genome_root": "8c49cccb28253fa46b1141f9c7d79c2d140c791137f01ff55517e26c0704ca96",
       "candidate_root": "7b927b6e736cb2fad8e019f067a2b8db7b96779b3b30f1a758f1db2c3e12578a",
       "acceptance_root": "a41089c423c51f6261487301c5eda5b158087a200a708954ca895cf66d30f5ae",
-      "forge_root": "057d1f0a43fb090ee1663155ae67235c6b63b5f5263f34ca44992493aa71387e",
+      "forge_root": "1fcabaef7023914da439829c7a497011d569deeb751bc880f0982edfc82628e6",
       "artifact_roots": {
         "animation-clips": "47158950c1c033622f92a4e8ba404dfb191d10d6a8d98fa9a249ead7e3577cd0",
         "collision-shape": "a14df9e767f48f509c49ccd8bcad5d69d80a9932124ffb0a0befc9ff367524d3",
@@ -48,7 +48,7 @@
     {
       "asset_key": "ice-relic-prop",
       "index": 1,
-      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-hoKLYg\\assets\\002-ice-relic-prop",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-batch-v01\\assets\\002-ice-relic-prop",
       "asset_id": "asset:795500e07f30c1152d3638b3",
       "asset_profile": "prop",
       "quality_tier": "AAA",
@@ -57,7 +57,7 @@
       "genome_root": "ae74fd8d418a9f9e920318e3a200eda78181dd5b4ef7b4878b4c36d9e22528d1",
       "candidate_root": "fd51e5755fb38c8f5a91e8940656ca919933c5b4901964153b3a70fe74818572",
       "acceptance_root": "3795cfe307bb5e4c64b0acd3c8d5d74ccfe5ecbfe7aec768dfe365b139f01120",
-      "forge_root": "972a8ed9306aeb1718dc78d6c5c233df758f255a117327624831ff0cf92efa8f",
+      "forge_root": "4c91011b43cd2e6d0f668f4dd35b14e1d749085937101b978dd04cd5e0ea2c2b",
       "artifact_roots": {
         "animation-clips": "97dd04f58b655f36b6641c7158e58a9d1fe8be45a8cd5dd2952fec3c21dde149",
         "collision-shape": "d8ab17692c2b8dff299bd4bda279122bf3b1cd1328cecc17106ba65b3f046f96",
@@ -324,5 +324,5 @@
     "acceptance_can_commit": false,
     "rncs_authority_required": true
   },
-  "batch_root": "9cc977b8ff1cc6ae1ccd6ef3a7b962df1c5a2a638f61aab67bfa8e472f286cbe"
+  "batch_root": "b5c175139b778e9d7c3fa87942fcb34b8aed5a8cfa50af5f7fdaaea41f03c6a6"
 }

@@ -1,0 +1,438 @@
+{
+  "format": "urrf.universal-art-asset-vsr-webgpu-performance.v0.1",
+  "version": "0.1.0",
+  "status": "LOCAL_HOST_CANDIDATE_PASS",
+  "source_reality_root": "16078c2e15b3bea8603f924ba15b09ca51e26a83bc33717cb1b866c5fc7f4602",
+  "assembly_root": "d5d7a753ba47e0bf1b6184a72e6cc5d6c9cf17cf69b9dd275aa74bfbd0605099",
+  "projection_root": "75aa544ca194f3f4878689a87194e5e15a67b03803775ddd0762192fae0c49f9",
+  "materialization_root": "ba67dacadd91a77437ad43478047131b03e5368fb57d019f3ec2a84a73933657",
+  "scene_id": "urrf-universal-art-asset-vsr-aggregate-v01",
+  "frame_root": "ae1f6b6fee4ec6d2f1a20d97957b1a5004a0d9329e9e1fd53a5fa98b4baa5e0c",
+  "cpu_frame_root": "ae1f6b6fee4ec6d2f1a20d97957b1a5004a0d9329e9e1fd53a5fa98b4baa5e0c",
+  "performance_root": "b083472c0d38535e0cb6687ce251af5449b6bf73431167453109907312d6012e",
+  "sample_count": 12,
+  "warmup_frame_count": 1,
+  "steady_state_sample_count": 11,
+  "sustained": {
+    "format": "urrf.universal-art-asset-vsr-webgpu-sustained-performance.v0.1",
+    "version": "0.1.0",
+    "sample_count": 12,
+    "warmup_frame_count": 1,
+    "steady_state_sample_count": 11,
+    "samples": [
+      {
+        "index": 0,
+        "phase": "warmup",
+        "wall_us": 488100,
+        "compile_us": 124200,
+        "upload_us": 900,
+        "encode_us": 75200,
+        "submit_us": 286800,
+        "frame_root": "ae1f6b6fee4ec6d2f1a20d97957b1a5004a0d9329e9e1fd53a5fa98b4baa5e0c",
+        "receipt_root": "af7c030d5244cbb5b5a62898d5d87ad91e7a35105f95e15015afa66eadffa646",
+        "submitted": true,
+        "device_lost": false,
+        "texture_bytes_resident": 655372,
+        "texture_uploads": 13,
+        "texture_evictions": 0,
+        "buffer_bytes_resident": 116360,
+        "buffer_uploads": 12,
+        "buffer_evictions": 0
+      },
+      {
+        "index": 1,
+        "phase": "steady_state",
+        "wall_us": 182700,
+        "compile_us": 105200,
+        "upload_us": 500,
+        "encode_us": 67500,
+        "submit_us": 9100,
+        "frame_root": "ae1f6b6fee4ec6d2f1a20d97957b1a5004a0d9329e9e1fd53a5fa98b4baa5e0c",
+        "receipt_root": "2a72ffb2dedc7b44dfea039812bea54c8c96d89c8cdae592f9196f310aec3526",
+        "submitted": true,
+        "device_lost": false,
+        "texture_bytes_resident": 655372,
+        "texture_uploads": 0,
+        "texture_evictions": 0,
+        "buffer_bytes_resident": 116360,
+        "buffer_uploads": 0,
+        "buffer_evictions": 0
+      },
+      {
+        "index": 2,
+        "phase": "steady_state",
+        "wall_us": 168100,
+        "compile_us": 102200,
+        "upload_us": 300,
+        "encode_us": 61600,
+        "submit_us": 3800,
+        "frame_root": "ae1f6b6fee4ec6d2f1a20d97957b1a5004a0d9329e9e1fd53a5fa98b4baa5e0c",
+        "receipt_root": "8dbcce47c979f9e898920d639270bc105356b68418f0cb771d0e0a7000e0ad5c",
+        "submitted": true,
+        "device_lost": false,
+        "texture_bytes_resident": 655372,
+        "texture_uploads": 0,
+        "texture_evictions": 0,
+        "buffer_bytes_resident": 116360,
+        "buffer_uploads": 0,
+        "buffer_evictions": 0
+      },
+      {
+        "index": 3,
+        "phase": "steady_state",
+        "wall_us": 173800,
+        "compile_us": 103500,
+        "upload_us": 200,
+        "encode_us": 61700,
+        "submit_us": 8300,
+        "frame_root": "ae1f6b6fee4ec6d2f1a20d97957b1a5004a0d9329e9e1fd53a5fa98b4baa5e0c",
+        "receipt_root": "06459f021994809ba336c598e7e8cc477a27ba648f4d9e9b3ca949e77308c26d",
+        "submitted": true,
+        "device_lost": false,
+        "texture_bytes_resident": 655372,
+        "texture_uploads": 0,
+        "texture_evictions": 0,
+        "buffer_bytes_resident": 116360,
+        "buffer_uploads": 0,
+        "buffer_evictions": 0
+      },
+      {
+        "index": 4,
+        "phase": "steady_state",
+        "wall_us": 169000,
+        "compile_us": 101100,
+        "upload_us": 200,
+        "encode_us": 60900,
+        "submit_us": 6700,
+        "frame_root": "ae1f6b6fee4ec6d2f1a20d97957b1a5004a0d9329e9e1fd53a5fa98b4baa5e0c",
+        "receipt_root": "b5820bea0eb5fe04d8c1dd6772d0e446a8f8b7933d85ef0abbef3c1c7b050907",
+        "submitted": true,
+        "device_lost": false,
+        "texture_bytes_resident": 655372,
+        "texture_uploads": 0,
+        "texture_evictions": 0,
+        "buffer_bytes_resident": 116360,
+        "buffer_uploads": 0,
+        "buffer_evictions": 0
+      },
+      {
+        "index": 5,
+        "phase": "steady_state",
+        "wall_us": 167000,
+        "compile_us": 98200,
+        "upload_us": 200,
+        "encode_us": 62900,
+        "submit_us": 5500,
+        "frame_root": "ae1f6b6fee4ec6d2f1a20d97957b1a5004a0d9329e9e1fd53a5fa98b4baa5e0c",
+        "receipt_root": "4fa80484cd8ad554199fb65ef50a8e255e36f8ebf5e8da709502bebba71c42fe",
+        "submitted": true,
+        "device_lost": false,
+        "texture_bytes_resident": 655372,
+        "texture_uploads": 0,
+        "texture_evictions": 0,
+        "buffer_bytes_resident": 116360,
+        "buffer_uploads": 0,
+        "buffer_evictions": 0
+      },
+      {
+        "index": 6,
+        "phase": "steady_state",
+        "wall_us": 164600,
+        "compile_us": 99500,
+        "upload_us": 200,
+        "encode_us": 60700,
+        "submit_us": 4100,
+        "frame_root": "ae1f6b6fee4ec6d2f1a20d97957b1a5004a0d9329e9e1fd53a5fa98b4baa5e0c",
+        "receipt_root": "62e4f9bd84ee7ff629e21bca2ea76a4bae986f7110c4b4236288fa8e663c8645",
+        "submitted": true,
+        "device_lost": false,
+        "texture_bytes_resident": 655372,
+        "texture_uploads": 0,
+        "texture_evictions": 0,
+        "buffer_bytes_resident": 116360,
+        "buffer_uploads": 0,
+        "buffer_evictions": 0
+      },
+      {
+        "index": 7,
+        "phase": "steady_state",
+        "wall_us": 212700,
+        "compile_us": 129600,
+        "upload_us": 100,
+        "encode_us": 77600,
+        "submit_us": 5000,
+        "frame_root": "ae1f6b6fee4ec6d2f1a20d97957b1a5004a0d9329e9e1fd53a5fa98b4baa5e0c",
+        "receipt_root": "4a0df832badfbee91ad19ef525faf82d909b7ffdd9d4e8eb14562b4feecf3f1c",
+        "submitted": true,
+        "device_lost": false,
+        "texture_bytes_resident": 655372,
+        "texture_uploads": 0,
+        "texture_evictions": 0,
+        "buffer_bytes_resident": 116360,
+        "buffer_uploads": 0,
+        "buffer_evictions": 0
+      },
+      {
+        "index": 8,
+        "phase": "steady_state",
+        "wall_us": 186400,
+        "compile_us": 113000,
+        "upload_us": 300,
+        "encode_us": 68300,
+        "submit_us": 4700,
+        "frame_root": "ae1f6b6fee4ec6d2f1a20d97957b1a5004a0d9329e9e1fd53a5fa98b4baa5e0c",
+        "receipt_root": "3e81944a60e7fbd6c71d69a518b9b34daba89c1c75a7fd261c2bdd87d7ee724d",
+        "submitted": true,
+        "device_lost": false,
+        "texture_bytes_resident": 655372,
+        "texture_uploads": 0,
+        "texture_evictions": 0,
+        "buffer_bytes_resident": 116360,
+        "buffer_uploads": 0,
+        "buffer_evictions": 0
+      },
+      {
+        "index": 9,
+        "phase": "steady_state",
+        "wall_us": 180800,
+        "compile_us": 108700,
+        "upload_us": 300,
+        "encode_us": 65800,
+        "submit_us": 5800,
+        "frame_root": "ae1f6b6fee4ec6d2f1a20d97957b1a5004a0d9329e9e1fd53a5fa98b4baa5e0c",
+        "receipt_root": "c4c199bae5fb36681bbe8806310eb4a1e46d15ae8d9f84d9488b2bc230c015c9",
+        "submitted": true,
+        "device_lost": false,
+        "texture_bytes_resident": 655372,
+        "texture_uploads": 0,
+        "texture_evictions": 0,
+        "buffer_bytes_resident": 116360,
+        "buffer_uploads": 0,
+        "buffer_evictions": 0
+      },
+      {
+        "index": 10,
+        "phase": "steady_state",
+        "wall_us": 170300,
+        "compile_us": 103400,
+        "upload_us": 200,
+        "encode_us": 61600,
+        "submit_us": 4900,
+        "frame_root": "ae1f6b6fee4ec6d2f1a20d97957b1a5004a0d9329e9e1fd53a5fa98b4baa5e0c",
+        "receipt_root": "4e8e69c328b1ca92f2df9155d95de4560b3c6d7bfd4427a993d7d7daa1656d0f",
+        "submitted": true,
+        "device_lost": false,
+        "texture_bytes_resident": 655372,
+        "texture_uploads": 0,
+        "texture_evictions": 0,
+        "buffer_bytes_resident": 116360,
+        "buffer_uploads": 0,
+        "buffer_evictions": 0
+      },
+      {
+        "index": 11,
+        "phase": "steady_state",
+        "wall_us": 175200,
+        "compile_us": 102200,
+        "upload_us": 300,
+        "encode_us": 68800,
+        "submit_us": 3800,
+        "frame_root": "ae1f6b6fee4ec6d2f1a20d97957b1a5004a0d9329e9e1fd53a5fa98b4baa5e0c",
+        "receipt_root": "b3714412a464de38254ae2142543f809b9b8eaa8131dada1f439ff58bfa5b416",
+        "submitted": true,
+        "device_lost": false,
+        "texture_bytes_resident": 655372,
+        "texture_uploads": 0,
+        "texture_evictions": 0,
+        "buffer_bytes_resident": 116360,
+        "buffer_uploads": 0,
+        "buffer_evictions": 0
+      }
+    ],
+    "metrics_us": {
+      "wall": {
+        "min": 164600,
+        "p50": 173800,
+        "p95": 488100,
+        "max": 488100
+      },
+      "compile": {
+        "min": 98200,
+        "p50": 103400,
+        "p95": 129600,
+        "max": 129600
+      },
+      "upload": {
+        "min": 100,
+        "p50": 200,
+        "p95": 900,
+        "max": 900
+      },
+      "encode": {
+        "min": 60700,
+        "p50": 62900,
+        "p95": 77600,
+        "max": 77600
+      },
+      "submit": {
+        "min": 3800,
+        "p50": 5000,
+        "p95": 286800,
+        "max": 286800
+      }
+    },
+    "warmup_metrics_us": {
+      "wall": {
+        "min": 488100,
+        "p50": 488100,
+        "p95": 488100,
+        "max": 488100
+      },
+      "compile": {
+        "min": 124200,
+        "p50": 124200,
+        "p95": 124200,
+        "max": 124200
+      },
+      "upload": {
+        "min": 900,
+        "p50": 900,
+        "p95": 900,
+        "max": 900
+      },
+      "encode": {
+        "min": 75200,
+        "p50": 75200,
+        "p95": 75200,
+        "max": 75200
+      },
+      "submit": {
+        "min": 286800,
+        "p50": 286800,
+        "p95": 286800,
+        "max": 286800
+      }
+    },
+    "steady_state_metrics_us": {
+      "wall": {
+        "min": 164600,
+        "p50": 173800,
+        "p95": 212700,
+        "max": 212700
+      },
+      "compile": {
+        "min": 98200,
+        "p50": 103400,
+        "p95": 129600,
+        "max": 129600
+      },
+      "upload": {
+        "min": 100,
+        "p50": 200,
+        "p95": 500,
+        "max": 500
+      },
+      "encode": {
+        "min": 60700,
+        "p50": 62900,
+        "p95": 77600,
+        "max": 77600
+      },
+      "submit": {
+        "min": 3800,
+        "p50": 5000,
+        "p95": 9100,
+        "max": 9100
+      }
+    },
+    "residency_bytes": {
+      "texture": {
+        "min": 655372,
+        "p50": 655372,
+        "p95": 655372,
+        "max": 655372
+      },
+      "buffer": {
+        "min": 116360,
+        "p50": 116360,
+        "p95": 116360,
+        "max": 116360
+      }
+    },
+    "transfer_totals": {
+      "texture_uploads": 13,
+      "texture_evictions": 0,
+      "buffer_uploads": 12,
+      "buffer_evictions": 0
+    },
+    "steady_state_transfer_totals": {
+      "texture_uploads": 0,
+      "texture_evictions": 0,
+      "buffer_uploads": 0,
+      "buffer_evictions": 0
+    },
+    "root_stability": {
+      "frame_root_variants": [
+        "ae1f6b6fee4ec6d2f1a20d97957b1a5004a0d9329e9e1fd53a5fa98b4baa5e0c"
+      ],
+      "receipt_root_variants": [
+        "af7c030d5244cbb5b5a62898d5d87ad91e7a35105f95e15015afa66eadffa646",
+        "2a72ffb2dedc7b44dfea039812bea54c8c96d89c8cdae592f9196f310aec3526",
+        "8dbcce47c979f9e898920d639270bc105356b68418f0cb771d0e0a7000e0ad5c",
+        "06459f021994809ba336c598e7e8cc477a27ba648f4d9e9b3ca949e77308c26d",
+        "b5820bea0eb5fe04d8c1dd6772d0e446a8f8b7933d85ef0abbef3c1c7b050907",
+        "4fa80484cd8ad554199fb65ef50a8e255e36f8ebf5e8da709502bebba71c42fe",
+        "62e4f9bd84ee7ff629e21bca2ea76a4bae986f7110c4b4236288fa8e663c8645",
+        "4a0df832badfbee91ad19ef525faf82d909b7ffdd9d4e8eb14562b4feecf3f1c",
+        "3e81944a60e7fbd6c71d69a518b9b34daba89c1c75a7fd261c2bdd87d7ee724d",
+        "c4c199bae5fb36681bbe8806310eb4a1e46d15ae8d9f84d9488b2bc230c015c9",
+        "4e8e69c328b1ca92f2df9155d95de4560b3c6d7bfd4427a993d7d7daa1656d0f",
+        "b3714412a464de38254ae2142543f809b9b8eaa8131dada1f439ff58bfa5b416"
+      ],
+      "all_frame_roots_match_expected": true
+    },
+    "submitted_count": 12,
+    "device_loss_count": 0,
+    "budget": {
+      "sample_count": 12,
+      "warmup_frame_count": 1,
+      "max_wall_p95_us": 2500000,
+      "max_compile_p95_us": 1000000,
+      "max_encode_p95_us": 1500000,
+      "max_submit_p95_us": 1500000,
+      "max_texture_bytes_resident": 2000000,
+      "max_buffer_bytes_resident": 1000000,
+      "max_texture_evictions": 0,
+      "max_buffer_evictions": 0,
+      "max_frame_root_variants": 1,
+      "max_device_losses": 0
+    },
+    "budget_checks": {
+      "sample_count": true,
+      "wall_p95": true,
+      "compile_p95": true,
+      "encode_p95": true,
+      "submit_p95": true,
+      "texture_residency": true,
+      "buffer_residency": true,
+      "texture_evictions": true,
+      "buffer_evictions": true,
+      "frame_root_variants": true,
+      "device_losses": true
+    },
+    "budget_failures": [],
+    "budget_status": "PASS",
+    "performance_root": "b083472c0d38535e0cb6687ce251af5449b6bf73431167453109907312d6012e"
+  },
+  "budget_status": "PASS",
+  "authority": {
+    "canonical_owner": "RNCS",
+    "representation_owner": "URRF",
+    "execution_owner": "VSR",
+    "candidate_only": true,
+    "authoritative": false,
+    "canonical_write_authorized": false
+  },
+  "notes": "Integer-quantized continuous local Chromium WebGPU samples over one dependency-complete URRF aggregate scene. Residency is VSR logical resource accounting, not physical VRAM telemetry; this is not target-device performance, driver coverage, production throughput, or AAA visual grading.",
+  "report_root": "00b11aa4a3a1acf5c7bd06383f46447186f7c4324720e9b164c8259d1a6433c6"
+}

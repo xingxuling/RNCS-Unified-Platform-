@@ -28,6 +28,35 @@ def sha256(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def canonical_json(value):
+    """Match the RNCS root encoding for the integer-only performance envelope."""
+    if value is None:
+        return 'null'
+    if value is True:
+        return 'true'
+    if value is False:
+        return 'false'
+    if isinstance(value, int):
+        return str(value)
+    if isinstance(value, float):
+        raise AssertionError('performance root must contain integer metrics')
+    if isinstance(value, str):
+        return json.dumps(value, ensure_ascii=False, separators=(',', ':'))
+    if isinstance(value, list):
+        return '[' + ','.join(canonical_json(item) for item in value) + ']'
+    if isinstance(value, dict):
+        keys = sorted(value, key=lambda key: str(key).encode('utf-8'))
+        return '{' + ','.join(
+            canonical_json(str(key)) + ':' + canonical_json(value[key])
+            for key in keys
+        ) + '}'
+    raise AssertionError(f'unsupported performance root value: {type(value).__name__}')
+
+
+def root_for(value):
+    return hashlib.sha256(canonical_json(value).encode('utf-8')).hexdigest()
+
+
 port = free_port()
 server = subprocess.Popen(
     ['python', '-m', 'http.server', str(port)],
@@ -79,7 +108,18 @@ try:
         assert state.get('sourceRealityRoot') == report['source_reality_root'], (state, report['source_reality_root'])
         assert receipt.get('triangles', 0) == report['triangle_count'], receipt
         assert receipt.get('materialTextureBindings', 0) == report['material_texture_bindings'], receipt
-        assert receipt.get('textureUploads', 0) >= report['texture_count'], receipt
+        sustained = state.get('sustained') or {}
+        assert sum(sample.get('texture_uploads', 0) for sample in sustained.get('samples', [])) >= report['texture_count'], sustained
+        assert state.get('performanceRoot'), state
+        assert sustained.get('performance_root') == state['performanceRoot'], sustained
+        sustained_without_root = {key: value for key, value in sustained.items() if key != 'performance_root'}
+        assert root_for(sustained_without_root) == state['performanceRoot'], sustained
+        assert sustained.get('budget_status') == 'PASS', sustained
+        assert sustained.get('sample_count') == sustained.get('budget', {}).get('sample_count'), sustained
+        assert sustained.get('submitted_count') == sustained.get('sample_count'), sustained
+        assert sustained.get('device_loss_count') == 0, sustained
+        assert sustained.get('root_stability', {}).get('all_frame_roots_match_expected') is True, sustained
+        assert sustained.get('root_stability', {}).get('frame_root_variants') == [report['frame_root']], sustained
         assert not page_errors, page_errors
         assert not failed_requests, failed_requests
         shader_messages = [
@@ -89,6 +129,32 @@ try:
         assert not shader_messages, shader_messages
         page.locator('#gpu').screenshot(path=str(screenshot))
         assert screenshot.stat().st_size > 10000, screenshot
+        performance_base = {
+            'format': 'urrf.universal-art-asset-vsr-webgpu-performance.v0.1',
+            'version': '0.1.0',
+            'status': 'LOCAL_HOST_CANDIDATE_PASS',
+            'source_reality_root': state['sourceRealityRoot'],
+            'assembly_root': report['assembly_root'],
+            'projection_root': report['projection_root'],
+            'materialization_root': report['materialization_root'],
+            'scene_id': receipt['sceneId'],
+            'frame_root': state['frameRoot'],
+            'cpu_frame_root': report['frame_root'],
+            'performance_root': state['performanceRoot'],
+            'sample_count': sustained['sample_count'],
+            'warmup_frame_count': sustained['warmup_frame_count'],
+            'steady_state_sample_count': sustained['steady_state_sample_count'],
+            'sustained': sustained,
+            'budget_status': sustained['budget_status'],
+            'authority': {'canonical_owner': 'RNCS', 'representation_owner': 'URRF', 'execution_owner': 'VSR', 'candidate_only': True, 'authoritative': False, 'canonical_write_authorized': False},
+            'notes': 'Integer-quantized continuous local Chromium WebGPU samples over one dependency-complete URRF aggregate scene. Residency is VSR logical resource accounting, not physical VRAM telemetry; this is not target-device performance, driver coverage, production throughput, or AAA visual grading.'
+        }
+        performance_report = {**performance_base, 'report_root': root_for(performance_base)}
+        assert performance_report['report_root'] == root_for(performance_base), performance_report
+        (evidence / 'universal-art-asset-vsr-webgpu-performance.json').write_text(
+            json.dumps(performance_report, ensure_ascii=False, indent=2) + '\n',
+            encoding='utf-8',
+        )
         browser_evidence = {
             'format': 'urrf.universal-art-asset-vsr-webgpu-browser-receipt.v0.1',
             'version': '0.1.0',
@@ -102,6 +168,10 @@ try:
             'cpu_frame_root': report['frame_root'],
             'receipt': receipt,
             'receipt_frame_root_matches_cpu': receipt.get('frameRoot') == report['frame_root'],
+            'performance_root': state['performanceRoot'],
+            'performance_report': 'universal-art-asset-vsr-webgpu-performance.json',
+            'performance_sample_count': sustained['sample_count'],
+            'performance_budget_status': sustained['budget_status'],
             'png': 'output/playwright/urrf-universal-art-asset-vsr-webgpu.png',
             'png_sha256': sha256(screenshot),
             'png_bytes': screenshot.stat().st_size,
@@ -109,7 +179,7 @@ try:
             'shader_messages': shader_messages,
             'failed_requests': failed_requests,
             'authority': {'candidate_only': True, 'authoritative': False, 'canonical_write_authorized': False},
-            'notes': 'Actual local Chromium WebGPU execution of the dependency-complete universal art VSR aggregate scene. This is machine-local GPU execution evidence, not target-device performance, physical VRAM residency, or AAA visual grading.'
+            'notes': 'Actual local Chromium WebGPU execution of the dependency-complete universal art VSR aggregate scene, followed by a rooted continuous-frame budget sample. This is machine-local GPU execution and VSR logical residency evidence, not target-device performance, physical VRAM residency, or AAA visual grading.'
         }
         (evidence / 'universal-art-asset-vsr-webgpu-browser-receipt.json').write_text(
             json.dumps(browser_evidence, ensure_ascii=False, indent=2) + '\n',
