@@ -1,12 +1,12 @@
 {
   "format": "urrf.universal-art-asset-vsr-materialization.v0.1",
   "version": "0.1.0",
-  "materialization_id": "urrf-universal-art-asset-vsr-materialization:6db9bb0f275724ee4c8836f2",
-  "projection_root": "d0f1c257ffda4002148e9992d8580a86888792e4c59d4f2b7577cbfc16f6a29b",
-  "assembly_root": "7efd6539c505069eb552ea2fcd6ec3ef63b6088ed291f985d32147a04dceb5b9",
-  "batch_root": "8077dfe2715c73c0090f1cf66a30590c4b5accffbec34b5e1edbfdb05c9dfd14",
-  "source_reality_root": "8077dfe2715c73c0090f1cf66a30590c4b5accffbec34b5e1edbfdb05c9dfd14",
-  "placement_root": "5361a0baed9597710875cbd025adbeb2860544ce19fbef1ec69d563aad91e652",
+  "materialization_id": "urrf-universal-art-asset-vsr-materialization:fbac189995721f2b62dc738e",
+  "projection_root": "65de82f9193b3e300b36ad1b0e7aadec9f9f4c0a3260905843a85fb3577de1f4",
+  "assembly_root": "e7ac57ad98a5b29a395681e042ab4d6eb3fde4b2b8e70d437e03b86d763f7969",
+  "batch_root": "9cc977b8ff1cc6ae1ccd6ef3a7b962df1c5a2a638f61aab67bfa8e472f286cbe",
+  "source_reality_root": "9cc977b8ff1cc6ae1ccd6ef3a7b962df1c5a2a638f61aab67bfa8e472f286cbe",
+  "placement_root": "f27174eefe2229f9e2f9d9c96d95157325f17b3670594c955b92abe7e328872c",
   "streaming_root": "800762498f7dda90f588f293248cbb4f6ba6c44c7ae407ffaf741b3f9646a25b",
   "scene_id": "urrf-universal-art-assembly-integration",
   "world_id": "world:urrf-universal-art-assembly-integration",
@@ -24,7 +24,7 @@
       "byte_length": 59880,
       "file_root": "b21b483ae0f8df76711b6ae53e6bb515ce86e905fe52bd66713aeeafbae49a4a",
       "relative_path": "candidates/mobile/mesh/lod0.glb",
-      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-JWGFcH\\assets\\001-guardian-character",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-hoKLYg\\assets\\001-guardian-character",
       "cell_ids": [
         "cell:guardian-character"
       ],
@@ -47,7 +47,7 @@
       "byte_length": 39596,
       "file_root": "85e157ff631d314e13d83820a5784f49925e93063dc84afd6a52966ee005faa3",
       "relative_path": "candidates/mobile/mesh/lod1.glb",
-      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-JWGFcH\\assets\\002-ice-relic-prop",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-hoKLYg\\assets\\002-ice-relic-prop",
       "cell_ids": [
         "cell:ice-relic-prop"
       ],
@@ -73,7 +73,7 @@
       "byte_length": 15231,
       "file_root": "8047f96ad5ca167f9a64da12287f939cc5db69d66034ad9df38d6c4db746ddcf",
       "relative_path": "candidates/mobile/pbr/base-color.png",
-      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-JWGFcH\\assets\\001-guardian-character",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-hoKLYg\\assets\\001-guardian-character",
       "cell_ids": [
         "cell:guardian-character"
       ],
@@ -91,7 +91,7 @@
       "byte_length": 428,
       "file_root": "13ceff94cca7e73afcebf6b206f3b13967583dd74c8b872ff91212cecc282658",
       "relative_path": "candidates/mobile/pbr/emissive.png",
-      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-JWGFcH\\assets\\001-guardian-character",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-hoKLYg\\assets\\001-guardian-character",
       "cell_ids": [
         "cell:guardian-character"
       ],
@@ -109,7 +109,7 @@
       "byte_length": 9039,
       "file_root": "7846a98a1055cb3d3f5c207e06ce75cc036a57ec8458ffcfae8be90997053386",
       "relative_path": "candidates/mobile/pbr/normal.png",
-      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-JWGFcH\\assets\\001-guardian-character",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-hoKLYg\\assets\\001-guardian-character",
       "cell_ids": [
         "cell:guardian-character"
       ],
@@ -127,7 +127,7 @@
       "byte_length": 19020,
       "file_root": "4a2ee573be2eb0b6e80381222f1885d2046ffbc3e62b8e624f8eb05ecd13f5da",
       "relative_path": "candidates/mobile/pbr/orm.png",
-      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-JWGFcH\\assets\\001-guardian-character",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-hoKLYg\\assets\\001-guardian-character",
       "cell_ids": [
         "cell:guardian-character"
       ],
@@ -145,7 +145,7 @@
       "byte_length": 15118,
       "file_root": "299fa704969b7053dbb5183249a50147aa4600f4ba12ec99bc406ab7177f197b",
       "relative_path": "candidates/mobile/pbr/base-color.png",
-      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-JWGFcH\\assets\\002-ice-relic-prop",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-hoKLYg\\assets\\002-ice-relic-prop",
       "cell_ids": [
         "cell:ice-relic-prop"
       ],
@@ -163,7 +163,7 @@
       "byte_length": 428,
       "file_root": "13ceff94cca7e73afcebf6b206f3b13967583dd74c8b872ff91212cecc282658",
       "relative_path": "candidates/mobile/pbr/emissive.png",
-      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-JWGFcH\\assets\\002-ice-relic-prop",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-hoKLYg\\assets\\002-ice-relic-prop",
       "cell_ids": [
         "cell:ice-relic-prop"
       ],
@@ -181,7 +181,7 @@
       "byte_length": 8974,
       "file_root": "d1622a7a34f56df8c31e95c7afab59a2f553d6bcfd07b8939d210fb881654f21",
       "relative_path": "candidates/mobile/pbr/normal.png",
-      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-JWGFcH\\assets\\002-ice-relic-prop",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-hoKLYg\\assets\\002-ice-relic-prop",
       "cell_ids": [
         "cell:ice-relic-prop"
       ],
@@ -199,7 +199,7 @@
       "byte_length": 19094,
       "file_root": "29389f27f1d2fb5b7f0e767d8c0a4f76cf3299b6c8da26920ce285841b909995",
       "relative_path": "candidates/mobile/pbr/orm.png",
-      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-JWGFcH\\assets\\002-ice-relic-prop",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-hoKLYg\\assets\\002-ice-relic-prop",
       "cell_ids": [
         "cell:ice-relic-prop"
       ],
@@ -221,5 +221,5 @@
     "acceptance_can_commit": false,
     "rncs_authority_required": true
   },
-  "materialization_root": "7d0eea89b905655e42c61b3a4559b3ec6ef121d335c76e4ccce18e839660610a"
+  "materialization_root": "a5faed4e8d612cba66acc6417ad1cc6f7012b29c946b012f4fe1b897859aeb49"
 }

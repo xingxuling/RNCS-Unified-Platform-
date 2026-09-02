@@ -1,0 +1,38 @@
+{
+  "format": "urrf.universal-art-asset-vsr-webgpu-report.v0.1",
+  "version": "0.1.0",
+  "source_reality_root": "c2336eca959757ffaa89247e75294b7d7f64854b1b8305180355662a455aad09",
+  "assembly_root": "e7ac57ad98a5b29a395681e042ab4d6eb3fde4b2b8e70d437e03b86d763f7969",
+  "projection_root": "65de82f9193b3e300b36ad1b0e7aadec9f9f4c0a3260905843a85fb3577de1f4",
+  "materialization_root": "a5faed4e8d612cba66acc6417ad1cc6f7012b29c946b012f4fe1b897859aeb49",
+  "scene_id": "urrf-universal-art-asset-vsr-aggregate-v01",
+  "world_id": "world:urrf-universal-art-assembly-integration",
+  "asset_count": 2,
+  "mesh_count": 2,
+  "texture_count": 8,
+  "material_count": 2,
+  "material_texture_bindings": 10,
+  "triangle_count": 1444,
+  "frame_root": "5fe3fe8b2e07ca4c1205d8f5e559145a9f10bffb97186de7e2fa6645cffaa6df",
+  "pixel_root": "2a207e9fac64f62eee5eebcc8fce2cc5d43711b3339fc82e6287b2ae56286d96",
+  "render_width": 640,
+  "render_height": 420,
+  "browser_execution": "NOT_EXECUTED_IN_NODE",
+  "actual_gpu_execution": false,
+  "artifacts": {
+    "scene_json": "universal-art-asset-vsr-aggregate-scene.json",
+    "cpu_reference_png": "universal-art-asset-vsr-aggregate-cpu-reference.png",
+    "browser_html": "universal-art-asset-vsr-webgpu.html",
+    "browser_receipt": "universal-art-asset-vsr-webgpu-browser-receipt.json",
+    "browser_png": "universal-art-asset-vsr-webgpu-browser.png"
+  },
+  "authority": {
+    "canonical_owner": "RNCS",
+    "representation_owner": "URRF",
+    "execution_owner": "VSR",
+    "candidate_only": true,
+    "authoritative": false
+  },
+  "notes": "Candidate-only local browser execution seam for the dependency-complete universal art assembly. Node produced the aggregate scene and CPU reference; browser GPU submission must be independently run and recorded, and this does not prove target-device performance or AAA art quality.",
+  "report_root": "fb285a607663b883b1fa083d1490938d43a0fe2913a8c439ebf69204acc4a943"
+}

@@ -36,6 +36,91 @@ import {
 const rootDir = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const evidenceDir = resolve(process.env.URRF_UNIVERSAL_ART_ASSET_FORGE_OUT ?? join(rootDir, 'docs', 'verification', 'URRF_UNIVERSAL_ART_ASSET_FORGE'));
 
+function composeUniversalArtAssetVsrScene(importedEntries, sourceRoot, worldId) {
+  const scene = {
+    format: 'vsr.spatial-scene.v0.4',
+    sceneId: 'urrf-universal-art-asset-vsr-aggregate-v01',
+    title: 'URRF Universal Art Asset VSR Aggregate',
+    activeCameraId: 'camera:urrf-universal-art-aggregate',
+    background: '#081421',
+    environment: {diffuseColor: '#2b4668', specularColor: '#d6e7ff', intensity: 0.7},
+    meshes: [],
+    materials: [],
+    textures: [],
+    animations: [],
+    skins: [],
+    nodes: [],
+    cameras: [{
+      id: 'camera:urrf-universal-art-aggregate',
+      projection: 'perspective',
+      fovYDeg: 48,
+      near: 0.1,
+      far: 100,
+      transform: {translation: [0, 1.3, 7.5], rotationEulerDeg: [-8, 0, 0]}
+    }],
+    lights: [
+      {id: 'light:urrf-universal-art-ambient', kind: 'ambient', color: '#b8d9ff', intensity: 0.3},
+      {id: 'light:urrf-universal-art-key', kind: 'directional', color: '#fff0cf', intensity: 1.8, direction: [-0.45, -1, -0.35], castShadow: false}
+    ],
+    reality: {worldId, realityRoot: sourceRoot}
+  };
+  for (const {asset, imported} of [...importedEntries].sort((a, b) => a.asset.metadata.asset_key.localeCompare(b.asset.metadata.asset_key))) {
+    const prefix = `urrf-universal-art:${asset.metadata.asset_key}`;
+    const meshIds = new Map(imported.scene.meshes.map((mesh, index) => [mesh.id, `${prefix}:mesh:${index}`]));
+    const textureIds = new Map((imported.scene.textures ?? []).map((texture, index) => [texture.id, `${prefix}:texture:${index}`]));
+    const materialIds = new Map(imported.scene.materials.map((material, index) => [material.id, `${prefix}:material:${index}`]));
+    const nodeIds = new Map(imported.scene.nodes.map((node, index) => [node.id, `${prefix}:node:${index}`]));
+    const skinIds = new Map((imported.scene.skins ?? []).map((skin, index) => [skin.id, `${prefix}:skin:${index}`]));
+    const animationIds = new Map((imported.scene.animations ?? []).map((animation, index) => [animation.id, `${prefix}:animation:${index}`]));
+    for (const mesh of imported.scene.meshes) scene.meshes.push({...structuredClone(mesh), id: meshIds.get(mesh.id)});
+    for (const texture of imported.scene.textures ?? []) scene.textures.push({...structuredClone(texture), id: textureIds.get(texture.id)});
+    for (const material of imported.scene.materials) {
+      const remapped = {...structuredClone(material), id: materialIds.get(material.id)};
+      for (const key of ['baseColorTextureId', 'metallicRoughnessTextureId', 'normalTextureId', 'occlusionTextureId', 'emissiveTextureId', 'lightmapTextureId', 'reactiveMaskTextureId']) {
+        if (remapped[key]) remapped[key] = textureIds.get(remapped[key]) ?? remapped[key];
+      }
+      scene.materials.push(remapped);
+    }
+    for (const skin of imported.scene.skins ?? []) {
+      scene.skins.push({...structuredClone(skin), id: skinIds.get(skin.id), joints: skin.joints.map(joint => nodeIds.get(joint) ?? joint)});
+    }
+    for (const animation of imported.scene.animations ?? []) {
+      scene.animations.push({
+        ...structuredClone(animation),
+        id: animationIds.get(animation.id),
+        channels: animation.channels.map(channel => ({...structuredClone(channel), nodeId: nodeIds.get(channel.nodeId) ?? channel.nodeId}))
+      });
+    }
+    for (const node of imported.scene.nodes) {
+      const remapped = {
+        ...structuredClone(node),
+        id: nodeIds.get(node.id),
+        ...(node.parentId ? {parentId: nodeIds.get(node.parentId) ?? node.parentId} : {}),
+        ...(node.meshId ? {meshId: meshIds.get(node.meshId) ?? node.meshId} : {}),
+        ...(node.materialId ? {materialId: materialIds.get(node.materialId) ?? node.materialId} : {}),
+        ...(node.skinId ? {skinId: skinIds.get(node.skinId) ?? node.skinId} : {})
+      };
+      if (!node.parentId) remapped.transform = {...(remapped.transform ?? {}), translation: [...asset.transform.translation_mm].map(value => value / 1000)};
+      scene.nodes.push(remapped);
+    }
+  }
+  return scene;
+}
+
+function universalArtAssetVsrBrowserPage(scene, referencePath, renderOptions, report) {
+  const sceneJson = JSON.stringify(scene).replaceAll('<', '\\u003c');
+  const optionsJson = JSON.stringify(renderOptions);
+  const reportJson = JSON.stringify({frame_root: report.frame_root, source_reality_root: report.source_reality_root});
+  return `<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>URRF Universal Art Asset · VSR WebGPU</title>
+<style>:root{font-family:Inter,"Noto Sans SC",system-ui,sans-serif;color:#e8f0ff;background:#050914;color-scheme:dark}*{box-sizing:border-box}body{margin:0;padding:24px;background:radial-gradient(circle at 20% 0,#173c63,#050914 52%)}main{width:min(1180px,100%);margin:auto;display:grid;grid-template-columns:minmax(0,1fr) 286px;gap:18px}.card{border:1px solid #274468;border-radius:18px;background:rgba(5,12,25,.9);overflow:hidden;box-shadow:0 24px 80px #0008}header{padding:18px 20px;border-bottom:1px solid #203a5d}h1{font-size:20px;margin:0 0 6px}p{font-size:13px;line-height:1.55;color:#9fb6d5;margin:0}canvas,img{display:block;width:100%;aspect-ratio:32/21;object-fit:cover;background:#07101e}.bar{display:flex;gap:8px;align-items:center;padding:12px 16px;border-top:1px solid #203a5d;flex-wrap:wrap}.badge{padding:5px 9px;border-radius:999px;background:#102843;color:#9ed0ff;font-size:12px}.ok{background:#123a2c;color:#8ff0bf}.warn{background:#4b3012;color:#ffd188}.panel{padding:18px}.panel h2{font-size:15px;margin:0 0 14px}.metric{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #1d3351;font-size:13px}.metric span{color:#8ba4c6}.metric strong{text-align:right;word-break:break-all;font-weight:600}code{font-size:11px;color:#8fd5ff}@media(max-width:850px){main{grid-template-columns:1fr}.panel{order:-1}}</style></head>
+<body><main><section class="card"><header><h1>URRF Universal Art Asset · VSR Spatial WebGPU</h1><p>选定 GLB 与外部四通道 PBR 纹理已在 Node/VSR 中导入；本页验证浏览器 GPU 提交。</p></header><canvas id="gpu" width="640" height="420"></canvas><img id="fallback" src="${referencePath}" alt="VSR CPU reference"><div class="bar"><span id="mode" class="badge">探测中</span><span id="receipt" class="badge">Receipt：—</span><span id="root" class="badge">Frame Root：${report.frame_root.slice(0, 12)}</span></div></section><aside class="card panel"><h2>执行状态</h2><div class="metric"><span>组合节点</span><strong>${scene.nodes.length}</strong></div><div class="metric"><span>纹理 / 材质</span><strong>${scene.textures.length} / ${scene.materials.length}</strong></div><div class="metric"><span>CPU frame root</span><strong><code>${report.frame_root}</code></strong></div><div class="metric"><span>浏览器 API</span><strong id="capability">—</strong></div><div class="metric"><span>GPU frame root</span><strong><code id="frame">—</code></strong></div></aside></main>
+<script src="../../../packages/world/visual-state-runtime/apps/spatial-v04/vsr-spatial-browser.js"></script><script>
+const scene=${sceneJson};const options=${optionsJson};const expected=${reportJson};const canvas=document.querySelector('#gpu'),fallback=document.querySelector('#fallback'),mode=document.querySelector('#mode'),capability=document.querySelector('#capability'),receipt=document.querySelector('#receipt'),frame=document.querySelector('#frame');
+async function start(){const api=window.VSRSpatial3D;const probe=api.probeSpatialWebGPU();window.__URRF_UNIVERSAL_ART_ASSET_VSR_WEBGPU__={capability:probe,status:'PROBE_ONLY',sourceRealityRoot:expected.source_reality_root,expectedFrameRoot:expected.frame_root};capability.textContent=probe.available?'available':'unavailable';if(!probe.available){mode.textContent='CPU reference · 未执行 GPU';mode.classList.add('warn');return}try{const executor=await api.VSRSpatialWebGPUExecutor.create(canvas);const result=await executor.render(scene,options);window.__URRF_UNIVERSAL_ART_ASSET_VSR_WEBGPU__={capability:probe,status:'EXECUTED',sourceRealityRoot:expected.source_reality_root,expectedFrameRoot:expected.frame_root,frameRoot:result.frameRoot,receipt:result};fallback.style.display='none';mode.textContent='真实 WebGPU 执行';mode.classList.add('ok');receipt.textContent='Draws：'+result.drawCalls+' · Textures：'+result.textureUploads;frame.textContent=result.frameRoot}catch(error){window.__URRF_UNIVERSAL_ART_ASSET_VSR_WEBGPU__={capability:probe,status:'FAILED',sourceRealityRoot:expected.source_reality_root,expectedFrameRoot:expected.frame_root,error:String(error.message??error)};mode.textContent='WebGPU 失败：'+error.message;mode.classList.add('warn')}}start();
+</script></body></html>`;
+}
+
 test('URRF Universal Art Asset Forge emits a rooted candidate and closes AAA claims without required evidence', () => {
   const outDir = mkdtempSync(join(tmpdir(), 'urrf-universal-art-integration-'));
   const result = generateUniversalArtAsset({
@@ -178,6 +263,7 @@ test('URRF Universal Art Asset Forge isolates a multi-asset candidate batch and 
   const payloads = materialized.payloads;
   const meshCatalog = catalog.filter(asset => asset.kind === 'mesh');
   const textureCatalog = catalog.filter(asset => asset.kind === 'texture');
+  const importedSceneEntries = [];
   const streamer = new VSRSpatialAssetStreamer(catalog, asset => payloads.get(asset.id), {maxConcurrent: 2});
   const streamingReceipt = await streamer.acquire({
     activeCellIds: projection.streaming.cells.map(cell => cell.id),
@@ -252,6 +338,7 @@ test('URRF Universal Art Asset Forge isolates a multi-asset candidate batch and 
           || renderedPng.data[offset + 2] !== background[2];
       }).length;
     assert.ok(nonBackgroundPixelCount > 0);
+    importedSceneEntries.push({asset, imported});
     return {
       id: asset.id,
       asset_key: asset.metadata.asset_key,
@@ -271,6 +358,54 @@ test('URRF Universal Art Asset Forge isolates a multi-asset candidate batch and 
       rendered_non_background_pixel_count: nonBackgroundPixelCount
     };
   }));
+  const aggregateScene = composeUniversalArtAssetVsrScene(importedSceneEntries, assembly.assembly_root, projection.world_id);
+  const aggregateRenderOptions = {width: 640, height: 420, enableShadows: false};
+  const aggregateFrame = compileSpatialFrame(aggregateScene, aggregateRenderOptions);
+  assert.equal(verifySpatialFrame(aggregateFrame).ok, true);
+  assert.equal(aggregateFrame.stats.materialTextureBindings, 10);
+  assert.equal(aggregateFrame.stats.triangleCount, importedAssets.reduce((sum, asset) => sum + asset.triangle_count, 0));
+  const aggregateRendered = renderSpatialReference(aggregateScene, aggregateRenderOptions);
+  const aggregatePng = decodePng(aggregateRendered.png);
+  assert.equal(aggregatePng.width, 640);
+  assert.equal(aggregatePng.height, 420);
+  assert.equal(aggregatePng.data.byteLength, 640 * 420 * 4);
+  assert.ok(aggregateRendered.pixelRoot);
+  const aggregateBrowserReportBase = {
+    format: 'urrf.universal-art-asset-vsr-webgpu-report.v0.1',
+    version: '0.1.0',
+    source_reality_root: aggregateFrame.sourceRealityRoot,
+    assembly_root: assembly.assembly_root,
+    projection_root: projection.projection_root,
+    materialization_root: materialized.materialization.materialization_root,
+    scene_id: aggregateScene.sceneId,
+    world_id: aggregateScene.reality.worldId,
+    asset_count: projection.assets.length,
+    mesh_count: aggregateScene.meshes.length,
+    texture_count: aggregateScene.textures.length,
+    material_count: aggregateScene.materials.length,
+    material_texture_bindings: aggregateFrame.stats.materialTextureBindings,
+    triangle_count: aggregateFrame.stats.triangleCount,
+    frame_root: aggregateFrame.frameRoot,
+    pixel_root: aggregateRendered.pixelRoot,
+    render_width: aggregatePng.width,
+    render_height: aggregatePng.height,
+    browser_execution: 'NOT_EXECUTED_IN_NODE',
+    actual_gpu_execution: false,
+    artifacts: {
+      scene_json: 'universal-art-asset-vsr-aggregate-scene.json',
+      cpu_reference_png: 'universal-art-asset-vsr-aggregate-cpu-reference.png',
+      browser_html: 'universal-art-asset-vsr-webgpu.html',
+      browser_receipt: 'universal-art-asset-vsr-webgpu-browser-receipt.json',
+      browser_png: 'universal-art-asset-vsr-webgpu-browser.png'
+    },
+    authority: {canonical_owner: 'RNCS', representation_owner: 'URRF', execution_owner: 'VSR', candidate_only: true, authoritative: false},
+    notes: 'Candidate-only local browser execution seam for the dependency-complete universal art assembly. Node produced the aggregate scene and CPU reference; browser GPU submission must be independently run and recorded, and this does not prove target-device performance or AAA art quality.'
+  };
+  const aggregateBrowserReport = {...aggregateBrowserReportBase, report_root: rootHash(aggregateBrowserReportBase)};
+  writeFileSync(join(evidenceDir, 'universal-art-asset-vsr-aggregate-scene.json'), `${JSON.stringify(aggregateScene)}\n`, 'utf8');
+  writeFileSync(join(evidenceDir, 'universal-art-asset-vsr-aggregate-cpu-reference.png'), aggregateRendered.png);
+  writeFileSync(join(evidenceDir, 'universal-art-asset-vsr-webgpu-report.json'), `${JSON.stringify(aggregateBrowserReport, null, 2)}\n`, 'utf8');
+  writeFileSync(join(evidenceDir, 'universal-art-asset-vsr-webgpu.html'), universalArtAssetVsrBrowserPage(aggregateScene, './universal-art-asset-vsr-aggregate-cpu-reference.png', aggregateRenderOptions, aggregateBrowserReport), 'utf8');
   const importReportBase = {
     format: 'urrf.universal-art-asset-vsr-import-execution-report.v0.1',
     version: '0.1.0',
@@ -326,6 +461,10 @@ test('URRF Universal Art Asset Forge isolates a multi-asset candidate batch and 
   assert.equal(importReport.rendered_asset_count, 2);
   assert.ok(importReport.total_rendered_png_byte_length > 0);
   assert.ok(importReport.total_rendered_non_background_pixel_count > 0);
+  assert.equal(aggregateBrowserReport.asset_count, 2);
+  assert.equal(aggregateBrowserReport.texture_count, 8);
+  assert.equal(aggregateBrowserReport.material_texture_bindings, 10);
+  assert.equal(aggregateBrowserReport.actual_gpu_execution, false);
   writeFileSync(join(evidenceDir, 'universal-art-asset-assembly.json'), `${JSON.stringify(assembly, null, 2)}\n`, 'utf8');
   writeFileSync(join(evidenceDir, 'universal-art-asset-vsr-projection.json'), `${JSON.stringify(projection, null, 2)}\n`, 'utf8');
   writeFileSync(join(evidenceDir, 'universal-art-asset-vsr-materialization.json'), `${JSON.stringify(materialized.materialization, null, 2)}\n`, 'utf8');

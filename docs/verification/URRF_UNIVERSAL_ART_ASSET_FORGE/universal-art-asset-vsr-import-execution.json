@@ -1,15 +1,15 @@
 {
   "format": "urrf.universal-art-asset-vsr-import-execution-report.v0.1",
   "version": "0.1.0",
-  "execution_id": "urrf-universal-art-vsr-import:7d0eea89b905655e42c61b3a",
-  "materialization_root": "7d0eea89b905655e42c61b3a4559b3ec6ef121d335c76e4ccce18e839660610a",
-  "projection_root": "d0f1c257ffda4002148e9992d8580a86888792e4c59d4f2b7577cbfc16f6a29b",
-  "assembly_root": "7efd6539c505069eb552ea2fcd6ec3ef63b6088ed291f985d32147a04dceb5b9",
+  "execution_id": "urrf-universal-art-vsr-import:a5faed4e8d612cba66acc641",
+  "materialization_root": "a5faed4e8d612cba66acc6417ad1cc6f7012b29c946b012f4fe1b897859aeb49",
+  "projection_root": "65de82f9193b3e300b36ad1b0e7aadec9f9f4c0a3260905843a85fb3577de1f4",
+  "assembly_root": "e7ac57ad98a5b29a395681e042ab4d6eb3fde4b2b8e70d437e03b86d763f7969",
   "scene_id": "urrf-universal-art-assembly-integration",
   "world_id": "world:urrf-universal-art-assembly-integration",
   "status": "CANDIDATE_LOCAL_CPU_PASS",
   "runtime_consumer": "VSR_GLTF_IMPORT",
-  "streaming_receipt_root": "23e8991ce2e46af4114ee050755900ff6b3dedf107496a6298eb8d44e7f6f391",
+  "streaming_receipt_root": "7aa37efd12d95047cd21417e68ee8758d7e152922d77fb9f23ff3afb9c43fc6d",
   "asset_count": 2,
   "catalog_asset_count": 10,
   "streamed_asset_count": 10,
@@ -39,9 +39,9 @@
         0,
         -900
       ],
-      "import_receipt_root": "9d85d63f4554c07e1c73aec83d8b8c4ecf6b811c12598ecc752a59ea217e6c3f",
-      "scene_root": "30f83117f5dafdc5899d5104aed8ca5203a8de04cd1cfae486685fa649a6a3eb",
-      "frame_root": "ab8b8c412673f96f4dd2cb8da832ba9223cb8dd5163da333f1e2b4c5fb831835",
+      "import_receipt_root": "97c3b689ece92bd167a2dfaa76b2f8aefa1376bb62cc7677d21a72b1b848c2cf",
+      "scene_root": "1e7cd94fc3a38d321260b7e515eeaaf5a68567e6f1918aca47afafdf77d10a09",
+      "frame_root": "87b9f30606b3b3363a27f373a86a072665f441dd68041b2d4d864e22c5ea22d1",
       "mesh_count": 1,
       "texture_count": 4,
       "material_texture_binding_count": 5,
@@ -61,9 +61,9 @@
         0,
         900
       ],
-      "import_receipt_root": "9ed5df100faf6c09db4c528adaf88400fdc35e65936417755a43800d774a1ac9",
-      "scene_root": "f31a6c7c25748311b4c78e043e91a71cddefce06489ed60854bcdac265b75acb",
-      "frame_root": "0c6e539fbadfb228902c160287c2983825a4a0e06167db886ad3196f19c2e097",
+      "import_receipt_root": "7032e67b0472a2264ae8b1b5cc712cbc498c0a2cbc9c7697c9edf15f1a692520",
+      "scene_root": "f4c690572fb085837d3e594043a840d75eafcd1354f4e6124be969d0a7537978",
+      "frame_root": "8351bfa6cc9c799ddda4017fbb80f9aad3d2458febed635a5de60f54b352716d",
       "mesh_count": 1,
       "texture_count": 4,
       "material_texture_binding_count": 5,
@@ -86,5 +86,5 @@
     "acceptance_can_commit": false,
     "rncs_authority_required": true
   },
-  "report_root": "eddf6b8dfb86d657901a0b2471f2af7c089f31ad4f69b55087c59abdb58d15bb"
+  "report_root": "77b4ab6b87aa7f8e1d1334aef1897538bc2245266ba8a9469fefeaf05ed3d343"
 }

@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.org/schemas/urrf.universal-art-asset-vsr-webgpu-report.v0.1.schema.json",
+  "title": "URRF Universal Art Asset VSR WebGPU Report v0.1",
+  "type": "object",
+  "required": [
+    "format",
+    "version",
+    "source_reality_root",
+    "assembly_root",
+    "projection_root",
+    "materialization_root",
+    "scene_id",
+    "world_id",
+    "asset_count",
+    "mesh_count",
+    "texture_count",
+    "material_count",
+    "material_texture_bindings",
+    "triangle_count",
+    "frame_root",
+    "pixel_root",
+    "render_width",
+    "render_height",
+    "browser_execution",
+    "actual_gpu_execution",
+    "artifacts",
+    "authority",
+    "notes",
+    "report_root"
+  ],
+  "properties": {
+    "format": {"const": "urrf.universal-art-asset-vsr-webgpu-report.v0.1"},
+    "version": {"const": "0.1.0"},
+    "source_reality_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "assembly_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "projection_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "materialization_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "scene_id": {"type": "string", "minLength": 1},
+    "world_id": {"type": "string", "minLength": 1},
+    "asset_count": {"type": "integer", "minimum": 1, "maximum": 64},
+    "mesh_count": {"type": "integer", "minimum": 1, "maximum": 256},
+    "texture_count": {"type": "integer", "minimum": 0, "maximum": 1024},
+    "material_count": {"type": "integer", "minimum": 1, "maximum": 256},
+    "material_texture_bindings": {"type": "integer", "minimum": 0, "maximum": 2048},
+    "triangle_count": {"type": "integer", "minimum": 1},
+    "frame_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "pixel_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "render_width": {"type": "integer", "minimum": 1, "maximum": 4096},
+    "render_height": {"type": "integer", "minimum": 1, "maximum": 4096},
+    "browser_execution": {"enum": ["NOT_EXECUTED_IN_NODE", "EXECUTED", "BLOCKED", "FAILED"]},
+    "actual_gpu_execution": {"const": false},
+    "artifacts": {
+      "type": "object",
+      "required": ["scene_json", "cpu_reference_png", "browser_html", "browser_receipt", "browser_png"],
+      "properties": {
+        "scene_json": {"type": "string", "minLength": 1},
+        "cpu_reference_png": {"type": "string", "minLength": 1},
+        "browser_html": {"type": "string", "minLength": 1},
+        "browser_receipt": {"type": "string", "minLength": 1},
+        "browser_png": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "authority": {
+      "type": "object",
+      "required": ["canonical_owner", "representation_owner", "execution_owner", "candidate_only", "authoritative"],
+      "properties": {
+        "canonical_owner": {"const": "RNCS"},
+        "representation_owner": {"const": "URRF"},
+        "execution_owner": {"const": "VSR"},
+        "candidate_only": {"const": true},
+        "authoritative": {"const": false}
+      },
+      "additionalProperties": false
+    },
+    "notes": {"type": "string", "minLength": 1},
+    "report_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "additionalProperties": false
+}

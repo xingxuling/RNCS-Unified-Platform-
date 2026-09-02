@@ -4,7 +4,7 @@
 
 `CANDIDATE_ONLY` / `AAA_NOT_PROVEN`
 
-The forge now has a runnable Genome → Provider Resolution → Provider Job → Candidate → Production Court → local GLB/LOD inspection → unified independent evidence-bundle verification → AAA Acceptance → Evidence Ledger path. A candidate-only batch → assembly → VSR projection path now binds materialized GLB/PBR bytes, selected LODs, integer placements, cells, and cross-asset roots. The committed reports are deliberately `BLOCKED`: the deterministic RAGF reference provider produced structurally valid candidate files with bound PBR textures and a decreasing three-level LOD sequence, but it did not supply all evidence required for an AAA production claim.
+The forge now has a runnable Genome → Provider Resolution → Provider Job → Candidate → Production Court → local GLB/LOD inspection → unified independent evidence-bundle verification → AAA Acceptance → Evidence Ledger path. A candidate-only batch → assembly → VSR projection path now binds materialized GLB/PBR bytes, selected LODs, integer placements, cells, and cross-asset roots, then imports, CPU-rasterizes, and browser-GPU-renders an aggregate VSR scene. The committed reports are deliberately `BLOCKED`: the deterministic RAGF reference provider produced structurally valid candidate files with bound PBR textures and a decreasing three-level LOD sequence, but it did not supply all evidence required for an AAA production claim.
 
 ## RCL Gap
 
@@ -31,7 +31,7 @@ The same rooted forge contract was exercised against:
 - a `vfx` profile with no matching Provider, which fails closed as `PROFILE_PROVIDER_UNRESOLVED` rather than borrowing a humanoid generator.
 - a two-asset `character` + `prop` batch, which emits isolated child Forge workspaces, per-asset summaries, and a cross-asset artifact-root index while remaining `BLOCKED` when both AAA candidates lack external proof;
 - the same two-asset batch assembled with `lod0`/`lod1` selection, integer millimeter placements, rehashed GLB/PBR files, a cell map, and a rooted VSR asset-stream projection;
-- the same assembly materialized eight external PBR PNG dependencies, streamed all ten mesh/texture records through VSR dependency closure, decoded the actual PNG bytes, bound four channels per material, compiled two verified local CPU frames, and rendered both imported scenes through the VSR CPU reference raster into decoded 160x160 PNG outputs with pixel roots and non-background counts;
+- the same assembly materialized eight external PBR PNG dependencies, streamed all ten mesh/texture records through VSR dependency closure, decoded the actual PNG bytes, bound four channels per material, compiled two verified local CPU frames, rendered both imported scenes through the VSR CPU reference raster into decoded 160x160 PNG outputs with pixel roots and non-background counts, and composed those scenes into one aggregate VSR scene that submitted successfully through local Chromium WebGPU;
 - a four-receipt evidence bundle, which verifies coverage and exact roots when all receipts are present and fails closed after artifact-root tampering.
 
 The negative cases are part of the contract: a Provider result, a generated GLB, a local browser/runtime receipt, an invalid LOD sequence, Provider provenance/license/`quality_tier` metadata, or Provider `art_direction`/`human_review` declarations are not by themselves AAA acceptance or RNCS authority. A malformed materialized GLB, an unbound PBR material, an unbound/non-external provenance/license, review, or quality receipt, a metric-mismatched quality proof, duplicate/non-reducing LOD geometry, stale or tampered assembly file bytes, unsafe assembly paths, invalid LOD/placement selections, a tampered VSR metadata root, a tampered evidence-bundle root, or a tampered cross-asset index cannot be rescued by Provider `PASS` declarations.
@@ -46,10 +46,11 @@ The negative cases are part of the contract: a Provider result, a generated GLB,
 - `npm run test:gltf --workspace @taowind/visual-state-runtime`: `22/22 PASS`, including the external PBR binding adapter.
 - `npm test --workspace @taowind/large-world-runtime`: `55/55 PASS`.
 - `npm run test:large-world-universal-art-asset-forge`: package `55/55 PASS`, integration `2/2 PASS`.
+- `python tests/large_world_universal_art_asset_forge_webgpu_browser_test.py`: actual local Chromium WebGPU `EXECUTED`, submitted `true`, device lost `false`, 2 draw calls, 1,444 triangles, 8 texture resources, and 10 material texture bindings; GPU and CPU frame roots match.
 - Existing URRF composition tests remain in the same package suite and continue to pass.
 - RAGF full package regression: `212/212 PASS`; the Forge-side PBR audit validates the external four-map pack and GLB material structure without coupling palette changes to mesh roots.
-- Schema validation: `PASS` for 12 schemas covering the Forge, persisted forge report, GLB inspection, independent provenance/license, review-receipt, quality-proof, evidence-bundle, batch, assembly, VSR projection, VSR payload materialization, and VSR import-execution report envelopes; generated envelopes validate with Draft 2020-12 and their roots reverify.
-- Persisted evidence audit: `PASS` for the file-inspection, incomplete evidence-bundle, batch, assembly, VSR projection, VSR payload materialization, and VSR import-execution packets; mesh/PBR payload roots, streamer receipt root, import roots, and CPU frame roots reverify, while the incomplete bundle remains fail-closed.
+- Schema validation: `PASS` for 14 schemas covering the Forge, persisted forge report, GLB inspection, independent provenance/license, review-receipt, quality-proof, evidence-bundle, batch, assembly, VSR projection, VSR payload materialization, VSR import-execution, VSR WebGPU report, and VSR browser-receipt envelopes; generated envelopes validate with Draft 2020-12 and their roots reverify.
+- Persisted evidence audit: `PASS` for the file-inspection, incomplete evidence-bundle, batch, assembly, VSR projection, VSR payload materialization, VSR import-execution, aggregate scene/CPU reference, VSR WebGPU report, and Chromium browser-receipt packets; mesh/PBR payload roots, streamer receipt root, import roots, CPU frame roots, browser GPU receipt root, and CPU/GPU frame-root equality reverify, while the incomplete bundle remains fail-closed.
 - `git diff --check`: no whitespace errors; only existing Windows LF/CRLF conversion warnings are reported.
 
 ## K400 / Nine-Gate Snapshot
@@ -61,7 +62,7 @@ For the committed reference run, the forge has:
 | EXPRESS | EVIDENCED | Universal Genome and profile contract are rooted. |
 | COMPILE | EVIDENCED | RAGF intent/genome and provider resolution compile. |
 | LOWER | EVIDENCED | RAGF/VSR workspace, Provider Adapter, multi-asset assembly, dependency-complete PBR catalog, and VSR projection paths are connected. |
-| EXECUTE | EVIDENCED_CANDIDATE | Real local GLB/PBR files are rehashed and streamed; VSR GLB import, actual PNG decode, four-channel material binding, two local CPU frame compiles, and two decoded CPU reference-raster outputs pass. GPU/target-device execution remains open. |
+| EXECUTE | EVIDENCED_CANDIDATE | Real local GLB/PBR files are rehashed and streamed; VSR GLB import, actual PNG decode, four-channel material binding, two local CPU frame compiles, two decoded CPU reference-raster outputs, and one actual local Chromium WebGPU submission pass. Target-device execution remains open. |
 | CORRECT | CANDIDATE | Roots, court, acceptance and ledger verify locally. |
 | ROBUST | CANDIDATE | Missing runtime, missing profile and weakened evidence fail closed. |
 | PERFORMANCE | NOT_RUN | No target-device or sustained AAA budget proof. |
@@ -75,4 +76,4 @@ For the committed reference run, the forge has:
 3. Supply independently authored provenance/license, art-direction, human-art, and quality-proof receipts bound to the candidate and file-inspection roots; none may be synthesized by the Provider. The current verifiers check contract/root/metric bindings and external-verifier declarations but do not prove legal clearance, reviewer identity, key custody, or target-device performance.
 4. Audit dependencies, model weights, datasets and generated-asset licenses before any commercial release decision.
 5. Repeat on a holdout asset set and submit the resulting Candidate Genome and regression evidence to Integration Court.
-6. Execute the produced VSR projection through the target GPU/device path and independently verify material residency, scene correctness, frame budget, and production delivery; the current import report is rooted local CPU evidence, including reference-raster pixels, even though all selected mesh/PBR bytes and four material channel bindings were exercised.
+6. Execute the produced VSR projection through the target GPU/device path and independently verify material residency, scene correctness, frame budget, and production delivery; the current browser receipt proves only one local Chromium GPU host (with CPU/GPU frame-root equality), not target-device performance, driver coverage, physical VRAM, or production delivery.
