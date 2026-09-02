@@ -1,0 +1,144 @@
+{
+  "format": "urrf.universal-art-asset-vsr-projection.v0.1",
+  "version": "0.1.0",
+  "projection_id": "urrf-universal-art-asset-vsr-projection:d6a686e401772ca1133bc376",
+  "assembly_root": "4ee9f941a1bec24035eceaa702e9ef77191112b8d70d8b3de9e8340289db416a",
+  "batch_root": "4f1330a66b78558aa2612fde0829f12b90f43e7e3d2d31514d275c5d3cdeffd9",
+  "source_reality_root": "4f1330a66b78558aa2612fde0829f12b90f43e7e3d2d31514d275c5d3cdeffd9",
+  "placement_root": "749db45954dc4056d9983fcbd54ad3d49e2572de10069dff24b77b6fee0aa257",
+  "scene_id": "urrf-universal-art-assembly-integration",
+  "world_id": "world:urrf-universal-art-assembly-integration",
+  "status": "BLOCKED",
+  "runtime_consumer": "VSR_GLTF_IMPORT",
+  "asset_count": 2,
+  "assets": [
+    {
+      "id": "asset:urrf:guardian-character:lod0",
+      "uri": "urrf+candidate://asset%3Acf644862f780b86ae2bd9e94/lod0",
+      "format": "model/gltf-binary",
+      "sha256": "c4ad66b4ecf4051c28c642848075eeeba8a634fdcb3d363d50901ff06e165d32",
+      "byteLength": 59880,
+      "kind": "mesh",
+      "cellIds": [
+        "cell:guardian-character"
+      ],
+      "priority": 1000,
+      "transform": {
+        "translation": [
+          1.2,
+          0,
+          -0.9
+        ],
+        "translation_mm": [
+          1200,
+          0,
+          -900
+        ]
+      },
+      "metadata": {
+        "assembly_root": "4ee9f941a1bec24035eceaa702e9ef77191112b8d70d8b3de9e8340289db416a",
+        "batch_root": "4f1330a66b78558aa2612fde0829f12b90f43e7e3d2d31514d275c5d3cdeffd9",
+        "asset_key": "guardian-character",
+        "asset_id": "asset:cf644862f780b86ae2bd9e94",
+        "candidate_root": "7b927b6e736cb2fad8e019f067a2b8db7b96779b3b30f1a758f1db2c3e12578a",
+        "candidate_artifact_root": "b14763f45777df3792bb030e33856591cfe7d3c9096e68dfbf0a2667378c26ae",
+        "candidate_file_root": "c4ad66b4ecf4051c28c642848075eeeba8a634fdcb3d363d50901ff06e165d32",
+        "file_root": "b21b483ae0f8df76711b6ae53e6bb515ce86e905fe52bd66713aeeafbae49a4a",
+        "relative_path": "candidates/mobile/mesh/lod0.glb",
+        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-eyGQ6v\\assets\\001-guardian-character",
+        "selected_lod": 0,
+        "quality_tier": "AAA",
+        "candidate_only": true,
+        "authoritative": false
+      }
+    },
+    {
+      "id": "asset:urrf:ice-relic-prop:lod1",
+      "uri": "urrf+candidate://asset%3A795500e07f30c1152d3638b3/lod1",
+      "format": "model/gltf-binary",
+      "sha256": "fd21db04bb2a9361bbb29b3e2fb5bf1dc1b32756591bce8b5ccf9a3dfc47675e",
+      "byteLength": 39596,
+      "kind": "mesh",
+      "cellIds": [
+        "cell:ice-relic-prop"
+      ],
+      "priority": 999,
+      "transform": {
+        "translation": [
+          -1.2,
+          0,
+          0.9
+        ],
+        "translation_mm": [
+          -1200,
+          0,
+          900
+        ]
+      },
+      "metadata": {
+        "assembly_root": "4ee9f941a1bec24035eceaa702e9ef77191112b8d70d8b3de9e8340289db416a",
+        "batch_root": "4f1330a66b78558aa2612fde0829f12b90f43e7e3d2d31514d275c5d3cdeffd9",
+        "asset_key": "ice-relic-prop",
+        "asset_id": "asset:795500e07f30c1152d3638b3",
+        "candidate_root": "fd51e5755fb38c8f5a91e8940656ca919933c5b4901964153b3a70fe74818572",
+        "candidate_artifact_root": "9b8a288a4875597a00f441ae329841feaf351ce3ab7f7be942ea24ccf4e39856",
+        "candidate_file_root": "fd21db04bb2a9361bbb29b3e2fb5bf1dc1b32756591bce8b5ccf9a3dfc47675e",
+        "file_root": "85e157ff631d314e13d83820a5784f49925e93063dc84afd6a52966ee005faa3",
+        "relative_path": "candidates/mobile/mesh/lod1.glb",
+        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-eyGQ6v\\assets\\002-ice-relic-prop",
+        "selected_lod": 1,
+        "quality_tier": "AAA",
+        "candidate_only": true,
+        "authoritative": false
+      }
+    }
+  ],
+  "streaming": {
+    "world_id": "world:urrf-universal-art-assembly-integration",
+    "cells": [
+      {
+        "id": "cell:guardian-character",
+        "center": [
+          1.2,
+          0,
+          -0.9
+        ],
+        "radius": 3.5,
+        "assetIds": [
+          "asset:urrf:guardian-character:lod0"
+        ],
+        "loadRadius": 72,
+        "unloadRadius": 96,
+        "priority": 1000
+      },
+      {
+        "id": "cell:ice-relic-prop",
+        "center": [
+          -1.2,
+          0,
+          0.9
+        ],
+        "radius": 3.5,
+        "assetIds": [
+          "asset:urrf:ice-relic-prop:lod1"
+        ],
+        "loadRadius": 72,
+        "unloadRadius": 96,
+        "priority": 999
+      }
+    ],
+    "persistentAssetIds": []
+  },
+  "candidate_only": true,
+  "authoritative": false,
+  "canonical_write_authorized": false,
+  "authority": {
+    "canonical_owner": "RNCS",
+    "representation_owner": "URRF",
+    "provider_can_write_authoritative_world_state": false,
+    "provider_can_commit": false,
+    "acceptance_can_commit": false,
+    "rncs_authority_required": true
+  },
+  "projection_root": "22c96ac800cf8b0b91495df5b297065933187d2d3ba0ec1ff2f6f0743a3c293f"
+}

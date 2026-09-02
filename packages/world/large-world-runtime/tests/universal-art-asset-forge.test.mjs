@@ -4,18 +4,22 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import {
+  createUniversalArtAssetAssembly,
   createUniversalArtAssetEvidenceBundle,
   createUniversalArtAssetGenome,
   evaluateUniversalArtAssetAcceptance,
   generateUniversalArtAssetBatch,
   generateUniversalArtAsset,
   inspectUniversalArtAssetFiles,
+  lowerUniversalArtAssetAssemblyToVsr,
   resolveUniversalArtAssetProvider,
+  verifyUniversalArtAssetAssembly,
   verifyUniversalArtAssetBatch,
   verifyUniversalArtAssetEvidenceBundle,
   verifyUniversalArtAssetProvenanceLicenseReceipt,
   verifyUniversalArtAssetQualityProof,
   verifyUniversalArtAssetReviewReceipt,
+  verifyUniversalArtAssetVsrProjection,
   verifyUniversalArtAssetForge,
   verifyUniversalArtAssetGenome
 } from '../src/index.mjs';
@@ -607,4 +611,83 @@ test('batch Forge isolates multiple assets and verifies a cross-asset artifact r
     {...characterInput, asset_key: 'duplicate'},
     {...characterInput, asset_key: 'duplicate', seed: 'duplicate-seed-2'}
   ], {outDir: fs.mkdtempSync(path.join(os.tmpdir(), 'urrf-universal-art-batch-duplicate-'))}), /UNIVERSAL_ART_ASSET_BATCH_DUPLICATE_ASSET_KEY/);
+});
+
+test('assembly binds materialized batch GLBs and lowers selected LODs into a VSR projection envelope', () => {
+  const outDir = fs.mkdtempSync(path.join(os.tmpdir(), 'urrf-universal-art-assembly-'));
+  const batch = generateUniversalArtAssetBatch([
+    {...characterInput, asset_key: 'guardian-character', seed: 'universal-art-forge-assembly-character-seed'},
+    {
+      ...characterInput,
+      asset_key: 'ice-relic-prop',
+      description: '一枚用于冰晶遗迹祭坛的三维古代护符。',
+      asset_profile: 'prop',
+      asset_kind: 'prop-3d',
+      seed: 'universal-art-forge-assembly-prop-seed'
+    }
+  ], {outDir});
+  const assembly = createUniversalArtAssetAssembly({
+    batch: batch.batch,
+    assetResults: batch.assets,
+    scene_id: 'urrf-universal-art-assembly-unit',
+    world_id: 'world:urrf-universal-art-assembly-unit',
+    placements_mm: [
+      {asset_key: 'guardian-character', translation_mm: [1200, 0, -900]},
+      {asset_key: 'ice-relic-prop', translation_mm: [-1200, 0, 900]}
+    ],
+    lod_by_asset: {'guardian-character': 0, 'ice-relic-prop': 1},
+    load_radius: 72,
+    unload_radius: 96
+  });
+  assert.equal(assembly.asset_count, 2);
+  assert.equal(assembly.status, 'BLOCKED');
+  assert.deepEqual(assembly.assets.map(asset => asset.selected_lod), [0, 1]);
+  assert.equal(assembly.assets[0].source.mesh.format, 'model/gltf-binary');
+  assert.equal(assembly.assets[0].source.pbr.channels.length, 4);
+  assert.equal(verifyUniversalArtAssetAssembly(assembly, {batch: batch.batch, assetResults: batch.assets}).valid, true);
+
+  const projection = lowerUniversalArtAssetAssemblyToVsr(assembly);
+  assert.equal(projection.format, 'urrf.universal-art-asset-vsr-projection.v0.1');
+  assert.equal(projection.asset_count, 2);
+  assert.equal(projection.assets[0].transform.translation[0], 1.2);
+  assert.equal(projection.assets[1].transform.translation[2], 0.9);
+  assert.equal(projection.assets[0].sha256, assembly.assets[0].source.mesh.sha256);
+  assert.notEqual(projection.assets[0].sha256, assembly.assets[0].source.mesh.file_root);
+  assert.equal(verifyUniversalArtAssetVsrProjection(projection, {assembly}).valid, true);
+  assert.equal(projection.authoritative, false);
+  assert.equal(projection.authority.provider_can_write_authoritative_world_state, false);
+
+  const tampered = structuredClone(assembly);
+  tampered.assets[0].source.mesh.file_root = '0'.repeat(64);
+  tampered.assets[0] = seal(tampered.assets[0], 'asset_root');
+  const resealedTamper = seal(tampered, 'assembly_root');
+  assert.equal(verifyUniversalArtAssetAssembly(resealedTamper, {batch: batch.batch, assetResults: batch.assets}).valid, false);
+  const tamperedProjection = structuredClone(projection);
+  tamperedProjection.assets[0].metadata.batch_root = '0'.repeat(64);
+  assert.equal(verifyUniversalArtAssetVsrProjection(tamperedProjection, {assembly}).valid, false);
+  const tamperedProjectionPayload = structuredClone(projection);
+  tamperedProjectionPayload.assets[0].sha256 = '0'.repeat(64);
+  const resealedProjectionPayload = seal(tamperedProjectionPayload, 'projection_root');
+  assert.equal(verifyUniversalArtAssetVsrProjection(resealedProjectionPayload, {assembly}).valid, false);
+
+  const meshPath = path.resolve(assembly.assets[0].source.output_directory, assembly.assets[0].source.mesh.relative_path);
+  const originalMesh = fs.readFileSync(meshPath);
+  const changedMesh = Buffer.from(originalMesh);
+  changedMesh[changedMesh.length - 1] ^= 1;
+  fs.writeFileSync(meshPath, changedMesh);
+  try {
+    assert.equal(verifyUniversalArtAssetAssembly(assembly, {batch: batch.batch, assetResults: batch.assets}).valid, false);
+  } finally {
+    fs.writeFileSync(meshPath, originalMesh);
+  }
+  assert.throws(() => createUniversalArtAssetAssembly({
+    batch: batch.batch,
+    assetResults: batch.assets,
+    placements_mm: [{asset_key: 'guardian-character', translation_mm: [1000001, 0, 0]}]
+  }), /UNIVERSAL_ART_ASSET_ASSEMBLY_PLACEMENT_INVALID/);
+  assert.throws(() => createUniversalArtAssetAssembly({
+    batch: batch.batch,
+    assetResults: batch.assets,
+    lod_by_asset: {'guardian-character': 4}
+  }), /UNIVERSAL_ART_ASSET_ASSEMBLY_LOD_FILE_INVALID/);
 });

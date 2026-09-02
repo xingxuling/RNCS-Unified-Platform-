@@ -17,7 +17,7 @@
     "acceptance_root": "1d55cc7e0acf5c387fe53cd5fe41157dcc160aab9896a2eb163d518ebedeae93",
     "evidence_ledger_root": "29e03620a23134a3c0542872dec1190352cc4fb422b1f7ea9dd0c7c01770e8b3",
     "file_inspection_root": "70c831a94250e93f747a1d8320901dbc6253d1e9b014bf0eb11dcbeb0c11b253",
-    "forge_root": "f81b6ecfa8c06803491dcb9f7448e26a9d52b76e1e808f19bb590757e447c642"
+    "forge_root": "7fd140ad3bd80ab2cb0137c740951725b0d5c10fd718f919d1a0e455ef68ed5d"
   },
   "profile": "character",
   "target_quality_tier": "AAA",
@@ -148,5 +148,5 @@
     "rncs_authority_required": true
   },
   "notes": "Candidate-only local RAGF reference execution. The forge independently inspects generated GLB accessors, welded indexed topology, UVs, normals, material structure, the external four-map PBR pack, and a contiguous decreasing three-level LOD sequence; Provider provenance/license/quality/art-direction/human-review declarations cannot open their AAA gates, independent provenance/license, quality, and review receipts are absent, and AAA remains blocked on those evidence gates. It is not AAA production art proof or canonical RNCS mutation.",
-  "report_root": "66a90a5699f6e20a40868ee4e35d393fe7caeb5fd94d70f2644116a7be1d6bcd"
+  "report_root": "230d3863185b85226cafd9c4c11acfc4968a948d37cbabc671f267c0cb982196"
 }

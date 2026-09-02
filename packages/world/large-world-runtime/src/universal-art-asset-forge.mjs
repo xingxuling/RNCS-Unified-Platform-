@@ -36,6 +36,8 @@ export const UNIVERSAL_ART_ASSET_QUALITY_PROOF_FORMAT = 'urrf.universal-art-asse
 export const UNIVERSAL_ART_ASSET_PROVENANCE_LICENSE_RECEIPT_FORMAT = 'urrf.universal-art-asset-provenance-license-receipt.v0.1';
 export const UNIVERSAL_ART_ASSET_EVIDENCE_BUNDLE_FORMAT = 'urrf.universal-art-asset-evidence-bundle.v0.1';
 export const UNIVERSAL_ART_ASSET_BATCH_FORMAT = 'urrf.universal-art-asset-batch.v0.1';
+export const UNIVERSAL_ART_ASSET_ASSEMBLY_FORMAT = 'urrf.universal-art-asset-assembly.v0.1';
+export const UNIVERSAL_ART_ASSET_VSR_PROJECTION_FORMAT = 'urrf.universal-art-asset-vsr-projection.v0.1';
 export const UNIVERSAL_ART_ASSET_FORGE_VERSION = '0.1.0';
 
 export const UNIVERSAL_ART_ASSET_PROFILES = Object.freeze([
@@ -2453,4 +2455,598 @@ export function verifyUniversalArtAssetBatch(batch, {assetResults = null} = {}) 
     errors.push(`VERIFY_EXCEPTION:${error.name}:${error.message}`);
   }
   return {valid: errors.length === 0, errors, batch_root: batch.batch_root ?? null};
+}
+
+function universalArtAssetAssemblyBatchInput(batch, assetResults = null) {
+  const value = record(batch);
+  const envelope = value.format === UNIVERSAL_ART_ASSET_BATCH_FORMAT ? value : record(value.batch);
+  const embeddedResults = Array.isArray(assetResults)
+    ? assetResults
+    : value.format === UNIVERSAL_ART_ASSET_BATCH_FORMAT
+      ? null
+      : value.assets;
+  return {envelope, assetResults: embeddedResults};
+}
+
+function universalArtAssetAssemblyLodRole(lod) {
+  return lod === 0 ? 'mesh-glb' : `mesh-lod${lod}-glb`;
+}
+
+function universalArtAssetAssemblyPlacementVector(raw, assetKey) {
+  const value = Array.isArray(raw)
+    ? raw
+    : record(raw).translation_mm ?? record(raw).translationMm ?? record(raw).position_mm ?? record(raw).positionMm;
+  const vector = Array.isArray(value) ? value.map(Number) : [];
+  if (vector.length !== 3 || vector.some(component => !Number.isSafeInteger(component) || Math.abs(component) > 1000000)) {
+    throw new GenesisError('UNIVERSAL_ART_ASSET_ASSEMBLY_PLACEMENT_INVALID', assetKey);
+  }
+  return vector;
+}
+
+function universalArtAssetAssemblyDefaultPlacement(index, count) {
+  const columns = Math.max(1, Math.ceil(Math.sqrt(count)));
+  const rows = Math.ceil(count / columns);
+  return [
+    (index % columns) * 6000 - Math.floor((columns - 1) * 6000 / 2),
+    0,
+    Math.floor(index / columns) * 6000 - Math.floor((rows - 1) * 6000 / 2)
+  ];
+}
+
+function universalArtAssetAssemblyPlacementMap(assets, placementsInput) {
+  const keys = new Set(assets.map(asset => asset.asset_key));
+  const placements = new Map();
+  const add = (assetKey, raw) => {
+    const key = String(assetKey ?? '').trim();
+    if (!keys.has(key)) throw new GenesisError('UNIVERSAL_ART_ASSET_ASSEMBLY_UNKNOWN_PLACEMENT', key);
+    if (placements.has(key)) throw new GenesisError('UNIVERSAL_ART_ASSET_ASSEMBLY_DUPLICATE_PLACEMENT', key);
+    placements.set(key, universalArtAssetAssemblyPlacementVector(raw, key));
+  };
+  if (Array.isArray(placementsInput)) {
+    for (const raw of placementsInput) {
+      const placement = record(raw);
+      add(placement.asset_key ?? placement.assetKey, placement);
+    }
+  } else {
+    for (const [assetKey, raw] of Object.entries(record(placementsInput))) add(assetKey, raw);
+  }
+  return new Map(assets.map((asset, index) => [
+    asset.asset_key,
+    placements.get(asset.asset_key) ?? universalArtAssetAssemblyDefaultPlacement(index, assets.length)
+  ]));
+}
+
+function universalArtAssetAssemblyLodMap(assets, defaultLod, lodByAsset) {
+  const fallback = Number(defaultLod ?? 0);
+  const lookup = record(lodByAsset);
+  const resolve = (asset, index) => {
+    const raw = lookup[asset.asset_key] ?? lookup[String(index)] ?? fallback;
+    const value = Number(record(raw).lod ?? raw);
+    if (!Number.isSafeInteger(value) || value < 0 || value > 32) throw new GenesisError('UNIVERSAL_ART_ASSET_ASSEMBLY_LOD_INVALID', asset.asset_key);
+    return value;
+  };
+  return new Map(assets.map((asset, index) => [asset.asset_key, resolve(asset, index)]));
+}
+
+function universalArtAssetAssemblyRelativePath(value, code, assetKey) {
+  const relative = String(value ?? '').replaceAll('\\', '/');
+  const segments = relative.split('/');
+  if (!nonEmptyText(relative) || relative.startsWith('/') || path.isAbsolute(relative) || segments.includes('..')) {
+    throw new GenesisError(code, assetKey);
+  }
+  return relative;
+}
+
+function universalArtAssetAssemblyFileRoot(filePath, declaredRoot, byteLength, assetKey, codePrefix) {
+  if (!isHexRoot(declaredRoot) || !Number.isSafeInteger(Number(byteLength)) || Number(byteLength) < 0) {
+    throw new GenesisError(`${codePrefix}_DECLARATION_INVALID`, assetKey);
+  }
+  if (!fs.existsSync(filePath)) throw new GenesisError(`${codePrefix}_FILE_MISSING`, assetKey);
+  const bytes = fs.readFileSync(filePath);
+  if (bytes.byteLength !== Number(byteLength)) throw new GenesisError(`${codePrefix}_BYTE_LENGTH_MISMATCH`, assetKey);
+  const actualSha256 = createHash('sha256').update(bytes).digest('hex');
+  const actualRoot = rootHash(bytes.toString('base64'));
+  if (actualRoot !== declaredRoot) throw new GenesisError(`${codePrefix}_ROOT_MISMATCH`, assetKey);
+  return {root: actualRoot, sha256: actualSha256, byte_length: bytes.byteLength};
+}
+
+function universalArtAssetAssemblySourceFromResult(entry, selectedLod) {
+  const assetKey = String(entry?.asset_key ?? '').trim();
+  const result = record(entry?.result);
+  const inspection = result.fileInspection ?? result.execution?.file_inspection;
+  const candidate = record(result.candidate);
+  const outputDirectory = path.resolve(String(entry?.output_directory ?? ''));
+  if (!nonEmptyText(entry?.output_directory)) throw new GenesisError('UNIVERSAL_ART_ASSET_ASSEMBLY_OUTPUT_DIRECTORY_MISSING', assetKey);
+  const role = universalArtAssetAssemblyLodRole(selectedLod);
+  const files = Array.isArray(inspection?.files) ? inspection.files : [];
+  const file = files.find(item => Number(item?.lod) === selectedLod && item?.role === role)
+    ?? files.find(item => Number(item?.lod) === selectedLod && String(item?.path ?? '').toLowerCase().endsWith('.glb'));
+  if (!file || file.valid !== true || file.glb_valid !== true) throw new GenesisError('UNIVERSAL_ART_ASSET_ASSEMBLY_LOD_FILE_INVALID', assetKey);
+  const relativeMeshPath = universalArtAssetAssemblyRelativePath(file.path, 'UNIVERSAL_ART_ASSET_ASSEMBLY_MESH_PATH_INVALID', assetKey);
+  const absoluteMeshPath = path.resolve(outputDirectory, relativeMeshPath);
+  const outputPrefix = `${outputDirectory}${path.sep}`;
+  if (!absoluteMeshPath.startsWith(outputPrefix)) throw new GenesisError('UNIVERSAL_ART_ASSET_ASSEMBLY_MESH_PATH_INVALID', assetKey);
+  const meshFileEvidence = universalArtAssetAssemblyFileRoot(absoluteMeshPath, file.file_root, file.byte_length, assetKey, 'UNIVERSAL_ART_ASSET_ASSEMBLY_MESH');
+  const artifact = record(candidate.artifacts?.[role]);
+  if (!isHexRoot(artifact.root)) throw new GenesisError('UNIVERSAL_ART_ASSET_ASSEMBLY_CANDIDATE_ARTIFACT_ROOT_INVALID', assetKey);
+  const artifactFile = (Array.isArray(artifact.files) ? artifact.files : [])
+    .find(item => item?.role === role || String(item?.name ?? '').toLowerCase().endsWith(`lod${selectedLod}.glb`));
+  if (!isHexRoot(artifactFile?.root)) throw new GenesisError('UNIVERSAL_ART_ASSET_ASSEMBLY_CANDIDATE_FILE_ROOT_INVALID', assetKey);
+  const pbrPack = record(inspection?.pbr_pack);
+  if (!isHexRoot(pbrPack.pack_root ?? pbrPack.external_pack_root ?? pbrPack.root)) throw new GenesisError('UNIVERSAL_ART_ASSET_ASSEMBLY_PBR_PACK_ROOT_INVALID', assetKey);
+  const channels = (Array.isArray(pbrPack.files) ? pbrPack.files : [])
+    .filter(channel => channel?.status === 'PASS')
+    .map(channel => {
+      const relativePath = universalArtAssetAssemblyRelativePath(channel.path, 'UNIVERSAL_ART_ASSET_ASSEMBLY_PBR_PATH_INVALID', assetKey);
+      const absolutePath = path.resolve(outputDirectory, relativePath);
+      if (!absolutePath.startsWith(outputPrefix)) throw new GenesisError('UNIVERSAL_ART_ASSET_ASSEMBLY_PBR_PATH_INVALID', assetKey);
+      const channelFileEvidence = universalArtAssetAssemblyFileRoot(absolutePath, channel.file_root, channel.byte_length, assetKey, 'UNIVERSAL_ART_ASSET_ASSEMBLY_PBR');
+      return {
+        role: String(channel.role),
+        relative_path: relativePath,
+        file_root: channelFileEvidence.root,
+        sha256: channelFileEvidence.sha256,
+        byte_length: channelFileEvidence.byte_length,
+        mime: channel.mime ?? 'image/png'
+      };
+    })
+    .sort((left, right) => left.role.localeCompare(right.role, 'en'));
+  if (channels.length < 4) throw new GenesisError('UNIVERSAL_ART_ASSET_ASSEMBLY_PBR_CHANNELS_INCOMPLETE', assetKey);
+  return {
+    output_directory: outputDirectory,
+    mesh: {
+      role,
+      relative_path: relativeMeshPath,
+      format: file.mime ?? 'model/gltf-binary',
+      file_root: meshFileEvidence.root,
+      sha256: meshFileEvidence.sha256,
+      byte_length: meshFileEvidence.byte_length,
+      candidate_artifact_root: artifact.root,
+      candidate_file_root: artifactFile.root
+    },
+    pbr: {
+      pack_root: pbrPack.pack_root ?? pbrPack.external_pack_root ?? pbrPack.root,
+      texture_count: Number(pbrPack.texture_count ?? channels.length),
+      channels
+    }
+  };
+}
+
+function universalArtAssetAssemblyAsset(entry, summary, placementMm, selectedLod) {
+  const source = universalArtAssetAssemblySourceFromResult(entry, selectedLod);
+  return seal({
+    asset_key: summary.asset_key,
+    index: summary.index,
+    asset_id: summary.asset_id,
+    asset_profile: summary.asset_profile,
+    quality_tier: summary.quality_tier,
+    status: summary.status,
+    acceptance_pass: summary.acceptance_pass === true,
+    genome_root: summary.genome_root,
+    candidate_root: summary.candidate_root,
+    acceptance_root: summary.acceptance_root,
+    forge_root: summary.forge_root,
+    selected_lod: selectedLod,
+    placement_mm: [...placementMm],
+    cell_id: `cell:${summary.asset_key}`,
+    priority: Math.max(1, 1000 - Number(summary.index ?? 0)),
+    failures: [...(summary.failures ?? [])],
+    source,
+    asset_root: ''
+  }, 'asset_root');
+}
+
+function universalArtAssetAssemblyArtifactRootIndex(assets) {
+  const index = {};
+  for (const asset of assets ?? []) {
+    const selectedLod = Number(asset.selected_lod);
+    const roots = [
+      [asset.source?.mesh?.candidate_artifact_root, `mesh-lod${selectedLod}-artifact`],
+      [asset.source?.mesh?.file_root, `mesh-lod${selectedLod}-file`],
+      [asset.source?.pbr?.pack_root, 'pbr-texture-pack']
+    ];
+    for (const [root, role] of roots) {
+      if (!isHexRoot(root)) continue;
+      index[root] ??= [];
+      index[root].push({asset_key: asset.asset_key, role});
+    }
+  }
+  return Object.fromEntries(Object.entries(index)
+    .sort(([left], [right]) => left.localeCompare(right, 'en'))
+    .map(([root, references]) => [
+      root,
+      references.sort((left, right) => `${left.asset_key}:${left.role}`.localeCompare(`${right.asset_key}:${right.role}`, 'en'))
+    ]));
+}
+
+/**
+ * Bind materialized Universal Art Forge candidates into one candidate-only
+ * assembly. This is the missing seam between the multi-asset Forge and VSR:
+ * it selects already inspected GLB/PBR files, records exact roots and integer
+ * millimeter placements, and never merges bytes or writes RNCS world truth.
+ */
+export function createUniversalArtAssetAssembly({
+  batch,
+  assetResults = null,
+  assets = null,
+  placements_mm = null,
+  placementsMm = null,
+  default_lod = null,
+  defaultLod = 0,
+  lod_by_asset = null,
+  lodByAsset = null,
+  scene_id = null,
+  sceneId = null,
+  world_id = null,
+  worldId = null,
+  source_reality_root = null,
+  sourceRealityRoot = null,
+  load_radius = null,
+  loadRadius = 64,
+  unload_radius = null,
+  unloadRadius = 80
+} = {}) {
+  const suppliedResults = assetResults ?? assets;
+  const input = universalArtAssetAssemblyBatchInput(batch, suppliedResults);
+  if (input.envelope.format !== UNIVERSAL_ART_ASSET_BATCH_FORMAT) throw new GenesisError('UNIVERSAL_ART_ASSET_ASSEMBLY_BATCH_INVALID');
+  if (!Array.isArray(input.assetResults) || input.assetResults.length === 0 || input.assetResults.some(entry => !record(entry).result)) {
+    throw new GenesisError('UNIVERSAL_ART_ASSET_ASSEMBLY_RESULTS_REQUIRED');
+  }
+  const batchVerification = verifyUniversalArtAssetBatch(input.envelope, {assetResults: input.assetResults});
+  if (!batchVerification.valid) throw new GenesisError('UNIVERSAL_ART_ASSET_ASSEMBLY_BATCH_INVALID', batchVerification.errors.join(','));
+  const summaries = input.envelope.assets.map(asset => clone(asset));
+  const resultEntries = new Map(input.assetResults.map(entry => [entry.asset_key, entry]));
+  const placementInput = placements_mm ?? placementsMm;
+  const placementMap = universalArtAssetAssemblyPlacementMap(summaries, placementInput);
+  const lodMap = universalArtAssetAssemblyLodMap(summaries, default_lod ?? defaultLod, lod_by_asset ?? lodByAsset);
+  const assemblyAssets = summaries.map(summary => {
+    const entry = resultEntries.get(summary.asset_key);
+    if (!entry) throw new GenesisError('UNIVERSAL_ART_ASSET_ASSEMBLY_RESULT_MISSING', summary.asset_key);
+    return universalArtAssetAssemblyAsset(entry, summary, placementMap.get(summary.asset_key), lodMap.get(summary.asset_key));
+  });
+  const maxLod = Math.max(...assemblyAssets.map(asset => asset.selected_lod));
+  const placementRoot = rootHash({
+    batch_root: input.envelope.batch_root,
+    placements: assemblyAssets.map(asset => ({asset_key: asset.asset_key, placement_mm: asset.placement_mm}))
+  });
+  const selectedLodHistogram = {};
+  for (const asset of assemblyAssets) selectedLodHistogram[String(asset.selected_lod)] = (selectedLodHistogram[String(asset.selected_lod)] ?? 0) + 1;
+  const loadRadiusValue = Number(load_radius ?? loadRadius);
+  const unloadRadiusValue = Number(unload_radius ?? unloadRadius);
+  if (!Number.isFinite(loadRadiusValue) || loadRadiusValue < 0 || !Number.isFinite(unloadRadiusValue) || unloadRadiusValue < loadRadiusValue) {
+    throw new GenesisError('UNIVERSAL_ART_ASSET_ASSEMBLY_STREAMING_RADIUS_INVALID');
+  }
+  const sourceRoot = source_reality_root ?? sourceRealityRoot ?? input.envelope.batch_root;
+  if (!isHexRoot(sourceRoot)) throw new GenesisError('UNIVERSAL_ART_ASSET_ASSEMBLY_SOURCE_ROOT_INVALID');
+  const resolvedSceneId = String(scene_id ?? sceneId ?? `urrf-universal-art-assembly:${placementRoot.slice(0, 16)}`).trim();
+  const resolvedWorldId = String(world_id ?? worldId ?? 'world:urrf-universal-art-assembly').trim();
+  if (!nonEmptyText(resolvedSceneId) || !nonEmptyText(resolvedWorldId)) throw new GenesisError('UNIVERSAL_ART_ASSET_ASSEMBLY_ID_INVALID');
+  return seal({
+    format: UNIVERSAL_ART_ASSET_ASSEMBLY_FORMAT,
+    version: UNIVERSAL_ART_ASSET_FORGE_VERSION,
+    assembly_id: stableId('urrf-universal-art-asset-assembly', {
+      batch_root: input.envelope.batch_root,
+      scene_id: resolvedSceneId,
+      placement_root: placementRoot,
+      assets: assemblyAssets.map(asset => ({asset_key: asset.asset_key, asset_root: asset.asset_root, selected_lod: asset.selected_lod}))
+    }),
+    batch_root: input.envelope.batch_root,
+    source_reality_root: sourceRoot,
+    scene_id: resolvedSceneId,
+    world_id: resolvedWorldId,
+    placement_root: placementRoot,
+    asset_count: assemblyAssets.length,
+    status: input.envelope.status,
+    lod_policy: {
+      selection_mode: 'preselected-local-inspection',
+      default_lod: Number(default_lod ?? defaultLod),
+      max_lod: maxLod
+    },
+    streaming: {
+      load_radius: loadRadiusValue,
+      unload_radius: unloadRadiusValue
+    },
+    assets: assemblyAssets,
+    artifact_root_index: universalArtAssetAssemblyArtifactRootIndex(assemblyAssets),
+    summary: {
+      asset_count: assemblyAssets.length,
+      blocked_count: assemblyAssets.filter(asset => asset.status === 'BLOCKED').length,
+      ready_count: assemblyAssets.filter(asset => asset.status === 'READY_FOR_HUMAN_REVIEW').length,
+      acceptance_pass_count: assemblyAssets.filter(asset => asset.acceptance_pass).length,
+      selected_lod_histogram: selectedLodHistogram
+    },
+    candidate_only: true,
+    authoritative: false,
+    canonical_write_authorized: false,
+    authority: {
+      canonical_owner: 'RNCS',
+      representation_owner: 'URRF',
+      provider_can_write_authoritative_world_state: false,
+      provider_can_commit: false,
+      acceptance_can_commit: false,
+      rncs_authority_required: true
+    },
+    assembly_root: ''
+  }, 'assembly_root');
+}
+
+/**
+ * Verify assembly roots and, when supplied, re-bind the assembly to the
+ * original batch results and current bytes on disk.
+ */
+export function verifyUniversalArtAssetAssembly(assembly, {batch = null, assetResults = null} = {}) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!assembly || typeof assembly !== 'object' || Array.isArray(assembly)) return {valid: false, errors: ['ASSEMBLY_NOT_OBJECT'], assembly_root: null};
+  try {
+    check(assembly.format === UNIVERSAL_ART_ASSET_ASSEMBLY_FORMAT, 'ASSEMBLY_FORMAT_INVALID');
+    check(assembly.version === UNIVERSAL_ART_ASSET_FORGE_VERSION, 'ASSEMBLY_VERSION_INVALID');
+    check(nonEmptyText(assembly.assembly_id), 'ASSEMBLY_ID_MISSING');
+    check(isHexRoot(assembly.batch_root), 'ASSEMBLY_BATCH_ROOT_INVALID');
+    check(isHexRoot(assembly.source_reality_root), 'ASSEMBLY_SOURCE_ROOT_INVALID');
+    check(nonEmptyText(assembly.scene_id) && nonEmptyText(assembly.world_id), 'ASSEMBLY_SCENE_ID_INVALID');
+    check(isHexRoot(assembly.placement_root), 'ASSEMBLY_PLACEMENT_ROOT_INVALID');
+    check(Array.isArray(assembly.assets) && assembly.assets.length > 0 && assembly.assets.length <= 64, 'ASSEMBLY_ASSETS_INVALID');
+    const assemblyAssets = Array.isArray(assembly.assets) ? assembly.assets : [];
+    check(assembly.asset_count === assemblyAssets.length, 'ASSEMBLY_ASSET_COUNT_MISMATCH');
+    const keys = assemblyAssets.map(asset => asset?.asset_key);
+    const indexes = assemblyAssets.map(asset => asset?.index);
+    check(keys.every(nonEmptyText) && new Set(keys).size === keys.length, 'ASSEMBLY_ASSET_KEYS_INVALID');
+    check(indexes.every(index => Number.isSafeInteger(index) && index >= 0 && index < assemblyAssets.length) && new Set(indexes).size === assemblyAssets.length && [...indexes].sort((left, right) => left - right).every((index, position) => index === position), 'ASSEMBLY_ASSET_INDEX_SET_INVALID');
+    const batchInput = batch === null ? null : universalArtAssetAssemblyBatchInput(batch, assetResults);
+    if (batchInput) {
+      const batchVerification = verifyUniversalArtAssetBatch(batchInput.envelope, {assetResults: batchInput.assetResults});
+      if (!batchVerification.valid) errors.push(...batchVerification.errors.map(error => `ASSEMBLY_BATCH_${error}`));
+      check(assembly.batch_root === batchInput.envelope.batch_root, 'ASSEMBLY_BATCH_ROOT_MISMATCH');
+      check(assemblyAssets.length === (batchInput.envelope.assets ?? []).length, 'ASSEMBLY_BATCH_ASSET_COUNT_MISMATCH');
+    }
+    if (assetResults !== null && !batchInput) errors.push('ASSEMBLY_BATCH_CONTEXT_REQUIRED');
+    const summaryByKey = new Map((batchInput?.envelope.assets ?? []).map(asset => [asset.asset_key, asset]));
+    let acceptancePassCount = 0;
+    let blockedCount = 0;
+    let readyCount = 0;
+    let maxLod = 0;
+    for (const asset of assemblyAssets) {
+      const key = asset?.asset_key ?? 'unknown';
+      const summary = summaryByKey.get(key);
+      if (batchInput && !summary) {
+        errors.push(`ASSEMBLY_BATCH_ASSET_MISSING:${key}`);
+        continue;
+      }
+      if (summary) {
+        for (const field of ['index', 'asset_id', 'asset_profile', 'quality_tier', 'status', 'genome_root', 'candidate_root', 'acceptance_root', 'forge_root']) {
+          check(asset[field] === summary[field], `ASSEMBLY_${field.toUpperCase()}_MISMATCH:${key}`);
+        }
+        check(asset.acceptance_pass === (summary.acceptance_pass === true), `ASSEMBLY_ACCEPTANCE_STATUS_MISMATCH:${key}`);
+      }
+      check(isHexRoot(asset.asset_root), `ASSEMBLY_ASSET_ROOT_INVALID:${key}`);
+      const assetCopy = clone(asset);
+      const assetRoot = assetCopy.asset_root;
+      delete assetCopy.asset_root;
+      check(assetRoot === rootHash(assetCopy), `ASSEMBLY_ASSET_ROOT_MISMATCH:${key}`);
+      check(Number.isSafeInteger(asset.selected_lod) && asset.selected_lod >= 0 && asset.selected_lod <= 32, `ASSEMBLY_LOD_INVALID:${key}`);
+      maxLod = Math.max(maxLod, Number(asset.selected_lod ?? 0));
+      check(Array.isArray(asset.placement_mm) && asset.placement_mm.length === 3 && asset.placement_mm.every(component => Number.isSafeInteger(component) && Math.abs(component) <= 1000000), `ASSEMBLY_PLACEMENT_INVALID:${key}`);
+      check(nonEmptyText(asset.cell_id) && asset.cell_id === `cell:${key}`, `ASSEMBLY_CELL_INVALID:${key}`);
+      check(Number.isSafeInteger(asset.priority) && asset.priority > 0, `ASSEMBLY_PRIORITY_INVALID:${key}`);
+      const source = record(asset.source);
+      const mesh = record(source.mesh);
+      const pbr = record(source.pbr);
+      check(nonEmptyText(source.output_directory), `ASSEMBLY_OUTPUT_DIRECTORY_MISSING:${key}`);
+      check(mesh.role === universalArtAssetAssemblyLodRole(asset.selected_lod), `ASSEMBLY_MESH_ROLE_INVALID:${key}`);
+      check(mesh.format === 'model/gltf-binary', `ASSEMBLY_MESH_FORMAT_INVALID:${key}`);
+      check(nonEmptyText(mesh.relative_path) && !mesh.relative_path.startsWith('/') && !path.isAbsolute(mesh.relative_path) && !String(mesh.relative_path).split('/').includes('..'), `ASSEMBLY_MESH_PATH_INVALID:${key}`);
+      check(isHexRoot(mesh.file_root) && isHexRoot(mesh.sha256) && Number.isSafeInteger(mesh.byte_length) && mesh.byte_length > 0, `ASSEMBLY_MESH_BINDING_INVALID:${key}`);
+      check(isHexRoot(mesh.candidate_artifact_root) && isHexRoot(mesh.candidate_file_root), `ASSEMBLY_CANDIDATE_MESH_ROOT_INVALID:${key}`);
+      check(isHexRoot(pbr.pack_root) && Number.isSafeInteger(pbr.texture_count) && pbr.texture_count >= 4, `ASSEMBLY_PBR_PACK_INVALID:${key}`);
+      check(Array.isArray(pbr.channels) && pbr.channels.length >= 4, `ASSEMBLY_PBR_CHANNELS_INVALID:${key}`);
+      for (const channel of pbr.channels ?? []) {
+        check(nonEmptyText(channel?.role) && nonEmptyText(channel?.relative_path) && isHexRoot(channel?.file_root) && isHexRoot(channel?.sha256) && Number.isSafeInteger(channel?.byte_length) && channel.byte_length > 0, `ASSEMBLY_PBR_CHANNEL_INVALID:${key}`);
+      }
+      if (assetResults !== null && summary) {
+        const entry = batchInput.assetResults.find(candidate => candidate?.asset_key === key);
+        if (!entry) {
+          errors.push(`ASSEMBLY_RESULT_MISSING:${key}`);
+        } else {
+          try {
+            const expected = universalArtAssetAssemblyAsset(entry, summary, asset.placement_mm, asset.selected_lod);
+            check(expected.asset_root === asset.asset_root, `ASSEMBLY_RESULT_BINDING_MISMATCH:${key}`);
+          } catch (error) {
+            errors.push(`ASSEMBLY_RESULT_BINDING_EXCEPTION:${key}:${error.message}`);
+          }
+        }
+      }
+      if (asset.status === 'BLOCKED') blockedCount++;
+      if (asset.status === 'READY_FOR_HUMAN_REVIEW') readyCount++;
+      if (asset.acceptance_pass) acceptancePassCount++;
+    }
+    const placementRoot = rootHash({
+      batch_root: assembly.batch_root,
+      placements: assemblyAssets.map(asset => ({asset_key: asset.asset_key, placement_mm: asset.placement_mm}))
+    });
+    check(assembly.placement_root === placementRoot, 'ASSEMBLY_PLACEMENT_ROOT_MISMATCH');
+    check(assembly.lod_policy?.selection_mode === 'preselected-local-inspection', 'ASSEMBLY_LOD_POLICY_INVALID');
+    check(assembly.lod_policy?.max_lod === maxLod, 'ASSEMBLY_MAX_LOD_MISMATCH');
+    check(assembly.streaming && Number.isFinite(assembly.streaming.load_radius) && assembly.streaming.load_radius >= 0 && Number.isFinite(assembly.streaming.unload_radius) && assembly.streaming.unload_radius >= assembly.streaming.load_radius, 'ASSEMBLY_STREAMING_INVALID');
+    check(rootHash(record(assembly.artifact_root_index)) === rootHash(universalArtAssetAssemblyArtifactRootIndex(assemblyAssets)), 'ASSEMBLY_ARTIFACT_ROOT_INDEX_MISMATCH');
+    check(assembly.summary?.asset_count === assemblyAssets.length, 'ASSEMBLY_SUMMARY_ASSET_COUNT_MISMATCH');
+    check(assembly.summary?.blocked_count === blockedCount, 'ASSEMBLY_BLOCKED_COUNT_MISMATCH');
+    check(assembly.summary?.ready_count === readyCount, 'ASSEMBLY_READY_COUNT_MISMATCH');
+    check(assembly.summary?.acceptance_pass_count === acceptancePassCount, 'ASSEMBLY_ACCEPTANCE_COUNT_MISMATCH');
+    check(assembly.status === (acceptancePassCount === assemblyAssets.length ? 'READY_FOR_HUMAN_REVIEW' : 'BLOCKED'), 'ASSEMBLY_STATUS_MISMATCH');
+    check(assembly.candidate_only === true && assembly.authoritative === false && assembly.canonical_write_authorized === false, 'ASSEMBLY_AUTHORITY_INVALID');
+    check(assembly.authority?.canonical_owner === 'RNCS' && assembly.authority?.representation_owner === 'URRF', 'ASSEMBLY_OWNER_INVALID');
+    check(assembly.authority?.provider_can_write_authoritative_world_state === false && assembly.authority?.provider_can_commit === false && assembly.authority?.acceptance_can_commit === false && assembly.authority?.rncs_authority_required === true, 'ASSEMBLY_PROVIDER_AUTHORITY_INVALID');
+    const copy = clone(assembly);
+    const actual = copy.assembly_root;
+    delete copy.assembly_root;
+    check(isHexRoot(actual) && actual === rootHash(copy), 'ASSEMBLY_ROOT_INVALID');
+  } catch (error) {
+    errors.push(`VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, assembly_root: assembly.assembly_root ?? null};
+}
+
+/**
+ * Lower the verified assembly into a VSR asset-stream reference envelope.
+ * The URI is a candidate-provider seam; the local path and byte root remain
+ * explicit so a later VSR importer can perform the actual file/GPU work.
+ */
+export function lowerUniversalArtAssetAssemblyToVsr(input = {}, options = {}) {
+  const value = record(input);
+  const assembly = value.format === UNIVERSAL_ART_ASSET_ASSEMBLY_FORMAT
+    ? clone(value)
+    : createUniversalArtAssetAssembly({...value, ...record(options)});
+  const verification = verifyUniversalArtAssetAssembly(assembly);
+  if (!verification.valid) throw new GenesisError('UNIVERSAL_ART_ASSET_ASSEMBLY_INVALID', verification.errors.join(','));
+  const assets = assembly.assets.map(asset => {
+    const id = `asset:urrf:${asset.asset_key}:lod${asset.selected_lod}`;
+    return {
+      id,
+      uri: `urrf+candidate://${encodeURIComponent(asset.asset_id)}/lod${asset.selected_lod}`,
+      format: 'model/gltf-binary',
+      sha256: asset.source.mesh.sha256,
+      byteLength: asset.source.mesh.byte_length,
+      kind: 'mesh',
+      cellIds: [asset.cell_id],
+      priority: asset.priority,
+      transform: {
+        translation: asset.placement_mm.map(component => component / 1000),
+        translation_mm: [...asset.placement_mm]
+      },
+      metadata: {
+        assembly_root: assembly.assembly_root,
+        batch_root: assembly.batch_root,
+        asset_key: asset.asset_key,
+        asset_id: asset.asset_id,
+        candidate_root: asset.candidate_root,
+        candidate_artifact_root: asset.source.mesh.candidate_artifact_root,
+        candidate_file_root: asset.source.mesh.candidate_file_root,
+        file_root: asset.source.mesh.file_root,
+        relative_path: asset.source.mesh.relative_path,
+        output_directory: asset.source.output_directory,
+        selected_lod: asset.selected_lod,
+        quality_tier: asset.quality_tier,
+        candidate_only: true,
+        authoritative: false
+      }
+    };
+  });
+  const cells = assembly.assets.map((asset, index) => ({
+    id: asset.cell_id,
+    center: [asset.placement_mm[0] / 1000, asset.placement_mm[1] / 1000, asset.placement_mm[2] / 1000],
+    radius: 3.5,
+    assetIds: [assets[index].id],
+    loadRadius: assembly.streaming.load_radius,
+    unloadRadius: assembly.streaming.unload_radius,
+    priority: asset.priority
+  }));
+  const base = {
+    format: UNIVERSAL_ART_ASSET_VSR_PROJECTION_FORMAT,
+    version: UNIVERSAL_ART_ASSET_FORGE_VERSION,
+    projection_id: stableId('urrf-universal-art-asset-vsr-projection', {assembly_root: assembly.assembly_root, assets: assets.map(asset => asset.id)}),
+    assembly_root: assembly.assembly_root,
+    batch_root: assembly.batch_root,
+    source_reality_root: assembly.source_reality_root,
+    placement_root: assembly.placement_root,
+    scene_id: assembly.scene_id,
+    world_id: assembly.world_id,
+    status: assembly.status,
+    runtime_consumer: 'VSR_GLTF_IMPORT',
+    asset_count: assets.length,
+    assets,
+    streaming: {
+      world_id: assembly.world_id,
+      cells,
+      persistentAssetIds: []
+    },
+    candidate_only: true,
+    authoritative: false,
+    canonical_write_authorized: false,
+    authority: {
+      canonical_owner: 'RNCS',
+      representation_owner: 'URRF',
+      provider_can_write_authoritative_world_state: false,
+      provider_can_commit: false,
+      acceptance_can_commit: false,
+      rncs_authority_required: true
+    }
+  };
+  return {...base, projection_root: rootHash(base)};
+}
+
+export function verifyUniversalArtAssetVsrProjection(projection, {assembly = null} = {}) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!projection || typeof projection !== 'object' || Array.isArray(projection)) return {valid: false, errors: ['VSR_PROJECTION_NOT_OBJECT'], projection_root: null};
+  try {
+    check(projection.format === UNIVERSAL_ART_ASSET_VSR_PROJECTION_FORMAT, 'VSR_PROJECTION_FORMAT_INVALID');
+    check(projection.version === UNIVERSAL_ART_ASSET_FORGE_VERSION, 'VSR_PROJECTION_VERSION_INVALID');
+    check(nonEmptyText(projection.projection_id), 'VSR_PROJECTION_ID_MISSING');
+    for (const field of ['assembly_root', 'batch_root', 'source_reality_root', 'placement_root']) check(isHexRoot(projection[field]), `VSR_PROJECTION_${field.toUpperCase()}_INVALID`);
+    check(nonEmptyText(projection.scene_id) && nonEmptyText(projection.world_id), 'VSR_PROJECTION_SCENE_INVALID');
+    check(projection.runtime_consumer === 'VSR_GLTF_IMPORT', 'VSR_PROJECTION_RUNTIME_CONSUMER_INVALID');
+    check(Array.isArray(projection.assets) && projection.assets.length > 0 && projection.assets.length <= 64, 'VSR_PROJECTION_ASSETS_INVALID');
+    const assets = Array.isArray(projection.assets) ? projection.assets : [];
+    check(projection.asset_count === assets.length, 'VSR_PROJECTION_ASSET_COUNT_MISMATCH');
+    const ids = assets.map(asset => asset?.id);
+    check(ids.every(nonEmptyText) && new Set(ids).size === ids.length, 'VSR_PROJECTION_ASSET_IDS_INVALID');
+    const cells = Array.isArray(projection.streaming?.cells) ? projection.streaming.cells : [];
+    const cellsById = new Map(cells.map(cell => [cell?.id, cell]));
+    check(projection.streaming?.world_id === projection.world_id, 'VSR_PROJECTION_STREAMING_WORLD_MISMATCH');
+    check(cells.every(cell => nonEmptyText(cell?.id) && Array.isArray(cell?.assetIds) && cell.assetIds.length === 1 && Number.isFinite(cell?.radius) && cell.radius > 0 && Number.isFinite(cell?.loadRadius) && cell.loadRadius >= 0 && Number.isFinite(cell?.unloadRadius) && cell.unloadRadius >= cell.loadRadius), 'VSR_PROJECTION_STREAMING_CELL_INVALID');
+    check(new Set(cells.map(cell => cell?.id)).size === cells.length, 'VSR_PROJECTION_STREAMING_CELL_IDS_INVALID');
+    check(Array.isArray(projection.streaming?.persistentAssetIds), 'VSR_PROJECTION_PERSISTENT_ASSETS_INVALID');
+    const assemblyAssetsByKey = assembly && Array.isArray(assembly.assets)
+      ? new Map(assembly.assets.map(asset => [asset.asset_key, asset]))
+      : null;
+    for (const asset of assets) {
+      const metadata = record(asset.metadata);
+      const cellIds = Array.isArray(asset.cellIds) ? asset.cellIds : [];
+      check(asset.format === 'model/gltf-binary' && asset.kind === 'mesh', `VSR_PROJECTION_ASSET_RECORD_INVALID:${asset?.id ?? 'unknown'}`);
+      check(isHexRoot(asset.sha256) && Number.isSafeInteger(asset.byteLength) && asset.byteLength > 0, `VSR_PROJECTION_ASSET_PAYLOAD_INVALID:${asset?.id ?? 'unknown'}`);
+      check(cellIds.length === 1 && cellsById.has(cellIds[0]), `VSR_PROJECTION_ASSET_CELL_INVALID:${asset?.id ?? 'unknown'}`);
+      check(metadata.assembly_root === projection.assembly_root && metadata.batch_root === projection.batch_root, `VSR_PROJECTION_ASSET_ROOT_BINDING_INVALID:${asset?.id ?? 'unknown'}`);
+      check(isHexRoot(metadata.candidate_root) && isHexRoot(metadata.candidate_artifact_root) && isHexRoot(metadata.candidate_file_root) && isHexRoot(metadata.file_root), `VSR_PROJECTION_ASSET_CANDIDATE_ROOT_INVALID:${asset?.id ?? 'unknown'}`);
+      check(Number.isSafeInteger(metadata.selected_lod) && metadata.selected_lod >= 0, `VSR_PROJECTION_ASSET_LOD_INVALID:${asset?.id ?? 'unknown'}`);
+      check(Array.isArray(asset.transform?.translation) && asset.transform.translation.length === 3 && asset.transform.translation.every(Number.isFinite), `VSR_PROJECTION_ASSET_TRANSFORM_INVALID:${asset?.id ?? 'unknown'}`);
+      check(Array.isArray(asset.transform?.translation_mm) && asset.transform.translation_mm.length === 3 && asset.transform.translation_mm.every(component => Number.isSafeInteger(component)), `VSR_PROJECTION_ASSET_MM_TRANSFORM_INVALID:${asset?.id ?? 'unknown'}`);
+      const cell = cellsById.get(cellIds[0]);
+      check(Array.isArray(cell?.assetIds) && cell.assetIds.includes(asset.id), `VSR_PROJECTION_CELL_ASSET_MISMATCH:${asset?.id ?? 'unknown'}`);
+      if (assemblyAssetsByKey) {
+        const sourceAsset = assemblyAssetsByKey.get(metadata.asset_key);
+        check(Boolean(sourceAsset), `VSR_PROJECTION_ASSEMBLY_ASSET_MISSING:${asset?.id ?? 'unknown'}`);
+        if (sourceAsset) {
+          check(asset.id === `asset:urrf:${sourceAsset.asset_key}:lod${sourceAsset.selected_lod}`, `VSR_PROJECTION_ASSET_ID_BINDING_INVALID:${asset?.id ?? 'unknown'}`);
+          check(asset.uri === `urrf+candidate://${encodeURIComponent(sourceAsset.asset_id)}/lod${sourceAsset.selected_lod}`, `VSR_PROJECTION_ASSET_URI_BINDING_INVALID:${asset?.id ?? 'unknown'}`);
+          check(asset.sha256 === sourceAsset.source?.mesh?.sha256 && asset.byteLength === sourceAsset.source?.mesh?.byte_length, `VSR_PROJECTION_ASSET_PAYLOAD_BINDING_INVALID:${asset?.id ?? 'unknown'}`);
+          check(asset.priority === sourceAsset.priority && cellIds[0] === sourceAsset.cell_id, `VSR_PROJECTION_ASSET_STREAM_BINDING_INVALID:${asset?.id ?? 'unknown'}`);
+          check(metadata.asset_id === sourceAsset.asset_id && metadata.candidate_root === sourceAsset.candidate_root && metadata.candidate_artifact_root === sourceAsset.source?.mesh?.candidate_artifact_root && metadata.candidate_file_root === sourceAsset.source?.mesh?.candidate_file_root && metadata.file_root === sourceAsset.source?.mesh?.file_root && metadata.relative_path === sourceAsset.source?.mesh?.relative_path && metadata.output_directory === sourceAsset.source?.output_directory && metadata.selected_lod === sourceAsset.selected_lod && metadata.quality_tier === sourceAsset.quality_tier, `VSR_PROJECTION_ASSET_METADATA_BINDING_INVALID:${asset?.id ?? 'unknown'}`);
+          check(JSON.stringify(asset.transform?.translation_mm) === JSON.stringify(sourceAsset.placement_mm), `VSR_PROJECTION_ASSET_PLACEMENT_BINDING_INVALID:${asset?.id ?? 'unknown'}`);
+          check(JSON.stringify(asset.transform?.translation) === JSON.stringify(sourceAsset.placement_mm.map(component => component / 1000)), `VSR_PROJECTION_ASSET_METER_BINDING_INVALID:${asset?.id ?? 'unknown'}`);
+          check(JSON.stringify(cell?.center) === JSON.stringify(sourceAsset.placement_mm.map(component => component / 1000)), `VSR_PROJECTION_CELL_CENTER_BINDING_INVALID:${asset?.id ?? 'unknown'}`);
+        }
+      }
+    }
+    check(cells.length === assets.length, 'VSR_PROJECTION_CELL_COUNT_MISMATCH');
+    check(projection.candidate_only === true && projection.authoritative === false && projection.canonical_write_authorized === false, 'VSR_PROJECTION_AUTHORITY_INVALID');
+    check(projection.authority?.canonical_owner === 'RNCS' && projection.authority?.representation_owner === 'URRF', 'VSR_PROJECTION_OWNER_INVALID');
+    check(projection.authority?.provider_can_write_authoritative_world_state === false && projection.authority?.provider_can_commit === false && projection.authority?.acceptance_can_commit === false && projection.authority?.rncs_authority_required === true, 'VSR_PROJECTION_PROVIDER_AUTHORITY_INVALID');
+    if (assembly !== null) {
+      const assemblyVerification = verifyUniversalArtAssetAssembly(assembly);
+      if (!assemblyVerification.valid) errors.push(...assemblyVerification.errors.map(error => `VSR_PROJECTION_ASSEMBLY_${error}`));
+      check(projection.assembly_root === assembly.assembly_root, 'VSR_PROJECTION_ASSEMBLY_ROOT_MISMATCH');
+      check(projection.batch_root === assembly.batch_root, 'VSR_PROJECTION_BATCH_ROOT_MISMATCH');
+      check(projection.source_reality_root === assembly.source_reality_root, 'VSR_PROJECTION_SOURCE_ROOT_MISMATCH');
+      check(projection.placement_root === assembly.placement_root, 'VSR_PROJECTION_PLACEMENT_ROOT_MISMATCH');
+      check(projection.scene_id === assembly.scene_id && projection.world_id === assembly.world_id && projection.status === assembly.status, 'VSR_PROJECTION_SCENE_BINDING_MISMATCH');
+    }
+    const copy = clone(projection);
+    const actual = copy.projection_root;
+    delete copy.projection_root;
+    check(isHexRoot(actual) && actual === rootHash(copy), 'VSR_PROJECTION_ROOT_INVALID');
+  } catch (error) {
+    errors.push(`VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, projection_root: projection.projection_root ?? null};
 }

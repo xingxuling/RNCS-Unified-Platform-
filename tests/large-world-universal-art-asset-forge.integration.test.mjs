@@ -6,10 +6,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {rootHash} from '@taowind/rncs-core-contract';
 import {
+  createUniversalArtAssetAssembly,
   createUniversalArtAssetEvidenceBundle,
   generateUniversalArtAssetBatch,
   generateUniversalArtAsset,
+  lowerUniversalArtAssetAssemblyToVsr,
+  verifyUniversalArtAssetAssembly,
   verifyUniversalArtAssetBatch,
+  verifyUniversalArtAssetVsrProjection,
   verifyUniversalArtAssetForge
 } from '@taowind/large-world-runtime';
 
@@ -130,4 +134,25 @@ test('URRF Universal Art Asset Forge isolates a multi-asset candidate batch and 
   mkdirSync(evidenceDir, {recursive: true});
   writeFileSync(join(evidenceDir, 'universal-art-asset-batch.json'), `${JSON.stringify(result.batch, null, 2)}\n`, 'utf8');
   assert.match(result.batch.batch_root, /^[a-f0-9]{64}$/);
+
+  const assembly = createUniversalArtAssetAssembly({
+    batch: result.batch,
+    assetResults: result.assets,
+    scene_id: 'urrf-universal-art-assembly-integration',
+    world_id: 'world:urrf-universal-art-assembly-integration',
+    placements_mm: [
+      {asset_key: 'guardian-character', translation_mm: [1200, 0, -900]},
+      {asset_key: 'ice-relic-prop', translation_mm: [-1200, 0, 900]}
+    ],
+    lod_by_asset: {'guardian-character': 0, 'ice-relic-prop': 1},
+    load_radius: 72,
+    unload_radius: 96
+  });
+  assert.equal(verifyUniversalArtAssetAssembly(assembly, {batch: result.batch, assetResults: result.assets}).valid, true);
+  const projection = lowerUniversalArtAssetAssemblyToVsr(assembly);
+  assert.equal(verifyUniversalArtAssetVsrProjection(projection, {assembly}).valid, true);
+  writeFileSync(join(evidenceDir, 'universal-art-asset-assembly.json'), `${JSON.stringify(assembly, null, 2)}\n`, 'utf8');
+  writeFileSync(join(evidenceDir, 'universal-art-asset-vsr-projection.json'), `${JSON.stringify(projection, null, 2)}\n`, 'utf8');
+  assert.match(assembly.assembly_root, /^[a-f0-9]{64}$/);
+  assert.match(projection.projection_root, /^[a-f0-9]{64}$/);
 });
