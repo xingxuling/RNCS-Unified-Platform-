@@ -1,7 +1,7 @@
 {
   "format": "ragf.asset-evidence-ledger.v0.1",
   "version": "0.1.0",
-  "ledger_id": "asset-evidence-ledger:87aa7f0e37a17495b1e1e02c",
+  "ledger_id": "asset-evidence-ledger:88f9af72455ca9ba07a5b804",
   "authority": {
     "provider_is_candidate_source_only": true,
     "provider_can_write_authoritative_world_state": false,
@@ -76,7 +76,7 @@
     {
       "evidence_id": "production-court",
       "status": "FAIL",
-      "root": "c9d131cb75e61ded827f3ddd0f9f3f9675c47997c25602908e3dbad5e316e279",
+      "root": "4d7c681af4c746f008f9cdc4f7978818b15198cc82fbd04a6ea5bf9459501ffe",
       "details": {
         "gates": [
           {
@@ -188,8 +188,8 @@
             "required": true,
             "status": "FAIL",
             "pass": false,
-            "reason": "PROVENANCE_OR_LICENSE_AUDIT_INCOMPLETE",
-            "source": "candidate/provider metadata"
+            "reason": "INDEPENDENT_PROVENANCE_LICENSE_PROOF_REQUIRED",
+            "source": "external provenance/license audit receipt"
           },
           {
             "gate": "art_direction_gate",
@@ -250,8 +250,8 @@
     "job_root": null,
     "result_root": null,
     "candidate_root": "bb0b52afb44be19f484bccbcb1833e1da3a46e39cd2c66357334f9f91821eb16",
-    "court_root": "c9d131cb75e61ded827f3ddd0f9f3f9675c47997c25602908e3dbad5e316e279",
+    "court_root": "4d7c681af4c746f008f9cdc4f7978818b15198cc82fbd04a6ea5bf9459501ffe",
     "placement_root": null
   },
-  "ledger_root": "73c2e38580635429e13e11551ecb28fdc63692f5d07fb78d61121abcd86372fc"
+  "ledger_root": "7213669ec852c30bbe982e180e92bf195c65b3552877052f0690e7b390c23c90"
 }

@@ -9,6 +9,7 @@ import {
   generateUniversalArtAsset,
   inspectUniversalArtAssetFiles,
   resolveUniversalArtAssetProvider,
+  verifyUniversalArtAssetProvenanceLicenseReceipt,
   verifyUniversalArtAssetQualityProof,
   verifyUniversalArtAssetReviewReceipt,
   verifyUniversalArtAssetForge,
@@ -89,6 +90,44 @@ function createQualityProof({result, targetPlatform = 'desktop'}) {
   }, 'receipt_root');
 }
 
+function createProvenanceLicenseProof({result}) {
+  const artifactRoots = Object.fromEntries(Object.entries(result.candidate.artifacts)
+    .map(([role, artifact]) => [role, artifact.root]));
+  return seal({
+    format: 'urrf.universal-art-asset-provenance-license-receipt.v0.1',
+    version: '0.1.0',
+    source: 'external-provenance-license-auditor',
+    receipt_status: 'VERIFIED',
+    decision: 'PASS',
+    audited_provider_id: result.execution.provider_id,
+    genome_root: result.genome.genome_root,
+    candidate_root: result.candidate.candidate_root,
+    file_inspection_root: result.fileInspection.inspection_root,
+    provenance: {
+      upstream_url: 'builtin://taowind/reality-asset-genesis-fabric',
+      source_revision: 'ragf-reference-workspace-v0.3',
+      generator_version: 'ragf-reference-provider-v0.4',
+      seed: result.genome.ragf_genome.seed
+    },
+    license: {
+      status: 'VERIFIED',
+      identifier: 'Apache-2.0',
+      scope: 'generated-candidate-and-runtime-artifacts'
+    },
+    model_weights_audit: {
+      status: 'PASS',
+      mode: 'PROCEDURAL_NO_WEIGHTS'
+    },
+    artifact_roots: artifactRoots,
+    verifier: {
+      kind: 'external-provenance-license-auditor',
+      status: 'PASS',
+      verifier_id: 'provenance-license-auditor:test',
+      method: 'external-provenance-license-receipt-v0.1'
+    }
+  }, 'receipt_root');
+}
+
 test('universal art genome reuses RAGF intent/genome and seals a broader profile contract', () => {
   const genome = createUniversalArtAssetGenome(characterInput);
   assert.equal(verifyUniversalArtAssetGenome(genome).valid, true);
@@ -138,6 +177,7 @@ test('built-in RAGF workspace produces real candidate files and local structure 
   assert.deepEqual(result.execution.file_inspection.lod.levels, [0, 1, 2]);
   assert.ok(result.execution.file_inspection.lod.triangle_counts[0] > result.execution.file_inspection.lod.triangle_counts[1]);
   assert.ok(result.execution.file_inspection.lod.triangle_counts[1] > result.execution.file_inspection.lod.triangle_counts[2]);
+  assert.equal(result.acceptance.metrics.provenance_license_proof_status, 'NOT_RUN');
   assert.equal(verifyUniversalArtAssetForge({
     forge: result.forge,
     genome: result.genome,
@@ -171,7 +211,9 @@ test('invalid local GLB inspection cannot be overridden by provider declarations
       uv: {status: 'PASS'},
       normal: {status: 'PASS'},
       pbr: {status: 'PASS'},
-      lod: {status: 'PASS'}
+      lod: {status: 'PASS'},
+      provenance: {status: 'PASS'},
+      license: {status: 'PASS'}
     },
     fileInspection: inspection
   });
@@ -297,13 +339,18 @@ test('acceptance gate cannot be passed by provider success alone', () => {
     providerEvidence: {
       provider_success: true,
       art_direction: {status: 'PASS'},
-      human_review: {status: 'PASS'}
+      human_review: {status: 'PASS'},
+      provenance: {status: 'PASS'},
+      license: {status: 'PASS'},
+      quality_tier: {status: 'PASS'}
     }
   });
   assert.equal(acceptance.status, 'BLOCKED');
   assert.ok(acceptance.failures.includes('geometry_gate'));
+  assert.ok(acceptance.failures.includes('provenance_license_gate'));
   assert.ok(acceptance.failures.includes('art_direction_gate'));
   assert.ok(acceptance.failures.includes('human_review_gate'));
+  assert.ok(acceptance.failures.includes('quality_tier_gate'));
 });
 
 test('independent review receipts bind exact roots and remain separate from Provider evidence', () => {
@@ -406,4 +453,47 @@ test('quality tier requires an independently verified proof bound to local inspe
     inspection: result.fileInspection,
     targetPlatforms: result.genome.target_platforms
   }).valid, false);
+});
+
+test('AAA provenance and license gate requires an independent audit bound to every candidate artifact root', () => {
+  const outDir = fs.mkdtempSync(path.join(os.tmpdir(), 'urrf-universal-art-provenance-'));
+  const result = generateUniversalArtAsset(characterInput, {outDir});
+  const proof = createProvenanceLicenseProof({result});
+  const binding = {
+    genomeRoot: result.genome.genome_root,
+    candidateRoot: result.candidate.candidate_root,
+    fileInspectionRoot: result.fileInspection.inspection_root,
+    providerId: result.execution.provider_id,
+    seed: result.genome.ragf_genome.seed,
+    artifactRoots: Object.fromEntries(Object.entries(result.candidate.artifacts).map(([role, artifact]) => [role, artifact.root]))
+  };
+  assert.equal(verifyUniversalArtAssetProvenanceLicenseReceipt(proof, binding).valid, true);
+
+  const acceptance = evaluateUniversalArtAssetAcceptance({
+    genome: result.genome,
+    workspace: result.workspace,
+    candidate: result.candidate,
+    execution: result.execution,
+    provider: result.execution.provider_id,
+    fileInspection: result.fileInspection,
+    providerEvidence: {
+      provenance: {status: 'PASS'},
+      license: {status: 'PASS'}
+    },
+    provenanceLicenseProof: proof
+  });
+  const gate = acceptance.gates.find(item => item.gate === 'provenance_license_gate');
+  assert.equal(gate.status, 'PASS');
+  assert.equal(acceptance.failures.includes('provenance_license_gate'), false);
+  assert.equal(acceptance.metrics.provenance_license_proof_status, 'PASS');
+  assert.equal(acceptance.evidence.provenance_license_proof_verification.valid, true);
+
+  const tampered = structuredClone(proof);
+  tampered.provenance.seed = `${tampered.provenance.seed}-tampered`;
+  assert.equal(verifyUniversalArtAssetProvenanceLicenseReceipt(tampered, binding).valid, false);
+
+  const tamperedArtifact = structuredClone(proof);
+  tamperedArtifact.artifact_roots['mesh-glb'] = '0'.repeat(64);
+  const resealedArtifactTamper = seal(tamperedArtifact, 'receipt_root');
+  assert.equal(verifyUniversalArtAssetProvenanceLicenseReceipt(resealedArtifactTamper, binding).valid, false);
 });

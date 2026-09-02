@@ -117,8 +117,8 @@
       "required": true,
       "status": "FAIL",
       "pass": false,
-      "reason": "PROVENANCE_OR_LICENSE_AUDIT_INCOMPLETE",
-      "source": "candidate/provider metadata"
+      "reason": "INDEPENDENT_PROVENANCE_LICENSE_PROOF_REQUIRED",
+      "source": "external provenance/license audit receipt"
     },
     {
       "gate": "art_direction_gate",
@@ -198,7 +198,8 @@
     "lod_inspection_status": "PASS",
     "lod_count": 3,
     "pbr_file_status": "PASS",
-    "quality_proof_status": "NOT_RUN"
+    "quality_proof_status": "NOT_RUN",
+    "provenance_license_proof_status": "NOT_RUN"
   },
   "authority": {
     "provider_can_commit": false,
@@ -1028,7 +1029,15 @@
         "QUALITY_PROOF_NOT_OBJECT"
       ],
       "receipt_root": null
+    },
+    "provenance_license_proof": null,
+    "provenance_license_proof_verification": {
+      "valid": false,
+      "errors": [
+        "PROVENANCE_LICENSE_RECEIPT_NOT_OBJECT"
+      ],
+      "receipt_root": null
     }
   },
-  "acceptance_root": "c9d131cb75e61ded827f3ddd0f9f3f9675c47997c25602908e3dbad5e316e279"
+  "acceptance_root": "4d7c681af4c746f008f9cdc4f7978818b15198cc82fbd04a6ea5bf9459501ffe"
 }

@@ -33,6 +33,7 @@ export const UNIVERSAL_ART_ASSET_ACCEPTANCE_FORMAT = 'urrf.universal-art-asset-a
 export const UNIVERSAL_ART_ASSET_FILE_INSPECTION_FORMAT = 'urrf.universal-art-asset-file-inspection.v0.1';
 export const UNIVERSAL_ART_ASSET_REVIEW_RECEIPT_FORMAT = 'urrf.universal-art-asset-review-receipt.v0.1';
 export const UNIVERSAL_ART_ASSET_QUALITY_PROOF_FORMAT = 'urrf.universal-art-asset-quality-proof.v0.1';
+export const UNIVERSAL_ART_ASSET_PROVENANCE_LICENSE_RECEIPT_FORMAT = 'urrf.universal-art-asset-provenance-license-receipt.v0.1';
 export const UNIVERSAL_ART_ASSET_FORGE_VERSION = '0.1.0';
 
 export const UNIVERSAL_ART_ASSET_PROFILES = Object.freeze([
@@ -1346,6 +1347,94 @@ export function verifyUniversalArtAssetQualityProof(receipt, {
   return {valid: errors.length === 0, errors, receipt_root: receipt.receipt_root ?? null};
 }
 
+function artifactRootsForCandidate(candidate) {
+  const artifacts = record(candidate?.artifacts);
+  return Object.fromEntries(Object.entries(artifacts)
+    .map(([role, artifact]) => [role, artifact?.root ?? null])
+    .filter(([role]) => nonEmptyText(role))
+    .sort(([left], [right]) => left.localeCompare(right, 'en')));
+}
+
+/**
+ * Verify an independently supplied provenance and license audit receipt.
+ *
+ * Candidate/provider metadata remains useful for diagnosis, but it is not
+ * acceptance authority for PRODUCTION or AAA. This receipt binds the audit
+ * to the exact URRF Genome, Candidate, local file inspection, and every
+ * materialized candidate artifact root. It records the audit boundary for
+ * source revision, generator version, license scope, and model-weight mode;
+ * it does not manufacture an external auditor, key custody, or legal opinion.
+ */
+export function verifyUniversalArtAssetProvenanceLicenseReceipt(receipt, {
+  genomeRoot = null,
+  candidateRoot = null,
+  fileInspectionRoot,
+  providerId = null,
+  seed = null,
+  artifactRoots = null
+} = {}) {
+  const errors = [];
+  if (!receipt || typeof receipt !== 'object' || Array.isArray(receipt)) {
+    return {valid: false, errors: ['PROVENANCE_LICENSE_RECEIPT_NOT_OBJECT'], receipt_root: null};
+  }
+  try {
+    if (receipt.format !== UNIVERSAL_ART_ASSET_PROVENANCE_LICENSE_RECEIPT_FORMAT) errors.push('FORMAT_INVALID');
+    if (receipt.version !== UNIVERSAL_ART_ASSET_FORGE_VERSION) errors.push('VERSION_INVALID');
+    if (receipt.source !== 'external-provenance-license-auditor') errors.push('PROVENANCE_LICENSE_SOURCE_NOT_EXTERNAL');
+    if (receipt.provider_id !== undefined) errors.push('PROVIDER_FIELD_FORBIDDEN');
+    if (!nonEmptyText(receipt.audited_provider_id)) errors.push('AUDITED_PROVIDER_ID_MISSING');
+    if (providerId !== null && receipt.audited_provider_id !== providerId) errors.push('AUDITED_PROVIDER_ID_MISMATCH');
+    if (receipt.receipt_status !== 'VERIFIED') errors.push('PROVENANCE_LICENSE_RECEIPT_NOT_VERIFIED');
+    if (receipt.decision !== 'PASS') errors.push('PROVENANCE_LICENSE_DECISION_NOT_PASS');
+    if (!isHexRoot(receipt.genome_root)) errors.push('PROVENANCE_LICENSE_GENOME_ROOT_INVALID');
+    if (genomeRoot !== null && receipt.genome_root !== genomeRoot) errors.push('PROVENANCE_LICENSE_GENOME_ROOT_MISMATCH');
+    if (!isHexRoot(receipt.candidate_root)) errors.push('PROVENANCE_LICENSE_CANDIDATE_ROOT_INVALID');
+    if (candidateRoot !== null && receipt.candidate_root !== candidateRoot) errors.push('PROVENANCE_LICENSE_CANDIDATE_ROOT_MISMATCH');
+    if (fileInspectionRoot !== undefined) {
+      const expectedInspectionRoot = fileInspectionRoot ?? null;
+      if (receipt.file_inspection_root !== expectedInspectionRoot) errors.push('PROVENANCE_LICENSE_FILE_INSPECTION_ROOT_MISMATCH');
+      if (receipt.file_inspection_root !== null && !isHexRoot(receipt.file_inspection_root)) errors.push('PROVENANCE_LICENSE_FILE_INSPECTION_ROOT_INVALID');
+    } else if (receipt.file_inspection_root !== null && !isHexRoot(receipt.file_inspection_root)) {
+      errors.push('PROVENANCE_LICENSE_FILE_INSPECTION_ROOT_INVALID');
+    }
+    const provenance = record(receipt.provenance);
+    for (const key of ['upstream_url', 'source_revision', 'generator_version', 'seed']) {
+      if (!nonEmptyText(provenance[key])) errors.push(`PROVENANCE_${key.toUpperCase()}_MISSING`);
+    }
+    if (seed !== null && provenance.seed !== seed) errors.push('PROVENANCE_SEED_MISMATCH');
+    const license = record(receipt.license);
+    if (license.status !== 'VERIFIED') errors.push('LICENSE_NOT_VERIFIED');
+    if (!nonEmptyText(license.identifier)) errors.push('LICENSE_IDENTIFIER_MISSING');
+    if (!nonEmptyText(license.scope)) errors.push('LICENSE_SCOPE_MISSING');
+    const modelWeightsAudit = record(receipt.model_weights_audit);
+    if (modelWeightsAudit.status !== 'PASS') errors.push('MODEL_WEIGHTS_AUDIT_NOT_PASS');
+    if (!nonEmptyText(modelWeightsAudit.mode)) errors.push('MODEL_WEIGHTS_AUDIT_MODE_MISSING');
+    const declaredArtifactRoots = record(receipt.artifact_roots);
+    const declaredEntries = Object.entries(declaredArtifactRoots);
+    if (declaredEntries.length === 0) {
+      errors.push('ARTIFACT_ROOTS_MISSING');
+    } else {
+      declaredEntries.forEach(([role, root]) => {
+        if (!nonEmptyText(role)) errors.push('ARTIFACT_ROLE_INVALID');
+        if (!isHexRoot(root)) errors.push(`ARTIFACT_ROOT_INVALID:${role}`);
+      });
+    }
+    if (artifactRoots !== null && rootHash(declaredArtifactRoots) !== rootHash(artifactRoots)) errors.push('ARTIFACT_ROOTS_MISMATCH');
+    const verifier = record(receipt.verifier);
+    if (verifier.kind !== 'external-provenance-license-auditor') errors.push('PROVENANCE_LICENSE_VERIFIER_KIND_INVALID');
+    if (verifier.status !== 'PASS') errors.push('PROVENANCE_LICENSE_VERIFIER_NOT_PASS');
+    if (!nonEmptyText(verifier.verifier_id)) errors.push('PROVENANCE_LICENSE_VERIFIER_ID_MISSING');
+    if (!nonEmptyText(verifier.method)) errors.push('PROVENANCE_LICENSE_VERIFIER_METHOD_MISSING');
+    const copy = clone(receipt);
+    const actual = copy.receipt_root;
+    delete copy.receipt_root;
+    if (!isHexRoot(actual) || actual !== rootHash(copy)) errors.push('PROVENANCE_LICENSE_RECEIPT_ROOT_INVALID');
+  } catch (error) {
+    errors.push(`VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, receipt_root: receipt.receipt_root ?? null};
+}
+
 function candidateFacts({candidate, workspace, provider, providerEvidence = {}} = {}) {
   const selected = candidate ?? workspace?.candidates?.find(item => item.candidate_id === workspace.recommended_candidate_id) ?? null;
   const artifacts = selected?.artifacts ?? {};
@@ -1419,6 +1508,7 @@ export function evaluateUniversalArtAssetAcceptance({
   artDirectionReview = null,
   humanReview = null,
   qualityProof = null,
+  provenanceLicenseProof = null,
   runtimeEvidence = null
 } = {}) {
   const genomeVerification = verifyUniversalArtAssetGenome(genome);
@@ -1463,6 +1553,16 @@ export function evaluateUniversalArtAssetAcceptance({
     targetPlatforms: genome.target_platforms
   });
   const qualityProofPass = Boolean(facts.selected?.candidate_root) && localInspectionValid && localFileInspection?.status === 'PASS' && qualityProofVerification.valid;
+  const expectedProviderId = execution.provider_id ?? facts.providerManifest?.id ?? facts.providerManifest?.provider_id ?? null;
+  const provenanceLicenseProofVerification = verifyUniversalArtAssetProvenanceLicenseReceipt(provenanceLicenseProof, {
+    genomeRoot: genome.genome_root,
+    candidateRoot: facts.selected?.candidate_root ?? null,
+    fileInspectionRoot: localFileInspection?.inspection_root ?? null,
+    providerId: expectedProviderId,
+    seed: genome.ragf_genome.seed,
+    artifactRoots: artifactRootsForCandidate(facts.selected)
+  });
+  const provenanceLicenseProofPass = Boolean(facts.selected?.candidate_root) && provenanceLicenseProofVerification.valid;
   const runtimeProjectionEvidence = explicitEvidence(evidence, ['vsr_projection', 'representation']);
   const workspaceVerification = execution.workspace_verification ?? null;
   const executionPass = execution.status === 'COMPLETED' && (!workspaceVerification || workspaceVerification.valid === true);
@@ -1476,6 +1576,11 @@ export function evaluateUniversalArtAssetAcceptance({
   const localNormalPass = !localFileInspection || localInspectionPass('normal');
   const localPbrPass = !localFileInspection || localInspectionPass('pbr');
   const localLodPass = !localFileInspection || localInspectionPass('lod');
+  const metadataProvenanceLicensePass = (provenanceEvidence.present ? provenanceEvidence.pass : facts.provenanceComplete) &&
+    (licenseEvidence.present ? licenseEvidence.pass : (facts.licenseVerified || facts.providerManifestLicense));
+  const provenanceLicenseCourtPass = courtGate(providerCourt, 'provenance_gate') !== false && courtGate(providerCourt, 'license_gate') !== false;
+  const strictProvenanceLicense = genome.quality_tier !== 'PREVIEW';
+  const provenanceLicensePass = (strictProvenanceLicense ? provenanceLicenseProofPass : (provenanceLicenseProof ? provenanceLicenseProofPass : metadataProvenanceLicensePass)) && provenanceLicenseCourtPass;
   const gates = [
     makeGate('intent_gate', required.has('intent_gate'), Boolean(genome.ragf_intent?.intent_root), 'INTENT_NOT_ROOTED', 'RAGF intent'),
     makeGate('genome_gate', required.has('genome_gate'), genomeVerification.valid, 'GENOME_INVALID', 'URRF/RAGF genome verification'),
@@ -1490,7 +1595,7 @@ export function evaluateUniversalArtAssetAcceptance({
     makeGate('lod_gate', required.has('lod_gate'), localLodPass && (lodEvidence.present ? lodEvidence.pass : facts.lodPresent) && courtGate(providerCourt, 'lod_platform_budget_gate') !== false, 'LOD_OR_PLATFORM_BUDGET_NOT_VERIFIED', localFileInspection ? 'local LOD sequence inspection' : lodEvidence.present ? 'provider evidence' : 'candidate artifact'),
     makeGate('collision_gate', required.has('collision_gate'), (collisionEvidence.present ? collisionEvidence.pass : facts.collisionPresent) && courtGate(providerCourt, 'collision_gate') !== false, 'COLLISION_NOT_VERIFIED', collisionEvidence.present ? 'provider evidence' : 'candidate artifact'),
     makeGate('platform_gate', required.has('platform_gate'), Boolean(evidence.platform?.status ? statusPass(evidence.platform) : facts.workspaceReport?.scores?.platform >= 6500), 'TARGET_PLATFORM_NOT_VERIFIED', evidence.platform ? 'provider evidence' : 'workspace report'),
-    makeGate('provenance_license_gate', required.has('provenance_license_gate'), (provenanceEvidence.present ? provenanceEvidence.pass : facts.provenanceComplete) && (licenseEvidence.present ? licenseEvidence.pass : (facts.licenseVerified || facts.providerManifestLicense)) && courtGate(providerCourt, 'provenance_gate') !== false && courtGate(providerCourt, 'license_gate') !== false, 'PROVENANCE_OR_LICENSE_AUDIT_INCOMPLETE', provenanceEvidence.present || licenseEvidence.present ? 'provider evidence' : 'candidate/provider metadata'),
+    makeGate('provenance_license_gate', required.has('provenance_license_gate'), provenanceLicensePass, strictProvenanceLicense ? 'INDEPENDENT_PROVENANCE_LICENSE_PROOF_REQUIRED' : 'PROVENANCE_OR_LICENSE_AUDIT_INCOMPLETE', strictProvenanceLicense || provenanceLicenseProof ? 'external provenance/license audit receipt' : provenanceEvidence.present || licenseEvidence.present ? 'provider evidence' : 'candidate/provider metadata'),
     makeGate('art_direction_gate', required.has('art_direction_gate'), artDirectionReviewPass, 'ART_DIRECTION_REVIEW_REQUIRED', 'external art-direction review receipt'),
     makeGate('runtime_projection_gate', required.has('runtime_projection_gate'), runtimePass && courtGate(providerCourt, 'vsr_projection_gate') !== false, 'VSR_PROJECTION_NOT_EXECUTED_OR_VERIFIED', runtimeProjectionEvidence.present ? 'provider evidence' : 'workspace runtime report'),
     makeGate('quality_tier_gate', required.has('quality_tier_gate'), genome.quality_tier === 'PREVIEW' ? facts.candidateQualityTier === genome.quality_tier : qualityProofPass, 'QUALITY_PROOF_OR_LOCAL_INSPECTION_MISSING', genome.quality_tier === 'PREVIEW' ? 'candidate quality tier' : 'external quality proof + local inspection'),
@@ -1529,7 +1634,8 @@ export function evaluateUniversalArtAssetAcceptance({
       lod_inspection_status: localFileInspection?.aggregates?.lod_status ?? null,
       lod_count: localFileInspection?.aggregates?.lod_count ?? null,
       pbr_file_status: localFileInspection?.aggregates?.pbr_status ?? null,
-      quality_proof_status: qualityProof ? (qualityProofVerification.valid ? 'PASS' : 'FAIL') : 'NOT_RUN'
+      quality_proof_status: qualityProof ? (qualityProofVerification.valid ? 'PASS' : 'FAIL') : 'NOT_RUN',
+      provenance_license_proof_status: provenanceLicenseProof ? (provenanceLicenseProofVerification.valid ? 'PASS' : 'FAIL') : 'NOT_RUN'
     },
     authority: {
       provider_can_commit: false,
@@ -1550,7 +1656,9 @@ export function evaluateUniversalArtAssetAcceptance({
       human_review: humanReview,
       human_review_verification: humanReviewVerification,
       quality_proof: qualityProof,
-      quality_proof_verification: qualityProofVerification
+      quality_proof_verification: qualityProofVerification,
+      provenance_license_proof: provenanceLicenseProof,
+      provenance_license_proof_verification: provenanceLicenseProofVerification
     },
     acceptance_root: ''
   };
@@ -1750,6 +1858,7 @@ function generateWithReferenceWorkspace({genome, resolution, outDir, options}) {
     artDirectionReview: options.artDirectionReview ?? null,
     humanReview: options.humanReview ?? null,
     qualityProof: options.qualityProof ?? options.qualityReceipt ?? null,
+    provenanceLicenseProof: options.provenanceLicenseProof ?? options.provenanceLicenseReceipt ?? null,
     runtimeEvidence: options.runtimeEvidence ?? null
   });
   const evidence = createLedger({genome, provider, candidate, acceptance});
@@ -1815,6 +1924,7 @@ function generateWithProvider({genome, resolution, outDir, options, adapterInfo}
     artDirectionReview: options.artDirectionReview ?? null,
     humanReview: options.humanReview ?? null,
     qualityProof: options.qualityProof ?? options.qualityReceipt ?? null,
+    provenanceLicenseProof: options.provenanceLicenseProof ?? options.provenanceLicenseReceipt ?? null,
     runtimeEvidence: options.runtimeEvidence ?? null
   });
   const evidence = createLedger({genome, provider: execution.provider ?? adapterInfo.manifest, job: execution.job, result: execution.result, candidate, acceptance});
