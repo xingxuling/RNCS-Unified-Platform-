@@ -33,6 +33,10 @@ export interface VSRGltfImportResult {scene:VSRSpatialScene3D;receipt:VSRGltfImp
 export interface VSRGlbParseResult {gltf:Json;binaryChunk?:Uint8Array}
 export type VSRGltfTextureSourceKind='KHR_texture_basisu'|'EXT_texture_webp'|'source';
 export interface VSRGltfTextureSource {imageIndex:number;kind:VSRGltfTextureSourceKind}
+export type VSRExternalPbrChannelRole='base-color'|'normal'|'occlusion-roughness-metallic'|'emissive';
+export interface VSRExternalPbrChannel {role:VSRExternalPbrChannelRole;bytes:Uint8Array;mimeType?:string;colorSpace?:'srgb'|'linear';uri?:string}
+export interface VSRExternalPbrBinding {role:VSRExternalPbrChannelRole;imageIndex:number;textureIndex:number;uri:string;byteLength:number;colorSpace:'srgb'|'linear'}
+export interface VSRExternalPbrBindingResult {gltf:Json;imageBytes:Record<string,Uint8Array>;bindings:VSRExternalPbrBinding[]}
 
 const GLB_MAGIC=0x46546c67;
 const GLB_VERSION=2;
@@ -56,6 +60,21 @@ function quaternionValue(q:number[]|undefined):Vec4|undefined{if(!q)return undef
 function matrixValue(matrix:number[]|undefined):Mat4|undefined{if(!matrix||matrix.length!==16)return undefined;return[matrix[0]!,matrix[4]!,matrix[8]!,matrix[12]!,matrix[1]!,matrix[5]!,matrix[9]!,matrix[13]!,matrix[2]!,matrix[6]!,matrix[10]!,matrix[14]!,matrix[3]!,matrix[7]!,matrix[11]!,matrix[15]!]}
 function textureSampling(sampler:Json):Pick<VSRSpatialTexture,'wrapU'|'wrapV'|'filter'>{return{wrapU:sampler.wrapS===33071?'clamp':'repeat',wrapV:sampler.wrapT===33071?'clamp':'repeat',filter:sampler.magFilter===9728||sampler.minFilter===9728?'nearest':'linear'}}
 export function resolveGltfTextureSource(texture:Json):VSRGltfTextureSource|undefined{const candidates:[[VSRGltfTextureSourceKind,unknown],[VSRGltfTextureSourceKind,unknown],[VSRGltfTextureSourceKind,unknown]]=[['KHR_texture_basisu',texture.extensions?.KHR_texture_basisu?.source],['EXT_texture_webp',texture.extensions?.EXT_texture_webp?.source],['source',texture.source]];for(const [kind,value] of candidates)if(Number.isInteger(value)&&Number(value)>=0)return{imageIndex:Number(value),kind};return undefined}
+/**
+ * Attach an independently materialized external PBR pack to a glTF material.
+ * This is deliberately a representation/import adapter: it copies channel
+ * bytes into the caller-owned imageBytes map and never writes a source GLB or
+ * any canonical world state. The async importer remains responsible for
+ * decoding those bytes into VSR RGBA textures.
+ */
+export function bindExternalPbrChannelsToGltf(gltf:Json,channels:VSRExternalPbrChannel[],{materialIndex=0,sourcePrefix='vsr-external-pbr'}:{materialIndex?:number;sourcePrefix?:string}={}):VSRExternalPbrBindingResult{
+  if(!gltf||typeof gltf!=='object'||!Array.isArray(channels)||channels.length===0)throw new Error('External PBR binding requires a glTF object and at least one channel.');
+  const material=gltf.materials?.[materialIndex];if(!material||typeof material!=='object')throw new Error(`External PBR material ${materialIndex} is missing.`);
+  const roles=new Set<VSRExternalPbrChannelRole>();for(const channel of channels){if(!channel||!['base-color','normal','occlusion-roughness-metallic','emissive'].includes(channel.role)||roles.has(channel.role)||!(channel.bytes instanceof Uint8Array)||channel.bytes.byteLength===0)throw new Error(`Invalid external PBR channel ${String(channel?.role)}.`);roles.add(channel.role)}
+  const next=JSON.parse(JSON.stringify(gltf)) as Json,nextMaterial=next.materials[materialIndex] as Json,nextPbr=(nextMaterial.pbrMetallicRoughness??={}) as Json,nextImages=Array.isArray(next.images)?next.images:[],nextTextures=Array.isArray(next.textures)?next.textures:[],imageBytes:Record<string,Uint8Array>={},bindings:VSRExternalPbrBinding[]=[];
+  for(const channel of channels){const imageIndex=nextImages.length,textureIndex=nextTextures.length,uri=channel.uri??`${sourcePrefix}/${channel.role}.png`,colorSpace=channel.colorSpace??(channel.role==='normal'||channel.role==='occlusion-roughness-metallic'?'linear':'srgb');nextImages.push({uri,mimeType:channel.mimeType??'image/png',extras:{vsrExternalPbrRole:channel.role,vsrColorSpace:colorSpace}});nextTextures.push({source:imageIndex});imageBytes[uri]=new Uint8Array(channel.bytes);if(channel.role==='base-color')nextPbr.baseColorTexture={index:textureIndex};else if(channel.role==='normal')nextMaterial.normalTexture={index:textureIndex};else if(channel.role==='occlusion-roughness-metallic'){nextPbr.metallicRoughnessTexture={index:textureIndex};nextMaterial.occlusionTexture={index:textureIndex}}else if(channel.role==='emissive')nextMaterial.emissiveTexture={index:textureIndex};bindings.push({role:channel.role,imageIndex,textureIndex,uri,byteLength:channel.bytes.byteLength,colorSpace})}
+  next.images=nextImages;next.textures=nextTextures;return{gltf:next,imageBytes,bindings}
+}
 function textureFromImage(gltf:Json,imageIndex:number,id:string,warnings:string[],sampler:Json={},resolver?:VSRGltfImageResolver):VSRSpatialTexture|undefined{
   const image=gltf.images?.[imageIndex];const resolved=resolver?.({imageIndex,image,id,sampler});if(resolved)return{...resolved,id};
   const raw=image?.extras?.vsrRGBA;

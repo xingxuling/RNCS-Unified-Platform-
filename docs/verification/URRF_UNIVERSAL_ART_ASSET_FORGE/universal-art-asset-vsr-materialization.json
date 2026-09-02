@@ -1,0 +1,225 @@
+{
+  "format": "urrf.universal-art-asset-vsr-materialization.v0.1",
+  "version": "0.1.0",
+  "materialization_id": "urrf-universal-art-asset-vsr-materialization:6db9bb0f275724ee4c8836f2",
+  "projection_root": "d0f1c257ffda4002148e9992d8580a86888792e4c59d4f2b7577cbfc16f6a29b",
+  "assembly_root": "7efd6539c505069eb552ea2fcd6ec3ef63b6088ed291f985d32147a04dceb5b9",
+  "batch_root": "8077dfe2715c73c0090f1cf66a30590c4b5accffbec34b5e1edbfdb05c9dfd14",
+  "source_reality_root": "8077dfe2715c73c0090f1cf66a30590c4b5accffbec34b5e1edbfdb05c9dfd14",
+  "placement_root": "5361a0baed9597710875cbd025adbeb2860544ce19fbef1ec69d563aad91e652",
+  "streaming_root": "800762498f7dda90f588f293248cbb4f6ba6c44c7ae407ffaf741b3f9646a25b",
+  "scene_id": "urrf-universal-art-assembly-integration",
+  "world_id": "world:urrf-universal-art-assembly-integration",
+  "source_status": "BLOCKED",
+  "status": "READY_FOR_VSR_IMPORT",
+  "runtime_consumer": "VSR_GLTF_IMPORT",
+  "asset_count": 2,
+  "assets": [
+    {
+      "id": "asset:urrf:guardian-character:lod0",
+      "uri": "urrf+candidate://asset%3Acf644862f780b86ae2bd9e94/lod0",
+      "format": "model/gltf-binary",
+      "kind": "mesh",
+      "sha256": "c4ad66b4ecf4051c28c642848075eeeba8a634fdcb3d363d50901ff06e165d32",
+      "byte_length": 59880,
+      "file_root": "b21b483ae0f8df76711b6ae53e6bb515ce86e905fe52bd66713aeeafbae49a4a",
+      "relative_path": "candidates/mobile/mesh/lod0.glb",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-JWGFcH\\assets\\001-guardian-character",
+      "cell_ids": [
+        "cell:guardian-character"
+      ],
+      "priority": 1000,
+      "status": "MATERIALIZED",
+      "selected_lod": 0,
+      "dependencies": [
+        "asset:urrf:guardian-character:lod0:pbr:base-color",
+        "asset:urrf:guardian-character:lod0:pbr:emissive",
+        "asset:urrf:guardian-character:lod0:pbr:normal",
+        "asset:urrf:guardian-character:lod0:pbr:occlusion-roughness-metallic"
+      ]
+    },
+    {
+      "id": "asset:urrf:ice-relic-prop:lod1",
+      "uri": "urrf+candidate://asset%3A795500e07f30c1152d3638b3/lod1",
+      "format": "model/gltf-binary",
+      "kind": "mesh",
+      "sha256": "fd21db04bb2a9361bbb29b3e2fb5bf1dc1b32756591bce8b5ccf9a3dfc47675e",
+      "byte_length": 39596,
+      "file_root": "85e157ff631d314e13d83820a5784f49925e93063dc84afd6a52966ee005faa3",
+      "relative_path": "candidates/mobile/mesh/lod1.glb",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-JWGFcH\\assets\\002-ice-relic-prop",
+      "cell_ids": [
+        "cell:ice-relic-prop"
+      ],
+      "priority": 999,
+      "status": "MATERIALIZED",
+      "selected_lod": 1,
+      "dependencies": [
+        "asset:urrf:ice-relic-prop:lod1:pbr:base-color",
+        "asset:urrf:ice-relic-prop:lod1:pbr:emissive",
+        "asset:urrf:ice-relic-prop:lod1:pbr:normal",
+        "asset:urrf:ice-relic-prop:lod1:pbr:occlusion-roughness-metallic"
+      ]
+    }
+  ],
+  "dependency_count": 8,
+  "dependencies": [
+    {
+      "id": "asset:urrf:guardian-character:lod0:pbr:base-color",
+      "uri": "urrf+candidate://asset%3Acf644862f780b86ae2bd9e94/pbr/base-color",
+      "format": "image/png",
+      "kind": "texture",
+      "sha256": "c12c9fdc8e32629097af8e4fcf6ca914d113d8526e76d2426321c18332982d6d",
+      "byte_length": 15231,
+      "file_root": "8047f96ad5ca167f9a64da12287f939cc5db69d66034ad9df38d6c4db746ddcf",
+      "relative_path": "candidates/mobile/pbr/base-color.png",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-JWGFcH\\assets\\001-guardian-character",
+      "cell_ids": [
+        "cell:guardian-character"
+      ],
+      "priority": 1000,
+      "status": "MATERIALIZED",
+      "role": "base-color",
+      "pbr_pack_root": "7fd12e06b60bb64b1a930cf7f0a3ecfb6754b11cff5aea57b546010d10b741d1"
+    },
+    {
+      "id": "asset:urrf:guardian-character:lod0:pbr:emissive",
+      "uri": "urrf+candidate://asset%3Acf644862f780b86ae2bd9e94/pbr/emissive",
+      "format": "image/png",
+      "kind": "texture",
+      "sha256": "31cc57591b6b059d0186f9554328e46fffa86bb47797790fc62306ab1735f8de",
+      "byte_length": 428,
+      "file_root": "13ceff94cca7e73afcebf6b206f3b13967583dd74c8b872ff91212cecc282658",
+      "relative_path": "candidates/mobile/pbr/emissive.png",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-JWGFcH\\assets\\001-guardian-character",
+      "cell_ids": [
+        "cell:guardian-character"
+      ],
+      "priority": 1000,
+      "status": "MATERIALIZED",
+      "role": "emissive",
+      "pbr_pack_root": "7fd12e06b60bb64b1a930cf7f0a3ecfb6754b11cff5aea57b546010d10b741d1"
+    },
+    {
+      "id": "asset:urrf:guardian-character:lod0:pbr:normal",
+      "uri": "urrf+candidate://asset%3Acf644862f780b86ae2bd9e94/pbr/normal",
+      "format": "image/png",
+      "kind": "texture",
+      "sha256": "a65e9ddc641d0902fdb46a353342491be37fb7ae26060113debc128fc452b4f9",
+      "byte_length": 9039,
+      "file_root": "7846a98a1055cb3d3f5c207e06ce75cc036a57ec8458ffcfae8be90997053386",
+      "relative_path": "candidates/mobile/pbr/normal.png",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-JWGFcH\\assets\\001-guardian-character",
+      "cell_ids": [
+        "cell:guardian-character"
+      ],
+      "priority": 1000,
+      "status": "MATERIALIZED",
+      "role": "normal",
+      "pbr_pack_root": "7fd12e06b60bb64b1a930cf7f0a3ecfb6754b11cff5aea57b546010d10b741d1"
+    },
+    {
+      "id": "asset:urrf:guardian-character:lod0:pbr:occlusion-roughness-metallic",
+      "uri": "urrf+candidate://asset%3Acf644862f780b86ae2bd9e94/pbr/occlusion-roughness-metallic",
+      "format": "image/png",
+      "kind": "texture",
+      "sha256": "433510ddf77121b4c622bd64a8d0fae01d56d8c1e56546af8f47bd0e77948b70",
+      "byte_length": 19020,
+      "file_root": "4a2ee573be2eb0b6e80381222f1885d2046ffbc3e62b8e624f8eb05ecd13f5da",
+      "relative_path": "candidates/mobile/pbr/orm.png",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-JWGFcH\\assets\\001-guardian-character",
+      "cell_ids": [
+        "cell:guardian-character"
+      ],
+      "priority": 1000,
+      "status": "MATERIALIZED",
+      "role": "occlusion-roughness-metallic",
+      "pbr_pack_root": "7fd12e06b60bb64b1a930cf7f0a3ecfb6754b11cff5aea57b546010d10b741d1"
+    },
+    {
+      "id": "asset:urrf:ice-relic-prop:lod1:pbr:base-color",
+      "uri": "urrf+candidate://asset%3A795500e07f30c1152d3638b3/pbr/base-color",
+      "format": "image/png",
+      "kind": "texture",
+      "sha256": "713a18106feabc65f5a1eab869faf0eaf2d570513f0670879dd5ba52456571ad",
+      "byte_length": 15118,
+      "file_root": "299fa704969b7053dbb5183249a50147aa4600f4ba12ec99bc406ab7177f197b",
+      "relative_path": "candidates/mobile/pbr/base-color.png",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-JWGFcH\\assets\\002-ice-relic-prop",
+      "cell_ids": [
+        "cell:ice-relic-prop"
+      ],
+      "priority": 999,
+      "status": "MATERIALIZED",
+      "role": "base-color",
+      "pbr_pack_root": "de37a08b457695ba75207a58c5569016de0d51c74644c979ffe54648f57a6f59"
+    },
+    {
+      "id": "asset:urrf:ice-relic-prop:lod1:pbr:emissive",
+      "uri": "urrf+candidate://asset%3A795500e07f30c1152d3638b3/pbr/emissive",
+      "format": "image/png",
+      "kind": "texture",
+      "sha256": "31cc57591b6b059d0186f9554328e46fffa86bb47797790fc62306ab1735f8de",
+      "byte_length": 428,
+      "file_root": "13ceff94cca7e73afcebf6b206f3b13967583dd74c8b872ff91212cecc282658",
+      "relative_path": "candidates/mobile/pbr/emissive.png",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-JWGFcH\\assets\\002-ice-relic-prop",
+      "cell_ids": [
+        "cell:ice-relic-prop"
+      ],
+      "priority": 999,
+      "status": "MATERIALIZED",
+      "role": "emissive",
+      "pbr_pack_root": "de37a08b457695ba75207a58c5569016de0d51c74644c979ffe54648f57a6f59"
+    },
+    {
+      "id": "asset:urrf:ice-relic-prop:lod1:pbr:normal",
+      "uri": "urrf+candidate://asset%3A795500e07f30c1152d3638b3/pbr/normal",
+      "format": "image/png",
+      "kind": "texture",
+      "sha256": "9ef6c3679ea792bec1ed379215082d4c9460fd73202627882087dff96d35dab5",
+      "byte_length": 8974,
+      "file_root": "d1622a7a34f56df8c31e95c7afab59a2f553d6bcfd07b8939d210fb881654f21",
+      "relative_path": "candidates/mobile/pbr/normal.png",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-JWGFcH\\assets\\002-ice-relic-prop",
+      "cell_ids": [
+        "cell:ice-relic-prop"
+      ],
+      "priority": 999,
+      "status": "MATERIALIZED",
+      "role": "normal",
+      "pbr_pack_root": "de37a08b457695ba75207a58c5569016de0d51c74644c979ffe54648f57a6f59"
+    },
+    {
+      "id": "asset:urrf:ice-relic-prop:lod1:pbr:occlusion-roughness-metallic",
+      "uri": "urrf+candidate://asset%3A795500e07f30c1152d3638b3/pbr/occlusion-roughness-metallic",
+      "format": "image/png",
+      "kind": "texture",
+      "sha256": "64a9f398ed21afca15698bab382ebd535b7699b9c5670875f891511d72bf7c94",
+      "byte_length": 19094,
+      "file_root": "29389f27f1d2fb5b7f0e767d8c0a4f76cf3299b6c8da26920ce285841b909995",
+      "relative_path": "candidates/mobile/pbr/orm.png",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-JWGFcH\\assets\\002-ice-relic-prop",
+      "cell_ids": [
+        "cell:ice-relic-prop"
+      ],
+      "priority": 999,
+      "status": "MATERIALIZED",
+      "role": "occlusion-roughness-metallic",
+      "pbr_pack_root": "de37a08b457695ba75207a58c5569016de0d51c74644c979ffe54648f57a6f59"
+    }
+  ],
+  "total_byte_length": 186808,
+  "candidate_only": true,
+  "authoritative": false,
+  "canonical_write_authorized": false,
+  "authority": {
+    "canonical_owner": "RNCS",
+    "representation_owner": "URRF",
+    "provider_can_write_authoritative_world_state": false,
+    "provider_can_commit": false,
+    "acceptance_can_commit": false,
+    "rncs_authority_required": true
+  },
+  "materialization_root": "7d0eea89b905655e42c61b3a4559b3ec6ef121d335c76e4ccce18e839660610a"
+}

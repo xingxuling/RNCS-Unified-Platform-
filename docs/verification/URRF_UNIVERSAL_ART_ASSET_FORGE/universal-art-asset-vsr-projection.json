@@ -1,11 +1,11 @@
 {
   "format": "urrf.universal-art-asset-vsr-projection.v0.1",
   "version": "0.1.0",
-  "projection_id": "urrf-universal-art-asset-vsr-projection:d6a686e401772ca1133bc376",
-  "assembly_root": "4ee9f941a1bec24035eceaa702e9ef77191112b8d70d8b3de9e8340289db416a",
-  "batch_root": "4f1330a66b78558aa2612fde0829f12b90f43e7e3d2d31514d275c5d3cdeffd9",
-  "source_reality_root": "4f1330a66b78558aa2612fde0829f12b90f43e7e3d2d31514d275c5d3cdeffd9",
-  "placement_root": "749db45954dc4056d9983fcbd54ad3d49e2572de10069dff24b77b6fee0aa257",
+  "projection_id": "urrf-universal-art-asset-vsr-projection:0e9bdebe0e4017d69d8cc39e",
+  "assembly_root": "7efd6539c505069eb552ea2fcd6ec3ef63b6088ed291f985d32147a04dceb5b9",
+  "batch_root": "8077dfe2715c73c0090f1cf66a30590c4b5accffbec34b5e1edbfdb05c9dfd14",
+  "source_reality_root": "8077dfe2715c73c0090f1cf66a30590c4b5accffbec34b5e1edbfdb05c9dfd14",
+  "placement_root": "5361a0baed9597710875cbd025adbeb2860544ce19fbef1ec69d563aad91e652",
   "scene_id": "urrf-universal-art-assembly-integration",
   "world_id": "world:urrf-universal-art-assembly-integration",
   "status": "BLOCKED",
@@ -19,6 +19,12 @@
       "sha256": "c4ad66b4ecf4051c28c642848075eeeba8a634fdcb3d363d50901ff06e165d32",
       "byteLength": 59880,
       "kind": "mesh",
+      "dependencies": [
+        "asset:urrf:guardian-character:lod0:pbr:base-color",
+        "asset:urrf:guardian-character:lod0:pbr:emissive",
+        "asset:urrf:guardian-character:lod0:pbr:normal",
+        "asset:urrf:guardian-character:lod0:pbr:occlusion-roughness-metallic"
+      ],
       "cellIds": [
         "cell:guardian-character"
       ],
@@ -36,8 +42,8 @@
         ]
       },
       "metadata": {
-        "assembly_root": "4ee9f941a1bec24035eceaa702e9ef77191112b8d70d8b3de9e8340289db416a",
-        "batch_root": "4f1330a66b78558aa2612fde0829f12b90f43e7e3d2d31514d275c5d3cdeffd9",
+        "assembly_root": "7efd6539c505069eb552ea2fcd6ec3ef63b6088ed291f985d32147a04dceb5b9",
+        "batch_root": "8077dfe2715c73c0090f1cf66a30590c4b5accffbec34b5e1edbfdb05c9dfd14",
         "asset_key": "guardian-character",
         "asset_id": "asset:cf644862f780b86ae2bd9e94",
         "candidate_root": "7b927b6e736cb2fad8e019f067a2b8db7b96779b3b30f1a758f1db2c3e12578a",
@@ -45,9 +51,11 @@
         "candidate_file_root": "c4ad66b4ecf4051c28c642848075eeeba8a634fdcb3d363d50901ff06e165d32",
         "file_root": "b21b483ae0f8df76711b6ae53e6bb515ce86e905fe52bd66713aeeafbae49a4a",
         "relative_path": "candidates/mobile/mesh/lod0.glb",
-        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-eyGQ6v\\assets\\001-guardian-character",
+        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-JWGFcH\\assets\\001-guardian-character",
         "selected_lod": 0,
         "quality_tier": "AAA",
+        "pbr_pack_root": "7fd12e06b60bb64b1a930cf7f0a3ecfb6754b11cff5aea57b546010d10b741d1",
+        "pbr_channel_count": 4,
         "candidate_only": true,
         "authoritative": false
       }
@@ -59,6 +67,12 @@
       "sha256": "fd21db04bb2a9361bbb29b3e2fb5bf1dc1b32756591bce8b5ccf9a3dfc47675e",
       "byteLength": 39596,
       "kind": "mesh",
+      "dependencies": [
+        "asset:urrf:ice-relic-prop:lod1:pbr:base-color",
+        "asset:urrf:ice-relic-prop:lod1:pbr:emissive",
+        "asset:urrf:ice-relic-prop:lod1:pbr:normal",
+        "asset:urrf:ice-relic-prop:lod1:pbr:occlusion-roughness-metallic"
+      ],
       "cellIds": [
         "cell:ice-relic-prop"
       ],
@@ -76,8 +90,8 @@
         ]
       },
       "metadata": {
-        "assembly_root": "4ee9f941a1bec24035eceaa702e9ef77191112b8d70d8b3de9e8340289db416a",
-        "batch_root": "4f1330a66b78558aa2612fde0829f12b90f43e7e3d2d31514d275c5d3cdeffd9",
+        "assembly_root": "7efd6539c505069eb552ea2fcd6ec3ef63b6088ed291f985d32147a04dceb5b9",
+        "batch_root": "8077dfe2715c73c0090f1cf66a30590c4b5accffbec34b5e1edbfdb05c9dfd14",
         "asset_key": "ice-relic-prop",
         "asset_id": "asset:795500e07f30c1152d3638b3",
         "candidate_root": "fd51e5755fb38c8f5a91e8940656ca919933c5b4901964153b3a70fe74818572",
@@ -85,9 +99,222 @@
         "candidate_file_root": "fd21db04bb2a9361bbb29b3e2fb5bf1dc1b32756591bce8b5ccf9a3dfc47675e",
         "file_root": "85e157ff631d314e13d83820a5784f49925e93063dc84afd6a52966ee005faa3",
         "relative_path": "candidates/mobile/mesh/lod1.glb",
-        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-eyGQ6v\\assets\\002-ice-relic-prop",
+        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-JWGFcH\\assets\\002-ice-relic-prop",
         "selected_lod": 1,
         "quality_tier": "AAA",
+        "pbr_pack_root": "de37a08b457695ba75207a58c5569016de0d51c74644c979ffe54648f57a6f59",
+        "pbr_channel_count": 4,
+        "candidate_only": true,
+        "authoritative": false
+      }
+    }
+  ],
+  "dependency_count": 8,
+  "dependencies": [
+    {
+      "id": "asset:urrf:guardian-character:lod0:pbr:base-color",
+      "uri": "urrf+candidate://asset%3Acf644862f780b86ae2bd9e94/pbr/base-color",
+      "format": "image/png",
+      "sha256": "c12c9fdc8e32629097af8e4fcf6ca914d113d8526e76d2426321c18332982d6d",
+      "byteLength": 15231,
+      "kind": "texture",
+      "cellIds": [
+        "cell:guardian-character"
+      ],
+      "priority": 1000,
+      "metadata": {
+        "assembly_root": "7efd6539c505069eb552ea2fcd6ec3ef63b6088ed291f985d32147a04dceb5b9",
+        "batch_root": "8077dfe2715c73c0090f1cf66a30590c4b5accffbec34b5e1edbfdb05c9dfd14",
+        "asset_key": "guardian-character",
+        "asset_id": "asset:cf644862f780b86ae2bd9e94",
+        "candidate_root": "7b927b6e736cb2fad8e019f067a2b8db7b96779b3b30f1a758f1db2c3e12578a",
+        "pbr_pack_root": "7fd12e06b60bb64b1a930cf7f0a3ecfb6754b11cff5aea57b546010d10b741d1",
+        "pbr_role": "base-color",
+        "file_root": "8047f96ad5ca167f9a64da12287f939cc5db69d66034ad9df38d6c4db746ddcf",
+        "relative_path": "candidates/mobile/pbr/base-color.png",
+        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-JWGFcH\\assets\\001-guardian-character",
+        "candidate_only": true,
+        "authoritative": false
+      }
+    },
+    {
+      "id": "asset:urrf:guardian-character:lod0:pbr:emissive",
+      "uri": "urrf+candidate://asset%3Acf644862f780b86ae2bd9e94/pbr/emissive",
+      "format": "image/png",
+      "sha256": "31cc57591b6b059d0186f9554328e46fffa86bb47797790fc62306ab1735f8de",
+      "byteLength": 428,
+      "kind": "texture",
+      "cellIds": [
+        "cell:guardian-character"
+      ],
+      "priority": 1000,
+      "metadata": {
+        "assembly_root": "7efd6539c505069eb552ea2fcd6ec3ef63b6088ed291f985d32147a04dceb5b9",
+        "batch_root": "8077dfe2715c73c0090f1cf66a30590c4b5accffbec34b5e1edbfdb05c9dfd14",
+        "asset_key": "guardian-character",
+        "asset_id": "asset:cf644862f780b86ae2bd9e94",
+        "candidate_root": "7b927b6e736cb2fad8e019f067a2b8db7b96779b3b30f1a758f1db2c3e12578a",
+        "pbr_pack_root": "7fd12e06b60bb64b1a930cf7f0a3ecfb6754b11cff5aea57b546010d10b741d1",
+        "pbr_role": "emissive",
+        "file_root": "13ceff94cca7e73afcebf6b206f3b13967583dd74c8b872ff91212cecc282658",
+        "relative_path": "candidates/mobile/pbr/emissive.png",
+        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-JWGFcH\\assets\\001-guardian-character",
+        "candidate_only": true,
+        "authoritative": false
+      }
+    },
+    {
+      "id": "asset:urrf:guardian-character:lod0:pbr:normal",
+      "uri": "urrf+candidate://asset%3Acf644862f780b86ae2bd9e94/pbr/normal",
+      "format": "image/png",
+      "sha256": "a65e9ddc641d0902fdb46a353342491be37fb7ae26060113debc128fc452b4f9",
+      "byteLength": 9039,
+      "kind": "texture",
+      "cellIds": [
+        "cell:guardian-character"
+      ],
+      "priority": 1000,
+      "metadata": {
+        "assembly_root": "7efd6539c505069eb552ea2fcd6ec3ef63b6088ed291f985d32147a04dceb5b9",
+        "batch_root": "8077dfe2715c73c0090f1cf66a30590c4b5accffbec34b5e1edbfdb05c9dfd14",
+        "asset_key": "guardian-character",
+        "asset_id": "asset:cf644862f780b86ae2bd9e94",
+        "candidate_root": "7b927b6e736cb2fad8e019f067a2b8db7b96779b3b30f1a758f1db2c3e12578a",
+        "pbr_pack_root": "7fd12e06b60bb64b1a930cf7f0a3ecfb6754b11cff5aea57b546010d10b741d1",
+        "pbr_role": "normal",
+        "file_root": "7846a98a1055cb3d3f5c207e06ce75cc036a57ec8458ffcfae8be90997053386",
+        "relative_path": "candidates/mobile/pbr/normal.png",
+        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-JWGFcH\\assets\\001-guardian-character",
+        "candidate_only": true,
+        "authoritative": false
+      }
+    },
+    {
+      "id": "asset:urrf:guardian-character:lod0:pbr:occlusion-roughness-metallic",
+      "uri": "urrf+candidate://asset%3Acf644862f780b86ae2bd9e94/pbr/occlusion-roughness-metallic",
+      "format": "image/png",
+      "sha256": "433510ddf77121b4c622bd64a8d0fae01d56d8c1e56546af8f47bd0e77948b70",
+      "byteLength": 19020,
+      "kind": "texture",
+      "cellIds": [
+        "cell:guardian-character"
+      ],
+      "priority": 1000,
+      "metadata": {
+        "assembly_root": "7efd6539c505069eb552ea2fcd6ec3ef63b6088ed291f985d32147a04dceb5b9",
+        "batch_root": "8077dfe2715c73c0090f1cf66a30590c4b5accffbec34b5e1edbfdb05c9dfd14",
+        "asset_key": "guardian-character",
+        "asset_id": "asset:cf644862f780b86ae2bd9e94",
+        "candidate_root": "7b927b6e736cb2fad8e019f067a2b8db7b96779b3b30f1a758f1db2c3e12578a",
+        "pbr_pack_root": "7fd12e06b60bb64b1a930cf7f0a3ecfb6754b11cff5aea57b546010d10b741d1",
+        "pbr_role": "occlusion-roughness-metallic",
+        "file_root": "4a2ee573be2eb0b6e80381222f1885d2046ffbc3e62b8e624f8eb05ecd13f5da",
+        "relative_path": "candidates/mobile/pbr/orm.png",
+        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-JWGFcH\\assets\\001-guardian-character",
+        "candidate_only": true,
+        "authoritative": false
+      }
+    },
+    {
+      "id": "asset:urrf:ice-relic-prop:lod1:pbr:base-color",
+      "uri": "urrf+candidate://asset%3A795500e07f30c1152d3638b3/pbr/base-color",
+      "format": "image/png",
+      "sha256": "713a18106feabc65f5a1eab869faf0eaf2d570513f0670879dd5ba52456571ad",
+      "byteLength": 15118,
+      "kind": "texture",
+      "cellIds": [
+        "cell:ice-relic-prop"
+      ],
+      "priority": 999,
+      "metadata": {
+        "assembly_root": "7efd6539c505069eb552ea2fcd6ec3ef63b6088ed291f985d32147a04dceb5b9",
+        "batch_root": "8077dfe2715c73c0090f1cf66a30590c4b5accffbec34b5e1edbfdb05c9dfd14",
+        "asset_key": "ice-relic-prop",
+        "asset_id": "asset:795500e07f30c1152d3638b3",
+        "candidate_root": "fd51e5755fb38c8f5a91e8940656ca919933c5b4901964153b3a70fe74818572",
+        "pbr_pack_root": "de37a08b457695ba75207a58c5569016de0d51c74644c979ffe54648f57a6f59",
+        "pbr_role": "base-color",
+        "file_root": "299fa704969b7053dbb5183249a50147aa4600f4ba12ec99bc406ab7177f197b",
+        "relative_path": "candidates/mobile/pbr/base-color.png",
+        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-JWGFcH\\assets\\002-ice-relic-prop",
+        "candidate_only": true,
+        "authoritative": false
+      }
+    },
+    {
+      "id": "asset:urrf:ice-relic-prop:lod1:pbr:emissive",
+      "uri": "urrf+candidate://asset%3A795500e07f30c1152d3638b3/pbr/emissive",
+      "format": "image/png",
+      "sha256": "31cc57591b6b059d0186f9554328e46fffa86bb47797790fc62306ab1735f8de",
+      "byteLength": 428,
+      "kind": "texture",
+      "cellIds": [
+        "cell:ice-relic-prop"
+      ],
+      "priority": 999,
+      "metadata": {
+        "assembly_root": "7efd6539c505069eb552ea2fcd6ec3ef63b6088ed291f985d32147a04dceb5b9",
+        "batch_root": "8077dfe2715c73c0090f1cf66a30590c4b5accffbec34b5e1edbfdb05c9dfd14",
+        "asset_key": "ice-relic-prop",
+        "asset_id": "asset:795500e07f30c1152d3638b3",
+        "candidate_root": "fd51e5755fb38c8f5a91e8940656ca919933c5b4901964153b3a70fe74818572",
+        "pbr_pack_root": "de37a08b457695ba75207a58c5569016de0d51c74644c979ffe54648f57a6f59",
+        "pbr_role": "emissive",
+        "file_root": "13ceff94cca7e73afcebf6b206f3b13967583dd74c8b872ff91212cecc282658",
+        "relative_path": "candidates/mobile/pbr/emissive.png",
+        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-JWGFcH\\assets\\002-ice-relic-prop",
+        "candidate_only": true,
+        "authoritative": false
+      }
+    },
+    {
+      "id": "asset:urrf:ice-relic-prop:lod1:pbr:normal",
+      "uri": "urrf+candidate://asset%3A795500e07f30c1152d3638b3/pbr/normal",
+      "format": "image/png",
+      "sha256": "9ef6c3679ea792bec1ed379215082d4c9460fd73202627882087dff96d35dab5",
+      "byteLength": 8974,
+      "kind": "texture",
+      "cellIds": [
+        "cell:ice-relic-prop"
+      ],
+      "priority": 999,
+      "metadata": {
+        "assembly_root": "7efd6539c505069eb552ea2fcd6ec3ef63b6088ed291f985d32147a04dceb5b9",
+        "batch_root": "8077dfe2715c73c0090f1cf66a30590c4b5accffbec34b5e1edbfdb05c9dfd14",
+        "asset_key": "ice-relic-prop",
+        "asset_id": "asset:795500e07f30c1152d3638b3",
+        "candidate_root": "fd51e5755fb38c8f5a91e8940656ca919933c5b4901964153b3a70fe74818572",
+        "pbr_pack_root": "de37a08b457695ba75207a58c5569016de0d51c74644c979ffe54648f57a6f59",
+        "pbr_role": "normal",
+        "file_root": "d1622a7a34f56df8c31e95c7afab59a2f553d6bcfd07b8939d210fb881654f21",
+        "relative_path": "candidates/mobile/pbr/normal.png",
+        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-JWGFcH\\assets\\002-ice-relic-prop",
+        "candidate_only": true,
+        "authoritative": false
+      }
+    },
+    {
+      "id": "asset:urrf:ice-relic-prop:lod1:pbr:occlusion-roughness-metallic",
+      "uri": "urrf+candidate://asset%3A795500e07f30c1152d3638b3/pbr/occlusion-roughness-metallic",
+      "format": "image/png",
+      "sha256": "64a9f398ed21afca15698bab382ebd535b7699b9c5670875f891511d72bf7c94",
+      "byteLength": 19094,
+      "kind": "texture",
+      "cellIds": [
+        "cell:ice-relic-prop"
+      ],
+      "priority": 999,
+      "metadata": {
+        "assembly_root": "7efd6539c505069eb552ea2fcd6ec3ef63b6088ed291f985d32147a04dceb5b9",
+        "batch_root": "8077dfe2715c73c0090f1cf66a30590c4b5accffbec34b5e1edbfdb05c9dfd14",
+        "asset_key": "ice-relic-prop",
+        "asset_id": "asset:795500e07f30c1152d3638b3",
+        "candidate_root": "fd51e5755fb38c8f5a91e8940656ca919933c5b4901964153b3a70fe74818572",
+        "pbr_pack_root": "de37a08b457695ba75207a58c5569016de0d51c74644c979ffe54648f57a6f59",
+        "pbr_role": "occlusion-roughness-metallic",
+        "file_root": "29389f27f1d2fb5b7f0e767d8c0a4f76cf3299b6c8da26920ce285841b909995",
+        "relative_path": "candidates/mobile/pbr/orm.png",
+        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-JWGFcH\\assets\\002-ice-relic-prop",
         "candidate_only": true,
         "authoritative": false
       }
@@ -140,5 +367,5 @@
     "acceptance_can_commit": false,
     "rncs_authority_required": true
   },
-  "projection_root": "22c96ac800cf8b0b91495df5b297065933187d2d3ba0ec1ff2f6f0743a3c293f"
+  "projection_root": "d0f1c257ffda4002148e9992d8580a86888792e4c59d4f2b7577cbfc16f6a29b"
 }

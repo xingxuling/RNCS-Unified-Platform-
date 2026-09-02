@@ -17,6 +17,8 @@
     "runtime_consumer",
     "asset_count",
     "assets",
+    "dependency_count",
+    "dependencies",
     "streaming",
     "candidate_only",
     "authoritative",
@@ -43,7 +45,7 @@
       "maxItems": 64,
       "items": {
         "type": "object",
-        "required": ["id", "uri", "format", "sha256", "byteLength", "kind", "cellIds", "priority", "transform", "metadata"],
+          "required": ["id", "uri", "format", "sha256", "byteLength", "kind", "dependencies", "cellIds", "priority", "transform", "metadata"],
         "properties": {
           "id": {"type": "string", "minLength": 1},
           "uri": {"type": "string", "minLength": 1},
@@ -51,6 +53,7 @@
           "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
           "byteLength": {"type": "integer", "minimum": 1},
           "kind": {"const": "mesh"},
+          "dependencies": {"type": "array", "minItems": 4, "items": {"type": "string", "minLength": 1}},
           "cellIds": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
           "priority": {"type": "integer", "minimum": 1},
           "transform": {
@@ -78,6 +81,48 @@
               "output_directory": {"type": "string", "minLength": 1},
               "selected_lod": {"type": "integer", "minimum": 0, "maximum": 32},
               "quality_tier": {"enum": ["PREVIEW", "PRODUCTION", "AAA"]},
+              "pbr_pack_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+              "pbr_channel_count": {"type": "integer", "minimum": 4, "maximum": 64},
+              "candidate_only": {"const": true},
+              "authoritative": {"const": false}
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "dependency_count": {"type": "integer", "minimum": 4, "maximum": 256},
+    "dependencies": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 256,
+      "items": {
+        "type": "object",
+        "required": ["id", "uri", "format", "sha256", "byteLength", "kind", "cellIds", "priority", "metadata"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "uri": {"type": "string", "minLength": 1},
+          "format": {"type": "string", "pattern": "^image/[^\\s]+$"},
+          "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "byteLength": {"type": "integer", "minimum": 1},
+          "kind": {"const": "texture"},
+          "cellIds": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+          "priority": {"type": "integer", "minimum": 1},
+          "metadata": {
+            "type": "object",
+            "required": ["assembly_root", "batch_root", "asset_key", "asset_id", "candidate_root", "pbr_pack_root", "pbr_role", "file_root", "relative_path", "output_directory", "candidate_only", "authoritative"],
+            "properties": {
+              "assembly_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+              "batch_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+              "asset_key": {"type": "string", "minLength": 1},
+              "asset_id": {"type": "string", "minLength": 1},
+              "candidate_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+              "pbr_pack_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+              "pbr_role": {"enum": ["base-color", "normal", "occlusion-roughness-metallic", "emissive"]},
+              "file_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+              "relative_path": {"type": "string", "minLength": 1},
+              "output_directory": {"type": "string", "minLength": 1},
               "candidate_only": {"const": true},
               "authoritative": {"const": false}
             },

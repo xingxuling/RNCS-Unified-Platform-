@@ -38,6 +38,7 @@ export const UNIVERSAL_ART_ASSET_EVIDENCE_BUNDLE_FORMAT = 'urrf.universal-art-as
 export const UNIVERSAL_ART_ASSET_BATCH_FORMAT = 'urrf.universal-art-asset-batch.v0.1';
 export const UNIVERSAL_ART_ASSET_ASSEMBLY_FORMAT = 'urrf.universal-art-asset-assembly.v0.1';
 export const UNIVERSAL_ART_ASSET_VSR_PROJECTION_FORMAT = 'urrf.universal-art-asset-vsr-projection.v0.1';
+export const UNIVERSAL_ART_ASSET_VSR_MATERIALIZATION_FORMAT = 'urrf.universal-art-asset-vsr-materialization.v0.1';
 export const UNIVERSAL_ART_ASSET_FORGE_VERSION = '0.1.0';
 
 export const UNIVERSAL_ART_ASSET_PROFILES = Object.freeze([
@@ -2892,6 +2893,40 @@ export function verifyUniversalArtAssetAssembly(assembly, {batch = null, assetRe
  * The URI is a candidate-provider seam; the local path and byte root remain
  * explicit so a later VSR importer can perform the actual file/GPU work.
  */
+const UNIVERSAL_ART_ASSET_VSR_PBR_ROLES = Object.freeze(['base-color', 'normal', 'occlusion-roughness-metallic', 'emissive']);
+
+function universalArtAssetVsrPbrDependencyId(assetId, role) {
+  return `${assetId}:pbr:${encodeURIComponent(String(role))}`;
+}
+
+function universalArtAssetVsrPbrDependency(meshAsset, sourceAsset, channel) {
+  const role = String(channel?.role ?? '');
+  return {
+    id: universalArtAssetVsrPbrDependencyId(meshAsset.id, role),
+    uri: `urrf+candidate://${encodeURIComponent(sourceAsset.asset_id)}/pbr/${encodeURIComponent(role)}`,
+    format: channel.mime ?? 'image/png',
+    sha256: channel.sha256,
+    byteLength: channel.byte_length,
+    kind: 'texture',
+    cellIds: [sourceAsset.cell_id],
+    priority: sourceAsset.priority,
+    metadata: {
+      assembly_root: meshAsset.metadata.assembly_root,
+      batch_root: meshAsset.metadata.batch_root,
+      asset_key: sourceAsset.asset_key,
+      asset_id: sourceAsset.asset_id,
+      candidate_root: sourceAsset.candidate_root,
+      pbr_pack_root: sourceAsset.source.pbr.pack_root,
+      pbr_role: role,
+      file_root: channel.file_root,
+      relative_path: channel.relative_path,
+      output_directory: sourceAsset.source.output_directory,
+      candidate_only: true,
+      authoritative: false
+    }
+  };
+}
+
 export function lowerUniversalArtAssetAssemblyToVsr(input = {}, options = {}) {
   const value = record(input);
   const assembly = value.format === UNIVERSAL_ART_ASSET_ASSEMBLY_FORMAT
@@ -2908,6 +2943,7 @@ export function lowerUniversalArtAssetAssemblyToVsr(input = {}, options = {}) {
       sha256: asset.source.mesh.sha256,
       byteLength: asset.source.mesh.byte_length,
       kind: 'mesh',
+      dependencies: (asset.source.pbr?.channels ?? []).map(channel => universalArtAssetVsrPbrDependencyId(id, channel.role)),
       cellIds: [asset.cell_id],
       priority: asset.priority,
       transform: {
@@ -2925,13 +2961,17 @@ export function lowerUniversalArtAssetAssemblyToVsr(input = {}, options = {}) {
         file_root: asset.source.mesh.file_root,
         relative_path: asset.source.mesh.relative_path,
         output_directory: asset.source.output_directory,
-        selected_lod: asset.selected_lod,
-        quality_tier: asset.quality_tier,
-        candidate_only: true,
-        authoritative: false
-      }
-    };
+         selected_lod: asset.selected_lod,
+         quality_tier: asset.quality_tier,
+         pbr_pack_root: asset.source.pbr.pack_root,
+         pbr_channel_count: asset.source.pbr.channels.length,
+         candidate_only: true,
+         authoritative: false
+       }
+     };
   });
+  const dependencies = assembly.assets.flatMap((sourceAsset, index) => (sourceAsset.source.pbr?.channels ?? [])
+    .map(channel => universalArtAssetVsrPbrDependency(assets[index], sourceAsset, channel)));
   const cells = assembly.assets.map((asset, index) => ({
     id: asset.cell_id,
     center: [asset.placement_mm[0] / 1000, asset.placement_mm[1] / 1000, asset.placement_mm[2] / 1000],
@@ -2944,7 +2984,11 @@ export function lowerUniversalArtAssetAssemblyToVsr(input = {}, options = {}) {
   const base = {
     format: UNIVERSAL_ART_ASSET_VSR_PROJECTION_FORMAT,
     version: UNIVERSAL_ART_ASSET_FORGE_VERSION,
-    projection_id: stableId('urrf-universal-art-asset-vsr-projection', {assembly_root: assembly.assembly_root, assets: assets.map(asset => asset.id)}),
+    projection_id: stableId('urrf-universal-art-asset-vsr-projection', {
+      assembly_root: assembly.assembly_root,
+      assets: assets.map(asset => asset.id),
+      dependencies: dependencies.map(asset => ({id: asset.id, sha256: asset.sha256, file_root: asset.metadata.file_root}))
+    }),
     assembly_root: assembly.assembly_root,
     batch_root: assembly.batch_root,
     source_reality_root: assembly.source_reality_root,
@@ -2955,6 +2999,8 @@ export function lowerUniversalArtAssetAssemblyToVsr(input = {}, options = {}) {
     runtime_consumer: 'VSR_GLTF_IMPORT',
     asset_count: assets.length,
     assets,
+    dependency_count: dependencies.length,
+    dependencies,
     streaming: {
       world_id: assembly.world_id,
       cells,
@@ -2989,10 +3035,16 @@ export function verifyUniversalArtAssetVsrProjection(projection, {assembly = nul
     check(Array.isArray(projection.assets) && projection.assets.length > 0 && projection.assets.length <= 64, 'VSR_PROJECTION_ASSETS_INVALID');
     const assets = Array.isArray(projection.assets) ? projection.assets : [];
     check(projection.asset_count === assets.length, 'VSR_PROJECTION_ASSET_COUNT_MISMATCH');
+    check(Array.isArray(projection.dependencies) && projection.dependencies.length >= assets.length * 4 && projection.dependencies.length <= 256, 'VSR_PROJECTION_DEPENDENCIES_INVALID');
+    const dependencies = Array.isArray(projection.dependencies) ? projection.dependencies : [];
+    check(projection.dependency_count === dependencies.length, 'VSR_PROJECTION_DEPENDENCY_COUNT_MISMATCH');
     const ids = assets.map(asset => asset?.id);
     check(ids.every(nonEmptyText) && new Set(ids).size === ids.length, 'VSR_PROJECTION_ASSET_IDS_INVALID');
+    const dependencyIds = dependencies.map(asset => asset?.id);
+    check(dependencyIds.every(nonEmptyText) && new Set(dependencyIds).size === dependencyIds.length, 'VSR_PROJECTION_DEPENDENCY_IDS_INVALID');
     const cells = Array.isArray(projection.streaming?.cells) ? projection.streaming.cells : [];
     const cellsById = new Map(cells.map(cell => [cell?.id, cell]));
+    const dependenciesById = new Map(dependencies.map(asset => [asset?.id, asset]));
     check(projection.streaming?.world_id === projection.world_id, 'VSR_PROJECTION_STREAMING_WORLD_MISMATCH');
     check(cells.every(cell => nonEmptyText(cell?.id) && Array.isArray(cell?.assetIds) && cell.assetIds.length === 1 && Number.isFinite(cell?.radius) && cell.radius > 0 && Number.isFinite(cell?.loadRadius) && cell.loadRadius >= 0 && Number.isFinite(cell?.unloadRadius) && cell.unloadRadius >= cell.loadRadius), 'VSR_PROJECTION_STREAMING_CELL_INVALID');
     check(new Set(cells.map(cell => cell?.id)).size === cells.length, 'VSR_PROJECTION_STREAMING_CELL_IDS_INVALID');
@@ -3005,10 +3057,13 @@ export function verifyUniversalArtAssetVsrProjection(projection, {assembly = nul
       const cellIds = Array.isArray(asset.cellIds) ? asset.cellIds : [];
       check(asset.format === 'model/gltf-binary' && asset.kind === 'mesh', `VSR_PROJECTION_ASSET_RECORD_INVALID:${asset?.id ?? 'unknown'}`);
       check(isHexRoot(asset.sha256) && Number.isSafeInteger(asset.byteLength) && asset.byteLength > 0, `VSR_PROJECTION_ASSET_PAYLOAD_INVALID:${asset?.id ?? 'unknown'}`);
+      const assetDependencies = Array.isArray(asset.dependencies) ? asset.dependencies : [];
+      check(assetDependencies.length >= 4 && assetDependencies.every(dependencyId => dependenciesById.has(dependencyId)), `VSR_PROJECTION_ASSET_DEPENDENCIES_INVALID:${asset?.id ?? 'unknown'}`);
       check(cellIds.length === 1 && cellsById.has(cellIds[0]), `VSR_PROJECTION_ASSET_CELL_INVALID:${asset?.id ?? 'unknown'}`);
       check(metadata.assembly_root === projection.assembly_root && metadata.batch_root === projection.batch_root, `VSR_PROJECTION_ASSET_ROOT_BINDING_INVALID:${asset?.id ?? 'unknown'}`);
       check(isHexRoot(metadata.candidate_root) && isHexRoot(metadata.candidate_artifact_root) && isHexRoot(metadata.candidate_file_root) && isHexRoot(metadata.file_root), `VSR_PROJECTION_ASSET_CANDIDATE_ROOT_INVALID:${asset?.id ?? 'unknown'}`);
       check(Number.isSafeInteger(metadata.selected_lod) && metadata.selected_lod >= 0, `VSR_PROJECTION_ASSET_LOD_INVALID:${asset?.id ?? 'unknown'}`);
+      check(isHexRoot(metadata.pbr_pack_root) && Number.isSafeInteger(metadata.pbr_channel_count) && metadata.pbr_channel_count === assetDependencies.length, `VSR_PROJECTION_ASSET_PBR_METADATA_INVALID:${asset?.id ?? 'unknown'}`);
       check(Array.isArray(asset.transform?.translation) && asset.transform.translation.length === 3 && asset.transform.translation.every(Number.isFinite), `VSR_PROJECTION_ASSET_TRANSFORM_INVALID:${asset?.id ?? 'unknown'}`);
       check(Array.isArray(asset.transform?.translation_mm) && asset.transform.translation_mm.length === 3 && asset.transform.translation_mm.every(component => Number.isSafeInteger(component)), `VSR_PROJECTION_ASSET_MM_TRANSFORM_INVALID:${asset?.id ?? 'unknown'}`);
       const cell = cellsById.get(cellIds[0]);
@@ -3020,11 +3075,36 @@ export function verifyUniversalArtAssetVsrProjection(projection, {assembly = nul
           check(asset.id === `asset:urrf:${sourceAsset.asset_key}:lod${sourceAsset.selected_lod}`, `VSR_PROJECTION_ASSET_ID_BINDING_INVALID:${asset?.id ?? 'unknown'}`);
           check(asset.uri === `urrf+candidate://${encodeURIComponent(sourceAsset.asset_id)}/lod${sourceAsset.selected_lod}`, `VSR_PROJECTION_ASSET_URI_BINDING_INVALID:${asset?.id ?? 'unknown'}`);
           check(asset.sha256 === sourceAsset.source?.mesh?.sha256 && asset.byteLength === sourceAsset.source?.mesh?.byte_length, `VSR_PROJECTION_ASSET_PAYLOAD_BINDING_INVALID:${asset?.id ?? 'unknown'}`);
-          check(asset.priority === sourceAsset.priority && cellIds[0] === sourceAsset.cell_id, `VSR_PROJECTION_ASSET_STREAM_BINDING_INVALID:${asset?.id ?? 'unknown'}`);
-          check(metadata.asset_id === sourceAsset.asset_id && metadata.candidate_root === sourceAsset.candidate_root && metadata.candidate_artifact_root === sourceAsset.source?.mesh?.candidate_artifact_root && metadata.candidate_file_root === sourceAsset.source?.mesh?.candidate_file_root && metadata.file_root === sourceAsset.source?.mesh?.file_root && metadata.relative_path === sourceAsset.source?.mesh?.relative_path && metadata.output_directory === sourceAsset.source?.output_directory && metadata.selected_lod === sourceAsset.selected_lod && metadata.quality_tier === sourceAsset.quality_tier, `VSR_PROJECTION_ASSET_METADATA_BINDING_INVALID:${asset?.id ?? 'unknown'}`);
-          check(JSON.stringify(asset.transform?.translation_mm) === JSON.stringify(sourceAsset.placement_mm), `VSR_PROJECTION_ASSET_PLACEMENT_BINDING_INVALID:${asset?.id ?? 'unknown'}`);
+           check(asset.priority === sourceAsset.priority && cellIds[0] === sourceAsset.cell_id, `VSR_PROJECTION_ASSET_STREAM_BINDING_INVALID:${asset?.id ?? 'unknown'}`);
+           check(metadata.asset_id === sourceAsset.asset_id && metadata.candidate_root === sourceAsset.candidate_root && metadata.candidate_artifact_root === sourceAsset.source?.mesh?.candidate_artifact_root && metadata.candidate_file_root === sourceAsset.source?.mesh?.candidate_file_root && metadata.file_root === sourceAsset.source?.mesh?.file_root && metadata.relative_path === sourceAsset.source?.mesh?.relative_path && metadata.output_directory === sourceAsset.source?.output_directory && metadata.selected_lod === sourceAsset.selected_lod && metadata.quality_tier === sourceAsset.quality_tier && metadata.pbr_pack_root === sourceAsset.source?.pbr?.pack_root && metadata.pbr_channel_count === sourceAsset.source?.pbr?.channels?.length, `VSR_PROJECTION_ASSET_METADATA_BINDING_INVALID:${asset?.id ?? 'unknown'}`);
+           const expectedDependencyIds = (sourceAsset.source?.pbr?.channels ?? []).map(channel => universalArtAssetVsrPbrDependencyId(asset.id, channel.role));
+           check(JSON.stringify(assetDependencies) === JSON.stringify(expectedDependencyIds), `VSR_PROJECTION_ASSET_PBR_DEPENDENCY_BINDING_INVALID:${asset?.id ?? 'unknown'}`);
+           check(JSON.stringify(asset.transform?.translation_mm) === JSON.stringify(sourceAsset.placement_mm), `VSR_PROJECTION_ASSET_PLACEMENT_BINDING_INVALID:${asset?.id ?? 'unknown'}`);
           check(JSON.stringify(asset.transform?.translation) === JSON.stringify(sourceAsset.placement_mm.map(component => component / 1000)), `VSR_PROJECTION_ASSET_METER_BINDING_INVALID:${asset?.id ?? 'unknown'}`);
           check(JSON.stringify(cell?.center) === JSON.stringify(sourceAsset.placement_mm.map(component => component / 1000)), `VSR_PROJECTION_CELL_CENTER_BINDING_INVALID:${asset?.id ?? 'unknown'}`);
+        }
+      }
+    }
+    for (const dependency of dependencies) {
+      const id = dependency?.id ?? 'unknown';
+      const metadata = record(dependency?.metadata);
+      const cellIds = Array.isArray(dependency?.cellIds) ? dependency.cellIds : [];
+      check(dependency?.kind === 'texture' && nonEmptyText(dependency?.format) && String(dependency.format).startsWith('image/'), `VSR_PROJECTION_DEPENDENCY_RECORD_INVALID:${id}`);
+      check(isHexRoot(dependency?.sha256) && Number.isSafeInteger(dependency?.byteLength) && dependency.byteLength > 0, `VSR_PROJECTION_DEPENDENCY_PAYLOAD_INVALID:${id}`);
+      check(cellIds.length === 1 && cellsById.has(cellIds[0]), `VSR_PROJECTION_DEPENDENCY_CELL_INVALID:${id}`);
+      check(isHexRoot(metadata.assembly_root) && metadata.assembly_root === projection.assembly_root && isHexRoot(metadata.batch_root) && metadata.batch_root === projection.batch_root, `VSR_PROJECTION_DEPENDENCY_ROOT_BINDING_INVALID:${id}`);
+      check(isHexRoot(metadata.candidate_root) && isHexRoot(metadata.pbr_pack_root) && isHexRoot(metadata.file_root) && nonEmptyText(metadata.pbr_role) && UNIVERSAL_ART_ASSET_VSR_PBR_ROLES.includes(metadata.pbr_role), `VSR_PROJECTION_DEPENDENCY_METADATA_INVALID:${id}`);
+      check(nonEmptyText(metadata.relative_path) && nonEmptyText(metadata.output_directory), `VSR_PROJECTION_DEPENDENCY_PATH_INVALID:${id}`);
+      const cell = cellsById.get(cellIds[0]);
+      check(Array.isArray(cell?.assetIds) && cell.assetIds.some(assetId => assetId === id || assets.some(asset => asset.id === assetId && asset.dependencies?.includes(id))), `VSR_PROJECTION_DEPENDENCY_CELL_ASSET_MISMATCH:${id}`);
+      if (assemblyAssetsByKey) {
+        const sourceAsset = assemblyAssetsByKey.get(metadata.asset_key);
+        const sourceChannel = sourceAsset?.source?.pbr?.channels?.find(channel => channel.role === metadata.pbr_role);
+        check(Boolean(sourceAsset && sourceChannel), `VSR_PROJECTION_ASSEMBLY_DEPENDENCY_MISSING:${id}`);
+        if (sourceAsset && sourceChannel) {
+          const meshAsset = assets.find(asset => asset.metadata?.asset_key === sourceAsset.asset_key);
+          check(Boolean(meshAsset) && id === universalArtAssetVsrPbrDependencyId(meshAsset.id, sourceChannel.role), `VSR_PROJECTION_DEPENDENCY_ID_BINDING_INVALID:${id}`);
+          check(dependency.uri === `urrf+candidate://${encodeURIComponent(sourceAsset.asset_id)}/pbr/${encodeURIComponent(sourceChannel.role)}` && dependency.sha256 === sourceChannel.sha256 && dependency.byteLength === sourceChannel.byte_length && metadata.pbr_pack_root === sourceAsset.source.pbr.pack_root && metadata.file_root === sourceChannel.file_root && metadata.relative_path === sourceChannel.relative_path && metadata.output_directory === sourceAsset.source.output_directory && cellIds[0] === sourceAsset.cell_id && dependency.priority === sourceAsset.priority, `VSR_PROJECTION_DEPENDENCY_SOURCE_BINDING_INVALID:${id}`);
         }
       }
     }
@@ -3049,4 +3129,240 @@ export function verifyUniversalArtAssetVsrProjection(projection, {assembly = nul
     errors.push(`VERIFY_EXCEPTION:${error.name}:${error.message}`);
   }
   return {valid: errors.length === 0, errors, projection_root: projection.projection_root ?? null};
+}
+
+function universalArtAssetVsrPayloadBytes(value, assetId) {
+  if (value instanceof ArrayBuffer) return new Uint8Array(value.slice(0));
+  if (ArrayBuffer.isView(value)) return Uint8Array.from(new Uint8Array(value.buffer, value.byteOffset, value.byteLength));
+  throw new GenesisError('UNIVERSAL_ART_ASSET_VSR_MATERIALIZATION_PAYLOAD_INVALID', assetId);
+}
+
+function universalArtAssetVsrPayloadMap(payloads) {
+  if (payloads instanceof Map) return payloads;
+  if (payloads && typeof payloads.get === 'function') return payloads;
+  if (payloads && typeof payloads === 'object' && !Array.isArray(payloads)) return new Map(Object.entries(payloads));
+  throw new GenesisError('UNIVERSAL_ART_ASSET_VSR_MATERIALIZATION_PAYLOADS_INVALID');
+}
+
+function universalArtAssetVsrMaterializationPath(metadata, assetId) {
+  const outputDirectory = path.resolve(String(metadata?.output_directory ?? ''));
+  if (!nonEmptyText(metadata?.output_directory)) throw new GenesisError('UNIVERSAL_ART_ASSET_VSR_MATERIALIZATION_OUTPUT_DIRECTORY_MISSING', assetId);
+  const relativePath = universalArtAssetAssemblyRelativePath(metadata.relative_path, 'UNIVERSAL_ART_ASSET_VSR_MATERIALIZATION_PATH_INVALID', assetId);
+  const absolutePath = path.resolve(outputDirectory, relativePath);
+  const outputPrefix = `${outputDirectory}${path.sep}`;
+  if (!absolutePath.startsWith(outputPrefix)) throw new GenesisError('UNIVERSAL_ART_ASSET_VSR_MATERIALIZATION_PATH_INVALID', assetId);
+  return {outputDirectory, relativePath, absolutePath};
+}
+
+function materializeUniversalArtAssetVsrPayload(source, readFile, payloads) {
+  const id = source.id;
+  const location = universalArtAssetVsrMaterializationPath(source.metadata, id);
+  let raw;
+  try {
+    raw = readFile(location.absolutePath);
+  } catch (error) {
+    throw new GenesisError('UNIVERSAL_ART_ASSET_VSR_MATERIALIZATION_FILE_READ_FAILED', `${id}:${error.message}`);
+  }
+  const bytes = universalArtAssetVsrPayloadBytes(raw, id);
+  const actualSha256 = createHash('sha256').update(bytes).digest('hex');
+  const actualFileRoot = rootHash(Buffer.from(bytes).toString('base64'));
+  if (bytes.byteLength !== source.byteLength) throw new GenesisError('UNIVERSAL_ART_ASSET_VSR_MATERIALIZATION_BYTE_LENGTH_MISMATCH', id);
+  if (actualSha256 !== source.sha256) throw new GenesisError('UNIVERSAL_ART_ASSET_VSR_MATERIALIZATION_SHA256_MISMATCH', id);
+  if (actualFileRoot !== source.metadata.file_root) throw new GenesisError('UNIVERSAL_ART_ASSET_VSR_MATERIALIZATION_FILE_ROOT_MISMATCH', id);
+  payloads.set(id, bytes);
+  const materialized = {
+    id,
+    uri: source.uri,
+    format: source.format,
+    kind: source.kind,
+    sha256: actualSha256,
+    byte_length: bytes.byteLength,
+    file_root: actualFileRoot,
+    relative_path: location.relativePath,
+    output_directory: location.outputDirectory,
+    cell_ids: [...source.cellIds],
+    priority: source.priority,
+    status: 'MATERIALIZED'
+  };
+  if (source.kind === 'mesh') {
+    materialized.selected_lod = source.metadata.selected_lod;
+    materialized.dependencies = [...(source.dependencies ?? [])];
+  } else {
+    materialized.role = source.metadata.pbr_role;
+    materialized.pbr_pack_root = source.metadata.pbr_pack_root;
+  }
+  return materialized;
+}
+
+/**
+ * Read the verified projection's selected GLBs and external PBR channels into
+ * bounded local payloads. This is the file/materialization seam consumed by a
+ * VSR streamer; it does not import, upload, render, merge meshes, or mutate
+ * RNCS canonical state.
+ */
+export function materializeUniversalArtAssetVsrProjection(projection, {
+  assembly = null,
+  max_total_bytes = null,
+  maxTotalBytes = 268435456,
+  readFile = filePath => fs.readFileSync(filePath)
+} = {}) {
+  const projectionVerification = verifyUniversalArtAssetVsrProjection(projection, {assembly});
+  if (!projectionVerification.valid) throw new GenesisError('UNIVERSAL_ART_ASSET_VSR_PROJECTION_INVALID', projectionVerification.errors.join(','));
+  if (typeof readFile !== 'function') throw new GenesisError('UNIVERSAL_ART_ASSET_VSR_MATERIALIZATION_READER_INVALID');
+  const totalBudget = Number(max_total_bytes ?? maxTotalBytes);
+  if (!Number.isSafeInteger(totalBudget) || totalBudget <= 0) throw new GenesisError('UNIVERSAL_ART_ASSET_VSR_MATERIALIZATION_BUDGET_INVALID');
+  const sourceAssets = [...projection.assets, ...projection.dependencies];
+  const declaredTotal = sourceAssets.reduce((sum, asset) => sum + Number(asset.byteLength ?? 0), 0);
+  if (!Number.isSafeInteger(declaredTotal) || declaredTotal <= 0 || declaredTotal > totalBudget) throw new GenesisError('UNIVERSAL_ART_ASSET_VSR_MATERIALIZATION_BUDGET_EXCEEDED');
+  const payloads = new Map();
+  const assets = projection.assets.map(asset => materializeUniversalArtAssetVsrPayload(asset, readFile, payloads));
+  const dependencies = projection.dependencies.map(asset => materializeUniversalArtAssetVsrPayload(asset, readFile, payloads));
+  const materializedPayloads = [...assets, ...dependencies];
+  const base = {
+    format: UNIVERSAL_ART_ASSET_VSR_MATERIALIZATION_FORMAT,
+    version: UNIVERSAL_ART_ASSET_FORGE_VERSION,
+    materialization_id: stableId('urrf-universal-art-asset-vsr-materialization', {
+      projection_root: projection.projection_root,
+      payloads: materializedPayloads.map(asset => ({id: asset.id, sha256: asset.sha256, file_root: asset.file_root}))
+    }),
+    projection_root: projection.projection_root,
+    assembly_root: projection.assembly_root,
+    batch_root: projection.batch_root,
+    source_reality_root: projection.source_reality_root,
+    placement_root: projection.placement_root,
+    streaming_root: rootHash(projection.streaming),
+    scene_id: projection.scene_id,
+    world_id: projection.world_id,
+    source_status: projection.status,
+    status: 'READY_FOR_VSR_IMPORT',
+    runtime_consumer: projection.runtime_consumer,
+    asset_count: assets.length,
+    assets,
+    dependency_count: dependencies.length,
+    dependencies,
+    total_byte_length: materializedPayloads.reduce((sum, asset) => sum + asset.byte_length, 0),
+    candidate_only: true,
+    authoritative: false,
+    canonical_write_authorized: false,
+    authority: {
+      canonical_owner: 'RNCS',
+      representation_owner: 'URRF',
+      provider_can_write_authoritative_world_state: false,
+      provider_can_commit: false,
+      acceptance_can_commit: false,
+      rncs_authority_required: true
+    }
+  };
+  const materialization = seal({...base, materialization_root: ''}, 'materialization_root');
+  return {materialization, catalog: [...projection.dependencies, ...projection.assets].map(asset => clone(asset)), payloads};
+}
+
+export function verifyUniversalArtAssetVsrMaterialization(materialization, {projection = null, assembly = null, payloads = null} = {}) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!materialization || typeof materialization !== 'object' || Array.isArray(materialization)) return {valid: false, errors: ['VSR_MATERIALIZATION_NOT_OBJECT'], materialization_root: null};
+  try {
+    check(materialization.format === UNIVERSAL_ART_ASSET_VSR_MATERIALIZATION_FORMAT, 'VSR_MATERIALIZATION_FORMAT_INVALID');
+    check(materialization.version === UNIVERSAL_ART_ASSET_FORGE_VERSION, 'VSR_MATERIALIZATION_VERSION_INVALID');
+    check(nonEmptyText(materialization.materialization_id), 'VSR_MATERIALIZATION_ID_MISSING');
+    for (const field of ['projection_root', 'assembly_root', 'batch_root', 'source_reality_root', 'placement_root', 'streaming_root']) check(isHexRoot(materialization[field]), `VSR_MATERIALIZATION_${field.toUpperCase()}_INVALID`);
+    check(nonEmptyText(materialization.scene_id) && nonEmptyText(materialization.world_id), 'VSR_MATERIALIZATION_SCENE_INVALID');
+    check(materialization.source_status === 'BLOCKED' || materialization.source_status === 'READY_FOR_HUMAN_REVIEW', 'VSR_MATERIALIZATION_SOURCE_STATUS_INVALID');
+    check(materialization.status === 'READY_FOR_VSR_IMPORT', 'VSR_MATERIALIZATION_STATUS_INVALID');
+    check(materialization.runtime_consumer === 'VSR_GLTF_IMPORT', 'VSR_MATERIALIZATION_RUNTIME_CONSUMER_INVALID');
+    check(Array.isArray(materialization.assets) && materialization.assets.length > 0 && materialization.assets.length <= 64, 'VSR_MATERIALIZATION_ASSETS_INVALID');
+    const assets = Array.isArray(materialization.assets) ? materialization.assets : [];
+    check(materialization.asset_count === assets.length, 'VSR_MATERIALIZATION_ASSET_COUNT_MISMATCH');
+    check(Array.isArray(materialization.dependencies) && materialization.dependencies.length >= assets.length * 4 && materialization.dependencies.length <= 256, 'VSR_MATERIALIZATION_DEPENDENCIES_INVALID');
+    const dependencies = Array.isArray(materialization.dependencies) ? materialization.dependencies : [];
+    check(materialization.dependency_count === dependencies.length, 'VSR_MATERIALIZATION_DEPENDENCY_COUNT_MISMATCH');
+    check(Number.isSafeInteger(materialization.total_byte_length) && materialization.total_byte_length > 0, 'VSR_MATERIALIZATION_TOTAL_BYTES_INVALID');
+    const ids = [...assets, ...dependencies].map(asset => asset?.id);
+    check(ids.every(nonEmptyText) && new Set(ids).size === ids.length, 'VSR_MATERIALIZATION_PAYLOAD_IDS_INVALID');
+    const projectionAssetsById = projection && Array.isArray(projection.assets) ? new Map(projection.assets.map(asset => [asset.id, asset])) : null;
+    const projectionDependenciesById = projection && Array.isArray(projection.dependencies) ? new Map(projection.dependencies.map(asset => [asset.id, asset])) : null;
+    if (projection !== null) {
+      const projectionVerification = verifyUniversalArtAssetVsrProjection(projection, {assembly});
+      if (!projectionVerification.valid) errors.push(...projectionVerification.errors.map(error => `VSR_MATERIALIZATION_PROJECTION_${error}`));
+      check(materialization.projection_root === projection.projection_root, 'VSR_MATERIALIZATION_PROJECTION_ROOT_MISMATCH');
+      check(materialization.assembly_root === projection.assembly_root && materialization.batch_root === projection.batch_root, 'VSR_MATERIALIZATION_PROJECTION_BATCH_BINDING_MISMATCH');
+      check(materialization.source_reality_root === projection.source_reality_root && materialization.placement_root === projection.placement_root, 'VSR_MATERIALIZATION_PROJECTION_SOURCE_BINDING_MISMATCH');
+      check(materialization.scene_id === projection.scene_id && materialization.world_id === projection.world_id && materialization.source_status === projection.status, 'VSR_MATERIALIZATION_PROJECTION_SCENE_MISMATCH');
+      check(materialization.streaming_root === rootHash(projection.streaming), 'VSR_MATERIALIZATION_STREAMING_ROOT_MISMATCH');
+      check(materialization.dependency_count === projection.dependency_count, 'VSR_MATERIALIZATION_PROJECTION_DEPENDENCY_COUNT_MISMATCH');
+    }
+    const suppliedPayloads = payloads === null ? null : universalArtAssetVsrPayloadMap(payloads);
+    let totalBytes = 0;
+    for (const asset of assets) {
+      const id = asset?.id ?? 'unknown';
+      check(nonEmptyText(asset?.uri) && asset?.format === 'model/gltf-binary' && asset?.kind === 'mesh', `VSR_MATERIALIZATION_ASSET_RECORD_INVALID:${id}`);
+      check(isHexRoot(asset?.sha256) && Number.isSafeInteger(asset?.byte_length) && asset.byte_length > 0, `VSR_MATERIALIZATION_ASSET_PAYLOAD_INVALID:${id}`);
+      check(isHexRoot(asset?.file_root), `VSR_MATERIALIZATION_ASSET_FILE_ROOT_INVALID:${id}`);
+      check(nonEmptyText(asset?.relative_path) && !String(asset.relative_path).startsWith('/') && !String(asset.relative_path).split('/').includes('..'), `VSR_MATERIALIZATION_ASSET_PATH_INVALID:${id}`);
+      check(nonEmptyText(asset?.output_directory), `VSR_MATERIALIZATION_ASSET_OUTPUT_DIRECTORY_INVALID:${id}`);
+      check(Number.isSafeInteger(asset?.selected_lod) && asset.selected_lod >= 0 && asset.selected_lod <= 32, `VSR_MATERIALIZATION_ASSET_LOD_INVALID:${id}`);
+      check(Array.isArray(asset?.dependencies) && asset.dependencies.length >= 4 && asset.dependencies.every(dependencyId => dependencies.some(dependency => dependency.id === dependencyId)), `VSR_MATERIALIZATION_ASSET_DEPENDENCIES_INVALID:${id}`);
+      check(Array.isArray(asset?.cell_ids) && asset.cell_ids.length === 1 && asset.cell_ids.every(nonEmptyText), `VSR_MATERIALIZATION_ASSET_CELL_INVALID:${id}`);
+      check(Number.isSafeInteger(asset?.priority) && asset.priority > 0, `VSR_MATERIALIZATION_ASSET_PRIORITY_INVALID:${id}`);
+      check(asset?.status === 'MATERIALIZED', `VSR_MATERIALIZATION_ASSET_STATUS_INVALID:${id}`);
+      totalBytes += Number(asset?.byte_length ?? 0);
+      const source = projectionAssetsById?.get(id);
+      if (source) {
+        check(asset.uri === source.uri && asset.byte_length === source.byteLength && asset.sha256 === source.sha256, `VSR_MATERIALIZATION_PROJECTION_ASSET_BINDING_INVALID:${id}`);
+        check(asset.file_root === source.metadata?.file_root && asset.relative_path === source.metadata?.relative_path && asset.output_directory === source.metadata?.output_directory, `VSR_MATERIALIZATION_PROJECTION_FILE_BINDING_INVALID:${id}`);
+        check(asset.selected_lod === source.metadata?.selected_lod && JSON.stringify(asset.dependencies) === JSON.stringify(source.dependencies) && JSON.stringify(asset.cell_ids) === JSON.stringify(source.cellIds) && asset.priority === source.priority, `VSR_MATERIALIZATION_PROJECTION_STREAM_BINDING_INVALID:${id}`);
+      } else if (projectionAssetsById) {
+        errors.push(`VSR_MATERIALIZATION_PROJECTION_ASSET_MISSING:${id}`);
+      }
+    }
+    for (const dependency of dependencies) {
+      const id = dependency?.id ?? 'unknown';
+      check(nonEmptyText(dependency?.uri) && dependency?.kind === 'texture' && nonEmptyText(dependency?.format) && String(dependency.format).startsWith('image/'), `VSR_MATERIALIZATION_DEPENDENCY_RECORD_INVALID:${id}`);
+      check(isHexRoot(dependency?.sha256) && Number.isSafeInteger(dependency?.byte_length) && dependency.byte_length > 0, `VSR_MATERIALIZATION_DEPENDENCY_PAYLOAD_INVALID:${id}`);
+      check(isHexRoot(dependency?.file_root), `VSR_MATERIALIZATION_DEPENDENCY_FILE_ROOT_INVALID:${id}`);
+      check(nonEmptyText(dependency?.role) && UNIVERSAL_ART_ASSET_VSR_PBR_ROLES.includes(dependency.role) && isHexRoot(dependency?.pbr_pack_root), `VSR_MATERIALIZATION_DEPENDENCY_PBR_METADATA_INVALID:${id}`);
+      check(nonEmptyText(dependency?.relative_path) && !String(dependency.relative_path).startsWith('/') && !String(dependency.relative_path).split('/').includes('..'), `VSR_MATERIALIZATION_DEPENDENCY_PATH_INVALID:${id}`);
+      check(nonEmptyText(dependency?.output_directory), `VSR_MATERIALIZATION_DEPENDENCY_OUTPUT_DIRECTORY_INVALID:${id}`);
+      check(Array.isArray(dependency?.cell_ids) && dependency.cell_ids.length === 1 && dependency.cell_ids.every(nonEmptyText), `VSR_MATERIALIZATION_DEPENDENCY_CELL_INVALID:${id}`);
+      check(Number.isSafeInteger(dependency?.priority) && dependency.priority > 0, `VSR_MATERIALIZATION_DEPENDENCY_PRIORITY_INVALID:${id}`);
+      check(dependency?.status === 'MATERIALIZED', `VSR_MATERIALIZATION_DEPENDENCY_STATUS_INVALID:${id}`);
+      totalBytes += Number(dependency?.byte_length ?? 0);
+      const source = projectionDependenciesById?.get(id);
+      if (source) {
+        check(dependency.uri === source.uri && dependency.format === source.format && dependency.byte_length === source.byteLength && dependency.sha256 === source.sha256, `VSR_MATERIALIZATION_PROJECTION_DEPENDENCY_BINDING_INVALID:${id}`);
+        check(dependency.file_root === source.metadata?.file_root && dependency.role === source.metadata?.pbr_role && dependency.pbr_pack_root === source.metadata?.pbr_pack_root && dependency.relative_path === source.metadata?.relative_path && dependency.output_directory === source.metadata?.output_directory, `VSR_MATERIALIZATION_PROJECTION_DEPENDENCY_FILE_BINDING_INVALID:${id}`);
+        check(JSON.stringify(dependency.cell_ids) === JSON.stringify(source.cellIds) && dependency.priority === source.priority, `VSR_MATERIALIZATION_PROJECTION_DEPENDENCY_STREAM_BINDING_INVALID:${id}`);
+      } else if (projectionDependenciesById) {
+        errors.push(`VSR_MATERIALIZATION_PROJECTION_DEPENDENCY_MISSING:${id}`);
+      }
+    }
+    if (suppliedPayloads) {
+      for (const asset of [...assets, ...dependencies]) {
+        const id = asset?.id ?? 'unknown';
+        if (!suppliedPayloads.has(id)) {
+          errors.push(`VSR_MATERIALIZATION_PAYLOAD_MISSING:${id}`);
+          continue;
+        }
+        try {
+          const bytes = universalArtAssetVsrPayloadBytes(suppliedPayloads.get(id), id);
+          check(bytes.byteLength === asset.byte_length, `VSR_MATERIALIZATION_PAYLOAD_BYTE_LENGTH_MISMATCH:${id}`);
+          check(createHash('sha256').update(bytes).digest('hex') === asset.sha256, `VSR_MATERIALIZATION_PAYLOAD_SHA256_MISMATCH:${id}`);
+          check(rootHash(Buffer.from(bytes).toString('base64')) === asset.file_root, `VSR_MATERIALIZATION_PAYLOAD_FILE_ROOT_MISMATCH:${id}`);
+        } catch (error) {
+          errors.push(`VSR_MATERIALIZATION_PAYLOAD_EXCEPTION:${id}:${error.message}`);
+        }
+      }
+    }
+    check(materialization.total_byte_length === totalBytes, 'VSR_MATERIALIZATION_TOTAL_BYTES_MISMATCH');
+    check(materialization.candidate_only === true && materialization.authoritative === false && materialization.canonical_write_authorized === false, 'VSR_MATERIALIZATION_AUTHORITY_INVALID');
+    check(materialization.authority?.canonical_owner === 'RNCS' && materialization.authority?.representation_owner === 'URRF', 'VSR_MATERIALIZATION_OWNER_INVALID');
+    check(materialization.authority?.provider_can_write_authoritative_world_state === false && materialization.authority?.provider_can_commit === false && materialization.authority?.acceptance_can_commit === false && materialization.authority?.rncs_authority_required === true, 'VSR_MATERIALIZATION_PROVIDER_AUTHORITY_INVALID');
+    const copy = clone(materialization);
+    const actual = copy.materialization_root;
+    delete copy.materialization_root;
+    check(isHexRoot(actual) && actual === rootHash(copy), 'VSR_MATERIALIZATION_ROOT_INVALID');
+  } catch (error) {
+    errors.push(`VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, materialization_root: materialization.materialization_root ?? null};
 }

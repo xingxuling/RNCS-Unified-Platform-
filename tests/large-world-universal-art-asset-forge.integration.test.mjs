@@ -11,11 +11,27 @@ import {
   generateUniversalArtAssetBatch,
   generateUniversalArtAsset,
   lowerUniversalArtAssetAssemblyToVsr,
+  materializeUniversalArtAssetVsrProjection,
   verifyUniversalArtAssetAssembly,
   verifyUniversalArtAssetBatch,
+  verifyUniversalArtAssetVsrMaterialization,
   verifyUniversalArtAssetVsrProjection,
   verifyUniversalArtAssetForge
 } from '@taowind/large-world-runtime';
+import {
+  VSRSpatialAssetStreamer,
+  compileSpatialFrame,
+  renderSpatialReference,
+  verifySpatialAssetStreamingReceipt,
+  verifySpatialFrame
+} from '@taowind/visual-state-runtime/spatial-reality-3d';
+import {decodePng} from '@taowind/visual-state-runtime/backend-canvas';
+import {
+  bindExternalPbrChannelsToGltf,
+  importGltfToSpatialSceneAsync,
+  parseGlb,
+  verifyGltfImportReceipt
+} from '@taowind/visual-state-runtime/gltf-asset';
 
 const rootDir = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const evidenceDir = resolve(process.env.URRF_UNIVERSAL_ART_ASSET_FORGE_OUT ?? join(rootDir, 'docs', 'verification', 'URRF_UNIVERSAL_ART_ASSET_FORGE'));
@@ -97,7 +113,7 @@ test('URRF Universal Art Asset Forge emits a rooted candidate and closes AAA cla
   assert.match(report.report_root, /^[a-f0-9]{64}$/);
 });
 
-test('URRF Universal Art Asset Forge isolates a multi-asset candidate batch and indexes reusable roots', () => {
+test('URRF Universal Art Asset Forge isolates a multi-asset candidate batch and indexes reusable roots', async () => {
   const outDir = mkdtempSync(join(tmpdir(), 'urrf-universal-art-batch-integration-'));
   const result = generateUniversalArtAssetBatch([
     {
@@ -151,8 +167,171 @@ test('URRF Universal Art Asset Forge isolates a multi-asset candidate batch and 
   assert.equal(verifyUniversalArtAssetAssembly(assembly, {batch: result.batch, assetResults: result.assets}).valid, true);
   const projection = lowerUniversalArtAssetAssemblyToVsr(assembly);
   assert.equal(verifyUniversalArtAssetVsrProjection(projection, {assembly}).valid, true);
+  const materialized = materializeUniversalArtAssetVsrProjection(projection, {assembly});
+  assert.equal(materialized.materialization.status, 'READY_FOR_VSR_IMPORT');
+  assert.equal(verifyUniversalArtAssetVsrMaterialization(materialized.materialization, {
+    projection,
+    assembly,
+    payloads: materialized.payloads
+  }).valid, true);
+  const catalog = materialized.catalog;
+  const payloads = materialized.payloads;
+  const meshCatalog = catalog.filter(asset => asset.kind === 'mesh');
+  const textureCatalog = catalog.filter(asset => asset.kind === 'texture');
+  const streamer = new VSRSpatialAssetStreamer(catalog, asset => payloads.get(asset.id), {maxConcurrent: 2});
+  const streamingReceipt = await streamer.acquire({
+    activeCellIds: projection.streaming.cells.map(cell => cell.id),
+    requestedAssetIds: meshCatalog.map(asset => asset.id),
+    maxAssets: catalog.length,
+    maxBytes: materialized.materialization.total_byte_length,
+    lease: false
+  });
+  assert.equal(verifySpatialAssetStreamingReceipt(streamingReceipt), true);
+  assert.deepEqual([...streamingReceipt.readyAssetIds].sort(), catalog.map(asset => asset.id).sort());
+  const importedAssets = await Promise.all(projection.assets.map(async asset => {
+    const meshBytes = streamer.get(asset.id);
+    assert.ok(meshBytes);
+    const parsed = parseGlb(meshBytes);
+    const pbrChannels = asset.dependencies.map(dependencyId => {
+      const dependency = projection.dependencies.find(entry => entry.id === dependencyId);
+      assert.ok(dependency);
+      const bytes = streamer.get(dependency.id);
+      assert.ok(bytes);
+      return {
+        role: dependency.metadata.pbr_role,
+        bytes,
+        mimeType: dependency.format,
+        colorSpace: dependency.metadata.pbr_role === 'normal' || dependency.metadata.pbr_role === 'occlusion-roughness-metallic' ? 'linear' : 'srgb',
+        uri: dependency.uri
+      };
+    });
+    const bound = bindExternalPbrChannelsToGltf(parsed.gltf, pbrChannels, {
+      sourcePrefix: `urrf-external-pbr/${asset.metadata.asset_key}`
+    });
+    const imported = await importGltfToSpatialSceneAsync(bound.gltf, {
+      sceneId: `urrf-universal-art-vsr-import-${asset.metadata.asset_key}`,
+      sourceRoot: projection.assembly_root,
+      buffers: {'buffer:0': parsed.binaryChunk},
+      imageBytes: bound.imageBytes,
+      imageDecoder: async ({id, bytes, image, sampler}) => {
+        const decoded = decodePng(bytes);
+        return {
+          id,
+          width: decoded.width,
+          height: decoded.height,
+          pixels: Array.from(decoded.data),
+          colorSpace: image?.extras?.vsrColorSpace ?? 'srgb',
+          filter: sampler?.minFilter === 9728 || sampler?.magFilter === 9728 ? 'nearest' : 'linear',
+          wrapU: sampler?.wrapS === 33071 ? 'clamp' : 'repeat',
+          wrapV: sampler?.wrapT === 33071 ? 'clamp' : 'repeat'
+        };
+      }
+    });
+    assert.equal(verifyGltfImportReceipt(imported.receipt), true);
+    assert.ok(imported.scene.meshes.length > 0);
+    assert.ok(imported.scene.materials.length > 0);
+    assert.equal(imported.receipt.textureCount, 4);
+    assert.equal(imported.receipt.materialTextureBindingCount, 5);
+    const meshNode = imported.scene.nodes.find(node => node.meshId);
+    assert.ok(meshNode);
+    meshNode.transform = {...(meshNode.transform ?? {}), translation: [...asset.transform.translation]};
+    const frame = compileSpatialFrame(imported.scene, {width: 160, height: 160, enableShadows: false});
+    assert.equal(verifySpatialFrame(frame).ok, true);
+    assert.ok(frame.stats.triangleCount > 0);
+    const rendered = renderSpatialReference(imported.scene, {width: 160, height: 160, enableShadows: false});
+    const renderedPng = decodePng(rendered.png);
+    assert.equal(renderedPng.width, 160);
+    assert.equal(renderedPng.height, 160);
+    assert.equal(renderedPng.data.byteLength, 160 * 160 * 4);
+    const background = renderedPng.data.slice(0, 3);
+    const nonBackgroundPixelCount = Array.from({length: 160 * 160}, (_, index) => index)
+      .filter(index => {
+        const offset = index * 4;
+        return renderedPng.data[offset] !== background[0]
+          || renderedPng.data[offset + 1] !== background[1]
+          || renderedPng.data[offset + 2] !== background[2];
+      }).length;
+    assert.ok(nonBackgroundPixelCount > 0);
+    return {
+      id: asset.id,
+      asset_key: asset.metadata.asset_key,
+      selected_lod: asset.metadata.selected_lod,
+      placement_mm: asset.transform.translation_mm,
+      import_receipt_root: imported.receipt.receiptRoot,
+      scene_root: imported.receipt.sceneRoot,
+      frame_root: frame.frameRoot,
+      mesh_count: imported.receipt.meshCount,
+      texture_count: imported.receipt.textureCount,
+      material_texture_binding_count: imported.receipt.materialTextureBindingCount,
+      triangle_count: frame.stats.triangleCount,
+      pbr_channel_count: pbrChannels.length,
+      pbr_byte_length: pbrChannels.reduce((sum, channel) => sum + channel.bytes.byteLength, 0),
+      rendered_png_byte_length: rendered.png.byteLength,
+      rendered_pixel_root: rendered.pixelRoot,
+      rendered_non_background_pixel_count: nonBackgroundPixelCount
+    };
+  }));
+  const importReportBase = {
+    format: 'urrf.universal-art-asset-vsr-import-execution-report.v0.1',
+    version: '0.1.0',
+    execution_id: `urrf-universal-art-vsr-import:${materialized.materialization.materialization_root.slice(0, 24)}`,
+    materialization_root: materialized.materialization.materialization_root,
+    projection_root: projection.projection_root,
+    assembly_root: assembly.assembly_root,
+    scene_id: projection.scene_id,
+    world_id: projection.world_id,
+    status: 'CANDIDATE_LOCAL_CPU_PASS',
+    runtime_consumer: 'VSR_GLTF_IMPORT',
+    streaming_receipt_root: streamingReceipt.receiptRoot,
+    asset_count: projection.assets.length,
+    catalog_asset_count: catalog.length,
+    streamed_asset_count: streamingReceipt.readyAssetIds.length,
+    streamed_mesh_asset_count: streamingReceipt.readyAssetIds.filter(id => meshCatalog.some(asset => asset.id === id)).length,
+    streamed_texture_asset_count: streamingReceipt.readyAssetIds.filter(id => textureCatalog.some(asset => asset.id === id)).length,
+    imported_asset_count: importedAssets.length,
+    frame_count: importedAssets.length,
+    total_triangle_count: importedAssets.reduce((sum, asset) => sum + asset.triangle_count, 0),
+    total_texture_count: importedAssets.reduce((sum, asset) => sum + asset.texture_count, 0),
+    total_material_texture_binding_count: importedAssets.reduce((sum, asset) => sum + asset.material_texture_binding_count, 0),
+    external_pbr_channel_count: materialized.materialization.dependencies.length,
+    texture_decode_mode: 'node-png-decode',
+    pbr_binding_mode: 'vsr-external-channel-adapter',
+    render_mode: 'vsr-cpu-reference-raster',
+    rendered_asset_count: importedAssets.filter(asset => asset.rendered_png_byte_length > 0).length,
+    total_rendered_png_byte_length: importedAssets.reduce((sum, asset) => sum + asset.rendered_png_byte_length, 0),
+    total_rendered_non_background_pixel_count: importedAssets.reduce((sum, asset) => sum + asset.rendered_non_background_pixel_count, 0),
+    actual_gpu_execution: false,
+    target_device_execution: false,
+    assets: importedAssets,
+    candidate_only: true,
+    authoritative: false,
+    canonical_write_authorized: false,
+    authority: {
+      canonical_owner: 'RNCS',
+      representation_owner: 'URRF',
+      provider_can_write_authoritative_world_state: false,
+      provider_can_commit: false,
+      acceptance_can_commit: false,
+      rncs_authority_required: true
+    }
+  };
+  const importReport = {...importReportBase, report_root: rootHash(importReportBase)};
+  assert.equal(importReport.catalog_asset_count, 10);
+  assert.equal(importReport.streamed_mesh_asset_count, 2);
+  assert.equal(importReport.streamed_texture_asset_count, 8);
+  assert.equal(importReport.external_pbr_channel_count, 8);
+  assert.equal(importReport.total_texture_count, 8);
+  assert.equal(importReport.total_material_texture_binding_count, 10);
+  assert.equal(importReport.render_mode, 'vsr-cpu-reference-raster');
+  assert.equal(importReport.rendered_asset_count, 2);
+  assert.ok(importReport.total_rendered_png_byte_length > 0);
+  assert.ok(importReport.total_rendered_non_background_pixel_count > 0);
   writeFileSync(join(evidenceDir, 'universal-art-asset-assembly.json'), `${JSON.stringify(assembly, null, 2)}\n`, 'utf8');
   writeFileSync(join(evidenceDir, 'universal-art-asset-vsr-projection.json'), `${JSON.stringify(projection, null, 2)}\n`, 'utf8');
+  writeFileSync(join(evidenceDir, 'universal-art-asset-vsr-materialization.json'), `${JSON.stringify(materialized.materialization, null, 2)}\n`, 'utf8');
+  writeFileSync(join(evidenceDir, 'universal-art-asset-vsr-import-execution.json'), `${JSON.stringify(importReport, null, 2)}\n`, 'utf8');
   assert.match(assembly.assembly_root, /^[a-f0-9]{64}$/);
   assert.match(projection.projection_root, /^[a-f0-9]{64}$/);
+  assert.match(materialized.materialization.materialization_root, /^[a-f0-9]{64}$/);
+  assert.match(importReport.report_root, /^[a-f0-9]{64}$/);
 });

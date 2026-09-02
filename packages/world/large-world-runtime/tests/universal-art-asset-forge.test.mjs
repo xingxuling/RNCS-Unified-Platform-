@@ -12,6 +12,7 @@ import {
   generateUniversalArtAsset,
   inspectUniversalArtAssetFiles,
   lowerUniversalArtAssetAssemblyToVsr,
+  materializeUniversalArtAssetVsrProjection,
   resolveUniversalArtAssetProvider,
   verifyUniversalArtAssetAssembly,
   verifyUniversalArtAssetBatch,
@@ -19,6 +20,7 @@ import {
   verifyUniversalArtAssetProvenanceLicenseReceipt,
   verifyUniversalArtAssetQualityProof,
   verifyUniversalArtAssetReviewReceipt,
+  verifyUniversalArtAssetVsrMaterialization,
   verifyUniversalArtAssetVsrProjection,
   verifyUniversalArtAssetForge,
   verifyUniversalArtAssetGenome
@@ -649,6 +651,9 @@ test('assembly binds materialized batch GLBs and lowers selected LODs into a VSR
   const projection = lowerUniversalArtAssetAssemblyToVsr(assembly);
   assert.equal(projection.format, 'urrf.universal-art-asset-vsr-projection.v0.1');
   assert.equal(projection.asset_count, 2);
+  assert.equal(projection.dependency_count, 8);
+  assert.equal(projection.assets[0].dependencies.length, 4);
+  assert.equal(projection.dependencies.filter(asset => asset.kind === 'texture').length, 8);
   assert.equal(projection.assets[0].transform.translation[0], 1.2);
   assert.equal(projection.assets[1].transform.translation[2], 0.9);
   assert.equal(projection.assets[0].sha256, assembly.assets[0].source.mesh.sha256);
@@ -656,6 +661,39 @@ test('assembly binds materialized batch GLBs and lowers selected LODs into a VSR
   assert.equal(verifyUniversalArtAssetVsrProjection(projection, {assembly}).valid, true);
   assert.equal(projection.authoritative, false);
   assert.equal(projection.authority.provider_can_write_authoritative_world_state, false);
+
+  const materialized = materializeUniversalArtAssetVsrProjection(projection, {assembly});
+  assert.equal(materialized.materialization.status, 'READY_FOR_VSR_IMPORT');
+  assert.equal(materialized.materialization.dependency_count, 8);
+  assert.equal(materialized.payloads.size, projection.assets.length + projection.dependencies.length);
+  assert.equal(materialized.catalog.length, projection.assets.length + projection.dependencies.length);
+  assert.equal(materialized.materialization.total_byte_length, [...materialized.payloads.values()].reduce((sum, bytes) => sum + bytes.byteLength, 0));
+  assert.equal(verifyUniversalArtAssetVsrMaterialization(materialized.materialization, {
+    projection,
+    assembly,
+    payloads: materialized.payloads
+  }).valid, true);
+  const tamperedPayloads = new Map(materialized.payloads);
+  const tamperedBytes = Uint8Array.from(tamperedPayloads.get(projection.assets[0].id));
+  tamperedBytes[0] ^= 1;
+  tamperedPayloads.set(projection.assets[0].id, tamperedBytes);
+  assert.equal(verifyUniversalArtAssetVsrMaterialization(materialized.materialization, {
+    projection,
+    assembly,
+    payloads: tamperedPayloads
+  }).valid, false);
+  const tamperedPbrPayloads = new Map(materialized.payloads);
+  const pbrDependency = projection.dependencies.find(asset => asset.metadata.pbr_role === 'normal');
+  assert.ok(pbrDependency);
+  const tamperedPbrBytes = Uint8Array.from(tamperedPbrPayloads.get(pbrDependency.id));
+  tamperedPbrBytes[0] ^= 1;
+  tamperedPbrPayloads.set(pbrDependency.id, tamperedPbrBytes);
+  assert.equal(verifyUniversalArtAssetVsrMaterialization(materialized.materialization, {
+    projection,
+    assembly,
+    payloads: tamperedPbrPayloads
+  }).valid, false);
+  assert.throws(() => materializeUniversalArtAssetVsrProjection(projection, {assembly, max_total_bytes: 1}), /UNIVERSAL_ART_ASSET_VSR_MATERIALIZATION_BUDGET_EXCEEDED/);
 
   const tampered = structuredClone(assembly);
   tampered.assets[0].source.mesh.file_root = '0'.repeat(64);

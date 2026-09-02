@@ -1,12 +1,12 @@
 {
   "format": "urrf.universal-art-asset-assembly.v0.1",
   "version": "0.1.0",
-  "assembly_id": "urrf-universal-art-asset-assembly:3783d119873f8af1329af0eb",
-  "batch_root": "4f1330a66b78558aa2612fde0829f12b90f43e7e3d2d31514d275c5d3cdeffd9",
-  "source_reality_root": "4f1330a66b78558aa2612fde0829f12b90f43e7e3d2d31514d275c5d3cdeffd9",
+  "assembly_id": "urrf-universal-art-asset-assembly:01bef19ae1be18be02f6881e",
+  "batch_root": "8077dfe2715c73c0090f1cf66a30590c4b5accffbec34b5e1edbfdb05c9dfd14",
+  "source_reality_root": "8077dfe2715c73c0090f1cf66a30590c4b5accffbec34b5e1edbfdb05c9dfd14",
   "scene_id": "urrf-universal-art-assembly-integration",
   "world_id": "world:urrf-universal-art-assembly-integration",
-  "placement_root": "749db45954dc4056d9983fcbd54ad3d49e2572de10069dff24b77b6fee0aa257",
+  "placement_root": "5361a0baed9597710875cbd025adbeb2860544ce19fbef1ec69d563aad91e652",
   "asset_count": 2,
   "status": "BLOCKED",
   "lod_policy": {
@@ -30,7 +30,7 @@
       "genome_root": "8c49cccb28253fa46b1141f9c7d79c2d140c791137f01ff55517e26c0704ca96",
       "candidate_root": "7b927b6e736cb2fad8e019f067a2b8db7b96779b3b30f1a758f1db2c3e12578a",
       "acceptance_root": "a41089c423c51f6261487301c5eda5b158087a200a708954ca895cf66d30f5ae",
-      "forge_root": "74b55b51dfd86527d1fb73c24b35e8037c3096afa0fc37cd6d1d9ba6bacd4619",
+      "forge_root": "dbcf8c42bc2281a315450150d86245c30a6ea49bb2256a34b251fde38f53c752",
       "selected_lod": 0,
       "placement_mm": [
         1200,
@@ -46,7 +46,7 @@
         "human_review_gate"
       ],
       "source": {
-        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-eyGQ6v\\assets\\001-guardian-character",
+        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-JWGFcH\\assets\\001-guardian-character",
         "mesh": {
           "role": "mesh-glb",
           "relative_path": "candidates/mobile/mesh/lod0.glb",
@@ -96,7 +96,7 @@
           ]
         }
       },
-      "asset_root": "27949f328eb542ca5785cfdd50a2f96a38465e50eb91b273d55a72b5b15ed844"
+      "asset_root": "ca73ef77bf43b5faa9d45ead9d1839e22246ab73bc3d3e57105437bab5a50db1"
     },
     {
       "asset_key": "ice-relic-prop",
@@ -109,7 +109,7 @@
       "genome_root": "ae74fd8d418a9f9e920318e3a200eda78181dd5b4ef7b4878b4c36d9e22528d1",
       "candidate_root": "fd51e5755fb38c8f5a91e8940656ca919933c5b4901964153b3a70fe74818572",
       "acceptance_root": "3795cfe307bb5e4c64b0acd3c8d5d74ccfe5ecbfe7aec768dfe365b139f01120",
-      "forge_root": "9a9488231a40e0182692d52257e6be2627aa2a1e406c26eb4e95f105fc0d6ec7",
+      "forge_root": "f1a633dfa3d1c7384e5ddb255d0c49b3ce3e4fe9233053ad8589271e67a1e8a7",
       "selected_lod": 1,
       "placement_mm": [
         -1200,
@@ -125,7 +125,7 @@
         "human_review_gate"
       ],
       "source": {
-        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-eyGQ6v\\assets\\002-ice-relic-prop",
+        "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-JWGFcH\\assets\\002-ice-relic-prop",
         "mesh": {
           "role": "mesh-lod1-glb",
           "relative_path": "candidates/mobile/mesh/lod1.glb",
@@ -175,7 +175,7 @@
           ]
         }
       },
-      "asset_root": "74818835eb3fe4170193f2f41cbd86c703f2df5a627232dfa1dbab00522e1c70"
+      "asset_root": "3d1975c0f6ff44a9443561a0a95185811be16fdf848e11bf4bbf0c02c8c48074"
     }
   ],
   "artifact_root_index": {
@@ -237,5 +237,5 @@
     "acceptance_can_commit": false,
     "rncs_authority_required": true
   },
-  "assembly_root": "4ee9f941a1bec24035eceaa702e9ef77191112b8d70d8b3de9e8340289db416a"
+  "assembly_root": "7efd6539c505069eb552ea2fcd6ec3ef63b6088ed291f985d32147a04dceb5b9"
 }

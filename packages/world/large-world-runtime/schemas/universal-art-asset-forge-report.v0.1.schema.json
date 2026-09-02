@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.org/schemas/urrf.universal-art-asset-forge-report.v0.1.schema.json",
+  "title": "URRF Universal Art Asset Forge Report v0.1",
+  "type": "object",
+  "required": [
+    "format",
+    "version",
+    "status",
+    "execution",
+    "roots",
+    "profile",
+    "target_quality_tier",
+    "metrics",
+    "gates",
+    "failures",
+    "authority",
+    "notes",
+    "report_root"
+  ],
+  "properties": {
+    "format": {"const": "urrf.universal-art-asset-forge-report.v0.1"},
+    "version": {"const": "0.1.0"},
+    "status": {"enum": ["BLOCKED", "READY_FOR_HUMAN_REVIEW"]},
+    "execution": {
+      "type": "object",
+      "required": ["mode", "status", "provider_id", "workspace_root", "workspace_verified"],
+      "properties": {
+        "mode": {"const": "RAGF_REFERENCE_WORKSPACE"},
+        "status": {"const": "COMPLETED"},
+        "provider_id": {"type": "string", "minLength": 1},
+        "workspace_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "workspace_verified": {"const": true}
+      },
+      "additionalProperties": false
+    },
+    "roots": {
+      "type": "object",
+      "required": [
+        "genome_root",
+        "provider_resolution_root",
+        "workspace_root",
+        "candidate_root",
+        "acceptance_root",
+        "evidence_ledger_root",
+        "file_inspection_root",
+        "forge_root"
+      ],
+      "properties": {
+        "genome_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "provider_resolution_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "workspace_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "candidate_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "acceptance_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "evidence_ledger_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "file_inspection_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "forge_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      },
+      "additionalProperties": false
+    },
+    "profile": {"enum": ["character", "environment", "prop", "vehicle", "weapon", "creature", "architecture", "foliage", "vfx"]},
+    "target_quality_tier": {"enum": ["PREVIEW", "PRODUCTION", "AAA"]},
+    "metrics": {
+      "type": "object",
+      "required": [
+        "triangle_count",
+        "pbr_channel_count",
+        "pbr_model",
+        "rig_present",
+        "animation_present",
+        "lod_present",
+        "collision_present",
+        "file_inspection_status",
+        "file_inspection_triangle_count",
+        "topology_status",
+        "uv_status",
+        "normal_status",
+        "lod_inspection_status",
+        "lod_count",
+        "pbr_file_status",
+        "quality_proof_status",
+        "provenance_license_proof_status",
+        "evidence_bundle_status"
+      ],
+      "properties": {
+        "triangle_count": {"type": "integer", "minimum": 1},
+        "pbr_channel_count": {"type": "integer", "minimum": 0},
+        "pbr_model": {"type": "string", "minLength": 1},
+        "rig_present": {"type": "boolean"},
+        "animation_present": {"type": "boolean"},
+        "lod_present": {"type": "boolean"},
+        "collision_present": {"type": "boolean"},
+        "file_inspection_status": {"enum": ["PASS", "FAIL", "NOT_RUN"]},
+        "file_inspection_triangle_count": {"type": "integer", "minimum": 0},
+        "topology_status": {"enum": ["PASS", "FAIL", "NOT_RUN"]},
+        "uv_status": {"enum": ["PASS", "FAIL", "NOT_RUN"]},
+        "normal_status": {"enum": ["PASS", "FAIL", "NOT_RUN"]},
+        "lod_inspection_status": {"enum": ["PASS", "FAIL", "NOT_RUN"]},
+        "lod_count": {"type": "integer", "minimum": 0},
+        "pbr_file_status": {"enum": ["PASS", "FAIL", "NOT_RUN"]},
+        "quality_proof_status": {"enum": ["PASS", "FAIL", "NOT_RUN"]},
+        "provenance_license_proof_status": {"enum": ["PASS", "FAIL", "NOT_RUN"]},
+        "evidence_bundle_status": {"enum": ["PASS", "FAIL", "NOT_RUN"]}
+      },
+      "additionalProperties": false
+    },
+    "gates": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "required": ["status", "required", "reason"],
+        "properties": {
+          "status": {"enum": ["PASS", "FAIL", "NOT_RUN"]},
+          "required": {"type": "boolean"},
+          "reason": {"type": ["string", "null"]}
+        },
+        "additionalProperties": false
+      }
+    },
+    "failures": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "canonical_owner",
+        "representation_owner",
+        "provider_can_write_authoritative_world_state",
+        "provider_can_commit",
+        "acceptance_can_commit",
+        "rncs_authority_required"
+      ],
+      "properties": {
+        "canonical_owner": {"const": "RNCS"},
+        "representation_owner": {"const": "URRF"},
+        "provider_can_write_authoritative_world_state": {"const": false},
+        "provider_can_commit": {"const": false},
+        "acceptance_can_commit": {"const": false},
+        "rncs_authority_required": {"const": true}
+      },
+      "additionalProperties": false
+    },
+    "notes": {"type": "string", "minLength": 1},
+    "report_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "additionalProperties": false
+}
