@@ -14,10 +14,10 @@
     "provider_resolution_root": "316d253d671be86fa25327cfe9af334c0f808915dc742ffd60bd3773fbefc9b7",
     "workspace_root": "dc97f010a63fd9ec37bda78695087f82da52170315f7f1f5e04c2c3b5936785f",
     "candidate_root": "bb0b52afb44be19f484bccbcb1833e1da3a46e39cd2c66357334f9f91821eb16",
-    "acceptance_root": "4d7c681af4c746f008f9cdc4f7978818b15198cc82fbd04a6ea5bf9459501ffe",
-    "evidence_ledger_root": "7213669ec852c30bbe982e180e92bf195c65b3552877052f0690e7b390c23c90",
+    "acceptance_root": "1d55cc7e0acf5c387fe53cd5fe41157dcc160aab9896a2eb163d518ebedeae93",
+    "evidence_ledger_root": "29e03620a23134a3c0542872dec1190352cc4fb422b1f7ea9dd0c7c01770e8b3",
     "file_inspection_root": "70c831a94250e93f747a1d8320901dbc6253d1e9b014bf0eb11dcbeb0c11b253",
-    "forge_root": "92866661e78cddd00a2cacb86ce92249fd8f5c64f500b5521a65afbeb3b63371"
+    "forge_root": "f81b6ecfa8c06803491dcb9f7448e26a9d52b76e1e808f19bb590757e447c642"
   },
   "profile": "character",
   "target_quality_tier": "AAA",
@@ -38,7 +38,8 @@
     "lod_count": 3,
     "pbr_file_status": "PASS",
     "quality_proof_status": "NOT_RUN",
-    "provenance_license_proof_status": "NOT_RUN"
+    "provenance_license_proof_status": "NOT_RUN",
+    "evidence_bundle_status": "NOT_RUN"
   },
   "gates": {
     "intent_gate": {
@@ -147,5 +148,5 @@
     "rncs_authority_required": true
   },
   "notes": "Candidate-only local RAGF reference execution. The forge independently inspects generated GLB accessors, welded indexed topology, UVs, normals, material structure, the external four-map PBR pack, and a contiguous decreasing three-level LOD sequence; Provider provenance/license/quality/art-direction/human-review declarations cannot open their AAA gates, independent provenance/license, quality, and review receipts are absent, and AAA remains blocked on those evidence gates. It is not AAA production art proof or canonical RNCS mutation.",
-  "report_root": "d032410cb683efc604dfff54299b39db274fa067a9407915439c5c1d1f23e03a"
+  "report_root": "66a90a5699f6e20a40868ee4e35d393fe7caeb5fd94d70f2644116a7be1d6bcd"
 }

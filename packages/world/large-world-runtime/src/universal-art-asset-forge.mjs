@@ -34,6 +34,8 @@ export const UNIVERSAL_ART_ASSET_FILE_INSPECTION_FORMAT = 'urrf.universal-art-as
 export const UNIVERSAL_ART_ASSET_REVIEW_RECEIPT_FORMAT = 'urrf.universal-art-asset-review-receipt.v0.1';
 export const UNIVERSAL_ART_ASSET_QUALITY_PROOF_FORMAT = 'urrf.universal-art-asset-quality-proof.v0.1';
 export const UNIVERSAL_ART_ASSET_PROVENANCE_LICENSE_RECEIPT_FORMAT = 'urrf.universal-art-asset-provenance-license-receipt.v0.1';
+export const UNIVERSAL_ART_ASSET_EVIDENCE_BUNDLE_FORMAT = 'urrf.universal-art-asset-evidence-bundle.v0.1';
+export const UNIVERSAL_ART_ASSET_BATCH_FORMAT = 'urrf.universal-art-asset-batch.v0.1';
 export const UNIVERSAL_ART_ASSET_FORGE_VERSION = '0.1.0';
 
 export const UNIVERSAL_ART_ASSET_PROFILES = Object.freeze([
@@ -1435,6 +1437,198 @@ export function verifyUniversalArtAssetProvenanceLicenseReceipt(receipt, {
   return {valid: errors.length === 0, errors, receipt_root: receipt.receipt_root ?? null};
 }
 
+const UNIVERSAL_ART_ASSET_EVIDENCE_RECEIPT_KEYS = Object.freeze([
+  'provenance_license',
+  'art_direction',
+  'quality',
+  'human_review'
+]);
+
+/**
+ * Verify a unified, candidate-only packet of independent AAA evidence. The
+ * packet is a convenience boundary for submission and replay: each nested
+ * receipt is still checked by its own verifier, and the packet cannot turn
+ * Provider evidence into authority or authorize an RNCS canonical write.
+ */
+export function verifyUniversalArtAssetEvidenceBundle(bundle, {
+  qualityTier = null,
+  genomeRoot = null,
+  candidateRoot = null,
+  fileInspectionRoot,
+  providerId = null,
+  seed = null,
+  artifactRoots = null,
+  inspection = null,
+  targetPlatforms = []
+} = {}) {
+  const errors = [];
+  if (!bundle || typeof bundle !== 'object' || Array.isArray(bundle)) {
+    return {valid: false, errors: ['EVIDENCE_BUNDLE_NOT_OBJECT'], bundle_root: null};
+  }
+  try {
+    if (bundle.format !== UNIVERSAL_ART_ASSET_EVIDENCE_BUNDLE_FORMAT) errors.push('FORMAT_INVALID');
+    if (bundle.version !== UNIVERSAL_ART_ASSET_FORGE_VERSION) errors.push('VERSION_INVALID');
+    if (bundle.source !== 'independent-evidence-bundle') errors.push('EVIDENCE_BUNDLE_SOURCE_INVALID');
+    if (bundle.provider_id !== undefined) errors.push('PROVIDER_FIELD_FORBIDDEN');
+    if (bundle.status !== 'VERIFIED') errors.push('EVIDENCE_BUNDLE_NOT_VERIFIED');
+    if (bundle.decision !== 'PASS') errors.push('EVIDENCE_BUNDLE_DECISION_NOT_PASS');
+    if (!isHexRoot(bundle.genome_root)) errors.push('EVIDENCE_BUNDLE_GENOME_ROOT_INVALID');
+    if (genomeRoot !== null && bundle.genome_root !== genomeRoot) errors.push('EVIDENCE_BUNDLE_GENOME_ROOT_MISMATCH');
+    if (!isHexRoot(bundle.candidate_root)) errors.push('EVIDENCE_BUNDLE_CANDIDATE_ROOT_INVALID');
+    if (candidateRoot !== null && bundle.candidate_root !== candidateRoot) errors.push('EVIDENCE_BUNDLE_CANDIDATE_ROOT_MISMATCH');
+    if (fileInspectionRoot !== undefined) {
+      const expectedInspectionRoot = fileInspectionRoot ?? null;
+      if (bundle.file_inspection_root !== expectedInspectionRoot) errors.push('EVIDENCE_BUNDLE_FILE_INSPECTION_ROOT_MISMATCH');
+      if (bundle.file_inspection_root !== null && !isHexRoot(bundle.file_inspection_root)) errors.push('EVIDENCE_BUNDLE_FILE_INSPECTION_ROOT_INVALID');
+    } else if (bundle.file_inspection_root !== null && !isHexRoot(bundle.file_inspection_root)) {
+      errors.push('EVIDENCE_BUNDLE_FILE_INSPECTION_ROOT_INVALID');
+    }
+    const declaredArtifactRoots = record(bundle.artifact_roots);
+    const declaredArtifactEntries = Object.entries(declaredArtifactRoots);
+    if (declaredArtifactEntries.length === 0) {
+      errors.push('EVIDENCE_BUNDLE_ARTIFACT_ROOTS_MISSING');
+    } else {
+      declaredArtifactEntries.forEach(([role, root]) => {
+        if (!nonEmptyText(role)) errors.push('EVIDENCE_BUNDLE_ARTIFACT_ROLE_INVALID');
+        if (!isHexRoot(root)) errors.push(`EVIDENCE_BUNDLE_ARTIFACT_ROOT_INVALID:${role}`);
+      });
+    }
+    if (artifactRoots !== null && rootHash(declaredArtifactRoots) !== rootHash(artifactRoots)) errors.push('EVIDENCE_BUNDLE_ARTIFACT_ROOTS_MISMATCH');
+    const receipts = record(bundle.receipts);
+    const receiptVerifications = {
+      provenance_license: verifyUniversalArtAssetProvenanceLicenseReceipt(receipts.provenance_license, {
+        genomeRoot,
+        candidateRoot,
+        fileInspectionRoot,
+        providerId,
+        seed,
+        artifactRoots
+      }),
+      art_direction: verifyUniversalArtAssetReviewReceipt(receipts.art_direction, {
+        reviewKind: 'ART_DIRECTION',
+        genomeRoot,
+        candidateRoot,
+        fileInspectionRoot
+      }),
+      quality: verifyUniversalArtAssetQualityProof(receipts.quality, {
+        qualityTier,
+        genomeRoot,
+        candidateRoot,
+        fileInspectionRoot,
+        inspection,
+        targetPlatforms
+      }),
+      human_review: verifyUniversalArtAssetReviewReceipt(receipts.human_review, {
+        reviewKind: 'HUMAN_ART',
+        genomeRoot,
+        candidateRoot,
+        fileInspectionRoot
+      })
+    };
+    for (const key of UNIVERSAL_ART_ASSET_EVIDENCE_RECEIPT_KEYS) {
+      const verification = receiptVerifications[key];
+      if (!verification.valid) errors.push(...verification.errors.map(error => `${key.toUpperCase()}_${error}`));
+    }
+    const receiptRoots = record(bundle.receipt_roots);
+    for (const key of UNIVERSAL_ART_ASSET_EVIDENCE_RECEIPT_KEYS) {
+      const expectedRoot = receipts[key]?.receipt_root ?? null;
+      if (receiptRoots[key] !== expectedRoot) errors.push(`EVIDENCE_BUNDLE_${key.toUpperCase()}_ROOT_MISMATCH`);
+      if (receiptRoots[key] !== null && !isHexRoot(receiptRoots[key])) errors.push(`EVIDENCE_BUNDLE_${key.toUpperCase()}_ROOT_INVALID`);
+    }
+    const coverage = record(bundle.coverage);
+    if (!Array.isArray(coverage.required_receipts) || UNIVERSAL_ART_ASSET_EVIDENCE_RECEIPT_KEYS.some(key => !coverage.required_receipts.includes(key))) errors.push('EVIDENCE_BUNDLE_REQUIRED_RECEIPTS_INVALID');
+    const presentReceipts = UNIVERSAL_ART_ASSET_EVIDENCE_RECEIPT_KEYS.filter(key => receipts[key] && typeof receipts[key] === 'object');
+    if (!Array.isArray(coverage.present_receipts) || rootHash(coverage.present_receipts) !== rootHash(presentReceipts)) errors.push('EVIDENCE_BUNDLE_PRESENT_RECEIPTS_MISMATCH');
+    if (coverage.complete !== true) errors.push('EVIDENCE_BUNDLE_COVERAGE_INCOMPLETE');
+    if (bundle.candidate_only !== true || bundle.authoritative !== false || bundle.canonical_write_authorized !== false) errors.push('EVIDENCE_BUNDLE_AUTHORITY_INVALID');
+    if (bundle.authority?.provider_can_commit !== false || bundle.authority?.acceptance_can_commit !== false || bundle.authority?.rncs_authority_required !== true) errors.push('EVIDENCE_BUNDLE_PROVIDER_AUTHORITY_INVALID');
+    const copy = clone(bundle);
+    const actual = copy.bundle_root;
+    delete copy.bundle_root;
+    if (!isHexRoot(actual) || actual !== rootHash(copy)) errors.push('EVIDENCE_BUNDLE_ROOT_INVALID');
+  } catch (error) {
+    errors.push(`VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, bundle_root: bundle.bundle_root ?? null};
+}
+
+/**
+ * Assemble the four independent AAA receipt types into one rooted packet.
+ * Missing receipts yield an explicitly INCOMPLETE packet rather than a
+ * synthetic pass, so callers can persist a work-in-progress submission.
+ */
+export function createUniversalArtAssetEvidenceBundle({
+  genome,
+  candidate,
+  fileInspection = null,
+  providerId = null,
+  targetPlatforms = [],
+  provenanceLicenseProof = null,
+  artDirectionReview = null,
+  qualityProof = null,
+  humanReview = null
+} = {}) {
+  const selectedGenome = record(genome);
+  const selectedCandidate = record(candidate);
+  const artifactRoots = artifactRootsForCandidate(selectedCandidate);
+  const receipts = {
+    provenance_license: clone(provenanceLicenseProof),
+    art_direction: clone(artDirectionReview),
+    quality: clone(qualityProof),
+    human_review: clone(humanReview)
+  };
+  const effectivePlatforms = Array.isArray(targetPlatforms) && targetPlatforms.length
+    ? [...targetPlatforms]
+    : [...(selectedGenome.target_platforms ?? [])];
+  const binding = {
+    qualityTier: selectedGenome.quality_tier ?? null,
+    genomeRoot: selectedGenome.genome_root ?? null,
+    candidateRoot: selectedCandidate.candidate_root ?? null,
+    fileInspectionRoot: fileInspection?.inspection_root ?? null,
+    providerId,
+    seed: selectedGenome.ragf_genome?.seed ?? null,
+    artifactRoots,
+    inspection: fileInspection,
+    targetPlatforms: effectivePlatforms
+  };
+  const componentVerification = [
+    verifyUniversalArtAssetProvenanceLicenseReceipt(receipts.provenance_license, binding),
+    verifyUniversalArtAssetReviewReceipt(receipts.art_direction, {reviewKind: 'ART_DIRECTION', ...binding}),
+    verifyUniversalArtAssetQualityProof(receipts.quality, binding),
+    verifyUniversalArtAssetReviewReceipt(receipts.human_review, {reviewKind: 'HUMAN_ART', ...binding})
+  ];
+  const complete = componentVerification.every(result => result.valid);
+  return seal({
+    format: UNIVERSAL_ART_ASSET_EVIDENCE_BUNDLE_FORMAT,
+    version: UNIVERSAL_ART_ASSET_FORGE_VERSION,
+    source: 'independent-evidence-bundle',
+    status: complete ? 'VERIFIED' : 'INCOMPLETE',
+    decision: complete ? 'PASS' : 'BLOCKED',
+    genome_root: selectedGenome.genome_root ?? null,
+    candidate_root: selectedCandidate.candidate_root ?? null,
+    file_inspection_root: fileInspection?.inspection_root ?? null,
+    artifact_roots: artifactRoots,
+    receipt_roots: Object.fromEntries(UNIVERSAL_ART_ASSET_EVIDENCE_RECEIPT_KEYS.map(key => [key, receipts[key]?.receipt_root ?? null])),
+    receipts,
+    coverage: {
+      required_receipts: [...UNIVERSAL_ART_ASSET_EVIDENCE_RECEIPT_KEYS],
+      present_receipts: UNIVERSAL_ART_ASSET_EVIDENCE_RECEIPT_KEYS.filter(key => receipts[key] && typeof receipts[key] === 'object'),
+      complete
+    },
+    candidate_only: true,
+    authoritative: false,
+    canonical_write_authorized: false,
+    authority: {
+      provider_can_commit: false,
+      acceptance_can_commit: false,
+      rncs_authority_required: true,
+      candidate_only: true,
+      authoritative: false
+    },
+    bundle_root: ''
+  }, 'bundle_root');
+}
+
 function candidateFacts({candidate, workspace, provider, providerEvidence = {}} = {}) {
   const selected = candidate ?? workspace?.candidates?.find(item => item.candidate_id === workspace.recommended_candidate_id) ?? null;
   const artifacts = selected?.artifacts ?? {};
@@ -1509,6 +1703,7 @@ export function evaluateUniversalArtAssetAcceptance({
   humanReview = null,
   qualityProof = null,
   provenanceLicenseProof = null,
+  evidenceBundle = null,
   runtimeEvidence = null
 } = {}) {
   const genomeVerification = verifyUniversalArtAssetGenome(genome);
@@ -1520,6 +1715,24 @@ export function evaluateUniversalArtAssetAcceptance({
   const fileInspectionVerification = localFileInspection ? verifyUniversalArtAssetFileInspection(localFileInspection) : null;
   const localInspectionValid = Boolean(fileInspectionVerification?.valid);
   const localInspectionPass = key => localInspectionValid && localFileInspection?.status === 'PASS' && statusPass(localFileInspection?.aggregates?.[`${key}_status`]);
+  const expectedProviderId = execution.provider_id ?? facts.providerManifest?.id ?? facts.providerManifest?.provider_id ?? null;
+  const expectedArtifactRoots = artifactRootsForCandidate(facts.selected);
+  const evidenceBundleVerification = verifyUniversalArtAssetEvidenceBundle(evidenceBundle, {
+    qualityTier: genome.quality_tier,
+    genomeRoot: genome.genome_root,
+    candidateRoot: facts.selected?.candidate_root ?? null,
+    fileInspectionRoot: localFileInspection?.inspection_root ?? null,
+    providerId: expectedProviderId,
+    seed: genome.ragf_genome.seed,
+    artifactRoots: expectedArtifactRoots,
+    inspection: localFileInspection,
+    targetPlatforms: genome.target_platforms
+  });
+  const bundleReceipts = evidenceBundleVerification.valid ? record(evidenceBundle.receipts) : {};
+  const effectiveArtDirectionReview = artDirectionReview ?? bundleReceipts.art_direction ?? null;
+  const effectiveHumanReview = humanReview ?? bundleReceipts.human_review ?? null;
+  const effectiveQualityProof = qualityProof ?? bundleReceipts.quality ?? null;
+  const effectiveProvenanceLicenseProof = provenanceLicenseProof ?? bundleReceipts.provenance_license ?? null;
   const meshEvidence = explicitEvidence(evidence, ['geometry']);
   const topologyEvidence = explicitEvidence(evidence, ['topology']);
   const uvEvidence = explicitEvidence(evidence, ['uv', 'uv_unwrap']);
@@ -1534,17 +1747,17 @@ export function evaluateUniversalArtAssetAcceptance({
     candidateRoot: facts.selected?.candidate_root ?? null,
     fileInspectionRoot: localFileInspection?.inspection_root ?? null
   };
-  const artDirectionReviewVerification = verifyUniversalArtAssetReviewReceipt(artDirectionReview, {
+  const artDirectionReviewVerification = verifyUniversalArtAssetReviewReceipt(effectiveArtDirectionReview, {
     reviewKind: 'ART_DIRECTION',
     ...reviewBinding
   });
-  const humanReviewVerification = verifyUniversalArtAssetReviewReceipt(humanReview, {
+  const humanReviewVerification = verifyUniversalArtAssetReviewReceipt(effectiveHumanReview, {
     reviewKind: 'HUMAN_ART',
     ...reviewBinding
   });
   const artDirectionReviewPass = Boolean(reviewBinding.candidateRoot) && artDirectionReviewVerification.valid;
   const humanReviewPass = Boolean(reviewBinding.candidateRoot) && humanReviewVerification.valid;
-  const qualityProofVerification = verifyUniversalArtAssetQualityProof(qualityProof, {
+  const qualityProofVerification = verifyUniversalArtAssetQualityProof(effectiveQualityProof, {
     qualityTier: genome.quality_tier,
     genomeRoot: genome.genome_root,
     candidateRoot: facts.selected?.candidate_root ?? null,
@@ -1553,14 +1766,13 @@ export function evaluateUniversalArtAssetAcceptance({
     targetPlatforms: genome.target_platforms
   });
   const qualityProofPass = Boolean(facts.selected?.candidate_root) && localInspectionValid && localFileInspection?.status === 'PASS' && qualityProofVerification.valid;
-  const expectedProviderId = execution.provider_id ?? facts.providerManifest?.id ?? facts.providerManifest?.provider_id ?? null;
-  const provenanceLicenseProofVerification = verifyUniversalArtAssetProvenanceLicenseReceipt(provenanceLicenseProof, {
+  const provenanceLicenseProofVerification = verifyUniversalArtAssetProvenanceLicenseReceipt(effectiveProvenanceLicenseProof, {
     genomeRoot: genome.genome_root,
     candidateRoot: facts.selected?.candidate_root ?? null,
     fileInspectionRoot: localFileInspection?.inspection_root ?? null,
     providerId: expectedProviderId,
     seed: genome.ragf_genome.seed,
-    artifactRoots: artifactRootsForCandidate(facts.selected)
+    artifactRoots: expectedArtifactRoots
   });
   const provenanceLicenseProofPass = Boolean(facts.selected?.candidate_root) && provenanceLicenseProofVerification.valid;
   const runtimeProjectionEvidence = explicitEvidence(evidence, ['vsr_projection', 'representation']);
@@ -1580,7 +1792,7 @@ export function evaluateUniversalArtAssetAcceptance({
     (licenseEvidence.present ? licenseEvidence.pass : (facts.licenseVerified || facts.providerManifestLicense));
   const provenanceLicenseCourtPass = courtGate(providerCourt, 'provenance_gate') !== false && courtGate(providerCourt, 'license_gate') !== false;
   const strictProvenanceLicense = genome.quality_tier !== 'PREVIEW';
-  const provenanceLicensePass = (strictProvenanceLicense ? provenanceLicenseProofPass : (provenanceLicenseProof ? provenanceLicenseProofPass : metadataProvenanceLicensePass)) && provenanceLicenseCourtPass;
+  const provenanceLicensePass = (strictProvenanceLicense ? provenanceLicenseProofPass : (effectiveProvenanceLicenseProof ? provenanceLicenseProofPass : metadataProvenanceLicensePass)) && provenanceLicenseCourtPass;
   const gates = [
     makeGate('intent_gate', required.has('intent_gate'), Boolean(genome.ragf_intent?.intent_root), 'INTENT_NOT_ROOTED', 'RAGF intent'),
     makeGate('genome_gate', required.has('genome_gate'), genomeVerification.valid, 'GENOME_INVALID', 'URRF/RAGF genome verification'),
@@ -1595,7 +1807,7 @@ export function evaluateUniversalArtAssetAcceptance({
     makeGate('lod_gate', required.has('lod_gate'), localLodPass && (lodEvidence.present ? lodEvidence.pass : facts.lodPresent) && courtGate(providerCourt, 'lod_platform_budget_gate') !== false, 'LOD_OR_PLATFORM_BUDGET_NOT_VERIFIED', localFileInspection ? 'local LOD sequence inspection' : lodEvidence.present ? 'provider evidence' : 'candidate artifact'),
     makeGate('collision_gate', required.has('collision_gate'), (collisionEvidence.present ? collisionEvidence.pass : facts.collisionPresent) && courtGate(providerCourt, 'collision_gate') !== false, 'COLLISION_NOT_VERIFIED', collisionEvidence.present ? 'provider evidence' : 'candidate artifact'),
     makeGate('platform_gate', required.has('platform_gate'), Boolean(evidence.platform?.status ? statusPass(evidence.platform) : facts.workspaceReport?.scores?.platform >= 6500), 'TARGET_PLATFORM_NOT_VERIFIED', evidence.platform ? 'provider evidence' : 'workspace report'),
-    makeGate('provenance_license_gate', required.has('provenance_license_gate'), provenanceLicensePass, strictProvenanceLicense ? 'INDEPENDENT_PROVENANCE_LICENSE_PROOF_REQUIRED' : 'PROVENANCE_OR_LICENSE_AUDIT_INCOMPLETE', strictProvenanceLicense || provenanceLicenseProof ? 'external provenance/license audit receipt' : provenanceEvidence.present || licenseEvidence.present ? 'provider evidence' : 'candidate/provider metadata'),
+    makeGate('provenance_license_gate', required.has('provenance_license_gate'), provenanceLicensePass, strictProvenanceLicense ? 'INDEPENDENT_PROVENANCE_LICENSE_PROOF_REQUIRED' : 'PROVENANCE_OR_LICENSE_AUDIT_INCOMPLETE', strictProvenanceLicense || effectiveProvenanceLicenseProof ? 'external provenance/license audit receipt' : provenanceEvidence.present || licenseEvidence.present ? 'provider evidence' : 'candidate/provider metadata'),
     makeGate('art_direction_gate', required.has('art_direction_gate'), artDirectionReviewPass, 'ART_DIRECTION_REVIEW_REQUIRED', 'external art-direction review receipt'),
     makeGate('runtime_projection_gate', required.has('runtime_projection_gate'), runtimePass && courtGate(providerCourt, 'vsr_projection_gate') !== false, 'VSR_PROJECTION_NOT_EXECUTED_OR_VERIFIED', runtimeProjectionEvidence.present ? 'provider evidence' : 'workspace runtime report'),
     makeGate('quality_tier_gate', required.has('quality_tier_gate'), genome.quality_tier === 'PREVIEW' ? facts.candidateQualityTier === genome.quality_tier : qualityProofPass, 'QUALITY_PROOF_OR_LOCAL_INSPECTION_MISSING', genome.quality_tier === 'PREVIEW' ? 'candidate quality tier' : 'external quality proof + local inspection'),
@@ -1634,8 +1846,9 @@ export function evaluateUniversalArtAssetAcceptance({
       lod_inspection_status: localFileInspection?.aggregates?.lod_status ?? null,
       lod_count: localFileInspection?.aggregates?.lod_count ?? null,
       pbr_file_status: localFileInspection?.aggregates?.pbr_status ?? null,
-      quality_proof_status: qualityProof ? (qualityProofVerification.valid ? 'PASS' : 'FAIL') : 'NOT_RUN',
-      provenance_license_proof_status: provenanceLicenseProof ? (provenanceLicenseProofVerification.valid ? 'PASS' : 'FAIL') : 'NOT_RUN'
+      quality_proof_status: effectiveQualityProof ? (qualityProofVerification.valid ? 'PASS' : 'FAIL') : 'NOT_RUN',
+      provenance_license_proof_status: effectiveProvenanceLicenseProof ? (provenanceLicenseProofVerification.valid ? 'PASS' : 'FAIL') : 'NOT_RUN',
+      evidence_bundle_status: evidenceBundle ? (evidenceBundleVerification.valid ? 'PASS' : 'FAIL') : 'NOT_RUN'
     },
     authority: {
       provider_can_commit: false,
@@ -1651,14 +1864,16 @@ export function evaluateUniversalArtAssetAcceptance({
       provider_evidence_root: evidence.evidence_root ?? rootHash(evidence),
       file_inspection: localFileInspection,
       file_inspection_verification: fileInspectionVerification,
-      art_direction_review: artDirectionReview,
+      art_direction_review: effectiveArtDirectionReview,
       art_direction_review_verification: artDirectionReviewVerification,
-      human_review: humanReview,
+      human_review: effectiveHumanReview,
       human_review_verification: humanReviewVerification,
-      quality_proof: qualityProof,
+      quality_proof: effectiveQualityProof,
       quality_proof_verification: qualityProofVerification,
-      provenance_license_proof: provenanceLicenseProof,
-      provenance_license_proof_verification: provenanceLicenseProofVerification
+      provenance_license_proof: effectiveProvenanceLicenseProof,
+      provenance_license_proof_verification: provenanceLicenseProofVerification,
+      evidence_bundle: evidenceBundle,
+      evidence_bundle_verification: evidenceBundleVerification
     },
     acceptance_root: ''
   };
@@ -1859,6 +2074,7 @@ function generateWithReferenceWorkspace({genome, resolution, outDir, options}) {
     humanReview: options.humanReview ?? null,
     qualityProof: options.qualityProof ?? options.qualityReceipt ?? null,
     provenanceLicenseProof: options.provenanceLicenseProof ?? options.provenanceLicenseReceipt ?? null,
+    evidenceBundle: options.evidenceBundle ?? options.evidenceBundleReceipt ?? null,
     runtimeEvidence: options.runtimeEvidence ?? null
   });
   const evidence = createLedger({genome, provider, candidate, acceptance});
@@ -1925,6 +2141,7 @@ function generateWithProvider({genome, resolution, outDir, options, adapterInfo}
     humanReview: options.humanReview ?? null,
     qualityProof: options.qualityProof ?? options.qualityReceipt ?? null,
     provenanceLicenseProof: options.provenanceLicenseProof ?? options.provenanceLicenseReceipt ?? null,
+    evidenceBundle: options.evidenceBundle ?? options.evidenceBundleReceipt ?? null,
     runtimeEvidence: options.runtimeEvidence ?? null
   });
   const evidence = createLedger({genome, provider: execution.provider ?? adapterInfo.manifest, job: execution.job, result: execution.result, candidate, acceptance});
@@ -2022,4 +2239,218 @@ export function verifyUniversalArtAssetForge({forge, genome, acceptance, evidenc
   delete copy.forge_root;
   if (!actual || actual !== rootHash(copy)) errors.push('FORGE_ROOT_INVALID');
   return {valid: errors.length === 0, errors, forge_root: forge?.forge_root ?? null};
+}
+
+function batchAssetKey(input, index) {
+  const raw = String(record(input).asset_key ?? record(input).assetKey ?? record(input).name ?? `asset-${index + 1}`).trim();
+  return raw || `asset-${index + 1}`;
+}
+
+function batchAssetDirectoryName(assetKey, index) {
+  const slug = String(assetKey)
+    .replace(/[^a-zA-Z0-9._-]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 80) || `asset-${index + 1}`;
+  return `${String(index + 1).padStart(3, '0')}-${slug}`;
+}
+
+function artifactRootIndexForBatchAssets(assets) {
+  const index = {};
+  for (const asset of assets ?? []) {
+    const artifactRoots = record(asset.artifact_roots);
+    for (const [role, root] of Object.entries(artifactRoots)) {
+      if (!isHexRoot(root)) continue;
+      index[root] ??= [];
+      index[root].push({asset_key: asset.asset_key, role});
+    }
+  }
+  return Object.fromEntries(Object.entries(index)
+    .sort(([left], [right]) => left.localeCompare(right, 'en'))
+    .map(([root, references]) => [
+      root,
+      references.sort((left, right) => `${left.asset_key}:${left.role}`.localeCompare(`${right.asset_key}:${right.role}`, 'en'))
+    ]));
+}
+
+function universalArtAssetBatchSummary(entry, index) {
+  const result = entry.result;
+  return {
+    asset_key: entry.asset_key,
+    index,
+    output_directory: entry.output_directory,
+    asset_id: result.genome?.asset_id ?? null,
+    asset_profile: result.genome?.asset_profile ?? null,
+    quality_tier: result.genome?.quality_tier ?? null,
+    status: result.status ?? 'BLOCKED',
+    acceptance_pass: result.acceptance?.pass === true,
+    genome_root: result.genome?.genome_root ?? null,
+    candidate_root: result.candidate?.candidate_root ?? null,
+    acceptance_root: result.acceptance?.acceptance_root ?? null,
+    forge_root: result.forge?.forge_root ?? null,
+    artifact_roots: artifactRootsForCandidate(result.candidate),
+    failures: [...(result.acceptance?.failures ?? [])]
+  };
+}
+
+/**
+ * Generate several URRF art-asset candidates in one candidate-only batch.
+ * Each asset keeps an isolated output directory and full Forge result while
+ * the batch adds a rooted summary and cross-asset artifact-root index for
+ * later composition/deduplication. Provider execution, acceptance, and RNCS
+ * authority remain per-asset boundaries; the batch never writes canonical
+ * world truth.
+ */
+export function generateUniversalArtAssetBatch(inputs = [], options = {}) {
+  const requests = Array.isArray(inputs) ? inputs : record(inputs).assets ?? record(inputs).requests;
+  if (!Array.isArray(requests) || requests.length === 0 || requests.length > 64 || requests.some(input => !input || typeof input !== 'object' || Array.isArray(input))) {
+    throw new GenesisError('UNIVERSAL_ART_ASSET_BATCH_INPUT_INVALID');
+  }
+  const outDir = ensureOutputDir(options.outDir);
+  const keys = requests.map((input, index) => batchAssetKey(input, index));
+  if (new Set(keys).size !== keys.length) throw new GenesisError('UNIVERSAL_ART_ASSET_BATCH_DUPLICATE_ASSET_KEY');
+  const sharedOptions = {...options};
+  delete sharedOptions.outDir;
+  delete sharedOptions.assetOptions;
+  delete sharedOptions.asset_options;
+  const assetOptions = options.assetOptions ?? options.asset_options ?? null;
+  const assets = requests.map((input, index) => {
+    const assetKey = keys[index];
+    const perAssetOptions = Array.isArray(assetOptions)
+      ? record(assetOptions[index])
+      : record(assetOptions?.[assetKey] ?? assetOptions?.[index]);
+    const outputDirectory = path.join(outDir, 'assets', batchAssetDirectoryName(assetKey, index));
+    const result = generateUniversalArtAsset(input, {
+      ...sharedOptions,
+      ...perAssetOptions,
+      outDir: outputDirectory
+    });
+    return {asset_key: assetKey, index, output_directory: outputDirectory, result};
+  });
+  const summaries = assets.map(universalArtAssetBatchSummary);
+  const artifactRootIndex = artifactRootIndexForBatchAssets(summaries);
+  const acceptancePassCount = summaries.filter(asset => asset.acceptance_pass).length;
+  const readyCount = summaries.filter(asset => asset.status === 'READY_FOR_HUMAN_REVIEW').length;
+  const blockedCount = summaries.length - readyCount;
+  const batchStatus = acceptancePassCount === summaries.length ? 'READY_FOR_HUMAN_REVIEW' : 'BLOCKED';
+  const batch = seal({
+    format: UNIVERSAL_ART_ASSET_BATCH_FORMAT,
+    version: UNIVERSAL_ART_ASSET_FORGE_VERSION,
+    batch_id: stableId('urrf-universal-art-asset-batch', {
+      assets: summaries.map(asset => ({asset_key: asset.asset_key, genome_root: asset.genome_root}))
+    }),
+    output_directory: outDir,
+    asset_count: summaries.length,
+    assets: summaries,
+    summary: {
+      asset_count: summaries.length,
+      ready_count: readyCount,
+      blocked_count: blockedCount,
+      acceptance_pass_count: acceptancePassCount,
+      all_acceptance_pass: acceptancePassCount === summaries.length,
+      unique_artifact_root_count: Object.keys(artifactRootIndex).length
+    },
+    artifact_root_index: artifactRootIndex,
+    status: batchStatus,
+    candidate_only: true,
+    authoritative: false,
+    canonical_write_authorized: false,
+    authority: {
+      canonical_owner: 'RNCS',
+      representation_owner: 'URRF',
+      provider_can_write_authoritative_world_state: false,
+      provider_can_commit: false,
+      acceptance_can_commit: false,
+      rncs_authority_required: true
+    },
+    batch_root: ''
+  }, 'batch_root');
+  const verification = verifyUniversalArtAssetBatch(batch, {assetResults: assets});
+  if (!verification.valid) throw new GenesisError('UNIVERSAL_ART_ASSET_BATCH_INVALID', verification.errors.join(','));
+  return {status: batchStatus, batch, assets, verification};
+}
+
+/**
+ * Verify a batch envelope and, when supplied, each embedded Forge result.
+ * Cross-asset artifact roots are checked as an index only; sharing a root is
+ * evidence of reusable content, not an automatic promotion or dedup write.
+ */
+export function verifyUniversalArtAssetBatch(batch, {assetResults = null} = {}) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!batch || typeof batch !== 'object' || Array.isArray(batch)) return {valid: false, errors: ['BATCH_NOT_OBJECT'], batch_root: null};
+  try {
+    check(batch.format === UNIVERSAL_ART_ASSET_BATCH_FORMAT, 'BATCH_FORMAT_INVALID');
+    check(batch.version === UNIVERSAL_ART_ASSET_FORGE_VERSION, 'BATCH_VERSION_INVALID');
+    check(nonEmptyText(batch.batch_id), 'BATCH_ID_MISSING');
+    check(nonEmptyText(batch.output_directory), 'BATCH_OUTPUT_DIRECTORY_MISSING');
+    check(Array.isArray(batch.assets) && batch.assets.length > 0 && batch.assets.length <= 64, 'BATCH_ASSETS_INVALID');
+    const assets = Array.isArray(batch.assets) ? batch.assets : [];
+    check(batch.asset_count === assets.length, 'BATCH_ASSET_COUNT_MISMATCH');
+    const keys = assets.map(asset => asset?.asset_key);
+    check(keys.every(nonEmptyText) && new Set(keys).size === keys.length, 'BATCH_ASSET_KEYS_INVALID');
+    const indexes = assets.map(asset => asset?.index);
+    check(indexes.every(index => Number.isSafeInteger(index) && index >= 0 && index < assets.length) && new Set(indexes).size === assets.length && [...indexes].sort((left, right) => left - right).every((index, position) => index === position), 'BATCH_ASSET_INDEX_SET_INVALID');
+    const readyCount = assets.filter(asset => asset?.status === 'READY_FOR_HUMAN_REVIEW').length;
+    const blockedCount = assets.filter(asset => asset?.status === 'BLOCKED').length;
+    const acceptancePassCount = assets.filter(asset => asset?.acceptance_pass === true).length;
+    check(readyCount + blockedCount === assets.length, 'BATCH_ASSET_STATUS_INVALID');
+    check(batch.summary?.asset_count === assets.length, 'BATCH_SUMMARY_ASSET_COUNT_MISMATCH');
+    check(batch.summary?.ready_count === readyCount, 'BATCH_READY_COUNT_MISMATCH');
+    check(batch.summary?.blocked_count === blockedCount, 'BATCH_BLOCKED_COUNT_MISMATCH');
+    check(batch.summary?.acceptance_pass_count === acceptancePassCount, 'BATCH_ACCEPTANCE_COUNT_MISMATCH');
+    check(batch.summary?.all_acceptance_pass === (acceptancePassCount === assets.length), 'BATCH_ACCEPTANCE_STATUS_MISMATCH');
+    check(batch.status === (acceptancePassCount === assets.length ? 'READY_FOR_HUMAN_REVIEW' : 'BLOCKED'), 'BATCH_STATUS_MISMATCH');
+    for (const asset of assets) {
+      check(Number.isSafeInteger(asset?.index) && asset.index >= 0 && asset.index < assets.length, `BATCH_ASSET_INDEX_INVALID:${asset?.asset_key ?? 'unknown'}`);
+      check(isHexRoot(asset?.genome_root), `BATCH_GENOME_ROOT_INVALID:${asset?.asset_key ?? 'unknown'}`);
+      check(asset?.candidate_root === null || isHexRoot(asset?.candidate_root), `BATCH_CANDIDATE_ROOT_INVALID:${asset?.asset_key ?? 'unknown'}`);
+      check(isHexRoot(asset?.acceptance_root), `BATCH_ACCEPTANCE_ROOT_INVALID:${asset?.asset_key ?? 'unknown'}`);
+      check(isHexRoot(asset?.forge_root), `BATCH_FORGE_ROOT_INVALID:${asset?.asset_key ?? 'unknown'}`);
+      check(['PREVIEW', 'PRODUCTION', 'AAA'].includes(asset?.quality_tier), `BATCH_QUALITY_TIER_INVALID:${asset?.asset_key ?? 'unknown'}`);
+      const artifactRoots = record(asset.artifact_roots);
+      for (const [role, root] of Object.entries(artifactRoots)) {
+        check(nonEmptyText(role) && isHexRoot(root), `BATCH_ARTIFACT_ROOT_INVALID:${asset?.asset_key ?? 'unknown'}:${role}`);
+      }
+    }
+    const expectedArtifactRootIndex = artifactRootIndexForBatchAssets(assets);
+    check(batch.summary?.unique_artifact_root_count === Object.keys(expectedArtifactRootIndex).length, 'BATCH_UNIQUE_ARTIFACT_ROOT_COUNT_MISMATCH');
+    check(rootHash(record(batch.artifact_root_index)) === rootHash(expectedArtifactRootIndex), 'BATCH_ARTIFACT_ROOT_INDEX_MISMATCH');
+    if (assetResults !== null) {
+      check(Array.isArray(assetResults) && assetResults.length === assets.length, 'BATCH_ASSET_RESULTS_INVALID');
+      const resultEntries = new Map((Array.isArray(assetResults) ? assetResults : []).map(entry => [entry?.asset_key, entry]));
+      for (const summary of assets) {
+        const entry = resultEntries.get(summary.asset_key);
+        const result = entry?.result ?? null;
+        if (!result) {
+          errors.push(`BATCH_ASSET_RESULT_MISSING:${summary.asset_key}`);
+          continue;
+        }
+        const forgeVerification = verifyUniversalArtAssetForge({
+          forge: result.forge,
+          genome: result.genome,
+          acceptance: result.acceptance,
+          evidenceLedger: result.evidenceLedger,
+          fileInspection: result.fileInspection
+        });
+        if (!forgeVerification.valid) errors.push(...forgeVerification.errors.map(error => `BATCH_${summary.asset_key}_${error}`));
+        check(result.status === summary.status, `BATCH_RESULT_STATUS_MISMATCH:${summary.asset_key}`);
+        check(result.acceptance?.pass === summary.acceptance_pass, `BATCH_RESULT_ACCEPTANCE_MISMATCH:${summary.asset_key}`);
+        check(result.genome?.genome_root === summary.genome_root, `BATCH_RESULT_GENOME_ROOT_MISMATCH:${summary.asset_key}`);
+        check((result.candidate?.candidate_root ?? null) === summary.candidate_root, `BATCH_RESULT_CANDIDATE_ROOT_MISMATCH:${summary.asset_key}`);
+        check(result.acceptance?.acceptance_root === summary.acceptance_root, `BATCH_RESULT_ACCEPTANCE_ROOT_MISMATCH:${summary.asset_key}`);
+        check(result.forge?.forge_root === summary.forge_root, `BATCH_RESULT_FORGE_ROOT_MISMATCH:${summary.asset_key}`);
+        check(rootHash(record(summary.artifact_roots)) === rootHash(artifactRootsForCandidate(result.candidate)), `BATCH_RESULT_ARTIFACT_ROOTS_MISMATCH:${summary.asset_key}`);
+      }
+    }
+    check(batch.candidate_only === true && batch.authoritative === false && batch.canonical_write_authorized === false, 'BATCH_AUTHORITY_INVALID');
+    check(batch.authority?.canonical_owner === 'RNCS' && batch.authority?.representation_owner === 'URRF', 'BATCH_OWNER_INVALID');
+    check(batch.authority?.provider_can_write_authoritative_world_state === false && batch.authority?.provider_can_commit === false && batch.authority?.acceptance_can_commit === false && batch.authority?.rncs_authority_required === true, 'BATCH_PROVIDER_AUTHORITY_INVALID');
+    const copy = clone(batch);
+    const actual = copy.batch_root;
+    delete copy.batch_root;
+    check(isHexRoot(actual) && actual === rootHash(copy), 'BATCH_ROOT_INVALID');
+  } catch (error) {
+    errors.push(`VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, batch_root: batch.batch_root ?? null};
 }

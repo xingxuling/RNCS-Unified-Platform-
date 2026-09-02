@@ -4,11 +4,15 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import {
+  createUniversalArtAssetEvidenceBundle,
   createUniversalArtAssetGenome,
   evaluateUniversalArtAssetAcceptance,
+  generateUniversalArtAssetBatch,
   generateUniversalArtAsset,
   inspectUniversalArtAssetFiles,
   resolveUniversalArtAssetProvider,
+  verifyUniversalArtAssetBatch,
+  verifyUniversalArtAssetEvidenceBundle,
   verifyUniversalArtAssetProvenanceLicenseReceipt,
   verifyUniversalArtAssetQualityProof,
   verifyUniversalArtAssetReviewReceipt,
@@ -496,4 +500,111 @@ test('AAA provenance and license gate requires an independent audit bound to eve
   tamperedArtifact.artifact_roots['mesh-glb'] = '0'.repeat(64);
   const resealedArtifactTamper = seal(tamperedArtifact, 'receipt_root');
   assert.equal(verifyUniversalArtAssetProvenanceLicenseReceipt(resealedArtifactTamper, binding).valid, false);
+});
+
+test('unified independent evidence bundle feeds the four AAA evidence gates without granting authority', () => {
+  const outDir = fs.mkdtempSync(path.join(os.tmpdir(), 'urrf-universal-art-evidence-bundle-'));
+  const result = generateUniversalArtAsset(characterInput, {outDir});
+  const provenanceLicenseProof = createProvenanceLicenseProof({result});
+  const artDirectionReview = createReviewReceipt({result, reviewKind: 'ART_DIRECTION'});
+  const humanReview = createReviewReceipt({result, reviewKind: 'HUMAN_ART'});
+  const qualityProof = createQualityProof({result});
+  const bundle = createUniversalArtAssetEvidenceBundle({
+    genome: result.genome,
+    candidate: result.candidate,
+    fileInspection: result.fileInspection,
+    providerId: result.execution.provider_id,
+    targetPlatforms: result.genome.target_platforms,
+    provenanceLicenseProof,
+    artDirectionReview,
+    qualityProof,
+    humanReview
+  });
+  const binding = {
+    qualityTier: result.genome.quality_tier,
+    genomeRoot: result.genome.genome_root,
+    candidateRoot: result.candidate.candidate_root,
+    fileInspectionRoot: result.fileInspection.inspection_root,
+    providerId: result.execution.provider_id,
+    seed: result.genome.ragf_genome.seed,
+    artifactRoots: Object.fromEntries(Object.entries(result.candidate.artifacts).map(([role, artifact]) => [role, artifact.root])),
+    inspection: result.fileInspection,
+    targetPlatforms: result.genome.target_platforms
+  };
+  assert.equal(bundle.status, 'VERIFIED');
+  assert.equal(verifyUniversalArtAssetEvidenceBundle(bundle, binding).valid, true);
+
+  const acceptance = evaluateUniversalArtAssetAcceptance({
+    genome: result.genome,
+    workspace: result.workspace,
+    candidate: result.candidate,
+    execution: result.execution,
+    provider: result.execution.provider_id,
+    fileInspection: result.fileInspection,
+    providerEvidence: {
+      provenance: {status: 'PASS'},
+      license: {status: 'PASS'},
+      art_direction: {status: 'PASS'},
+      human_review: {status: 'PASS'},
+      quality_tier: {status: 'PASS'}
+    },
+    evidenceBundle: bundle
+  });
+  const gates = new Map(acceptance.gates.map(gate => [gate.gate, gate]));
+  for (const gateName of ['provenance_license_gate', 'art_direction_gate', 'quality_tier_gate', 'human_review_gate']) {
+    assert.equal(gates.get(gateName).status, 'PASS', gateName);
+  }
+  assert.equal(acceptance.metrics.evidence_bundle_status, 'PASS');
+  assert.equal(acceptance.evidence.evidence_bundle_verification.valid, true);
+
+  const tampered = structuredClone(bundle);
+  tampered.artifact_roots['mesh-glb'] = '0'.repeat(64);
+  const resealedTamper = seal(tampered, 'bundle_root');
+  assert.equal(verifyUniversalArtAssetEvidenceBundle(resealedTamper, binding).valid, false);
+});
+
+test('batch Forge isolates multiple assets and verifies a cross-asset artifact root index', () => {
+  const outDir = fs.mkdtempSync(path.join(os.tmpdir(), 'urrf-universal-art-batch-'));
+  const batch = generateUniversalArtAssetBatch([
+    {...characterInput, asset_key: 'guardian-character'},
+    {
+      ...characterInput,
+      asset_key: 'ice-relic-prop',
+      description: '一枚用于冰晶遗迹祭坛的三维古代护符。',
+      asset_profile: 'prop',
+      asset_kind: 'prop-3d',
+      seed: 'universal-art-forge-prop-batch-seed'
+    }
+  ], {outDir});
+  assert.equal(batch.assets.length, 2);
+  assert.equal(batch.batch.status, 'BLOCKED');
+  assert.equal(batch.batch.summary.asset_count, 2);
+  assert.equal(batch.batch.summary.blocked_count, 2);
+  assert.equal(batch.batch.summary.acceptance_pass_count, 0);
+  assert.ok(batch.batch.summary.unique_artifact_root_count > 0);
+  assert.equal(batch.verification.valid, true);
+  assert.equal(verifyUniversalArtAssetBatch(batch.batch, {assetResults: batch.assets}).valid, true);
+  assert.ok(fs.existsSync(path.join(outDir, 'assets', '001-guardian-character', 'universal-art-asset-forge.json')));
+  assert.ok(fs.existsSync(path.join(outDir, 'assets', '002-ice-relic-prop', 'universal-art-asset-forge.json')));
+
+  const tampered = structuredClone(batch.batch);
+  tampered.artifact_root_index = {};
+  assert.equal(verifyUniversalArtAssetBatch(tampered).valid, false);
+
+  const tamperedSummary = structuredClone(batch.batch);
+  const firstAsset = tamperedSummary.assets[0];
+  const oldRoot = firstAsset.artifact_roots['mesh-glb'];
+  const replacementRoot = firstAsset.artifact_roots['mesh-lod1-glb'];
+  firstAsset.artifact_roots['mesh-glb'] = replacementRoot;
+  tamperedSummary.artifact_root_index[oldRoot] = tamperedSummary.artifact_root_index[oldRoot].filter(reference => !(reference.asset_key === firstAsset.asset_key && reference.role === 'mesh-glb'));
+  if (tamperedSummary.artifact_root_index[oldRoot].length === 0) delete tamperedSummary.artifact_root_index[oldRoot];
+  tamperedSummary.artifact_root_index[replacementRoot].push({asset_key: firstAsset.asset_key, role: 'mesh-glb'});
+  tamperedSummary.artifact_root_index[replacementRoot].sort((left, right) => `${left.asset_key}:${left.role}`.localeCompare(`${right.asset_key}:${right.role}`, 'en'));
+  tamperedSummary.summary.unique_artifact_root_count = Object.keys(tamperedSummary.artifact_root_index).length;
+  const resealedSummaryTamper = seal(tamperedSummary, 'batch_root');
+  assert.equal(verifyUniversalArtAssetBatch(resealedSummaryTamper, {assetResults: batch.assets}).valid, false);
+  assert.throws(() => generateUniversalArtAssetBatch([
+    {...characterInput, asset_key: 'duplicate'},
+    {...characterInput, asset_key: 'duplicate', seed: 'duplicate-seed-2'}
+  ], {outDir: fs.mkdtempSync(path.join(os.tmpdir(), 'urrf-universal-art-batch-duplicate-'))}), /UNIVERSAL_ART_ASSET_BATCH_DUPLICATE_ASSET_KEY/);
 });

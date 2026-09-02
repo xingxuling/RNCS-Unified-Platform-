@@ -1,0 +1,328 @@
+{
+  "format": "urrf.universal-art-asset-batch.v0.1",
+  "version": "0.1.0",
+  "batch_id": "urrf-universal-art-asset-batch:cc79578e66a2a29b4d437d70",
+  "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-P1w29h",
+  "asset_count": 2,
+  "assets": [
+    {
+      "asset_key": "guardian-character",
+      "index": 0,
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-P1w29h\\assets\\001-guardian-character",
+      "asset_id": "asset:cf644862f780b86ae2bd9e94",
+      "asset_profile": "character",
+      "quality_tier": "AAA",
+      "status": "BLOCKED",
+      "acceptance_pass": false,
+      "genome_root": "8c49cccb28253fa46b1141f9c7d79c2d140c791137f01ff55517e26c0704ca96",
+      "candidate_root": "7b927b6e736cb2fad8e019f067a2b8db7b96779b3b30f1a758f1db2c3e12578a",
+      "acceptance_root": "a41089c423c51f6261487301c5eda5b158087a200a708954ca895cf66d30f5ae",
+      "forge_root": "6ff537448651178d745fb483aea76d33fa63b40fea4f36b646f7846839790551",
+      "artifact_roots": {
+        "animation-clips": "47158950c1c033622f92a4e8ba404dfb191d10d6a8d98fa9a249ead7e3577cd0",
+        "collision-shape": "a14df9e767f48f509c49ccd8bcad5d69d80a9932124ffb0a0befc9ff367524d3",
+        "concept-svg": "f0b9a5aaa687bef1537b9d9a1a88165dfa569a4ffe7db4e5014925ca3dc85be8",
+        "dependency-graph": "05186a17d7ceef1c3b1f6fc2d2c019080b29e0953845b21a2198d99e03feecc3",
+        "lod-manifest": "3c7d98f6b124845a8e6f049fc3d8e1f90bbfc8e20d85da4c3b450e19dfe1541b",
+        "mesh-glb": "b14763f45777df3792bb030e33856591cfe7d3c9096e68dfbf0a2667378c26ae",
+        "mesh-lod1-glb": "2273fbbbaaaa3ad0953619d0929e841c0122825346057033e4ed88c199e131a0",
+        "mesh-lod2-glb": "b7c7d09e32bc37eacf38ca5ed76f9dd34905ee6157ac8e2bfa694fbd50b08aa2",
+        "particle-preset": "d6a16a141cd660f7fd76a1cfffb98a7ea1f105e49bc86bb512d0d9eb5ff7c877",
+        "pbr-texture-pack": "e70f36e26ec47a86e41e9e04ad594cf39098dc52401031f530911fd68f192a19",
+        "prefab-blueprint": "ea829511bf9f0ae748292f3ed8bcc12bfa55d8b2eda4a1b35001f8a67510d683",
+        "projection-manifest": "761d0fbee8f1c613178d99ec36faa8dc63f1e0be7e2f15cbc7dc31aa3bffc9df",
+        "retarget-profile": "7615b3fff4e5974489dc9b3a78cdcbcd13b7ba057e9a3e7f0a2c59b397bea81b",
+        "rsr-embodiment-profile": "dff0650a9cb99072dee5f816b54f61502f005dcf8edee29936635e79947eaecc",
+        "sfx-wav": "54abc1124ef5ee85a465c1ecae2c44a11b8beaf2e2895abcdf3e5a7ef07648f3",
+        "skeleton-rig": "9759d173aed8fe9156a746f4392b07dde13cb08e0fde81d062861b7ca571dc17",
+        "sprite-sheet": "ac6c8380146f638547615272d2954cd86d6c4e831aea703dc1ae1a7ca049186d",
+        "vsr-spatial-asset": "095af39568e39bb8a2eb625c9035c2b960a214968628e1efae00be76b0b515f0"
+      },
+      "failures": [
+        "provenance_license_gate",
+        "art_direction_gate",
+        "quality_tier_gate",
+        "human_review_gate"
+      ]
+    },
+    {
+      "asset_key": "ice-relic-prop",
+      "index": 1,
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\urrf-universal-art-batch-integration-P1w29h\\assets\\002-ice-relic-prop",
+      "asset_id": "asset:795500e07f30c1152d3638b3",
+      "asset_profile": "prop",
+      "quality_tier": "AAA",
+      "status": "BLOCKED",
+      "acceptance_pass": false,
+      "genome_root": "ae74fd8d418a9f9e920318e3a200eda78181dd5b4ef7b4878b4c36d9e22528d1",
+      "candidate_root": "fd51e5755fb38c8f5a91e8940656ca919933c5b4901964153b3a70fe74818572",
+      "acceptance_root": "3795cfe307bb5e4c64b0acd3c8d5d74ccfe5ecbfe7aec768dfe365b139f01120",
+      "forge_root": "44218a83b99f350f138d1920378b7e0fc8615035092e7b1a391f3dc991c28293",
+      "artifact_roots": {
+        "animation-clips": "97dd04f58b655f36b6641c7158e58a9d1fe8be45a8cd5dd2952fec3c21dde149",
+        "collision-shape": "d8ab17692c2b8dff299bd4bda279122bf3b1cd1328cecc17106ba65b3f046f96",
+        "concept-svg": "00f7e3633cb351bd8c00b0c48aee96282bacc0114edbfbc1bd2e19026b1b95a5",
+        "dependency-graph": "f7ae76a15e97cd1a6f7e0dfc09e9bc8ee104c6c36b6c6d57f7ac0cc5ed1ff776",
+        "lod-manifest": "8286d764bf23bf89ff2d4fa2981b835b90a2a259a8715d44678acc65b2f712aa",
+        "mesh-glb": "6a2ccfc5feaee736a74987e4ba69e81e23b72f225a7a9e3095e41c72923e6456",
+        "mesh-lod1-glb": "9b8a288a4875597a00f441ae329841feaf351ce3ab7f7be942ea24ccf4e39856",
+        "mesh-lod2-glb": "4f7214c250681b4bba50463793fcda85aa7330756f8bd96be19e4396a2703b67",
+        "particle-preset": "5f5afc8f2e20c3738d696cdd37b25875fe68ad251e3a1013c2acb6c9f2443e40",
+        "pbr-texture-pack": "5df52d6e52ea62bdb30ff9f6175c8458be6b9b6e75879ed471ebb88c31e6b884",
+        "prefab-blueprint": "fe0fb3635a87aeeacde54eb364af909b321aa17c2a4757d80a8b624939758c73",
+        "projection-manifest": "3e337d71feadcf8ca350bb2e218c675a52f53a752dc5f6665e40d50307631da2",
+        "retarget-profile": "3ba20b7ee4e3fa4db3c592bae07bbf944d0f03200f923c8ed5df17b8d738b0b1",
+        "rsr-embodiment-profile": "ac27f0cbd1c4ed8789647dc7bcc9339b11352657376b67cd0e9f70033a010a0e",
+        "sfx-wav": "c6c3c736a63c0f00e94f32a22d06ac74c6a877cff5bd22e945b92d444ff90198",
+        "skeleton-rig": "ee6628cbd477146f47a0c3154a36773cb86a5043e438e1e3b080ad2ab1af396c",
+        "sprite-sheet": "12c28b1da99d4964fe4b6f8d32f34c4cc1a248661da6160c38e48531c2564482",
+        "vsr-spatial-asset": "47d913f27757897a71d3bfce7156c977732775428a4f39d733aa2059512c6e6b"
+      },
+      "failures": [
+        "provenance_license_gate",
+        "art_direction_gate",
+        "quality_tier_gate",
+        "human_review_gate"
+      ]
+    }
+  ],
+  "summary": {
+    "asset_count": 2,
+    "ready_count": 0,
+    "blocked_count": 2,
+    "acceptance_pass_count": 0,
+    "all_acceptance_pass": false,
+    "unique_artifact_root_count": 36
+  },
+  "artifact_root_index": {
+    "00f7e3633cb351bd8c00b0c48aee96282bacc0114edbfbc1bd2e19026b1b95a5": [
+      {
+        "asset_key": "ice-relic-prop",
+        "role": "concept-svg"
+      }
+    ],
+    "05186a17d7ceef1c3b1f6fc2d2c019080b29e0953845b21a2198d99e03feecc3": [
+      {
+        "asset_key": "guardian-character",
+        "role": "dependency-graph"
+      }
+    ],
+    "095af39568e39bb8a2eb625c9035c2b960a214968628e1efae00be76b0b515f0": [
+      {
+        "asset_key": "guardian-character",
+        "role": "vsr-spatial-asset"
+      }
+    ],
+    "12c28b1da99d4964fe4b6f8d32f34c4cc1a248661da6160c38e48531c2564482": [
+      {
+        "asset_key": "ice-relic-prop",
+        "role": "sprite-sheet"
+      }
+    ],
+    "2273fbbbaaaa3ad0953619d0929e841c0122825346057033e4ed88c199e131a0": [
+      {
+        "asset_key": "guardian-character",
+        "role": "mesh-lod1-glb"
+      }
+    ],
+    "3ba20b7ee4e3fa4db3c592bae07bbf944d0f03200f923c8ed5df17b8d738b0b1": [
+      {
+        "asset_key": "ice-relic-prop",
+        "role": "retarget-profile"
+      }
+    ],
+    "3c7d98f6b124845a8e6f049fc3d8e1f90bbfc8e20d85da4c3b450e19dfe1541b": [
+      {
+        "asset_key": "guardian-character",
+        "role": "lod-manifest"
+      }
+    ],
+    "3e337d71feadcf8ca350bb2e218c675a52f53a752dc5f6665e40d50307631da2": [
+      {
+        "asset_key": "ice-relic-prop",
+        "role": "projection-manifest"
+      }
+    ],
+    "47158950c1c033622f92a4e8ba404dfb191d10d6a8d98fa9a249ead7e3577cd0": [
+      {
+        "asset_key": "guardian-character",
+        "role": "animation-clips"
+      }
+    ],
+    "47d913f27757897a71d3bfce7156c977732775428a4f39d733aa2059512c6e6b": [
+      {
+        "asset_key": "ice-relic-prop",
+        "role": "vsr-spatial-asset"
+      }
+    ],
+    "4f7214c250681b4bba50463793fcda85aa7330756f8bd96be19e4396a2703b67": [
+      {
+        "asset_key": "ice-relic-prop",
+        "role": "mesh-lod2-glb"
+      }
+    ],
+    "54abc1124ef5ee85a465c1ecae2c44a11b8beaf2e2895abcdf3e5a7ef07648f3": [
+      {
+        "asset_key": "guardian-character",
+        "role": "sfx-wav"
+      }
+    ],
+    "5df52d6e52ea62bdb30ff9f6175c8458be6b9b6e75879ed471ebb88c31e6b884": [
+      {
+        "asset_key": "ice-relic-prop",
+        "role": "pbr-texture-pack"
+      }
+    ],
+    "5f5afc8f2e20c3738d696cdd37b25875fe68ad251e3a1013c2acb6c9f2443e40": [
+      {
+        "asset_key": "ice-relic-prop",
+        "role": "particle-preset"
+      }
+    ],
+    "6a2ccfc5feaee736a74987e4ba69e81e23b72f225a7a9e3095e41c72923e6456": [
+      {
+        "asset_key": "ice-relic-prop",
+        "role": "mesh-glb"
+      }
+    ],
+    "7615b3fff4e5974489dc9b3a78cdcbcd13b7ba057e9a3e7f0a2c59b397bea81b": [
+      {
+        "asset_key": "guardian-character",
+        "role": "retarget-profile"
+      }
+    ],
+    "761d0fbee8f1c613178d99ec36faa8dc63f1e0be7e2f15cbc7dc31aa3bffc9df": [
+      {
+        "asset_key": "guardian-character",
+        "role": "projection-manifest"
+      }
+    ],
+    "8286d764bf23bf89ff2d4fa2981b835b90a2a259a8715d44678acc65b2f712aa": [
+      {
+        "asset_key": "ice-relic-prop",
+        "role": "lod-manifest"
+      }
+    ],
+    "9759d173aed8fe9156a746f4392b07dde13cb08e0fde81d062861b7ca571dc17": [
+      {
+        "asset_key": "guardian-character",
+        "role": "skeleton-rig"
+      }
+    ],
+    "97dd04f58b655f36b6641c7158e58a9d1fe8be45a8cd5dd2952fec3c21dde149": [
+      {
+        "asset_key": "ice-relic-prop",
+        "role": "animation-clips"
+      }
+    ],
+    "9b8a288a4875597a00f441ae329841feaf351ce3ab7f7be942ea24ccf4e39856": [
+      {
+        "asset_key": "ice-relic-prop",
+        "role": "mesh-lod1-glb"
+      }
+    ],
+    "a14df9e767f48f509c49ccd8bcad5d69d80a9932124ffb0a0befc9ff367524d3": [
+      {
+        "asset_key": "guardian-character",
+        "role": "collision-shape"
+      }
+    ],
+    "ac27f0cbd1c4ed8789647dc7bcc9339b11352657376b67cd0e9f70033a010a0e": [
+      {
+        "asset_key": "ice-relic-prop",
+        "role": "rsr-embodiment-profile"
+      }
+    ],
+    "ac6c8380146f638547615272d2954cd86d6c4e831aea703dc1ae1a7ca049186d": [
+      {
+        "asset_key": "guardian-character",
+        "role": "sprite-sheet"
+      }
+    ],
+    "b14763f45777df3792bb030e33856591cfe7d3c9096e68dfbf0a2667378c26ae": [
+      {
+        "asset_key": "guardian-character",
+        "role": "mesh-glb"
+      }
+    ],
+    "b7c7d09e32bc37eacf38ca5ed76f9dd34905ee6157ac8e2bfa694fbd50b08aa2": [
+      {
+        "asset_key": "guardian-character",
+        "role": "mesh-lod2-glb"
+      }
+    ],
+    "c6c3c736a63c0f00e94f32a22d06ac74c6a877cff5bd22e945b92d444ff90198": [
+      {
+        "asset_key": "ice-relic-prop",
+        "role": "sfx-wav"
+      }
+    ],
+    "d6a16a141cd660f7fd76a1cfffb98a7ea1f105e49bc86bb512d0d9eb5ff7c877": [
+      {
+        "asset_key": "guardian-character",
+        "role": "particle-preset"
+      }
+    ],
+    "d8ab17692c2b8dff299bd4bda279122bf3b1cd1328cecc17106ba65b3f046f96": [
+      {
+        "asset_key": "ice-relic-prop",
+        "role": "collision-shape"
+      }
+    ],
+    "dff0650a9cb99072dee5f816b54f61502f005dcf8edee29936635e79947eaecc": [
+      {
+        "asset_key": "guardian-character",
+        "role": "rsr-embodiment-profile"
+      }
+    ],
+    "e70f36e26ec47a86e41e9e04ad594cf39098dc52401031f530911fd68f192a19": [
+      {
+        "asset_key": "guardian-character",
+        "role": "pbr-texture-pack"
+      }
+    ],
+    "ea829511bf9f0ae748292f3ed8bcc12bfa55d8b2eda4a1b35001f8a67510d683": [
+      {
+        "asset_key": "guardian-character",
+        "role": "prefab-blueprint"
+      }
+    ],
+    "ee6628cbd477146f47a0c3154a36773cb86a5043e438e1e3b080ad2ab1af396c": [
+      {
+        "asset_key": "ice-relic-prop",
+        "role": "skeleton-rig"
+      }
+    ],
+    "f0b9a5aaa687bef1537b9d9a1a88165dfa569a4ffe7db4e5014925ca3dc85be8": [
+      {
+        "asset_key": "guardian-character",
+        "role": "concept-svg"
+      }
+    ],
+    "f7ae76a15e97cd1a6f7e0dfc09e9bc8ee104c6c36b6c6d57f7ac0cc5ed1ff776": [
+      {
+        "asset_key": "ice-relic-prop",
+        "role": "dependency-graph"
+      }
+    ],
+    "fe0fb3635a87aeeacde54eb364af909b321aa17c2a4757d80a8b624939758c73": [
+      {
+        "asset_key": "ice-relic-prop",
+        "role": "prefab-blueprint"
+      }
+    ]
+  },
+  "status": "BLOCKED",
+  "candidate_only": true,
+  "authoritative": false,
+  "canonical_write_authorized": false,
+  "authority": {
+    "canonical_owner": "RNCS",
+    "representation_owner": "URRF",
+    "provider_can_write_authoritative_world_state": false,
+    "provider_can_commit": false,
+    "acceptance_can_commit": false,
+    "rncs_authority_required": true
+  },
+  "batch_root": "89cbdb7f82934dd3e9fcc5c075036c2e953b1b9347c590a8a7156db67e903ff1"
+}

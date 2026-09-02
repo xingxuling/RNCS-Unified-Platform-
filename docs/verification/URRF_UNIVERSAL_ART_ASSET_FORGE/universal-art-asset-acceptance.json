@@ -199,7 +199,8 @@
     "lod_count": 3,
     "pbr_file_status": "PASS",
     "quality_proof_status": "NOT_RUN",
-    "provenance_license_proof_status": "NOT_RUN"
+    "provenance_license_proof_status": "NOT_RUN",
+    "evidence_bundle_status": "NOT_RUN"
   },
   "authority": {
     "provider_can_commit": false,
@@ -1037,7 +1038,15 @@
         "PROVENANCE_LICENSE_RECEIPT_NOT_OBJECT"
       ],
       "receipt_root": null
+    },
+    "evidence_bundle": null,
+    "evidence_bundle_verification": {
+      "valid": false,
+      "errors": [
+        "EVIDENCE_BUNDLE_NOT_OBJECT"
+      ],
+      "bundle_root": null
     }
   },
-  "acceptance_root": "4d7c681af4c746f008f9cdc4f7978818b15198cc82fbd04a6ea5bf9459501ffe"
+  "acceptance_root": "1d55cc7e0acf5c387fe53cd5fe41157dcc160aab9896a2eb163d518ebedeae93"
 }
