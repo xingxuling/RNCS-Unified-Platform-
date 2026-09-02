@@ -9,6 +9,7 @@ import {
   generateUniversalArtAsset,
   inspectUniversalArtAssetFiles,
   resolveUniversalArtAssetProvider,
+  verifyUniversalArtAssetQualityProof,
   verifyUniversalArtAssetReviewReceipt,
   verifyUniversalArtAssetForge,
   verifyUniversalArtAssetGenome
@@ -57,6 +58,37 @@ function createReviewReceipt({result, reviewKind}) {
   }, 'receipt_root');
 }
 
+function createQualityProof({result, targetPlatform = 'desktop'}) {
+  const inspection = result.fileInspection;
+  const textureSize = Math.max(...inspection.pbr_pack.files.flatMap(file => [file.width, file.height]));
+  const hardwareProfile = 'test-reference-renderer';
+  return seal({
+    format: 'urrf.universal-art-asset-quality-proof.v0.1',
+    version: '0.1.0',
+    source: 'external-quality-verifier',
+    receipt_status: 'VERIFIED',
+    decision: 'PASS',
+    target_quality_tier: result.genome.quality_tier,
+    genome_root: result.genome.genome_root,
+    candidate_root: result.candidate.candidate_root,
+    file_inspection_root: inspection.inspection_root,
+    benchmark_root: rootHash({asset_id: result.genome.asset_id, targetPlatform, hardwareProfile}),
+    hardware_profile: hardwareProfile,
+    metrics: {
+      lod0_triangle_count: inspection.lod.triangle_counts[0],
+      texture_size: textureSize,
+      pbr_channel_count: inspection.pbr_pack.texture_count,
+      target_platform: targetPlatform
+    },
+    verifier: {
+      kind: 'external-quality-verifier',
+      status: 'PASS',
+      verifier_id: 'quality-verifier:test',
+      method: 'external-quality-proof-v0.1'
+    }
+  }, 'receipt_root');
+}
+
 test('universal art genome reuses RAGF intent/genome and seals a broader profile contract', () => {
   const genome = createUniversalArtAssetGenome(characterInput);
   assert.equal(verifyUniversalArtAssetGenome(genome).valid, true);
@@ -98,6 +130,7 @@ test('built-in RAGF workspace produces real candidate files and local structure 
   assert.ok(result.acceptance.failures.includes('art_direction_gate'));
   assert.ok(result.acceptance.failures.includes('human_review_gate'));
   assert.ok(result.acceptance.failures.includes('quality_tier_gate'));
+  assert.equal(result.acceptance.metrics.quality_proof_status, 'NOT_RUN');
   assert.equal(result.execution.file_inspection.status, 'PASS');
   assert.equal(result.execution.file_inspection.aggregates.valid_file_count, 3);
   assert.equal(result.execution.file_inspection.aggregates.pbr_status, 'PASS');
@@ -333,4 +366,44 @@ test('independent review receipts bind exact roots and remain separate from Prov
   });
   assert.ok(declarationOnly.failures.includes('art_direction_gate'));
   assert.ok(declarationOnly.failures.includes('human_review_gate'));
+});
+
+test('quality tier requires an independently verified proof bound to local inspection metrics', () => {
+  const outDir = fs.mkdtempSync(path.join(os.tmpdir(), 'urrf-universal-art-quality-'));
+  const result = generateUniversalArtAsset(characterInput, {outDir});
+  const qualityProof = createQualityProof({result});
+  assert.equal(verifyUniversalArtAssetQualityProof(qualityProof, {
+    qualityTier: result.genome.quality_tier,
+    genomeRoot: result.genome.genome_root,
+    candidateRoot: result.candidate.candidate_root,
+    fileInspectionRoot: result.fileInspection.inspection_root,
+    inspection: result.fileInspection,
+    targetPlatforms: result.genome.target_platforms
+  }).valid, true);
+
+  const acceptance = evaluateUniversalArtAssetAcceptance({
+    genome: result.genome,
+    workspace: result.workspace,
+    candidate: result.candidate,
+    execution: result.execution,
+    provider: result.execution.provider_id,
+    fileInspection: result.fileInspection,
+    providerEvidence: {quality_tier: {status: 'PASS'}},
+    qualityProof
+  });
+  const qualityGate = acceptance.gates.find(gate => gate.gate === 'quality_tier_gate');
+  assert.equal(qualityGate.status, 'PASS');
+  assert.equal(acceptance.failures.includes('quality_tier_gate'), false);
+  assert.equal(acceptance.evidence.quality_proof_verification.valid, true);
+
+  const tampered = structuredClone(qualityProof);
+  tampered.metrics.texture_size += 1;
+  assert.equal(verifyUniversalArtAssetQualityProof(tampered, {
+    qualityTier: result.genome.quality_tier,
+    genomeRoot: result.genome.genome_root,
+    candidateRoot: result.candidate.candidate_root,
+    fileInspectionRoot: result.fileInspection.inspection_root,
+    inspection: result.fileInspection,
+    targetPlatforms: result.genome.target_platforms
+  }).valid, false);
 });
