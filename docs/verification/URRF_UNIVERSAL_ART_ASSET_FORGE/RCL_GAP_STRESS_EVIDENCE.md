@@ -20,6 +20,7 @@ RCL currently does not own a proven universal art-asset primitive that directly 
 - a canonical performance-evidence primitive that separates warmup from sustained frames, binds timing/resource budgets to the same scene/frame roots, and keeps local-host measurements distinct from target-device/physical-telemetry claims.
 - a canonical holdout-regression primitive that binds a new-seed batch to an explicit baseline, checks profile coverage and structural file gates, rejects genome/candidate/Forge root reuse, and keeps structural generalization separate from AAA acceptance.
 - a canonical all-profile coverage primitive that binds each declared profile to its resolution/execution facts, distinguishes contract-only from executed/unresolved routes, rejects silent fallback, and preserves the candidate-only authority boundary.
+- a canonical asset-kind/profile registry primitive that rejects unregistered asset kinds instead of silently routing them into the `prop` family.
 
 The implementation therefore remains a downstream URRF/RNCS seam and records the missing capability instead of silently lowering it into another language or declaring RCL completion. Candidate absorption into RCL remains pending primitive/IR design, regression cases, K400 coverage and Integration Court decision.
 
@@ -40,7 +41,7 @@ The same rooted forge contract was exercised against:
 - a baseline-vs-holdout run with two new-seed assets across the exercised `character` + `prop` profiles; both holdout candidates passed local structural inspection, exposed distinct genome/candidate/Forge roots, had zero baseline overlap, and remained AAA-blocked with zero acceptance passes;
 - a four-receipt evidence bundle, which verifies coverage and exact roots when all receipts are present and fails closed after artifact-root tampering.
 
-The negative cases are part of the contract: a Provider result, a generated GLB, a local browser/runtime receipt, an invalid LOD sequence, Provider provenance/license/`quality_tier` metadata, or Provider `art_direction`/`human_review` declarations are not by themselves AAA acceptance or RNCS authority. A malformed materialized GLB, an unbound PBR material, an unbound/non-external provenance/license, review, or quality receipt, a metric-mismatched quality proof, duplicate/non-reducing LOD geometry, stale or tampered assembly file bytes, unsafe assembly paths, invalid LOD/placement selections, a tampered VSR metadata root, a tampered evidence-bundle root, or a tampered cross-asset index cannot be rescued by Provider `PASS` declarations.
+The negative cases are part of the contract: a Provider result, a generated GLB, a local browser/runtime receipt, an invalid LOD sequence, Provider provenance/license/`quality_tier` metadata, or Provider `art_direction`/`human_review` declarations are not by themselves AAA acceptance or RNCS authority. A malformed materialized GLB, an unbound PBR material, an unbound/non-external provenance/license, review, or quality receipt, a metric-mismatched quality proof, duplicate/non-reducing LOD geometry, stale or tampered assembly file bytes, unsafe assembly paths, invalid LOD/placement selections, an unregistered asset kind, a tampered VSR metadata root, a tampered evidence-bundle root, or a tampered cross-asset index cannot be rescued by Provider `PASS` declarations.
 
 ## Donor Advantage and Reuse
 
@@ -48,10 +49,10 @@ The negative cases are part of the contract: a Provider result, a generated GLB,
 
 ## Regression Evidence
 
-- `node --test packages/world/large-world-runtime/tests/universal-art-asset-forge.test.mjs`: `18/18 PASS`, including all-profile route-boundary and fail-closed tamper coverage.
+- `node --test packages/world/large-world-runtime/tests/universal-art-asset-forge.test.mjs`: `19/19 PASS`, including unknown-asset-kind rejection, all-profile route-boundary, and fail-closed tamper coverage.
 - `npm run test:gltf --workspace @taowind/visual-state-runtime`: `22/22 PASS`, including the external PBR binding adapter.
-- `npm test --workspace @taowind/large-world-runtime`: `57/57 PASS`.
-- `npm run test:large-world-universal-art-asset-forge`: package `57/57 PASS`, integration `4/4 PASS`.
+- `npm test --workspace @taowind/large-world-runtime`: `58/58 PASS`.
+- `npm run test:large-world-universal-art-asset-forge`: package `58/58 PASS`, integration `4/4 PASS`.
 - `python tests/large_world_universal_art_asset_forge_webgpu_browser_test.py`: actual local Chromium WebGPU `EXECUTED`, 12/12 frames submitted, device lost `false`, 2 draw calls, 1,444 triangles, 8 texture resources, and 10 material texture bindings; all GPU/CPU frame roots match, the performance budget is `PASS`, and the persisted performance root re-verifies.
 - `node --test tests/large-world-universal-art-asset-forge.integration.test.mjs`: `4/4 PASS`, including the persisted nine-profile coverage matrix and two-profile holdout packet.
 - Existing URRF composition tests remain in the same package suite and continue to pass.
@@ -71,7 +72,7 @@ For the committed reference run, the forge has:
 | LOWER | EVIDENCED | RAGF/VSR workspace, Provider Adapter, multi-asset assembly, dependency-complete PBR catalog, and VSR projection paths are connected. |
 | EXECUTE | EVIDENCED_CANDIDATE | Real local GLB/PBR files are rehashed and streamed; VSR GLB import, actual PNG decode, four-channel material binding, two local CPU frame compiles, two decoded CPU reference-raster outputs, and 12 actual local Chromium WebGPU submissions. Target-device execution remains open. |
 | CORRECT | CANDIDATE | Roots, court, acceptance and ledger verify locally. |
-| ROBUST | CANDIDATE | Missing runtime, missing profile, silent profile fallback, and weakened evidence fail closed. |
+| ROBUST | CANDIDATE | Missing runtime, missing profile, silent profile fallback, unregistered asset kinds, and weakened evidence fail closed. |
 | PERFORMANCE | EVIDENCED_CANDIDATE | 12-frame local Chromium WebGPU sample passes explicit timing, logical residency, no-eviction, and frame-root budgets; target-device, driver matrix, physical VRAM, and AAA budget proof remain open. |
 | AI_GENERATE | NOT_PROVEN | No external model weights or real high-resolution AI generation were executed. |
 | EVIDENCE | CANDIDATE | Report, Genome, Acceptance, GLB inspection, Evidence Ledger, multi-asset batch, holdout report, all-profile coverage report, assembly, dependency-complete VSR projection/materialization, CPU import report, browser receipt, sustained-performance report, and an explicit `INCOMPLETE` evidence-bundle packet are committed; no real approvals are present. |

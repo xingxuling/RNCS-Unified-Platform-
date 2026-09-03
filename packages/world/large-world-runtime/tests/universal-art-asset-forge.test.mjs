@@ -156,6 +156,15 @@ test('universal art genome reuses RAGF intent/genome and seals a broader profile
   assert.equal(verifyUniversalArtAssetGenome(tampered).valid, false);
 });
 
+test('unknown asset kinds fail closed instead of silently becoming props', () => {
+  assert.throws(() => createUniversalArtAssetGenome({
+    description: '一个尚未注册资产族的实验对象。',
+    asset_kind: 'unregistered-asset-3d',
+    quality_tier: 'AAA',
+    seed: 'universal-art-forge-unknown-asset-kind-seed'
+  }), /UNIVERSAL_ART_ASSET_PROFILE_INVALID/);
+});
+
 test('provider resolution exposes external environment capability without silently executing it', () => {
   const genome = createUniversalArtAssetGenome({
     description: '一片可探索的远古湿地环境。',

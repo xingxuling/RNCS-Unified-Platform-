@@ -201,7 +201,9 @@ function statusPass(value) {
 }
 
 function normalizeProfile(input = {}) {
-  const raw = String(input.asset_profile ?? input.profile ?? PROFILE_ALIASES[String(input.asset_kind ?? '').toLowerCase()] ?? 'prop').trim().toLowerCase();
+  const value = record(input);
+  const assetKind = String(value.asset_kind ?? '').trim().toLowerCase();
+  const raw = String(value.asset_profile ?? value.profile ?? PROFILE_ALIASES[assetKind] ?? (assetKind || 'prop')).trim().toLowerCase();
   if (!UNIVERSAL_ART_ASSET_PROFILES.includes(raw)) throw new GenesisError('UNIVERSAL_ART_ASSET_PROFILE_INVALID', raw);
   return raw;
 }
@@ -2798,8 +2800,8 @@ function universalArtAssetProfileCoverageDefaultMode(profile, resolution = null)
 
 function universalArtAssetProfileCoverageInputProfile(input) {
   const value = record(input);
-  const raw = value.asset_profile ?? value.profile ?? PROFILE_ALIASES[String(value.asset_kind ?? '').toLowerCase()] ?? null;
-  return raw === null ? null : normalizeProfile({asset_profile: raw});
+  const hasProfileCue = value.asset_profile !== undefined || value.profile !== undefined || value.asset_kind !== undefined;
+  return hasProfileCue ? normalizeProfile(value) : null;
 }
 
 function universalArtAssetProfileCoverageObservedMode(entry) {
