@@ -10,6 +10,7 @@ export * from './hlod-generation.js';
 export * from './particle-spatial.js';
 export * from './point-cloud-spatial.js';
 export * from './ragf-adapter.js';
+export * from './voxel-spatial.js';
 
 type SpatialColor = [number, number, number, number];
 

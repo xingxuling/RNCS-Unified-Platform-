@@ -18,15 +18,20 @@ import {
 import {
   lowerVsrPointCloudCandidateToSpatialScene,
   lowerVsrCurveCandidateToSpatialScene,
+  lowerVsrVoxelCandidateToSpatialScene,
   renderSpatialReference,
   verifyVsrCurveSpatialScene,
+  verifyVsrVoxelSpatialScene,
   verifyVsrPointCloudSpatialScene,
   VSR_POINT_CLOUD_PAYLOAD_FORMAT,
   VSR_CURVE_PAYLOAD_FORMAT,
+  VSR_VOXEL_PAYLOAD_FORMAT,
   type VSRPointCloudRepresentationCandidate,
   type VSRPointCloudSpatialSceneResult,
   type VSRCurveRepresentationCandidate,
-  type VSRCurveSpatialSceneResult
+  type VSRCurveSpatialSceneResult,
+  type VSRVoxelRepresentationCandidate,
+  type VSRVoxelSpatialSceneResult
 } from '../packages/spatial-reality-3d/src/index.js';
 
 const root = (char: string): string => char.repeat(64);
@@ -302,6 +307,71 @@ test('VSR lowers an ordered fixed-record curve candidate into a rooted ribbon sc
   const tampered = structuredClone(lowering) as VSRCurveSpatialSceneResult;
   tampered.points[1]!.position[1] += 0.2;
   assert.equal(verifyVsrCurveSpatialScene(tampered), false);
+});
+
+test('VSR lowers a bounded RGBA voxel grid into rooted cube nodes', async () => {
+  const bytes = new Uint8Array(16 + 8 * 4);
+  const view = new DataView(bytes.buffer);
+  view.setUint32(0, 2, true);
+  view.setUint32(4, 2, true);
+  view.setUint32(8, 2, true);
+  const colors = [
+    [70, 170, 255, 220], [0, 0, 0, 0], [80, 220, 180, 210], [0, 0, 0, 0],
+    [255, 130, 70, 230], [0, 0, 0, 0], [190, 100, 255, 200], [0, 0, 0, 0]
+  ];
+  colors.forEach((color, index) => color.forEach((value, channel) => view.setUint8(16 + index * 4 + channel, value)));
+  const pages = [bytes.slice(0, 24), bytes.slice(24)];
+  const payloadAssetIds = ['asset:voxel:page0', 'asset:voxel:page1'];
+  const contentRoot = cryptographicHash(payloadAssetIds.map((assetId, index) => ({assetId, byteLength: pages[index]!.byteLength, byteRoot: cryptographicHash([...pages[index]!])})));
+  const manifestBase = {
+    format: VSR_NON_MESH_REPRESENTATION_MANIFEST_FORMAT,
+    version: '0.1.0',
+    component_id: 'crystal-volume',
+    asset_id: 'asset:crystal-volume',
+    representation_kind: 'voxel',
+    profile_id: 'vsr.voxel.u8rgba.v0.1',
+    payload_asset_ids: payloadAssetIds,
+    payload_format: VSR_VOXEL_PAYLOAD_FORMAT,
+    payload_byte_length: bytes.byteLength,
+    element_count: 8,
+    bounds: {min: [-1, -1, -1], max: [1, 1, 1]},
+    content_root: contentRoot,
+    candidate_only: true,
+    authoritative: false
+  };
+  const assets = [
+    {id: 'asset:voxel:manifest', kind: 'representation-manifest', format: 'application/json', metadata: {role: 'representation-manifest'}},
+    ...payloadAssetIds.map(id => ({id, kind: 'representation-data', format: VSR_VOXEL_PAYLOAD_FORMAT})),
+    {id: 'asset:voxel:note', kind: 'other', format: 'text/plain'}
+  ] as VSRNonMeshRepresentationAsset[];
+  const payloads = new Map<string, Uint8Array>([
+    ['asset:voxel:manifest', new TextEncoder().encode(JSON.stringify({...manifestBase, manifest_root: cryptographicHash(manifestBase)}))],
+    [payloadAssetIds[0]!, pages[0]!],
+    [payloadAssetIds[1]!, pages[1]!],
+    ['asset:voxel:note', new Uint8Array([8])]
+  ]);
+  const handler = createVsrNonMeshRepresentationComponentImportHandler({representationKind: 'voxel', handlerId: 'vsr.voxel-component-import.v0.1'});
+  const result = await handler.compile({entry: {component_id: 'crystal-volume', asset_id: 'asset:crystal-volume', representation_kind: 'voxel'}, assets, payloads});
+  const lowering = lowerVsrVoxelCandidateToSpatialScene(result.candidate as VSRVoxelRepresentationCandidate, {assets, payloads}, {sceneId: 'voxel-regression', maxVoxels: 8});
+  const repeat = lowerVsrVoxelCandidateToSpatialScene(result.candidate as VSRVoxelRepresentationCandidate, {assets, payloads}, {sceneId: 'voxel-regression', maxVoxels: 8});
+  const frame = renderSpatialReference(lowering.scene, {width: 96, height: 96, enableShadows: false, transparencyMode: 'weighted-blended-oit'});
+  assert.equal(result.candidate.renderStatus, 'NOT_IMPLEMENTED');
+  assert.deepEqual(lowering.grid, {width: 2, height: 2, depth: 2});
+  assert.equal(lowering.sourceElementCount, 8);
+  assert.equal(lowering.voxelCount, 8);
+  assert.equal(lowering.occupiedCount, 4);
+  assert.equal(lowering.renderableCount, 4);
+  assert.equal(lowering.scene.meshes.length, 1);
+  assert.equal(lowering.scene.nodes.length, 4);
+  assert.ok(frame.framePlan.stats.visibleDraws > 0);
+  assert.ok(frame.framePlan.stats.transparentDraws > 0);
+  assert.equal(lowering.voxelRoot, repeat.voxelRoot);
+  assert.equal(lowering.sceneRoot, repeat.sceneRoot);
+  assert.equal(lowering.root, repeat.root);
+  assert.equal(verifyVsrVoxelSpatialScene(lowering), true);
+  const tampered = structuredClone(lowering) as VSRVoxelSpatialSceneResult;
+  tampered.voxels[0]!.x = 1;
+  assert.equal(verifyVsrVoxelSpatialScene(tampered), false);
 });
 
 let passed = 0;
