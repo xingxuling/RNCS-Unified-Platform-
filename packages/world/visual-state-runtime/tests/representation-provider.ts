@@ -18,18 +18,23 @@ import {
 import {
   lowerVsrPointCloudCandidateToSpatialScene,
   lowerVsrCurveCandidateToSpatialScene,
+  lowerVsrSdfCandidateToSpatialScene,
   lowerVsrVoxelCandidateToSpatialScene,
   renderSpatialReference,
   verifyVsrCurveSpatialScene,
   verifyVsrVoxelSpatialScene,
   verifyVsrPointCloudSpatialScene,
+  verifyVsrSdfSpatialScene,
   VSR_POINT_CLOUD_PAYLOAD_FORMAT,
   VSR_CURVE_PAYLOAD_FORMAT,
+  VSR_SDF_PAYLOAD_FORMAT,
   VSR_VOXEL_PAYLOAD_FORMAT,
   type VSRPointCloudRepresentationCandidate,
   type VSRPointCloudSpatialSceneResult,
   type VSRCurveRepresentationCandidate,
   type VSRCurveSpatialSceneResult,
+  type VSRSdfRepresentationCandidate,
+  type VSRSdfSpatialSceneResult,
   type VSRVoxelRepresentationCandidate,
   type VSRVoxelSpatialSceneResult
 } from '../packages/spatial-reality-3d/src/index.js';
@@ -428,6 +433,69 @@ test('VSR lowers a bounded RGBA voxel grid into rooted cube nodes', async () => 
   const tampered = structuredClone(lowering) as VSRVoxelSpatialSceneResult;
   tampered.voxels[0]!.x = 1;
   assert.equal(verifyVsrVoxelSpatialScene(tampered), false);
+});
+
+test('VSR lowers a fixed-grid SDF into a rooted surface mesh with logical page binding', async () => {
+  const gridSize = 5;
+  const bytes = new Uint8Array(16 + gridSize * gridSize * gridSize * 4);
+  const view = new DataView(bytes.buffer);
+  view.setUint32(0, gridSize, true);
+  view.setUint32(4, gridSize, true);
+  view.setUint32(8, gridSize, true);
+  for (let z = 0; z < gridSize; z++) {
+    for (let y = 0; y < gridSize; y++) {
+      for (let x = 0; x < gridSize; x++) {
+        const px = -1 + (2 * x) / (gridSize - 1);
+        const py = -1 + (2 * y) / (gridSize - 1);
+        const pz = -1 + (2 * z) / (gridSize - 1);
+        const distance = Math.hypot(px, py, pz) - 0.7;
+        view.setFloat32(16 + (x + gridSize * (y + gridSize * z)) * 4, distance, true);
+      }
+    }
+  }
+  const pages = [bytes.slice(0, 220), bytes.slice(220)];
+  const sourcePayloadAssetIds = ['logical:sdf:page0', 'logical:sdf:page1'];
+  const payloadAssetIds = ['physical:sdf:page0', 'physical:sdf:page1'];
+  const contentRoot = cryptographicHash(sourcePayloadAssetIds.map((assetId, index) => ({assetId, byteLength: pages[index]!.byteLength, byteRoot: cryptographicHash([...pages[index]!])})));
+  const candidateBase = {
+    format: 'vsr.non-mesh-representation-candidate.v0.1' as const,
+    version: '0.1.0' as const,
+    componentId: 'sdf-orb',
+    representationKind: 'sdf' as const,
+    profileId: 'vsr.sdf.f32grid.v0.1',
+    payloadAssetIds,
+    sourcePayloadAssetIds,
+    payloadFormat: VSR_SDF_PAYLOAD_FORMAT,
+    payloadByteLength: bytes.byteLength,
+    elementCount: gridSize * gridSize * gridSize,
+    bounds: {min: [-1, -1, -1] as [number, number, number], max: [1, 1, 1] as [number, number, number]},
+    manifestRoot: root('c'),
+    contentRoot,
+    renderStatus: 'NOT_IMPLEMENTED' as const,
+    candidateOnly: true as const,
+    authoritative: false as const
+  };
+  const candidate = {...candidateBase, candidateRoot: cryptographicHash(candidateBase)} as VSRSdfRepresentationCandidate;
+  const assets = payloadAssetIds.map((id, index) => ({id, kind: 'representation-data', format: VSR_SDF_PAYLOAD_FORMAT, metadata: {source_asset_id: sourcePayloadAssetIds[index]}})) as VSRNonMeshRepresentationAsset[];
+  const payloads = new Map<string, Uint8Array>([[payloadAssetIds[0]!, pages[0]!], [payloadAssetIds[1]!, pages[1]!]]);
+  const lowering = lowerVsrSdfCandidateToSpatialScene(candidate, {assets, payloads}, {sceneId: 'sdf-regression', maxTriangles: 1024});
+  const repeat = lowerVsrSdfCandidateToSpatialScene(candidate, {assets, payloads}, {sceneId: 'sdf-regression', maxTriangles: 1024});
+  const frame = renderSpatialReference(lowering.scene, {width: 96, height: 96, enableShadows: false});
+  assert.equal(lowering.renderStatus, 'CANDIDATE_CPU_MARCHING_TETRAHEDRA');
+  assert.deepEqual(lowering.grid, {width: gridSize, height: gridSize, depth: gridSize});
+  assert.equal(lowering.sourceElementCount, 125);
+  assert.equal(lowering.sourceCellCount, 64);
+  assert.ok(lowering.triangleCount > 0);
+  assert.equal(lowering.scene.meshes.length, 1);
+  assert.equal(lowering.scene.nodes.length, 1);
+  assert.ok(frame.framePlan.stats.visibleDraws > 0);
+  assert.equal(lowering.meshRoot, repeat.meshRoot);
+  assert.equal(lowering.sceneRoot, repeat.sceneRoot);
+  assert.equal(lowering.root, repeat.root);
+  assert.equal(verifyVsrSdfSpatialScene(lowering), true);
+  const tampered = structuredClone(lowering) as VSRSdfSpatialSceneResult;
+  tampered.scene.meshes[0]!.positions[0]! += 0.1;
+  assert.equal(verifyVsrSdfSpatialScene(tampered), false);
 });
 
 let passed = 0;

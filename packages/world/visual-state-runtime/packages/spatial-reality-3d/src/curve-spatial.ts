@@ -17,6 +17,7 @@ export interface VSRCurveRepresentationCandidate {
   representationKind: 'curve';
   profileId: string;
   payloadAssetIds: string[];
+  sourcePayloadAssetIds?: string[];
   payloadFormat: string;
   payloadByteLength: number;
   elementCount: number;
@@ -101,6 +102,12 @@ function candidateBase(candidate: VSRCurveRepresentationCandidate): Omit<VSRCurv
   return base;
 }
 
+function sourcePayloadIds(candidate: VSRCurveRepresentationCandidate): string[] {
+  const sourceIds = candidate.sourcePayloadAssetIds ?? candidate.payloadAssetIds;
+  if (sourceIds.length !== candidate.payloadAssetIds.length || sourceIds.some(assetId => !nonEmpty(assetId)) || new Set(sourceIds).size !== sourceIds.length) throw new Error('VSR curve logical payload binding is invalid.');
+  return sourceIds;
+}
+
 function payloadBytes(payloads: Map<string, Uint8Array>, asset: VSRCurvePayloadAsset): Uint8Array {
   const bytes = payloads.get(asset.id);
   if (!(bytes instanceof Uint8Array) || bytes.byteLength === 0) throw new Error(`VSR curve payload ${asset.id} is missing or empty.`);
@@ -108,16 +115,18 @@ function payloadBytes(payloads: Map<string, Uint8Array>, asset: VSRCurvePayloadA
 }
 
 function contentRoot(candidate: VSRCurveRepresentationCandidate, assets: VSRCurvePayloadAsset[], payloads: Map<string, Uint8Array>): string {
-  return cryptographicHash(candidate.payloadAssetIds.map(assetId => {
+  const sourceIds = sourcePayloadIds(candidate);
+  return cryptographicHash(candidate.payloadAssetIds.map((assetId, index) => {
     const asset = assets.find(entry => entry.id === assetId);
     if (!asset) throw new Error(`VSR curve payload asset ${assetId} is not declared.`);
     const bytes = payloadBytes(payloads, asset);
-    return {assetId, byteLength: bytes.byteLength, byteRoot: cryptographicHash([...bytes])};
+    return {assetId: sourceIds[index]!, byteLength: bytes.byteLength, byteRoot: cryptographicHash([...bytes])};
   }));
 }
 
 function validateCandidate(candidate: VSRCurveRepresentationCandidate, assets: VSRCurvePayloadAsset[], payloads: Map<string, Uint8Array>): {bytes: Uint8Array; sourceElementCount: number} {
   if (!candidate || candidate.format !== 'vsr.non-mesh-representation-candidate.v0.1' || candidate.version !== '0.1.0' || !nonEmpty(candidate.componentId) || candidate.representationKind !== 'curve' || !nonEmpty(candidate.profileId) || !Array.isArray(candidate.payloadAssetIds) || candidate.payloadAssetIds.length < 1 || new Set(candidate.payloadAssetIds).size !== candidate.payloadAssetIds.length || candidate.payloadAssetIds.some(assetId => !nonEmpty(assetId)) || candidate.payloadFormat !== VSR_CURVE_PAYLOAD_FORMAT || !Number.isSafeInteger(candidate.payloadByteLength) || candidate.payloadByteLength < VSR_CURVE_RECORD_BYTE_LENGTH * 2 || candidate.payloadByteLength % VSR_CURVE_RECORD_BYTE_LENGTH !== 0 || !Number.isSafeInteger(candidate.elementCount) || candidate.elementCount < 2 || candidate.elementCount > VSR_CURVE_POINT_LIMIT || candidate.payloadByteLength !== candidate.elementCount * VSR_CURVE_RECORD_BYTE_LENGTH || !validBounds(candidate.bounds) || !isRoot(candidate.manifestRoot) || !isRoot(candidate.contentRoot) || candidate.renderStatus !== 'NOT_IMPLEMENTED' || candidate.candidateOnly !== true || candidate.authoritative !== false || !isRoot(candidate.candidateRoot) || cryptographicHash(candidateBase(candidate)) !== candidate.candidateRoot) throw new Error('VSR curve candidate contract or root is invalid.');
+  sourcePayloadIds(candidate);
   if (contentRoot(candidate, assets, payloads) !== candidate.contentRoot) throw new Error('VSR curve candidate content root mismatch.');
   const ordered = candidate.payloadAssetIds.map(assetId => {
     const asset = assets.find(entry => entry.id === assetId);

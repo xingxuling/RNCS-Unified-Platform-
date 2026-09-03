@@ -16,6 +16,7 @@ export interface VSRPointCloudRepresentationCandidate {
   representationKind: 'point-cloud';
   profileId: string;
   payloadAssetIds: string[];
+  sourcePayloadAssetIds?: string[];
   payloadFormat: string;
   payloadByteLength: number;
   elementCount: number;
@@ -103,6 +104,12 @@ function candidateBase(candidate: VSRPointCloudRepresentationCandidate): Omit<VS
   return base;
 }
 
+function sourcePayloadIds(candidate: VSRPointCloudRepresentationCandidate): string[] {
+  const sourceIds = candidate.sourcePayloadAssetIds ?? candidate.payloadAssetIds;
+  if (sourceIds.length !== candidate.payloadAssetIds.length || sourceIds.some(assetId => !nonEmpty(assetId)) || new Set(sourceIds).size !== sourceIds.length) throw new Error('VSR point-cloud logical payload binding is invalid.');
+  return sourceIds;
+}
+
 function payloadBytes(payloads: Map<string, Uint8Array>, asset: VSRPointCloudPayloadAsset): Uint8Array {
   const bytes = payloads.get(asset.id);
   if (!(bytes instanceof Uint8Array) || bytes.byteLength === 0) throw new Error(`VSR point-cloud payload ${asset.id} is missing or empty.`);
@@ -110,16 +117,18 @@ function payloadBytes(payloads: Map<string, Uint8Array>, asset: VSRPointCloudPay
 }
 
 function contentRoot(candidate: VSRPointCloudRepresentationCandidate, assets: VSRPointCloudPayloadAsset[], payloads: Map<string, Uint8Array>): string {
-  return cryptographicHash(candidate.payloadAssetIds.map(assetId => {
+  const sourceIds = sourcePayloadIds(candidate);
+  return cryptographicHash(candidate.payloadAssetIds.map((assetId, index) => {
     const asset = assets.find(entry => entry.id === assetId);
     if (!asset) throw new Error(`VSR point-cloud payload asset ${assetId} is not declared.`);
     const bytes = payloadBytes(payloads, asset);
-    return {assetId, byteLength: bytes.byteLength, byteRoot: cryptographicHash([...bytes])};
+    return {assetId: sourceIds[index]!, byteLength: bytes.byteLength, byteRoot: cryptographicHash([...bytes])};
   }));
 }
 
 function validateCandidate(candidate: VSRPointCloudRepresentationCandidate, assets: VSRPointCloudPayloadAsset[], payloads: Map<string, Uint8Array>): {bytes: Uint8Array; sourceElementCount: number} {
   if (!candidate || candidate.format !== 'vsr.non-mesh-representation-candidate.v0.1' || candidate.version !== '0.1.0' || !nonEmpty(candidate.componentId) || candidate.representationKind !== 'point-cloud' || !nonEmpty(candidate.profileId) || !Array.isArray(candidate.payloadAssetIds) || candidate.payloadAssetIds.length < 1 || new Set(candidate.payloadAssetIds).size !== candidate.payloadAssetIds.length || candidate.payloadAssetIds.some(assetId => !nonEmpty(assetId)) || candidate.payloadFormat !== VSR_POINT_CLOUD_PAYLOAD_FORMAT || !Number.isSafeInteger(candidate.payloadByteLength) || candidate.payloadByteLength < VSR_POINT_CLOUD_RECORD_BYTE_LENGTH || !Number.isSafeInteger(candidate.elementCount) || candidate.elementCount < 1 || candidate.elementCount > 1000000 || candidate.payloadByteLength !== candidate.elementCount * VSR_POINT_CLOUD_RECORD_BYTE_LENGTH || !validBounds(candidate.bounds) || !root(candidate.manifestRoot) || !root(candidate.contentRoot) || candidate.renderStatus !== 'NOT_IMPLEMENTED' || candidate.candidateOnly !== true || candidate.authoritative !== false || !root(candidate.candidateRoot) || cryptographicHash(candidateBase(candidate)) !== candidate.candidateRoot) throw new Error('VSR point-cloud candidate contract or root is invalid.');
+  sourcePayloadIds(candidate);
   if (contentRoot(candidate, assets, payloads) !== candidate.contentRoot) throw new Error('VSR point-cloud candidate content root mismatch.');
   const ordered = candidate.payloadAssetIds.map(assetId => payloadBytes(payloads, assets.find(asset => asset.id === assetId)!));
   const bytes = new Uint8Array(candidate.payloadByteLength);

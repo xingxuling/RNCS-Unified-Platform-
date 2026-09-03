@@ -19,6 +19,7 @@ export interface VSRVoxelRepresentationCandidate {
   representationKind: 'voxel';
   profileId: string;
   payloadAssetIds: string[];
+  sourcePayloadAssetIds?: string[];
   payloadFormat: string;
   payloadByteLength: number;
   elementCount: number;
@@ -110,6 +111,12 @@ function candidateBase(candidate: VSRVoxelRepresentationCandidate): Omit<VSRVoxe
   return base;
 }
 
+function sourcePayloadIds(candidate: VSRVoxelRepresentationCandidate): string[] {
+  const sourceIds = candidate.sourcePayloadAssetIds ?? candidate.payloadAssetIds;
+  if (sourceIds.length !== candidate.payloadAssetIds.length || sourceIds.some(assetId => !nonEmpty(assetId)) || new Set(sourceIds).size !== sourceIds.length) throw new Error('VSR voxel logical payload binding is invalid.');
+  return sourceIds;
+}
+
 function payloadBytes(payloads: Map<string, Uint8Array>, asset: VSRVoxelPayloadAsset): Uint8Array {
   const bytes = payloads.get(asset.id);
   if (!(bytes instanceof Uint8Array) || bytes.byteLength === 0) throw new Error(`VSR voxel payload ${asset.id} is missing or empty.`);
@@ -117,11 +124,12 @@ function payloadBytes(payloads: Map<string, Uint8Array>, asset: VSRVoxelPayloadA
 }
 
 function contentRoot(candidate: VSRVoxelRepresentationCandidate, assets: VSRVoxelPayloadAsset[], payloads: Map<string, Uint8Array>): string {
-  return cryptographicHash(candidate.payloadAssetIds.map(assetId => {
+  const sourceIds = sourcePayloadIds(candidate);
+  return cryptographicHash(candidate.payloadAssetIds.map((assetId, index) => {
     const asset = assets.find(entry => entry.id === assetId);
     if (!asset) throw new Error(`VSR voxel payload asset ${assetId} is not declared.`);
     const bytes = payloadBytes(payloads, asset);
-    return {assetId, byteLength: bytes.byteLength, byteRoot: cryptographicHash([...bytes])};
+    return {assetId: sourceIds[index]!, byteLength: bytes.byteLength, byteRoot: cryptographicHash([...bytes])};
   }));
 }
 
@@ -152,6 +160,7 @@ function gridFromPayload(bytes: Uint8Array): VSRVoxelGrid {
 
 function validateCandidate(candidate: VSRVoxelRepresentationCandidate, assets: VSRVoxelPayloadAsset[], payloads: Map<string, Uint8Array>): {bytes: Uint8Array; grid: VSRVoxelGrid; sourceElementCount: number} {
   if (!candidate || candidate.format !== 'vsr.non-mesh-representation-candidate.v0.1' || candidate.version !== '0.1.0' || !nonEmpty(candidate.componentId) || candidate.representationKind !== 'voxel' || !nonEmpty(candidate.profileId) || !Array.isArray(candidate.payloadAssetIds) || candidate.payloadAssetIds.length < 1 || new Set(candidate.payloadAssetIds).size !== candidate.payloadAssetIds.length || candidate.payloadAssetIds.some(assetId => !nonEmpty(assetId)) || candidate.payloadFormat !== VSR_VOXEL_PAYLOAD_FORMAT || !Number.isSafeInteger(candidate.payloadByteLength) || candidate.payloadByteLength < VSR_VOXEL_HEADER_BYTE_LENGTH + VSR_VOXEL_RECORD_BYTE_LENGTH || !Number.isSafeInteger(candidate.elementCount) || candidate.elementCount < 1 || candidate.elementCount > VSR_VOXEL_SOURCE_LIMIT || !validBounds(candidate.bounds) || !isRoot(candidate.manifestRoot) || !isRoot(candidate.contentRoot) || candidate.renderStatus !== 'NOT_IMPLEMENTED' || candidate.candidateOnly !== true || candidate.authoritative !== false || !isRoot(candidate.candidateRoot) || cryptographicHash(candidateBase(candidate)) !== candidate.candidateRoot) throw new Error('VSR voxel candidate contract or root is invalid.');
+  sourcePayloadIds(candidate);
   if (contentRoot(candidate, assets, payloads) !== candidate.contentRoot) throw new Error('VSR voxel candidate content root mismatch.');
   const bytes = mergePayload(candidate, assets, payloads);
   const grid = gridFromPayload(bytes);
