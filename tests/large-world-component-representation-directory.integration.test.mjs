@@ -23,6 +23,8 @@ import {
   VSRSpatialAssetStreamer,
   compileSpatialFrame,
   composeSpatialSceneFragments,
+  lowerVsrParticleEmitterToSpatialScene,
+  renderSpatialReference,
   resolveSpatialAssetStreaming,
   verifySpatialAssetStreamingReceipt,
   verifySpatialSceneCompositionReceipt
@@ -548,4 +550,15 @@ test('component representation import executes a particle preset handler with ex
   assert.deepEqual(imported.entries[0].consumed_asset_ids, [particleAsset.id]);
   assert.ok(imported.entries[0].deferred_asset_ids.length > 0);
   assert.equal(verifyUniversalArtAssetComponentRepresentationImport(imported, {directory, importerRegistry}).valid, true);
+  const particleEntry = directory.representations.find(entry => entry.component_id === 'sparks');
+  assert.ok(particleEntry);
+  const particleAssets = directory.vsr_catalog.assets.filter(asset => asset.metadata?.component_id === 'sparks');
+  const particlePayloads = new Map(particleAssets.map(asset => [asset.id, loadAsset(asset)]));
+  const particleResult = await handler.compile({entry: particleEntry, assets: particleAssets, payloads: particlePayloads});
+  const spatialParticles = lowerVsrParticleEmitterToSpatialScene(particleResult.emitter, {sceneId: 'directory:sparks', timeSeconds: 0.05, origin: [0, 0, 0], sizeScale: 0.02, seed: 'directory-particle-regression'});
+  const frame = renderSpatialReference(spatialParticles.scene, {width: 96, height: 96, enableShadows: false, transparencyMode: 'weighted-blended-oit'});
+  assert.equal(spatialParticles.emittedCount, particleResult.metrics.burst_count);
+  assert.ok(spatialParticles.renderableCount > 0);
+  assert.ok(frame.framePlan.stats.transparentDraws > 0);
+  assert.notEqual(frame.pixelRoot, '0'.repeat(64));
 });
