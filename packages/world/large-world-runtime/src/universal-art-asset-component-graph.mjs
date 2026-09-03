@@ -36,6 +36,8 @@ export const UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_FORMAT = 'urrf.universal-art
 export const UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_VERSION = UNIVERSAL_ART_ASSET_COMPONENT_GRAPH_VERSION;
 export const UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_DIRECTORY_FORMAT = 'urrf.universal-art-asset-component-representation-directory.v0.1';
 export const UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_DIRECTORY_VERSION = UNIVERSAL_ART_ASSET_COMPONENT_GRAPH_VERSION;
+export const UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_FORMAT = 'urrf.universal-art-asset-component-representation-import-execution.v0.1';
+export const UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_VERSION = UNIVERSAL_ART_ASSET_COMPONENT_GRAPH_VERSION;
 
 export const UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_KINDS = Object.freeze([
   'mesh',
@@ -2298,4 +2300,300 @@ export function verifyUniversalArtAssetComponentRepresentationDirectory(director
     errors.push(`VERIFY_EXCEPTION:${error.name}:${error.message}`);
   }
   return {valid: errors.length === 0, errors, directory_root: directory.directory_root ?? null};
+}
+
+const UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_STATUSES = Object.freeze(['EXECUTED', 'BLOCKED', 'FAILED', 'NOT_RUN']);
+
+function componentRepresentationImportAuthority() {
+  return {
+    canonical_owner: 'RNCS',
+    representation_owner: 'URRF',
+    runtime_consumer: 'VSR/RSR_ADAPTER',
+    consumer_can_write_authoritative_world_state: false,
+    consumer_can_commit: false,
+    rncs_authority_required: true
+  };
+}
+
+function componentRepresentationImportBytes(payload) {
+  if (payload instanceof Uint8Array) return new Uint8Array(payload);
+  if (payload instanceof ArrayBuffer) return new Uint8Array(payload);
+  if (ArrayBuffer.isView(payload)) return new Uint8Array(payload.buffer, payload.byteOffset, payload.byteLength);
+  throw new GenesisError('UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_PAYLOAD_INVALID');
+}
+
+function componentRepresentationImportHandler(importers, representationKind) {
+  const candidate = importers && typeof importers === 'object' && !Array.isArray(importers) ? importers[representationKind] : null;
+  if (!candidate || typeof candidate !== 'object' || Array.isArray(candidate)) return null;
+  if (!nonEmptyText(candidate.handler_id) || typeof candidate.compile !== 'function' || typeof candidate.verify !== 'function') return null;
+  return candidate;
+}
+
+function componentRepresentationImportStatus(entries) {
+  const statuses = entries.map(entry => entry.status);
+  if (statuses.some(status => status === 'FAILED')) return statuses.some(status => status === 'EXECUTED') ? 'CANDIDATE_COMPONENT_REPRESENTATION_IMPORT_PARTIAL_FAILED' : 'CANDIDATE_COMPONENT_REPRESENTATION_IMPORT_FAILED';
+  if (statuses.every(status => status === 'EXECUTED')) return 'CANDIDATE_COMPONENT_REPRESENTATION_IMPORT_EXECUTED';
+  if (statuses.some(status => status === 'EXECUTED')) return 'CANDIDATE_COMPONENT_REPRESENTATION_IMPORT_PARTIAL';
+  if (statuses.some(status => status === 'BLOCKED')) return 'CANDIDATE_COMPONENT_REPRESENTATION_IMPORT_BLOCKED';
+  return 'CANDIDATE_COMPONENT_REPRESENTATION_IMPORT_NOT_RUN';
+}
+
+function componentRepresentationImportVerificationStatus(status) {
+  if (status === 'EXECUTED') return 'HANDLER_VERIFIED';
+  if (status === 'FAILED') return 'FAILED';
+  if (status === 'BLOCKED') return 'NOT_APPLICABLE';
+  return 'NOT_RUN';
+}
+
+function componentRepresentationImportEntry({entry, handlerId = null, status, reason = null, verificationStatus, loadedResourceCount = 0, loadedByteLength = 0, receiptRoot = null, outputRoot = null, metrics = {}}) {
+  return seal({
+    component_id: entry.component_id,
+    representation_id: entry.representation_id,
+    representation_root: entry.representation_root,
+    representation_kind: entry.representation_kind,
+    representation_profile: entry.representation_profile,
+    source_content_root: entry.content_root,
+    handler_id: handlerId,
+    resource_ids: [...entry.resource_ids],
+    status,
+    reason,
+    verification_status: verificationStatus,
+    loaded_resource_count: loadedResourceCount,
+    loaded_byte_length: loadedByteLength,
+    receipt_root: receiptRoot,
+    output_root: outputRoot,
+    metrics: clone(record(metrics)),
+    candidate_only: true,
+    authoritative: false,
+    entry_root: ''
+  }, 'entry_root');
+}
+
+function componentRepresentationImportSummary(entries) {
+  return {
+    selected_component_count: entries.length,
+    executed_count: entries.filter(entry => entry.status === 'EXECUTED').length,
+    blocked_count: entries.filter(entry => entry.status === 'BLOCKED').length,
+    failed_count: entries.filter(entry => entry.status === 'FAILED').length,
+    not_run_count: entries.filter(entry => entry.status === 'NOT_RUN').length,
+    total_loaded_byte_length: entries.reduce((sum, entry) => sum + entry.loaded_byte_length, 0)
+  };
+}
+
+/**
+ * Execute representation-specific consumer adapters against a verified
+ * component representation directory. The directory remains immutable: the
+ * caller supplies the byte loader and an independent handler/receipt verifier.
+ * A handler is allowed to report EXECUTED only when its verifier returns true;
+ * missing handlers, missing bytes, and unsupported URRF kinds remain explicit.
+ */
+export async function executeUniversalArtAssetComponentRepresentationImport({
+  directory,
+  assembly = null,
+  loadAsset = null,
+  importers = {},
+  requestedComponentIds = null
+} = {}) {
+  const directoryVerification = verifyUniversalArtAssetComponentRepresentationDirectory(directory, {assembly});
+  fail(directoryVerification.valid, 'UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_DIRECTORY_INVALID', directoryVerification.errors.join(','));
+  fail(requestedComponentIds === null || Array.isArray(requestedComponentIds), 'UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_COMPONENT_IDS_INVALID');
+  const allEntries = [...directory.representations];
+  const selectedIds = requestedComponentIds === null ? allEntries.map(entry => entry.component_id) : [...requestedComponentIds];
+  fail(selectedIds.length > 0 && selectedIds.length <= allEntries.length, 'UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_COMPONENT_IDS_EMPTY');
+  fail(selectedIds.every(nonEmptyText) && new Set(selectedIds).size === selectedIds.length, 'UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_COMPONENT_IDS_INVALID');
+  const entryById = new Map(allEntries.map(entry => [entry.component_id, entry]));
+  fail(selectedIds.every(componentIdValue => entryById.has(componentIdValue)), 'UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_COMPONENT_UNKNOWN');
+  const vsrAssets = directory.vsr_catalog.assets;
+  const compiledEntries = [];
+  for (const componentIdValue of selectedIds) {
+    const entry = entryById.get(componentIdValue);
+    const assets = vsrAssets.filter(asset => asset.metadata?.component_id === componentIdValue && entry.resource_ids.includes(asset.metadata?.resource_id));
+    const handler = componentRepresentationImportHandler(importers, entry.representation_kind);
+    if (entry.representation_ref === null) {
+      compiledEntries.push(componentRepresentationImportEntry({entry, status: 'BLOCKED', reason: 'REPRESENTATION_REFERENCE_MISSING', verificationStatus: 'NOT_APPLICABLE'}));
+      continue;
+    }
+    if (assets.length === 0) {
+      compiledEntries.push(componentRepresentationImportEntry({entry, handlerId: handler?.handler_id ?? null, status: 'BLOCKED', reason: 'REPRESENTATION_RESOURCES_MISSING', verificationStatus: 'NOT_APPLICABLE'}));
+      continue;
+    }
+    if (!handler) {
+      compiledEntries.push(componentRepresentationImportEntry({entry, status: 'NOT_RUN', reason: 'REPRESENTATION_IMPORT_HANDLER_NOT_BOUND', verificationStatus: 'NOT_RUN'}));
+      continue;
+    }
+    if (typeof loadAsset !== 'function') {
+      compiledEntries.push(componentRepresentationImportEntry({entry, handlerId: handler.handler_id, status: 'NOT_RUN', reason: 'REPRESENTATION_IMPORT_LOADER_NOT_BOUND', verificationStatus: 'NOT_RUN'}));
+      continue;
+    }
+    const payloads = new Map();
+    let loadedByteLength = 0;
+    let loadedResourceCount = 0;
+    let loadFailure = null;
+    for (const asset of assets) {
+      try {
+        const bytes = componentRepresentationImportBytes(await loadAsset(asset));
+        const actualSha256 = createHash('sha256').update(bytes).digest('hex');
+        if (bytes.byteLength !== asset.byteLength || actualSha256 !== asset.sha256) throw new GenesisError('UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_RESOURCE_BYTES_MISMATCH', asset.id);
+        payloads.set(asset.id, bytes);
+        loadedResourceCount += 1;
+        loadedByteLength += bytes.byteLength;
+      } catch (error) {
+        loadFailure = error;
+        break;
+      }
+    }
+    if (loadFailure) {
+      compiledEntries.push(componentRepresentationImportEntry({
+        entry,
+        handlerId: handler.handler_id,
+        status: 'FAILED',
+        reason: `RESOURCE_LOAD_FAILED:${loadFailure instanceof Error ? loadFailure.message : String(loadFailure)}`,
+        verificationStatus: 'FAILED',
+        loadedResourceCount,
+        loadedByteLength
+      }));
+      continue;
+    }
+    try {
+      const result = await handler.compile({directory, entry, assets, payloads});
+      const resultStatus = result?.status ?? 'EXECUTED';
+      if (!UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_STATUSES.includes(resultStatus)) throw new GenesisError('UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_HANDLER_STATUS_INVALID');
+      if (resultStatus !== 'EXECUTED') {
+        compiledEntries.push(componentRepresentationImportEntry({
+          entry,
+          handlerId: handler.handler_id,
+          status: resultStatus,
+          reason: nonEmptyText(result?.reason) ? result.reason : `HANDLER_${resultStatus}`,
+          verificationStatus: componentRepresentationImportVerificationStatus(resultStatus),
+          loadedResourceCount,
+          loadedByteLength,
+          metrics: result?.metrics
+        }));
+        continue;
+      }
+      const verified = await handler.verify({directory, entry, assets, payloads, result});
+      const receiptRoot = result?.receipt_root ?? result?.receipt?.receiptRoot ?? null;
+      const outputRoot = result?.output_root ?? result?.receipt?.sceneRoot ?? null;
+      if (verified !== true || !hexRoot(receiptRoot) || !hexRoot(outputRoot)) throw new GenesisError(verified === true ? 'UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_HANDLER_ROOTS_INVALID' : 'UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_HANDLER_VERIFY_FAILED');
+      compiledEntries.push(componentRepresentationImportEntry({
+        entry,
+        handlerId: handler.handler_id,
+        status: 'EXECUTED',
+        verificationStatus: 'HANDLER_VERIFIED',
+        loadedResourceCount,
+        loadedByteLength,
+        receiptRoot,
+        outputRoot,
+        metrics: result?.metrics ?? {}
+      }));
+    } catch (error) {
+      compiledEntries.push(componentRepresentationImportEntry({
+        entry,
+        handlerId: handler.handler_id,
+        status: 'FAILED',
+        reason: `IMPORT_HANDLER_FAILED:${error instanceof Error ? error.message : String(error)}`,
+        verificationStatus: 'FAILED',
+        loadedResourceCount,
+        loadedByteLength
+      }));
+    }
+  }
+  const summary = componentRepresentationImportSummary(compiledEntries);
+  return seal({
+    format: UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_FORMAT,
+    version: UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_VERSION,
+    execution_id: stableId('urrf-universal-art-asset-component-representation-import', {
+      directory_root: directory.directory_root,
+      component_ids: selectedIds,
+      handlers: compiledEntries.map(entry => [entry.component_id, entry.handler_id])
+    }),
+    directory_root: directory.directory_root,
+    component_assembly_root: directory.component_assembly_root,
+    scene_id: directory.scene_id,
+    world_id: directory.world_id,
+    source_status: directory.status,
+    runtime_consumer: 'VSR_REPRESENTATION_IMPORT_ADAPTER',
+    execution_mode: 'INJECTED_CONSUMER_ADAPTER',
+    status: componentRepresentationImportStatus(compiledEntries),
+    selected_component_ids: selectedIds,
+    component_count: compiledEntries.length,
+    entries: compiledEntries,
+    summary,
+    candidate_only: true,
+    authoritative: false,
+    canonical_write_authorized: false,
+    authority: componentRepresentationImportAuthority(),
+    report_root: ''
+  }, 'report_root');
+}
+
+export function verifyUniversalArtAssetComponentRepresentationImport(report, {directory = null} = {}) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!report || typeof report !== 'object' || Array.isArray(report)) return {valid: false, errors: ['UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_NOT_OBJECT'], report_root: null};
+  try {
+    check(report.format === UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_FORMAT, 'FORMAT_INVALID');
+    check(report.version === UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_VERSION, 'VERSION_INVALID');
+    check(nonEmptyText(report.execution_id), 'EXECUTION_ID_INVALID');
+    check(hexRoot(report.directory_root) && hexRoot(report.component_assembly_root), 'SOURCE_ROOT_INVALID');
+    check(nonEmptyText(report.scene_id) && nonEmptyText(report.world_id), 'SCENE_WORLD_INVALID');
+    check(report.runtime_consumer === 'VSR_REPRESENTATION_IMPORT_ADAPTER' && report.execution_mode === 'INJECTED_CONSUMER_ADAPTER', 'RUNTIME_CONSUMER_INVALID');
+    const entries = Array.isArray(report.entries) ? report.entries : [];
+    const selectedIds = Array.isArray(report.selected_component_ids) ? report.selected_component_ids : [];
+    check(selectedIds.length >= 1 && selectedIds.length === entries.length, 'COMPONENT_COUNT_INVALID');
+    check(new Set(selectedIds).size === selectedIds.length && selectedIds.every(nonEmptyText), 'COMPONENT_IDS_INVALID');
+    check(report.component_count === entries.length && JSON.stringify(selectedIds) === JSON.stringify(entries.map(entry => entry.component_id)), 'COMPONENT_SELECTION_INVALID');
+    check(entries.every(entry => nonEmptyText(entry?.component_id)
+      && (entry?.representation_id === null || nonEmptyText(entry.representation_id))
+      && (entry?.representation_root === null || hexRoot(entry.representation_root))
+      && UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_KINDS.includes(entry?.representation_kind)
+      && nonEmptyText(entry?.representation_profile)
+      && hexRoot(entry?.source_content_root)
+      && (entry?.handler_id === null || nonEmptyText(entry.handler_id))
+      && Array.isArray(entry?.resource_ids)
+      && UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_STATUSES.includes(entry?.status)
+      && ['HANDLER_VERIFIED', 'FAILED', 'NOT_APPLICABLE', 'NOT_RUN'].includes(entry?.verification_status)
+      && (entry.status === 'EXECUTED' ? entry.verification_status === 'HANDLER_VERIFIED' && nonEmptyText(entry.handler_id) && hexRoot(entry.receipt_root) && hexRoot(entry.output_root) && entry.loaded_resource_count > 0 && entry.loaded_byte_length > 0 : entry.verification_status !== 'HANDLER_VERIFIED' && nonEmptyText(entry.reason) && entry.receipt_root === null && entry.output_root === null)
+      && Number.isSafeInteger(entry?.loaded_resource_count) && entry.loaded_resource_count >= 0
+      && Number.isSafeInteger(entry?.loaded_byte_length) && entry.loaded_byte_length >= 0
+      && entry?.candidate_only === true
+      && entry?.authoritative === false
+      && hexRoot(entry?.entry_root)), 'ENTRY_HEADER_INVALID');
+    check(new Set(entries.map(entry => entry?.component_id)).size === entries.length, 'ENTRY_IDS_INVALID');
+    check(entries.every(entry => {
+      const copy = clone(entry);
+      const root = copy.entry_root;
+      delete copy.entry_root;
+      return root === rootHash(copy);
+    }), 'ENTRY_ROOT_INVALID');
+    const expectedSummary = componentRepresentationImportSummary(entries);
+    for (const [key, value] of Object.entries(expectedSummary)) check(JSON.stringify(report.summary?.[key]) === JSON.stringify(value), `SUMMARY_${key.toUpperCase()}_MISMATCH`);
+    check(report.status === componentRepresentationImportStatus(entries), 'STATUS_MISMATCH');
+    check(report.candidate_only === true && report.authoritative === false && report.canonical_write_authorized === false, 'AUTHORITY_BOUNDARY_INVALID');
+    check(JSON.stringify(report.authority) === JSON.stringify(componentRepresentationImportAuthority()), 'AUTHORITY_INVALID');
+    if (directory !== null) {
+      const directoryVerification = verifyUniversalArtAssetComponentRepresentationDirectory(directory);
+      check(directoryVerification.valid, `DIRECTORY_INVALID:${directoryVerification.errors.join(',')}`);
+      check(report.directory_root === directory.directory_root, 'DIRECTORY_ROOT_MISMATCH');
+      check(report.component_assembly_root === directory.component_assembly_root, 'ASSEMBLY_ROOT_MISMATCH');
+      const directoryEntries = new Map(directory.representations.map(entry => [entry.component_id, entry]));
+      check(entries.every(entry => {
+        const source = directoryEntries.get(entry.component_id);
+        return Boolean(source)
+          && entry.representation_id === source.representation_id
+          && entry.representation_root === source.representation_root
+          && entry.representation_kind === source.representation_kind
+          && entry.representation_profile === source.representation_profile
+          && entry.source_content_root === source.content_root
+          && JSON.stringify(entry.resource_ids) === JSON.stringify(source.resource_ids);
+      }), 'DIRECTORY_ENTRY_BINDING_INVALID');
+    }
+    const actualRoot = report.report_root;
+    const copy = clone(report);
+    delete copy.report_root;
+    check(hexRoot(actualRoot) && actualRoot === rootHash(copy), 'ROOT_MISMATCH');
+  } catch (error) {
+    errors.push(`VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, report_root: report.report_root ?? null};
 }

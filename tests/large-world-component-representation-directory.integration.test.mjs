@@ -6,12 +6,16 @@ import test from 'node:test';
 import Ajv2020 from 'ajv/dist/2020.js';
 import {
   UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_DIRECTORY_FORMAT,
+  executeUniversalArtAssetComponentRepresentationImport,
   createUniversalArtAssetComponentAssembly,
   createUniversalArtAssetComponentGraph,
   createUniversalArtAssetGenome,
+  createLargeWorldRuntime,
+  createLargeWorldSpatialGlbBundle,
   executeUniversalArtAssetComponentGraph,
   lowerUniversalArtAssetComponentAssemblyToRepresentationDirectory,
-  verifyUniversalArtAssetComponentRepresentationDirectory
+  verifyUniversalArtAssetComponentRepresentationDirectory,
+  verifyUniversalArtAssetComponentRepresentationImport
 } from '@taowind/large-world-runtime';
 import {AssetProviderAdapter, createAssetProviderManifest} from '@taowind/reality-asset-genesis-fabric';
 import {
@@ -19,10 +23,11 @@ import {
   resolveSpatialAssetStreaming,
   verifySpatialAssetStreamingReceipt
 } from '@taowind/visual-state-runtime/spatial-reality-3d';
+import {importGlbToSpatialScene, verifyGltfImportReceipt} from '@taowind/visual-state-runtime/gltf-asset';
 
 const root = letter => letter.repeat(64);
 
-function createFixture() {
+function createFixture({validMesh = false} = {}) {
   const rootGenome = createUniversalArtAssetGenome({
     asset_profile: 'character',
     asset_kind: 'character-3d',
@@ -101,19 +106,32 @@ function createFixture() {
     upstream: {url: 'https://taowind.company', revision: 'component-representation-directory-integration'},
     metadata: {quality_tier: 'PRODUCTION', component_graph_fixture: true}
   });
+  const validMeshPayload = validMesh ? (() => {
+    const runtime = createLargeWorldRuntime({worldId: 'world:component-representation-directory-glb', seed: 'seed:component-representation-directory-glb', width: 5, depth: 5, chunkSize: 64, sampleResolution: 8, loadRadius: 1, maxActiveChunks: 9});
+    runtime.observe({x: 0, z: 0});
+    const active = runtime.listActiveChunks();
+    const selection = runtime.selectActiveRepresentationPortfolios({quality_by_chunk: Object.fromEntries(active.map(chunk => [chunk.chunk_id, 'STANDARD']))});
+    const scene = runtime.createSpatialScene({selection, scene_id: 'component-representation-directory-glb-scene'});
+    const bundle = createLargeWorldSpatialGlbBundle(scene);
+    return bundle.assets.find(asset => asset.record.metadata.lod === 0).payload;
+  })() : null;
   const provider = new AssetProviderAdapter(manifest, {
     runner: ({operation, input}) => ({
       asset_id: input.asset_id,
       format: 'component-representation-directory-provider-output',
       outputs: outputRoles,
-      files: outputRoles.map(role => ({
-        name: `${operation}/${role}.json`,
-        path: `${operation}/${role}.json`,
-        role,
-        format: 'application/json',
-        mime: 'application/json',
-        base64: Buffer.from(`${input.asset_id}:${input.component_context?.component_id}:${role}`).toString('base64')
-      })),
+      files: outputRoles.map(role => {
+        const mesh = role === 'mesh-glb' && validMeshPayload !== null;
+        const payload = mesh ? validMeshPayload : Buffer.from(`${input.asset_id}:${input.component_context?.component_id}:${role}`);
+        return {
+          name: `${operation}/${role}.${mesh ? 'glb' : 'json'}`,
+          path: `${operation}/${role}.${mesh ? 'glb' : 'json'}`,
+          role,
+          format: mesh ? 'model/gltf-binary' : 'application/json',
+          mime: mesh ? 'model/gltf-binary' : 'application/json',
+          base64: Buffer.from(payload).toString('base64')
+        };
+      }),
       generator_version: 'component-representation-directory-provider-fixture',
       seed: input.seed,
       evidence: {provider_success: true}
@@ -196,4 +214,66 @@ test('component representation directory schema is strict about consumer mapping
   const coerced = structuredClone(directory);
   coerced.representations.find(entry => entry.representation_kind === 'particle').consumer_mapping.vsr.catalog_kind = 'mesh';
   assert.equal(verifyUniversalArtAssetComponentRepresentationDirectory(coerced, {assembly}).valid, false);
+});
+
+test('component representation import executes a verified VSR mesh handler and fails on stale bytes', async () => {
+  const {assembly} = createFixture({validMesh: true});
+  const directory = lowerUniversalArtAssetComponentAssemblyToRepresentationDirectory({assembly});
+  const loadAsset = asset => fs.readFileSync(path.resolve(asset.metadata.output_directory, asset.metadata.relative_path));
+  const importers = {
+    mesh: {
+      handler_id: 'vsr.gltf-import',
+      compile: ({entry, assets, payloads}) => {
+        const meshAsset = assets.find(asset => asset.kind === 'mesh' && asset.format === 'model/gltf-binary');
+        assert.ok(meshAsset);
+        const imported = importGlbToSpatialScene(payloads.get(meshAsset.id), {
+          sceneId: `component-vsr-import-${entry.component_id}`,
+          sourceRoot: entry.representation_root
+        });
+        return {
+          status: 'EXECUTED',
+          receipt: imported.receipt,
+          output_root: imported.receipt.sceneRoot,
+          metrics: {
+            mesh_count: imported.receipt.meshCount,
+            material_count: imported.receipt.materialCount,
+            animation_count: imported.receipt.animationCount
+          }
+        };
+      },
+      verify: ({result}) => verifyGltfImportReceipt(result.receipt)
+    }
+  };
+  const executed = await executeUniversalArtAssetComponentRepresentationImport({
+    directory,
+    assembly,
+    requestedComponentIds: ['body'],
+    loadAsset,
+    importers
+  });
+  assert.equal(executed.status, 'CANDIDATE_COMPONENT_REPRESENTATION_IMPORT_EXECUTED');
+  assert.equal(executed.summary.executed_count, 1);
+  assert.equal(executed.entries[0].status, 'EXECUTED');
+  assert.equal(executed.entries[0].verification_status, 'HANDLER_VERIFIED');
+  assert.equal(verifyUniversalArtAssetComponentRepresentationImport(executed, {directory}).valid, true);
+  const schema = JSON.parse(fs.readFileSync(new URL('../packages/world/large-world-runtime/schemas/universal-art-asset-component-representation-import-execution.v0.1.schema.json', import.meta.url), 'utf8'));
+  const validate = new Ajv2020({strict: false, allErrors: true}).compile(schema);
+  assert.equal(validate(executed), true, JSON.stringify(validate.errors));
+
+  const tamperedAssetId = directory.vsr_catalog.assets.find(asset => asset.metadata.component_id === 'body').id;
+  const failed = await executeUniversalArtAssetComponentRepresentationImport({
+    directory,
+    assembly,
+    requestedComponentIds: ['body'],
+    loadAsset: asset => {
+      const bytes = Buffer.from(loadAsset(asset));
+      if (asset.id === tamperedAssetId) bytes[0] ^= 1;
+      return bytes;
+    },
+    importers
+  });
+  assert.equal(failed.status, 'CANDIDATE_COMPONENT_REPRESENTATION_IMPORT_FAILED');
+  assert.equal(failed.entries[0].status, 'FAILED');
+  assert.match(failed.entries[0].reason, /BYTES_MISMATCH/);
+  assert.equal(verifyUniversalArtAssetComponentRepresentationImport(failed, {directory}).valid, true);
 });
