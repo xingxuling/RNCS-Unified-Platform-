@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import {createHash} from 'node:crypto';
 import {
   UNIVERSAL_ART_ASSET_FORGE_VERSION,
   UNIVERSAL_ART_ASSET_GENOME_FORMAT,
@@ -27,6 +28,8 @@ export const UNIVERSAL_ART_ASSET_COMPONENT_LOWERING_FORMAT = 'urrf.universal-art
 export const UNIVERSAL_ART_ASSET_COMPONENT_EXECUTION_FORMAT = 'urrf.universal-art-asset-component-execution.v0.1';
 export const UNIVERSAL_ART_ASSET_COMPONENT_EXECUTION_CONTEXT_FORMAT = 'urrf.universal-art-asset-component-execution-context.v0.1';
 export const UNIVERSAL_ART_ASSET_COMPONENT_GRAPH_VERSION = '0.1.0';
+export const UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_FORMAT = 'urrf.universal-art-asset-component-assembly.v0.1';
+export const UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_VERSION = UNIVERSAL_ART_ASSET_COMPONENT_GRAPH_VERSION;
 
 export const UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_KINDS = Object.freeze([
   'mesh',
@@ -1016,4 +1019,672 @@ export function verifyUniversalArtAssetComponentExecution(receipt, {graph = null
     errors.push(`VERIFY_EXCEPTION:${error.name}:${error.message}`);
   }
   return {valid: errors.length === 0, errors, component_execution_root: receipt.component_execution_root ?? null};
+}
+
+function componentAssemblyAuthority() {
+  return {
+    canonical_owner: 'RNCS',
+    representation_owner: 'URRF',
+    provider_can_write_authoritative_world_state: false,
+    provider_can_commit: false,
+    composition_can_commit: false,
+    rncs_authority_required: true
+  };
+}
+
+function componentAssemblyTransform(value = {}) {
+  const raw = record(value);
+  return {
+    translation_mm: vector(raw.transform_mm ?? raw.transformMm ?? raw.translation_mm ?? raw.translationMm, [0, 0, 0], {
+      min: -1000000,
+      max: 1000000,
+      field: 'UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_TRANSLATION_MM'
+    }),
+    rotation_deg: vector(raw.rotation_deg ?? raw.rotationDeg, [0, 0, 0], {
+      min: -360,
+      max: 360,
+      field: 'UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_ROTATION_DEG'
+    }),
+    scale_milli: vector(raw.scale_milli ?? raw.scaleMilli, [1000, 1000, 1000], {
+      min: 1,
+      max: 100000,
+      field: 'UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_SCALE_MILLI'
+    })
+  };
+}
+
+function normalizeComponentAssemblyPath(value) {
+  const result = String(value ?? '').trim().replaceAll('\\', '/');
+  fail(
+    result.length > 0
+      && result.length <= 1024
+      && !result.startsWith('/')
+      && !path.win32.isAbsolute(result)
+      && !result.includes('\0')
+      && !result.split('/').includes('..'),
+    'UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_RESOURCE_PATH_INVALID'
+  );
+  return result;
+}
+
+function componentAssemblyResourceFormat(filePath) {
+  const lower = String(filePath ?? '').toLowerCase();
+  if (lower.endsWith('.glb') || lower.endsWith('.gltf')) return 'model/gltf-binary';
+  if (lower.endsWith('.png')) return 'image/png';
+  if (lower.endsWith('.jpg') || lower.endsWith('.jpeg')) return 'image/jpeg';
+  if (lower.endsWith('.ktx2')) return 'image/ktx2';
+  if (lower.endsWith('.json')) return 'application/json';
+  if (lower.endsWith('.wav')) return 'audio/wav';
+  if (lower.endsWith('.mp4')) return 'video/mp4';
+  return 'application/octet-stream';
+}
+
+function componentAssemblyResourceRole(file) {
+  const role = String(file?.role ?? '').trim();
+  return role || 'asset-output';
+}
+
+function componentAssemblyResourcePathIsSafe(resource) {
+  try {
+    const relativePath = normalizeComponentAssemblyPath(resource?.path);
+    const outputDirectory = String(resource?.output_directory ?? '').trim();
+    if (!outputDirectory) return false;
+    const root = path.resolve(outputDirectory);
+    const target = path.resolve(root, relativePath);
+    const relative = path.relative(root, target);
+    return relative.length > 0
+      && !relative.startsWith(`..${path.sep}`)
+      && !path.isAbsolute(relative);
+  } catch {
+    return false;
+  }
+}
+
+function componentAssemblyResourceLocation(resource) {
+  if (!componentAssemblyResourcePathIsSafe(resource)) {
+    return {valid: false, code: 'RESOURCE_PATH_INVALID', detail: String(resource?.path ?? '')};
+  }
+  const outputDirectory = path.resolve(String(resource.output_directory));
+  const relativePath = normalizeComponentAssemblyPath(resource.path);
+  const absolutePath = path.resolve(outputDirectory, relativePath);
+  if (!fs.existsSync(outputDirectory)) {
+    return {valid: false, code: 'RESOURCE_OUTPUT_DIRECTORY_MISSING', detail: outputDirectory};
+  }
+  if (!fs.existsSync(absolutePath)) {
+    return {valid: false, code: 'RESOURCE_FILE_MISSING', detail: absolutePath};
+  }
+  try {
+    const realRoot = fs.realpathSync(outputDirectory);
+    const realFile = fs.realpathSync(absolutePath);
+    const relativeRealPath = path.relative(realRoot, realFile);
+    if (!relativeRealPath || relativeRealPath.startsWith(`..${path.sep}`) || path.isAbsolute(relativeRealPath)) {
+      return {valid: false, code: 'RESOURCE_SYMLINK_ESCAPE', detail: absolutePath};
+    }
+  } catch (error) {
+    return {valid: false, code: 'RESOURCE_REALPATH_FAILED', detail: error.message};
+  }
+  return {valid: true, outputDirectory, relativePath, absolutePath};
+}
+
+function componentAssemblyResourceBytes(resource) {
+  const location = componentAssemblyResourceLocation(resource);
+  if (!location.valid) return location;
+  try {
+    const bytes = fs.readFileSync(location.absolutePath);
+    return {
+      valid: true,
+      ...location,
+      byte_length: bytes.length,
+      sha256: createHash('sha256').update(bytes).digest('hex')
+    };
+  } catch (error) {
+    return {valid: false, code: 'RESOURCE_READ_FAILED', detail: error.message};
+  }
+}
+
+function componentAssemblyResource({graph, component, artifact, file}) {
+  const stageId = text(file?.stage_id, null, 'UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_STAGE_ID', 160);
+  const role = componentAssemblyResourceRole(file);
+  const outputDirectory = artifact?.output_directory;
+  fail(nonEmptyText(outputDirectory), 'UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_OUTPUT_DIRECTORY_REQUIRED');
+  const byteLength = integer(file?.byte_length, null, {
+    min: 1,
+    max: Number.MAX_SAFE_INTEGER,
+    field: 'UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_BYTE_LENGTH'
+  });
+  const sha256 = String(file?.sha256 ?? '').trim();
+  fail(hexRoot(sha256), 'UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_SHA256_INVALID');
+  const stage = artifact.stages.find(candidate => candidate.stage_id === stageId);
+  fail(Boolean(stage), 'UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_STAGE_UNKNOWN', stageId);
+  const stageRelativePath = 'stages/' + String(stage.index + 1).padStart(3, '0') + '-' + stage.stage_id + '/' + normalizeComponentAssemblyPath(file?.path);
+  const relativePath = normalizeComponentAssemblyPath(stageRelativePath);
+  return seal({
+    resource_id: stableId('urrf-universal-art-asset-component-resource', {
+      component_graph_root: graph.component_graph_root,
+      component_id: component.component_id,
+      stage_id: stageId,
+      role,
+      path: relativePath,
+      sha256
+    }),
+    component_id: component.component_id,
+    stage_id: stageId,
+    role,
+    representation_kind: component.representation.kind,
+    format: componentAssemblyResourceFormat(relativePath),
+    path: relativePath,
+    output_directory: path.resolve(String(outputDirectory)),
+    byte_length: byteLength,
+    sha256,
+    declared_sha256: optionalRoot(file?.declared_sha256, 'UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_DECLARED_SHA256'),
+    artifact_root: artifact.artifact_root,
+    output_root: artifact.output.output_root,
+    result_root: stage.output?.result_root ?? null,
+    candidate_only: true,
+    authoritative: false,
+    resource_root: ''
+  }, 'resource_root');
+}
+
+function componentAssemblyResources({graph, component, detail}) {
+  const artifact = detail?.artifact ?? null;
+  if (!artifact) return [];
+  const files = Array.isArray(artifact.output?.files) ? artifact.output.files : [];
+  for (const file of files) {
+    fail(nonEmptyText(file?.path), 'UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_RESOURCE_PATH_REQUIRED', component.component_id);
+    fail(hexRoot(file?.sha256), 'UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_RESOURCE_SHA256_REQUIRED', component.component_id);
+    fail(Number.isSafeInteger(file?.byte_length) && file.byte_length > 0, 'UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_RESOURCE_LENGTH_REQUIRED', component.component_id);
+  }
+  return [...files]
+    .sort((left, right) => `${left.stage_id}:${left.path}:${left.role ?? ''}`.localeCompare(`${right.stage_id}:${right.path}:${right.role ?? ''}`, 'en'))
+    .map(file => componentAssemblyResource({graph, component, artifact, file}));
+}
+
+function componentAssemblyComponent({graph, component, executionComponent, detail, index}) {
+  fail(Boolean(executionComponent), 'UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_EXECUTION_COMPONENT_REQUIRED', component.component_id);
+  const artifact = detail?.artifact ?? null;
+  if (artifact) {
+    const artifactVerification = verifyUniversalArtAssetProviderPipelineArtifact(artifact, {
+      genome: detail.genome,
+      plan: detail.plan,
+      execution: detail.execution
+    });
+    fail(artifactVerification.valid, 'UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_ARTIFACT_INVALID', artifactVerification.errors.join(','));
+    fail(artifact.artifact_root === executionComponent.artifact_root, 'UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_ARTIFACT_ROOT_MISMATCH', component.component_id);
+  }
+  const resources = componentAssemblyResources({graph, component, detail});
+  const status = executionComponent.status;
+  const resourceStatus = status === 'NOT_RUN' ? 'NOT_RUN' : resources.length > 0 ? 'BOUND' : 'MISSING';
+  return {
+    component: seal({
+      index,
+      component_id: component.component_id,
+      role: component.role,
+      asset_id: component.asset_id,
+      asset_profile: component.asset_profile,
+      quality_tier: component.quality_tier,
+      genome_root: component.genome_root,
+      parent_component_id: component.parent_component_id,
+      depends_on: [...component.depends_on],
+      dependency_bindings: clone(executionComponent.dependency_bindings),
+      representation: clone(component.representation),
+      transform: componentAssemblyTransform(component),
+      pipeline_status: executionComponent.pipeline_status,
+      status,
+      failure_code: executionComponent.failure_code,
+      artifact_root: executionComponent.artifact_root,
+      execution_root: executionComponent.execution_root,
+      output_root: executionComponent.output_root,
+      result_root: executionComponent.result_root,
+      resource_status: resourceStatus,
+      resource_count: resources.length,
+      resource_ids: resources.map(resource => resource.resource_id),
+      graph_root: graph.component_graph_root,
+      candidate_only: true,
+      authoritative: false,
+      canonical_write_authorized: false,
+      component_root: ''
+    }, 'component_root'),
+    resources
+  };
+}
+
+function componentAssemblyResourceIndex(resources) {
+  return Object.fromEntries([...resources]
+    .sort((left, right) => left.resource_id.localeCompare(right.resource_id, 'en'))
+    .map(resource => [resource.resource_id, {
+      component_id: resource.component_id,
+      stage_id: resource.stage_id,
+      role: resource.role,
+      path: resource.path,
+      byte_length: resource.byte_length,
+      sha256: resource.sha256,
+      resource_root: resource.resource_root
+    }]));
+}
+
+function componentAssemblySummary(components, resources) {
+  return {
+    component_count: components.length,
+    completed_count: components.filter(component => component.status === 'COMPLETED').length,
+    failed_count: components.filter(component => component.status === 'FAILED').length,
+    blocked_count: components.filter(component => component.status === 'BLOCKED').length,
+    not_run_count: components.filter(component => component.status === 'NOT_RUN').length,
+    resource_count: resources.length,
+    bound_component_count: components.filter(component => component.resource_status === 'BOUND').length,
+    missing_resource_component_count: components.filter(component => component.resource_status === 'MISSING').length
+  };
+}
+
+function componentAssemblyFileVerification(resources, verifyFiles) {
+  if (!verifyFiles) {
+    return {
+      mode: 'NOT_RUN',
+      checked_count: 0,
+      passed_count: 0,
+      failed_count: 0,
+      failures: []
+    };
+  }
+  const failures = [];
+  let checkedCount = 0;
+  let passedCount = 0;
+  for (const resource of resources) {
+    checkedCount++;
+    const actual = componentAssemblyResourceBytes(resource);
+    if (!actual.valid) {
+      failures.push({resource_id: resource.resource_id, code: actual.code, detail: actual.detail});
+      continue;
+    }
+    if (actual.byte_length !== resource.byte_length) {
+      failures.push({resource_id: resource.resource_id, code: 'RESOURCE_BYTE_LENGTH_MISMATCH', detail: `${actual.byte_length}:${resource.byte_length}`});
+      continue;
+    }
+    if (actual.sha256 !== resource.sha256) {
+      failures.push({resource_id: resource.resource_id, code: 'RESOURCE_SHA256_MISMATCH', detail: `${actual.sha256}:${resource.sha256}`});
+      continue;
+    }
+    passedCount++;
+  }
+  failures.sort((left, right) => left.resource_id.localeCompare(right.resource_id, 'en'));
+  return {
+    mode: 'LOCAL_BYTES',
+    checked_count: checkedCount,
+    passed_count: passedCount,
+    failed_count: failures.length,
+    failures
+  };
+}
+
+function componentAssemblyRootInput(assembly) {
+  const copy = clone(assembly);
+  delete copy.component_assembly_root;
+  return copy;
+}
+
+function componentAssemblyReady(assembly, checks) {
+  return assembly.execution_status === 'CANDIDATE_COMPONENT_GRAPH_EXECUTED'
+    && assembly.components.every(component => component.status === 'COMPLETED' && component.resource_status === 'BOUND' && component.resource_count > 0)
+    && Object.values(checks).every(value => value === true);
+}
+
+/**
+ * Package component Pipeline Artifacts into one candidate-only reusable
+ * resource catalog. It preserves each component's local transform and
+ * dependency edges, binds every resource to its artifact/output/result roots,
+ * and verifies local bytes when materialized files are available. It does not
+ * merge meshes, infer missing representations, or grant commit authority.
+ */
+export function createUniversalArtAssetComponentAssembly({
+  graph: graphInput = null,
+  component_graph = null,
+  componentGraph = null,
+  execution: executionInput = null,
+  component_execution = null,
+  componentExecution = null,
+  component_executions = null,
+  componentExecutions = null,
+  root_transform = null,
+  rootTransform = null,
+  scene_id = null,
+  sceneId = null,
+  world_id = null,
+  worldId = null,
+  verify_files = null,
+  verifyFiles = null
+} = {}) {
+  const graphValue = graphInput ?? component_graph ?? componentGraph;
+  const executionValue = executionInput ?? component_execution ?? componentExecution;
+  const graph = graphValue?.format === UNIVERSAL_ART_ASSET_COMPONENT_GRAPH_FORMAT
+    ? clone(graphValue)
+    : createUniversalArtAssetComponentGraph(graphValue ?? {});
+  const execution = executionValue?.format === UNIVERSAL_ART_ASSET_COMPONENT_EXECUTION_FORMAT
+    ? clone(executionValue)
+    : null;
+  fail(Boolean(execution), 'UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_EXECUTION_REQUIRED');
+  const details = component_executions ?? componentExecutions;
+  fail(Array.isArray(details) && details.length === graph.components.length, 'UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_DETAILS_REQUIRED');
+  const graphVerification = verifyUniversalArtAssetComponentGraph(graph);
+  fail(graphVerification.valid, 'UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_GRAPH_INVALID', graphVerification.errors.join(','));
+  const executionVerification = verifyUniversalArtAssetComponentExecution(execution, {
+    graph,
+    componentExecutions: details
+  });
+  fail(executionVerification.valid, 'UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_EXECUTION_INVALID', executionVerification.errors.join(','));
+  const executionById = new Map(execution.components.map(component => [component.component_id, component]));
+  const detailById = new Map(details.map(detail => [detail?.component?.component_id, detail]));
+  const graphById = new Map(graph.components.map(component => [component.component_id, component]));
+  const built = graph.topological_order.map((componentIdValue, index) => {
+    const component = graphById.get(componentIdValue);
+    const executionComponent = executionById.get(componentIdValue);
+    const detail = detailById.get(componentIdValue);
+    fail(Boolean(component && executionComponent && detail), 'UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_COMPONENT_CONTEXT_MISSING', componentIdValue);
+    return componentAssemblyComponent({graph, component, executionComponent, detail, index});
+  });
+  const components = built.map(entry => entry.component);
+  const resources = built.flatMap(entry => entry.resources);
+  const resourceIndex = componentAssemblyResourceIndex(resources);
+  const resolvedSceneId = text(
+    scene_id ?? sceneId,
+    `urrf-component-assembly:${graph.component_graph_root.slice(0, 16)}`,
+    'UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_SCENE_ID',
+    160
+  );
+  const resolvedWorldId = text(
+    world_id ?? worldId,
+    'world:urrf-component-assembly',
+    'UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_WORLD_ID',
+    160
+  );
+  const resolvedRootTransform = componentAssemblyTransform(root_transform ?? rootTransform ?? {});
+  const verifyPhysicalFiles = verify_files ?? verifyFiles ?? true;
+  fail(typeof verifyPhysicalFiles === 'boolean', 'UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_VERIFY_FILES_INVALID');
+  const fileVerification = componentAssemblyFileVerification(resources, verifyPhysicalFiles);
+  const checks = {
+    graph_binding: graph.component_graph_root === graphVerification.component_graph_root
+      && components.every(component => component.graph_root === graph.component_graph_root),
+    execution_binding: hexRoot(execution.component_execution_root)
+      && execution.component_graph_root === graph.component_graph_root
+      && components.every(component => component.status !== 'COMPLETED' || (hexRoot(component.execution_root) && hexRoot(component.output_root) && hexRoot(component.result_root))),
+    component_order: components.every((component, index) => component.index === index && component.component_id === graph.topological_order[index]),
+    dependency_binding: components.every(component => component.dependency_bindings.length === component.depends_on.length
+      && component.dependency_bindings.every(binding => {
+        const dependency = components.find(candidate => candidate.component_id === binding.component_id);
+        return Boolean(dependency) && dependency.index < component.index;
+      })
+      && JSON.stringify(component.dependency_bindings.map(binding => binding.component_id).sort(keySort)) === JSON.stringify([...component.depends_on].sort(keySort))),
+    artifact_binding: components.every(component => component.status !== 'COMPLETED'
+      || (hexRoot(component.artifact_root) && component.resource_count > 0)),
+    resource_binding: resources.every(resource => graphById.has(resource.component_id)
+      && hexRoot(resource.artifact_root)
+      && hexRoot(resource.output_root)
+      && hexRoot(resource.sha256))
+      && components.every(component => component.status !== 'COMPLETED' || component.resource_status === 'BOUND'),
+    resource_path_safety: resources.every(componentAssemblyResourcePathIsSafe),
+    resource_file_integrity: fileVerification.mode === 'LOCAL_BYTES'
+      && fileVerification.failed_count === 0
+      && fileVerification.checked_count === resources.length
+      && fileVerification.passed_count === resources.length,
+    transform_integrity: components.every(component => Array.isArray(component.transform?.translation_mm)
+      && component.transform.translation_mm.length === 3
+      && Array.isArray(component.transform?.rotation_deg)
+      && component.transform.rotation_deg.length === 3
+      && Array.isArray(component.transform?.scale_milli)
+      && component.transform.scale_milli.length === 3),
+    authority_boundary: components.every(component => component.candidate_only === true && component.authoritative === false && component.canonical_write_authorized === false)
+  };
+  const base = {
+    format: UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_FORMAT,
+    version: UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_VERSION,
+    assembly_id: stableId('urrf-universal-art-asset-component-assembly', {
+      component_graph_root: graph.component_graph_root,
+      component_execution_root: execution.component_execution_root,
+      scene_id: resolvedSceneId,
+      world_id: resolvedWorldId,
+      root_transform: resolvedRootTransform,
+      resource_roots: resources.map(resource => resource.resource_root)
+    }),
+    source: 'urrf-component-graph-assembly',
+    component_graph_root: graph.component_graph_root,
+    component_execution_root: execution.component_execution_root,
+    execution_status: execution.status,
+    source_reality_root: graph.source_reality_root,
+    scene_id: resolvedSceneId,
+    world_id: resolvedWorldId,
+    root_transform: resolvedRootTransform,
+    component_count: components.length,
+    components,
+    resource_count: resources.length,
+    resources,
+    resource_index: resourceIndex,
+    summary: componentAssemblySummary(components, resources),
+    checks,
+    file_verification: fileVerification,
+    status: componentAssemblyReady({execution_status: execution.status, components}, checks)
+      ? 'CANDIDATE_COMPONENT_ASSEMBLY_READY'
+      : 'CANDIDATE_COMPONENT_ASSEMBLY_BLOCKED',
+    candidate_only: true,
+    authoritative: false,
+    canonical_write_authorized: false,
+    aaa_ready: false,
+    release_ready: false,
+    authority: componentAssemblyAuthority(),
+    component_assembly_root: ''
+  };
+  return seal(base, 'component_assembly_root');
+}
+
+export function verifyUniversalArtAssetComponentAssembly(assembly, {
+  graph = null,
+  execution = null,
+  componentExecutions = null,
+  verifyFiles = true
+} = {}) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!assembly || typeof assembly !== 'object' || Array.isArray(assembly)) {
+    return {valid: false, errors: ['UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_NOT_OBJECT'], component_assembly_root: null};
+  }
+  try {
+    check(assembly.format === UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_FORMAT, 'FORMAT_INVALID');
+    check(assembly.version === UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_VERSION, 'VERSION_INVALID');
+    check(nonEmptyText(assembly.assembly_id), 'ASSEMBLY_ID_INVALID');
+    check(assembly.source === 'urrf-component-graph-assembly', 'SOURCE_INVALID');
+    check(hexRoot(assembly.component_graph_root), 'GRAPH_ROOT_INVALID');
+    check(hexRoot(assembly.component_execution_root), 'EXECUTION_ROOT_INVALID');
+    check(['CANDIDATE_COMPONENT_GRAPH_EXECUTED', 'CANDIDATE_COMPONENT_GRAPH_FAILED', 'CANDIDATE_COMPONENT_GRAPH_BLOCKED', 'CANDIDATE_COMPONENT_GRAPH_NOT_RUN'].includes(assembly.execution_status), 'EXECUTION_STATUS_INVALID');
+    check(assembly.source_reality_root === null || hexRoot(assembly.source_reality_root), 'SOURCE_REALITY_ROOT_INVALID');
+    check(nonEmptyText(assembly.scene_id) && nonEmptyText(assembly.world_id), 'SCENE_WORLD_ID_INVALID');
+    const rootTransform = record(assembly.root_transform);
+    check(Array.isArray(rootTransform.translation_mm) && rootTransform.translation_mm.length === 3 && rootTransform.translation_mm.every(value => Number.isSafeInteger(value)), 'ROOT_TRANSLATION_INVALID');
+    check(Array.isArray(rootTransform.rotation_deg) && rootTransform.rotation_deg.length === 3 && rootTransform.rotation_deg.every(value => Number.isSafeInteger(value)), 'ROOT_ROTATION_INVALID');
+    check(Array.isArray(rootTransform.scale_milli) && rootTransform.scale_milli.length === 3 && rootTransform.scale_milli.every(value => Number.isSafeInteger(value) && value > 0), 'ROOT_SCALE_INVALID');
+    const components = Array.isArray(assembly.components) ? assembly.components : [];
+    const resources = Array.isArray(assembly.resources) ? assembly.resources : [];
+    check(components.length >= 1 && components.length <= 128, 'COMPONENTS_INVALID');
+    check(resources.length <= 16384, 'RESOURCES_INVALID');
+    check(assembly.component_count === components.length, 'COMPONENT_COUNT_MISMATCH');
+    check(assembly.resource_count === resources.length, 'RESOURCE_COUNT_MISMATCH');
+    const componentIds = components.map(component => component?.component_id);
+    const componentById = new Map(components.map(component => [component?.component_id, component]));
+    check(componentIds.every(nonEmptyText) && new Set(componentIds).size === componentIds.length, 'COMPONENT_IDS_INVALID');
+    check(components.every((component, index) => component?.index === index
+      && component?.component_id === componentIds[index]
+      && nonEmptyText(component?.role)
+      && nonEmptyText(component?.asset_id)
+      && UNIVERSAL_ART_ASSET_PROFILES.includes(component?.asset_profile)
+      && UNIVERSAL_ART_ASSET_QUALITY_TIERS.includes(component?.quality_tier)
+      && hexRoot(component?.genome_root)
+      && ['COMPLETED', 'FAILED', 'BLOCKED', 'NOT_RUN'].includes(component?.status)
+      && ['BOUND', 'MISSING', 'NOT_RUN'].includes(component?.resource_status)
+      && typeof component?.pipeline_status === 'string'
+      && (component?.failure_code === null || nonEmptyText(component?.failure_code))
+      && (component?.artifact_root === null || hexRoot(component?.artifact_root))
+      && (component?.execution_root === null || hexRoot(component?.execution_root))
+      && (component?.output_root === null || hexRoot(component?.output_root))
+      && (component?.result_root === null || hexRoot(component?.result_root))
+      && Array.isArray(component?.resource_ids)
+      && component?.resource_count === component.resource_ids.length
+      && hexRoot(component?.graph_root)
+      && hexRoot(component?.component_root)), 'COMPONENT_HEADER_INVALID');
+    check(components.every(component => component?.candidate_only === true && component?.authoritative === false && component?.canonical_write_authorized === false), 'COMPONENT_AUTHORITY_INVALID');
+    check(components.every(component => component?.status === 'COMPLETED'
+      ? component.failure_code === null && component.resource_status === 'BOUND' && component.resource_count > 0
+      : component.failure_code !== null), 'COMPONENT_STATUS_BINDING_INVALID');
+    check(components.every(component => Array.isArray(component?.depends_on)
+      && component.depends_on.every(dependency => componentById.has(dependency))
+      && Array.isArray(component?.dependency_bindings)
+      && component.dependency_bindings.length === component.depends_on.length
+      && component.dependency_bindings.every(binding => {
+        const dependency = componentById.get(binding?.component_id);
+        return Boolean(dependency) && dependency.index < component.index
+          && dependency.status === binding.status
+          && dependency.execution_root === binding.execution_root
+          && dependency.output_root === binding.output_root
+          && dependency.result_root === binding.result_root;
+      })
+      && JSON.stringify(component.dependency_bindings.map(binding => binding.component_id).sort(keySort)) === JSON.stringify([...component.depends_on].sort(keySort))), 'DEPENDENCY_BINDING_INVALID');
+    const resourceById = new Map(resources.map(resource => [resource?.resource_id, resource]));
+    check(resources.every(resource => nonEmptyText(resource?.resource_id)
+      && componentById.has(resource?.component_id)
+      && nonEmptyText(resource?.stage_id)
+      && nonEmptyText(resource?.role)
+      && UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_KINDS.includes(resource?.representation_kind)
+      && nonEmptyText(resource?.format)
+      && nonEmptyText(resource?.path)
+      && nonEmptyText(resource?.output_directory)
+      && Number.isSafeInteger(resource?.byte_length) && resource.byte_length > 0
+      && hexRoot(resource?.sha256)
+      && (resource?.declared_sha256 === null || hexRoot(resource.declared_sha256))
+      && hexRoot(resource?.artifact_root)
+      && hexRoot(resource?.output_root)
+      && (resource?.result_root === null || hexRoot(resource.result_root))
+      && resource?.candidate_only === true
+      && resource?.authoritative === false
+      && hexRoot(resource?.resource_root)
+      && componentAssemblyResourcePathIsSafe(resource)), 'RESOURCE_HEADER_INVALID');
+    check(new Set(resources.map(resource => resource?.resource_id)).size === resources.length, 'RESOURCE_IDS_INVALID');
+    check(components.every(component => component.resource_ids.every(resourceId => resourceById.has(resourceId)
+      && resourceById.get(resourceId).component_id === component.component_id)), 'COMPONENT_RESOURCE_BINDING_INVALID');
+    check(components.every(component => component.resource_count === resources.filter(resource => resource.component_id === component.component_id).length), 'COMPONENT_RESOURCE_COUNT_MISMATCH');
+    check(rootHash(record(assembly.resource_index)) === rootHash(componentAssemblyResourceIndex(resources)), 'RESOURCE_INDEX_MISMATCH');
+    check(assembly.summary?.component_count === components.length, 'SUMMARY_COMPONENT_COUNT_MISMATCH');
+    check(assembly.summary?.completed_count === components.filter(component => component.status === 'COMPLETED').length, 'SUMMARY_COMPLETED_COUNT_MISMATCH');
+    check(assembly.summary?.failed_count === components.filter(component => component.status === 'FAILED').length, 'SUMMARY_FAILED_COUNT_MISMATCH');
+    check(assembly.summary?.blocked_count === components.filter(component => component.status === 'BLOCKED').length, 'SUMMARY_BLOCKED_COUNT_MISMATCH');
+    check(assembly.summary?.not_run_count === components.filter(component => component.status === 'NOT_RUN').length, 'SUMMARY_NOT_RUN_COUNT_MISMATCH');
+    check(assembly.summary?.resource_count === resources.length, 'SUMMARY_RESOURCE_COUNT_MISMATCH');
+    check(assembly.summary?.bound_component_count === components.filter(component => component.resource_status === 'BOUND').length, 'SUMMARY_BOUND_COMPONENT_COUNT_MISMATCH');
+    check(assembly.summary?.missing_resource_component_count === components.filter(component => component.resource_status === 'MISSING').length, 'SUMMARY_MISSING_RESOURCE_COUNT_MISMATCH');
+    const fileVerification = record(assembly.file_verification);
+    check(['LOCAL_BYTES', 'NOT_RUN'].includes(fileVerification.mode), 'FILE_VERIFICATION_MODE_INVALID');
+    check(Number.isSafeInteger(fileVerification.checked_count) && fileVerification.checked_count >= 0, 'FILE_VERIFICATION_CHECKED_COUNT_INVALID');
+    check(Number.isSafeInteger(fileVerification.passed_count) && fileVerification.passed_count >= 0, 'FILE_VERIFICATION_PASSED_COUNT_INVALID');
+    check(Number.isSafeInteger(fileVerification.failed_count) && fileVerification.failed_count >= 0, 'FILE_VERIFICATION_FAILED_COUNT_INVALID');
+    check(Array.isArray(fileVerification.failures) && fileVerification.failures.length === fileVerification.failed_count, 'FILE_VERIFICATION_FAILURES_INVALID');
+    const structuralFileIntegrity = fileVerification.mode === 'LOCAL_BYTES'
+      && fileVerification.checked_count === resources.length
+      && fileVerification.passed_count === resources.length
+      && fileVerification.failed_count === 0;
+    if (verifyFiles && fileVerification.mode === 'LOCAL_BYTES') {
+      const actualFileVerification = componentAssemblyFileVerification(resources, true);
+      check(actualFileVerification.checked_count === fileVerification.checked_count
+        && actualFileVerification.passed_count === fileVerification.passed_count
+        && actualFileVerification.failed_count === fileVerification.failed_count
+        && JSON.stringify(actualFileVerification.failures) === JSON.stringify(fileVerification.failures), 'FILE_VERIFICATION_BINDING_INVALID');
+    }
+    const expectedChecks = {
+      graph_binding: hexRoot(assembly.component_graph_root) && components.every(component => component.graph_root === assembly.component_graph_root),
+      execution_binding: hexRoot(assembly.component_execution_root)
+        && components.every(component => component.status !== 'COMPLETED' || (hexRoot(component.execution_root) && hexRoot(component.output_root) && hexRoot(component.result_root))),
+      component_order: components.every((component, index) => component.index === index),
+      dependency_binding: components.every(component => component.dependency_bindings.length === component.depends_on.length
+        && component.dependency_bindings.every(binding => {
+          const dependency = componentById.get(binding.component_id);
+          return Boolean(dependency) && dependency.index < component.index
+            && dependency.status === binding.status
+            && dependency.execution_root === binding.execution_root
+            && dependency.output_root === binding.output_root
+            && dependency.result_root === binding.result_root;
+        })
+        && JSON.stringify(component.dependency_bindings.map(binding => binding.component_id).sort(keySort)) === JSON.stringify([...component.depends_on].sort(keySort))),
+      artifact_binding: components.every(component => component.status !== 'COMPLETED' || (hexRoot(component.artifact_root) && component.resource_count > 0)),
+      resource_binding: resources.every(resource => componentById.has(resource.component_id) && hexRoot(resource.artifact_root) && hexRoot(resource.output_root) && hexRoot(resource.sha256))
+        && components.every(component => component.status !== 'COMPLETED' || component.resource_status === 'BOUND'),
+      resource_path_safety: resources.every(componentAssemblyResourcePathIsSafe),
+      resource_file_integrity: structuralFileIntegrity,
+      transform_integrity: components.every(component => Array.isArray(component.transform?.translation_mm) && component.transform.translation_mm.length === 3
+        && Array.isArray(component.transform?.rotation_deg) && component.transform.rotation_deg.length === 3
+        && Array.isArray(component.transform?.scale_milli) && component.transform.scale_milli.length === 3),
+      authority_boundary: components.every(component => component.candidate_only === true && component.authoritative === false && component.canonical_write_authorized === false)
+    };
+    for (const [key, value] of Object.entries(expectedChecks)) check(assembly.checks?.[key] === value, `CHECK_${key.toUpperCase()}_MISMATCH`);
+    const expectedStatus = componentAssemblyReady({execution_status: assembly.execution_status, components}, expectedChecks)
+      ? 'CANDIDATE_COMPONENT_ASSEMBLY_READY'
+      : 'CANDIDATE_COMPONENT_ASSEMBLY_BLOCKED';
+    check(assembly.status === expectedStatus, 'STATUS_MISMATCH');
+    check(assembly.candidate_only === true && assembly.authoritative === false && assembly.canonical_write_authorized === false && assembly.aaa_ready === false && assembly.release_ready === false, 'AUTHORITY_BOUNDARY_INVALID');
+    check(JSON.stringify(assembly.authority) === JSON.stringify(componentAssemblyAuthority()), 'AUTHORITY_INVALID');
+    if (graph !== null) {
+      const graphVerification = verifyUniversalArtAssetComponentGraph(graph);
+      check(graphVerification.valid, `GRAPH_CONTEXT_INVALID:${graphVerification.errors.join(',')}`);
+      check(assembly.component_graph_root === graph.component_graph_root, 'GRAPH_CONTEXT_ROOT_MISMATCH');
+      check(assembly.source_reality_root === graph.source_reality_root, 'GRAPH_CONTEXT_REALITY_ROOT_MISMATCH');
+      check(JSON.stringify(componentIds) === JSON.stringify(graph.topological_order), 'GRAPH_CONTEXT_ORDER_MISMATCH');
+      for (const component of components) {
+        const graphComponent = graph.components.find(candidate => candidate.component_id === component.component_id);
+        check(Boolean(graphComponent)
+          && graphComponent.asset_id === component.asset_id
+          && graphComponent.asset_profile === component.asset_profile
+          && graphComponent.quality_tier === component.quality_tier
+          && graphComponent.genome_root === component.genome_root
+          && graphComponent.parent_component_id === component.parent_component_id
+          && JSON.stringify(graphComponent.depends_on) === JSON.stringify(component.depends_on)
+          && JSON.stringify(componentAssemblyTransform(graphComponent)) === JSON.stringify(component.transform)
+          && JSON.stringify(graphComponent.representation) === JSON.stringify(component.representation), `GRAPH_COMPONENT_BINDING_INVALID:${component.component_id}`);
+      }
+    }
+    if (execution !== null) {
+      const executionVerification = verifyUniversalArtAssetComponentExecution(execution, {graph, componentExecutions});
+      check(executionVerification.valid, `EXECUTION_CONTEXT_INVALID:${executionVerification.errors.join(',')}`);
+      check(assembly.component_execution_root === execution.component_execution_root, 'EXECUTION_CONTEXT_ROOT_MISMATCH');
+      check(assembly.execution_status === execution.status, 'EXECUTION_CONTEXT_STATUS_MISMATCH');
+      check(JSON.stringify(componentIds) === JSON.stringify(execution.components.map(component => component.component_id)), 'EXECUTION_CONTEXT_ORDER_MISMATCH');
+    }
+    if (graph !== null && execution !== null && Array.isArray(componentExecutions)) {
+      const executionById = new Map(execution.components.map(component => [component.component_id, component]));
+      const detailById = new Map(componentExecutions.map(detail => [detail?.component?.component_id, detail]));
+      const graphById = new Map(graph.components.map(component => [component.component_id, component]));
+      for (const [index, componentIdValue] of graph.topological_order.entries()) {
+        const expected = componentAssemblyComponent({
+          graph,
+          component: graphById.get(componentIdValue),
+          executionComponent: executionById.get(componentIdValue),
+          detail: detailById.get(componentIdValue),
+          index
+        });
+        const actual = components[index];
+        check(JSON.stringify(actual) === JSON.stringify(expected.component), `COMPONENT_CONTENT_MISMATCH:${componentIdValue}`);
+        const actualResources = resources.filter(resource => resource.component_id === componentIdValue);
+        check(JSON.stringify(actualResources) === JSON.stringify(expected.resources), `RESOURCE_CONTENT_MISMATCH:${componentIdValue}`);
+      }
+    }
+    for (const component of components) {
+      const copy = clone(component);
+      const actualRoot = copy.component_root;
+      delete copy.component_root;
+      check(hexRoot(actualRoot) && actualRoot === rootHash(copy), `COMPONENT_ROOT_MISMATCH:${component.component_id}`);
+    }
+    for (const resource of resources) {
+      const copy = clone(resource);
+      const actualRoot = copy.resource_root;
+      delete copy.resource_root;
+      check(hexRoot(actualRoot) && actualRoot === rootHash(copy), `RESOURCE_ROOT_MISMATCH:${resource.resource_id}`);
+    }
+    const actualRoot = assembly.component_assembly_root;
+    check(hexRoot(actualRoot) && actualRoot === rootHash(componentAssemblyRootInput(assembly)), 'ROOT_MISMATCH');
+  } catch (error) {
+    errors.push(`VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, component_assembly_root: assembly.component_assembly_root ?? null};
 }

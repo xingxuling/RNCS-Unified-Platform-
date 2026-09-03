@@ -5,13 +5,16 @@ import path from 'node:path';
 import test from 'node:test';
 import Ajv2020 from 'ajv/dist/2020.js';
 import {
+  UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_FORMAT,
   UNIVERSAL_ART_ASSET_COMPONENT_GRAPH_FORMAT,
   UNIVERSAL_ART_ASSET_COMPONENT_LOWERING_FORMAT,
   createUniversalArtAssetComponentGraph,
+  createUniversalArtAssetComponentAssembly,
   createUniversalArtAssetGenome,
   executeUniversalArtAssetComponentGraph,
   lowerUniversalArtAssetComponentGraph,
   verifyUniversalArtAssetComponentGraph,
+  verifyUniversalArtAssetComponentAssembly,
   verifyUniversalArtAssetComponentLowering,
   verifyUniversalArtAssetComponentExecution
 } from '../src/index.mjs';
@@ -264,6 +267,37 @@ test('URRF component graph executor reuses the Provider Pipeline and chains depe
   assert.match(armorContext.dependency_bindings[0].result_root, /^[a-f0-9]{64}$/);
   assert.equal(fs.existsSync(path.join(outDir, 'universal-art-asset-component-graph-execution.json')), true);
   assert.equal(fs.existsSync(path.join(outDir, '001-body', 'universal-art-asset-provider-pipeline-artifact.json')), true);
+
+  const assembly = createUniversalArtAssetComponentAssembly({
+    graph,
+    execution: run.execution,
+    componentExecutions: run.componentExecutions,
+    scene_id: 'scene:component-graph-guardian',
+    world_id: 'world:component-graph-guardian'
+  });
+  assert.equal(assembly.format, UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_FORMAT);
+  assert.equal(assembly.status, 'CANDIDATE_COMPONENT_ASSEMBLY_READY');
+  assert.equal(assembly.component_count, 4);
+  assert.equal(assembly.resource_count, 20);
+  assert.equal(assembly.summary.bound_component_count, 4);
+  assert.equal(assembly.checks.resource_file_integrity, true);
+  assert.equal(assembly.components.find(component => component.component_id === 'armor').transform.translation_mm[1], 840);
+  assert.equal(assembly.components.find(component => component.component_id === 'armor').parent_component_id, 'body');
+  const assemblyVerification = verifyUniversalArtAssetComponentAssembly(assembly, {
+    graph,
+    execution: run.execution,
+    componentExecutions: run.componentExecutions
+  });
+  assert.equal(assemblyVerification.valid, true);
+  const assemblySchema = JSON.parse(fs.readFileSync(new URL('../schemas/universal-art-asset-component-assembly.v0.1.schema.json', import.meta.url), 'utf8'));
+  const assemblyValidate = new Ajv2020({strict: false, allErrors: true}).compile(assemblySchema);
+  assert.equal(assemblyValidate(assembly), true, JSON.stringify(assemblyValidate.errors));
+  const tamperedAssembly = structuredClone(assembly);
+  tamperedAssembly.resources[0].sha256 = root('f');
+  assert.equal(verifyUniversalArtAssetComponentAssembly(tamperedAssembly, {graph, execution: run.execution}).valid, false);
+  const firstResource = assembly.resources[0];
+  fs.writeFileSync(path.join(firstResource.output_directory, firstResource.path), 'tampered-component-resource', 'utf8');
+  assert.equal(verifyUniversalArtAssetComponentAssembly(assembly, {graph, execution: run.execution}).valid, false);
 });
 
 test('URRF component graph executor blocks missing Provider/runtime inputs and propagates the dependency boundary', () => {
@@ -300,6 +334,20 @@ test('URRF component graph executor blocks missing Provider/runtime inputs and p
   assert.equal(run.execution.execution_attempted, false);
   assert.equal(verifyUniversalArtAssetComponentExecution(run.execution, {
     graph,
+    componentExecutions: run.componentExecutions
+  }).valid, true);
+  const assembly = createUniversalArtAssetComponentAssembly({
+    graph,
+    execution: run.execution,
+    componentExecutions: run.componentExecutions,
+    verifyFiles: true
+  });
+  assert.equal(assembly.status, 'CANDIDATE_COMPONENT_ASSEMBLY_BLOCKED');
+  assert.equal(assembly.resource_count, 0);
+  assert.equal(assembly.summary.not_run_count, 1);
+  assert.equal(verifyUniversalArtAssetComponentAssembly(assembly, {
+    graph,
+    execution: run.execution,
     componentExecutions: run.componentExecutions
   }).valid, true);
 });
