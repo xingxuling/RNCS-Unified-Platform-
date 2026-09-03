@@ -1,0 +1,340 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/urrf/universal-art-asset-provider-pipeline-artifact.v0.1.schema.json",
+  "title": "URRF Universal Art Asset Provider Pipeline Artifact",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "version",
+    "artifact_id",
+    "source",
+    "asset_id",
+    "asset_profile",
+    "quality_tier",
+    "genome_root",
+    "pipeline_root",
+    "execution_root",
+    "output_directory",
+    "stage_count",
+    "stages",
+    "output",
+    "summary",
+    "checks",
+    "status",
+    "candidate_only",
+    "authoritative",
+    "canonical_write_authorized",
+    "aaa_ready",
+    "release_ready",
+    "authority",
+    "artifact_root"
+  ],
+  "$defs": {
+    "root": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "nullableRoot": {
+      "anyOf": [
+        {"$ref": "#/$defs/root"},
+        {"type": "null"}
+      ]
+    },
+    "nullableText": {
+      "anyOf": [
+        {"type": "string", "minLength": 1},
+        {"type": "null"}
+      ]
+    },
+    "profile": {
+      "type": "string",
+      "enum": ["character", "creature", "prop", "vehicle", "structure", "environment", "vegetation", "resource", "vfx"]
+    },
+    "qualityTier": {
+      "type": "string",
+      "enum": ["PREVIEW", "PRODUCTION", "AAA"]
+    },
+    "stageKind": {
+      "type": "string",
+      "enum": ["BASE_GENERATION", "RIGGING_ANIMATION", "GEOMETRY_REFINEMENT"]
+    },
+    "routeStatus": {
+      "type": "string",
+      "enum": ["BUILTIN_REFERENCE", "EXTERNAL_CONTRACT_ONLY", "EXTERNAL_RUNTIME_BOUND", "INJECTED_CONTRACT_ONLY", "INJECTED_RUNTIME_BOUND", "UNRESOLVED"]
+    },
+    "runtimeBinding": {
+      "anyOf": [
+        {"type": "string", "enum": ["BUILTIN_REFERENCE", "CONTRACT_ONLY", "EXECUTOR_INJECTED", "EXTERNAL_PROCESS", "UNRESOLVED"]},
+        {"type": "null"}
+      ]
+    },
+    "stageStatus": {
+      "type": "string",
+      "enum": ["COMPLETED", "FAILED", "CONTRACT_ONLY", "NOT_RUN", "SKIPPED"]
+    },
+    "fileRoot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "role", "byte_length", "sha256", "declared_sha256"],
+      "properties": {
+        "path": {"$ref": "#/$defs/nullableText"},
+        "role": {"$ref": "#/$defs/nullableText"},
+        "byte_length": {"anyOf": [{"type": "integer", "minimum": 0}, {"type": "null"}]},
+        "sha256": {"$ref": "#/$defs/nullableRoot"},
+        "declared_sha256": {"$ref": "#/$defs/nullableRoot"}
+      }
+    },
+    "skippedFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "reason"],
+      "properties": {
+        "path": {"$ref": "#/$defs/nullableText"},
+        "reason": {"$ref": "#/$defs/nullableText"}
+      }
+    },
+    "stageOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "result_root",
+        "output_root",
+        "output_contract_pass",
+        "required_outputs",
+        "materialization_path",
+        "materialization_root",
+        "materialized_file_count",
+        "materialized_file_roots",
+        "materialization_skipped"
+      ],
+      "properties": {
+        "result_root": {"$ref": "#/$defs/nullableRoot"},
+        "output_root": {"$ref": "#/$defs/root"},
+        "output_contract_pass": {"type": "boolean"},
+        "required_outputs": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "materialization_path": {"$ref": "#/$defs/nullableText"},
+        "materialization_root": {"$ref": "#/$defs/nullableRoot"},
+        "materialized_file_count": {"type": "integer", "minimum": 0},
+        "materialized_file_roots": {"type": "array", "items": {"$ref": "#/$defs/fileRoot"}},
+        "materialization_skipped": {"type": "array", "items": {"$ref": "#/$defs/skippedFile"}}
+      }
+    },
+    "stageChecks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider_binding",
+        "request_binding",
+        "input_binding",
+        "result_binding",
+        "output_contract",
+        "materialization_integrity",
+        "execution_truthfulness",
+        "no_silent_fallback",
+        "authority_boundary"
+      ],
+      "properties": {
+        "provider_binding": {"type": "boolean"},
+        "request_binding": {"type": "boolean"},
+        "input_binding": {"type": "boolean"},
+        "result_binding": {"type": "boolean"},
+        "output_contract": {"type": "boolean"},
+        "materialization_integrity": {"type": "boolean"},
+        "execution_truthfulness": {"type": "boolean"},
+        "no_silent_fallback": {"type": "boolean"},
+        "authority_boundary": {"type": "boolean"}
+      }
+    },
+    "stage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "index",
+        "stage_id",
+        "stage_kind",
+        "required",
+        "input_stage_id",
+        "provider_id",
+        "provider_root",
+        "provider_source",
+        "route_status",
+        "runtime_binding",
+        "operation",
+        "request_root",
+        "status",
+        "execution_attempted",
+        "execution_performed",
+        "runtime_execution_performed",
+        "job_root",
+        "result_root",
+        "failure_code",
+        "failure_root",
+        "output",
+        "checks",
+        "stage_root"
+      ],
+      "properties": {
+        "index": {"type": "integer", "minimum": 0},
+        "stage_id": {"type": "string", "minLength": 1},
+        "stage_kind": {"$ref": "#/$defs/stageKind"},
+        "required": {"type": "boolean"},
+        "input_stage_id": {"$ref": "#/$defs/nullableText"},
+        "provider_id": {"$ref": "#/$defs/nullableText"},
+        "provider_root": {"$ref": "#/$defs/nullableRoot"},
+        "provider_source": {"$ref": "#/$defs/nullableText"},
+        "route_status": {"$ref": "#/$defs/routeStatus"},
+        "runtime_binding": {"$ref": "#/$defs/runtimeBinding"},
+        "operation": {"type": "string", "enum": ["generate", "rig", "refine"]},
+        "request_root": {"$ref": "#/$defs/root"},
+        "status": {"$ref": "#/$defs/stageStatus"},
+        "execution_attempted": {"type": "boolean"},
+        "execution_performed": {"type": "boolean"},
+        "runtime_execution_performed": {"type": "boolean"},
+        "job_root": {"$ref": "#/$defs/nullableRoot"},
+        "result_root": {"$ref": "#/$defs/nullableRoot"},
+        "failure_code": {"$ref": "#/$defs/nullableText"},
+        "failure_root": {"$ref": "#/$defs/nullableRoot"},
+        "output": {"$ref": "#/$defs/stageOutput"},
+        "checks": {"$ref": "#/$defs/stageChecks"},
+        "stage_root": {"$ref": "#/$defs/root"}
+      }
+    },
+    "primaryOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stage_id", "stage_kind", "result_root", "output_root", "materialization_root"],
+      "properties": {
+        "stage_id": {"$ref": "#/$defs/nullableText"},
+        "stage_kind": {"anyOf": [{"$ref": "#/$defs/stageKind"}, {"type": "null"}]},
+        "result_root": {"$ref": "#/$defs/nullableRoot"},
+        "output_root": {"$ref": "#/$defs/nullableRoot"},
+        "materialization_root": {"$ref": "#/$defs/nullableRoot"}
+      }
+    },
+    "outputFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stage_id", "path", "role", "byte_length", "sha256", "declared_sha256"],
+      "properties": {
+        "stage_id": {"type": "string", "minLength": 1},
+        "path": {"$ref": "#/$defs/nullableText"},
+        "role": {"type": "string", "minLength": 1},
+        "byte_length": {"anyOf": [{"type": "integer", "minimum": 0}, {"type": "null"}]},
+        "sha256": {"$ref": "#/$defs/nullableRoot"},
+        "declared_sha256": {"$ref": "#/$defs/nullableRoot"}
+      }
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["file_count", "files", "role_index", "primary_output", "output_root"],
+      "properties": {
+        "file_count": {"type": "integer", "minimum": 0},
+        "files": {"type": "array", "items": {"$ref": "#/$defs/outputFile"}},
+        "role_index": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["stage_id", "path", "byte_length", "sha256"],
+              "properties": {
+                "stage_id": {"type": "string", "minLength": 1},
+                "path": {"$ref": "#/$defs/nullableText"},
+                "byte_length": {"anyOf": [{"type": "integer", "minimum": 0}, {"type": "null"}]},
+                "sha256": {"$ref": "#/$defs/nullableRoot"}
+              }
+            }
+          }
+        },
+        "primary_output": {"$ref": "#/$defs/primaryOutput"},
+        "output_root": {"$ref": "#/$defs/root"}
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stage_count", "required_stage_count", "completed_stage_count", "blocked_stage_count", "file_count", "role_count", "primary_stage_id"],
+      "properties": {
+        "stage_count": {"type": "integer", "minimum": 1},
+        "required_stage_count": {"type": "integer", "minimum": 1},
+        "completed_stage_count": {"type": "integer", "minimum": 0},
+        "blocked_stage_count": {"type": "integer", "minimum": 0},
+        "file_count": {"type": "integer", "minimum": 0},
+        "role_count": {"type": "integer", "minimum": 0},
+        "primary_stage_id": {"$ref": "#/$defs/nullableText"}
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "genome_binding",
+        "pipeline_binding",
+        "execution_binding",
+        "stage_order",
+        "required_stage_outputs",
+        "final_output_binding",
+        "role_index_integrity",
+        "file_count_integrity",
+        "status_binding",
+        "no_silent_fallback",
+        "authority_boundary"
+      ],
+      "properties": {
+        "genome_binding": {"type": "boolean"},
+        "pipeline_binding": {"type": "boolean"},
+        "execution_binding": {"type": "boolean"},
+        "stage_order": {"type": "boolean"},
+        "required_stage_outputs": {"type": "boolean"},
+        "final_output_binding": {"type": "boolean"},
+        "role_index_integrity": {"type": "boolean"},
+        "file_count_integrity": {"type": "boolean"},
+        "status_binding": {"type": "boolean"},
+        "no_silent_fallback": {"type": "boolean"},
+        "authority_boundary": {"type": "boolean"}
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["canonical_owner", "representation_owner", "provider_can_write_authoritative_world_state", "provider_can_commit", "acceptance_can_commit", "rncs_authority_required"],
+      "properties": {
+        "canonical_owner": {"const": "RNCS"},
+        "representation_owner": {"const": "URRF"},
+        "provider_can_write_authoritative_world_state": {"const": false},
+        "provider_can_commit": {"const": false},
+        "acceptance_can_commit": {"const": false},
+        "rncs_authority_required": {"const": true}
+      }
+    }
+  },
+  "properties": {
+    "format": {"const": "urrf.universal-art-asset-provider-pipeline-artifact.v0.1"},
+    "version": {"const": "0.1.0"},
+    "artifact_id": {"type": "string", "minLength": 1},
+    "source": {"const": "urrf-provider-pipeline-artifact-assembler"},
+    "asset_id": {"type": "string", "minLength": 1},
+    "asset_profile": {"$ref": "#/$defs/profile"},
+    "quality_tier": {"$ref": "#/$defs/qualityTier"},
+    "genome_root": {"$ref": "#/$defs/root"},
+    "pipeline_root": {"$ref": "#/$defs/root"},
+    "execution_root": {"$ref": "#/$defs/root"},
+    "output_directory": {"$ref": "#/$defs/nullableText"},
+    "stage_count": {"type": "integer", "minimum": 1},
+    "stages": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/stage"}},
+    "output": {"$ref": "#/$defs/output"},
+    "summary": {"$ref": "#/$defs/summary"},
+    "checks": {"$ref": "#/$defs/checks"},
+    "status": {"type": "string", "enum": ["CANDIDATE_PROVIDER_PIPELINE_ARTIFACT_READY", "CANDIDATE_PROVIDER_PIPELINE_ARTIFACT_BLOCKED"]},
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "canonical_write_authorized": {"const": false},
+    "aaa_ready": {"const": false},
+    "release_ready": {"const": false},
+    "authority": {"$ref": "#/$defs/authority"},
+    "artifact_root": {"$ref": "#/$defs/root"}
+  }
+}

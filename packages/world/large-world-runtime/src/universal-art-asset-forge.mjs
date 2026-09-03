@@ -47,6 +47,7 @@ export const UNIVERSAL_ART_ASSET_PROVIDER_EXECUTION_FORMAT = 'urrf.universal-art
 export const UNIVERSAL_ART_ASSET_PROVIDER_REPLAY_FORMAT = 'urrf.universal-art-asset-provider-replay.v0.1';
 export const UNIVERSAL_ART_ASSET_PROVIDER_PIPELINE_FORMAT = 'urrf.universal-art-asset-provider-pipeline.v0.1';
 export const UNIVERSAL_ART_ASSET_PROVIDER_PIPELINE_EXECUTION_FORMAT = 'urrf.universal-art-asset-provider-pipeline-execution.v0.1';
+export const UNIVERSAL_ART_ASSET_PROVIDER_PIPELINE_ARTIFACT_FORMAT = 'urrf.universal-art-asset-provider-pipeline-artifact.v0.1';
 export const UNIVERSAL_ART_ASSET_FORGE_VERSION = '0.1.0';
 
 export const UNIVERSAL_ART_ASSET_PROFILES = Object.freeze([
@@ -4250,6 +4251,420 @@ export function verifyUniversalArtAssetProviderPipelineExecution(receipt, {plan 
     errors.push(`VERIFY_EXCEPTION:${error.name}:${error.message}`);
   }
   return {valid: errors.length === 0, errors, execution_root: receipt.execution_root ?? null};
+}
+
+function universalArtAssetProviderPipelineArtifactFileRole(file) {
+  const declared = String(file?.role ?? '').trim();
+  if (declared) return declared;
+  const filePath = String(file?.path ?? '').trim().toLowerCase();
+  if (filePath.endsWith('.glb') || filePath.endsWith('.gltf')) return 'mesh-glb';
+  if (filePath.endsWith('.png') || filePath.endsWith('.jpg') || filePath.endsWith('.jpeg')) return 'texture';
+  return 'asset-output';
+}
+
+function universalArtAssetProviderPipelineArtifactFiles(stages) {
+  return stages.flatMap(stage => (stage.output?.materialized_file_roots ?? []).map(file => ({
+    stage_id: stage.stage_id,
+    path: file?.path ?? null,
+    role: universalArtAssetProviderPipelineArtifactFileRole(file),
+    byte_length: file?.byte_length ?? null,
+    sha256: file?.sha256 ?? null,
+    declared_sha256: file?.declared_sha256 ?? null
+  })));
+}
+
+function universalArtAssetProviderPipelineArtifactRoleIndex(files) {
+  const index = {};
+  for (const file of files ?? []) {
+    const role = universalArtAssetProviderPipelineArtifactFileRole(file);
+    index[role] ??= [];
+    index[role].push({
+      stage_id: file.stage_id,
+      path: file.path,
+      byte_length: file.byte_length,
+      sha256: file.sha256
+    });
+  }
+  return Object.fromEntries(Object.entries(index)
+    .sort(([left], [right]) => left.localeCompare(right, 'en'))
+    .map(([role, entries]) => [role, entries.sort((left, right) =>
+      `${left.stage_id}:${left.path}`.localeCompare(`${right.stage_id}:${right.path}`, 'en'))]));
+}
+
+function universalArtAssetProviderPipelineArtifactStage(stage) {
+  return {
+    index: stage.index,
+    stage_id: stage.stage_id,
+    stage_kind: stage.stage_kind,
+    required: stage.required,
+    input_stage_id: stage.input_stage_id,
+    provider_id: stage.provider_id,
+    provider_root: stage.provider_root,
+    provider_source: stage.provider_source,
+    route_status: stage.route_status,
+    runtime_binding: stage.runtime_binding,
+    operation: stage.operation,
+    request_root: stage.request?.request_root ?? null,
+    status: stage.status,
+    execution_attempted: stage.execution_attempted,
+    execution_performed: stage.execution_performed,
+    runtime_execution_performed: stage.runtime_execution_performed,
+    job_root: stage.job_root,
+    result_root: stage.result_root,
+    failure_code: stage.failure_code,
+    failure_root: stage.failure_root,
+    output: {
+      result_root: stage.output?.result_root ?? null,
+      output_root: stage.output?.output_root ?? null,
+      output_contract_pass: stage.output?.output_contract_pass === true,
+      required_outputs: [...(stage.output?.required_outputs ?? [])],
+      materialization_path: stage.output?.materialization_path ?? null,
+      materialization_root: stage.output?.materialization_root ?? null,
+      materialized_file_count: stage.output?.materialized_file_count ?? 0,
+      materialized_file_roots: (stage.output?.materialized_file_roots ?? []).map(file => ({
+        path: file?.path ?? null,
+        role: file?.role ?? null,
+        byte_length: file?.byte_length ?? null,
+        sha256: file?.sha256 ?? null,
+        declared_sha256: file?.declared_sha256 ?? null
+      })),
+      materialization_skipped: (stage.output?.materialization_skipped ?? []).map(file => ({
+        path: file?.path ?? null,
+        reason: file?.reason ?? null
+      }))
+    },
+    checks: clone(stage.checks ?? {}),
+    stage_root: stage.stage_root
+  };
+}
+
+function universalArtAssetProviderPipelineArtifactPrimaryOutput(stages) {
+  const stage = [...stages].reverse().find(candidate => candidate.status === 'COMPLETED' && candidate.required)
+    ?? [...stages].reverse().find(candidate => candidate.status === 'COMPLETED')
+    ?? null;
+  return {
+    stage_id: stage?.stage_id ?? null,
+    stage_kind: stage?.stage_kind ?? null,
+    result_root: stage?.output?.result_root ?? null,
+    output_root: stage?.output?.output_root ?? null,
+    materialization_root: stage?.output?.materialization_root ?? null
+  };
+}
+
+function universalArtAssetProviderPipelineArtifactChecks({genome, plan, execution, stages, output, primaryOutput, status}) {
+  const requiredStages = stages.filter(stage => stage.required);
+  const expectedStatus = execution.status === 'CANDIDATE_PROVIDER_PIPELINE_EXECUTED'
+    ? 'CANDIDATE_PROVIDER_PIPELINE_ARTIFACT_READY'
+    : 'CANDIDATE_PROVIDER_PIPELINE_ARTIFACT_BLOCKED';
+  return {
+    genome_binding: isHexRoot(genome.genome_root) && genome.genome_root === execution.genome_root && genome.asset_id === execution.asset_id,
+    pipeline_binding: isHexRoot(plan.pipeline_root) && plan.pipeline_root === execution.pipeline_root,
+    execution_binding: isHexRoot(execution.execution_root) && execution.asset_profile === genome.asset_profile && execution.quality_tier === genome.quality_tier,
+    stage_order: stages.every((stage, index) => stage.index === index && stage.input_stage_id === (index > 0 ? stages[index - 1].stage_id : null)),
+    required_stage_outputs: requiredStages.length > 0 && requiredStages.every(stage => stage.status === 'COMPLETED' && stage.output?.output_contract_pass === true && stage.checks?.output_contract === true),
+    final_output_binding: primaryOutput.stage_id === null
+      ? stages.every(stage => stage.status !== 'COMPLETED')
+      : stages.some(stage => stage.stage_id === primaryOutput.stage_id
+        && stage.output?.result_root === primaryOutput.result_root
+        && stage.output?.output_root === primaryOutput.output_root
+        && stage.output?.materialization_root === primaryOutput.materialization_root),
+    role_index_integrity: rootHash(record(output.role_index)) === rootHash(universalArtAssetProviderPipelineArtifactRoleIndex(output.files)),
+    file_count_integrity: output.file_count === output.files.length,
+    status_binding: status === expectedStatus,
+    no_silent_fallback: stages.every(stage => stage.checks?.no_silent_fallback === true),
+    authority_boundary: execution.candidate_only === true
+      && execution.authoritative === false
+      && execution.canonical_write_authorized === false
+      && execution.authority?.provider_can_write_authoritative_world_state === false
+      && execution.authority?.provider_can_commit === false
+  };
+}
+
+function buildUniversalArtAssetProviderPipelineArtifact({genome, plan, execution, artifactId = null, outputDirectory = null} = {}) {
+  const stages = execution.stages.map(universalArtAssetProviderPipelineArtifactStage);
+  const files = universalArtAssetProviderPipelineArtifactFiles(execution.stages);
+  const primaryOutput = universalArtAssetProviderPipelineArtifactPrimaryOutput(execution.stages);
+  const output = {
+    file_count: files.length,
+    files,
+    role_index: universalArtAssetProviderPipelineArtifactRoleIndex(files),
+    primary_output: primaryOutput,
+    output_root: ''
+  };
+  const sealedOutput = seal(output, 'output_root');
+  const status = execution.status === 'CANDIDATE_PROVIDER_PIPELINE_EXECUTED'
+    ? 'CANDIDATE_PROVIDER_PIPELINE_ARTIFACT_READY'
+    : 'CANDIDATE_PROVIDER_PIPELINE_ARTIFACT_BLOCKED';
+  const checks = universalArtAssetProviderPipelineArtifactChecks({
+    genome,
+    plan,
+    execution,
+    stages,
+    output: sealedOutput,
+    primaryOutput,
+    status
+  });
+  return {
+    format: UNIVERSAL_ART_ASSET_PROVIDER_PIPELINE_ARTIFACT_FORMAT,
+    version: UNIVERSAL_ART_ASSET_FORGE_VERSION,
+    artifact_id: artifactId ?? stableId('urrf-universal-art-asset-provider-pipeline-artifact', {
+      genome_root: genome.genome_root,
+      pipeline_root: plan.pipeline_root,
+      execution_root: execution.execution_root
+    }),
+    source: 'urrf-provider-pipeline-artifact-assembler',
+    asset_id: genome.asset_id,
+    asset_profile: genome.asset_profile,
+    quality_tier: genome.quality_tier,
+    genome_root: genome.genome_root,
+    pipeline_root: plan.pipeline_root,
+    execution_root: execution.execution_root,
+    output_directory: outputDirectory,
+    stage_count: stages.length,
+    stages,
+    output: sealedOutput,
+    summary: {
+      stage_count: stages.length,
+      required_stage_count: stages.filter(stage => stage.required).length,
+      completed_stage_count: stages.filter(stage => stage.status === 'COMPLETED').length,
+      blocked_stage_count: stages.filter(stage => ['FAILED', 'CONTRACT_ONLY', 'SKIPPED', 'NOT_RUN'].includes(stage.status)).length,
+      file_count: files.length,
+      role_count: Object.keys(sealedOutput.role_index).length,
+      primary_stage_id: primaryOutput.stage_id
+    },
+    checks,
+    status,
+    candidate_only: true,
+    authoritative: false,
+    canonical_write_authorized: false,
+    aaa_ready: false,
+    release_ready: false,
+    authority: {
+      canonical_owner: 'RNCS',
+      representation_owner: 'URRF',
+      provider_can_write_authoritative_world_state: false,
+      provider_can_commit: false,
+      acceptance_can_commit: false,
+      rncs_authority_required: true
+    },
+    artifact_root: ''
+  };
+}
+
+/**
+ * Assemble an executed Provider pipeline into one reusable candidate artifact
+ * package. This packages stage outputs and role indexes without pretending to
+ * be an AAA acceptance receipt or granting Provider/RNCS write authority.
+ */
+export function createUniversalArtAssetProviderPipelineArtifact({
+  genome,
+  plan,
+  execution,
+  artifact_id = null,
+  artifactId = null,
+  output_directory = null,
+  outputDirectory = null
+} = {}) {
+  const checkedGenome = genome?.format === UNIVERSAL_ART_ASSET_GENOME_FORMAT ? clone(genome) : createUniversalArtAssetGenome(genome ?? {});
+  const planVerification = verifyUniversalArtAssetProviderPipelinePlan(plan, {genome: checkedGenome});
+  if (!planVerification.valid) throw new GenesisError('UNIVERSAL_ART_ASSET_PROVIDER_PIPELINE_PLAN_INVALID', planVerification.errors.join(','));
+  const executionVerification = verifyUniversalArtAssetProviderPipelineExecution(execution, {plan, genome: checkedGenome});
+  if (!executionVerification.valid) throw new GenesisError('UNIVERSAL_ART_ASSET_PROVIDER_PIPELINE_EXECUTION_INVALID', executionVerification.errors.join(','));
+  return seal(buildUniversalArtAssetProviderPipelineArtifact({
+    genome: checkedGenome,
+    plan,
+    execution,
+    artifactId: artifact_id ?? artifactId,
+    outputDirectory: output_directory ?? outputDirectory
+  }), 'artifact_root');
+}
+
+export function verifyUniversalArtAssetProviderPipelineArtifact(artifact, {genome = null, plan = null, execution = null} = {}) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!artifact || typeof artifact !== 'object' || Array.isArray(artifact)) return {valid: false, errors: ['PROVIDER_PIPELINE_ARTIFACT_NOT_OBJECT'], artifact_root: null};
+  try {
+    check(artifact.format === UNIVERSAL_ART_ASSET_PROVIDER_PIPELINE_ARTIFACT_FORMAT, 'PROVIDER_PIPELINE_ARTIFACT_FORMAT_INVALID');
+    check(artifact.version === UNIVERSAL_ART_ASSET_FORGE_VERSION, 'PROVIDER_PIPELINE_ARTIFACT_VERSION_INVALID');
+    check(nonEmptyText(artifact.artifact_id), 'PROVIDER_PIPELINE_ARTIFACT_ID_MISSING');
+    check(artifact.source === 'urrf-provider-pipeline-artifact-assembler', 'PROVIDER_PIPELINE_ARTIFACT_SOURCE_INVALID');
+    check(nonEmptyText(artifact.asset_id), 'PROVIDER_PIPELINE_ARTIFACT_ASSET_ID_MISSING');
+    check(UNIVERSAL_ART_ASSET_PROFILES.includes(artifact.asset_profile), 'PROVIDER_PIPELINE_ARTIFACT_PROFILE_INVALID');
+    check(UNIVERSAL_ART_ASSET_QUALITY_TIERS.includes(artifact.quality_tier), 'PROVIDER_PIPELINE_ARTIFACT_QUALITY_TIER_INVALID');
+    check(isHexRoot(artifact.genome_root) && isHexRoot(artifact.pipeline_root) && isHexRoot(artifact.execution_root), 'PROVIDER_PIPELINE_ARTIFACT_ROOT_INVALID');
+    check(artifact.output_directory === null || nonEmptyText(artifact.output_directory), 'PROVIDER_PIPELINE_ARTIFACT_OUTPUT_DIRECTORY_INVALID');
+    check(Array.isArray(artifact.stages) && artifact.stages.length > 0 && artifact.stage_count === artifact.stages.length, 'PROVIDER_PIPELINE_ARTIFACT_STAGES_INVALID');
+    const stages = Array.isArray(artifact.stages) ? artifact.stages : [];
+    const stageIds = stages.map(stage => stage?.stage_id);
+    check(stageIds.every(nonEmptyText) && new Set(stageIds).size === stageIds.length, 'PROVIDER_PIPELINE_ARTIFACT_STAGE_IDS_INVALID');
+    for (const [index, stage] of stages.entries()) {
+      check(stage.index === index, `PROVIDER_PIPELINE_ARTIFACT_STAGE_INDEX_INVALID:${index}`);
+      check(nonEmptyText(stage.stage_id) && nonEmptyText(stage.stage_kind), `PROVIDER_PIPELINE_ARTIFACT_STAGE_ID_INVALID:${index}`);
+      check(typeof stage.required === 'boolean', `PROVIDER_PIPELINE_ARTIFACT_STAGE_REQUIRED_INVALID:${index}`);
+      check(stage.input_stage_id === (index > 0 ? stageIds[index - 1] : null), `PROVIDER_PIPELINE_ARTIFACT_STAGE_INPUT_INVALID:${index}`);
+      check(stage.provider_id === null || nonEmptyText(stage.provider_id), `PROVIDER_PIPELINE_ARTIFACT_STAGE_PROVIDER_INVALID:${index}`);
+      check(stage.provider_root === null || isHexRoot(stage.provider_root), `PROVIDER_PIPELINE_ARTIFACT_STAGE_PROVIDER_ROOT_INVALID:${index}`);
+      check(nonEmptyText(stage.request_root) && isHexRoot(stage.request_root), `PROVIDER_PIPELINE_ARTIFACT_STAGE_REQUEST_ROOT_INVALID:${index}`);
+      check(UNIVERSAL_ART_ASSET_PROVIDER_PIPELINE_STAGE_EXECUTION_STATUSES.includes(stage.status), `PROVIDER_PIPELINE_ARTIFACT_STAGE_STATUS_INVALID:${index}`);
+      check(isHexRoot(stage.stage_root), `PROVIDER_PIPELINE_ARTIFACT_STAGE_ROOT_INVALID:${index}`);
+      const output = record(stage.output);
+      check(isHexRoot(output.output_root), `PROVIDER_PIPELINE_ARTIFACT_STAGE_OUTPUT_ROOT_INVALID:${index}`);
+      check(output.result_root === null || isHexRoot(output.result_root), `PROVIDER_PIPELINE_ARTIFACT_STAGE_RESULT_ROOT_INVALID:${index}`);
+      check(typeof output.output_contract_pass === 'boolean', `PROVIDER_PIPELINE_ARTIFACT_STAGE_OUTPUT_CONTRACT_INVALID:${index}`);
+      check(Number.isInteger(output.materialized_file_count) && output.materialized_file_count >= 0, `PROVIDER_PIPELINE_ARTIFACT_STAGE_FILE_COUNT_INVALID:${index}`);
+      check(output.materialized_file_count === (output.materialized_file_roots ?? []).length, `PROVIDER_PIPELINE_ARTIFACT_STAGE_FILE_COUNT_MISMATCH:${index}`);
+    }
+    const output = record(artifact.output);
+    const outputCopy = clone(output);
+    const outputRoot = outputCopy.output_root;
+    delete outputCopy.output_root;
+    check(isHexRoot(outputRoot) && outputRoot === rootHash(outputCopy), 'PROVIDER_PIPELINE_ARTIFACT_OUTPUT_ROOT_INVALID');
+    const expectedFiles = stages.flatMap(stage => (stage.output?.materialized_file_roots ?? []).map(file => ({
+      stage_id: stage.stage_id,
+      path: file?.path ?? null,
+      role: universalArtAssetProviderPipelineArtifactFileRole(file),
+      byte_length: file?.byte_length ?? null,
+      sha256: file?.sha256 ?? null,
+      declared_sha256: file?.declared_sha256 ?? null
+    })));
+    check(JSON.stringify(output.files) === JSON.stringify(expectedFiles), 'PROVIDER_PIPELINE_ARTIFACT_FILES_MISMATCH');
+    check(output.file_count === expectedFiles.length, 'PROVIDER_PIPELINE_ARTIFACT_FILE_COUNT_MISMATCH');
+    check(rootHash(record(output.role_index)) === rootHash(universalArtAssetProviderPipelineArtifactRoleIndex(expectedFiles)), 'PROVIDER_PIPELINE_ARTIFACT_ROLE_INDEX_MISMATCH');
+    const primaryOutput = universalArtAssetProviderPipelineArtifactPrimaryOutput(stages.map(stage => ({
+      ...stage,
+      output: stage.output
+    })));
+    check(JSON.stringify(output.primary_output) === JSON.stringify(primaryOutput), 'PROVIDER_PIPELINE_ARTIFACT_PRIMARY_OUTPUT_MISMATCH');
+    check(artifact.summary?.stage_count === stages.length, 'PROVIDER_PIPELINE_ARTIFACT_SUMMARY_STAGE_COUNT_MISMATCH');
+    check(artifact.summary?.required_stage_count === stages.filter(stage => stage.required).length, 'PROVIDER_PIPELINE_ARTIFACT_SUMMARY_REQUIRED_COUNT_MISMATCH');
+    check(artifact.summary?.completed_stage_count === stages.filter(stage => stage.status === 'COMPLETED').length, 'PROVIDER_PIPELINE_ARTIFACT_SUMMARY_COMPLETED_COUNT_MISMATCH');
+    check(artifact.summary?.blocked_stage_count === stages.filter(stage => ['FAILED', 'CONTRACT_ONLY', 'SKIPPED', 'NOT_RUN'].includes(stage.status)).length, 'PROVIDER_PIPELINE_ARTIFACT_SUMMARY_BLOCKED_COUNT_MISMATCH');
+    check(artifact.summary?.file_count === expectedFiles.length, 'PROVIDER_PIPELINE_ARTIFACT_SUMMARY_FILE_COUNT_MISMATCH');
+    check(artifact.summary?.role_count === Object.keys(output.role_index ?? {}).length, 'PROVIDER_PIPELINE_ARTIFACT_SUMMARY_ROLE_COUNT_MISMATCH');
+    check(artifact.summary?.primary_stage_id === primaryOutput.stage_id, 'PROVIDER_PIPELINE_ARTIFACT_SUMMARY_PRIMARY_STAGE_MISMATCH');
+    const requiredStages = stages.filter(stage => stage.required);
+    const expectedStatus = execution
+      ? execution.status === 'CANDIDATE_PROVIDER_PIPELINE_EXECUTED'
+        ? 'CANDIDATE_PROVIDER_PIPELINE_ARTIFACT_READY'
+        : 'CANDIDATE_PROVIDER_PIPELINE_ARTIFACT_BLOCKED'
+      : artifact.status;
+    check(artifact.status === expectedStatus, 'PROVIDER_PIPELINE_ARTIFACT_STATUS_MISMATCH');
+    const expectedChecks = {
+      genome_binding: isHexRoot(artifact.genome_root) && (genome ? artifact.genome_root === genome.genome_root && artifact.asset_id === genome.asset_id : true),
+      pipeline_binding: isHexRoot(artifact.pipeline_root) && (plan ? artifact.pipeline_root === plan.pipeline_root : true),
+      execution_binding: isHexRoot(artifact.execution_root) && (execution ? artifact.execution_root === execution.execution_root : true),
+      stage_order: stages.every((stage, index) => stage.index === index && stage.input_stage_id === (index > 0 ? stages[index - 1].stage_id : null)),
+      required_stage_outputs: requiredStages.length > 0 && requiredStages.every(stage => stage.status === 'COMPLETED' && stage.output?.output_contract_pass === true && stage.checks?.output_contract === true),
+      final_output_binding: primaryOutput.stage_id === null
+        ? stages.every(stage => stage.status !== 'COMPLETED')
+        : stages.some(stage => stage.stage_id === primaryOutput.stage_id && stage.output?.result_root === primaryOutput.result_root && stage.output?.output_root === primaryOutput.output_root && stage.output?.materialization_root === primaryOutput.materialization_root),
+      role_index_integrity: rootHash(record(output.role_index)) === rootHash(universalArtAssetProviderPipelineArtifactRoleIndex(output.files ?? [])),
+      file_count_integrity: output.file_count === (output.files ?? []).length,
+      status_binding: artifact.status === expectedStatus,
+      no_silent_fallback: stages.every(stage => stage.checks?.no_silent_fallback === true),
+      authority_boundary: artifact.candidate_only === true
+        && artifact.authoritative === false
+        && artifact.canonical_write_authorized === false
+        && artifact.authority?.provider_can_write_authoritative_world_state === false
+        && artifact.authority?.provider_can_commit === false
+    };
+    const checks = record(artifact.checks);
+    for (const [key, value] of Object.entries(expectedChecks)) check(checks[key] === value, `PROVIDER_PIPELINE_ARTIFACT_CHECK_${key.toUpperCase()}_MISMATCH`);
+    check(artifact.candidate_only === true && artifact.authoritative === false && artifact.canonical_write_authorized === false, 'PROVIDER_PIPELINE_ARTIFACT_AUTHORITY_INVALID');
+    check(artifact.aaa_ready === false && artifact.release_ready === false, 'PROVIDER_PIPELINE_ARTIFACT_READINESS_ESCALATION');
+    check(artifact.authority?.canonical_owner === 'RNCS' && artifact.authority?.representation_owner === 'URRF'
+      && artifact.authority?.provider_can_write_authoritative_world_state === false
+      && artifact.authority?.provider_can_commit === false
+      && artifact.authority?.acceptance_can_commit === false
+      && artifact.authority?.rncs_authority_required === true, 'PROVIDER_PIPELINE_ARTIFACT_PROVIDER_AUTHORITY_INVALID');
+    const copy = clone(artifact);
+    const actual = copy.artifact_root;
+    delete copy.artifact_root;
+    check(isHexRoot(actual) && actual === rootHash(copy), 'PROVIDER_PIPELINE_ARTIFACT_ROOT_MISMATCH');
+    if (genome && plan && execution) {
+      const genomeVerification = verifyUniversalArtAssetGenome(genome);
+      check(genomeVerification.valid, 'PROVIDER_PIPELINE_ARTIFACT_GENOME_INVALID');
+      const planVerification = verifyUniversalArtAssetProviderPipelinePlan(plan, {genome});
+      if (!planVerification.valid) errors.push(...planVerification.errors.map(error => `PROVIDER_PIPELINE_ARTIFACT_PLAN_${error}`));
+      const executionVerification = verifyUniversalArtAssetProviderPipelineExecution(execution, {plan, genome});
+      if (!executionVerification.valid) errors.push(...executionVerification.errors.map(error => `PROVIDER_PIPELINE_ARTIFACT_EXECUTION_${error}`));
+      if (planVerification.valid && executionVerification.valid) {
+        const expected = buildUniversalArtAssetProviderPipelineArtifact({
+          genome,
+          plan,
+          execution,
+          artifactId: artifact.artifact_id,
+          outputDirectory: artifact.output_directory
+        });
+        const expectedCopy = clone(expected);
+        delete expectedCopy.artifact_root;
+        const actualCopy = clone(artifact);
+        delete actualCopy.artifact_root;
+        check(JSON.stringify(actualCopy) === JSON.stringify(expectedCopy), 'PROVIDER_PIPELINE_ARTIFACT_CONTENT_MISMATCH');
+      }
+    }
+  } catch (error) {
+    errors.push(`VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, artifact_root: artifact.artifact_root ?? null};
+}
+
+/**
+ * Run the complete candidate-only Provider pipeline entrypoint and persist its
+ * plan, execution receipt, and role-indexed artifact package together. This is
+ * intentionally separate from generateUniversalArtAsset: it represents a
+ * multi-stage Provider candidate and does not manufacture a Forge acceptance
+ * or canonical RNCS write.
+ */
+export function generateUniversalArtAssetProviderPipeline(input = {}, options = {}) {
+  const outDir = ensureOutputDir(options.outDir);
+  const genome = input.format === UNIVERSAL_ART_ASSET_GENOME_FORMAT ? clone(input) : createUniversalArtAssetGenome(input);
+  const genomeVerification = verifyUniversalArtAssetGenome(genome);
+  if (!genomeVerification.valid) throw new GenesisError('UNIVERSAL_ART_ASSET_GENOME_INVALID', genomeVerification.errors.join(','));
+  const provider = options.providerAdapter ?? options.provider ?? null;
+  const providers = options.providers ?? [];
+  const providerRunners = options.providerRunners ?? options.provider_runners ?? {};
+  const plan = options.plan ?? createUniversalArtAssetProviderPipelinePlan({
+    genome,
+    provider_id: options.provider_id ?? options.providerId,
+    providerId: options.providerId,
+    provider,
+    providers,
+    provider_runners: providerRunners,
+    providerRunner: options.providerRunner
+  });
+  const run = executeUniversalArtAssetProviderPipeline({
+    genome,
+    plan,
+    outDir,
+    provider,
+    providers,
+    provider_id: options.provider_id ?? options.providerId,
+    providerId: options.providerId,
+    provider_runners: providerRunners,
+    providerRunner: options.providerRunner,
+    providerTimeout: options.providerTimeout,
+    execution_id: options.execution_id ?? options.executionId
+  });
+  const artifact = createUniversalArtAssetProviderPipelineArtifact({
+    genome,
+    plan,
+    execution: run.execution,
+    output_directory: outDir
+  });
+  writeJson(outDir, 'universal-art-asset-genome.json', genome);
+  writeJson(outDir, 'universal-art-asset-provider-pipeline.json', plan);
+  writeJson(outDir, 'universal-art-asset-provider-pipeline-execution.json', run.execution);
+  writeJson(outDir, 'universal-art-asset-provider-pipeline-artifact.json', artifact);
+  return {
+    status: artifact.status,
+    pipeline_status: run.status,
+    output_directory: outDir,
+    genome,
+    plan,
+    execution: run.execution,
+    artifact
+  };
 }
 
 function batchAssetKey(input, index) {

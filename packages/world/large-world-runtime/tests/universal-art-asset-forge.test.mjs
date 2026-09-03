@@ -29,6 +29,9 @@ import {
   verifyUniversalArtAssetProviderPipelinePlan,
   executeUniversalArtAssetProviderPipeline,
   verifyUniversalArtAssetProviderPipelineExecution,
+  createUniversalArtAssetProviderPipelineArtifact,
+  verifyUniversalArtAssetProviderPipelineArtifact,
+  generateUniversalArtAssetProviderPipeline,
   verifyUniversalArtAssetProviderPreflightReport,
   verifyUniversalArtAssetProvenanceLicenseReceipt,
   verifyUniversalArtAssetQualityProof,
@@ -720,9 +723,43 @@ test('provider pipeline executor runs injected stages, chains roots, and remains
   assert.equal(run.execution.authority.provider_can_write_authoritative_world_state, false);
   assert.equal(verifyUniversalArtAssetProviderPipelineExecution(run.execution, {plan, genome}).valid, true);
 
+  const artifact = createUniversalArtAssetProviderPipelineArtifact({
+    genome,
+    plan,
+    execution: run.execution,
+    output_directory: outDir
+  });
+  assert.equal(artifact.status, 'CANDIDATE_PROVIDER_PIPELINE_ARTIFACT_READY');
+  assert.equal(artifact.output.primary_output.stage_id, 'rigging_animation');
+  assert.equal(artifact.output.role_index['mesh-glb'].length, 1);
+  assert.equal(artifact.output.role_index['rig-candidate'].length, 1);
+  assert.equal(artifact.summary.file_count, artifact.output.files.length);
+  assert.equal(verifyUniversalArtAssetProviderPipelineArtifact(artifact, {genome, plan, execution: run.execution}).valid, true);
+  assert.equal(verifyUniversalArtAssetProviderPipelineArtifact(artifact).valid, true);
+
   const tampered = JSON.parse(JSON.stringify(run.execution));
   tampered.stages[1].request.input_result_root = 'f'.repeat(64);
   assert.equal(verifyUniversalArtAssetProviderPipelineExecution(tampered, {plan, genome}).valid, false);
+
+  const tamperedArtifact = JSON.parse(JSON.stringify(artifact));
+  tamperedArtifact.output.primary_output.output_root = 'f'.repeat(64);
+  assert.equal(verifyUniversalArtAssetProviderPipelineArtifact(tamperedArtifact, {genome, plan, execution: run.execution}).valid, false);
+
+  const entrypoint = generateUniversalArtAssetProviderPipeline({
+    description: 'pipeline entrypoint character',
+    asset_profile: 'character',
+    asset_kind: 'character-3d',
+    quality_tier: 'AAA',
+    seed: 'pipeline-entrypoint-character-seed'
+  }, {
+    outDir: fs.mkdtempSync(path.join(os.tmpdir(), 'urrf-universal-art-pipeline-entrypoint-')),
+    providerAdapter: baseProvider,
+    providers: [rigProvider]
+  });
+  assert.equal(entrypoint.status, 'CANDIDATE_PROVIDER_PIPELINE_ARTIFACT_READY');
+  assert.equal(entrypoint.pipeline_status, 'CANDIDATE_PROVIDER_PIPELINE_EXECUTED');
+  assert.equal(fs.existsSync(path.join(entrypoint.output_directory, 'universal-art-asset-provider-pipeline-artifact.json')), true);
+  assert.equal(verifyUniversalArtAssetProviderPipelineArtifact(entrypoint.artifact).valid, true);
 });
 
 test('provider pipeline executor stays blocked when a planned provider is contract-only', () => {
@@ -762,6 +799,11 @@ test('provider pipeline executor stays blocked when a planned provider is contra
   assert.equal(run.execution.stages[0].execution_performed, false);
   assert.equal(run.execution.stages[0].failure_code, 'PROVIDER_RUNTIME_NOT_EXECUTED');
   assert.equal(verifyUniversalArtAssetProviderPipelineExecution(run.execution, {plan, genome}).valid, true);
+
+  const artifact = createUniversalArtAssetProviderPipelineArtifact({genome, plan, execution: run.execution});
+  assert.equal(artifact.status, 'CANDIDATE_PROVIDER_PIPELINE_ARTIFACT_BLOCKED');
+  assert.equal(artifact.output.primary_output.stage_id, null);
+  assert.equal(verifyUniversalArtAssetProviderPipelineArtifact(artifact, {genome, plan, execution: run.execution}).valid, true);
 });
 
 test('acceptance gate cannot be passed by provider success alone', () => {

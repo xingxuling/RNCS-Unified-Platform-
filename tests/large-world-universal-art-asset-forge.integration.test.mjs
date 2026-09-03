@@ -27,6 +27,8 @@ import {
   verifyUniversalArtAssetProviderPipelinePlan,
   executeUniversalArtAssetProviderPipeline,
   verifyUniversalArtAssetProviderPipelineExecution,
+  createUniversalArtAssetProviderPipelineArtifact,
+  verifyUniversalArtAssetProviderPipelineArtifact,
   verifyUniversalArtAssetProviderPreflightReport,
   verifyUniversalArtAssetVsrMaterialization,
   verifyUniversalArtAssetVsrProjection,
@@ -276,16 +278,29 @@ test('URRF Universal Art Asset Forge emits a rooted candidate and closes AAA cla
     provider: pipelineBaseProvider,
     providers: [pipelineRigProvider]
   });
+  const pipelineOutDir = mkdtempSync(join(tmpdir(), 'taowind-urrf-universal-art-pipeline-execution-v01-'));
   const pipelineRun = executeUniversalArtAssetProviderPipeline({
     genome: pipelineGenome,
     plan: pipelinePlan,
     provider: pipelineBaseProvider,
     providers: [pipelineRigProvider],
-    outDir: mkdtempSync(join(tmpdir(), 'taowind-urrf-universal-art-pipeline-execution-v01-'))
+    outDir: pipelineOutDir
   });
   assert.equal(pipelineRun.status, 'CANDIDATE_PROVIDER_PIPELINE_EXECUTED');
   assert.deepEqual(pipelineRun.execution.stages.map(stage => stage.status), ['COMPLETED', 'COMPLETED']);
   assert.equal(verifyUniversalArtAssetProviderPipelineExecution(pipelineRun.execution, {plan: pipelinePlan, genome: pipelineGenome}).valid, true);
+  const pipelineArtifact = createUniversalArtAssetProviderPipelineArtifact({
+    genome: pipelineGenome,
+    plan: pipelinePlan,
+    execution: pipelineRun.execution,
+    output_directory: pipelineOutDir
+  });
+  assert.equal(pipelineArtifact.status, 'CANDIDATE_PROVIDER_PIPELINE_ARTIFACT_READY');
+  assert.equal(verifyUniversalArtAssetProviderPipelineArtifact(pipelineArtifact, {
+    genome: pipelineGenome,
+    plan: pipelinePlan,
+    execution: pipelineRun.execution
+  }).valid, true);
 
   const reportBase = {
     format: 'urrf.universal-art-asset-forge-report.v0.1',
@@ -332,6 +347,7 @@ test('URRF Universal Art Asset Forge emits a rooted candidate and closes AAA cla
   writeFileSync(join(evidenceDir, 'universal-art-asset-provider-replay-execution.json'), `${JSON.stringify(replay.replayReceipt, null, 2)}\n`, 'utf8');
   writeFileSync(join(evidenceDir, 'universal-art-asset-provider-pipeline.json'), `${JSON.stringify(result.providerPipelinePlan, null, 2)}\n`, 'utf8');
   writeFileSync(join(evidenceDir, 'universal-art-asset-provider-pipeline-execution.json'), `${JSON.stringify(pipelineRun.execution, null, 2)}\n`, 'utf8');
+  writeFileSync(join(evidenceDir, 'universal-art-asset-provider-pipeline-artifact.json'), `${JSON.stringify(pipelineArtifact, null, 2)}\n`, 'utf8');
   writeFileSync(join(evidenceDir, 'universal-art-asset-genome.json'), `${JSON.stringify(result.genome, null, 2)}\n`, 'utf8');
   writeFileSync(join(evidenceDir, 'universal-art-asset-acceptance.json'), `${JSON.stringify(result.acceptance, null, 2)}\n`, 'utf8');
   writeFileSync(join(evidenceDir, 'universal-art-asset-evidence-ledger.json'), `${JSON.stringify(result.evidenceLedger, null, 2)}\n`, 'utf8');
