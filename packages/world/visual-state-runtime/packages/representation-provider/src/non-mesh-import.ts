@@ -97,6 +97,11 @@ export interface VSRNonMeshRepresentationComponentImportHandlerOptions {
   sceneId?: (entry: JsonRecord, manifestAsset: VSRNonMeshRepresentationAsset) => string;
 }
 
+export interface VSRNonMeshRepresentationComponentImportHandlerSetOptions {
+  handlerIdPrefix?: string;
+  sceneId?: (entry: JsonRecord, manifestAsset: VSRNonMeshRepresentationAsset) => string;
+}
+
 export interface VSRNonMeshRepresentationComponentImportHandler {
   handler_id: string;
   representation_kind?: VSRNonMeshRepresentationKind;
@@ -104,7 +109,8 @@ export interface VSRNonMeshRepresentationComponentImportHandler {
   verify: (input: {result: VSRNonMeshRepresentationComponentImportResult}) => boolean;
 }
 
-const SUPPORTED_KINDS: readonly VSRNonMeshRepresentationKind[] = ['sdf', 'voxel', 'point-cloud', 'gaussian-splat', 'neural-field', 'curve', 'material'];
+export const VSR_NON_MESH_REPRESENTATION_KINDS: readonly VSRNonMeshRepresentationKind[] = Object.freeze(['sdf', 'voxel', 'point-cloud', 'gaussian-splat', 'neural-field', 'curve', 'material']);
+export type VSRNonMeshRepresentationComponentImportHandlerSet = Record<VSRNonMeshRepresentationKind, VSRNonMeshRepresentationComponentImportHandler>;
 const isHexRoot = (value: unknown): value is string => typeof value === 'string' && /^[a-f0-9]{64}$/i.test(value);
 const nonEmpty = (value: unknown): value is string => typeof value === 'string' && value.trim().length > 0;
 
@@ -112,7 +118,7 @@ function canonicalKind(value: unknown): VSRNonMeshRepresentationKind | undefined
   const normalized = String(value ?? '').trim().toLowerCase().replace(/_/g, '-');
   if (normalized === 'gaussian-splats') return 'gaussian-splat';
   if (normalized === 'point-clouds') return 'point-cloud';
-  return (SUPPORTED_KINDS as readonly string[]).includes(normalized) ? normalized as VSRNonMeshRepresentationKind : undefined;
+  return (VSR_NON_MESH_REPRESENTATION_KINDS as readonly string[]).includes(normalized) ? normalized as VSRNonMeshRepresentationKind : undefined;
 }
 
 function assetFormat(asset: VSRNonMeshRepresentationAsset): string {
@@ -348,4 +354,20 @@ export function createVsrNonMeshRepresentationComponentImportHandler(options: VS
       && result.metrics.rendered === 0
       && result.metrics.candidate_only === 1)
   };
+}
+
+/**
+ * Bind one explicitly keyed candidate importer for every non-mesh kind. The
+ * returned record is convenient for the URRF component registry, while each
+ * handler still retains its own representation-kind guard and verifier.
+ */
+export function createVsrNonMeshRepresentationComponentImportHandlerSet(options: VSRNonMeshRepresentationComponentImportHandlerSetOptions = {}): VSRNonMeshRepresentationComponentImportHandlerSet {
+  const prefix = String(options.handlerIdPrefix ?? 'vsr.non-mesh-representation').trim();
+  if (!prefix) throw new Error('VSR non-mesh representation handlerIdPrefix is required.');
+  const handlers = Object.fromEntries(VSR_NON_MESH_REPRESENTATION_KINDS.map(kind => [kind, createVsrNonMeshRepresentationComponentImportHandler({
+    handlerId: `${prefix}.${kind}.v0.1`,
+    representationKind: kind,
+    sceneId: options.sceneId
+  })])) as VSRNonMeshRepresentationComponentImportHandlerSet;
+  return handlers;
 }

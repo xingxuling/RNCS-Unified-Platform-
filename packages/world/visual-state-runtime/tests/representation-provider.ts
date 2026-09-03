@@ -5,21 +5,28 @@ import { cryptographicHash } from '../packages/spec/src/index.js';
 import {
   createSpark3DGSVisualBinding,
   createVsrNonMeshRepresentationComponentImportHandler,
+  createVsrNonMeshRepresentationComponentImportHandlerSet,
   inspectVisualRepresentationProvider,
   verifyVsrNonMeshRepresentationImportReceipt,
   verifyVisualRepresentationBinding,
   VSR_NON_MESH_REPRESENTATION_MANIFEST_FORMAT,
+  VSR_NON_MESH_REPRESENTATION_KINDS,
   type VSRNonMeshRepresentationAsset,
   type VSRRepresentationProviderManifest,
   type VSRRepresentationReference
 } from '../packages/representation-provider/src/index.js';
 import {
   lowerVsrPointCloudCandidateToSpatialScene,
+  lowerVsrCurveCandidateToSpatialScene,
   renderSpatialReference,
+  verifyVsrCurveSpatialScene,
   verifyVsrPointCloudSpatialScene,
   VSR_POINT_CLOUD_PAYLOAD_FORMAT,
+  VSR_CURVE_PAYLOAD_FORMAT,
   type VSRPointCloudRepresentationCandidate,
-  type VSRPointCloudSpatialSceneResult
+  type VSRPointCloudSpatialSceneResult,
+  type VSRCurveRepresentationCandidate,
+  type VSRCurveSpatialSceneResult
 } from '../packages/spatial-reality-3d/src/index.js';
 
 const root = (char: string): string => char.repeat(64);
@@ -91,6 +98,18 @@ test('non-mesh manifest schema pins the candidate-only authority boundary', () =
   assert.equal(schema.properties.format.const, VSR_NON_MESH_REPRESENTATION_MANIFEST_FORMAT);
   assert.equal(schema.properties.candidate_only.const, true);
   assert.equal(schema.properties.authoritative.const, false);
+});
+
+test('non-mesh importer factory binds every supported kind with an explicit verifier', () => {
+  const handlers = createVsrNonMeshRepresentationComponentImportHandlerSet({handlerIdPrefix: 'test.non-mesh'});
+  assert.deepEqual(Object.keys(handlers), [...VSR_NON_MESH_REPRESENTATION_KINDS]);
+  assert.equal(new Set(Object.values(handlers).map(handler => handler.handler_id)).size, VSR_NON_MESH_REPRESENTATION_KINDS.length);
+  for (const kind of VSR_NON_MESH_REPRESENTATION_KINDS) {
+    assert.equal(handlers[kind]!.representation_kind, kind);
+    assert.equal(handlers[kind]!.handler_id, `test.non-mesh.${kind}.v0.1`);
+    assert.equal(typeof handlers[kind]!.compile, 'function');
+    assert.equal(typeof handlers[kind]!.verify, 'function');
+  }
 });
 
 test('VSR seals a non-mesh Gaussian payload package without claiming rendering', async () => {
@@ -218,6 +237,71 @@ test('VSR lowers a fixed-record point-cloud candidate into a rooted transparent 
   const tampered = structuredClone(lowering) as VSRPointCloudSpatialSceneResult;
   tampered.points[0]!.radius += 1;
   assert.equal(verifyVsrPointCloudSpatialScene(tampered), false);
+});
+
+test('VSR lowers an ordered fixed-record curve candidate into a rooted ribbon scene', async () => {
+  const bytes = new Uint8Array(4 * 32);
+  const view = new DataView(bytes.buffer);
+  const records = [
+    [-0.8, 0, 0, 0.35, 0.75, 1, 0.9, 0.04],
+    [-0.3, 0.45, 0, 0.55, 0.35, 1, 0.86, 0.05],
+    [0.3, 0.2, 0, 0.8, 0.2, 0.95, 0.82, 0.06],
+    [0.8, 0.65, 0, 1, 0.55, 0.25, 0.78, 0.05]
+  ];
+  records.forEach((record, index) => record.forEach((value, field) => view.setFloat32(index * 32 + field * 4, value, true)));
+  const pages = [bytes.slice(0, 32), bytes.slice(32, 96), bytes.slice(96)];
+  const payloadAssetIds = ['asset:curve:page0', 'asset:curve:page1', 'asset:curve:page2'];
+  const contentRoot = cryptographicHash(payloadAssetIds.map((assetId, index) => ({assetId, byteLength: pages[index]!.byteLength, byteRoot: cryptographicHash([...pages[index]!])})));
+  const manifestBase = {
+    format: VSR_NON_MESH_REPRESENTATION_MANIFEST_FORMAT,
+    version: '0.1.0',
+    component_id: 'trail',
+    asset_id: 'asset:trail',
+    representation_kind: 'curve',
+    profile_id: 'vsr.curve.polyline.f32rgba.v0.1',
+    payload_asset_ids: payloadAssetIds,
+    payload_format: VSR_CURVE_PAYLOAD_FORMAT,
+    payload_byte_length: bytes.byteLength,
+    element_count: records.length,
+    bounds: {min: [-1, -1, -1], max: [1, 1, 1]},
+    content_root: contentRoot,
+    candidate_only: true,
+    authoritative: false
+  };
+  const assets = [
+    {id: 'asset:curve:manifest', kind: 'representation-manifest', format: 'application/json', metadata: {role: 'representation-manifest'}},
+    ...payloadAssetIds.map(id => ({id, kind: 'representation-data', format: VSR_CURVE_PAYLOAD_FORMAT})),
+    {id: 'asset:curve:note', kind: 'other', format: 'text/plain'}
+  ] as VSRNonMeshRepresentationAsset[];
+  const payloads = new Map<string, Uint8Array>([
+    ['asset:curve:manifest', new TextEncoder().encode(JSON.stringify({...manifestBase, manifest_root: cryptographicHash(manifestBase)}))],
+    [payloadAssetIds[0]!, pages[0]!],
+    [payloadAssetIds[1]!, pages[1]!],
+    [payloadAssetIds[2]!, pages[2]!],
+    ['asset:curve:note', new Uint8Array([9])]
+  ]);
+  const handler = createVsrNonMeshRepresentationComponentImportHandler({representationKind: 'curve', handlerId: 'vsr.curve-component-import.v0.1'});
+  const result = await handler.compile({entry: {component_id: 'trail', asset_id: 'asset:trail', representation_kind: 'curve'}, assets, payloads});
+  const lowering = lowerVsrCurveCandidateToSpatialScene(result.candidate as VSRCurveRepresentationCandidate, {assets, payloads}, {sceneId: 'curve-regression', sizeScale: 1, maxPoints: 4});
+  const repeat = lowerVsrCurveCandidateToSpatialScene(result.candidate as VSRCurveRepresentationCandidate, {assets, payloads}, {sceneId: 'curve-regression', sizeScale: 1, maxPoints: 4});
+  const frame = renderSpatialReference(lowering.scene, {width: 96, height: 96, enableShadows: false, transparencyMode: 'weighted-blended-oit'});
+  assert.equal(result.candidate.renderStatus, 'NOT_IMPLEMENTED');
+  assert.equal(lowering.sourceElementCount, records.length);
+  assert.equal(lowering.pointCount, records.length);
+  assert.equal(lowering.segmentCount, records.length - 1);
+  assert.equal(lowering.scene.meshes.length, 1);
+  assert.equal(lowering.scene.meshes[0]!.indices.length, 18);
+  assert.equal(lowering.scene.nodes.length, 1);
+  assert.equal(lowering.renderableCount, 1);
+  assert.equal(frame.framePlan.stats.visibleDraws, 1);
+  assert.ok(frame.framePlan.stats.transparentDraws > 0);
+  assert.equal(lowering.curveRoot, repeat.curveRoot);
+  assert.equal(lowering.sceneRoot, repeat.sceneRoot);
+  assert.equal(lowering.root, repeat.root);
+  assert.equal(verifyVsrCurveSpatialScene(lowering), true);
+  const tampered = structuredClone(lowering) as VSRCurveSpatialSceneResult;
+  tampered.points[1]!.position[1] += 0.2;
+  assert.equal(verifyVsrCurveSpatialScene(tampered), false);
 });
 
 let passed = 0;

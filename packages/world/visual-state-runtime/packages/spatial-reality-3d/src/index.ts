@@ -5,6 +5,7 @@ import type { VSRSpatialIrradianceVolume } from './irradiance-volume.js';
 import { packSpatialIrradianceVolumeFieldBuffer, sampleSpatialIrradianceVolumeField, sanitizeSpatialIrradianceVolumeField, selectSpatialIrradianceVolumeField, verifySpatialIrradianceVolumeField } from './irradiance-volume-field.js';
 import type { VSRSpatialIrradianceVolumeField } from './irradiance-volume-field.js';
 export * from './asset-streaming.js';
+export * from './curve-spatial.js';
 export * from './hlod-generation.js';
 export * from './particle-spatial.js';
 export * from './point-cloud-spatial.js';
