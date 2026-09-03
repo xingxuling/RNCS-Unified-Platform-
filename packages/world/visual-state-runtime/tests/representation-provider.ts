@@ -19,6 +19,7 @@ import {
   lowerVsrPointCloudCandidateToSpatialScene,
   lowerVsrCurveCandidateToSpatialScene,
   lowerVsrGaussianSplatCandidateToSpatialScene,
+  lowerVsrNeuralFieldCandidateToSpatialScene,
   lowerVsrSdfCandidateToSpatialScene,
   lowerVsrVoxelCandidateToSpatialScene,
   renderSpatialReference,
@@ -26,10 +27,12 @@ import {
   verifyVsrVoxelSpatialScene,
   verifyVsrPointCloudSpatialScene,
   verifyVsrGaussianSplatSpatialScene,
+  verifyVsrNeuralFieldSpatialScene,
   verifyVsrSdfSpatialScene,
   VSR_POINT_CLOUD_PAYLOAD_FORMAT,
   VSR_CURVE_PAYLOAD_FORMAT,
   VSR_GAUSSIAN_SPLAT_PAYLOAD_FORMAT,
+  VSR_NEURAL_FIELD_PAYLOAD_FORMAT,
   VSR_SDF_PAYLOAD_FORMAT,
   VSR_VOXEL_PAYLOAD_FORMAT,
   type VSRPointCloudRepresentationCandidate,
@@ -38,6 +41,8 @@ import {
   type VSRCurveSpatialSceneResult,
   type VSRGaussianSplatRepresentationCandidate,
   type VSRGaussianSplatSpatialSceneResult,
+  type VSRNeuralFieldRepresentationCandidate,
+  type VSRNeuralFieldSpatialSceneResult,
   type VSRSdfRepresentationCandidate,
   type VSRSdfSpatialSceneResult,
   type VSRVoxelRepresentationCandidate,
@@ -556,6 +561,66 @@ test('VSR decodes bounded Gaussian records into a rooted transparent billboard c
   const tampered = structuredClone(lowering) as VSRGaussianSplatSpatialSceneResult;
   tampered.splats[0]!.center[0] += 0.1;
   assert.equal(verifyVsrGaussianSplatSpatialScene(tampered), false);
+});
+
+test('VSR evaluates a bounded neural-field MLP into a rooted surface candidate', async () => {
+  const parameters = new Float32Array(132);
+  parameters[0] = 8;
+  parameters[64] = 1;
+  parameters[129] = 0.5;
+  parameters[130] = -0.5;
+  parameters[131] = 0.25;
+  const bytes = new Uint8Array(16 + parameters.length * 4);
+  const view = new DataView(bytes.buffer);
+  view.setUint32(0, 3, true);
+  view.setUint32(4, 16, true);
+  view.setUint32(8, 4, true);
+  view.setUint32(12, 1, true);
+  parameters.forEach((value, index) => view.setFloat32(16 + index * 4, value, true));
+  const pages = [bytes.slice(0, 180), bytes.slice(180)];
+  const sourcePayloadAssetIds = ['logical:field:page0', 'logical:field:page1'];
+  const payloadAssetIds = ['physical:field:page0', 'physical:field:page1'];
+  const contentRoot = cryptographicHash(sourcePayloadAssetIds.map((assetId, index) => ({assetId, byteLength: pages[index]!.byteLength, byteRoot: cryptographicHash([...pages[index]!])})));
+  const candidateBase = {
+    format: 'vsr.non-mesh-representation-candidate.v0.1' as const,
+    version: '0.1.0' as const,
+    componentId: 'neural-plane',
+    representationKind: 'neural-field' as const,
+    profileId: 'vsr.neural-field.mlp3x16x4.f32.v0.1',
+    payloadAssetIds,
+    sourcePayloadAssetIds,
+    payloadFormat: VSR_NEURAL_FIELD_PAYLOAD_FORMAT,
+    payloadByteLength: bytes.byteLength,
+    elementCount: parameters.length,
+    bounds: {min: [-1, -1, -1] as [number, number, number], max: [1, 1, 1] as [number, number, number]},
+    manifestRoot: root('e'),
+    contentRoot,
+    renderStatus: 'NOT_IMPLEMENTED' as const,
+    candidateOnly: true as const,
+    authoritative: false as const
+  };
+  const candidate = {...candidateBase, candidateRoot: cryptographicHash(candidateBase)} as VSRNeuralFieldRepresentationCandidate;
+  const assets = payloadAssetIds.map((id, index) => ({id, kind: 'representation-data', format: VSR_NEURAL_FIELD_PAYLOAD_FORMAT, metadata: {source_asset_id: sourcePayloadAssetIds[index]}})) as VSRNonMeshRepresentationAsset[];
+  const payloads = new Map<string, Uint8Array>([[payloadAssetIds[0]!, pages[0]!], [payloadAssetIds[1]!, pages[1]!]]);
+  const lowering = lowerVsrNeuralFieldCandidateToSpatialScene(candidate, {assets, payloads}, {sceneId: 'neural-field-regression', sampleResolution: 9, maxTriangles: 256});
+  const repeat = lowerVsrNeuralFieldCandidateToSpatialScene(candidate, {assets, payloads}, {sceneId: 'neural-field-regression', sampleResolution: 9, maxTriangles: 256});
+  const frame = renderSpatialReference(lowering.scene, {width: 96, height: 96, enableShadows: false});
+  assert.equal(lowering.renderStatus, 'CANDIDATE_CPU_NEURAL_FIELD_SURFACE');
+  assert.equal(lowering.parameterCount, parameters.length);
+  assert.equal(lowering.sampleResolution, 9);
+  assert.equal(lowering.sampleCount, 729);
+  assert.ok(lowering.triangleCount > 0);
+  assert.equal(lowering.renderableCount, 1);
+  assert.equal(lowering.scene.meshes.length, 1);
+  assert.equal(lowering.scene.nodes.length, 1);
+  assert.equal(frame.framePlan.stats.visibleDraws, 1);
+  assert.equal(lowering.meshRoot, repeat.meshRoot);
+  assert.equal(lowering.sceneRoot, repeat.sceneRoot);
+  assert.equal(lowering.root, repeat.root);
+  assert.equal(verifyVsrNeuralFieldSpatialScene(lowering), true);
+  const tampered = structuredClone(lowering) as VSRNeuralFieldSpatialSceneResult;
+  tampered.sampleResolution = 8;
+  assert.equal(verifyVsrNeuralFieldSpatialScene(tampered), false);
 });
 
 let passed = 0;

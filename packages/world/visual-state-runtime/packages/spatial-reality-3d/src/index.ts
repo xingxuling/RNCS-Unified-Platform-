@@ -8,6 +8,7 @@ export * from './asset-streaming.js';
 export * from './curve-spatial.js';
 export * from './gaussian-splat-spatial.js';
 export * from './hlod-generation.js';
+export * from './neural-field-spatial.js';
 export * from './particle-spatial.js';
 export * from './point-cloud-spatial.js';
 export * from './ragf-adapter.js';
