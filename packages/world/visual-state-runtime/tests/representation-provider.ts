@@ -13,6 +13,14 @@ import {
   type VSRRepresentationProviderManifest,
   type VSRRepresentationReference
 } from '../packages/representation-provider/src/index.js';
+import {
+  lowerVsrPointCloudCandidateToSpatialScene,
+  renderSpatialReference,
+  verifyVsrPointCloudSpatialScene,
+  VSR_POINT_CLOUD_PAYLOAD_FORMAT,
+  type VSRPointCloudRepresentationCandidate,
+  type VSRPointCloudSpatialSceneResult
+} from '../packages/spatial-reality-3d/src/index.js';
 
 const root = (char: string): string => char.repeat(64);
 
@@ -149,6 +157,67 @@ test('VSR seals a non-mesh Gaussian payload package without claiming rendering',
     () => handler.compile({...context, payloads: tamperedPayloads}),
     /content root mismatch|byte length mismatch/
   );
+});
+
+test('VSR lowers a fixed-record point-cloud candidate into a rooted transparent scene', async () => {
+  const bytes = new Uint8Array(4 * 32);
+  const view = new DataView(bytes.buffer);
+  const records = [
+    [-0.35, 0, 0, 1, 0.2, 0.1, 0.95, 0.08],
+    [0.35, 0, 0, 0.1, 0.7, 1, 0.9, 0.1],
+    [0, 0.35, 0, 0.2, 1, 0.35, 0.85, 0.1],
+    [0, -0.35, 0, 1, 0.55, 0.1, 0.8, 0.1]
+  ];
+  records.forEach((record, index) => record.forEach((value, field) => view.setFloat32(index * 32 + field * 4, value, true)));
+  const pages = [bytes.slice(0, 64), bytes.slice(64)];
+  const payloadAssetIds = ['asset:cloud:page0', 'asset:cloud:page1'];
+  const contentRoot = cryptographicHash(payloadAssetIds.map((assetId, index) => ({assetId, byteLength: pages[index]!.byteLength, byteRoot: cryptographicHash([...pages[index]!])})));
+  const manifestBase = {
+    format: VSR_NON_MESH_REPRESENTATION_MANIFEST_FORMAT,
+    version: '0.1.0',
+    component_id: 'cloud',
+    asset_id: 'asset:cloud',
+    representation_kind: 'point-cloud',
+    profile_id: 'vsr.point-cloud.f32rgba.v0.1',
+    payload_asset_ids: payloadAssetIds,
+    payload_format: VSR_POINT_CLOUD_PAYLOAD_FORMAT,
+    payload_byte_length: bytes.byteLength,
+    element_count: records.length,
+    bounds: {min: [-1, -1, -1], max: [1, 1, 1]},
+    content_root: contentRoot,
+    candidate_only: true,
+    authoritative: false
+  };
+  const assets = [
+    {id: 'asset:cloud:manifest', kind: 'representation-manifest', format: 'application/json', metadata: {role: 'representation-manifest'}},
+    ...payloadAssetIds.map(id => ({id, kind: 'representation-data', format: VSR_POINT_CLOUD_PAYLOAD_FORMAT})),
+    {id: 'asset:cloud:note', kind: 'other', format: 'text/plain'}
+  ] as VSRNonMeshRepresentationAsset[];
+  const payloads = new Map<string, Uint8Array>([
+    ['asset:cloud:manifest', new TextEncoder().encode(JSON.stringify({...manifestBase, manifest_root: cryptographicHash(manifestBase)}))],
+    [payloadAssetIds[0]!, pages[0]!],
+    [payloadAssetIds[1]!, pages[1]!],
+    ['asset:cloud:note', new Uint8Array([9])]
+  ]);
+  const handler = createVsrNonMeshRepresentationComponentImportHandler({representationKind: 'point-cloud', handlerId: 'vsr.point-cloud-component-import.v0.1'});
+  const result = await handler.compile({entry: {component_id: 'cloud', asset_id: 'asset:cloud', representation_kind: 'point-cloud'}, assets, payloads});
+  const lowering = lowerVsrPointCloudCandidateToSpatialScene(result.candidate as VSRPointCloudRepresentationCandidate, {assets, payloads}, {sceneId: 'point-cloud-regression', sizeScale: 1, maxPoints: 4});
+  const repeat = lowerVsrPointCloudCandidateToSpatialScene(result.candidate as VSRPointCloudRepresentationCandidate, {assets, payloads}, {sceneId: 'point-cloud-regression', sizeScale: 1, maxPoints: 4});
+  const frame = renderSpatialReference(lowering.scene, {width: 96, height: 96, enableShadows: false, transparencyMode: 'weighted-blended-oit'});
+  assert.equal(result.candidate.renderStatus, 'NOT_IMPLEMENTED');
+  assert.equal(lowering.sourceElementCount, records.length);
+  assert.equal(lowering.pointCount, records.length);
+  assert.equal(lowering.scene.meshes.length, 1);
+  assert.ok(lowering.renderableCount > 0);
+  assert.ok(frame.framePlan.stats.visibleDraws > 0);
+  assert.ok(frame.framePlan.stats.transparentDraws > 0);
+  assert.equal(lowering.pointRoot, repeat.pointRoot);
+  assert.equal(lowering.sceneRoot, repeat.sceneRoot);
+  assert.equal(lowering.root, repeat.root);
+  assert.equal(verifyVsrPointCloudSpatialScene(lowering), true);
+  const tampered = structuredClone(lowering) as VSRPointCloudSpatialSceneResult;
+  tampered.points[0]!.radius += 1;
+  assert.equal(verifyVsrPointCloudSpatialScene(tampered), false);
 });
 
 let passed = 0;

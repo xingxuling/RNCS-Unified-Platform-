@@ -7,6 +7,7 @@ import type { VSRSpatialIrradianceVolumeField } from './irradiance-volume-field.
 export * from './asset-streaming.js';
 export * from './hlod-generation.js';
 export * from './particle-spatial.js';
+export * from './point-cloud-spatial.js';
 export * from './ragf-adapter.js';
 
 type SpatialColor = [number, number, number, number];
