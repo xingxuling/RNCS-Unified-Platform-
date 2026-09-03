@@ -144,6 +144,7 @@ test('component representation directory is consumed by real VSR streaming and k
   assert.equal(verifyUniversalArtAssetComponentRepresentationDirectory(directory, {assembly}).valid, true);
 
   const catalog = directory.vsr_catalog.assets;
+  assert.deepEqual([...new Set(catalog.map(asset => asset.kind))].sort(), ['animation', 'material', 'mesh', 'other']);
   const totalBytes = catalog.reduce((sum, asset) => sum + asset.byteLength, 0);
   const resolved = resolveSpatialAssetStreaming(catalog, {
     activeCellIds: directory.representations.map(entry => entry.component_id),

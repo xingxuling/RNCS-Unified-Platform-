@@ -1725,12 +1725,25 @@ export function verifyUniversalArtAssetComponentAssembly(assembly, {
 
 const UNIVERSAL_ART_ASSET_COMPONENT_VSR_CATALOG_FORMAT = 'vsr.spatial-asset-streaming.v0.1';
 const UNIVERSAL_ART_ASSET_COMPONENT_RSR_OBSERVATION_FORMAT = 'rsr.representation-observation-candidate.v0.1';
-const UNIVERSAL_ART_ASSET_COMPONENT_VSR_KINDS = Object.freeze(['mesh', 'material', 'animation', 'other']);
+const UNIVERSAL_ART_ASSET_COMPONENT_VSR_KINDS = Object.freeze(['mesh', 'texture', 'material', 'animation', 'audio', 'shader', 'other']);
 
-function representationDirectoryVsrKind(representationKind) {
-  if (representationKind === 'mesh') return 'mesh';
-  if (representationKind === 'material') return 'material';
-  if (representationKind === 'animation') return 'animation';
+function representationDirectoryVsrKind(representationKind, resource = null) {
+  if (resource === null) {
+    if (representationKind === 'mesh') return 'mesh';
+    if (representationKind === 'material') return 'material';
+    if (representationKind === 'animation') return 'animation';
+    return 'other';
+  }
+  const role = String(resource.role ?? '').trim().toLowerCase();
+  const format = String(resource.format ?? '').trim().toLowerCase();
+  if (format.startsWith('image/')) return 'texture';
+  if (format.startsWith('audio/')) return 'audio';
+  if (role.includes('shader') || format.includes('shader')) return 'shader';
+  if (role.includes('animation') || format.includes('animation')) return 'animation';
+  if (role.includes('material') || role.includes('pbr')) return 'material';
+  if (role.includes('mesh') || format.includes('gltf')) return 'mesh';
+  if (representationKind === 'material' && role.length === 0) return 'material';
+  if (representationKind === 'animation' && role.length === 0) return 'animation';
   return 'other';
 }
 
@@ -1797,7 +1810,7 @@ function representationDirectoryVsrAsset({assembly, component, resource, represe
   const dependencies = component.depends_on
     .flatMap(dependency => resourceIdsByComponent.get(dependency) ?? [])
     .sort(keySort);
-  const kind = representationDirectoryVsrKind(component.representation.kind);
+  const kind = representationDirectoryVsrKind(component.representation.kind, resource);
   const assetId = representationDirectoryVsrAssetId(assembly, resource);
   return {
     id: assetId,
@@ -1864,6 +1877,7 @@ function representationDirectoryEntry({assembly, component, resources, resourceI
   const contentRoot = representationDirectoryContentRoot(component, resources);
   const provider = representationDirectoryProviderBinding(component, resources);
   const formats = [...new Set(resources.map(resource => resource.format))].sort(keySort);
+  const catalogKinds = [...new Set(resources.map(resource => representationDirectoryVsrKind(component.representation.kind, resource)))].sort(keySort);
   const representationRef = provider && formats.length > 0
     ? createRepresentationRef({
       representation_id: stableId('urrf-component-representation', {
@@ -1926,6 +1940,7 @@ function representationDirectoryEntry({assembly, component, resources, resourceI
       vsr: {
         target_contract: UNIVERSAL_ART_ASSET_COMPONENT_VSR_CATALOG_FORMAT,
         catalog_kind: representationDirectoryVsrKind(component.representation.kind),
+        catalog_kinds: catalogKinds,
         asset_ids: resources.map(resource => representationDirectoryVsrAssetId(assembly, resource)),
         stream_status: resources.length > 0 ? 'CATALOG_READY' : 'BLOCKED',
         direct_import_status: 'NOT_EXECUTED'
@@ -2153,6 +2168,8 @@ export function verifyUniversalArtAssetComponentRepresentationDirectory(director
       && (entry?.representation_ref === null || entry.representation_ref.representation_id === entry.representation_id)
       && (entry?.representation_ref === null || entry.representation_ref.representation_root === entry.representation_root)
       && entry?.consumer_mapping?.vsr?.target_contract === UNIVERSAL_ART_ASSET_COMPONENT_VSR_CATALOG_FORMAT
+      && Array.isArray(entry?.consumer_mapping?.vsr?.catalog_kinds)
+      && entry.consumer_mapping.vsr.catalog_kinds.every(kind => UNIVERSAL_ART_ASSET_COMPONENT_VSR_KINDS.includes(kind))
       && entry?.consumer_mapping?.rsr?.target_contract === UNIVERSAL_ART_ASSET_COMPONENT_RSR_OBSERVATION_FORMAT
       && entry?.consumer_mapping?.vsr?.direct_import_status === 'NOT_EXECUTED'
       && entry?.consumer_mapping?.rsr?.execution_status === 'NOT_EXECUTED'
@@ -2209,7 +2226,11 @@ export function verifyUniversalArtAssetComponentRepresentationDirectory(director
         && entry.consumer_mapping.vsr.asset_ids[resourceIndex] === asset.id
         && asset.sha256 === asset.metadata?.sha256
         && asset.byteLength === asset.metadata?.byte_length
-        && asset.metadata?.representation_kind === entry.representation_kind;
+        && asset.metadata?.representation_kind === entry.representation_kind
+        && asset.kind === representationDirectoryVsrKind(entry.representation_kind, {role: asset.metadata?.role, format: asset.format})
+        && asset.metadata?.vsr_kind === asset.kind
+        && JSON.stringify([...new Set(vsrAssets.filter(candidate => candidate.metadata?.component_id === entry.component_id).map(candidate => candidate.kind))].sort(keySort))
+          === JSON.stringify([...entry.consumer_mapping.vsr.catalog_kinds].sort(keySort));
     }), 'VSR_RESOURCE_BINDING_INVALID');
     check(rsrInputs.every(input => nonEmptyText(input?.representation_kind)
       && hexRoot(input?.content_root)

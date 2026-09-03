@@ -303,6 +303,10 @@ test('URRF component graph executor reuses the Provider Pipeline and chains depe
   assert.equal(directory.resource_count, 20);
   assert.deepEqual(directory.representations.map(entry => entry.representation_kind), ['mesh', 'mesh', 'mesh', 'particle']);
   assert.equal(directory.representations.find(entry => entry.component_id === 'sparks').consumer_mapping.vsr.catalog_kind, 'other');
+  assert.deepEqual(directory.representations.find(entry => entry.component_id === 'body').consumer_mapping.vsr.catalog_kinds, ['animation', 'material', 'mesh', 'other']);
+  assert.equal(directory.vsr_catalog.assets.find(asset => asset.metadata.role === 'pbr-texture-pack').kind, 'material');
+  assert.equal(directory.vsr_catalog.assets.find(asset => asset.metadata.role === 'animation-clips').kind, 'animation');
+  assert.equal(directory.vsr_catalog.assets.find(asset => asset.metadata.role === 'mesh-glb').kind, 'mesh');
   assert.equal(directory.representations.find(entry => entry.component_id === 'sparks').consumer_mapping.rsr.observation_input_status, 'INPUT_READY');
   assert.equal(directory.vsr_catalog.assets.every(asset => asset.metadata.representation_kind === (asset.metadata.component_id === 'sparks' ? 'particle' : 'mesh')), true);
   assert.equal(directory.vsr_catalog.assets.every(asset => asset.metadata.import_status === 'NOT_EXECUTED'), true);
