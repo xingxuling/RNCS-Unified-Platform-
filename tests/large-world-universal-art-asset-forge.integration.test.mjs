@@ -8,8 +8,10 @@ import {rootHash} from '@taowind/rncs-core-contract';
 import {
   createUniversalArtAssetAssembly,
   createUniversalArtAssetEvidenceBundle,
+  createUniversalArtAssetGenome,
   createUniversalArtAssetHoldoutReport,
   createUniversalArtAssetProfileCoverageReport,
+  createUniversalArtAssetProviderPipelinePlan,
   createUniversalArtAssetProviderPreflightReport,
   generateUniversalArtAssetBatch,
   generateUniversalArtAsset,
@@ -23,6 +25,8 @@ import {
   replayUniversalArtAssetProviderExecution,
   verifyUniversalArtAssetProviderReplayReport,
   verifyUniversalArtAssetProviderPipelinePlan,
+  executeUniversalArtAssetProviderPipeline,
+  verifyUniversalArtAssetProviderPipelineExecution,
   verifyUniversalArtAssetProviderPreflightReport,
   verifyUniversalArtAssetVsrMaterialization,
   verifyUniversalArtAssetVsrProjection,
@@ -42,9 +46,48 @@ import {
   parseGlb,
   verifyGltfImportReceipt
 } from '@taowind/visual-state-runtime/gltf-asset';
+import {AssetProviderAdapter, createAssetProviderManifest} from '@taowind/reality-asset-genesis-fabric';
 
 const rootDir = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const evidenceDir = resolve(process.env.URRF_UNIVERSAL_ART_ASSET_FORGE_OUT ?? join(rootDir, 'docs', 'verification', 'URRF_UNIVERSAL_ART_ASSET_FORGE'));
+
+function createIntegrationPipelineProvider({providerId, providerType, capabilities, outputs, roles}) {
+  const manifest = createAssetProviderManifest({
+    id: providerId,
+    name: `Integration ${providerId}`,
+    version: '0.1.0',
+    providerType,
+    capabilities,
+    capability_descriptors: outputs.map(output => ({capability_id: capabilities[0], output, quality_tier: 'PRODUCTION'})),
+    inputFormats: ['ragf.asset-genome.v0.3'],
+    outputFormats: ['model/gltf-binary', 'application/json', 'image/png'],
+    executionMode: 'local',
+    hardwareRequirements: {cpu: 'any', ram: 'any', gpu: 'none', vram: 'none', accelerator: 'none'},
+    license: {status: 'VERIFIED', identifier: 'Apache-2.0'},
+    runtimeStatus: 'READY',
+    upstream: {url: 'https://taowind.company', revision: 'pipeline-integration-test'},
+    metadata: {quality_tier: 'PRODUCTION', integration_test_provider: true}
+  });
+  return new AssetProviderAdapter(manifest, {
+    runner: ({input, operation}) => ({
+      asset_id: input.asset_id,
+      format: 'pipeline-integration-output',
+      files: roles.map(role => ({
+        name: `${operation}/${role}.json`,
+        path: `${operation}/${role}.json`,
+        role,
+        format: 'application/json',
+        mime: 'application/json',
+        base64: Buffer.from(`${providerId}:${operation}:${input.asset_id}:${role}`).toString('base64')
+      })),
+      geometry: {triangle_count: 1200},
+      materials: {material_count: 1},
+      generator_version: `pipeline-${providerId}`,
+      seed: input.seed,
+      evidence: {provider_success: true}
+    })
+  });
+}
 
 function composeUniversalArtAssetVsrScene(importedEntries, sourceRoot, worldId) {
   const scene = {
@@ -207,6 +250,42 @@ test('URRF Universal Art Asset Forge emits a rooted candidate and closes AAA cla
   assert.equal(result.providerPipelinePlan.status, 'CANDIDATE_PROVIDER_PIPELINE_PLANNED');
   assert.equal(result.providerPipelinePlan.runtime_ready, true);
   assert.equal(verifyUniversalArtAssetProviderPipelinePlan(result.providerPipelinePlan, {genome: result.genome}).valid, true);
+  const pipelineBaseProvider = createIntegrationPipelineProvider({
+    providerId: 'provider:test:integration-pipeline-base',
+    providerType: '3d-production',
+    capabilities: ['asset.generate.3d.production', 'asset.generate.mesh', 'asset.generate.pbr'],
+    outputs: ['mesh-glb', 'pbr-texture-pack'],
+    roles: ['mesh-glb', 'pbr-base-color']
+  });
+  const pipelineRigProvider = createIntegrationPipelineProvider({
+    providerId: 'provider:test:integration-pipeline-rig',
+    providerType: 'rigging',
+    capabilities: ['asset.rig.predict', 'asset.pose.initial'],
+    outputs: ['rig-candidate', 'animation-clips'],
+    roles: ['rig-candidate', 'animation-clips']
+  });
+  const pipelineGenome = createUniversalArtAssetGenome({
+    description: 'integration pipeline character',
+    asset_profile: 'character',
+    asset_kind: 'character-3d',
+    quality_tier: 'AAA',
+    seed: 'urrf-universal-art-pipeline-integration'
+  });
+  const pipelinePlan = createUniversalArtAssetProviderPipelinePlan({
+    genome: pipelineGenome,
+    provider: pipelineBaseProvider,
+    providers: [pipelineRigProvider]
+  });
+  const pipelineRun = executeUniversalArtAssetProviderPipeline({
+    genome: pipelineGenome,
+    plan: pipelinePlan,
+    provider: pipelineBaseProvider,
+    providers: [pipelineRigProvider],
+    outDir: mkdtempSync(join(tmpdir(), 'taowind-urrf-universal-art-pipeline-execution-v01-'))
+  });
+  assert.equal(pipelineRun.status, 'CANDIDATE_PROVIDER_PIPELINE_EXECUTED');
+  assert.deepEqual(pipelineRun.execution.stages.map(stage => stage.status), ['COMPLETED', 'COMPLETED']);
+  assert.equal(verifyUniversalArtAssetProviderPipelineExecution(pipelineRun.execution, {plan: pipelinePlan, genome: pipelineGenome}).valid, true);
 
   const reportBase = {
     format: 'urrf.universal-art-asset-forge-report.v0.1',
@@ -252,6 +331,7 @@ test('URRF Universal Art Asset Forge emits a rooted candidate and closes AAA cla
   writeFileSync(join(evidenceDir, 'universal-art-asset-provider-replay.json'), `${JSON.stringify(replay.report, null, 2)}\n`, 'utf8');
   writeFileSync(join(evidenceDir, 'universal-art-asset-provider-replay-execution.json'), `${JSON.stringify(replay.replayReceipt, null, 2)}\n`, 'utf8');
   writeFileSync(join(evidenceDir, 'universal-art-asset-provider-pipeline.json'), `${JSON.stringify(result.providerPipelinePlan, null, 2)}\n`, 'utf8');
+  writeFileSync(join(evidenceDir, 'universal-art-asset-provider-pipeline-execution.json'), `${JSON.stringify(pipelineRun.execution, null, 2)}\n`, 'utf8');
   writeFileSync(join(evidenceDir, 'universal-art-asset-genome.json'), `${JSON.stringify(result.genome, null, 2)}\n`, 'utf8');
   writeFileSync(join(evidenceDir, 'universal-art-asset-acceptance.json'), `${JSON.stringify(result.acceptance, null, 2)}\n`, 'utf8');
   writeFileSync(join(evidenceDir, 'universal-art-asset-evidence-ledger.json'), `${JSON.stringify(result.evidenceLedger, null, 2)}\n`, 'utf8');

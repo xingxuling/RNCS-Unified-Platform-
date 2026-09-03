@@ -27,6 +27,8 @@ import {
   verifyUniversalArtAssetProviderReplayReport,
   createUniversalArtAssetProviderPipelinePlan,
   verifyUniversalArtAssetProviderPipelinePlan,
+  executeUniversalArtAssetProviderPipeline,
+  verifyUniversalArtAssetProviderPipelineExecution,
   verifyUniversalArtAssetProviderPreflightReport,
   verifyUniversalArtAssetProvenanceLicenseReceipt,
   verifyUniversalArtAssetQualityProof,
@@ -36,7 +38,7 @@ import {
   verifyUniversalArtAssetForge,
   verifyUniversalArtAssetGenome
 } from '../src/index.mjs';
-import {createMockAssetProvider, createTrellis2Provider, rootHash, seal} from '@taowind/reality-asset-genesis-fabric';
+import {AssetProviderAdapter, createAssetProviderManifest, createMockAssetProvider, createTrellis2Provider, rootHash, seal} from '@taowind/reality-asset-genesis-fabric';
 
 const characterInput = {
   description: '一名守护古代冰晶遗迹的三维女剑士，穿着带有冰纹的重甲。',
@@ -78,6 +80,44 @@ function createReviewReceipt({result, reviewKind}) {
     },
     attestation: reviewKind === 'ART_DIRECTION' ? 'ART_DIRECTION_REVIEWED' : 'HUMAN_REVIEWED'
   }, 'receipt_root');
+}
+
+function createPipelineStageProvider({providerId, providerType, capabilities, outputs, roles}) {
+  const manifest = createAssetProviderManifest({
+    id: providerId,
+    name: `Pipeline ${providerId}`,
+    version: '0.1.0',
+    providerType,
+    capabilities,
+    capability_descriptors: outputs.map(output => ({capability_id: capabilities[0], output, quality_tier: 'PRODUCTION'})),
+    inputFormats: ['ragf.asset-genome.v0.3'],
+    outputFormats: ['model/gltf-binary', 'application/json', 'image/png'],
+    executionMode: 'local',
+    hardwareRequirements: {cpu: 'any', ram: 'any', gpu: 'none', vram: 'none', accelerator: 'none'},
+    license: {status: 'VERIFIED', identifier: 'Apache-2.0'},
+    runtimeStatus: 'READY',
+    upstream: {url: 'https://taowind.company', revision: 'pipeline-test'},
+    metadata: {quality_tier: 'PRODUCTION', pipeline_test_provider: true}
+  });
+  return new AssetProviderAdapter(manifest, {
+    runner: ({input, operation}) => ({
+      asset_id: input.asset_id,
+      format: 'pipeline-stage-output',
+      files: roles.map(role => ({
+        name: `${operation}/${role}.json`,
+        path: `${operation}/${role}.json`,
+        role,
+        format: 'application/json',
+        mime: 'application/json',
+        base64: Buffer.from(`${providerId}:${operation}:${input.asset_id}:${role}`).toString('base64')
+      })),
+      geometry: {triangle_count: 1200},
+      materials: {material_count: 1},
+      generator_version: `pipeline-${providerId}`,
+      seed: input.seed,
+      evidence: {provider_success: true}
+    })
+  });
 }
 
 function createQualityProof({result, targetPlatform = 'desktop'}) {
@@ -639,6 +679,89 @@ test('provider pipeline plan composes profile stages without executing or escala
   assert.equal(injectedPlan.stages[0].route_status, 'INJECTED_RUNTIME_BOUND');
   assert.equal(injectedPlan.runtime_ready, true);
   assert.equal(verifyUniversalArtAssetProviderPipelinePlan(injectedPlan, {genome: injectedGenome, provider: mock}).valid, true);
+});
+
+test('provider pipeline executor runs injected stages, chains roots, and remains candidate-only', () => {
+  const baseProvider = createPipelineStageProvider({
+    providerId: 'provider:test:pipeline-base',
+    providerType: '3d-production',
+    capabilities: ['asset.generate.3d.production', 'asset.generate.mesh', 'asset.generate.pbr'],
+    outputs: ['mesh-glb', 'pbr-texture-pack'],
+    roles: ['mesh-glb', 'pbr-base-color']
+  });
+  const rigProvider = createPipelineStageProvider({
+    providerId: 'provider:test:pipeline-rig',
+    providerType: 'rigging',
+    capabilities: ['asset.rig.predict', 'asset.pose.initial'],
+    outputs: ['rig-candidate', 'animation-clips'],
+    roles: ['rig-candidate', 'animation-clips']
+  });
+  const genome = createUniversalArtAssetGenome({
+    description: 'pipeline executor character',
+    asset_profile: 'character',
+    asset_kind: 'character-3d',
+    quality_tier: 'AAA',
+    seed: 'pipeline-executor-character-seed'
+  });
+  const plan = createUniversalArtAssetProviderPipelinePlan({genome, provider: baseProvider, providers: [rigProvider]});
+  assert.equal(plan.status, 'CANDIDATE_PROVIDER_PIPELINE_PLANNED');
+  assert.deepEqual(plan.stages.map(stage => stage.route_status), ['INJECTED_RUNTIME_BOUND', 'INJECTED_RUNTIME_BOUND']);
+  const outDir = fs.mkdtempSync(path.join(os.tmpdir(), 'urrf-universal-art-pipeline-execution-'));
+  const run = executeUniversalArtAssetProviderPipeline({genome, plan, provider: baseProvider, providers: [rigProvider], outDir});
+  assert.equal(run.status, 'CANDIDATE_PROVIDER_PIPELINE_EXECUTED');
+  assert.deepEqual(run.execution.stages.map(stage => stage.status), ['COMPLETED', 'COMPLETED']);
+  assert.equal(run.execution.stages[1].request.input_stage_id, 'base_generation');
+  assert.equal(run.execution.stages[1].request.input_result_root, run.execution.stages[0].output.result_root);
+  assert.equal(run.execution.stages[1].request.input_output_root, run.execution.stages[0].output.output_root);
+  assert.equal(run.execution.stages.every(stage => stage.execution_performed), true);
+  assert.equal(run.execution.output.composed_file_roots.length, 4);
+  assert.equal(run.execution.candidate_only, true);
+  assert.equal(run.execution.authoritative, false);
+  assert.equal(run.execution.authority.provider_can_write_authoritative_world_state, false);
+  assert.equal(verifyUniversalArtAssetProviderPipelineExecution(run.execution, {plan, genome}).valid, true);
+
+  const tampered = JSON.parse(JSON.stringify(run.execution));
+  tampered.stages[1].request.input_result_root = 'f'.repeat(64);
+  assert.equal(verifyUniversalArtAssetProviderPipelineExecution(tampered, {plan, genome}).valid, false);
+});
+
+test('provider pipeline executor stays blocked when a planned provider is contract-only', () => {
+  const manifest = createAssetProviderManifest({
+    id: 'provider:test:pipeline-contract-only',
+    name: 'Pipeline Contract-Only Provider',
+    version: '0.1.0',
+    providerType: '3d-production',
+    capabilities: ['asset.generate.3d.production', 'asset.generate.mesh', 'asset.generate.pbr'],
+    capability_descriptors: [
+      {capability_id: 'asset.generate.3d.production', output: 'mesh-glb', quality_tier: 'PRODUCTION'},
+      {capability_id: 'asset.generate.mesh', output: 'mesh-glb', quality_tier: 'PRODUCTION'},
+      {capability_id: 'asset.generate.pbr', output: 'pbr-texture-pack', quality_tier: 'PRODUCTION'}
+    ],
+    inputFormats: ['ragf.asset-genome.v0.3'],
+    outputFormats: ['model/gltf-binary'],
+    executionMode: 'local',
+    hardwareRequirements: {cpu: 'any', ram: 'any', gpu: 'none', vram: 'none', accelerator: 'none'},
+    license: {status: 'VERIFIED', identifier: 'Apache-2.0'},
+    runtimeStatus: 'READY',
+    upstream: {url: 'https://taowind.company', revision: 'pipeline-contract-only-test'},
+    metadata: {quality_tier: 'PRODUCTION'}
+  });
+  const genome = createUniversalArtAssetGenome({
+    description: 'pipeline contract-only prop',
+    asset_profile: 'prop',
+    asset_kind: 'prop-3d',
+    quality_tier: 'AAA',
+    seed: 'pipeline-contract-only-seed'
+  });
+  const plan = createUniversalArtAssetProviderPipelinePlan({genome, provider: manifest});
+  assert.equal(plan.status, 'CANDIDATE_PROVIDER_PIPELINE_PLANNED');
+  assert.equal(plan.stages[0].route_status, 'INJECTED_CONTRACT_ONLY');
+  const run = executeUniversalArtAssetProviderPipeline({genome, plan, provider: manifest});
+  assert.equal(run.status, 'CANDIDATE_PROVIDER_PIPELINE_BLOCKED');
+  assert.equal(run.execution.stages[0].status, 'CONTRACT_ONLY');
+  assert.equal(run.execution.stages[0].execution_performed, false);
+  assert.equal(run.execution.stages[0].failure_code, 'PROVIDER_RUNTIME_NOT_EXECUTED');
+  assert.equal(verifyUniversalArtAssetProviderPipelineExecution(run.execution, {plan, genome}).valid, true);
 });
 
 test('acceptance gate cannot be passed by provider success alone', () => {

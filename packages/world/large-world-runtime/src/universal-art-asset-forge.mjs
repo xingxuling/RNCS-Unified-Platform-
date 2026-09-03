@@ -46,6 +46,7 @@ export const UNIVERSAL_ART_ASSET_PROVIDER_PREFLIGHT_FORMAT = 'urrf.universal-art
 export const UNIVERSAL_ART_ASSET_PROVIDER_EXECUTION_FORMAT = 'urrf.universal-art-asset-provider-execution.v0.1';
 export const UNIVERSAL_ART_ASSET_PROVIDER_REPLAY_FORMAT = 'urrf.universal-art-asset-provider-replay.v0.1';
 export const UNIVERSAL_ART_ASSET_PROVIDER_PIPELINE_FORMAT = 'urrf.universal-art-asset-provider-pipeline.v0.1';
+export const UNIVERSAL_ART_ASSET_PROVIDER_PIPELINE_EXECUTION_FORMAT = 'urrf.universal-art-asset-provider-pipeline-execution.v0.1';
 export const UNIVERSAL_ART_ASSET_FORGE_VERSION = '0.1.0';
 
 export const UNIVERSAL_ART_ASSET_PROFILES = Object.freeze([
@@ -86,6 +87,21 @@ const UNIVERSAL_ART_ASSET_PROVIDER_PIPELINE_ROUTE_STATUSES = Object.freeze([
   'INJECTED_CONTRACT_ONLY',
   'INJECTED_RUNTIME_BOUND',
   'UNRESOLVED'
+]);
+
+const UNIVERSAL_ART_ASSET_PROVIDER_PIPELINE_EXECUTION_STATUSES = Object.freeze([
+  'CANDIDATE_PROVIDER_PIPELINE_EXECUTED',
+  'CANDIDATE_PROVIDER_PIPELINE_BLOCKED',
+  'CANDIDATE_PROVIDER_PIPELINE_FAILED',
+  'CANDIDATE_PROVIDER_PIPELINE_NOT_RUN'
+]);
+
+const UNIVERSAL_ART_ASSET_PROVIDER_PIPELINE_STAGE_EXECUTION_STATUSES = Object.freeze([
+  'COMPLETED',
+  'FAILED',
+  'CONTRACT_ONLY',
+  'NOT_RUN',
+  'SKIPPED'
 ]);
 
 const UNIVERSAL_ART_ASSET_REVIEW_KINDS = Object.freeze(['ART_DIRECTION', 'HUMAN_ART']);
@@ -3115,12 +3131,17 @@ function universalArtAssetProviderPipelineManifests({provider = null, providers 
   return supplied;
 }
 
-function universalArtAssetProviderPipelineRunnerMap({provider = null, providerRunners = {}, providerRunner = null} = {}) {
+function universalArtAssetProviderPipelineRunnerMap({provider = null, providers = [], providerRunners = {}, providerRunner = null} = {}) {
   const runners = {...record(providerRunners)};
-  const manifest = provider?.manifest ?? provider;
-  const providerId = manifest?.id ?? manifest?.provider_id ?? null;
-  if (providerId && typeof provider?.runner === 'function' && typeof runners[providerId] !== 'function') runners[providerId] = provider.runner;
-  if (providerId && typeof providerRunner === 'function') runners[providerId] = providerRunner;
+  const add = (value, allowOverride) => {
+    const manifest = value?.manifest ?? value;
+    const providerId = manifest?.id ?? manifest?.provider_id ?? null;
+    if (!providerId) return;
+    if (typeof value?.runner === 'function' && typeof runners[providerId] !== 'function') runners[providerId] = value.runner;
+    if (allowOverride && typeof providerRunner === 'function') runners[providerId] = providerRunner;
+  };
+  add(provider, true);
+  for (const value of Array.isArray(providers) ? providers : []) add(value, false);
   return runners;
 }
 
@@ -3128,7 +3149,7 @@ function universalArtAssetProviderPipelineEntries({provider = null, providers = 
   const customManifests = universalArtAssetProviderPipelineManifests({provider, providers});
   const injectedIds = new Set(customManifests.map(manifest => manifest.id ?? manifest.provider_id).filter(nonEmptyText));
   const registry = new AssetProviderRegistry([...externalAssetProviderManifests(), ...customManifests]);
-  const runners = universalArtAssetProviderPipelineRunnerMap({provider, providerRunners, providerRunner});
+  const runners = universalArtAssetProviderPipelineRunnerMap({provider, providers, providerRunners, providerRunner});
   const external = registry.list().map(manifest => {
     const providerId = manifest.id ?? manifest.provider_id;
     const runnerSupplied = typeof runners[providerId] === 'function';
@@ -3267,12 +3288,13 @@ function buildUniversalArtAssetProviderPipelinePlan({
 } = {}) {
   const checkedGenome = genome?.format === UNIVERSAL_ART_ASSET_GENOME_FORMAT ? genome : createUniversalArtAssetGenome(genome ?? {});
   const runners = provider_runners ?? providerRunners ?? {};
+  const providerManifests = universalArtAssetProviderPipelineManifests({provider, providers});
   const resolution = resolveUniversalArtAssetProvider({
     genome: checkedGenome,
     provider_id,
     providerId,
     provider,
-    providers
+    providers: providerManifests
   });
   const entries = universalArtAssetProviderPipelineEntries({provider, providers, providerRunners: runners, providerRunner});
   const definitions = universalArtAssetProviderPipelineStageDefinitions(checkedGenome.asset_profile);
@@ -3283,7 +3305,9 @@ function buildUniversalArtAssetProviderPipelinePlan({
       : entries.filter(entry => definition.required_capabilities.every(capability => universalArtAssetProviderPipelineCapabilityMatches(entry, capability, definition.capability_aliases)));
     const candidates = [...candidateEntries].sort((left, right) => {
       const preferredSource = resolution.selected_provider_source === 'ragf-reference-provider' ? 'ragf-reference-provider' : null;
-      const sourceRank = entry => preferredSource !== null && entry.provider_source === preferredSource ? 0 : 1;
+      const sourceRank = entry => preferredSource !== null
+        ? entry.provider_source === preferredSource ? 0 : 1
+        : entry.provider_source === 'injected-provider' ? 0 : 1;
       return sourceRank(left) - sourceRank(right) || left.provider_id.localeCompare(right.provider_id, 'en');
     });
     const selected = candidates[0] ?? null;
@@ -3552,6 +3576,680 @@ export function verifyUniversalArtAssetProviderPipelinePlan(plan, {
     errors.push(`VERIFY_EXCEPTION:${error.name}:${error.message}`);
   }
   return {valid: errors.length === 0, errors, pipeline_root: plan.pipeline_root ?? null};
+}
+
+function universalArtAssetProviderPipelineExecutionOperation(stage) {
+  if (stage?.stage_kind === 'GEOMETRY_REFINEMENT') return 'refine';
+  if (stage?.stage_kind === 'RIGGING_ANIMATION') return 'rig';
+  return 'generate';
+}
+
+function universalArtAssetProviderPipelineExecutionBindings({provider = null, providers = [], providerRunners = {}, providerRunner = null, timeout = 60000} = {}) {
+  const bindings = new Map();
+  const runners = record(providerRunners);
+  const register = (value, injected) => {
+    const adapter = value && typeof value.generate === 'function' && value.manifest ? value : null;
+    const manifest = adapter?.manifest ?? value?.manifest ?? value;
+    if (!manifest || typeof manifest !== 'object' || Array.isArray(manifest)) return;
+    const providerId = manifest.id ?? manifest.provider_id;
+    if (!nonEmptyText(providerId) || bindings.has(providerId)) return;
+    const configuredRunner = typeof runners[providerId] === 'function'
+      ? runners[providerId]
+      : value === provider && typeof providerRunner === 'function'
+        ? providerRunner
+        : typeof value?.runner === 'function' ? value.runner : null;
+    const resolvedAdapter = adapter && configuredRunner === null
+      ? adapter
+      : new AssetProviderAdapter(manifest, {runner: configuredRunner, timeout});
+    bindings.set(providerId, {
+      adapter: resolvedAdapter,
+      manifest: clone(resolvedAdapter.manifest),
+      source: injected ? 'injected-provider' : 'external-provider-contract'
+    });
+  };
+  register(provider, true);
+  for (const value of Array.isArray(providers) ? providers : []) register(value, true);
+  for (const manifest of externalAssetProviderManifests()) register(manifest, false);
+  return bindings;
+}
+
+function universalArtAssetProviderPipelineExecutionFileRoots(result) {
+  return (result?.files ?? []).map((file, index) => ({
+    index,
+    path: String(file?.path ?? file?.name ?? `output-${index}`),
+    role: file?.role ?? null,
+    sha256: isHexRoot(file?.sha256) ? file.sha256 : null,
+    byte_length: Number.isInteger(file?.size) && file.size >= 0 ? file.size : null
+  })).sort((left, right) => left.path.localeCompare(right.path, 'en') || left.index - right.index)
+    .map(({index, ...file}) => file);
+}
+
+function universalArtAssetProviderPipelineExecutionOutputTokens(result) {
+  const tokens = new Set();
+  const add = value => {
+    if (nonEmptyText(value)) tokens.add(String(value).trim());
+  };
+  for (const value of Array.isArray(result?.outputs) ? result.outputs : []) add(value);
+  for (const value of Array.isArray(result?.metadata?.outputs) ? result.metadata.outputs : []) add(value);
+  for (const file of result?.files ?? []) {
+    const role = String(file?.role ?? file?.path ?? file?.name ?? '').toLowerCase();
+    if (!role) continue;
+    add(file.role ?? file.path ?? file.name);
+    if (role.includes('glb') || role.endsWith('.glb')) add(role.includes('refin') ? 'refined-glb' : 'mesh-glb');
+    if (role.includes('pbr') || role.includes('base-color') || role.includes('normal') || role.includes('orm') || role.includes('roughness') || role.includes('metallic')) add('pbr-texture-pack');
+    if (role.includes('rig') || role.includes('skeleton')) add('rig-candidate');
+    if (role.includes('animation') || role.includes('motion') || role.includes('clip')) add('animation-clips');
+  }
+  return [...tokens].sort((left, right) => left.localeCompare(right, 'en'));
+}
+
+function universalArtAssetProviderPipelineExecutionMaterialization(materialization) {
+  if (!materialization) {
+    return {
+      path: null,
+      files: [],
+      skipped: [],
+      root: null
+    };
+  }
+  const files = (materialization.materialized ?? []).map(file => ({
+    path: file?.path ?? null,
+    role: file?.role ?? null,
+    byte_length: file?.byte_length ?? null,
+    sha256: isHexRoot(file?.sha256) ? file.sha256 : null,
+    declared_sha256: isHexRoot(file?.declared_sha256) ? file.declared_sha256 : null
+  }));
+  const skipped = (materialization.skipped ?? []).map(file => ({path: file?.path ?? null, reason: file?.reason ?? null}));
+  const base = {
+    path: materialization.root ?? null,
+    files,
+    skipped
+  };
+  return {...base, root: rootHash(base)};
+}
+
+function universalArtAssetProviderPipelineExecutionRequest({genome, plan, stage, previous}) {
+  const operation = universalArtAssetProviderPipelineExecutionOperation(stage);
+  return seal({
+    format: UNIVERSAL_ART_ASSET_PROVIDER_PIPELINE_EXECUTION_FORMAT,
+    version: UNIVERSAL_ART_ASSET_FORGE_VERSION,
+    request_kind: 'STAGE_REQUEST',
+    asset_id: genome.asset_id,
+    asset_profile: genome.asset_profile,
+    quality_tier: genome.quality_tier,
+    genome_root: genome.genome_root,
+    pipeline_root: plan.pipeline_root,
+    stage_id: stage.stage_id,
+    stage_kind: stage.stage_kind,
+    input_stage_id: stage.input_stage_id,
+    input_result_root: previous?.output?.result_root ?? null,
+    input_output_root: previous?.output?.output_root ?? null,
+    provider_id: stage.selected_provider_id,
+    provider_root: stage.selected_provider_root,
+    provider_source: stage.provider_source,
+    operation,
+    target_quality_tier: genome.quality_tier === 'AAA' ? 'PRODUCTION' : genome.quality_tier,
+    candidate_only: true,
+    authoritative: false,
+    request_root: ''
+  }, 'request_root');
+}
+
+function universalArtAssetProviderPipelineExecutionOutput({result = null, materialization = null, requiredOutputs = []} = {}) {
+  const materialized = universalArtAssetProviderPipelineExecutionMaterialization(materialization);
+  const outputTokens = universalArtAssetProviderPipelineExecutionOutputTokens(result);
+  const base = {
+    result_root: result?.result_root ?? null,
+    result_asset_id: result?.asset_id ?? null,
+    actual_outputs: outputTokens,
+    file_roots: universalArtAssetProviderPipelineExecutionFileRoots(result),
+    materialization_path: materialized.path,
+    materialization_root: materialized.root,
+    materialized_file_count: materialized.files.length,
+    materialized_file_roots: materialized.files,
+    materialization_skipped: materialized.skipped,
+    required_outputs: [...requiredOutputs],
+    output_contract_pass: Boolean(result) && requiredOutputs.every(output => universalArtAssetProviderPipelineOutputMatches(output, outputTokens)),
+    output_root: ''
+  };
+  return seal(base, 'output_root');
+}
+
+function universalArtAssetProviderPipelineExecutionOutputIntegrity(output) {
+  if (!output || typeof output !== 'object' || Array.isArray(output)) return false;
+  const copy = clone(output);
+  const actual = copy.output_root;
+  delete copy.output_root;
+  const materializationBase = {
+    path: copy.materialization_path,
+    files: copy.materialized_file_roots,
+    skipped: copy.materialization_skipped
+  };
+  const materializationValid = copy.materialization_root === null
+    ? copy.materialized_file_roots.length === 0 && copy.materialization_skipped.length === 0
+    : isHexRoot(copy.materialization_root) && copy.materialization_root === rootHash(materializationBase);
+  return isHexRoot(actual)
+    && actual === rootHash(copy)
+    && Array.isArray(copy.actual_outputs)
+    && Array.isArray(copy.file_roots)
+    && Array.isArray(copy.required_outputs)
+    && typeof copy.output_contract_pass === 'boolean'
+    && materializationValid;
+}
+
+function universalArtAssetProviderPipelineExecutionAggregateOutputIntegrity(output) {
+  if (!output || typeof output !== 'object' || Array.isArray(output)) return false;
+  const copy = clone(output);
+  const actual = copy.output_root;
+  delete copy.output_root;
+  return isHexRoot(actual)
+    && actual === rootHash(copy)
+    && Array.isArray(copy.stage_output_roots)
+    && Array.isArray(copy.composed_file_roots)
+    && Array.isArray(copy.materialization_roots);
+}
+
+function universalArtAssetProviderPipelineExecutionStageChecks({stage, request, output, previous, providerExecution = null, failureCode = null} = {}) {
+  const runtimeRoute = ['EXTERNAL_RUNTIME_BOUND', 'INJECTED_RUNTIME_BOUND'].includes(stage.route_status);
+  const result = providerExecution?.result ?? null;
+  const job = providerExecution?.job ?? null;
+  const providerId = stage.provider_id ?? stage.selected_provider_id ?? null;
+  const providerRoot = stage.provider_root ?? stage.selected_provider_root ?? null;
+  const providerBinding = providerId !== null
+    && nonEmptyText(providerId)
+    && isHexRoot(providerRoot)
+    && request.provider_id === providerId
+    && request.provider_root === providerRoot
+    && request.provider_source === stage.provider_source;
+  const requestBinding = request.asset_id === stage.asset_id
+    && request.stage_id === stage.stage_id
+    && request.stage_kind === stage.stage_kind
+    && request.pipeline_root === stage.pipeline_root
+    && request.input_stage_id === stage.input_stage_id;
+  const requestCopy = clone(request);
+  delete requestCopy.request_root;
+  const inputBinding = previous
+    ? previous.status === 'COMPLETED'
+      && request.input_stage_id === previous.stage_id
+      && request.input_result_root === previous.output.result_root
+      && request.input_output_root === previous.output.output_root
+    : request.input_stage_id === null && request.input_result_root === null && request.input_output_root === null;
+  const resultBinding = result === null
+    ? output.result_root === null
+    : isHexRoot(output.result_root)
+      && output.result_root === result.result_root
+      && result.asset_id === stage.asset_id
+      && result.provider_id === providerId
+      && isHexRoot(result.result_root);
+  const materializationIntegrity = universalArtAssetProviderPipelineExecutionOutputIntegrity(output);
+  const expectedAttempted = runtimeRoute && ['COMPLETED', 'FAILED'].includes(stage.status);
+  const expectedPerformed = isHexRoot(stage.result_root) && stage.job_state === 'COMPLETED';
+  const executionTruthfulness = stage.execution_attempted === expectedAttempted
+    && stage.execution_performed === expectedPerformed
+    && stage.runtime_execution_performed === expectedPerformed
+    && (stage.status === 'CONTRACT_ONLY' ? !stage.execution_attempted && !stage.execution_performed : true)
+    && (stage.status === 'COMPLETED' ? stage.execution_attempted && stage.execution_performed : true)
+    && (stage.status === 'FAILED' ? stage.execution_attempted === runtimeRoute : true)
+    && (failureCode === null ? stage.failure_code === null : stage.failure_code === failureCode);
+  const authorityBoundary = stage.candidate_only === true
+    && stage.authoritative === false
+    && stage.checks?.authority_boundary !== false;
+  return {
+    provider_binding: providerBinding,
+    request_binding: requestBinding && request.request_root === rootHash(requestCopy),
+    input_binding: inputBinding,
+    result_binding: resultBinding,
+    output_contract: output.output_contract_pass === (result !== null && stage.required_outputs.every(required => universalArtAssetProviderPipelineOutputMatches(required, output.actual_outputs))),
+    materialization_integrity: materializationIntegrity,
+    execution_truthfulness: executionTruthfulness,
+    no_silent_fallback: ['BUILTIN_REFERENCE', 'EXTERNAL_CONTRACT_ONLY', 'EXTERNAL_RUNTIME_BOUND', 'INJECTED_CONTRACT_ONLY', 'INJECTED_RUNTIME_BOUND', 'UNRESOLVED'].includes(stage.route_status),
+    authority_boundary: authorityBoundary
+  };
+}
+
+function universalArtAssetProviderPipelineExecutionOutputAggregate(stages) {
+  const base = {
+    stage_output_roots: stages.map(stage => ({stage_id: stage.stage_id, output_root: stage.output.output_root, result_root: stage.output.result_root})),
+    composed_file_roots: stages.flatMap(stage => stage.output.materialized_file_roots.map(file => ({stage_id: stage.stage_id, ...file}))),
+    materialization_roots: stages.map(stage => ({stage_id: stage.stage_id, materialization_root: stage.output.materialization_root}))
+  };
+  return seal(base, 'output_root');
+}
+
+function universalArtAssetProviderPipelineExecutionSummary(stages) {
+  return {
+    stage_count: stages.length,
+    required_stage_count: stages.filter(stage => stage.required).length,
+    completed_stage_count: stages.filter(stage => stage.status === 'COMPLETED').length,
+    attempted_stage_count: stages.filter(stage => stage.execution_attempted).length,
+    performed_stage_count: stages.filter(stage => stage.execution_performed).length,
+    contract_only_stage_count: stages.filter(stage => stage.status === 'CONTRACT_ONLY').length,
+    failed_stage_count: stages.filter(stage => stage.status === 'FAILED').length,
+    skipped_stage_count: stages.filter(stage => stage.status === 'SKIPPED').length,
+    not_run_stage_count: stages.filter(stage => stage.status === 'NOT_RUN').length,
+    optional_failure_count: stages.filter(stage => !stage.required && stage.status === 'FAILED').length
+  };
+}
+
+function universalArtAssetProviderPipelineExecutionExpectedStatus(stages) {
+  const requiredStages = stages.filter(stage => stage.required);
+  const requiredSuccess = requiredStages.length > 0 && requiredStages.every(stage => stage.status === 'COMPLETED');
+  const optionalFailure = stages.some(stage => !stage.required && stage.status === 'FAILED');
+  const attempted = stages.some(stage => stage.execution_attempted);
+  const notRunOnly = !attempted && stages.every(stage => ['NOT_RUN', 'SKIPPED'].includes(stage.status));
+  if (requiredSuccess && !optionalFailure) return 'CANDIDATE_PROVIDER_PIPELINE_EXECUTED';
+  if (notRunOnly) return 'CANDIDATE_PROVIDER_PIPELINE_NOT_RUN';
+  if (stages.some(stage => stage.status === 'FAILED')) return 'CANDIDATE_PROVIDER_PIPELINE_FAILED';
+  return 'CANDIDATE_PROVIDER_PIPELINE_BLOCKED';
+}
+
+function universalArtAssetProviderPipelineStageError(error, fallbackCode) {
+  return {
+    code: nonEmptyText(error?.code) ? error.code : fallbackCode,
+    detail: nonEmptyText(error?.message) ? error.message : null
+  };
+}
+
+/**
+ * Execute a planned Provider chain only when the plan is bound to a supplied
+ * executor or configured external process. Every stage is isolated, chained
+ * by the preceding result root, and recorded as a candidate-only receipt.
+ * Contract-only, built-in reference, unresolved, and failed stages remain
+ * explicit; no Provider output can mutate RNCS authority.
+ */
+export function executeUniversalArtAssetProviderPipeline({
+  genome,
+  plan = null,
+  outDir = null,
+  provider = null,
+  providers = [],
+  provider_id = null,
+  providerId = null,
+  provider_runners = null,
+  providerRunners = null,
+  providerRunner = null,
+  providerTimeout = 60000,
+  execution_id = null,
+  executionId = null
+} = {}) {
+  const checkedGenome = genome?.format === UNIVERSAL_ART_ASSET_GENOME_FORMAT ? clone(genome) : createUniversalArtAssetGenome(genome ?? {});
+  const runners = provider_runners ?? providerRunners ?? {};
+  const executionPlan = plan ?? createUniversalArtAssetProviderPipelinePlan({
+    genome: checkedGenome,
+    provider_id,
+    providerId,
+    provider,
+    providers,
+    provider_runners: runners,
+    providerRunner
+  });
+  const planVerification = verifyUniversalArtAssetProviderPipelinePlan(executionPlan, {genome: checkedGenome});
+  if (!planVerification.valid) throw new GenesisError('UNIVERSAL_ART_ASSET_PROVIDER_PIPELINE_PLAN_INVALID', planVerification.errors.join(','));
+  const resolvedOutDir = outDir === null || outDir === undefined ? null : ensureOutputDir(outDir);
+  const bindings = universalArtAssetProviderPipelineExecutionBindings({provider, providers, providerRunners: runners, providerRunner, timeout: providerTimeout});
+  const stageResults = [];
+  const canExecute = executionPlan.status === 'CANDIDATE_PROVIDER_PIPELINE_PLANNED';
+  for (const stage of executionPlan.stages) {
+    const previous = stageResults.at(-1)?.record ?? null;
+    const request = universalArtAssetProviderPipelineExecutionRequest({genome: checkedGenome, plan: executionPlan, stage, previous});
+    let status = 'NOT_RUN';
+    let executionAttempted = false;
+    let executionPerformed = false;
+    let runtimeExecutionPerformed = false;
+    let job = null;
+    let result = null;
+    let failureCode = null;
+    let failureRoot = null;
+    let materialization = null;
+    let providerExecution = null;
+    if (!canExecute) {
+      failureCode = 'PIPELINE_PLAN_BLOCKED';
+    } else if (previous && previous.status !== 'COMPLETED') {
+      status = 'SKIPPED';
+      failureCode = 'INPUT_STAGE_NOT_COMPLETED';
+    } else if (stage.route_status === 'BUILTIN_REFERENCE') {
+      failureCode = 'BUILTIN_REFERENCE_STAGE_REQUIRES_REFERENCE_WORKSPACE';
+    } else if (stage.route_status === 'UNRESOLVED') {
+      failureCode = 'STAGE_PROVIDER_UNRESOLVED';
+    } else {
+      const binding = bindings.get(stage.selected_provider_id);
+      if (!binding || binding.manifest.manifest_root !== stage.selected_provider_root) {
+        failureCode = 'STAGE_PROVIDER_RUNTIME_BINDING_MISSING';
+      } else {
+        const operation = universalArtAssetProviderPipelineExecutionOperation(stage);
+        try {
+          providerExecution = binding.adapter.execute(operation, {
+            genome: checkedGenome.ragf_genome,
+            asset_id: checkedGenome.asset_id,
+            candidate_id: stableId('urrf-provider-pipeline-stage-candidate', {pipeline_root: executionPlan.pipeline_root, stage_id: stage.stage_id}),
+            operation,
+            stage: stage.stage_id,
+            quality_tier: checkedGenome.quality_tier === 'AAA' ? 'PRODUCTION' : checkedGenome.quality_tier,
+            seed: checkedGenome.ragf_genome.seed,
+            request,
+            input_stage: previous ? {
+              stage_id: previous.stage_id,
+              result_root: previous.output.result_root,
+              output_root: previous.output.output_root
+            } : null
+          });
+          job = providerExecution?.job ?? null;
+          result = providerExecution?.result ?? null;
+          failureCode = providerExecution?.failure?.code ?? null;
+          failureRoot = providerExecution?.failure?.failure_root ?? null;
+          runtimeExecutionPerformed = providerExecution?.status === 'COMPLETED'
+            && job?.state === 'COMPLETED'
+            && isHexRoot(result?.result_root);
+          executionAttempted = ['EXECUTOR_INJECTED', 'EXTERNAL_PROCESS'].includes(stage.runtime_binding);
+          executionPerformed = runtimeExecutionPerformed;
+          if (providerExecution?.status === 'CONTRACT_VERIFIED_RUNTIME_NOT_EXECUTED') {
+            status = 'CONTRACT_ONLY';
+          } else if (!runtimeExecutionPerformed) {
+            status = 'FAILED';
+            failureCode ??= 'PROVIDER_STAGE_EXECUTION_FAILED';
+          } else {
+            if (result.asset_id !== checkedGenome.asset_id || result.provider_id !== stage.selected_provider_id) {
+              status = 'FAILED';
+              failureCode = 'STAGE_RESULT_BINDING_FAILED';
+            }
+            if (resolvedOutDir && status !== 'FAILED') {
+              try {
+                const stageDir = path.join(resolvedOutDir, 'stages', `${String(stage.index + 1).padStart(3, '0')}-${stage.stage_id}`);
+                materialization = materializeProviderFiles(stageDir, result);
+              } catch (error) {
+                status = 'FAILED';
+                failureCode = universalArtAssetProviderPipelineStageError(error, 'STAGE_MATERIALIZATION_FAILED').code;
+              }
+            }
+            const provisionalOutput = universalArtAssetProviderPipelineExecutionOutput({result, materialization, requiredOutputs: stage.required_outputs});
+            if (status !== 'FAILED' && provisionalOutput.output_contract_pass !== true) {
+              status = 'FAILED';
+              failureCode = 'STAGE_OUTPUT_CONTRACT_FAILED';
+            }
+            if (status !== 'FAILED') status = 'COMPLETED';
+          }
+        } catch (error) {
+          status = 'FAILED';
+          executionAttempted = true;
+          failureCode = universalArtAssetProviderPipelineStageError(error, 'PROVIDER_STAGE_EXECUTION_FAILED').code;
+        }
+      }
+    }
+    const output = universalArtAssetProviderPipelineExecutionOutput({result, materialization, requiredOutputs: stage.required_outputs});
+    if (failureCode && !failureRoot && providerExecution?.failure?.failure_root) failureRoot = providerExecution.failure.failure_root;
+    const stageRecord = {
+      index: stage.index,
+      stage_id: stage.stage_id,
+      stage_kind: stage.stage_kind,
+      required: stage.required,
+      input_stage_id: stage.input_stage_id,
+      asset_id: checkedGenome.asset_id,
+      pipeline_root: executionPlan.pipeline_root,
+      provider_id: stage.selected_provider_id,
+      provider_root: stage.selected_provider_root,
+      provider_source: stage.provider_source,
+      route_status: stage.route_status,
+      runtime_binding: stage.runtime_binding,
+      operation: universalArtAssetProviderPipelineExecutionOperation(stage),
+      request,
+      status,
+      execution_attempted: executionAttempted,
+      execution_performed: executionPerformed,
+      runtime_execution_performed: runtimeExecutionPerformed,
+      job_root: job?.job_root ?? null,
+      job_state: job?.state ?? null,
+      result_root: result?.result_root ?? null,
+      failure_code: failureCode,
+      failure_root: failureRoot,
+      output,
+      required_outputs: clone(stage.required_outputs),
+      candidate_only: true,
+      authoritative: false,
+      checks: {},
+      stage_root: ''
+    };
+    const checks = universalArtAssetProviderPipelineExecutionStageChecks({
+      stage: {...stageRecord, checks: {authority_boundary: true}},
+      request,
+      output,
+      previous,
+      providerExecution,
+      failureCode
+    });
+    stageRecord.checks = checks;
+    stageResults.push({record: seal(stageRecord, 'stage_root'), providerExecution});
+  }
+  const stages = stageResults.map(item => item.record);
+  const output = universalArtAssetProviderPipelineExecutionOutputAggregate(stages);
+  const requiredStages = stages.filter(stage => stage.required);
+  const checks = {
+    pipeline_binding: isHexRoot(executionPlan.pipeline_root)
+      && stages.every(stage => stage.pipeline_root === executionPlan.pipeline_root),
+    stage_order: stages.every((stage, index) => stage.index === index && stage.input_stage_id === (index > 0 ? stages[index - 1].stage_id : null)),
+    required_stage_execution: requiredStages.length > 0 && requiredStages.every(stage => stage.status === 'COMPLETED' && stage.execution_performed === true),
+    stage_output_contracts: requiredStages.length > 0 && requiredStages.every(stage => stage.checks.output_contract === true),
+    input_chaining: stages.every(stage => stage.checks.input_binding === true),
+    execution_truthfulness: stages.every(stage => stage.checks.execution_truthfulness === true),
+    no_silent_fallback: stages.every(stage => stage.checks.no_silent_fallback === true),
+    output_integrity: universalArtAssetProviderPipelineExecutionAggregateOutputIntegrity(output),
+    authority_boundary: stages.every(stage => stage.candidate_only === true && stage.authoritative === false && stage.checks.authority_boundary === true)
+  };
+  const status = universalArtAssetProviderPipelineExecutionExpectedStatus(stages);
+  const execution = seal({
+    format: UNIVERSAL_ART_ASSET_PROVIDER_PIPELINE_EXECUTION_FORMAT,
+    version: UNIVERSAL_ART_ASSET_FORGE_VERSION,
+    execution_id: executionId ?? execution_id ?? stableId('urrf-universal-art-asset-provider-pipeline-execution', {pipeline_root: executionPlan.pipeline_root, stages}),
+    source: 'urrf-provider-pipeline-executor',
+    asset_id: checkedGenome.asset_id,
+    asset_profile: checkedGenome.asset_profile,
+    quality_tier: checkedGenome.quality_tier,
+    genome_root: checkedGenome.genome_root,
+    pipeline_root: executionPlan.pipeline_root,
+    stage_count: stages.length,
+    stages,
+    output,
+    summary: universalArtAssetProviderPipelineExecutionSummary(stages),
+    checks,
+    status,
+    execution_attempted: stages.some(stage => stage.execution_attempted),
+    execution_performed: status === 'CANDIDATE_PROVIDER_PIPELINE_EXECUTED',
+    runtime_ready: requiredStages.length > 0 && requiredStages.every(stage => stage.status === 'COMPLETED'),
+    candidate_only: true,
+    authoritative: false,
+    canonical_write_authorized: false,
+    aaa_ready: false,
+    release_ready: false,
+    authority: {
+      canonical_owner: 'RNCS',
+      representation_owner: 'URRF',
+      provider_can_write_authoritative_world_state: false,
+      provider_can_commit: false,
+      acceptance_can_commit: false,
+      rncs_authority_required: true
+    },
+    execution_root: ''
+  }, 'execution_root');
+  return {
+    status,
+    plan: executionPlan,
+    execution,
+    stageExecutions: stageResults.map(({record, providerExecution}) => ({stage_id: record.stage_id, providerExecution})),
+    output
+  };
+}
+
+export function verifyUniversalArtAssetProviderPipelineExecution(receipt, {plan = null, genome = null} = {}) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!receipt || typeof receipt !== 'object' || Array.isArray(receipt)) return {valid: false, errors: ['PROVIDER_PIPELINE_EXECUTION_NOT_OBJECT'], execution_root: null};
+  try {
+    check(receipt.format === UNIVERSAL_ART_ASSET_PROVIDER_PIPELINE_EXECUTION_FORMAT, 'PROVIDER_PIPELINE_EXECUTION_FORMAT_INVALID');
+    check(receipt.version === UNIVERSAL_ART_ASSET_FORGE_VERSION, 'PROVIDER_PIPELINE_EXECUTION_VERSION_INVALID');
+    check(nonEmptyText(receipt.execution_id), 'PROVIDER_PIPELINE_EXECUTION_ID_MISSING');
+    check(receipt.source === 'urrf-provider-pipeline-executor', 'PROVIDER_PIPELINE_EXECUTION_SOURCE_INVALID');
+    check(nonEmptyText(receipt.asset_id) && UNIVERSAL_ART_ASSET_PROFILES.includes(receipt.asset_profile), 'PROVIDER_PIPELINE_EXECUTION_ASSET_INVALID');
+    check(UNIVERSAL_ART_ASSET_QUALITY_TIERS.includes(receipt.quality_tier), 'PROVIDER_PIPELINE_EXECUTION_QUALITY_INVALID');
+    check(isHexRoot(receipt.genome_root) && isHexRoot(receipt.pipeline_root), 'PROVIDER_PIPELINE_EXECUTION_ROOT_INVALID');
+    const stages = Array.isArray(receipt.stages) ? receipt.stages : [];
+    check(stages.length > 0 && stages.length === receipt.stage_count, 'PROVIDER_PIPELINE_EXECUTION_STAGE_COUNT_INVALID');
+    const stageIds = stages.map(stage => stage?.stage_id);
+    check(stageIds.every(nonEmptyText) && new Set(stageIds).size === stages.length, 'PROVIDER_PIPELINE_EXECUTION_STAGE_IDS_INVALID');
+    const planStages = Array.isArray(plan?.stages) ? plan.stages : null;
+    if (plan) {
+      const planVerification = verifyUniversalArtAssetProviderPipelinePlan(plan);
+      check(planVerification.valid, 'PROVIDER_PIPELINE_EXECUTION_PLAN_INVALID');
+      check(receipt.pipeline_root === plan.pipeline_root, 'PROVIDER_PIPELINE_EXECUTION_PLAN_ROOT_MISMATCH');
+      check(receipt.asset_id === plan.asset_id && receipt.asset_profile === plan.asset_profile && receipt.genome_root === plan.genome_root, 'PROVIDER_PIPELINE_EXECUTION_PLAN_BINDING_INVALID');
+      check(stages.length === planStages.length, 'PROVIDER_PIPELINE_EXECUTION_PLAN_STAGE_COUNT_MISMATCH');
+    }
+    for (const [index, stage] of stages.entries()) {
+      const expectedPlanStage = planStages?.[index] ?? null;
+      check(stage?.index === index, `PROVIDER_PIPELINE_EXECUTION_STAGE_INDEX_INVALID:${index}`);
+      check(nonEmptyText(stage?.stage_id) && stage?.stage_id === stageIds[index], `PROVIDER_PIPELINE_EXECUTION_STAGE_ID_INVALID:${index}`);
+      check(UNIVERSAL_ART_ASSET_PROVIDER_PIPELINE_STAGE_EXECUTION_STATUSES.includes(stage?.status), `PROVIDER_PIPELINE_EXECUTION_STAGE_STATUS_INVALID:${index}`);
+      check(typeof stage?.required === 'boolean' && typeof stage?.execution_attempted === 'boolean' && typeof stage?.execution_performed === 'boolean' && typeof stage?.runtime_execution_performed === 'boolean', `PROVIDER_PIPELINE_EXECUTION_STAGE_FLAGS_INVALID:${index}`);
+      check(stage?.input_stage_id === (index > 0 ? stageIds[index - 1] : null), `PROVIDER_PIPELINE_EXECUTION_STAGE_INPUT_INVALID:${index}`);
+      check(stage?.provider_id === null || nonEmptyText(stage.provider_id), `PROVIDER_PIPELINE_EXECUTION_STAGE_PROVIDER_INVALID:${index}`);
+      check(stage?.provider_root === null || isHexRoot(stage.provider_root), `PROVIDER_PIPELINE_EXECUTION_STAGE_PROVIDER_ROOT_INVALID:${index}`);
+      check(stage?.route_status && UNIVERSAL_ART_ASSET_PROVIDER_PIPELINE_ROUTE_STATUSES.includes(stage.route_status), `PROVIDER_PIPELINE_EXECUTION_STAGE_ROUTE_INVALID:${index}`);
+      check(stage?.runtime_binding === null || ['BUILTIN_REFERENCE', 'CONTRACT_ONLY', 'EXECUTOR_INJECTED', 'EXTERNAL_PROCESS', 'UNRESOLVED'].includes(stage.runtime_binding), `PROVIDER_PIPELINE_EXECUTION_STAGE_RUNTIME_INVALID:${index}`);
+      check(stage?.job_root === null || isHexRoot(stage.job_root), `PROVIDER_PIPELINE_EXECUTION_STAGE_JOB_ROOT_INVALID:${index}`);
+      check(stage?.result_root === null || isHexRoot(stage.result_root), `PROVIDER_PIPELINE_EXECUTION_STAGE_RESULT_ROOT_INVALID:${index}`);
+      check(stage?.failure_root === null || isHexRoot(stage.failure_root), `PROVIDER_PIPELINE_EXECUTION_STAGE_FAILURE_ROOT_INVALID:${index}`);
+      check(stage?.status === 'COMPLETED' ? stage.failure_code === null : nonEmptyText(stage.failure_code), `PROVIDER_PIPELINE_EXECUTION_STAGE_FAILURE_CODE_INVALID:${index}`);
+      check(stage?.candidate_only === true && stage?.authoritative === false, `PROVIDER_PIPELINE_EXECUTION_STAGE_AUTHORITY_INVALID:${index}`);
+      const request = record(stage?.request);
+      const requestCopy = clone(request);
+      const actualRequestRoot = requestCopy.request_root;
+      delete requestCopy.request_root;
+      check(isHexRoot(actualRequestRoot) && actualRequestRoot === rootHash(requestCopy), `PROVIDER_PIPELINE_EXECUTION_STAGE_REQUEST_ROOT_INVALID:${index}`);
+      const output = record(stage?.output);
+      check(universalArtAssetProviderPipelineExecutionOutputIntegrity(output), `PROVIDER_PIPELINE_EXECUTION_STAGE_OUTPUT_INVALID:${index}`);
+      check(stage?.result_root === output.result_root, `PROVIDER_PIPELINE_EXECUTION_STAGE_RESULT_BINDING_INVALID:${index}`);
+      const stageCopy = clone(stage ?? {});
+      const actualStageRoot = stageCopy.stage_root;
+      delete stageCopy.stage_root;
+      check(isHexRoot(actualStageRoot) && actualStageRoot === rootHash(stageCopy), `PROVIDER_PIPELINE_EXECUTION_STAGE_ROOT_INVALID:${index}`);
+      if (expectedPlanStage) {
+        const planBindings = {
+          stage_id: 'stage_id',
+          stage_kind: 'stage_kind',
+          required: 'required',
+          input_stage_id: 'input_stage_id',
+          required_outputs: 'required_outputs',
+          provider_id: 'selected_provider_id',
+          provider_root: 'selected_provider_root',
+          provider_source: 'provider_source',
+          route_status: 'route_status',
+          runtime_binding: 'runtime_binding'
+        };
+        for (const [executionKey, planKey] of Object.entries(planBindings)) {
+          check(JSON.stringify(stage[executionKey]) === JSON.stringify(expectedPlanStage[planKey]), `PROVIDER_PIPELINE_EXECUTION_STAGE_PLAN_${planKey.toUpperCase()}_MISMATCH:${index}`);
+        }
+        check(stage.pipeline_root === plan.pipeline_root, `PROVIDER_PIPELINE_EXECUTION_STAGE_PLAN_ROOT_MISMATCH:${index}`);
+      }
+      const providerBinding = stage.provider_id !== null
+        && nonEmptyText(stage.provider_id)
+        && isHexRoot(stage.provider_root)
+        && request.provider_id === stage.provider_id
+        && request.provider_root === stage.provider_root
+        && request.provider_source === stage.provider_source;
+      const requestBinding = request.asset_id === stage.asset_id
+        && request.asset_id === receipt.asset_id
+        && request.asset_profile === receipt.asset_profile
+        && request.quality_tier === receipt.quality_tier
+        && request.genome_root === receipt.genome_root
+        && request.pipeline_root === receipt.pipeline_root
+        && request.stage_id === stage.stage_id
+        && request.stage_kind === stage.stage_kind
+        && request.input_stage_id === stage.input_stage_id
+        && request.request_root === rootHash(requestCopy);
+      const previous = stages[index - 1] ?? null;
+      const inputBinding = previous
+        ? previous.status === 'COMPLETED'
+          && request.input_stage_id === previous.stage_id
+          && request.input_result_root === previous.output.result_root
+          && request.input_output_root === previous.output.output_root
+        : request.input_stage_id === null && request.input_result_root === null && request.input_output_root === null;
+      const resultBinding = output.result_root === null
+        ? stage.result_root === null
+        : isHexRoot(output.result_root)
+          && output.result_root === stage.result_root
+          && output.result_asset_id === stage.asset_id
+          && stage.provider_id !== null;
+      const expectedOutputContract = output.output_contract_pass === (output.result_root !== null
+        && stage.required_outputs.every(required => universalArtAssetProviderPipelineOutputMatches(required, output.actual_outputs)));
+      const runtimeRoute = ['EXTERNAL_RUNTIME_BOUND', 'INJECTED_RUNTIME_BOUND'].includes(stage.route_status);
+      const expectedAttempted = runtimeRoute && ['COMPLETED', 'FAILED'].includes(stage.status);
+      const expectedPerformed = isHexRoot(stage.result_root) && stage.job_state === 'COMPLETED';
+      const executionTruthfulness = stage.execution_attempted === expectedAttempted
+        && stage.execution_performed === expectedPerformed
+        && stage.runtime_execution_performed === expectedPerformed
+        && (stage.status === 'CONTRACT_ONLY' ? !stage.execution_attempted && !stage.execution_performed : true)
+        && (stage.status === 'COMPLETED' ? stage.execution_attempted && stage.execution_performed : true)
+        && (stage.status === 'FAILED' ? stage.execution_attempted === runtimeRoute : true);
+      const expectedStageChecks = {
+        provider_binding: providerBinding,
+        request_binding: requestBinding,
+        input_binding: inputBinding,
+        result_binding: resultBinding,
+        output_contract: expectedOutputContract,
+        materialization_integrity: universalArtAssetProviderPipelineExecutionOutputIntegrity(output),
+        execution_truthfulness: executionTruthfulness,
+        no_silent_fallback: UNIVERSAL_ART_ASSET_PROVIDER_PIPELINE_ROUTE_STATUSES.includes(stage.route_status),
+        authority_boundary: stage.candidate_only === true && stage.authoritative === false
+      };
+      const stageChecks = record(stage.checks);
+      for (const [key, value] of Object.entries(expectedStageChecks)) check(stageChecks[key] === value, `PROVIDER_PIPELINE_EXECUTION_STAGE_CHECK_${key.toUpperCase()}_MISMATCH:${index}`);
+    }
+    const output = record(receipt.output);
+    const expectedOutput = universalArtAssetProviderPipelineExecutionOutputAggregate(stages);
+    const outputCopy = clone(output);
+    const actualOutputRoot = outputCopy.output_root;
+    delete outputCopy.output_root;
+    check(isHexRoot(actualOutputRoot) && actualOutputRoot === rootHash(outputCopy), 'PROVIDER_PIPELINE_EXECUTION_OUTPUT_ROOT_INVALID');
+    check(JSON.stringify(outputCopy) === JSON.stringify({...clone(expectedOutput), output_root: undefined}), 'PROVIDER_PIPELINE_EXECUTION_OUTPUT_CONTENT_INVALID');
+    const requiredStages = stages.filter(stage => stage.required);
+    const expectedChecks = {
+      pipeline_binding: isHexRoot(receipt.pipeline_root) && stages.every(stage => stage.pipeline_root === receipt.pipeline_root),
+      stage_order: stages.every((stage, index) => stage.index === index && stage.input_stage_id === (index > 0 ? stages[index - 1].stage_id : null)),
+      required_stage_execution: requiredStages.length > 0 && requiredStages.every(stage => stage.status === 'COMPLETED' && stage.execution_performed === true),
+      stage_output_contracts: requiredStages.length > 0 && requiredStages.every(stage => stage.checks.output_contract === true),
+      input_chaining: stages.every(stage => stage.checks.input_binding === true),
+      execution_truthfulness: stages.every(stage => stage.checks.execution_truthfulness === true),
+      no_silent_fallback: stages.every(stage => stage.checks.no_silent_fallback === true),
+      output_integrity: isHexRoot(actualOutputRoot) && actualOutputRoot === rootHash(outputCopy),
+      authority_boundary: stages.every(stage => stage.candidate_only === true && stage.authoritative === false && stage.checks.authority_boundary === true)
+    };
+    const receiptChecks = record(receipt.checks);
+    check(Object.keys(expectedChecks).every(key => typeof receiptChecks[key] === 'boolean'), 'PROVIDER_PIPELINE_EXECUTION_CHECKS_INVALID');
+    for (const [key, value] of Object.entries(expectedChecks)) check(receiptChecks[key] === value, `PROVIDER_PIPELINE_EXECUTION_CHECK_${key.toUpperCase()}_MISMATCH`);
+    const expectedStatus = universalArtAssetProviderPipelineExecutionExpectedStatus(stages);
+    check(receipt.status === expectedStatus, 'PROVIDER_PIPELINE_EXECUTION_STATUS_MISMATCH');
+    check(receipt.execution_attempted === stages.some(stage => stage.execution_attempted), 'PROVIDER_PIPELINE_EXECUTION_ATTEMPTED_MISMATCH');
+    check(receipt.execution_performed === (receipt.status === 'CANDIDATE_PROVIDER_PIPELINE_EXECUTED'), 'PROVIDER_PIPELINE_EXECUTION_PERFORMED_MISMATCH');
+    check(receipt.runtime_ready === (requiredStages.length > 0 && requiredStages.every(stage => stage.status === 'COMPLETED')), 'PROVIDER_PIPELINE_EXECUTION_RUNTIME_READY_MISMATCH');
+    const summary = universalArtAssetProviderPipelineExecutionSummary(stages);
+    for (const [key, value] of Object.entries(summary)) check(receipt.summary?.[key] === value, `PROVIDER_PIPELINE_EXECUTION_SUMMARY_${key.toUpperCase()}_MISMATCH`);
+    check(receipt.candidate_only === true && receipt.authoritative === false && receipt.canonical_write_authorized === false, 'PROVIDER_PIPELINE_EXECUTION_AUTHORITY_INVALID');
+    check(receipt.aaa_ready === false && receipt.release_ready === false, 'PROVIDER_PIPELINE_EXECUTION_READINESS_ESCALATION');
+    check(receipt.authority?.canonical_owner === 'RNCS' && receipt.authority?.representation_owner === 'URRF'
+      && receipt.authority?.provider_can_write_authoritative_world_state === false
+      && receipt.authority?.provider_can_commit === false
+      && receipt.authority?.acceptance_can_commit === false
+      && receipt.authority?.rncs_authority_required === true, 'PROVIDER_PIPELINE_EXECUTION_PROVIDER_AUTHORITY_INVALID');
+    const copy = clone(receipt);
+    const actual = copy.execution_root;
+    delete copy.execution_root;
+    check(isHexRoot(actual) && actual === rootHash(copy), 'PROVIDER_PIPELINE_EXECUTION_ROOT_MISMATCH');
+    if (genome) {
+      const genomeVerification = verifyUniversalArtAssetGenome(genome);
+      check(genomeVerification.valid && genome.asset_id === receipt.asset_id && genome.asset_profile === receipt.asset_profile && genome.quality_tier === receipt.quality_tier && genome.genome_root === receipt.genome_root, 'PROVIDER_PIPELINE_EXECUTION_GENOME_BINDING_INVALID');
+    }
+  } catch (error) {
+    errors.push(`VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, execution_root: receipt.execution_root ?? null};
 }
 
 function batchAssetKey(input, index) {

@@ -1,0 +1,341 @@
+{
+  "format": "urrf.universal-art-asset-provider-pipeline-execution.v0.1",
+  "version": "0.1.0",
+  "execution_id": "urrf-universal-art-asset-provider-pipeline-execution:a838e6b770294bf2f95ee1c3",
+  "source": "urrf-provider-pipeline-executor",
+  "asset_id": "asset:5933e3f67a10f0ff0c398dd4",
+  "asset_profile": "character",
+  "quality_tier": "AAA",
+  "genome_root": "cb856fa4ffb32a1f29a2b8f74c60ae97fe0d150e04a8a47c8cbdf4b7c59d150a",
+  "pipeline_root": "374100fc42e762d27fce8057a018929cfe95ddc90c77f45e3ee26ed64b3ed69c",
+  "stage_count": 2,
+  "stages": [
+    {
+      "index": 0,
+      "stage_id": "base_generation",
+      "stage_kind": "BASE_GENERATION",
+      "required": true,
+      "input_stage_id": null,
+      "asset_id": "asset:5933e3f67a10f0ff0c398dd4",
+      "pipeline_root": "374100fc42e762d27fce8057a018929cfe95ddc90c77f45e3ee26ed64b3ed69c",
+      "provider_id": "provider:test:integration-pipeline-base",
+      "provider_root": "e46cf32d41144e7a5d7f5d65f6abf45e305dd0b0ec20f935ee42eeea24a0830d",
+      "provider_source": "injected-provider",
+      "route_status": "INJECTED_RUNTIME_BOUND",
+      "runtime_binding": "EXECUTOR_INJECTED",
+      "operation": "generate",
+      "request": {
+        "format": "urrf.universal-art-asset-provider-pipeline-execution.v0.1",
+        "version": "0.1.0",
+        "request_kind": "STAGE_REQUEST",
+        "asset_id": "asset:5933e3f67a10f0ff0c398dd4",
+        "asset_profile": "character",
+        "quality_tier": "AAA",
+        "genome_root": "cb856fa4ffb32a1f29a2b8f74c60ae97fe0d150e04a8a47c8cbdf4b7c59d150a",
+        "pipeline_root": "374100fc42e762d27fce8057a018929cfe95ddc90c77f45e3ee26ed64b3ed69c",
+        "stage_id": "base_generation",
+        "stage_kind": "BASE_GENERATION",
+        "input_stage_id": null,
+        "input_result_root": null,
+        "input_output_root": null,
+        "provider_id": "provider:test:integration-pipeline-base",
+        "provider_root": "e46cf32d41144e7a5d7f5d65f6abf45e305dd0b0ec20f935ee42eeea24a0830d",
+        "provider_source": "injected-provider",
+        "operation": "generate",
+        "target_quality_tier": "PRODUCTION",
+        "candidate_only": true,
+        "authoritative": false,
+        "request_root": "5ee129d5031768e9487e96f17eae88dcb5962f57a395b96887f43d7e1da94acf"
+      },
+      "status": "COMPLETED",
+      "execution_attempted": true,
+      "execution_performed": true,
+      "runtime_execution_performed": true,
+      "job_root": "da66ae439af5a24f0ad30d13a949b007d7c66fb6f97c406da016ac217d4a9ccc",
+      "job_state": "COMPLETED",
+      "result_root": "2454c43d986ff69dbb342259a5cab301b6ce7e715f6e8f35b36333a6995ed119",
+      "failure_code": null,
+      "failure_root": null,
+      "output": {
+        "result_root": "2454c43d986ff69dbb342259a5cab301b6ce7e715f6e8f35b36333a6995ed119",
+        "result_asset_id": "asset:5933e3f67a10f0ff0c398dd4",
+        "actual_outputs": [
+          "mesh-glb",
+          "pbr-base-color",
+          "pbr-texture-pack"
+        ],
+        "file_roots": [
+          {
+            "path": "generate/mesh-glb.json",
+            "role": "mesh-glb",
+            "sha256": "29b29a3a85408cdc447133e786369a224684e34b64027f10af1172f6783e1912",
+            "byte_length": 88
+          },
+          {
+            "path": "generate/pbr-base-color.json",
+            "role": "pbr-base-color",
+            "sha256": "11f5131ffd0b190e67bb9be9347b374ae74bbfc0eb734bceeaabdf73d31bc588",
+            "byte_length": 94
+          }
+        ],
+        "materialization_path": "provider-output",
+        "materialization_root": "f5b94d0d348ed718a45fe8ca4113ac2f4a628925a2a071e89bcb10e844d57def",
+        "materialized_file_count": 2,
+        "materialized_file_roots": [
+          {
+            "path": "provider-output/generate/mesh-glb.json",
+            "role": "mesh-glb",
+            "byte_length": 88,
+            "sha256": "ceaa887c5a8e228b55f9d7230b3958288a57a63cf42f65758d98cd65d02eab46",
+            "declared_sha256": "29b29a3a85408cdc447133e786369a224684e34b64027f10af1172f6783e1912"
+          },
+          {
+            "path": "provider-output/generate/pbr-base-color.json",
+            "role": "pbr-base-color",
+            "byte_length": 94,
+            "sha256": "748166b238bc365be1066f318d06c230d3595f9f7afd2e43234fb5f309f1aedd",
+            "declared_sha256": "11f5131ffd0b190e67bb9be9347b374ae74bbfc0eb734bceeaabdf73d31bc588"
+          }
+        ],
+        "materialization_skipped": [],
+        "required_outputs": [
+          "mesh-glb",
+          "pbr-texture-pack"
+        ],
+        "output_contract_pass": true,
+        "output_root": "eba8740d0875d45c941ea6c5282838461440d8bc94ef6fcd359bcc4af17aa443"
+      },
+      "required_outputs": [
+        "mesh-glb",
+        "pbr-texture-pack"
+      ],
+      "candidate_only": true,
+      "authoritative": false,
+      "checks": {
+        "provider_binding": true,
+        "request_binding": true,
+        "input_binding": true,
+        "result_binding": true,
+        "output_contract": true,
+        "materialization_integrity": true,
+        "execution_truthfulness": true,
+        "no_silent_fallback": true,
+        "authority_boundary": true
+      },
+      "stage_root": "1140057312b71ec07f66ca6a8051874cd19c56be9450a5ceacd12450da536b09"
+    },
+    {
+      "index": 1,
+      "stage_id": "rigging_animation",
+      "stage_kind": "RIGGING_ANIMATION",
+      "required": true,
+      "input_stage_id": "base_generation",
+      "asset_id": "asset:5933e3f67a10f0ff0c398dd4",
+      "pipeline_root": "374100fc42e762d27fce8057a018929cfe95ddc90c77f45e3ee26ed64b3ed69c",
+      "provider_id": "provider:test:integration-pipeline-rig",
+      "provider_root": "48f48309c2c3ec1297bec7812d1bab7ceaf88c803aa9dfc8181ee3935eb38fa7",
+      "provider_source": "injected-provider",
+      "route_status": "INJECTED_RUNTIME_BOUND",
+      "runtime_binding": "EXECUTOR_INJECTED",
+      "operation": "rig",
+      "request": {
+        "format": "urrf.universal-art-asset-provider-pipeline-execution.v0.1",
+        "version": "0.1.0",
+        "request_kind": "STAGE_REQUEST",
+        "asset_id": "asset:5933e3f67a10f0ff0c398dd4",
+        "asset_profile": "character",
+        "quality_tier": "AAA",
+        "genome_root": "cb856fa4ffb32a1f29a2b8f74c60ae97fe0d150e04a8a47c8cbdf4b7c59d150a",
+        "pipeline_root": "374100fc42e762d27fce8057a018929cfe95ddc90c77f45e3ee26ed64b3ed69c",
+        "stage_id": "rigging_animation",
+        "stage_kind": "RIGGING_ANIMATION",
+        "input_stage_id": "base_generation",
+        "input_result_root": "2454c43d986ff69dbb342259a5cab301b6ce7e715f6e8f35b36333a6995ed119",
+        "input_output_root": "eba8740d0875d45c941ea6c5282838461440d8bc94ef6fcd359bcc4af17aa443",
+        "provider_id": "provider:test:integration-pipeline-rig",
+        "provider_root": "48f48309c2c3ec1297bec7812d1bab7ceaf88c803aa9dfc8181ee3935eb38fa7",
+        "provider_source": "injected-provider",
+        "operation": "rig",
+        "target_quality_tier": "PRODUCTION",
+        "candidate_only": true,
+        "authoritative": false,
+        "request_root": "dcd597832e2fb66b5a137e72d4cd1118a22b9e8361b2e0f8c5c57f7c0e3d91c0"
+      },
+      "status": "COMPLETED",
+      "execution_attempted": true,
+      "execution_performed": true,
+      "runtime_execution_performed": true,
+      "job_root": "52d6fd33cfcb74b01f96d42f8fe030a86206bff5a7efee72cef11a132f73f7a3",
+      "job_state": "COMPLETED",
+      "result_root": "6e22d12fa65a3dd5f6a9d0020f6ac29a07a7a4acbbd624a49efd44119703aad1",
+      "failure_code": null,
+      "failure_root": null,
+      "output": {
+        "result_root": "6e22d12fa65a3dd5f6a9d0020f6ac29a07a7a4acbbd624a49efd44119703aad1",
+        "result_asset_id": "asset:5933e3f67a10f0ff0c398dd4",
+        "actual_outputs": [
+          "animation-clips",
+          "rig-candidate"
+        ],
+        "file_roots": [
+          {
+            "path": "rig/animation-clips.json",
+            "role": "animation-clips",
+            "sha256": "89fac54a8c29c58429342ee2c12e4af8506b1df7c60b17306ad1af8ee18dbf5d",
+            "byte_length": 89
+          },
+          {
+            "path": "rig/rig-candidate.json",
+            "role": "rig-candidate",
+            "sha256": "6097752c319fd5903b445a07e56548bd2f05fe8b56a87647da3c0c290c18cfc9",
+            "byte_length": 87
+          }
+        ],
+        "materialization_path": "provider-output",
+        "materialization_root": "e0b74f7f11a4793f0ba26f163594d2238f16c3665f0fe3bce05f9806279da0cb",
+        "materialized_file_count": 2,
+        "materialized_file_roots": [
+          {
+            "path": "provider-output/rig/rig-candidate.json",
+            "role": "rig-candidate",
+            "byte_length": 87,
+            "sha256": "68e13701ea76ca1639539798c1afcd7d152aabb3bf741d87119c7c4c33a16953",
+            "declared_sha256": "6097752c319fd5903b445a07e56548bd2f05fe8b56a87647da3c0c290c18cfc9"
+          },
+          {
+            "path": "provider-output/rig/animation-clips.json",
+            "role": "animation-clips",
+            "byte_length": 89,
+            "sha256": "e57f7623b97638ecb3924355ca719ebeeafc9e41c5b81c5498eea367676cc71c",
+            "declared_sha256": "89fac54a8c29c58429342ee2c12e4af8506b1df7c60b17306ad1af8ee18dbf5d"
+          }
+        ],
+        "materialization_skipped": [],
+        "required_outputs": [
+          "rig-candidate",
+          "animation-clips"
+        ],
+        "output_contract_pass": true,
+        "output_root": "6c4675fa155371aa69d6ad55d25f7047eed9b6b4f27ef0cf294241a126a5e9f5"
+      },
+      "required_outputs": [
+        "rig-candidate",
+        "animation-clips"
+      ],
+      "candidate_only": true,
+      "authoritative": false,
+      "checks": {
+        "provider_binding": true,
+        "request_binding": true,
+        "input_binding": true,
+        "result_binding": true,
+        "output_contract": true,
+        "materialization_integrity": true,
+        "execution_truthfulness": true,
+        "no_silent_fallback": true,
+        "authority_boundary": true
+      },
+      "stage_root": "826da692b3b03230022f7363d523ca744fe18fd55770f8aae0065d1e21a28687"
+    }
+  ],
+  "output": {
+    "stage_output_roots": [
+      {
+        "stage_id": "base_generation",
+        "output_root": "eba8740d0875d45c941ea6c5282838461440d8bc94ef6fcd359bcc4af17aa443",
+        "result_root": "2454c43d986ff69dbb342259a5cab301b6ce7e715f6e8f35b36333a6995ed119"
+      },
+      {
+        "stage_id": "rigging_animation",
+        "output_root": "6c4675fa155371aa69d6ad55d25f7047eed9b6b4f27ef0cf294241a126a5e9f5",
+        "result_root": "6e22d12fa65a3dd5f6a9d0020f6ac29a07a7a4acbbd624a49efd44119703aad1"
+      }
+    ],
+    "composed_file_roots": [
+      {
+        "stage_id": "base_generation",
+        "path": "provider-output/generate/mesh-glb.json",
+        "role": "mesh-glb",
+        "byte_length": 88,
+        "sha256": "ceaa887c5a8e228b55f9d7230b3958288a57a63cf42f65758d98cd65d02eab46",
+        "declared_sha256": "29b29a3a85408cdc447133e786369a224684e34b64027f10af1172f6783e1912"
+      },
+      {
+        "stage_id": "base_generation",
+        "path": "provider-output/generate/pbr-base-color.json",
+        "role": "pbr-base-color",
+        "byte_length": 94,
+        "sha256": "748166b238bc365be1066f318d06c230d3595f9f7afd2e43234fb5f309f1aedd",
+        "declared_sha256": "11f5131ffd0b190e67bb9be9347b374ae74bbfc0eb734bceeaabdf73d31bc588"
+      },
+      {
+        "stage_id": "rigging_animation",
+        "path": "provider-output/rig/rig-candidate.json",
+        "role": "rig-candidate",
+        "byte_length": 87,
+        "sha256": "68e13701ea76ca1639539798c1afcd7d152aabb3bf741d87119c7c4c33a16953",
+        "declared_sha256": "6097752c319fd5903b445a07e56548bd2f05fe8b56a87647da3c0c290c18cfc9"
+      },
+      {
+        "stage_id": "rigging_animation",
+        "path": "provider-output/rig/animation-clips.json",
+        "role": "animation-clips",
+        "byte_length": 89,
+        "sha256": "e57f7623b97638ecb3924355ca719ebeeafc9e41c5b81c5498eea367676cc71c",
+        "declared_sha256": "89fac54a8c29c58429342ee2c12e4af8506b1df7c60b17306ad1af8ee18dbf5d"
+      }
+    ],
+    "materialization_roots": [
+      {
+        "stage_id": "base_generation",
+        "materialization_root": "f5b94d0d348ed718a45fe8ca4113ac2f4a628925a2a071e89bcb10e844d57def"
+      },
+      {
+        "stage_id": "rigging_animation",
+        "materialization_root": "e0b74f7f11a4793f0ba26f163594d2238f16c3665f0fe3bce05f9806279da0cb"
+      }
+    ],
+    "output_root": "5af97a0761f3a4fd2cbba8d377de56f29f1e33ec5070ce6ceda0a34f567e6ed1"
+  },
+  "summary": {
+    "stage_count": 2,
+    "required_stage_count": 2,
+    "completed_stage_count": 2,
+    "attempted_stage_count": 2,
+    "performed_stage_count": 2,
+    "contract_only_stage_count": 0,
+    "failed_stage_count": 0,
+    "skipped_stage_count": 0,
+    "not_run_stage_count": 0,
+    "optional_failure_count": 0
+  },
+  "checks": {
+    "pipeline_binding": true,
+    "stage_order": true,
+    "required_stage_execution": true,
+    "stage_output_contracts": true,
+    "input_chaining": true,
+    "execution_truthfulness": true,
+    "no_silent_fallback": true,
+    "output_integrity": true,
+    "authority_boundary": true
+  },
+  "status": "CANDIDATE_PROVIDER_PIPELINE_EXECUTED",
+  "execution_attempted": true,
+  "execution_performed": true,
+  "runtime_ready": true,
+  "candidate_only": true,
+  "authoritative": false,
+  "canonical_write_authorized": false,
+  "aaa_ready": false,
+  "release_ready": false,
+  "authority": {
+    "canonical_owner": "RNCS",
+    "representation_owner": "URRF",
+    "provider_can_write_authoritative_world_state": false,
+    "provider_can_commit": false,
+    "acceptance_can_commit": false,
+    "rncs_authority_required": true
+  },
+  "execution_root": "3a37e45568e674baa12d16423cb38dd3c15b3bdf2f2e537134016ad07afb026c"
+}
