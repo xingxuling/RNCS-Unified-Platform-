@@ -25,6 +25,8 @@ import {
   verifyUniversalArtAssetProviderExecutionReceipt,
   replayUniversalArtAssetProviderExecution,
   verifyUniversalArtAssetProviderReplayReport,
+  createUniversalArtAssetProviderPipelinePlan,
+  verifyUniversalArtAssetProviderPipelinePlan,
   verifyUniversalArtAssetProviderPreflightReport,
   verifyUniversalArtAssetProvenanceLicenseReceipt,
   verifyUniversalArtAssetQualityProof,
@@ -587,6 +589,56 @@ test('provider execution replay compares bound output roots and fails closed for
     replayReceipt: contractReplay.replayReceipt,
     genome: contract.genome
   }).valid, true);
+});
+
+test('provider pipeline plan composes profile stages without executing or escalating authority', () => {
+  const inputs = [
+    {asset_profile: 'character', asset_kind: 'character-3d', description: 'pipeline character', seed: 'pipeline-character-seed'},
+    {asset_profile: 'creature', asset_kind: 'creature-3d', description: 'pipeline creature', seed: 'pipeline-creature-seed'},
+    {asset_profile: 'prop', asset_kind: 'prop-3d', description: 'pipeline prop', seed: 'pipeline-prop-seed'},
+    {asset_profile: 'vehicle', asset_kind: 'vehicle-3d', description: 'pipeline vehicle', seed: 'pipeline-vehicle-seed'},
+    {asset_profile: 'structure', asset_kind: 'structure-3d', description: 'pipeline structure', seed: 'pipeline-structure-seed'},
+    {asset_profile: 'environment', asset_kind: 'environment-3d', description: 'pipeline environment', seed: 'pipeline-environment-seed'},
+    {asset_profile: 'vegetation', asset_kind: 'vegetation-3d', description: 'pipeline vegetation', seed: 'pipeline-vegetation-seed'},
+    {asset_profile: 'resource', asset_kind: 'resource-3d', description: 'pipeline resource', seed: 'pipeline-resource-seed'},
+    {asset_profile: 'vfx', asset_kind: 'vfx-3d', description: 'pipeline vfx', seed: 'pipeline-vfx-seed'}
+  ];
+  const plans = inputs.map(input => createUniversalArtAssetProviderPipelinePlan({
+    genome: createUniversalArtAssetGenome({...input, quality_tier: 'AAA'})
+  }));
+  assert.equal(plans.length, 9);
+  assert.equal(plans.filter(plan => plan.status === 'CANDIDATE_PROVIDER_PIPELINE_PLANNED').length, 7);
+  assert.equal(plans.filter(plan => plan.status === 'CANDIDATE_PROVIDER_PIPELINE_BLOCKED').length, 2);
+  const character = plans.find(plan => plan.asset_profile === 'character');
+  assert.equal(character.runtime_ready, true);
+  assert.deepEqual(character.stages.map(stage => stage.stage_id), ['base_generation', 'rigging_animation']);
+  assert.equal(character.stages[0].route_status, 'BUILTIN_REFERENCE');
+  assert.equal(character.stages[1].route_status, 'BUILTIN_REFERENCE');
+  const creature = plans.find(plan => plan.asset_profile === 'creature');
+  assert.equal(creature.stages[1].route_status, 'EXTERNAL_CONTRACT_ONLY');
+  assert.ok(creature.stages[1].failure_reasons.includes('OUTPUT_CONTRACT_MISSING:animation-clips'));
+  const vfx = plans.find(plan => plan.asset_profile === 'vfx');
+  assert.equal(vfx.stages[0].route_status, 'UNRESOLVED');
+  assert.ok(vfx.required_stage_blockers.some(blocker => blocker.stage_id === 'base_generation'));
+  for (const plan of plans) {
+    assert.equal(plan.execution_performed, false);
+    assert.equal(plan.candidate_only, true);
+    assert.equal(plan.authoritative, false);
+    assert.equal(verifyUniversalArtAssetProviderPipelinePlan(plan).valid, true);
+  }
+
+  const mock = createMockAssetProvider();
+  const injectedGenome = createUniversalArtAssetGenome({
+    description: 'pipeline injected prop',
+    asset_profile: 'prop',
+    asset_kind: 'prop-3d',
+    quality_tier: 'AAA',
+    seed: 'pipeline-injected-prop-seed'
+  });
+  const injectedPlan = createUniversalArtAssetProviderPipelinePlan({genome: injectedGenome, provider: mock});
+  assert.equal(injectedPlan.stages[0].route_status, 'INJECTED_RUNTIME_BOUND');
+  assert.equal(injectedPlan.runtime_ready, true);
+  assert.equal(verifyUniversalArtAssetProviderPipelinePlan(injectedPlan, {genome: injectedGenome, provider: mock}).valid, true);
 });
 
 test('acceptance gate cannot be passed by provider success alone', () => {

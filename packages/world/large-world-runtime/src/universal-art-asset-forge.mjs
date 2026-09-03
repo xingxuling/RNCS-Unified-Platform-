@@ -45,6 +45,7 @@ export const UNIVERSAL_ART_ASSET_PROFILE_COVERAGE_FORMAT = 'urrf.universal-art-a
 export const UNIVERSAL_ART_ASSET_PROVIDER_PREFLIGHT_FORMAT = 'urrf.universal-art-asset-provider-preflight.v0.1';
 export const UNIVERSAL_ART_ASSET_PROVIDER_EXECUTION_FORMAT = 'urrf.universal-art-asset-provider-execution.v0.1';
 export const UNIVERSAL_ART_ASSET_PROVIDER_REPLAY_FORMAT = 'urrf.universal-art-asset-provider-replay.v0.1';
+export const UNIVERSAL_ART_ASSET_PROVIDER_PIPELINE_FORMAT = 'urrf.universal-art-asset-provider-pipeline.v0.1';
 export const UNIVERSAL_ART_ASSET_FORGE_VERSION = '0.1.0';
 
 export const UNIVERSAL_ART_ASSET_PROFILES = Object.freeze([
@@ -76,6 +77,15 @@ const UNIVERSAL_ART_ASSET_PROVIDER_PREFLIGHT_ROUTE_STATUSES = Object.freeze([
   'EXTERNAL_RUNTIME_BOUND',
   'UNRESOLVED',
   'INCONSISTENT'
+]);
+
+const UNIVERSAL_ART_ASSET_PROVIDER_PIPELINE_ROUTE_STATUSES = Object.freeze([
+  'BUILTIN_REFERENCE',
+  'EXTERNAL_CONTRACT_ONLY',
+  'EXTERNAL_RUNTIME_BOUND',
+  'INJECTED_CONTRACT_ONLY',
+  'INJECTED_RUNTIME_BOUND',
+  'UNRESOLVED'
 ]);
 
 const UNIVERSAL_ART_ASSET_REVIEW_KINDS = Object.freeze(['ART_DIRECTION', 'HUMAN_ART']);
@@ -2031,7 +2041,7 @@ function forgeEnvelope({genome, resolution, execution, candidate, acceptance, le
   }, 'forge_root');
 }
 
-function persistForge({outDir, genome, resolution, acceptance, evidence, forge, execution, candidate, providerResult = null, workspaceVerification = null, providerExecutionReceipt = null}) {
+function persistForge({outDir, genome, resolution, acceptance, evidence, forge, execution, candidate, providerResult = null, workspaceVerification = null, providerExecutionReceipt = null, providerPipelinePlan = null}) {
   writeJson(outDir, 'universal-art-asset-genome.json', genome);
   writeJson(outDir, 'universal-art-asset-provider-resolution.json', resolution);
   writeJson(outDir, 'universal-art-asset-acceptance.json', acceptance);
@@ -2045,9 +2055,10 @@ function persistForge({outDir, genome, resolution, acceptance, evidence, forge, 
   if (execution.file_inspection) writeJson(outDir, 'universal-art-asset-file-inspection.json', execution.file_inspection);
   if (providerResult) writeJson(outDir, 'universal-art-asset-provider-result.json', providerResult);
   if (providerExecutionReceipt) writeJson(outDir, 'universal-art-asset-provider-execution.json', providerExecutionReceipt);
+  if (providerPipelinePlan) writeJson(outDir, 'universal-art-asset-provider-pipeline.json', providerPipelinePlan);
 }
 
-function generateWithReferenceWorkspace({genome, resolution, outDir, options}) {
+function generateWithReferenceWorkspace({genome, resolution, outDir, options, providerPipelinePlan}) {
   const providers = Array.isArray(options.workspaceProviders) ? options.workspaceProviders : [];
   const workspace = generateAssetWorkspace(genome.ragf_intent, {
     outDir,
@@ -2121,11 +2132,11 @@ function generateWithReferenceWorkspace({genome, resolution, outDir, options}) {
   });
   const status = acceptance.pass ? 'READY_FOR_HUMAN_REVIEW' : 'BLOCKED';
   const forge = forgeEnvelope({genome, resolution, execution, candidate, acceptance, ledger: evidence.ledger, outDir, status});
-  persistForge({outDir, genome, resolution, acceptance, evidence, forge, execution, candidate, workspaceVerification, providerExecutionReceipt});
-  return {status, forge, genome, resolution, execution, workspace, workspaceVerification, candidate, acceptance, fileInspection, evidenceLedger: evidence.ledger, evidenceVerification: evidence.verification, providerExecutionReceipt};
+  persistForge({outDir, genome, resolution, acceptance, evidence, forge, execution, candidate, workspaceVerification, providerExecutionReceipt, providerPipelinePlan});
+  return {status, forge, genome, resolution, execution, workspace, workspaceVerification, candidate, acceptance, fileInspection, evidenceLedger: evidence.ledger, evidenceVerification: evidence.verification, providerExecutionReceipt, providerPipelinePlan};
 }
 
-function generateWithProvider({genome, resolution, outDir, options, adapterInfo}) {
+function generateWithProvider({genome, resolution, outDir, options, adapterInfo, providerPipelinePlan}) {
   const providerRequest = {
     format: UNIVERSAL_ART_ASSET_FORGE_FORMAT,
     universal_genome_root: genome.genome_root,
@@ -2203,11 +2214,11 @@ function generateWithProvider({genome, resolution, outDir, options, adapterInfo}
   });
   const status = acceptance.pass ? 'READY_FOR_HUMAN_REVIEW' : 'BLOCKED';
   const forge = forgeEnvelope({genome, resolution, execution: executionEnvelope, candidate, acceptance, ledger: evidence.ledger, outDir, status});
-  persistForge({outDir, genome, resolution, acceptance, evidence, forge, execution: executionEnvelope, candidate, providerResult: execution.result, providerExecutionReceipt});
-  return {status, forge, genome, resolution, execution: executionEnvelope, providerExecution: execution, candidate, providerCourt, acceptance, fileInspection, evidenceLedger: evidence.ledger, evidenceVerification: evidence.verification, materialization, providerExecutionReceipt};
+  persistForge({outDir, genome, resolution, acceptance, evidence, forge, execution: executionEnvelope, candidate, providerResult: execution.result, providerExecutionReceipt, providerPipelinePlan});
+  return {status, forge, genome, resolution, execution: executionEnvelope, providerExecution: execution, candidate, providerCourt, acceptance, fileInspection, evidenceLedger: evidence.ledger, evidenceVerification: evidence.verification, materialization, providerExecutionReceipt, providerPipelinePlan};
 }
 
-function generateBlocked({genome, resolution, outDir, execution}) {
+function generateBlocked({genome, resolution, outDir, execution, providerPipelinePlan}) {
   const acceptance = evaluateUniversalArtAssetAcceptance({genome, execution});
   const evidence = createLedger({genome, provider: null, acceptance});
   const providerExecutionReceipt = createUniversalArtAssetProviderExecutionReceipt({
@@ -2218,8 +2229,8 @@ function generateBlocked({genome, resolution, outDir, execution}) {
     evidenceLedger: evidence.ledger
   });
   const forge = forgeEnvelope({genome, resolution, execution, candidate: null, acceptance, ledger: evidence.ledger, outDir, status: 'BLOCKED'});
-  persistForge({outDir, genome, resolution, acceptance, evidence, forge, execution, candidate: null, providerExecutionReceipt});
-  return {status: 'BLOCKED', forge, genome, resolution, execution, candidate: null, acceptance, fileInspection: null, evidenceLedger: evidence.ledger, evidenceVerification: evidence.verification, providerExecutionReceipt};
+  persistForge({outDir, genome, resolution, acceptance, evidence, forge, execution, candidate: null, providerExecutionReceipt, providerPipelinePlan});
+  return {status: 'BLOCKED', forge, genome, resolution, execution, candidate: null, acceptance, fileInspection: null, evidenceLedger: evidence.ledger, evidenceVerification: evidence.verification, providerExecutionReceipt, providerPipelinePlan};
 }
 
 export function generateUniversalArtAsset(input = {}, options = {}) {
@@ -2227,6 +2238,15 @@ export function generateUniversalArtAsset(input = {}, options = {}) {
   const genome = input.format === UNIVERSAL_ART_ASSET_GENOME_FORMAT ? clone(input) : createUniversalArtAssetGenome(input);
   const genomeVerification = verifyUniversalArtAssetGenome(genome);
   if (!genomeVerification.valid) throw new GenesisError('UNIVERSAL_ART_ASSET_GENOME_INVALID', genomeVerification.errors.join(','));
+  const providerPipelinePlan = createUniversalArtAssetProviderPipelinePlan({
+    genome,
+    provider_id: options.provider_id,
+    providerId: options.providerId,
+    provider: options.providerAdapter ?? options.provider ?? null,
+    providers: options.providers ?? [],
+    provider_runners: options.providerRunners ?? {},
+    providerRunner: options.providerRunner
+  });
   const resolution = resolveUniversalArtAssetProvider({
     genome,
     provider_id: options.provider_id ?? options.providerId,
@@ -2242,6 +2262,7 @@ export function generateUniversalArtAsset(input = {}, options = {}) {
         genome,
         resolution,
         outDir,
+        providerPipelinePlan,
         execution: {
           mode: 'PROVIDER_RESOLUTION',
           status: 'FAILED',
@@ -2251,13 +2272,14 @@ export function generateUniversalArtAsset(input = {}, options = {}) {
         }
       });
     }
-    return generateWithProvider({genome, resolution, outDir, options, adapterInfo});
+    return generateWithProvider({genome, resolution, outDir, options, adapterInfo, providerPipelinePlan});
   }
-  if (PROFILE_CONTRACTS[genome.asset_profile]?.builtin_reference) return generateWithReferenceWorkspace({genome, resolution, outDir, options});
+  if (PROFILE_CONTRACTS[genome.asset_profile]?.builtin_reference) return generateWithReferenceWorkspace({genome, resolution, outDir, options, providerPipelinePlan});
   return generateBlocked({
     genome,
     resolution,
     outDir,
+    providerPipelinePlan,
     execution: {
       mode: 'PROVIDER_RESOLUTION',
       status: 'FAILED',
@@ -3080,6 +3102,456 @@ export function verifyUniversalArtAssetProviderReplayReport(report, {receipt = n
     errors.push(`VERIFY_EXCEPTION:${error.name}:${error.message}`);
   }
   return {valid: errors.length === 0, errors, replay_root: report.replay_root ?? null};
+}
+
+function universalArtAssetProviderPipelineManifests({provider = null, providers = []} = {}) {
+  const supplied = [];
+  const add = value => {
+    const manifest = value?.manifest ?? value;
+    if (manifest && typeof manifest === 'object' && !Array.isArray(manifest)) supplied.push(manifest);
+  };
+  add(provider);
+  for (const value of Array.isArray(providers) ? providers : []) add(value);
+  return supplied;
+}
+
+function universalArtAssetProviderPipelineRunnerMap({provider = null, providerRunners = {}, providerRunner = null} = {}) {
+  const runners = {...record(providerRunners)};
+  const manifest = provider?.manifest ?? provider;
+  const providerId = manifest?.id ?? manifest?.provider_id ?? null;
+  if (providerId && typeof provider?.runner === 'function' && typeof runners[providerId] !== 'function') runners[providerId] = provider.runner;
+  if (providerId && typeof providerRunner === 'function') runners[providerId] = providerRunner;
+  return runners;
+}
+
+function universalArtAssetProviderPipelineEntries({provider = null, providers = [], providerRunners = {}, providerRunner = null} = {}) {
+  const customManifests = universalArtAssetProviderPipelineManifests({provider, providers});
+  const injectedIds = new Set(customManifests.map(manifest => manifest.id ?? manifest.provider_id).filter(nonEmptyText));
+  const registry = new AssetProviderRegistry([...externalAssetProviderManifests(), ...customManifests]);
+  const runners = universalArtAssetProviderPipelineRunnerMap({provider, providerRunners, providerRunner});
+  const external = registry.list().map(manifest => {
+    const providerId = manifest.id ?? manifest.provider_id;
+    const runnerSupplied = typeof runners[providerId] === 'function';
+    const commandConfigured = Boolean(manifest.command);
+    return {
+      provider_id: providerId,
+      provider_root: manifest.manifest_root ?? manifest.provider_root ?? null,
+      provider_source: injectedIds.has(providerId) ? 'injected-provider' : 'external-provider-contract',
+      name: manifest.name ?? null,
+      version: manifest.version ?? null,
+      runtime_status: manifest.runtimeStatus ?? manifest.runtime_status ?? null,
+      runtime_binding: runnerSupplied ? 'EXECUTOR_INJECTED' : commandConfigured ? 'EXTERNAL_PROCESS' : 'CONTRACT_ONLY',
+      runner_supplied: runnerSupplied,
+      command_configured: commandConfigured,
+      capabilities: [...new Set((manifest.capabilities ?? []).map(String))].sort((left, right) => left.localeCompare(right, 'en')),
+      capability_descriptors: clone(manifest.capability_descriptors ?? []),
+      authoritative: false
+    };
+  });
+  const builtinManifest = builtinProviders().find(item => item.provider_id === 'provider:taowind:procedural-3d');
+  const builtin = builtinProviderSummary();
+  const builtinEntry = builtin
+    ? {
+      provider_id: builtin.provider_id,
+      provider_root: builtin.provider_root,
+      provider_source: 'ragf-reference-provider',
+      name: builtinManifest?.name ?? 'TaoWind Deterministic Procedural 3D',
+      version: 'reference',
+      runtime_status: 'READY_REFERENCE',
+      runtime_binding: 'BUILTIN_REFERENCE',
+      runner_supplied: false,
+      command_configured: false,
+      capabilities: clone(builtin.capabilities),
+      capability_descriptors: clone(builtinManifest?.capabilities ?? []),
+      authoritative: false
+    }
+    : null;
+  return [builtinEntry, ...external].filter(Boolean).sort((left, right) => left.provider_id.localeCompare(right.provider_id, 'en'));
+}
+
+function universalArtAssetProviderPipelineCapabilityMatches(entry, capability, aliases = {}) {
+  const alternatives = [capability, ...(Array.isArray(aliases?.[capability]) ? aliases[capability] : [])];
+  return alternatives.some(value => entry?.capabilities?.includes(value));
+}
+
+function universalArtAssetProviderPipelineDeclaredOutputs(entry) {
+  return [...new Set((entry?.capability_descriptors ?? []).flatMap(descriptor => {
+    const outputs = descriptor?.outputs ?? descriptor?.output ?? [];
+    return (Array.isArray(outputs) ? outputs : [outputs]).map(String).filter(nonEmptyText);
+  }))].sort((left, right) => left.localeCompare(right, 'en'));
+}
+
+function universalArtAssetProviderPipelineOutputMatches(requiredOutput, declaredOutputs) {
+  const value = String(requiredOutput);
+  const aliases = {
+    'mesh-glb': ['mesh-glb', 'glb', 'glb+pbr', 'model/gltf-binary'],
+    'pbr-texture-pack': ['pbr-texture-pack', 'pbr-channel-pack', 'glb+pbr', 'pbr'],
+    'rig-candidate': ['rig-candidate', 'skeleton-rig', 'rig'],
+    'animation-clips': ['animation-clips', 'animation'],
+    'refined-glb': ['refined-glb', 'glb'],
+    'asset-family': ['asset-family', 'environment-family'],
+    'glb+placement': ['glb+placement']
+  };
+  return (aliases[value] ?? [value]).some(alias => declaredOutputs.includes(alias));
+}
+
+function universalArtAssetProviderPipelineStageDefinitions(profile) {
+  const contract = profileContract(profile);
+  const worldProfile = ['structure', 'environment', 'vegetation', 'resource'].includes(profile);
+  const stages = [{
+    stage_id: 'base_generation',
+    stage_kind: 'BASE_GENERATION',
+    required: true,
+    required_capabilities: clone(contract.required_capabilities),
+    capability_aliases: {},
+    required_outputs: worldProfile ? ['asset-family', 'glb+placement'] : ['mesh-glb', 'pbr-texture-pack']
+  }];
+  if (contract.requires_rig || contract.requires_animation) {
+    stages.push({
+      stage_id: 'rigging_animation',
+      stage_kind: 'RIGGING_ANIMATION',
+      required: true,
+      required_capabilities: ['asset.rig.predict', 'asset.pose.initial'],
+      capability_aliases: {
+        'asset.rig.predict': ['asset.generate.skeleton-rig'],
+        'asset.pose.initial': ['asset.generate.animation-clips']
+      },
+      required_outputs: [
+        ...(contract.requires_rig ? ['rig-candidate'] : []),
+        ...(contract.requires_animation ? ['animation-clips'] : [])
+      ]
+    });
+  }
+  if (contract.optional_capabilities.includes('asset.refine.geometry')) {
+    stages.push({
+      stage_id: 'geometry_refinement',
+      stage_kind: 'GEOMETRY_REFINEMENT',
+      required: false,
+      required_capabilities: ['asset.refine.geometry'],
+      capability_aliases: {},
+      required_outputs: ['refined-glb']
+    });
+  }
+  return stages;
+}
+
+function universalArtAssetProviderPipelineRouteStatus(entry) {
+  if (!entry) return 'UNRESOLVED';
+  if (entry.provider_source === 'ragf-reference-provider') return 'BUILTIN_REFERENCE';
+  if (entry.provider_source === 'injected-provider') return entry.runtime_binding === 'CONTRACT_ONLY' ? 'INJECTED_CONTRACT_ONLY' : 'INJECTED_RUNTIME_BOUND';
+  return entry.runtime_binding === 'CONTRACT_ONLY' ? 'EXTERNAL_CONTRACT_ONLY' : 'EXTERNAL_RUNTIME_BOUND';
+}
+
+function universalArtAssetProviderPipelineRuntimeTruthfulness(entry, routeStatus) {
+  if (!entry) return routeStatus === 'UNRESOLVED';
+  if (routeStatus === 'BUILTIN_REFERENCE') return entry.runtime_binding === 'BUILTIN_REFERENCE' && entry.runtime_status === 'READY_REFERENCE';
+  if (routeStatus === 'EXTERNAL_CONTRACT_ONLY' || routeStatus === 'INJECTED_CONTRACT_ONLY') {
+    return entry.runtime_binding === 'CONTRACT_ONLY' && entry.runner_supplied === false && entry.command_configured === false;
+  }
+  if (routeStatus === 'EXTERNAL_RUNTIME_BOUND' || routeStatus === 'INJECTED_RUNTIME_BOUND') {
+    return entry.runtime_binding === 'EXECUTOR_INJECTED' || entry.runtime_binding === 'EXTERNAL_PROCESS';
+  }
+  return false;
+}
+
+function buildUniversalArtAssetProviderPipelinePlan({
+  pipelineId = null,
+  genome,
+  provider_id = null,
+  providerId = null,
+  provider = null,
+  providers = [],
+  provider_runners = null,
+  providerRunners = null,
+  providerRunner = null
+} = {}) {
+  const checkedGenome = genome?.format === UNIVERSAL_ART_ASSET_GENOME_FORMAT ? genome : createUniversalArtAssetGenome(genome ?? {});
+  const runners = provider_runners ?? providerRunners ?? {};
+  const resolution = resolveUniversalArtAssetProvider({
+    genome: checkedGenome,
+    provider_id,
+    providerId,
+    provider,
+    providers
+  });
+  const entries = universalArtAssetProviderPipelineEntries({provider, providers, providerRunners: runners, providerRunner});
+  const definitions = universalArtAssetProviderPipelineStageDefinitions(checkedGenome.asset_profile);
+  const stages = definitions.map((definition, index) => {
+    const isBase = definition.stage_id === 'base_generation';
+    const candidateEntries = isBase
+      ? entries.filter(entry => entry.provider_id === resolution.selected_provider_id)
+      : entries.filter(entry => definition.required_capabilities.every(capability => universalArtAssetProviderPipelineCapabilityMatches(entry, capability, definition.capability_aliases)));
+    const candidates = [...candidateEntries].sort((left, right) => {
+      const preferredSource = resolution.selected_provider_source === 'ragf-reference-provider' ? 'ragf-reference-provider' : null;
+      const sourceRank = entry => preferredSource !== null && entry.provider_source === preferredSource ? 0 : 1;
+      return sourceRank(left) - sourceRank(right) || left.provider_id.localeCompare(right.provider_id, 'en');
+    });
+    const selected = candidates[0] ?? null;
+    const routeStatus = universalArtAssetProviderPipelineRouteStatus(selected);
+    const declaredOutputs = universalArtAssetProviderPipelineDeclaredOutputs(selected);
+    const capabilityBinding = isBase
+      ? Boolean(selected)
+        && selected.provider_id === resolution.selected_provider_id
+        && selected.provider_root === resolution.selected_provider_root
+        && (selected.provider_source === 'ragf-reference-provider' || definition.required_capabilities.every(capability => universalArtAssetProviderPipelineCapabilityMatches(selected, capability, definition.capability_aliases)))
+      : Boolean(selected) && definition.required_capabilities.every(capability => universalArtAssetProviderPipelineCapabilityMatches(selected, capability, definition.capability_aliases));
+    const providerBinding = Boolean(selected) && nonEmptyText(selected.provider_id) && isHexRoot(selected.provider_root);
+    const artifactContractBinding = definition.required_outputs.every(output => universalArtAssetProviderPipelineOutputMatches(output, declaredOutputs));
+    const runtimeTruthfulness = universalArtAssetProviderPipelineRuntimeTruthfulness(selected, routeStatus);
+    const noSilentFallback = ['BUILTIN_REFERENCE', 'EXTERNAL_CONTRACT_ONLY', 'EXTERNAL_RUNTIME_BOUND', 'INJECTED_CONTRACT_ONLY', 'INJECTED_RUNTIME_BOUND', 'UNRESOLVED'].includes(routeStatus);
+    const authorityBoundary = (selected ? selected.authoritative : false) === false;
+    const runtimeReady = ['BUILTIN_REFERENCE', 'EXTERNAL_RUNTIME_BOUND', 'INJECTED_RUNTIME_BOUND'].includes(routeStatus);
+    const unresolvedCapabilities = selected
+      ? capabilityBinding
+        ? []
+        : definition.required_capabilities.filter(capability => !universalArtAssetProviderPipelineCapabilityMatches(selected, capability, definition.capability_aliases))
+      : clone(definition.required_capabilities);
+    const artifactFailures = definition.required_outputs.filter(output => !universalArtAssetProviderPipelineOutputMatches(output, declaredOutputs));
+    const failureReasons = [
+      ...unresolvedCapabilities.map(capability => `CAPABILITY_MISSING:${capability}`),
+      ...artifactFailures.map(output => `OUTPUT_CONTRACT_MISSING:${output}`),
+      ...(selected && !runtimeReady ? ['RUNTIME_NOT_BOUND'] : []),
+      ...(!selected ? ['PROVIDER_UNRESOLVED'] : [])
+    ];
+    const stage = {
+      index,
+      stage_id: definition.stage_id,
+      stage_kind: definition.stage_kind,
+      required: definition.required,
+      input_stage_id: index > 0 ? definitions[index - 1].stage_id : null,
+      required_capabilities: clone(definition.required_capabilities),
+      capability_aliases: clone(definition.capability_aliases),
+      required_outputs: clone(definition.required_outputs),
+      candidate_provider_ids: candidates.map(entry => entry.provider_id),
+      selected_provider_id: selected?.provider_id ?? null,
+      selected_provider_root: selected?.provider_root ?? null,
+      provider_source: selected?.provider_source ?? null,
+      runtime_status: selected?.runtime_status ?? null,
+      runtime_binding: selected?.runtime_binding ?? null,
+      runner_supplied: selected?.runner_supplied ?? false,
+      command_configured: selected?.command_configured ?? false,
+      declared_outputs: declaredOutputs,
+      unresolved_capabilities: unresolvedCapabilities,
+      failure_reasons: [...new Set(failureReasons)],
+      route_status: routeStatus,
+      runtime_ready: runtimeReady,
+      execution_performed: false,
+      candidate_only: true,
+      authoritative: false,
+      checks: {
+        provider_binding: providerBinding,
+        capability_binding: capabilityBinding,
+        artifact_contract_binding: artifactContractBinding,
+        runtime_truthfulness: runtimeTruthfulness,
+        no_silent_fallback: noSilentFallback,
+        authority_boundary: authorityBoundary
+      },
+      stage_root: ''
+    };
+    return seal(stage, 'stage_root');
+  });
+  const requiredStages = stages.filter(stage => stage.required);
+  const requiredStageCoverage = requiredStages.length > 0 && requiredStages.every(stage => stage.selected_provider_id !== null
+    && stage.checks.provider_binding
+    && stage.checks.capability_binding
+    && stage.checks.artifact_contract_binding);
+  const runtimeReady = requiredStages.length > 0 && requiredStages.every(stage => stage.runtime_ready);
+  const checks = {
+    genome_binding: isHexRoot(checkedGenome.genome_root),
+    resolution_binding: resolution.asset_id === checkedGenome.asset_id && resolution.genome_root === checkedGenome.genome_root && isHexRoot(resolution.resolution_root),
+    stage_count: stages.length === definitions.length && stages.length > 0,
+    unique_stage_ids: new Set(stages.map(stage => stage.stage_id)).size === stages.length,
+    required_stage_coverage: requiredStageCoverage,
+    runtime_truthfulness: stages.every(stage => stage.checks.runtime_truthfulness),
+    no_silent_fallback: stages.every(stage => stage.checks.no_silent_fallback),
+    no_execution_during_planning: stages.every(stage => stage.execution_performed === false),
+    authority_boundary: stages.every(stage => stage.checks.authority_boundary)
+  };
+  const summary = {
+    stage_count: stages.length,
+    required_stage_count: requiredStages.length,
+    resolved_stage_count: stages.filter(stage => stage.selected_provider_id !== null).length,
+    required_stage_coverage_count: requiredStages.filter(stage => stage.selected_provider_id !== null && stage.checks.provider_binding && stage.checks.capability_binding && stage.checks.artifact_contract_binding).length,
+    runtime_ready_required_stage_count: requiredStages.filter(stage => stage.runtime_ready).length,
+    contract_only_stage_count: stages.filter(stage => ['EXTERNAL_CONTRACT_ONLY', 'INJECTED_CONTRACT_ONLY'].includes(stage.route_status)).length,
+    unresolved_stage_count: stages.filter(stage => stage.route_status === 'UNRESOLVED').length,
+    blocker_count: stages.filter(stage => stage.failure_reasons.length > 0).length
+  };
+  const status = requiredStageCoverage && Object.values(checks).every(Boolean)
+    ? 'CANDIDATE_PROVIDER_PIPELINE_PLANNED'
+    : 'CANDIDATE_PROVIDER_PIPELINE_BLOCKED';
+  const plan = {
+    format: UNIVERSAL_ART_ASSET_PROVIDER_PIPELINE_FORMAT,
+    version: UNIVERSAL_ART_ASSET_FORGE_VERSION,
+    plan_id: pipelineId === null || pipelineId === undefined
+      ? stableId('urrf-universal-art-asset-provider-pipeline', {genome_root: checkedGenome.genome_root, resolution_root: resolution.resolution_root, stages})
+      : String(pipelineId).trim(),
+    source: 'urrf-provider-pipeline-planner',
+    asset_id: checkedGenome.asset_id,
+    asset_profile: checkedGenome.asset_profile,
+    quality_tier: checkedGenome.quality_tier,
+    genome_root: checkedGenome.genome_root,
+    resolution_root: resolution.resolution_root,
+    provider_registry_root: rootHash(entries.map(entry => ({provider_id: entry.provider_id, provider_root: entry.provider_root, provider_source: entry.provider_source, runtime_binding: entry.runtime_binding}))),
+    stage_count: stages.length,
+    required_stage_count: requiredStages.length,
+    stages,
+    summary,
+    required_stage_blockers: stages.filter(stage => stage.required && stage.failure_reasons.length > 0).map(stage => ({stage_id: stage.stage_id, route_status: stage.route_status, reasons: clone(stage.failure_reasons)})),
+    checks,
+    status,
+    runtime_ready: runtimeReady,
+    execution_performed: false,
+    candidate_only: true,
+    authoritative: false,
+    canonical_write_authorized: false,
+    aaa_ready: false,
+    release_ready: false,
+    authority: {
+      canonical_owner: 'RNCS',
+      representation_owner: 'URRF',
+      provider_can_write_authoritative_world_state: false,
+      provider_can_commit: false,
+      acceptance_can_commit: false,
+      rncs_authority_required: true
+    },
+    pipeline_root: ''
+  };
+  return plan;
+}
+
+/**
+ * Plan a multi-stage Provider chain without invoking any Provider. Required
+ * stages are capability/output bound; contract-only and unresolved stages are
+ * explicit blockers, while the plan remains candidate-only and non-authoritative.
+ */
+export function createUniversalArtAssetProviderPipelinePlan(input = {}) {
+  return seal(buildUniversalArtAssetProviderPipelinePlan(input), 'pipeline_root');
+}
+
+export function verifyUniversalArtAssetProviderPipelinePlan(plan, {
+  genome = null,
+  provider_id = null,
+  providerId = null,
+  provider = null,
+  providers = null,
+  provider_runners = null,
+  providerRunners = null,
+  providerRunner = null
+} = {}) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!plan || typeof plan !== 'object' || Array.isArray(plan)) return {valid: false, errors: ['PROVIDER_PIPELINE_PLAN_NOT_OBJECT'], pipeline_root: null};
+  try {
+    check(plan.format === UNIVERSAL_ART_ASSET_PROVIDER_PIPELINE_FORMAT, 'PROVIDER_PIPELINE_FORMAT_INVALID');
+    check(plan.version === UNIVERSAL_ART_ASSET_FORGE_VERSION, 'PROVIDER_PIPELINE_VERSION_INVALID');
+    check(nonEmptyText(plan.plan_id), 'PROVIDER_PIPELINE_ID_MISSING');
+    check(plan.source === 'urrf-provider-pipeline-planner', 'PROVIDER_PIPELINE_SOURCE_INVALID');
+    check(nonEmptyText(plan.asset_id), 'PROVIDER_PIPELINE_ASSET_ID_INVALID');
+    check(UNIVERSAL_ART_ASSET_PROFILES.includes(plan.asset_profile), 'PROVIDER_PIPELINE_PROFILE_INVALID');
+    check(UNIVERSAL_ART_ASSET_QUALITY_TIERS.includes(plan.quality_tier), 'PROVIDER_PIPELINE_QUALITY_TIER_INVALID');
+    check(isHexRoot(plan.genome_root) && isHexRoot(plan.resolution_root) && isHexRoot(plan.provider_registry_root), 'PROVIDER_PIPELINE_ROOT_INVALID');
+    const stages = Array.isArray(plan.stages) ? plan.stages : [];
+    check(stages.length > 0 && stages.length === plan.stage_count, 'PROVIDER_PIPELINE_STAGE_COUNT_INVALID');
+    check(plan.required_stage_count === stages.filter(stage => stage?.required === true).length, 'PROVIDER_PIPELINE_REQUIRED_STAGE_COUNT_INVALID');
+    const stageIds = stages.map(stage => stage?.stage_id);
+    check(stageIds.every(nonEmptyText) && new Set(stageIds).size === stages.length, 'PROVIDER_PIPELINE_STAGE_IDS_INVALID');
+    const stageCheckNames = ['provider_binding', 'capability_binding', 'artifact_contract_binding', 'runtime_truthfulness', 'no_silent_fallback', 'authority_boundary'];
+    for (const [index, stage] of stages.entries()) {
+      check(stage?.index === index, `PROVIDER_PIPELINE_STAGE_INDEX_INVALID:${index}`);
+      check(nonEmptyText(stage?.stage_id) && nonEmptyText(stage?.stage_kind), `PROVIDER_PIPELINE_STAGE_ID_INVALID:${index}`);
+      check(typeof stage?.required === 'boolean', `PROVIDER_PIPELINE_STAGE_REQUIRED_INVALID:${index}`);
+      check(stage?.input_stage_id === (index > 0 ? stageIds[index - 1] : null), `PROVIDER_PIPELINE_STAGE_INPUT_INVALID:${index}`);
+      check(Array.isArray(stage?.required_capabilities) && stage.required_capabilities.every(nonEmptyText), `PROVIDER_PIPELINE_STAGE_CAPABILITIES_INVALID:${index}`);
+      check(Array.isArray(stage?.required_outputs) && stage.required_outputs.every(nonEmptyText), `PROVIDER_PIPELINE_STAGE_OUTPUTS_INVALID:${index}`);
+      check(Array.isArray(stage?.candidate_provider_ids) && stage.candidate_provider_ids.every(nonEmptyText), `PROVIDER_PIPELINE_STAGE_CANDIDATES_INVALID:${index}`);
+      check(stage?.selected_provider_id === null || nonEmptyText(stage.selected_provider_id), `PROVIDER_PIPELINE_STAGE_SELECTED_PROVIDER_INVALID:${index}`);
+      check(stage?.selected_provider_root === null || isHexRoot(stage.selected_provider_root), `PROVIDER_PIPELINE_STAGE_SELECTED_ROOT_INVALID:${index}`);
+      check(stage?.provider_source === null || ['ragf-reference-provider', 'external-provider-contract', 'injected-provider'].includes(stage.provider_source), `PROVIDER_PIPELINE_STAGE_SOURCE_INVALID:${index}`);
+      check(UNIVERSAL_ART_ASSET_PROVIDER_PIPELINE_ROUTE_STATUSES.includes(stage?.route_status), `PROVIDER_PIPELINE_STAGE_ROUTE_INVALID:${index}`);
+      check(Array.isArray(stage?.declared_outputs) && stage.declared_outputs.every(nonEmptyText), `PROVIDER_PIPELINE_STAGE_DECLARED_OUTPUTS_INVALID:${index}`);
+      check(Array.isArray(stage?.unresolved_capabilities) && stage.unresolved_capabilities.every(nonEmptyText), `PROVIDER_PIPELINE_STAGE_UNRESOLVED_INVALID:${index}`);
+      check(Array.isArray(stage?.failure_reasons) && stage.failure_reasons.every(nonEmptyText), `PROVIDER_PIPELINE_STAGE_FAILURES_INVALID:${index}`);
+      check(stage?.runtime_binding === null || ['BUILTIN_REFERENCE', 'CONTRACT_ONLY', 'EXECUTOR_INJECTED', 'EXTERNAL_PROCESS', 'UNRESOLVED'].includes(stage.runtime_binding), `PROVIDER_PIPELINE_STAGE_RUNTIME_INVALID:${index}`);
+      check(typeof stage?.runner_supplied === 'boolean' && typeof stage?.command_configured === 'boolean' && typeof stage?.runtime_ready === 'boolean' && stage?.execution_performed === false, `PROVIDER_PIPELINE_STAGE_FLAGS_INVALID:${index}`);
+      const stageChecks = record(stage?.checks);
+      check(stageCheckNames.every(key => typeof stageChecks[key] === 'boolean'), `PROVIDER_PIPELINE_STAGE_CHECKS_INVALID:${index}`);
+      check(stage?.candidate_only === true && stage?.authoritative === false, `PROVIDER_PIPELINE_STAGE_AUTHORITY_INVALID:${index}`);
+      const stageCopy = clone(stage ?? {});
+      const actualStageRoot = stageCopy.stage_root;
+      delete stageCopy.stage_root;
+      check(isHexRoot(actualStageRoot) && actualStageRoot === rootHash(stageCopy), `PROVIDER_PIPELINE_STAGE_ROOT_INVALID:${index}`);
+    }
+    const requiredStages = stages.filter(stage => stage.required === true);
+    const requiredStageCoverage = requiredStages.length > 0 && requiredStages.every(stage => stage.selected_provider_id !== null
+      && stage.checks?.provider_binding === true
+      && stage.checks?.capability_binding === true
+      && stage.checks?.artifact_contract_binding === true);
+    const runtimeReady = requiredStages.length > 0 && requiredStages.every(stage => stage.runtime_ready === true);
+    const expectedChecks = {
+      genome_binding: isHexRoot(plan.genome_root),
+      resolution_binding: isHexRoot(plan.resolution_root),
+      stage_count: stages.length > 0 && stages.length === plan.stage_count,
+      unique_stage_ids: new Set(stageIds).size === stages.length,
+      required_stage_coverage: requiredStageCoverage,
+      runtime_truthfulness: stages.every(stage => stage.checks?.runtime_truthfulness === true),
+      no_silent_fallback: stages.every(stage => stage.checks?.no_silent_fallback === true),
+      no_execution_during_planning: stages.every(stage => stage.execution_performed === false),
+      authority_boundary: stages.every(stage => stage.checks?.authority_boundary === true)
+    };
+    const planChecks = record(plan.checks);
+    check(Object.keys(expectedChecks).every(key => typeof planChecks[key] === 'boolean'), 'PROVIDER_PIPELINE_CHECKS_INVALID');
+    for (const [key, value] of Object.entries(expectedChecks)) check(planChecks[key] === value, `PROVIDER_PIPELINE_CHECK_${key.toUpperCase()}_MISMATCH`);
+    check(plan.runtime_ready === runtimeReady, 'PROVIDER_PIPELINE_RUNTIME_READY_MISMATCH');
+    const expectedStatus = requiredStageCoverage && Object.values(expectedChecks).every(Boolean)
+      ? 'CANDIDATE_PROVIDER_PIPELINE_PLANNED'
+      : 'CANDIDATE_PROVIDER_PIPELINE_BLOCKED';
+    check(plan.status === expectedStatus, 'PROVIDER_PIPELINE_STATUS_MISMATCH');
+    check(plan.execution_performed === false, 'PROVIDER_PIPELINE_EXECUTION_ESCALATION');
+    check(plan.candidate_only === true && plan.authoritative === false && plan.canonical_write_authorized === false, 'PROVIDER_PIPELINE_AUTHORITY_INVALID');
+    check(plan.aaa_ready === false && plan.release_ready === false, 'PROVIDER_PIPELINE_READINESS_ESCALATION');
+    check(plan.authority?.canonical_owner === 'RNCS' && plan.authority?.representation_owner === 'URRF', 'PROVIDER_PIPELINE_OWNER_INVALID');
+    check(plan.authority?.provider_can_write_authoritative_world_state === false && plan.authority?.provider_can_commit === false && plan.authority?.acceptance_can_commit === false && plan.authority?.rncs_authority_required === true, 'PROVIDER_PIPELINE_PROVIDER_AUTHORITY_INVALID');
+    const summary = record(plan.summary);
+    check(summary.stage_count === stages.length, 'PROVIDER_PIPELINE_SUMMARY_STAGE_COUNT_MISMATCH');
+    check(summary.required_stage_count === requiredStages.length, 'PROVIDER_PIPELINE_SUMMARY_REQUIRED_COUNT_MISMATCH');
+    check(summary.resolved_stage_count === stages.filter(stage => stage.selected_provider_id !== null).length, 'PROVIDER_PIPELINE_SUMMARY_RESOLVED_COUNT_MISMATCH');
+    check(summary.required_stage_coverage_count === requiredStages.filter(stage => stage.selected_provider_id !== null && stage.checks?.provider_binding && stage.checks?.capability_binding && stage.checks?.artifact_contract_binding).length, 'PROVIDER_PIPELINE_SUMMARY_COVERAGE_COUNT_MISMATCH');
+    check(summary.runtime_ready_required_stage_count === requiredStages.filter(stage => stage.runtime_ready).length, 'PROVIDER_PIPELINE_SUMMARY_RUNTIME_COUNT_MISMATCH');
+    check(summary.contract_only_stage_count === stages.filter(stage => ['EXTERNAL_CONTRACT_ONLY', 'INJECTED_CONTRACT_ONLY'].includes(stage.route_status)).length, 'PROVIDER_PIPELINE_SUMMARY_CONTRACT_COUNT_MISMATCH');
+    check(summary.unresolved_stage_count === stages.filter(stage => stage.route_status === 'UNRESOLVED').length, 'PROVIDER_PIPELINE_SUMMARY_UNRESOLVED_COUNT_MISMATCH');
+    check(summary.blocker_count === stages.filter(stage => stage.failure_reasons.length > 0).length, 'PROVIDER_PIPELINE_SUMMARY_BLOCKER_COUNT_MISMATCH');
+    const blockers = Array.isArray(plan.required_stage_blockers) ? plan.required_stage_blockers : [];
+    check(blockers.every(blocker => nonEmptyText(blocker?.stage_id) && UNIVERSAL_ART_ASSET_PROVIDER_PIPELINE_ROUTE_STATUSES.includes(blocker?.route_status) && Array.isArray(blocker?.reasons)), 'PROVIDER_PIPELINE_BLOCKERS_INVALID');
+    check(blockers.length === requiredStages.filter(stage => stage.failure_reasons.length > 0).length, 'PROVIDER_PIPELINE_BLOCKER_COUNT_MISMATCH');
+    const copy = clone(plan);
+    const actual = copy.pipeline_root;
+    delete copy.pipeline_root;
+    check(isHexRoot(actual) && actual === rootHash(copy), 'PROVIDER_PIPELINE_ROOT_MISMATCH');
+    if (genome) {
+      const genomeVerification = verifyUniversalArtAssetGenome(genome);
+      check(genomeVerification.valid && genome.genome_root === plan.genome_root && genome.asset_id === plan.asset_id && genome.asset_profile === plan.asset_profile && genome.quality_tier === plan.quality_tier, 'PROVIDER_PIPELINE_GENOME_BINDING_INVALID');
+    }
+    const replayRequested = provider !== null || providers !== null || provider_id !== null || providerId !== null || provider_runners !== null || providerRunners !== null || providerRunner !== null;
+    if (replayRequested && genome) {
+      const expectedPlan = buildUniversalArtAssetProviderPipelinePlan({
+        pipelineId: plan.plan_id,
+        genome,
+        provider_id,
+        providerId,
+        provider,
+        providers: providers ?? [],
+        provider_runners: provider_runners,
+        providerRunners,
+        providerRunner
+      });
+      delete expectedPlan.pipeline_root;
+      check(rootHash(copy) === rootHash(expectedPlan), 'PROVIDER_PIPELINE_CONTENT_MISMATCH');
+    }
+  } catch (error) {
+    errors.push(`VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, pipeline_root: plan.pipeline_root ?? null};
 }
 
 function batchAssetKey(input, index) {

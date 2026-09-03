@@ -22,6 +22,7 @@ import {
   verifyUniversalArtAssetProviderExecutionReceipt,
   replayUniversalArtAssetProviderExecution,
   verifyUniversalArtAssetProviderReplayReport,
+  verifyUniversalArtAssetProviderPipelinePlan,
   verifyUniversalArtAssetProviderPreflightReport,
   verifyUniversalArtAssetVsrMaterialization,
   verifyUniversalArtAssetVsrProjection,
@@ -203,6 +204,9 @@ test('URRF Universal Art Asset Forge emits a rooted candidate and closes AAA cla
     replayReceipt: replay.replayReceipt,
     genome: result.genome
   }).valid, true);
+  assert.equal(result.providerPipelinePlan.status, 'CANDIDATE_PROVIDER_PIPELINE_PLANNED');
+  assert.equal(result.providerPipelinePlan.runtime_ready, true);
+  assert.equal(verifyUniversalArtAssetProviderPipelinePlan(result.providerPipelinePlan, {genome: result.genome}).valid, true);
 
   const reportBase = {
     format: 'urrf.universal-art-asset-forge-report.v0.1',
@@ -247,6 +251,7 @@ test('URRF Universal Art Asset Forge emits a rooted candidate and closes AAA cla
   writeFileSync(join(evidenceDir, 'universal-art-asset-provider-execution.json'), `${JSON.stringify(result.providerExecutionReceipt, null, 2)}\n`, 'utf8');
   writeFileSync(join(evidenceDir, 'universal-art-asset-provider-replay.json'), `${JSON.stringify(replay.report, null, 2)}\n`, 'utf8');
   writeFileSync(join(evidenceDir, 'universal-art-asset-provider-replay-execution.json'), `${JSON.stringify(replay.replayReceipt, null, 2)}\n`, 'utf8');
+  writeFileSync(join(evidenceDir, 'universal-art-asset-provider-pipeline.json'), `${JSON.stringify(result.providerPipelinePlan, null, 2)}\n`, 'utf8');
   writeFileSync(join(evidenceDir, 'universal-art-asset-genome.json'), `${JSON.stringify(result.genome, null, 2)}\n`, 'utf8');
   writeFileSync(join(evidenceDir, 'universal-art-asset-acceptance.json'), `${JSON.stringify(result.acceptance, null, 2)}\n`, 'utf8');
   writeFileSync(join(evidenceDir, 'universal-art-asset-evidence-ledger.json'), `${JSON.stringify(result.evidenceLedger, null, 2)}\n`, 'utf8');
