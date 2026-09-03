@@ -20,6 +20,8 @@ import {
   verifyUniversalArtAssetHoldoutReport,
   verifyUniversalArtAssetProfileCoverageReport,
   verifyUniversalArtAssetProviderExecutionReceipt,
+  replayUniversalArtAssetProviderExecution,
+  verifyUniversalArtAssetProviderReplayReport,
   verifyUniversalArtAssetProviderPreflightReport,
   verifyUniversalArtAssetVsrMaterialization,
   verifyUniversalArtAssetVsrProjection,
@@ -189,6 +191,18 @@ test('URRF Universal Art Asset Forge emits a rooted candidate and closes AAA cla
     evidenceLedger: result.evidenceLedger,
     fileInspection: result.fileInspection
   }).valid, true);
+  const replay = replayUniversalArtAssetProviderExecution({
+    receipt: result.providerExecutionReceipt,
+    genome: result.genome,
+    replayOutDir: mkdtempSync(join(tmpdir(), 'taowind-urrf-universal-art-forge-replay-v01-'))
+  });
+  assert.equal(replay.report.status, 'CANDIDATE_PROVIDER_REPLAY_PASS');
+  assert.equal(replay.report.comparison.output_root_match, true);
+  assert.equal(verifyUniversalArtAssetProviderReplayReport(replay.report, {
+    receipt: result.providerExecutionReceipt,
+    replayReceipt: replay.replayReceipt,
+    genome: result.genome
+  }).valid, true);
 
   const reportBase = {
     format: 'urrf.universal-art-asset-forge-report.v0.1',
@@ -231,6 +245,8 @@ test('URRF Universal Art Asset Forge emits a rooted candidate and closes AAA cla
   mkdirSync(evidenceDir, {recursive: true});
   writeFileSync(join(evidenceDir, 'universal-art-asset-forge-report.json'), `${JSON.stringify(report, null, 2)}\n`, 'utf8');
   writeFileSync(join(evidenceDir, 'universal-art-asset-provider-execution.json'), `${JSON.stringify(result.providerExecutionReceipt, null, 2)}\n`, 'utf8');
+  writeFileSync(join(evidenceDir, 'universal-art-asset-provider-replay.json'), `${JSON.stringify(replay.report, null, 2)}\n`, 'utf8');
+  writeFileSync(join(evidenceDir, 'universal-art-asset-provider-replay-execution.json'), `${JSON.stringify(replay.replayReceipt, null, 2)}\n`, 'utf8');
   writeFileSync(join(evidenceDir, 'universal-art-asset-genome.json'), `${JSON.stringify(result.genome, null, 2)}\n`, 'utf8');
   writeFileSync(join(evidenceDir, 'universal-art-asset-acceptance.json'), `${JSON.stringify(result.acceptance, null, 2)}\n`, 'utf8');
   writeFileSync(join(evidenceDir, 'universal-art-asset-evidence-ledger.json'), `${JSON.stringify(result.evidenceLedger, null, 2)}\n`, 'utf8');

@@ -44,6 +44,7 @@ export const UNIVERSAL_ART_ASSET_HOLDOUT_FORMAT = 'urrf.universal-art-asset-hold
 export const UNIVERSAL_ART_ASSET_PROFILE_COVERAGE_FORMAT = 'urrf.universal-art-asset-profile-coverage.v0.1';
 export const UNIVERSAL_ART_ASSET_PROVIDER_PREFLIGHT_FORMAT = 'urrf.universal-art-asset-provider-preflight.v0.1';
 export const UNIVERSAL_ART_ASSET_PROVIDER_EXECUTION_FORMAT = 'urrf.universal-art-asset-provider-execution.v0.1';
+export const UNIVERSAL_ART_ASSET_PROVIDER_REPLAY_FORMAT = 'urrf.universal-art-asset-provider-replay.v0.1';
 export const UNIVERSAL_ART_ASSET_FORGE_VERSION = '0.1.0';
 
 export const UNIVERSAL_ART_ASSET_PROFILES = Object.freeze([
@@ -2773,6 +2774,312 @@ export function verifyUniversalArtAssetProviderExecutionReceipt(receipt, {
     errors.push(`VERIFY_EXCEPTION:${error.name}:${error.message}`);
   }
   return {valid: errors.length === 0, errors, execution_root: receipt.execution_root ?? null};
+}
+
+function universalArtAssetProviderReplayError(error, fallbackCode = 'PROVIDER_REPLAY_FAILED') {
+  if (!error) return null;
+  return {
+    code: nonEmptyText(error.code) ? error.code : fallbackCode,
+    name: nonEmptyText(error.name) ? error.name : 'Error',
+    detail: nonEmptyText(error.message) ? error.message : null
+  };
+}
+
+function universalArtAssetProviderReplayResultVerification(result) {
+  const replayReceipt = result?.providerExecutionReceipt ?? null;
+  if (!replayReceipt) return {valid: false, errors: ['PROVIDER_REPLAY_RECEIPT_MISSING']};
+  return verifyUniversalArtAssetProviderExecutionReceipt(replayReceipt, {
+    genome: result.genome,
+    resolution: result.resolution,
+    execution: result.execution,
+    providerExecution: result.providerExecution,
+    workspaceVerification: result.workspaceVerification,
+    candidate: result.candidate,
+    providerCourt: result.providerCourt,
+    acceptance: result.acceptance,
+    evidenceLedger: result.evidenceLedger,
+    fileInspection: result.fileInspection,
+    materialization: result.materialization,
+    request: result.providerExecution?.job?.request ?? null
+  });
+}
+
+function buildUniversalArtAssetProviderReplayReport({
+  receipt,
+  initialVerification,
+  genome = null,
+  replayResult = null,
+  replayReceipt = null,
+  replayVerification = null,
+  replayAttempted = false,
+  replayError = null
+} = {}) {
+  const originalExecution = record(receipt?.execution);
+  const originalRequest = record(receipt?.request);
+  const originalOutput = record(receipt?.output);
+  const replayExecution = record(replayReceipt?.execution);
+  const replayRequest = record(replayReceipt?.request);
+  const replayOutput = record(replayReceipt?.output);
+  const genomeVerification = genome ? verifyUniversalArtAssetGenome(genome) : {valid: false, errors: ['REPLAY_GENOME_REQUIRED']};
+  const genomeBinding = genomeVerification.valid && genome.genome_root === receipt?.genome_root;
+  const requestRootMatch = isHexRoot(originalRequest.request_root)
+    && isHexRoot(replayRequest.request_root)
+    && originalRequest.request_root === replayRequest.request_root;
+  const providerBinding = receipt?.provider_id === (replayReceipt?.provider_id ?? null)
+    && receipt?.provider_root === (replayReceipt?.provider_root ?? null)
+    && receipt?.provider_source === (replayReceipt?.provider_source ?? null)
+    && originalRequest.provider_id === replayRequest.provider_id
+    && originalRequest.provider_root === replayRequest.provider_root
+    && originalRequest.provider_source === replayRequest.provider_source;
+  const modeBinding = nonEmptyText(originalExecution.mode) && originalExecution.mode === replayExecution.mode;
+  const replayExecutionPerformed = replayReceipt?.execution_performed === true;
+  const providerRuntimeReplaySatisfied = originalExecution.mode === 'RAGF_EXTERNAL_PROVIDER'
+    ? replayReceipt?.provider_runtime_performed === true
+    : true;
+  const outputRootComparable = replayExecutionPerformed
+    && providerRuntimeReplaySatisfied
+    && isHexRoot(originalOutput.output_root)
+    && isHexRoot(replayOutput.output_root);
+  const outputRootMatch = outputRootComparable && originalOutput.output_root === replayOutput.output_root;
+  const candidateRootComparable = isHexRoot(originalOutput.candidate_root) && isHexRoot(replayOutput.candidate_root);
+  const candidateRootMatch = candidateRootComparable && originalOutput.candidate_root === replayOutput.candidate_root;
+  const materializationRootMatch = originalOutput.materialization_root === replayOutput.materialization_root
+    && (originalOutput.materialization_root === null || isHexRoot(originalOutput.materialization_root));
+  const authorityBoundary = receipt?.candidate_only === true
+    && receipt?.authoritative === false
+    && receipt?.canonical_write_authorized === false
+    && replayReceipt?.candidate_only === true
+    && replayReceipt?.authoritative === false
+    && replayReceipt?.canonical_write_authorized === false
+    && receipt?.authority?.provider_can_commit === false
+    && replayReceipt?.authority?.provider_can_commit === false
+    && receipt?.authority?.rncs_authority_required === true
+    && replayReceipt?.authority?.rncs_authority_required === true;
+  const replayReceiptValid = replayVerification?.valid === true;
+  const checks = {
+    initial_receipt_valid: initialVerification?.valid === true,
+    genome_binding: genomeBinding,
+    request_binding: requestRootMatch,
+    provider_binding: providerBinding,
+    mode_binding: modeBinding,
+    replay_receipt_valid: replayReceiptValid,
+    replay_runtime_performed: replayExecutionPerformed,
+    provider_runtime_replay_satisfied: providerRuntimeReplaySatisfied,
+    output_root_comparable: outputRootComparable,
+    output_root_match: outputRootMatch,
+    authority_boundary: authorityBoundary
+  };
+  const runtimeCompleted = checks.replay_runtime_performed && checks.provider_runtime_replay_satisfied;
+  const pass = Object.values(checks).every(Boolean);
+  const status = pass
+    ? 'CANDIDATE_PROVIDER_REPLAY_PASS'
+    : runtimeCompleted
+      ? 'CANDIDATE_PROVIDER_REPLAY_FAIL'
+      : 'CANDIDATE_PROVIDER_REPLAY_NOT_RUN';
+  const errors = [];
+  if (!checks.initial_receipt_valid) errors.push('INITIAL_RECEIPT_INVALID');
+  if (!checks.genome_binding) errors.push('REPLAY_GENOME_BINDING_INVALID');
+  if (!checks.request_binding) errors.push('REPLAY_REQUEST_ROOT_MISMATCH');
+  if (!checks.provider_binding) errors.push('REPLAY_PROVIDER_BINDING_MISMATCH');
+  if (!checks.mode_binding) errors.push('REPLAY_MODE_MISMATCH');
+  if (!checks.replay_receipt_valid) errors.push('REPLAY_RECEIPT_INVALID');
+  if (!checks.replay_runtime_performed) errors.push('REPLAY_RUNTIME_NOT_PERFORMED');
+  if (!checks.provider_runtime_replay_satisfied) errors.push('REPLAY_EXTERNAL_PROVIDER_RUNTIME_NOT_PERFORMED');
+  if (!checks.output_root_comparable) errors.push('REPLAY_OUTPUT_ROOT_NOT_COMPARABLE');
+  if (!checks.output_root_match) errors.push('REPLAY_OUTPUT_ROOT_MISMATCH');
+  if (!checks.authority_boundary) errors.push('REPLAY_AUTHORITY_BOUNDARY_INVALID');
+  if (replayError) errors.push(replayError.code);
+  const comparison = {
+    request_root_match: requestRootMatch,
+    provider_binding_match: providerBinding,
+    mode_match: modeBinding,
+    candidate_root_match: candidateRootMatch,
+    materialization_root_match: materializationRootMatch,
+    output_root_match: outputRootMatch
+  };
+  const report = {
+    format: UNIVERSAL_ART_ASSET_PROVIDER_REPLAY_FORMAT,
+    version: UNIVERSAL_ART_ASSET_FORGE_VERSION,
+    replay_id: stableId('urrf-universal-art-asset-provider-replay', {
+      execution_root: receipt?.execution_root ?? null,
+      replay_execution_root: replayReceipt?.execution_root ?? null,
+      status
+    }),
+    source: 'urrf-provider-execution-replay-evaluator',
+    asset_id: receipt?.asset_id ?? genome?.asset_id ?? null,
+    asset_profile: receipt?.asset_profile ?? genome?.asset_profile ?? null,
+    quality_tier: receipt?.quality_tier ?? genome?.quality_tier ?? null,
+    original_execution_root: receipt?.execution_root ?? null,
+    replay_execution_root: replayReceipt?.execution_root ?? null,
+    original_request_root: originalRequest.request_root ?? null,
+    replay_request_root: replayRequest.request_root ?? null,
+    original_output_root: originalOutput.output_root ?? null,
+    replay_output_root: replayOutput.output_root ?? null,
+    provider_id: receipt?.provider_id ?? null,
+    provider_root: receipt?.provider_root ?? null,
+    provider_source: receipt?.provider_source ?? null,
+    execution_mode: originalExecution.mode ?? null,
+    replay_attempted: Boolean(replayAttempted),
+    replay_execution_performed: replayExecutionPerformed,
+    provider_runtime_performed: replayReceipt?.provider_runtime_performed === true,
+    provider_runtime_replay_required: originalExecution.mode === 'RAGF_EXTERNAL_PROVIDER',
+    comparison,
+    checks,
+    deterministic_claim: pass ? 'BOUNDED_OUTPUT_ROOT_EQUALITY' : 'NOT_PROVEN',
+    replay_status: replayReceipt ? (replayExecution.status ?? 'FAILED') : 'NOT_RUN',
+    status,
+    errors: [...new Set(errors)],
+    failure: replayError,
+    candidate_only: true,
+    authoritative: false,
+    canonical_write_authorized: false,
+    aaa_ready: false,
+    release_ready: false,
+    authority: {
+      canonical_owner: 'RNCS',
+      representation_owner: 'URRF',
+      provider_can_write_authoritative_world_state: false,
+      provider_can_commit: false,
+      acceptance_can_commit: false,
+      rncs_authority_required: true
+    },
+    replay_root: ''
+  };
+  return seal(report, 'replay_root');
+}
+
+/**
+ * Re-run the exact request bound by an execution receipt in a caller-supplied
+ * output directory. A replay pass proves only bounded output-root equality;
+ * it never proves AAA quality, legal clearance, human approval or authority.
+ * The replay directory is required so an evidence run cannot overwrite the
+ * original candidate workspace by accident.
+ */
+export function replayUniversalArtAssetProviderExecution({receipt, genome = null, options = {}, replay_out_dir = null, replayOutDir = null} = {}) {
+  const initialVerification = verifyUniversalArtAssetProviderExecutionReceipt(receipt);
+  let replayResult = null;
+  let replayError = null;
+  let replayAttempted = false;
+  const suppliedOptions = record(options);
+  const replayDirectory = replayOutDir ?? replay_out_dir ?? suppliedOptions.replayOutDir ?? suppliedOptions.replay_out_dir ?? null;
+  const genomeVerification = genome ? verifyUniversalArtAssetGenome(genome) : {valid: false, errors: ['REPLAY_GENOME_REQUIRED']};
+  if (!initialVerification.valid) {
+    replayError = {code: 'INITIAL_RECEIPT_INVALID', name: 'ReceiptVerificationError', detail: initialVerification.errors.join(',')};
+  } else if (!genomeVerification.valid || genome?.genome_root !== receipt.genome_root) {
+    replayError = {code: 'REPLAY_GENOME_BINDING_INVALID', name: 'GenomeVerificationError', detail: genomeVerification.errors.join(',') || 'GENOME_ROOT_MISMATCH'};
+  } else if (!nonEmptyText(replayDirectory)) {
+    replayError = {code: 'REPLAY_OUT_DIR_REQUIRED', name: 'ReplayInputError', detail: 'A separate replay_out_dir is required.'};
+  } else {
+    replayAttempted = true;
+    const generationOptions = {...suppliedOptions, outDir: replayDirectory};
+    delete generationOptions.replayOutDir;
+    delete generationOptions.replay_out_dir;
+    if (!generationOptions.provider_id && !generationOptions.providerId && receipt.provider_source !== 'ragf-reference-provider' && receipt.provider_id) {
+      generationOptions.provider_id = receipt.provider_id;
+    }
+    try {
+      replayResult = generateUniversalArtAsset(genome, generationOptions);
+    } catch (error) {
+      replayError = universalArtAssetProviderReplayError(error);
+    }
+  }
+  const replayReceipt = replayResult?.providerExecutionReceipt ?? null;
+  const replayVerification = replayReceipt
+    ? universalArtAssetProviderReplayResultVerification(replayResult)
+    : {valid: false, errors: ['PROVIDER_REPLAY_RECEIPT_MISSING']};
+  const report = buildUniversalArtAssetProviderReplayReport({
+    receipt,
+    initialVerification,
+    genome,
+    replayResult,
+    replayReceipt,
+    replayVerification,
+    replayAttempted,
+    replayError
+  });
+  return {report, replayReceipt, replayResult};
+}
+
+/**
+ * Verify the replay summary itself. Passing the original and replay receipts
+ * additionally checks the summary against the full sealed execution packets.
+ */
+export function verifyUniversalArtAssetProviderReplayReport(report, {receipt = null, replayReceipt = null, genome = null} = {}) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!report || typeof report !== 'object' || Array.isArray(report)) return {valid: false, errors: ['PROVIDER_REPLAY_REPORT_NOT_OBJECT'], replay_root: null};
+  try {
+    check(report.format === UNIVERSAL_ART_ASSET_PROVIDER_REPLAY_FORMAT, 'PROVIDER_REPLAY_FORMAT_INVALID');
+    check(report.version === UNIVERSAL_ART_ASSET_FORGE_VERSION, 'PROVIDER_REPLAY_VERSION_INVALID');
+    check(nonEmptyText(report.replay_id), 'PROVIDER_REPLAY_ID_MISSING');
+    check(report.source === 'urrf-provider-execution-replay-evaluator', 'PROVIDER_REPLAY_SOURCE_INVALID');
+    check(UNIVERSAL_ART_ASSET_PROFILES.includes(report.asset_profile), 'PROVIDER_REPLAY_PROFILE_INVALID');
+    check(UNIVERSAL_ART_ASSET_QUALITY_TIERS.includes(report.quality_tier), 'PROVIDER_REPLAY_QUALITY_TIER_INVALID');
+    check(nonEmptyText(report.asset_id), 'PROVIDER_REPLAY_ASSET_ID_INVALID');
+    check(isHexRoot(report.original_execution_root), 'PROVIDER_REPLAY_ORIGINAL_ROOT_INVALID');
+    check(report.replay_execution_root === null || isHexRoot(report.replay_execution_root), 'PROVIDER_REPLAY_REPLAY_ROOT_INVALID');
+    check(isHexRoot(report.original_request_root), 'PROVIDER_REPLAY_ORIGINAL_REQUEST_ROOT_INVALID');
+    check(report.replay_request_root === null || isHexRoot(report.replay_request_root), 'PROVIDER_REPLAY_REPLAY_REQUEST_ROOT_INVALID');
+    check(isHexRoot(report.original_output_root), 'PROVIDER_REPLAY_ORIGINAL_OUTPUT_ROOT_INVALID');
+    check(report.replay_output_root === null || isHexRoot(report.replay_output_root), 'PROVIDER_REPLAY_REPLAY_OUTPUT_ROOT_INVALID');
+    check(report.provider_id === null || nonEmptyText(report.provider_id), 'PROVIDER_REPLAY_PROVIDER_ID_INVALID');
+    check(report.provider_root === null || isHexRoot(report.provider_root), 'PROVIDER_REPLAY_PROVIDER_ROOT_INVALID');
+    check(report.provider_source === null || ['ragf-reference-provider', 'external-provider-contract', 'injected-provider'].includes(report.provider_source), 'PROVIDER_REPLAY_PROVIDER_SOURCE_INVALID');
+    check(['RAGF_REFERENCE_WORKSPACE', 'RAGF_EXTERNAL_PROVIDER', 'PROVIDER_RESOLUTION'].includes(report.execution_mode), 'PROVIDER_REPLAY_MODE_INVALID');
+    check(typeof report.replay_attempted === 'boolean' && typeof report.replay_execution_performed === 'boolean' && typeof report.provider_runtime_performed === 'boolean' && typeof report.provider_runtime_replay_required === 'boolean', 'PROVIDER_REPLAY_FLAGS_INVALID');
+    const comparison = record(report.comparison);
+    const comparisonKeys = ['request_root_match', 'provider_binding_match', 'mode_match', 'candidate_root_match', 'materialization_root_match', 'output_root_match'];
+    check(comparisonKeys.every(key => typeof comparison[key] === 'boolean'), 'PROVIDER_REPLAY_COMPARISON_INVALID');
+    check(comparison.request_root_match === (report.original_request_root === report.replay_request_root && report.replay_request_root !== null), 'PROVIDER_REPLAY_REQUEST_COMPARISON_MISMATCH');
+    check(comparison.output_root_match === (report.original_output_root === report.replay_output_root
+      && report.replay_output_root !== null
+      && report.replay_execution_performed === true
+      && (!report.provider_runtime_replay_required || report.provider_runtime_performed === true)), 'PROVIDER_REPLAY_OUTPUT_COMPARISON_MISMATCH');
+    const checks = record(report.checks);
+    const checkNames = ['initial_receipt_valid', 'genome_binding', 'request_binding', 'provider_binding', 'mode_binding', 'replay_receipt_valid', 'replay_runtime_performed', 'provider_runtime_replay_satisfied', 'output_root_comparable', 'output_root_match', 'authority_boundary'];
+    check(checkNames.every(key => typeof checks[key] === 'boolean'), 'PROVIDER_REPLAY_CHECKS_INVALID');
+    check(comparison.provider_binding_match === checks.provider_binding, 'PROVIDER_REPLAY_PROVIDER_COMPARISON_MISMATCH');
+    check(comparison.mode_match === checks.mode_binding, 'PROVIDER_REPLAY_MODE_COMPARISON_MISMATCH');
+    check(comparison.output_root_match === checks.output_root_match, 'PROVIDER_REPLAY_OUTPUT_CHECK_MISMATCH');
+    const runtimeCompleted = checks.replay_runtime_performed === true && checks.provider_runtime_replay_satisfied === true;
+    const expectedStatus = Object.values(checks).every(Boolean)
+      ? 'CANDIDATE_PROVIDER_REPLAY_PASS'
+      : runtimeCompleted
+        ? 'CANDIDATE_PROVIDER_REPLAY_FAIL'
+        : 'CANDIDATE_PROVIDER_REPLAY_NOT_RUN';
+    check(report.status === expectedStatus, 'PROVIDER_REPLAY_STATUS_MISMATCH');
+    check(report.deterministic_claim === (report.status === 'CANDIDATE_PROVIDER_REPLAY_PASS' ? 'BOUNDED_OUTPUT_ROOT_EQUALITY' : 'NOT_PROVEN'), 'PROVIDER_REPLAY_DETERMINISM_CLAIM_INVALID');
+    check(report.replay_status === 'NOT_RUN' || ['COMPLETED', 'FAILED'].includes(report.replay_status), 'PROVIDER_REPLAY_EXECUTION_STATUS_INVALID');
+    check(report.candidate_only === true && report.authoritative === false && report.canonical_write_authorized === false, 'PROVIDER_REPLAY_AUTHORITY_INVALID');
+    check(report.aaa_ready === false && report.release_ready === false, 'PROVIDER_REPLAY_READINESS_ESCALATION');
+    check(report.authority?.canonical_owner === 'RNCS' && report.authority?.representation_owner === 'URRF', 'PROVIDER_REPLAY_OWNER_INVALID');
+    check(report.authority?.provider_can_write_authoritative_world_state === false && report.authority?.provider_can_commit === false && report.authority?.acceptance_can_commit === false && report.authority?.rncs_authority_required === true, 'PROVIDER_REPLAY_PROVIDER_AUTHORITY_INVALID');
+    check(Array.isArray(report.errors), 'PROVIDER_REPLAY_ERRORS_INVALID');
+    if (report.status === 'CANDIDATE_PROVIDER_REPLAY_PASS') check(report.errors.length === 0, 'PROVIDER_REPLAY_PASS_WITH_ERRORS');
+    const copy = clone(report);
+    const actual = copy.replay_root;
+    delete copy.replay_root;
+    check(isHexRoot(actual) && actual === rootHash(copy), 'PROVIDER_REPLAY_ROOT_INVALID');
+    if (receipt) {
+      const initial = verifyUniversalArtAssetProviderExecutionReceipt(receipt, genome ? {genome} : {});
+      check(initial.valid, 'PROVIDER_REPLAY_BOUND_INITIAL_RECEIPT_INVALID');
+      check(report.original_execution_root === receipt.execution_root, 'PROVIDER_REPLAY_BOUND_INITIAL_ROOT_MISMATCH');
+      check(report.original_request_root === receipt.request?.request_root, 'PROVIDER_REPLAY_BOUND_INITIAL_REQUEST_MISMATCH');
+      check(report.original_output_root === receipt.output?.output_root, 'PROVIDER_REPLAY_BOUND_INITIAL_OUTPUT_MISMATCH');
+      check(report.provider_id === receipt.provider_id && report.provider_root === receipt.provider_root && report.provider_source === receipt.provider_source, 'PROVIDER_REPLAY_BOUND_INITIAL_PROVIDER_MISMATCH');
+    }
+    if (replayReceipt) {
+      const replay = verifyUniversalArtAssetProviderExecutionReceipt(replayReceipt, genome ? {genome} : {});
+      check(replay.valid, 'PROVIDER_REPLAY_BOUND_REPLAY_RECEIPT_INVALID');
+      check(report.replay_execution_root === replayReceipt.execution_root, 'PROVIDER_REPLAY_BOUND_REPLAY_ROOT_MISMATCH');
+      check(report.replay_request_root === replayReceipt.request?.request_root, 'PROVIDER_REPLAY_BOUND_REPLAY_REQUEST_MISMATCH');
+      check(report.replay_output_root === replayReceipt.output?.output_root, 'PROVIDER_REPLAY_BOUND_REPLAY_OUTPUT_MISMATCH');
+    }
+    if (genome) check(verifyUniversalArtAssetGenome(genome).valid && report.asset_id === genome.asset_id && report.asset_profile === genome.asset_profile && report.quality_tier === genome.quality_tier, 'PROVIDER_REPLAY_BOUND_GENOME_MISMATCH');
+  } catch (error) {
+    errors.push(`VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, replay_root: report.replay_root ?? null};
 }
 
 function batchAssetKey(input, index) {

@@ -23,6 +23,8 @@ import {
   verifyUniversalArtAssetHoldoutReport,
   verifyUniversalArtAssetProfileCoverageReport,
   verifyUniversalArtAssetProviderExecutionReceipt,
+  replayUniversalArtAssetProviderExecution,
+  verifyUniversalArtAssetProviderReplayReport,
   verifyUniversalArtAssetProviderPreflightReport,
   verifyUniversalArtAssetProvenanceLicenseReceipt,
   verifyUniversalArtAssetQualityProof,
@@ -508,6 +510,83 @@ test('provider preflight distinguishes an injected executor binding from executi
   assert.equal(report.profile_routes.find(entry => entry.asset_profile === 'vehicle').route_status, 'EXTERNAL_RUNTIME_BOUND');
   assert.equal(verifyUniversalArtAssetProviderPreflightReport(report, {provider_runners: providerRunners}).valid, true);
   assert.equal(verifyUniversalArtAssetProviderPreflightReport(report).valid, false);
+});
+
+test('provider execution replay compares bound output roots and fails closed for nondeterminism or missing runtime', () => {
+  const reference = generateUniversalArtAsset(characterInput, {
+    outDir: fs.mkdtempSync(path.join(os.tmpdir(), 'urrf-universal-art-replay-reference-first-'))
+  });
+  const referenceReplay = replayUniversalArtAssetProviderExecution({
+    receipt: reference.providerExecutionReceipt,
+    genome: reference.genome,
+    replayOutDir: fs.mkdtempSync(path.join(os.tmpdir(), 'urrf-universal-art-replay-reference-second-'))
+  });
+  assert.equal(referenceReplay.report.status, 'CANDIDATE_PROVIDER_REPLAY_PASS');
+  assert.equal(referenceReplay.report.deterministic_claim, 'BOUNDED_OUTPUT_ROOT_EQUALITY');
+  assert.equal(referenceReplay.report.comparison.output_root_match, true);
+  assert.equal(verifyUniversalArtAssetProviderReplayReport(referenceReplay.report, {
+    receipt: reference.providerExecutionReceipt,
+    replayReceipt: referenceReplay.replayReceipt,
+    genome: reference.genome
+  }).valid, true);
+
+  let invocation = 0;
+  const nondeterministicProvider = createMockAssetProvider({
+    runner: ({input}) => {
+      invocation += 1;
+      const content = Buffer.from(`nondeterministic-${invocation}`).toString('base64');
+      return {
+        asset_id: input.asset_id,
+        quality_tier: input.quality_tier,
+        files: [{name: 'mesh/lod0.glb', path: 'mesh/lod0.glb', role: 'mesh-glb', format: 'model/gltf-binary', base64: content}],
+        geometry: {triangle_count: 1, glb_valid: true},
+        pbr_channels: [],
+        evidence: {provider_success: true}
+      };
+    }
+  });
+  const nondeterministic = generateUniversalArtAsset(characterInput, {
+    outDir: fs.mkdtempSync(path.join(os.tmpdir(), 'urrf-universal-art-replay-nondeterministic-first-')),
+    provider: nondeterministicProvider
+  });
+  const nondeterministicReplay = replayUniversalArtAssetProviderExecution({
+    receipt: nondeterministic.providerExecutionReceipt,
+    genome: nondeterministic.genome,
+    options: {provider: nondeterministicProvider},
+    replayOutDir: fs.mkdtempSync(path.join(os.tmpdir(), 'urrf-universal-art-replay-nondeterministic-second-'))
+  });
+  assert.equal(nondeterministicReplay.report.status, 'CANDIDATE_PROVIDER_REPLAY_FAIL');
+  assert.equal(nondeterministicReplay.report.deterministic_claim, 'NOT_PROVEN');
+  assert.equal(nondeterministicReplay.report.comparison.output_root_match, false);
+  assert.equal(verifyUniversalArtAssetProviderReplayReport(nondeterministicReplay.report, {
+    receipt: nondeterministic.providerExecutionReceipt,
+    replayReceipt: nondeterministicReplay.replayReceipt,
+    genome: nondeterministic.genome
+  }).valid, true);
+
+  const contract = generateUniversalArtAsset({
+    description: '一辆用于重建遗迹运输的三维载具。',
+    asset_profile: 'vehicle',
+    asset_kind: 'vehicle-3d',
+    quality_tier: 'AAA',
+    seed: 'universal-art-replay-contract-seed'
+  }, {
+    outDir: fs.mkdtempSync(path.join(os.tmpdir(), 'urrf-universal-art-replay-contract-first-')),
+    provider: createTrellis2Provider()
+  });
+  const contractReplay = replayUniversalArtAssetProviderExecution({
+    receipt: contract.providerExecutionReceipt,
+    genome: contract.genome,
+    options: {provider: createTrellis2Provider()},
+    replayOutDir: fs.mkdtempSync(path.join(os.tmpdir(), 'urrf-universal-art-replay-contract-second-'))
+  });
+  assert.equal(contractReplay.report.status, 'CANDIDATE_PROVIDER_REPLAY_NOT_RUN');
+  assert.equal(contractReplay.report.provider_runtime_performed, false);
+  assert.equal(verifyUniversalArtAssetProviderReplayReport(contractReplay.report, {
+    receipt: contract.providerExecutionReceipt,
+    replayReceipt: contractReplay.replayReceipt,
+    genome: contract.genome
+  }).valid, true);
 });
 
 test('acceptance gate cannot be passed by provider success alone', () => {
