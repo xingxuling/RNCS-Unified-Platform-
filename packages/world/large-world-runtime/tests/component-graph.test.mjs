@@ -9,12 +9,14 @@ import {
   UNIVERSAL_ART_ASSET_COMPONENT_GRAPH_FORMAT,
   UNIVERSAL_ART_ASSET_COMPONENT_LOWERING_FORMAT,
   UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_DIRECTORY_FORMAT,
+  UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_REGISTRY_FORMAT,
   UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_FORMAT,
   createUniversalArtAssetComponentGraph,
   createUniversalArtAssetComponentAssembly,
   createUniversalArtAssetGenome,
   executeUniversalArtAssetComponentGraph,
   executeUniversalArtAssetComponentRepresentationImport,
+  createUniversalArtAssetComponentRepresentationImportRegistry,
   lowerUniversalArtAssetComponentGraph,
   lowerUniversalArtAssetComponentAssemblyToRepresentationDirectory,
   verifyUniversalArtAssetComponentGraph,
@@ -22,7 +24,8 @@ import {
   verifyUniversalArtAssetComponentLowering,
   verifyUniversalArtAssetComponentExecution,
   verifyUniversalArtAssetComponentRepresentationDirectory,
-  verifyUniversalArtAssetComponentRepresentationImport
+  verifyUniversalArtAssetComponentRepresentationImport,
+  verifyUniversalArtAssetComponentRepresentationImportRegistry
 } from '../src/index.mjs';
 import {AssetProviderAdapter, createAssetProviderManifest} from '@taowind/reality-asset-genesis-fabric';
 
@@ -319,25 +322,38 @@ test('URRF component graph executor reuses the Provider Pipeline and chains depe
   const directorySchema = JSON.parse(fs.readFileSync(new URL('../schemas/universal-art-asset-component-representation-directory.v0.1.schema.json', import.meta.url), 'utf8'));
   const directoryValidate = new Ajv2020({strict: false, allErrors: true}).compile(directorySchema);
   assert.equal(directoryValidate(directory), true, JSON.stringify(directoryValidate.errors));
+  const meshImporter = {
+    handler_id: 'test.deferred-gltf-import',
+    compile: async () => ({status: 'NOT_RUN', reason: 'fixture intentionally emits JSON markers instead of GLB bytes'}),
+    verify: async () => true
+  };
+  const importerRegistry = createUniversalArtAssetComponentRepresentationImportRegistry({importers: {mesh: meshImporter}});
+  assert.equal(importerRegistry.format, UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_REGISTRY_FORMAT);
+  assert.equal(verifyUniversalArtAssetComponentRepresentationImportRegistry(importerRegistry).valid, true);
   const importExecution = await executeUniversalArtAssetComponentRepresentationImport({
     directory,
     assembly,
     loadAsset: asset => fs.readFileSync(path.resolve(asset.metadata.output_directory, asset.metadata.relative_path)),
-    importers: {
-      mesh: {
-        handler_id: 'test.deferred-gltf-import',
-        compile: async () => ({status: 'NOT_RUN', reason: 'fixture intentionally emits JSON markers instead of GLB bytes'}),
-        verify: async () => true
-      }
-    }
+    importerRegistry
   });
   assert.equal(importExecution.format, UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_FORMAT);
+  assert.equal(importExecution.importer_registry_root, importerRegistry.registry_root);
   assert.equal(importExecution.status, 'CANDIDATE_COMPONENT_REPRESENTATION_IMPORT_NOT_RUN');
   assert.equal(importExecution.summary.not_run_count, 4);
-  assert.equal(verifyUniversalArtAssetComponentRepresentationImport(importExecution, {directory}).valid, true);
+  assert.equal(verifyUniversalArtAssetComponentRepresentationImport(importExecution, {directory, importerRegistry}).valid, true);
   const importSchema = JSON.parse(fs.readFileSync(new URL('../schemas/universal-art-asset-component-representation-import-execution.v0.1.schema.json', import.meta.url), 'utf8'));
   const importValidate = new Ajv2020({strict: false, allErrors: true}).compile(importSchema);
   assert.equal(importValidate(importExecution), true, JSON.stringify(importValidate.errors));
+  const registrySchema = JSON.parse(fs.readFileSync(new URL('../schemas/universal-art-asset-component-representation-import-registry.v0.1.schema.json', import.meta.url), 'utf8'));
+  const registryValidate = new Ajv2020({strict: false, allErrors: true}).compile(registrySchema);
+  assert.equal(registryValidate(structuredClone(importerRegistry)), true, JSON.stringify(registryValidate.errors));
+  const tamperedRegistry = structuredClone(importerRegistry);
+  tamperedRegistry.entries[0].handler_id = 'test.tampered-handler';
+  assert.equal(verifyUniversalArtAssetComponentRepresentationImportRegistry(tamperedRegistry).valid, false);
+  assert.throws(() => createUniversalArtAssetComponentRepresentationImportRegistry({importers: {
+    mesh: meshImporter,
+    rig: {...meshImporter, representation_kind: 'rig'}
+  }}), /HANDLER_ID_DUPLICATE/);
   const tamperedDirectory = structuredClone(directory);
   tamperedDirectory.vsr_catalog.assets[0].metadata.representation_kind = 'mesh';
   tamperedDirectory.vsr_catalog.assets[0].metadata.representation_root = root('f');

@@ -6,6 +6,7 @@ import test from 'node:test';
 import Ajv2020 from 'ajv/dist/2020.js';
 import {
   UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_DIRECTORY_FORMAT,
+  createUniversalArtAssetComponentRepresentationImportRegistry,
   executeUniversalArtAssetComponentRepresentationImport,
   createUniversalArtAssetComponentAssembly,
   createUniversalArtAssetComponentGraph,
@@ -393,15 +394,18 @@ test('component representation imports compose multiple VSR scenes under URRF tr
       verify: componentImportHandler.verify
     }
   };
+  const importerRegistry = createUniversalArtAssetComponentRepresentationImportRegistry({importers});
   const imported = await executeUniversalArtAssetComponentRepresentationImport({
     directory,
     assembly,
     requestedComponentIds: ['body', 'blade'],
     loadAsset,
-    importers
+    importerRegistry
   });
   assert.equal(imported.status, 'CANDIDATE_COMPONENT_REPRESENTATION_IMPORT_EXECUTED');
   assert.equal(imported.summary.executed_count, 2);
+  assert.equal(imported.importer_registry_root, importerRegistry.registry_root);
+  assert.equal(verifyUniversalArtAssetComponentRepresentationImport(imported, {directory, importerRegistry}).valid, true);
   assert.equal(importedScenes.size, 2);
   assert.deepEqual(imported.entries.map(entry => entry.resource_coverage_status), ['PARTIAL', 'COMPLETE']);
   assert.deepEqual(imported.entries.map(entry => [entry.metrics.texture_count, entry.metrics.material_texture_binding_count, entry.metrics.external_pbr_channel_count, entry.metrics.rig_bone_count, entry.metrics.animation_clip_count]), [[8, 5, 4, 8, 4], [8, 5, 4, 8, 4]]);
@@ -462,15 +466,17 @@ test('component representation import executes a standalone animation handler wi
       verify: handler.verify
     }
   };
+  const importerRegistry = createUniversalArtAssetComponentRepresentationImportRegistry({importers});
   const imported = await executeUniversalArtAssetComponentRepresentationImport({
     directory,
     assembly,
     requestedComponentIds: ['motion'],
     loadAsset,
-    importers
+    importerRegistry
   });
   assert.equal(imported.status, 'CANDIDATE_COMPONENT_REPRESENTATION_IMPORT_EXECUTED');
   assert.equal(imported.summary.executed_count, 1);
+  assert.equal(imported.importer_registry_root, importerRegistry.registry_root);
   assert.equal(imported.entries[0].representation_kind, 'animation');
   assert.equal(imported.entries[0].verification_status, 'HANDLER_VERIFIED');
   assert.equal(imported.entries[0].resource_coverage_status, 'PARTIAL');
@@ -483,5 +489,5 @@ test('component representation import executes a standalone animation handler wi
   assert.equal(frame.stats.meshCount, 0);
   assert.equal(frame.stats.animationClipCount, 4);
   assert.equal(frame.stats.visibleDraws, 0);
-  assert.equal(verifyUniversalArtAssetComponentRepresentationImport(imported, {directory}).valid, true);
+  assert.equal(verifyUniversalArtAssetComponentRepresentationImport(imported, {directory, importerRegistry}).valid, true);
 });

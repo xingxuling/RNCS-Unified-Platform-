@@ -38,6 +38,8 @@ export const UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_DIRECTORY_FORMAT = 'ur
 export const UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_DIRECTORY_VERSION = UNIVERSAL_ART_ASSET_COMPONENT_GRAPH_VERSION;
 export const UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_FORMAT = 'urrf.universal-art-asset-component-representation-import-execution.v0.1';
 export const UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_VERSION = UNIVERSAL_ART_ASSET_COMPONENT_GRAPH_VERSION;
+export const UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_REGISTRY_FORMAT = 'urrf.universal-art-asset-component-representation-import-registry.v0.1';
+export const UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_REGISTRY_VERSION = UNIVERSAL_ART_ASSET_COMPONENT_GRAPH_VERSION;
 
 export const UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_KINDS = Object.freeze([
   'mesh',
@@ -2329,6 +2331,98 @@ function componentRepresentationImportHandler(importers, representationKind) {
   return candidate;
 }
 
+function componentRepresentationImportRegistryHandler(registry, representationKind) {
+  if (!registry || typeof registry.resolve !== 'function') return null;
+  try {
+    return componentRepresentationImportHandler({[representationKind]: registry.resolve(representationKind)}, representationKind);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Build a candidate-only registry for representation consumer handlers. The
+ * sealed manifest is portable; the non-enumerable resolve method retains the
+ * current process' actual compile/verify bindings for execution.
+ */
+export function createUniversalArtAssetComponentRepresentationImportRegistry({importers = {}} = {}) {
+  fail(importers && typeof importers === 'object' && !Array.isArray(importers), 'UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_REGISTRY_IMPORTERS_INVALID');
+  const handlerEntries = Object.entries(importers).map(([representationKind, handler]) => {
+    fail(UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_KINDS.includes(representationKind), 'UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_REGISTRY_KIND_INVALID', representationKind);
+    fail(handler && typeof handler === 'object' && !Array.isArray(handler)
+      && nonEmptyText(handler.handler_id)
+      && typeof handler.compile === 'function'
+      && typeof handler.verify === 'function', 'UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_REGISTRY_HANDLER_INVALID', representationKind);
+    if (handler.representation_kind !== undefined) fail(handler.representation_kind === representationKind, 'UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_REGISTRY_HANDLER_KIND_MISMATCH', representationKind);
+    return [representationKind, handler];
+  }).sort(([left], [right]) => keySort(left, right));
+  const handlerIds = handlerEntries.map(([, handler]) => handler.handler_id);
+  fail(new Set(handlerIds).size === handlerIds.length, 'UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_REGISTRY_HANDLER_ID_DUPLICATE');
+  const registry = seal({
+    format: UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_REGISTRY_FORMAT,
+    version: UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_REGISTRY_VERSION,
+    runtime_consumer: 'VSR_REPRESENTATION_IMPORT_ADAPTER',
+    execution_mode: 'INJECTED_CONSUMER_ADAPTER',
+    entries: handlerEntries.map(([representationKind, handler]) => ({
+      representation_kind: representationKind,
+      handler_id: handler.handler_id,
+      compile_bound: true,
+      verify_bound: true,
+      candidate_only: true,
+      authoritative: false
+    })),
+    handler_count: handlerEntries.length,
+    candidate_only: true,
+    authoritative: false,
+    canonical_write_authorized: false,
+    registry_root: ''
+  }, 'registry_root');
+  const handlers = new Map(handlerEntries);
+  Object.defineProperty(registry, 'resolve', {
+    enumerable: false,
+    value: representationKind => handlers.get(representationKind) ?? null
+  });
+  return Object.freeze(registry);
+}
+
+export function verifyUniversalArtAssetComponentRepresentationImportRegistry(registry) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!registry || typeof registry !== 'object' || Array.isArray(registry)) return {valid: false, errors: ['UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_REGISTRY_NOT_OBJECT'], registry_root: null};
+  try {
+    check(registry.format === UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_REGISTRY_FORMAT, 'FORMAT_INVALID');
+    check(registry.version === UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_REGISTRY_VERSION, 'VERSION_INVALID');
+    check(registry.runtime_consumer === 'VSR_REPRESENTATION_IMPORT_ADAPTER' && registry.execution_mode === 'INJECTED_CONSUMER_ADAPTER', 'RUNTIME_CONSUMER_INVALID');
+    const entries = Array.isArray(registry.entries) ? registry.entries : [];
+    check(entries.length >= 1, 'HANDLER_ENTRIES_EMPTY');
+    check(registry.handler_count === entries.length, 'HANDLER_COUNT_MISMATCH');
+    check(entries.every(entry => UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_KINDS.includes(entry?.representation_kind)
+      && nonEmptyText(entry?.handler_id)
+      && entry?.compile_bound === true
+      && entry?.verify_bound === true
+      && entry?.candidate_only === true
+      && entry?.authoritative === false), 'HANDLER_ENTRY_INVALID');
+    check(new Set(entries.map(entry => entry?.representation_kind)).size === entries.length, 'HANDLER_KIND_DUPLICATE');
+    check(new Set(entries.map(entry => entry?.handler_id)).size === entries.length, 'HANDLER_ID_DUPLICATE');
+    check(JSON.stringify(entries) === JSON.stringify([...entries].sort((left, right) => keySort(left.representation_kind, right.representation_kind))), 'HANDLER_ORDER_INVALID');
+    check(registry.candidate_only === true && registry.authoritative === false && registry.canonical_write_authorized === false, 'AUTHORITY_BOUNDARY_INVALID');
+    const actualRoot = registry.registry_root;
+    const copy = clone(registry);
+    delete copy.registry_root;
+    check(hexRoot(actualRoot) && actualRoot === rootHash(copy), 'ROOT_MISMATCH');
+    if (registry.resolve !== undefined) {
+      check(typeof registry.resolve === 'function', 'RUNTIME_RESOLVER_INVALID');
+      check(entries.every(entry => {
+        const handler = typeof registry.resolve === 'function' ? registry.resolve(entry.representation_kind) : null;
+        return handler && handler.handler_id === entry.handler_id && typeof handler.compile === 'function' && typeof handler.verify === 'function';
+      }), 'RUNTIME_BINDING_MISMATCH');
+    }
+  } catch (error) {
+    errors.push(`VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, registry_root: registry.registry_root ?? null};
+}
+
 function componentRepresentationImportStatus(entries) {
   const statuses = entries.map(entry => entry.status);
   if (statuses.some(status => status === 'FAILED')) return statuses.some(status => status === 'EXECUTED') ? 'CANDIDATE_COMPONENT_REPRESENTATION_IMPORT_PARTIAL_FAILED' : 'CANDIDATE_COMPONENT_REPRESENTATION_IMPORT_FAILED';
@@ -2429,10 +2523,16 @@ export async function executeUniversalArtAssetComponentRepresentationImport({
   assembly = null,
   loadAsset = null,
   importers = {},
+  importerRegistry = null,
   requestedComponentIds = null
 } = {}) {
   const directoryVerification = verifyUniversalArtAssetComponentRepresentationDirectory(directory, {assembly});
   fail(directoryVerification.valid, 'UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_DIRECTORY_INVALID', directoryVerification.errors.join(','));
+  if (importerRegistry !== null) {
+    const registryVerification = verifyUniversalArtAssetComponentRepresentationImportRegistry(importerRegistry);
+    fail(registryVerification.valid, 'UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_REGISTRY_INVALID', registryVerification.errors.join(','));
+    fail(typeof importerRegistry.resolve === 'function', 'UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_REGISTRY_RUNTIME_BINDING_NOT_BOUND');
+  }
   fail(requestedComponentIds === null || Array.isArray(requestedComponentIds), 'UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_COMPONENT_IDS_INVALID');
   const allEntries = [...directory.representations];
   const selectedIds = requestedComponentIds === null ? allEntries.map(entry => entry.component_id) : [...requestedComponentIds];
@@ -2445,7 +2545,9 @@ export async function executeUniversalArtAssetComponentRepresentationImport({
   for (const componentIdValue of selectedIds) {
     const entry = entryById.get(componentIdValue);
     const assets = vsrAssets.filter(asset => asset.metadata?.component_id === componentIdValue && entry.resource_ids.includes(asset.metadata?.resource_id));
-    const handler = componentRepresentationImportHandler(importers, entry.representation_kind);
+    const handler = importerRegistry
+      ? componentRepresentationImportRegistryHandler(importerRegistry, entry.representation_kind)
+      : componentRepresentationImportHandler(importers, entry.representation_kind);
     if (entry.representation_ref === null) {
       compiledEntries.push(componentRepresentationImportEntry({entry, status: 'BLOCKED', reason: 'REPRESENTATION_REFERENCE_MISSING', verificationStatus: 'NOT_APPLICABLE'}));
       continue;
@@ -2546,7 +2648,8 @@ export async function executeUniversalArtAssetComponentRepresentationImport({
     execution_id: stableId('urrf-universal-art-asset-component-representation-import', {
       directory_root: directory.directory_root,
       component_ids: selectedIds,
-      handlers: compiledEntries.map(entry => [entry.component_id, entry.handler_id])
+      handlers: compiledEntries.map(entry => [entry.component_id, entry.handler_id]),
+      importer_registry_root: importerRegistry?.registry_root ?? null
     }),
     directory_root: directory.directory_root,
     component_assembly_root: directory.component_assembly_root,
@@ -2555,6 +2658,7 @@ export async function executeUniversalArtAssetComponentRepresentationImport({
     source_status: directory.status,
     runtime_consumer: 'VSR_REPRESENTATION_IMPORT_ADAPTER',
     execution_mode: 'INJECTED_CONSUMER_ADAPTER',
+    importer_registry_root: importerRegistry?.registry_root ?? null,
     status: componentRepresentationImportStatus(compiledEntries),
     selected_component_ids: selectedIds,
     component_count: compiledEntries.length,
@@ -2568,7 +2672,7 @@ export async function executeUniversalArtAssetComponentRepresentationImport({
   }, 'report_root');
 }
 
-export function verifyUniversalArtAssetComponentRepresentationImport(report, {directory = null} = {}) {
+export function verifyUniversalArtAssetComponentRepresentationImport(report, {directory = null, importerRegistry = null} = {}) {
   const errors = [];
   const check = (condition, code) => { if (!condition) errors.push(code); };
   if (!report || typeof report !== 'object' || Array.isArray(report)) return {valid: false, errors: ['UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_NOT_OBJECT'], report_root: null};
@@ -2579,6 +2683,12 @@ export function verifyUniversalArtAssetComponentRepresentationImport(report, {di
     check(hexRoot(report.directory_root) && hexRoot(report.component_assembly_root), 'SOURCE_ROOT_INVALID');
     check(nonEmptyText(report.scene_id) && nonEmptyText(report.world_id), 'SCENE_WORLD_INVALID');
     check(report.runtime_consumer === 'VSR_REPRESENTATION_IMPORT_ADAPTER' && report.execution_mode === 'INJECTED_CONSUMER_ADAPTER', 'RUNTIME_CONSUMER_INVALID');
+    check(report.importer_registry_root === undefined || report.importer_registry_root === null || hexRoot(report.importer_registry_root), 'IMPORTER_REGISTRY_ROOT_INVALID');
+    if (report.importer_registry_root !== undefined && report.importer_registry_root !== null && importerRegistry !== null) {
+      const registryVerification = verifyUniversalArtAssetComponentRepresentationImportRegistry(importerRegistry);
+      check(registryVerification.valid, `IMPORTER_REGISTRY_INVALID:${registryVerification.errors.join(',')}`);
+      check(importerRegistry.registry_root === report.importer_registry_root, 'IMPORTER_REGISTRY_ROOT_MISMATCH');
+    }
     const entries = Array.isArray(report.entries) ? report.entries : [];
     const selectedIds = Array.isArray(report.selected_component_ids) ? report.selected_component_ids : [];
     check(selectedIds.length >= 1 && selectedIds.length === entries.length, 'COMPONENT_COUNT_INVALID');

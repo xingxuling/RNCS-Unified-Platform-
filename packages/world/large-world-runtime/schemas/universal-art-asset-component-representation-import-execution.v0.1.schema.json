@@ -36,6 +36,7 @@
     "source_status": {"enum": ["CANDIDATE_REPRESENTATION_DIRECTORY_READY", "CANDIDATE_REPRESENTATION_DIRECTORY_BLOCKED"]},
     "runtime_consumer": {"const": "VSR_REPRESENTATION_IMPORT_ADAPTER"},
     "execution_mode": {"const": "INJECTED_CONSUMER_ADAPTER"},
+    "importer_registry_root": {"$ref": "#/$defs/nullableRoot"},
     "status": {"enum": [
       "CANDIDATE_COMPONENT_REPRESENTATION_IMPORT_EXECUTED",
       "CANDIDATE_COMPONENT_REPRESENTATION_IMPORT_PARTIAL",
