@@ -453,11 +453,11 @@ test('component representation imports compose multiple VSR scenes under URRF tr
   assert.equal(verifySpatialSceneCompositionReceipt(tampered), false);
 });
 
-test('component representation import executes a standalone animation handler with explicit mesh deferral', async () => {
+test('component representation import fuses standalone rig and animation with geometry', async () => {
   const {assembly} = createFixture({validMesh: true, includeAnimation: true, pbrMesh: true});
   const directory = lowerUniversalArtAssetComponentAssemblyToRepresentationDirectory({assembly});
   const loadAsset = asset => fs.readFileSync(path.resolve(asset.metadata.output_directory, asset.metadata.relative_path));
-  const handler = createVsrRigAnimationComponentImportHandler({requireRigForAnimation: true});
+  const handler = createVsrRigAnimationComponentImportHandler({requireRigForAnimation: true, fuseGeometry: true});
   const importedScenes = new Map();
   const importers = {
     animation: {
@@ -489,10 +489,11 @@ test('component representation import executes a standalone animation handler wi
   assert.equal(imported.entries[0].metrics.animation_clip_count, 4);
   assert.equal(imported.entries[0].metrics.animation_channel_count, 10);
   assert.equal(importedScenes.size, 1);
-  const frame = compileSpatialFrame(importedScenes.get('motion'), {width: 64, height: 64, enableShadows: false, animation: {clipId: 'animation:motion:clip:1', timeSeconds: 0.2}});
-  assert.equal(frame.stats.meshCount, 0);
+  const fusedScene = importedScenes.get('motion');
+  const frame = compileSpatialFrame(fusedScene, {width: 64, height: 64, enableShadows: false, animation: {clipId: fusedScene.animations[1].id, timeSeconds: 0.2}});
+  assert.equal(frame.stats.meshCount, 1);
   assert.equal(frame.stats.animationClipCount, 4);
-  assert.equal(frame.stats.visibleDraws, 0);
+  assert.equal(frame.stats.visibleDraws, 1);
   assert.equal(verifyUniversalArtAssetComponentRepresentationImport(imported, {directory, importerRegistry}).valid, true);
 });
 
