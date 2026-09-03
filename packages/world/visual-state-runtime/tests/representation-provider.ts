@@ -18,21 +18,26 @@ import {
 import {
   lowerVsrPointCloudCandidateToSpatialScene,
   lowerVsrCurveCandidateToSpatialScene,
+  lowerVsrGaussianSplatCandidateToSpatialScene,
   lowerVsrSdfCandidateToSpatialScene,
   lowerVsrVoxelCandidateToSpatialScene,
   renderSpatialReference,
   verifyVsrCurveSpatialScene,
   verifyVsrVoxelSpatialScene,
   verifyVsrPointCloudSpatialScene,
+  verifyVsrGaussianSplatSpatialScene,
   verifyVsrSdfSpatialScene,
   VSR_POINT_CLOUD_PAYLOAD_FORMAT,
   VSR_CURVE_PAYLOAD_FORMAT,
+  VSR_GAUSSIAN_SPLAT_PAYLOAD_FORMAT,
   VSR_SDF_PAYLOAD_FORMAT,
   VSR_VOXEL_PAYLOAD_FORMAT,
   type VSRPointCloudRepresentationCandidate,
   type VSRPointCloudSpatialSceneResult,
   type VSRCurveRepresentationCandidate,
   type VSRCurveSpatialSceneResult,
+  type VSRGaussianSplatRepresentationCandidate,
+  type VSRGaussianSplatSpatialSceneResult,
   type VSRSdfRepresentationCandidate,
   type VSRSdfSpatialSceneResult,
   type VSRVoxelRepresentationCandidate,
@@ -496,6 +501,61 @@ test('VSR lowers a fixed-grid SDF into a rooted surface mesh with logical page b
   const tampered = structuredClone(lowering) as VSRSdfSpatialSceneResult;
   tampered.scene.meshes[0]!.positions[0]! += 0.1;
   assert.equal(verifyVsrSdfSpatialScene(tampered), false);
+});
+
+test('VSR decodes bounded Gaussian records into a rooted transparent billboard candidate', async () => {
+  const records = [
+    [0, 0, 0, 0.45, 0.3, 0.2, 0, 0, 0, 1, 0.95, 0.25, 0.1, 0.72],
+    [-0.45, 0.1, 0, 0.2, 0.35, 0.25, 0, 0.15, 0, 0.9887, 0.1, 0.55, 1, 0.58],
+    [0.4, -0.1, -0.1, 0.25, 0.18, 0.4, 0.15, 0, 0, 0.9887, 0.15, 0.75, 1, 0.64]
+  ];
+  const bytes = new Uint8Array(16 + records.length * 56);
+  const view = new DataView(bytes.buffer);
+  view.setUint32(0, records.length, true);
+  records.forEach((record, index) => record.forEach((value, field) => view.setFloat32(16 + index * 56 + field * 4, value, true)));
+  const pages = [bytes.slice(0, 100), bytes.slice(100)];
+  const sourcePayloadAssetIds = ['logical:splats:page0', 'logical:splats:page1'];
+  const payloadAssetIds = ['physical:splats:page0', 'physical:splats:page1'];
+  const contentRoot = cryptographicHash(sourcePayloadAssetIds.map((assetId, index) => ({assetId, byteLength: pages[index]!.byteLength, byteRoot: cryptographicHash([...pages[index]!])})));
+  const candidateBase = {
+    format: 'vsr.non-mesh-representation-candidate.v0.1' as const,
+    version: '0.1.0' as const,
+    componentId: 'splat-cluster',
+    representationKind: 'gaussian-splat' as const,
+    profileId: 'vsr.gaussian-splat.f32rgba.v0.1',
+    payloadAssetIds,
+    sourcePayloadAssetIds,
+    payloadFormat: VSR_GAUSSIAN_SPLAT_PAYLOAD_FORMAT,
+    payloadByteLength: bytes.byteLength,
+    elementCount: records.length,
+    bounds: {min: [-1, -1, -1] as [number, number, number], max: [1, 1, 1] as [number, number, number]},
+    manifestRoot: root('d'),
+    contentRoot,
+    renderStatus: 'NOT_IMPLEMENTED' as const,
+    candidateOnly: true as const,
+    authoritative: false as const
+  };
+  const candidate = {...candidateBase, candidateRoot: cryptographicHash(candidateBase)} as VSRGaussianSplatRepresentationCandidate;
+  const assets = payloadAssetIds.map((id, index) => ({id, kind: 'representation-data', format: VSR_GAUSSIAN_SPLAT_PAYLOAD_FORMAT, metadata: {source_asset_id: sourcePayloadAssetIds[index]}})) as VSRNonMeshRepresentationAsset[];
+  const payloads = new Map<string, Uint8Array>([[payloadAssetIds[0]!, pages[0]!], [payloadAssetIds[1]!, pages[1]!]]);
+  const lowering = lowerVsrGaussianSplatCandidateToSpatialScene(candidate, {assets, payloads}, {sceneId: 'gaussian-regression', maxSplats: 3});
+  const repeat = lowerVsrGaussianSplatCandidateToSpatialScene(candidate, {assets, payloads}, {sceneId: 'gaussian-regression', maxSplats: 3});
+  const frame = renderSpatialReference(lowering.scene, {width: 96, height: 96, enableShadows: false, transparencyMode: 'weighted-blended-oit'});
+  assert.equal(lowering.renderStatus, 'CANDIDATE_CPU_GAUSSIAN_CROSS_BILLBOARD');
+  assert.equal(lowering.sourceElementCount, records.length);
+  assert.equal(lowering.splatCount, records.length);
+  assert.equal(lowering.renderableCount, records.length);
+  assert.equal(lowering.scene.meshes.length, 1);
+  assert.equal(lowering.scene.nodes.length, records.length);
+  assert.equal(frame.framePlan.stats.visibleDraws, records.length);
+  assert.equal(frame.framePlan.stats.transparentDraws, records.length);
+  assert.equal(lowering.meshRoot, repeat.meshRoot);
+  assert.equal(lowering.sceneRoot, repeat.sceneRoot);
+  assert.equal(lowering.root, repeat.root);
+  assert.equal(verifyVsrGaussianSplatSpatialScene(lowering), true);
+  const tampered = structuredClone(lowering) as VSRGaussianSplatSpatialSceneResult;
+  tampered.splats[0]!.center[0] += 0.1;
+  assert.equal(verifyVsrGaussianSplatSpatialScene(tampered), false);
 });
 
 let passed = 0;

@@ -6,6 +6,7 @@ import { packSpatialIrradianceVolumeFieldBuffer, sampleSpatialIrradianceVolumeFi
 import type { VSRSpatialIrradianceVolumeField } from './irradiance-volume-field.js';
 export * from './asset-streaming.js';
 export * from './curve-spatial.js';
+export * from './gaussian-splat-spatial.js';
 export * from './hlod-generation.js';
 export * from './particle-spatial.js';
 export * from './point-cloud-spatial.js';
