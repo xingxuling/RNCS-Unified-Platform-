@@ -10,6 +10,7 @@ import {
   createUniversalArtAssetEvidenceBundle,
   createUniversalArtAssetHoldoutReport,
   createUniversalArtAssetProfileCoverageReport,
+  createUniversalArtAssetProviderPreflightReport,
   generateUniversalArtAssetBatch,
   generateUniversalArtAsset,
   lowerUniversalArtAssetAssemblyToVsr,
@@ -18,6 +19,7 @@ import {
   verifyUniversalArtAssetBatch,
   verifyUniversalArtAssetHoldoutReport,
   verifyUniversalArtAssetProfileCoverageReport,
+  verifyUniversalArtAssetProviderPreflightReport,
   verifyUniversalArtAssetVsrMaterialization,
   verifyUniversalArtAssetVsrProjection,
   verifyUniversalArtAssetForge
@@ -365,6 +367,36 @@ test('URRF profile coverage exercises every asset family without silent Provider
   tampered.coverage_root = rootHash(tampered);
   assert.equal(verifyUniversalArtAssetProfileCoverageReport(tampered).valid, false);
   assert.equal(verifyUniversalArtAssetProfileCoverageReport(tampered, {entries}).valid, false);
+});
+
+test('URRF Provider preflight records route readiness, runtime binding, and release blockers', () => {
+  const report = createUniversalArtAssetProviderPreflightReport({
+    preflight_id: 'urrf-provider-preflight-integration-v01'
+  });
+  assert.equal(report.status, 'CANDIDATE_PROVIDER_PREFLIGHT_PASS');
+  assert.equal(report.summary.profile_count, 9);
+  assert.equal(report.summary.provider_count, 6);
+  assert.equal(report.summary.route_histogram.BUILTIN_REFERENCE_READY, 2);
+  assert.equal(report.summary.route_histogram.EXTERNAL_CONTRACT_ONLY, 6);
+  assert.equal(report.summary.route_histogram.EXTERNAL_RUNTIME_BOUND, 0);
+  assert.equal(report.summary.route_histogram.UNRESOLVED, 1);
+  assert.equal(report.summary.provider_health_histogram.CONTRACT_ONLY, 6);
+  assert.equal(report.summary.release_blocked_provider_count, 6);
+  assert.equal(report.profile_routes.find(entry => entry.asset_profile === 'environment').route_status, 'EXTERNAL_CONTRACT_ONLY');
+  assert.equal(report.profile_routes.find(entry => entry.asset_profile === 'vfx').selected_provider_id, null);
+  assert.equal(report.profile_routes.find(entry => entry.asset_profile === 'vfx').selected_provider_source, null);
+  assert.equal(report.execution_performed, false);
+  assert.equal(report.aaa_ready, false);
+  assert.equal(report.release_ready, false);
+  assert.equal(verifyUniversalArtAssetProviderPreflightReport(report).valid, true);
+  mkdirSync(evidenceDir, {recursive: true});
+  writeFileSync(join(evidenceDir, 'universal-art-asset-provider-preflight.json'), `${JSON.stringify(report, null, 2)}\n`, 'utf8');
+
+  const tampered = structuredClone(report);
+  tampered.profile_routes.find(entry => entry.asset_profile === 'environment').route_status = 'BUILTIN_REFERENCE_READY';
+  delete tampered.preflight_root;
+  tampered.preflight_root = rootHash(tampered);
+  assert.equal(verifyUniversalArtAssetProviderPreflightReport(tampered).valid, false);
 });
 
 test('URRF Universal Art Asset Forge isolates a multi-asset candidate batch and indexes reusable roots', async () => {

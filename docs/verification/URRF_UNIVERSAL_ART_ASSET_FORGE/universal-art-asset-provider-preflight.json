@@ -1,0 +1,614 @@
+{
+  "format": "urrf.universal-art-asset-provider-preflight.v0.1",
+  "version": "0.1.0",
+  "preflight_id": "urrf-provider-preflight-integration-v01",
+  "source": "urrf-provider-preflight-evaluator",
+  "expected_profiles": [
+    "character",
+    "creature",
+    "prop",
+    "vehicle",
+    "structure",
+    "environment",
+    "vegetation",
+    "resource",
+    "vfx"
+  ],
+  "providers": [
+    {
+      "provider_id": "provider:external:infinigen",
+      "provider_root": "83bdca7ae05e8330c67e2e8b80478704e36f723ee15f148046094929bce9f91d",
+      "name": "Princeton Infinigen",
+      "version": "main",
+      "provider_type": "procedural-environment",
+      "execution_mode": "external-process",
+      "declared_runtime_status": "CONTRACT_ONLY",
+      "health": {
+        "status": "CONTRACT_ONLY",
+        "runtime": "CONTRACT_ONLY"
+      },
+      "runtime_binding": "CONTRACT_ONLY",
+      "runner_supplied": false,
+      "command_configured": false,
+      "capabilities": [
+        "world.asset.building",
+        "world.asset.environment",
+        "world.asset.furniture",
+        "world.asset.generate.procedural",
+        "world.asset.rock",
+        "world.asset.room",
+        "world.asset.terrain",
+        "world.asset.vegetation"
+      ],
+      "profile_bindings": [
+        "structure",
+        "environment",
+        "vegetation",
+        "resource"
+      ],
+      "license": {
+        "code_status": "VERIFIED",
+        "dependency_status": "REQUIRES_AUDIT",
+        "model_weights_status": "REQUIRES_SEPARATE_AUDIT",
+        "data_status": "REQUIRES_SEPARATE_AUDIT",
+        "default_commercial_release": false,
+        "blocked_reasons": [
+          "DEPENDENCY_LICENSE_AUDIT_REQUIRED",
+          "MODEL_WEIGHT_LICENSE_AUDIT_REQUIRED",
+          "DEFAULT_COMMERCIAL_DEPENDENCY_DISABLED"
+        ]
+      },
+      "authoritative": false,
+      "checks": {
+        "provider_root": true,
+        "health_truthfulness": true,
+        "license_audit_binding": true,
+        "profile_binding": true,
+        "authority_boundary": true
+      },
+      "pass": true
+    },
+    {
+      "provider_id": "provider:external:make-it-animatable",
+      "provider_root": "b86d73809928fd8d78af87ebe526b396a422def02445d06ca2a5f1d6c46e4561",
+      "name": "Make-It-Animatable",
+      "version": "main",
+      "provider_type": "rigging",
+      "execution_mode": "external-process",
+      "declared_runtime_status": "CONTRACT_ONLY",
+      "health": {
+        "status": "CONTRACT_ONLY",
+        "runtime": "CONTRACT_ONLY"
+      },
+      "runtime_binding": "CONTRACT_ONLY",
+      "runner_supplied": false,
+      "command_configured": false,
+      "capabilities": [
+        "asset.pose.initial",
+        "asset.rig.predict",
+        "asset.skin.predict"
+      ],
+      "profile_bindings": [],
+      "license": {
+        "code_status": "VERIFIED",
+        "dependency_status": "REQUIRES_AUDIT",
+        "model_weights_status": "REQUIRES_SEPARATE_AUDIT",
+        "data_status": "REQUIRES_SEPARATE_AUDIT",
+        "default_commercial_release": false,
+        "blocked_reasons": [
+          "DEPENDENCY_LICENSE_AUDIT_REQUIRED",
+          "MODEL_WEIGHT_LICENSE_AUDIT_REQUIRED",
+          "DEFAULT_COMMERCIAL_DEPENDENCY_DISABLED"
+        ]
+      },
+      "authoritative": false,
+      "checks": {
+        "provider_root": true,
+        "health_truthfulness": true,
+        "license_audit_binding": true,
+        "profile_binding": true,
+        "authority_boundary": true
+      },
+      "pass": true
+    },
+    {
+      "provider_id": "provider:external:spark-2.1.0",
+      "provider_root": "e9b8c83a2d65b461ede913a05171dc8bc995eaf26aa9ffa1992a3e7e94c6678c",
+      "name": "Spark 2.1.0 Gaussian Representation Provider",
+      "version": "2.1.0",
+      "provider_type": "representation",
+      "execution_mode": "local",
+      "declared_runtime_status": "CONTRACT_ONLY",
+      "health": {
+        "status": "CONTRACT_ONLY",
+        "runtime": "CONTRACT_ONLY"
+      },
+      "runtime_binding": "CONTRACT_ONLY",
+      "runner_supplied": false,
+      "command_configured": false,
+      "capabilities": [
+        "asset.gaussian.build-lod",
+        "asset.gaussian.convert",
+        "asset.gaussian.edit-sdf",
+        "asset.gaussian.ingress",
+        "asset.gaussian.package-rad",
+        "asset.gaussian.procedural-generate",
+        "representation.visual.paged-residency",
+        "representation.visual.portal",
+        "representation.visual.raycast",
+        "representation.visual.render",
+        "representation.visual.stream",
+        "representation.visual.xr"
+      ],
+      "profile_bindings": [],
+      "license": {
+        "code_status": "VERIFIED",
+        "dependency_status": "NOT_AUDITED",
+        "model_weights_status": "NOT_APPLICABLE",
+        "data_status": "REMOTE_EXAMPLE_ASSETS_NOT_AUDITED",
+        "default_commercial_release": false,
+        "blocked_reasons": [
+          "DEPENDENCY_LICENSE_AUDIT_REQUIRED",
+          "MODEL_WEIGHT_LICENSE_AUDIT_REQUIRED",
+          "DEFAULT_COMMERCIAL_DEPENDENCY_DISABLED"
+        ]
+      },
+      "authoritative": false,
+      "checks": {
+        "provider_root": true,
+        "health_truthfulness": true,
+        "license_audit_binding": true,
+        "profile_binding": true,
+        "authority_boundary": true
+      },
+      "pass": true
+    },
+    {
+      "provider_id": "provider:external:trellis-2",
+      "provider_root": "f65ab9b82c18a54d9944811089285164a4ac6aeef1da27a19cc0e5b6ea03774b",
+      "name": "Microsoft TRELLIS.2",
+      "version": "main",
+      "provider_type": "3d-production",
+      "execution_mode": "external-process",
+      "declared_runtime_status": "CONTRACT_ONLY",
+      "health": {
+        "status": "CONTRACT_ONLY",
+        "runtime": "CONTRACT_ONLY"
+      },
+      "runtime_binding": "CONTRACT_ONLY",
+      "runner_supplied": false,
+      "command_configured": false,
+      "capabilities": [
+        "asset.generate.3d.production",
+        "asset.generate.mesh",
+        "asset.generate.pbr"
+      ],
+      "profile_bindings": [
+        "character",
+        "creature",
+        "prop",
+        "vehicle"
+      ],
+      "license": {
+        "code_status": "VERIFIED",
+        "dependency_status": "REQUIRES_AUDIT",
+        "model_weights_status": "REQUIRES_SEPARATE_AUDIT",
+        "data_status": "REQUIRES_SEPARATE_AUDIT",
+        "default_commercial_release": false,
+        "blocked_reasons": [
+          "DEPENDENCY_LICENSE_AUDIT_REQUIRED",
+          "MODEL_WEIGHT_LICENSE_AUDIT_REQUIRED",
+          "DEFAULT_COMMERCIAL_DEPENDENCY_DISABLED"
+        ]
+      },
+      "authoritative": false,
+      "checks": {
+        "provider_root": true,
+        "health_truthfulness": true,
+        "license_audit_binding": true,
+        "profile_binding": true,
+        "authority_boundary": true
+      },
+      "pass": true
+    },
+    {
+      "provider_id": "provider:external:triposf",
+      "provider_root": "0cdb4602efc6900402bf140ab33533462db93a12c74415aaba3568d55ab9825d",
+      "name": "TripoSF",
+      "version": "main",
+      "provider_type": "geometry-refinement",
+      "execution_mode": "external-process",
+      "declared_runtime_status": "CONTRACT_ONLY",
+      "health": {
+        "status": "CONTRACT_ONLY",
+        "runtime": "CONTRACT_ONLY"
+      },
+      "runtime_binding": "CONTRACT_ONLY",
+      "runner_supplied": false,
+      "command_configured": false,
+      "capabilities": [
+        "asset.refine.geometry"
+      ],
+      "profile_bindings": [],
+      "license": {
+        "code_status": "VERIFIED",
+        "dependency_status": "REQUIRES_AUDIT",
+        "model_weights_status": "REQUIRES_SEPARATE_AUDIT",
+        "data_status": "REQUIRES_SEPARATE_AUDIT",
+        "default_commercial_release": false,
+        "blocked_reasons": [
+          "DEPENDENCY_LICENSE_AUDIT_REQUIRED",
+          "MODEL_WEIGHT_LICENSE_AUDIT_REQUIRED",
+          "DEFAULT_COMMERCIAL_DEPENDENCY_DISABLED"
+        ]
+      },
+      "authoritative": false,
+      "checks": {
+        "provider_root": true,
+        "health_truthfulness": true,
+        "license_audit_binding": true,
+        "profile_binding": true,
+        "authority_boundary": true
+      },
+      "pass": true
+    },
+    {
+      "provider_id": "provider:external:triposr",
+      "provider_root": "f80ea2cb90af28f2c4991153653efeb0f5148ecc355dd616460b81752dc26620",
+      "name": "TripoSR",
+      "version": "main",
+      "provider_type": "3d-preview",
+      "execution_mode": "external-process",
+      "declared_runtime_status": "CONTRACT_ONLY",
+      "health": {
+        "status": "CONTRACT_ONLY",
+        "runtime": "CONTRACT_ONLY"
+      },
+      "runtime_binding": "CONTRACT_ONLY",
+      "runner_supplied": false,
+      "command_configured": false,
+      "capabilities": [
+        "asset.generate.3d.preview",
+        "asset.generate.mesh"
+      ],
+      "profile_bindings": [],
+      "license": {
+        "code_status": "VERIFIED",
+        "dependency_status": "REQUIRES_AUDIT",
+        "model_weights_status": "REQUIRES_SEPARATE_AUDIT",
+        "data_status": "REQUIRES_SEPARATE_AUDIT",
+        "default_commercial_release": false,
+        "blocked_reasons": [
+          "DEPENDENCY_LICENSE_AUDIT_REQUIRED",
+          "MODEL_WEIGHT_LICENSE_AUDIT_REQUIRED",
+          "DEFAULT_COMMERCIAL_DEPENDENCY_DISABLED"
+        ]
+      },
+      "authoritative": false,
+      "checks": {
+        "provider_root": true,
+        "health_truthfulness": true,
+        "license_audit_binding": true,
+        "profile_binding": true,
+        "authority_boundary": true
+      },
+      "pass": true
+    }
+  ],
+  "profile_routes": [
+    {
+      "index": 0,
+      "asset_profile": "character",
+      "asset_id": "asset:f67569af60b1c8e1f78cd3a5",
+      "genome_root": "9bd6aedb7e404af241c2ab64b9ed23be99c50a06b91974cfeaa0bf8e7768dece",
+      "required_capabilities": [
+        "asset.generate.3d.production",
+        "asset.generate.mesh",
+        "asset.generate.pbr"
+      ],
+      "resolution_root": "c6ab4ae72d2e59a323464b6a6271406b1337587a14257a0f422ab6c83450b3fe",
+      "selected_provider_id": "provider:taowind:procedural-3d",
+      "selected_provider_root": "82bf355a8b42fab295e1e96258e645703292ec27b20f119276e9e161cbb4b006",
+      "selected_provider_source": "ragf-reference-provider",
+      "eligible": true,
+      "runtime_status": "READY_REFERENCE",
+      "provider_health": null,
+      "route_status": "BUILTIN_REFERENCE_READY",
+      "checks": {
+        "profile_binding": true,
+        "resolution_root": true,
+        "provider_binding": true,
+        "runtime_truthfulness": true,
+        "no_silent_fallback": true,
+        "authority_boundary": true
+      },
+      "pass": true
+    },
+    {
+      "index": 1,
+      "asset_profile": "creature",
+      "asset_id": "asset:f2ccc97adf215b779e755833",
+      "genome_root": "cf40583b9385a4cd64304d8f2870be872d67fda76d3ff8803e3dfb19b42b3c69",
+      "required_capabilities": [
+        "asset.generate.3d.production",
+        "asset.generate.mesh",
+        "asset.generate.pbr"
+      ],
+      "resolution_root": "adc02f8ce9ce55614f447eff582dc005bc8e4b47eaf8356d5e27b0d62df275f5",
+      "selected_provider_id": "provider:external:trellis-2",
+      "selected_provider_root": "f65ab9b82c18a54d9944811089285164a4ac6aeef1da27a19cc0e5b6ea03774b",
+      "selected_provider_source": "external-provider-contract",
+      "eligible": true,
+      "runtime_status": "CONTRACT_ONLY",
+      "provider_health": {
+        "status": "CONTRACT_ONLY",
+        "runtime": "CONTRACT_ONLY",
+        "runtime_binding": "CONTRACT_ONLY"
+      },
+      "route_status": "EXTERNAL_CONTRACT_ONLY",
+      "checks": {
+        "profile_binding": true,
+        "resolution_root": true,
+        "provider_binding": true,
+        "runtime_truthfulness": true,
+        "no_silent_fallback": true,
+        "authority_boundary": true
+      },
+      "pass": true
+    },
+    {
+      "index": 2,
+      "asset_profile": "prop",
+      "asset_id": "asset:cfa7d32419628c51e92f8c69",
+      "genome_root": "508edde4fe7abe53e4ea4af87af9ebc48606f6a6c99fb1930341d755f8cbffb9",
+      "required_capabilities": [
+        "asset.generate.3d.production",
+        "asset.generate.mesh",
+        "asset.generate.pbr"
+      ],
+      "resolution_root": "9fa28e9247b11299a79716acc2c45b2bde2735cfc3f9e42db5fa5f0b2904710c",
+      "selected_provider_id": "provider:taowind:procedural-3d",
+      "selected_provider_root": "82bf355a8b42fab295e1e96258e645703292ec27b20f119276e9e161cbb4b006",
+      "selected_provider_source": "ragf-reference-provider",
+      "eligible": true,
+      "runtime_status": "READY_REFERENCE",
+      "provider_health": null,
+      "route_status": "BUILTIN_REFERENCE_READY",
+      "checks": {
+        "profile_binding": true,
+        "resolution_root": true,
+        "provider_binding": true,
+        "runtime_truthfulness": true,
+        "no_silent_fallback": true,
+        "authority_boundary": true
+      },
+      "pass": true
+    },
+    {
+      "index": 3,
+      "asset_profile": "vehicle",
+      "asset_id": "asset:10d1306d5a89a8e6260d3d5e",
+      "genome_root": "d15d88c68edc3f0a529efa950856034a66f5b6c230203524c0240a3913d78c85",
+      "required_capabilities": [
+        "asset.generate.3d.production",
+        "asset.generate.mesh",
+        "asset.generate.pbr"
+      ],
+      "resolution_root": "08980c3bab17c68bad4251c331b7e5675fdc0396526a1469a1d771ea9979211b",
+      "selected_provider_id": "provider:external:trellis-2",
+      "selected_provider_root": "f65ab9b82c18a54d9944811089285164a4ac6aeef1da27a19cc0e5b6ea03774b",
+      "selected_provider_source": "external-provider-contract",
+      "eligible": true,
+      "runtime_status": "CONTRACT_ONLY",
+      "provider_health": {
+        "status": "CONTRACT_ONLY",
+        "runtime": "CONTRACT_ONLY",
+        "runtime_binding": "CONTRACT_ONLY"
+      },
+      "route_status": "EXTERNAL_CONTRACT_ONLY",
+      "checks": {
+        "profile_binding": true,
+        "resolution_root": true,
+        "provider_binding": true,
+        "runtime_truthfulness": true,
+        "no_silent_fallback": true,
+        "authority_boundary": true
+      },
+      "pass": true
+    },
+    {
+      "index": 4,
+      "asset_profile": "structure",
+      "asset_id": "asset:410985a26afa34907f6f9b97",
+      "genome_root": "d751dfa10674b7fc68106c18f6565664d7290a9ff3544506e19858de3086f7bd",
+      "required_capabilities": [
+        "world.asset.generate.procedural",
+        "world.asset.building"
+      ],
+      "resolution_root": "1bdaad539bf7f13671d10f71d14427ed0019c78bb59f435f01193073d3d506ac",
+      "selected_provider_id": "provider:external:infinigen",
+      "selected_provider_root": "83bdca7ae05e8330c67e2e8b80478704e36f723ee15f148046094929bce9f91d",
+      "selected_provider_source": "external-provider-contract",
+      "eligible": true,
+      "runtime_status": "CONTRACT_ONLY",
+      "provider_health": {
+        "status": "CONTRACT_ONLY",
+        "runtime": "CONTRACT_ONLY",
+        "runtime_binding": "CONTRACT_ONLY"
+      },
+      "route_status": "EXTERNAL_CONTRACT_ONLY",
+      "checks": {
+        "profile_binding": true,
+        "resolution_root": true,
+        "provider_binding": true,
+        "runtime_truthfulness": true,
+        "no_silent_fallback": true,
+        "authority_boundary": true
+      },
+      "pass": true
+    },
+    {
+      "index": 5,
+      "asset_profile": "environment",
+      "asset_id": "asset:c5a0cdcc14e4197b1c1bc68f",
+      "genome_root": "f2a5f46c791241f2d6cb555f2d0f0437e9637cbfbf903bd2f93898d4b844f7b9",
+      "required_capabilities": [
+        "world.asset.generate.procedural",
+        "world.asset.environment"
+      ],
+      "resolution_root": "ab16f8708c98a059be06c2fb9025d2e25ec40c48c436bb79f5b35c708e6c3e06",
+      "selected_provider_id": "provider:external:infinigen",
+      "selected_provider_root": "83bdca7ae05e8330c67e2e8b80478704e36f723ee15f148046094929bce9f91d",
+      "selected_provider_source": "external-provider-contract",
+      "eligible": true,
+      "runtime_status": "CONTRACT_ONLY",
+      "provider_health": {
+        "status": "CONTRACT_ONLY",
+        "runtime": "CONTRACT_ONLY",
+        "runtime_binding": "CONTRACT_ONLY"
+      },
+      "route_status": "EXTERNAL_CONTRACT_ONLY",
+      "checks": {
+        "profile_binding": true,
+        "resolution_root": true,
+        "provider_binding": true,
+        "runtime_truthfulness": true,
+        "no_silent_fallback": true,
+        "authority_boundary": true
+      },
+      "pass": true
+    },
+    {
+      "index": 6,
+      "asset_profile": "vegetation",
+      "asset_id": "asset:3b4b7c4e08d9b0f0a477e070",
+      "genome_root": "61f8d2b32bc87e5b1a299a463b62eb0d7481d45156ae40890e9777c2a047cb7d",
+      "required_capabilities": [
+        "world.asset.generate.procedural",
+        "world.asset.vegetation"
+      ],
+      "resolution_root": "ae27483e35abf2bf655bd378a3ae06b7a1b31e4a99d63797d36365c8f84b9bad",
+      "selected_provider_id": "provider:external:infinigen",
+      "selected_provider_root": "83bdca7ae05e8330c67e2e8b80478704e36f723ee15f148046094929bce9f91d",
+      "selected_provider_source": "external-provider-contract",
+      "eligible": true,
+      "runtime_status": "CONTRACT_ONLY",
+      "provider_health": {
+        "status": "CONTRACT_ONLY",
+        "runtime": "CONTRACT_ONLY",
+        "runtime_binding": "CONTRACT_ONLY"
+      },
+      "route_status": "EXTERNAL_CONTRACT_ONLY",
+      "checks": {
+        "profile_binding": true,
+        "resolution_root": true,
+        "provider_binding": true,
+        "runtime_truthfulness": true,
+        "no_silent_fallback": true,
+        "authority_boundary": true
+      },
+      "pass": true
+    },
+    {
+      "index": 7,
+      "asset_profile": "resource",
+      "asset_id": "asset:67901d8c96e0204230513bf9",
+      "genome_root": "20e9a3857323c70d8803c7603ff1c78be7fb90a8c8e71c316ef6715be4941eff",
+      "required_capabilities": [
+        "world.asset.generate.procedural",
+        "world.asset.rock"
+      ],
+      "resolution_root": "3e1559e04a597bc25664c5a91b615cbc0cae6770537d6c5d5831e4dd0fe2ee7e",
+      "selected_provider_id": "provider:external:infinigen",
+      "selected_provider_root": "83bdca7ae05e8330c67e2e8b80478704e36f723ee15f148046094929bce9f91d",
+      "selected_provider_source": "external-provider-contract",
+      "eligible": true,
+      "runtime_status": "CONTRACT_ONLY",
+      "provider_health": {
+        "status": "CONTRACT_ONLY",
+        "runtime": "CONTRACT_ONLY",
+        "runtime_binding": "CONTRACT_ONLY"
+      },
+      "route_status": "EXTERNAL_CONTRACT_ONLY",
+      "checks": {
+        "profile_binding": true,
+        "resolution_root": true,
+        "provider_binding": true,
+        "runtime_truthfulness": true,
+        "no_silent_fallback": true,
+        "authority_boundary": true
+      },
+      "pass": true
+    },
+    {
+      "index": 8,
+      "asset_profile": "vfx",
+      "asset_id": "asset:6333b83fe8a8767c9af86903",
+      "genome_root": "0d941e31dd486f82886bb9a6c5d3c4e3fb8b976a56cc7a65654a57c880e705e1",
+      "required_capabilities": [
+        "asset.generate.vfx"
+      ],
+      "resolution_root": "02a306ec41a856c75a09a2bc3b45538ecaad2807e6c1e725b53586915e182179",
+      "selected_provider_id": null,
+      "selected_provider_root": null,
+      "selected_provider_source": null,
+      "eligible": false,
+      "runtime_status": "UNRESOLVED",
+      "provider_health": null,
+      "route_status": "UNRESOLVED",
+      "checks": {
+        "profile_binding": true,
+        "resolution_root": true,
+        "provider_binding": true,
+        "runtime_truthfulness": true,
+        "no_silent_fallback": true,
+        "authority_boundary": true
+      },
+      "pass": true
+    }
+  ],
+  "license_audit_root": "baadbabb378b64de1887d277428817a23818190aea74f73989f4cdf4508124dd",
+  "summary": {
+    "profile_count": 9,
+    "provider_count": 6,
+    "route_histogram": {
+      "BUILTIN_REFERENCE_READY": 2,
+      "EXTERNAL_CONTRACT_ONLY": 6,
+      "EXTERNAL_RUNTIME_BOUND": 0,
+      "UNRESOLVED": 1,
+      "INCONSISTENT": 0
+    },
+    "provider_health_histogram": {
+      "CONTRACT_ONLY": 6,
+      "EXECUTOR_INJECTED": 0,
+      "EXTERNAL_PROCESS": 0
+    },
+    "release_blocked_provider_count": 6
+  },
+  "checks": {
+    "profile_coverage": true,
+    "unique_profile_routes": true,
+    "profile_resolution_roots": true,
+    "provider_manifest_roots": true,
+    "provider_health_truthfulness": true,
+    "license_audit_root": true,
+    "no_silent_external_execution": true,
+    "authority_boundary": true
+  },
+  "status": "CANDIDATE_PROVIDER_PREFLIGHT_PASS",
+  "execution_performed": false,
+  "aaa_ready": false,
+  "release_ready": false,
+  "candidate_only": true,
+  "authoritative": false,
+  "canonical_write_authorized": false,
+  "authority": {
+    "canonical_owner": "RNCS",
+    "representation_owner": "URRF",
+    "provider_can_write_authoritative_world_state": false,
+    "provider_can_commit": false,
+    "acceptance_can_commit": false,
+    "rncs_authority_required": true
+  },
+  "preflight_root": "f91710b6e15c70046b404d0ac4e968d717d5041e680b481fe00efcf160fbf14c"
+}

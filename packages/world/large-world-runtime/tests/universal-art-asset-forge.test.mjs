@@ -9,6 +9,7 @@ import {
   createUniversalArtAssetGenome,
   createUniversalArtAssetHoldoutReport,
   createUniversalArtAssetProfileCoverageReport,
+  createUniversalArtAssetProviderPreflightReport,
   evaluateUniversalArtAssetAcceptance,
   generateUniversalArtAssetBatch,
   generateUniversalArtAsset,
@@ -21,6 +22,7 @@ import {
   verifyUniversalArtAssetEvidenceBundle,
   verifyUniversalArtAssetHoldoutReport,
   verifyUniversalArtAssetProfileCoverageReport,
+  verifyUniversalArtAssetProviderPreflightReport,
   verifyUniversalArtAssetProvenanceLicenseReceipt,
   verifyUniversalArtAssetQualityProof,
   verifyUniversalArtAssetReviewReceipt,
@@ -391,6 +393,64 @@ test('profile coverage preserves built-in and unresolved boundaries after reseal
   const resealedTamper = seal(tampered, 'coverage_root');
   assert.equal(verifyUniversalArtAssetProfileCoverageReport(resealedTamper).valid, false);
   assert.equal(verifyUniversalArtAssetProfileCoverageReport(resealedTamper, {entries}).valid, false);
+});
+
+test('provider preflight binds every URRF profile to health and fails closed on evidence-only tampering', () => {
+  const report = createUniversalArtAssetProviderPreflightReport({
+    preflight_id: 'urrf-provider-preflight-unit-v01'
+  });
+  assert.equal(report.status, 'CANDIDATE_PROVIDER_PREFLIGHT_PASS');
+  assert.equal(report.execution_performed, false);
+  assert.equal(report.aaa_ready, false);
+  assert.equal(report.release_ready, false);
+  assert.deepEqual(report.summary.route_histogram, {
+    BUILTIN_REFERENCE_READY: 2,
+    EXTERNAL_CONTRACT_ONLY: 6,
+    EXTERNAL_RUNTIME_BOUND: 0,
+    UNRESOLVED: 1,
+    INCONSISTENT: 0
+  });
+  assert.deepEqual(report.summary.provider_health_histogram, {
+    CONTRACT_ONLY: 6,
+    EXECUTOR_INJECTED: 0,
+    EXTERNAL_PROCESS: 0
+  });
+  assert.equal(report.summary.release_blocked_provider_count, 6);
+  assert.equal(report.profile_routes.find(entry => entry.asset_profile === 'vfx').selected_provider_id, null);
+  assert.equal(report.profile_routes.find(entry => entry.asset_profile === 'vfx').selected_provider_source, null);
+  assert.equal(report.profile_routes.find(entry => entry.asset_profile === 'environment').route_status, 'EXTERNAL_CONTRACT_ONLY');
+  assert.equal(verifyUniversalArtAssetProviderPreflightReport(report).valid, true);
+
+  const sourceTamper = structuredClone(report);
+  sourceTamper.profile_routes.find(entry => entry.asset_profile === 'environment').selected_provider_source = 'ragf-reference-provider';
+  assert.equal(verifyUniversalArtAssetProviderPreflightReport(seal(sourceTamper, 'preflight_root')).valid, false);
+
+  const checkTamper = structuredClone(report);
+  checkTamper.profile_routes.find(entry => entry.asset_profile === 'environment').checks.no_silent_fallback = false;
+  assert.equal(verifyUniversalArtAssetProviderPreflightReport(seal(checkTamper, 'preflight_root')).valid, false);
+
+  const authorityTamper = structuredClone(report);
+  authorityTamper.profile_routes.find(entry => entry.asset_profile === 'environment').checks.authority_boundary = false;
+  assert.equal(verifyUniversalArtAssetProviderPreflightReport(seal(authorityTamper, 'preflight_root')).valid, false);
+
+  const licenseTamper = structuredClone(report);
+  licenseTamper.providers[0].license.dependency_status = 'VERIFIED';
+  assert.equal(verifyUniversalArtAssetProviderPreflightReport(seal(licenseTamper, 'preflight_root')).valid, false);
+});
+
+test('provider preflight distinguishes an injected executor binding from execution and supports replay', () => {
+  const providerId = 'provider:external:trellis-2';
+  const providerRunners = {[providerId]: () => ({status: 'not-invoked-by-preflight'})};
+  const report = createUniversalArtAssetProviderPreflightReport({
+    preflight_id: 'urrf-provider-preflight-runner-unit-v01',
+    provider_runners: providerRunners
+  });
+  assert.equal(report.execution_performed, false);
+  assert.equal(report.summary.provider_health_histogram.EXECUTOR_INJECTED, 1);
+  assert.equal(report.summary.route_histogram.EXTERNAL_RUNTIME_BOUND, 2);
+  assert.equal(report.profile_routes.find(entry => entry.asset_profile === 'vehicle').route_status, 'EXTERNAL_RUNTIME_BOUND');
+  assert.equal(verifyUniversalArtAssetProviderPreflightReport(report, {provider_runners: providerRunners}).valid, true);
+  assert.equal(verifyUniversalArtAssetProviderPreflightReport(report).valid, false);
 });
 
 test('acceptance gate cannot be passed by provider success alone', () => {

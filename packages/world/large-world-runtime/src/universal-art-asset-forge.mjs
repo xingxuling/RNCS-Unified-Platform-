@@ -4,6 +4,7 @@ import {createHash} from 'node:crypto';
 import {
   AssetProviderAdapter,
   AssetProviderRegistry,
+  auditExternalProviderLicenses,
   ProviderRegistry,
   createAssetCandidateFromProviderResult,
   createAssetEvidenceLedger,
@@ -41,6 +42,7 @@ export const UNIVERSAL_ART_ASSET_VSR_PROJECTION_FORMAT = 'urrf.universal-art-ass
 export const UNIVERSAL_ART_ASSET_VSR_MATERIALIZATION_FORMAT = 'urrf.universal-art-asset-vsr-materialization.v0.1';
 export const UNIVERSAL_ART_ASSET_HOLDOUT_FORMAT = 'urrf.universal-art-asset-holdout.v0.1';
 export const UNIVERSAL_ART_ASSET_PROFILE_COVERAGE_FORMAT = 'urrf.universal-art-asset-profile-coverage.v0.1';
+export const UNIVERSAL_ART_ASSET_PROVIDER_PREFLIGHT_FORMAT = 'urrf.universal-art-asset-provider-preflight.v0.1';
 export const UNIVERSAL_ART_ASSET_FORGE_VERSION = '0.1.0';
 
 export const UNIVERSAL_ART_ASSET_PROFILES = Object.freeze([
@@ -62,6 +64,14 @@ const UNIVERSAL_ART_ASSET_PROFILE_COVERAGE_MODES = Object.freeze([
   'EXTERNAL_CONTRACT_ONLY',
   'EXTERNAL_EXECUTED',
   'INJECTED_EXECUTED',
+  'UNRESOLVED',
+  'INCONSISTENT'
+]);
+
+const UNIVERSAL_ART_ASSET_PROVIDER_PREFLIGHT_ROUTE_STATUSES = Object.freeze([
+  'BUILTIN_REFERENCE_READY',
+  'EXTERNAL_CONTRACT_ONLY',
+  'EXTERNAL_RUNTIME_BOUND',
   'UNRESOLVED',
   'INCONSISTENT'
 ]);
@@ -3163,6 +3173,485 @@ export function verifyUniversalArtAssetProfileCoverageReport(report, {entries = 
     errors.push(`VERIFY_EXCEPTION:${error.name}:${error.message}`);
   }
   return {valid: errors.length === 0, errors, coverage_root: report.coverage_root ?? null};
+}
+
+function normalizeUniversalArtAssetProviderPreflightProfiles(value) {
+  if (value === undefined || value === null) return [...UNIVERSAL_ART_ASSET_PROFILES];
+  return normalizeUniversalArtAssetProfileCoverageProfiles(value);
+}
+
+function universalArtAssetProviderPreflightManifests(providers = []) {
+  const supplied = Array.isArray(providers) ? providers : [];
+  return new AssetProviderRegistry([...externalAssetProviderManifests(), ...supplied]).list();
+}
+
+function universalArtAssetProviderPreflightRunner(runners, providerId) {
+  const source = record(runners);
+  return typeof source[providerId] === 'function' ? source[providerId] : null;
+}
+
+function universalArtAssetProviderPreflightCommandConfigured(manifest) {
+  if (Array.isArray(manifest?.command)) return manifest.command.length > 0 && nonEmptyText(manifest.command[0]);
+  return nonEmptyText(manifest?.command);
+}
+
+function universalArtAssetProviderPreflightExpectedHealth(manifest, runner) {
+  if (runner) return {status: 'AVAILABLE', runtime: 'EXECUTOR_INJECTED'};
+  if (universalArtAssetProviderPreflightCommandConfigured(manifest)) return {status: 'CONFIGURED', runtime: 'EXTERNAL_PROCESS'};
+  return {status: manifest?.runtimeStatus ?? null, runtime: 'CONTRACT_ONLY'};
+}
+
+function universalArtAssetProviderPreflightProfileBindings(manifest, profiles) {
+  const capabilities = new Set(Array.isArray(manifest?.capabilities) ? manifest.capabilities : []);
+  return profiles.filter(profile => profileContract(profile).required_capabilities.every(capability => capabilities.has(capability)));
+}
+
+function universalArtAssetProviderPreflightProviderEntry(manifest, profiles, runners, licenseEntry) {
+  const runner = universalArtAssetProviderPreflightRunner(runners, manifest.id);
+  const adapter = new AssetProviderAdapter(manifest, {runner});
+  const health = adapter.healthCheck();
+  const expectedHealth = universalArtAssetProviderPreflightExpectedHealth(manifest, runner);
+  const license = record(licenseEntry);
+  const profileBindings = universalArtAssetProviderPreflightProfileBindings(manifest, profiles);
+  const checks = {
+    provider_root: isHexRoot(manifest.manifest_root),
+    health_truthfulness: health.status === expectedHealth.status && health.runtime === expectedHealth.runtime,
+    license_audit_binding: license.provider_id === manifest.id
+      && license.manifest_valid === true
+      && license.license_status === manifest.license?.status
+      && license.dependency_status === manifest.license?.dependency_status
+      && license.model_weights_status === manifest.license?.model_weights_status,
+    profile_binding: profileBindings.every(profile => profileContract(profile).required_capabilities.every(capability => (manifest.capabilities ?? []).includes(capability))),
+    authority_boundary: manifest.metadata?.authoritative !== true
+  };
+  return {
+    provider_id: manifest.id,
+    provider_root: manifest.manifest_root ?? null,
+    name: manifest.name ?? null,
+    version: manifest.version ?? null,
+    provider_type: manifest.providerType ?? null,
+    execution_mode: manifest.executionMode ?? null,
+    declared_runtime_status: manifest.runtimeStatus ?? null,
+    health: {
+      status: health.status ?? null,
+      runtime: health.runtime ?? null
+    },
+    runtime_binding: health.runtime ?? null,
+    runner_supplied: Boolean(runner),
+    command_configured: universalArtAssetProviderPreflightCommandConfigured(manifest),
+    capabilities: clone(manifest.capabilities ?? []),
+    profile_bindings: profileBindings,
+    license: {
+      code_status: manifest.license?.code_status ?? null,
+      dependency_status: manifest.license?.dependency_status ?? null,
+      model_weights_status: manifest.license?.model_weights_status ?? null,
+      data_status: manifest.license?.data_status ?? null,
+      default_commercial_release: license.default_commercial_release ?? false,
+      blocked_reasons: clone(license.blocked_reasons ?? [])
+    },
+    authoritative: manifest.metadata?.authoritative ?? false,
+    checks,
+    pass: Object.values(checks).every(Boolean)
+  };
+}
+
+function universalArtAssetProviderPreflightExpectedHealthFromEntry(entry) {
+  if (entry?.runner_supplied === true) return {status: 'AVAILABLE', runtime: 'EXECUTOR_INJECTED'};
+  if (entry?.command_configured === true) return {status: 'CONFIGURED', runtime: 'EXTERNAL_PROCESS'};
+  return {status: entry?.declared_runtime_status ?? null, runtime: 'CONTRACT_ONLY'};
+}
+
+function universalArtAssetProviderPreflightExpectedProfileBindings(entry, profiles) {
+  const capabilities = new Set(Array.isArray(entry?.capabilities) ? entry.capabilities : []);
+  return profiles.filter(profile => profileContract(profile).required_capabilities.every(capability => capabilities.has(capability)));
+}
+
+function universalArtAssetProviderPreflightExpectedRouteStatusFromEntry(entry, provider) {
+  if (entry?.selected_provider_source === 'ragf-reference-provider'
+    && entry.runtime_status === 'READY_REFERENCE'
+    && nonEmptyText(entry.selected_provider_id)) return 'BUILTIN_REFERENCE_READY';
+  if (entry?.selected_provider_source === 'external-provider-contract' && provider) {
+    if (!['CONTRACT_ONLY', 'EXECUTOR_INJECTED', 'EXTERNAL_PROCESS'].includes(provider.runtime_binding)) return 'INCONSISTENT';
+    return provider.runtime_binding === 'CONTRACT_ONLY' ? 'EXTERNAL_CONTRACT_ONLY' : 'EXTERNAL_RUNTIME_BOUND';
+  }
+  if (entry?.selected_provider_id === null
+    && entry.selected_provider_root === null
+    && entry.selected_provider_source === null
+    && entry.eligible === false
+    && entry.runtime_status === 'UNRESOLVED') return 'UNRESOLVED';
+  return 'INCONSISTENT';
+}
+
+function universalArtAssetProviderPreflightRouteChecksFromEntry(entry, providerEntries, profiles) {
+  const provider = providerEntries.find(candidate => candidate.provider_id === entry?.selected_provider_id) ?? null;
+  const contract = profileContract(entry?.asset_profile);
+  const expectedStatus = universalArtAssetProviderPreflightExpectedRouteStatusFromEntry(entry, provider);
+  const providerBinding = expectedStatus === 'BUILTIN_REFERENCE_READY'
+    ? isHexRoot(entry.selected_provider_root)
+      && entry.selected_provider_id === 'provider:taowind:procedural-3d'
+      && provider === null
+    : expectedStatus === 'EXTERNAL_CONTRACT_ONLY' || expectedStatus === 'EXTERNAL_RUNTIME_BOUND'
+      ? Boolean(provider)
+        && provider.provider_id === entry.selected_provider_id
+        && provider.provider_root === entry.selected_provider_root
+      : expectedStatus === 'UNRESOLVED'
+        ? entry.selected_provider_id === null
+          && entry.selected_provider_root === null
+          && entry.selected_provider_source === null
+        : false;
+  const runtimeTruthfulness = expectedStatus === 'BUILTIN_REFERENCE_READY'
+    ? entry.selected_provider_source === 'ragf-reference-provider'
+      && entry.runtime_status === 'READY_REFERENCE'
+      && provider === null
+    : expectedStatus === 'EXTERNAL_CONTRACT_ONLY'
+      ? entry.selected_provider_source === 'external-provider-contract'
+        && entry.runtime_status === 'CONTRACT_ONLY'
+        && provider?.runtime_binding === 'CONTRACT_ONLY'
+        && provider.runner_supplied === false
+        && provider.command_configured === false
+      : expectedStatus === 'EXTERNAL_RUNTIME_BOUND'
+        ? entry.selected_provider_source === 'external-provider-contract'
+          && provider?.runtime_binding !== 'CONTRACT_ONLY'
+          && (provider?.runner_supplied === true || provider?.command_configured === true)
+        : expectedStatus === 'UNRESOLVED'
+          ? entry.selected_provider_id === null
+            && entry.selected_provider_source === null
+            && entry.eligible === false
+            && entry.runtime_status === 'UNRESOLVED'
+          : false;
+  const noSilentFallback = expectedStatus !== 'INCONSISTENT'
+    && ((expectedStatus === 'BUILTIN_REFERENCE_READY' && entry.selected_provider_source === 'ragf-reference-provider')
+      || ((expectedStatus === 'EXTERNAL_CONTRACT_ONLY' || expectedStatus === 'EXTERNAL_RUNTIME_BOUND')
+        && entry.selected_provider_source === 'external-provider-contract'
+        && nonEmptyText(entry.selected_provider_id))
+      || (expectedStatus === 'UNRESOLVED'
+        && entry.selected_provider_id === null
+        && entry.selected_provider_root === null
+        && entry.selected_provider_source === null));
+  return {
+    expectedStatus,
+    checks: {
+      profile_binding: rootHash(entry.required_capabilities ?? []) === rootHash(contract.required_capabilities),
+      resolution_root: isHexRoot(entry.resolution_root),
+      provider_binding: providerBinding,
+      runtime_truthfulness: runtimeTruthfulness,
+      no_silent_fallback: noSilentFallback,
+      authority_boundary: true
+    }
+  };
+}
+
+function universalArtAssetProviderPreflightRouteStatus({resolution, provider}) {
+  if (resolution?.selected_provider_source === 'ragf-reference-provider'
+    && resolution.runtime_status === 'READY_REFERENCE'
+    && nonEmptyText(resolution.selected_provider_id)) return 'BUILTIN_REFERENCE_READY';
+  if (resolution?.selected_provider_source === 'external-provider-contract' && provider) {
+    return provider.runtime_binding === 'CONTRACT_ONLY' ? 'EXTERNAL_CONTRACT_ONLY' : 'EXTERNAL_RUNTIME_BOUND';
+  }
+  if (resolution?.selected_provider_id === null && resolution.selected_provider_source === null && resolution.eligible === false) return 'UNRESOLVED';
+  return 'INCONSISTENT';
+}
+
+function universalArtAssetProviderPreflightRouteEntry({profile, providerEntries, manifests}) {
+  const contract = profileContract(profile);
+  const genome = createUniversalArtAssetGenome({
+    description: `URRF provider preflight probe for ${profile}`,
+    asset_profile: profile,
+    asset_kind: contract.asset_kind,
+    quality_tier: 'AAA',
+    seed: `urrf-provider-preflight-${profile}-seed`,
+    target_platforms: ['desktop', 'web']
+  });
+  const resolution = resolveUniversalArtAssetProvider({genome, providers: manifests});
+  const provider = providerEntries.find(entry => entry.provider_id === resolution.selected_provider_id) ?? null;
+  const routeStatus = universalArtAssetProviderPreflightRouteStatus({resolution, provider});
+  const selectedProviderId = resolution.selected_provider_id ?? null;
+  const selectedProviderSource = resolution.selected_provider_source ?? null;
+  const resolutionRoot = resolution.resolution_root ?? null;
+  const providerBinding = routeStatus === 'BUILTIN_REFERENCE_READY'
+    ? isHexRoot(resolution.selected_provider_root)
+      && selectedProviderId === 'provider:taowind:procedural-3d'
+    : routeStatus === 'EXTERNAL_CONTRACT_ONLY' || routeStatus === 'EXTERNAL_RUNTIME_BOUND'
+      ? Boolean(provider)
+        && provider.provider_root === resolution.selected_provider_root
+        && provider.provider_id === selectedProviderId
+      : routeStatus === 'UNRESOLVED'
+        ? selectedProviderId === null && selectedProviderSource === null
+        : false;
+  const runtimeTruthfulness = routeStatus === 'BUILTIN_REFERENCE_READY'
+    ? selectedProviderSource === 'ragf-reference-provider' && resolution.runtime_status === 'READY_REFERENCE' && provider === null
+    : routeStatus === 'EXTERNAL_CONTRACT_ONLY'
+      ? selectedProviderSource === 'external-provider-contract'
+        && resolution.runtime_status === 'CONTRACT_ONLY'
+        && provider?.runtime_binding === 'CONTRACT_ONLY'
+        && provider.runner_supplied === false
+        && provider.command_configured === false
+      : routeStatus === 'EXTERNAL_RUNTIME_BOUND'
+        ? selectedProviderSource === 'external-provider-contract'
+          && provider?.runtime_binding !== 'CONTRACT_ONLY'
+          && (provider?.runner_supplied === true || provider?.command_configured === true)
+        : routeStatus === 'UNRESOLVED'
+          ? selectedProviderId === null
+            && selectedProviderSource === null
+            && resolution.eligible === false
+            && resolution.runtime_status === 'UNRESOLVED'
+          : false;
+  const noSilentFallback = routeStatus !== 'INCONSISTENT'
+    && ((routeStatus === 'BUILTIN_REFERENCE_READY' && selectedProviderSource === 'ragf-reference-provider')
+      || ((routeStatus === 'EXTERNAL_CONTRACT_ONLY' || routeStatus === 'EXTERNAL_RUNTIME_BOUND') && selectedProviderSource === 'external-provider-contract')
+      || (routeStatus === 'UNRESOLVED' && selectedProviderId === null && selectedProviderSource === null));
+  const checks = {
+    profile_binding: resolution.asset_profile === profile
+      && rootHash(resolution.required_capabilities ?? []) === rootHash(contract.required_capabilities),
+    resolution_root: resolution.format === UNIVERSAL_ART_ASSET_PROVIDER_RESOLUTION_FORMAT
+      && resolution.version === UNIVERSAL_ART_ASSET_FORGE_VERSION
+      && isHexRoot(resolutionRoot)
+      && (() => {
+        const copy = clone(resolution);
+        delete copy.resolution_root;
+        return rootHash(copy) === resolutionRoot;
+      })(),
+    provider_binding: providerBinding,
+    runtime_truthfulness: runtimeTruthfulness,
+    no_silent_fallback: noSilentFallback,
+    authority_boundary: resolution.authority?.provider_can_write_authoritative_world_state === false
+      && resolution.authority?.candidate_only === true
+      && resolution.authority?.authoritative === false
+      && resolution.authority?.rncs_authority_required === true
+  };
+  return {
+    index: 0,
+    asset_profile: profile,
+    asset_id: genome.asset_id,
+    genome_root: genome.genome_root,
+    required_capabilities: clone(contract.required_capabilities),
+    resolution_root: resolutionRoot,
+    selected_provider_id: selectedProviderId,
+    selected_provider_root: resolution.selected_provider_root ?? null,
+    selected_provider_source: selectedProviderSource,
+    eligible: resolution.eligible,
+    runtime_status: resolution.runtime_status,
+    provider_health: provider
+      ? {status: provider.health.status, runtime: provider.health.runtime, runtime_binding: provider.runtime_binding}
+      : null,
+    route_status: routeStatus,
+    checks,
+    pass: Object.values(checks).every(Boolean)
+  };
+}
+
+function universalArtAssetProviderPreflightRouteEntries(profiles, providerEntries, manifests) {
+  return profiles.map((profile, index) => ({
+    ...universalArtAssetProviderPreflightRouteEntry({profile, providerEntries, manifests}),
+    index
+  }));
+}
+
+function universalArtAssetProviderPreflightHistogram(entries, field, values) {
+  return Object.fromEntries(values.map(value => [value, entries.filter(entry => entry?.[field] === value).length]));
+}
+
+function buildUniversalArtAssetProviderPreflightReport({preflightId = null, profiles = null, providers = [], providerRunners = {}} = {}) {
+  const expectedProfiles = normalizeUniversalArtAssetProviderPreflightProfiles(profiles);
+  const manifests = universalArtAssetProviderPreflightManifests(providers);
+  const licenseAudit = auditExternalProviderLicenses(manifests);
+  const licenseEntries = new Map((licenseAudit.entries ?? []).map(entry => [entry.provider_id, entry]));
+  const providerEntries = manifests.map(manifest => universalArtAssetProviderPreflightProviderEntry(manifest, expectedProfiles, providerRunners, licenseEntries.get(manifest.id)));
+  const routeEntries = universalArtAssetProviderPreflightRouteEntries(expectedProfiles, providerEntries, manifests);
+  const checks = {
+    profile_coverage: routeEntries.length === expectedProfiles.length
+      && new Set(routeEntries.map(entry => entry.asset_profile)).size === expectedProfiles.length,
+    unique_profile_routes: new Set(routeEntries.map(entry => entry.asset_profile)).size === routeEntries.length,
+    profile_resolution_roots: routeEntries.length > 0
+      && routeEntries.every(entry => isHexRoot(entry.resolution_root))
+      && new Set(routeEntries.map(entry => entry.resolution_root)).size === routeEntries.length,
+    provider_manifest_roots: providerEntries.every(entry => isHexRoot(entry.provider_root))
+      && new Set(providerEntries.map(entry => entry.provider_root)).size === providerEntries.length,
+    provider_health_truthfulness: providerEntries.every(entry => entry.pass),
+    license_audit_root: isHexRoot(licenseAudit.audit_root),
+    no_silent_external_execution: routeEntries.every(entry => entry.checks.no_silent_fallback),
+    authority_boundary: routeEntries.every(entry => entry.checks.authority_boundary)
+      && providerEntries.every(entry => entry.authoritative === false)
+  };
+  const resolvedPreflightId = preflightId === null || preflightId === undefined
+    ? stableId('urrf-universal-art-asset-provider-preflight', {
+      profiles: expectedProfiles,
+      provider_roots: providerEntries.map(entry => entry.provider_root),
+      resolution_roots: routeEntries.map(entry => entry.resolution_root),
+      health: providerEntries.map(entry => ({provider_id: entry.provider_id, status: entry.health.status, runtime: entry.health.runtime}))
+    })
+    : String(preflightId).trim();
+  if (!nonEmptyText(resolvedPreflightId)) throw new GenesisError('UNIVERSAL_ART_ASSET_PROVIDER_PREFLIGHT_ID_INVALID');
+  return {
+    format: UNIVERSAL_ART_ASSET_PROVIDER_PREFLIGHT_FORMAT,
+    version: UNIVERSAL_ART_ASSET_FORGE_VERSION,
+    preflight_id: resolvedPreflightId,
+    source: 'urrf-provider-preflight-evaluator',
+    expected_profiles: expectedProfiles,
+    providers: providerEntries,
+    profile_routes: routeEntries,
+    license_audit_root: licenseAudit.audit_root,
+    summary: {
+      profile_count: routeEntries.length,
+      provider_count: providerEntries.length,
+      route_histogram: universalArtAssetProviderPreflightHistogram(routeEntries, 'route_status', UNIVERSAL_ART_ASSET_PROVIDER_PREFLIGHT_ROUTE_STATUSES),
+      provider_health_histogram: universalArtAssetProviderPreflightHistogram(providerEntries, 'runtime_binding', ['CONTRACT_ONLY', 'EXECUTOR_INJECTED', 'EXTERNAL_PROCESS']),
+      release_blocked_provider_count: providerEntries.filter(entry => entry.license.default_commercial_release !== true).length
+    },
+    checks,
+    status: Object.values(checks).every(Boolean) ? 'CANDIDATE_PROVIDER_PREFLIGHT_PASS' : 'CANDIDATE_PROVIDER_PREFLIGHT_FAIL',
+    execution_performed: false,
+    aaa_ready: false,
+    release_ready: false,
+    candidate_only: true,
+    authoritative: false,
+    canonical_write_authorized: false,
+    authority: {
+      canonical_owner: 'RNCS',
+      representation_owner: 'URRF',
+      provider_can_write_authoritative_world_state: false,
+      provider_can_commit: false,
+      acceptance_can_commit: false,
+      rncs_authority_required: true
+    },
+    preflight_root: ''
+  };
+}
+
+/**
+ * Inspect Provider manifests, runtime binding and license blockers together
+ * with every URRF profile route. Preflight never invokes a Provider and never
+ * turns readiness into an AAA or RNCS authority decision.
+ */
+export function createUniversalArtAssetProviderPreflightReport({preflight_id = null, preflightId = null, profiles = null, providers = [], provider_runners = null, providerRunners = null} = {}) {
+  const base = buildUniversalArtAssetProviderPreflightReport({
+    preflightId: preflight_id ?? preflightId,
+    profiles,
+    providers,
+    providerRunners: provider_runners ?? providerRunners ?? {}
+  });
+  return seal(base, 'preflight_root');
+}
+
+/**
+ * Verify a persisted Provider preflight. Optional runtime inputs allow the
+ * caller to recompute the report when custom manifests or runners were used.
+ */
+export function verifyUniversalArtAssetProviderPreflightReport(report, {profiles = null, providers = null, provider_runners = null, providerRunners = null} = {}) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!report || typeof report !== 'object' || Array.isArray(report)) return {valid: false, errors: ['PROVIDER_PREFLIGHT_REPORT_NOT_OBJECT'], preflight_root: null};
+  try {
+    check(report.format === UNIVERSAL_ART_ASSET_PROVIDER_PREFLIGHT_FORMAT, 'PROVIDER_PREFLIGHT_FORMAT_INVALID');
+    check(report.version === UNIVERSAL_ART_ASSET_FORGE_VERSION, 'PROVIDER_PREFLIGHT_VERSION_INVALID');
+    check(nonEmptyText(report.preflight_id), 'PROVIDER_PREFLIGHT_ID_MISSING');
+    check(report.source === 'urrf-provider-preflight-evaluator', 'PROVIDER_PREFLIGHT_SOURCE_INVALID');
+    const expectedProfiles = normalizeUniversalArtAssetProviderPreflightProfiles(report.expected_profiles);
+    const providerEntries = Array.isArray(report.providers) ? report.providers : [];
+    const routeEntries = Array.isArray(report.profile_routes) ? report.profile_routes : [];
+    check(routeEntries.length === expectedProfiles.length, 'PROVIDER_PREFLIGHT_PROFILE_ROUTE_COUNT_INVALID');
+    check(routeEntries.every((entry, index) => entry?.index === index), 'PROVIDER_PREFLIGHT_ROUTE_INDEX_INVALID');
+    check(routeEntries.every(entry => expectedProfiles.includes(entry?.asset_profile)), 'PROVIDER_PREFLIGHT_ROUTE_PROFILE_INVALID');
+    check(new Set(routeEntries.map(entry => entry?.asset_profile)).size === routeEntries.length, 'PROVIDER_PREFLIGHT_ROUTE_PROFILE_DUPLICATE');
+    check(providerEntries.every(entry => nonEmptyText(entry?.provider_id) && isHexRoot(entry?.provider_root)), 'PROVIDER_PREFLIGHT_PROVIDER_INVALID');
+    check(new Set(providerEntries.map(entry => entry?.provider_id)).size === providerEntries.length, 'PROVIDER_PREFLIGHT_PROVIDER_DUPLICATE');
+    check(new Set(providerEntries.map(entry => entry?.provider_root)).size === providerEntries.length, 'PROVIDER_PREFLIGHT_PROVIDER_ROOT_DUPLICATE');
+    for (const entry of providerEntries) {
+      const checks = record(entry.checks);
+      check(typeof entry.pass === 'boolean', `PROVIDER_PREFLIGHT_PROVIDER_PASS_INVALID:${entry?.provider_id ?? 'unknown'}`);
+      check(Object.values(checks).every(value => typeof value === 'boolean'), `PROVIDER_PREFLIGHT_PROVIDER_CHECKS_INVALID:${entry?.provider_id ?? 'unknown'}`);
+      check(entry.authoritative === false, `PROVIDER_PREFLIGHT_PROVIDER_AUTHORITY_INVALID:${entry?.provider_id ?? 'unknown'}`);
+      const expectedHealth = universalArtAssetProviderPreflightExpectedHealthFromEntry(entry);
+      const expectedBindings = universalArtAssetProviderPreflightExpectedProfileBindings(entry, expectedProfiles);
+      const expectedProviderChecks = {
+        provider_root: isHexRoot(entry.provider_root),
+        health_truthfulness: entry.health?.status === expectedHealth.status
+          && entry.health?.runtime === expectedHealth.runtime
+          && entry.runtime_binding === expectedHealth.runtime,
+        license_audit_binding: checks.license_audit_binding === true,
+        profile_binding: rootHash(entry.profile_bindings ?? []) === rootHash(expectedBindings),
+        authority_boundary: entry.authoritative === false
+      };
+      for (const [key, value] of Object.entries(expectedProviderChecks)) {
+        check(checks[key] === value, `PROVIDER_PREFLIGHT_PROVIDER_CHECK_${key.toUpperCase()}_MISMATCH:${entry?.provider_id ?? 'unknown'}`);
+      }
+      check(entry.pass === Object.values(checks).every(Boolean), `PROVIDER_PREFLIGHT_PROVIDER_PASS_MISMATCH:${entry?.provider_id ?? 'unknown'}`);
+    }
+    for (const entry of routeEntries) {
+      check(nonEmptyText(entry?.asset_profile), `PROVIDER_PREFLIGHT_ROUTE_PROFILE_MISSING:${entry?.index ?? 'unknown'}`);
+      check(nonEmptyText(entry?.asset_id), `PROVIDER_PREFLIGHT_ROUTE_ASSET_ID_INVALID:${entry?.index ?? 'unknown'}`);
+      check(isHexRoot(entry?.genome_root) && isHexRoot(entry?.resolution_root), `PROVIDER_PREFLIGHT_ROUTE_ROOT_INVALID:${entry?.index ?? 'unknown'}`);
+      check(entry?.selected_provider_id === null || nonEmptyText(entry?.selected_provider_id), `PROVIDER_PREFLIGHT_ROUTE_PROVIDER_ID_INVALID:${entry?.index ?? 'unknown'}`);
+      check(entry?.selected_provider_root === null || isHexRoot(entry?.selected_provider_root), `PROVIDER_PREFLIGHT_ROUTE_PROVIDER_ROOT_INVALID:${entry?.index ?? 'unknown'}`);
+      check(entry?.selected_provider_source === null || ['ragf-reference-provider', 'external-provider-contract', 'injected-provider'].includes(entry.selected_provider_source), `PROVIDER_PREFLIGHT_ROUTE_SOURCE_INVALID:${entry?.index ?? 'unknown'}`);
+      check(UNIVERSAL_ART_ASSET_PROVIDER_PREFLIGHT_ROUTE_STATUSES.includes(entry?.route_status), `PROVIDER_PREFLIGHT_ROUTE_STATUS_INVALID:${entry?.index ?? 'unknown'}`);
+      const provider = providerEntries.find(candidate => candidate.provider_id === entry.selected_provider_id) ?? null;
+      const expected = universalArtAssetProviderPreflightRouteChecksFromEntry(entry, providerEntries, expectedProfiles);
+      check(entry.route_status === expected.expectedStatus, `PROVIDER_PREFLIGHT_ROUTE_STATUS_MISMATCH:${entry?.index ?? 'unknown'}`);
+      for (const [key, value] of Object.entries(expected.checks)) {
+        check(entry?.checks?.[key] === value, `PROVIDER_PREFLIGHT_ROUTE_CHECK_${key.toUpperCase()}_MISMATCH:${entry?.index ?? 'unknown'}`);
+      }
+      const expectedProviderHealth = provider
+        ? {status: provider.health?.status ?? null, runtime: provider.health?.runtime ?? null, runtime_binding: provider.runtime_binding ?? null}
+        : null;
+      check(rootHash(entry.provider_health ?? null) === rootHash(expectedProviderHealth), `PROVIDER_PREFLIGHT_ROUTE_HEALTH_MISMATCH:${entry?.index ?? 'unknown'}`);
+      check(entry?.pass === Object.values(record(entry.checks)).every(Boolean), `PROVIDER_PREFLIGHT_ROUTE_PASS_INVALID:${entry?.index ?? 'unknown'}`);
+    }
+    const expectedChecks = {
+      profile_coverage: routeEntries.length === expectedProfiles.length
+        && new Set(routeEntries.map(entry => entry.asset_profile)).size === expectedProfiles.length,
+      unique_profile_routes: new Set(routeEntries.map(entry => entry.asset_profile)).size === routeEntries.length,
+      profile_resolution_roots: routeEntries.length > 0
+        && routeEntries.every(entry => isHexRoot(entry.resolution_root))
+        && new Set(routeEntries.map(entry => entry.resolution_root)).size === routeEntries.length,
+      provider_manifest_roots: providerEntries.every(entry => isHexRoot(entry.provider_root))
+        && new Set(providerEntries.map(entry => entry.provider_root)).size === providerEntries.length,
+      provider_health_truthfulness: providerEntries.every(entry => entry.pass),
+      license_audit_root: isHexRoot(report.license_audit_root),
+      no_silent_external_execution: routeEntries.every(entry => entry.checks?.no_silent_fallback === true),
+      authority_boundary: routeEntries.every(entry => entry.checks?.authority_boundary === true)
+        && providerEntries.every(entry => entry.authoritative === false)
+    };
+    const reportChecks = record(report.checks);
+    check(Object.keys(expectedChecks).every(key => typeof reportChecks[key] === 'boolean'), 'PROVIDER_PREFLIGHT_CHECKS_INVALID');
+    for (const [key, value] of Object.entries(expectedChecks)) check(reportChecks[key] === value, `PROVIDER_PREFLIGHT_CHECK_${key.toUpperCase()}_MISMATCH`);
+    const expectedStatus = Object.values(expectedChecks).every(Boolean) ? 'CANDIDATE_PROVIDER_PREFLIGHT_PASS' : 'CANDIDATE_PROVIDER_PREFLIGHT_FAIL';
+    check(report.status === expectedStatus, 'PROVIDER_PREFLIGHT_STATUS_MISMATCH');
+    check(rootHash(universalArtAssetProviderPreflightHistogram(routeEntries, 'route_status', UNIVERSAL_ART_ASSET_PROVIDER_PREFLIGHT_ROUTE_STATUSES)) === rootHash(report.summary?.route_histogram ?? {}), 'PROVIDER_PREFLIGHT_ROUTE_HISTOGRAM_MISMATCH');
+    check(rootHash(universalArtAssetProviderPreflightHistogram(providerEntries, 'runtime_binding', ['CONTRACT_ONLY', 'EXECUTOR_INJECTED', 'EXTERNAL_PROCESS'])) === rootHash(report.summary?.provider_health_histogram ?? {}), 'PROVIDER_PREFLIGHT_HEALTH_HISTOGRAM_MISMATCH');
+    check(report.summary?.profile_count === routeEntries.length, 'PROVIDER_PREFLIGHT_SUMMARY_PROFILE_COUNT_MISMATCH');
+    check(report.summary?.provider_count === providerEntries.length, 'PROVIDER_PREFLIGHT_SUMMARY_PROVIDER_COUNT_MISMATCH');
+    check(report.summary?.release_blocked_provider_count === providerEntries.filter(entry => entry.license?.default_commercial_release !== true).length, 'PROVIDER_PREFLIGHT_SUMMARY_RELEASE_BLOCKED_COUNT_MISMATCH');
+    check(report.execution_performed === false && report.aaa_ready === false && report.release_ready === false, 'PROVIDER_PREFLIGHT_READINESS_ESCALATION');
+    check(report.candidate_only === true && report.authoritative === false && report.canonical_write_authorized === false, 'PROVIDER_PREFLIGHT_AUTHORITY_INVALID');
+    check(report.authority?.canonical_owner === 'RNCS' && report.authority?.representation_owner === 'URRF', 'PROVIDER_PREFLIGHT_OWNER_INVALID');
+    check(report.authority?.provider_can_write_authoritative_world_state === false && report.authority?.provider_can_commit === false && report.authority?.acceptance_can_commit === false && report.authority?.rncs_authority_required === true, 'PROVIDER_PREFLIGHT_PROVIDER_AUTHORITY_INVALID');
+    const copy = clone(report);
+    const actual = copy.preflight_root;
+    delete copy.preflight_root;
+    check(isHexRoot(actual) && actual === rootHash(copy), 'PROVIDER_PREFLIGHT_ROOT_INVALID');
+    const replayRequested = providers !== null || profiles !== null || provider_runners !== null || providerRunners !== null;
+    const expectedReport = buildUniversalArtAssetProviderPreflightReport({
+      preflightId: report.preflight_id,
+      profiles: profiles ?? expectedProfiles,
+      providers: providers ?? [],
+      providerRunners: provider_runners ?? providerRunners ?? {}
+    });
+    delete expectedReport.preflight_root;
+    if (replayRequested) {
+      check(rootHash(copy) === rootHash(expectedReport), 'PROVIDER_PREFLIGHT_CONTENT_MISMATCH');
+    } else {
+      const defaultProviderIdentityRoot = rootHash(expectedReport.providers.map(entry => ({provider_id: entry.provider_id, provider_root: entry.provider_root})));
+      const reportProviderIdentityRoot = rootHash(providerEntries.map(entry => ({provider_id: entry.provider_id, provider_root: entry.provider_root})));
+      check(reportProviderIdentityRoot === defaultProviderIdentityRoot, 'PROVIDER_PREFLIGHT_REPLAY_INPUTS_REQUIRED');
+      if (reportProviderIdentityRoot === defaultProviderIdentityRoot) {
+        check(rootHash(copy) === rootHash(expectedReport), 'PROVIDER_PREFLIGHT_CONTENT_MISMATCH');
+      }
+    }
+  } catch (error) {
+    errors.push(`VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, preflight_root: report.preflight_root ?? null};
 }
 
 function universalArtAssetAssemblyBatchInput(batch, assetResults = null) {
