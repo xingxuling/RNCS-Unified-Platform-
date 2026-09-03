@@ -18,7 +18,7 @@ import {
   verifyUniversalArtAssetComponentRepresentationDirectory,
   verifyUniversalArtAssetComponentRepresentationImport
 } from '@taowind/large-world-runtime';
-import {AssetProviderAdapter, createAssetProviderManifest, generateAnimationClips, generateMesh3d, generatePbrTexturePack, generateSkeletonRig} from '@taowind/reality-asset-genesis-fabric';
+import {AssetProviderAdapter, createAssetProviderManifest, generateAnimationClips, generateMesh3d, generateParticlePreset, generatePbrTexturePack, generateSkeletonRig} from '@taowind/reality-asset-genesis-fabric';
 import {
   VSRSpatialAssetStreamer,
   compileSpatialFrame,
@@ -27,12 +27,12 @@ import {
   verifySpatialAssetStreamingReceipt,
   verifySpatialSceneCompositionReceipt
 } from '@taowind/visual-state-runtime/spatial-reality-3d';
-import {createVsrGltfPbrComponentImportHandler, createVsrRigAnimationComponentImportHandler, decodeGltfImageToSpatialTexture, importGlbToSpatialScene, verifyGltfImportReceipt} from '@taowind/visual-state-runtime/gltf-asset';
+import {createVsrGltfPbrComponentImportHandler, createVsrParticleComponentImportHandler, createVsrRigAnimationComponentImportHandler, decodeGltfImageToSpatialTexture, importGlbToSpatialScene, verifyGltfImportReceipt} from '@taowind/visual-state-runtime/gltf-asset';
 import {decodePng} from '@taowind/visual-state-runtime/backend-canvas';
 
 const root = letter => letter.repeat(64);
 
-function createFixture({validMesh = false, includeBlade = false, includeAnimation = false, pbrMesh = false} = {}) {
+function createFixture({validMesh = false, includeBlade = false, includeAnimation = false, includeParticle = false, pbrMesh = false} = {}) {
   const rootGenome = createUniversalArtAssetGenome({
     asset_profile: 'character',
     asset_kind: 'character-3d',
@@ -102,7 +102,7 @@ function createFixture({validMesh = false, includeBlade = false, includeAnimatio
     scene_id: 'scene:representation-directory-integration',
     components: specs.map(spec => ({...spec, genome: genomes[spec.component_id]}))
   });
-  const outputRoles = ['mesh-glb', 'pbr-texture-pack', 'rig-candidate', 'animation-clips'];
+  const outputRoles = ['mesh-glb', 'pbr-texture-pack', 'rig-candidate', 'animation-clips', ...(includeParticle ? ['particle-preset'] : [])];
   const manifest = createAssetProviderManifest({
     id: 'provider:test:component-representation-directory',
     name: 'Component Representation Directory Fixture',
@@ -179,6 +179,10 @@ function createFixture({validMesh = false, includeBlade = false, includeAnimatio
         if (pbrMesh && role === 'animation-clips') {
           const payload = Buffer.from(JSON.stringify(generateAnimationClips({genome: ragfGenome, variant: 'standard'})), 'utf8');
           return [{name: `${operation}/rig/animation-clips.json`, path: `${operation}/rig/animation-clips.json`, role, format: 'application/json', mime: 'application/json', base64: payload.toString('base64')}];
+        }
+        if (includeParticle && role === 'particle-preset') {
+          const payload = Buffer.from(JSON.stringify(generateParticlePreset({genome: ragfGenome, variant: 'standard'})), 'utf8');
+          return [{name: `${operation}/effects/particle-preset.json`, path: `${operation}/effects/particle-preset.json`, role, format: 'application/json', mime: 'application/json', base64: payload.toString('base64')}];
         }
         const meshPayload = role === 'mesh-glb' ? validMeshPayloadByComponent[componentId] : null;
         const mesh = role === 'mesh-glb' && meshPayload !== null && meshPayload !== undefined;
@@ -489,5 +493,38 @@ test('component representation import executes a standalone animation handler wi
   assert.equal(frame.stats.meshCount, 0);
   assert.equal(frame.stats.animationClipCount, 4);
   assert.equal(frame.stats.visibleDraws, 0);
+  assert.equal(verifyUniversalArtAssetComponentRepresentationImport(imported, {directory, importerRegistry}).valid, true);
+});
+
+test('component representation import executes a particle preset handler with explicit non-particle deferral', async () => {
+  const {assembly} = createFixture({validMesh: true, includeParticle: true, pbrMesh: true});
+  const directory = lowerUniversalArtAssetComponentAssemblyToRepresentationDirectory({assembly});
+  const loadAsset = asset => fs.readFileSync(path.resolve(asset.metadata.output_directory, asset.metadata.relative_path));
+  const handler = createVsrParticleComponentImportHandler();
+  const importers = {
+    particle: {
+      handler_id: handler.handler_id,
+      compile: context => handler.compile(context),
+      verify: handler.verify
+    }
+  };
+  const importerRegistry = createUniversalArtAssetComponentRepresentationImportRegistry({importers});
+  const imported = await executeUniversalArtAssetComponentRepresentationImport({
+    directory,
+    assembly,
+    requestedComponentIds: ['sparks'],
+    loadAsset,
+    importerRegistry
+  });
+  const particleAsset = directory.vsr_catalog.assets.find(asset => asset.metadata?.component_id === 'sparks' && asset.metadata?.role === 'particle-preset');
+  assert.ok(particleAsset);
+  assert.equal(imported.status, 'CANDIDATE_COMPONENT_REPRESENTATION_IMPORT_EXECUTED');
+  assert.equal(imported.importer_registry_root, importerRegistry.registry_root);
+  assert.equal(imported.entries[0].representation_kind, 'particle');
+  assert.equal(imported.entries[0].resource_coverage_status, 'PARTIAL');
+  assert.equal(imported.entries[0].metrics.emitter_count, 1);
+  assert.equal(imported.entries[0].metrics.particle_max, 64);
+  assert.deepEqual(imported.entries[0].consumed_asset_ids, [particleAsset.id]);
+  assert.ok(imported.entries[0].deferred_asset_ids.length > 0);
   assert.equal(verifyUniversalArtAssetComponentRepresentationImport(imported, {directory, importerRegistry}).valid, true);
 });
