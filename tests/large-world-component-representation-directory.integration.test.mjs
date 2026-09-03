@@ -6,7 +6,6 @@ import test from 'node:test';
 import Ajv2020 from 'ajv/dist/2020.js';
 import {
   UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_DIRECTORY_FORMAT,
-  createUniversalArtAssetComponentRepresentationImportRegistry,
   executeUniversalArtAssetComponentRepresentationImport,
   createUniversalArtAssetComponentAssembly,
   createUniversalArtAssetComponentGraph,
@@ -29,8 +28,9 @@ import {
   verifySpatialAssetStreamingReceipt,
   verifySpatialSceneCompositionReceipt
 } from '@taowind/visual-state-runtime/spatial-reality-3d';
-import {createVsrGltfPbrComponentImportHandler, createVsrParticleComponentImportHandler, createVsrRigAnimationComponentImportHandler, decodeGltfImageToSpatialTexture, importGlbToSpatialScene, verifyGltfImportReceipt} from '@taowind/visual-state-runtime/gltf-asset';
+import {decodeGltfImageToSpatialTexture, importGlbToSpatialScene, verifyGltfImportReceipt} from '@taowind/visual-state-runtime/gltf-asset';
 import {decodePng} from '@taowind/visual-state-runtime/backend-canvas';
+import {createUrrfVsrArtAssetImportBinding} from '../packages/integration/urrf-vsr-art-asset-bridge/src/index.mjs';
 
 const root = letter => letter.repeat(64);
 
@@ -372,10 +372,12 @@ test('component representation imports compose multiple VSR scenes under URRF tr
   const directory = lowerUniversalArtAssetComponentAssemblyToRepresentationDirectory({assembly});
   const importedScenes = new Map();
   const loadAsset = asset => fs.readFileSync(path.resolve(asset.metadata.output_directory, asset.metadata.relative_path));
-  const componentImportHandler = createVsrGltfPbrComponentImportHandler({
-    aggregateMeshAssets: false,
-    consumeRigAnimation: true,
-    requireRigAnimation: true,
+  const binding = createUrrfVsrArtAssetImportBinding({
+    mesh: {
+      aggregateMeshAssets: false,
+      consumeRigAnimation: true,
+      requireRigAnimation: true
+    },
     imageDecoder: async input => {
       if (input.mimeType === 'image/ktx2' || input.image?.mimeType === 'image/ktx2') return decodeGltfImageToSpatialTexture(input);
       const decoded = decodePng(input.bytes);
@@ -387,31 +389,20 @@ test('component representation imports compose multiple VSR scenes under URRF tr
         colorSpace: input.image?.extras?.vsrColorSpace ?? 'srgb',
         filter: 'linear'
       };
-    }
+    },
+    onVerifiedResult: ({component_id, result}) => importedScenes.set(component_id, result.scene)
   });
-  const importers = {
-    mesh: {
-      handler_id: componentImportHandler.handler_id,
-      compile: async context => {
-        const imported = await componentImportHandler.compile(context);
-        importedScenes.set(context.entry.component_id, imported.scene);
-        return imported;
-      },
-      verify: componentImportHandler.verify
-    }
-  };
-  const importerRegistry = createUniversalArtAssetComponentRepresentationImportRegistry({importers});
   const imported = await executeUniversalArtAssetComponentRepresentationImport({
     directory,
     assembly,
     requestedComponentIds: ['body', 'blade'],
     loadAsset,
-    importerRegistry
+    importerRegistry: binding.registry
   });
   assert.equal(imported.status, 'CANDIDATE_COMPONENT_REPRESENTATION_IMPORT_EXECUTED');
   assert.equal(imported.summary.executed_count, 2);
-  assert.equal(imported.importer_registry_root, importerRegistry.registry_root);
-  assert.equal(verifyUniversalArtAssetComponentRepresentationImport(imported, {directory, importerRegistry}).valid, true);
+  assert.equal(imported.importer_registry_root, binding.registry.registry_root);
+  assert.equal(verifyUniversalArtAssetComponentRepresentationImport(imported, {directory, importerRegistry: binding.registry}).valid, true);
   assert.equal(importedScenes.size, 2);
   assert.deepEqual(imported.entries.map(entry => entry.resource_coverage_status), ['PARTIAL', 'COMPLETE']);
   assert.deepEqual(imported.entries.map(entry => [entry.metrics.texture_count, entry.metrics.material_texture_binding_count, entry.metrics.external_pbr_channel_count, entry.metrics.rig_bone_count, entry.metrics.animation_clip_count]), [[8, 5, 4, 8, 4], [8, 5, 4, 8, 4]]);
@@ -459,11 +450,14 @@ test('component representation import fuses standalone rig and animation with ge
   const {assembly} = createFixture({validMesh: true, includeAnimation: true, pbrMesh: true});
   const directory = lowerUniversalArtAssetComponentAssemblyToRepresentationDirectory({assembly});
   const loadAsset = asset => fs.readFileSync(path.resolve(asset.metadata.output_directory, asset.metadata.relative_path));
-  const handler = createVsrRigAnimationComponentImportHandler({
-    requireRigForAnimation: true,
-    fuseGeometry: true,
-    fuseExternalPbr: true,
-    requireExternalPbr: true,
+  const importedScenes = new Map();
+  const binding = createUrrfVsrArtAssetImportBinding({
+    animation: {
+      requireRigForAnimation: true,
+      fuseGeometry: true,
+      fuseExternalPbr: true,
+      requireExternalPbr: true
+    },
     imageDecoder: async input => {
       if (input.mimeType === 'image/ktx2' || input.image?.mimeType === 'image/ktx2') return decodeGltfImageToSpatialTexture(input);
       const decoded = decodePng(input.bytes);
@@ -475,31 +469,19 @@ test('component representation import fuses standalone rig and animation with ge
         colorSpace: input.image?.extras?.vsrColorSpace ?? 'srgb',
         filter: 'linear'
       };
-    }
+    },
+    onVerifiedResult: ({component_id, result}) => importedScenes.set(component_id, result.scene)
   });
-  const importedScenes = new Map();
-  const importers = {
-    animation: {
-      handler_id: handler.handler_id,
-      compile: async context => {
-        const result = await handler.compile(context);
-        importedScenes.set(context.entry.component_id, result.scene);
-        return result;
-      },
-      verify: handler.verify
-    }
-  };
-  const importerRegistry = createUniversalArtAssetComponentRepresentationImportRegistry({importers});
   const imported = await executeUniversalArtAssetComponentRepresentationImport({
     directory,
     assembly,
     requestedComponentIds: ['motion'],
     loadAsset,
-    importerRegistry
+    importerRegistry: binding.registry
   });
   assert.equal(imported.status, 'CANDIDATE_COMPONENT_REPRESENTATION_IMPORT_EXECUTED');
   assert.equal(imported.summary.executed_count, 1);
-  assert.equal(imported.importer_registry_root, importerRegistry.registry_root);
+  assert.equal(imported.importer_registry_root, binding.registry.registry_root);
   assert.equal(imported.entries[0].representation_kind, 'animation');
   assert.equal(imported.entries[0].verification_status, 'HANDLER_VERIFIED');
   assert.equal(imported.entries[0].resource_coverage_status, 'PARTIAL');
@@ -516,40 +498,33 @@ test('component representation import fuses standalone rig and animation with ge
   assert.equal(frame.stats.meshCount, 1);
   assert.equal(frame.stats.animationClipCount, 4);
   assert.equal(frame.stats.visibleDraws, 1);
-  assert.equal(verifyUniversalArtAssetComponentRepresentationImport(imported, {directory, importerRegistry}).valid, true);
+  assert.equal(verifyUniversalArtAssetComponentRepresentationImport(imported, {directory, importerRegistry: binding.registry}).valid, true);
 });
 
 test('component representation import executes a particle preset handler with explicit non-particle deferral', async () => {
   const {assembly} = createFixture({validMesh: true, includeParticle: true, pbrMesh: true});
   const directory = lowerUniversalArtAssetComponentAssemblyToRepresentationDirectory({assembly});
   const loadAsset = asset => fs.readFileSync(path.resolve(asset.metadata.output_directory, asset.metadata.relative_path));
-  const handler = createVsrParticleComponentImportHandler();
-  const importers = {
-    particle: {
-      handler_id: handler.handler_id,
-      compile: context => handler.compile(context),
-      verify: handler.verify
-    }
-  };
-  const importerRegistry = createUniversalArtAssetComponentRepresentationImportRegistry({importers});
+  const binding = createUrrfVsrArtAssetImportBinding();
+  const handler = binding.importers.particle;
   const imported = await executeUniversalArtAssetComponentRepresentationImport({
     directory,
     assembly,
     requestedComponentIds: ['sparks'],
     loadAsset,
-    importerRegistry
+    importerRegistry: binding.registry
   });
   const particleAsset = directory.vsr_catalog.assets.find(asset => asset.metadata?.component_id === 'sparks' && asset.metadata?.role === 'particle-preset');
   assert.ok(particleAsset);
   assert.equal(imported.status, 'CANDIDATE_COMPONENT_REPRESENTATION_IMPORT_EXECUTED');
-  assert.equal(imported.importer_registry_root, importerRegistry.registry_root);
+  assert.equal(imported.importer_registry_root, binding.registry.registry_root);
   assert.equal(imported.entries[0].representation_kind, 'particle');
   assert.equal(imported.entries[0].resource_coverage_status, 'PARTIAL');
   assert.equal(imported.entries[0].metrics.emitter_count, 1);
   assert.equal(imported.entries[0].metrics.particle_max, 64);
   assert.deepEqual(imported.entries[0].consumed_asset_ids, [particleAsset.id]);
   assert.ok(imported.entries[0].deferred_asset_ids.length > 0);
-  assert.equal(verifyUniversalArtAssetComponentRepresentationImport(imported, {directory, importerRegistry}).valid, true);
+  assert.equal(verifyUniversalArtAssetComponentRepresentationImport(imported, {directory, importerRegistry: binding.registry}).valid, true);
   const particleEntry = directory.representations.find(entry => entry.component_id === 'sparks');
   assert.ok(particleEntry);
   const particleAssets = directory.vsr_catalog.assets.filter(asset => asset.metadata?.component_id === 'sparks');
