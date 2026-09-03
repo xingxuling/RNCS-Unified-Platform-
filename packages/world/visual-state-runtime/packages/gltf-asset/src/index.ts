@@ -1,6 +1,7 @@
 import { cryptographicHash } from '../../spec/src/index.js';
 import {
   VSR_SPATIAL_SCENE_FORMAT,
+  compileSpatialFrame,
   type Mat4,
   type Vec3,
   type Vec4,
@@ -43,6 +44,12 @@ export interface VSRGltfComponentImportContext {entry:VSRGltfComponentImportEntr
 export interface VSRGltfComponentImportResult {status:'EXECUTED';scene:VSRSpatialScene3D;receipt:VSRGltfImportReceipt;output_root:string;consumed_asset_ids:string[];deferred_asset_ids:string[];metrics:Record<string,number>}
 export interface VSRGltfComponentImportHandlerOptions {handlerId?:string;imageDecoder?:VSRGltfImageDecoder;sceneId?:(entry:VSRGltfComponentImportEntry,asset:VSRGltfComponentAsset)=>string;sourceRoot?:(entry:VSRGltfComponentImportEntry,asset:VSRGltfComponentAsset)=>string|undefined;requireExternalPbr?:boolean;consumeRigAnimation?:boolean;requireRigAnimation?:boolean}
 export interface VSRGltfComponentImportHandler {handler_id:string;compile:(context:VSRGltfComponentImportContext)=>Promise<VSRGltfComponentImportResult>;verify:(input:{result:VSRGltfComponentImportResult})=>boolean}
+export const VSR_RIG_ANIMATION_IMPORT_FORMAT='vsr.rig-animation-import-receipt.v0.1' as const;
+export type VSRRigAnimationRepresentationKind='rig'|'animation';
+export interface VSRRigAnimationComponentImportReceipt {format:typeof VSR_RIG_ANIMATION_IMPORT_FORMAT;componentId:string;sceneId:string;representationKind:VSRRigAnimationRepresentationKind;resourceRoot:string;sceneRoot:string;nodeCount:number;rigBoneCount:number;animationClipCount:number;animationChannelCount:number;candidateOnly:true;authoritative:false;receiptRoot:string}
+export interface VSRRigAnimationComponentImportResult {status:'EXECUTED';scene:VSRSpatialScene3D;receipt:VSRRigAnimationComponentImportReceipt;output_root:string;consumed_asset_ids:string[];deferred_asset_ids:string[];metrics:Record<string,number>}
+export interface VSRRigAnimationComponentImportHandlerOptions {handlerId?:string;sceneId?:(entry:VSRGltfComponentImportEntry,asset:VSRGltfComponentAsset)=>string;requireRigForAnimation?:boolean}
+export interface VSRRigAnimationComponentImportHandler {handler_id:string;compile:(context:VSRGltfComponentImportContext)=>Promise<VSRRigAnimationComponentImportResult>;verify:(input:{result:VSRRigAnimationComponentImportResult})=>boolean}
 
 const GLB_MAGIC=0x46546c67;
 const GLB_VERSION=2;
@@ -161,6 +168,101 @@ export function createVsrGltfPbrComponentImportHandler(options:VSRGltfComponentI
     },
     verify:({result})=>Boolean(result&&result.status==='EXECUTED'&&typeof result.output_root==='string'&&result.output_root.length===64&&verifyGltfImportReceipt(result.receipt))
   }
+}
+
+type VSRStandaloneRigBone={name:string;parent:string|null;translation:Vec3;rotation:Vec4};
+type VSRStandaloneAnimationTrack={bone:string;path:VSRSpatialAnimationPath;times:number[];values:(Vec3|Vec4)[];interpolation:'LINEAR'|'STEP'};
+type VSRStandaloneAnimationClip={name:string;duration:number;tracks:VSRStandaloneAnimationTrack[]};
+
+function standaloneFiniteVector(value:unknown,length:number,field:string):number[]{
+  if(!Array.isArray(value)||value.length!==length||value.some(component=>typeof component!=='number'||!Number.isFinite(component)))throw new Error(`VSR rig/animation ${field} must be a finite ${length}-component vector.`);
+  return value.map(component=>Number(component));
+}
+function standaloneAssetId(entry:VSRGltfComponentImportEntry,fallback:string):string{const value=String(entry.component_id??entry.componentId??fallback).trim();if(!value)throw new Error('VSR rig/animation component id is required.');return value}
+function standaloneRepresentationKind(entry:VSRGltfComponentImportEntry):VSRRigAnimationRepresentationKind{const value=String(entry.representation_kind??entry.representationKind??'').trim().toLowerCase();if(value!=='rig'&&value!=='animation')throw new Error(`VSR rig/animation handler does not support representation kind ${value||'missing'}.`);return value}
+function standalonePayloadJson(payloads:Map<string,Uint8Array>,asset:VSRGltfComponentAsset):Json{try{const value=JSON.parse(new TextDecoder().decode(componentAssetBytes(payloads,asset)));if(!value||typeof value!=='object'||Array.isArray(value))throw new Error('JSON root must be an object.');return value as Json}catch(error){throw new Error(`VSR rig/animation ${roleForError(asset)} payload is invalid JSON: ${error instanceof Error?error.message:String(error)}`)}}
+function standaloneRig(rig:Json,expectedAssetId?:string):VSRStandaloneRigBone[]{
+  if(rig.format!=='reality-asset.skeleton-rig.v0.4'||!Array.isArray(rig.bones)||!rig.bones.length||typeof rig.rig_root!=='string'||!/^[0-9a-f]{64}$/i.test(rig.rig_root))throw new Error('VSR rig/animation rig contract is invalid.');
+  if(expectedAssetId&&rig.asset_id!==expectedAssetId)throw new Error('VSR rig/animation rig asset identity is not bound.');
+  if(rig.metrics?.bone_count!==undefined&&Number(rig.metrics.bone_count)!==rig.bones.length)throw new Error('VSR rig/animation rig bone metric is inconsistent.');
+  if(rig.limits?.max_bones!==undefined&&(!Number.isSafeInteger(Number(rig.limits.max_bones))||Number(rig.limits.max_bones)<rig.bones.length))throw new Error('VSR rig/animation rig exceeds its declared bone budget.');
+  const names=new Set<string>(),bones:VSRStandaloneRigBone[]=[];let rootCount=0;
+  for(let index=0;index<rig.bones.length;index++){
+    const bone=rig.bones[index];if(!bone||typeof bone.name!=='string'||!bone.name.trim()||names.has(bone.name))throw new Error(`VSR rig/animation rig bone ${index} has an invalid or duplicate name.`);names.add(bone.name);
+    if(bone.parent!==null&&typeof bone.parent!=='string')throw new Error(`VSR rig/animation rig parent ${bone.name} is invalid.`);if(bone.parent===null)rootCount++;
+    const rest=bone.rest;if(!rest||typeof rest!=='object')throw new Error(`VSR rig/animation rig bone ${bone.name} has no rest transform.`);
+    const translation=standaloneFiniteVector(rest.translation,3,`rig bone ${bone.name} translation`) as Vec3,rotation=standaloneFiniteVector(rest.rotation,4,`rig bone ${bone.name} rotation`) as Vec4;
+    bones.push({name:bone.name,parent:bone.parent,translation,rotation});
+  }
+  if(rootCount!==1)throw new Error('VSR rig/animation rig must contain exactly one root bone.');
+  for(const bone of bones){if(bone.parent!==null&&!names.has(bone.parent))throw new Error(`VSR rig/animation rig parent ${bone.parent} is missing.`);const seen=new Set<string>();let cursor:VSRStandaloneRigBone|undefined=bone;while(cursor){if(seen.has(cursor.name))throw new Error(`VSR rig/animation rig hierarchy cycles at ${cursor.name}.`);seen.add(cursor.name);if(cursor.parent===null)break;cursor=bones.find(candidate=>candidate.name===cursor!.parent)}}
+  return bones;
+}
+function standaloneAnimation(animation:Json,expectedAssetId?:string,rigNames?:Set<string>):VSRStandaloneAnimationClip[]{
+  if(animation.format!=='reality-asset.animation-clips.v0.4'||!Array.isArray(animation.clips)||!animation.clips.length||typeof animation.clip_root!=='string'||!/^[0-9a-f]{64}$/i.test(animation.clip_root))throw new Error('VSR rig/animation animation contract is invalid.');
+  if(expectedAssetId&&animation.asset_id!==expectedAssetId)throw new Error('VSR rig/animation animation asset identity is not bound.');
+  const clipNames=new Set<string>(),clips:VSRStandaloneAnimationClip[]=[];
+  for(let clipIndex=0;clipIndex<animation.clips.length;clipIndex++){
+    const clip=animation.clips[clipIndex];if(!clip||typeof clip.name!=='string'||!clip.name.trim()||clipNames.has(clip.name))throw new Error(`VSR rig/animation clip ${clipIndex} has an invalid or duplicate name.`);clipNames.add(clip.name);
+    if(typeof clip.duration!=='number'||!Number.isFinite(clip.duration)||clip.duration<0||!Array.isArray(clip.tracks)||!clip.tracks.length)throw new Error(`VSR rig/animation clip ${clip.name} contract is invalid.`);
+    const trackKeys=new Set<string>(),tracks:VSRStandaloneAnimationTrack[]=[];
+    for(let trackIndex=0;trackIndex<clip.tracks.length;trackIndex++){
+      const track=clip.tracks[trackIndex];if(!track||typeof track.bone!=='string'||!track.bone.trim()||!Array.isArray(track.times)||!Array.isArray(track.values)||track.times.length!==track.values.length||!track.times.length)throw new Error(`VSR rig/animation track ${clip.name}/${trackIndex} contract is invalid.`);
+      if(rigNames&&!rigNames.has(track.bone))throw new Error(`VSR rig/animation track ${clip.name}/${track.bone} references an unknown rig bone.`);
+      const rawPath=String(track.path??'').trim();let path:VSRSpatialAnimationPath,dimension:number;
+      if(rawPath==='translation'){path='translation';dimension=3}else if(rawPath==='scale'){path='scale';dimension=3}else if(rawPath==='rotation'||rawPath==='rotationQuaternion'){path='rotationQuaternion';dimension=4}else if(rawPath==='rotationEulerDeg'){path='rotationEulerDeg';dimension=3}else throw new Error(`VSR rig/animation track ${clip.name}/${track.bone} has unsupported path ${rawPath||'missing'}.`);
+      const key=`${track.bone}:${path}`;if(trackKeys.has(key))throw new Error(`VSR rig/animation clip ${clip.name} contains duplicate track ${key}.`);trackKeys.add(key);
+      const times=track.times.map((time:unknown,index:number)=>{if(typeof time!=='number'||!Number.isFinite(time)||time<0||(index>0&&time<track.times[index-1]))throw new Error(`VSR rig/animation track ${clip.name}/${track.bone} times are invalid.`);if(time>clip.duration)throw new Error(`VSR rig/animation track ${clip.name}/${track.bone} exceeds clip duration.`);return time});
+      const values=track.values.map((value:unknown)=>standaloneFiniteVector(value,dimension,`track ${clip.name}/${track.bone} value`) as Vec3|Vec4);
+      const interpolation=String(track.interpolation??'LINEAR').trim().toUpperCase();if(interpolation!=='LINEAR'&&interpolation!=='STEP')throw new Error(`VSR rig/animation track ${clip.name}/${track.bone} interpolation ${interpolation} requires an explicit VSR tangent representation.`);
+      tracks.push({bone:track.bone,path,times,values,interpolation});
+    }
+    clips.push({name:clip.name,duration:clip.duration,tracks});
+  }
+  return clips;
+}
+function standaloneRigNodes(componentId:string,bones:VSRStandaloneRigBone[]):{nodes:VSRSpatialNode[];skin:VSRSpatialSkin}{
+  const ids=new Map(bones.map((bone,index)=>[bone.name,`rig:${componentId}:bone:${index}`])),nodes=bones.map(bone=>({id:ids.get(bone.name)!,...(bone.parent===null?{}:{parentId:ids.get(bone.parent)!}),transform:{translation:bone.translation,rotationQuaternion:bone.rotation},tags:['vsr-rig-bone',`rig-bone:${bone.name}`]} as VSRSpatialNode));return{nodes,skin:{id:`skin:${componentId}:rig`,joints:nodes.map(node=>node.id)}}
+}
+function standaloneAnimationNodes(componentId:string,clips:VSRStandaloneAnimationClip[],rig?:{nodes:VSRSpatialNode[];skin:VSRSpatialSkin}):{nodes:VSRSpatialNode[];skin?:VSRSpatialSkin}{
+  if(rig)return rig;
+  const names=[...new Set(clips.flatMap(clip=>clip.tracks.map(track=>track.bone)))].sort((left,right)=>left.localeCompare(right)),nodes=names.map((name,index)=>({id:`animation:${componentId}:bone:${index}`,transform:{},tags:['vsr-animation-bone',`animation-bone:${name}`]} as VSRSpatialNode));return{nodes}
+}
+function standaloneSpatialScene(componentId:string,sceneId:string,kind:VSRRigAnimationRepresentationKind,resourceRoot:string,nodes:VSRSpatialNode[],skin:VSRSpatialSkin|undefined,animations:VSRSpatialAnimationClip[]):VSRSpatialScene3D{
+  const cameraId=`camera:${componentId}:${kind}`;return{format:VSR_SPATIAL_SCENE_FORMAT,sceneId,title:`VSR ${kind} component ${componentId}`,background:'#0b1020',activeCameraId:cameraId,meshes:[],materials:[],textures:[],animations,skins:skin?[skin]:[],nodes,cameras:[{id:cameraId,transform:{translation:[0,1.2,5]},projection:'perspective',fovYDeg:60,near:.01,far:1000}],lights:[{id:`light:${componentId}:ambient`,kind:'ambient',color:'#ffffff',intensity:.35},{id:`light:${componentId}:key`,kind:'directional',color:'#ffffff',intensity:1,direction:[-.35,-1,-.25]}],reality:{worldId:`world:${sceneId}`,realityRoot:resourceRoot}};
+}
+function standaloneResourceRoot(componentId:string,kind:VSRRigAnimationRepresentationKind,bindings:Array<{asset:VSRGltfComponentAsset;bytes:Uint8Array}>):{root:string;byteLength:number}{const resources=bindings.map(({asset,bytes})=>({assetId:asset.id,byteLength:bytes.byteLength,byteRoot:cryptographicHash([...bytes])}));return{root:cryptographicHash({componentId,representationKind:kind,resources}),byteLength:resources.reduce((sum,resource)=>sum+resource.byteLength,0)}}
+type VSRRigAnimationReceiptBase=Omit<VSRRigAnimationComponentImportReceipt,'receiptRoot'>;
+function standaloneReceiptBase(input:{componentId:string;sceneId:string;kind:VSRRigAnimationRepresentationKind;resourceRoot:string;scene:VSRSpatialScene3D;rigBoneCount:number;animationClipCount:number;animationChannelCount:number}):VSRRigAnimationReceiptBase{return{format:VSR_RIG_ANIMATION_IMPORT_FORMAT,componentId:input.componentId,sceneId:input.sceneId,representationKind:input.kind,resourceRoot:input.resourceRoot,sceneRoot:cryptographicHash(input.scene),nodeCount:input.scene.nodes.length,rigBoneCount:input.rigBoneCount,animationClipCount:input.animationClipCount,animationChannelCount:input.animationChannelCount,candidateOnly:true,authoritative:false}}
+export function verifyVsrRigAnimationImportReceipt(receipt:VSRRigAnimationComponentImportReceipt,scene?:VSRSpatialScene3D):boolean{
+  try{
+    if(!receipt||receipt.format!==VSR_RIG_ANIMATION_IMPORT_FORMAT||!receipt.componentId||!receipt.sceneId||(receipt.representationKind!=='rig'&&receipt.representationKind!=='animation')||![receipt.resourceRoot,receipt.sceneRoot,receipt.receiptRoot].every(root=>/^[a-f0-9]{64}$/i.test(root))||![receipt.nodeCount,receipt.rigBoneCount,receipt.animationClipCount,receipt.animationChannelCount].every(value=>Number.isSafeInteger(value)&&value>=0)||receipt.nodeCount<1||receipt.candidateOnly!==true||receipt.authoritative!==false)return false;
+    const{receiptRoot,...base}=receipt;if(cryptographicHash(base)!==receiptRoot)return false;
+    if(scene){compileSpatialFrame(scene,{width:1,height:1,enableShadows:false});if(scene.format!==VSR_SPATIAL_SCENE_FORMAT||scene.sceneId!==receipt.sceneId||cryptographicHash(scene)!==receipt.sceneRoot||scene.meshes.length!==0||scene.nodes.length!==receipt.nodeCount||(scene.skins?.[0]?.joints.length??0)!==receipt.rigBoneCount||(scene.animations??[]).length!==receipt.animationClipCount||(scene.animations??[]).reduce((sum,clip)=>sum+clip.channels.length,0)!==receipt.animationChannelCount)return false;if(receipt.representationKind==='rig'&&receipt.animationClipCount!==0)return false;if(receipt.representationKind==='animation'&&receipt.animationClipCount<1)return false}
+    return true;
+  }catch{return false}
+}
+function standaloneCoverageValid(result:VSRRigAnimationComponentImportResult):boolean{const consumed=result.consumed_asset_ids,deferred=result.deferred_asset_ids;if(!Array.isArray(consumed)||!Array.isArray(deferred)||consumed.some(id=>typeof id!=='string'||!id)||deferred.some(id=>typeof id!=='string'||!id)||new Set(consumed).size!==consumed.length||new Set(deferred).size!==deferred.length||consumed.some(id=>deferred.includes(id)))return false;return true}
+/**
+ * Import standalone RAGF rig or animation JSON into a bone-only VSR scene.
+ * The result is a candidate representation: it is executable and verifiable,
+ * but it never mutates RNCS state or claims AAA fidelity.
+ */
+export function createVsrRigAnimationComponentImportHandler(options:VSRRigAnimationComponentImportHandlerOptions={}):VSRRigAnimationComponentImportHandler{
+  const handler_id=options.handlerId??'vsr.rig-animation-component-import.v0.1';
+  return{handler_id,compile:async({entry,assets,payloads})=>{
+    if(!Array.isArray(assets)||!(payloads instanceof Map))throw new Error('VSR rig/animation component import requires an asset list and payload map.');
+    if(assets.some(asset=>!asset||typeof asset.id!=='string'||!asset.id.trim())||new Set(assets.map(asset=>asset.id)).size!==assets.length)throw new Error('VSR rig/animation component asset IDs must be unique and non-empty.');
+    const kind=standaloneRepresentationKind(entry),rigBinding=componentAuxiliaryAsset(assets,payloads,'rig'),animationBinding=componentAuxiliaryAsset(assets,payloads,'animation');
+    if(kind==='rig'&&!rigBinding)throw new Error('VSR rig/animation rig import requires a rig resource.');
+    if(kind==='animation'&&!animationBinding)throw new Error('VSR rig/animation animation import requires an animation resource.');
+    if(kind==='animation'&&options.requireRigForAnimation&&!rigBinding)throw new Error('VSR rig/animation animation import requires a rig resource for binding.');
+    const componentId=standaloneAssetId(entry,(kind==='rig'?rigBinding!:animationBinding!).asset.id),primary=kind==='rig'?rigBinding!.asset:animationBinding!.asset,sceneId=String(options.sceneId?.(entry,primary)??`component-vsr-import-${kind}-${componentId}`).trim();if(!sceneId)throw new Error('VSR rig/animation scene id is required.');
+    const expectedAssetId=typeof entry.asset_id==='string'?entry.asset_id:typeof entry.assetId==='string'?entry.assetId:undefined,rigPayload=rigBinding?standalonePayloadJson(payloads,rigBinding.asset):undefined,animationPayload=kind==='animation'&&animationBinding?standalonePayloadJson(payloads,animationBinding.asset):undefined,rig=rigPayload?standaloneRig(rigPayload,expectedAssetId):undefined,animation=animationPayload?standaloneAnimation(animationPayload,expectedAssetId,rig?new Set(rig.map(bone=>bone.name)):undefined):undefined;
+    if(rigPayload&&animationPayload&&typeof rigPayload.asset_id==='string'&&typeof animationPayload.asset_id==='string'&&rigPayload.asset_id!==animationPayload.asset_id)throw new Error('VSR rig/animation auxiliary asset identities conflict.');
+    const bindings=kind==='rig'?[rigBinding!]:rig?[rigBinding!,animationBinding!]:[animationBinding!],resource=standaloneResourceRoot(componentId,kind,bindings),rigScene=rig?standaloneRigNodes(componentId,rig):undefined,animationNodes=standaloneAnimationNodes(componentId,animation??[],rigScene),nodes=animationNodes.nodes,skin=animationNodes.skin,animationClips=(animation??[]).map((clip,clipIndex)=>({id:`animation:${componentId}:clip:${clipIndex}`,duration:clip.duration,channels:clip.tracks.map(track=>{const node=nodes.find(candidate=>candidate.tags?.includes(`animation-bone:${track.bone}`)||candidate.tags?.includes(`rig-bone:${track.bone}`));if(!node)throw new Error(`VSR rig/animation node ${track.bone} is missing.`);return{nodeId:node.id,path:track.path,times:track.times,values:track.values,interpolation:track.interpolation}})})),scene=standaloneSpatialScene(componentId,sceneId,kind,resource.root,nodes,skin,animationClips),base=standaloneReceiptBase({componentId,sceneId,kind,resourceRoot:resource.root,scene,rigBoneCount:rig?.length??0,animationClipCount:animationClips.length,animationChannelCount:animationClips.reduce((sum,clip)=>sum+clip.channels.length,0)}),receipt={...base,receiptRoot:cryptographicHash(base)},consumed_asset_ids=bindings.map(binding=>binding.asset.id),consumed=new Set(consumed_asset_ids),deferred_asset_ids=assets.map(asset=>asset.id).filter(id=>!consumed.has(id));
+    return{status:'EXECUTED',scene,receipt,output_root:receipt.sceneRoot,consumed_asset_ids,deferred_asset_ids,metrics:{node_count:receipt.nodeCount,rig_bone_count:receipt.rigBoneCount,animation_clip_count:receipt.animationClipCount,animation_channel_count:receipt.animationChannelCount,rig_bound:rig?1:0,resource_count:bindings.length,resource_byte_length:resource.byteLength}};
+  },verify:({result})=>Boolean(result&&result.status==='EXECUTED'&&result.output_root===result.receipt.sceneRoot&&standaloneCoverageValid(result)&&verifyVsrRigAnimationImportReceipt(result.receipt,result.scene)&&result.metrics.node_count===result.receipt.nodeCount&&result.metrics.rig_bone_count===result.receipt.rigBoneCount&&result.metrics.animation_clip_count===result.receipt.animationClipCount&&result.metrics.animation_channel_count===result.receipt.animationChannelCount)}
 }
 function textureFromImage(gltf:Json,imageIndex:number,id:string,warnings:string[],sampler:Json={},resolver?:VSRGltfImageResolver):VSRSpatialTexture|undefined{
   const image=gltf.images?.[imageIndex];const resolved=resolver?.({imageIndex,image,id,sampler});if(resolved)return{...resolved,id};

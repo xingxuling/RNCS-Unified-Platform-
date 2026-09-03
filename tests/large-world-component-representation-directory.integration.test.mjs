@@ -26,12 +26,12 @@ import {
   verifySpatialAssetStreamingReceipt,
   verifySpatialSceneCompositionReceipt
 } from '@taowind/visual-state-runtime/spatial-reality-3d';
-import {createVsrGltfPbrComponentImportHandler, decodeGltfImageToSpatialTexture, importGlbToSpatialScene, verifyGltfImportReceipt} from '@taowind/visual-state-runtime/gltf-asset';
+import {createVsrGltfPbrComponentImportHandler, createVsrRigAnimationComponentImportHandler, decodeGltfImageToSpatialTexture, importGlbToSpatialScene, verifyGltfImportReceipt} from '@taowind/visual-state-runtime/gltf-asset';
 import {decodePng} from '@taowind/visual-state-runtime/backend-canvas';
 
 const root = letter => letter.repeat(64);
 
-function createFixture({validMesh = false, includeBlade = false, pbrMesh = false} = {}) {
+function createFixture({validMesh = false, includeBlade = false, includeAnimation = false, pbrMesh = false} = {}) {
   const rootGenome = createUniversalArtAssetGenome({
     asset_profile: 'character',
     asset_kind: 'character-3d',
@@ -62,6 +62,18 @@ function createFixture({validMesh = false, includeBlade = false, pbrMesh = false
       representation_profile: 'rigid-pbr',
       depends_on: ['body'],
       transform_mm: [1400, 0, 0]
+    }] : []),
+    ...(includeAnimation ? [{
+      component_id: 'motion',
+      role: 'character-animation',
+      asset_profile: 'character',
+      asset_kind: 'character-3d',
+      description: '空间角色动作表示。',
+      seed: 'component-representation-directory-motion',
+      representation_kind: 'animation',
+      representation_profile: 'humanoid-clips',
+      depends_on: ['body'],
+      transform_mm: [0, 0, 0]
     }] : []),
     {
       component_id: 'sparks',
@@ -430,4 +442,45 @@ test('component representation imports compose multiple VSR scenes under URRF tr
   assert.equal(frame.stats.visibleDraws, 2);
   const tampered = {...composed.receipt, sceneRoot: 'f'.repeat(64)};
   assert.equal(verifySpatialSceneCompositionReceipt(tampered), false);
+});
+
+test('component representation import executes a standalone animation handler with explicit mesh deferral', async () => {
+  const {assembly} = createFixture({validMesh: true, includeAnimation: true, pbrMesh: true});
+  const directory = lowerUniversalArtAssetComponentAssemblyToRepresentationDirectory({assembly});
+  const loadAsset = asset => fs.readFileSync(path.resolve(asset.metadata.output_directory, asset.metadata.relative_path));
+  const handler = createVsrRigAnimationComponentImportHandler({requireRigForAnimation: true});
+  const importedScenes = new Map();
+  const importers = {
+    animation: {
+      handler_id: handler.handler_id,
+      compile: async context => {
+        const result = await handler.compile(context);
+        importedScenes.set(context.entry.component_id, result.scene);
+        return result;
+      },
+      verify: handler.verify
+    }
+  };
+  const imported = await executeUniversalArtAssetComponentRepresentationImport({
+    directory,
+    assembly,
+    requestedComponentIds: ['motion'],
+    loadAsset,
+    importers
+  });
+  assert.equal(imported.status, 'CANDIDATE_COMPONENT_REPRESENTATION_IMPORT_EXECUTED');
+  assert.equal(imported.summary.executed_count, 1);
+  assert.equal(imported.entries[0].representation_kind, 'animation');
+  assert.equal(imported.entries[0].verification_status, 'HANDLER_VERIFIED');
+  assert.equal(imported.entries[0].resource_coverage_status, 'PARTIAL');
+  assert.equal(imported.entries[0].metrics.rig_bound, 1);
+  assert.equal(imported.entries[0].metrics.rig_bone_count, 8);
+  assert.equal(imported.entries[0].metrics.animation_clip_count, 4);
+  assert.equal(imported.entries[0].metrics.animation_channel_count, 10);
+  assert.equal(importedScenes.size, 1);
+  const frame = compileSpatialFrame(importedScenes.get('motion'), {width: 64, height: 64, enableShadows: false, animation: {clipId: 'animation:motion:clip:1', timeSeconds: 0.2}});
+  assert.equal(frame.stats.meshCount, 0);
+  assert.equal(frame.stats.animationClipCount, 4);
+  assert.equal(frame.stats.visibleDraws, 0);
+  assert.equal(verifyUniversalArtAssetComponentRepresentationImport(imported, {directory}).valid, true);
 });
