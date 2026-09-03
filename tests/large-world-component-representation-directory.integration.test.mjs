@@ -17,7 +17,7 @@ import {
   verifyUniversalArtAssetComponentRepresentationDirectory,
   verifyUniversalArtAssetComponentRepresentationImport
 } from '@taowind/large-world-runtime';
-import {AssetProviderAdapter, createAssetProviderManifest} from '@taowind/reality-asset-genesis-fabric';
+import {AssetProviderAdapter, createAssetProviderManifest, generatePbrTexturePack} from '@taowind/reality-asset-genesis-fabric';
 import {
   VSRSpatialAssetStreamer,
   compileSpatialFrame,
@@ -26,7 +26,8 @@ import {
   verifySpatialAssetStreamingReceipt,
   verifySpatialSceneCompositionReceipt
 } from '@taowind/visual-state-runtime/spatial-reality-3d';
-import {decodeGltfImageToSpatialTexture, importGlbToSpatialScene, importGlbToSpatialSceneAsync, verifyGltfImportReceipt} from '@taowind/visual-state-runtime/gltf-asset';
+import {createVsrGltfPbrComponentImportHandler, decodeGltfImageToSpatialTexture, importGlbToSpatialScene, verifyGltfImportReceipt} from '@taowind/visual-state-runtime/gltf-asset';
+import {decodePng} from '@taowind/visual-state-runtime/backend-canvas';
 
 const root = letter => letter.repeat(64);
 
@@ -113,7 +114,7 @@ function createFixture({validMesh = false, includeBlade = false, pbrMesh = false
       {capability_id: 'asset.pose.initial', outputs: ['animation-clips'], quality_tier: 'PRODUCTION'}
     ],
     inputFormats: ['ragf.asset-genome.v0.3'],
-    outputFormats: ['model/gltf-binary', 'application/json'],
+    outputFormats: ['model/gltf-binary', 'image/png', 'application/json'],
     executionMode: 'local',
     hardwareRequirements: {cpu: 'any', ram: 'any', gpu: 'none', vram: 'none', accelerator: 'none'},
     license: {status: 'VERIFIED', identifier: 'Apache-2.0'},
@@ -135,17 +136,28 @@ function createFixture({validMesh = false, includeBlade = false, pbrMesh = false
       asset_id: input.asset_id,
       format: 'component-representation-directory-provider-output',
       outputs: outputRoles,
-      files: outputRoles.map(role => {
+      files: outputRoles.flatMap(role => {
+        if (role === 'pbr-texture-pack' && pbrMesh) {
+          const pbr = generatePbrTexturePack({genome: (genomes[input.component_context?.component_id] ?? rootGenome).ragf_genome, variant: 'standard'});
+          return pbr.files.map(file => ({
+            name: `${operation}/pbr/${file.name}`,
+            path: `${operation}/pbr/${file.name}`,
+            role: file.role,
+            format: file.mime,
+            mime: file.mime,
+            base64: Buffer.from(file.buffer).toString('base64')
+          }));
+        }
         const mesh = role === 'mesh-glb' && validMeshPayload !== null;
         const payload = mesh ? validMeshPayload : Buffer.from(`${input.asset_id}:${input.component_context?.component_id}:${role}`);
-        return {
+        return [{
           name: `${operation}/${role}.${mesh ? 'glb' : 'json'}`,
           path: `${operation}/${role}.${mesh ? 'glb' : 'json'}`,
           role,
           format: mesh ? 'model/gltf-binary' : 'application/json',
           mime: mesh ? 'model/gltf-binary' : 'application/json',
           base64: Buffer.from(payload).toString('base64')
-        };
+        }];
       }),
       generator_version: 'component-representation-directory-provider-fixture',
       seed: input.seed,
@@ -321,31 +333,29 @@ test('component representation imports compose multiple VSR scenes under URRF tr
   const directory = lowerUniversalArtAssetComponentAssemblyToRepresentationDirectory({assembly});
   const importedScenes = new Map();
   const loadAsset = asset => fs.readFileSync(path.resolve(asset.metadata.output_directory, asset.metadata.relative_path));
+  const componentImportHandler = createVsrGltfPbrComponentImportHandler({
+    imageDecoder: async input => {
+      if (input.mimeType === 'image/ktx2' || input.image?.mimeType === 'image/ktx2') return decodeGltfImageToSpatialTexture(input);
+      const decoded = decodePng(input.bytes);
+      return {
+        id: input.id,
+        width: decoded.width,
+        height: decoded.height,
+        pixels: Array.from(decoded.data),
+        colorSpace: input.image?.extras?.vsrColorSpace ?? 'srgb',
+        filter: 'linear'
+      };
+    }
+  });
   const importers = {
     mesh: {
-      handler_id: 'vsr.gltf-import.compose',
-      compile: async ({entry, assets, payloads}) => {
-        const meshAsset = assets.find(asset => asset.kind === 'mesh' && asset.format === 'model/gltf-binary');
-        assert.ok(meshAsset);
-        const imported = await importGlbToSpatialSceneAsync(payloads.get(meshAsset.id), {
-          sceneId: `component-vsr-compose-${entry.component_id}`,
-          sourceRoot: entry.representation_root,
-          imageDecoder: decodeGltfImageToSpatialTexture
-        });
-        importedScenes.set(entry.component_id, imported.scene);
-        return {
-          status: 'EXECUTED',
-          receipt: imported.receipt,
-          output_root: imported.receipt.sceneRoot,
-          metrics: {
-            texture_count: imported.receipt.textureCount,
-            material_texture_binding_count: imported.receipt.materialTextureBindingCount
-          },
-          consumed_asset_ids: [meshAsset.id],
-          deferred_asset_ids: assets.filter(asset => asset.id !== meshAsset.id).map(asset => asset.id)
-        };
+      handler_id: componentImportHandler.handler_id,
+      compile: async context => {
+        const imported = await componentImportHandler.compile(context);
+        importedScenes.set(context.entry.component_id, imported.scene);
+        return imported;
       },
-      verify: ({result}) => verifyGltfImportReceipt(result.receipt)
+      verify: componentImportHandler.verify
     }
   };
   const imported = await executeUniversalArtAssetComponentRepresentationImport({
@@ -359,7 +369,7 @@ test('component representation imports compose multiple VSR scenes under URRF tr
   assert.equal(imported.summary.executed_count, 2);
   assert.equal(importedScenes.size, 2);
   assert.deepEqual(imported.entries.map(entry => entry.resource_coverage_status), ['PARTIAL', 'PARTIAL']);
-  assert.deepEqual(imported.entries.map(entry => [entry.metrics.texture_count, entry.metrics.material_texture_binding_count]), [[4, 5], [4, 5]]);
+  assert.deepEqual(imported.entries.map(entry => [entry.metrics.texture_count, entry.metrics.material_texture_binding_count, entry.metrics.external_pbr_channel_count]), [[8, 5, 4], [8, 5, 4]]);
   const fragments = ['body', 'blade'].map(componentId => {
     const entry = directory.representations.find(candidate => candidate.component_id === componentId);
     assert.ok(entry);

@@ -37,6 +37,12 @@ export type VSRExternalPbrChannelRole='base-color'|'normal'|'occlusion-roughness
 export interface VSRExternalPbrChannel {role:VSRExternalPbrChannelRole;bytes:Uint8Array;mimeType?:string;colorSpace?:'srgb'|'linear';uri?:string}
 export interface VSRExternalPbrBinding {role:VSRExternalPbrChannelRole;imageIndex:number;textureIndex:number;uri:string;byteLength:number;colorSpace:'srgb'|'linear'}
 export interface VSRExternalPbrBindingResult {gltf:Json;imageBytes:Record<string,Uint8Array>;bindings:VSRExternalPbrBinding[]}
+export interface VSRGltfComponentAsset {id:string;kind?:string;format?:string;role?:string;uri?:string;metadata?:Json}
+export interface VSRGltfComponentImportEntry {component_id?:string;representation_root?:string;[key:string]:unknown}
+export interface VSRGltfComponentImportContext {entry:VSRGltfComponentImportEntry;assets:VSRGltfComponentAsset[];payloads:Map<string,Uint8Array>}
+export interface VSRGltfComponentImportResult {status:'EXECUTED';scene:VSRSpatialScene3D;receipt:VSRGltfImportReceipt;output_root:string;consumed_asset_ids:string[];deferred_asset_ids:string[];metrics:Record<string,number>}
+export interface VSRGltfComponentImportHandlerOptions {handlerId?:string;imageDecoder?:VSRGltfImageDecoder;sceneId?:(entry:VSRGltfComponentImportEntry,asset:VSRGltfComponentAsset)=>string;sourceRoot?:(entry:VSRGltfComponentImportEntry,asset:VSRGltfComponentAsset)=>string|undefined;requireExternalPbr?:boolean}
+export interface VSRGltfComponentImportHandler {handler_id:string;compile:(context:VSRGltfComponentImportContext)=>Promise<VSRGltfComponentImportResult>;verify:(input:{result:VSRGltfComponentImportResult})=>boolean}
 
 const GLB_MAGIC=0x46546c67;
 const GLB_VERSION=2;
@@ -74,6 +80,48 @@ export function bindExternalPbrChannelsToGltf(gltf:Json,channels:VSRExternalPbrC
   const next=JSON.parse(JSON.stringify(gltf)) as Json,nextMaterial=next.materials[materialIndex] as Json,nextPbr=(nextMaterial.pbrMetallicRoughness??={}) as Json,nextImages=Array.isArray(next.images)?next.images:[],nextTextures=Array.isArray(next.textures)?next.textures:[],imageBytes:Record<string,Uint8Array>={},bindings:VSRExternalPbrBinding[]=[];
   for(const channel of channels){const imageIndex=nextImages.length,textureIndex=nextTextures.length,uri=channel.uri??`${sourcePrefix}/${channel.role}.png`,colorSpace=channel.colorSpace??(channel.role==='normal'||channel.role==='occlusion-roughness-metallic'?'linear':'srgb');nextImages.push({uri,mimeType:channel.mimeType??'image/png',extras:{vsrExternalPbrRole:channel.role,vsrColorSpace:colorSpace}});nextTextures.push({source:imageIndex});imageBytes[uri]=new Uint8Array(channel.bytes);if(channel.role==='base-color')nextPbr.baseColorTexture={index:textureIndex};else if(channel.role==='normal')nextMaterial.normalTexture={index:textureIndex};else if(channel.role==='occlusion-roughness-metallic'){nextPbr.metallicRoughnessTexture={index:textureIndex};nextMaterial.occlusionTexture={index:textureIndex}}else if(channel.role==='emissive')nextMaterial.emissiveTexture={index:textureIndex};bindings.push({role:channel.role,imageIndex,textureIndex,uri,byteLength:channel.bytes.byteLength,colorSpace})}
   next.images=nextImages;next.textures=nextTextures;return{gltf:next,imageBytes,bindings}
+}
+function componentPbrRole(asset:VSRGltfComponentAsset):VSRExternalPbrChannelRole|undefined{
+  const value=String(asset.metadata?.pbr_role??asset.metadata?.pbrRole??asset.role??asset.metadata?.role??'').trim().toLowerCase().replace(/_/g,'-');
+  if(['base-color','basecolor','pbr-base-color','albedo','pbr-albedo'].includes(value))return'base-color';
+  if(['normal','pbr-normal'].includes(value))return'normal';
+  if(['orm','pbr-orm','occlusion-roughness-metallic','metallic-roughness','occlusion-roughness-metallic-pack'].includes(value))return'occlusion-roughness-metallic';
+  if(['emissive','pbr-emissive'].includes(value))return'emissive';
+  return undefined;
+}
+function componentAssetBytes(payloads:Map<string,Uint8Array>,asset:VSRGltfComponentAsset):Uint8Array{
+  const bytes=payloads.get(asset.id);if(!(bytes instanceof Uint8Array)||bytes.byteLength===0)throw new Error(`VSR glTF component payload ${asset.id} is missing or empty.`);return bytes;
+}
+function componentAssetFormat(asset:VSRGltfComponentAsset):string{return String(asset.format??asset.metadata?.format??'').toLowerCase()}
+function componentAssetUri(asset:VSRGltfComponentAsset,role:VSRExternalPbrChannelRole):string{return String(asset.uri??asset.metadata?.uri??`vsr-external-pbr/${asset.id}/${role}.png`)}
+/**
+ * Build a reusable component-level VSR importer for one mesh GLB plus an
+ * optional independently materialized four-channel PBR pack. The handler is
+ * deliberately structural: large-world orchestration owns coverage and
+ * receipts, while this VSR adapter owns glTF/PBR interpretation only.
+ */
+export function createVsrGltfPbrComponentImportHandler(options:VSRGltfComponentImportHandlerOptions={}):VSRGltfComponentImportHandler{
+  const handler_id=options.handlerId??'vsr.gltf-pbr-component-import.v0.1',roles:VSRExternalPbrChannelRole[]=['base-color','normal','occlusion-roughness-metallic','emissive'];
+  return{
+    handler_id,
+    compile:async({entry,assets,payloads})=>{
+      if(!Array.isArray(assets)||!(payloads instanceof Map))throw new Error('VSR glTF component import requires an asset list and payload map.');
+      const meshAssets=assets.filter(asset=>asset.kind==='mesh'&&componentAssetFormat(asset)==='model/gltf-binary').sort((left,right)=>left.id.localeCompare(right.id));
+      if(!meshAssets.length)throw new Error('VSR glTF component import requires a model/gltf-binary mesh asset.');
+      const meshAsset=meshAssets[0]!,meshBytes=componentAssetBytes(payloads,meshAsset),grouped=new Map<VSRExternalPbrChannelRole,{asset:VSRGltfComponentAsset;bytes:Uint8Array}>();
+      for(const asset of assets){const role=componentPbrRole(asset);if(!role||!(asset.kind==='texture'||componentAssetFormat(asset).startsWith('image/')))continue;const bytes=componentAssetBytes(payloads,asset),existing=grouped.get(role);if(existing){if(cryptographicHash([...existing.bytes])!==cryptographicHash([...bytes]))throw new Error(`VSR glTF component PBR role ${role} has conflicting payloads.`);continue}grouped.set(role,{asset,bytes})}
+      const external=roles.flatMap(role=>{const value=grouped.get(role);return value?[{role,asset:value.asset,bytes:value.bytes}]:[]});
+      if(options.requireExternalPbr&&!external.length)throw new Error('VSR glTF component import requires an external PBR pack.');
+      if(external.length&&external.length!==roles.length)throw new Error(`VSR glTF component external PBR pack is incomplete: ${external.length}/${roles.length} channels.`);
+      if(external.length&&!options.imageDecoder)throw new Error('VSR glTF component external PBR import requires an image decoder.');
+      const componentId=String(entry.component_id??meshAsset.id),sceneId=options.sceneId?.(entry,meshAsset)??`component-vsr-import-${componentId}`,sourceRoot=options.sourceRoot?.(entry,meshAsset)??entry.representation_root??cryptographicHash({componentId,meshAssetId:meshAsset.id,meshRoot:cryptographicHash([...meshBytes])});
+      const imported=external.length===roles.length?(()=>{const parsed=parseGlb(meshBytes),bound=bindExternalPbrChannelsToGltf(parsed.gltf,external.map(channel=>({role:channel.role,bytes:channel.bytes,mimeType:componentAssetFormat(channel.asset)||'image/png',colorSpace:channel.role==='normal'||channel.role==='occlusion-roughness-metallic'?'linear':'srgb',uri:componentAssetUri(channel.asset,channel.role)})));return importGltfToSpatialSceneAsync(bound.gltf,{sceneId,sourceRoot,buffers:{'buffer:0':parsed.binaryChunk??new Uint8Array()},imageBytes:bound.imageBytes,imageDecoder:options.imageDecoder})})():importGlbToSpatialSceneAsync(meshBytes,{sceneId,sourceRoot,imageDecoder:options.imageDecoder});
+      const result=await imported;if(external.length&&result.receipt.warnings.length)throw new Error(`VSR glTF component external PBR decode produced warnings: ${result.receipt.warnings.join(';')}`);
+      const consumed_asset_ids=[meshAsset.id,...external.map(channel=>channel.asset.id)],consumed=new Set(consumed_asset_ids),deferred_asset_ids=assets.map(asset=>asset.id).filter(id=>!consumed.has(id));
+      return{status:'EXECUTED',scene:result.scene,receipt:result.receipt,output_root:result.receipt.sceneRoot,consumed_asset_ids,deferred_asset_ids,metrics:{mesh_count:result.receipt.meshCount,texture_count:result.receipt.textureCount,material_texture_binding_count:result.receipt.materialTextureBindingCount,external_pbr_channel_count:external.length,external_pbr_byte_length:external.reduce((sum,channel)=>sum+channel.bytes.byteLength,0),warning_count:result.receipt.warnings.length}};
+    },
+    verify:({result})=>Boolean(result&&result.status==='EXECUTED'&&typeof result.output_root==='string'&&result.output_root.length===64&&verifyGltfImportReceipt(result.receipt))
+  }
 }
 function textureFromImage(gltf:Json,imageIndex:number,id:string,warnings:string[],sampler:Json={},resolver?:VSRGltfImageResolver):VSRSpatialTexture|undefined{
   const image=gltf.images?.[imageIndex];const resolved=resolver?.({imageIndex,image,id,sampler});if(resolved)return{...resolved,id};
