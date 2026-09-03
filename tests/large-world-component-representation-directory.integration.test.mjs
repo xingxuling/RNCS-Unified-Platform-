@@ -457,7 +457,24 @@ test('component representation import fuses standalone rig and animation with ge
   const {assembly} = createFixture({validMesh: true, includeAnimation: true, pbrMesh: true});
   const directory = lowerUniversalArtAssetComponentAssemblyToRepresentationDirectory({assembly});
   const loadAsset = asset => fs.readFileSync(path.resolve(asset.metadata.output_directory, asset.metadata.relative_path));
-  const handler = createVsrRigAnimationComponentImportHandler({requireRigForAnimation: true, fuseGeometry: true});
+  const handler = createVsrRigAnimationComponentImportHandler({
+    requireRigForAnimation: true,
+    fuseGeometry: true,
+    fuseExternalPbr: true,
+    requireExternalPbr: true,
+    imageDecoder: async input => {
+      if (input.mimeType === 'image/ktx2' || input.image?.mimeType === 'image/ktx2') return decodeGltfImageToSpatialTexture(input);
+      const decoded = decodePng(input.bytes);
+      return {
+        id: input.id,
+        width: decoded.width,
+        height: decoded.height,
+        pixels: Array.from(decoded.data),
+        colorSpace: input.image?.extras?.vsrColorSpace ?? 'srgb',
+        filter: 'linear'
+      };
+    }
+  });
   const importedScenes = new Map();
   const importers = {
     animation: {
@@ -488,6 +505,9 @@ test('component representation import fuses standalone rig and animation with ge
   assert.equal(imported.entries[0].metrics.rig_bone_count, 8);
   assert.equal(imported.entries[0].metrics.animation_clip_count, 4);
   assert.equal(imported.entries[0].metrics.animation_channel_count, 10);
+  assert.equal(imported.entries[0].metrics.external_pbr_channel_count, 4);
+  assert.equal(imported.entries[0].metrics.external_pbr_material_count, 1);
+  assert.equal(imported.entries[0].consumed_asset_ids.length, 7);
   assert.equal(importedScenes.size, 1);
   const fusedScene = importedScenes.get('motion');
   const frame = compileSpatialFrame(fusedScene, {width: 64, height: 64, enableShadows: false, animation: {clipId: fusedScene.animations[1].id, timeSeconds: 0.2}});
