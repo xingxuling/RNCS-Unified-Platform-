@@ -8,15 +8,18 @@ import {
   UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_FORMAT,
   UNIVERSAL_ART_ASSET_COMPONENT_GRAPH_FORMAT,
   UNIVERSAL_ART_ASSET_COMPONENT_LOWERING_FORMAT,
+  UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_DIRECTORY_FORMAT,
   createUniversalArtAssetComponentGraph,
   createUniversalArtAssetComponentAssembly,
   createUniversalArtAssetGenome,
   executeUniversalArtAssetComponentGraph,
   lowerUniversalArtAssetComponentGraph,
+  lowerUniversalArtAssetComponentAssemblyToRepresentationDirectory,
   verifyUniversalArtAssetComponentGraph,
   verifyUniversalArtAssetComponentAssembly,
   verifyUniversalArtAssetComponentLowering,
-  verifyUniversalArtAssetComponentExecution
+  verifyUniversalArtAssetComponentExecution,
+  verifyUniversalArtAssetComponentRepresentationDirectory
 } from '../src/index.mjs';
 import {AssetProviderAdapter, createAssetProviderManifest} from '@taowind/reality-asset-genesis-fabric';
 
@@ -292,6 +295,27 @@ test('URRF component graph executor reuses the Provider Pipeline and chains depe
   const assemblySchema = JSON.parse(fs.readFileSync(new URL('../schemas/universal-art-asset-component-assembly.v0.1.schema.json', import.meta.url), 'utf8'));
   const assemblyValidate = new Ajv2020({strict: false, allErrors: true}).compile(assemblySchema);
   assert.equal(assemblyValidate(assembly), true, JSON.stringify(assemblyValidate.errors));
+  const directory = lowerUniversalArtAssetComponentAssemblyToRepresentationDirectory({assembly});
+  assert.equal(directory.format, UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_DIRECTORY_FORMAT);
+  assert.equal(directory.status, 'CANDIDATE_REPRESENTATION_DIRECTORY_READY');
+  assert.equal(directory.representation_count, 4);
+  assert.equal(directory.representation_refs.length, 4);
+  assert.equal(directory.resource_count, 20);
+  assert.deepEqual(directory.representations.map(entry => entry.representation_kind), ['mesh', 'mesh', 'mesh', 'particle']);
+  assert.equal(directory.representations.find(entry => entry.component_id === 'sparks').consumer_mapping.vsr.catalog_kind, 'other');
+  assert.equal(directory.representations.find(entry => entry.component_id === 'sparks').consumer_mapping.rsr.observation_input_status, 'INPUT_READY');
+  assert.equal(directory.vsr_catalog.assets.every(asset => asset.metadata.representation_kind === (asset.metadata.component_id === 'sparks' ? 'particle' : 'mesh')), true);
+  assert.equal(directory.vsr_catalog.assets.every(asset => asset.metadata.import_status === 'NOT_EXECUTED'), true);
+  assert.equal(directory.rsr_observation_inputs.every(input => input.execution_status === 'NOT_EXECUTED' && input.reconstruction_candidate === null), true);
+  const directoryVerification = verifyUniversalArtAssetComponentRepresentationDirectory(directory, {assembly});
+  assert.equal(directoryVerification.valid, true, JSON.stringify(directoryVerification.errors));
+  const directorySchema = JSON.parse(fs.readFileSync(new URL('../schemas/universal-art-asset-component-representation-directory.v0.1.schema.json', import.meta.url), 'utf8'));
+  const directoryValidate = new Ajv2020({strict: false, allErrors: true}).compile(directorySchema);
+  assert.equal(directoryValidate(directory), true, JSON.stringify(directoryValidate.errors));
+  const tamperedDirectory = structuredClone(directory);
+  tamperedDirectory.vsr_catalog.assets[0].metadata.representation_kind = 'mesh';
+  tamperedDirectory.vsr_catalog.assets[0].metadata.representation_root = root('f');
+  assert.equal(verifyUniversalArtAssetComponentRepresentationDirectory(tamperedDirectory, {assembly}).valid, false);
   const tamperedAssembly = structuredClone(assembly);
   tamperedAssembly.resources[0].sha256 = root('f');
   assert.equal(verifyUniversalArtAssetComponentAssembly(tamperedAssembly, {graph, execution: run.execution}).valid, false);
@@ -350,4 +374,9 @@ test('URRF component graph executor blocks missing Provider/runtime inputs and p
     execution: run.execution,
     componentExecutions: run.componentExecutions
   }).valid, true);
+  const directory = lowerUniversalArtAssetComponentAssemblyToRepresentationDirectory({assembly});
+  assert.equal(directory.status, 'CANDIDATE_REPRESENTATION_DIRECTORY_BLOCKED');
+  assert.equal(directory.representation_refs.length, 0);
+  assert.equal(directory.rsr_observation_inputs.every(input => input.status === 'BLOCKED' && input.execution_status === 'NOT_EXECUTED'), true);
+  assert.equal(verifyUniversalArtAssetComponentRepresentationDirectory(directory, {assembly}).valid, true);
 });

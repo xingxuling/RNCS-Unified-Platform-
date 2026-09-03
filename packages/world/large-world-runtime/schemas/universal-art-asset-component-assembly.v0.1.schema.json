@@ -184,9 +184,25 @@
       },
       "additionalProperties": false
     },
+    "providerBinding": {
+      "type": "object",
+      "required": ["index", "stage_id", "provider_id", "provider_root", "provider_source", "route_status", "status", "result_root", "output_root"],
+      "properties": {
+        "index": {"type": "integer", "minimum": 0},
+        "stage_id": {"type": "string", "minLength": 1},
+        "provider_id": {"$ref": "#/$defs/nullableText"},
+        "provider_root": {"$ref": "#/$defs/nullableRoot"},
+        "provider_source": {"$ref": "#/$defs/nullableText"},
+        "route_status": {"$ref": "#/$defs/nullableText"},
+        "status": {"type": "string", "minLength": 1},
+        "result_root": {"$ref": "#/$defs/nullableRoot"},
+        "output_root": {"$ref": "#/$defs/nullableRoot"}
+      },
+      "additionalProperties": false
+    },
     "component": {
       "type": "object",
-      "required": ["index", "component_id", "role", "asset_id", "asset_profile", "quality_tier", "genome_root", "parent_component_id", "depends_on", "dependency_bindings", "representation", "transform", "pipeline_status", "status", "failure_code", "artifact_root", "execution_root", "output_root", "result_root", "resource_status", "resource_count", "resource_ids", "graph_root", "candidate_only", "authoritative", "canonical_write_authorized", "component_root"],
+      "required": ["index", "component_id", "role", "asset_id", "asset_profile", "quality_tier", "genome_root", "parent_component_id", "depends_on", "dependency_bindings", "provider_bindings", "representation", "transform", "pipeline_status", "status", "failure_code", "artifact_root", "execution_root", "output_root", "result_root", "resource_status", "resource_count", "resource_ids", "graph_root", "candidate_only", "authoritative", "canonical_write_authorized", "component_root"],
       "properties": {
         "index": {"type": "integer", "minimum": 0, "maximum": 127},
         "component_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,95}$"},
@@ -198,6 +214,7 @@
         "parent_component_id": {"$ref": "#/$defs/nullableText"},
         "depends_on": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
         "dependency_bindings": {"type": "array", "items": {"$ref": "#/$defs/dependencyBinding"}},
+        "provider_bindings": {"type": "array", "items": {"$ref": "#/$defs/providerBinding"}},
         "representation": {
           "type": "object",
           "required": ["kind", "profile", "source_root", "candidate_only", "authoritative"],

@@ -22,6 +22,10 @@ import {
   seal,
   stableId
 } from '@taowind/reality-asset-genesis-fabric';
+import {
+  createRepresentationRef,
+  verifyRepresentationRef
+} from '@taowind/rncs-core-contract';
 
 export const UNIVERSAL_ART_ASSET_COMPONENT_GRAPH_FORMAT = 'urrf.universal-art-asset-component-graph.v0.1';
 export const UNIVERSAL_ART_ASSET_COMPONENT_LOWERING_FORMAT = 'urrf.universal-art-asset-component-lowering.v0.1';
@@ -30,6 +34,8 @@ export const UNIVERSAL_ART_ASSET_COMPONENT_EXECUTION_CONTEXT_FORMAT = 'urrf.univ
 export const UNIVERSAL_ART_ASSET_COMPONENT_GRAPH_VERSION = '0.1.0';
 export const UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_FORMAT = 'urrf.universal-art-asset-component-assembly.v0.1';
 export const UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_VERSION = UNIVERSAL_ART_ASSET_COMPONENT_GRAPH_VERSION;
+export const UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_DIRECTORY_FORMAT = 'urrf.universal-art-asset-component-representation-directory.v0.1';
+export const UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_DIRECTORY_VERSION = UNIVERSAL_ART_ASSET_COMPONENT_GRAPH_VERSION;
 
 export const UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_KINDS = Object.freeze([
   'mesh',
@@ -1186,6 +1192,21 @@ function componentAssemblyResource({graph, component, artifact, file}) {
   }, 'resource_root');
 }
 
+function componentAssemblyProviderBindings(detail) {
+  const stages = Array.isArray(detail?.artifact?.stages) ? detail.artifact.stages : [];
+  return stages.map(stage => ({
+    index: stage.index,
+    stage_id: stage.stage_id,
+    provider_id: stage.provider_id ?? null,
+    provider_root: stage.provider_root ?? null,
+    provider_source: stage.provider_source ?? null,
+    route_status: stage.route_status ?? null,
+    status: stage.status,
+    result_root: stage.output?.result_root ?? stage.result_root ?? null,
+    output_root: stage.output?.output_root ?? null
+  }));
+}
+
 function componentAssemblyResources({graph, component, detail}) {
   const artifact = detail?.artifact ?? null;
   if (!artifact) return [];
@@ -1215,6 +1236,7 @@ function componentAssemblyComponent({graph, component, executionComponent, detai
   const resources = componentAssemblyResources({graph, component, detail});
   const status = executionComponent.status;
   const resourceStatus = status === 'NOT_RUN' ? 'NOT_RUN' : resources.length > 0 ? 'BOUND' : 'MISSING';
+  const providerBindings = componentAssemblyProviderBindings(detail);
   return {
     component: seal({
       index,
@@ -1227,6 +1249,7 @@ function componentAssemblyComponent({graph, component, executionComponent, detai
       parent_component_id: component.parent_component_id,
       depends_on: [...component.depends_on],
       dependency_bindings: clone(executionComponent.dependency_bindings),
+      provider_bindings: providerBindings,
       representation: clone(component.representation),
       transform: componentAssemblyTransform(component),
       pipeline_status: executionComponent.pipeline_status,
@@ -1525,6 +1548,7 @@ export function verifyUniversalArtAssetComponentAssembly(assembly, {
       && (component?.result_root === null || hexRoot(component?.result_root))
       && Array.isArray(component?.resource_ids)
       && component?.resource_count === component.resource_ids.length
+      && Array.isArray(component?.provider_bindings)
       && hexRoot(component?.graph_root)
       && hexRoot(component?.component_root)), 'COMPONENT_HEADER_INVALID');
     check(components.every(component => component?.candidate_only === true && component?.authoritative === false && component?.canonical_write_authorized === false), 'COMPONENT_AUTHORITY_INVALID');
@@ -1544,6 +1568,15 @@ export function verifyUniversalArtAssetComponentAssembly(assembly, {
           && dependency.result_root === binding.result_root;
       })
       && JSON.stringify(component.dependency_bindings.map(binding => binding.component_id).sort(keySort)) === JSON.stringify([...component.depends_on].sort(keySort))), 'DEPENDENCY_BINDING_INVALID');
+    check(components.every(component => component.provider_bindings.every((binding, index) => binding?.index === index
+      && nonEmptyText(binding?.stage_id)
+      && (binding?.provider_id === null || nonEmptyText(binding?.provider_id))
+      && (binding?.provider_root === null || hexRoot(binding?.provider_root))
+      && (binding?.provider_source === null || nonEmptyText(binding?.provider_source))
+      && (binding?.route_status === null || nonEmptyText(binding?.route_status))
+      && nonEmptyText(binding?.status)
+      && (binding?.result_root === null || hexRoot(binding?.result_root))
+      && (binding?.output_root === null || hexRoot(binding?.output_root)))), 'PROVIDER_BINDING_INVALID');
     const resourceById = new Map(resources.map(resource => [resource?.resource_id, resource]));
     check(resources.every(resource => nonEmptyText(resource?.resource_id)
       && componentById.has(resource?.component_id)
@@ -1564,6 +1597,7 @@ export function verifyUniversalArtAssetComponentAssembly(assembly, {
       && hexRoot(resource?.resource_root)
       && componentAssemblyResourcePathIsSafe(resource)), 'RESOURCE_HEADER_INVALID');
     check(new Set(resources.map(resource => resource?.resource_id)).size === resources.length, 'RESOURCE_IDS_INVALID');
+    check(resources.every(resource => componentById.get(resource?.component_id)?.provider_bindings.some(binding => binding.stage_id === resource.stage_id)), 'RESOURCE_PROVIDER_STAGE_BINDING_INVALID');
     check(components.every(component => component.resource_ids.every(resourceId => resourceById.has(resourceId)
       && resourceById.get(resourceId).component_id === component.component_id)), 'COMPONENT_RESOURCE_BINDING_INVALID');
     check(components.every(component => component.resource_count === resources.filter(resource => resource.component_id === component.component_id).length), 'COMPONENT_RESOURCE_COUNT_MISMATCH');
@@ -1687,4 +1721,560 @@ export function verifyUniversalArtAssetComponentAssembly(assembly, {
     errors.push(`VERIFY_EXCEPTION:${error.name}:${error.message}`);
   }
   return {valid: errors.length === 0, errors, component_assembly_root: assembly.component_assembly_root ?? null};
+}
+
+const UNIVERSAL_ART_ASSET_COMPONENT_VSR_CATALOG_FORMAT = 'vsr.spatial-asset-streaming.v0.1';
+const UNIVERSAL_ART_ASSET_COMPONENT_RSR_OBSERVATION_FORMAT = 'rsr.representation-observation-candidate.v0.1';
+const UNIVERSAL_ART_ASSET_COMPONENT_VSR_KINDS = Object.freeze(['mesh', 'material', 'animation', 'other']);
+
+function representationDirectoryVsrKind(representationKind) {
+  if (representationKind === 'mesh') return 'mesh';
+  if (representationKind === 'material') return 'material';
+  if (representationKind === 'animation') return 'animation';
+  return 'other';
+}
+
+function representationDirectoryVsrAssetView(asset) {
+  return {
+    id: asset.id,
+    uri: asset.uri,
+    format: asset.format ?? null,
+    sha256: asset.sha256,
+    byteLength: asset.byteLength,
+    kind: asset.kind,
+    dependencies: [...(asset.dependencies ?? [])].sort(keySort),
+    cellIds: [...(asset.cellIds ?? [])].sort(keySort),
+    priority: asset.priority ?? 0,
+    metadata: asset.metadata ?? null
+  };
+}
+
+function representationDirectoryVsrCatalogRoot(assets) {
+  return rootHash(assets.map(representationDirectoryVsrAssetView).sort((left, right) => keySort(left.id, right.id)));
+}
+
+function representationDirectoryComponentResources(assembly, componentIdValue) {
+  return assembly.resources
+    .filter(resource => resource.component_id === componentIdValue)
+    .sort((left, right) => keySort(left.resource_id, right.resource_id));
+}
+
+function representationDirectoryContentRoot(component, resources) {
+  return rootHash({
+    component_id: component.component_id,
+    component_root: component.component_root,
+    representation: component.representation,
+    resources: resources.map(resource => ({
+      resource_id: resource.resource_id,
+      resource_root: resource.resource_root,
+      format: resource.format,
+      path: resource.path,
+      byte_length: resource.byte_length,
+      sha256: resource.sha256
+    }))
+  });
+}
+
+function representationDirectoryProviderBinding(component, resources) {
+  const resourceStageIds = new Set(resources.map(resource => resource.stage_id));
+  return [...(component.provider_bindings ?? [])]
+    .filter(binding => resourceStageIds.has(binding.stage_id)
+      && binding.status === 'COMPLETED'
+      && nonEmptyText(binding.provider_id)
+      && hexRoot(binding.provider_root))
+    .sort((left, right) => right.index - left.index || keySort(left.stage_id, right.stage_id))[0] ?? null;
+}
+
+function representationDirectoryVsrAssetId(assembly, resource) {
+  return stableId('urrf-vsr-component-resource', {
+    component_assembly_root: assembly.component_assembly_root,
+    resource_id: resource.resource_id,
+    resource_root: resource.resource_root
+  });
+}
+
+function representationDirectoryVsrAsset({assembly, component, resource, representation, resourceIdsByComponent}) {
+  const dependencies = component.depends_on
+    .flatMap(dependency => resourceIdsByComponent.get(dependency) ?? [])
+    .sort(keySort);
+  const kind = representationDirectoryVsrKind(component.representation.kind);
+  const assetId = representationDirectoryVsrAssetId(assembly, resource);
+  return {
+    id: assetId,
+    uri: `candidate://urrf/${assembly.component_assembly_root}/${assetId}`,
+    format: resource.format,
+    sha256: resource.sha256,
+    byteLength: resource.byte_length,
+    kind,
+    dependencies,
+    cellIds: [component.component_id],
+    priority: Math.max(1, 100000 - component.index * 1000 - resource.resource_id.length),
+    metadata: {
+      source: UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_FORMAT,
+      assembly_root: assembly.component_assembly_root,
+      component_id: component.component_id,
+      component_root: component.component_root,
+      representation_id: representation.representation_ref?.representation_id ?? null,
+      representation_root: representation.representation_ref?.representation_root ?? null,
+      representation_kind: component.representation.kind,
+      representation_profile: component.representation.profile,
+      vsr_kind: kind,
+      import_status: 'NOT_EXECUTED',
+      resource_id: resource.resource_id,
+      resource_root: resource.resource_root,
+      stage_id: resource.stage_id,
+      role: resource.role,
+      relative_path: resource.path,
+      output_directory: resource.output_directory,
+      byte_length: resource.byte_length,
+      sha256: resource.sha256,
+      transform: clone(component.transform),
+      candidate_only: true,
+      authoritative: false
+    }
+  };
+}
+
+function representationDirectoryRsrInput(representation) {
+  const base = {
+    target_contract: UNIVERSAL_ART_ASSET_COMPONENT_RSR_OBSERVATION_FORMAT,
+    representation_id: representation.representation_ref?.representation_id ?? null,
+    representation_root: representation.representation_ref?.representation_root ?? null,
+    representation_kind: representation.representation_kind,
+    content_root: representation.content_root,
+    observation_kinds: ['bounds', 'lod', 'residency'],
+    status: representation.representation_ref ? 'INPUT_READY' : 'BLOCKED',
+    execution_status: 'NOT_EXECUTED',
+    candidate_creation: 'DEFERRED_TO_RSR',
+    reconstruction_candidate: null,
+    canonical_state_proposal: null,
+    authority: {
+      provider_can_write_authoritative_world_state: false,
+      rsr_can_promote_without_independent_evidence: false,
+      rncs_authority_required: true
+    },
+    candidate_only: true,
+    authoritative: false,
+    commit_status: 'NOT_COMMITTED'
+  };
+  return seal(base, 'input_root');
+}
+
+function representationDirectoryEntry({assembly, component, resources, resourceIdsByComponent}) {
+  const contentRoot = representationDirectoryContentRoot(component, resources);
+  const provider = representationDirectoryProviderBinding(component, resources);
+  const formats = [...new Set(resources.map(resource => resource.format))].sort(keySort);
+  const representationRef = provider && formats.length > 0
+    ? createRepresentationRef({
+      representation_id: stableId('urrf-component-representation', {
+        component_assembly_root: assembly.component_assembly_root,
+        component_id: component.component_id,
+        content_root: contentRoot
+      }),
+      provider_id: provider.provider_id,
+      provider_root: provider.provider_root,
+      representation_kind: component.representation.kind,
+      representation_formats: formats,
+      content_root: contentRoot,
+      source_uri: `candidate://urrf/${assembly.component_assembly_root}/${component.component_id}`,
+      representation_profile: {
+        profile_id: component.representation.profile,
+        encoding: 'urrf-component-resource-catalog',
+        fidelity: component.quality_tier,
+        precision: 'provider-declared',
+        formats
+      },
+      detail_policy: {
+        mode: 'component-transform',
+        selectors: ['component-graph', 'screen-space-size', 'representation-kind'],
+        budget: {resource_count: resources.length}
+      },
+      residency_policy: {
+        mode: 'paged-streaming',
+        selectors: ['component-cell', 'resource-dependency-closure'],
+        budget: {byte_length: resources.reduce((sum, resource) => sum + resource.byte_length, 0)}
+      },
+      authority_scope: ['representation_candidate', 'visual_projection', 'observation_candidate'],
+      availability: 'EXECUTED',
+      provenance: {
+        generator_version: UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_DIRECTORY_VERSION,
+        parameters_root: component.genome_root
+      },
+      evidence: {
+        provider_manifest_root: provider.provider_root,
+        provider_result_root: provider.result_root,
+        runtime_receipt_root: component.execution_root,
+        notes: 'candidate component representation; VSR import and RSR observation remain separate runtime steps'
+      }
+    })
+    : null;
+  const representation = {
+    component_id: component.component_id,
+    component_root: component.component_root,
+    representation_id: representationRef?.representation_id ?? null,
+    representation_root: representationRef?.representation_root ?? null,
+    representation_kind: component.representation.kind,
+    representation_profile: component.representation.profile,
+    content_root: contentRoot,
+    resource_ids: resources.map(resource => resource.resource_id),
+    transform: clone(component.transform),
+    provider_stage_ids: component.provider_bindings.map(binding => binding.stage_id),
+    provider_id: provider?.provider_id ?? null,
+    provider_root: provider?.provider_root ?? null,
+    representation_ref: representationRef,
+    consumer_mapping: {
+      vsr: {
+        target_contract: UNIVERSAL_ART_ASSET_COMPONENT_VSR_CATALOG_FORMAT,
+        catalog_kind: representationDirectoryVsrKind(component.representation.kind),
+        asset_ids: resources.map(resource => representationDirectoryVsrAssetId(assembly, resource)),
+        stream_status: resources.length > 0 ? 'CATALOG_READY' : 'BLOCKED',
+        direct_import_status: 'NOT_EXECUTED'
+      },
+      rsr: {
+        target_contract: UNIVERSAL_ART_ASSET_COMPONENT_RSR_OBSERVATION_FORMAT,
+        observation_input_status: representationRef ? 'INPUT_READY' : 'BLOCKED',
+        observation_kinds: ['bounds', 'lod', 'residency'],
+        execution_status: 'NOT_EXECUTED',
+        reconstruction_status: 'FORBIDDEN_IN_THIS_LAYER'
+      }
+    },
+    candidate_only: true,
+    authoritative: false,
+    entry_root: ''
+  };
+  return {
+    entry: seal(representation, 'entry_root'),
+    rsrInput: representationDirectoryRsrInput({...representation, representation_ref: representationRef})
+  };
+}
+
+function representationDirectorySummary(entries, vsrAssets, rsrInputs) {
+  const representationKindCounts = {};
+  for (const entry of entries) representationKindCounts[entry.representation_kind] = (representationKindCounts[entry.representation_kind] ?? 0) + 1;
+  return {
+    representation_count: entries.length,
+    reference_count: entries.filter(entry => entry.representation_ref !== null).length,
+    resource_count: vsrAssets.length,
+    vsr_asset_count: vsrAssets.length,
+    rsr_input_count: rsrInputs.length,
+    representation_kind_counts: Object.fromEntries(Object.entries(representationKindCounts).sort(([left], [right]) => keySort(left, right))),
+    vsr_catalog_kind_counts: Object.fromEntries(Object.entries(vsrAssets.reduce((counts, asset) => {
+      counts[asset.kind] = (counts[asset.kind] ?? 0) + 1;
+      return counts;
+    }, {})).sort(([left], [right]) => keySort(left, right)))
+  };
+}
+
+function representationDirectoryAuthority() {
+  return {
+    canonical_owner: 'RNCS',
+    representation_owner: 'URRF',
+    provider_can_write_authoritative_world_state: false,
+    provider_can_commit: false,
+    composition_can_commit: false,
+    rsr_can_promote_without_independent_evidence: false,
+    rncs_authority_required: true
+  };
+}
+
+function representationDirectoryRootInput(directory) {
+  const copy = clone(directory);
+  delete copy.directory_root;
+  return copy;
+}
+
+function representationDirectoryReady(directory, checks) {
+  return directory.assembly_status === 'CANDIDATE_COMPONENT_ASSEMBLY_READY'
+    && directory.representations.every(entry => entry.representation_ref !== null)
+    && directory.resources.length > 0
+    && Object.values(checks).every(value => value === true);
+}
+
+function buildUniversalArtAssetComponentRepresentationDirectory(assembly) {
+  const components = [...assembly.components].sort((left, right) => left.index - right.index);
+  const resourcesByComponent = new Map(components.map(component => [component.component_id, representationDirectoryComponentResources(assembly, component.component_id)]));
+  const resourceIdsByComponent = new Map([...resourcesByComponent.entries()].map(([componentIdValue, resources]) => [componentIdValue, resources.map(resource => representationDirectoryVsrAssetId(assembly, resource))]));
+  const built = components.map(component => representationDirectoryEntry({
+    assembly,
+    component,
+    resources: resourcesByComponent.get(component.component_id) ?? [],
+    resourceIdsByComponent
+  }));
+  const representations = built.map(item => item.entry);
+  const rsrInputs = built.map(item => item.rsrInput);
+  const representationByComponent = new Map(representations.map(entry => [entry.component_id, entry]));
+  const resources = components.flatMap(component => (resourcesByComponent.get(component.component_id) ?? []).map(resource => representationDirectoryVsrAsset({
+    assembly,
+    component,
+    resource,
+    representation: representationByComponent.get(component.component_id),
+    resourceIdsByComponent
+  })));
+  const vsrCatalogRoot = representationDirectoryVsrCatalogRoot(resources);
+  const rsrInputRoot = rootHash(rsrInputs);
+  const checks = {
+    assembly_binding: hexRoot(assembly.component_assembly_root),
+    representation_reference_binding: representations.every(entry => entry.representation_ref === null || verifyRepresentationRef(entry.representation_ref).valid),
+    provider_binding: representations.every(entry => entry.representation_ref === null || (nonEmptyText(entry.provider_id) && hexRoot(entry.provider_root) && entry.representation_ref.provider_id === entry.provider_id && entry.representation_ref.provider_root === entry.provider_root)),
+    representation_kind_preservation: representations.every(entry => UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_KINDS.includes(entry.representation_kind)
+      && (entry.representation_ref === null || entry.representation_ref.representation_kind === entry.representation_kind)
+      && resources.filter(asset => asset.metadata?.component_id === entry.component_id).every(asset => asset.metadata?.representation_kind === entry.representation_kind)),
+    representation_resource_binding: representations.every(entry => entry.resource_ids.every(resourceId => resources.some(asset => asset.metadata?.resource_id === resourceId && asset.metadata?.component_id === entry.component_id))
+      && entry.consumer_mapping.vsr.asset_ids.length === entry.resource_ids.length),
+    vsr_catalog_integrity: resources.every(asset => UNIVERSAL_ART_ASSET_COMPONENT_VSR_KINDS.includes(asset.kind)
+      && nonEmptyText(asset.uri)
+      && hexRoot(asset.sha256)
+      && Number.isSafeInteger(asset.byteLength)
+      && asset.byteLength > 0
+      && asset.metadata?.candidate_only === true
+      && asset.metadata?.authoritative === false)
+      && vsrCatalogRoot === representationDirectoryVsrCatalogRoot(resources),
+    rsr_observation_boundary: rsrInputs.every(input => input.target_contract === UNIVERSAL_ART_ASSET_COMPONENT_RSR_OBSERVATION_FORMAT
+      && input.execution_status === 'NOT_EXECUTED'
+      && input.reconstruction_candidate === null
+      && input.canonical_state_proposal === null
+      && input.authority?.rsr_can_promote_without_independent_evidence === false
+      && input.candidate_only === true
+      && input.authoritative === false
+      && input.commit_status === 'NOT_COMMITTED'),
+    transform_binding: representations.every(entry => Array.isArray(entry.transform?.translation_mm)
+      && entry.transform.translation_mm.length === 3
+      && Array.isArray(entry.transform?.rotation_deg)
+      && entry.transform.rotation_deg.length === 3
+      && Array.isArray(entry.transform?.scale_milli)
+      && entry.transform.scale_milli.length === 3),
+    authority_boundary: representations.every(entry => entry.candidate_only === true && entry.authoritative === false)
+      && resources.every(asset => asset.metadata?.candidate_only === true && asset.metadata?.authoritative === false)
+  };
+  const base = {
+    format: UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_DIRECTORY_FORMAT,
+    version: UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_DIRECTORY_VERSION,
+    directory_id: stableId('urrf-universal-art-asset-component-representation-directory', {
+      component_assembly_root: assembly.component_assembly_root,
+      vsr_catalog_root: vsrCatalogRoot,
+      rsr_input_root: rsrInputRoot
+    }),
+    source: 'urrf-component-assembly-representation-lowering',
+    component_assembly_root: assembly.component_assembly_root,
+    assembly_status: assembly.status,
+    scene_id: assembly.scene_id,
+    world_id: assembly.world_id,
+    component_count: components.length,
+    representation_count: representations.length,
+    representations,
+    representation_refs: representations.filter(entry => entry.representation_ref !== null).map(entry => entry.representation_ref),
+    resource_count: resources.length,
+    resources,
+    vsr_catalog: {
+      format: UNIVERSAL_ART_ASSET_COMPONENT_VSR_CATALOG_FORMAT,
+      version: '0.1.0',
+      catalog_root: vsrCatalogRoot,
+      asset_count: resources.length,
+      assets: resources
+    },
+    rsr_observation_inputs: rsrInputs,
+    rsr_observation_input_root: rsrInputRoot,
+    summary: representationDirectorySummary(representations, resources, rsrInputs),
+    checks,
+    status: representationDirectoryReady({assembly_status: assembly.status, representations, resources}, checks)
+      ? 'CANDIDATE_REPRESENTATION_DIRECTORY_READY'
+      : 'CANDIDATE_REPRESENTATION_DIRECTORY_BLOCKED',
+    candidate_only: true,
+    authoritative: false,
+    canonical_write_authorized: false,
+    aaa_ready: false,
+    release_ready: false,
+    authority: representationDirectoryAuthority(),
+    directory_root: ''
+  };
+  return seal(base, 'directory_root');
+}
+
+/**
+ * Lower a verified component assembly into representation-aware VSR and RSR
+ * candidate inputs. VSR receives a streamable asset catalog with exact bytes;
+ * RSR receives observation inputs that still require the RSR runtime to create
+ * an observation candidate. No mesh conversion, GPU import, reconstruction, or
+ * canonical state proposal is performed here.
+ */
+export function lowerUniversalArtAssetComponentAssemblyToRepresentationDirectory({
+  assembly: assemblyInput = null,
+  component_assembly = null,
+  componentAssembly = null
+} = {}) {
+  const assembly = assemblyInput ?? component_assembly ?? componentAssembly;
+  fail(assembly?.format === UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_FORMAT, 'UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_DIRECTORY_ASSEMBLY_REQUIRED');
+  const verification = verifyUniversalArtAssetComponentAssembly(assembly);
+  fail(verification.valid, 'UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_DIRECTORY_ASSEMBLY_INVALID', verification.errors.join(','));
+  return buildUniversalArtAssetComponentRepresentationDirectory(clone(assembly));
+}
+
+export function verifyUniversalArtAssetComponentRepresentationDirectory(directory, {assembly = null} = {}) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!directory || typeof directory !== 'object' || Array.isArray(directory)) {
+    return {valid: false, errors: ['UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_DIRECTORY_NOT_OBJECT'], directory_root: null};
+  }
+  try {
+    check(directory.format === UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_DIRECTORY_FORMAT, 'FORMAT_INVALID');
+    check(directory.version === UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_DIRECTORY_VERSION, 'VERSION_INVALID');
+    check(nonEmptyText(directory.directory_id), 'DIRECTORY_ID_INVALID');
+    check(directory.source === 'urrf-component-assembly-representation-lowering', 'SOURCE_INVALID');
+    check(hexRoot(directory.component_assembly_root), 'ASSEMBLY_ROOT_INVALID');
+    check(['CANDIDATE_COMPONENT_ASSEMBLY_READY', 'CANDIDATE_COMPONENT_ASSEMBLY_BLOCKED'].includes(directory.assembly_status), 'ASSEMBLY_STATUS_INVALID');
+    check(nonEmptyText(directory.scene_id) && nonEmptyText(directory.world_id), 'SCENE_WORLD_ID_INVALID');
+    const representations = Array.isArray(directory.representations) ? directory.representations : [];
+    const resources = Array.isArray(directory.resources) ? directory.resources : [];
+    const representationRefs = Array.isArray(directory.representation_refs) ? directory.representation_refs : [];
+    const rsrInputs = Array.isArray(directory.rsr_observation_inputs) ? directory.rsr_observation_inputs : [];
+    const vsrCatalog = record(directory.vsr_catalog);
+    const vsrAssets = Array.isArray(vsrCatalog.assets) ? vsrCatalog.assets : [];
+    check(representations.length >= 1 && representations.length <= 128, 'REPRESENTATIONS_INVALID');
+    check(resources.length <= 16384 && vsrAssets.length === resources.length, 'RESOURCES_INVALID');
+    check(directory.component_count === representations.length, 'COMPONENT_COUNT_MISMATCH');
+    check(directory.representation_count === representations.length, 'REPRESENTATION_COUNT_MISMATCH');
+    check(directory.resource_count === resources.length, 'RESOURCE_COUNT_MISMATCH');
+    check(representationRefs.length === representations.filter(entry => entry?.representation_ref !== null).length, 'REFERENCE_COUNT_MISMATCH');
+    check(rsrInputs.length === representations.length, 'RSR_INPUT_COUNT_MISMATCH');
+    const representationIds = representations.map(entry => entry?.representation_id).filter(nonEmptyText);
+    check(new Set(representationIds).size === representationIds.length, 'REPRESENTATION_IDS_INVALID');
+    check(representations.every(entry => nonEmptyText(entry?.component_id)
+      && hexRoot(entry?.component_root)
+      && (entry?.representation_id === null || nonEmptyText(entry.representation_id))
+      && (entry?.representation_root === null || hexRoot(entry.representation_root))
+      && UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_KINDS.includes(entry?.representation_kind)
+      && nonEmptyText(entry?.representation_profile)
+      && hexRoot(entry?.content_root)
+      && Array.isArray(entry?.resource_ids)
+      && Array.isArray(entry?.provider_stage_ids)
+      && (entry?.provider_id === null || nonEmptyText(entry.provider_id))
+      && (entry?.provider_root === null || hexRoot(entry.provider_root))
+      && (entry?.representation_ref === null || verifyRepresentationRef(entry.representation_ref).valid)
+      && (entry?.representation_ref === null || entry.representation_ref.representation_id === entry.representation_id)
+      && (entry?.representation_ref === null || entry.representation_ref.representation_root === entry.representation_root)
+      && entry?.consumer_mapping?.vsr?.target_contract === UNIVERSAL_ART_ASSET_COMPONENT_VSR_CATALOG_FORMAT
+      && entry?.consumer_mapping?.rsr?.target_contract === UNIVERSAL_ART_ASSET_COMPONENT_RSR_OBSERVATION_FORMAT
+      && entry?.consumer_mapping?.vsr?.direct_import_status === 'NOT_EXECUTED'
+      && entry?.consumer_mapping?.rsr?.execution_status === 'NOT_EXECUTED'
+      && entry?.consumer_mapping?.rsr?.reconstruction_status === 'FORBIDDEN_IN_THIS_LAYER'
+      && entry?.candidate_only === true
+      && entry?.authoritative === false
+      && hexRoot(entry?.entry_root)), 'REPRESENTATION_HEADER_INVALID');
+    check(representations.every(entry => {
+      const copy = clone(entry);
+      const actual = copy.entry_root;
+      delete copy.entry_root;
+      return actual === rootHash(copy);
+    }), 'REPRESENTATION_ROOT_INVALID');
+    check(representationRefs.every(reference => verifyRepresentationRef(reference).valid), 'REPRESENTATION_REFERENCE_INVALID');
+    check(representationRefs.every(reference => representations.some(entry => entry.representation_id === reference.representation_id
+      && entry.representation_root === reference.representation_root
+      && entry.representation_ref?.representation_root === reference.representation_root)), 'REPRESENTATION_REFERENCE_BINDING_INVALID');
+    check(new Set(resources.map(resource => resource?.metadata?.resource_id)).size === resources.length, 'RESOURCE_IDS_INVALID');
+    check(resources.every(resource => nonEmptyText(resource?.id)
+      && nonEmptyText(resource?.metadata?.resource_id)
+      && nonEmptyText(resource?.metadata?.component_id)
+      && nonEmptyText(resource?.metadata?.representation_kind)
+      && UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_KINDS.includes(resource.metadata.representation_kind)
+      && nonEmptyText(resource?.metadata?.format ?? resource?.format)
+      && nonEmptyText(resource?.metadata?.relative_path)
+      && nonEmptyText(resource?.metadata?.output_directory)
+      && Number.isSafeInteger(resource?.metadata?.byte_length)
+      && resource.metadata.byte_length > 0
+      && hexRoot(resource?.metadata?.sha256)
+      && hexRoot(resource?.metadata?.resource_root)), 'RESOURCE_HEADER_INVALID');
+    check(vsrCatalog.format === UNIVERSAL_ART_ASSET_COMPONENT_VSR_CATALOG_FORMAT && vsrCatalog.version === '0.1.0', 'VSR_CATALOG_CONTRACT_INVALID');
+    check(vsrCatalog.asset_count === vsrAssets.length && hexRoot(vsrCatalog.catalog_root), 'VSR_CATALOG_HEADER_INVALID');
+    check(vsrAssets.every(asset => nonEmptyText(asset?.id)
+      && nonEmptyText(asset?.uri)
+      && UNIVERSAL_ART_ASSET_COMPONENT_VSR_KINDS.includes(asset?.kind)
+      && nonEmptyText(asset?.format)
+      && hexRoot(asset?.sha256)
+      && Number.isSafeInteger(asset?.byteLength)
+      && asset.byteLength > 0
+      && Array.isArray(asset?.dependencies)
+      && Array.isArray(asset?.cellIds)
+      && Number.isSafeInteger(asset?.priority)
+      && asset.metadata?.candidate_only === true
+      && asset.metadata?.authoritative === false), 'VSR_ASSET_HEADER_INVALID');
+    check(new Set(vsrAssets.map(asset => asset?.id)).size === vsrAssets.length, 'VSR_ASSET_IDS_INVALID');
+    check(JSON.stringify(resources) === JSON.stringify(vsrAssets), 'RESOURCE_CATALOG_DUPLICATE_MISMATCH');
+    check(directory.vsr_catalog.catalog_root === representationDirectoryVsrCatalogRoot(vsrAssets), 'VSR_CATALOG_ROOT_MISMATCH');
+    check(vsrAssets.every(asset => {
+      const entry = representations.find(candidate => candidate.component_id === asset.metadata?.component_id);
+      const resourceIndex = entry?.resource_ids.indexOf(asset.metadata?.resource_id);
+      return Boolean(entry)
+        && resourceIndex !== undefined
+        && resourceIndex >= 0
+        && entry.consumer_mapping.vsr.asset_ids[resourceIndex] === asset.id
+        && asset.sha256 === asset.metadata?.sha256
+        && asset.byteLength === asset.metadata?.byte_length
+        && asset.metadata?.representation_kind === entry.representation_kind;
+    }), 'VSR_RESOURCE_BINDING_INVALID');
+    check(rsrInputs.every(input => nonEmptyText(input?.representation_kind)
+      && hexRoot(input?.content_root)
+      && Array.isArray(input?.observation_kinds)
+      && input.observation_kinds.length === 3
+      && input.observation_kinds.includes('bounds')
+      && input.observation_kinds.includes('lod')
+      && input.observation_kinds.includes('residency')
+      && input.execution_status === 'NOT_EXECUTED'
+      && input.reconstruction_candidate === null
+      && input.canonical_state_proposal === null
+      && input.authority?.rsr_can_promote_without_independent_evidence === false
+      && input.authority?.rncs_authority_required === true
+      && input.candidate_only === true
+      && input.authoritative === false
+      && input.commit_status === 'NOT_COMMITTED'
+      && (input.status === 'INPUT_READY') === (input.representation_root !== null)
+      && (input.representation_id === null) === (input.representation_root === null)
+      && hexRoot(input.input_root)
+      && input.input_root === rootHash(Object.fromEntries(Object.entries(input).filter(([key]) => key !== 'input_root')))), 'RSR_INPUT_INVALID');
+    check(directory.rsr_observation_input_root === rootHash(rsrInputs), 'RSR_INPUT_ROOT_MISMATCH');
+    const expectedSummary = representationDirectorySummary(representations, vsrAssets, rsrInputs);
+    for (const [key, value] of Object.entries(expectedSummary)) check(JSON.stringify(directory.summary?.[key]) === JSON.stringify(value), `SUMMARY_${key.toUpperCase()}_MISMATCH`);
+    const expectedChecks = {
+      assembly_binding: hexRoot(directory.component_assembly_root),
+      representation_reference_binding: representations.every(entry => entry.representation_ref === null || verifyRepresentationRef(entry.representation_ref).valid),
+      provider_binding: representations.every(entry => entry.representation_ref === null || (nonEmptyText(entry.provider_id) && hexRoot(entry.provider_root) && entry.representation_ref.provider_id === entry.provider_id && entry.representation_ref.provider_root === entry.provider_root)),
+      representation_kind_preservation: representations.every(entry => UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_KINDS.includes(entry.representation_kind)
+        && (entry.representation_ref === null || entry.representation_ref.representation_kind === entry.representation_kind)
+        && vsrAssets.filter(asset => asset.metadata?.component_id === entry.component_id).every(asset => asset.metadata?.representation_kind === entry.representation_kind)),
+      representation_resource_binding: representations.every(entry => entry.resource_ids.every(resourceId => vsrAssets.some(asset => asset.metadata?.resource_id === resourceId && asset.metadata?.component_id === entry.component_id))
+        && entry.consumer_mapping.vsr.asset_ids.length === entry.resource_ids.length),
+      vsr_catalog_integrity: vsrAssets.every(asset => UNIVERSAL_ART_ASSET_COMPONENT_VSR_KINDS.includes(asset.kind) && nonEmptyText(asset.uri) && hexRoot(asset.sha256) && Number.isSafeInteger(asset.byteLength) && asset.byteLength > 0 && asset.metadata?.candidate_only === true && asset.metadata?.authoritative === false)
+        && directory.vsr_catalog.catalog_root === representationDirectoryVsrCatalogRoot(vsrAssets),
+      rsr_observation_boundary: rsrInputs.every(input => input.target_contract === UNIVERSAL_ART_ASSET_COMPONENT_RSR_OBSERVATION_FORMAT && input.execution_status === 'NOT_EXECUTED' && input.reconstruction_candidate === null && input.canonical_state_proposal === null && input.authority?.rsr_can_promote_without_independent_evidence === false && input.candidate_only === true && input.authoritative === false && input.commit_status === 'NOT_COMMITTED'),
+      transform_binding: representations.every(entry => Array.isArray(entry.transform?.translation_mm) && entry.transform.translation_mm.length === 3 && Array.isArray(entry.transform?.rotation_deg) && entry.transform.rotation_deg.length === 3 && Array.isArray(entry.transform?.scale_milli) && entry.transform.scale_milli.length === 3),
+      authority_boundary: representations.every(entry => entry.candidate_only === true && entry.authoritative === false) && vsrAssets.every(asset => asset.metadata?.candidate_only === true && asset.metadata?.authoritative === false)
+    };
+    for (const [key, value] of Object.entries(expectedChecks)) check(directory.checks?.[key] === value, `CHECK_${key.toUpperCase()}_MISMATCH`);
+    const expectedStatus = representationDirectoryReady({assembly_status: directory.assembly_status, representations, resources: vsrAssets}, expectedChecks)
+      ? 'CANDIDATE_REPRESENTATION_DIRECTORY_READY'
+      : 'CANDIDATE_REPRESENTATION_DIRECTORY_BLOCKED';
+    check(directory.status === expectedStatus, 'STATUS_MISMATCH');
+    check(directory.candidate_only === true
+      && directory.authoritative === false
+      && directory.canonical_write_authorized === false
+      && directory.aaa_ready === false
+      && directory.release_ready === false, 'AUTHORITY_BOUNDARY_INVALID');
+    check(JSON.stringify(directory.authority) === JSON.stringify(representationDirectoryAuthority()), 'AUTHORITY_INVALID');
+    if (assembly !== null) {
+      const assemblyVerification = verifyUniversalArtAssetComponentAssembly(assembly);
+      check(assemblyVerification.valid, `ASSEMBLY_CONTEXT_INVALID:${assemblyVerification.errors.join(',')}`);
+      check(directory.component_assembly_root === assembly.component_assembly_root, 'ASSEMBLY_CONTEXT_ROOT_MISMATCH');
+      check(directory.assembly_status === assembly.status, 'ASSEMBLY_CONTEXT_STATUS_MISMATCH');
+      const expected = buildUniversalArtAssetComponentRepresentationDirectory(clone(assembly));
+      const expectedCopy = clone(expected);
+      delete expectedCopy.directory_root;
+      const actualCopy = clone(directory);
+      delete actualCopy.directory_root;
+      check(JSON.stringify(actualCopy) === JSON.stringify(expectedCopy), 'ASSEMBLY_CONTEXT_CONTENT_MISMATCH');
+    }
+    const actualRoot = directory.directory_root;
+    check(hexRoot(actualRoot) && actualRoot === rootHash(representationDirectoryRootInput(directory)), 'ROOT_MISMATCH');
+  } catch (error) {
+    errors.push(`VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, directory_root: directory.directory_root ?? null};
 }
