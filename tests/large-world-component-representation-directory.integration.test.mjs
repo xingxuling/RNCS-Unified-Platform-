@@ -17,7 +17,7 @@ import {
   verifyUniversalArtAssetComponentRepresentationDirectory,
   verifyUniversalArtAssetComponentRepresentationImport
 } from '@taowind/large-world-runtime';
-import {AssetProviderAdapter, createAssetProviderManifest, generatePbrTexturePack} from '@taowind/reality-asset-genesis-fabric';
+import {AssetProviderAdapter, createAssetProviderManifest, generateAnimationClips, generateMesh3d, generatePbrTexturePack, generateSkeletonRig} from '@taowind/reality-asset-genesis-fabric';
 import {
   VSRSpatialAssetStreamer,
   compileSpatialFrame,
@@ -122,23 +122,34 @@ function createFixture({validMesh = false, includeBlade = false, pbrMesh = false
     upstream: {url: 'https://taowind.company', revision: 'component-representation-directory-integration'},
     metadata: {quality_tier: 'PRODUCTION', component_graph_fixture: true}
   });
-  const validMeshPayload = validMesh ? (() => {
+  const validMeshPayloadByComponent = validMesh ? (() => {
+    if (pbrMesh) {
+      return Object.fromEntries(specs.map(spec => {
+        const ragfGenome = genomes[spec.component_id].ragf_genome;
+        const pbr = generatePbrTexturePack({genome: ragfGenome, variant: 'standard'});
+        return [spec.component_id, generateMesh3d({genome: ragfGenome, variant: 'standard', lod: 0, pbr}).glb];
+      }));
+    }
     const runtime = createLargeWorldRuntime({worldId: 'world:component-representation-directory-glb', seed: 'seed:component-representation-directory-glb', width: 5, depth: 5, chunkSize: 64, sampleResolution: 8, loadRadius: 1, maxActiveChunks: 9});
     runtime.observe({x: 0, z: 0});
     const active = runtime.listActiveChunks();
     const selection = runtime.selectActiveRepresentationPortfolios({quality_by_chunk: Object.fromEntries(active.map(chunk => [chunk.chunk_id, 'STANDARD']))});
     const scene = runtime.createSpatialScene({selection, scene_id: 'component-representation-directory-glb-scene'});
-    const bundle = createLargeWorldSpatialGlbBundle(scene, pbrMesh ? {texture_profile: 'ragf.ktx2-pbr-mipped.v0.1', texture_size: 8} : {});
-    return bundle.assets.find(asset => asset.record.metadata.lod === 0).payload;
-  })() : null;
+    const bundle = createLargeWorldSpatialGlbBundle(scene);
+    const payload = bundle.assets.find(asset => asset.record.metadata.lod === 0).payload;
+    return Object.fromEntries(specs.map(spec => [spec.component_id, payload]));
+  })() : {};
   const provider = new AssetProviderAdapter(manifest, {
     runner: ({operation, input}) => ({
       asset_id: input.asset_id,
       format: 'component-representation-directory-provider-output',
       outputs: outputRoles,
       files: outputRoles.flatMap(role => {
+        const componentId = input.component_context?.component_id;
+        const componentGenome = genomes[componentId] ?? rootGenome;
+        const ragfGenome = componentGenome.ragf_genome;
         if (role === 'pbr-texture-pack' && pbrMesh) {
-          const pbr = generatePbrTexturePack({genome: (genomes[input.component_context?.component_id] ?? rootGenome).ragf_genome, variant: 'standard'});
+          const pbr = generatePbrTexturePack({genome: ragfGenome, variant: 'standard'});
           return pbr.files.map(file => ({
             name: `${operation}/pbr/${file.name}`,
             path: `${operation}/pbr/${file.name}`,
@@ -148,8 +159,17 @@ function createFixture({validMesh = false, includeBlade = false, pbrMesh = false
             base64: Buffer.from(file.buffer).toString('base64')
           }));
         }
-        const mesh = role === 'mesh-glb' && validMeshPayload !== null;
-        const payload = mesh ? validMeshPayload : Buffer.from(`${input.asset_id}:${input.component_context?.component_id}:${role}`);
+        if (pbrMesh && role === 'rig-candidate') {
+          const payload = Buffer.from(JSON.stringify(generateSkeletonRig({genome: ragfGenome, variant: 'standard'})), 'utf8');
+          return [{name: `${operation}/rig/skeleton-rig.json`, path: `${operation}/rig/skeleton-rig.json`, role, format: 'application/json', mime: 'application/json', base64: payload.toString('base64')}];
+        }
+        if (pbrMesh && role === 'animation-clips') {
+          const payload = Buffer.from(JSON.stringify(generateAnimationClips({genome: ragfGenome, variant: 'standard'})), 'utf8');
+          return [{name: `${operation}/rig/animation-clips.json`, path: `${operation}/rig/animation-clips.json`, role, format: 'application/json', mime: 'application/json', base64: payload.toString('base64')}];
+        }
+        const meshPayload = role === 'mesh-glb' ? validMeshPayloadByComponent[componentId] : null;
+        const mesh = role === 'mesh-glb' && meshPayload !== null && meshPayload !== undefined;
+        const payload = mesh ? meshPayload : Buffer.from(`${input.asset_id}:${componentId}:${role}`);
         return [{
           name: `${operation}/${role}.${mesh ? 'glb' : 'json'}`,
           path: `${operation}/${role}.${mesh ? 'glb' : 'json'}`,
@@ -334,6 +354,8 @@ test('component representation imports compose multiple VSR scenes under URRF tr
   const importedScenes = new Map();
   const loadAsset = asset => fs.readFileSync(path.resolve(asset.metadata.output_directory, asset.metadata.relative_path));
   const componentImportHandler = createVsrGltfPbrComponentImportHandler({
+    consumeRigAnimation: true,
+    requireRigAnimation: true,
     imageDecoder: async input => {
       if (input.mimeType === 'image/ktx2' || input.image?.mimeType === 'image/ktx2') return decodeGltfImageToSpatialTexture(input);
       const decoded = decodePng(input.bytes);
@@ -368,8 +390,9 @@ test('component representation imports compose multiple VSR scenes under URRF tr
   assert.equal(imported.status, 'CANDIDATE_COMPONENT_REPRESENTATION_IMPORT_EXECUTED');
   assert.equal(imported.summary.executed_count, 2);
   assert.equal(importedScenes.size, 2);
-  assert.deepEqual(imported.entries.map(entry => entry.resource_coverage_status), ['PARTIAL', 'PARTIAL']);
-  assert.deepEqual(imported.entries.map(entry => [entry.metrics.texture_count, entry.metrics.material_texture_binding_count, entry.metrics.external_pbr_channel_count]), [[8, 5, 4], [8, 5, 4]]);
+  assert.deepEqual(imported.entries.map(entry => entry.resource_coverage_status), ['PARTIAL', 'COMPLETE']);
+  assert.deepEqual(imported.entries.map(entry => [entry.metrics.texture_count, entry.metrics.material_texture_binding_count, entry.metrics.external_pbr_channel_count, entry.metrics.rig_bone_count, entry.metrics.animation_clip_count]), [[8, 5, 4, 8, 4], [8, 5, 4, 8, 4]]);
+  assert.deepEqual(imported.entries.map(entry => [entry.metrics.skin_count, entry.metrics.animation_count, entry.consumed_asset_ids.length]), [[1, 4, 7], [1, 4, 7]]);
   const fragments = ['body', 'blade'].map(componentId => {
     const entry = directory.representations.find(candidate => candidate.component_id === componentId);
     assert.ok(entry);
@@ -394,7 +417,7 @@ test('component representation imports compose multiple VSR scenes under URRF tr
       fovYDeg: 45,
       near: 0.1,
       far: 1000,
-      transform: {translation: [32, 2, 100]}
+      transform: {translation: [0, 1.4, 6]}
     }
   });
   assert.equal(composed.scene.meshes.length, 2);

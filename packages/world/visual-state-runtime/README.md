@@ -5,7 +5,7 @@ VSR是RNCS的独立视觉时间投影、三维资产和可验证像素执行层�
 ## v0.8 Complete PBR Projection
 
 - glTF Base Color、Metallic-Roughness、Normal、Occlusion、Emissive纹理映射。
-- `createVsrGltfPbrComponentImportHandler()` 将一个 mesh GLB 与独立的四通道 PBR 资源包绑定为可复用的候选组件导入处理器；它要求通道完整、通过注入的解码器真实解码，并显式返回 consumed/deferred 资源覆盖，不把未接入的 rig/animation 资源算作已导入。
+- `createVsrGltfPbrComponentImportHandler()` 将一个 mesh GLB 与独立的四通道 PBR 资源包绑定为可复用的候选组件导入处理器；它要求通道完整、通过注入的解码器真实解码，并可消费匹配的 skeleton-rig/animation-clips JSON，验证其确实绑定到 GLB 的 skin 与 animation channels，最后显式返回 consumed/deferred 资源覆盖。
 - Nearest与Bilinear采样。
 - 切线空间Normal Map。
 - Alpha Mask在深度写入前裁剪。
