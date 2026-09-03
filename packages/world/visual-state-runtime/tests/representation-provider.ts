@@ -1,8 +1,15 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { cryptographicHash } from '../packages/spec/src/index.js';
 import {
   createSpark3DGSVisualBinding,
+  createVsrNonMeshRepresentationComponentImportHandler,
   inspectVisualRepresentationProvider,
+  verifyVsrNonMeshRepresentationImportReceipt,
   verifyVisualRepresentationBinding,
+  VSR_NON_MESH_REPRESENTATION_MANIFEST_FORMAT,
+  type VSRNonMeshRepresentationAsset,
   type VSRRepresentationProviderManifest,
   type VSRRepresentationReference
 } from '../packages/representation-provider/src/index.js';
@@ -37,8 +44,8 @@ const sparkReference = (): VSRRepresentationReference => ({
   representation_root: root('c')
 });
 
-const tests: Array<{ name: string; fn: () => void }> = [];
-const test = (name: string, fn: () => void): void => { tests.push({ name, fn }); };
+const tests: Array<{ name: string; fn: () => void | Promise<void> }> = [];
+const test = (name: string, fn: () => void | Promise<void>): void => { tests.push({ name, fn }); };
 
 test('Spark manifest is recognized as a visual-only representation provider', () => {
   const inspection = inspectVisualRepresentationProvider(sparkProvider());
@@ -70,9 +77,83 @@ test('VSR binding integrity detects a visual binding mutation', () => {
   assert.equal(verifyVisualRepresentationBinding(binding), false);
 });
 
+test('non-mesh manifest schema pins the candidate-only authority boundary', () => {
+  const schema = JSON.parse(readFileSync(fileURLToPath(new URL('../schemas/vsr-non-mesh-representation-manifest.v0.1.schema.json', import.meta.url)), 'utf8')) as Record<string, any>;
+  assert.equal(schema.$schema, 'https://json-schema.org/draft/2020-12/schema');
+  assert.equal(schema.properties.format.const, VSR_NON_MESH_REPRESENTATION_MANIFEST_FORMAT);
+  assert.equal(schema.properties.candidate_only.const, true);
+  assert.equal(schema.properties.authoritative.const, false);
+});
+
+test('VSR seals a non-mesh Gaussian payload package without claiming rendering', async () => {
+  const payloads = new Map<string, Uint8Array>([
+    ['asset:ruins:page0', new Uint8Array([1, 2, 3])],
+    ['asset:ruins:page1', new Uint8Array([4, 5])]
+  ]);
+  const payloadAssetIds = [...payloads.keys()];
+  const contentRoot = cryptographicHash(payloadAssetIds.map(assetId => {
+    const bytes = payloads.get(assetId)!;
+    return {assetId, byteLength: bytes.byteLength, byteRoot: cryptographicHash([...bytes])};
+  }));
+  const manifestBase = {
+    format: VSR_NON_MESH_REPRESENTATION_MANIFEST_FORMAT,
+    version: '0.1.0',
+    component_id: 'ruins',
+    asset_id: 'asset:ruins',
+    representation_kind: 'gaussian-splats',
+    profile_id: 'spark.ext-splats',
+    payload_asset_ids: payloadAssetIds,
+    payload_format: 'application/vnd.spark.rad',
+    payload_byte_length: 5,
+    element_count: 12,
+    bounds: {min: [-1, -0.5, -2], max: [1, 2, 3]},
+    content_root: contentRoot,
+    candidate_only: true,
+    authoritative: false
+  };
+  const manifest = {...manifestBase, manifest_root: cryptographicHash(manifestBase)};
+  const manifestBytes = new TextEncoder().encode(JSON.stringify(manifest));
+  const assets = [
+    {id: 'asset:ruins:manifest', kind: 'representation-manifest', format: 'application/json', metadata: {role: 'representation-manifest'}},
+    ...payloadAssetIds.map(id => ({id, kind: 'representation-data', format: 'application/vnd.spark.rad'})),
+    {id: 'asset:ruins:note', kind: 'other', format: 'text/plain'}
+  ] as VSRNonMeshRepresentationAsset[];
+  const allPayloads = new Map(payloads);
+  allPayloads.set('asset:ruins:manifest', manifestBytes);
+  allPayloads.set('asset:ruins:note', new Uint8Array([9]));
+  const context = {
+    entry: {component_id: 'ruins', asset_id: 'asset:ruins', representation_kind: 'gaussian-splat'},
+    assets,
+    payloads: allPayloads
+  };
+  const handler = createVsrNonMeshRepresentationComponentImportHandler({
+    representationKind: 'gaussian-splat',
+    handlerId: 'vsr.gaussian-splat-component-import.v0.1'
+  });
+  const result = await handler.compile(context);
+  assert.equal(result.candidate.representationKind, 'gaussian-splat');
+  assert.equal(result.candidate.renderStatus, 'NOT_IMPLEMENTED');
+  assert.equal(result.receipt.payloadFormat, 'application/vnd.spark.rad');
+  assert.equal(result.receipt.payloadCount, 2);
+  assert.equal(result.receipt.payloadByteLength, 5);
+  assert.equal(result.receipt.elementCount, 12);
+  assert.equal(result.metrics.rendered, 0);
+  assert.deepEqual(result.consumed_asset_ids, ['asset:ruins:manifest', ...payloadAssetIds]);
+  assert.deepEqual(result.deferred_asset_ids, ['asset:ruins:note']);
+  assert.equal(verifyVsrNonMeshRepresentationImportReceipt(result.receipt, result.candidate), true);
+  assert.equal(handler.verify({result}), true);
+
+  const tamperedPayloads = new Map(allPayloads);
+  tamperedPayloads.set('asset:ruins:page1', new Uint8Array([4, 5, 6]));
+  await assert.rejects(
+    () => handler.compile({...context, payloads: tamperedPayloads}),
+    /content root mismatch|byte length mismatch/
+  );
+});
+
 let passed = 0;
 for (const entry of tests) {
-  try { entry.fn(); passed++; console.log(`PASS ${entry.name}`); }
+  try { await entry.fn(); passed++; console.log(`PASS ${entry.name}`); }
   catch (error) { console.error(`FAIL ${entry.name}`); throw error; }
 }
 console.log(`VSR representation provider tests: ${passed}/${tests.length} PASS`);
