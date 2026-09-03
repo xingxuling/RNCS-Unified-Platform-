@@ -253,7 +253,9 @@ test('component representation import executes a verified VSR mesh handler and f
             mesh_count: imported.receipt.meshCount,
             material_count: imported.receipt.materialCount,
             animation_count: imported.receipt.animationCount
-          }
+          },
+          consumed_asset_ids: [meshAsset.id],
+          deferred_asset_ids: assets.filter(asset => asset.id !== meshAsset.id).map(asset => asset.id)
         };
       },
       verify: ({result}) => verifyGltfImportReceipt(result.receipt)
@@ -270,6 +272,9 @@ test('component representation import executes a verified VSR mesh handler and f
   assert.equal(executed.summary.executed_count, 1);
   assert.equal(executed.entries[0].status, 'EXECUTED');
   assert.equal(executed.entries[0].verification_status, 'HANDLER_VERIFIED');
+  assert.equal(executed.entries[0].resource_coverage_status, 'PARTIAL');
+  assert.equal(executed.entries[0].consumed_asset_ids.length, 1);
+  assert.equal(executed.entries[0].deferred_asset_ids.length, executed.entries[0].resource_ids.length - 1);
   assert.equal(verifyUniversalArtAssetComponentRepresentationImport(executed, {directory}).valid, true);
   const schema = JSON.parse(fs.readFileSync(new URL('../packages/world/large-world-runtime/schemas/universal-art-asset-component-representation-import-execution.v0.1.schema.json', import.meta.url), 'utf8'));
   const validate = new Ajv2020({strict: false, allErrors: true}).compile(schema);
@@ -291,6 +296,24 @@ test('component representation import executes a verified VSR mesh handler and f
   assert.equal(failed.entries[0].status, 'FAILED');
   assert.match(failed.entries[0].reason, /BYTES_MISMATCH/);
   assert.equal(verifyUniversalArtAssetComponentRepresentationImport(failed, {directory}).valid, true);
+
+  const incompleteImporters = {
+    mesh: {
+      ...importers.mesh,
+      compile: ({entry, assets, payloads}) => importers.mesh.compile({entry, assets, payloads})
+    }
+  };
+  const originalCompile = incompleteImporters.mesh.compile;
+  incompleteImporters.mesh.compile = async context => {
+    const result = await originalCompile(context);
+    delete result.consumed_asset_ids;
+    delete result.deferred_asset_ids;
+    return result;
+  };
+  const incomplete = await executeUniversalArtAssetComponentRepresentationImport({directory, assembly, requestedComponentIds: ['body'], loadAsset, importers: incompleteImporters});
+  assert.equal(incomplete.entries[0].status, 'FAILED');
+  assert.match(incomplete.entries[0].reason, /RESOURCE_COVERAGE_UNDECLARED/);
+  assert.equal(verifyUniversalArtAssetComponentRepresentationImport(incomplete, {directory}).valid, true);
 });
 
 test('component representation imports compose multiple VSR scenes under URRF transforms', async () => {
@@ -317,7 +340,9 @@ test('component representation imports compose multiple VSR scenes under URRF tr
           metrics: {
             texture_count: imported.receipt.textureCount,
             material_texture_binding_count: imported.receipt.materialTextureBindingCount
-          }
+          },
+          consumed_asset_ids: [meshAsset.id],
+          deferred_asset_ids: assets.filter(asset => asset.id !== meshAsset.id).map(asset => asset.id)
         };
       },
       verify: ({result}) => verifyGltfImportReceipt(result.receipt)
@@ -333,6 +358,7 @@ test('component representation imports compose multiple VSR scenes under URRF tr
   assert.equal(imported.status, 'CANDIDATE_COMPONENT_REPRESENTATION_IMPORT_EXECUTED');
   assert.equal(imported.summary.executed_count, 2);
   assert.equal(importedScenes.size, 2);
+  assert.deepEqual(imported.entries.map(entry => entry.resource_coverage_status), ['PARTIAL', 'PARTIAL']);
   assert.deepEqual(imported.entries.map(entry => [entry.metrics.texture_count, entry.metrics.material_texture_binding_count]), [[4, 5], [4, 5]]);
   const fragments = ['body', 'blade'].map(componentId => {
     const entry = directory.representations.find(candidate => candidate.component_id === componentId);

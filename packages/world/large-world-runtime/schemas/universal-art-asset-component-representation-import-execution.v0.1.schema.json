@@ -90,6 +90,9 @@
       "receipt_root",
       "output_root",
       "metrics",
+      "consumed_asset_ids",
+      "deferred_asset_ids",
+      "resource_coverage_status",
       "candidate_only",
       "authoritative",
       "entry_root"
@@ -110,6 +113,9 @@
       "receipt_root": {"$ref": "#/$defs/nullableRoot"},
       "output_root": {"$ref": "#/$defs/nullableRoot"},
       "metrics": {"type": "object", "additionalProperties": true},
+      "consumed_asset_ids": {"type": "array", "items": {"type": "string", "minLength": 1}},
+      "deferred_asset_ids": {"type": "array", "items": {"type": "string", "minLength": 1}},
+      "resource_coverage_status": {"enum": ["COMPLETE", "PARTIAL", "NOT_APPLICABLE"]},
       "candidate_only": {"const": true},
       "authoritative": {"const": false},
       "entry_root": {"$ref": "#/$defs/root"}

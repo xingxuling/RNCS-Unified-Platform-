@@ -2345,7 +2345,41 @@ function componentRepresentationImportVerificationStatus(status) {
   return 'NOT_RUN';
 }
 
-function componentRepresentationImportEntry({entry, handlerId = null, status, reason = null, verificationStatus, loadedResourceCount = 0, loadedByteLength = 0, receiptRoot = null, outputRoot = null, metrics = {}}) {
+function componentRepresentationImportCoverage({assets, result}) {
+  const available = assets.map(asset => asset.id);
+  const availableSet = new Set(available);
+  const consumed = Array.isArray(result?.consumed_asset_ids) ? [...result.consumed_asset_ids] : null;
+  const deferred = Array.isArray(result?.deferred_asset_ids) ? [...result.deferred_asset_ids] : null;
+  if (!consumed || !deferred) throw new GenesisError('UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_RESOURCE_COVERAGE_UNDECLARED');
+  if (consumed.some(assetId => !nonEmptyText(assetId)) || deferred.some(assetId => !nonEmptyText(assetId))) throw new GenesisError('UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_RESOURCE_COVERAGE_ID_INVALID');
+  if (new Set(consumed).size !== consumed.length || new Set(deferred).size !== deferred.length) throw new GenesisError('UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_RESOURCE_COVERAGE_DUPLICATE');
+  if (consumed.some(assetId => !availableSet.has(assetId)) || deferred.some(assetId => !availableSet.has(assetId))) throw new GenesisError('UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_RESOURCE_COVERAGE_UNKNOWN');
+  if (consumed.some(assetId => deferred.includes(assetId)) || new Set([...consumed, ...deferred]).size !== availableSet.size || available.some(assetId => !consumed.includes(assetId) && !deferred.includes(assetId))) throw new GenesisError('UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_RESOURCE_COVERAGE_INCOMPLETE');
+  return {
+    consumed_asset_ids: consumed,
+    deferred_asset_ids: deferred,
+    resource_coverage_status: deferred.length === 0 ? 'COMPLETE' : 'PARTIAL'
+  };
+}
+
+function componentRepresentationImportCoverageValid(entry, availableAssetIds = null) {
+  const consumed = Array.isArray(entry?.consumed_asset_ids) ? entry.consumed_asset_ids : [];
+  const deferred = Array.isArray(entry?.deferred_asset_ids) ? entry.deferred_asset_ids : [];
+  if (consumed.some(assetId => !nonEmptyText(assetId)) || deferred.some(assetId => !nonEmptyText(assetId))) return false;
+  if (new Set(consumed).size !== consumed.length || new Set(deferred).size !== deferred.length || consumed.some(assetId => deferred.includes(assetId))) return false;
+  if (!['COMPLETE', 'PARTIAL', 'NOT_APPLICABLE'].includes(entry?.resource_coverage_status)) return false;
+  if (entry?.status !== 'EXECUTED') return consumed.length === 0 && deferred.length === 0 && entry.resource_coverage_status === 'NOT_APPLICABLE';
+  if (entry.resource_coverage_status !== (deferred.length === 0 ? 'COMPLETE' : 'PARTIAL') || consumed.length + deferred.length === 0) return false;
+  if (availableAssetIds === null) return true;
+  const available = [...availableAssetIds];
+  const availableSet = new Set(available);
+  return available.length === consumed.length + deferred.length
+    && available.every(assetId => consumed.includes(assetId) || deferred.includes(assetId))
+    && consumed.every(assetId => availableSet.has(assetId))
+    && deferred.every(assetId => availableSet.has(assetId));
+}
+
+function componentRepresentationImportEntry({entry, handlerId = null, status, reason = null, verificationStatus, loadedResourceCount = 0, loadedByteLength = 0, receiptRoot = null, outputRoot = null, metrics = {}, consumedAssetIds = [], deferredAssetIds = [], resourceCoverageStatus = 'NOT_APPLICABLE'}) {
   return seal({
     component_id: entry.component_id,
     representation_id: entry.representation_id,
@@ -2363,6 +2397,9 @@ function componentRepresentationImportEntry({entry, handlerId = null, status, re
     receipt_root: receiptRoot,
     output_root: outputRoot,
     metrics: clone(record(metrics)),
+    consumed_asset_ids: [...consumedAssetIds],
+    deferred_asset_ids: [...deferredAssetIds],
+    resource_coverage_status: resourceCoverageStatus,
     candidate_only: true,
     authoritative: false,
     entry_root: ''
@@ -2472,6 +2509,7 @@ export async function executeUniversalArtAssetComponentRepresentationImport({
         continue;
       }
       const verified = await handler.verify({directory, entry, assets, payloads, result});
+      const coverage = componentRepresentationImportCoverage({assets, result});
       const receiptRoot = result?.receipt_root ?? result?.receipt?.receiptRoot ?? null;
       const outputRoot = result?.output_root ?? result?.receipt?.sceneRoot ?? null;
       if (verified !== true || !hexRoot(receiptRoot) || !hexRoot(outputRoot)) throw new GenesisError(verified === true ? 'UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_HANDLER_ROOTS_INVALID' : 'UNIVERSAL_ART_ASSET_COMPONENT_REPRESENTATION_IMPORT_HANDLER_VERIFY_FAILED');
@@ -2484,7 +2522,10 @@ export async function executeUniversalArtAssetComponentRepresentationImport({
         loadedByteLength,
         receiptRoot,
         outputRoot,
-        metrics: result?.metrics ?? {}
+        metrics: result?.metrics ?? {},
+        consumedAssetIds: coverage.consumed_asset_ids,
+        deferredAssetIds: coverage.deferred_asset_ids,
+        resourceCoverageStatus: coverage.resource_coverage_status
       }));
     } catch (error) {
       compiledEntries.push(componentRepresentationImportEntry({
@@ -2556,6 +2597,7 @@ export function verifyUniversalArtAssetComponentRepresentationImport(report, {di
       && (entry.status === 'EXECUTED' ? entry.verification_status === 'HANDLER_VERIFIED' && nonEmptyText(entry.handler_id) && hexRoot(entry.receipt_root) && hexRoot(entry.output_root) && entry.loaded_resource_count > 0 && entry.loaded_byte_length > 0 : entry.verification_status !== 'HANDLER_VERIFIED' && nonEmptyText(entry.reason) && entry.receipt_root === null && entry.output_root === null)
       && Number.isSafeInteger(entry?.loaded_resource_count) && entry.loaded_resource_count >= 0
       && Number.isSafeInteger(entry?.loaded_byte_length) && entry.loaded_byte_length >= 0
+      && componentRepresentationImportCoverageValid(entry)
       && entry?.candidate_only === true
       && entry?.authoritative === false
       && hexRoot(entry?.entry_root)), 'ENTRY_HEADER_INVALID');
@@ -2587,6 +2629,13 @@ export function verifyUniversalArtAssetComponentRepresentationImport(report, {di
           && entry.source_content_root === source.content_root
           && JSON.stringify(entry.resource_ids) === JSON.stringify(source.resource_ids);
       }), 'DIRECTORY_ENTRY_BINDING_INVALID');
+      check(entries.every(entry => {
+        const source = directoryEntries.get(entry.component_id);
+        const availableAssetIds = directory.vsr_catalog.assets
+          .filter(asset => asset.metadata?.component_id === entry.component_id && source?.resource_ids.includes(asset.metadata?.resource_id))
+          .map(asset => asset.id);
+        return componentRepresentationImportCoverageValid(entry, availableAssetIds);
+      }), 'RESOURCE_COVERAGE_INVALID');
     }
     const actualRoot = report.report_root;
     const copy = clone(report);
