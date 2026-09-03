@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rncs.authority-lease.v0.3",
+  "title": "RNCS Authority Lease Epoch and Fencing v0.3",
+  "type": "object",
+  "required": ["format", "version", "authority_id", "shard_id", "semantic_scope", "owner_node", "epoch", "fencing_token", "valid_from_tick", "valid_until_tick", "status", "revoked_at_tick", "renewal_of", "provenance_ref", "authority_ref", "evidence_refs", "candidate_only", "authoritative", "commit_status", "lease_root"],
+  "properties": {
+    "format": {"const": "rncs.authority-lease.v0.3"},
+    "version": {"const": "0.3.0"},
+    "authority_id": {"type": "string", "minLength": 1},
+    "shard_id": {"type": "string", "minLength": 1},
+    "semantic_scope": {"type": "string", "minLength": 1},
+    "owner_node": {"type": "string", "minLength": 1},
+    "epoch": {"type": "integer", "minimum": 0},
+    "fencing_token": {"type": "integer", "minimum": 0},
+    "valid_from_tick": {"type": "integer", "minimum": 0},
+    "valid_until_tick": {"type": "integer", "minimum": 0},
+    "status": {"enum": ["ACTIVE", "REVOKED", "EXPIRED"]},
+    "revoked_at_tick": {"anyOf": [{"type": "integer", "minimum": 0}, {"type": "null"}]},
+    "renewal_of": {"anyOf": [{"type": "string", "pattern": "^[0-9a-f]{64}$"}, {"type": "null"}]},
+    "provenance_ref": {"type": "string", "minLength": 1},
+    "authority_ref": {"type": "string", "minLength": 1},
+    "evidence_refs": {"type": "array", "items": {"type": "string"}},
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "commit_status": {"const": "NOT_COMMITTED"},
+    "lease_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "allOf": [
+    {"if": {"properties": {"status": {"const": "REVOKED"}}}, "then": {"properties": {"revoked_at_tick": {"type": "integer", "minimum": 0}}}},
+    {"if": {"properties": {"status": {"enum": ["ACTIVE", "EXPIRED"]}}}, "then": {"properties": {"revoked_at_tick": {"type": "null"}}}}
+  ],
+  "additionalProperties": true
+}

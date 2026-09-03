@@ -1,10 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import {fileURLToPath} from 'node:url';
 import {normalizeIntent, createGenome, seal} from '../src/index.mjs';
 import {
   ASSET_PROVIDER_MANIFEST_FORMAT,
+  AssetProviderAdapter,
   AssetGenerationJob,
+  createAssetProviderManifest,
   createAssetGenerationJob,
   transitionAssetGenerationJob,
   validateAssetProviderManifest,
@@ -155,6 +158,73 @@ test('external adapters are contract verified but do not claim runtime execution
     assert.equal(result.job.state, 'FAILED');
     assert.equal(result.failure.code, 'PROVIDER_RUNTIME_NOT_EXECUTED');
   }
+});
+
+test('configured external adapter executes a deterministic child-process contract fixture', () => {
+  const fixture = fileURLToPath(new URL('../examples/providers/contract-echo-provider.mjs', import.meta.url));
+  const base = createTripoSRProvider().manifest;
+  const manifest = createAssetProviderManifest({
+    ...base,
+    id: 'provider:test:external-process-smoke',
+    provider_id: 'provider:test:external-process-smoke',
+    name: 'Deterministic External Process Smoke Provider',
+    command: [process.execPath, fixture],
+    runtimeStatus: 'CONFIGURED',
+    metadata: {
+      ...base.metadata,
+      quality_tier: 'PREVIEW',
+      external_process_smoke: true
+    }
+  });
+  const adapter = new AssetProviderAdapter(manifest, {timeout: 5000});
+  assert.deepEqual(adapter.healthCheck(), {
+    status: 'CONFIGURED',
+    runtime: 'EXTERNAL_PROCESS',
+    provider_id: 'provider:test:external-process-smoke'
+  });
+
+  const execution = adapter.generate({
+    asset_id: 'asset:external-process-smoke',
+    seed: 'external-process-smoke-seed',
+    quality_tier: 'PREVIEW'
+  });
+
+  assert.equal(execution.status, 'COMPLETED');
+  assert.equal(execution.failure, null);
+  assert.equal(execution.job.state, 'COMPLETED');
+  assert.deepEqual(execution.job.history.map(item => item.state), [
+    'QUEUED', 'PREPARING', 'RUNNING', 'VALIDATING', 'COMPLETED'
+  ]);
+  assert.equal(execution.result.metadata.external_process_smoke, true);
+  assert.equal(execution.result.source.kind, 'deterministic-child-process-fixture');
+  assert.equal(execution.result.provenance.provider_id, manifest.id);
+  assert.equal(execution.result.provenance.provider_root, manifest.manifest_root);
+  assert.equal(execution.result.provenance.seed, 'external-process-smoke-seed');
+  assert.equal(execution.result.authoritative, false);
+  assert.equal(execution.result.evidence.candidate_only, true);
+  assert.match(execution.result.result_root, /^[a-f0-9]{64}$/);
+  assert.equal(execution.job.result_root, execution.result.result_root);
+});
+
+test('external adapter fails closed when a configured process returns invalid JSON', () => {
+  const base = createTripoSRProvider().manifest;
+  const manifest = createAssetProviderManifest({
+    ...base,
+    id: 'provider:test:external-process-invalid-json',
+    provider_id: 'provider:test:external-process-invalid-json',
+    name: 'Invalid JSON External Process Fixture',
+    command: [process.execPath, '-e', "process.stdout.write('not-json')"],
+    runtimeStatus: 'CONFIGURED'
+  });
+  const execution = new AssetProviderAdapter(manifest, {timeout: 5000}).generate({
+    asset_id: 'asset:external-process-invalid-json',
+    seed: 'external-process-invalid-json'
+  });
+  assert.equal(execution.status, 'FAILED');
+  assert.equal(execution.result, null);
+  assert.equal(execution.job.state, 'FAILED');
+  assert.equal(execution.failure.code, 'ASSET_PROVIDER_INVALID_JSON');
+  assert.equal(execution.failure.authoritative, false);
 });
 
 test('named provider factories preserve provider identity', () => {

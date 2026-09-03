@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import {fileURLToPath} from 'node:url';
 import {
   createUniversalArtAssetAssembly,
   createUniversalArtAssetEvidenceBundle,
@@ -760,6 +761,67 @@ test('provider pipeline executor runs injected stages, chains roots, and remains
   assert.equal(entrypoint.pipeline_status, 'CANDIDATE_PROVIDER_PIPELINE_EXECUTED');
   assert.equal(fs.existsSync(path.join(entrypoint.output_directory, 'universal-art-asset-provider-pipeline-artifact.json')), true);
   assert.equal(verifyUniversalArtAssetProviderPipelineArtifact(entrypoint.artifact).valid, true);
+});
+
+test('provider pipeline executes a configured child process and materializes candidate output', () => {
+  const fixture = fileURLToPath(new URL('../../reality-asset-genesis-fabric/examples/providers/contract-echo-provider.mjs', import.meta.url));
+  const base = createTrellis2Provider().manifest;
+  const manifest = createAssetProviderManifest({
+    ...base,
+    id: 'provider:test:pipeline-external-process',
+    provider_id: 'provider:test:pipeline-external-process',
+    name: 'Deterministic Pipeline External Process Fixture',
+    command: [process.execPath, fixture],
+    runtimeStatus: 'CONFIGURED',
+    metadata: {
+      ...base.metadata,
+      quality_tier: 'PRODUCTION',
+      external_process_smoke: true
+    }
+  });
+  const genome = createUniversalArtAssetGenome({
+    description: 'pipeline external process prop',
+    asset_profile: 'prop',
+    asset_kind: 'prop-3d',
+    quality_tier: 'AAA',
+    seed: 'pipeline-external-process-seed'
+  });
+  const plan = createUniversalArtAssetProviderPipelinePlan({genome, provider: manifest});
+  assert.equal(plan.status, 'CANDIDATE_PROVIDER_PIPELINE_PLANNED');
+  assert.equal(plan.stages.length, 1);
+  assert.equal(plan.stages[0].route_status, 'INJECTED_RUNTIME_BOUND');
+  assert.equal(plan.stages[0].runtime_binding, 'EXTERNAL_PROCESS');
+  assert.equal(plan.stages[0].command_configured, true);
+  assert.equal(plan.runtime_ready, true);
+
+  const outDir = fs.mkdtempSync(path.join(os.tmpdir(), 'urrf-universal-art-pipeline-external-'));
+  const run = executeUniversalArtAssetProviderPipeline({genome, plan, provider: manifest, outDir, providerTimeout: 5000});
+  assert.equal(run.status, 'CANDIDATE_PROVIDER_PIPELINE_EXECUTED');
+  assert.equal(run.execution.stages[0].status, 'COMPLETED');
+  assert.equal(run.execution.stages[0].runtime_binding, 'EXTERNAL_PROCESS');
+  assert.equal(run.execution.stages[0].execution_attempted, true);
+  assert.equal(run.execution.stages[0].execution_performed, true);
+  assert.equal(run.execution.stages[0].output.output_contract_pass, true);
+  assert.equal(run.execution.stages[0].output.materialized_file_count, 3);
+  assert.equal(run.execution.stages[0].output.materialization_skipped.length, 0);
+  assert.equal(run.execution.candidate_only, true);
+  assert.equal(run.execution.authoritative, false);
+  assert.equal(run.execution.authority.provider_can_write_authoritative_world_state, false);
+  assert.equal(verifyUniversalArtAssetProviderPipelineExecution(run.execution, {plan, genome}).valid, true);
+
+  const artifact = createUniversalArtAssetProviderPipelineArtifact({
+    genome,
+    plan,
+    execution: run.execution,
+    output_directory: outDir
+  });
+  assert.equal(artifact.status, 'CANDIDATE_PROVIDER_PIPELINE_ARTIFACT_READY');
+  assert.equal(artifact.output.role_index['mesh-glb'].length, 1);
+  assert.equal(artifact.output.role_index['pbr-texture-pack'].length, 1);
+  assert.equal(artifact.summary.file_count, 3);
+  assert.equal(verifyUniversalArtAssetProviderPipelineArtifact(artifact, {genome, plan, execution: run.execution}).valid, true);
+  assert.equal(fs.existsSync(path.join(outDir, 'stages', '001-base_generation', 'provider-output', 'contract', 'mesh-glb.marker')), true);
+  assert.equal(fs.existsSync(path.join(outDir, 'stages', '001-base_generation', 'provider-output', 'contract', 'pbr-texture-pack.marker')), true);
 });
 
 test('provider pipeline executor stays blocked when a planned provider is contract-only', () => {

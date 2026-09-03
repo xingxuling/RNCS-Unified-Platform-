@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rncs.reality-consistency-profile.v0.3",
+  "title": "RNCS Reality Consistency Profile v0.3",
+  "type": "object",
+  "required": ["format", "version", "profile_id", "mode", "stale_read_budget_ms", "authority_required", "conflict_policy", "lease_required", "fencing_required", "retry_policy", "evidence_refs", "candidate_only", "authoritative", "commit_status", "profile_root"],
+  "properties": {
+    "format": {"const": "rncs.reality-consistency-profile.v0.3"},
+    "version": {"const": "0.3.0"},
+    "profile_id": {"type": "string", "minLength": 1},
+    "mode": {"enum": ["LINEARIZABLE", "SERIALIZABLE", "CAUSAL", "SNAPSHOT", "EVENTUAL", "BEST_EFFORT_PROJECTION"]},
+    "stale_read_budget_ms": {"type": "integer", "minimum": 0},
+    "authority_required": {"type": "boolean"},
+    "conflict_policy": {"type": "string", "minLength": 1},
+    "lease_required": {"type": "boolean"},
+    "fencing_required": {"type": "boolean"},
+    "retry_policy": {
+      "type": "object",
+      "required": ["max_attempts", "backoff_ms", "mode"],
+      "properties": {"max_attempts": {"type": "integer", "minimum": 0}, "backoff_ms": {"type": "integer", "minimum": 0}, "mode": {"type": "string", "minLength": 1}},
+      "additionalProperties": true
+    },
+    "evidence_refs": {"type": "array", "items": {"type": "string"}},
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "commit_status": {"const": "NOT_COMMITTED"},
+    "profile_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}
