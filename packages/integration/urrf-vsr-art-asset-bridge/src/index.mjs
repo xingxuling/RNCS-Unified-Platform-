@@ -9,6 +9,22 @@ import {
   createVsrRigAnimationComponentImportHandler
 } from '@taowind/visual-state-runtime/gltf-asset';
 import {createVsrNonMeshRepresentationComponentImportHandlerSet} from '@taowind/visual-state-runtime/representation-provider';
+import {
+  lowerVsrCurveCandidateToSpatialScene,
+  lowerVsrGaussianSplatCandidateToSpatialScene,
+  lowerVsrNeuralFieldCandidateToSpatialScene,
+  lowerVsrParticleEmitterToSpatialScene,
+  lowerVsrPointCloudCandidateToSpatialScene,
+  lowerVsrSdfCandidateToSpatialScene,
+  lowerVsrVoxelCandidateToSpatialScene,
+  verifyVsrCurveSpatialScene,
+  verifyVsrGaussianSplatSpatialScene,
+  verifyVsrNeuralFieldSpatialScene,
+  verifyVsrSpatialParticleScene,
+  verifyVsrPointCloudSpatialScene,
+  verifyVsrSdfSpatialScene,
+  verifyVsrVoxelSpatialScene
+} from '@taowind/visual-state-runtime/spatial-reality-3d';
 
 export const URRF_VSR_ART_ASSET_BRIDGE_FORMAT = 'urrf.vsr-art-asset-component-bridge.v0.1';
 export const URRF_VSR_ART_ASSET_BRIDGE_VERSION = '0.1.0';
@@ -37,6 +53,33 @@ function prefixOf(value) {
 
 function componentIdOf(entry, result) {
   return String(entry?.component_id ?? entry?.componentId ?? result?.receipt?.componentId ?? result?.candidate?.componentId ?? result?.emitter?.componentId ?? '').trim();
+}
+
+const SPATIAL_LOWERERS = Object.freeze({
+  sdf: {lower: lowerVsrSdfCandidateToSpatialScene, verify: verifyVsrSdfSpatialScene},
+  voxel: {lower: lowerVsrVoxelCandidateToSpatialScene, verify: verifyVsrVoxelSpatialScene},
+  'point-cloud': {lower: lowerVsrPointCloudCandidateToSpatialScene, verify: verifyVsrPointCloudSpatialScene},
+  'gaussian-splat': {lower: lowerVsrGaussianSplatCandidateToSpatialScene, verify: verifyVsrGaussianSplatSpatialScene},
+  'neural-field': {lower: lowerVsrNeuralFieldCandidateToSpatialScene, verify: verifyVsrNeuralFieldSpatialScene},
+  curve: {lower: lowerVsrCurveCandidateToSpatialScene, verify: verifyVsrCurveSpatialScene}
+});
+
+const SPATIAL_OPTION_ALIASES = Object.freeze({
+  'point-cloud': 'pointCloud',
+  'gaussian-splat': 'gaussianSplat',
+  'neural-field': 'neuralField'
+});
+
+function spatialOptionsFor(config, representationKind) {
+  return record(config[representationKind] ?? config[SPATIAL_OPTION_ALIASES[representationKind]]);
+}
+
+function sourceOutputRoot(result) {
+  return result?.receipt?.candidateRoot ?? result?.receipt?.emitterRoot ?? null;
+}
+
+function spatialRenderableCount(spatial) {
+  return Number(spatial?.renderableCount ?? spatial?.occupiedCount ?? spatial?.pointCount ?? spatial?.voxelCount ?? spatial?.splatCount ?? spatial?.triangleCount ?? 0);
 }
 
 /**
@@ -70,6 +113,65 @@ function bindHandler(representationKind, handler, onVerifiedResult) {
 }
 
 /**
+ * Upgrade a validated non-mesh/particle handler to an explicit spatial
+ * candidate handler. The generic VSR receipt is retained as the source proof;
+ * the spatial receipt becomes the execution output root and is independently
+ * verified before the callback is released.
+ */
+function bindSpatialHandler(representationKind, handler, spatialLowerer, spatialVerifier, options, onVerifiedResult) {
+  if (!handler || !nonEmptyText(handler.handler_id) || typeof handler.compile !== 'function' || typeof handler.verify !== 'function' || typeof spatialLowerer !== 'function' || typeof spatialVerifier !== 'function') {
+    throw new Error(`URRF VSR spatial bridge handler ${representationKind} is invalid.`);
+  }
+  return Object.freeze({
+    representation_kind: representationKind,
+    handler_id: handler.handler_id,
+    compile: async context => {
+      const sourceResult = await handler.compile(context);
+      const spatial = representationKind === 'particle'
+        ? spatialLowerer(sourceResult.emitter, options)
+        : spatialLowerer(sourceResult.candidate, {assets: context.assets, payloads: context.payloads}, options);
+      return {
+        ...sourceResult,
+        spatial,
+        output_root: spatial.root,
+        metrics: {
+          ...sourceResult.metrics,
+          rendered: 1,
+          spatial_scene: 1,
+          spatial_renderable_count: spatialRenderableCount(spatial),
+          spatial_scene_root_bound: 1
+        }
+      };
+    },
+    verify: async input => {
+      const result = input?.result;
+      const sourceRoot = sourceOutputRoot(result);
+      const sourceResult = result && sourceRoot
+        ? {...result, output_root: sourceRoot, metrics: {...record(result.metrics), ...(result.candidate ? {rendered: 0} : {})}}
+        : null;
+      const sourceVerified = sourceResult ? await handler.verify({...input, result: sourceResult}) : false;
+      const spatialVerified = result?.spatial ? spatialVerifier(result.spatial) : false;
+      const verified = sourceVerified === true
+        && spatialVerified === true
+        && result.output_root === result.spatial.root
+        && result.metrics?.rendered === 1
+        && result.metrics?.spatial_scene === 1
+        && result.metrics?.spatial_renderable_count === spatialRenderableCount(result.spatial);
+      if (verified && typeof onVerifiedResult === 'function') {
+        await onVerifiedResult({
+          bridge_format: URRF_VSR_ART_ASSET_BRIDGE_FORMAT,
+          bridge_version: URRF_VSR_ART_ASSET_BRIDGE_VERSION,
+          representation_kind: representationKind,
+          component_id: componentIdOf(input?.entry, result),
+          result
+        });
+      }
+      return verified;
+    }
+  });
+}
+
+/**
  * Create the complete candidate-only VSR handler set accepted by the URRF
  * component representation registry. VSR owns interpretation; URRF/LWR owns
  * component selection, byte rehashing, coverage, and execution receipts.
@@ -81,6 +183,8 @@ export function createUrrfVsrArtAssetImporters(options = {}) {
   const animationOptions = record(options.animation);
   const particleOptions = record(options.particle);
   const nonMeshOptions = record(options.nonMesh);
+  const spatialOptions = record(options.spatial);
+  const spatialEnabled = options.spatial === true || spatialOptions.enabled === true;
   const onVerifiedResult = options.onVerifiedResult;
 
   const mesh = createVsrGltfPbrComponentImportHandler({
@@ -106,19 +210,36 @@ export function createUrrfVsrArtAssetImporters(options = {}) {
     ...(nonMeshOptions.sceneId === undefined ? {} : {sceneId: nonMeshOptions.sceneId})
   });
 
+  const bindNonMesh = (representationKind, handler) => spatialEnabled && SPATIAL_LOWERERS[representationKind]
+    ? bindSpatialHandler(representationKind, handler, SPATIAL_LOWERERS[representationKind].lower, SPATIAL_LOWERERS[representationKind].verify, spatialOptionsFor(spatialOptions, representationKind), onVerifiedResult)
+    : bindHandler(representationKind, handler, onVerifiedResult);
+  const bindParticle = spatialEnabled
+    ? bindSpatialHandler('particle', particle, lowerVsrParticleEmitterToSpatialScene, verifyVsrSpatialParticleScene, spatialOptionsFor(spatialOptions, 'particle'), onVerifiedResult)
+    : bindHandler('particle', particle, onVerifiedResult);
+
   return Object.freeze({
     mesh: bindHandler('mesh', mesh, onVerifiedResult),
-    sdf: bindHandler('sdf', nonMesh.sdf, onVerifiedResult),
-    voxel: bindHandler('voxel', nonMesh.voxel, onVerifiedResult),
-    'point-cloud': bindHandler('point-cloud', nonMesh['point-cloud'], onVerifiedResult),
-    'gaussian-splat': bindHandler('gaussian-splat', nonMesh['gaussian-splat'], onVerifiedResult),
-    'neural-field': bindHandler('neural-field', nonMesh['neural-field'], onVerifiedResult),
-    curve: bindHandler('curve', nonMesh.curve, onVerifiedResult),
-    particle: bindHandler('particle', particle, onVerifiedResult),
+    sdf: bindNonMesh('sdf', nonMesh.sdf),
+    voxel: bindNonMesh('voxel', nonMesh.voxel),
+    'point-cloud': bindNonMesh('point-cloud', nonMesh['point-cloud']),
+    'gaussian-splat': bindNonMesh('gaussian-splat', nonMesh['gaussian-splat']),
+    'neural-field': bindNonMesh('neural-field', nonMesh['neural-field']),
+    curve: bindNonMesh('curve', nonMesh.curve),
+    particle: bindParticle,
     material: bindHandler('material', nonMesh.material, onVerifiedResult),
     rig: bindHandler('rig', rig, onVerifiedResult),
     animation: bindHandler('animation', animation, onVerifiedResult)
   });
+}
+
+/**
+ * Explicit spatial mode for callers that need a VSR scene as the handler
+ * output. Default import mode stays descriptor-only, so importing a candidate
+ * never silently implies rendering or a target-device result.
+ */
+export function createUrrfVsrArtAssetSpatialImporters(options = {}) {
+  const currentSpatial = record(options.spatial);
+  return createUrrfVsrArtAssetImporters({...options, spatial: {...currentSpatial, enabled: true}});
 }
 
 /**
@@ -141,6 +262,10 @@ export function createUrrfVsrArtAssetImportBinding(options = {}) {
     authoritative: false,
     canonical_write_authorized: false
   });
+}
+
+export function createUrrfVsrArtAssetSpatialImportBinding(options = {}) {
+  return createUrrfVsrArtAssetImportBinding({...options, spatial: {...record(options.spatial), enabled: true}});
 }
 
 /**

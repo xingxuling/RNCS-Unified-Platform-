@@ -22,7 +22,6 @@ import {
   VSRSpatialAssetStreamer,
   compileSpatialFrame,
   composeSpatialSceneFragments,
-  lowerVsrParticleEmitterToSpatialScene,
   renderSpatialReference,
   resolveSpatialAssetStreaming,
   verifySpatialAssetStreamingReceipt,
@@ -30,7 +29,7 @@ import {
 } from '@taowind/visual-state-runtime/spatial-reality-3d';
 import {decodeGltfImageToSpatialTexture, importGlbToSpatialScene, verifyGltfImportReceipt} from '@taowind/visual-state-runtime/gltf-asset';
 import {decodePng} from '@taowind/visual-state-runtime/backend-canvas';
-import {createUrrfVsrArtAssetImportBinding} from '../packages/integration/urrf-vsr-art-asset-bridge/src/index.mjs';
+import {createUrrfVsrArtAssetImportBinding, createUrrfVsrArtAssetSpatialImportBinding} from '../packages/integration/urrf-vsr-art-asset-bridge/src/index.mjs';
 
 const root = letter => letter.repeat(64);
 
@@ -505,7 +504,17 @@ test('component representation import executes a particle preset handler with ex
   const {assembly} = createFixture({validMesh: true, includeParticle: true, pbrMesh: true});
   const directory = lowerUniversalArtAssetComponentAssemblyToRepresentationDirectory({assembly});
   const loadAsset = asset => fs.readFileSync(path.resolve(asset.metadata.output_directory, asset.metadata.relative_path));
-  const binding = createUrrfVsrArtAssetImportBinding();
+  const binding = createUrrfVsrArtAssetSpatialImportBinding({
+    spatial: {
+      particle: {
+        sceneId: 'directory:sparks',
+        timeSeconds: 0.05,
+        origin: [0, 0, 0],
+        sizeScale: 0.02,
+        seed: 'directory-particle-regression'
+      }
+    }
+  });
   const handler = binding.importers.particle;
   const imported = await executeUniversalArtAssetComponentRepresentationImport({
     directory,
@@ -530,7 +539,9 @@ test('component representation import executes a particle preset handler with ex
   const particleAssets = directory.vsr_catalog.assets.filter(asset => asset.metadata?.component_id === 'sparks');
   const particlePayloads = new Map(particleAssets.map(asset => [asset.id, loadAsset(asset)]));
   const particleResult = await handler.compile({entry: particleEntry, assets: particleAssets, payloads: particlePayloads});
-  const spatialParticles = lowerVsrParticleEmitterToSpatialScene(particleResult.emitter, {sceneId: 'directory:sparks', timeSeconds: 0.05, origin: [0, 0, 0], sizeScale: 0.02, seed: 'directory-particle-regression'});
+  const spatialParticles = particleResult.spatial;
+  assert.equal(particleResult.output_root, spatialParticles.root);
+  assert.equal(await handler.verify({result: particleResult}), true);
   const frame = renderSpatialReference(spatialParticles.scene, {width: 96, height: 96, enableShadows: false, transparencyMode: 'weighted-blended-oit'});
   assert.equal(spatialParticles.emittedCount, particleResult.metrics.burst_count);
   assert.ok(spatialParticles.renderableCount > 0);
