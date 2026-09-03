@@ -19,6 +19,7 @@ import {
   verifyUniversalArtAssetBatch,
   verifyUniversalArtAssetHoldoutReport,
   verifyUniversalArtAssetProfileCoverageReport,
+  verifyUniversalArtAssetProviderExecutionReceipt,
   verifyUniversalArtAssetProviderPreflightReport,
   verifyUniversalArtAssetVsrMaterialization,
   verifyUniversalArtAssetVsrProjection,
@@ -177,6 +178,17 @@ test('URRF Universal Art Asset Forge emits a rooted candidate and closes AAA cla
     evidenceLedger: result.evidenceLedger,
     fileInspection: result.execution.file_inspection
   }).valid, true);
+  assert.equal(result.providerExecutionReceipt.status, 'CANDIDATE_PROVIDER_EXECUTION_PASS');
+  assert.equal(verifyUniversalArtAssetProviderExecutionReceipt(result.providerExecutionReceipt, {
+    genome: result.genome,
+    resolution: result.resolution,
+    execution: result.execution,
+    workspaceVerification: result.workspaceVerification,
+    candidate: result.candidate,
+    acceptance: result.acceptance,
+    evidenceLedger: result.evidenceLedger,
+    fileInspection: result.fileInspection
+  }).valid, true);
 
   const reportBase = {
     format: 'urrf.universal-art-asset-forge-report.v0.1',
@@ -218,6 +230,7 @@ test('URRF Universal Art Asset Forge emits a rooted candidate and closes AAA cla
   assert.equal(incompleteEvidenceBundle.status, 'INCOMPLETE');
   mkdirSync(evidenceDir, {recursive: true});
   writeFileSync(join(evidenceDir, 'universal-art-asset-forge-report.json'), `${JSON.stringify(report, null, 2)}\n`, 'utf8');
+  writeFileSync(join(evidenceDir, 'universal-art-asset-provider-execution.json'), `${JSON.stringify(result.providerExecutionReceipt, null, 2)}\n`, 'utf8');
   writeFileSync(join(evidenceDir, 'universal-art-asset-genome.json'), `${JSON.stringify(result.genome, null, 2)}\n`, 'utf8');
   writeFileSync(join(evidenceDir, 'universal-art-asset-acceptance.json'), `${JSON.stringify(result.acceptance, null, 2)}\n`, 'utf8');
   writeFileSync(join(evidenceDir, 'universal-art-asset-evidence-ledger.json'), `${JSON.stringify(result.evidenceLedger, null, 2)}\n`, 'utf8');

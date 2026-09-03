@@ -43,6 +43,7 @@ export const UNIVERSAL_ART_ASSET_VSR_MATERIALIZATION_FORMAT = 'urrf.universal-ar
 export const UNIVERSAL_ART_ASSET_HOLDOUT_FORMAT = 'urrf.universal-art-asset-holdout.v0.1';
 export const UNIVERSAL_ART_ASSET_PROFILE_COVERAGE_FORMAT = 'urrf.universal-art-asset-profile-coverage.v0.1';
 export const UNIVERSAL_ART_ASSET_PROVIDER_PREFLIGHT_FORMAT = 'urrf.universal-art-asset-provider-preflight.v0.1';
+export const UNIVERSAL_ART_ASSET_PROVIDER_EXECUTION_FORMAT = 'urrf.universal-art-asset-provider-execution.v0.1';
 export const UNIVERSAL_ART_ASSET_FORGE_VERSION = '0.1.0';
 
 export const UNIVERSAL_ART_ASSET_PROFILES = Object.freeze([
@@ -2029,7 +2030,7 @@ function forgeEnvelope({genome, resolution, execution, candidate, acceptance, le
   }, 'forge_root');
 }
 
-function persistForge({outDir, genome, resolution, acceptance, evidence, forge, execution, candidate, providerResult = null, workspaceVerification = null}) {
+function persistForge({outDir, genome, resolution, acceptance, evidence, forge, execution, candidate, providerResult = null, workspaceVerification = null, providerExecutionReceipt = null}) {
   writeJson(outDir, 'universal-art-asset-genome.json', genome);
   writeJson(outDir, 'universal-art-asset-provider-resolution.json', resolution);
   writeJson(outDir, 'universal-art-asset-acceptance.json', acceptance);
@@ -2042,6 +2043,7 @@ function persistForge({outDir, genome, resolution, acceptance, evidence, forge, 
   });
   if (execution.file_inspection) writeJson(outDir, 'universal-art-asset-file-inspection.json', execution.file_inspection);
   if (providerResult) writeJson(outDir, 'universal-art-asset-provider-result.json', providerResult);
+  if (providerExecutionReceipt) writeJson(outDir, 'universal-art-asset-provider-execution.json', providerExecutionReceipt);
 }
 
 function generateWithReferenceWorkspace({genome, resolution, outDir, options}) {
@@ -2083,6 +2085,7 @@ function generateWithReferenceWorkspace({genome, resolution, outDir, options}) {
   const execution = {
     mode: 'RAGF_REFERENCE_WORKSPACE',
     status: workspaceVerification.valid ? 'COMPLETED' : 'FAILED',
+    runtime_binding: 'BUILTIN_REFERENCE',
     provider_id: provider?.provider_id ?? null,
     provider_root: provider?.provider_root ?? null,
     workspace_root: workspace.workspace_root,
@@ -2105,25 +2108,36 @@ function generateWithReferenceWorkspace({genome, resolution, outDir, options}) {
     runtimeEvidence: options.runtimeEvidence ?? null
   });
   const evidence = createLedger({genome, provider, candidate, acceptance});
+  const providerExecutionReceipt = createUniversalArtAssetProviderExecutionReceipt({
+    genome,
+    resolution,
+    execution,
+    workspaceVerification,
+    candidate,
+    acceptance,
+    evidenceLedger: evidence.ledger,
+    fileInspection
+  });
   const status = acceptance.pass ? 'READY_FOR_HUMAN_REVIEW' : 'BLOCKED';
   const forge = forgeEnvelope({genome, resolution, execution, candidate, acceptance, ledger: evidence.ledger, outDir, status});
-  persistForge({outDir, genome, resolution, acceptance, evidence, forge, execution, candidate, workspaceVerification});
-  return {status, forge, genome, resolution, execution, workspace, workspaceVerification, candidate, acceptance, fileInspection, evidenceLedger: evidence.ledger, evidenceVerification: evidence.verification};
+  persistForge({outDir, genome, resolution, acceptance, evidence, forge, execution, candidate, workspaceVerification, providerExecutionReceipt});
+  return {status, forge, genome, resolution, execution, workspace, workspaceVerification, candidate, acceptance, fileInspection, evidenceLedger: evidence.ledger, evidenceVerification: evidence.verification, providerExecutionReceipt};
 }
 
 function generateWithProvider({genome, resolution, outDir, options, adapterInfo}) {
+  const providerRequest = {
+    format: UNIVERSAL_ART_ASSET_FORGE_FORMAT,
+    universal_genome_root: genome.genome_root,
+    asset_profile: genome.asset_profile,
+    target_quality_tier: genome.quality_tier,
+    representation_contract: genome.representation_contract
+  };
   const execution = adapterInfo.adapter.generate({
     genome: genome.ragf_genome,
     asset_id: genome.asset_id,
     quality_tier: genome.quality_tier === 'AAA' ? 'PRODUCTION' : genome.quality_tier,
     seed: genome.ragf_genome.seed,
-    request: {
-      format: UNIVERSAL_ART_ASSET_FORGE_FORMAT,
-      universal_genome_root: genome.genome_root,
-      asset_profile: genome.asset_profile,
-      target_quality_tier: genome.quality_tier,
-      representation_contract: genome.representation_contract
-    }
+    request: providerRequest
   });
   let candidate = null;
   let providerCourt = null;
@@ -2149,6 +2163,7 @@ function generateWithProvider({genome, resolution, outDir, options, adapterInfo}
   const executionEnvelope = {
     mode: 'RAGF_EXTERNAL_PROVIDER',
     status: execution.status === 'COMPLETED' ? 'COMPLETED' : 'FAILED',
+    runtime_binding: adapterInfo.adapter.healthCheck().runtime,
     provider_id: execution.provider?.id ?? adapterInfo.manifest?.id ?? null,
     provider_root: execution.provider?.manifest_root ?? adapterInfo.manifest?.manifest_root ?? null,
     job: execution.job ?? null,
@@ -2172,18 +2187,38 @@ function generateWithProvider({genome, resolution, outDir, options, adapterInfo}
     runtimeEvidence: options.runtimeEvidence ?? null
   });
   const evidence = createLedger({genome, provider: execution.provider ?? adapterInfo.manifest, job: execution.job, result: execution.result, candidate, acceptance});
+  const providerExecutionReceipt = createUniversalArtAssetProviderExecutionReceipt({
+    genome,
+    resolution,
+    execution: executionEnvelope,
+    providerExecution: execution,
+    candidate,
+    providerCourt,
+    acceptance,
+    evidenceLedger: evidence.ledger,
+    fileInspection,
+    materialization,
+    request: providerRequest
+  });
   const status = acceptance.pass ? 'READY_FOR_HUMAN_REVIEW' : 'BLOCKED';
   const forge = forgeEnvelope({genome, resolution, execution: executionEnvelope, candidate, acceptance, ledger: evidence.ledger, outDir, status});
-  persistForge({outDir, genome, resolution, acceptance, evidence, forge, execution: executionEnvelope, candidate, providerResult: execution.result});
-  return {status, forge, genome, resolution, execution: executionEnvelope, providerExecution: execution, candidate, providerCourt, acceptance, fileInspection, evidenceLedger: evidence.ledger, evidenceVerification: evidence.verification, materialization};
+  persistForge({outDir, genome, resolution, acceptance, evidence, forge, execution: executionEnvelope, candidate, providerResult: execution.result, providerExecutionReceipt});
+  return {status, forge, genome, resolution, execution: executionEnvelope, providerExecution: execution, candidate, providerCourt, acceptance, fileInspection, evidenceLedger: evidence.ledger, evidenceVerification: evidence.verification, materialization, providerExecutionReceipt};
 }
 
 function generateBlocked({genome, resolution, outDir, execution}) {
   const acceptance = evaluateUniversalArtAssetAcceptance({genome, execution});
   const evidence = createLedger({genome, provider: null, acceptance});
+  const providerExecutionReceipt = createUniversalArtAssetProviderExecutionReceipt({
+    genome,
+    resolution,
+    execution,
+    acceptance,
+    evidenceLedger: evidence.ledger
+  });
   const forge = forgeEnvelope({genome, resolution, execution, candidate: null, acceptance, ledger: evidence.ledger, outDir, status: 'BLOCKED'});
-  persistForge({outDir, genome, resolution, acceptance, evidence, forge, execution, candidate: null});
-  return {status: 'BLOCKED', forge, genome, resolution, execution, candidate: null, acceptance, fileInspection: null, evidenceLedger: evidence.ledger, evidenceVerification: evidence.verification};
+  persistForge({outDir, genome, resolution, acceptance, evidence, forge, execution, candidate: null, providerExecutionReceipt});
+  return {status: 'BLOCKED', forge, genome, resolution, execution, candidate: null, acceptance, fileInspection: null, evidenceLedger: evidence.ledger, evidenceVerification: evidence.verification, providerExecutionReceipt};
 }
 
 export function generateUniversalArtAsset(input = {}, options = {}) {
@@ -2266,6 +2301,478 @@ export function verifyUniversalArtAssetForge({forge, genome, acceptance, evidenc
   delete copy.forge_root;
   if (!actual || actual !== rootHash(copy)) errors.push('FORGE_ROOT_INVALID');
   return {valid: errors.length === 0, errors, forge_root: forge?.forge_root ?? null};
+}
+
+function universalArtAssetProviderExecutionSealedRoot(value, field) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  const copy = clone(value);
+  const actual = copy[field];
+  delete copy[field];
+  return isHexRoot(actual) && actual === rootHash(copy);
+}
+
+function universalArtAssetProviderExecutionRequest({genome, resolution, execution, request = null}) {
+  return seal({
+    format: 'urrf.universal-art-asset-provider-execution-request.v0.1',
+    version: UNIVERSAL_ART_ASSET_FORGE_VERSION,
+    asset_id: genome?.asset_id ?? null,
+    asset_profile: genome?.asset_profile ?? null,
+    quality_tier: genome?.quality_tier ?? null,
+    seed: genome?.ragf_genome?.seed ?? genome?.seed ?? null,
+    genome_root: genome?.genome_root ?? null,
+    resolution_root: resolution?.resolution_root ?? null,
+    provider_id: execution?.provider_id ?? resolution?.selected_provider_id ?? null,
+    provider_root: execution?.provider_root ?? resolution?.selected_provider_root ?? null,
+    provider_source: resolution?.selected_provider_source ?? null,
+    payload: request === undefined ? null : clone(request),
+    request_root: ''
+  }, 'request_root');
+}
+
+function universalArtAssetProviderExecutionMaterialization(materialization) {
+  if (!materialization || typeof materialization !== 'object' || Array.isArray(materialization)) {
+    return {path: null, files: [], skipped: [], root: null};
+  }
+  const files = (Array.isArray(materialization.materialized) ? materialization.materialized : []).map(file => ({
+    path: file?.path ?? null,
+    role: file?.role ?? null,
+    byte_length: file?.byte_length ?? null,
+    sha256: file?.sha256 ?? null,
+    declared_sha256: file?.declared_sha256 ?? null
+  }));
+  const skipped = (Array.isArray(materialization.skipped) ? materialization.skipped : []).map(file => ({
+    path: file?.path ?? null,
+    reason: file?.reason ?? null
+  }));
+  const base = {path: materialization.root ?? null, files, skipped};
+  return {...base, root: rootHash(base)};
+}
+
+function universalArtAssetProviderExecutionRuntimeFacts({execution, providerExecution, workspaceVerification}) {
+  const mode = execution?.mode ?? null;
+  const status = execution?.status ?? null;
+  const attempted = mode !== 'PROVIDER_RESOLUTION';
+  const providerRuntimePerformed = mode === 'RAGF_EXTERNAL_PROVIDER'
+    && providerExecution?.status === 'COMPLETED'
+    && providerExecution?.job?.state === 'COMPLETED';
+  const runtimeExecutionPerformed = mode === 'RAGF_REFERENCE_WORKSPACE'
+    ? status === 'COMPLETED' && workspaceVerification?.valid !== false
+    : providerRuntimePerformed;
+  const expectedStatus = mode === 'RAGF_EXTERNAL_PROVIDER'
+    ? providerExecution?.status === 'COMPLETED' ? 'COMPLETED' : 'FAILED'
+    : status;
+  return {
+    attempted,
+    providerRuntimePerformed,
+    runtimeExecutionPerformed,
+    expectedStatus
+  };
+}
+
+function universalArtAssetProviderExecutionOutput({execution, providerExecution, candidate, providerCourt, acceptance, evidenceLedger, fileInspection, materialization}) {
+  const job = providerExecution?.job ?? null;
+  const result = providerExecution?.result ?? null;
+  const failure = providerExecution?.failure ?? execution?.failure ?? null;
+  const materialized = universalArtAssetProviderExecutionMaterialization(materialization);
+  const outputBase = {
+    workspace_root: execution?.workspace_root ?? null,
+    workspace_verified: execution?.workspace_verification?.valid ?? null,
+    job_root: job?.job_root ?? null,
+    result_root: result?.result_root ?? null,
+    failure_code: failure?.code ?? null,
+    failure_root: failure?.failure_root ?? null,
+    candidate_root: candidate?.candidate_root ?? null,
+    provider_court_root: providerCourt?.court_root ?? null,
+    acceptance_root: acceptance?.acceptance_root ?? null,
+    evidence_ledger_root: evidenceLedger?.ledger_root ?? null,
+    file_inspection_root: fileInspection?.inspection_root ?? execution?.file_inspection?.inspection_root ?? null,
+    materialization_path: materialized.path,
+    materialization_root: materialized.root,
+    materialized_file_count: materialized.files.length,
+    materialized_file_roots: materialized.files,
+    materialization_skipped: materialized.skipped,
+    output_root: ''
+  };
+  return seal(outputBase, 'output_root');
+}
+
+function universalArtAssetProviderExecutionChecks({assetId, assetProfile, genomeRoot, resolutionRoot, providerId, providerRoot, providerSource, request, resolution, execution, providerExecution, failureInput = null, workspaceVerification, candidate, providerCourt, acceptance, evidenceLedger, fileInspection, materialization, output, top}) {
+  const job = providerExecution?.job ?? null;
+  const result = providerExecution?.result ?? null;
+  const failure = failureInput ?? providerExecution?.failure ?? execution?.failure ?? null;
+  const facts = universalArtAssetProviderExecutionRuntimeFacts({execution, providerExecution, workspaceVerification});
+  const materialized = universalArtAssetProviderExecutionMaterialization(materialization);
+  const requestCopy = request && typeof request === 'object' && !Array.isArray(request) ? clone(request) : null;
+  if (requestCopy) delete requestCopy.request_root;
+  const outputCopy = clone(output ?? {});
+  const actualOutputRoot = outputCopy.output_root;
+  delete outputCopy.output_root;
+  const expectedJobIntegrity = execution?.mode === 'RAGF_EXTERNAL_PROVIDER'
+    ? universalArtAssetProviderExecutionSealedRoot(job, 'job_root')
+      && job.provider_id === providerId
+      && ['COMPLETED', 'FAILED', 'CANCELLED'].includes(job.state)
+    : job === null;
+  const expectedResultIntegrity = result === null
+    ? facts.providerRuntimePerformed === false
+    : universalArtAssetProviderExecutionSealedRoot(result, 'result_root')
+      && result.provider_id === providerId
+      && (providerRoot === null || result.provider_root === providerRoot)
+      && (!job || job.result_root === result.result_root);
+  const expectedFailureIntegrity = execution?.status === 'FAILED'
+    ? nonEmptyText(failure?.code)
+      && (failure?.failure_root
+        ? universalArtAssetProviderExecutionSealedRoot(failure, 'failure_root')
+        : execution?.mode !== 'RAGF_EXTERNAL_PROVIDER')
+    : failure === null;
+  const expectedMaterializationIntegrity = materialization === null || materialization === undefined
+    ? output.materialization_root === null && output.materialized_file_roots.length === 0 && output.materialization_skipped.length === 0
+    : materialized.root === output.materialization_root
+      && rootHash(materialized.files) === rootHash(output.materialized_file_roots)
+      && rootHash(materialized.skipped) === rootHash(output.materialization_skipped)
+      && output.materialized_file_count === materialized.files.length
+      && materialized.files.every(file => nonEmptyText(file.path) && isHexRoot(file.sha256));
+  const expectedProviderBinding = request.provider_id === providerId
+    && request.provider_root === providerRoot
+    && request.provider_source === providerSource
+    && (providerSource === null
+      ? providerId === null && providerRoot === null
+      : nonEmptyText(providerId) && isHexRoot(providerRoot))
+    && (resolution
+      ? request.provider_id === (resolution.selected_provider_id ?? null)
+        && request.provider_root === (resolution.selected_provider_root ?? null)
+        && request.resolution_root === resolution.resolution_root
+      : true);
+  const expectedCandidateBinding = output.candidate_root === (candidate?.candidate_root ?? null)
+    && (facts.runtimeExecutionPerformed ? isHexRoot(output.candidate_root) : output.candidate_root === null);
+  const expectedAcceptanceBinding = output.acceptance_root === (acceptance?.acceptance_root ?? output.acceptance_root)
+    && isHexRoot(output.acceptance_root);
+  const expectedEvidenceBinding = output.evidence_ledger_root === (evidenceLedger?.ledger_root ?? output.evidence_ledger_root)
+    && isHexRoot(output.evidence_ledger_root);
+  return {
+    genome_binding: request.asset_id === assetId
+      && request.asset_profile === assetProfile
+      && request.genome_root === genomeRoot
+      && isHexRoot(genomeRoot),
+    resolution_binding: request.resolution_root === resolutionRoot && isHexRoot(resolutionRoot),
+    provider_binding: expectedProviderBinding,
+    request_integrity: universalArtAssetProviderExecutionSealedRoot(request, 'request_root')
+      && requestCopy !== null
+      && request.request_root === rootHash(requestCopy),
+    job_integrity: expectedJobIntegrity,
+    result_integrity: expectedResultIntegrity,
+    failure_integrity: expectedFailureIntegrity,
+    materialization_integrity: expectedMaterializationIntegrity,
+    output_integrity: isHexRoot(actualOutputRoot) && actualOutputRoot === rootHash(outputCopy),
+    candidate_binding: expectedCandidateBinding,
+    acceptance_binding: expectedAcceptanceBinding,
+    evidence_binding: expectedEvidenceBinding,
+    execution_truthfulness: execution?.mode === 'RAGF_EXTERNAL_PROVIDER'
+      ? execution.status === facts.expectedStatus
+        && execution.attempted === facts.attempted
+        && execution.runtime_execution_performed === facts.runtimeExecutionPerformed
+        && execution.provider_runtime_performed === facts.providerRuntimePerformed
+        && execution.job_state === (job?.state ?? null)
+      : execution.status === facts.expectedStatus
+        && execution.attempted === facts.attempted
+        && execution.runtime_execution_performed === facts.runtimeExecutionPerformed
+        && execution.provider_runtime_performed === facts.providerRuntimePerformed
+        && execution.job_state === null,
+    no_aaa_escalation: top.aaa_ready === false
+      && top.release_ready === false
+      && top.execution_performed === facts.runtimeExecutionPerformed,
+    authority_boundary: top.candidate_only === true
+      && top.authoritative === false
+      && top.canonical_write_authorized === false
+      && top.authority?.provider_can_write_authoritative_world_state === false
+      && top.authority?.provider_can_commit === false
+      && top.authority?.acceptance_can_commit === false
+      && top.authority?.rncs_authority_required === true
+  };
+}
+
+function buildUniversalArtAssetProviderExecutionReceipt({genome, resolution, execution, providerExecution = null, workspaceVerification = null, candidate = null, providerCourt = null, acceptance = null, evidenceLedger = null, fileInspection = null, materialization = null, request = null} = {}) {
+  if (!genome || !resolution || !execution) throw new GenesisError('UNIVERSAL_ART_ASSET_PROVIDER_EXECUTION_INPUT_REQUIRED');
+  const provider = providerExecution?.provider ?? null;
+  const providerId = execution.provider_id ?? provider?.id ?? provider?.provider_id ?? resolution.selected_provider_id ?? null;
+  const providerRoot = execution.provider_root ?? provider?.manifest_root ?? provider?.provider_root ?? resolution.selected_provider_root ?? null;
+  const providerSource = resolution.selected_provider_source ?? null;
+  const normalizedExecution = {
+    mode: execution.mode ?? null,
+    status: execution.status ?? null,
+    provider_id: providerId,
+    provider_root: providerRoot,
+    provider_source: providerSource,
+    runtime_binding: execution.runtime_binding ?? (execution.mode === 'RAGF_REFERENCE_WORKSPACE' ? 'BUILTIN_REFERENCE' : execution.mode === 'PROVIDER_RESOLUTION' ? 'UNRESOLVED' : null),
+    attempted: false,
+    runtime_execution_performed: false,
+    provider_runtime_performed: false,
+    job_state: providerExecution?.job?.state ?? null,
+    failure_code: providerExecution?.failure?.code ?? execution.failure?.code ?? null
+  };
+  const facts = universalArtAssetProviderExecutionRuntimeFacts({execution: normalizedExecution, providerExecution, workspaceVerification});
+  normalizedExecution.attempted = facts.attempted;
+  normalizedExecution.runtime_execution_performed = facts.runtimeExecutionPerformed;
+  normalizedExecution.provider_runtime_performed = facts.providerRuntimePerformed;
+  const executionRequest = universalArtAssetProviderExecutionRequest({genome, resolution, execution: normalizedExecution, request});
+  const output = universalArtAssetProviderExecutionOutput({execution, providerExecution, candidate, providerCourt, acceptance, evidenceLedger, fileInspection, materialization});
+  const top = {
+    aaa_ready: false,
+    release_ready: false,
+    execution_performed: facts.runtimeExecutionPerformed,
+    candidate_only: true,
+    authoritative: false,
+    canonical_write_authorized: false,
+    authority: {
+      provider_can_write_authoritative_world_state: false,
+      provider_can_commit: false,
+      acceptance_can_commit: false,
+      rncs_authority_required: true
+    }
+  };
+  const checks = universalArtAssetProviderExecutionChecks({
+    assetId: genome.asset_id,
+    assetProfile: genome.asset_profile,
+    genomeRoot: genome.genome_root,
+    resolutionRoot: resolution.resolution_root,
+    providerId,
+    providerRoot,
+    providerSource,
+    request: executionRequest,
+    resolution,
+    execution: normalizedExecution,
+    providerExecution,
+    failureInput: providerExecution?.failure ?? execution.failure ?? null,
+    workspaceVerification,
+    candidate,
+    providerCourt,
+    acceptance,
+    evidenceLedger,
+    fileInspection,
+    materialization,
+    output,
+    top
+  });
+  const receipt = {
+    format: UNIVERSAL_ART_ASSET_PROVIDER_EXECUTION_FORMAT,
+    version: UNIVERSAL_ART_ASSET_FORGE_VERSION,
+    execution_id: stableId('urrf-universal-art-asset-provider-execution', {
+      request_root: executionRequest.request_root,
+      output_root: output.output_root,
+      status: normalizedExecution.status
+    }),
+    source: 'urrf-provider-execution-evaluator',
+    asset_id: genome.asset_id,
+    asset_profile: genome.asset_profile,
+    quality_tier: genome.quality_tier,
+    genome_root: genome.genome_root,
+    resolution_root: resolution.resolution_root,
+    provider_id: providerId,
+    provider_root: providerRoot,
+    provider_source: providerSource,
+    request: executionRequest,
+    execution: normalizedExecution,
+    output,
+    replay: {
+      input_root: executionRequest.request_root,
+      output_root: output.output_root,
+      status: 'NOT_RUN',
+      deterministic_claim: 'NOT_PROVEN',
+      provider_runtime_replay_required: normalizedExecution.mode === 'RAGF_EXTERNAL_PROVIDER',
+      replay_authority: 'PROVIDER_RUNTIME_REQUIRED'
+    },
+    checks,
+    status: Object.values(checks).every(Boolean) ? 'CANDIDATE_PROVIDER_EXECUTION_PASS' : 'CANDIDATE_PROVIDER_EXECUTION_FAIL',
+    execution_attempted: facts.attempted,
+    execution_performed: facts.runtimeExecutionPerformed,
+    provider_runtime_performed: facts.providerRuntimePerformed,
+    aaa_ready: false,
+    release_ready: false,
+    candidate_only: true,
+    authoritative: false,
+    canonical_write_authorized: false,
+    authority: {
+      canonical_owner: 'RNCS',
+      representation_owner: 'URRF',
+      provider_can_write_authoritative_world_state: false,
+      provider_can_commit: false,
+      acceptance_can_commit: false,
+      rncs_authority_required: true
+    },
+    execution_root: ''
+  };
+  return seal(receipt, 'execution_root');
+}
+
+/**
+ * Seal the exact URRF Provider request, Job/Result/Failure roots and local
+ * materialization outcome. A valid receipt can describe a blocked execution;
+ * receipt validity never means the Provider produced AAA art.
+ */
+export function createUniversalArtAssetProviderExecutionReceipt(input = {}) {
+  return buildUniversalArtAssetProviderExecutionReceipt(input);
+}
+
+/**
+ * Verify an execution receipt. Supplying the original generation objects adds
+ * exact replay of the receipt content; without them, the persisted receipt is
+ * still checked for internal roots, bindings, and fail-closed status.
+ */
+export function verifyUniversalArtAssetProviderExecutionReceipt(receipt, {
+  genome = null,
+  resolution = null,
+  execution = null,
+  providerExecution = null,
+  workspaceVerification = null,
+  candidate = null,
+  providerCourt = null,
+  acceptance = null,
+  evidenceLedger = null,
+  fileInspection = null,
+  materialization = null,
+  request = null
+} = {}) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!receipt || typeof receipt !== 'object' || Array.isArray(receipt)) return {valid: false, errors: ['PROVIDER_EXECUTION_RECEIPT_NOT_OBJECT'], execution_root: null};
+  try {
+    check(receipt.format === UNIVERSAL_ART_ASSET_PROVIDER_EXECUTION_FORMAT, 'PROVIDER_EXECUTION_RECEIPT_FORMAT_INVALID');
+    check(receipt.version === UNIVERSAL_ART_ASSET_FORGE_VERSION, 'PROVIDER_EXECUTION_RECEIPT_VERSION_INVALID');
+    check(nonEmptyText(receipt.execution_id), 'PROVIDER_EXECUTION_RECEIPT_ID_MISSING');
+    check(receipt.source === 'urrf-provider-execution-evaluator', 'PROVIDER_EXECUTION_RECEIPT_SOURCE_INVALID');
+    check(UNIVERSAL_ART_ASSET_PROFILES.includes(receipt.asset_profile), 'PROVIDER_EXECUTION_RECEIPT_PROFILE_INVALID');
+    check(nonEmptyText(receipt.asset_id), 'PROVIDER_EXECUTION_RECEIPT_ASSET_ID_INVALID');
+    check(isHexRoot(receipt.genome_root) && isHexRoot(receipt.resolution_root), 'PROVIDER_EXECUTION_RECEIPT_ROOT_INVALID');
+    check(receipt.provider_id === null || nonEmptyText(receipt.provider_id), 'PROVIDER_EXECUTION_RECEIPT_PROVIDER_ID_INVALID');
+    check(receipt.provider_root === null || isHexRoot(receipt.provider_root), 'PROVIDER_EXECUTION_RECEIPT_PROVIDER_ROOT_INVALID');
+    check(receipt.provider_source === null || ['ragf-reference-provider', 'external-provider-contract', 'injected-provider'].includes(receipt.provider_source), 'PROVIDER_EXECUTION_RECEIPT_PROVIDER_SOURCE_INVALID');
+    const requestRecord = record(receipt.request);
+    const output = record(receipt.output);
+    const executionRecord = record(receipt.execution);
+    check(universalArtAssetProviderExecutionSealedRoot(requestRecord, 'request_root'), 'PROVIDER_EXECUTION_RECEIPT_REQUEST_ROOT_INVALID');
+    check(universalArtAssetProviderExecutionSealedRoot(output, 'output_root'), 'PROVIDER_EXECUTION_RECEIPT_OUTPUT_ROOT_INVALID');
+    check(requestRecord.asset_id === receipt.asset_id
+      && requestRecord.asset_profile === receipt.asset_profile
+      && requestRecord.genome_root === receipt.genome_root
+      && requestRecord.resolution_root === receipt.resolution_root, 'PROVIDER_EXECUTION_RECEIPT_REQUEST_BINDING_INVALID');
+    check(requestRecord.provider_id === receipt.provider_id
+      && requestRecord.provider_root === receipt.provider_root
+      && requestRecord.provider_source === receipt.provider_source, 'PROVIDER_EXECUTION_RECEIPT_REQUEST_PROVIDER_INVALID');
+    check(receipt.replay?.input_root === requestRecord.request_root
+      && receipt.replay?.output_root === output.output_root
+      && receipt.replay?.status === 'NOT_RUN'
+      && receipt.replay?.deterministic_claim === 'NOT_PROVEN'
+      && receipt.replay?.replay_authority === 'PROVIDER_RUNTIME_REQUIRED', 'PROVIDER_EXECUTION_RECEIPT_REPLAY_BOUNDARY_INVALID');
+    check(receipt.replay?.provider_runtime_replay_required === (executionRecord.mode === 'RAGF_EXTERNAL_PROVIDER'), 'PROVIDER_EXECUTION_RECEIPT_REPLAY_REQUIREMENT_INVALID');
+    check(['RAGF_REFERENCE_WORKSPACE', 'RAGF_EXTERNAL_PROVIDER', 'PROVIDER_RESOLUTION'].includes(executionRecord.mode), 'PROVIDER_EXECUTION_RECEIPT_MODE_INVALID');
+    check(['COMPLETED', 'FAILED'].includes(executionRecord.status), 'PROVIDER_EXECUTION_RECEIPT_STATUS_INVALID');
+    check(['BUILTIN_REFERENCE', 'CONTRACT_ONLY', 'EXECUTOR_INJECTED', 'EXTERNAL_PROCESS', 'UNRESOLVED', null].includes(executionRecord.runtime_binding), 'PROVIDER_EXECUTION_RECEIPT_RUNTIME_BINDING_INVALID');
+    check(typeof receipt.execution_attempted === 'boolean'
+      && typeof receipt.execution_performed === 'boolean'
+      && typeof receipt.provider_runtime_performed === 'boolean', 'PROVIDER_EXECUTION_RECEIPT_EXECUTION_FLAGS_INVALID');
+    const job = output.job_root === null ? null : {job_root: output.job_root, provider_id: receipt.provider_id, state: executionRecord.job_state, result_root: output.result_root};
+    const result = output.result_root === null ? null : {result_root: output.result_root, provider_id: receipt.provider_id, provider_root: receipt.provider_root};
+    const failure = output.failure_code === null ? null : {code: output.failure_code, failure_root: output.failure_root};
+    const facts = universalArtAssetProviderExecutionRuntimeFacts({
+      execution: executionRecord,
+      providerExecution: {status: executionRecord.status, job},
+      workspaceVerification: {valid: output.workspace_verified}
+    });
+    const materializationBase = {
+      path: output.materialization_path,
+      files: output.materialized_file_roots,
+      skipped: output.materialization_skipped
+    };
+    const materializationIntegrity = output.materialization_root === null
+      ? output.materialized_file_roots.length === 0 && output.materialization_skipped.length === 0
+      : isHexRoot(output.materialization_root)
+        && output.materialization_root === rootHash(materializationBase)
+        && output.materialized_file_count === output.materialized_file_roots.length
+        && output.materialized_file_roots.every(file => nonEmptyText(file?.path) && isHexRoot(file?.sha256));
+    const expectedChecks = {
+      genome_binding: requestRecord.asset_id === receipt.asset_id
+        && requestRecord.asset_profile === receipt.asset_profile
+        && requestRecord.genome_root === receipt.genome_root
+        && isHexRoot(receipt.genome_root),
+      resolution_binding: requestRecord.resolution_root === receipt.resolution_root && isHexRoot(receipt.resolution_root),
+      provider_binding: requestRecord.provider_id === receipt.provider_id
+        && requestRecord.provider_root === receipt.provider_root
+        && requestRecord.provider_source === receipt.provider_source
+        && (receipt.provider_source === null
+          ? receipt.provider_id === null && receipt.provider_root === null
+          : nonEmptyText(receipt.provider_id) && isHexRoot(receipt.provider_root)),
+      request_integrity: universalArtAssetProviderExecutionSealedRoot(requestRecord, 'request_root'),
+      job_integrity: executionRecord.mode === 'RAGF_EXTERNAL_PROVIDER'
+        ? isHexRoot(output.job_root) && ['COMPLETED', 'FAILED', 'CANCELLED'].includes(executionRecord.job_state)
+        : output.job_root === null,
+      result_integrity: output.result_root === null
+        ? facts.providerRuntimePerformed === false
+        : isHexRoot(output.result_root) && facts.providerRuntimePerformed === true,
+      failure_integrity: executionRecord.status === 'FAILED'
+        ? nonEmptyText(output.failure_code)
+          && (executionRecord.mode === 'RAGF_EXTERNAL_PROVIDER'
+            ? isHexRoot(output.failure_root)
+            : output.failure_root === null || isHexRoot(output.failure_root))
+        : output.failure_code === null && output.failure_root === null,
+      materialization_integrity: materializationIntegrity,
+      output_integrity: universalArtAssetProviderExecutionSealedRoot(output, 'output_root'),
+      candidate_binding: output.candidate_root === null
+        ? facts.runtimeExecutionPerformed === false
+        : facts.runtimeExecutionPerformed === true && isHexRoot(output.candidate_root),
+      acceptance_binding: isHexRoot(output.acceptance_root),
+      evidence_binding: isHexRoot(output.evidence_ledger_root),
+      execution_truthfulness: executionRecord.status === facts.expectedStatus
+        && receipt.execution_attempted === facts.attempted
+        && receipt.execution_performed === facts.runtimeExecutionPerformed
+        && receipt.provider_runtime_performed === facts.providerRuntimePerformed
+        && executionRecord.attempted === facts.attempted
+        && executionRecord.runtime_execution_performed === facts.runtimeExecutionPerformed
+        && executionRecord.provider_runtime_performed === facts.providerRuntimePerformed
+        && executionRecord.job_state === (job?.state ?? null),
+      no_aaa_escalation: receipt.aaa_ready === false
+        && receipt.release_ready === false
+        && receipt.execution_performed === facts.runtimeExecutionPerformed,
+      authority_boundary: receipt.candidate_only === true
+        && receipt.authoritative === false
+        && receipt.canonical_write_authorized === false
+        && receipt.authority?.canonical_owner === 'RNCS'
+        && receipt.authority?.representation_owner === 'URRF'
+        && receipt.authority?.provider_can_write_authoritative_world_state === false
+        && receipt.authority?.provider_can_commit === false
+        && receipt.authority?.acceptance_can_commit === false
+        && receipt.authority?.rncs_authority_required === true
+    };
+    const receiptChecks = record(receipt.checks);
+    check(Object.keys(expectedChecks).every(key => typeof receiptChecks[key] === 'boolean'), 'PROVIDER_EXECUTION_RECEIPT_CHECKS_INVALID');
+    for (const [key, value] of Object.entries(expectedChecks)) check(receiptChecks[key] === value, `PROVIDER_EXECUTION_RECEIPT_CHECK_${key.toUpperCase()}_MISMATCH`);
+    const expectedStatus = Object.values(expectedChecks).every(Boolean) ? 'CANDIDATE_PROVIDER_EXECUTION_PASS' : 'CANDIDATE_PROVIDER_EXECUTION_FAIL';
+    check(receipt.status === expectedStatus, 'PROVIDER_EXECUTION_RECEIPT_STATUS_MISMATCH');
+    const copy = clone(receipt);
+    const actual = copy.execution_root;
+    delete copy.execution_root;
+    check(isHexRoot(actual) && actual === rootHash(copy), 'PROVIDER_EXECUTION_RECEIPT_ROOT_INVALID');
+    const completeReplay = genome && resolution && execution;
+    if (completeReplay) {
+      const expectedReceipt = buildUniversalArtAssetProviderExecutionReceipt({
+        genome,
+        resolution,
+        execution,
+        providerExecution,
+        workspaceVerification,
+        candidate,
+        providerCourt,
+        acceptance,
+        evidenceLedger,
+        fileInspection,
+        materialization,
+        request
+      });
+      delete expectedReceipt.execution_root;
+      check(rootHash(copy) === rootHash(expectedReceipt), 'PROVIDER_EXECUTION_RECEIPT_CONTENT_MISMATCH');
+    }
+  } catch (error) {
+    errors.push(`VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, execution_root: receipt.execution_root ?? null};
 }
 
 function batchAssetKey(input, index) {

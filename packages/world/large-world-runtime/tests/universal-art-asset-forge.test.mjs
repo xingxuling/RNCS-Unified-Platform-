@@ -22,6 +22,7 @@ import {
   verifyUniversalArtAssetEvidenceBundle,
   verifyUniversalArtAssetHoldoutReport,
   verifyUniversalArtAssetProfileCoverageReport,
+  verifyUniversalArtAssetProviderExecutionReceipt,
   verifyUniversalArtAssetProviderPreflightReport,
   verifyUniversalArtAssetProvenanceLicenseReceipt,
   verifyUniversalArtAssetQualityProof,
@@ -210,9 +211,21 @@ test('built-in RAGF workspace produces real candidate files and local structure 
     evidenceLedger: result.evidenceLedger,
     fileInspection: result.execution.file_inspection
   }).valid, true);
+  assert.equal(result.providerExecutionReceipt.status, 'CANDIDATE_PROVIDER_EXECUTION_PASS');
+  assert.equal(verifyUniversalArtAssetProviderExecutionReceipt(result.providerExecutionReceipt, {
+    genome: result.genome,
+    resolution: result.resolution,
+    execution: result.execution,
+    workspaceVerification: result.workspaceVerification,
+    candidate: result.candidate,
+    acceptance: result.acceptance,
+    evidenceLedger: result.evidenceLedger,
+    fileInspection: result.fileInspection
+  }).valid, true);
   assert.ok(fs.existsSync(path.join(outDir, 'universal-art-asset-genome.json')));
   assert.ok(fs.existsSync(path.join(outDir, 'universal-art-asset-acceptance.json')));
   assert.ok(fs.existsSync(path.join(outDir, 'universal-art-asset-file-inspection.json')));
+  assert.ok(fs.existsSync(path.join(outDir, 'universal-art-asset-provider-execution.json')));
   assert.ok(fs.existsSync(path.join(outDir, 'candidates', 'cinematic', 'mesh', 'lod0.glb')));
 });
 
@@ -315,6 +328,38 @@ test('injected provider is normalized through job, candidate, court and evidence
   assert.equal(result.acceptance.status, 'BLOCKED', 'mock provider evidence is not an AAA art-review receipt');
   assert.ok(result.acceptance.failures.includes('pbr_gate'));
   assert.equal(result.resolution.selected_provider_id, 'provider:test:asset-mock');
+  assert.equal(result.providerExecutionReceipt.status, 'CANDIDATE_PROVIDER_EXECUTION_PASS');
+  assert.equal(verifyUniversalArtAssetProviderExecutionReceipt(result.providerExecutionReceipt, {
+    genome: result.genome,
+    resolution: result.resolution,
+    execution: result.execution,
+    providerExecution: result.providerExecution,
+    candidate: result.candidate,
+    providerCourt: result.providerCourt,
+    acceptance: result.acceptance,
+    evidenceLedger: result.evidenceLedger,
+    fileInspection: result.fileInspection,
+    materialization: result.materialization,
+    request: result.providerExecution.job.request
+  }).valid, true);
+  const tamperedReceipt = structuredClone(result.providerExecutionReceipt);
+  tamperedReceipt.output.candidate_root = null;
+  delete tamperedReceipt.execution_root;
+  tamperedReceipt.execution_root = rootHash(tamperedReceipt);
+  assert.equal(verifyUniversalArtAssetProviderExecutionReceipt(tamperedReceipt, {
+    genome: result.genome,
+    resolution: result.resolution,
+    execution: result.execution,
+    providerExecution: result.providerExecution,
+    candidate: result.candidate,
+    providerCourt: result.providerCourt,
+    acceptance: result.acceptance,
+    evidenceLedger: result.evidenceLedger,
+    fileInspection: result.fileInspection,
+    materialization: result.materialization,
+    request: result.providerExecution.job.request
+  }).valid, false);
+  assert.ok(fs.existsSync(path.join(outDir, 'universal-art-asset-provider-execution.json')));
   assert.equal(verifyUniversalArtAssetForge({
     forge: result.forge,
     genome: result.genome,
@@ -339,6 +384,16 @@ test('contract-only provider failure is visible and does not become a fake gener
   assert.equal(result.acceptance.status, 'BLOCKED');
   assert.ok(result.acceptance.failures.includes('provider_execution_gate'));
   assert.equal(result.forge.authoritative, false);
+  assert.equal(result.providerExecutionReceipt.status, 'CANDIDATE_PROVIDER_EXECUTION_PASS');
+  assert.equal(verifyUniversalArtAssetProviderExecutionReceipt(result.providerExecutionReceipt, {
+    genome: result.genome,
+    resolution: result.resolution,
+    execution: result.execution,
+    providerExecution: result.providerExecution,
+    acceptance: result.acceptance,
+    evidenceLedger: result.evidenceLedger,
+    request: result.providerExecution.job.request
+  }).valid, true);
 });
 
 test('unsupported profile fails closed instead of borrowing a humanoid generator', () => {
@@ -356,6 +411,8 @@ test('unsupported profile fails closed instead of borrowing a humanoid generator
   assert.equal(result.status, 'BLOCKED');
   assert.equal(result.candidate, null);
   assert.equal(result.acceptance.aaa_verified, false);
+  assert.equal(result.providerExecutionReceipt.status, 'CANDIDATE_PROVIDER_EXECUTION_PASS');
+  assert.equal(verifyUniversalArtAssetProviderExecutionReceipt(result.providerExecutionReceipt).valid, true);
 });
 
 test('profile coverage preserves built-in and unresolved boundaries after resealing', () => {

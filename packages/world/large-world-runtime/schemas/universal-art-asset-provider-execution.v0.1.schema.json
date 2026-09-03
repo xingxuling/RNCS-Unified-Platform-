@@ -1,0 +1,314 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/urrf/universal-art-asset-provider-execution.v0.1.schema.json",
+  "title": "URRF Universal Art Asset Provider Execution Receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "version",
+    "execution_id",
+    "source",
+    "asset_id",
+    "asset_profile",
+    "quality_tier",
+    "genome_root",
+    "resolution_root",
+    "provider_id",
+    "provider_root",
+    "provider_source",
+    "request",
+    "execution",
+    "output",
+    "replay",
+    "checks",
+    "status",
+    "execution_attempted",
+    "execution_performed",
+    "provider_runtime_performed",
+    "aaa_ready",
+    "release_ready",
+    "candidate_only",
+    "authoritative",
+    "canonical_write_authorized",
+    "authority",
+    "execution_root"
+  ],
+  "$defs": {
+    "root": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "nullableRoot": {
+      "anyOf": [
+        {"$ref": "#/$defs/root"},
+        {"type": "null"}
+      ]
+    },
+    "profile": {
+      "type": "string",
+      "enum": ["character", "creature", "prop", "vehicle", "structure", "environment", "vegetation", "resource", "vfx"]
+    },
+    "qualityTier": {
+      "type": "string",
+      "enum": ["PREVIEW", "PRODUCTION", "AAA"]
+    },
+    "providerSource": {
+      "anyOf": [
+        {"enum": ["ragf-reference-provider", "external-provider-contract", "injected-provider"]},
+        {"type": "null"}
+      ]
+    },
+    "runtimeBinding": {
+      "anyOf": [
+        {"enum": ["BUILTIN_REFERENCE", "CONTRACT_ONLY", "EXECUTOR_INJECTED", "EXTERNAL_PROCESS", "UNRESOLVED"]},
+        {"type": "null"}
+      ]
+    },
+    "nullableText": {
+      "anyOf": [
+        {"type": "string", "minLength": 1},
+        {"type": "null"}
+      ]
+    },
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "format",
+        "version",
+        "asset_id",
+        "asset_profile",
+        "quality_tier",
+        "seed",
+        "genome_root",
+        "resolution_root",
+        "provider_id",
+        "provider_root",
+        "provider_source",
+        "payload",
+        "request_root"
+      ],
+      "properties": {
+        "format": {"const": "urrf.universal-art-asset-provider-execution-request.v0.1"},
+        "version": {"const": "0.1.0"},
+        "asset_id": {"type": "string", "minLength": 1},
+        "asset_profile": {"$ref": "#/$defs/profile"},
+        "quality_tier": {"$ref": "#/$defs/qualityTier"},
+        "seed": {"anyOf": [{"type": "string", "minLength": 1}, {"type": "null"}]},
+        "genome_root": {"$ref": "#/$defs/root"},
+        "resolution_root": {"$ref": "#/$defs/root"},
+        "provider_id": {"$ref": "#/$defs/nullableText"},
+        "provider_root": {"$ref": "#/$defs/nullableRoot"},
+        "provider_source": {"$ref": "#/$defs/providerSource"},
+        "payload": {"anyOf": [{"type": "object"}, {"type": "null"}]},
+        "request_root": {"$ref": "#/$defs/root"}
+      }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "status",
+        "provider_id",
+        "provider_root",
+        "provider_source",
+        "runtime_binding",
+        "attempted",
+        "runtime_execution_performed",
+        "provider_runtime_performed",
+        "job_state",
+        "failure_code"
+      ],
+      "properties": {
+        "mode": {"enum": ["RAGF_REFERENCE_WORKSPACE", "RAGF_EXTERNAL_PROVIDER", "PROVIDER_RESOLUTION"]},
+        "status": {"enum": ["COMPLETED", "FAILED"]},
+        "provider_id": {"$ref": "#/$defs/nullableText"},
+        "provider_root": {"$ref": "#/$defs/nullableRoot"},
+        "provider_source": {"$ref": "#/$defs/providerSource"},
+        "runtime_binding": {"$ref": "#/$defs/runtimeBinding"},
+        "attempted": {"type": "boolean"},
+        "runtime_execution_performed": {"type": "boolean"},
+        "provider_runtime_performed": {"type": "boolean"},
+        "job_state": {
+          "anyOf": [
+            {"enum": ["QUEUED", "PREPARING", "RUNNING", "VALIDATING", "COMPLETED", "FAILED", "CANCELLED"]},
+            {"type": "null"}
+          ]
+        },
+        "failure_code": {"$ref": "#/$defs/nullableText"}
+      }
+    },
+    "materializedFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "role", "byte_length", "sha256", "declared_sha256"],
+      "properties": {
+        "path": {"$ref": "#/$defs/nullableText"},
+        "role": {"$ref": "#/$defs/nullableText"},
+        "byte_length": {"anyOf": [{"type": "integer", "minimum": 0}, {"type": "null"}]},
+        "sha256": {"$ref": "#/$defs/nullableRoot"},
+        "declared_sha256": {"$ref": "#/$defs/nullableRoot"}
+      }
+    },
+    "skippedFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "reason"],
+      "properties": {
+        "path": {"$ref": "#/$defs/nullableText"},
+        "reason": {"$ref": "#/$defs/nullableText"}
+      }
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "workspace_root",
+        "workspace_verified",
+        "job_root",
+        "result_root",
+        "failure_code",
+        "failure_root",
+        "candidate_root",
+        "provider_court_root",
+        "acceptance_root",
+        "evidence_ledger_root",
+        "file_inspection_root",
+        "materialization_path",
+        "materialization_root",
+        "materialized_file_count",
+        "materialized_file_roots",
+        "materialization_skipped",
+        "output_root"
+      ],
+      "properties": {
+        "workspace_root": {"$ref": "#/$defs/nullableText"},
+        "workspace_verified": {"anyOf": [{"type": "boolean"}, {"type": "null"}]},
+        "job_root": {"$ref": "#/$defs/nullableRoot"},
+        "result_root": {"$ref": "#/$defs/nullableRoot"},
+        "failure_code": {"$ref": "#/$defs/nullableText"},
+        "failure_root": {"$ref": "#/$defs/nullableRoot"},
+        "candidate_root": {"$ref": "#/$defs/nullableRoot"},
+        "provider_court_root": {"$ref": "#/$defs/nullableRoot"},
+        "acceptance_root": {"$ref": "#/$defs/nullableRoot"},
+        "evidence_ledger_root": {"$ref": "#/$defs/nullableRoot"},
+        "file_inspection_root": {"$ref": "#/$defs/nullableRoot"},
+        "materialization_path": {"$ref": "#/$defs/nullableText"},
+        "materialization_root": {"$ref": "#/$defs/nullableRoot"},
+        "materialized_file_count": {"type": "integer", "minimum": 0},
+        "materialized_file_roots": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/materializedFile"}
+        },
+        "materialization_skipped": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/skippedFile"}
+        },
+        "output_root": {"$ref": "#/$defs/root"}
+      }
+    },
+    "replay": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["input_root", "output_root", "status", "deterministic_claim", "provider_runtime_replay_required", "replay_authority"],
+      "properties": {
+        "input_root": {"$ref": "#/$defs/root"},
+        "output_root": {"$ref": "#/$defs/root"},
+        "status": {"const": "NOT_RUN"},
+        "deterministic_claim": {"const": "NOT_PROVEN"},
+        "provider_runtime_replay_required": {"type": "boolean"},
+        "replay_authority": {"const": "PROVIDER_RUNTIME_REQUIRED"}
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "genome_binding",
+        "resolution_binding",
+        "provider_binding",
+        "request_integrity",
+        "job_integrity",
+        "result_integrity",
+        "failure_integrity",
+        "materialization_integrity",
+        "output_integrity",
+        "candidate_binding",
+        "acceptance_binding",
+        "evidence_binding",
+        "execution_truthfulness",
+        "no_aaa_escalation",
+        "authority_boundary"
+      ],
+      "properties": {
+        "genome_binding": {"type": "boolean"},
+        "resolution_binding": {"type": "boolean"},
+        "provider_binding": {"type": "boolean"},
+        "request_integrity": {"type": "boolean"},
+        "job_integrity": {"type": "boolean"},
+        "result_integrity": {"type": "boolean"},
+        "failure_integrity": {"type": "boolean"},
+        "materialization_integrity": {"type": "boolean"},
+        "output_integrity": {"type": "boolean"},
+        "candidate_binding": {"type": "boolean"},
+        "acceptance_binding": {"type": "boolean"},
+        "evidence_binding": {"type": "boolean"},
+        "execution_truthfulness": {"type": "boolean"},
+        "no_aaa_escalation": {"type": "boolean"},
+        "authority_boundary": {"type": "boolean"}
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canonical_owner",
+        "representation_owner",
+        "provider_can_write_authoritative_world_state",
+        "provider_can_commit",
+        "acceptance_can_commit",
+        "rncs_authority_required"
+      ],
+      "properties": {
+        "canonical_owner": {"const": "RNCS"},
+        "representation_owner": {"const": "URRF"},
+        "provider_can_write_authoritative_world_state": {"const": false},
+        "provider_can_commit": {"const": false},
+        "acceptance_can_commit": {"const": false},
+        "rncs_authority_required": {"const": true}
+      }
+    }
+  },
+  "properties": {
+    "format": {"const": "urrf.universal-art-asset-provider-execution.v0.1"},
+    "version": {"const": "0.1.0"},
+    "execution_id": {"type": "string", "minLength": 1},
+    "source": {"const": "urrf-provider-execution-evaluator"},
+    "asset_id": {"type": "string", "minLength": 1},
+    "asset_profile": {"$ref": "#/$defs/profile"},
+    "quality_tier": {"$ref": "#/$defs/qualityTier"},
+    "genome_root": {"$ref": "#/$defs/root"},
+    "resolution_root": {"$ref": "#/$defs/root"},
+    "provider_id": {"$ref": "#/$defs/nullableText"},
+    "provider_root": {"$ref": "#/$defs/nullableRoot"},
+    "provider_source": {"$ref": "#/$defs/providerSource"},
+    "request": {"$ref": "#/$defs/request"},
+    "execution": {"$ref": "#/$defs/execution"},
+    "output": {"$ref": "#/$defs/output"},
+    "replay": {"$ref": "#/$defs/replay"},
+    "checks": {"$ref": "#/$defs/checks"},
+    "status": {"enum": ["CANDIDATE_PROVIDER_EXECUTION_PASS", "CANDIDATE_PROVIDER_EXECUTION_FAIL"]},
+    "execution_attempted": {"type": "boolean"},
+    "execution_performed": {"type": "boolean"},
+    "provider_runtime_performed": {"type": "boolean"},
+    "aaa_ready": {"const": false},
+    "release_ready": {"const": false},
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "canonical_write_authorized": {"const": false},
+    "authority": {"$ref": "#/$defs/authority"},
+    "execution_root": {"$ref": "#/$defs/root"}
+  }
+}
