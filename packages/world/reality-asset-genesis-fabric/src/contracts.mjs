@@ -7,8 +7,15 @@ export const FORMATS={
  continuity:'reality-asset.continuity-bundle.v0.3',delta:'rfe.asset-genesis-causal-delta.v0.3'
 };
 const OUTPUTS_2D=['concept-svg','sprite-sheet','sfx-wav','particle-preset','collision-shape'];
-const OUTPUTS_3D=['concept-svg','sprite-sheet','mesh-glb','mesh-lod1-glb','mesh-lod2-glb','pbr-texture-pack','skeleton-rig','animation-clips','lod-manifest','sfx-wav','particle-preset','collision-shape','vsr-spatial-asset','rsr-embodiment-profile','retarget-profile','projection-manifest','dependency-graph','prefab-blueprint'];
-export const defaultOutputs=kind=>String(kind).includes('3d')?[...OUTPUTS_3D]:[...OUTPUTS_2D];
+const OUTPUTS_3D_STATIC=['concept-svg','sprite-sheet','mesh-glb','mesh-lod1-glb','mesh-lod2-glb','pbr-texture-pack','lod-manifest','sfx-wav','particle-preset','collision-shape','vsr-spatial-asset','rsr-embodiment-profile','projection-manifest','dependency-graph','prefab-blueprint'];
+const OUTPUTS_3D_RIGGED=[...OUTPUTS_3D_STATIC.slice(0, 6),'skeleton-rig','animation-clips','lod-manifest',...OUTPUTS_3D_STATIC.slice(7, 11),'retarget-profile',...OUTPUTS_3D_STATIC.slice(11)];
+const RIGGED_3D_ASSET_KINDS=new Set(['character-3d','creature-3d']);
+const STATIC_3D_HALF_EXTENTS=Object.freeze({'prop-3d':[.7,1.05,.6],'vehicle-3d':[1.4,.7,.8],'structure-3d':[1.65,1.42,1.3],'environment-3d':[2.9,1.15,2.25],'vegetation-3d':[1.2,1.5,1],'resource-3d':[.95,1.35,.85]});
+export const isRiggedAssetKind=kind=>RIGGED_3D_ASSET_KINDS.has(String(kind??'').trim().toLowerCase());
+export const isStatic3dAssetKind=kind=>String(kind??'').trim().toLowerCase().endsWith('-3d')&&!isRiggedAssetKind(kind);
+export const static3dHalfExtents=kind=>[...(STATIC_3D_HALF_EXTENTS[String(kind??'').trim().toLowerCase()]??STATIC_3D_HALF_EXTENTS['prop-3d'])];
+export const static3dBounds=kind=>{const normalized=String(kind??'').trim().toLowerCase(),halfExtents=static3dHalfExtents(normalized);return{center:[0,normalized==='environment-3d'?.7:halfExtents[1],0],halfExtents};};
+export const defaultOutputs=kind=>String(kind).includes('3d')?(isRiggedAssetKind(kind)?[...OUTPUTS_3D_RIGGED]:[...OUTPUTS_3D_STATIC]):[...OUTPUTS_2D];
 const required=(obj,key,errors)=>{if(obj?.[key]===undefined||obj?.[key]===null||obj?.[key]==='')errors.push(`MISSING:${key}`);};
 export function normalizeIntent(input={}){
  const description=String(input.description??input.goal??'').trim();if(!description)throw new GenesisError('INTENT_DESCRIPTION_REQUIRED');const assetKind=input.asset_kind??'character-2d';

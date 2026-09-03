@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added profile-aware deterministic static 3D reference candidates for `prop`, `vehicle`, `structure`, `environment`, `vegetation`, and `resource`. These emit family-specific low-poly geometry, four-channel PBR, decreasing LODs, VSR, and static RSR/prefab contracts without fabricating humanoid rigging; they remain candidate evidence rather than AAA art or target-device proof.
 - Added deterministic native RGBA8 KTX2 mip encoding/inspection through `encodeKtx2Rgba8` and `inspectKtx2`; this exposes a reusable progressive-texture container without claiming BasisU supercompression.
 - 修正默认 cycle 周期端点：周期包含末端闭环帧，避免长 Cut 在源帧边界跳变
 - 新增 `ragf.anime-motion-quality-contract.v0.1` 与逐通道 terminal seam 报告

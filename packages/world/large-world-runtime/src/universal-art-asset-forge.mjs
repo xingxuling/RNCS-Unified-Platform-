@@ -158,7 +158,7 @@ const PROFILE_CONTRACTS = Object.freeze({
   },
   vehicle: {
     asset_kind: 'vehicle-3d',
-    builtin_reference: false,
+    builtin_reference: true,
     required_capabilities: ['asset.generate.3d.production', 'asset.generate.mesh', 'asset.generate.pbr'],
     optional_capabilities: ['asset.refine.geometry'],
     required_gates: STATIC_GATES,
@@ -167,7 +167,7 @@ const PROFILE_CONTRACTS = Object.freeze({
   },
   structure: {
     asset_kind: 'structure-3d',
-    builtin_reference: false,
+    builtin_reference: true,
     required_capabilities: ['world.asset.generate.procedural', 'world.asset.building'],
     optional_capabilities: ['asset.refine.geometry'],
     required_gates: STATIC_GATES,
@@ -176,7 +176,7 @@ const PROFILE_CONTRACTS = Object.freeze({
   },
   environment: {
     asset_kind: 'environment-3d',
-    builtin_reference: false,
+    builtin_reference: true,
     required_capabilities: ['world.asset.generate.procedural', 'world.asset.environment'],
     optional_capabilities: ['world.asset.terrain', 'world.asset.vegetation', 'asset.refine.geometry'],
     required_gates: STATIC_GATES,
@@ -185,7 +185,7 @@ const PROFILE_CONTRACTS = Object.freeze({
   },
   vegetation: {
     asset_kind: 'vegetation-3d',
-    builtin_reference: false,
+    builtin_reference: true,
     required_capabilities: ['world.asset.generate.procedural', 'world.asset.vegetation'],
     optional_capabilities: ['asset.refine.geometry'],
     required_gates: STATIC_GATES,
@@ -194,7 +194,7 @@ const PROFILE_CONTRACTS = Object.freeze({
   },
   resource: {
     asset_kind: 'resource-3d',
-    builtin_reference: false,
+    builtin_reference: true,
     required_capabilities: ['world.asset.generate.procedural', 'world.asset.rock'],
     optional_capabilities: ['asset.refine.geometry'],
     required_gates: STATIC_GATES,
@@ -3227,9 +3227,9 @@ function universalArtAssetProviderPipelineOutputMatches(requiredOutput, declared
   return (aliases[value] ?? [value]).some(alias => declaredOutputs.includes(alias));
 }
 
-function universalArtAssetProviderPipelineStageDefinitions(profile) {
+function universalArtAssetProviderPipelineStageDefinitions(profile, {builtinReference = false} = {}) {
   const contract = profileContract(profile);
-  const worldProfile = ['structure', 'environment', 'vegetation', 'resource'].includes(profile);
+  const worldProfile = !builtinReference && ['structure', 'environment', 'vegetation', 'resource'].includes(profile);
   const stages = [{
     stage_id: 'base_generation',
     stage_kind: 'BASE_GENERATION',
@@ -3308,7 +3308,9 @@ function buildUniversalArtAssetProviderPipelinePlan({
     providers: providerManifests
   });
   const entries = universalArtAssetProviderPipelineEntries({provider, providers, providerRunners: runners, providerRunner});
-  const definitions = universalArtAssetProviderPipelineStageDefinitions(checkedGenome.asset_profile);
+  const definitions = universalArtAssetProviderPipelineStageDefinitions(checkedGenome.asset_profile, {
+    builtinReference: resolution.selected_provider_source === 'ragf-reference-provider'
+  });
   const stages = definitions.map((definition, index) => {
     const isBase = definition.stage_id === 'base_generation';
     const candidateEntries = isBase

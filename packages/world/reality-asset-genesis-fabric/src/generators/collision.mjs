@@ -1,7 +1,14 @@
 import {seal} from '../canonical.mjs';
+import {isRiggedAssetKind,static3dBounds} from '../contracts.mjs';
 
 export function generateCollisionShape({genome,variant}){
   const scale=variant==='mobile'?.92:1,is3d=String(genome.identity.kind).includes('3d'),assetId=genome.identity.asset_id,shapeId=`collision:${assetId.split(':').pop()}:${variant}`;
+  if(is3d&&!isRiggedAssetKind(genome.identity.kind)){
+    const {center,halfExtents}=static3dBounds(genome.identity.kind);
+    const body={id:'body',role:'solid',type:'box-3d',center,half_extents:halfExtents,layer:'world',mask:['dynamic','character','sensor']};
+    const fixtures=[body,{id:'interaction-volume',role:'interaction-sensor',type:'box-3d',center:body.center,half_extents:halfExtents.map(value=>value*1.08),layer:'sensor',mask:['character','interactable']}];
+    return seal({format:'rsr.collision-shape.v0.6',version:'0.3.0',shape_id:shapeId,asset_id:assetId,asset_kind:genome.identity.kind,variant,type:'box-3d',center:body.center,half_extents:halfExtents,collision_layer:'world',mask:body.mask,fixtures,semantic_regions:[{name:'body',role:'solid',fixture_id:'body'},{name:'interaction-volume',role:'interaction-sensor',fixture_id:'interaction-volume'}],authoring:{fit:`${genome.identity.kind}-static-bounds-v0.1`,source:'profile-archetype-bounds',coverage:{solid:.94,sensor:.06},runtime_primary:'body'},shape_root:''},'shape_root');
+  }
   if(is3d){
     const body={id:'body',role:'solid',type:'capsule-3d',center:[0,1.25,0],radius:.3*scale,half_height:.95*scale,layer:'character',mask:['world','enemy','trigger']};
     const fixtures=[

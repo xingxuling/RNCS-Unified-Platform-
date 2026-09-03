@@ -18,11 +18,11 @@
     "character": "BUILTIN_REFERENCE",
     "creature": "EXTERNAL_CONTRACT_ONLY",
     "prop": "BUILTIN_REFERENCE",
-    "vehicle": "EXTERNAL_CONTRACT_ONLY",
-    "structure": "EXTERNAL_CONTRACT_ONLY",
-    "environment": "EXTERNAL_CONTRACT_ONLY",
-    "vegetation": "EXTERNAL_CONTRACT_ONLY",
-    "resource": "EXTERNAL_CONTRACT_ONLY",
+    "vehicle": "BUILTIN_REFERENCE",
+    "structure": "BUILTIN_REFERENCE",
+    "environment": "BUILTIN_REFERENCE",
+    "vegetation": "BUILTIN_REFERENCE",
+    "resource": "BUILTIN_REFERENCE",
     "vfx": "UNRESOLVED"
   },
   "entries": [
@@ -36,16 +36,16 @@
       "genome_root": "b29274818ecf2ab8cbba0682976c13c071e527187c01865c846cbcc3a7083e68",
       "forge_asset_profile": "character",
       "forge_genome_root": "b29274818ecf2ab8cbba0682976c13c071e527187c01865c846cbcc3a7083e68",
-      "resolution_root": "83a2ae9bc68de51881ef4f6c5970ab2b82925231945b682c7fe42c5de440654b",
+      "resolution_root": "d1468ec1101cb82fb9fff12f7d0dc3f77c2e5b13c4ceb15b53443d361c3d23c4",
       "resolution": {
         "format": "urrf.universal-art-asset-provider-resolution.v0.1",
         "version": "0.1.0",
         "asset_id": "asset:c05dbe23a32fa8262449ed7e",
         "asset_profile": "character",
         "genome_root": "b29274818ecf2ab8cbba0682976c13c071e527187c01865c846cbcc3a7083e68",
-        "resolution_root": "83a2ae9bc68de51881ef4f6c5970ab2b82925231945b682c7fe42c5de440654b",
+        "resolution_root": "d1468ec1101cb82fb9fff12f7d0dc3f77c2e5b13c4ceb15b53443d361c3d23c4",
         "selected_provider_id": "provider:taowind:procedural-3d",
-        "selected_provider_root": "82bf355a8b42fab295e1e96258e645703292ec27b20f119276e9e161cbb4b006",
+        "selected_provider_root": "7bba81ec5d30d0d0f84e0d44a718c4831634a088ee7624565828895100788e3d",
         "selected_provider_source": "ragf-reference-provider",
         "eligible": true,
         "runtime_status": "READY_REFERENCE"
@@ -58,7 +58,7 @@
       },
       "candidate": {
         "present": true,
-        "candidate_root": "907e3c7a49e6df14bb9d786d736506c3066d2a733356dfa1f539870874132fe9"
+        "candidate_root": "a5c814ff6514be31d973de1e8718673b765276c96ca6b73ef98ec0e43133d006"
       },
       "authority": {
         "candidate_only": true,
@@ -145,19 +145,19 @@
       "asset_profile": "prop",
       "requested_profile": "prop",
       "status": "BLOCKED",
-      "genome_root": "ee3f2f282df6862cbd622b28d42c3e512c4465d2b25616f6a1c9d89626eff399",
+      "genome_root": "94f16934d970a8b94e502faca649bd34c94f09e11fac19326ef78d175fa031af",
       "forge_asset_profile": "prop",
-      "forge_genome_root": "ee3f2f282df6862cbd622b28d42c3e512c4465d2b25616f6a1c9d89626eff399",
-      "resolution_root": "c61992f1d8b85e7179e046e5a39044deae146acc6d59d920fed6e1bd9df4c89f",
+      "forge_genome_root": "94f16934d970a8b94e502faca649bd34c94f09e11fac19326ef78d175fa031af",
+      "resolution_root": "628a5d768d84bfb451c4338ad26aafe863feb277408d4c7998abefb0232270bc",
       "resolution": {
         "format": "urrf.universal-art-asset-provider-resolution.v0.1",
         "version": "0.1.0",
         "asset_id": "asset:21e0f31956d0f44a8198617d",
         "asset_profile": "prop",
-        "genome_root": "ee3f2f282df6862cbd622b28d42c3e512c4465d2b25616f6a1c9d89626eff399",
-        "resolution_root": "c61992f1d8b85e7179e046e5a39044deae146acc6d59d920fed6e1bd9df4c89f",
+        "genome_root": "94f16934d970a8b94e502faca649bd34c94f09e11fac19326ef78d175fa031af",
+        "resolution_root": "628a5d768d84bfb451c4338ad26aafe863feb277408d4c7998abefb0232270bc",
         "selected_provider_id": "provider:taowind:procedural-3d",
-        "selected_provider_root": "82bf355a8b42fab295e1e96258e645703292ec27b20f119276e9e161cbb4b006",
+        "selected_provider_root": "7bba81ec5d30d0d0f84e0d44a718c4831634a088ee7624565828895100788e3d",
         "selected_provider_source": "ragf-reference-provider",
         "eligible": true,
         "runtime_status": "READY_REFERENCE"
@@ -170,7 +170,7 @@
       },
       "candidate": {
         "present": true,
-        "candidate_root": "46d4c7a8f2b2b25e407a62778d209547acad52f9e08f9fc56e9b951fe26adce0"
+        "candidate_root": "924cf0b99b8e7d9c643073609b86390cb09ac17749abf65b6e0bf3fbcbd6c03f"
       },
       "authority": {
         "candidate_only": true,
@@ -201,32 +201,32 @@
       "asset_profile": "vehicle",
       "requested_profile": "vehicle",
       "status": "BLOCKED",
-      "genome_root": "341b9f25e4bb8aa80509144c9554e05fa49cc38096f5004168d647de984232b7",
+      "genome_root": "a3de5104959ec0f51a1b5d70b86b19d05017d78e53ffcb078a9fd4153514646e",
       "forge_asset_profile": "vehicle",
-      "forge_genome_root": "341b9f25e4bb8aa80509144c9554e05fa49cc38096f5004168d647de984232b7",
-      "resolution_root": "bb2d89c740143915b4f0092736975b8aa7b20193bd80f3aaa5f38e68b90e8c16",
+      "forge_genome_root": "a3de5104959ec0f51a1b5d70b86b19d05017d78e53ffcb078a9fd4153514646e",
+      "resolution_root": "d24a98c971792212f960f332f121f60a24c9d7765e3d8082016c12da986e9950",
       "resolution": {
         "format": "urrf.universal-art-asset-provider-resolution.v0.1",
         "version": "0.1.0",
         "asset_id": "asset:73c48add0d6031a045eec8d3",
         "asset_profile": "vehicle",
-        "genome_root": "341b9f25e4bb8aa80509144c9554e05fa49cc38096f5004168d647de984232b7",
-        "resolution_root": "bb2d89c740143915b4f0092736975b8aa7b20193bd80f3aaa5f38e68b90e8c16",
-        "selected_provider_id": "provider:external:trellis-2",
-        "selected_provider_root": "f65ab9b82c18a54d9944811089285164a4ac6aeef1da27a19cc0e5b6ea03774b",
-        "selected_provider_source": "external-provider-contract",
+        "genome_root": "a3de5104959ec0f51a1b5d70b86b19d05017d78e53ffcb078a9fd4153514646e",
+        "resolution_root": "d24a98c971792212f960f332f121f60a24c9d7765e3d8082016c12da986e9950",
+        "selected_provider_id": "provider:taowind:procedural-3d",
+        "selected_provider_root": "7bba81ec5d30d0d0f84e0d44a718c4831634a088ee7624565828895100788e3d",
+        "selected_provider_source": "ragf-reference-provider",
         "eligible": true,
-        "runtime_status": "CONTRACT_ONLY"
+        "runtime_status": "READY_REFERENCE"
       },
       "execution": {
-        "mode": "PROVIDER_RESOLUTION",
-        "status": "FAILED",
-        "provider_id": null,
-        "failure_code": "PROFILE_PROVIDER_RUNTIME_NOT_BOUND"
+        "mode": "RAGF_REFERENCE_WORKSPACE",
+        "status": "COMPLETED",
+        "provider_id": "provider:taowind:procedural-3d",
+        "failure_code": null
       },
       "candidate": {
-        "present": false,
-        "candidate_root": null
+        "present": true,
+        "candidate_root": "78109ef27b40cb2c46392124cefdcb5e3bcaff4de1bf0373c4cc6e89ee974be4"
       },
       "authority": {
         "candidate_only": true,
@@ -237,8 +237,8 @@
         "acceptance_can_commit": false,
         "rncs_authority_required": true
       },
-      "expected_mode": "EXTERNAL_CONTRACT_ONLY",
-      "observed_mode": "EXTERNAL_CONTRACT_ONLY",
+      "expected_mode": "BUILTIN_REFERENCE",
+      "observed_mode": "BUILTIN_REFERENCE",
       "checks": {
         "profile_binding": true,
         "genome_binding": true,
@@ -257,32 +257,32 @@
       "asset_profile": "structure",
       "requested_profile": "structure",
       "status": "BLOCKED",
-      "genome_root": "505be236774317b351392789a76b64ab780d680bbbc82e385732a3427d7c6b44",
+      "genome_root": "c768bdffab4955ddff80fefab916eb6dde23871ad8b19839689252028c6591ae",
       "forge_asset_profile": "structure",
-      "forge_genome_root": "505be236774317b351392789a76b64ab780d680bbbc82e385732a3427d7c6b44",
-      "resolution_root": "80959aa3b0a4a791d12a4c297be708ad220e1730bde3b9f95b8adfa04b2f36a6",
+      "forge_genome_root": "c768bdffab4955ddff80fefab916eb6dde23871ad8b19839689252028c6591ae",
+      "resolution_root": "4285b2102aaa28198074b62e266ba418f141d3cd1ec3b61d7ca9e5f8786531f2",
       "resolution": {
         "format": "urrf.universal-art-asset-provider-resolution.v0.1",
         "version": "0.1.0",
         "asset_id": "asset:36c7b845d2088006a2af6324",
         "asset_profile": "structure",
-        "genome_root": "505be236774317b351392789a76b64ab780d680bbbc82e385732a3427d7c6b44",
-        "resolution_root": "80959aa3b0a4a791d12a4c297be708ad220e1730bde3b9f95b8adfa04b2f36a6",
-        "selected_provider_id": "provider:external:infinigen",
-        "selected_provider_root": "83bdca7ae05e8330c67e2e8b80478704e36f723ee15f148046094929bce9f91d",
-        "selected_provider_source": "external-provider-contract",
+        "genome_root": "c768bdffab4955ddff80fefab916eb6dde23871ad8b19839689252028c6591ae",
+        "resolution_root": "4285b2102aaa28198074b62e266ba418f141d3cd1ec3b61d7ca9e5f8786531f2",
+        "selected_provider_id": "provider:taowind:procedural-3d",
+        "selected_provider_root": "7bba81ec5d30d0d0f84e0d44a718c4831634a088ee7624565828895100788e3d",
+        "selected_provider_source": "ragf-reference-provider",
         "eligible": true,
-        "runtime_status": "CONTRACT_ONLY"
+        "runtime_status": "READY_REFERENCE"
       },
       "execution": {
-        "mode": "PROVIDER_RESOLUTION",
-        "status": "FAILED",
-        "provider_id": null,
-        "failure_code": "PROFILE_PROVIDER_RUNTIME_NOT_BOUND"
+        "mode": "RAGF_REFERENCE_WORKSPACE",
+        "status": "COMPLETED",
+        "provider_id": "provider:taowind:procedural-3d",
+        "failure_code": null
       },
       "candidate": {
-        "present": false,
-        "candidate_root": null
+        "present": true,
+        "candidate_root": "12d4c7dbd3b55385ebc158509b297f4e7d0940768f9be5010f2c9d04e78d357d"
       },
       "authority": {
         "candidate_only": true,
@@ -293,8 +293,8 @@
         "acceptance_can_commit": false,
         "rncs_authority_required": true
       },
-      "expected_mode": "EXTERNAL_CONTRACT_ONLY",
-      "observed_mode": "EXTERNAL_CONTRACT_ONLY",
+      "expected_mode": "BUILTIN_REFERENCE",
+      "observed_mode": "BUILTIN_REFERENCE",
       "checks": {
         "profile_binding": true,
         "genome_binding": true,
@@ -313,32 +313,32 @@
       "asset_profile": "environment",
       "requested_profile": "environment",
       "status": "BLOCKED",
-      "genome_root": "0e928a2583d39429f8f9f2717e90fc20cc77719b48f3c6488a7ae3a98b23b7c9",
+      "genome_root": "07431423f8c6c68214036f3d1a6965fa09ec53f6fd84cc6204d634a1c3ecab4f",
       "forge_asset_profile": "environment",
-      "forge_genome_root": "0e928a2583d39429f8f9f2717e90fc20cc77719b48f3c6488a7ae3a98b23b7c9",
-      "resolution_root": "caa1d11e01e710363f39baeb07aab2823cee4d805de646212fe2192ad24717ac",
+      "forge_genome_root": "07431423f8c6c68214036f3d1a6965fa09ec53f6fd84cc6204d634a1c3ecab4f",
+      "resolution_root": "e878196883c09f83fe2f5815db64b77cd78375ed1007e3912e64ba51bd77ab47",
       "resolution": {
         "format": "urrf.universal-art-asset-provider-resolution.v0.1",
         "version": "0.1.0",
         "asset_id": "asset:b9e6cff7b514f988ae3f0361",
         "asset_profile": "environment",
-        "genome_root": "0e928a2583d39429f8f9f2717e90fc20cc77719b48f3c6488a7ae3a98b23b7c9",
-        "resolution_root": "caa1d11e01e710363f39baeb07aab2823cee4d805de646212fe2192ad24717ac",
-        "selected_provider_id": "provider:external:infinigen",
-        "selected_provider_root": "83bdca7ae05e8330c67e2e8b80478704e36f723ee15f148046094929bce9f91d",
-        "selected_provider_source": "external-provider-contract",
+        "genome_root": "07431423f8c6c68214036f3d1a6965fa09ec53f6fd84cc6204d634a1c3ecab4f",
+        "resolution_root": "e878196883c09f83fe2f5815db64b77cd78375ed1007e3912e64ba51bd77ab47",
+        "selected_provider_id": "provider:taowind:procedural-3d",
+        "selected_provider_root": "7bba81ec5d30d0d0f84e0d44a718c4831634a088ee7624565828895100788e3d",
+        "selected_provider_source": "ragf-reference-provider",
         "eligible": true,
-        "runtime_status": "CONTRACT_ONLY"
+        "runtime_status": "READY_REFERENCE"
       },
       "execution": {
-        "mode": "PROVIDER_RESOLUTION",
-        "status": "FAILED",
-        "provider_id": null,
-        "failure_code": "PROFILE_PROVIDER_RUNTIME_NOT_BOUND"
+        "mode": "RAGF_REFERENCE_WORKSPACE",
+        "status": "COMPLETED",
+        "provider_id": "provider:taowind:procedural-3d",
+        "failure_code": null
       },
       "candidate": {
-        "present": false,
-        "candidate_root": null
+        "present": true,
+        "candidate_root": "ffb8c367c9ae1c05fc7cdb65765534c80137853dcf78916da0667242f48da80d"
       },
       "authority": {
         "candidate_only": true,
@@ -349,8 +349,8 @@
         "acceptance_can_commit": false,
         "rncs_authority_required": true
       },
-      "expected_mode": "EXTERNAL_CONTRACT_ONLY",
-      "observed_mode": "EXTERNAL_CONTRACT_ONLY",
+      "expected_mode": "BUILTIN_REFERENCE",
+      "observed_mode": "BUILTIN_REFERENCE",
       "checks": {
         "profile_binding": true,
         "genome_binding": true,
@@ -369,32 +369,32 @@
       "asset_profile": "vegetation",
       "requested_profile": "vegetation",
       "status": "BLOCKED",
-      "genome_root": "2fd517f2305d54de3c960c7dc72f622530d6cc70ddf8719732cfdc412e0c5b82",
+      "genome_root": "26db070bff905931a0f48bdfda191964b01e2596b75fdc6148bb85d95f6bee42",
       "forge_asset_profile": "vegetation",
-      "forge_genome_root": "2fd517f2305d54de3c960c7dc72f622530d6cc70ddf8719732cfdc412e0c5b82",
-      "resolution_root": "100b4974e80aaf4183566b33d185d912e579fb6a10dc67a94d6ffca6de2fbbbf",
+      "forge_genome_root": "26db070bff905931a0f48bdfda191964b01e2596b75fdc6148bb85d95f6bee42",
+      "resolution_root": "bb8d4a077edec246250d2faec6cd68985f94c5aa2fbc841cc86b25fa5cf1032a",
       "resolution": {
         "format": "urrf.universal-art-asset-provider-resolution.v0.1",
         "version": "0.1.0",
         "asset_id": "asset:375c2c626d65044093d54381",
         "asset_profile": "vegetation",
-        "genome_root": "2fd517f2305d54de3c960c7dc72f622530d6cc70ddf8719732cfdc412e0c5b82",
-        "resolution_root": "100b4974e80aaf4183566b33d185d912e579fb6a10dc67a94d6ffca6de2fbbbf",
-        "selected_provider_id": "provider:external:infinigen",
-        "selected_provider_root": "83bdca7ae05e8330c67e2e8b80478704e36f723ee15f148046094929bce9f91d",
-        "selected_provider_source": "external-provider-contract",
+        "genome_root": "26db070bff905931a0f48bdfda191964b01e2596b75fdc6148bb85d95f6bee42",
+        "resolution_root": "bb8d4a077edec246250d2faec6cd68985f94c5aa2fbc841cc86b25fa5cf1032a",
+        "selected_provider_id": "provider:taowind:procedural-3d",
+        "selected_provider_root": "7bba81ec5d30d0d0f84e0d44a718c4831634a088ee7624565828895100788e3d",
+        "selected_provider_source": "ragf-reference-provider",
         "eligible": true,
-        "runtime_status": "CONTRACT_ONLY"
+        "runtime_status": "READY_REFERENCE"
       },
       "execution": {
-        "mode": "PROVIDER_RESOLUTION",
-        "status": "FAILED",
-        "provider_id": null,
-        "failure_code": "PROFILE_PROVIDER_RUNTIME_NOT_BOUND"
+        "mode": "RAGF_REFERENCE_WORKSPACE",
+        "status": "COMPLETED",
+        "provider_id": "provider:taowind:procedural-3d",
+        "failure_code": null
       },
       "candidate": {
-        "present": false,
-        "candidate_root": null
+        "present": true,
+        "candidate_root": "89665d361ea5b36d436489a5d6ad0d94cdc6fdf53d268c02b1fe69cff8fbae67"
       },
       "authority": {
         "candidate_only": true,
@@ -405,8 +405,8 @@
         "acceptance_can_commit": false,
         "rncs_authority_required": true
       },
-      "expected_mode": "EXTERNAL_CONTRACT_ONLY",
-      "observed_mode": "EXTERNAL_CONTRACT_ONLY",
+      "expected_mode": "BUILTIN_REFERENCE",
+      "observed_mode": "BUILTIN_REFERENCE",
       "checks": {
         "profile_binding": true,
         "genome_binding": true,
@@ -425,32 +425,32 @@
       "asset_profile": "resource",
       "requested_profile": "resource",
       "status": "BLOCKED",
-      "genome_root": "ccf9c0ed08220713279db2b016797fcbfe3af0e8b6deb30c63f0ee0570126b0c",
+      "genome_root": "5af119d73610c5684c2d134d1318ac84b204d57f66a850d54114de616efad08c",
       "forge_asset_profile": "resource",
-      "forge_genome_root": "ccf9c0ed08220713279db2b016797fcbfe3af0e8b6deb30c63f0ee0570126b0c",
-      "resolution_root": "293c15b350de372f44d896ee8346890cd15593506ffbe6198c4327ccfe26794d",
+      "forge_genome_root": "5af119d73610c5684c2d134d1318ac84b204d57f66a850d54114de616efad08c",
+      "resolution_root": "80ab44421c285483ff962daa8de3394f3d747c5f4c9c742031edbdaf52280808",
       "resolution": {
         "format": "urrf.universal-art-asset-provider-resolution.v0.1",
         "version": "0.1.0",
         "asset_id": "asset:71c60af578b2e558d28d9bb5",
         "asset_profile": "resource",
-        "genome_root": "ccf9c0ed08220713279db2b016797fcbfe3af0e8b6deb30c63f0ee0570126b0c",
-        "resolution_root": "293c15b350de372f44d896ee8346890cd15593506ffbe6198c4327ccfe26794d",
-        "selected_provider_id": "provider:external:infinigen",
-        "selected_provider_root": "83bdca7ae05e8330c67e2e8b80478704e36f723ee15f148046094929bce9f91d",
-        "selected_provider_source": "external-provider-contract",
+        "genome_root": "5af119d73610c5684c2d134d1318ac84b204d57f66a850d54114de616efad08c",
+        "resolution_root": "80ab44421c285483ff962daa8de3394f3d747c5f4c9c742031edbdaf52280808",
+        "selected_provider_id": "provider:taowind:procedural-3d",
+        "selected_provider_root": "7bba81ec5d30d0d0f84e0d44a718c4831634a088ee7624565828895100788e3d",
+        "selected_provider_source": "ragf-reference-provider",
         "eligible": true,
-        "runtime_status": "CONTRACT_ONLY"
+        "runtime_status": "READY_REFERENCE"
       },
       "execution": {
-        "mode": "PROVIDER_RESOLUTION",
-        "status": "FAILED",
-        "provider_id": null,
-        "failure_code": "PROFILE_PROVIDER_RUNTIME_NOT_BOUND"
+        "mode": "RAGF_REFERENCE_WORKSPACE",
+        "status": "COMPLETED",
+        "provider_id": "provider:taowind:procedural-3d",
+        "failure_code": null
       },
       "candidate": {
-        "present": false,
-        "candidate_root": null
+        "present": true,
+        "candidate_root": "81f3d91422f8106007199845bd86a9c2f8b29f96f3f9528de3220bb48c98f230"
       },
       "authority": {
         "candidate_only": true,
@@ -461,8 +461,8 @@
         "acceptance_can_commit": false,
         "rncs_authority_required": true
       },
-      "expected_mode": "EXTERNAL_CONTRACT_ONLY",
-      "observed_mode": "EXTERNAL_CONTRACT_ONLY",
+      "expected_mode": "BUILTIN_REFERENCE",
+      "observed_mode": "BUILTIN_REFERENCE",
       "checks": {
         "profile_binding": true,
         "genome_binding": true,
@@ -481,17 +481,17 @@
       "asset_profile": "vfx",
       "requested_profile": "vfx",
       "status": "BLOCKED",
-      "genome_root": "b11f421af223b02dd3dacca54a5e7211479a968d18d363e1781957b788a039d1",
+      "genome_root": "6ca655c90ab7b341e212444504f618e1fd1a0b7feafe29f8ab515319f68e6da4",
       "forge_asset_profile": "vfx",
-      "forge_genome_root": "b11f421af223b02dd3dacca54a5e7211479a968d18d363e1781957b788a039d1",
-      "resolution_root": "e1356499f4ee30812fa1e3613b19a4ba207878b8b605c58777711a3c612547b9",
+      "forge_genome_root": "6ca655c90ab7b341e212444504f618e1fd1a0b7feafe29f8ab515319f68e6da4",
+      "resolution_root": "2c5e8113e9f0666de9909c1ab5e708c5a5954c4801978f2871f3a9af2afe4381",
       "resolution": {
         "format": "urrf.universal-art-asset-provider-resolution.v0.1",
         "version": "0.1.0",
         "asset_id": "asset:e199a996e4026d4875e015fd",
         "asset_profile": "vfx",
-        "genome_root": "b11f421af223b02dd3dacca54a5e7211479a968d18d363e1781957b788a039d1",
-        "resolution_root": "e1356499f4ee30812fa1e3613b19a4ba207878b8b605c58777711a3c612547b9",
+        "genome_root": "6ca655c90ab7b341e212444504f618e1fd1a0b7feafe29f8ab515319f68e6da4",
+        "resolution_root": "2c5e8113e9f0666de9909c1ab5e708c5a5954c4801978f2871f3a9af2afe4381",
         "selected_provider_id": null,
         "selected_provider_root": null,
         "selected_provider_source": null,
@@ -536,8 +536,8 @@
     "pass_count": 9,
     "fail_count": 0,
     "mode_histogram": {
-      "BUILTIN_REFERENCE": 2,
-      "EXTERNAL_CONTRACT_ONLY": 6,
+      "BUILTIN_REFERENCE": 7,
+      "EXTERNAL_CONTRACT_ONLY": 1,
       "EXTERNAL_EXECUTED": 0,
       "INJECTED_EXECUTED": 0,
       "UNRESOLVED": 1,
@@ -596,5 +596,5 @@
     "acceptance_can_commit": false,
     "rncs_authority_required": true
   },
-  "coverage_root": "2057db816dd17d61a1aa4d12e545d340f598d3a9e8e9b96e0fa3308abe6e2ee6"
+  "coverage_root": "303a1fd108b849f2f0b26ea484b788528e4438011fa82734def33561360e4c14"
 }

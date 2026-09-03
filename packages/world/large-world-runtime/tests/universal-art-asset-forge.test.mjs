@@ -216,7 +216,7 @@ test('unknown asset kinds fail closed instead of silently becoming props', () =>
   }), /UNIVERSAL_ART_ASSET_PROFILE_INVALID/);
 });
 
-test('provider resolution exposes external environment capability without silently executing it', () => {
+test('provider resolution exposes the bounded environment reference route without granting authority', () => {
   const genome = createUniversalArtAssetGenome({
     description: '一片可探索的远古湿地环境。',
     asset_profile: 'environment',
@@ -225,8 +225,9 @@ test('provider resolution exposes external environment capability without silent
   });
   const resolution = resolveUniversalArtAssetProvider({genome});
   assert.equal(resolution.eligible, true);
-  assert.equal(resolution.selected_provider_id, 'provider:external:infinigen');
-  assert.equal(resolution.runtime_status, 'CONTRACT_ONLY');
+  assert.equal(resolution.selected_provider_id, 'provider:taowind:procedural-3d');
+  assert.equal(resolution.selected_provider_source, 'ragf-reference-provider');
+  assert.equal(resolution.runtime_status, 'READY_REFERENCE');
   assert.equal(resolution.authority.provider_can_write_authoritative_world_state, false);
 });
 
@@ -509,8 +510,8 @@ test('provider preflight binds every URRF profile to health and fails closed on 
   assert.equal(report.aaa_ready, false);
   assert.equal(report.release_ready, false);
   assert.deepEqual(report.summary.route_histogram, {
-    BUILTIN_REFERENCE_READY: 2,
-    EXTERNAL_CONTRACT_ONLY: 6,
+    BUILTIN_REFERENCE_READY: 7,
+    EXTERNAL_CONTRACT_ONLY: 1,
     EXTERNAL_RUNTIME_BOUND: 0,
     UNRESOLVED: 1,
     INCONSISTENT: 0
@@ -523,11 +524,11 @@ test('provider preflight binds every URRF profile to health and fails closed on 
   assert.equal(report.summary.release_blocked_provider_count, 6);
   assert.equal(report.profile_routes.find(entry => entry.asset_profile === 'vfx').selected_provider_id, null);
   assert.equal(report.profile_routes.find(entry => entry.asset_profile === 'vfx').selected_provider_source, null);
-  assert.equal(report.profile_routes.find(entry => entry.asset_profile === 'environment').route_status, 'EXTERNAL_CONTRACT_ONLY');
+  assert.equal(report.profile_routes.find(entry => entry.asset_profile === 'environment').route_status, 'BUILTIN_REFERENCE_READY');
   assert.equal(verifyUniversalArtAssetProviderPreflightReport(report).valid, true);
 
   const sourceTamper = structuredClone(report);
-  sourceTamper.profile_routes.find(entry => entry.asset_profile === 'environment').selected_provider_source = 'ragf-reference-provider';
+  sourceTamper.profile_routes.find(entry => entry.asset_profile === 'environment').selected_provider_source = 'external-provider-contract';
   assert.equal(verifyUniversalArtAssetProviderPreflightReport(seal(sourceTamper, 'preflight_root')).valid, false);
 
   const checkTamper = structuredClone(report);
@@ -552,8 +553,8 @@ test('provider preflight distinguishes an injected executor binding from executi
   });
   assert.equal(report.execution_performed, false);
   assert.equal(report.summary.provider_health_histogram.EXECUTOR_INJECTED, 1);
-  assert.equal(report.summary.route_histogram.EXTERNAL_RUNTIME_BOUND, 2);
-  assert.equal(report.profile_routes.find(entry => entry.asset_profile === 'vehicle').route_status, 'EXTERNAL_RUNTIME_BOUND');
+  assert.equal(report.summary.route_histogram.EXTERNAL_RUNTIME_BOUND, 1);
+  assert.equal(report.profile_routes.find(entry => entry.asset_profile === 'creature').route_status, 'EXTERNAL_RUNTIME_BOUND');
   assert.equal(verifyUniversalArtAssetProviderPreflightReport(report, {provider_runners: providerRunners}).valid, true);
   assert.equal(verifyUniversalArtAssetProviderPreflightReport(report).valid, false);
 });

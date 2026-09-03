@@ -306,9 +306,9 @@
         "asset.generate.mesh",
         "asset.generate.pbr"
       ],
-      "resolution_root": "c6ab4ae72d2e59a323464b6a6271406b1337587a14257a0f422ab6c83450b3fe",
+      "resolution_root": "fa4c4119adae5ffedac3099701d468b19a194245ac2f84ef0cebc27846016e28",
       "selected_provider_id": "provider:taowind:procedural-3d",
-      "selected_provider_root": "82bf355a8b42fab295e1e96258e645703292ec27b20f119276e9e161cbb4b006",
+      "selected_provider_root": "7bba81ec5d30d0d0f84e0d44a718c4831634a088ee7624565828895100788e3d",
       "selected_provider_source": "ragf-reference-provider",
       "eligible": true,
       "runtime_status": "READY_REFERENCE",
@@ -360,15 +360,15 @@
       "index": 2,
       "asset_profile": "prop",
       "asset_id": "asset:cfa7d32419628c51e92f8c69",
-      "genome_root": "508edde4fe7abe53e4ea4af87af9ebc48606f6a6c99fb1930341d755f8cbffb9",
+      "genome_root": "b3247f0b0862833aca1ec966b5bfc6605f4c3204af95aa59f8eba60375599fad",
       "required_capabilities": [
         "asset.generate.3d.production",
         "asset.generate.mesh",
         "asset.generate.pbr"
       ],
-      "resolution_root": "9fa28e9247b11299a79716acc2c45b2bde2735cfc3f9e42db5fa5f0b2904710c",
+      "resolution_root": "b6817bbf23ad7291c0b5b5579a0efe6f38405fdcb0c28a26015499ad3f33a7b8",
       "selected_provider_id": "provider:taowind:procedural-3d",
-      "selected_provider_root": "82bf355a8b42fab295e1e96258e645703292ec27b20f119276e9e161cbb4b006",
+      "selected_provider_root": "7bba81ec5d30d0d0f84e0d44a718c4831634a088ee7624565828895100788e3d",
       "selected_provider_source": "ragf-reference-provider",
       "eligible": true,
       "runtime_status": "READY_REFERENCE",
@@ -388,24 +388,20 @@
       "index": 3,
       "asset_profile": "vehicle",
       "asset_id": "asset:10d1306d5a89a8e6260d3d5e",
-      "genome_root": "d15d88c68edc3f0a529efa950856034a66f5b6c230203524c0240a3913d78c85",
+      "genome_root": "8b3811b5ce67105c0ca7bd21500d0c35a3cb7eb7e01ecfee82054d132ab53afc",
       "required_capabilities": [
         "asset.generate.3d.production",
         "asset.generate.mesh",
         "asset.generate.pbr"
       ],
-      "resolution_root": "08980c3bab17c68bad4251c331b7e5675fdc0396526a1469a1d771ea9979211b",
-      "selected_provider_id": "provider:external:trellis-2",
-      "selected_provider_root": "f65ab9b82c18a54d9944811089285164a4ac6aeef1da27a19cc0e5b6ea03774b",
-      "selected_provider_source": "external-provider-contract",
+      "resolution_root": "1d7cda10dc53abfb2452f4ab584e61ee4f80ff7faa880f74ae4fcb3ceff6b8ec",
+      "selected_provider_id": "provider:taowind:procedural-3d",
+      "selected_provider_root": "7bba81ec5d30d0d0f84e0d44a718c4831634a088ee7624565828895100788e3d",
+      "selected_provider_source": "ragf-reference-provider",
       "eligible": true,
-      "runtime_status": "CONTRACT_ONLY",
-      "provider_health": {
-        "status": "CONTRACT_ONLY",
-        "runtime": "CONTRACT_ONLY",
-        "runtime_binding": "CONTRACT_ONLY"
-      },
-      "route_status": "EXTERNAL_CONTRACT_ONLY",
+      "runtime_status": "READY_REFERENCE",
+      "provider_health": null,
+      "route_status": "BUILTIN_REFERENCE_READY",
       "checks": {
         "profile_binding": true,
         "resolution_root": true,
@@ -420,23 +416,19 @@
       "index": 4,
       "asset_profile": "structure",
       "asset_id": "asset:410985a26afa34907f6f9b97",
-      "genome_root": "d751dfa10674b7fc68106c18f6565664d7290a9ff3544506e19858de3086f7bd",
+      "genome_root": "b8eb480b39bc1c0f3b95dbee54dd4038ea0bc022e5a65f2bced3b5a2b92cecb5",
       "required_capabilities": [
         "world.asset.generate.procedural",
         "world.asset.building"
       ],
-      "resolution_root": "1bdaad539bf7f13671d10f71d14427ed0019c78bb59f435f01193073d3d506ac",
-      "selected_provider_id": "provider:external:infinigen",
-      "selected_provider_root": "83bdca7ae05e8330c67e2e8b80478704e36f723ee15f148046094929bce9f91d",
-      "selected_provider_source": "external-provider-contract",
+      "resolution_root": "42a780584f695f64bd0aca9617295b264b93cbc91fc3701ae55b3f9c0f562e90",
+      "selected_provider_id": "provider:taowind:procedural-3d",
+      "selected_provider_root": "7bba81ec5d30d0d0f84e0d44a718c4831634a088ee7624565828895100788e3d",
+      "selected_provider_source": "ragf-reference-provider",
       "eligible": true,
-      "runtime_status": "CONTRACT_ONLY",
-      "provider_health": {
-        "status": "CONTRACT_ONLY",
-        "runtime": "CONTRACT_ONLY",
-        "runtime_binding": "CONTRACT_ONLY"
-      },
-      "route_status": "EXTERNAL_CONTRACT_ONLY",
+      "runtime_status": "READY_REFERENCE",
+      "provider_health": null,
+      "route_status": "BUILTIN_REFERENCE_READY",
       "checks": {
         "profile_binding": true,
         "resolution_root": true,
@@ -451,23 +443,19 @@
       "index": 5,
       "asset_profile": "environment",
       "asset_id": "asset:c5a0cdcc14e4197b1c1bc68f",
-      "genome_root": "f2a5f46c791241f2d6cb555f2d0f0437e9637cbfbf903bd2f93898d4b844f7b9",
+      "genome_root": "4042d2fc53ce0f39bd3c92a47c7cf5a929a952776ca71d85684214442513d5fd",
       "required_capabilities": [
         "world.asset.generate.procedural",
         "world.asset.environment"
       ],
-      "resolution_root": "ab16f8708c98a059be06c2fb9025d2e25ec40c48c436bb79f5b35c708e6c3e06",
-      "selected_provider_id": "provider:external:infinigen",
-      "selected_provider_root": "83bdca7ae05e8330c67e2e8b80478704e36f723ee15f148046094929bce9f91d",
-      "selected_provider_source": "external-provider-contract",
+      "resolution_root": "570d3ec736539c5a0dc2286530c97078b82795da173b0c4547c4110f6cdf74a7",
+      "selected_provider_id": "provider:taowind:procedural-3d",
+      "selected_provider_root": "7bba81ec5d30d0d0f84e0d44a718c4831634a088ee7624565828895100788e3d",
+      "selected_provider_source": "ragf-reference-provider",
       "eligible": true,
-      "runtime_status": "CONTRACT_ONLY",
-      "provider_health": {
-        "status": "CONTRACT_ONLY",
-        "runtime": "CONTRACT_ONLY",
-        "runtime_binding": "CONTRACT_ONLY"
-      },
-      "route_status": "EXTERNAL_CONTRACT_ONLY",
+      "runtime_status": "READY_REFERENCE",
+      "provider_health": null,
+      "route_status": "BUILTIN_REFERENCE_READY",
       "checks": {
         "profile_binding": true,
         "resolution_root": true,
@@ -482,23 +470,19 @@
       "index": 6,
       "asset_profile": "vegetation",
       "asset_id": "asset:3b4b7c4e08d9b0f0a477e070",
-      "genome_root": "61f8d2b32bc87e5b1a299a463b62eb0d7481d45156ae40890e9777c2a047cb7d",
+      "genome_root": "d870585d0930d2b545ba02544399c361cfae963ece8f2f6fa3a53105d61d9d12",
       "required_capabilities": [
         "world.asset.generate.procedural",
         "world.asset.vegetation"
       ],
-      "resolution_root": "ae27483e35abf2bf655bd378a3ae06b7a1b31e4a99d63797d36365c8f84b9bad",
-      "selected_provider_id": "provider:external:infinigen",
-      "selected_provider_root": "83bdca7ae05e8330c67e2e8b80478704e36f723ee15f148046094929bce9f91d",
-      "selected_provider_source": "external-provider-contract",
+      "resolution_root": "9d70b6bd7404dfd90ae87748e3f87b76ab628baa147f26004d18be6c53269c43",
+      "selected_provider_id": "provider:taowind:procedural-3d",
+      "selected_provider_root": "7bba81ec5d30d0d0f84e0d44a718c4831634a088ee7624565828895100788e3d",
+      "selected_provider_source": "ragf-reference-provider",
       "eligible": true,
-      "runtime_status": "CONTRACT_ONLY",
-      "provider_health": {
-        "status": "CONTRACT_ONLY",
-        "runtime": "CONTRACT_ONLY",
-        "runtime_binding": "CONTRACT_ONLY"
-      },
-      "route_status": "EXTERNAL_CONTRACT_ONLY",
+      "runtime_status": "READY_REFERENCE",
+      "provider_health": null,
+      "route_status": "BUILTIN_REFERENCE_READY",
       "checks": {
         "profile_binding": true,
         "resolution_root": true,
@@ -513,23 +497,19 @@
       "index": 7,
       "asset_profile": "resource",
       "asset_id": "asset:67901d8c96e0204230513bf9",
-      "genome_root": "20e9a3857323c70d8803c7603ff1c78be7fb90a8c8e71c316ef6715be4941eff",
+      "genome_root": "c3bb46b97d80b5e6b8fe5b59d09273955d76a529e237664fe49995ff4dc6b3c9",
       "required_capabilities": [
         "world.asset.generate.procedural",
         "world.asset.rock"
       ],
-      "resolution_root": "3e1559e04a597bc25664c5a91b615cbc0cae6770537d6c5d5831e4dd0fe2ee7e",
-      "selected_provider_id": "provider:external:infinigen",
-      "selected_provider_root": "83bdca7ae05e8330c67e2e8b80478704e36f723ee15f148046094929bce9f91d",
-      "selected_provider_source": "external-provider-contract",
+      "resolution_root": "e69634ee26ba2c663ecee0d0f2f2842748dda4d25359bb6233c84ce7a574133e",
+      "selected_provider_id": "provider:taowind:procedural-3d",
+      "selected_provider_root": "7bba81ec5d30d0d0f84e0d44a718c4831634a088ee7624565828895100788e3d",
+      "selected_provider_source": "ragf-reference-provider",
       "eligible": true,
-      "runtime_status": "CONTRACT_ONLY",
-      "provider_health": {
-        "status": "CONTRACT_ONLY",
-        "runtime": "CONTRACT_ONLY",
-        "runtime_binding": "CONTRACT_ONLY"
-      },
-      "route_status": "EXTERNAL_CONTRACT_ONLY",
+      "runtime_status": "READY_REFERENCE",
+      "provider_health": null,
+      "route_status": "BUILTIN_REFERENCE_READY",
       "checks": {
         "profile_binding": true,
         "resolution_root": true,
@@ -544,11 +524,11 @@
       "index": 8,
       "asset_profile": "vfx",
       "asset_id": "asset:6333b83fe8a8767c9af86903",
-      "genome_root": "0d941e31dd486f82886bb9a6c5d3c4e3fb8b976a56cc7a65654a57c880e705e1",
+      "genome_root": "1d292c08fc689d3b1130458ea50d13f8d5dcdd2a3d34f6b00c7bb77f39c2ff67",
       "required_capabilities": [
         "asset.generate.vfx"
       ],
-      "resolution_root": "02a306ec41a856c75a09a2bc3b45538ecaad2807e6c1e725b53586915e182179",
+      "resolution_root": "7fde02f6a5d1867858dd4457ff0a8dcc34f86441be297cbd870258e4c38556c6",
       "selected_provider_id": null,
       "selected_provider_root": null,
       "selected_provider_source": null,
@@ -572,8 +552,8 @@
     "profile_count": 9,
     "provider_count": 6,
     "route_histogram": {
-      "BUILTIN_REFERENCE_READY": 2,
-      "EXTERNAL_CONTRACT_ONLY": 6,
+      "BUILTIN_REFERENCE_READY": 7,
+      "EXTERNAL_CONTRACT_ONLY": 1,
       "EXTERNAL_RUNTIME_BOUND": 0,
       "UNRESOLVED": 1,
       "INCONSISTENT": 0
@@ -610,5 +590,5 @@
     "acceptance_can_commit": false,
     "rncs_authority_required": true
   },
-  "preflight_root": "f91710b6e15c70046b404d0ac4e968d717d5041e680b481fe00efcf160fbf14c"
+  "preflight_root": "e84cee3b1799990370356aaf4df009b1a6d87046e0863081b7f418c0f68847d6"
 }

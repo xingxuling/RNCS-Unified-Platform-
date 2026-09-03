@@ -181,8 +181,12 @@ npm run test:ragf-world-binding
 RNCS Character Genome Forge v0.1. It accepts solved Character Genome requests
 and emits deterministic Character Asset Families with GLB geometry, LODs,
 morphs, rig, collision and physics profiles, cross-media projections, stable
-roots, lineage, provider receipts and evidence. It can propose candidate assets
-but cannot mutate the RNCS identity authority or commit to the durable library.
+roots, lineage, provider receipts and evidence. The adjacent procedural 3D
+provider also emits bounded static reference candidates for `prop`, `vehicle`,
+`structure`, `environment`, `vegetation` and `resource`; those profiles use
+profile-specific geometry and static RSR/prefab contracts rather than a fake
+humanoid rig. It can propose candidate assets but cannot mutate the RNCS
+identity authority or commit to the durable library.
 
 The built-in assets are Apache-2.0 reference assets for pipeline validation.
 They are not presented as commercial character art, external DCC parity, GPU
@@ -190,7 +194,7 @@ target approval or human acceptance evidence.
 
 ## 事实边界
 
-内置Provider现在是确定性的 stylized procedural 3D 参考生产器，用于验证资产协议、家族、装配、谱系、增量影响和运行时闭环。它仍不等同于电影级或 AAA 角色生产，也未包含专业重拓扑、复杂 UV 展开、面部绑定、头发/布料、动作捕捉或通用文生 3D 模型。专业 DCC 与生成模型应作为可替换 Provider 接入。
+内置 Provider 现在是 profile-aware 的确定性 stylized procedural 3D 参考生产器：`character` 保留圆润人体、骨骼、动画和 morph 路径；`prop`、`vehicle`、`structure`、`environment`、`vegetation`、`resource` 生成各自的静态几何原型、四通道 PBR、三级 LOD、VSR 和静态 RSR。`creature` 与 `vfx` 仍分别停在外部 Provider 合同或未解析能力边界。所有输出都用于验证资产协议、家族、装配、谱系、增量影响和运行时闭环，仍不等同于电影级或 AAA 生产，也未包含专业重拓扑、复杂 UV 展开、面部绑定、头发/布料、动作捕捉、目标设备性能或通用文生 3D 模型。专业 DCC 与生成模型应作为可替换 Provider 接入。
 
 ## v0.5：AI社会生态与技术创生
 

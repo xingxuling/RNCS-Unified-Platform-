@@ -457,16 +457,25 @@ test('URRF profile coverage exercises every asset family without silent Provider
     input,
     result: generateUniversalArtAsset(input, {outDir: join(coverageOutDir, `${String(index).padStart(2, '0')}-${input.asset_profile}`)})
   }));
+  for (const profile of ['vehicle', 'structure', 'environment', 'vegetation', 'resource']) {
+    const result = entries.find(entry => entry.input.asset_profile === profile).result;
+    assert.equal(result.execution.status, 'COMPLETED', profile);
+    assert.equal(result.execution.file_inspection.status, 'PASS', profile);
+    assert.ok(result.candidate, profile);
+    assert.equal(result.candidate.artifacts['mesh-glb'].metadata.asset_kind, `${profile}-3d`);
+    assert.equal(result.candidate.artifacts['mesh-glb'].metadata.rigged, false);
+    assert.equal(result.candidate.artifacts['rsr-embodiment-profile'].data.body.runtime_kind, 'static');
+  }
   const expectedProfiles = profileInputs.map(input => input.asset_profile);
   const expectedModes = {
     character: 'BUILTIN_REFERENCE',
     creature: 'EXTERNAL_CONTRACT_ONLY',
     prop: 'BUILTIN_REFERENCE',
-    vehicle: 'EXTERNAL_CONTRACT_ONLY',
-    structure: 'EXTERNAL_CONTRACT_ONLY',
-    environment: 'EXTERNAL_CONTRACT_ONLY',
-    vegetation: 'EXTERNAL_CONTRACT_ONLY',
-    resource: 'EXTERNAL_CONTRACT_ONLY',
+    vehicle: 'BUILTIN_REFERENCE',
+    structure: 'BUILTIN_REFERENCE',
+    environment: 'BUILTIN_REFERENCE',
+    vegetation: 'BUILTIN_REFERENCE',
+    resource: 'BUILTIN_REFERENCE',
     vfx: 'UNRESOLVED'
   };
   const report = createUniversalArtAssetProfileCoverageReport({
@@ -478,8 +487,8 @@ test('URRF profile coverage exercises every asset family without silent Provider
   assert.equal(report.status, 'CANDIDATE_PROFILE_COVERAGE_PASS');
   assert.equal(report.summary.pass_count, 9);
   assert.equal(report.summary.fail_count, 0);
-  assert.equal(report.summary.mode_histogram.BUILTIN_REFERENCE, 2);
-  assert.equal(report.summary.mode_histogram.EXTERNAL_CONTRACT_ONLY, 6);
+  assert.equal(report.summary.mode_histogram.BUILTIN_REFERENCE, 7);
+  assert.equal(report.summary.mode_histogram.EXTERNAL_CONTRACT_ONLY, 1);
   assert.equal(report.summary.mode_histogram.UNRESOLVED, 1);
   assert.deepEqual(report.coverage.missing_profiles, []);
   assert.deepEqual(report.coverage.unexpected_profiles, []);
@@ -506,13 +515,13 @@ test('URRF Provider preflight records route readiness, runtime binding, and rele
   assert.equal(report.status, 'CANDIDATE_PROVIDER_PREFLIGHT_PASS');
   assert.equal(report.summary.profile_count, 9);
   assert.equal(report.summary.provider_count, 6);
-  assert.equal(report.summary.route_histogram.BUILTIN_REFERENCE_READY, 2);
-  assert.equal(report.summary.route_histogram.EXTERNAL_CONTRACT_ONLY, 6);
+  assert.equal(report.summary.route_histogram.BUILTIN_REFERENCE_READY, 7);
+  assert.equal(report.summary.route_histogram.EXTERNAL_CONTRACT_ONLY, 1);
   assert.equal(report.summary.route_histogram.EXTERNAL_RUNTIME_BOUND, 0);
   assert.equal(report.summary.route_histogram.UNRESOLVED, 1);
   assert.equal(report.summary.provider_health_histogram.CONTRACT_ONLY, 6);
   assert.equal(report.summary.release_blocked_provider_count, 6);
-  assert.equal(report.profile_routes.find(entry => entry.asset_profile === 'environment').route_status, 'EXTERNAL_CONTRACT_ONLY');
+  assert.equal(report.profile_routes.find(entry => entry.asset_profile === 'environment').route_status, 'BUILTIN_REFERENCE_READY');
   assert.equal(report.profile_routes.find(entry => entry.asset_profile === 'vfx').selected_provider_id, null);
   assert.equal(report.profile_routes.find(entry => entry.asset_profile === 'vfx').selected_provider_source, null);
   assert.equal(report.execution_performed, false);
@@ -523,7 +532,7 @@ test('URRF Provider preflight records route readiness, runtime binding, and rele
   writeFileSync(join(evidenceDir, 'universal-art-asset-provider-preflight.json'), `${JSON.stringify(report, null, 2)}\n`, 'utf8');
 
   const tampered = structuredClone(report);
-  tampered.profile_routes.find(entry => entry.asset_profile === 'environment').route_status = 'BUILTIN_REFERENCE_READY';
+  tampered.profile_routes.find(entry => entry.asset_profile === 'environment').route_status = 'EXTERNAL_CONTRACT_ONLY';
   delete tampered.preflight_root;
   tampered.preflight_root = rootHash(tampered);
   assert.equal(verifyUniversalArtAssetProviderPreflightReport(tampered).valid, false);
