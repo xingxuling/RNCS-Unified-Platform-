@@ -7,6 +7,7 @@ import {
 } from '../src/index.mjs';
 import {verifyUniversalArtAssetComponentRepresentationImportRegistry} from '@taowind/large-world-runtime';
 import {rootHash} from '@taowind/rncs-core-contract';
+import {VSR_PBR_MATERIAL_CHANNEL_ROLES} from '@taowind/visual-state-runtime/representation-provider';
 
 test('bridge binds every current URRF representation kind to a distinct VSR handler', () => {
   const importers = createUrrfVsrArtAssetImporters({handlerIdPrefix: 'test.bridge'});
@@ -61,6 +62,27 @@ test('bridge exposes a verified non-mesh result only after the VSR verifier pass
   assert.equal(verified[0].representation_kind, 'sdf');
   assert.equal(verified[0].component_id, 'component:sdf');
   assert.equal(verified[0].result.candidate.representationKind, 'sdf');
+});
+
+test('bridge routes a standalone four-channel PBR pack through the material candidate handler', async () => {
+  const importers = createUrrfVsrArtAssetImporters({handlerIdPrefix: 'test.material'});
+  const assets = VSR_PBR_MATERIAL_CHANNEL_ROLES.map((role, index) => ({
+    id: `physical:material:${index}`,
+    kind: 'texture',
+    format: 'image/png',
+    role
+  }));
+  const payloads = new Map(assets.map((asset, index) => [asset.id, new Uint8Array([index + 1, 2, 3])]));
+  const result = await importers.material.compile({
+    entry: {component_id: 'component:material', asset_id: 'asset:material', representation_kind: 'material', representation_profile: 'pbr-texture-pack'},
+    assets,
+    payloads
+  });
+  assert.equal(result.candidate.format, 'vsr.pbr-material-candidate.v0.1');
+  assert.equal(result.candidate.representationKind, 'material');
+  assert.equal(result.metrics.pbr_channel_count, 4);
+  assert.equal(result.metrics.rendered, 0);
+  assert.equal(await importers.material.verify({result}), true);
 });
 
 test('explicit spatial mode lowers a verified fixed point-cloud candidate', async () => {

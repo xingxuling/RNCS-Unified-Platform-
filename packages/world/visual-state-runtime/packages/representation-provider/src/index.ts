@@ -1,5 +1,6 @@
 import { cryptographicHash } from '../../spec/src/index.js';
 export * from './non-mesh-import.js';
+export * from './pbr-material-import.js';
 
 export const VSR_REPRESENTATION_PROVIDER_BINDING_FORMAT = 'vsr.representation-provider-binding.v0.1' as const;
 export const VSR_SPARK_3DGS_PROVIDER_ID = 'provider:external:spark-2.1.0' as const;

@@ -33,7 +33,7 @@ import {createUrrfVsrArtAssetImportBinding, createUrrfVsrArtAssetSpatialImportBi
 
 const root = letter => letter.repeat(64);
 
-function createFixture({validMesh = false, includeBlade = false, includeAnimation = false, includeParticle = false, pbrMesh = false} = {}) {
+function createFixture({validMesh = false, includeBlade = false, includeAnimation = false, includeParticle = false, includeMaterialComponent = false, pbrMesh = false} = {}) {
   const rootGenome = createUniversalArtAssetGenome({
     asset_profile: 'character',
     asset_kind: 'character-3d',
@@ -76,6 +76,16 @@ function createFixture({validMesh = false, includeBlade = false, includeAnimatio
       representation_profile: 'humanoid-clips',
       depends_on: ['body'],
       transform_mm: [0, 0, 0]
+    }] : []),
+    ...(includeMaterialComponent ? [{
+      component_id: 'surface-material',
+      role: 'surface-material',
+      asset_profile: 'prop',
+      asset_kind: 'prop-3d',
+      description: '独立四通道表面材质。',
+      seed: 'component-representation-directory-material',
+      representation_kind: 'material',
+      representation_profile: 'pbr-texture-pack'
     }] : []),
     {
       component_id: 'sparks',
@@ -164,7 +174,7 @@ function createFixture({validMesh = false, includeBlade = false, includeAnimatio
         const ragfGenome = componentGenome.ragf_genome;
         if (role === 'pbr-texture-pack' && pbrMesh) {
           const pbr = generatePbrTexturePack({genome: ragfGenome, variant: 'standard'});
-          return pbr.files.map(file => ({
+          const channelFiles = pbr.files.map(file => ({
             name: `${operation}/pbr/${file.name}`,
             path: `${operation}/pbr/${file.name}`,
             role: file.role,
@@ -172,6 +182,16 @@ function createFixture({validMesh = false, includeBlade = false, includeAnimatio
             mime: file.mime,
             base64: Buffer.from(file.buffer).toString('base64')
           }));
+          if (componentId !== 'surface-material') return channelFiles;
+          const metadata = Buffer.from(JSON.stringify(pbr.metadata), 'utf8');
+          return [...channelFiles, {
+            name: `${operation}/pbr/material.json`,
+            path: `${operation}/pbr/material.json`,
+            role: 'pbr-material-metadata',
+            format: 'application/json',
+            mime: 'application/json',
+            base64: metadata.toString('base64')
+          }];
         }
         if (pbrMesh && role === 'rig-candidate') {
           const payload = Buffer.from(JSON.stringify(generateSkeletonRig({genome: ragfGenome, variant: 'standard'})), 'utf8');
@@ -547,4 +567,38 @@ test('component representation import executes a particle preset handler with ex
   assert.ok(spatialParticles.renderableCount > 0);
   assert.ok(frame.framePlan.stats.transparentDraws > 0);
   assert.notEqual(frame.pixelRoot, '0'.repeat(64));
+});
+
+test('component representation directory imports a generated RAGF PBR material pack', async () => {
+  const {assembly} = createFixture({includeMaterialComponent: true, pbrMesh: true});
+  const directory = lowerUniversalArtAssetComponentAssemblyToRepresentationDirectory({assembly});
+  const loadAsset = asset => fs.readFileSync(path.resolve(asset.metadata.output_directory, asset.metadata.relative_path));
+  let materialCandidate = null;
+  const binding = createUrrfVsrArtAssetImportBinding({
+    material: {requirePackMetadata: true},
+    onVerifiedResult: ({component_id, result}) => {
+      if (component_id === 'surface-material') materialCandidate = result.candidate;
+    }
+  });
+  const imported = await executeUniversalArtAssetComponentRepresentationImport({
+    directory,
+    assembly,
+    requestedComponentIds: ['surface-material'],
+    loadAsset,
+    importerRegistry: binding.registry
+  });
+  assert.equal(imported.status, 'CANDIDATE_COMPONENT_REPRESENTATION_IMPORT_EXECUTED');
+  assert.equal(imported.importer_registry_root, binding.registry.registry_root);
+  assert.equal(imported.entries[0].representation_kind, 'material');
+  assert.equal(imported.entries[0].verification_status, 'HANDLER_VERIFIED');
+  assert.equal(imported.entries[0].resource_coverage_status, 'PARTIAL');
+  assert.equal(imported.entries[0].metrics.pbr_channel_count, 4);
+  assert.equal(imported.entries[0].metrics.pbr_metadata_present, 1);
+  assert.equal(imported.entries[0].metrics.rendered, 0);
+  assert.equal(imported.entries[0].consumed_asset_ids.length, 5);
+  assert.ok(imported.entries[0].deferred_asset_ids.length > 0);
+  assert.equal(materialCandidate?.format, 'vsr.pbr-material-candidate.v0.1');
+  assert.equal(materialCandidate?.materialModel, 'stylized-pbr-v0.4');
+  assert.equal(materialCandidate?.channelAssetIds.length, 4);
+  assert.equal(verifyUniversalArtAssetComponentRepresentationImport(imported, {directory, importerRegistry: binding.registry}).valid, true);
 });

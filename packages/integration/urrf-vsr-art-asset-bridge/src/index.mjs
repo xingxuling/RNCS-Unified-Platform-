@@ -8,7 +8,11 @@ import {
   createVsrParticleComponentImportHandler,
   createVsrRigAnimationComponentImportHandler
 } from '@taowind/visual-state-runtime/gltf-asset';
-import {createVsrNonMeshRepresentationComponentImportHandlerSet} from '@taowind/visual-state-runtime/representation-provider';
+import {
+  createVsrNonMeshRepresentationComponentImportHandlerSet,
+  createVsrPbrMaterialComponentImportHandler,
+  hasVsrPbrMaterialAssets
+} from '@taowind/visual-state-runtime/representation-provider';
 import {
   lowerVsrCurveCandidateToSpatialScene,
   lowerVsrGaussianSplatCandidateToSpatialScene,
@@ -80,6 +84,24 @@ function sourceOutputRoot(result) {
 
 function spatialRenderableCount(spatial) {
   return Number(spatial?.renderableCount ?? spatial?.occupiedCount ?? spatial?.pointCount ?? spatial?.voxelCount ?? spatial?.splatCount ?? spatial?.triangleCount ?? 0);
+}
+
+/**
+ * Keep the legacy opaque material descriptor available, but route an explicit
+ * four-channel PBR pack through the stronger material candidate contract.
+ */
+function createMaterialHandler({pbr, descriptor}) {
+  if (!pbr || !descriptor) throw new Error('URRF VSR material bridge requires both PBR and descriptor handlers.');
+  return Object.freeze({
+    representation_kind: 'material',
+    handler_id: pbr.handler_id,
+    compile: async context => hasVsrPbrMaterialAssets(context?.assets ?? [])
+      ? pbr.compile(context)
+      : descriptor.compile(context),
+    verify: async input => input?.result?.candidate?.format === 'vsr.pbr-material-candidate.v0.1'
+      ? pbr.verify(input)
+      : descriptor.verify(input)
+  });
 }
 
 /**
@@ -182,6 +204,7 @@ export function createUrrfVsrArtAssetImporters(options = {}) {
   const rigOptions = record(options.rig);
   const animationOptions = record(options.animation);
   const particleOptions = record(options.particle);
+  const materialOptions = record(options.material);
   const nonMeshOptions = record(options.nonMesh);
   const spatialOptions = record(options.spatial);
   const spatialEnabled = options.spatial === true || spatialOptions.enabled === true;
@@ -209,6 +232,11 @@ export function createUrrfVsrArtAssetImporters(options = {}) {
     handlerIdPrefix: nonMeshOptions.handlerIdPrefix ?? `${prefix}.non-mesh`,
     ...(nonMeshOptions.sceneId === undefined ? {} : {sceneId: nonMeshOptions.sceneId})
   });
+  const pbrMaterial = createVsrPbrMaterialComponentImportHandler({
+    ...materialOptions,
+    handlerId: materialOptions.handlerId ?? `${prefix}.material.v0.1`
+  });
+  const material = createMaterialHandler({pbr: pbrMaterial, descriptor: nonMesh.material});
 
   const bindNonMesh = (representationKind, handler) => spatialEnabled && SPATIAL_LOWERERS[representationKind]
     ? bindSpatialHandler(representationKind, handler, SPATIAL_LOWERERS[representationKind].lower, SPATIAL_LOWERERS[representationKind].verify, spatialOptionsFor(spatialOptions, representationKind), onVerifiedResult)
@@ -226,7 +254,7 @@ export function createUrrfVsrArtAssetImporters(options = {}) {
     'neural-field': bindNonMesh('neural-field', nonMesh['neural-field']),
     curve: bindNonMesh('curve', nonMesh.curve),
     particle: bindParticle,
-    material: bindHandler('material', nonMesh.material, onVerifiedResult),
+    material: bindHandler('material', material, onVerifiedResult),
     rig: bindHandler('rig', rig, onVerifiedResult),
     animation: bindHandler('animation', animation, onVerifiedResult)
   });

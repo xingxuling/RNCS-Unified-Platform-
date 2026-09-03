@@ -8,10 +8,14 @@ It covers all eleven current component representation kinds:
 - rig and animation: standalone or optional geometry-fused rig/clip import;
 - particle: RAGF particle-preset normalization;
 - sdf, voxel, point-cloud, gaussian-splat, neural-field, curve, and material:
-  descriptor/payload-page validation. `createUrrfVsrArtAssetSpatialImportBinding`
-  additionally connects the particle, SDF, voxel, point-cloud, Gaussian,
-  neural-field, and curve candidate lowerers to the handler output; material
-  remains descriptor-only until a mesh/material consumer is explicitly bound.
+  descriptor/payload-page validation. An explicit four-channel RAGF PBR pack
+  is routed through `createVsrPbrMaterialComponentImportHandler`, which
+  verifies `pbr/material.json`, channel roots, color spaces, and logical-to-
+  physical resource bindings; generic material descriptors remain available as
+  the fallback. `createUrrfVsrArtAssetSpatialImportBinding` additionally
+  connects the particle, SDF, voxel, point-cloud, Gaussian, neural-field, and
+  curve candidate lowerers to the handler output; material remains a
+  candidate-only material package, not a GPU-rendered scene.
 
 The bridge keeps responsibilities separate: URRF/LWR selects components,
 rehashes bytes, records coverage and execution receipts; VSR interprets the

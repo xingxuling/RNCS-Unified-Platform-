@@ -6,9 +6,13 @@ import {
   createSpark3DGSVisualBinding,
   createVsrNonMeshRepresentationComponentImportHandler,
   createVsrNonMeshRepresentationComponentImportHandlerSet,
+  createVsrPbrMaterialComponentImportHandler,
   inspectVisualRepresentationProvider,
+  verifyVsrPbrMaterialImportReceipt,
   verifyVsrNonMeshRepresentationImportReceipt,
   verifyVisualRepresentationBinding,
+  VSR_PBR_MATERIAL_CHANNEL_ROLES,
+  VSR_PBR_TEXTURE_PACK_FORMAT,
   VSR_NON_MESH_REPRESENTATION_MANIFEST_FORMAT,
   VSR_NON_MESH_REPRESENTATION_KINDS,
   type VSRNonMeshRepresentationAsset,
@@ -130,6 +134,81 @@ test('non-mesh importer factory binds every supported kind with an explicit veri
     assert.equal(typeof handlers[kind]!.compile, 'function');
     assert.equal(typeof handlers[kind]!.verify, 'function');
   }
+});
+
+test('VSR imports and verifies an RAGF four-channel PBR material candidate', async () => {
+  const channelBytes = VSR_PBR_MATERIAL_CHANNEL_ROLES.map((_, index) => new Uint8Array([index + 1, 16 + index, 255 - index]));
+  const physicalIds = VSR_PBR_MATERIAL_CHANNEL_ROLES.map(role => `physical:material:${role}`);
+  const logicalIds = VSR_PBR_MATERIAL_CHANNEL_ROLES.map(role => `logical:material:${role}`);
+  const metadataBase = {
+    format: VSR_PBR_TEXTURE_PACK_FORMAT,
+    asset_id: 'asset:material',
+    variant: 'standard',
+    size: 1,
+    color_space: {
+      'base-color': 'srgb',
+      normal: 'linear',
+      'occlusion-roughness-metallic': 'linear',
+      emissive: 'srgb'
+    },
+    material_model: 'stylized-pbr-v0.4',
+    variation: {seed: 17},
+    files: VSR_PBR_MATERIAL_CHANNEL_ROLES.map((role, index) => ({
+      name: `${role}.png`,
+      role,
+      mime: 'image/png',
+      root: cryptographicHash(Buffer.from(channelBytes[index]!).toString('base64'))
+    }))
+  };
+  const metadata = {...metadataBase, pack_root: cryptographicHash(metadataBase)};
+  const metadataId = 'physical:material:metadata';
+  const metadataBytes = new TextEncoder().encode(JSON.stringify(metadata));
+  const assets = [
+    {id: metadataId, kind: 'material', format: 'application/json', role: 'pbr-material-metadata'},
+    ...physicalIds.map((id, index) => ({
+      id,
+      kind: 'texture',
+      format: 'image/png',
+      role: VSR_PBR_MATERIAL_CHANNEL_ROLES[index],
+      metadata: {source_asset_id: logicalIds[index]}
+    })),
+    {id: 'physical:material:note', kind: 'other', format: 'text/plain'}
+  ];
+  const payloads = new Map<string, Uint8Array>([
+    [metadataId, metadataBytes],
+    ...physicalIds.map((id, index) => [id, channelBytes[index]!] as [string, Uint8Array]),
+    ['physical:material:note', new Uint8Array([9])]
+  ]);
+  const handler = createVsrPbrMaterialComponentImportHandler({
+    handlerId: 'vsr.pbr-material-regression.v0.1',
+    requirePackMetadata: true
+  });
+  const result = await handler.compile({
+    entry: {component_id: 'material', asset_id: 'asset:material', representation_kind: 'material', representation_profile: 'pbr-texture-pack'},
+    assets,
+    payloads
+  });
+  assert.deepEqual(result.candidate.channelAssetIds, physicalIds);
+  assert.deepEqual(result.candidate.sourceChannelAssetIds, logicalIds);
+  assert.equal(result.candidate.materialModel, 'stylized-pbr-v0.4');
+  assert.equal(result.candidate.packRoot, metadata.pack_root);
+  assert.equal(result.candidate.channelByteLengths.reduce((sum, value) => sum + value, 0), 12);
+  assert.equal(result.metrics.pbr_channel_count, 4);
+  assert.equal(result.metrics.pbr_metadata_present, 1);
+  assert.equal(result.metrics.rendered, 0);
+  assert.deepEqual(result.consumed_asset_ids, [metadataId, ...physicalIds]);
+  assert.deepEqual(result.deferred_asset_ids, ['physical:material:note']);
+  assert.equal(verifyVsrPbrMaterialImportReceipt(result.receipt, result.candidate), true);
+  assert.equal(JSON.parse(readFileSync(fileURLToPath(new URL('../schemas/vsr-pbr-material-candidate.v0.1.schema.json', import.meta.url)), 'utf8')).properties.format.const, 'vsr.pbr-material-candidate.v0.1');
+  assert.equal(JSON.parse(readFileSync(fileURLToPath(new URL('../schemas/vsr-pbr-material-import-receipt.v0.1.schema.json', import.meta.url)), 'utf8')).properties.format.const, 'vsr.pbr-material-import-receipt.v0.1');
+  assert.equal(handler.verify({result}), true);
+
+  const tampered = new Map(payloads);
+  tampered.set(physicalIds[2]!, new Uint8Array([99, 16, 253]));
+  await assert.rejects(
+    () => handler.compile({entry: {component_id: 'material', asset_id: 'asset:material', representation_kind: 'material'}, assets, payloads: tampered}),
+    /root does not match pack metadata/
+  );
 });
 
 test('VSR seals a non-mesh Gaussian payload package without claiming rendering', async () => {
