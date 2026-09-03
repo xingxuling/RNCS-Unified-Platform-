@@ -47,6 +47,7 @@ export interface VSRNonMeshRepresentationCandidate {
   representationKind: VSRNonMeshRepresentationKind;
   profileId: string;
   payloadAssetIds: string[];
+  sourcePayloadAssetIds?: string[];
   payloadFormat: string;
   payloadByteLength: number;
   elementCount: number;
@@ -71,6 +72,7 @@ export interface VSRNonMeshRepresentationImportReceipt {
   resourceRoot: string;
   candidateRoot: string;
   payloadAssetIds: string[];
+  sourcePayloadAssetIds?: string[];
   payloadFormat: string;
   payloadByteLength: number;
   payloadCount: number;
@@ -125,6 +127,11 @@ function assetFormat(asset: VSRNonMeshRepresentationAsset): string {
   return String(asset.format ?? asset.metadata?.format ?? '').trim();
 }
 
+function sourceAssetId(asset: VSRNonMeshRepresentationAsset): string | undefined {
+  const value = asset.metadata?.source_asset_id;
+  return nonEmpty(value) ? value.trim() : undefined;
+}
+
 function isManifestAsset(asset: VSRNonMeshRepresentationAsset): boolean {
   const role = String(asset.metadata?.role ?? asset.metadata?.representation_role ?? asset.role ?? '').trim().toLowerCase().replace(/_/g, '-');
   return asset.kind === 'representation-manifest'
@@ -156,25 +163,31 @@ function manifestBase(manifest: VSRNonMeshRepresentationManifest): Omit<VSRNonMe
   return base;
 }
 
-function payloadRoot(payloads: Map<string, Uint8Array>, payloadAssets: VSRNonMeshRepresentationAsset[], payloadAssetIds: string[]): string {
-  return cryptographicHash(payloadAssetIds.map(assetId => {
-    const asset = payloadAssets.find(candidate => candidate.id === assetId);
-    if (!asset) throw new Error(`VSR non-mesh representation payload asset ${assetId} is missing.`);
+function payloadRoot(payloads: Map<string, Uint8Array>, payloadAssets: VSRNonMeshRepresentationAsset[], payloadAssetIds: string[], sourcePayloadAssetIds: string[]): string {
+  if (payloadAssetIds.length !== sourcePayloadAssetIds.length || payloadAssets.length !== payloadAssetIds.length) throw new Error('VSR non-mesh representation payload binding lengths do not match.');
+  return cryptographicHash(payloadAssetIds.map((assetId, index) => {
+    const asset = payloadAssets[index];
+    if (!asset || asset.id !== assetId) throw new Error(`VSR non-mesh representation payload asset ${assetId} is missing.`);
     const bytes = bytesFor(payloads, asset);
-    return {assetId, byteLength: bytes.byteLength, byteRoot: cryptographicHash([...bytes])};
+    return {assetId: sourcePayloadAssetIds[index], byteLength: bytes.byteLength, byteRoot: cryptographicHash([...bytes])};
   }));
 }
 
-function resourceRoot(manifestAsset: VSRNonMeshRepresentationAsset, manifestBytes: Uint8Array, payloads: Map<string, Uint8Array>, payloadAssets: VSRNonMeshRepresentationAsset[], payloadAssetIds: string[], componentId: string, representationKind: VSRNonMeshRepresentationKind): string {
+function resourceRoot(manifestAsset: VSRNonMeshRepresentationAsset, manifestBytes: Uint8Array, payloads: Map<string, Uint8Array>, payloadAssets: VSRNonMeshRepresentationAsset[], payloadAssetIds: string[], sourcePayloadAssetIds: string[], componentId: string, representationKind: VSRNonMeshRepresentationKind): string {
   return cryptographicHash({
     componentId,
     representationKind,
     resources: [
       {assetId: manifestAsset.id, byteLength: manifestBytes.byteLength, byteRoot: cryptographicHash([...manifestBytes])},
-      ...payloadAssetIds.map(assetId => {
-        const asset = payloadAssets.find(candidate => candidate.id === assetId)!;
+      ...payloadAssetIds.map((assetId, index) => {
+        const asset = payloadAssets[index]!;
         const bytes = bytesFor(payloads, asset);
-        return {assetId, byteLength: bytes.byteLength, byteRoot: cryptographicHash([...bytes])};
+        return {
+          assetId,
+          ...(sourcePayloadAssetIds[index] === assetId ? {} : {sourceAssetId: sourcePayloadAssetIds[index]}),
+          byteLength: bytes.byteLength,
+          byteRoot: cryptographicHash([...bytes])
+        };
       })
     ]
   });
@@ -189,7 +202,16 @@ function finiteBounds(bounds: unknown): bounds is {min: [number, number, number]
     && candidate.max.every((value, index) => value > (candidate.min as number[])[index]!);
 }
 
-function validateManifest(manifest: VSRNonMeshRepresentationManifest, {entry, componentId, expectedKind, assets, payloads, manifestAsset}: {entry: JsonRecord; componentId: string; expectedKind: VSRNonMeshRepresentationKind | undefined; assets: VSRNonMeshRepresentationAsset[]; payloads: Map<string, Uint8Array>; manifestAsset: VSRNonMeshRepresentationAsset}): {kind: VSRNonMeshRepresentationKind; payloadAssets: VSRNonMeshRepresentationAsset[]; manifestBytes: Uint8Array; contentRoot: string; resourceRoot: string} {
+function resolvePayloadAsset(sourcePayloadAssetId: string, assets: VSRNonMeshRepresentationAsset[], manifestAsset: VSRNonMeshRepresentationAsset): VSRNonMeshRepresentationAsset {
+  const matches = assets.filter(asset => asset.id === sourcePayloadAssetId || sourceAssetId(asset) === sourcePayloadAssetId);
+  const uniqueMatches = [...new Map(matches.map(asset => [asset.id, asset])).values()];
+  if (uniqueMatches.length === 0) throw new Error(`VSR non-mesh representation payload asset ${sourcePayloadAssetId} is not declared.`);
+  if (uniqueMatches.length !== 1) throw new Error(`VSR non-mesh representation payload asset ${sourcePayloadAssetId} is ambiguous.`);
+  if (uniqueMatches[0]!.id === manifestAsset.id) throw new Error(`VSR non-mesh representation payload asset ${sourcePayloadAssetId} resolves to the manifest.`);
+  return uniqueMatches[0]!;
+}
+
+function validateManifest(manifest: VSRNonMeshRepresentationManifest, {entry, componentId, expectedKind, assets, payloads, manifestAsset}: {entry: JsonRecord; componentId: string; expectedKind: VSRNonMeshRepresentationKind | undefined; assets: VSRNonMeshRepresentationAsset[]; payloads: Map<string, Uint8Array>; manifestAsset: VSRNonMeshRepresentationAsset}): {kind: VSRNonMeshRepresentationKind; payloadAssets: VSRNonMeshRepresentationAsset[]; payloadAssetIds: string[]; sourcePayloadAssetIds: string[]; manifestBytes: Uint8Array; contentRoot: string; resourceRoot: string} {
   const kind = canonicalKind(manifest.representation_kind);
   if (manifest.format !== VSR_NON_MESH_REPRESENTATION_MANIFEST_FORMAT || manifest.version !== '0.1.0' || !kind) throw new Error('VSR non-mesh representation manifest contract is invalid.');
   if (expectedKind && kind !== expectedKind) throw new Error(`VSR non-mesh representation kind ${kind} does not match handler ${expectedKind}.`);
@@ -197,18 +219,19 @@ function validateManifest(manifest: VSRNonMeshRepresentationManifest, {entry, co
   const expectedAssetId = entry.asset_id ?? entry.assetId;
   if (expectedAssetId !== undefined && manifest.asset_id !== expectedAssetId) throw new Error('VSR non-mesh representation asset identity is not bound.');
   if (!nonEmpty(manifest.asset_id) || !nonEmpty(manifest.profile_id) || !nonEmpty(manifest.payload_format) || !finiteBounds(manifest.bounds) || !Array.isArray(manifest.payload_asset_ids) || manifest.payload_asset_ids.length < 1 || manifest.payload_asset_ids.length > 4096 || new Set(manifest.payload_asset_ids).size !== manifest.payload_asset_ids.length || manifest.payload_asset_ids.some(assetId => !nonEmpty(assetId) || assetId === manifestAsset.id) || !Number.isSafeInteger(manifest.payload_byte_length) || manifest.payload_byte_length < 1 || !Number.isSafeInteger(manifest.element_count) || manifest.element_count < 1 || !isHexRoot(manifest.content_root) || manifest.candidate_only !== true || manifest.authoritative !== false || !isHexRoot(manifest.manifest_root) || cryptographicHash(manifestBase(manifest)) !== manifest.manifest_root) throw new Error('VSR non-mesh representation manifest integrity or bounds contract is invalid.');
-  const payloadAssets = manifest.payload_asset_ids.map(assetId => {
-    const asset = assets.find(candidate => candidate.id === assetId);
-    if (!asset) throw new Error(`VSR non-mesh representation payload asset ${assetId} is not declared.`);
-    if (assetFormat(asset) !== manifest.payload_format) throw new Error(`VSR non-mesh representation payload ${assetId} format is not ${manifest.payload_format}.`);
+  const sourcePayloadAssetIds = [...manifest.payload_asset_ids];
+  const payloadAssets = sourcePayloadAssetIds.map(sourcePayloadAssetId => {
+    const asset = resolvePayloadAsset(sourcePayloadAssetId, assets, manifestAsset);
+    if (assetFormat(asset) !== manifest.payload_format) throw new Error(`VSR non-mesh representation payload ${sourcePayloadAssetId} format is not ${manifest.payload_format}.`);
     return asset;
   });
+  const payloadAssetIds = payloadAssets.map(asset => asset.id);
   const actualByteLength = payloadAssets.reduce((sum, asset) => sum + bytesFor(payloads, asset).byteLength, 0);
   if (actualByteLength !== manifest.payload_byte_length) throw new Error('VSR non-mesh representation payload byte length mismatch.');
-  const contentRoot = payloadRoot(payloads, payloadAssets, manifest.payload_asset_ids);
+  const contentRoot = payloadRoot(payloads, payloadAssets, payloadAssetIds, sourcePayloadAssetIds);
   if (contentRoot !== manifest.content_root) throw new Error('VSR non-mesh representation content root mismatch.');
   const manifestBytes = bytesFor(payloads, manifestAsset);
-  return {kind, payloadAssets, manifestBytes, contentRoot, resourceRoot: resourceRoot(manifestAsset, manifestBytes, payloads, payloadAssets, manifest.payload_asset_ids, componentId, kind)};
+  return {kind, payloadAssets, payloadAssetIds, sourcePayloadAssetIds, manifestBytes, contentRoot, resourceRoot: resourceRoot(manifestAsset, manifestBytes, payloads, payloadAssets, payloadAssetIds, sourcePayloadAssetIds, componentId, kind)};
 }
 
 function candidateBase(candidate: VSRNonMeshRepresentationCandidate): Omit<VSRNonMeshRepresentationCandidate, 'candidateRoot'> {
@@ -230,9 +253,17 @@ function coverageValid(result: VSRNonMeshRepresentationComponentImportResult): b
     && consumed.every(assetId => !deferred.includes(assetId));
 }
 
+function sourcePayloadAssetIdsValid(value: unknown, payloadAssetIds: string[]): value is string[] {
+  return value === undefined
+    || (Array.isArray(value)
+      && value.length === payloadAssetIds.length
+      && value.every(nonEmpty)
+      && new Set(value).size === value.length);
+}
+
 export function verifyVsrNonMeshRepresentationImportReceipt(receipt: VSRNonMeshRepresentationImportReceipt, candidate?: VSRNonMeshRepresentationCandidate): boolean {
   try {
-    if (!receipt || receipt.format !== VSR_NON_MESH_REPRESENTATION_IMPORT_FORMAT || receipt.version !== '0.1.0' || !nonEmpty(receipt.componentId) || !nonEmpty(receipt.sceneId) || !canonicalKind(receipt.representationKind) || !nonEmpty(receipt.profileId) || !isHexRoot(receipt.manifestRoot) || !isHexRoot(receipt.contentRoot) || !isHexRoot(receipt.resourceRoot) || !isHexRoot(receipt.candidateRoot) || !Array.isArray(receipt.payloadAssetIds) || receipt.payloadAssetIds.length < 1 || new Set(receipt.payloadAssetIds).size !== receipt.payloadAssetIds.length || !nonEmpty(receipt.payloadFormat) || !Number.isSafeInteger(receipt.payloadByteLength) || receipt.payloadByteLength < 1 || !Number.isSafeInteger(receipt.payloadCount) || receipt.payloadCount !== receipt.payloadAssetIds.length || !Number.isSafeInteger(receipt.elementCount) || receipt.elementCount < 1 || receipt.renderStatus !== 'NOT_IMPLEMENTED' || receipt.candidateOnly !== true || receipt.authoritative !== false) return false;
+    if (!receipt || receipt.format !== VSR_NON_MESH_REPRESENTATION_IMPORT_FORMAT || receipt.version !== '0.1.0' || !nonEmpty(receipt.componentId) || !nonEmpty(receipt.sceneId) || !canonicalKind(receipt.representationKind) || !nonEmpty(receipt.profileId) || !isHexRoot(receipt.manifestRoot) || !isHexRoot(receipt.contentRoot) || !isHexRoot(receipt.resourceRoot) || !isHexRoot(receipt.candidateRoot) || !Array.isArray(receipt.payloadAssetIds) || receipt.payloadAssetIds.length < 1 || new Set(receipt.payloadAssetIds).size !== receipt.payloadAssetIds.length || !sourcePayloadAssetIdsValid(receipt.sourcePayloadAssetIds, receipt.payloadAssetIds) || !nonEmpty(receipt.payloadFormat) || !Number.isSafeInteger(receipt.payloadByteLength) || receipt.payloadByteLength < 1 || !Number.isSafeInteger(receipt.payloadCount) || receipt.payloadCount !== receipt.payloadAssetIds.length || !Number.isSafeInteger(receipt.elementCount) || receipt.elementCount < 1 || receipt.renderStatus !== 'NOT_IMPLEMENTED' || receipt.candidateOnly !== true || receipt.authoritative !== false) return false;
     if (cryptographicHash(receiptBase(receipt)) !== receipt.receiptRoot) return false;
     if (candidate) return candidate.format === VSR_NON_MESH_REPRESENTATION_CANDIDATE_FORMAT
       && candidate.version === '0.1.0'
@@ -242,6 +273,8 @@ export function verifyVsrNonMeshRepresentationImportReceipt(receipt: VSRNonMeshR
       && candidate.manifestRoot === receipt.manifestRoot
       && candidate.contentRoot === receipt.contentRoot
       && JSON.stringify(candidate.payloadAssetIds) === JSON.stringify(receipt.payloadAssetIds)
+      && sourcePayloadAssetIdsValid(candidate.sourcePayloadAssetIds, candidate.payloadAssetIds)
+      && JSON.stringify(candidate.sourcePayloadAssetIds ?? null) === JSON.stringify(receipt.sourcePayloadAssetIds ?? null)
       && candidate.payloadFormat === receipt.payloadFormat
       && candidate.payloadByteLength === receipt.payloadByteLength
       && candidate.elementCount === receipt.elementCount
@@ -290,7 +323,8 @@ export function createVsrNonMeshRepresentationComponentImportHandler(options: VS
         componentId,
         representationKind: validation.kind,
         profileId: manifest.profile_id,
-        payloadAssetIds: [...manifest.payload_asset_ids],
+        payloadAssetIds: [...validation.payloadAssetIds],
+        ...(validation.sourcePayloadAssetIds.every((assetId, index) => assetId === validation.payloadAssetIds[index]) ? {} : {sourcePayloadAssetIds: [...validation.sourcePayloadAssetIds]}),
         payloadFormat: manifest.payload_format,
         payloadByteLength: manifest.payload_byte_length,
         elementCount: manifest.element_count,
@@ -302,7 +336,7 @@ export function createVsrNonMeshRepresentationComponentImportHandler(options: VS
         authoritative: false
       };
       const candidate: VSRNonMeshRepresentationCandidate = {...candidateBaseValue, candidateRoot: cryptographicHash(candidateBaseValue)};
-      const consumed_asset_ids = [manifestAsset.id, ...manifest.payload_asset_ids];
+      const consumed_asset_ids = [manifestAsset.id, ...validation.payloadAssetIds];
       const consumed = new Set(consumed_asset_ids);
       const deferred_asset_ids = assets.map(asset => asset.id).filter(assetId => !consumed.has(assetId));
       const resourceRootValue = validation.resourceRoot;
@@ -317,10 +351,11 @@ export function createVsrNonMeshRepresentationComponentImportHandler(options: VS
         contentRoot: validation.contentRoot,
         resourceRoot: resourceRootValue,
         candidateRoot: candidate.candidateRoot,
-        payloadAssetIds: [...manifest.payload_asset_ids],
+        payloadAssetIds: [...validation.payloadAssetIds],
+        ...(validation.sourcePayloadAssetIds.every((assetId, index) => assetId === validation.payloadAssetIds[index]) ? {} : {sourcePayloadAssetIds: [...validation.sourcePayloadAssetIds]}),
         payloadFormat: manifest.payload_format,
         payloadByteLength: manifest.payload_byte_length,
-        payloadCount: manifest.payload_asset_ids.length,
+        payloadCount: validation.payloadAssetIds.length,
         elementCount: manifest.element_count,
         renderStatus: 'NOT_IMPLEMENTED',
         candidateOnly: true,

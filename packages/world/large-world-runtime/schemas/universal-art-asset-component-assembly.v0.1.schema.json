@@ -60,6 +60,7 @@
           "path": {"type": "string", "minLength": 1},
           "byte_length": {"type": "integer", "minimum": 1},
           "sha256": {"$ref": "#/$defs/root"},
+          "source_asset_id": {"type": "string", "minLength": 1, "maxLength": 256},
           "resource_root": {"$ref": "#/$defs/root"}
         },
         "additionalProperties": false
@@ -260,6 +261,7 @@
         "output_directory": {"type": "string", "minLength": 1},
         "byte_length": {"type": "integer", "minimum": 1},
         "sha256": {"$ref": "#/$defs/root"},
+        "source_asset_id": {"type": "string", "minLength": 1, "maxLength": 256},
         "declared_sha256": {"$ref": "#/$defs/nullableRoot"},
         "artifact_root": {"$ref": "#/$defs/root"},
         "output_root": {"$ref": "#/$defs/root"},

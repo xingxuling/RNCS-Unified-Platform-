@@ -461,3 +461,16 @@ test('standalone result normalization records warnings instead of asserting prov
   assert.equal(result.license.status, 'UNVERIFIED');
   assert.equal(result.evidence.candidate_only, true);
 });
+
+test('provider result normalization preserves an explicit logical source asset id', () => {
+  const result = normalizeAssetProviderResult({
+    provider_id: 'provider:test:logical-source-id',
+    files: [{name: 'page.bin', role: 'representation-data', format: 'application/octet-stream', source_asset_id: 'logical:ruins:page0', base64: Buffer.from('page').toString('base64')}]
+  }, {provider: {id: 'provider:test:logical-source-id', manifest_root: 'b'.repeat(64), version: '0.1.0'}});
+  assert.equal(result.files[0].source_asset_id, 'logical:ruins:page0');
+  assert.equal(result.authoritative, false);
+  assert.throws(() => normalizeAssetProviderResult({
+    provider_id: 'provider:test:logical-source-id',
+    files: [{name: 'page.bin', role: 'representation-data', format: 'application/octet-stream', source_asset_id: 17, base64: Buffer.from('page').toString('base64')}]
+  }, {provider: {id: 'provider:test:logical-source-id', manifest_root: 'b'.repeat(64), version: '0.1.0'}}), /ASSET_RESULT_SOURCE_ASSET_ID_INVALID/);
+});

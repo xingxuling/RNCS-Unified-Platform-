@@ -183,6 +183,62 @@ test('VSR seals a non-mesh Gaussian payload package without claiming rendering',
   );
 });
 
+test('VSR binds manifest logical pages to explicit physical directory assets', async () => {
+  const sourcePayloadAssetIds = ['logical:ruins:page0', 'logical:ruins:page1'];
+  const physicalPayloadAssetIds = ['urrf:resource:ruins:page0', 'urrf:resource:ruins:page1'];
+  const payloadBytes = [new Uint8Array([11, 12, 13]), new Uint8Array([14, 15])];
+  const contentRoot = cryptographicHash(sourcePayloadAssetIds.map((assetId, index) => ({
+    assetId,
+    byteLength: payloadBytes[index]!.byteLength,
+    byteRoot: cryptographicHash([...payloadBytes[index]!])
+  })));
+  const manifestBase = {
+    format: VSR_NON_MESH_REPRESENTATION_MANIFEST_FORMAT,
+    version: '0.1.0',
+    component_id: 'mapped-ruins',
+    asset_id: 'asset:mapped-ruins',
+    representation_kind: 'gaussian-splat',
+    profile_id: 'spark.ext-splats',
+    payload_asset_ids: sourcePayloadAssetIds,
+    payload_format: 'application/vnd.spark.rad',
+    payload_byte_length: 5,
+    element_count: 12,
+    bounds: {min: [-1, -1, -1], max: [1, 1, 1]},
+    content_root: contentRoot,
+    candidate_only: true,
+    authoritative: false
+  };
+  const manifestAssetId = 'urrf:resource:mapped-ruins:manifest';
+  const assets = [
+    {id: manifestAssetId, kind: 'representation-manifest', format: 'application/json', metadata: {role: 'representation-manifest'}},
+    ...physicalPayloadAssetIds.map((id, index) => ({
+      id,
+      kind: 'representation-data',
+      format: 'application/vnd.spark.rad',
+      metadata: {source_asset_id: sourcePayloadAssetIds[index]}
+    }))
+  ] as VSRNonMeshRepresentationAsset[];
+  const payloads = new Map<string, Uint8Array>([
+    [manifestAssetId, new TextEncoder().encode(JSON.stringify({...manifestBase, manifest_root: cryptographicHash(manifestBase)}))],
+    [physicalPayloadAssetIds[0]!, payloadBytes[0]!],
+    [physicalPayloadAssetIds[1]!, payloadBytes[1]!]
+  ]);
+  const handler = createVsrNonMeshRepresentationComponentImportHandler({representationKind: 'gaussian-splat', handlerId: 'vsr.gaussian-splat-logical-binding.v0.1'});
+  const result = await handler.compile({entry: {component_id: 'mapped-ruins', asset_id: 'asset:mapped-ruins', representation_kind: 'gaussian-splat'}, assets, payloads});
+  assert.deepEqual(result.candidate.payloadAssetIds, physicalPayloadAssetIds);
+  assert.deepEqual(result.candidate.sourcePayloadAssetIds, sourcePayloadAssetIds);
+  assert.deepEqual(result.consumed_asset_ids, [manifestAssetId, ...physicalPayloadAssetIds]);
+  assert.equal(handler.verify({result}), true);
+
+  const ambiguousAssets = assets.map(asset => asset.id === physicalPayloadAssetIds[1]
+    ? {...asset, metadata: {source_asset_id: sourcePayloadAssetIds[0]}}
+    : asset);
+  await assert.rejects(
+    () => handler.compile({entry: {component_id: 'mapped-ruins', asset_id: 'asset:mapped-ruins', representation_kind: 'gaussian-splat'}, assets: ambiguousAssets, payloads}),
+    /ambiguous/
+  );
+});
+
 test('VSR lowers a fixed-record point-cloud candidate into a rooted transparent scene', async () => {
   const bytes = new Uint8Array(4 * 32);
   const view = new DataView(bytes.buffer);

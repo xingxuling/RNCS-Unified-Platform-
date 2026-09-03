@@ -1136,6 +1136,13 @@ function componentAssemblyResourceLocation(resource) {
   return {valid: true, outputDirectory, relativePath, absolutePath};
 }
 
+function componentAssemblySourceAssetId(file) {
+  if (!Object.prototype.hasOwnProperty.call(file ?? {}, 'source_asset_id')) return undefined;
+  const value = typeof file?.source_asset_id === 'string' ? file.source_asset_id.trim() : '';
+  fail(value.length > 0 && value.length <= 256, 'UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_SOURCE_ASSET_ID_INVALID');
+  return value;
+}
+
 function componentAssemblyResourceBytes(resource) {
   const location = componentAssemblyResourceLocation(resource);
   if (!location.valid) return location;
@@ -1168,15 +1175,18 @@ function componentAssemblyResource({graph, component, artifact, file}) {
   fail(Boolean(stage), 'UNIVERSAL_ART_ASSET_COMPONENT_ASSEMBLY_STAGE_UNKNOWN', stageId);
   const stageRelativePath = 'stages/' + String(stage.index + 1).padStart(3, '0') + '-' + stage.stage_id + '/' + normalizeComponentAssemblyPath(file?.path);
   const relativePath = normalizeComponentAssemblyPath(stageRelativePath);
+  const sourceAssetId = componentAssemblySourceAssetId(file);
+  const resourceIdentity = {
+    component_graph_root: graph.component_graph_root,
+    component_id: component.component_id,
+    stage_id: stageId,
+    role,
+    path: relativePath,
+    sha256,
+    ...(sourceAssetId === undefined ? {} : {source_asset_id: sourceAssetId})
+  };
   return seal({
-    resource_id: stableId('urrf-universal-art-asset-component-resource', {
-      component_graph_root: graph.component_graph_root,
-      component_id: component.component_id,
-      stage_id: stageId,
-      role,
-      path: relativePath,
-      sha256
-    }),
+    resource_id: stableId('urrf-universal-art-asset-component-resource', resourceIdentity),
     component_id: component.component_id,
     stage_id: stageId,
     role,
@@ -1192,6 +1202,7 @@ function componentAssemblyResource({graph, component, artifact, file}) {
     result_root: stage.output?.result_root ?? null,
     candidate_only: true,
     authoritative: false,
+    ...(sourceAssetId === undefined ? {} : {source_asset_id: sourceAssetId}),
     resource_root: ''
   }, 'resource_root');
 }
@@ -1279,15 +1290,20 @@ function componentAssemblyComponent({graph, component, executionComponent, detai
 function componentAssemblyResourceIndex(resources) {
   return Object.fromEntries([...resources]
     .sort((left, right) => left.resource_id.localeCompare(right.resource_id, 'en'))
-    .map(resource => [resource.resource_id, {
-      component_id: resource.component_id,
-      stage_id: resource.stage_id,
-      role: resource.role,
-      path: resource.path,
-      byte_length: resource.byte_length,
-      sha256: resource.sha256,
-      resource_root: resource.resource_root
-    }]));
+    .map(resource => {
+      const indexEntry = {
+        component_id: resource.component_id,
+        stage_id: resource.stage_id,
+        role: resource.role,
+        path: resource.path,
+        byte_length: resource.byte_length,
+        sha256: resource.sha256,
+        resource_root: resource.resource_root
+      };
+      const sourceAssetId = componentAssemblySourceAssetId(resource);
+      if (sourceAssetId !== undefined) indexEntry.source_asset_id = sourceAssetId;
+      return [resource.resource_id, indexEntry];
+    }));
 }
 
 function componentAssemblySummary(components, resources) {
@@ -1598,6 +1614,7 @@ export function verifyUniversalArtAssetComponentAssembly(assembly, {
       && (resource?.result_root === null || hexRoot(resource.result_root))
       && resource?.candidate_only === true
       && resource?.authoritative === false
+      && (resource?.source_asset_id === undefined || (nonEmptyText(resource.source_asset_id) && resource.source_asset_id.length <= 256))
       && hexRoot(resource?.resource_root)
       && componentAssemblyResourcePathIsSafe(resource)), 'RESOURCE_HEADER_INVALID');
     check(new Set(resources.map(resource => resource?.resource_id)).size === resources.length, 'RESOURCE_IDS_INVALID');
@@ -1845,6 +1862,7 @@ function representationDirectoryVsrAsset({assembly, component, resource, represe
       output_directory: resource.output_directory,
       byte_length: resource.byte_length,
       sha256: resource.sha256,
+      ...(resource.source_asset_id === undefined ? {} : {source_asset_id: resource.source_asset_id}),
       transform: clone(component.transform),
       candidate_only: true,
       authoritative: false
@@ -2203,6 +2221,7 @@ export function verifyUniversalArtAssetComponentRepresentationDirectory(director
       && Number.isSafeInteger(resource?.metadata?.byte_length)
       && resource.metadata.byte_length > 0
       && hexRoot(resource?.metadata?.sha256)
+      && (resource?.metadata?.source_asset_id === undefined || (nonEmptyText(resource.metadata.source_asset_id) && resource.metadata.source_asset_id.length <= 256))
       && hexRoot(resource?.metadata?.resource_root)), 'RESOURCE_HEADER_INVALID');
     check(vsrCatalog.format === UNIVERSAL_ART_ASSET_COMPONENT_VSR_CATALOG_FORMAT && vsrCatalog.version === '0.1.0', 'VSR_CATALOG_CONTRACT_INVALID');
     check(vsrCatalog.asset_count === vsrAssets.length && hexRoot(vsrCatalog.catalog_root), 'VSR_CATALOG_HEADER_INVALID');

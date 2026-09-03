@@ -1256,6 +1256,13 @@ function isHexRoot(value) {
   return typeof value === 'string' && /^[a-f0-9]{64}$/.test(value);
 }
 
+function providerSourceAssetId(file) {
+  if (file?.source_asset_id === undefined || file?.source_asset_id === null) return null;
+  const value = typeof file.source_asset_id === 'string' ? file.source_asset_id.trim() : '';
+  if (!value || value.length > 256) throw new GenesisError('UNIVERSAL_ART_ASSET_PROVIDER_SOURCE_ASSET_ID_INVALID');
+  return value;
+}
+
 /**
  * Verify an externally supplied art-direction or human-art review receipt.
  *
@@ -1992,12 +1999,14 @@ function materializeProviderFiles(outDir, result) {
     const bytes = Buffer.from(String(file.content), 'base64');
     fs.mkdirSync(path.dirname(target), {recursive: true});
     fs.writeFileSync(target, bytes);
+    const sourceAssetId = providerSourceAssetId(file);
     materialized.push({
       path: path.relative(outDir, target).replaceAll('\\', '/'),
       role: file.role ?? null,
       byte_length: bytes.length,
       sha256: createHash('sha256').update(bytes).digest('hex'),
-      declared_sha256: file.sha256 ?? null
+      declared_sha256: file.sha256 ?? null,
+      ...(sourceAssetId ? {source_asset_id: sourceAssetId} : {})
     });
   }
   return {root: path.relative(outDir, root).replaceAll('\\', '/'), materialized, skipped};
@@ -2378,7 +2387,8 @@ function universalArtAssetProviderExecutionMaterialization(materialization) {
     role: file?.role ?? null,
     byte_length: file?.byte_length ?? null,
     sha256: file?.sha256 ?? null,
-    declared_sha256: file?.declared_sha256 ?? null
+    declared_sha256: file?.declared_sha256 ?? null,
+    ...((providerSourceAssetId(file)) ? {source_asset_id: providerSourceAssetId(file)} : {})
   }));
   const skipped = (Array.isArray(materialization.skipped) ? materialization.skipped : []).map(file => ({
     path: file?.path ?? null,
@@ -3620,7 +3630,8 @@ function universalArtAssetProviderPipelineExecutionFileRoots(result) {
     path: String(file?.path ?? file?.name ?? `output-${index}`),
     role: file?.role ?? null,
     sha256: isHexRoot(file?.sha256) ? file.sha256 : null,
-    byte_length: Number.isInteger(file?.size) && file.size >= 0 ? file.size : null
+    byte_length: Number.isInteger(file?.size) && file.size >= 0 ? file.size : null,
+    ...((providerSourceAssetId(file)) ? {source_asset_id: providerSourceAssetId(file)} : {})
   })).sort((left, right) => left.path.localeCompare(right.path, 'en') || left.index - right.index)
     .map(({index, ...file}) => file);
 }
@@ -3658,7 +3669,8 @@ function universalArtAssetProviderPipelineExecutionMaterialization(materializati
     role: file?.role ?? null,
     byte_length: file?.byte_length ?? null,
     sha256: isHexRoot(file?.sha256) ? file.sha256 : null,
-    declared_sha256: isHexRoot(file?.declared_sha256) ? file.declared_sha256 : null
+    declared_sha256: isHexRoot(file?.declared_sha256) ? file.declared_sha256 : null,
+    ...((providerSourceAssetId(file)) ? {source_asset_id: providerSourceAssetId(file)} : {})
   }));
   const skipped = (materialization.skipped ?? []).map(file => ({path: file?.path ?? null, reason: file?.reason ?? null}));
   const base = {
@@ -4281,7 +4293,8 @@ function universalArtAssetProviderPipelineArtifactFiles(stages) {
     role: universalArtAssetProviderPipelineArtifactFileRole(file),
     byte_length: file?.byte_length ?? null,
     sha256: file?.sha256 ?? null,
-    declared_sha256: file?.declared_sha256 ?? null
+    declared_sha256: file?.declared_sha256 ?? null,
+    ...((providerSourceAssetId(file)) ? {source_asset_id: providerSourceAssetId(file)} : {})
   })));
 }
 
@@ -4290,12 +4303,15 @@ function universalArtAssetProviderPipelineArtifactRoleIndex(files) {
   for (const file of files ?? []) {
     const role = universalArtAssetProviderPipelineArtifactFileRole(file);
     index[role] ??= [];
-    index[role].push({
+    const indexEntry = {
       stage_id: file.stage_id,
       path: file.path,
       byte_length: file.byte_length,
       sha256: file.sha256
-    });
+    };
+    const sourceAssetId = providerSourceAssetId(file);
+    if (sourceAssetId) indexEntry.source_asset_id = sourceAssetId;
+    index[role].push(indexEntry);
   }
   return Object.fromEntries(Object.entries(index)
     .sort(([left], [right]) => left.localeCompare(right, 'en'))
@@ -4338,7 +4354,8 @@ function universalArtAssetProviderPipelineArtifactStage(stage) {
         role: file?.role ?? null,
         byte_length: file?.byte_length ?? null,
         sha256: file?.sha256 ?? null,
-        declared_sha256: file?.declared_sha256 ?? null
+        declared_sha256: file?.declared_sha256 ?? null,
+        ...((providerSourceAssetId(file)) ? {source_asset_id: providerSourceAssetId(file)} : {})
       })),
       materialization_skipped: (stage.output?.materialization_skipped ?? []).map(file => ({
         path: file?.path ?? null,
@@ -4537,7 +4554,8 @@ export function verifyUniversalArtAssetProviderPipelineArtifact(artifact, {genom
       role: universalArtAssetProviderPipelineArtifactFileRole(file),
       byte_length: file?.byte_length ?? null,
       sha256: file?.sha256 ?? null,
-      declared_sha256: file?.declared_sha256 ?? null
+      declared_sha256: file?.declared_sha256 ?? null,
+      ...((providerSourceAssetId(file)) ? {source_asset_id: providerSourceAssetId(file)} : {})
     })));
     check(JSON.stringify(output.files) === JSON.stringify(expectedFiles), 'PROVIDER_PIPELINE_ARTIFACT_FILES_MISMATCH');
     check(output.file_count === expectedFiles.length, 'PROVIDER_PIPELINE_ARTIFACT_FILE_COUNT_MISMATCH');

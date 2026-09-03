@@ -236,6 +236,7 @@ test('URRF component graph executor reuses the Provider Pipeline and chains depe
           role,
           format: 'application/json',
           mime: 'application/json',
+          ...(input.component_context?.component_id === 'sparks' ? {source_asset_id: `logical:${input.component_context.component_id}:${role}`} : {}),
           base64: Buffer.from(`${input.asset_id}:${input.component_context?.component_id}:${role}`).toString('base64')
         })),
         generator_version: 'component-graph-provider-fixture',
@@ -292,6 +293,7 @@ test('URRF component graph executor reuses the Provider Pipeline and chains depe
   assert.equal(assembly.checks.resource_file_integrity, true);
   assert.equal(assembly.components.find(component => component.component_id === 'armor').transform.translation_mm[1], 840);
   assert.equal(assembly.components.find(component => component.component_id === 'armor').parent_component_id, 'body');
+  assert.equal(assembly.resources.find(resource => resource.component_id === 'sparks' && resource.role === 'mesh-glb').source_asset_id, 'logical:sparks:mesh-glb');
   const assemblyVerification = verifyUniversalArtAssetComponentAssembly(assembly, {
     graph,
     execution: run.execution,
@@ -313,6 +315,7 @@ test('URRF component graph executor reuses the Provider Pipeline and chains depe
   assert.equal(directory.vsr_catalog.assets.find(asset => asset.metadata.role === 'pbr-texture-pack').kind, 'material');
   assert.equal(directory.vsr_catalog.assets.find(asset => asset.metadata.role === 'animation-clips').kind, 'animation');
   assert.equal(directory.vsr_catalog.assets.find(asset => asset.metadata.role === 'mesh-glb').kind, 'mesh');
+  assert.equal(directory.vsr_catalog.assets.find(asset => asset.metadata.component_id === 'sparks' && asset.metadata.role === 'mesh-glb').metadata.source_asset_id, 'logical:sparks:mesh-glb');
   assert.equal(directory.representations.find(entry => entry.component_id === 'sparks').consumer_mapping.rsr.observation_input_status, 'INPUT_READY');
   assert.equal(directory.vsr_catalog.assets.every(asset => asset.metadata.representation_kind === (asset.metadata.component_id === 'sparks' ? 'particle' : 'mesh')), true);
   assert.equal(directory.vsr_catalog.assets.every(asset => asset.metadata.import_status === 'NOT_EXECUTED'), true);

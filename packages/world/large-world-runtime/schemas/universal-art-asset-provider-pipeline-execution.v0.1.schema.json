@@ -169,7 +169,8 @@
         "path": {"type": "string", "minLength": 1},
         "role": {"$ref": "#/$defs/nullableText"},
         "sha256": {"$ref": "#/$defs/nullableRoot"},
-        "byte_length": {"anyOf": [{"type": "integer", "minimum": 0}, {"type": "null"}]}
+        "byte_length": {"anyOf": [{"type": "integer", "minimum": 0}, {"type": "null"}]},
+        "source_asset_id": {"type": "string", "minLength": 1, "maxLength": 256}
       }
     },
     "materializedFileRoot": {
@@ -182,6 +183,7 @@
         "role": {"$ref": "#/$defs/nullableText"},
         "byte_length": {"anyOf": [{"type": "integer", "minimum": 0}, {"type": "null"}]},
         "sha256": {"$ref": "#/$defs/nullableRoot"},
+        "source_asset_id": {"type": "string", "minLength": 1, "maxLength": 256},
         "declared_sha256": {"$ref": "#/$defs/nullableRoot"}
       }
     },
