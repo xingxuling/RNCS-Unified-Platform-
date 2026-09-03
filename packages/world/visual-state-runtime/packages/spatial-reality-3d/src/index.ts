@@ -35,6 +35,7 @@ export const VSR_SPATIAL_FRAME_FORMAT='vsr.spatial-frame-plan.v0.4' as const;
 export type VSRSpatialTransparencyMode='weighted-blended-oit'|'sorted';
 export const VSR_SPATIAL_STREAMING_FORMAT='vsr.spatial-streaming-resolution.v0.1' as const;
 export const VSR_SPATIAL_HLOD_FORMAT='vsr.spatial-hlod-resolution.v0.1' as const;
+export const VSR_SPATIAL_SCENE_COMPOSITION_FORMAT='vsr.spatial-scene-composition-receipt.v0.1' as const;
 export const VSR_SPATIAL_VISUAL_INTENT_FORMAT='taowind.rcl-rncs-visual-intent.v0.1' as const;
 export const VSR_SPATIAL_VISUAL_INTENT_VERSION='0.1.0';
 export const VSR_SPATIAL_IRRADIANCE_BAKE_FORMAT='vsr.spatial-irradiance-probe-bake.v0.1' as const;
@@ -305,6 +306,10 @@ export interface VSRSpatialScene3D {
   lights:VSRSpatialLight[];
   reality?:VSRSpatialRealityBinding;
 }
+export interface VSRSpatialSceneCompositionFragment {id:string;scene:VSRSpatialScene3D;transform?:VSRSpatialTransform;tags?:string[]}
+export interface VSRSpatialSceneCompositionOptions {sceneId:string;title?:string;worldId?:string;realityRoot?:string;camera?:VSRSpatialCamera;lights?:VSRSpatialLight[];environment?:VSRSpatialEnvironment;preserveStreaming?:boolean}
+export interface VSRSpatialSceneCompositionReceipt {format:typeof VSR_SPATIAL_SCENE_COMPOSITION_FORMAT;version:'0.1.0';sceneId:string;worldId:string;fragmentIds:string[];fragmentCount:number;sourceSceneRoots:string[];sceneRoot:string;candidateOnly:true;authoritative:false;receiptRoot:string}
+export interface VSRSpatialSceneCompositionResult {scene:VSRSpatialScene3D;receipt:VSRSpatialSceneCompositionReceipt}
 export interface VSRSpatialCompileOptions {
   width?:number;
   height?:number;
@@ -583,6 +588,64 @@ function validateScene(scene:VSRSpatialScene3D):void{
   for(const node of scene.nodes){if(node.parentId&&!nodeIds.has(node.parentId))throw new Error(`Node ${node.id} missing parent ${node.parentId}.`);if(node.meshId&&!scene.meshes.some(mesh=>mesh.id===node.meshId))throw new Error(`Node ${node.id} missing mesh ${node.meshId}.`);if(node.materialId&&!scene.materials.some(material=>material.id===node.materialId))throw new Error(`Node ${node.id} missing material ${node.materialId}.`);if(node.skinId&&!skinIds.has(node.skinId))throw new Error(`Node ${node.id} missing skin ${node.skinId}.`)}
   const animationIds=new Set<string>();
   for(const clip of scene.animations??[]){if(animationIds.has(clip.id))throw new Error(`Duplicate animation ${clip.id}.`);animationIds.add(clip.id);if(!Number.isFinite(clip.duration)||clip.duration<0)throw new Error(`Animation ${clip.id} duration must be non-negative.`);for(const channel of clip.channels){if(!nodeIds.has(channel.nodeId))throw new Error(`Animation ${clip.id} missing node ${channel.nodeId}.`);const dimension=channel.path==='rotationQuaternion'?4:3;if(channel.times.length!==channel.values.length||!channel.times.length)throw new Error(`Animation ${clip.id} channel length mismatch.`);if(channel.interpolation==='CUBICSPLINE'&&(channel.inTangents?.length!==channel.values.length||channel.outTangents?.length!==channel.values.length))throw new Error(`Animation ${clip.id} cubic channel tangent length mismatch.`);for(let index=0;index<channel.times.length;index++){if(!Number.isFinite(channel.times[index]!)||(index>0&&channel.times[index]!<channel.times[index-1]!))throw new Error(`Animation ${clip.id} channel times must be finite and ordered.`);const value=channel.values[index]!;if(value.length!==dimension||value.some(component=>!Number.isFinite(component)))throw new Error(`Animation ${clip.id} channel value dimension mismatch.`);for(const tangent of [channel.inTangents?.[index],channel.outTangents?.[index]])if(tangent&&(tangent.length!==dimension||tangent.some(component=>!Number.isFinite(component))))throw new Error(`Animation ${clip.id} channel tangent dimension mismatch.`)}}}
+}
+
+const compositionClone=<T>(value:T):T=>structuredClone(value);
+function compositionFragmentId(value:unknown):string{const id=String(value??'').trim();if(!id||id.length>160||/[\u0000-\u001f]/.test(id))throw new Error('Spatial scene composition fragment id is invalid.');return id}
+function compositionRemap(prefix:string,kind:string,value:string):string{return`${prefix}:${kind}:${value}`}
+function compositionMapped(map:Map<string,string>,value:string,kind:string):string{const mapped=map.get(value);if(!mapped)throw new Error(`Spatial scene composition ${kind} ${value} is missing.`);return mapped}
+
+/**
+ * Compose independently imported VSR scenes into one candidate scene. Each
+ * fragment is placed beneath a synthetic anchor node, so component transforms
+ * preserve the source node hierarchy instead of overwriting root transforms.
+ * Resource IDs, skins, animations, streaming cells, and HLOD references are
+ * remapped into an isolated namespace; no RNCS state is written.
+ */
+export function composeSpatialSceneFragments(fragments:VSRSpatialSceneCompositionFragment[],options:VSRSpatialSceneCompositionOptions):VSRSpatialSceneCompositionResult{
+  if(!Array.isArray(fragments)||fragments.length<1||fragments.length>1024)throw new Error('Spatial scene composition requires 1-1024 fragments.');
+  if(!options||!String(options.sceneId??'').trim())throw new Error('Spatial scene composition sceneId is required.');
+  const ordered=fragments.map(fragment=>({id:compositionFragmentId(fragment.id),scene:fragment.scene,transform:compositionClone(fragment.transform??{}),tags:[...(fragment.tags??[])]})).sort((a,b)=>a.id.localeCompare(b.id));
+  if(new Set(ordered.map(fragment=>fragment.id)).size!==ordered.length)throw new Error('Spatial scene composition fragment IDs must be unique.');
+  for(const fragment of ordered)validateScene(fragment.scene);
+  const sourceSceneRoots=ordered.map(fragment=>cryptographicHash(fragment.scene));
+  const first=ordered[0]!;
+  const meshes:VSRSpatialMesh[]=[],materials:VSRSpatialMaterial[]=[],textures:VSRSpatialTexture[]=[],animations:VSRSpatialAnimationClip[]=[],skins:VSRSpatialSkin[]=[],nodes:VSRSpatialNode[]=[],hlodClusters:VSRSpatialHLODCluster[]=[],streamingCells:VSRSpatialStreamingCell[]=[],streamingPersistentNodeIds:string[]=[];
+  const preserveStreaming=options.preserveStreaming!==false&&ordered.some(fragment=>Boolean(fragment.scene.streaming));
+  for(const fragment of ordered){
+    const prefix=`fragment:${fragment.id}`;
+    const meshIds=new Map(fragment.scene.meshes.map(mesh=>[mesh.id,compositionRemap(prefix,'mesh',mesh.id)]));
+    const materialIds=new Map(fragment.scene.materials.map(material=>[material.id,compositionRemap(prefix,'material',material.id)]));
+    const textureIds=new Map((fragment.scene.textures??[]).map(texture=>[texture.id,compositionRemap(prefix,'texture',texture.id)]));
+    const skinIds=new Map((fragment.scene.skins??[]).map(skin=>[skin.id,compositionRemap(prefix,'skin',skin.id)]));
+    const nodeIds=new Map(fragment.scene.nodes.map(node=>[node.id,compositionRemap(prefix,'node',node.id)]));
+    const animationIds=new Map((fragment.scene.animations??[]).map(animation=>[animation.id,compositionRemap(prefix,'animation',animation.id)]));
+    for(const mesh of fragment.scene.meshes)meshes.push({...compositionClone(mesh),id:compositionMapped(meshIds,mesh.id,'mesh')});
+    for(const texture of fragment.scene.textures??[])textures.push({...compositionClone(texture),id:compositionMapped(textureIds,texture.id,'texture')});
+    for(const material of fragment.scene.materials){const next=compositionClone(material);next.id=compositionMapped(materialIds,material.id,'material');for(const key of ['baseColorTextureId','metallicRoughnessTextureId','normalTextureId','occlusionTextureId','emissiveTextureId','lightmapTextureId','reactiveMaskTextureId'] as const){const value=next[key];if(value)next[key]=compositionMapped(textureIds,value,'texture')}materials.push(next)}
+    for(const skin of fragment.scene.skins??[])skins.push({...compositionClone(skin),id:compositionMapped(skinIds,skin.id,'skin'),joints:skin.joints.map(joint=>compositionMapped(nodeIds,joint,'node'))});
+    for(const animation of fragment.scene.animations??[])animations.push({...compositionClone(animation),id:compositionMapped(animationIds,animation.id,'animation'),channels:animation.channels.map(channel=>({...compositionClone(channel),nodeId:compositionMapped(nodeIds,channel.nodeId,'node')}))});
+    const anchorId=`${prefix}:anchor`;
+    nodes.push({id:anchorId,transform:compositionClone(fragment.transform),tags:[...new Set(['vsr-composition-anchor',`fragment:${fragment.id}`,...fragment.tags])]});
+    for(const node of fragment.scene.nodes){const next=compositionClone(node);next.id=compositionMapped(nodeIds,node.id,'node');next.parentId=node.parentId?compositionMapped(nodeIds,node.parentId,'node'):anchorId;if(next.meshId)next.meshId=compositionMapped(meshIds,next.meshId,'mesh');if(next.materialId)next.materialId=compositionMapped(materialIds,next.materialId,'material');if(next.skinId)next.skinId=compositionMapped(skinIds,next.skinId,'skin');if(next.lods)next.lods=next.lods.map(lod=>({...lod,meshId:compositionMapped(meshIds,lod.meshId,'mesh')}));next.tags=[...new Set([...(next.tags??[]),`fragment:${fragment.id}`,...fragment.tags])];nodes.push(next)}
+    for(const cluster of fragment.scene.hlod?.clusters??[])hlodClusters.push({id:`${prefix}:hlod:${cluster.id}`,sourceNodeIds:cluster.sourceNodeIds.map(nodeId=>compositionMapped(nodeIds,nodeId,'node')),levels:cluster.levels.map(level=>({maxDistance:level.maxDistance,proxyNodeIds:level.proxyNodeIds.map(nodeId=>compositionMapped(nodeIds,nodeId,'node'))}))});
+    if(preserveStreaming&&fragment.scene.streaming){for(const cell of fragment.scene.streaming.cells)streamingCells.push({...compositionClone(cell),id:`${prefix}:cell:${cell.id}`,nodeIds:cell.nodeIds.map(nodeId=>compositionMapped(nodeIds,nodeId,'node'))});for(const nodeId of fragment.scene.streaming.persistentNodeIds??[])streamingPersistentNodeIds.push(compositionMapped(nodeIds,nodeId,'node'))}
+  }
+  const firstTextureIds=new Map((first.scene.textures??[]).map(texture=>[texture.id,compositionRemap(`fragment:${first.id}`,'texture',texture.id)]));
+  const environment=options.environment?compositionClone(options.environment):compositionClone(first.scene.environment??{});
+  if(environment.textureId)environment.textureId=compositionMapped(firstTextureIds,environment.textureId,'environment texture');
+  const firstCamera=first.scene.cameras.find(camera=>camera.id===first.scene.activeCameraId);
+  const camera=options.camera?compositionClone(options.camera):{...compositionClone(firstCamera!),id:`camera:composition:${first.id}`};
+  const worldId=String(options.worldId??first.scene.reality?.worldId??`world:${options.sceneId}`).trim();
+  const realityRoot=String(options.realityRoot??first.scene.reality?.realityRoot??cryptographicHash({worldId,sourceSceneRoots}));
+  const scene:VSRSpatialScene3D={format:VSR_SPATIAL_SCENE_FORMAT,sceneId:String(options.sceneId).trim(),...(options.title?{title:options.title}:{}),background:first.scene.background,environment,activeCameraId:camera.id,meshes,materials,textures,animations,skins,nodes,cameras:[camera],lights:options.lights?compositionClone(options.lights):compositionClone(first.scene.lights),...(hlodClusters.length?{hlod:{clusters:hlodClusters}}:{}),...(preserveStreaming?{streaming:{worldId,cells:streamingCells,persistentNodeIds:[...new Set(streamingPersistentNodeIds)]}}:{}),reality:{worldId,realityRoot}};
+  validateScene(scene);
+  const sceneRoot=cryptographicHash(scene),receiptBase={format:VSR_SPATIAL_SCENE_COMPOSITION_FORMAT,version:'0.1.0' as const,sceneId:scene.sceneId,worldId,fragmentIds:ordered.map(fragment=>fragment.id),fragmentCount:ordered.length,sourceSceneRoots,sceneRoot,candidateOnly:true as const,authoritative:false as const};
+  return{scene,receipt:{...receiptBase,receiptRoot:cryptographicHash(receiptBase)}};
+}
+
+export function verifySpatialSceneCompositionReceipt(receipt:VSRSpatialSceneCompositionReceipt,options:{scene?:VSRSpatialScene3D;fragments?:VSRSpatialSceneCompositionFragment[]}={}):boolean{
+  try{if(!receipt||receipt.format!==VSR_SPATIAL_SCENE_COMPOSITION_FORMAT||receipt.version!=='0.1.0'||!receipt.sceneId||!receipt.worldId||receipt.candidateOnly!==true||receipt.authoritative!==false||!Number.isSafeInteger(receipt.fragmentCount)||receipt.fragmentCount<1||receipt.fragmentCount>1024||!Array.isArray(receipt.fragmentIds)||receipt.fragmentIds.length!==receipt.fragmentCount||receipt.fragmentIds.some(id=>typeof id!=='string'||!id.trim())||new Set(receipt.fragmentIds).size!==receipt.fragmentIds.length||!Array.isArray(receipt.sourceSceneRoots)||receipt.sourceSceneRoots.length!==receipt.fragmentCount||receipt.sourceSceneRoots.some(root=>!/^[a-f0-9]{64}$/i.test(root))||!/^[a-f0-9]{64}$/i.test(receipt.sceneRoot))return false;const{receiptRoot,...base}=receipt;if(!/^[a-f0-9]{64}$/i.test(receiptRoot)||cryptographicHash(base)!==receiptRoot)return false;if(options.scene){validateScene(options.scene);if(options.scene.sceneId!==receipt.sceneId||cryptographicHash(options.scene)!==receipt.sceneRoot)return false}if(options.fragments){const ordered=options.fragments.map(fragment=>({id:compositionFragmentId(fragment.id),scene:fragment.scene})).sort((a,b)=>a.id.localeCompare(b.id));for(const fragment of ordered)validateScene(fragment.scene);if(JSON.stringify(ordered.map(fragment=>fragment.id))!==JSON.stringify(receipt.fragmentIds)||JSON.stringify(ordered.map(fragment=>cryptographicHash(fragment.scene)))!==JSON.stringify(receipt.sourceSceneRoots))return false}return true}catch{return false}
 }
 
 export function resolveSpatialStreaming(scene:VSRSpatialScene3D,observerPosition:Vec3,options:VSRSpatialStreamingOptions={}):VSRSpatialStreamingResolution|undefined{

@@ -20,14 +20,17 @@ import {
 import {AssetProviderAdapter, createAssetProviderManifest} from '@taowind/reality-asset-genesis-fabric';
 import {
   VSRSpatialAssetStreamer,
+  compileSpatialFrame,
+  composeSpatialSceneFragments,
   resolveSpatialAssetStreaming,
-  verifySpatialAssetStreamingReceipt
+  verifySpatialAssetStreamingReceipt,
+  verifySpatialSceneCompositionReceipt
 } from '@taowind/visual-state-runtime/spatial-reality-3d';
-import {importGlbToSpatialScene, verifyGltfImportReceipt} from '@taowind/visual-state-runtime/gltf-asset';
+import {decodeGltfImageToSpatialTexture, importGlbToSpatialScene, importGlbToSpatialSceneAsync, verifyGltfImportReceipt} from '@taowind/visual-state-runtime/gltf-asset';
 
 const root = letter => letter.repeat(64);
 
-function createFixture({validMesh = false} = {}) {
+function createFixture({validMesh = false, includeBlade = false, pbrMesh = false} = {}) {
   const rootGenome = createUniversalArtAssetGenome({
     asset_profile: 'character',
     asset_kind: 'character-3d',
@@ -47,6 +50,18 @@ function createFixture({validMesh = false} = {}) {
       representation_kind: 'mesh',
       representation_profile: 'skinned-pbr'
     },
+    ...(includeBlade ? [{
+      component_id: 'blade',
+      role: 'equipment-blade',
+      asset_profile: 'prop',
+      asset_kind: 'prop-3d',
+      description: '空间角色装备网格。',
+      seed: 'component-representation-directory-blade',
+      representation_kind: 'mesh',
+      representation_profile: 'rigid-pbr',
+      depends_on: ['body'],
+      transform_mm: [1400, 0, 0]
+    }] : []),
     {
       component_id: 'sparks',
       role: 'impact-particles',
@@ -112,7 +127,7 @@ function createFixture({validMesh = false} = {}) {
     const active = runtime.listActiveChunks();
     const selection = runtime.selectActiveRepresentationPortfolios({quality_by_chunk: Object.fromEntries(active.map(chunk => [chunk.chunk_id, 'STANDARD']))});
     const scene = runtime.createSpatialScene({selection, scene_id: 'component-representation-directory-glb-scene'});
-    const bundle = createLargeWorldSpatialGlbBundle(scene);
+    const bundle = createLargeWorldSpatialGlbBundle(scene, pbrMesh ? {texture_profile: 'ragf.ktx2-pbr-mipped.v0.1', texture_size: 8} : {});
     return bundle.assets.find(asset => asset.record.metadata.lod === 0).payload;
   })() : null;
   const provider = new AssetProviderAdapter(manifest, {
@@ -221,9 +236,9 @@ test('component representation import executes a verified VSR mesh handler and f
   const directory = lowerUniversalArtAssetComponentAssemblyToRepresentationDirectory({assembly});
   const loadAsset = asset => fs.readFileSync(path.resolve(asset.metadata.output_directory, asset.metadata.relative_path));
   const importers = {
-    mesh: {
-      handler_id: 'vsr.gltf-import',
-      compile: ({entry, assets, payloads}) => {
+      mesh: {
+        handler_id: 'vsr.gltf-import',
+        compile: ({entry, assets, payloads}) => {
         const meshAsset = assets.find(asset => asset.kind === 'mesh' && asset.format === 'model/gltf-binary');
         assert.ok(meshAsset);
         const imported = importGlbToSpatialScene(payloads.get(meshAsset.id), {
@@ -276,4 +291,84 @@ test('component representation import executes a verified VSR mesh handler and f
   assert.equal(failed.entries[0].status, 'FAILED');
   assert.match(failed.entries[0].reason, /BYTES_MISMATCH/);
   assert.equal(verifyUniversalArtAssetComponentRepresentationImport(failed, {directory}).valid, true);
+});
+
+test('component representation imports compose multiple VSR scenes under URRF transforms', async () => {
+  const {assembly} = createFixture({validMesh: true, includeBlade: true, pbrMesh: true});
+  const directory = lowerUniversalArtAssetComponentAssemblyToRepresentationDirectory({assembly});
+  const importedScenes = new Map();
+  const loadAsset = asset => fs.readFileSync(path.resolve(asset.metadata.output_directory, asset.metadata.relative_path));
+  const importers = {
+    mesh: {
+      handler_id: 'vsr.gltf-import.compose',
+      compile: async ({entry, assets, payloads}) => {
+        const meshAsset = assets.find(asset => asset.kind === 'mesh' && asset.format === 'model/gltf-binary');
+        assert.ok(meshAsset);
+        const imported = await importGlbToSpatialSceneAsync(payloads.get(meshAsset.id), {
+          sceneId: `component-vsr-compose-${entry.component_id}`,
+          sourceRoot: entry.representation_root,
+          imageDecoder: decodeGltfImageToSpatialTexture
+        });
+        importedScenes.set(entry.component_id, imported.scene);
+        return {
+          status: 'EXECUTED',
+          receipt: imported.receipt,
+          output_root: imported.receipt.sceneRoot,
+          metrics: {
+            texture_count: imported.receipt.textureCount,
+            material_texture_binding_count: imported.receipt.materialTextureBindingCount
+          }
+        };
+      },
+      verify: ({result}) => verifyGltfImportReceipt(result.receipt)
+    }
+  };
+  const imported = await executeUniversalArtAssetComponentRepresentationImport({
+    directory,
+    assembly,
+    requestedComponentIds: ['body', 'blade'],
+    loadAsset,
+    importers
+  });
+  assert.equal(imported.status, 'CANDIDATE_COMPONENT_REPRESENTATION_IMPORT_EXECUTED');
+  assert.equal(imported.summary.executed_count, 2);
+  assert.equal(importedScenes.size, 2);
+  assert.deepEqual(imported.entries.map(entry => [entry.metrics.texture_count, entry.metrics.material_texture_binding_count]), [[4, 5], [4, 5]]);
+  const fragments = ['body', 'blade'].map(componentId => {
+    const entry = directory.representations.find(candidate => candidate.component_id === componentId);
+    assert.ok(entry);
+    return {
+      id: componentId,
+      scene: importedScenes.get(componentId),
+      transform: {
+        translation: entry.transform.translation_mm.map(value => value / 1000),
+        rotationEulerDeg: [...entry.transform.rotation_deg],
+        scale: entry.transform.scale_milli.map(value => value / 1000)
+      },
+      tags: [`urrf-component:${componentId}`]
+    };
+  });
+  const composed = composeSpatialSceneFragments(fragments, {
+    sceneId: 'scene:component-representation-composed',
+    worldId: directory.world_id,
+    realityRoot: directory.directory_root,
+    camera: {
+      id: 'camera:component-representation-composed',
+      projection: 'perspective',
+      fovYDeg: 45,
+      near: 0.1,
+      far: 1000,
+      transform: {translation: [32, 2, 100]}
+    }
+  });
+  assert.equal(composed.scene.meshes.length, 2);
+  assert.equal(composed.scene.materials.length, 2);
+  assert.equal(composed.scene.nodes.filter(node => node.tags?.includes('vsr-composition-anchor')).length, 2);
+  assert.equal(composed.scene.nodes.filter(node => node.meshId).length, 2);
+  assert.equal(composed.scene.nodes.find(node => node.id === 'fragment:blade:anchor').transform.translation[0], 1.4);
+  assert.equal(verifySpatialSceneCompositionReceipt(composed.receipt, {scene: composed.scene, fragments}), true);
+  const frame = compileSpatialFrame(composed.scene, {width: 160, height: 120, enableShadows: false});
+  assert.equal(frame.stats.visibleDraws, 2);
+  const tampered = {...composed.receipt, sceneRoot: 'f'.repeat(64)};
+  assert.equal(verifySpatialSceneCompositionReceipt(tampered), false);
 });

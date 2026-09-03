@@ -19,6 +19,7 @@ VSR 的首个三维空间现实参考层。它把 Mesh、层级变换、相机�
 - WebGPU adapter capability contract：`evaluateSpatialWebGPUCapabilities` / `inspectSpatialWebGPU` 校验 required features、limits、安全上下文与缺失原因；
 - `VSRSpatialAssetStreamer`：依赖优先异步加载、并发上限、字节 SHA-256 校验、驻留状态和收据根；帧计划可选绑定 `assetStreaming` 证据；
 - `compileRagfSpatialAsset()`：校验 `ragf.vsr-spatial-asset.v0.4` 的封存根和 VSR 兼容目标，把 RAGF 主网格/三级 LOD 编译为当前场景，并可绑定一个 Reality Cell 的驻留目录；
+- `composeSpatialSceneFragments()`：把独立导入的 VSR 场景片段按稳定 ID 重映射到隔离命名空间，挂到带 URRF 变换的合成锚点下，并生成可回验的候选组合回执；不会写入 RNCS 真相，也不等同于 AAA 资产合并；
 - Metallic / Roughness 紧凑参考光照；
 - Directional / Point / Ambient Light；
 - Directional Shadow Map 参考路径；
