@@ -3669,9 +3669,9 @@ function universalArtAssetProviderPipelineExecutionMaterialization(materializati
   return {...base, root: rootHash(base)};
 }
 
-function universalArtAssetProviderPipelineExecutionRequest({genome, plan, stage, previous}) {
+function universalArtAssetProviderPipelineExecutionRequest({genome, plan, stage, previous, request_context = null}) {
   const operation = universalArtAssetProviderPipelineExecutionOperation(stage);
-  return seal({
+  const request = {
     format: UNIVERSAL_ART_ASSET_PROVIDER_PIPELINE_EXECUTION_FORMAT,
     version: UNIVERSAL_ART_ASSET_FORGE_VERSION,
     request_kind: 'STAGE_REQUEST',
@@ -3693,7 +3693,9 @@ function universalArtAssetProviderPipelineExecutionRequest({genome, plan, stage,
     candidate_only: true,
     authoritative: false,
     request_root: ''
-  }, 'request_root');
+  };
+  if (request_context !== null && request_context !== undefined) request.context = clone(request_context);
+  return seal(request, 'request_root');
 }
 
 function universalArtAssetProviderPipelineExecutionOutput({result = null, materialization = null, requiredOutputs = []} = {}) {
@@ -3870,6 +3872,8 @@ export function executeUniversalArtAssetProviderPipeline({
   providerRunners = null,
   providerRunner = null,
   providerTimeout = 60000,
+  request_context = null,
+  requestContext = null,
   execution_id = null,
   executionId = null
 } = {}) {
@@ -3888,11 +3892,18 @@ export function executeUniversalArtAssetProviderPipeline({
   if (!planVerification.valid) throw new GenesisError('UNIVERSAL_ART_ASSET_PROVIDER_PIPELINE_PLAN_INVALID', planVerification.errors.join(','));
   const resolvedOutDir = outDir === null || outDir === undefined ? null : ensureOutputDir(outDir);
   const bindings = universalArtAssetProviderPipelineExecutionBindings({provider, providers, providerRunners: runners, providerRunner, timeout: providerTimeout});
+  const resolvedRequestContext = request_context ?? requestContext ?? null;
   const stageResults = [];
   const canExecute = executionPlan.status === 'CANDIDATE_PROVIDER_PIPELINE_PLANNED';
   for (const stage of executionPlan.stages) {
     const previous = stageResults.at(-1)?.record ?? null;
-    const request = universalArtAssetProviderPipelineExecutionRequest({genome: checkedGenome, plan: executionPlan, stage, previous});
+    const request = universalArtAssetProviderPipelineExecutionRequest({
+      genome: checkedGenome,
+      plan: executionPlan,
+      stage,
+      previous,
+      request_context: resolvedRequestContext
+    });
     let status = 'NOT_RUN';
     let executionAttempted = false;
     let executionPerformed = false;
@@ -3928,6 +3939,7 @@ export function executeUniversalArtAssetProviderPipeline({
             quality_tier: checkedGenome.quality_tier === 'AAA' ? 'PRODUCTION' : checkedGenome.quality_tier,
             seed: checkedGenome.ragf_genome.seed,
             request,
+            ...(resolvedRequestContext === null || resolvedRequestContext === undefined ? {} : {component_context: clone(resolvedRequestContext)}),
             input_stage: previous ? {
               stage_id: previous.stage_id,
               result_root: previous.output.result_root,

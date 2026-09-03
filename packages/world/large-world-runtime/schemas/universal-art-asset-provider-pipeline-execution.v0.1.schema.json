@@ -125,8 +125,41 @@
         "target_quality_tier": {"$ref": "#/$defs/targetQualityTier"},
         "candidate_only": {"const": true},
         "authoritative": {"const": false},
+        "context": {"$ref": "#/$defs/requestContext"},
         "request_root": {"$ref": "#/$defs/root"}
       }
+    },
+    "requestContext": {
+      "type": "object",
+      "required": ["format", "component_graph_root", "source_reality_root", "component_id", "parent_component_id", "depends_on", "dependency_bindings", "candidate_only", "authoritative", "context_root"],
+      "properties": {
+        "format": {"const": "urrf.universal-art-asset-component-execution-context.v0.1"},
+        "version": {"const": "0.1.0"},
+        "component_graph_root": {"$ref": "#/$defs/root"},
+        "source_reality_root": {"$ref": "#/$defs/nullableRoot"},
+        "component_id": {"type": "string", "minLength": 1},
+        "parent_component_id": {"$ref": "#/$defs/nullableText"},
+        "depends_on": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "dependency_bindings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["component_id", "status", "execution_root", "output_root", "result_root"],
+            "properties": {
+              "component_id": {"type": "string", "minLength": 1},
+              "status": {"type": "string", "enum": ["COMPLETED", "BLOCKED", "FAILED", "NOT_RUN"]},
+              "execution_root": {"$ref": "#/$defs/nullableRoot"},
+              "output_root": {"$ref": "#/$defs/nullableRoot"},
+              "result_root": {"$ref": "#/$defs/nullableRoot"}
+            }
+          }
+        },
+        "candidate_only": {"const": true},
+        "authoritative": {"const": false},
+        "context_root": {"$ref": "#/$defs/root"}
+      },
+      "additionalProperties": false
     },
     "resultFileRoot": {
       "type": "object",
