@@ -366,6 +366,7 @@ test('component representation imports compose multiple VSR scenes under URRF tr
   const importedScenes = new Map();
   const loadAsset = asset => fs.readFileSync(path.resolve(asset.metadata.output_directory, asset.metadata.relative_path));
   const componentImportHandler = createVsrGltfPbrComponentImportHandler({
+    aggregateMeshAssets: false,
     consumeRigAnimation: true,
     requireRigAnimation: true,
     imageDecoder: async input => {
