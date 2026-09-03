@@ -9,6 +9,7 @@ import {
   createUniversalArtAssetAssembly,
   createUniversalArtAssetEvidenceBundle,
   createUniversalArtAssetHoldoutReport,
+  createUniversalArtAssetProfileCoverageReport,
   generateUniversalArtAssetBatch,
   generateUniversalArtAsset,
   lowerUniversalArtAssetAssemblyToVsr,
@@ -16,6 +17,7 @@ import {
   verifyUniversalArtAssetAssembly,
   verifyUniversalArtAssetBatch,
   verifyUniversalArtAssetHoldoutReport,
+  verifyUniversalArtAssetProfileCoverageReport,
   verifyUniversalArtAssetVsrMaterialization,
   verifyUniversalArtAssetVsrProjection,
   verifyUniversalArtAssetForge
@@ -295,6 +297,74 @@ test('URRF holdout regression evaluates new seeds across the exercised profile s
   delete tamperedBase.holdout_root;
   const tamperedReport = {...tamperedBase, holdout_root: rootHash(tamperedBase)};
   assert.equal(verifyUniversalArtAssetHoldoutReport(tamperedReport, {batch: holdout}).valid, false);
+});
+
+test('URRF profile coverage exercises every asset family without silent Provider fallback', () => {
+  const coverageOutDir = join(tmpdir(), 'taowind-urrf-universal-art-profile-coverage-v01');
+  const profileInputs = [
+    ['character', 'character-3d', '一名守护古代冰晶遗迹的三维女剑士。'],
+    ['creature', 'creature-3d', '一头栖息在极寒遗迹中的三维冰晶巨兽。'],
+    ['prop', 'prop-3d', '一枚用于冰晶遗迹祭坛的三维古代护符。'],
+    ['vehicle', 'vehicle-3d', '一辆能够穿越冻原裂谷的三维远古装甲载具。'],
+    ['structure', 'structure-3d', '一座带有风化石墙和入口拱门的三维遗迹建筑。'],
+    ['environment', 'environment-3d', '一片包含冰原、遗迹和远景山脊的三维环境。'],
+    ['vegetation', 'vegetation-3d', '一株生长在冰晶裂谷边缘的三维发光植物。'],
+    ['resource', 'resource-3d', '一簇可用于世界资源节点的三维冰晶矿石。'],
+    ['vfx', 'vfx-3d', '一组需要真实粒子材质和轨迹的三维魔法爆炸特效。']
+  ].map(([asset_profile, asset_kind, description]) => ({
+    asset_key: `profile-coverage-${asset_profile}`,
+    asset_profile,
+    asset_kind,
+    description,
+    quality_tier: 'AAA',
+    seed: `urrf-profile-coverage-${asset_profile}-seed`,
+    target_platforms: ['desktop', 'web'],
+    constraints: {max_triangles: 2400, pbr_texture_size: 128}
+  }));
+  const entries = profileInputs.map((input, index) => ({
+    input,
+    result: generateUniversalArtAsset(input, {outDir: join(coverageOutDir, `${String(index).padStart(2, '0')}-${input.asset_profile}`)})
+  }));
+  const expectedProfiles = profileInputs.map(input => input.asset_profile);
+  const expectedModes = {
+    character: 'BUILTIN_REFERENCE',
+    creature: 'EXTERNAL_CONTRACT_ONLY',
+    prop: 'BUILTIN_REFERENCE',
+    vehicle: 'EXTERNAL_CONTRACT_ONLY',
+    structure: 'EXTERNAL_CONTRACT_ONLY',
+    environment: 'EXTERNAL_CONTRACT_ONLY',
+    vegetation: 'EXTERNAL_CONTRACT_ONLY',
+    resource: 'EXTERNAL_CONTRACT_ONLY',
+    vfx: 'UNRESOLVED'
+  };
+  const report = createUniversalArtAssetProfileCoverageReport({
+    coverage_id: 'urrf-profile-coverage-integration-v01',
+    entries,
+    expected_profiles: expectedProfiles,
+    expected_modes: expectedModes
+  });
+  assert.equal(report.status, 'CANDIDATE_PROFILE_COVERAGE_PASS');
+  assert.equal(report.summary.pass_count, 9);
+  assert.equal(report.summary.fail_count, 0);
+  assert.equal(report.summary.mode_histogram.BUILTIN_REFERENCE, 2);
+  assert.equal(report.summary.mode_histogram.EXTERNAL_CONTRACT_ONLY, 6);
+  assert.equal(report.summary.mode_histogram.UNRESOLVED, 1);
+  assert.deepEqual(report.coverage.missing_profiles, []);
+  assert.deepEqual(report.coverage.unexpected_profiles, []);
+  assert.equal(report.coverage.unique_genome_root_count, 9);
+  assert.equal(report.coverage.unique_resolution_root_count, 9);
+  assert.equal(report.entries.find(entry => entry.asset_profile === 'vfx').resolution.selected_provider_source, null);
+  assert.equal(verifyUniversalArtAssetProfileCoverageReport(report).valid, true);
+  assert.equal(verifyUniversalArtAssetProfileCoverageReport(report, {entries}).valid, true);
+  mkdirSync(evidenceDir, {recursive: true});
+  writeFileSync(join(evidenceDir, 'universal-art-asset-profile-coverage.json'), `${JSON.stringify(report, null, 2)}\n`, 'utf8');
+
+  const tampered = structuredClone(report);
+  tampered.entries.find(entry => entry.asset_profile === 'vfx').resolution.selected_provider_source = 'ragf-reference-provider';
+  delete tampered.coverage_root;
+  tampered.coverage_root = rootHash(tampered);
+  assert.equal(verifyUniversalArtAssetProfileCoverageReport(tampered).valid, false);
+  assert.equal(verifyUniversalArtAssetProfileCoverageReport(tampered, {entries}).valid, false);
 });
 
 test('URRF Universal Art Asset Forge isolates a multi-asset candidate batch and indexes reusable roots', async () => {

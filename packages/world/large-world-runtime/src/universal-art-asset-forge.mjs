@@ -40,6 +40,7 @@ export const UNIVERSAL_ART_ASSET_ASSEMBLY_FORMAT = 'urrf.universal-art-asset-ass
 export const UNIVERSAL_ART_ASSET_VSR_PROJECTION_FORMAT = 'urrf.universal-art-asset-vsr-projection.v0.1';
 export const UNIVERSAL_ART_ASSET_VSR_MATERIALIZATION_FORMAT = 'urrf.universal-art-asset-vsr-materialization.v0.1';
 export const UNIVERSAL_ART_ASSET_HOLDOUT_FORMAT = 'urrf.universal-art-asset-holdout.v0.1';
+export const UNIVERSAL_ART_ASSET_PROFILE_COVERAGE_FORMAT = 'urrf.universal-art-asset-profile-coverage.v0.1';
 export const UNIVERSAL_ART_ASSET_FORGE_VERSION = '0.1.0';
 
 export const UNIVERSAL_ART_ASSET_PROFILES = Object.freeze([
@@ -55,6 +56,15 @@ export const UNIVERSAL_ART_ASSET_PROFILES = Object.freeze([
 ]);
 
 export const UNIVERSAL_ART_ASSET_QUALITY_TIERS = Object.freeze(['PREVIEW', 'PRODUCTION', 'AAA']);
+
+const UNIVERSAL_ART_ASSET_PROFILE_COVERAGE_MODES = Object.freeze([
+  'BUILTIN_REFERENCE',
+  'EXTERNAL_CONTRACT_ONLY',
+  'EXTERNAL_EXECUTED',
+  'INJECTED_EXECUTED',
+  'UNRESOLVED',
+  'INCONSISTENT'
+]);
 
 const UNIVERSAL_ART_ASSET_REVIEW_KINDS = Object.freeze(['ART_DIRECTION', 'HUMAN_ART']);
 
@@ -424,6 +434,7 @@ export function resolveUniversalArtAssetProvider({genome, provider_id = null, pr
     ? (explicitCapabilityGap.length ? null : explicit)
     : (builtin ?? (externalNegotiation.eligible ? externalNegotiation.selected_provider_id : null));
   const selectedManifest = typeof selected === 'object' ? selected : (selected ? externalRegistry.get(selected) : null);
+  const selectedProviderId = selectedManifest?.id ?? selectedManifest?.provider_id ?? null;
   const resolution = {
     format: UNIVERSAL_ART_ASSET_PROVIDER_RESOLUTION_FORMAT,
     version: UNIVERSAL_ART_ASSET_FORGE_VERSION,
@@ -432,9 +443,9 @@ export function resolveUniversalArtAssetProvider({genome, provider_id = null, pr
     genome_root: checkedGenome.genome_root,
     required_capabilities: clone(contract.required_capabilities),
     optional_capabilities: clone(contract.optional_capabilities),
-    selected_provider_id: selectedManifest?.id ?? selectedManifest?.provider_id ?? (typeof selected === 'string' ? selected : null),
+    selected_provider_id: selectedProviderId ?? (typeof selected === 'string' ? selected : null),
     selected_provider_root: selectedManifest?.manifest_root ?? selectedManifest?.provider_root ?? null,
-    selected_provider_source: (selectedManifest?.id ?? selectedManifest?.provider_id) === builtin?.provider_id
+    selected_provider_source: selectedProviderId && builtin?.provider_id && selectedProviderId === builtin.provider_id
       ? 'ragf-reference-provider'
       : suppliedManifest
         ? 'injected-provider'
@@ -2747,6 +2758,409 @@ export function verifyUniversalArtAssetHoldoutReport(report, {batch = null, asse
     errors.push(`VERIFY_EXCEPTION:${error.name}:${error.message}`);
   }
   return {valid: errors.length === 0, errors, holdout_root: report.holdout_root ?? null};
+}
+
+function normalizeUniversalArtAssetProfileCoverageProfiles(value) {
+  if (!Array.isArray(value) || value.length === 0 || value.length > UNIVERSAL_ART_ASSET_PROFILES.length) {
+    throw new GenesisError('UNIVERSAL_ART_ASSET_PROFILE_COVERAGE_PROFILES_INVALID');
+  }
+  const raw = value.map(profile => String(profile).trim().toLowerCase());
+  const profiles = UNIVERSAL_ART_ASSET_PROFILES.filter(profile => raw.includes(profile));
+  if (profiles.length !== raw.length || new Set(raw).size !== raw.length) {
+    throw new GenesisError('UNIVERSAL_ART_ASSET_PROFILE_COVERAGE_PROFILE_INVALID');
+  }
+  return profiles;
+}
+
+function normalizeUniversalArtAssetProfileCoverageMode(value) {
+  const mode = String(value ?? '').trim().toUpperCase();
+  if (!UNIVERSAL_ART_ASSET_PROFILE_COVERAGE_MODES.includes(mode)) {
+    throw new GenesisError('UNIVERSAL_ART_ASSET_PROFILE_COVERAGE_MODE_INVALID', mode);
+  }
+  return mode;
+}
+
+function normalizeUniversalArtAssetProfileCoverageExpectedModes(value, profiles) {
+  const source = record(value);
+  const unknown = Object.keys(source).filter(profile => !profiles.includes(profile));
+  if (unknown.length) throw new GenesisError('UNIVERSAL_ART_ASSET_PROFILE_COVERAGE_EXPECTED_MODE_PROFILE_INVALID', unknown.join(','));
+  return Object.fromEntries(profiles
+    .filter(profile => source[profile] !== undefined)
+    .map(profile => [profile, normalizeUniversalArtAssetProfileCoverageMode(source[profile])]));
+}
+
+function universalArtAssetProfileCoverageDefaultMode(profile, resolution = null) {
+  if (profileContract(profile).builtin_reference) return 'BUILTIN_REFERENCE';
+  if (resolution && resolution.eligible === false) return 'UNRESOLVED';
+  if (profile === 'vfx' && resolution === null) return 'UNRESOLVED';
+  return 'EXTERNAL_CONTRACT_ONLY';
+}
+
+function universalArtAssetProfileCoverageInputProfile(input) {
+  const value = record(input);
+  const raw = value.asset_profile ?? value.profile ?? PROFILE_ALIASES[String(value.asset_kind ?? '').toLowerCase()] ?? null;
+  return raw === null ? null : normalizeProfile({asset_profile: raw});
+}
+
+function universalArtAssetProfileCoverageObservedMode(entry) {
+  const resolution = record(entry?.resolution);
+  const execution = record(entry?.execution);
+  const candidate = record(entry?.candidate);
+  const selectedProviderId = nonEmptyText(resolution.selected_provider_id) ? resolution.selected_provider_id : null;
+  const selectedProviderSource = resolution.selected_provider_source ?? null;
+  const candidatePresent = candidate.present === true;
+  const executionStatus = execution.status ?? null;
+  const failureCode = execution.failure_code ?? null;
+  if (selectedProviderSource === 'ragf-reference-provider'
+    && resolution.runtime_status === 'READY_REFERENCE'
+    && executionStatus === 'COMPLETED'
+    && execution.provider_id === selectedProviderId
+    && candidatePresent) return 'BUILTIN_REFERENCE';
+  if (selectedProviderSource === 'external-provider-contract'
+    && nonEmptyText(selectedProviderId)
+    && resolution.runtime_status === 'CONTRACT_ONLY'
+    && executionStatus === 'FAILED'
+    && execution.provider_id === null
+    && failureCode === 'PROFILE_PROVIDER_RUNTIME_NOT_BOUND'
+    && !candidatePresent) return 'EXTERNAL_CONTRACT_ONLY';
+  if (selectedProviderSource === 'external-provider-contract'
+    && nonEmptyText(selectedProviderId)
+    && executionStatus === 'COMPLETED'
+    && nonEmptyText(execution.provider_id)
+    && candidatePresent) return 'EXTERNAL_EXECUTED';
+  if (selectedProviderSource === 'injected-provider'
+    && nonEmptyText(selectedProviderId)
+    && executionStatus === 'COMPLETED'
+    && nonEmptyText(execution.provider_id)
+    && candidatePresent) return 'INJECTED_EXECUTED';
+  if (selectedProviderId === null
+    && selectedProviderSource === null
+    && resolution.eligible === false
+    && resolution.runtime_status === 'UNRESOLVED'
+    && executionStatus === 'FAILED'
+    && execution.provider_id === null
+    && failureCode === 'PROFILE_PROVIDER_UNRESOLVED'
+    && !candidatePresent) return 'UNRESOLVED';
+  return 'INCONSISTENT';
+}
+
+function universalArtAssetProfileCoverageEntryChecks(entry, expectedMode) {
+  const resolution = record(entry?.resolution);
+  const execution = record(entry?.execution);
+  const candidate = record(entry?.candidate);
+  const authority = record(entry?.authority);
+  const observedMode = universalArtAssetProfileCoverageObservedMode(entry);
+  const profile = entry?.asset_profile ?? null;
+  const resolutionIntegrity = resolution.format === UNIVERSAL_ART_ASSET_PROVIDER_RESOLUTION_FORMAT
+    && resolution.version === UNIVERSAL_ART_ASSET_FORGE_VERSION
+    && isHexRoot(resolution.resolution_root)
+    && resolution.asset_id === entry?.asset_id
+    && resolution.asset_profile === profile
+    && resolution.genome_root === entry?.genome_root;
+  const candidateBinding = typeof candidate.present === 'boolean'
+    && (candidate.present ? isHexRoot(candidate.candidate_root) : candidate.candidate_root === null);
+  const authorityBoundary = authority.candidate_only === true
+    && authority.authoritative === false
+    && authority.canonical_write_authorized === false
+    && authority.provider_can_write_authoritative_world_state === false
+    && authority.provider_can_commit === false
+    && authority.acceptance_can_commit === false
+    && authority.rncs_authority_required === true;
+  const checks = {
+    profile_binding: nonEmptyText(entry?.requested_profile)
+      && entry.requested_profile === profile
+      && entry.forge_asset_profile === profile
+      && resolution.asset_profile === profile,
+    genome_binding: isHexRoot(entry?.genome_root)
+      && entry.forge_genome_root === entry.genome_root
+      && resolution.genome_root === entry.genome_root,
+    resolution_integrity: resolutionIntegrity,
+    candidate_binding: candidateBinding,
+    expected_mode: observedMode === expectedMode,
+    no_silent_fallback: observedMode !== 'INCONSISTENT' && observedMode === expectedMode,
+    authority_boundary: authorityBoundary
+  };
+  return {observedMode, checks, pass: Object.values(checks).every(Boolean)};
+}
+
+function universalArtAssetProfileCoverageRootCount(entries, field) {
+  const roots = entries.map(entry => entry?.[field]).filter(isHexRoot);
+  return new Set(roots).size;
+}
+
+function universalArtAssetProfileCoverageGlobalChecks(entries, expectedProfiles, observedProfiles, missingProfiles, unexpectedProfiles) {
+  const entryChecks = entries.map(entry => entry?.checks ?? {});
+  return {
+    entry_count: entries.length === expectedProfiles.length,
+    profile_coverage: entries.length === expectedProfiles.length
+      && observedProfiles.length === expectedProfiles.length
+      && missingProfiles.length === 0
+      && unexpectedProfiles.length === 0,
+    unique_profiles: observedProfiles.length === entries.length,
+    unique_genome_roots: entries.length > 0
+      && entries.every(entry => isHexRoot(entry?.genome_root))
+      && universalArtAssetProfileCoverageRootCount(entries, 'genome_root') === entries.length,
+    unique_resolution_roots: entries.length > 0
+      && entries.every(entry => isHexRoot(entry?.resolution_root))
+      && universalArtAssetProfileCoverageRootCount(entries, 'resolution_root') === entries.length,
+    entry_checks: entries.length > 0 && entries.every(entry => entry?.pass === true),
+    no_silent_fallback: entries.length > 0 && entryChecks.every(checks => checks.no_silent_fallback === true),
+    authority_boundary: entries.length > 0 && entryChecks.every(checks => checks.authority_boundary === true)
+  };
+}
+
+function universalArtAssetProfileCoverageModeHistogram(entries) {
+  return Object.fromEntries(UNIVERSAL_ART_ASSET_PROFILE_COVERAGE_MODES.map(mode => [
+    mode,
+    entries.filter(entry => entry?.observed_mode === mode).length
+  ]));
+}
+
+function buildUniversalArtAssetProfileCoverageEntry(entry, index, expectedMode) {
+  const selected = record(entry);
+  const input = record(selected.input);
+  const result = record(selected.result);
+  const genome = record(result.genome);
+  const resolution = record(result.resolution);
+  const execution = record(result.execution);
+  const forge = record(result.forge);
+  const candidate = record(result.candidate);
+  const profile = genome.asset_profile ?? null;
+  if (!UNIVERSAL_ART_ASSET_PROFILES.includes(profile)) throw new GenesisError('UNIVERSAL_ART_ASSET_PROFILE_COVERAGE_PROFILE_INVALID', profile);
+  const candidatePresent = result.candidate !== null && result.candidate !== undefined && typeof result.candidate === 'object' && !Array.isArray(result.candidate);
+  const summary = {
+    index,
+    asset_key: nonEmptyText(selected.asset_key ?? input.asset_key) ? String(selected.asset_key ?? input.asset_key) : null,
+    asset_id: genome.asset_id ?? null,
+    asset_profile: profile,
+    requested_profile: universalArtAssetProfileCoverageInputProfile(input),
+    status: result.status ?? 'BLOCKED',
+    genome_root: genome.genome_root ?? null,
+    forge_asset_profile: forge.asset_profile ?? null,
+    forge_genome_root: forge.genome_root ?? null,
+    resolution_root: resolution.resolution_root ?? null,
+    resolution: {
+      format: resolution.format ?? null,
+      version: resolution.version ?? null,
+      asset_id: resolution.asset_id ?? null,
+      asset_profile: resolution.asset_profile ?? null,
+      genome_root: resolution.genome_root ?? null,
+      resolution_root: resolution.resolution_root ?? null,
+      selected_provider_id: resolution.selected_provider_id ?? null,
+      selected_provider_root: resolution.selected_provider_root ?? null,
+      selected_provider_source: resolution.selected_provider_source ?? null,
+      eligible: resolution.eligible ?? null,
+      runtime_status: resolution.runtime_status ?? null
+    },
+    execution: {
+      mode: execution.mode ?? null,
+      status: execution.status ?? null,
+      provider_id: execution.provider_id ?? null,
+      failure_code: execution.failure?.code ?? null
+    },
+    candidate: {
+      present: candidatePresent,
+      candidate_root: candidate.candidate_root ?? null
+    },
+    authority: {
+      candidate_only: forge.candidate_only ?? null,
+      authoritative: forge.authoritative ?? null,
+      canonical_write_authorized: forge.canonical_write_authorized ?? null,
+      provider_can_write_authoritative_world_state: forge.authority?.provider_can_write_authoritative_world_state ?? null,
+      provider_can_commit: forge.authority?.provider_can_commit ?? null,
+      acceptance_can_commit: forge.authority?.acceptance_can_commit ?? null,
+      rncs_authority_required: forge.authority?.rncs_authority_required ?? null
+    },
+    expected_mode: expectedMode,
+    observed_mode: null,
+    checks: {},
+    pass: false
+  };
+  const checked = universalArtAssetProfileCoverageEntryChecks(summary, expectedMode);
+  summary.observed_mode = checked.observedMode;
+  summary.checks = checked.checks;
+  summary.pass = checked.pass;
+  return summary;
+}
+
+function buildUniversalArtAssetProfileCoverageReport({coverageId = null, entries, expectedProfiles, expectedModes = {}} = {}) {
+  if (!Array.isArray(entries) || entries.length === 0 || entries.length > 64) {
+    throw new GenesisError('UNIVERSAL_ART_ASSET_PROFILE_COVERAGE_ENTRIES_INVALID');
+  }
+  const profiles = normalizeUniversalArtAssetProfileCoverageProfiles(expectedProfiles);
+  const explicitModes = normalizeUniversalArtAssetProfileCoverageExpectedModes(expectedModes, profiles);
+  const profilesForEntries = entries.map(entry => {
+    const result = record(entry?.result);
+    const profile = record(result.genome).asset_profile ?? universalArtAssetProfileCoverageInputProfile(entry?.input);
+    if (!UNIVERSAL_ART_ASSET_PROFILES.includes(profile)) throw new GenesisError('UNIVERSAL_ART_ASSET_PROFILE_COVERAGE_PROFILE_INVALID', profile);
+    return profile;
+  });
+  const resolvedModes = Object.fromEntries(profiles.map(profile => {
+    const entryIndex = profilesForEntries.indexOf(profile);
+    const resolution = entryIndex >= 0 ? record(entries[entryIndex]?.result?.resolution) : null;
+    return [profile, explicitModes[profile] ?? universalArtAssetProfileCoverageDefaultMode(profile, resolution)];
+  }));
+  const summaries = entries.map((entry, index) => {
+    const profile = profilesForEntries[index];
+    const expectedMode = resolvedModes[profile] ?? universalArtAssetProfileCoverageDefaultMode(profile, record(entry?.result?.resolution));
+    return buildUniversalArtAssetProfileCoverageEntry(entry, index, expectedMode);
+  });
+  const observedProfiles = [...new Set(summaries.map(entry => entry.asset_profile))]
+    .sort((left, right) => UNIVERSAL_ART_ASSET_PROFILES.indexOf(left) - UNIVERSAL_ART_ASSET_PROFILES.indexOf(right));
+  const missingProfiles = profiles.filter(profile => !observedProfiles.includes(profile));
+  const unexpectedProfiles = observedProfiles.filter(profile => !profiles.includes(profile));
+  const checks = universalArtAssetProfileCoverageGlobalChecks(summaries, profiles, observedProfiles, missingProfiles, unexpectedProfiles);
+  const resolvedCoverageId = coverageId === null || coverageId === undefined
+    ? stableId('urrf-universal-art-asset-profile-coverage', {
+      expected_profiles: profiles,
+      expected_modes: resolvedModes,
+      roots: summaries.map(entry => ({profile: entry.asset_profile, genome_root: entry.genome_root, resolution_root: entry.resolution_root}))
+    })
+    : String(coverageId).trim();
+  if (!nonEmptyText(resolvedCoverageId)) throw new GenesisError('UNIVERSAL_ART_ASSET_PROFILE_COVERAGE_ID_INVALID');
+  return {
+    format: UNIVERSAL_ART_ASSET_PROFILE_COVERAGE_FORMAT,
+    version: UNIVERSAL_ART_ASSET_FORGE_VERSION,
+    coverage_id: resolvedCoverageId,
+    source: 'urrf-profile-coverage-evaluator',
+    expected_profiles: profiles,
+    expected_modes: resolvedModes,
+    entries: summaries,
+    summary: {
+      profile_count: summaries.length,
+      pass_count: summaries.filter(entry => entry.pass).length,
+      fail_count: summaries.filter(entry => !entry.pass).length,
+      mode_histogram: universalArtAssetProfileCoverageModeHistogram(summaries)
+    },
+    coverage: {
+      expected_profile_count: profiles.length,
+      observed_profile_count: observedProfiles.length,
+      expected_profiles: profiles,
+      observed_profiles: observedProfiles,
+      missing_profiles: missingProfiles,
+      unexpected_profiles: unexpectedProfiles,
+      unique_genome_root_count: universalArtAssetProfileCoverageRootCount(summaries, 'genome_root'),
+      unique_resolution_root_count: universalArtAssetProfileCoverageRootCount(summaries, 'resolution_root')
+    },
+    checks,
+    status: Object.values(checks).every(Boolean) ? 'CANDIDATE_PROFILE_COVERAGE_PASS' : 'CANDIDATE_PROFILE_COVERAGE_FAIL',
+    candidate_only: true,
+    authoritative: false,
+    canonical_write_authorized: false,
+    authority: {
+      canonical_owner: 'RNCS',
+      representation_owner: 'URRF',
+      provider_can_write_authoritative_world_state: false,
+      provider_can_commit: false,
+      acceptance_can_commit: false,
+      rncs_authority_required: true
+    },
+    coverage_root: ''
+  };
+}
+
+/**
+ * Summarize every exercised URRF profile while preserving the distinction
+ * between a built-in reference, an unbound external contract, an executed
+ * Provider, and an unresolved capability. This is coverage evidence only;
+ * it cannot grant AAA acceptance or RNCS write authority.
+ */
+export function createUniversalArtAssetProfileCoverageReport({coverage_id = null, coverageId = null, entries = [], expected_profiles = null, expectedProfiles = null, expected_modes = null, expectedModes = null} = {}) {
+  const base = buildUniversalArtAssetProfileCoverageReport({
+    coverageId: coverage_id ?? coverageId,
+    entries,
+    expectedProfiles: expected_profiles ?? expectedProfiles,
+    expectedModes: expected_modes ?? expectedModes ?? {}
+  });
+  return seal(base, 'coverage_root');
+}
+
+/**
+ * Verify persisted profile coverage and optionally recompute it from the
+ * source results so a resealed summary cannot hide a silent Provider fallback.
+ */
+export function verifyUniversalArtAssetProfileCoverageReport(report, {entries = null} = {}) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  if (!report || typeof report !== 'object' || Array.isArray(report)) return {valid: false, errors: ['PROFILE_COVERAGE_REPORT_NOT_OBJECT'], coverage_root: null};
+  try {
+    check(report.format === UNIVERSAL_ART_ASSET_PROFILE_COVERAGE_FORMAT, 'PROFILE_COVERAGE_FORMAT_INVALID');
+    check(report.version === UNIVERSAL_ART_ASSET_FORGE_VERSION, 'PROFILE_COVERAGE_VERSION_INVALID');
+    check(nonEmptyText(report.coverage_id), 'PROFILE_COVERAGE_ID_MISSING');
+    check(report.source === 'urrf-profile-coverage-evaluator', 'PROFILE_COVERAGE_SOURCE_INVALID');
+    const expectedProfiles = normalizeUniversalArtAssetProfileCoverageProfiles(report.expected_profiles);
+    const expectedModes = normalizeUniversalArtAssetProfileCoverageExpectedModes(report.expected_modes, expectedProfiles);
+    check(rootHash(expectedModes) === rootHash(report.expected_modes ?? {}), 'PROFILE_COVERAGE_EXPECTED_MODES_MISMATCH');
+    const summaries = Array.isArray(report.entries) ? report.entries : [];
+    check(summaries.length > 0 && summaries.length <= 64, 'PROFILE_COVERAGE_ENTRIES_INVALID');
+    check(summaries.every((entry, index) => entry?.index === index), 'PROFILE_COVERAGE_ENTRY_INDEX_INVALID');
+    const keys = summaries.map(entry => entry?.asset_key).filter(nonEmptyText);
+    check(keys.length === new Set(keys).size, 'PROFILE_COVERAGE_ASSET_KEYS_INVALID');
+    for (const entry of summaries) {
+      const profile = entry?.asset_profile;
+      check(UNIVERSAL_ART_ASSET_PROFILES.includes(profile), `PROFILE_COVERAGE_ENTRY_PROFILE_INVALID:${entry?.index ?? 'unknown'}`);
+      check(nonEmptyText(entry?.asset_id), `PROFILE_COVERAGE_ENTRY_ASSET_ID_INVALID:${entry?.index ?? 'unknown'}`);
+      check(entry?.requested_profile === null || UNIVERSAL_ART_ASSET_PROFILES.includes(entry?.requested_profile), `PROFILE_COVERAGE_ENTRY_REQUESTED_PROFILE_INVALID:${entry?.index ?? 'unknown'}`);
+      check(isHexRoot(entry?.genome_root), `PROFILE_COVERAGE_ENTRY_GENOME_ROOT_INVALID:${entry?.index ?? 'unknown'}`);
+      check(isHexRoot(entry?.forge_genome_root), `PROFILE_COVERAGE_ENTRY_FORGE_GENOME_ROOT_INVALID:${entry?.index ?? 'unknown'}`);
+      check(isHexRoot(entry?.resolution_root), `PROFILE_COVERAGE_ENTRY_RESOLUTION_ROOT_INVALID:${entry?.index ?? 'unknown'}`);
+      check(['BLOCKED', 'READY_FOR_HUMAN_REVIEW'].includes(entry?.status ?? 'BLOCKED') || entry?.status === undefined, `PROFILE_COVERAGE_ENTRY_STATUS_INVALID:${entry?.index ?? 'unknown'}`);
+      check(UNIVERSAL_ART_ASSET_PROFILE_COVERAGE_MODES.includes(entry?.expected_mode), `PROFILE_COVERAGE_ENTRY_EXPECTED_MODE_INVALID:${entry?.index ?? 'unknown'}`);
+      check(UNIVERSAL_ART_ASSET_PROFILE_COVERAGE_MODES.includes(entry?.observed_mode), `PROFILE_COVERAGE_ENTRY_OBSERVED_MODE_INVALID:${entry?.index ?? 'unknown'}`);
+      const candidate = record(entry?.candidate);
+      check(typeof candidate.present === 'boolean', `PROFILE_COVERAGE_ENTRY_CANDIDATE_STATUS_INVALID:${entry?.index ?? 'unknown'}`);
+      check(candidate.present ? isHexRoot(candidate.candidate_root) : candidate.candidate_root === null, `PROFILE_COVERAGE_ENTRY_CANDIDATE_ROOT_INVALID:${entry?.index ?? 'unknown'}`);
+      const checks = record(entry?.checks);
+      const expectedMode = expectedModes[profile] ?? entry?.expected_mode ?? universalArtAssetProfileCoverageDefaultMode(profile, record(entry?.resolution));
+      const recomputed = universalArtAssetProfileCoverageEntryChecks(entry, expectedMode);
+      check(entry?.expected_mode === expectedMode, `PROFILE_COVERAGE_ENTRY_EXPECTED_MODE_MISMATCH:${entry?.index ?? 'unknown'}`);
+      check(entry?.observed_mode === recomputed.observedMode, `PROFILE_COVERAGE_ENTRY_OBSERVED_MODE_MISMATCH:${entry?.index ?? 'unknown'}`);
+      for (const [key, value] of Object.entries(recomputed.checks)) check(checks[key] === value, `PROFILE_COVERAGE_ENTRY_CHECK_${key.toUpperCase()}_MISMATCH:${entry?.index ?? 'unknown'}`);
+      check(entry?.pass === recomputed.pass, `PROFILE_COVERAGE_ENTRY_STATUS_MISMATCH:${entry?.index ?? 'unknown'}`);
+    }
+    const observedProfiles = [...new Set(summaries.map(entry => entry?.asset_profile).filter(profile => UNIVERSAL_ART_ASSET_PROFILES.includes(profile)))]
+      .sort((left, right) => UNIVERSAL_ART_ASSET_PROFILES.indexOf(left) - UNIVERSAL_ART_ASSET_PROFILES.indexOf(right));
+    const missingProfiles = expectedProfiles.filter(profile => !observedProfiles.includes(profile));
+    const unexpectedProfiles = observedProfiles.filter(profile => !expectedProfiles.includes(profile));
+    check(rootHash(observedProfiles) === rootHash(report.coverage?.observed_profiles ?? []), 'PROFILE_COVERAGE_OBSERVED_PROFILES_MISMATCH');
+    check(rootHash(missingProfiles) === rootHash(report.coverage?.missing_profiles ?? []), 'PROFILE_COVERAGE_MISSING_PROFILES_MISMATCH');
+    check(rootHash(unexpectedProfiles) === rootHash(report.coverage?.unexpected_profiles ?? []), 'PROFILE_COVERAGE_UNEXPECTED_PROFILES_MISMATCH');
+    check(report.coverage?.expected_profile_count === expectedProfiles.length, 'PROFILE_COVERAGE_EXPECTED_PROFILE_COUNT_MISMATCH');
+    check(report.coverage?.observed_profile_count === observedProfiles.length, 'PROFILE_COVERAGE_OBSERVED_PROFILE_COUNT_MISMATCH');
+    check(report.coverage?.unique_genome_root_count === universalArtAssetProfileCoverageRootCount(summaries, 'genome_root'), 'PROFILE_COVERAGE_UNIQUE_GENOME_ROOT_COUNT_MISMATCH');
+    check(report.coverage?.unique_resolution_root_count === universalArtAssetProfileCoverageRootCount(summaries, 'resolution_root'), 'PROFILE_COVERAGE_UNIQUE_RESOLUTION_ROOT_COUNT_MISMATCH');
+    check(report.summary?.profile_count === summaries.length, 'PROFILE_COVERAGE_SUMMARY_PROFILE_COUNT_MISMATCH');
+    check(report.summary?.pass_count === summaries.filter(entry => entry.pass === true).length, 'PROFILE_COVERAGE_SUMMARY_PASS_COUNT_MISMATCH');
+    check(report.summary?.fail_count === summaries.filter(entry => entry.pass !== true).length, 'PROFILE_COVERAGE_SUMMARY_FAIL_COUNT_MISMATCH');
+    check(rootHash(report.summary?.mode_histogram ?? {}) === rootHash(universalArtAssetProfileCoverageModeHistogram(summaries)), 'PROFILE_COVERAGE_MODE_HISTOGRAM_MISMATCH');
+    const expectedChecks = universalArtAssetProfileCoverageGlobalChecks(summaries, expectedProfiles, observedProfiles, missingProfiles, unexpectedProfiles);
+    const checkNames = Object.keys(expectedChecks);
+    const reportChecks = record(report.checks);
+    check(checkNames.every(key => typeof reportChecks[key] === 'boolean'), 'PROFILE_COVERAGE_CHECKS_INVALID');
+    for (const key of checkNames) check(reportChecks[key] === expectedChecks[key], `PROFILE_COVERAGE_CHECK_${key.toUpperCase()}_MISMATCH`);
+    const expectedStatus = Object.values(reportChecks).every(Boolean) ? 'CANDIDATE_PROFILE_COVERAGE_PASS' : 'CANDIDATE_PROFILE_COVERAGE_FAIL';
+    check(report.status === expectedStatus, 'PROFILE_COVERAGE_STATUS_MISMATCH');
+    check(report.candidate_only === true && report.authoritative === false && report.canonical_write_authorized === false, 'PROFILE_COVERAGE_AUTHORITY_INVALID');
+    check(report.authority?.canonical_owner === 'RNCS' && report.authority?.representation_owner === 'URRF', 'PROFILE_COVERAGE_OWNER_INVALID');
+    check(report.authority?.provider_can_write_authoritative_world_state === false && report.authority?.provider_can_commit === false && report.authority?.acceptance_can_commit === false && report.authority?.rncs_authority_required === true, 'PROFILE_COVERAGE_PROVIDER_AUTHORITY_INVALID');
+    const copy = clone(report);
+    const actual = copy.coverage_root;
+    delete copy.coverage_root;
+    check(isHexRoot(actual) && actual === rootHash(copy), 'PROFILE_COVERAGE_ROOT_INVALID');
+    if (entries !== null) {
+      const expectedReport = buildUniversalArtAssetProfileCoverageReport({
+        coverageId: report.coverage_id,
+        entries,
+        expectedProfiles,
+        expectedModes
+      });
+      delete expectedReport.coverage_root;
+      check(rootHash(copy) === rootHash(expectedReport), 'PROFILE_COVERAGE_CONTENT_MISMATCH');
+    }
+  } catch (error) {
+    errors.push(`VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, coverage_root: report.coverage_root ?? null};
 }
 
 function universalArtAssetAssemblyBatchInput(batch, assetResults = null) {

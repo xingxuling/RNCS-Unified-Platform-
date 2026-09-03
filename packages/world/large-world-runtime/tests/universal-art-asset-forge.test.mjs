@@ -8,6 +8,7 @@ import {
   createUniversalArtAssetEvidenceBundle,
   createUniversalArtAssetGenome,
   createUniversalArtAssetHoldoutReport,
+  createUniversalArtAssetProfileCoverageReport,
   evaluateUniversalArtAssetAcceptance,
   generateUniversalArtAssetBatch,
   generateUniversalArtAsset,
@@ -19,6 +20,7 @@ import {
   verifyUniversalArtAssetBatch,
   verifyUniversalArtAssetEvidenceBundle,
   verifyUniversalArtAssetHoldoutReport,
+  verifyUniversalArtAssetProfileCoverageReport,
   verifyUniversalArtAssetProvenanceLicenseReceipt,
   verifyUniversalArtAssetQualityProof,
   verifyUniversalArtAssetReviewReceipt,
@@ -338,9 +340,48 @@ test('unsupported profile fails closed instead of borrowing a humanoid generator
   const outDir = fs.mkdtempSync(path.join(os.tmpdir(), 'urrf-universal-art-unresolved-'));
   const result = generateUniversalArtAsset(genome, {outDir});
   assert.equal(result.execution.failure.code, 'PROFILE_PROVIDER_UNRESOLVED');
+  assert.equal(result.resolution.selected_provider_id, null);
+  assert.equal(result.resolution.selected_provider_source, null);
   assert.equal(result.status, 'BLOCKED');
   assert.equal(result.candidate, null);
   assert.equal(result.acceptance.aaa_verified, false);
+});
+
+test('profile coverage preserves built-in and unresolved boundaries after resealing', () => {
+  const characterOutDir = fs.mkdtempSync(path.join(os.tmpdir(), 'urrf-universal-art-profile-coverage-character-'));
+  const vfxInput = {
+    description: '一个需要真实粒子材质和轨迹的魔法爆炸特效。',
+    asset_profile: 'vfx',
+    quality_tier: 'AAA',
+    seed: 'universal-art-forge-profile-coverage-vfx-seed'
+  };
+  const character = generateUniversalArtAsset(characterInput, {outDir: characterOutDir});
+  const vfxGenome = createUniversalArtAssetGenome(vfxInput);
+  const vfx = generateUniversalArtAsset(vfxGenome, {
+    outDir: fs.mkdtempSync(path.join(os.tmpdir(), 'urrf-universal-art-profile-coverage-vfx-'))
+  });
+  const entries = [
+    {input: characterInput, result: character},
+    {input: vfxGenome, result: vfx}
+  ];
+  const report = createUniversalArtAssetProfileCoverageReport({
+    coverage_id: 'urrf-profile-coverage-unit-v01',
+    entries,
+    expected_profiles: ['character', 'vfx'],
+    expected_modes: {character: 'BUILTIN_REFERENCE', vfx: 'UNRESOLVED'}
+  });
+  assert.equal(report.status, 'CANDIDATE_PROFILE_COVERAGE_PASS');
+  assert.deepEqual(report.coverage.observed_profiles, ['character', 'vfx']);
+  assert.equal(report.summary.mode_histogram.BUILTIN_REFERENCE, 1);
+  assert.equal(report.summary.mode_histogram.UNRESOLVED, 1);
+  assert.equal(verifyUniversalArtAssetProfileCoverageReport(report).valid, true);
+  assert.equal(verifyUniversalArtAssetProfileCoverageReport(report, {entries}).valid, true);
+
+  const tampered = structuredClone(report);
+  tampered.entries[1].resolution.selected_provider_source = 'ragf-reference-provider';
+  const resealedTamper = seal(tampered, 'coverage_root');
+  assert.equal(verifyUniversalArtAssetProfileCoverageReport(resealedTamper).valid, false);
+  assert.equal(verifyUniversalArtAssetProfileCoverageReport(resealedTamper, {entries}).valid, false);
 });
 
 test('acceptance gate cannot be passed by provider success alone', () => {

@@ -1,0 +1,266 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/urrf/universal-art-asset-profile-coverage.v0.1.schema.json",
+  "title": "URRF Universal Art Asset Profile Coverage",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "version",
+    "coverage_id",
+    "source",
+    "expected_profiles",
+    "expected_modes",
+    "entries",
+    "summary",
+    "coverage",
+    "checks",
+    "status",
+    "candidate_only",
+    "authoritative",
+    "canonical_write_authorized",
+    "authority",
+    "coverage_root"
+  ],
+  "$defs": {
+    "root": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "nullableRoot": {
+      "anyOf": [
+        {"$ref": "#/$defs/root"},
+        {"type": "null"}
+      ]
+    },
+    "profile": {
+      "type": "string",
+      "enum": ["character", "creature", "prop", "vehicle", "structure", "environment", "vegetation", "resource", "vfx"]
+    },
+    "mode": {
+      "type": "string",
+      "enum": ["BUILTIN_REFERENCE", "EXTERNAL_CONTRACT_ONLY", "EXTERNAL_EXECUTED", "INJECTED_EXECUTED", "UNRESOLVED", "INCONSISTENT"]
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate_only",
+        "authoritative",
+        "canonical_write_authorized",
+        "provider_can_write_authoritative_world_state",
+        "provider_can_commit",
+        "acceptance_can_commit",
+        "rncs_authority_required"
+      ],
+      "properties": {
+        "candidate_only": {"type": "boolean"},
+        "authoritative": {"type": "boolean"},
+        "canonical_write_authorized": {"type": "boolean"},
+        "provider_can_write_authoritative_world_state": {"type": "boolean"},
+        "provider_can_commit": {"type": "boolean"},
+        "acceptance_can_commit": {"type": "boolean"},
+        "rncs_authority_required": {"type": "boolean"}
+      }
+    }
+  },
+  "properties": {
+    "format": {"const": "urrf.universal-art-asset-profile-coverage.v0.1"},
+    "version": {"const": "0.1.0"},
+    "coverage_id": {"type": "string", "minLength": 1},
+    "source": {"const": "urrf-profile-coverage-evaluator"},
+    "expected_profiles": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 9,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/profile"}
+    },
+    "expected_modes": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {"enum": ["character", "creature", "prop", "vehicle", "structure", "environment", "vegetation", "resource", "vfx"]},
+      "additionalProperties": {"$ref": "#/$defs/mode"}
+    },
+    "entries": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "index",
+          "asset_key",
+          "asset_id",
+          "asset_profile",
+          "requested_profile",
+          "status",
+          "genome_root",
+          "forge_asset_profile",
+          "forge_genome_root",
+          "resolution_root",
+          "resolution",
+          "execution",
+          "candidate",
+          "authority",
+          "expected_mode",
+          "observed_mode",
+          "checks",
+          "pass"
+        ],
+        "properties": {
+          "index": {"type": "integer", "minimum": 0},
+          "asset_key": {"anyOf": [{"type": "string", "minLength": 1}, {"type": "null"}]},
+          "asset_id": {"type": "string", "minLength": 1},
+          "asset_profile": {"$ref": "#/$defs/profile"},
+          "requested_profile": {"anyOf": [{"$ref": "#/$defs/profile"}, {"type": "null"}]},
+          "status": {"enum": ["BLOCKED", "READY_FOR_HUMAN_REVIEW"]},
+          "genome_root": {"$ref": "#/$defs/root"},
+          "forge_asset_profile": {"$ref": "#/$defs/profile"},
+          "forge_genome_root": {"$ref": "#/$defs/root"},
+          "resolution_root": {"$ref": "#/$defs/root"},
+          "resolution": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "format",
+              "version",
+              "asset_id",
+              "asset_profile",
+              "genome_root",
+              "resolution_root",
+              "selected_provider_id",
+              "selected_provider_root",
+              "selected_provider_source",
+              "eligible",
+              "runtime_status"
+            ],
+            "properties": {
+              "format": {"const": "urrf.universal-art-asset-provider-resolution.v0.1"},
+              "version": {"const": "0.1.0"},
+              "asset_id": {"type": "string", "minLength": 1},
+              "asset_profile": {"$ref": "#/$defs/profile"},
+              "genome_root": {"$ref": "#/$defs/root"},
+              "resolution_root": {"$ref": "#/$defs/root"},
+              "selected_provider_id": {"anyOf": [{"type": "string", "minLength": 1}, {"type": "null"}]},
+              "selected_provider_root": {"$ref": "#/$defs/nullableRoot"},
+              "selected_provider_source": {"anyOf": [{"enum": ["ragf-reference-provider", "external-provider-contract", "injected-provider"]}, {"type": "null"}]},
+              "eligible": {"type": "boolean"},
+              "runtime_status": {"type": "string", "minLength": 1}
+            }
+          },
+          "execution": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["mode", "status", "provider_id", "failure_code"],
+            "properties": {
+              "mode": {"anyOf": [{"type": "string", "minLength": 1}, {"type": "null"}]},
+              "status": {"enum": ["COMPLETED", "FAILED"]},
+              "provider_id": {"anyOf": [{"type": "string", "minLength": 1}, {"type": "null"}]},
+              "failure_code": {"anyOf": [{"type": "string", "minLength": 1}, {"type": "null"}]}
+            }
+          },
+          "candidate": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["present", "candidate_root"],
+            "properties": {
+              "present": {"type": "boolean"},
+              "candidate_root": {"$ref": "#/$defs/nullableRoot"}
+            }
+          },
+          "authority": {"$ref": "#/$defs/authority"},
+          "expected_mode": {"$ref": "#/$defs/mode"},
+          "observed_mode": {"$ref": "#/$defs/mode"},
+          "checks": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["profile_binding", "genome_binding", "resolution_integrity", "candidate_binding", "expected_mode", "no_silent_fallback", "authority_boundary"],
+            "properties": {
+              "profile_binding": {"type": "boolean"},
+              "genome_binding": {"type": "boolean"},
+              "resolution_integrity": {"type": "boolean"},
+              "candidate_binding": {"type": "boolean"},
+              "expected_mode": {"type": "boolean"},
+              "no_silent_fallback": {"type": "boolean"},
+              "authority_boundary": {"type": "boolean"}
+            }
+          },
+          "pass": {"type": "boolean"}
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profile_count", "pass_count", "fail_count", "mode_histogram"],
+      "properties": {
+        "profile_count": {"type": "integer", "minimum": 0},
+        "pass_count": {"type": "integer", "minimum": 0},
+        "fail_count": {"type": "integer", "minimum": 0},
+        "mode_histogram": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["BUILTIN_REFERENCE", "EXTERNAL_CONTRACT_ONLY", "EXTERNAL_EXECUTED", "INJECTED_EXECUTED", "UNRESOLVED", "INCONSISTENT"],
+          "properties": {
+            "BUILTIN_REFERENCE": {"type": "integer", "minimum": 0},
+            "EXTERNAL_CONTRACT_ONLY": {"type": "integer", "minimum": 0},
+            "EXTERNAL_EXECUTED": {"type": "integer", "minimum": 0},
+            "INJECTED_EXECUTED": {"type": "integer", "minimum": 0},
+            "UNRESOLVED": {"type": "integer", "minimum": 0},
+            "INCONSISTENT": {"type": "integer", "minimum": 0}
+          }
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["expected_profile_count", "observed_profile_count", "expected_profiles", "observed_profiles", "missing_profiles", "unexpected_profiles", "unique_genome_root_count", "unique_resolution_root_count"],
+      "properties": {
+        "expected_profile_count": {"type": "integer", "minimum": 0},
+        "observed_profile_count": {"type": "integer", "minimum": 0},
+        "expected_profiles": {"type": "array", "items": {"$ref": "#/$defs/profile"}, "uniqueItems": true},
+        "observed_profiles": {"type": "array", "items": {"$ref": "#/$defs/profile"}, "uniqueItems": true},
+        "missing_profiles": {"type": "array", "items": {"$ref": "#/$defs/profile"}, "uniqueItems": true},
+        "unexpected_profiles": {"type": "array", "items": {"$ref": "#/$defs/profile"}, "uniqueItems": true},
+        "unique_genome_root_count": {"type": "integer", "minimum": 0},
+        "unique_resolution_root_count": {"type": "integer", "minimum": 0}
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["entry_count", "profile_coverage", "unique_profiles", "unique_genome_roots", "unique_resolution_roots", "entry_checks", "no_silent_fallback", "authority_boundary"],
+      "properties": {
+        "entry_count": {"type": "boolean"},
+        "profile_coverage": {"type": "boolean"},
+        "unique_profiles": {"type": "boolean"},
+        "unique_genome_roots": {"type": "boolean"},
+        "unique_resolution_roots": {"type": "boolean"},
+        "entry_checks": {"type": "boolean"},
+        "no_silent_fallback": {"type": "boolean"},
+        "authority_boundary": {"type": "boolean"}
+      }
+    },
+    "status": {"enum": ["CANDIDATE_PROFILE_COVERAGE_PASS", "CANDIDATE_PROFILE_COVERAGE_FAIL"]},
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "canonical_write_authorized": {"const": false},
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["canonical_owner", "representation_owner", "provider_can_write_authoritative_world_state", "provider_can_commit", "acceptance_can_commit", "rncs_authority_required"],
+      "properties": {
+        "canonical_owner": {"const": "RNCS"},
+        "representation_owner": {"const": "URRF"},
+        "provider_can_write_authoritative_world_state": {"const": false},
+        "provider_can_commit": {"const": false},
+        "acceptance_can_commit": {"const": false},
+        "rncs_authority_required": {"const": true}
+      }
+    },
+    "coverage_root": {"$ref": "#/$defs/root"}
+  }
+}
