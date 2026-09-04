@@ -1,4 +1,4 @@
-import {seal,rootHash,clamp} from './canonical.mjs';import {FORMATS,isRiggedAssetKind} from './contracts.mjs';
+import {seal,rootHash,clamp} from './canonical.mjs';import {FORMATS,isRiggedAssetKind,isCreatureAssetKind} from './contracts.mjs';
 function sealed(value,field){if(!value||typeof value!=='object'||typeof value[field]!=='string')return false;const copy=structuredClone(value),actual=copy[field];delete copy[field];return actual===rootHash(copy)}
 export function validateRuntimeAdapters(artifacts,genome){
  const errors=[];if(!String(genome?.identity?.kind).includes('3d'))return{valid:true,errors:[]};
@@ -18,8 +18,8 @@ export function validateRuntimeAdapters(artifacts,genome){
  if(rsr?.compatibility?.target_format!=='rsr.spatial-embodiment-world.v0.6')errors.push('RSR_PROFILE_TARGET_INVALID');
  if(!sealed(rsr,'profile_root'))errors.push('RSR_PROFILE_ROOT_INVALID');
  if(rigged){
-   if(rsr?.body?.runtime_kind!=='dynamic'||rsr?.body?.shape_spec?.type!=='capsule')errors.push('RSR_PROFILE_PHYSICAL_BINDING_INVALID');
-   if((rsr?.skeleton?.bones?.length??0)<8||(rsr?.collision?.fixtures?.length??0)<4)errors.push('RSR_EMBODIMENT_QUALITY_INVALID');
+   if(rsr?.body?.runtime_kind!=='dynamic'||rsr?.body?.shape_spec?.type!==(isCreatureAssetKind(genome?.identity?.kind)?'box':'capsule'))errors.push('RSR_PROFILE_PHYSICAL_BINDING_INVALID');
+   if((rsr?.skeleton?.bones?.length??0)<(isCreatureAssetKind(genome?.identity?.kind)?13:8)||(rsr?.collision?.fixtures?.length??0)<(isCreatureAssetKind(genome?.identity?.kind)?5:4))errors.push('RSR_EMBODIMENT_QUALITY_INVALID');
  }else if(rsr?.body?.runtime_kind!=='static'||rsr?.body?.shape_spec?.type!=='box'||(rsr?.collision?.fixtures?.length??0)<2){
    errors.push('RSR_STATIC_PROFILE_INVALID');
  }

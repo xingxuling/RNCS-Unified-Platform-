@@ -173,6 +173,7 @@ npm run test:ragf-world-binding
 - GLB 内含 8 骨骼、4 个可回放动画、1 个表情 morph target、真实 UV/法线/权重和可选四张 PBR 纹理；生产工作区默认将几何 GLB 与 PBR 包分开寻址，保持调色增量重建不污染几何根。
 - PBR 包不再是常量色块：base-color 有分层/镶嵌变化，normal 有面板起伏，ORM 有边缘遮蔽和材质区，emissive 有角色标记和饰边。
 - 3D 碰撞输出增加 torso、head、weapon sensor 等语义 fixture；主 RSR 仍以稳定胶囊为权威运行时形状。
+- `creature` 现在有独立的四足 profile：13 骨骼、4 个动作、步态/尾部事件、动态 box RSR、五个碰撞 fixture、quadruped retarget 和对应的跨媒体预览；它仍是本地结构候选，不是高分辨率生物资产或 AAA 证据。
 - 质量合同沉淀在 `art_bible/ragf-procedural-3d-v0.4.md`、`asset_manifest.json` 和 `source_prompts/character-3d-quality-v0.4.json`，后续外部 Provider 也必须对齐这些不变量。
 
 静态族使用独立的语义合同：Genome 的 `body_type` 为 `static-asset`、具身档案为 `static-box`，动画集合和攻击 gameplay signals 为空；概念 SVG 与精灵表分别输出族形态和单帧 `catalog-preview`，粒子、音频与 Prefab 使用 `impact` / `destroy` 事件。这样车辆、建筑和环境不会被下游误解释为可攻击的人形角色。角色与生物仍走骨骼/动画分支，二维角色仍保留原有行为帧。
@@ -185,10 +186,11 @@ and emits deterministic Character Asset Families with GLB geometry, LODs,
 morphs, rig, collision and physics profiles, cross-media projections, stable
 roots, lineage, provider receipts and evidence. The adjacent procedural 3D
 provider also emits bounded static reference candidates for `prop`, `vehicle`,
-`structure`, `environment`, `vegetation` and `resource`; those profiles use
-profile-specific geometry and static RSR/prefab contracts rather than a fake
-humanoid rig. It can propose candidate assets but cannot mutate the RNCS
-identity authority or commit to the durable library.
+`structure`, `environment`, `vegetation` and `resource`, plus a bounded
+quadruped reference candidate for `creature`; those profiles use
+profile-specific geometry and RSR/prefab contracts rather than silently
+borrowing a humanoid interpretation. It can propose candidate assets but
+cannot mutate the RNCS identity authority or commit to the durable library.
 
 The built-in assets are Apache-2.0 reference assets for pipeline validation.
 They are not presented as commercial character art, external DCC parity, GPU
@@ -196,7 +198,7 @@ target approval or human acceptance evidence.
 
 ## 事实边界
 
-内置 Provider 现在是 profile-aware 的确定性 stylized procedural 3D 参考生产器：`character` 保留圆润人体、骨骼、动画和 morph 路径；`prop`、`vehicle`、`structure`、`environment`、`vegetation`、`resource` 生成各自的静态几何原型、四通道 PBR、三级 LOD、VSR 和静态 RSR。`creature` 与 `vfx` 仍分别停在外部 Provider 合同或未解析能力边界。所有输出都用于验证资产协议、家族、装配、谱系、增量影响和运行时闭环，仍不等同于电影级或 AAA 生产，也未包含专业重拓扑、复杂 UV 展开、面部绑定、头发/布料、动作捕捉、目标设备性能或通用文生 3D 模型。专业 DCC 与生成模型应作为可替换 Provider 接入。
+内置 Provider 现在是 profile-aware 的确定性 stylized procedural 3D 参考生产器：`character` 保留圆润人体、骨骼、动画和 morph 路径；`creature` 使用独立四足几何、13 骨骼、步态动画、动态 RSR 与 quadruped retarget；`prop`、`vehicle`、`structure`、`environment`、`vegetation`、`resource` 生成各自的静态几何原型、四通道 PBR、三级 LOD、VSR 和静态 RSR。`vfx` 仍保持未解析能力边界。所有输出都用于验证资产协议、家族、装配、谱系、增量影响和运行时闭环，仍不等同于电影级或 AAA 生产，也未包含专业重拓扑、复杂 UV 展开、面部绑定、头发/布料、动作捕捉、目标设备性能或通用文生 3D 模型。专业 DCC 与生成模型应作为可替换 Provider 接入。
 
 ## v0.5：AI社会生态与技术创生
 

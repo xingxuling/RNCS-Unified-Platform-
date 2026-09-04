@@ -306,9 +306,9 @@
         "asset.generate.mesh",
         "asset.generate.pbr"
       ],
-      "resolution_root": "fa4c4119adae5ffedac3099701d468b19a194245ac2f84ef0cebc27846016e28",
+      "resolution_root": "3d288977c1bc3e8c9af62fd9c9010a67556904c7713da1c465e21f1acade6c0d",
       "selected_provider_id": "provider:taowind:procedural-3d",
-      "selected_provider_root": "7bba81ec5d30d0d0f84e0d44a718c4831634a088ee7624565828895100788e3d",
+      "selected_provider_root": "e0eac2677eeb2f351f1b9ca69c46c25dc21a3b930d2e6be17e1ee749e1815a10",
       "selected_provider_source": "ragf-reference-provider",
       "eligible": true,
       "runtime_status": "READY_REFERENCE",
@@ -328,24 +328,20 @@
       "index": 1,
       "asset_profile": "creature",
       "asset_id": "asset:f2ccc97adf215b779e755833",
-      "genome_root": "cf40583b9385a4cd64304d8f2870be872d67fda76d3ff8803e3dfb19b42b3c69",
+      "genome_root": "7a5b6cd2bc52e6e90bee9816e357b43255656c81d06caa3067bc26d977f4eb82",
       "required_capabilities": [
         "asset.generate.3d.production",
         "asset.generate.mesh",
         "asset.generate.pbr"
       ],
-      "resolution_root": "adc02f8ce9ce55614f447eff582dc005bc8e4b47eaf8356d5e27b0d62df275f5",
-      "selected_provider_id": "provider:external:trellis-2",
-      "selected_provider_root": "f65ab9b82c18a54d9944811089285164a4ac6aeef1da27a19cc0e5b6ea03774b",
-      "selected_provider_source": "external-provider-contract",
+      "resolution_root": "27e428965275acfdd027713d775cf032e328989318d21f00dd0b25421f156ea2",
+      "selected_provider_id": "provider:taowind:procedural-3d",
+      "selected_provider_root": "e0eac2677eeb2f351f1b9ca69c46c25dc21a3b930d2e6be17e1ee749e1815a10",
+      "selected_provider_source": "ragf-reference-provider",
       "eligible": true,
-      "runtime_status": "CONTRACT_ONLY",
-      "provider_health": {
-        "status": "CONTRACT_ONLY",
-        "runtime": "CONTRACT_ONLY",
-        "runtime_binding": "CONTRACT_ONLY"
-      },
-      "route_status": "EXTERNAL_CONTRACT_ONLY",
+      "runtime_status": "READY_REFERENCE",
+      "provider_health": null,
+      "route_status": "BUILTIN_REFERENCE_READY",
       "checks": {
         "profile_binding": true,
         "resolution_root": true,
@@ -366,9 +362,9 @@
         "asset.generate.mesh",
         "asset.generate.pbr"
       ],
-      "resolution_root": "f8db3bbcf8021df52fc226f115c09c9d9776654ac22c02f4ddd440b69a4bbdab",
+      "resolution_root": "089305c0d35d4410a47cdd99aa8a2afd1a087d90182b3350c8b64c686cefe11f",
       "selected_provider_id": "provider:taowind:procedural-3d",
-      "selected_provider_root": "7bba81ec5d30d0d0f84e0d44a718c4831634a088ee7624565828895100788e3d",
+      "selected_provider_root": "e0eac2677eeb2f351f1b9ca69c46c25dc21a3b930d2e6be17e1ee749e1815a10",
       "selected_provider_source": "ragf-reference-provider",
       "eligible": true,
       "runtime_status": "READY_REFERENCE",
@@ -394,9 +390,9 @@
         "asset.generate.mesh",
         "asset.generate.pbr"
       ],
-      "resolution_root": "39ef2f93095d5995e5c62ae386b13b30f60fe6cc477bb1412f0b9bfdbf2f8e7c",
+      "resolution_root": "bbdce53d0b59e1065799d0bd0eb8af89f7cb0fa104c3076136429255d60c39cf",
       "selected_provider_id": "provider:taowind:procedural-3d",
-      "selected_provider_root": "7bba81ec5d30d0d0f84e0d44a718c4831634a088ee7624565828895100788e3d",
+      "selected_provider_root": "e0eac2677eeb2f351f1b9ca69c46c25dc21a3b930d2e6be17e1ee749e1815a10",
       "selected_provider_source": "ragf-reference-provider",
       "eligible": true,
       "runtime_status": "READY_REFERENCE",
@@ -421,9 +417,9 @@
         "world.asset.generate.procedural",
         "world.asset.building"
       ],
-      "resolution_root": "e91b9facb9f971e15350619f0543a5da9c5e6f820d74d5d8a23cc977c40c34ce",
+      "resolution_root": "4383993c15c16dbca3a09fd067167515809b6890f1803aa079ea9120ef1c12b0",
       "selected_provider_id": "provider:taowind:procedural-3d",
-      "selected_provider_root": "7bba81ec5d30d0d0f84e0d44a718c4831634a088ee7624565828895100788e3d",
+      "selected_provider_root": "e0eac2677eeb2f351f1b9ca69c46c25dc21a3b930d2e6be17e1ee749e1815a10",
       "selected_provider_source": "ragf-reference-provider",
       "eligible": true,
       "runtime_status": "READY_REFERENCE",
@@ -448,9 +444,9 @@
         "world.asset.generate.procedural",
         "world.asset.environment"
       ],
-      "resolution_root": "8878a0986411f7211e669f9438b03cd18bdc5f04d7bf0ea956d52824c36468a8",
+      "resolution_root": "97be237269741cc59acbe888df42463a57f081ed27ab8712a862dea995ecea6e",
       "selected_provider_id": "provider:taowind:procedural-3d",
-      "selected_provider_root": "7bba81ec5d30d0d0f84e0d44a718c4831634a088ee7624565828895100788e3d",
+      "selected_provider_root": "e0eac2677eeb2f351f1b9ca69c46c25dc21a3b930d2e6be17e1ee749e1815a10",
       "selected_provider_source": "ragf-reference-provider",
       "eligible": true,
       "runtime_status": "READY_REFERENCE",
@@ -475,9 +471,9 @@
         "world.asset.generate.procedural",
         "world.asset.vegetation"
       ],
-      "resolution_root": "f1045e189100e77f8544d69b5cd997a0fd27c06d503d34507eb8c12b78726f89",
+      "resolution_root": "5f2b9eff7b7227ea5f559d2a06d9d220f1d5f517f89ac8ac3db30fd7fa5c782d",
       "selected_provider_id": "provider:taowind:procedural-3d",
-      "selected_provider_root": "7bba81ec5d30d0d0f84e0d44a718c4831634a088ee7624565828895100788e3d",
+      "selected_provider_root": "e0eac2677eeb2f351f1b9ca69c46c25dc21a3b930d2e6be17e1ee749e1815a10",
       "selected_provider_source": "ragf-reference-provider",
       "eligible": true,
       "runtime_status": "READY_REFERENCE",
@@ -502,9 +498,9 @@
         "world.asset.generate.procedural",
         "world.asset.rock"
       ],
-      "resolution_root": "1b620c960273ef4e1806cbe1cb9bda8840c7ead22f800678064204a982c7e528",
+      "resolution_root": "7a9090962657b16c98f40f1c304659cff3b734cb713388d3cc522bc01610c336",
       "selected_provider_id": "provider:taowind:procedural-3d",
-      "selected_provider_root": "7bba81ec5d30d0d0f84e0d44a718c4831634a088ee7624565828895100788e3d",
+      "selected_provider_root": "e0eac2677eeb2f351f1b9ca69c46c25dc21a3b930d2e6be17e1ee749e1815a10",
       "selected_provider_source": "ragf-reference-provider",
       "eligible": true,
       "runtime_status": "READY_REFERENCE",
@@ -552,8 +548,8 @@
     "profile_count": 9,
     "provider_count": 6,
     "route_histogram": {
-      "BUILTIN_REFERENCE_READY": 7,
-      "EXTERNAL_CONTRACT_ONLY": 1,
+      "BUILTIN_REFERENCE_READY": 8,
+      "EXTERNAL_CONTRACT_ONLY": 0,
       "EXTERNAL_RUNTIME_BOUND": 0,
       "UNRESOLVED": 1,
       "INCONSISTENT": 0
@@ -590,5 +586,5 @@
     "acceptance_can_commit": false,
     "rncs_authority_required": true
   },
-  "preflight_root": "a5d0ec0f987da55ae997d6b256de14d5b058b4373d1dd10c4679991b61b453b5"
+  "preflight_root": "9fbd7a615933d6397a5ae43e466bbb90b86f0d11f4daff9e87d1505f41655a7e"
 }

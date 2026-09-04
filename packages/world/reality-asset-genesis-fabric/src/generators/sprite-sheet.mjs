@@ -1,6 +1,11 @@
 import {surface,rect,circle,line,polygon,parseHex,encodePng} from '../png.mjs';
 import {rootHash} from '../canonical.mjs';
-import {isStatic3dAssetKind} from '../contracts.mjs';
+import {isStatic3dAssetKind,isCreatureAssetKind} from '../contracts.mjs';
+
+function drawCreatureFrame(s,ox,palette,f){
+  const [primary,white,accent,dark]=palette,bob=[0,1,0,-1,0,1][f%6],stride=(f%2)*3;
+  rect(s,ox+12,27+bob,35,18,primary);circle(s,ox+20,35+bob,12,primary);circle(s,ox+39,34+bob,12,primary);rect(s,ox+39,26+bob,14,12,white);rect(s,ox+50,30+bob,8,7,primary);circle(s,ox+49,29+bob,2,dark);polygon(s,[[ox+42,26+bob],[ox+44,17+bob],[ox+48,26+bob]],accent);polygon(s,[[ox+48,26+bob],[ox+53,18+bob],[ox+55,29+bob]],accent);line(s,ox+13,29+bob,ox+5,23+bob,white,3);line(s,ox+17,42+bob,ox+15-stride,57,dark,5);line(s,ox+29,43+bob,ox+27+stride,57,dark,5);line(s,ox+40,43+bob,ox+42-stride,57,dark,5);line(s,ox+49,42+bob,ox+52+stride,57,dark,5);line(s,ox+12,58,ox+23,58,dark,2);line(s,ox+39,58,ox+55,58,dark,2);rect(s,ox+22,30+bob,7,5,white);line(s,ox+23,32+bob,ox+28,32+bob,accent,2);
+}
 
 function drawStaticFrame(s,kind,ox,palette){
   const [primary,white,accent,dark]=palette;
@@ -21,11 +26,12 @@ function drawStaticFrame(s,kind,ox,palette){
 }
 
 export function generateSpriteSheet({genome,variant}){
-  const static3d=isStatic3dAssetKind(genome.identity.kind),frames=static3d?1:Math.min(genome.budgets.max_sprite_frames,variant==='mobile'?4:6),fw=64,fh=64,s=surface(fw*frames,fh,[8,16,31,0]);
+  const static3d=isStatic3dAssetKind(genome.identity.kind),creature=isCreatureAssetKind(genome.identity.kind),frames=static3d?1:Math.min(genome.budgets.max_sprite_frames,variant==='mobile'?4:6),fw=64,fh=64,s=surface(fw*frames,fh,[8,16,31,0]);
   const [primary,white,accent,dark]=genome.visual.palette.map(parseHex);
   for(let f=0;f<frames;f++){
     const ox=f*fw,bob=[0,1,0,-1,0,1][f%6],leg=(f%2)*3;
     if(static3d){drawStaticFrame(s,genome.identity.kind,ox,[primary,white,accent,dark]);continue;}
+    if(creature){drawCreatureFrame(s,ox,[primary,white,accent,dark],f);continue;}
     circle(s,ox+32,15+bob,8,white);rect(s,ox+25,12+bob,14,4,primary);rect(s,ox+24,23+bob,16,23,primary);rect(s,ox+28,27+bob,8,10,white);
     line(s,ox+26,44+bob,ox+22-leg,58,dark,5);line(s,ox+38,44+bob,ox+42+leg,58,dark,5);
     line(s,ox+24,27+bob,ox+14,40+(f%3),white,4);line(s,ox+40,27+bob,ox+48,38-(f%3),white,4);
@@ -34,6 +40,6 @@ export function generateSpriteSheet({genome,variant}){
   }
   const png=encodePng(s.width,s.height,s.data);
   const frameNames=static3d?['catalog-preview']:['idle','move-1','move-2','attack-1','attack-2','hit'];
-  const metadata={format:'reality-asset.sprite-sheet.v0.1',asset_id:genome.identity.asset_id,variant,frame_width:fw,frame_height:fh,frames:Array.from({length:frames},(_,i)=>({name:frameNames[i]??`frame-${i}`,x:i*fw,y:0,w:fw,h:fh,duration_ms:static3d?0:i>=3?90:140})),pixel_root:rootHash(png.toString('base64'))};
+  const metadata={format:'reality-asset.sprite-sheet.v0.1',asset_id:genome.identity.asset_id,variant,profile:static3d?'static-family':creature?'creature-quadruped':'humanoid',frame_width:fw,frame_height:fh,frames:Array.from({length:frames},(_,i)=>({name:frameNames[i]??`frame-${i}`,x:i*fw,y:0,w:fw,h:fh,duration_ms:static3d?0:i>=3?90:140})),pixel_root:rootHash(png.toString('base64'))};
   return{png,metadata};
 }

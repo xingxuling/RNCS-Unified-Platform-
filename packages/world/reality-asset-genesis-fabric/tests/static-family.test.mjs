@@ -10,8 +10,8 @@ const STATIC_KINDS = ['prop-3d', 'vehicle-3d', 'structure-3d', 'environment-3d',
 test('procedural 3D provider declares the supported static family boundary', () => {
   const provider = builtinProviders().find(candidate => candidate.provider_id === 'provider:taowind:procedural-3d');
   assert.ok(provider);
-  assert.equal(provider.metadata.quality_profile, 'profile-aware-static-and-humanoid-v0.1');
-  assert.deepEqual(provider.metadata.asset_family_profiles, ['character-3d', ...STATIC_KINDS]);
+  assert.equal(provider.metadata.quality_profile, 'profile-aware-static-humanoid-creature-v0.1');
+  assert.deepEqual(provider.metadata.asset_family_profiles, ['character-3d', 'creature-3d', 'environment-3d', 'prop-3d', 'resource-3d', 'structure-3d', 'vegetation-3d', 'vehicle-3d']);
   assert.equal(provider.metadata.static_profile, 'family-static-v0.1');
 });
 

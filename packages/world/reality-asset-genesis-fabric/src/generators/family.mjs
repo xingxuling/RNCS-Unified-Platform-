@@ -1,10 +1,11 @@
 import {seal,stableId,clone} from '../canonical.mjs';
-import {isRiggedAssetKind,isStatic3dAssetKind} from '../contracts.mjs';
+import {isRiggedAssetKind,isStatic3dAssetKind,isCreatureAssetKind} from '../contracts.mjs';
 
 export function generatePrefabBlueprint({genome,variant,context}){
   const assetId=genome.identity.asset_id;
   const rigged=isRiggedAssetKind(genome.identity.kind);
   const static3d=isStatic3dAssetKind(genome.identity.kind);
+  const creature=isCreatureAssetKind(genome.identity.kind);
   const effectEvents=static3d?['spawn','impact','destroy']:['spawn','attack','hit'];
   const components=[
     {component_id:'visual',type:'mesh-renderer',bindings:{mesh_role:'mesh-glb',lod_role:'lod-manifest',material_role:'pbr-texture-pack'},cast_shadow:true,receive_shadow:true},
@@ -20,7 +21,7 @@ export function generatePrefabBlueprint({genome,variant,context}){
     identity:{name:genome.identity.name,kind:genome.identity.kind,stable:true},
     hierarchy:{root:'entity-root',nodes:[
       {node_id:'entity-root',name:genome.identity.name,parent:null,components:components.map(x=>x.component_id)},
-      ...(rigged?[{node_id:'weapon-anchor',name:'weapon_r',parent:'entity-root',socket:'weapon_r',components:[]},{node_id:'effect-anchor',name:'vfx_head',parent:'entity-root',socket:'vfx_head',components:[]}]:[{node_id:'effect-anchor',name:'effect_anchor',parent:'entity-root',components:[]}])
+      ...(rigged&&!creature?[{node_id:'weapon-anchor',name:'weapon_r',parent:'entity-root',socket:'weapon_r',components:[]},{node_id:'effect-anchor',name:'vfx_head',parent:'entity-root',socket:'vfx_head',components:[]}]:creature?[{node_id:'effect-anchor',name:'vfx_head',parent:'entity-root',socket:'vfx_head',components:[]}]:[{node_id:'effect-anchor',name:'effect_anchor',parent:'entity-root',components:[]}])
     ]},
     components,
     dependencies:['mesh-glb','lod-manifest','pbr-texture-pack',...(rigged?['skeleton-rig','animation-clips','retarget-profile']:[]),'collision-shape','rsr-embodiment-profile','particle-preset','sfx-wav','projection-manifest','vsr-spatial-asset'],
@@ -32,19 +33,19 @@ export function generatePrefabBlueprint({genome,variant,context}){
 }
 
 export function generateRetargetProfile({genome,variant,rig,animations}){
-  const canonical={hips:'hips',spine:'spine',head:'head',left_arm:'arm_l',right_arm:'arm_r',left_leg:'leg_l',right_leg:'leg_r'};
+  const creature=isCreatureAssetKind(genome.identity.kind),canonical=creature?{pelvis:'pelvis',spine:'spine',chest:'chest',neck:'neck',head:'head',front_left_leg:'leg_front_l',front_right_leg:'leg_front_r',hind_left_leg:'leg_hind_l',hind_right_leg:'leg_hind_r',tail_base:'tail_base',tail_mid:'tail_mid',tail_tip:'tail_tip'}:{hips:'hips',spine:'spine',head:'head',left_arm:'arm_l',right_arm:'arm_r',left_leg:'leg_l',right_leg:'leg_r'};
   const available=new Set((rig?.bones??[]).map(x=>x.name));
   const bone_map=Object.fromEntries(Object.entries(canonical).filter(([,target])=>available.has(target)));
   return seal({
     format:'reality-asset.animation-retarget-profile.v0.3',version:'0.3.0',
     profile_id:stableId('retarget',{asset:genome.identity.asset_id,variant,rig:rig?.rig_root}),asset_id:genome.identity.asset_id,variant,
-    source_profile:rig?.profile??'humanoid-rounded-v0.4',canonical_profile:'rncs.humanoid-rounded.v0.4',bone_map,
-    required_bones:['hips','spine','head'],optional_bones:['left_arm','right_arm','left_leg','right_leg'],
+    source_profile:rig?.profile??(creature?'creature-quadruped-v0.1':'humanoid-rounded-v0.4'),canonical_profile:creature?'rncs.creature-quadruped.v0.1':'rncs.humanoid-rounded.v0.4',bone_map,
+    required_bones:creature?['root','pelvis','spine','chest','neck','head']:['hips','spine','head'],optional_bones:creature?['leg_front_l','leg_front_r','leg_hind_l','leg_hind_r','tail_base','tail_mid','tail_tip']:['left_arm','right_arm','left_leg','right_leg'],
     sockets:clone(rig?.sockets??[]),
-    scale_policy:{mode:'normalized-height',reference_height:2.55,root_motion:'extract-horizontal'},
+    scale_policy:{mode:creature?'normalized-length':'normalized-height',reference_height:creature?1.9:2.55,root_motion:'extract-horizontal'},
     rotation_policy:{coordinate_system:'right-handed-y-up',quaternion_order:'xyzw',preserve_joint_limits:true},
     clips:(animations?.clips??[]).map(c=>({name:c.name,duration:c.duration,loop:c.loop,semantic_events:clone(c.events??[]),retargetable:true})),
-    compatibility:{accepted_sources:['rncs.humanoid-rounded.v0.4','rncs.humanoid-lite.v0.3','mixamo-compatible','gltf-humanoid-lite'],target_runtime:'rsr.v0.6+'},
+    compatibility:{accepted_sources:creature?['rncs.creature-quadruped.v0.1','quadruped-gait-v0.1']:['rncs.humanoid-rounded.v0.4','rncs.humanoid-lite.v0.3','mixamo-compatible','gltf-humanoid-lite'],target_runtime:'rsr.v0.6+'},
     retarget_root:''
   },'retarget_root');
 }
@@ -52,11 +53,18 @@ export function generateRetargetProfile({genome,variant,rig,animations}){
 export function generateProjectionManifest({genome,variant,context}){
   const assetId=genome.identity.asset_id;
   const rigged=isRiggedAssetKind(genome.identity.kind);
+  const creature=isCreatureAssetKind(genome.identity.kind);
   return seal({
     format:'reality-asset.cross-media-projection-manifest.v0.3',version:'0.3.0',
     projection_family_id:stableId('projection-family',{assetId,variant,genome:genome.genome_root}),asset_id:assetId,variant,
     invariants:{identity:assetId,name:genome.identity.name,element:genome.semantics.element,faction:genome.semantics.faction,style:genome.visual.style,palette:clone(genome.visual.palette),silhouette:genome.visual.silhouette,telegraph_required:rigged},
-    projections:rigged?[
+    projections:creature?[
+      {projection_id:'concept-creature-card',medium:'document',roles:['concept-svg'],interaction:'inspect',fidelity:'semantic'},
+      {projection_id:'sprite-creature',medium:'2d-game',roles:['sprite-sheet','particle-preset','sfx-wav'],interaction:'play',fidelity:'realtime-low'},
+      {projection_id:'realtime-creature',medium:'3d-game',roles:['mesh-glb','pbr-texture-pack','skeleton-rig','animation-clips','lod-manifest'],interaction:'embodied-quadruped',fidelity:variant==='cinematic'?'realtime-high':'realtime-balanced'},
+      {projection_id:'xr-creature',medium:'xr',roles:['mesh-glb','pbr-texture-pack','vsr-spatial-asset','rsr-embodiment-profile','retarget-profile'],interaction:'spatial-embodied',fidelity:'device-negotiated'},
+      {projection_id:'cinematic-creature',medium:'film-animation',roles:['mesh-glb','pbr-texture-pack','skeleton-rig','animation-clips'],interaction:'render-source',fidelity:'source-controlled'}
+    ]:rigged?[
       {projection_id:'concept-card',medium:'document',roles:['concept-svg'],interaction:'inspect',fidelity:'semantic'},
       {projection_id:'sprite-avatar',medium:'2d-game',roles:['sprite-sheet','particle-preset','sfx-wav'],interaction:'play',fidelity:'realtime-low'},
       {projection_id:'realtime-avatar',medium:'3d-game',roles:['mesh-glb','pbr-texture-pack','skeleton-rig','animation-clips','lod-manifest'],interaction:'embodied',fidelity:variant==='cinematic'?'realtime-high':'realtime-balanced'},
@@ -69,7 +77,9 @@ export function generateProjectionManifest({genome,variant,context}){
       {projection_id:'xr-asset',medium:'xr',roles:['mesh-glb','pbr-texture-pack','vsr-spatial-asset','rsr-embodiment-profile'],interaction:'spatial-static',fidelity:'device-negotiated'},
       {projection_id:'cinematic-source',medium:'film-animation',roles:['mesh-glb','pbr-texture-pack'],interaction:'render-source',fidelity:'source-controlled'}
     ],
-    equivalence_checks:rigged?[
+    equivalence_checks:creature?[
+      {check:'stable-asset-id',required:true},{check:'palette-family',required:true},{check:'element-language',required:true},{check:'creature-archetype',required:true},{check:'gait-events',required:true}
+    ]:rigged?[
       {check:'stable-asset-id',required:true},{check:'palette-family',required:true},{check:'element-language',required:true},{check:'attack-telegraph',required:true},{check:'semantic-sockets',required:true}
     ]:[
       {check:'stable-asset-id',required:true},{check:'palette-family',required:true},{check:'element-language',required:true},{check:'profile-archetype',required:true}

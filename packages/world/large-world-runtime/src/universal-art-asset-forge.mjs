@@ -149,7 +149,7 @@ const PROFILE_CONTRACTS = Object.freeze({
   },
   creature: {
     asset_kind: 'creature-3d',
-    builtin_reference: false,
+    builtin_reference: true,
     required_capabilities: ['asset.generate.3d.production', 'asset.generate.mesh', 'asset.generate.pbr'],
     optional_capabilities: ['asset.rig.predict', 'asset.skin.predict', 'asset.pose.initial'],
     required_gates: CHARACTER_GATES,
@@ -2095,7 +2095,9 @@ function generateWithReferenceWorkspace({genome, resolution, outDir, options, pr
   const workspaceVerification = verifyWorkspace(workspace, {baseDir: outDir, verifyFiles: options.verifyFiles !== false});
   const candidate = workspace.candidates.find(item => item.candidate_id === workspace.recommended_candidate_id) ?? null;
   const providerRegistry = new ProviderRegistry([...builtinProviders(), ...providers]);
-  const provider = candidate?.provider_roots?.map(root => providerRegistry.list().find(item => item.provider_root === root)).find(Boolean) ?? null;
+  const provider = providerRegistry.list().find(item => item.provider_root === resolution.selected_provider_root || item.provider_id === resolution.selected_provider_id)
+    ?? candidate?.provider_roots?.map(root => providerRegistry.list().find(item => item.provider_root === root)).find(Boolean)
+    ?? null;
   const pbrArtifact = candidate?.artifacts?.['pbr-texture-pack'];
   const pbrPack = candidate?.variant && pbrArtifact
     ? {

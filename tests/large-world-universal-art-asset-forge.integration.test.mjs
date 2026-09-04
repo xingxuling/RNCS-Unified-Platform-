@@ -469,7 +469,7 @@ test('URRF profile coverage exercises every asset family without silent Provider
   const expectedProfiles = profileInputs.map(input => input.asset_profile);
   const expectedModes = {
     character: 'BUILTIN_REFERENCE',
-    creature: 'EXTERNAL_CONTRACT_ONLY',
+    creature: 'BUILTIN_REFERENCE',
     prop: 'BUILTIN_REFERENCE',
     vehicle: 'BUILTIN_REFERENCE',
     structure: 'BUILTIN_REFERENCE',
@@ -487,8 +487,8 @@ test('URRF profile coverage exercises every asset family without silent Provider
   assert.equal(report.status, 'CANDIDATE_PROFILE_COVERAGE_PASS');
   assert.equal(report.summary.pass_count, 9);
   assert.equal(report.summary.fail_count, 0);
-  assert.equal(report.summary.mode_histogram.BUILTIN_REFERENCE, 7);
-  assert.equal(report.summary.mode_histogram.EXTERNAL_CONTRACT_ONLY, 1);
+  assert.equal(report.summary.mode_histogram.BUILTIN_REFERENCE, 8);
+  assert.equal(report.summary.mode_histogram.EXTERNAL_CONTRACT_ONLY, 0);
   assert.equal(report.summary.mode_histogram.UNRESOLVED, 1);
   assert.deepEqual(report.coverage.missing_profiles, []);
   assert.deepEqual(report.coverage.unexpected_profiles, []);
@@ -515,8 +515,8 @@ test('URRF Provider preflight records route readiness, runtime binding, and rele
   assert.equal(report.status, 'CANDIDATE_PROVIDER_PREFLIGHT_PASS');
   assert.equal(report.summary.profile_count, 9);
   assert.equal(report.summary.provider_count, 6);
-  assert.equal(report.summary.route_histogram.BUILTIN_REFERENCE_READY, 7);
-  assert.equal(report.summary.route_histogram.EXTERNAL_CONTRACT_ONLY, 1);
+  assert.equal(report.summary.route_histogram.BUILTIN_REFERENCE_READY, 8);
+  assert.equal(report.summary.route_histogram.EXTERNAL_CONTRACT_ONLY, 0);
   assert.equal(report.summary.route_histogram.EXTERNAL_RUNTIME_BOUND, 0);
   assert.equal(report.summary.route_histogram.UNRESOLVED, 1);
   assert.equal(report.summary.provider_health_histogram.CONTRACT_ONLY, 6);

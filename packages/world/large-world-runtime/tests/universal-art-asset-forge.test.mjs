@@ -510,8 +510,8 @@ test('provider preflight binds every URRF profile to health and fails closed on 
   assert.equal(report.aaa_ready, false);
   assert.equal(report.release_ready, false);
   assert.deepEqual(report.summary.route_histogram, {
-    BUILTIN_REFERENCE_READY: 7,
-    EXTERNAL_CONTRACT_ONLY: 1,
+    BUILTIN_REFERENCE_READY: 8,
+    EXTERNAL_CONTRACT_ONLY: 0,
     EXTERNAL_RUNTIME_BOUND: 0,
     UNRESOLVED: 1,
     INCONSISTENT: 0
@@ -553,8 +553,8 @@ test('provider preflight distinguishes an injected executor binding from executi
   });
   assert.equal(report.execution_performed, false);
   assert.equal(report.summary.provider_health_histogram.EXECUTOR_INJECTED, 1);
-  assert.equal(report.summary.route_histogram.EXTERNAL_RUNTIME_BOUND, 1);
-  assert.equal(report.profile_routes.find(entry => entry.asset_profile === 'creature').route_status, 'EXTERNAL_RUNTIME_BOUND');
+  assert.equal(report.summary.route_histogram.EXTERNAL_RUNTIME_BOUND, 0);
+  assert.equal(report.profile_routes.find(entry => entry.asset_profile === 'creature').route_status, 'BUILTIN_REFERENCE_READY');
   assert.equal(verifyUniversalArtAssetProviderPreflightReport(report, {provider_runners: providerRunners}).valid, true);
   assert.equal(verifyUniversalArtAssetProviderPreflightReport(report).valid, false);
 });
@@ -652,16 +652,16 @@ test('provider pipeline plan composes profile stages without executing or escala
     genome: createUniversalArtAssetGenome({...input, quality_tier: 'AAA'})
   }));
   assert.equal(plans.length, 9);
-  assert.equal(plans.filter(plan => plan.status === 'CANDIDATE_PROVIDER_PIPELINE_PLANNED').length, 7);
-  assert.equal(plans.filter(plan => plan.status === 'CANDIDATE_PROVIDER_PIPELINE_BLOCKED').length, 2);
+  assert.equal(plans.filter(plan => plan.status === 'CANDIDATE_PROVIDER_PIPELINE_PLANNED').length, 8);
+  assert.equal(plans.filter(plan => plan.status === 'CANDIDATE_PROVIDER_PIPELINE_BLOCKED').length, 1);
   const character = plans.find(plan => plan.asset_profile === 'character');
   assert.equal(character.runtime_ready, true);
   assert.deepEqual(character.stages.map(stage => stage.stage_id), ['base_generation', 'rigging_animation']);
   assert.equal(character.stages[0].route_status, 'BUILTIN_REFERENCE');
   assert.equal(character.stages[1].route_status, 'BUILTIN_REFERENCE');
   const creature = plans.find(plan => plan.asset_profile === 'creature');
-  assert.equal(creature.stages[1].route_status, 'EXTERNAL_CONTRACT_ONLY');
-  assert.ok(creature.stages[1].failure_reasons.includes('OUTPUT_CONTRACT_MISSING:animation-clips'));
+  assert.equal(creature.stages[1].route_status, 'BUILTIN_REFERENCE');
+  assert.deepEqual(creature.stages[1].failure_reasons, []);
   const vfx = plans.find(plan => plan.asset_profile === 'vfx');
   assert.equal(vfx.stages[0].route_status, 'UNRESOLVED');
   assert.ok(vfx.required_stage_blockers.some(blocker => blocker.stage_id === 'base_generation'));

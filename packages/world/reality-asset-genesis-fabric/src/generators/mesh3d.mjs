@@ -1,7 +1,8 @@
 import {GlbBuilder,encodeFloat32,encodeUint16,minMax,encodeGlb,inspectGlb} from '../gltf.mjs';
 import {parseHex} from '../png.mjs';
 import {rootHash,seal} from '../canonical.mjs';
-import {isRiggedAssetKind} from '../contracts.mjs';
+import {isRiggedAssetKind,isCreatureAssetKind} from '../contracts.mjs';
+import {CREATURE_BONE_WORLD,CREATURE_PROFILE,createCreatureAnimationClips} from './creature-profile.mjs';
 
 const TAU=Math.PI*2;
 const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
@@ -57,7 +58,7 @@ function addEllipsoid(g,{center=[0,0,0],radii=[1,1,1],bone=0,segments=12,rings=5
   }
 }
 
-function qualityProfile(variant,lod,budget,rigged=true){
+function qualityProfile(variant,lod,budget,rigged=true,creature=false){
   const presets={
     mobile:{segments:10,rings:4,limbSegments:8,limbRings:3,features:2},
     balanced:{segments:14,rings:5,limbSegments:10,limbRings:3,features:3},
@@ -66,7 +67,7 @@ function qualityProfile(variant,lod,budget,rigged=true){
   const base=presets[variant]??presets.balanced;
   const scale=Math.min(1,Math.max(.58,Math.sqrt(Math.max(12,budget??2400)/2400)));
   return{
-    profile:`${rigged?'humanoid-rounded-v0.4':'family-static-v0.1'}-${variant}`,
+    profile:`${creature?CREATURE_PROFILE:rigged?'humanoid-rounded-v0.4':'family-static-v0.1'}-${variant}`,
     segments:Math.max(6,Math.floor(base.segments*scale)-lod*2),
     rings:Math.max(3,Math.floor(base.rings*scale)-Math.min(lod,1)),
     limbSegments:Math.max(6,Math.floor(base.limbSegments*scale)-lod),
@@ -136,6 +137,56 @@ function buildStaticGeometry(kind,profile){
   addEllipsoid(g,{center:[0,.88,0],radii:[.48,.62,.42],segments,rings,uvOffset:[.08,.04],uvScale:[.84,.48]});
   addBox(g,{center:[0,1.52,0],size:[.18,.42,.18],uvOffset:[.68,.08],uvScale:[.12,.24]});
   if(featureLevel>=1)addEllipsoid(g,{center:[0,1.78,0],radii:[.34,.26,.34],segments:limbSegments,rings:limbRings,uvOffset:[.6,.56],uvScale:[.3,.2]});
+  return g;
+}
+
+function buildCreatureGeometry(profile){
+  const g={positions:[],normals:[],uvs:[],joints:[],weights:[],indices:[]};
+  const {segments,rings,limbSegments,limbRings,featureLevel}=profile;
+  addEllipsoid(g,{center:[0,.93,.02],radii:[.52,.42,.98],bone:2,segments,rings,uvOffset:[0,.2],uvScale:[.55,.5]});
+  addEllipsoid(g,{center:[0,.91,.67],radii:[.5,.4,.56],bone:3,segments,rings,uvOffset:[.52,.2],uvScale:[.48,.5]});
+  addEllipsoid(g,{center:[0,.9,1.15],radii:[.32,.3,.42],bone:4,segments:limbSegments,rings:limbRings,uvOffset:[0,.02],uvScale:[.4,.28]});
+  addEllipsoid(g,{center:[0,.9,1.45],radii:[.3,.28,.4],bone:5,segments,rings,uvOffset:[.4,.02],uvScale:[.45,.28]});
+  addEllipsoid(g,{center:[0,.82,1.77],radii:[.22,.17,.3],bone:5,segments:limbSegments,rings:limbRings,uvOffset:[.78,.02],uvScale:[.22,.2]});
+  addEllipsoid(g,{center:[-.22,1.16,1.48],radii:[.11,.2,.12],bone:5,segments:limbSegments,rings:limbRings,uvOffset:[.7,.3],uvScale:[.15,.18]});
+  addEllipsoid(g,{center:[.22,1.16,1.48],radii:[.11,.2,.12],bone:5,segments:limbSegments,rings:limbRings,uvOffset:[.86,.3],uvScale:[.14,.18]});
+  for(const side of [-1,1]){
+    const frontBone=side<0?6:7,hindBone=side<0?8:9;
+    addEllipsoid(g,{center:[side*.4,.55,.78],radii:[.14,.42,.14],bone:frontBone,segments:limbSegments,rings:limbRings,uvOffset:[side<0?0:.24,.56],uvScale:[.22,.32]});
+    addEllipsoid(g,{center:[side*.4,.27,.88],radii:[.12,.28,.12],bone:frontBone,segments:limbSegments,rings:limbRings,uvOffset:[side<0?0:.24,.78],uvScale:[.22,.22]});
+    addEllipsoid(g,{center:[side*.4,.53,-.53],radii:[.17,.46,.17],bone:hindBone,segments:limbSegments,rings:limbRings,uvOffset:[side<0?.46:.7,.56],uvScale:[.22,.32]});
+    addEllipsoid(g,{center:[side*.4,.25,-.65],radii:[.13,.3,.13],bone:hindBone,segments:limbSegments,rings:limbRings,uvOffset:[side<0?.46:.7,.78],uvScale:[.22,.22]});
+    addBox(g,{center:[side*.4,.07,.92],size:[.28,.14,.36],bone:frontBone,uvOffset:[side<0?.12:.34,.9],uvScale:[.2,.1]});
+    addBox(g,{center:[side*.4,.07,-.7],size:[.32,.14,.4],bone:hindBone,uvOffset:[side<0?.58:.82,.9],uvScale:[.2,.1]});
+  }
+  addEllipsoid(g,{center:[0,.76,-1.12],radii:[.18,.18,.42],bone:10,segments:limbSegments,rings:limbRings,uvOffset:[0,.92],uvScale:[.2,.12]});
+  addEllipsoid(g,{center:[0,.74,-1.48],radii:[.14,.14,.38],bone:11,segments:limbSegments,rings:limbRings,uvOffset:[.2,.92],uvScale:[.18,.1]});
+  addEllipsoid(g,{center:[0,.78,-1.77],radii:[.1,.1,.3],bone:12,segments:limbSegments,rings:limbRings,uvOffset:[.38,.92],uvScale:[.16,.08]});
+  if(featureLevel>=1){
+    addEllipsoid(g,{center:[0,1.25,.15],radii:[.42,.18,.55],bone:2,segments:limbSegments,rings:3,uvOffset:[.52,.7],uvScale:[.28,.18]});
+    addEllipsoid(g,{center:[0,1.02,-.78],radii:[.3,.2,.22],bone:1,segments:limbSegments,rings:3,uvOffset:[.8,.7],uvScale:[.2,.14]});
+    addEllipsoid(g,{center:[0,.82,-2.02],radii:[.18,.14,.14],bone:12,segments:limbSegments,rings:3,uvOffset:[.56,.92],uvScale:[.16,.08]});
+  }
+  if(featureLevel>=2){
+    addBox(g,{center:[0,1.3,.66],size:[.5,.08,.72],bone:3,uvOffset:[.2,.48],uvScale:[.3,.12]});
+    addEllipsoid(g,{center:[-.25,.94,1.67],radii:[.055,.07,.06],bone:5,segments:6,rings:3,uvOffset:[.7,.52],uvScale:[.08,.06]});
+    addEllipsoid(g,{center:[.25,.94,1.67],radii:[.055,.07,.06],bone:5,segments:6,rings:3,uvOffset:[.78,.52],uvScale:[.08,.06]});
+  }
+  if(featureLevel>=3){
+    addEllipsoid(g,{center:[0,1.3,.0],radii:[.12,.28,.12],bone:2,segments:limbSegments,rings:3,uvOffset:[.52,.88],uvScale:[.12,.1]});
+    addBox(g,{center:[-.14,.96,1.72],size:[.05,.12,.08],bone:5,uvOffset:[.86,.52],uvScale:[.05,.08]});
+    addBox(g,{center:[.14,.96,1.72],size:[.05,.12,.08],bone:5,uvOffset:[.92,.52],uvScale:[.05,.08]});
+  }
+  const morphPositions=new Array(g.positions.length).fill(0);
+  for(let index=0;index<g.positions.length;index+=3){
+    const y=g.positions[index+1],z=g.positions[index+2];
+    if(z>1.45){
+      const weight=Math.min(1,(z-1.45)/.45)*.02;
+      morphPositions[index+2]=weight;
+      morphPositions[index+1]=Math.sin((z-1.45)*Math.PI)*.006;
+    }
+  }
+  g.morphTargets=[{id:'expression-snarl',positions:morphPositions,defaultWeight:0}];
   return g;
 }
 
@@ -224,6 +275,14 @@ function buildAnimations(builder){
   return animations;
 }
 
+function buildCreatureAnimations(builder){
+  const nodeByBone={root:0,pelvis:1,spine:2,chest:3,neck:4,head:5,leg_front_l:6,leg_front_r:7,leg_hind_l:8,leg_hind_r:9,tail_base:10,tail_mid:11,tail_tip:12};
+  const animations=[];
+  const add=(name,tracks)=>{const samplers=addAnimationAccessors(builder,tracks.map(track=>({...track,node:nodeByBone[track.bone]})));animations.push({name,samplers,channels:samplers.map((sampler,index)=>({sampler:index,target:sampler.target}))});};
+  for(const clip of createCreatureAnimationClips(30))add(clip.name,clip.tracks);
+  return animations;
+}
+
 function embedPbrTextures(builder,pbr){
   const files=new Map((pbr?.files??[]).map(file=>[file.role,file]));
   const roles=['base-color','normal','occlusion-roughness-metallic','emissive'];
@@ -239,7 +298,7 @@ function embedPbrTextures(builder,pbr){
 }
 
 export function generateMesh3d({genome,variant,lod=0,pbr=null}){
-  const rigged=isRiggedAssetKind(genome.identity.kind),quality=qualityProfile(variant,lod,genome.budgets.max_triangles,rigged),g=rigged?buildGeometry(quality):buildStaticGeometry(genome.identity.kind,quality),builder=new GlbBuilder(),mm=minMax(g.positions,3);
+  const rigged=isRiggedAssetKind(genome.identity.kind),creature=isCreatureAssetKind(genome.identity.kind),quality=qualityProfile(variant,lod,genome.budgets.max_triangles,rigged,creature),g=creature?buildCreatureGeometry(quality):rigged?buildGeometry(quality):buildStaticGeometry(genome.identity.kind,quality),builder=new GlbBuilder(),mm=minMax(g.positions,3);
   const position=builder.addAccessor(encodeFloat32(g.positions),{componentType:5126,type:'VEC3',count:g.positions.length/3,target:34962,min:mm.min,max:mm.max});
   const normal=builder.addAccessor(encodeFloat32(g.normals),{componentType:5126,type:'VEC3',count:g.normals.length/3,target:34962});
   const uv=builder.addAccessor(encodeFloat32(g.uvs),{componentType:5126,type:'VEC2',count:g.uvs.length/2,target:34962});
@@ -247,13 +306,13 @@ export function generateMesh3d({genome,variant,lod=0,pbr=null}){
   const weights=rigged?builder.addAccessor(encodeFloat32(g.weights),{componentType:5126,type:'VEC4',count:g.weights.length/4,target:34962}):null;
   const indices=builder.addAccessor(encodeUint16(g.indices),{componentType:5123,type:'SCALAR',count:g.indices.length,target:34963,min:[0],max:[Math.max(...g.indices)]});
   const morphAccessors=rigged?(g.morphTargets??[]).map(target=>builder.addAccessor(encodeFloat32(target.positions),{componentType:5126,type:'VEC3',count:target.positions.length/3,target:34962})):[];
-  const bindWorld=[[0,0,0],[0,1,0],[0,1.55,0],[0,2.2,0],[-.35,1.9,0],[.35,1.9,0],[-.18,.45,0],[.18,.45,0]];
-  const ibm=rigged?builder.addAccessor(encodeFloat32(bindWorld.map(value=>inverseTranslation(...value)).flat()),{componentType:5126,type:'MAT4',count:8}):null;
-  const animations=rigged?buildAnimations(builder):[],textureBinding=embedPbrTextures(builder,pbr),palette=genome.visual.palette;
+  const bindWorld=creature?CREATURE_BONE_WORLD:[[0,0,0],[0,1,0],[0,1.55,0],[0,2.2,0],[-.35,1.9,0],[.35,1.9,0],[-.18,.45,0],[.18,.45,0]];
+  const ibm=rigged?builder.addAccessor(encodeFloat32(bindWorld.map(value=>inverseTranslation(...value)).flat()),{componentType:5126,type:'MAT4',count:bindWorld.length}):null;
+  const animations=rigged?(creature?buildCreatureAnimations(builder):buildAnimations(builder)):[],textureBinding=embedPbrTextures(builder,pbr),palette=genome.visual.palette;
   const baseColor=pbr?colorFactor(palette[0]):[1,1,1,1],emissive=pbr?colorFactor(palette[2]??palette[0]):[0,0,0,1];
   const baseTexture=textureBinding.textureIndex('base-color'),normalTexture=textureBinding.textureIndex('normal'),ormTexture=textureBinding.textureIndex('occlusion-roughness-metallic'),emissiveTexture=textureBinding.textureIndex('emissive');
   const material={name:`${genome.semantics.element}-stylized-pbr`,pbrMetallicRoughness:{baseColorFactor:baseColor,metallicFactor:variant==='cinematic'?.42:.18,roughnessFactor:variant==='mobile'?.72:.5,...(baseTexture===null?{}:{baseColorTexture:{index:baseTexture}}),...(ormTexture===null?{}:{metallicRoughnessTexture:{index:ormTexture}})},...(normalTexture===null?{}:{normalTexture:{index:normalTexture,scale:variant==='mobile'?.75:1}}),...(ormTexture===null?{}:{occlusionTexture:{index:ormTexture,strength:.86}}),...(emissiveTexture===null?{}:{emissiveTexture:{index:emissiveTexture}}),emissiveFactor:emissive,emissiveStrength:variant==='cinematic'?.75:.4,doubleSided:false,extras:{ragf:{quality_profile:quality.profile,material_root:pbr?.metadata?.pack_root??null}}};
-  const nodes=rigged?[
+  const humanoidNodes=[
     {name:'Armature',children:[1,8]},
     {name:'hips',children:[2,6,7],translation:[0,1,0]},
     {name:'spine',children:[3,4,5],translation:[0,.55,0]},
@@ -263,24 +322,41 @@ export function generateMesh3d({genome,variant,lod=0,pbr=null}){
     {name:'leg_l',translation:[-.18,-.55,0]},
     {name:'leg_r',translation:[.18,-.55,0]},
     {name:'mesh',mesh:0,skin:0}
-  ]:[{name:'asset-root',children:[1]},{name:'mesh',mesh:0}];
+  ];
+  const creatureNodes=[
+    {name:'Armature',children:[1,13]},
+    {name:'pelvis',children:[2,8,9,10],translation:[0,.78,0]},
+    {name:'spine',children:[3],translation:[0,.04,.38]},
+    {name:'chest',children:[4,6,7],translation:[0,.02,.42]},
+    {name:'neck',children:[5],translation:[0,.02,.36]},
+    {name:'head',translation:[0,.02,.24]},
+    {name:'leg_front_l',translation:[-.42,-.4,.28]},
+    {name:'leg_front_r',translation:[.42,-.4,.28]},
+    {name:'leg_hind_l',translation:[-.4,-.4,-.34]},
+    {name:'leg_hind_r',translation:[.4,-.4,-.34]},
+    {name:'tail_base',children:[11],translation:[0,-.02,-.4]},
+    {name:'tail_mid',children:[12],translation:[0,-.02,-.38]},
+    {name:'tail_tip',translation:[0,.02,-.34]},
+    {name:'mesh',mesh:0,skin:0}
+  ];
+  const nodes=rigged?(creature?creatureNodes:humanoidNodes):[{name:'asset-root',children:[1]},{name:'mesh',mesh:0}];
   const attributes={POSITION:position,NORMAL:normal,TEXCOORD_0:uv,...(rigged?{JOINTS_0:joints,WEIGHTS_0:weights}:{})};
   const json={
     asset:{version:'2.0',generator:'TaoWind RAGF v0.4 deterministic rounded 3D'},
     scene:0,scenes:[{nodes:[0]}],nodes,
     meshes:[{name:genome.identity.name,primitives:[{attributes,indices,material:0,...(morphAccessors.length?{targets:morphAccessors.map(accessor=>({POSITION:accessor}))}:{})}],weights:morphAccessors.length?[0]:undefined}],
     materials:[material],
-    ...(rigged?{skins:[{name:'humanoid-rounded-v0.4',inverseBindMatrices:ibm,skeleton:0,joints:[0,1,2,3,4,5,6,7]}],animations}:{}),
+    ...(rigged?{skins:[{name:creature?CREATURE_PROFILE:'humanoid-rounded-v0.4',inverseBindMatrices:ibm,skeleton:0,joints:Array.from({length:bindWorld.length},(_,index)=>index)}],animations}:{}),
     ...(textureBinding.images.length?{samplers:[{magFilter:9729,minFilter:9987,wrapS:10497,wrapT:10497}],images:textureBinding.images,textures:textureBinding.textures}:{}),
     buffers:[{byteLength:builder.binary().length}],bufferViews:builder.bufferViews,accessors:builder.accessors,
      extras:{ragf:{asset_id:genome.identity.asset_id,variant,lod,geometry_profile:quality.profile,asset_kind:genome.identity.kind,rigged,feature_level:quality.featureLevel,pbr_embedded:textureBinding.images.length===4,morph_targets:(g.morphTargets??[]).map(target=>target.id)}}
   };
   const binary=builder.binary(),glb=encodeGlb(json,binary),inspection=inspectGlb(glb);
-   const metadata={format:'reality-asset.mesh-3d.v0.4',asset_id:genome.identity.asset_id,variant,lod,vertex_count:g.positions.length/3,triangle_count:g.indices.length/3,bone_count:rigged?8:0,animation_count:rigged?inspection.animation_count:0,morph_target_count:morphAccessors.length,embedded_texture_count:textureBinding.images.length,bounds:{min:mm.min,max:mm.max},glb_root:inspection.root,gltf_version:'2.0',rigged,pbr:true,quality_profile:quality.profile,asset_kind:genome.identity.kind,feature_level:quality.featureLevel,material_root:pbr?.metadata?.pack_root??null};
+  const metadata={format:'reality-asset.mesh-3d.v0.4',asset_id:genome.identity.asset_id,variant,lod,vertex_count:g.positions.length/3,triangle_count:g.indices.length/3,bone_count:rigged?bindWorld.length:0,animation_count:rigged?inspection.animation_count:0,morph_target_count:morphAccessors.length,embedded_texture_count:textureBinding.images.length,bounds:{min:mm.min,max:mm.max},glb_root:inspection.root,gltf_version:'2.0',rigged,pbr:true,quality_profile:quality.profile,asset_kind:genome.identity.kind,feature_level:quality.featureLevel,material_root:pbr?.metadata?.pack_root??null};
   return{glb,metadata,geometry:{...g,topology:'triangle-list'}};
 }
 
 export function generateLodManifest({genome,variant,meshes}){
   const maxTriangles=genome.budgets.max_triangles;
-  return seal({format:'reality-asset.lod-manifest.v0.4',asset_id:genome.identity.asset_id,variant,levels:meshes.map((mesh,lod)=>({lod,role:lod===0?'mesh-glb':`mesh-lod${lod}-glb`,triangle_count:mesh.metadata.triangle_count,triangle_budget:lod===0?maxTriangles:Math.max(12,Math.floor(maxTriangles*(lod===1?.45:.18))),screen_coverage:lod===0?1:lod===1?.45:.16,geometric_error:lod===0?0:lod===1?.018:.055,glb_root:mesh.metadata.glb_root,quality_profile:mesh.metadata.quality_profile})),policy:{selection:'screen-coverage',cross_fade:true,geometry:isRiggedAssetKind(genome.identity.kind)?'rounded-humanoid-progressive-detail':'family-static-progressive-detail',min_resident_level:2},lod_root:''},'lod_root');
+  return seal({format:'reality-asset.lod-manifest.v0.4',asset_id:genome.identity.asset_id,variant,levels:meshes.map((mesh,lod)=>({lod,role:lod===0?'mesh-glb':`mesh-lod${lod}-glb`,triangle_count:mesh.metadata.triangle_count,triangle_budget:lod===0?maxTriangles:Math.max(12,Math.floor(maxTriangles*(lod===1?.45:.18))),screen_coverage:lod===0?1:lod===1?.45:.16,geometric_error:lod===0?0:lod===1?.018:.055,glb_root:mesh.metadata.glb_root,quality_profile:mesh.metadata.quality_profile})),policy:{selection:'screen-coverage',cross_fade:true,geometry:isCreatureAssetKind(genome.identity.kind)?'creature-quadruped-progressive-detail':isRiggedAssetKind(genome.identity.kind)?'rounded-humanoid-progressive-detail':'family-static-progressive-detail',min_resident_level:2},lod_root:''},'lod_root');
 }
