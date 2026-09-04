@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:taowind:rncs:large-world-multi-process-evidence:v0.1",
+  "title": "RNCS Large World Multi-Process Replication Evidence",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "format",
+    "version",
+    "world_id",
+    "node_ids",
+    "process_count",
+    "process_isolation",
+    "nodes",
+    "snapshot_delta",
+    "lease_epoch_fencing",
+    "failure_recovery",
+    "cache_invalidation",
+    "stale_write_rejection",
+    "authority",
+    "candidate_only",
+    "authoritative",
+    "commit_status",
+    "evidence_root"
+  ],
+  "properties": {
+    "format": {"const": "rncs.large-world-multi-process-evidence.v0.1"},
+    "version": {"const": "0.1.0"},
+    "world_id": {"type": "string", "minLength": 1},
+    "node_ids": {"type": "array", "minItems": 2, "items": {"type": "string", "minLength": 1}},
+    "process_count": {"type": "integer", "minimum": 2},
+    "process_isolation": {
+      "type": "object",
+      "required": ["independent_processes", "process_identity_observed", "distinct_parent_process"],
+      "properties": {
+        "independent_processes": {"const": true},
+        "process_identity_observed": {"const": true},
+        "distinct_parent_process": {"const": true}
+      }
+    },
+    "nodes": {"type": "array", "minItems": 2},
+    "authority": {
+      "type": "object",
+      "required": ["canonical_owner", "canonical_write_authorized", "provider_can_write_authoritative_world_state"],
+      "properties": {
+        "canonical_owner": {"const": "RNCS"},
+        "canonical_write_authorized": {"const": false},
+        "provider_can_write_authoritative_world_state": {"const": false}
+      }
+    },
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "commit_status": {"const": "NOT_COMMITTED"},
+    "evidence_root": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"}
+  }
+}

@@ -132,6 +132,7 @@ export const LARGE_WORLD_SERVER_SOVEREIGNTY_HANDOFF_RECEIPT_FORMAT = 'rncs.serve
 
 export * from './universal-art-asset-forge.mjs';
 export * from './universal-art-asset-component-graph.mjs';
+export * from './multi-process-replication.mjs';
 
 export const LARGE_WORLD_BIOMES = Object.freeze(['coast', 'desert', 'forest', 'grassland', 'tundra', 'wetland']);
 export const LARGE_WORLD_STRUCTURE_KINDS = Object.freeze(['ruin', 'grove', 'mine', 'shrine', 'watchtower']);
