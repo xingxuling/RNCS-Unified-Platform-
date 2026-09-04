@@ -22,6 +22,10 @@ The matrix test checks:
 - roots and authority ownership are valid;
 - the dedicated VFX contract and independent child-process replication route
   are included as bounded candidate evidence;
+- the nine-family Universal Art Asset golden set binds the Forge's profile
+  requirements to 18 local positive/boundary executions, nine same-seed
+  replays, nine open-domain fail-closed rejections, and rooted contract and
+  evidence schemas;
 - the sensor-inference gate is locally closed while its external authority and
   hardware boundary, plus blocked AI generation status, remain explicit.
 

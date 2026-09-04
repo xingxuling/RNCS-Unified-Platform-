@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/urrf/universal-art-asset-golden-set-evidence.v0.1.schema.json",
+  "title": "URRF Universal Art Asset Golden Set Evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "version", "golden_set_id", "source", "contract_root", "output_directory", "profiles", "positive", "boundary", "open_domain_negative", "deterministic_replay", "summary", "checks", "status", "execution_status", "aaa_status", "ai_generate_status", "candidate_only", "authoritative", "canonical_write_authorized", "authority", "evidence_root"],
+  "$defs": {
+    "root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "profile": {
+      "type": "string",
+      "enum": ["character", "creature", "prop", "vehicle", "structure", "environment", "vegetation", "resource", "vfx"]
+    },
+    "roots": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["genome_root", "resolution_root", "candidate_root", "forge_root"],
+      "properties": {
+        "genome_root": {"anyOf": [{"$ref": "#/$defs/root"}, {"type": "null"}]},
+        "resolution_root": {"anyOf": [{"$ref": "#/$defs/root"}, {"type": "null"}]},
+        "candidate_root": {"anyOf": [{"$ref": "#/$defs/root"}, {"type": "null"}]},
+        "forge_root": {"anyOf": [{"$ref": "#/$defs/root"}, {"type": "null"}]}
+      }
+    },
+    "generated": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case_id", "case_kind", "asset_profile", "asset_kind", "input_root", "output_directory", "underlying_asset_status", "execution_status", "roots", "structural_checks", "checks", "pass", "candidate_only", "authoritative", "canonical_write_authorized", "root_fingerprint"],
+      "properties": {
+        "case_id": {"type": "string", "minLength": 1},
+        "case_kind": {"enum": ["POSITIVE", "BOUNDARY"]},
+        "asset_profile": {"$ref": "#/$defs/profile"},
+        "asset_kind": {"type": "string", "minLength": 1},
+        "input_root": {"$ref": "#/$defs/root"},
+        "output_directory": {"type": "string", "minLength": 1},
+        "underlying_asset_status": {"const": "BLOCKED"},
+        "execution_status": {"const": "COMPLETED"},
+        "roots": {"$ref": "#/$defs/roots"},
+        "structural_checks": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "boolean"}},
+        "checks": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["profile_binding", "execution_completed", "provider_route", "candidate_present", "required_structural_gates", "structural_artifacts", "forge_integrity", "authority_boundary"],
+          "properties": {
+            "profile_binding": {"type": "boolean"},
+            "execution_completed": {"type": "boolean"},
+            "provider_route": {"type": "boolean"},
+            "candidate_present": {"type": "boolean"},
+            "required_structural_gates": {"type": "boolean"},
+            "structural_artifacts": {"type": "boolean"},
+            "forge_integrity": {"type": "boolean"},
+            "authority_boundary": {"type": "boolean"}
+          }
+        },
+        "pass": {"type": "boolean"},
+        "candidate_only": {"const": true},
+        "authoritative": {"const": false},
+        "canonical_write_authorized": {"const": false},
+        "root_fingerprint": {"$ref": "#/$defs/root"}
+      }
+    },
+    "negative": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case_id", "case_kind", "asset_profile", "asset_kind", "input_root", "output_directory", "status", "error_code", "error_message", "roots", "checks", "pass", "candidate_only", "authoritative", "canonical_write_authorized", "root_fingerprint"],
+      "properties": {
+        "case_id": {"type": "string", "minLength": 1},
+        "case_kind": {"const": "OPEN_DOMAIN_NEGATIVE"},
+        "asset_profile": {"type": "string", "minLength": 1},
+        "asset_kind": {"type": "string", "minLength": 1},
+        "input_root": {"$ref": "#/$defs/root"},
+        "output_directory": {"type": "string", "minLength": 1},
+        "status": {"const": "REJECTED"},
+        "error_code": {"const": "UNIVERSAL_ART_ASSET_PROFILE_INVALID"},
+        "error_message": {"type": ["string", "null"]},
+        "roots": {"$ref": "#/$defs/roots"},
+        "checks": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["rejected", "expected_error", "no_candidate_root", "no_canonical_write"],
+          "properties": {
+            "rejected": {"const": true},
+            "expected_error": {"const": true},
+            "no_candidate_root": {"const": true},
+            "no_canonical_write": {"const": true}
+          }
+        },
+        "pass": {"const": true},
+        "candidate_only": {"const": true},
+        "authoritative": {"const": false},
+        "canonical_write_authorized": {"const": false},
+        "root_fingerprint": {"$ref": "#/$defs/root"}
+      }
+    },
+    "replay": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case_id", "asset_profile", "input_root", "output_directory", "original_root_fingerprint", "replay_root_fingerprint", "original_roots", "replay_roots", "checks", "pass"],
+      "properties": {
+        "case_id": {"type": "string", "minLength": 1},
+        "asset_profile": {"$ref": "#/$defs/profile"},
+        "input_root": {"$ref": "#/$defs/root"},
+        "output_directory": {"type": "string", "minLength": 1},
+        "original_root_fingerprint": {"$ref": "#/$defs/root"},
+        "replay_root_fingerprint": {"$ref": "#/$defs/root"},
+        "original_roots": {"$ref": "#/$defs/roots"},
+        "replay_roots": {"$ref": "#/$defs/roots"},
+        "checks": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["execution_completed", "root_equality", "replay_structural"],
+          "properties": {
+            "execution_completed": {"type": "boolean"},
+            "root_equality": {"type": "boolean"},
+            "replay_structural": {"type": "boolean"}
+          }
+        },
+        "pass": {"type": "boolean"}
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["canonical_owner", "representation_owner", "provider_can_write_authoritative_world_state", "provider_can_commit", "acceptance_can_commit", "rncs_authority_required"],
+      "properties": {
+        "canonical_owner": {"const": "RNCS"},
+        "representation_owner": {"const": "URRF"},
+        "provider_can_write_authoritative_world_state": {"const": false},
+        "provider_can_commit": {"const": false},
+        "acceptance_can_commit": {"const": false},
+        "rncs_authority_required": {"const": true}
+      }
+    }
+  },
+  "properties": {
+    "format": {"const": "urrf.universal-art-asset-golden-set-evidence.v0.1"},
+    "version": {"const": "0.1.0"},
+    "golden_set_id": {"type": "string", "minLength": 1},
+    "source": {"const": "urrf-golden-set-runner"},
+    "contract_root": {"$ref": "#/$defs/root"},
+    "output_directory": {"type": "string", "minLength": 1},
+    "profiles": {"type": "array", "const": ["character", "creature", "prop", "vehicle", "structure", "environment", "vegetation", "resource", "vfx"]},
+    "positive": {"type": "array", "items": {"$ref": "#/$defs/generated"}, "minItems": 9, "maxItems": 9},
+    "boundary": {"type": "array", "items": {"$ref": "#/$defs/generated"}, "minItems": 9, "maxItems": 9},
+    "open_domain_negative": {"type": "array", "items": {"$ref": "#/$defs/negative"}, "minItems": 9, "maxItems": 9},
+    "deterministic_replay": {"type": "array", "items": {"$ref": "#/$defs/replay"}, "minItems": 9, "maxItems": 9},
+    "summary": {"type": "object"},
+    "checks": {"type": "object", "additionalProperties": {"type": "boolean"}, "minProperties": 1},
+    "status": {"enum": ["CANDIDATE_GOLDEN_SET_PASS", "CANDIDATE_GOLDEN_SET_FAIL"]},
+    "execution_status": {"const": "CANDIDATE_LOCAL_REFERENCE_EXECUTED"},
+    "aaa_status": {"const": "BLOCKED_EXTERNAL_ART_HUMAN_HARDWARE_EVIDENCE"},
+    "ai_generate_status": {"const": "BLOCKED_EXTERNAL_MODEL_NOT_RUN"},
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "canonical_write_authorized": {"const": false},
+    "authority": {"$ref": "#/$defs/authority"},
+    "evidence_root": {"$ref": "#/$defs/root"}
+  }
+}

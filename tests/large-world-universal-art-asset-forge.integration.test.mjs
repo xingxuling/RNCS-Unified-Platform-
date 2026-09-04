@@ -8,6 +8,7 @@ import {rootHash} from '@taowind/rncs-core-contract';
 import {
   createUniversalArtAssetAssembly,
   createUniversalArtAssetEvidenceBundle,
+  createUniversalArtAssetGoldenSetContract,
   createUniversalArtAssetGenome,
   createUniversalArtAssetHoldoutReport,
   createUniversalArtAssetProfileCoverageReport,
@@ -26,10 +27,13 @@ import {
   verifyUniversalArtAssetProviderReplayReport,
   verifyUniversalArtAssetProviderPipelinePlan,
   executeUniversalArtAssetProviderPipeline,
+  executeUniversalArtAssetGoldenSet,
   verifyUniversalArtAssetProviderPipelineExecution,
   createUniversalArtAssetProviderPipelineArtifact,
   verifyUniversalArtAssetProviderPipelineArtifact,
   verifyUniversalArtAssetProviderPreflightReport,
+  verifyUniversalArtAssetGoldenSetContract,
+  verifyUniversalArtAssetGoldenSetReport,
   verifyUniversalArtAssetVsrMaterialization,
   verifyUniversalArtAssetVsrProjection,
   verifyUniversalArtAssetForge
@@ -476,7 +480,7 @@ test('URRF profile coverage exercises every asset family without silent Provider
     environment: 'BUILTIN_REFERENCE',
     vegetation: 'BUILTIN_REFERENCE',
     resource: 'BUILTIN_REFERENCE',
-    vfx: 'UNRESOLVED'
+    vfx: 'BUILTIN_REFERENCE'
   };
   const report = createUniversalArtAssetProfileCoverageReport({
     coverage_id: 'urrf-profile-coverage-integration-v01',
@@ -487,25 +491,43 @@ test('URRF profile coverage exercises every asset family without silent Provider
   assert.equal(report.status, 'CANDIDATE_PROFILE_COVERAGE_PASS');
   assert.equal(report.summary.pass_count, 9);
   assert.equal(report.summary.fail_count, 0);
-  assert.equal(report.summary.mode_histogram.BUILTIN_REFERENCE, 8);
+  assert.equal(report.summary.mode_histogram.BUILTIN_REFERENCE, 9);
   assert.equal(report.summary.mode_histogram.EXTERNAL_CONTRACT_ONLY, 0);
-  assert.equal(report.summary.mode_histogram.UNRESOLVED, 1);
+  assert.equal(report.summary.mode_histogram.UNRESOLVED, 0);
   assert.deepEqual(report.coverage.missing_profiles, []);
   assert.deepEqual(report.coverage.unexpected_profiles, []);
   assert.equal(report.coverage.unique_genome_root_count, 9);
   assert.equal(report.coverage.unique_resolution_root_count, 9);
-  assert.equal(report.entries.find(entry => entry.asset_profile === 'vfx').resolution.selected_provider_source, null);
+  assert.equal(report.entries.find(entry => entry.asset_profile === 'vfx').resolution.selected_provider_source, 'ragf-reference-provider');
   assert.equal(verifyUniversalArtAssetProfileCoverageReport(report).valid, true);
   assert.equal(verifyUniversalArtAssetProfileCoverageReport(report, {entries}).valid, true);
   mkdirSync(evidenceDir, {recursive: true});
   writeFileSync(join(evidenceDir, 'universal-art-asset-profile-coverage.json'), `${JSON.stringify(report, null, 2)}\n`, 'utf8');
 
   const tampered = structuredClone(report);
-  tampered.entries.find(entry => entry.asset_profile === 'vfx').resolution.selected_provider_source = 'ragf-reference-provider';
+  tampered.entries.find(entry => entry.asset_profile === 'vfx').resolution.selected_provider_source = 'external-provider-contract';
   delete tampered.coverage_root;
   tampered.coverage_root = rootHash(tampered);
   assert.equal(verifyUniversalArtAssetProfileCoverageReport(tampered).valid, false);
   assert.equal(verifyUniversalArtAssetProfileCoverageReport(tampered, {entries}).valid, false);
+});
+
+test('URRF nine-family golden set binds positive, boundary, replay, and open-domain rejection evidence', () => {
+  const outDir = mkdtempSync(join(tmpdir(), 'taowind-urrf-universal-art-golden-set-v01-'));
+  const contract = createUniversalArtAssetGoldenSetContract({golden_set_id: 'urrf-golden-set-integration-v01'});
+  assert.equal(verifyUniversalArtAssetGoldenSetContract(contract).valid, true);
+  const execution = executeUniversalArtAssetGoldenSet({contract, outDir});
+  assert.equal(execution.report.status, 'CANDIDATE_GOLDEN_SET_PASS');
+  assert.equal(execution.report.summary.pass_count, 36);
+  assert.equal(execution.report.summary.fail_count, 0);
+  assert.deepEqual(execution.report.profiles, ['character', 'creature', 'prop', 'vehicle', 'structure', 'environment', 'vegetation', 'resource', 'vfx']);
+  assert.equal(execution.report.checks.open_domain_fail_closed, true);
+  assert.equal(execution.report.checks.deterministic_replay, true);
+  assert.equal(execution.report.aaa_status, 'BLOCKED_EXTERNAL_ART_HUMAN_HARDWARE_EVIDENCE');
+  assert.equal(verifyUniversalArtAssetGoldenSetReport(execution.report, {contract}).valid, true);
+  mkdirSync(evidenceDir, {recursive: true});
+  writeFileSync(join(evidenceDir, 'universal-art-asset-golden-set-contract.json'), `${JSON.stringify(contract, null, 2)}\n`, 'utf8');
+  writeFileSync(join(evidenceDir, 'universal-art-asset-golden-set-evidence.json'), `${JSON.stringify(execution.report, null, 2)}\n`, 'utf8');
 });
 
 test('URRF Provider preflight records route readiness, runtime binding, and release blockers', () => {
@@ -515,15 +537,15 @@ test('URRF Provider preflight records route readiness, runtime binding, and rele
   assert.equal(report.status, 'CANDIDATE_PROVIDER_PREFLIGHT_PASS');
   assert.equal(report.summary.profile_count, 9);
   assert.equal(report.summary.provider_count, 6);
-  assert.equal(report.summary.route_histogram.BUILTIN_REFERENCE_READY, 8);
+  assert.equal(report.summary.route_histogram.BUILTIN_REFERENCE_READY, 9);
   assert.equal(report.summary.route_histogram.EXTERNAL_CONTRACT_ONLY, 0);
   assert.equal(report.summary.route_histogram.EXTERNAL_RUNTIME_BOUND, 0);
-  assert.equal(report.summary.route_histogram.UNRESOLVED, 1);
+  assert.equal(report.summary.route_histogram.UNRESOLVED, 0);
   assert.equal(report.summary.provider_health_histogram.CONTRACT_ONLY, 6);
   assert.equal(report.summary.release_blocked_provider_count, 6);
   assert.equal(report.profile_routes.find(entry => entry.asset_profile === 'environment').route_status, 'BUILTIN_REFERENCE_READY');
-  assert.equal(report.profile_routes.find(entry => entry.asset_profile === 'vfx').selected_provider_id, null);
-  assert.equal(report.profile_routes.find(entry => entry.asset_profile === 'vfx').selected_provider_source, null);
+  assert.equal(report.profile_routes.find(entry => entry.asset_profile === 'vfx').selected_provider_id, 'provider:taowind:vfx-reference');
+  assert.equal(report.profile_routes.find(entry => entry.asset_profile === 'vfx').selected_provider_source, 'ragf-reference-provider');
   assert.equal(report.execution_performed, false);
   assert.equal(report.aaa_ready, false);
   assert.equal(report.release_ready, false);

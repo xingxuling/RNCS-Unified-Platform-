@@ -131,6 +131,7 @@ export const LARGE_WORLD_SERVER_SOVEREIGNTY_MIGRATION_FORMAT = 'rncs.server-sove
 export const LARGE_WORLD_SERVER_SOVEREIGNTY_HANDOFF_RECEIPT_FORMAT = 'rncs.server-sovereignty-handoff-receipt.v0.3';
 
 export * from './universal-art-asset-forge.mjs';
+export * from './universal-art-asset-golden-set.mjs';
 export * from './universal-art-asset-component-graph.mjs';
 export * from './multi-process-replication.mjs';
 

@@ -245,6 +245,22 @@ const PROFILE_ALIASES = Object.freeze({
   'vfx-3d': 'vfx'
 });
 
+/**
+ * Public profile contract view consumed by URRF coverage/evidence runners.
+ * The forge remains the single owner of profile semantics; downstream
+ * evidence code must read this view instead of copying gate requirements.
+ */
+export const UNIVERSAL_ART_ASSET_PROFILE_REQUIREMENTS = Object.freeze(Object.fromEntries(
+  Object.entries(PROFILE_CONTRACTS).map(([profile, contract]) => [profile, Object.freeze({
+    asset_kind: contract.asset_kind,
+    required_capabilities: Object.freeze([...contract.required_capabilities]),
+    required_gates: Object.freeze([...contract.required_gates]),
+    requires_rig: contract.requires_rig,
+    requires_animation: contract.requires_animation,
+    builtin_reference: contract.builtin_reference
+  })])
+));
+
 const PASS_STATUSES = new Set(['PASS', 'PASSED', 'VALID', 'VERIFIED', 'AVAILABLE', 'COMPLETED', 'READY']);
 
 const record = value => value && typeof value === 'object' && !Array.isArray(value) ? value : {};

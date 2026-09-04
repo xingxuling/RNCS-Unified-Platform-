@@ -81,10 +81,10 @@ export const URRF_V03_SUCCESS_CRITERIA = Object.freeze([
     ['missing source event', 'memory-tree reference in canonical fact']
   )),
   criterion(4, 'Multiple Representations', 'One RealityObject may bind multiple rooted representations and a bounded quality portfolio.', candidate, ref(
-    [`${core}/src/representation-ref.mjs`, `${core}/src/representation-portfolio.mjs`, `${urrf}/src/index.mjs`, `${urrf}/src/portfolio-runtime.mjs`, `${ragf}/src/vfx-reference-provider.mjs`],
-    [`${core}/schemas/representation-reference.v0.1.schema.json`, `${core}/schemas/representation-portfolio.v0.3.schema.json`, `${core}/schemas/representation-slot.v0.3.schema.json`, `${ragf}/schemas/vfx-asset-contract.v0.1.schema.json`],
-    [`${core}/tests/representation-portfolio.mjs`, `${urrf}/tests/portfolio-runtime.test.mjs`, `${urrf}/tests/runtime.test.mjs`, `${ragf}/tests/vfx-reference-provider.test.mjs`],
-    [`${evidence}/URRF_V03_VISUAL_PORTFOLIO_PHASE6_EVIDENCE.md`],
+    [`${core}/src/representation-ref.mjs`, `${core}/src/representation-portfolio.mjs`, `${urrf}/src/index.mjs`, `${urrf}/src/portfolio-runtime.mjs`, `${ragf}/src/vfx-reference-provider.mjs`, `${largeWorld}/src/universal-art-asset-golden-set.mjs`],
+    [`${core}/schemas/representation-reference.v0.1.schema.json`, `${core}/schemas/representation-portfolio.v0.3.schema.json`, `${core}/schemas/representation-slot.v0.3.schema.json`, `${ragf}/schemas/vfx-asset-contract.v0.1.schema.json`, `${largeWorld}/schemas/universal-art-asset-golden-set.v0.1.schema.json`, `${largeWorld}/schemas/universal-art-asset-golden-set-evidence.v0.1.schema.json`],
+    [`${core}/tests/representation-portfolio.mjs`, `${urrf}/tests/portfolio-runtime.test.mjs`, `${urrf}/tests/runtime.test.mjs`, `${ragf}/tests/vfx-reference-provider.test.mjs`, `${largeWorld}/tests/universal-art-asset-golden-set.test.mjs`],
+    [`${evidence}/URRF_V03_VISUAL_PORTFOLIO_PHASE6_EVIDENCE.md`, `${evidence}/URRF_UNIVERSAL_ART_ASSET_FORGE/universal-art-asset-golden-set-evidence.json`],
     ['EXPRESS', 'COMPILE', 'LOWER', 'EXECUTE', 'CORRECT', 'PERFORMANCE', 'EVIDENCE'],
     ['missing required slot', 'duplicate representation root', 'provider-owned canonical state']
   )),
@@ -208,9 +208,9 @@ export const URRF_V03_SUCCESS_CRITERIA = Object.freeze([
     ['physical power/thermal sensor and OS enforcement']
   )),
   criterion(19, 'Evidence and Rollback', 'Roots, receipts, candidate ledgers and rollback/fencing records make candidate transitions auditable and reversible.', candidate, ref(
-    [`${core}/src/reality-distribution.mjs`, `${core}/src/reality-chunk.mjs`, `${largeWorld}/src/multi-process-replication.mjs`, `${ragf}/src/asset-evidence-ledger.mjs`, `${ragf}/src/trellis2-local-provider.mjs`],
-    [`${core}/schemas/evidence-graph.v0.1.schema.json`, `${core}/schemas/reality-replication-envelope.v0.3.schema.json`, `${largeWorld}/schemas/multi-process-replication-evidence.v0.1.schema.json`, `${ragf}/schemas/asset-evidence-ledger.v0.1.schema.json`],
-    [`${core}/tests/reality-distribution.mjs`, `${largeWorld}/tests/reality-fault-recovery.test.mjs`, `${largeWorld}/tests/multi-process-replication.test.mjs`, `${ragf}/tests/external-asset-providers.test.mjs`],
+    [`${core}/src/reality-distribution.mjs`, `${core}/src/reality-chunk.mjs`, `${largeWorld}/src/multi-process-replication.mjs`, `${ragf}/src/asset-evidence-ledger.mjs`, `${ragf}/src/trellis2-local-provider.mjs`, `${largeWorld}/src/universal-art-asset-golden-set.mjs`],
+    [`${core}/schemas/evidence-graph.v0.1.schema.json`, `${core}/schemas/reality-replication-envelope.v0.3.schema.json`, `${largeWorld}/schemas/multi-process-replication-evidence.v0.1.schema.json`, `${ragf}/schemas/asset-evidence-ledger.v0.1.schema.json`, `${largeWorld}/schemas/universal-art-asset-golden-set.v0.1.schema.json`, `${largeWorld}/schemas/universal-art-asset-golden-set-evidence.v0.1.schema.json`],
+    [`${core}/tests/reality-distribution.mjs`, `${largeWorld}/tests/reality-fault-recovery.test.mjs`, `${largeWorld}/tests/multi-process-replication.test.mjs`, `${ragf}/tests/external-asset-providers.test.mjs`, `${largeWorld}/tests/universal-art-asset-golden-set.test.mjs`],
     [`${evidence}/URRF_V03_CONSISTENCY_LEASE_PHASE3_EVIDENCE.md`, `${evidence}/URRF_UNIVERSAL_ART_ASSET_FORGE/RCL_GAP_STRESS_EVIDENCE.md`],
     ['EXPRESS', 'COMPILE', 'LOWER', 'EXECUTE', 'CORRECT', 'ROBUST', 'EVIDENCE'],
     ['tampered root', 'stale receipt', 'rollback without authority', 'provider failure without evidence']
@@ -266,10 +266,10 @@ export const URRF_V03_SUCCESS_CRITERIA = Object.freeze([
     boundary: 'Local calibrated candidate, lease-bound synthetic RNCS acceptance and explicit promotion are verified; external authority signatures, physical sensor replay and production sensor hardware are not claimed.'
   }),
   criterion(25, 'RCL Gap versus Provider Gap', 'The coverage ledger distinguishes missing RCL semantic primitives from unavailable or unaudited provider/runtime capability.', partial, ref(
-    [`${core}/src/reality-property.mjs`, `${core}/src/reality-transport.mjs`, `${largeWorld}/src/multi-process-replication.mjs`, `${ragf}/src/external-asset-providers.mjs`, `${ragf}/src/trellis2-local-provider.mjs`],
-    [`${core}/schemas/reality-transport-profile.v0.3.schema.json`],
-    ['packages/kernel/rncs-core-contract/tests/urrf-v03-coverage-matrix.test.mjs', `${largeWorld}/tests/multi-process-replication.test.mjs`, `${ragf}/tests/external-asset-providers.test.mjs`],
-    [`${evidence}/URRF_UNIVERSAL_ART_ASSET_FORGE/RCL_GAP_STRESS_EVIDENCE.md`, `${evidence}/URRF_V03_TRANSPORT_PHASE4_EVIDENCE.md`],
+    [`${core}/src/reality-property.mjs`, `${core}/src/reality-transport.mjs`, `${largeWorld}/src/multi-process-replication.mjs`, `${ragf}/src/external-asset-providers.mjs`, `${ragf}/src/trellis2-local-provider.mjs`, `${largeWorld}/src/universal-art-asset-golden-set.mjs`],
+    [`${core}/schemas/reality-transport-profile.v0.3.schema.json`, `${largeWorld}/schemas/universal-art-asset-golden-set.v0.1.schema.json`, `${largeWorld}/schemas/universal-art-asset-golden-set-evidence.v0.1.schema.json`],
+    ['packages/kernel/rncs-core-contract/tests/urrf-v03-coverage-matrix.test.mjs', `${largeWorld}/tests/multi-process-replication.test.mjs`, `${ragf}/tests/external-asset-providers.test.mjs`, `${largeWorld}/tests/universal-art-asset-golden-set.test.mjs`],
+    [`${evidence}/URRF_UNIVERSAL_ART_ASSET_FORGE/RCL_GAP_STRESS_EVIDENCE.md`, `${evidence}/URRF_V03_TRANSPORT_PHASE4_EVIDENCE.md`, `${evidence}/URRF_UNIVERSAL_ART_ASSET_FORGE/universal-art-asset-golden-set-evidence.json`],
     ['EXPRESS', 'COMPILE', 'LOWER', 'EVIDENCE'],
     ['silent language bypass', 'provider output treated as authority', 'missing RCL primitive mislabeled as runtime outage'],
     ['automated donor search, K400 cell attribution and formal Integration Court']
@@ -281,10 +281,10 @@ export const URRF_V03_SUCCESS_CRITERIA = Object.freeze([
     }
   }),
   criterion(26, 'Honest Status and AAA Boundary', 'Every result reports bounded status and keeps AAA production blocked until external model, hardware, provenance and human evidence exist.', candidate, ref(
-    [`${ragf}/src/trellis2-local-provider.mjs`, `${ragf}/src/vfx-reference-provider.mjs`, `${ragf}/src/production-court.mjs`, `${ragf}/src/asset-evidence-ledger.mjs`, `${largeWorld}/src/universal-art-asset-forge.mjs`, `${largeWorld}/src/multi-process-replication.mjs`],
-    [`${ragf}/schemas/asset-provider-manifest.v0.1.schema.json`, `${ragf}/schemas/asset-provider-result.v0.1.schema.json`, `${ragf}/schemas/vfx-asset-contract.v0.1.schema.json`, `${ragf}/schemas/asset-production-court.v0.1.schema.json`, `${largeWorld}/schemas/multi-process-replication-evidence.v0.1.schema.json`],
-    [`${ragf}/tests/external-asset-providers.test.mjs`, `${ragf}/tests/vfx-reference-provider.test.mjs`, `${ragf}/tests/runtime.test.mjs`, `${largeWorld}/tests/universal-art-asset-forge.test.mjs`, `${largeWorld}/tests/multi-process-replication.test.mjs`],
-    [`${evidence}/URRF_UNIVERSAL_ART_ASSET_FORGE/RCL_GAP_STRESS_EVIDENCE.md`, `${evidence}/URRF_V03_POWER_GOVERNOR_PHASE5_EVIDENCE.md`],
+    [`${ragf}/src/trellis2-local-provider.mjs`, `${ragf}/src/vfx-reference-provider.mjs`, `${ragf}/src/production-court.mjs`, `${ragf}/src/asset-evidence-ledger.mjs`, `${largeWorld}/src/universal-art-asset-forge.mjs`, `${largeWorld}/src/universal-art-asset-golden-set.mjs`, `${largeWorld}/src/multi-process-replication.mjs`],
+    [`${ragf}/schemas/asset-provider-manifest.v0.1.schema.json`, `${ragf}/schemas/asset-provider-result.v0.1.schema.json`, `${ragf}/schemas/vfx-asset-contract.v0.1.schema.json`, `${ragf}/schemas/asset-production-court.v0.1.schema.json`, `${largeWorld}/schemas/multi-process-replication-evidence.v0.1.schema.json`, `${largeWorld}/schemas/universal-art-asset-golden-set.v0.1.schema.json`, `${largeWorld}/schemas/universal-art-asset-golden-set-evidence.v0.1.schema.json`],
+    [`${ragf}/tests/external-asset-providers.test.mjs`, `${ragf}/tests/vfx-reference-provider.test.mjs`, `${ragf}/tests/runtime.test.mjs`, `${largeWorld}/tests/universal-art-asset-forge.test.mjs`, `${largeWorld}/tests/universal-art-asset-golden-set.test.mjs`, `${largeWorld}/tests/multi-process-replication.test.mjs`],
+    [`${evidence}/URRF_UNIVERSAL_ART_ASSET_FORGE/RCL_GAP_STRESS_EVIDENCE.md`, `${evidence}/URRF_V03_POWER_GOVERNOR_PHASE5_EVIDENCE.md`, `${evidence}/URRF_UNIVERSAL_ART_ASSET_FORGE/universal-art-asset-golden-set-evidence.json`],
     ['EXPRESS', 'COMPILE', 'LOWER', 'EXECUTE', 'CORRECT', 'ROBUST', 'PERFORMANCE', 'AI_GENERATE', 'EVIDENCE'],
     ['contract-only provider reported as executed', 'candidate reported as AAA', 'missing hardware evidence reported as pass']
   ), {

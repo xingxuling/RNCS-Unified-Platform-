@@ -1,0 +1,1277 @@
+{
+  "format": "urrf.universal-art-asset-golden-set.v0.1",
+  "version": "0.1.0",
+  "golden_set_id": "urrf-golden-set-integration-v01",
+  "source": "urrf-golden-set-catalog",
+  "purpose": "nine-profile-positive-boundary-open-domain-candidate-coverage",
+  "profiles": [
+    {
+      "asset_profile": "character",
+      "asset_kind": "character-3d",
+      "required_capabilities": [
+        "asset.generate.3d.production",
+        "asset.generate.mesh",
+        "asset.generate.pbr"
+      ],
+      "required_gates": [
+        "intent_gate",
+        "genome_gate",
+        "provider_execution_gate",
+        "geometry_gate",
+        "topology_gate",
+        "uv_gate",
+        "normal_gate",
+        "pbr_gate",
+        "lod_gate",
+        "collision_gate",
+        "platform_gate",
+        "provenance_license_gate",
+        "art_direction_gate",
+        "runtime_projection_gate",
+        "quality_tier_gate",
+        "human_review_gate",
+        "rig_gate",
+        "animation_gate"
+      ],
+      "structural_gates": [
+        "geometry_gate",
+        "topology_gate",
+        "uv_gate",
+        "normal_gate",
+        "pbr_gate",
+        "lod_gate",
+        "collision_gate",
+        "runtime_projection_gate",
+        "rig_gate",
+        "animation_gate"
+      ],
+      "requires_rig": true,
+      "requires_animation": true,
+      "cases": {
+        "positive": {
+          "case_id": "golden-positive-character-v01",
+          "case_kind": "POSITIVE",
+          "input": {
+            "asset_key": "golden-positive-character",
+            "asset_profile": "character",
+            "asset_kind": "character-3d",
+            "description": "一名守护古代冰晶遗迹的三维女剑士，穿着带有冰纹的重甲。",
+            "quality_tier": "AAA",
+            "seed": "urrf-golden-positive-character-v01",
+            "target_platforms": [
+              "desktop",
+              "web"
+            ],
+            "constraints": {
+              "max_triangles": 2400,
+              "pbr_texture_size": 128,
+              "max_bones": 64,
+              "animation_fps": 24
+            }
+          },
+          "expected": {
+            "asset_profile": "character",
+            "asset_kind": "character-3d",
+            "provider_route": "BUILTIN_REFERENCE",
+            "candidate_required": true,
+            "structural_gates": [
+              "geometry_gate",
+              "topology_gate",
+              "uv_gate",
+              "normal_gate",
+              "pbr_gate",
+              "lod_gate",
+              "collision_gate",
+              "runtime_projection_gate",
+              "rig_gate",
+              "animation_gate"
+            ]
+          }
+        },
+        "boundary": {
+          "case_id": "golden-boundary-character-v01",
+          "case_kind": "BOUNDARY",
+          "input": {
+            "asset_key": "golden-boundary-character",
+            "asset_profile": "character",
+            "asset_kind": "character-3d",
+            "description": "边界：单平台预览用的最小冰纹守卫候选。",
+            "quality_tier": "PREVIEW",
+            "seed": "urrf-golden-boundary-character-v01",
+            "target_platforms": [
+              "web"
+            ],
+            "constraints": {
+              "max_triangles": 2400,
+              "pbr_texture_size": 128,
+              "max_bones": 64,
+              "animation_fps": 24
+            }
+          },
+          "expected": {
+            "asset_profile": "character",
+            "asset_kind": "character-3d",
+            "provider_route": "BUILTIN_REFERENCE",
+            "candidate_required": true,
+            "structural_gates": [
+              "geometry_gate",
+              "topology_gate",
+              "uv_gate",
+              "normal_gate",
+              "pbr_gate",
+              "lod_gate",
+              "collision_gate",
+              "runtime_projection_gate",
+              "rig_gate",
+              "animation_gate"
+            ],
+            "quality_tier": "PREVIEW",
+            "target_platforms": [
+              "web"
+            ],
+            "aaa_proof_required": true
+          }
+        },
+        "open_domain_negative": {
+          "case_id": "golden-open-domain-negative-character-v01",
+          "case_kind": "OPEN_DOMAIN_NEGATIVE",
+          "input": {
+            "asset_key": "golden-open-domain-negative-character",
+            "asset_profile": "unregistered-character",
+            "asset_kind": "unregistered-character-3d",
+            "description": "开放域负例：未注册的 character 资产族请求必须被拒绝。",
+            "quality_tier": "AAA",
+            "seed": "urrf-golden-open-domain-negative-character-v01",
+            "target_platforms": [
+              "desktop"
+            ]
+          },
+          "expected": {
+            "rejection_code": "UNIVERSAL_ART_ASSET_PROFILE_INVALID",
+            "candidate_forbidden": true,
+            "canonical_write_forbidden": true
+          }
+        }
+      }
+    },
+    {
+      "asset_profile": "creature",
+      "asset_kind": "creature-3d",
+      "required_capabilities": [
+        "asset.generate.3d.production",
+        "asset.generate.mesh",
+        "asset.generate.pbr"
+      ],
+      "required_gates": [
+        "intent_gate",
+        "genome_gate",
+        "provider_execution_gate",
+        "geometry_gate",
+        "topology_gate",
+        "uv_gate",
+        "normal_gate",
+        "pbr_gate",
+        "lod_gate",
+        "collision_gate",
+        "platform_gate",
+        "provenance_license_gate",
+        "art_direction_gate",
+        "runtime_projection_gate",
+        "quality_tier_gate",
+        "human_review_gate",
+        "rig_gate",
+        "animation_gate"
+      ],
+      "structural_gates": [
+        "geometry_gate",
+        "topology_gate",
+        "uv_gate",
+        "normal_gate",
+        "pbr_gate",
+        "lod_gate",
+        "collision_gate",
+        "runtime_projection_gate",
+        "rig_gate",
+        "animation_gate"
+      ],
+      "requires_rig": true,
+      "requires_animation": true,
+      "cases": {
+        "positive": {
+          "case_id": "golden-positive-creature-v01",
+          "case_kind": "POSITIVE",
+          "input": {
+            "asset_key": "golden-positive-creature",
+            "asset_profile": "creature",
+            "asset_kind": "creature-3d",
+            "description": "一头栖息在极寒遗迹中的三维冰晶巨兽，具有可回放的步态。",
+            "quality_tier": "AAA",
+            "seed": "urrf-golden-positive-creature-v01",
+            "target_platforms": [
+              "desktop",
+              "web"
+            ],
+            "constraints": {
+              "max_triangles": 2400,
+              "pbr_texture_size": 128,
+              "max_bones": 64,
+              "animation_fps": 24
+            }
+          },
+          "expected": {
+            "asset_profile": "creature",
+            "asset_kind": "creature-3d",
+            "provider_route": "BUILTIN_REFERENCE",
+            "candidate_required": true,
+            "structural_gates": [
+              "geometry_gate",
+              "topology_gate",
+              "uv_gate",
+              "normal_gate",
+              "pbr_gate",
+              "lod_gate",
+              "collision_gate",
+              "runtime_projection_gate",
+              "rig_gate",
+              "animation_gate"
+            ]
+          }
+        },
+        "boundary": {
+          "case_id": "golden-boundary-creature-v01",
+          "case_kind": "BOUNDARY",
+          "input": {
+            "asset_key": "golden-boundary-creature",
+            "asset_profile": "creature",
+            "asset_kind": "creature-3d",
+            "description": "边界：单平台预览用的最小冰晶兽候选。",
+            "quality_tier": "PREVIEW",
+            "seed": "urrf-golden-boundary-creature-v01",
+            "target_platforms": [
+              "web"
+            ],
+            "constraints": {
+              "max_triangles": 2400,
+              "pbr_texture_size": 128,
+              "max_bones": 64,
+              "animation_fps": 24
+            }
+          },
+          "expected": {
+            "asset_profile": "creature",
+            "asset_kind": "creature-3d",
+            "provider_route": "BUILTIN_REFERENCE",
+            "candidate_required": true,
+            "structural_gates": [
+              "geometry_gate",
+              "topology_gate",
+              "uv_gate",
+              "normal_gate",
+              "pbr_gate",
+              "lod_gate",
+              "collision_gate",
+              "runtime_projection_gate",
+              "rig_gate",
+              "animation_gate"
+            ],
+            "quality_tier": "PREVIEW",
+            "target_platforms": [
+              "web"
+            ],
+            "aaa_proof_required": true
+          }
+        },
+        "open_domain_negative": {
+          "case_id": "golden-open-domain-negative-creature-v01",
+          "case_kind": "OPEN_DOMAIN_NEGATIVE",
+          "input": {
+            "asset_key": "golden-open-domain-negative-creature",
+            "asset_profile": "unregistered-creature",
+            "asset_kind": "unregistered-creature-3d",
+            "description": "开放域负例：未注册的 creature 资产族请求必须被拒绝。",
+            "quality_tier": "AAA",
+            "seed": "urrf-golden-open-domain-negative-creature-v01",
+            "target_platforms": [
+              "desktop"
+            ]
+          },
+          "expected": {
+            "rejection_code": "UNIVERSAL_ART_ASSET_PROFILE_INVALID",
+            "candidate_forbidden": true,
+            "canonical_write_forbidden": true
+          }
+        }
+      }
+    },
+    {
+      "asset_profile": "prop",
+      "asset_kind": "prop-3d",
+      "required_capabilities": [
+        "asset.generate.3d.production",
+        "asset.generate.mesh",
+        "asset.generate.pbr"
+      ],
+      "required_gates": [
+        "intent_gate",
+        "genome_gate",
+        "provider_execution_gate",
+        "geometry_gate",
+        "topology_gate",
+        "uv_gate",
+        "normal_gate",
+        "pbr_gate",
+        "lod_gate",
+        "collision_gate",
+        "platform_gate",
+        "provenance_license_gate",
+        "art_direction_gate",
+        "runtime_projection_gate",
+        "quality_tier_gate",
+        "human_review_gate"
+      ],
+      "structural_gates": [
+        "geometry_gate",
+        "topology_gate",
+        "uv_gate",
+        "normal_gate",
+        "pbr_gate",
+        "lod_gate",
+        "collision_gate",
+        "runtime_projection_gate"
+      ],
+      "requires_rig": false,
+      "requires_animation": false,
+      "cases": {
+        "positive": {
+          "case_id": "golden-positive-prop-v01",
+          "case_kind": "POSITIVE",
+          "input": {
+            "asset_key": "golden-positive-prop",
+            "asset_profile": "prop",
+            "asset_kind": "prop-3d",
+            "description": "一枚用于冰晶遗迹祭坛的三维古代护符，具有可复用材质与碰撞边界。",
+            "quality_tier": "AAA",
+            "seed": "urrf-golden-positive-prop-v01",
+            "target_platforms": [
+              "desktop",
+              "web"
+            ],
+            "constraints": {
+              "max_triangles": 2400,
+              "pbr_texture_size": 128
+            }
+          },
+          "expected": {
+            "asset_profile": "prop",
+            "asset_kind": "prop-3d",
+            "provider_route": "BUILTIN_REFERENCE",
+            "candidate_required": true,
+            "structural_gates": [
+              "geometry_gate",
+              "topology_gate",
+              "uv_gate",
+              "normal_gate",
+              "pbr_gate",
+              "lod_gate",
+              "collision_gate",
+              "runtime_projection_gate"
+            ]
+          }
+        },
+        "boundary": {
+          "case_id": "golden-boundary-prop-v01",
+          "case_kind": "BOUNDARY",
+          "input": {
+            "asset_key": "golden-boundary-prop",
+            "asset_profile": "prop",
+            "asset_kind": "prop-3d",
+            "description": "边界：单平台预览用的最小古代护符候选。",
+            "quality_tier": "PREVIEW",
+            "seed": "urrf-golden-boundary-prop-v01",
+            "target_platforms": [
+              "web"
+            ],
+            "constraints": {
+              "max_triangles": 2400,
+              "pbr_texture_size": 128
+            }
+          },
+          "expected": {
+            "asset_profile": "prop",
+            "asset_kind": "prop-3d",
+            "provider_route": "BUILTIN_REFERENCE",
+            "candidate_required": true,
+            "structural_gates": [
+              "geometry_gate",
+              "topology_gate",
+              "uv_gate",
+              "normal_gate",
+              "pbr_gate",
+              "lod_gate",
+              "collision_gate",
+              "runtime_projection_gate"
+            ],
+            "quality_tier": "PREVIEW",
+            "target_platforms": [
+              "web"
+            ],
+            "aaa_proof_required": true
+          }
+        },
+        "open_domain_negative": {
+          "case_id": "golden-open-domain-negative-prop-v01",
+          "case_kind": "OPEN_DOMAIN_NEGATIVE",
+          "input": {
+            "asset_key": "golden-open-domain-negative-prop",
+            "asset_profile": "unregistered-prop",
+            "asset_kind": "unregistered-prop-3d",
+            "description": "开放域负例：未注册的 prop 资产族请求必须被拒绝。",
+            "quality_tier": "AAA",
+            "seed": "urrf-golden-open-domain-negative-prop-v01",
+            "target_platforms": [
+              "desktop"
+            ]
+          },
+          "expected": {
+            "rejection_code": "UNIVERSAL_ART_ASSET_PROFILE_INVALID",
+            "candidate_forbidden": true,
+            "canonical_write_forbidden": true
+          }
+        }
+      }
+    },
+    {
+      "asset_profile": "vehicle",
+      "asset_kind": "vehicle-3d",
+      "required_capabilities": [
+        "asset.generate.3d.production",
+        "asset.generate.mesh",
+        "asset.generate.pbr"
+      ],
+      "required_gates": [
+        "intent_gate",
+        "genome_gate",
+        "provider_execution_gate",
+        "geometry_gate",
+        "topology_gate",
+        "uv_gate",
+        "normal_gate",
+        "pbr_gate",
+        "lod_gate",
+        "collision_gate",
+        "platform_gate",
+        "provenance_license_gate",
+        "art_direction_gate",
+        "runtime_projection_gate",
+        "quality_tier_gate",
+        "human_review_gate"
+      ],
+      "structural_gates": [
+        "geometry_gate",
+        "topology_gate",
+        "uv_gate",
+        "normal_gate",
+        "pbr_gate",
+        "lod_gate",
+        "collision_gate",
+        "runtime_projection_gate"
+      ],
+      "requires_rig": false,
+      "requires_animation": false,
+      "cases": {
+        "positive": {
+          "case_id": "golden-positive-vehicle-v01",
+          "case_kind": "POSITIVE",
+          "input": {
+            "asset_key": "golden-positive-vehicle",
+            "asset_profile": "vehicle",
+            "asset_kind": "vehicle-3d",
+            "description": "一辆能够穿越冻原裂谷的三维远古装甲载具，具有可复用碰撞边界。",
+            "quality_tier": "AAA",
+            "seed": "urrf-golden-positive-vehicle-v01",
+            "target_platforms": [
+              "desktop",
+              "web"
+            ],
+            "constraints": {
+              "max_triangles": 2400,
+              "pbr_texture_size": 128
+            }
+          },
+          "expected": {
+            "asset_profile": "vehicle",
+            "asset_kind": "vehicle-3d",
+            "provider_route": "BUILTIN_REFERENCE",
+            "candidate_required": true,
+            "structural_gates": [
+              "geometry_gate",
+              "topology_gate",
+              "uv_gate",
+              "normal_gate",
+              "pbr_gate",
+              "lod_gate",
+              "collision_gate",
+              "runtime_projection_gate"
+            ]
+          }
+        },
+        "boundary": {
+          "case_id": "golden-boundary-vehicle-v01",
+          "case_kind": "BOUNDARY",
+          "input": {
+            "asset_key": "golden-boundary-vehicle",
+            "asset_profile": "vehicle",
+            "asset_kind": "vehicle-3d",
+            "description": "边界：单平台预览用的最小冻原载具候选。",
+            "quality_tier": "PREVIEW",
+            "seed": "urrf-golden-boundary-vehicle-v01",
+            "target_platforms": [
+              "web"
+            ],
+            "constraints": {
+              "max_triangles": 2400,
+              "pbr_texture_size": 128
+            }
+          },
+          "expected": {
+            "asset_profile": "vehicle",
+            "asset_kind": "vehicle-3d",
+            "provider_route": "BUILTIN_REFERENCE",
+            "candidate_required": true,
+            "structural_gates": [
+              "geometry_gate",
+              "topology_gate",
+              "uv_gate",
+              "normal_gate",
+              "pbr_gate",
+              "lod_gate",
+              "collision_gate",
+              "runtime_projection_gate"
+            ],
+            "quality_tier": "PREVIEW",
+            "target_platforms": [
+              "web"
+            ],
+            "aaa_proof_required": true
+          }
+        },
+        "open_domain_negative": {
+          "case_id": "golden-open-domain-negative-vehicle-v01",
+          "case_kind": "OPEN_DOMAIN_NEGATIVE",
+          "input": {
+            "asset_key": "golden-open-domain-negative-vehicle",
+            "asset_profile": "unregistered-vehicle",
+            "asset_kind": "unregistered-vehicle-3d",
+            "description": "开放域负例：未注册的 vehicle 资产族请求必须被拒绝。",
+            "quality_tier": "AAA",
+            "seed": "urrf-golden-open-domain-negative-vehicle-v01",
+            "target_platforms": [
+              "desktop"
+            ]
+          },
+          "expected": {
+            "rejection_code": "UNIVERSAL_ART_ASSET_PROFILE_INVALID",
+            "candidate_forbidden": true,
+            "canonical_write_forbidden": true
+          }
+        }
+      }
+    },
+    {
+      "asset_profile": "structure",
+      "asset_kind": "structure-3d",
+      "required_capabilities": [
+        "world.asset.generate.procedural",
+        "world.asset.building"
+      ],
+      "required_gates": [
+        "intent_gate",
+        "genome_gate",
+        "provider_execution_gate",
+        "geometry_gate",
+        "topology_gate",
+        "uv_gate",
+        "normal_gate",
+        "pbr_gate",
+        "lod_gate",
+        "collision_gate",
+        "platform_gate",
+        "provenance_license_gate",
+        "art_direction_gate",
+        "runtime_projection_gate",
+        "quality_tier_gate",
+        "human_review_gate"
+      ],
+      "structural_gates": [
+        "geometry_gate",
+        "topology_gate",
+        "uv_gate",
+        "normal_gate",
+        "pbr_gate",
+        "lod_gate",
+        "collision_gate",
+        "runtime_projection_gate"
+      ],
+      "requires_rig": false,
+      "requires_animation": false,
+      "cases": {
+        "positive": {
+          "case_id": "golden-positive-structure-v01",
+          "case_kind": "POSITIVE",
+          "input": {
+            "asset_key": "golden-positive-structure",
+            "asset_profile": "structure",
+            "asset_kind": "structure-3d",
+            "description": "一座带有风化石墙和入口拱门的三维遗迹建筑。",
+            "quality_tier": "AAA",
+            "seed": "urrf-golden-positive-structure-v01",
+            "target_platforms": [
+              "desktop",
+              "web"
+            ],
+            "constraints": {
+              "max_triangles": 2400,
+              "pbr_texture_size": 128
+            }
+          },
+          "expected": {
+            "asset_profile": "structure",
+            "asset_kind": "structure-3d",
+            "provider_route": "BUILTIN_REFERENCE",
+            "candidate_required": true,
+            "structural_gates": [
+              "geometry_gate",
+              "topology_gate",
+              "uv_gate",
+              "normal_gate",
+              "pbr_gate",
+              "lod_gate",
+              "collision_gate",
+              "runtime_projection_gate"
+            ]
+          }
+        },
+        "boundary": {
+          "case_id": "golden-boundary-structure-v01",
+          "case_kind": "BOUNDARY",
+          "input": {
+            "asset_key": "golden-boundary-structure",
+            "asset_profile": "structure",
+            "asset_kind": "structure-3d",
+            "description": "边界：单平台预览用的最小遗迹入口候选。",
+            "quality_tier": "PREVIEW",
+            "seed": "urrf-golden-boundary-structure-v01",
+            "target_platforms": [
+              "web"
+            ],
+            "constraints": {
+              "max_triangles": 2400,
+              "pbr_texture_size": 128
+            }
+          },
+          "expected": {
+            "asset_profile": "structure",
+            "asset_kind": "structure-3d",
+            "provider_route": "BUILTIN_REFERENCE",
+            "candidate_required": true,
+            "structural_gates": [
+              "geometry_gate",
+              "topology_gate",
+              "uv_gate",
+              "normal_gate",
+              "pbr_gate",
+              "lod_gate",
+              "collision_gate",
+              "runtime_projection_gate"
+            ],
+            "quality_tier": "PREVIEW",
+            "target_platforms": [
+              "web"
+            ],
+            "aaa_proof_required": true
+          }
+        },
+        "open_domain_negative": {
+          "case_id": "golden-open-domain-negative-structure-v01",
+          "case_kind": "OPEN_DOMAIN_NEGATIVE",
+          "input": {
+            "asset_key": "golden-open-domain-negative-structure",
+            "asset_profile": "unregistered-structure",
+            "asset_kind": "unregistered-structure-3d",
+            "description": "开放域负例：未注册的 structure 资产族请求必须被拒绝。",
+            "quality_tier": "AAA",
+            "seed": "urrf-golden-open-domain-negative-structure-v01",
+            "target_platforms": [
+              "desktop"
+            ]
+          },
+          "expected": {
+            "rejection_code": "UNIVERSAL_ART_ASSET_PROFILE_INVALID",
+            "candidate_forbidden": true,
+            "canonical_write_forbidden": true
+          }
+        }
+      }
+    },
+    {
+      "asset_profile": "environment",
+      "asset_kind": "environment-3d",
+      "required_capabilities": [
+        "world.asset.generate.procedural",
+        "world.asset.environment"
+      ],
+      "required_gates": [
+        "intent_gate",
+        "genome_gate",
+        "provider_execution_gate",
+        "geometry_gate",
+        "topology_gate",
+        "uv_gate",
+        "normal_gate",
+        "pbr_gate",
+        "lod_gate",
+        "collision_gate",
+        "platform_gate",
+        "provenance_license_gate",
+        "art_direction_gate",
+        "runtime_projection_gate",
+        "quality_tier_gate",
+        "human_review_gate"
+      ],
+      "structural_gates": [
+        "geometry_gate",
+        "topology_gate",
+        "uv_gate",
+        "normal_gate",
+        "pbr_gate",
+        "lod_gate",
+        "collision_gate",
+        "runtime_projection_gate"
+      ],
+      "requires_rig": false,
+      "requires_animation": false,
+      "cases": {
+        "positive": {
+          "case_id": "golden-positive-environment-v01",
+          "case_kind": "POSITIVE",
+          "input": {
+            "asset_key": "golden-positive-environment",
+            "asset_profile": "environment",
+            "asset_kind": "environment-3d",
+            "description": "一片包含冰原、遗迹和远景山脊的三维环境。",
+            "quality_tier": "AAA",
+            "seed": "urrf-golden-positive-environment-v01",
+            "target_platforms": [
+              "desktop",
+              "web"
+            ],
+            "constraints": {
+              "max_triangles": 2400,
+              "pbr_texture_size": 128
+            }
+          },
+          "expected": {
+            "asset_profile": "environment",
+            "asset_kind": "environment-3d",
+            "provider_route": "BUILTIN_REFERENCE",
+            "candidate_required": true,
+            "structural_gates": [
+              "geometry_gate",
+              "topology_gate",
+              "uv_gate",
+              "normal_gate",
+              "pbr_gate",
+              "lod_gate",
+              "collision_gate",
+              "runtime_projection_gate"
+            ]
+          }
+        },
+        "boundary": {
+          "case_id": "golden-boundary-environment-v01",
+          "case_kind": "BOUNDARY",
+          "input": {
+            "asset_key": "golden-boundary-environment",
+            "asset_profile": "environment",
+            "asset_kind": "environment-3d",
+            "description": "边界：单平台预览用的最小冰原环境候选。",
+            "quality_tier": "PREVIEW",
+            "seed": "urrf-golden-boundary-environment-v01",
+            "target_platforms": [
+              "web"
+            ],
+            "constraints": {
+              "max_triangles": 2400,
+              "pbr_texture_size": 128
+            }
+          },
+          "expected": {
+            "asset_profile": "environment",
+            "asset_kind": "environment-3d",
+            "provider_route": "BUILTIN_REFERENCE",
+            "candidate_required": true,
+            "structural_gates": [
+              "geometry_gate",
+              "topology_gate",
+              "uv_gate",
+              "normal_gate",
+              "pbr_gate",
+              "lod_gate",
+              "collision_gate",
+              "runtime_projection_gate"
+            ],
+            "quality_tier": "PREVIEW",
+            "target_platforms": [
+              "web"
+            ],
+            "aaa_proof_required": true
+          }
+        },
+        "open_domain_negative": {
+          "case_id": "golden-open-domain-negative-environment-v01",
+          "case_kind": "OPEN_DOMAIN_NEGATIVE",
+          "input": {
+            "asset_key": "golden-open-domain-negative-environment",
+            "asset_profile": "unregistered-environment",
+            "asset_kind": "unregistered-environment-3d",
+            "description": "开放域负例：未注册的 environment 资产族请求必须被拒绝。",
+            "quality_tier": "AAA",
+            "seed": "urrf-golden-open-domain-negative-environment-v01",
+            "target_platforms": [
+              "desktop"
+            ]
+          },
+          "expected": {
+            "rejection_code": "UNIVERSAL_ART_ASSET_PROFILE_INVALID",
+            "candidate_forbidden": true,
+            "canonical_write_forbidden": true
+          }
+        }
+      }
+    },
+    {
+      "asset_profile": "vegetation",
+      "asset_kind": "vegetation-3d",
+      "required_capabilities": [
+        "world.asset.generate.procedural",
+        "world.asset.vegetation"
+      ],
+      "required_gates": [
+        "intent_gate",
+        "genome_gate",
+        "provider_execution_gate",
+        "geometry_gate",
+        "topology_gate",
+        "uv_gate",
+        "normal_gate",
+        "pbr_gate",
+        "lod_gate",
+        "collision_gate",
+        "platform_gate",
+        "provenance_license_gate",
+        "art_direction_gate",
+        "runtime_projection_gate",
+        "quality_tier_gate",
+        "human_review_gate"
+      ],
+      "structural_gates": [
+        "geometry_gate",
+        "topology_gate",
+        "uv_gate",
+        "normal_gate",
+        "pbr_gate",
+        "lod_gate",
+        "collision_gate",
+        "runtime_projection_gate"
+      ],
+      "requires_rig": false,
+      "requires_animation": false,
+      "cases": {
+        "positive": {
+          "case_id": "golden-positive-vegetation-v01",
+          "case_kind": "POSITIVE",
+          "input": {
+            "asset_key": "golden-positive-vegetation",
+            "asset_profile": "vegetation",
+            "asset_kind": "vegetation-3d",
+            "description": "一株生长在冰晶裂谷边缘的三维发光植物。",
+            "quality_tier": "AAA",
+            "seed": "urrf-golden-positive-vegetation-v01",
+            "target_platforms": [
+              "desktop",
+              "web"
+            ],
+            "constraints": {
+              "max_triangles": 2400,
+              "pbr_texture_size": 128
+            }
+          },
+          "expected": {
+            "asset_profile": "vegetation",
+            "asset_kind": "vegetation-3d",
+            "provider_route": "BUILTIN_REFERENCE",
+            "candidate_required": true,
+            "structural_gates": [
+              "geometry_gate",
+              "topology_gate",
+              "uv_gate",
+              "normal_gate",
+              "pbr_gate",
+              "lod_gate",
+              "collision_gate",
+              "runtime_projection_gate"
+            ]
+          }
+        },
+        "boundary": {
+          "case_id": "golden-boundary-vegetation-v01",
+          "case_kind": "BOUNDARY",
+          "input": {
+            "asset_key": "golden-boundary-vegetation",
+            "asset_profile": "vegetation",
+            "asset_kind": "vegetation-3d",
+            "description": "边界：单平台预览用的最小发光植物候选。",
+            "quality_tier": "PREVIEW",
+            "seed": "urrf-golden-boundary-vegetation-v01",
+            "target_platforms": [
+              "web"
+            ],
+            "constraints": {
+              "max_triangles": 2400,
+              "pbr_texture_size": 128
+            }
+          },
+          "expected": {
+            "asset_profile": "vegetation",
+            "asset_kind": "vegetation-3d",
+            "provider_route": "BUILTIN_REFERENCE",
+            "candidate_required": true,
+            "structural_gates": [
+              "geometry_gate",
+              "topology_gate",
+              "uv_gate",
+              "normal_gate",
+              "pbr_gate",
+              "lod_gate",
+              "collision_gate",
+              "runtime_projection_gate"
+            ],
+            "quality_tier": "PREVIEW",
+            "target_platforms": [
+              "web"
+            ],
+            "aaa_proof_required": true
+          }
+        },
+        "open_domain_negative": {
+          "case_id": "golden-open-domain-negative-vegetation-v01",
+          "case_kind": "OPEN_DOMAIN_NEGATIVE",
+          "input": {
+            "asset_key": "golden-open-domain-negative-vegetation",
+            "asset_profile": "unregistered-vegetation",
+            "asset_kind": "unregistered-vegetation-3d",
+            "description": "开放域负例：未注册的 vegetation 资产族请求必须被拒绝。",
+            "quality_tier": "AAA",
+            "seed": "urrf-golden-open-domain-negative-vegetation-v01",
+            "target_platforms": [
+              "desktop"
+            ]
+          },
+          "expected": {
+            "rejection_code": "UNIVERSAL_ART_ASSET_PROFILE_INVALID",
+            "candidate_forbidden": true,
+            "canonical_write_forbidden": true
+          }
+        }
+      }
+    },
+    {
+      "asset_profile": "resource",
+      "asset_kind": "resource-3d",
+      "required_capabilities": [
+        "world.asset.generate.procedural",
+        "world.asset.rock"
+      ],
+      "required_gates": [
+        "intent_gate",
+        "genome_gate",
+        "provider_execution_gate",
+        "geometry_gate",
+        "topology_gate",
+        "uv_gate",
+        "normal_gate",
+        "pbr_gate",
+        "lod_gate",
+        "collision_gate",
+        "platform_gate",
+        "provenance_license_gate",
+        "art_direction_gate",
+        "runtime_projection_gate",
+        "quality_tier_gate",
+        "human_review_gate"
+      ],
+      "structural_gates": [
+        "geometry_gate",
+        "topology_gate",
+        "uv_gate",
+        "normal_gate",
+        "pbr_gate",
+        "lod_gate",
+        "collision_gate",
+        "runtime_projection_gate"
+      ],
+      "requires_rig": false,
+      "requires_animation": false,
+      "cases": {
+        "positive": {
+          "case_id": "golden-positive-resource-v01",
+          "case_kind": "POSITIVE",
+          "input": {
+            "asset_key": "golden-positive-resource",
+            "asset_profile": "resource",
+            "asset_kind": "resource-3d",
+            "description": "一簇可用于世界资源节点的三维冰晶矿石。",
+            "quality_tier": "AAA",
+            "seed": "urrf-golden-positive-resource-v01",
+            "target_platforms": [
+              "desktop",
+              "web"
+            ],
+            "constraints": {
+              "max_triangles": 2400,
+              "pbr_texture_size": 128
+            }
+          },
+          "expected": {
+            "asset_profile": "resource",
+            "asset_kind": "resource-3d",
+            "provider_route": "BUILTIN_REFERENCE",
+            "candidate_required": true,
+            "structural_gates": [
+              "geometry_gate",
+              "topology_gate",
+              "uv_gate",
+              "normal_gate",
+              "pbr_gate",
+              "lod_gate",
+              "collision_gate",
+              "runtime_projection_gate"
+            ]
+          }
+        },
+        "boundary": {
+          "case_id": "golden-boundary-resource-v01",
+          "case_kind": "BOUNDARY",
+          "input": {
+            "asset_key": "golden-boundary-resource",
+            "asset_profile": "resource",
+            "asset_kind": "resource-3d",
+            "description": "边界：单平台预览用的最小冰晶矿石候选。",
+            "quality_tier": "PREVIEW",
+            "seed": "urrf-golden-boundary-resource-v01",
+            "target_platforms": [
+              "web"
+            ],
+            "constraints": {
+              "max_triangles": 2400,
+              "pbr_texture_size": 128
+            }
+          },
+          "expected": {
+            "asset_profile": "resource",
+            "asset_kind": "resource-3d",
+            "provider_route": "BUILTIN_REFERENCE",
+            "candidate_required": true,
+            "structural_gates": [
+              "geometry_gate",
+              "topology_gate",
+              "uv_gate",
+              "normal_gate",
+              "pbr_gate",
+              "lod_gate",
+              "collision_gate",
+              "runtime_projection_gate"
+            ],
+            "quality_tier": "PREVIEW",
+            "target_platforms": [
+              "web"
+            ],
+            "aaa_proof_required": true
+          }
+        },
+        "open_domain_negative": {
+          "case_id": "golden-open-domain-negative-resource-v01",
+          "case_kind": "OPEN_DOMAIN_NEGATIVE",
+          "input": {
+            "asset_key": "golden-open-domain-negative-resource",
+            "asset_profile": "unregistered-resource",
+            "asset_kind": "unregistered-resource-3d",
+            "description": "开放域负例：未注册的 resource 资产族请求必须被拒绝。",
+            "quality_tier": "AAA",
+            "seed": "urrf-golden-open-domain-negative-resource-v01",
+            "target_platforms": [
+              "desktop"
+            ]
+          },
+          "expected": {
+            "rejection_code": "UNIVERSAL_ART_ASSET_PROFILE_INVALID",
+            "candidate_forbidden": true,
+            "canonical_write_forbidden": true
+          }
+        }
+      }
+    },
+    {
+      "asset_profile": "vfx",
+      "asset_kind": "vfx-3d",
+      "required_capabilities": [
+        "asset.generate.vfx"
+      ],
+      "required_gates": [
+        "intent_gate",
+        "genome_gate",
+        "provider_execution_gate",
+        "effect_graph_gate",
+        "particle_contract_gate",
+        "volume_contract_gate",
+        "flipbook_contract_gate",
+        "curve_contract_gate",
+        "platform_gate",
+        "provenance_license_gate",
+        "art_direction_gate",
+        "runtime_projection_gate",
+        "quality_tier_gate",
+        "human_review_gate"
+      ],
+      "structural_gates": [
+        "effect_graph_gate",
+        "particle_contract_gate",
+        "volume_contract_gate",
+        "flipbook_contract_gate",
+        "curve_contract_gate",
+        "runtime_projection_gate"
+      ],
+      "requires_rig": false,
+      "requires_animation": false,
+      "cases": {
+        "positive": {
+          "case_id": "golden-positive-vfx-v01",
+          "case_kind": "POSITIVE",
+          "input": {
+            "asset_key": "golden-positive-vfx",
+            "asset_profile": "vfx",
+            "asset_kind": "vfx-3d",
+            "description": "一组需要粒子、体积、flipbook 和曲线表示的三维魔法爆炸特效。",
+            "quality_tier": "AAA",
+            "seed": "urrf-golden-positive-vfx-v01",
+            "target_platforms": [
+              "desktop",
+              "web"
+            ],
+            "constraints": {
+              "max_particles": 96
+            }
+          },
+          "expected": {
+            "asset_profile": "vfx",
+            "asset_kind": "vfx-3d",
+            "provider_route": "BUILTIN_REFERENCE",
+            "candidate_required": true,
+            "structural_gates": [
+              "effect_graph_gate",
+              "particle_contract_gate",
+              "volume_contract_gate",
+              "flipbook_contract_gate",
+              "curve_contract_gate",
+              "runtime_projection_gate"
+            ]
+          }
+        },
+        "boundary": {
+          "case_id": "golden-boundary-vfx-v01",
+          "case_kind": "BOUNDARY",
+          "input": {
+            "asset_key": "golden-boundary-vfx",
+            "asset_profile": "vfx",
+            "asset_kind": "vfx-3d",
+            "description": "边界：单平台预览用的最小四表示魔法特效候选。",
+            "quality_tier": "PREVIEW",
+            "seed": "urrf-golden-boundary-vfx-v01",
+            "target_platforms": [
+              "web"
+            ],
+            "constraints": {
+              "max_particles": 96
+            }
+          },
+          "expected": {
+            "asset_profile": "vfx",
+            "asset_kind": "vfx-3d",
+            "provider_route": "BUILTIN_REFERENCE",
+            "candidate_required": true,
+            "structural_gates": [
+              "effect_graph_gate",
+              "particle_contract_gate",
+              "volume_contract_gate",
+              "flipbook_contract_gate",
+              "curve_contract_gate",
+              "runtime_projection_gate"
+            ],
+            "quality_tier": "PREVIEW",
+            "target_platforms": [
+              "web"
+            ],
+            "aaa_proof_required": true
+          }
+        },
+        "open_domain_negative": {
+          "case_id": "golden-open-domain-negative-vfx-v01",
+          "case_kind": "OPEN_DOMAIN_NEGATIVE",
+          "input": {
+            "asset_key": "golden-open-domain-negative-vfx",
+            "asset_profile": "unregistered-vfx",
+            "asset_kind": "unregistered-vfx-3d",
+            "description": "开放域负例：未注册的 vfx 资产族请求必须被拒绝。",
+            "quality_tier": "AAA",
+            "seed": "urrf-golden-open-domain-negative-vfx-v01",
+            "target_platforms": [
+              "desktop"
+            ]
+          },
+          "expected": {
+            "rejection_code": "UNIVERSAL_ART_ASSET_PROFILE_INVALID",
+            "candidate_forbidden": true,
+            "canonical_write_forbidden": true
+          }
+        }
+      }
+    }
+  ],
+  "summary": {
+    "profile_count": 9,
+    "positive_case_count": 9,
+    "boundary_case_count": 9,
+    "open_domain_negative_case_count": 9,
+    "total_case_count": 27
+  },
+  "checks": {
+    "exact_profile_set": true,
+    "every_profile_has_positive": true,
+    "every_profile_has_boundary": true,
+    "every_profile_has_open_domain_negative": true,
+    "open_domain_is_fail_closed": true,
+    "candidate_only": true
+  },
+  "candidate_only": true,
+  "authoritative": false,
+  "canonical_write_authorized": false,
+  "authority": {
+    "canonical_owner": "RNCS",
+    "representation_owner": "URRF",
+    "provider_can_write_authoritative_world_state": false,
+    "provider_can_commit": false,
+    "acceptance_can_commit": false,
+    "rncs_authority_required": true
+  },
+  "contract_root": "bbeafdb7e630f590ddcf75b9f1787a669721f88d3d372074e88a0687f2ddccea"
+}

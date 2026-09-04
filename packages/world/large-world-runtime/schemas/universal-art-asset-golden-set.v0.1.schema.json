@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/urrf/universal-art-asset-golden-set.v0.1.schema.json",
+  "title": "URRF Universal Art Asset Golden Set Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "version", "golden_set_id", "source", "purpose", "profiles", "summary", "checks", "candidate_only", "authoritative", "canonical_write_authorized", "authority", "contract_root"],
+  "$defs": {
+    "profile": {
+      "type": "string",
+      "enum": ["character", "creature", "prop", "vehicle", "structure", "environment", "vegetation", "resource", "vfx"]
+    },
+    "gate": {"type": "string", "minLength": 1},
+    "input": {
+      "type": "object",
+      "required": ["asset_key", "asset_profile", "asset_kind", "description", "quality_tier", "seed", "target_platforms"],
+      "properties": {
+        "asset_key": {"type": "string", "minLength": 1},
+        "asset_profile": {"type": "string", "minLength": 1},
+        "asset_kind": {"type": "string", "minLength": 1},
+        "description": {"type": "string", "minLength": 1},
+        "quality_tier": {"enum": ["PREVIEW", "PRODUCTION", "AAA"]},
+        "seed": {"type": "string", "minLength": 1},
+        "target_platforms": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "constraints": {"type": "object"}
+      },
+      "additionalProperties": true
+    },
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case_id", "case_kind", "input", "expected"],
+      "properties": {
+        "case_id": {"type": "string", "minLength": 1},
+        "case_kind": {"enum": ["POSITIVE", "BOUNDARY", "OPEN_DOMAIN_NEGATIVE"]},
+        "input": {"$ref": "#/$defs/input"},
+        "expected": {"type": "object"}
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["canonical_owner", "representation_owner", "provider_can_write_authoritative_world_state", "provider_can_commit", "acceptance_can_commit", "rncs_authority_required"],
+      "properties": {
+        "canonical_owner": {"const": "RNCS"},
+        "representation_owner": {"const": "URRF"},
+        "provider_can_write_authoritative_world_state": {"const": false},
+        "provider_can_commit": {"const": false},
+        "acceptance_can_commit": {"const": false},
+        "rncs_authority_required": {"const": true}
+      }
+    }
+  },
+  "properties": {
+    "format": {"const": "urrf.universal-art-asset-golden-set.v0.1"},
+    "version": {"const": "0.1.0"},
+    "golden_set_id": {"type": "string", "minLength": 1},
+    "source": {"const": "urrf-golden-set-catalog"},
+    "purpose": {"const": "nine-profile-positive-boundary-open-domain-candidate-coverage"},
+    "profiles": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["asset_profile", "asset_kind", "required_capabilities", "required_gates", "structural_gates", "requires_rig", "requires_animation", "cases"],
+        "properties": {
+          "asset_profile": {"$ref": "#/$defs/profile"},
+          "asset_kind": {"type": "string", "minLength": 1},
+          "required_capabilities": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+          "required_gates": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/gate"}},
+          "structural_gates": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/gate"}},
+          "requires_rig": {"type": "boolean"},
+          "requires_animation": {"type": "boolean"},
+          "cases": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["positive", "boundary", "open_domain_negative"],
+            "properties": {
+              "positive": {"$ref": "#/$defs/case"},
+              "boundary": {"$ref": "#/$defs/case"},
+              "open_domain_negative": {"$ref": "#/$defs/case"}
+            }
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profile_count", "positive_case_count", "boundary_case_count", "open_domain_negative_case_count", "total_case_count"],
+      "properties": {
+        "profile_count": {"const": 9},
+        "positive_case_count": {"const": 9},
+        "boundary_case_count": {"const": 9},
+        "open_domain_negative_case_count": {"const": 9},
+        "total_case_count": {"const": 27}
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["exact_profile_set", "every_profile_has_positive", "every_profile_has_boundary", "every_profile_has_open_domain_negative", "open_domain_is_fail_closed", "candidate_only"],
+      "properties": {
+        "exact_profile_set": {"const": true},
+        "every_profile_has_positive": {"const": true},
+        "every_profile_has_boundary": {"const": true},
+        "every_profile_has_open_domain_negative": {"const": true},
+        "open_domain_is_fail_closed": {"const": true},
+        "candidate_only": {"const": true}
+      }
+    },
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "canonical_write_authorized": {"const": false},
+    "authority": {"$ref": "#/$defs/authority"},
+    "contract_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

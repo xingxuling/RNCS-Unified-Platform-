@@ -155,22 +155,27 @@
         "packages/kernel/rncs-core-contract/src/representation-portfolio.mjs",
         "packages/world/reality-representation-fabric/src/index.mjs",
         "packages/world/reality-representation-fabric/src/portfolio-runtime.mjs",
-        "packages/world/reality-asset-genesis-fabric/src/vfx-reference-provider.mjs"
+        "packages/world/reality-asset-genesis-fabric/src/vfx-reference-provider.mjs",
+        "packages/world/large-world-runtime/src/universal-art-asset-golden-set.mjs"
       ],
       "schema_refs": [
         "packages/kernel/rncs-core-contract/schemas/representation-reference.v0.1.schema.json",
         "packages/kernel/rncs-core-contract/schemas/representation-portfolio.v0.3.schema.json",
         "packages/kernel/rncs-core-contract/schemas/representation-slot.v0.3.schema.json",
-        "packages/world/reality-asset-genesis-fabric/schemas/vfx-asset-contract.v0.1.schema.json"
+        "packages/world/reality-asset-genesis-fabric/schemas/vfx-asset-contract.v0.1.schema.json",
+        "packages/world/large-world-runtime/schemas/universal-art-asset-golden-set.v0.1.schema.json",
+        "packages/world/large-world-runtime/schemas/universal-art-asset-golden-set-evidence.v0.1.schema.json"
       ],
       "test_refs": [
         "packages/kernel/rncs-core-contract/tests/representation-portfolio.mjs",
         "packages/world/reality-representation-fabric/tests/portfolio-runtime.test.mjs",
         "packages/world/reality-representation-fabric/tests/runtime.test.mjs",
-        "packages/world/reality-asset-genesis-fabric/tests/vfx-reference-provider.test.mjs"
+        "packages/world/reality-asset-genesis-fabric/tests/vfx-reference-provider.test.mjs",
+        "packages/world/large-world-runtime/tests/universal-art-asset-golden-set.test.mjs"
       ],
       "evidence_refs": [
-        "docs/verification/URRF_V03_VISUAL_PORTFOLIO_PHASE6_EVIDENCE.md"
+        "docs/verification/URRF_V03_VISUAL_PORTFOLIO_PHASE6_EVIDENCE.md",
+        "docs/verification/URRF_UNIVERSAL_ART_ASSET_FORGE/universal-art-asset-golden-set-evidence.json"
       ],
       "k400_gates": [
         "EXPRESS",
@@ -796,19 +801,23 @@
         "packages/kernel/rncs-core-contract/src/reality-chunk.mjs",
         "packages/world/large-world-runtime/src/multi-process-replication.mjs",
         "packages/world/reality-asset-genesis-fabric/src/asset-evidence-ledger.mjs",
-        "packages/world/reality-asset-genesis-fabric/src/trellis2-local-provider.mjs"
+        "packages/world/reality-asset-genesis-fabric/src/trellis2-local-provider.mjs",
+        "packages/world/large-world-runtime/src/universal-art-asset-golden-set.mjs"
       ],
       "schema_refs": [
         "packages/kernel/rncs-core-contract/schemas/evidence-graph.v0.1.schema.json",
         "packages/kernel/rncs-core-contract/schemas/reality-replication-envelope.v0.3.schema.json",
         "packages/world/large-world-runtime/schemas/multi-process-replication-evidence.v0.1.schema.json",
-        "packages/world/reality-asset-genesis-fabric/schemas/asset-evidence-ledger.v0.1.schema.json"
+        "packages/world/reality-asset-genesis-fabric/schemas/asset-evidence-ledger.v0.1.schema.json",
+        "packages/world/large-world-runtime/schemas/universal-art-asset-golden-set.v0.1.schema.json",
+        "packages/world/large-world-runtime/schemas/universal-art-asset-golden-set-evidence.v0.1.schema.json"
       ],
       "test_refs": [
         "packages/kernel/rncs-core-contract/tests/reality-distribution.mjs",
         "packages/world/large-world-runtime/tests/reality-fault-recovery.test.mjs",
         "packages/world/large-world-runtime/tests/multi-process-replication.test.mjs",
-        "packages/world/reality-asset-genesis-fabric/tests/external-asset-providers.test.mjs"
+        "packages/world/reality-asset-genesis-fabric/tests/external-asset-providers.test.mjs",
+        "packages/world/large-world-runtime/tests/universal-art-asset-golden-set.test.mjs"
       ],
       "evidence_refs": [
         "docs/verification/URRF_V03_CONSISTENCY_LEASE_PHASE3_EVIDENCE.md",
@@ -1055,19 +1064,24 @@
         "packages/kernel/rncs-core-contract/src/reality-transport.mjs",
         "packages/world/large-world-runtime/src/multi-process-replication.mjs",
         "packages/world/reality-asset-genesis-fabric/src/external-asset-providers.mjs",
-        "packages/world/reality-asset-genesis-fabric/src/trellis2-local-provider.mjs"
+        "packages/world/reality-asset-genesis-fabric/src/trellis2-local-provider.mjs",
+        "packages/world/large-world-runtime/src/universal-art-asset-golden-set.mjs"
       ],
       "schema_refs": [
-        "packages/kernel/rncs-core-contract/schemas/reality-transport-profile.v0.3.schema.json"
+        "packages/kernel/rncs-core-contract/schemas/reality-transport-profile.v0.3.schema.json",
+        "packages/world/large-world-runtime/schemas/universal-art-asset-golden-set.v0.1.schema.json",
+        "packages/world/large-world-runtime/schemas/universal-art-asset-golden-set-evidence.v0.1.schema.json"
       ],
       "test_refs": [
         "packages/kernel/rncs-core-contract/tests/urrf-v03-coverage-matrix.test.mjs",
         "packages/world/large-world-runtime/tests/multi-process-replication.test.mjs",
-        "packages/world/reality-asset-genesis-fabric/tests/external-asset-providers.test.mjs"
+        "packages/world/reality-asset-genesis-fabric/tests/external-asset-providers.test.mjs",
+        "packages/world/large-world-runtime/tests/universal-art-asset-golden-set.test.mjs"
       ],
       "evidence_refs": [
         "docs/verification/URRF_UNIVERSAL_ART_ASSET_FORGE/RCL_GAP_STRESS_EVIDENCE.md",
-        "docs/verification/URRF_V03_TRANSPORT_PHASE4_EVIDENCE.md"
+        "docs/verification/URRF_V03_TRANSPORT_PHASE4_EVIDENCE.md",
+        "docs/verification/URRF_UNIVERSAL_ART_ASSET_FORGE/universal-art-asset-golden-set-evidence.json"
       ],
       "k400_gates": [
         "EXPRESS",
@@ -1104,6 +1118,7 @@
         "packages/world/reality-asset-genesis-fabric/src/production-court.mjs",
         "packages/world/reality-asset-genesis-fabric/src/asset-evidence-ledger.mjs",
         "packages/world/large-world-runtime/src/universal-art-asset-forge.mjs",
+        "packages/world/large-world-runtime/src/universal-art-asset-golden-set.mjs",
         "packages/world/large-world-runtime/src/multi-process-replication.mjs"
       ],
       "schema_refs": [
@@ -1111,18 +1126,22 @@
         "packages/world/reality-asset-genesis-fabric/schemas/asset-provider-result.v0.1.schema.json",
         "packages/world/reality-asset-genesis-fabric/schemas/vfx-asset-contract.v0.1.schema.json",
         "packages/world/reality-asset-genesis-fabric/schemas/asset-production-court.v0.1.schema.json",
-        "packages/world/large-world-runtime/schemas/multi-process-replication-evidence.v0.1.schema.json"
+        "packages/world/large-world-runtime/schemas/multi-process-replication-evidence.v0.1.schema.json",
+        "packages/world/large-world-runtime/schemas/universal-art-asset-golden-set.v0.1.schema.json",
+        "packages/world/large-world-runtime/schemas/universal-art-asset-golden-set-evidence.v0.1.schema.json"
       ],
       "test_refs": [
         "packages/world/reality-asset-genesis-fabric/tests/external-asset-providers.test.mjs",
         "packages/world/reality-asset-genesis-fabric/tests/vfx-reference-provider.test.mjs",
         "packages/world/reality-asset-genesis-fabric/tests/runtime.test.mjs",
         "packages/world/large-world-runtime/tests/universal-art-asset-forge.test.mjs",
+        "packages/world/large-world-runtime/tests/universal-art-asset-golden-set.test.mjs",
         "packages/world/large-world-runtime/tests/multi-process-replication.test.mjs"
       ],
       "evidence_refs": [
         "docs/verification/URRF_UNIVERSAL_ART_ASSET_FORGE/RCL_GAP_STRESS_EVIDENCE.md",
-        "docs/verification/URRF_V03_POWER_GOVERNOR_PHASE5_EVIDENCE.md"
+        "docs/verification/URRF_V03_POWER_GOVERNOR_PHASE5_EVIDENCE.md",
+        "docs/verification/URRF_UNIVERSAL_ART_ASSET_FORGE/universal-art-asset-golden-set-evidence.json"
       ],
       "k400_gates": [
         "EXPRESS",
@@ -1309,5 +1328,5 @@
     "aaa_release_status": "BLOCKED_EXTERNAL_ART_HUMAN_HARDWARE_EVIDENCE",
     "ai_generate_status": "BLOCKED_NOT_RUN"
   },
-  "coverage_root": "cb2c31f2c464ad12ff15f554361b9c90514055ef5dbdc5ff1dfc734db6903bbe"
+  "coverage_root": "6361a8163db6831f326b92ed3b3349303522467b01b8c8773b38aba8c7512487"
 }

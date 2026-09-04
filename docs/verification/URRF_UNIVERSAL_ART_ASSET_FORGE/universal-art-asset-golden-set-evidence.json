@@ -1,0 +1,1257 @@
+{
+  "format": "urrf.universal-art-asset-golden-set-evidence.v0.1",
+  "version": "0.1.0",
+  "golden_set_id": "urrf-golden-set-integration-v01",
+  "source": "urrf-golden-set-runner",
+  "contract_root": "bbeafdb7e630f590ddcf75b9f1787a669721f88d3d372074e88a0687f2ddccea",
+  "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX",
+  "profiles": [
+    "character",
+    "creature",
+    "prop",
+    "vehicle",
+    "structure",
+    "environment",
+    "vegetation",
+    "resource",
+    "vfx"
+  ],
+  "positive": [
+    {
+      "case_id": "golden-positive-character-v01",
+      "case_kind": "POSITIVE",
+      "asset_profile": "character",
+      "asset_kind": "character-3d",
+      "input_root": "db47a264e67eaf915f97ff0a8485cfd17207c2bfe7dbbe3481c0efef253495ef",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\golden-positive-character-v01",
+      "underlying_asset_status": "BLOCKED",
+      "execution_status": "COMPLETED",
+      "roots": {
+        "genome_root": "d80b0cb15a78420c075f8f4ccdd50f469370f5007607f114becd59a601191763",
+        "resolution_root": "6382832c0b21c4cf1959c4730b13c458380a665479740d4cb851047d93836fdd",
+        "candidate_root": "1e988292366ce6a9ef363597538f8ee631dcbb77b6284b9a5261383fcce675df",
+        "forge_root": "d2856d073aed58244855cf4150cbd559d6712761af99ff9bf980ed674d10650c"
+      },
+      "structural_checks": {
+        "file_inspection": true,
+        "mesh_glb": true,
+        "lod_structure": true,
+        "collision": true,
+        "rig_structure": true,
+        "animation_structure": true
+      },
+      "checks": {
+        "profile_binding": true,
+        "execution_completed": true,
+        "provider_route": true,
+        "candidate_present": true,
+        "required_structural_gates": true,
+        "structural_artifacts": true,
+        "forge_integrity": true,
+        "authority_boundary": true
+      },
+      "pass": true,
+      "candidate_only": true,
+      "authoritative": false,
+      "canonical_write_authorized": false,
+      "root_fingerprint": "0dca8d95c755dd5846e475c7aa0e8519a456ac54d55f9c8a377ac3760babb9f7"
+    },
+    {
+      "case_id": "golden-positive-creature-v01",
+      "case_kind": "POSITIVE",
+      "asset_profile": "creature",
+      "asset_kind": "creature-3d",
+      "input_root": "a621b7313cf4241a726b1b4da1043eb945cb0554e84c5eb2637818f57ea1b00e",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\golden-positive-creature-v01",
+      "underlying_asset_status": "BLOCKED",
+      "execution_status": "COMPLETED",
+      "roots": {
+        "genome_root": "c03ae01cbc0224525684fbf8761ce3bc35d0af17ff148ce5897405010357dc29",
+        "resolution_root": "0a3076aac297b638398db93e1194f3bb79db7bce45c3d79b957d7eb21ac4b988",
+        "candidate_root": "fc89a4736b53934e2fa52e04a525ce7795febea11a8f2c390c169f46b5c476be",
+        "forge_root": "49a4cf53cffe47e60394ea8be29c00d9815509765375e144f3c87e0c5ef7b2e9"
+      },
+      "structural_checks": {
+        "file_inspection": true,
+        "mesh_glb": true,
+        "lod_structure": true,
+        "collision": true,
+        "rig_structure": true,
+        "animation_structure": true
+      },
+      "checks": {
+        "profile_binding": true,
+        "execution_completed": true,
+        "provider_route": true,
+        "candidate_present": true,
+        "required_structural_gates": true,
+        "structural_artifacts": true,
+        "forge_integrity": true,
+        "authority_boundary": true
+      },
+      "pass": true,
+      "candidate_only": true,
+      "authoritative": false,
+      "canonical_write_authorized": false,
+      "root_fingerprint": "10faac968522f72cdbc3ad4fc6794e21235d64bc93faa6b83fe59b27e56c5b55"
+    },
+    {
+      "case_id": "golden-positive-prop-v01",
+      "case_kind": "POSITIVE",
+      "asset_profile": "prop",
+      "asset_kind": "prop-3d",
+      "input_root": "f53c6a05e2df54803d75ea1f7a399cad102ac7b78b2acaece871dbf656904bf2",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\golden-positive-prop-v01",
+      "underlying_asset_status": "BLOCKED",
+      "execution_status": "COMPLETED",
+      "roots": {
+        "genome_root": "aadb00989ac530a35543df7b25d090578fe3defab3015ee9079c484704bdd4aa",
+        "resolution_root": "f03186355c581a122ae27e40d12e628674f1baf9f52149e2d26e9e29f8cf83e2",
+        "candidate_root": "91a5c9440bdf3dbbcb7886d9f55a3c9de777429ed2b4f15836ca6fdc85837810",
+        "forge_root": "007553750989c03ec2a282d628ed16f81985214a18312eb49b32ef8c1a578bf4"
+      },
+      "structural_checks": {
+        "file_inspection": true,
+        "mesh_glb": true,
+        "lod_structure": true,
+        "collision": true,
+        "rig_structure": true,
+        "animation_structure": true
+      },
+      "checks": {
+        "profile_binding": true,
+        "execution_completed": true,
+        "provider_route": true,
+        "candidate_present": true,
+        "required_structural_gates": true,
+        "structural_artifacts": true,
+        "forge_integrity": true,
+        "authority_boundary": true
+      },
+      "pass": true,
+      "candidate_only": true,
+      "authoritative": false,
+      "canonical_write_authorized": false,
+      "root_fingerprint": "fb68e9f0b7f4ded6404641936c4d7017e27f557f70ef9a9fa93ca5a534650800"
+    },
+    {
+      "case_id": "golden-positive-vehicle-v01",
+      "case_kind": "POSITIVE",
+      "asset_profile": "vehicle",
+      "asset_kind": "vehicle-3d",
+      "input_root": "510b32177d597f0916013feb218d19bf9747565a35c74cc3286abb820bc40a9a",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\golden-positive-vehicle-v01",
+      "underlying_asset_status": "BLOCKED",
+      "execution_status": "COMPLETED",
+      "roots": {
+        "genome_root": "4b928af5b78a7899b8e115d233f0888fbf017b865f3311cd48a52def7975f25e",
+        "resolution_root": "114072caf0dc5c3d6d0ee78cdbd303f3dc5726306505afe2843d3f76f9d6a353",
+        "candidate_root": "9d4682e527f4466b545245a65b69c54d0a01f4d311c5ddb36cd774975cc0bc55",
+        "forge_root": "9f3d8ae8f5f96e25ee03fdf4145f995bef131c229737a7b3888536253f961761"
+      },
+      "structural_checks": {
+        "file_inspection": true,
+        "mesh_glb": true,
+        "lod_structure": true,
+        "collision": true,
+        "rig_structure": true,
+        "animation_structure": true
+      },
+      "checks": {
+        "profile_binding": true,
+        "execution_completed": true,
+        "provider_route": true,
+        "candidate_present": true,
+        "required_structural_gates": true,
+        "structural_artifacts": true,
+        "forge_integrity": true,
+        "authority_boundary": true
+      },
+      "pass": true,
+      "candidate_only": true,
+      "authoritative": false,
+      "canonical_write_authorized": false,
+      "root_fingerprint": "857566fb18c73f8d2d69617a983d45e77023c511a308d2f50535f1984306d6c0"
+    },
+    {
+      "case_id": "golden-positive-structure-v01",
+      "case_kind": "POSITIVE",
+      "asset_profile": "structure",
+      "asset_kind": "structure-3d",
+      "input_root": "925e043755bc767c9391db17b6e4def7c82c35a58dbe8170b9003e7a6efa5d24",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\golden-positive-structure-v01",
+      "underlying_asset_status": "BLOCKED",
+      "execution_status": "COMPLETED",
+      "roots": {
+        "genome_root": "681e2cc08995f5d104a42758774659f97de16bbe37bcc9753a70a94fb199982a",
+        "resolution_root": "d9c48b6613384b090de0920048ae5a786faa711af3fd32c44373309329f560e0",
+        "candidate_root": "92ed5763fcb02108d09cf82b178b91474e189ec0b2f386723bf109c35245f5ac",
+        "forge_root": "944dc644e96d8f319081c2e49bb2f3f944981a74fc0e36834905a23880ef230f"
+      },
+      "structural_checks": {
+        "file_inspection": true,
+        "mesh_glb": true,
+        "lod_structure": true,
+        "collision": true,
+        "rig_structure": true,
+        "animation_structure": true
+      },
+      "checks": {
+        "profile_binding": true,
+        "execution_completed": true,
+        "provider_route": true,
+        "candidate_present": true,
+        "required_structural_gates": true,
+        "structural_artifacts": true,
+        "forge_integrity": true,
+        "authority_boundary": true
+      },
+      "pass": true,
+      "candidate_only": true,
+      "authoritative": false,
+      "canonical_write_authorized": false,
+      "root_fingerprint": "9f3fed7167b145fa0af9b61729b011143e85c32448ecb72298d42e76e2512324"
+    },
+    {
+      "case_id": "golden-positive-environment-v01",
+      "case_kind": "POSITIVE",
+      "asset_profile": "environment",
+      "asset_kind": "environment-3d",
+      "input_root": "dcb5d32cb3adfeea3699a32851258aac529d217e39733db3db8d3ba35b4f1ead",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\golden-positive-environment-v01",
+      "underlying_asset_status": "BLOCKED",
+      "execution_status": "COMPLETED",
+      "roots": {
+        "genome_root": "2ee7d0df830cc2bbe6320c109645ee32f5eb58c2ee197dbadbae121a38c0d5b7",
+        "resolution_root": "0c96cff86e57c5bfcfd61a9df9d3b96130b14fb0b9a557ba84e30efab1b1098b",
+        "candidate_root": "314ba1412d32e4b4a374a06fa227b6f3fb45facbd16c91652088f3f3ea14e128",
+        "forge_root": "8a3a82871e199272fc996f227eb8ee350e0353d2afbf5bec8bf71da41f7101a5"
+      },
+      "structural_checks": {
+        "file_inspection": true,
+        "mesh_glb": true,
+        "lod_structure": true,
+        "collision": true,
+        "rig_structure": true,
+        "animation_structure": true
+      },
+      "checks": {
+        "profile_binding": true,
+        "execution_completed": true,
+        "provider_route": true,
+        "candidate_present": true,
+        "required_structural_gates": true,
+        "structural_artifacts": true,
+        "forge_integrity": true,
+        "authority_boundary": true
+      },
+      "pass": true,
+      "candidate_only": true,
+      "authoritative": false,
+      "canonical_write_authorized": false,
+      "root_fingerprint": "a6789071c859a71c3601da75523df57efdcca97e5b5fa9c1f28896ab10149b26"
+    },
+    {
+      "case_id": "golden-positive-vegetation-v01",
+      "case_kind": "POSITIVE",
+      "asset_profile": "vegetation",
+      "asset_kind": "vegetation-3d",
+      "input_root": "0fd7c1076936d4a12a5ff3a6cfb68eecc22c0076ddf42a7a8187c34504afbd28",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\golden-positive-vegetation-v01",
+      "underlying_asset_status": "BLOCKED",
+      "execution_status": "COMPLETED",
+      "roots": {
+        "genome_root": "3c605b80fcc919c4b753d3216a3a25b8dff8e25d24ee7ef85d1284e61ae0dba8",
+        "resolution_root": "35f9508c791055d604bed1d237347ecbe9547ee6b4a6694aa658a02217c691bb",
+        "candidate_root": "4c10f1b88c2487cee3cb07ae4d70c33bf800ed09ab631fc26702885466bcd906",
+        "forge_root": "cfdb650ccd40cd5d494c3b492ca9dd22e9b5772965ab547d2833449ac15fb0b9"
+      },
+      "structural_checks": {
+        "file_inspection": true,
+        "mesh_glb": true,
+        "lod_structure": true,
+        "collision": true,
+        "rig_structure": true,
+        "animation_structure": true
+      },
+      "checks": {
+        "profile_binding": true,
+        "execution_completed": true,
+        "provider_route": true,
+        "candidate_present": true,
+        "required_structural_gates": true,
+        "structural_artifacts": true,
+        "forge_integrity": true,
+        "authority_boundary": true
+      },
+      "pass": true,
+      "candidate_only": true,
+      "authoritative": false,
+      "canonical_write_authorized": false,
+      "root_fingerprint": "7cd89b7a2b6d4e4cb454170c158484395c1176ee2f98a78e30b8e080eb8d39fe"
+    },
+    {
+      "case_id": "golden-positive-resource-v01",
+      "case_kind": "POSITIVE",
+      "asset_profile": "resource",
+      "asset_kind": "resource-3d",
+      "input_root": "398511aac1829b66a623eca860cd695d793ce9958067d8a1d729d47723dc4039",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\golden-positive-resource-v01",
+      "underlying_asset_status": "BLOCKED",
+      "execution_status": "COMPLETED",
+      "roots": {
+        "genome_root": "2579bc298f85b27fc2ea0c4a9ebed9e64f2bba4e417e66a0a64cc2e1c210dc05",
+        "resolution_root": "0490e8810b9912162b3791f74985be9b4e64b954c0e346e3433f5b44009e932e",
+        "candidate_root": "a126dc4572ffa83acf0773651afe88d77915d92185ecdd1943da3b99ff440938",
+        "forge_root": "0781a556f9255dc595c0a4702937b07ad33b90dc0c5bc406d1770311d8c6c0d3"
+      },
+      "structural_checks": {
+        "file_inspection": true,
+        "mesh_glb": true,
+        "lod_structure": true,
+        "collision": true,
+        "rig_structure": true,
+        "animation_structure": true
+      },
+      "checks": {
+        "profile_binding": true,
+        "execution_completed": true,
+        "provider_route": true,
+        "candidate_present": true,
+        "required_structural_gates": true,
+        "structural_artifacts": true,
+        "forge_integrity": true,
+        "authority_boundary": true
+      },
+      "pass": true,
+      "candidate_only": true,
+      "authoritative": false,
+      "canonical_write_authorized": false,
+      "root_fingerprint": "1aeda2860e54523157c9efd83f25ff34c4d99ef8a576f0f9494c65e278de9bf3"
+    },
+    {
+      "case_id": "golden-positive-vfx-v01",
+      "case_kind": "POSITIVE",
+      "asset_profile": "vfx",
+      "asset_kind": "vfx-3d",
+      "input_root": "fcd2f1113698ae87bcbcb017414532a28f381fcfdceec1ec4a47ebb943925513",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\golden-positive-vfx-v01",
+      "underlying_asset_status": "BLOCKED",
+      "execution_status": "COMPLETED",
+      "roots": {
+        "genome_root": "a8ef715e0011092ad1461ca53f2b1aab57211471097436fb541ede5faf33fc56",
+        "resolution_root": "640886b281a30300477dbbb04d090f73e62bbc1991ee306904cca430308ed310",
+        "candidate_root": "069ff47d2a12e91d685a15ba243c17ceb9a634d09e5b85dfcbe2c8af2a65f799",
+        "forge_root": "796d0c57ac778a12332053b65c6cdf1245431ba121d863e7f1c67e387501a352"
+      },
+      "structural_checks": {
+        "effect_graph": true,
+        "representation_kinds": true,
+        "representation_evidence": true,
+        "particle": true,
+        "volume": true,
+        "flipbook": true,
+        "curve": true
+      },
+      "checks": {
+        "profile_binding": true,
+        "execution_completed": true,
+        "provider_route": true,
+        "candidate_present": true,
+        "required_structural_gates": true,
+        "structural_artifacts": true,
+        "forge_integrity": true,
+        "authority_boundary": true
+      },
+      "pass": true,
+      "candidate_only": true,
+      "authoritative": false,
+      "canonical_write_authorized": false,
+      "root_fingerprint": "b0b8190c975e4175e6cfc5725028dccbfd0832f6c4031976affb15715df3f7e0"
+    }
+  ],
+  "boundary": [
+    {
+      "case_id": "golden-boundary-character-v01",
+      "case_kind": "BOUNDARY",
+      "asset_profile": "character",
+      "asset_kind": "character-3d",
+      "input_root": "85ec6dfcc5a3508df0ddaf5c1348d3b13ebe870aeac4219dd4fb9ee2c508af49",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\golden-boundary-character-v01",
+      "underlying_asset_status": "BLOCKED",
+      "execution_status": "COMPLETED",
+      "roots": {
+        "genome_root": "cba5b8ba75f972ce3bdcfa65e953b2c6a52bd40a01c0affcfc625a07d6ca6f41",
+        "resolution_root": "f2fc5d87d20bfc6541e91325385cdc2acc0c3f6a9267ab6eade70038166340b6",
+        "candidate_root": "86f307aa3ca519732096f56d31dc0ee61eef41e839f7e56c842b163b60330a62",
+        "forge_root": "0b1c7c4c58d70832e41372fe74973885d4725789935bedfebbfaa85ff84c118e"
+      },
+      "structural_checks": {
+        "file_inspection": true,
+        "mesh_glb": true,
+        "lod_structure": true,
+        "collision": true,
+        "rig_structure": true,
+        "animation_structure": true
+      },
+      "checks": {
+        "profile_binding": true,
+        "execution_completed": true,
+        "provider_route": true,
+        "candidate_present": true,
+        "required_structural_gates": true,
+        "structural_artifacts": true,
+        "forge_integrity": true,
+        "authority_boundary": true
+      },
+      "pass": true,
+      "candidate_only": true,
+      "authoritative": false,
+      "canonical_write_authorized": false,
+      "root_fingerprint": "cf55faed8de9ab4afb81bb71216defa4f1b66955675143c7dab6df00b2dfbb92"
+    },
+    {
+      "case_id": "golden-boundary-creature-v01",
+      "case_kind": "BOUNDARY",
+      "asset_profile": "creature",
+      "asset_kind": "creature-3d",
+      "input_root": "f2d63e118eee754a1f7bdcd5e98fbcd34cc04c8eb0f79917221457d2271b48a9",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\golden-boundary-creature-v01",
+      "underlying_asset_status": "BLOCKED",
+      "execution_status": "COMPLETED",
+      "roots": {
+        "genome_root": "09a423ba1e8111819468a13870ce47403503a99428b53ec6d1e95ad19cfe16ef",
+        "resolution_root": "3fc2435255cf5619eb4150066dce8f1c068966bc6c06da87badbb09f9002042a",
+        "candidate_root": "6d7138839b1690680864ded7ed04c4d97417b4f1699a81ea0f784a73d83895c7",
+        "forge_root": "4af5e8a8f15b9906b9b3469e397956b41a177b4f5a03e5ba334950ad8839dcb5"
+      },
+      "structural_checks": {
+        "file_inspection": true,
+        "mesh_glb": true,
+        "lod_structure": true,
+        "collision": true,
+        "rig_structure": true,
+        "animation_structure": true
+      },
+      "checks": {
+        "profile_binding": true,
+        "execution_completed": true,
+        "provider_route": true,
+        "candidate_present": true,
+        "required_structural_gates": true,
+        "structural_artifacts": true,
+        "forge_integrity": true,
+        "authority_boundary": true
+      },
+      "pass": true,
+      "candidate_only": true,
+      "authoritative": false,
+      "canonical_write_authorized": false,
+      "root_fingerprint": "1130b1f56cb0ab35dab6a0a6e601eb2eca6c110d7ac140b38a35eb86572958c0"
+    },
+    {
+      "case_id": "golden-boundary-prop-v01",
+      "case_kind": "BOUNDARY",
+      "asset_profile": "prop",
+      "asset_kind": "prop-3d",
+      "input_root": "06b34a9d1cd1e83c2bff1eaa254d6c64fbc51d1f22024273779f2c43dd47b3a8",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\golden-boundary-prop-v01",
+      "underlying_asset_status": "BLOCKED",
+      "execution_status": "COMPLETED",
+      "roots": {
+        "genome_root": "f64dcff470cad9988ea7c1562c186040c1b975adf039de2b65d9562b25ba3347",
+        "resolution_root": "588ff920292eea317528a7b0e5c8bb98db58f526c1799a35c3a72f7b3b515446",
+        "candidate_root": "c708c10a7e2f61e393366da26e7d6714ea8f30549aa8cdd0a601c349a81e3ee0",
+        "forge_root": "4337ed46cf294f935a842932bb5261af44797bdaa281cfa525169fc4f4cd2762"
+      },
+      "structural_checks": {
+        "file_inspection": true,
+        "mesh_glb": true,
+        "lod_structure": true,
+        "collision": true,
+        "rig_structure": true,
+        "animation_structure": true
+      },
+      "checks": {
+        "profile_binding": true,
+        "execution_completed": true,
+        "provider_route": true,
+        "candidate_present": true,
+        "required_structural_gates": true,
+        "structural_artifacts": true,
+        "forge_integrity": true,
+        "authority_boundary": true
+      },
+      "pass": true,
+      "candidate_only": true,
+      "authoritative": false,
+      "canonical_write_authorized": false,
+      "root_fingerprint": "df73841a8a2ce0962a94f7088bd136006226f0dde6c1aba3dc07c3bd9af72093"
+    },
+    {
+      "case_id": "golden-boundary-vehicle-v01",
+      "case_kind": "BOUNDARY",
+      "asset_profile": "vehicle",
+      "asset_kind": "vehicle-3d",
+      "input_root": "d1e606c127a52edae587df26f611c3686b38fa8e5ab874c2484c4726a6bb8e60",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\golden-boundary-vehicle-v01",
+      "underlying_asset_status": "BLOCKED",
+      "execution_status": "COMPLETED",
+      "roots": {
+        "genome_root": "415ba6db44def73f2225ccb6ba3a95063d13d2aeaa574d561b472bd196f670bb",
+        "resolution_root": "76cb6b21cf3328be75d6f42a508610905965776f895b5ca8b331710e45bd4330",
+        "candidate_root": "229bc79d6ee8c835318caeb24ab9e431985b8c72648def7d903dc213d3565776",
+        "forge_root": "ec318de988f40dde7aa74ba52d5a028771e6b4d8ee747b33f739252a873dd539"
+      },
+      "structural_checks": {
+        "file_inspection": true,
+        "mesh_glb": true,
+        "lod_structure": true,
+        "collision": true,
+        "rig_structure": true,
+        "animation_structure": true
+      },
+      "checks": {
+        "profile_binding": true,
+        "execution_completed": true,
+        "provider_route": true,
+        "candidate_present": true,
+        "required_structural_gates": true,
+        "structural_artifacts": true,
+        "forge_integrity": true,
+        "authority_boundary": true
+      },
+      "pass": true,
+      "candidate_only": true,
+      "authoritative": false,
+      "canonical_write_authorized": false,
+      "root_fingerprint": "ab8fe72dd20cd8ec17a81fd814967edea9bedd7838954a019fc6c4e1658f2342"
+    },
+    {
+      "case_id": "golden-boundary-structure-v01",
+      "case_kind": "BOUNDARY",
+      "asset_profile": "structure",
+      "asset_kind": "structure-3d",
+      "input_root": "7fe8a061b759d67463a80059a28a51ac953d66682cae195817a65d1a643ad12f",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\golden-boundary-structure-v01",
+      "underlying_asset_status": "BLOCKED",
+      "execution_status": "COMPLETED",
+      "roots": {
+        "genome_root": "f742db9005137b6dd8475aab151331fa16c5c661ba9307456bd16f80925a9563",
+        "resolution_root": "a46c2a8f6122d3a48ac42f93f4b0cb7aeaa3b9e208af56c5eb17c58c2c431dda",
+        "candidate_root": "93eb86c7451da22765f8fea2bfcee8f9d895aaaa1ed381d964d9a6225e1aa080",
+        "forge_root": "b71a93e4542ada8fd60875f97e60e02535c9ba62294077ad6bccb7bc2adb9bb2"
+      },
+      "structural_checks": {
+        "file_inspection": true,
+        "mesh_glb": true,
+        "lod_structure": true,
+        "collision": true,
+        "rig_structure": true,
+        "animation_structure": true
+      },
+      "checks": {
+        "profile_binding": true,
+        "execution_completed": true,
+        "provider_route": true,
+        "candidate_present": true,
+        "required_structural_gates": true,
+        "structural_artifacts": true,
+        "forge_integrity": true,
+        "authority_boundary": true
+      },
+      "pass": true,
+      "candidate_only": true,
+      "authoritative": false,
+      "canonical_write_authorized": false,
+      "root_fingerprint": "63daa6ad55673e3c02713de3b9c8d70a02806038aca1ad63748351e3db602656"
+    },
+    {
+      "case_id": "golden-boundary-environment-v01",
+      "case_kind": "BOUNDARY",
+      "asset_profile": "environment",
+      "asset_kind": "environment-3d",
+      "input_root": "31128b14b8471a3d3da60c3a3d2fd2ecc27f7ad7b63e2b1b409508276225df8c",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\golden-boundary-environment-v01",
+      "underlying_asset_status": "BLOCKED",
+      "execution_status": "COMPLETED",
+      "roots": {
+        "genome_root": "8e2e0023793db54249f3ea0f28f603ec74ba08c491b2d8966f387e1d04976c28",
+        "resolution_root": "6acd7418427ebf1239be1df05aecb0cd86fa76239b3becbdd7a25d94e7748e22",
+        "candidate_root": "6b7d00c808e2be9b86df685055028227e2739073c16baafb27249a563bd8d1b6",
+        "forge_root": "81fac80f377d70618246f6373df9ee579e96da43b296895b400a2d7c0e3f6c20"
+      },
+      "structural_checks": {
+        "file_inspection": true,
+        "mesh_glb": true,
+        "lod_structure": true,
+        "collision": true,
+        "rig_structure": true,
+        "animation_structure": true
+      },
+      "checks": {
+        "profile_binding": true,
+        "execution_completed": true,
+        "provider_route": true,
+        "candidate_present": true,
+        "required_structural_gates": true,
+        "structural_artifacts": true,
+        "forge_integrity": true,
+        "authority_boundary": true
+      },
+      "pass": true,
+      "candidate_only": true,
+      "authoritative": false,
+      "canonical_write_authorized": false,
+      "root_fingerprint": "34042a67e3053b20d3ae029d7ed9d346f3756a1b29519d0f0cc7425a36c7b941"
+    },
+    {
+      "case_id": "golden-boundary-vegetation-v01",
+      "case_kind": "BOUNDARY",
+      "asset_profile": "vegetation",
+      "asset_kind": "vegetation-3d",
+      "input_root": "9e513254402c2f0656679bb4c605d176643f96d73a9e798a95ce267faea4b263",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\golden-boundary-vegetation-v01",
+      "underlying_asset_status": "BLOCKED",
+      "execution_status": "COMPLETED",
+      "roots": {
+        "genome_root": "78774a0f76e19b39af8ae4629d605e300d36aaed18bbfd039799340821ff86fd",
+        "resolution_root": "dd6a5bc622fbdebdb64721c4fa1b96c62ecafaad83647450a4ab3264427b73bb",
+        "candidate_root": "b01d7f839529c7a334c03c7d64c58d203a3e42464e5e2b182527313422ab8f7f",
+        "forge_root": "a30a882734f94d3cab95e25c64bee90c7d06c7df225a8ac36bbbe5207d105ece"
+      },
+      "structural_checks": {
+        "file_inspection": true,
+        "mesh_glb": true,
+        "lod_structure": true,
+        "collision": true,
+        "rig_structure": true,
+        "animation_structure": true
+      },
+      "checks": {
+        "profile_binding": true,
+        "execution_completed": true,
+        "provider_route": true,
+        "candidate_present": true,
+        "required_structural_gates": true,
+        "structural_artifacts": true,
+        "forge_integrity": true,
+        "authority_boundary": true
+      },
+      "pass": true,
+      "candidate_only": true,
+      "authoritative": false,
+      "canonical_write_authorized": false,
+      "root_fingerprint": "83d7f3fb6d3924728555d8ab09244386e0d82d1f2400454f7c4b9dac6d01b4f6"
+    },
+    {
+      "case_id": "golden-boundary-resource-v01",
+      "case_kind": "BOUNDARY",
+      "asset_profile": "resource",
+      "asset_kind": "resource-3d",
+      "input_root": "1979b20f9631671dca1a16a4b28b22b89f447f1a5c7a3e4053c70464a33ed826",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\golden-boundary-resource-v01",
+      "underlying_asset_status": "BLOCKED",
+      "execution_status": "COMPLETED",
+      "roots": {
+        "genome_root": "27ad622bd3d87f5ebe31123e1ce9ca621874f74039512f5b5823ab95157cdf39",
+        "resolution_root": "db04b656f7288fb95ade1c9caff68e2e9eda5217cba51820be7f361b50211f5d",
+        "candidate_root": "a4cb7af8c3eb8143af50947c04a170ba8b465cf676e58d4004d6bb327c18b362",
+        "forge_root": "f25df1dbc77764fe287e055a4958e0fbea502ead47a1e52bd51943a30a12d314"
+      },
+      "structural_checks": {
+        "file_inspection": true,
+        "mesh_glb": true,
+        "lod_structure": true,
+        "collision": true,
+        "rig_structure": true,
+        "animation_structure": true
+      },
+      "checks": {
+        "profile_binding": true,
+        "execution_completed": true,
+        "provider_route": true,
+        "candidate_present": true,
+        "required_structural_gates": true,
+        "structural_artifacts": true,
+        "forge_integrity": true,
+        "authority_boundary": true
+      },
+      "pass": true,
+      "candidate_only": true,
+      "authoritative": false,
+      "canonical_write_authorized": false,
+      "root_fingerprint": "f9e1fd3b5cd8273adf84f351ab032f4a802bb482bf47193b279cf6c9a024e800"
+    },
+    {
+      "case_id": "golden-boundary-vfx-v01",
+      "case_kind": "BOUNDARY",
+      "asset_profile": "vfx",
+      "asset_kind": "vfx-3d",
+      "input_root": "f31787690abf2e2124bd168f9f8324fade4057c8c050b200151c0a50b39b428d",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\golden-boundary-vfx-v01",
+      "underlying_asset_status": "BLOCKED",
+      "execution_status": "COMPLETED",
+      "roots": {
+        "genome_root": "e7a5b75c694a9354022e0a7c10fde708a0607a6611c795e492d04dbc43728f61",
+        "resolution_root": "e47671c163a19f4853e73975534aa436332fcf89bbe457caa921060d2497a1fe",
+        "candidate_root": "01f5a163a19849a3b558b419a6525010416bda6741cae058717727b721ccccb4",
+        "forge_root": "993e7071825916e27d429bf7e6506629e1e7468bac04e8dca3f3e80e496c23c5"
+      },
+      "structural_checks": {
+        "effect_graph": true,
+        "representation_kinds": true,
+        "representation_evidence": true,
+        "particle": true,
+        "volume": true,
+        "flipbook": true,
+        "curve": true
+      },
+      "checks": {
+        "profile_binding": true,
+        "execution_completed": true,
+        "provider_route": true,
+        "candidate_present": true,
+        "required_structural_gates": true,
+        "structural_artifacts": true,
+        "forge_integrity": true,
+        "authority_boundary": true
+      },
+      "pass": true,
+      "candidate_only": true,
+      "authoritative": false,
+      "canonical_write_authorized": false,
+      "root_fingerprint": "f7ca6ad0576a1cde7a926098512598082fa376dab4dd47274fbe30043a296f94"
+    }
+  ],
+  "open_domain_negative": [
+    {
+      "case_id": "golden-open-domain-negative-character-v01",
+      "case_kind": "OPEN_DOMAIN_NEGATIVE",
+      "asset_profile": "unregistered-character",
+      "asset_kind": "unregistered-character-3d",
+      "input_root": "db176315be7359b0747f273d4c8d343045ca932706926f472cbba96b6fae8ad0",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\golden-open-domain-negative-character-v01",
+      "status": "REJECTED",
+      "error_code": "UNIVERSAL_ART_ASSET_PROFILE_INVALID",
+      "error_message": "UNIVERSAL_ART_ASSET_PROFILE_INVALID: unregistered-character",
+      "roots": {
+        "genome_root": null,
+        "resolution_root": null,
+        "candidate_root": null,
+        "forge_root": null
+      },
+      "checks": {
+        "rejected": true,
+        "expected_error": true,
+        "no_candidate_root": true,
+        "no_canonical_write": true
+      },
+      "pass": true,
+      "candidate_only": true,
+      "authoritative": false,
+      "canonical_write_authorized": false,
+      "root_fingerprint": "7b53cfc77bf01d45559428b52018129a8dbc7bed171555a6de3da54fda45e15b"
+    },
+    {
+      "case_id": "golden-open-domain-negative-creature-v01",
+      "case_kind": "OPEN_DOMAIN_NEGATIVE",
+      "asset_profile": "unregistered-creature",
+      "asset_kind": "unregistered-creature-3d",
+      "input_root": "5c079ddc6a4db1b13548e5f872c97d0b1e068611b3d65f3c5081535b61197c97",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\golden-open-domain-negative-creature-v01",
+      "status": "REJECTED",
+      "error_code": "UNIVERSAL_ART_ASSET_PROFILE_INVALID",
+      "error_message": "UNIVERSAL_ART_ASSET_PROFILE_INVALID: unregistered-creature",
+      "roots": {
+        "genome_root": null,
+        "resolution_root": null,
+        "candidate_root": null,
+        "forge_root": null
+      },
+      "checks": {
+        "rejected": true,
+        "expected_error": true,
+        "no_candidate_root": true,
+        "no_canonical_write": true
+      },
+      "pass": true,
+      "candidate_only": true,
+      "authoritative": false,
+      "canonical_write_authorized": false,
+      "root_fingerprint": "30618a8f56419837a1a31f14ea1729a9ee763b08c5a5d7a17fd6f855c555f3f9"
+    },
+    {
+      "case_id": "golden-open-domain-negative-prop-v01",
+      "case_kind": "OPEN_DOMAIN_NEGATIVE",
+      "asset_profile": "unregistered-prop",
+      "asset_kind": "unregistered-prop-3d",
+      "input_root": "6b231269c2ae041eb65c41b1883f9325db1f023d2e9c66668c37e3e32d83f347",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\golden-open-domain-negative-prop-v01",
+      "status": "REJECTED",
+      "error_code": "UNIVERSAL_ART_ASSET_PROFILE_INVALID",
+      "error_message": "UNIVERSAL_ART_ASSET_PROFILE_INVALID: unregistered-prop",
+      "roots": {
+        "genome_root": null,
+        "resolution_root": null,
+        "candidate_root": null,
+        "forge_root": null
+      },
+      "checks": {
+        "rejected": true,
+        "expected_error": true,
+        "no_candidate_root": true,
+        "no_canonical_write": true
+      },
+      "pass": true,
+      "candidate_only": true,
+      "authoritative": false,
+      "canonical_write_authorized": false,
+      "root_fingerprint": "0ab84c18734e7dc9b83e5c4e0fa10cb32e95d217eb8106a48efc8eeaf308633d"
+    },
+    {
+      "case_id": "golden-open-domain-negative-vehicle-v01",
+      "case_kind": "OPEN_DOMAIN_NEGATIVE",
+      "asset_profile": "unregistered-vehicle",
+      "asset_kind": "unregistered-vehicle-3d",
+      "input_root": "c1a88373af854a166e834baa5f337e26e3d006ad7d67a43db98551f325a1006a",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\golden-open-domain-negative-vehicle-v01",
+      "status": "REJECTED",
+      "error_code": "UNIVERSAL_ART_ASSET_PROFILE_INVALID",
+      "error_message": "UNIVERSAL_ART_ASSET_PROFILE_INVALID: unregistered-vehicle",
+      "roots": {
+        "genome_root": null,
+        "resolution_root": null,
+        "candidate_root": null,
+        "forge_root": null
+      },
+      "checks": {
+        "rejected": true,
+        "expected_error": true,
+        "no_candidate_root": true,
+        "no_canonical_write": true
+      },
+      "pass": true,
+      "candidate_only": true,
+      "authoritative": false,
+      "canonical_write_authorized": false,
+      "root_fingerprint": "c45c131d7856dc8a12edb4167f619677f54f021e2ab09f061677f5c7dffb422d"
+    },
+    {
+      "case_id": "golden-open-domain-negative-structure-v01",
+      "case_kind": "OPEN_DOMAIN_NEGATIVE",
+      "asset_profile": "unregistered-structure",
+      "asset_kind": "unregistered-structure-3d",
+      "input_root": "ac09cfdabb9aa8a5aca4041055438c0a5d4b9cb2d8b876c92bec10586d124ab8",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\golden-open-domain-negative-structure-v01",
+      "status": "REJECTED",
+      "error_code": "UNIVERSAL_ART_ASSET_PROFILE_INVALID",
+      "error_message": "UNIVERSAL_ART_ASSET_PROFILE_INVALID: unregistered-structure",
+      "roots": {
+        "genome_root": null,
+        "resolution_root": null,
+        "candidate_root": null,
+        "forge_root": null
+      },
+      "checks": {
+        "rejected": true,
+        "expected_error": true,
+        "no_candidate_root": true,
+        "no_canonical_write": true
+      },
+      "pass": true,
+      "candidate_only": true,
+      "authoritative": false,
+      "canonical_write_authorized": false,
+      "root_fingerprint": "c9b419c20791382645289dae81eafe81fefdbf5d92ea937f7ae9c0884153db39"
+    },
+    {
+      "case_id": "golden-open-domain-negative-environment-v01",
+      "case_kind": "OPEN_DOMAIN_NEGATIVE",
+      "asset_profile": "unregistered-environment",
+      "asset_kind": "unregistered-environment-3d",
+      "input_root": "70097f0ded4f2bdc639128e4d9ab406ce1ea57c1ad4a2ad2948b35f153aa7fad",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\golden-open-domain-negative-environment-v01",
+      "status": "REJECTED",
+      "error_code": "UNIVERSAL_ART_ASSET_PROFILE_INVALID",
+      "error_message": "UNIVERSAL_ART_ASSET_PROFILE_INVALID: unregistered-environment",
+      "roots": {
+        "genome_root": null,
+        "resolution_root": null,
+        "candidate_root": null,
+        "forge_root": null
+      },
+      "checks": {
+        "rejected": true,
+        "expected_error": true,
+        "no_candidate_root": true,
+        "no_canonical_write": true
+      },
+      "pass": true,
+      "candidate_only": true,
+      "authoritative": false,
+      "canonical_write_authorized": false,
+      "root_fingerprint": "abc05e7faac470dd1a50bc6fe0bbeda4a5e4cb27d803bfef314128dbc107c272"
+    },
+    {
+      "case_id": "golden-open-domain-negative-vegetation-v01",
+      "case_kind": "OPEN_DOMAIN_NEGATIVE",
+      "asset_profile": "unregistered-vegetation",
+      "asset_kind": "unregistered-vegetation-3d",
+      "input_root": "0b009908e6d7d8982839df5286708950b5f7d0189ea82d52a05f0fa9d3aa02ae",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\golden-open-domain-negative-vegetation-v01",
+      "status": "REJECTED",
+      "error_code": "UNIVERSAL_ART_ASSET_PROFILE_INVALID",
+      "error_message": "UNIVERSAL_ART_ASSET_PROFILE_INVALID: unregistered-vegetation",
+      "roots": {
+        "genome_root": null,
+        "resolution_root": null,
+        "candidate_root": null,
+        "forge_root": null
+      },
+      "checks": {
+        "rejected": true,
+        "expected_error": true,
+        "no_candidate_root": true,
+        "no_canonical_write": true
+      },
+      "pass": true,
+      "candidate_only": true,
+      "authoritative": false,
+      "canonical_write_authorized": false,
+      "root_fingerprint": "d3f545f87d2b5db9c9d28f3166af46f75e3d3ed0fa70f62b6a7a564bf375cc94"
+    },
+    {
+      "case_id": "golden-open-domain-negative-resource-v01",
+      "case_kind": "OPEN_DOMAIN_NEGATIVE",
+      "asset_profile": "unregistered-resource",
+      "asset_kind": "unregistered-resource-3d",
+      "input_root": "856c3632ae76ae7be4262bc4a9a830019c2ca0020457c7d474095f55747e0823",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\golden-open-domain-negative-resource-v01",
+      "status": "REJECTED",
+      "error_code": "UNIVERSAL_ART_ASSET_PROFILE_INVALID",
+      "error_message": "UNIVERSAL_ART_ASSET_PROFILE_INVALID: unregistered-resource",
+      "roots": {
+        "genome_root": null,
+        "resolution_root": null,
+        "candidate_root": null,
+        "forge_root": null
+      },
+      "checks": {
+        "rejected": true,
+        "expected_error": true,
+        "no_candidate_root": true,
+        "no_canonical_write": true
+      },
+      "pass": true,
+      "candidate_only": true,
+      "authoritative": false,
+      "canonical_write_authorized": false,
+      "root_fingerprint": "4dd8a251ad603645ae9aa92b45773adaa1c540b34be179d56dac91512fe776ef"
+    },
+    {
+      "case_id": "golden-open-domain-negative-vfx-v01",
+      "case_kind": "OPEN_DOMAIN_NEGATIVE",
+      "asset_profile": "unregistered-vfx",
+      "asset_kind": "unregistered-vfx-3d",
+      "input_root": "4c32621511566f89223b80fc4d50320856a0cc53c56b35164f507357b330db22",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\golden-open-domain-negative-vfx-v01",
+      "status": "REJECTED",
+      "error_code": "UNIVERSAL_ART_ASSET_PROFILE_INVALID",
+      "error_message": "UNIVERSAL_ART_ASSET_PROFILE_INVALID: unregistered-vfx",
+      "roots": {
+        "genome_root": null,
+        "resolution_root": null,
+        "candidate_root": null,
+        "forge_root": null
+      },
+      "checks": {
+        "rejected": true,
+        "expected_error": true,
+        "no_candidate_root": true,
+        "no_canonical_write": true
+      },
+      "pass": true,
+      "candidate_only": true,
+      "authoritative": false,
+      "canonical_write_authorized": false,
+      "root_fingerprint": "c74d2282e0e53f3e1658178132bdd4d2b80af04cd5c60dd1c8f12c4403f39eb3"
+    }
+  ],
+  "deterministic_replay": [
+    {
+      "case_id": "golden-positive-character-v01",
+      "asset_profile": "character",
+      "input_root": "db47a264e67eaf915f97ff0a8485cfd17207c2bfe7dbbe3481c0efef253495ef",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\replay\\golden-positive-character-v01",
+      "original_root_fingerprint": "0dca8d95c755dd5846e475c7aa0e8519a456ac54d55f9c8a377ac3760babb9f7",
+      "replay_root_fingerprint": "0dca8d95c755dd5846e475c7aa0e8519a456ac54d55f9c8a377ac3760babb9f7",
+      "original_roots": {
+        "genome_root": "d80b0cb15a78420c075f8f4ccdd50f469370f5007607f114becd59a601191763",
+        "resolution_root": "6382832c0b21c4cf1959c4730b13c458380a665479740d4cb851047d93836fdd",
+        "candidate_root": "1e988292366ce6a9ef363597538f8ee631dcbb77b6284b9a5261383fcce675df",
+        "forge_root": "d2856d073aed58244855cf4150cbd559d6712761af99ff9bf980ed674d10650c"
+      },
+      "replay_roots": {
+        "genome_root": "d80b0cb15a78420c075f8f4ccdd50f469370f5007607f114becd59a601191763",
+        "resolution_root": "6382832c0b21c4cf1959c4730b13c458380a665479740d4cb851047d93836fdd",
+        "candidate_root": "1e988292366ce6a9ef363597538f8ee631dcbb77b6284b9a5261383fcce675df",
+        "forge_root": "963effe7162551bca5972aa2565d7b4b9e03920da40889992fc25c221b3de9c3"
+      },
+      "checks": {
+        "execution_completed": true,
+        "root_equality": true,
+        "replay_structural": true
+      },
+      "pass": true
+    },
+    {
+      "case_id": "golden-positive-creature-v01",
+      "asset_profile": "creature",
+      "input_root": "a621b7313cf4241a726b1b4da1043eb945cb0554e84c5eb2637818f57ea1b00e",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\replay\\golden-positive-creature-v01",
+      "original_root_fingerprint": "10faac968522f72cdbc3ad4fc6794e21235d64bc93faa6b83fe59b27e56c5b55",
+      "replay_root_fingerprint": "10faac968522f72cdbc3ad4fc6794e21235d64bc93faa6b83fe59b27e56c5b55",
+      "original_roots": {
+        "genome_root": "c03ae01cbc0224525684fbf8761ce3bc35d0af17ff148ce5897405010357dc29",
+        "resolution_root": "0a3076aac297b638398db93e1194f3bb79db7bce45c3d79b957d7eb21ac4b988",
+        "candidate_root": "fc89a4736b53934e2fa52e04a525ce7795febea11a8f2c390c169f46b5c476be",
+        "forge_root": "49a4cf53cffe47e60394ea8be29c00d9815509765375e144f3c87e0c5ef7b2e9"
+      },
+      "replay_roots": {
+        "genome_root": "c03ae01cbc0224525684fbf8761ce3bc35d0af17ff148ce5897405010357dc29",
+        "resolution_root": "0a3076aac297b638398db93e1194f3bb79db7bce45c3d79b957d7eb21ac4b988",
+        "candidate_root": "fc89a4736b53934e2fa52e04a525ce7795febea11a8f2c390c169f46b5c476be",
+        "forge_root": "77b30f0ce8890f41b3cc93ccca023d02b4084121d586a852d0c25a1086a88153"
+      },
+      "checks": {
+        "execution_completed": true,
+        "root_equality": true,
+        "replay_structural": true
+      },
+      "pass": true
+    },
+    {
+      "case_id": "golden-positive-prop-v01",
+      "asset_profile": "prop",
+      "input_root": "f53c6a05e2df54803d75ea1f7a399cad102ac7b78b2acaece871dbf656904bf2",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\replay\\golden-positive-prop-v01",
+      "original_root_fingerprint": "fb68e9f0b7f4ded6404641936c4d7017e27f557f70ef9a9fa93ca5a534650800",
+      "replay_root_fingerprint": "fb68e9f0b7f4ded6404641936c4d7017e27f557f70ef9a9fa93ca5a534650800",
+      "original_roots": {
+        "genome_root": "aadb00989ac530a35543df7b25d090578fe3defab3015ee9079c484704bdd4aa",
+        "resolution_root": "f03186355c581a122ae27e40d12e628674f1baf9f52149e2d26e9e29f8cf83e2",
+        "candidate_root": "91a5c9440bdf3dbbcb7886d9f55a3c9de777429ed2b4f15836ca6fdc85837810",
+        "forge_root": "007553750989c03ec2a282d628ed16f81985214a18312eb49b32ef8c1a578bf4"
+      },
+      "replay_roots": {
+        "genome_root": "aadb00989ac530a35543df7b25d090578fe3defab3015ee9079c484704bdd4aa",
+        "resolution_root": "f03186355c581a122ae27e40d12e628674f1baf9f52149e2d26e9e29f8cf83e2",
+        "candidate_root": "91a5c9440bdf3dbbcb7886d9f55a3c9de777429ed2b4f15836ca6fdc85837810",
+        "forge_root": "d5e6edb2d3c7bae5e260474fadf32e13f06329010f6f2f647923accb1c0fff6c"
+      },
+      "checks": {
+        "execution_completed": true,
+        "root_equality": true,
+        "replay_structural": true
+      },
+      "pass": true
+    },
+    {
+      "case_id": "golden-positive-vehicle-v01",
+      "asset_profile": "vehicle",
+      "input_root": "510b32177d597f0916013feb218d19bf9747565a35c74cc3286abb820bc40a9a",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\replay\\golden-positive-vehicle-v01",
+      "original_root_fingerprint": "857566fb18c73f8d2d69617a983d45e77023c511a308d2f50535f1984306d6c0",
+      "replay_root_fingerprint": "857566fb18c73f8d2d69617a983d45e77023c511a308d2f50535f1984306d6c0",
+      "original_roots": {
+        "genome_root": "4b928af5b78a7899b8e115d233f0888fbf017b865f3311cd48a52def7975f25e",
+        "resolution_root": "114072caf0dc5c3d6d0ee78cdbd303f3dc5726306505afe2843d3f76f9d6a353",
+        "candidate_root": "9d4682e527f4466b545245a65b69c54d0a01f4d311c5ddb36cd774975cc0bc55",
+        "forge_root": "9f3d8ae8f5f96e25ee03fdf4145f995bef131c229737a7b3888536253f961761"
+      },
+      "replay_roots": {
+        "genome_root": "4b928af5b78a7899b8e115d233f0888fbf017b865f3311cd48a52def7975f25e",
+        "resolution_root": "114072caf0dc5c3d6d0ee78cdbd303f3dc5726306505afe2843d3f76f9d6a353",
+        "candidate_root": "9d4682e527f4466b545245a65b69c54d0a01f4d311c5ddb36cd774975cc0bc55",
+        "forge_root": "534d0881aa2caad774e05fa86383895e127b9d865baee9dd019b7fc6375d7c45"
+      },
+      "checks": {
+        "execution_completed": true,
+        "root_equality": true,
+        "replay_structural": true
+      },
+      "pass": true
+    },
+    {
+      "case_id": "golden-positive-structure-v01",
+      "asset_profile": "structure",
+      "input_root": "925e043755bc767c9391db17b6e4def7c82c35a58dbe8170b9003e7a6efa5d24",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\replay\\golden-positive-structure-v01",
+      "original_root_fingerprint": "9f3fed7167b145fa0af9b61729b011143e85c32448ecb72298d42e76e2512324",
+      "replay_root_fingerprint": "9f3fed7167b145fa0af9b61729b011143e85c32448ecb72298d42e76e2512324",
+      "original_roots": {
+        "genome_root": "681e2cc08995f5d104a42758774659f97de16bbe37bcc9753a70a94fb199982a",
+        "resolution_root": "d9c48b6613384b090de0920048ae5a786faa711af3fd32c44373309329f560e0",
+        "candidate_root": "92ed5763fcb02108d09cf82b178b91474e189ec0b2f386723bf109c35245f5ac",
+        "forge_root": "944dc644e96d8f319081c2e49bb2f3f944981a74fc0e36834905a23880ef230f"
+      },
+      "replay_roots": {
+        "genome_root": "681e2cc08995f5d104a42758774659f97de16bbe37bcc9753a70a94fb199982a",
+        "resolution_root": "d9c48b6613384b090de0920048ae5a786faa711af3fd32c44373309329f560e0",
+        "candidate_root": "92ed5763fcb02108d09cf82b178b91474e189ec0b2f386723bf109c35245f5ac",
+        "forge_root": "3d70dcda880ebad333484157449fcac7dd503dc9387fbfd7c788c4a209e7058c"
+      },
+      "checks": {
+        "execution_completed": true,
+        "root_equality": true,
+        "replay_structural": true
+      },
+      "pass": true
+    },
+    {
+      "case_id": "golden-positive-environment-v01",
+      "asset_profile": "environment",
+      "input_root": "dcb5d32cb3adfeea3699a32851258aac529d217e39733db3db8d3ba35b4f1ead",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\replay\\golden-positive-environment-v01",
+      "original_root_fingerprint": "a6789071c859a71c3601da75523df57efdcca97e5b5fa9c1f28896ab10149b26",
+      "replay_root_fingerprint": "a6789071c859a71c3601da75523df57efdcca97e5b5fa9c1f28896ab10149b26",
+      "original_roots": {
+        "genome_root": "2ee7d0df830cc2bbe6320c109645ee32f5eb58c2ee197dbadbae121a38c0d5b7",
+        "resolution_root": "0c96cff86e57c5bfcfd61a9df9d3b96130b14fb0b9a557ba84e30efab1b1098b",
+        "candidate_root": "314ba1412d32e4b4a374a06fa227b6f3fb45facbd16c91652088f3f3ea14e128",
+        "forge_root": "8a3a82871e199272fc996f227eb8ee350e0353d2afbf5bec8bf71da41f7101a5"
+      },
+      "replay_roots": {
+        "genome_root": "2ee7d0df830cc2bbe6320c109645ee32f5eb58c2ee197dbadbae121a38c0d5b7",
+        "resolution_root": "0c96cff86e57c5bfcfd61a9df9d3b96130b14fb0b9a557ba84e30efab1b1098b",
+        "candidate_root": "314ba1412d32e4b4a374a06fa227b6f3fb45facbd16c91652088f3f3ea14e128",
+        "forge_root": "2dd983fffb1db5c512ef558763d4df5b92cf765f00315d1e26f607624044b828"
+      },
+      "checks": {
+        "execution_completed": true,
+        "root_equality": true,
+        "replay_structural": true
+      },
+      "pass": true
+    },
+    {
+      "case_id": "golden-positive-vegetation-v01",
+      "asset_profile": "vegetation",
+      "input_root": "0fd7c1076936d4a12a5ff3a6cfb68eecc22c0076ddf42a7a8187c34504afbd28",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\replay\\golden-positive-vegetation-v01",
+      "original_root_fingerprint": "7cd89b7a2b6d4e4cb454170c158484395c1176ee2f98a78e30b8e080eb8d39fe",
+      "replay_root_fingerprint": "7cd89b7a2b6d4e4cb454170c158484395c1176ee2f98a78e30b8e080eb8d39fe",
+      "original_roots": {
+        "genome_root": "3c605b80fcc919c4b753d3216a3a25b8dff8e25d24ee7ef85d1284e61ae0dba8",
+        "resolution_root": "35f9508c791055d604bed1d237347ecbe9547ee6b4a6694aa658a02217c691bb",
+        "candidate_root": "4c10f1b88c2487cee3cb07ae4d70c33bf800ed09ab631fc26702885466bcd906",
+        "forge_root": "cfdb650ccd40cd5d494c3b492ca9dd22e9b5772965ab547d2833449ac15fb0b9"
+      },
+      "replay_roots": {
+        "genome_root": "3c605b80fcc919c4b753d3216a3a25b8dff8e25d24ee7ef85d1284e61ae0dba8",
+        "resolution_root": "35f9508c791055d604bed1d237347ecbe9547ee6b4a6694aa658a02217c691bb",
+        "candidate_root": "4c10f1b88c2487cee3cb07ae4d70c33bf800ed09ab631fc26702885466bcd906",
+        "forge_root": "fceb7d6cb5e4751c30f1a5c847f37affbda04464f284dfd26252cb997bcabff2"
+      },
+      "checks": {
+        "execution_completed": true,
+        "root_equality": true,
+        "replay_structural": true
+      },
+      "pass": true
+    },
+    {
+      "case_id": "golden-positive-resource-v01",
+      "asset_profile": "resource",
+      "input_root": "398511aac1829b66a623eca860cd695d793ce9958067d8a1d729d47723dc4039",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\replay\\golden-positive-resource-v01",
+      "original_root_fingerprint": "1aeda2860e54523157c9efd83f25ff34c4d99ef8a576f0f9494c65e278de9bf3",
+      "replay_root_fingerprint": "1aeda2860e54523157c9efd83f25ff34c4d99ef8a576f0f9494c65e278de9bf3",
+      "original_roots": {
+        "genome_root": "2579bc298f85b27fc2ea0c4a9ebed9e64f2bba4e417e66a0a64cc2e1c210dc05",
+        "resolution_root": "0490e8810b9912162b3791f74985be9b4e64b954c0e346e3433f5b44009e932e",
+        "candidate_root": "a126dc4572ffa83acf0773651afe88d77915d92185ecdd1943da3b99ff440938",
+        "forge_root": "0781a556f9255dc595c0a4702937b07ad33b90dc0c5bc406d1770311d8c6c0d3"
+      },
+      "replay_roots": {
+        "genome_root": "2579bc298f85b27fc2ea0c4a9ebed9e64f2bba4e417e66a0a64cc2e1c210dc05",
+        "resolution_root": "0490e8810b9912162b3791f74985be9b4e64b954c0e346e3433f5b44009e932e",
+        "candidate_root": "a126dc4572ffa83acf0773651afe88d77915d92185ecdd1943da3b99ff440938",
+        "forge_root": "b2630eececa50bd4dc1c7b36d43349e695141d0bdfb2db934ab9cf2cf2178a9d"
+      },
+      "checks": {
+        "execution_completed": true,
+        "root_equality": true,
+        "replay_structural": true
+      },
+      "pass": true
+    },
+    {
+      "case_id": "golden-positive-vfx-v01",
+      "asset_profile": "vfx",
+      "input_root": "fcd2f1113698ae87bcbcb017414532a28f381fcfdceec1ec4a47ebb943925513",
+      "output_directory": "C:\\Users\\User\\AppData\\Local\\Temp\\taowind-urrf-universal-art-golden-set-v01-S3d0jX\\replay\\golden-positive-vfx-v01",
+      "original_root_fingerprint": "b0b8190c975e4175e6cfc5725028dccbfd0832f6c4031976affb15715df3f7e0",
+      "replay_root_fingerprint": "b0b8190c975e4175e6cfc5725028dccbfd0832f6c4031976affb15715df3f7e0",
+      "original_roots": {
+        "genome_root": "a8ef715e0011092ad1461ca53f2b1aab57211471097436fb541ede5faf33fc56",
+        "resolution_root": "640886b281a30300477dbbb04d090f73e62bbc1991ee306904cca430308ed310",
+        "candidate_root": "069ff47d2a12e91d685a15ba243c17ceb9a634d09e5b85dfcbe2c8af2a65f799",
+        "forge_root": "796d0c57ac778a12332053b65c6cdf1245431ba121d863e7f1c67e387501a352"
+      },
+      "replay_roots": {
+        "genome_root": "a8ef715e0011092ad1461ca53f2b1aab57211471097436fb541ede5faf33fc56",
+        "resolution_root": "640886b281a30300477dbbb04d090f73e62bbc1991ee306904cca430308ed310",
+        "candidate_root": "069ff47d2a12e91d685a15ba243c17ceb9a634d09e5b85dfcbe2c8af2a65f799",
+        "forge_root": "487886183415cfbceca006343b1b5c3eaba8c519447d8faf05da31947748fd80"
+      },
+      "checks": {
+        "execution_completed": true,
+        "root_equality": true,
+        "replay_structural": true
+      },
+      "pass": true
+    }
+  ],
+  "summary": {
+    "profile_count": 9,
+    "positive_case_count": 9,
+    "boundary_case_count": 9,
+    "open_domain_negative_case_count": 9,
+    "replay_case_count": 9,
+    "pass_count": 36,
+    "fail_count": 0
+  },
+  "checks": {
+    "contract_binding": true,
+    "positive_case_count": true,
+    "boundary_case_count": true,
+    "open_domain_negative_case_count": true,
+    "positive_profile_coverage": true,
+    "boundary_profile_coverage": true,
+    "open_domain_profile_coverage": true,
+    "positive_structural": true,
+    "boundary_structural": true,
+    "open_domain_fail_closed": true,
+    "deterministic_replay": true,
+    "unique_positive_roots": true,
+    "authority_boundary": true
+  },
+  "status": "CANDIDATE_GOLDEN_SET_PASS",
+  "execution_status": "CANDIDATE_LOCAL_REFERENCE_EXECUTED",
+  "aaa_status": "BLOCKED_EXTERNAL_ART_HUMAN_HARDWARE_EVIDENCE",
+  "ai_generate_status": "BLOCKED_EXTERNAL_MODEL_NOT_RUN",
+  "candidate_only": true,
+  "authoritative": false,
+  "canonical_write_authorized": false,
+  "authority": {
+    "canonical_owner": "RNCS",
+    "representation_owner": "URRF",
+    "provider_can_write_authoritative_world_state": false,
+    "provider_can_commit": false,
+    "acceptance_can_commit": false,
+    "rncs_authority_required": true
+  },
+  "evidence_root": "4ae9fec97c4fc589b866ff3554560f11118d5d4458266770c84f756076c9f37e"
+}
