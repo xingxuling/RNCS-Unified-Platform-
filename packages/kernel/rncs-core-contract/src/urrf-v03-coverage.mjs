@@ -81,9 +81,9 @@ export const URRF_V03_SUCCESS_CRITERIA = Object.freeze([
     ['missing source event', 'memory-tree reference in canonical fact']
   )),
   criterion(4, 'Multiple Representations', 'One RealityObject may bind multiple rooted representations and a bounded quality portfolio.', candidate, ref(
-    [`${core}/src/representation-ref.mjs`, `${core}/src/representation-portfolio.mjs`, `${urrf}/src/index.mjs`, `${urrf}/src/portfolio-runtime.mjs`],
-    [`${core}/schemas/representation-reference.v0.1.schema.json`, `${core}/schemas/representation-portfolio.v0.3.schema.json`, `${core}/schemas/representation-slot.v0.3.schema.json`],
-    [`${core}/tests/representation-portfolio.mjs`, `${urrf}/tests/portfolio-runtime.test.mjs`, `${urrf}/tests/runtime.test.mjs`],
+    [`${core}/src/representation-ref.mjs`, `${core}/src/representation-portfolio.mjs`, `${urrf}/src/index.mjs`, `${urrf}/src/portfolio-runtime.mjs`, `${ragf}/src/vfx-reference-provider.mjs`],
+    [`${core}/schemas/representation-reference.v0.1.schema.json`, `${core}/schemas/representation-portfolio.v0.3.schema.json`, `${core}/schemas/representation-slot.v0.3.schema.json`, `${ragf}/schemas/vfx-asset-contract.v0.1.schema.json`],
+    [`${core}/tests/representation-portfolio.mjs`, `${urrf}/tests/portfolio-runtime.test.mjs`, `${urrf}/tests/runtime.test.mjs`, `${ragf}/tests/vfx-reference-provider.test.mjs`],
     [`${evidence}/URRF_V03_VISUAL_PORTFOLIO_PHASE6_EVIDENCE.md`],
     ['EXPRESS', 'COMPILE', 'LOWER', 'EXECUTE', 'CORRECT', 'PERFORMANCE', 'EVIDENCE'],
     ['missing required slot', 'duplicate representation root', 'provider-owned canonical state']
@@ -129,32 +129,32 @@ export const URRF_V03_SUCCESS_CRITERIA = Object.freeze([
     ['private object leakage', 'invalid state operator', 'temporal range mismatch']
   )),
   criterion(10, 'Snapshot and Delta', 'RealityChunk and replication paths carry rooted snapshots, deltas, receipts and deterministic conflict inputs.', candidate, ref(
-    [`${core}/src/reality-chunk.mjs`, `${core}/src/reality-distribution.mjs`, `${largeWorld}/src/index.mjs`],
+    [`${core}/src/reality-chunk.mjs`, `${core}/src/reality-distribution.mjs`, `${largeWorld}/src/index.mjs`, `${largeWorld}/src/multi-process-replication.mjs`],
     [`${core}/schemas/reality-chunk.v0.3.schema.json`, `${core}/schemas/reality-chunk-delta.v0.3.schema.json`, `${core}/schemas/reality-replication-envelope.v0.3.schema.json`],
-    [`${core}/tests/reality-chunk.mjs`, `${core}/tests/reality-distribution.mjs`, `${largeWorld}/tests/reality-chunk.test.mjs`, `${largeWorld}/tests/reality-chunk-fabric.test.mjs`],
+    [`${core}/tests/reality-chunk.mjs`, `${core}/tests/reality-distribution.mjs`, `${largeWorld}/tests/reality-chunk.test.mjs`, `${largeWorld}/tests/reality-chunk-fabric.test.mjs`, `${largeWorld}/tests/multi-process-replication.test.mjs`],
     [`${evidence}/URRF_LARGE_WORLD_REALITY_CHUNK/README.md`, `${evidence}/URRF_V03_CONSISTENCY_LEASE_PHASE3_EVIDENCE.md`],
     ['EXPRESS', 'COMPILE', 'LOWER', 'EXECUTE', 'CORRECT', 'ROBUST', 'EVIDENCE'],
     ['duplicate delta', 'base snapshot mismatch', 'tampered payload root'],
-    ['independent OS-process replay is not yet evidenced']
-  ), {boundary: 'Local runtime objects and bounded replay; not production network replication.'}),
+    ['cross-host process/network partition replay is not yet evidenced']
+  ), {boundary: 'Local runtime objects and independent child-process replay; not production network replication.'}),
   criterion(11, 'Consistency Lease and Fencing', 'Two runtime nodes reject stale epoch, expired lease and stale fencing writes before canonical mutation.', partial, ref(
-    [`${core}/src/reality-distribution.mjs`, `${core}/src/reality-chunk.mjs`, `${largeWorld}/src/index.mjs`],
+    [`${core}/src/reality-distribution.mjs`, `${core}/src/reality-chunk.mjs`, `${largeWorld}/src/index.mjs`, `${largeWorld}/src/multi-process-replication.mjs`],
     [`${core}/schemas/reality-consistency-profile.v0.3.schema.json`, `${core}/schemas/authority-lease.v0.3.schema.json`, `${core}/schemas/reality-replication-envelope.v0.3.schema.json`],
-    [`${core}/tests/reality-distribution.mjs`, `${largeWorld}/tests/reality-chunk-fabric.test.mjs`, `${largeWorld}/tests/server-sovereignty.test.mjs`],
+    [`${core}/tests/reality-distribution.mjs`, `${largeWorld}/tests/reality-chunk-fabric.test.mjs`, `${largeWorld}/tests/server-sovereignty.test.mjs`, `${largeWorld}/tests/multi-process-replication.test.mjs`],
     [`${evidence}/URRF_V03_CONSISTENCY_LEASE_PHASE3_EVIDENCE.md`],
     ['EXPRESS', 'COMPILE', 'LOWER', 'EXECUTE', 'CORRECT', 'ROBUST', 'EVIDENCE'],
     ['stale epoch', 'stale fencing token', 'expired lease', 'revoked lease'],
-    ['real independent process consensus and network partition proof']
-  ), {boundary: 'Two isolated runtime instances are tested; distributed consensus is not claimed.'}),
+    ['network partition and production consensus proof']
+  ), {boundary: 'Independent local child processes are tested; distributed consensus and cross-host networking are not claimed.'}),
   criterion(12, 'Migration and Failover', 'Server pseudo-sovereignty can transfer a durable bundle and fence the source candidate on failover.', partial, ref(
-    [`${core}/src/server-sovereignty.mjs`, `${largeWorld}/src/index.mjs`],
+    [`${core}/src/server-sovereignty.mjs`, `${largeWorld}/src/index.mjs`, `${largeWorld}/src/multi-process-replication.mjs`],
     [`${core}/schemas/server-pseudo-sovereignty.v0.3.schema.json`, `${core}/schemas/server-sovereignty-migration.v0.3.schema.json`],
-    [`${core}/tests/server-sovereignty.mjs`, `${largeWorld}/tests/server-sovereignty.test.mjs`],
+    [`${core}/tests/server-sovereignty.mjs`, `${largeWorld}/tests/server-sovereignty.test.mjs`, `${largeWorld}/tests/multi-process-replication.test.mjs`],
     [`${evidence}/URRF_V03_SERVER_SOVEREIGNTY/README.md`],
     ['EXPRESS', 'COMPILE', 'LOWER', 'EXECUTE', 'CORRECT', 'ROBUST', 'EVIDENCE'],
     ['source lease not revoked', 'target bundle root mismatch', 'stale writer after failover'],
-    ['persistent cross-process durable store and production failover drill']
-  ), {boundary: 'Local durable-bundle candidate, not an HA consensus cluster.'}),
+    ['cross-host persistent store and production failover drill']
+  ), {boundary: 'Local durable-bundle candidate across independent child processes, not an HA consensus cluster.'}),
   criterion(13, 'Fiber QoS', 'Fiber transport profile expresses bandwidth, latency, reliability, freshness, loss mode and authority requirements.', partial, ref(
     [`${core}/src/reality-transport.mjs`, `${urrf}/src/transport-runtime.mjs`],
     [`${core}/schemas/reality-transport-profile.v0.3.schema.json`],
@@ -208,9 +208,9 @@ export const URRF_V03_SUCCESS_CRITERIA = Object.freeze([
     ['physical power/thermal sensor and OS enforcement']
   )),
   criterion(19, 'Evidence and Rollback', 'Roots, receipts, candidate ledgers and rollback/fencing records make candidate transitions auditable and reversible.', candidate, ref(
-    [`${core}/src/reality-distribution.mjs`, `${core}/src/reality-chunk.mjs`, `${ragf}/src/asset-evidence-ledger.mjs`, `${ragf}/src/trellis2-local-provider.mjs`],
-    [`${core}/schemas/evidence-graph.v0.1.schema.json`, `${core}/schemas/reality-replication-envelope.v0.3.schema.json`, `${ragf}/schemas/asset-evidence-ledger.v0.1.schema.json`],
-    [`${core}/tests/reality-distribution.mjs`, `${largeWorld}/tests/reality-fault-recovery.test.mjs`, `${ragf}/tests/external-asset-providers.test.mjs`],
+    [`${core}/src/reality-distribution.mjs`, `${core}/src/reality-chunk.mjs`, `${largeWorld}/src/multi-process-replication.mjs`, `${ragf}/src/asset-evidence-ledger.mjs`, `${ragf}/src/trellis2-local-provider.mjs`],
+    [`${core}/schemas/evidence-graph.v0.1.schema.json`, `${core}/schemas/reality-replication-envelope.v0.3.schema.json`, `${largeWorld}/schemas/multi-process-replication-evidence.v0.1.schema.json`, `${ragf}/schemas/asset-evidence-ledger.v0.1.schema.json`],
+    [`${core}/tests/reality-distribution.mjs`, `${largeWorld}/tests/reality-fault-recovery.test.mjs`, `${largeWorld}/tests/multi-process-replication.test.mjs`, `${ragf}/tests/external-asset-providers.test.mjs`],
     [`${evidence}/URRF_V03_CONSISTENCY_LEASE_PHASE3_EVIDENCE.md`, `${evidence}/URRF_UNIVERSAL_ART_ASSET_FORGE/RCL_GAP_STRESS_EVIDENCE.md`],
     ['EXPRESS', 'COMPILE', 'LOWER', 'EXECUTE', 'CORRECT', 'ROBUST', 'EVIDENCE'],
     ['tampered root', 'stale receipt', 'rollback without authority', 'provider failure without evidence']
@@ -265,9 +265,9 @@ export const URRF_V03_SUCCESS_CRITERIA = Object.freeze([
     boundary: 'The existing property transition fence is reusable, but no sensor inference organ is implemented in this slice.'
   }),
   criterion(25, 'RCL Gap versus Provider Gap', 'The coverage ledger distinguishes missing RCL semantic primitives from unavailable or unaudited provider/runtime capability.', partial, ref(
-    [`${core}/src/reality-property.mjs`, `${core}/src/reality-transport.mjs`, `${ragf}/src/external-asset-providers.mjs`, `${ragf}/src/trellis2-local-provider.mjs`],
+    [`${core}/src/reality-property.mjs`, `${core}/src/reality-transport.mjs`, `${largeWorld}/src/multi-process-replication.mjs`, `${ragf}/src/external-asset-providers.mjs`, `${ragf}/src/trellis2-local-provider.mjs`],
     [`${core}/schemas/reality-transport-profile.v0.3.schema.json`],
-    ['packages/kernel/rncs-core-contract/tests/urrf-v03-coverage-matrix.test.mjs', `${ragf}/tests/external-asset-providers.test.mjs`],
+    ['packages/kernel/rncs-core-contract/tests/urrf-v03-coverage-matrix.test.mjs', `${largeWorld}/tests/multi-process-replication.test.mjs`, `${ragf}/tests/external-asset-providers.test.mjs`],
     [`${evidence}/URRF_UNIVERSAL_ART_ASSET_FORGE/RCL_GAP_STRESS_EVIDENCE.md`, `${evidence}/URRF_V03_TRANSPORT_PHASE4_EVIDENCE.md`],
     ['EXPRESS', 'COMPILE', 'LOWER', 'EVIDENCE'],
     ['silent language bypass', 'provider output treated as authority', 'missing RCL primitive mislabeled as runtime outage'],
@@ -280,9 +280,9 @@ export const URRF_V03_SUCCESS_CRITERIA = Object.freeze([
     }
   }),
   criterion(26, 'Honest Status and AAA Boundary', 'Every result reports bounded status and keeps AAA production blocked until external model, hardware, provenance and human evidence exist.', candidate, ref(
-    [`${ragf}/src/trellis2-local-provider.mjs`, `${ragf}/src/production-court.mjs`, `${ragf}/src/asset-evidence-ledger.mjs`, `${largeWorld}/src/universal-art-asset-forge.mjs`],
-    [`${ragf}/schemas/asset-provider-manifest.v0.1.schema.json`, `${ragf}/schemas/asset-provider-result.v0.1.schema.json`, `${ragf}/schemas/asset-production-court.v0.1.schema.json`],
-    [`${ragf}/tests/external-asset-providers.test.mjs`, `${ragf}/tests/runtime.test.mjs`, `${largeWorld}/tests/universal-art-asset-forge.test.mjs`],
+    [`${ragf}/src/trellis2-local-provider.mjs`, `${ragf}/src/vfx-reference-provider.mjs`, `${ragf}/src/production-court.mjs`, `${ragf}/src/asset-evidence-ledger.mjs`, `${largeWorld}/src/universal-art-asset-forge.mjs`, `${largeWorld}/src/multi-process-replication.mjs`],
+    [`${ragf}/schemas/asset-provider-manifest.v0.1.schema.json`, `${ragf}/schemas/asset-provider-result.v0.1.schema.json`, `${ragf}/schemas/vfx-asset-contract.v0.1.schema.json`, `${ragf}/schemas/asset-production-court.v0.1.schema.json`, `${largeWorld}/schemas/multi-process-replication-evidence.v0.1.schema.json`],
+    [`${ragf}/tests/external-asset-providers.test.mjs`, `${ragf}/tests/vfx-reference-provider.test.mjs`, `${ragf}/tests/runtime.test.mjs`, `${largeWorld}/tests/universal-art-asset-forge.test.mjs`, `${largeWorld}/tests/multi-process-replication.test.mjs`],
     [`${evidence}/URRF_UNIVERSAL_ART_ASSET_FORGE/RCL_GAP_STRESS_EVIDENCE.md`, `${evidence}/URRF_V03_POWER_GOVERNOR_PHASE5_EVIDENCE.md`],
     ['EXPRESS', 'COMPILE', 'LOWER', 'EXECUTE', 'CORRECT', 'ROBUST', 'PERFORMANCE', 'AI_GENERATE', 'EVIDENCE'],
     ['contract-only provider reported as executed', 'candidate reported as AAA', 'missing hardware evidence reported as pass']
@@ -299,25 +299,25 @@ export const URRF_V03_K400_GATE_STATUS = Object.freeze([
     test_refs: [`${core}/tests/world-truth.mjs`, `${core}/tests/reality-property.mjs`, `${core}/tests/reality-transport.mjs`]
   }),
   gateStatus('COMPILE', candidate, {
-    source_refs: [`${core}/src/index.mjs`, `${urrf}/src/index.mjs`, `${ragf}/src/index.mjs`],
-    test_refs: [`${core}/tests/v03-schemas.mjs`, `${ragf}/tests/external-asset-providers.test.mjs`]
+    source_refs: [`${core}/src/index.mjs`, `${urrf}/src/index.mjs`, `${ragf}/src/index.mjs`, `${largeWorld}/src/multi-process-replication.mjs`],
+    test_refs: [`${core}/tests/v03-schemas.mjs`, `${ragf}/tests/external-asset-providers.test.mjs`, `${largeWorld}/tests/multi-process-replication.test.mjs`]
   }),
   gateStatus('LOWER', candidate, {
-    source_refs: [`${urrf}/src/index.mjs`, `${largeWorld}/src/index.mjs`, `${ragf}/src/trellis2-local-provider.mjs`],
-    test_refs: [`${urrf}/tests/runtime.test.mjs`, `${largeWorld}/tests/runtime.test.mjs`]
+    source_refs: [`${urrf}/src/index.mjs`, `${largeWorld}/src/index.mjs`, `${largeWorld}/src/multi-process-replication.mjs`, `${ragf}/src/trellis2-local-provider.mjs`],
+    test_refs: [`${urrf}/tests/runtime.test.mjs`, `${largeWorld}/tests/runtime.test.mjs`, `${largeWorld}/tests/multi-process-replication.test.mjs`]
   }),
   gateStatus('EXECUTE', partial, {
-    source_refs: [`${urrf}/src/transport-runtime.mjs`, `${urrf}/src/resource-governor-runtime.mjs`, `${ragf}/src/trellis2-local-provider.mjs`],
-    test_refs: [`${urrf}/tests/transport-runtime.test.mjs`, `${ragf}/tests/external-asset-providers.test.mjs`]
-  }, ['real multi-process and hardware execution']),
+    source_refs: [`${urrf}/src/transport-runtime.mjs`, `${urrf}/src/resource-governor-runtime.mjs`, `${largeWorld}/src/multi-process-replication.mjs`, `${ragf}/src/trellis2-local-provider.mjs`],
+    test_refs: [`${urrf}/tests/transport-runtime.test.mjs`, `${largeWorld}/tests/multi-process-replication.test.mjs`, `${ragf}/tests/external-asset-providers.test.mjs`]
+  }, ['real multi-host/network and hardware execution']),
   gateStatus('CORRECT', candidate, {
     source_refs: [`${core}/src/reality-property.mjs`, `${core}/src/reality-distribution.mjs`, `${ragf}/src/production-court.mjs`],
     test_refs: [`${core}/tests/reality-property.mjs`, `${core}/tests/reality-distribution.mjs`, `${ragf}/tests/external-asset-providers.test.mjs`]
   }),
   gateStatus('ROBUST', partial, {
-    source_refs: [`${core}/src/reality-power.mjs`, `${core}/src/server-sovereignty.mjs`, `${largeWorld}/src/index.mjs`],
-    test_refs: [`${largeWorld}/tests/reality-fault-recovery.test.mjs`, `${largeWorld}/tests/server-sovereignty.test.mjs`]
-  }, ['network partition, independent process restart and hardware fault drills']),
+    source_refs: [`${core}/src/reality-power.mjs`, `${core}/src/server-sovereignty.mjs`, `${largeWorld}/src/index.mjs`, `${largeWorld}/src/multi-process-replication.mjs`],
+    test_refs: [`${largeWorld}/tests/reality-fault-recovery.test.mjs`, `${largeWorld}/tests/server-sovereignty.test.mjs`, `${largeWorld}/tests/multi-process-replication.test.mjs`]
+  }, ['network partition, multi-host restart and hardware fault drills']),
   gateStatus('PERFORMANCE', partial, {
     source_refs: [`${urrf}/src/resource-governor-runtime.mjs`, `${largeWorld}/src/index.mjs`],
     test_refs: [`${urrf}/tests/resource-governor-runtime.test.mjs`, `${largeWorld}/tests/runtime.test.mjs`]
@@ -327,8 +327,8 @@ export const URRF_V03_K400_GATE_STATUS = Object.freeze([
     test_refs: [`${ragf}/tests/external-asset-providers.test.mjs`]
   }, ['TRELLIS.2 weights', 'CUDA/NVIDIA GPU', 'real Provider execution', 'AAA art and human acceptance']),
   gateStatus('EVIDENCE', candidate, {
-    source_refs: [`${ragf}/src/asset-evidence-ledger.mjs`, `${core}/src/reality-chunk.mjs`, `${core}/src/urrf-v03-coverage.mjs`],
-    test_refs: ['packages/kernel/rncs-core-contract/tests/urrf-v03-coverage-matrix.test.mjs', `${ragf}/tests/external-asset-providers.test.mjs`]
+    source_refs: [`${ragf}/src/asset-evidence-ledger.mjs`, `${core}/src/reality-chunk.mjs`, `${largeWorld}/src/multi-process-replication.mjs`, `${core}/src/urrf-v03-coverage.mjs`],
+    test_refs: ['packages/kernel/rncs-core-contract/tests/urrf-v03-coverage-matrix.test.mjs', `${ragf}/tests/external-asset-providers.test.mjs`, `${largeWorld}/tests/multi-process-replication.test.mjs`]
   })
 ]);
 

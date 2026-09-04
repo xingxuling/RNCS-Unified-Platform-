@@ -20,6 +20,8 @@ The matrix test checks:
 - exactly 26 ordered criteria and nine ordered K400 gates;
 - every source, schema, test and evidence reference resolves to a real file;
 - roots and authority ownership are valid;
+- the dedicated VFX contract and independent child-process replication route
+  are included as bounded candidate evidence;
 - the open sensor-inference gate and blocked AI generation status remain
   explicit.
 
@@ -34,5 +36,7 @@ The matrix test checks:
 - AAA release: `BLOCKED_EXTERNAL_ART_HUMAN_HARDWARE_EVIDENCE`.
 
 Local contract, lowering, deterministic replay and negative-case evidence do
-not substitute for independent processes, target hardware, model/data/license
-audit, art direction, human review or production release authority.
+not substitute for multi-host/network consensus, target hardware, model/data/
+license audit, art direction, human review or production release authority.
+The VFX route covers particle, volume, flipbook and curve representations; it
+does not turn a mesh provider into a VFX provider or claim AAA effects quality.
