@@ -116,7 +116,7 @@
       "properties": {
         "index": {"type": "integer", "minimum": 0},
         "stage_id": {"type": "string", "minLength": 1},
-        "stage_kind": {"enum": ["BASE_GENERATION", "RIGGING_ANIMATION", "GEOMETRY_REFINEMENT"]},
+        "stage_kind": {"enum": ["BASE_GENERATION", "RIGGING_ANIMATION", "GEOMETRY_REFINEMENT", "VFX_GENERATION"]},
         "required": {"type": "boolean"},
         "input_stage_id": {"anyOf": [{"type": "string", "minLength": 1}, {"type": "null"}]},
         "required_capabilities": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},

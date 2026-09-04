@@ -594,7 +594,8 @@ test('schemas for the new contracts are present and declare the authority bounda
     'asset-provider-result.v0.1.schema.json',
     'asset-production-court.v0.1.schema.json',
     'asset-requirement.v0.1.schema.json',
-    'asset-evidence-ledger.v0.1.schema.json'
+    'asset-evidence-ledger.v0.1.schema.json',
+    'vfx-asset-contract.v0.1.schema.json'
   ];
   for (const name of names) {
     const schema = JSON.parse(fs.readFileSync(new URL('../schemas/' + name, import.meta.url), 'utf8'));

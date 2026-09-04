@@ -72,7 +72,7 @@
     },
     "stageKind": {
       "type": "string",
-      "enum": ["BASE_GENERATION", "RIGGING_ANIMATION", "GEOMETRY_REFINEMENT"]
+      "enum": ["BASE_GENERATION", "RIGGING_ANIMATION", "GEOMETRY_REFINEMENT", "VFX_GENERATION"]
     },
     "stageStatus": {
       "type": "string",

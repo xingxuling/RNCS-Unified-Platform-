@@ -23,6 +23,10 @@ import {
   verifyAssetEvidenceLedger,
   verifyWorkspace,
   builtinProviders,
+  createVfxReferenceProvider,
+  VFX_PROVIDER_ID,
+  VFX_REPRESENTATION_KINDS,
+  verifyVfxAssetContract,
   clone,
   GenesisError
 } from '@taowind/reality-asset-genesis-fabric';
@@ -128,6 +132,23 @@ const STATIC_GATES = Object.freeze([
 
 const CHARACTER_GATES = Object.freeze([...STATIC_GATES, 'rig_gate', 'animation_gate']);
 
+const VFX_GATES = Object.freeze([
+  'intent_gate',
+  'genome_gate',
+  'provider_execution_gate',
+  'effect_graph_gate',
+  'particle_contract_gate',
+  'volume_contract_gate',
+  'flipbook_contract_gate',
+  'curve_contract_gate',
+  'platform_gate',
+  'provenance_license_gate',
+  'art_direction_gate',
+  'runtime_projection_gate',
+  'quality_tier_gate',
+  'human_review_gate'
+]);
+
 const PROFILE_CONTRACTS = Object.freeze({
   character: {
     asset_kind: 'character-3d',
@@ -203,10 +224,10 @@ const PROFILE_CONTRACTS = Object.freeze({
   },
   vfx: {
     asset_kind: 'vfx-3d',
-    builtin_reference: false,
+    builtin_reference: true,
     required_capabilities: ['asset.generate.vfx'],
-    optional_capabilities: [],
-    required_gates: STATIC_GATES,
+    optional_capabilities: ['asset.generate.vfx.particle', 'asset.generate.vfx.volume', 'asset.generate.vfx.flipbook', 'asset.generate.vfx.curve'],
+    required_gates: VFX_GATES,
     requires_rig: false,
     requires_animation: false
   }
@@ -259,6 +280,22 @@ function profileContract(profile) {
   return contract;
 }
 
+function providerContractGaps(genome, manifest) {
+  const profile = genome?.asset_profile ?? null;
+  const provider = record(manifest);
+  const contract = profileContract(profile);
+  const missingCapabilities = contract.required_capabilities.filter(capability => !(provider.capabilities ?? []).includes(capability));
+  if (profile !== 'vfx') return missingCapabilities;
+  const declaredKinds = new Set(provider.representation?.kinds ?? []);
+  const requiredKinds = Array.isArray(genome?.representation_contract?.visual_effect?.required_kinds)
+    ? genome.representation_contract.visual_effect.required_kinds
+    : VFX_REPRESENTATION_KINDS;
+  return [
+    ...missingCapabilities,
+    ...requiredKinds.filter(kind => !declaredKinds.has(kind)).map(kind => `vfx.representation.${kind}`)
+  ];
+}
+
 function mergeRecord(base, patch) {
   const out = clone(base ?? {});
   for (const [key, value] of Object.entries(record(patch))) {
@@ -276,13 +313,34 @@ function requiredGatesFor(profile, overrides = {}) {
   const source = Array.isArray(overrides.required_gates) && overrides.required_gates.length
     ? overrides.required_gates
     : contract.required_gates;
-  const allowed = new Set([...STATIC_GATES, 'rig_gate', 'animation_gate']);
+  const allowed = new Set([...STATIC_GATES, ...VFX_GATES, 'rig_gate', 'animation_gate']);
   const gates = [...new Set(source.map(String).filter(gate => allowed.has(gate)))];
   if (!gates.length) throw new GenesisError('UNIVERSAL_ART_ASSET_REQUIRED_GATES_EMPTY');
   return gates;
 }
 
 function defaultRepresentationContract(profile, intent) {
+  if (profile === 'vfx') {
+    return {
+      visual_effect: {
+        representation_kinds: [...VFX_REPRESENTATION_KINDS],
+        required_kinds: [...VFX_REPRESENTATION_KINDS],
+        event_clock: 'world-time-derived',
+        simulation_step_seconds: '0.0166666666666667',
+        max_particles: intent.constraints.max_particles,
+        volume_dimensions: [16, 16, 16],
+        flipbook_frames: 4,
+        curve_points: 64,
+        failure_policy: 'fail-closed-preserve-event-and-last-valid-representation'
+      },
+      runtime: {
+        target_platforms: clone(intent.target_platforms),
+        vsr_projection_required: true,
+        rsr_projection_required: false,
+        canonical_world_write: false
+      }
+    };
+  }
   const character = profileContract(profile).requires_rig;
   return {
     geometry: {
@@ -443,6 +501,18 @@ function builtinProviderSummary() {
   } : null;
 }
 
+function builtinVfxProviderSummary() {
+  const provider = createVfxReferenceProvider().manifest;
+  return {
+    provider_id: provider.id,
+    provider_root: provider.manifest_root,
+    mode: provider.executionMode,
+    runtime_status: 'READY_REFERENCE',
+    quality_tier: provider.metadata?.quality_tier ?? 'PRODUCTION',
+    capabilities: [...provider.capabilities].sort()
+  };
+}
+
 export function resolveUniversalArtAssetProvider({genome, provider_id = null, providerId = null, provider = null, providers = []} = {}) {
   const checkedGenome = genome?.format === UNIVERSAL_ART_ASSET_GENOME_FORMAT ? genome : createUniversalArtAssetGenome(genome ?? {});
   const profile = checkedGenome.asset_profile;
@@ -456,10 +526,10 @@ export function resolveUniversalArtAssetProvider({genome, provider_id = null, pr
     allow_preview: checkedGenome.quality_tier === 'PREVIEW'
   });
   const explicit = suppliedManifest ?? (explicitId ? externalRegistry.get(explicitId) : null);
-  const explicitCapabilityGap = explicit
-    ? contract.required_capabilities.filter(capability => !(explicit.capabilities ?? []).includes(capability))
-    : [];
-  const builtin = !explicitId && contract.builtin_reference ? builtinProviderSummary() : null;
+  const explicitCapabilityGap = explicit ? providerContractGaps(checkedGenome, explicit) : [];
+  const builtin = !explicitId && contract.builtin_reference
+    ? profile === 'vfx' ? builtinVfxProviderSummary() : builtinProviderSummary()
+    : null;
   const candidates = externalNegotiation.candidates.map(candidate => ({...candidate, source: 'external-provider-contract'}));
   if (explicit) candidates.unshift({
     provider_id: explicit.id ?? explicit.provider_id,
@@ -540,6 +610,11 @@ function resolveProviderAdapter({genome, options, resolution}) {
       const adapter = new AssetProviderAdapter(manifest, {runner: options.providerRunner ?? null, timeout: options.providerTimeout ?? 60000});
       return {adapter, manifest: clone(adapter.manifest), source: 'resolved-external-provider'};
     }
+  }
+  if (resolution.selected_provider_source === 'ragf-reference-provider'
+    && resolution.selected_provider_id === VFX_PROVIDER_ID) {
+    const adapter = createVfxReferenceProvider();
+    return {adapter, manifest: clone(adapter.manifest), source: 'builtin-vfx-reference'};
   }
   return null;
 }
@@ -1414,9 +1489,13 @@ export function verifyUniversalArtAssetQualityProof(receipt, {
 
 function artifactRootsForCandidate(candidate) {
   const artifacts = record(candidate?.artifacts);
-  return Object.fromEntries(Object.entries(artifacts)
+  const directRoots = record(candidate?.format_output?.vfx_contract?.artifact_roots ?? candidate?.format_output?.artifact_roots);
+  const roots = Object.keys(artifacts).length > 0 ? Object.fromEntries(Object.entries(artifacts)
     .map(([role, artifact]) => [role, artifact?.root ?? null])
     .filter(([role]) => nonEmptyText(role))
+    .sort(([left], [right]) => left.localeCompare(right, 'en'))) : directRoots;
+  return Object.fromEntries(Object.entries(roots)
+    .filter(([role, root]) => nonEmptyText(role) && nonEmptyText(root))
     .sort(([left], [right]) => left.localeCompare(right, 'en')));
 }
 
@@ -1706,6 +1785,8 @@ function candidateFacts({candidate, workspace, provider, providerEvidence = {}} 
   const providerManifest = provider?.manifest ?? provider ?? null;
   const provenance = direct ? record(selected.provenance) : {};
   const license = direct ? record(selected.license) : {};
+  const vfxContract = direct ? record(selected?.format_output?.vfx_contract) : record(selected?.vfx_contract);
+  const vfxKinds = Array.isArray(vfxContract.representation_kinds) ? [...vfxContract.representation_kinds] : [];
   return {
     selected,
     artifacts,
@@ -1733,6 +1814,9 @@ function candidateFacts({candidate, workspace, provider, providerEvidence = {}} 
     ),
     licenseVerified: license.status === 'VERIFIED' && Boolean(license.identifier),
     providerManifestLicense: providerManifest?.license?.status === 'VERIFIED' || providerManifest?.metadata?.license === 'Apache-2.0',
+    vfxContract,
+    vfxKinds,
+    vfxPlatformPass: selected?.metrics?.platform_status === 'PASS' || vfxContract.platform_contract?.status === 'PASS',
     direct
   };
 }
@@ -1780,6 +1864,17 @@ export function evaluateUniversalArtAssetAcceptance({
   const localInspectionPass = key => localInspectionValid && localFileInspection?.status === 'PASS' && statusPass(localFileInspection?.aggregates?.[`${key}_status`]);
   const expectedProviderId = execution.provider_id ?? facts.providerManifest?.id ?? facts.providerManifest?.provider_id ?? null;
   const expectedArtifactRoots = artifactRootsForCandidate(facts.selected);
+  const isVfx = genome.asset_profile === 'vfx';
+  const requestedVfxKinds = isVfx
+    ? [...(genome.representation_contract?.visual_effect?.required_kinds ?? VFX_REPRESENTATION_KINDS)]
+    : [];
+  const vfxContractVerification = isVfx
+    ? verifyVfxAssetContract(facts.vfxContract, {
+      genome: genome.ragf_genome,
+      artifactRoots: expectedArtifactRoots,
+      requiredKinds: requestedVfxKinds
+    })
+    : {valid: false, errors: [], contract_root: null};
   const evidenceBundleVerification = verifyUniversalArtAssetEvidenceBundle(evidenceBundle, {
     qualityTier: genome.quality_tier,
     genomeRoot: genome.genome_root,
@@ -1828,7 +1923,9 @@ export function evaluateUniversalArtAssetAcceptance({
     inspection: localFileInspection,
     targetPlatforms: genome.target_platforms
   });
-  const qualityProofPass = Boolean(facts.selected?.candidate_root) && localInspectionValid && localFileInspection?.status === 'PASS' && qualityProofVerification.valid;
+  const qualityProofPass = Boolean(facts.selected?.candidate_root)
+    && qualityProofVerification.valid
+    && (isVfx || (localInspectionValid && localFileInspection?.status === 'PASS'));
   const provenanceLicenseProofVerification = verifyUniversalArtAssetProvenanceLicenseReceipt(effectiveProvenanceLicenseProof, {
     genomeRoot: genome.genome_root,
     candidateRoot: facts.selected?.candidate_root ?? null,
@@ -1843,7 +1940,9 @@ export function evaluateUniversalArtAssetAcceptance({
   const executionPass = execution.status === 'COMPLETED' && (!workspaceVerification || workspaceVerification.valid === true);
   const runtimePass = runtimeProjectionEvidence.present
     ? runtimeProjectionEvidence.pass
-    : Boolean(facts.workspaceReport?.runtime_validation?.valid === true);
+    : isVfx
+      ? vfxContractVerification.valid
+      : Boolean(facts.workspaceReport?.runtime_validation?.valid === true);
   const pbrPass = (pbrEvidence.present ? pbrEvidence.pass : facts.pbrChannels >= 4) && facts.pbrChannels >= 3;
   const localGeometryPass = !localFileInspection || localInspectionPass('geometry');
   const localTopologyPass = !localFileInspection || localInspectionPass('topology');
@@ -1856,10 +1955,28 @@ export function evaluateUniversalArtAssetAcceptance({
   const provenanceLicenseCourtPass = courtGate(providerCourt, 'provenance_gate') !== false && courtGate(providerCourt, 'license_gate') !== false;
   const strictProvenanceLicense = genome.quality_tier !== 'PREVIEW';
   const provenanceLicensePass = (strictProvenanceLicense ? provenanceLicenseProofPass : (effectiveProvenanceLicenseProof ? provenanceLicenseProofPass : metadataProvenanceLicensePass)) && provenanceLicenseCourtPass;
-  const gates = [
+  const commonGates = [
     makeGate('intent_gate', required.has('intent_gate'), Boolean(genome.ragf_intent?.intent_root), 'INTENT_NOT_ROOTED', 'RAGF intent'),
     makeGate('genome_gate', required.has('genome_gate'), genomeVerification.valid, 'GENOME_INVALID', 'URRF/RAGF genome verification'),
-    makeGate('provider_execution_gate', required.has('provider_execution_gate'), executionPass, execution.failure?.code ?? 'PROVIDER_NOT_EXECUTED', execution.mode ?? 'provider lifecycle'),
+    makeGate('provider_execution_gate', required.has('provider_execution_gate'), executionPass, execution.failure?.code ?? 'PROVIDER_NOT_EXECUTED', execution.mode ?? 'provider lifecycle')
+  ];
+  const gates = isVfx
+    ? [
+      ...commonGates,
+      makeGate('effect_graph_gate', required.has('effect_graph_gate'), vfxContractVerification.valid, vfxContractVerification.errors[0] ?? 'VFX_EFFECT_GRAPH_INVALID', 'URRF VFX contract'),
+      makeGate('particle_contract_gate', required.has('particle_contract_gate'), vfxContractVerification.valid && facts.vfxKinds.includes('particle'), 'VFX_PARTICLE_CONTRACT_MISSING', 'URRF particle representation contract'),
+      makeGate('volume_contract_gate', required.has('volume_contract_gate'), vfxContractVerification.valid && facts.vfxKinds.includes('volume'), 'VFX_VOLUME_CONTRACT_MISSING', 'URRF volume representation contract'),
+      makeGate('flipbook_contract_gate', required.has('flipbook_contract_gate'), vfxContractVerification.valid && facts.vfxKinds.includes('flipbook'), 'VFX_FLIPBOOK_CONTRACT_MISSING', 'URRF flipbook representation contract'),
+      makeGate('curve_contract_gate', required.has('curve_contract_gate'), vfxContractVerification.valid && facts.vfxKinds.includes('curve'), 'VFX_CURVE_CONTRACT_MISSING', 'URRF curve representation contract'),
+      makeGate('platform_gate', required.has('platform_gate'), facts.vfxPlatformPass, 'VFX_TARGET_PLATFORM_NOT_VERIFIED', 'VFX provider platform contract'),
+      makeGate('provenance_license_gate', required.has('provenance_license_gate'), provenanceLicensePass, strictProvenanceLicense ? 'INDEPENDENT_PROVENANCE_LICENSE_PROOF_REQUIRED' : 'PROVENANCE_OR_LICENSE_AUDIT_INCOMPLETE', strictProvenanceLicense ? 'external provenance/license audit receipt' : 'candidate/provider metadata'),
+      makeGate('art_direction_gate', required.has('art_direction_gate'), artDirectionReviewPass, 'ART_DIRECTION_REVIEW_REQUIRED', 'external art-direction review receipt'),
+      makeGate('runtime_projection_gate', required.has('runtime_projection_gate'), runtimePass, 'VSR_VFX_PROJECTION_NOT_EXECUTED_OR_VERIFIED', runtimeProjectionEvidence.present ? 'provider representation evidence' : 'URRF VFX contract'),
+      makeGate('quality_tier_gate', required.has('quality_tier_gate'), genome.quality_tier === 'PREVIEW' ? facts.candidateQualityTier === genome.quality_tier : qualityProofPass, 'QUALITY_PROOF_REQUIRED_FOR_VFX', genome.quality_tier === 'PREVIEW' ? 'candidate quality tier' : 'external quality proof'),
+      makeGate('human_review_gate', required.has('human_review_gate'), humanReviewPass, 'HUMAN_ART_REVIEW_REQUIRED', 'external human-art review receipt')
+    ]
+    : [
+      ...commonGates,
     makeGate('geometry_gate', required.has('geometry_gate'), facts.meshValid && localGeometryPass && (meshEvidence.present ? meshEvidence.pass : true) && courtGate(providerCourt, 'geometry_gate') !== false, 'GEOMETRY_OUTPUT_INVALID_OR_MISSING', localFileInspection ? 'local GLB inspection' : meshEvidence.present ? 'provider evidence' : 'candidate metrics'),
     makeGate('topology_gate', required.has('topology_gate'), localTopologyPass && (topologyEvidence.present ? topologyEvidence.pass : localFileInspection ? true : statusPass(facts.mesh.topology_status)) && courtGate(providerCourt, 'topology_gate') !== false, 'TOPOLOGY_NOT_EXPLICITLY_VERIFIED', localFileInspection ? 'local GLB topology inspection' : topologyEvidence.present ? 'provider evidence' : 'candidate topology status'),
     makeGate('uv_gate', required.has('uv_gate'), localUvPass && (uvEvidence.present ? uvEvidence.pass : localFileInspection ? true : statusPass(facts.mesh.uv_status ?? facts.pbr.uv_status)), 'UV_NOT_EXPLICITLY_VERIFIED', localFileInspection ? 'local GLB UV inspection' : uvEvidence.present ? 'provider evidence' : 'candidate UV status'),
@@ -1909,6 +2026,9 @@ export function evaluateUniversalArtAssetAcceptance({
       lod_inspection_status: localFileInspection?.aggregates?.lod_status ?? null,
       lod_count: localFileInspection?.aggregates?.lod_count ?? null,
       pbr_file_status: localFileInspection?.aggregates?.pbr_status ?? null,
+      vfx_contract_status: isVfx ? (vfxContractVerification.valid ? 'PASS' : 'FAIL') : 'NOT_APPLICABLE',
+      vfx_representation_kinds: isVfx ? [...facts.vfxKinds] : [],
+      vfx_contract_root: isVfx ? vfxContractVerification.contract_root : null,
       quality_proof_status: effectiveQualityProof ? (qualityProofVerification.valid ? 'PASS' : 'FAIL') : 'NOT_RUN',
       provenance_license_proof_status: effectiveProvenanceLicenseProof ? (provenanceLicenseProofVerification.valid ? 'PASS' : 'FAIL') : 'NOT_RUN',
       evidence_bundle_status: evidenceBundle ? (evidenceBundleVerification.valid ? 'PASS' : 'FAIL') : 'NOT_RUN'
@@ -2283,8 +2403,7 @@ export function generateUniversalArtAsset(input = {}, options = {}) {
   });
   const adapterInfo = resolveProviderAdapter({genome, options, resolution});
   if (adapterInfo) {
-    const missingCapabilities = profileContract(genome.asset_profile).required_capabilities
-      .filter(capability => !(adapterInfo.manifest.capabilities ?? []).includes(capability));
+    const missingCapabilities = providerContractGaps(genome, adapterInfo.manifest);
     if (missingCapabilities.length) {
       return generateBlocked({
         genome,
@@ -3200,7 +3319,25 @@ function universalArtAssetProviderPipelineEntries({provider = null, providers = 
       authoritative: false
     }
     : null;
-  return [builtinEntry, ...external].filter(Boolean).sort((left, right) => left.provider_id.localeCompare(right.provider_id, 'en'));
+  const builtinVfxManifest = createVfxReferenceProvider().manifest;
+  const builtinVfx = builtinVfxProviderSummary();
+  const builtinVfxEntry = builtinVfx
+    ? {
+      provider_id: builtinVfx.provider_id,
+      provider_root: builtinVfx.provider_root,
+      provider_source: 'ragf-reference-provider',
+      name: builtinVfxManifest.name,
+      version: builtinVfxManifest.version,
+      runtime_status: 'READY_REFERENCE',
+      runtime_binding: 'BUILTIN_REFERENCE',
+      runner_supplied: false,
+      command_configured: false,
+      capabilities: clone(builtinVfx.capabilities),
+      capability_descriptors: clone(builtinVfxManifest.capability_descriptors ?? []),
+      authoritative: false
+    }
+    : null;
+  return [builtinEntry, builtinVfxEntry, ...external].filter(Boolean).sort((left, right) => left.provider_id.localeCompare(right.provider_id, 'en'));
 }
 
 function universalArtAssetProviderPipelineCapabilityMatches(entry, capability, aliases = {}) {
@@ -3224,13 +3361,27 @@ function universalArtAssetProviderPipelineOutputMatches(requiredOutput, declared
     'animation-clips': ['animation-clips', 'animation'],
     'refined-glb': ['refined-glb', 'glb'],
     'asset-family': ['asset-family', 'environment-family'],
-    'glb+placement': ['glb+placement']
+    'glb+placement': ['glb+placement'],
+    'vfx-particle': ['vfx-particle'],
+    'vfx-volume': ['vfx-volume'],
+    'vfx-flipbook': ['vfx-flipbook'],
+    'vfx-curve': ['vfx-curve']
   };
   return (aliases[value] ?? [value]).some(alias => declaredOutputs.includes(alias));
 }
 
 function universalArtAssetProviderPipelineStageDefinitions(profile, {builtinReference = false} = {}) {
   const contract = profileContract(profile);
+  if (profile === 'vfx') {
+    return [{
+      stage_id: 'vfx_generation',
+      stage_kind: 'VFX_GENERATION',
+      required: true,
+      required_capabilities: clone(contract.required_capabilities),
+      capability_aliases: {},
+      required_outputs: ['vfx-particle', 'vfx-volume', 'vfx-flipbook', 'vfx-curve']
+    }];
+  }
   const worldProfile = !builtinReference && ['structure', 'environment', 'vegetation', 'resource'].includes(profile);
   const stages = [{
     stage_id: 'base_generation',
@@ -3625,6 +3776,7 @@ function universalArtAssetProviderPipelineExecutionBindings({provider = null, pr
   register(provider, true);
   for (const value of Array.isArray(providers) ? providers : []) register(value, true);
   for (const manifest of externalAssetProviderManifests()) register(manifest, false);
+  if (!bindings.has(VFX_PROVIDER_ID)) register(createVfxReferenceProvider(), false);
   return bindings;
 }
 
@@ -3769,7 +3921,8 @@ function universalArtAssetProviderPipelineExecutionAggregateOutputIntegrity(outp
 }
 
 function universalArtAssetProviderPipelineExecutionStageChecks({stage, request, output, previous, providerExecution = null, failureCode = null} = {}) {
-  const runtimeRoute = ['EXTERNAL_RUNTIME_BOUND', 'INJECTED_RUNTIME_BOUND'].includes(stage.route_status);
+  const runtimeRoute = ['EXTERNAL_RUNTIME_BOUND', 'INJECTED_RUNTIME_BOUND'].includes(stage.route_status)
+    || (stage.route_status === 'BUILTIN_REFERENCE' && stage.provider_id === VFX_PROVIDER_ID);
   const result = providerExecution?.result ?? null;
   const job = providerExecution?.job ?? null;
   const providerId = stage.provider_id ?? stage.selected_provider_id ?? null;
@@ -3935,7 +4088,7 @@ export function executeUniversalArtAssetProviderPipeline({
     } else if (previous && previous.status !== 'COMPLETED') {
       status = 'SKIPPED';
       failureCode = 'INPUT_STAGE_NOT_COMPLETED';
-    } else if (stage.route_status === 'BUILTIN_REFERENCE') {
+    } else if (stage.route_status === 'BUILTIN_REFERENCE' && stage.selected_provider_id !== VFX_PROVIDER_ID) {
       failureCode = 'BUILTIN_REFERENCE_STAGE_REQUIRES_REFERENCE_WORKSPACE';
     } else if (stage.route_status === 'UNRESOLVED') {
       failureCode = 'STAGE_PROVIDER_UNRESOLVED';
@@ -3969,7 +4122,8 @@ export function executeUniversalArtAssetProviderPipeline({
           runtimeExecutionPerformed = providerExecution?.status === 'COMPLETED'
             && job?.state === 'COMPLETED'
             && isHexRoot(result?.result_root);
-          executionAttempted = ['EXECUTOR_INJECTED', 'EXTERNAL_PROCESS'].includes(stage.runtime_binding);
+          executionAttempted = ['EXECUTOR_INJECTED', 'EXTERNAL_PROCESS'].includes(stage.runtime_binding)
+            || (stage.route_status === 'BUILTIN_REFERENCE' && stage.selected_provider_id === VFX_PROVIDER_ID);
           executionPerformed = runtimeExecutionPerformed;
           if (providerExecution?.status === 'CONTRACT_VERIFIED_RUNTIME_NOT_EXECUTED') {
             status = 'CONTRACT_ONLY';
@@ -4208,7 +4362,8 @@ export function verifyUniversalArtAssetProviderPipelineExecution(receipt, {plan 
           && stage.provider_id !== null;
       const expectedOutputContract = output.output_contract_pass === (output.result_root !== null
         && stage.required_outputs.every(required => universalArtAssetProviderPipelineOutputMatches(required, output.actual_outputs)));
-      const runtimeRoute = ['EXTERNAL_RUNTIME_BOUND', 'INJECTED_RUNTIME_BOUND'].includes(stage.route_status);
+      const runtimeRoute = ['EXTERNAL_RUNTIME_BOUND', 'INJECTED_RUNTIME_BOUND'].includes(stage.route_status)
+        || (stage.route_status === 'BUILTIN_REFERENCE' && stage.provider_id === VFX_PROVIDER_ID);
       const expectedAttempted = runtimeRoute && ['COMPLETED', 'FAILED'].includes(stage.status);
       const expectedPerformed = isHexRoot(stage.result_root) && stage.job_state === 'COMPLETED';
       const executionTruthfulness = stage.execution_attempted === expectedAttempted

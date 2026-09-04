@@ -198,7 +198,7 @@ target approval or human acceptance evidence.
 
 ## 事实边界
 
-内置 Provider 现在是 profile-aware 的确定性 stylized procedural 3D 参考生产器：`character` 保留圆润人体、骨骼、动画和 morph 路径；`creature` 使用独立四足几何、13 骨骼、步态动画、动态 RSR 与 quadruped retarget；`prop`、`vehicle`、`structure`、`environment`、`vegetation`、`resource` 生成各自的静态几何原型、四通道 PBR、三级 LOD、VSR 和静态 RSR。`vfx` 仍保持未解析能力边界。所有输出都用于验证资产协议、家族、装配、谱系、增量影响和运行时闭环，仍不等同于电影级或 AAA 生产，也未包含专业重拓扑、复杂 UV 展开、面部绑定、头发/布料、动作捕捉、目标设备性能或通用文生 3D 模型。专业 DCC 与生成模型应作为可替换 Provider 接入。
+内置 Provider 现在是 profile-aware 的确定性参考生产器：`character` 保留圆润人体、骨骼、动画和 morph 路径；`creature` 使用独立四足几何、13 骨骼、步态动画、动态 RSR 与 quadruped retarget；`prop`、`vehicle`、`structure`、`environment`、`vegetation`、`resource` 生成各自的静态几何原型、四通道 PBR、三级 LOD、VSR 和静态 RSR；`vfx` 使用独立的粒子、体积、flipbook、曲线四表示合同和世界时间效果图，不借用网格生成器。所有输出都用于验证资产协议、家族、装配、谱系、增量影响和运行时闭环，仍不等同于电影级或 AAA 生产，也未包含专业重拓扑、复杂 UV 展开、面部绑定、头发/布料、动作捕捉、目标设备性能或通用文生 3D 模型。专业 DCC 与生成模型应作为可替换 Provider 接入。
 
 ## v0.5：AI社会生态与技术创生
 

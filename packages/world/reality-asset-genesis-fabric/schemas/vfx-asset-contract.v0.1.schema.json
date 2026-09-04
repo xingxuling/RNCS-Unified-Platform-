@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.example/schemas/vfx-asset-contract.v0.1.schema.json",
+  "title": "RAGF VFX Asset Contract v0.1",
+  "type": "object",
+  "required": [
+    "format",
+    "version",
+    "asset_id",
+    "genome_root",
+    "representation_kinds",
+    "artifact_roles",
+    "artifact_roots",
+    "effect_graph",
+    "simulation_budget",
+    "platform_contract",
+    "runtime_contract",
+    "authority",
+    "contract_root"
+  ],
+  "properties": {
+    "format": {"const": "ragf.vfx-asset-contract.v0.1"},
+    "version": {"const": "0.1.0"},
+    "asset_id": {"type": "string", "minLength": 1},
+    "genome_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "representation_kinds": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"enum": ["particle", "volume", "flipbook", "curve"]}
+    },
+    "artifact_roles": {
+      "type": "object",
+      "additionalProperties": {"type": "string", "minLength": 1}
+    },
+    "artifact_roots": {
+      "type": "object",
+      "additionalProperties": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+    },
+    "effect_graph": {
+      "type": "object",
+      "required": ["node_policy", "event_clock", "failure_policy"],
+      "properties": {
+        "node_policy": {"type": "string"},
+        "event_clock": {"const": "world-time-derived"},
+        "failure_policy": {"const": "fail-closed-preserve-event-and-last-valid-representation"}
+      }
+    },
+    "simulation_budget": {
+      "type": "object",
+      "required": ["max_particles", "fixed_step_seconds", "max_volume_dimensions", "max_flipbook_frames", "max_curve_points"],
+      "properties": {
+        "max_particles": {"type": "integer", "minimum": 1},
+        "fixed_step_seconds": {"type": "number", "exclusiveMinimum": 0},
+        "max_volume_dimensions": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"type": "integer", "minimum": 1}},
+        "max_flipbook_frames": {"type": "integer", "minimum": 1},
+        "max_curve_points": {"type": "integer", "minimum": 1}
+      }
+    },
+    "platform_contract": {
+      "type": "object",
+      "required": ["target_platforms", "supported", "status"],
+      "properties": {
+        "target_platforms": {"type": "array", "items": {"type": "string"}},
+        "supported": {"const": true},
+        "status": {"const": "PASS"}
+      }
+    },
+    "runtime_contract": {
+      "type": "object",
+      "required": ["vsr_projection_required", "canonical_world_write"],
+      "properties": {
+        "vsr_projection_required": {"const": true},
+        "canonical_world_write": {"const": false}
+      }
+    },
+    "authority": {
+      "type": "object",
+      "required": ["canonical_owner", "representation_owner", "provider_can_write_authoritative_world_state", "provider_can_commit", "candidate_only", "authoritative"],
+      "properties": {
+        "canonical_owner": {"const": "RNCS"},
+        "representation_owner": {"const": "URRF"},
+        "provider_can_write_authoritative_world_state": {"const": false},
+        "provider_can_commit": {"const": false},
+        "candidate_only": {"const": true},
+        "authoritative": {"const": false}
+      }
+    },
+    "contract_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "additionalProperties": true
+}

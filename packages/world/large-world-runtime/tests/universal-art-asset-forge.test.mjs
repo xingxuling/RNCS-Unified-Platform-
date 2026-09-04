@@ -445,26 +445,61 @@ test('contract-only provider failure is visible and does not become a fake gener
   }).valid, true);
 });
 
-test('unsupported profile fails closed instead of borrowing a humanoid generator', () => {
+test('VFX profile uses the dedicated particle-volume-flipbook-curve contract instead of a mesh generator', () => {
   const genome = createUniversalArtAssetGenome({
     description: '一个需要真实粒子材质和轨迹的魔法爆炸特效。',
     asset_profile: 'vfx',
     quality_tier: 'AAA',
     seed: 'universal-art-forge-vfx-seed'
   });
-  const outDir = fs.mkdtempSync(path.join(os.tmpdir(), 'urrf-universal-art-unresolved-'));
+  const outDir = fs.mkdtempSync(path.join(os.tmpdir(), 'urrf-universal-art-vfx-reference-'));
   const result = generateUniversalArtAsset(genome, {outDir});
-  assert.equal(result.execution.failure.code, 'PROFILE_PROVIDER_UNRESOLVED');
-  assert.equal(result.resolution.selected_provider_id, null);
-  assert.equal(result.resolution.selected_provider_source, null);
+  assert.equal(result.execution.status, 'COMPLETED');
+  assert.equal(result.resolution.selected_provider_id, 'provider:taowind:vfx-reference');
+  assert.equal(result.resolution.selected_provider_source, 'ragf-reference-provider');
   assert.equal(result.status, 'BLOCKED');
-  assert.equal(result.candidate, null);
+  assert.ok(result.candidate);
+  assert.deepEqual(result.candidate.format_output.vfx_contract.representation_kinds, ['curve', 'flipbook', 'particle', 'volume']);
+  assert.equal(result.candidate.files.some(file => /glb|mesh/i.test(`${file.role}:${file.path}`)), false);
+  assert.ok(result.acceptance.failures.includes('art_direction_gate'));
+  assert.ok(result.acceptance.failures.includes('human_review_gate'));
   assert.equal(result.acceptance.aaa_verified, false);
   assert.equal(result.providerExecutionReceipt.status, 'CANDIDATE_PROVIDER_EXECUTION_PASS');
   assert.equal(verifyUniversalArtAssetProviderExecutionReceipt(result.providerExecutionReceipt).valid, true);
 });
 
-test('profile coverage preserves built-in and unresolved boundaries after resealing', () => {
+test('mesh-only Provider cannot satisfy the VFX representation contract', () => {
+  const manifest = createAssetProviderManifest({
+    id: 'provider:test:vfx-mesh-only',
+    name: 'Incorrect Mesh VFX Fixture',
+    version: '0.1.0',
+    providerType: '3d-production',
+    capabilities: ['asset.generate.vfx'],
+    capability_descriptors: [{capability_id: 'asset.generate.vfx', outputs: ['mesh-glb', 'pbr-texture-pack'], quality_tier: 'PRODUCTION'}],
+    inputFormats: ['ragf.asset-genome.v0.3'],
+    outputFormats: ['model/gltf-binary', 'application/json'],
+    executionMode: 'local',
+    hardwareRequirements: {cpu: 'any', ram: 'any', gpu: 'none', vram: 'none', accelerator: 'none'},
+    license: {status: 'VERIFIED', identifier: 'Apache-2.0'},
+    runtimeStatus: 'READY',
+    upstream: {url: 'https://taowind.company', revision: 'vfx-mesh-only-fixture'}
+  });
+  const provider = new AssetProviderAdapter(manifest, {runner: () => ({files: []})});
+  const outDir = fs.mkdtempSync(path.join(os.tmpdir(), 'urrf-universal-art-vfx-mesh-only-'));
+  const result = generateUniversalArtAsset({
+    description: '一个被错误声明为 VFX 的网格输出。',
+    asset_profile: 'vfx',
+    asset_kind: 'vfx-3d',
+    quality_tier: 'AAA',
+    seed: 'universal-art-forge-vfx-mesh-only-seed'
+  }, {outDir, provider});
+  assert.equal(result.execution.failure.code, 'PROVIDER_CAPABILITY_MISMATCH');
+  assert.ok(result.execution.failure.detail.some(code => code.startsWith('vfx.representation.')));
+  assert.equal(result.candidate, null);
+  assert.equal(result.status, 'BLOCKED');
+});
+
+test('profile coverage preserves built-in VFX and other provider boundaries after resealing', () => {
   const characterOutDir = fs.mkdtempSync(path.join(os.tmpdir(), 'urrf-universal-art-profile-coverage-character-'));
   const vfxInput = {
     description: '一个需要真实粒子材质和轨迹的魔法爆炸特效。',
@@ -485,17 +520,16 @@ test('profile coverage preserves built-in and unresolved boundaries after reseal
     coverage_id: 'urrf-profile-coverage-unit-v01',
     entries,
     expected_profiles: ['character', 'vfx'],
-    expected_modes: {character: 'BUILTIN_REFERENCE', vfx: 'UNRESOLVED'}
+    expected_modes: {character: 'BUILTIN_REFERENCE', vfx: 'BUILTIN_REFERENCE'}
   });
   assert.equal(report.status, 'CANDIDATE_PROFILE_COVERAGE_PASS');
   assert.deepEqual(report.coverage.observed_profiles, ['character', 'vfx']);
-  assert.equal(report.summary.mode_histogram.BUILTIN_REFERENCE, 1);
-  assert.equal(report.summary.mode_histogram.UNRESOLVED, 1);
+  assert.equal(report.summary.mode_histogram.BUILTIN_REFERENCE, 2);
   assert.equal(verifyUniversalArtAssetProfileCoverageReport(report).valid, true);
   assert.equal(verifyUniversalArtAssetProfileCoverageReport(report, {entries}).valid, true);
 
   const tampered = structuredClone(report);
-  tampered.entries[1].resolution.selected_provider_source = 'ragf-reference-provider';
+  tampered.entries[1].resolution.selected_provider_source = 'external-provider-contract';
   const resealedTamper = seal(tampered, 'coverage_root');
   assert.equal(verifyUniversalArtAssetProfileCoverageReport(resealedTamper).valid, false);
   assert.equal(verifyUniversalArtAssetProfileCoverageReport(resealedTamper, {entries}).valid, false);
@@ -510,10 +544,10 @@ test('provider preflight binds every URRF profile to health and fails closed on 
   assert.equal(report.aaa_ready, false);
   assert.equal(report.release_ready, false);
   assert.deepEqual(report.summary.route_histogram, {
-    BUILTIN_REFERENCE_READY: 8,
+    BUILTIN_REFERENCE_READY: 9,
     EXTERNAL_CONTRACT_ONLY: 0,
     EXTERNAL_RUNTIME_BOUND: 0,
-    UNRESOLVED: 1,
+    UNRESOLVED: 0,
     INCONSISTENT: 0
   });
   assert.deepEqual(report.summary.provider_health_histogram, {
@@ -522,8 +556,8 @@ test('provider preflight binds every URRF profile to health and fails closed on 
     EXTERNAL_PROCESS: 0
   });
   assert.equal(report.summary.release_blocked_provider_count, 6);
-  assert.equal(report.profile_routes.find(entry => entry.asset_profile === 'vfx').selected_provider_id, null);
-  assert.equal(report.profile_routes.find(entry => entry.asset_profile === 'vfx').selected_provider_source, null);
+  assert.equal(report.profile_routes.find(entry => entry.asset_profile === 'vfx').selected_provider_id, 'provider:taowind:vfx-reference');
+  assert.equal(report.profile_routes.find(entry => entry.asset_profile === 'vfx').selected_provider_source, 'ragf-reference-provider');
   assert.equal(report.profile_routes.find(entry => entry.asset_profile === 'environment').route_status, 'BUILTIN_REFERENCE_READY');
   assert.equal(verifyUniversalArtAssetProviderPreflightReport(report).valid, true);
 
@@ -652,8 +686,8 @@ test('provider pipeline plan composes profile stages without executing or escala
     genome: createUniversalArtAssetGenome({...input, quality_tier: 'AAA'})
   }));
   assert.equal(plans.length, 9);
-  assert.equal(plans.filter(plan => plan.status === 'CANDIDATE_PROVIDER_PIPELINE_PLANNED').length, 8);
-  assert.equal(plans.filter(plan => plan.status === 'CANDIDATE_PROVIDER_PIPELINE_BLOCKED').length, 1);
+  assert.equal(plans.filter(plan => plan.status === 'CANDIDATE_PROVIDER_PIPELINE_PLANNED').length, 9);
+  assert.equal(plans.filter(plan => plan.status === 'CANDIDATE_PROVIDER_PIPELINE_BLOCKED').length, 0);
   const character = plans.find(plan => plan.asset_profile === 'character');
   assert.equal(character.runtime_ready, true);
   assert.deepEqual(character.stages.map(stage => stage.stage_id), ['base_generation', 'rigging_animation']);
@@ -663,8 +697,9 @@ test('provider pipeline plan composes profile stages without executing or escala
   assert.equal(creature.stages[1].route_status, 'BUILTIN_REFERENCE');
   assert.deepEqual(creature.stages[1].failure_reasons, []);
   const vfx = plans.find(plan => plan.asset_profile === 'vfx');
-  assert.equal(vfx.stages[0].route_status, 'UNRESOLVED');
-  assert.ok(vfx.required_stage_blockers.some(blocker => blocker.stage_id === 'base_generation'));
+  assert.equal(vfx.stages[0].route_status, 'BUILTIN_REFERENCE');
+  assert.deepEqual(vfx.stages[0].required_outputs, ['vfx-particle', 'vfx-volume', 'vfx-flipbook', 'vfx-curve']);
+  assert.deepEqual(vfx.required_stage_blockers, []);
   for (const plan of plans) {
     assert.equal(plan.execution_performed, false);
     assert.equal(plan.candidate_only, true);

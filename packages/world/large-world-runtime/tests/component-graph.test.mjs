@@ -190,6 +190,7 @@ test('URRF component graph executor reuses the Provider Pipeline and chains depe
     components: specs.map(spec => ({...spec, genome: componentGenomes[spec.component_id]}))
   });
   const outputRoles = ['mesh-glb', 'pbr-texture-pack', 'rig-candidate', 'animation-clips'];
+  const vfxOutputRoles = ['vfx-particle', 'vfx-volume', 'vfx-flipbook', 'vfx-curve'];
   const manifest = createAssetProviderManifest({
     id: 'provider:test:component-graph-executor',
     name: 'Component Graph Executor Fixture',
@@ -209,7 +210,7 @@ test('URRF component graph executor reuses the Provider Pipeline and chains depe
       {capability_id: 'asset.generate.3d.production', outputs: outputRoles, quality_tier: 'PRODUCTION'},
       {capability_id: 'asset.generate.mesh', outputs: ['mesh-glb'], quality_tier: 'PRODUCTION'},
       {capability_id: 'asset.generate.pbr', outputs: ['pbr-texture-pack'], quality_tier: 'PRODUCTION'},
-      {capability_id: 'asset.generate.vfx', outputs: ['mesh-glb', 'pbr-texture-pack'], quality_tier: 'PRODUCTION'},
+      {capability_id: 'asset.generate.vfx', outputs: ['vfx-particle', 'vfx-volume', 'vfx-flipbook', 'vfx-curve'], quality_tier: 'PRODUCTION'},
       {capability_id: 'asset.rig.predict', outputs: ['rig-candidate'], quality_tier: 'PRODUCTION'},
       {capability_id: 'asset.pose.initial', outputs: ['animation-clips'], quality_tier: 'PRODUCTION'}
     ],
@@ -230,7 +231,7 @@ test('URRF component graph executor reuses the Provider Pipeline and chains depe
         asset_id: input.asset_id,
         format: 'component-graph-provider-output',
         outputs: outputRoles,
-        files: outputRoles.map(role => ({
+        files: (input.component_context?.component_id === 'sparks' ? vfxOutputRoles : outputRoles).map(role => ({
           name: `${operation}/${role}.json`,
           path: `${operation}/${role}.json`,
           role,
@@ -293,7 +294,7 @@ test('URRF component graph executor reuses the Provider Pipeline and chains depe
   assert.equal(assembly.checks.resource_file_integrity, true);
   assert.equal(assembly.components.find(component => component.component_id === 'armor').transform.translation_mm[1], 840);
   assert.equal(assembly.components.find(component => component.component_id === 'armor').parent_component_id, 'body');
-  assert.equal(assembly.resources.find(resource => resource.component_id === 'sparks' && resource.role === 'mesh-glb').source_asset_id, 'logical:sparks:mesh-glb');
+  assert.equal(assembly.resources.find(resource => resource.component_id === 'sparks' && resource.role === 'vfx-particle').source_asset_id, 'logical:sparks:vfx-particle');
   const assemblyVerification = verifyUniversalArtAssetComponentAssembly(assembly, {
     graph,
     execution: run.execution,
@@ -315,7 +316,7 @@ test('URRF component graph executor reuses the Provider Pipeline and chains depe
   assert.equal(directory.vsr_catalog.assets.find(asset => asset.metadata.role === 'pbr-texture-pack').kind, 'material');
   assert.equal(directory.vsr_catalog.assets.find(asset => asset.metadata.role === 'animation-clips').kind, 'animation');
   assert.equal(directory.vsr_catalog.assets.find(asset => asset.metadata.role === 'mesh-glb').kind, 'mesh');
-  assert.equal(directory.vsr_catalog.assets.find(asset => asset.metadata.component_id === 'sparks' && asset.metadata.role === 'mesh-glb').metadata.source_asset_id, 'logical:sparks:mesh-glb');
+  assert.equal(directory.vsr_catalog.assets.find(asset => asset.metadata.component_id === 'sparks' && asset.metadata.role === 'vfx-particle').metadata.source_asset_id, 'logical:sparks:vfx-particle');
   assert.equal(directory.representations.find(entry => entry.component_id === 'sparks').consumer_mapping.rsr.observation_input_status, 'INPUT_READY');
   assert.equal(directory.vsr_catalog.assets.every(asset => asset.metadata.representation_kind === (asset.metadata.component_id === 'sparks' ? 'particle' : 'mesh')), true);
   assert.equal(directory.vsr_catalog.assets.every(asset => asset.metadata.import_status === 'NOT_EXECUTED'), true);
