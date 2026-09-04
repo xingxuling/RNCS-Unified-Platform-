@@ -1,0 +1,38 @@
+# URRF v0.3 Coverage Matrix
+
+Status: `CANDIDATE / LOCAL_VERIFIED / NOT_PRODUCTION`
+
+`urrf-v03-coverage-matrix.json` is the generated, machine-readable mapping
+for all 26 URRF v0.3 success criteria and the nine K400 gates. The canonical
+matrix definition is exported by
+`packages/kernel/rncs-core-contract/src/urrf-v03-coverage.mjs`; the JSON is a
+reviewable evidence snapshot, not an authority receipt.
+
+## Reproduce
+
+```text
+npm run evidence:urrf-v03-coverage --workspace @taowind/rncs-core-contract
+npm test --workspace @taowind/rncs-core-contract
+```
+
+The matrix test checks:
+
+- exactly 26 ordered criteria and nine ordered K400 gates;
+- every source, schema, test and evidence reference resolves to a real file;
+- roots and authority ownership are valid;
+- the open sensor-inference gate and blocked AI generation status remain
+  explicit.
+
+## Current bounded result
+
+- Criteria: `19 CANDIDATE_LOCAL_VERIFIED`, `6 CANDIDATE_LOCAL_PARTIAL`,
+  `1 NOT_IMPLEMENTED`.
+- K400: `5 CANDIDATE_LOCAL_VERIFIED`, `3 CANDIDATE_LOCAL_PARTIAL`,
+  `1 BLOCKED_NOT_RUN`.
+- `AI_GENERATE`: `BLOCKED_NOT_RUN` because this host has no CUDA/NVIDIA GPU,
+  TRELLIS.2 weights or real Provider executor.
+- AAA release: `BLOCKED_EXTERNAL_ART_HUMAN_HARDWARE_EVIDENCE`.
+
+Local contract, lowering, deterministic replay and negative-case evidence do
+not substitute for independent processes, target hardware, model/data/license
+audit, art direction, human review or production release authority.

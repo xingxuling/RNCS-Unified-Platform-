@@ -12,7 +12,11 @@ import {
   createRealityConsistencyProfile,
   createRealityHorizon,
   createRealityInterestGraph,
+  createRealityLawBindings,
   createRealityPowerProfile,
+  createRealityPropertySet,
+  createRealityPropertyTransitionCandidate,
+  createRealityQuantity,
   createRealityReplicationEnvelope,
   createRealityResourceBudget,
   createRealityTransportProfile,
@@ -40,7 +44,11 @@ const schemaDefinitions = [
   ['reality-replication-envelope.v0.3.schema.json', 'rncs.reality-replication-envelope.v0.3'],
   ['reality-transport-profile.v0.3.schema.json', 'rncs.reality-transport-profile.v0.3'],
   ['reality-power-profile.v0.3.schema.json', 'rncs.reality-power-profile.v0.3'],
-  ['reality-resource-budget.v0.3.schema.json', 'rncs.reality-resource-budget.v0.3']
+  ['reality-resource-budget.v0.3.schema.json', 'rncs.reality-resource-budget.v0.3'],
+  ['reality-quantity.v0.3.schema.json', 'rncs.reality-quantity.v0.3'],
+  ['reality-property-set.v0.3.schema.json', 'rncs.reality-property-set.v0.3'],
+  ['reality-law-bindings.v0.3.schema.json', 'rncs.reality-law-bindings.v0.3'],
+  ['reality-property-transition.v0.3.schema.json', 'rncs.reality-property-transition.v0.3']
 ];
 
 function loadSchemas() {
@@ -92,6 +100,53 @@ function fixtures() {
   });
   const transport_profile = createRealityTransportProfile({profile_id: 'transport:schema-closure'});
   const power_profile = createRealityPowerProfile({profile_id: 'power:schema-closure', node_id: 'node:schema-closure'});
+  const quantity = createRealityQuantity({
+    value: '7850',
+    unit: 'kg/m³',
+    dimension: 'density',
+    status: 'CANDIDATE',
+    provenance_ref: 'urn:test:property',
+    authority_ref: 'urn:test:authority',
+    evidence_refs: ['evidence:test:property']
+  });
+  const property_set = createRealityPropertySet({
+    object_id: 'object:schema-closure',
+    revision: '1',
+    evidence_refs: ['evidence:test:property'],
+    intrinsic_properties: {
+      density: {
+        domain: 'physical',
+        value: '7850',
+        unit: 'kg/m³',
+        dimension: 'density',
+        status: 'CANDIDATE',
+        provenance_ref: 'urn:test:property',
+        authority_ref: 'urn:test:authority',
+        evidence_refs: ['evidence:test:property']
+      }
+    }
+  });
+  const law_bindings = createRealityLawBindings({
+    object_id: 'object:schema-closure',
+    world_law_set_id: 'world-law:test',
+    evidence_refs: ['evidence:test:law'],
+    world_laws: [{
+      law_id: 'gravity',
+      domain: 'physical',
+      model: 'constant-gravity',
+      status: 'CANDIDATE',
+      provenance_ref: 'urn:test:law',
+      authority_ref: 'urn:test:authority',
+      evidence_refs: ['evidence:test:law']
+    }]
+  });
+  const property_transition = createRealityPropertyTransitionCandidate({
+    property_set,
+    source_state_root: root('6'),
+    law_binding: {law_id: 'gravity', law_root: law_bindings.world_laws.gravity.law_root},
+    provider: {provider_id: 'provider:schema-closure', provider_root: root('7')},
+    predicted_output: {status: 'CANDIDATE'}
+  });
   return new Map([
     ['world-time.v0.3.schema.json', initial_time],
     ['world-event.v0.3.schema.json', event],
@@ -137,7 +192,11 @@ function fixtures() {
       node_id: 'node:schema-closure',
       power_profile_root: power_profile.power_root,
       transport_profile_roots: [transport_profile.profile_root]
-    })]
+    })],
+    ['reality-quantity.v0.3.schema.json', quantity],
+    ['reality-property-set.v0.3.schema.json', property_set],
+    ['reality-law-bindings.v0.3.schema.json', law_bindings],
+    ['reality-property-transition.v0.3.schema.json', property_transition]
   ]);
 }
 

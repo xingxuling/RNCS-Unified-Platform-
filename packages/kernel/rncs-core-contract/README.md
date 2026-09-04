@@ -62,6 +62,17 @@ VSR/AER State   = 观察者投影状态
 
 `src/representation-flow.mjs` 提供 `RepresentationFlow` 与 `RepresentationFlowSample`。Flow 把对象身份、源/目标状态根和表示根绑定到严格单调的时间区间，并显式记录运动场、插值/外推策略、预测/误差预算、安全边界与回滚兼容性。Sample 只允许预算内的插值或外推，超出时间、误差、碰撞或陈旧状态闸门时失败；所有输出保持 `candidate_only`、`NOT_COMMITTED`，不拥有 Canonical 写入权。
 
+## URRF v0.3 覆盖矩阵
+
+`src/urrf-v03-coverage.mjs` 固化 URRF v0.3 的 26 项成功标准与 K400 九个 Gate，逐项绑定真实源码、Schema、测试、证据和负例。矩阵的 Canonical owner 仍是 RNCS，RCL 保有跨项目语义所有权，URRF 负责表示/物化；Provider 只能发出候选。可用以下命令生成审阅快照：
+
+```bash
+npm run evidence:urrf-v03-coverage
+npm test
+```
+
+当前快照将本地合同证据、未完成的传感器推断闸门、缺少 TRELLIS.2 权重/CUDA 的 `AI_GENERATE` 以及 AAA 外部人审/硬件证据分开记录，不把任何一项候选证据升级成生产放行。
+
 ## Entity Kernel v0.1
 
 `src/entity-kernel.mjs` 提供一个小型、可复核的状态内核：Fragment Schema 只接受明确类型；Entity 由 Fragment Composition 形成稳定组合根；读取通过确定性 State Batch；写入先进入 Deferred Mutation Ledger，经过 authority、预算和 expected entity root 检查后才提交。\`decimal\` 使用规范化十进制字符串，保持 Node/Python 共享哈希不引入浮点歧义。

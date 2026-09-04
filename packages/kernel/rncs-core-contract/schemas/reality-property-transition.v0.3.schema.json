@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rncs.reality-property-transition.v0.3",
+  "title": "RNCS Reality Property Transition Candidate v0.3",
+  "type": "object",
+  "required": ["format", "version", "transition_id", "phase", "object_id", "source_property_root", "source_state_root", "law_binding", "applied_input", "provider", "predicted_output", "uncertainty", "constraint_check", "authority", "candidate_only", "authoritative", "commit_status", "transition_root"],
+  "properties": {
+    "format": {"const": "rncs.reality-property-transition.v0.3"},
+    "version": {"const": "0.3.0"},
+    "transition_id": {"type": "string", "minLength": 1},
+    "phase": {"const": "candidate"},
+    "object_id": {"type": "string", "minLength": 1},
+    "source_property_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "source_state_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "law_binding": {"type": "object", "required": ["law_id"], "properties": {"law_id": {"type": "string", "minLength": 1}, "law_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}, "additionalProperties": true},
+    "applied_input": {"type": "object"},
+    "provider": {"type": "object", "required": ["provider_id"], "properties": {"provider_id": {"type": "string", "minLength": 1}, "provider_root": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"}}, "additionalProperties": true},
+    "predicted_output": {},
+    "uncertainty": {},
+    "constraint_check": {"type": "object"},
+    "authority": {"type": "object", "required": ["provider_can_write_canonical_property", "rncs_authority_required", "canonical_state_mutation_allowed"], "properties": {"provider_can_write_canonical_property": {"const": false}, "rncs_authority_required": {"const": true}, "canonical_state_mutation_allowed": {"const": false}}, "additionalProperties": true},
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "commit_status": {"const": "NOT_COMMITTED"},
+    "transition_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}

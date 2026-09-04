@@ -42,3 +42,4 @@ export * from './representation-flow.mjs';
 export * from './causal-physical.mjs';
 export * from './server-sovereignty.mjs';
 export * from './reality-chunk.mjs';
+export * from './urrf-v03-coverage.mjs';

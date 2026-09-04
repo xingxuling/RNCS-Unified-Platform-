@@ -1,0 +1,1272 @@
+{
+  "format": "rncs.urrf-v03-coverage-matrix.v0.1",
+  "version": "0.1.0",
+  "repository": "RNCS-Unified-Platform-",
+  "observed_on": "2026-09-05",
+  "authority": {
+    "canonical_owner": "RNCS",
+    "rcl_semantic_owner": "RCL",
+    "representation_owner": "URRF",
+    "provider_can_emit_candidate": true,
+    "provider_can_write_authoritative_world_state": false
+  },
+  "status_vocabulary": [
+    "CANDIDATE_LOCAL_VERIFIED",
+    "CANDIDATE_LOCAL_PARTIAL",
+    "BLOCKED_NOT_RUN",
+    "NOT_IMPLEMENTED"
+  ],
+  "k400_gates": [
+    "EXPRESS",
+    "COMPILE",
+    "LOWER",
+    "EXECUTE",
+    "CORRECT",
+    "ROBUST",
+    "PERFORMANCE",
+    "AI_GENERATE",
+    "EVIDENCE"
+  ],
+  "criteria": [
+    {
+      "criterion_id": "URRF-01",
+      "ordinal": 1,
+      "title": "Unified WorldTime",
+      "requirement": "WorldTime separates epoch, logical time, simulation tick, causal sequence and historical reference.",
+      "canonical_owner": "RNCS",
+      "representation_owner": "URRF",
+      "status": "CANDIDATE_LOCAL_VERIFIED",
+      "evidence_level": "LOCAL_TEST_AND_ROOT_EVIDENCE",
+      "source_refs": [
+        "packages/kernel/rncs-core-contract/src/world-truth.mjs"
+      ],
+      "schema_refs": [
+        "packages/kernel/rncs-core-contract/schemas/world-time.v0.3.schema.json"
+      ],
+      "test_refs": [
+        "packages/kernel/rncs-core-contract/tests/world-truth.mjs",
+        "tests/urrf-v03-world-truth.integration.test.mjs"
+      ],
+      "evidence_refs": [
+        "docs/verification/URRF_V03_WORLD_TRUTH_EVIDENCE_v0.1.md"
+      ],
+      "k400_gates": [
+        "EXPRESS",
+        "COMPILE",
+        "LOWER",
+        "EXECUTE",
+        "CORRECT",
+        "EVIDENCE"
+      ],
+      "negative_cases": [
+        "non-monotonic world time",
+        "duplicate causal sequence"
+      ],
+      "remaining": []
+    },
+    {
+      "criterion_id": "URRF-02",
+      "ordinal": 2,
+      "title": "Canonical Event Replay",
+      "requirement": "World events append to a canonical log and replay deterministically to the same state root.",
+      "canonical_owner": "RNCS",
+      "representation_owner": "URRF",
+      "status": "CANDIDATE_LOCAL_VERIFIED",
+      "evidence_level": "LOCAL_TEST_AND_ROOT_EVIDENCE",
+      "source_refs": [
+        "packages/kernel/rncs-core-contract/src/world-truth.mjs"
+      ],
+      "schema_refs": [
+        "packages/kernel/rncs-core-contract/schemas/world-event.v0.3.schema.json"
+      ],
+      "test_refs": [
+        "packages/kernel/rncs-core-contract/tests/world-truth.mjs",
+        "tests/urrf-v03-world-truth.integration.test.mjs"
+      ],
+      "evidence_refs": [
+        "docs/verification/URRF_V03_WORLD_TRUTH_EVIDENCE_v0.1.md"
+      ],
+      "k400_gates": [
+        "EXPRESS",
+        "COMPILE",
+        "LOWER",
+        "EXECUTE",
+        "CORRECT",
+        "ROBUST",
+        "EVIDENCE"
+      ],
+      "negative_cases": [
+        "missing causal parent",
+        "previous-state mismatch",
+        "next-state mismatch",
+        "duplicate event"
+      ],
+      "remaining": []
+    },
+    {
+      "criterion_id": "URRF-03",
+      "ordinal": 3,
+      "title": "Fact Provenance",
+      "requirement": "WorldFact and FactWorldTree retain source-event provenance and separate canonical facts from memory references.",
+      "canonical_owner": "RNCS",
+      "representation_owner": "URRF",
+      "status": "CANDIDATE_LOCAL_VERIFIED",
+      "evidence_level": "LOCAL_TEST_AND_ROOT_EVIDENCE",
+      "source_refs": [
+        "packages/kernel/rncs-core-contract/src/world-truth.mjs"
+      ],
+      "schema_refs": [
+        "packages/kernel/rncs-core-contract/schemas/world-fact.v0.3.schema.json",
+        "packages/kernel/rncs-core-contract/schemas/fact-world-tree.v0.3.schema.json",
+        "packages/kernel/rncs-core-contract/schemas/fact-world-tree-ref.v0.3.schema.json"
+      ],
+      "test_refs": [
+        "packages/kernel/rncs-core-contract/tests/world-truth.mjs",
+        "tests/urrf-v03-world-truth.integration.test.mjs"
+      ],
+      "evidence_refs": [
+        "docs/verification/URRF_V03_WORLD_TRUTH_EVIDENCE_v0.1.md"
+      ],
+      "k400_gates": [
+        "EXPRESS",
+        "COMPILE",
+        "LOWER",
+        "EXECUTE",
+        "CORRECT",
+        "EVIDENCE"
+      ],
+      "negative_cases": [
+        "missing source event",
+        "memory-tree reference in canonical fact"
+      ],
+      "remaining": []
+    },
+    {
+      "criterion_id": "URRF-04",
+      "ordinal": 4,
+      "title": "Multiple Representations",
+      "requirement": "One RealityObject may bind multiple rooted representations and a bounded quality portfolio.",
+      "canonical_owner": "RNCS",
+      "representation_owner": "URRF",
+      "status": "CANDIDATE_LOCAL_VERIFIED",
+      "evidence_level": "LOCAL_TEST_AND_ROOT_EVIDENCE",
+      "source_refs": [
+        "packages/kernel/rncs-core-contract/src/representation-ref.mjs",
+        "packages/kernel/rncs-core-contract/src/representation-portfolio.mjs",
+        "packages/world/reality-representation-fabric/src/index.mjs",
+        "packages/world/reality-representation-fabric/src/portfolio-runtime.mjs"
+      ],
+      "schema_refs": [
+        "packages/kernel/rncs-core-contract/schemas/representation-reference.v0.1.schema.json",
+        "packages/kernel/rncs-core-contract/schemas/representation-portfolio.v0.3.schema.json",
+        "packages/kernel/rncs-core-contract/schemas/representation-slot.v0.3.schema.json"
+      ],
+      "test_refs": [
+        "packages/kernel/rncs-core-contract/tests/representation-portfolio.mjs",
+        "packages/world/reality-representation-fabric/tests/portfolio-runtime.test.mjs",
+        "packages/world/reality-representation-fabric/tests/runtime.test.mjs"
+      ],
+      "evidence_refs": [
+        "docs/verification/URRF_V03_VISUAL_PORTFOLIO_PHASE6_EVIDENCE.md"
+      ],
+      "k400_gates": [
+        "EXPRESS",
+        "COMPILE",
+        "LOWER",
+        "EXECUTE",
+        "CORRECT",
+        "PERFORMANCE",
+        "EVIDENCE"
+      ],
+      "negative_cases": [
+        "missing required slot",
+        "duplicate representation root",
+        "provider-owned canonical state"
+      ],
+      "remaining": []
+    },
+    {
+      "criterion_id": "URRF-05",
+      "ordinal": 5,
+      "title": "Representation Flow Time",
+      "requirement": "Representation flow time is distinct from historical WorldTime and is bounded by interpolation, prediction and error budgets.",
+      "canonical_owner": "RNCS",
+      "representation_owner": "URRF",
+      "status": "CANDIDATE_LOCAL_VERIFIED",
+      "evidence_level": "LOCAL_TEST_AND_ROOT_EVIDENCE",
+      "source_refs": [
+        "packages/kernel/rncs-core-contract/src/representation-flow.mjs",
+        "packages/world/reality-representation-fabric/src/index.mjs"
+      ],
+      "schema_refs": [
+        "packages/kernel/rncs-core-contract/schemas/representation-flow.v0.3.schema.json",
+        "packages/kernel/rncs-core-contract/schemas/representation-flow-sample.v0.3.schema.json"
+      ],
+      "test_refs": [
+        "packages/kernel/rncs-core-contract/tests/representation-flow.mjs",
+        "packages/world/reality-representation-fabric/tests/flow-time.test.mjs"
+      ],
+      "evidence_refs": [
+        "docs/verification/URRF_REPRESENTATION_FLOW_TIME/representation-flow-time-report.json"
+      ],
+      "k400_gates": [
+        "EXPRESS",
+        "COMPILE",
+        "LOWER",
+        "EXECUTE",
+        "CORRECT",
+        "ROBUST",
+        "EVIDENCE"
+      ],
+      "negative_cases": [
+        "unregistered flow",
+        "stale sample",
+        "prediction error over budget"
+      ],
+      "remaining": []
+    },
+    {
+      "criterion_id": "URRF-06",
+      "ordinal": 6,
+      "title": "Independent Detail Axes",
+      "requirement": "Visual, physical, causal, semantic, behavioral, audio, temporal, cognitive and flow detail axes can be lowered independently.",
+      "canonical_owner": "RNCS",
+      "representation_owner": "URRF",
+      "status": "CANDIDATE_LOCAL_VERIFIED",
+      "evidence_level": "LOCAL_TEST_AND_ROOT_EVIDENCE",
+      "source_refs": [
+        "packages/kernel/rncs-core-contract/src/reality-access.mjs",
+        "packages/world/reality-representation-fabric/src/index.mjs"
+      ],
+      "schema_refs": [
+        "packages/kernel/rncs-core-contract/schemas/reality-horizon.v0.3.schema.json",
+        "packages/kernel/rncs-core-contract/schemas/reality-interest-graph.v0.3.schema.json"
+      ],
+      "test_refs": [
+        "packages/kernel/rncs-core-contract/tests/reality-access.mjs",
+        "packages/world/reality-representation-fabric/tests/access-query-runtime.test.mjs"
+      ],
+      "evidence_refs": [
+        "docs/verification/URRF_V03_REALITY_ACCESS_PHASE2_EVIDENCE.md"
+      ],
+      "k400_gates": [
+        "EXPRESS",
+        "COMPILE",
+        "LOWER",
+        "EXECUTE",
+        "CORRECT",
+        "PERFORMANCE",
+        "EVIDENCE"
+      ],
+      "negative_cases": [
+        "axis root tampering",
+        "invalid detail vector",
+        "physical detail silently replacing visual detail"
+      ],
+      "remaining": []
+    },
+    {
+      "criterion_id": "URRF-07",
+      "ordinal": 7,
+      "title": "Causal and Physical Levels",
+      "requirement": "Causal and physical levels affect execution demand and interaction behavior while remaining candidate lowering data.",
+      "canonical_owner": "RNCS",
+      "representation_owner": "URRF",
+      "status": "CANDIDATE_LOCAL_VERIFIED",
+      "evidence_level": "LOCAL_TEST_AND_ROOT_EVIDENCE",
+      "source_refs": [
+        "packages/kernel/rncs-core-contract/src/causal-physical.mjs",
+        "packages/world/reality-representation-fabric/src/index.mjs",
+        "packages/world/large-world-runtime/src/index.mjs"
+      ],
+      "schema_refs": [
+        "packages/kernel/rncs-core-contract/schemas/causal-physical-profile.v0.3.schema.json"
+      ],
+      "test_refs": [
+        "packages/kernel/rncs-core-contract/tests/causal-physical.mjs",
+        "packages/world/reality-representation-fabric/tests/causal-physical.test.mjs",
+        "packages/world/large-world-runtime/tests/causal-physical.test.mjs"
+      ],
+      "evidence_refs": [
+        "docs/verification/URRF_LARGE_WORLD_CAUSAL_PHYSICAL_DETAIL/README.md"
+      ],
+      "k400_gates": [
+        "EXPRESS",
+        "COMPILE",
+        "LOWER",
+        "EXECUTE",
+        "CORRECT",
+        "PERFORMANCE",
+        "EVIDENCE"
+      ],
+      "negative_cases": [
+        "invalid causal/physical level",
+        "collision demand omitted from lowering"
+      ],
+      "remaining": []
+    },
+    {
+      "criterion_id": "URRF-08",
+      "ordinal": 8,
+      "title": "Horizon and Interest Cognitive Streaming",
+      "requirement": "RealityHorizon and InterestGraph bound cognitive working sets without granting query or provider mutation authority.",
+      "canonical_owner": "RNCS",
+      "representation_owner": "URRF",
+      "status": "CANDIDATE_LOCAL_VERIFIED",
+      "evidence_level": "LOCAL_TEST_AND_ROOT_EVIDENCE",
+      "source_refs": [
+        "packages/kernel/rncs-core-contract/src/reality-access.mjs",
+        "packages/world/reality-representation-fabric/src/index.mjs"
+      ],
+      "schema_refs": [
+        "packages/kernel/rncs-core-contract/schemas/reality-horizon.v0.3.schema.json",
+        "packages/kernel/rncs-core-contract/schemas/reality-interest-graph.v0.3.schema.json"
+      ],
+      "test_refs": [
+        "packages/kernel/rncs-core-contract/tests/reality-access.mjs",
+        "packages/world/reality-representation-fabric/tests/access-query-runtime.test.mjs"
+      ],
+      "evidence_refs": [
+        "docs/verification/URRF_V03_REALITY_ACCESS_PHASE2_EVIDENCE.md"
+      ],
+      "k400_gates": [
+        "EXPRESS",
+        "COMPILE",
+        "LOWER",
+        "EXECUTE",
+        "CORRECT",
+        "ROBUST",
+        "EVIDENCE"
+      ],
+      "negative_cases": [
+        "permission filtered object",
+        "working-set capacity overflow",
+        "missing required interest node"
+      ],
+      "remaining": []
+    },
+    {
+      "criterion_id": "URRF-09",
+      "ordinal": 9,
+      "title": "Reality Query",
+      "requirement": "Spatial, semantic, state, relation, temporal and permission filters form a rooted candidate query result.",
+      "canonical_owner": "RNCS",
+      "representation_owner": "URRF",
+      "status": "CANDIDATE_LOCAL_VERIFIED",
+      "evidence_level": "LOCAL_TEST_AND_ROOT_EVIDENCE",
+      "source_refs": [
+        "packages/kernel/rncs-core-contract/src/reality-access.mjs",
+        "packages/world/reality-representation-fabric/src/index.mjs"
+      ],
+      "schema_refs": [
+        "packages/kernel/rncs-core-contract/schemas/reality-horizon.v0.3.schema.json",
+        "packages/kernel/rncs-core-contract/schemas/reality-interest-graph.v0.3.schema.json"
+      ],
+      "test_refs": [
+        "packages/kernel/rncs-core-contract/tests/reality-access.mjs",
+        "packages/world/reality-representation-fabric/tests/access-query-runtime.test.mjs"
+      ],
+      "evidence_refs": [
+        "docs/verification/URRF_V03_REALITY_ACCESS_PHASE2_EVIDENCE.md"
+      ],
+      "k400_gates": [
+        "EXPRESS",
+        "COMPILE",
+        "LOWER",
+        "EXECUTE",
+        "CORRECT",
+        "EVIDENCE"
+      ],
+      "negative_cases": [
+        "private object leakage",
+        "invalid state operator",
+        "temporal range mismatch"
+      ],
+      "remaining": []
+    },
+    {
+      "criterion_id": "URRF-10",
+      "ordinal": 10,
+      "title": "Snapshot and Delta",
+      "requirement": "RealityChunk and replication paths carry rooted snapshots, deltas, receipts and deterministic conflict inputs.",
+      "canonical_owner": "RNCS",
+      "representation_owner": "URRF",
+      "status": "CANDIDATE_LOCAL_VERIFIED",
+      "evidence_level": "LOCAL_TEST_AND_ROOT_EVIDENCE",
+      "source_refs": [
+        "packages/kernel/rncs-core-contract/src/reality-chunk.mjs",
+        "packages/kernel/rncs-core-contract/src/reality-distribution.mjs",
+        "packages/world/large-world-runtime/src/index.mjs"
+      ],
+      "schema_refs": [
+        "packages/kernel/rncs-core-contract/schemas/reality-chunk.v0.3.schema.json",
+        "packages/kernel/rncs-core-contract/schemas/reality-chunk-delta.v0.3.schema.json",
+        "packages/kernel/rncs-core-contract/schemas/reality-replication-envelope.v0.3.schema.json"
+      ],
+      "test_refs": [
+        "packages/kernel/rncs-core-contract/tests/reality-chunk.mjs",
+        "packages/kernel/rncs-core-contract/tests/reality-distribution.mjs",
+        "packages/world/large-world-runtime/tests/reality-chunk.test.mjs",
+        "packages/world/large-world-runtime/tests/reality-chunk-fabric.test.mjs"
+      ],
+      "evidence_refs": [
+        "docs/verification/URRF_LARGE_WORLD_REALITY_CHUNK/README.md",
+        "docs/verification/URRF_V03_CONSISTENCY_LEASE_PHASE3_EVIDENCE.md"
+      ],
+      "k400_gates": [
+        "EXPRESS",
+        "COMPILE",
+        "LOWER",
+        "EXECUTE",
+        "CORRECT",
+        "ROBUST",
+        "EVIDENCE"
+      ],
+      "negative_cases": [
+        "duplicate delta",
+        "base snapshot mismatch",
+        "tampered payload root"
+      ],
+      "remaining": [
+        "independent OS-process replay is not yet evidenced"
+      ],
+      "boundary": "Local runtime objects and bounded replay; not production network replication."
+    },
+    {
+      "criterion_id": "URRF-11",
+      "ordinal": 11,
+      "title": "Consistency Lease and Fencing",
+      "requirement": "Two runtime nodes reject stale epoch, expired lease and stale fencing writes before canonical mutation.",
+      "canonical_owner": "RNCS",
+      "representation_owner": "URRF",
+      "status": "CANDIDATE_LOCAL_PARTIAL",
+      "evidence_level": "LOCAL_BOUNDED_EVIDENCE",
+      "source_refs": [
+        "packages/kernel/rncs-core-contract/src/reality-distribution.mjs",
+        "packages/kernel/rncs-core-contract/src/reality-chunk.mjs",
+        "packages/world/large-world-runtime/src/index.mjs"
+      ],
+      "schema_refs": [
+        "packages/kernel/rncs-core-contract/schemas/reality-consistency-profile.v0.3.schema.json",
+        "packages/kernel/rncs-core-contract/schemas/authority-lease.v0.3.schema.json",
+        "packages/kernel/rncs-core-contract/schemas/reality-replication-envelope.v0.3.schema.json"
+      ],
+      "test_refs": [
+        "packages/kernel/rncs-core-contract/tests/reality-distribution.mjs",
+        "packages/world/large-world-runtime/tests/reality-chunk-fabric.test.mjs",
+        "packages/world/large-world-runtime/tests/server-sovereignty.test.mjs"
+      ],
+      "evidence_refs": [
+        "docs/verification/URRF_V03_CONSISTENCY_LEASE_PHASE3_EVIDENCE.md"
+      ],
+      "k400_gates": [
+        "EXPRESS",
+        "COMPILE",
+        "LOWER",
+        "EXECUTE",
+        "CORRECT",
+        "ROBUST",
+        "EVIDENCE"
+      ],
+      "negative_cases": [
+        "stale epoch",
+        "stale fencing token",
+        "expired lease",
+        "revoked lease"
+      ],
+      "remaining": [
+        "real independent process consensus and network partition proof"
+      ],
+      "boundary": "Two isolated runtime instances are tested; distributed consensus is not claimed."
+    },
+    {
+      "criterion_id": "URRF-12",
+      "ordinal": 12,
+      "title": "Migration and Failover",
+      "requirement": "Server pseudo-sovereignty can transfer a durable bundle and fence the source candidate on failover.",
+      "canonical_owner": "RNCS",
+      "representation_owner": "URRF",
+      "status": "CANDIDATE_LOCAL_PARTIAL",
+      "evidence_level": "LOCAL_BOUNDED_EVIDENCE",
+      "source_refs": [
+        "packages/kernel/rncs-core-contract/src/server-sovereignty.mjs",
+        "packages/world/large-world-runtime/src/index.mjs"
+      ],
+      "schema_refs": [
+        "packages/kernel/rncs-core-contract/schemas/server-pseudo-sovereignty.v0.3.schema.json",
+        "packages/kernel/rncs-core-contract/schemas/server-sovereignty-migration.v0.3.schema.json"
+      ],
+      "test_refs": [
+        "packages/kernel/rncs-core-contract/tests/server-sovereignty.mjs",
+        "packages/world/large-world-runtime/tests/server-sovereignty.test.mjs"
+      ],
+      "evidence_refs": [
+        "docs/verification/URRF_V03_SERVER_SOVEREIGNTY/README.md"
+      ],
+      "k400_gates": [
+        "EXPRESS",
+        "COMPILE",
+        "LOWER",
+        "EXECUTE",
+        "CORRECT",
+        "ROBUST",
+        "EVIDENCE"
+      ],
+      "negative_cases": [
+        "source lease not revoked",
+        "target bundle root mismatch",
+        "stale writer after failover"
+      ],
+      "remaining": [
+        "persistent cross-process durable store and production failover drill"
+      ],
+      "boundary": "Local durable-bundle candidate, not an HA consensus cluster."
+    },
+    {
+      "criterion_id": "URRF-13",
+      "ordinal": 13,
+      "title": "Fiber QoS",
+      "requirement": "Fiber transport profile expresses bandwidth, latency, reliability, freshness, loss mode and authority requirements.",
+      "canonical_owner": "RNCS",
+      "representation_owner": "URRF",
+      "status": "CANDIDATE_LOCAL_PARTIAL",
+      "evidence_level": "LOCAL_BOUNDED_EVIDENCE",
+      "source_refs": [
+        "packages/kernel/rncs-core-contract/src/reality-transport.mjs",
+        "packages/world/reality-representation-fabric/src/transport-runtime.mjs"
+      ],
+      "schema_refs": [
+        "packages/kernel/rncs-core-contract/schemas/reality-transport-profile.v0.3.schema.json"
+      ],
+      "test_refs": [
+        "packages/kernel/rncs-core-contract/tests/reality-transport.mjs",
+        "packages/world/reality-representation-fabric/tests/transport-runtime.test.mjs"
+      ],
+      "evidence_refs": [
+        "docs/verification/URRF_V03_TRANSPORT_PHASE4_EVIDENCE.md"
+      ],
+      "k400_gates": [
+        "EXPRESS",
+        "COMPILE",
+        "LOWER",
+        "EXECUTE",
+        "CORRECT",
+        "EVIDENCE"
+      ],
+      "negative_cases": [
+        "payload root mismatch",
+        "sequence regression",
+        "authority receipt missing"
+      ],
+      "remaining": [
+        "physical Fiber link and production QoS telemetry"
+      ],
+      "boundary": "Profile and deterministic runtime only; no physical link execution."
+    },
+    {
+      "criterion_id": "URRF-14",
+      "ordinal": 14,
+      "title": "WiFi Discovery and Roaming",
+      "requirement": "WiFi-style discovery, association, roaming and fallback remain explicit candidate transport decisions.",
+      "canonical_owner": "RNCS",
+      "representation_owner": "URRF",
+      "status": "CANDIDATE_LOCAL_PARTIAL",
+      "evidence_level": "LOCAL_BOUNDED_EVIDENCE",
+      "source_refs": [
+        "packages/kernel/rncs-core-contract/src/reality-transport.mjs",
+        "packages/world/reality-representation-fabric/src/transport-runtime.mjs"
+      ],
+      "schema_refs": [
+        "packages/kernel/rncs-core-contract/schemas/reality-transport-profile.v0.3.schema.json"
+      ],
+      "test_refs": [
+        "packages/kernel/rncs-core-contract/tests/reality-transport.mjs",
+        "packages/world/reality-representation-fabric/tests/transport-runtime.test.mjs"
+      ],
+      "evidence_refs": [
+        "docs/verification/URRF_V03_TRANSPORT_PHASE4_EVIDENCE.md"
+      ],
+      "k400_gates": [
+        "EXPRESS",
+        "COMPILE",
+        "LOWER",
+        "EXECUTE",
+        "CORRECT",
+        "ROBUST",
+        "EVIDENCE"
+      ],
+      "negative_cases": [
+        "unknown node",
+        "coverage loss",
+        "roaming target unavailable"
+      ],
+      "remaining": [
+        "real radio discovery, roaming and packet-loss measurements"
+      ],
+      "boundary": "WiFi-like contract, not radio operation."
+    },
+    {
+      "criterion_id": "URRF-15",
+      "ordinal": 15,
+      "title": "Bluetooth Organ Link",
+      "requirement": "Bluetooth-style low-power pairing binds device identity and capability scope without granting canonical write authority.",
+      "canonical_owner": "RNCS",
+      "representation_owner": "URRF",
+      "status": "CANDIDATE_LOCAL_PARTIAL",
+      "evidence_level": "LOCAL_BOUNDED_EVIDENCE",
+      "source_refs": [
+        "packages/kernel/rncs-core-contract/src/reality-transport.mjs",
+        "packages/world/reality-representation-fabric/src/transport-runtime.mjs"
+      ],
+      "schema_refs": [
+        "packages/kernel/rncs-core-contract/schemas/reality-transport-profile.v0.3.schema.json"
+      ],
+      "test_refs": [
+        "packages/kernel/rncs-core-contract/tests/reality-transport.mjs",
+        "packages/world/reality-representation-fabric/tests/transport-runtime.test.mjs"
+      ],
+      "evidence_refs": [
+        "docs/verification/URRF_V03_TRANSPORT_PHASE4_EVIDENCE.md"
+      ],
+      "k400_gates": [
+        "EXPRESS",
+        "COMPILE",
+        "LOWER",
+        "EXECUTE",
+        "CORRECT",
+        "ROBUST",
+        "EVIDENCE"
+      ],
+      "negative_cases": [
+        "pairing scope escalation",
+        "device identity mismatch",
+        "state sequence regression"
+      ],
+      "remaining": [
+        "real Bluetooth pairing and device compatibility evidence"
+      ],
+      "boundary": "Bluetooth-like Organ Link candidate, not physical pairing."
+    },
+    {
+      "criterion_id": "URRF-16",
+      "ordinal": 16,
+      "title": "Power Load Shedding",
+      "requirement": "Power profiles and load-shedding plans protect authority, control and minimum reality before reducing soft representations.",
+      "canonical_owner": "RNCS",
+      "representation_owner": "URRF",
+      "status": "CANDIDATE_LOCAL_VERIFIED",
+      "evidence_level": "LOCAL_TEST_AND_ROOT_EVIDENCE",
+      "source_refs": [
+        "packages/kernel/rncs-core-contract/src/reality-power.mjs",
+        "packages/world/reality-representation-fabric/src/resource-governor-runtime.mjs",
+        "packages/world/large-world-runtime/src/index.mjs"
+      ],
+      "schema_refs": [
+        "packages/kernel/rncs-core-contract/schemas/reality-power-profile.v0.3.schema.json",
+        "packages/kernel/rncs-core-contract/schemas/reality-resource-budget.v0.3.schema.json"
+      ],
+      "test_refs": [
+        "packages/kernel/rncs-core-contract/tests/reality-power.mjs",
+        "packages/world/reality-representation-fabric/tests/resource-governor-runtime.test.mjs",
+        "packages/world/large-world-runtime/tests/reality-fault-recovery.test.mjs"
+      ],
+      "evidence_refs": [
+        "docs/verification/URRF_V03_POWER_GOVERNOR_PHASE5_EVIDENCE.md"
+      ],
+      "k400_gates": [
+        "EXPRESS",
+        "COMPILE",
+        "LOWER",
+        "EXECUTE",
+        "CORRECT",
+        "ROBUST",
+        "EVIDENCE"
+      ],
+      "negative_cases": [
+        "battery critical",
+        "thermal pressure",
+        "power loss",
+        "minimum reality omitted"
+      ],
+      "remaining": []
+    },
+    {
+      "criterion_id": "URRF-17",
+      "ordinal": 17,
+      "title": "Resource Governor",
+      "requirement": "CPU/GPU/NPU/VRAM/RAM/storage/network/energy and simulation budgets admit or lower candidate work deterministically.",
+      "canonical_owner": "RNCS",
+      "representation_owner": "URRF",
+      "status": "CANDIDATE_LOCAL_VERIFIED",
+      "evidence_level": "LOCAL_TEST_AND_ROOT_EVIDENCE",
+      "source_refs": [
+        "packages/kernel/rncs-core-contract/src/reality-power.mjs",
+        "packages/world/reality-representation-fabric/src/resource-governor-runtime.mjs"
+      ],
+      "schema_refs": [
+        "packages/kernel/rncs-core-contract/schemas/reality-resource-budget.v0.3.schema.json"
+      ],
+      "test_refs": [
+        "packages/kernel/rncs-core-contract/tests/reality-power.mjs",
+        "packages/world/reality-representation-fabric/tests/resource-governor-runtime.test.mjs"
+      ],
+      "evidence_refs": [
+        "docs/verification/URRF_V03_POWER_GOVERNOR_PHASE5_EVIDENCE.md",
+        "docs/verification/URRF_LARGE_WORLD_WORKING_SET_BUDGET/README.md"
+      ],
+      "k400_gates": [
+        "EXPRESS",
+        "COMPILE",
+        "LOWER",
+        "EXECUTE",
+        "CORRECT",
+        "PERFORMANCE",
+        "EVIDENCE"
+      ],
+      "negative_cases": [
+        "resource deficit",
+        "negative available budget",
+        "soft work displacing authority work"
+      ],
+      "remaining": []
+    },
+    {
+      "criterion_id": "URRF-18",
+      "ordinal": 18,
+      "title": "Faults Preserve Minimum Reality",
+      "requirement": "Provider, network, GPU-memory, battery, thermal and power faults preserve a rooted minimum-reality recovery chain.",
+      "canonical_owner": "RNCS",
+      "representation_owner": "URRF",
+      "status": "CANDIDATE_LOCAL_VERIFIED",
+      "evidence_level": "LOCAL_TEST_AND_ROOT_EVIDENCE",
+      "source_refs": [
+        "packages/kernel/rncs-core-contract/src/reality-power.mjs",
+        "packages/world/large-world-runtime/src/index.mjs"
+      ],
+      "schema_refs": [
+        "packages/kernel/rncs-core-contract/schemas/reality-power-profile.v0.3.schema.json",
+        "packages/kernel/rncs-core-contract/schemas/reality-resource-budget.v0.3.schema.json"
+      ],
+      "test_refs": [
+        "packages/kernel/rncs-core-contract/tests/reality-power.mjs",
+        "packages/world/large-world-runtime/tests/reality-fault-recovery.test.mjs"
+      ],
+      "evidence_refs": [
+        "docs/verification/URRF_V03_POWER_GOVERNOR_PHASE5_EVIDENCE.md"
+      ],
+      "k400_gates": [
+        "EXPRESS",
+        "COMPILE",
+        "LOWER",
+        "EXECUTE",
+        "CORRECT",
+        "ROBUST",
+        "EVIDENCE"
+      ],
+      "negative_cases": [
+        "provider crash",
+        "GPU memory pressure",
+        "battery at survival level",
+        "thermal fault"
+      ],
+      "remaining": [
+        "physical power/thermal sensor and OS enforcement"
+      ]
+    },
+    {
+      "criterion_id": "URRF-19",
+      "ordinal": 19,
+      "title": "Evidence and Rollback",
+      "requirement": "Roots, receipts, candidate ledgers and rollback/fencing records make candidate transitions auditable and reversible.",
+      "canonical_owner": "RNCS",
+      "representation_owner": "URRF",
+      "status": "CANDIDATE_LOCAL_VERIFIED",
+      "evidence_level": "LOCAL_TEST_AND_ROOT_EVIDENCE",
+      "source_refs": [
+        "packages/kernel/rncs-core-contract/src/reality-distribution.mjs",
+        "packages/kernel/rncs-core-contract/src/reality-chunk.mjs",
+        "packages/world/reality-asset-genesis-fabric/src/asset-evidence-ledger.mjs",
+        "packages/world/reality-asset-genesis-fabric/src/trellis2-local-provider.mjs"
+      ],
+      "schema_refs": [
+        "packages/kernel/rncs-core-contract/schemas/evidence-graph.v0.1.schema.json",
+        "packages/kernel/rncs-core-contract/schemas/reality-replication-envelope.v0.3.schema.json",
+        "packages/world/reality-asset-genesis-fabric/schemas/asset-evidence-ledger.v0.1.schema.json"
+      ],
+      "test_refs": [
+        "packages/kernel/rncs-core-contract/tests/reality-distribution.mjs",
+        "packages/world/large-world-runtime/tests/reality-fault-recovery.test.mjs",
+        "packages/world/reality-asset-genesis-fabric/tests/external-asset-providers.test.mjs"
+      ],
+      "evidence_refs": [
+        "docs/verification/URRF_V03_CONSISTENCY_LEASE_PHASE3_EVIDENCE.md",
+        "docs/verification/URRF_UNIVERSAL_ART_ASSET_FORGE/RCL_GAP_STRESS_EVIDENCE.md"
+      ],
+      "k400_gates": [
+        "EXPRESS",
+        "COMPILE",
+        "LOWER",
+        "EXECUTE",
+        "CORRECT",
+        "ROBUST",
+        "EVIDENCE"
+      ],
+      "negative_cases": [
+        "tampered root",
+        "stale receipt",
+        "rollback without authority",
+        "provider failure without evidence"
+      ],
+      "remaining": []
+    },
+    {
+      "criterion_id": "URRF-20",
+      "ordinal": 20,
+      "title": "Property and Law Query Versioning",
+      "requirement": "PropertySet and LawBindings expose rooted, versioned quantity and law queries for URRF lowering.",
+      "canonical_owner": "RNCS",
+      "representation_owner": "URRF",
+      "status": "CANDIDATE_LOCAL_VERIFIED",
+      "evidence_level": "LOCAL_TEST_AND_ROOT_EVIDENCE",
+      "source_refs": [
+        "packages/kernel/rncs-core-contract/src/reality-property.mjs",
+        "packages/world/reality-representation-fabric/src/index.mjs"
+      ],
+      "schema_refs": [
+        "packages/kernel/rncs-core-contract/schemas/reality-quantity.v0.3.schema.json",
+        "packages/kernel/rncs-core-contract/schemas/reality-property-set.v0.3.schema.json",
+        "packages/kernel/rncs-core-contract/schemas/reality-law-bindings.v0.3.schema.json"
+      ],
+      "test_refs": [
+        "packages/kernel/rncs-core-contract/tests/reality-property.mjs",
+        "packages/world/reality-representation-fabric/tests/property-law-runtime.test.mjs"
+      ],
+      "evidence_refs": [
+        "docs/verification/URRF_V03_PROPERTY_LAW_PHASE1_EVIDENCE.md"
+      ],
+      "k400_gates": [
+        "EXPRESS",
+        "COMPILE",
+        "LOWER",
+        "EXECUTE",
+        "CORRECT",
+        "EVIDENCE"
+      ],
+      "negative_cases": [
+        "unknown property",
+        "unknown law",
+        "property root mismatch"
+      ],
+      "remaining": []
+    },
+    {
+      "criterion_id": "URRF-21",
+      "ordinal": 21,
+      "title": "Dimensional Rejection",
+      "requirement": "RealityQuantity rejects invalid units, dimensions and illegal arithmetic rather than silently coercing values.",
+      "canonical_owner": "RNCS",
+      "representation_owner": "URRF",
+      "status": "CANDIDATE_LOCAL_VERIFIED",
+      "evidence_level": "LOCAL_TEST_AND_ROOT_EVIDENCE",
+      "source_refs": [
+        "packages/kernel/rncs-core-contract/src/reality-property.mjs"
+      ],
+      "schema_refs": [
+        "packages/kernel/rncs-core-contract/schemas/reality-quantity.v0.3.schema.json"
+      ],
+      "test_refs": [
+        "packages/kernel/rncs-core-contract/tests/reality-property.mjs"
+      ],
+      "evidence_refs": [
+        "docs/verification/URRF_V03_PROPERTY_LAW_PHASE1_EVIDENCE.md"
+      ],
+      "k400_gates": [
+        "EXPRESS",
+        "COMPILE",
+        "CORRECT",
+        "ROBUST",
+        "EVIDENCE"
+      ],
+      "negative_cases": [
+        "length plus mass",
+        "unit/dimension mismatch",
+        "non-finite quantity"
+      ],
+      "remaining": []
+    },
+    {
+      "criterion_id": "URRF-22",
+      "ordinal": 22,
+      "title": "Same Property at Two Physics Levels",
+      "requirement": "A property remains one RNCS-owned semantic while causal and physical profiles change the execution level.",
+      "canonical_owner": "RNCS",
+      "representation_owner": "URRF",
+      "status": "CANDIDATE_LOCAL_VERIFIED",
+      "evidence_level": "LOCAL_TEST_AND_ROOT_EVIDENCE",
+      "source_refs": [
+        "packages/kernel/rncs-core-contract/src/reality-property.mjs",
+        "packages/kernel/rncs-core-contract/src/causal-physical.mjs",
+        "packages/world/reality-representation-fabric/src/index.mjs"
+      ],
+      "schema_refs": [
+        "packages/kernel/rncs-core-contract/schemas/reality-property-set.v0.3.schema.json",
+        "packages/kernel/rncs-core-contract/schemas/causal-physical-profile.v0.3.schema.json"
+      ],
+      "test_refs": [
+        "packages/kernel/rncs-core-contract/tests/reality-property.mjs",
+        "packages/kernel/rncs-core-contract/tests/causal-physical.mjs",
+        "packages/world/reality-representation-fabric/tests/property-law-runtime.test.mjs",
+        "packages/world/reality-representation-fabric/tests/causal-physical.test.mjs"
+      ],
+      "evidence_refs": [
+        "docs/verification/URRF_V03_PROPERTY_LAW_PHASE1_EVIDENCE.md",
+        "docs/verification/URRF_LARGE_WORLD_CAUSAL_PHYSICAL_DETAIL/README.md"
+      ],
+      "k400_gates": [
+        "EXPRESS",
+        "COMPILE",
+        "LOWER",
+        "EXECUTE",
+        "CORRECT",
+        "EVIDENCE"
+      ],
+      "negative_cases": [
+        "physics level changes canonical property root",
+        "provider invents second property owner"
+      ],
+      "remaining": []
+    },
+    {
+      "criterion_id": "URRF-23",
+      "ordinal": 23,
+      "title": "Provider Cannot Rewrite Canonical Property",
+      "requirement": "Provider materialization and prediction can emit candidates but cannot mutate RNCS canonical property or law roots.",
+      "canonical_owner": "RNCS",
+      "representation_owner": "URRF",
+      "status": "CANDIDATE_LOCAL_VERIFIED",
+      "evidence_level": "LOCAL_TEST_AND_ROOT_EVIDENCE",
+      "source_refs": [
+        "packages/world/reality-representation-fabric/src/index.mjs",
+        "packages/kernel/rncs-core-contract/src/reality-property.mjs"
+      ],
+      "schema_refs": [
+        "packages/kernel/rncs-core-contract/schemas/reality-property-transition.v0.3.schema.json",
+        "packages/kernel/rncs-core-contract/schemas/reality-property-set.v0.3.schema.json",
+        "packages/kernel/rncs-core-contract/schemas/reality-law-bindings.v0.3.schema.json"
+      ],
+      "test_refs": [
+        "packages/world/reality-representation-fabric/tests/property-law-runtime.test.mjs"
+      ],
+      "evidence_refs": [
+        "docs/verification/URRF_V03_PROPERTY_LAW_PHASE1_EVIDENCE.md"
+      ],
+      "k400_gates": [
+        "EXPRESS",
+        "COMPILE",
+        "LOWER",
+        "EXECUTE",
+        "CORRECT",
+        "ROBUST",
+        "EVIDENCE"
+      ],
+      "negative_cases": [
+        "provider property mutation attempt",
+        "canonical state root changed during materialization"
+      ],
+      "remaining": []
+    },
+    {
+      "criterion_id": "URRF-24",
+      "ordinal": 24,
+      "title": "Sensor Inference Candidate Gate",
+      "requirement": "Sensor or inference-derived properties remain candidates until an explicit RNCS acceptance gate promotes them.",
+      "canonical_owner": "RNCS",
+      "representation_owner": "URRF",
+      "status": "NOT_IMPLEMENTED",
+      "evidence_level": "EXPLICIT_GAP_OR_BLOCKER",
+      "source_refs": [
+        "packages/kernel/rncs-core-contract/src/reality-property.mjs",
+        "packages/world/reality-representation-fabric/src/index.mjs"
+      ],
+      "schema_refs": [
+        "packages/kernel/rncs-core-contract/schemas/reality-property-transition.v0.3.schema.json",
+        "packages/kernel/rncs-core-contract/schemas/reality-property-set.v0.3.schema.json"
+      ],
+      "test_refs": [
+        "packages/kernel/rncs-core-contract/tests/urrf-v03-coverage-matrix.test.mjs"
+      ],
+      "evidence_refs": [
+        "docs/verification/URRF_UNIVERSAL_ART_ASSET_FORGE/RCL_GAP_STRESS_EVIDENCE.md"
+      ],
+      "k400_gates": [
+        "EXPRESS",
+        "COMPILE",
+        "EVIDENCE"
+      ],
+      "negative_cases": [
+        "unverified sensor inference promotion",
+        "provider inference directly mutates canonical property"
+      ],
+      "remaining": [
+        "sensor inference adapter, calibrated observation evidence and acceptance gate"
+      ],
+      "gap": {
+        "gap_type": "URRF_GAP",
+        "id": "URRF_GAP_SENSOR_INFERENCE_ACCEPTANCE",
+        "status": "OPEN",
+        "owner": "RNCS/RCL boundary"
+      },
+      "boundary": "The existing property transition fence is reusable, but no sensor inference organ is implemented in this slice."
+    },
+    {
+      "criterion_id": "URRF-25",
+      "ordinal": 25,
+      "title": "RCL Gap versus Provider Gap",
+      "requirement": "The coverage ledger distinguishes missing RCL semantic primitives from unavailable or unaudited provider/runtime capability.",
+      "canonical_owner": "RNCS",
+      "representation_owner": "URRF",
+      "status": "CANDIDATE_LOCAL_PARTIAL",
+      "evidence_level": "LOCAL_BOUNDED_EVIDENCE",
+      "source_refs": [
+        "packages/kernel/rncs-core-contract/src/reality-property.mjs",
+        "packages/kernel/rncs-core-contract/src/reality-transport.mjs",
+        "packages/world/reality-asset-genesis-fabric/src/external-asset-providers.mjs",
+        "packages/world/reality-asset-genesis-fabric/src/trellis2-local-provider.mjs"
+      ],
+      "schema_refs": [
+        "packages/kernel/rncs-core-contract/schemas/reality-transport-profile.v0.3.schema.json"
+      ],
+      "test_refs": [
+        "packages/kernel/rncs-core-contract/tests/urrf-v03-coverage-matrix.test.mjs",
+        "packages/world/reality-asset-genesis-fabric/tests/external-asset-providers.test.mjs"
+      ],
+      "evidence_refs": [
+        "docs/verification/URRF_UNIVERSAL_ART_ASSET_FORGE/RCL_GAP_STRESS_EVIDENCE.md",
+        "docs/verification/URRF_V03_TRANSPORT_PHASE4_EVIDENCE.md"
+      ],
+      "k400_gates": [
+        "EXPRESS",
+        "COMPILE",
+        "LOWER",
+        "EVIDENCE"
+      ],
+      "negative_cases": [
+        "silent language bypass",
+        "provider output treated as authority",
+        "missing RCL primitive mislabeled as runtime outage"
+      ],
+      "remaining": [
+        "automated donor search, K400 cell attribution and formal Integration Court"
+      ],
+      "gap": {
+        "gap_type": "MIXED",
+        "status": "PARTIAL",
+        "policy": "No silent RCL bypass; provider/runtime gaps remain auxiliary."
+      }
+    },
+    {
+      "criterion_id": "URRF-26",
+      "ordinal": 26,
+      "title": "Honest Status and AAA Boundary",
+      "requirement": "Every result reports bounded status and keeps AAA production blocked until external model, hardware, provenance and human evidence exist.",
+      "canonical_owner": "RNCS",
+      "representation_owner": "URRF",
+      "status": "CANDIDATE_LOCAL_VERIFIED",
+      "evidence_level": "LOCAL_TEST_AND_ROOT_EVIDENCE",
+      "source_refs": [
+        "packages/world/reality-asset-genesis-fabric/src/trellis2-local-provider.mjs",
+        "packages/world/reality-asset-genesis-fabric/src/production-court.mjs",
+        "packages/world/reality-asset-genesis-fabric/src/asset-evidence-ledger.mjs",
+        "packages/world/large-world-runtime/src/universal-art-asset-forge.mjs"
+      ],
+      "schema_refs": [
+        "packages/world/reality-asset-genesis-fabric/schemas/asset-provider-manifest.v0.1.schema.json",
+        "packages/world/reality-asset-genesis-fabric/schemas/asset-provider-result.v0.1.schema.json",
+        "packages/world/reality-asset-genesis-fabric/schemas/asset-production-court.v0.1.schema.json"
+      ],
+      "test_refs": [
+        "packages/world/reality-asset-genesis-fabric/tests/external-asset-providers.test.mjs",
+        "packages/world/reality-asset-genesis-fabric/tests/runtime.test.mjs",
+        "packages/world/large-world-runtime/tests/universal-art-asset-forge.test.mjs"
+      ],
+      "evidence_refs": [
+        "docs/verification/URRF_UNIVERSAL_ART_ASSET_FORGE/RCL_GAP_STRESS_EVIDENCE.md",
+        "docs/verification/URRF_V03_POWER_GOVERNOR_PHASE5_EVIDENCE.md"
+      ],
+      "k400_gates": [
+        "EXPRESS",
+        "COMPILE",
+        "LOWER",
+        "EXECUTE",
+        "CORRECT",
+        "ROBUST",
+        "PERFORMANCE",
+        "AI_GENERATE",
+        "EVIDENCE"
+      ],
+      "negative_cases": [
+        "contract-only provider reported as executed",
+        "candidate reported as AAA",
+        "missing hardware evidence reported as pass"
+      ],
+      "remaining": [],
+      "boundary": "Current host has no CUDA/NVIDIA GPU, TRELLIS.2 weights or real Provider; AI_GENERATE and production AAA remain blocked."
+    }
+  ],
+  "gate_status": [
+    {
+      "gate": "EXPRESS",
+      "status": "CANDIDATE_LOCAL_VERIFIED",
+      "source_refs": [
+        "packages/kernel/rncs-core-contract/src/world-truth.mjs",
+        "packages/kernel/rncs-core-contract/src/reality-property.mjs",
+        "packages/kernel/rncs-core-contract/src/reality-transport.mjs"
+      ],
+      "test_refs": [
+        "packages/kernel/rncs-core-contract/tests/world-truth.mjs",
+        "packages/kernel/rncs-core-contract/tests/reality-property.mjs",
+        "packages/kernel/rncs-core-contract/tests/reality-transport.mjs"
+      ],
+      "remaining": []
+    },
+    {
+      "gate": "COMPILE",
+      "status": "CANDIDATE_LOCAL_VERIFIED",
+      "source_refs": [
+        "packages/kernel/rncs-core-contract/src/index.mjs",
+        "packages/world/reality-representation-fabric/src/index.mjs",
+        "packages/world/reality-asset-genesis-fabric/src/index.mjs"
+      ],
+      "test_refs": [
+        "packages/kernel/rncs-core-contract/tests/v03-schemas.mjs",
+        "packages/world/reality-asset-genesis-fabric/tests/external-asset-providers.test.mjs"
+      ],
+      "remaining": []
+    },
+    {
+      "gate": "LOWER",
+      "status": "CANDIDATE_LOCAL_VERIFIED",
+      "source_refs": [
+        "packages/world/reality-representation-fabric/src/index.mjs",
+        "packages/world/large-world-runtime/src/index.mjs",
+        "packages/world/reality-asset-genesis-fabric/src/trellis2-local-provider.mjs"
+      ],
+      "test_refs": [
+        "packages/world/reality-representation-fabric/tests/runtime.test.mjs",
+        "packages/world/large-world-runtime/tests/runtime.test.mjs"
+      ],
+      "remaining": []
+    },
+    {
+      "gate": "EXECUTE",
+      "status": "CANDIDATE_LOCAL_PARTIAL",
+      "source_refs": [
+        "packages/world/reality-representation-fabric/src/transport-runtime.mjs",
+        "packages/world/reality-representation-fabric/src/resource-governor-runtime.mjs",
+        "packages/world/reality-asset-genesis-fabric/src/trellis2-local-provider.mjs"
+      ],
+      "test_refs": [
+        "packages/world/reality-representation-fabric/tests/transport-runtime.test.mjs",
+        "packages/world/reality-asset-genesis-fabric/tests/external-asset-providers.test.mjs"
+      ],
+      "remaining": [
+        "real multi-process and hardware execution"
+      ]
+    },
+    {
+      "gate": "CORRECT",
+      "status": "CANDIDATE_LOCAL_VERIFIED",
+      "source_refs": [
+        "packages/kernel/rncs-core-contract/src/reality-property.mjs",
+        "packages/kernel/rncs-core-contract/src/reality-distribution.mjs",
+        "packages/world/reality-asset-genesis-fabric/src/production-court.mjs"
+      ],
+      "test_refs": [
+        "packages/kernel/rncs-core-contract/tests/reality-property.mjs",
+        "packages/kernel/rncs-core-contract/tests/reality-distribution.mjs",
+        "packages/world/reality-asset-genesis-fabric/tests/external-asset-providers.test.mjs"
+      ],
+      "remaining": []
+    },
+    {
+      "gate": "ROBUST",
+      "status": "CANDIDATE_LOCAL_PARTIAL",
+      "source_refs": [
+        "packages/kernel/rncs-core-contract/src/reality-power.mjs",
+        "packages/kernel/rncs-core-contract/src/server-sovereignty.mjs",
+        "packages/world/large-world-runtime/src/index.mjs"
+      ],
+      "test_refs": [
+        "packages/world/large-world-runtime/tests/reality-fault-recovery.test.mjs",
+        "packages/world/large-world-runtime/tests/server-sovereignty.test.mjs"
+      ],
+      "remaining": [
+        "network partition, independent process restart and hardware fault drills"
+      ]
+    },
+    {
+      "gate": "PERFORMANCE",
+      "status": "CANDIDATE_LOCAL_PARTIAL",
+      "source_refs": [
+        "packages/world/reality-representation-fabric/src/resource-governor-runtime.mjs",
+        "packages/world/large-world-runtime/src/index.mjs"
+      ],
+      "test_refs": [
+        "packages/world/reality-representation-fabric/tests/resource-governor-runtime.test.mjs",
+        "packages/world/large-world-runtime/tests/runtime.test.mjs"
+      ],
+      "remaining": [
+        "target-device performance budget and GPU/VRAM measurements"
+      ]
+    },
+    {
+      "gate": "AI_GENERATE",
+      "status": "BLOCKED_NOT_RUN",
+      "source_refs": [
+        "packages/world/reality-asset-genesis-fabric/src/external-asset-providers.mjs",
+        "packages/world/reality-asset-genesis-fabric/src/trellis2-local-provider.mjs"
+      ],
+      "test_refs": [
+        "packages/world/reality-asset-genesis-fabric/tests/external-asset-providers.test.mjs"
+      ],
+      "remaining": [
+        "TRELLIS.2 weights",
+        "CUDA/NVIDIA GPU",
+        "real Provider execution",
+        "AAA art and human acceptance"
+      ]
+    },
+    {
+      "gate": "EVIDENCE",
+      "status": "CANDIDATE_LOCAL_VERIFIED",
+      "source_refs": [
+        "packages/world/reality-asset-genesis-fabric/src/asset-evidence-ledger.mjs",
+        "packages/kernel/rncs-core-contract/src/reality-chunk.mjs",
+        "packages/kernel/rncs-core-contract/src/urrf-v03-coverage.mjs"
+      ],
+      "test_refs": [
+        "packages/kernel/rncs-core-contract/tests/urrf-v03-coverage-matrix.test.mjs",
+        "packages/world/reality-asset-genesis-fabric/tests/external-asset-providers.test.mjs"
+      ],
+      "remaining": []
+    }
+  ],
+  "summary": {
+    "criterion_count": 26,
+    "criterion_status_counts": {
+      "CANDIDATE_LOCAL_VERIFIED": 19,
+      "CANDIDATE_LOCAL_PARTIAL": 6,
+      "BLOCKED_NOT_RUN": 0,
+      "NOT_IMPLEMENTED": 1
+    },
+    "k400_gate_status_counts": {
+      "CANDIDATE_LOCAL_VERIFIED": 5,
+      "CANDIDATE_LOCAL_PARTIAL": 3,
+      "BLOCKED_NOT_RUN": 1,
+      "NOT_IMPLEMENTED": 0
+    },
+    "aaa_release_status": "BLOCKED_EXTERNAL_ART_HUMAN_HARDWARE_EVIDENCE",
+    "ai_generate_status": "BLOCKED_NOT_RUN"
+  },
+  "coverage_root": "204a10908e322ef7a5653f747662092999e5a9ec6881637824766113b308238e"
+}

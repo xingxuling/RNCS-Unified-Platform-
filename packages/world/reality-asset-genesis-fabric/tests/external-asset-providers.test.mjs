@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {normalizeIntent, createGenome, seal} from '../src/index.mjs';
 import {
@@ -24,6 +26,7 @@ import {
   createTripoSFProvider,
   createTripoSRProvider,
   createTrellis2Provider,
+  createTrellis2LocalProvider,
   externalAssetProviderManifests
 } from '../src/index.mjs';
 import {createRepresentationRef} from '@taowind/rncs-core-contract';
@@ -225,6 +228,161 @@ test('external adapter fails closed when a configured process returns invalid JS
   assert.equal(execution.job.state, 'FAILED');
   assert.equal(execution.failure.code, 'ASSET_PROVIDER_INVALID_JSON');
   assert.equal(execution.failure.authoritative, false);
+});
+
+const auditedTrellis2Overrides = base => ({
+  license: {
+    ...base.license,
+    status: 'VERIFIED',
+    code_status: 'VERIFIED',
+    dependency_status: 'VERIFIED',
+    model_weights_status: 'VERIFIED',
+    data_status: 'VERIFIED'
+  },
+  commercialPolicy: {
+    ...base.commercialPolicy,
+    default_release_dependency_allowed: true,
+    dependency_audit: 'VERIFIED'
+  }
+});
+
+test('TRELLIS.2 local adapter emits a sealed fail-closed preflight report', () => {
+  const provider = createTrellis2LocalProvider();
+  const report = provider.preflight();
+  assert.equal(report.format, 'ragf.trellis2-local-preflight.v0.1');
+  assert.equal(report.status, 'BLOCKED');
+  assert.equal(report.execution_status, 'NOT_RUN');
+  assert.ok(report.blocked_reasons.includes('CUDA_UNAVAILABLE'));
+  assert.ok(report.blocked_reasons.includes('WEIGHTS_NOT_CONFIGURED'));
+  assert.ok(report.blocked_reasons.includes('COMMAND_NOT_CONFIGURED'));
+  assert.match(report.preflight_root, /^[a-f0-9]{64}$/);
+  assert.equal(provider.healthCheck().status, 'BLOCKED');
+  const execution = provider.generate({asset_id: 'asset:trellis2-preflight-blocked', seed: 'blocked'});
+  assert.equal(execution.status, 'FAILED');
+  assert.equal(execution.failure.code, 'TRELLIS2_PREFLIGHT_BLOCKED');
+  assert.equal(execution.result, null);
+  assert.equal(execution.job.state, 'FAILED');
+  assert.equal(execution.preflight.preflight_root, report.preflight_root);
+});
+
+test('TRELLIS.2 local adapter runs a deterministic injected candidate only after all preflight gates pass', t => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'ragf-trellis2-injected-'));
+  t.after(() => fs.rmSync(root, {recursive: true, force: true}));
+  const weightsPath = path.join(root, 'model.safetensors');
+  fs.writeFileSync(weightsPath, 'candidate-weight-fixture');
+  const base = createTrellis2Provider().manifest;
+  const provider = createTrellis2LocalProvider({
+    provider_id: 'provider:test:trellis-2-injected',
+    weights_path: weightsPath,
+    cuda_probe: () => ({status: 'PASS', available: true, devices: ['fixture-cuda']}),
+    dependency_probe: () => ({status: 'PASS', available: true, packages: ['fixture-dependency']}),
+    manifest_overrides: auditedTrellis2Overrides(base),
+    runner: ({input}) => ({
+      asset_id: input.asset_id,
+      quality_tier: 'PRODUCTION',
+      files: [{name: 'candidate.glb', role: 'mesh-glb', format: 'model/gltf-binary', base64: Buffer.from('trellis2-injected').toString('base64')}],
+      geometry: {triangle_count: 12, glb_valid: true, topology_status: 'manifold'},
+      materials: {material_count: 1, pbr_model: 'metallic-roughness'},
+      pbr_channels: ['baseColor', 'normal', 'orm'],
+      provenance: {seed: input.seed},
+      evidence: {provider_success: true, representation: {status: 'CANDIDATE', execution: 'INJECTED_FIXTURE'}}
+    })
+  });
+  const report = provider.preflight();
+  assert.equal(report.status, 'PASS');
+  assert.equal(report.execution_status, 'READY_CANDIDATE');
+  assert.equal(report.checks.command.source, 'executor_injected');
+  assert.equal(report.checks.weights.status, 'PASS');
+  assert.equal(report.checks.cuda.status, 'PASS');
+  assert.equal(report.checks.dependencies.status, 'PASS');
+  assert.equal(report.checks.license.status, 'PASS');
+  const execution = provider.generate({asset_id: 'asset:trellis2-injected', seed: 'injected-seed'});
+  assert.equal(execution.status, 'COMPLETED');
+  assert.equal(execution.job.state, 'COMPLETED');
+  assert.equal(execution.result.authoritative, false);
+  assert.equal(execution.result.evidence.candidate_only, true);
+  assert.equal(execution.result.provenance.provider_id, provider.manifest.id);
+  assert.match(execution.result.result_root, /^[a-f0-9]{64}$/);
+  assert.equal(execution.job.result_root, execution.result.result_root);
+});
+
+test('TRELLIS.2 local adapter executes an audited external-process candidate and preserves provenance', t => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'ragf-trellis2-process-'));
+  t.after(() => fs.rmSync(root, {recursive: true, force: true}));
+  const weightsPath = path.join(root, 'model.safetensors');
+  fs.writeFileSync(weightsPath, 'candidate-weight-fixture');
+  const fixture = fileURLToPath(new URL('../examples/providers/contract-echo-provider.mjs', import.meta.url));
+  const base = createTrellis2Provider().manifest;
+  const provider = createTrellis2LocalProvider({
+    provider_id: 'provider:test:trellis-2-process',
+    command: [process.execPath, fixture],
+    weights_path: weightsPath,
+    cuda_probe: {status: 'PASS', available: true, devices: ['fixture-cuda']},
+    dependency_probe: {status: 'PASS', available: true, packages: ['fixture-dependency']},
+    manifest_overrides: auditedTrellis2Overrides(base),
+    timeout: 5000
+  });
+  assert.equal(provider.preflight().status, 'PASS');
+  const execution = provider.generate({asset_id: 'asset:trellis2-process', seed: 'process-seed', quality_tier: 'PRODUCTION'});
+  assert.equal(execution.status, 'COMPLETED');
+  assert.equal(execution.result.source.kind, 'deterministic-child-process-fixture');
+  assert.equal(execution.result.provenance.provider_id, provider.manifest.id);
+  assert.equal(execution.result.provenance.provider_root, provider.manifest.manifest_root);
+  assert.equal(execution.result.authoritative, false);
+  assert.match(execution.result.result_root, /^[a-f0-9]{64}$/);
+});
+
+test('TRELLIS.2 local adapter rejects a provider-supplied result-root mismatch', t => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'ragf-trellis2-root-'));
+  t.after(() => fs.rmSync(root, {recursive: true, force: true}));
+  const weightsPath = path.join(root, 'model.safetensors');
+  fs.writeFileSync(weightsPath, 'candidate-weight-fixture');
+  const base = createTrellis2Provider().manifest;
+  const provider = createTrellis2LocalProvider({
+    provider_id: 'provider:test:trellis-2-root-mismatch',
+    weights_path: weightsPath,
+    cuda_probe: true,
+    dependency_probe: true,
+    manifest_overrides: auditedTrellis2Overrides(base),
+    runner: () => ({
+      result_root: '0'.repeat(64),
+      files: [{name: 'candidate.glb', role: 'mesh-glb', format: 'model/gltf-binary', base64: Buffer.from('root-mismatch').toString('base64')}]
+    })
+  });
+  const execution = provider.generate({asset_id: 'asset:trellis2-root-mismatch', seed: 'root-mismatch'});
+  assert.equal(execution.status, 'FAILED');
+  assert.equal(execution.failure.code, 'ASSET_PROVIDER_RESULT_ROOT_MISMATCH');
+  assert.equal(execution.result, null);
+  assert.equal(execution.job.state, 'FAILED');
+});
+
+test('TRELLIS.2 local adapter exposes timeout and crash as provider failures', t => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'ragf-trellis2-faults-'));
+  t.after(() => fs.rmSync(root, {recursive: true, force: true}));
+  const weightsPath = path.join(root, 'model.safetensors');
+  fs.writeFileSync(weightsPath, 'candidate-weight-fixture');
+  const base = createTrellis2Provider().manifest;
+  const common = {
+    weights_path: weightsPath,
+    cuda_probe: true,
+    dependency_probe: true,
+    manifest_overrides: auditedTrellis2Overrides(base)
+  };
+  const crashed = createTrellis2LocalProvider({
+    ...common,
+    provider_id: 'provider:test:trellis-2-crash',
+    command: [process.execPath, '-e', 'process.stderr.write("fixture-crash"); process.exit(17)']
+  }).generate({asset_id: 'asset:trellis2-crash', seed: 'crash'});
+  assert.equal(crashed.status, 'FAILED');
+  assert.equal(crashed.failure.code, 'ASSET_PROVIDER_NONZERO');
+  const timedOut = createTrellis2LocalProvider({
+    ...common,
+    provider_id: 'provider:test:trellis-2-timeout',
+    command: [process.execPath, '-e', 'setTimeout(() => {}, 500)'],
+    timeout: 50
+  }).generate({asset_id: 'asset:trellis2-timeout', seed: 'timeout'});
+  assert.equal(timedOut.status, 'FAILED');
+  assert.equal(timedOut.failure.code, 'ASSET_PROVIDER_TIMEOUT');
 });
 
 test('named provider factories preserve provider identity', () => {
