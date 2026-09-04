@@ -994,25 +994,35 @@
       "requirement": "Sensor or inference-derived properties remain candidates until an explicit RNCS acceptance gate promotes them.",
       "canonical_owner": "RNCS",
       "representation_owner": "URRF",
-      "status": "NOT_IMPLEMENTED",
-      "evidence_level": "EXPLICIT_GAP_OR_BLOCKER",
+      "status": "CANDIDATE_LOCAL_VERIFIED",
+      "evidence_level": "LOCAL_TEST_AND_ROOT_EVIDENCE",
       "source_refs": [
+        "packages/kernel/rncs-core-contract/src/reality-sensor-inference.mjs",
         "packages/kernel/rncs-core-contract/src/reality-property.mjs",
+        "packages/kernel/rncs-core-contract/src/reality-distribution.mjs",
         "packages/world/reality-representation-fabric/src/index.mjs"
       ],
       "schema_refs": [
-        "packages/kernel/rncs-core-contract/schemas/reality-property-transition.v0.3.schema.json",
-        "packages/kernel/rncs-core-contract/schemas/reality-property-set.v0.3.schema.json"
+        "packages/kernel/rncs-core-contract/schemas/reality-sensor-inference-candidate.v0.3.schema.json",
+        "packages/kernel/rncs-core-contract/schemas/reality-sensor-inference-acceptance.v0.3.schema.json",
+        "packages/kernel/rncs-core-contract/schemas/reality-property-set.v0.3.schema.json",
+        "packages/kernel/rncs-core-contract/schemas/authority-lease.v0.3.schema.json"
       ],
       "test_refs": [
+        "packages/kernel/rncs-core-contract/tests/sensor-inference.test.mjs",
         "packages/kernel/rncs-core-contract/tests/urrf-v03-coverage-matrix.test.mjs"
       ],
       "evidence_refs": [
+        "docs/verification/URRF_V03_SENSOR_INFERENCE_EVIDENCE.md",
         "docs/verification/URRF_UNIVERSAL_ART_ASSET_FORGE/RCL_GAP_STRESS_EVIDENCE.md"
       ],
       "k400_gates": [
         "EXPRESS",
         "COMPILE",
+        "LOWER",
+        "EXECUTE",
+        "CORRECT",
+        "ROBUST",
         "EVIDENCE"
       ],
       "negative_cases": [
@@ -1020,15 +1030,16 @@
         "provider inference directly mutates canonical property"
       ],
       "remaining": [
-        "sensor inference adapter, calibrated observation evidence and acceptance gate"
+        "externally authenticated authority signature/replay and physical sensor calibration"
       ],
       "gap": {
         "gap_type": "URRF_GAP",
         "id": "URRF_GAP_SENSOR_INFERENCE_ACCEPTANCE",
-        "status": "OPEN",
-        "owner": "RNCS/RCL boundary"
+        "status": "CANDIDATE_LOCAL_VERIFIED",
+        "owner": "RNCS/RCL boundary",
+        "resolution": "Calibrated observation, candidate inference, lease-bound RNCS acceptance and explicit canonical promotion are locally verified."
       },
-      "boundary": "The existing property transition fence is reusable, but no sensor inference organ is implemented in this slice."
+      "boundary": "Local calibrated candidate, lease-bound synthetic RNCS acceptance and explicit promotion are verified; external authority signatures, physical sensor replay and production sensor hardware are not claimed."
     },
     {
       "criterion_id": "URRF-25",
@@ -1284,10 +1295,10 @@
   "summary": {
     "criterion_count": 26,
     "criterion_status_counts": {
-      "CANDIDATE_LOCAL_VERIFIED": 19,
+      "CANDIDATE_LOCAL_VERIFIED": 20,
       "CANDIDATE_LOCAL_PARTIAL": 6,
       "BLOCKED_NOT_RUN": 0,
-      "NOT_IMPLEMENTED": 1
+      "NOT_IMPLEMENTED": 0
     },
     "k400_gate_status_counts": {
       "CANDIDATE_LOCAL_VERIFIED": 5,
@@ -1298,5 +1309,5 @@
     "aaa_release_status": "BLOCKED_EXTERNAL_ART_HUMAN_HARDWARE_EVIDENCE",
     "ai_generate_status": "BLOCKED_NOT_RUN"
   },
-  "coverage_root": "2ec7168d0bcf2a489d4576da2c2a38783cf31c3bea13d0db8ebe11c0668782fc"
+  "coverage_root": "cb2c31f2c464ad12ff15f554361b9c90514055ef5dbdc5ff1dfc734db6903bbe"
 }

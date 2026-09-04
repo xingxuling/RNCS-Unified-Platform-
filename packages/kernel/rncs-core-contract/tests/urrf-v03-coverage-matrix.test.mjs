@@ -20,7 +20,8 @@ test('URRF v0.3 coverage matrix contains all 26 criteria and nine K400 gates', (
   assert.deepEqual(matrix.k400_gates, [...URRF_K400_GATES]);
   assert.deepEqual(matrix.criteria.map(item => item.criterion_id), Array.from({length: 26}, (_, index) => `URRF-${String(index + 1).padStart(2, '0')}`));
   assert.equal(matrix.summary.criterion_count, 26);
-  assert.equal(matrix.summary.criterion_status_counts.NOT_IMPLEMENTED, 1);
+  assert.equal(matrix.summary.criterion_status_counts.CANDIDATE_LOCAL_VERIFIED, 20);
+  assert.equal(matrix.summary.criterion_status_counts.NOT_IMPLEMENTED, 0);
   assert.equal(matrix.summary.aaa_release_status, 'BLOCKED_EXTERNAL_ART_HUMAN_HARDWARE_EVIDENCE');
   assert.equal(matrix.summary.ai_generate_status, 'BLOCKED_NOT_RUN');
 });
@@ -43,11 +44,12 @@ test('every coverage reference resolves to a real source, schema, test or eviden
   }
 });
 
-test('coverage matrix makes the open sensor gate and blocked AI generation explicit', () => {
+test('coverage matrix makes the sensor gate and blocked AI generation boundary explicit', () => {
   const sensor = matrix.criteria.find(item => item.criterion_id === 'URRF-24');
-  assert.equal(sensor.status, 'NOT_IMPLEMENTED');
+  assert.equal(sensor.status, 'CANDIDATE_LOCAL_VERIFIED');
   assert.equal(sensor.gap.id, 'URRF_GAP_SENSOR_INFERENCE_ACCEPTANCE');
-  assert.ok(sensor.remaining.includes('sensor inference adapter, calibrated observation evidence and acceptance gate'));
+  assert.equal(sensor.gap.status, 'CANDIDATE_LOCAL_VERIFIED');
+  assert.ok(sensor.remaining.includes('externally authenticated authority signature/replay and physical sensor calibration'));
   const aiGate = matrix.gate_status.find(item => item.gate === 'AI_GENERATE');
   assert.equal(aiGate.status, 'BLOCKED_NOT_RUN');
   assert.ok(aiGate.remaining.includes('TRELLIS.2 weights'));

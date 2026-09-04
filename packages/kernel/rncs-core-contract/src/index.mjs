@@ -34,6 +34,7 @@ export * from './representation-portfolio.mjs';
 export * from './representation-transition.mjs';
 export * from './world-truth.mjs';
 export * from './reality-property.mjs';
+export * from './reality-sensor-inference.mjs';
 export * from './reality-access.mjs';
 export * from './reality-distribution.mjs';
 export * from './reality-transport.mjs';

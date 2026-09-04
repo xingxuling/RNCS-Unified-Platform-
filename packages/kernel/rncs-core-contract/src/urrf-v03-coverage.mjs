@@ -247,22 +247,23 @@ export const URRF_V03_SUCCESS_CRITERIA = Object.freeze([
     ['EXPRESS', 'COMPILE', 'LOWER', 'EXECUTE', 'CORRECT', 'ROBUST', 'EVIDENCE'],
     ['provider property mutation attempt', 'canonical state root changed during materialization']
   )),
-  criterion(24, 'Sensor Inference Candidate Gate', 'Sensor or inference-derived properties remain candidates until an explicit RNCS acceptance gate promotes them.', notImplemented, ref(
-    [`${core}/src/reality-property.mjs`, `${urrf}/src/index.mjs`],
-    [`${core}/schemas/reality-property-transition.v0.3.schema.json`, `${core}/schemas/reality-property-set.v0.3.schema.json`],
-    ['packages/kernel/rncs-core-contract/tests/urrf-v03-coverage-matrix.test.mjs'],
-    [`${evidence}/URRF_UNIVERSAL_ART_ASSET_FORGE/RCL_GAP_STRESS_EVIDENCE.md`],
-    ['EXPRESS', 'COMPILE', 'EVIDENCE'],
+  criterion(24, 'Sensor Inference Candidate Gate', 'Sensor or inference-derived properties remain candidates until an explicit RNCS acceptance gate promotes them.', candidate, ref(
+    [`${core}/src/reality-sensor-inference.mjs`, `${core}/src/reality-property.mjs`, `${core}/src/reality-distribution.mjs`, `${urrf}/src/index.mjs`],
+    [`${core}/schemas/reality-sensor-inference-candidate.v0.3.schema.json`, `${core}/schemas/reality-sensor-inference-acceptance.v0.3.schema.json`, `${core}/schemas/reality-property-set.v0.3.schema.json`, `${core}/schemas/authority-lease.v0.3.schema.json`],
+    [`${core}/tests/sensor-inference.test.mjs`, 'packages/kernel/rncs-core-contract/tests/urrf-v03-coverage-matrix.test.mjs'],
+    [`${evidence}/URRF_V03_SENSOR_INFERENCE_EVIDENCE.md`, `${evidence}/URRF_UNIVERSAL_ART_ASSET_FORGE/RCL_GAP_STRESS_EVIDENCE.md`],
+    ['EXPRESS', 'COMPILE', 'LOWER', 'EXECUTE', 'CORRECT', 'ROBUST', 'EVIDENCE'],
     ['unverified sensor inference promotion', 'provider inference directly mutates canonical property'],
-    ['sensor inference adapter, calibrated observation evidence and acceptance gate']
+    ['externally authenticated authority signature/replay and physical sensor calibration']
   ), {
     gap: {
       gap_type: 'URRF_GAP',
       id: 'URRF_GAP_SENSOR_INFERENCE_ACCEPTANCE',
-      status: 'OPEN',
-      owner: 'RNCS/RCL boundary'
+      status: 'CANDIDATE_LOCAL_VERIFIED',
+      owner: 'RNCS/RCL boundary',
+      resolution: 'Calibrated observation, candidate inference, lease-bound RNCS acceptance and explicit canonical promotion are locally verified.'
     },
-    boundary: 'The existing property transition fence is reusable, but no sensor inference organ is implemented in this slice.'
+    boundary: 'Local calibrated candidate, lease-bound synthetic RNCS acceptance and explicit promotion are verified; external authority signatures, physical sensor replay and production sensor hardware are not claimed.'
   }),
   criterion(25, 'RCL Gap versus Provider Gap', 'The coverage ledger distinguishes missing RCL semantic primitives from unavailable or unaudited provider/runtime capability.', partial, ref(
     [`${core}/src/reality-property.mjs`, `${core}/src/reality-transport.mjs`, `${largeWorld}/src/multi-process-replication.mjs`, `${ragf}/src/external-asset-providers.mjs`, `${ragf}/src/trellis2-local-provider.mjs`],

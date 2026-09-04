@@ -22,13 +22,13 @@ The matrix test checks:
 - roots and authority ownership are valid;
 - the dedicated VFX contract and independent child-process replication route
   are included as bounded candidate evidence;
-- the open sensor-inference gate and blocked AI generation status remain
-  explicit.
+- the sensor-inference gate is locally closed while its external authority and
+  hardware boundary, plus blocked AI generation status, remain explicit.
 
 ## Current bounded result
 
-- Criteria: `19 CANDIDATE_LOCAL_VERIFIED`, `6 CANDIDATE_LOCAL_PARTIAL`,
-  `1 NOT_IMPLEMENTED`.
+- Criteria: `20 CANDIDATE_LOCAL_VERIFIED`, `6 CANDIDATE_LOCAL_PARTIAL`,
+  `0 NOT_IMPLEMENTED`.
 - K400: `5 CANDIDATE_LOCAL_VERIFIED`, `3 CANDIDATE_LOCAL_PARTIAL`,
   `1 BLOCKED_NOT_RUN`.
 - `AI_GENERATE`: `BLOCKED_NOT_RUN` because this host has no CUDA/NVIDIA GPU,

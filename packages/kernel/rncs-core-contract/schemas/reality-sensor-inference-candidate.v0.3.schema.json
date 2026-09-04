@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rncs.reality-sensor-inference-candidate.v0.3",
+  "title": "RNCS Reality Sensor Inference Candidate v0.3",
+  "type": "object",
+  "required": ["format", "version", "candidate_id", "object_id", "source_property_root", "source_state_root", "observation", "calibration", "inference", "proposed_property_set", "proposed_property_root", "provider", "evidence", "acceptance", "authority", "candidate_only", "authoritative", "commit_status", "candidate_root"],
+  "properties": {
+    "format": {"const": "rncs.reality-sensor-inference-candidate.v0.3"},
+    "version": {"const": "0.3.0"},
+    "candidate_id": {"type": "string", "minLength": 1},
+    "object_id": {"type": "string", "minLength": 1},
+    "source_property_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "source_state_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "observation": {
+      "type": "object",
+      "required": ["observation_id", "sensor_id", "capture_tick", "modality", "reference_frame", "sample", "sample_root", "quality", "validity_interval", "evidence_refs", "observation_root"],
+      "properties": {
+        "observation_id": {"type": "string", "minLength": 1},
+        "sensor_id": {"type": "string", "minLength": 1},
+        "capture_tick": {"type": "integer", "minimum": 0},
+        "modality": {"type": "string", "minLength": 1},
+        "reference_frame": {"type": "string", "minLength": 1},
+        "sample": {},
+        "sample_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "quality": {"type": "object"},
+        "validity_interval": {"type": "object"},
+        "evidence_refs": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "observation_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": true
+    },
+    "calibration": {
+      "type": "object",
+      "required": ["calibration_id", "version", "status", "reference_frame", "uncertainty_model", "valid_interval", "evidence_refs", "calibration_root"],
+      "properties": {
+        "calibration_id": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1},
+        "status": {"const": "VERIFIED"},
+        "reference_frame": {"type": "string", "minLength": 1},
+        "uncertainty_model": {"type": "object"},
+        "valid_interval": {"type": "object"},
+        "evidence_refs": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "calibration_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": true
+    },
+    "inference": {
+      "type": "object",
+      "required": ["inference_id", "method_id", "method_version", "input_observation_root", "output_property_id", "confidence", "deterministic", "output_constraints", "evidence_refs", "inference_root"],
+      "properties": {
+        "inference_id": {"type": "string", "minLength": 1},
+        "method_id": {"type": "string", "minLength": 1},
+        "method_version": {"type": "string", "minLength": 1},
+        "input_observation_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "output_property_id": {"type": "string", "minLength": 1},
+        "confidence": {"type": ["string", "null"]},
+        "deterministic": {"type": "boolean"},
+        "output_constraints": {"type": "object"},
+        "evidence_refs": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "inference_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": true
+    },
+    "proposed_property_set": {"$ref": "rncs.reality-property-set.v0.3"},
+    "proposed_property_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "provider": {
+      "type": "object",
+      "required": ["provider_id", "provider_root", "deterministic", "runtime", "can_write_canonical_property"],
+      "properties": {
+        "provider_id": {"type": "string", "minLength": 1},
+        "provider_root": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "deterministic": {"type": ["boolean", "null"]},
+        "runtime": {"type": ["string", "null"]},
+        "can_write_canonical_property": {"const": false}
+      },
+      "additionalProperties": true
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["observation_root", "calibration_root", "inference_root", "evidence_refs", "evidence_root"],
+      "properties": {
+        "observation_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "calibration_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "inference_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "evidence_refs": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "evidence_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": true
+    },
+    "acceptance": {
+      "type": "object",
+      "required": ["status", "gate_id", "authority_receipt_root", "promotion_allowed", "canonical_property_mutation_performed"],
+      "properties": {
+        "status": {"const": "PENDING"},
+        "gate_id": {"type": ["string", "null"]},
+        "authority_receipt_root": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "promotion_allowed": {"const": false},
+        "canonical_property_mutation_performed": {"const": false}
+      },
+      "additionalProperties": true
+    },
+    "authority": {
+      "type": "object",
+      "required": ["canonical_owner", "provider_can_write_canonical_property", "rncs_authority_required", "canonical_write_authorized", "candidate_only", "authoritative"],
+      "properties": {
+        "canonical_owner": {"const": "RNCS"},
+        "provider_can_write_canonical_property": {"const": false},
+        "rncs_authority_required": {"const": true},
+        "canonical_write_authorized": {"const": false},
+        "candidate_only": {"const": true},
+        "authoritative": {"const": false}
+      },
+      "additionalProperties": true
+    },
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "commit_status": {"const": "NOT_COMMITTED"},
+    "candidate_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}
