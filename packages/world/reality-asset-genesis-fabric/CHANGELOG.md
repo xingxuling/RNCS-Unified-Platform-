@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Static 3D profiles now carry canonical `static-asset` / `static-box` Genome semantics: no animation set, attack gameplay signals, humanoid embodiment, or fake rigging. Their concept SVG, catalog sprite, particle preset, prefab, audio, and effect events are profile-aware (`catalog-preview`, `impact`, `destroy`) while 2D and rigged character paths retain their existing contracts.
 - Added profile-aware deterministic static 3D reference candidates for `prop`, `vehicle`, `structure`, `environment`, `vegetation`, and `resource`. These emit family-specific low-poly geometry, four-channel PBR, decreasing LODs, VSR, and static RSR/prefab contracts without fabricating humanoid rigging; they remain candidate evidence rather than AAA art or target-device proof.
 - Added deterministic native RGBA8 KTX2 mip encoding/inspection through `encodeKtx2Rgba8` and `inspectKtx2`; this exposes a reusable progressive-texture container without claiming BasisU supercompression.
 - 修正默认 cycle 周期端点：周期包含末端闭环帧，避免长 Cut 在源帧边界跳变

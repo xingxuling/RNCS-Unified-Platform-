@@ -7,12 +7,12 @@
 - 生产就绪：技术、语义、平台、生产、几何、材质、骨骼、动画、运行时、来源十类门已实现
 - 定点再生成：Generation历史、稳定Asset ID、选择/再生/接受回执已实现
 - 二维资产：SVG、PNG精灵、WAV、粒子、碰撞已闭环
-- 三维资产：角色类圆润分部几何、GLB、非恒定 PBR、8 骨骼、4 动画、morph、三级 LOD 已闭环；静态 `prop/vehicle/structure/environment/vegetation/resource` 族具备 profile-aware 几何、四通道 PBR、三级 LOD、VSR 与静态 RSR 候选
+- 三维资产：角色类圆润分部几何、GLB、非恒定 PBR、8 骨骼、4 动画、morph、三级 LOD 已闭环；静态 `prop/vehicle/structure/environment/vegetation/resource` 族具备 profile-aware 几何、四通道 PBR、三级 LOD、VSR 与静态 RSR 候选，并使用 `static-asset` / `static-box` Genome 语义、无攻击动画集合和族形态单帧预览
 - 资产装配：Prefab、Retarget、Cross-media Projection已实现
 - 连续性：Asset Family、Lineage Graph、文件SHA-256与Studio导入已实现
 - 运行时适配：VSR v0.8、RSR v0.9、Reality Studio v1.5
 - 运行时适配校验：RAGF VSR v0.4 / RSR v0.4 适配包的版本、兼容目标、LOD/物理字段和封存根已纳入生产就绪门
-- 内置 3D 质量门：角色类最低几何细节、四张 PBR map、morph target、四个嵌入动画、骨骼数量和语义 collision fixture 已纳入候选验收；静态族使用独立的几何、LOD、PBR、碰撞和无骨骼运行时合同
+- 内置 3D 质量门：角色类最低几何细节、四张 PBR map、morph target、四个嵌入动画、骨骼数量和语义 collision fixture 已纳入候选验收；静态族使用独立的几何、LOD、PBR、碰撞、无骨骼运行时和 `impact/destroy` 事件合同
 - 外部Provider：stdio协议已实现并测试
 - Anime 内置 Provider：v0.4 状态驱动 SVG/PNG 角色媒体、多帧 PNG 序列、motion track、媒体清单、state root 与非占位质量门已实现
 - Anime 连续性：同一身份在表情、口型、视线、姿势和二级运动帧间保持 identity、palette、proportion 与 appearance roots

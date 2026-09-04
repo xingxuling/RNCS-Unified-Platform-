@@ -1,15 +1,17 @@
 import {seal,stableId,clone} from '../canonical.mjs';
-import {isRiggedAssetKind} from '../contracts.mjs';
+import {isRiggedAssetKind,isStatic3dAssetKind} from '../contracts.mjs';
 
 export function generatePrefabBlueprint({genome,variant,context}){
   const assetId=genome.identity.asset_id;
   const rigged=isRiggedAssetKind(genome.identity.kind);
+  const static3d=isStatic3dAssetKind(genome.identity.kind);
+  const effectEvents=static3d?['spawn','impact','destroy']:['spawn','attack','hit'];
   const components=[
     {component_id:'visual',type:'mesh-renderer',bindings:{mesh_role:'mesh-glb',lod_role:'lod-manifest',material_role:'pbr-texture-pack'},cast_shadow:true,receive_shadow:true},
     ...(rigged?[{component_id:'animator',type:'skeletal-animator',bindings:{rig_role:'skeleton-rig',clips_role:'animation-clips',retarget_role:'retarget-profile'},default_state:'idle'}]:[]),
     {component_id:'body',type:'embodiment',bindings:{collision_role:'collision-shape',rsr_role:'rsr-embodiment-profile'}},
-    {component_id:'effects',type:'semantic-effect-emitter',bindings:{particle_role:'particle-preset'},events:['spawn','attack','hit']},
-    {component_id:'audio',type:'semantic-audio-emitter',bindings:{audio_role:'sfx-wav'},events:['attack','hit']},
+    {component_id:'effects',type:'semantic-effect-emitter',bindings:{particle_role:'particle-preset'},events:effectEvents},
+    {component_id:'audio',type:'semantic-audio-emitter',bindings:{audio_role:'sfx-wav'},events:static3d?['impact','destroy']:['attack','hit']},
     {component_id:'projection',type:'observer-projection',bindings:{manifest_role:'projection-manifest',vsr_role:'vsr-spatial-asset'}}
   ];
   return seal({

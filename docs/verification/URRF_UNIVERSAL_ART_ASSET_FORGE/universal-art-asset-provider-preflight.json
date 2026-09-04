@@ -360,13 +360,13 @@
       "index": 2,
       "asset_profile": "prop",
       "asset_id": "asset:cfa7d32419628c51e92f8c69",
-      "genome_root": "b3247f0b0862833aca1ec966b5bfc6605f4c3204af95aa59f8eba60375599fad",
+      "genome_root": "c669b931b7c16daeb8c5501ff7da57277ba7884232d8f663f6c8c9360107a351",
       "required_capabilities": [
         "asset.generate.3d.production",
         "asset.generate.mesh",
         "asset.generate.pbr"
       ],
-      "resolution_root": "b6817bbf23ad7291c0b5b5579a0efe6f38405fdcb0c28a26015499ad3f33a7b8",
+      "resolution_root": "f8db3bbcf8021df52fc226f115c09c9d9776654ac22c02f4ddd440b69a4bbdab",
       "selected_provider_id": "provider:taowind:procedural-3d",
       "selected_provider_root": "7bba81ec5d30d0d0f84e0d44a718c4831634a088ee7624565828895100788e3d",
       "selected_provider_source": "ragf-reference-provider",
@@ -388,13 +388,13 @@
       "index": 3,
       "asset_profile": "vehicle",
       "asset_id": "asset:10d1306d5a89a8e6260d3d5e",
-      "genome_root": "8b3811b5ce67105c0ca7bd21500d0c35a3cb7eb7e01ecfee82054d132ab53afc",
+      "genome_root": "d68763d264b28b318d2db96f508858dc8547eef3bbaebb5957a562f8c77f4d9f",
       "required_capabilities": [
         "asset.generate.3d.production",
         "asset.generate.mesh",
         "asset.generate.pbr"
       ],
-      "resolution_root": "1d7cda10dc53abfb2452f4ab584e61ee4f80ff7faa880f74ae4fcb3ceff6b8ec",
+      "resolution_root": "39ef2f93095d5995e5c62ae386b13b30f60fe6cc477bb1412f0b9bfdbf2f8e7c",
       "selected_provider_id": "provider:taowind:procedural-3d",
       "selected_provider_root": "7bba81ec5d30d0d0f84e0d44a718c4831634a088ee7624565828895100788e3d",
       "selected_provider_source": "ragf-reference-provider",
@@ -416,12 +416,12 @@
       "index": 4,
       "asset_profile": "structure",
       "asset_id": "asset:410985a26afa34907f6f9b97",
-      "genome_root": "b8eb480b39bc1c0f3b95dbee54dd4038ea0bc022e5a65f2bced3b5a2b92cecb5",
+      "genome_root": "ac5cf033ec6a7267294ed613afb2c07b5395789eb7bf8af26d4740fe5a81e364",
       "required_capabilities": [
         "world.asset.generate.procedural",
         "world.asset.building"
       ],
-      "resolution_root": "42a780584f695f64bd0aca9617295b264b93cbc91fc3701ae55b3f9c0f562e90",
+      "resolution_root": "e91b9facb9f971e15350619f0543a5da9c5e6f820d74d5d8a23cc977c40c34ce",
       "selected_provider_id": "provider:taowind:procedural-3d",
       "selected_provider_root": "7bba81ec5d30d0d0f84e0d44a718c4831634a088ee7624565828895100788e3d",
       "selected_provider_source": "ragf-reference-provider",
@@ -443,12 +443,12 @@
       "index": 5,
       "asset_profile": "environment",
       "asset_id": "asset:c5a0cdcc14e4197b1c1bc68f",
-      "genome_root": "4042d2fc53ce0f39bd3c92a47c7cf5a929a952776ca71d85684214442513d5fd",
+      "genome_root": "74eabbd25edce25904d597ac3154ad8f9b81cee298278d0d361b20596fef3294",
       "required_capabilities": [
         "world.asset.generate.procedural",
         "world.asset.environment"
       ],
-      "resolution_root": "570d3ec736539c5a0dc2286530c97078b82795da173b0c4547c4110f6cdf74a7",
+      "resolution_root": "8878a0986411f7211e669f9438b03cd18bdc5f04d7bf0ea956d52824c36468a8",
       "selected_provider_id": "provider:taowind:procedural-3d",
       "selected_provider_root": "7bba81ec5d30d0d0f84e0d44a718c4831634a088ee7624565828895100788e3d",
       "selected_provider_source": "ragf-reference-provider",
@@ -470,12 +470,12 @@
       "index": 6,
       "asset_profile": "vegetation",
       "asset_id": "asset:3b4b7c4e08d9b0f0a477e070",
-      "genome_root": "d870585d0930d2b545ba02544399c361cfae963ece8f2f6fa3a53105d61d9d12",
+      "genome_root": "e9991aeee3d0a7a6a954d58b7f53bd478d01a760e4374f24f1993d21314bf48a",
       "required_capabilities": [
         "world.asset.generate.procedural",
         "world.asset.vegetation"
       ],
-      "resolution_root": "9d70b6bd7404dfd90ae87748e3f87b76ab628baa147f26004d18be6c53269c43",
+      "resolution_root": "f1045e189100e77f8544d69b5cd997a0fd27c06d503d34507eb8c12b78726f89",
       "selected_provider_id": "provider:taowind:procedural-3d",
       "selected_provider_root": "7bba81ec5d30d0d0f84e0d44a718c4831634a088ee7624565828895100788e3d",
       "selected_provider_source": "ragf-reference-provider",
@@ -497,12 +497,12 @@
       "index": 7,
       "asset_profile": "resource",
       "asset_id": "asset:67901d8c96e0204230513bf9",
-      "genome_root": "c3bb46b97d80b5e6b8fe5b59d09273955d76a529e237664fe49995ff4dc6b3c9",
+      "genome_root": "c5ee2276a7df0ff567b2db71b7fe0a8bca42b3ff03127e3dfe837fecd09ebd0e",
       "required_capabilities": [
         "world.asset.generate.procedural",
         "world.asset.rock"
       ],
-      "resolution_root": "e69634ee26ba2c663ecee0d0f2f2842748dda4d25359bb6233c84ce7a574133e",
+      "resolution_root": "1b620c960273ef4e1806cbe1cb9bda8840c7ead22f800678064204a982c7e528",
       "selected_provider_id": "provider:taowind:procedural-3d",
       "selected_provider_root": "7bba81ec5d30d0d0f84e0d44a718c4831634a088ee7624565828895100788e3d",
       "selected_provider_source": "ragf-reference-provider",
@@ -524,11 +524,11 @@
       "index": 8,
       "asset_profile": "vfx",
       "asset_id": "asset:6333b83fe8a8767c9af86903",
-      "genome_root": "1d292c08fc689d3b1130458ea50d13f8d5dcdd2a3d34f6b00c7bb77f39c2ff67",
+      "genome_root": "0e19eaf44ed951a63d0c7cb81fad81fe2d17306337579d9e04ccf82dc9ef7577",
       "required_capabilities": [
         "asset.generate.vfx"
       ],
-      "resolution_root": "7fde02f6a5d1867858dd4457ff0a8dcc34f86441be297cbd870258e4c38556c6",
+      "resolution_root": "adb93b75dfbcb6acf041624b868bc8a9fde0413b925b3994db6b80b38c032c38",
       "selected_provider_id": null,
       "selected_provider_root": null,
       "selected_provider_source": null,
@@ -590,5 +590,5 @@
     "acceptance_can_commit": false,
     "rncs_authority_required": true
   },
-  "preflight_root": "e84cee3b1799990370356aaf4df009b1a6d87046e0863081b7f418c0f68847d6"
+  "preflight_root": "a5d0ec0f987da55ae997d6b256de14d5b058b4373d1dd10c4679991b61b453b5"
 }

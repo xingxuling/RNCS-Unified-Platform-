@@ -58,7 +58,7 @@
       },
       "candidate": {
         "present": true,
-        "candidate_root": "a5c814ff6514be31d973de1e8718673b765276c96ca6b73ef98ec0e43133d006"
+        "candidate_root": "dd32db9070f034c7dc5ff0ad970d7d5a105a7a8585fdd3f49e3c6e04de9ab0fc"
       },
       "authority": {
         "candidate_only": true,
@@ -145,17 +145,17 @@
       "asset_profile": "prop",
       "requested_profile": "prop",
       "status": "BLOCKED",
-      "genome_root": "94f16934d970a8b94e502faca649bd34c94f09e11fac19326ef78d175fa031af",
+      "genome_root": "12c47d990f485cb03c0936cd2e82146a2504147307c8a0afe0b4cf0213fb292d",
       "forge_asset_profile": "prop",
-      "forge_genome_root": "94f16934d970a8b94e502faca649bd34c94f09e11fac19326ef78d175fa031af",
-      "resolution_root": "628a5d768d84bfb451c4338ad26aafe863feb277408d4c7998abefb0232270bc",
+      "forge_genome_root": "12c47d990f485cb03c0936cd2e82146a2504147307c8a0afe0b4cf0213fb292d",
+      "resolution_root": "3577cf548f2a2b0b019b4eb1d053dbfeb19e6abbe823bca57b480848e2038c93",
       "resolution": {
         "format": "urrf.universal-art-asset-provider-resolution.v0.1",
         "version": "0.1.0",
         "asset_id": "asset:21e0f31956d0f44a8198617d",
         "asset_profile": "prop",
-        "genome_root": "94f16934d970a8b94e502faca649bd34c94f09e11fac19326ef78d175fa031af",
-        "resolution_root": "628a5d768d84bfb451c4338ad26aafe863feb277408d4c7998abefb0232270bc",
+        "genome_root": "12c47d990f485cb03c0936cd2e82146a2504147307c8a0afe0b4cf0213fb292d",
+        "resolution_root": "3577cf548f2a2b0b019b4eb1d053dbfeb19e6abbe823bca57b480848e2038c93",
         "selected_provider_id": "provider:taowind:procedural-3d",
         "selected_provider_root": "7bba81ec5d30d0d0f84e0d44a718c4831634a088ee7624565828895100788e3d",
         "selected_provider_source": "ragf-reference-provider",
@@ -170,7 +170,7 @@
       },
       "candidate": {
         "present": true,
-        "candidate_root": "924cf0b99b8e7d9c643073609b86390cb09ac17749abf65b6e0bf3fbcbd6c03f"
+        "candidate_root": "02a2cd338f14ab30ecbff280166409cfafc257d3d35ca68f460c48c019fbd856"
       },
       "authority": {
         "candidate_only": true,
@@ -201,17 +201,17 @@
       "asset_profile": "vehicle",
       "requested_profile": "vehicle",
       "status": "BLOCKED",
-      "genome_root": "a3de5104959ec0f51a1b5d70b86b19d05017d78e53ffcb078a9fd4153514646e",
+      "genome_root": "6430463c5437d3d33d52702a05810243a7004149c994872d44ccf94c00406d83",
       "forge_asset_profile": "vehicle",
-      "forge_genome_root": "a3de5104959ec0f51a1b5d70b86b19d05017d78e53ffcb078a9fd4153514646e",
-      "resolution_root": "d24a98c971792212f960f332f121f60a24c9d7765e3d8082016c12da986e9950",
+      "forge_genome_root": "6430463c5437d3d33d52702a05810243a7004149c994872d44ccf94c00406d83",
+      "resolution_root": "089b7257fd38d5eb2e96873e742f4e8358c2cfef37837bf3ca65bd8362be75de",
       "resolution": {
         "format": "urrf.universal-art-asset-provider-resolution.v0.1",
         "version": "0.1.0",
         "asset_id": "asset:73c48add0d6031a045eec8d3",
         "asset_profile": "vehicle",
-        "genome_root": "a3de5104959ec0f51a1b5d70b86b19d05017d78e53ffcb078a9fd4153514646e",
-        "resolution_root": "d24a98c971792212f960f332f121f60a24c9d7765e3d8082016c12da986e9950",
+        "genome_root": "6430463c5437d3d33d52702a05810243a7004149c994872d44ccf94c00406d83",
+        "resolution_root": "089b7257fd38d5eb2e96873e742f4e8358c2cfef37837bf3ca65bd8362be75de",
         "selected_provider_id": "provider:taowind:procedural-3d",
         "selected_provider_root": "7bba81ec5d30d0d0f84e0d44a718c4831634a088ee7624565828895100788e3d",
         "selected_provider_source": "ragf-reference-provider",
@@ -226,7 +226,7 @@
       },
       "candidate": {
         "present": true,
-        "candidate_root": "78109ef27b40cb2c46392124cefdcb5e3bcaff4de1bf0373c4cc6e89ee974be4"
+        "candidate_root": "3b69f0453c781220765e0199fd5c500a986ce51b9a04eafcb1ec58412b6f1625"
       },
       "authority": {
         "candidate_only": true,
@@ -257,17 +257,17 @@
       "asset_profile": "structure",
       "requested_profile": "structure",
       "status": "BLOCKED",
-      "genome_root": "c768bdffab4955ddff80fefab916eb6dde23871ad8b19839689252028c6591ae",
+      "genome_root": "e0e2d65bb58cdc2592f99c25bc2af23493546ce8ca0e34c2a90f6e9381a016c3",
       "forge_asset_profile": "structure",
-      "forge_genome_root": "c768bdffab4955ddff80fefab916eb6dde23871ad8b19839689252028c6591ae",
-      "resolution_root": "4285b2102aaa28198074b62e266ba418f141d3cd1ec3b61d7ca9e5f8786531f2",
+      "forge_genome_root": "e0e2d65bb58cdc2592f99c25bc2af23493546ce8ca0e34c2a90f6e9381a016c3",
+      "resolution_root": "717a6fd838f126bdc233a5d403431597c3d8554a752056fa8ccf8f0371cb8a75",
       "resolution": {
         "format": "urrf.universal-art-asset-provider-resolution.v0.1",
         "version": "0.1.0",
         "asset_id": "asset:36c7b845d2088006a2af6324",
         "asset_profile": "structure",
-        "genome_root": "c768bdffab4955ddff80fefab916eb6dde23871ad8b19839689252028c6591ae",
-        "resolution_root": "4285b2102aaa28198074b62e266ba418f141d3cd1ec3b61d7ca9e5f8786531f2",
+        "genome_root": "e0e2d65bb58cdc2592f99c25bc2af23493546ce8ca0e34c2a90f6e9381a016c3",
+        "resolution_root": "717a6fd838f126bdc233a5d403431597c3d8554a752056fa8ccf8f0371cb8a75",
         "selected_provider_id": "provider:taowind:procedural-3d",
         "selected_provider_root": "7bba81ec5d30d0d0f84e0d44a718c4831634a088ee7624565828895100788e3d",
         "selected_provider_source": "ragf-reference-provider",
@@ -282,7 +282,7 @@
       },
       "candidate": {
         "present": true,
-        "candidate_root": "12d4c7dbd3b55385ebc158509b297f4e7d0940768f9be5010f2c9d04e78d357d"
+        "candidate_root": "83cbcba6e1e81a72c9755fb99c036479993ebcf2a781e66049cdd417ec25f5d0"
       },
       "authority": {
         "candidate_only": true,
@@ -313,17 +313,17 @@
       "asset_profile": "environment",
       "requested_profile": "environment",
       "status": "BLOCKED",
-      "genome_root": "07431423f8c6c68214036f3d1a6965fa09ec53f6fd84cc6204d634a1c3ecab4f",
+      "genome_root": "2f45b645a633b419a8d4f8b5d44c0a7c5d01285c28330ee70b261bf1d39e7d54",
       "forge_asset_profile": "environment",
-      "forge_genome_root": "07431423f8c6c68214036f3d1a6965fa09ec53f6fd84cc6204d634a1c3ecab4f",
-      "resolution_root": "e878196883c09f83fe2f5815db64b77cd78375ed1007e3912e64ba51bd77ab47",
+      "forge_genome_root": "2f45b645a633b419a8d4f8b5d44c0a7c5d01285c28330ee70b261bf1d39e7d54",
+      "resolution_root": "28c5c4040cbeb9b8aba8a30063a446ef5715404ea99279f1c3923057293759b7",
       "resolution": {
         "format": "urrf.universal-art-asset-provider-resolution.v0.1",
         "version": "0.1.0",
         "asset_id": "asset:b9e6cff7b514f988ae3f0361",
         "asset_profile": "environment",
-        "genome_root": "07431423f8c6c68214036f3d1a6965fa09ec53f6fd84cc6204d634a1c3ecab4f",
-        "resolution_root": "e878196883c09f83fe2f5815db64b77cd78375ed1007e3912e64ba51bd77ab47",
+        "genome_root": "2f45b645a633b419a8d4f8b5d44c0a7c5d01285c28330ee70b261bf1d39e7d54",
+        "resolution_root": "28c5c4040cbeb9b8aba8a30063a446ef5715404ea99279f1c3923057293759b7",
         "selected_provider_id": "provider:taowind:procedural-3d",
         "selected_provider_root": "7bba81ec5d30d0d0f84e0d44a718c4831634a088ee7624565828895100788e3d",
         "selected_provider_source": "ragf-reference-provider",
@@ -338,7 +338,7 @@
       },
       "candidate": {
         "present": true,
-        "candidate_root": "ffb8c367c9ae1c05fc7cdb65765534c80137853dcf78916da0667242f48da80d"
+        "candidate_root": "b162594fdcba7d6dc8fc092ddbc4dfc479c62c555c7d9d0412cb549c85e264ff"
       },
       "authority": {
         "candidate_only": true,
@@ -369,17 +369,17 @@
       "asset_profile": "vegetation",
       "requested_profile": "vegetation",
       "status": "BLOCKED",
-      "genome_root": "26db070bff905931a0f48bdfda191964b01e2596b75fdc6148bb85d95f6bee42",
+      "genome_root": "8d15b0504a60ee5fcf79cf8fb7ecbf1a5377027bfbe3bf5cf0400087b2c3b870",
       "forge_asset_profile": "vegetation",
-      "forge_genome_root": "26db070bff905931a0f48bdfda191964b01e2596b75fdc6148bb85d95f6bee42",
-      "resolution_root": "bb8d4a077edec246250d2faec6cd68985f94c5aa2fbc841cc86b25fa5cf1032a",
+      "forge_genome_root": "8d15b0504a60ee5fcf79cf8fb7ecbf1a5377027bfbe3bf5cf0400087b2c3b870",
+      "resolution_root": "82aa879923a29aaeadb216f9d53933c95667c1fadceab8a14091d3c215b23e47",
       "resolution": {
         "format": "urrf.universal-art-asset-provider-resolution.v0.1",
         "version": "0.1.0",
         "asset_id": "asset:375c2c626d65044093d54381",
         "asset_profile": "vegetation",
-        "genome_root": "26db070bff905931a0f48bdfda191964b01e2596b75fdc6148bb85d95f6bee42",
-        "resolution_root": "bb8d4a077edec246250d2faec6cd68985f94c5aa2fbc841cc86b25fa5cf1032a",
+        "genome_root": "8d15b0504a60ee5fcf79cf8fb7ecbf1a5377027bfbe3bf5cf0400087b2c3b870",
+        "resolution_root": "82aa879923a29aaeadb216f9d53933c95667c1fadceab8a14091d3c215b23e47",
         "selected_provider_id": "provider:taowind:procedural-3d",
         "selected_provider_root": "7bba81ec5d30d0d0f84e0d44a718c4831634a088ee7624565828895100788e3d",
         "selected_provider_source": "ragf-reference-provider",
@@ -394,7 +394,7 @@
       },
       "candidate": {
         "present": true,
-        "candidate_root": "89665d361ea5b36d436489a5d6ad0d94cdc6fdf53d268c02b1fe69cff8fbae67"
+        "candidate_root": "ac8eb94efda9589cf3a3b038c0812aad59bf0720957b965246be80aae3cb116a"
       },
       "authority": {
         "candidate_only": true,
@@ -425,17 +425,17 @@
       "asset_profile": "resource",
       "requested_profile": "resource",
       "status": "BLOCKED",
-      "genome_root": "5af119d73610c5684c2d134d1318ac84b204d57f66a850d54114de616efad08c",
+      "genome_root": "555adc7c42587b952874eb0e5aa62b7bc406c779acd7c750f3d5805f4ef2f73e",
       "forge_asset_profile": "resource",
-      "forge_genome_root": "5af119d73610c5684c2d134d1318ac84b204d57f66a850d54114de616efad08c",
-      "resolution_root": "80ab44421c285483ff962daa8de3394f3d747c5f4c9c742031edbdaf52280808",
+      "forge_genome_root": "555adc7c42587b952874eb0e5aa62b7bc406c779acd7c750f3d5805f4ef2f73e",
+      "resolution_root": "e314d30aca75eee5fd0e36eeaad318da4de1a9c8119f1ea3f311ba8ffbb25bdd",
       "resolution": {
         "format": "urrf.universal-art-asset-provider-resolution.v0.1",
         "version": "0.1.0",
         "asset_id": "asset:71c60af578b2e558d28d9bb5",
         "asset_profile": "resource",
-        "genome_root": "5af119d73610c5684c2d134d1318ac84b204d57f66a850d54114de616efad08c",
-        "resolution_root": "80ab44421c285483ff962daa8de3394f3d747c5f4c9c742031edbdaf52280808",
+        "genome_root": "555adc7c42587b952874eb0e5aa62b7bc406c779acd7c750f3d5805f4ef2f73e",
+        "resolution_root": "e314d30aca75eee5fd0e36eeaad318da4de1a9c8119f1ea3f311ba8ffbb25bdd",
         "selected_provider_id": "provider:taowind:procedural-3d",
         "selected_provider_root": "7bba81ec5d30d0d0f84e0d44a718c4831634a088ee7624565828895100788e3d",
         "selected_provider_source": "ragf-reference-provider",
@@ -450,7 +450,7 @@
       },
       "candidate": {
         "present": true,
-        "candidate_root": "81f3d91422f8106007199845bd86a9c2f8b29f96f3f9528de3220bb48c98f230"
+        "candidate_root": "8c4adb5f701e62af4ffeffff0a28d3e92df50146e1ce66c658741837820c4885"
       },
       "authority": {
         "candidate_only": true,
@@ -481,17 +481,17 @@
       "asset_profile": "vfx",
       "requested_profile": "vfx",
       "status": "BLOCKED",
-      "genome_root": "6ca655c90ab7b341e212444504f618e1fd1a0b7feafe29f8ab515319f68e6da4",
+      "genome_root": "c9865d06e2a748805b56057c11aac694247dec121b84fca7c35b066c98eaabd4",
       "forge_asset_profile": "vfx",
-      "forge_genome_root": "6ca655c90ab7b341e212444504f618e1fd1a0b7feafe29f8ab515319f68e6da4",
-      "resolution_root": "2c5e8113e9f0666de9909c1ab5e708c5a5954c4801978f2871f3a9af2afe4381",
+      "forge_genome_root": "c9865d06e2a748805b56057c11aac694247dec121b84fca7c35b066c98eaabd4",
+      "resolution_root": "05419e7f64ca65e73bf5893bbe1d6e259217a339196a45428ba29458bb4ee016",
       "resolution": {
         "format": "urrf.universal-art-asset-provider-resolution.v0.1",
         "version": "0.1.0",
         "asset_id": "asset:e199a996e4026d4875e015fd",
         "asset_profile": "vfx",
-        "genome_root": "6ca655c90ab7b341e212444504f618e1fd1a0b7feafe29f8ab515319f68e6da4",
-        "resolution_root": "2c5e8113e9f0666de9909c1ab5e708c5a5954c4801978f2871f3a9af2afe4381",
+        "genome_root": "c9865d06e2a748805b56057c11aac694247dec121b84fca7c35b066c98eaabd4",
+        "resolution_root": "05419e7f64ca65e73bf5893bbe1d6e259217a339196a45428ba29458bb4ee016",
         "selected_provider_id": null,
         "selected_provider_root": null,
         "selected_provider_source": null,
@@ -596,5 +596,5 @@
     "acceptance_can_commit": false,
     "rncs_authority_required": true
   },
-  "coverage_root": "303a1fd108b849f2f0b26ea484b788528e4438011fa82734def33561360e4c14"
+  "coverage_root": "631b64fc491f09aabc8aedb3da6a320cb8bc5f5123cdd84252300e10b9a956f7"
 }

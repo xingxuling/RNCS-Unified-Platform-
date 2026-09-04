@@ -175,6 +175,8 @@ npm run test:ragf-world-binding
 - 3D 碰撞输出增加 torso、head、weapon sensor 等语义 fixture；主 RSR 仍以稳定胶囊为权威运行时形状。
 - 质量合同沉淀在 `art_bible/ragf-procedural-3d-v0.4.md`、`asset_manifest.json` 和 `source_prompts/character-3d-quality-v0.4.json`，后续外部 Provider 也必须对齐这些不变量。
 
+静态族使用独立的语义合同：Genome 的 `body_type` 为 `static-asset`、具身档案为 `static-box`，动画集合和攻击 gameplay signals 为空；概念 SVG 与精灵表分别输出族形态和单帧 `catalog-preview`，粒子、音频与 Prefab 使用 `impact` / `destroy` 事件。这样车辆、建筑和环境不会被下游误解释为可攻击的人形角色。角色与生物仍走骨骼/动画分支，二维角色仍保留原有行为帧。
+
 ## Character Genome Reference Provider
 
 `ragf.character-genome-reference-provider` is the explicit offline provider for

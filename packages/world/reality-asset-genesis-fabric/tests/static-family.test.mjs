@@ -31,6 +31,16 @@ test('static 3D family profiles generate bounded archetypes without fake rigging
     const collision = selected.artifacts['collision-shape'].data;
     const prefab = selected.artifacts['prefab-blueprint'].data;
     assert.equal(verifyWorkspace(workspace, {baseDir: outDir, verifyFiles: true}).valid, true, kind);
+    assert.deepEqual(workspace.genome.behavior.animation_set, []);
+    assert.deepEqual(workspace.genome.behavior.affordances, ['selectable', 'collidable', 'audible', 'effect-emitter']);
+    assert.deepEqual(workspace.genome.behavior.gameplay_signals, []);
+    assert.equal(workspace.genome.physical.body_type, 'static-asset');
+    assert.equal(workspace.genome.physical.collision_shape, 'box');
+    assert.equal(workspace.genome.physical.embodiment_profile, 'static-box');
+    assert.ok(selected.artifacts['concept-svg'].text.includes(kind));
+    assert.deepEqual(selected.artifacts['sprite-sheet'].metadata.frames.map(frame => frame.name), ['catalog-preview']);
+    assert.equal(selected.artifacts['sprite-sheet'].metadata.frames[0].duration_ms, 0);
+    assert.equal(selected.artifacts['particle-preset'].data.semantic_event, 'impact-destroy');
     assert.equal(mesh.asset_kind, kind);
     assert.equal(mesh.rigged, false);
     assert.equal(mesh.bone_count, 0);
@@ -46,6 +56,8 @@ test('static 3D family profiles generate bounded archetypes without fake rigging
     }
     assert.equal(selected.artifacts['lod-manifest'].data.policy.geometry, 'family-static-progressive-detail');
     assert.equal(prefab.components.some(component => component.component_id === 'animator'), false);
+    assert.deepEqual(prefab.components.find(component => component.component_id === 'effects').events, ['spawn', 'impact', 'destroy']);
+    assert.deepEqual(prefab.components.find(component => component.component_id === 'audio').events, ['impact', 'destroy']);
     assert.equal(selected.artifacts['skeleton-rig'], undefined);
     assert.equal(selected.artifacts['animation-clips'], undefined);
     assert.equal(selected.artifacts['retarget-profile'], undefined);
