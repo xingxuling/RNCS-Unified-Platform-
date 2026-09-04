@@ -1,0 +1,31 @@
+{
+  "format": "rncs.urrf-integration-court-verdict.v0.1",
+  "version": "0.1.0",
+  "court_id": "urrf-v03-integration-court-v01",
+  "coverage_root": "6361a8163db6831f326b92ed3b3349303522467b01b8c8773b38aba8c7512487",
+  "gap_ledger_root": "41feedb3492cd46f43650ff088c0199def51fad675731afc42ea23c707443f4c",
+  "checks": {
+    "coverage_matrix_valid": true,
+    "gap_ledger_valid": true,
+    "every_nonverified_criterion_classified": true,
+    "donor_advantage_and_refs_bound": true,
+    "k400_cells_bound": true,
+    "no_silent_rcl_bypass": true,
+    "incomplete_external_authority_explicit": true,
+    "candidate_only": true
+  },
+  "status": "CANDIDATE_LOCAL_ONLY",
+  "decision": "NO_RCL_PROMOTION_OR_CANONICAL_WRITE",
+  "external_authorization_status": "NOT_PRESENT",
+  "authority": {
+    "canonical_owner": "RNCS",
+    "semantic_owner": "RCL",
+    "representation_owner": "URRF",
+    "provider_can_write_authoritative_world_state": false,
+    "provider_can_commit": false,
+    "rcl_promotion_authorized": false,
+    "canonical_write_authorized": false,
+    "candidate_only": true
+  },
+  "court_root": "f94b7f9e72e0992906248fb716650239062668e33d029ac9b594668f09b8fdaf"
+}

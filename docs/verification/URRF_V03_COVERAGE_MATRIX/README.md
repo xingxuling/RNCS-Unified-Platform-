@@ -26,6 +26,9 @@ The matrix test checks:
   requirements to 18 local positive/boundary executions, nine same-seed
   replays, nine open-domain fail-closed rejections, and rooted contract and
   evidence schemas;
+- the URRF gap ledger and candidate Integration Court bind remaining partial
+  criteria to `RCL_GAP`/`PROVIDER_GAP`/`MIXED` classifications, Donor references,
+  K400 cells and an explicit no-promotion verdict;
 - the sensor-inference gate is locally closed while its external authority and
   hardware boundary, plus blocked AI generation status, remain explicit.
 

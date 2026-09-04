@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/rncs/urrf-integration-court-verdict.v0.1.schema.json",
+  "type": "object",
+  "required": ["format", "version", "court_id", "coverage_root", "gap_ledger_root", "checks", "status", "decision", "external_authorization_status", "authority", "court_root"],
+  "properties": {
+    "format": {"const": "rncs.urrf-integration-court-verdict.v0.1"},
+    "version": {"const": "0.1.0"},
+    "court_id": {"type": "string", "minLength": 1},
+    "coverage_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "gap_ledger_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "checks": {"type": "object", "additionalProperties": {"type": "boolean"}},
+    "status": {"enum": ["CANDIDATE_LOCAL_ONLY", "BLOCKED_INCOMPLETE_GAP_COURT"]},
+    "decision": {"const": "NO_RCL_PROMOTION_OR_CANONICAL_WRITE"},
+    "external_authorization_status": {"const": "NOT_PRESENT"},
+    "authority": {"type": "object", "required": ["canonical_owner", "semantic_owner", "representation_owner", "provider_can_write_authoritative_world_state", "provider_can_commit", "rcl_promotion_authorized", "canonical_write_authorized", "candidate_only"], "properties": {"canonical_owner": {"const": "RNCS"}, "semantic_owner": {"const": "RCL"}, "representation_owner": {"const": "URRF"}, "provider_can_write_authoritative_world_state": {"const": false}, "provider_can_commit": {"const": false}, "rcl_promotion_authorized": {"const": false}, "canonical_write_authorized": {"const": false}, "candidate_only": {"const": true}}},
+    "court_root": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

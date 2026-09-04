@@ -1062,6 +1062,7 @@
       "source_refs": [
         "packages/kernel/rncs-core-contract/src/reality-property.mjs",
         "packages/kernel/rncs-core-contract/src/reality-transport.mjs",
+        "packages/kernel/rncs-core-contract/src/urrf-gap-integration-court.mjs",
         "packages/world/large-world-runtime/src/multi-process-replication.mjs",
         "packages/world/reality-asset-genesis-fabric/src/external-asset-providers.mjs",
         "packages/world/reality-asset-genesis-fabric/src/trellis2-local-provider.mjs",
@@ -1069,18 +1070,24 @@
       ],
       "schema_refs": [
         "packages/kernel/rncs-core-contract/schemas/reality-transport-profile.v0.3.schema.json",
+        "packages/kernel/rncs-core-contract/schemas/urrf-gap-ledger.v0.1.schema.json",
+        "packages/kernel/rncs-core-contract/schemas/urrf-integration-court-verdict.v0.1.schema.json",
         "packages/world/large-world-runtime/schemas/universal-art-asset-golden-set.v0.1.schema.json",
         "packages/world/large-world-runtime/schemas/universal-art-asset-golden-set-evidence.v0.1.schema.json"
       ],
       "test_refs": [
         "packages/kernel/rncs-core-contract/tests/urrf-v03-coverage-matrix.test.mjs",
+        "packages/kernel/rncs-core-contract/tests/urrf-gap-integration-court.test.mjs",
         "packages/world/large-world-runtime/tests/multi-process-replication.test.mjs",
         "packages/world/reality-asset-genesis-fabric/tests/external-asset-providers.test.mjs",
-        "packages/world/large-world-runtime/tests/universal-art-asset-golden-set.test.mjs"
+        "packages/world/large-world-runtime/tests/universal-art-asset-golden-set.test.mjs",
+        "tests/large-world-universal-art-asset-forge.integration.test.mjs"
       ],
       "evidence_refs": [
         "docs/verification/URRF_UNIVERSAL_ART_ASSET_FORGE/RCL_GAP_STRESS_EVIDENCE.md",
         "docs/verification/URRF_V03_TRANSPORT_PHASE4_EVIDENCE.md",
+        "docs/verification/URRF_UNIVERSAL_ART_ASSET_FORGE/urrf-gap-ledger.json",
+        "docs/verification/URRF_UNIVERSAL_ART_ASSET_FORGE/urrf-integration-court-verdict.json",
         "docs/verification/URRF_UNIVERSAL_ART_ASSET_FORGE/universal-art-asset-golden-set-evidence.json"
       ],
       "k400_gates": [
@@ -1095,7 +1102,7 @@
         "missing RCL primitive mislabeled as runtime outage"
       ],
       "remaining": [
-        "automated donor search, K400 cell attribution and formal Integration Court"
+        "automated donor search across external projects and independently authorized or human Integration Court promotion"
       ],
       "gap": {
         "gap_type": "MIXED",
@@ -1300,13 +1307,18 @@
       "source_refs": [
         "packages/world/reality-asset-genesis-fabric/src/asset-evidence-ledger.mjs",
         "packages/kernel/rncs-core-contract/src/reality-chunk.mjs",
+        "packages/kernel/rncs-core-contract/src/urrf-gap-integration-court.mjs",
         "packages/world/large-world-runtime/src/multi-process-replication.mjs",
+        "packages/world/large-world-runtime/src/universal-art-asset-golden-set.mjs",
         "packages/kernel/rncs-core-contract/src/urrf-v03-coverage.mjs"
       ],
       "test_refs": [
         "packages/kernel/rncs-core-contract/tests/urrf-v03-coverage-matrix.test.mjs",
+        "packages/kernel/rncs-core-contract/tests/urrf-gap-integration-court.test.mjs",
         "packages/world/reality-asset-genesis-fabric/tests/external-asset-providers.test.mjs",
-        "packages/world/large-world-runtime/tests/multi-process-replication.test.mjs"
+        "packages/world/large-world-runtime/tests/multi-process-replication.test.mjs",
+        "packages/world/large-world-runtime/tests/universal-art-asset-golden-set.test.mjs",
+        "tests/large-world-universal-art-asset-forge.integration.test.mjs"
       ],
       "remaining": []
     }
@@ -1328,5 +1340,5 @@
     "aaa_release_status": "BLOCKED_EXTERNAL_ART_HUMAN_HARDWARE_EVIDENCE",
     "ai_generate_status": "BLOCKED_NOT_RUN"
   },
-  "coverage_root": "6361a8163db6831f326b92ed3b3349303522467b01b8c8773b38aba8c7512487"
+  "coverage_root": "af43a82651fce1372fbe1ee11b02a5836326ca673019301cbc6228eb8efed552"
 }

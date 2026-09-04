@@ -266,13 +266,13 @@ export const URRF_V03_SUCCESS_CRITERIA = Object.freeze([
     boundary: 'Local calibrated candidate, lease-bound synthetic RNCS acceptance and explicit promotion are verified; external authority signatures, physical sensor replay and production sensor hardware are not claimed.'
   }),
   criterion(25, 'RCL Gap versus Provider Gap', 'The coverage ledger distinguishes missing RCL semantic primitives from unavailable or unaudited provider/runtime capability.', partial, ref(
-    [`${core}/src/reality-property.mjs`, `${core}/src/reality-transport.mjs`, `${largeWorld}/src/multi-process-replication.mjs`, `${ragf}/src/external-asset-providers.mjs`, `${ragf}/src/trellis2-local-provider.mjs`, `${largeWorld}/src/universal-art-asset-golden-set.mjs`],
-    [`${core}/schemas/reality-transport-profile.v0.3.schema.json`, `${largeWorld}/schemas/universal-art-asset-golden-set.v0.1.schema.json`, `${largeWorld}/schemas/universal-art-asset-golden-set-evidence.v0.1.schema.json`],
-    ['packages/kernel/rncs-core-contract/tests/urrf-v03-coverage-matrix.test.mjs', `${largeWorld}/tests/multi-process-replication.test.mjs`, `${ragf}/tests/external-asset-providers.test.mjs`, `${largeWorld}/tests/universal-art-asset-golden-set.test.mjs`],
-    [`${evidence}/URRF_UNIVERSAL_ART_ASSET_FORGE/RCL_GAP_STRESS_EVIDENCE.md`, `${evidence}/URRF_V03_TRANSPORT_PHASE4_EVIDENCE.md`, `${evidence}/URRF_UNIVERSAL_ART_ASSET_FORGE/universal-art-asset-golden-set-evidence.json`],
+    [`${core}/src/reality-property.mjs`, `${core}/src/reality-transport.mjs`, `${core}/src/urrf-gap-integration-court.mjs`, `${largeWorld}/src/multi-process-replication.mjs`, `${ragf}/src/external-asset-providers.mjs`, `${ragf}/src/trellis2-local-provider.mjs`, `${largeWorld}/src/universal-art-asset-golden-set.mjs`],
+    [`${core}/schemas/reality-transport-profile.v0.3.schema.json`, `${core}/schemas/urrf-gap-ledger.v0.1.schema.json`, `${core}/schemas/urrf-integration-court-verdict.v0.1.schema.json`, `${largeWorld}/schemas/universal-art-asset-golden-set.v0.1.schema.json`, `${largeWorld}/schemas/universal-art-asset-golden-set-evidence.v0.1.schema.json`],
+    ['packages/kernel/rncs-core-contract/tests/urrf-v03-coverage-matrix.test.mjs', `${core}/tests/urrf-gap-integration-court.test.mjs`, `${largeWorld}/tests/multi-process-replication.test.mjs`, `${ragf}/tests/external-asset-providers.test.mjs`, `${largeWorld}/tests/universal-art-asset-golden-set.test.mjs`, 'tests/large-world-universal-art-asset-forge.integration.test.mjs'],
+    [`${evidence}/URRF_UNIVERSAL_ART_ASSET_FORGE/RCL_GAP_STRESS_EVIDENCE.md`, `${evidence}/URRF_V03_TRANSPORT_PHASE4_EVIDENCE.md`, `${evidence}/URRF_UNIVERSAL_ART_ASSET_FORGE/urrf-gap-ledger.json`, `${evidence}/URRF_UNIVERSAL_ART_ASSET_FORGE/urrf-integration-court-verdict.json`, `${evidence}/URRF_UNIVERSAL_ART_ASSET_FORGE/universal-art-asset-golden-set-evidence.json`],
     ['EXPRESS', 'COMPILE', 'LOWER', 'EVIDENCE'],
     ['silent language bypass', 'provider output treated as authority', 'missing RCL primitive mislabeled as runtime outage'],
-    ['automated donor search, K400 cell attribution and formal Integration Court']
+    ['automated donor search across external projects and independently authorized or human Integration Court promotion']
   ), {
     gap: {
       gap_type: 'MIXED',
@@ -328,8 +328,8 @@ export const URRF_V03_K400_GATE_STATUS = Object.freeze([
     test_refs: [`${ragf}/tests/external-asset-providers.test.mjs`]
   }, ['TRELLIS.2 weights', 'CUDA/NVIDIA GPU', 'real Provider execution', 'AAA art and human acceptance']),
   gateStatus('EVIDENCE', candidate, {
-    source_refs: [`${ragf}/src/asset-evidence-ledger.mjs`, `${core}/src/reality-chunk.mjs`, `${largeWorld}/src/multi-process-replication.mjs`, `${core}/src/urrf-v03-coverage.mjs`],
-    test_refs: ['packages/kernel/rncs-core-contract/tests/urrf-v03-coverage-matrix.test.mjs', `${ragf}/tests/external-asset-providers.test.mjs`, `${largeWorld}/tests/multi-process-replication.test.mjs`]
+    source_refs: [`${ragf}/src/asset-evidence-ledger.mjs`, `${core}/src/reality-chunk.mjs`, `${core}/src/urrf-gap-integration-court.mjs`, `${largeWorld}/src/multi-process-replication.mjs`, `${largeWorld}/src/universal-art-asset-golden-set.mjs`, `${core}/src/urrf-v03-coverage.mjs`],
+    test_refs: ['packages/kernel/rncs-core-contract/tests/urrf-v03-coverage-matrix.test.mjs', `${core}/tests/urrf-gap-integration-court.test.mjs`, `${ragf}/tests/external-asset-providers.test.mjs`, `${largeWorld}/tests/multi-process-replication.test.mjs`, `${largeWorld}/tests/universal-art-asset-golden-set.test.mjs`, 'tests/large-world-universal-art-asset-forge.integration.test.mjs']
   })
 ]);
 

@@ -73,6 +73,8 @@ npm test
 
 当前快照将本地合同证据、未完成的传感器推断闸门、缺少 TRELLIS.2 权重/CUDA 的 `AI_GENERATE` 以及 AAA 外部人审/硬件证据分开记录，不把任何一项候选证据升级成生产放行。
 
+`src/urrf-gap-integration-court.mjs` 将工程缺口显式分类为 `RCL_GAP`、`PROVIDER_GAP` 或 `MIXED`，绑定 Donor 优势、候选吸收原语、回归负例和 `K400:<criterion>:<gate>` cell。`createURRFIntegrationCourtVerdict` 只接受有效的 26 项矩阵和 gap ledger，输出 `CANDIDATE_LOCAL_ONLY` 或阻断 verdict；它不会授予 RCL 晋升权、Provider 提交权或 RNCS canonical write。跨项目自动 Donor 发现、独立签名和人类 Integration Court 授权仍是外部边界。
+
 ## Entity Kernel v0.1
 
 `src/entity-kernel.mjs` 提供一个小型、可复核的状态内核：Fragment Schema 只接受明确类型；Entity 由 Fragment Composition 形成稳定组合根；读取通过确定性 State Batch；写入先进入 Deferred Mutation Ledger，经过 authority、预算和 expected entity root 检查后才提交。\`decimal\` 使用规范化十进制字符串，保持 Node/Python 共享哈希不引入浮点歧义。

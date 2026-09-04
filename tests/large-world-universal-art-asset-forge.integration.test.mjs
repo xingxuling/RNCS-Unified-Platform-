@@ -4,7 +4,15 @@ import {join, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {rootHash} from '@taowind/rncs-core-contract';
+import {
+  createURRFIntegrationCourtVerdict,
+  createURRFGAPLedger,
+  createURRFV03CoverageMatrix,
+  rootHash,
+  verifyURRFIntegrationCourtVerdict,
+  verifyURRFGAPLedger,
+  verifyURRFV03CoverageMatrix
+} from '@taowind/rncs-core-contract';
 import {
   createUniversalArtAssetAssembly,
   createUniversalArtAssetEvidenceBundle,
@@ -56,6 +64,48 @@ import {AssetProviderAdapter, createAssetProviderManifest} from '@taowind/realit
 
 const rootDir = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const evidenceDir = resolve(process.env.URRF_UNIVERSAL_ART_ASSET_FORGE_OUT ?? join(rootDir, 'docs', 'verification', 'URRF_UNIVERSAL_ART_ASSET_FORGE'));
+
+function createIntegrationGapLedger() {
+  const entry = (gap_id, gap_type, task_refs, extra = {}) => ({
+    gap_id,
+    task_refs,
+    gap_type,
+    provider_id: extra.provider_id,
+    missing_capability: extra.missing_capability ?? `missing capability for ${gap_id}`,
+    workaround: {
+      owner_layer: extra.owner_layer ?? 'candidate URRF/RAGF seam',
+      language: 'JavaScript runtime',
+      description: 'The workaround is bounded candidate evidence and cannot promote RCL or RNCS truth.'
+    },
+    donor: {
+      donor_id: extra.donor_id ?? `donor:${gap_id}`,
+      owner_layer: extra.donor_layer ?? 'RAGF',
+      advantage: 'Existing contract, provider boundary and rooted evidence can be reused.',
+      source_refs: ['packages/world/reality-asset-genesis-fabric/src/external-asset-providers.mjs'],
+      evidence_refs: ['docs/verification/URRF_UNIVERSAL_ART_ASSET_FORGE/RCL_GAP_STRESS_EVIDENCE.md']
+    },
+    generality: extra.generality ?? 'CROSS_PROJECT',
+    candidate_absorption: {
+      status: gap_type === 'PROVIDER_GAP' ? 'NOT_APPLICABLE' : 'PENDING',
+      primitive_candidates: gap_type === 'PROVIDER_GAP' ? [] : [`candidate primitive for ${gap_id}`],
+      regression_cases: [`negative case for ${gap_id}`]
+    },
+    affected_k400_cells: task_refs.map(task => `K400:${task}:EVIDENCE`),
+    evidence_refs: [
+      'docs/verification/URRF_V03_COVERAGE_MATRIX/urrf-v03-coverage-matrix.json',
+      'docs/verification/URRF_UNIVERSAL_ART_ASSET_FORGE/universal-art-asset-golden-set-evidence.json'
+    ]
+  });
+  return createURRFGAPLedger({
+    ledger_id: 'urrf-gap-ledger-integration-v01',
+    entries: [
+      entry('gap:rcl-art-profile', 'RCL_GAP', ['URRF-25']),
+      entry('gap:provider-transport', 'PROVIDER_GAP', ['URRF-11', 'URRF-12', 'URRF-13', 'URRF-14', 'URRF-15'], {provider_id: 'provider:physical-transport'}),
+      entry('gap:provider-sensor', 'PROVIDER_GAP', ['URRF-24'], {provider_id: 'provider:physical-sensor', generality: 'HOST_LOCAL'}),
+      entry('gap:mixed-aaa', 'MIXED', ['URRF-26'], {provider_id: 'provider:external-aaa'})
+    ]
+  });
+}
 
 function createIntegrationPipelineProvider({providerId, providerType, capabilities, outputs, roles}) {
   const manifest = createAssetProviderManifest({
@@ -528,6 +578,25 @@ test('URRF nine-family golden set binds positive, boundary, replay, and open-dom
   mkdirSync(evidenceDir, {recursive: true});
   writeFileSync(join(evidenceDir, 'universal-art-asset-golden-set-contract.json'), `${JSON.stringify(contract, null, 2)}\n`, 'utf8');
   writeFileSync(join(evidenceDir, 'universal-art-asset-golden-set-evidence.json'), `${JSON.stringify(execution.report, null, 2)}\n`, 'utf8');
+});
+
+test('URRF gap ledger and Integration Court classify remaining boundaries without silent bypass', () => {
+  const matrix = createURRFV03CoverageMatrix({repository: 'RNCS-Unified-Platform-', observed_on: '2026-09-05'});
+  const ledger = createIntegrationGapLedger();
+  assert.equal(verifyURRFV03CoverageMatrix(matrix).valid, true);
+  assert.equal(verifyURRFGAPLedger(ledger).valid, true);
+  for (const entry of ledger.entries) {
+    for (const reference of [...entry.donor.source_refs, ...entry.donor.evidence_refs, ...entry.evidence_refs]) {
+      assert.equal(existsSync(resolve(rootDir, reference)), true, `missing gap reference: ${reference}`);
+    }
+  }
+  const verdict = createURRFIntegrationCourtVerdict({matrix, gapLedger: ledger});
+  assert.equal(verdict.status, 'CANDIDATE_LOCAL_ONLY');
+  assert.equal(verdict.decision, 'NO_RCL_PROMOTION_OR_CANONICAL_WRITE');
+  assert.equal(verifyURRFIntegrationCourtVerdict(verdict, {matrix, gapLedger: ledger}).valid, true);
+  mkdirSync(evidenceDir, {recursive: true});
+  writeFileSync(join(evidenceDir, 'urrf-gap-ledger.json'), `${JSON.stringify(ledger, null, 2)}\n`, 'utf8');
+  writeFileSync(join(evidenceDir, 'urrf-integration-court-verdict.json'), `${JSON.stringify(verdict, null, 2)}\n`, 'utf8');
 });
 
 test('URRF Provider preflight records route readiness, runtime binding, and release blockers', () => {
