@@ -2,10 +2,11 @@
   "name": "@taowind/rcl-genome-rncs-bridge",
   "version": "0.1.0-alpha.1",
   "type": "module",
-  "description": "RCL Genome IR observations compiled into RNCS evidence graphs and governed candidate proposals",
+  "description": "RCL Genome IR observations and genome knowledge graphs compiled into RNCS evidence graphs and governed candidate proposals",
   "license": "Apache-2.0",
   "exports": {
-    ".": "./src/index.mjs"
+    ".": "./src/index.mjs",
+    "./knowledge-graph": "./src/knowledge-graph.mjs"
   },
   "scripts": {
     "test": "node --test --test-concurrency=1 tests/*.test.mjs"
