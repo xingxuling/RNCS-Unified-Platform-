@@ -1,0 +1,19 @@
+{
+  "id": "rcl-genome-rncs-bridge",
+  "name": "RCL Genome IR RNCS Evidence Bridge",
+  "version": "0.1.0-alpha.1",
+  "layer": "integration",
+  "runtime": "rncs.rcl-genome-evidence",
+  "dependsOn": [
+    "rncs-core",
+    "rcl"
+  ],
+  "capabilities": [
+    "genome-observation-root-verification",
+    "genomics-evidence-graph",
+    "genomics-candidate-proposal",
+    "association-causality-boundary",
+    "genomic-data-authority-gate",
+    "genomic-provenance-binding"
+  ]
+}
