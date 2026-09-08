@@ -1,0 +1,200 @@
+{
+  "format": "ragf.visual-factory-plan.v0.1",
+  "candidate_only": true,
+  "input": {
+    "format": "ragf.visual-ir.v0.1",
+    "character_id": "fixture:triangle-avatar",
+    "identity_root": "b25c20c9fe0866481fff0033b288985ec020e2523ae8a8841913c768a26f3baf",
+    "representation_kind": "character-mesh",
+    "geometry": {
+      "vertices": [
+        [
+          64,
+          8,
+          0
+        ],
+        [
+          88,
+          40,
+          0
+        ],
+        [
+          40,
+          40,
+          0
+        ],
+        [
+          64,
+          42,
+          0
+        ],
+        [
+          112,
+          116,
+          0
+        ],
+        [
+          16,
+          116,
+          0
+        ]
+      ],
+      "triangles": [
+        [
+          0,
+          1,
+          2
+        ],
+        [
+          3,
+          4,
+          5
+        ]
+      ],
+      "material_ids": [
+        "blue",
+        "blue"
+      ]
+    },
+    "materials": [
+      {
+        "id": "blue",
+        "color": "#51a8ff"
+      }
+    ],
+    "skeleton": {
+      "bones": []
+    },
+    "layers": [],
+    "provenance": {
+      "seed": "42",
+      "generator": "fixture",
+      "version": "1"
+    },
+    "artifacts": [],
+    "visual_ir_root": "46c4e126b982d8483e5ab85577a43169d26550563a3794a4762d7a11afb8e5c1"
+  },
+  "providers": [
+    {
+      "manifest": {
+        "format": "ragf.asset-provider-manifest.v0.1",
+        "contract_version": "0.1.0",
+        "id": "local:triangle-svg",
+        "provider_id": "local:triangle-svg",
+        "name": "local:triangle-svg",
+        "version": "1",
+        "providerType": "generic",
+        "capabilities": [
+          "visual.rendering"
+        ],
+        "capability_descriptors": [],
+        "inputFormats": [
+          "ragf.visual-ir.v0.1"
+        ],
+        "outputFormats": [
+          "ragf.visual-ir.v0.1"
+        ],
+        "executionMode": "local",
+        "hardwareRequirements": {},
+        "computeRequirement": {
+          "cpu": "unspecified",
+          "ram": "unspecified",
+          "gpu": "unspecified",
+          "vram": "unspecified",
+          "accelerator": "unspecified",
+          "estimated_duration": "unspecified",
+          "priority": 5000,
+          "deadline": null,
+          "compute_requirement_root": "318232c8a539e735f8d7fddb834460dcd3bbfa3be0234dc9c1b00a13dc58b3a2"
+        },
+        "license": {
+          "status": "VERIFIED",
+          "identifier": "Apache-2.0",
+          "upstream_url": null,
+          "code_status": "VERIFIED",
+          "dependency_status": "NOT_AUDITED",
+          "model_weights_status": "NOT_AUDITED"
+        },
+        "commercialPolicy": {
+          "default_release_dependency_allowed": false,
+          "dependency_audit": "REQUIRED",
+          "model_weight_policy": "USER_INSTALLED_OR_SEPARATELY_AUDITED",
+          "notes": null
+        },
+        "provenancePolicy": {
+          "requires_source_url": true,
+          "requires_source_revision": true,
+          "requires_generator_version": true,
+          "requires_seed": true,
+          "candidate_only": true
+        },
+        "runtimeStatus": "CONTRACT_ONLY",
+        "upstream": {},
+        "command": null,
+        "representation": {
+          "kinds": [
+            "character-mesh"
+          ],
+          "profiles": [],
+          "detail_policy": null,
+          "residency_policy": null
+        },
+        "endpoint": null,
+        "authority": {
+          "owns_asset_identity": false,
+          "owns_living_asset_family": false,
+          "owns_authoritative_world_state": false,
+          "may_emit_candidate": true,
+          "scope": [
+            "asset_generation_candidate"
+          ]
+        },
+        "metadata": {},
+        "manifest_root": "fe2938c4325655ae853f9131b4ddcaed8baaa1e2fa5584544837cbf49e34d13a"
+      },
+      "profile": {
+        "format": "ragf.opp6-visual-capability-profile.v0.1",
+        "protocol_status": "CANDIDATE_EXTENSION",
+        "provider_id": "local:triangle-svg",
+        "provider_manifest_root": "fe2938c4325655ae853f9131b4ddcaed8baaa1e2fa5584544837cbf49e34d13a",
+        "candidate_only": true,
+        "operations": [
+          {
+            "operation": "rendering",
+            "capability_id": "visual.rendering",
+            "input_formats": [
+              "ragf.visual-ir.v0.1"
+            ],
+            "output_formats": [
+              "ragf.visual-ir.v0.1"
+            ],
+            "representation_kinds": [
+              "character-mesh"
+            ],
+            "deterministic": true
+          }
+        ],
+        "profile_root": "5bcec7cf61353baaae3daae3982b20584136dcf6992df130cc7197d23cd077fa"
+      }
+    }
+  ],
+  "operations": [
+    "rendering"
+  ],
+  "stages": [
+    {
+      "index": 0,
+      "operation": "rendering",
+      "provider_id": "local:triangle-svg",
+      "provider_manifest_root": "fe2938c4325655ae853f9131b4ddcaed8baaa1e2fa5584544837cbf49e34d13a",
+      "profile_root": "5bcec7cf61353baaae3daae3982b20584136dcf6992df130cc7197d23cd077fa"
+    }
+  ],
+  "bridges": {
+    "rncs": "RAGF_EXECUTOR",
+    "rcl": "OPTIONAL_HOST_CALL_WRAPPER",
+    "dwac": "OPTIONAL_LOCAL_VERIFICATION_SIDECAR",
+    "opp6": "RCP_RXP_EXPORT_ADAPTER"
+  },
+  "plan_root": "3a4970cf215d5bfaa97eac738c98d8edbbe63b007dcdbe8d19eaec149e59be4d"
+}

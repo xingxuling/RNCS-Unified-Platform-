@@ -1,0 +1,95 @@
+
+> @taowind/rncs-core-contract@0.1.0 test
+> node tests/run.mjs && node tests/representation-ref.mjs && node tests/representation-transition.mjs && node tests/world-truth.mjs && node tests/foundation-governance.mjs && node --test tests/entity-kernel.mjs tests/reality-property.mjs tests/reality-access.mjs tests/reality-distribution.mjs tests/reality-transport.mjs tests/reality-power.mjs tests/representation-portfolio.mjs tests/representation-flow.mjs tests/causal-physical.mjs tests/server-sovereignty.mjs tests/reality-chunk.mjs
+
+ok 1 - proposal verifies
+ok 2 - full lifecycle
+ok 3 - denied cannot commit
+ok 4 - generation advances
+ok 5 - projection preserves commit root
+ok 6 - HNAC generation demoted
+ok 7 - tamper detected
+ok 8 - unicode deterministic root
+ok 1 - candidate-only representation reference seals provider and policy evidence
+ok 2 - representation reference rejects an authority escalation
+ok 3 - representation reference detects tampering
+ok 4 - representation reference schema exposes candidate-only authority fields
+ok 5 - URRF visual families seal distinct reproducible candidate references
+ok 6 - URRF registration is immutable and does not silently register provider extensions
+ok 7 - reference and portfolio schemas advertise the same URRF vocabulary
+representation reference tests: 7/7 PASS
+ok 1 - representation transition candidate keeps identity and policy roots
+ok 2 - candidate transition applies only as a reversible candidate handoff
+ok 3 - rollback restores the source representation without canonical commit
+ok 4 - identity mismatch is rejected before a representation transition can be created
+ok 5 - transition tampering is detected and schema freezes candidate-only fields
+representation transition tests: 5/5 PASS
+ok 1 - WorldTime keeps simulation, logical and causal clocks distinct and rooted
+ok 2 - WorldEvent requires a committed authority receipt and verifies mutation/state roots
+ok 3 - Canonical event log replays state deterministically and enforces causal order
+ok 4 - FactWorldTree keeps canonical facts distinct from subject memory and traces source events
+ok 5 - v0.3 schemas freeze the four P0 truth contracts
+world truth tests: 5/5 PASS
+ok foundation governance proposal root and commit gate
+✔ derives independent causal and physical levels from task and reality demand (12.6115ms)
+✔ requires selected detail to meet the derived risk floor and exposes resource blocking (5.1265ms)
+✔ detects profile, execution and authority tampering (3.6837ms)
+✔ typed fragments form a deterministic composition and state batch (6.1961ms)
+✔ deferred mutations remain pending until an authority commit (1.8192ms)
+✔ same inputs produce the same state and mutation roots (1.9754ms)
+✔ stale expected entity roots reject the whole mutation batch (1.0216ms)
+✔ canonical decimal fields reject binary floating point values (1.3961ms)
+✔ state batch verification rejects tampered rows (0.8758ms)
+reality access contract tests: 5 PASS
+✔ keeps DetailVector axes independent and candidate-only (2.9162ms)
+✔ seals a multi-domain RealityHorizon (2.9285ms)
+✔ seals InterestGraph weights and rejects unknown edge types (2.0414ms)
+✔ runs a deterministic spatial, semantic, state, relation, temporal and permission query (9.8594ms)
+✔ bounds Cognitive Working Set and keeps canonical revalidation mandatory (4.6216ms)
+reality chunk contract tests: 6 PASS
+✔ seals RealityChunk v0.3 metadata for content-addressed reconstruction (6.2608ms)
+✔ binds a delta to parent version, content hash and dependency graph (5.6644ms)
+✔ seals an idempotent candidate delta receipt without canonical mutation (5.062ms)
+✔ rejects a delta that changes chunk identity or world truth root (2.0437ms)
+✔ publishes RealityChunk v0.3 schemas with the same candidate-only formats (4.9717ms)
+✔ seals a candidate snapshot receipt for resync without canonical mutation (1.5631ms)
+reality distribution contract tests: 4 PASS
+✔ seals consistency profiles and rejects tampering (2.7373ms)
+✔ admits an active lease and fences stale, expired, or revoked authority (4.1125ms)
+✔ seals an explicit lease revocation without granting commit authority (1.1307ms)
+✔ binds replication to version roots, lease fencing, and an authority receipt (3.4991ms)
+✔ seals power state, thermal envelope and safe identity/body boundary (5.5159ms)
+✔ binds compute, memory, transport and energy budget pressure deterministically (2.7966ms)
+✔ keeps authority and control while shedding visual and refinement demand (7.4552ms)
+✔ recovers minimum viable reality during a critical fault without changing world truth (3.0503ms)
+reality property contract tests: 6 PASS
+✔ seals and queries canonical and symbolic RealityObject properties (15.5988ms)
+✔ rejects dimensionally illegal operations and unit-dimension mismatches (4.291ms)
+✔ keeps candidate properties explicitly uncommitted (1.9045ms)
+✔ seals world, constitutive, and interaction law bindings without provider authority (4.2687ms)
+✔ creates a property transition candidate with law and provider evidence (4.4396ms)
+✔ detects tampering in a quantity root (0.5216ms)
+reality transport contract tests: 4 PASS
+✔ distinguishes Fiber, WiFi and Bluetooth QoS profiles (5.7996ms)
+✔ binds a transport packet to a lease, receipt and profile root (8.3559ms)
+✔ seals WiFi discovery, association and a fallback roaming decision (5.5267ms)
+✔ keeps Bluetooth Organ Link paired but not authoritative (7.3556ms)
+✔ seals identity, monotonic time, prediction and authority boundaries (12.6302ms)
+✔ rejects stale, over-window, over-error and tampered flow samples (14.4832ms)
+✔ enforces tick extrapolation even when the millisecond window is valid (1.5454ms)
+✔ seals a bounded portfolio with explicit count, quality ladder and diversity targets (10.5153ms)
+✔ reports incomplete composition without silently inventing representations (1.2713ms)
+✔ keeps candidate and authority boundaries on every slot and portfolio root (1.0861ms)
+server pseudo-sovereignty contract tests: 4 PASS
+✔ seals the six-level server pseudo-sovereignty profile and keeps RNCS canonical ownership (4.8441ms)
+✔ requires a strictly newer epoch and fencing token for a migration (4.4729ms)
+✔ requires a lease revocation for failover and fences the old writer (5.1248ms)
+✔ seals a hydration receipt without transferring canonical ownership (2.3105ms)
+ℹ tests 48
+ℹ suites 0
+ℹ pass 48
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 806.3589

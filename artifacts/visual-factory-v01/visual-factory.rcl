@@ -1,0 +1,14 @@
+reality VisualFactory {
+    facet visual.receipt : Text = "pending"
+    subject builder { warrant visual.factory on visual }
+    host visual { offers execute -> Text }
+    emergence produce {
+      cause builder
+      when visual.receipt == "pending"
+      needs visual.factory on visual
+      call visual.execute("3a4970cf215d5bfaa97eac738c98d8edbbe63b007dcdbe8d19eaec149e59be4d") -> visual.receipt
+      preserve length(visual.receipt) > 0
+      witness "visual-factory:candidate-execution"
+    }
+    realize produce
+  }

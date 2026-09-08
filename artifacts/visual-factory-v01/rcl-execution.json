@@ -1,0 +1,294 @@
+{
+  "format": "ragf.visual-rcl-execution.v0.1",
+  "status": "LOCAL_CANDIDATE_EXECUTED",
+  "candidate_only": true,
+  "runtime": "RCL_JS_REFERENCE_HOST_CALL",
+  "source": "reality VisualFactory {\n    facet visual.receipt : Text = \"pending\"\n    subject builder { warrant visual.factory on visual }\n    host visual { offers execute -> Text }\n    emergence produce {\n      cause builder\n      when visual.receipt == \"pending\"\n      needs visual.factory on visual\n      call visual.execute(\"3a4970cf215d5bfaa97eac738c98d8edbbe63b007dcdbe8d19eaec149e59be4d\") -> visual.receipt\n      preserve length(visual.receipt) > 0\n      witness \"visual-factory:candidate-execution\"\n    }\n    realize produce\n  }",
+  "source_root": "5dae2e46d141e9d6a521ff25273d9ff680c8a489835d41fa742fe5ae25f0b29c",
+  "plan_root": "3a4970cf215d5bfaa97eac738c98d8edbbe63b007dcdbe8d19eaec149e59be4d",
+  "provider_receipts": [
+    {
+      "format": "rcl.provider-runtime.v2.receipt",
+      "runtimeVersion": "0.27.0-alpha.1",
+      "requestId": "f3d9dbb7625718590f00b04427fd1121c950a4c7068184e7ea25408c0d4d9c39",
+      "providerId": "visual",
+      "capability": "execute",
+      "target": "visual",
+      "actor": "builder",
+      "rule": "produce",
+      "mode": "realize",
+      "startedAt": "2026-09-08T03:56:42.422Z",
+      "inputRoot": "8ca1ba2796992cfdd04171a069a82a3304f29a07690e8b3e35115e3ee21de728",
+      "inputBytes": 148,
+      "authorityNeeds": [
+        {
+          "capability": "visual.factory",
+          "target": "visual"
+        }
+      ],
+      "isolationDomainId": null,
+      "capabilityTicketId": null,
+      "status": "succeeded",
+      "code": "RCL_PROVIDER_V2_OK",
+      "offer": {
+        "capability": "execute",
+        "target": "visual",
+        "modes": [
+          "realize"
+        ],
+        "effects": [
+          "HostCall",
+          "Evidence"
+        ]
+      },
+      "resourceIsolation": null,
+      "output": "{\"format\":\"ragf.visual-factory-result.v0.1\",\"status\":\"LOCAL_CANDIDATE_EXECUTED\",\"candidate_only\":true,\"commit_status\":\"NOT_COMMITTED\",\"plan_root\":\"3a4970cf215d5bfaa97eac738c98d8edbbe63b007dcdbe8d19eaec149e59be4d\",\"receipts\":[{\"stage\":{\"index\":0,\"operation\":\"rendering\",\"provider_id\":\"local:triangle-svg\",\"provider_manifest_root\":\"fe2938c4325655ae853f9131b4ddcaed8baaa1e2fa5584544837cbf49e34d13a\",\"profile_root\":\"5bcec7cf61353baaae3daae3982b20584136dcf6992df130cc7197d23cd077fa\"},\"job\":{\"format\":\"ragf.asset-generation-job.v0.1\",\"version\":\"0.1.0\",\"job_id\":\"visual-job:57299f9e9ed0c03f5fae70c7ddfb0825bcb51a0aa218d33236b3ae6fa19f1bbd\",\"provider_id\":\"local:triangle-svg\",\"asset_id\":\"fixture:triangle-avatar\",\"candidate_id\":null,\"operation\":\"rendering\",\"quality_tier\":\"PRODUCTION\",\"state\":\"COMPLETED\",\"request\":{\"plan_root\":\"3a4970cf215d5bfaa97eac738c98d8edbbe63b007dcdbe8d19eaec149e59be4d\",\"stage\":0,\"input_root\":\"46c4e126b982d8483e5ab85577a43169d26550563a3794a4762d7a11afb8e5c1\"},\"genome_root\":null,\"seed\":\"42\",\"compute_requirement\":{\"cpu\":\"unspecified\",\"ram\":\"unspecified\",\"gpu\":\"unspecified\",\"vram\":\"unspecified\",\"accelerator\":\"unspecified\",\"estimated_duration\":\"unspecified\",\"priority\":5000,\"deadline\":null,\"compute_requirement_root\":\"318232c8a539e735f8d7fddb834460dcd3bbfa3be0234dc9c1b00a13dc58b3a2\"},\"history\":[{\"state\":\"QUEUED\",\"detail\":\"created\"},{\"state\":\"PREPARING\",\"detail\":{}},{\"state\":\"RUNNING\",\"detail\":{}},{\"state\":\"VALIDATING\",\"detail\":{}},{\"state\":\"COMPLETED\",\"detail\":{\"output_root\":\"4ed7585ca207fb038e979580dcb349e8cb8c2fd38280227f350bac50d1ac9e34\"}}],\"error\":null,\"result_root\":\"4ed7585ca207fb038e979580dcb349e8cb8c2fd38280227f350bac50d1ac9e34\",\"evidence_root\":\"c505923a44d63d2de41c4c605b9bb505b5718337d9a06284dc27efac10206752\",\"job_root\":\"3af387a45b20b96c5d451a7fe938580410f32cc5c6ce299ce3ab838bc581480d\"},\"representation_ref\":{\"format\":\"rncs.representation-ref.v0.1\",\"version\":\"0.1.0\",\"representation_id\":\"representation:6733f8927a5d1f06843332a6\",\"provider_id\":\"local:triangle-svg\",\"provider_root\":\"fe2938c4325655ae853f9131b4ddcaed8baaa1e2fa5584544837cbf49e34d13a\",\"representation_kind\":\"character-mesh\",\"representation_formats\":[\"ragf.visual-ir.v0.1\"],\"content_root\":\"4ed7585ca207fb038e979580dcb349e8cb8c2fd38280227f350bac50d1ac9e34\",\"source_uri\":null,\"representation_profile\":{\"profile_id\":\"5bcec7cf61353baaae3daae3982b20584136dcf6992df130cc7197d23cd077fa\",\"encoding\":\"provider-defined\",\"fidelity\":\"provider-defined\",\"precision\":\"provider-defined\",\"formats\":[\"ragf.visual-ir.v0.1\"],\"metadata\":{}},\"detail_policy\":{\"mode\":\"provider-defined\",\"selectors\":[],\"budget\":{},\"metadata\":{},\"policy_label\":\"detail\"},\"residency_policy\":{\"mode\":\"provider-defined\",\"selectors\":[],\"budget\":{},\"metadata\":{},\"policy_label\":\"residency\"},\"availability\":\"EXECUTED\",\"authority_scope\":[\"representation_candidate\"],\"authority\":{\"provider_may_write_authoritative_world_state\":false,\"rncs_authority_required\":true},\"provenance\":{\"upstream_url\":null,\"source_revision\":null,\"source_archive_sha256\":null,\"generator_version\":null,\"parameters_root\":null},\"evidence\":{\"provider_manifest_root\":\"fe2938c4325655ae853f9131b4ddcaed8baaa1e2fa5584544837cbf49e34d13a\",\"provider_result_root\":\"4ed7585ca207fb038e979580dcb349e8cb8c2fd38280227f350bac50d1ac9e34\",\"runtime_receipt_root\":null,\"notes\":\"Local adapter output; visual acceptance not evaluated\"},\"candidate_only\":true,\"authoritative\":false,\"commit_status\":\"NOT_COMMITTED\",\"representation_root\":\"cab8759a61757f53d18ce32cac7c60df11e1d8df5e3e831d74950aeecf1c0893\"},\"input_root\":\"46c4e126b982d8483e5ab85577a43169d26550563a3794a4762d7a11afb8e5c1\",\"output_root\":\"4ed7585ca207fb038e979580dcb349e8cb8c2fd38280227f350bac50d1ac9e34\",\"evidence\":{\"format\":\"ragf.visual-verification.v0.1\",\"visual_ir_root\":\"4ed7585ca207fb038e979580dcb349e8cb8c2fd38280227f350bac50d1ac9e34\",\"valid\":true,\"errors\":[],\"identity_evidence\":\"REFERENCE_BINDING_ONLY\",\"perceptual_consistency\":\"NOT_EVALUATED\",\"reproducibility\":\"CONTENT_INTEGRITY_ONLY\",\"authority\":\"CANDIDATE_ONLY\",\"verification_root\":\"2986a3342e6df7b3a1bed0b18b96bc2227498c3a93a002a477e2ac38a170c003\"},\"reproducibility\":\"LOCAL_REPLAY_MATCH\",\"deterministic_declared\":true,\"receipt_root\":\"c855e0d25d86a2a09b7dfc5b1fd06fbdc225fcbb7f281cd1bcf1b2bdeab73566\"}],\"output\":{\"format\":\"ragf.visual-ir.v0.1\",\"character_id\":\"fixture:triangle-avatar\",\"identity_root\":\"b25c20c9fe0866481fff0033b288985ec020e2523ae8a8841913c768a26f3baf\",\"representation_kind\":\"character-mesh\",\"geometry\":{\"vertices\":[[64,8,0],[88,40,0],[40,40,0],[64,42,0],[112,116,0],[16,116,0]],\"triangles\":[[0,1,2],[3,4,5]],\"material_ids\":[\"blue\",\"blue\"]},\"materials\":[{\"id\":\"blue\",\"color\":\"#51a8ff\"}],\"skeleton\":{\"bones\":[]},\"layers\":[],\"provenance\":{\"seed\":\"42\",\"generator\":\"local:triangle-svg\",\"version\":\"1\"},\"artifacts\":[{\"id\":\"preview.svg\",\"sha256\":\"3ae04bdc56eaa785c0124116d4e908f674868276020fca7377ff594026d3806f\",\"byte_length\":221}],\"visual_ir_root\":\"4ed7585ca207fb038e979580dcb349e8cb8c2fd38280227f350bac50d1ac9e34\"},\"visual_acceptance\":\"NOT_EVALUATED\",\"bridges\":{\"rncs\":\"RAGF_EXECUTOR\",\"rcl\":\"OPTIONAL_HOST_CALL_WRAPPER\",\"dwac\":\"OPTIONAL_LOCAL_VERIFICATION_SIDECAR\",\"opp6\":\"RCP_RXP_EXPORT_ADAPTER\"},\"result_root\":\"cec955807b0d5f3d05642932620504ff4e331cffec515032daf8ab2fc574c24b\"}",
+      "outputRoot": "df584abe49bfb0db1eba9a9e0c494b676d76e901c1241083d6a88d2a7b937cb9",
+      "outputBytes": 5692,
+      "finishedAt": "2026-09-08T03:56:42.433Z",
+      "durationMs": 11,
+      "root": "27b772a20bdd5ca618dbea5d769652388fb5e73cadbe935f224ad3da03af1c19"
+    }
+  ],
+  "factory_result": {
+    "format": "ragf.visual-factory-result.v0.1",
+    "status": "LOCAL_CANDIDATE_EXECUTED",
+    "candidate_only": true,
+    "commit_status": "NOT_COMMITTED",
+    "plan_root": "3a4970cf215d5bfaa97eac738c98d8edbbe63b007dcdbe8d19eaec149e59be4d",
+    "receipts": [
+      {
+        "stage": {
+          "index": 0,
+          "operation": "rendering",
+          "provider_id": "local:triangle-svg",
+          "provider_manifest_root": "fe2938c4325655ae853f9131b4ddcaed8baaa1e2fa5584544837cbf49e34d13a",
+          "profile_root": "5bcec7cf61353baaae3daae3982b20584136dcf6992df130cc7197d23cd077fa"
+        },
+        "job": {
+          "format": "ragf.asset-generation-job.v0.1",
+          "version": "0.1.0",
+          "job_id": "visual-job:57299f9e9ed0c03f5fae70c7ddfb0825bcb51a0aa218d33236b3ae6fa19f1bbd",
+          "provider_id": "local:triangle-svg",
+          "asset_id": "fixture:triangle-avatar",
+          "candidate_id": null,
+          "operation": "rendering",
+          "quality_tier": "PRODUCTION",
+          "state": "COMPLETED",
+          "request": {
+            "plan_root": "3a4970cf215d5bfaa97eac738c98d8edbbe63b007dcdbe8d19eaec149e59be4d",
+            "stage": 0,
+            "input_root": "46c4e126b982d8483e5ab85577a43169d26550563a3794a4762d7a11afb8e5c1"
+          },
+          "genome_root": null,
+          "seed": "42",
+          "compute_requirement": {
+            "cpu": "unspecified",
+            "ram": "unspecified",
+            "gpu": "unspecified",
+            "vram": "unspecified",
+            "accelerator": "unspecified",
+            "estimated_duration": "unspecified",
+            "priority": 5000,
+            "deadline": null,
+            "compute_requirement_root": "318232c8a539e735f8d7fddb834460dcd3bbfa3be0234dc9c1b00a13dc58b3a2"
+          },
+          "history": [
+            {
+              "state": "QUEUED",
+              "detail": "created"
+            },
+            {
+              "state": "PREPARING",
+              "detail": {}
+            },
+            {
+              "state": "RUNNING",
+              "detail": {}
+            },
+            {
+              "state": "VALIDATING",
+              "detail": {}
+            },
+            {
+              "state": "COMPLETED",
+              "detail": {
+                "output_root": "4ed7585ca207fb038e979580dcb349e8cb8c2fd38280227f350bac50d1ac9e34"
+              }
+            }
+          ],
+          "error": null,
+          "result_root": "4ed7585ca207fb038e979580dcb349e8cb8c2fd38280227f350bac50d1ac9e34",
+          "evidence_root": "c505923a44d63d2de41c4c605b9bb505b5718337d9a06284dc27efac10206752",
+          "job_root": "3af387a45b20b96c5d451a7fe938580410f32cc5c6ce299ce3ab838bc581480d"
+        },
+        "representation_ref": {
+          "format": "rncs.representation-ref.v0.1",
+          "version": "0.1.0",
+          "representation_id": "representation:6733f8927a5d1f06843332a6",
+          "provider_id": "local:triangle-svg",
+          "provider_root": "fe2938c4325655ae853f9131b4ddcaed8baaa1e2fa5584544837cbf49e34d13a",
+          "representation_kind": "character-mesh",
+          "representation_formats": [
+            "ragf.visual-ir.v0.1"
+          ],
+          "content_root": "4ed7585ca207fb038e979580dcb349e8cb8c2fd38280227f350bac50d1ac9e34",
+          "source_uri": null,
+          "representation_profile": {
+            "profile_id": "5bcec7cf61353baaae3daae3982b20584136dcf6992df130cc7197d23cd077fa",
+            "encoding": "provider-defined",
+            "fidelity": "provider-defined",
+            "precision": "provider-defined",
+            "formats": [
+              "ragf.visual-ir.v0.1"
+            ],
+            "metadata": {}
+          },
+          "detail_policy": {
+            "mode": "provider-defined",
+            "selectors": [],
+            "budget": {},
+            "metadata": {},
+            "policy_label": "detail"
+          },
+          "residency_policy": {
+            "mode": "provider-defined",
+            "selectors": [],
+            "budget": {},
+            "metadata": {},
+            "policy_label": "residency"
+          },
+          "availability": "EXECUTED",
+          "authority_scope": [
+            "representation_candidate"
+          ],
+          "authority": {
+            "provider_may_write_authoritative_world_state": false,
+            "rncs_authority_required": true
+          },
+          "provenance": {
+            "upstream_url": null,
+            "source_revision": null,
+            "source_archive_sha256": null,
+            "generator_version": null,
+            "parameters_root": null
+          },
+          "evidence": {
+            "provider_manifest_root": "fe2938c4325655ae853f9131b4ddcaed8baaa1e2fa5584544837cbf49e34d13a",
+            "provider_result_root": "4ed7585ca207fb038e979580dcb349e8cb8c2fd38280227f350bac50d1ac9e34",
+            "runtime_receipt_root": null,
+            "notes": "Local adapter output; visual acceptance not evaluated"
+          },
+          "candidate_only": true,
+          "authoritative": false,
+          "commit_status": "NOT_COMMITTED",
+          "representation_root": "cab8759a61757f53d18ce32cac7c60df11e1d8df5e3e831d74950aeecf1c0893"
+        },
+        "input_root": "46c4e126b982d8483e5ab85577a43169d26550563a3794a4762d7a11afb8e5c1",
+        "output_root": "4ed7585ca207fb038e979580dcb349e8cb8c2fd38280227f350bac50d1ac9e34",
+        "evidence": {
+          "format": "ragf.visual-verification.v0.1",
+          "visual_ir_root": "4ed7585ca207fb038e979580dcb349e8cb8c2fd38280227f350bac50d1ac9e34",
+          "valid": true,
+          "errors": [],
+          "identity_evidence": "REFERENCE_BINDING_ONLY",
+          "perceptual_consistency": "NOT_EVALUATED",
+          "reproducibility": "CONTENT_INTEGRITY_ONLY",
+          "authority": "CANDIDATE_ONLY",
+          "verification_root": "2986a3342e6df7b3a1bed0b18b96bc2227498c3a93a002a477e2ac38a170c003"
+        },
+        "reproducibility": "LOCAL_REPLAY_MATCH",
+        "deterministic_declared": true,
+        "receipt_root": "c855e0d25d86a2a09b7dfc5b1fd06fbdc225fcbb7f281cd1bcf1b2bdeab73566"
+      }
+    ],
+    "output": {
+      "format": "ragf.visual-ir.v0.1",
+      "character_id": "fixture:triangle-avatar",
+      "identity_root": "b25c20c9fe0866481fff0033b288985ec020e2523ae8a8841913c768a26f3baf",
+      "representation_kind": "character-mesh",
+      "geometry": {
+        "vertices": [
+          [
+            64,
+            8,
+            0
+          ],
+          [
+            88,
+            40,
+            0
+          ],
+          [
+            40,
+            40,
+            0
+          ],
+          [
+            64,
+            42,
+            0
+          ],
+          [
+            112,
+            116,
+            0
+          ],
+          [
+            16,
+            116,
+            0
+          ]
+        ],
+        "triangles": [
+          [
+            0,
+            1,
+            2
+          ],
+          [
+            3,
+            4,
+            5
+          ]
+        ],
+        "material_ids": [
+          "blue",
+          "blue"
+        ]
+      },
+      "materials": [
+        {
+          "id": "blue",
+          "color": "#51a8ff"
+        }
+      ],
+      "skeleton": {
+        "bones": []
+      },
+      "layers": [],
+      "provenance": {
+        "seed": "42",
+        "generator": "local:triangle-svg",
+        "version": "1"
+      },
+      "artifacts": [
+        {
+          "id": "preview.svg",
+          "sha256": "3ae04bdc56eaa785c0124116d4e908f674868276020fca7377ff594026d3806f",
+          "byte_length": 221
+        }
+      ],
+      "visual_ir_root": "4ed7585ca207fb038e979580dcb349e8cb8c2fd38280227f350bac50d1ac9e34"
+    },
+    "visual_acceptance": "NOT_EVALUATED",
+    "bridges": {
+      "rncs": "RAGF_EXECUTOR",
+      "rcl": "OPTIONAL_HOST_CALL_WRAPPER",
+      "dwac": "OPTIONAL_LOCAL_VERIFICATION_SIDECAR",
+      "opp6": "RCP_RXP_EXPORT_ADAPTER"
+    },
+    "result_root": "cec955807b0d5f3d05642932620504ff4e331cffec515032daf8ab2fc574c24b"
+  },
+  "bridge_root": "d6fd62d3d55787df893d3b4b82cd816dd062d7271391c0e4151819353f7dae70"
+}

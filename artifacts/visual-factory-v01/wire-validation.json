@@ -1,0 +1,11 @@
+{
+  "format": "rncs.visual-wire-validation.v0.1",
+  "status": "LOCAL_VALIDATION_PASSED",
+  "visual_ir_documents": 2,
+  "visual_profiles": 1,
+  "opp_envelopes": 2,
+  "opp_commit": "168e55bd071fe63c24ee71cd43d1573770e884b2",
+  "opp_validator_sha256": "e2ed70f1c33b5a91f3380cadd761e013b1ab7e8e79094f602a9d2dcf40f7a040",
+  "result_root": "cec955807b0d5f3d05642932620504ff4e331cffec515032daf8ab2fc574c24b",
+  "visual_quality": "NOT_EVALUATED"
+}

@@ -1,0 +1,114 @@
+{
+  "rcp": [
+    {
+      "format": "taowind.opp.reality-envelope.v0.1",
+      "protocol": "opp.rcp.v0.1",
+      "version": "0.1.0-candidate.1",
+      "kind": "capability",
+      "id": "capability:visual:5bcec7cf61353baaae3daae3982b20584136dcf6992df130cc7197d23cd077fa:rendering",
+      "status": "candidate",
+      "issuedAt": "2026-09-08T00:00:00Z",
+      "issuer": {
+        "id": "local:triangle-svg",
+        "type": "service"
+      },
+      "payload": {
+        "capabilityId": "visual.rendering",
+        "name": "Visual rendering",
+        "domain": "visual.character",
+        "operation": "rendering",
+        "inputModalities": [
+          "ragf.visual-ir.v0.1"
+        ],
+        "outputModalities": [
+          "ragf.visual-ir.v0.1"
+        ],
+        "inputSchema": null,
+        "outputSchema": null,
+        "determinism": "seeded",
+        "statefulness": "unknown",
+        "authorityRequired": [
+          "host.execution.consent"
+        ],
+        "sideEffects": [
+          "provider-defined:unknown"
+        ],
+        "reversibility": "unknown",
+        "availability": "candidate-only",
+        "evidence": [
+          "rncs:visual-profile:5bcec7cf61353baaae3daae3982b20584136dcf6992df130cc7197d23cd077fa"
+        ],
+        "claimBoundary": "Provider-declared visual capability only; no execution, identity authentication, visual quality verification, or canonical authority promotion."
+      },
+      "constraints": [
+        "candidate-only",
+        "host-execution-consent-required",
+        "no-canonical-authority-promotion"
+      ],
+      "evidenceRefs": [
+        "rncs:provider-manifest:fe2938c4325655ae853f9131b4ddcaed8baaa1e2fa5584544837cbf49e34d13a",
+        "rncs:visual-profile:5bcec7cf61353baaae3daae3982b20584136dcf6992df130cc7197d23cd077fa"
+      ],
+      "extensions": {
+        "oppContractRevision": "168e55bd071fe63c24ee71cd43d1573770e884b2",
+        "representationKinds": [
+          "character-mesh"
+        ],
+        "providerVersion": "1"
+      },
+      "integrity": {
+        "algorithm": "sha256",
+        "contentRoot": "0072a98e3b70612adac0e72ed70cff60c140a1832011a80150d91f1526e6ed92"
+      }
+    }
+  ],
+  "rxp": {
+    "format": "taowind.opp.reality-envelope.v0.1",
+    "protocol": "opp.rxp.v0.1",
+    "version": "0.1.0-candidate.1",
+    "kind": "protocol",
+    "id": "exchange:visual:5bcec7cf61353baaae3daae3982b20584136dcf6992df130cc7197d23cd077fa",
+    "status": "candidate",
+    "issuedAt": "2026-09-08T00:00:00Z",
+    "issuer": {
+      "id": "local:triangle-svg",
+      "type": "service"
+    },
+    "payload": {
+      "semanticClass": "capability",
+      "content": {
+        "providerId": "local:triangle-svg",
+        "providerManifestRoot": "fe2938c4325655ae853f9131b4ddcaed8baaa1e2fa5584544837cbf49e34d13a",
+        "visualProfileRoot": "5bcec7cf61353baaae3daae3982b20584136dcf6992df130cc7197d23cd077fa",
+        "capabilities": [
+          {
+            "id": "capability:visual:5bcec7cf61353baaae3daae3982b20584136dcf6992df130cc7197d23cd077fa:rendering",
+            "protocol": "opp.rcp.v0.1",
+            "contentRoot": "0072a98e3b70612adac0e72ed70cff60c140a1832011a80150d91f1526e6ed92"
+          }
+        ]
+      },
+      "intent": null,
+      "actions": [],
+      "rollback": null,
+      "authority": [],
+      "claimBoundary": "Provider-declared visual capability only; no execution, identity authentication, visual quality verification, or canonical authority promotion."
+    },
+    "constraints": [
+      "candidate-only",
+      "host-execution-consent-required",
+      "no-canonical-authority-promotion"
+    ],
+    "evidenceRefs": [
+      "rncs:provider-manifest:fe2938c4325655ae853f9131b4ddcaed8baaa1e2fa5584544837cbf49e34d13a",
+      "rncs:visual-profile:5bcec7cf61353baaae3daae3982b20584136dcf6992df130cc7197d23cd077fa"
+    ],
+    "extensions": {
+      "oppContractRevision": "168e55bd071fe63c24ee71cd43d1573770e884b2"
+    },
+    "integrity": {
+      "algorithm": "sha256",
+      "contentRoot": "a735ef6e40177b02c660b8af2c8c1aac4a7e5023baa17d2294aeefab3dc30fe2"
+    }
+  }
+}

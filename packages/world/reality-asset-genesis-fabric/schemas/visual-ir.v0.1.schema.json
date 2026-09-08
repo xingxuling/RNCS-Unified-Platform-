@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.example/schemas/ragf-visual-ir.v0.1.schema.json",
+  "title": "RAGF Visual Asset Payload IR v0.1 Candidate",
+  "type": "object",
+  "required": ["format", "character_id", "identity_root", "representation_kind", "geometry", "materials", "skeleton", "layers", "provenance", "artifacts", "visual_ir_root"],
+  "additionalProperties": false,
+  "$defs": {
+    "name": {"type": "string", "minLength": 1, "pattern": "\\S"},
+    "hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "parented": {
+      "type": "object", "required": ["id", "parent_id"],
+      "properties": {"id": {"$ref": "#/$defs/name"}, "parent_id": {"anyOf": [{"type": "null"}, {"$ref": "#/$defs/name"}]}},
+      "additionalProperties": true
+    }
+  },
+  "properties": {
+    "format": {"const": "ragf.visual-ir.v0.1"},
+    "character_id": {"$ref": "#/$defs/name"},
+    "identity_root": {"$ref": "#/$defs/hash"},
+    "representation_kind": {"enum": ["world-proxy", "mesh", "gaussian-splats", "character-mesh", "layered-2d", "gaussian-character", "neural-visual", "cinematic-character"]},
+    "geometry": {
+      "type": "object", "required": ["vertices", "triangles", "material_ids"],
+      "properties": {
+        "vertices": {"type": "array", "items": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"type": "number"}}},
+        "triangles": {"type": "array", "items": {"type": "array", "minItems": 3, "maxItems": 3, "uniqueItems": true, "items": {"type": "integer", "minimum": 0}}},
+        "material_ids": {"type": "array", "items": {"$ref": "#/$defs/name"}}
+      },
+      "additionalProperties": true
+    },
+    "materials": {"type": "array", "items": {"type": "object", "required": ["id"], "properties": {"id": {"$ref": "#/$defs/name"}}, "additionalProperties": true}},
+    "skeleton": {"type": "object", "required": ["bones"], "properties": {"bones": {"type": "array", "items": {"$ref": "#/$defs/parented"}}}, "additionalProperties": true},
+    "layers": {"type": "array", "items": {"$ref": "#/$defs/parented"}},
+    "provenance": {"type": "object", "required": ["seed", "generator", "version"], "properties": {"seed": {"$ref": "#/$defs/name"}, "generator": {"$ref": "#/$defs/name"}, "version": {"$ref": "#/$defs/name"}}, "additionalProperties": true},
+    "artifacts": {"type": "array", "items": {"type": "object", "required": ["id", "sha256", "byte_length"], "properties": {"id": {"$ref": "#/$defs/name"}, "sha256": {"$ref": "#/$defs/hash"}, "byte_length": {"type": "integer", "minimum": 0, "maximum": 9007199254740991}}, "additionalProperties": true}},
+    "visual_ir_root": {"$ref": "#/$defs/hash"}
+  },
+  "allOf": [{"if": {"properties": {"representation_kind": {"const": "character-mesh"}}}, "then": {"properties": {"geometry": {"properties": {"vertices": {"minItems": 1}, "triangles": {"minItems": 1}}}}}}]
+}
