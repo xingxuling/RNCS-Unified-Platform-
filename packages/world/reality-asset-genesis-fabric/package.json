@@ -45,6 +45,7 @@
     "evidence:anime-quality": "node scripts/generate-anime-quality-evidence.mjs"
   },
   "dependencies": {
+    "@taowind/reality-computation-language": "*",
     "@taowind/rncs-core-contract": "*"
   },
   "engines": {

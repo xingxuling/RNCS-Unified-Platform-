@@ -1,0 +1,14 @@
+# Visual Factory API v0.1 candidate
+
+Import from `@taowind/reality-asset-genesis-fabric`:
+
+- `createVisualIR(input)`, `validateVisualIR(ir)`, `verifyVisualArtifacts(ir, artifacts)` — see visual-ir-v0.1.md.
+- `createVisualCapabilityProfile(manifest, {operations})` — bind six supported operation categories to an existing RAGF manifest. Each operation declares `operation`, `capability_id`, `input_formats`, `output_formats`, `representation_kinds`, `deterministic`. Declarations must be subsets of the manifest.
+- `toOppVisualCapabilities(manifest, profile, {issuedAt})` — export actual OPP RCP capability envelopes and one RXP exchange. Caller supplies a fixed valid UTC timestamp for reproducible export. `rcp` is an array; `rxp` is one envelope. The local profile is a domain extension, not a new OPP protocol.
+- `planVisualFactory(ir, [{manifest, profile}], operations)` — select providers deterministically by UTF-8 provider ID. Ordered operations form a sequential dependency chain. Unknown or uncovered operations fail before dispatch; maximum 32 stages.
+- `executeVisualFactory(plan, adapters, {timeoutMs, replay, signal})` — explicit host adapters map provider ID to an async function `(request, {signal}) => ({ir, artifacts})`. Request includes operation, existing RAGF job and input IR. Output provenance generator/version must match the selected manifest, with the same seed, character ID and identity root. Every artifact must provide actual bytes. Defaults: 30s per invocation, replay enabled. Optional AbortSignal cancels the active invocation and prevents later stages; the RCL wrapper propagates its outer timeout signal.
+- `executeVisualFactoryRCL(plan, adapters, {policy, timeoutMs, replay})` — execute generated RCL Host Call through the existing JS reference runtime and Provider Runtime v2. Missing policy denies execution. The host must explicitly provide builder policy entries `visual.execute@visual` and `visual.factory@visual` for the fixed local bridge; these are not external credentials or world-commit permission. Returns generated source, source root, provider receipts and factory result.
+
+Run the package's `scripts/visual-factory-demo.mjs` from the repository root for a complete fixture using these APIs. The optional repository script `scripts/verify-visual-dwac.py` consumes the result through a real DWAC operation graph; it verifies already-produced output, not remote generation.
+
+`LOCAL_CANDIDATE_EXECUTED` reports adapter execution and structural validation. Inspect each receipt's `reproducibility`: `LOCAL_REPLAY_MATCH` or `NOT_RUN`. Visual acceptance remains `NOT_EVALUATED`; output roots are content evidence, not proof of professional rendering quality. There is no automatic commit, promotion, remote transport, durable queue, process isolation or commercial-provider configuration. The adapter map is trusted host code, and an ignored AbortSignal cannot be forcibly terminated in-process.

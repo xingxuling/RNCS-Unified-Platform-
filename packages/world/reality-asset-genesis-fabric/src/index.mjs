@@ -22,3 +22,8 @@ export * from './production-court.mjs';
 export * from './asset-requirements.mjs';
 export * from './asset-evidence-ledger.mjs';
 export * from './laf-bridge.mjs';
+export * from './visual-ir.mjs';
+export * from './visual-capability-profile.mjs';
+export * from './visual-factory.mjs';
+export * from './visual-rcl-bridge.mjs';
+export * from './visual-opp-bridge.mjs';

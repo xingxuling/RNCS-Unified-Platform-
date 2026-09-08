@@ -1,0 +1,575 @@
+{
+  "format": "rncs.dwac-visual-bridge-evidence.v0.1",
+  "status": "PASS",
+  "runs": [
+    {
+      "format": "rncs.dwac-visual-verification.v0.1",
+      "status": "PASS",
+      "scope": "LOCAL_DWAC_OPERATION_GRAPH_VISUAL_VERIFICATION",
+      "negative_case": false,
+      "dwac_commit": "73ded423734d539d9ceed3a82fac449206758c1e",
+      "dwac_source_hashes": {
+        "dwac_runtime.py": "13d97b7078e6699b121b3f4b3ba11a9ac7a80d1ab1a7f8d63b69233408b8a7c0",
+        "structural_generation\\dwac_structural\\operation_worker.py": "4d6ea3adc09d181a9d2fd03a294c2f6704c86bf25ad0aa79015c7b91bd8ec673",
+        "structural_generation\\dwac_structural\\universal_compiler.py": "c5c80d6f8cc87d4c50a0625d862153a3b62e6da421414aca48ebfc7dc918c741"
+      },
+      "factory_result_sha256": "75ef89bb453fb090ffbde5b8bbc00be8b0122ab46f250b9fbad6364f3bd1ff70",
+      "factory_result_root": "cec955807b0d5f3d05642932620504ff4e331cffec515032daf8ab2fc574c24b",
+      "plan_root": "3a4970cf215d5bfaa97eac738c98d8edbbe63b007dcdbe8d19eaec149e59be4d",
+      "visual_ir_root": "4ed7585ca207fb038e979580dcb349e8cb8c2fd38280227f350bac50d1ac9e34",
+      "observed_operations": [
+        "rncs.visual.verify",
+        "rncs.visual.accept-binding"
+      ],
+      "unit_statuses": [
+        "CANDIDATE",
+        "CANDIDATE"
+      ],
+      "result": {
+        "artifact_id": "rncs-visual-result-verification",
+        "kind": "custom.visual/candidate@v0.1",
+        "goal": "Verify existing RAGF Visual Factory output bytes",
+        "results": [
+          {
+            "unit_id": "verify-visual-output",
+            "output_type": "taowind/mixed@v0.1",
+            "content": {
+              "value": {
+                "artifact_count": 1,
+                "factory_result_root": "cec955807b0d5f3d05642932620504ff4e331cffec515032daf8ab2fc574c24b",
+                "plan_root": "3a4970cf215d5bfaa97eac738c98d8edbbe63b007dcdbe8d19eaec149e59be4d",
+                "report": {
+                  "authority": "CANDIDATE_ONLY",
+                  "errors": [],
+                  "format": "ragf.visual-verification.v0.1",
+                  "identity_evidence": "REFERENCE_BINDING_ONLY",
+                  "perceptual_consistency": "NOT_EVALUATED",
+                  "reproducibility": "CONTENT_INTEGRITY_ONLY",
+                  "valid": true,
+                  "verification_root": "2986a3342e6df7b3a1bed0b18b96bc2227498c3a93a002a477e2ac38a170c003",
+                  "visual_ir_root": "4ed7585ca207fb038e979580dcb349e8cb8c2fd38280227f350bac50d1ac9e34"
+                },
+                "source_sha256": "75ef89bb453fb090ffbde5b8bbc00be8b0122ab46f250b9fbad6364f3bd1ff70",
+                "valid": true,
+                "visual_ir_root": "4ed7585ca207fb038e979580dcb349e8cb8c2fd38280227f350bac50d1ac9e34"
+              },
+              "operation_receipt": {
+                "sha256": "bd48f3dceaa63191c08c43211ed0cd4fea25d90c902b01f5d00ca2e452912ae2",
+                "hash": "bd48f3dceaa63191c08c43211ed0cd4fea25d90c902b01f5d00ca2e452912ae2",
+                "size": 1433,
+                "mime": "application/json",
+                "format": "json",
+                "producer": "dwac.operation.receipt",
+                "dependencies": [
+                  "8f5b00d7682a181ecb47056a25ce4ab342022dd8df8ee69ecdedb0e6a2bf8da9"
+                ],
+                "provenance": {},
+                "version": "v0.1",
+                "storage": "cas-blob",
+                "locator": "cas://sha256/bd48f3dceaa63191c08c43211ed0cd4fea25d90c902b01f5d00ca2e452912ae2"
+              }
+            },
+            "status": "CANDIDATE",
+            "worker_id": "rncs.visual.verify",
+            "content_hash": "849617aae85b3ddb58ebc0344d220f6a5ed84db37820fc40d37132ed548b7d99",
+            "acceptance": {
+              "non_empty": true
+            },
+            "evidence": [
+              {
+                "kind": "worker_receipt",
+                "worker": "rncs.visual.verify",
+                "packet_root": "2abad46ef0c5bfd23f1a39ea7c10fcccd8557ca737713dafb10f19007405f584",
+                "execution_input_root": "6a82c119ef49c8afa2cde6af7816d389856626b5a62d68670bcb1de7ef28e59d",
+                "dependency_result_roots": {},
+                "required_capabilities": [
+                  "rncs.visual.verify"
+                ],
+                "worker_capabilities": [
+                  "rncs.visual.verify"
+                ],
+                "required_authority_scope": [],
+                "worker_authority_scope": []
+              }
+            ]
+          },
+          {
+            "unit_id": "accept-visual-binding",
+            "output_type": "taowind/mixed@v0.1",
+            "content": {
+              "value": {
+                "accepted": true,
+                "source_sha256": "75ef89bb453fb090ffbde5b8bbc00be8b0122ab46f250b9fbad6364f3bd1ff70",
+                "visual_ir_root": "4ed7585ca207fb038e979580dcb349e8cb8c2fd38280227f350bac50d1ac9e34"
+              },
+              "operation_receipt": {
+                "sha256": "527ba090144e7b9f900f8726b1eb90126e5f8a2a4d2f34c4e6369c5beb92d55e",
+                "hash": "527ba090144e7b9f900f8726b1eb90126e5f8a2a4d2f34c4e6369c5beb92d55e",
+                "size": 844,
+                "mime": "application/json",
+                "format": "json",
+                "producer": "dwac.operation.receipt",
+                "dependencies": [
+                  "3c020616c6e41b6d20b3027386a8001ba3272d312d1ae041eeb4659a5eb65212"
+                ],
+                "provenance": {},
+                "version": "v0.1",
+                "storage": "cas-blob",
+                "locator": "cas://sha256/527ba090144e7b9f900f8726b1eb90126e5f8a2a4d2f34c4e6369c5beb92d55e"
+              }
+            },
+            "status": "CANDIDATE",
+            "worker_id": "rncs.visual.accept-binding",
+            "content_hash": "9ca93f7dcfb06b388ab166c3421624e39abf72a279052877959e902ee23380f9",
+            "acceptance": {
+              "non_empty": true
+            },
+            "evidence": [
+              {
+                "kind": "worker_receipt",
+                "worker": "rncs.visual.accept-binding",
+                "packet_root": "156e2dde6f8ec24f2559f83f4ed16697700337e088a596254c3dc449410148f0",
+                "execution_input_root": "477eeab93b3f39d5c20fb9891d574ae181cd3db24e0372fe8fd1f87cfcad6103",
+                "dependency_result_roots": {
+                  "verify-visual-output": "849617aae85b3ddb58ebc0344d220f6a5ed84db37820fc40d37132ed548b7d99"
+                },
+                "required_capabilities": [
+                  "rncs.visual.accept-binding"
+                ],
+                "worker_capabilities": [
+                  "rncs.visual.accept-binding"
+                ],
+                "required_authority_scope": [],
+                "worker_authority_scope": []
+              }
+            ]
+          }
+        ],
+        "consistency": {
+          "all_units_present": true,
+          "all_acceptance_pass": true,
+          "canonical_promotion_performed": false,
+          "statuses": {
+            "verify-visual-output": "CANDIDATE",
+            "accept-visual-binding": "CANDIDATE"
+          }
+        },
+        "stats": {
+          "semantic_units": 2,
+          "waves": 2,
+          "critical_path_depth": 2,
+          "wall_seconds": 0.249831,
+          "generation_unit": "SEMANTIC_WORK_UNIT",
+          "token_is_planning_unit": false,
+          "worker_pool_size": 2,
+          "worker_assignments": {
+            "verify-visual-output": "rncs.visual.verify",
+            "accept-visual-binding": "rncs.visual.accept-binding"
+          }
+        }
+      },
+      "operation_receipts": [
+        {
+          "ref": {
+            "sha256": "bd48f3dceaa63191c08c43211ed0cd4fea25d90c902b01f5d00ca2e452912ae2",
+            "hash": "bd48f3dceaa63191c08c43211ed0cd4fea25d90c902b01f5d00ca2e452912ae2",
+            "size": 1433,
+            "mime": "application/json",
+            "format": "json",
+            "producer": "dwac.operation.receipt",
+            "dependencies": [
+              "8f5b00d7682a181ecb47056a25ce4ab342022dd8df8ee69ecdedb0e6a2bf8da9"
+            ],
+            "provenance": {},
+            "version": "v0.1",
+            "storage": "cas-blob",
+            "locator": "cas://sha256/bd48f3dceaa63191c08c43211ed0cd4fea25d90c902b01f5d00ca2e452912ae2"
+          },
+          "record": {
+            "canonical_promotion_performed": false,
+            "plan": {
+              "dependencies": [],
+              "format": "json",
+              "hash": "8f5b00d7682a181ecb47056a25ce4ab342022dd8df8ee69ecdedb0e6a2bf8da9",
+              "locator": "cas://sha256/8f5b00d7682a181ecb47056a25ce4ab342022dd8df8ee69ecdedb0e6a2bf8da9",
+              "mime": "application/json",
+              "producer": "dwac.operation.plan",
+              "provenance": {},
+              "sha256": "8f5b00d7682a181ecb47056a25ce4ab342022dd8df8ee69ecdedb0e6a2bf8da9",
+              "size": 11315,
+              "storage": "cas-blob",
+              "version": "v0.1"
+            },
+            "rcl_evidence_commit": false,
+            "response": {
+              "operation": "rncs.visual.verify",
+              "result": {
+                "artifact_count": 1,
+                "factory_result_root": "cec955807b0d5f3d05642932620504ff4e331cffec515032daf8ab2fc574c24b",
+                "plan_root": "3a4970cf215d5bfaa97eac738c98d8edbbe63b007dcdbe8d19eaec149e59be4d",
+                "report": {
+                  "authority": "CANDIDATE_ONLY",
+                  "errors": [],
+                  "format": "ragf.visual-verification.v0.1",
+                  "identity_evidence": "REFERENCE_BINDING_ONLY",
+                  "perceptual_consistency": "NOT_EVALUATED",
+                  "reproducibility": "CONTENT_INTEGRITY_ONLY",
+                  "valid": true,
+                  "verification_root": "2986a3342e6df7b3a1bed0b18b96bc2227498c3a93a002a477e2ac38a170c003",
+                  "visual_ir_root": "4ed7585ca207fb038e979580dcb349e8cb8c2fd38280227f350bac50d1ac9e34"
+                },
+                "source_sha256": "75ef89bb453fb090ffbde5b8bbc00be8b0122ab46f250b9fbad6364f3bd1ff70",
+                "valid": true,
+                "visual_ir_root": "4ed7585ca207fb038e979580dcb349e8cb8c2fd38280227f350bac50d1ac9e34"
+              },
+              "status": "PASS",
+              "worker_id": "rncs-visual-verification"
+            },
+            "schema": "dwac.operation-receipt.v1",
+            "status": "CHECKED_PROVIDER_RESULT"
+          },
+          "plan": {
+            "contract": {
+              "inputs": {},
+              "operation": "rncs.visual.verify",
+              "result_checks": [
+                {
+                  "equals": true,
+                  "path": [
+                    "valid"
+                  ]
+                },
+                {
+                  "equals": "75ef89bb453fb090ffbde5b8bbc00be8b0122ab46f250b9fbad6364f3bd1ff70",
+                  "path": [
+                    "source_sha256"
+                  ]
+                },
+                {
+                  "equals": "cec955807b0d5f3d05642932620504ff4e331cffec515032daf8ab2fc574c24b",
+                  "path": [
+                    "factory_result_root"
+                  ]
+                }
+              ],
+              "schema": "dwac.operation-binding.v1"
+            },
+            "dependency_result_roots": {},
+            "operation": "rncs.visual.verify",
+            "packet_root": "2abad46ef0c5bfd23f1a39ea7c10fcccd8557ca737713dafb10f19007405f584",
+            "payload": {
+              "artifacts": [
+                {
+                  "base64": "PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij48cmVjdCB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgZmlsbD0iIzE2MjAzMiIvPjxwb2x5Z29uIHBvaW50cz0iNjQsOCA4OCw0MCA0MCw0MCIgZmlsbD0iIzUxYThmZiIvPjxwb2x5Z29uIHBvaW50cz0iNjQsNDIgMTEyLDExNiAxNiwxMTYiIGZpbGw9IiM1MWE4ZmYiLz48L3N2Zz4=",
+                  "id": "preview.svg"
+                }
+              ],
+              "canonical": "C:\\Users\\User\\Documents\\RCL\\_worktrees\\rncs-visual-factory-v01\\packages\\world\\reality-asset-genesis-fabric\\src\\canonical.mjs",
+              "document_base64": "ewogICJmb3JtYXQiOiAicmFnZi52aXN1YWwtZmFjdG9yeS1yZXN1bHQudjAuMSIsCiAgInN0YXR1cyI6ICJMT0NBTF9DQU5ESURBVEVfRVhFQ1VURUQiLAogICJjYW5kaWRhdGVfb25seSI6IHRydWUsCiAgImNvbW1pdF9zdGF0dXMiOiAiTk9UX0NPTU1JVFRFRCIsCiAgInBsYW5fcm9vdCI6ICIzYTQ5NzBjZjIxNWQ1YmZhYTk3ZWFjNzM4Yzk4ZDhlZGJiZTYzYjAwN2RjZGJlOGQxOWVhZWMxNDllNTliZTRkIiwKICAicmVjZWlwdHMiOiBbCiAgICB7CiAgICAgICJzdGFnZSI6IHsKICAgICAgICAiaW5kZXgiOiAwLAogICAgICAgICJvcGVyYXRpb24iOiAicmVuZGVyaW5nIiwKICAgICAgICAicHJvdmlkZXJfaWQiOiAibG9jYWw6dHJpYW5nbGUtc3ZnIiwKICAgICAgICAicHJvdmlkZXJfbWFuaWZlc3Rfcm9vdCI6ICJmZTI5MzhjNDMyNTY1NWFlODUzZjkxMzFiNGRkY2FlZDhiYWFhMWUyZmE1NTg0NTQ0ODM3Y2JmNDllMzRkMTNhIiwKICAgICAgICAicHJvZmlsZV9yb290IjogIjViY2VjN2NmNjEzNTNiYWFhZTNkYWFlMzk4MmIyMDU4NDEzNmRjZjY5OTJkZjEzMGNjNzE5N2QyM2NkMDc3ZmEiCiAgICAgIH0sCiAgICAgICJqb2IiOiB7CiAgICAgICAgImZvcm1hdCI6ICJyYWdmLmFzc2V0LWdlbmVyYXRpb24tam9iLnYwLjEiLAogICAgICAgICJ2ZXJzaW9uIjogIjAuMS4wIiwKICAgICAgICAiam9iX2lkIjogInZpc3VhbC1qb2I6NTcyOTlmOWU5ZWQwYzAzZjVmYWU3MGM3ZGRmYjA4MjViY2I1MWEwYWEyMThkMzMyMzZiM2FlNmZhMTlmMWJiZCIsCiAgICAgICAgInByb3ZpZGVyX2lkIjogImxvY2FsOnRyaWFuZ2xlLXN2ZyIsCiAgICAgICAgImFzc2V0X2lkIjogImZpeHR1cmU6dHJpYW5nbGUtYXZhdGFyIiwKICAgICAgICAiY2FuZGlkYXRlX2lkIjogbnVsbCwKICAgICAgICAib3BlcmF0aW9uIjogInJlbmRlcmluZyIsCiAgICAgICAgInF1YWxpdHlfdGllciI6ICJQUk9EVUNUSU9OIiwKICAgICAgICAic3RhdGUiOiAiQ09NUExFVEVEIiwKICAgICAgICAicmVxdWVzdCI6IHsKICAgICAgICAgICJwbGFuX3Jvb3QiOiAiM2E0OTcwY2YyMTVkNWJmYWE5N2VhYzczOGM5OGQ4ZWRiYmU2M2IwMDdkY2RiZThkMTllYWVjMTQ5ZTU5YmU0ZCIsCiAgICAgICAgICAic3RhZ2UiOiAwLAogICAgICAgICAgImlucHV0X3Jvb3QiOiAiNDZjNGUxMjZiOTgyZDg0ODNlNWFiODU1NzdhNDMxNjlkMjY1NTA1NjNhMzc5NGE0NzYyZDdhMTFhZmI4ZTVjMSIKICAgICAgICB9LAogICAgICAgICJnZW5vbWVfcm9vdCI6IG51bGwsCiAgICAgICAgInNlZWQiOiAiNDIiLAogICAgICAgICJjb21wdXRlX3JlcXVpcmVtZW50IjogewogICAgICAgICAgImNwdSI6ICJ1bnNwZWNpZmllZCIsCiAgICAgICAgICAicmFtIjogInVuc3BlY2lmaWVkIiwKICAgICAgICAgICJncHUiOiAidW5zcGVjaWZpZWQiLAogICAgICAgICAgInZyYW0iOiAidW5zcGVjaWZpZWQiLAogICAgICAgICAgImFjY2VsZXJhdG9yIjogInVuc3BlY2lmaWVkIiwKICAgICAgICAgICJlc3RpbWF0ZWRfZHVyYXRpb24iOiAidW5zcGVjaWZpZWQiLAogICAgICAgICAgInByaW9yaXR5IjogNTAwMCwKICAgICAgICAgICJkZWFkbGluZSI6IG51bGwsCiAgICAgICAgICAiY29tcHV0ZV9yZXF1aXJlbWVudF9yb290IjogIjMxODIzMmM4YTUzOWU3MzVmOGQ3ZmRkYjgzNDQ2MGRjZDNiYmZhM2JlMDIzNGRjOWMxYjAwYTEzZGM1OGIzYTIiCiAgICAgICAgfSwKICAgICAgICAiaGlzdG9yeSI6IFsKICAgICAgICAgIHsKICAgICAgICAgICAgInN0YXRlIjogIlFVRVVFRCIsCiAgICAgICAgICAgICJkZXRhaWwiOiAiY3JlYXRlZCIKICAgICAgICAgIH0sCiAgICAgICAgICB7CiAgICAgICAgICAgICJzdGF0ZSI6ICJQUkVQQVJJTkciLAogICAgICAgICAgICAiZGV0YWlsIjoge30KICAgICAgICAgIH0sCiAgICAgICAgICB7CiAgICAgICAgICAgICJzdGF0ZSI6ICJSVU5OSU5HIiwKICAgICAgICAgICAgImRldGFpbCI6IHt9CiAgICAgICAgICB9LAogICAgICAgICAgewogICAgICAgICAgICAic3RhdGUiOiAiVkFMSURBVElORyIsCiAgICAgICAgICAgICJkZXRhaWwiOiB7fQogICAgICAgICAgfSwKICAgICAgICAgIHsKICAgICAgICAgICAgInN0YXRlIjogIkNPTVBMRVRFRCIsCiAgICAgICAgICAgICJkZXRhaWwiOiB7CiAgICAgICAgICAgICAgIm91dHB1dF9yb290IjogIjRlZDc1ODVjYTIwN2ZiMDM4ZTk3OTU4MGRjYjM0OWU4Y2I4YzJmZDM4MjgwMjI3ZjM1MGJhYzUwZDFhYzllMzQiCiAgICAgICAgICAgIH0KICAgICAgICAgIH0KICAgICAgICBdLAogICAgICAgICJlcnJvciI6IG51bGwsCiAgICAgICAgInJlc3VsdF9yb290IjogIjRlZDc1ODVjYTIwN2ZiMDM4ZTk3OTU4MGRjYjM0OWU4Y2I4YzJmZDM4MjgwMjI3ZjM1MGJhYzUwZDFhYzllMzQiLAogICAgICAgICJldmlkZW5jZV9yb290IjogImM1MDU5MjNhNDRkNjNkMmRlNDFjNGM2MDViOWJiNTA1YjU3MTgzMzdkOWEwNjI4NGRjMjdlZmFjMTAyMDY3NTIiLAogICAgICAgICJqb2Jfcm9vdCI6ICIzYWYzODdhNDViMjBiOTZjNWQ0NTFhN2ZlOTM4NTgwNDEwZjMyY2M1YzZjZTI5OWNlM2FiODM4YmM1ODE0ODBkIgogICAgICB9LAogICAgICAicmVwcmVzZW50YXRpb25fcmVmIjogewogICAgICAgICJmb3JtYXQiOiAicm5jcy5yZXByZXNlbnRhdGlvbi1yZWYudjAuMSIsCiAgICAgICAgInZlcnNpb24iOiAiMC4xLjAiLAogICAgICAgICJyZXByZXNlbnRhdGlvbl9pZCI6ICJyZXByZXNlbnRhdGlvbjo2NzMzZjg5MjdhNWQxZjA2ODQzMzMyYTYiLAogICAgICAgICJwcm92aWRlcl9pZCI6ICJsb2NhbDp0cmlhbmdsZS1zdmciLAogICAgICAgICJwcm92aWRlcl9yb290IjogImZlMjkzOGM0MzI1NjU1YWU4NTNmOTEzMWI0ZGRjYWVkOGJhYWExZTJmYTU1ODQ1NDQ4MzdjYmY0OWUzNGQxM2EiLAogICAgICAgICJyZXByZXNlbnRhdGlvbl9raW5kIjogImNoYXJhY3Rlci1tZXNoIiwKICAgICAgICAicmVwcmVzZW50YXRpb25fZm9ybWF0cyI6IFsKICAgICAgICAgICJyYWdmLnZpc3VhbC1pci52MC4xIgogICAgICAgIF0sCiAgICAgICAgImNvbnRlbnRfcm9vdCI6ICI0ZWQ3NTg1Y2EyMDdmYjAzOGU5Nzk1ODBkY2IzNDllOGNiOGMyZmQzODI4MDIyN2YzNTBiYWM1MGQxYWM5ZTM0IiwKICAgICAgICAic291cmNlX3VyaSI6IG51bGwsCiAgICAgICAgInJlcHJlc2VudGF0aW9uX3Byb2ZpbGUiOiB7CiAgICAgICAgICAicHJvZmlsZV9pZCI6ICI1YmNlYzdjZjYxMzUzYmFhYWUzZGFhZTM5ODJiMjA1ODQxMzZkY2Y2OTkyZGYxMzBjYzcxOTdkMjNjZDA3N2ZhIiwKICAgICAgICAgICJlbmNvZGluZyI6ICJwcm92aWRlci1kZWZpbmVkIiwKICAgICAgICAgICJmaWRlbGl0eSI6ICJwcm92aWRlci1kZWZpbmVkIiwKICAgICAgICAgICJwcmVjaXNpb24iOiAicHJvdmlkZXItZGVmaW5lZCIsCiAgICAgICAgICAiZm9ybWF0cyI6IFsKICAgICAgICAgICAgInJhZ2YudmlzdWFsLWlyLnYwLjEiCiAgICAgICAgICBdLAogICAgICAgICAgIm1ldGFkYXRhIjoge30KICAgICAgICB9LAogICAgICAgICJkZXRhaWxfcG9saWN5IjogewogICAgICAgICAgIm1vZGUiOiAicHJvdmlkZXItZGVmaW5lZCIsCiAgICAgICAgICAic2VsZWN0b3JzIjogW10sCiAgICAgICAgICAiYnVkZ2V0Ijoge30sCiAgICAgICAgICAibWV0YWRhdGEiOiB7fSwKICAgICAgICAgICJwb2xpY3lfbGFiZWwiOiAiZGV0YWlsIgogICAgICAgIH0sCiAgICAgICAgInJlc2lkZW5jeV9wb2xpY3kiOiB7CiAgICAgICAgICAibW9kZSI6ICJwcm92aWRlci1kZWZpbmVkIiwKICAgICAgICAgICJzZWxlY3RvcnMiOiBbXSwKICAgICAgICAgICJidWRnZXQiOiB7fSwKICAgICAgICAgICJtZXRhZGF0YSI6IHt9LAogICAgICAgICAgInBvbGljeV9sYWJlbCI6ICJyZXNpZGVuY3kiCiAgICAgICAgfSwKICAgICAgICAiYXZhaWxhYmlsaXR5IjogIkVYRUNVVEVEIiwKICAgICAgICAiYXV0aG9yaXR5X3Njb3BlIjogWwogICAgICAgICAgInJlcHJlc2VudGF0aW9uX2NhbmRpZGF0ZSIKICAgICAgICBdLAogICAgICAgICJhdXRob3JpdHkiOiB7CiAgICAgICAgICAicHJvdmlkZXJfbWF5X3dyaXRlX2F1dGhvcml0YXRpdmVfd29ybGRfc3RhdGUiOiBmYWxzZSwKICAgICAgICAgICJybmNzX2F1dGhvcml0eV9yZXF1aXJlZCI6IHRydWUKICAgICAgICB9LAogICAgICAgICJwcm92ZW5hbmNlIjogewogICAgICAgICAgInVwc3RyZWFtX3VybCI6IG51bGwsCiAgICAgICAgICAic291cmNlX3JldmlzaW9uIjogbnVsbCwKICAgICAgICAgICJzb3VyY2VfYXJjaGl2ZV9zaGEyNTYiOiBudWxsLAogICAgICAgICAgImdlbmVyYXRvcl92ZXJzaW9uIjogbnVsbCwKICAgICAgICAgICJwYXJhbWV0ZXJzX3Jvb3QiOiBudWxsCiAgICAgICAgfSwKICAgICAgICAiZXZpZGVuY2UiOiB7CiAgICAgICAgICAicHJvdmlkZXJfbWFuaWZlc3Rfcm9vdCI6ICJmZTI5MzhjNDMyNTY1NWFlODUzZjkxMzFiNGRkY2FlZDhiYWFhMWUyZmE1NTg0NTQ0ODM3Y2JmNDllMzRkMTNhIiwKICAgICAgICAgICJwcm92aWRlcl9yZXN1bHRfcm9vdCI6ICI0ZWQ3NTg1Y2EyMDdmYjAzOGU5Nzk1ODBkY2IzNDllOGNiOGMyZmQzODI4MDIyN2YzNTBiYWM1MGQxYWM5ZTM0IiwKICAgICAgICAgICJydW50aW1lX3JlY2VpcHRfcm9vdCI6IG51bGwsCiAgICAgICAgICAibm90ZXMiOiAiTG9jYWwgYWRhcHRlciBvdXRwdXQ7IHZpc3VhbCBhY2NlcHRhbmNlIG5vdCBldmFsdWF0ZWQiCiAgICAgICAgfSwKICAgICAgICAiY2FuZGlkYXRlX29ubHkiOiB0cnVlLAogICAgICAgICJhdXRob3JpdGF0aXZlIjogZmFsc2UsCiAgICAgICAgImNvbW1pdF9zdGF0dXMiOiAiTk9UX0NPTU1JVFRFRCIsCiAgICAgICAgInJlcHJlc2VudGF0aW9uX3Jvb3QiOiAiY2FiODc1OWE2MTc1N2Y1M2QxOGNlMzJjYWM3YzYwZGYxMWUxZDhkZjVlM2U4MzFkNzQ5NTBhZWVjZjFjMDg5MyIKICAgICAgfSwKICAgICAgImlucHV0X3Jvb3QiOiAiNDZjNGUxMjZiOTgyZDg0ODNlNWFiODU1NzdhNDMxNjlkMjY1NTA1NjNhMzc5NGE0NzYyZDdhMTFhZmI4ZTVjMSIsCiAgICAgICJvdXRwdXRfcm9vdCI6ICI0ZWQ3NTg1Y2EyMDdmYjAzOGU5Nzk1ODBkY2IzNDllOGNiOGMyZmQzODI4MDIyN2YzNTBiYWM1MGQxYWM5ZTM0IiwKICAgICAgImV2aWRlbmNlIjogewogICAgICAgICJmb3JtYXQiOiAicmFnZi52aXN1YWwtdmVyaWZpY2F0aW9uLnYwLjEiLAogICAgICAgICJ2aXN1YWxfaXJfcm9vdCI6ICI0ZWQ3NTg1Y2EyMDdmYjAzOGU5Nzk1ODBkY2IzNDllOGNiOGMyZmQzODI4MDIyN2YzNTBiYWM1MGQxYWM5ZTM0IiwKICAgICAgICAidmFsaWQiOiB0cnVlLAogICAgICAgICJlcnJvcnMiOiBbXSwKICAgICAgICAiaWRlbnRpdHlfZXZpZGVuY2UiOiAiUkVGRVJFTkNFX0JJTkRJTkdfT05MWSIsCiAgICAgICAgInBlcmNlcHR1YWxfY29uc2lzdGVuY3kiOiAiTk9UX0VWQUxVQVRFRCIsCiAgICAgICAgInJlcHJvZHVjaWJpbGl0eSI6ICJDT05URU5UX0lOVEVHUklUWV9PTkxZIiwKICAgICAgICAiYXV0aG9yaXR5IjogIkNBTkRJREFURV9PTkxZIiwKICAgICAgICAidmVyaWZpY2F0aW9uX3Jvb3QiOiAiMjk4NmEzMzQyZTZkZjdiM2ExYmVkMGIxOGI5NmJjMjIyNzQ5OGMzYTkzYTAwMmE0NzdlMmFjMzhhMTcwYzAwMyIKICAgICAgfSwKICAgICAgInJlcHJvZHVjaWJpbGl0eSI6ICJMT0NBTF9SRVBMQVlfTUFUQ0giLAogICAgICAiZGV0ZXJtaW5pc3RpY19kZWNsYXJlZCI6IHRydWUsCiAgICAgICJyZWNlaXB0X3Jvb3QiOiAiYzg1NWUwZDI1ZDg2YTJhMDliN2RmYzViMWZkMDZmYmRjMjI1ZmNiYjdmMjgxY2QxYmNmMWIyYmRlYWI3MzU2NiIKICAgIH0KICBdLAogICJvdXRwdXQiOiB7CiAgICAiZm9ybWF0IjogInJhZ2YudmlzdWFsLWlyLnYwLjEiLAogICAgImNoYXJhY3Rlcl9pZCI6ICJmaXh0dXJlOnRyaWFuZ2xlLWF2YXRhciIsCiAgICAiaWRlbnRpdHlfcm9vdCI6ICJiMjVjMjBjOWZlMDg2NjQ4MWZmZjAwMzNiMjg4OTg1ZWMwMjBlMjUyM2FlOGE4ODQxOTEzYzc2OGEyNmYzYmFmIiwKICAgICJyZXByZXNlbnRhdGlvbl9raW5kIjogImNoYXJhY3Rlci1tZXNoIiwKICAgICJnZW9tZXRyeSI6IHsKICAgICAgInZlcnRpY2VzIjogWwogICAgICAgIFsKICAgICAgICAgIDY0LAogICAgICAgICAgOCwKICAgICAgICAgIDAKICAgICAgICBdLAogICAgICAgIFsKICAgICAgICAgIDg4LAogICAgICAgICAgNDAsCiAgICAgICAgICAwCiAgICAgICAgXSwKICAgICAgICBbCiAgICAgICAgICA0MCwKICAgICAgICAgIDQwLAogICAgICAgICAgMAogICAgICAgIF0sCiAgICAgICAgWwogICAgICAgICAgNjQsCiAgICAgICAgICA0MiwKICAgICAgICAgIDAKICAgICAgICBdLAogICAgICAgIFsKICAgICAgICAgIDExMiwKICAgICAgICAgIDExNiwKICAgICAgICAgIDAKICAgICAgICBdLAogICAgICAgIFsKICAgICAgICAgIDE2LAogICAgICAgICAgMTE2LAogICAgICAgICAgMAogICAgICAgIF0KICAgICAgXSwKICAgICAgInRyaWFuZ2xlcyI6IFsKICAgICAgICBbCiAgICAgICAgICAwLAogICAgICAgICAgMSwKICAgICAgICAgIDIKICAgICAgICBdLAogICAgICAgIFsKICAgICAgICAgIDMsCiAgICAgICAgICA0LAogICAgICAgICAgNQogICAgICAgIF0KICAgICAgXSwKICAgICAgIm1hdGVyaWFsX2lkcyI6IFsKICAgICAgICAiYmx1ZSIsCiAgICAgICAgImJsdWUiCiAgICAgIF0KICAgIH0sCiAgICAibWF0ZXJpYWxzIjogWwogICAgICB7CiAgICAgICAgImlkIjogImJsdWUiLAogICAgICAgICJjb2xvciI6ICIjNTFhOGZmIgogICAgICB9CiAgICBdLAogICAgInNrZWxldG9uIjogewogICAgICAiYm9uZXMiOiBbXQogICAgfSwKICAgICJsYXllcnMiOiBbXSwKICAgICJwcm92ZW5hbmNlIjogewogICAgICAic2VlZCI6ICI0MiIsCiAgICAgICJnZW5lcmF0b3IiOiAibG9jYWw6dHJpYW5nbGUtc3ZnIiwKICAgICAgInZlcnNpb24iOiAiMSIKICAgIH0sCiAgICAiYXJ0aWZhY3RzIjogWwogICAgICB7CiAgICAgICAgImlkIjogInByZXZpZXcuc3ZnIiwKICAgICAgICAic2hhMjU2IjogIjNhZTA0YmRjNTZlYWE3ODVjMDEyNDExNmQ0ZTkwOGY2NzQ4NjgyNzYwMjBmY2E3Mzc3ZmY1OTQwMjZkMzgwNmYiLAogICAgICAgICJieXRlX2xlbmd0aCI6IDIyMQogICAgICB9CiAgICBdLAogICAgInZpc3VhbF9pcl9yb290IjogIjRlZDc1ODVjYTIwN2ZiMDM4ZTk3OTU4MGRjYjM0OWU4Y2I4YzJmZDM4MjgwMjI3ZjM1MGJhYzUwZDFhYzllMzQiCiAgfSwKICAidmlzdWFsX2FjY2VwdGFuY2UiOiAiTk9UX0VWQUxVQVRFRCIsCiAgImJyaWRnZXMiOiB7CiAgICAicm5jcyI6ICJSQUdGX0VYRUNVVE9SIiwKICAgICJyY2wiOiAiT1BUSU9OQUxfSE9TVF9DQUxMX1dSQVBQRVIiLAogICAgImR3YWMiOiAiT1BUSU9OQUxfTE9DQUxfVkVSSUZJQ0FUSU9OX1NJREVDQVIiLAogICAgIm9wcDYiOiAiUkNQX1JYUF9FWFBPUlRfQURBUFRFUiIKICB9LAogICJyZXN1bHRfcm9vdCI6ICJjZWM5NTU4MDdiMGQ1ZjNkMDU2NDI5MzI2MjA1MDRmZjRlMzMxY2ZmZWM1MTUwMzJkYWY4YWIyZmM1NzRjMjRiIgp9Cg==",
+              "document_sha256": "75ef89bb453fb090ffbde5b8bbc00be8b0122ab46f250b9fbad6364f3bd1ff70",
+              "module": "C:\\Users\\User\\Documents\\RCL\\_worktrees\\rncs-visual-factory-v01\\packages\\world\\reality-asset-genesis-fabric\\src\\visual-ir.mjs"
+            },
+            "schema": "dwac.operation-plan.v1",
+            "unit_id": "verify-visual-output"
+          }
+        },
+        {
+          "ref": {
+            "sha256": "527ba090144e7b9f900f8726b1eb90126e5f8a2a4d2f34c4e6369c5beb92d55e",
+            "hash": "527ba090144e7b9f900f8726b1eb90126e5f8a2a4d2f34c4e6369c5beb92d55e",
+            "size": 844,
+            "mime": "application/json",
+            "format": "json",
+            "producer": "dwac.operation.receipt",
+            "dependencies": [
+              "3c020616c6e41b6d20b3027386a8001ba3272d312d1ae041eeb4659a5eb65212"
+            ],
+            "provenance": {},
+            "version": "v0.1",
+            "storage": "cas-blob",
+            "locator": "cas://sha256/527ba090144e7b9f900f8726b1eb90126e5f8a2a4d2f34c4e6369c5beb92d55e"
+          },
+          "record": {
+            "canonical_promotion_performed": false,
+            "plan": {
+              "dependencies": [],
+              "format": "json",
+              "hash": "3c020616c6e41b6d20b3027386a8001ba3272d312d1ae041eeb4659a5eb65212",
+              "locator": "cas://sha256/3c020616c6e41b6d20b3027386a8001ba3272d312d1ae041eeb4659a5eb65212",
+              "mime": "application/json",
+              "producer": "dwac.operation.plan",
+              "provenance": {},
+              "sha256": "3c020616c6e41b6d20b3027386a8001ba3272d312d1ae041eeb4659a5eb65212",
+              "size": 818,
+              "storage": "cas-blob",
+              "version": "v0.1"
+            },
+            "rcl_evidence_commit": false,
+            "response": {
+              "operation": "rncs.visual.accept-binding",
+              "result": {
+                "accepted": true,
+                "source_sha256": "75ef89bb453fb090ffbde5b8bbc00be8b0122ab46f250b9fbad6364f3bd1ff70",
+                "visual_ir_root": "4ed7585ca207fb038e979580dcb349e8cb8c2fd38280227f350bac50d1ac9e34"
+              },
+              "status": "PASS",
+              "worker_id": "rncs-visual-binding"
+            },
+            "schema": "dwac.operation-receipt.v1",
+            "status": "CHECKED_PROVIDER_RESULT"
+          },
+          "plan": {
+            "contract": {
+              "inputs": {
+                "source_sha256": {
+                  "dependency": "verify-visual-output",
+                  "path": [
+                    "value",
+                    "source_sha256"
+                  ]
+                },
+                "verified_root": {
+                  "dependency": "verify-visual-output",
+                  "path": [
+                    "value",
+                    "visual_ir_root"
+                  ]
+                }
+              },
+              "operation": "rncs.visual.accept-binding",
+              "result_checks": [
+                {
+                  "equals": true,
+                  "path": [
+                    "accepted"
+                  ]
+                }
+              ],
+              "schema": "dwac.operation-binding.v1"
+            },
+            "dependency_result_roots": {
+              "verify-visual-output": "849617aae85b3ddb58ebc0344d220f6a5ed84db37820fc40d37132ed548b7d99"
+            },
+            "operation": "rncs.visual.accept-binding",
+            "packet_root": "156e2dde6f8ec24f2559f83f4ed16697700337e088a596254c3dc449410148f0",
+            "payload": {
+              "source_sha256": "75ef89bb453fb090ffbde5b8bbc00be8b0122ab46f250b9fbad6364f3bd1ff70",
+              "verified_root": "4ed7585ca207fb038e979580dcb349e8cb8c2fd38280227f350bac50d1ac9e34"
+            },
+            "schema": "dwac.operation-plan.v1",
+            "unit_id": "accept-visual-binding"
+          }
+        }
+      ],
+      "dwac_visual_generation": "NOT_RUN",
+      "remote_execution": "NOT_RUN",
+      "visual_acceptance": "NOT_EVALUATED",
+      "canonical_promotion_performed": false
+    },
+    {
+      "format": "rncs.dwac-visual-verification.v0.1",
+      "status": "PASS",
+      "scope": "LOCAL_DWAC_OPERATION_GRAPH_VISUAL_VERIFICATION",
+      "negative_case": true,
+      "dwac_commit": "73ded423734d539d9ceed3a82fac449206758c1e",
+      "dwac_source_hashes": {
+        "dwac_runtime.py": "13d97b7078e6699b121b3f4b3ba11a9ac7a80d1ab1a7f8d63b69233408b8a7c0",
+        "structural_generation\\dwac_structural\\operation_worker.py": "4d6ea3adc09d181a9d2fd03a294c2f6704c86bf25ad0aa79015c7b91bd8ec673",
+        "structural_generation\\dwac_structural\\universal_compiler.py": "c5c80d6f8cc87d4c50a0625d862153a3b62e6da421414aca48ebfc7dc918c741"
+      },
+      "factory_result_sha256": "75ef89bb453fb090ffbde5b8bbc00be8b0122ab46f250b9fbad6364f3bd1ff70",
+      "factory_result_root": "cec955807b0d5f3d05642932620504ff4e331cffec515032daf8ab2fc574c24b",
+      "plan_root": "3a4970cf215d5bfaa97eac738c98d8edbbe63b007dcdbe8d19eaec149e59be4d",
+      "visual_ir_root": "4ed7585ca207fb038e979580dcb349e8cb8c2fd38280227f350bac50d1ac9e34",
+      "observed_operations": [
+        "rncs.visual.verify"
+      ],
+      "unit_statuses": [
+        "EXECUTION_ERROR",
+        "DEPENDENCY_FAILED"
+      ],
+      "result": {
+        "artifact_id": "rncs-visual-result-verification",
+        "kind": "custom.visual/candidate@v0.1",
+        "goal": "Verify existing RAGF Visual Factory output bytes",
+        "results": [
+          {
+            "unit_id": "verify-visual-output",
+            "output_type": "taowind/mixed@v0.1",
+            "content": {
+              "error_type": "OperationContractError",
+              "detail": "OPERATION_REJECTED:cas://sha256/801f3635b8f566f5888e0efe60b4b23cde07b2c4a28c9bc74d810e0c6c5a9a7a"
+            },
+            "status": "EXECUTION_ERROR",
+            "worker_id": "rncs.visual.verify",
+            "content_hash": "5073b062046a79221b037f7404aa511a461d8c417e7437d9d8a172372f09efcc",
+            "acceptance": {
+              "non_empty": false
+            },
+            "evidence": [
+              {
+                "kind": "worker_receipt",
+                "worker": "rncs.visual.verify",
+                "packet_root": "812375432328ec9c5eafbee86d37d9599e77eb188fcd5c0aaebfb9ff5a270c27",
+                "execution_input_root": "e025ca29b71ac99c9dcfe5c9c08455a3516345fe7cc5239bcb19f538601590af",
+                "dependency_result_roots": {},
+                "terminal_status": "EXECUTION_ERROR"
+              }
+            ]
+          },
+          {
+            "unit_id": "accept-visual-binding",
+            "output_type": "taowind/mixed@v0.1",
+            "content": {
+              "reason": "DEPENDENCY_FAILED",
+              "failed_dependencies": {
+                "verify-visual-output": "EXECUTION_ERROR"
+              }
+            },
+            "status": "DEPENDENCY_FAILED",
+            "worker_id": "NONE",
+            "content_hash": "9e581b90070c7116b63f32ccc82a5694da1f34aa6cdfdfc45cb972daf4d3a6ba",
+            "acceptance": {
+              "non_empty": false
+            },
+            "evidence": [
+              {
+                "kind": "worker_receipt",
+                "worker": "NONE",
+                "packet_root": "156e2dde6f8ec24f2559f83f4ed16697700337e088a596254c3dc449410148f0",
+                "execution_input_root": "c1f1388ee223ff0fbe3f82f3469591265c3dc2f8c3410dedea0278a5673770de",
+                "dependency_result_roots": {
+                  "verify-visual-output": "5073b062046a79221b037f7404aa511a461d8c417e7437d9d8a172372f09efcc"
+                },
+                "terminal_status": "DEPENDENCY_FAILED"
+              }
+            ]
+          }
+        ],
+        "consistency": {
+          "all_units_present": true,
+          "all_acceptance_pass": false,
+          "canonical_promotion_performed": false,
+          "statuses": {
+            "verify-visual-output": "EXECUTION_ERROR",
+            "accept-visual-binding": "DEPENDENCY_FAILED"
+          }
+        },
+        "stats": {
+          "semantic_units": 2,
+          "waves": 2,
+          "critical_path_depth": 2,
+          "wall_seconds": 0.182451,
+          "generation_unit": "SEMANTIC_WORK_UNIT",
+          "token_is_planning_unit": false,
+          "worker_pool_size": 2,
+          "worker_assignments": {
+            "verify-visual-output": "rncs.visual.verify"
+          }
+        }
+      },
+      "operation_receipts": [
+        {
+          "sha256": "801f3635b8f566f5888e0efe60b4b23cde07b2c4a28c9bc74d810e0c6c5a9a7a",
+          "record": {
+            "canonical_promotion_performed": false,
+            "error": {
+              "detail": "provider result rejected by declared check",
+              "type": "OperationContractError"
+            },
+            "plan": {
+              "dependencies": [],
+              "format": "json",
+              "hash": "97ac908476b4140b386adc69ea2872f775e641bb8b211cd7a01d85c92fd2d770",
+              "locator": "cas://sha256/97ac908476b4140b386adc69ea2872f775e641bb8b211cd7a01d85c92fd2d770",
+              "mime": "application/json",
+              "producer": "dwac.operation.plan",
+              "provenance": {},
+              "sha256": "97ac908476b4140b386adc69ea2872f775e641bb8b211cd7a01d85c92fd2d770",
+              "size": 11047,
+              "storage": "cas-blob",
+              "version": "v0.1"
+            },
+            "rcl_evidence_commit": false,
+            "response": {
+              "operation": "rncs.visual.verify",
+              "result": {
+                "artifact_count": 1,
+                "factory_result_root": "cec955807b0d5f3d05642932620504ff4e331cffec515032daf8ab2fc574c24b",
+                "plan_root": "3a4970cf215d5bfaa97eac738c98d8edbbe63b007dcdbe8d19eaec149e59be4d",
+                "report": {
+                  "authority": "CANDIDATE_ONLY",
+                  "errors": [
+                    "ARTIFACT_CONTENT_MISMATCH:preview.svg"
+                  ],
+                  "format": "ragf.visual-verification.v0.1",
+                  "identity_evidence": "REFERENCE_BINDING_ONLY",
+                  "perceptual_consistency": "NOT_EVALUATED",
+                  "reproducibility": "CONTENT_INTEGRITY_ONLY",
+                  "valid": false,
+                  "verification_root": "5167a9fcb0a67a0ff6f143ae835aec1a57d2218ca8cf838a4699dee8bb67c594",
+                  "visual_ir_root": "4ed7585ca207fb038e979580dcb349e8cb8c2fd38280227f350bac50d1ac9e34"
+                },
+                "source_sha256": "75ef89bb453fb090ffbde5b8bbc00be8b0122ab46f250b9fbad6364f3bd1ff70",
+                "valid": false,
+                "visual_ir_root": "4ed7585ca207fb038e979580dcb349e8cb8c2fd38280227f350bac50d1ac9e34"
+              },
+              "status": "PASS",
+              "worker_id": "rncs-visual-verification"
+            },
+            "schema": "dwac.operation-receipt.v1",
+            "status": "REJECTED"
+          },
+          "plan": {
+            "contract": {
+              "inputs": {},
+              "operation": "rncs.visual.verify",
+              "result_checks": [
+                {
+                  "equals": true,
+                  "path": [
+                    "valid"
+                  ]
+                },
+                {
+                  "equals": "75ef89bb453fb090ffbde5b8bbc00be8b0122ab46f250b9fbad6364f3bd1ff70",
+                  "path": [
+                    "source_sha256"
+                  ]
+                },
+                {
+                  "equals": "cec955807b0d5f3d05642932620504ff4e331cffec515032daf8ab2fc574c24b",
+                  "path": [
+                    "factory_result_root"
+                  ]
+                }
+              ],
+              "schema": "dwac.operation-binding.v1"
+            },
+            "dependency_result_roots": {},
+            "operation": "rncs.visual.verify",
+            "packet_root": "812375432328ec9c5eafbee86d37d9599e77eb188fcd5c0aaebfb9ff5a270c27",
+            "payload": {
+              "artifacts": [
+                {
+                  "base64": "dGFtcGVyZWQgdmlzdWFsIGJ5dGVz",
+                  "id": "preview.svg"
+                }
+              ],
+              "canonical": "C:\\Users\\User\\Documents\\RCL\\_worktrees\\rncs-visual-factory-v01\\packages\\world\\reality-asset-genesis-fabric\\src\\canonical.mjs",
+              "document_base64": "ewogICJmb3JtYXQiOiAicmFnZi52aXN1YWwtZmFjdG9yeS1yZXN1bHQudjAuMSIsCiAgInN0YXR1cyI6ICJMT0NBTF9DQU5ESURBVEVfRVhFQ1VURUQiLAogICJjYW5kaWRhdGVfb25seSI6IHRydWUsCiAgImNvbW1pdF9zdGF0dXMiOiAiTk9UX0NPTU1JVFRFRCIsCiAgInBsYW5fcm9vdCI6ICIzYTQ5NzBjZjIxNWQ1YmZhYTk3ZWFjNzM4Yzk4ZDhlZGJiZTYzYjAwN2RjZGJlOGQxOWVhZWMxNDllNTliZTRkIiwKICAicmVjZWlwdHMiOiBbCiAgICB7CiAgICAgICJzdGFnZSI6IHsKICAgICAgICAiaW5kZXgiOiAwLAogICAgICAgICJvcGVyYXRpb24iOiAicmVuZGVyaW5nIiwKICAgICAgICAicHJvdmlkZXJfaWQiOiAibG9jYWw6dHJpYW5nbGUtc3ZnIiwKICAgICAgICAicHJvdmlkZXJfbWFuaWZlc3Rfcm9vdCI6ICJmZTI5MzhjNDMyNTY1NWFlODUzZjkxMzFiNGRkY2FlZDhiYWFhMWUyZmE1NTg0NTQ0ODM3Y2JmNDllMzRkMTNhIiwKICAgICAgICAicHJvZmlsZV9yb290IjogIjViY2VjN2NmNjEzNTNiYWFhZTNkYWFlMzk4MmIyMDU4NDEzNmRjZjY5OTJkZjEzMGNjNzE5N2QyM2NkMDc3ZmEiCiAgICAgIH0sCiAgICAgICJqb2IiOiB7CiAgICAgICAgImZvcm1hdCI6ICJyYWdmLmFzc2V0LWdlbmVyYXRpb24tam9iLnYwLjEiLAogICAgICAgICJ2ZXJzaW9uIjogIjAuMS4wIiwKICAgICAgICAiam9iX2lkIjogInZpc3VhbC1qb2I6NTcyOTlmOWU5ZWQwYzAzZjVmYWU3MGM3ZGRmYjA4MjViY2I1MWEwYWEyMThkMzMyMzZiM2FlNmZhMTlmMWJiZCIsCiAgICAgICAgInByb3ZpZGVyX2lkIjogImxvY2FsOnRyaWFuZ2xlLXN2ZyIsCiAgICAgICAgImFzc2V0X2lkIjogImZpeHR1cmU6dHJpYW5nbGUtYXZhdGFyIiwKICAgICAgICAiY2FuZGlkYXRlX2lkIjogbnVsbCwKICAgICAgICAib3BlcmF0aW9uIjogInJlbmRlcmluZyIsCiAgICAgICAgInF1YWxpdHlfdGllciI6ICJQUk9EVUNUSU9OIiwKICAgICAgICAic3RhdGUiOiAiQ09NUExFVEVEIiwKICAgICAgICAicmVxdWVzdCI6IHsKICAgICAgICAgICJwbGFuX3Jvb3QiOiAiM2E0OTcwY2YyMTVkNWJmYWE5N2VhYzczOGM5OGQ4ZWRiYmU2M2IwMDdkY2RiZThkMTllYWVjMTQ5ZTU5YmU0ZCIsCiAgICAgICAgICAic3RhZ2UiOiAwLAogICAgICAgICAgImlucHV0X3Jvb3QiOiAiNDZjNGUxMjZiOTgyZDg0ODNlNWFiODU1NzdhNDMxNjlkMjY1NTA1NjNhMzc5NGE0NzYyZDdhMTFhZmI4ZTVjMSIKICAgICAgICB9LAogICAgICAgICJnZW5vbWVfcm9vdCI6IG51bGwsCiAgICAgICAgInNlZWQiOiAiNDIiLAogICAgICAgICJjb21wdXRlX3JlcXVpcmVtZW50IjogewogICAgICAgICAgImNwdSI6ICJ1bnNwZWNpZmllZCIsCiAgICAgICAgICAicmFtIjogInVuc3BlY2lmaWVkIiwKICAgICAgICAgICJncHUiOiAidW5zcGVjaWZpZWQiLAogICAgICAgICAgInZyYW0iOiAidW5zcGVjaWZpZWQiLAogICAgICAgICAgImFjY2VsZXJhdG9yIjogInVuc3BlY2lmaWVkIiwKICAgICAgICAgICJlc3RpbWF0ZWRfZHVyYXRpb24iOiAidW5zcGVjaWZpZWQiLAogICAgICAgICAgInByaW9yaXR5IjogNTAwMCwKICAgICAgICAgICJkZWFkbGluZSI6IG51bGwsCiAgICAgICAgICAiY29tcHV0ZV9yZXF1aXJlbWVudF9yb290IjogIjMxODIzMmM4YTUzOWU3MzVmOGQ3ZmRkYjgzNDQ2MGRjZDNiYmZhM2JlMDIzNGRjOWMxYjAwYTEzZGM1OGIzYTIiCiAgICAgICAgfSwKICAgICAgICAiaGlzdG9yeSI6IFsKICAgICAgICAgIHsKICAgICAgICAgICAgInN0YXRlIjogIlFVRVVFRCIsCiAgICAgICAgICAgICJkZXRhaWwiOiAiY3JlYXRlZCIKICAgICAgICAgIH0sCiAgICAgICAgICB7CiAgICAgICAgICAgICJzdGF0ZSI6ICJQUkVQQVJJTkciLAogICAgICAgICAgICAiZGV0YWlsIjoge30KICAgICAgICAgIH0sCiAgICAgICAgICB7CiAgICAgICAgICAgICJzdGF0ZSI6ICJSVU5OSU5HIiwKICAgICAgICAgICAgImRldGFpbCI6IHt9CiAgICAgICAgICB9LAogICAgICAgICAgewogICAgICAgICAgICAic3RhdGUiOiAiVkFMSURBVElORyIsCiAgICAgICAgICAgICJkZXRhaWwiOiB7fQogICAgICAgICAgfSwKICAgICAgICAgIHsKICAgICAgICAgICAgInN0YXRlIjogIkNPTVBMRVRFRCIsCiAgICAgICAgICAgICJkZXRhaWwiOiB7CiAgICAgICAgICAgICAgIm91dHB1dF9yb290IjogIjRlZDc1ODVjYTIwN2ZiMDM4ZTk3OTU4MGRjYjM0OWU4Y2I4YzJmZDM4MjgwMjI3ZjM1MGJhYzUwZDFhYzllMzQiCiAgICAgICAgICAgIH0KICAgICAgICAgIH0KICAgICAgICBdLAogICAgICAgICJlcnJvciI6IG51bGwsCiAgICAgICAgInJlc3VsdF9yb290IjogIjRlZDc1ODVjYTIwN2ZiMDM4ZTk3OTU4MGRjYjM0OWU4Y2I4YzJmZDM4MjgwMjI3ZjM1MGJhYzUwZDFhYzllMzQiLAogICAgICAgICJldmlkZW5jZV9yb290IjogImM1MDU5MjNhNDRkNjNkMmRlNDFjNGM2MDViOWJiNTA1YjU3MTgzMzdkOWEwNjI4NGRjMjdlZmFjMTAyMDY3NTIiLAogICAgICAgICJqb2Jfcm9vdCI6ICIzYWYzODdhNDViMjBiOTZjNWQ0NTFhN2ZlOTM4NTgwNDEwZjMyY2M1YzZjZTI5OWNlM2FiODM4YmM1ODE0ODBkIgogICAgICB9LAogICAgICAicmVwcmVzZW50YXRpb25fcmVmIjogewogICAgICAgICJmb3JtYXQiOiAicm5jcy5yZXByZXNlbnRhdGlvbi1yZWYudjAuMSIsCiAgICAgICAgInZlcnNpb24iOiAiMC4xLjAiLAogICAgICAgICJyZXByZXNlbnRhdGlvbl9pZCI6ICJyZXByZXNlbnRhdGlvbjo2NzMzZjg5MjdhNWQxZjA2ODQzMzMyYTYiLAogICAgICAgICJwcm92aWRlcl9pZCI6ICJsb2NhbDp0cmlhbmdsZS1zdmciLAogICAgICAgICJwcm92aWRlcl9yb290IjogImZlMjkzOGM0MzI1NjU1YWU4NTNmOTEzMWI0ZGRjYWVkOGJhYWExZTJmYTU1ODQ1NDQ4MzdjYmY0OWUzNGQxM2EiLAogICAgICAgICJyZXByZXNlbnRhdGlvbl9raW5kIjogImNoYXJhY3Rlci1tZXNoIiwKICAgICAgICAicmVwcmVzZW50YXRpb25fZm9ybWF0cyI6IFsKICAgICAgICAgICJyYWdmLnZpc3VhbC1pci52MC4xIgogICAgICAgIF0sCiAgICAgICAgImNvbnRlbnRfcm9vdCI6ICI0ZWQ3NTg1Y2EyMDdmYjAzOGU5Nzk1ODBkY2IzNDllOGNiOGMyZmQzODI4MDIyN2YzNTBiYWM1MGQxYWM5ZTM0IiwKICAgICAgICAic291cmNlX3VyaSI6IG51bGwsCiAgICAgICAgInJlcHJlc2VudGF0aW9uX3Byb2ZpbGUiOiB7CiAgICAgICAgICAicHJvZmlsZV9pZCI6ICI1YmNlYzdjZjYxMzUzYmFhYWUzZGFhZTM5ODJiMjA1ODQxMzZkY2Y2OTkyZGYxMzBjYzcxOTdkMjNjZDA3N2ZhIiwKICAgICAgICAgICJlbmNvZGluZyI6ICJwcm92aWRlci1kZWZpbmVkIiwKICAgICAgICAgICJmaWRlbGl0eSI6ICJwcm92aWRlci1kZWZpbmVkIiwKICAgICAgICAgICJwcmVjaXNpb24iOiAicHJvdmlkZXItZGVmaW5lZCIsCiAgICAgICAgICAiZm9ybWF0cyI6IFsKICAgICAgICAgICAgInJhZ2YudmlzdWFsLWlyLnYwLjEiCiAgICAgICAgICBdLAogICAgICAgICAgIm1ldGFkYXRhIjoge30KICAgICAgICB9LAogICAgICAgICJkZXRhaWxfcG9saWN5IjogewogICAgICAgICAgIm1vZGUiOiAicHJvdmlkZXItZGVmaW5lZCIsCiAgICAgICAgICAic2VsZWN0b3JzIjogW10sCiAgICAgICAgICAiYnVkZ2V0Ijoge30sCiAgICAgICAgICAibWV0YWRhdGEiOiB7fSwKICAgICAgICAgICJwb2xpY3lfbGFiZWwiOiAiZGV0YWlsIgogICAgICAgIH0sCiAgICAgICAgInJlc2lkZW5jeV9wb2xpY3kiOiB7CiAgICAgICAgICAibW9kZSI6ICJwcm92aWRlci1kZWZpbmVkIiwKICAgICAgICAgICJzZWxlY3RvcnMiOiBbXSwKICAgICAgICAgICJidWRnZXQiOiB7fSwKICAgICAgICAgICJtZXRhZGF0YSI6IHt9LAogICAgICAgICAgInBvbGljeV9sYWJlbCI6ICJyZXNpZGVuY3kiCiAgICAgICAgfSwKICAgICAgICAiYXZhaWxhYmlsaXR5IjogIkVYRUNVVEVEIiwKICAgICAgICAiYXV0aG9yaXR5X3Njb3BlIjogWwogICAgICAgICAgInJlcHJlc2VudGF0aW9uX2NhbmRpZGF0ZSIKICAgICAgICBdLAogICAgICAgICJhdXRob3JpdHkiOiB7CiAgICAgICAgICAicHJvdmlkZXJfbWF5X3dyaXRlX2F1dGhvcml0YXRpdmVfd29ybGRfc3RhdGUiOiBmYWxzZSwKICAgICAgICAgICJybmNzX2F1dGhvcml0eV9yZXF1aXJlZCI6IHRydWUKICAgICAgICB9LAogICAgICAgICJwcm92ZW5hbmNlIjogewogICAgICAgICAgInVwc3RyZWFtX3VybCI6IG51bGwsCiAgICAgICAgICAic291cmNlX3JldmlzaW9uIjogbnVsbCwKICAgICAgICAgICJzb3VyY2VfYXJjaGl2ZV9zaGEyNTYiOiBudWxsLAogICAgICAgICAgImdlbmVyYXRvcl92ZXJzaW9uIjogbnVsbCwKICAgICAgICAgICJwYXJhbWV0ZXJzX3Jvb3QiOiBudWxsCiAgICAgICAgfSwKICAgICAgICAiZXZpZGVuY2UiOiB7CiAgICAgICAgICAicHJvdmlkZXJfbWFuaWZlc3Rfcm9vdCI6ICJmZTI5MzhjNDMyNTY1NWFlODUzZjkxMzFiNGRkY2FlZDhiYWFhMWUyZmE1NTg0NTQ0ODM3Y2JmNDllMzRkMTNhIiwKICAgICAgICAgICJwcm92aWRlcl9yZXN1bHRfcm9vdCI6ICI0ZWQ3NTg1Y2EyMDdmYjAzOGU5Nzk1ODBkY2IzNDllOGNiOGMyZmQzODI4MDIyN2YzNTBiYWM1MGQxYWM5ZTM0IiwKICAgICAgICAgICJydW50aW1lX3JlY2VpcHRfcm9vdCI6IG51bGwsCiAgICAgICAgICAibm90ZXMiOiAiTG9jYWwgYWRhcHRlciBvdXRwdXQ7IHZpc3VhbCBhY2NlcHRhbmNlIG5vdCBldmFsdWF0ZWQiCiAgICAgICAgfSwKICAgICAgICAiY2FuZGlkYXRlX29ubHkiOiB0cnVlLAogICAgICAgICJhdXRob3JpdGF0aXZlIjogZmFsc2UsCiAgICAgICAgImNvbW1pdF9zdGF0dXMiOiAiTk9UX0NPTU1JVFRFRCIsCiAgICAgICAgInJlcHJlc2VudGF0aW9uX3Jvb3QiOiAiY2FiODc1OWE2MTc1N2Y1M2QxOGNlMzJjYWM3YzYwZGYxMWUxZDhkZjVlM2U4MzFkNzQ5NTBhZWVjZjFjMDg5MyIKICAgICAgfSwKICAgICAgImlucHV0X3Jvb3QiOiAiNDZjNGUxMjZiOTgyZDg0ODNlNWFiODU1NzdhNDMxNjlkMjY1NTA1NjNhMzc5NGE0NzYyZDdhMTFhZmI4ZTVjMSIsCiAgICAgICJvdXRwdXRfcm9vdCI6ICI0ZWQ3NTg1Y2EyMDdmYjAzOGU5Nzk1ODBkY2IzNDllOGNiOGMyZmQzODI4MDIyN2YzNTBiYWM1MGQxYWM5ZTM0IiwKICAgICAgImV2aWRlbmNlIjogewogICAgICAgICJmb3JtYXQiOiAicmFnZi52aXN1YWwtdmVyaWZpY2F0aW9uLnYwLjEiLAogICAgICAgICJ2aXN1YWxfaXJfcm9vdCI6ICI0ZWQ3NTg1Y2EyMDdmYjAzOGU5Nzk1ODBkY2IzNDllOGNiOGMyZmQzODI4MDIyN2YzNTBiYWM1MGQxYWM5ZTM0IiwKICAgICAgICAidmFsaWQiOiB0cnVlLAogICAgICAgICJlcnJvcnMiOiBbXSwKICAgICAgICAiaWRlbnRpdHlfZXZpZGVuY2UiOiAiUkVGRVJFTkNFX0JJTkRJTkdfT05MWSIsCiAgICAgICAgInBlcmNlcHR1YWxfY29uc2lzdGVuY3kiOiAiTk9UX0VWQUxVQVRFRCIsCiAgICAgICAgInJlcHJvZHVjaWJpbGl0eSI6ICJDT05URU5UX0lOVEVHUklUWV9PTkxZIiwKICAgICAgICAiYXV0aG9yaXR5IjogIkNBTkRJREFURV9PTkxZIiwKICAgICAgICAidmVyaWZpY2F0aW9uX3Jvb3QiOiAiMjk4NmEzMzQyZTZkZjdiM2ExYmVkMGIxOGI5NmJjMjIyNzQ5OGMzYTkzYTAwMmE0NzdlMmFjMzhhMTcwYzAwMyIKICAgICAgfSwKICAgICAgInJlcHJvZHVjaWJpbGl0eSI6ICJMT0NBTF9SRVBMQVlfTUFUQ0giLAogICAgICAiZGV0ZXJtaW5pc3RpY19kZWNsYXJlZCI6IHRydWUsCiAgICAgICJyZWNlaXB0X3Jvb3QiOiAiYzg1NWUwZDI1ZDg2YTJhMDliN2RmYzViMWZkMDZmYmRjMjI1ZmNiYjdmMjgxY2QxYmNmMWIyYmRlYWI3MzU2NiIKICAgIH0KICBdLAogICJvdXRwdXQiOiB7CiAgICAiZm9ybWF0IjogInJhZ2YudmlzdWFsLWlyLnYwLjEiLAogICAgImNoYXJhY3Rlcl9pZCI6ICJmaXh0dXJlOnRyaWFuZ2xlLWF2YXRhciIsCiAgICAiaWRlbnRpdHlfcm9vdCI6ICJiMjVjMjBjOWZlMDg2NjQ4MWZmZjAwMzNiMjg4OTg1ZWMwMjBlMjUyM2FlOGE4ODQxOTEzYzc2OGEyNmYzYmFmIiwKICAgICJyZXByZXNlbnRhdGlvbl9raW5kIjogImNoYXJhY3Rlci1tZXNoIiwKICAgICJnZW9tZXRyeSI6IHsKICAgICAgInZlcnRpY2VzIjogWwogICAgICAgIFsKICAgICAgICAgIDY0LAogICAgICAgICAgOCwKICAgICAgICAgIDAKICAgICAgICBdLAogICAgICAgIFsKICAgICAgICAgIDg4LAogICAgICAgICAgNDAsCiAgICAgICAgICAwCiAgICAgICAgXSwKICAgICAgICBbCiAgICAgICAgICA0MCwKICAgICAgICAgIDQwLAogICAgICAgICAgMAogICAgICAgIF0sCiAgICAgICAgWwogICAgICAgICAgNjQsCiAgICAgICAgICA0MiwKICAgICAgICAgIDAKICAgICAgICBdLAogICAgICAgIFsKICAgICAgICAgIDExMiwKICAgICAgICAgIDExNiwKICAgICAgICAgIDAKICAgICAgICBdLAogICAgICAgIFsKICAgICAgICAgIDE2LAogICAgICAgICAgMTE2LAogICAgICAgICAgMAogICAgICAgIF0KICAgICAgXSwKICAgICAgInRyaWFuZ2xlcyI6IFsKICAgICAgICBbCiAgICAgICAgICAwLAogICAgICAgICAgMSwKICAgICAgICAgIDIKICAgICAgICBdLAogICAgICAgIFsKICAgICAgICAgIDMsCiAgICAgICAgICA0LAogICAgICAgICAgNQogICAgICAgIF0KICAgICAgXSwKICAgICAgIm1hdGVyaWFsX2lkcyI6IFsKICAgICAgICAiYmx1ZSIsCiAgICAgICAgImJsdWUiCiAgICAgIF0KICAgIH0sCiAgICAibWF0ZXJpYWxzIjogWwogICAgICB7CiAgICAgICAgImlkIjogImJsdWUiLAogICAgICAgICJjb2xvciI6ICIjNTFhOGZmIgogICAgICB9CiAgICBdLAogICAgInNrZWxldG9uIjogewogICAgICAiYm9uZXMiOiBbXQogICAgfSwKICAgICJsYXllcnMiOiBbXSwKICAgICJwcm92ZW5hbmNlIjogewogICAgICAic2VlZCI6ICI0MiIsCiAgICAgICJnZW5lcmF0b3IiOiAibG9jYWw6dHJpYW5nbGUtc3ZnIiwKICAgICAgInZlcnNpb24iOiAiMSIKICAgIH0sCiAgICAiYXJ0aWZhY3RzIjogWwogICAgICB7CiAgICAgICAgImlkIjogInByZXZpZXcuc3ZnIiwKICAgICAgICAic2hhMjU2IjogIjNhZTA0YmRjNTZlYWE3ODVjMDEyNDExNmQ0ZTkwOGY2NzQ4NjgyNzYwMjBmY2E3Mzc3ZmY1OTQwMjZkMzgwNmYiLAogICAgICAgICJieXRlX2xlbmd0aCI6IDIyMQogICAgICB9CiAgICBdLAogICAgInZpc3VhbF9pcl9yb290IjogIjRlZDc1ODVjYTIwN2ZiMDM4ZTk3OTU4MGRjYjM0OWU4Y2I4YzJmZDM4MjgwMjI3ZjM1MGJhYzUwZDFhYzllMzQiCiAgfSwKICAidmlzdWFsX2FjY2VwdGFuY2UiOiAiTk9UX0VWQUxVQVRFRCIsCiAgImJyaWRnZXMiOiB7CiAgICAicm5jcyI6ICJSQUdGX0VYRUNVVE9SIiwKICAgICJyY2wiOiAiT1BUSU9OQUxfSE9TVF9DQUxMX1dSQVBQRVIiLAogICAgImR3YWMiOiAiT1BUSU9OQUxfTE9DQUxfVkVSSUZJQ0FUSU9OX1NJREVDQVIiLAogICAgIm9wcDYiOiAiUkNQX1JYUF9FWFBPUlRfQURBUFRFUiIKICB9LAogICJyZXN1bHRfcm9vdCI6ICJjZWM5NTU4MDdiMGQ1ZjNkMDU2NDI5MzI2MjA1MDRmZjRlMzMxY2ZmZWM1MTUwMzJkYWY4YWIyZmM1NzRjMjRiIgp9Cg==",
+              "document_sha256": "75ef89bb453fb090ffbde5b8bbc00be8b0122ab46f250b9fbad6364f3bd1ff70",
+              "module": "C:\\Users\\User\\Documents\\RCL\\_worktrees\\rncs-visual-factory-v01\\packages\\world\\reality-asset-genesis-fabric\\src\\visual-ir.mjs"
+            },
+            "schema": "dwac.operation-plan.v1",
+            "unit_id": "verify-visual-output"
+          }
+        }
+      ],
+      "dwac_visual_generation": "NOT_RUN",
+      "remote_execution": "NOT_RUN",
+      "visual_acceptance": "NOT_EVALUATED",
+      "canonical_promotion_performed": false
+    }
+  ]
+}

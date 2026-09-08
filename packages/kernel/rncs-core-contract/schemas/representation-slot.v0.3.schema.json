@@ -10,7 +10,7 @@
     "slot_id": {"type": "string", "minLength": 1},
     "representation_id": {"type": "string", "minLength": 1},
     "representation_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-    "representation_kind": {"type": "string", "minLength": 1},
+    "representation_kind": {"type": "string", "minLength": 1, "description": "URRF family identifier. Provider extensions remain allowed; registration does not prove availability, quality, or authority.", "examples": ["world-proxy", "mesh", "gaussian-splats", "character-mesh", "layered-2d", "gaussian-character", "neural-visual", "cinematic-character"]},
     "quality_profile": {"enum": ["PROXY", "MOBILE", "STANDARD", "CINEMATIC", "REFERENCE"]},
     "quality_rank": {"type": "integer", "minimum": 0, "maximum": 4},
     "diversity_axes": {"type": "object", "required": ["MODALITY", "DETAIL"], "additionalProperties": {"type": "string", "minLength": 1}},

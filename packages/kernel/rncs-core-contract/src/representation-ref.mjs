@@ -2,6 +2,24 @@ import {ContractError, rootHash, without} from './index.mjs';
 
 export const REPRESENTATION_REF_FORMAT = 'rncs.representation-ref.v0.1';
 export const REPRESENTATION_REF_VERSION = '0.1.0';
+// Shared URRF family vocabulary, not a provider availability or quality claim.
+// References remain extensible for provider-defined kinds; strict consumers can
+// explicitly require a registered family using isRegisteredRepresentationKind.
+export const REPRESENTATION_KINDS = Object.freeze([
+  'world-proxy',
+  'mesh',
+  'gaussian-splats',
+  'character-mesh',
+  'layered-2d',
+  'gaussian-character',
+  'neural-visual',
+  'cinematic-character'
+]);
+
+export function isRegisteredRepresentationKind(kind) {
+  return typeof kind === 'string' && REPRESENTATION_KINDS.includes(kind);
+}
+
 export const REPRESENTATION_AUTHORITY_SCOPES = Object.freeze([
   'asset_generation_candidate',
   'representation_candidate',

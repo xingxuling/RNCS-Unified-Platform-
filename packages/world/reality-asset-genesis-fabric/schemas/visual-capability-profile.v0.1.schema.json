@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OPP6-facing Visual Capability Profile candidate extension",
+  "type": "object",
+  "required": ["format", "protocol_status", "provider_id", "provider_manifest_root", "candidate_only", "operations", "profile_root"],
+  "properties": {
+    "format": {"const": "ragf.opp6-visual-capability-profile.v0.1"},
+    "protocol_status": {"const": "CANDIDATE_EXTENSION"},
+    "candidate_only": {"const": true},
+    "provider_id": {"type": "string", "minLength": 1},
+    "provider_manifest_root": {"$ref": "#/$defs/hash"},
+    "profile_root": {"$ref": "#/$defs/hash"},
+    "operations": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "required": ["operation", "capability_id", "input_formats", "output_formats", "representation_kinds", "deterministic"],
+        "properties": {
+          "operation": {"enum": ["modeling", "material", "layering", "rigging", "rendering", "denoising"]},
+          "capability_id": {"type": "string", "minLength": 1},
+          "input_formats": {"$ref": "#/$defs/strings"},
+          "output_formats": {"$ref": "#/$defs/strings"},
+          "representation_kinds": {"$ref": "#/$defs/strings"},
+          "deterministic": {"type": "boolean"}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "strings": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+  },
+  "$comment": "Runtime validator also verifies provider manifest binding, capability/format subsets, unique operations and canonical root. This is not an upstream OPP6 protocol release."
+}
