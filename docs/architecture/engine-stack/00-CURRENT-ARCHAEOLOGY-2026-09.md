@@ -67,11 +67,20 @@ WorldSeed / Chunk runtime
 
 这条 donor 的边界同样明确：源码检索只发现 Reality One Gateway 与 Studio 浏览器 smoke 消费它；它没有 Unified Project、World Body Declaration、Large World Runtime 或 Reality Build 的 authoring/build adapter。因此它是共享 runtime seam，不是共享 authoring-to-runtime compiler。`rncs.modules.json` 对它的依赖列表也比其真实 `package.json` import 图窄，存在 registry discoverability/build-order 缺口。
 
+## 当前 Studio / Build 真实执行审计
+
+在补齐 sparse checkout 中已跟踪但未物化的依赖后，本地重新执行了两个产品入口：
+
+- Reality Studio：`246 tests / 244 pass / 1 fail / 1 skip`。空间、网络世界编译、资产数据库、RAGF 接受、行为、UI/input、TileMap/navigation、GPU frame 和 browser-facing server tests 均通过。唯一失败是 `geometric-truth-workspace.test.mjs` 把当前缺失的 Phase 6.3 evidence 文件（`phase6-3-status.json`、`strict-morphology-certificate.json`、`phase6-3-after-measurements.json` 等）按 `pass/green` 断言；源码的 workspace builder 正确返回 `blocked/missing`，不能用静态改断言把它提升为已完成媒体能力。
+- Reality Build：`133 tests / 124 pass / 1 fail / 8 skip`。构建图、Asset Database、确定性构建根、Android debug APK、Runtime Evidence、Replay/Headless、外部 VSR scene→RSR body binding 和 legacy fallback 均通过；Windows native/Go 相关目标按工具链状态 skip。唯一失败是 `apps/reality-build/src/runtime-template.mjs` 的 `buildBrowserSpatial3DRuntime()` 只移除 `export function/const` 和 `export {}`，没有移除 VSR dist entry 的 `export * from ...`，因此生成的 `spatial3d-runtime.js` 在 `new Function`/classic `<script>` 入口中报 `Unexpected token 'export'`。
+
+该 Build 缺口是新的近端共享发布瓶颈：同一个 3D runtime packager 同时服务 Web Release、Web single、Windows portable 和 Android embedded HTML。Reality Studio 直接加载的 `vsr-spatial-browser.js` 是 IIFE/`var` 入口，已通过 Chromium smoke，不能替代 Reality Build 生成物的 classic-script 验证。
+
 ## 结构判断
 
 ### 限制性瓶颈
 
-当前最大瓶颈仍是 `RCL_GAP_RNCS_SHARED_WORLD_COMPILATION_SPINE`，但含义已收窄：Kernel→RSR→Reality Cell→VSR 的 runtime seam 已由 Aether bridge 提供；缺的是 Studio/World Body/Large World/Build 进入这条 seam 时保持 root、authority、candidate 和 evidence 语义的共享 authoring-to-runtime compiler seam。
+当前存在两个有先后关系的瓶颈：近端发布门是 `RCL_GAP_RNCS_RELEASE_3D_BROWSER_SCRIPT_PACKAGING`，必须先让 Build 产出的 3D runtime 在所有目标中成为真实可解析的 classic script；结构性瓶颈仍是 `RCL_GAP_RNCS_SHARED_WORLD_COMPILATION_SPINE`，即 Studio/World Body/Large World/Build 进入已有 Kernel→RSR→Reality Cell→VSR runtime seam 时保持 root、authority、candidate 和 evidence 语义。
 
 这不是“再写一个引擎子系统”的缺口，而是已有子系统不能共同承载同一个世界工件的缺口。应把 Aether bridge 作为下游 runtime donor；若直接在 Studio、Build、Large World 各自添加转换，或重新实现 Reality Cell/资产生命周期，会产生重复语义、root 混淆和无法回滚的并行系统。
 
@@ -85,7 +94,7 @@ WorldSeed / Chunk runtime
 
 ## 下一最小高杠杆候选
 
-建立一个薄的 integration adapter（建议 `packages/integration/world-body-studio-bridge`），复用 World Body Codegen 与 Aether bridge，不能复制 Reality Cell/streaming/render glue，只做：
+第一优先先修复并验证 Build 的 3D classic-script packaging（不改变 VSR 语义）；随后再建立一个薄的 integration adapter（建议 `packages/integration/world-body-studio-bridge`），复用 World Body Codegen 与 Aether bridge，不能复制 Reality Cell/streaming/render glue，只做：
 
 ```text
 Unified Project + selected spatial world + scene/asset roots
