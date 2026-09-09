@@ -40,6 +40,7 @@
   "dependencies": {
     "@taowind/reality-behavior-fabric": "*",
     "@taowind/reality-engine-session": "*",
-    "@taowind/reality-studio-native": "*"
+    "@taowind/reality-studio-native": "*",
+    "@taowind/world-body-studio-bridge": "*"
   }
 }

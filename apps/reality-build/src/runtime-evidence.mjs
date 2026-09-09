@@ -39,12 +39,13 @@ function runSpatialTrace(session,trace){
   }
   return{initial_snapshot:initial,initial_state_root:initial.stateRoot,frames,final_snapshot:clone(session.spatial.lastSnapshot),final_state_root:session.spatial.lastSnapshot.stateRoot};
 }
-function presentationSpec(project){
+function presentationSpec(project,externalCandidate=null){
   const spatial=project?.spatial3d;
-  const scene=spatial?.presentation_scene;
+  const candidate=externalCandidate?.presentation??externalCandidate;
+  const scene=candidate?.scene??spatial?.presentation_scene;
   if(!scene||typeof scene!=='object')return null;
-  const bindings=Array.isArray(spatial?.presentation_bindings)?spatial.presentation_bindings:[];
-  return{scene:clone(scene),bindings:clone(bindings),source_root:spatial?.presentation_source_root??scene.sceneRoot??null};
+  const bindings=Array.isArray(candidate?.bindings)?candidate.bindings:Array.isArray(spatial?.presentation_bindings)?spatial.presentation_bindings:[];
+  return{scene:clone(scene),bindings:clone(bindings),source_root:candidate?.presentation_source_root??spatial?.presentation_source_root??scene.sceneRoot??null};
 }
 function bindPresentationScene(scene,snapshot,bindings){
   const out=clone(scene);
@@ -64,8 +65,8 @@ function bindPresentationScene(scene,snapshot,bindings){
   }
   return out;
 }
-export function compileBoundPresentationScene(project,snapshot,fallbackScene,fallbackFramePlan){
-  const spec=presentationSpec(project);
+export function compileBoundPresentationScene(project,snapshot,fallbackScene,fallbackFramePlan,externalCandidate=null){
+  const spec=presentationSpec(project,externalCandidate);
   if(!spec)return{scene:fallbackScene,frame_plan:fallbackFramePlan,bound:false,binding_count:0,source_root:null};
   const scene=bindPresentationScene(spec.scene,snapshot,spec.bindings);
   const framePlan=compileSpatialFrame(scene,{
@@ -78,7 +79,7 @@ export function compileBoundPresentationScene(project,snapshot,fallbackScene,fal
   return{scene,frame_plan:framePlan,bound:true,binding_count:spec.bindings.length,source_root:spec.source_root};
 }
 
-export function buildRuntimeEvidence({project,request,identity}={}){
+export function buildRuntimeEvidence({project,request,identity,presentationCandidate=null}={}){
   const trace=normalizeTrace(request?.runtime_trace);
   const spatialTrace=normalizeSpatialTrace(request?.spatial_trace);
   const runtimeProject=portableProject(project);
@@ -114,7 +115,7 @@ export function buildRuntimeEvidence({project,request,identity}={}){
   const fallbackSpatialScene=initialArtifacts.spatial_scene??null;
   const fallbackSpatialFramePlan=initialArtifacts.spatial_frame_plan??null;
   if(!spatialInitialSnapshot||!spatialWorld||!fallbackSpatialScene||!fallbackSpatialFramePlan)throw new Error('SPATIAL_3D_RUNTIME_EVIDENCE_MISSING');
-  const presentation=compileBoundPresentationScene(runtimeProject,spatialInitialSnapshot,fallbackSpatialScene,fallbackSpatialFramePlan);
+  const presentation=compileBoundPresentationScene(runtimeProject,spatialInitialSnapshot,fallbackSpatialScene,fallbackSpatialFramePlan,presentationCandidate);
   const spatialScene=presentation.scene;
   const spatialFramePlan=presentation.frame_plan;
 

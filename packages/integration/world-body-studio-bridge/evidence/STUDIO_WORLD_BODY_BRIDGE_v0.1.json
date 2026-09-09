@@ -7,11 +7,14 @@
     "npm test --workspace @taowind/world-body-studio-bridge",
     "npm run demo --workspace @taowind/world-body-studio-bridge",
     "npm run test:generated-runtime --workspace @taowind/world-body-studio-bridge",
-    "npm run demo:aether-runtime --workspace @taowind/world-body-studio-bridge"
+    "npm run demo:aether-runtime --workspace @taowind/world-body-studio-bridge",
+    "node --test --test-concurrency=1 apps/reality-build/tests/world-body-candidate.test.mjs"
   ],
   "tests": {
     "adapter": "12/12 PASS",
     "aetherWorldBodyProjection": "3/3 PASS; default lossy projection blocked; explicit candidate runtime executed",
+    "realityBuildCandidateConsumer": "2/2 PASS; full build verification.valid=true with explicit presentation_candidate",
+    "realityBuildSuite": "135 tests / 127 pass / 0 fail / 8 skip",
     "generatedCandidateRuntime": "1/1 PASS",
     "worldBodyIr": "36/36 PASS",
     "worldBodyCodegen": "12/12 PASS",
@@ -73,14 +76,27 @@
       "vsr_pixel_root": "93f376611bba435c781d7313767051a953383a1e8c832cc09404ddcfcec497c9"
     }
   },
+  "realityBuildCandidateConsumer": {
+    "status": "PASS_CANDIDATE",
+    "authority": "candidate-build-presentation-only",
+    "presentationRoot": "e3cfe526626a55c42714e43f2711d6308a442e10df323529f2b6a22870ce2fcf",
+    "presentationSourceRoot": "8abf6e07cd4efe4dbc6696c51ac2c8f977c66abc576879e15a9d9b824d21815c",
+    "sceneRoot": "87eae6a5437109de75ada919b5398edbe536d6a02ad039ecf57f94a15c22b7e4",
+    "bindingCount": 6,
+    "buildReceiptRoot": "933715340cc51703a2d5b006360a7528d313298d8b834391ad107b1102eeb9b6",
+    "runtimeEvidenceRoot": "6fb2c73682a32cd72c89b15a34a96305f7a22fb5e8844d0c0eab5b99ef146f16",
+    "runtimePresentationFrameRoot": "cc9e93802263aacd07fc478a6c5eec8224237a5955c3908672a9badd35e3f8b3",
+    "buildVerification": true,
+    "defaultBuildPath": "unchanged-unless-request.presentation_candidate-is-supplied"
+  },
   "boundaries": [
     "candidate artifact generation only; no commit or promotion authority",
     "model-3d is explicitly lowered to mesh and source kind is retained in sidecar",
     "2D scene transforms are preserved as source metadata and are not converted into 3D authority",
     "Aether Cell candidate projection executed, but dynamic mass, visual asset binding, character facets, and network compilation are explicit losses",
-    "Reality Build consumer binding, Large World consumer integration and target hardware remain unverified",
+    "Reality Build candidate consumer executed and verified; default Build path remains unchanged, Large World consumer and target hardware remain unverified",
     "no new K400 PASS"
   ],
   "authority": "candidate-artifact-generation-only-no-commit",
-  "evidenceRoot": "b568decd06c27220675fb0069bc35e38dec480fd4ec75b7b86f6b35044374a74"
+  "evidenceRoot": "877fe35f99fb48e96fbca5645ab53253ff6939670b0c68960475942099ae6a44"
 }

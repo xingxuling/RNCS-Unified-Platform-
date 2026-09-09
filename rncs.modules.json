@@ -330,7 +330,8 @@
       "layer": "apps",
       "dependsOn": [
         "behavior",
-        "reality-studio"
+        "reality-studio",
+        "world-body-studio-bridge"
       ],
       "test": "npm test --workspace @taowind/reality-build-fabric"
     },

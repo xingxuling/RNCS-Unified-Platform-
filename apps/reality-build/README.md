@@ -86,6 +86,12 @@ node src/cli.mjs build --config examples/reality-build.json
 
 构建器会独立重放空间轨迹并比较最终状态根，同时输出 `spatial-snapshot.json`、`spatial-causal-delta.json`、`spatial-runtime.manifest.json` 和可用时的 `tilemap-navigation.manifest.json`。`headless-server` 额外暴露 `/spatial-inspect` 与 `POST /spatial-step`，因此物理与导航状态可以被运行时验收，而不只停留在编辑器导出阶段。
 
+## World Body candidate presentation
+
+Build request 可以显式携带 `presentation_candidate`。`@taowind/reality-build-fabric` 不把含浮点 VSR scene 的 payload 写回 Unified Project；`createWorldBodyRealityBuildPresentationCandidate()` 只生成 candidate-only 的 presentation scene、body bindings 和 `presentation_root`，Build 再通过既有 `compileBoundPresentationScene()` 将它绑定到 authoritative RSR snapshot。请求 root、Build identity 和 runtime evidence 都会绑定这个 candidate root。
+
+这条路径不会自动获得 commit 或 release authority。缺失 body node 默认阻断；`presentation_scene_source_root` 与 `presentation_binding_count` 会出现在 runtime evidence 中，并可通过 `verifyBuild()` 验证。它证明的是 Build consumer 的 root 连续性，不等于已闭合 World Body 的质量、资产、角色、网络或目标硬件能力。
+
 ## 诚实边界
 
 - `windows-native` 是真实 Windows GUI EXE，不依赖 BAT 或 Node.js；但 v0.2 的渲染宿主仍使用 Windows 自带或已安装的 Edge/Chrome，而不是内嵌 Chromium/WebView2 Runtime。
