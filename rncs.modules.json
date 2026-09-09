@@ -754,7 +754,9 @@
       "runtime": "rncs.world-body-studio-bridge",
       "dependsOn": [
         "world-body-codegen",
-        "world-body-ir"
+        "world-body-ir",
+        "rncs-core-contract",
+        "aether-rncs-bridge"
       ],
       "test": "npm test --workspace @taowind/world-body-studio-bridge"
     },

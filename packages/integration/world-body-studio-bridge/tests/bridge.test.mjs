@@ -3,8 +3,12 @@ import test from 'node:test';
 import { createStudioNetworkWorld } from '../../../../examples/studio-authored-network-world-v03/project.mjs';
 import {
   StudioWorldBodyBridgeError,
+  compileStudioWorldBodyAetherProjection,
   compileStudioWorldBodyCandidate,
   createWorldBodyDeclarationFromStudioProject,
+  inspectStudioWorldBodyAetherProjection,
+  projectStudioWorldBodyCandidateToRealityCell,
+  verifyStudioWorldBodyAetherProjection,
   verifyStudioWorldBodyCandidate,
 } from '../src/index.mjs';
 
@@ -27,6 +31,67 @@ test('Studio network fixture enters the existing World Body codegen spine', () =
   assert.equal(bundle.authority, 'candidate-artifact-generation-only-no-commit');
   assert.equal(bundle.declaration.world.authorityClass, 'candidate');
   assert.equal(bundle.declaration.world.commitRoot, undefined);
+});
+
+test('Aether projection reports and blocks semantic losses by default', () => {
+  const { project, networkCompilation } = fixture();
+  const bundle = compileStudioWorldBodyCandidate(project, { networkCompilation });
+  const inspection = inspectStudioWorldBodyAetherProjection(bundle);
+  const codes = inspection.losses.map(loss => loss.code);
+  assert.ok(codes.includes('RCL_GAP_WB_AETHER_MASS'));
+  assert.ok(codes.includes('RCL_GAP_WB_AETHER_VISUAL_ASSET_BINDING'));
+  assert.ok(codes.includes('RCL_GAP_WB_AETHER_CHARACTER_FACETS'));
+  assert.ok(codes.includes('RCL_GAP_WB_AETHER_NETWORK_BINDING'));
+  assert.throws(
+    () => compileStudioWorldBodyAetherProjection(bundle),
+    error => error instanceof StudioWorldBodyBridgeError && error.code === 'STUDIO_WB_AETHER_LOSSY_PROJECTION_BLOCKED',
+  );
+});
+
+test('explicit lossy Aether projection executes the existing RSR, Cell, and VSR runtime', async () => {
+  const { project, networkCompilation } = fixture();
+  const bundle = compileStudioWorldBodyCandidate(project, { networkCompilation });
+  const projection = compileStudioWorldBodyAetherProjection(bundle, { allowLossyProjection: true });
+  const bodyIds = projection.batch.entity_ids;
+  const result = await projectStudioWorldBodyCandidateToRealityCell(bundle, {
+    allowLossyProjection: true,
+    cellCatalog: [{ id: 'cell:studio-world', center: [0, 0, 0], radius: 1_000_000, bodyIds, priority: 10 }],
+    observerPosition: [0, 0, 0],
+    cameraPosition: [7, 5, 9],
+    focusBodyIds: bodyIds,
+    causalBodyIds: bodyIds,
+    maxObjects: bodyIds.length,
+    width: 320,
+    height: 180,
+    qualityTier: 'balanced',
+  });
+  assert.equal(result.projectionRoot, projection.projectionRoot);
+  assert.equal(result.receipt.cellStateVerified, true);
+  assert.equal(verifyStudioWorldBodyAetherProjection(result), true);
+  assert.equal(result.runtime.snapshot.bodies.length, bodyIds.length);
+  assert.equal(result.runtime.snapshot.bodies.reduce((sum, body) => sum + body.fixtures.length, 0), bodyIds.length);
+  assert.equal(result.runtime.cellState.activeCellIds.includes('cell:studio-world'), true);
+  assert.equal(typeof result.runtime.projection.framePlan.frameRoot, 'string');
+  assert.equal(typeof result.runtime.projection.pixelRoot, 'string');
+});
+
+test('Aether projection receipt tampering is detected', async () => {
+  const { project, networkCompilation } = fixture();
+  const bundle = compileStudioWorldBodyCandidate(project, { networkCompilation });
+  const projection = compileStudioWorldBodyAetherProjection(bundle, { allowLossyProjection: true });
+  const result = await projectStudioWorldBodyCandidateToRealityCell(bundle, {
+    allowLossyProjection: true,
+    cellCatalog: [{ id: 'cell:studio-world', center: [0, 0, 0], radius: 1_000_000, bodyIds: projection.batch.entity_ids }],
+    observerPosition: [0, 0, 0],
+    cameraPosition: [7, 5, 9],
+    maxObjects: projection.batch.entity_ids.length,
+    width: 160,
+    height: 96,
+    qualityTier: 'economy',
+  });
+  const tampered = structuredClone(result);
+  tampered.receipt.runtimeRoots.vsr_frame_root = '0'.repeat(64);
+  assert.equal(verifyStudioWorldBodyAetherProjection(tampered), false);
 });
 
 test('closed asset-kind lowering and 2D transform preservation are explicit', () => {

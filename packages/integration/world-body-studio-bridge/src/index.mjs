@@ -1,8 +1,10 @@
 import {
   canonicalClone,
   isSha256,
+  quaternionToEulerMilliDegrees,
   semanticHash,
 } from '@taowind/world-body-ir';
+import { rootHash } from '@taowind/rncs-core-contract';
 import {
   compileWorldDeclaration,
   generateWorldBodyArtifacts,
@@ -12,6 +14,8 @@ import {
 export const STUDIO_WORLD_BODY_BRIDGE_FORMAT = 'taowind.reality-studio.world-body-bridge.v0.1';
 export const STUDIO_WORLD_BODY_BRIDGE_VERSION = '0.1.0-alpha.1';
 export const STUDIO_WORLD_BODY_BRIDGE_MANIFEST_FORMAT = 'taowind.reality-studio.world-body-bridge-manifest.v0.1';
+export const STUDIO_WORLD_BODY_AETHER_PROJECTION_FORMAT = 'taowind.reality-studio.world-body-aether-projection.v0.1';
+export const STUDIO_WORLD_BODY_AETHER_PROJECTION_VERSION = '0.1.0-alpha.1';
 
 const DEFAULT_AUTHORITY_OWNER = 'reality-studio:world-body-bridge';
 const DEFAULT_CAPABILITY_SCOPES = Object.freeze(['world.body.read', 'world.body.project']);
@@ -480,4 +484,235 @@ export function summarizeStudioWorldBodyCandidate(bundle) {
     gaps: bundle.manifest.gaps,
     generatedArtifactCount: bundle.worldBody.artifacts.length,
   });
+}
+
+function requireStudioWorldBodyCandidate(bundle) {
+  if (!verifyStudioWorldBodyCandidate(bundle)) fail('STUDIO_WB_CANDIDATE_INVALID', 'Cannot project an invalid Studio World Body candidate');
+  return bundle;
+}
+
+function aetherShape(shape, bodyId, fixtureId) {
+  if (shape?.type === 'sphere') return { type: 'sphere', radius: shape.radiusMm };
+  if (shape?.type === 'capsule') {
+    if (shape.halfHeightMm <= 0) fail('STUDIO_WB_AETHER_CAPSULE_UNSUPPORTED', `Capsule ${fixtureId} on ${bodyId} has no positive half-height`);
+    return { type: 'capsule', radius: shape.radiusMm, halfHeight: shape.halfHeightMm };
+  }
+  if (shape?.type === 'box') return { type: 'box', halfExtents: shape.halfExtentsMm };
+  fail('STUDIO_WB_AETHER_SHAPE_UNSUPPORTED', `Fixture ${fixtureId} on ${bodyId} cannot be lowered to the Kernel spatial fragment`);
+}
+
+function aetherProjectionLosses(bundle) {
+  const ir = bundle.worldBody.ir;
+  const losses = [];
+  const dynamicBodies = ir.physicalBodyState.bodies
+    .filter(body => body.kind === 'dynamic' && body.massGrams > 0)
+    .map(body => ({ bodyId: body.id, massGrams: body.massGrams }));
+  if (dynamicBodies.length > 0) {
+    losses.push({
+      code: 'RCL_GAP_WB_AETHER_MASS',
+      severity: 'blocking-loss',
+      sourceFacet: 'physicalBodyState.massGrams',
+      target: 'rncs.entity-state-batch.v0.1/spatial.body',
+      detail: 'The existing Kernel spatial materializer does not consume body mass; mass remains only in the projection sidecar.',
+      bodies: dynamicBodies,
+    });
+  }
+  const secondaryFixtures = ir.physicalBodyState.bodies
+    .filter(body => body.fixtures.length > 1)
+    .map(body => ({ bodyId: body.id, fixtureIds: body.fixtures.map(fixture => fixture.id) }));
+  if (secondaryFixtures.length > 0) {
+    losses.push({
+      code: 'RCL_GAP_WB_AETHER_SECONDARY_FIXTURES',
+      severity: 'blocking-loss',
+      sourceFacet: 'physicalBodyState.fixtures',
+      target: 'rncs.entity-state-batch.v0.1/spatial.fixture',
+      detail: 'The existing Kernel spatial materializer accepts one fixture per entity and cannot preserve secondary fixtures.',
+      bodies: secondaryFixtures,
+    });
+  }
+  const assetBindings = ir.visualBodyState.bodies.flatMap(body => body.nodes
+    .filter(node => node.assetRef !== undefined)
+    .map(node => ({ bodyId: body.id, nodeId: node.id, assetId: node.assetRef })));
+  if (assetBindings.length > 0) {
+    losses.push({
+      code: 'RCL_GAP_WB_AETHER_VISUAL_ASSET_BINDING',
+      severity: 'blocking-loss',
+      sourceFacet: 'visualBodyState.nodes.assetRef',
+      target: 'Aether Reality Cell asset scene binding',
+      detail: 'The kernel-to-cell projection does not consume World Body visual asset bindings; no asset catalog is inferred.',
+      bindings: assetBindings,
+    });
+  }
+  const sourceFacets = bundle.sidecar.preserved_source_facets;
+  if ((sourceFacets?.character_count ?? 0) > 0) {
+    losses.push({
+      code: 'RCL_GAP_WB_AETHER_CHARACTER_FACETS',
+      severity: 'blocking-loss',
+      sourceFacet: 'Studio source characters',
+      target: 'Aether Reality Cell',
+      detail: 'Character controller and character runtime facets remain sidecar-only in this projection.',
+      count: sourceFacets.character_count,
+    });
+  }
+  if ((sourceFacets?.joint_count ?? 0) > 0) {
+    losses.push({
+      code: 'RCL_GAP_WB_AETHER_JOINT_FACETS',
+      severity: 'blocking-loss',
+      sourceFacet: 'Studio source joints',
+      target: 'Aether Reality Cell causal islands',
+      detail: 'World Body joints are not represented by the current EntityStateBatch spatial fragments.',
+      count: sourceFacets.joint_count,
+    });
+  }
+  if (bundle.sidecar.network?.supplied) {
+    losses.push({
+      code: 'RCL_GAP_WB_AETHER_NETWORK_BINDING',
+      severity: 'blocking-loss',
+      sourceFacet: 'Reality Network compilation',
+      target: 'Aether Reality Cell observer/relevance state',
+      detail: 'Network compilation roots are verified by ingress but are not lowered into the kernel batch projection.',
+      compilationRoot: bundle.sidecar.network.roots.compilation_root,
+    });
+  }
+  return losses;
+}
+
+export function inspectStudioWorldBodyAetherProjection(bundle) {
+  requireStudioWorldBodyCandidate(bundle);
+  const ir = bundle.worldBody.ir;
+  return canonicalClone({
+    format: STUDIO_WORLD_BODY_AETHER_PROJECTION_FORMAT,
+    version: STUDIO_WORLD_BODY_AETHER_PROJECTION_VERSION,
+    authority: 'candidate-runtime-projection-only',
+    sourceWorldBodyRoot: bundle.manifest.worldBodyRoot,
+    bodyCount: ir.physicalBodyState.bodies.length,
+    fixtureCount: ir.physicalBodyState.bodies.reduce((sum, body) => sum + body.fixtures.length, 0),
+    visualAssetBindingCount: ir.visualBodyState.bodies.reduce((sum, body) => sum + body.nodes.filter(node => node.assetRef !== undefined).length, 0),
+    losses: aetherProjectionLosses(bundle),
+  });
+}
+
+function createAetherEntityStateProjection(bundle, options = {}) {
+  requireStudioWorldBodyCandidate(bundle);
+  const ir = bundle.worldBody.ir;
+  const losses = aetherProjectionLosses(bundle);
+  if (losses.length > 0 && options.allowLossyProjection !== true) {
+    fail('STUDIO_WB_AETHER_LOSSY_PROJECTION_BLOCKED', 'Aether projection would discard World Body facets; set allowLossyProjection:true for an explicit candidate experiment', { losses });
+  }
+  const rows = ir.physicalBodyState.bodies.map(body => {
+    const fixture = body.fixtures[0];
+    const fragments = {
+      'spatial.body': {
+        kind: body.kind,
+        position: body.transform.positionMm,
+        rotation: quaternionToEulerMilliDegrees(body.transform.rotation),
+        velocity: body.linearVelocityMmPerSecond ?? { x: 0, y: 0, z: 0 },
+        angular_velocity: body.angularVelocityMilliDegPerSecond ?? { x: 0, y: 0, z: 0 },
+        tags: body.tags ?? [],
+        enabled: true,
+      },
+      'spatial.fixture': {
+        shape: aetherShape(fixture.shape, body.id, fixture.id),
+        local_position: fixture.localPositionMm ?? { x: 0, y: 0, z: 0 },
+        sensor: fixture.sensor ?? false,
+        ...(fixture.materialId === undefined ? {} : { material_id: fixture.materialId }),
+        ...(fixture.bodyZone === undefined ? {} : { body_zone: fixture.bodyZone }),
+        tags: fixture.tags ?? [],
+      },
+    };
+    const rowBase = { entity_id: body.entityId, tags: body.tags ?? [], fragments };
+    return { ...rowBase, entity_root: rootHash(rowBase) };
+  });
+  const projectionBase = {
+    format: 'taowind.world-body.kernel-projection.v0.1',
+    source_world_body_root: bundle.manifest.worldBodyRoot,
+    semantic_declaration_root: bundle.manifest.semanticDeclarationRoot,
+    source_reality_root: ir.authorityState.sourceRealityRoot,
+    world_id: ir.worldId,
+    generation: ir.generation,
+    tick: ir.temporalPresentationState.clock.tick,
+    losses,
+    rows,
+  };
+  const stateRoot = rootHash(projectionBase);
+  const batchBase = {
+    format: 'rncs.entity-state-batch.v0.1',
+    version: '0.1.0',
+    world_id: ir.worldId,
+    generation: ir.generation,
+    generation_root: ir.authorityState.sourceRealityRoot,
+    tick: ir.temporalPresentationState.clock.tick,
+    state_root: stateRoot,
+    entity_ids: rows.map(row => row.entity_id),
+    fragment_ids: ['spatial.body', 'spatial.fixture'],
+    rows,
+  };
+  const batch = { ...batchBase, batch_root: rootHash(batchBase) };
+  const base = {
+    format: STUDIO_WORLD_BODY_AETHER_PROJECTION_FORMAT,
+    version: STUDIO_WORLD_BODY_AETHER_PROJECTION_VERSION,
+    authority: 'candidate-runtime-projection-only',
+    source: {
+      project_root: bundle.manifest.source_roots.project_root,
+      source_reality_root: ir.authorityState.sourceRealityRoot,
+      semantic_declaration_root: bundle.manifest.semanticDeclarationRoot,
+      world_body_root: bundle.manifest.worldBodyRoot,
+      world_id: ir.worldId,
+      generation: ir.generation,
+      tick: ir.temporalPresentationState.clock.tick,
+    },
+    mapping: {
+      coordinate_unit: 'millimetre-preserved',
+      rotation_unit: 'milli-degree-euler-lowered-from-canonical-quaternion',
+      selected_fixture: 'first-fixture-only',
+      source_facet_retention: 'sidecar-and-loss-list-only',
+    },
+    losses,
+    batch,
+  };
+  return { ...base, projectionRoot: rootHash(base) };
+}
+
+export function compileStudioWorldBodyAetherProjection(bundle, options = {}) {
+  return createAetherEntityStateProjection(bundle, options);
+}
+
+export async function projectStudioWorldBodyCandidateToRealityCell(bundle, options = {}) {
+  const { allowLossyProjection, ...runtimeOptions } = options;
+  const projection = createAetherEntityStateProjection(bundle, { allowLossyProjection });
+  const { projectKernelStateToRealityCell, verifyRealityCellState } = await import('@taowind/aether-rncs-bridge');
+  const runtime = await projectKernelStateToRealityCell(projection.batch, runtimeOptions);
+  const cellVerification = verifyRealityCellState(runtime.cellState);
+  if (!cellVerification.ok) fail('STUDIO_WB_AETHER_CELL_VERIFICATION_FAILED', 'Aether Reality Cell did not verify after projection', { diagnostics: cellVerification.diagnostics });
+  const receiptBase = {
+    format: 'taowind.world-body.aether-runtime-receipt.v0.1',
+    version: STUDIO_WORLD_BODY_AETHER_PROJECTION_VERSION,
+    authority: 'candidate-runtime-projection-only',
+    projectionRoot: projection.projectionRoot,
+    source: projection.source,
+    losses: projection.losses,
+    runtimeRoots: runtime.roots,
+    cellStateVerified: true,
+  };
+  const receipt = { ...receiptBase, receiptRoot: rootHash(receiptBase) };
+  return { ...projection, runtime, receipt };
+}
+
+export function verifyStudioWorldBodyAetherProjection(result) {
+  try {
+    if (!result || result.format !== STUDIO_WORLD_BODY_AETHER_PROJECTION_FORMAT || result.authority !== 'candidate-runtime-projection-only') return false;
+    if (!result.batch || result.batch.format !== 'rncs.entity-state-batch.v0.1') return false;
+    const { batch_root: batchRoot, ...batchBase } = result.batch;
+    if (rootHash(batchBase) !== batchRoot) return false;
+    const { projectionRoot, runtime, receipt, ...projectionBase } = result;
+    if (rootHash(projectionBase) !== projectionRoot) return false;
+    if (!receipt || receipt.format !== 'taowind.world-body.aether-runtime-receipt.v0.1') return false;
+    const { receiptRoot, ...receiptBase } = receipt;
+    return rootHash(receiptBase) === receiptRoot
+      && receiptBase.projectionRoot === projectionRoot
+      && receiptBase.cellStateVerified === true
+      && semanticHash(runtime?.roots) === semanticHash(receiptBase.runtimeRoots);
+  } catch {
+    return false;
+  }
 }

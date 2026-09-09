@@ -10,10 +10,13 @@
   "scripts": {
     "test": "node --test --test-concurrency=1 tests/*.test.mjs",
     "demo": "node examples/studio-network-world-body-demo.mjs",
-    "test:generated-runtime": "node examples/studio-network-world-body-runtime-demo.mjs"
+    "test:generated-runtime": "node examples/studio-network-world-body-runtime-demo.mjs",
+    "demo:aether-runtime": "node examples/studio-network-world-body-aether-demo.mjs"
   },
   "engines": { "node": ">=20" },
   "dependencies": {
+    "@taowind/aether-rncs-bridge": "*",
+    "@taowind/rncs-core-contract": "*",
     "@taowind/world-body-codegen": "*",
     "@taowind/world-body-ir": "*"
   }

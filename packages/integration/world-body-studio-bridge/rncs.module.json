@@ -12,5 +12,5 @@
     "taowind.reality-studio.world-body-bridge.v0.1"
   ],
   "authority": "candidate-artifact-generation-only-no-commit",
-  "dependsOn": ["world-body-codegen", "world-body-ir"]
+  "dependsOn": ["world-body-codegen", "world-body-ir", "rncs-core-contract", "aether-rncs-bridge"]
 }
