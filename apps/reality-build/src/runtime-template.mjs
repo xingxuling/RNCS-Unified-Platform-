@@ -6,9 +6,9 @@ import {canonicalJson} from './canonical.mjs';
 const here=path.dirname(fileURLToPath(import.meta.url));
 const vendor=path.dirname(fileURLToPath(import.meta.resolve('@taowind/reality-behavior-fabric')));
 const vsrBrowserExecutor=path.resolve(here,'../../../packages/world/visual-state-runtime/dist/packages/realtime-webgpu/src/browser-executor.js');
-const spatial3dSpecRuntime=path.resolve(here,'../../../packages/world/visual-state-runtime/dist/packages/spec/src/index.js');
-const spatial3dRuntime=path.resolve(here,'../../../packages/world/visual-state-runtime/dist/packages/spatial-reality-3d/src/index.js');
+const spatial3dBrowserBundle=path.resolve(here,'../../../packages/world/visual-state-runtime/apps/spatial-v04/vsr-spatial-browser.js');
 const rsrSpecRuntime=path.resolve(here,'../../../packages/world/reality-simulation-runtime/dist/packages/spec/src/index.js');
+const rsrConvexRuntime=path.resolve(here,'../../../packages/world/reality-simulation-runtime/dist/packages/spatial-embodiment/src/convex-narrow-phase.js');
 const rsrSpatialRuntime=path.resolve(here,'../../../packages/world/reality-simulation-runtime/dist/packages/spatial-embodiment/src/index.js');
 
 export function buildBrowserBehaviorRuntime(){
@@ -36,16 +36,17 @@ export function buildBrowserVSRRuntime(){
 }
 
 export function buildBrowserRSRRuntime(){
-  for(const file of [rsrSpecRuntime,rsrSpatialRuntime])if(!fs.existsSync(file))throw new Error(`RSR_BROWSER_RUNTIME_BUILD_MISSING:${file}`);
-  const clean=file=>fs.readFileSync(file,'utf8').replace(/\n\/\/#[^\n]*sourceMappingURL[^\n]*/g,'').replace(/^import .*?;\s*$/gm,'').replace(/\bexport\s+(?=(const|function|class)\b)/g,'').replace(/export\s*\{[^}]*\};?/g,'');
-  return `${clean(rsrSpecRuntime)}\n${clean(rsrSpatialRuntime)}\nwindow.__RNCSRSR__={SpatialEmbodimentWorld,SPATIAL_EMBODIMENT_VERSION,SPATIAL_EMBODIMENT_FORMAT,verifySpatialEmbodimentSnapshot,computeSpatialEmbodimentStateRoot,spatialEmbodimentSnapshotToCausalDelta};window.dispatchEvent?.(new Event('rncs-rsr-ready'));\n`;
+  for(const file of [rsrSpecRuntime,rsrConvexRuntime,rsrSpatialRuntime])if(!fs.existsSync(file))throw new Error(`RSR_BROWSER_RUNTIME_BUILD_MISSING:${file}`);
+  const clean=file=>fs.readFileSync(file,'utf8').replace(/\n\/\/#[^\n]*sourceMappingURL[^\n]*/g,'').replace(/^import .*?;\s*$/gm,'').replace(/^export\s+\*\s+from .*?;\s*$/gm,'').replace(/\bexport\s+(?=(const|function|class)\b)/g,'').replace(/export\s*\{[^}]*\};?/g,'');
+  const convex=`(()=>{${clean(rsrConvexRuntime)}\nreturn{collideConvex};})()`;
+  return `${clean(rsrSpecRuntime)}\nconst {collideConvex}=${convex};\n${clean(rsrSpatialRuntime)}\nwindow.__RNCSRSR__={SpatialEmbodimentWorld,SPATIAL_EMBODIMENT_VERSION,SPATIAL_EMBODIMENT_FORMAT,verifySpatialEmbodimentSnapshot,computeSpatialEmbodimentStateRoot,spatialEmbodimentSnapshotToCausalDelta};window.dispatchEvent?.(new Event('rncs-rsr-ready'));\n`;
 }
 
 export function buildBrowserSpatial3DRuntime(){
-  for(const file of [spatial3dSpecRuntime,spatial3dRuntime])if(!fs.existsSync(file))throw new Error(`VSR_SPATIAL_3D_BROWSER_RUNTIME_BUILD_MISSING:${file}`);
-  const clean=file=>fs.readFileSync(file,'utf8').replace(/\n\/\/#[^\n]*sourceMappingURL[^\n]*/g,'').replace(/^import .*?;\s*$/gm,'').replace(/\bexport\s+(?=(const|function|class)\b)/g,'').replace(/export\s*\{[^}]*\};?/g,'');
+  if(!fs.existsSync(spatial3dBrowserBundle))throw new Error(`VSR_SPATIAL_3D_BROWSER_BUNDLE_MISSING:${spatial3dBrowserBundle}`);
+  const source=fs.readFileSync(spatial3dBrowserBundle,'utf8').replace(/\n\/\/#[^\n]*sourceMappingURL[^\n]*/g,'');
   const color=`function parseColor(color){const input=String(color??'').trim(),hex=input.match(/^#([0-9a-f]{3,8})$/i),clampByte=value=>Math.max(0,Math.min(255,Math.round(value)));if(hex){const h=hex[1];if(h.length===3||h.length===4)return[parseInt(h[0]+h[0],16),parseInt(h[1]+h[1],16),parseInt(h[2]+h[2],16),h.length===4?parseInt(h[3]+h[3],16):255];if(h.length===6||h.length===8)return[parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16),h.length===8?parseInt(h.slice(6,8),16):255]}const rgb=input.match(/^rgba?\\(([^)]+)\\)$/i);if(rgb){const values=rgb[1].split(',').map(Number);return[clampByte(values[0]??0),clampByte(values[1]??0),clampByte(values[2]??0),values.length>3?clampByte((values[3]??1)*255):255]}const named={transparent:[0,0,0,0],black:[0,0,0,255],white:[255,255,255,255],red:[255,0,0,255],green:[0,128,0,255],blue:[0,0,255,255],yellow:[255,255,0,255]};return named[input.toLowerCase()]??[255,0,255,255]}`;
-  return `(function(){\n${clean(spatial3dSpecRuntime)}\n${color}\n${clean(spatial3dRuntime)}\nwindow.__RNCS3D__={VSR_SPATIAL_REALITY_VERSION,VSR_SPATIAL_SCENE_FORMAT,VSR_SPATIAL_FRAME_FORMAT,compileSpatialFrame,verifySpatialFrame,probeSpatialWebGPU,VSRSpatialWebGPUExecutor,verifySpatialWebGPUReceipt,packSpatialVertexBuffer,packSpatialIndexBuffer,packSpatialObjectUniform,packSpatialMaterialUniform,packSpatialCameraUniform,transformVec4,parseColor};window.dispatchEvent?.(new Event('rncs-vsr-spatial-ready'));\n})();\n`;
+  return `${source}\n(function(){\n${color}\nwindow.__RNCS3D__={...VSRSpatial3D,parseColor};window.dispatchEvent?.(new Event('rncs-vsr-spatial-ready'));\n})();\n`;
 }
 
 export function buildGameSource(){return String.raw`/* Reality Build Fabric browser host */

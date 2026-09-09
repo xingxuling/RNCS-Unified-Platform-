@@ -1,0 +1,468 @@
+{
+  "format": "reality-build.browser-acceptance.v0.2",
+  "results": [
+    {
+      "mode": "web-release",
+      "outcome": {
+        "ticks": 309,
+        "victory": true,
+        "defeat": false,
+        "score": 655,
+        "state_root": "414cbed4bdc7bf40414cbed4bdc7bf40414cbed4bdc7bf40414cbed4bdc7bf40",
+        "player": {
+          "x": 599.9,
+          "y": 270,
+          "health": 92,
+          "max_health": 100,
+          "speed": 3.2,
+          "facing": 1,
+          "has_key": true,
+          "attack_cooldown": 0,
+          "invulnerable": 0,
+          "color": "#8cc9ff"
+        },
+        "enemy": {
+          "x": 623.3,
+          "y": 270,
+          "health": 0,
+          "max_health": 75,
+          "speed": 1.35,
+          "attack_cooldown": 0,
+          "color": "#ff758d"
+        },
+        "navigation": null,
+        "spatial": {
+          "initial": {
+            "available": true,
+            "mode": "rsr.browser-bridge",
+            "tick": 0,
+            "state_root": "fnv1a64:fc1859b684ab65e5",
+            "contact_count": 0,
+            "event_count": 0,
+            "binding_count": 2,
+            "navigation_available": false,
+            "navigation_root": null,
+            "error": "",
+            "verified": true
+          },
+          "final": {
+            "available": true,
+            "mode": "rsr.browser-bridge",
+            "tick": 309,
+            "state_root": "fnv1a64:331c9a6ba2778c46",
+            "contact_count": 1,
+            "event_count": 1,
+            "binding_count": 2,
+            "navigation_available": false,
+            "navigation_root": null,
+            "error": "",
+            "verified": true
+          }
+        },
+        "spatial3d": {
+          "initial": {
+            "available": true,
+            "mode": "canvas2d-projective",
+            "tick": 0,
+            "state_root": "fnv1a64:b29ecc584250facb",
+            "frame_root": "fde751d9014113edc112434ee1734eee8cc9b9f76eddac51125d618be4ec62a0",
+            "draw_count": 5,
+            "error": "",
+            "verified": true,
+            "receipt": null
+          },
+          "final": {
+            "available": true,
+            "mode": "canvas2d-projective",
+            "tick": 309,
+            "state_root": "fnv1a64:9d24558ea9d75232",
+            "frame_root": "f4319782fc3a3a5aec2d95c24b5118144309cc03c03f798eda9851b58ca70a9b",
+            "draw_count": 5,
+            "error": "",
+            "verified": true,
+            "receipt": null
+          },
+          "initial_frame": {
+            "tick": 0,
+            "stateRoot": "fnv1a64:b29ecc584250facb",
+            "frameRoot": "fde751d9014113edc112434ee1734eee8cc9b9f76eddac51125d618be4ec62a0",
+            "drawCount": 5,
+            "verified": true,
+            "mode": "canvas2d-projective"
+          },
+          "final_frame": {
+            "tick": 309,
+            "stateRoot": "fnv1a64:9d24558ea9d75232",
+            "frameRoot": "f4319782fc3a3a5aec2d95c24b5118144309cc03c03f798eda9851b58ca70a9b",
+            "drawCount": 5,
+            "verified": true,
+            "mode": "canvas2d-projective"
+          }
+        },
+        "dynamic_gpu": {
+          "initial": {
+            "tick": 0,
+            "sourceDisplayHash": "17f1d4bb09a6e3cf17f1d4bb09a6e3cf17f1d4bb09a6e3cf17f1d4bb09a6e3cf",
+            "resourceRoot": "662c1fe6420cef8ba506810052f4dedba2c387989935e0b5ae5ed9b329d0af07",
+            "framePlanRoot": "298e1bdd4b6779b7dab77e8bffd661025ab312624885776aa48fa51ffeabbbd8",
+            "dynamicBindings": 5,
+            "spatialStateRoot": "fnv1a64:fc1859b684ab65e5",
+            "verified": true
+          },
+          "final": {
+            "tick": 309,
+            "sourceDisplayHash": "414cbed4bdc7bf40414cbed4bdc7bf40414cbed4bdc7bf40414cbed4bdc7bf40",
+            "resourceRoot": "952b0b5d24987ce8ac811530912f511e7c4eded435248a184f477700e604424e",
+            "framePlanRoot": "f701b462544cc5c0a1e5742fd9a5b8415574edf497395a38106428f039dfe897",
+            "dynamicBindings": 5,
+            "spatialStateRoot": "fnv1a64:331c9a6ba2778c46",
+            "verified": true
+          }
+        }
+      },
+      "page_errors": [],
+      "runtime": {
+        "vsr_loaded": true,
+        "rsr_loaded": true,
+        "navigator_gpu": false,
+        "gpu_ready": false,
+        "gpu_error": "",
+        "gpu_receipt": null,
+        "spatial": {
+          "available": true,
+          "mode": "rsr.browser-bridge",
+          "tick": 345,
+          "state_root": "fnv1a64:f343743e8ebaa354",
+          "contact_count": 1,
+          "event_count": 1,
+          "binding_count": 2,
+          "navigation_available": false,
+          "navigation_root": null,
+          "error": "",
+          "verified": true
+        },
+        "spatial3d": {
+          "available": true,
+          "mode": "canvas2d-projective",
+          "tick": 345,
+          "state_root": "fnv1a64:d18893489c0bba02",
+          "frame_root": "8ba450fe05082398b721fcaf7d1cb39f03990b06eb472c8f81bd1876aec3d8f4",
+          "draw_count": 5,
+          "error": "",
+          "verified": true,
+          "receipt": null
+        }
+      },
+      "screenshot": "evidence/Reality_Build_v0.2_web-release.png"
+    },
+    {
+      "mode": "web-single",
+      "outcome": {
+        "ticks": 309,
+        "victory": true,
+        "defeat": false,
+        "score": 655,
+        "state_root": "414cbed4bdc7bf40414cbed4bdc7bf40414cbed4bdc7bf40414cbed4bdc7bf40",
+        "player": {
+          "attack_cooldown": 0,
+          "color": "#8cc9ff",
+          "facing": 1,
+          "has_key": true,
+          "health": 92,
+          "invulnerable": 0,
+          "max_health": 100,
+          "speed": 3.2,
+          "x": 599.9,
+          "y": 270
+        },
+        "enemy": {
+          "attack_cooldown": 0,
+          "color": "#ff758d",
+          "health": 0,
+          "max_health": 75,
+          "speed": 1.35,
+          "x": 623.3,
+          "y": 270
+        },
+        "navigation": null,
+        "spatial": {
+          "initial": {
+            "available": true,
+            "mode": "rsr.browser-bridge",
+            "tick": 0,
+            "state_root": "fnv1a64:fc1859b684ab65e5",
+            "contact_count": 0,
+            "event_count": 0,
+            "binding_count": 2,
+            "navigation_available": false,
+            "navigation_root": null,
+            "error": "",
+            "verified": true
+          },
+          "final": {
+            "available": true,
+            "mode": "rsr.browser-bridge",
+            "tick": 309,
+            "state_root": "fnv1a64:331c9a6ba2778c46",
+            "contact_count": 1,
+            "event_count": 1,
+            "binding_count": 2,
+            "navigation_available": false,
+            "navigation_root": null,
+            "error": "",
+            "verified": true
+          }
+        },
+        "spatial3d": {
+          "initial": {
+            "available": true,
+            "mode": "canvas2d-projective",
+            "tick": 0,
+            "state_root": "fnv1a64:b29ecc584250facb",
+            "frame_root": "fde751d9014113edc112434ee1734eee8cc9b9f76eddac51125d618be4ec62a0",
+            "draw_count": 5,
+            "error": "",
+            "verified": true,
+            "receipt": null
+          },
+          "final": {
+            "available": true,
+            "mode": "canvas2d-projective",
+            "tick": 309,
+            "state_root": "fnv1a64:9d24558ea9d75232",
+            "frame_root": "f4319782fc3a3a5aec2d95c24b5118144309cc03c03f798eda9851b58ca70a9b",
+            "draw_count": 5,
+            "error": "",
+            "verified": true,
+            "receipt": null
+          },
+          "initial_frame": {
+            "tick": 0,
+            "stateRoot": "fnv1a64:b29ecc584250facb",
+            "frameRoot": "fde751d9014113edc112434ee1734eee8cc9b9f76eddac51125d618be4ec62a0",
+            "drawCount": 5,
+            "verified": true,
+            "mode": "canvas2d-projective"
+          },
+          "final_frame": {
+            "tick": 309,
+            "stateRoot": "fnv1a64:9d24558ea9d75232",
+            "frameRoot": "f4319782fc3a3a5aec2d95c24b5118144309cc03c03f798eda9851b58ca70a9b",
+            "drawCount": 5,
+            "verified": true,
+            "mode": "canvas2d-projective"
+          }
+        },
+        "dynamic_gpu": {
+          "initial": {
+            "tick": 0,
+            "sourceDisplayHash": "17f1d4bb09a6e3cf17f1d4bb09a6e3cf17f1d4bb09a6e3cf17f1d4bb09a6e3cf",
+            "resourceRoot": "662c1fe6420cef8ba506810052f4dedba2c387989935e0b5ae5ed9b329d0af07",
+            "framePlanRoot": "298e1bdd4b6779b7dab77e8bffd661025ab312624885776aa48fa51ffeabbbd8",
+            "dynamicBindings": 5,
+            "spatialStateRoot": "fnv1a64:fc1859b684ab65e5",
+            "verified": true
+          },
+          "final": {
+            "tick": 309,
+            "sourceDisplayHash": "414cbed4bdc7bf40414cbed4bdc7bf40414cbed4bdc7bf40414cbed4bdc7bf40",
+            "resourceRoot": "952b0b5d24987ce8ac811530912f511e7c4eded435248a184f477700e604424e",
+            "framePlanRoot": "f701b462544cc5c0a1e5742fd9a5b8415574edf497395a38106428f039dfe897",
+            "dynamicBindings": 5,
+            "spatialStateRoot": "fnv1a64:331c9a6ba2778c46",
+            "verified": true
+          }
+        }
+      },
+      "page_errors": [],
+      "runtime": {
+        "vsr_loaded": true,
+        "rsr_loaded": true,
+        "navigator_gpu": false,
+        "gpu_ready": false,
+        "gpu_error": "",
+        "gpu_receipt": null,
+        "spatial": {
+          "available": true,
+          "mode": "rsr.browser-bridge",
+          "tick": 339,
+          "state_root": "fnv1a64:f637fbddd29d56aa",
+          "contact_count": 1,
+          "event_count": 1,
+          "binding_count": 2,
+          "navigation_available": false,
+          "navigation_root": null,
+          "error": "",
+          "verified": true
+        },
+        "spatial3d": {
+          "available": true,
+          "mode": "canvas2d-projective",
+          "tick": 339,
+          "state_root": "fnv1a64:2b246a5890e02c94",
+          "frame_root": "6e3694824b1b823c02b5d1607fb90fe0e525fe1aae7743f4504cb24926c00d33",
+          "draw_count": 5,
+          "error": "",
+          "verified": true,
+          "receipt": null
+        }
+      },
+      "screenshot": "evidence/Reality_Build_v0.2_web-single.png"
+    },
+    {
+      "mode": "windows-portable",
+      "outcome": {
+        "ticks": 309,
+        "victory": true,
+        "defeat": false,
+        "score": 655,
+        "state_root": "414cbed4bdc7bf40414cbed4bdc7bf40414cbed4bdc7bf40414cbed4bdc7bf40",
+        "player": {
+          "attack_cooldown": 0,
+          "color": "#8cc9ff",
+          "facing": 1,
+          "has_key": true,
+          "health": 92,
+          "invulnerable": 0,
+          "max_health": 100,
+          "speed": 3.2,
+          "x": 599.9,
+          "y": 270
+        },
+        "enemy": {
+          "attack_cooldown": 0,
+          "color": "#ff758d",
+          "health": 0,
+          "max_health": 75,
+          "speed": 1.35,
+          "x": 623.3,
+          "y": 270
+        },
+        "navigation": null,
+        "spatial": {
+          "initial": {
+            "available": true,
+            "mode": "rsr.browser-bridge",
+            "tick": 0,
+            "state_root": "fnv1a64:fc1859b684ab65e5",
+            "contact_count": 0,
+            "event_count": 0,
+            "binding_count": 2,
+            "navigation_available": false,
+            "navigation_root": null,
+            "error": "",
+            "verified": true
+          },
+          "final": {
+            "available": true,
+            "mode": "rsr.browser-bridge",
+            "tick": 309,
+            "state_root": "fnv1a64:331c9a6ba2778c46",
+            "contact_count": 1,
+            "event_count": 1,
+            "binding_count": 2,
+            "navigation_available": false,
+            "navigation_root": null,
+            "error": "",
+            "verified": true
+          }
+        },
+        "spatial3d": {
+          "initial": {
+            "available": true,
+            "mode": "canvas2d-projective",
+            "tick": 0,
+            "state_root": "fnv1a64:b29ecc584250facb",
+            "frame_root": "fde751d9014113edc112434ee1734eee8cc9b9f76eddac51125d618be4ec62a0",
+            "draw_count": 5,
+            "error": "",
+            "verified": true,
+            "receipt": null
+          },
+          "final": {
+            "available": true,
+            "mode": "canvas2d-projective",
+            "tick": 309,
+            "state_root": "fnv1a64:9d24558ea9d75232",
+            "frame_root": "f4319782fc3a3a5aec2d95c24b5118144309cc03c03f798eda9851b58ca70a9b",
+            "draw_count": 5,
+            "error": "",
+            "verified": true,
+            "receipt": null
+          },
+          "initial_frame": {
+            "tick": 0,
+            "stateRoot": "fnv1a64:b29ecc584250facb",
+            "frameRoot": "fde751d9014113edc112434ee1734eee8cc9b9f76eddac51125d618be4ec62a0",
+            "drawCount": 5,
+            "verified": true,
+            "mode": "canvas2d-projective"
+          },
+          "final_frame": {
+            "tick": 309,
+            "stateRoot": "fnv1a64:9d24558ea9d75232",
+            "frameRoot": "f4319782fc3a3a5aec2d95c24b5118144309cc03c03f798eda9851b58ca70a9b",
+            "drawCount": 5,
+            "verified": true,
+            "mode": "canvas2d-projective"
+          }
+        },
+        "dynamic_gpu": {
+          "initial": {
+            "tick": 0,
+            "sourceDisplayHash": "17f1d4bb09a6e3cf17f1d4bb09a6e3cf17f1d4bb09a6e3cf17f1d4bb09a6e3cf",
+            "resourceRoot": "662c1fe6420cef8ba506810052f4dedba2c387989935e0b5ae5ed9b329d0af07",
+            "framePlanRoot": "298e1bdd4b6779b7dab77e8bffd661025ab312624885776aa48fa51ffeabbbd8",
+            "dynamicBindings": 5,
+            "spatialStateRoot": "fnv1a64:fc1859b684ab65e5",
+            "verified": true
+          },
+          "final": {
+            "tick": 309,
+            "sourceDisplayHash": "414cbed4bdc7bf40414cbed4bdc7bf40414cbed4bdc7bf40414cbed4bdc7bf40",
+            "resourceRoot": "952b0b5d24987ce8ac811530912f511e7c4eded435248a184f477700e604424e",
+            "framePlanRoot": "f701b462544cc5c0a1e5742fd9a5b8415574edf497395a38106428f039dfe897",
+            "dynamicBindings": 5,
+            "spatialStateRoot": "fnv1a64:331c9a6ba2778c46",
+            "verified": true
+          }
+        }
+      },
+      "page_errors": [],
+      "runtime": {
+        "vsr_loaded": true,
+        "rsr_loaded": true,
+        "navigator_gpu": false,
+        "gpu_ready": false,
+        "gpu_error": "",
+        "gpu_receipt": null,
+        "spatial": {
+          "available": true,
+          "mode": "rsr.browser-bridge",
+          "tick": 345,
+          "state_root": "fnv1a64:f343743e8ebaa354",
+          "contact_count": 1,
+          "event_count": 1,
+          "binding_count": 2,
+          "navigation_available": false,
+          "navigation_root": null,
+          "error": "",
+          "verified": true
+        },
+        "spatial3d": {
+          "available": true,
+          "mode": "canvas2d-projective",
+          "tick": 345,
+          "state_root": "fnv1a64:d18893489c0bba02",
+          "frame_root": "8ba450fe05082398b721fcaf7d1cb39f03990b06eb472c8f81bd1876aec3d8f4",
+          "draw_count": 5,
+          "error": "",
+          "verified": true,
+          "receipt": null
+        }
+      },
+      "screenshot": "evidence/Reality_Build_v0.2_windows-portable.png"
+    }
+  ],
+  "pass": true
+}

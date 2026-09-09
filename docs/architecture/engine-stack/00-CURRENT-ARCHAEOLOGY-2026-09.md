@@ -10,7 +10,7 @@
 
 - RNCS worktree：`codex/rncs-engine-stack-archaeology-v01`，基于 `main-95` 的 `09f11a88e56c93f3b295c767ff71f62f7e4f890f`。
 - GitHub `origin/main-95` 当前指针与该 commit 相同。
-- 工作树原先干净；当前新增的唯一内容是本审计文件。
+- 审计开始时工作树干净；本轮新增了 Reality Build 浏览器 runtime 包装修复、回归测试和本地浏览器验收证据。
 - worktree 使用 sparse checkout。部分已被 Git 跟踪的源文件没有物化到磁盘，因此这类失败只能记为 `BLOCKED_CHECKOUT_COVERAGE`，不能冒充语义测试失败。
 
 ## 已确认的现实能力
@@ -72,15 +72,27 @@ WorldSeed / Chunk runtime
 在补齐 sparse checkout 中已跟踪但未物化的依赖后，本地重新执行了两个产品入口：
 
 - Reality Studio：`246 tests / 244 pass / 1 fail / 1 skip`。空间、网络世界编译、资产数据库、RAGF 接受、行为、UI/input、TileMap/navigation、GPU frame 和 browser-facing server tests 均通过。唯一失败是 `geometric-truth-workspace.test.mjs` 把当前缺失的 Phase 6.3 evidence 文件（`phase6-3-status.json`、`strict-morphology-certificate.json`、`phase6-3-after-measurements.json` 等）按 `pass/green` 断言；源码的 workspace builder 正确返回 `blocked/missing`，不能用静态改断言把它提升为已完成媒体能力。
-- Reality Build：`133 tests / 124 pass / 1 fail / 8 skip`。构建图、Asset Database、确定性构建根、Android debug APK、Runtime Evidence、Replay/Headless、外部 VSR scene→RSR body binding 和 legacy fallback 均通过；Windows native/Go 相关目标按工具链状态 skip。唯一失败是 `apps/reality-build/src/runtime-template.mjs` 的 `buildBrowserSpatial3DRuntime()` 只移除 `export function/const` 和 `export {}`，没有移除 VSR dist entry 的 `export * from ...`，因此生成的 `spatial3d-runtime.js` 在 `new Function`/classic `<script>` 入口中报 `Unexpected token 'export'`。
+- Reality Build：初始审计为 `133 tests / 124 pass / 1 fail / 8 skip`。构建图、Asset Database、确定性构建根、Android debug APK、Runtime Evidence、Replay/Headless、外部 VSR scene→RSR body binding 和 legacy fallback 均通过；Windows native/Go 相关目标按工具链状态 skip。两个浏览器包装缺口已在本轮修复后重新验证为 `133 tests / 125 pass / 0 fail / 8 skip`；Studio 的唯一失败仍是上面的 Phase 6.3 evidence 缺失，不因本轮修复改变。
 
-该 Build 缺口是新的近端共享发布瓶颈：同一个 3D runtime packager 同时服务 Web Release、Web single、Windows portable 和 Android embedded HTML。Reality Studio 直接加载的 `vsr-spatial-browser.js` 是 IIFE/`var` 入口，已通过 Chromium smoke，不能替代 Reality Build 生成物的 classic-script 验证。
+该 Build 缺口是新的近端共享发布瓶颈：同一个 3D runtime packager 同时服务 Web Release、Web single、Windows portable 和 Android embedded HTML。Reality Studio 直接加载的 `vsr-spatial-browser.js` 是 IIFE/`var` 入口，已通过 Chromium smoke，不能替代 Reality Build 生成物的 classic-script 验证。修复后，VSR 3D 改为复用该既有 IIFE；RSR 则把现有 spec、convex narrow phase 与 spatial embodiment dist 组合成无 ESM export 的 classic script，并隔离窄相位内部 helper，避免重复实现物理语义。
+
+## 本轮受控修复与真实执行证据
+
+这不是新增引擎子系统，而是把已有运行时接到它声明的浏览器发布入口：
+
+1. `apps/reality-build/src/runtime-template.mjs` 的 VSR 3D 入口改为读取版本库中的 `packages/world/visual-state-runtime/apps/spatial-v04/vsr-spatial-browser.js`，只增加 `parseColor` 与 `window.__RNCS3D__` 适配，不再对 ESM dist 做不完整的 export 正则变换。
+2. 同文件的 RSR 入口补入已有 `convex-narrow-phase.js`，在局部作用域内导出 `collideConvex`，并剥离仅属于 ESM 模块边界的 `export *`；不改变 RSR world、碰撞、state root 或 authority contract。
+3. `apps/reality-build/tests/runtime.test.mjs` 新增 classic-script 解析负例门：禁止残留顶层 `import/export`，并要求真实 VSR bundle、RSR 窄相位和执行器存在。
+4. 回归结果：runtime template `17/17 PASS`；Reality Build 全套 `133 PASS / 0 FAIL / 8 SKIP`。
+5. 真实构建 `output/engine-stack-3d-packaging-v03` 的 `status=built`、`verification.valid=true`，Web Release、Web Single、Windows Portable 三个目标均有 target receipt；本次 receipt root 为 `74bae5bdaa712e9cf6e039ad97fc46508472aef6dada57c5df5e832a6b9098ef`。
+6. `apps/reality-build/evidence/BROWSER_ACCEPTANCE_v0.2.json` 为 `pass=true`：Web Release、Web Single、Windows Portable 各完成 309 ticks 的行为胜利路径；三者均 `rsr_loaded=true`、RSR snapshot `verified=true`、VSR 3D frame `verified=true`、5 个 draw packets、无 page error，Canvas 2D projective fallback 实际绘制并产生截图。
+7. 本机该次 Build 验收报告 `navigator_gpu=false`，因此 WebGPU executor、目标硬件帧率和设备矩阵仍是 `UNVERIFIED`；这次证据只能提升“真实浏览器 classic script + RSR + VSR 3D compile/verify + Canvas fallback”这一窄门。
 
 ## 结构判断
 
 ### 限制性瓶颈
 
-当前存在两个有先后关系的瓶颈：近端发布门是 `RCL_GAP_RNCS_RELEASE_3D_BROWSER_SCRIPT_PACKAGING`，必须先让 Build 产出的 3D runtime 在所有目标中成为真实可解析的 classic script；结构性瓶颈仍是 `RCL_GAP_RNCS_SHARED_WORLD_COMPILATION_SPINE`，即 Studio/World Body/Large World/Build 进入已有 Kernel→RSR→Reality Cell→VSR runtime seam 时保持 root、authority、candidate 和 evidence 语义。
+当前存在两个有先后关系的瓶颈：`RCL_GAP_RNCS_RELEASE_3D_BROWSER_SCRIPT_PACKAGING` 已完成一个本地候选修复并通过三个 Build target 的真实浏览器回归，但 Android embedded 独立浏览器运行和 WebGPU/目标设备仍未验证；结构性瓶颈仍是 `RCL_GAP_RNCS_SHARED_WORLD_COMPILATION_SPINE`，即 Studio/World Body/Large World/Build 进入已有 Kernel→RSR→Reality Cell→VSR runtime seam 时保持 root、authority、candidate 和 evidence 语义。
 
 这不是“再写一个引擎子系统”的缺口，而是已有子系统不能共同承载同一个世界工件的缺口。应把 Aether bridge 作为下游 runtime donor；若直接在 Studio、Build、Large World 各自添加转换，或重新实现 Reality Cell/资产生命周期，会产生重复语义、root 混淆和无法回滚的并行系统。
 
@@ -94,7 +106,7 @@ WorldSeed / Chunk runtime
 
 ## 下一最小高杠杆候选
 
-第一优先先修复并验证 Build 的 3D classic-script packaging（不改变 VSR 语义）；随后再建立一个薄的 integration adapter（建议 `packages/integration/world-body-studio-bridge`），复用 World Body Codegen 与 Aether bridge，不能复制 Reality Cell/streaming/render glue，只做：
+第一优先的 Build 3D classic-script packaging 已完成局部候选修复和真实浏览器回归；下一阶段建立一个薄的 integration adapter（建议 `packages/integration/world-body-studio-bridge`），复用 World Body Codegen 与 Aether bridge，不能复制 Reality Cell/streaming/render glue，只做：
 
 ```text
 Unified Project + selected spatial world + scene/asset roots
