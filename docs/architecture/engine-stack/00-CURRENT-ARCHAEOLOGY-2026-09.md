@@ -56,13 +56,24 @@ WorldSeed / Chunk runtime
 
 语义覆盖也不是一一对应：Studio Unified Project 还拥有 behavior、input、sequencer、UI、spatial3d 和 network facets；Studio 的 network fixture 实际覆盖 6 bodies、3 characters、2 asset bindings、2 player slots。World Body IR v0.1 当前有 authority、physical、visual、temporal、assets、observers、events 七类状态 root，另有 BodyMap 与 Render Graph set root；codegen 只对这些声明生成 specialization。它没有直接承载 Studio 的 character controller、joint/material/listener、behavior/UI/input/audio、network transport profile 或 Large World streaming。因而下一步不能把这些字段静默丢进 World Body，也不能把它们硬塞入 World Body core；必须保留 facet owner，并用显式 sidecar/root binding 证明覆盖和缺口。
 
+## 已发现的可复用运行时 donor
+
+`packages/integration/aether-rncs-bridge` 已经提供一条真实的运行时投影 seam，不应再为此新建平行 Reality Cell 或资产生命周期实现：
+
+1. `projectKernelStateToRealityCell(...)` 接受 `EntityKernel` 或已封存的 `rncs.entity-state-batch.v0.1`，经过 RSR authority body/fixture materialization、Network Observer Relevance、固定点 LWC sector/local 坐标，进入 VSR scene/frame/pixel projection。
+2. 它保留 `kernel_state_root`、`kernel_batch_root`、`binding_root`、`rsr_state_root`、`rsr_body_root`、`cell_state_root`、`vsr_scene_root`、`vsr_frame_root`、`vsr_pixel_root`，并在有资产时继续保留 `asset_streaming_root`、`asset_binding_root` 和 transition root。
+3. 本地实际执行结果：bridge 测试 `28/28 PASS`；Reality Cell、异步 payload lease/eviction、GLB/glTF scene binding、Cell transition/cache demos 均产生 sealed evidence。
+4. 本机 Chrome/Playwright WebGPU smoke 已通过：kernel binding、Reality Cell、GLB/glTF asset scene、near→far→near transition 共 `4/4 PASS`；均验证 `submitted=true`、`deviceLost=false`、Node frame root 与浏览器 receipt frame root 相等、无 page/shader/request error，并生成 PNG。第一次运行因 sparse checkout 未物化 Studio 的已跟踪依赖而失败；补齐物化范围后通过，不能把第一次失败归因于 VSR 语义。
+
+这条 donor 的边界同样明确：源码检索只发现 Reality One Gateway 与 Studio 浏览器 smoke 消费它；它没有 Unified Project、World Body Declaration、Large World Runtime 或 Reality Build 的 authoring/build adapter。因此它是共享 runtime seam，不是共享 authoring-to-runtime compiler。`rncs.modules.json` 对它的依赖列表也比其真实 `package.json` import 图窄，存在 registry discoverability/build-order 缺口。
+
 ## 结构判断
 
 ### 限制性瓶颈
 
-当前最大瓶颈是 `RCL_GAP_RNCS_SHARED_WORLD_COMPILATION_SPINE`：缺少一条保持 root、authority、candidate 和 evidence 语义的共享 authoring-to-runtime compiler seam。
+当前最大瓶颈仍是 `RCL_GAP_RNCS_SHARED_WORLD_COMPILATION_SPINE`，但含义已收窄：Kernel→RSR→Reality Cell→VSR 的 runtime seam 已由 Aether bridge 提供；缺的是 Studio/World Body/Large World/Build 进入这条 seam 时保持 root、authority、candidate 和 evidence 语义的共享 authoring-to-runtime compiler seam。
 
-这不是“再写一个引擎子系统”的缺口，而是已有子系统不能共同承载同一个世界工件的缺口。若直接在 Studio、Build、Large World 各自添加转换，会产生重复语义、root 混淆和无法回滚的并行系统。
+这不是“再写一个引擎子系统”的缺口，而是已有子系统不能共同承载同一个世界工件的缺口。应把 Aether bridge 作为下游 runtime donor；若直接在 Studio、Build、Large World 各自添加转换，或重新实现 Reality Cell/资产生命周期，会产生重复语义、root 混淆和无法回滚的并行系统。
 
 ### 必须保持的不变量
 
@@ -74,19 +85,19 @@ WorldSeed / Chunk runtime
 
 ## 下一最小高杠杆候选
 
-建立一个独立 integration adapter（建议 `packages/integration/world-body-studio-bridge`），只做：
+建立一个薄的 integration adapter（建议 `packages/integration/world-body-studio-bridge`），复用 World Body Codegen 与 Aether bridge，不能复制 Reality Cell/streaming/render glue，只做：
 
 ```text
 Unified Project + selected spatial world + scene/asset roots
   → candidate World Declaration
   → existing world-body-codegen bundle
-  → existing Studio/Build evidence as a sidecar
+  → existing Aether Cell/runtime projection and Studio/Build evidence as sidecars
 ```
 
-第一轮应以 `examples/studio-authored-network-world-v03/project.mjs` 为 fixture，验证：确定性双生成、Studio roots 与 World Body roots 的显式绑定、真实 RSR/VSR 观测差分、Network compilation 的 root 保持、Build fallback 不变、篡改/缺失资产/非法 authority 负例闭合。Large World 接入应在同一 adapter contract 之后再做，而不是另起一套 world compiler。
+第一轮应以 `examples/studio-authored-network-world-v03/project.mjs` 为 fixture，验证：确定性双生成、Studio roots 与 World Body roots 的显式绑定、Aether Cell 的 kernel/cell/frame/asset roots 连续性、真实 RSR/VSR 观测差分、Network compilation 的 root 保持、Build fallback 不变、篡改/缺失资产/非法 authority 负例闭合。Large World 接入应在同一 adapter contract 之后再做，而不是另起一套 world compiler。
 
 ## K400 / 证据裁决
 
-本轮只完成资产考古与结构定位，不宣布 K400 任一新单元 PASS。下一候选必须分别提供 `EXPRESS / COMPILE / LOWER / EXECUTE / CORRECT / ROBUST / PERFORMANCE / AI_GENERATE / EVIDENCE` 的可重放回执；源码生成、schema 通过、package test 通过不能替代真实 runtime、平台、设备和生产差分门。
+本轮完成资产考古、既有 runtime donor 的真实执行和边界定位，不宣布 K400 任一新单元 PASS。下一候选必须分别提供 `EXPRESS / COMPILE / LOWER / EXECUTE / CORRECT / ROBUST / PERFORMANCE / AI_GENERATE / EVIDENCE` 的可重放回执；源码生成、schema 通过、package test 通过或本机 Chrome smoke 不能替代目标硬件、外部物理、真实分布式网络和生产差分门。
 
 当前总体裁决：`PROCEED_AS_CANDIDATE`；World Body 仍是 `F4.5 Partial Production Parity` 方向上的候选基础，Studio/Build/Large World 统一消费链尚未实现。
