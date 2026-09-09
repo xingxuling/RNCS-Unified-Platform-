@@ -1,0 +1,54 @@
+{
+  "format": "taowind.reality-studio.world-body-bridge-evidence.v0.1",
+  "status": "PASS_CANDIDATE",
+  "bridgeVersion": "0.1.0-alpha.1",
+  "fixture": "examples/studio-authored-network-world-v03/project.mjs",
+  "commands": [
+    "npm test --workspace @taowind/world-body-studio-bridge",
+    "npm run demo --workspace @taowind/world-body-studio-bridge"
+  ],
+  "tests": {
+    "adapter": "9/9 PASS",
+    "worldBodyIr": "36/36 PASS",
+    "worldBodyCodegen": "12/12 PASS",
+    "worldBodyFormalTheory": "8/8 PASS",
+    "studioNetworkCompiler": "6/6 PASS",
+    "networkRuntime": "27/27 PASS",
+    "aetherBridge": "28/28 PASS",
+    "visualStateRuntime": "122/122 + 99/99 + 6/6 + 4/4 + 21/21 + 11/11 PASS",
+    "realitySimulationRuntime": "all local build suites PASS"
+  },
+  "upstreamRegression": {
+    "realityStudio": "244 PASS / 1 FAIL / 1 SKIP",
+    "knownFailure": "Phase 6.3 geometric-truth evidence is absent; workspace correctly reports blocked/missing while the test expects pass."
+  },
+  "roots": {
+    "studioProjectRoot": "72d8ec8f99bdf739d2e4b9eb7bc4493ab5b18a896a623c8cc1f8f5e763c9ecae",
+    "spatialWorkspaceRoot": "2ba151a5e8abe348172f2b960008af79faf3f26fd08102898c355517a4f382e2",
+    "sourceWorldRoot": "ab49370188ae9147058e0756134225f6382c5f8e5f79c74be08e92520012a10f",
+    "activeSceneRoot": "82859e17f4e585eba10fd5ba724eb135589adb78bdac3b268ec75b799b144604",
+    "networkCompilationRoot": "af43344d519e3e09c46efe09318f66685489d8732f0b50ccd8db482dd2a21531",
+    "networkEvidenceRoot": "7fdfc753dfd519d87a5154958cdf40e85f1e98a976dbf98944ff7a554e7eeab2",
+    "semanticDeclarationRoot": "a12fbbffa4b9ca5421530b944a8c2cd3312b4c8413952ef863dca58290630c2f",
+    "worldBodyRoot": "90adf7100e1c2e2514a8e8ba94e9c0475a5a84b72d1e2138e11322c0eb9c374a"
+  },
+  "coverage": {
+    "sourceSceneNodeCount": 6,
+    "spatialBodyCount": 6,
+    "emittedEntityCount": 6,
+    "sceneBoundBodyCount": 2,
+    "syntheticBodyVisualCount": 4,
+    "emittedAssetCount": 1,
+    "unmappedSceneNodeCount": 4,
+    "generatedArtifactCount": 9
+  },
+  "boundaries": [
+    "candidate artifact generation only; no commit or promotion authority",
+    "model-3d is explicitly lowered to mesh and source kind is retained in sidecar",
+    "2D scene transforms are preserved as source metadata and are not converted into 3D authority",
+    "Reality Build, Aether Cell, Large World consumer integration and target hardware remain unverified",
+    "no new K400 PASS"
+  ],
+  "authority": "candidate-artifact-generation-only-no-commit",
+  "evidenceRoot": "fc9ceb0a0e788362dd4138e35c8d64bd2057892c5a426bf043face8eb48964ac"
+}

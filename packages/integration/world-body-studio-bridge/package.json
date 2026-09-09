@@ -1,0 +1,19 @@
+{
+  "name": "@taowind/world-body-studio-bridge",
+  "version": "0.1.0-alpha.1",
+  "private": false,
+  "type": "module",
+  "description": "Candidate-only Reality Studio ingress adapter for the shared World Body compilation spine.",
+  "license": "Apache-2.0",
+  "exports": { ".": "./src/index.mjs" },
+  "files": ["src", "examples", "tests", "evidence", "README.md", "rncs.module.json"],
+  "scripts": {
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs",
+    "demo": "node examples/studio-network-world-body-demo.mjs"
+  },
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "@taowind/world-body-codegen": "*",
+    "@taowind/world-body-ir": "*"
+  }
+}

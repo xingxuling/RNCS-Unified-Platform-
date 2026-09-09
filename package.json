@@ -112,6 +112,7 @@
     "test:gateway": "npm run build:native --workspace @taowind/reality-computation-language && npm run build --workspace @taowind/reality-simulation-runtime && npm test --workspace @taowind/reality-one-gateway",
     "test:authority-presentation": "node --test tests/engine-v06.integration.test.mjs",
     "test:world-body": "npm test --workspace @taowind/world-body-ir && npm test --workspace @taowind/world-body-formal-kernel && npm test --workspace @taowind/rsr-formal-theory && npm test --workspace @taowind/vsr-formal-theory && npm test --workspace @taowind/world-body-formal-theory && npm test --workspace @taowind/world-body-codegen",
+    "test:world-body-studio-bridge": "npm test --workspace @taowind/world-body-studio-bridge",
     "verify:world-body-rcl": "npm run verify:rcl --workspace @taowind/world-body-formal-kernel",
     "evidence:world-body": "node scripts/generate-world-body-evidence.mjs",
     "verify:world-body": "npm test --workspace @taowind/reality-simulation-runtime && npm test --workspace @taowind/visual-state-runtime && npm run test:network && npm run test:world-body && npm run verify:world-body-rcl && npm run test:authority-presentation && npm run evidence:world-body",

@@ -746,6 +746,19 @@
       "test": "npm test --workspace @taowind/world-body-codegen"
     },
     {
+      "id": "world-body-studio-bridge",
+      "name": "Reality Studio World Body Compilation Bridge",
+      "version": "0.1.0-alpha.1",
+      "path": "packages/integration/world-body-studio-bridge",
+      "layer": "integration",
+      "runtime": "rncs.world-body-studio-bridge",
+      "dependsOn": [
+        "world-body-codegen",
+        "world-body-ir"
+      ],
+      "test": "npm test --workspace @taowind/world-body-studio-bridge"
+    },
+    {
       "id": "world-body-formal-theory",
       "name": "World Body Joint Formal Theory",
       "version": "0.1.0-alpha.1",
