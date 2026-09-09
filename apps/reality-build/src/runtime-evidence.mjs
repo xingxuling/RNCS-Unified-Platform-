@@ -1,6 +1,7 @@
 import {UnifiedManufacturingSession} from '@taowind/reality-studio-native';
 import {replaySpatialReplayBundle,verifySpatialReplayBundle} from '@taowind/reality-engine-session/spatial-replay';
 import {compileSpatialFrame,verifySpatialFrame} from '@taowind/visual-state-runtime/spatial-reality-3d';
+import {resolveSpatialAssetStreaming} from '@taowind/visual-state-runtime/spatial-asset-streaming';
 import {clone,rootHash,seal} from './canonical.mjs';
 
 export const RUNTIME_EVIDENCE_FORMAT='reality-build.runtime-evidence.v0.1';
@@ -65,18 +66,26 @@ function bindPresentationScene(scene,snapshot,bindings){
   }
   return out;
 }
+function presentationAssetStreaming(scene){
+  const catalog=Array.isArray(scene?.assets)?scene.assets:[];
+  if(catalog.length===0)return null;
+  const activeCellIds=Array.isArray(scene?.streaming?.cells)?scene.streaming.cells.map(cell=>String(cell.id)).sort():[];
+  return resolveSpatialAssetStreaming(catalog,{activeCellIds});
+}
 export function compileBoundPresentationScene(project,snapshot,fallbackScene,fallbackFramePlan,externalCandidate=null){
   const spec=presentationSpec(project,externalCandidate);
   if(!spec)return{scene:fallbackScene,frame_plan:fallbackFramePlan,bound:false,binding_count:0,source_root:null};
   const scene=bindPresentationScene(spec.scene,snapshot,spec.bindings);
+  const assetStreaming=presentationAssetStreaming(scene);
   const framePlan=compileSpatialFrame(scene,{
     width:Number(scene?.viewport?.width??project?.spatial3d?.editor?.viewport?.width??960),
     height:Number(scene?.viewport?.height??project?.spatial3d?.editor?.viewport?.height??540),
-    qualityTier:String(project?.spatial3d?.editor?.viewport?.quality_tier??'quality')
+    qualityTier:String(project?.spatial3d?.editor?.viewport?.quality_tier??'quality'),
+    ...(assetStreaming?{assetStreaming}:{})
   });
   const verification=verifySpatialFrame(framePlan);
   if(!verification?.ok)throw new Error(`PRESENTATION_SPATIAL_FRAME_INVALID:${JSON.stringify(verification)}`);
-  return{scene,frame_plan:framePlan,bound:true,binding_count:spec.bindings.length,source_root:spec.source_root};
+  return{scene,frame_plan:framePlan,asset_streaming:assetStreaming,bound:true,binding_count:spec.bindings.length,source_root:spec.source_root};
 }
 
 export function buildRuntimeEvidence({project,request,identity,presentationCandidate=null}={}){
@@ -156,6 +165,9 @@ export function buildRuntimeEvidence({project,request,identity,presentationCandi
     presentation_scene_source_root:presentation.source_root,
     presentation_scene_frame_root:spatialFramePlan.frameRoot??null,
     presentation_binding_count:presentation.binding_count,
+    presentation_asset_streaming_root:presentation.asset_streaming?.root??null,
+    presentation_asset_requested_count:presentation.asset_streaming?.requestedAssetIds?.length??0,
+    presentation_asset_missing_count:presentation.asset_streaming?.missingAssetIds?.length??0,
     gpu_frame_plan_root:gpuFrameSummary.frame_plan_root??gpuFramePlan.framePlanRoot??null,
     gpu_resource_root:gpuFrameSummary.resource_root??gpuFramePlan.resourceRoot??null,
     gpu_command_root:gpuFrameSummary.command_root??gpuFramePlan.commandRoot??null,
@@ -185,7 +197,9 @@ export function runtimeEvidenceSummary(runtimeEvidence){
     spatial_replay_final_frame_root:e.spatial_replay_final_frame_root,spatial_runtime_manifest_root:e.spatial_runtime_manifest_root,
     navigation_manifest_root:e.navigation_manifest_root,presentation_scene_bound:e.presentation_scene_bound,
     presentation_scene_source_root:e.presentation_scene_source_root,presentation_scene_frame_root:e.presentation_scene_frame_root,
-    presentation_binding_count:e.presentation_binding_count,gpu_frame_plan_root:e.gpu_frame_plan_root,gpu_resource_root:e.gpu_resource_root,
+    presentation_binding_count:e.presentation_binding_count,presentation_asset_streaming_root:e.presentation_asset_streaming_root,
+    presentation_asset_requested_count:e.presentation_asset_requested_count,presentation_asset_missing_count:e.presentation_asset_missing_count,
+    gpu_frame_plan_root:e.gpu_frame_plan_root,gpu_resource_root:e.gpu_resource_root,
     gpu_command_root:e.gpu_command_root,gpu_frame_summary_root:e.gpu_frame_summary_root,gpu_viewport_manifest_root:e.gpu_viewport_manifest_root
   };
 }

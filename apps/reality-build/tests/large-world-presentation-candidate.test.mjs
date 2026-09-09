@@ -67,6 +67,9 @@ test('Reality Build consumes an existing Large World VSR scene through the gener
   assert.equal(evidence.presentation_scene_source_root, presentationCandidate.presentation.presentation_source_root);
   assert.equal(evidence.presentation_binding_count, 0);
   assert.ok(evidence.presentation_scene_frame_root);
+  assert.ok(evidence.presentation_asset_streaming_root);
+  assert.equal(evidence.presentation_asset_requested_count, 4);
+  assert.equal(evidence.presentation_asset_missing_count, 0);
 });
 
 test('Reality Build rejects a self-sealed presentation candidate from another project', () => {

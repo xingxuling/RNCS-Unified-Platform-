@@ -8,8 +8,10 @@
   ],
   "tests": {
     "focused": "2/2 PASS",
-    "realityBuildSuite": "137 tests / 129 pass / 0 fail / 8 skip",
+    "realityBuildSuite": "138 tests / 130 pass / 0 fail / 8 skip",
     "largeWorldScene": "verifyLargeWorldSpatialScene.valid=true",
+    "presentationAssetStreaming": "resolved root; requested=4; missing=0",
+    "browserSmoke": "Chromium web-release inline smoke PASS; pageErrors=0; VSR/RSR loaded; frame verified; drawCount=0 because rncs:// payload import is not implemented",
     "build": "buildProject verification.valid=true; verifyBuild.valid=true"
   },
   "source": {
@@ -32,23 +34,26 @@
     "presentationRoot": "a49ec2c65663f85d854e5f8e18e2234757f5126591c0763913e2cd4ad2afda78",
     "buildId": "build:3167a203d9d5086cb083fb34",
     "buildKey": "3167a203d9d5086cb083fb349afec82466488a8580ba541901756ed69122d3aa",
-    "runtimeEvidenceRoot": "2976c26d04540e59d4243276211cc2dcccbdb64097725458df8d81b9ea44fbff",
-    "presentationFrameRoot": "55be3408c050024cb5bd1a90105fc0254a17551d10695a8b77def313a18b7405"
+    "runtimeEvidenceRoot": "8f804c0a4cae7ff3aeea3d891234b1ffb5b2facd412143144526211aa2df2af8",
+    "presentationFrameRoot": "fd45b4bf0eecd0b82436abe8ea7ecea3c13f05b76d4c4ca608bef5ff954031a6",
+    "presentationAssetStreamingRoot": "535401c5186c7499b4e230b0e0c8c694ebdf955dd06c3729847bdbf8b5e04136"
   },
   "coverage": {
     "bindings": 0,
     "projectRootBound": true,
     "sceneTamperRejected": true,
     "crossProjectCandidateRejected": true,
+    "assetStreamingRequested": 4,
+    "assetStreamingMissing": 0,
     "defaultBuildPathChanged": false
   },
   "boundaries": [
     "candidate-build-presentation-only; no commit or release authority",
     "Large World scene remains URRF/VSR representation candidate and does not become RSR physical truth",
-    "rncs:// candidate asset references are not automatically baked into target packages by this seam",
-    "no target GPU, Android device, distributed transport/session, or production streaming claim",
+    "rncs:// candidate asset references now enter deterministic VSR streaming resolution, but are not automatically baked, fetched, imported, or uploaded by this seam",
+    "Chromium smoke executes the candidate frame and streaming plan but does not prove target GPU, Android device, distributed transport/session, payload import, or production streaming",
     "no new K400 PASS"
   ],
   "authority": "candidate-artifact-generation-only-no-commit",
-  "evidenceRoot": "82aaade39e8f32ad16fbec25e29ba961b08e36e8a0a8e22dc74d1752bf4544fd"
+  "evidenceRoot": "8e393ccc8dc6bb90ffc17386177e786559eb3d0d76bb68fc0e18ee4bdcc57586"
 }

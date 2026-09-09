@@ -102,7 +102,7 @@ WorldSeed → Region → Chunk → URRF selection → VSR spatial scene
   → Reality Build runtime evidence / target receipt
 ```
 
-该接缝保持 source reference、scene root、project root 和 candidate-only authority；没有 body bindings 时不会伪造 RSR physical bodies。当前证据证明的是本地 Build 对 4 个 active streaming cells、17 个 VSR nodes 和 CPU-reference spatial frame 的消费与自校验，不等于 Large World 已经进入 Web/Android 的资产流送、网络 transport、目标 GPU 或真实设备产品路径。
+该接缝保持 source reference、scene root、project root 和 candidate-only authority；没有 body bindings 时不会伪造 RSR physical bodies。当前证据证明的是本地 Build 对 4 个 active streaming cells、17 个 VSR nodes、CPU-reference spatial frame 以及 4 个 `rncs://` candidate asset records 的 VSR streaming resolution（requested=4、missing=0）消费与自校验；它仍不等于 payload 已下载/导入/上传，也不等于 Large World 已经进入 Web/Android 资产流送、网络 transport、目标 GPU 或真实设备产品路径。
 
 ## 诚实边界
 
@@ -111,4 +111,4 @@ WorldSeed → Region → Chunk → URRF selection → VSR spatial scene
 - 正式商店 Android 发布仍需用户的 release keystore、AAB、商店元数据与真实设备矩阵。
 - 原生 GPU、原生音频、增量补丁、自动更新和代码签名证书尚未完成。
 - 浏览器 `web-release` 仍使用现有 Behavior 浏览器 runtime；RSR 物理、空间快照与导航目前作为 RNCS 构建证据和 headless 运行时接入，尚未声称已经替换浏览器渲染器。
-- Large World spatial presentation candidate 仍是显式 candidate request；默认 Studio/Build authoring path 不变，`rncs://` candidate asset references 也尚未被该 Build seam 自动烘焙成目标包内的生产资产。
+- Large World spatial presentation candidate 仍是显式 candidate request；默认 Studio/Build authoring path 不变，`rncs://` candidate asset references 现在会进入确定性的 VSR streaming resolution，但尚未被该 Build seam 自动烘焙、下载、导入或上传成目标包内的生产资产。
