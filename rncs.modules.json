@@ -142,6 +142,26 @@
       ]
     },
     {
+      "id": "urrf",
+      "name": "Reality Representation Fabric",
+      "version": "0.1.0-alpha.1",
+      "path": "packages/world/reality-representation-fabric",
+      "layer": "world",
+      "runtime": "rncs.urrf",
+      "dependsOn": [
+        "rncs-core"
+      ],
+      "test": "npm test --workspace @taowind/reality-representation-fabric",
+      "capabilities": [
+        "representation-identity",
+        "quality-ladder-selection",
+        "provider-materialization-boundary",
+        "reversible-candidate-transitions",
+        "resource-governor",
+        "reality-access-query"
+      ]
+    },
+    {
       "id": "rsr",
       "name": "Reality Simulation Runtime",
       "version": "0.9.0-alpha.1",
@@ -674,6 +694,31 @@
         "rfe-sdk"
       ],
       "test": "npm test --workspace @taowind/open-world-rpg-runtime"
+    },
+    {
+      "id": "large-world-runtime",
+      "name": "Large World Runtime",
+      "version": "0.1.0-alpha.7",
+      "path": "packages/world/large-world-runtime",
+      "layer": "world",
+      "runtime": "rncs.large-world-runtime",
+      "dependsOn": [
+        "rncs-core",
+        "urrf",
+        "ragf"
+      ],
+      "test": "npm test --workspace @taowind/large-world-runtime",
+      "capabilities": [
+        "world-seed-region-chunk-generation",
+        "bounded-world-streaming",
+        "reality-access-to-streaming",
+        "causal-physical-detail-selection",
+        "minimum-reality-recovery",
+        "candidate-vsr-scene-lowering",
+        "gltf-glb-provider-bundles",
+        "authority-gated-replication",
+        "durable-restart-recovery"
+      ]
     },
     {
       "id": "world-body-ir",

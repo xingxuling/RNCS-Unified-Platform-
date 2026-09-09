@@ -3,6 +3,7 @@ import {
   SPATIAL_EMBODIMENT_FORMAT,
   type IntVector3,
   type SpatialBodyKind,
+  type SpatialCharacterSpec,
   type SpatialEmbodimentWorldConfig,
   type SpatialShape
 } from './index.js';
@@ -32,6 +33,7 @@ export interface KernelStateBatch {
 export interface KernelSpatialBodyFields {
   kind: string;
   position: string;
+  mass_q?: string;
   rotation?: string;
   velocity?: string;
   angular_velocity?: string;
@@ -48,12 +50,34 @@ export interface KernelSpatialFixtureFields {
   tags?: string;
 }
 
+export interface KernelSpatialCharacterFields {
+  id: string;
+  body_id?: string;
+  walk_speed: string;
+  acceleration: string;
+  air_control_q?: string;
+  jump_speed: string;
+  ground_probe?: string;
+  max_slope_deg?: string;
+  footstep_distance?: string;
+  left_foot_zone?: string;
+  right_foot_zone?: string;
+  step_height?: string;
+  ground_snap_distance?: string;
+  skin_width?: string;
+  platform_inheritance_q?: string;
+  coyote_ticks?: string;
+  jump_buffer_ticks?: string;
+}
+
 export interface KernelSpatialBindingOptions {
   world_id?: string;
   body_fragment_id?: string;
   fixture_fragment_id?: string;
   body_fields?: Partial<KernelSpatialBodyFields>;
   fixture_fields?: Partial<KernelSpatialFixtureFields>;
+  character_fragment_id?: string;
+  character_fields?: Partial<KernelSpatialCharacterFields>;
   step_hz?: number;
   floor_y?: number;
   gravity?: IntVector3;
@@ -168,6 +192,13 @@ function fragment(row: KernelStateRow, fragmentId: string, path: string): Record
   return value;
 }
 
+function optionalFragment(row: KernelStateRow, fragmentId: string, path: string): Record<string, VSRValue> | null {
+  const value = row.fragments?.[fragmentId];
+  if (value === undefined) return null;
+  fail(value && typeof value === 'object' && !Array.isArray(value), 'KERNEL_BINDING_FRAGMENT_REQUIRED', `${path}.${fragmentId}`);
+  return value;
+}
+
 function uniqueSorted(values: string[]): string[] { return [...new Set(values)].sort(); }
 
 function materializeBody(
@@ -183,6 +214,10 @@ function materializeBody(
   const kind = text(bodyFragment[bodyFields.kind], `entity:${bodyId}.${bodyFields.kind}`) as SpatialBodyKind;
   fail(BODY_KINDS.has(kind), 'KERNEL_BINDING_BODY_KIND_INVALID', `${bodyId}.${bodyFields.kind}`);
   const position = vector(bodyFragment[bodyFields.position], `entity:${bodyId}.${bodyFields.position}`);
+  const massQ = bodyFields.mass_q && bodyFragment[bodyFields.mass_q] !== undefined
+    ? integer(bodyFragment[bodyFields.mass_q], `entity:${bodyId}.${bodyFields.mass_q}`)
+    : undefined;
+  if (massQ !== undefined) fail(massQ > 0, 'KERNEL_BINDING_MASS_INVALID', `${bodyId}.${bodyFields.mass_q}`);
   const fixtureShape = shape(fixtureFragment[fixtureFields.shape], `entity:${bodyId}.${fixtureFields.shape}`);
   const bodyTags = optionalStringList(bodyFragment, bodyFields.tags, `entity:${bodyId}`);
   const rowTags = Array.isArray(row.tags) ? stringList(row.tags, `entity:${bodyId}.tags`) : [];
@@ -202,6 +237,7 @@ function materializeBody(
     id: bodyId,
     kind,
     position,
+    ...(massQ === undefined ? {} : { massQ }),
     rotationDeg: optionalVector(bodyFragment, bodyFields.rotation, { x: 0, y: 0, z: 0 }, `entity:${bodyId}`),
     velocity: optionalVector(bodyFragment, bodyFields.velocity, { x: 0, y: 0, z: 0 }, `entity:${bodyId}`),
     angularVelocityDeg: optionalVector(bodyFragment, bodyFields.angular_velocity, { x: 0, y: 0, z: 0 }, `entity:${bodyId}`),
@@ -209,6 +245,60 @@ function materializeBody(
     enabled: bodyFields.enabled && bodyFragment[bodyFields.enabled] !== undefined ? booleanValue(bodyFragment[bodyFields.enabled], `entity:${bodyId}.${bodyFields.enabled}`) : true,
     tags: uniqueSorted([...kernelTags, ...rowTags, ...bodyTags]),
     data: { kernel_entity_id: bodyId, kernel_entity_root: row.entity_root, kernel_state_root: source.state_root }
+  };
+}
+
+function materializeCharacter(
+  row: KernelStateRow,
+  body: ReturnType<typeof materializeBody>,
+  characterFragment: Record<string, VSRValue>,
+  characterFields: KernelSpatialCharacterFields
+): SpatialCharacterSpec {
+  const characterId = text(characterFragment[characterFields.id], `entity:${row.entity_id}.${characterFields.id}`);
+  const bodyId = characterFields.body_id && characterFragment[characterFields.body_id] !== undefined
+    ? text(characterFragment[characterFields.body_id], `entity:${row.entity_id}.${characterFields.body_id}`)
+    : body.id;
+  fail(bodyId === body.id, 'KERNEL_BINDING_CHARACTER_BODY_MISMATCH', `${characterId}:${bodyId}:${body.id}`);
+  const walkSpeed = integer(characterFragment[characterFields.walk_speed], `entity:${row.entity_id}.${characterFields.walk_speed}`);
+  const acceleration = integer(characterFragment[characterFields.acceleration], `entity:${row.entity_id}.${characterFields.acceleration}`);
+  const jumpSpeed = integer(characterFragment[characterFields.jump_speed], `entity:${row.entity_id}.${characterFields.jump_speed}`);
+  fail(walkSpeed >= 0 && acceleration >= 0 && jumpSpeed >= 0, 'KERNEL_BINDING_CHARACTER_VALUE_INVALID', characterId);
+  const optionalInteger = (field: string | undefined): number | undefined => field && characterFragment[field] !== undefined
+    ? integer(characterFragment[field], `entity:${row.entity_id}.${field}`)
+    : undefined;
+  const optionalText = (field: string | undefined): string | undefined => field && characterFragment[field] !== undefined
+    ? text(characterFragment[field], `entity:${row.entity_id}.${field}`)
+    : undefined;
+  const airControlQ = optionalInteger(characterFields.air_control_q);
+  const groundProbe = optionalInteger(characterFields.ground_probe);
+  const maxSlopeDeg = optionalInteger(characterFields.max_slope_deg);
+  const footstepDistance = optionalInteger(characterFields.footstep_distance);
+  const stepHeight = optionalInteger(characterFields.step_height);
+  const groundSnapDistance = optionalInteger(characterFields.ground_snap_distance);
+  const skinWidth = optionalInteger(characterFields.skin_width);
+  const platformInheritanceQ = optionalInteger(characterFields.platform_inheritance_q);
+  const coyoteTicks = optionalInteger(characterFields.coyote_ticks);
+  const jumpBufferTicks = optionalInteger(characterFields.jump_buffer_ticks);
+  const leftFootZone = optionalText(characterFields.left_foot_zone);
+  const rightFootZone = optionalText(characterFields.right_foot_zone);
+  return {
+    id: characterId,
+    bodyId,
+    walkSpeed,
+    acceleration,
+    jumpSpeed,
+    ...(airControlQ === undefined ? {} : { airControlQ }),
+    ...(groundProbe === undefined ? {} : { groundProbe }),
+    ...(maxSlopeDeg === undefined ? {} : { maxSlopeDeg }),
+    ...(footstepDistance === undefined ? {} : { footstepDistance }),
+    ...(stepHeight === undefined ? {} : { stepHeight }),
+    ...(groundSnapDistance === undefined ? {} : { groundSnapDistance }),
+    ...(skinWidth === undefined ? {} : { skinWidth }),
+    ...(platformInheritanceQ === undefined ? {} : { platformInheritanceQ }),
+    ...(coyoteTicks === undefined ? {} : { coyoteTicks }),
+    ...(jumpBufferTicks === undefined ? {} : { jumpBufferTicks }),
+    ...(leftFootZone === undefined ? {} : { leftFootZone }),
+    ...(rightFootZone === undefined ? {} : { rightFootZone }),
   };
 }
 
@@ -225,17 +315,22 @@ export function materializeKernelStateBatch(batch: KernelStateBatch, options: Ke
   const source = { world_id: options.world_id ?? batch.world_id, generation: batch.generation, generation_root: batch.generation_root, tick: batch.tick, state_root: batch.state_root, batch_root: batch.batch_root };
   const bodyFragmentId = options.body_fragment_id ?? 'spatial.body';
   const fixtureFragmentId = options.fixture_fragment_id ?? 'spatial.fixture';
-  const bodyFields: KernelSpatialBodyFields = { kind: 'kind', position: 'position', rotation: 'rotation', velocity: 'velocity', angular_velocity: 'angular_velocity', tags: 'tags', enabled: 'enabled', ...options.body_fields };
+  const characterFragmentId = options.character_fragment_id ?? 'spatial.character';
+  const bodyFields: KernelSpatialBodyFields = { kind: 'kind', position: 'position', mass_q: 'mass_q', rotation: 'rotation', velocity: 'velocity', angular_velocity: 'angular_velocity', tags: 'tags', enabled: 'enabled', ...options.body_fields };
   const fixtureFields: KernelSpatialFixtureFields = { shape: 'shape', local_position: 'local_position', sensor: 'sensor', material_id: 'material_id', body_zone: 'body_zone', tags: 'tags', ...options.fixture_fields };
+  const characterFields: KernelSpatialCharacterFields = { id: 'character_id', body_id: 'body_id', walk_speed: 'walk_speed', acceleration: 'acceleration', air_control_q: 'air_control_q', jump_speed: 'jump_speed', ground_probe: 'ground_probe', max_slope_deg: 'max_slope_deg', footstep_distance: 'footstep_distance', left_foot_zone: 'left_foot_zone', right_foot_zone: 'right_foot_zone', step_height: 'step_height', ground_snap_distance: 'ground_snap_distance', skin_width: 'skin_width', platform_inheritance_q: 'platform_inheritance_q', coyote_ticks: 'coyote_ticks', jump_buffer_ticks: 'jump_buffer_ticks', ...options.character_fields };
   const rows = [...batch.rows].sort((a, b) => a.entity_id.localeCompare(b.entity_id));
   const seen = new Set<string>();
   const entityBindings: KernelSpatialEntityBinding[] = [];
+  const characters: SpatialCharacterSpec[] = [];
   const bodies = rows.map(row => {
     const entityId = text(row.entity_id, 'row.entity_id');
     fail(!seen.has(entityId), 'KERNEL_BINDING_ENTITY_DUPLICATE', entityId);
     seen.add(entityId);
     fail(HEX64.test(row.entity_root), 'KERNEL_BINDING_ENTITY_ROOT_INVALID', entityId);
     const body = materializeBody(row, fragment(row, bodyFragmentId, `entity:${entityId}`), fragment(row, fixtureFragmentId, `entity:${entityId}`), bodyFields, fixtureFields, source);
+    const characterFragment = optionalFragment(row, characterFragmentId, `entity:${entityId}`);
+    if (characterFragment) characters.push(materializeCharacter(row, body, characterFragment, characterFields));
     entityBindings.push({ entity_id: entityId, entity_root: row.entity_root, body_id: body.id, fixture_id: body.fixtures[0]!.id, body_fragment_id: bodyFragmentId, fixture_fragment_id: fixtureFragmentId });
     return body;
   });
@@ -249,6 +344,7 @@ export function materializeKernelStateBatch(batch: KernelStateBatch, options: Ke
     positionIterations: options.position_iterations ?? 4,
     maxSubsteps: options.max_substeps ?? 16,
     bodies,
+    ...(characters.length > 0 ? { characters: characters.sort((a, b) => a.id.localeCompare(b.id)) } : {}),
     reality: { generation: source.generation, realityRoot: source.state_root, evidenceRoot: source.batch_root }
   };
   const base = { format: KERNEL_RSR_BINDING_FORMAT, version: '0.1.0' as const, source, entity_bindings: entityBindings, config: deepClone(config) };

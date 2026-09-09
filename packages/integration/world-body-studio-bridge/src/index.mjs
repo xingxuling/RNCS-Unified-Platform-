@@ -501,22 +501,17 @@ function aetherShape(shape, bodyId, fixtureId) {
   fail('STUDIO_WB_AETHER_SHAPE_UNSUPPORTED', `Fixture ${fixtureId} on ${bodyId} cannot be lowered to the Kernel spatial fragment`);
 }
 
+function aetherCharacterBindings(bundle) {
+  const bodiesById = new Map(bundle.worldBody.ir.physicalBodyState.bodies.map(body => [body.id, body]));
+  return (bundle.sidecar.preserved_source_facets?.character_runtime ?? []).map(character => ({
+    character,
+    body: bodiesById.get(character.bodyId) ?? null,
+  }));
+}
+
 function aetherProjectionLosses(bundle) {
   const ir = bundle.worldBody.ir;
   const losses = [];
-  const dynamicBodies = ir.physicalBodyState.bodies
-    .filter(body => body.kind === 'dynamic' && body.massGrams > 0)
-    .map(body => ({ bodyId: body.id, massGrams: body.massGrams }));
-  if (dynamicBodies.length > 0) {
-    losses.push({
-      code: 'RCL_GAP_WB_AETHER_MASS',
-      severity: 'blocking-loss',
-      sourceFacet: 'physicalBodyState.massGrams',
-      target: 'rncs.entity-state-batch.v0.1/spatial.body',
-      detail: 'The existing Kernel spatial materializer does not consume body mass; mass remains only in the projection sidecar.',
-      bodies: dynamicBodies,
-    });
-  }
   const secondaryFixtures = ir.physicalBodyState.bodies
     .filter(body => body.fixtures.length > 1)
     .map(body => ({ bodyId: body.id, fixtureIds: body.fixtures.map(fixture => fixture.id) }));
@@ -544,14 +539,18 @@ function aetherProjectionLosses(bundle) {
     });
   }
   const sourceFacets = bundle.sidecar.preserved_source_facets;
-  if ((sourceFacets?.character_count ?? 0) > 0) {
+  const characterBindings = aetherCharacterBindings(bundle);
+  const unboundCharacters = characterBindings
+    .filter(item => !item.body || typeof item.character.id !== 'string' || item.character.id.length === 0)
+    .map(item => ({ characterId: item.character.id ?? null, bodyId: item.character.bodyId ?? null }));
+  if (unboundCharacters.length > 0) {
     losses.push({
       code: 'RCL_GAP_WB_AETHER_CHARACTER_FACETS',
       severity: 'blocking-loss',
       sourceFacet: 'Studio source characters',
       target: 'Aether Reality Cell',
-      detail: 'Character controller and character runtime facets remain sidecar-only in this projection.',
-      count: sourceFacets.character_count,
+      detail: 'Some Studio character facets do not bind to a physical World Body entity for the existing RSR character contract.',
+      characters: unboundCharacters,
     });
   }
   if ((sourceFacets?.joint_count ?? 0) > 0) {
@@ -599,12 +598,15 @@ function createAetherEntityStateProjection(bundle, options = {}) {
   if (losses.length > 0 && options.allowLossyProjection !== true) {
     fail('STUDIO_WB_AETHER_LOSSY_PROJECTION_BLOCKED', 'Aether projection would discard World Body facets; set allowLossyProjection:true for an explicit candidate experiment', { losses });
   }
+  const characterByBodyId = new Map(aetherCharacterBindings(bundle).filter(item => item.body).map(item => [item.body.id, item.character]));
   const rows = ir.physicalBodyState.bodies.map(body => {
     const fixture = body.fixtures[0];
+    const character = characterByBodyId.get(body.id);
     const fragments = {
       'spatial.body': {
         kind: body.kind,
         position: body.transform.positionMm,
+        ...(body.massGrams > 0 ? { mass_q: body.massGrams * 1000 } : {}),
         rotation: quaternionToEulerMilliDegrees(body.transform.rotation),
         velocity: body.linearVelocityMmPerSecond ?? { x: 0, y: 0, z: 0 },
         angular_velocity: body.angularVelocityMilliDegPerSecond ?? { x: 0, y: 0, z: 0 },
@@ -619,6 +621,27 @@ function createAetherEntityStateProjection(bundle, options = {}) {
         ...(fixture.bodyZone === undefined ? {} : { body_zone: fixture.bodyZone }),
         tags: fixture.tags ?? [],
       },
+      ...(character ? {
+        'spatial.character': {
+          character_id: character.id,
+          body_id: body.entityId,
+          walk_speed: character.walkSpeed,
+          acceleration: character.acceleration,
+          ...(character.airControlQ === undefined ? {} : { air_control_q: character.airControlQ }),
+          jump_speed: character.jumpSpeed,
+          ...(character.groundProbe === undefined ? {} : { ground_probe: character.groundProbe }),
+          ...(character.maxSlopeDeg === undefined ? {} : { max_slope_deg: character.maxSlopeDeg }),
+          ...(character.footstepDistance === undefined ? {} : { footstep_distance: character.footstepDistance }),
+          ...(character.leftFootZone === undefined ? {} : { left_foot_zone: character.leftFootZone }),
+          ...(character.rightFootZone === undefined ? {} : { right_foot_zone: character.rightFootZone }),
+          ...(character.stepHeight === undefined ? {} : { step_height: character.stepHeight }),
+          ...(character.groundSnapDistance === undefined ? {} : { ground_snap_distance: character.groundSnapDistance }),
+          ...(character.skinWidth === undefined ? {} : { skin_width: character.skinWidth }),
+          ...(character.platformInheritanceQ === undefined ? {} : { platform_inheritance_q: character.platformInheritanceQ }),
+          ...(character.coyoteTicks === undefined ? {} : { coyote_ticks: character.coyoteTicks }),
+          ...(character.jumpBufferTicks === undefined ? {} : { jump_buffer_ticks: character.jumpBufferTicks }),
+        },
+      } : {}),
     };
     const rowBase = { entity_id: body.entityId, tags: body.tags ?? [], fragments };
     return { ...rowBase, entity_root: rootHash(rowBase) };
@@ -644,7 +667,7 @@ function createAetherEntityStateProjection(bundle, options = {}) {
     tick: ir.temporalPresentationState.clock.tick,
     state_root: stateRoot,
     entity_ids: rows.map(row => row.entity_id),
-    fragment_ids: ['spatial.body', 'spatial.fixture'],
+    fragment_ids: ['spatial.body', 'spatial.fixture', ...(rows.some(row => row.fragments['spatial.character']) ? ['spatial.character'] : [])],
     rows,
   };
   const batch = { ...batchBase, batch_root: rootHash(batchBase) };
@@ -664,6 +687,7 @@ function createAetherEntityStateProjection(bundle, options = {}) {
     mapping: {
       coordinate_unit: 'millimetre-preserved',
       rotation_unit: 'milli-degree-euler-lowered-from-canonical-quaternion',
+      mass_unit: 'grams-to-rsr-mass-q-by-multiply-1000',
       selected_fixture: 'first-fixture-only',
       source_facet_retention: 'sidecar-and-loss-list-only',
     },

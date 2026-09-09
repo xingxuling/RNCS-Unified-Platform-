@@ -22,7 +22,7 @@
 | Visual | VSR v0.8 CPU reference、glTF/GLB/PBR、动画图、蒙皮/morph、WebGPU 编码/真实 Chromium 边界 | 本地 VSR/RSR 专项套件已通过；真实 Chromium 与 fake device 不是目标硬件帧率或跨设备生产证明。 |
 | Assets | RAGF 资产创生、资产连续性、GLB/材质/动画候选和 Studio 资产数据库 | 本地候选生产与导入链可运行；外部文生 3D Provider、专业 DCC 回写、电影/AAA 质量和生产资产服务仍未闭合。 |
 | Network | Studio network authoring/compiler v1.6，Network Runtime v0.2 的编译世界、预测、回滚、丢包/重排测试 | 当前是本地确定性/故障注入证据，不是真实跨节点部署、攻击面、安全密钥或生产 SLA 证据。 |
-| Large World | Large World Runtime v0.1.0-alpha.7 的 WorldSeed→Region→Chunk、有限工作集、URRF/VSR、复制、持久化和恢复 | package 自身测试已取得 36/36 PASS；该路径没有接入 Studio/Build，也没有在 `rncs.modules.json` 中登记，当前不能称为产品级统一世界管线。 |
+| Large World | Large World Runtime v0.1.0-alpha.7 的 WorldSeed→Region→Chunk、有限工作集、URRF/VSR、复制、持久化和恢复 | package 自身测试已取得 36/36 PASS，本轮已补齐 URRF/Large World 模块登记；该路径仍没有接入 Studio/Build，当前不能称为产品级统一世界管线。 |
 | World Body | World Body IR/codegen v0.1：Declaration→IR→RSR/VSR/temporal/network/render-graph/RCL 候选产物 | IR 36/36、codegen 12/12；9 个生成产物和 manifest 为候选且禁止 commit。现有 evidence 明确把真实 GPU、外部物理、真实分布式网络、生产资产 Provider、目标硬件和完整生产差分记为 `UNVERIFIED`。 |
 | Build | Reality Build v0.2：Unified Project→validate/preflight→Behavior+RSR evidence→asset bake→targets→receipt | Web、Windows portable/native EXE、Android project/debug APK、headless/replay 有真实本地路径；release APK/AAB、嵌入式原生渲染、完整 3D RSR/GPU 和设备矩阵仍开放。 |
 
@@ -52,7 +52,7 @@ WorldSeed / Chunk runtime
 2. `apps/reality-build/src/runtime-evidence.mjs` 从 Unified Project 创建 `UnifiedManufacturingSession`，直接重放 Behavior/Spatial trace 并生成 Build evidence；它不消费 World Body IR 或 codegen manifest。
 3. `packages/world/world-body-codegen/src/index.mjs` 只接受 `taowind.world-declaration.v0.1`，生成 RSR config、VSR bindings、temporal/network、render graph、event routes、RCL 和 proof template；新 bridge 在 integration 层提供了候选 Unified Project adapter，但 codegen core 没有被 Studio/Build 语义污染。
 4. Studio 的 Network Compiler 已经拥有 `project_root`、`spatial_workspace_root`、`source_world_root`、`active_scene_root`、`authoring_root`、`world_config_root` 和 asset binding roots，但这些根没有被映射到 World Body roots。
-5. `rncs.modules.json` 登记了 Studio/Build 与 World Body 包，却没有让 Studio/Build 依赖 World Body；Large World Runtime 和 URRF 也没有 registry entry。这是能力可发现性/测试编排缺口，不应靠重复胶水解决。
+5. `rncs.modules.json` 登记了 Studio/Build 与 World Body 包，却没有让 Studio/Build 依赖 World Body；本轮已把既有 URRF 与 Large World Runtime 纳入 registry 和 workspace test 编排，但它们仍没有 Studio/Build consumer。这是能力可发现性与共享执行链缺口，不应靠重复胶水解决。
 
 语义覆盖也不是一一对应：Studio Unified Project 还拥有 behavior、input、sequencer、UI、spatial3d 和 network facets；Studio 的 network fixture 实际覆盖 6 bodies、3 characters、2 asset bindings、2 player slots。World Body IR v0.1 当前有 authority、physical、visual、temporal、assets、observers、events 七类状态 root，另有 BodyMap 与 Render Graph set root；codegen 只对这些声明生成 specialization。它没有直接承载 Studio 的 character controller、joint/material/listener、behavior/UI/input/audio、network transport profile 或 Large World streaming。因而下一步不能把这些字段静默丢进 World Body，也不能把它们硬塞入 World Body core；必须保留 facet owner，并用显式 sidecar/root binding 证明覆盖和缺口。
 
@@ -119,7 +119,7 @@ Studio Unified Project
 - Network Compilation root `af43344d519e3e09c46efe09318f66685489d8732f0b50ccd8db482dd2a21531`、Studio project root、workspace root、source world root、scene root 均在 sidecar 中保留并校验。
 - 回归：World Body IR `36/36 PASS`，World Body codegen `12/12 PASS`，World Body formal theory `8/8 PASS`，Studio network compiler `6/6 PASS`，Network Runtime `27/27 PASS`，Aether bridge `28/28 PASS`，VSR `122/122 + 99/99 + 6/6 + 4/4 + 21/21 + 11/11 PASS`，RSR build suites 全部通过。
 
-该 adapter 关闭了“Studio authoring 能否进入既有 World Body compiler”的候选入口，并新增了显式有损的 Aether Cell runtime projection；Reality Build 通过独立的 request candidate seam 已能消费 presentation candidate，但默认生产链和 Large World Runtime 仍未接入，也没有闭合质量/资产/网络/多 fixture 语义，因此 `RCL_GAP_RNCS_SHARED_WORLD_COMPILATION_SPINE` 仍未关闭，只是拆成可验证的 ingress、runtime projection 和 Build consumer 子缺口。没有新增 K400 PASS。
+该 adapter 关闭了“Studio authoring 能否进入既有 World Body compiler”的候选入口，并新增了显式有损的 Aether Cell runtime projection；Reality Build 通过独立的 request candidate seam 已能消费 presentation candidate，但默认生产链和 Large World Runtime 仍未接入。共享 Kernel spatial donor 本轮已把动态质量通过 `spatial.body.mass_q → SpatialBodySpec.massQ`、角色控制器通过 `spatial.character` 闭合，视觉资产、网络和多 fixture 语义仍未闭合，因此 `RCL_GAP_RNCS_SHARED_WORLD_COMPILATION_SPINE` 仍未关闭，只是拆成可验证的 ingress、runtime projection、Build consumer 和 donor contract 子缺口。没有新增 K400 PASS。
 
 ## 本轮 World Body → Aether runtime projection
 
@@ -135,16 +135,16 @@ candidate World Body IR
 
 1. 默认遇到不可逆语义损失就 `STUDIO_WB_AETHER_LOSSY_PROJECTION_BLOCKED`；只有调用者明确传入 `allowLossyProjection: true` 才会执行实验性 candidate projection。
 2. World Body 的 `worldBodyRoot`、semantic declaration root、source reality root、projection root、Kernel batch root 和 Aether runtime roots 分开保存；Aether 结果不获得 World Body authority，也没有 commit/release 权限。
-3. 当前 Kernel spatial materializer 每实体只接收一个 `spatial.fixture`，所以 adapter 明确记录 `first-fixture-only`；动态质量不在既有 spatial fragment 中消费，只保留为 loss；视觉 asset bindings、Studio character facets 和 Network Compilation 也保持 loss/sidecar，不伪装成已接入。
+3. 当前 Kernel spatial materializer 每实体只接收一个 `spatial.fixture`，所以 adapter 明确记录 `first-fixture-only`；动态质量现在通过可选 `spatial.body.mass_q` 进入既有 `SpatialBodySpec.massQ`，Studio character facets 通过 `spatial.character` 进入既有 RSR character contract，并在 RSR snapshot 中验证；视觉 asset bindings 和 Network Compilation 仍保持 loss/sidecar，不伪装成已接入。
 4. `verifyStudioWorldBodyAetherProjection()` 将 receipt root 与实际 runtime roots 绑定，篡改 runtime receipt 或 root 会失败。
 
 本地真实执行：
 
 - bridge 测试：`12/12 PASS`，其中默认有损阻断、显式有损 projection runtime、receipt tamper 共 `3` 个下游测试。
 - `npm run demo:aether-runtime --workspace @taowind/world-body-studio-bridge`：`PASS_CANDIDATE_LOSSY_RUNTIME`；6 个实体进入已有 RSR snapshot 和 `cell:studio-world`，Reality Cell state verification 为 true，并生成 kernel/batch/binding/RSR/cell/VSR scene/frame/pixel roots。
-- 本次 candidate projection root 为 `eed158eab242389ecd984119b25f3c6cba7b6e916ced35ceed3c8aa5bf9df415`，receipt root 为 `c1af2490f299647b57ff4a854fe242116ff2475c470438782082a5146e7a4a13`；loss codes 为 `RCL_GAP_WB_AETHER_MASS`、`RCL_GAP_WB_AETHER_VISUAL_ASSET_BINDING`、`RCL_GAP_WB_AETHER_CHARACTER_FACETS`、`RCL_GAP_WB_AETHER_NETWORK_BINDING`。
+- 本次 candidate projection root 为 `ce5f406ba2d6487d34f74a619dbf82e271b36adb4c41ec77a47d4f0a696eb230`，receipt root 为 `9e3f84e186984d31c37871012f96a88c009abe6fef4c5aea2d5a5c1b2e14c97f`；loss codes 为 `RCL_GAP_WB_AETHER_VISUAL_ASSET_BINDING`、`RCL_GAP_WB_AETHER_NETWORK_BINDING`。动态质量和 3 个 Studio character facets 已由 shared Kernel donor 传递并在 runtime snapshot 中验证。
 
-这证明的是“已有 runtime seam 能消费一份被明确标注为有损的 candidate projection”，不是 World Body 已经完整驱动物理、资产、角色、网络或生产渲染。下一阶段必须优先补齐 loss 的 owner/contract，或让更高层 consumer 在没有语义丢失时再允许 projection；不能把 `allowLossyProjection` 推进为默认产品路径。
+这证明的是“已有 runtime seam 能消费一份被明确标注为有损的 candidate projection”，不是 World Body 已经完整驱动物理、资产、网络或生产渲染。下一阶段必须优先补齐剩余 loss 的 owner/contract，或让更高层 consumer 在没有语义丢失时再允许 projection；不能把 `allowLossyProjection` 推进为默认产品路径。
 
 ## 本轮 World Body → Reality Build candidate consumer
 
@@ -173,13 +173,13 @@ Studio World Body candidate + existing Studio spatial VSR scene
 - candidate `presentationRoot=e3cfe526626a55c42714e43f2711d6308a442e10df323529f2b6a22870ce2fcf`，`presentationSourceRoot=8abf6e07cd4efe4dbc6696c51ac2c8f977c66abc576879e15a9d9b824d21815c`，6 个 body bindings 全部映射。
 - 完整 Build candidate run：`verification.valid=true`，Build receipt root `933715340cc51703a2d5b006360a7528d313298d8b834391ad107b1102eeb9b6`，runtime evidence root `6fb2c73682a32cd72c89b15a34a96305f7a22fb5e8844d0c0eab5b99ef146f16`；evidence 中 `presentation_scene_source_root` 与 candidate source root 相等，presentation frame root 与 spatial frame root 均为 `cc9e93802263aacd07fc478a6c5eec8224237a5955c3908672a9badd35e3f8b3`。
 
-这只关闭了 Build 的显式 candidate consumer 接缝；它没有把 candidate 自动晋升为默认 build authority，也没有关闭 Aether projection 的质量/资产/角色/网络 loss、Large World 接入、WebGPU 或真实设备矩阵。
+这只关闭了 Build 的显式 candidate consumer 接缝；它没有把 candidate 自动晋升为默认 build authority，也没有关闭 Aether projection 的资产/网络 loss、多 fixture 语义、Large World 接入、WebGPU 或真实设备矩阵。
 
 ## 结构判断
 
 ### 限制性瓶颈
 
-当前存在两个有先后关系的瓶颈：`RCL_GAP_RNCS_RELEASE_3D_BROWSER_SCRIPT_PACKAGING` 已完成一个本地候选修复并通过三个 Build target 的真实浏览器回归，但 Android embedded 独立浏览器运行和 WebGPU/目标设备仍未验证；结构性瓶颈仍是 `RCL_GAP_RNCS_SHARED_WORLD_COMPILATION_SPINE`，其 Studio ingress、Aether runtime projection 和 Build candidate consumer 已有证据，但 projection 的质量/资产/角色/网络 loss 尚未闭合，默认 Studio/World Body/Large World/Build 生产链也仍未共同进入同一 runtime seam。
+当前存在两个有先后关系的瓶颈：`RCL_GAP_RNCS_RELEASE_3D_BROWSER_SCRIPT_PACKAGING` 已完成一个本地候选修复并通过三个 Build target 的真实浏览器回归，但 Android embedded 独立浏览器运行和 WebGPU/目标设备仍未验证；结构性瓶颈仍是 `RCL_GAP_RNCS_SHARED_WORLD_COMPILATION_SPINE`，其 Studio ingress、Aether runtime projection、shared mass/character donor 和 Build candidate consumer 已有证据，但 projection 的资产/网络/多 fixture loss 尚未闭合，默认 Studio/World Body/Large World/Build 生产链也仍未共同进入同一 runtime seam。
 
 这不是“再写一个引擎子系统”的缺口，而是已有子系统不能共同承载同一个世界工件的缺口。应把 Aether bridge 作为下游 runtime donor；若直接在 Studio、Build、Large World 各自添加转换，或重新实现 Reality Cell/资产生命周期，会产生重复语义、root 混淆和无法回滚的并行系统。
 
@@ -193,7 +193,7 @@ Studio World Body candidate + existing Studio spatial VSR scene
 
 ## 下一最小高杠杆候选
 
-第一优先的 Build 3D classic-script packaging 已完成局部候选修复和真实浏览器回归；Studio→World Body→Aether 已完成候选 ingress 与有损 runtime projection，Build 也能通过显式 request candidate 绑定同一 World Body source root。下一阶段应优先解决 Aether loss 与 Large World consumer 的共同 contract，不能复制 Reality Cell/streaming/render glue，只做：
+第一优先的 Build 3D classic-script packaging 已完成局部候选修复和真实浏览器回归；Studio→World Body→Aether 已完成候选 ingress、有损 runtime projection 和 shared mass/character donor，Build 也能通过显式 request candidate 绑定同一 World Body source root。下一阶段应优先解决剩余 Aether loss 与 Large World consumer 的共同 contract，不能复制 Reality Cell/streaming/render glue，只做：
 
 ```text
 Unified Project + selected spatial world + scene/asset roots
@@ -202,7 +202,7 @@ Unified Project + selected spatial world + scene/asset roots
   → existing Aether Cell/runtime projection and Studio/Build evidence as sidecars
 ```
 
-第一轮 ingress 已以 `examples/studio-authored-network-world-v03/project.mjs` 为 fixture 验证：确定性 World Declaration/codegen、Studio roots 与 World Body roots 的显式绑定、Network compilation root 保持、模型 kind lowering、2D transform 不越权、篡改/缺失资产/非法 authority 负例闭合；第二轮验证有损 candidate bundle 能进入 Aether Cell 并保持各级 runtime roots；第三轮验证 Build request candidate 能将同一 source root 写入 runtime evidence 并通过 Build 自校验。下一轮应优先解决质量/asset/character/network facet 的明确 loss，再做 Large World consumer；任何晋升为默认产品路径的动作仍需独立 authority/设备证据。
+第一轮 ingress 已以 `examples/studio-authored-network-world-v03/project.mjs` 为 fixture 验证：确定性 World Declaration/codegen、Studio roots 与 World Body roots 的显式绑定、Network compilation root 保持、模型 kind lowering、2D transform 不越权、篡改/缺失资产/非法 authority 负例闭合；第二轮验证有损 candidate bundle 能进入 Aether Cell 并保持各级 runtime roots；第三轮验证 Build request candidate 能将同一 source root 写入 runtime evidence 并通过 Build 自校验；第四轮把动态质量经 shared `mass_q` donor 传入 RSR；第五轮把 3 个 Studio character facets 经 shared `spatial.character` donor 传入 RSR 并验证。下一轮应优先解决 asset/network/multi-fixture facet 的明确 loss，再做 Large World consumer；任何晋升为默认产品路径的动作仍需独立 authority/设备证据。
 
 ## K400 / 证据裁决
 

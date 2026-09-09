@@ -38,9 +38,9 @@ test('Aether projection reports and blocks semantic losses by default', () => {
   const bundle = compileStudioWorldBodyCandidate(project, { networkCompilation });
   const inspection = inspectStudioWorldBodyAetherProjection(bundle);
   const codes = inspection.losses.map(loss => loss.code);
-  assert.ok(codes.includes('RCL_GAP_WB_AETHER_MASS'));
+  assert.equal(codes.includes('RCL_GAP_WB_AETHER_MASS'), false);
+  assert.equal(codes.includes('RCL_GAP_WB_AETHER_CHARACTER_FACETS'), false);
   assert.ok(codes.includes('RCL_GAP_WB_AETHER_VISUAL_ASSET_BINDING'));
-  assert.ok(codes.includes('RCL_GAP_WB_AETHER_CHARACTER_FACETS'));
   assert.ok(codes.includes('RCL_GAP_WB_AETHER_NETWORK_BINDING'));
   assert.throws(
     () => compileStudioWorldBodyAetherProjection(bundle),
@@ -53,6 +53,10 @@ test('explicit lossy Aether projection executes the existing RSR, Cell, and VSR 
   const bundle = compileStudioWorldBodyCandidate(project, { networkCompilation });
   const projection = compileStudioWorldBodyAetherProjection(bundle, { allowLossyProjection: true });
   const bodyIds = projection.batch.entity_ids;
+  const dynamicBody = bundle.worldBody.ir.physicalBodyState.bodies.find(body => body.kind === 'dynamic');
+  assert.ok(dynamicBody);
+  const dynamicRow = projection.batch.rows.find(row => row.entity_id === dynamicBody.entityId);
+  assert.equal(dynamicRow.fragments['spatial.body'].mass_q, dynamicBody.massGrams * 1000);
   const result = await projectStudioWorldBodyCandidateToRealityCell(bundle, {
     allowLossyProjection: true,
     cellCatalog: [{ id: 'cell:studio-world', center: [0, 0, 0], radius: 1_000_000, bodyIds, priority: 10 }],
@@ -70,6 +74,9 @@ test('explicit lossy Aether projection executes the existing RSR, Cell, and VSR 
   assert.equal(verifyStudioWorldBodyAetherProjection(result), true);
   assert.equal(result.runtime.snapshot.bodies.length, bodyIds.length);
   assert.equal(result.runtime.snapshot.bodies.reduce((sum, body) => sum + body.fixtures.length, 0), bodyIds.length);
+  assert.equal(result.runtime.snapshot.bodies.find(body => body.id === dynamicBody.entityId).massQ, dynamicBody.massGrams * 1000);
+  assert.deepEqual(result.runtime.snapshot.characters.map(character => character.id), ['studio-character:blue', 'studio-character:red', 'subject:player']);
+  assert.equal(result.runtime.snapshot.characters.find(character => character.id === 'subject:player').bodyId, 'entity:studio:avatar');
   assert.equal(result.runtime.cellState.activeCellIds.includes('cell:studio-world'), true);
   assert.equal(typeof result.runtime.projection.framePlan.frameRoot, 'string');
   assert.equal(typeof result.runtime.projection.pixelRoot, 'string');

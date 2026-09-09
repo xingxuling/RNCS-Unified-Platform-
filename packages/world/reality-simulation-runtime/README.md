@@ -21,7 +21,7 @@ RSR是RNCS的三维权威状态、物理接触、角色具身和可验证重放�
 
 ## Entity Kernel Binding
 
-- `materializeKernelStateBatch(...)` 将 `rncs.entity-state-batch.v0.1` 的 typed Fragment rows 按实体根确定性物化为 RSR authority body/fixture；Kernel 状态根保留在 `config.reality.realityRoot`，批次根保留为 evidence root。
+- `materializeKernelStateBatch(...)` 将 `rncs.entity-state-batch.v0.1` 的 typed Fragment rows 按实体根确定性物化为 RSR authority body/fixture；`spatial.body.mass_q`（可选）保留到既有 `SpatialBodySpec.massQ`，`spatial.character`（可选）保留到既有 RSR character specs，缺省时维持兼容的默认质量/无角色配置；Kernel 状态根保留在 `config.reality.realityRoot`，批次根保留为 evidence root。
 - `projectKernelStateBatchToVSR(...)` 沿同一条 body/fixture 快照路径生成 VSR scene、frame plan 和 pixel root，并把 `kernel-entity:<id>` 标签与实体根写入投影数据。
 - Aether bridge 的 `projectKernelStateToReality(...)` 接受真实 `EntityKernel` 或已封存 batch，先验证 `batch_root`，再提供 Node 侧的跨运行时入口。
 

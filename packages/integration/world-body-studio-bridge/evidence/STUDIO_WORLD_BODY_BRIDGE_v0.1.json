@@ -8,7 +8,8 @@
     "npm run demo --workspace @taowind/world-body-studio-bridge",
     "npm run test:generated-runtime --workspace @taowind/world-body-studio-bridge",
     "npm run demo:aether-runtime --workspace @taowind/world-body-studio-bridge",
-    "node --test --test-concurrency=1 apps/reality-build/tests/world-body-candidate.test.mjs"
+    "node --test --test-concurrency=1 apps/reality-build/tests/world-body-candidate.test.mjs",
+    "npm test --workspace @taowind/large-world-runtime"
   ],
   "tests": {
     "adapter": "12/12 PASS",
@@ -22,8 +23,9 @@
     "studioNetworkCompiler": "6/6 PASS",
     "networkRuntime": "27/27 PASS",
     "aetherBridge": "28/28 PASS",
+    "largeWorldRuntime": "36/36 PASS after materializing the registered reality-representation-fabric donor",
     "visualStateRuntime": "122/122 + 99/99 + 6/6 + 4/4 + 21/21 + 11/11 PASS",
-    "realitySimulationRuntime": "all local build suites PASS"
+    "realitySimulationRuntime": "build PASS; shared Kernel mass_q and spatial.character bindings consumed by Aether regression"
   },
   "upstreamRegression": {
     "realityStudio": "244 PASS / 1 FAIL / 1 SKIP",
@@ -53,26 +55,24 @@
     "status": "PASS_CANDIDATE_LOSSY_RUNTIME",
     "authority": "candidate-runtime-projection-only",
     "sourceWorldBodyRoot": "90adf7100e1c2e2514a8e8ba94e9c0475a5a84b72d1e2138e11322c0eb9c374a",
-    "projectionRoot": "eed158eab242389ecd984119b25f3c6cba7b6e916ced35ceed3c8aa5bf9df415",
-    "receiptRoot": "c1af2490f299647b57ff4a854fe242116ff2475c470438782082a5146e7a4a13",
+    "projectionRoot": "ce5f406ba2d6487d34f74a619dbf82e271b36adb4c41ec77a47d4f0a696eb230",
+    "receiptRoot": "9e3f84e186984d31c37871012f96a88c009abe6fef4c5aea2d5a5c1b2e14c97f",
     "lossCodes": [
-      "RCL_GAP_WB_AETHER_MASS",
       "RCL_GAP_WB_AETHER_VISUAL_ASSET_BINDING",
-      "RCL_GAP_WB_AETHER_CHARACTER_FACETS",
       "RCL_GAP_WB_AETHER_NETWORK_BINDING"
     ],
     "cellStateVerified": true,
     "bodyCount": 6,
     "activeCellIds": ["cell:studio-world"],
     "runtimeRoots": {
-      "kernel_state_root": "2d2d7b4f72bc404c2f0e21eead81eb48d693b107012febea52ad9712d364f5de",
-      "kernel_batch_root": "5521e507426ea02e5b641eb16b007d60c9beedac6072a496dbf85ce60c0e5b1f",
-      "binding_root": "fnv1a64:9e90de60c466248e",
-      "rsr_state_root": "fnv1a64:ed883b1d60ca3aed",
-      "rsr_body_root": "fnv1a64:53940af3e08f56bf",
-      "cell_state_root": "adaff68835691dba3d0ade04d5ce4ee82fcca7701f9902345b55050d7b36c8ca",
-      "vsr_scene_root": "fnv1a64:f76ff6dec1a68d6b",
-      "vsr_frame_root": "951c3a8957a8b2b79db993f1d1c181777a8b4b92ced0e8f93dbfe5753380c7ea",
+      "kernel_state_root": "d0bf5f1450a952da7cab43150f7de42326e1de965de4b13a8f4bcd6c91677613",
+      "kernel_batch_root": "5feab823dbf645b2e59e43be4d319bef5b1a87f761d6f30fb1263c36f452072d",
+      "binding_root": "fnv1a64:cde3d8e20c9c13f6",
+      "rsr_state_root": "fnv1a64:4084fba4f53e3471",
+      "rsr_body_root": "fnv1a64:ae12974b1c9f1b90",
+      "cell_state_root": "4e563d35b857b4c35a679c5452748a7f3db0aa510d9d91fa552293ebe9bd8127",
+      "vsr_scene_root": "fnv1a64:ecd133f70ecb8d6e",
+      "vsr_frame_root": "57d666ee5a30e0e3e9423518ebdeca62486d88c9439ccba15b90f75b31034839",
       "vsr_pixel_root": "93f376611bba435c781d7313767051a953383a1e8c832cc09404ddcfcec497c9"
     }
   },
@@ -93,10 +93,10 @@
     "candidate artifact generation only; no commit or promotion authority",
     "model-3d is explicitly lowered to mesh and source kind is retained in sidecar",
     "2D scene transforms are preserved as source metadata and are not converted into 3D authority",
-    "Aether Cell candidate projection executed, but dynamic mass, visual asset binding, character facets, and network compilation are explicit losses",
+    "Aether Cell candidate projection executed; dynamic mass and character facets now lower through shared Kernel spatial contracts, while visual asset binding and network compilation remain explicit losses",
     "Reality Build candidate consumer executed and verified; default Build path remains unchanged, Large World consumer and target hardware remain unverified",
     "no new K400 PASS"
   ],
   "authority": "candidate-artifact-generation-only-no-commit",
-  "evidenceRoot": "877fe35f99fb48e96fbca5645ab53253ff6939670b0c68960475942099ae6a44"
+  "evidenceRoot": "bb7b895f44d10cb7ec546df1dbb6c58de22c00637a45c608e4a641bae23af4d8"
 }
