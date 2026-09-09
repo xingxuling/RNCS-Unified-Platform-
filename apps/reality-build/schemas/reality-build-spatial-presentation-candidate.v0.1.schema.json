@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.example/schemas/reality-build-spatial-presentation-candidate.v0.1.schema.json",
+  "title": "Reality Build Spatial Presentation Candidate v0.1",
+  "type": "object",
+  "required": ["format", "version", "authority", "presentation"],
+  "properties": {
+    "format": {"const": "reality-build.spatial-presentation-candidate.v0.1"},
+    "version": {"const": "0.1.0-alpha.1"},
+    "authority": {"const": "candidate-build-presentation-only"},
+    "presentation": {
+      "type": "object",
+      "required": ["format", "version", "authority", "project_root", "source", "scene_root", "bindings", "scene", "presentation_source_root", "presentation_root"],
+      "properties": {
+        "format": {"const": "reality-build.spatial-presentation-candidate.v0.1"},
+        "version": {"const": "0.1.0-alpha.1"},
+        "authority": {"const": "candidate-build-presentation-only"},
+        "project_root": {"type": "string", "minLength": 1},
+        "source": {"type": "object"},
+        "scene_root": {"type": "string", "minLength": 1},
+        "bindings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["body_id", "node_id", "position_scale"],
+            "properties": {
+              "body_id": {"type": "string", "minLength": 1},
+              "node_id": {"type": "string", "minLength": 1},
+              "position_scale": {"type": "number", "exclusiveMinimum": 0}
+            },
+            "additionalProperties": true
+          }
+        },
+        "scene": {
+          "type": "object",
+          "required": ["format", "nodes"],
+          "properties": {
+            "format": {"const": "vsr.spatial-scene.v0.4"},
+            "nodes": {"type": "array"}
+          },
+          "additionalProperties": true
+        },
+        "presentation_source_root": {"type": "string", "minLength": 1},
+        "presentation_root": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

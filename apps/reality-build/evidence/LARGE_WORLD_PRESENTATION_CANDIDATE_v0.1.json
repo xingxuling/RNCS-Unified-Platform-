@@ -1,0 +1,54 @@
+{
+  "format": "taowind.reality-build.large-world-presentation-candidate-evidence.v0.1",
+  "status": "PASS_CANDIDATE",
+  "fixture": "apps/reality-build/tests/large-world-presentation-candidate.test.mjs",
+  "commands": [
+    "node --test apps/reality-build/tests/large-world-presentation-candidate.test.mjs",
+    "npm test --workspace @taowind/reality-build-fabric"
+  ],
+  "tests": {
+    "focused": "2/2 PASS",
+    "realityBuildSuite": "137 tests / 129 pass / 0 fail / 8 skip",
+    "largeWorldScene": "verifyLargeWorldSpatialScene.valid=true",
+    "build": "buildProject verification.valid=true; verifyBuild.valid=true"
+  },
+  "source": {
+    "kind": "large-world-runtime",
+    "worldId": "world:large-build-candidate",
+    "seed": "bridge-seed",
+    "generation": 1,
+    "activeChunkCount": 4,
+    "activeCellCount": 4,
+    "nodeCount": 17,
+    "qualityProfile": "MOBILE"
+  },
+  "roots": {
+    "worldRoot": "1f029d391607727c142a26504e62beec21420b979f3eec4cd52d753b33e726ac",
+    "regionRoot": "577b3252fcc9f969b62840c923c07013df1fa8b54e2cda59a876f70e2f756d5b",
+    "selectionRoot": "8ac362376bc9ac9ab4d640c233a893eed014f9c1d5edeb06ad95118f0f7e770c",
+    "nativeSceneRoot": "6d2189c4ae01259be0f7c3cb7e06a713a96e9c53669aeb7d73535dd2aaabc673",
+    "candidateSceneContentRoot": "a86127f411c7e98d33d96657c9b1fa30fd95e1955ddfca9ecf3574a08e345eb8",
+    "presentationSourceRoot": "61fc0af2040fce5ab44fa077639c8e955958c494342f02ba3f8286f0fd4c6183",
+    "presentationRoot": "a49ec2c65663f85d854e5f8e18e2234757f5126591c0763913e2cd4ad2afda78",
+    "buildId": "build:3167a203d9d5086cb083fb34",
+    "buildKey": "3167a203d9d5086cb083fb349afec82466488a8580ba541901756ed69122d3aa",
+    "runtimeEvidenceRoot": "2976c26d04540e59d4243276211cc2dcccbdb64097725458df8d81b9ea44fbff",
+    "presentationFrameRoot": "55be3408c050024cb5bd1a90105fc0254a17551d10695a8b77def313a18b7405"
+  },
+  "coverage": {
+    "bindings": 0,
+    "projectRootBound": true,
+    "sceneTamperRejected": true,
+    "crossProjectCandidateRejected": true,
+    "defaultBuildPathChanged": false
+  },
+  "boundaries": [
+    "candidate-build-presentation-only; no commit or release authority",
+    "Large World scene remains URRF/VSR representation candidate and does not become RSR physical truth",
+    "rncs:// candidate asset references are not automatically baked into target packages by this seam",
+    "no target GPU, Android device, distributed transport/session, or production streaming claim",
+    "no new K400 PASS"
+  ],
+  "authority": "candidate-artifact-generation-only-no-commit",
+  "evidenceRoot": "82aaade39e8f32ad16fbec25e29ba961b08e36e8a0a8e22dc74d1752bf4544fd"
+}

@@ -75,7 +75,10 @@ export function verifyBuild(outRoot){
 export function buildProject(input={}){
   const request=assertRequest(input?.format?input:normalizeBuildRequest(input));
   if(!fs.existsSync(request.project_file))throw new BuildError('PROJECT_FILE_NOT_FOUND',request.project_file);
-  const sourceProject=assertProject(readJson(request.project_file)),assetDatabase=syncAssetDatabase({project:sourceProject,request}),project=assertProject(assetDatabase.project),identity=createBuildIdentity(request,project,{asset_database_root:assetDatabase.evidence?.database_root??null}),outRoot=request.output_dir;
+  const sourceProject=assertProject(readJson(request.project_file)),assetDatabase=syncAssetDatabase({project:sourceProject,request}),project=assertProject(assetDatabase.project);
+  const candidateProjectRoot=request.presentation_candidate?.presentation?.project_root;
+  if(candidateProjectRoot!==undefined&&candidateProjectRoot!==project.project_root)throw new BuildError('PRESENTATION_CANDIDATE_PROJECT_ROOT_MISMATCH','', {expected:project.project_root,actual:candidateProjectRoot});
+  const identity=createBuildIdentity(request,project,{asset_database_root:assetDatabase.evidence?.database_root??null}),outRoot=request.output_dir;
   if(fs.existsSync(path.join(outRoot,'build-receipt.json'))){const existing=verifyBuild(outRoot);if(existing.valid&&existing.receipt.build_key===identity.build_key)return{...existing.receipt,cache_hit:true,asset_cache_summary:assetDatabase.observation?.summary??null,output_dir:outRoot,verification:existing};}
   emptyDir(outRoot);const graph=createBuildGraph(request,project,identity);writeJson(path.join(outRoot,'build-graph.json'),graph);
   const started=performance.now(),metrics=[];

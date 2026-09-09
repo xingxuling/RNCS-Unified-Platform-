@@ -21,4 +21,5 @@
 - Browser VSR WebGPU executor: implemented for Web Release, single-file, Windows Portable and embedded Android HTML targets; build-time GPU resources plus per-Tick dynamic entity/light bindings, tiled lights, particles, postprocess and Canvas/device-loss fallback are verified
 - Browser-native RSR 2D authority bridge: implemented for behavior-bound colliders; browser targets execute the compiled `SpatialEmbodimentWorld`, publish spatial roots/events, and synchronize its body state back into the host frame
 - Browser GPU frame now derives dynamic vertex/light buffers from the current BehaviorRuntime state and re-seals its evidence roots per Tick; full 3D RSR/GPU execution, native rendering, and complete device-matrix validation remain open work
+- Candidate-only VSR presentation consumer: implemented for explicit World Body and generic Large World presentation candidates; default authoring/build path is unchanged and target asset streaming/network/device execution remain open
 - Release-signed APK/AAB: not implemented

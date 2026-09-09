@@ -1,6 +1,7 @@
 import path from 'node:path';
 import {clone,rootHash,seal,verifySeal,BuildError,fixedIso,safeName} from './canonical.mjs';
 import {verifyWorldBodyBuildPresentationCandidate} from './world-body-candidate.mjs';
+import {verifySpatialPresentationCandidate} from './presentation-candidate.mjs';
 
 export const BUILD_FORMAT='reality-build.request.v0.1';
 export const BUILD_VERSION='0.2.0-alpha.1';
@@ -76,7 +77,7 @@ export function validateBuildRequest(r){
   need(Number.isInteger(r?.app?.version_code)&&r.app.version_code>0,'VERSION_CODE_INVALID','app.version_code');
   need(Array.isArray(r?.runtime_trace),'RUNTIME_TRACE_INVALID','runtime_trace');
   need(Array.isArray(r?.spatial_trace),'SPATIAL_TRACE_INVALID','spatial_trace');
-  if(r?.presentation_candidate!==null&&r?.presentation_candidate!==undefined)need(verifyWorldBodyBuildPresentationCandidate(r.presentation_candidate),'WORLD_BODY_PRESENTATION_CANDIDATE_INVALID','presentation_candidate');
+  if(r?.presentation_candidate!==null&&r?.presentation_candidate!==undefined)need(verifyWorldBodyBuildPresentationCandidate(r.presentation_candidate)||verifySpatialPresentationCandidate(r.presentation_candidate),'PRESENTATION_CANDIDATE_INVALID','presentation_candidate');
   if(r?.asset_database?.enabled){
     need(Boolean(r.asset_database.cache_dir),'ASSET_DATABASE_CACHE_DIR_REQUIRED','asset_database.cache_dir');
     need(Array.isArray(r.asset_database.source_roots),'ASSET_DATABASE_SOURCE_ROOTS_INVALID','asset_database.source_roots');

@@ -92,6 +92,18 @@ Build request 可以显式携带 `presentation_candidate`。`@taowind/reality-bu
 
 这条路径不会自动获得 commit 或 release authority。缺失 body node 默认阻断；`presentation_scene_source_root` 与 `presentation_binding_count` 会出现在 runtime evidence 中，并可通过 `verifyBuild()` 验证。它证明的是 Build consumer 的 root 连续性，不等于已闭合 World Body 的质量、资产、角色、网络或目标硬件能力。
 
+## Large World spatial presentation candidate
+
+Reality Build 还接受通用的 `reality-build.spatial-presentation-candidate.v0.1`。`createSpatialPresentationCandidate()` 可以直接封装已有 `vsr.spatial-scene.v0.4`，因此 Large World Runtime 的 `createSpatialScene()` 能通过同一个 `compileBoundPresentationScene()` 与 Build runtime evidence 接通：
+
+```text
+WorldSeed → Region → Chunk → URRF selection → VSR spatial scene
+  → candidate presentation_root / presentation_source_root
+  → Reality Build runtime evidence / target receipt
+```
+
+该接缝保持 source reference、scene root、project root 和 candidate-only authority；没有 body bindings 时不会伪造 RSR physical bodies。当前证据证明的是本地 Build 对 4 个 active streaming cells、17 个 VSR nodes 和 CPU-reference spatial frame 的消费与自校验，不等于 Large World 已经进入 Web/Android 的资产流送、网络 transport、目标 GPU 或真实设备产品路径。
+
 ## 诚实边界
 
 - `windows-native` 是真实 Windows GUI EXE，不依赖 BAT 或 Node.js；但 v0.2 的渲染宿主仍使用 Windows 自带或已安装的 Edge/Chrome，而不是内嵌 Chromium/WebView2 Runtime。
@@ -99,3 +111,4 @@ Build request 可以显式携带 `presentation_candidate`。`@taowind/reality-bu
 - 正式商店 Android 发布仍需用户的 release keystore、AAB、商店元数据与真实设备矩阵。
 - 原生 GPU、原生音频、增量补丁、自动更新和代码签名证书尚未完成。
 - 浏览器 `web-release` 仍使用现有 Behavior 浏览器 runtime；RSR 物理、空间快照与导航目前作为 RNCS 构建证据和 headless 运行时接入，尚未声称已经替换浏览器渲染器。
+- Large World spatial presentation candidate 仍是显式 candidate request；默认 Studio/Build authoring path 不变，`rncs://` candidate asset references 也尚未被该 Build seam 自动烘焙成目标包内的生产资产。
