@@ -74,6 +74,7 @@ test('network compilation is optional but its absence remains an explicit gap', 
   assert.ok(bundle.manifest.gaps.some(gap => gap.includes('network compilation was not supplied')));
 });
 
+
 test('network compilation roots are verified before ingress', () => {
   const { project, networkCompilation } = fixture();
   const tampered = structuredClone(networkCompilation);

@@ -9,7 +9,8 @@
   "files": ["src", "examples", "tests", "evidence", "README.md", "rncs.module.json"],
   "scripts": {
     "test": "node --test --test-concurrency=1 tests/*.test.mjs",
-    "demo": "node examples/studio-network-world-body-demo.mjs"
+    "demo": "node examples/studio-network-world-body-demo.mjs",
+    "test:generated-runtime": "node examples/studio-network-world-body-runtime-demo.mjs"
   },
   "engines": { "node": ">=20" },
   "dependencies": {

@@ -114,6 +114,7 @@ Studio Unified Project
 本地真实执行：
 
 - `npm test --workspace @taowind/world-body-studio-bridge`：`9/9 PASS`，包含 bundle tamper、declaration tamper、network-root tamper、unsupported asset kind、missing active world 和 no-network-compilation 负例。
+- `npm run test:generated-runtime --workspace @taowind/world-body-studio-bridge`：独立子进程把临时生成的 9 个 artifact 写入隔离目录，并执行既有 `world-body.generated.test.mjs`；`1/1 PASS`，实际闭合生成 RSR config、VSR bindings、rollback snapshot、network envelope 和 tamper rejection。
 - `npm run demo --workspace @taowind/world-body-studio-bridge`：fixture 的 `6` 个 spatial bodies 进入 `6` 个 World Body entities，`2` 个 scene/body bindings，`4` 个 synthetic visuals，`1` 个 asset lowering，生成 `9` 个既有 codegen artifacts；candidate `worldBodyRoot=90adf7100e1c2e2514a8e8ba94e9c0475a5a84b72d1e2138e11322c0eb9c374a`，`semanticDeclarationRoot=a12fbbffa4b9ca5421530b944a8c2cd3312b4c8413952ef863dca58290630c2f`。
 - Network Compilation root `af43344d519e3e09c46efe09318f66685489d8732f0b50ccd8db482dd2a21531`、Studio project root、workspace root、source world root、scene root 均在 sidecar 中保留并校验。
 - 回归：World Body IR `36/36 PASS`，World Body codegen `12/12 PASS`，World Body formal theory `8/8 PASS`，Studio network compiler `6/6 PASS`，Network Runtime `27/27 PASS`，Aether bridge `28/28 PASS`，VSR `122/122 + 99/99 + 6/6 + 4/4 + 21/21 + 11/11 PASS`，RSR build suites 全部通过。

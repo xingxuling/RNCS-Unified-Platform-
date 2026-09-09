@@ -5,10 +5,12 @@
   "fixture": "examples/studio-authored-network-world-v03/project.mjs",
   "commands": [
     "npm test --workspace @taowind/world-body-studio-bridge",
-    "npm run demo --workspace @taowind/world-body-studio-bridge"
+    "npm run demo --workspace @taowind/world-body-studio-bridge",
+    "npm run test:generated-runtime --workspace @taowind/world-body-studio-bridge"
   ],
   "tests": {
     "adapter": "9/9 PASS",
+    "generatedCandidateRuntime": "1/1 PASS",
     "worldBodyIr": "36/36 PASS",
     "worldBodyCodegen": "12/12 PASS",
     "worldBodyFormalTheory": "8/8 PASS",
@@ -50,5 +52,5 @@
     "no new K400 PASS"
   ],
   "authority": "candidate-artifact-generation-only-no-commit",
-  "evidenceRoot": "fc9ceb0a0e788362dd4138e35c8d64bd2057892c5a426bf043face8eb48964ac"
+  "evidenceRoot": "d886bb7f0446b7959d6b2627167e6ae900c91360e64e8b47d64270862b60e464"
 }
