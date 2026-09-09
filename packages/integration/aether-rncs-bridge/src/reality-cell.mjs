@@ -144,8 +144,8 @@ function remapAssetMaterial(material,prefix,textureIds){
   return result;
 }
 
-function mergeImportedAssetScene(baseScene,imported,asset,placement,resourceAssetIds=[]){
-  const prefix=`cell-asset:${asset.id}:`,meshIds=new Map(imported.scene.meshes.map(mesh=>[mesh.id,`${prefix}mesh:${mesh.id}`])),textureIds=new Map((imported.scene.textures??[]).map(texture=>[texture.id,`${prefix}texture:${texture.id}`])),nodeIds=new Map(imported.scene.nodes.map(node=>[node.id,`${prefix}node:${node.id}`])),skinIds=new Map((imported.scene.skins??[]).map(skin=>[skin.id,`${prefix}skin:${skin.id}`])),materialIds=new Map(imported.scene.materials.map(material=>[material.id,`${prefix}material:${material.id}`])),animationIds=new Map((imported.scene.animations??[]).map(animation=>[animation.id,`${prefix}animation:${animation.id}`])),rootNodeIds=new Set(imported.scene.nodes.filter(node=>!node.parentId||!nodeIds.has(node.parentId)).map(node=>node.id));
+function mergeImportedAssetScene(baseScene,imported,asset,placement,resourceAssetIds=[],instanceId=asset.id){
+  const prefix=`cell-asset:${instanceId}:`,meshIds=new Map(imported.scene.meshes.map(mesh=>[mesh.id,`${prefix}mesh:${mesh.id}`])),textureIds=new Map((imported.scene.textures??[]).map(texture=>[texture.id,`${prefix}texture:${texture.id}`])),nodeIds=new Map(imported.scene.nodes.map(node=>[node.id,`${prefix}node:${node.id}`])),skinIds=new Map((imported.scene.skins??[]).map(skin=>[skin.id,`${prefix}skin:${skin.id}`])),materialIds=new Map(imported.scene.materials.map(material=>[material.id,`${prefix}material:${material.id}`])),animationIds=new Map((imported.scene.animations??[]).map(animation=>[animation.id,`${prefix}animation:${animation.id}`])),rootNodeIds=new Set(imported.scene.nodes.filter(node=>!node.parentId||!nodeIds.has(node.parentId)).map(node=>node.id));
   const nodes=imported.scene.nodes.map(node=>({...node,id:nodeIds.get(node.id),...(node.parentId?{parentId:nodeIds.get(node.parentId)}:{}),...(node.meshId?{meshId:meshIds.get(node.meshId)}:{}),...(node.materialId?{materialId:materialIds.get(node.materialId)}:{}),...(node.skinId?{skinId:skinIds.get(node.skinId)}:{}),tags:[...(node.tags??[]),`asset:${asset.id}`,...(rootNodeIds.has(node.id)?['asset-root']:[])],...(rootNodeIds.has(node.id)&&placement?{transform:{...(node.transform??{}),...placement}}:{})}));
   const materials=imported.scene.materials.map(material=>remapAssetMaterial(material,prefix,textureIds));
   const skins=(imported.scene.skins??[]).map(skin=>({...skin,id:skinIds.get(skin.id),joints:skin.joints.map(nodeId=>nodeIds.get(nodeId)??nodeId)}));
@@ -154,7 +154,7 @@ function mergeImportedAssetScene(baseScene,imported,asset,placement,resourceAsse
   const assetNodeIds=nodes.map(node=>node.id).sort((a,b)=>a.localeCompare(b));
   const streamCells=(baseScene.streaming?.cells??[]).map(cell=>asset.cellIds?.includes(cell.id)?{...cell,nodeIds:uniqueSorted([...(cell.nodeIds??[]),...assetNodeIds])}:cell);
   const scene={...baseScene,meshes:[...baseScene.meshes,...imported.scene.meshes.map(mesh=>({...mesh,id:meshIds.get(mesh.id)}))],materials:[...baseScene.materials,...materials],textures:[...(baseScene.textures??[]),...(imported.scene.textures??[]).map(texture=>({...texture,id:textureIds.get(texture.id)}))],nodes:[...baseScene.nodes,...nodes],skins:[...(baseScene.skins??[]),...skins],animations:[...(baseScene.animations??[]),...animations],lights:[...baseScene.lights,...lights],...(baseScene.streaming?{streaming:{...baseScene.streaming,cells:streamCells}}:{})};
-  const bindingBase={format:'rncs.reality-cell-asset-binding.v0.1',assetId:asset.id,assetFormat:assetFormat(asset),payloadRoot:asset.sha256,resourceAssetIds:uniqueSorted(resourceAssetIds),importReceiptRoot:imported.receipt.receiptRoot,meshIds:[...meshIds.values()].sort(),materialIds:[...materialIds.values()].sort(),textureIds:[...textureIds.values()].sort(),nodeIds:assetNodeIds};
+  const bindingBase={format:'rncs.reality-cell-asset-binding.v0.1',assetId:asset.id,...(instanceId===asset.id?{}:{instanceId}),assetFormat:assetFormat(asset),payloadRoot:asset.sha256,resourceAssetIds:uniqueSorted(resourceAssetIds),importReceiptRoot:imported.receipt.receiptRoot,meshIds:[...meshIds.values()].sort(),materialIds:[...materialIds.values()].sort(),textureIds:[...textureIds.values()].sort(),nodeIds:assetNodeIds};
   return {scene,binding:{...bindingBase,bindingRoot:rootHash(bindingBase)}};
 }
 
@@ -178,34 +178,37 @@ export function createRealityCellAssetRuntime(assetCatalog,loader,{maxConcurrent
   };
 }
 
-export async function bindRealityCellAssetScene(runtime,state,scene,{assetIds,placements={}}={}){
+export async function bindRealityCellAssetScene(runtime,state,scene,{assetIds,placements={},instances}={}){
   assertAssetRuntime(runtime);
   const verification=verifyRealityCellState(state);
   fail(verification.ok,'REALITY_CELL_STATE_INVALID');
   fail(scene?.format,'REALITY_CELL_SCENE_INVALID');
   let receipt;
   try{
-    receipt=await acquireRealityCellAssets(runtime,state);
-    const catalog=new Map((runtime.catalog??[]).map(asset=>[asset.id,asset])),targets=Array.isArray(assetIds)?uniqueSorted(assetIds):receipt.readyAssetIds.filter(id=>['glb','gltf'].includes(assetFormat(catalog.get(id)))),gltf=targets.length?await import('@taowind/visual-state-runtime/gltf-asset'):undefined;
+    const requestedInstances=Array.isArray(instances)&&instances.length>0?instances.map((item,index)=>({assetId:String(item?.assetId??''),instanceId:String(item?.instanceId??`${item?.assetId??'asset'}:instance:${index}`),placement:item?.placement??placements?.[item?.assetId]})):undefined;
+    if(requestedInstances?.some(item=>!item.assetId||!item.instanceId))throw new TypeError('REALITY_CELL_ASSET_INSTANCE_INVALID');
+    if(requestedInstances&&new Set(requestedInstances.map(item=>item.instanceId)).size!==requestedInstances.length)throw new TypeError('REALITY_CELL_ASSET_INSTANCE_DUPLICATE');
+    receipt=await acquireRealityCellAssets(runtime,state,{requestedAssetIds:requestedInstances?.map(item=>item.assetId)});
+    const catalog=new Map((runtime.catalog??[]).map(asset=>[asset.id,asset])),targets=requestedInstances??(Array.isArray(assetIds)?uniqueSorted(assetIds).map(id=>({assetId:id,instanceId:id,placement:placements?.[id]})):receipt.readyAssetIds.filter(id=>['glb','gltf'].includes(assetFormat(catalog.get(id)))).map(id=>({assetId:id,instanceId:id,placement:placements?.[id]}))),gltf=targets.length?await import('@taowind/visual-state-runtime/gltf-asset'):undefined;
     let boundScene=clone(scene);const bindings=[];
-    for(const id of targets){
-      const asset=catalog.get(id),bytes=runtime.get?.(id);
+    for(const target of targets){
+      const id=target.assetId,asset=catalog.get(id),bytes=runtime.get?.(id);
       fail(asset&&receipt.readyAssetIds.includes(id),'REALITY_CELL_ASSET_NOT_READY');
       const format=assetFormat(asset);
       fail(['glb','gltf'].includes(format),'REALITY_CELL_ASSET_FORMAT_UNSUPPORTED');
       fail(bytes instanceof Uint8Array,'REALITY_CELL_ASSET_BYTES_MISSING');
       let imported,resourceAssetIds=[];
-      if(format==='glb')imported=gltf.importGlbToSpatialScene(bytes,{sceneId:`cell-asset:${id}`,title:`Cell Asset ${id}`,defaultCamera:true,sourceRoot:asset.sha256});
+      if(format==='glb')imported=gltf.importGlbToSpatialScene(bytes,{sceneId:`cell-asset:${target.instanceId}`,title:`Cell Asset ${id}`,defaultCamera:true,sourceRoot:asset.sha256});
       else{
         const document=parseGltfJson(bytes),external=resolveGltfExternalResources(asset,document,catalog,receipt,runtime);
         resourceAssetIds=external.resourceAssetIds;
-        imported=await gltf.importGltfToSpatialSceneAsync(document,{sceneId:`cell-asset:${id}`,title:`Cell Asset ${id}`,defaultCamera:true,buffers:external.buffers,imageBytes:external.imageBytes,imageDecoder:decodeGltfExternalImage,sourceRoot:rootHash({assetRoot:asset.sha256,resources:external.resources})});
+        imported=await gltf.importGltfToSpatialSceneAsync(document,{sceneId:`cell-asset:${target.instanceId}`,title:`Cell Asset ${id}`,defaultCamera:true,buffers:external.buffers,imageBytes:external.imageBytes,imageDecoder:decodeGltfExternalImage,sourceRoot:rootHash({assetRoot:asset.sha256,resources:external.resources})});
       }
       fail(gltf.verifyGltfImportReceipt(imported.receipt),'REALITY_CELL_GLTF_RECEIPT_INVALID');
-      const merged=mergeImportedAssetScene(boundScene,imported,asset,placements?.[id],resourceAssetIds);
+      const merged=mergeImportedAssetScene(boundScene,imported,asset,target.placement,resourceAssetIds,target.instanceId);
       boundScene=merged.scene;bindings.push(merged.binding);
     }
-    const base={format:'rncs.reality-cell-asset-scene-binding.v0.1',cellStateRoot:state.root,assetStreamingRoot:state.assetStreaming.root,assetIds:bindings.map(binding=>binding.assetId).sort(),bindings};
+    const base={format:'rncs.reality-cell-asset-scene-binding.v0.1',cellStateRoot:state.root,assetStreamingRoot:state.assetStreaming.root,assetIds:bindings.map(binding=>binding.assetId).sort(),instanceIds:bindings.map(binding=>binding.instanceId??binding.assetId).sort(),bindings};
     return {format:base.format,scene:boundScene,receipt,assetBindings:bindings,bindingRoot:rootHash(base)};
   }catch(error){
     if(receipt)releaseRealityCellAssets(runtime,receipt);
@@ -398,7 +401,7 @@ export async function projectKernelStateToRealityCell(source,{query={},...option
   const batch=readKernelStateBatch(source,query),rsr=await (await import('@taowind/reality-simulation-runtime')).spatial(),vsr=await (await import('@taowind/reality-simulation-runtime')).spatialVsr();
   const binding=rsr.materializeKernelStateBatch(batch,options),world=new rsr.SpatialEmbodimentWorld(binding.config);
   if((options.advance_ticks??0)>0)world.run(Math.floor(options.advance_ticks),options.commands??[]);
-  const snapshot=world.snapshot(),projectionOptions={...options,cameraPosition:options.cameraPosition??options.observerPosition??[7,5,9]},baseScene=vsr.spatialEmbodimentSnapshotToVSRScene(snapshot,projectionOptions),cellState=resolveRealityCellState(snapshot,baseScene,projectionOptions),streamingScene={...baseScene,streaming:cellState.vsr.config},assetBinding=options.assetSceneRuntime?await options.assetSceneRuntime.bind(cellState,streamingScene,{assetIds:options.assetSceneAssetIds,placements:options.assetScenePlacements}):options.assetRuntime?await bindRealityCellAssetScene(options.assetRuntime,cellState,streamingScene,{assetIds:options.assetSceneAssetIds,placements:options.assetScenePlacements}):undefined,projection=vsr.projectSpatialEmbodiment(snapshot,{...projectionOptions,sceneOverride:assetBinding?.scene??streamingScene,streaming:cellState.vsr.config,streamingOptions:cellState.vsr.options,assetStreaming:cellState.assetStreaming});
+  const snapshot=world.snapshot(),projectionOptions={...options,cameraPosition:options.cameraPosition??options.observerPosition??[7,5,9]},baseScene=vsr.spatialEmbodimentSnapshotToVSRScene(snapshot,projectionOptions),cellState=resolveRealityCellState(snapshot,baseScene,projectionOptions),streamingScene={...baseScene,streaming:cellState.vsr.config},assetBinding=options.assetSceneRuntime?await options.assetSceneRuntime.bind(cellState,streamingScene,{assetIds:options.assetSceneAssetIds,placements:options.assetScenePlacements,instances:options.assetSceneInstances}):options.assetRuntime?await bindRealityCellAssetScene(options.assetRuntime,cellState,streamingScene,{assetIds:options.assetSceneAssetIds,placements:options.assetScenePlacements,instances:options.assetSceneInstances}):undefined,projection=vsr.projectSpatialEmbodiment(snapshot,{...projectionOptions,sceneOverride:assetBinding?.scene??streamingScene,streaming:cellState.vsr.config,streamingOptions:cellState.vsr.options,assetStreaming:cellState.assetStreaming});
   const roots={kernel_state_root:batch.state_root,kernel_batch_root:batch.batch_root,binding_root:binding.binding_root,rsr_state_root:snapshot.stateRoot,rsr_body_root:snapshot.bodyRoot,cell_state_root:cellState.root,vsr_scene_root:vsr.spatialEmbodimentSceneRoot(projection.scene),vsr_frame_root:projection.framePlan.frameRoot,vsr_pixel_root:projection.pixelRoot,...(cellState.assetStreaming?{asset_streaming_root:cellState.assetStreaming.root}:{}),...(assetBinding?{asset_binding_root:assetBinding.bindingRoot}:{}),...(assetBinding?.lifecycle?{asset_transition_root:assetBinding.lifecycle.lifecycleRoot}:{})};
   const base={format:'rncs.kernel-rsr-vsr-reality-cell.v0.1',version:REALITY_CELL_VERSION,roots};
   return {...base,binding,snapshot,cellState,projection,assetBinding,binding_root:rootHash(base)};

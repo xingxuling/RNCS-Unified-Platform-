@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { createRealityCellAssetRuntime } from '@taowind/aether-rncs-bridge';
 import { createStudioNetworkWorld } from '../../../../examples/studio-authored-network-world-v03/project.mjs';
 import {
   StudioWorldBodyBridgeError,
@@ -15,6 +16,26 @@ import {
 function fixture() {
   const created = createStudioNetworkWorld();
   return { project: created.session.project, networkCompilation: created.compilation };
+}
+
+function assetRuntime(project, assetId) {
+  const source = project.assets.registry[assetId];
+  const file = source.files.find(item => item.mime === 'model/gltf-binary');
+  const bytes = Buffer.from(file.embedded_base64, 'base64');
+  const catalog = [{
+    id: assetId,
+    uri: `memory://${assetId}.glb`,
+    format: 'glb',
+    sha256: file.sha256,
+    byteLength: bytes.length,
+    kind: 'mesh',
+    cellIds: ['cell:studio-world'],
+    priority: 100,
+  }];
+  return {
+    bytes,
+    runtime: createRealityCellAssetRuntime(catalog, async () => new Uint8Array(bytes), { maxConcurrent: 2 }),
+  };
 }
 
 test('Studio network fixture enters the existing World Body codegen spine', () => {
@@ -80,6 +101,41 @@ test('explicit lossy Aether projection executes the existing RSR, Cell, and VSR 
   assert.equal(result.runtime.cellState.activeCellIds.includes('cell:studio-world'), true);
   assert.equal(typeof result.runtime.projection.framePlan.frameRoot, 'string');
   assert.equal(typeof result.runtime.projection.pixelRoot, 'string');
+});
+
+test('Aether projection lowers verified Studio asset instances and network observer relevance', async () => {
+  const { project, networkCompilation } = fixture();
+  const bundle = compileStudioWorldBodyCandidate(project, { networkCompilation });
+  const asset = assetRuntime(project, 'asset:studio-network-player');
+  const bodyIds = bundle.worldBody.ir.physicalBodyState.bodies.map(body => body.entityId);
+  const result = await projectStudioWorldBodyCandidateToRealityCell(bundle, {
+    cellCatalog: [{ id: 'cell:studio-world', center: [0, 0, 0], radius: 1_000_000, bodyIds, priority: 10 }],
+    assetRuntime: asset.runtime,
+    assetStreamingRequest: { maxAssets: 1, maxBytes: asset.bytes.length },
+    bindNetworkObserver: true,
+    observerPosition: [0, 0, 0],
+    cameraPosition: [7, 5, 9],
+    maxObjects: 1,
+    width: 320,
+    height: 180,
+    qualityTier: 'balanced',
+  });
+  assert.deepEqual(result.losses, []);
+  assert.equal(result.assetBindingPlan.instances.length, 2);
+  assert.deepEqual(result.runtime.assetBinding.assetBindings.map(binding => binding.instanceId), [
+    'world-body:entity:studio:studio-player-blue:node:studio:studio-player-blue',
+    'world-body:entity:studio:studio-player-red:node:studio:studio-player-red',
+  ]);
+  assert.deepEqual(result.networkBinding.focusBodyIds, [
+    'entity:studio:studio-player-blue',
+    'entity:studio:studio-player-red',
+  ]);
+  assert.equal(result.runtime.cellState.relevanceView.profile.observerId, result.networkBinding.observerId);
+  assert.equal(result.runtime.cellState.relevanceView.sessionId, result.networkBinding.sessionId);
+  assert.equal(result.receipt.losses.length, 0);
+  assert.equal(verifyStudioWorldBodyAetherProjection(result), true);
+  asset.runtime.release(result.runtime.assetBinding.receipt.leasedAssetIds);
+  asset.runtime.evict(result.runtime.assetBinding.receipt.leasedAssetIds);
 });
 
 test('Aether projection receipt tampering is detected', async () => {

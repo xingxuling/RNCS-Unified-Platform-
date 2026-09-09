@@ -1,5 +1,6 @@
 import {
   canonicalClone,
+  composeBodyMapTransform,
   isSha256,
   quaternionToEulerMilliDegrees,
   semanticHash,
@@ -509,7 +510,94 @@ function aetherCharacterBindings(bundle) {
   }));
 }
 
-function aetherProjectionLosses(bundle) {
+function aetherAssetInstancePlan(bundle) {
+  const ir = bundle.worldBody.ir;
+  const physicalByEntityId = new Map(ir.physicalBodyState.bodies.map(body => [body.entityId, body]));
+  const bodyMapByEntityId = new Map(ir.bodyMaps.map(bodyMap => [bodyMap.entityId, bodyMap]));
+  return ir.visualBodyState.bodies.flatMap(visualBody => visualBody.nodes
+    .filter(node => node.assetRef !== undefined)
+    .map(node => {
+      const physical = physicalByEntityId.get(visualBody.entityId);
+      const bodyMap = bodyMapByEntityId.get(visualBody.entityId);
+      const composed = physical && bodyMap ? composeBodyMapTransform(physical.transform, bodyMap.visualOnlyOffset) : null;
+      const instanceId = `world-body:${visualBody.entityId}:${node.id}`;
+      return {
+        assetId: node.assetRef,
+        instanceId,
+        bodyId: visualBody.entityId,
+        nodeId: node.id,
+        parentId: node.parentId ?? null,
+        ...(composed ? {
+          placementQ: {
+            positionMm: composed.positionMm,
+            rotationMilliDegrees: quaternionToEulerMilliDegrees(composed.rotation),
+            scaleQ: composed.scale,
+          },
+          placement: {
+            translation: [composed.positionMm.x / 1000, composed.positionMm.y / 1000, composed.positionMm.z / 1000],
+            rotationEulerDeg: Object.values(quaternionToEulerMilliDegrees(composed.rotation)).map(value => value / 1000),
+            scale: [composed.scale.x / composed.scale.scale, composed.scale.y / composed.scale.scale, composed.scale.z / composed.scale.scale],
+          },
+        } : {}),
+        executable: Boolean(composed && node.parentId === null),
+      };
+    }));
+}
+
+function aetherNetworkBindingPlan(bundle) {
+  const network = bundle.sidecar.network;
+  if (!network?.supplied) return null;
+  const physicalByBodyId = new Map(bundle.worldBody.ir.physicalBodyState.bodies.map(body => [body.id, body.entityId]));
+  const slots = (network.player_slots ?? []).map(slot => ({
+    slotId: slot.slot_id,
+    subjectId: slot.subject_id,
+    playerId: slot.player_id,
+    characterId: slot.character_id,
+    sourceBodyId: slot.body_id,
+    entityId: physicalByBodyId.get(slot.body_id) ?? null,
+  }));
+  if (slots.length === 0 || slots.some(slot => !slot.entityId)) return null;
+  return canonicalClone({
+    format: 'taowind.world-body.aether-network-observer-binding.v0.1',
+    compilationRoot: network.roots.compilation_root,
+    evidenceRoot: network.roots.evidence_root,
+    projectRoot: network.roots.project_root,
+    sessionId: `session:${bundle.sidecar.project_id}`,
+    observerId: `observer:network:${bundle.sidecar.project_id}`,
+    slots,
+    focusBodyIds: slots.map(slot => slot.entityId).sort(),
+    causalBodyIds: slots.map(slot => slot.entityId).sort(),
+  });
+}
+
+function aetherAssetFormat(asset) {
+  if (asset?.format) return String(asset.format).toLowerCase();
+  const uri = String(asset?.uri ?? '').toLowerCase();
+  if (uri.endsWith('.glb')) return 'glb';
+  if (uri.endsWith('.gltf')) return 'gltf';
+  return undefined;
+}
+
+function aetherAssetRuntimeCatalog(options = {}) {
+  return options.assetSceneRuntime?.runtime?.catalog ?? options.assetRuntime?.catalog ?? options.assetCatalog?.catalog ?? options.assetCatalog ?? [];
+}
+
+function aetherAssetBindingReady(bundle, options = {}, instances = aetherAssetInstancePlan(bundle)) {
+  if (instances.length === 0) return true;
+  if (instances.some(instance => !instance.executable)) return false;
+  const catalog = aetherAssetRuntimeCatalog(options);
+  const catalogById = new Map((Array.isArray(catalog) ? catalog : []).map(asset => [asset.id, asset]));
+  const sourceById = new Map(bundle.worldBody.ir.assetState.assets.map(asset => [asset.id, asset]));
+  const runtime = options.assetSceneRuntime?.runtime ?? options.assetRuntime;
+  return Boolean(runtime && instances.every(instance => {
+    const asset = catalogById.get(instance.assetId);
+    const source = sourceById.get(instance.assetId);
+    return asset && source && ['glb', 'gltf'].includes(aetherAssetFormat(asset))
+      && (source.importReceiptRoot === undefined || source.importReceiptRoot === asset.sha256);
+  }));
+}
+
+function aetherProjectionLosses(bundle, { assetBindingReady = false, networkBindingReady = false } = {}) {
   const ir = bundle.worldBody.ir;
   const losses = [];
   const secondaryFixtures = ir.physicalBodyState.bodies
@@ -528,7 +616,7 @@ function aetherProjectionLosses(bundle) {
   const assetBindings = ir.visualBodyState.bodies.flatMap(body => body.nodes
     .filter(node => node.assetRef !== undefined)
     .map(node => ({ bodyId: body.id, nodeId: node.id, assetId: node.assetRef })));
-  if (assetBindings.length > 0) {
+  if (assetBindings.length > 0 && !assetBindingReady) {
     losses.push({
       code: 'RCL_GAP_WB_AETHER_VISUAL_ASSET_BINDING',
       severity: 'blocking-loss',
@@ -563,7 +651,7 @@ function aetherProjectionLosses(bundle) {
       count: sourceFacets.joint_count,
     });
   }
-  if (bundle.sidecar.network?.supplied) {
+  if (bundle.sidecar.network?.supplied && !networkBindingReady) {
     losses.push({
       code: 'RCL_GAP_WB_AETHER_NETWORK_BINDING',
       severity: 'blocking-loss',
@@ -594,7 +682,11 @@ export function inspectStudioWorldBodyAetherProjection(bundle) {
 function createAetherEntityStateProjection(bundle, options = {}) {
   requireStudioWorldBodyCandidate(bundle);
   const ir = bundle.worldBody.ir;
-  const losses = aetherProjectionLosses(bundle);
+  const assetInstances = aetherAssetInstancePlan(bundle);
+  const networkBinding = aetherNetworkBindingPlan(bundle);
+  const assetBindingReady = options.assetBindingReady === true;
+  const networkBindingReady = options.networkBindingReady === true && networkBinding !== null;
+  const losses = aetherProjectionLosses(bundle, { assetBindingReady, networkBindingReady });
   if (losses.length > 0 && options.allowLossyProjection !== true) {
     fail('STUDIO_WB_AETHER_LOSSY_PROJECTION_BLOCKED', 'Aether projection would discard World Body facets; set allowLossyProjection:true for an explicit candidate experiment', { losses });
   }
@@ -689,10 +781,23 @@ function createAetherEntityStateProjection(bundle, options = {}) {
       rotation_unit: 'milli-degree-euler-lowered-from-canonical-quaternion',
       mass_unit: 'grams-to-rsr-mass-q-by-multiply-1000',
       selected_fixture: 'first-fixture-only',
-      source_facet_retention: 'sidecar-and-loss-list-only',
+      source_facet_retention: assetBindingReady || networkBindingReady ? 'sidecar-plus-executable-aether-bindings-and-loss-list' : 'sidecar-and-loss-list-only',
     },
     losses,
     batch,
+    ...(assetBindingReady && assetInstances.length > 0 ? {
+      assetBindingPlan: {
+        format: 'taowind.world-body.aether-asset-instance-plan.v0.1',
+        instances: assetInstances.map(instance => ({
+          assetId: instance.assetId,
+          instanceId: instance.instanceId,
+          bodyId: instance.bodyId,
+          nodeId: instance.nodeId,
+          placementQ: instance.placementQ,
+        })),
+      },
+    } : {}),
+    ...(networkBindingReady ? { networkBinding } : {}),
   };
   return { ...base, projectionRoot: rootHash(base) };
 }
@@ -702,12 +807,44 @@ export function compileStudioWorldBodyAetherProjection(bundle, options = {}) {
 }
 
 export async function projectStudioWorldBodyCandidateToRealityCell(bundle, options = {}) {
-  const { allowLossyProjection, ...runtimeOptions } = options;
-  const projection = createAetherEntityStateProjection(bundle, { allowLossyProjection });
+  const { allowLossyProjection, bindNetworkObserver = false, ...runtimeOptions } = options;
+  const assetInstances = aetherAssetInstancePlan(bundle);
+  const networkBinding = aetherNetworkBindingPlan(bundle);
+  const assetBindingReady = aetherAssetBindingReady(bundle, runtimeOptions, assetInstances);
+  const networkBindingReady = bindNetworkObserver === true && networkBinding !== null;
+  const projection = createAetherEntityStateProjection(bundle, { allowLossyProjection, assetBindingReady, networkBindingReady });
   const { projectKernelStateToRealityCell, verifyRealityCellState } = await import('@taowind/aether-rncs-bridge');
-  const runtime = await projectKernelStateToRealityCell(projection.batch, runtimeOptions);
+  const runtimeOptionsWithBindings = {
+    ...runtimeOptions,
+    ...(assetBindingReady && assetInstances.length > 0 ? {
+      assetCatalog: runtimeOptions.assetCatalog ?? aetherAssetRuntimeCatalog(runtimeOptions),
+      assetSceneInstances: assetInstances.map(instance => ({ assetId: instance.assetId, instanceId: instance.instanceId, placement: instance.placement })),
+    } : {}),
+    ...(networkBindingReady ? {
+      sessionId: runtimeOptions.sessionId ?? networkBinding.sessionId,
+      observerId: runtimeOptions.observerId ?? networkBinding.observerId,
+      focusBodyIds: sortedUnique([...(runtimeOptions.focusBodyIds ?? []), ...networkBinding.focusBodyIds]),
+      causalBodyIds: sortedUnique([...(runtimeOptions.causalBodyIds ?? []), ...networkBinding.causalBodyIds]),
+    } : {}),
+  };
+  const runtime = await projectKernelStateToRealityCell(projection.batch, runtimeOptionsWithBindings);
   const cellVerification = verifyRealityCellState(runtime.cellState);
   if (!cellVerification.ok) fail('STUDIO_WB_AETHER_CELL_VERIFICATION_FAILED', 'Aether Reality Cell did not verify after projection', { diagnostics: cellVerification.diagnostics });
+  if (assetBindingReady) {
+    const expectedInstances = new Set(assetInstances.map(instance => instance.instanceId));
+    const actualInstances = new Set((runtime.assetBinding?.assetBindings ?? []).map(binding => binding.instanceId ?? binding.assetId));
+    if (!runtime.assetBinding || expectedInstances.size !== actualInstances.size || [...expectedInstances].some(instanceId => !actualInstances.has(instanceId))) {
+      fail('STUDIO_WB_AETHER_ASSET_BINDING_INCOMPLETE', 'Aether Reality Cell did not bind every World Body asset instance', { expectedInstances: [...expectedInstances], actualInstances: [...actualInstances] });
+    }
+  }
+  if (networkBindingReady) {
+    const relevance = runtime.cellState.relevanceView;
+    const selected = new Set((relevance?.selectedObjects ?? []).map(object => object.objectId));
+    const missing = networkBinding.focusBodyIds.filter(bodyId => !selected.has(bodyId));
+    if (!relevance || relevance.profile.observerId !== networkBinding.observerId || relevance.sessionId !== networkBinding.sessionId || missing.length > 0) {
+      fail('STUDIO_WB_AETHER_NETWORK_BINDING_INCOMPLETE', 'Aether Reality Cell did not bind the compiled player slots into observer relevance', { expectedBodyIds: networkBinding.focusBodyIds, missingBodyIds: missing, relevance: relevance ? { sessionId: relevance.sessionId, observerId: relevance.observerId } : null });
+    }
+  }
   const receiptBase = {
     format: 'taowind.world-body.aether-runtime-receipt.v0.1',
     version: STUDIO_WORLD_BODY_AETHER_PROJECTION_VERSION,
@@ -730,6 +867,16 @@ export function verifyStudioWorldBodyAetherProjection(result) {
     if (rootHash(batchBase) !== batchRoot) return false;
     const { projectionRoot, runtime, receipt, ...projectionBase } = result;
     if (rootHash(projectionBase) !== projectionRoot) return false;
+    if (result.assetBindingPlan) {
+      const expected = new Set(result.assetBindingPlan.instances.map(instance => instance.instanceId));
+      const actual = new Set((runtime?.assetBinding?.assetBindings ?? []).map(binding => binding.instanceId ?? binding.assetId));
+      if (expected.size !== actual.size || [...expected].some(instanceId => !actual.has(instanceId))) return false;
+    }
+    if (result.networkBinding) {
+      const relevance = runtime?.cellState?.relevanceView;
+      const selected = new Set((relevance?.selectedObjects ?? []).map(object => object.objectId));
+      if (!relevance || relevance.sessionId !== result.networkBinding.sessionId || relevance.profile.observerId !== result.networkBinding.observerId || result.networkBinding.focusBodyIds.some(bodyId => !selected.has(bodyId))) return false;
+    }
     if (!receipt || receipt.format !== 'taowind.world-body.aether-runtime-receipt.v0.1') return false;
     const { receiptRoot, ...receiptBase } = receipt;
     return rootHash(receiptBase) === receiptRoot

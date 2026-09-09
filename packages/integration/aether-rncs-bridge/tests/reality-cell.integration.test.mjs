@@ -197,6 +197,21 @@ test('Reality Cell binds verified GLB payloads into VSR scene resources',async()
   assert.deepEqual(evictRealityCellAssets(runtime,result.assetBinding.receipt.leasedAssetIds),['asset:mesh','asset:shared']);
 });
 
+test('Reality Cell binds repeated asset instances without aliasing scene resources',async()=>{
+  const payloads=createCellAssetPayloads(),catalog=createCellAssetCatalog(payloads),runtime=createRealityCellAssetRuntime(catalog,async asset=>payloads.get(asset.id),{maxConcurrent:2}),result=await projectKernelStateToRealityCell(createKernel(),{cellCatalog,assetCatalog:catalog,assetStreamingRequest:{maxAssets:2,maxBytes:catalog.reduce((sum,asset)=>sum+asset.byteLength,0)},assetRuntime:runtime,assetSceneInstances:[
+    {assetId:'asset:mesh',instanceId:'body:crate:mesh',placement:{translation:[0,1.5,0],scale:[1.5,1.5,1.5]}},
+    {assetId:'asset:mesh',instanceId:'body:crate:mesh:shadow',placement:{translation:[2,1.5,0],scale:[.75,.75,.75]}}
+  ],observerPosition:[0,2,0],cameraPosition:[7,5,9],focusBodyIds:['body:crate'],causalBodyIds:['body:crate'],maxObjects:1,width:160,height:96,qualityTier:'economy'});
+  assert.equal(result.assetBinding.assetBindings.length,2);
+  assert.deepEqual(result.assetBinding.assetBindings.map(binding=>binding.instanceId),['body:crate:mesh','body:crate:mesh:shadow']);
+  assert.notEqual(result.assetBinding.assetBindings[0].nodeIds[0],result.assetBinding.assetBindings[1].nodeIds[0]);
+  assert.ok(result.assetBinding.scene.nodes.some(node=>node.id.startsWith('cell-asset:body:crate:mesh:')));
+  assert.ok(result.assetBinding.scene.nodes.some(node=>node.id.startsWith('cell-asset:body:crate:mesh:shadow:')));
+  assert.equal(result.projection.frameVerified,true);
+  assert.deepEqual(releaseRealityCellAssets(runtime,result.assetBinding.receipt),['asset:mesh','asset:shared']);
+  assert.deepEqual(evictRealityCellAssets(runtime,result.assetBinding.receipt.leasedAssetIds),['asset:mesh','asset:shared']);
+});
+
 test('Reality Cell scene runtime transitions GLB bindings and evicts old Cell assets',async()=>{
   const payloads=createCellAssetPayloads(),catalog=createCellAssetCatalog(payloads),runtime=createRealityCellAssetRuntime(catalog,async asset=>{await new Promise(resolve=>setTimeout(resolve,1));return payloads.get(asset.id)},{maxConcurrent:2}),sceneRuntime=createRealityCellAssetSceneRuntime(runtime),maxBytes=catalog.reduce((sum,asset)=>sum+asset.byteLength,0),near=await projectKernelStateToRealityCell(createKernel(),{cellCatalog,assetCatalog:catalog,assetStreamingRequest:{maxAssets:3,maxBytes},assetSceneRuntime:sceneRuntime,assetSceneAssetIds:['asset:mesh'],assetScenePlacements:{'asset:mesh':{translation:[0,1.5,0],scale:[1.5,1.5,1.5]}},observerPosition:[0,2,0],cameraPosition:[7,5,9],focusBodyIds:['body:crate'],causalBodyIds:['body:crate'],maxObjects:1,width:160,height:96,qualityTier:'economy'});
   assert.deepEqual(near.cellState.activeCellIds,['cell:near']);

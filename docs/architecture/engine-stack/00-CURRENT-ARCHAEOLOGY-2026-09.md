@@ -62,7 +62,7 @@ WorldSeed / Chunk runtime
 
 1. `projectKernelStateToRealityCell(...)` 接受 `EntityKernel` 或已封存的 `rncs.entity-state-batch.v0.1`，经过 RSR authority body/fixture materialization、Network Observer Relevance、固定点 LWC sector/local 坐标，进入 VSR scene/frame/pixel projection。
 2. 它保留 `kernel_state_root`、`kernel_batch_root`、`binding_root`、`rsr_state_root`、`rsr_body_root`、`cell_state_root`、`vsr_scene_root`、`vsr_frame_root`、`vsr_pixel_root`，并在有资产时继续保留 `asset_streaming_root`、`asset_binding_root` 和 transition root。
-3. 本地实际执行结果：bridge 测试 `28/28 PASS`；Reality Cell、异步 payload lease/eviction、GLB/glTF scene binding、Cell transition/cache demos 均产生 sealed evidence。
+3. 本地实际执行结果：bridge 测试 `29/29 PASS`；Reality Cell、异步 payload lease/eviction、GLB/glTF scene binding、重复资产实例、Cell transition/cache demos 均产生 sealed evidence。
 4. 本机 Chrome/Playwright WebGPU smoke 已通过：kernel binding、Reality Cell、GLB/glTF asset scene、near→far→near transition 共 `4/4 PASS`；均验证 `submitted=true`、`deviceLost=false`、Node frame root 与浏览器 receipt frame root 相等、无 page/shader/request error，并生成 PNG。第一次运行因 sparse checkout 未物化 Studio 的已跟踪依赖而失败；补齐物化范围后通过，不能把第一次失败归因于 VSR 语义。
 
 这条 donor 的边界同样明确：源码检索只发现 Reality One Gateway 与 Studio 浏览器 smoke 消费它；本轮新增的 Studio→World Body→Aether projection 和 Reality Build request candidate consumer 都是显式 candidate-only adapter，仍没有默认生产 authoring/build consumer，也没有 Large World consumer。因此它已经成为可复用的共享 runtime seam，但还不是统一的 authoring-to-runtime compiler。`rncs.modules.json` 对它的依赖列表也比其真实 `package.json` import 图窄，存在 registry discoverability/build-order 缺口。
@@ -113,13 +113,13 @@ Studio Unified Project
 
 本地真实执行：
 
-- `npm test --workspace @taowind/world-body-studio-bridge`：`12/12 PASS`，包含 bundle tamper、declaration tamper、network-root tamper、unsupported asset kind、missing active world、no-network-compilation、Aether lossy-block/runtime/receipt 负例。
+- `npm test --workspace @taowind/world-body-studio-bridge`：`13/13 PASS`，包含 bundle tamper、declaration tamper、network-root tamper、unsupported asset kind、missing active world、no-network-compilation、Aether lossy-block/runtime/receipt 负例，以及 verified asset-instance/network-observer runtime。
 - `npm run test:generated-runtime --workspace @taowind/world-body-studio-bridge`：独立子进程把临时生成的 9 个 artifact 写入隔离目录，并执行既有 `world-body.generated.test.mjs`；`1/1 PASS`，实际闭合生成 RSR config、VSR bindings、rollback snapshot、network envelope 和 tamper rejection。
 - `npm run demo --workspace @taowind/world-body-studio-bridge`：fixture 的 `6` 个 spatial bodies 进入 `6` 个 World Body entities，`2` 个 scene/body bindings，`4` 个 synthetic visuals，`1` 个 asset lowering，生成 `9` 个既有 codegen artifacts；candidate `worldBodyRoot=90adf7100e1c2e2514a8e8ba94e9c0475a5a84b72d1e2138e11322c0eb9c374a`，`semanticDeclarationRoot=a12fbbffa4b9ca5421530b944a8c2cd3312b4c8413952ef863dca58290630c2f`。
 - Network Compilation root `af43344d519e3e09c46efe09318f66685489d8732f0b50ccd8db482dd2a21531`、Studio project root、workspace root、source world root、scene root 均在 sidecar 中保留并校验。
-- 回归：World Body IR `36/36 PASS`，World Body codegen `12/12 PASS`，World Body formal theory `8/8 PASS`，Studio network compiler `6/6 PASS`，Network Runtime `27/27 PASS`，Aether bridge `28/28 PASS`，VSR `122/122 + 99/99 + 6/6 + 4/4 + 21/21 + 11/11 PASS`，RSR build suites 全部通过。
+- 回归：World Body IR `36/36 PASS`，World Body codegen `12/12 PASS`，World Body formal theory `8/8 PASS`，Studio network compiler `6/6 PASS`，Network Runtime `27/27 PASS`，Aether bridge `29/29 PASS`，VSR `122/122 + 99/99 + 6/6 + 4/4 + 21/21 + 11/11 PASS`，RSR build suites 全部通过。
 
-该 adapter 关闭了“Studio authoring 能否进入既有 World Body compiler”的候选入口，并新增了显式有损的 Aether Cell runtime projection；Reality Build 通过独立的 request candidate seam 已能消费 presentation candidate，但默认生产链和 Large World Runtime 仍未接入。共享 Kernel spatial donor 本轮已把动态质量通过 `spatial.body.mass_q → SpatialBodySpec.massQ`、角色控制器通过 `spatial.character` 闭合，视觉资产、网络和多 fixture 语义仍未闭合，因此 `RCL_GAP_RNCS_SHARED_WORLD_COMPILATION_SPINE` 仍未关闭，只是拆成可验证的 ingress、runtime projection、Build consumer 和 donor contract 子缺口。没有新增 K400 PASS。
+该 adapter 关闭了“Studio authoring 能否进入既有 World Body compiler”的候选入口，并新增了显式有损与显式无损条件分开的 Aether Cell runtime projection；Reality Build 通过独立的 request candidate seam 已能消费 presentation candidate，但默认生产链和 Large World Runtime 仍未接入。共享 Kernel spatial donor 本轮已把动态质量通过 `spatial.body.mass_q → SpatialBodySpec.massQ`、角色控制器通过 `spatial.character` 闭合；在调用者提供真实可校验 GLB runtime 且显式开启 `bindNetworkObserver` 时，视觉资产实例和 Network Observer Relevance 也经既有 donor 执行并验证。多 fixture、未配置的资产/网络 facet、完整网络 transport/session 仍未闭合，因此 `RCL_GAP_RNCS_SHARED_WORLD_COMPILATION_SPINE` 仍未关闭，只是拆成可验证的 ingress、runtime projection、Build consumer 和 donor contract 子缺口。没有新增 K400 PASS。
 
 ## 本轮 World Body → Aether runtime projection
 
@@ -135,16 +135,16 @@ candidate World Body IR
 
 1. 默认遇到不可逆语义损失就 `STUDIO_WB_AETHER_LOSSY_PROJECTION_BLOCKED`；只有调用者明确传入 `allowLossyProjection: true` 才会执行实验性 candidate projection。
 2. World Body 的 `worldBodyRoot`、semantic declaration root、source reality root、projection root、Kernel batch root 和 Aether runtime roots 分开保存；Aether 结果不获得 World Body authority，也没有 commit/release 权限。
-3. 当前 Kernel spatial materializer 每实体只接收一个 `spatial.fixture`，所以 adapter 明确记录 `first-fixture-only`；动态质量现在通过可选 `spatial.body.mass_q` 进入既有 `SpatialBodySpec.massQ`，Studio character facets 通过 `spatial.character` 进入既有 RSR character contract，并在 RSR snapshot 中验证；视觉 asset bindings 和 Network Compilation 仍保持 loss/sidecar，不伪装成已接入。
+3. 当前 Kernel spatial materializer 每实体只接收一个 `spatial.fixture`，所以 adapter 明确记录 `first-fixture-only`；动态质量现在通过可选 `spatial.body.mass_q` 进入既有 `SpatialBodySpec.massQ`，Studio character facets 通过 `spatial.character` 进入既有 RSR character contract，并在 RSR snapshot 中验证。调用者显式提供并通过 SHA-256 校验的 GLB/Gltf asset runtime 后，World Body visual asset bindings 会进入既有 Reality Cell asset streamer/GLB importer；显式开启 network observer binding 后，Network Compilation player slots 会进入既有 Observer Relevance。完整 transport/session、secondary fixtures 和没有对应 runtime 的 facet 仍保持 loss/sidecar，不伪装成已接入。
 4. `verifyStudioWorldBodyAetherProjection()` 将 receipt root 与实际 runtime roots 绑定，篡改 runtime receipt 或 root 会失败。
 
 本地真实执行：
 
-- bridge 测试：`12/12 PASS`，其中默认有损阻断、显式有损 projection runtime、receipt tamper 共 `3` 个下游测试。
-- `npm run demo:aether-runtime --workspace @taowind/world-body-studio-bridge`：`PASS_CANDIDATE_LOSSY_RUNTIME`；6 个实体进入已有 RSR snapshot 和 `cell:studio-world`，Reality Cell state verification 为 true，并生成 kernel/batch/binding/RSR/cell/VSR scene/frame/pixel roots。
-- 本次 candidate projection root 为 `ce5f406ba2d6487d34f74a619dbf82e271b36adb4c41ec77a47d4f0a696eb230`，receipt root 为 `9e3f84e186984d31c37871012f96a88c009abe6fef4c5aea2d5a5c1b2e14c97f`；loss codes 为 `RCL_GAP_WB_AETHER_VISUAL_ASSET_BINDING`、`RCL_GAP_WB_AETHER_NETWORK_BINDING`。动态质量和 3 个 Studio character facets 已由 shared Kernel donor 传递并在 runtime snapshot 中验证。
+- bridge 测试：`13/13 PASS`，其中默认有损阻断、显式有损 projection runtime、receipt tamper、重复 GLB asset instance 和 Network Observer Relevance binding 均有正负例。
+- `npm run demo:aether-runtime --workspace @taowind/world-body-studio-bridge`：`PASS_CANDIDATE_RUNTIME`；6 个实体进入已有 RSR snapshot 和 `cell:studio-world`，同一个经过 SHA-256 校验的 GLB 被绑定为两个 World Body asset instances，两个 Network Compilation player slots 进入 Observer Relevance，Reality Cell state verification 为 true，并生成 kernel/batch/binding/RSR/cell/VSR/asset streaming roots。
+- 本次 candidate projection root 为 `dbd4c623ff5944af9c665d94b715c27881b576f72425c926a717364d1a36f1f9`，receipt root 为 `a97b14bb1b2926ac86d308aa00fa94153b1d594dc5e65ffaf9a05dfbcfb0f37b`；显式 runtime 的 loss codes 为空。未配置 runtime 的 inspection 仍保留 `RCL_GAP_WB_AETHER_VISUAL_ASSET_BINDING`、`RCL_GAP_WB_AETHER_NETWORK_BINDING`，动态质量和 3 个 Studio character facets 已由 shared Kernel donor 传递并在 runtime snapshot 中验证。
 
-这证明的是“已有 runtime seam 能消费一份被明确标注为有损的 candidate projection”，不是 World Body 已经完整驱动物理、资产、网络或生产渲染。下一阶段必须优先补齐剩余 loss 的 owner/contract，或让更高层 consumer 在没有语义丢失时再允许 projection；不能把 `allowLossyProjection` 推进为默认产品路径。
+这证明的是“已有 runtime seam 能消费一份候选 projection，并在显式提供真实资产 payload 与 observer binding 时关闭对应 loss”，不是 World Body 已经完整驱动物理、资产、网络或生产渲染。下一阶段必须优先补齐 secondary fixture 与完整网络 transport/session 的 owner/contract，或让更高层 consumer 在没有语义丢失时再允许 projection；不能把 `allowLossyProjection` 推进为默认产品路径。
 
 ## 本轮 World Body → Reality Build candidate consumer
 
@@ -179,7 +179,7 @@ Studio World Body candidate + existing Studio spatial VSR scene
 
 ### 限制性瓶颈
 
-当前存在两个有先后关系的瓶颈：`RCL_GAP_RNCS_RELEASE_3D_BROWSER_SCRIPT_PACKAGING` 已完成一个本地候选修复并通过三个 Build target 的真实浏览器回归，但 Android embedded 独立浏览器运行和 WebGPU/目标设备仍未验证；结构性瓶颈仍是 `RCL_GAP_RNCS_SHARED_WORLD_COMPILATION_SPINE`，其 Studio ingress、Aether runtime projection、shared mass/character donor 和 Build candidate consumer 已有证据，但 projection 的资产/网络/多 fixture loss 尚未闭合，默认 Studio/World Body/Large World/Build 生产链也仍未共同进入同一 runtime seam。
+当前存在两个有先后关系的瓶颈：`RCL_GAP_RNCS_RELEASE_3D_BROWSER_SCRIPT_PACKAGING` 已完成一个本地候选修复并通过三个 Build target 的真实浏览器回归，但 Android embedded 独立浏览器运行和 WebGPU/目标设备仍未验证；结构性瓶颈仍是 `RCL_GAP_RNCS_SHARED_WORLD_COMPILATION_SPINE`，其 Studio ingress、Aether runtime projection、shared mass/character/asset-instance donor、Network Observer Relevance binding 和 Build candidate consumer 已有证据，但 secondary fixture、完整 network transport/session、默认 Studio/World Body/Large World/Build 生产链仍未共同进入同一 runtime seam。
 
 这不是“再写一个引擎子系统”的缺口，而是已有子系统不能共同承载同一个世界工件的缺口。应把 Aether bridge 作为下游 runtime donor；若直接在 Studio、Build、Large World 各自添加转换，或重新实现 Reality Cell/资产生命周期，会产生重复语义、root 混淆和无法回滚的并行系统。
 
@@ -193,7 +193,7 @@ Studio World Body candidate + existing Studio spatial VSR scene
 
 ## 下一最小高杠杆候选
 
-第一优先的 Build 3D classic-script packaging 已完成局部候选修复和真实浏览器回归；Studio→World Body→Aether 已完成候选 ingress、有损 runtime projection 和 shared mass/character donor，Build 也能通过显式 request candidate 绑定同一 World Body source root。下一阶段应优先解决剩余 Aether loss 与 Large World consumer 的共同 contract，不能复制 Reality Cell/streaming/render glue，只做：
+第一优先的 Build 3D classic-script packaging 已完成局部候选修复和真实浏览器回归；Studio→World Body→Aether 已完成候选 ingress、显式 asset-instance/observer binding runtime projection 和 shared mass/character donor，Build 也能通过显式 request candidate 绑定同一 World Body source root。下一阶段应优先解决 secondary fixture 与 Large World consumer 的共同 contract，不能复制 Reality Cell/streaming/render glue，只做：
 
 ```text
 Unified Project + selected spatial world + scene/asset roots

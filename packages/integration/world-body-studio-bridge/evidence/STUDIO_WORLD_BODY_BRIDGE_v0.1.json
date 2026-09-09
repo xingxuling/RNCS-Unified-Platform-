@@ -13,7 +13,7 @@
   ],
   "tests": {
     "adapter": "12/12 PASS",
-    "aetherWorldBodyProjection": "3/3 PASS; default lossy projection blocked; explicit candidate runtime executed",
+    "aetherWorldBodyProjection": "4/4 PASS; default lossy projection blocked; explicit candidate runtime executed; verified asset instances and network observer relevance executed",
     "realityBuildCandidateConsumer": "2/2 PASS; full build verification.valid=true with explicit presentation_candidate",
     "realityBuildSuite": "135 tests / 127 pass / 0 fail / 8 skip",
     "generatedCandidateRuntime": "1/1 PASS",
@@ -22,7 +22,7 @@
     "worldBodyFormalTheory": "8/8 PASS",
     "studioNetworkCompiler": "6/6 PASS",
     "networkRuntime": "27/27 PASS",
-    "aetherBridge": "28/28 PASS",
+    "aetherBridge": "29/29 PASS",
     "largeWorldRuntime": "36/36 PASS after materializing the registered reality-representation-fabric donor",
     "visualStateRuntime": "122/122 + 99/99 + 6/6 + 4/4 + 21/21 + 11/11 PASS",
     "realitySimulationRuntime": "build PASS; shared Kernel mass_q and spatial.character bindings consumed by Aether regression"
@@ -52,28 +52,43 @@
     "generatedArtifactCount": 9
   },
   "aetherProjectionRuntime": {
-    "status": "PASS_CANDIDATE_LOSSY_RUNTIME",
+    "status": "PASS_CANDIDATE_RUNTIME",
     "authority": "candidate-runtime-projection-only",
     "sourceWorldBodyRoot": "90adf7100e1c2e2514a8e8ba94e9c0475a5a84b72d1e2138e11322c0eb9c374a",
-    "projectionRoot": "ce5f406ba2d6487d34f74a619dbf82e271b36adb4c41ec77a47d4f0a696eb230",
-    "receiptRoot": "9e3f84e186984d31c37871012f96a88c009abe6fef4c5aea2d5a5c1b2e14c97f",
-    "lossCodes": [
+    "projectionRoot": "dbd4c623ff5944af9c665d94b715c27881b576f72425c926a717364d1a36f1f9",
+    "receiptRoot": "a97b14bb1b2926ac86d308aa00fa94153b1d594dc5e65ffaf9a05dfbcfb0f37b",
+    "inspectionLossCodes": [
       "RCL_GAP_WB_AETHER_VISUAL_ASSET_BINDING",
       "RCL_GAP_WB_AETHER_NETWORK_BINDING"
     ],
+    "runtimeLossCodes": [],
+    "assetInstanceIds": [
+      "world-body:entity:studio:studio-player-blue:node:studio:studio-player-blue",
+      "world-body:entity:studio:studio-player-red:node:studio:studio-player-red"
+    ],
+    "networkObserver": {
+      "sessionId": "session:unified-project:studio-authored-network-v03",
+      "observerId": "observer:network:unified-project:studio-authored-network-v03",
+      "selectedBodyIds": [
+        "entity:studio:studio-player-blue",
+        "entity:studio:studio-player-red"
+      ]
+    },
     "cellStateVerified": true,
     "bodyCount": 6,
     "activeCellIds": ["cell:studio-world"],
     "runtimeRoots": {
-      "kernel_state_root": "d0bf5f1450a952da7cab43150f7de42326e1de965de4b13a8f4bcd6c91677613",
-      "kernel_batch_root": "5feab823dbf645b2e59e43be4d319bef5b1a87f761d6f30fb1263c36f452072d",
-      "binding_root": "fnv1a64:cde3d8e20c9c13f6",
-      "rsr_state_root": "fnv1a64:4084fba4f53e3471",
-      "rsr_body_root": "fnv1a64:ae12974b1c9f1b90",
-      "cell_state_root": "4e563d35b857b4c35a679c5452748a7f3db0aa510d9d91fa552293ebe9bd8127",
-      "vsr_scene_root": "fnv1a64:ecd133f70ecb8d6e",
-      "vsr_frame_root": "57d666ee5a30e0e3e9423518ebdeca62486d88c9439ccba15b90f75b31034839",
-      "vsr_pixel_root": "93f376611bba435c781d7313767051a953383a1e8c832cc09404ddcfcec497c9"
+      "kernel_state_root": "1b99815830032763748d687529a56dc3e4b874904c32acf626632ec59669b214",
+      "kernel_batch_root": "b20fad85a35d11b83fdaec00231060cc09a63917f30682c724ed8230c7a4187f",
+      "binding_root": "fnv1a64:5ced317c38d962c2",
+      "rsr_state_root": "fnv1a64:08d0cf95078405e8",
+      "rsr_body_root": "fnv1a64:78039793e3fc2250",
+      "cell_state_root": "a52bc3c06df174bd4ca19d3710ca01cd0b9676833e9c034b0121e598fa0bbe74",
+      "vsr_scene_root": "fnv1a64:5528ba1b3b310a1a",
+      "vsr_frame_root": "c704d8756273b11f34c9024456d8beb379d4476afba8c747f356f23c545b46c1",
+      "vsr_pixel_root": "8f102ba905cbc2e88983eae0270918de63b4a5fba819819df1181fec5a7c7b4c",
+      "asset_streaming_root": "eae92558dc5c01c78754208b40a7ffe721831b2402bc29530ad2d1b2ea4a0715",
+      "asset_binding_root": "791da9093b8266557e816fe83d8fe221ff2ee409b5f0cd955a9f94b2d41d24c9"
     }
   },
   "realityBuildCandidateConsumer": {
@@ -93,10 +108,10 @@
     "candidate artifact generation only; no commit or promotion authority",
     "model-3d is explicitly lowered to mesh and source kind is retained in sidecar",
     "2D scene transforms are preserved as source metadata and are not converted into 3D authority",
-    "Aether Cell candidate projection executed; dynamic mass and character facets now lower through shared Kernel spatial contracts, while visual asset binding and network compilation remain explicit losses",
+    "Aether Cell candidate projection executed; dynamic mass and character facets lower through shared Kernel spatial contracts, verified GLB asset instances lower through the existing Cell asset streamer, and verified Network Compilation player slots lower into Observer Relevance",
     "Reality Build candidate consumer executed and verified; default Build path remains unchanged, Large World consumer and target hardware remain unverified",
     "no new K400 PASS"
   ],
   "authority": "candidate-artifact-generation-only-no-commit",
-  "evidenceRoot": "bb7b895f44d10cb7ec546df1dbb6c58de22c00637a45c608e4a641bae23af4d8"
+  "evidenceRoot": "c860a5715d05584cb0482f530f947f66612ab943872a1c79ed9e2865732e6635"
 }

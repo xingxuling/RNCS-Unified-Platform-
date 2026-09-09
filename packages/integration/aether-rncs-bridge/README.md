@@ -50,6 +50,8 @@ npm run demo:reality-cell-asset-scene --workspace @taowind/aether-rncs-bridge
 
 It loads a SHA-256 verified GLB through the Cell runtime, imports its mesh and `vsrRGBA` texture, assigns the imported nodes to the active Cell, and writes a scene/frame plan requiring a real material texture binding. The bridge also accepts a SHA-256 verified `.gltf` root whose external buffer and image dependencies are separate catalog assets; those dependency roots enter the binding receipt. The matching Chromium smoke is `apps/reality-studio/tests/browser_reality_cell_asset_scene_webgpu_test.py`; it requires actual texture and buffer uploads plus a submitted, non-lost WebGPU receipt.
 
+`bindRealityCellAssetScene(...)` also accepts explicit `instances: [{ assetId, instanceId, placement }]`. Repeated instances reuse the content-addressed payload lease while receiving isolated scene resource IDs and binding roots; omitted `instances` preserves the original one-binding-per-asset behavior.
+
 For Cell-to-Cell replacement, `createRealityCellAssetSceneRuntime(...)` keeps one active scene binding, acquires the next Cell before releasing the previous lease set, and evicts previous Cell assets from the new streaming receipt. `projectKernelStateToRealityCell(...)` accepts this runtime through `assetSceneRuntime`, so the scene, Cell roots, and lifecycle receipt move together:
 
 ```bash
