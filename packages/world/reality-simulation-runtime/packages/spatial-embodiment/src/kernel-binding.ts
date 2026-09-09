@@ -42,11 +42,14 @@ export interface KernelSpatialBodyFields {
 }
 
 export interface KernelSpatialFixtureFields {
+  id?: string;
   shape: string;
   local_position?: string;
   sensor?: string;
   material_id?: string;
   body_zone?: string;
+  category_bits?: string;
+  mask_bits?: string;
   tags?: string;
 }
 
@@ -74,6 +77,8 @@ export interface KernelSpatialBindingOptions {
   world_id?: string;
   body_fragment_id?: string;
   fixture_fragment_id?: string;
+  fixtures_fragment_id?: string;
+  fixtures_collection_field?: string;
   body_fields?: Partial<KernelSpatialBodyFields>;
   fixture_fields?: Partial<KernelSpatialFixtureFields>;
   character_fragment_id?: string;
@@ -93,6 +98,7 @@ export interface KernelSpatialEntityBinding {
   fixture_id: string;
   body_fragment_id: string;
   fixture_fragment_id: string;
+  fixture_ids?: string[];
 }
 
 export interface KernelSpatialMaterialization {
@@ -127,6 +133,13 @@ function record(value: unknown, path: string): Record<string, unknown> {
 function integer(value: unknown, path: string): number {
   fail(Number.isSafeInteger(value), 'KERNEL_BINDING_INTEGER_REQUIRED', path);
   return value as number;
+}
+
+function optionalUnsignedInteger(fragment: Record<string, VSRValue>, field: string | undefined, path: string): number | undefined {
+  if (!field || fragment[field] === undefined) return undefined;
+  const value = integer(fragment[field], `${path}.${field}`);
+  fail(value >= 0 && value <= 0xffff_ffff, 'KERNEL_BINDING_UNSIGNED_INTEGER_INVALID', `${path}.${field}`);
+  return value;
 }
 
 function text(value: unknown, path: string): string {
@@ -199,18 +212,32 @@ function optionalFragment(row: KernelStateRow, fragmentId: string, path: string)
   return value;
 }
 
+function fixtureCollection(
+  row: KernelStateRow,
+  fragmentId: string,
+  collectionField: string,
+  path: string,
+): Record<string, VSRValue>[] | null {
+  const value = row.fragments?.[fragmentId];
+  if (value === undefined) return null;
+  const collection = record(value, `${path}.${fragmentId}`);
+  const items = collection[collectionField];
+  fail(Array.isArray(items) && items.length > 0, 'KERNEL_BINDING_FIXTURE_COLLECTION_REQUIRED', `${path}.${fragmentId}.${collectionField}`);
+  return items.map((item, index) => record(item, `${path}.${fragmentId}.${collectionField}[${index}]`) as Record<string, VSRValue>);
+}
+
 function uniqueSorted(values: string[]): string[] { return [...new Set(values)].sort(); }
 
 function materializeBody(
   row: KernelStateRow,
   bodyFragment: Record<string, VSRValue>,
-  fixtureFragment: Record<string, VSRValue>,
+  fixtureFragments: Record<string, VSRValue>[],
   bodyFields: KernelSpatialBodyFields,
   fixtureFields: KernelSpatialFixtureFields,
   source: KernelSpatialMaterialization['source']
 ) {
   const bodyId = row.entity_id;
-  const fixtureId = `fixture:${bodyId}`;
+  fail(fixtureFragments.length > 0, 'KERNEL_BINDING_FIXTURE_REQUIRED', `entity:${bodyId}`);
   const kind = text(bodyFragment[bodyFields.kind], `entity:${bodyId}.${bodyFields.kind}`) as SpatialBodyKind;
   fail(BODY_KINDS.has(kind), 'KERNEL_BINDING_BODY_KIND_INVALID', `${bodyId}.${bodyFields.kind}`);
   const position = vector(bodyFragment[bodyFields.position], `entity:${bodyId}.${bodyFields.position}`);
@@ -218,21 +245,32 @@ function materializeBody(
     ? integer(bodyFragment[bodyFields.mass_q], `entity:${bodyId}.${bodyFields.mass_q}`)
     : undefined;
   if (massQ !== undefined) fail(massQ > 0, 'KERNEL_BINDING_MASS_INVALID', `${bodyId}.${bodyFields.mass_q}`);
-  const fixtureShape = shape(fixtureFragment[fixtureFields.shape], `entity:${bodyId}.${fixtureFields.shape}`);
   const bodyTags = optionalStringList(bodyFragment, bodyFields.tags, `entity:${bodyId}`);
   const rowTags = Array.isArray(row.tags) ? stringList(row.tags, `entity:${bodyId}.tags`) : [];
-  const fixtureTags = optionalStringList(fixtureFragment, fixtureFields.tags, `entity:${bodyId}`);
   const kernelTags = [`kernel-entity:${bodyId}`];
-  const fixture = {
-    id: fixtureId,
-    shape: fixtureShape,
-    localPosition: optionalVector(fixtureFragment, fixtureFields.local_position, { x: 0, y: 0, z: 0 }, `entity:${bodyId}`),
-    sensor: fixtureFields.sensor && fixtureFragment[fixtureFields.sensor] !== undefined ? booleanValue(fixtureFragment[fixtureFields.sensor], `entity:${bodyId}.${fixtureFields.sensor}`) : false,
-    ...(fixtureFields.material_id && fixtureFragment[fixtureFields.material_id] !== undefined ? { materialId: text(fixtureFragment[fixtureFields.material_id], `entity:${bodyId}.${fixtureFields.material_id}`) } : {}),
-    ...(fixtureFields.body_zone && fixtureFragment[fixtureFields.body_zone] !== undefined ? { bodyZone: text(fixtureFragment[fixtureFields.body_zone], `entity:${bodyId}.${fixtureFields.body_zone}`) } : {}),
-    tags: uniqueSorted([...kernelTags, ...rowTags, ...fixtureTags]),
-    data: { kernel_entity_id: bodyId, kernel_entity_root: row.entity_root, kernel_state_root: source.state_root }
-  };
+  const fixtureIds = new Set<string>();
+  const fixtures = fixtureFragments.map((fixtureFragment, index) => {
+    const fixtureId = fixtureFields.id && fixtureFragment[fixtureFields.id] !== undefined
+      ? text(fixtureFragment[fixtureFields.id], `entity:${bodyId}.${fixtureFields.id}`)
+      : index === 0 ? `fixture:${bodyId}` : `fixture:${bodyId}:${index}`;
+    fail(!fixtureIds.has(fixtureId), 'KERNEL_BINDING_FIXTURE_DUPLICATE', `${bodyId}:${fixtureId}`);
+    fixtureIds.add(fixtureId);
+    const fixtureTags = optionalStringList(fixtureFragment, fixtureFields.tags, `entity:${bodyId}`);
+    const categoryBits = optionalUnsignedInteger(fixtureFragment, fixtureFields.category_bits, `entity:${bodyId}`);
+    const maskBits = optionalUnsignedInteger(fixtureFragment, fixtureFields.mask_bits, `entity:${bodyId}`);
+    return {
+      id: fixtureId,
+      shape: shape(fixtureFragment[fixtureFields.shape], `entity:${bodyId}.${fixtureFields.shape}`),
+      localPosition: optionalVector(fixtureFragment, fixtureFields.local_position, { x: 0, y: 0, z: 0 }, `entity:${bodyId}`),
+      sensor: fixtureFields.sensor && fixtureFragment[fixtureFields.sensor] !== undefined ? booleanValue(fixtureFragment[fixtureFields.sensor], `entity:${bodyId}.${fixtureFields.sensor}`) : false,
+      ...(fixtureFields.material_id && fixtureFragment[fixtureFields.material_id] !== undefined ? { materialId: text(fixtureFragment[fixtureFields.material_id], `entity:${bodyId}.${fixtureFields.material_id}`) } : {}),
+      ...(fixtureFields.body_zone && fixtureFragment[fixtureFields.body_zone] !== undefined ? { bodyZone: text(fixtureFragment[fixtureFields.body_zone], `entity:${bodyId}.${fixtureFields.body_zone}`) } : {}),
+      ...(categoryBits === undefined ? {} : { categoryBits }),
+      ...(maskBits === undefined ? {} : { maskBits }),
+      tags: uniqueSorted([...kernelTags, ...rowTags, ...fixtureTags]),
+      data: { kernel_entity_id: bodyId, kernel_entity_root: row.entity_root, kernel_state_root: source.state_root }
+    };
+  });
   return {
     id: bodyId,
     kind,
@@ -241,7 +279,7 @@ function materializeBody(
     rotationDeg: optionalVector(bodyFragment, bodyFields.rotation, { x: 0, y: 0, z: 0 }, `entity:${bodyId}`),
     velocity: optionalVector(bodyFragment, bodyFields.velocity, { x: 0, y: 0, z: 0 }, `entity:${bodyId}`),
     angularVelocityDeg: optionalVector(bodyFragment, bodyFields.angular_velocity, { x: 0, y: 0, z: 0 }, `entity:${bodyId}`),
-    fixtures: [fixture],
+    fixtures,
     enabled: bodyFields.enabled && bodyFragment[bodyFields.enabled] !== undefined ? booleanValue(bodyFragment[bodyFields.enabled], `entity:${bodyId}.${bodyFields.enabled}`) : true,
     tags: uniqueSorted([...kernelTags, ...rowTags, ...bodyTags]),
     data: { kernel_entity_id: bodyId, kernel_entity_root: row.entity_root, kernel_state_root: source.state_root }
@@ -315,9 +353,11 @@ export function materializeKernelStateBatch(batch: KernelStateBatch, options: Ke
   const source = { world_id: options.world_id ?? batch.world_id, generation: batch.generation, generation_root: batch.generation_root, tick: batch.tick, state_root: batch.state_root, batch_root: batch.batch_root };
   const bodyFragmentId = options.body_fragment_id ?? 'spatial.body';
   const fixtureFragmentId = options.fixture_fragment_id ?? 'spatial.fixture';
+  const fixturesFragmentId = options.fixtures_fragment_id ?? 'spatial.fixtures';
+  const fixturesCollectionField = options.fixtures_collection_field ?? 'items';
   const characterFragmentId = options.character_fragment_id ?? 'spatial.character';
   const bodyFields: KernelSpatialBodyFields = { kind: 'kind', position: 'position', mass_q: 'mass_q', rotation: 'rotation', velocity: 'velocity', angular_velocity: 'angular_velocity', tags: 'tags', enabled: 'enabled', ...options.body_fields };
-  const fixtureFields: KernelSpatialFixtureFields = { shape: 'shape', local_position: 'local_position', sensor: 'sensor', material_id: 'material_id', body_zone: 'body_zone', tags: 'tags', ...options.fixture_fields };
+  const fixtureFields: KernelSpatialFixtureFields = { id: 'fixture_id', shape: 'shape', local_position: 'local_position', sensor: 'sensor', material_id: 'material_id', body_zone: 'body_zone', category_bits: 'category_bits', mask_bits: 'mask_bits', tags: 'tags', ...options.fixture_fields };
   const characterFields: KernelSpatialCharacterFields = { id: 'character_id', body_id: 'body_id', walk_speed: 'walk_speed', acceleration: 'acceleration', air_control_q: 'air_control_q', jump_speed: 'jump_speed', ground_probe: 'ground_probe', max_slope_deg: 'max_slope_deg', footstep_distance: 'footstep_distance', left_foot_zone: 'left_foot_zone', right_foot_zone: 'right_foot_zone', step_height: 'step_height', ground_snap_distance: 'ground_snap_distance', skin_width: 'skin_width', platform_inheritance_q: 'platform_inheritance_q', coyote_ticks: 'coyote_ticks', jump_buffer_ticks: 'jump_buffer_ticks', ...options.character_fields };
   const rows = [...batch.rows].sort((a, b) => a.entity_id.localeCompare(b.entity_id));
   const seen = new Set<string>();
@@ -328,10 +368,23 @@ export function materializeKernelStateBatch(batch: KernelStateBatch, options: Ke
     fail(!seen.has(entityId), 'KERNEL_BINDING_ENTITY_DUPLICATE', entityId);
     seen.add(entityId);
     fail(HEX64.test(row.entity_root), 'KERNEL_BINDING_ENTITY_ROOT_INVALID', entityId);
-    const body = materializeBody(row, fragment(row, bodyFragmentId, `entity:${entityId}`), fragment(row, fixtureFragmentId, `entity:${entityId}`), bodyFields, fixtureFields, source);
+    const collectionPresent = row.fragments?.[fixturesFragmentId] !== undefined;
+    const singularPresent = row.fragments?.[fixtureFragmentId] !== undefined;
+    fail(!(collectionPresent && singularPresent && fixturesFragmentId !== fixtureFragmentId), 'KERNEL_BINDING_FIXTURE_SOURCES_AMBIGUOUS', entityId);
+    const collection = fixtureCollection(row, fixturesFragmentId, fixturesCollectionField, `entity:${entityId}`);
+    const singular = collection === null ? [fragment(row, fixtureFragmentId, `entity:${entityId}`)] : null;
+    const body = materializeBody(row, fragment(row, bodyFragmentId, `entity:${entityId}`), collection ?? singular!, bodyFields, fixtureFields, source);
     const characterFragment = optionalFragment(row, characterFragmentId, `entity:${entityId}`);
     if (characterFragment) characters.push(materializeCharacter(row, body, characterFragment, characterFields));
-    entityBindings.push({ entity_id: entityId, entity_root: row.entity_root, body_id: body.id, fixture_id: body.fixtures[0]!.id, body_fragment_id: bodyFragmentId, fixture_fragment_id: fixtureFragmentId });
+    entityBindings.push({
+      entity_id: entityId,
+      entity_root: row.entity_root,
+      body_id: body.id,
+      fixture_id: body.fixtures[0]!.id,
+      ...(body.fixtures.length > 1 ? { fixture_ids: body.fixtures.map(fixture => fixture.id) } : {}),
+      body_fragment_id: bodyFragmentId,
+      fixture_fragment_id: collection === null ? fixtureFragmentId : fixturesFragmentId,
+    });
     return body;
   });
   const config: SpatialEmbodimentWorldConfig = {

@@ -502,6 +502,22 @@ function aetherShape(shape, bodyId, fixtureId) {
   fail('STUDIO_WB_AETHER_SHAPE_UNSUPPORTED', `Fixture ${fixtureId} on ${bodyId} cannot be lowered to the Kernel spatial fragment`);
 }
 
+function aetherFixture(fixture, bodyId) {
+  return {
+    fixture_id: fixture.id,
+    shape: aetherShape(fixture.shape, bodyId, fixture.id),
+    local_position: fixture.localPositionMm ?? { x: 0, y: 0, z: 0 },
+    sensor: fixture.sensor ?? false,
+    ...(fixture.materialId === undefined ? {} : { material_id: fixture.materialId }),
+    ...(fixture.bodyZone === undefined ? {} : { body_zone: fixture.bodyZone }),
+    ...(fixture.collisionFilter === undefined ? {} : {
+      category_bits: fixture.collisionFilter.categoryBits,
+      mask_bits: fixture.collisionFilter.maskBits,
+    }),
+    tags: fixture.tags ?? [],
+  };
+}
+
 function aetherCharacterBindings(bundle) {
   const bodiesById = new Map(bundle.worldBody.ir.physicalBodyState.bodies.map(body => [body.id, body]));
   return (bundle.sidecar.preserved_source_facets?.character_runtime ?? []).map(character => ({
@@ -600,19 +616,6 @@ function aetherAssetBindingReady(bundle, options = {}, instances = aetherAssetIn
 function aetherProjectionLosses(bundle, { assetBindingReady = false, networkBindingReady = false } = {}) {
   const ir = bundle.worldBody.ir;
   const losses = [];
-  const secondaryFixtures = ir.physicalBodyState.bodies
-    .filter(body => body.fixtures.length > 1)
-    .map(body => ({ bodyId: body.id, fixtureIds: body.fixtures.map(fixture => fixture.id) }));
-  if (secondaryFixtures.length > 0) {
-    losses.push({
-      code: 'RCL_GAP_WB_AETHER_SECONDARY_FIXTURES',
-      severity: 'blocking-loss',
-      sourceFacet: 'physicalBodyState.fixtures',
-      target: 'rncs.entity-state-batch.v0.1/spatial.fixture',
-      detail: 'The existing Kernel spatial materializer accepts one fixture per entity and cannot preserve secondary fixtures.',
-      bodies: secondaryFixtures,
-    });
-  }
   const assetBindings = ir.visualBodyState.bodies.flatMap(body => body.nodes
     .filter(node => node.assetRef !== undefined)
     .map(node => ({ bodyId: body.id, nodeId: node.id, assetId: node.assetRef })));
@@ -692,7 +695,6 @@ function createAetherEntityStateProjection(bundle, options = {}) {
   }
   const characterByBodyId = new Map(aetherCharacterBindings(bundle).filter(item => item.body).map(item => [item.body.id, item.character]));
   const rows = ir.physicalBodyState.bodies.map(body => {
-    const fixture = body.fixtures[0];
     const character = characterByBodyId.get(body.id);
     const fragments = {
       'spatial.body': {
@@ -705,14 +707,7 @@ function createAetherEntityStateProjection(bundle, options = {}) {
         tags: body.tags ?? [],
         enabled: true,
       },
-      'spatial.fixture': {
-        shape: aetherShape(fixture.shape, body.id, fixture.id),
-        local_position: fixture.localPositionMm ?? { x: 0, y: 0, z: 0 },
-        sensor: fixture.sensor ?? false,
-        ...(fixture.materialId === undefined ? {} : { material_id: fixture.materialId }),
-        ...(fixture.bodyZone === undefined ? {} : { body_zone: fixture.bodyZone }),
-        tags: fixture.tags ?? [],
-      },
+      'spatial.fixtures': { items: body.fixtures.map(fixture => aetherFixture(fixture, body.id)) },
       ...(character ? {
         'spatial.character': {
           character_id: character.id,
@@ -759,7 +754,7 @@ function createAetherEntityStateProjection(bundle, options = {}) {
     tick: ir.temporalPresentationState.clock.tick,
     state_root: stateRoot,
     entity_ids: rows.map(row => row.entity_id),
-    fragment_ids: ['spatial.body', 'spatial.fixture', ...(rows.some(row => row.fragments['spatial.character']) ? ['spatial.character'] : [])],
+    fragment_ids: ['spatial.body', 'spatial.fixtures', ...(rows.some(row => row.fragments['spatial.character']) ? ['spatial.character'] : [])],
     rows,
   };
   const batch = { ...batchBase, batch_root: rootHash(batchBase) };
@@ -780,7 +775,7 @@ function createAetherEntityStateProjection(bundle, options = {}) {
       coordinate_unit: 'millimetre-preserved',
       rotation_unit: 'milli-degree-euler-lowered-from-canonical-quaternion',
       mass_unit: 'grams-to-rsr-mass-q-by-multiply-1000',
-      selected_fixture: 'first-fixture-only',
+      fixture_binding: 'all-fixtures-via-spatial.fixtures.items',
       source_facet_retention: assetBindingReady || networkBindingReady ? 'sidecar-plus-executable-aether-bindings-and-loss-list' : 'sidecar-and-loss-list-only',
     },
     losses,

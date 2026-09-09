@@ -47,6 +47,7 @@
               "entity_root": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
               "body_id": { "type": "string", "minLength": 1 },
               "fixture_id": { "type": "string", "minLength": 1 },
+              "fixture_ids": { "type": "array", "items": { "type": "string", "minLength": 1 }, "minItems": 1 },
               "body_fragment_id": { "type": "string", "minLength": 1 },
               "fixture_fragment_id": { "type": "string", "minLength": 1 }
             }

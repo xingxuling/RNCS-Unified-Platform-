@@ -12,8 +12,8 @@
     "npm test --workspace @taowind/large-world-runtime"
   ],
   "tests": {
-    "adapter": "12/12 PASS",
-    "aetherWorldBodyProjection": "4/4 PASS; default lossy projection blocked; explicit candidate runtime executed; verified asset instances and network observer relevance executed",
+    "adapter": "14/14 PASS",
+    "aetherWorldBodyProjection": "5/5 PASS; default lossy projection blocked; explicit candidate runtime executed; complete fixture collection, verified asset instances, and network observer relevance executed",
     "realityBuildCandidateConsumer": "2/2 PASS; full build verification.valid=true with explicit presentation_candidate",
     "realityBuildSuite": "135 tests / 127 pass / 0 fail / 8 skip",
     "generatedCandidateRuntime": "1/1 PASS",
@@ -25,7 +25,7 @@
     "aetherBridge": "29/29 PASS",
     "largeWorldRuntime": "36/36 PASS after materializing the registered reality-representation-fabric donor",
     "visualStateRuntime": "122/122 + 99/99 + 6/6 + 4/4 + 21/21 + 11/11 PASS",
-    "realitySimulationRuntime": "build PASS; shared Kernel mass_q and spatial.character bindings consumed by Aether regression"
+    "realitySimulationRuntime": "build PASS; shared Kernel mass_q, spatial.fixtures.items, and spatial.character bindings consumed by Aether regression"
   },
   "upstreamRegression": {
     "realityStudio": "244 PASS / 1 FAIL / 1 SKIP",
@@ -55,8 +55,8 @@
     "status": "PASS_CANDIDATE_RUNTIME",
     "authority": "candidate-runtime-projection-only",
     "sourceWorldBodyRoot": "90adf7100e1c2e2514a8e8ba94e9c0475a5a84b72d1e2138e11322c0eb9c374a",
-    "projectionRoot": "dbd4c623ff5944af9c665d94b715c27881b576f72425c926a717364d1a36f1f9",
-    "receiptRoot": "a97b14bb1b2926ac86d308aa00fa94153b1d594dc5e65ffaf9a05dfbcfb0f37b",
+    "projectionRoot": "fa495e4496c309eef1520f73a743f24f8d58f2e43e9a1c5b8619b74043119824",
+    "receiptRoot": "9ff3c1f3e85338fad16e0b202d01d6f1e7e21c451a475adfc00788040cbff8ab",
     "inspectionLossCodes": [
       "RCL_GAP_WB_AETHER_VISUAL_ASSET_BINDING",
       "RCL_GAP_WB_AETHER_NETWORK_BINDING"
@@ -78,17 +78,17 @@
     "bodyCount": 6,
     "activeCellIds": ["cell:studio-world"],
     "runtimeRoots": {
-      "kernel_state_root": "1b99815830032763748d687529a56dc3e4b874904c32acf626632ec59669b214",
-      "kernel_batch_root": "b20fad85a35d11b83fdaec00231060cc09a63917f30682c724ed8230c7a4187f",
-      "binding_root": "fnv1a64:5ced317c38d962c2",
-      "rsr_state_root": "fnv1a64:08d0cf95078405e8",
-      "rsr_body_root": "fnv1a64:78039793e3fc2250",
-      "cell_state_root": "a52bc3c06df174bd4ca19d3710ca01cd0b9676833e9c034b0121e598fa0bbe74",
-      "vsr_scene_root": "fnv1a64:5528ba1b3b310a1a",
-      "vsr_frame_root": "c704d8756273b11f34c9024456d8beb379d4476afba8c747f356f23c545b46c1",
+      "kernel_state_root": "973731ff07423118424d8b7c8bb44b4249a786ad4b33b318128292c0e49675e4",
+      "kernel_batch_root": "43628f28cfb1fe1c8b03fca6d3918417b6c4a04b041c8ff7466e1c9e9232cc93",
+      "binding_root": "fnv1a64:c0558fcc114f2c6a",
+      "rsr_state_root": "fnv1a64:55372b5fe36f8088",
+      "rsr_body_root": "fnv1a64:02ed525f3e6ce9cc",
+      "cell_state_root": "5bf75e07c4da2cf116c88cdb35bb8313a9b6c0b360e7196120426bec2109fed6",
+      "vsr_scene_root": "fnv1a64:b1b5759c547fb8bc",
+      "vsr_frame_root": "ebc1fd9b9d2d565f5c4efec9292ceb0807173a124567c09bb55bcbcea74dc911",
       "vsr_pixel_root": "8f102ba905cbc2e88983eae0270918de63b4a5fba819819df1181fec5a7c7b4c",
       "asset_streaming_root": "eae92558dc5c01c78754208b40a7ffe721831b2402bc29530ad2d1b2ea4a0715",
-      "asset_binding_root": "791da9093b8266557e816fe83d8fe221ff2ee409b5f0cd955a9f94b2d41d24c9"
+      "asset_binding_root": "9f8b5bac745e4adab5f2f17cd61f4befbf03512e03d6624c05870ccbe79ebd0a"
     }
   },
   "realityBuildCandidateConsumer": {
@@ -108,10 +108,10 @@
     "candidate artifact generation only; no commit or promotion authority",
     "model-3d is explicitly lowered to mesh and source kind is retained in sidecar",
     "2D scene transforms are preserved as source metadata and are not converted into 3D authority",
-    "Aether Cell candidate projection executed; dynamic mass and character facets lower through shared Kernel spatial contracts, verified GLB asset instances lower through the existing Cell asset streamer, and verified Network Compilation player slots lower into Observer Relevance",
+    "Aether Cell candidate projection executed; dynamic mass, complete fixture collections, and character facets lower through shared Kernel spatial contracts, verified GLB asset instances lower through the existing Cell asset streamer, and verified Network Compilation player slots lower into Observer Relevance",
     "Reality Build candidate consumer executed and verified; default Build path remains unchanged, Large World consumer and target hardware remain unverified",
     "no new K400 PASS"
   ],
   "authority": "candidate-artifact-generation-only-no-commit",
-  "evidenceRoot": "c860a5715d05584cb0482f530f947f66612ab943872a1c79ed9e2865732e6635"
+  "evidenceRoot": "a9a574488e2975c381cf8ecd7b024aa62136aa4c59add3e01f30d093deebce3b"
 }

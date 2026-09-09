@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { materializeKernelStateToRSR, projectKernelStateToReality } from '../src/index.mjs';
-import { createKernel } from '../examples/kernel-spatial-binding-fixture.mjs';
+import { createCompoundKernel, createKernel } from '../examples/kernel-spatial-binding-fixture.mjs';
 
 test('Kernel batch materializes into authoritative RSR bodies and fixtures', async () => {
   const value = createKernel();
@@ -15,6 +15,23 @@ test('Kernel batch materializes into authoritative RSR bodies and fixtures', asy
   assert.equal(materialization.config.reality.realityRoot, batch.state_root);
   assert.equal(materialization.entity_bindings.length, 2);
   assert.match(materialization.binding_root, /^fnv1a64:[0-9a-f]{16}$/);
+});
+
+test('Kernel fixture collection preserves compound fixtures through RSR and VSR', async () => {
+  const value = createCompoundKernel();
+  const batch = value.readStateBatch();
+  assert.deepEqual(batch.fragment_ids, ['spatial.body', 'spatial.fixtures']);
+  const materialization = await materializeKernelStateToRSR(value);
+  const body = materialization.config.bodies[0];
+  assert.deepEqual(body.fixtures.map(fixture => fixture.id), ['compound:solid', 'compound:sensor']);
+  assert.equal(body.fixtures[0].categoryBits, 1);
+  assert.equal(body.fixtures[1].maskBits, 1);
+  assert.equal(body.fixtures[1].sensor, true);
+  assert.deepEqual(materialization.entity_bindings[0].fixture_ids, ['compound:solid', 'compound:sensor']);
+  const projection = await projectKernelStateToReality(value, { width: 160, height: 90, qualityTier: 'economy' });
+  assert.equal(projection.snapshot.bodies[0].fixtures.length, 2);
+  assert.equal(projection.projection.frameVerified, true);
+  assert.equal(projection.projection.scene.nodes.filter(node => node.id.includes('compound:')).length >= 2, true);
 });
 
 test('Kernel to RSR to VSR preserves roots and renders a verified frame', async () => {

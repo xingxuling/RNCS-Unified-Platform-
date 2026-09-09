@@ -13,9 +13,27 @@ import {
   verifyStudioWorldBodyCandidate,
 } from '../src/index.mjs';
 
-function fixture() {
+function fixture({ secondaryFixture = false } = {}) {
   const created = createStudioNetworkWorld();
-  return { project: created.session.project, networkCompilation: created.compilation };
+  if (secondaryFixture) {
+    const world = created.session.project.spatial3d.worlds[created.session.project.spatial3d.active_world_id];
+    const body = world.bodies.find(item => item.id === 'studio-player-blue');
+    created.session.spatialPatchBody(body.id, {
+      fixtures: [
+        ...body.fixtures,
+        {
+          id: 'studio-player-blue:proximity-sensor',
+          shape: { type: 'sphere', radius: 1_100 },
+          localPosition: { x: 0, y: 900, z: 0 },
+          sensor: true,
+          collisionFilter: { categoryBits: 2, maskBits: 1 },
+          bodyZone: 'proximity',
+          tags: ['sensor'],
+        },
+      ],
+    });
+  }
+  return { project: created.session.project, networkCompilation: secondaryFixture ? created.session.networkCompile() : created.compilation };
 }
 
 function assetRuntime(project, assetId) {
@@ -101,6 +119,38 @@ test('explicit lossy Aether projection executes the existing RSR, Cell, and VSR 
   assert.equal(result.runtime.cellState.activeCellIds.includes('cell:studio-world'), true);
   assert.equal(typeof result.runtime.projection.framePlan.frameRoot, 'string');
   assert.equal(typeof result.runtime.projection.pixelRoot, 'string');
+});
+
+test('Aether projection preserves every World Body fixture through the shared collection fragment', async () => {
+  const { project, networkCompilation } = fixture({ secondaryFixture: true });
+  const bundle = compileStudioWorldBodyCandidate(project, { networkCompilation });
+  const projection = compileStudioWorldBodyAetherProjection(bundle, { allowLossyProjection: true });
+  const blue = bundle.worldBody.ir.physicalBodyState.bodies.find(body => body.id === 'studio-player-blue');
+  const blueRow = projection.batch.rows.find(row => row.entity_id === blue.entityId);
+  assert.equal(blue.fixtures.length, 2);
+  assert.deepEqual(blueRow.fragments['spatial.fixtures'].items.map(item => item.fixture_id), [
+    'studio-player-blue:proximity-sensor',
+    'studio-player-blue:shape',
+  ]);
+  assert.equal(projection.losses.some(loss => loss.code === 'RCL_GAP_WB_AETHER_SECONDARY_FIXTURES'), false);
+  const result = await projectStudioWorldBodyCandidateToRealityCell(bundle, {
+    allowLossyProjection: true,
+    cellCatalog: [{ id: 'cell:studio-world', center: [0, 0, 0], radius: 1_000_000, bodyIds: projection.batch.entity_ids }],
+    observerPosition: [0, 0, 0],
+    cameraPosition: [7, 5, 9],
+    maxObjects: projection.batch.entity_ids.length,
+    width: 320,
+    height: 180,
+    qualityTier: 'balanced',
+  });
+  const runtimeBlue = result.runtime.snapshot.bodies.find(body => body.id === blue.entityId);
+  assert.deepEqual(runtimeBlue.fixtures.map(fixture => fixture.id), [
+    'studio-player-blue:proximity-sensor',
+    'studio-player-blue:shape',
+  ]);
+  assert.equal(runtimeBlue.fixtures[0].sensor, true);
+  assert.equal(result.runtime.snapshot.bodies.reduce((sum, body) => sum + body.fixtures.length, 0), projection.batch.rows.reduce((sum, row) => sum + row.fragments['spatial.fixtures'].items.length, 0));
+  assert.equal(verifyStudioWorldBodyAetherProjection(result), true);
 });
 
 test('Aether projection lowers verified Studio asset instances and network observer relevance', async () => {
