@@ -31,6 +31,32 @@
             "additionalProperties": true
           }
         },
+        "asset_bundle": {
+          "type": "object",
+          "required": ["format", "version", "provider_format", "provider_version", "provider_bundle_root", "manifest", "assets", "asset_bundle_root"],
+          "properties": {
+            "format": {"const": "reality-build.spatial-asset-bundle.v0.1"},
+            "version": {"const": "0.1.0-alpha.1"},
+            "provider_format": {"type": "string", "minLength": 1},
+            "provider_version": {"type": "string", "minLength": 1},
+            "provider_bundle_root": {"type": "string", "minLength": 1},
+            "manifest": {"type": "object"},
+            "assets": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["record", "payload_base64"],
+                "properties": {
+                  "record": {"type": "object"},
+                  "payload_base64": {"type": "string"}
+                },
+                "additionalProperties": true
+              }
+            },
+            "asset_bundle_root": {"type": "string", "minLength": 1}
+          },
+          "additionalProperties": true
+        },
         "scene": {
           "type": "object",
           "required": ["format", "nodes"],

@@ -2,6 +2,7 @@
 
 ## Unreleased — 2026-07-27
 
+- Large World GLB candidate bundles can now cross the generic presentation seam into content-addressed web-release/embedded target payloads; the browser host reuses `VSRSpatialAssetStreamer` for active-cell byte loading and SHA verification, while GLB scene import/binding remains candidate work.
 - 构建请求新增 `spatial_trace`，纳入语义构建键并执行两次独立 RSR 空间回放。
 - 构建收据新增空间状态根、因果 delta 根、空间 runtime manifest 根和导航 manifest 根。
 - VSR WebGPU frame plans now expose dynamic entity vertex ranges and light bindings; browser targets update those buffers from the authoritative behavior Tick and re-verify the resulting resource/frame roots.

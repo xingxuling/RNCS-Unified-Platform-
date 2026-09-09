@@ -102,7 +102,9 @@ WorldSeed → Region → Chunk → URRF selection → VSR spatial scene
   → Reality Build runtime evidence / target receipt
 ```
 
-该接缝保持 source reference、scene root、project root 和 candidate-only authority；没有 body bindings 时不会伪造 RSR physical bodies。当前证据证明的是本地 Build 对 4 个 active streaming cells、17 个 VSR nodes、CPU-reference spatial frame 以及 4 个 `rncs://` candidate asset records 的 VSR streaming resolution（requested=4、missing=0）消费与自校验；它仍不等于 payload 已下载/导入/上传，也不等于 Large World 已经进入 Web/Android 资产流送、网络 transport、目标 GPU 或真实设备产品路径。
+该接缝保持 source reference、scene root、project root 和 candidate-only authority；没有 body bindings 时不会伪造 RSR physical bodies。当前证据证明的是本地 Build 对 4 个 active streaming cells、17 个 VSR nodes、CPU-reference spatial frame 以及 4 个 `rncs://` candidate asset records 的 VSR streaming resolution（requested=4、missing=0）消费与自校验。
+
+当 candidate 同时携带已有 Large World GLB provider bundle 时，Build 会保留 provider `format/version/bundle_root/manifest` 与 asset records，把 payload 写入 `web-release/assets/spatial/<sha256>.glb` 并生成 `spatial-asset-payload-manifest.json`；单文件/embedded HTML 使用同一 candidate payload 的 base64 版本。Chromium smoke 已真实通过现有 `VSRSpatialAssetStreamer` 读取并校验 36 条 catalog 中 33 条 active-cell payload（`ready=33`、`missing=0`、`failed=0`、`144632` bytes）。这仍不等于 GLB 已导入/绑定到 VSR scene、Android 设备、网络 transport、目标 GPU 或生产资产服务已闭合；3 条无 cell 归属的 provider payload 会保持 deferred。
 
 ## 诚实边界
 

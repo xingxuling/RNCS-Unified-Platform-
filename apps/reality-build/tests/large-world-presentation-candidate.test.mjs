@@ -3,14 +3,14 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
-import {createLargeWorldRuntime, verifyLargeWorldSpatialScene} from '@taowind/large-world-runtime';
+import {createLargeWorldRuntime, createLargeWorldSpatialGlbBundle, verifyLargeWorldSpatialScene, verifyLargeWorldSpatialGlbBundle} from '@taowind/large-world-runtime';
 import {createStudioNetworkWorld} from '../../../examples/studio-authored-network-world-v03/project.mjs';
 import {
   createSpatialPresentationCandidate,
   verifySpatialPresentationCandidate,
 } from '../src/presentation-candidate.mjs';
 import {buildProject, verifyBuild} from '../src/builder.mjs';
-import {readJson} from '../src/canonical.mjs';
+import {readJson, rootHash} from '../src/canonical.mjs';
 
 test('Reality Build consumes an existing Large World VSR scene through the generic presentation seam', () => {
   const {session} = createStudioNetworkWorld();
@@ -26,6 +26,8 @@ test('Reality Build consumes an existing Large World VSR scene through the gener
   const scene = runtime.createSpatialScene({selection});
   assert.equal(verifyLargeWorldSpatialScene(scene).valid, true);
   const region = runtime.getRegion();
+  const spatialAssetBundle = createLargeWorldSpatialGlbBundle(scene);
+  assert.equal(verifyLargeWorldSpatialGlbBundle(spatialAssetBundle, {sceneRoot: scene.scene_root}).valid, true);
   const presentationCandidate = createSpatialPresentationCandidate({
     projectRoot: session.project.project_root,
     scene,
@@ -38,8 +40,13 @@ test('Reality Build consumes an existing Large World VSR scene through the gener
       selection_root: selection.selection_root,
       source_region_root: region.region_root,
     },
+    assetBundle: spatialAssetBundle,
   });
   assert.equal(verifySpatialPresentationCandidate(presentationCandidate), true);
+  const payloadTampered = structuredClone(presentationCandidate);
+  const encoded = payloadTampered.presentation.asset_bundle.assets[0].payload_base64;
+  payloadTampered.presentation.asset_bundle.assets[0].payload_base64 = `${encoded[0] === 'A' ? 'B' : 'A'}${encoded.slice(1)}`;
+  assert.equal(verifySpatialPresentationCandidate(payloadTampered), false);
   assert.equal(presentationCandidate.presentation.bindings.length, 0);
 
   const tampered = structuredClone(presentationCandidate);
@@ -53,7 +60,7 @@ test('Reality Build consumes an existing Large World VSR scene through the gener
   const build = buildProject({
     project_file: projectFile,
     output_dir: outputDir,
-    targets: ['web-release'],
+    targets: ['web-release', 'web-single'],
     app: {app_id: 'com.taowind.largeworldbuild', title: 'Large World Build Candidate', version_name: '0.1.0', version_code: 1},
     build_time: '2026-09-10T00:00:00.000Z',
     runtime_trace: [{}, {}],
@@ -70,6 +77,20 @@ test('Reality Build consumes an existing Large World VSR scene through the gener
   assert.ok(evidence.presentation_asset_streaming_root);
   assert.equal(evidence.presentation_asset_requested_count, 4);
   assert.equal(evidence.presentation_asset_missing_count, 0);
+  assert.equal(evidence.presentation_asset_bundle_root, presentationCandidate.presentation.asset_bundle.asset_bundle_root);
+  assert.equal(evidence.presentation_asset_provider_bundle_root, spatialAssetBundle.bundle_root);
+  assert.equal(evidence.presentation_asset_payload_count, spatialAssetBundle.assets.length);
+  assert.equal(evidence.presentation_asset_payload_bytes, spatialAssetBundle.assets.reduce((sum, entry) => sum + entry.record.byteLength, 0));
+  const payloadManifest = readJson(path.join(outputDir, 'web-release', 'spatial-asset-payload-manifest.json'));
+  const {payload_root: payloadRoot, ...payloadManifestBase} = payloadManifest;
+  assert.equal(payloadRoot, rootHash(payloadManifestBase));
+  assert.equal(payloadManifest.source_asset_bundle_root, presentationCandidate.presentation.asset_bundle.asset_bundle_root);
+  assert.equal(payloadManifest.payload_count, spatialAssetBundle.assets.length);
+  assert.equal(payloadManifest.payloads.length, spatialAssetBundle.assets.length);
+  assert.equal(payloadManifest.payloads.every(payload => fs.existsSync(path.join(outputDir, 'web-release', payload.uri.slice(2)))), true);
+  const singleHtml = fs.readFileSync(path.join(outputDir, 'web-single', 'Large World Build Candidate_单文件版.html'), 'utf8');
+  assert.match(singleHtml, /reality-build\.spatial-presentation-payloads\.v0\.1/);
+  assert.match(singleHtml, /"base64":"[A-Za-z0-9+/]+=*/);
 });
 
 test('Reality Build rejects a self-sealed presentation candidate from another project', () => {

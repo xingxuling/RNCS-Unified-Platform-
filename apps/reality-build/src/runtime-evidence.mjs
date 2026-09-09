@@ -46,7 +46,7 @@ function presentationSpec(project,externalCandidate=null){
   const scene=candidate?.scene??spatial?.presentation_scene;
   if(!scene||typeof scene!=='object')return null;
   const bindings=Array.isArray(candidate?.bindings)?candidate.bindings:Array.isArray(spatial?.presentation_bindings)?spatial.presentation_bindings:[];
-  return{scene:clone(scene),bindings:clone(bindings),source_root:candidate?.presentation_source_root??spatial?.presentation_source_root??scene.sceneRoot??null};
+  return{scene:clone(scene),bindings:clone(bindings),asset_bundle:candidate?.asset_bundle??spatial?.presentation_asset_bundle??null,source_root:candidate?.presentation_source_root??spatial?.presentation_source_root??scene.sceneRoot??null};
 }
 function bindPresentationScene(scene,snapshot,bindings){
   const out=clone(scene);
@@ -85,7 +85,7 @@ export function compileBoundPresentationScene(project,snapshot,fallbackScene,fal
   });
   const verification=verifySpatialFrame(framePlan);
   if(!verification?.ok)throw new Error(`PRESENTATION_SPATIAL_FRAME_INVALID:${JSON.stringify(verification)}`);
-  return{scene,frame_plan:framePlan,asset_streaming:assetStreaming,bound:true,binding_count:spec.bindings.length,source_root:spec.source_root};
+  return{scene,frame_plan:framePlan,asset_streaming:assetStreaming,asset_bundle:spec.asset_bundle??null,bound:true,binding_count:spec.bindings.length,source_root:spec.source_root};
 }
 
 export function buildRuntimeEvidence({project,request,identity,presentationCandidate=null}={}){
@@ -168,6 +168,10 @@ export function buildRuntimeEvidence({project,request,identity,presentationCandi
     presentation_asset_streaming_root:presentation.asset_streaming?.root??null,
     presentation_asset_requested_count:presentation.asset_streaming?.requestedAssetIds?.length??0,
     presentation_asset_missing_count:presentation.asset_streaming?.missingAssetIds?.length??0,
+    presentation_asset_bundle_root:presentation.asset_bundle?.asset_bundle_root??null,
+    presentation_asset_provider_bundle_root:presentation.asset_bundle?.provider_bundle_root??null,
+    presentation_asset_payload_count:presentation.asset_bundle?.assets?.length??0,
+    presentation_asset_payload_bytes:(presentation.asset_bundle?.assets??[]).reduce((sum,entry)=>sum+Number(entry?.record?.byteLength??0),0),
     gpu_frame_plan_root:gpuFrameSummary.frame_plan_root??gpuFramePlan.framePlanRoot??null,
     gpu_resource_root:gpuFrameSummary.resource_root??gpuFramePlan.resourceRoot??null,
     gpu_command_root:gpuFrameSummary.command_root??gpuFramePlan.commandRoot??null,
@@ -199,6 +203,8 @@ export function runtimeEvidenceSummary(runtimeEvidence){
     presentation_scene_source_root:e.presentation_scene_source_root,presentation_scene_frame_root:e.presentation_scene_frame_root,
     presentation_binding_count:e.presentation_binding_count,presentation_asset_streaming_root:e.presentation_asset_streaming_root,
     presentation_asset_requested_count:e.presentation_asset_requested_count,presentation_asset_missing_count:e.presentation_asset_missing_count,
+    presentation_asset_bundle_root:e.presentation_asset_bundle_root,presentation_asset_provider_bundle_root:e.presentation_asset_provider_bundle_root,
+    presentation_asset_payload_count:e.presentation_asset_payload_count,presentation_asset_payload_bytes:e.presentation_asset_payload_bytes,
     gpu_frame_plan_root:e.gpu_frame_plan_root,gpu_resource_root:e.gpu_resource_root,
     gpu_command_root:e.gpu_command_root,gpu_frame_summary_root:e.gpu_frame_summary_root,gpu_viewport_manifest_root:e.gpu_viewport_manifest_root
   };

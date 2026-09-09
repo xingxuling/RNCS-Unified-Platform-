@@ -7,4 +7,5 @@ export * from './native-host.mjs';
 export * from './targets.mjs';
 export * from './world-body-candidate.mjs';
 export * from './presentation-candidate.mjs';
+export * from './presentation-assets.mjs';
 export * from './builder.mjs';
