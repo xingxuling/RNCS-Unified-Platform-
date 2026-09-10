@@ -1,0 +1,35 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {createAudioTargetProfile} from '@taowind/audio-target-runtime';
+import {sealUnifiedProject} from '../../reality-studio/src/scene-studio.mjs';
+import {buildProject,verifyBuild} from '../src/builder.mjs';
+import {readJson} from '../src/canonical.mjs';
+
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const fixture=path.join(root,'examples','冰境试炼.unified-project.json');
+
+test('Reality Build lowers an explicit cue binding to the packaged audio target plan',()=>{
+  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'reality-build-audio-target-'));
+  const copiedExamples=path.join(directory,'examples');
+  fs.cpSync(path.join(root,'examples'),copiedExamples,{recursive:true});
+  const projectFile=path.join(copiedExamples,'冰境试炼.unified-project.json'),project=readJson(projectFile),audioAsset=Object.values(project.assets.registry).find(record=>(record.files??[]).some(file=>String(file.mime??'').startsWith('audio/'))),audioFile=audioAsset.files.find(file=>String(file.mime??'').startsWith('audio/'));
+  project.audio_target=createAudioTargetProfile({bindings:[{binding_id:'audio-binding:footstep-ice',cue_id:'footstep-ice',asset_id:audioAsset.asset_id,file_role:audioFile.role,asset_sha256:audioFile.sha256}]});
+  fs.writeFileSync(projectFile,JSON.stringify(sealUnifiedProject(project,{touch:false}))+'\n');
+  const outputDir=path.join(directory,'output');
+  const build=buildProject({project_file:projectFile,output_dir:outputDir,targets:['web-release'],app:{app_id:'com.taowind.audiotarget',title:'Audio Target Candidate',version_name:'0.1.0',version_code:1},build_time:'2026-09-10T00:00:00.000Z',runtime_trace:[{}],spatial_trace:[]});
+  const plan=readJson(path.join(outputDir,'web-release','audio-target-plan.json'));
+  const data=fs.readFileSync(path.join(outputDir,'web-release','build-data.js'),'utf8');
+  const game=fs.readFileSync(path.join(outputDir,'web-release','game.js'),'utf8');
+  assert.equal(build.verification.valid,true);
+  assert.equal(verifyBuild(outputDir).valid,true);
+  assert.equal(plan.summary.bound,1);
+  assert.equal(plan.bindings[0].status,'bound');
+  assert.equal(plan.bindings[0].asset_id,audioAsset.asset_id);
+  assert.match(data,/audio_target_plan/);
+  assert.match(game,/decodeAudioData/);
+  assert.match(game,/blocked-binding/);
+});

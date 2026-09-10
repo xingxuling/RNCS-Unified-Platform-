@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {AUDIO_TARGET_FORMAT,compileAudioTargetPlan,createAudioTargetProfile,verifyAudioTargetProfile} from '../src/index.mjs';
+
+const hash='a'.repeat(64);
+const profile=()=>createAudioTargetProfile({bindings:[{binding_id:'audio-binding:footstep',cue_id:'footstep-ice',asset_id:'asset:sfx',file_role:'sfx-wav',asset_sha256:hash}]});
+
+test('explicit profile is sealed and unique by cue',()=>{const value=profile();assert.equal(value.format,AUDIO_TARGET_FORMAT);assert.equal(verifyAudioTargetProfile(value).valid,true);assert.throws(()=>createAudioTargetProfile({bindings:[{binding_id:'a',cue_id:'same',asset_id:'x',file_role:'sfx-wav',asset_sha256:hash},{binding_id:'b',cue_id:'same',asset_id:'y',file_role:'sfx-wav',asset_sha256:hash}]}),/AUDIO_TARGET_CUE_DUPLICATE/)});
+test('target plan binds the exact content-addressed audio file',()=>{const value=compileAudioTargetPlan(profile(),{records:{'asset:sfx':{asset_root:'asset-root',files:[{role:'sfx-wav',mime:'audio/wav',sha256:hash,store_path:`assets/${hash}.wav`,size:42}]}}});assert.equal(value.status,'ready');assert.equal(value.summary.bound,1);assert.equal(value.bindings[0].uri,`assets/${hash}.wav`);assert.equal(value.bindings[0].status,'bound')});
+test('missing file role fails closed without fallback inference',()=>{const value=compileAudioTargetPlan(profile(),{records:{'asset:sfx':{files:[{role:'other',mime:'audio/wav',sha256:hash,store_path:'assets/other.wav'}]}}});assert.equal(value.summary.blocked,1);assert.equal(value.bindings[0].status,'blocked-file');assert.equal(value.bindings[0].uri,null)});
+test('hash mismatch is a blocked target, not a different asset choice',()=>{const value=compileAudioTargetPlan(profile(),{records:{'asset:sfx':{files:[{role:'sfx-wav',mime:'audio/wav',sha256:'b'.repeat(64),store_path:'assets/wrong.wav'}]}}});assert.equal(value.bindings[0].status,'blocked-hash');assert.equal(value.bindings[0].asset_id,'asset:sfx')});
+test('an unsealed profile blocks the whole target plan',()=>{const value=profile();delete value.profile_root;const plan=compileAudioTargetPlan(value,{records:{'asset:sfx':{files:[{role:'sfx-wav',mime:'audio/wav',sha256:hash,store_path:`assets/${hash}.wav`}]}}});assert.equal(plan.status,'invalid-profile');assert.equal(plan.summary.bound,0);assert.equal(plan.bindings.length,0);assert.equal(plan.validation.errors[0].code,'AUDIO_TARGET_PROFILE_ROOT_REQUIRED')});

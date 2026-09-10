@@ -42,6 +42,7 @@
     "@taowind/reality-engine-session": "*",
     "@taowind/reality-network-runtime": "*",
     "@taowind/reality-studio-native": "*",
+    "@taowind/audio-target-runtime": "*",
     "@taowind/world-body-ir": "*",
     "@taowind/world-body-studio-bridge": "*"
   }

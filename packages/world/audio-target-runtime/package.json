@@ -1,0 +1,11 @@
+{
+  "name": "@taowind/audio-target-runtime",
+  "version": "0.1.0-alpha.1",
+  "private": false,
+  "type": "module",
+  "description": "Explicit cue-to-asset target binding and fail-closed lowering for RNCS audio providers.",
+  "license": "Apache-2.0",
+  "exports": {".": "./src/index.mjs"},
+  "scripts": {"test": "node --test --test-concurrency=1 tests/*.test.mjs"},
+  "engines": {"node": ">=20"}
+}

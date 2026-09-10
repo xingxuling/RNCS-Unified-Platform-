@@ -189,6 +189,24 @@ Reality Studio evaluateSequence()
 
 当前缺口记录为 `RCL_GAP_RNCS_AUDIO_TARGET_LOWERING`：必须先裁决 cue-to-asset 的 canonical owner 和 receipt shape，再复用现有资产清单、Behavior/RSR timing/spatial 参数做最小 target lowering。打包文件不能描述成播放完成；instrumented AudioContext 也不是 native audio、延迟、混音质量或人工听感证据。本轮没有新增 K400 PASS。
 
+## Audio target binding candidate
+
+在上述负证据基础上，本轮只补齐了最小的显式 target seam，没有建立第二套音频语义系统：
+
+```text
+Reality Studio setAudioCueBinding()
+  → rncs.audio-target-profile.v0.1
+  → @taowind/audio-target-runtime
+  → Reality Build audio-target-plan.json
+  → existing content-addressed WAV
+  → reality-build.web-audio-buffer
+  → browser target receipt
+```
+
+Studio 现在保存 `cue_id → asset_id → file_role → asset_sha256`，Build 复用已有资产清单，把音频文件暴露为 `audio_files`，但不把它提升为 `primary_visual`。计划只接受精确资产记录、文件角色、`audio/*` MIME 与 SHA-256 匹配；缺失资产、角色、MIME、哈希和未封存 profile 都会阻断，不做 cue 名或“第一个音频文件”的推断。没有 profile 的旧项目仍可进入明确标注的 legacy procedural fallback，这不是源 WAV 播放。
+
+对一份新生成的 web-release，真实本地 Chromium 请求了 `assets/ba8ebd46...e.wav`，并观察到 `decode-pending → scheduled` 收据，页面错误为 0。该结果只证明精确目标文件请求、Web Audio 解码调度与收据身份；`spatial_parameters_forwarded=false`，因此不宣称 RSR 空间参数已变成 3D 音频，也不宣称可听输出、延迟、混音质量、Android/native audio、物理设备或人工听感。完整证据见 `evidence/BUILD_AUDIO_TARGET_BINDING_CANDIDATE_v0.1.json`，缺口仍为 `RCL_GAP_RNCS_AUDIO_TARGET_LOWERING`，没有新增 K400 PASS。
+
 ## Network compilation → headless candidate
 
 Reality Build 现在消费既有 Reality Studio `project.network`，不再只把 network authoring 留在 Studio 导出侧：

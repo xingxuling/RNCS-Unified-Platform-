@@ -127,5 +127,5 @@ export function copyBakedAssets(assetManifest,fromDir,toDir){
 }
 
 export function assetRuntimeMap(assetManifest,{embedded=false}={}){
-  const out={};for(const [id,rec] of Object.entries(assetManifest.records)){const p=rec.primary_visual;out[id]={name:rec.name,kind:rec.kind,uri:p?(embedded?p.uri:p.path):'',sha256:p?.sha256??null};}return out;
+  const out={};for(const [id,rec] of Object.entries(assetManifest.records)){const p=rec.primary_visual;out[id]={name:rec.name,kind:rec.kind,uri:p?(embedded?p.uri:p.path):'',sha256:p?.sha256??null,audio_files:(rec.files??[]).filter(file=>String(file.mime??'').startsWith('audio/')).map(file=>({role:file.role,uri:embedded?(file.embedded_uri??file.store_path):file.store_path,mime:file.mime,sha256:file.sha256,size:file.size}))};}return out;
 }

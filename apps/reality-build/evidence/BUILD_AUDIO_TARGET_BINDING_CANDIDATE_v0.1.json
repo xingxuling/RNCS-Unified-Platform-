@@ -1,0 +1,128 @@
+{
+  "format": "reality-build.audio-target-lowering-evidence.v0.1",
+  "version": "0.1.0-alpha.1",
+  "status": "CANDIDATE",
+  "source": {
+    "checkout": "rncs-visual-factory-v01",
+    "branch": "codex/rncs-engine-stack-archaeology-v01",
+    "sourceCommit": "026593e",
+    "authority": "working-tree candidate; no RCL Core promotion, production-provider admission, main-branch mutation or release claim"
+  },
+  "canonicalSeam": {
+    "studio": "Reality Studio authors one explicit cue_id -> asset_id -> file_role -> asset_sha256 binding and seals the audio target profile.",
+    "behaviorAndRsr": "Behavior and RSR continue to own cue identity, authoritative tick and spatial parameters; neither infers a file asset.",
+    "assetManifest": "Reality Build reuses the existing content-addressed asset/file records and exposes audio_files without promoting audio to primary_visual.",
+    "targetProvider": "Reality Build compiles the profile into a deterministic target plan and the local Web Audio buffer Provider performs the target request/decode/schedule candidate.",
+    "rclBoundary": "The package is an auxiliary target-lowering provider seam, not an RCL Core promotion."
+  },
+  "observed": {
+    "sharedRuntime": {
+      "profileFormat": "rncs.audio-target-profile.v0.1",
+      "planFormat": "rncs.audio-target-plan.v0.1",
+      "providerId": "reality-build.web-audio-buffer",
+      "negativeStatuses": [
+        "blocked-asset",
+        "blocked-file",
+        "blocked-mime",
+        "blocked-hash",
+        "invalid-profile"
+      ],
+      "fallbackPolicy": "blocked"
+    },
+    "build": {
+      "fixture": "apps/reality-build/examples/冰境试炼.unified-project.json",
+      "buildId": "build:a7c4f123c82f4adaf695ef7b",
+      "buildKey": "a7c4f123c82f4adaf695ef7bc654b543e7af5d1cc2205e26b49bb83c7569d228",
+      "targetRoot": "72f2b0753d5550257e4a90b3888d41157e7172e3c1051c1bff01ee30d7a19687",
+      "profileRoot": "1ae24b7c56e42fee3413cfdb1beaa1ae63de1f90c8854ee1742fceab2d98a42b",
+      "planRoot": "a9ff6e4dc568506bf016d12cad5338e010c1786949360c9910aa64b153b10192",
+      "summary": {
+        "declared": 1,
+        "bound": 1,
+        "blocked": 0
+      },
+      "binding": {
+        "bindingId": "audio-binding:footstep-ice",
+        "cueId": "footstep-ice",
+        "assetId": "asset:3a82d1753e140d24552b89d1",
+        "fileRole": "sfx-wav",
+        "mime": "audio/wav",
+        "bytes": 19888,
+        "sha256": "ba8ebd46b31544ce76973a7ac88039c82d0c1aaaaabdf1cbfb1339a495f2e53e",
+        "uri": "assets/ba8ebd46b31544ce76973a7ac88039c82d0c1aaaaabdf1cbfb1339a495f2e53e.wav"
+      },
+      "verificationValid": true
+    },
+    "localChromium": {
+      "execution": "Playwright-driven local Chromium headless run against the freshly built web-release",
+      "url": "http://127.0.0.1:45992/index.html",
+      "before": {
+        "planRoot": "a9ff6e4dc568506bf016d12cad5338e010c1786949360c9910aa64b153b10192",
+        "bindingCount": 1,
+        "receiptCount": 0
+      },
+      "action": "window.__RNCS_GAME__.step({move_right:true})",
+      "after": {
+        "receiptCount": 2,
+        "statusCounts": {
+          "decode-pending": 1,
+          "scheduled": 1
+        },
+        "scheduledReceipt": {
+          "cueId": "footstep-ice",
+          "bindingId": "audio-binding:footstep-ice",
+          "assetId": "asset:3a82d1753e140d24552b89d1",
+          "fileRole": "sfx-wav",
+          "sha256": "ba8ebd46b31544ce76973a7ac88039c82d0c1aaaaabdf1cbfb1339a495f2e53e",
+          "providerId": "reality-build.web-audio-buffer",
+          "spatialParametersForwarded": false
+        }
+      },
+      "requests": [
+        "http://127.0.0.1:45992/assets/ba8ebd46b31544ce76973a7ac88039c82d0c1aaaaabdf1cbfb1339a495f2e53e.wav"
+      ],
+      "pageErrors": 0,
+      "claimBoundary": "Chromium executed the exact content-addressed WAV request and moved the candidate receipt from decode-pending to scheduled; this is not audible playback or spatialization proof."
+    }
+  },
+  "verification": {
+    "commands": [
+      "npm.cmd test --workspace @taowind/audio-target-runtime",
+      "node --test apps/reality-studio/tests/unified-studio.test.mjs",
+      "node --test apps/reality-build/tests/audio-target.test.mjs apps/reality-build/tests/targets.test.mjs",
+      "node --test apps/reality-build/tests/runtime.test.mjs apps/reality-build/tests/assets.test.mjs",
+      "npm.cmd test --workspace @taowind/reality-build-fabric",
+      "node --check on modified JavaScript modules",
+      "git diff --check",
+      "local Chromium candidate execution through Playwright"
+    ],
+    "localTestSummary": {
+      "audioTargetRuntime": "5 passed",
+      "realityStudioFocused": "32 passed",
+      "realityBuildAudioAndTargetsFocused": "33 passed",
+      "realityBuildRuntimeAndAssetsFocused": "42 passed",
+      "realityBuildFull": "162 passed, 0 failed, 8 skipped"
+    },
+    "expectedResult": "All listed local checks pass; no hosted CI, Android audio, physical-device or human-listening result is inferred."
+  },
+  "rclGap": "RCL_GAP_RNCS_AUDIO_TARGET_LOWERING",
+  "stressCase": "An authored audio cue must survive explicit Studio binding, content-addressed asset resolution, target plan sealing, browser request/decode scheduling and receipt generation without inventing an asset or mutating Behavior/RSR authority.",
+  "donorAdvantage": "Studio asset records already carry real sfx-wav roles and hashes; Behavior/RSR already carry deterministic cue/tick/spatial semantics; the candidate reuses those seams rather than adding a second audio asset registry or timeline evaluator.",
+  "regressionCase": "Projects without an audio target profile retain the explicitly labeled legacy procedural fallback; primary_visual remains visual-only; missing roles, wrong hashes and invalid profiles remain blocked instead of selecting another file.",
+  "affectedK400Cells": [
+    "LOWER",
+    "EXECUTE",
+    "CORRECT",
+    "ROBUST",
+    "PERFORMANCE",
+    "EVIDENCE"
+  ],
+  "boundaries": [
+    "Only the explicit footstep-ice binding is demonstrated; no cue-name, first-file or Sequence-track inference is claimed.",
+    "The browser receipt proves file request, Web Audio decode scheduling and target identity, not audible output, gain quality or latency.",
+    "spatial_parameters_forwarded is false: RSR spatial-audio parameters are not claimed as 3D spatialized audio by this candidate.",
+    "No Android WebView audio, native audio backend, physical device, streaming, mixing, production mastering, performance curve or human listening acceptance is claimed.",
+    "No K400 gate is promoted to PASS."
+  ],
+  "nextCandidate": "Use the same sealed plan in the generated Android/WebView host, capture request/decode receipts there, then separately decide and test how RSR spatial parameters are admitted to a real spatial audio Provider; keep physical-device and human listening gates open."
+}
