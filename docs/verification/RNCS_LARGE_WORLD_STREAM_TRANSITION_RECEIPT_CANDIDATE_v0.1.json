@@ -1,0 +1,160 @@
+{
+  "format": "rncs.large-world-stream-transition-evidence.v0.1",
+  "version": "0.1.0",
+  "sourceCommit": "ea5aaa7",
+  "authority": {
+    "candidate_only": true,
+    "authoritative": false,
+    "canonical_write_authorized": false,
+    "commit_status": "NOT_COMMITTED"
+  },
+  "streamReceipts": [
+    {
+      "label": "initial-budget-admission",
+      "stream_root": "eb5234ca55b196cbbca0cf064a49906e54ae21f1e626dc5033d26a7877fd6f02",
+      "transition_root": "13c761ca432bc79ae96f50c1f2e511aa23b66065edb041ce6e55c8a48db32fcd",
+      "previous_stream_root": null,
+      "previous_active_chunk_ids": [],
+      "next_active_chunk_ids": [
+        "chunk:world:stream-transition-evidence:0:0"
+      ],
+      "entered_chunk_ids": [
+        "chunk:world:stream-transition-evidence:0:0"
+      ],
+      "retained_chunk_ids": [],
+      "exited_chunk_ids": [],
+      "released_chunk_ids": [],
+      "evicted_chunk_ids": [
+        "chunk:world:stream-transition-evidence:-1:-1",
+        "chunk:world:stream-transition-evidence:-1:0",
+        "chunk:world:stream-transition-evidence:-1:1",
+        "chunk:world:stream-transition-evidence:0:-1",
+        "chunk:world:stream-transition-evidence:0:1",
+        "chunk:world:stream-transition-evidence:1:-1",
+        "chunk:world:stream-transition-evidence:1:0",
+        "chunk:world:stream-transition-evidence:1:1"
+      ],
+      "load_radius": 1,
+      "unload_radius": 1,
+      "stream_verified": true,
+      "transition_verified": true
+    },
+    {
+      "label": "observer-move-release",
+      "stream_root": "7cee9c23ce12c8f77d71e4a8efcee0b10e3616b28765ddcd61fa5e5f42d33840",
+      "transition_root": "b3f1fb341bc44cae4fffa04256f97e9d7dceef45704ff388af1f7a391a6c8ef7",
+      "previous_stream_root": "eb5234ca55b196cbbca0cf064a49906e54ae21f1e626dc5033d26a7877fd6f02",
+      "previous_active_chunk_ids": [
+        "chunk:world:stream-transition-evidence:0:0"
+      ],
+      "next_active_chunk_ids": [
+        "chunk:world:stream-transition-evidence:1:0"
+      ],
+      "entered_chunk_ids": [
+        "chunk:world:stream-transition-evidence:1:0"
+      ],
+      "retained_chunk_ids": [],
+      "exited_chunk_ids": [
+        "chunk:world:stream-transition-evidence:0:0"
+      ],
+      "released_chunk_ids": [
+        "chunk:world:stream-transition-evidence:0:0"
+      ],
+      "evicted_chunk_ids": [
+        "chunk:world:stream-transition-evidence:0:-1",
+        "chunk:world:stream-transition-evidence:0:0",
+        "chunk:world:stream-transition-evidence:0:1",
+        "chunk:world:stream-transition-evidence:1:-1",
+        "chunk:world:stream-transition-evidence:1:1"
+      ],
+      "load_radius": 1,
+      "unload_radius": 1,
+      "stream_verified": true,
+      "transition_verified": true
+    }
+  ],
+  "candidate": {
+    "candidate_root": "9415451266924995a6a4ccdd9ea88cc4e38b9f7d392c788b0c70616fd8401db3",
+    "source_stream_root": "7cee9c23ce12c8f77d71e4a8efcee0b10e3616b28765ddcd61fa5e5f42d33840",
+    "source_stream_transition_root": "b3f1fb341bc44cae4fffa04256f97e9d7dceef45704ff388af1f7a391a6c8ef7",
+    "active_chunk_ids": [
+      "chunk:world:stream-transition-evidence:1:0"
+    ],
+    "verification": {
+      "valid": true,
+      "errors": [],
+      "candidate_root": "9415451266924995a6a4ccdd9ea88cc4e38b9f7d392c788b0c70616fd8401db3"
+    }
+  },
+  "admission": {
+    "admission_root": "25410879c97e3f0aa54ca3aade0e194a7a155742727c51421b7b09f946d5d988",
+    "status": "READY",
+    "source_stream_transition_root": "b3f1fb341bc44cae4fffa04256f97e9d7dceef45704ff388af1f7a391a6c8ef7",
+    "source_evicted_chunk_ids": [
+      "chunk:world:stream-transition-evidence:0:-1",
+      "chunk:world:stream-transition-evidence:0:0",
+      "chunk:world:stream-transition-evidence:0:1",
+      "chunk:world:stream-transition-evidence:1:-1",
+      "chunk:world:stream-transition-evidence:1:1"
+    ],
+    "source_released_chunk_ids": [
+      "chunk:world:stream-transition-evidence:0:0"
+    ],
+    "verification": {
+      "valid": true,
+      "errors": [],
+      "admission_root": "25410879c97e3f0aa54ca3aade0e194a7a155742727c51421b7b09f946d5d988"
+    }
+  },
+  "physicalTransition": {
+    "transition_root": "f6aa31c0a91d94919d9fcae7b739a59d6c40a48d71800af40db2013d016c7e42",
+    "source_stream_transition_root": "b3f1fb341bc44cae4fffa04256f97e9d7dceef45704ff388af1f7a391a6c8ef7",
+    "source_released_chunk_ids": [
+      "chunk:world:stream-transition-evidence:0:0"
+    ],
+    "entered_body_ids": [
+      "terrain:chunk:world:stream-transition-evidence:1:0"
+    ],
+    "exited_body_ids": [
+      "terrain:chunk:world:stream-transition-evidence:0:0"
+    ],
+    "verification": {
+      "valid": true,
+      "errors": [],
+      "transition_root": "f6aa31c0a91d94919d9fcae7b739a59d6c40a48d71800af40db2013d016c7e42"
+    }
+  },
+  "replay": {
+    "ok": true,
+    "replay_root": "ad71da55fcb098b82bd9ec8b5794190b194534b658fa00bf6efc6aa84bc71b19"
+  },
+  "runtimeSnapshot": {
+    "snapshot_root": "da49dc10d5014fdad5db16e3e26d5f6f9a8250cbfdad21f2012d3dae2196dd92",
+    "verification": true
+  },
+  "execution": {
+    "largeWorldTests": "36/36 PASS",
+    "largeWorldRsrBridgeTests": "5/5 PASS",
+    "schemaJsonParse": "PASS"
+  },
+  "rclGap": {
+    "id": "RCL_GAP_RNCS_LARGE_WORLD_PHYSICAL_TERRAIN_LOWERING",
+    "task": "bind Large World source stream residency decisions to downstream physical terrain residency",
+    "missingCapability": "independently verifiable source transition root distinguishing released chunks from budget-evicted candidates",
+    "workaround": "reuse Large World observe owner to emit candidate-only rncs.large-world-stream-transition.v0.1 and bind its root through bridge admission and RSR transition",
+    "donor": "existing Large World load/unload hysteresis and RSR managed-static-body residency transition",
+    "generality": "cross-projection stream-to-physical residency seam",
+    "candidateAbsorption": "source transition receipt is now a reusable candidate contract; canonical scheduler, device residency, exact terrain sweep and production promotion remain open",
+    "affectedK400Cells": [
+      "EXPRESS",
+      "COMPILE",
+      "LOWER",
+      "EXECUTE",
+      "CORRECT",
+      "ROBUST",
+      "EVIDENCE"
+    ]
+  },
+  "decision": "LARGE_WORLD_STREAM_TRANSITION_RECEIPT_CANDIDATE_VERIFIED_RELEASE_AND_BUDGET_EVICTION_BOUNDARIES_OPEN",
+  "evidenceRoot": "1abd58069835b3140a6c5dd2719884e15eb900fff6f1c0f60f40f8fe3ac90ccc"
+}
