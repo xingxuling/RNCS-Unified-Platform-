@@ -140,6 +140,9 @@ test('compiled checkpoint requires source roots and supports authority resume',a
 // 15
 test('network checkpoint store recovers primary and valid temporary files',async()=>{
   const {runtime,ctx,id}=await setup({id:'session:checkpoint-store',joinB:false});
+  const receiptSchema=JSON.parse(fs.readFileSync(new URL('../schemas/network.checkpoint-store-receipt.v0.1.schema.json',import.meta.url),'utf8'));
+  assert.equal(receiptSchema.properties.format.const,'rncs.network-checkpoint-store-receipt.v0.1');
+  assert.ok(receiptSchema.required.includes('canonicalStateMutated'));assert.ok(receiptSchema.required.includes('commitStatus'));
   const pending=ctx.clients.get('a').createInput({type:'move',x:1000000,z:0});assert.equal(ctx.server.submitInput(pending).accepted,true);
   const first=runtime.createCheckpoint({sessionId:id});
   const directory=fs.mkdtempSync(path.join(os.tmpdir(),'rncs-network-checkpoint-store-')),store=new NetworkSessionCheckpointStore({filePath:path.join(directory,'session.json')});

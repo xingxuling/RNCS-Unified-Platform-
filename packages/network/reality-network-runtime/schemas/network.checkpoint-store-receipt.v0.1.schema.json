@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/network.checkpoint-store-receipt.v0.1.schema.json",
+  "title": "rncs.network-checkpoint-store-receipt.v0.1",
+  "type": "object",
+  "required": [
+    "format",
+    "version",
+    "operation",
+    "status",
+    "source",
+    "checkpointRoot",
+    "bytes",
+    "atomicRename",
+    "fileSynced",
+    "directorySynced",
+    "canonicalStateMutated",
+    "authority",
+    "candidateOnly",
+    "authoritative",
+    "commitStatus",
+    "receiptRoot"
+  ],
+  "properties": {
+    "format": {"const": "rncs.network-checkpoint-store-receipt.v0.1"},
+    "version": {"const": "0.1.0"},
+    "operation": {"enum": ["SAVE", "RECOVER"]},
+    "status": {"enum": ["COMMITTED", "RECOVERED"]},
+    "source": {"enum": ["temp_rename", "primary", "temporary_promoted"]},
+    "checkpointRoot": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "bytes": {"type": "integer", "minimum": 1},
+    "atomicRename": {"const": true},
+    "fileSynced": {"const": true},
+    "directorySynced": {"type": "boolean"},
+    "canonicalStateMutated": {"const": false},
+    "authority": {
+      "type": "object",
+      "required": ["providerCanWriteAuthoritativeWorldState", "rncsAuthorityRequired"],
+      "properties": {
+        "providerCanWriteAuthoritativeWorldState": {"const": false},
+        "rncsAuthorityRequired": {"const": true}
+      },
+      "additionalProperties": true
+    },
+    "candidateOnly": {"const": true},
+    "authoritative": {"const": false},
+    "commitStatus": {"const": "NOT_COMMITTED"},
+    "receiptRoot": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}
