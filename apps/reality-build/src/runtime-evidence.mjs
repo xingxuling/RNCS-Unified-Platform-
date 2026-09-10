@@ -52,7 +52,10 @@ function presentationAnimationOptions(policy,tick=0){
   if(!policy)return{};
   const tickHz=Number(policy.tick_hz??60),speed=Number(policy.speed??1),phaseSeconds=Number(policy.phase_seconds??0),safeTick=Math.max(0,Number(tick));
   if(!Number.isFinite(tickHz)||tickHz<=0||!Number.isFinite(speed)||speed<0||!Number.isFinite(phaseSeconds)||phaseSeconds<0)return{};
-  return{animation:{clipId:String(policy.clip_id??''),timeSeconds:phaseSeconds+safeTick/tickHz*speed,loop:policy.loop!==false}};
+  const timeSeconds=phaseSeconds+safeTick/tickHz*speed,selection=String(policy.selection??'clip');
+  if(selection==='layers')return{animationLayers:(policy.layers??[]).map(layer=>({clipId:String(layer.clip_id??''),timeSeconds,weight:Number(layer.weight??1),loop:layer.loop!==false,mode:String(layer.mode??'override'),...(Array.isArray(layer.node_ids)?{nodeIds:layer.node_ids.map(String)}:{})}))};
+  if(selection==='graph')return{animationGraph:{graph:{initialState:String(policy.graph?.initial_state??''),states:(policy.graph?.states??[]).map(state=>({id:String(state.id??''),clipId:String(state.clip_id??''),speed:Number(state.speed??1),loop:state.loop!==false,...(Array.isArray(state.node_ids)?{nodeIds:state.node_ids.map(String)}:{})}))},stateId:String(policy.state_id??policy.graph?.initial_state??''),timeSeconds,...(policy.transition?{transition:{fromStateId:String(policy.transition.from_state_id??''),toStateId:String(policy.transition.to_state_id??''),progress:Number(policy.transition.progress)}}:{})}};
+  return{animation:{clipId:String(policy.clip_id??''),timeSeconds,loop:policy.loop!==false}};
 }
 function bindPresentationScene(scene,snapshot,bindings){
   const out=clone(scene);
@@ -173,8 +176,12 @@ export function buildRuntimeEvidence({project,request,identity,presentationCandi
     presentation_scene_source_root:presentation.source_root,
     presentation_scene_frame_root:spatialFramePlan.frameRoot??null,
     presentation_animation_policy_root:presentation.animation_policy?rootHash(presentation.animation_policy):null,
+    presentation_animation_selection:presentation.animation_policy?(presentation.animation_policy.selection??'clip'):null,
     presentation_animation_clip_id:presentation.animation_policy?.clip_id??null,
-    presentation_animation_initial_time_seconds:presentation.animation_options?.animation?.timeSeconds??null,
+    presentation_animation_layer_count:presentation.animation_options?.animationLayers?.length??0,
+    presentation_animation_graph_state_id:presentation.animation_options?.animationGraph?.stateId??null,
+    presentation_animation_graph_transition_root:presentation.animation_options?.animationGraph?.transition?rootHash(presentation.animation_options.animationGraph.transition):null,
+    presentation_animation_initial_time_seconds:presentation.animation_options?.animation?.timeSeconds??presentation.animation_options?.animationLayers?.[0]?.timeSeconds??presentation.animation_options?.animationGraph?.timeSeconds??null,
     presentation_animation_root:spatialFramePlan.animationRoot??null,
     presentation_binding_count:presentation.binding_count,
     presentation_asset_binding_count:presentation.asset_binding_count,
@@ -214,7 +221,9 @@ export function runtimeEvidenceSummary(runtimeEvidence){
     spatial_replay_final_frame_root:e.spatial_replay_final_frame_root,spatial_runtime_manifest_root:e.spatial_runtime_manifest_root,
     navigation_manifest_root:e.navigation_manifest_root,presentation_scene_bound:e.presentation_scene_bound,
     presentation_scene_source_root:e.presentation_scene_source_root,presentation_scene_frame_root:e.presentation_scene_frame_root,
-    presentation_animation_policy_root:e.presentation_animation_policy_root,presentation_animation_clip_id:e.presentation_animation_clip_id,
+    presentation_animation_policy_root:e.presentation_animation_policy_root,presentation_animation_selection:e.presentation_animation_selection,
+    presentation_animation_clip_id:e.presentation_animation_clip_id,presentation_animation_layer_count:e.presentation_animation_layer_count,
+    presentation_animation_graph_state_id:e.presentation_animation_graph_state_id,presentation_animation_graph_transition_root:e.presentation_animation_graph_transition_root,
     presentation_animation_initial_time_seconds:e.presentation_animation_initial_time_seconds,presentation_animation_root:e.presentation_animation_root,
     presentation_binding_count:e.presentation_binding_count,presentation_asset_streaming_root:e.presentation_asset_streaming_root,
     presentation_asset_binding_count:e.presentation_asset_binding_count,

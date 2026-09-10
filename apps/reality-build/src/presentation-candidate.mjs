@@ -109,24 +109,99 @@ function normalizeScene(scene) {
   return {scene: clone(scene), nodeIds};
 }
 
+function normalizeAnimationNodeIds(value, scene, code) {
+  if (value === undefined || value === null) return undefined;
+  if (!Array.isArray(value) || value.some(nodeId => typeof nodeId !== 'string' || !nodeId.trim())) {
+    fail(code, 'Animation node_ids must be an array of non-empty strings');
+  }
+  const nodeIds = [...new Set(value.map(nodeId => nodeId.trim()))].sort();
+  const sceneNodeIds = new Set((scene.nodes ?? []).map(node => String(node?.id ?? '')));
+  for (const nodeId of nodeIds) if (!sceneNodeIds.has(nodeId)) fail(code, `Animation node ${nodeId} is missing from the scene`);
+  return nodeIds;
+}
+
 function normalizeAnimationPolicy(animationPolicy, scene) {
   if (animationPolicy === undefined || animationPolicy === null) return null;
   if (!isRecord(animationPolicy)) fail('REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_POLICY_INVALID', 'Presentation animation policy must be an object');
   const mode = String(animationPolicy.mode ?? 'fixed-tick');
-  const clipId = String(animationPolicy.clip_id ?? animationPolicy.clipId ?? '').trim();
   const tickHz = Number(animationPolicy.tick_hz ?? animationPolicy.tickHz ?? 60);
   const speed = Number(animationPolicy.speed ?? 1);
   const phaseSeconds = Number(animationPolicy.phase_seconds ?? animationPolicy.phaseSeconds ?? 0);
   const loop = animationPolicy.loop !== false;
   if (mode !== 'fixed-tick') fail('REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_MODE_UNSUPPORTED', 'Presentation animation policy must use fixed-tick time');
-  if (!clipId) fail('REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_CLIP_REQUIRED', 'Presentation animation policy needs a clip_id');
-  if (!(scene.animations ?? []).some(animation => String(animation?.id ?? '') === clipId)) {
-    fail('REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_CLIP_MISSING', `Presentation animation clip ${clipId} is missing from the scene`);
-  }
   if (!Number.isInteger(tickHz) || tickHz <= 0) fail('REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_TICK_HZ_INVALID', 'Presentation animation tick_hz must be a positive integer');
   if (!Number.isFinite(speed) || speed < 0) fail('REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_SPEED_INVALID', 'Presentation animation speed must be finite and non-negative');
   if (!Number.isFinite(phaseSeconds) || phaseSeconds < 0) fail('REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_PHASE_INVALID', 'Presentation animation phase_seconds must be finite and non-negative');
-  return {mode, clip_id: clipId, tick_hz: tickHz, speed, phase_seconds: phaseSeconds, loop};
+
+  const explicitSelection = animationPolicy.selection ?? animationPolicy.animation_selection;
+  const inferredSelection = Array.isArray(animationPolicy.layers) ? 'layers' : isRecord(animationPolicy.graph) ? 'graph' : 'clip';
+  const selection = String(explicitSelection ?? inferredSelection);
+  if (!['clip', 'layers', 'graph'].includes(selection)) fail('REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_SELECTION_INVALID', 'Presentation animation selection must be clip, layers, or graph');
+
+  const animationIds = new Set((scene.animations ?? []).map(animation => String(animation?.id ?? '')));
+  const requireClip = (clipId, code) => {
+    const normalized = String(clipId ?? '').trim();
+    if (!normalized) fail(code, 'Presentation animation clip_id is required');
+    if (!animationIds.has(normalized)) fail('REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_CLIP_MISSING', `Presentation animation clip ${normalized} is missing from the scene`);
+    return normalized;
+  };
+
+  if (selection === 'clip') {
+    if (animationPolicy.layers !== undefined || animationPolicy.graph !== undefined) fail('REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_SELECTION_INVALID', 'Clip animation policy cannot also contain layers or graph');
+    const clipId = requireClip(animationPolicy.clip_id ?? animationPolicy.clipId, 'REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_CLIP_REQUIRED');
+    return {mode, clip_id: clipId, tick_hz: tickHz, speed, phase_seconds: phaseSeconds, loop};
+  }
+
+  if (selection === 'layers') {
+    if (!Array.isArray(animationPolicy.layers) || animationPolicy.layers.length === 0) fail('REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_LAYERS_INVALID', 'Layer animation policy needs at least one layer');
+    const layers = animationPolicy.layers.map((layer, index) => {
+      if (!isRecord(layer)) fail('REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_LAYER_INVALID', `Animation layer ${index} must be an object`);
+      const clipId = requireClip(layer.clip_id ?? layer.clipId, 'REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_LAYER_CLIP_REQUIRED');
+      const weight = Number(layer.weight ?? 1);
+      if (!Number.isFinite(weight) || weight < 0 || weight > 1) fail('REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_LAYER_WEIGHT_INVALID', `Animation layer ${index} weight must be between 0 and 1`);
+      const layerLoop = layer.loop === undefined ? loop : layer.loop;
+      if (typeof layerLoop !== 'boolean') fail('REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_LAYER_LOOP_INVALID', `Animation layer ${index} loop must be boolean`);
+      const blendMode = String(layer.mode ?? 'override');
+      if (!['override', 'additive'].includes(blendMode)) fail('REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_LAYER_MODE_INVALID', `Animation layer ${index} mode is unsupported`);
+      const nodeIds = normalizeAnimationNodeIds(layer.node_ids ?? layer.nodeIds, scene, 'REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_LAYER_NODES_INVALID');
+      return {clip_id: clipId, weight, loop: layerLoop, mode: blendMode, ...(nodeIds ? {node_ids: nodeIds} : {})};
+    });
+    return {mode, selection, tick_hz: tickHz, speed, phase_seconds: phaseSeconds, loop, layers};
+  }
+
+  if (!isRecord(animationPolicy.graph) || !Array.isArray(animationPolicy.graph.states) || animationPolicy.graph.states.length === 0) {
+    fail('REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_GRAPH_INVALID', 'Graph animation policy needs a non-empty graph state list');
+  }
+  const graphStates = animationPolicy.graph.states.map((state, index) => {
+    if (!isRecord(state)) fail('REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_GRAPH_STATE_INVALID', `Animation graph state ${index} must be an object`);
+    const id = String(state.id ?? '').trim();
+    if (!id) fail('REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_GRAPH_STATE_INVALID', `Animation graph state ${index} needs an id`);
+    const clipId = requireClip(state.clip_id ?? state.clipId, 'REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_GRAPH_STATE_CLIP_REQUIRED');
+    const stateSpeed = Number(state.speed ?? 1);
+    if (!Number.isFinite(stateSpeed) || stateSpeed <= 0) fail('REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_GRAPH_STATE_SPEED_INVALID', `Animation graph state ${id} speed must be positive`);
+    const stateLoop = state.loop === undefined ? loop : state.loop;
+    if (typeof stateLoop !== 'boolean') fail('REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_GRAPH_STATE_LOOP_INVALID', `Animation graph state ${id} loop must be boolean`);
+    const nodeIds = normalizeAnimationNodeIds(state.node_ids ?? state.nodeIds, scene, 'REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_GRAPH_STATE_NODES_INVALID');
+    return {id, clip_id: clipId, speed: stateSpeed, loop: stateLoop, ...(nodeIds ? {node_ids: nodeIds} : {})};
+  });
+  const stateIds = new Set(graphStates.map(state => state.id));
+  if (new Set(graphStates.map(state => state.id)).size !== graphStates.length) fail('REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_GRAPH_STATE_DUPLICATE', 'Animation graph state ids must be unique');
+  const initialState = String(animationPolicy.graph.initial_state ?? animationPolicy.graph.initialState ?? '').trim();
+  if (!initialState || !stateIds.has(initialState)) fail('REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_GRAPH_INITIAL_STATE_INVALID', 'Animation graph initial_state must reference a declared state');
+  const stateId = String(animationPolicy.state_id ?? animationPolicy.stateId ?? initialState).trim();
+  if (!stateIds.has(stateId)) fail('REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_GRAPH_STATE_MISSING', `Animation graph state ${stateId} is not declared`);
+  let transition;
+  if (animationPolicy.transition !== undefined && animationPolicy.transition !== null) {
+    if (!isRecord(animationPolicy.transition)) fail('REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_GRAPH_TRANSITION_INVALID', 'Animation graph transition must be an object');
+    const fromStateId = String(animationPolicy.transition.from_state_id ?? animationPolicy.transition.fromStateId ?? '').trim();
+    const toStateId = String(animationPolicy.transition.to_state_id ?? animationPolicy.transition.toStateId ?? '').trim();
+    const progress = Number(animationPolicy.transition.progress);
+    if (!stateIds.has(fromStateId) || !stateIds.has(toStateId) || !Number.isFinite(progress) || progress < 0 || progress > 1) {
+      fail('REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_GRAPH_TRANSITION_INVALID', 'Animation graph transition must reference declared states and use progress from 0 to 1');
+    }
+    transition = {from_state_id: fromStateId, to_state_id: toStateId, progress};
+  }
+  return {mode, selection, tick_hz: tickHz, speed, phase_seconds: phaseSeconds, loop, graph: {initial_state: initialState, states: graphStates}, state_id: stateId, ...(transition ? {transition} : {})};
 }
 
 /**

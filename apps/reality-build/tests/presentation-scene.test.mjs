@@ -66,3 +66,67 @@ test('Reality Build rejects animation policies that cannot be lowered determinis
   assert.throws(()=>createSpatialPresentationCandidate({...base,animationPolicy:{mode:'wall-clock',clip_id:'candidate:walk'}}),error=>error?.code==='REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_MODE_UNSUPPORTED');
   assert.throws(()=>createSpatialPresentationCandidate({...base,animationPolicy:{clip_id:'candidate:missing'}}),error=>error?.code==='REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_CLIP_MISSING');
 });
+
+test('Reality Build lowers VSR animation layers through the same fixed Tick',()=>{
+  const scene=structuredClone(createSpatialShowcaseScene()),node=scene.nodes.find(entry=>entry.meshId);
+  assert.ok(node?.id);
+  scene.animations=[
+    {id:'candidate:walk',duration:1,channels:[{nodeId:node.id,path:'translation',times:[0,1],values:[[0,0,0],[.5,0,0]]}]},
+    {id:'candidate:offset',duration:1,channels:[{nodeId:node.id,path:'translation',times:[0,1],values:[[0,0,0],[0,0,.5]]}]}
+  ];
+  const candidate=createSpatialPresentationCandidate({
+    projectRoot:'project-root:animation-layers',scene,
+    source:{kind:'vsr-animation-layer-lowering',scene_id:scene.sceneId},
+    animationPolicy:{selection:'layers',tick_hz:60,speed:1,phase_seconds:0,loop:true,layers:[
+      {clip_id:'candidate:walk',weight:.5,mode:'override'},
+      {clip_id:'candidate:offset',weight:1,mode:'additive'}
+    ]}
+  });
+  const project={spatial3d:{editor:{viewport:{width:640,height:360,quality_tier:'quality'}}}};
+  const initial=compileBoundPresentationScene(project,{tick:0,bodies:[]},null,null,candidate);
+  const advanced=compileBoundPresentationScene(project,{tick:15,bodies:[]},null,null,candidate);
+  assert.equal(initial.animation_options.animationLayers.length,2);
+  assert.equal(initial.animation_options.animationLayers[0].timeSeconds,0);
+  assert.equal(advanced.animation_options.animationLayers[0].timeSeconds,.25);
+  assert.equal(initial.frame_plan.stats.animationClipCount,2);
+  assert.equal(initial.frame_plan.sourceRealityRoot,advanced.frame_plan.sourceRealityRoot);
+  assert.notEqual(initial.frame_plan.animationRoot,advanced.frame_plan.animationRoot);
+  assert.equal(advanced.animation_policy.selection,'layers');
+});
+
+test('Reality Build lowers a VSR animation graph and transition through the same fixed Tick',()=>{
+  const scene=structuredClone(createSpatialShowcaseScene()),node=scene.nodes.find(entry=>entry.meshId);
+  assert.ok(node?.id);
+  scene.animations=[
+    {id:'candidate:walk',duration:1,channels:[{nodeId:node.id,path:'translation',times:[0,1],values:[[0,0,0],[.5,0,0]]}]},
+    {id:'candidate:run',duration:1,channels:[{nodeId:node.id,path:'translation',times:[0,1],values:[[0,0,0],[1,0,0]]}]}
+  ];
+  const candidate=createSpatialPresentationCandidate({
+    projectRoot:'project-root:animation-graph',scene,
+    source:{kind:'vsr-animation-graph-lowering',scene_id:scene.sceneId},
+    animationPolicy:{selection:'graph',tick_hz:60,speed:1,phase_seconds:0,loop:true,state_id:'run',graph:{initial_state:'walk',states:[
+      {id:'walk',clip_id:'candidate:walk',speed:1},
+      {id:'run',clip_id:'candidate:run',speed:1.5}
+    ]},transition:{from_state_id:'walk',to_state_id:'run',progress:.25}}
+  });
+  const project={spatial3d:{editor:{viewport:{width:640,height:360,quality_tier:'quality'}}}};
+  const initial=compileBoundPresentationScene(project,{tick:0,bodies:[]},null,null,candidate);
+  const advanced=compileBoundPresentationScene(project,{tick:15,bodies:[]},null,null,candidate);
+  assert.equal(initial.animation_options.animationGraph.stateId,'run');
+  assert.equal(initial.animation_options.animationGraph.transition.progress,.25);
+  assert.equal(initial.animation_options.animationGraph.timeSeconds,0);
+  assert.equal(advanced.animation_options.animationGraph.timeSeconds,.25);
+  assert.equal(initial.frame_plan.stats.animationClipCount,2);
+  assert.equal(initial.frame_plan.sourceRealityRoot,advanced.frame_plan.sourceRealityRoot);
+  assert.notEqual(initial.frame_plan.animationRoot,advanced.frame_plan.animationRoot);
+  assert.equal(advanced.animation_policy.selection,'graph');
+});
+
+test('Reality Build rejects malformed VSR layer and graph policies before lowering',()=>{
+  const scene=structuredClone(createSpatialShowcaseScene()),node=scene.nodes.find(entry=>entry.meshId);
+  assert.ok(node?.id);
+  scene.animations=[{id:'candidate:walk',duration:1,channels:[{nodeId:node.id,path:'translation',times:[0,1],values:[[0,0,0],[.5,0,0]]}]}];
+  const base={projectRoot:'project-root:animation-structured-negative',scene,source:{kind:'vsr-animation-structured-negative',scene_id:scene.sceneId}};
+  assert.throws(()=>createSpatialPresentationCandidate({...base,animationPolicy:{selection:'layers',layers:[{clip_id:'candidate:walk',weight:2}]}}),error=>error?.code==='REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_LAYER_WEIGHT_INVALID');
+  assert.throws(()=>createSpatialPresentationCandidate({...base,animationPolicy:{selection:'graph',graph:{initial_state:'missing',states:[{id:'walk',clip_id:'candidate:walk'}]}}}),error=>error?.code==='REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_GRAPH_INITIAL_STATE_INVALID');
+});
