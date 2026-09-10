@@ -108,9 +108,17 @@ WorldSeed → Region → Chunk → URRF selection → VSR spatial scene
 
 宿主现在还暴露 `setSpatial3DObserver()` / `setSpatial3DCamera()`：它们复用 VSR 的 spatial working-set resolution，并让同一 active-cell 集合进入 asset acquire/release/evict、GLB rebind 和 frame compilation。真实 Chromium candidate 在复位后验证了 4 cells/12 bindings → 单 cell/6 bindings（`released=36`、`evicted=18`）→ 另一单 cell/3 bindings；回入阶段真实重新加载 `8576` bytes，三个阶段均 `verified=true`、无导入失败。该证据关闭的是 web-release candidate 的动态工作集接缝，不是缓存性能曲线、Large World 新 chunk 生成、Android/物理设备 GPU、跨设备矩阵、跨节点网络 transport/session 或生产资产服务。
 
-空间 payload loader 还可注入 VSR 的 `createVSRBrowserAssetCache()`：同一项目使用稳定 cache name，使用 `payload_root` 作为 revision root；CacheStorage 只保留 SHA-addressed、可丢弃的浏览器 bytes，VSR 仍拥有 catalog、lease、import、working set 和 residency receipt。真实 Chromium evidence 记录了首次 39 条 active payload misses、同一页面 cold reload 的 39 hits；切换到第二个 payload root 后旧条目被清空并发出 `VSR_BROWSER_ASSET_CACHE_REVISION_CHANGED`，新 revision 36 条 active payload 重新加载，下一次 cold reload 命中 36 条。该 provider 是浏览器 candidate lowering，不等于 Android app-private cache、远程 coherence、quota/SLA、物理设备或 production asset service；收据见 `evidence/BROWSER_ASSET_CACHE_PROVIDER_v0.1.json`。
+空间 payload loader 还可注入 VSR 的 `createVSRBrowserAssetCache()`：同一项目使用稳定 cache name，使用 `payload_root` 作为 revision root；CacheStorage 只保留 SHA-addressed、可丢弃的浏览器 bytes，VSR 仍拥有 catalog、lease、import、working set 和 residency receipt。真实 Chromium evidence 记录了首次 39 条 active payload misses、同一页面 cold reload 的 39 hits；切换到第二个 payload root 后旧条目被清空并发出 `VSR_BROWSER_ASSET_CACHE_REVISION_CHANGED`，新 revision 36 条 active payload 重新加载，下一次 cold reload 命中 36 条。该 provider 是浏览器 candidate lowering；Android lowering 另有独立的 WebView host 证据，远程 coherence、quota/SLA、物理设备和 production asset service 仍未闭合；浏览器收据见 `evidence/BROWSER_ASSET_CACHE_PROVIDER_v0.1.json`。
 
-随后用同一 Large World presentation fixture 重新生成了真正的 `android-project`（`index.html` 内嵌 base64 payload，而不是复用 web-release 外部 URI），经 Gradle 9.5.1 / Android SDK 35 构建出 `325945` bytes 的 debug APK，Windows `apksigner` v2 验签通过。在 `Rcl_Aether_API35_ATD` 的 Android WebView/CDP 中，初始 4 cells/33 ready payloads/11 bindings，远移后释放并驱逐 33 个 payload，回入 `cell:...:-1:-1` 后恢复 12 ready payloads/4 bindings；三阶段均 `verified=true`、`importFailed=0`、错误为空。证据写入 `evidence/LARGE_WORLD_ANDROID_EMBEDDED_DYNAMIC_CANDIDATE_v0.1.json`；这仍是 Emulator candidate，不是物理/目标设备 GPU、release 签名、持久 cache 性能或人工视觉验收。
+此前用同一 Large World presentation fixture 重新生成的 `android-project`（`index.html` 内嵌 base64 payload，而不是复用 web-release 外部 URI）经 Gradle 9.5.1 / Android SDK 35 构建出 `325945` bytes 的 debug APK，Windows `apksigner` v2 验签通过。在 `Rcl_Aether_API35_ATD` 的 Android WebView/CDP 中，初始 4 cells/33 ready payloads/11 bindings，远移后释放并驱逐 33 个 payload，回入 `cell:...:-1:-1` 后恢复 12 ready payloads/4 bindings；三阶段均 `verified=true`、`importFailed=0`、错误为空。证据写入 `evidence/LARGE_WORLD_ANDROID_EMBEDDED_DYNAMIC_CANDIDATE_v0.1.json`；这仍是 Emulator candidate，不是物理/目标设备 GPU、release 签名、持久 cache 性能或人工视觉验收。
+
+## Android WebView CacheStorage candidate
+
+Android 目标现在把内嵌 `index.html` 读入 WebView，并通过 `loadDataWithBaseURL("https://rncs.local/", ...)` 提供固定 synthetic origin。这个 lowering 复用了 VSR 的 `createVSRBrowserAssetCache()`，没有新增原生缓存桥或第二套资产生命周期；`https://rncs.local/` 只是本地文档 origin，不是远程网络服务。
+
+真实源码生成、Gradle 9.5.1、Android SDK 35 和 `Rcl_Aether_API35_ATD` API 35 Emulator 验证了同一包的版本切换：v1 为 `39` 个缓存 miss / `170656` bytes，安装 v2 后新的 payload root 触发 `VSR_BROWSER_ASSET_CACHE_REVISION_CHANGED`，重新写入 `36` 个活动资产 / `156064` bytes；进程重启后重新命中 `36` 个缓存条目，`importFailed=0`、无运行时错误。改动前的 `file:///android_asset/index.html` 探针确认 CacheStorage 存在但 `Cache.put` 被 WebView 以 `Request scheme 'file' is unsupported` 拒绝。证据见 `evidence/ANDROID_ASSET_CACHE_PROVIDER_v0.1.json`。
+
+这是 Android WebView/app-private CacheStorage 的 candidate execution evidence，不等于 WebView quota/eviction/performance 曲线、跨进程/跨设备 coherence、物理设备 GPU、release 签名、商店交付或人工视觉验收。
 
 ## Network compilation → headless candidate
 
@@ -132,7 +140,7 @@ Unified Project.project.network
 ## 诚实边界
 
 - `windows-native` 是真实 Windows GUI EXE，不依赖 BAT 或 Node.js；但 v0.2 的渲染宿主仍使用 Windows 自带或已安装的 Edge/Chrome，而不是内嵌 Chromium/WebView2 Runtime。
-- `android-apk` 已实现真实 Gradle 调用、产物检查、调试签名声明和 Windows `apksigner` 验证；本轮本机用 Gradle 9.5.1、Android SDK 35 生成并验签了 Large World debug APK，并在 `Rcl_Aether_API35_ATD` Emulator 完成两次 WebView 冷启动候选检查。没有相应工具链的环境仍只产出 Android 工程；物理/目标设备 GPU 矩阵与正式商店发布仍需独立证据、release keystore、AAB 和元数据。
+- `android-apk` 已实现真实 Gradle 调用、产物检查、调试签名声明和 Windows `apksigner` 验证；本轮本机用 Gradle 9.5.1、Android SDK 35 生成并验签了 Large World debug APK，并在 `Rcl_Aether_API35_ATD` Emulator 完成 WebView 冷启动、payload revision invalidation 与进程重启 rehydrate candidate。没有相应工具链的环境仍只产出 Android 工程；WebView quota/eviction/performance、物理/目标设备 GPU 矩阵与正式商店发布仍需独立证据、release keystore、AAB 和元数据。
 - 正式商店 Android 发布仍需用户的 release keystore、AAB、商店元数据与真实设备矩阵。
 - 原生 GPU、原生音频、增量补丁、自动更新和代码签名证书尚未完成。
 - 浏览器 `web-release` 仍使用现有 Behavior 浏览器 runtime；RSR 物理、空间快照与导航目前作为 RNCS 构建证据和 headless 运行时接入，尚未声称已经替换浏览器渲染器。

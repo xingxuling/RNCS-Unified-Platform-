@@ -1,0 +1,140 @@
+{
+  "format": "reality-build.android-asset-cache-provider-evidence.v0.1",
+  "status": "CANDIDATE_ANDROID_WEBVIEW_CACHESTORAGE_VERIFIED",
+  "sourceCommit": "c8ed99a8b0c29b366ae50126ff0e4cb97c5607b0",
+  "fixture": "output/playwright/build-asset-cache-candidates.mjs",
+  "pipeline": "Large World Runtime -> VSR spatial scene -> Reality Build android-project -> embedded Android assets -> Gradle debug APK -> Android WebView/CDP",
+  "commands": [
+    "node output/playwright/build-asset-cache-candidates.mjs",
+    "node --test apps/reality-build/tests/targets.test.mjs",
+    "npm test --workspace @taowind/reality-build-fabric",
+    "Gradle 9.5.1: app:assembleDebug for source-generated v1 and v2 Android projects",
+    "Android SDK 35 apksigner verify",
+    "adb install -r -> process restart -> WebView CDP Runtime.evaluate"
+  ],
+  "tests": {
+    "targetContract": "30/30 PASS",
+    "realityBuild": "143 tests / 135 pass / 0 fail / 8 skip",
+    "gradleV1": "PASS",
+    "gradleV2": "PASS",
+    "apkSignatureV2": "verified; one signer; debug key; v1/v3/v4/SourceStamp false",
+    "runtimeLog": "No FATAL EXCEPTION or AndroidRuntime failure observed for the candidate package"
+  },
+  "build": {
+    "sourceGeneratedHost": true,
+    "gradle": "9.5.1",
+    "compileSdk": 35,
+    "targetSdk": 35,
+    "v1": {
+      "assetPayloadCatalog": 42,
+      "apkBytes": 338241,
+      "apkSha256": "5aa6584d31d78e89c83bccf847561a30959561fcc4349153c190894a9ed146bc"
+    },
+    "v2": {
+      "assetPayloadCatalog": 39,
+      "apkBytes": 331789,
+      "apkSha256": "a4cdde130af24221f206fd2eae9deeb6d8006188fc1ca347fc50fdba3b750250"
+    }
+  },
+  "device": {
+    "avd": "Rcl_Aether_API35_ATD",
+    "model": "Android ATD built for x86_64",
+    "api": 35,
+    "androidRelease": "15",
+    "webview": "com.android.webview 124.0.6367.219",
+    "package": "com.taowind.browserassetcache",
+    "pageOrigin": "https://rncs.local/",
+    "readyState": "complete",
+    "gpuProperty": "emulation"
+  },
+  "archaeologyNegativeProbe": {
+    "host": "pre-lowering generated Android WebView target",
+    "pageUrl": "file:///android_asset/index.html",
+    "cacheStorageAvailable": true,
+    "cryptoSubtleAvailable": true,
+    "ready": 39,
+    "cacheMisses": 39,
+    "bytesResident": 0,
+    "importFailed": 0,
+    "diagnostic": "Failed to execute 'put' on 'Cache': Request scheme 'file' is unsupported",
+    "interpretation": "WebView CacheStorage was present but the file origin could not persist payload responses; this negative result motivated the synthetic origin lowering."
+  },
+  "phases": [
+    {
+      "name": "source-generated-v1-revision-transition",
+      "payloadRoot": "04da0e683aff1f50768da213b3a4b63a6dcfd112ca5bbda7e3cb9e8ceb765b7b",
+      "sourceAssetBundleRoot": "c6ad10e0c3d10bab7ce3cab3455db2f78bdb60075904072bc2d434aede229d8e",
+      "payloadCatalog": 42,
+      "ready": 39,
+      "cacheHits": 0,
+      "cacheMisses": 39,
+      "cachedAssetCount": 39,
+      "bytesResident": 170656,
+      "importFailed": 0,
+      "diagnostics": [
+        "VSR_BROWSER_ASSET_CACHE_REVISION_CHANGED:f8d4968a41248af7d7df5ddc7603ced6ff0871dcc923f0d4dd9cc81c0897b1b1:04da0e683aff1f50768da213b3a4b63a6dcfd112ca5bbda7e3cb9e8ceb765b7b"
+      ],
+      "origin": "https://rncs.local/",
+      "verified": true
+    },
+    {
+      "name": "source-generated-v2-revision-invalidation",
+      "payloadRoot": "f8d4968a41248af7d7df5ddc7603ced6ff0871dcc923f0d4dd9cc81c0897b1b1",
+      "sourceAssetBundleRoot": "60429e355fa532dfc4d60797bb11d5f08b10704d95b23a6fa99f4ecf1ad65d39",
+      "payloadCatalog": 39,
+      "ready": 36,
+      "cacheHits": 0,
+      "cacheMisses": 36,
+      "cachedAssetCount": 36,
+      "bytesResident": 156064,
+      "importFailed": 0,
+      "diagnostics": [
+        "VSR_BROWSER_ASSET_CACHE_REVISION_CHANGED:04da0e683aff1f50768da213b3a4b63a6dcfd112ca5bbda7e3cb9e8ceb765b7b:f8d4968a41248af7d7df5ddc7603ced6ff0871dcc923f0d4dd9cc81c0897b1b1"
+      ],
+      "origin": "https://rncs.local/",
+      "verified": true
+    },
+    {
+      "name": "source-generated-v2-process-restart-rehydrate",
+      "payloadRoot": "f8d4968a41248af7d7df5ddc7603ced6ff0871dcc923f0d4dd9cc81c0897b1b1",
+      "payloadCatalog": 39,
+      "ready": 36,
+      "cacheHits": 36,
+      "cacheMisses": 0,
+      "cachedAssetCount": 36,
+      "bytesResident": 156064,
+      "importFailed": 0,
+      "diagnostics": [
+        "VSR_BROWSER_ASSET_CACHE_REVISION_CHANGED:04da0e683aff1f50768da213b3a4b63a6dcfd112ca5bbda7e3cb9e8ceb765b7b:f8d4968a41248af7d7df5ddc7603ced6ff0871dcc923f0d4dd9cc81c0897b1b1"
+      ],
+      "origin": "https://rncs.local/",
+      "verified": true
+    }
+  ],
+  "coverage": {
+    "existingVsrBrowserProviderReused": true,
+    "syntheticHttpsOriginLowering": true,
+    "contentAddressedPayloads": true,
+    "byteLengthVerification": true,
+    "sha256Verification": true,
+    "manifestRootVerification": true,
+    "revisionInvalidation": true,
+    "processRestartRehydrate": true,
+    "realityBuildHostIntegration": true,
+    "customNativeCacheBridge": false,
+    "remoteCacheCoherence": false,
+    "quotaEvictionPerformanceCurve": false,
+    "physicalDeviceOrProductionRelease": false
+  },
+  "boundaries": [
+    "VSR remains the owner of asset catalog, leases, active working sets, imports and residency receipts; Android WebView CacheStorage owns only discardable app-private payload bytes and the provider manifest.",
+    "https://rncs.local/ is a local synthetic document origin supplied to WebView loadDataWithBaseURL; it is not a remote endpoint, TLS deployment, WAN transport, or network authority.",
+    "The Android target still embeds deterministic base64 payloads in the APK; this round adds cache rehydration for the existing provider and does not add external asset streaming.",
+    "The candidate does not establish WebView quota limits, eviction behavior under pressure, cross-process or cross-device coherence, physical-device GPU behavior, release signing, store delivery, or human visual acceptance.",
+    "No K400 gate is promoted to PASS; this is candidate runtime evidence only."
+  ],
+  "authority": "candidate-runtime-evidence-only-no-commit",
+  "rclGap": "RCL_GAP_RNCS_RUNTIME_ASSET_CACHE_PROVIDER",
+  "nextCandidate": "Measure Android WebView quota/eviction/performance on a reproducible target profile, then assess whether an external network cache provider can lower through the same content-addressed manifest contract without changing VSR ownership.",
+  "evidenceRoot": "2bdf6c1680210c24a5926ad6c31f9944b7f901f9b04734a172a9ab372596ab96"
+}
