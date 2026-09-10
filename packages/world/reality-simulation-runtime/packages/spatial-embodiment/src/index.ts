@@ -347,7 +347,7 @@ export interface SpatialBodyResidencyTransition {
 }
 
 interface Aabb3 { min: IntVector3; max: IntVector3 }
-interface CollisionResult { point: IntVector3; normal: IntVector3; penetration: number; feature?: 'capsule-obb' | 'gjk-epa' | 'heightfield' }
+interface CollisionResult { point: IntVector3; normal: IntVector3; penetration: number; feature?: 'capsule-obb' | 'gjk-epa' | 'heightfield'; manifoldIndex?: number }
 interface CollisionStats { gjkCalls: number; epaCalls: number; convexContacts: number; convexFallbacks: number }
 
 const v3 = (x = 0, y = 0, z = 0): IntVector3 => ({ x, y, z });
@@ -734,12 +734,31 @@ function heightfieldShapeCast(origin: IntVector3, direction: IntVector3, maxDist
   if (shape.type === 'sphere') return heightfieldSphereSweep(origin, direction, maxDistance, shape.radius, body, fixture);
   return heightfieldCapsuleSweep(origin, direction, maxDistance, shape.radius, shape.halfHeight, body, fixture);
 }
-function heightfieldCollision(movingBody: RuntimeSpatialBody, movingFixture: RuntimeSpatialFixture, terrainBody: RuntimeSpatialBody, terrainFixture: RuntimeSpatialFixture & { shape: HeightfieldShape }, persistence: number): CollisionResult | undefined {
+function heightfieldContactSamples(body: RuntimeSpatialBody, fixture: RuntimeSpatialFixture): IntVector3[] {
+  const bounds = fixtureAabb(body, fixture), center = v3(Math.round((bounds.min.x + bounds.max.x) / 2), Math.round((bounds.min.y + bounds.max.y) / 2), Math.round((bounds.min.z + bounds.max.z) / 2)), shape = fixture.shape;
+  const samples = [center];
+  if (shape.type === 'sphere' || shape.type === 'capsule') {
+    const radius = shape.radius;
+    samples.push(v3(center.x + radius, center.y, center.z), v3(center.x - radius, center.y, center.z), v3(center.x, center.y, center.z + radius), v3(center.x, center.y, center.z - radius));
+  } else {
+    samples.push(v3(bounds.min.x, center.y, bounds.min.z), v3(bounds.min.x, center.y, bounds.max.z), v3(bounds.max.x, center.y, bounds.min.z), v3(bounds.max.x, center.y, bounds.max.z));
+  }
+  const unique = new Map<string, IntVector3>();
+  for (const sample of samples) unique.set(`${sample.x}:${sample.z}`, sample);
+  return [...unique.values()];
+}
+function heightfieldCollision(movingBody: RuntimeSpatialBody, movingFixture: RuntimeSpatialFixture, terrainBody: RuntimeSpatialBody, terrainFixture: RuntimeSpatialFixture & { shape: HeightfieldShape }, persistence: number): CollisionResult[] {
   const movingBounds = fixtureAabb(movingBody, movingFixture), terrainBounds = heightfieldAabb(terrainBody, terrainFixture);
-  if (!overlaps(movingBounds, terrainBounds)) return undefined;
-  const sampleX = clamp(Math.round((movingBounds.min.x + movingBounds.max.x) / 2), terrainBounds.min.x, terrainBounds.max.x), sampleZ = clamp(Math.round((movingBounds.min.z + movingBounds.max.z) / 2), terrainBounds.min.z, terrainBounds.max.z), surface = heightfieldSurface(terrainBody, terrainFixture, sampleX, sampleZ);
-  if (!surface || movingBounds.min.y > surface.point.y + persistence || sub(movingBody.velocity, terrainBody.velocity).y > 0) return undefined;
-  return { point: surface.point, normal: mul(surface.normal, -1), penetration: Math.max(0, surface.point.y - movingBounds.min.y), feature: 'heightfield' };
+  if (!overlaps(movingBounds, terrainBounds) || sub(movingBody.velocity, terrainBody.velocity).y > 0) return [];
+  const candidates: CollisionResult[] = [];
+  for (const sample of heightfieldContactSamples(movingBody, movingFixture)) {
+    const sampleX = clamp(sample.x, terrainBounds.min.x, terrainBounds.max.x), sampleZ = clamp(sample.z, terrainBounds.min.z, terrainBounds.max.z), surface = heightfieldSurface(terrainBody, terrainFixture, sampleX, sampleZ);
+    if (!surface || movingBounds.min.y > surface.point.y + persistence) continue;
+    candidates.push({point: surface.point, normal: mul(surface.normal, -1), penetration: Math.max(0, surface.point.y - movingBounds.min.y), feature: 'heightfield'});
+  }
+  const unique = new Map<string, CollisionResult>();
+  for (const candidate of candidates) unique.set(`${candidate.point.x}:${candidate.point.y}:${candidate.point.z}`, candidate);
+  return [...unique.values()].sort((left, right) => right.penetration - left.penetration || left.point.x - right.point.x || left.point.z - right.point.z || left.point.y - right.point.y).slice(0, 4).map((candidate, manifoldIndex) => ({...candidate, manifoldIndex}));
 }
 function closestPointObb(point: IntVector3, box: OrientedBox3): IntVector3 {
   const delta = fsub(toFloat3(point), box.center); let result = box.center;
@@ -1080,10 +1099,10 @@ export class SpatialEmbodimentWorld {
     return side >= -(rule.skin ?? 20) && approach <= (rule.minApproachSpeed ?? 40);
   }
 
-  private makeContact(bodyA: RuntimeSpatialBody, fixtureA: RuntimeSpatialFixture, bodyB: RuntimeSpatialBody | undefined, fixtureB: RuntimeSpatialFixture | undefined, result: CollisionResult, floor = false): SpatialContactPoint {
-    const idValue = floor ? canonicalId('floor', bodyA.id, fixtureA.id) : canonicalId(bodyA.id, fixtureA.id, bodyB!.id, fixtureB!.id);
+  private makeContact(bodyA: RuntimeSpatialBody, fixtureA: RuntimeSpatialFixture, bodyB: RuntimeSpatialBody | undefined, fixtureB: RuntimeSpatialFixture | undefined, result: CollisionResult, floor = false, contactIndex = 0): SpatialContactPoint {
+    const manifoldId = floor ? canonicalId('floor', bodyA.id, fixtureA.id) : canonicalId(bodyA.id, fixtureA.id, bodyB!.id, fixtureB!.id), idValue = contactIndex === 0 ? manifoldId : canonicalId(manifoldId, `point:${contactIndex}`);
     const cached = this.contactImpulseCache.get(idValue);
-    return { id: idValue, manifoldId: idValue, bodyA: bodyA.id, fixtureA: fixtureA.id, bodyB: floor ? '__floor__' : bodyB!.id, fixtureB: floor ? '__floor__' : fixtureB!.id, point: result.point, normal: result.normal, penetration: result.penetration, impulse: cached?.normalImpulse ?? 0, normalImpulse: cached?.normalImpulse ?? 0, tangentImpulse: cached?.tangentImpulse ?? 0, tangent: cloneVec(cached?.tangent), warmStarted: Boolean(cached), sensor: Boolean(fixtureA.sensor || fixtureB?.sensor), zoneA: fixtureA.bodyZone, zoneB: floor ? 'ground' : fixtureB?.bodyZone };
+    return { id: idValue, manifoldId, bodyA: bodyA.id, fixtureA: fixtureA.id, bodyB: floor ? '__floor__' : bodyB!.id, fixtureB: floor ? '__floor__' : fixtureB!.id, point: result.point, normal: result.normal, penetration: result.penetration, impulse: cached?.normalImpulse ?? 0, normalImpulse: cached?.normalImpulse ?? 0, tangentImpulse: cached?.tangentImpulse ?? 0, tangent: cloneVec(cached?.tangent), warmStarted: Boolean(cached), sensor: Boolean(fixtureA.sensor || fixtureB?.sensor), zoneA: fixtureA.bodyZone, zoneB: floor ? 'ground' : fixtureB?.bodyZone };
   }
 
   private broadPhasePairs(proxies: Array<{ body: RuntimeSpatialBody; fixture: RuntimeSpatialFixture; aabb: Aabb3 }>): Array<[number, number]> {
@@ -1105,13 +1124,12 @@ export class SpatialEmbodimentWorld {
       if (a.body.id===b.body.id || (a.body.kind==='static'&&b.body.kind==='static') || !filterPair(a.fixture,b.fixture) || !overlaps(a.aabb,b.aabb)) continue;
       if (!this.oneWayAllows(a.body,a.fixture,b.body) || !this.oneWayAllows(b.body,b.fixture,a.body)) continue;
       this.diagnosticsValue.narrowPhaseTests++;
-      const result = a.fixture.shape.type === 'heightfield' && b.fixture.shape.type !== 'heightfield'
-        ? (() => { const collision = heightfieldCollision(b.body, b.fixture, a.body, a.fixture as RuntimeSpatialFixture & { shape: HeightfieldShape }, this.contactPersistenceDistance); return collision ? { ...collision, normal: mul(collision.normal, -1) } : undefined; })()
+      const results = a.fixture.shape.type === 'heightfield' && b.fixture.shape.type !== 'heightfield'
+        ? heightfieldCollision(b.body, b.fixture, a.body, a.fixture as RuntimeSpatialFixture & { shape: HeightfieldShape }, this.contactPersistenceDistance).map(collision => ({...collision, normal: mul(collision.normal, -1)}))
         : b.fixture.shape.type === 'heightfield' && a.fixture.shape.type !== 'heightfield'
           ? heightfieldCollision(a.body, a.fixture, b.body, b.fixture as RuntimeSpatialFixture & { shape: HeightfieldShape }, this.contactPersistenceDistance)
-          : collideFixtures(a.body, a.fixture, b.body, b.fixture, this.diagnosticsValue);
-      if(!result)continue;const capsuleObb=(a.fixture.shape.type==='capsule'&&b.fixture.shape.type==='box')||(a.fixture.shape.type==='box'&&b.fixture.shape.type==='capsule');if(result.feature==='capsule-obb'||capsuleObb)this.diagnosticsValue.capsuleObbContacts++;
-      contacts.push(this.makeContact(a.body,a.fixture,b.body,b.fixture,result));
+          : (() => { const result = collideFixtures(a.body, a.fixture, b.body, b.fixture, this.diagnosticsValue); return result ? [result] : []; })();
+      for (const result of results) { const capsuleObb=(a.fixture.shape.type==='capsule'&&b.fixture.shape.type==='box')||(a.fixture.shape.type==='box'&&b.fixture.shape.type==='capsule');if(result.feature==='capsule-obb'||capsuleObb)this.diagnosticsValue.capsuleObbContacts++; contacts.push(this.makeContact(a.body,a.fixture,b.body,b.fixture,result,false,result.manifoldIndex ?? 0)); }
     }
     return contacts.sort((a,b)=>a.id.localeCompare(b.id));
   }
@@ -1174,7 +1192,7 @@ export class SpatialEmbodimentWorld {
 
   private bodyForContact(id: string): RuntimeSpatialBody | undefined { return id === '__floor__' ? undefined : this.bodyMap.get(id); }
   private correctContactPosition(contact: SpatialContactPoint): void {
-    if (contact.sensor) return;
+    if (contact.sensor || contact.id !== contact.manifoldId) return;
     const a=this.bodyForContact(contact.bodyA),b=this.bodyForContact(contact.bodyB),invA=a?.inverseMassQ??0,invB=b?.inverseMassQ??0,invTotal=invA+invB;if(invTotal<=0)return;
     const correction=Math.max(0,contact.penetration-1);if(correction<=0)return;
     if(a?.kind==='dynamic')a.position=sub(a.position,mul(contact.normal,correction*invA/Math.max(1,invTotal)/Q));
