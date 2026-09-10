@@ -1,0 +1,19 @@
+{
+  "name": "@taowind/large-world-rsr-bridge",
+  "version": "0.1.0-alpha.1",
+  "type": "module",
+  "private": false,
+  "description": "Candidate-only lowering from Large World streamed terrain chunks into the existing Kernel-to-RSR heightfield contract.",
+  "license": "Apache-2.0",
+  "exports": { ".": "./src/index.mjs" },
+  "files": ["src", "schemas", "tests", "README.md", "rncs.module.json"],
+  "scripts": {
+    "test": "npm run build --workspace @taowind/reality-simulation-runtime && node --test --test-concurrency=1 tests/*.test.mjs"
+  },
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "@taowind/large-world-runtime": "*",
+    "@taowind/rncs-core-contract": "*",
+    "@taowind/reality-simulation-runtime": "*"
+  }
+}

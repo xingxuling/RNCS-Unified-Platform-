@@ -646,13 +646,15 @@ Unified Project + selected spatial world + scene/asset roots
 
 ## 本轮 RSR bounded heightfield candidate
 
-继续考古 Large World Runtime 后，确认其 `terrainHeight(seed, sampleX, sampleZ)` 与 `gridMesh(seed, x, z, sampleResolution)` 仍是地形采样和可视网格的唯一既有 owner；本轮没有复制生成器，也没有把 Large World 的 terrain scene 静默变成 RSR authority。现实缺口是在保留该 owner 的前提下，缺少一个可审计的“已选 chunk/固定点高度样本 → RSR 物理 terrain fixture”的 lowering seam。
+继续考古 Large World Runtime 后，确认其 `terrainHeight(seed, sampleX, sampleZ)` 与 `gridMesh(seed, x, z, sampleResolution)` 仍是地形采样和可视网格的唯一既有 owner；本轮没有复制生成器，也没有把 Large World 的 terrain scene 静默变成 RSR authority。原先的“已选 chunk/固定点高度样本 → RSR 物理 terrain fixture” seam 已以独立 integration candidate 接通，但 chunk transition、物理 residency、完整查询语义和生产证据仍未闭合。
 
 本轮在 RSR Spatial Embodiment 增加了 bounded `heightfield` candidate：
 
 ```text
-Large World terrain owner (仍未接入)
-  → explicit fixed-point height samples / candidate sidecar
+Large World terrain owner
+  → verified active stream resolution
+  → integration candidate sidecar / Kernel state batch
+  → explicit fixed-point height samples
   → RSR static or fixed-rotation kinematic heightfield
   → bounded support contact + character snap/footstep height
   → deterministic replay roots
@@ -663,9 +665,15 @@ Large World terrain owner (仍未接入)
 
 本地真实证据：Spatial Embodiment `69/69 PASS`，Reality Simulation Runtime 全量 `203/203 PASS`，并执行 flat settle/replay、slope normal、Kernel lowering、admission negative cases、footstep support height、VSR mesh/frame projection。候选 evidence 位于 `docs/verification/RNCS_RSR_HEIGHTFIELD_CANDIDATE_v0.1.json`，其中保留 `stateRoot=fnv1a64:0f53fc4cacf8ebd2`、`bodyRoot=fnv1a64:9f91ebd15f4c7388`、`contactRoot=fnv1a64:d06c58a3b9c1a713`、`vsr.frameRoot=715413bc036206c7f4ca9277785e46342c037e2406e2feda2b26fcb38ce10403` 与 `vsr.pixelRoot=43c4eeaae4dc78ad288046663c3eb1135f2e02e81f50b3cd79d49bda0a315baa`。这些是本地 candidate execution roots，不是目标设备、外部物理或生产发布证明。
 
-负例和未闭合边界已经固定：没有 Large World chunk/world-root/authority 绑定 adapter；没有动态地形、完整 manifold、精确 terrain ray/shape cast、并行 Job、物理设备性能或生产资产发布证据。因此新缺口登记为 `RCL_GAP_RNCS_LARGE_WORLD_PHYSICAL_TERRAIN_LOWERING`，K400 只进入 `EXPRESS / COMPILE / LOWER / EXECUTE / CORRECT / ROBUST / EVIDENCE` 的 candidate evidence，不宣布任何新单元 PASS。
+## 本轮 Large World → RSR terrain lowering adapter
 
-本轮裁决：`RSR_HEIGHTFIELD_PROVIDER_CANDIDATE_VERIFIED_LARGE_WORLD_ADAPTER_OPEN`。下一最高杠杆工作是先审计 Large World chunk 输出、world/region/chunk roots、工作集/流送生命周期和 authority metadata，设计一个显式 sidecar/adapter，把已选 chunk 的既有高度样本降低到 RSR，并证明 chunk transition、replay 和 VSR projection 复用同一 roots；不得复制 terrain generator，也不得借 adapter 获得 canonical world mutation 或 release promotion 权限。
+在保持 Large World Runtime 不依赖 RSR 的前提下，新增 `packages/integration/large-world-rsr-bridge`。它先验证 region、chunk 和 stream resolution，再只接受 active chunk，把既有 `chunk.mesh.positions` 的 row-major y 样本降低为 `rncs.entity-state-batch.v0.1` 的 `spatial.fixtures.items.shape=heightfield`；Kernel 既有 materializer 随后生成 RSR static terrain body。每个 binding 同时保留 `chunk_root`、`state_root`、`content_root`、`mesh_root`、`height_samples_root`、`origin_mm` 和 `stream_root`，相邻 chunk 的共享边界样本经回归保持相等。
+
+本地真实执行：Large World `36/36 PASS`；bridge `4/4 PASS`；RSR 全量 `203/203 PASS`；覆盖 active-only lowering、Kernel materialization、120 tick RSR terrain contact/grounded、确定性 replay、VSR heightfield projection、相邻 chunk boundary、inactive chunk rejection 和 batch/candidate tamper rejection。候选 evidence 位于 `docs/verification/RNCS_LARGE_WORLD_RSR_TERRAIN_LOWERING_CANDIDATE_v0.1.json`，本次固定的 region/world/stream/candidate/batch/RSR/VSR roots 均在其中。该证据仍是本地 candidate execution，不是 physical device、目标 GPU、分布式物理或 release proof。
+
+负例和未闭合边界已经固定：适配器不改变 active working set 或 canonical world state，也不授予 provider commit authority；没有 chunk transition 的 RSR body residency 生命周期、动态地形、完整 manifold、精确 terrain ray/shape cast、并行 Job、物理设备性能或生产资产发布证据。因此 `RCL_GAP_RNCS_LARGE_WORLD_PHYSICAL_TERRAIN_LOWERING` 已从“无 lowering seam”收窄为“candidate lowering 已验证、跨流送物理 residency 与产品执行仍 OPEN”，K400 只进入 `EXPRESS / COMPILE / LOWER / EXECUTE / CORRECT / ROBUST / EVIDENCE` 的 candidate evidence，不宣布新单元 PASS。
+
+本轮裁决：`LARGE_WORLD_TO_RSR_HEIGHTFIELD_ADAPTER_CANDIDATE_VERIFIED_PHYSICAL_RESIDENCY_AND_PRODUCTION_BOUNDARIES_OPEN`。下一最高杠杆工作是把 stream enter/exit、replay checkpoint 与 RSR terrain-body residency transition 接到同一显式 roots；继续禁止复制 terrain generator，也不得借 adapter 获得 canonical world mutation 或 release promotion 权限。
 
 ## K400 / 证据裁决
 

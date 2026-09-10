@@ -1,0 +1,90 @@
+{
+  "format": "rncs.large-world-rsr-terrain-lowering-candidate-evidence.v0.1",
+  "version": "0.1.0",
+  "status": "CANDIDATE_EXECUTION_VERIFIED",
+  "source": {
+    "checkout": "C:\\Users\\User\\Documents\\RCL\\_worktrees\\rncs-visual-factory-v01",
+    "branch": "codex/rncs-engine-stack-archaeology-v01",
+    "sourceCommit": "62e06274fc270e3fd7a51947a32b127780f8d19a",
+    "workingTreeStatus": "CANDIDATE_CHANGES_AFTER_SOURCE_COMMIT",
+    "largeWorldSource": "packages/world/large-world-runtime/src/index.mjs",
+    "bridgeSource": "packages/integration/large-world-rsr-bridge/src/index.mjs",
+    "rsrSource": "packages/world/reality-simulation-runtime/packages/spatial-embodiment/src/index.ts",
+    "vsrSource": "packages/world/reality-simulation-runtime/packages/spatial-embodiment-vsr/src/index.ts"
+  },
+  "authority": {
+    "status": "CANDIDATE_ONLY",
+    "canonicalWorldMutation": false,
+    "releasePromotion": false,
+    "physicalDeviceExecution": false,
+    "humanApprovalRequiredForPromotion": true
+  },
+  "owners": {
+    "terrainSampling": "@taowind/large-world-runtime",
+    "semanticStateBatch": "@taowind/rncs-core-contract",
+    "physicalExecution": "@taowind/reality-simulation-runtime",
+    "visualProjection": "@taowind/reality-simulation-runtime/spatial-embodiment-vsr",
+    "adapter": "@taowind/large-world-rsr-bridge"
+  },
+  "contract": {
+    "format": "rncs.large-world-rsr-terrain-candidate.v0.1",
+    "source": "verified active Large World chunk.mesh.positions",
+    "target": "rncs.entity-state-batch.v0.1 → bounded RSR heightfield",
+    "coordinateUnits": "integer millimeters",
+    "authorityBoundary": "candidate_only=true, authoritative=false, canonical_write_authorized=false, commit_status=NOT_COMMITTED",
+    "workingSetBinding": "candidate stores and verifies the complete stream_resolution and stream_root; only active chunk ids may be lowered"
+  },
+  "positiveEvidence": [
+    "Region and every source chunk are verified before lowering.",
+    "Chunk mesh row-major y samples are extracted without copying or reimplementing Large World terrain generation.",
+    "Chunk origin, region/world roots, stream root, source mesh root, state root and content root remain explicit bindings.",
+    "The adapter is integration-only; Large World Runtime has no dependency on RSR.",
+    "Existing Kernel materialization produces static heightfield bodies, and existing RSR executes terrain contact and deterministic replay.",
+    "Existing VSR projection receives the same heightfield fixture mesh and a verified CPU reference frame.",
+    "Adjacent chunk shared boundary samples remain equal after lowering."
+  ],
+  "negativeEvidence": [
+    "The adapter does not mutate Large World activeChunkIds or canonical state.",
+    "An inactive or region-mismatched chunk is rejected before lowering.",
+    "Tampering with height samples invalidates the batch/candidate roots.",
+    "There is no chunk-transition body lifecycle or physical terrain residency manager yet.",
+    "RSR heightfield remains a bounded single-support/AABB candidate; exact terrain ray/shape cast and full contact manifold remain open.",
+    "No dynamic terrain deformation, physical device performance, target GPU matrix, distributed physics or production release evidence exists."
+  ],
+  "execution": {
+    "largeWorldTests": "36/36 PASS",
+    "bridgeTests": "4/4 PASS",
+    "rsrFullTests": "203/203 PASS",
+    "registryAndSchemaJson": "PASS",
+    "adapterSyntax": "PASS",
+    "activeChunkCount": 9,
+    "loweredChunkCount": 9,
+    "physicalExecutionChunkCount": 1,
+    "rsrTicks": 120,
+    "grounded": true,
+    "terrainContactCount": 1,
+    "replayStateRootEquivalent": true,
+    "vsrFrameVerified": true,
+    "vsrVisibleDraws": 0
+  },
+  "roots": {
+    "regionRoot": "b5ba07aaec7ee2f91be9aa5ffb4caaffcf53739302a35e8ecccc5629887cea3c",
+    "worldRoot": "ed05c81090ecc4958ad56c9c01b3d4eae47135efb8f80edf7b1ad2a10e0f3841",
+    "streamRoot": "ede820f007f712840a242f921f8fde731ca6f7af435ed6e6e264048b9cb7929c",
+    "candidateRoot": "ce496e58ec0f84801f381e03eb6fb8b1b64ca974b21a87a3757f1aa393d74250",
+    "candidateBatchRoot": "a0f0e5701944dd514f642314ada759a6bc2907eb0adbe065b5768c3f605b66aa",
+    "physicalCandidateRoot": "36c7a0974ee95ed5f7614a43c428bb34ea0d91972600aadb8f57ffa8a9355833",
+    "physicalBatchRoot": "2d097f9383fe7406396233f13a78ed571b00693c91ed2de524ea372c373ce6d7",
+    "snapshotStateRoot": "fnv1a64:ba92fa2fa8b3425f",
+    "bodyRoot": "fnv1a64:3f748c361fa34a3a",
+    "contactRoot": "fnv1a64:25f8ca009ae44ac0",
+    "frameRoot": "ca6a3e36c60af6325b9f1867e8a68828abe448d3c2b1665a83e86719742b47a6",
+    "pixelRoot": "e8821ad48e143b3a1a8e4b22f32af11a6ecda3989d46005faa27df5145ef07c9",
+    "projectionRoot": "fnv1a64:79edd17fbc8c60c1"
+  },
+  "rclGap": "RCL_GAP_RNCS_LARGE_WORLD_PHYSICAL_TERRAIN_LOWERING",
+  "k400AffectedCells": ["EXPRESS", "COMPILE", "LOWER", "EXECUTE", "CORRECT", "ROBUST", "EVIDENCE"],
+  "decision": "LARGE_WORLD_TO_RSR_HEIGHTFIELD_ADAPTER_CANDIDATE_VERIFIED_PHYSICAL_RESIDENCY_AND_PRODUCTION_BOUNDARIES_OPEN",
+  "nextCandidate": "Bind stream enter/exit and replay to an explicit RSR terrain-body residency transition without mutating canonical world truth or duplicating terrain generation.",
+  "evidenceRoot": "8e354dcf6168fd4853934ace1064eb9d3a513afbe09e040cbee70ecbc1131fb3"
+}

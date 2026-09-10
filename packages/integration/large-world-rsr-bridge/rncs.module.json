@@ -1,0 +1,17 @@
+{
+  "format": "rncs.module.v0.1",
+  "id": "large-world-rsr-bridge",
+  "name": "Large World RSR Terrain Lowering Bridge",
+  "version": "0.1.0-alpha.1",
+  "layer": "integration",
+  "runtime": "rncs.large-world-rsr-bridge",
+  "protocols": [
+    "rncs.large-world-chunk.v0.1",
+    "rncs.large-world-stream-resolution.v0.1",
+    "rncs.entity-state-batch.v0.1",
+    "rsr.spatial-embodiment-world.v0.6",
+    "rncs.large-world-rsr-terrain-candidate.v0.1"
+  ],
+  "authority": "candidate-artifact-generation-only-no-commit",
+  "dependsOn": ["large-world-runtime", "rncs-core", "rsr"]
+}

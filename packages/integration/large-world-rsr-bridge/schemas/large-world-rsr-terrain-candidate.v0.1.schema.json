@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.org/schemas/rncs.large-world-rsr-terrain-candidate.v0.1.schema.json",
+  "title": "RNCS Large World RSR Terrain Candidate v0.1",
+  "type": "object",
+  "required": [
+    "format",
+    "version",
+    "world_id",
+    "generation",
+    "source",
+    "active_chunk_ids",
+    "lowered_chunk_ids",
+    "chunk_bindings",
+    "stream_resolution",
+    "batch",
+    "authority",
+    "candidate_only",
+    "authoritative",
+    "canonical_write_authorized",
+    "commit_status",
+    "candidate_root"
+  ],
+  "properties": {
+    "format": {"const": "rncs.large-world-rsr-terrain-candidate.v0.1"},
+    "version": {"const": "0.1.0"},
+    "world_id": {"type": "string", "minLength": 1},
+    "generation": {"type": "integer", "minimum": 0},
+    "source": {
+      "type": "object",
+      "required": ["terrain_owner", "region_root", "world_root", "stream_root"],
+      "properties": {
+        "terrain_owner": {"const": "@taowind/large-world-runtime"},
+        "region_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "world_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "stream_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": true
+    },
+    "active_chunk_ids": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "lowered_chunk_ids": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "chunk_bindings": {"type": "array", "items": {"type": "object"}},
+    "stream_resolution": {"type": "object"},
+    "batch": {"type": "object"},
+    "authority": {"type": "object"},
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "canonical_write_authorized": {"const": false},
+    "commit_status": {"const": "NOT_COMMITTED"},
+    "candidate_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}
