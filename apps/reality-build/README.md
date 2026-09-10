@@ -248,6 +248,14 @@ Build 现在从已 bound 的 `cue_id → asset_id → file_role → asset_sha256
 
 这只关闭了“显式音频目标文件 → 既有 VSR asset residency → Web Audio decode”的浏览器与 Android WebView candidate seam。它不宣称 target-side voice cap、mixer/bus lowering、连续/分段音频 streaming、音频缓存预算、Android 原生音频、跨设备 latency、扬声器输出、物理设备或人工听感；不新增 K400 PASS。`RCL_GAP_RNCS_AUDIO_TARGET_LOWERING` 仍保持开放，Android WebView 的同一 VSR receipt 已单独复验；下一步应决定是否有独立的 provider cache/stream policy 缺口。
 
+## Audio target VSR cache reuse candidate
+
+本轮没有新增音频缓存语义或第二套资源系统。Build 复用既有 `createVSRBrowserAssetCache()` 和 `asset_cache` policy，把显式 `kind: audio` target bytes 放入与 3D payload 相同的 CacheStorage/VSR contract；`audioSnapshot().provider_diagnostics.asset_streaming.cache` 暴露 revision root、容量、命中/未命中、驱逐、manifest root 和诊断。缓存仍只负责内容驻留，Web Audio 仍负责 decode/provider lifecycle，RSR/Experience Fabric 的 voice、bus、cue concurrency ownership 不变。
+
+真实 Chromium 在清空缓存的首次加载中观察到 `cache_misses=1`、19888 resident bytes；同一运行时再次访问命中一次；cold reload 观察到 `cache_hits=1`、`cache_misses=0`、相同 revision/manifest root，且没有第二次 WAV request。API 35 Android ATD Emulator/WebView 通过 `https://rncs.local/` synthetic origin 得到同样的 clean-launch miss → cold-reload hit；VSR `ready=1`、Web Audio decode `1/1`、`failed=0`、`blocked=0`，并保留同一 asset receipt root。完整收据见 `evidence/BUILD_AUDIO_VSR_CACHE_CANDIDATE_v0.1.json` 与 `evidence/ANDROID_AUDIO_VSR_CACHE_CANDIDATE_v0.1.json`。
+
+这只关闭了“音频 target bytes 复用既有 VSR browser cache”的 Chromium/Android WebView candidate seam；不是 Android quota 保证、目标设备性能曲线、连续/分段 streaming、native audio、扬声器输出或人工听感证据。强行在 pending decode 期间 `reset()` 会产生可解释的生命周期竞态，已与 clean launch/cold reload cache verdict 分开；不新增 K400 PASS。
+
 ## Network compilation → headless candidate
 
 Reality Build 现在消费既有 Reality Studio `project.network`，不再只把 network authoring 留在 Studio 导出侧：

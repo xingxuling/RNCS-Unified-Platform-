@@ -1,0 +1,199 @@
+{
+  "format": "reality-build.audio-vsr-browser-cache-candidate.v0.1",
+  "version": "0.1.0-alpha.1",
+  "status": "CANDIDATE_WEB_CHROMIUM_VSR_CACHE_COLD_REHYDRATE_VERIFIED",
+  "source": {
+    "checkout": "rncs-visual-factory-v01",
+    "branch": "codex/rncs-engine-stack-archaeology-v01",
+    "sourceCommit": "15f61b9",
+    "authority": "local browser target-provider cache candidate; no RCL Core promotion, production cache admission, main-branch mutation or release claim"
+  },
+  "pipeline": "sealed explicit audio-target binding -> existing VSR browser asset cache -> existing VSRSpatialAssetStreamer(kind=audio) -> SHA-256 verified bytes and receipt root -> Web Audio decodeAudioData -> scheduled target receipt",
+  "canonicalSeam": {
+    "worldSemantics": "RSR and Experience Fabric continue to own cue identity, fixed-tick timing, spatial parameters, listener meaning and offline audio semantics.",
+    "assetResidency": "VSR owns the existing CacheStorage-backed content-addressed asset cache, revision root, SHA verification, bounded bytes and cache diagnostics.",
+    "targetProvider": "Reality Build reuses the VSR browser cache and VSRSpatialAssetStreamer before handing verified bytes to the existing Web Audio buffer Provider.",
+    "policyBoundary": "Experience Fabric maxVoices, cue maxInstances/cooldown and audio-bus/render policy are not copied into the browser target.",
+    "rclBoundary": "This is an auxiliary target-provider cache reuse seam, not an RCL Core promotion."
+  },
+  "cacheContract": {
+    "format": "vsr.browser-asset-cache.v0.1",
+    "cacheName": "reality-build-audio-assets:com.taowind.audiovsrstream",
+    "revisionRoot": "c53a2f43ea96d4020eaca41abdb75acf9da33cba8446540e28ddafe7a7cc0a78",
+    "maxBytes": 67108864,
+    "persistAccesses": false,
+    "assetId": "audio-target:ba8ebd46b31544ce76973a7ac88039c82d0c1aaaaabdf1cbfb1339a495f2e53e",
+    "bytes": 19888,
+    "firstLoad": {
+      "cacheHits": 0,
+      "cacheMisses": 1,
+      "cacheEvictions": 0,
+      "bytesResident": 19888,
+      "manifestRoot": "e89d8fc9237a8055960bc732d0ee91b75ba3567e910a32af0cbc0c2afc19fe01"
+    },
+    "sameRuntimeRevisit": {
+      "cacheHits": 1,
+      "cacheMisses": 1,
+      "cacheEvictions": 0,
+      "bytesResident": 19888
+    },
+    "coldReload": {
+      "cacheHits": 1,
+      "cacheMisses": 0,
+      "cacheEvictions": 0,
+      "bytesResident": 19888,
+      "manifestRoot": "e89d8fc9237a8055960bc732d0ee91b75ba3567e910a32af0cbc0c2afc19fe01",
+      "secondAudioRequestObserved": false
+    }
+  },
+  "build": {
+    "fixture": "apps/reality-build/examples/冰境试炼.unified-project.json",
+    "target": "web-release",
+    "buildId": "build:a8e615963e1b54ba7878dcc5",
+    "buildKey": "a8e615963e1b54ba7878dcc5329ee97042054110f799ca24ea0ff86929903b7f",
+    "graphRoot": "2966103b3f3827c07f691cbfdfbce83f45e84d466e9d8b79cf2e5928e5aa4305",
+    "preflightRoot": "64d3f6537a0777936f6e2584d737debc5b4b73ae371ae129d059d2c17b17ce71",
+    "receiptRoot": "7bddb06d47618117db13bee24b88588afcea59ee4dcd145807768c01711bd4c8",
+    "targetRoot": "55954f7e1f1e36534cac5ea5fb73ec70bf364008edfdda395fc88da4d3892a2c",
+    "planRoot": "c53a2f43ea96d4020eaca41abdb75acf9da33cba8446540e28ddafe7a7cc0a78",
+    "assetManifestRoot": "ab1486dc3fce33cad83f48221cce64c0c5a0bf7acb1791d3f9c343a1780cdf9e",
+    "binding": {
+      "bindingId": "audio-binding:impact-body",
+      "cueId": "impact.body",
+      "assetId": "asset:3a82d1753e140d24552b89d1",
+      "fileRole": "sfx-wav",
+      "bytes": 19888,
+      "sha256": "ba8ebd46b31544ce76973a7ac88039c82d0c1aaaaabdf1cbfb1339a495f2e53e",
+      "uri": "assets/ba8ebd46b31544ce76973a7ac88039c82d0c1aaaaabdf1cbfb1339a495f2e53e.wav"
+    },
+    "verificationValid": true
+  },
+  "webChromium": {
+    "host": "Playwright-driven local Chromium headless run",
+    "url": "http://127.0.0.1:45998/index.html",
+    "readyState": "complete",
+    "pageErrors": 0,
+    "consoleWarnings": 3,
+    "warningTypes": [
+      "WebGPU powerPreference ignored on Windows",
+      "No available WebGPU adapters",
+      "AudioContext requires a user gesture"
+    ],
+    "requestEvidence": {
+      "uri": "assets/ba8ebd46b31544ce76973a7ac88039c82d0c1aaaaabdf1cbfb1339a495f2e53e.wav",
+      "httpStatus": 200,
+      "exactAudioRequestCountAcrossFirstLoadAndReload": 1,
+      "reloadUsedCacheWithoutSecondAudioRequest": true
+    },
+    "audioSnapshot": {
+      "planRoot": "c53a2f43ea96d4020eaca41abdb75acf9da33cba8446540e28ddafe7a7cc0a78",
+      "bindingCount": 1,
+      "statusCounts": {
+        "decode-pending": 1,
+        "blocked-binding": 3,
+        "scheduled": 1
+      },
+      "providerDiagnostics": {
+        "format": "taowind.audio-target-provider-diagnostics.v0.1",
+        "context_state": "running",
+        "sample_rate": 48000,
+        "resume_attempts": 1,
+        "resume_succeeded": 1,
+        "resume_failed": 0,
+        "decode_requests": 1,
+        "decode_completed": 1,
+        "decode_failed": 0,
+        "pending_decode_count": 0,
+        "cached_buffer_count": 1,
+        "scheduled_voice_count": 1,
+        "active_voice_count": 0,
+        "peak_active_voice_count": 1,
+        "ended_voice_count": 1,
+        "stopped_voice_count": 0,
+        "provider_error_count": 0,
+        "last_error": null,
+        "asset_streaming": {
+          "format": "vsr.spatial-asset-streaming.v0.1",
+          "status": "ready",
+          "catalog_root": "2385ddeae83afbd5ee52fde3fd10f54820f37b5eb4e43279b1b72cbd5038be4f",
+          "max_concurrent": 4,
+          "ready_asset_ids": [
+            "audio-target:ba8ebd46b31544ce76973a7ac88039c82d0c1aaaaabdf1cbfb1339a495f2e53e"
+          ],
+          "bytes_resident": 19888,
+          "pending_request_count": 0,
+          "last_receipt_root": "68ea9a948deef03703f1ed742fe628aa5ecc407e39cdc23f8221d8174ffd7aa5",
+          "request_count": 1,
+          "loaded_count": 1,
+          "failed_count": 0,
+          "blocked_count": 0,
+          "bytes_loaded": 19888,
+          "cache": {
+            "format": "vsr.browser-asset-cache.v0.1",
+            "available": true,
+            "revision_root": "c53a2f43ea96d4020eaca41abdb75acf9da33cba8446540e28ddafe7a7cc0a78",
+            "max_bytes": 67108864,
+            "persist_accesses": false,
+            "bytes_resident": 19888,
+            "cached_asset_ids": [
+              "audio-target:ba8ebd46b31544ce76973a7ac88039c82d0c1aaaaabdf1cbfb1339a495f2e53e"
+            ],
+            "cache_hits": 1,
+            "cache_misses": 0,
+            "cache_evictions": 0,
+            "manifest_root": "e89d8fc9237a8055960bc732d0ee91b75ba3567e910a32af0cbc0c2afc19fe01",
+            "diagnostics": []
+          }
+        }
+      },
+      "scheduledReceipt": {
+        "status": "scheduled",
+        "cueId": "impact.body",
+        "bindingId": "audio-binding:impact-body",
+        "assetId": "asset:3a82d1753e140d24552b89d1",
+        "assetSha256": "ba8ebd46b31544ce76973a7ac88039c82d0c1aaaaabdf1cbfb1339a495f2e53e",
+        "tick": 1,
+        "providerId": "reality-build.web-audio-buffer",
+        "assetStreamReceiptRoot": "68ea9a948deef03703f1ed742fe628aa5ecc407e39cdc23f8221d8174ffd7aa5",
+        "spatialParametersForwarded": true,
+        "listenerId": "listener:player",
+        "scheduledReceiptRoot": "4790614e94f888169f449b7c2b258bd6"
+      }
+    },
+    "claimBoundary": "Chromium observed cache write, same-runtime cache hit, cold-reload cache hit, VSR asset residency, Web Audio decode and target scheduling; this is not audible output or human listening proof."
+  },
+  "verification": {
+    "commands": [
+      "node --check apps/reality-build/src/runtime-template.mjs",
+      "node --test apps/reality-build/tests/runtime.test.mjs apps/reality-build/tests/audio-target.test.mjs",
+      "npm.cmd test --workspace @taowind/reality-build-fabric",
+      "local Chromium candidate execution through Playwright",
+      "first load with empty browser cache, same-runtime revisit and cold reload"
+    ],
+    "localTestSummary": {
+      "focused": "26 passed, 0 failed",
+      "realityBuildFull": "164 passed, 0 failed, 8 skipped",
+      "browser": "exact WAV request 200; first-load cache miss/write; cold-reload cache hit; VSR ready=1, failed=0, blocked=0; Web Audio decode=1/1; page errors=0"
+    },
+    "expectedResult": "All listed local checks pass; no hosted CI, Android/native audio, physical-device output or human-listening result is inferred."
+  },
+  "rclGap": "RCL_GAP_RNCS_AUDIO_TARGET_LOWERING",
+  "stressCase": "A fixed-tick RSR audio event must reuse the generic VSR browser cache across target reloads while preserving revision-root identity, SHA-verified bytes, receipt roots and explicit audio binding.",
+  "donorAdvantage": "VSR already supplies a CacheStorage-backed content-addressed cache with revision invalidation and diagnostics; the audio target reuses it instead of adding a parallel audio cache.",
+  "regressionCase": "First load records one miss and write; repeated same-runtime access hits the existing bytes; cold reload rehydrates the same revision and manifest without a second audio request; VSR and Web Audio receipts remain linked.",
+  "affectedK400Cells": [
+    "LOWER",
+    "EXECUTE",
+    "CORRECT",
+    "ROBUST",
+    "EVIDENCE"
+  ],
+  "boundaries": [
+    "The cache is asset residency reuse only; it is not continuous or segmented audio streaming.",
+    "No target-side max-voice cap, mixer, bus graph, authored concurrency policy or latency budget was introduced or verified.",
+    "The cache byte budget and hit behavior are one local Chromium run, not a quota guarantee or cross-device performance curve.",
+    "No Android/native audio output, speaker/headphone routing, physical-device behavior, release signing, store delivery or human listening acceptance is claimed by this browser evidence.",
+    "No K400 gate is promoted to PASS."
+  ],
+  "nextCandidate": "Retain the shared cache contract and separately determine whether Android quota/eviction/performance or target-side voice/mixer/continuous-stream policy has a canonical owner; physical-device listening remains a separate human gate."
+}
