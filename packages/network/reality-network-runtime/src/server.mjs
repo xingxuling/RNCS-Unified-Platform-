@@ -1,21 +1,114 @@
 import {spatial} from '@taowind/reality-simulation-runtime';
 import {createBranch, createWorkspace, validateWorkspace} from '@taowind/reality-branch-fabric';
+import {verifyDelegation} from '@taowind/agent-authority-fabric';
 import {verifyPlayerInputAuthority} from './authority.mjs';
 import {clone, hash, FORMATS, makeSnapshotPacket, makeDeltaPacket, makeRfeEvidence, NETWORK_PROTOCOL, NETWORK_VERSION} from './protocol.mjs';
 import {AuthoritativeStateHistory, RSR_AUTHORITY_PROTOCOL} from '@taowind/reality-simulation-runtime/network-reconciliation';
 import {makeObserverRelevanceView} from './relevance.mjs';
 
 const ZERO='0'.repeat(64);
+const CHECKPOINT_VERSION='0.1.0';
+
+const mapEntries=(map, mapValue=value=>value)=>[...map.entries()].map(([key,value])=>({key,value:mapValue(value)}));
+const sortedMapEntries=(map, compare, mapValue=value=>value)=>mapEntries(map,mapValue).sort(compare);
+const snapshotEntries=(map)=>sortedMapEntries(map,(a,b)=>Number(a.key)-Number(b.key),value=>clone(value));
+
+export function verifyNetworkSessionCheckpoint(checkpoint){
+  const errors=[],check=(condition,code)=>{if(!condition)errors.push(code)};
+  if(!checkpoint||typeof checkpoint!=='object')return{valid:false,errors:['NETWORK_CHECKPOINT_NOT_OBJECT']};
+  try{
+    const copy=clone(checkpoint),actual=copy.checkpointRoot;delete copy.checkpointRoot;
+    check(checkpoint.format===FORMATS.checkpoint,'NETWORK_CHECKPOINT_FORMAT_INVALID');
+    check(checkpoint.version===CHECKPOINT_VERSION,'NETWORK_CHECKPOINT_VERSION_INVALID');
+    check(checkpoint.protocol===NETWORK_PROTOCOL,'NETWORK_CHECKPOINT_PROTOCOL_INVALID');
+    check(typeof checkpoint.sessionId==='string'&&checkpoint.sessionId.length>0,'NETWORK_CHECKPOINT_SESSION_ID_INVALID');
+    check(['open','closed'].includes(checkpoint.status),'NETWORK_CHECKPOINT_STATUS_INVALID');
+    check(Number.isSafeInteger(checkpoint.tick)&&checkpoint.tick>=0,'NETWORK_CHECKPOINT_TICK_INVALID');
+    check(checkpoint.candidateOnly===true&&checkpoint.authoritative===false,'NETWORK_CHECKPOINT_AUTHORITY_SCOPE_INVALID');
+    check(checkpoint.commitStatus==='NOT_COMMITTED','NETWORK_CHECKPOINT_COMMIT_STATUS_INVALID');
+    check(typeof actual==='string'&&actual===hash(copy),'NETWORK_CHECKPOINT_ROOT_MISMATCH');
+    check(checkpoint.worldSnapshot&&typeof checkpoint.worldSnapshot==='object','NETWORK_CHECKPOINT_WORLD_SNAPSHOT_MISSING');
+    check(checkpoint.stateRoot===checkpoint.worldSnapshot?.stateRoot,'NETWORK_CHECKPOINT_STATE_ROOT_MISMATCH');
+    check(checkpoint.tick===checkpoint.worldSnapshot?.tick,'NETWORK_CHECKPOINT_WORLD_TICK_MISMATCH');
+    for(const field of ['players','delegations','pendingInputs','seenInputSequences','rateByTick','rejections','accepted','receipts','snapshots','deltas'])check(Array.isArray(checkpoint[field]),`NETWORK_CHECKPOINT_${field.toUpperCase()}_INVALID`);
+    check(checkpoint.authorityHistory&&Array.isArray(checkpoint.authorityHistory.snapshots),'NETWORK_CHECKPOINT_AUTHORITY_HISTORY_INVALID');
+    check(checkpoint.limits&&Number.isSafeInteger(checkpoint.limits.maxFutureTicks)&&Number.isSafeInteger(checkpoint.limits.maxPastTicks)&&Number.isSafeInteger(checkpoint.limits.maxInputsPerTick),'NETWORK_CHECKPOINT_LIMITS_INVALID');
+    if(checkpoint.source!==null&&checkpoint.source!==undefined)check(typeof checkpoint.source==='object','NETWORK_CHECKPOINT_SOURCE_INVALID');
+  }catch(error){errors.push(`NETWORK_CHECKPOINT_VERIFY_EXCEPTION:${error.name}:${error.message}`)}
+  return{valid:errors.length===0,errors,checkpointRoot:checkpoint.checkpointRoot??null,stateRoot:checkpoint.stateRoot??null};
+}
+
 export class ServerAuthoritativeWorld {
   static async create({sessionId='session:loopback', worldConfig, maxFutureTicks=12, maxPastTicks=2, maxInputsPerTick=8, clock=()=>new Date().toISOString()}={}) {
     const {SpatialEmbodimentWorld}=await spatial();
     return new ServerAuthoritativeWorld({sessionId,world:new SpatialEmbodimentWorld(worldConfig),maxFutureTicks,maxPastTicks,maxInputsPerTick,clock});
+  }
+  static async fromCheckpoint({checkpoint,clock=()=>new Date().toISOString()}={}) {
+    const verification=verifyNetworkSessionCheckpoint(checkpoint);
+    if(!verification.valid)throw new Error(`NETWORK_CHECKPOINT_INVALID:${verification.errors.join(',')}`);
+    const {SpatialEmbodimentWorld}=await spatial();
+    let world;
+    try{world=SpatialEmbodimentWorld.fromSnapshot(checkpoint.worldSnapshot)}catch(error){throw new Error(`NETWORK_CHECKPOINT_WORLD_INVALID:${error.message}`)}
+    const canonical=world.snapshot();
+    if(canonical.stateRoot!==checkpoint.stateRoot||canonical.tick!==checkpoint.tick)throw new Error('NETWORK_CHECKPOINT_CANONICAL_ROOT_MISMATCH');
+    const server=new ServerAuthoritativeWorld({sessionId:checkpoint.sessionId,world,maxFutureTicks:checkpoint.limits.maxFutureTicks,maxPastTicks:checkpoint.limits.maxPastTicks,maxInputsPerTick:checkpoint.limits.maxInputsPerTick,clock});
+    const bodyIds=new Set(canonical.bodies.map(body=>body.id)),characterMap=new Map(canonical.characters.map(character=>[character.id,character])),boundBodyIds=new Set(),boundCharacterIds=new Set();
+    for(const player of checkpoint.players){
+      if(!player||typeof player.playerId!=='string'||typeof player.subjectId!=='string'||typeof player.bodyId!=='string'||typeof player.characterId!=='string')throw new Error('NETWORK_CHECKPOINT_PLAYER_INVALID');
+      if(!bodyIds.has(player.bodyId)||characterMap.get(player.characterId)?.bodyId!==player.bodyId)throw new Error(`NETWORK_CHECKPOINT_PLAYER_BINDING_INVALID:${player.playerId}`);
+      if(server.players.has(player.playerId))throw new Error(`NETWORK_CHECKPOINT_PLAYER_DUPLICATE:${player.playerId}`);
+      if(boundBodyIds.has(player.bodyId)||boundCharacterIds.has(player.characterId))throw new Error(`NETWORK_CHECKPOINT_PLAYER_SLOT_DUPLICATE:${player.playerId}`);
+      boundBodyIds.add(player.bodyId);boundCharacterIds.add(player.characterId);
+      server.players.set(player.playerId,clone(player));
+    }
+    for(const entry of checkpoint.delegations){if(!entry||typeof entry.playerId!=='string'||server.delegations.has(entry.playerId)||!server.players.has(entry.playerId)||!verifyDelegation(entry.delegation))throw new Error('NETWORK_CHECKPOINT_DELEGATION_INVALID');server.delegations.set(entry.playerId,clone(entry.delegation));}
+    for(const playerId of server.players.keys())if(!server.delegations.has(playerId))throw new Error(`NETWORK_CHECKPOINT_PLAYER_DELEGATION_MISSING:${playerId}`);
+    server.status=checkpoint.status;
+    server.pendingByTick=new Map(checkpoint.pendingInputs.map(entry=>[Number(entry.tick),clone(entry.inputs)]));
+    server.seenSequences=new Map(checkpoint.seenInputSequences.map(entry=>[entry.playerId,new Set(entry.sequences.map(Number))]));
+    server.rateByTick=new Map(checkpoint.rateByTick.map(entry=>[String(entry.key),Number(entry.value)]));
+    server.rejections=clone(checkpoint.rejections);server.accepted=clone(checkpoint.accepted);server.receipts=clone(checkpoint.receipts);
+    server.snapshots=new Map(checkpoint.snapshots.map(entry=>[Number(entry.tick),clone(entry.snapshot)]));
+    server.snapshots.set(canonical.tick,clone(canonical));
+    server.deltas=new Map(checkpoint.deltas.map(entry=>[Number(entry.tick),clone(entry.delta)]));
+    server.previousTickRoot=String(checkpoint.previousTickRoot??ZERO);
+    server.lastSnapshot=clone(canonical);
+    const capacity=Number(checkpoint.authorityHistory.capacity??256);
+    if(!Number.isSafeInteger(capacity)||capacity<2)throw new Error('NETWORK_CHECKPOINT_HISTORY_CAPACITY_INVALID');
+    server.authorityHistory=new AuthoritativeStateHistory(capacity);
+    for(const snapshot of checkpoint.authorityHistory.snapshots){
+      try{const restored=SpatialEmbodimentWorld.fromSnapshot(snapshot).snapshot();server.authorityHistory.push(restored)}catch(error){throw new Error(`NETWORK_CHECKPOINT_HISTORY_INVALID:${error.message}`)}
+    }
+    if(!server.authorityHistory.get(canonical.tick))server.authorityHistory.push(canonical);
+    server.recoveryCandidates=[];
+    return server;
   }
   constructor({sessionId,world,maxFutureTicks,maxPastTicks,maxInputsPerTick,clock}) {
     this.sessionId=sessionId; this.rsrWorld=world; this.maxFutureTicks=maxFutureTicks; this.maxPastTicks=maxPastTicks; this.maxInputsPerTick=maxInputsPerTick; this.clock=clock;
     this.status='open'; this.players=new Map(); this.delegations=new Map(); this.pendingByTick=new Map(); this.seenSequences=new Map(); this.rateByTick=new Map(); this.rejections=[]; this.accepted=[]; this.receipts=[]; this.snapshots=new Map([[world.tick,world.snapshot()]]); this.deltas=new Map(); this.previousTickRoot=ZERO; this.lastSnapshot=this.rsrWorld.snapshot(); this.authorityHistory=new AuthoritativeStateHistory(256); this.authorityHistory.push(this.lastSnapshot); this.recoveryCandidates=[];
   }
   get session(){return {format:FORMATS.session,sessionId:this.sessionId,status:this.status,players:this.players,tick:this.rsrWorld.tick};}
+  createCheckpoint({source=null}={}){
+    const historyTicks=this.authorityHistory.ticks();
+    const base={
+      format:FORMATS.checkpoint,version:CHECKPOINT_VERSION,protocol:NETWORK_PROTOCOL,sessionId:this.sessionId,status:this.status,tick:this.rsrWorld.tick,
+      stateRoot:this.lastSnapshot.stateRoot,worldSnapshot:clone(this.lastSnapshot),
+      limits:{maxFutureTicks:this.maxFutureTicks,maxPastTicks:this.maxPastTicks,maxInputsPerTick:this.maxInputsPerTick},
+      players:[...this.players.values()].map(clone).sort((a,b)=>a.playerId.localeCompare(b.playerId)),
+      delegations:[...this.delegations.entries()].map(([playerId,delegation])=>({playerId,delegation:clone(delegation)})).sort((a,b)=>a.playerId.localeCompare(b.playerId)),
+      pendingInputs:sortedMapEntries(this.pendingByTick,(a,b)=>Number(a.key)-Number(b.key),inputs=>clone(inputs).sort((a,b)=>a.playerId.localeCompare(b.playerId)||a.inputSequence-b.inputSequence)).map(entry=>({tick:Number(entry.key),inputs:entry.value})),
+      seenInputSequences:[...this.seenSequences.entries()].map(([playerId,sequences])=>({playerId,sequences:[...sequences].sort((a,b)=>a-b)})).sort((a,b)=>a.playerId.localeCompare(b.playerId)),
+      rateByTick:[...this.rateByTick.entries()].map(([key,value])=>({key,value})).sort((a,b)=>a.key.localeCompare(b.key)),
+      rejections:clone(this.rejections),accepted:clone(this.accepted),receipts:clone(this.receipts),
+      snapshots:snapshotEntries(this.snapshots).map(entry=>({tick:Number(entry.key),snapshot:entry.value})),
+      deltas:snapshotEntries(this.deltas).map(entry=>({tick:Number(entry.key),delta:entry.value})),
+      previousTickRoot:this.previousTickRoot,
+      authorityHistory:{capacity:this.authorityHistory.capacity,snapshots:historyTicks.map(tick=>this.authorityHistory.get(tick)).filter(Boolean)},
+      source:source?clone(source):null,
+      candidateOnly:true,authoritative:false,commitStatus:'NOT_COMMITTED'
+    };
+    return{...base,checkpointRoot:hash(base)};
+  }
   joinPlayer({subjectId,playerId,characterId,bodyId,delegation}) {if(this.status!=='open')throw new Error('SESSION_NOT_OPEN');if(this.players.has(playerId))throw new Error('PLAYER_ALREADY_JOINED');const body=this.lastSnapshot.bodies.find(item=>item.id===bodyId),character=this.lastSnapshot.characters.find(item=>item.id===characterId);if(!body)throw new Error('PLAYER_BODY_NOT_FOUND');if(!character)throw new Error('PLAYER_CHARACTER_NOT_FOUND');if(character.bodyId!==bodyId)throw new Error('PLAYER_CHARACTER_BODY_MISMATCH');if([...this.players.values()].some(player=>player.bodyId===bodyId||player.characterId===characterId))throw new Error('PLAYER_SLOT_OCCUPIED');this.players.set(playerId,{subjectId,playerId,characterId,bodyId,joinedTick:this.rsrWorld.tick,connected:true});this.delegations.set(playerId,clone(delegation));return this.pullSnapshot('late-join');}
   disconnect(playerId){const p=this.players.get(playerId);if(p)p.connected=false;return makeRfeEvidence('player-disconnect',{sessionId:this.sessionId,playerId,tick:this.rsrWorld.tick});}
   reconnect(playerId){const p=this.players.get(playerId);if(!p)throw new Error('PLAYER_NOT_FOUND');p.connected=true;return {snapshot:this.pullSnapshot('reconnect'),evidence:makeRfeEvidence('player-reconnect',{sessionId:this.sessionId,playerId,tick:this.rsrWorld.tick})};}

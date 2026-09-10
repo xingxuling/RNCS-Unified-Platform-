@@ -12,7 +12,8 @@ export const NETWORK_RUNTIME_ID = 'rncs.network';
 export const FORMATS = Object.freeze({
   session: 'network.session.v0.2', input: 'network.input.v0.2', snapshot: 'network.snapshot.v0.2',
   delta: 'network.delta.v0.2', ack: 'network.ack.v0.2', correction: 'network.correction.v0.2',
-  receipt: 'network.receipt.v0.2', recovery: 'network.recovery.v0.2', rejection: 'network.input-rejection-receipt.v0.2'
+  receipt: 'network.receipt.v0.2', recovery: 'network.recovery.v0.2', rejection: 'network.input-rejection-receipt.v0.2',
+  checkpoint: 'network.session-checkpoint.v0.1'
 });
 export const clone = value => structuredClone(value);
 export function clean(value){ if(Array.isArray(value)) return value.map(item=>item===undefined?null:clean(item)); if(value&&typeof value==='object') return Object.fromEntries(Object.entries(value).filter(([,v])=>v!==undefined).map(([k,v])=>[k,clean(v)])); return value; }

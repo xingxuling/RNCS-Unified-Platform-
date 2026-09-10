@@ -3,10 +3,11 @@ import assert from 'node:assert/strict';
 import path from 'node:path';
 import os from 'node:os';
 import fs from 'node:fs';
-import {fileURLToPath} from 'node:url';
+import {spawnSync} from 'node:child_process';
+import {fileURLToPath,pathToFileURL} from 'node:url';
 import {
   RealityNetworkRuntime, issuePlayerDelegation, FORMATS, SnapshotInterpolator,
-  createTwoPlayerWorldConfig, hash, NETWORK_PROTOCOL, OBSERVER_RELEVANCE_FORMAT, verifyNetworkWorldCompilationEnvelope
+  createTwoPlayerWorldConfig, hash, NETWORK_PROTOCOL, OBSERVER_RELEVANCE_FORMAT, verifyNetworkWorldCompilationEnvelope, verifyNetworkSessionCheckpoint
 } from '../src/index.mjs';
 import {RealityOneGateway} from '../../../control/reality-one-gateway/src/index.mjs';
 import {createStudioNetworkWorld} from '../../../../examples/studio-authored-network-world-v03/project.mjs';
@@ -105,12 +106,42 @@ test('severe desync creates isolated RBF recovery candidate',async()=>{
   const {runtime,ctx,id}=await setup({id:'session:t12'});drain(runtime,id,3);const c=runtime.createRecovery({sessionId:id,playerId:'a',reportedRoot:'fnv1a64:badbadbadbadbadb'});assert.equal(c.status,'candidate');assert.equal(c.workspace.branches[0].tags.includes('network-recovery'),true);assert.equal(ctx.server.lastSnapshot.stateRoot,c.trustedStateRoot);
 });
 
-async function deterministicRun(id,seed){const {runtime,ctx}=await setup({id,network:{seed,lossRate:.1,duplicateRate:.15,reorderRate:.2,jitterTicks:2}});for(let i=0;i<25;i++){runtime.submitInput({sessionId:id,playerId:i%2?'a':'b',command:{type:'move',x:(i%3-1)*1000000,z:(i%2)*1000000}});runtime.advanceServerTick({sessionId:id});}drain(runtime,id,80);return {root:ctx.server.lastSnapshot.stateRoot,receipts:ctx.server.receipts.map(x=>x.networkReceiptRoot),seen:[...ctx.server.seenSequences.values()].reduce((n,s)=>n+s.size,0)};}
-
 // 13
-test('network receipts replay deterministically',async()=>{const a=await deterministicRun('session:t13',123),b=await deterministicRun('session:t13',123);assert.deepEqual(a.receipts.map((x,i)=>x&&i>=0?x:null).length,b.receipts.length);assert.equal(a.receipts.at(-1),b.receipts.at(-1));});
+test('network session checkpoint restores through a new Node process',async()=>{
+  const {runtime,ctx,id}=await setup({id:'session:checkpoint',joinB:false});
+  const pending=ctx.clients.get('a').createInput({type:'move',x:1000000,z:0});assert.equal(ctx.server.submitInput(pending).accepted,true);
+  const checkpoint=runtime.createCheckpoint({sessionId:id});
+  assert.equal(checkpoint.format,FORMATS.checkpoint);assert.equal(verifyNetworkSessionCheckpoint(checkpoint).valid,true);assert.equal(checkpoint.pendingInputs.length,1);
+  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'rncs-network-checkpoint-')),file=path.join(directory,'session-checkpoint.json');
+  fs.writeFileSync(file,`${JSON.stringify(checkpoint)}\n`);
+  const importPath=pathToFileURL(path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../src/index.mjs')).href;
+  const script=`import fs from 'node:fs';import {RealityNetworkRuntime} from ${JSON.stringify(importPath)};const checkpoint=JSON.parse(fs.readFileSync(${JSON.stringify(file)},'utf8'));const runtime=new RealityNetworkRuntime();await runtime.createSessionFromCheckpoint({checkpoint});const result=runtime.advanceServerTick({sessionId:checkpoint.sessionId});const health=runtime.getSessionHealth({sessionId:checkpoint.sessionId});process.stdout.write(JSON.stringify({tick:result.tick,stateRoot:health.server.stateRoot,accepted:result.inputs.length}));`;
+  const child=spawnSync(process.execPath,['--input-type=module','-e',script],{encoding:'utf8'});
+  try{assert.equal(child.status,0,child.stderr);const restored=JSON.parse(child.stdout);const expected=ctx.server.advanceTick().snapshot.stateRoot;assert.equal(restored.tick,1);assert.equal(restored.accepted,1);assert.equal(restored.stateRoot,expected);}finally{fs.rmSync(directory,{recursive:true,force:true});}
+  const tampered=structuredClone(checkpoint);tampered.worldSnapshot.bodies[0].position.x+=1;assert.equal(verifyNetworkSessionCheckpoint(tampered).valid,false);await assert.rejects(()=>runtime.createSessionFromCheckpoint({checkpoint:tampered}),/NETWORK_CHECKPOINT_INVALID/);
+});
 
 // 14
+test('compiled checkpoint requires source roots and supports authority resume',async()=>{
+  const {compilation}=createStudioNetworkWorld(),id='session:compiled-checkpoint',runtime=new RealityNetworkRuntime();
+  await runtime.createSessionFromCompilation({sessionId:id,compilation});
+  const joined=await runtime.joinCompiledSlotAuthority({sessionId:id,slotId:'slot:blue',subjectId:'subject:blue'});
+  assert.equal(joined.playerId,'blue');
+  const checkpoint=runtime.createCheckpoint({sessionId:id});
+  assert.equal(checkpoint.source.compilationRoot,compilation.compilation_root);
+  const restored=new RealityNetworkRuntime();
+  await assert.rejects(()=>restored.createSessionFromCheckpoint({checkpoint}),/NETWORK_CHECKPOINT_SOURCE_COMPILATION_REQUIRED/);
+  await restored.createSessionFromCheckpoint({checkpoint,compilation});
+  const resumed=await restored.joinCompiledSlotAuthority({sessionId:id,slotId:'slot:blue',subjectId:'subject:blue'});
+  assert.equal(resumed.resumed,true);assert.equal(resumed.snapshot.stateRoot,checkpoint.stateRoot);assert.equal(restored.getSessionHealth({sessionId:id}).server.players,1);
+});
+
+async function deterministicRun(id,seed){const {runtime,ctx}=await setup({id,network:{seed,lossRate:.1,duplicateRate:.15,reorderRate:.2,jitterTicks:2}});for(let i=0;i<25;i++){runtime.submitInput({sessionId:id,playerId:i%2?'a':'b',command:{type:'move',x:(i%3-1)*1000000,z:(i%2)*1000000}});runtime.advanceServerTick({sessionId:id});}drain(runtime,id,80);return {root:ctx.server.lastSnapshot.stateRoot,receipts:ctx.server.receipts.map(x=>x.networkReceiptRoot),seen:[...ctx.server.seenSequences.values()].reduce((n,s)=>n+s.size,0)};}
+
+// 14
+test('network receipts replay deterministically',async()=>{const a=await deterministicRun('session:t13',123),b=await deterministicRun('session:t13',123);assert.deepEqual(a.receipts.map((x,i)=>x&&i>=0?x:null).length,b.receipts.length);assert.equal(a.receipts.at(-1),b.receipts.at(-1));});
+
+// 15
 test('same inputs and network seed produce same final root',async()=>{const a=await deterministicRun('session:t14',456),b=await deterministicRun('session:t14',456);assert.equal(a.root,b.root);assert.equal(a.seen,b.seen);});
 
 // 15

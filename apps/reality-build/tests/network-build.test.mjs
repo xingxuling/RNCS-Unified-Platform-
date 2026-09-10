@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
 import test from 'node:test';
 import { createStudioNetworkWorld } from '../../../examples/studio-authored-network-world-v03/project.mjs';
-import { HttpAuthorityClient } from '@taowind/reality-network-runtime';
+import { FORMATS, HttpAuthorityClient, NETWORK_PROTOCOL } from '@taowind/reality-network-runtime';
 import { buildProject, verifyBuild } from '../src/builder.mjs';
 import { readJson, rootHash, verifySeal } from '../src/canonical.mjs';
 
@@ -112,6 +112,40 @@ test('Reality Build carries the existing network compilation into a runnable loc
 
     const authorityClient = new HttpAuthorityClient({ baseUrl });
     const authorityJoin = await authorityClient.join({ slotId: 'slot:blue', subjectId: 'subject:blue' });
+    const rawAuthorityInput = (inputSequence, command, overrides = {}) => {
+      const snapshot = authorityClient.prediction.currentSnapshot();
+      return {
+        format: FORMATS.input, protocol: NETWORK_PROTOCOL, subjectId: authorityClient.player.subjectId,
+        playerId: authorityClient.player.playerId, sessionId: authorityClient.player.sessionId, inputSequence,
+        clientTick: snapshot.tick, targetServerTick: snapshot.tick + 1, command,
+        authorizationRoot: authorityClient.delegation.delegation_root, clientPredictionRoot: snapshot.stateRoot, ...overrides,
+      };
+    };
+    const forgedInput = rawAuthorityInput(100, { type: 'move', x: 1, z: 0 }, { subjectId: 'subject:intruder' });
+    const forgedResponse = await fetch(`${baseUrl}/network/authority/input`, {
+      method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ input: forgedInput }),
+    });
+    const forgedBody = await forgedResponse.json();
+    assert.equal(forgedResponse.ok, true);
+    assert.equal(forgedBody.accepted, false);
+    assert.equal(forgedBody.rejection.code, 'SUBJECT_FORGED');
+    const stateWriteInput = rawAuthorityInput(101, { type: 'move', x: 1, z: 0 });
+    stateWriteInput.position = { x: 999, y: 999, z: 999 };
+    const stateWriteResponse = await fetch(`${baseUrl}/network/authority/input`, {
+      method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ input: stateWriteInput }),
+    });
+    const stateWriteBody = await stateWriteResponse.json();
+    assert.equal(stateWriteResponse.ok, true);
+    assert.equal(stateWriteBody.accepted, false);
+    assert.equal(stateWriteBody.rejection.code, 'CLIENT_STATE_WRITE_FORBIDDEN');
+    const futureInput = rawAuthorityInput(102, { type: 'move', x: 1, z: 0 }, { targetServerTick: 999 });
+    const futureResponse = await fetch(`${baseUrl}/network/authority/input`, {
+      method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ input: futureInput }),
+    });
+    const futureBody = await futureResponse.json();
+    assert.equal(futureResponse.ok, true);
+    assert.equal(futureBody.accepted, false);
+    assert.equal(futureBody.rejection.code, 'INPUT_TOO_FAR_FUTURE');
     const accepted = await authorityClient.submitInput({ type: 'move', x: -1_000_000, z: 0 });
     assert.equal(accepted.accepted, true);
     const authorityTick = await authorityClient.tick(1);

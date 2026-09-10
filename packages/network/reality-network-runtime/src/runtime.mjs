@@ -1,4 +1,4 @@
-import {ServerAuthoritativeWorld} from './server.mjs';
+import {ServerAuthoritativeWorld, verifyNetworkSessionCheckpoint} from './server.mjs';
 import {ClientPredictionRuntime} from './client.mjs';
 import {LoopbackTransport} from './transport.mjs';
 import {issuePlayerDelegation} from './authority.mjs';
@@ -59,14 +59,51 @@ const compiledNetworkOptions=profile=>({
   reorderRate:Number(profile?.reorder_rate_ppm??0)/1_000_000,
 });
 
+const compilationSource=compilation=>compilation?{
+  format:compilation.format,version:compilation.version,compilationRoot:compilation.compilation_root,projectRoot:compilation.project_root,
+  worldConfigRoot:compilation.world_config_root,spatialWorkspaceRoot:compilation.spatial_workspace_root,sourceWorldRoot:compilation.source_world_root,
+  activeSceneRoot:compilation.active_scene_root,authoringRoot:compilation.authoring_root
+}:null;
+
+function sourceMatches(source,compilation){
+  const expected=compilationSource(compilation);
+  return JSON.stringify(source)===JSON.stringify(expected);
+}
+
+function createSessionContext({sessionId,server,network={seed:1},sourceCompilation=null}){
+  const transport=new LoopbackTransport(network);
+  const ctx={sessionId,server,transport,clients:new Map(),externalClients:new Map(),lastTickResult:null,closed:false,sourceCompilation:sourceCompilation?clone(sourceCompilation):null};
+  transport.register(`server:${sessionId}`,packet=>{
+    if(packet.type!=='input')return;
+    const result=server.submitInput(packet.payload);
+    if(!result.accepted)transport.send(`server:${sessionId}`,`client:${packet.payload.playerId}`,'rejection',result.rejection);
+    else if(result.duplicate){const snapshot=server.pullSnapshot('duplicate-ack');const ack={...result.ack,stateRoot:snapshot.stateRoot};transport.send(`server:${sessionId}`,`client:${packet.payload.playerId}`,'ack',{ack,snapshot});}
+  });
+  return ctx;
+}
+
 export class RealityNetworkRuntime {
   constructor(){this.sessions=new Map();}
-  async createSession({sessionId=`session:${Date.now()}`,worldConfig=createTwoPlayerWorldConfig(),network={seed:1},clock}={}){const server=await ServerAuthoritativeWorld.create({sessionId,worldConfig,clock});const transport=new LoopbackTransport(network);const ctx={sessionId,server,transport,clients:new Map(),externalClients:new Map(),lastTickResult:null,closed:false,sourceCompilation:null};transport.register(`server:${sessionId}`,packet=>{if(packet.type==='input'){const result=server.submitInput(packet.payload);if(!result.accepted)transport.send(`server:${sessionId}`,`client:${packet.payload.playerId}`,'rejection',result.rejection);else if(result.duplicate){const snapshot=server.pullSnapshot('duplicate-ack');const ack={...result.ack,stateRoot:snapshot.stateRoot};transport.send(`server:${sessionId}`,`client:${packet.payload.playerId}`,'ack',{ack,snapshot});}}});this.sessions.set(sessionId,ctx);return {sessionId,version:NETWORK_VERSION,protocol:NETWORK_PROTOCOL};}
+  async createSession({sessionId=`session:${Date.now()}`,worldConfig=createTwoPlayerWorldConfig(),network={seed:1},clock}={}){const server=await ServerAuthoritativeWorld.create({sessionId,worldConfig,clock});const ctx=createSessionContext({sessionId,server,network});this.sessions.set(sessionId,ctx);return {sessionId,version:NETWORK_VERSION,protocol:NETWORK_PROTOCOL};}
   async createSessionFromCompilation({sessionId,compilation,network={},clock}={}){const verification=verifyNetworkWorldCompilationEnvelope(compilation);if(!verification.valid)throw new Error(verification.errors[0]);const id=sessionId??`session:${compilation.project_id}`;const result=await this.createSession({sessionId:id,worldConfig:clone(compilation.world_config),network:{...compiledNetworkOptions(compilation.network_profile),...network},clock});const ctx=this.require(id);ctx.sourceCompilation=clone(compilation);return{...result,compilationRoot:compilation.compilation_root,worldConfigRoot:compilation.world_config_root,projectRoot:compilation.project_root,playerSlots:compilation.player_slots.length};}
+  async createSessionFromCheckpoint({checkpoint,compilation=null,network={},clock}={}){
+    const verification=verifyNetworkSessionCheckpoint(checkpoint);
+    if(!verification.valid)throw new Error(`NETWORK_CHECKPOINT_INVALID:${verification.errors.join(',')}`);
+    if(checkpoint.source){
+      if(!compilation)throw new Error('NETWORK_CHECKPOINT_SOURCE_COMPILATION_REQUIRED');
+      const sourceVerification=verifyNetworkWorldCompilationEnvelope(compilation);
+      if(!sourceVerification.valid)throw new Error(sourceVerification.errors[0]);
+      if(!sourceMatches(checkpoint.source,compilation))throw new Error('NETWORK_CHECKPOINT_SOURCE_ROOT_MISMATCH');
+    }else if(compilation)throw new Error('NETWORK_CHECKPOINT_UNEXPECTED_SOURCE_COMPILATION');
+    const server=await ServerAuthoritativeWorld.fromCheckpoint({checkpoint,clock});
+    const ctx=createSessionContext({sessionId:checkpoint.sessionId,server,network,sourceCompilation:compilation});
+    this.sessions.set(checkpoint.sessionId,ctx);
+    return{sessionId:checkpoint.sessionId,version:NETWORK_VERSION,protocol:NETWORK_PROTOCOL,checkpointRoot:checkpoint.checkpointRoot,stateRoot:server.lastSnapshot.stateRoot,tick:server.rsrWorld.tick,source:compilationSource(compilation)};
+  }
   require(sessionId){const ctx=this.sessions.get(sessionId);if(!ctx)throw new Error('SESSION_NOT_FOUND');return ctx;}
   async joinSession({sessionId,subjectId,playerId,characterId,bodyId,delegation=null}){const ctx=this.require(sessionId);delegation??=issuePlayerDelegation({sessionId,subjectId,playerId,characterId});const snapshot=ctx.server.joinPlayer({subjectId,playerId,characterId,bodyId,delegation});const client=await ClientPredictionRuntime.create({player:{sessionId,subjectId,playerId,characterId,bodyId},delegation,initialSnapshot:snapshot});ctx.clients.set(playerId,client);ctx.transport.register(`client:${playerId}`,packet=>{if(packet.type==='ack')client.receiveAck(packet.payload.ack,packet.payload.snapshot);else if(packet.type==='delta')client.receiveDelta(packet.payload);else if(packet.type==='snapshot'){client.reconcile(packet.payload);client.lastConfirmed=clone(packet.payload);}else if(packet.type==='rejection')client.receiveRejection(packet.payload);});return {playerId,delegation,snapshot};}
   async joinCompiledSlot({sessionId,slotId,subjectId}={}){const ctx=this.require(sessionId),compilation=ctx.sourceCompilation;if(!compilation)throw new Error('SESSION_COMPILATION_REQUIRED');const slot=compilation.player_slots.find(item=>item.slot_id===slotId);if(!slot)throw new Error('COMPILED_SLOT_NOT_FOUND');const subject=subjectId??slot.subject_id;if(subject!==slot.subject_id)throw new Error('COMPILED_SLOT_SUBJECT_MISMATCH');const delegation=issuePlayerDelegation({sessionId,subjectId:subject,playerId:slot.player_id,characterId:slot.character_id,actions:slot.actions});const joined=await this.joinSession({sessionId,subjectId:subject,playerId:slot.player_id,characterId:slot.character_id,bodyId:slot.body_id,delegation});return{slotId,...joined};}
-  async joinCompiledSlotAuthority({sessionId,slotId,subjectId}={}){const ctx=this.require(sessionId),compilation=ctx.sourceCompilation;if(!compilation)throw new Error('SESSION_COMPILATION_REQUIRED');const slot=compilation.player_slots.find(item=>item.slot_id===slotId);if(!slot)throw new Error('COMPILED_SLOT_NOT_FOUND');const subject=subjectId??slot.subject_id;if(subject!==slot.subject_id)throw new Error('COMPILED_SLOT_SUBJECT_MISMATCH');const delegation=issuePlayerDelegation({sessionId,subjectId:subject,playerId:slot.player_id,characterId:slot.character_id,actions:slot.actions});const snapshot=ctx.server.joinPlayer({subjectId:subject,playerId:slot.player_id,characterId:slot.character_id,bodyId:slot.body_id,delegation});ctx.externalClients.set(slot.player_id,{playerId:slot.player_id,subjectId:subject,characterId:slot.character_id,bodyId:slot.body_id,connected:true,joinedTick:snapshot.tick});return{slotId,playerId:slot.player_id,player:{sessionId,subjectId:subject,playerId:slot.player_id,characterId:slot.character_id,bodyId:slot.body_id},delegation,snapshot};}
+  async joinCompiledSlotAuthority({sessionId,slotId,subjectId}={}){const ctx=this.require(sessionId),compilation=ctx.sourceCompilation;if(!compilation)throw new Error('SESSION_COMPILATION_REQUIRED');const slot=compilation.player_slots.find(item=>item.slot_id===slotId);if(!slot)throw new Error('COMPILED_SLOT_NOT_FOUND');const subject=subjectId??slot.subject_id;if(subject!==slot.subject_id)throw new Error('COMPILED_SLOT_SUBJECT_MISMATCH');const existing=ctx.server.players.get(slot.player_id);if(existing){if(existing.subjectId!==subject||existing.characterId!==slot.character_id||existing.bodyId!==slot.body_id)throw new Error('COMPILED_SLOT_EXISTING_BINDING_MISMATCH');const delegation=ctx.server.delegations.get(slot.player_id);if(!delegation)throw new Error('COMPILED_SLOT_DELEGATION_MISSING');const snapshot=ctx.server.pullSnapshot('authority-resume');ctx.externalClients.set(slot.player_id,{playerId:slot.player_id,subjectId:subject,characterId:slot.character_id,bodyId:slot.body_id,connected:true,joinedTick:existing.joinedTick,resumed:true});return{slotId,playerId:slot.player_id,player:{sessionId,subjectId:subject,playerId:slot.player_id,characterId:slot.character_id,bodyId:slot.body_id},delegation:clone(delegation),snapshot,resumed:true};}const delegation=issuePlayerDelegation({sessionId,subjectId:subject,playerId:slot.player_id,characterId:slot.character_id,actions:slot.actions});const snapshot=ctx.server.joinPlayer({subjectId:subject,playerId:slot.player_id,characterId:slot.character_id,bodyId:slot.body_id,delegation});ctx.externalClients.set(slot.player_id,{playerId:slot.player_id,subjectId:subject,characterId:slot.character_id,bodyId:slot.body_id,connected:true,joinedTick:snapshot.tick});return{slotId,playerId:slot.player_id,player:{sessionId,subjectId:subject,playerId:slot.player_id,characterId:slot.character_id,bodyId:slot.body_id},delegation,snapshot};}
   submitInput({sessionId,playerId,command,targetServerTick}){const ctx=this.require(sessionId),client=ctx.clients.get(playerId);if(!client)throw new Error('CLIENT_NOT_FOUND');const input=client.createInput(command,{targetServerTick});ctx.transport.send(`client:${playerId}`,`server:${sessionId}`,'input',input);client.markSent(input.inputSequence,ctx.transport.tick);return input;}
   submitInputPacket({sessionId,input}={}){const ctx=this.require(sessionId);return ctx.server.submitInput(clone(input));}
   advanceServerTick({sessionId,ticks=1}={}){const ctx=this.require(sessionId);const results=[];for(let i=0;i<ticks;i++){for(const [playerId,client] of ctx.clients)for(const input of client.dueForResend(ctx.transport.tick)){ctx.transport.send(`client:${playerId}`,`server:${sessionId}`,'input',input);client.markSent(input.inputSequence,ctx.transport.tick);}ctx.transport.advance(1);const result=ctx.server.advanceTick();ctx.lastTickResult=result;const ackByPlayer=new Map();for(const ack of result.acks){const prior=ackByPlayer.get(ack.playerId);if(!prior||ack.inputSequence>prior.inputSequence)ackByPlayer.set(ack.playerId,ack);}for(const ack of ackByPlayer.values())ctx.transport.send(`server:${sessionId}`,`client:${ack.playerId}`,'ack',{ack,snapshot:result.snapshot});for(const playerId of ctx.clients.keys())if(!ackByPlayer.has(playerId))ctx.transport.send(`server:${sessionId}`,`client:${playerId}`,'delta',result.delta);ctx.transport.advance(Math.max(1,Number(ctx.transport.condition.options.fixedLatencyTicks??0)+Number(ctx.transport.condition.options.jitterTicks??0)+3));
@@ -82,6 +119,7 @@ export class RealityNetworkRuntime {
   pullSnapshot({sessionId,reason='manual'}={}){return this.require(sessionId).server.pullSnapshot(reason);}
   pullDelta({sessionId,tick}={}){return this.require(sessionId).server.pullDelta(tick);}
   pullObserverView({sessionId,...profile}={}){return this.require(sessionId).server.pullObserverView(profile);}
+  createCheckpoint({sessionId}={}){const ctx=this.require(sessionId);return ctx.server.createCheckpoint({source:compilationSource(ctx.sourceCompilation)});}
   acknowledge({sessionId,playerId,inputSequence}={}){const ctx=this.require(sessionId),client=ctx.clients.get(playerId);return {known:client?.unacknowledged.some(x=>x.input.inputSequence===inputSequence)===false,inputSequence};}
   reconcile({sessionId,playerId}={}){const ctx=this.require(sessionId);return ctx.clients.get(playerId).reconcile(ctx.server.pullSnapshot('reconcile'));}
   disconnect({sessionId,playerId}={}){const ctx=this.require(sessionId);ctx.transport.disconnect(`client:${playerId}`);const client=ctx.clients.get(playerId),external=ctx.externalClients.get(playerId);if(client)client.connected=false;if(external)external.connected=false;return ctx.server.disconnect(playerId);}
