@@ -1,0 +1,76 @@
+{
+  "format": "rncs.rsr-experience-fabric-local-evidence.v0.1",
+  "date": "2026-09-10",
+  "testedSourceCommit": "6d600a706594532e335cecd753cbd1ad2eb7acd1",
+  "sourceLastChangedCommit": "da9d2da3f8b46f40972c06d3f0f24b1e2b5b20f4",
+  "sourcePaths": [
+    "packages/world/reality-simulation-runtime/packages/experience-fabric/src/index.ts",
+    "packages/world/reality-simulation-runtime/packages/experience-fabric-audio/src/index.ts",
+    "packages/world/reality-simulation-runtime/packages/experience-fabric-vsr/src/index.ts",
+    "packages/world/reality-simulation-runtime/schemas/rsr-experience-fabric.v0.4.schema.json",
+    "packages/world/reality-simulation-runtime/tests/experience-fabric.ts"
+  ],
+  "verification": {
+    "command": "npm.cmd run test:experience-fabric --workspace @taowind/reality-simulation-runtime",
+    "tests": 35,
+    "passed": 35,
+    "failed": 0,
+    "skipped": 0,
+    "status": "PASS_LOCAL"
+  },
+  "verifiedCapabilities": [
+    "fixed-tick seeded execution with canonical input event ordering",
+    "keyframe animation sampling, animator layers, state transitions, parameters and semantic markers",
+    "skeleton pose evaluation and two-bone IK",
+    "audio cue admission with maxInstances and cooldownTicks",
+    "offline audio voice priority, maxVoices, buses, spatial attenuation/pan and deterministic WAV output",
+    "particle emitters, deterministic effect instances and screen effect signals",
+    "snapshot restore and deterministic replay with animation, skeleton, audio, effect, event and state roots",
+    "provisional causal delta carrying evidence roots",
+    "VSR player, debugger, auditor and accessibility observer projections with invariant-root verification and PNG bytes"
+  ],
+  "candidateGenome": {
+    "input": "seeded authored experience config plus fixed-tick semantic input events",
+    "execution": "tick -> animation/state transition and marker -> bound audio/effect actions -> snapshot roots",
+    "outputs": [
+      "animationRoot",
+      "skeletonRoot",
+      "audioPlanRoot",
+      "effectRoot",
+      "eventRoot",
+      "stateRoot",
+      "provisional causal delta",
+      "role-scoped VSR projections"
+    ],
+    "authority": "experience/presentation candidate state only; no Studio authoring mutation, RSR spatial authority write, Build promotion or device authorization"
+  },
+  "reusableDonor": [
+    "one fixed-tick causal spine can produce animation, audio and effects without separate per-track clocks",
+    "snapshot/replay and root structure can carry multimodal evidence together",
+    "observer projection policy keeps player, debug, audit and accessibility views on one invariant source"
+  ],
+  "integrationAudit": {
+    "packageSubpathExport": false,
+    "unifiedIndexExport": false,
+    "realityStudioSequenceIngress": false,
+    "realityBuildExperienceIngress": false,
+    "targetSidePlayback": false,
+    "studioAudioTargetProfileExists": true,
+    "experienceFabricAudioTargetBindingIngress": false,
+    "experienceFabricBuildAssetShaLowering": false,
+    "explicitOwnerDecisionRequired": true
+  },
+  "missingCapability": "RNCS lacks a target-independent authored presentation/experience ingress that maps Studio Sequence semantics to the existing RSR Experience Fabric without duplicating evaluation or silently moving authority.",
+  "rclGap": "RCL_GAP_RNCS_SHARED_AUTHORED_PRESENTATION_SPINE",
+  "stressCase": "A single semantic attack event must advance animation state, emit a marker, admit an audio cue, create a particle effect, survive snapshot/replay and remain consistent across player/debugger/accessibility projections.",
+  "regressionCase": "A Studio sequence or Build request must not infer cue-to-asset bindings, copy Experience Fabric policy fields into Web Audio, create a second sampler, or treat the existing RSR test/demo as target playback.",
+  "loweringEvidence": "Local RSR compilation and 35/35 package tests are verified; no Studio Sequence ingress, Reality Build target lowering, Android target, physical device, network transport or production release was executed by this evidence.",
+  "boundaries": [
+    "The nested Experience Fabric sources are a verified RSR runtime donor, not yet the stable public owner of Studio authored Sequence semantics.",
+    "Experience Fabric audio uses procedural/sample voice specs and offline WAV rendering; it does not replace the explicit Studio cue_id to asset_id to file_role to asset_sha256 binding.",
+    "The existing VSR observer bridge emits local PNG bytes; this is not proof of target GPU rendering, audio hardware output, visual acceptance or accessibility acceptance.",
+    "A shared target-side runtime versus sealed Studio evaluated-frame projection remains a canonical-owner decision; no new adapter or schema is promoted here.",
+    "No K400 gate is promoted to PASS."
+  ],
+  "decision": "SHARED_RUNTIME_DONOR_VERIFIED_INTEGRATION_NOT_PROMOTED"
+}

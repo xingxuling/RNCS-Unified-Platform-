@@ -569,11 +569,13 @@ Reality Studio 当前源码真实拥有 `reality-studio.sequence.v1.7`、`Sequen
 
 ## 本轮 Experience Fabric / authored presentation owner 复核
 
-远端分支复核没有发现一条已经把 Experience Fabric 音频策略接入 Unified Project/Reality Build 的更新实现；当前工作树仍是事实来源。`npm.cmd run test:experience-fabric --workspace @taowind/reality-simulation-runtime` 真实完成 `35/35 PASS`，确认这不是“等待补写的接口”：`packages/world/reality-simulation-runtime/packages/experience-fabric/src/index.ts` 已拥有 fixed-tick cue admission、`maxInstances`、`cooldownTicks`、snapshot `audioPlanRoot`、确定性 replay、voice/spatial fields 与 bus declarations；`experience-fabric-audio` 还拥有离线 voice budget、priority、bus gain/low-pass/delay 与 WAV renderer。`audio-scene-runtime` 则是另一类离线制作/混音 donor，拥有 stem、bus、dialogue ducking、loudness/export，不应静默成为 gameplay cue owner。
+远端分支复核没有发现一条已经把 Experience Fabric 音频策略接入 Unified Project/Reality Build 的更新实现；当前工作树仍是事实来源。`npm.cmd run test:experience-fabric --workspace @taowind/reality-simulation-runtime` 真实完成 `35/35 PASS`，独立收据见 `docs/verification/RSR_EXPERIENCE_FABRIC_LOCAL_EVIDENCE_v0.1.json`。这确认它不是“等待补写的接口”：`packages/world/reality-simulation-runtime/packages/experience-fabric/src/index.ts` 已拥有 fixed-tick cue admission、`maxInstances`、`cooldownTicks`、snapshot `audioPlanRoot`、确定性 replay、voice/spatial fields 与 bus declarations；`experience-fabric-audio` 还拥有离线 voice budget、priority、bus gain/low-pass/delay 与 WAV renderer。`audio-scene-runtime` 则是另一类离线制作/混音 donor，拥有 stem、bus、dialogue ducking、loudness/export，不应静默成为 gameplay cue owner。
+
+这次重跑还确认了一个工程接缝：`@taowind/reality-simulation-runtime` 的 `exports` 与 `src/unified-index.mjs` 都没有公开 Experience Fabric、audio 或 VSR bridge 子路径。它因此是“内部源码可编译、可测试的 RSR donor”，还不是 Studio / Build 可依赖的稳定共享 runtime；单纯补一个 export 也不能替代 ingress、target lowering 与播放回执。
 
 当前 ingress 仍然分裂但边界清楚：Reality Studio 的 `rncs.audio-target-profile.v0.1` 只拥有显式 `cue_id → asset_id → file_role → asset_sha256` 绑定；Studio `reality-studio.sequence.v1.7` 虽有 audio track，却没有进入 Build 的播放/投影契约；Reality Build 只接收 explicit audio target plan、既有 VSR asset residency/cache、Web Audio decode/schedule 和 RSR spatial context，既没有 Experience Fabric config/snapshot/audioPlanRoot ingress，也没有 `maxVoices`、cue concurrency、cooldown、bus graph 或 continuous/segmented stream lowering。故而不能把 Experience Fabric policy 字段拷进 Build，也不能按 sequence cue 名或第一个音频文件推断来源。
 
-该负证据与 owner matrix 固化在 `apps/reality-build/evidence/BUILD_AUDIO_POLICY_OWNER_AUDIT_v0.1.json`。它把大缺口归入 `RCL_GAP_RNCS_SHARED_AUTHORED_PRESENTATION_SPINE`，把可执行的音频子缺口保留为 `RCL_GAP_RNCS_AUDIO_TARGET_LOWERING`；当前需要人类裁决的是：采用 Studio sealed evaluated frame → Build projection，还是建立 shared target-side Sequence/Experience runtime，并明确 voice/bus policy 的投影 owner。没有这个裁决，本轮不新增 schema 或胶水。
+该负证据与 owner matrix 固化在 `apps/reality-build/evidence/BUILD_AUDIO_POLICY_OWNER_AUDIT_v0.1.json`；本轮 RSR 证据把同一缺口的共享 runtime donor 边界补齐。它把大缺口归入 `RCL_GAP_RNCS_SHARED_AUTHORED_PRESENTATION_SPINE`，把可执行的音频子缺口保留为 `RCL_GAP_RNCS_AUDIO_TARGET_LOWERING`；当前需要人类裁决的是：采用 Studio sealed evaluated frame → Build projection，还是建立 shared target-side Sequence/Experience runtime，并明确 voice/bus policy 的投影 owner。没有这个裁决，本轮不新增 schema 或胶水。
 
 ## 本轮 DML Remote Link 控制面资产复核
 
