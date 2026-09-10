@@ -30,12 +30,13 @@
     "managed_tag": {"const": "large-world-terrain"},
     "source": {
       "type": "object",
-      "required": ["terrain_owner", "region_root", "world_root", "stream_root"],
+      "required": ["terrain_owner", "region_root", "world_root", "stream_root", "stream_transition_root"],
       "properties": {
         "terrain_owner": {"const": "@taowind/large-world-runtime"},
         "region_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
         "world_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-        "stream_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        "stream_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "stream_transition_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
       },
       "additionalProperties": true
     },

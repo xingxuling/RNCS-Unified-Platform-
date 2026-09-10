@@ -74,6 +74,7 @@ export const LARGE_WORLD_RUNTIME_VERSION = '0.1.0';
 export const LARGE_WORLD_REGION_FORMAT = 'rncs.large-world-region.v0.1';
 export const LARGE_WORLD_CHUNK_FORMAT = 'rncs.large-world-chunk.v0.1';
 export const LARGE_WORLD_STREAM_FORMAT = 'rncs.large-world-stream-resolution.v0.1';
+export const LARGE_WORLD_STREAM_TRANSITION_FORMAT = 'rncs.large-world-stream-transition.v0.1';
 export const LARGE_WORLD_REALITY_ACCESS_FORMAT = 'rncs.large-world-reality-access-resolution.v0.1';
 export const LARGE_WORLD_PORTFOLIO_SELECTION_FORMAT = 'rncs.large-world-portfolio-selection.v0.1';
 export const LARGE_WORLD_SPATIAL_SCENE_FORMAT = 'rncs.large-world-spatial-scene.v0.1';
@@ -2280,6 +2281,55 @@ function verifyStreamResolution(resolution) {
   return hex64(actual) && rootHash(copy) === actual;
 }
 
+export function verifyStreamTransitionReceipt(transition) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  try {
+    check(transition && typeof transition === 'object' && !Array.isArray(transition), 'LARGE_WORLD_STREAM_TRANSITION_NOT_OBJECT');
+    check(transition?.format === LARGE_WORLD_STREAM_TRANSITION_FORMAT, 'LARGE_WORLD_STREAM_TRANSITION_FORMAT_INVALID');
+    check(transition?.version === LARGE_WORLD_RUNTIME_VERSION, 'LARGE_WORLD_STREAM_TRANSITION_VERSION_INVALID');
+    check(typeof transition?.world_id === 'string' && transition.world_id.length > 0, 'LARGE_WORLD_STREAM_TRANSITION_WORLD_ID_INVALID');
+    check(Number.isSafeInteger(transition?.generation) && transition.generation >= 0, 'LARGE_WORLD_STREAM_TRANSITION_GENERATION_INVALID');
+    for (const field of ['region_root', 'world_root']) check(hex64(transition?.[field]), `LARGE_WORLD_STREAM_TRANSITION_${field.toUpperCase()}_INVALID`);
+    check(transition?.previous_stream_root === null || hex64(transition?.previous_stream_root), 'LARGE_WORLD_STREAM_TRANSITION_PREVIOUS_ROOT_INVALID');
+    check(Number.isSafeInteger(transition?.load_radius) && transition.load_radius >= 0, 'LARGE_WORLD_STREAM_TRANSITION_LOAD_RADIUS_INVALID');
+    check(Number.isSafeInteger(transition?.unload_radius) && transition.unload_radius >= transition.load_radius, 'LARGE_WORLD_STREAM_TRANSITION_UNLOAD_RADIUS_INVALID');
+    const arrayFields = ['previous_active_chunk_ids', 'next_active_chunk_ids', 'entered_chunk_ids', 'retained_chunk_ids', 'exited_chunk_ids', 'released_chunk_ids', 'evicted_chunk_ids', 'loaded_chunk_ids'];
+    for (const field of arrayFields) {
+      check(Array.isArray(transition?.[field]), `LARGE_WORLD_STREAM_TRANSITION_${field.toUpperCase()}_INVALID`);
+      if (Array.isArray(transition?.[field])) {
+        check(JSON.stringify(transition[field]) === JSON.stringify(strings(transition[field])), `LARGE_WORLD_STREAM_TRANSITION_${field.toUpperCase()}_ORDER_INVALID`);
+      }
+    }
+    const previous = new Set(transition?.previous_active_chunk_ids ?? []);
+    const next = new Set(transition?.next_active_chunk_ids ?? []);
+    const entered = new Set(transition?.entered_chunk_ids ?? []);
+    const retained = new Set(transition?.retained_chunk_ids ?? []);
+    const exited = new Set(transition?.exited_chunk_ids ?? []);
+    const released = new Set(transition?.released_chunk_ids ?? []);
+    const evicted = new Set(transition?.evicted_chunk_ids ?? []);
+    check([...entered].every(id => next.has(id) && !previous.has(id)), 'LARGE_WORLD_STREAM_TRANSITION_ENTERED_SET_INVALID');
+    check([...retained].every(id => next.has(id) && previous.has(id)), 'LARGE_WORLD_STREAM_TRANSITION_RETAINED_SET_INVALID');
+    check([...exited].every(id => previous.has(id) && !next.has(id)), 'LARGE_WORLD_STREAM_TRANSITION_EXITED_SET_INVALID');
+    check(JSON.stringify([...released].sort(keySort)) === JSON.stringify([...exited].sort(keySort)), 'LARGE_WORLD_STREAM_TRANSITION_RELEASED_SET_INVALID');
+    check([...evicted].every(id => !next.has(id)), 'LARGE_WORLD_STREAM_TRANSITION_EVICTED_SET_INVALID');
+    const reconstructed = [...new Set([...retained, ...entered])].sort(keySort);
+    check(JSON.stringify(reconstructed) === JSON.stringify([...(transition?.next_active_chunk_ids ?? [])].sort(keySort)), 'LARGE_WORLD_STREAM_TRANSITION_ACTIVE_SET_INVALID');
+    check(JSON.stringify([...(transition?.loaded_chunk_ids ?? [])]) === JSON.stringify([...(transition?.entered_chunk_ids ?? [])]), 'LARGE_WORLD_STREAM_TRANSITION_LOADED_SET_INVALID');
+    check(transition?.canonical_state_mutated === false, 'LARGE_WORLD_STREAM_TRANSITION_CANONICAL_MUTATION');
+    check(transition?.authority?.provider_can_write_authoritative_world_state === false, 'LARGE_WORLD_STREAM_TRANSITION_AUTHORITY_ESCALATION');
+    check(transition?.candidate_only === true && transition?.authoritative === false, 'LARGE_WORLD_STREAM_TRANSITION_CANDIDATE_BOUNDARY_INVALID');
+    check(transition?.commit_status === 'NOT_COMMITTED', 'LARGE_WORLD_STREAM_TRANSITION_COMMIT_STATUS_INVALID');
+    const copy = clone(transition);
+    const root = copy.transition_root;
+    delete copy.transition_root;
+    check(hex64(root) && rootHash(copy) === root, 'LARGE_WORLD_STREAM_TRANSITION_ROOT_INVALID');
+  } catch (error) {
+    errors.push(`LARGE_WORLD_STREAM_TRANSITION_VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, transition_root: transition?.transition_root ?? null};
+}
+
 function replicationAuthorityReceipt(input) {
   const receipt = clone(record(input));
   fail(receipt.status === 'committed' && hex64(receipt.receipt_root), 'LARGE_WORLD_REPLICATION_AUTHORITY_RECEIPT_REQUIRED');
@@ -3291,6 +3341,8 @@ export class LargeWorldRuntime {
     const observer = normalizeObserver(input);
     const forcedRequested = normalizeForcedIds(input);
     const previous = new Set(this.activeChunkIds);
+    const previousStreamRoot = this.trace.at(-1)?.stream_root ?? null;
+    const previousActiveChunkIds = [...previous].sort(keySort);
     const centerChunk = {x: Math.floor(observer.x / this.options.chunkSize), z: Math.floor(observer.z / this.options.chunkSize)};
     const forcedKnown = forcedRequested.map(id => this.chunks.get(id)).filter(Boolean);
     const unknownForcedIds = forcedRequested.filter(id => !this.chunks.has(id));
@@ -3324,6 +3376,38 @@ export class LargeWorldRuntime {
     const entered = activeChunkIds.filter(id => !previous.has(id));
     const exited = [...previous].filter(id => !activeSet.has(id)).sort(keySort);
     const evictedSet = new Set(evicted);
+    const transitionBase = {
+      format: LARGE_WORLD_STREAM_TRANSITION_FORMAT,
+      version: LARGE_WORLD_RUNTIME_VERSION,
+      world_id: this.options.worldId,
+      generation: this.options.generation,
+      region_root: this.region.region_root,
+      world_root: this.region.world_root,
+      previous_stream_root: previousStreamRoot,
+      previous_active_chunk_ids: previousActiveChunkIds,
+      next_active_chunk_ids: activeChunkIds,
+      entered_chunk_ids: entered,
+      retained_chunk_ids: activeChunkIds.filter(id => previous.has(id)).sort(keySort),
+      exited_chunk_ids: exited,
+      released_chunk_ids: exited,
+      evicted_chunk_ids: [...evictedSet].sort(keySort),
+      loaded_chunk_ids: entered,
+      observer_position_mm: {x: observer.x * 1000, z: observer.z * 1000},
+      observer_chunk: centerChunk,
+      load_radius: this.options.loadRadius,
+      unload_radius: this.options.unloadRadius,
+      forced_chunk_ids: forcedRequested,
+      unknown_forced_chunk_ids: unknownForcedIds,
+      working_set_bytes: workingSetBytes,
+      max_active_chunks: this.options.maxActiveChunks,
+      max_working_set_bytes: this.options.maxWorkingSetBytes,
+      canonical_state_mutated: false,
+      authority: {provider_can_write_authoritative_world_state: false, rncs_authority_required: true},
+      candidate_only: true,
+      authoritative: false,
+      commit_status: 'NOT_COMMITTED'
+    };
+    const streamTransition = {...transitionBase, transition_root: rootHash(transitionBase)};
     const base = {
       format: LARGE_WORLD_STREAM_FORMAT,
       version: LARGE_WORLD_RUNTIME_VERSION,
@@ -3344,6 +3428,7 @@ export class LargeWorldRuntime {
       working_set_bytes: workingSetBytes,
       max_active_chunks: this.options.maxActiveChunks,
       max_working_set_bytes: this.options.maxWorkingSetBytes,
+      stream_transition: streamTransition,
       diagnostics: [...budgetDiagnostics, ...unknownForcedIds.map(id => `unknown-forced-chunk:${id}`)].sort(keySort),
       canonical_state_mutated: false,
       authority: {provider_can_write_authoritative_world_state: false, rncs_authority_required: true},
@@ -5129,6 +5214,13 @@ export function verifyStreamResolutionReceipt(resolution) {
   const errors = [];
   if (resolution?.format !== LARGE_WORLD_STREAM_FORMAT) errors.push('LARGE_WORLD_STREAM_FORMAT_INVALID');
   if (!verifyStreamResolution(resolution)) errors.push('LARGE_WORLD_STREAM_ROOT_INVALID');
+  if (resolution?.stream_transition !== undefined) {
+    if (!verifyStreamTransitionReceipt(resolution.stream_transition).valid) errors.push('LARGE_WORLD_STREAM_TRANSITION_INVALID');
+    if (resolution.stream_transition?.world_id !== resolution?.world_id) errors.push('LARGE_WORLD_STREAM_TRANSITION_WORLD_MISMATCH');
+    if (resolution.stream_transition?.generation !== resolution?.generation) errors.push('LARGE_WORLD_STREAM_TRANSITION_GENERATION_MISMATCH');
+    if (resolution.stream_transition?.region_root !== resolution?.region_root || resolution.stream_transition?.world_root !== resolution?.world_root) errors.push('LARGE_WORLD_STREAM_TRANSITION_ROOT_BINDING_MISMATCH');
+    if (JSON.stringify(resolution.stream_transition.next_active_chunk_ids ?? []) !== JSON.stringify(resolution.active_chunk_ids ?? [])) errors.push('LARGE_WORLD_STREAM_TRANSITION_ACTIVE_BINDING_MISMATCH');
+  }
   if (resolution?.canonical_state_mutated !== false) errors.push('LARGE_WORLD_STREAM_CANONICAL_MUTATION');
   if (resolution?.authority?.provider_can_write_authoritative_world_state !== false) errors.push('LARGE_WORLD_STREAM_AUTHORITY_ESCALATION');
   if (resolution?.active_chunk_ids?.length > resolution?.max_active_chunks) errors.push('LARGE_WORLD_STREAM_ACTIVE_BUDGET_EXCEEDED');

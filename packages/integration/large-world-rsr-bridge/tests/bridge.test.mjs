@@ -44,6 +44,9 @@ test('lowers only active Large World chunk samples into the existing Kernel heig
   assert.equal(candidate.source.region_root, region.region_root);
   assert.equal(candidate.source.world_root, region.world_root);
   assert.equal(candidate.source.stream_root, stream.stream_root);
+  assert.equal(candidate.source.stream_transition_root, stream.stream_transition.transition_root);
+  assert.deepEqual(admission.source_released_chunk_ids, []);
+  assert.equal(admission.source_stream_transition_root, stream.stream_transition.transition_root);
   assert.equal(candidate.authority.adapter_authority, 'candidate-artifact-generation-only-no-commit');
   const materialization = materializeKernelStateBatch(candidate.batch);
   assert.equal(materialization.config.bodies.length, 9);
@@ -145,6 +148,11 @@ test('keeps source and candidate roots fail-closed across inactive chunks and ta
   const verification = verifyLargeWorldRsrTerrainCandidate(tampered, {region});
   assert.equal(verification.valid, false);
   assert.ok(verification.errors.some(error => error.includes('BATCH_ROOT') || error.includes('CANDIDATE_ROOT')));
+  const tamperedTransition = structuredClone(candidate);
+  tamperedTransition.stream_resolution.stream_transition.released_chunk_ids = ['chunk:forged'];
+  const transitionVerification = verifyLargeWorldRsrTerrainCandidate(tamperedTransition, {region});
+  assert.equal(transitionVerification.valid, false);
+  assert.ok(transitionVerification.errors.includes('LARGE_WORLD_RSR_STREAM_INVALID') || transitionVerification.errors.includes('LARGE_WORLD_RSR_STREAM_TRANSITION_INVALID'));
   const materialization = materializeKernelStateBatch(candidate.batch);
   const world = new SpatialEmbodimentWorld({...materialization.config, worldId: candidate.world_id, floorY: -100_000});
   const before = world.snapshot();
@@ -201,7 +209,7 @@ function runStreamResidencyTransition() {
 
 test('applies Large World stream enter/exit to the same RSR world with deterministic replay', () => {
   const result = runStreamResidencyTransition();
-  const {region, nextCandidate, before, after, transition, world} = result;
+  const {region, nextCandidate, nextStream, before, after, transition, world} = result;
   const beforeTerrain = before.bodies.find(body => body.tags?.includes('large-world-terrain'));
   const afterTerrain = after.bodies.find(body => body.tags?.includes('large-world-terrain'));
   assert.ok(beforeTerrain);
@@ -215,6 +223,9 @@ test('applies Large World stream enter/exit to the same RSR world with determini
   assert.equal(transition.residency_admission?.status, 'READY');
   assert.equal(transition.residency_admission?.usage.heightfield_sample_count, 25);
   assert.equal(transition.source_candidate_root, nextCandidate.candidate_root);
+  assert.equal(transition.source_stream_transition_root, nextStream.stream_transition.transition_root);
+  assert.deepEqual(transition.source_released_chunk_ids, nextStream.stream_transition.released_chunk_ids);
+  assert.equal(transition.source_released_chunk_ids.length, 1);
   assert.equal(result.largeWorldReplay.ok, true);
   assert.equal(verifyRuntimeSnapshot(result.largeWorldSnapshot).valid, true);
   assert.equal(verifySpatialEmbodimentSnapshot(before), true);

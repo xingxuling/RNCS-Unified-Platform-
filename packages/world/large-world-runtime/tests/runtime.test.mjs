@@ -49,6 +49,7 @@ import {
   verifyRegion,
   verifyRuntimeSnapshot,
   verifyStreamResolutionReceipt,
+  verifyStreamTransitionReceipt,
   verifyLargeWorldRealityAccessResolution
 } from '../src/index.mjs';
 
@@ -93,16 +94,24 @@ test('streams a bounded active working set with enter, exit, and hysteresis evid
   assert.equal(first.exited_chunk_ids.length, 0);
   assert.equal(first.working_set_bytes <= first.max_working_set_bytes, true);
   assert.equal(verifyStreamResolutionReceipt(first).valid, true);
+  assert.equal(verifyStreamTransitionReceipt(first.stream_transition).valid, true);
+  assert.equal(first.stream_transition.previous_stream_root, null);
+  assert.deepEqual(first.stream_transition.released_chunk_ids, []);
 
   const held = runtime.observe({x: 256, z: 0});
   assert.equal(held.active_chunk_ids.includes('chunk:world:stream:0:0'), true);
   assert.equal(held.exited_chunk_ids.length, 0);
   assert.equal(verifyStreamResolutionReceipt(held).valid, true);
+  assert.equal(verifyStreamTransitionReceipt(held.stream_transition).valid, true);
+  assert.deepEqual(held.stream_transition.released_chunk_ids, []);
 
   const moved = runtime.observe({x: 1024, z: 1024});
   assert.equal(moved.active_chunk_ids.length <= 12, true);
   assert.equal(moved.exited_chunk_ids.length > 0, true);
   assert.equal(verifyStreamResolutionReceipt(moved).valid, true);
+  assert.equal(verifyStreamTransitionReceipt(moved.stream_transition).valid, true);
+  assert.deepEqual(moved.stream_transition.released_chunk_ids, moved.exited_chunk_ids);
+  assert.equal(moved.stream_transition.previous_stream_root, held.stream_root);
 });
 
 test('keeps forced chunks in the working set and records unknown force requests', () => {

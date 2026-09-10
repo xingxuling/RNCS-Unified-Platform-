@@ -1,5 +1,5 @@
 import {EntityKernel, rootHash, verifyEntityStateBatch} from '@taowind/rncs-core-contract';
-import {verifyChunk, verifyRegion, verifyStreamResolutionReceipt} from '@taowind/large-world-runtime';
+import {verifyChunk, verifyRegion, verifyStreamResolutionReceipt, verifyStreamTransitionReceipt} from '@taowind/large-world-runtime';
 import {materializeKernelStateBatch, verifySpatialBodyResidencyTransition} from '@taowind/reality-simulation-runtime/spatial-embodiment';
 
 export const LARGE_WORLD_RSR_TERRAIN_FORMAT = 'rncs.large-world-rsr-terrain-candidate.v0.1';
@@ -87,6 +87,8 @@ function orderedIds(values) {
 function assertStreamResolution(stream, region) {
   const verification = verifyStreamResolutionReceipt(stream);
   if (!verification.valid) fail('LARGE_WORLD_RSR_STREAM_INVALID', verification.errors.join(','));
+  const transitionVerification = verifyStreamTransitionReceipt(stream?.stream_transition);
+  if (!transitionVerification.valid) fail('LARGE_WORLD_RSR_STREAM_TRANSITION_INVALID', transitionVerification.errors.join(','));
   if (stream.world_id !== region.world_id) fail('LARGE_WORLD_RSR_STREAM_WORLD_MISMATCH', 'Stream and region world ids differ');
   if (stream.generation !== region.generation) fail('LARGE_WORLD_RSR_STREAM_GENERATION_MISMATCH', 'Stream and region generations differ');
   if (stream.region_root !== region.region_root) fail('LARGE_WORLD_RSR_STREAM_REGION_ROOT_MISMATCH', 'Stream and region roots differ');
@@ -240,6 +242,7 @@ export function createLargeWorldRsrTerrainCandidate(input = {}) {
       region_root: region.region_root,
       world_root: region.world_root,
       stream_root: stream.stream_root,
+      stream_transition_root: stream.stream_transition.transition_root,
       lowering: 'chunk.mesh.positions→spatial.fixtures.items.heightfield'
     },
     managed_tag: LARGE_WORLD_RSR_TERRAIN_MANAGED_TAG,
@@ -298,14 +301,17 @@ export function verifyLargeWorldRsrTerrainCandidate(candidate, options = {}) {
     check(candidate?.source?.terrain_owner === LARGE_WORLD_RSR_TERRAIN_OWNER, 'LARGE_WORLD_RSR_TERRAIN_OWNER_INVALID');
     check(candidate?.source?.physical_owner === LARGE_WORLD_RSR_PHYSICAL_OWNER, 'LARGE_WORLD_RSR_PHYSICAL_OWNER_INVALID');
     check(candidate?.managed_tag === LARGE_WORLD_RSR_TERRAIN_MANAGED_TAG, 'LARGE_WORLD_RSR_MANAGED_TAG_INVALID');
-    for (const field of ['region_root', 'world_root', 'stream_root']) check(HEX64.test(candidate?.source?.[field] ?? ''), `LARGE_WORLD_RSR_SOURCE_${field.toUpperCase()}_INVALID`);
+    for (const field of ['region_root', 'world_root', 'stream_root', 'stream_transition_root']) check(HEX64.test(candidate?.source?.[field] ?? ''), `LARGE_WORLD_RSR_SOURCE_${field.toUpperCase()}_INVALID`);
     check(Array.isArray(candidate?.active_chunk_ids), 'LARGE_WORLD_RSR_ACTIVE_IDS_INVALID');
     check(Array.isArray(candidate?.lowered_chunk_ids), 'LARGE_WORLD_RSR_LOWERED_IDS_INVALID');
     check(Array.isArray(candidate?.chunk_bindings), 'LARGE_WORLD_RSR_BINDINGS_INVALID');
     check(candidate?.lowered_chunk_ids?.length === candidate?.chunk_bindings?.length, 'LARGE_WORLD_RSR_BINDING_COUNT_MISMATCH');
     const streamVerification = verifyStreamResolutionReceipt(candidate?.stream_resolution);
     check(streamVerification.valid, 'LARGE_WORLD_RSR_STREAM_INVALID');
+    const streamTransitionVerification = verifyStreamTransitionReceipt(candidate?.stream_resolution?.stream_transition);
+    check(streamTransitionVerification.valid, 'LARGE_WORLD_RSR_STREAM_TRANSITION_INVALID');
     check(candidate?.stream_resolution?.stream_root === candidate?.source?.stream_root, 'LARGE_WORLD_RSR_STREAM_ROOT_MISMATCH');
+    check(candidate?.stream_resolution?.stream_transition?.transition_root === candidate?.source?.stream_transition_root, 'LARGE_WORLD_RSR_STREAM_TRANSITION_ROOT_MISMATCH');
     check(JSON.stringify(orderedIds(candidate?.active_chunk_ids ?? [])) === JSON.stringify(orderedIds(candidate?.stream_resolution?.active_chunk_ids ?? [])), 'LARGE_WORLD_RSR_ACTIVE_STREAM_IDS_MISMATCH');
     check(verifyEntityStateBatch(candidate?.batch), 'LARGE_WORLD_RSR_BATCH_ROOT_INVALID');
     check(candidate?.batch?.world_id === candidate?.world_id && candidate?.batch?.generation === candidate?.generation, 'LARGE_WORLD_RSR_BATCH_SOURCE_MISMATCH');
@@ -365,12 +371,14 @@ export function planLargeWorldRsrTerrainResidency(candidate, options = {}) {
     source_region_root: candidate.source.region_root,
     source_world_root: candidate.source.world_root,
     source_stream_root: candidate.source.stream_root,
+    source_stream_transition_root: candidate.source.stream_transition_root,
     managed_tag: candidate.managed_tag,
     budget,
     budget_root: rootHash(budget),
     usage,
     source_active_chunk_ids: orderedIds(candidate.active_chunk_ids),
     source_evicted_chunk_ids: orderedIds(candidate.stream_resolution.evicted_chunk_ids ?? []),
+    source_released_chunk_ids: orderedIds(candidate.stream_resolution.stream_transition?.released_chunk_ids ?? []),
     status: exceeded.length === 0 ? 'READY' : 'BLOCKED_RESOURCE',
     exceeded_limits: exceeded,
     authority: {
@@ -394,7 +402,7 @@ export function verifyLargeWorldRsrTerrainResidencyAdmission(admission, options 
     check(admission?.version === LARGE_WORLD_RSR_TERRAIN_RESIDENCY_ADMISSION_VERSION, 'LARGE_WORLD_RSR_ADMISSION_VERSION_INVALID');
     check(typeof admission?.world_id === 'string' && admission.world_id.length > 0, 'LARGE_WORLD_RSR_ADMISSION_WORLD_ID_INVALID');
     check(Number.isSafeInteger(admission?.generation) && admission.generation >= 0, 'LARGE_WORLD_RSR_ADMISSION_GENERATION_INVALID');
-    for (const field of ['source_candidate_root', 'source_region_root', 'source_world_root', 'source_stream_root', 'budget_root']) check(HEX64.test(admission?.[field] ?? ''), `LARGE_WORLD_RSR_ADMISSION_${field.toUpperCase()}_INVALID`);
+    for (const field of ['source_candidate_root', 'source_region_root', 'source_world_root', 'source_stream_root', 'source_stream_transition_root', 'budget_root']) check(HEX64.test(admission?.[field] ?? ''), `LARGE_WORLD_RSR_ADMISSION_${field.toUpperCase()}_INVALID`);
     check(admission?.managed_tag === LARGE_WORLD_RSR_TERRAIN_MANAGED_TAG, 'LARGE_WORLD_RSR_ADMISSION_MANAGED_TAG_INVALID');
     check(admission?.budget && typeof admission.budget === 'object' && !Array.isArray(admission.budget), 'LARGE_WORLD_RSR_ADMISSION_BUDGET_INVALID');
     const budget = admission?.budget ?? {};
@@ -404,6 +412,7 @@ export function verifyLargeWorldRsrTerrainResidencyAdmission(admission, options 
     for (const field of ['managed_body_count', 'managed_fixture_count', 'heightfield_sample_count']) check(Number.isSafeInteger(usage[field]) && usage[field] >= 0, `LARGE_WORLD_RSR_ADMISSION_${field.toUpperCase()}_INVALID`);
     check(Array.isArray(admission?.source_active_chunk_ids), 'LARGE_WORLD_RSR_ADMISSION_ACTIVE_IDS_INVALID');
     check(Array.isArray(admission?.source_evicted_chunk_ids), 'LARGE_WORLD_RSR_ADMISSION_EVICTED_IDS_INVALID');
+    check(Array.isArray(admission?.source_released_chunk_ids), 'LARGE_WORLD_RSR_ADMISSION_RELEASED_IDS_INVALID');
     check(admission?.status === 'READY' || admission?.status === 'BLOCKED_RESOURCE', 'LARGE_WORLD_RSR_ADMISSION_STATUS_INVALID');
     const expectedExceeded = [];
     if (budget.max_managed_bodies !== undefined && usage.managed_body_count > budget.max_managed_bodies) expectedExceeded.push('max_managed_bodies');
@@ -420,6 +429,9 @@ export function verifyLargeWorldRsrTerrainResidencyAdmission(admission, options 
       const candidateVerification = verifyLargeWorldRsrTerrainCandidate(options.candidate, options.region === undefined ? {} : {region: options.region});
       check(candidateVerification.valid, 'LARGE_WORLD_RSR_ADMISSION_CANDIDATE_INVALID');
       check(options.candidate?.candidate_root === admission.source_candidate_root, 'LARGE_WORLD_RSR_ADMISSION_CANDIDATE_ROOT_MISMATCH');
+      check(options.candidate?.source?.stream_transition_root === admission.source_stream_transition_root, 'LARGE_WORLD_RSR_ADMISSION_STREAM_TRANSITION_ROOT_MISMATCH');
+      check(JSON.stringify(admission.source_evicted_chunk_ids ?? []) === JSON.stringify(orderedIds(options.candidate?.stream_resolution?.evicted_chunk_ids ?? [])), 'LARGE_WORLD_RSR_ADMISSION_EVICTED_IDS_MISMATCH');
+      check(JSON.stringify(admission.source_released_chunk_ids ?? []) === JSON.stringify(orderedIds(options.candidate?.stream_resolution?.stream_transition?.released_chunk_ids ?? [])), 'LARGE_WORLD_RSR_ADMISSION_RELEASED_IDS_MISMATCH');
     }
     const copy = clone(admission);
     const root = copy.admission_root;
@@ -458,6 +470,8 @@ export function applyLargeWorldRsrTerrainCandidate(world, candidate, options = {
     source_region_root: candidate.source.region_root,
     source_world_root: candidate.source.world_root,
     source_stream_root: candidate.source.stream_root,
+    source_stream_transition_root: candidate.source.stream_transition_root,
+    source_released_chunk_ids: orderedIds(candidate.stream_resolution.stream_transition?.released_chunk_ids ?? []),
     managed_tag: managedTag,
     entered_body_ids: [...transition.enteredBodyIds],
     exited_body_ids: [...transition.exitedBodyIds],
@@ -491,7 +505,8 @@ export function verifyLargeWorldRsrTerrainResidencyTransition(transition, option
     check(Number.isSafeInteger(transition?.generation) && transition.generation >= 0, 'LARGE_WORLD_RSR_RESIDENCY_GENERATION_INVALID');
     check(Number.isSafeInteger(transition?.tick) && transition.tick >= 0, 'LARGE_WORLD_RSR_RESIDENCY_TICK_INVALID');
     check(transition?.managed_tag === LARGE_WORLD_RSR_TERRAIN_MANAGED_TAG, 'LARGE_WORLD_RSR_RESIDENCY_MANAGED_TAG_INVALID');
-    for (const field of ['source_candidate_root', 'source_region_root', 'source_world_root', 'source_stream_root']) check(HEX64.test(transition?.[field] ?? ''), `LARGE_WORLD_RSR_RESIDENCY_${field.toUpperCase()}_INVALID`);
+    for (const field of ['source_candidate_root', 'source_region_root', 'source_world_root', 'source_stream_root', 'source_stream_transition_root']) check(HEX64.test(transition?.[field] ?? ''), `LARGE_WORLD_RSR_RESIDENCY_${field.toUpperCase()}_INVALID`);
+    check(Array.isArray(transition?.source_released_chunk_ids), 'LARGE_WORLD_RSR_RESIDENCY_RELEASED_IDS_INVALID');
     check(transition?.authority?.provider_can_write_authoritative_world_state === false, 'LARGE_WORLD_RSR_RESIDENCY_PROVIDER_AUTHORITY_ESCALATION');
     check(transition?.authority?.rncs_authority_required === true, 'LARGE_WORLD_RSR_RESIDENCY_RNCS_AUTHORITY_MISSING');
     check(transition?.candidate_only === true && transition?.authoritative === false && transition?.canonical_write_authorized === false, 'LARGE_WORLD_RSR_RESIDENCY_AUTHORITY_ESCALATION');
@@ -511,6 +526,8 @@ export function verifyLargeWorldRsrTerrainResidencyTransition(transition, option
       const candidateVerification = verifyLargeWorldRsrTerrainCandidate(options.candidate, options.region === undefined ? {} : {region: options.region});
       check(candidateVerification.valid, 'LARGE_WORLD_RSR_RESIDENCY_SOURCE_CANDIDATE_INVALID');
       check(options.candidate?.candidate_root === transition?.source_candidate_root, 'LARGE_WORLD_RSR_RESIDENCY_SOURCE_CANDIDATE_ROOT_MISMATCH');
+      check(options.candidate?.source?.stream_transition_root === transition?.source_stream_transition_root, 'LARGE_WORLD_RSR_RESIDENCY_STREAM_TRANSITION_ROOT_MISMATCH');
+      check(JSON.stringify(transition?.source_released_chunk_ids ?? []) === JSON.stringify(orderedIds(options.candidate?.stream_resolution?.stream_transition?.released_chunk_ids ?? [])), 'LARGE_WORLD_RSR_RESIDENCY_RELEASED_IDS_MISMATCH');
     }
     const copy = clone(transition);
     const root = copy.transition_root;

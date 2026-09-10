@@ -748,6 +748,7 @@
       "capabilities": [
         "world-seed-region-chunk-generation",
         "bounded-world-streaming",
+        "rooted-stream-residency-transition-receipts",
         "reality-access-to-streaming",
         "causal-physical-detail-selection",
         "minimum-reality-recovery",
@@ -773,6 +774,7 @@
       "capabilities": [
         "large-world-chunk-to-rsr-heightfield-lowering",
         "stream-root-bound-terrain-candidate",
+        "source-stream-transition-receipt-binding",
         "candidate-physical-terrain-residency-admission",
         "managed-static-terrain-residency-transition",
         "candidate-only-no-canonical-mutation"
