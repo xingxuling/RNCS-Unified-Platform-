@@ -1,0 +1,102 @@
+{
+  "format": "reality-build.audio-policy-owner-audit.v0.1",
+  "status": "AUDIT_AUDIO_POLICY_OWNER_AND_INGRESS_GAP_CONFIRMED",
+  "sourceCommit": "e552070",
+  "pipeline": "RSR Experience Fabric / Reality Studio Sequencer / Spatial Embodiment -> Unified Project -> Reality Build target",
+  "commands": [
+    "npm.cmd run test:experience-fabric --workspace @taowind/reality-simulation-runtime",
+    "node --check apps/reality-build/src/runtime-template.mjs",
+    "node --test apps/reality-build/tests/runtime.test.mjs apps/reality-build/tests/audio-target.test.mjs"
+  ],
+  "donorVerification": {
+    "experienceFabric": {
+      "source": "packages/world/reality-simulation-runtime/packages/experience-fabric/src/index.ts",
+      "schema": "packages/world/reality-simulation-runtime/schemas/rsr-experience-fabric.v0.4.schema.json",
+      "testResult": "35/35 PASS",
+      "ownedSemantics": [
+        "fixed-tick audio cue admission",
+        "cue maxInstances and cooldownTicks",
+        "audioPlanRoot and snapshot/replay restoration",
+        "voice source, priority and spatial fields",
+        "audio bus graph configuration"
+      ]
+    },
+    "experienceFabricAudio": {
+      "source": "packages/world/reality-simulation-runtime/packages/experience-fabric-audio/src/index.ts",
+      "ownedSemantics": [
+        "deterministic offline voice scheduling",
+        "maxVoices budget and dropped-voice diagnostics",
+        "bus gain, low-pass and delay rendering",
+        "WAV output and render diagnostics"
+      ],
+      "boundary": "offline renderer; not a Build target provider"
+    },
+    "audioSceneRuntime": {
+      "source": "packages/world/audio-scene-runtime/src/index.mjs",
+      "ownedSemantics": [
+        "production dialogue/ambience/foley/sfx/music stems",
+        "bus graph and dialogue ducking",
+        "loudness/export policy"
+      ],
+      "boundary": "offline production audio scene; not gameplay cue authority"
+    },
+    "spatialEmbodiment": {
+      "source": "packages/world/reality-simulation-runtime/packages/spatial-embodiment/src",
+      "ownedSemantics": [
+        "spatial-audio event cue",
+        "listener/source position",
+        "gain, pitch, distance and occlusion parameters"
+      ],
+      "boundary": "authoritative spatial event source; Build must not infer playback from event existence"
+    }
+  },
+  "ingressFindings": {
+    "realityStudio": {
+      "audioTargetProfile": "rncs.audio-target-profile.v0.1 owns explicit cue_id -> asset_id -> file_role -> asset_sha256 binding",
+      "sequencer": "reality-studio.sequence.v1.7 has an audio track, but the raw fixture does not persist a sequencer field and Build has no sequence playback entry",
+      "experienceFabricConfigIngress": false
+    },
+    "realityBuild": {
+      "targetProvider": "explicit audio-target-plan -> VSR asset residency/cache -> Web Audio decode/schedule",
+      "experienceFabricConfigIngress": false,
+      "policyLowering": {
+        "maxVoices": false,
+        "maxInstances": false,
+        "cooldownTicks": false,
+        "busGraph": false,
+        "continuousOrSegmentedStreaming": false
+      },
+      "sequenceConsumer": {
+        "audio": false,
+        "camera": true,
+        "animation": true
+      }
+    }
+  },
+  "negativeEvidence": [
+    "Experience Fabric has a real canonical policy source and 35 passing tests, but no current Studio/Build ingress carries its config, snapshot or audioPlanRoot.",
+    "The current Build audio provider accepts an explicit target binding and spatial event context, but it does not possess the Experience Fabric cue policy needed to enforce authored concurrency or bus semantics.",
+    "The Studio sequence audio track is not a target execution contract; mapping it by cue name or first audio file would create unsealed parallel semantics.",
+    "Audio Scene Runtime bus/stem semantics cannot be copied into gameplay target audio without deciding whether the source is RSR Experience Fabric, Studio Sequence, or production audio authoring."
+  ],
+  "rclGap": "RCL_GAP_RNCS_SHARED_AUTHORED_PRESENTATION_SPINE",
+  "audioSubgap": "RCL_GAP_RNCS_AUDIO_TARGET_LOWERING",
+  "affectedK400Cells": [
+    "EXPRESS",
+    "COMPILE",
+    "LOWER",
+    "EXECUTE",
+    "CORRECT",
+    "ROBUST",
+    "PERFORMANCE",
+    "EVIDENCE"
+  ],
+  "humanDecisionRequired": "Choose the canonical authored-presentation ingress: (1) Studio emits a sealed evaluated Experience/Sequence frame and Build lowers only explicitly supported target tracks, or (2) a shared target-side Sequence/Experience runtime is established with a track capability matrix. Also decide whether target voice/bus policy remains RSR-owned or is explicitly projected from Experience Fabric.",
+  "nextCandidate": "After the owner decision, implement one narrow candidate projection with retained source/config/audioPlan roots, explicit target capability diagnostics, positive and negative replay tests, and browser plus Android WebView execution evidence. Do not infer cue-to-file, concurrency or bus policy.",
+  "boundaries": [
+    "The 35/35 Experience Fabric result proves the donor runtime and its deterministic semantics, not Reality Build or Android target execution.",
+    "Existing browser and Android audio cache receipts prove explicit asset residency and Web Audio scheduling only; they do not prove authored voice, mixer or bus policy.",
+    "No new schema, Build adapter, RCL promotion, device claim or K400 PASS is made by this audit."
+  ],
+  "evidenceRoot": "bd6127086264b2bb62f580bdc91e0369427f2803c68b7f719c7b146bdc2fa19c"
+}
