@@ -1,0 +1,156 @@
+{
+  "format": "reality-build.audio-vsr-asset-streaming-candidate.v0.1",
+  "version": "0.1.0-alpha.1",
+  "status": "CANDIDATE_WEB_CHROMIUM_VSR_RESIDENCY_VERIFIED",
+  "source": {
+    "checkout": "rncs-visual-factory-v01",
+    "branch": "codex/rncs-engine-stack-archaeology-v01",
+    "sourceCommit": "0cfee2d",
+    "authority": "local browser target-provider candidate; no RCL Core promotion, production audio admission, main-branch mutation or release claim"
+  },
+  "pipeline": "sealed explicit audio-target binding -> existing VSRSpatialAssetStreamer(kind=audio) -> SHA-256 verified bytes and VSR receipt root -> Web Audio decodeAudioData -> scheduled target receipt",
+  "canonicalSeam": {
+    "worldSemantics": "RSR and Experience Fabric continue to own cue identity, fixed-tick timing, spatial parameters, listener meaning and offline audio semantics.",
+    "assetResidency": "VSR owns the existing content-addressed asset catalog, dependency/ready state, SHA verification, bounded asset loading and lease/evict receipts.",
+    "targetProvider": "Reality Build owns explicit audio-target binding lowering and passes VSR-verified bytes to the existing Web Audio buffer Provider.",
+    "policyBoundary": "Experience Fabric maxVoices, cue maxInstances/cooldown and audio-bus/render policy are not copied into the browser target.",
+    "rclBoundary": "This is an auxiliary target-lowering seam, not an RCL Core promotion."
+  },
+  "streamContract": {
+    "format": "vsr.spatial-asset-streaming.v0.1",
+    "assetKind": "audio",
+    "maxConcurrent": 4,
+    "catalogRoot": "2385ddeae83afbd5ee52fde3fd10f54820f37b5eb4e43279b1b72cbd5038be4f",
+    "assetStreamId": "audio-target:ba8ebd46b31544ce76973a7ac88039c82d0c1aaaaabdf1cbfb1339a495f2e53e",
+    "receiptRoot": "68ea9a948deef03703f1ed742fe628aa5ecc407e39cdc23f8221d8174ffd7aa5",
+    "resetBoundary": "reset stops active audio sources and releases/evicts the target audio asset leases; no persistent cache or continuous-stream policy is introduced"
+  },
+  "build": {
+    "fixture": "apps/reality-build/examples/冰境试炼.unified-project.json",
+    "target": "web-release",
+    "planRoot": "c53a2f43ea96d4020eaca41abdb75acf9da33cba8446540e28ddafe7a7cc0a78",
+    "binding": {
+      "bindingId": "audio-binding:impact-body",
+      "cueId": "impact.body",
+      "assetId": "asset:3a82d1753e140d24552b89d1",
+      "fileRole": "sfx-wav",
+      "bytes": 19888,
+      "sha256": "ba8ebd46b31544ce76973a7ac88039c82d0c1aaaaabdf1cbfb1339a495f2e53e",
+      "uri": "assets/ba8ebd46b31544ce76973a7ac88039c82d0c1aaaaabdf1cbfb1339a495f2e53e.wav"
+    },
+    "verificationValid": true
+  },
+  "webChromium": {
+    "host": "Playwright-driven local Chromium headless run",
+    "url": "http://127.0.0.1:45997/index.html",
+    "readyState": "complete",
+    "pageErrors": 0,
+    "consoleWarnings": 3,
+    "requestEvidence": {
+      "uri": "assets/ba8ebd46b31544ce76973a7ac88039c82d0c1aaaaabdf1cbfb1339a495f2e53e.wav",
+      "httpStatus": 200
+    },
+    "audioSnapshot": {
+      "planRoot": "c53a2f43ea96d4020eaca41abdb75acf9da33cba8446540e28ddafe7a7cc0a78",
+      "bindingCount": 1,
+      "statusCounts": {
+        "decode-pending": 1,
+        "blocked-binding": 3,
+        "scheduled": 1
+      },
+      "providerDiagnostics": {
+        "format": "taowind.audio-target-provider-diagnostics.v0.1",
+        "context_state": "running",
+        "sample_rate": 48000,
+        "context_create_count": 1,
+        "resume_attempts": 1,
+        "resume_succeeded": 1,
+        "resume_failed": 0,
+        "decode_requests": 1,
+        "decode_completed": 1,
+        "decode_failed": 0,
+        "decode_latency_ms_last": 392.3,
+        "pending_decode_count": 0,
+        "cached_buffer_count": 1,
+        "scheduled_voice_count": 1,
+        "active_voice_count": 0,
+        "peak_active_voice_count": 1,
+        "ended_voice_count": 1,
+        "stopped_voice_count": 0,
+        "provider_error_count": 0,
+        "last_error": null,
+        "asset_streaming": {
+          "format": "vsr.spatial-asset-streaming.v0.1",
+          "status": "ready",
+          "catalog_root": "2385ddeae83afbd5ee52fde3fd10f54820f37b5eb4e43279b1b72cbd5038be4f",
+          "max_concurrent": 4,
+          "ready_asset_ids": [
+            "audio-target:ba8ebd46b31544ce76973a7ac88039c82d0c1aaaaabdf1cbfb1339a495f2e53e"
+          ],
+          "bytes_resident": 19888,
+          "pending_request_count": 0,
+          "last_receipt_root": "68ea9a948deef03703f1ed742fe628aa5ecc407e39cdc23f8221d8174ffd7aa5",
+          "request_count": 1,
+          "loaded_count": 1,
+          "failed_count": 0,
+          "blocked_count": 0,
+          "bytes_loaded": 19888
+        }
+      },
+      "scheduledReceipt": {
+        "status": "scheduled",
+        "cueId": "impact.body",
+        "bindingId": "audio-binding:impact-body",
+        "assetId": "asset:3a82d1753e140d24552b89d1",
+        "assetSha256": "ba8ebd46b31544ce76973a7ac88039c82d0c1aaaaabdf1cbfb1339a495f2e53e",
+        "tick": 1,
+        "source": "audio:1:avatar|avatar:capsule|floor",
+        "providerId": "reality-build.web-audio-buffer",
+        "asset_stream_receipt_root": "68ea9a948deef03703f1ed742fe628aa5ecc407e39cdc23f8221d8174ffd7aa5",
+        "spatial_parameters_forwarded": true,
+        "listenerId": "listener:player",
+        "scheduledReceiptRoot": "4790614e94f888169f449b7c2b258bd6"
+      }
+    },
+    "spatial3d": {
+      "available": true,
+      "mode": "webgpu",
+      "verified": true,
+      "drawCount": 5
+    },
+    "claimBoundary": "Chromium observed the VSR asset request, residency receipt, Web Audio decode and target scheduling; this is not audible output or human listening proof."
+  },
+  "verification": {
+    "commands": [
+      "node --check apps/reality-build/src/runtime-template.mjs",
+      "node --test apps/reality-build/tests/runtime.test.mjs apps/reality-build/tests/audio-target.test.mjs",
+      "npm.cmd test --workspace @taowind/reality-build-fabric",
+      "local Chromium candidate execution through Playwright"
+    ],
+    "localTestSummary": {
+      "focused": "26 passed, 0 failed",
+      "realityBuildFull": "164 passed, 0 failed, 8 skipped",
+      "browser": "exact WAV request 200; VSR ready=1, failed=0, blocked=0; Web Audio decode=1/1; page errors=0"
+    },
+    "expectedResult": "All listed local checks pass; no hosted CI, Android/native audio, physical-device output or human-listening result is inferred."
+  },
+  "rclGap": "RCL_GAP_RNCS_AUDIO_TARGET_LOWERING",
+  "stressCase": "A fixed-tick RSR audio event must cross an explicit content-addressed target binding through the existing VSR asset-residency contract and retain a verifiable receipt root before target decode.",
+  "donorAdvantage": "VSR already supplies generic dependency-aware, SHA-verified asset streaming and lease receipts; the target seam reuses that donor instead of adding a parallel audio file loader.",
+  "regressionCase": "Repeated content-addressed requests share one ready VSR asset; missing or unbound cues remain blocked; failed VSR loads remain fail-closed; reset releases/evicts target asset leases; scheduled receipts retain VSR receipt-root continuity.",
+  "affectedK400Cells": [
+    "LOWER",
+    "EXECUTE",
+    "CORRECT",
+    "ROBUST",
+    "EVIDENCE"
+  ],
+  "boundaries": [
+    "The VSR bridge is asset residency/loading reuse only; it is not continuous or segmented audio streaming.",
+    "No target-side max-voice cap, mixer, bus graph, authored concurrency policy, cache budget or latency budget was introduced or verified.",
+    "The 392.3 ms decode value is one local Chromium observation, not a cross-device performance curve.",
+    "No Android WebView rerun for this VSR receipt, native audio backend, speaker/headphone routing, physical-device behavior, release signing, store delivery or human listening acceptance is claimed.",
+    "No K400 gate is promoted to PASS."
+  ],
+  "nextCandidate": "Re-run the same explicit binding through the generated Android WebView target and compare VSR catalog/receipt-root continuity; only then decide whether a separate provider cache or continuous-stream policy has a canonical owner."
+}
