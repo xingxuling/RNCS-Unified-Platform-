@@ -21,6 +21,14 @@ export function findCommand(name,{env=process.env}={}){
 }
 
 export function commandInvocation(command,args=[],{env=process.env}={}){
+  if(process.platform==='win32'&&path.isAbsolute(command)){
+    const ext=path.extname(command).toLowerCase();
+    if(ext==='.bat'||ext==='.cmd'){
+      const quote=value=>{const text=String(value);return /[\s&"]/.test(text)?`"${text.replaceAll('"','""')}"`:text;};
+      const shell=env.ComSpec??env.COMSPEC??'cmd.exe';
+      return{command:shell,args:['/d','/s','/c',[quote(command),...args.map(quote)].join(' ')]};
+    }
+  }
   if(process.platform==='win32'&&path.isAbsolute(command)&&!path.extname(command)){
     const shell=findCommand('sh',{env});
     if(shell){
@@ -52,7 +60,8 @@ function findSdkTool(root,name){
   const direct=[path.join(root,'platform-tools',process.platform==='win32'?`${name}.exe`:name),path.join(root,'cmdline-tools','latest','bin',exe),path.join(root,'tools','bin',exe)];
   for(const p of direct)if(fs.existsSync(p))return p;
   const buildTools=path.join(root,'build-tools');if(fs.existsSync(buildTools)){
-    const versions=fs.readdirSync(buildTools).sort().reverse();for(const v of versions){const p=path.join(buildTools,v,process.platform==='win32'?`${name}.exe`:name);if(fs.existsSync(p))return p;}
+    const toolNames=process.platform==='win32'?[`${name}.exe`,`${name}.bat`]:[name];
+    const versions=fs.readdirSync(buildTools).sort().reverse();for(const v of versions)for(const toolName of toolNames){const p=path.join(buildTools,v,toolName);if(fs.existsSync(p))return p;}
   }
   return null;
 }

@@ -104,12 +104,12 @@ WorldSeed → Region → Chunk → URRF selection → VSR spatial scene
 
 该接缝保持 source reference、scene root、project root 和 candidate-only authority；没有 body bindings 时不会伪造 RSR physical bodies。当前证据证明的是本地 Build 对 4 个 active streaming cells、17 个 VSR nodes、CPU-reference spatial frame 以及 4 个 `rncs://` candidate asset records 的 VSR streaming resolution（requested=4、missing=0）消费与自校验；显式 asset-binding plan 现在把 provider record 的 `source_mesh_id`、LOD 和 cell 归属带入目标加载器。
 
-当 candidate 同时携带已有 Large World GLB provider bundle 时，Build 会保留 provider `format/version/bundle_root/manifest` 与 asset records，把 payload 写入 `web-release/assets/spatial/<sha256>.glb` 并生成 `spatial-asset-payload-manifest.json`；单文件/embedded HTML 使用同一 candidate payload 的 base64 版本。Chromium smoke 已真实通过现有 `VSRSpatialAssetStreamer` 读取并校验 36 条 catalog 中 33 条 active-cell payload（`ready=33`、`missing=0`、`failed=0`、`144632` bytes），再用现有 VSR glTF/GLB importer 导入选中的 payload，并按 11 条显式 binding 进行 mesh replacement；本机 WebGPU receipt 为 `drawCalls=11`、`triangles=402`、`submitted=true`、`deviceLost=false`，同时捕获了 3D 画布截图。这仍不等于 Android embedded 运行、目标设备矩阵、跨节点网络 transport/session 或生产资产服务已闭合；3 条无 cell 归属的 provider payload 会保持 deferred，人工视觉验收也仍独立于自动化证据。
+当 candidate 同时携带已有 Large World GLB provider bundle 时，Build 会保留 provider `format/version/bundle_root/manifest` 与 asset records，把 payload 写入 `web-release/assets/spatial/<sha256>.glb` 并生成 `spatial-asset-payload-manifest.json`；单文件/embedded HTML 使用同一 candidate payload 的 base64 版本。Chromium smoke 已真实通过现有 `VSRSpatialAssetStreamer` 读取并校验 36 条 catalog 中 33 条 active-cell payload（`ready=33`、`missing=0`、`failed=0`、`144632` bytes），再用现有 VSR glTF/GLB importer 导入选中的 payload，并按 11 条显式 binding 进行 mesh replacement；本机 WebGPU receipt 为 `drawCalls=11`、`triangles=402`、`submitted=true`、`deviceLost=false`，同时捕获了 3D 画布截图。由同一 candidate 生成的 Android 工程又在本机通过 Gradle 9.5.1 产出 debug APK，并由 Windows `apksigner` 验签；这仍不等于 Android WebView/生命周期/触摸/GPU 运行、目标设备矩阵、跨节点网络 transport/session 或生产资产服务已闭合；3 条无 cell 归属的 provider payload 会保持 deferred，人工视觉验收也仍独立于自动化证据。
 
 ## 诚实边界
 
 - `windows-native` 是真实 Windows GUI EXE，不依赖 BAT 或 Node.js；但 v0.2 的渲染宿主仍使用 Windows 自带或已安装的 Edge/Chrome，而不是内嵌 Chromium/WebView2 Runtime。
-- `android-apk` 已实现真实 Gradle 调用、产物检查、调试签名声明及可用时的 `apksigner` 验证；本发布环境没有 Android SDK/Gradle，因此发布样板只附 Android 工程，自动 APK 路径由隔离工具链测试验证。
+- `android-apk` 已实现真实 Gradle 调用、产物检查、调试签名声明和 Windows `apksigner` 验证；本轮本机用 Gradle 9.5.1、Android SDK 35 生成并验签了 Large World debug APK。没有相应工具链的环境仍只产出 Android 工程；正式商店发布仍需 release keystore、AAB、元数据和真实设备矩阵。
 - 正式商店 Android 发布仍需用户的 release keystore、AAB、商店元数据与真实设备矩阵。
 - 原生 GPU、原生音频、增量补丁、自动更新和代码签名证书尚未完成。
 - 浏览器 `web-release` 仍使用现有 Behavior 浏览器 runtime；RSR 物理、空间快照与导航目前作为 RNCS 构建证据和 headless 运行时接入，尚未声称已经替换浏览器渲染器。

@@ -13,7 +13,7 @@
 - Windows EXE self-contained payload: implemented
 - Windows embedded rendering runtime: not implemented; system Edge/Chrome is used
 - Android project one-click scripts: implemented
-- Compiled/debug-signed Android APK target: implemented; requires external Android toolchain
+- Compiled/debug-signed Android APK target: implemented; local Gradle 9.5.1 + Android SDK 35 host build and Windows apksigner verification passed; attached-device/WebView execution remains open
 - Deterministic Behavior + RSR spatial build evidence: implemented
 - Spatial snapshot, causal delta and runtime manifest outputs: implemented
 - TileMap collision/navigation manifest output: implemented when the active scene has a TileMap
@@ -21,5 +21,5 @@
 - Browser VSR WebGPU executor: implemented for Web Release, single-file, Windows Portable and embedded Android HTML targets; build-time GPU resources plus per-Tick dynamic entity/light bindings, tiled lights, particles, postprocess and Canvas/device-loss fallback are verified
 - Browser-native RSR 2D authority bridge: implemented for behavior-bound colliders; browser targets execute the compiled `SpatialEmbodimentWorld`, publish spatial roots/events, and synchronize its body state back into the host frame
 - Browser GPU frame now derives dynamic vertex/light buffers from the current BehaviorRuntime state and re-seals its evidence roots per Tick; an explicit Large World candidate also reaches the VSR GLB importer and WebGPU executor in local Chromium, while native rendering and complete device-matrix validation remain open work
-- Candidate-only VSR presentation consumer: implemented for explicit World Body and generic Large World presentation candidates; Build evidence executes shared VSR asset-catalog resolution (`requested=4`, `missing=0`), and the Large World GLB candidate bundle now has a web-release content-addressed payload manifest, browser VSR byte loading/hash verification (`catalog=36`, active request/ready=`33/33`, missing/failed=`0/0`), explicit 11-record mesh replacement bindings, and local Chromium WebGPU draw evidence (`drawCalls=11`, `triangles=402`, `submitted=true`, `deviceLost=false`); Android embedded runtime, network, target-device execution, and production asset service remain open
+- Candidate-only VSR presentation consumer: implemented for explicit World Body and generic Large World presentation candidates; Build evidence executes shared VSR asset-catalog resolution (`requested=4`, `missing=0`), and the Large World GLB candidate bundle now has a web-release content-addressed payload manifest, browser VSR byte loading/hash verification (`catalog=36`, active request/ready=`33/33`, missing/failed=`0/0`), explicit 11-record mesh replacement bindings, local Chromium WebGPU draw evidence (`drawCalls=11`, `triangles=402`, `submitted=true`, `deviceLost=false`), and a locally built/apksigner-verified debug APK from the generated Android project; Android WebView/device execution, network, and production asset service remain open
 - Release-signed APK/AAB: not implemented

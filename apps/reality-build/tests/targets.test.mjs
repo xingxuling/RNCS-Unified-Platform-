@@ -19,6 +19,7 @@ test('Windows 包明确非原生 EXE',()=>{const m=readJson(path.join(out,'windo
 test('Windows 包可直接打开 HTML',()=>assert.ok(fs.existsSync(path.join(out,'windows-portable','目标验收.html'))));
 test('Android 工程有 settings.gradle',()=>assert.ok(fs.existsSync(path.join(out,'android-project','settings.gradle'))));
 test('Android 工程有应用 Gradle',()=>assert.ok(fs.existsSync(path.join(out,'android-project','app','build.gradle'))));
+test('Android Gradle 的 debug 与 release 构建类型保持独立闭包',()=>{const g=fs.readFileSync(path.join(out,'android-project','app','build.gradle'),'utf8');assert.match(g,/buildTypes \{ debug \{ debuggable true; \}\s+release \{/)});
 test('Android 工程有 Manifest',()=>assert.ok(fs.existsSync(path.join(out,'android-project','app','src','main','AndroidManifest.xml'))));
 test('Android 工程有 MainActivity',()=>assert.ok(fs.existsSync(path.join(out,'android-project','app','src','main','java','com','taowind','targets','MainActivity.java'))));
 test('Android 工程内嵌游戏 HTML',()=>assert.ok(fs.existsSync(path.join(out,'android-project','app','src','main','assets','index.html'))));
