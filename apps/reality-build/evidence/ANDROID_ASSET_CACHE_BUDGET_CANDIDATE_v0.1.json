@@ -1,0 +1,157 @@
+{
+  "format": "reality-build.android-asset-cache-budget-evidence.v0.1",
+  "status": "CANDIDATE_ANDROID_WEBVIEW_CACHE_BUDGET_AND_SCHEDULING_VERIFIED",
+  "sourceCommit": "789f22f46987c528cd2e97f431af25bb2acc7299",
+  "fixture": "output/playwright/build-asset-cache-candidates.mjs",
+  "pipeline": "Large World Runtime -> VSR spatial scene -> Reality Build asset-cache policy -> embedded Android assets -> Gradle debug APK -> Android WebView/CDP",
+  "commands": [
+    "node output/playwright/build-asset-cache-candidates.mjs",
+    "npm run typecheck --workspace @taowind/visual-state-runtime",
+    "npm run lint --workspace @taowind/visual-state-runtime",
+    "npm test --workspace @taowind/visual-state-runtime",
+    "npm test --workspace @taowind/reality-build-fabric",
+    "Gradle 9.5.1: app:assembleDebug for source-generated v1 and v2 Android projects",
+    "Android SDK 36.1.0 apksigner verify --verbose",
+    "adb install -r -> process restart -> WebView CDP Runtime.evaluate"
+  ],
+  "tests": {
+    "visualStateRuntime": "122/122 PASS; spatial reality 99/99 PASS; spatial asset streaming 10/10 PASS",
+    "realityBuild": "147 tests / 139 pass / 0 fail / 8 skip",
+    "androidTargetContracts": "31/31 PASS",
+    "gradleV1": "PASS",
+    "gradleV2": "PASS",
+    "apkSignature": "v1/v3/v4/SourceStamp false; v2 true; one signer for both debug APKs",
+    "runtimeLog": "No FATAL EXCEPTION or AndroidRuntime failure observed for the candidate package"
+  },
+  "policy": {
+    "assetCache": {
+      "enabled": true,
+      "maxBytes": 50000
+    },
+    "buildKeyIncludesPolicy": true,
+    "providerInspectionExposesMaxBytes": true,
+    "loadScheduling": "cached asset ids receive a provider-backed priority hint; VSR resolution and authority ownership are unchanged"
+  },
+  "build": {
+    "sourceGeneratedHost": true,
+    "gradle": "9.5.1",
+    "compileSdk": 35,
+    "targetSdk": 35,
+    "v1": {
+      "buildKey": "44b50c2adaf3de5c29e24cf234ff80735d75902bf4b28e69f4481d613c392708",
+      "payloadRoot": "04da0e683aff1f50768da213b3a4b63a6dcfd112ca5bbda7e3cb9e8ceb765b7b",
+      "sourceAssetBundleRoot": "c6ad10e0c3d10bab7ce3cab3455db2f78bdb60075904072bc2d434aede229d8e",
+      "payloadCatalog": 42,
+      "apkBytes": 338541,
+      "apkSha256": "e301a0eb889a10721a719ac233ecba1eecb73826202a6e031626997ed19d3790"
+    },
+    "v2": {
+      "buildKey": "01960d6fb1e41a966ccf9fa4feb5255d8c2eea66b2da7d4e628f4d4970d66e67",
+      "payloadRoot": "f8d4968a41248af7d7df5ddc7603ced6ff0871dcc923f0d4dd9cc81c0897b1b1",
+      "sourceAssetBundleRoot": "60429e355fa532dfc4d60797bb11d5f08b10704d95b23a6fa99f4ecf1ad65d39",
+      "payloadCatalog": 39,
+      "apkBytes": 332097,
+      "apkSha256": "aaa805cf76e09fb5ddd29b3c3908a6b9e64681ef938ae300b3e1959cd5b1b81f"
+    }
+  },
+  "device": {
+    "avd": "Rcl_Aether_API35_ATD",
+    "model": "Android ATD built for x86_64",
+    "api": 35,
+    "androidRelease": "15",
+    "webview": "com.android.webview 124.0.6367.219",
+    "package": "com.taowind.browserassetcache",
+    "pageOrigin": "https://rncs.local/",
+    "gpuProperty": "emulation"
+  },
+  "phases": [
+    {
+      "name": "v1-process-restart-budgeted-rehydrate",
+      "payloadRoot": "04da0e683aff1f50768da213b3a4b63a6dcfd112ca5bbda7e3cb9e8ceb765b7b",
+      "payloadCatalog": 42,
+      "ready": 39,
+      "importFailed": 0,
+      "cache": {
+        "maxBytes": 50000,
+        "bytesResident": 49524,
+        "cachedAssetCount": 11,
+        "cacheHits": 8,
+        "cacheMisses": 31,
+        "cacheEvictions": 28
+      },
+      "origin": "https://rncs.local/",
+      "verified": true
+    },
+    {
+      "name": "v2-revision-invalidation-and-budgeted-fill",
+      "payloadRoot": "f8d4968a41248af7d7df5ddc7603ced6ff0871dcc923f0d4dd9cc81c0897b1b1",
+      "payloadCatalog": 39,
+      "ready": 36,
+      "importFailed": 0,
+      "cache": {
+        "maxBytes": 50000,
+        "bytesResident": 47496,
+        "cachedAssetCount": 9,
+        "cacheHits": 0,
+        "cacheMisses": 36,
+        "cacheEvictions": 27
+      },
+      "diagnostics": [
+        "VSR_BROWSER_ASSET_CACHE_REVISION_CHANGED:04da0e683aff1f50768da213b3a4b63a6dcfd112ca5bbda7e3cb9e8ceb765b7b:f8d4968a41248af7d7df5ddc7603ced6ff0871dcc923f0d4dd9cc81c0897b1b1"
+      ],
+      "origin": "https://rncs.local/",
+      "verified": true
+    },
+    {
+      "name": "v2-process-restart-budgeted-rehydrate",
+      "payloadRoot": "f8d4968a41248af7d7df5ddc7603ced6ff0871dcc923f0d4dd9cc81c0897b1b1",
+      "payloadCatalog": 39,
+      "ready": 36,
+      "importFailed": 0,
+      "cache": {
+        "maxBytes": 50000,
+        "bytesResident": 46980,
+        "cachedAssetCount": 11,
+        "cacheHits": 8,
+        "cacheMisses": 28,
+        "cacheEvictions": 25
+      },
+      "diagnostics": [
+        "VSR_BROWSER_ASSET_CACHE_REVISION_CHANGED:04da0e683aff1f50768da213b3a4b63a6dcfd112ca5bbda7e3cb9e8ceb765b7b:f8d4968a41248af7d7df5ddc7603ced6ff0871dcc923f0d4dd9cc81c0897b1b1"
+      ],
+      "origin": "https://rncs.local/",
+      "verified": true
+    }
+  ],
+  "stressCase": "A full forced catalog under a 50 KB cache budget initially caused future LRU entries to be scanned after they were evicted; the shared load-priority hint rehydrates known cached entries first and produces repeatable restart hits without changing the VSR resolution root.",
+  "coverage": {
+    "requestSchemaAndValidation": true,
+    "semanticBuildKeyBinding": true,
+    "sharedVsrLoadPriority": true,
+    "contentAddressedPayloads": true,
+    "byteLengthVerification": true,
+    "sha256Verification": true,
+    "manifestRootVerification": true,
+    "revisionInvalidation": true,
+    "processRestartRehydrate": true,
+    "boundedResidentBytesObserved": true,
+    "realityBuildHostIntegration": true,
+    "customNativeCacheBridge": false,
+    "remoteCacheCoherence": false,
+    "quotaEvictionPerformanceCurve": false,
+    "physicalDeviceOrProductionRelease": false,
+    "humanVisualAcceptance": false
+  },
+  "boundaries": [
+    "VSR remains the owner of asset catalog, leases, active working sets, imports, resolution roots and residency receipts; CacheStorage owns only discardable payload bytes and its provider manifest.",
+    "The 50 KB policy bounds the provider cache, not the in-memory VSR working set and not the embedded APK payload size; the APK still contains deterministic base64 payloads.",
+    "https://rncs.local/ is a local synthetic document origin supplied to WebView loadDataWithBaseURL; it is not a remote endpoint, TLS deployment, WAN transport, or network authority.",
+    "The API 35 Android ATD result is emulator/WebView evidence only. It does not establish physical-device GPU behavior, WebView quota guarantees, performance curves, cross-device coherence, release signing, store delivery, or human visual acceptance.",
+    "No K400 gate is promoted to PASS; this is candidate runtime evidence only."
+  ],
+  "rclGap": "RCL_GAP_RNCS_RUNTIME_ASSET_CACHE_PROVIDER",
+  "donorAdvantage": "The existing Node content-addressed cache provider supplied the manifest-root, SHA payload, atomic persistence and deterministic LRU contract; browser and Android are lowerings/providers rather than new semantic owners.",
+  "regressionCase": "The pre-lowering file origin had CacheStorage and WebCrypto but rejected Cache.put with an unsupported file scheme; synthetic origin lowering plus provider-backed load scheduling now closes the tested Android candidate path.",
+  "nextCandidate": "Measure real WebView quota and eviction/performance curves on a reproducible physical device, then evaluate remote asset-cache coherence through the same content-addressed manifest contract.",
+  "evidenceRoot": "3b3c740846ad94c5c2ec40c84b14106f8c15b67b620f1528e1fa2295c86cac25"
+}

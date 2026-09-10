@@ -118,6 +118,8 @@ Android 目标现在把内嵌 `index.html` 读入 WebView，并通过 `loadDataW
 
 真实源码生成、Gradle 9.5.1、Android SDK 35 和 `Rcl_Aether_API35_ATD` API 35 Emulator 验证了同一包的版本切换：v1 为 `39` 个缓存 miss / `170656` bytes，安装 v2 后新的 payload root 触发 `VSR_BROWSER_ASSET_CACHE_REVISION_CHANGED`，重新写入 `36` 个活动资产 / `156064` bytes；进程重启后重新命中 `36` 个缓存条目，`importFailed=0`、无运行时错误。改动前的 `file:///android_asset/index.html` 探针确认 CacheStorage 存在但 `Cache.put` 被 WebView 以 `Request scheme 'file' is unsupported` 拒绝。证据见 `evidence/ANDROID_ASSET_CACHE_PROVIDER_v0.1.json`。
 
+Build request/schema 现在显式提供 `asset_cache.enabled` 与 `asset_cache.max_bytes`，并将该策略纳入 build identity；VSR `VSRSpatialAssetStreamer` 只使用 provider 已缓存 asset ids 作为加载顺序提示，resolution root、catalog、lease 和 authority ownership 不变。在同一 API 35 Emulator 的 `50,000`-byte provider budget 下，v1 进程重启重新命中 `8` 条、最终 resident `49,524` bytes/`28` 次 eviction；v2 revision invalidation 后最终 resident `47,496` bytes，v2 再次进程重启命中 `8` 条、最终 resident `46,980` bytes/`25` 次 eviction；所有阶段 `ready=39/36`、`importFailed=0`，最终 resident bytes 均未超过预算。该结果是共享 provider 的预算与调度 candidate，不代表 VSR 内存 working set 或 APK 内嵌 payload 大小受此预算限制。完整收据见 `evidence/ANDROID_ASSET_CACHE_BUDGET_CANDIDATE_v0.1.json`。
+
 这是 Android WebView/app-private CacheStorage 的 candidate execution evidence，不等于 WebView quota/eviction/performance 曲线、跨进程/跨设备 coherence、物理设备 GPU、release 签名、商店交付或人工视觉验收。
 
 ## Network compilation → headless candidate
