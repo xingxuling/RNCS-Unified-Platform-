@@ -22,6 +22,7 @@ test('Android 工程有应用 Gradle',()=>assert.ok(fs.existsSync(path.join(out,
 test('Android Gradle 的 debug 与 release 构建类型保持独立闭包',()=>{const g=fs.readFileSync(path.join(out,'android-project','app','build.gradle'),'utf8');assert.match(g,/buildTypes \{ debug \{ debuggable true; \}\s+release \{/)});
 test('Android 工程有 Manifest',()=>assert.ok(fs.existsSync(path.join(out,'android-project','app','src','main','AndroidManifest.xml'))));
 test('Android 工程有 MainActivity',()=>assert.ok(fs.existsSync(path.join(out,'android-project','app','src','main','java','com','taowind','targets','MainActivity.java'))));
+test('Android host 为内嵌页面提供稳定 synthetic origin',()=>{const java=fs.readFileSync(path.join(out,'android-project','app','src','main','java','com','taowind','targets','MainActivity.java'),'utf8');assert.match(java,/loadDataWithBaseURL\("https:\/\/rncs\.local\//);assert.match(java,/readIndexHtml\(\)/);assert.doesNotMatch(java,/loadUrl\("file:\/\/\/android_asset\/index\.html"\)/)});
 test('Android 工程内嵌游戏 HTML',()=>assert.ok(fs.existsSync(path.join(out,'android-project','app','src','main','assets','index.html'))));
 test('Android 清单承认未编译 APK',()=>{const m=readJson(path.join(out,'android-project','android-build-manifest.json'));assert.equal(m.apk_built,false)});
 test('Android 版本号正确',()=>{const m=readJson(path.join(out,'android-project','android-build-manifest.json'));assert.equal(m.version_code,12)});

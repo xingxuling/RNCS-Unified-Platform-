@@ -174,7 +174,47 @@ export function generateAndroidProject({dir,project,request,identity,assetManife
   const manifest=`<manifest xmlns:android="http://schemas.android.com/apk/res/android"><application android:theme="@style/AppTheme" android:label="@string/app_name" android:allowBackup="false" android:usesCleartextTraffic="false" android:hardwareAccelerated="true"><activity android:name=".MainActivity" android:screenOrientation="${request.app.orientation==='portrait'?'portrait':'landscape'}" android:configChanges="keyboardHidden|orientation|screenSize" android:exported="true"><intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter></activity></application></manifest>`;
   writeText(path.join(appDir,'src/main/AndroidManifest.xml'),manifest);
   const javaDir=ensureDir(path.join(appDir,'src/main/java',javaPackagePath(request.app.app_id)));
-  writeText(path.join(javaDir,'MainActivity.java'),`package ${request.app.app_id};\nimport android.app.Activity;import android.os.Bundle;import android.view.View;import android.webkit.WebChromeClient;import android.webkit.WebSettings;import android.webkit.WebView;\npublic class MainActivity extends Activity{private WebView web;@Override public void onCreate(Bundle b){super.onCreate(b);${request.app.fullscreen?'getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN|View.SYSTEM_UI_FLAG_HIDE_NAVIGATION|View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);':''}web=new WebView(this);WebSettings s=web.getSettings();s.setJavaScriptEnabled(true);s.setDomStorageEnabled(true);s.setAllowFileAccess(true);s.setMediaPlaybackRequiresUserGesture(false);web.setWebChromeClient(new WebChromeClient());web.loadUrl("file:///android_asset/index.html");setContentView(web);}@Override public void onBackPressed(){if(web.canGoBack())web.goBack();else super.onBackPressed();}}\n`);
+  writeText(path.join(javaDir,'MainActivity.java'),`package ${request.app.app_id};
+import android.app.Activity;
+import android.os.Bundle;
+import android.view.View;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+
+public class MainActivity extends Activity {
+  private WebView web;
+  private String readIndexHtml() throws Exception {
+    try (InputStream input = getAssets().open("index.html"); ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+      byte[] buffer = new byte[8192];
+      int count;
+      while ((count = input.read(buffer)) != -1) output.write(buffer, 0, count);
+      return output.toString(StandardCharsets.UTF_8.name());
+    }
+  }
+  @Override public void onCreate(Bundle b) {
+    super.onCreate(b);
+    ${request.app.fullscreen?'getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN|View.SYSTEM_UI_FLAG_HIDE_NAVIGATION|View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);':''}
+    web = new WebView(this);
+    WebSettings s = web.getSettings();
+    s.setJavaScriptEnabled(true);
+    s.setDomStorageEnabled(true);
+    s.setAllowFileAccess(true);
+    s.setMediaPlaybackRequiresUserGesture(false);
+    web.setWebChromeClient(new WebChromeClient());
+    try {
+      web.loadDataWithBaseURL("https://rncs.local/", readIndexHtml(), "text/html", "UTF-8", null);
+    } catch (Exception error) {
+      web.loadData("<h1>RNCS Android target failed to load</h1>", "text/html", "UTF-8");
+    }
+    setContentView(web);
+  }
+  @Override public void onBackPressed() { if (web.canGoBack()) web.goBack(); else super.onBackPressed(); }
+}
+`);
   writeText(path.join(appDir,'src/main/res/values/strings.xml'),`<resources><string name="app_name">${xmlEscape(request.app.title)}</string></resources>`);
   writeText(path.join(appDir,'src/main/res/values/styles.xml'),'<resources><style name="AppTheme" parent="android:style/Theme.Material.Light.NoActionBar"><item name="android:fontFamily">sans</item><item name="android:colorAccent">#67E8F9</item><item name="android:windowFullscreen">true</item><item name="android:windowActionModeOverlay">true</item></style></resources>');
   writeText(path.join(dir,'构建调试APK.bat'),'@echo off\r\nchcp 65001 >nul\r\ncd /d "%~dp0"\r\nwhere gradle >nul 2>nul || (echo 未找到 Gradle。请用 Android Studio 打开本目录，或安装 Gradle。 & pause & exit /b 1)\r\ngradle --no-daemon app:assembleDebug\r\nif errorlevel 1 (pause & exit /b 1)\r\necho APK: app\\build\\outputs\\apk\\debug\\app-debug.apk\r\npause\r\n');
