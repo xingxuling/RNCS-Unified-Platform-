@@ -1,0 +1,83 @@
+{
+  "format": "rncs.authority-presentation-session-local-evidence.v0.1",
+  "date": "2026-09-10",
+  "testedSourceCommit": "efe27e3d30ce06a37c5bbf2040e5062c8978c5e1",
+  "sourceLastChangedCommit": "da9d2da3f8b46f40972c06d3f0f24b1e2b5b20f4",
+  "sourcePaths": [
+    "packages/world/visual-state-runtime/packages/temporal-presentation/src/index.ts",
+    "packages/world/visual-state-runtime/tests/temporal-presentation.ts",
+    "packages/control/reality-engine-session/src/spatial.mjs",
+    "packages/control/reality-engine-session/src/runtime-binding.mjs",
+    "packages/control/reality-engine-session/tests/spatial-engine-session.test.mjs",
+    "packages/control/reality-engine-session/tests/spatial-replay.test.mjs"
+  ],
+  "verification": {
+    "temporalPresentation": {
+      "command": "npm.cmd run test:temporal --workspace @taowind/visual-state-runtime",
+      "tests": 11,
+      "passed": 11,
+      "failed": 0,
+      "skipped": 0,
+      "status": "PASS_LOCAL"
+    },
+    "realityEngineSession": {
+      "command": "npm.cmd test --workspace @taowind/reality-engine-session",
+      "tests": 14,
+      "passed": 14,
+      "failed": 0,
+      "skipped": 0,
+      "status": "PASS_LOCAL"
+    }
+  },
+  "verifiedCapabilities": [
+    "RSR authoritative-state-frame.v0.7 adapts to VSR temporal-state-packet.v0.6 while preserving sourceStateRoot, sourcePacketRoot and body authority metadata",
+    "temporal packet sealing detects tampering and rejects forged authority frame identity or nested body roots",
+    "bounded hold, Hermite interpolation, bounded extrapolation and discontinuity snap produce separate presentation roots",
+    "visual correction uses none, blend or snap without mutating the authority root",
+    "Reality Engine Session keeps spatial candidate effects inert until explicit authority and commit",
+    "spatial simulation records RSR state, VSR frame, authority frame, temporal packet and RNCS authority-presentation binding roots",
+    "commit replays the candidate against the authoritative base and rejects state, frame, temporal or binding root divergence",
+    "verified spatial replay bundles and counterfactual branches preserve root checks without mutating the parent authority"
+  ],
+  "candidateGenome": {
+    "input": "verified RSR authoritative state frame with world id, tick, source state root, frame root and body roots",
+    "execution": "RSR authority frame -> VSR sealed temporal packet -> bounded temporal buffer/correction -> presentation frame; session receipt binds roots before commit",
+    "outputs": [
+      "authorityFrame.frameRoot",
+      "temporalPacket.packetRoot",
+      "temporalPacket.sourceStateRoot",
+      "temporalPacket.sourcePacketRoot",
+      "presentationFrame.frameRoot",
+      "runtimeBinding.bindingRoot",
+      "replay bundle roots"
+    ],
+    "authority": "RSR owns authoritative state; VSR owns temporal presentation and visual correction; Reality Engine Session owns candidate/authority/commit boundary"
+  },
+  "reusableDonor": [
+    "explicit authority-to-presentation root binding is already package-exported and transport-independent",
+    "temporal smoothing is separated from authority mutation and has bounded discontinuity/extrapolation behavior",
+    "session commit regenerates the same spatial and temporal outputs instead of trusting stored candidate artifacts"
+  ],
+  "integrationAudit": {
+    "vsrTemporalPackageExport": true,
+    "realityEngineSessionSpatialExport": true,
+    "realityStudioSequenceIngress": false,
+    "experienceFabricIngress": false,
+    "cameraAudioDialogueEffectLightLowering": false,
+    "targetPlayback": false,
+    "externalTransport": false,
+    "explicitOwnerDecisionRequired": true
+  },
+  "missingCapability": "The verified authority-to-presentation spine has no authored Sequence/Experience ingress; it carries authoritative spatial objects and temporal correction, not authored camera, animation, audio, dialogue, effect or light tracks.",
+  "rclGap": "RCL_GAP_RNCS_SHARED_AUTHORED_PRESENTATION_SPINE",
+  "stressCase": "A spatial candidate must remain inert before commit, then preserve the same RSR state root, VSR frame root, temporal packet root and authority-presentation binding through commit, replay, correction and forged-root negative cases.",
+  "regressionCase": "Temporal interpolation, extrapolation or visual correction must not rewrite RSR authority; a forged body root, authority root, frame root, state root or replay artifact must fail closed.",
+  "loweringEvidence": "Local TypeScript VSR build plus local Node session/replay execution are verified; no WAN/physical carrier, Android/physical device, target GPU, authored Sequence playback, audio hardware or production release was executed by this evidence.",
+  "boundaries": [
+    "This is an authority-state presentation spine, not a shared authored Sequence evaluator.",
+    "A separate authored presentation adapter would still need canonical owner approval and explicit mappings for camera, animation, audio, dialogue, effects, light, behavior and target capability policy.",
+    "Network start is a session boundary tested with adapters; these tests do not prove external transport, multi-device convergence or WAN deployment.",
+    "No K400 gate is promoted to PASS."
+  ],
+  "decision": "AUTHORITY_PRESENTATION_SPINE_VERIFIED_AUTHORED_INGRESS_REMAINS_OPEN"
+}

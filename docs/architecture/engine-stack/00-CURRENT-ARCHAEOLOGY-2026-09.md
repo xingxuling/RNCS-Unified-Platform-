@@ -547,6 +547,12 @@ Reality Studio 当前源码真实拥有 `reality-studio.sequence.v1.7`、`Sequen
 
 因此本轮不把 Studio payload 猜成 VSR animation layer，不复制第二个 timeline evaluator，也不把 audio/camera/behavior track 静默映射到 Build。负证据封存在 `apps/reality-build/evidence/BUILD_SEQUENCE_TARGET_LOWERING_AUDIT_v0.1.json`，缺口为 `RCL_GAP_RNCS_SHARED_AUTHORED_PRESENTATION_SPINE`。下一步必须先裁决：Studio 输出 sealed evaluated Sequence frame 供 Build 做最小 target projection，还是抽取 shared target-side Sequence runtime 并定义各 target 的 track capability matrix；这是 authored-presentation/target-runtime canonical owner 决策，不是单纯的接口缺失。
 
+## 本轮 authority → temporal presentation 共享脊柱复核
+
+与 authored Sequence 不同，RSR/VSR 的“权威状态到时间呈现”接缝已经存在且是可执行的共享基础设施：VSR `temporal-presentation.v0.6` 将 `rsr.authoritative-state-frame.v0.7` 转成带 `sourceStateRoot` / `sourcePacketRoot` 的 sealed temporal packet；`TemporalPresentationBuffer` 只在呈现层执行 bounded hold、Hermite interpolation、bounded extrapolation、discontinuity snap 与 none/blend/snap correction。Reality Engine Session 的 spatial path 再用 `rncs.authority-presentation-binding.v0.1` 把 RSR authority frame、VSR temporal packet、frame plan 和 session candidate/commit roots 绑定起来，并在 commit 时从权威基线重算后比较 roots。专门回归结果为 VSR Temporal `11/11 PASS`、Reality Engine Session `14/14 PASS`，收据见 `docs/verification/RNCS_AUTHORITY_PRESENTATION_SESSION_LOCAL_EVIDENCE_v0.1.json`。
+
+这条脊柱可以作为未来 authored presentation lowering 的下游承载层，但不能反向成为 authored Sequence owner：它现在承载的是 authoritative spatial object state 与 temporal correction，不拥有 Studio 的 camera、animation、audio、dialogue、effect、light、behavior track，也没有 Experience Fabric ingress。因而本轮只确认“authority → presentation”共享 donor 已经稳定，不新增 Sequence adapter，不把 temporal interpolation 误写成网络/设备/渲染产品能力；`RCL_GAP_RNCS_SHARED_AUTHORED_PRESENTATION_SPINE` 仍集中在 authored ingress 与 target capability policy。
+
 ## 本轮音频 target lowering 考古（负证据）
 
 本轮先对真实源项目做了 audio execution audit，没有立即建立第二套音频系统。Reality Studio/资产记录已有 `sfx-wav` role 与 content hash；Experience Fabric 已有 deterministic audio cue/voice plan 和 oscillator/sample/offline WAV renderer；Spatial Embodiment 已有带 cue、position、gain、pitch、distance、occlusion 的 `spatial-audio` event。它们的语义 owner 各自存在，但当前 Build target 没有把这些语义共同接到文件资产与宿主 audio consumer。
