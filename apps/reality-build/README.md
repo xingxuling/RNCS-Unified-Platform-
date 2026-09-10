@@ -207,6 +207,8 @@ Studio 现在保存 `cue_id → asset_id → file_role → asset_sha256`，Build
 
 对一份新生成的 web-release，真实本地 Chromium 请求了 `assets/ba8ebd46...e.wav`，并观察到 `decode-pending → scheduled` 收据，页面错误为 0。该结果只证明精确目标文件请求、Web Audio 解码调度与收据身份；`spatial_parameters_forwarded=false`，因此不宣称 RSR 空间参数已变成 3D 音频，也不宣称可听输出、延迟、混音质量、Android/native audio、物理设备或人工听感。完整证据见 `evidence/BUILD_AUDIO_TARGET_BINDING_CANDIDATE_v0.1.json`，缺口仍为 `RCL_GAP_RNCS_AUDIO_TARGET_LOWERING`，没有新增 K400 PASS。
 
+同一计划随后通过既有 `embeddedHtml()` seam 进入 `android-project` 和 `android-apk`。本机用 Gradle 9.5.1 / Android SDK 35 生成并用 APK Signature Scheme v2 验签 debug APK，安装到 API 35 `Android ATD built for x86_64` Emulator；WebView 通过已有 `loadDataWithBaseURL("https://rncs.local/", ...)` 加载，CDP 在 `reset()` 后触发 `footstep-ice`，等待 7 秒观察到 `decode-pending → scheduled`，应用异常为 0。因为 WAV 是内嵌 data URI，这里没有远程音频请求；这仍然只是 WebView buffer scheduling candidate，不是扬声器、耳机、空间化、延迟、物理设备或人工听感证据。完整收据见 `evidence/ANDROID_AUDIO_TARGET_BINDING_CANDIDATE_v0.1.json`。
+
 ## Network compilation → headless candidate
 
 Reality Build 现在消费既有 Reality Studio `project.network`，不再只把 network authoring 留在 Studio 导出侧：

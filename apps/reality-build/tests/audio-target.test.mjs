@@ -20,10 +20,11 @@ test('Reality Build lowers an explicit cue binding to the packaged audio target 
   project.audio_target=createAudioTargetProfile({bindings:[{binding_id:'audio-binding:footstep-ice',cue_id:'footstep-ice',asset_id:audioAsset.asset_id,file_role:audioFile.role,asset_sha256:audioFile.sha256}]});
   fs.writeFileSync(projectFile,JSON.stringify(sealUnifiedProject(project,{touch:false}))+'\n');
   const outputDir=path.join(directory,'output');
-  const build=buildProject({project_file:projectFile,output_dir:outputDir,targets:['web-release'],app:{app_id:'com.taowind.audiotarget',title:'Audio Target Candidate',version_name:'0.1.0',version_code:1},build_time:'2026-09-10T00:00:00.000Z',runtime_trace:[{}],spatial_trace:[]});
+  const build=buildProject({project_file:projectFile,output_dir:outputDir,targets:['web-release','android-project'],app:{app_id:'com.taowind.audiotarget',title:'Audio Target Candidate',version_name:'0.1.0',version_code:1},build_time:'2026-09-10T00:00:00.000Z',runtime_trace:[{}],spatial_trace:[]});
   const plan=readJson(path.join(outputDir,'web-release','audio-target-plan.json'));
   const data=fs.readFileSync(path.join(outputDir,'web-release','build-data.js'),'utf8');
   const game=fs.readFileSync(path.join(outputDir,'web-release','game.js'),'utf8');
+  const androidHtml=fs.readFileSync(path.join(outputDir,'android-project','app','src','main','assets','index.html'),'utf8');
   assert.equal(build.verification.valid,true);
   assert.equal(verifyBuild(outputDir).valid,true);
   assert.equal(plan.summary.bound,1);
@@ -32,4 +33,7 @@ test('Reality Build lowers an explicit cue binding to the packaged audio target 
   assert.match(data,/audio_target_plan/);
   assert.match(game,/decodeAudioData/);
   assert.match(game,/blocked-binding/);
+  assert.match(androidHtml,/audio_target_plan/);
+  assert.match(androidHtml,/data:audio\/wav;base64/);
+  assert.match(androidHtml,/decodeAudioData/);
 });

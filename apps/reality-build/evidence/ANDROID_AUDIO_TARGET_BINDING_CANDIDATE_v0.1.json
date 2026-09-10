@@ -1,0 +1,135 @@
+{
+  "format": "reality-build.android-audio-target-lowering-evidence.v0.1",
+  "version": "0.1.0-alpha.1",
+  "status": "CANDIDATE_ANDROID_WEBVIEW_AUDIO_TARGET_VERIFIED",
+  "source": {
+    "checkout": "rncs-visual-factory-v01",
+    "branch": "codex/rncs-engine-stack-archaeology-v01",
+    "sourceCommit": "0055628",
+    "authority": "debug APK and emulator candidate; no release promotion, physical-device acceptance or main-branch mutation"
+  },
+  "pipeline": "explicit Studio audio target profile -> Reality Build embedded Android HTML -> Gradle debug APK -> Android WebView synthetic origin -> CDP Runtime.evaluate",
+  "canonicalSeam": {
+    "profile": "rncs.audio-target-profile.v0.1",
+    "plan": "rncs.audio-target-plan.v0.1",
+    "provider": "reality-build.web-audio-buffer",
+    "owners": [
+      "Reality Studio owns the explicit cue-to-asset/file-role/hash binding.",
+      "Behavior and RSR retain cue, tick and spatial semantic ownership.",
+      "Reality Build owns embedded target lowering and the admitted Web Audio Provider.",
+      "Android WebView is only the platform host and does not become World Body authority."
+    ]
+  },
+  "build": {
+    "fixture": "apps/reality-build/examples/冰境试炼.unified-project.json",
+    "gradle": "9.5.1",
+    "androidSdk": "35",
+    "buildId": "build:c4e98d1b516e9a3bdceb460f",
+    "buildKey": "c4e98d1b516e9a3bdceb460fd5b7a1d97a069115109b7162abc336196fdda220",
+    "targetRoot": "1a9b2610b314e93902f3b0d588172db0205a4d2e637824edf3183b28b776d881",
+    "apk": {
+      "artifact": "Audio Target Android Candidate-0.1.0-debug.apk",
+      "bytes": 331560,
+      "sha256": "a50d63d12d8c6cc43d91d5849863ea4a047b633e34e2b8e396e454b26b5188d4",
+      "signature": "verified; Android APK Signature Scheme v2",
+      "signingIdentity": "android-debug-keystore"
+    },
+    "embeddedRegression": {
+      "androidProject": "audio-target.test.mjs asserts audio_target_plan, data:audio/wav;base64 and decodeAudioData are present in app/src/main/assets/index.html",
+      "planStatus": "ready",
+      "bindingCount": 1,
+      "binding": {
+        "cueId": "footstep-ice",
+        "assetId": "asset:3a82d1753e140d24552b89d1",
+        "fileRole": "sfx-wav",
+        "sha256": "ba8ebd46b31544ce76973a7ac88039c82d0c1aaaaabdf1cbfb1339a495f2e53e"
+      }
+    }
+  },
+  "android": {
+    "serial": "emulator-5554",
+    "api": 35,
+    "model": "Android ATD built for x86_64",
+    "product": "sdk_slim_x86_64",
+    "webviewPackage": "com.android.webview",
+    "webviewVersion": "124.0.6367.219",
+    "origin": "https://rncs.local/",
+    "readyState": "complete",
+    "cdpTarget": "0E92E9635146C782412BF7147CCE418E"
+  },
+  "runtime": {
+    "before": {
+      "format": "taowind.audio-target-browser-snapshot.v0.1",
+      "planRoot": "684322cd17137e0f8d1ed794db05b4db8b87a42d330757282868bdf6abbca23f",
+      "bindingCount": 1,
+      "receiptCount": 0
+    },
+    "action": "window.__RNCS_GAME__.reset(); window.__RNCS_GAME__.step({move_right:true})",
+    "after": {
+      "waitMs": 7000,
+      "planRoot": "684322cd17137e0f8d1ed794db05b4db8b87a42d330757282868bdf6abbca23f",
+      "receiptCount": 2,
+      "statusCounts": {
+        "decode-pending": 1,
+        "scheduled": 1
+      },
+      "scheduledReceipt": {
+        "cueId": "footstep-ice",
+        "bindingId": "audio-binding:footstep-ice",
+        "assetId": "asset:3a82d1753e140d24552b89d1",
+        "fileRole": "sfx-wav",
+        "sha256": "ba8ebd46b31544ce76973a7ac88039c82d0c1aaaaabdf1cbfb1339a495f2e53e",
+        "providerId": "reality-build.web-audio-buffer",
+        "tick": 25,
+        "spatialParametersForwarded": false
+      }
+    },
+    "diagnostics": {
+      "consoleEvents": 0,
+      "applicationExceptions": 0,
+      "warnings": [
+        "Failed to create WebGPU Context Provider",
+        "Failed to create WebGPU Context Provider"
+      ],
+      "warningBoundary": "The two warnings are the known emulator WebGPU limitation; they are unrelated to the audio target receipt."
+    }
+  },
+  "verification": {
+    "commands": [
+      "node --test apps/reality-build/tests/audio-target.test.mjs",
+      "npm.cmd test --workspace @taowind/audio-target-runtime",
+      "npm.cmd test --workspace @taowind/reality-build-fabric",
+      "Gradle 9.5.1 android-apk target",
+      "apksigner verify --verbose",
+      "adb install -r and explicit MainActivity launch",
+      "Android WebView CDP Runtime.evaluate through adb local forward"
+    ],
+    "localTestSummary": {
+      "audioTargetFocused": "1 passed",
+      "audioTargetRuntime": "5 passed",
+      "realityBuildFull": "162 passed, 0 failed, 8 skipped",
+      "apk": "compiled and v2 signature verified",
+      "webView": "page loaded and scheduled one bound audio buffer candidate"
+    }
+  },
+  "rclGap": "RCL_GAP_RNCS_AUDIO_TARGET_LOWERING",
+  "stressCase": "The same explicit content-addressed audio target must survive the embedded Android lowering, synthetic-origin WebView host and real CDP runtime without changing the authoritative world or silently selecting a different asset.",
+  "donorAdvantage": "Reality Build already had a tested Android embedded HTML host, synthetic origin and CDP evidence seam; the audio candidate reuses it instead of creating a native Android audio registry or a second lifecycle.",
+  "regressionCase": "The Android embedded HTML retains the exact plan root, bound asset hash and Web Audio Provider source; no network endpoint is required because the WAV is embedded as a data URI.",
+  "affectedK400Cells": [
+    "LOWER",
+    "EXECUTE",
+    "CORRECT",
+    "ROBUST",
+    "PERFORMANCE",
+    "EVIDENCE"
+  ],
+  "boundaries": [
+    "This is an API 35 Android ATD Emulator/WebView candidate, not physical-device or target-device acceptance.",
+    "The APK is debug-signed, not a release-signed APK/AAB or store-delivery artifact.",
+    "A scheduled Web Audio buffer receipt proves target execution and decode scheduling only; it does not prove audible output, speaker routing, latency, mixing quality or human listening.",
+    "spatialParametersForwarded remains false; RSR spatial-audio is not claimed as 3D spatialized audio.",
+    "The emulator had no usable WebGPU Context Provider; no native GPU claim is made and no K400 gate is promoted to PASS."
+  ],
+  "nextCandidate": "Keep the Android plan seam, add an explicit provider diagnostic for WebView audio context/decode latency, then decide how RSR gain/position/occlusion parameters can be admitted to a spatial audio Provider without changing RSR ownership; physical audio and human listening remain separate gates."
+}
