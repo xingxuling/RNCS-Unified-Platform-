@@ -318,18 +318,18 @@ Reality Studio project.network
   → build identity + core artifact + receipt + integrity root
   → generated headless server
   → RealityNetworkRuntime.createSessionFromCompilation()
-  → joinCompiledSlot / submitInput / advanceServerTick / health
+  → loopback join/submit/advance OR authority joinCompiledSlotAuthority / submitInputPacket / ack-snapshot
 ```
 
 实际改动保持了既有 owner：
 
 1. `apps/reality-build/src/network-build.mjs` 只负责调用 Studio compiler、fail-closed 验证和向 Build 转交 compilation；没有复制 Studio network schema，也没有改写 `world_config` 或 authority roots。
 2. `builder.mjs` 在存在 `project.network` 时生成 `network-compilation` 节点，把 `compilation_root` 纳入 Build identity、`network-world-compilation.json`、core file hash、receipt、integrity 和 `verifyBuild()`；没有 network facet 的旧项目不会生成意外 artifact。
-3. `targets.mjs` 只给 `headless-server` 接入既有 Network Runtime。目标声明 loopback-local-candidate 模式和六个本地端点；Web/Android embedded presentation targets 没有被静默改造成网络客户端。
+3. `targets.mjs` 只给 `headless-server` 接入既有 Network Runtime。目标同时声明旧 loopback-local-candidate 的六个端点和新的 HTTP authority-client candidate 六个端点；后者接收既有 packet，不复制协议或把 server 内部 prediction 冒充外部 client。Web/Android embedded presentation targets 没有被静默改造成网络客户端。
 
-本地真实结果：Reality Build 全套为 `142 tests / 134 pass / 0 fail / 8 skip`；新增集成测试真实启动生成的 `server.mjs`，通过 HTTP 加入 `slot:blue`、`slot:red`，提交 `move`，推进 server tick，并在 `/network/health` 验证 `compilationRoot`、`projectRoot` 和两个客户端 `synchronized`。篡改或删除 root artifact 会使 `verifyBuild()` 失败。证据文件为 `apps/reality-build/evidence/REALITY_BUILD_NETWORK_HEADLESS_CANDIDATE_v0.1.json`。
+本地真实结果：Network Runtime `27/27 PASS`；Reality Build 全套为 `142 tests / 134 pass / 0 fail / 8 skip`；新增集成测试真实启动生成的 `server.mjs`，通过旧 loopback 端点加入 `slot:blue`、`slot:red`，再通过 authority HTTP 端点让独立 `ClientPredictionRuntime` 获取 delegation/snapshot、提交 `network.input.v0.2`、推进 server tick 并消费 ack/snapshot，最终在 health 中验证 source roots 和 client `synchronized`。篡改或删除 root artifact 会使 `verifyBuild()` 失败。证据文件为 `apps/reality-build/evidence/REALITY_BUILD_NETWORK_HEADLESS_CANDIDATE_v0.1.json`。
 
-这关闭的是“既有 Studio network compilation 能否进入 Reality Build headless candidate 并走到既有本地 Network Runtime”的候选接缝；仍未关闭 WAN/真实跨节点 transport、TLS/密钥与攻击面、真实多设备客户端、网络压测/SLA、生产部署和发布 authority。没有新增 K400 PASS。
+这关闭的是“既有 Studio network compilation 能否进入 Reality Build headless candidate，并分别走到既有 local loopback 与 HTTP authority-client candidate”的候选接缝；仍未关闭 WAN/真实跨节点 transport、TLS/密钥与攻击面、真实多设备客户端、网络压测/SLA、生产部署和发布 authority。没有新增 K400 PASS。
 
 ## 结构判断
 

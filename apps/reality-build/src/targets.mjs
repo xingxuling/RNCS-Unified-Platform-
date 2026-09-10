@@ -54,6 +54,9 @@ const networkRuntime=new RealityNetworkRuntime();
 const networkSessionId='build-network:'+evidence.build_id;
 let networkReady=null;
 const ensureNetworkSession=async()=>{networkReady??=networkRuntime.createSessionFromCompilation({sessionId:networkSessionId,compilation:networkCompilation});await networkReady;return networkSessionId;};
+const networkAuthoritySessionId='build-network-authority:'+evidence.build_id;
+let networkAuthorityReady=null;
+const ensureNetworkAuthoritySession=async()=>{networkAuthorityReady??=networkRuntime.createSessionFromCompilation({sessionId:networkAuthoritySessionId,compilation:networkCompilation});await networkAuthorityReady;return networkAuthoritySessionId;};
 `:'';
   const networkRoutes=networkEnabled?`if(req.method==='GET'&&u.pathname==='/network/health'){await ensureNetworkSession();return send(res,200,networkRuntime.getSessionHealth({sessionId:networkSessionId}));}
 if(req.method==='POST'&&u.pathname==='/network/join'){const input=await body(req);await ensureNetworkSession();return send(res,200,await networkRuntime.joinCompiledSlot({sessionId:networkSessionId,slotId:input.slot_id??input.slotId,subjectId:input.subject_id??input.subjectId}));}
@@ -61,6 +64,12 @@ if(req.method==='POST'&&u.pathname==='/network/input'){const input=await body(re
 if(req.method==='POST'&&u.pathname==='/network/tick'){const input=await body(req);await ensureNetworkSession();return send(res,200,networkRuntime.advanceServerTick({sessionId:networkSessionId,ticks:Math.max(1,Math.min(120,Number(input.ticks??1)))}));}
 if(req.method==='POST'&&u.pathname==='/network/disconnect'){const input=await body(req);await ensureNetworkSession();return send(res,200,networkRuntime.disconnect({sessionId:networkSessionId,playerId:input.player_id??input.playerId}));}
 if(req.method==='POST'&&u.pathname==='/network/reconnect'){const input=await body(req);await ensureNetworkSession();return send(res,200,networkRuntime.reconnect({sessionId:networkSessionId,playerId:input.player_id??input.playerId}));}
+if(req.method==='GET'&&u.pathname==='/network/authority/health'){await ensureNetworkAuthoritySession();return send(res,200,networkRuntime.getSessionHealth({sessionId:networkAuthoritySessionId}));}
+if(req.method==='POST'&&u.pathname==='/network/authority/join'){const input=await body(req);await ensureNetworkAuthoritySession();return send(res,200,await networkRuntime.joinCompiledSlotAuthority({sessionId:networkAuthoritySessionId,slotId:input.slot_id??input.slotId,subjectId:input.subject_id??input.subjectId}));}
+if(req.method==='POST'&&u.pathname==='/network/authority/input'){const input=await body(req);await ensureNetworkAuthoritySession();return send(res,200,networkRuntime.submitInputPacket({sessionId:networkAuthoritySessionId,input:input.input??input}));}
+if(req.method==='POST'&&u.pathname==='/network/authority/tick'){const input=await body(req);await ensureNetworkAuthoritySession();return send(res,200,networkRuntime.advanceServerTick({sessionId:networkAuthoritySessionId,ticks:Math.max(1,Math.min(120,Number(input.ticks??1)))}));}
+if(req.method==='GET'&&u.pathname==='/network/authority/snapshot'){await ensureNetworkAuthoritySession();return send(res,200,networkRuntime.pullSnapshot({sessionId:networkAuthoritySessionId,reason:'http-authority-client'}));}
+if(req.method==='GET'&&u.pathname==='/network/authority/delta'){await ensureNetworkAuthoritySession();return send(res,200,networkRuntime.pullDelta({sessionId:networkAuthoritySessionId}));}
 `:'';
   return `import fs from'node:fs';
 import path from'node:path';
@@ -134,9 +143,9 @@ export function buildHeadlessServer({project,request,identity,outRoot,runtimeEvi
   writeText(path.join(dir,'verify-replay.mjs'),replayVerifierSource());
   const dependencies={'@taowind/reality-studio-native':'^1.6.0-alpha.1','@taowind/reality-engine-session':'^0.1.0-alpha.1',...(networkEnabled?{'@taowind/reality-network-runtime':'^0.2.0-alpha.1'}:{})};
   writeJson(path.join(dir,'package.json'),{name:`${safeName(request.app.title,'reality-app').toLowerCase().replace(/[^a-z0-9]+/g,'-')}-headless-server`,version:request.app.version_name,private:true,type:'module',scripts:{start:'node server.mjs',verify:'node verify-replay.mjs'},dependencies});
-  const networkEndpoints=networkEnabled?['/network/health','/network/join','/network/input','/network/tick','/network/disconnect','/network/reconnect']:[];
+  const networkEndpoints=networkEnabled?['/network/health','/network/join','/network/input','/network/tick','/network/disconnect','/network/reconnect','/network/authority/health','/network/authority/join','/network/authority/input','/network/authority/tick','/network/authority/snapshot','/network/authority/delta']:[];
   writeJson(path.join(dir,'server-manifest.json'),seal({format:'reality-build.headless-server-manifest.v0.2',version:'0.2.0-alpha.1',build_id:identity.build_id,project_root:project.project_root,entry:'server.mjs',verification_entry:'verify-replay.mjs',health_endpoint:'/health',inspect_endpoint:'/inspect',spatial_inspect_endpoint:'/spatial-inspect',step_endpoint:'/step',spatial_step_endpoint:'/spatial-step',replay_endpoint:'/replay',network_runtime_mode:networkEnabled?'loopback-local-candidate':null,network_compilation_root:networkCompilation?.compilation_root??null,network_endpoints:networkEndpoints,runtime_evidence:runtimeEvidenceSummary(runtimeEvidence),spatial_runtime_manifest_root:runtimeEvidence.spatial_runtime_manifest?.manifest_root??null,gpu_frame_plan_root:runtimeEvidence.evidence.gpu_frame_plan_root,gpu_frame_summary_root:runtimeEvidence.evidence.gpu_frame_summary_root,gpu_viewport_manifest_root:runtimeEvidence.evidence.gpu_viewport_manifest_root,navigation_manifest_root:runtimeEvidence.navigation_manifest?.manifest_root??null,asset_database_root:assetDatabase?.evidence?.database_root??null},'manifest_root'));
-  const networkReadme=networkEnabled?' The /network/* endpoints use the existing deterministic Reality Network Runtime with local loopback transport; this build does not claim WAN, multi-device, or production deployment proof.':'';
+  const networkReadme=networkEnabled?' The /network/* endpoints use the existing deterministic Reality Network Runtime. The /network/authority/* endpoints expose the compiled authority session over the generated HTTP target and accept verified network.input packets; local loopback/HTTP candidate only, with no WAN, multi-device, or production deployment proof.':'';
   writeText(path.join(dir,'README.md'),`# ${request.app.title} Headless Server\n\nRun npm install, then npm start. The server exposes /health, /inspect, /spatial-inspect, /step, /spatial-step, and /replay.${networkReadme}\n`);
   return{dir,receipt:manifestForTarget(dir,'headless-server',identity)};
 }

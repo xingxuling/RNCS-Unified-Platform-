@@ -119,13 +119,13 @@ Unified Project.project.network
   → existing compileNetworkWorld()
   → verified network-world-compilation.json
   → Build receipt / integrity / build identity roots
-  → headless-server local loopback endpoints
-  → existing RealityNetworkRuntime session
+  → headless-server loopback + authority HTTP endpoints
+  → existing RealityNetworkRuntime session / ClientPredictionRuntime
 ```
 
-构建图新增 `network-compilation` 节点，并把 `compilation_root` 纳入 Build identity、core files、receipt 和自校验。`headless-server` 目标会携带同一 compilation artifact，按需声明 `@taowind/reality-network-runtime`，并通过 `/network/health`、`/network/join`、`/network/input`、`/network/tick`、`/network/disconnect`、`/network/reconnect` 实际调用既有编译世界、权威 server、预测/回滚和 loopback transport。集成测试真实启动生成的 `server.mjs`，加入两个 compiled slots、提交 move、推进 tick，并验证 source compilation root 与两个 client 的同步状态；篡改或删除根 artifact 会使 `verifyBuild()` 失败。
+构建图新增 `network-compilation` 节点，并把 `compilation_root` 纳入 Build identity、core files、receipt 和自校验。`headless-server` 目标会携带同一 compilation artifact，按需声明 `@taowind/reality-network-runtime`。旧 `/network/*` 端点继续走既有 local loopback session；新增 `/network/authority/*` 端点则返回 compiled slot delegation/snapshot，接收既有 `network.input.v0.2` packet，并返回 authority tick 的 ack/snapshot/delta，让独立的 `ClientPredictionRuntime` 走 HTTP candidate。集成测试真实启动生成的 `server.mjs`，分别验证两个 loopback slots 和独立 authority client 的 source root、ack convergence 与同步状态；篡改或删除根 artifact 会使 `verifyBuild()` 失败。
 
-这是 `CANDIDATE_LOCAL_LOOPBACK_VERIFIED`，不是 WAN、真实跨设备/跨节点 transport、安全密钥、压测、生产部署或 release promotion 证据。Web/Android embedded targets 只保持自身的 presentation/runtime 路径，没有被静默改成网络客户端。
+这是 `CANDIDATE_LOCAL_HTTP_AUTHORITY_VERIFIED`，不是 WAN、真实跨设备/跨节点 transport、安全密钥、压测、生产部署或 release promotion 证据。Web/Android embedded targets 只保持自身的 presentation/runtime 路径，没有被静默改成网络客户端。
 
 ## 诚实边界
 
