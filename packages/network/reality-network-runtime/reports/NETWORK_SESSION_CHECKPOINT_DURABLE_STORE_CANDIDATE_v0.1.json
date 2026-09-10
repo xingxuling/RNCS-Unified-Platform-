@@ -1,0 +1,59 @@
+{
+  "format": "taowind.reality-network.session-checkpoint-durable-store-candidate-evidence.v0.1",
+  "version": "0.1.0",
+  "status": "CANDIDATE_LOCAL_ATOMIC_STORE_VERIFIED",
+  "sourceCommit": "e15b6fbbf98b800d1006c19ed85a82843fd2325e",
+  "pipeline": "network.session-checkpoint.v0.1 -> shared AtomicJsonStore -> temp-file sync -> atomic rename -> directory sync -> primary-first or temporary promotion recovery",
+  "provider": {
+    "package": "@taowind/rncs-durable-store",
+    "networkEntry": "@taowind/reality-network-runtime/node",
+    "receiptFormat": "rncs.network-checkpoint-store-receipt.v0.1",
+    "nodeOnly": true,
+    "semanticOwner": "Network Runtime owns checkpoint verification, receipt, and authority boundary; the provider owns no canonical world state"
+  },
+  "commands": [
+    "npm test --workspace @taowind/rncs-durable-store",
+    "npm test --workspace @taowind/large-world-runtime",
+    "npm test --workspace @taowind/reality-network-runtime",
+    "npm test --workspace @taowind/reality-build-fabric",
+    "node --check packages/control/rncs-durable-store/src/index.mjs",
+    "node --check packages/network/reality-network-runtime/src/node.mjs",
+    "git diff --cached --check"
+  ],
+  "tests": {
+    "durableStoreSuite": "1 test / 1 pass / 0 fail",
+    "largeWorldSuite": "36 tests / 36 pass / 0 fail",
+    "networkRuntimeSuite": "30 tests / 30 pass / 0 fail",
+    "realityBuildSuite": "142 tests / 134 pass / 0 fail / 8 skip",
+    "networkCheckpointStoreIntegration": "PASS",
+    "semanticReceiptVerification": "PASS",
+    "primaryFirstRecovery": "PASS",
+    "temporaryPromotionWhenPrimaryMissing": "PASS",
+    "afterTempSyncFaultRecovery": "PASS",
+    "afterRenameFaultRecovery": "PASS",
+    "corruptPrimaryRejection": "PASS",
+    "largeWorldSharedProviderRegression": "PASS"
+  },
+  "checkpoint": {
+    "format": "network.session-checkpoint.v0.1",
+    "checkpointRoot": "931bd7c728342139ac8170844faa0ab4b63f93c470ba970f53a2633e21b4409b",
+    "jsonBytes": 23664,
+    "rootVerification": true,
+    "storeReceipt": {
+      "canonicalStateMutated": false,
+      "candidateOnly": true,
+      "authoritative": false,
+      "commitStatus": "NOT_COMMITTED"
+    }
+  },
+  "boundaries": [
+    "The provider requires an absolute Node filesystem path and is not a browser or Android persistence implementation.",
+    "The tests inject faults after temporary-file sync and after rename; they do not simulate actual power loss, filesystem corruption, or durable quorum behavior.",
+    "Directory sync is reported as a host capability result; a successful JSON write is not a production durability guarantee.",
+    "The shared provider does not verify domain schemas, create authority receipts, write canonical state, grant commit, or promote a candidate to production.",
+    "This does not prove WAN/TLS transport, cross-node lease or leader failover, multi-device reconnection, key custody, load/SLA, or production deployment.",
+    "No K400 gate is promoted to PASS."
+  ],
+  "authority": "candidate-runtime-evidence-only-no-commit",
+  "evidenceRoot": "a9fde2c255e462e18ea1c2ceb58d7cf7642c7e332d8a8df04b4954a2eca2ca1a"
+}
