@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {createLargeWorldRuntime} from '@taowind/large-world-runtime';
-import {materializeKernelStateBatch, replaySpatialEmbodiment, SpatialEmbodimentWorld} from '@taowind/reality-simulation-runtime/spatial-embodiment';
+import {createLargeWorldRuntime, verifyRuntimeSnapshot} from '@taowind/large-world-runtime';
+import {materializeKernelStateBatch, replaySpatialEmbodiment, SpatialEmbodimentWorld, verifySpatialEmbodimentSnapshot} from '@taowind/reality-simulation-runtime/spatial-embodiment';
 import {spatialEmbodimentSnapshotToVSRScene} from '@taowind/reality-simulation-runtime/spatial-embodiment-vsr';
 import {
   createLargeWorldRsrTerrainCandidate,
@@ -168,7 +168,7 @@ function runStreamResidencyTransition() {
   const nextCandidate = createLargeWorldRsrTerrainCandidate({region, streamResolution: nextStream, tick: world.tick});
   const transition = applyLargeWorldRsrTerrainCandidate(world, nextCandidate, {region});
   const after = world.snapshot();
-  return {region, firstStream, nextStream, firstCandidate, nextCandidate, before, after, transition, world};
+  return {region, firstStream, nextStream, firstCandidate, nextCandidate, before, after, transition, world, largeWorldSnapshot: runtime.snapshot(), largeWorldReplay: runtime.replay()};
 }
 
 test('applies Large World stream enter/exit to the same RSR world with deterministic replay', () => {
@@ -185,6 +185,9 @@ test('applies Large World stream enter/exit to the same RSR world with determini
   assert.equal(transition.exited_body_ids.length, 1);
   assert.equal(transition.retained_body_ids.length, 0);
   assert.equal(transition.source_candidate_root, nextCandidate.candidate_root);
+  assert.equal(result.largeWorldReplay.ok, true);
+  assert.equal(verifyRuntimeSnapshot(result.largeWorldSnapshot).valid, true);
+  assert.equal(verifySpatialEmbodimentSnapshot(before), true);
   const verification = verifyLargeWorldRsrTerrainResidencyTransition(transition, {candidate: nextCandidate, region});
   assert.equal(verification.valid, true, verification.errors.join(','));
   const mismatchedTick = createLargeWorldRsrTerrainCandidate({region, streamResolution: result.nextStream, tick: result.before.tick + 1});
@@ -192,7 +195,10 @@ test('applies Large World stream enter/exit to the same RSR world with determini
     () => applyLargeWorldRsrTerrainCandidate(world, mismatchedTick, {region}),
     error => error instanceof LargeWorldRsrTerrainBridgeError && error.code === 'LARGE_WORLD_RSR_TICK_MISMATCH',
   );
-  assert.equal(world.step().snapshot.tick, before.tick + 1);
+  const restoredWorld = SpatialEmbodimentWorld.fromSnapshot(before);
+  const restoredTransition = applyLargeWorldRsrTerrainCandidate(restoredWorld, nextCandidate, {region});
+  assert.deepEqual(restoredTransition, transition);
+  assert.equal(restoredWorld.step().snapshot.stateRoot, world.step().snapshot.stateRoot);
   const replay = runStreamResidencyTransition();
   assert.deepEqual(replay.transition, transition);
   assert.equal(replay.after.stateRoot, after.stateRoot);
