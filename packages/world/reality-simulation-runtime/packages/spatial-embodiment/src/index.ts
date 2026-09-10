@@ -6,6 +6,8 @@ export const SPATIAL_EMBODIMENT_FORMAT = 'rsr.spatial-embodiment-world.v0.6' as 
 export const LEGACY_SPATIAL_EMBODIMENT_FORMAT = 'rsr.spatial-embodiment-world.v0.5' as const;
 export const SPATIAL_BODY_RESIDENCY_TRANSITION_FORMAT = 'rsr.spatial-body-residency-transition.v0.1' as const;
 export const SPATIAL_BODY_RESIDENCY_TRANSITION_VERSION = '0.1.0' as const;
+export const SPATIAL_HEIGHTFIELD_MUTATION_FORMAT = 'rsr.spatial-heightfield-mutation.v0.1' as const;
+export const SPATIAL_HEIGHTFIELD_MUTATION_VERSION = '0.1.0' as const;
 export const POSITION_SCALE = 1_000;
 export const ROTATION_SCALE = 1_000;
 export const Q = 1_000_000;
@@ -124,6 +126,7 @@ export type SpatialCommand =
   | { id: string; tick: number; type: 'apply-impulse'; bodyId: string; impulse: IntVector3; worldPoint?: IntVector3 }
   | { id: string; tick: number; type: 'set-velocity'; bodyId: string; velocity: IntVector3 }
   | { id: string; tick: number; type: 'teleport'; bodyId: string; position: IntVector3; rotationDeg?: IntVector3 }
+  | { id: string; tick: number; type: 'patch-heightfield'; bodyId: string; fixtureId: string; samples: Array<{ index: number; height: number }>; expectedHeightfieldRoot?: string }
   | { id: string; tick: number; type: 'move-character'; characterId: string; direction: IntVector3; speedQ?: number }
   | { id: string; tick: number; type: 'jump-character'; characterId: string }
   | { id: string; tick: number; type: 'set-joint-motor'; jointId: string; motorSpeedDeg: number; maxMotorTorque?: number }
@@ -200,7 +203,21 @@ export interface SpatialFootstepEvent {
   materialId: string;
 }
 
-export type SpatialEmbodimentEvent = SpatialContactEvent | SpatialAudioEvent | SpatialHapticEvent | SpatialFootstepEvent | { kind: 'joint'; phase: 'break'; tick: number; jointId: string; force: number };
+export interface SpatialHeightfieldMutationEvent {
+  kind: 'terrain-mutation';
+  phase: 'patch';
+  format: typeof SPATIAL_HEIGHTFIELD_MUTATION_FORMAT;
+  version: typeof SPATIAL_HEIGHTFIELD_MUTATION_VERSION;
+  tick: number;
+  bodyId: string;
+  fixtureId: string;
+  samples: Array<{ index: number; height: number }>;
+  previousHeightfieldRoot: string;
+  nextHeightfieldRoot: string;
+  mutationRoot: string;
+}
+
+export type SpatialEmbodimentEvent = SpatialContactEvent | SpatialAudioEvent | SpatialHapticEvent | SpatialFootstepEvent | SpatialHeightfieldMutationEvent | { kind: 'joint'; phase: 'break'; tick: number; jointId: string; force: number };
 
 export interface RuntimeSpatialFixture extends SpatialFixtureSpec {
   localPosition: IntVector3;
@@ -365,6 +382,7 @@ const quantize = (n: number): number => Math.round(n);
 const MAX_HEIGHTFIELD_DIMENSION = 4_096;
 const MAX_HEIGHTFIELD_SAMPLES = 1_000_000;
 const MAX_HEIGHTFIELD_SWEEP_CELLS = 4_096;
+const MAX_HEIGHTFIELD_PATCH_SAMPLES = 4_096;
 
 export const toSpatialFixed = (value: number): number => Math.round(value * POSITION_SCALE);
 export const fromSpatialFixed = (value: number): number => value / POSITION_SCALE;
@@ -442,6 +460,9 @@ function obbAabb(box: OrientedBox3): Aabb3 {
   return { min: v3(Math.floor(box.center.x - extent.x), Math.floor(box.center.y - extent.y), Math.floor(box.center.z - extent.z)), max: v3(Math.ceil(box.center.x + extent.x), Math.ceil(box.center.y + extent.y), Math.ceil(box.center.z + extent.z)) };
 }
 type HeightfieldShape = Extract<SpatialShape, { type: 'heightfield' }>;
+export function spatialHeightfieldRoot(bodyId: string, fixtureId: string, shape: HeightfieldShape): string {
+  return semanticHash({ bodyId, fixtureId, shape: deepClone(shape) });
+}
 function heightfieldAabb(body: RuntimeSpatialBody, fixture: RuntimeSpatialFixture & { shape: HeightfieldShape }): Aabb3 {
   const origin = fixtureWorldPosition(body, fixture), shape = fixture.shape;
   let minHeight = shape.heights[0]!, maxHeight = minHeight;
@@ -1009,11 +1030,48 @@ export class SpatialEmbodimentWorld {
     return { ...base, transitionRoot: semanticHash(base) };
   }
 
+  private invalidateHeightfieldContacts(bodyId: string, fixtureId: string): void {
+    const touches = (contact: SpatialContactPoint): boolean => (contact.bodyA === bodyId && contact.fixtureA === fixtureId) || (contact.bodyB === bodyId && contact.fixtureB === fixtureId);
+    const affected = new Set(this.currentContacts.filter(touches).map(contact => contact.id));
+    for (const id of affected) this.contactImpulseCache.delete(id);
+    this.previousContactIds = new Set([...this.previousContactIds].filter(id => !affected.has(id)));
+    this.currentContacts = this.currentContacts.filter(contact => !affected.has(contact.id));
+  }
+
+  private applyHeightfieldPatch(command: Extract<SpatialCommand, { type: 'patch-heightfield' }>): void {
+    const body = this.bodyMap.get(command.bodyId);
+    if (!body) throw new Error(`SPATIAL_HEIGHTFIELD_PATCH_BODY_MISSING:${command.bodyId}`);
+    if (body.kind === 'dynamic') throw new Error(`SPATIAL_HEIGHTFIELD_PATCH_DYNAMIC_BODY_UNSUPPORTED:${body.id}`);
+    const fixture = body.fixtures.find(candidate => candidate.id === command.fixtureId);
+    if (!fixture) throw new Error(`SPATIAL_HEIGHTFIELD_PATCH_FIXTURE_MISSING:${command.bodyId}:${command.fixtureId}`);
+    if (fixture.shape.type !== 'heightfield') throw new Error(`SPATIAL_HEIGHTFIELD_PATCH_SHAPE_UNSUPPORTED:${command.bodyId}:${command.fixtureId}`);
+    const shape: HeightfieldShape = fixture.shape as HeightfieldShape;
+    if (!Array.isArray(command.samples) || command.samples.length === 0 || command.samples.length > MAX_HEIGHTFIELD_PATCH_SAMPLES) throw new Error('SPATIAL_HEIGHTFIELD_PATCH_SAMPLE_COUNT_INVALID');
+    const samples = [...command.samples].map((sample, index) => {
+      if (!sample || !Number.isSafeInteger(sample.index) || sample.index < 0 || sample.index >= shape.heights.length) throw new Error(`SPATIAL_HEIGHTFIELD_PATCH_INDEX_INVALID:${index}`);
+      if (!Number.isSafeInteger(sample.height)) throw new Error(`SPATIAL_HEIGHTFIELD_PATCH_HEIGHT_INVALID:${index}`);
+      return { index: sample.index, height: sample.height };
+    }).sort((left, right) => left.index - right.index);
+    for (let index = 1; index < samples.length; index++) if (samples[index]!.index === samples[index - 1]!.index) throw new Error(`SPATIAL_HEIGHTFIELD_PATCH_DUPLICATE_INDEX:${samples[index]!.index}`);
+    const previousHeightfieldRoot = spatialHeightfieldRoot(body.id, fixture.id, shape);
+    if (command.expectedHeightfieldRoot !== undefined && command.expectedHeightfieldRoot !== previousHeightfieldRoot) throw new Error('SPATIAL_HEIGHTFIELD_PATCH_EXPECTED_ROOT_MISMATCH');
+    const changedSamples = samples.filter(sample => shape.heights[sample.index] !== sample.height);
+    if (changedSamples.length === 0) throw new Error('SPATIAL_HEIGHTFIELD_PATCH_NOOP');
+    const nextHeights = [...shape.heights];
+    for (const sample of changedSamples) nextHeights[sample.index] = sample.height;
+    fixture.shape = { ...shape, heights: nextHeights };
+    const nextHeightfieldRoot = spatialHeightfieldRoot(body.id, fixture.id, fixture.shape);
+    this.invalidateHeightfieldContacts(body.id, fixture.id);
+    const base = { kind: 'terrain-mutation' as const, phase: 'patch' as const, format: SPATIAL_HEIGHTFIELD_MUTATION_FORMAT, version: SPATIAL_HEIGHTFIELD_MUTATION_VERSION, tick: this.tickValue, bodyId: body.id, fixtureId: fixture.id, samples: changedSamples, previousHeightfieldRoot, nextHeightfieldRoot };
+    this.currentEvents.push({ ...base, mutationRoot: semanticHash(base) });
+  }
+
   private applyCommand(command: SpatialCommand): void {
     if (command.type === 'set-listener') { const listener = this.listenerMap.get(command.listenerId); if (!listener) throw new Error(`listener ${command.listenerId} missing`); listener.position = cloneVec(command.position); if (command.forward) listener.forward = cloneVec(command.forward); return; }
     if (command.type === 'move-character') { const character = this.characterMap.get(command.characterId); if (!character) throw new Error(`character ${command.characterId} missing`); character.desiredDirection = cloneVec(command.direction); character.desiredSpeedQ = command.speedQ ?? Q; return; }
     if (command.type === 'jump-character') { const character = this.characterMap.get(command.characterId); if (!character) throw new Error(`character ${command.characterId} missing`); character.jumpQueued = true; character.jumpBufferRemaining=Math.max(character.jumpBufferRemaining,character.jumpBufferTicks); return; }
     if (command.type === 'set-joint-motor') { const joint = this.jointMap.get(command.jointId); if (!joint || joint.type !== 'hinge') throw new Error(`hinge joint ${command.jointId} missing`); joint.motorSpeedDeg = command.motorSpeedDeg; if (command.maxMotorTorque !== undefined) joint.maxMotorTorque = command.maxMotorTorque; return; }
+    if (command.type === 'patch-heightfield') { this.applyHeightfieldPatch(command); return; }
     const body = this.bodyMap.get(command.bodyId); if (!body) throw new Error(`body ${command.bodyId} missing`);
     body.awake = true; body.sleepCounter = 0;
      if (command.type === 'set-velocity') body.velocity = cloneVec(command.velocity);
@@ -1270,7 +1328,7 @@ export class SpatialEmbodimentWorld {
   }
 
   step(commands: SpatialCommand[] = []): { snapshot: SpatialEmbodimentSnapshot; events: SpatialEmbodimentEvent[] } {
-    this.tickValue++; this.currentEvents = []; this.currentContacts = []; this.diagnosticsValue = { broadPhasePairs: 0, narrowPhaseTests: 0, contacts: 0, sensorContacts: 0, groundedBodies: 0, sleepingBodies: 0, characterControllers: this.characterMap.size, jointConstraints: 0, microsteps: 1, ccdBodies: 0, audioEvents: 0, hapticEvents: 0, footstepEvents: 0, broadPhaseCells: 0, persistentManifolds: this.contactImpulseCache.size, warmStartedContacts: 0, steppedCharacters: 0, snappedCharacters: 0, movingPlatformTransfers: 0, solverIslands:0, largestSolverIsland:0, sleepingIslands:0, warmStartedFrictionContacts:0, coyoteJumps:0, bufferedJumps:0, capsuleObbContacts:0, gjkCalls: 0, epaCalls: 0, convexContacts: 0, convexFallbacks: 0 };
+    this.tickValue++; this.currentEvents = []; this.diagnosticsValue = { broadPhasePairs: 0, narrowPhaseTests: 0, contacts: 0, sensorContacts: 0, groundedBodies: 0, sleepingBodies: 0, characterControllers: this.characterMap.size, jointConstraints: 0, microsteps: 1, ccdBodies: 0, audioEvents: 0, hapticEvents: 0, footstepEvents: 0, broadPhaseCells: 0, persistentManifolds: this.contactImpulseCache.size, warmStartedContacts: 0, steppedCharacters: 0, snappedCharacters: 0, movingPlatformTransfers: 0, solverIslands:0, largestSolverIsland:0, sleepingIslands:0, warmStartedFrictionContacts:0, coyoteJumps:0, bufferedJumps:0, capsuleObbContacts:0, gjkCalls: 0, epaCalls: 0, convexContacts: 0, convexFallbacks: 0 };
     this.applyMovingPlatformInheritance();
     for (const command of commands.filter(c => c.tick === this.tickValue).sort((a, b) => a.id.localeCompare(b.id))) this.applyCommand(command);
     this.applyCharacterControllers(); this.resetGrounding(); const previousPositions = new Map([...this.bodyMap.values()].map(body => [body.id, cloneVec(body.position)]));
@@ -1375,6 +1433,38 @@ export function verifySpatialEmbodimentSnapshot(snapshot: SpatialEmbodimentSnaps
   return computeSpatialEmbodimentStateRoot(snapshot) === snapshot.stateRoot;
 }
 
+export function spatialHeightfieldMutationEventBase(event: SpatialHeightfieldMutationEvent): Omit<SpatialHeightfieldMutationEvent, 'mutationRoot'> {
+  return {
+    kind: event.kind,
+    phase: event.phase,
+    format: event.format,
+    version: event.version,
+    tick: event.tick,
+    bodyId: event.bodyId,
+    fixtureId: event.fixtureId,
+    samples: deepClone(event.samples),
+    previousHeightfieldRoot: event.previousHeightfieldRoot,
+    nextHeightfieldRoot: event.nextHeightfieldRoot,
+  };
+}
+
+export function verifySpatialHeightfieldMutationEvent(event: SpatialHeightfieldMutationEvent): boolean {
+  try {
+    if (event?.kind !== 'terrain-mutation' || event.phase !== 'patch' || event.format !== SPATIAL_HEIGHTFIELD_MUTATION_FORMAT || event.version !== SPATIAL_HEIGHTFIELD_MUTATION_VERSION) return false;
+    if (!Number.isSafeInteger(event.tick) || event.tick < 1 || typeof event.bodyId !== 'string' || event.bodyId.length === 0 || typeof event.fixtureId !== 'string' || event.fixtureId.length === 0) return false;
+    if (!Array.isArray(event.samples) || event.samples.length === 0 || event.samples.length > MAX_HEIGHTFIELD_PATCH_SAMPLES) return false;
+    for (let index = 0; index < event.samples.length; index++) {
+      const sample = event.samples[index];
+      if (!sample || !Number.isSafeInteger(sample.index) || sample.index < 0 || !Number.isSafeInteger(sample.height)) return false;
+      if (index > 0 && event.samples[index - 1]!.index >= sample.index) return false;
+    }
+    if (![event.previousHeightfieldRoot, event.nextHeightfieldRoot, event.mutationRoot].every(root => typeof root === 'string' && root.length > 0)) return false;
+    return semanticHash(spatialHeightfieldMutationEventBase(event)) === event.mutationRoot;
+  } catch {
+    return false;
+  }
+}
+
 export function spatialBodyResidencyTransitionBase(transition: SpatialBodyResidencyTransition): Omit<SpatialBodyResidencyTransition, 'transitionRoot'> {
   return {
     format: transition.format,
@@ -1434,6 +1524,7 @@ export function spatialEmbodimentSnapshotToCausalDelta(snapshot: SpatialEmbodime
   const facts: SpatialEmbodimentCausalDelta['facts'] = [];
   for (const body of snapshot.bodies) { facts.push({ subject: `body:${body.id}`, predicate: 'spatial.position', object: deepClone(body.position) as unknown as VSRValue }); facts.push({ subject: `body:${body.id}`, predicate: 'spatial.rotation', object: deepClone(body.rotationDeg) as unknown as VSRValue }); facts.push({ subject: `body:${body.id}`, predicate: 'embodiment.grounded', object: body.grounded }); }
   for (const character of snapshot.characters) facts.push({ subject: `character:${character.id}`, predicate: 'embodiment.body', object: character.bodyId });
+  for (const event of snapshot.events) if (event.kind === 'terrain-mutation') facts.push({ subject: `body:${event.bodyId}`, predicate: 'spatial.heightfield.patch', object: event.mutationRoot });
   const evidence = { stateRoot: snapshot.stateRoot, bodyRoot: snapshot.bodyRoot, contactRoot: snapshot.contactRoot, characterRoot: snapshot.characterRoot, sensoryRoot: snapshot.sensoryRoot, jointRoot: snapshot.jointRoot };
   const base = { format: 'rfe.spatial-embodiment-causal-delta.v0.6' as const, worldId: snapshot.worldId, baseRealityRoot, tick: snapshot.tick, facts, evidence }; return { ...base, deltaRoot: semanticHash(base) };
 }

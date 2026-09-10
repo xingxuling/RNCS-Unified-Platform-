@@ -7,8 +7,10 @@ import {
   materializeKernelStateBatch,
   materializeRagfEmbodimentProfile,
   replaySpatialEmbodiment,
+  spatialHeightfieldRoot,
   spatialEmbodimentSnapshotToCausalDelta,
   verifySpatialBodyResidencyTransition,
+  verifySpatialHeightfieldMutationEvent,
   verifySpatialEmbodimentSnapshot,
   verifyRagfEmbodimentMaterialization,
   type KernelStateBatch,
@@ -175,6 +177,44 @@ test('convex hull geometry stays authored through the VSR projection', () => { c
 // 63
 test('heightfield supports deterministic flat-ground collision and recovery', () => { const avatar = sphere('avatar', 1000, 2500, 1000); const cfg = config([avatar, heightfield()], { floorY: -100_000 }); const snapshot = new SpatialEmbodimentWorld(cfg).run(120); const body = snapshot.bodies.find(entry => entry.id === 'avatar')!; const contact = snapshot.contacts.find(entry => entry.bodyA === 'avatar' || entry.bodyB === 'avatar'); assert.equal(body.grounded, true); assert.ok(body.position.y >= 490 && body.position.y <= 520); assert.equal(contact?.point.y, 0); assert.equal(contact?.normal.y, -Q); assert.equal(replaySpatialEmbodiment(cfg, 120).stateRoot, snapshot.stateRoot); });
 test('heightfield emits a bounded deterministic support manifold candidate', () => { const avatar = sphere('manifold-avatar', 500, 400, 500); const terrain = heightfield('manifold-terrain'); const cfg = config([avatar, terrain], { gravity: { x: 0, y: 0, z: 0 }, floorY: -100_000 }); const snapshot = new SpatialEmbodimentWorld(cfg).step().snapshot; const contacts = snapshot.contacts.filter(contact => contact.bodyA === 'manifold-avatar' || contact.bodyB === 'manifold-avatar'); assert.equal(contacts.length, 4); assert.equal(new Set(contacts.map(contact => contact.id)).size, 4); assert.equal(new Set(contacts.map(contact => contact.manifoldId)).size, 1); assert.ok(contacts.every(contact => contact.point.y === 0 && contact.normal.y === -Q)); assert.equal(replaySpatialEmbodiment(cfg, 1).stateRoot, snapshot.stateRoot); });
+test('heightfield patch mutates authored samples with roots, cache invalidation and replay', () => {
+  const avatar = sphere('patch-avatar', 500, 400, 500);
+  const terrain = heightfield('patch-terrain');
+  const terrainShape = terrain.fixtures[0]!.shape;
+  assert.equal(terrainShape.type, 'heightfield');
+  if (terrainShape.type !== 'heightfield') throw new Error('test fixture shape mismatch');
+  const cfg = config([avatar, terrain], { gravity: { x: 0, y: 0, z: 0 }, floorY: -100_000 });
+  const expectedHeightfieldRoot = spatialHeightfieldRoot('patch-terrain', 'patch-terrain:heightfield', terrainShape);
+  const command: SpatialCommand = { id: 'raise-center', tick: 2, type: 'patch-heightfield', bodyId: 'patch-terrain', fixtureId: 'patch-terrain:heightfield', samples: [{ index: 4, height: 600 }], expectedHeightfieldRoot };
+  const world = new SpatialEmbodimentWorld(cfg);
+  world.step();
+  const result = world.step([command]);
+  const mutation = result.events.find(event => event.kind === 'terrain-mutation');
+  assert.ok(mutation);
+  if (mutation?.kind !== 'terrain-mutation') throw new Error('terrain mutation event missing');
+  assert.equal(verifySpatialHeightfieldMutationEvent(mutation), true);
+  assert.equal(mutation.previousHeightfieldRoot, expectedHeightfieldRoot);
+  const afterTerrain = result.snapshot.bodies.find(body => body.id === 'patch-terrain')!.fixtures[0]!.shape;
+  assert.equal(afterTerrain.type, 'heightfield');
+  if (afterTerrain.type !== 'heightfield') throw new Error('patched fixture shape mismatch');
+  assert.equal(afterTerrain.heights[4], 600);
+  assert.equal(mutation.nextHeightfieldRoot, spatialHeightfieldRoot('patch-terrain', 'patch-terrain:heightfield', afterTerrain));
+  assert.ok(result.events.some(event => event.kind === 'contact' && event.phase === 'begin'));
+  assert.equal(spatialEmbodimentSnapshotToCausalDelta(result.snapshot, 'rfe:patch-base').facts.some(fact => fact.predicate === 'spatial.heightfield.patch' && fact.object === mutation.mutationRoot), true);
+  assert.equal(verifySpatialEmbodimentSnapshot(result.snapshot), true);
+  assert.equal(replaySpatialEmbodiment(cfg, 2, [command]).stateRoot, result.snapshot.stateRoot);
+});
+test('heightfield patch rejects stale roots without changing authored samples', () => {
+  const terrain = heightfield('stale-patch-terrain');
+  const cfg = config([terrain], { gravity: { x: 0, y: 0, z: 0 }, floorY: -100_000 });
+  const world = new SpatialEmbodimentWorld(cfg);
+  const before = world.snapshot();
+  assert.throws(() => world.step([{ id: 'stale', tick: 1, type: 'patch-heightfield', bodyId: 'stale-patch-terrain', fixtureId: 'stale-patch-terrain:heightfield', samples: [{ index: 4, height: 600 }], expectedHeightfieldRoot: 'stale-root' }]), /SPATIAL_HEIGHTFIELD_PATCH_EXPECTED_ROOT_MISMATCH/);
+  const after = world.snapshot();
+  assert.equal(after.bodyRoot, before.bodyRoot);
+  assert.equal(after.bodies[0]!.fixtures[0]!.shape.type, 'heightfield');
+  assert.deepEqual(after.bodies[0]!.fixtures[0]!.shape.type === 'heightfield' ? after.bodies[0]!.fixtures[0]!.shape.heights : [], new Array(9).fill(0));
+});
 
 // 64
 test('heightfield slope emits an upward support normal and exact VSR mesh', () => { const terrain = heightfield('slope', 'static', [0, 500, 1000, 0, 500, 1000, 0, 500, 1000]); const avatar = sphere('avatar', 500, 750, 1000); const snapshot = new SpatialEmbodimentWorld(config([avatar, terrain], { gravity: { x: 0, y: 0, z: 0 }, floorY: -100_000 })).step().snapshot; const body = snapshot.bodies.find(entry => entry.id === 'avatar')!; assert.equal(body.grounded, true); assert.ok(body.groundNormal.x < -300_000); assert.ok(body.groundNormal.y > 800_000); const scene = spatialEmbodimentSnapshotToVSRScene(snapshot); const mesh = scene.meshes.find(entry => entry.id === 'mesh:heightfield:slope:slope:heightfield'); const node = scene.nodes.find(entry => entry.id === 'node:slope:slope:heightfield'); assert.ok(mesh); assert.ok(node); assert.equal(mesh!.positions.length, 27); assert.equal(mesh!.indices.length, 24); assert.equal(node!.meshId, mesh!.id); const projected = projectSpatialEmbodiment(snapshot, { width: 160, height: 90, qualityTier: 'economy' }); assert.equal(projected.frameVerified, true); });
