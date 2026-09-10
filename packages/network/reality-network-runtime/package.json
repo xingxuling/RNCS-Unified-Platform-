@@ -5,7 +5,8 @@
   "description": "RNCS authoritative multiplayer runtime using RSR v0.7 integrity-checked state frames/deltas with deterministic prediction, rollback and loopback fault injection.",
   "license": "Apache-2.0",
   "exports": {
-    ".": "./src/index.mjs"
+    ".": "./src/index.mjs",
+    "./node": "./src/node.mjs"
   },
   "files": [
     "src",
@@ -20,6 +21,7 @@
   "dependencies": {
     "@taowind/agent-authority-fabric": "*",
     "@taowind/reality-branch-fabric": "*",
+    "@taowind/rncs-durable-store": "*",
     "@taowind/reality-simulation-runtime": "*",
     "@taowind/rfe-core-sdk": "*"
   },

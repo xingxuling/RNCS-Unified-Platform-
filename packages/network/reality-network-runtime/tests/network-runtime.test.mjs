@@ -9,6 +9,7 @@ import {
   RealityNetworkRuntime, issuePlayerDelegation, FORMATS, SnapshotInterpolator,
   createTwoPlayerWorldConfig, hash, NETWORK_PROTOCOL, OBSERVER_RELEVANCE_FORMAT, verifyNetworkWorldCompilationEnvelope, verifyNetworkSessionCheckpoint
 } from '../src/index.mjs';
+import {NetworkSessionCheckpointStore, verifyNetworkCheckpointStoreReceipt} from '../src/node.mjs';
 import {RealityOneGateway} from '../../../control/reality-one-gateway/src/index.mjs';
 import {createStudioNetworkWorld} from '../../../../examples/studio-authored-network-world-v03/project.mjs';
 
@@ -134,6 +135,22 @@ test('compiled checkpoint requires source roots and supports authority resume',a
   await restored.createSessionFromCheckpoint({checkpoint,compilation});
   const resumed=await restored.joinCompiledSlotAuthority({sessionId:id,slotId:'slot:blue',subjectId:'subject:blue'});
   assert.equal(resumed.resumed,true);assert.equal(resumed.snapshot.stateRoot,checkpoint.stateRoot);assert.equal(restored.getSessionHealth({sessionId:id}).server.players,1);
+});
+
+// 15
+test('network checkpoint store recovers primary and valid temporary files',async()=>{
+  const {runtime,ctx,id}=await setup({id:'session:checkpoint-store',joinB:false});
+  const pending=ctx.clients.get('a').createInput({type:'move',x:1000000,z:0});assert.equal(ctx.server.submitInput(pending).accepted,true);
+  const first=runtime.createCheckpoint({sessionId:id});
+  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'rncs-network-checkpoint-store-')),store=new NetworkSessionCheckpointStore({filePath:path.join(directory,'session.json')});
+  try{
+    const saved=await store.save(first);assert.equal(verifyNetworkCheckpointStoreReceipt(saved).valid,true);assert.equal((await store.load()).checkpointRoot,first.checkpointRoot);
+    ctx.server.advanceTick();const second=runtime.createCheckpoint({sessionId:id});
+    await assert.rejects(store.save(second,{faultAt:'after-temp-sync'}),/NETWORK_CHECKPOINT_STORE_FAULT:after-temp-sync/);
+    const primary=await store.recover();assert.equal(primary.source,'primary');assert.equal(primary.checkpoint.checkpointRoot,first.checkpointRoot);assert.equal(verifyNetworkCheckpointStoreReceipt(primary.receipt).valid,true);
+    fs.rmSync(store.filePath,{force:true});const promoted=await store.recover();assert.equal(promoted.source,'temporary_promoted');assert.equal(promoted.checkpoint.checkpointRoot,second.checkpointRoot);assert.equal(verifyNetworkCheckpointStoreReceipt(promoted.receipt).valid,true);
+    await assert.rejects(store.save(second,{faultAt:'after-rename'}),/NETWORK_CHECKPOINT_STORE_FAULT:after-rename/);const renameRecovery=await store.recover();assert.equal(renameRecovery.source,'primary');
+  }finally{fs.rmSync(directory,{recursive:true,force:true});}
 });
 
 async function deterministicRun(id,seed){const {runtime,ctx}=await setup({id,network:{seed,lossRate:.1,duplicateRate:.15,reorderRate:.2,jitterTicks:2}});for(let i=0;i<25;i++){runtime.submitInput({sessionId:id,playerId:i%2?'a':'b',command:{type:'move',x:(i%3-1)*1000000,z:(i%2)*1000000}});runtime.advanceServerTick({sessionId:id});}drain(runtime,id,80);return {root:ctx.server.lastSnapshot.stateRoot,receipts:ctx.server.receipts.map(x=>x.networkReceiptRoot),seen:[...ctx.server.seenSequences.values()].reduce((n,s)=>n+s.size,0)};}

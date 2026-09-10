@@ -8,7 +8,7 @@
 - 相同输入与相同网络种子产生相同最终 Root。
 
 ## 系统边界与环境
-系统内：Session 生命周期、输入校验、固定 Tick、Loopback 故障队列、预测/回滚、Snapshot/Delta、Receipt、checkpoint 候选恢复、RBF 恢复候选、Gateway bridge。
+系统内：Session 生命周期、输入校验、固定 Tick、Loopback 故障队列、预测/回滚、Snapshot/Delta、Receipt、checkpoint 候选恢复、Node-only checkpoint store candidate、RBF 恢复候选、Gateway bridge。
 外部 Provider：RSR 物理、AAF delegation、RBF candidate、RFE hashing/evidence、VSR 可选正式投影。
 环境：浏览器键盘、Node 进程、操作系统定时器；所有入站数据默认不可信。
 
@@ -45,6 +45,7 @@
 - 短时断线：客户端保留队列；重连取得完整快照并重发。
 - 严重失同步：创建隔离的 RBF `network-recovery` candidate，重放成功才恢复。
 - 进程退出/迁移候选：`network.session-checkpoint.v0.1` 保存经过 RFE 根封存的 RSR snapshot、玩家/AAF delegation、未消费输入、幂等序列、收据和有限 history；新 Runtime 通过 `SpatialEmbodimentWorld.fromSnapshot()` 恢复，验证失败则拒绝载入。
+- 文件恢复候选：Node-only `NetworkSessionCheckpointStore` 复用 `rncs-durable-store` 的临时文件同步、原子 rename、目录同步、主文件优先和故障注入；恢复后仍须由 Network Runtime 验证 checkpoint，存储 provider 不写入 canonical world state。
 - 带宽限制：优先 Ack/Receipt；正常使用 Delta，必要时回退完整 Snapshot。
 
 ## 外部 Provider 契约
@@ -53,10 +54,11 @@
 - AAF：`sealDelegation/verifyDelegation` 与 delegation root。
 - RFE：`rootHash/withIntegrity`。
 - RBF：`createBranch/createWorkspace/validateWorkspace`。
+- Durable store：`AtomicJsonStore` 只负责已验证 candidate artifact 的文件原子写入与恢复；调用方负责 schema、root、receipt 和 authority。
 - Gateway：runtime manifest + node-module bridge。
 
 ## 演化与兼容策略
-协议对象均有 `format` 和版本；checkpoint 候选只新增 Network Runtime 包，不改 RSR/VSR。未来 UDP/QUIC 传输实现同一 Transport 接口；旧 Loopback 继续作为确定性测试 Provider。文件原子存储、WAN/TLS、跨节点租约与 failover 不由该候选暗示为已完成。
+协议对象均有 `format` 和版本；checkpoint 候选只新增 Network Runtime 包，不改 RSR/VSR。未来 UDP/QUIC 传输实现同一 Transport 接口；旧 Loopback 继续作为确定性测试 Provider。文件原子存储现在有本地 Node candidate seam，但实际断电、WAN/TLS、跨节点租约与 failover 不由该候选暗示为已完成。
 
 ## 最小系统验证
-`npm test --workspace @taowind/reality-network-runtime` 覆盖 20 个场景；`npm run demo:network` 启动双人运行；Gateway 测试发现 `rncs.network` 并调用健康与 Session 动作。
+`npm test --workspace @taowind/reality-network-runtime` 覆盖 30 个场景；`npm test --workspace @taowind/rncs-durable-store` 覆盖共享原子存储；`npm run demo:network` 启动双人运行；Gateway 测试发现 `rncs.network` 并调用健康与 Session 动作。

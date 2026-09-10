@@ -19,6 +19,7 @@
     "verify": "npm test"
   },
   "dependencies": {
+    "@taowind/rncs-durable-store": "*",
     "@taowind/rncs-core-contract": "*",
     "@taowind/reality-representation-fabric": "*",
     "@taowind/reality-asset-genesis-fabric": "*"

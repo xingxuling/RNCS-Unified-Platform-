@@ -1,6 +1,5 @@
 import {createHash, createHmac, timingSafeEqual} from 'node:crypto';
-import {mkdir, open, readFile, rename} from 'node:fs/promises';
-import {dirname, isAbsolute} from 'node:path';
+import {isAbsolute} from 'node:path';
 import {
   ZERO_ROOT,
   advanceWorldTime,
@@ -68,6 +67,7 @@ import {
 } from '@taowind/rncs-core-contract';
 import {RealityRepresentationFabric, RealityRepresentationPortfolioRuntime} from '@taowind/reality-representation-fabric';
 import {GlbBuilder, encodeFloat32, encodeUint16, encodeUint32, encodeGlb, encodePng, encodeKtx2Rgba8, inspectGlb, inspectKtx2, minMax, normalizeIntent, deriveGenomeFromIntent, generatePbrTexturePack, generateMesh3d} from '@taowind/reality-asset-genesis-fabric';
+import {AtomicJsonStore} from '@taowind/rncs-durable-store';
 
 export const LARGE_WORLD_RUNTIME_FORMAT = 'rncs.large-world-runtime.v0.1';
 export const LARGE_WORLD_RUNTIME_VERSION = '0.1.0';
@@ -2577,48 +2577,6 @@ function resolveReplicationConflictCandidates(candidatesInput) {
   return {candidates: ordered, decision: {...base, decision_root: rootHash(base)}};
 }
 
-function injectDurableStoreFault(faultAt, stage) {
-  if (faultAt === stage) throw new Error(`LARGE_WORLD_DURABLE_STORE_FAULT:${stage}`);
-}
-
-async function syncDurableStoreDirectory(directoryPath) {
-  let handle = null;
-  try {
-    handle = await open(directoryPath, 'r');
-    await handle.sync();
-    return true;
-  } catch (error) {
-    if (['EBADF', 'EISDIR', 'EINVAL', 'ENOTDIR', 'ENOTSUP', 'EPERM'].includes(error.code)) return false;
-    throw error;
-  } finally {
-    if (handle) await handle.close();
-  }
-}
-
-async function readDurableStoreCandidate(filePath) {
-  try {
-    const serialized = await readFile(filePath, 'utf8');
-    let bundle;
-    try {
-      bundle = JSON.parse(serialized);
-    } catch (error) {
-      return {exists: true, valid: false, bytes: Buffer.byteLength(serialized, 'utf8'), error: `JSON_PARSE:${error.message}`};
-    }
-    const verification = verifyDurableBundle(bundle);
-    return {
-      exists: true,
-      valid: verification.valid,
-      bundle: verification.valid ? clone(bundle) : null,
-      bundle_root: bundle?.bundle_root ?? null,
-      bytes: Buffer.byteLength(serialized, 'utf8'),
-      error: verification.valid ? null : verification.errors.join(',')
-    };
-  } catch (error) {
-    if (error.code === 'ENOENT') return {exists: false, valid: false, bundle: null, bundle_root: null, bytes: 0, error: null};
-    return {exists: true, valid: false, bundle: null, bundle_root: null, bytes: 0, error: `${error.code ?? error.name}:${error.message}`};
-  }
-}
-
 function durableStoreReceipt(input) {
   const base = {
     format: LARGE_WORLD_DURABLE_STORE_RECEIPT_FORMAT,
@@ -4120,97 +4078,53 @@ export class LargeWorldDurableStore {
     const target = String(filePath ?? pathValue ?? '');
     fail(isAbsolute(target), 'LARGE_WORLD_DURABLE_STORE_ABSOLUTE_PATH_REQUIRED');
     this.filePath = target;
-    this.tempPath = `${target}.tmp`;
+    this.store = new AtomicJsonStore({
+      filePath: target,
+      verify: verifyDurableBundle,
+      valueRoot: bundle => bundle.bundle_root,
+      codePrefix: 'LARGE_WORLD_DURABLE_STORE',
+      invalidValueCode: 'LARGE_WORLD_DURABLE_STORE_BUNDLE_INVALID',
+      primaryMissingCode: 'LARGE_WORLD_DURABLE_STORE_PRIMARY_MISSING',
+      primaryInvalidCode: 'LARGE_WORLD_DURABLE_STORE_PRIMARY_INVALID'
+    });
+    this.tempPath = this.store.tempPath;
   }
 
   async save(bundleInput, {faultAt} = {}) {
-    const bundle = clone(bundleInput);
-    const verification = verifyDurableBundle(bundle);
-    fail(verification.valid, `LARGE_WORLD_DURABLE_STORE_BUNDLE_INVALID:${verification.errors.join(',')}`);
-    await mkdir(dirname(this.filePath), {recursive: true});
-    const serialized = JSON.stringify(bundle);
-    const handle = await open(this.tempPath, 'w');
-    let fileSynced = false;
-    try {
-      await handle.writeFile(serialized, 'utf8');
-      await handle.sync();
-      fileSynced = true;
-    } finally {
-      await handle.close();
-    }
-    injectDurableStoreFault(faultAt, 'after-temp-sync');
-    await rename(this.tempPath, this.filePath);
-    injectDurableStoreFault(faultAt, 'after-rename');
-    const directorySynced = await syncDurableStoreDirectory(dirname(this.filePath));
+    const result = await this.store.save(bundleInput, {faultAt});
     return durableStoreReceipt({
-      operation: 'SAVE',
-      status: 'COMMITTED',
-      source: 'temp_rename',
-      bundleRoot: bundle.bundle_root,
-      bytes: Buffer.byteLength(serialized, 'utf8'),
-      atomicRename: true,
-      fileSynced,
-      directorySynced
+      operation: result.operation,
+      status: result.status,
+      source: result.source,
+      bundleRoot: result.valueRoot,
+      bytes: result.bytes,
+      atomicRename: result.atomicRename,
+      fileSynced: result.fileSynced,
+      directorySynced: result.directorySynced
     });
   }
 
   async load() {
-    const primary = await readDurableStoreCandidate(this.filePath);
-    fail(primary.exists, 'LARGE_WORLD_DURABLE_STORE_PRIMARY_MISSING');
-    fail(primary.valid, `LARGE_WORLD_DURABLE_STORE_PRIMARY_INVALID:${primary.error ?? 'unknown'}`);
-    return clone(primary.bundle);
+    return this.store.load();
   }
 
   async recover() {
-    const primary = await readDurableStoreCandidate(this.filePath);
-    const temporary = await readDurableStoreCandidate(this.tempPath);
-    if (primary.valid) {
-      return {
-        status: 'RECOVERED',
-        source: 'primary',
-        bundle: clone(primary.bundle),
-        receipt: durableStoreReceipt({
-          operation: 'RECOVER',
-          status: 'RECOVERED',
-          source: 'primary',
-          bundleRoot: primary.bundle.bundle_root,
-          bytes: primary.bytes,
-          atomicRename: true,
-          fileSynced: true,
-          directorySynced: false
-        }),
-        diagnostics: {primary: 'VALID', temporary: temporary.valid ? 'VALID_IGNORED' : temporary.exists ? 'INVALID_IGNORED' : 'MISSING'}
-      };
-    }
-    if (temporary.valid) {
-      await rename(this.tempPath, this.filePath);
-      const directorySynced = await syncDurableStoreDirectory(dirname(this.filePath));
-      return {
-        status: 'RECOVERED',
-        source: 'temporary_promoted',
-        bundle: clone(temporary.bundle),
-        receipt: durableStoreReceipt({
-          operation: 'RECOVER',
-          status: 'RECOVERED',
-          source: 'temporary_promoted',
-          bundleRoot: temporary.bundle.bundle_root,
-          bytes: temporary.bytes,
-          atomicRename: true,
-          fileSynced: true,
-          directorySynced
-        }),
-        diagnostics: {primary: primary.exists ? 'INVALID' : 'MISSING', temporary: 'VALID_PROMOTED'}
-      };
-    }
+    const result = await this.store.recover();
     return {
-      status: primary.exists || temporary.exists ? 'CORRUPT' : 'EMPTY',
-      source: null,
-      bundle: null,
-      receipt: null,
-      diagnostics: {
-        primary: primary.exists ? `INVALID:${primary.error ?? 'unknown'}` : 'MISSING',
-        temporary: temporary.exists ? `INVALID:${temporary.error ?? 'unknown'}` : 'MISSING'
-      }
+      status: result.status,
+      source: result.source,
+      bundle: result.value ? clone(result.value) : null,
+      receipt: result.receipt ? durableStoreReceipt({
+        operation: result.receipt.operation,
+        status: result.receipt.status,
+        source: result.receipt.source,
+        bundleRoot: result.receipt.valueRoot,
+        bytes: result.receipt.bytes,
+        atomicRename: result.receipt.atomicRename,
+        fileSynced: result.receipt.fileSynced,
+        directorySynced: result.receipt.directorySynced
+      }) : null,
+      diagnostics: result.diagnostics
     };
   }
 }
