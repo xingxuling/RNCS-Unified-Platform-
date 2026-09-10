@@ -904,11 +904,13 @@ var VSRSpatial3D = (() => {
     catalog;
     loader;
     maxConcurrent;
+    loadPriority;
     states = /* @__PURE__ */ new Map();
-    constructor(catalog, loader, { maxConcurrent = 4 } = {}) {
+    constructor(catalog, loader, { maxConcurrent = 4, loadPriority = (asset) => 0 } = {}) {
       this.catalog = catalogMap(catalog);
       this.loader = loader;
       this.maxConcurrent = Math.max(1, Math.floor(maxConcurrent));
+      this.loadPriority = loadPriority;
       for (const id of this.catalog.keys()) this.states.set(id, { status: "idle", attempts: 0, leases: 0 });
     }
     state(assetId) {
@@ -940,7 +942,10 @@ var VSRSpatial3D = (() => {
           state.status = "blocked";
           operations.push({ assetId: id, status: "blocked", errorCode: "VSR_ASSET_DEPENDENCY_BLOCKED", errorMessage: "Dependency failed or is missing." });
         }
-        const candidates = [...pending].filter((id) => unique(this.catalog.get(id)?.dependencies).every((dependency) => this.states.get(dependency)?.status === "ready")), foregroundLoadable = candidates.filter((id) => foregroundPending.has(id)), loadable = (foregroundLoadable.length ? foregroundLoadable : candidates).slice(0, this.maxConcurrent);
+        const candidates = [...pending].filter((id) => unique(this.catalog.get(id)?.dependencies).every((dependency) => this.states.get(dependency)?.status === "ready")), foregroundLoadable = candidates.filter((id) => foregroundPending.has(id)), prioritized = foregroundLoadable.length ? foregroundLoadable : candidates, order = new Map(prioritized.map((id, index) => [id, index])), loadable = prioritized.sort((a, b) => {
+          const ap = Number(this.loadPriority(this.catalog.get(a))), bp = Number(this.loadPriority(this.catalog.get(b)));
+          return (Number.isFinite(bp) ? bp : 0) - (Number.isFinite(ap) ? ap : 0) || order.get(a) - order.get(b);
+        }).slice(0, this.maxConcurrent);
         if (!loadable.length) {
           for (const id of pending) {
             blocked.add(id);
@@ -1208,7 +1213,7 @@ var VSRSpatial3D = (() => {
         }
       },
       inspect() {
-        return { format: VSR_BROWSER_ASSET_CACHE_FORMAT, version: VSR_BROWSER_ASSET_CACHE_VERSION, cacheName, revisionRoot, available, manifestRoot, bytesResident: [...entries.values()].reduce((sum, entry) => sum + entry.byteLength, 0), cachedAssetIds: unique2([...entries.values()].flatMap((entry) => entry.assetIds)), cacheHits, cacheMisses, cacheEvictions, diagnostics: unique2(diagnostics) };
+        return { format: VSR_BROWSER_ASSET_CACHE_FORMAT, version: VSR_BROWSER_ASSET_CACHE_VERSION, cacheName, revisionRoot, maxBytes, available, manifestRoot, bytesResident: [...entries.values()].reduce((sum, entry) => sum + entry.byteLength, 0), cachedAssetIds: unique2([...entries.values()].flatMap((entry) => entry.assetIds)), cacheHits, cacheMisses, cacheEvictions, diagnostics: unique2(diagnostics) };
       }
     };
   }

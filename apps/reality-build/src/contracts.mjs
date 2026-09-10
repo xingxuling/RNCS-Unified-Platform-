@@ -31,6 +31,10 @@ function normalizeAssetDatabase(input,projectFile){
   const sourceRoots=Array.isArray(raw.source_roots??raw.sourceRoots)?(raw.source_roots??raw.sourceRoots).map(value=>resolveProjectPath(value,projectFile)):[];
   return{enabled:true,cache_dir:resolveProjectPath(raw.cache_dir??raw.cacheDir??'output/asset-cache',projectFile),source_roots:[...new Set(sourceRoots)].sort(),profiles:[...new Set((Array.isArray(raw.profiles)?raw.profiles:['runtime']).map(String))].sort(),recursive:raw.recursive!==false,materialize:raw.materialize!==false};
 }
+function normalizeAssetCache(input){
+  const raw=input?.asset_cache??input?.assetCache??{},maxBytes=raw.max_bytes??raw.maxBytes??null;
+  return{enabled:raw.enabled!==false,max_bytes:maxBytes};
+}
 
 export function normalizeBuildRequest(input={}){
   const targets=[...new Set((input.targets??['web-release']).map(String))];
@@ -56,6 +60,7 @@ export function normalizeBuildRequest(input={}){
       fail_on_warning:input.policy?.fail_on_warning===true
     },
     asset_database:normalizeAssetDatabase(input,path.resolve(String(input.project_file??input.projectFile??''))),
+    asset_cache:normalizeAssetCache(input),
     presentation_candidate:clone(input.presentation_candidate??input.presentationCandidate??null),
     build_time:fixedIso(input.build_time??'2026-07-01T00:00:00.000Z'),
     runtime_trace:Array.isArray(input.runtime_trace)?clone(input.runtime_trace):[{},{}],
@@ -77,6 +82,7 @@ export function validateBuildRequest(r){
   need(Number.isInteger(r?.app?.version_code)&&r.app.version_code>0,'VERSION_CODE_INVALID','app.version_code');
   need(Array.isArray(r?.runtime_trace),'RUNTIME_TRACE_INVALID','runtime_trace');
   need(Array.isArray(r?.spatial_trace),'SPATIAL_TRACE_INVALID','spatial_trace');
+  if(r?.asset_cache!==undefined){need(typeof r.asset_cache.enabled==='boolean','ASSET_CACHE_ENABLED_INVALID','asset_cache.enabled');need(r.asset_cache.max_bytes===null||Number.isSafeInteger(r.asset_cache.max_bytes)&&r.asset_cache.max_bytes>=0,'ASSET_CACHE_MAX_BYTES_INVALID','asset_cache.max_bytes');}
   if(r?.presentation_candidate!==null&&r?.presentation_candidate!==undefined)need(verifyWorldBodyBuildPresentationCandidate(r.presentation_candidate)||verifySpatialPresentationCandidate(r.presentation_candidate),'PRESENTATION_CANDIDATE_INVALID','presentation_candidate');
   if(r?.asset_database?.enabled){
     need(Boolean(r.asset_database.cache_dir),'ASSET_DATABASE_CACHE_DIR_REQUIRED','asset_database.cache_dir');
@@ -104,7 +110,7 @@ export function validateUnifiedProject(project){
 }
 
 export function createBuildIdentity(request,project,inputs={}){
-  const semantic={fabric_version:BUILD_VERSION,project_root:project.project_root??rootHash(project),targets:request.targets,mode:request.mode,quality_profile:request.quality_profile,app:request.app,policy:request.policy,asset_database:{enabled:request.asset_database?.enabled===true,source_roots:request.asset_database?.source_roots??[],profiles:request.asset_database?.profiles??['runtime'],recursive:request.asset_database?.recursive!==false,materialize:request.asset_database?.materialize!==false,database_root:inputs.asset_database_root??null},presentation_candidate_root:request.presentation_candidate?.presentation?.presentation_root??null,network_compilation_root:inputs.network_compilation_root??null,build_time:request.build_time,runtime_trace:request.runtime_trace,spatial_trace:request.spatial_trace,metadata:request.metadata};
+  const semantic={fabric_version:BUILD_VERSION,project_root:project.project_root??rootHash(project),targets:request.targets,mode:request.mode,quality_profile:request.quality_profile,app:request.app,policy:request.policy,asset_database:{enabled:request.asset_database?.enabled===true,source_roots:request.asset_database?.source_roots??[],profiles:request.asset_database?.profiles??['runtime'],recursive:request.asset_database?.recursive!==false,materialize:request.asset_database?.materialize!==false,database_root:inputs.asset_database_root??null},asset_cache:{enabled:request.asset_cache?.enabled!==false,max_bytes:request.asset_cache?.max_bytes??null},presentation_candidate_root:request.presentation_candidate?.presentation?.presentation_root??null,network_compilation_root:inputs.network_compilation_root??null,build_time:request.build_time,runtime_trace:request.runtime_trace,spatial_trace:request.spatial_trace,metadata:request.metadata};
   const semantic_request_root=rootHash(semantic),value={semantic_request_root,...semantic};
   return{build_id:`build:${rootHash(value).slice(0,24)}`,build_key:rootHash(value),semantic_request_root,safe_title:safeName(request.app.title),project_root:semantic.project_root};
 }

@@ -68,6 +68,7 @@ export interface VSRSpatialAssetStreamingLoaderContext {
 }
 export type VSRSpatialAssetPayload=Uint8Array|ArrayBuffer;
 export type VSRSpatialAssetLoader=(asset:VSRSpatialAssetRecord,context:VSRSpatialAssetStreamingLoaderContext)=>VSRSpatialAssetPayload|Promise<VSRSpatialAssetPayload>;
+export type VSRSpatialAssetLoadPriority=(asset:VSRSpatialAssetRecord)=>number;
 export type VSRSpatialAssetState='idle'|'loading'|'ready'|'failed'|'blocked'|'evicted';
 export interface VSRSpatialAssetStreamingOperation {
   assetId:string;
@@ -153,9 +154,10 @@ export class VSRSpatialAssetStreamer{
   private readonly catalog:Map<string,VSRSpatialAssetRecord>;
   private readonly loader:VSRSpatialAssetLoader;
   private readonly maxConcurrent:number;
+  private readonly loadPriority:VSRSpatialAssetLoadPriority;
   private readonly states=new Map<string,AssetState>();
-  constructor(catalog:VSRSpatialAssetRecord[],loader:VSRSpatialAssetLoader,{maxConcurrent=4}:{maxConcurrent?:number}={}){
-    this.catalog=catalogMap(catalog);this.loader=loader;this.maxConcurrent=Math.max(1,Math.floor(maxConcurrent));for(const id of this.catalog.keys())this.states.set(id,{status:'idle',attempts:0,leases:0});
+  constructor(catalog:VSRSpatialAssetRecord[],loader:VSRSpatialAssetLoader,{maxConcurrent=4,loadPriority=(asset)=>0}:{maxConcurrent?:number;loadPriority?:VSRSpatialAssetLoadPriority}={}){
+    this.catalog=catalogMap(catalog);this.loader=loader;this.maxConcurrent=Math.max(1,Math.floor(maxConcurrent));this.loadPriority=loadPriority;for(const id of this.catalog.keys())this.states.set(id,{status:'idle',attempts:0,leases:0});
   }
   state(assetId:string):VSRSpatialAssetState{return this.states.get(assetId)?.status??'evicted'}
   get(assetId:string):Uint8Array|undefined{const bytes=this.states.get(assetId)?.bytes;return bytes?new Uint8Array(bytes):undefined}
@@ -169,7 +171,7 @@ export class VSRSpatialAssetStreamer{
     while(pending.size){
       const newlyBlocked=[...pending].filter(id=>unique(this.catalog.get(id)?.dependencies).some(dependency=>resolution.missingAssetIds.includes(dependency)||this.states.get(dependency)?.status==='failed'||blocked.has(dependency)));
       for(const id of newlyBlocked){pending.delete(id);blocked.add(id);const state=this.states.get(id)!;state.status='blocked';operations.push({assetId:id,status:'blocked',errorCode:'VSR_ASSET_DEPENDENCY_BLOCKED',errorMessage:'Dependency failed or is missing.'})}
-      const candidates=[...pending].filter(id=>unique(this.catalog.get(id)?.dependencies).every(dependency=>this.states.get(dependency)?.status==='ready')),foregroundLoadable=candidates.filter(id=>foregroundPending.has(id)),loadable=(foregroundLoadable.length?foregroundLoadable:candidates).slice(0,this.maxConcurrent);
+      const candidates=[...pending].filter(id=>unique(this.catalog.get(id)?.dependencies).every(dependency=>this.states.get(dependency)?.status==='ready')),foregroundLoadable=candidates.filter(id=>foregroundPending.has(id)),prioritized=foregroundLoadable.length?foregroundLoadable:candidates,order=new Map(prioritized.map((id,index)=>[id,index])),loadable=prioritized.sort((a,b)=>{const ap=Number(this.loadPriority(this.catalog.get(a)!)),bp=Number(this.loadPriority(this.catalog.get(b)!));return(Number.isFinite(bp)?bp:0)-(Number.isFinite(ap)?ap:0)||(order.get(a)!-order.get(b)!)}).slice(0,this.maxConcurrent);
       if(!loadable.length){for(const id of pending){blocked.add(id);const state=this.states.get(id)!;state.status='blocked';operations.push({assetId:id,status:'blocked',errorCode:'VSR_ASSET_DEPENDENCY_UNRESOLVED',errorMessage:'Dependency did not become ready.'})}pending.clear();break}
       for(const id of loadable){pending.delete(id);this.states.get(id)!.status='loading'}
       const results=await Promise.all(loadable.map(async id=>{const state=this.states.get(id)!,asset=this.catalog.get(id)!;state.attempts++;const controller=new AbortController();try{const bytes=payloadBytes(await this.loader(asset,{asset,signal:controller.signal,attempt:state.attempts})),actual=sha256Bytes(bytes);if(actual.toLowerCase()!==asset.sha256.toLowerCase()){const error=Object.assign(new Error(`SHA-256 mismatch for ${id}.`),{code:'VSR_ASSET_HASH_MISMATCH'});throw error}state.bytes=bytes;state.status='ready';return{assetId:id,status:'loaded' as const,byteLength:bytes.byteLength,sha256:actual,attempt:state.attempts}}catch(error){const info=errorInfo(error);state.status='failed';state.bytes=undefined;state.errorCode=info.code;state.errorMessage=info.message;return{assetId:id,status:'failed' as const,errorCode:info.code,errorMessage:info.message,attempt:state.attempts}}}));

@@ -10,6 +10,14 @@
     "targets": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["web-release", "web-single", "windows-portable", "windows-native", "android-project", "android-apk", "headless-server", "replay-bundle"]}},
     "runtime_trace": {"type": "array", "items": {"type": "object"}},
     "presentation_candidate": {"$ref": "./reality-build-spatial-presentation-candidate.v0.1.schema.json"},
+    "asset_cache": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {"type": "boolean"},
+        "max_bytes": {"type": ["integer", "null"], "minimum": 0}
+      }
+    },
     "mode": {"enum": ["development", "release"]},
     "quality_profile": {"enum": ["economy", "balanced", "quality", "cinematic"]},
     "app": {

@@ -10,6 +10,9 @@ test('请求被规范化',()=>assert.equal(base().format,'reality-build.request.
 test('请求版本正确',()=>assert.equal(base().version,'0.2.0-alpha.1'));
 test('默认发布模式',()=>assert.equal(base().mode,'release'));
 test('默认平衡质量',()=>assert.equal(base().quality_profile,'balanced'));
+test('默认启用共享资产缓存策略',()=>assert.deepEqual(base().asset_cache,{enabled:true,max_bytes:null}));
+test('资产缓存预算进入语义构建键',()=>{const a=base(),b=normalizeBuildRequest({...a,asset_cache:{max_bytes:4096}});assert.equal(b.asset_cache.enabled,true);assert.equal(b.asset_cache.max_bytes,4096);assert.notEqual(createBuildIdentity(a,project).build_key,createBuildIdentity(b,project).build_key)});
+test('非法资产缓存预算被拒绝',()=>{const r=normalizeBuildRequest({...base(),asset_cache:{max_bytes:-1}});assert.equal(validateBuildRequest(r).valid,false);assert.ok(validateBuildRequest(r).errors.some(x=>x.code==='ASSET_CACHE_MAX_BYTES_INVALID'))});
 test('请求根可验证',()=>assert.ok(verifySeal(base(),'request_root')));
 test('目标会去重',()=>assert.deepEqual(normalizeBuildRequest({...base(),targets:['web-release','web-release']}).targets,['web-release']));
 test('开发模式保留',()=>assert.equal(normalizeBuildRequest({...base(),mode:'development'}).mode,'development'));

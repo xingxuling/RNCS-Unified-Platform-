@@ -53,6 +53,14 @@ test('asset streamer loads dependency-first with bounded concurrency and verifie
   assert.deepEqual(streamer.evict(),['asset:dependency','asset:independent','asset:root']);
 });
 
+test('asset streamer honors a provider-backed load priority without changing resolution',async()=>{
+  const catalog=[record('asset:a','a'),record('asset:b','b'),record('asset:c','c')],starts:string[]=[],streamer=new VSRSpatialAssetStreamer(catalog,async asset=>{starts.push(asset.id);return bytes(asset.id.slice(-1))},{maxConcurrent:1,loadPriority:asset=>asset.id==='asset:c'?10:0});
+  const receipt=await streamer.acquire({requestedAssetIds:['asset:a','asset:b','asset:c']});
+  assert.deepEqual(starts,['asset:c','asset:a','asset:b']);
+  assert.deepEqual(receipt.resolution.requestedAssetIds,['asset:a','asset:b','asset:c']);
+  assert.equal(receipt.failedAssetIds.length,0);
+});
+
 test('asset hash failure blocks dependents and seals failure evidence',async()=>{
   const bad=record('asset:bad','expected'),root=record('asset:root','root',{dependencies:['asset:bad']});bad.sha256='0'.repeat(64);
   const streamer=new VSRSpatialAssetStreamer([bad,root],async asset=>bytes(asset.id==='asset:bad'?'actual':'root'));
@@ -117,7 +125,7 @@ test('browser cache provider rehydrates bytes and invalidates a changed scene re
 
 test('browser cache provider rejects a tampered payload and applies deterministic LRU',async()=>{
   const storage=new MemoryCacheStorage(),first=bytes('first'),second=bytes('second'),one=record('asset:first','first'),two=record('asset:second','second'),options={cacheName:'test-spatial-assets-lru',revisionRoot:'revision:lru',maxBytes:second.byteLength,cacheStorage:storage as unknown as CacheStorage,cryptoApi:{subtle:globalThis.crypto.subtle},origin:'https://rncs.test'};
-  const cache=createVSRBrowserAssetCache(options);await cache.write(one,first);await cache.write(two,second);assert.equal(await cache.read(one),undefined);const resident=await cache.read(two);if(!resident)throw new Error('BROWSER_CACHE_LRU_RESIDENT_MISSING');assert.deepEqual([...resident],[...second]);const payloadKey=(await storage.cache.keys()).find(request=>request.url.endsWith(`${two.sha256}.bin`))!;await storage.cache.put(payloadKey,response(bytes('bad')));const tampered=createVSRBrowserAssetCache(options);assert.equal(await tampered.read(two),undefined);assert.equal(tampered.inspect().cacheMisses,1);assert.equal(tampered.inspect().cacheEvictions,0);
+  const cache=createVSRBrowserAssetCache(options);assert.equal(cache.inspect().maxBytes,second.byteLength);await cache.write(one,first);await cache.write(two,second);assert.equal(await cache.read(one),undefined);const resident=await cache.read(two);if(!resident)throw new Error('BROWSER_CACHE_LRU_RESIDENT_MISSING');assert.deepEqual([...resident],[...second]);const payloadKey=(await storage.cache.keys()).find(request=>request.url.endsWith(`${two.sha256}.bin`))!;await storage.cache.put(payloadKey,response(bytes('bad')));const tampered=createVSRBrowserAssetCache(options);assert.equal(await tampered.read(two),undefined);assert.equal(tampered.inspect().cacheMisses,1);assert.equal(tampered.inspect().cacheEvictions,0);
 });
 
 let passed=0;
