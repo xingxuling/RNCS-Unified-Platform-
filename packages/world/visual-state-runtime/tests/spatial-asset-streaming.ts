@@ -128,6 +128,11 @@ test('browser cache provider rejects a tampered payload and applies deterministi
   const cache=createVSRBrowserAssetCache(options);assert.equal(cache.inspect().maxBytes,second.byteLength);await cache.write(one,first);await cache.write(two,second);assert.equal(await cache.read(one),undefined);const resident=await cache.read(two);if(!resident)throw new Error('BROWSER_CACHE_LRU_RESIDENT_MISSING');assert.deepEqual([...resident],[...second]);const payloadKey=(await storage.cache.keys()).find(request=>request.url.endsWith(`${two.sha256}.bin`))!;await storage.cache.put(payloadKey,response(bytes('bad')));const tampered=createVSRBrowserAssetCache(options);assert.equal(await tampered.read(two),undefined);assert.equal(tampered.inspect().cacheMisses,1);assert.equal(tampered.inspect().cacheEvictions,0);
 });
 
+test('browser cache coalesces concurrent manifest writes and can keep access telemetry ephemeral',async()=>{
+  const storage=new MemoryCacheStorage(),items=['one','two','three'].map(value=>({payload:bytes(value),descriptor:record(`asset:${value}`,value)})),options={cacheName:'test-spatial-assets-batch',revisionRoot:'revision:batch',maxBytes:64,cacheStorage:storage as unknown as CacheStorage,cryptoApi:{subtle:globalThis.crypto.subtle},origin:'https://rncs.test',persistAccesses:false};
+  const cache=createVSRBrowserAssetCache(options),first=items[0]!;await Promise.all(items.map(item=>cache.write(item.descriptor,item.payload)));const inspection=cache.inspect();assert.equal(inspection.persistAccesses,false);assert.equal(inspection.bytesResident,items.reduce((sum,item)=>sum+item.payload.byteLength,0));assert.ok(inspection.manifestWrites<items.length);const cold=createVSRBrowserAssetCache(options),read=await cold.read(first.descriptor);if(!read)throw new Error('BROWSER_CACHE_BATCH_REHYDRATE_FAILED');assert.equal(cold.inspect().cacheHits,1);assert.equal(cold.inspect().manifestWrites,0);
+});
+
 let passed=0;
 for(const entry of tests){try{await entry.fn();passed++;console.log(`PASS ${entry.name}`)}catch(error){console.error(`FAIL ${entry.name}`);throw error}}
 console.log(`VSR spatial asset streaming tests: ${passed}/${tests.length} PASS`);

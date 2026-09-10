@@ -24,7 +24,7 @@ test('Android 工程有 Manifest',()=>assert.ok(fs.existsSync(path.join(out,'and
 test('Android 工程有 MainActivity',()=>assert.ok(fs.existsSync(path.join(out,'android-project','app','src','main','java','com','taowind','targets','MainActivity.java'))));
 test('Android host 为内嵌页面提供稳定 synthetic origin',()=>{const java=fs.readFileSync(path.join(out,'android-project','app','src','main','java','com','taowind','targets','MainActivity.java'),'utf8');assert.match(java,/loadDataWithBaseURL\("https:\/\/rncs\.local\//);assert.match(java,/readIndexHtml\(\)/);assert.doesNotMatch(java,/loadUrl\("file:\/\/\/android_asset\/index\.html"\)/)});
 test('Android 工程内嵌游戏 HTML',()=>assert.ok(fs.existsSync(path.join(out,'android-project','app','src','main','assets','index.html'))));
-test('嵌入式 runtime 携带共享资产缓存策略',()=>{const html=fs.readFileSync(path.join(out,'android-project','app','src','main','assets','index.html'),'utf8');assert.match(html,/"asset_cache"\s*:\s*\{"enabled":true,"max_bytes":null\}/)});
+test('嵌入式 runtime 携带共享资产缓存策略',()=>{const html=fs.readFileSync(path.join(out,'android-project','app','src','main','assets','index.html'),'utf8');assert.match(html,/"asset_cache"\s*:\s*\{"enabled":true,"max_bytes":null,"persist_accesses":false\}/)});
 test('Android 清单承认未编译 APK',()=>{const m=readJson(path.join(out,'android-project','android-build-manifest.json'));assert.equal(m.apk_built,false)});
 test('Android 版本号正确',()=>{const m=readJson(path.join(out,'android-project','android-build-manifest.json'));assert.equal(m.version_code,12)});
 test('六个目标均有目标收据',()=>built.targets.forEach(t=>assert.ok(fs.existsSync(path.join(out,t.target,'target-receipt.json')))));

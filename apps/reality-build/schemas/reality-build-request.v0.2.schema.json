@@ -15,7 +15,8 @@
       "additionalProperties": false,
       "properties": {
         "enabled": {"type": "boolean"},
-        "max_bytes": {"type": ["integer", "null"], "minimum": 0}
+        "max_bytes": {"type": ["integer", "null"], "minimum": 0},
+        "persist_accesses": {"type": "boolean"}
       }
     },
     "mode": {"enum": ["development", "release"]},
