@@ -779,6 +779,7 @@
         "managed-static-terrain-residency-transition",
         "bounded-heightfield-sphere-sweep-candidate",
         "bounded-heightfield-capsule-sweep-candidate",
+        "bounded-heightfield-contact-manifold-candidate",
         "candidate-only-no-canonical-mutation"
       ]
     },

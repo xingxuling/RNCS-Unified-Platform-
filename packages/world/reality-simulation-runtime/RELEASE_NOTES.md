@@ -8,7 +8,8 @@
 - 历史 candidate 新增 bounded heightfield sphere/upright-capsule support probe：复用 authored triangle surface，固定步进加二分细化首个 sampled contact；unsupported box/convex 等类型 fail closed。该路径的收据保留在 `RNCS_RSR_HEIGHTFIELD_SHAPE_PROBE_CANDIDATE_v0.1.json`，当前 capsule shape cast 已由后续 authored-triangle sweep 替代。
 - 新增 bounded heightfield sphere-vs-authored-triangle sweep：对 face、edge、vertex 候选做确定性固定点求交，按投影 XZ cell window 和 `4096` cell 上限 fail closed；sphere 走 exact local sweep，box/convex 等类型继续拒绝。
 - 新增 bounded upright-capsule-vs-authored-triangle sweep：解析 capsule segment interior 与 triangle face/edge/vertex 的 earliest candidate，并继续以 `4096` projected cell 上限 fail closed；任意旋转 capsule、动态 terrain 与完整接触流形仍保持 OPEN。
-- Spatial Embodiment 回归为 `73/73 PASS`，RSR 全量回归为 `207/207 PASS`；Large World -> RSR terrain lowering、同一 RSR 世界的 stream residency transition、bounded terrain-surface ray query、sphere sweep 与 upright-capsule sweep 已有本地 candidate execution evidence，但不宣称完成生产级 stream policy、动态地形、完整工业接触流形、真实设备或生产性能。
+- 新增 bounded heightfield contact manifold candidate：按 moving fixture footprint 采样最多四个 authored support points，共享 `manifoldId`、保留独立 impulse/cache key，只有主点执行位置修正；continuous manifold、动态 terrain 与完整工业求解仍保持 OPEN。
+- Spatial Embodiment 回归为 `74/74 PASS`，RSR 全量回归为 `208/208 PASS`；Large World -> RSR terrain lowering、同一 RSR 世界的 stream residency transition、bounded terrain-surface ray query、sphere sweep、upright-capsule sweep 与 bounded contact manifold 已有本地 candidate execution evidence，但不宣称完成生产级 stream policy、动态地形、连续完整接触流形、真实设备或生产性能。
 
 - Added authored convex-hull fixtures with finite, non-coplanar vertex validation and deterministic triangle-index validation.
 - Routed convex-hull fixtures through rotated world-space support points, GJK/EPA contacts, broad-phase AABBs, snapshots, replay roots and VSR triangle-mesh projection.

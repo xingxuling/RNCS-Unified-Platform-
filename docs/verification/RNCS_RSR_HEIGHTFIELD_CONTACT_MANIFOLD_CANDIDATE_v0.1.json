@@ -1,0 +1,97 @@
+{
+  "format": "rncs.rsr-heightfield-contact-manifold-candidate-evidence.v0.1",
+  "version": "0.1.0-alpha.1",
+  "status": "CANDIDATE_EXECUTION_VERIFIED",
+  "source": {
+    "checkout": "rncs-visual-factory-v01",
+    "branch": "codex/rncs-engine-stack-archaeology-v01",
+    "sourceCommit": "46875cf",
+    "authority": "candidate-only; no physical provider admission, RCL promotion, release promotion or main-branch mutation"
+  },
+  "change": {
+    "owner": "RSR Spatial Embodiment",
+    "upstreamTerrainOwner": "Large World Runtime terrain sampling and grid mesh",
+    "contract": "heightfield fixture pair -> bounded deterministic contact points sharing one manifoldId",
+    "algorithm": "shape-aware center/boundary footprint samples, authored heightfield surface resolution, stable penetration/coordinate ordering, maximum four contacts; primary contact alone performs positional correction while each point retains an independent contact cache key",
+    "explicitCandidateLabel": "bounded-heightfield-contact-manifold-candidate"
+  },
+  "positiveEvidence": [
+    "A flat authored heightfield produces four distinct contact point IDs under one stable manifoldId for a sphere footprint.",
+    "The primary contact preserves the existing single-point position correction boundary while non-primary points retain independent manifold and impulse/cache identity.",
+    "The same candidate path remains deterministic across a fresh replay and preserves the lowered Large World terrain roots.",
+    "A lowered Large World terrain chunk reaches the manifold-capable RSR path without changing the source candidate or stream roots."
+  ],
+  "negativeEvidence": [
+    "This is a bounded four-point support manifold candidate, not a complete continuous terrain contact manifold or industrial solver.",
+    "Contact points are derived from shape-aware footprint samples and the existing single-support/AABB penetration test; exact arbitrary-shape terrain contact, dynamic terrain and rotated heightfields remain open.",
+    "The change does not grant canonical world mutation, provider commit authority or release promotion.",
+    "No physical device, target GPU frame-rate, Android, external network or production terrain deployment evidence exists.",
+    "No K400 gate is promoted to PASS by source, package tests or CPU reference execution alone."
+  ],
+  "execution": {
+    "commands": [
+      "npm.cmd run typecheck --workspace @taowind/reality-simulation-runtime",
+      "npm.cmd run lint --workspace @taowind/reality-simulation-runtime",
+      "npm.cmd run test:spatial-embodiment --workspace @taowind/reality-simulation-runtime",
+      "npm.cmd test --workspace @taowind/reality-simulation-runtime",
+      "npm.cmd run test:large-world-rsr-bridge",
+      "npm.cmd run verify:release --workspace @taowind/reality-simulation-runtime",
+      "git diff --check -- <heightfield source, tests, docs and registry paths>"
+    ],
+    "results": {
+      "typecheck": "PASS",
+      "lint": "PASS",
+      "spatialEmbodiment": "74/74 PASS",
+      "fullRsr": {
+        "vsr": "29/29 PASS",
+        "simulationV01": "11/11 PASS",
+        "constraintPhysicsV02": "19/19 PASS",
+        "embodiedDynamicsV03": "30/30 PASS",
+        "temporalExperienceV04": "35/35 PASS",
+        "spatialEmbodimentV06": "74/74 PASS",
+        "networkReconciliationV07": "7/7 PASS",
+        "representationObservation": "3/3 PASS",
+        "total": "208/208 PASS"
+      },
+      "largeWorldRsrBridge": "5/5 PASS",
+      "releaseAudit": "PASS",
+      "diffCheck": "PASS"
+    }
+  },
+  "fixtureReceipt": {
+    "initialAvatarPosition": {"x": 500, "y": 400, "z": 500},
+    "positionAfterStep": {"x": 500, "y": 499, "z": 500},
+    "stateRoot": "fnv1a64:2100103353143cc4",
+    "replayRoot": "fnv1a64:2100103353143cc4",
+    "contactCount": 4,
+    "contacts": [
+      {"id": "manifold-avatar|manifold-avatar:sphere|manifold-terrain|manifold-terrain:heightfield", "manifoldId": "manifold-avatar|manifold-avatar:sphere|manifold-terrain|manifold-terrain:heightfield", "point": {"x": 0, "y": 0, "z": 500}, "normal": {"x": 0, "y": -1000000, "z": 0}, "penetration": 100, "normalImpulse": 0},
+      {"id": "manifold-avatar|manifold-avatar:sphere|manifold-terrain|manifold-terrain:heightfield|point:1", "manifoldId": "manifold-avatar|manifold-avatar:sphere|manifold-terrain|manifold-terrain:heightfield", "point": {"x": 500, "y": 0, "z": 0}, "normal": {"x": 0, "y": -1000000, "z": 0}, "penetration": 100, "normalImpulse": 0},
+      {"id": "manifold-avatar|manifold-avatar:sphere|manifold-terrain|manifold-terrain:heightfield|point:2", "manifoldId": "manifold-avatar|manifold-avatar:sphere|manifold-terrain|manifold-terrain:heightfield", "point": {"x": 500, "y": 0, "z": 500}, "normal": {"x": 0, "y": -1000000, "z": 0}, "penetration": 100, "normalImpulse": 0},
+      {"id": "manifold-avatar|manifold-avatar:sphere|manifold-terrain|manifold-terrain:heightfield|point:3", "manifoldId": "manifold-avatar|manifold-avatar:sphere|manifold-terrain|manifold-terrain:heightfield", "point": {"x": 500, "y": 0, "z": 1000}, "normal": {"x": 0, "y": -1000000, "z": 0}, "penetration": 100, "normalImpulse": 0}
+    ]
+  },
+  "bridgeReceipt": {
+    "sourceCandidateRoot": "293ed1a83b540ed67887b864fd779d412e912ea7d502189481861f45d9014ea9",
+    "sourceStreamRoot": "3f9150b4e6267edbcb9ffa56c350fc636d05b422db672a0c5b6451388efd571e",
+    "bodyId": "terrain:chunk:world:large-world-rsr-manifold:0:0",
+    "fixtureId": "terrain:chunk:world:large-world-rsr-manifold:0:0:heightfield",
+    "contactCount": 1,
+    "contacts": [
+      {"id": "avatar|avatar:sphere|terrain:chunk:world:large-world-rsr-manifold:0:0|terrain:chunk:world:large-world-rsr-manifold:0:0:heightfield", "manifoldId": "avatar|avatar:sphere|terrain:chunk:world:large-world-rsr-manifold:0:0|terrain:chunk:world:large-world-rsr-manifold:0:0:heightfield", "point": {"x": 8000, "y": 374, "z": 8000}, "normal": {"x": 76521, "y": -993773, "z": 80993}, "penetration": 0}
+    ],
+    "stateRoot": "fnv1a64:f30de4c8f04c793b"
+  },
+  "rclGap": "RCL_GAP_RNCS_LARGE_WORLD_PHYSICAL_TERRAIN_LOWERING",
+  "affectedK400Cells": [
+    "EXPRESS",
+    "COMPILE",
+    "LOWER",
+    "EXECUTE",
+    "CORRECT",
+    "ROBUST",
+    "EVIDENCE"
+  ],
+  "decision": "RSR_BOUNDED_HEIGHTFIELD_CONTACT_MANIFOLD_CANDIDATE_VERIFIED_DYNAMIC_TERRAIN_CONTINUOUS_MANIFOLD_AND_DEVICE_BOUNDARIES_OPEN",
+  "evidenceRoot": "3385f0bcd2e039b202c83192cf3f689dfdc8c2ed929dd1e8626992828e666441"
+}
