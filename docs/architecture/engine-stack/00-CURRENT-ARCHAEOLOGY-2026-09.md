@@ -406,11 +406,31 @@ Network Runtime message
 
 边界：这关闭的是既有 semantic transport contract 到 Network Runtime loopback candidate 的 execution seam；它不是物理 WebSocket、UDP、QUIC、WebRTC、TLS、WAN、NAT、第二网络、多设备重连、跨节点 lease/leader、生产 relay 或 SLA 证明。历史 DuoWorld donor 仍受 private-preview/许可证、密钥、部署和异网证据边界约束；详细审计见 `docs/architecture/engine-stack/EXTERNAL-TRANSPORT-DONOR-AUDIT-2026-09.md`。没有新增 K400 PASS。
 
+## 本轮 Reality Cell content-addressed cache → shared Node provider
+
+继续考古发现，Aether/Reality Cell 已经有可运行的内容寻址磁盘缓存，但它原先把 SHA-256 校验、manifest root、临时文件写入、冷启动 rehydrate 和确定性 LRU 全部内嵌在 integration bridge；VSR `VSRSpatialAssetStreamer` 只拥有内存 residency/lease，Reality Build Web/Android 仍直接消费 embedded/URI payload。这里的限制不是再写一个 cache，而是把已有机制抽成可复用的 provider，同时不把 Node 文件系统误报成跨平台 runtime。
+
+本轮新增 `packages/control/rncs-asset-cache`，并让 `createRealityCellAssetCache(...)` 作为兼容包装：
+
+```text
+VSR streamer loader seam
+  → Reality Cell compatibility format
+  → shared @taowind/rncs-asset-cache Node provider
+  → SHA-256 payload verification + root-checked manifest
+  → deterministic byte-budget LRU
+```
+
+实现保持语义 owner 不变：VSR 仍拥有内存资产状态与 lease，Reality Cell 仍拥有依赖闭包、prefetch、eviction receipt 和 Cell binding；共享 provider 只拥有可丢弃的二进制 cache bytes、manifest recovery 和 diagnostics，不拥有 canonical world state、资产选择、authority、promotion 或 commit。manifest 复用 `@taowind/rncs-durable-store` 的 verified temp→rename/recovery；二进制 payload 采用独立的 synced temp→rename，并在读回时重新校验 byte length 与 SHA-256。
+
+本地真实结果：`npm test --workspace @taowind/rncs-asset-cache` 为 `3/3 PASS`；`npm test --workspace @taowind/aether-rncs-bridge` 保持 `29/29 PASS`，覆盖旧 Reality Cell 格式兼容、冷启动 rehydrate、tampered payload、确定性 LRU、prefetch/lease 分离、GLB/glTF binding 与 transition。候选证据写入 `packages/control/rncs-asset-cache/reports/ASSET_CACHE_PROVIDER_CANDIDATE_v0.1.json`。
+
+边界：本轮只关闭“既有 Reality Cell cache donor → shared Node cache provider”的 implementation seam；没有关闭浏览器 Cache Storage/IndexedDB、Android app-private persistence、跨进程/远程 cache coherence、部署级 invalidation、BasisU/KTX2、Draco/Meshopt、format-aware prefetch、HLOD/PCG、目标设备性能或生产资产服务。该缺口记录为 `RCL_GAP_RNCS_RUNTIME_ASSET_CACHE_PROVIDER`，没有新增 K400 PASS。
+
 ## 结构判断
 
 ### 限制性瓶颈
 
-当前有两个有先后关系的瓶颈：`RCL_GAP_RNCS_RELEASE_3D_BROWSER_SCRIPT_PACKAGING` 已完成一个本地候选修复并通过 Build target 的真实浏览器回归；`RCL_GAP_RNCS_TARGET_PAYLOAD_IMPORT_BINDING` 已完成 web-release candidate loading/hash verification、显式 mesh binding、本机 Chromium WebGPU submission、host debug APK build/signing、Android Emulator embedded WebView dynamic working-set candidate、通用 VSR residency transition receipt 以及 reset→cell transition→eviction→re-entry 的动态浏览器/Android candidate，但物理/目标设备 GPU、Large World 新 chunk/scene revision、持久 cache eviction/performance 和生产资产服务仍未验证。Reality Studio network compilation 现在已进入 Reality Build headless 的本地 loopback/HTTP authority candidate，Network Runtime 已有 JSON→独立 Node 的 session checkpoint、共享 durable-store candidate 和 URRF semantic transport→Loopback carrier binding candidate，但 WAN/跨节点 physical transport、实际断电/跨节点 crash recovery、真实多设备和生产部署仍未验证。结构性瓶颈仍是 `RCL_GAP_RNCS_SHARED_WORLD_COMPILATION_SPINE`，其 Studio ingress、Aether runtime projection、shared mass/character/asset-instance/compound-fixture donor、Network Observer Relevance binding、World Body/Large World Build candidate consumer、VSR asset resolution/import/binding/residency、network compilation→headless candidate、HTTP authority、session checkpoint、durable-store 和 semantic transport binding seam 已有证据，但完整 external provider、跨节点 durable authority、Android 物理/原生平台层、默认 Studio/World Body/Large World/Build 生产链仍未共同进入同一 runtime seam。
+当前有两个有先后关系的瓶颈：`RCL_GAP_RNCS_RELEASE_3D_BROWSER_SCRIPT_PACKAGING` 已完成一个本地候选修复并通过 Build target 的真实浏览器回归；`RCL_GAP_RNCS_TARGET_PAYLOAD_IMPORT_BINDING` 已完成 web-release candidate loading/hash verification、显式 mesh binding、本机 Chromium WebGPU submission、host debug APK build/signing、Android Emulator embedded WebView dynamic working-set candidate、通用 VSR residency transition receipt 以及 reset→cell transition→eviction→re-entry 的动态浏览器/Android candidate，但物理/目标设备 GPU、Large World 新 chunk/scene revision、浏览器/Android cache provider、持久 cache eviction/performance 和生产资产服务仍未验证。Reality Studio network compilation 现在已进入 Reality Build headless 的本地 loopback/HTTP authority candidate，Network Runtime 已有 JSON→独立 Node 的 session checkpoint、共享 durable-store candidate、URRF semantic transport→Loopback carrier binding candidate 和 shared Node asset-cache provider candidate，但 WAN/跨节点 physical transport、实际断电/跨节点 crash recovery、真实多设备和生产部署仍未验证。结构性瓶颈仍是 `RCL_GAP_RNCS_SHARED_WORLD_COMPILATION_SPINE`，其 Studio ingress、Aether runtime projection、shared mass/character/asset-instance/compound-fixture donor、Network Observer Relevance binding、World Body/Large World Build candidate consumer、VSR asset resolution/import/binding/residency、network compilation→headless candidate、HTTP authority、session checkpoint、durable-store、semantic transport binding 和 Node asset-cache seam 已有证据，但完整 external provider、跨平台 cache providers、跨节点 durable authority、Android 物理/原生平台层、默认 Studio/World Body/Large World/Build 生产链仍未共同进入同一 runtime seam。
 
 这不是“再写一个引擎子系统”的缺口，而是已有子系统不能共同承载同一个世界工件的缺口。Android host APK 现在已有候选构建闭环，剩余问题是平台宿主和设备证据，不应复制 Reality Cell/streaming/render glue。应把 Aether bridge 作为下游 runtime donor；若直接在 Studio、Build、Large World 各自添加转换，会产生重复语义、root 混淆和无法回滚的并行系统。
 
@@ -424,7 +444,7 @@ Network Runtime message
 
 ## 下一最小高杠杆候选
 
-第一优先的 Build 3D classic-script packaging 已完成局部候选修复和真实浏览器回归；Studio→World Body→Aether 已完成候选 ingress、显式 asset-instance/observer binding runtime projection 和 shared mass/character/compound-fixture donor，Build 也能通过显式 request candidate 绑定同一 World Body source root；Large World VSR scene 现在也能通过 generic candidate 进入 Build evidence，复用 VSR asset streaming、GLB import、mesh binding、通用 residency transition、本机 WebGPU receipt、host APK build/signing 和 Emulator WebView candidate；动态 reset/cell transition 已在 web-release Chromium 与 embedded Android Emulator candidate 中执行；Studio network compilation 已进入 Build headless 的本地 loopback/HTTP authority candidate，Network Runtime 已具备 JSON checkpoint→独立 Node 恢复、共享 Node-only durable-store candidate 和 URRF semantic transport→Loopback carrier binding candidate。下一阶段最高杠杆缺口应转向“在既有 URRF semantic seam 之上选择并执行 external network provider 的 WAN/TLS/重连/跨节点 durable authority，以及 Android/可复现 GPU-capable host 的新 chunk/scene revision、persistent cache 和性能 receipt”，不能复制 Reality Cell/streaming/render glue，只做：
+第一优先的 Build 3D classic-script packaging 已完成局部候选修复和真实浏览器回归；Studio→World Body→Aether 已完成候选 ingress、显式 asset-instance/observer binding runtime projection 和 shared mass/character/compound-fixture donor，Build 也能通过显式 request candidate 绑定同一 World Body source root；Large World VSR scene 现在也能通过 generic candidate 进入 Build evidence，复用 VSR asset streaming、GLB import、mesh binding、通用 residency transition、本机 WebGPU receipt、host APK build/signing 和 Emulator WebView candidate；动态 reset/cell transition 已在 web-release Chromium 与 embedded Android Emulator candidate 中执行；Studio network compilation 已进入 Build headless 的本地 loopback/HTTP authority candidate，Network Runtime 已具备 JSON checkpoint→独立 Node 恢复、共享 Node-only durable-store candidate、URRF semantic transport→Loopback carrier binding candidate，Reality Cell cache mechanism 也已抽为共享 Node asset-cache provider。下一阶段最高杠杆缺口应转向“在既有 URRF semantic seam 之上选择并执行 external network provider 的 WAN/TLS/重连/跨节点 durable authority，并在统一 cache contract 下实现 Browser/Android provider、scene revision/invalidation 和目标设备性能 receipt”，不能复制 Reality Cell/streaming/render glue，只做：
 
 ```text
 Unified Project + selected spatial world + scene/asset roots

@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@taowind/agent-authority-fabric": "*",
+    "@taowind/rncs-asset-cache": "*",
     "@taowind/rncs-core-contract": "*",
     "@taowind/reality-behavior-fabric": "*",
     "@taowind/reality-branch-fabric": "*",

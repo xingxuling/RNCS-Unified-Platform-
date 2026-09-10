@@ -1,7 +1,5 @@
-import {createHash,randomUUID} from 'node:crypto';
-import {mkdir,readFile,rename,unlink,writeFile} from 'node:fs/promises';
-import path from 'node:path';
 import {rootHash} from '@taowind/rncs-core-contract';
+import {createContentAddressedAssetCache} from '@taowind/rncs-asset-cache';
 import {hash,makeObserverRelevanceView} from '@taowind/reality-network-runtime';
 import {resolveSpatialAssetStreaming,VSRSpatialAssetStreamer,verifySpatialAssetStreamingReceipt} from '@taowind/visual-state-runtime/spatial-asset-streaming';
 import {composeImportedSpatialScene} from '@taowind/visual-state-runtime/gltf-asset';
@@ -23,8 +21,6 @@ const distanceSquared=(a,b)=>{const dx=a[0]-b[0],dy=a[1]-b[1],dz=a[2]-b[2];retur
 const quantize=(value,scale)=>Math.round(finite(value,0)*scale);
 const quantizedVector=(value,scale)=>asVector(value)?.map(component=>quantize(component,scale))??[0,0,0];
 const worldVector=(value,scale)=>value.map(component=>component/scale);
-const bytesSha256=bytes=>createHash('sha256').update(bytes).digest('hex');
-
 function cloneAssetCatalog(value){
   const catalog=Array.isArray(value)?value:value?.catalog;
   fail(Array.isArray(catalog)&&catalog.length>0,'REALITY_CELL_ASSET_CATALOG_EMPTY');
@@ -35,55 +31,10 @@ function assertAssetRuntime(runtime){
   fail(runtime&&typeof runtime.acquire==='function','REALITY_CELL_ASSET_RUNTIME_INVALID');
 }
 
-// Keep source payloads content-addressed so memory eviction can be followed by a verified disk hit.
+// Preserve the Reality Cell cache format while delegating storage mechanics to the shared provider.
 export function createRealityCellAssetCache(directory,{maxBytes=Number.MAX_SAFE_INTEGER}={}){
   fail(typeof directory==='string'&&directory.length>0,'REALITY_CELL_ASSET_CACHE_DIRECTORY_REQUIRED');
-  const cacheDirectory=path.resolve(directory),manifestPath=path.join(cacheDirectory,'manifest.json'),budget=Number.isFinite(maxBytes)?Math.max(0,Math.floor(maxBytes)):Number.MAX_SAFE_INTEGER,entries=new Map();
-  let readyPromise,mutationQueue=Promise.resolve(),sequence=0,cacheHits=0,cacheMisses=0,cacheEvictions=0,manifestRoot,diagnostics=[];
-  const entryView=entry=>({sha256:entry.sha256,byteLength:entry.byteLength,lastAccess:entry.lastAccess,assetIds:uniqueSorted(entry.assetIds)});
-  const manifestBase=()=>({format:REALITY_CELL_ASSET_CACHE_FORMAT,version:REALITY_CELL_VERSION,maxBytes:budget,sequence,entries:[...entries.values()].map(entryView).sort((a,b)=>a.sha256.localeCompare(b.sha256)),diagnostics:uniqueSorted(diagnostics)});
-  const persistNow=async()=>{const base=manifestBase(),document={...base,root:rootHash(base)},temporary=`${manifestPath}.${process.pid}.${randomUUID()}.tmp`;await writeFile(temporary,JSON.stringify(document,null,2));await rename(temporary,manifestPath);manifestRoot=document.root};
-  const mutate=operation=>{const next=mutationQueue.then(operation);mutationQueue=next.catch(()=>{});return next};
-  const load=async()=>{
-    if(readyPromise)return readyPromise;
-    readyPromise=(async()=>{await mkdir(cacheDirectory,{recursive:true});try{
-      const parsed=JSON.parse(await readFile(manifestPath,'utf8')),base={...parsed};delete base.root;
-      if(parsed.format!==REALITY_CELL_ASSET_CACHE_FORMAT||parsed.version!==REALITY_CELL_VERSION||parsed.root!==rootHash(base))throw new Error('REALITY_CELL_ASSET_CACHE_MANIFEST_INVALID');
-      sequence=Number.isSafeInteger(parsed.sequence)?parsed.sequence:0;manifestRoot=parsed.root;
-       for(const entry of Array.isArray(parsed.entries)?parsed.entries:[]){if(!/^[a-f0-9]{64}$/i.test(entry.sha256)||!Number.isSafeInteger(entry.byteLength)||entry.byteLength<0)continue;entries.set(entry.sha256.toLowerCase(),{sha256:entry.sha256.toLowerCase(),byteLength:entry.byteLength,lastAccess:Number.isSafeInteger(entry.lastAccess)?entry.lastAccess:0,assetIds:uniqueSorted(entry.assetIds)})}
-       if([...entries.values()].reduce((sum,entry)=>sum+entry.byteLength,0)>budget){await trim();await persistNow()}
-    }catch(error){if(error?.code!=='ENOENT'){diagnostics.push(error instanceof Error?error.message:'REALITY_CELL_ASSET_CACHE_MANIFEST_INVALID');entries.clear();sequence=0;manifestRoot=undefined}}
-    })();
-    return readyPromise;
-  };
-  const filePath=sha256=>path.join(cacheDirectory,`${sha256}.bin`);
-  const trim=async()=>{
-    let bytesResident=[...entries.values()].reduce((sum,entry)=>sum+entry.byteLength,0);
-    const candidates=[...entries.values()].sort((a,b)=>a.lastAccess-b.lastAccess||a.sha256.localeCompare(b.sha256));
-    for(const entry of candidates){if(bytesResident<=budget)break;entries.delete(entry.sha256);bytesResident-=entry.byteLength;cacheEvictions++;try{await unlink(filePath(entry.sha256))}catch{}}
-  };
-  return {
-    format:REALITY_CELL_ASSET_CACHE_FORMAT,
-    directory:cacheDirectory,
-    maxBytes:budget,
-    ready:load,
-    async read(asset){
-      await load();
-      const sha256=String(asset.sha256).toLowerCase(),entry=entries.get(sha256);
-      if(!entry)return mutate(async()=>{cacheMisses++;return undefined});
-      let bytes;
-      try{bytes=new Uint8Array(await readFile(filePath(sha256)));if(bytes.byteLength!==asset.byteLength||bytesSha256(bytes)!==sha256)throw new Error('REALITY_CELL_ASSET_CACHE_PAYLOAD_INVALID')}
-      catch(error){return mutate(async()=>{diagnostics.push(error instanceof Error?error.message:'REALITY_CELL_ASSET_CACHE_PAYLOAD_INVALID');entries.delete(sha256);cacheMisses++;try{await unlink(filePath(sha256))}catch{}await persistNow();return undefined})}
-      return mutate(async()=>{const current=entries.get(sha256);if(!current){cacheMisses++;return undefined}current.lastAccess=++sequence;current.assetIds=uniqueSorted([...current.assetIds,asset.id]);cacheHits++;await persistNow();return bytes});
-    },
-    async write(asset,payload){
-      await load();
-      const bytes=payload instanceof Uint8Array?new Uint8Array(payload):new Uint8Array(payload),sha256=String(asset.sha256).toLowerCase();
-      if(bytes.byteLength!==asset.byteLength||bytesSha256(bytes)!==sha256)throw new TypeError('REALITY_CELL_ASSET_CACHE_HASH_MISMATCH');
-      const temporary=`${filePath(sha256)}.${process.pid}.${randomUUID()}.tmp`;await writeFile(temporary,bytes);try{await mutate(async()=>{await rename(temporary,filePath(sha256));entries.set(sha256,{sha256,byteLength:bytes.byteLength,lastAccess:++sequence,assetIds:[asset.id]});await trim();await persistNow()})}catch(error){try{await unlink(temporary)}catch{}throw error}
-    },
-    inspect(){return{format:REALITY_CELL_ASSET_CACHE_FORMAT,directory:cacheDirectory,maxBytes:budget,manifestRoot,bytesResident:[...entries.values()].reduce((sum,entry)=>sum+entry.byteLength,0),cachedAssetIds:uniqueSorted([...entries.values()].flatMap(entry=>entry.assetIds)),cacheHits,cacheMisses,cacheEvictions,diagnostics:uniqueSorted(diagnostics)}}
-  };
+  return createContentAddressedAssetCache(directory,{maxBytes,format:REALITY_CELL_ASSET_CACHE_FORMAT,version:REALITY_CELL_VERSION,codePrefix:'REALITY_CELL_ASSET_CACHE'});
 }
 
 function assetFormat(asset){

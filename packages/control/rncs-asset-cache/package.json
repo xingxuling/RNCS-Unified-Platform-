@@ -1,0 +1,26 @@
+{
+  "name": "@taowind/rncs-asset-cache",
+  "version": "0.1.0-alpha.1",
+  "type": "module",
+  "description": "Node-only content-addressed binary asset cache with verified rehydrate and deterministic LRU eviction.",
+  "license": "Apache-2.0",
+  "exports": {
+    ".": "./src/index.mjs"
+  },
+  "files": [
+    "src",
+    "tests",
+    "README.md",
+    "rncs.module.json"
+  ],
+  "scripts": {
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs"
+  },
+  "dependencies": {
+    "@taowind/rncs-core-contract": "*",
+    "@taowind/rncs-durable-store": "*"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

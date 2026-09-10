@@ -118,6 +118,25 @@
       ]
     },
     {
+      "id": "rncs-asset-cache",
+      "name": "RNCS Content-Addressed Asset Cache",
+      "version": "0.1.0-alpha.1",
+      "path": "packages/control/rncs-asset-cache",
+      "layer": "control",
+      "runtime": "rncs.asset-cache",
+      "dependsOn": [
+        "rncs-core",
+        "rncs-durable-store"
+      ],
+      "test": "npm test --workspace @taowind/rncs-asset-cache",
+      "capabilities": [
+        "content-addressed-binary-cache",
+        "sha256-payload-verification",
+        "deterministic-lru",
+        "candidate-runtime-cache"
+      ]
+    },
+    {
       "id": "behavior",
       "name": "Reality Behavior Fabric",
       "version": "0.9.0-alpha.1",
@@ -587,7 +606,8 @@
         "aaf",
         "rbf",
         "behavior",
-        "rfe-sdk"
+        "rfe-sdk",
+        "rncs-asset-cache"
       ],
       "test": "npm test --workspace @taowind/aether-rncs-bridge",
       "runtime": "rncs.aetherworld-native"

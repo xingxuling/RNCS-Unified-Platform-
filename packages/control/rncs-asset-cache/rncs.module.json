@@ -1,0 +1,10 @@
+{
+  "id": "rncs-asset-cache",
+  "name": "RNCS Content-Addressed Asset Cache",
+  "version": "0.1.0-alpha.1",
+  "layer": "control",
+  "runtime_id": "rncs.asset-cache",
+  "protocol": "rncs.content-addressed-asset-cache.v0.1",
+  "entry": "src/index.mjs",
+  "test": "npm test --workspace @taowind/rncs-asset-cache"
+}
