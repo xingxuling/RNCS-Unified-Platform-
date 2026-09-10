@@ -539,6 +539,14 @@ Studio Sequencer 的反向考古给出相反结论：`SequencerSession`/`evaluat
 
 这只关闭了“既有 VSR layers/graph 能否沿 Reality Build fixed-Tick seam 执行”以及“该 graph seam 能否在 Android Emulator/WebView target 上执行”的 candidate seam；没有关闭 Studio authored Sequence lowering、事件驱动 state machine、constraint/full deformation policy、音频 target、物理设备/原生 GPU、性能曲线、人工视觉验收或 K400 PASS。缺口仍为 `RCL_GAP_RNCS_BUILD_ANIMATION_TARGET_LOWERING`，但其子缺口已经从 flat clip seam 扩展为可验证的 VSR structured selection seam；Android APK/runtime 的 emulator 子路径已有独立 receipt，不能外推为设备/发布能力。
 
+## 本轮 authored Sequence target lowering 考古（canonical owner decision required）
+
+Reality Studio 当前源码真实拥有 `reality-studio.sequence.v1.7`、`SequencerSession` 和 `evaluateSequence()`。四条 focused sequencer tests 全部通过；对 `冰境试炼.unified-project.json` 运行 `createDefaultSequence()` 得到稳定的 `sequence_root`，`evaluateSequence(0)` 与 `evaluateSequence(.25)` 的 `authority_root` 保持一致而 `presentation_root/frame_root` 改变。这证明 Studio/Node 的 authored timeline 与 authority/presentation 分离是可执行 donor，不是缺失实现。
+
+反向检查 Reality Build 的真实 seam：`presentationSpec()` 只读取 scene、bindings、asset bundle、asset bindings、animation policy 和 source root；Build 没有 Sequence consumer、播放入口或浏览器 Sequence runtime。原始 `冰境试炼.unified-project.json` 没有 `sequencer` 字段，Studio session 只在内存中 materialize default sequence，且该 fixture 的 animation/audio clip 数量为 0。现有 `animation_policy` 也没有 3D VSR clip/node/mask/weight 的 Sequence binding contract。
+
+因此本轮不把 Studio payload 猜成 VSR animation layer，不复制第二个 timeline evaluator，也不把 audio/camera/behavior track 静默映射到 Build。负证据封存在 `apps/reality-build/evidence/BUILD_SEQUENCE_TARGET_LOWERING_AUDIT_v0.1.json`，缺口为 `RCL_GAP_RNCS_SHARED_AUTHORED_PRESENTATION_SPINE`。下一步必须先裁决：Studio 输出 sealed evaluated Sequence frame 供 Build 做最小 target projection，还是抽取 shared target-side Sequence runtime 并定义各 target 的 track capability matrix；这是 authored-presentation/target-runtime canonical owner 决策，不是单纯的接口缺失。
+
 ## 本轮音频 target lowering 考古（负证据）
 
 本轮先对真实源项目做了 audio execution audit，没有立即建立第二套音频系统。Reality Studio/资产记录已有 `sfx-wav` role 与 content hash；Experience Fabric 已有 deterministic audio cue/voice plan 和 oscillator/sample/offline WAV renderer；Spatial Embodiment 已有带 cue、position、gain、pitch、distance、occlusion 的 `spatial-audio` event。它们的语义 owner 各自存在，但当前 Build target 没有把这些语义共同接到文件资产与宿主 audio consumer。

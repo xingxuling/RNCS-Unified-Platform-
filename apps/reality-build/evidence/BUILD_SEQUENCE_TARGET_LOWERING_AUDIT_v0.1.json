@@ -1,0 +1,124 @@
+{
+  "format": "reality-build.sequence-target-lowering-audit.v0.1",
+  "status": "AUDIT_SEQUENCE_TARGET_LOWERING_GAP_CONFIRMED",
+  "sourceCommit": "6104e1cb8e23e80f7fa818f3a66a145835eb5192",
+  "pipeline": "Reality Studio authored Sequence -> existing deterministic sequence evaluator -> Reality Build presentation candidate boundary -> target host",
+  "archaeology": {
+    "semanticOwners": {
+      "realityStudio": "Reality Studio SequencerSession and evaluateSequence() own authored timeline normalization, active/fired clip selection, authority/presentation separation and sequence frame roots.",
+      "realityBuild": "Reality Build currently owns spatial presentation candidate validation and VSR fixed-Tick lowering, but has no Sequence consumer or Sequence playback entry point.",
+      "vsr": "Visual State Runtime owns animation clip/layer/graph sampling and frame compilation after an explicit VSR animation option exists.",
+      "rsr": "Reality Simulation Runtime owns authoritative spatial state and Tick; it does not own authored presentation tracks."
+    },
+    "studioContract": {
+      "format": "reality-studio.sequence.v1.7",
+      "version": "1.7.0-alpha.1",
+      "tracks": [
+        "camera",
+        "animation",
+        "dialogue",
+        "audio",
+        "effect",
+        "light",
+        "behavior",
+        "quest",
+        "network",
+        "physics",
+        "branch"
+      ],
+      "frameRoots": [
+        "sequence_root",
+        "authority_root",
+        "presentation_root",
+        "frame_root"
+      ]
+    },
+    "buildBoundary": {
+      "currentPresentationSpecFields": [
+        "scene",
+        "bindings",
+        "asset_bundle",
+        "asset_bindings",
+        "animation_policy",
+        "presentation_source_root"
+      ],
+      "sequenceConsumer": false,
+      "sequencePlaybackEntry": false,
+      "browserSequenceRuntime": false,
+      "targetSequenceReceipt": false
+    },
+    "rawProject": {
+      "path": "apps/reality-build/examples/冰境试炼.unified-project.json",
+      "hasSequencerField": false,
+      "spatial3dKeys": [],
+      "defaultSequenceMaterializedOnlyInsideStudioSession": true,
+      "defaultSequenceAnimationClipCount": 0,
+      "defaultSequenceAudioClipCount": 0
+    }
+  },
+  "execution": {
+    "studioSequencerTests": "4/4 PASS",
+    "defaultSequence": {
+      "sequenceRoot": "13ece78697ce158b382d64f17399232ab14e3f3388e757c7d9d9aa0661b6a47d",
+      "trackTypes": [
+        "camera",
+        "animation",
+        "audio",
+        "behavior"
+      ],
+      "trackClipCounts": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "frameAt0": {
+        "frameRoot": "09306064277a5ae3e5103e26d8c265380c229b4dd0d71946b15810f036c08943",
+        "authorityRoot": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "presentationRoot": "98bffadf61b1432b183bdbf8f93735050d2639c52f7a0a6d907d51f7554278db",
+        "activeClipCount": 1
+      },
+      "frameAt025": {
+        "frameRoot": "6c80cd9d56dc3102b2e4d49a91e243223f1854a93b3d8f0cb177a003f6468d52",
+        "authorityRoot": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "presentationRoot": "3e041a72b902a3f5c36f3968428cb6681bfbdd23a82cd22f46b8cb84fe363a92",
+        "activeClipCount": 1
+      },
+      "sameAuthorityRoot": true,
+      "presentationRootChanged": true,
+      "frameRootChanged": true
+    },
+    "realTargetEvidence": {
+      "build": false,
+      "chromium": false,
+      "android": false,
+      "reason": "The audit intentionally stopped before inventing a Sequence-to-VSR target mapping or a second browser evaluator."
+    }
+  },
+  "rclGap": "RCL_GAP_RNCS_SHARED_AUTHORED_PRESENTATION_SPINE",
+  "missingCapability": "RNCS has a deterministic authored Sequence owner and a deterministic VSR evaluator, but no canonical projection contract that carries an evaluated Sequence frame or explicit 3D VSR target binding through Reality Build into web/Android/native targets.",
+  "donorAdvantage": "Studio already separates authority tracks from presentation tracks and seals sequence/frame roots; VSR already consumes fixed-time clip/layer/graph options. The missing seam can reuse both instead of adding a Build timeline evaluator.",
+  "candidateOptions": [
+    {
+      "id": "studio-evaluated-frame-lowering",
+      "description": "Studio remains the timeline owner; Build accepts a sealed evaluated Sequence frame plus explicit VSR target bindings and lowers only the supported animation presentation state through the existing fixed-Tick seam.",
+      "tradeoff": "Smallest ownership change and easiest evidence boundary, but authoring/export must produce an explicit frame projection and it does not by itself provide target-side timeline editing."
+    },
+    {
+      "id": "shared-target-sequence-runtime",
+      "description": "Extract the pure Sequence evaluator into a shared runtime and embed it in Build targets so the target evaluates authored tracks against the authoritative Tick.",
+      "tradeoff": "Supports richer playback, but expands browser/Android/native runtime surface, replay/evidence contracts and the canonical decision about which track classes lower to each target."
+    }
+  ],
+  "currentWorkaround": "Keep Studio Sequence authoring/evaluation separate and use the existing Build fixed-tick animation_policy candidate for explicit VSR clip/layer/graph selections; do not infer a Sequence consumer or map audio/camera tracks implicitly.",
+  "regressionCase": "Studio tests prove authority_root remains distinct from presentation_root; the raw Build project has no persisted sequence, so claiming Sequence target execution would be an unsupported promotion.",
+  "boundaries": [
+    "No Build, web, Android or native target Sequence execution is claimed.",
+    "The default sequence created inside a Studio session is not evidence that the raw project artifact contains a sequence.",
+    "The existing animation track payload shape is not a canonical 3D VSR binding; no clip/node/mask/weight mapping is inferred.",
+    "Audio cue-to-asset lowering remains separately blocked by RCL_GAP_RNCS_AUDIO_TARGET_LOWERING.",
+    "No K400 gate is promoted to PASS."
+  ],
+  "humanDecisionRequired": "Choose whether the next candidate should lower Studio-owned evaluated frames through an explicit Build projection, or establish a shared target-side Sequence runtime and track capability matrix. This is a canonical authored-presentation/target-runtime owner decision, not a missing local implementation detail.",
+  "evidenceRoot": "c2d15882d50c48e7fa8e4eb3717f22bcab8f3f5f3d48862d7779bd88f455592e"
+}

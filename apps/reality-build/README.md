@@ -162,6 +162,12 @@ sealed animation_policy {selection: clip|layers|graph, tick_hz, speed, phase_sec
 
 同一 graph candidate 又通过真实 Gradle 9.5.1 / Android SDK 35 生成并验签 debug APK，安装到 `Rcl_Aether_API35_ATD` 后由 `MainActivity` 的 WebView 加载 `https://rncs.local/`，CDP 读取到 Tick 0 的 `run` 状态与 `walk → run` transition（`0.25`），并在同一同步调用中推进 15 个 tick 到 `0.25s`；`animationRoot`、`frameRoot` 改变，两个 frame 均 `verified=true`、draw count 为 5、应用/资产错误为空。收据见 `evidence/ANDROID_ANIMATION_GRAPH_TARGET_LOWERING_CANDIDATE_v0.1.json`。这是 Emulator/WebView target-lowering candidate：APK 是 debug 签名，设备的 primary GPU 报告 `WebGPU adapter unavailable`，没有观察到 spatial WebGPU submission receipt，因此不宣称原生 GPU、物理设备、帧率、视觉 parity 或 release 交付。
 
+## Authored Sequence target lowering archaeology
+
+Reality Studio 已有 `reality-studio.sequence.v1.7`、`SequencerSession` 和 `evaluateSequence()`；它们能把 authority tracks 与 presentation tracks 分开，并稳定生成 `sequence_root`、`authority_root`、`presentation_root`、`frame_root`。但这是 Studio/Node owner，Reality Build 当前的 presentation candidate 只接受 scene、bindings、asset bundle、asset bindings 和 fixed-tick `animation_policy`，没有 Sequence consumer、播放入口或浏览器 Sequence runtime。`冰境试炼.unified-project.json` 原始文件也没有 `sequencer` 字段；Studio session 运行时生成的 default sequence 只有 camera clip，animation/audio clip 数量为 0。
+
+因此本轮没有把 Sequence payload 猜成 3D VSR clip binding，也没有添加第二套 timeline evaluator。负证据见 `evidence/BUILD_SEQUENCE_TARGET_LOWERING_AUDIT_v0.1.json`，缺口为 `RCL_GAP_RNCS_SHARED_AUTHORED_PRESENTATION_SPINE`。下一步需要先选择：由 Studio 输出 sealed evaluated Sequence frame 供 Build 做最小 target projection，或抽取 shared target-side Sequence runtime 并定义各 target 的 track capability matrix；这属于 authored-presentation/target-runtime canonical owner 决策。音频 cue-to-asset 仍独立保持 blocked。
+
 ## Audio target lowering archaeology（negative candidate）
 
 本轮没有新增音频系统，而是沿着真实源资产做了一次可证伪审计。`asset:3a82d1753e140d24552b89d1` 的 `sfx-wav` 文件在 web-release 中确实被烘焙为 `assets/ba8ebd46...e.wav`（19888 bytes，SHA-256 保持一致），但 `assetRuntimeMap()` 当前只暴露 `primary_visual`；Behavior 的 `experience.audio.emit` cue（如 `footstep-ice`）没有 `asset_id`/file-role 绑定。RSR 的 `spatial-audio` 事件也能在同一 Build 页面生成 `impact.generic`，但 Build host 只收集事件，没有音频 consumer。
