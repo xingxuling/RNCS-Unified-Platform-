@@ -9,6 +9,7 @@
 - 新增作者凸包 fixture：校验非共面顶点和三角索引，接入旋转 GJK/EPA、快照重放与 VSR 网格投影；空间具身测试达到 63/63。
 - 新增 bounded `heightfield` fixture candidate：接收固定点毫米采样，接入静态/运动学 terrain 支撑、斜坡法线、Kernel lowering、VSR 网格、脚步支撑高度与确定性重放；空间具身测试达到 69/69、RSR 全量达到 203/203。Large World terrain adapter、完整接触流形、精确 terrain ray/shape cast 和目标设备证据仍保持 OPEN。
 - 新增 candidate-only managed static body residency transition：按受管理标签对静态 RSR body 做 enter/exit/retain 切换，清除旧接触/支撑缓存，保留非管理动态运行态，并生成 `rsr.spatial-body-residency-transition.v0.1` 根；Spatial Embodiment 达到 70/70、RSR 全量达到 204/204。Large World stream policy、完整接触流形、精确 terrain ray/shape cast 和目标设备证据仍保持 OPEN。
+- 新增 bounded fixed-point heightfield surface ray query：对已 lower 的 authored heightfield 做 bounded XZ clip、确定性 cell traversal 和双三角面求交，返回真实表面距离、交点与 upward normal；Spatial Embodiment 达到 71/71、RSR 全量达到 205/205。shape cast、完整接触流形、动态地形和目标设备证据仍保持 OPEN。
 - 新增 Entity Kernel -> RSR -> VSR 绑定：typed state batch 确定性物化为 authority body/fixture，并沿同一快照生成带实体标签的 scene/frame/pixel roots；Aether bridge 集成回归 3/3。
 - 新增 bounded Spatial Reality Partition：Aether bridge 从 RSR snapshot 推导 causal islands，接入 Network Observer Relevance、固定点 LWC sector/local 坐标和 VSR streaming/frame plan；`reality-cell.v0.1` 的 enter/exit、root 链和篡改拒绝集成回归 22/22。
 - 新增 Cell 驱动的 VSR asset streaming resolution：`assetCatalog` 依赖闭包、resident/queued/deferred/evicted 预算和 active-cell request 进入 Reality Cell state/frame roots；Node/真实 Chromium 根一致，异步 payload loader 与 GPU upload 仍保持显式边界。

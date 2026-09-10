@@ -1,0 +1,103 @@
+{
+  "format": "rncs.rsr-heightfield-ray-query-candidate-evidence.v0.1",
+  "version": "0.1.0-alpha.1",
+  "status": "CANDIDATE_EXECUTION_VERIFIED",
+  "source": {
+    "checkout": "rncs-visual-factory-v01",
+    "branch": "codex/rncs-engine-stack-archaeology-v01",
+    "sourceCommit": "5c3dd22",
+    "authority": "candidate-only; no physical provider admission, RCL promotion, release promotion or main-branch mutation"
+  },
+  "change": {
+    "owner": "RSR Spatial Embodiment",
+    "upstreamTerrainOwner": "Large World Runtime terrain sampling and grid mesh",
+    "queryContract": "ray origin/direction/maxDistance -> nearest authored heightfield triangle hit with fixed-point point and upward normal",
+    "algorithm": "bounded XZ slab clip plus deterministic grid-cell traversal and Moller-Trumbore intersection over the two authored cell triangles",
+    "compatibility": "non-heightfield fixtures retain the existing bounded AABB ray path; heightfield fixtures no longer report only their enclosing AABB"
+  },
+  "positiveEvidence": [
+    "The RSR heightfield ray path returns the authored triangle surface rather than the heightfield AABB top on a sloped 3x3 fixed-point fixture.",
+    "A diagonal ray traverses the bounded grid and returns the deterministic interpolated surface point and distance.",
+    "The query returns a normalized fixed-point upward surface normal and rejects a ray whose XZ path is outside the heightfield bounds.",
+    "The existing Large World -> RSR lowered terrain bridge reaches the same query path without changing source region, stream, chunk or world roots."
+  ],
+  "negativeEvidence": [
+    "Heightfield ray queries remain bounded to unrotated static or fixed-rotation kinematic heightfields; dynamic and rotated admission remains rejected.",
+    "Heightfield shape cast, swept-volume queries, arbitrary-footprint terrain contact manifolds and dynamic terrain deformation remain open.",
+    "Non-heightfield fixtures intentionally retain the existing AABB ray behavior; this change does not claim general exact ray geometry for every fixture type.",
+    "No physical device, target GPU frame-rate, Android, external network or production terrain deployment evidence exists.",
+    "No K400 gate is promoted to PASS by source, package tests or CPU reference execution alone."
+  ],
+  "execution": {
+    "commands": [
+      "npm.cmd run typecheck --workspace @taowind/reality-simulation-runtime",
+      "npm.cmd run lint --workspace @taowind/reality-simulation-runtime",
+      "npm.cmd run test:spatial-embodiment --workspace @taowind/reality-simulation-runtime",
+      "npm.cmd test --workspace @taowind/reality-simulation-runtime",
+      "npm.cmd run test:large-world-rsr-bridge",
+      "git diff --check -- <heightfield source and test paths>"
+    ],
+    "results": {
+      "typecheck": "PASS",
+      "lint": "PASS",
+      "spatialEmbodiment": "71/71 PASS",
+      "fullRsr": {
+        "vsr": "29/29 PASS",
+        "simulationV01": "11/11 PASS",
+        "constraintPhysicsV02": "19/19 PASS",
+        "embodiedDynamicsV03": "30/30 PASS",
+        "temporalExperienceV04": "35/35 PASS",
+        "spatialEmbodimentV06": "71/71 PASS",
+        "networkReconciliationV07": "7/7 PASS",
+        "representationObservation": "3/3 PASS",
+        "total": "205/205 PASS"
+      },
+      "largeWorldRsrBridge": "5/5 PASS",
+      "diffCheck": "PASS"
+    }
+  },
+  "queryReceipt": {
+    "fixture": {
+      "bodyId": "query-terrain",
+      "fixtureId": "query-terrain:heightfield",
+      "columns": 3,
+      "rows": 3,
+      "sampleSpacing": 1000,
+      "heights": [0, 1000, 0, 0, 1000, 0, 0, 1000, 0]
+    },
+    "vertical": {
+      "origin": {"x": 500, "y": 2500, "z": 500},
+      "direction": {"x": 0, "y": -1000000, "z": 0},
+      "distance": 2000,
+      "point": {"x": 500, "y": 500, "z": 500},
+      "normal": {"x": -707107, "y": 707107, "z": 0}
+    },
+    "diagonal": {
+      "origin": {"x": -1000, "y": 2000, "z": 500},
+      "direction": {"x": 1000000, "y": -1000000, "z": 0},
+      "distance": 2121,
+      "point": {"x": 500, "y": 500, "z": 500}
+    },
+    "outsideBoundsHitCount": 0
+  },
+  "roots": {
+    "fixtureSnapshotStateRoot": "fnv1a64:9144a79e68322f22",
+    "fixtureBodyRoot": "fnv1a64:ecd0a627587628c7",
+    "fixtureContactRoot": "fnv1a64:09612b07b5ecb5a5",
+    "fixtureCharacterRoot": "fnv1a64:09612b07b5ecb5a5",
+    "fixtureSensoryRoot": "fnv1a64:09612b07b5ecb5a5",
+    "fixtureJointRoot": "fnv1a64:09612b07b5ecb5a5"
+  },
+  "rclGap": "RCL_GAP_RNCS_LARGE_WORLD_PHYSICAL_TERRAIN_LOWERING",
+  "affectedK400Cells": [
+    "EXPRESS",
+    "COMPILE",
+    "LOWER",
+    "EXECUTE",
+    "CORRECT",
+    "ROBUST",
+    "EVIDENCE"
+  ],
+  "decision": "RSR_BOUNDED_HEIGHTFIELD_SURFACE_RAY_QUERY_CANDIDATE_VERIFIED_SHAPE_CAST_AND_DEVICE_BOUNDARIES_OPEN",
+  "evidenceRoot": "c0d9a4a9dbb390d700d42081e2ca6e1d4aae231ea1abbbdb38517e3306812bfb"
+}

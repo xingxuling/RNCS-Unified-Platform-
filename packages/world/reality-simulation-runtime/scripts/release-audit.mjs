@@ -69,7 +69,7 @@ const spatialArtifacts = walk('outputs/spatial-embodiment-verify').filter(path =
 const audit = {
   format: 'rsr.release-audit.v0.6', version: pkg.version, ok: failures.length === 0, failures,
   sourceFileCount: sourceFiles.length, packageRuntimeDependencies: runtimeDependencies,
-  testSummary: { vsr: '29/29', simulationV01: '11/11', constraintPhysicsV02: '19/19', embodiedDynamicsV03: '30/30', temporalExperienceV04: '35/35', spatialEmbodimentV06: '70/70', networkReconciliationV07: '7/7', total: '204/204' },
+  testSummary: { vsr: '29/29', simulationV01: '11/11', constraintPhysicsV02: '19/19', embodiedDynamicsV03: '30/30', temporalExperienceV04: '35/35', spatialEmbodimentV06: '71/71', networkReconciliationV07: '7/7', total: '205/205' },
   spatialRoots: spatial.roots,
   spatialReality: spatial.reality,
   compatibilityRoots: { v04StateRoot: experience.finalStateRoot, v03StateRoot: embodied.finalStateRoot, v02StateRoot: constraint.finalStateRoot, v01StateRoot: simulation.finalStateRoot },

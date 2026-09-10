@@ -44,7 +44,7 @@ npm run verify:release
 
 - 角色控制器默认仍为Y轴直立胶囊；物理窄相位已支持带刚体旋转的Capsule。
 - Sphere/Box/Capsule/Convex Hull 常见组合均走广义凸支持路径；球-球使用稳定闭式特例，极少数 EPA 退化仍保留显式 legacy fallback 并计入诊断。
-- Convex Hull 当前是单个作者网格 fixture；自动凸分解、车辆轮胎接触和完整工业接触流形仍未实现。`heightfield` 仍是 candidate provider：仅支持未旋转静态/运动学场和单个 AABB 支撑采样，不是完整三角形接触流形，也没有 terrain-surface 精确 ray/shape cast、动态地形或物理设备性能证据。
+- Convex Hull 当前是单个作者网格 fixture；自动凸分解、车辆轮胎接触和完整工业接触流形仍未实现。`heightfield` 仍是 candidate provider：仅支持未旋转静态/运动学场和单个 AABB 支撑采样，并新增 bounded authored-surface ray query；它不是完整三角形接触流形，也没有 terrain shape cast、动态地形或物理设备性能证据。
 - 接触缓存是确定性单点持久流形，不是完整四点/八点工业接触流形。
 - 约束求解器仍是单线程整数确定性参考实现，不声称达到Jolt/PhysX/Chaos吞吐量。
 - Kernel binding 当前是一实体一 body/fixture 的确定性桥；多 fixture archetype、完整 ECS chunk/processor、并行 Job 和网络 wire frame 绑定仍未完成。Heightfield 与 managed residency 仍是 bounded candidate，不是生产级 terrain streaming、精确 terrain query 或物理设备性能证明。

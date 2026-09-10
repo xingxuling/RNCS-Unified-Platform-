@@ -4,7 +4,8 @@
 
 - 在 `e0214c3` 增加 bounded `heightfield` fixture：固定点毫米采样、未旋转静态/运动学 provider、三角插值支撑法线、单支撑点碰撞、Kernel lowering、快照/重放与 VSR 网格投影。
 - 新增 candidate-only `replaceManagedStaticBodies(...)`：按受管理标签对静态物理体做确定性 enter/exit/retain 切换，切换前原子校验，切换后清除失效接触/支撑缓存并保留非管理动态体；输出独立 `rsr.spatial-body-residency-transition.v0.1` 根。
-- Spatial Embodiment 回归为 `70/70 PASS`，RSR 全量回归为 `204/204 PASS`；Large World -> RSR terrain lowering 与同一 RSR 世界的 stream residency transition 已有本地 candidate execution evidence，但不宣称完成生产级 stream policy、完整工业接触流形、精确 terrain ray/shape cast、真实设备或生产性能。
+- 新增 bounded fixed-point heightfield surface ray query：对未旋转 heightfield 做 XZ bounded clip、网格 traversing 与 authored triangle intersection，返回表面交点和 upward normal；shape cast、动态地形与完整接触流形仍保持 OPEN。
+- Spatial Embodiment 回归为 `71/71 PASS`，RSR 全量回归为 `205/205 PASS`；Large World -> RSR terrain lowering、同一 RSR 世界的 stream residency transition 与 bounded terrain-surface ray query 已有本地 candidate execution evidence，但不宣称完成生产级 stream policy、shape cast、完整工业接触流形、真实设备或生产性能。
 
 - Added authored convex-hull fixtures with finite, non-coplanar vertex validation and deterministic triangle-index validation.
 - Routed convex-hull fixtures through rotated world-space support points, GJK/EPA contacts, broad-phase AABBs, snapshots, replay roots and VSR triangle-mesh projection.
