@@ -4,7 +4,7 @@
   "status": "CANDIDATE_LOCAL_HTTP_AUTHORITY_VERIFIED",
   "fixture": "examples/studio-authored-network-world-v03/project.mjs",
   "pipeline": "Reality Studio network authoring -> compileNetworkWorld -> Reality Build headless-server -> RealityNetworkRuntime loopback + HttpAuthorityClient generated HTTP authority candidate",
-  "sourceCommit": "31d93a6bee7d467f81d625331827df1ba9cfbf0d",
+  "sourceCommit": "b73df83f00ef455c215bd0f3d123775e9a4b1aca",
   "commands": [
     "npm test --workspace @taowind/reality-build-fabric",
     "npm test --workspace @taowind/reality-network-runtime",
@@ -67,5 +67,5 @@
     "No K400 gate is promoted to PASS."
   ],
   "authority": "candidate-runtime-evidence-only-no-commit",
-  "evidenceRoot": "e006a92ed7b11a7e3ee45c193a7cb46d3e202a0d42f7071eafb160bd37521d9d"
+  "evidenceRoot": "cd2bbd6261a68ffc92011eda7de67483f564c43771f66ece173f1212c96003cd"
 }
