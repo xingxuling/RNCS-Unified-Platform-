@@ -1,0 +1,60 @@
+{
+  "format": "taowind.rncs.asset-cache.provider-candidate-evidence.v0.1",
+  "version": "0.1.0",
+  "status": "CANDIDATE_NODE_PROVIDER_VERIFIED",
+  "sourceCommit": "44e6a514621fbbc76fcee401b042dc1ac84f1db3",
+  "pipeline": "VSR loader seam -> Reality Cell compatibility wrapper -> shared content-addressed Node provider -> verified payload read/write -> deterministic byte-budget LRU",
+  "semanticOwner": {
+    "cacheBytesAndManifest": "@taowind/rncs-asset-cache",
+    "manifestAtomicPersistence": "@taowind/rncs-durable-store / AtomicJsonStore",
+    "memoryResidencyAndLeases": "VSRSpatialAssetStreamer",
+    "cellDependencyPrefetchAndBinding": "Aether Reality Cell bridge",
+    "canonicalWorldStateAndAuthority": "not owned by this provider",
+    "browserAndAndroidProvider": "not implemented by this candidate"
+  },
+  "commands": [
+    "npm test --workspace @taowind/rncs-asset-cache",
+    "npm test --workspace @taowind/aether-rncs-bridge",
+    "node --check packages/control/rncs-asset-cache/src/index.mjs",
+    "node --check packages/integration/aether-rncs-bridge/src/reality-cell.mjs",
+    "npm install --package-lock-only --ignore-scripts --no-audit --no-fund",
+    "git diff --check"
+  ],
+  "tests": {
+    "assetCacheProviderSuite": "4 tests / 4 pass / 0 fail",
+    "aetherBridgeSuite": "29 tests / 29 pass / 0 fail",
+    "coldRehydrate": "PASS",
+    "sha256PayloadVerification": "PASS",
+    "manifestRootTamperRejection": "PASS",
+    "deterministicLruByteBudget": "PASS",
+    "realityCellCompatibilityFormat": "PASS",
+    "leasePrefetchAndGlbGltfRegression": "PASS"
+  },
+  "provider": {
+    "package": "@taowind/rncs-asset-cache",
+    "format": "rncs.content-addressed-asset-cache.v0.1",
+    "realityCellCompatibilityFormat": "rncs.reality-cell-asset-cache.v0.1",
+    "payloadLayout": "sha256.bin",
+    "manifest": "root-checked manifest.json",
+    "writePath": "synced temporary payload -> atomic rename; AtomicJsonStore manifest save",
+    "evictionOrder": "lastAccess ascending, then sha256 ascending",
+    "runtime": "Node >=20 only"
+  },
+  "rclGap": {
+    "id": "RCL_GAP_RNCS_RUNTIME_ASSET_CACHE_PROVIDER",
+    "missingCapability": "one cache contract with browser, Android and Node persistence providers plus invalidation and performance evidence",
+    "workaround": "shared Node provider behind Reality Cell compatibility wrapper; VSR loader remains injected",
+    "donor": "Aether Reality Cell content-addressed cache implementation",
+    "candidateAbsorption": "shared control-layer provider extracted; platform providers remain open",
+    "k400": "not evaluated; no gate promoted"
+  },
+  "boundaries": [
+    "The provider owns discardable bytes, manifest recovery and diagnostics only; it does not own canonical world state, asset selection, VSR leases, authority, promotion or commit.",
+    "Node filesystem rehydrate is locally verified; Browser Cache Storage/IndexedDB and Android app-private persistence are not implemented or proven.",
+    "The cache is bounded and rebuildable; multi-process or remote coherence, deployment-wide invalidation, format-aware prefetch, HLOD/PCG and large-world performance remain open.",
+    "Aether bridge regression is local Node evidence; it is not a real device, GPU, production deployment or commercial asset-format proof.",
+    "No K400 gate is promoted to PASS."
+  ],
+  "authority": "candidate-runtime-evidence-only-no-commit",
+  "evidenceRoot": "c6d46d69ed3ff4ea8d17e334e15d05f4ee0869059be1ff9d12ba62d6031a341d"
+}
