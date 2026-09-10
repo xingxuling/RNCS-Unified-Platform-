@@ -10,7 +10,8 @@
   ],
   "tests": {
     "focused": "2/2 PASS",
-    "realityBuildSuite": "140 tests / 132 pass / 0 fail / 8 skip",
+    "realityBuildSuite": "141 tests / 133 pass / 0 fail / 8 skip",
+    "windowsBatchArguments": "Windows BAT command adapter preserves executable and APK paths with spaces; dedicated regression PASS and actual Large World GPU Candidate android-apk build verification.valid=true",
     "spatialAssetStreaming": "7/7 PASS; transition receipt releases previous leases before over-budget eviction and verifies nested roots",
     "aetherBridge": "29/29 PASS; Reality Cell scene transition reuses the generic VSR residency reconcile seam",
     "largeWorldScene": "verifyLargeWorldSpatialScene.valid=true",
@@ -61,6 +62,7 @@
     "assetResidencyTransitionRoot": "0317301809c9bda3292596bed9f0c17f767ef0737ec7c6d9dfa117b28c61cb83",
     "browserTransitionReleased": 0,
     "browserTransitionEvicted": 0,
+    "windowsBatchArgumentsWithSpaces": true,
     "androidEmbeddedCandidate": true,
     "androidApkBuiltOnHost": true,
     "androidApkSignatureVerified": true,
@@ -87,5 +89,5 @@
     "no new K400 PASS"
   ],
   "authority": "candidate-artifact-generation-only-no-commit",
-  "evidenceRoot": "80cd909f8b97178d59a0bcc4304a86cb6576623596774c32379a5f69260a60aa"
+  "evidenceRoot": "cc7252f4eb1f6730ad53c84567cc693ef05dd30e8318d0c9fb85e47070acb4a9"
 }

@@ -24,9 +24,9 @@ export function commandInvocation(command,args=[],{env=process.env}={}){
   if(process.platform==='win32'&&path.isAbsolute(command)){
     const ext=path.extname(command).toLowerCase();
     if(ext==='.bat'||ext==='.cmd'){
-      const quote=value=>{const text=String(value);return /[\s&"]/.test(text)?`"${text.replaceAll('"','""')}"`:text;};
+      const quote=value=>`"${String(value).replaceAll('"','""')}"`;
       const shell=env.ComSpec??env.COMSPEC??'cmd.exe';
-      return{command:shell,args:['/d','/s','/c',[quote(command),...args.map(quote)].join(' ')]};
+      return{command:shell,args:['/d','/s','/c',`"${[quote(command),...args.map(quote)].join(' ')}"`]};
     }
   }
   if(process.platform==='win32'&&path.isAbsolute(command)&&!path.extname(command)){
@@ -43,7 +43,7 @@ export function commandInvocation(command,args=[],{env=process.env}={}){
 function firstLine(text){return String(text??'').trim().split(/\r?\n/).find(Boolean)??null;}
 function probe(name,args=['--version'],options={}){
   const command=findCommand(name,options);if(!command)return{name,available:false,version:null};
-  const invocation=commandInvocation(command,args,options),r=spawnSync(invocation.command,invocation.args,{encoding:'utf8',timeout:5000,windowsHide:true,env:options.env??process.env});
+  const invocation=commandInvocation(command,args,options),r=spawnSync(invocation.command,invocation.args,{encoding:'utf8',timeout:5000,windowsHide:true,windowsVerbatimArguments:process.platform==='win32'&&path.basename(invocation.command).toLowerCase()==='cmd.exe',env:options.env??process.env});
   return{name,available:r.status===0||Boolean(r.stdout)||Boolean(r.stderr),version:firstLine(r.stdout)||firstLine(r.stderr),command};
 }
 
