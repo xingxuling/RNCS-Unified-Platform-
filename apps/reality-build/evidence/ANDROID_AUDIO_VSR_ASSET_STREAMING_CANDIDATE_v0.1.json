@@ -1,0 +1,187 @@
+{
+  "format": "reality-build.android-audio-vsr-asset-streaming-candidate.v0.1",
+  "version": "0.1.0-alpha.1",
+  "status": "CANDIDATE_ANDROID_WEBVIEW_VSR_RESIDENCY_VERIFIED",
+  "source": {
+    "checkout": "rncs-visual-factory-v01",
+    "branch": "codex/rncs-engine-stack-archaeology-v01",
+    "sourceCommit": "0cfee2d",
+    "authority": "debug APK and Android Emulator/WebView candidate; no RCL Core promotion, native audio admission, physical-device acceptance, release promotion or main-branch mutation"
+  },
+  "pipeline": "sealed explicit audio-target binding -> embedded Android HTML -> existing VSRSpatialAssetStreamer(kind=audio) -> SHA-256 verified bytes and VSR receipt root -> Web Audio decodeAudioData -> scheduled WebView receipt",
+  "canonicalSeam": {
+    "worldSemantics": "RSR and Experience Fabric continue to own cue identity, fixed-tick timing, spatial parameters, listener meaning and offline audio semantics.",
+    "assetResidency": "VSR owns the existing content-addressed asset catalog, dependency/ready state, SHA verification, bounded asset loading and lease/evict receipts.",
+    "targetProvider": "Reality Build owns embedded Android target lowering and passes VSR-verified bytes to the existing Web Audio buffer Provider hosted by Android WebView.",
+    "platformBoundary": "Android WebView is only the platform host; it does not become World Body authority or a native audio semantic owner.",
+    "rclBoundary": "This is an auxiliary target-lowering seam, not an RCL Core promotion."
+  },
+  "build": {
+    "fixture": "apps/reality-build/examples/冰境试炼.unified-project.json",
+    "profile": "explicit audio-binding:impact-body plus spatial_policy.listener_id=listener:player",
+    "gradle": "9.5.1",
+    "androidSdk": "35",
+    "buildId": "build:aa1709d33dc70c8b5b14645d",
+    "buildKey": "aa1709d33dc70c8b5b14645db50a91b4ad826d007d3b41200cf31718bcf46fe4",
+    "graphRoot": "fbbb91654dc1651892cb4c894550a1037b2249af016d5e6e2e130ca58dfa4cc5",
+    "assetManifestRoot": "ab1486dc3fce33cad83f48221cce64c0c5a0bf7acb1791d3f9c343a1780cdf9e",
+    "preflightRoot": "84f995865ba7218f2f3fde91ec7dbf099e43a29334b4ae500c9aa0e0334214ad",
+    "receiptRoot": "b368b4f5c268d9b871ff0ccb4ffcfc1fe03870674e85ef1760bb67de1d9e8b28",
+    "targetRoot": "f0004b4389b46c0f2490c48d03b6a88c7433727d49520a309734dce1cb31e8d7",
+    "planRoot": "d28fa6966e279cbc18fe58b3c3befbf182d2f0ad34cd5e8cbef07d9c64b8df06",
+    "binding": {
+      "bindingId": "audio-binding:impact-body",
+      "cueId": "impact.body",
+      "assetId": "asset:3a82d1753e140d24552b89d1",
+      "fileRole": "sfx-wav",
+      "bytes": 19888,
+      "sha256": "ba8ebd46b31544ce76973a7ac88039c82d0c1aaaaabdf1cbfb1339a495f2e53e",
+      "embedded": true
+    },
+    "apk": {
+      "artifact": "Audio VSR Android Explicit Candidate-0.1.0-debug.apk",
+      "bytes": 336208,
+      "sha256": "370a07dfc49906a839c692593d79fe961520c348d638bff198707a074bd1abb3",
+      "signature": "verified; Android APK Signature Scheme v2",
+      "signingIdentity": "android-debug-keystore"
+    }
+  },
+  "androidWebView": {
+    "serial": "emulator-5554",
+    "api": 35,
+    "model": "Android ATD built for x86_64",
+    "product": "sdk_slim_x86_64",
+    "webviewPackage": "com.android.webview",
+    "webviewVersion": "124.0.6367.219",
+    "origin": "https://rncs.local/",
+    "readyState": "complete",
+    "cdpTarget": "57AECAB8C6A88A7672F41962226582D7",
+    "action": "window.__RNCS_GAME__.reset(); window.__RNCS_GAME__.step({move_right:true}); wait 7000 ms",
+    "before": {
+      "planRoot": "d28fa6966e279cbc18fe58b3c3befbf182d2f0ad34cd5e8cbef07d9c64b8df06",
+      "bindingCount": 1,
+      "receiptCount": 0
+    },
+    "after": {
+      "planRoot": "d28fa6966e279cbc18fe58b3c3befbf182d2f0ad34cd5e8cbef07d9c64b8df06",
+      "bindingCount": 1,
+      "receiptCount": 6,
+      "statusCounts": {
+        "blocked-binding": 4,
+        "decode-pending": 1,
+        "scheduled": 1
+      },
+      "providerDiagnostics": {
+        "format": "taowind.audio-target-provider-diagnostics.v0.1",
+        "context_state": "running",
+        "sample_rate": 48000,
+        "context_create_count": 0,
+        "resume_attempts": 1,
+        "resume_succeeded": 1,
+        "resume_failed": 0,
+        "decode_requests": 1,
+        "decode_completed": 1,
+        "decode_failed": 0,
+        "decode_latency_ms_last": 282.2,
+        "pending_decode_count": 0,
+        "cached_buffer_count": 1,
+        "scheduled_voice_count": 1,
+        "active_voice_count": 0,
+        "peak_active_voice_count": 1,
+        "ended_voice_count": 1,
+        "stopped_voice_count": 0,
+        "provider_error_count": 0,
+        "last_error": null,
+        "asset_streaming": {
+          "format": "vsr.spatial-asset-streaming.v0.1",
+          "status": "ready",
+          "catalog_root": "6ba3084106f84c5eda2a81ea97c77473e357b08eb80cf0e491f0b64e7092cb1c",
+          "max_concurrent": 4,
+          "ready_asset_ids": [
+            "audio-target:ba8ebd46b31544ce76973a7ac88039c82d0c1aaaaabdf1cbfb1339a495f2e53e"
+          ],
+          "bytes_resident": 19888,
+          "pending_request_count": 0,
+          "last_receipt_root": "3e70328beba4c59844092aeddd3e5c6e9c83241d7541591f1f6714b52db4618f",
+          "request_count": 1,
+          "loaded_count": 1,
+          "failed_count": 0,
+          "blocked_count": 0,
+          "bytes_loaded": 19888
+        }
+      },
+      "scheduledReceipt": {
+        "status": "scheduled",
+        "cueId": "impact.body",
+        "bindingId": "audio-binding:impact-body",
+        "assetId": "asset:3a82d1753e140d24552b89d1",
+        "assetSha256": "ba8ebd46b31544ce76973a7ac88039c82d0c1aaaaabdf1cbfb1339a495f2e53e",
+        "tick": 1,
+        "source": "audio:1:avatar|avatar:capsule|floor",
+        "providerId": "reality-build.web-audio-buffer",
+        "assetStreamReceiptRoot": "3e70328beba4c59844092aeddd3e5c6e9c83241d7541591f1f6714b52db4618f",
+        "spatialParametersForwarded": true,
+        "listenerId": "listener:player",
+        "spatialMapping": {
+          "panningModel": "equalpower",
+          "distanceModel": "linear",
+          "positionScale": 1000,
+          "occlusionMode": "lowpass"
+        },
+        "receiptRoot": "6ba24d4e2f02614ed9cacfa4fa38272e"
+      }
+    },
+    "diagnostics": {
+      "runtimeExceptionThrown": 0,
+      "knownConsoleWarnings": [
+        "Failed to create WebGPU Context Provider",
+        "Failed to create WebGPU Context Provider"
+      ],
+      "warningBoundary": "The two WebGPU warnings are the known Android Emulator GPU limitation; they are unrelated to the audio asset receipt.",
+      "spatial3d": {
+        "available": true,
+        "mode": "webgpu",
+        "verified": true,
+        "drawCount": 5
+      }
+    }
+  },
+  "verification": {
+    "commands": [
+      "node --check apps/reality-build/src/runtime-template.mjs",
+      "node --test apps/reality-build/tests/runtime.test.mjs apps/reality-build/tests/audio-target.test.mjs",
+      "npm.cmd test --workspace @taowind/reality-build-fabric",
+      "Gradle 9.5.1 android-apk target with Android SDK 35",
+      "apksigner verify --verbose",
+      "adb install -r and explicit MainActivity launch",
+      "Android WebView CDP Runtime.evaluate through adb local forward"
+    ],
+    "localTestSummary": {
+      "focused": "26 passed, 0 failed",
+      "realityBuildFull": "164 passed, 0 failed, 8 skipped",
+      "apk": "compiled and v2 signature verified",
+      "webView": "explicit embedded plan loaded; VSR ready=1; decode=1/1; scheduled receipt retained the VSR receipt root; Runtime.exceptionThrown=0"
+    },
+    "expectedResult": "All listed local checks pass; no hosted CI, native audio, physical-device output or human-listening result is inferred."
+  },
+  "rclGap": "RCL_GAP_RNCS_AUDIO_TARGET_LOWERING",
+  "stressCase": "The same explicit content-addressed audio target must survive Android APK packaging, synthetic-origin WebView loading and CDP execution while preserving VSR asset-residency and receipt-root continuity.",
+  "donorAdvantage": "Reality Build already supplies the Android embedded HTML host, synthetic origin and CDP evidence seam; VSR supplies generic SHA-verified asset residency, so no native Android audio registry or parallel asset loader was added.",
+  "regressionCase": "The Android plan remains explicit and bound, unbound cues remain blocked, the embedded asset is loaded once into VSR ready state, decode pending resolves to scheduled, and the scheduled receipt retains the same VSR receipt root.",
+  "affectedK400Cells": [
+    "LOWER",
+    "EXECUTE",
+    "CORRECT",
+    "ROBUST",
+    "EVIDENCE"
+  ],
+  "boundaries": [
+    "This is an API 35 Android ATD Emulator/WebView target execution candidate, not physical-device or production-device acceptance.",
+    "The APK is debug-signed, not a release-signed APK/AAB or store-delivery artifact.",
+    "A scheduled Web Audio buffer receipt proves target execution and decode scheduling only; it does not prove audible output, native speaker routing, latency, mixing quality or human listening.",
+    "The WebGPU warnings keep native GPU and performance claims closed; no native GPU or audio equivalence is inferred.",
+    "No target-side voice cap, mixer/bus policy, continuous-stream policy, cache budget or latency budget was introduced or verified.",
+    "No K400 gate is promoted to PASS."
+  ],
+  "nextCandidate": "Keep the VSR receipt continuity as evidence and audit whether a canonical owner exists for target-side cache budget or continuous/segmented audio streaming; physical-device listening remains a separate human gate."
+}

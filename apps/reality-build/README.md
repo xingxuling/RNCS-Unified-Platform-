@@ -244,7 +244,9 @@ Build 现在从已 bound 的 `cue_id → asset_id → file_role → asset_sha256
 
 真实本地 Chromium source build 观察到：精确 WAV 请求 `200`，VSR audio catalog `ready=1`、`bytes_resident=19888`、`failed=0`、`blocked=0`、`max_concurrent=4`，Web Audio `decode=1/1`，并在 `scheduled` receipt 中携带 VSR `receipt_root`；页面错误为 `0`。完整收据见 `evidence/BUILD_AUDIO_VSR_ASSET_STREAMING_CANDIDATE_v0.1.json`。
 
-这只关闭了“显式音频目标文件 → 既有 VSR asset residency → Web Audio decode”的浏览器 candidate seam。它不宣称 target-side voice cap、mixer/bus lowering、连续/分段音频 streaming、音频缓存预算、Android/原生音频、跨设备 latency、扬声器输出、物理设备或人工听感；不新增 K400 PASS。`RCL_GAP_RNCS_AUDIO_TARGET_LOWERING` 仍保持开放，下一步应单独复验 embedded Android WebView 的同一 VSR receipt，再决定是否有独立的 provider cache/stream policy 缺口。
+同一显式 profile 继续进入真实 Gradle 9.5.1 / Android SDK 35 debug APK，并安装到 API 35 `emulator-5554` 的 Android WebView synthetic origin。CDP 观察到 embedded plan `binding_count=1`、VSR catalog `ready=1`、`bytes_resident=19888`、`failed=0`、`blocked=0`、Web Audio `decode=1/1`、`Runtime.exceptionThrown=0`，且 `scheduled` receipt 保留同一 VSR `asset_stream_receipt_root`。这是 Android Emulator/WebView target execution candidate，不是 native audio、GPU、物理设备、扬声器或人工听感证明；完整收据见 `evidence/ANDROID_AUDIO_VSR_ASSET_STREAMING_CANDIDATE_v0.1.json`。
+
+这只关闭了“显式音频目标文件 → 既有 VSR asset residency → Web Audio decode”的浏览器与 Android WebView candidate seam。它不宣称 target-side voice cap、mixer/bus lowering、连续/分段音频 streaming、音频缓存预算、Android 原生音频、跨设备 latency、扬声器输出、物理设备或人工听感；不新增 K400 PASS。`RCL_GAP_RNCS_AUDIO_TARGET_LOWERING` 仍保持开放，Android WebView 的同一 VSR receipt 已单独复验；下一步应决定是否有独立的 provider cache/stream policy 缺口。
 
 ## Network compilation → headless candidate
 

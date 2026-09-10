@@ -152,5 +152,5 @@
     "No Android WebView rerun for this VSR receipt, native audio backend, speaker/headphone routing, physical-device behavior, release signing, store delivery or human listening acceptance is claimed.",
     "No K400 gate is promoted to PASS."
   ],
-  "nextCandidate": "Re-run the same explicit binding through the generated Android WebView target and compare VSR catalog/receipt-root continuity; only then decide whether a separate provider cache or continuous-stream policy has a canonical owner."
+  "nextCandidate": "Android WebView receipt-root continuity is recorded separately in ANDROID_AUDIO_VSR_ASSET_STREAMING_CANDIDATE_v0.1.json; next, decide whether a separate provider cache or continuous-stream policy has a canonical owner."
 }
