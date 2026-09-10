@@ -1,0 +1,109 @@
+{
+  "format": "rncs.transport-profile-immutability-performance-evidence.v0.1",
+  "version": "0.1.0-alpha.1",
+  "status": "CANDIDATE_PERFORMANCE_OPTIMIZATION_VERIFIED",
+  "source": {
+    "checkout": "rncs-visual-factory-v01",
+    "branch": "codex/rncs-engine-stack-archaeology-v01",
+    "sourceCommit": "b3754620bffd4676f96110e97f42bc3cc689c178",
+    "authority": "candidate-only; no physical provider admission, RCL promotion, release or main-branch mutation"
+  },
+  "change": {
+    "owners": [
+      "RNCS Core Contract",
+      "URRF RealityTransportFabric"
+    ],
+    "mechanisms": [
+      "deep-frozen canonical transport profiles",
+      "cached verification results for immutable transport profiles",
+      "constructed immutable packet verification cache",
+      "RealityTransportFabric reuses registered immutable profile references"
+    ],
+    "semanticSchemaUnchanged": true,
+    "authorityBoundaryUnchanged": true,
+    "candidateBoundaryUnchanged": true
+  },
+  "positiveEvidence": [
+    "Core transport profiles and constructed packets are sealed before they enter the reusable verification path.",
+    "Externally supplied or cloned/tampered values remain on the full verification path and are not admitted through the immutable cache.",
+    "URRF retains its existing profile roots, packet roots, candidate-only flags and non-authoritative commit status.",
+    "The final state root is unchanged across the formal benchmark source path: fnv1a64:59c41f121ea346e5."
+  ],
+  "negativeEvidence": [
+    "This is not a WebSocket, WebTransport, QUIC, UDP, TLS, WAN, cross-node or physical-device provider.",
+    "The measurements are single local Windows runs and are not an SLA, device performance curve or K400 PERFORMANCE PASS.",
+    "Loopback semantic-carrier throughput does not prove distributed authority, failover, lease continuity, key custody or production deployment."
+  ],
+  "sameProcessMicrobenchmark": {
+    "payload": "3000 Loopback input packets with 50 clients and 60 ticks",
+    "runtime": "Node v24.15.0 / win32 x64",
+    "comparisonBoundary": "same worktree invocation before and after the immutable transport verification change; one local run per measurement",
+    "before": {
+      "fabric": true,
+      "elapsedMs": "1024.111"
+    },
+    "after": {
+      "fabric": true,
+      "elapsedMs": "578.505"
+    },
+    "elapsedReductionPercent": "43.51",
+    "primaryClaim": "local semantic-carrier verification overhead was reduced in this run; no carrier or authority capability was added"
+  },
+  "formalBenchmark": {
+    "report": "packages/network/reality-network-runtime/reports/performance/network-runtime-benchmark.json",
+    "generatedAt": "2026-09-10T16:15:42.007Z",
+    "fullSimulation": {
+      "players": 2,
+      "ticks": 60,
+      "elapsedMs": "2590.749",
+      "effectiveTicksPerSecond": "23.16",
+      "averageTickMs": "43.179",
+      "finalStateRoot": "fnv1a64:59c41f121ea346e5"
+    },
+    "protocolQueue50": {
+      "packets": 3000,
+      "elapsedMs": "693.139",
+      "packetsPerSecond": "4328.13"
+    },
+    "protocolQueue10": {
+      "packets": 600,
+      "elapsedMs": "96.676",
+      "packetsPerSecond": "6206.3"
+    },
+    "lossConvergenceTicks": 2,
+    "transportRoots": {
+      "fullSimulationProfileRoot": "d1fb536298d0ef2a5d6bc662fb07857ef9c10a654e1a9dca2a6f79e0d356562d",
+      "fullSimulationFabricRoot": "b6c5649207807e864238111f007c527c9b43506a9df3f9a519dd90709863f2fe",
+      "lossProfileRoot": "497140b51c9aa50e55b7e3221b52c68be436cb3b859a1478fd12724016298304",
+      "lossFabricRoot": "f6641764f657d8cf3572f5886ff40601f692ee2d7bba72b55a30c746cbe8e5a1"
+    }
+  },
+  "verification": {
+    "commands": [
+      "node --check packages/kernel/rncs-core-contract/src/reality-transport.mjs",
+      "node --check packages/world/reality-representation-fabric/src/transport-runtime.mjs",
+      "npm.cmd test --workspace @taowind/rncs-core-contract",
+      "npm.cmd test --workspace @taowind/reality-representation-fabric",
+      "npm.cmd test --workspace @taowind/reality-network-runtime",
+      "npm.cmd run benchmark --workspace @taowind/reality-network-runtime"
+    ],
+    "results": {
+      "coreContract": "49 passed, 0 failed, 0 skipped",
+      "realityRepresentationFabric": "21 passed, 0 failed, 0 skipped",
+      "realityNetworkRuntime": "31 passed, 0 failed, 0 skipped",
+      "syntax": "PASS",
+      "formalBenchmark": "PASS"
+    },
+    "claimBoundary": "The candidate proves a reusable local verification-cost optimization while preserving roots and authority flags; it does not prove an external carrier, distributed execution, device output, production SLA or K400 promotion."
+  },
+  "rclGap": "RCL_GAP_RNCS_EXTERNAL_TRANSPORT_PROVIDER_AND_DEPLOYMENT",
+  "affectedK400Cells": [
+    "EXECUTE",
+    "CORRECT",
+    "ROBUST",
+    "PERFORMANCE",
+    "EVIDENCE"
+  ],
+  "decision": "SHARED_SEMANTIC_TRANSPORT_PERFORMANCE_CANDIDATE_VERIFIED_PHYSICAL_PROVIDER_OWNER_OPEN",
+  "evidenceRoot": "93be3cb663b3d6571a23af974572ac7142dba3fa1be02171495d9b72f743d5ad"
+}

@@ -601,6 +601,14 @@ Reality Build 已把该计划写入 candidate presentation、runtime payload 和
 
 这关闭的是控制面安全与本机回执 donor 的考古缺口，不是 RNCS external world transport。DML Remote Link 的 owner 仍是 DML action/Workbench projection；它不拥有 URRF packet、RSR/VSR world state、复制 authority 或外部 carrier。可复用的是 device-bound Grant、Origin/Scope/Risk、签名/nonce、receipt root 和 local policy seam；不可复用为 RNCS world transport 的是 DML queue/projection schema。Loopback、单节点 JSON、Cloudflare 配置模板、无第二网络/物理设备的边界保持不变。
 
+## 本轮 URRF semantic transport verification cache/performance candidate
+
+对现有 URRF semantic transport → Loopback carrier seam 做了执行级 profiling 后，限制性成本不是 RSR world step，而是每个 packet 重复 clone、canonical hash 和 profile/packet contract verification。最小共享修复放在真正的 owner 上：RNCS Core Contract 对 canonical transport profile/constructed packet 做 deep-freeze，并缓存 immutable verification result；URRF `RealityTransportFabric` 复用已经登记的 sealed profile reference。外部输入、clone 或 tampered packet 仍走完整验证路径，没有放宽 admission。
+
+本轮真实回归为：Core Contract `49/49 PASS`，URRF `21/21 PASS`，Network Runtime `31/31 PASS`，两个 transport source `node --check PASS`，formal benchmark `PASS`。同一工作树、Node v24.15.0、Windows x64、3000 个 Loopback input packets（50 clients × 60 ticks）的单次本地比较为 `1024.111 ms → 578.505 ms`，约 `43.51%` 降低；final state root 仍为 `fnv1a64:59c41f121ea346e5`。formal report 同时记录 2-player/60-tick `23.16 ticks/s`、50-player queue `4328.13 packets/s` 与 loss convergence `2 ticks`。完整收据见 `docs/verification/RNCS_TRANSPORT_PROFILE_IMMUTABILITY_PERFORMANCE_CANDIDATE_v0.1.json`。
+
+这只关闭了 semantic carrier 的本地验证成本候选，不是 external provider 的实现。当前仍没有 WebSocket/WebTransport/QUIC/UDP/TLS/WAN、跨节点 authority/failover、key custody、物理设备或 production SLA 证据；不得把 Loopback benchmark 或 immutable cache 晋升为 K400 `PERFORMANCE`/`EVIDENCE` PASS。canonical external protocol、donor license、TLS/key custody、relay/leader/lease/failover owner 仍需人类裁决后才能进入下一轮 provider 实现。
+
 ## 结构判断
 
 ### 限制性瓶颈
