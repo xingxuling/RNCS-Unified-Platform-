@@ -1,0 +1,149 @@
+{
+  "format": "reality-build.audio-target-lowering-audit.v0.1",
+  "status": "AUDIT_AUDIO_TARGET_LOWERING_GAP_CONFIRMED",
+  "sourceCommit": "d260101e2fd5c9ee85df3fd0a4984b770c629576",
+  "fixture": "apps/reality-build/examples/冰境试炼.unified-project.json",
+  "pipeline": "Reality Studio asset registry + Behavior/RSR spatial-audio -> Reality Build web-release -> Chromium host",
+  "commands": [
+    "node apps/reality-build/src/cli.mjs build --project apps/reality-build/examples/冰境试炼.unified-project.json --out output/playwright/audio-source-audit-v02 --targets web-release",
+    "node --test apps/reality-build/tests/runtime.test.mjs",
+    "Chromium via playwright-cli against http://127.0.0.1:4184/index.html",
+    "Instrumented browser step for Behavior audio and RSR spatial-audio event capture"
+  ],
+  "archaeology": {
+    "assetContract": {
+      "assetId": "asset:3a82d1753e140d24552b89d1",
+      "assetKind": "character-2d",
+      "fileRole": "sfx-wav",
+      "sourcePath": "candidates/mobile/attack-sfx.wav",
+      "declaredSha256": "ba8ebd46b31544ce76973a7ac88039c82d0c1aaaaabdf1cbfb1339a495f2e53e",
+      "declaredBytes": 19888
+    },
+    "behaviorContract": {
+      "capability": "experience.audio.emit",
+      "cues": [
+        "footstep-ice",
+        "defeat",
+        "victory",
+        "enemy-hit",
+        "pickup-key",
+        "sword-ice-hit",
+        "door-open"
+      ],
+      "assetBindingFieldsObserved": false
+    },
+    "rsrContract": {
+      "eventKind": "spatial-audio",
+      "cuesObserved": [
+        "impact.generic",
+        "impact.body",
+        "impact.object"
+      ],
+      "assetBindingFieldsObserved": false,
+      "eventOwner": "RSR SpatialEmbodiment"
+    },
+    "experienceFabricAudio": {
+      "sourceTypes": [
+        "oscillator",
+        "sample"
+      ],
+      "fileAssetSourceObserved": false,
+      "offlineWavRenderer": true
+    },
+    "buildTarget": {
+      "runtimeAssetMapExposes": "primary_visual only",
+      "decodeAudioDataObserved": false,
+      "spatialAudioConsumerObserved": false
+    }
+  },
+  "build": {
+    "output": "output/playwright/audio-source-audit-v02",
+    "buildId": "build:74df9c009271f5ed6ba26e3e",
+    "buildKey": "74df9c009271f5ed6ba26e3e6bf8b017ef6c8f6404f69f037d4bb473ca7e3c96",
+    "receiptRoot": "fbd8c771486e1e788b7644a205a807c527da14501d97828446e3138d83062539",
+    "assetManifestRoot": "9ff10fedd3c7189c9034b7e9b56099807ff6efcb5faa26a8b3c6c880487e5543",
+    "targetRoot": "545a9c905463bf430fa5085d2001eb017fad678f553ea7691a4c527f70825db9",
+    "verificationValid": true,
+    "audioFile": {
+      "storePath": "web-release/assets/ba8ebd46b31544ce76973a7ac88039c82d0c1aaaaabdf1cbfb1339a495f2e53e.wav",
+      "sha256": "ba8ebd46b31544ce76973a7ac88039c82d0c1aaaaabdf1cbfb1339a495f2e53e",
+      "bytes": 19888,
+      "mime": "audio/wav",
+      "packaged": true
+    },
+    "runtimeAssetMap": {
+      "assetId": "asset:3a82d1753e140d24552b89d1",
+      "kind": "character-2d",
+      "uri": "assets/fcf49fc901802d8699c0b5be05feec076f915bb0c45db126e6c50096a4d6651f.png",
+      "sha256": "fcf49fc901802d8699c0b5be05feec076f915bb0c45db126e6c50096a4d6651f",
+      "audioFileExposed": false
+    }
+  },
+  "browser": {
+    "host": "Chromium via playwright-cli",
+    "url": "http://127.0.0.1:4184/index.html",
+    "readyState": "complete",
+    "consoleErrors": 0,
+    "consoleWarnings": 2,
+    "staticAudioRequests": 0,
+    "wavRequests": [],
+    "behaviorAudioBranch": {
+      "action": "window.__RNCS_GAME__.step({move_right:true})",
+      "cue": "footstep-ice",
+      "playerX": "70 -> 73.2",
+      "audioContextConstructed": true,
+      "oscillatorStarted": true,
+      "fileDecodeObserved": false,
+      "probeType": "instrumented AudioContext; not playback proof"
+    },
+    "spatialBranch": {
+      "action": "force player x=415 then step",
+      "rsrVerified": true,
+      "twoDContactAudioEvents": [
+        {
+          "cue": "impact.generic",
+          "sourceBodyId": "node:enemy",
+          "tick": 2
+        }
+      ],
+      "additionalEmbeddedSpatialEvents": [
+        "impact.body",
+        "impact.object"
+      ],
+      "browserAudioConsumer": false,
+      "wavRequests": 0
+    }
+  },
+  "verdict": {
+    "sourceAudioExists": true,
+    "targetFilePackaged": true,
+    "behaviorCueEnteredRuntime": true,
+    "proceduralFallbackExecuted": true,
+    "explicitCueAssetBinding": false,
+    "audioFileDecodeOrPlayed": false,
+    "rsrSpatialAudioLoweredToAudio": false,
+    "runtimeStateAndSpatialRoots": "verified",
+    "status": "CANDIDATE_NEGATIVE_EVIDENCE_ONLY"
+  },
+  "rclGap": "RCL_GAP_RNCS_AUDIO_TARGET_LOWERING",
+  "missingCapability": "An explicit, root-bound cue-to-asset binding and target audio execution path that can load/decode the exact Build asset while preserving Behavior/RSR timing, spatial parameters and receipts.",
+  "currentWorkaround": "Behavior audio calls use a procedural oscillator derived from the cue string; RSR spatial-audio events are collected by the Build host but are not forwarded to an audio consumer.",
+  "donorAdvantage": "Studio asset records already carry sfx-wav roles and content hashes; Experience Fabric and Spatial Embodiment already carry deterministic cue/timing/spatial semantics; Audio Scene Runtime already supplies offline stems and WAV rendering.",
+  "candidateAbsorption": "Keep Studio/Experience Fabric/RSR as semantic owners; reuse the existing asset manifest and content-addressed file records; add no cue-to-file mapping until a canonical binding owner and runtime receipt contract are selected.",
+  "affectedK400Cells": [
+    "LOWER",
+    "EXECUTE",
+    "CORRECT",
+    "ROBUST",
+    "PERFORMANCE",
+    "EVIDENCE"
+  ],
+  "boundaries": [
+    "The packaged WAV is a real source-derived target file, but packaging is not playback or decode evidence.",
+    "The instrumented AudioContext probe proves only that the current procedural fallback branch is entered; it is not native audio or audible-quality proof.",
+    "RSR spatial-audio events retain their own event/root semantics; the Build host does not claim them as audio playback.",
+    "No K400 gate is promoted to PASS; physical audio devices, Android audio output, latency, mixing quality, streaming, production mastering and human listening acceptance remain unverified."
+  ],
+  "nextCandidate": "First decide the canonical cue-to-asset binding owner and receipt shape across Studio/Experience Fabric/RSR/Build; then implement the smallest shared target lowering with explicit missing/fallback diagnostics and browser plus Android execution evidence.",
+  "evidenceRoot": "6ad36b1a17d690a272bb7777db4c80008b96d05d7069c10f05ac8402b53e641a"
+}

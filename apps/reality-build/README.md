@@ -140,6 +140,14 @@ Reality Studio UI/Input contract
 
 这里的 owner 仍是 Reality Studio；DOM/WebView 只是平台 lowering，不拥有 World Body IR、canonical world state、authority、commit 或 release。截图和 accessibility tree 只能证明候选目标链路已经执行，默认 Studio fixture 的标题/生命面板相邻关系仍需要人工视觉验收；物理设备、原生 GPU UI、无障碍/本地化、网络 transport、release 签名和生产交付没有被本轮关闭。
 
+## Audio target lowering archaeology（negative candidate）
+
+本轮没有新增音频系统，而是沿着真实源资产做了一次可证伪审计。`asset:3a82d1753e140d24552b89d1` 的 `sfx-wav` 文件在 web-release 中确实被烘焙为 `assets/ba8ebd46...e.wav`（19888 bytes，SHA-256 保持一致），但 `assetRuntimeMap()` 当前只暴露 `primary_visual`；Behavior 的 `experience.audio.emit` cue（如 `footstep-ice`）没有 `asset_id`/file-role 绑定。RSR 的 `spatial-audio` 事件也能在同一 Build 页面生成 `impact.generic`，但 Build host 只收集事件，没有音频 consumer。
+
+真实 Chromium source build（`output/playwright/audio-source-audit-v02`）达到 `readyState=complete`、`0` application errors；instrumented step 证明 procedural oscillator fallback 被进入并启动，但没有 `decodeAudioData`、WAV 请求或真实音频播放收据。Experience Fabric Audio 已有 oscillator/sample 与离线 WAV renderer，Audio Scene Runtime 已有 stem/render 语义；这些是 donor，不等于浏览器/Android target lowering。完整负证据见 `evidence/BUILD_AUDIO_TARGET_LOWERING_AUDIT_v0.1.json`，状态为 `CANDIDATE_NEGATIVE_EVIDENCE_ONLY`。
+
+当前缺口记录为 `RCL_GAP_RNCS_AUDIO_TARGET_LOWERING`：必须先裁决 cue-to-asset 的 canonical owner 和 receipt shape，再复用现有资产清单、Behavior/RSR timing/spatial 参数做最小 target lowering。打包文件不能描述成播放完成；instrumented AudioContext 也不是 native audio、延迟、混音质量或人工听感证据。本轮没有新增 K400 PASS。
+
 ## Network compilation → headless candidate
 
 Reality Build 现在消费既有 Reality Studio `project.network`，不再只把 network authoring 留在 Studio 导出侧：
