@@ -1,0 +1,161 @@
+{
+  "format": "reality-build.android-animation-graph-lowering-evidence.v0.1",
+  "status": "CANDIDATE_ANDROID_EMULATOR_ANIMATION_GRAPH_LOWERING_VERIFIED",
+  "sourceCommit": "4c62e3d163dcac2d12d00968ec619a88b9af44ed",
+  "pipeline": "sealed Build animation graph policy -> fixed spatial Tick -> VSR frame compilation -> signed debug APK -> Android WebView synthetic origin -> CDP runtime probe",
+  "archaeology": {
+    "semanticOwners": {
+      "realityStudio": "Reality Studio Sequencer remains the authored presentation timeline owner; this APK candidate does not infer or consume a Studio Sequence.",
+      "vsr": "Visual State Runtime owns animation graph state/transition sampling, animationRoot and frame verification.",
+      "rsr": "Reality Simulation Runtime owns the authoritative spatial state and Tick; the Android probe only advances the existing runtime through the candidate host.",
+      "realityBuild": "Reality Build owns candidate policy validation, fixed-Tick lowering, target packaging and evidence projection; it does not become the animation evaluator."
+    },
+    "existingContracts": [
+      "The Android host reuses the same generated embedded HTML and animation policy as the verified web-release graph candidate.",
+      "The WebView page exposes the existing window.__RNCS_GAME__ inspection seam and VSR spatial frame verification.",
+      "The APK target receipt and debug signature are separate from runtime and device evidence."
+    ],
+    "gap": "The structured VSR animation graph policy previously had Chromium evidence but no Android APK/WebView execution receipt; this run closes only that emulator target seam."
+  },
+  "build": {
+    "project": "apps/reality-build/examples/冰境试炼.unified-project.json",
+    "buildId": "build:8e6cc18786f50c10858db399",
+    "buildKey": "8e6cc18786f50c10858db399c628ca2f5bc2d7e6d70c5e75d9887d5c9118c279",
+    "buildReceiptRoot": "90115486c41e74f6c0da5105e29a388a90be7dfbcc7ce50faea37ea9f40e0eee",
+    "runtimeEvidenceRoot": "fe02624b82f36be89e24ab84b2f24799ce6ac5ba540b27dc57f8367a9324cbca",
+    "targetRoot": "847f6245b1b1bbea3b0c9588e9cbc8d3d00c4606c0105fb08f92b02a3e373ebd",
+    "policyRoot": "395841bc4b28cc04d2c367fc5b05a95687392e5268a7923730bfb2de8da8c476",
+    "verifyBuild": true,
+    "runtimeDeterministic": true,
+    "apk": {
+      "path": "C:/Users/User/AppData/Local/Temp/rncs-animation-android-TOGePw/android-apk/RNCS Animation Graph Android Candidate-0.1.0-debug.apk",
+      "package": "com.taowind.animationgraphcandidate",
+      "versionName": "0.1.0",
+      "variant": "debug",
+      "signed": true,
+      "signatureStatus": "verified",
+      "signingIdentity": "android-debug-keystore",
+      "sha256": "2e89457e62a57c3a1efd7b6aae354575d27d02a4fb7e8fc975b7f7a142a5962a"
+    }
+  },
+  "android": {
+    "device": "emulator-5554",
+    "avd": "Rcl_Aether_API35_ATD",
+    "model": "Android ATD built for x86_64",
+    "sdk": 35,
+    "release": "15",
+    "webview": "com.android.webview 124.0.6367.219",
+    "package": "com.taowind.animationgraphcandidate",
+    "activity": "com.taowind.animationgraphcandidate/.MainActivity",
+    "url": "https://rncs.local/",
+    "readyState": "complete",
+    "runtimeInspection": "Android WebView DevTools Protocol Runtime.evaluate through an adb local forward",
+    "navigatorGpu": true,
+    "spatialWebGpuProbe": {
+      "available": true,
+      "secureContext": true,
+      "features": [],
+      "limits": {}
+    },
+    "primaryGpu": {
+      "ready": false,
+      "error": "WebGPU adapter unavailable."
+    },
+    "spatialModeTelemetry": "webgpu",
+    "spatialWebGpuReceipt": null,
+    "nativeGpuSubmission": false,
+    "before": {
+      "tick": 0,
+      "timeSeconds": 0,
+      "stateRoot": "fnv1a64:b29ecc584250facb",
+      "frameRoot": "919dbcc0f4671b24c03043562f2c3cbe5b71f0f7c8f8d5d43a9e751105e9dd2a",
+      "animationRoot": "59652f8057eb977faac1aa55b7e34347eb8c84446d0dcfd0951524f939d30bff",
+      "selection": "graph",
+      "graphStateId": "run",
+      "transition": {
+        "fromStateId": "walk",
+        "toStateId": "run",
+        "progress": 0.25
+      },
+      "drawCount": 5,
+      "verified": true,
+      "spatialError": "",
+      "assetPayloadError": ""
+    },
+    "after15Ticks": {
+      "tick": 15,
+      "timeSeconds": 0.25,
+      "stateRoot": "fnv1a64:6ec171a06ab30e6e",
+      "frameRoot": "7ea4ee1445e9b279c805f06685cda152a43e2c6c68a3d371e18b4fe222e0f6a8",
+      "animationRoot": "a72ad50ffa9e671c924902d4f91134a3f31818e4fcb9500936036c7c7b0a36e0",
+      "selection": "graph",
+      "graphStateId": "run",
+      "transition": {
+        "fromStateId": "walk",
+        "toStateId": "run",
+        "progress": 0.25
+      },
+      "drawCount": 5,
+      "verified": true,
+      "spatialError": "",
+      "assetPayloadError": ""
+    },
+    "animationRootChanged": true,
+    "frameRootChanged": true,
+    "applicationFatalExceptionObserved": false,
+    "logSignals": [
+      "ActivityManager displayed com.taowind.animationgraphcandidate/.MainActivity",
+      "Android WebView 124.0.6367.219 loaded the page",
+      "Chromium reported Failed to create WebGPU Context Provider twice"
+    ]
+  },
+  "tests": {
+    "focusedRealityBuild": "29/29 PASS",
+    "realityBuildFull": "163 tests / 155 pass / 0 fail / 8 skip",
+    "visualStateRuntimeTypecheck": "PASS",
+    "visualStateRuntimeGltf": "23/23 PASS",
+    "visualStateRuntimeSpatial3d": "99/99 PASS",
+    "apkGradleBuild": "PASS; Gradle 9.5.1 + Android SDK 35",
+    "apkSignatureVerification": "PASS; Windows apksigner v2",
+    "apkInstall": "PASS; adb install --no-streaming -r",
+    "activityLaunch": "PASS; explicit MainActivity launch",
+    "androidWebViewRuntime": "PASS; page loaded and CDP Runtime.evaluate returned graph frames",
+    "gitDiffCheck": "PASS"
+  },
+  "coverage": {
+    "candidatePolicyValidation": true,
+    "fixedTickGraphLowering": true,
+    "androidApk": true,
+    "androidEmulatorWebView": true,
+    "androidRuntimeGraphExecution": true,
+    "physicalAndroidRuntime": false,
+    "nativeGpuTarget": false,
+    "nativeGpuSubmission": false,
+    "performanceCurve": false,
+    "studioSequenceLowering": false,
+    "audioTargetLowering": false,
+    "humanVisualAcceptance": false,
+    "k400Pass": false
+  },
+  "affectedK400Cells": [
+    "LOWER",
+    "EXECUTE",
+    "CORRECT",
+    "ROBUST",
+    "EVIDENCE"
+  ],
+  "rclGap": "RCL_GAP_RNCS_BUILD_ANIMATION_TARGET_LOWERING",
+  "missingCapability": "A target-independent authored presentation contract and target GPU/device evidence are not yet established; this run only proves the existing VSR graph selection through the Android Emulator WebView host.",
+  "currentWorkaround": "Reality Build packages the candidate graph policy into the generated embedded HTML, maps the policy to the authoritative spatial Tick and delegates evaluation to VSR; the Android host exposes the existing inspection seam for runtime evidence.",
+  "regressionCase": "The graph policy remains graph-selected at Tick 0 and Tick 15; the declared run state and walk-to-run transition remain stable, while stateRoot, animationRoot and frameRoot change and both frames remain VSR verified.",
+  "boundaries": [
+    "This is an API 35 Android ATD Emulator/WebView candidate, not a physical or target-device acceptance result.",
+    "The APK is debug-signed and is not a release-signed APK/AAB or store-delivery proof.",
+    "navigator.gpu capability availability is not an adapter or submission receipt: the primary GPU path reported WebGPU adapter unavailable, spatial3dReceipt remained null, and native GPU execution is not claimed.",
+    "The host telemetry retained spatialMode=webgpu while no WebGPU submission receipt was observed; frame-plan verification is not a native GPU frame-rate or visual-parity claim.",
+    "Studio authored Sequence lowering, event-driven state-machine ownership, audio target lowering, performance curves, physical-device behavior, accessibility/localization and human visual acceptance remain open.",
+    "No K400 gate is promoted to PASS; the listed cells identify affected evidence surfaces only."
+  ],
+  "nextCandidate": "Audit the shared authored presentation spine: determine whether an explicit Studio Sequence projection can reuse the existing VSR/Build fixed-Tick seam without duplicating timeline ownership; keep audio separately blocked until cue-to-asset canonical ownership and receipt shape are decided.",
+  "evidenceRoot": "e7c82e7195fc9f879d3cf7413ab7937a1e52ba3cf4d84673fdea7b5d7b321a37"
+}

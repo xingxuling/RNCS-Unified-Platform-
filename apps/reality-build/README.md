@@ -158,7 +158,9 @@ sealed animation_policy {selection: clip|layers|graph, tick_hz, speed, phase_sec
 
 由 `冰境试炼` candidate scene 生成的 web-release 与 Android embedded HTML 都携带同一 policy 和 initial animation root；本地 `verifyBuild()` 有效。真实 Chromium/WebGPU 中 reset 后 Tick 0 的时间为 `0`，手动推进 15 个 spatial ticks 后为 `0.25` 秒，`animationRoot` 变化、两帧均 `verified=true`、应用错误为 `0`。RAGF GLB → VSR import → replace-mesh → skin/animation frame probe 也验证了 `9` 个导入节点、`1` 个 skin、`4` 个 clips、`8` 个 support nodes 和 `skinnedDraws=1`。完整收据见 `evidence/BUILD_ANIMATION_TARGET_LOWERING_CANDIDATE_v0.1.json`。
 
-固定 clip、layers 和 graph 的 Build target lowering 已在 candidate scope 内验证；这仍不是完整动画生产链：Studio authored Sequence lowering、事件驱动的动画状态机、约束/全量 deformation policy、物理设备/原生 GPU、Android APK/runtime、性能曲线、人工视觉验收和 K400 PASS 仍未关闭。layers/graph 的独立收据见 `evidence/BUILD_ANIMATION_GRAPH_LAYER_LOWERING_CANDIDATE_v0.1.json`。
+固定 clip、layers 和 graph 的 Build target lowering 已在 candidate scope 内验证；这仍不是完整动画生产链：Studio authored Sequence lowering、事件驱动的动画状态机、约束/全量 deformation policy、物理设备/原生 GPU、性能曲线、人工视觉验收和 K400 PASS 仍未关闭。layers/graph 的独立收据见 `evidence/BUILD_ANIMATION_GRAPH_LAYER_LOWERING_CANDIDATE_v0.1.json`。
+
+同一 graph candidate 又通过真实 Gradle 9.5.1 / Android SDK 35 生成并验签 debug APK，安装到 `Rcl_Aether_API35_ATD` 后由 `MainActivity` 的 WebView 加载 `https://rncs.local/`，CDP 读取到 Tick 0 的 `run` 状态与 `walk → run` transition（`0.25`），并在同一同步调用中推进 15 个 tick 到 `0.25s`；`animationRoot`、`frameRoot` 改变，两个 frame 均 `verified=true`、draw count 为 5、应用/资产错误为空。收据见 `evidence/ANDROID_ANIMATION_GRAPH_TARGET_LOWERING_CANDIDATE_v0.1.json`。这是 Emulator/WebView target-lowering candidate：APK 是 debug 签名，设备的 primary GPU 报告 `WebGPU adapter unavailable`，没有观察到 spatial WebGPU submission receipt，因此不宣称原生 GPU、物理设备、帧率、视觉 parity 或 release 交付。
 
 ## Audio target lowering archaeology（negative candidate）
 
