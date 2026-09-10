@@ -777,6 +777,8 @@
         "source-stream-transition-receipt-binding",
         "candidate-physical-terrain-residency-admission",
         "managed-static-terrain-residency-transition",
+        "bounded-heightfield-sphere-sweep-candidate",
+        "bounded-heightfield-capsule-support-probe",
         "candidate-only-no-canonical-mutation"
       ]
     },
