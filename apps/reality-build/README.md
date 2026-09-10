@@ -124,6 +124,22 @@ Build request/schema 现在显式提供 `asset_cache.enabled` 与 `asset_cache.m
 
 这是 Android WebView/app-private CacheStorage 的 candidate execution evidence，不等于 WebView quota/eviction/performance 曲线、跨进程/跨设备 coherence、物理设备 GPU、release 签名、商店交付或人工视觉验收。
 
+## Reality Studio UI/Input target lowering candidate
+
+Reality Studio 已经拥有可执行的 reality-studio.ui-tree.v1.2、reality-studio.input-profile.v1.2、锚点布局、数据绑定、焦点导航和 InputActionRuntime。本轮没有复制一套 Build UI 语义，而是在 Build 验证后生成 reality-build.ui-input-runtime.v0.1，把 active UI tree、active input profile、layout、manifest root 和 lowering root 一起带入目标：
+
+§§§text
+Reality Studio UI/Input contract
+  → Build validation + sealed ui-input runtime payload
+  → browser DOM overlay / embedded WebView overlay
+  → InputActionRuntime
+  → existing BehaviorRuntime tick and authoritative state
+§§§
+
+由 ensureUIInputProject() 生成的真实构建 fixture 通过 web-release、web-single 和 android-project 三个 target。Chromium 的可访问性树实际出现 13 个 Studio UI 节点；桌面条件下 7 个节点可见，KeyD 让玩家位置从 70 变为 166，KeyP 让暂停面板和“已暂停”文本可见。API 35 Rcl_Aether_API35_ATD 上的同一 source-generated debug APK 通过 https://rncs.local/ synthetic origin 启动 WebView，触摸条件下 11 个节点可见，三个按钮都在 960×540 CSS viewport 内；设备级 adb shell input tap 366 924 让 ui:right 产生 move_right pressed event，并把玩家位置从 70 变为 73.2。Build/Gradle/apksigner 与运行时收据见 evidence/BUILD_UI_INPUT_TARGET_LOWERING_CANDIDATE_v0.1.json。
+
+这里的 owner 仍是 Reality Studio；DOM/WebView 只是平台 lowering，不拥有 World Body IR、canonical world state、authority、commit 或 release。截图和 accessibility tree 只能证明候选目标链路已经执行，默认 Studio fixture 的标题/生命面板相邻关系仍需要人工视觉验收；物理设备、原生 GPU UI、无障碍/本地化、网络 transport、release 签名和生产交付没有被本轮关闭。
+
 ## Network compilation → headless candidate
 
 Reality Build 现在消费既有 Reality Studio `project.network`，不再只把 network authoring 留在 Studio 导出侧：

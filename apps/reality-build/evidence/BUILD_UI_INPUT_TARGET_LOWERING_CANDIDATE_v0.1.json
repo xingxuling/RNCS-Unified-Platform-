@@ -1,0 +1,212 @@
+{
+  "format": "reality-build.ui-input-target-lowering-evidence.v0.1",
+  "status": "CANDIDATE_BUILD_UI_INPUT_TARGET_LOWERING_VERIFIED",
+  "sourceCommit": "bcc7b6cda71b68d6bbbbec81462e5b09b0eb18be",
+  "fixture": "output/playwright/ui-input-project.unified-project.json",
+  "pipeline": "Reality Studio UI tree + input profile -> Reality Build validation/lowering -> web-release/web-single/Android embedded host -> browser/WebView UI and Behavior execution",
+  "commands": [
+    "node apps/reality-build/src/cli.mjs build --project output/playwright/ui-input-project.unified-project.json --out output/playwright/ui-input-build-v05 --targets web-release,web-single,android-project --title UI输入候选 --app-id com.taowind.uiinputcandidate --version 0.2.0 --version-code 2",
+    "npm.cmd test --workspace @taowind/reality-build-fabric",
+    "npm run typecheck --workspace @taowind/visual-state-runtime",
+    "npm run lint --workspace @taowind/visual-state-runtime",
+    "npm test --workspace @taowind/visual-state-runtime",
+    "Gradle 9.5.1: app:assembleDebug for the source-generated Android project",
+    "Android SDK 36.1.0 apksigner verify --verbose",
+    "Chromium via playwright-cli against the locally served web-release candidate",
+    "adb install/launch -> WebView CDP Runtime.evaluate -> adb shell input tap"
+  ],
+  "tests": {
+    "realityBuild": "156 tests / 148 pass / 0 fail / 8 skip",
+    "uiInputLowering": "configured valid tree/profile; 13 layout nodes; 3 touch focus controls; legacy and malformed partial UI/Input paths remain covered",
+    "visualStateRuntime": "122/122 PASS; spatial reality 99/99 PASS; spatial asset streaming 11/11 PASS",
+    "buildVerification": true,
+    "targetContract": "web-release/web-single/Android target receipts valid",
+    "gradle": "BUILD SUCCESSFUL",
+    "apkSignature": "v1/v3/v4/SourceStamp false; v2 true; one debug signer",
+    "chromiumConsole": "0 errors; 2 WebGPU capability warnings; no application exception",
+    "androidRuntimeLog": "No FATAL EXCEPTION or AndroidRuntime failure observed for the candidate package"
+  },
+  "build": {
+    "output": "output/playwright/ui-input-build-v05",
+    "buildId": "build:5f10d0e0b96fee3baddf25f3",
+    "buildKey": "5f10d0e0b96fee3baddf25f362fb43694b3c64099b7487ea8da0b67ccc00b856",
+    "projectRoot": "a61ec0916ea0ba3fac9026848a57aab85d40454231fdeca1e1d7b889a8035613",
+    "requestRoot": "4a30871dbb72408b00f62feb6ca0ee524a13dcfe354dde827b77879037f7b10d",
+    "semanticRequestRoot": "025b6f2d53974b709e28d763e1e50e594bc3df27e5a951cc1bfc2e6eafe07dd1",
+    "graphRoot": "0ba7bd593ad4485b35c8e2a4bdf0429508cc156433e428b6b368499a2ac5fef4",
+    "assetManifestRoot": "397e247857031864ddc3e1402b151ffc9cba8d5b44ea4e1066f0ffadb72d6882",
+    "runtimeEvidenceRoot": "ad53a01ba993d9d6a2df3fe38d2deedf7a7c017621c902a4b8e8182c47cbcd72",
+    "verificationValid": true,
+    "targets": {
+      "web-release": {
+        "targetRoot": "fb0ba7712c025e4cd07a15e99825845041409f20f75db22b42f2934ebf15629f",
+        "files": 32,
+        "uiManifest": "web-release/ui-input.manifest.json",
+        "uiRuntime": "web-release/ui-input-runtime.js"
+      },
+      "web-single": {
+        "targetRoot": "74de0e417fc16a11147184f2e8d2f2072c0186d77513241a2264764f7a7e314d",
+        "files": 1,
+        "uiRuntime": "inline in web-single/UI输入候选_单文件版.html"
+      },
+      "android-project": {
+        "targetRoot": "1ce19d42254bc290ec9048520ae8367a378583d53cc593167aaff5892c973555",
+        "files": 29,
+        "uiManifest": "android-project/app/src/main/assets/ui-input.manifest.json",
+        "uiRuntime": "inline in android-project/app/src/main/assets/index.html"
+      }
+    },
+    "uiInputRoots": {
+      "uiRoot": "a0440fbc73b9b6391727e2e35eeef236d369dcc0d5086ec93654dd50417ff9bb",
+      "inputRoot": "521d1f8da7be2177764669e31e87dc7e1d0c399e5b5b44cf6a7e73c54a854b09",
+      "manifestRoot": "026a86a2741886f9a1678fd350f82520627f6a19518832944e23faffdf2e833f",
+      "manifestLayoutRoot": "0f5d45d837963c7aad388311af03f8e7c2a9d2fdb52fe2e0139de254b69f7c91",
+      "loweringRoot": "e6e7624444097a9c9c2bbd3fd526816a51f1dcd73564c75c991e21295955585e",
+      "layoutNodes": 13
+    }
+  },
+  "chromium": {
+    "host": "Chromium via Playwright CLI",
+    "url": "http://127.0.0.1:4173/index.html",
+    "title": "UI输入候选",
+    "readyState": "complete",
+    "accessibleUiNodes": 13,
+    "desktopVisibleUiNodes": 7,
+    "uiSnapshot": {
+      "enabled": true,
+      "nodeCount": 13,
+      "visibleCount": 7,
+      "touch": false,
+      "error": "",
+      "rootContinuity": true
+    },
+    "keyboard": {
+      "resetPlayerX": 70,
+      "key": "KeyD",
+      "after160msPlayerX": 166,
+      "moveRight": {
+        "strengthMilli": 1000,
+        "pressed": true,
+        "inputRoot": "521d1f8da7be2177764669e31e87dc7e1d0c399e5b5b44cf6a7e73c54a854b09"
+      }
+    },
+    "pause": {
+      "key": "KeyP",
+      "status": "已暂停",
+      "pausePanelHidden": false,
+      "pauseLabelHidden": false,
+      "visibleCount": 9,
+      "error": ""
+    },
+    "artifacts": {
+      "snapshot": ".playwright-cli/page-2026-09-10T08-40-02-480Z.yml",
+      "console": ".playwright-cli/console-2026-09-10T08-40-02-024Z.log",
+      "screenshot": ".playwright-cli/page-2026-09-10T08-48-08-549Z.png"
+    }
+  },
+  "android": {
+    "avd": "Rcl_Aether_API35_ATD",
+    "model": "Android ATD built for x86_64",
+    "api": 35,
+    "androidRelease": "15",
+    "webview": "com.android.webview 124.0.6367.219",
+    "package": "com.taowind.uiinputcandidate",
+    "apk": {
+      "path": "output/playwright/ui-input-build-v05/android-project/app/build/outputs/apk/debug/app-debug.apk",
+      "bytes": 292403,
+      "sha256": "2f05627be6165803efb2957618a985d968ff10f264a0f101f74292027cd580f8",
+      "signing": "debug; v2 verified; one signer"
+    },
+    "page": {
+      "origin": "https://rncs.local/",
+      "readyState": "complete",
+      "viewportCss": {
+        "width": 960,
+        "height": 540,
+        "devicePixelRatio": 2,
+        "maxTouchPoints": 5
+      },
+      "uiSnapshot": {
+        "enabled": true,
+        "nodeCount": 13,
+        "visibleCount": 11,
+        "focusId": "ui:right",
+        "touch": true,
+        "error": ""
+      },
+      "buttonsCssAndPhysicalCenters": [
+        {"id": "ui:left", "x": 33, "y": 417, "width": 90, "height": 90, "screenX": 156, "screenY": 924},
+        {"id": "ui:right", "x": 138, "y": 417, "width": 90, "height": 90, "screenX": 366, "screenY": 924},
+        {"id": "ui:attack", "x": 822, "y": 402, "width": 105, "height": 105, "screenX": 1749, "screenY": 909}
+      ],
+      "allVisibleTouchButtonsInCssViewport": true,
+      "storageCapabilitiesObserved": {
+        "cacheStorage": true,
+        "cryptoSubtle": true,
+        "persisted": false,
+        "quotaBytesObserved": 3736869273
+      }
+    },
+    "syntheticPointer": {
+      "target": "ui:right",
+      "event": {
+        "format": "reality-studio.ui-event.v1.2",
+        "type": "pressed",
+        "action": "move_right",
+        "source": "browser-target"
+      },
+      "playerX": "70 -> 121.2",
+      "pausedVisibleCount": 13,
+      "activeVisibleCount": 11,
+      "errors": ""
+    },
+    "deviceTap": {
+      "command": "adb shell input tap 366 924",
+      "playerX": "70 -> 73.2",
+      "health": 100,
+      "event": {
+        "format": "reality-studio.ui-event.v1.2",
+        "type": "pressed",
+        "targetId": "ui:right",
+        "action": "move_right",
+        "source": "browser-target"
+      },
+      "error": ""
+    }
+  },
+  "coverage": {
+    "studioSemanticOwnerReused": true,
+    "buildValidationAndFailClosed": true,
+    "webReleaseLowering": true,
+    "webSingleLowering": true,
+    "androidEmbeddedLowering": true,
+    "anchorAndBindingLayout": true,
+    "keyboardInputActionRuntime": true,
+    "touchInputActionRuntime": true,
+    "focusNavigation": true,
+    "pauseBinding": true,
+    "behaviorStateMutation": true,
+    "legacyProjectFallback": true,
+    "malformedPartialUiInputRejected": true,
+    "physicalAndroidDevice": false,
+    "nativeGpuUi": false,
+    "accessibilityAndLocalizationAcceptance": false,
+    "remoteDeployment": false,
+    "externalWanTransport": false,
+    "humanVisualAcceptance": false,
+    "k400Pass": false
+  },
+  "boundaries": [
+    "Reality Studio remains the semantic owner of UI tree, layout, bindings, focus navigation and input action profiles; Reality Build only lowers the validated contract into browser DOM/WebView hosts.",
+    "The browser DOM/WebView overlay is an auxiliary target lowering over the existing Canvas/RSR/VSR host. It does not become World Body IR, canonical world state, authority, commit or release ownership.",
+    "https://rncs.local/ is a local synthetic document origin supplied to WebView loadDataWithBaseURL; it is not a remote endpoint, TLS deployment, WAN transport or network authority.",
+    "The Android result is API 35 ATD emulator/WebView evidence. It does not establish physical-device behavior, native GPU UI, release signing, store delivery, production accessibility/localization or a device matrix.",
+    "The screenshot and accessibility tree are candidate visual evidence only. Human visual acceptance remains open; the default Studio fixture still has a title/health-panel adjacency that requires product review.",
+    "No K400 gate is promoted to PASS; this is candidate target-lowering evidence only."
+  ],
+  "rclGap": "RCL_GAP_RNCS_BUILD_TARGET_UI_INPUT_LOWERING",
+  "donorAdvantage": "The existing Reality Studio ui-input.mjs contract supplied the reusable anchor layout, data binding, focus navigation, action-map and runtime sampling semantics; no parallel UI or input owner was introduced.",
+  "regressionCase": "Projects without ui/input sections retain the legacy target controls and pass the existing suite; a one-sided or malformed UI/Input section fails closed. The direct Studio example asset hash mismatch remains an independent ASSET_BAKE_FAILED fixture issue and was not silently repaired by this lowering.",
+  "nextCandidate": "Re-audit the next engine-level bottleneck after human visual review: either obtain a reproducible physical/native target receipt for the same UI/Input roots or resolve the separately documented external transport protocol, licensing, TLS/key custody and cross-node authority decisions before WAN implementation.",
+  "evidenceRoot": "54148436158b990a03fd78e4ad3b754df72821188724537d517ee335ecf6390d"
+}

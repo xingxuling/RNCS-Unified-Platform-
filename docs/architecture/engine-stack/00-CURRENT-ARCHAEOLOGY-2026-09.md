@@ -500,6 +500,16 @@ Reality Build asset_cache.persist_accesses
 
 收据写入 `apps/reality-build/evidence/ANDROID_ASSET_CACHE_PERFORMANCE_CANDIDATE_v0.1.json`，证据根为 `741da8194219b03a89e5a8773ef62bb5d8051b4e244c98fd5280934eb893ad2c`，source commit 为 `648f4dc17b73944dc36049820f7c873d39935e94`。边界：`50,000` bytes 只约束 provider discardable bytes，不约束 VSR memory working set 或 APK embedded payload；`https://rncs.local/` 只是本地 synthetic origin；该 receipt 没有关闭 physical device、release signing、remote cache coherence、WAN/TLS transport、production SLA 或 human visual acceptance，也没有新增 K400 PASS。
 
+## 本轮 Reality Studio UI/Input → Reality Build target lowering candidate
+
+引擎级考古重新检查 Reality Studio 后确认：UI 与输入并不是待新造的空白子系统。apps/reality-studio/src/ui-input.mjs 已经拥有 reality-studio.ui-tree.v1.2、reality-studio.input-profile.v1.2、anchor/container layout、data binding、focus navigation、pointer routing、跨设备 action map、runtime rebind 和 InputActionRuntime；scene-studio.mjs 会在 Studio 内编译 layout、派发 UI event、采样输入并进入 Behavior step。此前 Reality Build 只把统一项目 JSON 带入 payload，目标宿主仍使用硬编码 touch buttons 和旧 Behavior input bindings，所以“Build 成功”没有证明 Studio UI/Input 真正抵达产品运行链。
+
+本轮采用 REUSE-OVER-REBUILD：apps/reality-build/src/ui-input.mjs 只做 Build-side validation、active tree/profile 选择、目标 viewport layout 和 sealed manifest/payload；runtime-template.mjs 将同一 Studio source lowering 成 browser DOM/WebView overlay，输入仍经 InputActionRuntime 进入既有 BehaviorRuntime/authoritative state。web-release 输出独立 ui-input-runtime.js 与 ui-input.manifest.json，web-single 和 Android embedded target 使用同一 payload 的 inline lowering；没有把 UI/Input 语义塞进 World Body IR，也没有把 DOM/WebView 变成新的 canonical owner。
+
+真实结果：source-generated fixture 的 Build validation 为 valid=true，UI tree 为 13 个 layout nodes，Build receipt 的 project_root、ui_root、input_root、manifest_root 和 lowering_root 均被保留。Reality Build 测试为 156 tests / 148 pass / 0 fail / 8 skip，VSR 全套为 122/122 PASS；Gradle 9.5.1 生成 debug APK，apksigner v2 验证为 true。Chromium 通过 accessibility tree 看到 13 个实际 DOM 节点，桌面可见 7 个；KeyD 在 reset 后让 Behavior player x=70 → 166，KeyP 让暂停面板和“已暂停”文本显示，应用控制台为 0 errors / 2 WebGPU capability warnings。Android API 35 ATD (Rcl_Aether_API35_ATD, WebView 124.0.6367.219) 通过 https://rncs.local/ 启动，WebView 为 960×540 CSS, dpr=2, maxTouchPoints=5，触摸可见 11 个节点；三个按钮均在 viewport 内，真实 adb shell input tap 366 924 产生 ui:right → move_right，player x=70 → 73.2，uiError=""。完整收据为 apps/reality-build/evidence/BUILD_UI_INPUT_TARGET_LOWERING_CANDIDATE_v0.1.json，证据根为 54148436158b990a03fd78e4ad3b754df72821188724537d517ee335ecf6390d，source commit 为 bcc7b6cda71b68d6bbbbec81462e5b09b0eb18be。
+
+该轮关闭的是“既有 Studio UI/Input contract → Reality Build browser/embedded target lowering”的 implementation seam，并将缺口明确记录为 RCL_GAP_RNCS_BUILD_TARGET_UI_INPUT_LOWERING；它没有关闭 native GPU UI、物理 Android、无障碍/本地化、跨设备矩阵、release signing、human visual acceptance 或 external network transport。Chromium/Android 页面上的 UI overlay、CSS 响应式布局和 WebView synthetic origin 均属于 auxiliary/platform lowering；Behavior、RSR/VSR、world state、authority、candidate/promotion 和 evidence owner 不变。
+
 ## 结构判断
 
 ### 限制性瓶颈
