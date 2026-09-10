@@ -4,6 +4,8 @@ export const REALITY_BUILD_SPATIAL_PRESENTATION_FORMAT = 'reality-build.spatial-
 export const REALITY_BUILD_SPATIAL_PRESENTATION_VERSION = '0.1.0-alpha.1';
 export const REALITY_BUILD_SPATIAL_ASSET_BUNDLE_FORMAT = 'reality-build.spatial-asset-bundle.v0.1';
 export const REALITY_BUILD_SPATIAL_ASSET_BUNDLE_VERSION = '0.1.0-alpha.1';
+export const REALITY_BUILD_SEQUENCE_FRAME_PROJECTION_FORMAT = 'reality-build.sequence-frame-projection.v0.1';
+export const REALITY_BUILD_SEQUENCE_FRAME_PROJECTION_VERSION = '0.1.0-alpha.1';
 const CANDIDATE_AUTHORITY = 'candidate-build-presentation-only';
 
 export class RealityBuildSpatialPresentationCandidateError extends Error {
@@ -204,6 +206,107 @@ function normalizeAnimationPolicy(animationPolicy, scene) {
   return {mode, selection, tick_hz: tickHz, speed, phase_seconds: phaseSeconds, loop, graph: {initial_state: initialState, states: graphStates}, state_id: stateId, ...(transition ? {transition} : {})};
 }
 
+function normalizeSequenceAnimationLayers(layers, scene) {
+  if (!Array.isArray(layers) || layers.length === 0) fail('REALITY_BUILD_SEQUENCE_FRAME_ANIMATION_LAYERS_INVALID', 'Sequence frame projection needs at least one animation layer');
+  const animationIds = new Set((scene.animations ?? []).map(animation => String(animation?.id ?? '')));
+  return layers.map((layer, index) => {
+    if (!isRecord(layer)) fail('REALITY_BUILD_SEQUENCE_FRAME_ANIMATION_LAYER_INVALID', `Sequence frame animation layer ${index} must be an object`);
+    const clipId = String(layer.clip_id ?? layer.clipId ?? '').trim();
+    const trackId = String(layer.track_id ?? layer.trackId ?? '').trim();
+    const timeSeconds = Number(layer.time_seconds ?? layer.timeSeconds ?? 0);
+    const weight = Number(layer.weight ?? 1);
+    const loop = layer.loop !== false;
+    const mode = String(layer.mode ?? 'override');
+    if (!clipId || !animationIds.has(clipId)) fail('REALITY_BUILD_SEQUENCE_FRAME_ANIMATION_CLIP_MISSING', `Sequence frame animation clip ${clipId || index} is missing from the scene`);
+    if (!trackId) fail('REALITY_BUILD_SEQUENCE_ANIMATION_TRACK_REQUIRED', `Sequence frame animation layer ${index} needs track_id`);
+    if (!Number.isFinite(timeSeconds) || timeSeconds < 0) fail('REALITY_BUILD_SEQUENCE_FRAME_ANIMATION_TIME_INVALID', `Sequence frame animation layer ${index} time_seconds must be finite and non-negative`);
+    if (!Number.isFinite(weight) || weight < 0 || weight > 1) fail('REALITY_BUILD_SEQUENCE_FRAME_ANIMATION_WEIGHT_INVALID', `Sequence frame animation layer ${index} weight must be between 0 and 1`);
+    if (typeof layer.loop !== 'undefined' && typeof layer.loop !== 'boolean') fail('REALITY_BUILD_SEQUENCE_FRAME_ANIMATION_LOOP_INVALID', `Sequence frame animation layer ${index} loop must be boolean`);
+    if (!['override', 'additive'].includes(mode)) fail('REALITY_BUILD_SEQUENCE_FRAME_ANIMATION_MODE_INVALID', `Sequence frame animation layer ${index} mode is unsupported`);
+    const nodeIds = normalizeAnimationNodeIds(layer.node_ids ?? layer.nodeIds, scene, 'REALITY_BUILD_SEQUENCE_FRAME_ANIMATION_NODES_INVALID');
+    return {track_id: trackId, clip_id: clipId, time_seconds: timeSeconds, weight, loop, mode, ...(nodeIds ? {node_ids: nodeIds} : {})};
+  });
+}
+
+function normalizeSequenceFrameProjection(value, scene) {
+  if (!isRecord(value) || value.format !== REALITY_BUILD_SEQUENCE_FRAME_PROJECTION_FORMAT || value.version !== REALITY_BUILD_SEQUENCE_FRAME_PROJECTION_VERSION || value.authority !== CANDIDATE_AUTHORITY) {
+    fail('REALITY_BUILD_SEQUENCE_FRAME_PROJECTION_INVALID', 'Sequence frame projection format, version or authority is invalid');
+  }
+  const {projection_root: projectionRoot, ...base} = value;
+  if (!projectionRoot || rootHash(base) !== projectionRoot) fail('REALITY_BUILD_SEQUENCE_FRAME_PROJECTION_ROOT_INVALID', 'Sequence frame projection root is invalid');
+  const frame = base.frame;
+  if (!isRecord(frame) || frame.format !== 'reality-studio.sequence-frame.v1.6' || !String(frame.sequence_id ?? '').trim()) fail('REALITY_BUILD_SEQUENCE_FRAME_INVALID', 'Sequence frame projection requires a Studio sequence frame');
+  if (!String(base.sequence_id ?? '').trim() || base.sequence_id !== frame.sequence_id) fail('REALITY_BUILD_SEQUENCE_ID_MISMATCH', 'Sequence frame projection sequence_id must match the Studio frame');
+  if (!String(base.sequence_root ?? '').trim() || !String(frame.frame_root ?? '').trim() || !String(frame.authority_root ?? '').trim() || !String(frame.presentation_root ?? '').trim()) fail('REALITY_BUILD_SEQUENCE_FRAME_ROOTS_REQUIRED', 'Sequence frame projection must retain sequence and frame roots');
+  if (!Number.isFinite(Number(frame.time)) || Number(frame.time) < 0) fail('REALITY_BUILD_SEQUENCE_FRAME_TIME_INVALID', 'Sequence frame time must be finite and non-negative');
+  if (!Array.isArray(frame.active) || !Array.isArray(frame.presentation_state) || !Array.isArray(frame.authority_events)) fail('REALITY_BUILD_SEQUENCE_FRAME_SHAPE_INVALID', 'Sequence frame active, presentation_state and authority_events must be arrays');
+  const activeAnimation = frame.presentation_state.filter(entry => entry?.track_type === 'animation');
+  const animationLayers = normalizeSequenceAnimationLayers(base.animation_layers, scene);
+  if (activeAnimation.length !== animationLayers.length) fail('REALITY_BUILD_SEQUENCE_FRAME_ANIMATION_COUNT_MISMATCH', 'Sequence frame animation layers must cover every active Studio animation clip exactly once');
+  for (const [index, entry] of activeAnimation.entries()) {
+    const layer = animationLayers[index];
+    if (layer.track_id !== String(entry.track_id ?? '') || layer.clip_id !== String(entry.clip_id ?? '')) fail('REALITY_BUILD_SEQUENCE_FRAME_ANIMATION_ORDER_MISMATCH', `Sequence frame animation layer ${index} does not match the active Studio presentation state`);
+  }
+  return {...base, animation_layers: animationLayers, projection_root: projectionRoot};
+}
+
+/**
+ * Convert a Studio-owned evaluated Sequence frame into an explicit Build
+ * candidate projection. Studio remains responsible for timeline evaluation;
+ * this adapter only validates an explicit animation-track-to-VSR binding.
+ */
+export function createSpatialSequenceFrameProjection({scene, sequence, frame, animationBindings = []} = {}) {
+  const normalizedScene = normalizeScene(scene).scene;
+  if (!isRecord(sequence) || sequence.format !== 'reality-studio.sequence.v1.7' || sequence.version !== '1.7.0-alpha.1') fail('REALITY_BUILD_SEQUENCE_INVALID', 'Sequence frame projection requires a Reality Studio sequence v1.7');
+  if (!String(sequence.sequence_id ?? '').trim() || !String(sequence.sequence_root ?? '').trim()) fail('REALITY_BUILD_SEQUENCE_ROOTS_REQUIRED', 'Sequence frame projection requires sequence_id and sequence_root');
+  if (!isRecord(frame) || frame.format !== 'reality-studio.sequence-frame.v1.6' || frame.sequence_id !== sequence.sequence_id) fail('REALITY_BUILD_SEQUENCE_FRAME_INVALID', 'Sequence frame must come from the supplied Studio sequence');
+  if (!Array.isArray(animationBindings)) fail('REALITY_BUILD_SEQUENCE_ANIMATION_BINDINGS_INVALID', 'Sequence animation bindings must be an array');
+  const bindings = animationBindings.map((binding, index) => {
+    if (!isRecord(binding)) fail('REALITY_BUILD_SEQUENCE_ANIMATION_BINDING_INVALID', `Sequence animation binding ${index} must be an object`);
+    const clipId = String(binding.clip_id ?? binding.clipId ?? '').trim();
+    const trackId = String(binding.track_id ?? binding.trackId ?? '').trim();
+    if (!clipId || !trackId) fail('REALITY_BUILD_SEQUENCE_ANIMATION_BINDING_REQUIRED', `Sequence animation binding ${index} needs track_id and clip_id`);
+    const nodeIds = normalizeAnimationNodeIds(binding.node_ids ?? binding.nodeIds, normalizedScene, 'REALITY_BUILD_SEQUENCE_ANIMATION_BINDING_NODES_INVALID');
+    return {track_id: trackId, clip_id: clipId, weight: Number(binding.weight ?? 1), loop: binding.loop !== false, mode: String(binding.mode ?? 'override'), ...(nodeIds ? {node_ids: nodeIds} : {})};
+  });
+  const bindingByKey = new Map();
+  for (const binding of bindings) {
+    const key = `${binding.track_id}:${binding.clip_id}`;
+    if (bindingByKey.has(key)) fail('REALITY_BUILD_SEQUENCE_ANIMATION_BINDING_DUPLICATE', `Sequence animation binding ${key} is duplicated`);
+    bindingByKey.set(key, binding);
+  }
+  const activeAnimation = frame.presentation_state.filter(entry => entry?.track_type === 'animation');
+  if (!activeAnimation.length) fail('REALITY_BUILD_SEQUENCE_FRAME_ANIMATION_REQUIRED', 'Sequence frame projection needs at least one active animation presentation clip');
+  const animationLayers = activeAnimation.map((entry, index) => {
+    const key = `${String(entry.track_id ?? '')}:${String(entry.clip_id ?? '')}`;
+    const binding = bindingByKey.get(key);
+    if (!binding) fail('REALITY_BUILD_SEQUENCE_ANIMATION_BINDING_MISSING', `Sequence animation binding ${key} is missing`);
+    const timeSeconds = Number(entry.local_time ?? 0);
+    return {track_id: binding.track_id, clip_id: binding.clip_id, time_seconds: timeSeconds, weight: binding.weight, loop: binding.loop, mode: binding.mode, ...(binding.node_ids ? {node_ids: binding.node_ids} : {})};
+  });
+  const base = {
+    format: REALITY_BUILD_SEQUENCE_FRAME_PROJECTION_FORMAT,
+    version: REALITY_BUILD_SEQUENCE_FRAME_PROJECTION_VERSION,
+    authority: CANDIDATE_AUTHORITY,
+    sequence_id: String(sequence.sequence_id),
+    sequence_root: String(sequence.sequence_root),
+    frame: clone(frame),
+    animation_layers: animationLayers,
+    source: 'reality-studio.evaluateSequence'
+  };
+  const projection = {...base, projection_root: rootHash(base)};
+  return normalizeSequenceFrameProjection(projection, normalizedScene);
+}
+
+export function verifySpatialSequenceFrameProjection(value, scene) {
+  try {
+    const normalized = normalizeSequenceFrameProjection(value, scene);
+    return rootHash(normalized) === rootHash(value);
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Derive an explicit candidate-only provider-record to world-mesh plan. The
  * provider metadata is used only to name the source mesh; records that do not
@@ -296,7 +399,7 @@ function normalizeBindings(bindings, nodeIds) {
   return normalized;
 }
 
-export function createSpatialPresentationCandidate({projectRoot, scene, source, bindings = [], assetBundle = null, assetBindings = [], animationPolicy = null} = {}) {
+export function createSpatialPresentationCandidate({projectRoot, scene, source, bindings = [], assetBundle = null, assetBindings = [], animationPolicy = null, sequenceFrameProjection = null} = {}) {
   const normalizedProjectRoot = String(projectRoot ?? '').trim();
   if (!normalizedProjectRoot) fail('REALITY_BUILD_SPATIAL_PRESENTATION_PROJECT_ROOT_INVALID', 'Build presentation candidate requires a project root');
   if (!isRecord(source)) fail('REALITY_BUILD_SPATIAL_PRESENTATION_SOURCE_INVALID', 'Build presentation candidate requires a structured source reference');
@@ -305,6 +408,8 @@ export function createSpatialPresentationCandidate({projectRoot, scene, source, 
   const normalizedAssetBundle = assetBundle === null || assetBundle === undefined ? null : normalizeAssetBundle(assetBundle);
   const normalizedAssetBindings = normalizeAssetBindings(assetBindings, normalizedScene.scene, normalizedAssetBundle);
   const normalizedAnimationPolicy = normalizeAnimationPolicy(animationPolicy, normalizedScene.scene);
+  const normalizedSequenceFrameProjection = sequenceFrameProjection === null || sequenceFrameProjection === undefined ? null : normalizeSequenceFrameProjection(sequenceFrameProjection, normalizedScene.scene);
+  if (normalizedAnimationPolicy && normalizedSequenceFrameProjection) fail('REALITY_BUILD_PRESENTATION_ANIMATION_OWNER_CONFLICT', 'A presentation candidate cannot mix fixed animation_policy with a Studio sequence frame projection');
   const sourceBase = {
     format: REALITY_BUILD_SPATIAL_PRESENTATION_FORMAT,
     version: REALITY_BUILD_SPATIAL_PRESENTATION_VERSION,
@@ -315,7 +420,8 @@ export function createSpatialPresentationCandidate({projectRoot, scene, source, 
     bindings: normalizedBindings,
     ...(normalizedAssetBundle ? {asset_bundle: normalizedAssetBundle} : {}),
     ...(normalizedAssetBindings.length ? {asset_bindings: normalizedAssetBindings} : {}),
-    ...(normalizedAnimationPolicy ? {animation_policy: normalizedAnimationPolicy} : {})
+    ...(normalizedAnimationPolicy ? {animation_policy: normalizedAnimationPolicy} : {}),
+    ...(normalizedSequenceFrameProjection ? {sequence_frame_projection: normalizedSequenceFrameProjection} : {})
   };
   const presentationSourceRoot = rootHash(sourceBase);
   const presentation = {
@@ -353,6 +459,10 @@ export function verifySpatialPresentationCandidate(value, {projectRoot = null} =
     if (presentationBase.animation_policy !== undefined) {
       const normalizedAnimationPolicy = normalizeAnimationPolicy(presentationBase.animation_policy, normalizedScene.scene);
       if (rootHash(normalizedAnimationPolicy) !== rootHash(presentationBase.animation_policy)) return false;
+    }
+    if (presentationBase.sequence_frame_projection !== undefined) {
+      if (presentationBase.animation_policy !== undefined) return false;
+      if (!verifySpatialSequenceFrameProjection(presentationBase.sequence_frame_projection, normalizedScene.scene)) return false;
     }
     return normalizeBindings(presentationBase.bindings, normalizedScene.nodeIds).every((binding, index) => rootHash(binding) === rootHash(presentationBase.bindings[index]));
   } catch {

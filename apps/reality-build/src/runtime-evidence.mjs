@@ -46,7 +46,7 @@ function presentationSpec(project,externalCandidate=null){
   const scene=candidate?.scene??spatial?.presentation_scene;
   if(!scene||typeof scene!=='object')return null;
   const bindings=Array.isArray(candidate?.bindings)?candidate.bindings:Array.isArray(spatial?.presentation_bindings)?spatial.presentation_bindings:[];
-  return{scene:clone(scene),bindings:clone(bindings),asset_bundle:candidate?.asset_bundle??spatial?.presentation_asset_bundle??null,asset_bindings:clone(candidate?.asset_bindings??spatial?.presentation_asset_bindings??[]),animation_policy:clone(candidate?.animation_policy??spatial?.presentation_animation_policy??null),source_root:candidate?.presentation_source_root??spatial?.presentation_source_root??scene.sceneRoot??null};
+  return{scene:clone(scene),bindings:clone(bindings),asset_bundle:candidate?.asset_bundle??spatial?.presentation_asset_bundle??null,asset_bindings:clone(candidate?.asset_bindings??spatial?.presentation_asset_bindings??[]),animation_policy:clone(candidate?.animation_policy??spatial?.presentation_animation_policy??null),sequence_frame_projection:clone(candidate?.sequence_frame_projection??spatial?.sequence_frame_projection??null),source_root:candidate?.presentation_source_root??spatial?.presentation_source_root??scene.sceneRoot??null};
 }
 function presentationAnimationOptions(policy,tick=0){
   if(!policy)return{};
@@ -56,6 +56,9 @@ function presentationAnimationOptions(policy,tick=0){
   if(selection==='layers')return{animationLayers:(policy.layers??[]).map(layer=>({clipId:String(layer.clip_id??''),timeSeconds,weight:Number(layer.weight??1),loop:layer.loop!==false,mode:String(layer.mode??'override'),...(Array.isArray(layer.node_ids)?{nodeIds:layer.node_ids.map(String)}:{})}))};
   if(selection==='graph')return{animationGraph:{graph:{initialState:String(policy.graph?.initial_state??''),states:(policy.graph?.states??[]).map(state=>({id:String(state.id??''),clipId:String(state.clip_id??''),speed:Number(state.speed??1),loop:state.loop!==false,...(Array.isArray(state.node_ids)?{nodeIds:state.node_ids.map(String)}:{})}))},stateId:String(policy.state_id??policy.graph?.initial_state??''),timeSeconds,...(policy.transition?{transition:{fromStateId:String(policy.transition.from_state_id??''),toStateId:String(policy.transition.to_state_id??''),progress:Number(policy.transition.progress)}}:{})}};
   return{animation:{clipId:String(policy.clip_id??''),timeSeconds,loop:policy.loop!==false}};
+}
+function sequenceFrameAnimationOptions(projection){
+  return{animationLayers:(projection?.animation_layers??[]).map(layer=>({clipId:String(layer.clip_id??''),timeSeconds:Number(layer.time_seconds??0),weight:Number(layer.weight??1),loop:layer.loop!==false,mode:String(layer.mode??'override'),...(Array.isArray(layer.node_ids)?{nodeIds:layer.node_ids.map(String)}:{})}))};
 }
 function bindPresentationScene(scene,snapshot,bindings){
   const out=clone(scene);
@@ -86,7 +89,7 @@ export function compileBoundPresentationScene(project,snapshot,fallbackScene,fal
   if(!spec)return{scene:fallbackScene,frame_plan:fallbackFramePlan,bound:false,binding_count:0,asset_binding_count:0,source_root:null};
   const scene=bindPresentationScene(spec.scene,snapshot,spec.bindings);
   const assetStreaming=presentationAssetStreaming(scene);
-  const animationOptions=presentationAnimationOptions(spec.animation_policy,snapshot?.tick??0);
+  const animationOptions=spec.sequence_frame_projection?sequenceFrameAnimationOptions(spec.sequence_frame_projection):presentationAnimationOptions(spec.animation_policy,snapshot?.tick??0);
   const framePlan=compileSpatialFrame(scene,{
     width:Number(scene?.viewport?.width??project?.spatial3d?.editor?.viewport?.width??960),
     height:Number(scene?.viewport?.height??project?.spatial3d?.editor?.viewport?.height??540),
@@ -96,7 +99,7 @@ export function compileBoundPresentationScene(project,snapshot,fallbackScene,fal
   });
   const verification=verifySpatialFrame(framePlan);
   if(!verification?.ok)throw new Error(`PRESENTATION_SPATIAL_FRAME_INVALID:${JSON.stringify(verification)}`);
-  return{scene,frame_plan:framePlan,asset_streaming:assetStreaming,asset_bundle:spec.asset_bundle??null,asset_bindings:spec.asset_bindings,animation_policy:spec.animation_policy,animation_options:animationOptions,bound:true,binding_count:spec.bindings.length,asset_binding_count:spec.asset_bindings.length,source_root:spec.source_root};
+  return{scene,frame_plan:framePlan,asset_streaming:assetStreaming,asset_bundle:spec.asset_bundle??null,asset_bindings:spec.asset_bindings,animation_policy:spec.animation_policy,sequence_frame_projection:spec.sequence_frame_projection,animation_options:animationOptions,bound:true,binding_count:spec.bindings.length,asset_binding_count:spec.asset_bindings.length,source_root:spec.source_root};
 }
 
 export function buildRuntimeEvidence({project,request,identity,presentationCandidate=null}={}){
@@ -176,13 +179,18 @@ export function buildRuntimeEvidence({project,request,identity,presentationCandi
     presentation_scene_source_root:presentation.source_root,
     presentation_scene_frame_root:spatialFramePlan.frameRoot??null,
     presentation_animation_policy_root:presentation.animation_policy?rootHash(presentation.animation_policy):null,
-    presentation_animation_selection:presentation.animation_policy?(presentation.animation_policy.selection??'clip'):null,
+    presentation_animation_selection:presentation.sequence_frame_projection?'sequence-frame':(presentation.animation_policy?(presentation.animation_policy.selection??'clip'):null),
     presentation_animation_clip_id:presentation.animation_policy?.clip_id??null,
     presentation_animation_layer_count:presentation.animation_options?.animationLayers?.length??0,
     presentation_animation_graph_state_id:presentation.animation_options?.animationGraph?.stateId??null,
     presentation_animation_graph_transition_root:presentation.animation_options?.animationGraph?.transition?rootHash(presentation.animation_options.animationGraph.transition):null,
     presentation_animation_initial_time_seconds:presentation.animation_options?.animation?.timeSeconds??presentation.animation_options?.animationLayers?.[0]?.timeSeconds??presentation.animation_options?.animationGraph?.timeSeconds??null,
     presentation_animation_root:spatialFramePlan.animationRoot??null,
+    presentation_sequence_root:presentation.sequence_frame_projection?.sequence_root??null,
+    presentation_sequence_frame_root:presentation.sequence_frame_projection?.frame?.frame_root??null,
+    presentation_sequence_projection_root:presentation.sequence_frame_projection?.projection_root??null,
+    presentation_sequence_time_seconds:presentation.sequence_frame_projection?.frame?.time??null,
+    presentation_sequence_animation_layer_count:presentation.sequence_frame_projection?.animation_layers?.length??0,
     presentation_binding_count:presentation.binding_count,
     presentation_asset_binding_count:presentation.asset_binding_count,
     presentation_asset_streaming_root:presentation.asset_streaming?.root??null,
@@ -225,6 +233,9 @@ export function runtimeEvidenceSummary(runtimeEvidence){
     presentation_animation_clip_id:e.presentation_animation_clip_id,presentation_animation_layer_count:e.presentation_animation_layer_count,
     presentation_animation_graph_state_id:e.presentation_animation_graph_state_id,presentation_animation_graph_transition_root:e.presentation_animation_graph_transition_root,
     presentation_animation_initial_time_seconds:e.presentation_animation_initial_time_seconds,presentation_animation_root:e.presentation_animation_root,
+    presentation_sequence_root:e.presentation_sequence_root,presentation_sequence_frame_root:e.presentation_sequence_frame_root,
+    presentation_sequence_projection_root:e.presentation_sequence_projection_root,presentation_sequence_time_seconds:e.presentation_sequence_time_seconds,
+    presentation_sequence_animation_layer_count:e.presentation_sequence_animation_layer_count,
     presentation_binding_count:e.presentation_binding_count,presentation_asset_streaming_root:e.presentation_asset_streaming_root,
     presentation_asset_binding_count:e.presentation_asset_binding_count,
     presentation_asset_requested_count:e.presentation_asset_requested_count,presentation_asset_missing_count:e.presentation_asset_missing_count,
