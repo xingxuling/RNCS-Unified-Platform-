@@ -13,7 +13,8 @@ import {
   verifyRealityOrganLink,
   verifyRealityRoamingDecision,
   verifyRealityTransportPacket,
-  verifyRealityTransportProfile
+  verifyRealityTransportProfile,
+  freezeRealityTransportProfile
 } from '@taowind/rncs-core-contract';
 
 const clone = value => structuredClone(value);
@@ -59,9 +60,10 @@ export class RealityTransportFabric {
   }
 
   registerProfile(input) {
-    const profile = record(input).profile_root ? clone(input) : createRealityTransportProfile(input);
-    const verification = verifyRealityTransportProfile(profile);
+    const candidate = record(input).profile_root ? clone(input) : createRealityTransportProfile(input);
+    const verification = verifyRealityTransportProfile(candidate);
     fail(verification.valid, `URRF_TRANSPORT_PROFILE_INVALID:${verification.errors.join(',')}`);
+    const profile = freezeRealityTransportProfile(candidate);
     this.profiles.set(profile.profile_id, profile);
     this.profiles.set(profile.profile_root, profile);
     return clone(profile);
@@ -169,7 +171,7 @@ export class RealityTransportFabric {
 
   send(input = {}) {
     const value = record(input);
-    const profile = this.getProfile(value.profile_id ?? value.profileId ?? value.profile_root ?? value.profileRoot ?? value.profile?.profile_root);
+    const profile = this.profiles.get(String(value.profile_id ?? value.profileId ?? value.profile_root ?? value.profileRoot ?? value.profile?.profile_root)) ?? null;
     fail(profile, 'URRF_TRANSPORT_SEND_PROFILE_NOT_FOUND');
     const packet = createRealityTransportPacket({
       ...value,

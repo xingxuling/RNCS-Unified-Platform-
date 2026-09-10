@@ -47,6 +47,27 @@ const keySort = (a, b) => Buffer.compare(Buffer.from(String(a), 'utf8'), Buffer.
 const hex64 = value => typeof value === 'string' && /^[0-9a-f]{64}$/i.test(value);
 const fail = (condition, code) => { if (!condition) throw new ContractError(code); };
 const strings = values => [...new Set((Array.isArray(values) ? values : []).map(String).filter(Boolean))].sort(keySort);
+const immutableTransportProfiles = new WeakSet();
+const transportProfileVerificationCache = new WeakMap();
+const immutableTransportPackets = new WeakSet();
+const transportPacketVerificationCache = new WeakMap();
+function deepFreeze(value, seen = new WeakSet()) {
+  if (!value || typeof value !== 'object' || seen.has(value)) return value;
+  seen.add(value);
+  for (const child of Object.values(value)) deepFreeze(child, seen);
+  return Object.freeze(value);
+}
+export function freezeRealityTransportProfile(profile) {
+  const value = immutableTransportProfiles.has(profile) ? profile : clone(profile);
+  deepFreeze(value);
+  immutableTransportProfiles.add(value);
+  return value;
+}
+export function freezeRealityTransportPacket(packet) {
+  deepFreeze(packet);
+  immutableTransportPackets.add(packet);
+  return packet;
+}
 const text = (value, code, fallback = '') => {
   const result = String(value ?? fallback);
   fail(result.length > 0, code);
@@ -106,13 +127,17 @@ function normalizeTransportProfile(input = {}) {
 
 export function createRealityTransportProfile(input = {}) {
   const base = normalizeTransportProfile(input);
-  return {...base, profile_root: rootHash(base)};
+  return freezeRealityTransportProfile({...base, profile_root: rootHash(base)});
 }
 
 export function verifyRealityTransportProfile(profile) {
   const errors = [];
   const check = (condition, code) => { if (!condition) errors.push(code); };
   if (!profile || typeof profile !== 'object') return {valid: false, errors: ['RNCS_TRANSPORT_PROFILE_NOT_OBJECT']};
+  if (immutableTransportProfiles.has(profile)) {
+    const cached = transportProfileVerificationCache.get(profile);
+    if (cached) return cached;
+  }
   try {
     const copy = clone(profile);
     const profileRoot = copy.profile_root;
@@ -138,16 +163,24 @@ export function verifyRealityTransportProfile(profile) {
   } catch (error) {
     errors.push(`RNCS_TRANSPORT_PROFILE_VERIFY_EXCEPTION:${error.name}:${error.message}`);
   }
-  return {valid: errors.length === 0, errors, profile_root: profile.profile_root ?? null};
+  const result = {valid: errors.length === 0, errors, profile_root: profile.profile_root ?? null};
+  if (immutableTransportProfiles.has(profile)) {
+    const cached = {valid: result.valid, errors: Object.freeze([...result.errors]), profile_root: result.profile_root};
+    transportProfileVerificationCache.set(profile, cached);
+    return cached;
+  }
+  return result;
 }
 
 function normalizeTransportPacket(input = {}) {
   const value = record(input);
-  const profile = clone(value.profile ?? value.transport_profile ?? value.transportProfile);
+  const sourceProfile = value.profile ?? value.transport_profile ?? value.transportProfile;
+  const profile = immutableTransportProfiles.has(sourceProfile) ? sourceProfile : clone(sourceProfile);
   const profileVerification = verifyRealityTransportProfile(profile);
   fail(profileVerification.valid, `RNCS_TRANSPORT_PACKET_PROFILE_INVALID:${profileVerification.errors.join(',')}`);
   const payload = clone(value.payload ?? {});
   const authorityLease = value.authority_lease ?? value.authorityLease ?? null;
+  const authorityReceiptRoot = value.authority_receipt_root ?? value.authorityReceiptRoot ?? null;
   if (authorityLease !== null) {
     const leaseVerification = checkAuthorityLease(authorityLease);
     fail(leaseVerification.valid, `RNCS_TRANSPORT_PACKET_LEASE_INVALID:${leaseVerification.errors.join(',')}`);
@@ -155,6 +188,7 @@ function normalizeTransportPacket(input = {}) {
   if (profile.requires_authority) fail(authorityLease !== null, 'RNCS_TRANSPORT_PACKET_AUTHORITY_LEASE_REQUIRED');
   const packet_type = String(value.packet_type ?? value.packetType ?? 'STATE_DELTA').toUpperCase();
   fail(REALITY_TRANSPORT_PACKET_TYPES.includes(packet_type), 'RNCS_TRANSPORT_PACKET_TYPE_INVALID');
+  fail(authorityReceiptRoot === null || hex64(authorityReceiptRoot), 'RNCS_TRANSPORT_PACKET_AUTHORITY_RECEIPT_ROOT_INVALID');
   return {
     format: REALITY_TRANSPORT_PACKET_FORMAT,
     version: REALITY_TRANSPORT_VERSION,
@@ -168,7 +202,7 @@ function normalizeTransportPacket(input = {}) {
     created_tick: integer(value.created_tick ?? value.createdTick, 'RNCS_TRANSPORT_PACKET_TICK_INVALID'),
     authority_lease: authorityLease,
     authority_lease_root: authorityLease?.lease_root ?? null,
-    authority_receipt_root: value.authority_receipt_root ?? value.authorityReceiptRoot ?? null,
+    authority_receipt_root: authorityReceiptRoot,
     permission_scope: strings(value.permission_scope ?? value.permissionScope),
     payload,
     payload_root: rootHash(payload),
@@ -180,13 +214,19 @@ function normalizeTransportPacket(input = {}) {
 
 export function createRealityTransportPacket(input = {}) {
   const base = normalizeTransportPacket(input);
-  return {...base, packet_root: rootHash(base)};
+  const packet = freezeRealityTransportPacket({...base, packet_root: rootHash(base)});
+  transportPacketVerificationCache.set(packet, {valid: true, errors: Object.freeze([]), packet_root: packet.packet_root});
+  return packet;
 }
 
 export function verifyRealityTransportPacket(packet) {
   const errors = [];
   const check = (condition, code) => { if (!condition) errors.push(code); };
   if (!packet || typeof packet !== 'object') return {valid: false, errors: ['RNCS_TRANSPORT_PACKET_NOT_OBJECT']};
+  if (immutableTransportPackets.has(packet)) {
+    const cached = transportPacketVerificationCache.get(packet);
+    if (cached) return cached;
+  }
   try {
     const copy = clone(packet);
     const packetRoot = copy.packet_root;
@@ -216,7 +256,13 @@ export function verifyRealityTransportPacket(packet) {
   } catch (error) {
     errors.push(`RNCS_TRANSPORT_PACKET_VERIFY_EXCEPTION:${error.name}:${error.message}`);
   }
-  return {valid: errors.length === 0, errors, packet_root: packet.packet_root ?? null};
+  const result = {valid: errors.length === 0, errors, packet_root: packet.packet_root ?? null};
+  if (immutableTransportPackets.has(packet)) {
+    const cached = {valid: result.valid, errors: Object.freeze([...result.errors]), packet_root: result.packet_root};
+    transportPacketVerificationCache.set(packet, cached);
+    return cached;
+  }
+  return result;
 }
 
 export function checkRealityTransportAdmission(packet, input = {}) {

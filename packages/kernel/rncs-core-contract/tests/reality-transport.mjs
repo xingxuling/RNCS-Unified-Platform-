@@ -43,6 +43,13 @@ function profile(overrides = {}) {
   });
 }
 
+test('canonical transport profiles are immutable after sealing', () => {
+  const value = profile();
+  assert.equal(Object.isFrozen(value), true);
+  assert.equal(Object.isFrozen(value.evidence_refs), true);
+  assert.equal(verifyRealityTransportProfile(value).valid, true);
+});
+
 function discovery(overrides = {}) {
   return createRealityNodeDiscovery({
     observer_node: 'node:local',
@@ -89,6 +96,7 @@ test('binds a transport packet to a lease, receipt and profile root', () => {
     permission_scope: ['simulation.delta'],
     payload: {delta_root: 'a'.repeat(64)}
   });
+  assert.equal(Object.isFrozen(packet), true);
   assert.equal(verifyRealityTransportPacket(packet).valid, true);
   assert.equal(checkRealityTransportAdmission(packet, {
     source_node: 'node:source',
