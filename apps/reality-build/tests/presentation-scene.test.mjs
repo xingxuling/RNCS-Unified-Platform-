@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createSpatialShowcaseScene,verifySpatialFrame} from '../../../packages/world/visual-state-runtime/dist/packages/spatial-reality-3d/src/index.js';
+import {createSpatialPresentationCandidate} from '../src/presentation-candidate.mjs';
 import {compileBoundPresentationScene} from '../src/runtime-evidence.mjs';
 
 test('Reality Build binds external VSR presentation scene to authoritative RSR body',()=>{
@@ -32,4 +33,36 @@ test('Reality Build preserves legacy spatial projection when no presentation sce
   assert.equal(result.bound,false);
   assert.equal(result.scene,fallbackScene);
   assert.equal(result.frame_plan,fallbackFrame);
+});
+
+test('Reality Build lowers candidate animation on the authoritative spatial tick',()=>{
+  const scene=structuredClone(createSpatialShowcaseScene()),node=scene.nodes.find(entry=>entry.meshId);
+  assert.ok(node?.id);
+  scene.animations=[{id:'candidate:walk',duration:1,channels:[{nodeId:node.id,path:'translation',times:[0,1],values:[[0,0,0],[.5,0,0]]}]}];
+  const candidate=createSpatialPresentationCandidate({
+    projectRoot:'project-root:animation-candidate',
+    scene,
+    source:{kind:'vsr-animation-target-lowering',scene_id:scene.sceneId},
+    animationPolicy:{clip_id:'candidate:walk',tick_hz:60,speed:1,phase_seconds:0,loop:true},
+  });
+  const project={spatial3d:{editor:{viewport:{width:640,height:360,quality_tier:'quality'}}}};
+  const initial=compileBoundPresentationScene(project,{tick:0,bodies:[]},null,null,candidate);
+  const advanced=compileBoundPresentationScene(project,{tick:15,bodies:[]},null,null,candidate);
+  assert.equal(initial.bound,true);
+  assert.equal(initial.animation_options.animation.timeSeconds,0);
+  assert.equal(advanced.animation_options.animation.timeSeconds,.25);
+  assert.equal(initial.frame_plan.stats.animationClipCount,1);
+  assert.equal(initial.frame_plan.sourceRealityRoot,advanced.frame_plan.sourceRealityRoot);
+  assert.notEqual(initial.frame_plan.animationRoot,advanced.frame_plan.animationRoot);
+  assert.notEqual(initial.frame_plan.frameRoot,advanced.frame_plan.frameRoot);
+  assert.equal(advanced.animation_policy.clip_id,'candidate:walk');
+});
+
+test('Reality Build rejects animation policies that cannot be lowered deterministically',()=>{
+  const scene=structuredClone(createSpatialShowcaseScene()),node=scene.nodes.find(entry=>entry.meshId);
+  assert.ok(node?.id);
+  scene.animations=[{id:'candidate:walk',duration:1,channels:[{nodeId:node.id,path:'translation',times:[0,1],values:[[0,0,0],[.5,0,0]]}]}];
+  const base={projectRoot:'project-root:animation-negative',scene,source:{kind:'vsr-animation-target-lowering',scene_id:scene.sceneId}};
+  assert.throws(()=>createSpatialPresentationCandidate({...base,animationPolicy:{mode:'wall-clock',clip_id:'candidate:walk'}}),error=>error?.code==='REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_MODE_UNSUPPORTED');
+  assert.throws(()=>createSpatialPresentationCandidate({...base,animationPolicy:{clip_id:'candidate:missing'}}),error=>error?.code==='REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_CLIP_MISSING');
 });

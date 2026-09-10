@@ -109,6 +109,26 @@ function normalizeScene(scene) {
   return {scene: clone(scene), nodeIds};
 }
 
+function normalizeAnimationPolicy(animationPolicy, scene) {
+  if (animationPolicy === undefined || animationPolicy === null) return null;
+  if (!isRecord(animationPolicy)) fail('REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_POLICY_INVALID', 'Presentation animation policy must be an object');
+  const mode = String(animationPolicy.mode ?? 'fixed-tick');
+  const clipId = String(animationPolicy.clip_id ?? animationPolicy.clipId ?? '').trim();
+  const tickHz = Number(animationPolicy.tick_hz ?? animationPolicy.tickHz ?? 60);
+  const speed = Number(animationPolicy.speed ?? 1);
+  const phaseSeconds = Number(animationPolicy.phase_seconds ?? animationPolicy.phaseSeconds ?? 0);
+  const loop = animationPolicy.loop !== false;
+  if (mode !== 'fixed-tick') fail('REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_MODE_UNSUPPORTED', 'Presentation animation policy must use fixed-tick time');
+  if (!clipId) fail('REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_CLIP_REQUIRED', 'Presentation animation policy needs a clip_id');
+  if (!(scene.animations ?? []).some(animation => String(animation?.id ?? '') === clipId)) {
+    fail('REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_CLIP_MISSING', `Presentation animation clip ${clipId} is missing from the scene`);
+  }
+  if (!Number.isInteger(tickHz) || tickHz <= 0) fail('REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_TICK_HZ_INVALID', 'Presentation animation tick_hz must be a positive integer');
+  if (!Number.isFinite(speed) || speed < 0) fail('REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_SPEED_INVALID', 'Presentation animation speed must be finite and non-negative');
+  if (!Number.isFinite(phaseSeconds) || phaseSeconds < 0) fail('REALITY_BUILD_SPATIAL_PRESENTATION_ANIMATION_PHASE_INVALID', 'Presentation animation phase_seconds must be finite and non-negative');
+  return {mode, clip_id: clipId, tick_hz: tickHz, speed, phase_seconds: phaseSeconds, loop};
+}
+
 /**
  * Derive an explicit candidate-only provider-record to world-mesh plan. The
  * provider metadata is used only to name the source mesh; records that do not
@@ -201,7 +221,7 @@ function normalizeBindings(bindings, nodeIds) {
   return normalized;
 }
 
-export function createSpatialPresentationCandidate({projectRoot, scene, source, bindings = [], assetBundle = null, assetBindings = []} = {}) {
+export function createSpatialPresentationCandidate({projectRoot, scene, source, bindings = [], assetBundle = null, assetBindings = [], animationPolicy = null} = {}) {
   const normalizedProjectRoot = String(projectRoot ?? '').trim();
   if (!normalizedProjectRoot) fail('REALITY_BUILD_SPATIAL_PRESENTATION_PROJECT_ROOT_INVALID', 'Build presentation candidate requires a project root');
   if (!isRecord(source)) fail('REALITY_BUILD_SPATIAL_PRESENTATION_SOURCE_INVALID', 'Build presentation candidate requires a structured source reference');
@@ -209,6 +229,7 @@ export function createSpatialPresentationCandidate({projectRoot, scene, source, 
   const normalizedBindings = normalizeBindings(bindings, normalizedScene.nodeIds);
   const normalizedAssetBundle = assetBundle === null || assetBundle === undefined ? null : normalizeAssetBundle(assetBundle);
   const normalizedAssetBindings = normalizeAssetBindings(assetBindings, normalizedScene.scene, normalizedAssetBundle);
+  const normalizedAnimationPolicy = normalizeAnimationPolicy(animationPolicy, normalizedScene.scene);
   const sourceBase = {
     format: REALITY_BUILD_SPATIAL_PRESENTATION_FORMAT,
     version: REALITY_BUILD_SPATIAL_PRESENTATION_VERSION,
@@ -218,7 +239,8 @@ export function createSpatialPresentationCandidate({projectRoot, scene, source, 
     scene_root: rootHash(normalizedScene.scene),
     bindings: normalizedBindings,
     ...(normalizedAssetBundle ? {asset_bundle: normalizedAssetBundle} : {}),
-    ...(normalizedAssetBindings.length ? {asset_bindings: normalizedAssetBindings} : {})
+    ...(normalizedAssetBindings.length ? {asset_bindings: normalizedAssetBindings} : {}),
+    ...(normalizedAnimationPolicy ? {animation_policy: normalizedAnimationPolicy} : {})
   };
   const presentationSourceRoot = rootHash(sourceBase);
   const presentation = {
@@ -252,6 +274,10 @@ export function verifySpatialPresentationCandidate(value, {projectRoot = null} =
     if (presentationBase.asset_bindings !== undefined) {
       const normalizedAssetBindings = normalizeAssetBindings(presentationBase.asset_bindings, normalizedScene.scene, presentationBase.asset_bundle);
       if (normalizedAssetBindings.some((binding, index) => rootHash(binding) !== rootHash(presentationBase.asset_bindings[index]))) return false;
+    }
+    if (presentationBase.animation_policy !== undefined) {
+      const normalizedAnimationPolicy = normalizeAnimationPolicy(presentationBase.animation_policy, normalizedScene.scene);
+      if (rootHash(normalizedAnimationPolicy) !== rootHash(presentationBase.animation_policy)) return false;
     }
     return normalizeBindings(presentationBase.bindings, normalizedScene.nodeIds).every((binding, index) => rootHash(binding) === rootHash(presentationBase.bindings[index]));
   } catch {

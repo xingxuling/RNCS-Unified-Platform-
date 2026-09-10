@@ -146,6 +146,7 @@ export interface VSRSpatialAssetBinding {
   materialIds:string[];
   textureIds:string[];
   nodeIds:string[];
+  supportNodeIds?:string[];
   boundNodeIds:string[];
   bindingRoot:string;
 }
@@ -153,6 +154,17 @@ export interface VSRSpatialAssetComposeResult {scene:VSRSpatialScene3D;binding:V
 
 const importedAssetTextureKeys=['baseColorTextureId','metallicRoughnessTextureId','normalTextureId','occlusionTextureId','emissiveTextureId','lightmapTextureId','reactiveMaskTextureId'] as const;
 const uniqueSortedStrings=(values:unknown[]):string[]=>[...new Set(values.filter(value=>typeof value==='string'&&value.length>0) as string[])].sort((a,b)=>a.localeCompare(b));
+
+function isIdentityTransform(transform:VSRSpatialTransform|undefined):boolean{
+  if(!transform)return true;
+  const identity=identityMat4();
+  if(transform.matrix?.some((value,index)=>value!==identity[index]))return false;
+  if(transform.translation?.some(value=>value!==0))return false;
+  if(transform.rotationEulerDeg?.some(value=>value!==0))return false;
+  if(transform.rotationQuaternion?.some((value,index)=>value!==[0,0,0,1][index]))return false;
+  if(transform.scale?.some(value=>value!==1))return false;
+  return true;
+}
 
 function remapImportedMaterial(material:VSRSpatialMaterial,prefix:string,textureIds:Map<string,string>):VSRSpatialMaterial{
   const result={...material,id:`${prefix}material:${material.id}`};
@@ -186,6 +198,7 @@ export function composeImportedSpatialScene(baseScene:VSRSpatialScene3D,imported
   const importedNodeIds=importedNodes.map(node=>node.id).sort((a,b)=>a.localeCompare(b));
   let scene:VSRSpatialScene3D;
   let boundNodeIds:string[]=[];
+  let supportNodeIds:string[]=[];
   let sourceMeshId=options.sourceMeshId?String(options.sourceMeshId):undefined;
   if(mode==='replace-mesh'){
     if(!sourceMeshId)throw new TypeError('VSR_SPATIAL_ASSET_SOURCE_MESH_REQUIRED');
@@ -195,17 +208,29 @@ export function composeImportedSpatialScene(baseScene:VSRSpatialScene3D,imported
     if(!targets.length)throw new TypeError('VSR_SPATIAL_ASSET_REPLACE_TARGET_MISSING');
     const importedMesh=imported.scene.meshes[0]!;
     const replacementMeshId=meshIds.get(importedMesh.id)!;
-    const importedMaterialId=imported.scene.nodes.find(node=>node.meshId===importedMesh.id)?.materialId;
+    const renderNodes=imported.scene.nodes.filter(node=>node.meshId===importedMesh.id);
+    const renderNode=renderNodes[0];
+    const hasPresentationDeformation=Boolean(imported.scene.skins?.length||imported.scene.animations?.length||renderNode?.morphWeights?.length);
+    if(hasPresentationDeformation&&renderNodes.length!==1)throw new TypeError('VSR_SPATIAL_ASSET_REPLACE_DEFORMED_ASSET_REQUIRES_ONE_RENDER_NODE');
+    if(hasPresentationDeformation&&!renderNode)throw new TypeError('VSR_SPATIAL_ASSET_REPLACE_DEFORMED_RENDER_NODE_MISSING');
+    if(hasPresentationDeformation&&!isIdentityTransform(renderNode?.transform))throw new TypeError('VSR_SPATIAL_ASSET_REPLACE_DEFORMED_RENDER_TRANSFORM_UNSUPPORTED');
+    const importedMaterialId=renderNode?.materialId;
     const replacementMaterialId=importedMaterialId?materialIds.get(importedMaterialId):undefined;
     boundNodeIds=targets.map(node=>node.id).sort((a,b)=>a.localeCompare(b));
     const targetSet=new Set(boundNodeIds);
-    const replacedNodes=baseScene.nodes.map(node=>targetSet.has(node.id)?{...node,meshId:replacementMeshId,...(replacementMaterialId?{materialId:replacementMaterialId}:{}),tags:uniqueSortedStrings([...(node.tags??[]),`asset:${assetId}`,'asset-replacement'])}:node);
-    scene={...baseScene,meshes:[...baseScene.meshes,...imported.scene.meshes.map(mesh=>({...mesh,id:meshIds.get(mesh.id)!}))],materials:[...baseScene.materials,...materials],textures:[...(baseScene.textures??[]),...(imported.scene.textures??[]).map(texture=>({...texture,id:textureIds.get(texture.id)!}))],nodes:replacedNodes};
+    const targetNodeId=boundNodeIds[0];
+    const importedNodeId=(nodeId:string):string=>nodeId===renderNode?.id?targetNodeId!:nodeIds.get(nodeId)!;
+    const supportNodes=hasPresentationDeformation?imported.scene.nodes.filter(node=>node.id!==renderNode?.id).map(node=>({...node,id:nodeIds.get(node.id)!,...(node.parentId?{parentId:importedNodeId(node.parentId)}:{parentId:targetNodeId}),...(node.meshId?{meshId:meshIds.get(node.meshId)}:{}),...(node.materialId?{materialId:materialIds.get(node.materialId)}:{}),...(node.skinId?{skinId:skinIds.get(node.skinId)}:{}),tags:uniqueSortedStrings([...(node.tags??[]),`asset:${assetId}`,...(importedRootNodeIds.has(node.id)?['asset-support-root']:[])])})):[];
+    supportNodeIds=supportNodes.map(node=>node.id).sort((a,b)=>a.localeCompare(b));
+    const replacementSkinId=renderNode?.skinId?skinIds.get(renderNode.skinId):undefined;
+    const replacedNodes=baseScene.nodes.map(node=>targetSet.has(node.id)?{...node,meshId:replacementMeshId,...(replacementMaterialId?{materialId:replacementMaterialId}:{}),...(replacementSkinId?{skinId:replacementSkinId}:{}),...(renderNode?.morphWeights?{morphWeights:[...renderNode.morphWeights]}:{}),tags:uniqueSortedStrings([...(node.tags??[]),`asset:${assetId}`,'asset-replacement'])}:node);
+    const replacedAnimations=(imported.scene.animations??[]).map(animation=>({...animation,id:animationIds.get(animation.id)!,channels:animation.channels.map(channel=>({...channel,nodeId:importedNodeId(channel.nodeId)}))}));
+    scene={...baseScene,meshes:[...baseScene.meshes,...imported.scene.meshes.map(mesh=>({...mesh,id:meshIds.get(mesh.id)!}))],materials:[...baseScene.materials,...materials],textures:[...(baseScene.textures??[]),...(imported.scene.textures??[]).map(texture=>({...texture,id:textureIds.get(texture.id)!}))],nodes:[...replacedNodes,...supportNodes],skins:[...(baseScene.skins??[]),...skins],animations:[...(baseScene.animations??[]),...replacedAnimations],lights:[...(baseScene.lights??[]),...lights]};
   }else if(mode==='append'){
     const streamCells=(baseScene.streaming?.cells??[]).map(cell=>options.cellIds?.includes(cell.id)?{...cell,nodeIds:uniqueSortedStrings([...(cell.nodeIds??[]),...importedNodeIds])}:cell);
     scene={...baseScene,meshes:[...baseScene.meshes,...imported.scene.meshes.map(mesh=>({...mesh,id:meshIds.get(mesh.id)!}))],materials:[...baseScene.materials,...materials],textures:[...(baseScene.textures??[]),...(imported.scene.textures??[]).map(texture=>({...texture,id:textureIds.get(texture.id)!}))],nodes:[...baseScene.nodes,...importedNodes],skins:[...(baseScene.skins??[]),...skins],animations:[...(baseScene.animations??[]),...animations],lights:[...(baseScene.lights??[]),...lights],...(baseScene.streaming?{streaming:{...baseScene.streaming,cells:streamCells}}:{})};
   }else throw new TypeError(`VSR_SPATIAL_ASSET_COMPOSE_MODE_UNSUPPORTED:${String(mode)}`);
-  const bindingBase={format:'vsr.spatial-asset-binding.v0.1' as const,version:'0.1.0' as const,mode,assetId,...(instanceId===assetId?{}:{instanceId}),...(options.assetFormat?{assetFormat:String(options.assetFormat)}:{}),...(options.payloadRoot?{payloadRoot:String(options.payloadRoot)}:{}),...(sourceMeshId?{sourceMeshId}:{}),resourceAssetIds:uniqueSortedStrings(options.resourceAssetIds??[]),importReceiptRoot:imported.receipt.receiptRoot,meshIds:[...meshIds.values()].sort((a,b)=>a.localeCompare(b)),materialIds:[...materialIds.values()].sort((a,b)=>a.localeCompare(b)),textureIds:[...textureIds.values()].sort((a,b)=>a.localeCompare(b)),nodeIds:mode==='append'?importedNodeIds:[],boundNodeIds};
+  const bindingBase={format:'vsr.spatial-asset-binding.v0.1' as const,version:'0.1.0' as const,mode,assetId,...(instanceId===assetId?{}:{instanceId}),...(options.assetFormat?{assetFormat:String(options.assetFormat)}:{}),...(options.payloadRoot?{payloadRoot:String(options.payloadRoot)}:{}),...(sourceMeshId?{sourceMeshId}:{}),resourceAssetIds:uniqueSortedStrings(options.resourceAssetIds??[]),importReceiptRoot:imported.receipt.receiptRoot,meshIds:[...meshIds.values()].sort((a,b)=>a.localeCompare(b)),materialIds:[...materialIds.values()].sort((a,b)=>a.localeCompare(b)),textureIds:[...textureIds.values()].sort((a,b)=>a.localeCompare(b)),nodeIds:mode==='append'?importedNodeIds:[],...(supportNodeIds.length?{supportNodeIds}:{}),boundNodeIds};
   return {scene,binding:{...bindingBase,bindingRoot:cryptographicHash(bindingBase)}};
 }
 

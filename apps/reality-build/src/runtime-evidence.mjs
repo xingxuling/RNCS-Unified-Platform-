@@ -46,7 +46,13 @@ function presentationSpec(project,externalCandidate=null){
   const scene=candidate?.scene??spatial?.presentation_scene;
   if(!scene||typeof scene!=='object')return null;
   const bindings=Array.isArray(candidate?.bindings)?candidate.bindings:Array.isArray(spatial?.presentation_bindings)?spatial.presentation_bindings:[];
-  return{scene:clone(scene),bindings:clone(bindings),asset_bundle:candidate?.asset_bundle??spatial?.presentation_asset_bundle??null,asset_bindings:clone(candidate?.asset_bindings??spatial?.presentation_asset_bindings??[]),source_root:candidate?.presentation_source_root??spatial?.presentation_source_root??scene.sceneRoot??null};
+  return{scene:clone(scene),bindings:clone(bindings),asset_bundle:candidate?.asset_bundle??spatial?.presentation_asset_bundle??null,asset_bindings:clone(candidate?.asset_bindings??spatial?.presentation_asset_bindings??[]),animation_policy:clone(candidate?.animation_policy??spatial?.presentation_animation_policy??null),source_root:candidate?.presentation_source_root??spatial?.presentation_source_root??scene.sceneRoot??null};
+}
+function presentationAnimationOptions(policy,tick=0){
+  if(!policy)return{};
+  const tickHz=Number(policy.tick_hz??60),speed=Number(policy.speed??1),phaseSeconds=Number(policy.phase_seconds??0),safeTick=Math.max(0,Number(tick));
+  if(!Number.isFinite(tickHz)||tickHz<=0||!Number.isFinite(speed)||speed<0||!Number.isFinite(phaseSeconds)||phaseSeconds<0)return{};
+  return{animation:{clipId:String(policy.clip_id??''),timeSeconds:phaseSeconds+safeTick/tickHz*speed,loop:policy.loop!==false}};
 }
 function bindPresentationScene(scene,snapshot,bindings){
   const out=clone(scene);
@@ -77,15 +83,17 @@ export function compileBoundPresentationScene(project,snapshot,fallbackScene,fal
   if(!spec)return{scene:fallbackScene,frame_plan:fallbackFramePlan,bound:false,binding_count:0,asset_binding_count:0,source_root:null};
   const scene=bindPresentationScene(spec.scene,snapshot,spec.bindings);
   const assetStreaming=presentationAssetStreaming(scene);
+  const animationOptions=presentationAnimationOptions(spec.animation_policy,snapshot?.tick??0);
   const framePlan=compileSpatialFrame(scene,{
     width:Number(scene?.viewport?.width??project?.spatial3d?.editor?.viewport?.width??960),
     height:Number(scene?.viewport?.height??project?.spatial3d?.editor?.viewport?.height??540),
     qualityTier:String(project?.spatial3d?.editor?.viewport?.quality_tier??'quality'),
+    ...animationOptions,
     ...(assetStreaming?{assetStreaming}:{})
   });
   const verification=verifySpatialFrame(framePlan);
   if(!verification?.ok)throw new Error(`PRESENTATION_SPATIAL_FRAME_INVALID:${JSON.stringify(verification)}`);
-  return{scene,frame_plan:framePlan,asset_streaming:assetStreaming,asset_bundle:spec.asset_bundle??null,asset_bindings:spec.asset_bindings,bound:true,binding_count:spec.bindings.length,asset_binding_count:spec.asset_bindings.length,source_root:spec.source_root};
+  return{scene,frame_plan:framePlan,asset_streaming:assetStreaming,asset_bundle:spec.asset_bundle??null,asset_bindings:spec.asset_bindings,animation_policy:spec.animation_policy,animation_options:animationOptions,bound:true,binding_count:spec.bindings.length,asset_binding_count:spec.asset_bindings.length,source_root:spec.source_root};
 }
 
 export function buildRuntimeEvidence({project,request,identity,presentationCandidate=null}={}){
@@ -164,6 +172,10 @@ export function buildRuntimeEvidence({project,request,identity,presentationCandi
     presentation_scene_bound:presentation.bound,
     presentation_scene_source_root:presentation.source_root,
     presentation_scene_frame_root:spatialFramePlan.frameRoot??null,
+    presentation_animation_policy_root:presentation.animation_policy?rootHash(presentation.animation_policy):null,
+    presentation_animation_clip_id:presentation.animation_policy?.clip_id??null,
+    presentation_animation_initial_time_seconds:presentation.animation_options?.animation?.timeSeconds??null,
+    presentation_animation_root:spatialFramePlan.animationRoot??null,
     presentation_binding_count:presentation.binding_count,
     presentation_asset_binding_count:presentation.asset_binding_count,
     presentation_asset_streaming_root:presentation.asset_streaming?.root??null,
@@ -202,6 +214,8 @@ export function runtimeEvidenceSummary(runtimeEvidence){
     spatial_replay_final_frame_root:e.spatial_replay_final_frame_root,spatial_runtime_manifest_root:e.spatial_runtime_manifest_root,
     navigation_manifest_root:e.navigation_manifest_root,presentation_scene_bound:e.presentation_scene_bound,
     presentation_scene_source_root:e.presentation_scene_source_root,presentation_scene_frame_root:e.presentation_scene_frame_root,
+    presentation_animation_policy_root:e.presentation_animation_policy_root,presentation_animation_clip_id:e.presentation_animation_clip_id,
+    presentation_animation_initial_time_seconds:e.presentation_animation_initial_time_seconds,presentation_animation_root:e.presentation_animation_root,
     presentation_binding_count:e.presentation_binding_count,presentation_asset_streaming_root:e.presentation_asset_streaming_root,
     presentation_asset_binding_count:e.presentation_asset_binding_count,
     presentation_asset_requested_count:e.presentation_asset_requested_count,presentation_asset_missing_count:e.presentation_asset_missing_count,
