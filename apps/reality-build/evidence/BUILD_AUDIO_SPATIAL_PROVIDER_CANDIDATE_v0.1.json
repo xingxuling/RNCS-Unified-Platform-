@@ -1,0 +1,223 @@
+{
+  "format": "reality-build.audio-spatial-provider-evidence.v0.1",
+  "version": "0.1.0-alpha.1",
+  "status": "CANDIDATE_WEB_CHROMIUM_AND_ANDROID_WEBVIEW_PROVIDER_VERIFIED",
+  "source": {
+    "checkout": "rncs-visual-factory-v01",
+    "branch": "codex/rncs-engine-stack-archaeology-v01",
+    "sourceCommit": "47560b3",
+    "authority": "local code commit plus target candidates; no RCL Core promotion, production-provider admission, main-branch mutation or release claim"
+  },
+  "pipeline": "Reality Studio explicit audio target profile -> Reality Build content-addressed plan -> Web Audio Panner/low-pass Provider -> Chromium and embedded Android WebView receipts",
+  "canonicalSeam": {
+    "studio": "Reality Studio owns one explicit cue_id -> asset_id -> file_role -> asset_sha256 binding and spatial_policy.listener_id declaration.",
+    "behaviorAndRsr": "Behavior and RSR retain cue identity, authoritative tick and spatial parameters; RSR does not infer a file asset or listener policy.",
+    "assetManifest": "Reality Build reuses the existing content-addressed audio/wav record without promoting it to primary_visual.",
+    "targetProvider": "Reality Build lowers RSR position, gainQ, pitchQ, minDistance, maxDistance and occlusionQ into Web Audio PannerNode and optional low-pass nodes, then seals target receipts.",
+    "rclBoundary": "The audio target package and Web Audio implementation remain auxiliary provider/lowering seams; no RCL Core promotion is claimed."
+  },
+  "observed": {
+    "sharedRuntime": {
+      "profileFormat": "rncs.audio-target-profile.v0.1",
+      "planFormat": "rncs.audio-target-plan.v0.1",
+      "providerId": "reality-build.web-audio-buffer",
+      "spatialPolicy": {
+        "listener_id": "listener:player",
+        "position_scale": 1000,
+        "occlusion_mode": "lowpass"
+      },
+      "listenerSelection": "explicit-only; no first-listener inference and no 2D/3D listener mixing",
+      "negativeStatuses": [
+        "blocked-asset",
+        "blocked-file",
+        "blocked-mime",
+        "blocked-hash",
+        "blocked-spatial-listener",
+        "invalid-profile"
+      ]
+    },
+    "build": {
+      "fixture": "apps/reality-build/examples/冰境试炼.unified-project.json",
+      "buildId": "build:8bcf9a29d1d1de5a53359b40",
+      "buildKey": "8bcf9a29d1d1de5a53359b400bed48ca094f4853bd0d0b88b68951193057ee17",
+      "graphRoot": "3f9194690f0888cae726240b695a01d4c4b1eab8fd839c4ccba4a1f91777b7ac",
+      "assetManifestRoot": "ab1486dc3fce33cad83f48221cce64c0c5a0bf7acb1791d3f9c343a1780cdf9e",
+      "targetRoots": {
+        "web-release": "986f173510bf8461d4a29836aa8364a65df0d4d8da4a7295fa94a9ad62bf70d1",
+        "android-apk": "4d42f8dea477df31a8c8b503af1fbd816d1c83f7fb3c6c923c601c4e87ee715e"
+      },
+      "planRoots": {
+        "web-release": "c53a2f43ea96d4020eaca41abdb75acf9da33cba8446540e28ddafe7a7cc0a78",
+        "android-embedded": "d28fa6966e279cbc18fe58b3c3befbf182d2f0ad34cd5e8cbef07d9c64b8df06"
+      },
+      "verificationValid": true,
+      "binding": {
+        "bindingId": "audio-binding:impact-body",
+        "cueId": "impact.body",
+        "assetId": "asset:3a82d1753e140d24552b89d1",
+        "fileRole": "sfx-wav",
+        "mime": "audio/wav",
+        "bytes": 19888,
+        "sha256": "ba8ebd46b31544ce76973a7ac88039c82d0c1aaaaabdf1cbfb1339a495f2e53e",
+        "uri": "assets/ba8ebd46b31544ce76973a7ac88039c82d0c1aaaaabdf1cbfb1339a495f2e53e.wav"
+      }
+    },
+    "webChromium": {
+      "host": "Playwright-driven local Chromium headless run",
+      "url": "http://127.0.0.1:45994/index.html",
+      "readyState": "complete",
+      "pageErrors": 0,
+      "consoleWarnings": 5,
+      "warningTypes": [
+        "WebGPU powerPreference ignored on Windows",
+        "No available WebGPU adapters",
+        "AudioContext requires a user gesture"
+      ],
+      "action": "window.__RNCS_GAME__.reset(); 80 fixed host steps with move_right=true; wait 2500 ms",
+      "after": {
+        "receiptCount": 13,
+        "spatialRequestedCount": 6,
+        "spatialForwardedCount": 1,
+        "statusCounts": {
+          "blocked-binding": 11,
+          "decode-pending": 1,
+          "scheduled": 1
+        },
+        "scheduledReceipt": {
+          "cueId": "impact.body",
+          "bindingId": "audio-binding:impact-body",
+          "assetId": "asset:3a82d1753e140d24552b89d1",
+          "fileRole": "sfx-wav",
+          "sha256": "ba8ebd46b31544ce76973a7ac88039c82d0c1aaaaabdf1cbfb1339a495f2e53e",
+          "providerId": "reality-build.web-audio-buffer",
+          "tick": 1,
+          "source": "rsr-spatial3d",
+          "spatialParametersForwarded": true,
+          "listenerId": "listener:player",
+          "mapping": {
+            "panningModel": "equalpower",
+            "distanceModel": "linear",
+            "positionScale": 1000,
+            "occlusionMode": "lowpass"
+          }
+        },
+        "spatial3d": {
+          "available": true,
+          "verified": true,
+          "mode": "webgpu",
+          "tick": 236
+        },
+        "spatial2d": {
+          "available": true,
+          "verified": true,
+          "mode": "rsr.browser-bridge"
+        }
+      },
+      "claimBoundary": "Chromium executed the exact content-addressed WAV target and applied the explicit spatial Provider chain; the autoplay warning means this is not audible playback or human listening proof."
+    },
+    "androidWebView": {
+      "serial": "emulator-5554",
+      "api": 35,
+      "model": "Android ATD built for x86_64",
+      "product": "sdk_slim_x86_64",
+      "webviewPackage": "com.android.webview",
+      "webviewVersion": "124.0.6367.219",
+      "apk": {
+        "artifact": "Audio Spatial Candidate-0.1.0-debug.apk",
+        "bytes": 332988,
+        "sha256": "4beaa2521d7c97d414217a6111459420859d571b8b5f879faa3c33b62769c18e",
+        "signature": "verified; Android APK Signature Scheme v2",
+        "signingIdentity": "android-debug-keystore"
+      },
+      "origin": "https://rncs.local/",
+      "readyState": "complete",
+      "cdpTarget": "8068E814C77C5A4B0241AD19B85B8690",
+      "action": "window.__RNCS_GAME__.reset(); window.__RNCS_GAME__.step({move_right:true}); wait 3000 ms",
+      "after": {
+        "receiptCount": 6,
+        "spatialRequestedCount": 5,
+        "spatialForwardedCount": 1,
+        "statusCounts": {
+          "decode-pending": 1,
+          "blocked-binding": 4,
+          "scheduled": 1
+        },
+        "scheduledReceipt": {
+          "cueId": "impact.body",
+          "bindingId": "audio-binding:impact-body",
+          "assetId": "asset:3a82d1753e140d24552b89d1",
+          "fileRole": "sfx-wav",
+          "sha256": "ba8ebd46b31544ce76973a7ac88039c82d0c1aaaaabdf1cbfb1339a495f2e53e",
+          "providerId": "reality-build.web-audio-buffer",
+          "tick": 1,
+          "source": "rsr-spatial3d",
+          "spatialParametersForwarded": true,
+          "listenerId": "listener:player",
+          "mapping": {
+            "panningModel": "equalpower",
+            "distanceModel": "linear",
+            "positionScale": 1000,
+            "occlusionMode": "lowpass"
+          }
+        },
+        "spatial3d": {
+          "available": true,
+          "verified": true,
+          "mode": "webgpu",
+          "tick": 187
+        },
+        "applicationExceptions": 0,
+        "warnings": [
+          "Failed to create WebGPU Context Provider",
+          "Failed to create WebGPU Context Provider"
+        ]
+      },
+      "claimBoundary": "The API 35 Emulator/WebView executed the same embedded provider path; it does not prove speaker output, native audio, physical-device behavior or perceptual spatial equivalence."
+    }
+  },
+  "verification": {
+    "commands": [
+      "npm.cmd test --workspace @taowind/audio-target-runtime",
+      "node --test apps/reality-studio/tests/unified-studio.test.mjs",
+      "node --test apps/reality-build/tests/audio-target.test.mjs apps/reality-build/tests/runtime.test.mjs",
+      "npm.cmd test --workspace @taowind/reality-build-fabric",
+      "node --check on modified JavaScript modules",
+      "git diff --check",
+      "local Chromium candidate execution through Playwright",
+      "Gradle 9.5.1 android-apk target",
+      "apksigner verify --verbose",
+      "adb install -r and explicit MainActivity launch",
+      "Android WebView CDP Runtime.evaluate through adb local forward"
+    ],
+    "localTestSummary": {
+      "audioTargetRuntime": "7 passed",
+      "realityStudioFocused": "33 passed",
+      "realityBuildAudioTargetFocused": "2 passed",
+      "realityBuildRuntimeFocused": "23 passed",
+      "realityBuildFull": "163 passed, 0 failed, 8 skipped",
+      "apk": "compiled and v2 signature verified",
+      "webAndWebView": "both targets reached scheduled receipt with spatial_parameters_forwarded=true"
+    },
+    "expectedResult": "All listed local checks pass; no hosted CI, physical-device audio or human-listening result is inferred."
+  },
+  "rclGap": "RCL_GAP_RNCS_AUDIO_TARGET_LOWERING",
+  "stressCase": "An RSR spatial-audio event must preserve its authoritative tick and integer spatial parameters while crossing one explicit Studio binding into two target hosts, with missing bindings/listeners remaining observable blocks rather than inferred assets or listeners.",
+  "donorAdvantage": "RSR already owns deterministic spatial-audio events and listener snapshots; Studio already owns sealed content-addressed asset/file records; the candidate reuses both seams and the existing Android synthetic-origin WebView host instead of creating native or duplicate semantic registries.",
+  "regressionCase": "Unbound cues remain blocked-binding, invalid or missing listener policy cannot select a listener, exact file role/MIME/hash checks remain fail-closed, and projects without an audio profile retain only the explicitly named legacy procedural fallback.",
+  "affectedK400Cells": [
+    "LOWER",
+    "EXECUTE",
+    "CORRECT",
+    "ROBUST",
+    "PERFORMANCE",
+    "EVIDENCE"
+  ],
+  "boundaries": [
+    "This demonstrates target Provider parameter application and receipt generation, not audible output.",
+    "The Chromium run reports an AudioContext user-gesture warning; the Android result is an API 35 Emulator/WebView execution, not a physical-device audio result.",
+    "Equal-power panning, linear distance and occlusion low-pass are the current candidate mapping, not perceptual equivalence or production mixing policy.",
+    "No native audio backend, speaker/headphone routing, latency curve, concurrency/mixing quality, streaming, release signing, store delivery or human listening acceptance is claimed.",
+    "No K400 gate is promoted to PASS."
+  ],
+  "nextCandidate": "Audit Provider lifecycle and audio robustness next: user-gesture/AudioContext readiness, concurrent voice/mixing and decode latency receipts, then decide whether physical-device listening is the next required human gate; keep native audio and production release boundaries explicit."
+}

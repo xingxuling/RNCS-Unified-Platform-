@@ -209,6 +209,19 @@ Studio 现在保存 `cue_id → asset_id → file_role → asset_sha256`，Build
 
 同一计划随后通过既有 `embeddedHtml()` seam 进入 `android-project` 和 `android-apk`。本机用 Gradle 9.5.1 / Android SDK 35 生成并用 APK Signature Scheme v2 验签 debug APK，安装到 API 35 `Android ATD built for x86_64` Emulator；WebView 通过已有 `loadDataWithBaseURL("https://rncs.local/", ...)` 加载，CDP 在 `reset()` 后触发 `footstep-ice`，等待 7 秒观察到 `decode-pending → scheduled`，应用异常为 0。因为 WAV 是内嵌 data URI，这里没有远程音频请求；这仍然只是 WebView buffer scheduling candidate，不是扬声器、耳机、空间化、延迟、物理设备或人工听感证据。完整收据见 `evidence/ANDROID_AUDIO_TARGET_BINDING_CANDIDATE_v0.1.json`。
 
+## RSR spatial audio Provider candidate
+
+在显式 cue-to-file seam 之后，Build 继续复用 RSR 的空间语义，不改 RSR event owner：
+
+```text
+RSR spatial-audio event
+  → explicit audio-target binding + spatial_policy.listener_id
+  → Web Audio PannerNode / occlusion low-pass lowering
+  → receipt with source parameters and spatial_parameters_forwarded
+```
+
+`spatial_policy.listener_id` 必须指向目标空间快照中已经存在的 RSR listener；Build 不猜测第一个 listener，也不把 2D/3D 空间混用。`position` 按 RSR `position_scale` 转换，`gainQ`、`pitchQ`、`minDistance`、`maxDistance` 和 `occlusionQ` 进入 Provider 的参数映射；没有显式策略或 listener 时保持未空间化或阻断，并在收据中说明原因。真实 Chromium 与 API 35 Android WebView 候选都观察到 3D RSR 的 `impact.body` 在 Tick 1 经精确 WAV `decode-pending → scheduled`，`spatial_parameters_forwarded=true`；Chromium 页面异常为 0，Android CDP 未收到应用异常。这个结果是目标 Provider 执行证据，不是可听输出、空间感知等价、延迟、混音质量、Android 原生音频、物理设备或人工听感证据。完整收据见 `evidence/BUILD_AUDIO_SPATIAL_PROVIDER_CANDIDATE_v0.1.json`；仍不晋升任何 K400 PASS。
+
 ## Network compilation → headless candidate
 
 Reality Build 现在消费既有 Reality Studio `project.network`，不再只把 network authoring 留在 Studio 导出侧：
