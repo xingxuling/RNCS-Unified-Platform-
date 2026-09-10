@@ -1,0 +1,99 @@
+{
+  "format": "reality-build.world-body-event-delivery-evidence.v0.1",
+  "version": "0.1.0-alpha.1",
+  "status": "CANDIDATE",
+  "source": {
+    "checkout": "rncs-visual-factory-v01",
+    "branch": "codex/rncs-engine-stack-archaeology-v01",
+    "authority": "working-tree candidate; no RNCS/RFE commit, promotion, or main-branch mutation"
+  },
+  "canonical_seam": {
+    "world_body_ir": "taowind.world-body-ir.v0.1",
+    "delivery_plan": "taowind.world-body-event-delivery-plan.v0.1",
+    "event_runtime": "taowind.world-body-event-runtime.v0.1",
+    "owners": [
+      "World Body IR owns event identity, authority binding, tick, sequence, and route declarations.",
+      "The shared event runtime owns candidate delivery attempts and receipts.",
+      "Concrete audio, animation, haptic, network, and telemetry Providers remain target-owned and must be explicitly admitted."
+    ]
+  },
+  "observed": {
+    "shared_node_runtime": {
+      "statuses": [
+        "blocked-provider",
+        "provider-rejected",
+        "provider-error",
+        "delivered",
+        "duplicate-suppressed"
+      ],
+      "delivery_invariant": "Missing, rejected, and throwing Providers do not advance deliveredKeys; a later accepted attempt does.",
+      "provider_commit": "candidate-only"
+    },
+    "reality_build_candidate": {
+      "explicit_event_route_count": 1,
+      "consumer_counts": {
+        "audio": 1
+      },
+      "payload_surfaces": [
+        "runtime-evidence.json",
+        "build-data.js",
+        "game.js"
+      ]
+    },
+    "local_chromium": {
+      "execution": "Playwright-driven local Chromium candidate run",
+      "build_id": "build:91934099adb1007dbab5508f",
+      "source_authority_root": "72d8ec8f99bdf739d2e4b9eb7bc4493ab5b18a896a623c8cc1f8f5e763c9ecae",
+      "delivery_plan_root": "871a6a08852d1b49e3c93e99df634b1dfc109040471e8f0ea3a5f17939174210",
+      "before_first_tick": {
+        "delivery_count": 1,
+        "delivered_count": 0,
+        "receipt_count": 0
+      },
+      "after_first_tick": {
+        "delivery_count": 1,
+        "delivered_count": 0,
+        "blocked_count": 1,
+        "receipt_status": "blocked-provider",
+        "provider_id": null
+      },
+      "claim_boundary": "The browser route was executed and failed closed without an admitted audio Provider; this is not audio decode, playback, latency, device, or listening evidence."
+    }
+  },
+  "verification": {
+    "commands": [
+      "npm test --workspace @taowind/world-body-ir",
+      "npm test --workspace @taowind/world-body-formal-theory",
+      "npm test --workspace @taowind/world-body-codegen",
+      "npm test --workspace @taowind/world-body-studio-bridge",
+      "node --test apps/reality-build/tests/world-body-candidate.test.mjs",
+      "local Chromium candidate execution through Playwright"
+    ],
+    "local_test_summary": {
+      "world_body_ir": "40 passed",
+      "world_body_formal_theory": "8 passed",
+      "world_body_codegen": "12 passed",
+      "world_body_studio_bridge": "14 passed",
+      "reality_build_world_body_focused": "3 passed",
+      "reality_build_full": "159 passed, 0 failed, 8 skipped"
+    },
+    "expected_result": "All listed local checks pass; no hosted CI or physical-device result is inferred."
+  },
+  "rclGap": "RCL_GAP_RNCS_AUDIO_TARGET_LOWERING",
+  "stressCase": "An authority-bound World Body event must survive IR normalization, formal routing, code generation, Studio ingress, Build presentation binding, browser Tick execution, and fail-closed Provider receipt generation.",
+  "donorAdvantage": "The existing World Body Formal route plan already encoded authority-bound exactly-once delivery keys; the change promotes that donor into one shared IR runtime seam instead of adding a parallel target event system.",
+  "regressionCase": "The existing browser spatial diagnostic contract, including asset_payload_receipt_root, remains preserved while the event receipt surface is added.",
+  "affectedK400Cells": [
+    "LOWER",
+    "EXECUTE",
+    "CORRECT",
+    "ROBUST",
+    "EVIDENCE"
+  ],
+  "boundaries": [
+    "No event routes are synthesized from RSR sensory events or Studio Sequence clips.",
+    "No concrete audio asset cue-to-file binding or audio decoder Provider is claimed.",
+    "No Android, physical-device, WAN, production transport, performance, or human acceptance proof is claimed.",
+    "No K400 gate is promoted to PASS."
+  ]
+}

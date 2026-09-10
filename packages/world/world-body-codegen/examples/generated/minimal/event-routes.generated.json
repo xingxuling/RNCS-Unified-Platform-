@@ -1,27 +1,29 @@
 {
-  "events": [
+  "deliveries": [
     {
-      "exactlyOnceKey": "1dcad4625497d3ef68436d799f0b6b7333d057a1a99e32c6c16499d07f556846:12:0",
-      "id": "event:hero-contact:12:0",
-      "kind": "contact-begin",
-      "routes": [
-        {
-          "consumer": "animation",
-          "id": "route:hero-contact-animation",
-          "target": "animation:hero-land"
-        },
-        {
-          "consumer": "audio",
-          "id": "route:hero-contact-audio",
-          "target": "audio:hero-contact"
-        }
-      ],
+      "consumer": "animation",
+      "deliveryKey": "1dcad4625497d3ef68436d799f0b6b7333d057a1a99e32c6c16499d07f556846:12:0:route:hero-contact-animation",
+      "eventId": "event:hero-contact:12:0",
+      "eventKind": "contact-begin",
+      "routeId": "route:hero-contact-animation",
       "sequence": 0,
-      "source": "rsr",
       "sourceAuthorityRoot": "1dcad4625497d3ef68436d799f0b6b7333d057a1a99e32c6c16499d07f556846",
+      "target": "animation:hero-land",
+      "tick": 12
+    },
+    {
+      "consumer": "audio",
+      "deliveryKey": "1dcad4625497d3ef68436d799f0b6b7333d057a1a99e32c6c16499d07f556846:12:0:route:hero-contact-audio",
+      "eventId": "event:hero-contact:12:0",
+      "eventKind": "contact-begin",
+      "routeId": "route:hero-contact-audio",
+      "sequence": 0,
+      "sourceAuthorityRoot": "1dcad4625497d3ef68436d799f0b6b7333d057a1a99e32c6c16499d07f556846",
+      "target": "audio:hero-contact",
       "tick": 12
     }
   ],
-  "format": "taowind.world-body-generated-event-routes.v0.1",
+  "deliveryPlanRoot": "b4e46647f59f966f99dbfba15605b93489d58ada9fec59619d6633aea68c0833",
+  "format": "taowind.world-body-event-delivery-plan.v0.1",
   "sourceWorldBodyRoot": "72e39c0d4be74c2caafa386f61966900446687a4e7c9ab09c0cca5ab0cdae709"
 }

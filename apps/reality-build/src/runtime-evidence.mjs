@@ -46,7 +46,7 @@ function presentationSpec(project,externalCandidate=null){
   const scene=candidate?.scene??spatial?.presentation_scene;
   if(!scene||typeof scene!=='object')return null;
   const bindings=Array.isArray(candidate?.bindings)?candidate.bindings:Array.isArray(spatial?.presentation_bindings)?spatial.presentation_bindings:[];
-  return{scene:clone(scene),bindings:clone(bindings),asset_bundle:candidate?.asset_bundle??spatial?.presentation_asset_bundle??null,asset_bindings:clone(candidate?.asset_bindings??spatial?.presentation_asset_bindings??[]),animation_policy:clone(candidate?.animation_policy??spatial?.presentation_animation_policy??null),sequence_frame_projection:clone(candidate?.sequence_frame_projection??spatial?.sequence_frame_projection??null),source_root:candidate?.presentation_source_root??spatial?.presentation_source_root??scene.sceneRoot??null};
+  return{scene:clone(scene),bindings:clone(bindings),asset_bundle:candidate?.asset_bundle??spatial?.presentation_asset_bundle??null,asset_bindings:clone(candidate?.asset_bindings??spatial?.presentation_asset_bindings??[]),animation_policy:clone(candidate?.animation_policy??spatial?.presentation_animation_policy??null),sequence_frame_projection:clone(candidate?.sequence_frame_projection??spatial?.sequence_frame_projection??null),event_delivery_plan:clone(candidate?.event_delivery_plan??spatial?.event_delivery_plan??null),source_root:candidate?.presentation_source_root??spatial?.presentation_source_root??scene.sceneRoot??null};
 }
 function presentationAnimationOptions(policy,tick=0){
   if(!policy)return{};
@@ -92,7 +92,7 @@ function presentationAssetStreaming(scene){
 }
 export function compileBoundPresentationScene(project,snapshot,fallbackScene,fallbackFramePlan,externalCandidate=null){
   const spec=presentationSpec(project,externalCandidate);
-  if(!spec)return{scene:fallbackScene,frame_plan:fallbackFramePlan,bound:false,binding_count:0,asset_binding_count:0,source_root:null};
+  if(!spec)return{scene:fallbackScene,frame_plan:fallbackFramePlan,bound:false,binding_count:0,asset_binding_count:0,event_delivery_plan:null,source_root:null};
   const scene=sequenceFrameCameraScene(bindPresentationScene(spec.scene,snapshot,spec.bindings),spec.sequence_frame_projection);
   const assetStreaming=presentationAssetStreaming(scene);
   const animationOptions=spec.sequence_frame_projection?sequenceFrameAnimationOptions(spec.sequence_frame_projection):presentationAnimationOptions(spec.animation_policy,snapshot?.tick??0);
@@ -105,7 +105,7 @@ export function compileBoundPresentationScene(project,snapshot,fallbackScene,fal
   });
   const verification=verifySpatialFrame(framePlan);
   if(!verification?.ok)throw new Error(`PRESENTATION_SPATIAL_FRAME_INVALID:${JSON.stringify(verification)}`);
-  return{scene,frame_plan:framePlan,asset_streaming:assetStreaming,asset_bundle:spec.asset_bundle??null,asset_bindings:spec.asset_bindings,animation_policy:spec.animation_policy,sequence_frame_projection:spec.sequence_frame_projection,animation_options:animationOptions,bound:true,binding_count:spec.bindings.length,asset_binding_count:spec.asset_bindings.length,source_root:spec.source_root};
+  return{scene,frame_plan:framePlan,asset_streaming:assetStreaming,asset_bundle:spec.asset_bundle??null,asset_bindings:spec.asset_bindings,animation_policy:spec.animation_policy,sequence_frame_projection:spec.sequence_frame_projection,event_delivery_plan:spec.event_delivery_plan,animation_options:animationOptions,bound:true,binding_count:spec.bindings.length,asset_binding_count:spec.asset_bindings.length,source_root:spec.source_root};
 }
 
 export function buildRuntimeEvidence({project,request,identity,presentationCandidate=null}={}){
@@ -200,6 +200,9 @@ export function buildRuntimeEvidence({project,request,identity,presentationCandi
     presentation_sequence_camera_binding_root:presentation.sequence_frame_projection?.camera_binding?rootHash(presentation.sequence_frame_projection.camera_binding):null,
     presentation_sequence_camera_id:presentation.sequence_frame_projection?.camera_binding?.camera_id??null,
     presentation_camera_id:spatialFramePlan.camera?.id??null,
+    presentation_event_delivery_plan_root:presentation.event_delivery_plan?.deliveryPlanRoot??null,
+    presentation_event_delivery_count:presentation.event_delivery_plan?.deliveries?.length??0,
+    presentation_event_consumer_counts:Object.fromEntries([...new Set((presentation.event_delivery_plan?.deliveries??[]).map(item=>item.consumer))].sort().map(consumer=>[consumer,(presentation.event_delivery_plan.deliveries??[]).filter(item=>item.consumer===consumer).length])),
     presentation_binding_count:presentation.binding_count,
     presentation_asset_binding_count:presentation.asset_binding_count,
     presentation_asset_streaming_root:presentation.asset_streaming?.root??null,
@@ -247,6 +250,9 @@ export function runtimeEvidenceSummary(runtimeEvidence){
     presentation_sequence_animation_layer_count:e.presentation_sequence_animation_layer_count,
     presentation_sequence_camera_binding_root:e.presentation_sequence_camera_binding_root,presentation_sequence_camera_id:e.presentation_sequence_camera_id,
     presentation_camera_id:e.presentation_camera_id,
+    presentation_event_delivery_plan_root:e.presentation_event_delivery_plan_root,
+    presentation_event_delivery_count:e.presentation_event_delivery_count,
+    presentation_event_consumer_counts:e.presentation_event_consumer_counts,
     presentation_binding_count:e.presentation_binding_count,presentation_asset_streaming_root:e.presentation_asset_streaming_root,
     presentation_asset_binding_count:e.presentation_asset_binding_count,
     presentation_asset_requested_count:e.presentation_asset_requested_count,presentation_asset_missing_count:e.presentation_asset_missing_count,

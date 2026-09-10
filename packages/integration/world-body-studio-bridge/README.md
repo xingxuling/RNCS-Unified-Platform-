@@ -10,6 +10,8 @@ It reuses:
 
 It does not implement a second physics runtime, renderer, network runtime, asset streamer, or scene IR. Studio-only facets that are not owned by World Body are preserved in a sidecar and listed as gaps.
 
+Explicit `options.events` are lowered into the World Body `worldEventState` and the shared delivery plan consumed by Formal, Codegen, Studio Bridge, and Reality Build. The bridge does not synthesize event routes from RSR sensory events or Studio Sequence clips; missing authored events remain an explicit gap. The resulting plan is candidate evidence only and does not bind an audio decoder or commit authority.
+
 The adapter is candidate-only. `compileStudioWorldBodyCandidate()` never commits, promotes, or mutates the Studio project. `verifyStudioWorldBodyCandidate()` verifies the bridge manifest and the underlying generated artifact bundle.
 
 For downstream runtime archaeology, `compileStudioWorldBodyAetherProjection()` lowers the candidate's physical bodies into the existing sealed `rncs.entity-state-batch.v0.1` contract, and `projectStudioWorldBodyCandidateToRealityCell()` executes the existing Kernel → RSR → Reality Cell → VSR seam. Lossy projection is blocked by default. Passing `allowLossyProjection: true` is an explicit candidate experiment when source facets remain unbound; when a caller supplies a verified Reality Cell asset runtime and opts into `bindNetworkObserver: true`, the bridge executes the existing GLB asset-scene and Network Observer Relevance paths and verifies those bindings instead of declaring those two facets lost.

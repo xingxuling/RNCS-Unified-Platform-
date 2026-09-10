@@ -1,4 +1,5 @@
 import { verifyStudioWorldBodyCandidate } from '@taowind/world-body-studio-bridge';
+import { createWorldBodyEventDeliveryPlan } from '@taowind/world-body-ir/event-runtime';
 import { rootHash } from './canonical.mjs';
 
 export const REALITY_BUILD_WORLD_BODY_PRESENTATION_FORMAT = 'reality-build.world-body-presentation-candidate.v0.1';
@@ -50,6 +51,7 @@ export function createWorldBodyRealityBuildPresentationCandidate({ project, cand
     semantic_declaration_root: candidate.manifest.semanticDeclarationRoot,
     world_body_root: candidate.manifest.worldBodyRoot,
     scene_root: rootHash(presentationScene),
+    event_delivery_plan: clone(createWorldBodyEventDeliveryPlan(candidate.worldBody.ir)),
     bindings,
     unmapped_bodies: unmappedBodies,
   };
@@ -68,6 +70,10 @@ export function verifyWorldBodyBuildPresentationCandidate(value) {
     if (!value || value.format !== REALITY_BUILD_WORLD_BODY_PRESENTATION_FORMAT || value.version !== REALITY_BUILD_WORLD_BODY_PRESENTATION_VERSION || value.authority !== 'candidate-build-presentation-only') return false;
     const { presentation_root: presentationRoot, scene, ...presentationBase } = value.presentation ?? {};
     if (!presentationRoot || !scene || rootHash(presentationBase) !== presentationRoot) return false;
+    const eventPlan = presentationBase.event_delivery_plan;
+    if (!eventPlan || eventPlan.sourceWorldBodyRoot !== presentationBase.world_body_root) return false;
+    const { deliveryPlanRoot, ...eventPlanBase } = eventPlan;
+    if (!deliveryPlanRoot || rootHash(eventPlanBase) !== deliveryPlanRoot) return false;
     return rootHash(scene) === presentationBase.scene_root
       && value.presentation.presentation_source_root === rootHash({ ...presentationBase, presentation_source_root: undefined });
   } catch {

@@ -5,6 +5,7 @@ import {
   quaternionToEulerMilliDegrees,
   semanticHash,
 } from '@taowind/world-body-ir';
+import { createWorldBodyEventDeliveryPlan } from '@taowind/world-body-ir/event-runtime';
 import { rootHash } from '@taowind/rncs-core-contract';
 import {
   compileWorldDeclaration,
@@ -259,6 +260,8 @@ function createDeclaration(project, options = {}) {
     'STUDIO_WB_SOURCE_REALITY_ROOT_INVALID',
     'Studio ingress sourceRealityRoot must be a SHA-256 root',
   );
+  if (options.events !== undefined && !Array.isArray(options.events)) fail('STUDIO_WB_EVENTS_INVALID', 'Explicit Studio World Body events must be an array');
+  const authoredEvents = clone(options.events ?? []);
   const nodes = Array.isArray(scene.nodes) ? scene.nodes : [];
   const nodeByBody = new Map();
   for (const node of nodes) {
@@ -381,11 +384,14 @@ function createDeclaration(project, options = {}) {
       synthetic_body_visual_count: entities.filter(entity => !nodeByBody.has(entity.physical.bodyId)).length,
       emitted_asset_count: declarationAssets.length,
       unmapped_scene_node_count: unmappedSceneNodes.length,
+      authored_event_count: authoredEvents.length,
+      authored_event_route_count: authoredEvents.reduce((count, event) => count + (Array.isArray(event?.routes) ? event.routes.length : 0), 0),
     },
     gaps: [
       ...(options.temporalPolicy ? [] : ['Studio source has no explicit temporal presentation policy in this path; the bridge uses a reviewable hold default.']),
       ...(network.supplied ? [] : network.gaps),
       ...(unmappedSceneNodes.length === 0 ? [] : [`${unmappedSceneNodes.length} non-spatial Studio scene nodes remain outside this World Body candidate.`]),
+      ...(authoredEvents.length > 0 ? [] : ['Studio World Body event routes are not synthesized from RSR sensory events or Sequence clips; explicit event input is required.']),
       'Studio material/friction, character controller, joint, listener, render graph, and UI/input facets remain source sidecar data; this bridge does not duplicate their runtimes.',
     ],
   };
@@ -414,7 +420,7 @@ function createDeclaration(project, options = {}) {
     assets: declarationAssets,
     entities,
     observers: [],
-    events: [],
+    events: authoredEvents,
     renderGraphs: [],
   };
   return { declaration, sidecar };
@@ -427,6 +433,7 @@ export function createWorldBodyDeclarationFromStudioProject(project, options = {
 export function compileStudioWorldBodyCandidate(project, options = {}) {
   const { declaration, sidecar } = createDeclaration(project, options);
   const worldBody = generateWorldBodyArtifacts(declaration);
+  const eventDeliveryPlan = createWorldBodyEventDeliveryPlan(worldBody.ir);
   const manifestBase = {
     format: STUDIO_WORLD_BODY_BRIDGE_MANIFEST_FORMAT,
     bridgeVersion: STUDIO_WORLD_BODY_BRIDGE_VERSION,
@@ -435,6 +442,8 @@ export function compileStudioWorldBodyCandidate(project, options = {}) {
     source_roots: sidecar.source_roots,
     semanticDeclarationRoot: worldBody.compilation.semanticDeclarationRoot,
     worldBodyRoot: worldBody.manifest.worldBodyRoot,
+    eventDeliveryPlanRoot: eventDeliveryPlan.deliveryPlanRoot,
+    eventDeliveryCount: eventDeliveryPlan.deliveries.length,
     generatedArtifactPaths: worldBody.manifest.artifacts.map(item => item.path).sort(),
     coverage: sidecar.coverage,
     gaps: sidecar.gaps,
@@ -447,6 +456,7 @@ export function compileStudioWorldBodyCandidate(project, options = {}) {
     declaration,
     sidecar,
     worldBody,
+    eventDeliveryPlan,
     manifest,
   };
 }
@@ -457,6 +467,8 @@ export function verifyStudioWorldBodyCandidate(bundle) {
     if (bundle.authority !== 'candidate-artifact-generation-only-no-commit') return false;
     if (!bundle.declaration || bundle.declaration.world?.authorityClass !== 'candidate' || bundle.declaration.world?.commitRoot !== undefined) return false;
     if (!verifyGeneratedArtifactBundle(bundle.worldBody)) return false;
+    const eventDeliveryPlan = createWorldBodyEventDeliveryPlan(bundle.worldBody.ir);
+    if (!bundle.eventDeliveryPlan || semanticHash(bundle.eventDeliveryPlan) !== semanticHash(eventDeliveryPlan)) return false;
     const recompilation = compileWorldDeclaration(bundle.declaration);
     if (recompilation.semanticDeclarationRoot !== bundle.worldBody.compilation.semanticDeclarationRoot) return false;
     if (!bundle.sidecar || bundle.sidecar.format !== 'taowind.reality-studio.world-body-bridge-sidecar.v0.1') return false;
@@ -464,6 +476,8 @@ export function verifyStudioWorldBodyCandidate(bundle) {
     const { manifestRoot, ...manifestBase } = bundle.manifest;
     if (semanticHash(manifestBase) !== manifestRoot) return false;
     if (bundle.worldBody.manifest.worldBodyRoot !== bundle.manifest.worldBodyRoot) return false;
+    if (bundle.manifest.eventDeliveryPlanRoot !== eventDeliveryPlan.deliveryPlanRoot) return false;
+    if (bundle.manifest.eventDeliveryCount !== eventDeliveryPlan.deliveries.length) return false;
     if (bundle.worldBody.compilation.semanticDeclarationRoot !== bundle.manifest.semanticDeclarationRoot) return false;
     if (semanticHash(bundle.sidecar.source_roots) !== semanticHash(bundle.manifest.source_roots)) return false;
     if (bundle.worldBody.manifest.authority !== 'candidate-artifact-generation-only-no-commit') return false;
@@ -481,6 +495,8 @@ export function summarizeStudioWorldBodyCandidate(bundle) {
     source_roots: bundle.manifest.source_roots,
     semanticDeclarationRoot: bundle.manifest.semanticDeclarationRoot,
     worldBodyRoot: bundle.manifest.worldBodyRoot,
+    eventDeliveryPlanRoot: bundle.manifest.eventDeliveryPlanRoot,
+    eventDeliveryCount: bundle.manifest.eventDeliveryCount,
     coverage: bundle.manifest.coverage,
     gaps: bundle.manifest.gaps,
     generatedArtifactCount: bundle.worldBody.artifacts.length,

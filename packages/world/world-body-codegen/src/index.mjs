@@ -9,6 +9,7 @@ import {
   semanticHash,
   verifyWorldBodyIR,
 } from '@taowind/world-body-ir';
+import { createWorldBodyEventDeliveryPlan } from '@taowind/world-body-ir/event-runtime';
 
 export const WORLD_DECLARATION_FORMAT = 'taowind.world-declaration.v0.1';
 export const WORLD_BODY_CODEGEN_VERSION = '0.1.0-alpha.1';
@@ -398,11 +399,7 @@ export function generateWorldBodyArtifacts(declaration) {
   const rsrConfig = compileRsrWorldConfig(compilation, declaration);
   const bindings = visualBindings(ir);
   const temporal = temporalBindings(ir);
-  const eventPlan = {
-    format: 'taowind.world-body-generated-event-routes.v0.1',
-    sourceWorldBodyRoot: ir.roots.worldBodyRoot,
-    events: ir.worldEventState.events,
-  };
+  const eventPlan = createWorldBodyEventDeliveryPlan(ir);
   const renderGraphPlan = {
     format: 'taowind.world-body-generated-render-graphs.v0.1',
     sourceWorldBodyRoot: ir.roots.worldBodyRoot,

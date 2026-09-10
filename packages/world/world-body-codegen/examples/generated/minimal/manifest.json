@@ -1,7 +1,7 @@
 {
   "artifacts": [
     {
-      "contentRoot": "6258e2221e2068a8a6707182cd047d6243f885b25a94fe879bf57ed5735611bd",
+      "contentRoot": "1a7be73bb06266b26e81cd429418893ecb1fa069a1e4e4405d5e2386041c27aa",
       "mediaType": "application/json",
       "path": "event-routes.generated.json"
     },
@@ -49,7 +49,7 @@
   "authority": "candidate-artifact-generation-only-no-commit",
   "format": "taowind.world-body-codegen-manifest.v0.1",
   "generatorVersion": "0.1.0-alpha.1",
-  "manifestRoot": "b0f665de71603fa4fe977cd4cea57f0010d5efa078b01829915d8024d516b191",
+  "manifestRoot": "b64ca87226283b3761c6d4925c417c4b4be15a71094a4d080c20c067889fc562",
   "metrics": {
     "entityCount": 2,
     "eventRouteCount": 2,

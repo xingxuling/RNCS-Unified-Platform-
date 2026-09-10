@@ -34,6 +34,12 @@ visualWorld(t) = present(authorityPhysical(sample(t)), temporalPolicy)
 
 Changing a `visualOnlyOffset` may change visual/body-map/frame roots, but it must not change authority or physical roots.
 
+## Event delivery candidate
+
+`src/event-runtime.mjs` is the shared candidate seam for `worldEventState`. `createWorldBodyEventDeliveryPlan()` turns every authority-bound event route into a deterministic delivery record with a route-level exactly-once key. `WorldBodyEventRuntime` exposes explicit `blocked-provider`, `provider-rejected`, `provider-error`, `delivered`, and `duplicate-suppressed` receipts; failed or missing providers never advance the delivered set.
+
+This runtime is a routing and evidence boundary, not an audio decoder, haptic driver, renderer, network transport, or authority commit path. Providers must be admitted by the caller, and browser/Build targets remain candidate-only until their concrete consumer providers and real-device evidence exist.
+
 ## Run
 
 ```bash

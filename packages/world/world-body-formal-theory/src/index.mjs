@@ -1,11 +1,11 @@
 import {
   canonicalClone,
-  compareUtf8,
   createWorldBodyIR,
   semanticHash,
   validateRenderGraph,
   verifyWorldBodyIR,
 } from '@taowind/world-body-ir';
+import { createWorldBodyEventDeliveryPlan } from '@taowind/world-body-ir/event-runtime';
 import { defineTheorem } from '@taowind/world-body-formal-kernel';
 import {
   buildRsrReferenceFixture,
@@ -87,21 +87,7 @@ export function advanceWorldBodyReference(ir, commands = []) {
 }
 
 export function routeWorldEvents(ir) {
-  const deliveries = ir.worldEventState.events.flatMap(event => event.routes.map(route => ({
-    eventId: event.id,
-    routeId: route.id,
-    consumer: route.consumer,
-    target: route.target,
-    sourceAuthorityRoot: event.sourceAuthorityRoot,
-    deliveryKey: `${event.exactlyOnceKey}:${route.id}`,
-  })));
-  const ordered = deliveries.sort((left, right) => compareUtf8(left.deliveryKey, right.deliveryKey));
-  const base = {
-    format: 'taowind.world-body-event-delivery-plan.v0.1',
-    sourceWorldBodyRoot: ir.roots.worldBodyRoot,
-    deliveries: ordered,
-  };
-  return canonicalClone({ ...base, deliveryPlanRoot: semanticHash(base) });
+  return createWorldBodyEventDeliveryPlan(ir);
 }
 
 export function forkWorldBodyReference(ir, branchId, commands = []) {

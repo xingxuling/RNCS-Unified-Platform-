@@ -6,6 +6,7 @@
   "main": "./src/index.mjs",
   "exports": {
     ".": "./src/index.mjs",
+    "./event-runtime": "./src/event-runtime.mjs",
     "./render-graph": "./src/render-graph.mjs",
     "./schema": "./schemas/world-body-ir.v0.1.schema.json"
   },
