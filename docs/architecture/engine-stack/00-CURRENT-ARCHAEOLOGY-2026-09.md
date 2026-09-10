@@ -305,11 +305,37 @@ Android 审计先用 web-release 外部 URI 直接覆盖 `android-project` asset
 - observer 回入并显式请求 `cell:chunk:world:large-build-candidate:-1:-1` 后恢复 12 个 payload、4 条 binding、加载 `53036` bytes，frame 为 1 active cell/4 draws/116 triangles，`verified=true`。
 - 三阶段 `importFailed=0`、asset/spatial error 为空；这是 Android Emulator/WebView target seam candidate，不是 physical device、release APK/AAB、持续生产运行或人工视觉验收证据。
 
+## 本轮 Reality Studio network compilation → Reality Build headless candidate
+
+本轮先做了负向构建审计：同一个 `examples/studio-authored-network-world-v03/project.mjs` fixture 的 `project.network` 和 `compilation_root` 已存在，但 Reality Build 当时仍返回 `buildValid=true`，目标目录没有 `network-world-compilation.json`，生成的 `server.mjs` 也没有 `RealityNetworkRuntime`。因此缺口不是重新实现 network compiler 或 session，而是 Build 没有消费既有 compilation seam。
+
+复用关系现在是：
+
+```text
+Reality Studio project.network
+  → compileNetworkWorld() / verifyNetworkWorldCompilation()
+  → Reality Build network-compilation graph node
+  → build identity + core artifact + receipt + integrity root
+  → generated headless server
+  → RealityNetworkRuntime.createSessionFromCompilation()
+  → joinCompiledSlot / submitInput / advanceServerTick / health
+```
+
+实际改动保持了既有 owner：
+
+1. `apps/reality-build/src/network-build.mjs` 只负责调用 Studio compiler、fail-closed 验证和向 Build 转交 compilation；没有复制 Studio network schema，也没有改写 `world_config` 或 authority roots。
+2. `builder.mjs` 在存在 `project.network` 时生成 `network-compilation` 节点，把 `compilation_root` 纳入 Build identity、`network-world-compilation.json`、core file hash、receipt、integrity 和 `verifyBuild()`；没有 network facet 的旧项目不会生成意外 artifact。
+3. `targets.mjs` 只给 `headless-server` 接入既有 Network Runtime。目标声明 loopback-local-candidate 模式和六个本地端点；Web/Android embedded presentation targets 没有被静默改造成网络客户端。
+
+本地真实结果：Reality Build 全套为 `142 tests / 134 pass / 0 fail / 8 skip`；新增集成测试真实启动生成的 `server.mjs`，通过 HTTP 加入 `slot:blue`、`slot:red`，提交 `move`，推进 server tick，并在 `/network/health` 验证 `compilationRoot`、`projectRoot` 和两个客户端 `synchronized`。篡改或删除 root artifact 会使 `verifyBuild()` 失败。证据文件为 `apps/reality-build/evidence/REALITY_BUILD_NETWORK_HEADLESS_CANDIDATE_v0.1.json`。
+
+这关闭的是“既有 Studio network compilation 能否进入 Reality Build headless candidate 并走到既有本地 Network Runtime”的候选接缝；仍未关闭 WAN/真实跨节点 transport、TLS/密钥与攻击面、真实多设备客户端、网络压测/SLA、生产部署和发布 authority。没有新增 K400 PASS。
+
 ## 结构判断
 
 ### 限制性瓶颈
 
-当前有两个有先后关系的瓶颈：`RCL_GAP_RNCS_RELEASE_3D_BROWSER_SCRIPT_PACKAGING` 已完成一个本地候选修复并通过 Build target 的真实浏览器回归；`RCL_GAP_RNCS_TARGET_PAYLOAD_IMPORT_BINDING` 已完成 web-release candidate loading/hash verification、显式 mesh binding、本机 Chromium WebGPU submission、host debug APK build/signing、Android Emulator embedded WebView dynamic working-set candidate、通用 VSR residency transition receipt 以及 reset→cell transition→eviction→re-entry 的动态浏览器/Android candidate，但物理/目标设备 GPU、Large World 新 chunk/scene revision、持久 cache eviction/performance 和生产资产服务仍未验证。结构性瓶颈仍是 `RCL_GAP_RNCS_SHARED_WORLD_COMPILATION_SPINE`，其 Studio ingress、Aether runtime projection、shared mass/character/asset-instance/compound-fixture donor、Network Observer Relevance binding、World Body/Large World Build candidate consumer、VSR asset resolution/import/binding/residency 已有证据，但完整 network transport/session、Android 物理/原生平台层、默认 Studio/World Body/Large World/Build 生产链仍未共同进入同一 runtime seam。
+当前有两个有先后关系的瓶颈：`RCL_GAP_RNCS_RELEASE_3D_BROWSER_SCRIPT_PACKAGING` 已完成一个本地候选修复并通过 Build target 的真实浏览器回归；`RCL_GAP_RNCS_TARGET_PAYLOAD_IMPORT_BINDING` 已完成 web-release candidate loading/hash verification、显式 mesh binding、本机 Chromium WebGPU submission、host debug APK build/signing、Android Emulator embedded WebView dynamic working-set candidate、通用 VSR residency transition receipt 以及 reset→cell transition→eviction→re-entry 的动态浏览器/Android candidate，但物理/目标设备 GPU、Large World 新 chunk/scene revision、持久 cache eviction/performance 和生产资产服务仍未验证。Reality Studio network compilation 现在已进入 Reality Build headless 的本地 loopback candidate，但 WAN/跨节点 transport、真实多设备和生产部署仍未验证。结构性瓶颈仍是 `RCL_GAP_RNCS_SHARED_WORLD_COMPILATION_SPINE`，其 Studio ingress、Aether runtime projection、shared mass/character/asset-instance/compound-fixture donor、Network Observer Relevance binding、World Body/Large World Build candidate consumer、VSR asset resolution/import/binding/residency、network compilation→headless candidate 已有证据，但完整 external network seam、Android 物理/原生平台层、默认 Studio/World Body/Large World/Build 生产链仍未共同进入同一 runtime seam。
 
 这不是“再写一个引擎子系统”的缺口，而是已有子系统不能共同承载同一个世界工件的缺口。Android host APK 现在已有候选构建闭环，剩余问题是平台宿主和设备证据，不应复制 Reality Cell/streaming/render glue。应把 Aether bridge 作为下游 runtime donor；若直接在 Studio、Build、Large World 各自添加转换，会产生重复语义、root 混淆和无法回滚的并行系统。
 
@@ -323,7 +349,7 @@ Android 审计先用 web-release 外部 URI 直接覆盖 `android-project` asset
 
 ## 下一最小高杠杆候选
 
-第一优先的 Build 3D classic-script packaging 已完成局部候选修复和真实浏览器回归；Studio→World Body→Aether 已完成候选 ingress、显式 asset-instance/observer binding runtime projection 和 shared mass/character/compound-fixture donor，Build 也能通过显式 request candidate 绑定同一 World Body source root；Large World VSR scene 现在也能通过 generic candidate 进入 Build evidence，复用 VSR asset streaming、GLB import、mesh binding、通用 residency transition、本机 WebGPU receipt、host APK build/signing 和 Emulator WebView candidate；动态 reset/cell transition 已在 web-release Chromium 与 embedded Android Emulator candidate 中执行。下一阶段最高杠杆缺口应转向“同一 candidate target loader 能否把 Large World 新 chunk/scene revision、persistent cache 和性能 receipt 接入 Android/可复现 GPU-capable target host，并在不丢失同一 target manifest/root 的前提下进入 network transport/session”，不能复制 Reality Cell/streaming/render glue，只做：
+第一优先的 Build 3D classic-script packaging 已完成局部候选修复和真实浏览器回归；Studio→World Body→Aether 已完成候选 ingress、显式 asset-instance/observer binding runtime projection 和 shared mass/character/compound-fixture donor，Build 也能通过显式 request candidate 绑定同一 World Body source root；Large World VSR scene 现在也能通过 generic candidate 进入 Build evidence，复用 VSR asset streaming、GLB import、mesh binding、通用 residency transition、本机 WebGPU receipt、host APK build/signing 和 Emulator WebView candidate；动态 reset/cell transition 已在 web-release Chromium 与 embedded Android Emulator candidate 中执行；Studio network compilation 也已进入 Build headless 的本地 loopback candidate。下一阶段最高杠杆缺口应转向“同一 world compilation/target manifest 能否继续进入可复现的 external network transport/session、Android/可复现 GPU-capable host 的新 chunk/scene revision、persistent cache 和性能 receipt”，不能复制 Reality Cell/streaming/render glue，只做：
 
 ```text
 Unified Project + selected spatial world + scene/asset roots
@@ -334,7 +360,7 @@ Unified Project + selected spatial world + scene/asset roots
   → bounded cache/eviction/performance evidence
 ```
 
-第一轮 ingress 已以 `examples/studio-authored-network-world-v03/project.mjs` 为 fixture 验证：确定性 World Declaration/codegen、Studio roots 与 World Body roots 的显式绑定、Network compilation root 保持、模型 kind lowering、2D transform 不越权、篡改/缺失资产/非法 authority 负例闭合；第二轮验证有损 candidate bundle 能进入 Aether Cell 并保持各级 runtime roots；第三轮验证 Build request candidate 能将同一 source root 写入 runtime evidence 并通过 Build 自校验；第四轮把动态质量经 shared `mass_q` donor 传入 RSR；第五轮把 3 个 Studio character facets 经 shared `spatial.character` donor 传入 RSR；第六轮把完整 fixture 集合经 `spatial.fixtures.items` 传入 RSR/VSR；第七轮把 Large World VSR scene 经 generic Build candidate 接缝执行；第八轮复用 VSR `resolveSpatialAssetStreaming()`，让 4 个 active-cell `rncs://` asset records 进入 frame/evidence roots（requested=4、missing=0）；第九轮复用 Large World GLB provider bundle、Build content-addressed target packaging 和 VSR streamer，完成 36 条 candidate payload catalog、33 条 active request 的 Chromium 字节加载/哈希校验；第十轮复用共享 VSR GLB importer/composer，完成 11 条显式 mesh bindings 和本机 WebGPU draw receipt；第十一轮完成 host APK build/signing；第十二轮在 Emulator WebView 中完成 cold-start、payload/binding/frame root 和 Canvas2D fallback candidate；第十三轮把 lease release/over-budget eviction 抽为 VSR transition receipt，并让 Aether/Build 复用；第十四轮把 Reality Build reset/cell transition/re-entry 接到同一 VSR working-set、residency、rebind 和 frame receipt。下一轮应优先审计 Android WebView/物理或可复现 GPU-capable target host 是否保留同一 target asset manifest、payload/binding/frame roots、cache eviction 和性能边界，同时推进 Large World 新 chunk/scene revision、network transport/session 和真实设备边界；任何晋升为默认产品路径的动作仍需独立 authority/设备证据。
+第一轮 ingress 已以 `examples/studio-authored-network-world-v03/project.mjs` 为 fixture 验证：确定性 World Declaration/codegen、Studio roots 与 World Body roots 的显式绑定、Network compilation root 保持、模型 kind lowering、2D transform 不越权、篡改/缺失资产/非法 authority 负例闭合；第二轮验证有损 candidate bundle 能进入 Aether Cell 并保持各级 runtime roots；第三轮验证 Build request candidate 能将同一 source root 写入 runtime evidence 并通过 Build 自校验；第四轮把动态质量经 shared `mass_q` donor 传入 RSR；第五轮把 3 个 Studio character facets 经 shared `spatial.character` donor 传入 RSR；第六轮把完整 fixture 集合经 `spatial.fixtures.items` 传入 RSR/VSR；第七轮把 Large World VSR scene 经 generic Build candidate 接缝执行；第八轮复用 VSR `resolveSpatialAssetStreaming()`，让 4 个 active-cell `rncs://` asset records 进入 frame/evidence roots（requested=4、missing=0）；第九轮复用 Large World GLB provider bundle、Build content-addressed target packaging 和 VSR streamer，完成 36 条 candidate payload catalog、33 条 active request 的 Chromium 字节加载/哈希校验；第十轮复用共享 VSR GLB importer/composer，完成 11 条显式 mesh bindings 和本机 WebGPU draw receipt；第十一轮完成 host APK build/signing；第十二轮在 Emulator WebView 中完成 cold-start、payload/binding/frame root 和 Canvas2D fallback candidate；第十三轮把 lease release/over-budget eviction 抽为 VSR transition receipt，并让 Aether/Build 复用；第十四轮把 Reality Build reset/cell transition/re-entry 接到同一 VSR working-set、residency、rebind 和 frame receipt；第十五轮将既有 Studio network compilation 接入 Reality Build headless candidate，并用实际生成 server 走一次双 slot local loopback session。下一轮应优先审计 external transport/session 与 Android WebView/物理或可复现 GPU-capable target host 是否保留同一 world/target manifest、payload/binding/frame roots、cache eviction 和性能边界；任何晋升为默认产品路径的动作仍需独立 authority/设备证据。
 
 ## K400 / 证据裁决
 

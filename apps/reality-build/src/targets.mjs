@@ -47,18 +47,33 @@ const result={format:'reality-build.replay-verification.v0.3',build_id:evidence.
 console.log(JSON.stringify(result,null,2));
 if(!result.ok)process.exitCode=1;
 `;}
-function headlessServerSource(){return `import fs from'node:fs';
+function headlessServerSource({networkEnabled=false}={}){
+  const networkImport=networkEnabled?"import{RealityNetworkRuntime}from'@taowind/reality-network-runtime';\n":'';
+  const networkBootstrap=networkEnabled?`const networkCompilation=JSON.parse(fs.readFileSync(path.join(root,'network-world-compilation.json'),'utf8'));
+const networkRuntime=new RealityNetworkRuntime();
+const networkSessionId='build-network:'+evidence.build_id;
+let networkReady=null;
+const ensureNetworkSession=async()=>{networkReady??=networkRuntime.createSessionFromCompilation({sessionId:networkSessionId,compilation:networkCompilation});await networkReady;return networkSessionId;};
+`:'';
+  const networkRoutes=networkEnabled?`if(req.method==='GET'&&u.pathname==='/network/health'){await ensureNetworkSession();return send(res,200,networkRuntime.getSessionHealth({sessionId:networkSessionId}));}
+if(req.method==='POST'&&u.pathname==='/network/join'){const input=await body(req);await ensureNetworkSession();return send(res,200,await networkRuntime.joinCompiledSlot({sessionId:networkSessionId,slotId:input.slot_id??input.slotId,subjectId:input.subject_id??input.subjectId}));}
+if(req.method==='POST'&&u.pathname==='/network/input'){const input=await body(req);await ensureNetworkSession();return send(res,200,networkRuntime.submitInput({sessionId:networkSessionId,playerId:input.player_id??input.playerId,command:input.command??{},targetServerTick:input.target_server_tick??input.targetServerTick}));}
+if(req.method==='POST'&&u.pathname==='/network/tick'){const input=await body(req);await ensureNetworkSession();return send(res,200,networkRuntime.advanceServerTick({sessionId:networkSessionId,ticks:Math.max(1,Math.min(120,Number(input.ticks??1)))}));}
+if(req.method==='POST'&&u.pathname==='/network/disconnect'){const input=await body(req);await ensureNetworkSession();return send(res,200,networkRuntime.disconnect({sessionId:networkSessionId,playerId:input.player_id??input.playerId}));}
+if(req.method==='POST'&&u.pathname==='/network/reconnect'){const input=await body(req);await ensureNetworkSession();return send(res,200,networkRuntime.reconnect({sessionId:networkSessionId,playerId:input.player_id??input.playerId}));}
+`:'';
+  return `import fs from'node:fs';
 import path from'node:path';
 import{fileURLToPath}from'node:url';
 import{createServer}from'node:http';
 import{UnifiedManufacturingSession}from'@taowind/reality-studio-native';
-const root=path.dirname(fileURLToPath(import.meta.url));
+${networkImport}const root=path.dirname(fileURLToPath(import.meta.url));
 const project=JSON.parse(fs.readFileSync(path.join(root,'project.json'),'utf8'));
 const evidence=JSON.parse(fs.readFileSync(path.join(root,'runtime-evidence.json'),'utf8'));
 const session=new UnifiedManufacturingSession(project,{sessionId:'build-runtime:'+evidence.build_id});
 session.createRuntimeCheckpoint('build-initial');
 for(const input of evidence.trace??[])session.step(input);
-const send=(res,status,payload)=>{res.writeHead(status,{'content-type':'application/json; charset=utf-8','access-control-allow-origin':'*'});res.end(JSON.stringify(payload));};
+${networkBootstrap}const send=(res,status,payload)=>{res.writeHead(status,{'content-type':'application/json; charset=utf-8','access-control-allow-origin':'*'});res.end(JSON.stringify(payload));};
 const body=req=>new Promise((resolve,reject)=>{let data='';req.on('data',chunk=>data+=chunk);req.on('end',()=>{try{resolve(data?JSON.parse(data):{})}catch(error){reject(error)}});req.on('error',reject)});
 const server=createServer(async(req,res)=>{try{const u=new URL(req.url??'/', 'http://127.0.0.1');
 if(req.method==='GET'&&u.pathname==='/health')return send(res,200,{status:'healthy',format:'reality-build.headless-server.v0.2',build_id:evidence.build_id,project_root:project.project_root,replay_root:evidence.replay_root,deterministic:evidence.deterministic,spatial_state_root:session.spatial.lastSnapshot.stateRoot,spatial_deterministic:evidence.spatial_deterministic===true,tick:session.behavior.runtime.state.tick});
@@ -67,7 +82,7 @@ if(req.method==='GET'&&u.pathname==='/spatial-inspect')return send(res,200,sessi
 if(req.method==='GET'&&u.pathname==='/replay')return send(res,200,session.replayRuntime({verify:true}));
 if(req.method==='POST'&&u.pathname==='/step')return send(res,200,session.step((await body(req)).input??{}));
 if(req.method==='POST'&&u.pathname==='/spatial-step'){const input=await body(req);return send(res,200,session.spatial.step({commands:input.commands??[]}));}
-return send(res,404,{error:'NOT_FOUND'});}catch(error){return send(res,400,{error:error.code??'HEADLESS_SERVER_ERROR',message:error.message})}});
+${networkRoutes}return send(res,404,{error:'NOT_FOUND'});}catch(error){return send(res,400,{error:error.code??'HEADLESS_SERVER_ERROR',message:error.message})}});
 server.listen(Number(process.env.PORT??4174),'127.0.0.1',()=>console.log('http://127.0.0.1:'+Number(process.env.PORT??4174)));
 `;}
 
@@ -108,8 +123,22 @@ export function buildWindowsNative({project,request,identity,outRoot,assetManife
   return{dir,receipt:manifestForTarget(dir,'windows-native',identity)};
 }
 
-export function buildHeadlessServer({project,request,identity,outRoot,runtimeEvidence,assetDatabase,publicAssetManifest}){
-  const dir=emptyDir(path.join(outRoot,'headless-server'));writeJson(path.join(dir,'project.json'),artifactProject(project));writeRuntimeEvidenceFiles(dir,runtimeEvidence);writeTargetAssetEvidence(dir,assetDatabase,publicAssetManifest);writeText(path.join(dir,'server.mjs'),headlessServerSource());writeText(path.join(dir,'verify-replay.mjs'),replayVerifierSource());writeJson(path.join(dir,'package.json'),{name:`${safeName(request.app.title,'reality-app').toLowerCase().replace(/[^a-z0-9]+/g,'-')}-headless-server`,version:request.app.version_name,private:true,type:'module',scripts:{start:'node server.mjs',verify:'node verify-replay.mjs'},dependencies:{'@taowind/reality-studio-native':'^1.6.0-alpha.1','@taowind/reality-engine-session':'^0.1.0-alpha.1'}});writeJson(path.join(dir,'server-manifest.json'),seal({format:'reality-build.headless-server-manifest.v0.2',version:'0.2.0-alpha.1',build_id:identity.build_id,project_root:project.project_root,entry:'server.mjs',verification_entry:'verify-replay.mjs',health_endpoint:'/health',inspect_endpoint:'/inspect',spatial_inspect_endpoint:'/spatial-inspect',step_endpoint:'/step',spatial_step_endpoint:'/spatial-step',replay_endpoint:'/replay',runtime_evidence:runtimeEvidenceSummary(runtimeEvidence),spatial_runtime_manifest_root:runtimeEvidence.spatial_runtime_manifest?.manifest_root??null,gpu_frame_plan_root:runtimeEvidence.evidence.gpu_frame_plan_root,gpu_frame_summary_root:runtimeEvidence.evidence.gpu_frame_summary_root,gpu_viewport_manifest_root:runtimeEvidence.evidence.gpu_viewport_manifest_root,navigation_manifest_root:runtimeEvidence.navigation_manifest?.manifest_root??null,asset_database_root:assetDatabase?.evidence?.database_root??null},'manifest_root'));writeText(path.join(dir,'README.md'),`# ${request.app.title} Headless Server\n\nRun npm install, then npm start. The server exposes /health, /inspect, /spatial-inspect, /step, /spatial-step, and /replay.\n`);return{dir,receipt:manifestForTarget(dir,'headless-server',identity)};
+export function buildHeadlessServer({project,request,identity,outRoot,runtimeEvidence,assetDatabase,publicAssetManifest,networkCompilation}){
+  const dir=emptyDir(path.join(outRoot,'headless-server'));
+  const networkEnabled=Boolean(networkCompilation);
+  writeJson(path.join(dir,'project.json'),artifactProject(project));
+  writeRuntimeEvidenceFiles(dir,runtimeEvidence);
+  writeTargetAssetEvidence(dir,assetDatabase,publicAssetManifest);
+  if(networkCompilation)writeJson(path.join(dir,'network-world-compilation.json'),networkCompilation);
+  writeText(path.join(dir,'server.mjs'),headlessServerSource({networkEnabled}));
+  writeText(path.join(dir,'verify-replay.mjs'),replayVerifierSource());
+  const dependencies={'@taowind/reality-studio-native':'^1.6.0-alpha.1','@taowind/reality-engine-session':'^0.1.0-alpha.1',...(networkEnabled?{'@taowind/reality-network-runtime':'^0.2.0-alpha.1'}:{})};
+  writeJson(path.join(dir,'package.json'),{name:`${safeName(request.app.title,'reality-app').toLowerCase().replace(/[^a-z0-9]+/g,'-')}-headless-server`,version:request.app.version_name,private:true,type:'module',scripts:{start:'node server.mjs',verify:'node verify-replay.mjs'},dependencies});
+  const networkEndpoints=networkEnabled?['/network/health','/network/join','/network/input','/network/tick','/network/disconnect','/network/reconnect']:[];
+  writeJson(path.join(dir,'server-manifest.json'),seal({format:'reality-build.headless-server-manifest.v0.2',version:'0.2.0-alpha.1',build_id:identity.build_id,project_root:project.project_root,entry:'server.mjs',verification_entry:'verify-replay.mjs',health_endpoint:'/health',inspect_endpoint:'/inspect',spatial_inspect_endpoint:'/spatial-inspect',step_endpoint:'/step',spatial_step_endpoint:'/spatial-step',replay_endpoint:'/replay',network_runtime_mode:networkEnabled?'loopback-local-candidate':null,network_compilation_root:networkCompilation?.compilation_root??null,network_endpoints:networkEndpoints,runtime_evidence:runtimeEvidenceSummary(runtimeEvidence),spatial_runtime_manifest_root:runtimeEvidence.spatial_runtime_manifest?.manifest_root??null,gpu_frame_plan_root:runtimeEvidence.evidence.gpu_frame_plan_root,gpu_frame_summary_root:runtimeEvidence.evidence.gpu_frame_summary_root,gpu_viewport_manifest_root:runtimeEvidence.evidence.gpu_viewport_manifest_root,navigation_manifest_root:runtimeEvidence.navigation_manifest?.manifest_root??null,asset_database_root:assetDatabase?.evidence?.database_root??null},'manifest_root'));
+  const networkReadme=networkEnabled?' The /network/* endpoints use the existing deterministic Reality Network Runtime with local loopback transport; this build does not claim WAN, multi-device, or production deployment proof.':'';
+  writeText(path.join(dir,'README.md'),`# ${request.app.title} Headless Server\n\nRun npm install, then npm start. The server exposes /health, /inspect, /spatial-inspect, /step, /spatial-step, and /replay.${networkReadme}\n`);
+  return{dir,receipt:manifestForTarget(dir,'headless-server',identity)};
 }
 
 export function buildReplayBundle({project,request,identity,outRoot,runtimeEvidence,assetDatabase,publicAssetManifest}){

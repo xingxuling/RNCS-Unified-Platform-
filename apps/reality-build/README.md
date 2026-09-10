@@ -110,6 +110,23 @@ WorldSeed → Region → Chunk → URRF selection → VSR spatial scene
 
 随后用同一 Large World presentation fixture 重新生成了真正的 `android-project`（`index.html` 内嵌 base64 payload，而不是复用 web-release 外部 URI），经 Gradle 9.5.1 / Android SDK 35 构建出 `325945` bytes 的 debug APK，Windows `apksigner` v2 验签通过。在 `Rcl_Aether_API35_ATD` 的 Android WebView/CDP 中，初始 4 cells/33 ready payloads/11 bindings，远移后释放并驱逐 33 个 payload，回入 `cell:...:-1:-1` 后恢复 12 ready payloads/4 bindings；三阶段均 `verified=true`、`importFailed=0`、错误为空。证据写入 `evidence/LARGE_WORLD_ANDROID_EMBEDDED_DYNAMIC_CANDIDATE_v0.1.json`；这仍是 Emulator candidate，不是物理/目标设备 GPU、release 签名、持久 cache 性能或人工视觉验收。
 
+## Network compilation → headless candidate
+
+Reality Build 现在消费既有 Reality Studio `project.network`，不再只把 network authoring 留在 Studio 导出侧：
+
+```text
+Unified Project.project.network
+  → existing compileNetworkWorld()
+  → verified network-world-compilation.json
+  → Build receipt / integrity / build identity roots
+  → headless-server local loopback endpoints
+  → existing RealityNetworkRuntime session
+```
+
+构建图新增 `network-compilation` 节点，并把 `compilation_root` 纳入 Build identity、core files、receipt 和自校验。`headless-server` 目标会携带同一 compilation artifact，按需声明 `@taowind/reality-network-runtime`，并通过 `/network/health`、`/network/join`、`/network/input`、`/network/tick`、`/network/disconnect`、`/network/reconnect` 实际调用既有编译世界、权威 server、预测/回滚和 loopback transport。集成测试真实启动生成的 `server.mjs`，加入两个 compiled slots、提交 move、推进 tick，并验证 source compilation root 与两个 client 的同步状态；篡改或删除根 artifact 会使 `verifyBuild()` 失败。
+
+这是 `CANDIDATE_LOCAL_LOOPBACK_VERIFIED`，不是 WAN、真实跨设备/跨节点 transport、安全密钥、压测、生产部署或 release promotion 证据。Web/Android embedded targets 只保持自身的 presentation/runtime 路径，没有被静默改成网络客户端。
+
 ## 诚实边界
 
 - `windows-native` 是真实 Windows GUI EXE，不依赖 BAT 或 Node.js；但 v0.2 的渲染宿主仍使用 Windows 自带或已安装的 Edge/Chrome，而不是内嵌 Chromium/WebView2 Runtime。
