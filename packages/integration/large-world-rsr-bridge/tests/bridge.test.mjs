@@ -74,6 +74,11 @@ test('runs the lowered terrain through RSR replay and VSR projection without cha
     gravity: {x: 0, y: -9_810, z: 0},
     reality: {generation: candidate.generation, realityRoot: candidate.source.world_root, evidenceRoot: candidate.source.stream_root},
   };
+  const queryWorld = new SpatialEmbodimentWorld(config);
+  const ray = queryWorld.rayCast({x: 24_000, y: 100_000, z: 24_000}, {x: 0, y: -1_000_000, z: 0})[0];
+  assert.ok(ray);
+  assert.equal(ray?.bodyId, terrain.id);
+  assert.ok((ray?.normal?.y ?? 0) > 0);
   const snapshot = new SpatialEmbodimentWorld(config).run(120);
   const avatarState = snapshot.bodies.find(body => body.id === 'avatar');
   assert.ok(avatarState);

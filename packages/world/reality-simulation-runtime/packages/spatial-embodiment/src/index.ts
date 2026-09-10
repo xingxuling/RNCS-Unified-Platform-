@@ -461,6 +461,56 @@ function heightfieldSurface(body: RuntimeSpatialBody, fixture: RuntimeSpatialFix
   }
   return { point: v3(origin.x + cellX * spacing + offsetX, origin.y + height, origin.z + cellZ * spacing + offsetZ), normal };
 }
+function rayTriangleIntersection(origin: IntVector3, direction: IntVector3, a: IntVector3, b: IntVector3, c: IntVector3, minimumDistance: number, maximumDistance: number): { distance: number; point: IntVector3; normal: IntVector3 } | undefined {
+  const ray = fscale(toFloat3(direction), 1 / Q), edgeA = fsub(toFloat3(b), toFloat3(a)), edgeB = fsub(toFloat3(c), toFloat3(a)), p = fcross(ray, edgeB), determinant = fdot(edgeA, p);
+  if (Math.abs(determinant) < 1e-9) return undefined;
+  const inverse = 1 / determinant, offset = fsub(toFloat3(origin), toFloat3(a)), u = fdot(offset, p) * inverse;
+  if (u < -1e-7 || u > 1 + 1e-7) return undefined;
+  const q = fcross(offset, edgeA), v = fdot(ray, q) * inverse;
+  if (v < -1e-7 || u + v > 1 + 1e-7) return undefined;
+  const distance = fdot(edgeB, q) * inverse;
+  if (distance < minimumDistance - 1e-7 || distance > maximumDistance + 1e-7) return undefined;
+  let normal = fnormalize(fcross(edgeA, edgeB));
+  if (normal.y < 0) normal = fscale(normal, -1);
+  return { distance: Math.max(0, distance), point: fromFloat3(fadd(toFloat3(origin), fscale(ray, distance))), normal: normalizeQ(v3(Math.round(normal.x * Q), Math.round(normal.y * Q), Math.round(normal.z * Q))) };
+}
+function heightfieldRayCast(origin: IntVector3, direction: IntVector3, maxDistance: number, body: RuntimeSpatialBody, fixture: RuntimeSpatialFixture & { shape: HeightfieldShape }): { distance: number; point: IntVector3; normal: IntVector3 } | undefined {
+  const shape = fixture.shape, terrainOrigin = fixtureWorldPosition(body, fixture), dir = normalizeQ(direction), ray = fscale(toFloat3(dir), 1 / Q), limit = Math.max(0, maxDistance), minX = terrainOrigin.x, minZ = terrainOrigin.z, maxX = minX + (shape.columns - 1) * shape.sampleSpacing, maxZ = minZ + (shape.rows - 1) * shape.sampleSpacing;
+  let enter = 0, exit = limit;
+  for (const [minimum, maximum, coordinate, component] of [[minX, maxX, origin.x, ray.x], [minZ, maxZ, origin.z, ray.z]] as const) {
+    if (Math.abs(component) < 1e-12) { if (coordinate < minimum || coordinate > maximum) return undefined; continue; }
+    const first = (minimum - coordinate) / component, second = (maximum - coordinate) / component;
+    enter = Math.max(enter, Math.min(first, second));
+    exit = Math.min(exit, Math.max(first, second));
+    if (enter > exit) return undefined;
+  }
+  if (exit < 0 || enter > limit) return undefined;
+  enter = Math.max(0, enter);
+  const sampleDistance = Math.min(exit, enter + 1e-6), sample = fadd(toFloat3(origin), fscale(ray, sampleDistance));
+  const cellX = clamp(Math.floor((sample.x - minX) / shape.sampleSpacing), 0, shape.columns - 2), cellZ = clamp(Math.floor((sample.z - minZ) / shape.sampleSpacing), 0, shape.rows - 2), stepX = ray.x > 1e-12 ? 1 : ray.x < -1e-12 ? -1 : 0, stepZ = ray.z > 1e-12 ? 1 : ray.z < -1e-12 ? -1 : 0;
+  let currentX = cellX, currentZ = cellZ, distance = enter;
+  const nextBoundary = (axis: 'x' | 'z', cell: number, step: number): number => {
+    if (step === 0) return Infinity;
+    const boundary = axis === 'x' ? minX + (step > 0 ? cell + 1 : cell) * shape.sampleSpacing : minZ + (step > 0 ? cell + 1 : cell) * shape.sampleSpacing;
+    const coordinate = axis === 'x' ? sample.x : sample.z, component = axis === 'x' ? ray.x : ray.z;
+    return sampleDistance + (boundary - coordinate) / component;
+  };
+  let nextX = nextBoundary('x', currentX, stepX), nextZ = nextBoundary('z', currentZ, stepZ), best: { distance: number; point: IntVector3; normal: IntVector3 } | undefined;
+  for (let guard = 0; guard <= shape.columns + shape.rows + 4 && currentX >= 0 && currentX < shape.columns - 1 && currentZ >= 0 && currentZ < shape.rows - 1 && distance <= exit + 1e-7; guard++) {
+    const spacing = shape.sampleSpacing, baseX = minX + currentX * spacing, baseZ = minZ + currentZ * spacing, index = currentZ * shape.columns + currentX;
+    const p00 = v3(baseX, terrainOrigin.y + shape.heights[index]!, baseZ), p10 = v3(baseX + spacing, terrainOrigin.y + shape.heights[index + 1]!, baseZ), p01 = v3(baseX, terrainOrigin.y + shape.heights[index + shape.columns]!, baseZ + spacing), p11 = v3(baseX + spacing, terrainOrigin.y + shape.heights[index + shape.columns + 1]!, baseZ + spacing), cellEnd = Math.min(exit, nextX, nextZ);
+    const hits = [rayTriangleIntersection(origin, dir, p00, p10, p01, distance - 1e-7, cellEnd + 1e-7), rayTriangleIntersection(origin, dir, p11, p01, p10, distance - 1e-7, cellEnd + 1e-7)].filter((hit): hit is { distance: number; point: IntVector3; normal: IntVector3 } => Boolean(hit));
+    for (const hit of hits) if (!best || hit.distance < best.distance) best = hit;
+    if (best && best.distance <= cellEnd + 1e-7) return best;
+    const advanceX = nextX <= nextZ, advanceZ = nextZ <= nextX;
+    if (!advanceX && !advanceZ) break;
+    distance = Math.min(nextX, nextZ);
+    if (advanceX) { currentX += stepX; nextX = nextBoundary('x', currentX, stepX); }
+    if (advanceZ) { currentZ += stepZ; nextZ = nextBoundary('z', currentZ, stepZ); }
+    if (stepX === 0 && stepZ === 0) break;
+  }
+  return best;
+}
 function heightfieldCollision(movingBody: RuntimeSpatialBody, movingFixture: RuntimeSpatialFixture, terrainBody: RuntimeSpatialBody, terrainFixture: RuntimeSpatialFixture & { shape: HeightfieldShape }, persistence: number): CollisionResult | undefined {
   const movingBounds = fixtureAabb(movingBody, movingFixture), terrainBounds = heightfieldAabb(terrainBody, terrainFixture);
   if (!overlaps(movingBounds, terrainBounds)) return undefined;
@@ -1005,9 +1055,16 @@ export class SpatialEmbodimentWorld {
     const hits: Array<{ bodyId: string; fixtureId: string }> = []; for (const body of this.bodyMap.values()) for (const fixture of body.fixtures) { const aabb = fixtureAabb(body, fixture); if (point.x >= aabb.min.x && point.x <= aabb.max.x && point.y >= aabb.min.y && point.y <= aabb.max.y && point.z >= aabb.min.z && point.z <= aabb.max.z) hits.push({ bodyId: body.id, fixtureId: fixture.id }); } return hits.sort((a, b) => a.bodyId.localeCompare(b.bodyId) || a.fixtureId.localeCompare(b.fixtureId));
   }
   queryAabb(bounds: Aabb3): Array<{ bodyId: string; fixtureId: string }> { const hits: Array<{ bodyId: string; fixtureId: string }> = []; for (const body of this.bodyMap.values()) for (const fixture of body.fixtures) if (overlaps(bounds, fixtureAabb(body, fixture))) hits.push({ bodyId: body.id, fixtureId: fixture.id }); return hits.sort((a, b) => a.bodyId.localeCompare(b.bodyId) || a.fixtureId.localeCompare(b.fixtureId)); }
-  rayCast(origin: IntVector3, direction: IntVector3, maxDistance = 100_000): Array<{ bodyId: string; fixtureId: string; distance: number; point: IntVector3 }> {
-    const dir = normalizeQ(direction), hits: Array<{ bodyId: string; fixtureId: string; distance: number; point: IntVector3 }> = [];
-    for (const body of this.bodyMap.values()) for (const fixture of body.fixtures) { const aabb = fixtureAabb(body, fixture); let tmin = 0, tmax = maxDistance; let valid = true; for (const axis of ['x', 'y', 'z'] as const) { const d = dir[axis] / Q; if (Math.abs(d) < 1e-9) { if (origin[axis] < aabb.min[axis] || origin[axis] > aabb.max[axis]) valid = false; continue; } const t1 = (aabb.min[axis] - origin[axis]) / d, t2 = (aabb.max[axis] - origin[axis]) / d; tmin = Math.max(tmin, Math.min(t1, t2)); tmax = Math.min(tmax, Math.max(t1, t2)); if (tmin > tmax) valid = false; } if (valid && tmin >= 0 && tmin <= maxDistance) hits.push({ bodyId: body.id, fixtureId: fixture.id, distance: Math.round(tmin), point: add(origin, mul(dir, tmin / Q)) }); }
+  rayCast(origin: IntVector3, direction: IntVector3, maxDistance = 100_000): Array<{ bodyId: string; fixtureId: string; distance: number; point: IntVector3; normal?: IntVector3 }> {
+    const dir = normalizeQ(direction), hits: Array<{ bodyId: string; fixtureId: string; distance: number; point: IntVector3; normal?: IntVector3 }> = [];
+    for (const body of this.bodyMap.values()) for (const fixture of body.fixtures) {
+      if (fixture.shape.type === 'heightfield') {
+        const hit = heightfieldRayCast(origin, direction, maxDistance, body, fixture as RuntimeSpatialFixture & { shape: HeightfieldShape });
+        if (hit) hits.push({ bodyId: body.id, fixtureId: fixture.id, distance: Math.round(hit.distance), point: hit.point, normal: hit.normal });
+        continue;
+      }
+      const aabb = fixtureAabb(body, fixture); let tmin = 0, tmax = maxDistance; let valid = true; for (const axis of ['x', 'y', 'z'] as const) { const d = dir[axis] / Q; if (Math.abs(d) < 1e-9) { if (origin[axis] < aabb.min[axis] || origin[axis] > aabb.max[axis]) valid = false; continue; } const t1 = (aabb.min[axis] - origin[axis]) / d, t2 = (aabb.max[axis] - origin[axis]) / d; tmin = Math.max(tmin, Math.min(t1, t2)); tmax = Math.min(tmax, Math.max(t1, t2)); if (tmin > tmax) valid = false; } if (valid && tmin >= 0 && tmin <= maxDistance) hits.push({ bodyId: body.id, fixtureId: fixture.id, distance: Math.round(tmin), point: add(origin, mul(dir, tmin / Q)) });
+    }
     return hits.sort((a, b) => a.distance - b.distance || a.bodyId.localeCompare(b.bodyId));
   }
 
