@@ -244,8 +244,9 @@ provider asset record
 - VSR glTF asset suite：`22/22 PASS`；Aether integration suite：`9/9 PASS`；Reality Build focused runtime/candidate：`20/20 + 2/2 PASS`；完整 Reality Build suite：`138 tests / 130 pass / 0 fail / 8 skip`。
 - Chromium web-release：pageErrors=`0`，4 cells/17 streamed nodes，11 visible draws/402 triangles/0 culled draws；36 条 payload catalog 中 33 条真实进入 `/assets/spatial/*.glb` performance resource 表并被 streamer 计为 ready，11 条 binding，import failure=`0`。
 - 同一页面的真实 WebGPU receipt：`vsr.spatial-webgpu-receipt.v0.4`、`drawCalls=11`、`triangles=402`、`submitted=true`、`deviceLost=false`；`#spatial-game` 截图显示导入后的空间几何。此证据是本机 Chromium host 证据，不是目标硬件性能或 Android 证据。
+- `android-project` candidate target：回归测试现在实际生成 Android Studio 工程，并检查 `app/src/main/assets/index.html` 仍携带 `VSRGltfAsset`、11 条显式 `asset_bindings`、base64 payload、无外部 script `src`，且 `android-build-manifest.apk_built=false`。把该 assets 目录通过本地 HTTP 代理加载到 Chromium 后，仍得到 33/33 ready、11 bindings、11 draw calls、402 triangles、`submitted=true`、`deviceLost=false`；这只证明嵌入 HTML 内容可执行，不证明 Android WebView、APK、设备 GPU 或触摸/生命周期。
 
-这轮已关闭 `RCL_GAP_RNCS_TARGET_PAYLOAD_IMPORT_BINDING` 的 web-release candidate 子缺口，但没有关闭其 Android/原生/跨设备/生产子缺口，也没有新增 K400 PASS。
+这轮已关闭 `RCL_GAP_RNCS_TARGET_PAYLOAD_IMPORT_BINDING` 的 web-release candidate 子缺口，并增加了 Android-project 静态嵌入与代理宿主检查，但没有关闭其 Android WebView/APK、原生/跨设备/生产子缺口，也没有新增 K400 PASS。
 
 ## 结构判断
 

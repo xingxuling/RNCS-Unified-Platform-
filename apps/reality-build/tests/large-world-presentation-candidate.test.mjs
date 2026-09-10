@@ -65,7 +65,7 @@ test('Reality Build consumes an existing Large World VSR scene through the gener
   const build = buildProject({
     project_file: projectFile,
     output_dir: outputDir,
-    targets: ['web-release', 'web-single'],
+    targets: ['web-release', 'web-single', 'android-project'],
     app: {app_id: 'com.taowind.largeworldbuild', title: 'Large World Build Candidate', version_name: '0.1.0', version_code: 1},
     build_time: '2026-09-10T00:00:00.000Z',
     runtime_trace: [{}, {}],
@@ -98,6 +98,15 @@ test('Reality Build consumes an existing Large World VSR scene through the gener
   const singleHtml = fs.readFileSync(path.join(outputDir, 'web-single', 'Large World Build Candidate_单文件版.html'), 'utf8');
   assert.match(singleHtml, /reality-build\.spatial-presentation-payloads\.v0\.1/);
   assert.match(singleHtml, /"base64":"[A-Za-z0-9+/]+=*/);
+  const androidRoot = path.join(outputDir, 'android-project');
+  const androidHtml = fs.readFileSync(path.join(androidRoot, 'app', 'src', 'main', 'assets', 'index.html'), 'utf8');
+  const androidManifest = readJson(path.join(androidRoot, 'android-build-manifest.json'));
+  assert.equal(androidManifest.apk_built, false);
+  assert.match(androidHtml, /reality-build\.spatial-presentation-payloads\.v0\.1/);
+  assert.match(androidHtml, /VSRGltfAsset/);
+  assert.match(androidHtml, /asset_bindings/);
+  assert.match(androidHtml, /"base64":"[A-Za-z0-9+/]+=*/);
+  assert.doesNotMatch(androidHtml, /<script[^>]+src=/);
 });
 
 test('Reality Build rejects a self-sealed presentation candidate from another project', () => {
