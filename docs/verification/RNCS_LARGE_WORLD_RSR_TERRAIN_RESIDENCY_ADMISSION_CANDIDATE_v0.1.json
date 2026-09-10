@@ -1,0 +1,108 @@
+{
+  "format": "rncs.large-world-rsr-terrain-residency-admission-candidate-evidence.v0.1",
+  "version": "0.1.0-alpha.1",
+  "status": "CANDIDATE_EXECUTION_VERIFIED",
+  "source": {
+    "checkout": "rncs-visual-factory-v01",
+    "branch": "codex/rncs-engine-stack-archaeology-v01",
+    "sourceCommit": "e04a07a",
+    "authority": "candidate-only; no canonical world mutation, provider commit, RCL promotion, release promotion or main-branch mutation"
+  },
+  "scope": {
+    "terrainOwner": "@taowind/large-world-runtime",
+    "physicalOwner": "@taowind/reality-simulation-runtime",
+    "integrationOwner": "@taowind/large-world-rsr-bridge",
+    "streamPolicyBoundary": "Large World owns active-set, hysteresis and source working-set eviction; bridge only admits or blocks the physical candidate",
+    "budgetFormat": "rncs.large-world-rsr-terrain-residency-admission.v0.1"
+  },
+  "execution": {
+    "largeWorldTests": "36/36 PASS",
+    "bridgeTests": "5/5 PASS",
+    "rsrFullTests": "205/205 PASS",
+    "spatialEmbodimentTests": "71/71 PASS",
+    "typecheck": "PASS",
+    "lint": "PASS",
+    "sourceStreamActiveChunkCount": 9,
+    "sourceStreamWorkingSetBytes": 7788,
+    "sourceStreamMaxWorkingSetBytes": 4194304,
+    "sourceStreamEvictedChunkIds": [],
+    "readyAdmissionVerified": true,
+    "blockedAdmissionVerified": true,
+    "blockedApplyErrorCode": "LARGE_WORLD_RSR_PHYSICAL_RESIDENCY_BUDGET_EXCEEDED",
+    "blockedApplyNoMutation": true,
+    "transitionAdmissionVerified": true,
+    "largeWorldSnapshotVerified": true,
+    "rsrSnapshotVerified": true
+  },
+  "readyAdmission": {
+    "admissionRoot": "b6b069233c6bf4a4a17b24bcf45aee4740b91eb8fee0e453464512f3b6933b94",
+    "status": "READY",
+    "budget": {
+      "max_managed_bodies": 9,
+      "max_managed_fixtures": 9,
+      "max_heightfield_samples": 225
+    },
+    "budgetRoot": "37101b97cc1abc23539bbbdcc4d8998cdbe50e6fa75485362ab01e1030fda24e",
+    "usage": {
+      "managed_body_count": 9,
+      "managed_fixture_count": 9,
+      "heightfield_sample_count": 225
+    }
+  },
+  "blockedAdmission": {
+    "admissionRoot": "579b49c2360347ad5a2d37159b587e46a609d48b15c3f3bfa05f119b2ecbe9ea",
+    "status": "BLOCKED_RESOURCE",
+    "exceededLimits": [
+      "max_managed_bodies",
+      "max_managed_fixtures",
+      "max_heightfield_samples"
+    ],
+    "usage": {
+      "managed_body_count": 9,
+      "managed_fixture_count": 9,
+      "heightfield_sample_count": 225
+    }
+  },
+  "transition": {
+    "transitionRoot": "c077efe16b721285156e17db4bfae5a5b7aec7cb99fa9d87f7c2570758dfe9f4",
+    "enteredBodyIds": [
+      "terrain:chunk:world:admission-transition:1:0"
+    ],
+    "exitedBodyIds": [
+      "terrain:chunk:world:admission-transition:0:0"
+    ],
+    "admissionRoot": "5211cc9c3bb1c0a2c0ccdf1262e128be90c7d999f78e204963f9def3af1b2dc0",
+    "status": "READY",
+    "usage": {
+      "managed_body_count": 1,
+      "managed_fixture_count": 1,
+      "heightfield_sample_count": 25
+    },
+    "nextStateRoot": "fnv1a64:9b7d61046afc3b1a",
+    "physicalTransitionRoot": "fnv1a64:c7236d525ad57e37"
+  },
+  "roots": {
+    "sourceStreamRoot": "b44ec53aefd6f422a4897fd3cc697f528a3250c325ef8019e154d027f028cfc2",
+    "sourceCandidateRoot": "038e580523542a47997493154609bc1bcf1a8b696c8f604f5126e7d8612b77f5",
+    "transitionInitialCandidateRoot": "9adea8e807d1dd9ff5b2ed210f5089ae8ea02da83772c40bdebe7a54a7368b0a",
+    "transitionNextCandidateRoot": "1f59aadb9c6df3415a3a0953f6ca7b12143009112bb53d954accf51edebe2e42"
+  },
+  "negativeEvidence": [
+    "A candidate over the physical body, fixture and sample limits produces BLOCKED_RESOURCE before materialization and leaves the RSR state root unchanged.",
+    "The bridge does not select a replacement active set or invent a second eviction order; upstream Large World stream enter/exit and evicted ids remain the source decision.",
+    "The budget gate is not device memory telemetry, a GPU allocator, a production scheduler or canonical authority admission.",
+    "No physical device, distributed runtime, production performance or release-promotion evidence exists."
+  ],
+  "rclGap": "RCL_GAP_RNCS_LARGE_WORLD_PHYSICAL_TERRAIN_LOWERING",
+  "affectedK400Cells": [
+    "EXPRESS",
+    "COMPILE",
+    "LOWER",
+    "EXECUTE",
+    "CORRECT",
+    "ROBUST",
+    "EVIDENCE"
+  ],
+  "decision": "LARGE_WORLD_STREAM_SOURCE_AND_RSR_PHYSICAL_RESIDENCY_ADMISSION_CANDIDATE_VERIFIED_PRODUCTION_SCHEDULER_AND_DEVICE_BOUNDARIES_OPEN",
+  "evidenceRoot": "7da7df9b86f4522b0b398fb5b3e68f3f0e61584ddd778eaaed6a22b22b719c76"
+}
