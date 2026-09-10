@@ -177,9 +177,9 @@ Reality Studio evaluateSequence()
   → web-release payload + runtime evidence
 ```
 
-该 candidate 只覆盖 active animation presentation entries；Build 做规范化根校验和 fail-closed binding 检查，浏览器只消费 evaluated time，不重新计算 Sequence。实际 web-release 构建通过 `verifyBuild()`，Chromium/WebGPU 运行报告 `selection=sequence-frame`、`mode=evaluated-frame`、`time=0.25`、`verified=true`、5 draw calls、806 triangles，并观察到 `submitted=true`、`deviceLost=false`。完整收据见 `evidence/BUILD_SEQUENCE_FRAME_PROJECTION_CANDIDATE_v0.1.json`。
+该 candidate 现在覆盖 active animation 和 camera presentation entries；Build 做规范化根校验和 fail-closed binding 检查，camera binding 只选择现有 VSR camera 并 lower 为 `activeCameraId`，浏览器仍只消费 evaluated time/selection，不重新计算 Sequence。实际 web-release 构建通过 `verifyBuild()`，Chromium/WebGPU camera+animation 运行报告 `camera:alternate`、`selection=sequence-frame`、`mode=evaluated-frame`、`time=0.25`、`verified=true`、4 draw calls、806 triangles，并观察到 `submitted=true`、`deviceLost=false`。完整收据见 `evidence/BUILD_SEQUENCE_CAMERA_FRAME_PROJECTION_CANDIDATE_v0.1.json`；动画-only projection 的收据仍见 `evidence/BUILD_SEQUENCE_FRAME_PROJECTION_CANDIDATE_v0.1.json`。
 
-这不是 target-side Sequence playback 或 timeline editing；camera、audio、dialogue、effect、light、behavior、quest、network、physics、branch 等 track class 仍未 lower。音频 cue-to-asset 仍独立保持 blocked，`RCL_GAP_RNCS_SHARED_AUTHORED_PRESENTATION_SPINE` 仍未晋升为完整闭环。
+这不是 target-side Sequence playback、camera transform/lens interpolation 或 timeline editing；audio、dialogue、effect、light、behavior、quest、network、physics、branch 等 track class 仍未 lower。音频 cue-to-asset 仍独立保持 blocked，`RCL_GAP_RNCS_SHARED_AUTHORED_PRESENTATION_SPINE` 仍未晋升为完整闭环。
 
 ## Audio target lowering archaeology（negative candidate）
 

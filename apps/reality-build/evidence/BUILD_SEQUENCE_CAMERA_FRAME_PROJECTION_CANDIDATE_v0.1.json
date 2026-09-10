@@ -1,0 +1,173 @@
+{
+  "format": "reality-build.sequence-camera-frame-projection-evidence.v0.1",
+  "status": "CANDIDATE_BUILD_SEQUENCE_CAMERA_FRAME_PROJECTION_VERIFIED",
+  "sourceCommit": "ebeee6872a44263b3162b757b41d087fdf6bfe34",
+  "pipeline": "Reality Studio evaluated camera+animation Sequence frame -> explicit Build camera/animation projection -> VSR activeCameraId and animation-layer lowering -> web-release target -> real Chromium/WebGPU runtime receipt",
+  "archaeology": {
+    "semanticOwners": {
+      "realityStudio": "Reality Studio SequencerSession and evaluateSequence() remain the authored timeline owners; the camera-cut payload and frame roots are carried without moving evaluation into Build or the target.",
+      "vsr": "Visual State Runtime already owns scene cameras, activeCameraId validation, camera matrices, animation sampling and spatial frame compilation.",
+      "rsr": "Reality Simulation Runtime owns the authoritative spatial state and Tick; camera selection remains presentation-only and does not mutate RSR authority.",
+      "realityBuild": "Reality Build owns candidate-only camera/animation binding validation, canonical root checks, scene activeCameraId lowering, target payload propagation and evidence; it is not a Sequence evaluator.",
+      "browserTarget": "The generated browser host consumes the explicit camera selection and evaluated animation layers; it does not evaluate Studio tracks or become an authored timeline owner."
+    },
+    "existingContracts": [
+      "Reality Studio sequence-frame.v1.6 exposes active camera presentation entries with authored camera_id payloads.",
+      "VSR scene already has cameras, activeCameraId, camera matrix compilation and verified frame roots.",
+      "The existing reality-build.sequence-frame-projection.v0.1 seam now carries camera_binding alongside the previously verified animation_layers without adding a second evaluator."
+    ],
+    "comparisonWithAudio": "Camera reuses an existing VSR scene/frame contract; audio still lacks canonical cue-to-asset binding and a target consumer, so it remains separately blocked.",
+    "priorProjectionEvidence": "apps/reality-build/evidence/BUILD_SEQUENCE_FRAME_PROJECTION_CANDIDATE_v0.1.json"
+  },
+  "projection": {
+    "format": "reality-build.sequence-frame-projection.v0.1",
+    "version": "0.1.0-alpha.1",
+    "authority": "candidate-build-presentation-only",
+    "sequenceId": "sequence:real-camera-web-target-v2",
+    "sequenceRoot": "c6e0839dc1667aec58b66c3c03d167cc8cf559e6e3578c346e568f245f75913b",
+    "frameFormat": "reality-studio.sequence-frame.v1.6",
+    "frameRoot": "fd3f4d23682e70a22d8e89b2321801a54ff58d0ba3c25b45874769becd767c9a",
+    "frameTimeSeconds": 0.25,
+    "projectionRoot": "9a6ac16a2282cecb713f6338ee3d1e49c90b93130c379dc4977c33ce67fef69b",
+    "source": "reality-studio.evaluateSequence",
+    "cameraBinding": {
+      "trackId": "track:camera",
+      "clipId": "camera:alternate-shot",
+      "cameraId": "camera:alternate"
+    },
+    "animationLayers": [
+      {
+        "trackId": "track:animation",
+        "clipId": "candidate:walk",
+        "nodeIds": ["ground"],
+        "timeSeconds": 0.25,
+        "weight": 1,
+        "loop": true,
+        "mode": "override"
+      }
+    ]
+  },
+  "build": {
+    "project": "apps/reality-build/examples/冰境试炼.unified-project.json",
+    "buildId": "build:c6ba12fe3326ba804ac2406b",
+    "buildKey": "c6ba12fe3326ba804ac2406b8e8fa4ad97e38dfa93c014498c1efe1ba227fe91",
+    "projectRoot": "fff2312f5e9ded65c519b42148e74fcb683bb4f117dcfd6a9d47f95dffa4967e",
+    "requestRoot": "fac62daa0b0ff95295d9473d3d99e7ce420870bdc591f9252b0973d5afe62ab4",
+    "semanticRequestRoot": "3eb5c2114553e00a080be46507a3b878f8459c79b64e33729136d67c8ca50114",
+    "buildReceiptRoot": "d6f356f451a5bb611ba4c64abae50efe99ff38a4eba0ea63844a289ef84f505e",
+    "runtimeEvidenceRoot": "82fcbcdae95c33cf4acc1851a1b1e0677220a67c20bae87dcfa7ea8216d7bf0d",
+    "targetRoot": "ba8372d6aab0f0739258679a1d1bbf09c4c8e8f9fb656abb6f7e124443b69573",
+    "targetFiles": 36,
+    "verifyBuild": true,
+    "runtimeDeterministic": true,
+    "runtimeEvidence": {
+      "presentationSceneSourceRoot": "c5ac72c4bbfbca10ca5767258a14fc73f1abe95c35f342de3f259e97e7a50e03",
+      "presentationFrameRoot": "d505568bab873e35b45645533fdc75607d46957ba82d76b3a310d50a42532f7c",
+      "animationSelection": "sequence-frame",
+      "presentationCameraId": "camera:alternate",
+      "sequenceCameraBindingRoot": "8a8b8b6d1bd03e44baa4d1cb21ad6e6cca8737806bd036f9901145c931ead0d1",
+      "sequenceRoot": "c6e0839dc1667aec58b66c3c03d167cc8cf559e6e3578c346e568f245f75913b",
+      "sequenceFrameRoot": "fd3f4d23682e70a22d8e89b2321801a54ff58d0ba3c25b45874769becd767c9a",
+      "sequenceProjectionRoot": "9a6ac16a2282cecb713f6338ee3d1e49c90b93130c379dc4977c33ce67fef69b",
+      "sequenceTimeSeconds": 0.25,
+      "sequenceAnimationLayerCount": 1
+    }
+  },
+  "browser": {
+    "host": "Chromium via playwright-cli",
+    "url": "http://127.0.0.1:4185/",
+    "title": "Sequence Camera Target v2",
+    "readyState": "complete",
+    "consoleErrors": 0,
+    "consoleWarnings": 2,
+    "warningClass": "WebGPU powerPreference is ignored on Windows during requestAdapter()",
+    "afterHostStep": {
+      "tick": 8587,
+      "stateRoot": "fnv1a64:9cf99584573535b4",
+      "frameRoot": "05ad90df265b38b106bbee56cedaf95ebbd16d72de751922f481ae71b5ffe7",
+      "cameraId": "camera:alternate",
+      "selection": "sequence-frame",
+      "mode": "evaluated-frame",
+      "timeSeconds": 0.25,
+      "layerCount": 1,
+      "sequenceRoot": "c6e0839dc1667aec58b66c3c03d167cc8cf559e6e3578c346e568f245f75913b",
+      "sequenceFrameRoot": "fd3f4d23682e70a22d8e89b2321801a54ff58d0ba3c25b45874769becd767c9a",
+      "sequenceProjectionRoot": "9a6ac16a2282cecb713f6338ee3d1e49c90b93130c379dc4977c33ce67fef69b",
+      "animationRoot": "3cf4d228c4e2e5788b9b443b6369b12b7a2e3d59bffdba0413d06bdf7ffc6b8f",
+      "drawCount": 4,
+      "renderMode": "webgpu",
+      "verified": true
+    },
+    "webgpuProbe": {
+      "available": true,
+      "secureContext": true,
+      "missingFeatures": [],
+      "missingLimits": []
+    },
+    "spatialWebgpuReceipt": {
+      "format": "vsr.spatial-webgpu-receipt.v0.4",
+      "frameRoot": "ac5f60add43c09ae7fcaf4013ee9440ca7ca0198fb34da15d3d1df5a0f6040f9",
+      "receiptRoot": "8bb8e91385ec779f6d1312404c69a71e90fdf8f72591c4aaac8507c8f5e714c0",
+      "drawCalls": 4,
+      "triangles": 806,
+      "submitted": true,
+      "deviceLost": false
+    },
+    "frameDiagnostics": {
+      "meshCount": 4,
+      "nodeCount": 5,
+      "animationClipCount": 1,
+      "visibleDraws": 4,
+      "visibleInstances": 5,
+      "instancedDraws": 1,
+      "triangleCount": 806,
+      "lightCount": 3,
+      "shadowCasterCount": 4
+    },
+    "visualCheck": "Agent inspected the generated 3D viewport candidate; human visual acceptance is not performed."
+  },
+  "tests": {
+    "presentationScene": "10/10 PASS including camera-only and camera+animation projection",
+    "realityBuild": "166 tests / 158 pass / 0 fail / 8 skip",
+    "targetBuild": "web-release build and verifyBuild() PASS",
+    "browserRuntime": "real Chromium page loaded; 0 application errors; 2 browser capability warnings",
+    "gitDiffCheck": "PASS"
+  },
+  "coverage": {
+    "studioEvaluatedCameraFrameProjection": true,
+    "studioEvaluatedAnimationFrameProjection": true,
+    "explicitCameraBinding": true,
+    "explicitAnimationBinding": true,
+    "cameraOnlyProjection": true,
+    "canonicalProjectionRootValidation": true,
+    "webReleasePayloadPropagation": true,
+    "chromiumRuntimeExecution": true,
+    "cameraIdRuntimeReceipt": true,
+    "webgpuSubmissionReceipt": true,
+    "targetSideSequenceEvaluator": false,
+    "cameraTransformKeyframeInterpolation": false,
+    "dialogueEffectLightBehaviorQuestNetworkTrackLowering": false,
+    "audioTargetLowering": false,
+    "androidTarget": false,
+    "physicalDevice": false,
+    "performanceCurve": false,
+    "humanVisualAcceptance": false,
+    "k400Pass": false
+  },
+  "affectedK400Cells": ["LOWER", "EXECUTE", "CORRECT", "ROBUST", "EVIDENCE"],
+  "rclGap": "RCL_GAP_RNCS_SHARED_AUTHORED_PRESENTATION_SPINE",
+  "missingCapability": "RNCS now has candidate-only projection for evaluated animation and camera presentation entries, but it still lacks a target-independent authored presentation spine for audio, dialogue, effects, light and other Sequence track classes, camera transform keyframe semantics, and target-side playback.",
+  "currentWorkaround": "Keep Reality Studio as the only Sequence evaluator; require explicit camera and animation bindings; lower camera selection to an existing VSR activeCameraId and animation time to existing VSR animationLayers while preserving all Studio roots through Build payload/evidence.",
+  "regressionCase": "Missing camera binding, camera binding/payload mismatch, ambiguous active camera clips, missing animation binding, non-canonical projection values and mixed animation_policy plus sequence projection fail closed; a real Chromium host step preserves cameraId, evaluated time, projection roots and verified WebGPU execution.",
+  "boundaries": [
+    "This is a candidate-only Studio evaluated-frame projection; it is not target-side Sequence playback, camera timeline interpolation or timeline editing.",
+    "Camera lowering currently selects an existing VSR camera by explicit camera_id; it does not interpolate camera transforms, lenses or cuts beyond that selection.",
+    "Only active animation and camera presentation entries are lowered; audio, dialogue, effect, light, behavior, quest, network, physics and branch tracks remain unlowered.",
+    "The raw 冰境试炼 project still has no persisted sequencer field; this evidence uses an explicit candidate projection supplied to Build.",
+    "Chromium WebGPU submission was observed locally; this is not Android, physical-device, native-runtime, performance, WAN, release or production delivery proof.",
+    "The 3D screenshot/viewport is agent-inspected candidate visual evidence; human visual acceptance remains open.",
+    "No K400 gate is promoted to PASS."
+  ],
+  "nextCandidate": "Audit camera transform/lens semantics and the separate audio cue-to-asset owner boundary; do not merge audio into this projection until a canonical cue binding and target receipt contract are evidenced.",
+  "evidenceRoot": "c514583e63a3972a634512d9c7ad0f093d5113ee44826a8929e894f2b34e4aeb"
+}
