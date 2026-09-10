@@ -1,0 +1,56 @@
+{
+  "format": "taowind.reality-build.network-headless-candidate-evidence.v0.1",
+  "version": "0.1.0",
+  "status": "CANDIDATE_LOCAL_LOOPBACK_VERIFIED",
+  "fixture": "examples/studio-authored-network-world-v03/project.mjs",
+  "pipeline": "Reality Studio network authoring -> compileNetworkWorld -> Reality Build headless-server -> RealityNetworkRuntime local loopback",
+  "sourceCommit": "d0ad87de00f6c923f6d12ec85a3ee7472176103d",
+  "commands": [
+    "npm test --workspace @taowind/reality-build-fabric",
+    "buildProject(target=headless-server)",
+    "spawn generated server.mjs and exercise /network/* over 127.0.0.1",
+    "tamper and remove network-world-compilation.json -> verifyBuild()"
+  ],
+  "tests": {
+    "realityBuildSuite": "142 tests / 134 pass / 0 fail / 8 skip",
+    "generatedHeadlessServer": "PASS",
+    "compiledSlotJoin": "2 slots PASS",
+    "inputAndTick": "PASS",
+    "sourceRootContinuity": "PASS",
+    "clientSynchronization": "blue/red synchronized",
+    "tamperMissingNegativeCases": "PASS"
+  },
+  "build": {
+    "buildId": "build:2f5454663e90a12ee638d3a6",
+    "buildKey": "2f5454663e90a12ee638d3a64dd13851f8d4e21600d65c435ac73fd322ab022b",
+    "networkCompilationRoot": "af43344d519e3e09c46efe09318f66685489d8732f0b50ccd8db482dd2a21531",
+    "graphRoot": "c85e89a1d96b95c975f5b5ed18474325fdebe04857092976fcc5dd6c0c8a25fd",
+    "receiptRoot": "f3a883f39e25abfd709d1533df3cf2508d85f0181fbdf3775420d92ff2c0e1e6",
+    "integrityRoot": "5715c0f763f35108cfdc4a30708afeedd7435daa8afead67b965badfc776243f",
+    "targetRoot": "d1caee4bbf4e55064007d25c247957433d4661a10a4095c6fb467523efa578de",
+    "targetNetworkCompilationRoot": "af43344d519e3e09c46efe09318f66685489d8732f0b50ccd8db482dd2a21531",
+    "verifyBuild": true
+  },
+  "session": {
+    "initialHealth": {
+      "deterministic": true,
+      "format": "reality-build.headless-server.v0.2"
+    },
+    "joinedPlayers": ["blue", "red"],
+    "inputPlayer": "blue",
+    "advancedTick": 1,
+    "sourceCompilationRoot": "af43344d519e3e09c46efe09318f66685489d8732f0b50ccd8db482dd2a21531",
+    "sourceProjectRoot": "72d8ec8f99bdf739d2e4b9eb7bc4493ab5b18a896a623c8cc1f8f5e763c9ecae",
+    "blueSyncStatus": "synchronized",
+    "redSyncStatus": "synchronized"
+  },
+  "boundaries": [
+    "Uses existing Reality Studio compilation and existing RealityNetworkRuntime; no duplicate network world schema or session implementation.",
+    "Local deterministic loopback transport only; no WAN or cross-node transport proof.",
+    "No TLS/key custody/attack-surface proof, multi-device client proof, load/SLA proof, or production deployment proof.",
+    "Web and Android embedded targets are not silently promoted to network clients.",
+    "No K400 gate is promoted to PASS."
+  ],
+  "authority": "candidate-runtime-evidence-only-no-commit",
+  "evidenceRoot": "df04858f2dbf2224cb585c4cc4876fca1bb99741ddb99cfd86933249829c378f"
+}
