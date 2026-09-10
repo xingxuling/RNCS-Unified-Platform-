@@ -1,0 +1,159 @@
+{
+  "format": "reality-build.sequence-frame-projection-evidence.v0.1",
+  "status": "CANDIDATE_BUILD_SEQUENCE_EVALUATED_FRAME_PROJECTION_VERIFIED",
+  "sourceCommit": "82efc7c2d7ac4c381da0faa3dae2c82719306362",
+  "pipeline": "Reality Studio evaluated Sequence frame -> explicit Build candidate projection -> VSR animation-layer lowering -> web-release target -> real Chromium/WebGPU runtime receipt",
+  "archaeology": {
+    "semanticOwners": {
+      "realityStudio": "Reality Studio SequencerSession and evaluateSequence() remain the authored timeline owners; authority/presentation/frame roots are preserved without moving evaluation into Build or the target.",
+      "vsr": "Visual State Runtime owns animation clip/layer sampling, animationRoot and spatial frame compilation after the explicit track/clip/node binding is lowered.",
+      "rsr": "Reality Simulation Runtime owns the authoritative spatial state and Tick; the projection carries Studio presentation evidence but does not write authored timeline state into RSR authority.",
+      "realityBuild": "Reality Build owns candidate-only projection validation, canonical root checks, explicit binding validation, target payload propagation and runtime evidence; it is not a Sequence evaluator.",
+      "browserTarget": "The generated browser host consumes the evaluated frame as static animation-layer options; it does not evaluate Studio tracks or become an authored timeline owner."
+    },
+    "existingContracts": [
+      "reality-studio.sequence.v1.7 and reality-studio.sequence-frame.v1.6 provide the normalized authored sequence and evaluated frame roots.",
+      "reality-build.sequence-frame-projection.v0.1 binds each active Studio animation entry to an explicit VSR clip and optional node mask, weight, loop and mode.",
+      "VSR compileSpatialFrame() consumes the existing animationLayers option and emits animationRoot/frame verification; no parallel sampler was introduced."
+    ],
+    "priorAudit": "apps/reality-build/evidence/BUILD_SEQUENCE_TARGET_LOWERING_AUDIT_v0.1.json"
+  },
+  "projection": {
+    "format": "reality-build.sequence-frame-projection.v0.1",
+    "version": "0.1.0-alpha.1",
+    "authority": "candidate-build-presentation-only",
+    "sequenceId": "sequence:real-web-target",
+    "sequenceRoot": "0b90fbaa84b14e412d29caa270edc9264bbddfa57aa65c4208e36846256df837",
+    "frameFormat": "reality-studio.sequence-frame.v1.6",
+    "frameRoot": "d771a476ad8cf8acd40258b616a15afbc38e130099cc48b1d27d2fa20bce1593",
+    "frameTimeSeconds": 0.25,
+    "projectionRoot": "955213bf6f85c2aa8edb2e6460b64f5a13bfdc3150da71ac5e5cd52cb0c64d31",
+    "source": "reality-studio.evaluateSequence",
+    "animationLayers": [
+      {
+        "trackId": "track:animation",
+        "clipId": "candidate:walk",
+        "nodeIds": ["ground"],
+        "timeSeconds": 0.25,
+        "weight": 1,
+        "loop": true,
+        "mode": "override"
+      }
+    ]
+  },
+  "build": {
+    "project": "apps/reality-build/examples/冰境试炼.unified-project.json",
+    "buildId": "build:fede92ef52472fb27d21ebc1",
+    "buildKey": "fede92ef52472fb27d21ebc1c44eec391742a512f6b3f9d6d47cc5fb923ba713",
+    "projectRoot": "fff2312f5e9ded65c519b42148e74fcb683bb4f117dcfd6a9d47f95dffa4967e",
+    "requestRoot": "5b566dd07459326bd0d6c1920d44bc4952c78a7075fac7c55b74d856ef8bc1f6",
+    "semanticRequestRoot": "51271763480f8978f7068424da917eebb167d393eb99cbe31e52b276c5d7c325",
+    "buildReceiptRoot": "5d0a6f2994ea07917f58157a9d5dc894fcd5d319ae2976bd9e6268d3b02ec088",
+    "runtimeEvidenceRoot": "c04d5b1e6f9a9290deb35ef006966044e8ec315e2800efcc89391b115d42afe0",
+    "targetRoot": "cbe96e61d2513f198a33433b2952a39ef39808fafcdd767313cba009abe00e51",
+    "targetFiles": 36,
+    "verifyBuild": true,
+    "runtimeDeterministic": true,
+    "runtimeEvidence": {
+      "presentationSceneSourceRoot": "75c7ef948b75e9874929d96983d74e004cd2b4c3174691efa3c3c43d18c9b0d2",
+      "presentationFrameRoot": "2bae99313ed82dced17f5875c3aae37d833a5a001e6f53999c897ce98633139f",
+      "animationSelection": "sequence-frame",
+      "sequenceRoot": "0b90fbaa84b14e412d29caa270edc9264bbddfa57aa65c4208e36846256df837",
+      "sequenceFrameRoot": "d771a476ad8cf8acd40258b616a15afbc38e130099cc48b1d27d2fa20bce1593",
+      "sequenceProjectionRoot": "955213bf6f85c2aa8edb2e6460b64f5a13bfdc3150da71ac5e5cd52cb0c64d31",
+      "sequenceTimeSeconds": 0.25,
+      "sequenceAnimationLayerCount": 1
+    }
+  },
+  "browser": {
+    "host": "Chromium via playwright-cli",
+    "url": "http://127.0.0.1:4183/",
+    "title": "Sequence Frame Target",
+    "readyState": "complete",
+    "consoleErrors": 0,
+    "consoleWarnings": 2,
+    "warningClass": "WebGPU powerPreference is ignored on Windows during requestAdapter()",
+    "afterHostStep": {
+      "tick": 3258,
+      "stateRoot": "fnv1a64:d453682d5671efe8",
+      "frameRoot": "768af605c94950c2fdbde714e562e6c7653b0380b77cbc26d232d30660b5cdb0",
+      "selection": "sequence-frame",
+      "mode": "evaluated-frame",
+      "timeSeconds": 0.25,
+      "layerCount": 1,
+      "sequenceRoot": "0b90fbaa84b14e412d29caa270edc9264bbddfa57aa65c4208e36846256df837",
+      "sequenceFrameRoot": "d771a476ad8cf8acd40258b616a15afbc38e130099cc48b1d27d2fa20bce1593",
+      "sequenceProjectionRoot": "955213bf6f85c2aa8edb2e6460b64f5a13bfdc3150da71ac5e5cd52cb0c64d31",
+      "animationRoot": "3cf4d228c4e2e5788b9b443b6369b12b7a2e3d59bffdba0413d06bdf7ffc6b8f",
+      "drawCount": 5,
+      "renderMode": "webgpu",
+      "verified": true,
+      "assetMissingCount": 0,
+      "assetPayloadError": ""
+    },
+    "webgpuProbe": {
+      "available": true,
+      "secureContext": true,
+      "missingFeatures": [],
+      "missingLimits": []
+    },
+    "spatialWebgpuReceipt": {
+      "format": "vsr.spatial-webgpu-receipt.v0.4",
+      "frameRoot": "2d2c4d0f8cf73fbf15c684175c0775bae12aa623231406e5e9cd882b2446b8c3",
+      "receiptRoot": "844b95d0291020c3bd25b1586e007eb1b6371d487d6334db9fa6abab9dcf3b4e",
+      "drawCalls": 5,
+      "triangles": 806,
+      "submitted": true,
+      "deviceLost": false
+    },
+    "frameDiagnostics": {
+      "meshCount": 4,
+      "nodeCount": 5,
+      "animationClipCount": 1,
+      "visibleDraws": 5,
+      "triangleCount": 806,
+      "lightCount": 3,
+      "shadowCasterCount": 4
+    },
+    "visualCheck": "Agent inspected the generated 3D viewport screenshot and observed rendered geometry; human visual acceptance is not performed."
+  },
+  "tests": {
+    "presentationScene": "9/9 PASS",
+    "realityBuild": "165 tests / 157 pass / 0 fail / 8 skip",
+    "targetBuild": "web-release build and verifyBuild() PASS",
+    "browserRuntime": "real Chromium page loaded; 0 application errors; 2 browser capability warnings",
+    "gitDiffCheck": "PASS"
+  },
+  "coverage": {
+    "studioEvaluatedFrameProjection": true,
+    "explicitAnimationBinding": true,
+    "canonicalProjectionRootValidation": true,
+    "webReleasePayloadPropagation": true,
+    "chromiumRuntimeExecution": true,
+    "webgpuSubmissionReceipt": true,
+    "targetSideSequenceEvaluator": false,
+    "cameraTrackLowering": false,
+    "dialogueEffectLightBehaviorQuestNetworkTrackLowering": false,
+    "audioTargetLowering": false,
+    "androidTarget": false,
+    "physicalDevice": false,
+    "performanceCurve": false,
+    "humanVisualAcceptance": false,
+    "k400Pass": false
+  },
+  "affectedK400Cells": ["LOWER", "EXECUTE", "CORRECT", "ROBUST", "EVIDENCE"],
+  "rclGap": "RCL_GAP_RNCS_SHARED_AUTHORED_PRESENTATION_SPINE",
+  "missingCapability": "RNCS now has a candidate-only projection for one evaluated animation presentation track, but it still lacks a target-independent authored presentation spine for camera, audio, dialogue, effects, light, behavior and other Sequence track classes, plus a target-side playback contract.",
+  "currentWorkaround": "Keep Reality Studio as the only Sequence evaluator; require explicit track-to-VSR binding for the supported animation projection; lower the evaluated time into existing VSR animationLayers and carry Studio roots unchanged through Build payload/evidence.",
+  "regressionCase": "Missing track/clip binding, non-canonical projection values and mixed animation_policy plus sequence projection are rejected; a real Chromium host step preserves sequence-frame selection, evaluated time, projection roots and verified VSR frame execution.",
+  "boundaries": [
+    "This is a candidate-only Studio evaluated-frame projection; it is not target-side Sequence playback or timeline editing.",
+    "Only active animation presentation entries with explicit VSR clip/node bindings are lowered; camera, audio, dialogue, effect, light, behavior, quest, network, physics and branch tracks remain unlowered.",
+    "The raw 冰境试炼 project still has no persisted sequencer field; this evidence uses an explicit candidate projection supplied to Build.",
+    "Chromium WebGPU submission was observed locally; this is not Android, physical-device, native-runtime, performance, WAN, release or production delivery proof.",
+    "The 3D screenshot is agent-inspected candidate visual evidence; human visual acceptance remains open.",
+    "No K400 gate is promoted to PASS."
+  ],
+  "nextCandidate": "Re-audit the remaining shared authored presentation spine with camera and audio kept separate: determine whether camera can reuse an existing VSR camera/frame contract, while audio remains blocked until cue-to-asset canonical ownership and target receipt semantics are established.",
+  "evidenceRoot": "cfafce119b1ccceb205514df10dc8eb9532d9a39c33e849e0f3c7db1b5271b4d"
+}
