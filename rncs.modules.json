@@ -773,6 +773,7 @@
       "capabilities": [
         "large-world-chunk-to-rsr-heightfield-lowering",
         "stream-root-bound-terrain-candidate",
+        "candidate-physical-terrain-residency-admission",
         "managed-static-terrain-residency-transition",
         "candidate-only-no-canonical-mutation"
       ]

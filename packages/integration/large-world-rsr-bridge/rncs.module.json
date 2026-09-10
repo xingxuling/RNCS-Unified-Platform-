@@ -11,6 +11,7 @@
     "rncs.entity-state-batch.v0.1",
     "rsr.spatial-embodiment-world.v0.6",
     "rncs.large-world-rsr-terrain-candidate.v0.1",
+    "rncs.large-world-rsr-terrain-residency-admission.v0.1",
     "rncs.large-world-rsr-terrain-residency-transition.v0.1"
   ],
   "authority": "candidate-physical-residency-transition-only-no-commit",

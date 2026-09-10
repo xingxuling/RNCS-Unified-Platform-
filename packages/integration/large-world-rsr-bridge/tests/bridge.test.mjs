@@ -5,8 +5,10 @@ import {materializeKernelStateBatch, replaySpatialEmbodiment, SpatialEmbodimentW
 import {spatialEmbodimentSnapshotToVSRScene} from '@taowind/reality-simulation-runtime/spatial-embodiment-vsr';
 import {
   createLargeWorldRsrTerrainCandidate,
+  planLargeWorldRsrTerrainResidency,
   applyLargeWorldRsrTerrainCandidate,
   verifyLargeWorldRsrTerrainCandidate,
+  verifyLargeWorldRsrTerrainResidencyAdmission,
   verifyLargeWorldRsrTerrainResidencyTransition,
   LargeWorldRsrTerrainBridgeError,
 } from '../src/index.mjs';
@@ -32,6 +34,10 @@ test('lowers only active Large World chunk samples into the existing Kernel heig
   const candidate = createLargeWorldRsrTerrainCandidate({region, streamResolution: stream, tick: 7});
   const verification = verifyLargeWorldRsrTerrainCandidate(candidate, {region});
   assert.equal(verification.valid, true, verification.errors.join(','));
+  const admission = planLargeWorldRsrTerrainResidency(candidate, {region, residencyBudget: {maxManagedBodies: 9, maxManagedFixtures: 9, maxHeightfieldSamples: 225}});
+  assert.equal(admission.status, 'READY');
+  assert.equal(admission.usage.heightfield_sample_count, 225);
+  assert.equal(verifyLargeWorldRsrTerrainResidencyAdmission(admission, {candidate, region}).valid, true);
   assert.equal(candidate.active_chunk_ids.length, 9);
   assert.equal(candidate.lowered_chunk_ids.length, 9);
   assert.equal(candidate.batch.format, 'rncs.entity-state-batch.v0.1');
@@ -135,6 +141,18 @@ test('keeps source and candidate roots fail-closed across inactive chunks and ta
   const verification = verifyLargeWorldRsrTerrainCandidate(tampered, {region});
   assert.equal(verification.valid, false);
   assert.ok(verification.errors.some(error => error.includes('BATCH_ROOT') || error.includes('CANDIDATE_ROOT')));
+  const materialization = materializeKernelStateBatch(candidate.batch);
+  const world = new SpatialEmbodimentWorld({...materialization.config, worldId: candidate.world_id, floorY: -100_000});
+  const before = world.snapshot();
+  const blockedAdmission = planLargeWorldRsrTerrainResidency(candidate, {region, residencyBudget: {maxManagedBodies: 0, maxManagedFixtures: 0, maxHeightfieldSamples: 0}});
+  assert.equal(blockedAdmission.status, 'BLOCKED_RESOURCE');
+  assert.deepEqual(blockedAdmission.exceeded_limits, ['max_managed_bodies', 'max_managed_fixtures', 'max_heightfield_samples']);
+  assert.equal(verifyLargeWorldRsrTerrainResidencyAdmission(blockedAdmission, {candidate, region}).valid, true);
+  assert.throws(
+    () => applyLargeWorldRsrTerrainCandidate(world, candidate, {region, residencyBudget: {maxManagedBodies: 0, maxManagedFixtures: 0, maxHeightfieldSamples: 0}}),
+    error => error instanceof LargeWorldRsrTerrainBridgeError && error.code === 'LARGE_WORLD_RSR_PHYSICAL_RESIDENCY_BUDGET_EXCEEDED',
+  );
+  assert.equal(world.snapshot().stateRoot, before.stateRoot);
 });
 
 function runStreamResidencyTransition() {
@@ -171,9 +189,10 @@ function runStreamResidencyTransition() {
   const before = world.snapshot();
   const nextStream = runtime.observe({x: 64, z: 0});
   const nextCandidate = createLargeWorldRsrTerrainCandidate({region, streamResolution: nextStream, tick: world.tick});
-  const transition = applyLargeWorldRsrTerrainCandidate(world, nextCandidate, {region});
+  const residencyBudget = {maxManagedBodies: 1, maxManagedFixtures: 1, maxHeightfieldSamples: 25};
+  const transition = applyLargeWorldRsrTerrainCandidate(world, nextCandidate, {region, residencyBudget});
   const after = world.snapshot();
-  return {region, firstStream, nextStream, firstCandidate, nextCandidate, before, after, transition, world, largeWorldSnapshot: runtime.snapshot(), largeWorldReplay: runtime.replay()};
+  return {region, firstStream, nextStream, firstCandidate, nextCandidate, before, after, transition, world, residencyBudget, largeWorldSnapshot: runtime.snapshot(), largeWorldReplay: runtime.replay()};
 }
 
 test('applies Large World stream enter/exit to the same RSR world with deterministic replay', () => {
@@ -189,6 +208,8 @@ test('applies Large World stream enter/exit to the same RSR world with determini
   assert.equal(transition.entered_body_ids.length, 1);
   assert.equal(transition.exited_body_ids.length, 1);
   assert.equal(transition.retained_body_ids.length, 0);
+  assert.equal(transition.residency_admission?.status, 'READY');
+  assert.equal(transition.residency_admission?.usage.heightfield_sample_count, 25);
   assert.equal(transition.source_candidate_root, nextCandidate.candidate_root);
   assert.equal(result.largeWorldReplay.ok, true);
   assert.equal(verifyRuntimeSnapshot(result.largeWorldSnapshot).valid, true);
@@ -201,7 +222,7 @@ test('applies Large World stream enter/exit to the same RSR world with determini
     error => error instanceof LargeWorldRsrTerrainBridgeError && error.code === 'LARGE_WORLD_RSR_TICK_MISMATCH',
   );
   const restoredWorld = SpatialEmbodimentWorld.fromSnapshot(before);
-  const restoredTransition = applyLargeWorldRsrTerrainCandidate(restoredWorld, nextCandidate, {region});
+  const restoredTransition = applyLargeWorldRsrTerrainCandidate(restoredWorld, nextCandidate, {region, residencyBudget: result.residencyBudget});
   assert.deepEqual(restoredTransition, transition);
   assert.equal(restoredWorld.step().snapshot.stateRoot, world.step().snapshot.stateRoot);
   const replay = runStreamResidencyTransition();

@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.org/schemas/rncs.large-world-rsr-terrain-residency-admission.v0.1.schema.json",
+  "title": "RNCS Large World RSR Terrain Residency Admission v0.1",
+  "type": "object",
+  "required": [
+    "format",
+    "version",
+    "world_id",
+    "generation",
+    "source_candidate_root",
+    "source_region_root",
+    "source_world_root",
+    "source_stream_root",
+    "managed_tag",
+    "budget",
+    "budget_root",
+    "usage",
+    "source_active_chunk_ids",
+    "source_evicted_chunk_ids",
+    "status",
+    "exceeded_limits",
+    "authority",
+    "candidate_only",
+    "authoritative",
+    "canonical_write_authorized",
+    "commit_status",
+    "admission_root"
+  ],
+  "properties": {
+    "format": {"const": "rncs.large-world-rsr-terrain-residency-admission.v0.1"},
+    "version": {"const": "0.1.0"},
+    "world_id": {"type": "string", "minLength": 1},
+    "generation": {"type": "integer", "minimum": 0},
+    "source_candidate_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "source_region_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "source_world_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "source_stream_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "managed_tag": {"const": "large-world-terrain"},
+    "budget": {
+      "type": "object",
+      "minProperties": 1,
+      "properties": {
+        "max_managed_bodies": {"type": "integer", "minimum": 0},
+        "max_managed_fixtures": {"type": "integer", "minimum": 0},
+        "max_heightfield_samples": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "budget_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "usage": {
+      "type": "object",
+      "required": ["managed_body_count", "managed_fixture_count", "heightfield_sample_count"],
+      "properties": {
+        "managed_body_count": {"type": "integer", "minimum": 0},
+        "managed_fixture_count": {"type": "integer", "minimum": 0},
+        "heightfield_sample_count": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "source_active_chunk_ids": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "source_evicted_chunk_ids": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "status": {"enum": ["READY", "BLOCKED_RESOURCE"]},
+    "exceeded_limits": {"type": "array", "items": {"enum": ["max_managed_bodies", "max_managed_fixtures", "max_heightfield_samples"]}},
+    "authority": {"type": "object"},
+    "candidate_only": {"const": true},
+    "authoritative": {"const": false},
+    "canonical_write_authorized": {"const": false},
+    "commit_status": {"const": "NOT_COMMITTED"},
+    "admission_root": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "additionalProperties": true
+}
