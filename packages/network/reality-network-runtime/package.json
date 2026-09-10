@@ -21,6 +21,7 @@
   "dependencies": {
     "@taowind/agent-authority-fabric": "*",
     "@taowind/reality-branch-fabric": "*",
+    "@taowind/reality-representation-fabric": "*",
     "@taowind/rncs-durable-store": "*",
     "@taowind/reality-simulation-runtime": "*",
     "@taowind/rfe-core-sdk": "*"

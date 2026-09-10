@@ -1,4 +1,51 @@
-import {clone, hash} from './protocol.mjs';
+import {clean, clone, hash} from './protocol.mjs';
+import {RealityTransportFabric} from '@taowind/reality-representation-fabric';
+
+export function createLoopbackTransportProfile({profileId = 'network:loopback', evidenceRefs = []} = {}) {
+  return {
+    profile_id: String(profileId),
+    transport_kind: 'RDN',
+    qos_class: 'STATE_DELTA',
+    coverage: 'LOCAL',
+    bandwidth_mbps: 1000,
+    latency_budget_ms: 0,
+    reliability_ppm: 1000000,
+    freshness_budget_ms: 500,
+    priority: 50,
+    loss_mode: 'RECOVERABLE',
+    discovery_supported: false,
+    roaming_supported: false,
+    low_power: false,
+    bidirectional: true,
+    requires_authority: false,
+    fallback_profile_ids: [],
+    evidence_refs: [...new Set((Array.isArray(evidenceRefs) ? evidenceRefs : [evidenceRefs]).map(String).filter(Boolean))]
+  };
+}
+
+function transportPacketType(type) {
+  return {
+    input: 'CONTROL',
+    ack: 'ACK',
+    rejection: 'NACK',
+    delta: 'STATE_DELTA',
+    snapshot: 'STATE_DELTA'
+  }[String(type).toLowerCase()] ?? 'CONTROL';
+}
+
+function canonicalTransportValue(value) {
+  if (Array.isArray(value)) return value.map(canonicalTransportValue);
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(Object.entries(value)
+      .filter(([, child]) => child !== undefined)
+      .map(([key, child]) => [key, canonicalTransportValue(child)]));
+  }
+  if (typeof value === 'number') {
+    if (!Number.isFinite(value)) throw new Error('NETWORK_TRANSPORT_PAYLOAD_NONFINITE_NUMBER');
+    return Number.isInteger(value) ? value : String(value);
+  }
+  return value;
+}
 
 class DeterministicRandom {
   constructor(seed = 1) { this.state = (Number(seed) >>> 0) || 1; }
@@ -30,16 +77,58 @@ export class NetworkConditionSimulator {
 }
 
 export class LoopbackTransport {
-  constructor(options={}) { this.condition = new NetworkConditionSimulator(options); this.tick = 0; this.queue = []; this.handlers = new Map(); this.stats = {sent:0,delivered:0,dropped:0,duplicated:0,bytes:0}; }
+  constructor(options={}) {
+    const {transportProfile, transportNodeId, ...conditionOptions} = options;
+    this.condition = new NetworkConditionSimulator(conditionOptions);
+    this.tick = 0;
+    this.queue = [];
+    this.handlers = new Map();
+    this.stats = {sent:0,delivered:0,dropped:0,duplicated:0,bytes:0};
+    const profile = transportProfile === false
+      ? null
+      : transportProfile ?? createLoopbackTransportProfile();
+    this.transportNodeId = String(transportNodeId ?? 'node:network-loopback');
+    this.transportFabric = profile
+      ? new RealityTransportFabric({nodeId: this.transportNodeId, profiles: [profile]})
+      : null;
+    this.transportProfile = this.transportFabric
+      ? this.transportFabric.getProfile(profile.profile_id ?? profile.profile_root)
+      : null;
+  }
   register(endpoint, handler) { this.handlers.set(endpoint, handler); }
   send(from,to,type,payload) {
-    const message = {from,to,type,payload:clone(payload),sentTick:this.tick};
+    const transportPayload = canonicalTransportValue(clean({from: String(from), to: String(to), type: String(type), payload: clone(payload)}));
+    const transportPacket = this.transportFabric?.send({
+      profileId: this.transportProfile.profile_root,
+      packetType: transportPacketType(type),
+      sourceNode: this.transportNodeId,
+      targetNode: String(to),
+      createdTick: this.tick,
+      permissionScope: [`network:${String(type)}`],
+      payload: transportPayload,
+      worldMutation: false
+    });
+    const message = {
+      from,
+      to,
+      type,
+      payload: clone(payload),
+      sentTick: this.tick,
+      transport: transportPacket ? {
+        packet_id: transportPacket.packet_id,
+        packet_root: transportPacket.packet_root,
+        packet_type: transportPacket.packet_type,
+        profile_root: transportPacket.profile_root,
+        source_node: transportPacket.source_node,
+        target_node: transportPacket.target_node
+      } : null
+    };
     const planned = this.condition.plan(message,this.tick); this.stats.sent++;
     if (!planned.length) this.stats.dropped++;
     if (planned.length > 1) this.stats.duplicated += planned.length - 1;
     for (const packet of planned) { packet.bytes = Buffer.byteLength(JSON.stringify(packet)); this.queue.push(packet); this.stats.bytes += packet.bytes; }
   }
-  advance(ticks=1) { for(let i=0;i<ticks;i++){ this.tick++; this.flush(); } }
+  advance(ticks=1) { for(let i=0;i<ticks;i++){ this.tick++; this.transportFabric?.advance(1); this.flush(); } }
   flush() {
     this.queue.sort((a,b)=>a.deliverTick-b.deliverTick || a.packetId.localeCompare(b.packetId));
     let budget = this.condition.options.bandwidthBytesPerTick;
@@ -51,5 +140,24 @@ export class LoopbackTransport {
     this.queue=remaining;
   }
   disconnect(endpoint){this.condition.disconnect(endpoint);} reconnect(endpoint){this.condition.reconnect(endpoint);}
-  setConditions(patch){this.condition.setOptions(patch);} getStats(){return clone({...this.stats,queued:this.queue.length,tick:this.tick});}
+  setConditions(patch){this.condition.setOptions(patch);}
+  getTransportSnapshot(){return this.transportFabric?.verify() ?? null;}
+  getTransportPacket(packetRoot){return this.transportFabric?.getPacket(packetRoot) ?? null;}
+  getStats(){
+    const transport = this.transportFabric ? this.getTransportSnapshot() : null;
+    return clone({
+      ...this.stats,
+      queued: this.queue.length,
+      tick: this.tick,
+      transport: transport ? {
+        node_id: transport.node_id,
+        profile_root: this.transportProfile.profile_root,
+        fabric_root: transport.fabric_root,
+        packet_count: transport.packets.length,
+        candidate_only: transport.candidate_only,
+        authoritative: transport.authoritative,
+        commit_status: transport.commit_status
+      } : null
+    });
+  }
 }

@@ -258,6 +258,7 @@
         "aaf",
         "rbf",
         "rfe-sdk",
+        "urrf",
         "rncs-durable-store"
       ],
       "test": "npm test --workspace @taowind/reality-network-runtime"

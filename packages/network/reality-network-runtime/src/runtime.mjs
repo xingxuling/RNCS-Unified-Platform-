@@ -1,6 +1,6 @@
 import {ServerAuthoritativeWorld, verifyNetworkSessionCheckpoint} from './server.mjs';
 import {ClientPredictionRuntime} from './client.mjs';
-import {LoopbackTransport} from './transport.mjs';
+import {createLoopbackTransportProfile, LoopbackTransport} from './transport.mjs';
 import {issuePlayerDelegation} from './authority.mjs';
 import {createTwoPlayerWorldConfig} from './world-fixture.mjs';
 import {clone, hash, NETWORK_VERSION, NETWORK_PROTOCOL, NETWORK_RUNTIME_ID} from './protocol.mjs';
@@ -70,8 +70,20 @@ function sourceMatches(source,compilation){
   return JSON.stringify(source)===JSON.stringify(expected);
 }
 
-function createSessionContext({sessionId,server,network={seed:1},sourceCompilation=null}){
-  const transport=new LoopbackTransport(network);
+function createSessionContext({sessionId,server,network={seed:1},sourceCompilation=null,transportProfile,transportNodeId}){
+  const {
+    transportProfile: networkTransportProfile,
+    transportNodeId: networkTransportNodeId,
+    ...conditionOptions
+  } = network ?? {};
+  const transport=new LoopbackTransport({
+    ...conditionOptions,
+    transportProfile: transportProfile ?? networkTransportProfile ?? createLoopbackTransportProfile({
+      profileId: `network:loopback:${sessionId}`,
+      evidenceRefs: [`session:${sessionId}`]
+    }),
+    transportNodeId: transportNodeId ?? networkTransportNodeId ?? `node:network:${sessionId}`
+  });
   const ctx={sessionId,server,transport,clients:new Map(),externalClients:new Map(),lastTickResult:null,closed:false,sourceCompilation:sourceCompilation?clone(sourceCompilation):null};
   transport.register(`server:${sessionId}`,packet=>{
     if(packet.type!=='input')return;
@@ -84,9 +96,9 @@ function createSessionContext({sessionId,server,network={seed:1},sourceCompilati
 
 export class RealityNetworkRuntime {
   constructor(){this.sessions=new Map();}
-  async createSession({sessionId=`session:${Date.now()}`,worldConfig=createTwoPlayerWorldConfig(),network={seed:1},clock}={}){const server=await ServerAuthoritativeWorld.create({sessionId,worldConfig,clock});const ctx=createSessionContext({sessionId,server,network});this.sessions.set(sessionId,ctx);return {sessionId,version:NETWORK_VERSION,protocol:NETWORK_PROTOCOL};}
-  async createSessionFromCompilation({sessionId,compilation,network={},clock}={}){const verification=verifyNetworkWorldCompilationEnvelope(compilation);if(!verification.valid)throw new Error(verification.errors[0]);const id=sessionId??`session:${compilation.project_id}`;const result=await this.createSession({sessionId:id,worldConfig:clone(compilation.world_config),network:{...compiledNetworkOptions(compilation.network_profile),...network},clock});const ctx=this.require(id);ctx.sourceCompilation=clone(compilation);return{...result,compilationRoot:compilation.compilation_root,worldConfigRoot:compilation.world_config_root,projectRoot:compilation.project_root,playerSlots:compilation.player_slots.length};}
-  async createSessionFromCheckpoint({checkpoint,compilation=null,network={},clock}={}){
+  async createSession({sessionId=`session:${Date.now()}`,worldConfig=createTwoPlayerWorldConfig(),network={seed:1},transportProfile,transportNodeId,clock}={}){const server=await ServerAuthoritativeWorld.create({sessionId,worldConfig,clock});const ctx=createSessionContext({sessionId,server,network,transportProfile,transportNodeId});this.sessions.set(sessionId,ctx);return {sessionId,version:NETWORK_VERSION,protocol:NETWORK_PROTOCOL};}
+  async createSessionFromCompilation({sessionId,compilation,network={},transportProfile,transportNodeId,clock}={}){const verification=verifyNetworkWorldCompilationEnvelope(compilation);if(!verification.valid)throw new Error(verification.errors[0]);const id=sessionId??`session:${compilation.project_id}`;const result=await this.createSession({sessionId:id,worldConfig:clone(compilation.world_config),network:{...compiledNetworkOptions(compilation.network_profile),...network},transportProfile,transportNodeId,clock});const ctx=this.require(id);ctx.sourceCompilation=clone(compilation);return{...result,compilationRoot:compilation.compilation_root,worldConfigRoot:compilation.world_config_root,projectRoot:compilation.project_root,playerSlots:compilation.player_slots.length};}
+  async createSessionFromCheckpoint({checkpoint,compilation=null,network={},transportProfile,transportNodeId,clock}={}){
     const verification=verifyNetworkSessionCheckpoint(checkpoint);
     if(!verification.valid)throw new Error(`NETWORK_CHECKPOINT_INVALID:${verification.errors.join(',')}`);
     if(checkpoint.source){
@@ -96,7 +108,7 @@ export class RealityNetworkRuntime {
       if(!sourceMatches(checkpoint.source,compilation))throw new Error('NETWORK_CHECKPOINT_SOURCE_ROOT_MISMATCH');
     }else if(compilation)throw new Error('NETWORK_CHECKPOINT_UNEXPECTED_SOURCE_COMPILATION');
     const server=await ServerAuthoritativeWorld.fromCheckpoint({checkpoint,clock});
-    const ctx=createSessionContext({sessionId:checkpoint.sessionId,server,network,sourceCompilation:compilation});
+    const ctx=createSessionContext({sessionId:checkpoint.sessionId,server,network,transportProfile,transportNodeId,sourceCompilation:compilation});
     this.sessions.set(checkpoint.sessionId,ctx);
     return{sessionId:checkpoint.sessionId,version:NETWORK_VERSION,protocol:NETWORK_PROTOCOL,checkpointRoot:checkpoint.checkpointRoot,stateRoot:server.lastSnapshot.stateRoot,tick:server.rsrWorld.tick,source:compilationSource(compilation)};
   }

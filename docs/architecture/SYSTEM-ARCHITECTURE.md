@@ -8,14 +8,15 @@
 - 相同输入与相同网络种子产生相同最终 Root。
 
 ## 系统边界与环境
-系统内：Session 生命周期、输入校验、固定 Tick、Loopback 故障队列、预测/回滚、Snapshot/Delta、Receipt、checkpoint 候选恢复、Node-only checkpoint store candidate、RBF 恢复候选、Gateway bridge。
+系统内：Session 生命周期、输入校验、固定 Tick、URRF semantic transport packet binding、Loopback 故障队列、预测/回滚、Snapshot/Delta、Receipt、checkpoint 候选恢复、Node-only checkpoint store candidate、RBF 恢复候选、Gateway bridge。
 外部 Provider：RSR 物理、AAF delegation、RBF candidate、RFE hashing/evidence、VSR 可选正式投影。
 环境：浏览器键盘、Node 进程、操作系统定时器；所有入站数据默认不可信。
 
 ## 子系统职责
 - `ServerAuthoritativeWorld`：授权、幂等、Tick 队列、RSR step、快照/增量/收据。
 - `ClientPredictionRuntime`：未确认输入、预测快照、Ack、恢复、重演和 correction receipt。
-- `LoopbackTransport`：确定性传输时序。
+- `RealityTransportFabric`：profile、packet root、QoS、candidate/authority admission 与 transport evidence seam；不拥有 canonical world state。
+- `LoopbackTransport`：把 Network message 映射为 URRF candidate packet，再提供确定性传输时序和故障模拟。
 - `NetworkConditionSimulator`：延迟、抖动、丢包、重复、乱序、断线、带宽和 burst loss。
 - `SnapshotInterpolator`：远端视觉投影。
 - `RealityNetworkRuntime`：公开 Session API 和 Gateway 动作。
@@ -54,11 +55,12 @@
 - AAF：`sealDelegation/verifyDelegation` 与 delegation root。
 - RFE：`rootHash/withIntegrity`。
 - RBF：`createBranch/createWorkspace/validateWorkspace`。
+- Reality Transport Fabric：Network Runtime 只绑定 profile-rooted candidate packets；physical provider 不能获得 RSR/Session authority。
 - Durable store：`AtomicJsonStore` 只负责已验证 candidate artifact 的文件原子写入与恢复；调用方负责 schema、root、receipt 和 authority。
 - Gateway：runtime manifest + node-module bridge。
 
 ## 演化与兼容策略
-协议对象均有 `format` 和版本；checkpoint 候选只新增 Network Runtime 包，不改 RSR/VSR。未来 UDP/QUIC 传输实现同一 Transport 接口；旧 Loopback 继续作为确定性测试 Provider。文件原子存储现在有本地 Node candidate seam，但实际断电、WAN/TLS、跨节点租约与 failover 不由该候选暗示为已完成。
+协议对象均有 `format` 和版本；transport candidate 复用 URRF profile/packet contract，checkpoint 候选只新增 Network Runtime 包，不改 RSR/VSR。未来 WebSocket/WSS、UDP/QUIC 或其他 physical provider 必须实现同一 semantic seam；旧 Loopback 继续作为确定性测试 Provider。文件原子存储现在有本地 Node candidate seam，但实际断电、WAN/TLS、跨节点租约与 failover 不由这些候选暗示为已完成。
 
 ## 最小系统验证
-`npm test --workspace @taowind/reality-network-runtime` 覆盖 30 个场景；`npm test --workspace @taowind/rncs-durable-store` 覆盖共享原子存储；`npm run demo:network` 启动双人运行；Gateway 测试发现 `rncs.network` 并调用健康与 Session 动作。
+`npm test --workspace @taowind/reality-network-runtime` 覆盖 31 个场景；`npm test --workspace @taowind/reality-representation-fabric` 覆盖 transport semantic seam；`npm test --workspace @taowind/rncs-durable-store` 覆盖共享原子存储；`npm run demo:network` 启动双人运行；Gateway 测试发现 `rncs.network` 并调用健康与 Session 动作。

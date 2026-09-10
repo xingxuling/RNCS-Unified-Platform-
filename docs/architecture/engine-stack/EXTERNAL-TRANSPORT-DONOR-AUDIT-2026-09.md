@@ -2,19 +2,21 @@
 
 ## 裁决
 
-`DONOR_FOUND_REUSE_BLOCKED_BY_LICENSE_AND_DEPLOYMENT_BOUNDARY`
+`SEMANTIC_TRANSPORT_REUSED_EXTERNAL_PROVIDER_NOT_PROMOTED`
 
-本轮没有把历史 DuoWorld Relay 源码复制进 RNCS。它可以证明一组 transport/provider 能力存在过，但不能直接成为 RNCS canonical runtime、生产安全实现或发布依赖。
+本轮没有把历史 DuoWorld Relay 源码复制进 RNCS。RNCS 已有的 URRF/Reality Transport Fabric 语义契约被复用到 Network Runtime 的 Loopback candidate；历史 DuoWorld Relay 只作为物理 WebSocket/relay Provider donor，不能直接成为 RNCS canonical runtime、生产安全实现或发布依赖。
 
 ## RNCS 当前真实基线
 
 Reality Network Runtime 当前拥有：
 
+- `RealityTransportFabric` semantic seam：`FIBER/WIFI/BLUETOOTH/RDN` profiles、QoS/packet types、profile/packet roots、candidate-only/authority admission 和 discovery/association/roaming/Organ Link 记录；该 Fabric 不拥有 canonical world state。
 - `LoopbackTransport`：确定性延迟、丢包、重复、乱序、带宽和断线模拟；这是测试 Provider，不是外部网络部署。
+- Loopback 已通过 `RDN` local candidate profile 把 input/ack/rejection/delta/snapshot 绑定为 URRF transport packets，并在 health 中暴露 transport/fabric root；这只是 semantic carrier binding，不是物理链路证明。
 - `HttpAuthorityClient`：基于 `fetch` 的 authority join/input/tick/snapshot/delta HTTP candidate；它复用 `ClientPredictionRuntime`，但不是长连接 transport。
 - Reality Build headless target：可通过 `RNCS_NETWORK_CHECKPOINT_PATH` 保存/恢复 checkpoint；恢复已在两个独立 Node server 进程间验证。
 
-当前没有可复用的 RNCS WebSocket、UDP、QUIC、WebRTC、TLS listener、跨节点 lease 或 public relay 实现。
+当前仍没有可复用的 RNCS WebSocket、UDP、QUIC、WebRTC、TLS listener、跨节点 lease 或 public relay 实现；URRF semantic packet 不应被误报为这些 physical provider。
 
 ## 历史 donor
 
@@ -40,6 +42,7 @@ Reality Network Runtime 当前拥有：
 
 | 能力 | 可吸收内容 | 当前裁决 |
 |---|---|---|
+| URRF transport profile/packet seam | canonical profile、QoS、packet root、候选/权威 admission 语义 | 已复用；由 Core Contract/Reality Transport Fabric 保持语义 owner，Network Runtime 只绑定 Loopback carrier，不产生第二套 packet schema |
 | WebSocket framing/heartbeat/limits | Provider contract 的候选输入 | 可研究；不能复制实现后宣称 RNCS native |
 | relay room/reconnect | 外部 transport provider 行为 | 只能作为 Auxiliary/Provider；不能拥有 RSR/Network canonical state |
 | WSS/TLS outbound | 部署层能力 | 需要证书、密钥托管、origin、反向代理和生产安全裁决 |
@@ -50,17 +53,17 @@ Reality Network Runtime 当前拥有：
 
 ## 当前 RCL Gap
 
-`RCL_GAP_RNCS_EXTERNAL_TRANSPORT_AND_DEPLOYMENT`：
+`RCL_GAP_RNCS_EXTERNAL_TRANSPORT_PROVIDER_AND_DEPLOYMENT`：
 
-- missing capability：面向浏览器、Node、Android/native 的统一外部 transport provider contract，以及带 TLS/身份/限流/重连/跨节点 lease 证据的实际执行链；
-- current workaround：Loopback/HTTP candidate；
+- missing capability：在既有 URRF semantic profile/packet seam 之上，面向浏览器、Node、Android/native 的统一 external transport provider execution，以及带 TLS/身份/限流/重连/跨节点 lease 证据的实际执行链；
+- current workaround：URRF candidate packet + Loopback carrier binding + HTTP authority candidate；
 - donor advantage：历史 Relay 已证明 WebSocket room、heartbeat、reconnect 和 WSS outbound 的局部 Provider 形态；
-- owner：Network Runtime 保留 packet/session/state-root 语义，transport/provider 不得成为 authority；
+- owner：Core Contract/Reality Transport Fabric 保留 transport semantic owner，Network Runtime 保留 session/state-root/authority owner，physical transport/provider 不得成为 authority；
 - blocked promotion: donor license/owner approval、canonical transport choice、TLS/key custody、跨节点 authority 与真实第二网络测试。
 
 ## 下一步需要的战略裁决
 
-在继续实现外部 transport 之前，需要确定：
+在继续实现 physical external transport 之前，需要确定：
 
 1. canonical external transport 选择 `WebSocket/WSS`、`WebTransport/QUIC`，还是继续把 HTTP 维持为 candidate；
 2. 是否允许历史 DuoWorld Relay 仅作为外部 Provider 参考，或必须使用有明确许可证的独立实现/第三方依赖；

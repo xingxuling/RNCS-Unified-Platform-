@@ -59,6 +59,7 @@ test('keeps authority-gated packets and low-power Organ Links candidate-only', (
   const receiptRoot = 'a'.repeat(64);
   const packet = fabric.send({profileId: state.profile_id, targetNode: 'node:target', authorityLease: lease, authorityReceiptRoot: receiptRoot, currentLease: lease, authorityReceipt: {status: 'committed', receipt_root: receiptRoot}, authorityId: lease.authority_id, shardId: lease.shard_id, semanticScope: lease.semantic_scope, worldMutation: true, payload: {state_root: 'b'.repeat(64)}});
   assert.equal(verifyRealityTransportPacket(packet).valid, true);
+  assert.equal(fabric.getPacket(packet.packet_root).packet_root, packet.packet_root);
   const discovery = targetFabric.discover({remoteNodes: ['node:source'], transportKinds: ['bluetooth']})[0];
   const association = targetFabric.associate({discovery, profileId: bluetooth.profile_id, deviceId: 'device:haptic', paired: true, permissionScope: ['device.state']});
   const link = targetFabric.sendOrganState({association, profileId: bluetooth.profile_id, deviceId: 'device:haptic', capabilityId: 'haptic.state', capabilityManifestRoot: 'c'.repeat(64), permissionScope: ['device.state'], authorityLease: lease, authorityReceiptRoot: receiptRoot, currentLease: lease, authorityReceipt: {status: 'committed', receipt_root: receiptRoot}, authorityId: lease.authority_id, shardId: lease.shard_id, semanticScope: lease.semantic_scope, worldMutation: true, payload: {pose: {x: 1}}});

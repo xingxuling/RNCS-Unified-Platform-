@@ -196,6 +196,10 @@ export class RealityTransportFabric {
     return clone(packet);
   }
 
+  getPacket(packetRoot) {
+    return clone(this.packets.get(String(packetRoot)) ?? null);
+  }
+
   sendOrganState(input = {}) {
     const value = record(input);
     const association = clone(value.association ?? value.node_association ?? this.associations.get(String(value.association_root ?? value.associationRoot)));

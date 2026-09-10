@@ -277,3 +277,30 @@ test('observer relevance preserves causal focus beyond the object budget',async(
   const view=runtime.pullObserverView({sessionId:id,observerId:'observer:causal',position:{x:0,y:0,z:0},radius:1,maxObjects:1,causalBodyIds:['player-blue','player-red']});
   assert.equal(view.selectedObjects.length,2);assert.deepEqual(view.selectedObjects.map(object=>object.objectId).sort(),['player-blue','player-red']);assert.equal(view.summary.budget,1);assert.deepEqual(view.missingRequiredBodyIds,[]);assert.equal(view.sourceStateRoot,sourceRoot);
 });
+
+// 28
+test('network loopback binds messages to the candidate Reality Transport Fabric',async()=>{
+  const {runtime,ctx,id}=await setup({id:'session:transport-fabric',joinB:false});
+  const initial=ctx.transport.getTransportSnapshot();
+  assert.equal(initial.packets.length,0);
+  assert.equal(initial.candidate_only,true);
+  assert.equal(initial.authoritative,false);
+  assert.equal(initial.commit_status,'NOT_COMMITTED');
+  const input=runtime.submitInput({sessionId:id,playerId:'a',command:{type:'move',x:1000000,z:0}});
+  const queued=ctx.transport.queue.at(-1);
+  assert.equal(queued.transport.packet_type,'CONTROL');
+  const packet=ctx.transport.getTransportPacket(queued.transport.packet_root);
+  assert.equal(packet.source_node,`node:network:${id}`);
+  assert.equal(packet.target_node,`server:${id}`);
+  assert.equal(packet.payload.payload.inputSequence,input.inputSequence);
+  assert.equal(packet.authoritative,false);
+  assert.equal(packet.commit_status,'NOT_COMMITTED');
+  const afterSend=ctx.transport.getStats();
+  assert.equal(afterSend.transport.packet_count,1);
+  runtime.advanceServerTick({sessionId:id});
+  const health=runtime.getSessionHealth({sessionId:id});
+  const snapshot=ctx.transport.getTransportSnapshot();
+  assert.ok(snapshot.packets.length>1);
+  assert.equal(health.transport.transport.fabric_root,snapshot.fabric_root);
+  assert.equal(health.transport.transport.packet_count,snapshot.packets.length);
+});
