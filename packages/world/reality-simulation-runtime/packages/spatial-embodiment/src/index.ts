@@ -12,7 +12,7 @@ export const Q = 1_000_000;
 
 export interface IntVector3 { x: number; y: number; z: number }
 export interface FloatVector3 { x: number; y: number; z: number }
-export interface SpatialShapeCastHit { bodyId: string; fixtureId: string; distance: number; point: IntVector3; normal: IntVector3; shapeType: 'sphere' | 'capsule'; method: 'bounded-heightfield-support-probe' }
+export interface SpatialShapeCastHit { bodyId: string; fixtureId: string; distance: number; point: IntVector3; normal: IntVector3; shapeType: 'sphere' | 'capsule'; method: 'bounded-heightfield-sphere-sweep' | 'bounded-heightfield-support-probe' }
 export type SpatialBodyKind = 'static' | 'dynamic' | 'kinematic';
 export type SpatialShape =
   | { type: 'sphere'; radius: number }
@@ -364,6 +364,7 @@ const canonicalId = (...parts: string[]): string => parts.sort().join('|');
 const quantize = (n: number): number => Math.round(n);
 const MAX_HEIGHTFIELD_DIMENSION = 4_096;
 const MAX_HEIGHTFIELD_SAMPLES = 1_000_000;
+const MAX_HEIGHTFIELD_SWEEP_CELLS = 4_096;
 
 export const toSpatialFixed = (value: number): number => Math.round(value * POSITION_SCALE);
 export const fromSpatialFixed = (value: number): number => value / POSITION_SCALE;
@@ -475,6 +476,99 @@ function rayTriangleIntersection(origin: IntVector3, direction: IntVector3, a: I
   if (normal.y < 0) normal = fscale(normal, -1);
   return { distance: Math.max(0, distance), point: fromFloat3(fadd(toFloat3(origin), fscale(ray, distance))), normal: normalizeQ(v3(Math.round(normal.x * Q), Math.round(normal.y * Q), Math.round(normal.z * Q))) };
 }
+interface FloatSphereSweepHit { distance: number; point: FloatVector3; normal: FloatVector3; featureRank: number }
+function closestPointOnSegment(point: FloatVector3, a: FloatVector3, b: FloatVector3): FloatVector3 {
+  const edge = fsub(b, a), denominator = fdot(edge, edge);
+  return fadd(a, fscale(edge, denominator <= 1e-12 ? 0 : clamp(fdot(fsub(point, a), edge) / denominator, 0, 1)));
+}
+function closestPointOnTriangle(point: FloatVector3, a: FloatVector3, b: FloatVector3, c: FloatVector3): FloatVector3 {
+  const ab = fsub(b, a), ac = fsub(c, a), ap = fsub(point, a), d1 = fdot(ab, ap), d2 = fdot(ac, ap);
+  if (d1 <= 0 && d2 <= 0) return a;
+  const bp = fsub(point, b), d3 = fdot(ab, bp), d4 = fdot(ac, bp);
+  if (d3 >= 0 && d4 <= d3) return b;
+  const vc = d1 * d4 - d3 * d2;
+  if (vc <= 0 && d1 >= 0 && d3 <= 0) return fadd(a, fscale(ab, d1 / Math.max(1e-12, d1 - d3)));
+  const cp = fsub(point, c), d5 = fdot(ab, cp), d6 = fdot(ac, cp);
+  if (d6 >= 0 && d5 <= d6) return c;
+  const vb = d5 * d2 - d1 * d6;
+  if (vb <= 0 && d2 >= 0 && d6 <= 0) return fadd(a, fscale(ac, d2 / Math.max(1e-12, d2 - d6)));
+  const va = d3 * d6 - d5 * d4;
+  if (va <= 0 && d4 >= d3 && d5 >= d4) return fadd(b, fscale(fsub(c, b), (d4 - d3) / Math.max(1e-12, (d4 - d3) + (d5 - d6))));
+  const denominator = 1 / Math.max(1e-12, va + vb + vc), v = vb * denominator, w = vc * denominator;
+  return fadd(a, fadd(fscale(ab, v), fscale(ac, w)));
+}
+function pointInTriangle(point: FloatVector3, a: FloatVector3, b: FloatVector3, c: FloatVector3): boolean {
+  const v0 = fsub(b, a), v1 = fsub(c, a), v2 = fsub(point, a), d00 = fdot(v0, v0), d01 = fdot(v0, v1), d11 = fdot(v1, v1), d20 = fdot(v2, v0), d21 = fdot(v2, v1), denominator = d00 * d11 - d01 * d01;
+  if (Math.abs(denominator) <= 1e-12) return false;
+  const v = (d11 * d20 - d01 * d21) / denominator, w = (d00 * d21 - d01 * d20) / denominator;
+  return v >= -1e-7 && w >= -1e-7 && v + w <= 1 + 1e-7;
+}
+function quadraticRoots(a: number, b: number, c: number): number[] {
+  if (Math.abs(a) <= 1e-12) return Math.abs(b) <= 1e-12 ? [] : [-c / b];
+  const discriminant = b * b - 4 * a * c;
+  if (discriminant < -1e-9) return [];
+  if (Math.abs(discriminant) <= 1e-9) return [-b / (2 * a)];
+  const root = Math.sqrt(discriminant), first = (-b - root) / (2 * a), second = (-b + root) / (2 * a);
+  return first <= second ? [first, second] : [second, first];
+}
+function sweptSphereTriangle(origin: FloatVector3, velocity: FloatVector3, radius: number, a: FloatVector3, b: FloatVector3, c: FloatVector3, maxDistance: number): FloatSphereSweepHit | undefined {
+  let terrainNormal = fnormalize(fcross(fsub(b, a), fsub(c, a)));
+  if (terrainNormal.y < 0) terrainNormal = fscale(terrainNormal, -1);
+  const closest = closestPointOnTriangle(origin, a, b, c), initialDelta = fsub(origin, closest), initialDistance = flength(initialDelta);
+  if (initialDistance <= radius + 1e-7) return { distance: 0, point: closest, normal: initialDistance <= 1e-9 ? terrainNormal : fscale(initialDelta, 1 / initialDistance), featureRank: 0 };
+  const candidates: FloatSphereSweepHit[] = [];
+  const consider = (distanceAlongPath: number, point: FloatVector3, normal: FloatVector3, featureRank: number): void => {
+    if (distanceAlongPath < -1e-7 || distanceAlongPath > maxDistance + 1e-7) return;
+    const normalized = flength(normal) <= 1e-9 ? terrainNormal : fnormalize(normal);
+    candidates.push({distance: Math.max(0, distanceAlongPath), point, normal: normalized, featureRank});
+  };
+  const signedPlaneDistance = fdot(fsub(origin, a), terrainNormal), planeSpeed = fdot(velocity, terrainNormal);
+  if (signedPlaneDistance > radius + 1e-7 && planeSpeed < -1e-12) {
+    const distanceAlongPath = (radius - signedPlaneDistance) / planeSpeed;
+    if (distanceAlongPath >= -1e-7 && distanceAlongPath <= maxDistance + 1e-7) {
+      const center = fadd(origin, fscale(velocity, distanceAlongPath)), contact = fsub(center, fscale(terrainNormal, radius));
+      if (pointInTriangle(contact, a, b, c)) consider(distanceAlongPath, contact, terrainNormal, 0);
+    }
+  }
+  for (const [edgeStart, edgeEnd] of [[a, b], [b, c], [c, a]] as const) {
+    const edge = fsub(edgeEnd, edgeStart), edgeLengthSquared = fdot(edge, edge);
+    if (edgeLengthSquared <= 1e-12) continue;
+    const relativeOrigin = fsub(origin, edgeStart), edgeProjection = fscale(edge, fdot(relativeOrigin, edge) / edgeLengthSquared), velocityProjection = fscale(edge, fdot(velocity, edge) / edgeLengthSquared), perpendicularOrigin = fsub(relativeOrigin, edgeProjection), perpendicularVelocity = fsub(velocity, velocityProjection);
+    for (const distanceAlongPath of quadraticRoots(fdot(perpendicularVelocity, perpendicularVelocity), 2 * fdot(perpendicularOrigin, perpendicularVelocity), fdot(perpendicularOrigin, perpendicularOrigin) - radius * radius)) {
+      if (distanceAlongPath < -1e-7 || distanceAlongPath > maxDistance + 1e-7) continue;
+      const center = fadd(origin, fscale(velocity, distanceAlongPath)), edgePoint = closestPointOnSegment(center, edgeStart, edgeEnd), normal = fsub(center, edgePoint), edgeParameter = fdot(fsub(edgePoint, edgeStart), edge) / edgeLengthSquared;
+      if (edgeParameter >= -1e-7 && edgeParameter <= 1 + 1e-7) consider(distanceAlongPath, edgePoint, normal, 1);
+    }
+  }
+  for (const vertex of [a, b, c]) {
+    const relative = fsub(origin, vertex);
+    for (const distanceAlongPath of quadraticRoots(fdot(velocity, velocity), 2 * fdot(relative, velocity), fdot(relative, relative) - radius * radius)) {
+      if (distanceAlongPath < -1e-7 || distanceAlongPath > maxDistance + 1e-7) continue;
+      const center = fadd(origin, fscale(velocity, distanceAlongPath));
+      consider(distanceAlongPath, vertex, fsub(center, vertex), 2);
+    }
+  }
+  candidates.sort((left, right) => left.distance - right.distance || left.featureRank - right.featureRank || left.point.x - right.point.x || left.point.y - right.point.y || left.point.z - right.point.z);
+  return candidates[0];
+}
+function heightfieldSphereSweep(origin: IntVector3, direction: IntVector3, maxDistance: number, radius: number, body: RuntimeSpatialBody, fixture: RuntimeSpatialFixture & { shape: HeightfieldShape }): { distance: number; point: IntVector3; normal: IntVector3 } | undefined {
+  const shape = fixture.shape, terrainOrigin = fixtureWorldPosition(body, fixture), dir = normalizeQ(direction), velocity = fscale(toFloat3(dir), 1 / Q), limit = Math.max(0, maxDistance), endpoint = fadd(toFloat3(origin), fscale(velocity, limit)), terrainMaxX = terrainOrigin.x + (shape.columns - 1) * shape.sampleSpacing, terrainMaxZ = terrainOrigin.z + (shape.rows - 1) * shape.sampleSpacing, expandedMinX = Math.min(origin.x, endpoint.x) - radius, expandedMaxX = Math.max(origin.x, endpoint.x) + radius, expandedMinZ = Math.min(origin.z, endpoint.z) - radius, expandedMaxZ = Math.max(origin.z, endpoint.z) + radius;
+  if (expandedMaxX < terrainOrigin.x || expandedMinX > terrainMaxX || expandedMaxZ < terrainOrigin.z || expandedMinZ > terrainMaxZ) return undefined;
+  const firstCellX = clamp(Math.floor((Math.max(terrainOrigin.x, expandedMinX) - terrainOrigin.x) / shape.sampleSpacing), 0, shape.columns - 2), lastCellX = clamp(Math.floor((Math.min(terrainMaxX, expandedMaxX) - terrainOrigin.x) / shape.sampleSpacing), 0, shape.columns - 2), firstCellZ = clamp(Math.floor((Math.max(terrainOrigin.z, expandedMinZ) - terrainOrigin.z) / shape.sampleSpacing), 0, shape.rows - 2), lastCellZ = clamp(Math.floor((Math.min(terrainMaxZ, expandedMaxZ) - terrainOrigin.z) / shape.sampleSpacing), 0, shape.rows - 2);
+  const cellCount = (lastCellX - firstCellX + 1) * (lastCellZ - firstCellZ + 1);
+  if (cellCount > MAX_HEIGHTFIELD_SWEEP_CELLS) throw new Error('SPATIAL_HEIGHTFIELD_SPHERE_SWEEP_BUDGET_EXCEEDED');
+  let best: FloatSphereSweepHit | undefined;
+  const spacing = shape.sampleSpacing;
+  for (let cellZ = firstCellZ; cellZ <= lastCellZ; cellZ++) for (let cellX = firstCellX; cellX <= lastCellX; cellX++) {
+    const baseX = terrainOrigin.x + cellX * spacing, baseZ = terrainOrigin.z + cellZ * spacing, index = cellZ * shape.columns + cellX;
+    const p00 = toFloat3(v3(baseX, terrainOrigin.y + shape.heights[index]!, baseZ)), p10 = toFloat3(v3(baseX + spacing, terrainOrigin.y + shape.heights[index + 1]!, baseZ)), p01 = toFloat3(v3(baseX, terrainOrigin.y + shape.heights[index + shape.columns]!, baseZ + spacing)), p11 = toFloat3(v3(baseX + spacing, terrainOrigin.y + shape.heights[index + shape.columns + 1]!, baseZ + spacing));
+    for (const triangle of [[p00, p10, p01], [p11, p01, p10]] as const) {
+      const hit = sweptSphereTriangle(toFloat3(origin), velocity, radius, triangle[0], triangle[1], triangle[2], limit);
+      if (hit && (!best || hit.distance < best.distance - 1e-7 || hit.distance <= best.distance + 1e-7 && hit.featureRank < best.featureRank)) best = hit;
+    }
+  }
+  return best ? {distance: Math.round(best.distance), point: fromFloat3(best.point), normal: normalizeQ(v3(Math.round(best.normal.x * Q), Math.round(best.normal.y * Q), Math.round(best.normal.z * Q)))} : undefined;
+}
 function heightfieldRayCast(origin: IntVector3, direction: IntVector3, maxDistance: number, body: RuntimeSpatialBody, fixture: RuntimeSpatialFixture & { shape: HeightfieldShape }): { distance: number; point: IntVector3; normal: IntVector3 } | undefined {
   const shape = fixture.shape, terrainOrigin = fixtureWorldPosition(body, fixture), dir = normalizeQ(direction), ray = fscale(toFloat3(dir), 1 / Q), limit = Math.max(0, maxDistance), minX = terrainOrigin.x, minZ = terrainOrigin.z, maxX = minX + (shape.columns - 1) * shape.sampleSpacing, maxZ = minZ + (shape.rows - 1) * shape.sampleSpacing;
   let enter = 0, exit = limit;
@@ -525,7 +619,8 @@ function heightfieldFootprintSupport(body: RuntimeSpatialBody, fixture: RuntimeS
   return best;
 }
 function heightfieldShapeCast(origin: IntVector3, direction: IntVector3, maxDistance: number, shape: HeightfieldCastShape, body: RuntimeSpatialBody, fixture: RuntimeSpatialFixture & { shape: HeightfieldShape }): { distance: number; point: IntVector3; normal: IntVector3 } | undefined {
-  const limit = Math.max(0, maxDistance), dir = normalizeQ(direction), radius = shape.radius, verticalExtent = shape.type === 'sphere' ? shape.radius : shape.halfHeight + shape.radius;
+  if (shape.type === 'sphere') return heightfieldSphereSweep(origin, direction, maxDistance, shape.radius, body, fixture);
+  const limit = Math.max(0, maxDistance), dir = normalizeQ(direction), radius = shape.radius, verticalExtent = shape.halfHeight + shape.radius;
   const stepLength = Math.max(1, Math.min(fixture.shape.sampleSpacing / 2, Math.max(1, radius / 2))), steps = Math.max(1, Math.min(4_096, Math.ceil(limit / stepLength)));
   const probe = (distanceAlongRay: number): { distance: number; point: IntVector3; normal: IntVector3 } | undefined => {
     const center = add(origin, mul(dir, distanceAlongRay / Q)), support = heightfieldFootprintSupport(body, fixture, center, radius);
@@ -1112,7 +1207,7 @@ export class SpatialEmbodimentWorld {
     for (const body of this.bodyMap.values()) for (const fixture of body.fixtures) {
       if (fixture.shape.type !== 'heightfield') continue;
       const hit = heightfieldShapeCast(origin, direction, maxDistance, shape, body, fixture as RuntimeSpatialFixture & { shape: HeightfieldShape });
-      if (hit) hits.push({bodyId: body.id, fixtureId: fixture.id, distance: hit.distance, point: hit.point, normal: hit.normal, shapeType: shape.type, method: 'bounded-heightfield-support-probe'});
+      if (hit) hits.push({bodyId: body.id, fixtureId: fixture.id, distance: hit.distance, point: hit.point, normal: hit.normal, shapeType: shape.type, method: shape.type === 'sphere' ? 'bounded-heightfield-sphere-sweep' : 'bounded-heightfield-support-probe'});
     }
     return hits.sort((a, b) => a.distance - b.distance || a.bodyId.localeCompare(b.bodyId));
   }

@@ -91,7 +91,7 @@ test('runs the lowered terrain through RSR replay and VSR projection without cha
   const cast = queryWorld.shapeCast({type: 'sphere', radius: 500}, {x: 24_000, y: 100_000, z: 24_000}, {x: 0, y: -1_000_000, z: 0})[0];
   assert.ok(cast);
   assert.equal(cast?.bodyId, terrain.id);
-  assert.equal(cast?.method, 'bounded-heightfield-support-probe');
+  assert.equal(cast?.method, 'bounded-heightfield-sphere-sweep');
   const snapshot = new SpatialEmbodimentWorld(config).run(120);
   const avatarState = snapshot.bodies.find(body => body.id === 'avatar');
   assert.ok(avatarState);
