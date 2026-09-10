@@ -1,0 +1,54 @@
+{
+  "format": "taowind.reality-build.network-checkpoint-recovery-candidate-evidence.v0.1",
+  "version": "0.1.0",
+  "status": "CANDIDATE_TWO_NODE_PROCESS_VERIFIED",
+  "sourceCommit": "5ef859b4a5e2e01b9bbd1ebc825f91591ee34631",
+  "pipeline": "Studio network compilation -> Reality Build headless-server target -> HTTP authority join/input/tick -> checkpoint store save -> independent server process -> checkpoint recover -> compiled source rebind -> authority slot resume",
+  "target": {
+    "kind": "headless-server",
+    "networkRuntimeMode": "loopback-local-candidate",
+    "checkpointMode": "node-local-file-candidate",
+    "checkpointPathEnv": "RNCS_NETWORK_CHECKPOINT_PATH",
+    "checkpointEndpoints": [
+      "/network/authority/checkpoint",
+      "/network/authority/recover"
+    ]
+  },
+  "commands": [
+    "node --test --test-concurrency=1 apps/reality-build/tests/network-build.test.mjs",
+    "npm test --workspace @taowind/reality-build-fabric",
+    "npm test --workspace @taowind/reality-network-runtime",
+    "npm test --workspace @taowind/rncs-durable-store"
+  ],
+  "tests": {
+    "networkBuildIntegration": "1 test / 1 pass / 0 fail",
+    "realityBuildSuite": "142 tests / 134 pass / 0 fail / 8 skip",
+    "networkRuntimeSuite": "30 tests / 30 pass / 0 fail",
+    "durableStoreSuite": "1 test / 1 pass / 0 fail",
+    "manifestDeclaresCheckpointEndpoints": "PASS",
+    "checkpointSaveReceipt": "PASS",
+    "checkpointFileMaterialized": "PASS",
+    "firstNodeProcessAuthorityRun": "PASS",
+    "secondNodeProcessAuthorityRun": "PASS",
+    "checkpointRecovery": "PASS",
+    "compiledSourceRootRebind": "PASS",
+    "authorityResume": "PASS",
+    "restoredStateRootEqualsSavedCheckpoint": "PASS"
+  },
+  "authority": {
+    "storeReceiptCandidateOnly": true,
+    "storeReceiptAuthoritative": false,
+    "storeReceiptCommitStatus": "NOT_COMMITTED",
+    "canonicalStateMutatedByStore": false,
+    "recoveryRequiresVerifiedCompilation": true,
+    "resumeRequiresExplicitAuthorityJoin": true
+  },
+  "boundaries": [
+    "The endpoint is generated only for the Node headless candidate target and requires an explicit absolute local filesystem path.",
+    "The test proves two independent local Node server processes, not a distributed server pair or actual crash/power-loss recovery.",
+    "The transport remains HTTP over loopback; no WebSocket, UDP, QUIC, TLS, WAN, multi-device, cross-node lease, leader election, or production SLA evidence is claimed.",
+    "The checkpoint store owns no canonical world state and grants no commit or promotion authority.",
+    "No K400 gate is promoted to PASS."
+  ],
+  "evidenceRoot": "a7b5a0795b09bf5d97142f5d8a89834bce8c449bc71917245dfcd6a1e37e0aff"
+}
