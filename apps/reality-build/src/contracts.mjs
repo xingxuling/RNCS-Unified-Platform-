@@ -2,6 +2,7 @@ import path from 'node:path';
 import {clone,rootHash,seal,verifySeal,BuildError,fixedIso,safeName} from './canonical.mjs';
 import {verifyWorldBodyBuildPresentationCandidate} from './world-body-candidate.mjs';
 import {verifySpatialPresentationCandidate} from './presentation-candidate.mjs';
+import {validateBuildUIInput} from './ui-input.mjs';
 
 export const BUILD_FORMAT='reality-build.request.v0.1';
 export const BUILD_VERSION='0.2.0-alpha.1';
@@ -106,8 +107,9 @@ export function validateUnifiedProject(project){
   need(sceneIds.has(project?.active_scene_id),'ACTIVE_SCENE_INVALID','active_scene_id');
   const assetIds=new Set(Object.keys(project?.assets?.registry??{}));for(const s of project?.scenes??[])for(const n of s.nodes??[])if(n.asset_id&&!assetIds.has(n.asset_id))warnings.push({code:'NODE_ASSET_UNRESOLVED',path:n.node_id,asset_id:n.asset_id});
   const programs=project?.behavior?.programs??{};need(Boolean(project?.behavior?.active_program_id),'ACTIVE_PROGRAM_REQUIRED','behavior.active_program_id');need(Boolean(programs[project?.behavior?.active_program_id]),'ACTIVE_PROGRAM_MISSING','behavior.active_program_id');
+  const uiInput=validateBuildUIInput(project);errors.push(...uiInput.errors);warnings.push(...uiInput.warnings);
   if(typeof project?.project_root!=='string'||project.project_root.length<32)warnings.push({code:'PROJECT_ROOT_WEAK_OR_MISSING',path:'project_root'});
-  return{valid:errors.length===0,errors,warnings,counts:{scenes:project?.scenes?.length??0,nodes:(project?.scenes??[]).reduce((n,s)=>n+(s.nodes?.length??0),0),assets:assetIds.size,programs:Object.keys(programs).length}};
+  return{valid:errors.length===0,errors,warnings,ui_input:uiInput,counts:{scenes:project?.scenes?.length??0,nodes:(project?.scenes??[]).reduce((n,s)=>n+(s.nodes?.length??0),0),assets:assetIds.size,programs:Object.keys(programs).length}};
 }
 
 export function createBuildIdentity(request,project,inputs={}){
