@@ -15,7 +15,8 @@ export type SpatialShape =
   | { type: 'sphere'; radius: number }
   | { type: 'box'; halfExtents: IntVector3 }
   | { type: 'capsule'; radius: number; halfHeight: number }
-  | { type: 'convex'; vertices: IntVector3[]; indices: number[] };
+  | { type: 'convex'; vertices: IntVector3[]; indices: number[] }
+  | { type: 'heightfield'; columns: number; rows: number; sampleSpacing: number; heights: number[] };
 
 export interface SpatialMaterialSpec {
   id: string;
@@ -317,7 +318,7 @@ export interface SpatialEmbodimentSnapshot {
 }
 
 interface Aabb3 { min: IntVector3; max: IntVector3 }
-interface CollisionResult { point: IntVector3; normal: IntVector3; penetration: number; feature?: 'capsule-obb' | 'gjk-epa' }
+interface CollisionResult { point: IntVector3; normal: IntVector3; penetration: number; feature?: 'capsule-obb' | 'gjk-epa' | 'heightfield' }
 interface CollisionStats { gjkCalls: number; epaCalls: number; convexContacts: number; convexFallbacks: number }
 
 const v3 = (x = 0, y = 0, z = 0): IntVector3 => ({ x, y, z });
@@ -332,6 +333,8 @@ const clamp = (n: number, min: number, max: number): number => Math.max(min, Mat
 const qmul = (value: number, q: number): number => Math.round(value * q / Q);
 const canonicalId = (...parts: string[]): string => parts.sort().join('|');
 const quantize = (n: number): number => Math.round(n);
+const MAX_HEIGHTFIELD_DIMENSION = 4_096;
+const MAX_HEIGHTFIELD_SAMPLES = 1_000_000;
 
 export const toSpatialFixed = (value: number): number => Math.round(value * POSITION_SCALE);
 export const fromSpatialFixed = (value: number): number => value / POSITION_SCALE;
@@ -340,7 +343,6 @@ export const fromDegrees = (value: number): number => value / ROTATION_SCALE;
 
 function cloneVec(value: IntVector3 | undefined, fallback = v3()): IntVector3 { return value ? v3(value.x, value.y, value.z) : v3(fallback.x, fallback.y, fallback.z); }
 function validateFiniteVec(name: string, value: IntVector3): void { for (const key of ['x', 'y', 'z'] as const) if (!Number.isFinite(value[key])) throw new Error(`${name}.${key} must be finite`); }
-function shapeRadius(shape: SpatialShape): number { if (shape.type === 'sphere') return shape.radius; if (shape.type === 'capsule') return shape.radius + shape.halfHeight; if (shape.type === 'box') return Math.hypot(shape.halfExtents.x, shape.halfExtents.y, shape.halfExtents.z); return Math.max(...shape.vertices.map(vertex => Math.hypot(vertex.x, vertex.y, vertex.z))); }
 function validateShape(name: string, shape: SpatialShape): void {
   if (shape.type === 'sphere' || shape.type === 'capsule') {
     if (!Number.isFinite(shape.radius) || shape.radius <= 0) throw new Error(`${name}.radius must be positive`);
@@ -350,6 +352,14 @@ function validateShape(name: string, shape: SpatialShape): void {
   if (shape.type === 'box') {
     validateFiniteVec(`${name}.halfExtents`, shape.halfExtents);
     if (shape.halfExtents.x <= 0 || shape.halfExtents.y <= 0 || shape.halfExtents.z <= 0) throw new Error(`${name}.halfExtents must be positive`);
+    return;
+  }
+  if (shape.type === 'heightfield') {
+    if (!Number.isSafeInteger(shape.columns) || shape.columns < 2 || shape.columns > MAX_HEIGHTFIELD_DIMENSION) throw new Error(`${name}.columns must be an integer between 2 and ${MAX_HEIGHTFIELD_DIMENSION}`);
+    if (!Number.isSafeInteger(shape.rows) || shape.rows < 2 || shape.rows > MAX_HEIGHTFIELD_DIMENSION) throw new Error(`${name}.rows must be an integer between 2 and ${MAX_HEIGHTFIELD_DIMENSION}`);
+    if (!Number.isSafeInteger(shape.sampleSpacing) || shape.sampleSpacing <= 0) throw new Error(`${name}.sampleSpacing must be a positive integer`);
+    if (shape.columns * shape.rows > MAX_HEIGHTFIELD_SAMPLES || shape.heights.length !== shape.columns * shape.rows) throw new Error(`${name}.heights length must equal columns*rows and remain bounded`);
+    if (shape.heights.some(height => !Number.isSafeInteger(height))) throw new Error(`${name}.heights must contain safe integer samples`);
     return;
   }
   if (shape.vertices.length < 4 || shape.vertices.some(vertex => !Number.isFinite(vertex.x) || !Number.isFinite(vertex.y) || !Number.isFinite(vertex.z))) throw new Error(`${name}.vertices must contain at least four finite points`);
@@ -401,6 +411,35 @@ function obbAabb(box: OrientedBox3): Aabb3 {
   const extent = { x: Math.abs(x.x) * h.x + Math.abs(y.x) * h.y + Math.abs(z.x) * h.z, y: Math.abs(x.y) * h.x + Math.abs(y.y) * h.y + Math.abs(z.y) * h.z, z: Math.abs(x.z) * h.x + Math.abs(y.z) * h.y + Math.abs(z.z) * h.z };
   return { min: v3(Math.floor(box.center.x - extent.x), Math.floor(box.center.y - extent.y), Math.floor(box.center.z - extent.z)), max: v3(Math.ceil(box.center.x + extent.x), Math.ceil(box.center.y + extent.y), Math.ceil(box.center.z + extent.z)) };
 }
+type HeightfieldShape = Extract<SpatialShape, { type: 'heightfield' }>;
+function heightfieldAabb(body: RuntimeSpatialBody, fixture: RuntimeSpatialFixture & { shape: HeightfieldShape }): Aabb3 {
+  const origin = fixtureWorldPosition(body, fixture), shape = fixture.shape;
+  let minHeight = shape.heights[0]!, maxHeight = minHeight;
+  for (const height of shape.heights) { minHeight = Math.min(minHeight, height); maxHeight = Math.max(maxHeight, height); }
+  return { min: v3(origin.x, origin.y + minHeight, origin.z), max: v3(origin.x + (shape.columns - 1) * shape.sampleSpacing, origin.y + maxHeight, origin.z + (shape.rows - 1) * shape.sampleSpacing) };
+}
+function heightfieldSurface(body: RuntimeSpatialBody, fixture: RuntimeSpatialFixture & { shape: HeightfieldShape }, worldX: number, worldZ: number): { point: IntVector3; normal: IntVector3 } | undefined {
+  const shape = fixture.shape, origin = fixtureWorldPosition(body, fixture), localX = worldX - origin.x, localZ = worldZ - origin.z, extentX = (shape.columns - 1) * shape.sampleSpacing, extentZ = (shape.rows - 1) * shape.sampleSpacing;
+  if (localX < 0 || localZ < 0 || localX > extentX || localZ > extentZ) return undefined;
+  const cellX = Math.min(shape.columns - 2, Math.floor(localX / shape.sampleSpacing)), cellZ = Math.min(shape.rows - 2, Math.floor(localZ / shape.sampleSpacing)), offsetX = localX - cellX * shape.sampleSpacing, offsetZ = localZ - cellZ * shape.sampleSpacing, stride = shape.columns;
+  const h00 = shape.heights[cellZ * stride + cellX]!, h10 = shape.heights[cellZ * stride + cellX + 1]!, h01 = shape.heights[(cellZ + 1) * stride + cellX]!, h11 = shape.heights[(cellZ + 1) * stride + cellX + 1]!, spacing = shape.sampleSpacing;
+  let height: number, normal: IntVector3;
+  if (offsetX + offsetZ <= spacing) {
+    height = Math.round(h00 + (h10 - h00) * offsetX / spacing + (h01 - h00) * offsetZ / spacing);
+    normal = normalizeQ(v3(-(h10 - h00), spacing, -(h01 - h00)));
+  } else {
+    height = Math.round(h11 + (h01 - h11) * (spacing - offsetX) / spacing + (h10 - h11) * (spacing - offsetZ) / spacing);
+    normal = normalizeQ(v3(h01 - h11, spacing, h10 - h11));
+  }
+  return { point: v3(origin.x + cellX * spacing + offsetX, origin.y + height, origin.z + cellZ * spacing + offsetZ), normal };
+}
+function heightfieldCollision(movingBody: RuntimeSpatialBody, movingFixture: RuntimeSpatialFixture, terrainBody: RuntimeSpatialBody, terrainFixture: RuntimeSpatialFixture & { shape: HeightfieldShape }, persistence: number): CollisionResult | undefined {
+  const movingBounds = fixtureAabb(movingBody, movingFixture), terrainBounds = heightfieldAabb(terrainBody, terrainFixture);
+  if (!overlaps(movingBounds, terrainBounds)) return undefined;
+  const sampleX = clamp(Math.round((movingBounds.min.x + movingBounds.max.x) / 2), terrainBounds.min.x, terrainBounds.max.x), sampleZ = clamp(Math.round((movingBounds.min.z + movingBounds.max.z) / 2), terrainBounds.min.z, terrainBounds.max.z), surface = heightfieldSurface(terrainBody, terrainFixture, sampleX, sampleZ);
+  if (!surface || movingBounds.min.y > surface.point.y + persistence || sub(movingBody.velocity, terrainBody.velocity).y > 0) return undefined;
+  return { point: surface.point, normal: mul(surface.normal, -1), penetration: Math.max(0, surface.point.y - movingBounds.min.y), feature: 'heightfield' };
+}
 function closestPointObb(point: IntVector3, box: OrientedBox3): IntVector3 {
   const delta = fsub(toFloat3(point), box.center); let result = box.center;
   for (let index = 0; index < 3; index++) { const axis = box.axes[index]!, extent = index === 0 ? box.halfExtents.x : index === 1 ? box.halfExtents.y : box.halfExtents.z; result = fadd(result, fscale(axis, clamp(fdot(delta, axis), -extent, extent))); }
@@ -426,9 +465,11 @@ function convexProxy(body: RuntimeSpatialBody, fixture: RuntimeSpatialFixture): 
     return { kind: 'capsule', center, segment: [fsub(center, offset), fadd(center, offset)], radius: shape.radius };
   }
   if (shape.type === 'convex') return { kind: 'convex', center, vertices: convexHullWorldVertices(body, fixture as RuntimeSpatialFixture & {shape:Extract<SpatialShape,{type:'convex'}>}) };
-  return { kind: 'box', center, axes, halfExtents: toFloat3(shape.halfExtents) };
+  if (shape.type === 'box') return { kind: 'box', center, axes, halfExtents: toFloat3(shape.halfExtents) };
+  throw new Error('HEIGHTFIELD_CONVEX_PROVIDER_REQUIRED');
 }
 function collideFixtures(bodyA: RuntimeSpatialBody, fixtureA: RuntimeSpatialFixture, bodyB: RuntimeSpatialBody, fixtureB: RuntimeSpatialFixture, stats?: CollisionStats): CollisionResult | undefined {
+  if (fixtureA.shape.type === 'heightfield' || fixtureB.shape.type === 'heightfield') return undefined;
   const convex = collideConvex(convexProxy(bodyA, fixtureA), convexProxy(bodyB, fixtureB));
   if (stats) { stats.gjkCalls++; if (convex.epaIterations > 0) stats.epaCalls++; }
   if (convex.status === 'collision' && convex.contact) {
@@ -461,6 +502,7 @@ function fixtureAabb(body: RuntimeSpatialBody, fixture: RuntimeSpatialFixture): 
   const p = fixtureWorldPosition(body, fixture), s = fixture.shape;
   if (s.type === 'sphere') return { min: v3(p.x - s.radius, p.y - s.radius, p.z - s.radius), max: v3(p.x + s.radius, p.y + s.radius, p.z + s.radius) };
   if (s.type === 'capsule') { const [start, end] = capsuleSegment(p, s, rotationAxes(body.rotationDeg)); return { min: v3(Math.min(start.x, end.x) - s.radius, Math.min(start.y, end.y) - s.radius, Math.min(start.z, end.z) - s.radius), max: v3(Math.max(start.x, end.x) + s.radius, Math.max(start.y, end.y) + s.radius, Math.max(start.z, end.z) + s.radius) }; }
+  if (s.type === 'heightfield') return heightfieldAabb(body, fixture as RuntimeSpatialFixture & { shape: HeightfieldShape });
   if (s.type === 'convex') { const vertices=convexHullWorldVertices(body,fixture as RuntimeSpatialFixture & {shape:Extract<SpatialShape,{type:'convex'}>});return{min:v3(Math.floor(Math.min(...vertices.map(vertex=>vertex.x))),Math.floor(Math.min(...vertices.map(vertex=>vertex.y))),Math.floor(Math.min(...vertices.map(vertex=>vertex.z)))),max:v3(Math.ceil(Math.max(...vertices.map(vertex=>vertex.x))),Math.ceil(Math.max(...vertices.map(vertex=>vertex.y))),Math.ceil(Math.max(...vertices.map(vertex=>vertex.z))))}; }
   return obbAabb(fixtureObb(body, fixture as RuntimeSpatialFixture & { shape: Extract<SpatialShape, { type: 'box' }> }));
 }
@@ -528,8 +570,12 @@ function makeRuntimeBody(spec: SpatialBodySpec): RuntimeSpatialBody {
   validateFiniteVec(`body:${spec.id}.position`, spec.position);
   if (!spec.fixtures.length) throw new Error(`body ${spec.id} must have at least one fixture`);
   spec.fixtures.forEach((fixture,index)=>validateShape(`body:${spec.id}.fixtures[${index}].shape`,fixture.shape));
+  const hasHeightfield = spec.fixtures.some(fixture => fixture.shape.type === 'heightfield'), rotation = cloneVec(spec.rotationDeg);
+  if (hasHeightfield && (rotation.x !== 0 || rotation.y !== 0 || rotation.z !== 0)) throw new Error(`body ${spec.id} heightfield rotation is unsupported`);
+  if (hasHeightfield && spec.kind === 'dynamic') throw new Error(`body ${spec.id} heightfield must be static or kinematic`);
+  if (hasHeightfield && spec.kind === 'kinematic' && spec.fixedRotation !== true) throw new Error(`body ${spec.id} kinematic heightfield requires fixedRotation=true`);
   return {
-    ...deepClone(spec), rotationDeg: cloneVec(spec.rotationDeg), velocity: cloneVec(spec.velocity), angularVelocityDeg: cloneVec(spec.angularVelocityDeg),
+    ...deepClone(spec), rotationDeg: rotation, velocity: cloneVec(spec.velocity), angularVelocityDeg: cloneVec(spec.angularVelocityDeg),
     fixtures: spec.fixtures.map(f => ({ ...deepClone(f), localPosition: cloneVec(f.localPosition), categoryBits: f.categoryBits ?? 1, maskBits: f.maskBits ?? 0xffff_ffff })),
     inverseMassQ: bodyMassInverseQ(spec), gravityScaleQ: spec.gravityScaleQ ?? Q, linearDampingQ: spec.linearDampingQ ?? 12_000, angularDampingQ: spec.angularDampingQ ?? 20_000,
     frictionQ: spec.frictionQ ?? 500_000, restitutionQ: spec.restitutionQ ?? 0, enabled: spec.enabled ?? true, allowSleep: spec.allowSleep ?? true,
@@ -581,8 +627,11 @@ export class SpatialEmbodimentWorld {
     if (command.type === 'set-joint-motor') { const joint = this.jointMap.get(command.jointId); if (!joint || joint.type !== 'hinge') throw new Error(`hinge joint ${command.jointId} missing`); joint.motorSpeedDeg = command.motorSpeedDeg; if (command.maxMotorTorque !== undefined) joint.maxMotorTorque = command.maxMotorTorque; return; }
     const body = this.bodyMap.get(command.bodyId); if (!body) throw new Error(`body ${command.bodyId} missing`);
     body.awake = true; body.sleepCounter = 0;
-    if (command.type === 'set-velocity') body.velocity = cloneVec(command.velocity);
-    else if (command.type === 'teleport') { body.position = cloneVec(command.position); if (command.rotationDeg) body.rotationDeg = cloneVec(command.rotationDeg); }
+     if (command.type === 'set-velocity') body.velocity = cloneVec(command.velocity);
+     else if (command.type === 'teleport') {
+       if (command.rotationDeg && body.fixtures.some(fixture => fixture.shape.type === 'heightfield') && (command.rotationDeg.x !== 0 || command.rotationDeg.y !== 0 || command.rotationDeg.z !== 0)) throw new Error(`body ${body.id} heightfield rotation is unsupported`);
+       body.position = cloneVec(command.position); if (command.rotationDeg) body.rotationDeg = cloneVec(command.rotationDeg);
+     }
     else if (command.type === 'apply-impulse' && body.kind === 'dynamic') {
       body.velocity = add(body.velocity, mul(command.impulse, body.inverseMassQ / Q));
       if (command.worldPoint && !body.fixedRotation) { const r = sub(command.worldPoint, body.position); body.angularVelocityDeg = add(body.angularVelocityDeg, v3(Math.round((r.y * command.impulse.z - r.z * command.impulse.y) / 10_000), Math.round((r.z * command.impulse.x - r.x * command.impulse.z) / 10_000), Math.round((r.x * command.impulse.y - r.y * command.impulse.x) / 10_000))); }
@@ -685,7 +734,13 @@ export class SpatialEmbodimentWorld {
       const a=proxies[i]!, b=proxies[j]!; this.diagnosticsValue.broadPhasePairs++;
       if (a.body.id===b.body.id || (a.body.kind==='static'&&b.body.kind==='static') || !filterPair(a.fixture,b.fixture) || !overlaps(a.aabb,b.aabb)) continue;
       if (!this.oneWayAllows(a.body,a.fixture,b.body) || !this.oneWayAllows(b.body,b.fixture,a.body)) continue;
-      this.diagnosticsValue.narrowPhaseTests++; const result=collideFixtures(a.body,a.fixture,b.body,b.fixture,this.diagnosticsValue); if(!result)continue;const capsuleObb=(a.fixture.shape.type==='capsule'&&b.fixture.shape.type==='box')||(a.fixture.shape.type==='box'&&b.fixture.shape.type==='capsule');if(result.feature==='capsule-obb'||capsuleObb)this.diagnosticsValue.capsuleObbContacts++;
+      this.diagnosticsValue.narrowPhaseTests++;
+      const result = a.fixture.shape.type === 'heightfield' && b.fixture.shape.type !== 'heightfield'
+        ? (() => { const collision = heightfieldCollision(b.body, b.fixture, a.body, a.fixture as RuntimeSpatialFixture & { shape: HeightfieldShape }, this.contactPersistenceDistance); return collision ? { ...collision, normal: mul(collision.normal, -1) } : undefined; })()
+        : b.fixture.shape.type === 'heightfield' && a.fixture.shape.type !== 'heightfield'
+          ? heightfieldCollision(a.body, a.fixture, b.body, b.fixture as RuntimeSpatialFixture & { shape: HeightfieldShape }, this.contactPersistenceDistance)
+          : collideFixtures(a.body, a.fixture, b.body, b.fixture, this.diagnosticsValue);
+      if(!result)continue;const capsuleObb=(a.fixture.shape.type==='capsule'&&b.fixture.shape.type==='box')||(a.fixture.shape.type==='box'&&b.fixture.shape.type==='capsule');if(result.feature==='capsule-obb'||capsuleObb)this.diagnosticsValue.capsuleObbContacts++;
       contacts.push(this.makeContact(a.body,a.fixture,b.body,b.fixture,result));
     }
     return contacts.sort((a,b)=>a.id.localeCompare(b.id));
@@ -723,9 +778,15 @@ export class SpatialEmbodimentWorld {
   private snapCharactersToGround(): void {
     for(const character of this.characterMap.values()){
       const body=this.bodyMap.get(character.bodyId)!;if(body.grounded||body.velocity.y>0||character.groundSnapDistance<=0)continue;
-      const bodyBounds=body.fixtures.map(f=>fixtureAabb(body,f)),bottom=Math.min(...bodyBounds.map(a=>a.min.y));let bestTop=this.floorY,bestSupport:RuntimeSpatialBody|undefined;
-      for(const support of this.bodyMap.values()){if(support.id===body.id||support.kind==='dynamic'||!support.enabled)continue;for(const fixture of support.fixtures){if(fixture.sensor)continue;const aabb=fixtureAabb(support,fixture),horizontal=bodyBounds.some(bounds=>bounds.max.x>=aabb.min.x&&bounds.min.x<=aabb.max.x&&bounds.max.z>=aabb.min.z&&bounds.min.z<=aabb.max.z);if(horizontal&&aabb.max.y<=bottom&&aabb.max.y>bestTop){bestTop=aabb.max.y;bestSupport=support;}}}
-      const gap=bottom-bestTop;if(gap<0||gap>character.groundSnapDistance)continue;body.position.y-=gap;body.velocity.y=0;body.grounded=true;body.groundNormal=v3(0,Q,0);character.grounded=true;character.supportBodyId=bestSupport?.id;character.supportVelocity=cloneVec(bestSupport?.velocity);this.diagnosticsValue.snappedCharacters++;
+      const bodyBounds=body.fixtures.map(f=>fixtureAabb(body,f)),bottom=Math.min(...bodyBounds.map(a=>a.min.y)),bodyCenterX=Math.round((Math.min(...bodyBounds.map(a=>a.min.x))+Math.max(...bodyBounds.map(a=>a.max.x)))/2),bodyCenterZ=Math.round((Math.min(...bodyBounds.map(a=>a.min.z))+Math.max(...bodyBounds.map(a=>a.max.z)))/2);let bestTop=this.floorY,bestSupport:RuntimeSpatialBody|undefined,bestNormal=v3(0,Q,0);
+      for(const support of this.bodyMap.values()){if(support.id===body.id||support.kind==='dynamic'||!support.enabled)continue;for(const fixture of support.fixtures){if(fixture.sensor)continue;
+        const aabb=fixtureAabb(support,fixture),horizontal=bodyBounds.some(bounds=>bounds.max.x>=aabb.min.x&&bounds.min.x<=aabb.max.x&&bounds.max.z>=aabb.min.z&&bounds.min.z<=aabb.max.z);
+        if(fixture.shape.type==='heightfield'){
+          const sampleX=clamp(bodyCenterX,aabb.min.x,aabb.max.x),sampleZ=clamp(bodyCenterZ,aabb.min.z,aabb.max.z),surface=heightfieldSurface(support,fixture as RuntimeSpatialFixture & {shape:HeightfieldShape},sampleX,sampleZ),minimum=Math.cos(character.maxSlopeDeg*Math.PI/180)*Q;
+          if(horizontal&&surface&&surface.normal.y>=minimum&&surface.point.y<=bottom&&surface.point.y>bestTop){bestTop=surface.point.y;bestSupport=support;bestNormal=surface.normal;}
+        } else if(horizontal&&aabb.max.y<=bottom&&aabb.max.y>bestTop){bestTop=aabb.max.y;bestSupport=support;}
+      }}
+      const gap=bottom-bestTop;if(gap<0||gap>character.groundSnapDistance)continue;body.position.y-=gap;body.velocity.y=0;body.grounded=true;body.groundNormal=bestNormal;character.grounded=true;character.supportBodyId=bestSupport?.id;character.supportVelocity=cloneVec(bestSupport?.velocity);this.diagnosticsValue.snappedCharacters++;
     }
   }
 
@@ -800,7 +861,8 @@ export class SpatialEmbodimentWorld {
       const body = this.bodyMap.get(character.bodyId)!, previous = previousPositions.get(body.id) ?? body.position; const planar = Math.hypot(body.position.x - previous.x, body.position.z - previous.z); if (body.grounded) character.distanceSinceFootstep += planar;
       if (body.grounded && character.distanceSinceFootstep >= character.footstepDistance && Math.hypot(body.velocity.x, body.velocity.z) > 20) {
         const foot = character.nextFoot; character.nextFoot = foot === 'left' ? 'right' : 'left'; character.distanceSinceFootstep = 0;
-        const position = v3(body.position.x + (foot === 'left' ? -100 : 100), this.floorY, body.position.z); const event: SpatialFootstepEvent = { kind: 'footstep', id: `footstep:${this.tickValue}:${character.id}:${foot}`, tick: this.tickValue, characterId: character.id, bodyId: body.id, foot, position, materialId: 'ground' }; this.currentEvents.push(event);
+        const supportContact = this.currentContacts.filter(contact => !contact.sensor && (contact.bodyA === body.id || contact.bodyB === body.id)).sort((a, b) => a.id.localeCompare(b.id))[0], supportY = supportContact?.point.y ?? this.floorY;
+        const position = v3(body.position.x + (foot === 'left' ? -100 : 100), supportY, body.position.z); const event: SpatialFootstepEvent = { kind: 'footstep', id: `footstep:${this.tickValue}:${character.id}:${foot}`, tick: this.tickValue, characterId: character.id, bodyId: body.id, foot, position, materialId: 'ground' }; this.currentEvents.push(event);
         this.currentEvents.push({ kind: 'spatial-audio', id: `audio:${event.id}`, tick: this.tickValue, cue: 'footstep.ground', position, gainQ: 300_000, pitchQ: foot === 'left' ? 970_000 : 1_030_000, minDistance: 200, maxDistance: 8_000, occlusionQ: 0, sourceBodyId: body.id });
         this.currentEvents.push({ kind: 'haptic', id: `haptic:${event.id}`, tick: this.tickValue, bodyId: body.id, zone: foot === 'left' ? (character.leftFootZone ?? 'foot.left') : (character.rightFootZone ?? 'foot.right'), amplitudeQ: 180_000, frequencyHz: 65, durationMs: 45, direction: v3(0, Q, 0) });
       }

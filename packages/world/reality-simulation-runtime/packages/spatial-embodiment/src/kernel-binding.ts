@@ -119,7 +119,7 @@ export interface KernelSpatialMaterialization {
 
 const HEX64 = /^[0-9a-f]{64}$/;
 const BODY_KINDS = new Set<SpatialBodyKind>(['static', 'dynamic', 'kinematic']);
-const SHAPE_TYPES = new Set<SpatialShape['type']>(['sphere', 'box', 'capsule', 'convex']);
+const SHAPE_TYPES = new Set<SpatialShape['type']>(['sphere', 'box', 'capsule', 'convex', 'heightfield']);
 
 function fail(condition: unknown, code: string, detail = ''): asserts condition {
   if (!condition) throw new Error(`${code}${detail ? `:${detail}` : ''}`);
@@ -188,6 +188,13 @@ function shape(value: unknown, path: string): SpatialShape {
     const radius = integer(item.radius, `${path}.radius`), halfHeight = integer(item.halfHeight ?? item.half_height, `${path}.halfHeight`);
     fail(radius > 0 && halfHeight > 0, 'KERNEL_BINDING_SHAPE_DIMENSION_INVALID', path);
     return { type, radius, halfHeight };
+  }
+  if (type === 'heightfield') {
+    const columns = integer(item.columns, `${path}.columns`), rows = integer(item.rows, `${path}.rows`), sampleSpacing = integer(item.sampleSpacing ?? item.sample_spacing, `${path}.sampleSpacing`), heightsValue = item.heights;
+    fail(columns >= 2 && columns <= 4_096 && rows >= 2 && rows <= 4_096 && columns * rows <= 1_000_000 && sampleSpacing > 0, 'KERNEL_BINDING_HEIGHTFIELD_DIMENSION_INVALID', path);
+    fail(Array.isArray(heightsValue) && heightsValue.length === columns * rows, 'KERNEL_BINDING_HEIGHTFIELD_SAMPLES_INVALID', path);
+    const heights = heightsValue.map((height, index) => integer(height, `${path}.heights[${index}]`));
+    return { type, columns, rows, sampleSpacing, heights };
   }
   const verticesValue = item.vertices;
   fail(Array.isArray(verticesValue) && verticesValue.length >= 4, 'KERNEL_BINDING_CONVEX_VERTICES_INVALID', path);

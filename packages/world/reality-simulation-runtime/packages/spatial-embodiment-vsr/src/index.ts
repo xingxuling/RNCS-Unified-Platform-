@@ -99,6 +99,19 @@ function convexFixtureMesh(id: string, shape: Extract<SpatialShape, { type: 'con
   };
 }
 
+function heightfieldFixtureMesh(id: string, shape: Extract<SpatialShape, { type: 'heightfield' }>): VSRSpatialMesh {
+  const positions: number[] = [], indices: number[] = [];
+  for (let row = 0; row < shape.rows; row++) for (let column = 0; column < shape.columns; column++) {
+    const height = shape.heights[row * shape.columns + column]!;
+    positions.push(column * shape.sampleSpacing / POSITION_SCALE, height / POSITION_SCALE, row * shape.sampleSpacing / POSITION_SCALE);
+  }
+  for (let row = 0; row < shape.rows - 1; row++) for (let column = 0; column < shape.columns - 1; column++) {
+    const a = row * shape.columns + column, b = a + 1, c = a + shape.columns, d = c + 1;
+    indices.push(a, c, b, b, c, d);
+  }
+  return { id, positions, indices, topology: 'triangle-list' };
+}
+
 function fixtureNode(body: RuntimeSpatialBody, fixture: SpatialFixtureSpec, index: number): VSRSpatialNode {
   const position = fixture.localPosition ?? { x: 0, y: 0, z: 0 };
   const base = {
@@ -113,12 +126,14 @@ function fixtureNode(body: RuntimeSpatialBody, fixture: SpatialFixtureSpec, inde
   if (fixture.shape.type === 'sphere') return { ...base, meshId: 'mesh:unit-sphere', transform: { ...base.transform, scale: [fixture.shape.radius * 2 / POSITION_SCALE, fixture.shape.radius * 2 / POSITION_SCALE, fixture.shape.radius * 2 / POSITION_SCALE] } };
   if (fixture.shape.type === 'capsule') return { ...base, meshId: 'mesh:unit-sphere', transform: { ...base.transform, scale: [fixture.shape.radius * 2 / POSITION_SCALE, (fixture.shape.halfHeight + fixture.shape.radius) * 2 / POSITION_SCALE, fixture.shape.radius * 2 / POSITION_SCALE] } };
   if (fixture.shape.type === 'convex') return { ...base, meshId: `mesh:convex:${body.id}:${fixture.id}`, tags: [...base.tags, `fixture-index:${index}`] };
+  if (fixture.shape.type === 'heightfield') return { ...base, meshId: `mesh:heightfield:${body.id}:${fixture.id}`, tags: [...base.tags, 'heightfield', `fixture-index:${index}`] };
   return { ...base, meshId: 'mesh:unit-cube', transform: { ...base.transform, scale: [fixture.shape.halfExtents.x * 2 / POSITION_SCALE, fixture.shape.halfExtents.y * 2 / POSITION_SCALE, fixture.shape.halfExtents.z * 2 / POSITION_SCALE] }, tags: [...base.tags, `fixture-index:${index}`] };
 }
 
 export function spatialEmbodimentSnapshotToVSRScene(snapshot: SpatialEmbodimentSnapshot, options: SpatialEmbodimentProjectionOptions = {}): VSRSpatialScene3D {
   const convexMeshes = snapshot.bodies.flatMap(body => body.fixtures.flatMap(fixture => fixture.shape.type === 'convex' ? [convexFixtureMesh(`mesh:convex:${body.id}:${fixture.id}`, fixture.shape)] : []));
-  const meshes: VSRSpatialMesh[] = [createCubeMesh('mesh:unit-cube', 1), createUVSphereMesh('mesh:unit-sphere', 0.5, 20, 12), createPlaneMesh('mesh:ground', 30, 30), ...convexMeshes];
+  const heightfieldMeshes = snapshot.bodies.flatMap(body => body.fixtures.flatMap(fixture => fixture.shape.type === 'heightfield' ? [heightfieldFixtureMesh(`mesh:heightfield:${body.id}:${fixture.id}`, fixture.shape)] : []));
+  const meshes: VSRSpatialMesh[] = [createCubeMesh('mesh:unit-cube', 1), createUVSphereMesh('mesh:unit-sphere', 0.5, 20, 12), createPlaneMesh('mesh:ground', 30, 30), ...convexMeshes, ...heightfieldMeshes];
   const materials: VSRSpatialMaterial[] = [
     { id: 'material:ground', baseColor: '#1e293b', metallic: 0.02, roughness: 0.92, doubleSided: true },
     { id: 'material:contact', baseColor: '#f43f5e', emissive: '#fb7185', emissiveStrength: 0.8, roughness: 0.25 },

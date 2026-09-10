@@ -29,7 +29,8 @@
         {"type":"object","required":["type","radius"],"properties":{"type":{"const":"sphere"},"radius":{"type":"number","exclusiveMinimum":0}},"additionalProperties":true},
         {"type":"object","required":["type","halfExtents"],"properties":{"type":{"const":"box"},"halfExtents":{"$ref":"#/$defs/vector3"}},"additionalProperties":true},
         {"type":"object","required":["type","radius","halfHeight"],"properties":{"type":{"const":"capsule"},"radius":{"type":"number","exclusiveMinimum":0},"halfHeight":{"type":"number","minimum":0}},"additionalProperties":true},
-        {"type":"object","required":["type","vertices","indices"],"properties":{"type":{"const":"convex"},"vertices":{"type":"array","minItems":4,"items":{"$ref":"#/$defs/vector3"}},"indices":{"type":"array","minItems":12,"items":{"type":"integer","minimum":0}}},"additionalProperties":true}
+        {"type":"object","required":["type","vertices","indices"],"properties":{"type":{"const":"convex"},"vertices":{"type":"array","minItems":4,"items":{"$ref":"#/$defs/vector3"}},"indices":{"type":"array","minItems":12,"items":{"type":"integer","minimum":0}}},"additionalProperties":true},
+        {"type":"object","required":["type","columns","rows","sampleSpacing","heights"],"properties":{"type":{"const":"heightfield"},"columns":{"type":"integer","minimum":2,"maximum":4096},"rows":{"type":"integer","minimum":2,"maximum":4096},"sampleSpacing":{"type":"integer","minimum":1},"heights":{"type":"array","minItems":4,"items":{"type":"integer"}}},"additionalProperties":true}
       ]
     },
     "fixture":{
