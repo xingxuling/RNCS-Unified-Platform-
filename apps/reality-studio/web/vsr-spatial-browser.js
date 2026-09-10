@@ -23,6 +23,8 @@ var VSRSpatial3D = (() => {
   __export(index_exports, {
     VSRSpatialAssetStreamer: () => VSRSpatialAssetStreamer,
     VSRSpatialWebGPUExecutor: () => VSRSpatialWebGPUExecutor,
+    VSR_BROWSER_ASSET_CACHE_FORMAT: () => VSR_BROWSER_ASSET_CACHE_FORMAT,
+    VSR_BROWSER_ASSET_CACHE_VERSION: () => VSR_BROWSER_ASSET_CACHE_VERSION,
     VSR_RAGF_SPATIAL_ADAPTER_FORMAT: () => VSR_RAGF_SPATIAL_ADAPTER_FORMAT,
     VSR_RAGF_SPATIAL_COMPILATION_FORMAT: () => VSR_RAGF_SPATIAL_COMPILATION_FORMAT,
     VSR_SPATIAL_ASSET_STREAMING_FORMAT: () => VSR_SPATIAL_ASSET_STREAMING_FORMAT,
@@ -74,6 +76,7 @@ var VSRSpatial3D = (() => {
     createPlaneMesh: () => createPlaneMesh,
     createSpatialShowcaseScene: () => createSpatialShowcaseScene,
     createUVSphereMesh: () => createUVSphereMesh,
+    createVSRBrowserAssetCache: () => createVSRBrowserAssetCache,
     distributionGGX: () => distributionGGX,
     evaluatePBRLighting: () => evaluatePBRLighting,
     evaluateSpatialWebGPUCapabilities: () => evaluateSpatialWebGPUCapabilities,
@@ -1023,6 +1026,191 @@ var VSRSpatial3D = (() => {
   function verifySpatialAssetTransitionReceipt(receipt) {
     const { root, ...base } = receipt;
     return verifySpatialAssetStreamingReceipt(receipt.receipt) && cryptographicHash(base) === root && receipt.releasedAssetIds.every((id) => receipt.previousLeasedAssetIds.includes(id)) && receipt.evictedAssetIds.every((id) => receipt.receipt.resolution.evictedAssetIds.includes(id) || receipt.receipt.resolution.prefetchEvictedAssetIds?.includes(id));
+  }
+
+  // packages/spatial-reality-3d/src/browser-asset-cache.ts
+  var VSR_BROWSER_ASSET_CACHE_FORMAT = "vsr.browser-asset-cache.v0.1";
+  var VSR_BROWSER_ASSET_CACHE_VERSION = "0.1.0";
+  var unique2 = (values) => [...new Set(values.map(String))].sort((a, b) => a.localeCompare(b));
+  var bytesFrom = (value) => value instanceof Uint8Array ? new Uint8Array(value) : new Uint8Array(value.slice(0));
+  var budgetOf = (value) => Number.isFinite(value) ? Math.max(0, Math.floor(value)) : Number.MAX_SAFE_INTEGER;
+  var descriptorOf = (asset) => {
+    const sha2562 = String(asset?.sha256 ?? "").toLowerCase(), byteLength = asset?.byteLength;
+    if (!/^[a-f0-9]{64}$/.test(sha2562) || !Number.isSafeInteger(byteLength) || byteLength < 0) throw new TypeError("VSR_BROWSER_ASSET_CACHE_ASSET_INVALID");
+    return { ...asset, sha256: sha2562, byteLength };
+  };
+  async function sha256(cryptoApi, bytes) {
+    const digest = new Uint8Array(await cryptoApi.subtle.digest("SHA-256", bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength)));
+    return [...digest].map((value) => value.toString(16).padStart(2, "0")).join("");
+  }
+  function manifestBase(value) {
+    return value;
+  }
+  function verifyManifest(value) {
+    if (!value || typeof value !== "object") return false;
+    const candidate = value, base = { ...candidate };
+    delete base.root;
+    if (candidate.format !== VSR_BROWSER_ASSET_CACHE_FORMAT || candidate.version !== VSR_BROWSER_ASSET_CACHE_VERSION || (!Number.isSafeInteger(candidate.maxBytes) || candidate.maxBytes < 0) || (!Number.isSafeInteger(candidate.sequence) || candidate.sequence < 0) || !Array.isArray(candidate.entries) || !Array.isArray(candidate.diagnostics) || typeof candidate.root !== "string" || typeof candidate.revisionRoot !== "string" && candidate.revisionRoot !== null) return false;
+    if (candidate.diagnostics.some((value2) => typeof value2 !== "string") || candidate.entries.some((entry) => !entry || typeof entry.sha256 !== "string" || !/^[a-f0-9]{64}$/.test(entry.sha256) || !Number.isSafeInteger(entry.byteLength) || entry.byteLength < 0 || !Number.isSafeInteger(entry.lastAccess) || entry.lastAccess < 0 || !Array.isArray(entry.assetIds) || entry.assetIds.some((assetId) => typeof assetId !== "string"))) return false;
+    try {
+      return candidate.root === cryptographicHash(base);
+    } catch {
+      return false;
+    }
+  }
+  var requestKey = (origin, cacheName, suffix) => new Request(`${origin.replace(/\/$/, "")}/__rncs_vsr_asset_cache__/${encodeURIComponent(cacheName)}/${suffix}`);
+  function createVSRBrowserAssetCache(options) {
+    if (!options?.cacheName) throw new TypeError("VSR_BROWSER_ASSET_CACHE_NAME_REQUIRED");
+    const cacheName = String(options.cacheName), revisionRoot = options.revisionRoot === void 0 ? null : options.revisionRoot === null ? null : String(options.revisionRoot), maxBytes = budgetOf(options.maxBytes), storage = options.cacheStorage ?? globalThis.caches, cryptoApi = options.cryptoApi ?? globalThis.crypto, origin = String(options.origin ?? globalThis.location?.origin ?? "https://rncs.invalid"), entries = /* @__PURE__ */ new Map();
+    let cache, readyPromise, mutationQueue = Promise.resolve(), sequence = 0, manifestRoot, cacheHits = 0, cacheMisses = 0, cacheEvictions = 0, diagnostics = [], available = Boolean(storage && cryptoApi?.subtle);
+    const payloadRequest = (sha256Value) => requestKey(origin, cacheName, `${sha256Value}.bin`), manifestRequest = () => requestKey(origin, cacheName, "manifest.json");
+    const entryView = (entry) => ({ sha256: entry.sha256, byteLength: entry.byteLength, lastAccess: entry.lastAccess, assetIds: unique2(entry.assetIds) });
+    const base = () => ({ format: VSR_BROWSER_ASSET_CACHE_FORMAT, version: VSR_BROWSER_ASSET_CACHE_VERSION, revisionRoot, maxBytes, sequence, entries: [...entries.values()].map(entryView).sort((a, b) => a.sha256.localeCompare(b.sha256)), diagnostics: unique2(diagnostics) });
+    const persist = async () => {
+      if (!cache) return;
+      const document = { ...manifestBase(base()), root: cryptographicHash(base()) };
+      await cache.put(manifestRequest(), new Response(JSON.stringify(document), { status: 200, headers: { "content-type": "application/json", "x-rncs-root": document.root } }));
+      manifestRoot = document.root;
+    };
+    const mutate = (operation) => {
+      const next = mutationQueue.then(operation);
+      mutationQueue = next.catch(() => {
+      });
+      return next;
+    };
+    const clearCache = async () => {
+      if (!cache) return;
+      for (const request of await cache.keys()) await cache.delete(request);
+    };
+    const applyManifest = (document) => {
+      entries.clear();
+      sequence = document.sequence;
+      manifestRoot = document.root;
+      diagnostics = unique2(document.diagnostics);
+      for (const entry of document.entries) entries.set(entry.sha256, { sha256: entry.sha256, byteLength: entry.byteLength, lastAccess: entry.lastAccess, assetIds: unique2(entry.assetIds) });
+    };
+    const trim = async () => {
+      if (!cache) return;
+      let bytesResident = [...entries.values()].reduce((sum, entry) => sum + entry.byteLength, 0);
+      const candidates = [...entries.values()].sort((a, b) => a.lastAccess - b.lastAccess || a.sha256.localeCompare(b.sha256));
+      for (const entry of candidates) {
+        if (bytesResident <= maxBytes) break;
+        entries.delete(entry.sha256);
+        bytesResident -= entry.byteLength;
+        cacheEvictions++;
+        await cache.delete(payloadRequest(entry.sha256));
+      }
+    };
+    const load = async () => {
+      if (readyPromise) return readyPromise;
+      readyPromise = (async () => {
+        if (!available || !storage || !cryptoApi?.subtle) {
+          available = false;
+          diagnostics.push("VSR_BROWSER_ASSET_CACHE_UNAVAILABLE");
+          return;
+        }
+        try {
+          cache = await storage.open(cacheName);
+          const response = await cache.match(manifestRequest());
+          if (!response) return;
+          const value = await response.json();
+          if (!verifyManifest(value)) {
+            diagnostics.push("VSR_BROWSER_ASSET_CACHE_MANIFEST_INVALID");
+            await clearCache();
+            entries.clear();
+            sequence = 0;
+            manifestRoot = void 0;
+            await persist();
+            return;
+          }
+          if (value.revisionRoot !== revisionRoot) {
+            diagnostics.push(`VSR_BROWSER_ASSET_CACHE_REVISION_CHANGED:${value.revisionRoot ?? "none"}:${revisionRoot ?? "none"}`);
+            await clearCache();
+            entries.clear();
+            sequence = 0;
+            manifestRoot = void 0;
+            await persist();
+            return;
+          }
+          applyManifest(value);
+          if ([...entries.values()].reduce((sum, entry) => sum + entry.byteLength, 0) > maxBytes) {
+            await trim();
+            await persist();
+          }
+        } catch (error) {
+          available = false;
+          diagnostics.push(error instanceof Error ? error.message : "VSR_BROWSER_ASSET_CACHE_OPEN_FAILED");
+        }
+      })();
+      return readyPromise;
+    };
+    return {
+      format: VSR_BROWSER_ASSET_CACHE_FORMAT,
+      version: VSR_BROWSER_ASSET_CACHE_VERSION,
+      ready: load,
+      async read(asset) {
+        const expected = descriptorOf(asset);
+        await load();
+        if (!available || !cache || !cryptoApi?.subtle) {
+          cacheMisses++;
+          return void 0;
+        }
+        const entry = entries.get(expected.sha256);
+        if (!entry) {
+          cacheMisses++;
+          return void 0;
+        }
+        try {
+          const response = await cache.match(payloadRequest(expected.sha256));
+          if (!response) throw new Error("VSR_BROWSER_ASSET_CACHE_PAYLOAD_MISSING");
+          const bytes = new Uint8Array(await response.arrayBuffer());
+          if (bytes.byteLength !== expected.byteLength || await sha256(cryptoApi, bytes) !== expected.sha256) throw new Error("VSR_BROWSER_ASSET_CACHE_PAYLOAD_INVALID");
+          return mutate(async () => {
+            const current = entries.get(expected.sha256);
+            if (!current) {
+              cacheMisses++;
+              return;
+            }
+            current.lastAccess = ++sequence;
+            current.assetIds = unique2([...current.assetIds, String(expected.id ?? "")]);
+            cacheHits++;
+            await persist();
+          }).then(() => new Uint8Array(bytes));
+        } catch (error) {
+          await mutate(async () => {
+            diagnostics.push(error instanceof Error ? error.message : "VSR_BROWSER_ASSET_CACHE_PAYLOAD_INVALID");
+            entries.delete(expected.sha256);
+            cacheMisses++;
+            await cache.delete(payloadRequest(expected.sha256));
+            await persist();
+          });
+          return void 0;
+        }
+      },
+      async write(asset, payload) {
+        const expected = descriptorOf(asset), bytes = bytesFrom(payload);
+        await load();
+        if (!available || !cache || !cryptoApi?.subtle) return;
+        if (bytes.byteLength !== expected.byteLength || await sha256(cryptoApi, bytes) !== expected.sha256) {
+          diagnostics.push("VSR_BROWSER_ASSET_CACHE_HASH_MISMATCH");
+          return;
+        }
+        try {
+          const body = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
+          await cache.put(payloadRequest(expected.sha256), new Response(body, { status: 200, headers: { "content-type": "application/octet-stream", "x-rncs-sha256": expected.sha256 } }));
+          await mutate(async () => {
+            entries.set(expected.sha256, { sha256: expected.sha256, byteLength: bytes.byteLength, lastAccess: ++sequence, assetIds: [String(expected.id ?? "")] });
+            await trim();
+            await persist();
+          });
+        } catch (error) {
+          diagnostics.push(error instanceof Error ? error.message : "VSR_BROWSER_ASSET_CACHE_WRITE_FAILED");
+        }
+      },
+      inspect() {
+        return { format: VSR_BROWSER_ASSET_CACHE_FORMAT, version: VSR_BROWSER_ASSET_CACHE_VERSION, cacheName, revisionRoot, available, manifestRoot, bytesResident: [...entries.values()].reduce((sum, entry) => sum + entry.byteLength, 0), cachedAssetIds: unique2([...entries.values()].flatMap((entry) => entry.assetIds)), cacheHits, cacheMisses, cacheEvictions, diagnostics: unique2(diagnostics) };
+      }
+    };
   }
 
   // packages/spatial-reality-3d/src/hlod-generation.ts

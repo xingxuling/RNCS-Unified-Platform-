@@ -5,6 +5,7 @@ import type { VSRSpatialIrradianceVolume } from './irradiance-volume.js';
 import { packSpatialIrradianceVolumeFieldBuffer, sampleSpatialIrradianceVolumeField, sanitizeSpatialIrradianceVolumeField, selectSpatialIrradianceVolumeField, verifySpatialIrradianceVolumeField } from './irradiance-volume-field.js';
 import type { VSRSpatialIrradianceVolumeField } from './irradiance-volume-field.js';
 export * from './asset-streaming.js';
+export * from './browser-asset-cache.js';
 export * from './hlod-generation.js';
 export * from './ragf-adapter.js';
 

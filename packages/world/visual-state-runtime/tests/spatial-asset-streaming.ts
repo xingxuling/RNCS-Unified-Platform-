@@ -1,11 +1,22 @@
 import assert from 'node:assert/strict';
-import { resolveSpatialAssetStreaming, VSRSpatialAssetStreamer, verifySpatialAssetStreamingReceipt, verifySpatialAssetTransitionReceipt, type VSRSpatialAssetRecord } from '../packages/spatial-reality-3d/src/index.js';
+import { resolveSpatialAssetStreaming, VSRSpatialAssetStreamer, createVSRBrowserAssetCache, verifySpatialAssetStreamingReceipt, verifySpatialAssetTransitionReceipt, type VSRSpatialAssetRecord } from '../packages/spatial-reality-3d/src/index.js';
 import { sha256Bytes } from '../packages/spec/src/index.js';
 
 const bytes=(value:string):Uint8Array=>new TextEncoder().encode(value);
+const response=(payload:Uint8Array):Response=>new Response(payload.buffer.slice(payload.byteOffset,payload.byteOffset+payload.byteLength) as ArrayBuffer);
 const record=(id:string,value:string,extra:Partial<VSRSpatialAssetRecord>={}):VSRSpatialAssetRecord=>({id,uri:`/${id}.bin`,sha256:sha256Bytes(bytes(value)),byteLength:bytes(value).byteLength,kind:'other',...extra});
 const tests:Array<{name:string;fn:()=>void|Promise<void>}>=[];
 const test=(name:string,fn:()=>void|Promise<void>):void=>{tests.push({name,fn})};
+
+class MemoryCache{
+  readonly values=new Map<string,Response>();
+  key(input:RequestInfo|URL):string{return typeof input==='string'?input:input instanceof URL?input.toString():input.url}
+  async match(input:RequestInfo|URL):Promise<Response|undefined>{return this.values.get(this.key(input))?.clone()}
+  async put(input:RequestInfo|URL,response:Response):Promise<void>{this.values.set(this.key(input),response.clone())}
+  async delete(input:RequestInfo|URL):Promise<boolean>{return this.values.delete(this.key(input))}
+  async keys():Promise<Request[]>{return[...this.values.keys()].map(value=>new Request(value))}
+}
+class MemoryCacheStorage{readonly cache=new MemoryCache();async open(_name:string):Promise<Cache>{return this.cache as unknown as Cache}}
 
 test('asset streaming resolution orders dependencies, cells, and budgets deterministically',()=>{
   const catalog=[
@@ -97,6 +108,16 @@ test('foreground assets get priority over a bounded Cell prefetch plan',async()=
   assert.deepEqual(far.leasedAssetIds,['asset:far']);
   streamer.release(near.leasedAssetIds);streamer.release(far.leasedAssetIds);
   assert.deepEqual(streamer.evict(),['asset:far','asset:near']);
+});
+
+test('browser cache provider rehydrates bytes and invalidates a changed scene revision',async()=>{
+  const storage=new MemoryCacheStorage(),payload=bytes('browser-payload'),descriptor=record('asset:browser','browser-payload'),options={cacheName:'test-spatial-assets',revisionRoot:'revision:a',cacheStorage:storage as unknown as CacheStorage,cryptoApi:{subtle:globalThis.crypto.subtle},origin:'https://rncs.test'};
+  const cache=createVSRBrowserAssetCache(options);await cache.write(descriptor,payload);const cold=createVSRBrowserAssetCache(options),rehydrated=await cold.read(descriptor);if(!rehydrated)throw new Error('BROWSER_CACHE_REHYDRATE_FAILED');assert.deepEqual([...rehydrated],[...payload]);assert.equal(cold.inspect().cacheHits,1);const revised=createVSRBrowserAssetCache({...options,revisionRoot:'revision:b'});await revised.ready();assert.equal(await revised.read(descriptor),undefined);assert.ok(revised.inspect().diagnostics.some(value=>value.includes('REVISION_CHANGED')));
+});
+
+test('browser cache provider rejects a tampered payload and applies deterministic LRU',async()=>{
+  const storage=new MemoryCacheStorage(),first=bytes('first'),second=bytes('second'),one=record('asset:first','first'),two=record('asset:second','second'),options={cacheName:'test-spatial-assets-lru',revisionRoot:'revision:lru',maxBytes:second.byteLength,cacheStorage:storage as unknown as CacheStorage,cryptoApi:{subtle:globalThis.crypto.subtle},origin:'https://rncs.test'};
+  const cache=createVSRBrowserAssetCache(options);await cache.write(one,first);await cache.write(two,second);assert.equal(await cache.read(one),undefined);const resident=await cache.read(two);if(!resident)throw new Error('BROWSER_CACHE_LRU_RESIDENT_MISSING');assert.deepEqual([...resident],[...second]);const payloadKey=(await storage.cache.keys()).find(request=>request.url.endsWith(`${two.sha256}.bin`))!;await storage.cache.put(payloadKey,response(bytes('bad')));const tampered=createVSRBrowserAssetCache(options);assert.equal(await tampered.read(two),undefined);assert.equal(tampered.inspect().cacheMisses,1);assert.equal(tampered.inspect().cacheEvictions,0);
 });
 
 let passed=0;
