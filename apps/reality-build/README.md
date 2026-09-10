@@ -144,11 +144,12 @@ Reality Studio UI/Input contract
 
 VSR v0.8 已经拥有确定性 clip sampling、animation root、蒙皮、morph、animation graph/layer 和 glTF import；RAGF 的真实 showcase GLB 也带有 1 个 skin、4 个 animation clips、1 个 morph target。此前 Build 的缺口不是再造动画 runtime，而是两处真实接缝：初始/每 Tick 的 `compileSpatialFrame()` 没有收到确定性 animation clock，`replace-mesh` 组合路径也没有保留导入骨骼、动画通道和支撑关节节点。
 
-本轮只增加 candidate-only 的 fixed-tick lowering：
+本轮先增加 candidate-only 的 fixed-tick lowering，并在同一 seam 上扩展 VSR layers/graph selection：
 
 ```text
-sealed animation_policy {clip_id, tick_hz, speed, phase_seconds, loop}
+sealed animation_policy {selection: clip|layers|graph, tick_hz, speed, phase_seconds, loop, ...}
   → phase_seconds + max(spatial Tick, 0) / tick_hz * speed
+  → existing VSR animation / animationLayers / animationGraph options
   → existing VSR compileSpatialFrame / WebGPU render options
   → animationRoot / frameRoot receipt
 ```
@@ -157,7 +158,7 @@ sealed animation_policy {clip_id, tick_hz, speed, phase_seconds, loop}
 
 由 `冰境试炼` candidate scene 生成的 web-release 与 Android embedded HTML 都携带同一 policy 和 initial animation root；本地 `verifyBuild()` 有效。真实 Chromium/WebGPU 中 reset 后 Tick 0 的时间为 `0`，手动推进 15 个 spatial ticks 后为 `0.25` 秒，`animationRoot` 变化、两帧均 `verified=true`、应用错误为 `0`。RAGF GLB → VSR import → replace-mesh → skin/animation frame probe 也验证了 `9` 个导入节点、`1` 个 skin、`4` 个 clips、`8` 个 support nodes 和 `skinnedDraws=1`。完整收据见 `evidence/BUILD_ANIMATION_TARGET_LOWERING_CANDIDATE_v0.1.json`。
 
-这是固定 clip 的 Build target candidate，不是完整动画生产链：Studio animation graph/layer、Sequencer lowering、物理设备/原生 GPU、Android APK/runtime、性能曲线、人工视觉验收和 K400 PASS 仍未关闭。
+固定 clip、layers 和 graph 的 Build target lowering 已在 candidate scope 内验证；这仍不是完整动画生产链：Studio authored Sequence lowering、事件驱动的动画状态机、约束/全量 deformation policy、物理设备/原生 GPU、Android APK/runtime、性能曲线、人工视觉验收和 K400 PASS 仍未关闭。layers/graph 的独立收据见 `evidence/BUILD_ANIMATION_GRAPH_LAYER_LOWERING_CANDIDATE_v0.1.json`。
 
 ## Audio target lowering archaeology（negative candidate）
 

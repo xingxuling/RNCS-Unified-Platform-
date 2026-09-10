@@ -1,0 +1,178 @@
+{
+  "format": "reality-build.animation-graph-layer-lowering-evidence.v0.1",
+  "status": "CANDIDATE_BUILD_ANIMATION_GRAPH_LAYER_LOWERING_VERIFIED",
+  "sourceCommit": "b867bbb962e6a04d295f79cace79f42f46c00497",
+  "pipeline": "sealed Build animation policy (layers or graph) -> fixed spatial Tick -> existing VSR layer/graph evaluator -> animationRoot/frameRoot -> web-release target -> Chromium WebGPU",
+  "archaeology": {
+    "semanticOwners": {
+      "realityStudio": "Reality Studio Sequencer v1.7 remains the authored presentation timeline owner; the raw Build fixture has no sequencer field and no Sequence playback lowering was inferred.",
+      "vsr": "Visual State Runtime owns animation layers, blend/mask semantics, animation graph state/transition sampling and frame compilation.",
+      "rsr": "Reality Simulation Runtime remains the authoritative spatial state and Tick owner; it does not receive presentation animation policy writes.",
+      "realityBuild": "Reality Build owns candidate validation, fixed-Tick lowering and target/evidence projection; it does not evaluate animation semantics itself."
+    },
+    "existingContracts": [
+      "VSR sampleSpatialAnimationLayers() already covers override, additive and node mask behavior.",
+      "VSR sampleSpatialAnimationGraph() already covers declared states and deterministic transitions.",
+      "VSR compileSpatialFrame() gives graph precedence over layers and layers precedence over a single clip, and roots the selected animation inputs.",
+      "Studio Sequence evaluation produces presentation roots, but Build has no sequence consumer and the source fixture materializes a default sequence only inside a Studio session."
+    ],
+    "gap": "The Build seam previously carried only a flat fixed-tick clip policy; layers and graph selections were present in VSR but could not cross the candidate target boundary."
+  },
+  "candidate": {
+    "policySelections": [
+      {
+        "selection": "layers",
+        "policyRoot": "74008740d94e7832fe473e76478e099c304d364a977ac9c91a451030792d9a2b",
+        "layers": 2,
+        "initialAnimationRoot": "ff5b8373fba77f1fecea0bf4473ec1d0f27b72eb460bfa717c8b75cdad5ab514"
+      },
+      {
+        "selection": "graph",
+        "policyRoot": "395841bc4b28cc04d2c367fc5b05a95687392e5268a7923730bfb2de8da8c476",
+        "stateId": "run",
+        "transition": {
+          "fromStateId": "walk",
+          "toStateId": "run",
+          "progress": 0.25
+        },
+        "initialAnimationRoot": "59652f8057eb977faac1aa55b7e34347eb8c84446d0dcfd0951524f939d30bff"
+      }
+    ],
+    "timeFormula": "phase_seconds + max(tick, 0) / tick_hz * speed",
+    "lowering": "layers -> VSR animationLayers with one fixed time per layer; graph -> VSR animationGraph with declared state ids and optional static transition; clip policy remains backward compatible.",
+    "authorityBoundary": "Candidate-only presentation policy; RSR state/clock remains authoritative; VSR remains the animation evaluator and frame-root owner."
+  },
+  "builds": {
+    "project": "apps/reality-build/examples/冰境试炼.unified-project.json",
+    "projectRoot": "fff2312f5e9ded65c519b42148e74fcb683bb4f117dcfd6a9d47f95dffa4967e",
+    "layers": {
+      "buildId": "build:8e715359bb14d350a890f92a",
+      "buildKey": "8e715359bb14d350a890f92ab8e3aff3c6c19fe5ccc5ffa241fc80da6b851d77",
+      "buildReceiptRoot": "2280ffae35a2fa6cf9e1849abb7cc547c53204325c453785aaaaa616886392b7",
+      "runtimeEvidenceRoot": "859261863e49239fccbd0362ba55a2c29b7a8ba4adce417fa3642757e20dd5f0",
+      "webTargetRoot": "ecf2046f9a6346b3ac2eb00f50d60f8f09965d7aa1d1c3fc7f23d3a06f2f5df6",
+      "webTargetFiles": 36,
+      "verifyBuild": true,
+      "runtimeDeterministic": true
+    },
+    "graph": {
+      "buildId": "build:c5ddda19f7bd9acb8ffe70e1",
+      "buildKey": "c5ddda19f7bd9acb8ffe70e1a1dffcc31b11e0ed267a128385c0f90af9304123",
+      "buildReceiptRoot": "a40589b326e09c19d505f16db4c86a4425d8ace8758858d7466f60768a6d3ee9",
+      "runtimeEvidenceRoot": "5e765b1e767647ed32b2d0c089c51ff5630b1dd342c837fa79b1ee81b1b2aed7",
+      "webTargetRoot": "2e60b197864beb506678539bb59e223dc66bd778b373b133332df3563e0f9d9b",
+      "webTargetFiles": 36,
+      "verifyBuild": true,
+      "runtimeDeterministic": true
+    }
+  },
+  "tests": {
+    "focusedRealityBuild": "29/29 PASS",
+    "realityBuildFull": "163 tests / 155 pass / 0 fail / 8 skip",
+    "visualStateRuntimeTypecheck": "PASS",
+    "visualStateRuntimeGltf": "23/23 PASS",
+    "visualStateRuntimeSpatial3d": "99/99 PASS",
+    "candidateNegativeCases": "PASS; unsupported wall-clock mode, missing clip, invalid layer weight and invalid graph initial state fail closed",
+    "gitDiffCheck": "PASS"
+  },
+  "chromium": {
+    "host": "Chromium via Playwright CLI",
+    "layers": {
+      "title": "RNCS Animation Layers Candidate",
+      "readyState": "complete",
+      "consoleErrors": 0,
+      "consoleWarnings": 2,
+      "runtimeMode": "webgpu",
+      "verified": true,
+      "selection": "layers",
+      "layerCount": 2,
+      "initial": {
+        "tick": 0,
+        "timeSeconds": 0,
+        "frameRoot": "bd66267bb84ea003d80571d92cc3947c170e6e6e06d0569a350806d44b7fdeba",
+        "animationRoot": "ff5b8373fba77f1fecea0bf4473ec1d0f27b72eb460bfa717c8b75cdad5ab514",
+        "drawCount": 5,
+        "verified": true
+      },
+      "after15Ticks": {
+        "tick": 15,
+        "timeSeconds": 0.25,
+        "frameRoot": "108dedba7fdb3fdbb8e3bbc84f4058b69d22efe8b4f2ae11ccd7462f8b00cf6b",
+        "animationRoot": "4b90df288db9f805269a7c76ea149d1db06066198d0a9ca92139605412f4eb01",
+        "drawCount": 5,
+        "verified": true
+      },
+      "animationRootChanged": true,
+      "applicationErrors": ""
+    },
+    "graph": {
+      "title": "RNCS Animation Graph Candidate",
+      "readyState": "complete",
+      "consoleErrors": 0,
+      "consoleWarnings": 2,
+      "runtimeMode": "webgpu",
+      "verified": true,
+      "selection": "graph",
+      "stateId": "run",
+      "transitionProgress": 0.25,
+      "initial": {
+        "tick": 0,
+        "timeSeconds": 0,
+        "frameRoot": "919dbcc0f4671b24c03043562f2c3cbe5b71f0f7c8f8d5d43a9e751105e9dd2a",
+        "animationRoot": "59652f8057eb977faac1aa55b7e34347eb8c84446d0dcfd0951524f939d30bff",
+        "drawCount": 5,
+        "verified": true
+      },
+      "after15Ticks": {
+        "tick": 15,
+        "timeSeconds": 0.25,
+        "frameRoot": "7ea4ee1445e9b279c805f06685cda152a43e2c6c68a3d371e18b4fe222e0f6a8",
+        "animationRoot": "a72ad50ffa9e671c924902d4f91134a3f31818e4fcb9500936036c7c7b0a36e0",
+        "drawCount": 5,
+        "verified": true
+      },
+      "animationRootChanged": true,
+      "applicationErrors": ""
+    }
+  },
+  "coverage": {
+    "candidatePolicyValidation": true,
+    "fixedTickLayerLowering": true,
+    "fixedTickGraphLowering": true,
+    "webReleasePayloadLowering": true,
+    "chromiumWebGpuExecutionLayers": true,
+    "chromiumWebGpuExecutionGraph": true,
+    "studioSequenceLowering": false,
+    "audioTargetLowering": false,
+    "physicalAndroidRuntime": false,
+    "androidApk": false,
+    "nativeGpuTarget": false,
+    "performanceCurve": false,
+    "humanVisualAcceptance": false,
+    "k400Pass": false
+  },
+  "affectedK400Cells": [
+    "COMPILE",
+    "LOWER",
+    "EXECUTE",
+    "CORRECT",
+    "ROBUST",
+    "AI_GENERATE",
+    "EVIDENCE"
+  ],
+  "rclGap": "RCL_GAP_RNCS_BUILD_ANIMATION_TARGET_LOWERING",
+  "missingCapability": "A shared RCL-level animation presentation contract and authored Sequence-to-target lowering are not yet established; this candidate only lowers existing VSR layer/graph selections through a fixed Tick.",
+  "currentWorkaround": "Reality Build validates a candidate-only policy, maps its time to the authoritative spatial Tick, and delegates layers/graph evaluation to VSR. Projects without a policy retain the legacy path.",
+  "donorAdvantage": "VSR already provides deterministic layer blending, additive offsets, masks, graph transitions, animation roots and frame verification; Studio already provides authored Sequence roots but has no Build consumer in this path.",
+  "candidateAbsorption": "Do not silently move Build policy into RCL Core or create a second sequence evaluator. Preserve Studio/VSR/RSR ownership and revisit a shared RCL presentation primitive only after cross-target replay and authority review.",
+  "regressionCase": "Legacy flat clip policy remains compatible; malformed selection/layer/graph policies fail closed; sourceRealityRoot remains stable while animationRoot/frameRoot change across fixed ticks.",
+  "boundaries": [
+    "All graph/layer policies and frame outputs are candidate-only and non-authoritative.",
+    "Chromium WebGPU proves local browser execution, not physical-device GPU parity, frame-rate SLA, native target parity or release delivery.",
+    "Studio authored Sequence tracks are inspected but not lowered or played by Build; a static graph transition is not a full behavior-driven animation state machine.",
+    "No audio cue-to-asset mapping, decode, mixing, Android APK/runtime, physical device, WAN transport, production asset service or human acceptance is claimed.",
+    "No K400 gate is promoted to PASS; the listed cells identify affected evidence surfaces only."
+  ],
+  "nextCandidate": "Audit the shared authored presentation spine: determine whether Studio Sequence clips can be explicitly projected into the existing VSR/Build seam without duplicating timeline ownership; keep audio separately blocked until cue-to-asset canonical ownership and receipt shape are decided.",
+  "evidenceRoot": "eb2628ff1e50bc517cc2c247995665926d0865da0b9eac4719c57261e67157b0"
+}
