@@ -12,7 +12,8 @@
     "largeWorldScene": "verifyLargeWorldSpatialScene.valid=true",
     "presentationAssetStreaming": "resolved root; requested=4; missing=0",
     "androidProject": "android-project target embeds the same candidate HTML with VSRGltfAsset, explicit asset_bindings and base64 payloads; no external script src; apk_built=false",
-    "androidApkBuild": "A freshly generated Large World android-project built locally with Gradle 9.5.1, producing a 324425-byte debug APK; Windows apksigner verified v2 with one signer; adb devices reported zero attached devices",
+    "androidApkBuild": "A freshly generated Large World android-project built locally with Gradle 9.5.1, producing a 324425-byte debug APK; Windows apksigner verified v2 with one signer; the APK build probe itself ran without an attached runtime device",
+    "androidWebViewSmoke": "Rcl_Aether_API35_ATD Android Emulator cold-started the APK twice; CDP observed file:///android_asset/index.html readyState=complete, RSR browser bridge verified=true, spatial3d verified=true, mode=canvas2d-projective, drawCount=11, payloadReady=33/33, bindings=11, Canvas 960x540 with non-empty PNG data; WebGPU adapter unavailable and no physical device was attached",
     "browserSmoke": "Chromium web-release smoke PASS; pageErrors=0; VSR/RSR loaded; frame verified; activeCells=4; streamedNodes=17; visibleDraws=11; triangles=402; payloadCatalog=36; activePayloadRequested=33; activePayloadReady=33; activePayloadMissing=0; activePayloadFailed=0; bytesLoaded=144632; payloadReceiptRoot=f63d5f84bb98aef244daa7104d0ab78dac8bf647e8184062420df6476fdbaa89; assetBindings=11; importFailed=0; bindingRoot=1494adb2c6a8783bcd450e1c0fbab8ba5a57cb7ad9d4cc588822d7bcca0ecf92; WebGPU receipt submitted=true; deviceLost=false; drawCalls=11; receiptRoot=4772acced5bce06246d0cbcf3009e4d4b65e9bf7b0064e79aaaec6f6ed8d946f4; screenshot=#spatial-game captured; human visual acceptance remains separate",
     "build": "buildProject verification.valid=true; verifyBuild.valid=true"
   },
@@ -55,7 +56,11 @@
     "androidEmbeddedCandidate": true,
     "androidApkBuiltOnHost": true,
     "androidApkSignatureVerified": true,
-    "androidAttachedDeviceCount": 0,
+    "androidEmulatorWebViewCandidate": true,
+    "androidEmulatorColdStarts": 2,
+    "androidEmulatorSpatialVerified": true,
+    "androidEmulatorWebGpuAvailable": false,
+    "androidPhysicalDeviceCount": 0,
     "assetPayloadBytes": 154432,
     "assetPayloadRequested": 33,
     "assetPayloadReady": 33,
@@ -69,9 +74,9 @@
     "candidate-build-presentation-only; no commit or release authority",
     "Large World scene remains URRF/VSR representation candidate and does not become RSR physical truth",
     "provider GLB payloads and explicit mesh bindings remain candidate-only; web-release writes 36 SHA-addressed payload files and a rooted target payload manifest, while the embedded HTML adapter carries base64 payloads",
-    "Chromium smoke fetches and SHA-verifies 33 active payloads through the existing VSR streamer, imports the selected GLBs through the existing VSR glTF importer, replaces 11 explicit source meshes, and submits 11 WebGPU draw calls on this host (3 cell-unindexed provider assets remain deferred); the generated Android project also produced a locally verified debug APK, but Android WebView/lifecycle/touch/GPU execution, target-device matrix, distributed transport/session, production asset service, and human visual acceptance remain unproven",
+    "Chromium smoke fetches and SHA-verifies 33 active payloads through the existing VSR streamer, imports the selected GLBs through the existing VSR glTF importer, replaces 11 explicit source meshes, and submits 11 WebGPU draw calls on this host (3 cell-unindexed provider assets remain deferred); the generated Android project also produced a locally verified debug APK, and the APK cold-started twice in Rcl_Aether_API35_ATD with verified RNCS/RSR/Canvas fallback execution, but physical/target-device GPU execution and matrix coverage, distributed transport/session, production asset service, and human visual acceptance remain unproven",
     "no new K400 PASS"
   ],
   "authority": "candidate-artifact-generation-only-no-commit",
-  "evidenceRoot": "4cebb059a6a4708be17b2a5dd13bcce948a09b199af3f5cb4c60803a8813b142"
+  "evidenceRoot": "1636d5750c2e78c5e4ef1fbabd7c1419e8a7cc7bf1c3c2efe8b8dacc320cc4a7"
 }
