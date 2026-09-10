@@ -1,0 +1,103 @@
+{
+  "format": "rncs.rsr-heightfield-shape-probe-candidate-evidence.v0.1",
+  "version": "0.1.0-alpha.1",
+  "status": "CANDIDATE_EXECUTION_VERIFIED",
+  "source": {
+    "checkout": "rncs-visual-factory-v01",
+    "branch": "codex/rncs-engine-stack-archaeology-v01",
+    "sourceCommit": "4129763",
+    "authority": "candidate-only; no physical provider admission, RCL promotion, release promotion or main-branch mutation"
+  },
+  "change": {
+    "owner": "RSR Spatial Embodiment",
+    "upstreamTerrainOwner": "Large World Runtime terrain sampling and grid mesh",
+    "queryContract": "sphere or upright capsule origin/direction/maxDistance -> bounded heightfield support-probe hit",
+    "algorithm": "nine-point footprint support sampling over existing triangle-interpolated heightfield surfaces, deterministic fixed step traversal and binary refinement of first sampled contact",
+    "explicitCandidateLabel": "bounded-heightfield-support-probe"
+  },
+  "positiveEvidence": [
+    "A fixed-point sphere cast against flat authored terrain returns the first support distance, point and upward normal.",
+    "An upright capsule cast uses its radius and half-height and returns the same deterministic support contact on flat terrain.",
+    "Unsupported box shape casts fail closed with SPATIAL_SHAPE_CAST_UNSUPPORTED rather than silently using an AABB approximation.",
+    "A lowered Large World terrain chunk reaches the same shape-probe path and returns a rooted terrain fixture hit."
+  ],
+  "negativeEvidence": [
+    "This is a bounded support probe, not an exact swept sphere-vs-triangle or capsule-vs-triangle solver; fixed-step sampling is explicit and capped.",
+    "Only sphere and upright capsule probes are admitted; box, convex, heightfield query shapes, arbitrary capsule rotation and full contact manifolds remain open.",
+    "The probe does not change authoritative world state, integrate contacts, or replace the existing single-support collision solver.",
+    "No dynamic terrain, physical device, target GPU frame-rate, Android, external network or production terrain deployment evidence exists.",
+    "No K400 gate is promoted to PASS by source, package tests or CPU reference execution alone."
+  ],
+  "execution": {
+    "commands": [
+      "npm.cmd run typecheck --workspace @taowind/reality-simulation-runtime",
+      "npm.cmd run lint --workspace @taowind/reality-simulation-runtime",
+      "npm.cmd run test:spatial-embodiment --workspace @taowind/reality-simulation-runtime",
+      "npm.cmd test --workspace @taowind/reality-simulation-runtime",
+      "npm.cmd run test:large-world-rsr-bridge",
+      "npm.cmd run verify:release --workspace @taowind/reality-simulation-runtime",
+      "git diff --check -- <heightfield source and test paths>"
+    ],
+    "results": {
+      "typecheck": "PASS",
+      "lint": "PASS",
+      "spatialEmbodiment": "71/71 PASS",
+      "fullRsr": {
+        "vsr": "29/29 PASS",
+        "simulationV01": "11/11 PASS",
+        "constraintPhysicsV02": "19/19 PASS",
+        "embodiedDynamicsV03": "30/30 PASS",
+        "temporalExperienceV04": "35/35 PASS",
+        "spatialEmbodimentV06": "71/71 PASS",
+        "networkReconciliationV07": "7/7 PASS",
+        "representationObservation": "3/3 PASS",
+        "total": "205/205 PASS"
+      },
+      "largeWorldRsrBridge": "5/5 PASS",
+      "releaseAudit": "PASS",
+      "diffCheck": "PASS"
+    }
+  },
+  "fixtureReceipt": {
+    "stateRoot": "fnv1a64:46aa0c0f8e3baeed",
+    "bodyRoot": "fnv1a64:71c1c90c4088e5b6",
+    "sphere": {
+      "distance": 2000,
+      "point": {"x": 500, "y": 0, "z": 500},
+      "normal": {"x": 0, "y": 1000000, "z": 0},
+      "shapeType": "sphere",
+      "method": "bounded-heightfield-support-probe"
+    },
+    "capsule": {
+      "distance": 2000,
+      "point": {"x": 500, "y": 0, "z": 500},
+      "normal": {"x": 0, "y": 1000000, "z": 0},
+      "shapeType": "capsule",
+      "method": "bounded-heightfield-support-probe"
+    },
+    "unsupportedShapeError": "SPATIAL_SHAPE_CAST_UNSUPPORTED"
+  },
+  "bridgeReceipt": {
+    "sourceCandidateRoot": "fc041518e3a9af44dfb0056f5fa4b29801d572949985c6ad969856c7388d275a",
+    "sourceStreamRoot": "85f1ab3ac1b117d25c086cc1b0eaf9c581ac664fa1d604337d0e4f3bc5a24ac4",
+    "bodyId": "terrain:chunk:world:shape-probe-bridge:0:0",
+    "fixtureId": "terrain:chunk:world:shape-probe-bridge:0:0:heightfield",
+    "distance": 99277,
+    "point": {"x": 24354, "y": 223, "z": 23646},
+    "normal": {"x": -41195, "y": 998669, "z": 31021},
+    "shapeType": "sphere",
+    "method": "bounded-heightfield-support-probe"
+  },
+  "rclGap": "RCL_GAP_RNCS_LARGE_WORLD_PHYSICAL_TERRAIN_LOWERING",
+  "affectedK400Cells": [
+    "EXPRESS",
+    "COMPILE",
+    "LOWER",
+    "EXECUTE",
+    "CORRECT",
+    "ROBUST",
+    "EVIDENCE"
+  ],
+  "decision": "RSR_BOUNDED_HEIGHTFIELD_SPHERE_UPRIGHT_CAPSULE_SUPPORT_PROBE_CANDIDATE_VERIFIED_EXACT_SWEEP_FULL_MANIFOLD_AND_DEVICE_BOUNDARIES_OPEN",
+  "evidenceRoot": "515890b1cf4e033b0d86c5d3597563c5d0010c0cb4a39dad482ddc3cbe324184"
+}
