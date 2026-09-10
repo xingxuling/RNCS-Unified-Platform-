@@ -422,3 +422,5 @@ Unified Project + selected spatial world + scene/asset roots
 本轮完成资产考古、既有 runtime donor 的真实执行、host APK build/signing 和边界定位，不宣布 K400 任一新单元 PASS。下一候选必须分别提供 `EXPRESS / COMPILE / LOWER / EXECUTE / CORRECT / ROBUST / PERFORMANCE / AI_GENERATE / EVIDENCE` 的可重放回执；源码生成、schema 通过、package test、host APK 或本机 Chrome smoke 不能替代 Android WebView/目标硬件、外部物理、真实分布式网络和生产差分门。
 
 当前总体裁决：`PROCEED_AS_CANDIDATE`；World Body 仍是 `F4.5 Partial Production Parity` 方向上的候选基础，Studio/Build/Large World 统一消费链尚未实现。
+
+外部 transport donor 的详细审计见 `docs/architecture/engine-stack/EXTERNAL-TRANSPORT-DONOR-AUDIT-2026-09.md`：历史 DuoWorld Relay 在本机 protocol/bridge candidate 上可执行，但许可证、生产部署和 authority 边界不允许直接复制；下一步必须先裁决 canonical external transport 与 Provider/security owner。
