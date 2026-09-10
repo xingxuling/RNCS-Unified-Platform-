@@ -1,5 +1,6 @@
 # Unreleased — World Body Formal Kernel v0.1 Candidate
 
+- Added a candidate-only Reality Build bridge from explicit audio target bindings through the existing VSR `VSRSpatialAssetStreamer` (`kind: audio`) into Web Audio decode, preserving VSR SHA/lease receipt roots and reset-time release/evict diagnostics; no target-side voice, mixer, bus or continuous-stream policy was introduced.
 - Added fake-device WebGPU evidence for URRF selected-mip execution: near mip0 and far mip2 reach the VSR executor with one-level textures and a lower resident-byte receipt, while real-GPU claims remain closed.
 - Added a candidate-only URRF → VSR texture-residency lowering seam: selected mip levels now become rooted VSR textures with deferred levels excluded from executor input, plus near/far large-world PBR frame and pixel evidence.
 - Added `@taowind/world-body-ir` with seven sealed root objects, total BodyMap validation, fixed-point transform rules, and an explicit hazard/lifetime/barrier Render Graph contract.

@@ -228,6 +228,24 @@ RSR spatial-audio event
 
 同一显式 `impact.body` 候选在本地 Chromium 中观察到 `resume_succeeded=1`、decode `1/1`、`pending_decode_count=0`、`decode_latency_ms_last≈957.7ms`、active voice `1→0`；API 35 Android WebView 中为 `≈421.6ms`，应用异常为 `0`。这只是 Provider 生命周期与目标执行观测，不是跨设备 latency 曲线、并发/混音质量、扬声器输出、native audio、物理设备或人工听感证据。完整收据见 `evidence/BUILD_AUDIO_PROVIDER_LIFECYCLE_CANDIDATE_v0.1.json`；不晋升任何 K400 PASS。
 
+## Audio target asset residency candidate
+
+本轮没有新增音频 authored schema，也没有把 Experience Fabric 的离线 `maxVoices`、cue `maxInstances`、cooldown 或 bus graph 复制到目标侧。已确认的 owner 保持不变：RSR / Experience Fabric 拥有 cue identity、timing、tick、空间参数和离线渲染语义；VSR 拥有通用 content-addressed asset 的依赖、SHA 校验、并发加载、ready/lease/evict receipt；Reality Build 只把显式 audio target binding lower 到目标 Provider。
+
+```text
+sealed audio-target-plan binding
+  → existing VSRSpatialAssetStreamer { kind: audio }
+  → SHA-256 verified asset bytes / VSR receipt root
+  → Web Audio decodeAudioData
+  → scheduled target receipt
+```
+
+Build 现在从已 bound 的 `cue_id → asset_id → file_role → asset_sha256` 生成临时 VSR audio catalog，批量调用既有 `VSRSpatialAssetStreamer`（现有 Provider 默认 `maxConcurrent=4`），再把经过 VSR receipt 校验的 bytes 交给原有 Web Audio buffer Provider。相同内容地址的多个 cue 共享 VSR ready bytes；`reset()` 会停止 active sources，并释放/驱逐本轮 audio asset leases。最终 `taowind.audio-target-browser-receipt.v0.1` 带有 `asset_stream_receipt_root`，因此目标解码 receipt 与 VSR 资产 receipt 可以追溯到同一内容根。
+
+真实本地 Chromium source build 观察到：精确 WAV 请求 `200`，VSR audio catalog `ready=1`、`bytes_resident=19888`、`failed=0`、`blocked=0`、`max_concurrent=4`，Web Audio `decode=1/1`，并在 `scheduled` receipt 中携带 VSR `receipt_root`；页面错误为 `0`。完整收据见 `evidence/BUILD_AUDIO_VSR_ASSET_STREAMING_CANDIDATE_v0.1.json`。
+
+这只关闭了“显式音频目标文件 → 既有 VSR asset residency → Web Audio decode”的浏览器 candidate seam。它不宣称 target-side voice cap、mixer/bus lowering、连续/分段音频 streaming、音频缓存预算、Android/原生音频、跨设备 latency、扬声器输出、物理设备或人工听感；不新增 K400 PASS。`RCL_GAP_RNCS_AUDIO_TARGET_LOWERING` 仍保持开放，下一步应单独复验 embedded Android WebView 的同一 VSR receipt，再决定是否有独立的 provider cache/stream policy 缺口。
+
 ## Network compilation → headless candidate
 
 Reality Build 现在消费既有 Reality Studio `project.network`，不再只把 network authoring 留在 Studio 导出侧：

@@ -33,6 +33,10 @@ test('Reality Build lowers an explicit cue binding to the packaged audio target 
   assert.match(data,/audio_target_plan/);
   assert.match(game,/decodeAudioData/);
   assert.match(game,/blocked-binding/);
+  assert.match(game,/audioAssetBytes/);
+  assert.match(game,/VSRSpatialAssetStreamer/);
+  assert.match(game,/kind:'audio'/);
+  assert.match(game,/asset_streaming/);
   assert.match(androidHtml,/audio_target_plan/);
   assert.match(androidHtml,/data:audio\/wav;base64/);
   assert.match(androidHtml,/decodeAudioData/);

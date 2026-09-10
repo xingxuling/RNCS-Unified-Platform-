@@ -8,6 +8,7 @@ test('游戏宿主使用统一行为与空间 Tick',()=>{assert.match(game,/func
 test('游戏宿主包含触摸控制',()=>assert.match(game,/data-action/));
 test('游戏宿主包含音频 Provider',()=>assert.match(game,/experience\.audio\.emit/));
 test('游戏宿主保留显式音频目标计划与浏览器收据边界',()=>{assert.match(game,/audio_target_plan/);assert.match(game,/decodeAudioData/);assert.match(game,/audioSnapshot/);assert.match(game,/provider_diagnostics/);assert.match(game,/decode_latency_ms_last/);assert.match(game,/audioStopActiveSources/);assert.match(game,/legacy-procedural-fallback/);assert.match(game,/spatial_parameters_forwarded/);assert.match(game,/createPanner/);assert.match(game,/spatial3dSnapshot/);assert.match(game,/listeners/)});
+test('游戏宿主复用 VSR audio asset streaming 到 Web Audio 解码前',()=>{assert.match(game,/VSRSpatialAssetStreamer/);assert.match(game,/kind:'audio'/);assert.match(game,/audioFlushAssetBatch/);assert.match(game,/maxConcurrent:4/);assert.match(game,/vsr\.spatial-asset-streaming\.v0\.1/);assert.match(game,/asset_stream_receipt_root/);assert.match(game,/audioResetAssetStreaming/);});
 test('游戏宿主包含特效 Provider',()=>assert.match(game,/experience\.effect\.emit/));
 test('游戏宿主包含 VSR WebGPU 入口与回退',()=>{assert.match(game,/VSRRealtimeWebGPUExecutor/);assert.match(game,/Canvas 2D/);assert.match(game,/gpu_frame_plan/)});
 test('浏览器 VSR 入口无 Node 依赖',()=>{const source=buildBrowserVSRRuntime();assert.doesNotMatch(source,/node:/);assert.match(source,/VSRRealtimeWebGPUExecutor/);assert.match(source,/createRealtimeWebGPUFrame/);assert.match(source,/verifyRealtimeWebGPUFrame/);assert.match(source,/__RNCSVSR__/)});
