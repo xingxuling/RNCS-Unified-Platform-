@@ -1,0 +1,87 @@
+{
+  "format": "rncs.world-body-event-delivery-local-evidence.v0.1",
+  "date": "2026-09-10",
+  "testedSourceCommit": "f2c7886b1adc8c46df43b56903a80f00bb4d9412",
+  "sourceLastChangedCommit": "026593e46a90fc6b65bef9b8c5851ac77c0e6cf4",
+  "sourcePaths": [
+    "packages/world/world-body-ir/src/event-runtime.mjs",
+    "packages/world/world-body-ir/tests/event-runtime.test.mjs",
+    "packages/world/world-body-ir/examples/minimal-world-body.mjs",
+    "apps/reality-build/src/world-body-candidate.mjs",
+    "apps/reality-build/src/runtime-template.mjs",
+    "apps/reality-build/tests/world-body-candidate.test.mjs"
+  ],
+  "verification": {
+    "worldBodyIr": {
+      "command": "npm.cmd test --workspace @taowind/world-body-ir",
+      "tests": 40,
+      "passed": 40,
+      "failed": 0,
+      "skipped": 0,
+      "status": "PASS_LOCAL"
+    },
+    "realityBuildRegression": {
+      "command": "npm.cmd test --workspace @taowind/reality-build-fabric",
+      "tests": 172,
+      "passed": 164,
+      "failed": 0,
+      "skipped": 8,
+      "status": "PASS_LOCAL_AFTER_DEPENDENCY_MATERIALIZATION"
+    }
+  },
+  "verifiedCapabilities": [
+    "World Body IR event routes preserve source authority root, tick, sequence, consumer, target and exactly-once delivery key",
+    "delivery planning is deterministic and sealed by deliveryPlanRoot",
+    "provider admission fails closed as blocked-provider and permits later retry",
+    "provider rejection and provider errors do not mark a delivery complete",
+    "accepted delivery is duplicate-suppressed on later attempts and receipt/state roots remain deterministic",
+    "Reality Build candidate carries the verified event_delivery_plan and validates its source World Body root",
+    "Build browser runtime exposes explicit provider registration, tick dispatch and blocked/delivered/duplicate receipts"
+  ],
+  "fixtureObservation": {
+    "source": "packages/world/world-body-ir/examples/minimal-world-body.mjs",
+    "sampleTick": 12,
+    "sampleConsumers": ["animation", "audio"],
+    "sampleTargets": ["animation:hero-land", "audio:hero-contact"],
+    "providerAdmission": "explicit-provider-only"
+  },
+  "candidateGenome": {
+    "input": "verified World Body IR with authoritative event state and route declarations",
+    "execution": "World Body IR -> deterministic event delivery plan -> consumer provider admission -> delivery receipts and runtime state root",
+    "outputs": [
+      "deliveryPlanRoot",
+      "receiptRoot",
+      "event runtime stateRoot",
+      "Build presentation event_delivery_plan",
+      "browser provider receipts"
+    ],
+    "authority": "World Body IR retains source authority binding; providers may deliver candidate effects but do not gain commit or world mutation authority"
+  },
+  "reusableDonor": [
+    "one event ordering and exactly-once contract can feed animation, audio and future consumers",
+    "provider admission and retry semantics are shared instead of being reimplemented per target",
+    "Build and browser receipts preserve the World Body source root"
+  ],
+  "integrationAudit": {
+    "worldBodyEventPlanToBuild": true,
+    "browserDispatchPath": true,
+    "defaultAnimationProviderToVsr": false,
+    "defaultAudioProviderToSealedAssetPlan": false,
+    "experienceFabricIngress": false,
+    "realityStudioSequenceEventIngress": false,
+    "targetPlayback": false,
+    "explicitOwnerDecisionRequired": true
+  },
+  "missingCapability": "RNCS has a verified World Body event delivery spine but no canonical provider binding that maps animation routes to VSR animation graph/layer semantics and audio routes to the explicit asset-bound audio target plan while preserving one authored owner.",
+  "rclGap": "RCL_GAP_RNCS_SHARED_AUTHORED_PRESENTATION_SPINE",
+  "stressCase": "At one authoritative tick, the same contact event must produce ordered animation and audio deliveries, block safely when providers are absent, retry after provider admission, and suppress duplicate delivery without changing the source authority root.",
+  "regressionCase": "A provider must not mark a rejected or errored delivery complete; a Build or browser target must not infer a VSR clip, audio asset, or provider from the route target string alone.",
+  "loweringEvidence": "World Body IR and Build candidate/runtime paths execute locally; provider binding remains explicit and candidate-only. No native audio, target GPU, physical device, external network or production release was executed by this evidence.",
+  "boundaries": [
+    "The event runtime is a delivery spine, not an animation evaluator, audio mixer, Sequence evaluator or behavior tree.",
+    "The Build browser provider map starts empty; blocked-provider is the truthful default until an explicit provider is registered.",
+    "The 172-test Build result required materializing existing sparse-checkout dependency sources; this is a workspace condition, not a product capability claim.",
+    "No K400 gate is promoted to PASS."
+  ],
+  "decision": "EVENT_DELIVERY_SPINE_VERIFIED_PROVIDER_BINDING_NOT_PROMOTED"
+}

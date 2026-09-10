@@ -555,6 +555,12 @@ Reality Studio 当前源码真实拥有 `reality-studio.sequence.v1.7`、`Sequen
 
 这条脊柱可以作为未来 authored presentation lowering 的下游承载层，但不能反向成为 authored Sequence owner：它现在承载的是 authoritative spatial object state 与 temporal correction，不拥有 Studio 的 camera、animation、audio、dialogue、effect、light、behavior track，也没有 Experience Fabric ingress。因而本轮只确认“authority → presentation”共享 donor 已经稳定，不新增 Sequence adapter，不把 temporal interpolation 误写成网络/设备/渲染产品能力；`RCL_GAP_RNCS_SHARED_AUTHORED_PRESENTATION_SPINE` 仍集中在 authored ingress 与 target capability policy。
 
+## 本轮 World Body event delivery spine 复核
+
+World Body IR 也已经拥有一个可复用的事件投递层，而不是每个 target 各写一套回调：`createWorldBodyEventDeliveryPlan()` 从已验证 IR 生成带 `sourceWorldBodyRoot`、tick、sequence、consumer、target 和 exactly-once `deliveryKey` 的确定性计划；`WorldBodyEventRuntime` 对 provider 缺失、拒绝、异常、重试和 duplicate suppression 分别出具 receipt。最小 IR 明确同时存在 `animation:hero-land` 与 `audio:hero-contact` 两条 route；独立 `@taowind/world-body-ir` 回归为 `40/40 PASS`，收据见 `docs/verification/WORLD_BODY_EVENT_DELIVERY_LOCAL_EVIDENCE_v0.1.json`。
+
+Reality Build 已把该计划写入 candidate presentation、runtime payload 和浏览器 `dispatchWorldBodyEventTick()`；当前完整 Build 回归为 `172 tests / 164 pass / 0 fail / 8 skipped`。但浏览器 provider map 默认为空，`animation` / `audio` 只有在显式 provider admission 后才会从 `blocked-provider` 变为 `delivered`。因此这关闭的是“World Body authority event → bounded provider delivery receipt”的共享 execution seam，不是 `animation route → VSR graph/layer`、`audio route → sealed target asset plan` 或 Sequence event playback。不能按 route target 字符串推断 clip、asset 或 provider；该 provider binding 仍属于 `RCL_GAP_RNCS_SHARED_AUTHORED_PRESENTATION_SPINE` 的 canonical-owner 决策。
+
 ## 本轮音频 target lowering 考古（负证据）
 
 本轮先对真实源项目做了 audio execution audit，没有立即建立第二套音频系统。Reality Studio/资产记录已有 `sfx-wav` role 与 content hash；Experience Fabric 已有 deterministic audio cue/voice plan 和 oscillator/sample/offline WAV renderer；Spatial Embodiment 已有带 cue、position、gain、pitch、distance、occlusion 的 `spatial-audio` event。它们的语义 owner 各自存在，但当前 Build target 没有把这些语义共同接到文件资产与宿主 audio consumer。
