@@ -1,0 +1,84 @@
+{
+  "format": "reality-build.browser-asset-cache-provider-evidence.v0.1",
+  "status": "CANDIDATE_BROWSER_PROVIDER_VERIFIED",
+  "sourceCommit": "371284146d1f145e2dfd9ef3c417b990824918d6",
+  "fixture": "output/playwright/build-asset-cache-candidates.mjs",
+  "commands": [
+    "npm run typecheck --workspace @taowind/visual-state-runtime",
+    "npm run lint --workspace @taowind/visual-state-runtime",
+    "npm test --workspace @taowind/visual-state-runtime",
+    "npm test --workspace @taowind/reality-build-fabric",
+    "Chromium via playwright-cli against a locally served web-single candidate"
+  ],
+  "tests": {
+    "typecheck": "PASS",
+    "lint": "PASS",
+    "visualStateRuntime": "122/122 PASS; spatial asset streaming 9/9 PASS",
+    "realityBuild": "142 tests / 134 pass / 0 fail / 8 skip",
+    "chromiumConsole": "0 errors; 2 WebGPU capability warnings; no page exception"
+  },
+  "chromium": {
+    "host": "Chromium via Playwright CLI",
+    "target": "Reality Build web-single generated Large World presentation candidate",
+    "cacheStorageAvailable": true,
+    "cacheName": "reality-build-spatial-assets:unified-project:studio-authored-network-v03",
+    "revisionV1": {
+      "payloadRoot": "04da0e683aff1f50768da213b3a4b63a6dcfd112ca5bbda7e3cb9e8ceb765b7b",
+      "sourceAssetBundleRoot": "c6ad10e0c3d10bab7ce3cab3455db2f78bdb60075904072bc2d434aede229d8e",
+      "payloadCatalog": 42,
+      "ready": 39,
+      "cacheHits": 0,
+      "cacheMisses": 39,
+      "bytesResident": 170656,
+      "importFailed": 0,
+      "error": ""
+    },
+    "revisionV1ColdReload": {
+      "ready": 39,
+      "cacheHits": 39,
+      "cacheMisses": 0,
+      "importFailed": 0,
+      "error": ""
+    },
+    "revisionV2": {
+      "payloadRoot": "f8d4968a41248af7d7df5ddc7603ced6ff0871dcc923f0d4dd9cc81c0897b1b1",
+      "sourceAssetBundleRoot": "60429e355fa532dfc4d60797bb11d5f08b10704d95b23a6fa99f4ecf1ad65d39",
+      "payloadCatalog": 39,
+      "ready": 36,
+      "cacheHits": 0,
+      "cacheMisses": 36,
+      "importFailed": 0,
+      "revisionDiagnostic": "VSR_BROWSER_ASSET_CACHE_REVISION_CHANGED:04da0e683aff1f50768da213b3a4b63a6dcfd112ca5bbda7e3cb9e8ceb765b7b:f8d4968a41248af7d7df5ddc7603ced6ff0871dcc923f0d4dd9cc81c0897b1b1",
+      "error": ""
+    },
+    "revisionV2ColdReload": {
+      "ready": 36,
+      "cacheHits": 36,
+      "cacheMisses": 0,
+      "importFailed": 0,
+      "error": ""
+    }
+  },
+  "coverage": {
+    "contentAddressedPayloads": true,
+    "byteLengthVerification": true,
+    "sha256Verification": true,
+    "manifestRootVerification": true,
+    "coldRehydrate": true,
+    "deterministicLru": true,
+    "revisionInvalidation": true,
+    "realityBuildHostIntegration": true,
+    "androidProvider": false,
+    "crossProcessOrRemoteCoherence": false,
+    "physicalDeviceOrQuotaPerformance": false
+  },
+  "boundaries": [
+    "VSR remains the owner of asset catalog, leases, active working sets, imports and residency receipts; the browser provider owns only discardable CacheStorage bytes and its manifest.",
+    "The provider is candidate-only and does not own canonical world state, authority, commit, release promotion or production deployment.",
+    "This closes the Chromium CacheStorage read/write/rehydrate/revision-invalidation seam for Reality Build web-single; it does not implement the Android app-private provider, remote cache coherence, CDN invalidation, quota/performance curves, or target-device evidence.",
+    "No new K400 PASS. Human visual acceptance remains separate from automated browser evidence."
+  ],
+  "rclGap": "RCL_GAP_RNCS_RUNTIME_ASSET_CACHE_PROVIDER",
+  "nextCandidate": "Implement or explicitly reject the Android app-private lowering under the same provider contract, then measure quota/eviction/performance on a reproducible device host without changing VSR semantic ownership.",
+  "evidenceRoot": "b23b8e1222302106b3d7cfa719454ffbf15670a9fd06370ec4b9a0e79888c2bf"
+}

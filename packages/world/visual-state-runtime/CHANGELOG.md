@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added `createVSRBrowserAssetCache()` as the CacheStorage lowering for the existing VSR asset-loader seam: content-addressed payloads, byte-length/SHA-256 verification, rooted manifest, cold rehydrate, scene/payload revision invalidation, deterministic byte-budget LRU, and inspection diagnostics. Real Chromium evidence covers first write, cold reload hits, and revision rebuild; Android app-private persistence, quota/performance, remote coherence, and target-device execution remain open.
 - Spatial temporal frame plans now carry bounded `temporalVelocityThreshold`/`temporalVelocityDilation` controls and current/previous instance transforms; CPU and WebGPU paths pack and consume the same 128-byte-per-instance transform contract.
 - Spatial temporal resolve now carries motion-vector velocity attachments through opaque, transparent, weighted-OIT, and history paths, applies bounded velocity dilation plus previous-depth/history-velocity rejection, and records `velocityPasses`; real Chromium coverage now includes static and moving-object frames across thirteen submitted, device-loss-free frames.
 - Added deterministic environment mip-chain generation, roughness-aware CPU IBL sampling, WebGPU mip uploads, and explicit environment mip evidence in spatial frame plans;
