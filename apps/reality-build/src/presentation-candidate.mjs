@@ -40,6 +40,10 @@ function decodePayload(value) {
 }
 
 function normalizeAssetBundle(assetBundle) {
+  if (assetBundle?.format === REALITY_BUILD_SPATIAL_ASSET_BUNDLE_FORMAT) {
+    if (!verifySpatialAssetBundle(assetBundle)) fail('REALITY_BUILD_SPATIAL_ASSET_BUNDLE_INVALID', 'Presentation asset bundle seal is invalid');
+    return clone(assetBundle);
+  }
   if (!isRecord(assetBundle) || !isRecord(assetBundle.manifest) || !Array.isArray(assetBundle.assets)) {
     fail('REALITY_BUILD_SPATIAL_ASSET_BUNDLE_INVALID', 'Presentation asset bundle requires a provider manifest and asset entries');
   }
@@ -105,6 +109,74 @@ function normalizeScene(scene) {
   return {scene: clone(scene), nodeIds};
 }
 
+/**
+ * Derive an explicit candidate-only provider-record to world-mesh plan. The
+ * provider metadata is used only to name the source mesh; records that do not
+ * identify a mesh present in the scene (for example a showcase asset) remain
+ * packaged but are deliberately not bound implicitly.
+ */
+export function createSpatialAssetBindingPlan({scene, assetBundle} = {}) {
+  const normalizedScene = normalizeScene(scene).scene;
+  const normalizedBundle = normalizeAssetBundle(assetBundle);
+  const meshIds = new Set((normalizedScene.meshes ?? []).map(mesh => String(mesh?.id ?? '')).filter(Boolean));
+  const nodeIdsByMesh = new Map();
+  for (const node of normalizedScene.nodes) {
+    const meshId = String(node?.meshId ?? '').trim();
+    if (!meshId || !meshIds.has(meshId)) continue;
+    const list = nodeIdsByMesh.get(meshId) ?? [];
+    list.push(String(node.id));
+    nodeIdsByMesh.set(meshId, list);
+  }
+  const groups = new Map();
+  for (const entry of normalizedBundle.assets) {
+    const record = entry.record;
+    const sourceMeshId = String(record.metadata?.source_mesh_id ?? '').trim();
+    const lod = Number(record.metadata?.lod);
+    if (!sourceMeshId || !meshIds.has(sourceMeshId) || !Number.isInteger(lod) || lod < 0 || !(nodeIdsByMesh.get(sourceMeshId)?.length)) continue;
+    const group = groups.get(sourceMeshId) ?? {mode: 'replace-mesh', source_mesh_id: sourceMeshId, node_ids: [...new Set(nodeIdsByMesh.get(sourceMeshId))].sort(), assets: []};
+    group.assets.push({asset_id: String(record.id), lod, cell_ids: [...new Set(record.cellIds ?? [])].map(String).sort()});
+    groups.set(sourceMeshId, group);
+  }
+  return [...groups.values()].sort((a, b) => a.source_mesh_id.localeCompare(b.source_mesh_id)).map(group => ({
+    ...group,
+    assets: group.assets.sort((a, b) => a.lod - b.lod || a.asset_id.localeCompare(b.asset_id)),
+  }));
+}
+
+function normalizeAssetBindings(bindings, scene, assetBundle) {
+  if (bindings === undefined || (Array.isArray(bindings) && bindings.length === 0)) return [];
+  if (!Array.isArray(bindings)) fail('REALITY_BUILD_SPATIAL_PRESENTATION_ASSET_BINDINGS_INVALID', 'Presentation asset bindings must be an array');
+  if (!assetBundle) fail('REALITY_BUILD_SPATIAL_PRESENTATION_ASSET_BUNDLE_REQUIRED', 'Presentation asset bindings require an asset bundle');
+  const sceneMeshIds = new Set((scene.meshes ?? []).map(mesh => String(mesh?.id ?? '')).filter(Boolean));
+  const sceneNodes = new Map(scene.nodes.map(node => [String(node.id), node]));
+  const records = new Map(assetBundle.assets.map(entry => [String(entry.record.id), entry.record]));
+  const sourceMeshIds = new Set();
+  const assetIds = new Set();
+  return bindings.map((binding, index) => {
+    if (!isRecord(binding)) fail('REALITY_BUILD_SPATIAL_PRESENTATION_ASSET_BINDING_INVALID', `Presentation asset binding ${index} is not an object`);
+    const mode = String(binding.mode ?? 'replace-mesh');
+    const sourceMeshId = String(binding.source_mesh_id ?? binding.sourceMeshId ?? '').trim();
+    const nodeIds = [...new Set((binding.node_ids ?? binding.nodeIds ?? []).map(String))].sort();
+    if (mode !== 'replace-mesh') fail('REALITY_BUILD_SPATIAL_PRESENTATION_ASSET_BINDING_MODE_UNSUPPORTED', `Presentation asset binding ${index} must use replace-mesh`);
+    if (!sourceMeshId || !sceneMeshIds.has(sourceMeshId)) fail('REALITY_BUILD_SPATIAL_PRESENTATION_ASSET_BINDING_SOURCE_MISSING', `Presentation asset binding ${index} names an unknown source mesh`);
+    if (sourceMeshIds.has(sourceMeshId)) fail('REALITY_BUILD_SPATIAL_PRESENTATION_ASSET_BINDING_DUPLICATE_SOURCE', `Presentation source mesh ${sourceMeshId} is bound more than once`);
+    if (!nodeIds.length) fail('REALITY_BUILD_SPATIAL_PRESENTATION_ASSET_BINDING_NODES_REQUIRED', `Presentation asset binding ${index} needs target nodes`);
+    for (const nodeId of nodeIds) if (!sceneNodes.has(nodeId) || sceneNodes.get(nodeId)?.meshId !== sourceMeshId) fail('REALITY_BUILD_SPATIAL_PRESENTATION_ASSET_BINDING_NODE_MISMATCH', `Presentation asset binding ${index} targets a node outside ${sourceMeshId}`);
+    if (!Array.isArray(binding.assets) || !binding.assets.length) fail('REALITY_BUILD_SPATIAL_PRESENTATION_ASSET_BINDING_ASSETS_REQUIRED', `Presentation asset binding ${index} needs provider assets`);
+    const assets = binding.assets.map((asset, assetIndex) => {
+      const assetId = String(asset?.asset_id ?? asset?.assetId ?? '').trim();
+      const lod = Number(asset?.lod);
+      const record = records.get(assetId);
+      if (!assetId || !record || assetIds.has(assetId)) fail('REALITY_BUILD_SPATIAL_PRESENTATION_ASSET_BINDING_ASSET_INVALID', `Presentation asset binding ${index} asset ${assetIndex} is invalid or duplicated`);
+      if (!Number.isInteger(lod) || lod < 0 || String(record.metadata?.source_mesh_id ?? '') !== sourceMeshId || Number(record.metadata?.lod) !== lod) fail('REALITY_BUILD_SPATIAL_PRESENTATION_ASSET_BINDING_RECORD_MISMATCH', `Presentation asset binding ${index} asset ${assetId} does not match its provider metadata`);
+      assetIds.add(assetId);
+      return {asset_id: assetId, lod, cell_ids: [...new Set((asset.cell_ids ?? asset.cellIds ?? record.cellIds ?? []).map(String))].sort()};
+    }).sort((a, b) => a.lod - b.lod || a.asset_id.localeCompare(b.asset_id));
+    sourceMeshIds.add(sourceMeshId);
+    return {...clone(binding), mode, source_mesh_id: sourceMeshId, node_ids: nodeIds, assets};
+  }).sort((a, b) => a.source_mesh_id.localeCompare(b.source_mesh_id));
+}
+
 function normalizeBindings(bindings, nodeIds) {
   if (!Array.isArray(bindings)) fail('REALITY_BUILD_SPATIAL_PRESENTATION_BINDINGS_INVALID', 'Presentation bindings must be an array');
   const bodyIds = new Set();
@@ -129,13 +201,14 @@ function normalizeBindings(bindings, nodeIds) {
   return normalized;
 }
 
-export function createSpatialPresentationCandidate({projectRoot, scene, source, bindings = [], assetBundle = null} = {}) {
+export function createSpatialPresentationCandidate({projectRoot, scene, source, bindings = [], assetBundle = null, assetBindings = []} = {}) {
   const normalizedProjectRoot = String(projectRoot ?? '').trim();
   if (!normalizedProjectRoot) fail('REALITY_BUILD_SPATIAL_PRESENTATION_PROJECT_ROOT_INVALID', 'Build presentation candidate requires a project root');
   if (!isRecord(source)) fail('REALITY_BUILD_SPATIAL_PRESENTATION_SOURCE_INVALID', 'Build presentation candidate requires a structured source reference');
   const normalizedScene = normalizeScene(scene);
   const normalizedBindings = normalizeBindings(bindings, normalizedScene.nodeIds);
   const normalizedAssetBundle = assetBundle === null || assetBundle === undefined ? null : normalizeAssetBundle(assetBundle);
+  const normalizedAssetBindings = normalizeAssetBindings(assetBindings, normalizedScene.scene, normalizedAssetBundle);
   const sourceBase = {
     format: REALITY_BUILD_SPATIAL_PRESENTATION_FORMAT,
     version: REALITY_BUILD_SPATIAL_PRESENTATION_VERSION,
@@ -144,7 +217,8 @@ export function createSpatialPresentationCandidate({projectRoot, scene, source, 
     source: clone(source),
     scene_root: rootHash(normalizedScene.scene),
     bindings: normalizedBindings,
-    ...(normalizedAssetBundle ? {asset_bundle: normalizedAssetBundle} : {})
+    ...(normalizedAssetBundle ? {asset_bundle: normalizedAssetBundle} : {}),
+    ...(normalizedAssetBindings.length ? {asset_bindings: normalizedAssetBindings} : {})
   };
   const presentationSourceRoot = rootHash(sourceBase);
   const presentation = {
@@ -175,6 +249,10 @@ export function verifySpatialPresentationCandidate(value, {projectRoot = null} =
     const normalizedScene = normalizeScene(scene);
     if (rootHash(scene) !== presentationBase.scene_root) return false;
     if (presentation.presentation_source_root !== rootHash({...presentationBase, presentation_source_root: undefined})) return false;
+    if (presentationBase.asset_bindings !== undefined) {
+      const normalizedAssetBindings = normalizeAssetBindings(presentationBase.asset_bindings, normalizedScene.scene, presentationBase.asset_bundle);
+      if (normalizedAssetBindings.some((binding, index) => rootHash(binding) !== rootHash(presentationBase.asset_bindings[index]))) return false;
+    }
     return normalizeBindings(presentationBase.bindings, normalizedScene.nodeIds).every((binding, index) => rootHash(binding) === rootHash(presentationBase.bindings[index]));
   } catch {
     return false;

@@ -16,6 +16,7 @@ import {
   type VSRSpatialSkin,
   type VSRSpatialTexture,
   type VSRSpatialTextureLevel,
+  type VSRSpatialTransform,
   identityMat4,
 } from '../../spatial-reality-3d/src/index.js';
 
@@ -115,3 +116,97 @@ export function importGlbToSpatialScene(input:ArrayBuffer|Uint8Array,options:VSR
 export async function importGltfToSpatialSceneAsync(gltf:Json,options:VSRGltfImportOptions={}):Promise<VSRGltfImportResult>{const buffers=loadBuffers(gltf,options),decoded=new Map<number,VSRSpatialTexture>(),imageRoots:[number,string][]=[];if(options.imageDecoder)for(const texture of gltf.textures??[]){const source=resolveGltfTextureSource(texture);if(!source||!Number.isInteger(source.imageIndex)||decoded.has(source.imageIndex))continue;const imageIndex=source.imageIndex,image=gltf.images?.[imageIndex],bytes=imageBytes(gltf,imageIndex,buffers,options);if(!image||!bytes)continue;const id=`texture:gltf:${imageIndex}`,sampler=gltf.samplers?.[texture.sampler]??{},resolved=await options.imageDecoder({imageIndex,image,id,sampler,bytes,mimeType:image.mimeType});if(resolved){decoded.set(imageIndex,resolved);imageRoots.push([imageIndex,cryptographicHash([...bytes])])}}const sourceRoot=options.sourceRoot??(imageRoots.length?cryptographicHash({gltf,imageRoots}):cryptographicHash(gltf));return importGltfToSpatialScene(gltf,{...options,sourceRoot,imageResolver:input=>decoded.get(input.imageIndex)??options.imageResolver?.(input)})}
 export async function importGlbToSpatialSceneAsync(input:ArrayBuffer|Uint8Array,options:VSRGltfImportOptions={}):Promise<VSRGltfImportResult>{const parsed=parseGlb(input),buffers={...(options.buffers??{})};if(parsed.binaryChunk&&!buffers['buffer:0'])buffers['buffer:0']=parsed.binaryChunk;const binaryRoot=parsed.binaryChunk?cryptographicHash([...parsed.binaryChunk]):cryptographicHash([]),sourceRoot=options.sourceRoot??cryptographicHash({gltf:parsed.gltf,binaryRoot});return importGltfToSpatialSceneAsync(parsed.gltf,{...options,buffers,sourceRoot})}
 export function verifyGltfImportReceipt(receipt:VSRGltfImportReceipt):boolean{const {receiptRoot,...base}=receipt;return cryptographicHash(base)===receiptRoot}
+
+export type VSRSpatialAssetComposeMode='append'|'replace-mesh';
+export interface VSRSpatialAssetComposeOptions {
+  assetId:string;
+  instanceId?:string;
+  idPrefix?:string;
+  mode?:VSRSpatialAssetComposeMode;
+  sourceMeshId?:string;
+  targetNodeIds?:string[];
+  placement?:VSRSpatialTransform;
+  cellIds?:string[];
+  payloadRoot?:string;
+  assetFormat?:string;
+  resourceAssetIds?:string[];
+}
+export interface VSRSpatialAssetBinding {
+  format:'vsr.spatial-asset-binding.v0.1';
+  version:'0.1.0';
+  mode:VSRSpatialAssetComposeMode;
+  assetId:string;
+  instanceId?:string;
+  assetFormat?:string;
+  payloadRoot?:string;
+  sourceMeshId?:string;
+  resourceAssetIds:string[];
+  importReceiptRoot:string;
+  meshIds:string[];
+  materialIds:string[];
+  textureIds:string[];
+  nodeIds:string[];
+  boundNodeIds:string[];
+  bindingRoot:string;
+}
+export interface VSRSpatialAssetComposeResult {scene:VSRSpatialScene3D;binding:VSRSpatialAssetBinding}
+
+const importedAssetTextureKeys=['baseColorTextureId','metallicRoughnessTextureId','normalTextureId','occlusionTextureId','emissiveTextureId','lightmapTextureId','reactiveMaskTextureId'] as const;
+const uniqueSortedStrings=(values:unknown[]):string[]=>[...new Set(values.filter(value=>typeof value==='string'&&value.length>0) as string[])].sort((a,b)=>a.localeCompare(b));
+
+function remapImportedMaterial(material:VSRSpatialMaterial,prefix:string,textureIds:Map<string,string>):VSRSpatialMaterial{
+  const result={...material,id:`${prefix}material:${material.id}`};
+  for(const key of importedAssetTextureKeys)if(result[key])result[key]=textureIds.get(result[key]!)??result[key];
+  return result;
+}
+
+/**
+ * Compose a verified imported asset into a VSR scene without granting the
+ * asset authority over world state. Append mode preserves the imported node
+ * hierarchy; replace-mesh mode reuses existing world nodes and swaps only
+ * their presentation mesh/material references.
+ */
+export function composeImportedSpatialScene(baseScene:VSRSpatialScene3D,imported:VSRGltfImportResult,options:VSRSpatialAssetComposeOptions):VSRSpatialAssetComposeResult{
+  if(!baseScene||baseScene.format!==VSR_SPATIAL_SCENE_FORMAT)throw new TypeError('VSR_SPATIAL_ASSET_BASE_SCENE_INVALID');
+  if(!imported?.scene||!verifyGltfImportReceipt(imported.receipt))throw new TypeError('VSR_SPATIAL_ASSET_IMPORT_RECEIPT_INVALID');
+  const assetId=String(options?.assetId??'').trim();if(!assetId)throw new TypeError('VSR_SPATIAL_ASSET_ID_REQUIRED');
+  const mode=options.mode??'append',instanceId=String(options.instanceId??assetId),prefix=String(options.idPrefix??`asset:${instanceId}:`);
+  const meshIds=new Map(imported.scene.meshes.map(mesh=>[mesh.id,`${prefix}mesh:${mesh.id}`]));
+  const textureIds=new Map((imported.scene.textures??[]).map(texture=>[texture.id,`${prefix}texture:${texture.id}`]));
+  const nodeIds=new Map(imported.scene.nodes.map(node=>[node.id,`${prefix}node:${node.id}`]));
+  const skinIds=new Map((imported.scene.skins??[]).map(skin=>[skin.id,`${prefix}skin:${skin.id}`]));
+  const materialIds=new Map(imported.scene.materials.map(material=>[material.id,`${prefix}material:${material.id}`]));
+  const animationIds=new Map((imported.scene.animations??[]).map(animation=>[animation.id,`${prefix}animation:${animation.id}`]));
+  const importedRootNodeIds=new Set(imported.scene.nodes.filter(node=>!node.parentId||!nodeIds.has(node.parentId)).map(node=>node.id));
+  const importedNodes=imported.scene.nodes.map(node=>({...node,id:nodeIds.get(node.id)!,...(node.parentId?{parentId:nodeIds.get(node.parentId)}:{}),...(node.meshId?{meshId:meshIds.get(node.meshId)}:{}),...(node.materialId?{materialId:materialIds.get(node.materialId)}:{}),...(node.skinId?{skinId:skinIds.get(node.skinId)}:{}),tags:[...(node.tags??[]),`asset:${assetId}`,...(importedRootNodeIds.has(node.id)?['asset-root']:[])],...(importedRootNodeIds.has(node.id)&&options.placement?{transform:{...(node.transform??{}),...options.placement}}:{})}));
+  const materials=imported.scene.materials.map(material=>remapImportedMaterial(material,prefix,textureIds));
+  const skins=(imported.scene.skins??[]).map(skin=>({...skin,id:skinIds.get(skin.id)!,joints:skin.joints.map(nodeId=>nodeIds.get(nodeId)??nodeId)}));
+  const animations=(imported.scene.animations??[]).map(animation=>({...animation,id:animationIds.get(animation.id)!,channels:animation.channels.map(channel=>({...channel,nodeId:nodeIds.get(channel.nodeId)??channel.nodeId}))}));
+  const lights=(imported.scene.lights??[]).map(light=>({...light,id:`${prefix}light:${light.id}`}));
+  const importedNodeIds=importedNodes.map(node=>node.id).sort((a,b)=>a.localeCompare(b));
+  let scene:VSRSpatialScene3D;
+  let boundNodeIds:string[]=[];
+  let sourceMeshId=options.sourceMeshId?String(options.sourceMeshId):undefined;
+  if(mode==='replace-mesh'){
+    if(!sourceMeshId)throw new TypeError('VSR_SPATIAL_ASSET_SOURCE_MESH_REQUIRED');
+    if(imported.scene.meshes.length!==1)throw new TypeError('VSR_SPATIAL_ASSET_REPLACE_MESH_REQUIRES_ONE_IMPORTED_MESH');
+    const targetIds=new Set((options.targetNodeIds??[]).map(String));
+    const targets=baseScene.nodes.filter(node=>node.meshId===sourceMeshId&&(!targetIds.size||targetIds.has(node.id)));
+    if(!targets.length)throw new TypeError('VSR_SPATIAL_ASSET_REPLACE_TARGET_MISSING');
+    const importedMesh=imported.scene.meshes[0]!;
+    const replacementMeshId=meshIds.get(importedMesh.id)!;
+    const importedMaterialId=imported.scene.nodes.find(node=>node.meshId===importedMesh.id)?.materialId;
+    const replacementMaterialId=importedMaterialId?materialIds.get(importedMaterialId):undefined;
+    boundNodeIds=targets.map(node=>node.id).sort((a,b)=>a.localeCompare(b));
+    const targetSet=new Set(boundNodeIds);
+    const replacedNodes=baseScene.nodes.map(node=>targetSet.has(node.id)?{...node,meshId:replacementMeshId,...(replacementMaterialId?{materialId:replacementMaterialId}:{}),tags:uniqueSortedStrings([...(node.tags??[]),`asset:${assetId}`,'asset-replacement'])}:node);
+    scene={...baseScene,meshes:[...baseScene.meshes,...imported.scene.meshes.map(mesh=>({...mesh,id:meshIds.get(mesh.id)!}))],materials:[...baseScene.materials,...materials],textures:[...(baseScene.textures??[]),...(imported.scene.textures??[]).map(texture=>({...texture,id:textureIds.get(texture.id)!}))],nodes:replacedNodes};
+  }else if(mode==='append'){
+    const streamCells=(baseScene.streaming?.cells??[]).map(cell=>options.cellIds?.includes(cell.id)?{...cell,nodeIds:uniqueSortedStrings([...(cell.nodeIds??[]),...importedNodeIds])}:cell);
+    scene={...baseScene,meshes:[...baseScene.meshes,...imported.scene.meshes.map(mesh=>({...mesh,id:meshIds.get(mesh.id)!}))],materials:[...baseScene.materials,...materials],textures:[...(baseScene.textures??[]),...(imported.scene.textures??[]).map(texture=>({...texture,id:textureIds.get(texture.id)!}))],nodes:[...baseScene.nodes,...importedNodes],skins:[...(baseScene.skins??[]),...skins],animations:[...(baseScene.animations??[]),...animations],lights:[...(baseScene.lights??[]),...lights],...(baseScene.streaming?{streaming:{...baseScene.streaming,cells:streamCells}}:{})};
+  }else throw new TypeError(`VSR_SPATIAL_ASSET_COMPOSE_MODE_UNSUPPORTED:${String(mode)}`);
+  const bindingBase={format:'vsr.spatial-asset-binding.v0.1' as const,version:'0.1.0' as const,mode,assetId,...(instanceId===assetId?{}:{instanceId}),...(options.assetFormat?{assetFormat:String(options.assetFormat)}:{}),...(options.payloadRoot?{payloadRoot:String(options.payloadRoot)}:{}),...(sourceMeshId?{sourceMeshId}:{}),resourceAssetIds:uniqueSortedStrings(options.resourceAssetIds??[]),importReceiptRoot:imported.receipt.receiptRoot,meshIds:[...meshIds.values()].sort((a,b)=>a.localeCompare(b)),materialIds:[...materialIds.values()].sort((a,b)=>a.localeCompare(b)),textureIds:[...textureIds.values()].sort((a,b)=>a.localeCompare(b)),nodeIds:mode==='append'?importedNodeIds:[],boundNodeIds};
+  return {scene,binding:{...bindingBase,bindingRoot:cryptographicHash(bindingBase)}};
+}
+
+export function computeSpatialAssetBindingRoot(bindings:VSRSpatialAssetBinding[]):string{return cryptographicHash(bindings.map(binding=>binding.bindingRoot).sort((a,b)=>a.localeCompare(b)))}

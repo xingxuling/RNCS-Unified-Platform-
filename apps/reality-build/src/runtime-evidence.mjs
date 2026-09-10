@@ -46,7 +46,7 @@ function presentationSpec(project,externalCandidate=null){
   const scene=candidate?.scene??spatial?.presentation_scene;
   if(!scene||typeof scene!=='object')return null;
   const bindings=Array.isArray(candidate?.bindings)?candidate.bindings:Array.isArray(spatial?.presentation_bindings)?spatial.presentation_bindings:[];
-  return{scene:clone(scene),bindings:clone(bindings),asset_bundle:candidate?.asset_bundle??spatial?.presentation_asset_bundle??null,source_root:candidate?.presentation_source_root??spatial?.presentation_source_root??scene.sceneRoot??null};
+  return{scene:clone(scene),bindings:clone(bindings),asset_bundle:candidate?.asset_bundle??spatial?.presentation_asset_bundle??null,asset_bindings:clone(candidate?.asset_bindings??spatial?.presentation_asset_bindings??[]),source_root:candidate?.presentation_source_root??spatial?.presentation_source_root??scene.sceneRoot??null};
 }
 function bindPresentationScene(scene,snapshot,bindings){
   const out=clone(scene);
@@ -74,7 +74,7 @@ function presentationAssetStreaming(scene){
 }
 export function compileBoundPresentationScene(project,snapshot,fallbackScene,fallbackFramePlan,externalCandidate=null){
   const spec=presentationSpec(project,externalCandidate);
-  if(!spec)return{scene:fallbackScene,frame_plan:fallbackFramePlan,bound:false,binding_count:0,source_root:null};
+  if(!spec)return{scene:fallbackScene,frame_plan:fallbackFramePlan,bound:false,binding_count:0,asset_binding_count:0,source_root:null};
   const scene=bindPresentationScene(spec.scene,snapshot,spec.bindings);
   const assetStreaming=presentationAssetStreaming(scene);
   const framePlan=compileSpatialFrame(scene,{
@@ -85,7 +85,7 @@ export function compileBoundPresentationScene(project,snapshot,fallbackScene,fal
   });
   const verification=verifySpatialFrame(framePlan);
   if(!verification?.ok)throw new Error(`PRESENTATION_SPATIAL_FRAME_INVALID:${JSON.stringify(verification)}`);
-  return{scene,frame_plan:framePlan,asset_streaming:assetStreaming,asset_bundle:spec.asset_bundle??null,bound:true,binding_count:spec.bindings.length,source_root:spec.source_root};
+  return{scene,frame_plan:framePlan,asset_streaming:assetStreaming,asset_bundle:spec.asset_bundle??null,asset_bindings:spec.asset_bindings,bound:true,binding_count:spec.bindings.length,asset_binding_count:spec.asset_bindings.length,source_root:spec.source_root};
 }
 
 export function buildRuntimeEvidence({project,request,identity,presentationCandidate=null}={}){
@@ -165,6 +165,7 @@ export function buildRuntimeEvidence({project,request,identity,presentationCandi
     presentation_scene_source_root:presentation.source_root,
     presentation_scene_frame_root:spatialFramePlan.frameRoot??null,
     presentation_binding_count:presentation.binding_count,
+    presentation_asset_binding_count:presentation.asset_binding_count,
     presentation_asset_streaming_root:presentation.asset_streaming?.root??null,
     presentation_asset_requested_count:presentation.asset_streaming?.requestedAssetIds?.length??0,
     presentation_asset_missing_count:presentation.asset_streaming?.missingAssetIds?.length??0,
@@ -202,6 +203,7 @@ export function runtimeEvidenceSummary(runtimeEvidence){
     navigation_manifest_root:e.navigation_manifest_root,presentation_scene_bound:e.presentation_scene_bound,
     presentation_scene_source_root:e.presentation_scene_source_root,presentation_scene_frame_root:e.presentation_scene_frame_root,
     presentation_binding_count:e.presentation_binding_count,presentation_asset_streaming_root:e.presentation_asset_streaming_root,
+    presentation_asset_binding_count:e.presentation_asset_binding_count,
     presentation_asset_requested_count:e.presentation_asset_requested_count,presentation_asset_missing_count:e.presentation_asset_missing_count,
     presentation_asset_bundle_root:e.presentation_asset_bundle_root,presentation_asset_provider_bundle_root:e.presentation_asset_provider_bundle_root,
     presentation_asset_payload_count:e.presentation_asset_payload_count,presentation_asset_payload_bytes:e.presentation_asset_payload_bytes,

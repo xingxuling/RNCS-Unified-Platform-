@@ -4,6 +4,7 @@ import path from 'node:path';
 import {rootHash} from '@taowind/rncs-core-contract';
 import {hash,makeObserverRelevanceView} from '@taowind/reality-network-runtime';
 import {resolveSpatialAssetStreaming,VSRSpatialAssetStreamer,verifySpatialAssetStreamingReceipt} from '@taowind/visual-state-runtime/spatial-asset-streaming';
+import {composeImportedSpatialScene} from '@taowind/visual-state-runtime/gltf-asset';
 import {resolveSpatialStreaming} from '@taowind/visual-state-runtime/spatial-reality-3d';
 import {readKernelStateBatch} from './kernel-spatial-binding.mjs';
 
@@ -85,8 +86,6 @@ export function createRealityCellAssetCache(directory,{maxBytes=Number.MAX_SAFE_
   };
 }
 
-const assetTextureKeys=['baseColorTextureId','metallicRoughnessTextureId','normalTextureId','occlusionTextureId','emissiveTextureId','lightmapTextureId','reactiveMaskTextureId'];
-
 function assetFormat(asset){
   const metadata=asset?.metadata;
   if(asset?.format)return String(asset.format).toLowerCase();
@@ -138,24 +137,10 @@ function resolveGltfExternalResources(rootAsset,document,catalog,receipt,runtime
   return {buffers,imageBytes,resources:uniqueResources,resourceAssetIds:uniqueResources.map(resource=>resource.id)};
 }
 
-function remapAssetMaterial(material,prefix,textureIds){
-  const result={...material,id:`${prefix}material:${material.id}`};
-  for(const key of assetTextureKeys)if(result[key])result[key]=textureIds.get(result[key])??result[key];
-  return result;
-}
-
 function mergeImportedAssetScene(baseScene,imported,asset,placement,resourceAssetIds=[],instanceId=asset.id){
-  const prefix=`cell-asset:${instanceId}:`,meshIds=new Map(imported.scene.meshes.map(mesh=>[mesh.id,`${prefix}mesh:${mesh.id}`])),textureIds=new Map((imported.scene.textures??[]).map(texture=>[texture.id,`${prefix}texture:${texture.id}`])),nodeIds=new Map(imported.scene.nodes.map(node=>[node.id,`${prefix}node:${node.id}`])),skinIds=new Map((imported.scene.skins??[]).map(skin=>[skin.id,`${prefix}skin:${skin.id}`])),materialIds=new Map(imported.scene.materials.map(material=>[material.id,`${prefix}material:${material.id}`])),animationIds=new Map((imported.scene.animations??[]).map(animation=>[animation.id,`${prefix}animation:${animation.id}`])),rootNodeIds=new Set(imported.scene.nodes.filter(node=>!node.parentId||!nodeIds.has(node.parentId)).map(node=>node.id));
-  const nodes=imported.scene.nodes.map(node=>({...node,id:nodeIds.get(node.id),...(node.parentId?{parentId:nodeIds.get(node.parentId)}:{}),...(node.meshId?{meshId:meshIds.get(node.meshId)}:{}),...(node.materialId?{materialId:materialIds.get(node.materialId)}:{}),...(node.skinId?{skinId:skinIds.get(node.skinId)}:{}),tags:[...(node.tags??[]),`asset:${asset.id}`,...(rootNodeIds.has(node.id)?['asset-root']:[])],...(rootNodeIds.has(node.id)&&placement?{transform:{...(node.transform??{}),...placement}}:{})}));
-  const materials=imported.scene.materials.map(material=>remapAssetMaterial(material,prefix,textureIds));
-  const skins=(imported.scene.skins??[]).map(skin=>({...skin,id:skinIds.get(skin.id),joints:skin.joints.map(nodeId=>nodeIds.get(nodeId)??nodeId)}));
-  const animations=(imported.scene.animations??[]).map(animation=>({...animation,id:animationIds.get(animation.id),channels:animation.channels.map(channel=>({...channel,nodeId:nodeIds.get(channel.nodeId)??channel.nodeId}))}));
-  const lights=(imported.scene.lights??[]).map(light=>({...light,id:`${prefix}light:${light.id}`}));
-  const assetNodeIds=nodes.map(node=>node.id).sort((a,b)=>a.localeCompare(b));
-  const streamCells=(baseScene.streaming?.cells??[]).map(cell=>asset.cellIds?.includes(cell.id)?{...cell,nodeIds:uniqueSorted([...(cell.nodeIds??[]),...assetNodeIds])}:cell);
-  const scene={...baseScene,meshes:[...baseScene.meshes,...imported.scene.meshes.map(mesh=>({...mesh,id:meshIds.get(mesh.id)}))],materials:[...baseScene.materials,...materials],textures:[...(baseScene.textures??[]),...(imported.scene.textures??[]).map(texture=>({...texture,id:textureIds.get(texture.id)}))],nodes:[...baseScene.nodes,...nodes],skins:[...(baseScene.skins??[]),...skins],animations:[...(baseScene.animations??[]),...animations],lights:[...baseScene.lights,...lights],...(baseScene.streaming?{streaming:{...baseScene.streaming,cells:streamCells}}:{})};
-  const bindingBase={format:'rncs.reality-cell-asset-binding.v0.1',assetId:asset.id,...(instanceId===asset.id?{}:{instanceId}),assetFormat:assetFormat(asset),payloadRoot:asset.sha256,resourceAssetIds:uniqueSorted(resourceAssetIds),importReceiptRoot:imported.receipt.receiptRoot,meshIds:[...meshIds.values()].sort(),materialIds:[...materialIds.values()].sort(),textureIds:[...textureIds.values()].sort(),nodeIds:assetNodeIds};
-  return {scene,binding:{...bindingBase,bindingRoot:rootHash(bindingBase)}};
+  const composed=composeImportedSpatialScene(baseScene,imported,{assetId:asset.id,instanceId,idPrefix:`cell-asset:${instanceId}:`,mode:'append',placement,cellIds:asset.cellIds,payloadRoot:asset.sha256,assetFormat:assetFormat(asset),resourceAssetIds});
+  const bindingBase={...composed.binding,format:'rncs.reality-cell-asset-binding.v0.1'};
+  return {scene:composed.scene,binding:{...bindingBase,bindingRoot:rootHash(bindingBase)}};
 }
 
 export function createRealityCellAssetRuntime(assetCatalog,loader,{maxConcurrent=4,cacheDirectory,cacheByteBudget=Number.MAX_SAFE_INTEGER}={}){

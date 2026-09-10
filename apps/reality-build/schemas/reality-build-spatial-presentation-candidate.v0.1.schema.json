@@ -57,6 +57,32 @@
           },
           "additionalProperties": true
         },
+        "asset_bindings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["mode", "source_mesh_id", "node_ids", "assets"],
+            "properties": {
+              "mode": {"const": "replace-mesh"},
+              "source_mesh_id": {"type": "string", "minLength": 1},
+              "node_ids": {"type": "array", "items": {"type": "string", "minLength": 1}},
+              "assets": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["asset_id", "lod"],
+                  "properties": {
+                    "asset_id": {"type": "string", "minLength": 1},
+                    "lod": {"type": "integer", "minimum": 0},
+                    "cell_ids": {"type": "array", "items": {"type": "string"}}
+                  },
+                  "additionalProperties": true
+                }
+              }
+            },
+            "additionalProperties": true
+          }
+        },
         "scene": {
           "type": "object",
           "required": ["format", "nodes"],

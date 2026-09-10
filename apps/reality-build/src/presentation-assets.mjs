@@ -53,6 +53,7 @@ export function materializeSpatialAssetPayloads(candidate, {targetRoot = null, e
     provider_version: sourceBundle.provider_version,
     provider_bundle_root: sourceBundle.provider_bundle_root,
     source_asset_bundle_root: sourceBundle.asset_bundle_root,
+    asset_bindings: candidate?.presentation?.asset_bindings ?? [],
     catalog: entries.map(entry => entry.record),
     payloads,
     payload_count: payloads.length,

@@ -6,6 +6,7 @@ import test from 'node:test';
 import {createLargeWorldRuntime, createLargeWorldSpatialGlbBundle, verifyLargeWorldSpatialScene, verifyLargeWorldSpatialGlbBundle} from '@taowind/large-world-runtime';
 import {createStudioNetworkWorld} from '../../../examples/studio-authored-network-world-v03/project.mjs';
 import {
+  createSpatialAssetBindingPlan,
   createSpatialPresentationCandidate,
   verifySpatialPresentationCandidate,
 } from '../src/presentation-candidate.mjs';
@@ -28,6 +29,9 @@ test('Reality Build consumes an existing Large World VSR scene through the gener
   const region = runtime.getRegion();
   const spatialAssetBundle = createLargeWorldSpatialGlbBundle(scene);
   assert.equal(verifyLargeWorldSpatialGlbBundle(spatialAssetBundle, {sceneRoot: scene.scene_root}).valid, true);
+  const assetBindings = createSpatialAssetBindingPlan({scene, assetBundle: spatialAssetBundle});
+  assert.ok(assetBindings.length > 0);
+  assert.ok(assetBindings.every(binding => binding.assets.length === 3 && binding.node_ids.length > 0));
   const presentationCandidate = createSpatialPresentationCandidate({
     projectRoot: session.project.project_root,
     scene,
@@ -41,6 +45,7 @@ test('Reality Build consumes an existing Large World VSR scene through the gener
       source_region_root: region.region_root,
     },
     assetBundle: spatialAssetBundle,
+    assetBindings,
   });
   assert.equal(verifySpatialPresentationCandidate(presentationCandidate), true);
   const payloadTampered = structuredClone(presentationCandidate);
@@ -73,6 +78,7 @@ test('Reality Build consumes an existing Large World VSR scene through the gener
   assert.equal(evidence.presentation_scene_bound, true);
   assert.equal(evidence.presentation_scene_source_root, presentationCandidate.presentation.presentation_source_root);
   assert.equal(evidence.presentation_binding_count, 0);
+  assert.equal(evidence.presentation_asset_binding_count, assetBindings.length);
   assert.ok(evidence.presentation_scene_frame_root);
   assert.ok(evidence.presentation_asset_streaming_root);
   assert.equal(evidence.presentation_asset_requested_count, 4);
@@ -85,6 +91,7 @@ test('Reality Build consumes an existing Large World VSR scene through the gener
   const {payload_root: payloadRoot, ...payloadManifestBase} = payloadManifest;
   assert.equal(payloadRoot, rootHash(payloadManifestBase));
   assert.equal(payloadManifest.source_asset_bundle_root, presentationCandidate.presentation.asset_bundle.asset_bundle_root);
+  assert.equal(payloadManifest.asset_bindings.length, assetBindings.length);
   assert.equal(payloadManifest.payload_count, spatialAssetBundle.assets.length);
   assert.equal(payloadManifest.payloads.length, spatialAssetBundle.assets.length);
   assert.equal(payloadManifest.payloads.every(payload => fs.existsSync(path.join(outputDir, 'web-release', payload.uri.slice(2)))), true);

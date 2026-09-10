@@ -102,9 +102,9 @@ WorldSeed → Region → Chunk → URRF selection → VSR spatial scene
   → Reality Build runtime evidence / target receipt
 ```
 
-该接缝保持 source reference、scene root、project root 和 candidate-only authority；没有 body bindings 时不会伪造 RSR physical bodies。当前证据证明的是本地 Build 对 4 个 active streaming cells、17 个 VSR nodes、CPU-reference spatial frame 以及 4 个 `rncs://` candidate asset records 的 VSR streaming resolution（requested=4、missing=0）消费与自校验。
+该接缝保持 source reference、scene root、project root 和 candidate-only authority；没有 body bindings 时不会伪造 RSR physical bodies。当前证据证明的是本地 Build 对 4 个 active streaming cells、17 个 VSR nodes、CPU-reference spatial frame 以及 4 个 `rncs://` candidate asset records 的 VSR streaming resolution（requested=4、missing=0）消费与自校验；显式 asset-binding plan 现在把 provider record 的 `source_mesh_id`、LOD 和 cell 归属带入目标加载器。
 
-当 candidate 同时携带已有 Large World GLB provider bundle 时，Build 会保留 provider `format/version/bundle_root/manifest` 与 asset records，把 payload 写入 `web-release/assets/spatial/<sha256>.glb` 并生成 `spatial-asset-payload-manifest.json`；单文件/embedded HTML 使用同一 candidate payload 的 base64 版本。Chromium smoke 已真实通过现有 `VSRSpatialAssetStreamer` 读取并校验 36 条 catalog 中 33 条 active-cell payload（`ready=33`、`missing=0`、`failed=0`、`144632` bytes）。这仍不等于 GLB 已导入/绑定到 VSR scene、Android 设备、网络 transport、目标 GPU 或生产资产服务已闭合；3 条无 cell 归属的 provider payload 会保持 deferred。
+当 candidate 同时携带已有 Large World GLB provider bundle 时，Build 会保留 provider `format/version/bundle_root/manifest` 与 asset records，把 payload 写入 `web-release/assets/spatial/<sha256>.glb` 并生成 `spatial-asset-payload-manifest.json`；单文件/embedded HTML 使用同一 candidate payload 的 base64 版本。Chromium smoke 已真实通过现有 `VSRSpatialAssetStreamer` 读取并校验 36 条 catalog 中 33 条 active-cell payload（`ready=33`、`missing=0`、`failed=0`、`144632` bytes），再用现有 VSR glTF/GLB importer 导入选中的 payload，并按 11 条显式 binding 进行 mesh replacement；本机 WebGPU receipt 为 `drawCalls=11`、`triangles=402`、`submitted=true`、`deviceLost=false`，同时捕获了 3D 画布截图。这仍不等于 Android embedded 运行、目标设备矩阵、跨节点网络 transport/session 或生产资产服务已闭合；3 条无 cell 归属的 provider payload 会保持 deferred，人工视觉验收也仍独立于自动化证据。
 
 ## 诚实边界
 
@@ -113,4 +113,4 @@ WorldSeed → Region → Chunk → URRF selection → VSR spatial scene
 - 正式商店 Android 发布仍需用户的 release keystore、AAB、商店元数据与真实设备矩阵。
 - 原生 GPU、原生音频、增量补丁、自动更新和代码签名证书尚未完成。
 - 浏览器 `web-release` 仍使用现有 Behavior 浏览器 runtime；RSR 物理、空间快照与导航目前作为 RNCS 构建证据和 headless 运行时接入，尚未声称已经替换浏览器渲染器。
-- Large World spatial presentation candidate 仍是显式 candidate request；默认 Studio/Build authoring path 不变，`rncs://` candidate asset references 现在会进入确定性的 VSR streaming resolution，但尚未被该 Build seam 自动烘焙、下载、导入或上传成目标包内的生产资产。
+- Large World spatial presentation candidate 仍是显式 candidate request；默认 Studio/Build authoring path 不变，`rncs://` candidate asset references 现在会进入确定性的 VSR streaming resolution，并在 web-release candidate host 中完成受显式 plan 约束的下载、导入、mesh binding 与 WebGPU 提交，但尚未成为 canonical world truth、默认生产资产管线、Android/原生目标或跨设备发布能力。

@@ -10,7 +10,7 @@
 
 - RNCS worktree：`codex/rncs-engine-stack-archaeology-v01`，基于 `main-95` 的 `09f11a88e56c93f3b295c767ff71f62f7e4f890f`。
 - GitHub `origin/main-95` 当前指针与该 commit 相同。
-- 审计开始时工作树干净；本轮新增了 Reality Build 浏览器 runtime 包装修复、回归测试、本地浏览器验收证据，以及 Studio→World Body→Aether runtime 和 Large World→Reality Build 的候选编译/投影链。
+- 审计开始时工作树干净；本轮新增了 Reality Build 浏览器 runtime 包装修复、回归测试、本地浏览器验收证据，以及 Studio→World Body→Aether runtime 和 Large World→Reality Build 的候选编译/投影链；本轮后半段把 Large World provider record → VSR GLB import → explicit mesh binding → WebGPU receipt 接通到 web-release candidate host。
 - worktree 使用 sparse checkout。部分已被 Git 跟踪的源文件没有物化到磁盘，因此这类失败只能记为 `BLOCKED_CHECKOUT_COVERAGE`，不能冒充语义测试失败。
 
 ## 已确认的现实能力
@@ -22,7 +22,7 @@
 | Visual | VSR v0.8 CPU reference、glTF/GLB/PBR、动画图、蒙皮/morph、WebGPU 编码/真实 Chromium 边界 | 本地 VSR/RSR 专项套件已通过；真实 Chromium 与 fake device 不是目标硬件帧率或跨设备生产证明。 |
 | Assets | RAGF 资产创生、资产连续性、GLB/材质/动画候选和 Studio 资产数据库 | 本地候选生产与导入链可运行；外部文生 3D Provider、专业 DCC 回写、电影/AAA 质量和生产资产服务仍未闭合。 |
 | Network | Studio network authoring/compiler v1.6，Network Runtime v0.2 的编译世界、预测、回滚、丢包/重排测试 | 当前是本地确定性/故障注入证据，不是真实跨节点部署、攻击面、安全密钥或生产 SLA 证据。 |
-| Large World | Large World Runtime v0.1.0-alpha.7 的 WorldSeed→Region→Chunk、有限工作集、URRF/VSR、复制、持久化和恢复 | package 自身测试已取得 36/36 PASS；`createSpatialScene()` 现在可通过显式 generic presentation candidate 进入 Reality Build runtime evidence，并复用 VSR asset streaming resolution，但仍不是默认 Studio/Build 产品链。 |
+| Large World | Large World Runtime v0.1.0-alpha.7 的 WorldSeed→Region→Chunk、有限工作集、URRF/VSR、复制、持久化和恢复 | package 自身测试已取得 36/36 PASS；`createSpatialScene()` 现在可通过显式 generic presentation candidate 进入 Reality Build runtime evidence，复用 VSR asset streaming、GLB import 和 explicit mesh binding，在本机 Chromium 产生 WebGPU draw receipt；仍不是默认 Studio/Build 产品链。 |
 | World Body | World Body IR/codegen v0.1：Declaration→IR→RSR/VSR/temporal/network/render-graph/RCL 候选产物 | IR 36/36、codegen 12/12；9 个生成产物和 manifest 为候选且禁止 commit。现有 evidence 明确把真实 GPU、外部物理、真实分布式网络、生产资产 Provider、目标硬件和完整生产差分记为 `UNVERIFIED`。 |
 | Build | Reality Build v0.2：Unified Project→validate/preflight→Behavior+RSR evidence→asset bake→targets→receipt | Web、Windows portable/native EXE、Android project/debug APK、headless/replay 有真实本地路径；release APK/AAB、嵌入式原生渲染、完整 3D RSR/GPU 和设备矩阵仍开放。 |
 
@@ -45,7 +45,7 @@ WorldSeed / Chunk runtime
   → explicit Reality Build presentation candidate / runtime evidence
 ```
 
-第一条链的真实 Studio 导出与 Build 运行时仍没有直接调用 `world-body-codegen`；本轮新增的 bridge 是候选 ingress，不是这条生产链的默认 consumer。第二条链的 `world-body-codegen` 仍只接受 World Declaration，尚没有默认 Reality Build consumer。第三条链保持 RNCS world truth 与 URRF/VSR representation 的边界；本轮新增的 Build candidate 只把已有 VSR scene 接入 Build evidence，不把 Large World representation 提升为 canonical world truth 或默认产品资产。
+第一条链的真实 Studio 导出与 Build 运行时仍没有直接调用 `world-body-codegen`；本轮新增的 bridge 是候选 ingress，不是这条生产链的默认 consumer。第二条链的 `world-body-codegen` 仍只接受 World Declaration，尚没有默认 Reality Build consumer。第三条链保持 RNCS world truth 与 URRF/VSR representation 的边界；本轮新增的 Build candidate 只把已有 VSR scene、provider payload 和显式 binding plan 接入 Build evidence/浏览器 candidate host，不把 Large World representation 提升为 canonical world truth 或默认产品资产。
 
 源码级事实：
 
@@ -66,7 +66,7 @@ WorldSeed / Chunk runtime
 3. 本地实际执行结果：bridge 测试 `29/29 PASS`；Reality Cell、异步 payload lease/eviction、GLB/glTF scene binding、重复资产实例、Cell transition/cache demos 均产生 sealed evidence。
 4. 本机 Chrome/Playwright WebGPU smoke 已通过：kernel binding、Reality Cell、GLB/glTF asset scene、near→far→near transition 共 `4/4 PASS`；均验证 `submitted=true`、`deviceLost=false`、Node frame root 与浏览器 receipt frame root 相等、无 page/shader/request error，并生成 PNG。第一次运行因 sparse checkout 未物化 Studio 的已跟踪依赖而失败；补齐物化范围后通过，不能把第一次失败归因于 VSR 语义。
 
-这条 donor 的边界同样明确：源码检索只发现 Reality One Gateway 与 Studio 浏览器 smoke 消费它；本轮新增的 Studio→World Body→Aether projection、Reality Build request candidate consumer 和 Large World generic presentation consumer 都是显式 candidate-only adapter，仍没有默认生产 authoring/build consumer。因此它已经成为可复用的共享 runtime seam，但还不是统一的 authoring-to-runtime compiler。`rncs.modules.json` 对它的依赖列表也比其真实 `package.json` import 图窄，存在 registry discoverability/build-order 缺口。
+这条 donor 的边界同样明确：源码检索只发现 Reality One Gateway 与 Studio 浏览器 smoke 消费它；本轮新增的 Studio→World Body→Aether projection、Reality Build request candidate consumer 和 Large World generic presentation/import consumer 都是显式 candidate-only adapter，仍没有默认生产 authoring/build consumer。因此它已经成为可复用的共享 runtime seam，但还不是统一的 authoring-to-runtime compiler。`rncs.modules.json` 对它的依赖列表也比其真实 `package.json` import 图窄，存在 registry discoverability/build-order 缺口。
 
 ## 当前 Studio / Build 真实执行审计
 
@@ -178,25 +178,26 @@ Studio World Body candidate + existing Studio spatial VSR scene
 
 ## 本轮 Large World → Reality Build generic presentation consumer
 
-考古确认 Large World Runtime 已经拥有完整的 `createSpatialScene()` VSR lowering、`verifyLargeWorldSpatialScene()` 和带 cell 归属的 asset catalog，缺口不在再造地形或重复 streaming，而在 Reality Build request validator 只认识 World Body 专用 candidate 信封，且 generic scene consumer 尚未调用既有 VSR asset resolution。新增的 `reality-build.spatial-presentation-candidate.v0.1` 复用现有 `compileBoundPresentationScene()` 与 `resolveSpatialAssetStreaming()`：
+考古确认 Large World Runtime 已经拥有完整的 `createSpatialScene()` VSR lowering、`verifyLargeWorldSpatialScene()`、带 cell 归属的 asset catalog 和 GLB provider bundle，缺口不在再造地形或重复 streaming，而在 Reality Build request validator 只认识 World Body 专用 candidate 信封，且 generic scene consumer 尚未调用既有 VSR asset resolution/import/binding。新增的 `reality-build.spatial-presentation-candidate.v0.1` 复用现有 `compileBoundPresentationScene()`、`resolveSpatialAssetStreaming()`、`VSRSpatialAssetStreamer` 与 VSR glTF asset runtime：
 
 ```text
 WorldSeed → Region → Chunk → URRF selection → existing VSR scene
-  → generic candidate root envelope
-  → Reality Build runtime evidence → target receipt
+  → generic candidate root envelope + explicit asset binding plan
+  → Reality Build runtime evidence → content-addressed target payloads
+  → VSR GLB import receipt → mesh replacement → WebGPU receipt
 ```
 
-这条路径不把 Large World terrain 映射成 RSR physical bodies，也不修改 Unified Project。无 bindings 的 scene 仍然可以被 Build 编译成 CPU-reference spatial frame，并把 active cell 的 candidate asset records 解析为 rooted VSR streaming plan；如果以后提供 body bindings，仍沿用同一个已有绑定函数，并由 authoritative RSR snapshot 承担位置来源。
+这条路径不把 Large World terrain 映射成 RSR physical bodies，也不修改 Unified Project。无 body bindings 的 scene 仍然可以被 Build 编译成 CPU-reference spatial frame；有 provider bundle 时，`createSpatialAssetBindingPlan()` 只接受可在现有 VSR scene 中找到的 `source_mesh_id`/node 集合，并把 record 的 LOD/cell 归属显式写入 candidate manifest。浏览器 host 选择 ready 的最低 LOD，通过既有 streamer 取字节、校验 GLB import receipt，再调用共享 `composeImportedSpatialScene(..., mode='replace-mesh')`；scene 仍由 VSR 拥有，RSR 只承担既有 authoritative body projection。
 
 本地真实执行：
 
 - `node --test apps/reality-build/tests/large-world-presentation-candidate.test.mjs`：`2/2 PASS`；覆盖 4 个 active streaming cells、17 个 VSR nodes、4 个 candidate asset records 的 streaming resolution（requested=4、missing=0）、candidate scene tamper rejection 和跨 project root rejection。
 - `npm test --workspace @taowind/reality-build-fabric`：`138 tests / 130 pass / 0 fail / 8 skip`。
-- Chromium `web-release` smoke：`PASS`；VSR/RSR 均加载、无 page error、`spatial3d.verified=true`，streaming root 与 Build evidence 一致，scene catalog `requested=4`、`missing=0`；候选 GLB payload catalog `36` 条，其中 active-cell request `33` 条、`ready=33`、`missing=0`、`failed=0`、实际字节校验加载 `144632` bytes，VSR payload receipt root 为 `f63d5f84bb98aef244daa7104d0ab78dac8bf647e8184062420df6476fdbaa89`。`drawCount=0` 仍表示 GLB 尚未导入/绑定到目标 scene。
-- 固定 fixture 的 candidate roots：`presentationRoot=4d8ec7ba6d014ba9d0f3dba7332ad85926458922e8d150a989dd3d504828e462`、`presentationSourceRoot=e0becfe908a013d4d1c459d87b6d29daea7ab85acae7a6fc0bbaef3069235077`、`candidateSceneContentRoot=a86127f411c7e98d33d96657c9b1fa30fd95e1955ddfca9ecf3574a08e345eb8`；Large World 原生 `scene.scene_root=6d2189c4ae01259be0f7c3cb7e06a713a96e9c53669aeb7d73535dd2aaabc673` 仍保留在 scene payload 内。
+- Chromium `web-release` smoke：`PASS`；VSR/RSR 均加载、pageErrors=`0`，`spatial3d.verified=true`，4 个 active cells、17 个 streamed nodes、11 个 visible draws、402 triangles、`culledDraws=0`；scene catalog `requested=4`、`missing=0`。候选 GLB payload catalog `36` 条，其中 active-cell request `33` 条、`ready=33`、`missing=0`、`failed=0`、实际字节校验加载 `144632` bytes，VSR payload receipt root 为 `f63d5f84bb98aef244daa7104d0ab78dac8bf647e8184062420df6476fdbaa89`；11 条 explicit asset bindings、`importFailed=0`、binding root 为 `1494adb2c6a8783bcd450e1c0fbab8ba5a57cb7ad9d4cc588822d7bcca0ecf92`。WebGPU receipt 为 `vsr.spatial-webgpu-receipt.v0.4`、`drawCalls=11`、`triangles=402`、`submitted=true`、`deviceLost=false`，并捕获了 `#spatial-game` 3D 画布截图；人工视觉验收仍独立保留。
+- 固定 fixture 的 candidate roots：`presentationRoot=97001e67da694d19e3dcb768125715f1c4b0f879478dde1abe110bbe6d6ba0cf`、`presentationSourceRoot=1d0430dde0db78e781898c16420c9fc7f66fec98ab7fc3fd5ef93e4e0cb2b06c`、`candidateSceneContentRoot=a86127f411c7e98d33d96657c9b1fa30fd95e1955ddfca9ecf3574a08e345eb8`；Large World 原生 `scene.scene_root=6d2189c4ae01259be0f7c3cb7e06a713a96e9c53669aeb7d73535dd2aaabc673` 仍保留在 scene payload 内。
 - Build run（`web-release` + `web-single`）：`build_id=build:3a0b2d6074fb6e689a03af95`、`build_key=3a0b2d6074fb6e689a03af9583a80b7fac607bb760556ee97bdb87085a1aa2bd`、`runtimeEvidenceRoot=449a5ee44ace7d75971baf9aa56eec32a24558a71f529564900c41a13bc63cc1`、`presentationFrameRoot=fd45b4bf0eecd0b82436abe8ea7ecea3c13f05b76d4c4ca608bef5ff954031a6`、`presentationAssetStreamingRoot=535401c5186c7499b4e230b0e0c8c694ebdf955dd06c3729847bdbf8b5e04136`，`verifyBuild.valid=true`。Build receipt root 为 `a5a732a0c320c456d64470bd9e2ae60fa8cbcde067c037e8f0094fea71da69cc`；请求 root 含临时 project/output 路径，固定证据只记录此运行值。
 
-边界：这是 Build evidence consumer 的 candidate proof；它已经执行并封存 scene asset references 的 VSR streaming resolution，web-release 已写入 36 个 SHA 内容寻址 GLB 文件，Chromium 通过既有 VSR streamer 对 33 个 active-cell payload 做了真实 fetch/字节 hash 校验。它仍不是 GLB scene import/binding、Android 目标包运行、实时网络 transport、目标 GPU 或设备矩阵证明；3 个没有 cell 归属的 provider payload 被正确延迟，不被伪造为 active request。
+边界：这是 Build evidence consumer 与 candidate browser host 的 proof；它已经执行并封存 scene asset references 的 VSR streaming resolution、11 条显式 mesh binding、GLB import receipt 和当前 Chromium WebGPU submission。它仍不是 canonical world mutation、Android embedded 目标包运行、原生/目标 GPU 设备矩阵、实时网络 transport/session、生产资产服务或人工视觉验收证明；3 个没有 cell 归属的 provider payload 被正确延迟，不被伪造为 active request。
 
 ## 本轮 Large World candidate payload → target package loader
 
@@ -207,18 +208,50 @@ Large World GLB provider bundle
   → explicit presentation.asset_bundle candidate envelope
   → content-addressed web-release files / embedded base64 payloads
   → existing VSRSpatialAssetStreamer acquire(activeCellIds)
-  → payload receipt; GLB import/binding remains the next seam
+  → payload receipt
+  → existing VSR glTF/GLB import receipt
+  → explicit replace-mesh binding plan
+  → browser frame/WebGPU receipt
 ```
 
 本轮新增的 generic bundle envelope 保留 provider `format/version/bundle_root/manifest` 以及每个 asset record，不把 chunk-level `asset:chunk` 记录静默改名成 mesh/LOD。Build 生成 `spatial-asset-payload-manifest.json`，固定 fixture 为 `payload_count=36`、`byte_length=154432`、`payloadRoot=cad88da9ca1a6554cc6b150a78b8bf72eed8cfbacc06e0179811a6d50b913f56`；candidate asset bundle root 为 `26ce2c395e07ecd7eaeb7887d714ae61207e113702f559002773403e321b77eb`，provider bundle root 为 `af695b4ae66347464c7653cdc55331cf1c1fcbaf0ccfcea41613d4b3dd8c13e3`。
 
-这轮关闭的是“候选 payload 能否进入 Build target 并由真实浏览器 streamer 读取/校验”的窄候选接缝，不是“资产已经成为 canonical world truth”。下一条真实缺口是显式 `record → scene placement/mesh binding → VSR glTF/GLB import receipt`，同时继续保留 provider record 与 scene asset catalog 的双根；随后才审计 Android embedded fetch、cache eviction、网络 transport/session 和真实设备。
+这轮关闭的是“候选 payload 能否进入 Build target、由真实浏览器 streamer 读取/校验，并按显式 plan 导入/绑定到 VSR scene”的窄候选接缝，不是“资产已经成为 canonical world truth”。provider record 与 scene asset catalog 的双根仍保留；3 条无 cell 归属的 payload 继续 deferred。下一条真实缺口转为 Android embedded 独立执行、cache eviction/增量工作集、网络 transport/session 和真实设备/性能证据。
+
+## 本轮 Large World candidate asset binding → browser WebGPU receipt
+
+这一轮没有再建新的资产生命周期或渲染器，而是把上一轮确认存在的 VSR glTF importer、Aether 共享 composition seam 和 Build payload loader 组合成一个显式 candidate path：
+
+```text
+provider asset record
+  → source_mesh_id / node_ids / lod / cell_ids binding plan
+  → ready payload bytes + SHA verification
+  → VSR GLB importer receipt
+  → shared VSR composeImportedSpatialScene(replace-mesh)
+  → compileSpatialFrame(streaming=forced active cells)
+  → VSRSpatialWebGPUExecutor receipt
+```
+
+实际改动：
+
+1. `packages/world/visual-state-runtime/packages/gltf-asset` 新增共享 `composeImportedSpatialScene()` 与 `computeSpatialAssetBindingRoot()`；Aether Reality Cell 删除重复的材质/纹理 remap，改为调用这一 donor。`replace-mesh` 只替换已有 VSR node 的 mesh/material 引用，不把 imported scene 变成 RSR authority。
+2. Reality Build candidate 只从 provider metadata 的 `source_mesh_id`/`lod` 生成 binding plan，明确拒绝不存在的 source mesh、node 不匹配、重复 asset 或隐式 showcase asset；target payload manifest 和 runtime evidence 都保留 `asset_bindings`。
+3. 浏览器 adapter 复用 `VSRSpatialAssetStreamer`、GLB import receipt 和共享 composition；生成的 Large World GLB 没有 camera 时，Build browser adapter 显式启用 importer 的 `defaultCamera` fallback，不能把缺 camera 的 provider payload 伪装成完整 authoring scene。
+4. VSR 的正式 streaming resolver 原本已存在；本轮只修复 Build browser adapter 漏传 `forcedCellIds` 的发布层缺口，使 frame compiler 与 asset streamer 使用同一活动工作集。未改变 VSR core 的 streaming semantics。
+
+本地真实执行：
+
+- VSR glTF asset suite：`22/22 PASS`；Aether integration suite：`9/9 PASS`；Reality Build focused runtime/candidate：`20/20 + 2/2 PASS`；完整 Reality Build suite：`138 tests / 130 pass / 0 fail / 8 skip`。
+- Chromium web-release：pageErrors=`0`，4 cells/17 streamed nodes，11 visible draws/402 triangles/0 culled draws；36 条 payload catalog 中 33 条真实进入 `/assets/spatial/*.glb` performance resource 表并被 streamer 计为 ready，11 条 binding，import failure=`0`。
+- 同一页面的真实 WebGPU receipt：`vsr.spatial-webgpu-receipt.v0.4`、`drawCalls=11`、`triangles=402`、`submitted=true`、`deviceLost=false`；`#spatial-game` 截图显示导入后的空间几何。此证据是本机 Chromium host 证据，不是目标硬件性能或 Android 证据。
+
+这轮已关闭 `RCL_GAP_RNCS_TARGET_PAYLOAD_IMPORT_BINDING` 的 web-release candidate 子缺口，但没有关闭其 Android/原生/跨设备/生产子缺口，也没有新增 K400 PASS。
 
 ## 结构判断
 
 ### 限制性瓶颈
 
-当前存在两个有先后关系的瓶颈：`RCL_GAP_RNCS_RELEASE_3D_BROWSER_SCRIPT_PACKAGING` 已完成一个本地候选修复并通过 Build target 的真实浏览器回归，`RCL_GAP_RNCS_TARGET_PAYLOAD_IMPORT_BINDING` 现在也完成了 web-release candidate loading/hash verification，但 Android embedded 独立浏览器运行、GLB scene import/binding、WebGPU/目标设备仍未验证；结构性瓶颈仍是 `RCL_GAP_RNCS_SHARED_WORLD_COMPILATION_SPINE`，其 Studio ingress、Aether runtime projection、shared mass/character/asset-instance/compound-fixture donor、Network Observer Relevance binding、World Body/Large World Build candidate consumer 和 VSR asset resolution 已有证据，但完整 network transport/session、payload import/upload、默认 Studio/World Body/Large World/Build 生产链仍未共同进入同一 runtime seam。
+当前有两个有先后关系的瓶颈：`RCL_GAP_RNCS_RELEASE_3D_BROWSER_SCRIPT_PACKAGING` 已完成一个本地候选修复并通过 Build target 的真实浏览器回归；`RCL_GAP_RNCS_TARGET_PAYLOAD_IMPORT_BINDING` 已完成 web-release candidate loading/hash verification、显式 mesh binding 和本机 Chromium WebGPU submission，但 Android embedded 独立浏览器运行、原生/目标设备、cache eviction/performance 和生产资产服务仍未验证。结构性瓶颈仍是 `RCL_GAP_RNCS_SHARED_WORLD_COMPILATION_SPINE`，其 Studio ingress、Aether runtime projection、shared mass/character/asset-instance/compound-fixture donor、Network Observer Relevance binding、World Body/Large World Build candidate consumer、VSR asset resolution/import/binding 已有证据，但完整 network transport/session、Android/原生平台层、默认 Studio/World Body/Large World/Build 生产链仍未共同进入同一 runtime seam。
 
 这不是“再写一个引擎子系统”的缺口，而是已有子系统不能共同承载同一个世界工件的缺口。应把 Aether bridge 作为下游 runtime donor；若直接在 Studio、Build、Large World 各自添加转换，或重新实现 Reality Cell/资产生命周期，会产生重复语义、root 混淆和无法回滚的并行系统。
 
@@ -232,16 +265,18 @@ Large World GLB provider bundle
 
 ## 下一最小高杠杆候选
 
-第一优先的 Build 3D classic-script packaging 已完成局部候选修复和真实浏览器回归；Studio→World Body→Aether 已完成候选 ingress、显式 asset-instance/observer binding runtime projection 和 shared mass/character/compound-fixture donor，Build 也能通过显式 request candidate 绑定同一 World Body source root；Large World VSR scene 现在也能通过 generic candidate 进入 Build evidence，复用 VSR asset streaming resolution，并把已有 GLB provider payload 装入 web-release/embedded target candidate loader。下一阶段应优先解决 resolved provider record 到 VSR scene import/binding 的共同 contract，不能复制 Reality Cell/streaming/render glue，只做：
+第一优先的 Build 3D classic-script packaging 已完成局部候选修复和真实浏览器回归；Studio→World Body→Aether 已完成候选 ingress、显式 asset-instance/observer binding runtime projection 和 shared mass/character/compound-fixture donor，Build 也能通过显式 request candidate 绑定同一 World Body source root；Large World VSR scene 现在也能通过 generic candidate 进入 Build evidence，复用 VSR asset streaming、GLB import、mesh binding 和本机 WebGPU receipt。下一阶段最高杠杆缺口应转向“同一 candidate target loader 能否在 Android embedded 宿主中真实启动并保留这些 root/receipt”，不能复制 Reality Cell/streaming/render glue，只做：
 
 ```text
 Unified Project + selected spatial world + scene/asset roots
   → candidate scene/asset manifest with explicit source roots
   → existing Build Asset Database / RAGF content-addressed payloads
-  → target package asset catalog / bounded loader / streaming evidence
+  → shared web/embedded target asset loader
+  → Android WebView/asset transport/receipt probe
+  → bounded cache/eviction/performance evidence
 ```
 
-第一轮 ingress 已以 `examples/studio-authored-network-world-v03/project.mjs` 为 fixture 验证：确定性 World Declaration/codegen、Studio roots 与 World Body roots 的显式绑定、Network compilation root 保持、模型 kind lowering、2D transform 不越权、篡改/缺失资产/非法 authority 负例闭合；第二轮验证有损 candidate bundle 能进入 Aether Cell 并保持各级 runtime roots；第三轮验证 Build request candidate 能将同一 source root 写入 runtime evidence 并通过 Build 自校验；第四轮把动态质量经 shared `mass_q` donor 传入 RSR；第五轮把 3 个 Studio character facets 经 shared `spatial.character` donor 传入 RSR；第六轮把完整 fixture 集合经 `spatial.fixtures.items` 传入 RSR/VSR；第七轮把 Large World VSR scene 经 generic Build candidate 接缝执行；第八轮复用 VSR `resolveSpatialAssetStreaming()`，让 4 个 active-cell `rncs://` asset records 进入 frame/evidence roots（requested=4、missing=0）；第九轮复用 Large World GLB provider bundle、Build content-addressed target packaging 和 VSR streamer，完成 36 条 candidate payload catalog、33 条 active request 的 Chromium 字节加载/哈希校验。下一轮应优先建立 provider record 到 VSR scene placement/import/binding receipt 的显式 adapter，同时保留 network transport/session、Android embedded 和真实设备边界；任何晋升为默认产品路径的动作仍需独立 authority/设备证据。
+第一轮 ingress 已以 `examples/studio-authored-network-world-v03/project.mjs` 为 fixture 验证：确定性 World Declaration/codegen、Studio roots 与 World Body roots 的显式绑定、Network compilation root 保持、模型 kind lowering、2D transform 不越权、篡改/缺失资产/非法 authority 负例闭合；第二轮验证有损 candidate bundle 能进入 Aether Cell 并保持各级 runtime roots；第三轮验证 Build request candidate 能将同一 source root 写入 runtime evidence 并通过 Build 自校验；第四轮把动态质量经 shared `mass_q` donor 传入 RSR；第五轮把 3 个 Studio character facets 经 shared `spatial.character` donor 传入 RSR；第六轮把完整 fixture 集合经 `spatial.fixtures.items` 传入 RSR/VSR；第七轮把 Large World VSR scene 经 generic Build candidate 接缝执行；第八轮复用 VSR `resolveSpatialAssetStreaming()`，让 4 个 active-cell `rncs://` asset records 进入 frame/evidence roots（requested=4、missing=0）；第九轮复用 Large World GLB provider bundle、Build content-addressed target packaging 和 VSR streamer，完成 36 条 candidate payload catalog、33 条 active request 的 Chromium 字节加载/哈希校验；第十轮复用共享 VSR GLB importer/composer，完成 11 条显式 mesh bindings 和本机 WebGPU draw receipt。下一轮应优先审计 Android embedded host 是否真实加载同一 target asset manifest、是否保留 payload/binding/frame roots，以及 cache eviction/性能是否有可回放证据；同时保留 network transport/session、原生 GPU 和真实设备边界，任何晋升为默认产品路径的动作仍需独立 authority/设备证据。
 
 ## K400 / 证据裁决
 

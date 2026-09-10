@@ -23,6 +23,8 @@ var VSRGltfAsset = (() => {
   __export(index_exports, {
     VSR_GLTF_ASSET_VERSION: () => VSR_GLTF_ASSET_VERSION,
     VSR_GLTF_IMPORT_FORMAT: () => VSR_GLTF_IMPORT_FORMAT,
+    composeImportedSpatialScene: () => composeImportedSpatialScene,
+    computeSpatialAssetBindingRoot: () => computeSpatialAssetBindingRoot,
     decodeGltfImageToSpatialTexture: () => decodeGltfImageToSpatialTexture,
     decodeKtx2ToSpatialTexture: () => decodeKtx2ToSpatialTexture,
     importGlbToSpatialScene: () => importGlbToSpatialScene,
@@ -594,6 +596,59 @@ fn environmentProbeSample(worldPosition:vec3<f32>,fallback:vec3<f32>,specular:bo
   function verifyGltfImportReceipt(receipt) {
     const { receiptRoot, ...base } = receipt;
     return cryptographicHash(base) === receiptRoot;
+  }
+  var importedAssetTextureKeys = ["baseColorTextureId", "metallicRoughnessTextureId", "normalTextureId", "occlusionTextureId", "emissiveTextureId", "lightmapTextureId", "reactiveMaskTextureId"];
+  var uniqueSortedStrings = (values) => [...new Set(values.filter((value) => typeof value === "string" && value.length > 0))].sort((a, b) => a.localeCompare(b));
+  function remapImportedMaterial(material, prefix, textureIds) {
+    const result = { ...material, id: `${prefix}material:${material.id}` };
+    for (const key of importedAssetTextureKeys) if (result[key]) result[key] = textureIds.get(result[key]) ?? result[key];
+    return result;
+  }
+  function composeImportedSpatialScene(baseScene, imported, options) {
+    if (!baseScene || baseScene.format !== VSR_SPATIAL_SCENE_FORMAT) throw new TypeError("VSR_SPATIAL_ASSET_BASE_SCENE_INVALID");
+    if (!imported?.scene || !verifyGltfImportReceipt(imported.receipt)) throw new TypeError("VSR_SPATIAL_ASSET_IMPORT_RECEIPT_INVALID");
+    const assetId = String(options?.assetId ?? "").trim();
+    if (!assetId) throw new TypeError("VSR_SPATIAL_ASSET_ID_REQUIRED");
+    const mode = options.mode ?? "append", instanceId = String(options.instanceId ?? assetId), prefix = String(options.idPrefix ?? `asset:${instanceId}:`);
+    const meshIds = new Map(imported.scene.meshes.map((mesh) => [mesh.id, `${prefix}mesh:${mesh.id}`]));
+    const textureIds = new Map((imported.scene.textures ?? []).map((texture) => [texture.id, `${prefix}texture:${texture.id}`]));
+    const nodeIds = new Map(imported.scene.nodes.map((node) => [node.id, `${prefix}node:${node.id}`]));
+    const skinIds = new Map((imported.scene.skins ?? []).map((skin) => [skin.id, `${prefix}skin:${skin.id}`]));
+    const materialIds = new Map(imported.scene.materials.map((material) => [material.id, `${prefix}material:${material.id}`]));
+    const animationIds = new Map((imported.scene.animations ?? []).map((animation) => [animation.id, `${prefix}animation:${animation.id}`]));
+    const importedRootNodeIds = new Set(imported.scene.nodes.filter((node) => !node.parentId || !nodeIds.has(node.parentId)).map((node) => node.id));
+    const importedNodes = imported.scene.nodes.map((node) => ({ ...node, id: nodeIds.get(node.id), ...node.parentId ? { parentId: nodeIds.get(node.parentId) } : {}, ...node.meshId ? { meshId: meshIds.get(node.meshId) } : {}, ...node.materialId ? { materialId: materialIds.get(node.materialId) } : {}, ...node.skinId ? { skinId: skinIds.get(node.skinId) } : {}, tags: [...node.tags ?? [], `asset:${assetId}`, ...importedRootNodeIds.has(node.id) ? ["asset-root"] : []], ...importedRootNodeIds.has(node.id) && options.placement ? { transform: { ...node.transform ?? {}, ...options.placement } } : {} }));
+    const materials = imported.scene.materials.map((material) => remapImportedMaterial(material, prefix, textureIds));
+    const skins = (imported.scene.skins ?? []).map((skin) => ({ ...skin, id: skinIds.get(skin.id), joints: skin.joints.map((nodeId) => nodeIds.get(nodeId) ?? nodeId) }));
+    const animations = (imported.scene.animations ?? []).map((animation) => ({ ...animation, id: animationIds.get(animation.id), channels: animation.channels.map((channel) => ({ ...channel, nodeId: nodeIds.get(channel.nodeId) ?? channel.nodeId })) }));
+    const lights = (imported.scene.lights ?? []).map((light) => ({ ...light, id: `${prefix}light:${light.id}` }));
+    const importedNodeIds = importedNodes.map((node) => node.id).sort((a, b) => a.localeCompare(b));
+    let scene;
+    let boundNodeIds = [];
+    let sourceMeshId = options.sourceMeshId ? String(options.sourceMeshId) : void 0;
+    if (mode === "replace-mesh") {
+      if (!sourceMeshId) throw new TypeError("VSR_SPATIAL_ASSET_SOURCE_MESH_REQUIRED");
+      if (imported.scene.meshes.length !== 1) throw new TypeError("VSR_SPATIAL_ASSET_REPLACE_MESH_REQUIRES_ONE_IMPORTED_MESH");
+      const targetIds = new Set((options.targetNodeIds ?? []).map(String));
+      const targets = baseScene.nodes.filter((node) => node.meshId === sourceMeshId && (!targetIds.size || targetIds.has(node.id)));
+      if (!targets.length) throw new TypeError("VSR_SPATIAL_ASSET_REPLACE_TARGET_MISSING");
+      const importedMesh = imported.scene.meshes[0];
+      const replacementMeshId = meshIds.get(importedMesh.id);
+      const importedMaterialId = imported.scene.nodes.find((node) => node.meshId === importedMesh.id)?.materialId;
+      const replacementMaterialId = importedMaterialId ? materialIds.get(importedMaterialId) : void 0;
+      boundNodeIds = targets.map((node) => node.id).sort((a, b) => a.localeCompare(b));
+      const targetSet = new Set(boundNodeIds);
+      const replacedNodes = baseScene.nodes.map((node) => targetSet.has(node.id) ? { ...node, meshId: replacementMeshId, ...replacementMaterialId ? { materialId: replacementMaterialId } : {}, tags: uniqueSortedStrings([...node.tags ?? [], `asset:${assetId}`, "asset-replacement"]) } : node);
+      scene = { ...baseScene, meshes: [...baseScene.meshes, ...imported.scene.meshes.map((mesh) => ({ ...mesh, id: meshIds.get(mesh.id) }))], materials: [...baseScene.materials, ...materials], textures: [...baseScene.textures ?? [], ...(imported.scene.textures ?? []).map((texture) => ({ ...texture, id: textureIds.get(texture.id) }))], nodes: replacedNodes };
+    } else if (mode === "append") {
+      const streamCells = (baseScene.streaming?.cells ?? []).map((cell) => options.cellIds?.includes(cell.id) ? { ...cell, nodeIds: uniqueSortedStrings([...cell.nodeIds ?? [], ...importedNodeIds]) } : cell);
+      scene = { ...baseScene, meshes: [...baseScene.meshes, ...imported.scene.meshes.map((mesh) => ({ ...mesh, id: meshIds.get(mesh.id) }))], materials: [...baseScene.materials, ...materials], textures: [...baseScene.textures ?? [], ...(imported.scene.textures ?? []).map((texture) => ({ ...texture, id: textureIds.get(texture.id) }))], nodes: [...baseScene.nodes, ...importedNodes], skins: [...baseScene.skins ?? [], ...skins], animations: [...baseScene.animations ?? [], ...animations], lights: [...baseScene.lights ?? [], ...lights], ...baseScene.streaming ? { streaming: { ...baseScene.streaming, cells: streamCells } } : {} };
+    } else throw new TypeError(`VSR_SPATIAL_ASSET_COMPOSE_MODE_UNSUPPORTED:${String(mode)}`);
+    const bindingBase = { format: "vsr.spatial-asset-binding.v0.1", version: "0.1.0", mode, assetId, ...instanceId === assetId ? {} : { instanceId }, ...options.assetFormat ? { assetFormat: String(options.assetFormat) } : {}, ...options.payloadRoot ? { payloadRoot: String(options.payloadRoot) } : {}, ...sourceMeshId ? { sourceMeshId } : {}, resourceAssetIds: uniqueSortedStrings(options.resourceAssetIds ?? []), importReceiptRoot: imported.receipt.receiptRoot, meshIds: [...meshIds.values()].sort((a, b) => a.localeCompare(b)), materialIds: [...materialIds.values()].sort((a, b) => a.localeCompare(b)), textureIds: [...textureIds.values()].sort((a, b) => a.localeCompare(b)), nodeIds: mode === "append" ? importedNodeIds : [], boundNodeIds };
+    return { scene, binding: { ...bindingBase, bindingRoot: cryptographicHash(bindingBase) } };
+  }
+  function computeSpatialAssetBindingRoot(bindings) {
+    return cryptographicHash(bindings.map((binding) => binding.bindingRoot).sort((a, b) => a.localeCompare(b)));
   }
   return __toCommonJS(index_exports);
 })();
