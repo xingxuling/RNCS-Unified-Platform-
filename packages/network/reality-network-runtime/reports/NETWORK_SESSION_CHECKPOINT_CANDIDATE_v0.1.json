@@ -1,0 +1,50 @@
+{
+  "format": "taowind.reality-network.session-checkpoint-candidate-evidence.v0.1",
+  "version": "0.1.0",
+  "status": "CANDIDATE_LOCAL_NODE_PROCESS_VERIFIED",
+  "sourceCommit": "684854f8a3179379b51717f20e953867a5148c24",
+  "pipeline": "ServerAuthoritativeWorld + RSR snapshot + AAF delegation + network receipts -> network.session-checkpoint.v0.1 -> JSON serialization -> independent Node RealityNetworkRuntime restore",
+  "commands": [
+    "npm test --workspace @taowind/reality-network-runtime",
+    "npm test --workspace @taowind/reality-build-fabric",
+    "node --test --test-concurrency=1 tests/network-build.test.mjs",
+    "serialize runtime.createCheckpoint() to JSON and restore in an independent Node process",
+    "verify tampered world snapshot is rejected",
+    "verify compiled checkpoint requires source compilation roots and supports authority resume"
+  ],
+  "tests": {
+    "networkRuntimeSuite": "29 tests / 29 pass / 0 fail",
+    "realityBuildSuite": "142 tests / 134 pass / 0 fail / 8 skip",
+    "generatedHeadlessNetworkIntegration": "1/1 PASS",
+    "independentNodeProcessRestore": "PASS",
+    "compiledSourceRootRebind": "PASS",
+    "authoritySlotResume": "PASS",
+    "tamperRejection": "PASS",
+    "httpAuthorityNegativeCases": {
+      "forgedSubject": "SUBJECT_FORGED",
+      "directStateWrite": "CLIENT_STATE_WRITE_FORBIDDEN",
+      "futureTick": "INPUT_TOO_FAR_FUTURE",
+      "status": "PASS"
+    }
+  },
+  "checkpoint": {
+    "format": "network.session-checkpoint.v0.1",
+    "checkpointRoot": "931bd7c728342139ac8170844faa0ab4b63f93c470ba970f53a2633e21b4409b",
+    "stateRoot": "fnv1a64:e3edc69676577918",
+    "tick": 0,
+    "pendingInputCount": 1,
+    "restoredTick": 1,
+    "restoredStateRoot": "fnv1a64:928490f57cb77e90",
+    "jsonBytes": 23664,
+    "rootVerification": true
+  },
+  "boundaries": [
+    "Checkpoint is candidateOnly=true, authoritative=false, commitStatus=NOT_COMMITTED.",
+    "The checkpoint root detects accidental or ordinary serialized tampering; it is not a signature, key custody mechanism, or promotion authority.",
+    "This proves JSON and an independent local Node process boundary, not atomic file persistence, crash injection, disk recovery, WAN/TLS, cross-node lease or leader failover.",
+    "Source roots are retained for compiled worlds, but the original Studio compilation must be supplied and independently verified during restore.",
+    "No K400 gate is promoted to PASS."
+  ],
+  "authority": "candidate-runtime-evidence-only-no-commit",
+  "evidenceRoot": "d8e356ac15052dda0a17ac2d30f2534c8ab284a23e940f4599809735ed7b885d"
+}

@@ -4,7 +4,7 @@
   "status": "CANDIDATE_LOCAL_HTTP_AUTHORITY_VERIFIED",
   "fixture": "examples/studio-authored-network-world-v03/project.mjs",
   "pipeline": "Reality Studio network authoring -> compileNetworkWorld -> Reality Build headless-server -> RealityNetworkRuntime loopback + HttpAuthorityClient generated HTTP authority candidate",
-  "sourceCommit": "b73df83f00ef455c215bd0f3d123775e9a4b1aca",
+  "sourceCommit": "684854f8a3179379b51717f20e953867a5148c24",
   "commands": [
     "npm test --workspace @taowind/reality-build-fabric",
     "npm test --workspace @taowind/reality-network-runtime",
@@ -15,7 +15,7 @@
   ],
   "tests": {
     "realityBuildSuite": "142 tests / 134 pass / 0 fail / 8 skip",
-    "networkRuntimeSuite": "27 tests / 27 pass / 0 fail",
+    "networkRuntimeSuite": "29 tests / 29 pass / 0 fail",
     "generatedHeadlessServer": "PASS",
     "compiledSlotJoin": "loopback 2 slots PASS; authority slot PASS",
     "inputAndTick": "PASS",
@@ -27,7 +27,13 @@
       "loopbackRed": "synchronized",
       "authorityBlue": "synchronized"
     },
-    "tamperMissingNegativeCases": "PASS"
+    "tamperMissingNegativeCases": "PASS",
+    "authorityBoundaryNegativeCases": {
+      "forgedSubject": "SUBJECT_FORGED",
+      "directStateWrite": "CLIENT_STATE_WRITE_FORBIDDEN",
+      "futureTick": "INPUT_TOO_FAR_FUTURE",
+      "status": "PASS"
+    }
   },
   "build": {
     "buildId": "build:4fcab677d4f6050b92a2b441",
@@ -67,5 +73,5 @@
     "No K400 gate is promoted to PASS."
   ],
   "authority": "candidate-runtime-evidence-only-no-commit",
-  "evidenceRoot": "cd2bbd6261a68ffc92011eda7de67483f564c43771f66ece173f1212c96003cd"
+  "evidenceRoot": "f061220109d4e2765927003ba0b8598db767dc32de1af2619777270155dcfffa"
 }
