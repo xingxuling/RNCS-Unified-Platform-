@@ -292,13 +292,24 @@ observer position + explicit forced cells
 - 再切换到另一 cell 后重新加载 8576 bytes，恢复 3 bindings/3 draws/44 triangles，`verified=true`；三阶段均无 missing/failed/import failure。
 - 控制台只有两个 Windows WebGPU `powerPreference` 警告和一个 favicon 404；没有 runtime/page exception。
 
-边界：这关闭的是 web-release candidate 的 reset→工作集转场→驱逐→回入→rebind 接缝，不是 Large World 新 chunk 生成、持久 cache 性能曲线、Android WebView 动态转场、物理/目标设备 GPU、跨节点网络 transport/session 或生产资产服务证明。目标设备和性能证据仍保持 `UNVERIFIED`。
+边界：这关闭的是 web-release candidate 的 reset→工作集转场→驱逐→回入→rebind 接缝，不是 Large World 新 chunk 生成、持久 cache 性能曲线、物理/目标设备 GPU、跨节点网络 transport/session 或生产资产服务证明。目标设备和性能证据仍保持 `UNVERIFIED`。
+
+## 本轮 Android embedded target transition
+
+Android 审计先用 web-release 外部 URI 直接覆盖 `android-project` assets，真实 WebView 运行得到 `assetPayloadFailedCount=36/18/9`；这不是 Android runtime 缺陷，而是 target packaging 违反了 `embeddedHtml()` 的 payload 约束。随后按既有 `large-world-presentation-candidate.test.mjs` 重新生成 Android 工程，检查 `index.html` 为 `1133236` bytes 且包含 base64 payload，再用 Gradle 9.5.1、Android SDK 35 生成 `325945` bytes debug APK；Windows `apksigner` v2 verified、one signer。该负例与修复后的正例共同证明了“web-release URI 不能冒充 embedded Android payload”的边界。
+
+真实 `Rcl_Aether_API35_ATD` WebView/CDP 结果已写入 `apps/reality-build/evidence/LARGE_WORLD_ANDROID_EMBEDDED_DYNAMIC_CANDIDATE_v0.1.json`：
+
+- 初始 reset 解析 4 cells，33 个 embedded payload ready、11 条 GLB mesh binding，加载 `144632` bytes，frame 为 4 active cells/11 draws/402 triangles，`mode=webgpu`、`verified=true`。
+- observer 移到 `[10000,0,10000]` 后解析为空工作集，4 cells exited，33 个 payload released/evicted，frame 为 0 active cells/0 draws，`verified=true`。
+- observer 回入并显式请求 `cell:chunk:world:large-build-candidate:-1:-1` 后恢复 12 个 payload、4 条 binding、加载 `53036` bytes，frame 为 1 active cell/4 draws/116 triangles，`verified=true`。
+- 三阶段 `importFailed=0`、asset/spatial error 为空；这是 Android Emulator/WebView target seam candidate，不是 physical device、release APK/AAB、持续生产运行或人工视觉验收证据。
 
 ## 结构判断
 
 ### 限制性瓶颈
 
-当前有两个有先后关系的瓶颈：`RCL_GAP_RNCS_RELEASE_3D_BROWSER_SCRIPT_PACKAGING` 已完成一个本地候选修复并通过 Build target 的真实浏览器回归；`RCL_GAP_RNCS_TARGET_PAYLOAD_IMPORT_BINDING` 已完成 web-release candidate loading/hash verification、显式 mesh binding、本机 Chromium WebGPU submission、host debug APK build/signing、Android Emulator WebView/Canvas fallback candidate、通用 VSR residency transition receipt 以及 reset→cell transition→eviction→re-entry 的动态浏览器 candidate，但物理/目标设备 GPU、Large World 新 chunk/scene revision、持久 cache eviction/performance 和生产资产服务仍未验证。结构性瓶颈仍是 `RCL_GAP_RNCS_SHARED_WORLD_COMPILATION_SPINE`，其 Studio ingress、Aether runtime projection、shared mass/character/asset-instance/compound-fixture donor、Network Observer Relevance binding、World Body/Large World Build candidate consumer、VSR asset resolution/import/binding/residency 已有证据，但完整 network transport/session、Android 物理/原生平台层、默认 Studio/World Body/Large World/Build 生产链仍未共同进入同一 runtime seam。
+当前有两个有先后关系的瓶颈：`RCL_GAP_RNCS_RELEASE_3D_BROWSER_SCRIPT_PACKAGING` 已完成一个本地候选修复并通过 Build target 的真实浏览器回归；`RCL_GAP_RNCS_TARGET_PAYLOAD_IMPORT_BINDING` 已完成 web-release candidate loading/hash verification、显式 mesh binding、本机 Chromium WebGPU submission、host debug APK build/signing、Android Emulator embedded WebView dynamic working-set candidate、通用 VSR residency transition receipt 以及 reset→cell transition→eviction→re-entry 的动态浏览器/Android candidate，但物理/目标设备 GPU、Large World 新 chunk/scene revision、持久 cache eviction/performance 和生产资产服务仍未验证。结构性瓶颈仍是 `RCL_GAP_RNCS_SHARED_WORLD_COMPILATION_SPINE`，其 Studio ingress、Aether runtime projection、shared mass/character/asset-instance/compound-fixture donor、Network Observer Relevance binding、World Body/Large World Build candidate consumer、VSR asset resolution/import/binding/residency 已有证据，但完整 network transport/session、Android 物理/原生平台层、默认 Studio/World Body/Large World/Build 生产链仍未共同进入同一 runtime seam。
 
 这不是“再写一个引擎子系统”的缺口，而是已有子系统不能共同承载同一个世界工件的缺口。Android host APK 现在已有候选构建闭环，剩余问题是平台宿主和设备证据，不应复制 Reality Cell/streaming/render glue。应把 Aether bridge 作为下游 runtime donor；若直接在 Studio、Build、Large World 各自添加转换，会产生重复语义、root 混淆和无法回滚的并行系统。
 
@@ -312,7 +323,7 @@ observer position + explicit forced cells
 
 ## 下一最小高杠杆候选
 
-第一优先的 Build 3D classic-script packaging 已完成局部候选修复和真实浏览器回归；Studio→World Body→Aether 已完成候选 ingress、显式 asset-instance/observer binding runtime projection 和 shared mass/character/compound-fixture donor，Build 也能通过显式 request candidate 绑定同一 World Body source root；Large World VSR scene 现在也能通过 generic candidate 进入 Build evidence，复用 VSR asset streaming、GLB import、mesh binding、通用 residency transition、本机 WebGPU receipt、host APK build/signing 和 Emulator WebView candidate；动态 reset/cell transition 也已在 web-release Chromium candidate 中执行。下一阶段最高杠杆缺口应转向“同一 candidate target loader 能否在 Android WebView/物理或 GPU-capable target host 上复现 transition、cache 和性能 receipt，并让 Large World 新 chunk/scene revision 进入同一 manifest”，不能复制 Reality Cell/streaming/render glue，只做：
+第一优先的 Build 3D classic-script packaging 已完成局部候选修复和真实浏览器回归；Studio→World Body→Aether 已完成候选 ingress、显式 asset-instance/observer binding runtime projection 和 shared mass/character/compound-fixture donor，Build 也能通过显式 request candidate 绑定同一 World Body source root；Large World VSR scene 现在也能通过 generic candidate 进入 Build evidence，复用 VSR asset streaming、GLB import、mesh binding、通用 residency transition、本机 WebGPU receipt、host APK build/signing 和 Emulator WebView candidate；动态 reset/cell transition 已在 web-release Chromium 与 embedded Android Emulator candidate 中执行。下一阶段最高杠杆缺口应转向“同一 candidate target loader 能否把 Large World 新 chunk/scene revision、persistent cache 和性能 receipt 接入 Android/可复现 GPU-capable target host，并在不丢失同一 target manifest/root 的前提下进入 network transport/session”，不能复制 Reality Cell/streaming/render glue，只做：
 
 ```text
 Unified Project + selected spatial world + scene/asset roots

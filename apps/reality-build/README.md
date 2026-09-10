@@ -108,6 +108,8 @@ WorldSeed → Region → Chunk → URRF selection → VSR spatial scene
 
 宿主现在还暴露 `setSpatial3DObserver()` / `setSpatial3DCamera()`：它们复用 VSR 的 spatial working-set resolution，并让同一 active-cell 集合进入 asset acquire/release/evict、GLB rebind 和 frame compilation。真实 Chromium candidate 在复位后验证了 4 cells/12 bindings → 单 cell/6 bindings（`released=36`、`evicted=18`）→ 另一单 cell/3 bindings；回入阶段真实重新加载 `8576` bytes，三个阶段均 `verified=true`、无导入失败。该证据关闭的是 web-release candidate 的动态工作集接缝，不是持久 cache 性能、Large World 新 chunk 生成、Android/物理设备 GPU、跨设备矩阵、跨节点网络 transport/session 或生产资产服务。
 
+随后用同一 Large World presentation fixture 重新生成了真正的 `android-project`（`index.html` 内嵌 base64 payload，而不是复用 web-release 外部 URI），经 Gradle 9.5.1 / Android SDK 35 构建出 `325945` bytes 的 debug APK，Windows `apksigner` v2 验签通过。在 `Rcl_Aether_API35_ATD` 的 Android WebView/CDP 中，初始 4 cells/33 ready payloads/11 bindings，远移后释放并驱逐 33 个 payload，回入 `cell:...:-1:-1` 后恢复 12 ready payloads/4 bindings；三阶段均 `verified=true`、`importFailed=0`、错误为空。证据写入 `evidence/LARGE_WORLD_ANDROID_EMBEDDED_DYNAMIC_CANDIDATE_v0.1.json`；这仍是 Emulator candidate，不是物理/目标设备 GPU、release 签名、持久 cache 性能或人工视觉验收。
+
 ## 诚实边界
 
 - `windows-native` 是真实 Windows GUI EXE，不依赖 BAT 或 Node.js；但 v0.2 的渲染宿主仍使用 Windows 自带或已安装的 Edge/Chrome，而不是内嵌 Chromium/WebView2 Runtime。
