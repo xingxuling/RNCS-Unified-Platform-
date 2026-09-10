@@ -37,3 +37,25 @@ test('Reality Build lowers an explicit cue binding to the packaged audio target 
   assert.match(androidHtml,/data:audio\/wav;base64/);
   assert.match(androidHtml,/decodeAudioData/);
 });
+
+test('Reality Build carries an explicit RSR spatial policy into Web and Android targets',()=>{
+  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'reality-build-audio-spatial-'));
+  const copiedExamples=path.join(directory,'examples');
+  fs.cpSync(path.join(root,'examples'),copiedExamples,{recursive:true});
+  const projectFile=path.join(copiedExamples,'冰境试炼.unified-project.json'),project=readJson(projectFile),audioAsset=Object.values(project.assets.registry).find(record=>(record.files??[]).some(file=>String(file.mime??'').startsWith('audio/'))),audioFile=audioAsset.files.find(file=>String(file.mime??'').startsWith('audio/'));
+  project.audio_target=createAudioTargetProfile({bindings:[{binding_id:'audio-binding:impact-body',cue_id:'impact.body',asset_id:audioAsset.asset_id,file_role:audioFile.role,asset_sha256:audioFile.sha256}],spatial_policy:{listener_id:'listener:player',position_scale:1000,occlusion_mode:'lowpass'}});
+  fs.writeFileSync(projectFile,JSON.stringify(sealUnifiedProject(project,{touch:false}))+'\n');
+  const outputDir=path.join(directory,'output');
+  const build=buildProject({project_file:projectFile,output_dir:outputDir,targets:['web-release','android-project'],app:{app_id:'com.taowind.audiospatialstatic',title:'Audio Spatial Static Candidate',version_name:'0.1.0',version_code:1},build_time:'2026-09-10T00:00:00.000Z',runtime_trace:[{}],spatial_trace:[]});
+  const plan=readJson(path.join(outputDir,'web-release','audio-target-plan.json'));
+  const game=fs.readFileSync(path.join(outputDir,'web-release','game.js'),'utf8');
+  const androidHtml=fs.readFileSync(path.join(outputDir,'android-project','app','src','main','assets','index.html'),'utf8');
+  assert.equal(build.verification.valid,true);
+  assert.equal(plan.spatial_policy.listener_id,'listener:player');
+  assert.equal(plan.spatial_policy.position_scale,1000);
+  assert.equal(plan.spatial_policy.occlusion_mode,'lowpass');
+  assert.match(game,/createPanner/);
+  assert.match(game,/spatial_parameters_forwarded/);
+  assert.match(androidHtml,/spatial_policy/);
+  assert.match(androidHtml,/createPanner/);
+});

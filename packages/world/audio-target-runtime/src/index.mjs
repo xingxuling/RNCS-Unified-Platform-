@@ -23,7 +23,17 @@ function normalizeBinding(binding,index){
   };
 }
 
-export function createAudioTargetProfile({bindings=[],fallback_policy='blocked'}={}){
+function normalizeSpatialPolicy(policy){
+  if(policy===undefined||policy===null)return null;
+  const value=policy??{};
+  return{
+    listener_id:String(value.listener_id??''),
+    position_scale:Number(value.position_scale??1000),
+    occlusion_mode:String(value.occlusion_mode??'lowpass')
+  };
+}
+
+export function createAudioTargetProfile({bindings=[],fallback_policy='blocked',spatial_policy=null}={}){
   const normalized=bindings.map(normalizeBinding);
   const ids=new Set(),cues=new Set();
   for(const binding of normalized){
@@ -31,7 +41,9 @@ export function createAudioTargetProfile({bindings=[],fallback_policy='blocked'}
     if(cues.has(binding.cue_id))throw Object.assign(new Error(`AUDIO_TARGET_CUE_DUPLICATE:${binding.cue_id}`),{code:'AUDIO_TARGET_CUE_DUPLICATE'});
     ids.add(binding.binding_id);cues.add(binding.cue_id);
   }
-  return seal({format:AUDIO_TARGET_FORMAT,version:AUDIO_TARGET_VERSION,fallback_policy:String(fallback_policy),bindings:normalized.sort((a,b)=>a.cue_id.localeCompare(b.cue_id)||a.binding_id.localeCompare(b.binding_id))},'profile_root');
+  const output={format:AUDIO_TARGET_FORMAT,version:AUDIO_TARGET_VERSION,fallback_policy:String(fallback_policy),bindings:normalized.sort((a,b)=>a.cue_id.localeCompare(b.cue_id)||a.binding_id.localeCompare(b.binding_id))};
+  const spatial=normalizeSpatialPolicy(spatial_policy);if(spatial)output.spatial_policy=spatial;
+  return seal(output,'profile_root');
 }
 
 export function verifyAudioTargetProfile(profile){
@@ -39,6 +51,12 @@ export function verifyAudioTargetProfile(profile){
   if(profile?.format!==AUDIO_TARGET_FORMAT)errors.push({code:'AUDIO_TARGET_FORMAT_INVALID'});
   if(profile?.version!==AUDIO_TARGET_VERSION)errors.push({code:'AUDIO_TARGET_VERSION_INVALID'});
   if(!['blocked','procedural-explicit'].includes(profile?.fallback_policy))errors.push({code:'AUDIO_TARGET_FALLBACK_POLICY_INVALID'});
+  if(profile?.spatial_policy!==undefined){
+    const spatial=normalizeSpatialPolicy(profile.spatial_policy);
+    if(!spatial?.listener_id)errors.push({code:'AUDIO_TARGET_SPATIAL_LISTENER_REQUIRED'});
+    if(!Number.isFinite(spatial?.position_scale)||spatial.position_scale<=0)errors.push({code:'AUDIO_TARGET_SPATIAL_POSITION_SCALE_INVALID'});
+    if(!['lowpass','none'].includes(spatial?.occlusion_mode))errors.push({code:'AUDIO_TARGET_SPATIAL_OCCLUSION_MODE_INVALID'});
+  }
   const ids=new Set(),cues=new Set();
   for(const [index,binding] of (profile?.bindings??[]).entries()){
     const normalized=normalizeBinding(binding,index);
@@ -58,7 +76,8 @@ function blockedBinding(binding,status,reason){return{...binding,status,reason,u
 export function compileAudioTargetPlan(profile,{records={},embedded=false}={}){
   if(!profile)return null;
   const validation=verifyAudioTargetProfile(profile);
-  if(!validation.valid)return seal({format:AUDIO_TARGET_PLAN_FORMAT,version:AUDIO_TARGET_VERSION,status:'invalid-profile',provider_id:'reality-build.web-audio-buffer',fallback_policy:profile.fallback_policy??'blocked',profile_root:profile.profile_root??null,bindings:[],summary:{declared:profile.bindings?.length??0,bound:0,blocked:profile.bindings?.length??0},validation},'plan_root');
+  const spatialPolicy=normalizeSpatialPolicy(profile.spatial_policy);
+  if(!validation.valid)return seal({format:AUDIO_TARGET_PLAN_FORMAT,version:AUDIO_TARGET_VERSION,status:'invalid-profile',provider_id:'reality-build.web-audio-buffer',fallback_policy:profile.fallback_policy??'blocked',spatial_policy:spatialPolicy,profile_root:profile.profile_root??null,bindings:[],summary:{declared:profile.bindings?.length??0,bound:0,blocked:profile.bindings?.length??0},validation},'plan_root');
   const bindings=[];
   for(const binding of profile.bindings??[]){
     const record=records?.[binding.asset_id];
@@ -77,7 +96,7 @@ export function compileAudioTargetPlan(profile,{records={},embedded=false}={}){
     });
   }
   const summary={declared:bindings.length,bound:bindings.filter(item=>item.status==='bound').length,blocked:bindings.filter(item=>item.status!=='bound').length};
-  return seal({format:AUDIO_TARGET_PLAN_FORMAT,version:AUDIO_TARGET_VERSION,status:validation.valid?'ready':'invalid-profile',provider_id:'reality-build.web-audio-buffer',fallback_policy:profile.fallback_policy??'blocked',profile_root:profile.profile_root??null,bindings,summary,validation:validation.valid?null:validation},'plan_root');
+  return seal({format:AUDIO_TARGET_PLAN_FORMAT,version:AUDIO_TARGET_VERSION,status:validation.valid?'ready':'invalid-profile',provider_id:'reality-build.web-audio-buffer',fallback_policy:profile.fallback_policy??'blocked',spatial_policy:spatialPolicy,profile_root:profile.profile_root??null,bindings,summary,validation:validation.valid?null:validation},'plan_root');
 }
 
 export function audioTargetReceipt({plan,cue_id,tick=null,source_event_id=null,status=null,provider_id=null,reason=null}={}){
