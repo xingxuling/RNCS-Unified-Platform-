@@ -1,0 +1,97 @@
+{
+  "format": "rncs.large-world-rsr-terrain-residency-transition-candidate-evidence.v0.1",
+  "sourceCommit": "1a2fe7b3996e20d46f38b5fe5322109685bb64cf",
+  "branch": "codex/rncs-engine-stack-archaeology-v01",
+  "status": "CANDIDATE_EXECUTION_VERIFIED",
+  "scope": {
+    "terrainOwner": "@taowind/large-world-runtime",
+    "physicalOwner": "@taowind/reality-simulation-runtime",
+    "integrationOwner": "@taowind/large-world-rsr-bridge",
+    "authority": "candidate-only; no canonical world mutation; no provider commit or release promotion"
+  },
+  "execution": {
+    "largeWorldTests": "36/36 PASS",
+    "bridgeTests": "5/5 PASS",
+    "rsrFullTests": "204/204 PASS",
+    "spatialEmbodimentTests": "70/70 PASS",
+    "initialActiveChunkCount": 1,
+    "nextActiveChunkCount": 1,
+    "initialLoweredBodyCount": 1,
+    "nextLoweredBodyCount": 1,
+    "preTransitionTick": 30,
+    "transitionTick": 30,
+    "postTransitionTick": 31,
+    "dynamicAvatarStatePreserved": true,
+    "afterSnapshotVerified": true,
+    "continuedStepSnapshotVerified": true,
+    "transitionVerified": true,
+    "replayEquivalent": true
+  },
+  "stream": {
+    "initial": {
+      "streamRoot": "14c45680bd860a808929f238212c508c02dccac2f424c56f79e411a193d25684",
+      "activeChunkIds": [
+        "chunk:world:large-world-rsr-residency:0:0"
+      ],
+      "enteredChunkIds": [
+        "chunk:world:large-world-rsr-residency:0:0"
+      ],
+      "exitedChunkIds": []
+    },
+    "next": {
+      "streamRoot": "14c94e66db583c8c79d372cee99521ec8c16fb9e2e9fecc8ab1953c6baaf1a4b",
+      "activeChunkIds": [
+        "chunk:world:large-world-rsr-residency:1:0"
+      ],
+      "enteredChunkIds": [
+        "chunk:world:large-world-rsr-residency:1:0"
+      ],
+      "exitedChunkIds": [
+        "chunk:world:large-world-rsr-residency:0:0"
+      ]
+    }
+  },
+  "transition": {
+    "format": "rncs.large-world-rsr-terrain-residency-transition.v0.1",
+    "version": "0.1.0",
+    "transitionRoot": "f4e490901fa92664b903e5fae24dece13a225d95db985b8fd1b3d19eb8735f3d",
+    "physicalTransitionRoot": "fnv1a64:947792044b125d71",
+    "managedTag": "large-world-terrain",
+    "enteredBodyIds": [
+      "terrain:chunk:world:large-world-rsr-residency:1:0"
+    ],
+    "exitedBodyIds": [
+      "terrain:chunk:world:large-world-rsr-residency:0:0"
+    ],
+    "retainedBodyIds": [],
+    "previousStateRoot": "fnv1a64:d1621a1b0cc6ce9c",
+    "nextStateRoot": "fnv1a64:ed705a3af8d0106d",
+    "previousBodyRoot": "fnv1a64:6fa381469cd711d6",
+    "nextBodyRoot": "fnv1a64:2e01e9de469b0fe8"
+  },
+  "roots": {
+    "regionRoot": "cb57b82566603008aa89a6653024d4beab6753931a841dc29146d65d70a447fc",
+    "worldRoot": "f2a62b8a016f8d2276c98db128f6801e1c4e9a2e6ba11fee05cf9a6a8e1d18a6",
+    "initialStreamRoot": "14c45680bd860a808929f238212c508c02dccac2f424c56f79e411a193d25684",
+    "nextStreamRoot": "14c94e66db583c8c79d372cee99521ec8c16fb9e2e9fecc8ab1953c6baaf1a4b",
+    "initialCandidateRoot": "0037cf6bbc48d756ed8e49e3e3fef665ed9e89f5ea1909fe546589239e4bd3ca",
+    "nextCandidateRoot": "26fca07caf5b0e6d67d5dc2c8dcddd466bb7992daa306d0e64e472169173b4a4",
+    "beforeStateRoot": "fnv1a64:d1621a1b0cc6ce9c",
+    "afterStateRoot": "fnv1a64:ed705a3af8d0106d",
+    "resumedStateRoot": "fnv1a64:8a87476eb20f9089"
+  },
+  "negativeEvidence": [
+    "inactive chunk requests are rejected by the bridge",
+    "candidate batch or source roots are rejected after tampering",
+    "transition candidate tick mismatch is rejected before physical mutation",
+    "RSR residency API rejects dynamic, untagged, duplicate, or unmanaged-collision bodies"
+  ],
+  "openBoundaries": [
+    "Large World remains stream policy and terrain sample owner",
+    "RSR heightfield remains unrotated bounded single-support/AABB candidate",
+    "no exact terrain-surface ray or shape cast",
+    "no dynamic terrain or production-scale residency budget/eviction scheduler",
+    "no physical device, target GPU, distributed transport, or production release proof"
+  ],
+  "evidenceRoot": "b88febb09e223e0f2520e2f721944660dab924348b6a2e2ae450251e863cfb33"
+}
