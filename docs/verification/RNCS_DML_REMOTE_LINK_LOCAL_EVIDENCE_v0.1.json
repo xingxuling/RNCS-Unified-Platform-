@@ -1,0 +1,47 @@
+{
+  "format": "rncs.dml-remote-link-local-evidence.v0.1",
+  "date": "2026-09-10",
+  "sourceTreeCommit": "da9d2da3f8b46f40972c06d3f0f24b1e2b5b20f4",
+  "sourcePath": "packages/host/dml-remote-link",
+  "license": "Apache-2.0",
+  "verification": {
+    "command": "npm.cmd test --workspace @taowind/dml-remote-link",
+    "tests": 6,
+    "passed": 6,
+    "failed": 0,
+    "skipped": 0,
+    "status": "PASS_LOCAL"
+  },
+  "verified": [
+    "one-time browser login code and short device-bound grant",
+    "Ed25519 sealed envelope tamper rejection",
+    "signed host request binds method path timestamp nonce and body",
+    "Relay queue to local DML Core execution to projection",
+    "replayed signed host request nonce rejection",
+    "Host Policy remote identity stripping and unmapped project rejection"
+  ],
+  "execution": {
+    "relay": "local Node HTTP server",
+    "host": "local DMLLocalHost",
+    "dmlCore": "local @taowind/dml-core-runtime",
+    "projection": "observed from local Relay after Host execution",
+    "network": "loopback only",
+    "physicalDevice": false,
+    "secondNetwork": false,
+    "publicDeployment": false
+  },
+  "reusableDonor": [
+    "device-bound short grants and origin/scope/risk checks",
+    "signed request nonce replay protection",
+    "signed action and execution receipt roots",
+    "local host policy as a separate authority boundary"
+  ],
+  "notWorldTransport": [
+    "does not carry RNCS URRF world packets",
+    "does not own RSR/VSR/world state or replication authority",
+    "does not provide WebSocket, UDP, QUIC, WebRTC, TLS listener, multi-node lease or failover",
+    "Cloudflare Named Tunnel is configuration/deployment automation, not deployment evidence"
+  ],
+  "rclGap": "RCL_GAP_RNCS_EXTERNAL_TRANSPORT_PROVIDER_AND_DEPLOYMENT",
+  "decision": "CONTROL_PLANE_DONOR_RETAINED_WORLD_TRANSPORT_NOT_PROMOTED"
+}

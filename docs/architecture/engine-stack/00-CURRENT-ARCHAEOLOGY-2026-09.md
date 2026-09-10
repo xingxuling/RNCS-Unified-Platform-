@@ -575,6 +575,12 @@ Reality Studio 当前源码真实拥有 `reality-studio.sequence.v1.7`、`Sequen
 
 该负证据与 owner matrix 固化在 `apps/reality-build/evidence/BUILD_AUDIO_POLICY_OWNER_AUDIT_v0.1.json`。它把大缺口归入 `RCL_GAP_RNCS_SHARED_AUTHORED_PRESENTATION_SPINE`，把可执行的音频子缺口保留为 `RCL_GAP_RNCS_AUDIO_TARGET_LOWERING`；当前需要人类裁决的是：采用 Studio sealed evaluated frame → Build projection，还是建立 shared target-side Sequence/Experience runtime，并明确 voice/bus policy 的投影 owner。没有这个裁决，本轮不新增 schema 或胶水。
 
+## 本轮 DML Remote Link 控制面资产复核
+
+`packages/host/dml-remote-link` 已在当前提交树中存在，只是未被本工作树的 sparse checkout 物化。临时物化并重跑当前工作树测试得到 `6 tests / 6 pass / 0 fail / 0 skip`；证据见 `docs/verification/RNCS_DML_REMOTE_LINK_LOCAL_EVIDENCE_v0.1.json`。它已经真实执行一次性浏览器设备注册、短期 Grant、Relay 队列、签名 Host、DML Core 和 Projection 闭环，并验证 nonce 重放拒绝与 Host Policy 负例。
+
+这关闭的是控制面安全与本机回执 donor 的考古缺口，不是 RNCS external world transport。DML Remote Link 的 owner 仍是 DML action/Workbench projection；它不拥有 URRF packet、RSR/VSR world state、复制 authority 或外部 carrier。可复用的是 device-bound Grant、Origin/Scope/Risk、签名/nonce、receipt root 和 local policy seam；不可复用为 RNCS world transport 的是 DML queue/projection schema。Loopback、单节点 JSON、Cloudflare 配置模板、无第二网络/物理设备的边界保持不变。
+
 ## 结构判断
 
 ### 限制性瓶颈
@@ -616,4 +622,4 @@ Unified Project + selected spatial world + scene/asset roots
 
 当前总体裁决：`PROCEED_AS_CANDIDATE`；World Body 仍是 `F4.5 Partial Production Parity` 方向上的候选基础，Studio/Build/Large World 统一消费链尚未实现。
 
-外部 transport donor 的详细审计见 `docs/architecture/engine-stack/EXTERNAL-TRANSPORT-DONOR-AUDIT-2026-09.md`：历史 DuoWorld Relay 在本机 protocol/bridge candidate 上可执行，但许可证、生产部署和 authority 边界不允许直接复制；下一步必须先裁决 canonical external transport 与 Provider/security owner。
+外部 transport donor 的详细审计见 `docs/architecture/engine-stack/EXTERNAL-TRANSPORT-DONOR-AUDIT-2026-09.md`：DuoWorld Relay 仍只是受许可和部署边界限制的物理 Provider donor；DML Remote Link 已证明控制面身份/回执 donor 可本地执行，但不能替代 URRF world transport。下一步必须先裁决 canonical external transport 与 Provider/security owner。

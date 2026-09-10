@@ -78,3 +78,11 @@ Reality Network Runtime 当前拥有：
 本机事实也保持边界：Android 设备列表只有 `emulator-5554`（Android ATD x86_64，API 35），没有物理设备或第二网络。历史 DuoWorld donor 的 `node --check public_relay/relay_server.js`、`node --check gateway/relay_bridge.js`、`node tests/public_relay_test.js`（`PUBLIC_RELAY_PROTOCOL_PASS`）和 `node tests/gateway_relay_bridge_test.js`（`GATEWAY_RELAY_BRIDGE_PASS`）本轮重新通过；这些仍是本机协议/bridge candidate，不是公网部署、TLS、NAT、跨节点 authority 或 SLA 证据。其 `LICENSE_AUDIT.md` 仍明确为 `METADATA_INVENTORY_COMPLETE_NOT_LEGAL_CLEARANCE`，项目 `private: true`、无根 `LICENSE`，不产生复制或发布授权。
 
 因此当前 blocker 不是缺少可读源码，而是 canonical external transport、donor/实现许可、TLS/key custody 及 relay/leader/lease/failover authority 的 owner 决策。完成这三个裁决前，安全的下一步仍然是保留 URRF semantic seam、Loopback/HTTP candidate 和负证据，不新增物理 Provider 或平行 socket/relay 语义。
+
+## 2026-09-10 DML Remote Link 本地资产复核
+
+本轮又检查了 RNCS 当前提交树中被 sparse checkout 隐藏的 `packages/host/dml-remote-link`。它不是外部陌生 donor，而是已有的 Apache-2.0 控制面资产；为避免只引用历史状态，临时物化该路径后在当前工作树重跑 `npm.cmd test --workspace @taowind/dml-remote-link`，结果为 `6 tests / 6 pass / 0 fail / 0 skip`，随后恢复原 sparse checkout。完整账本为 `docs/verification/RNCS_DML_REMOTE_LINK_LOCAL_EVIDENCE_v0.1.json`。
+
+它实际闭合的是：一次性浏览器连接码 → P-256 设备公钥 → Ed25519 短期 Grant → HTTP Relay 队列 → 签名 Host 拉取 → 本地 DML Core 执行 → 签名回执 → Projection；同时验证了请求签名绑定、nonce 重放拒绝、设备/Origin/Scope/Risk 限制和 Host Policy 目录边界。这个实现可以作为外部 transport 未来所需的身份、短期授权、重放防护、回执 root 和本地 policy donor。
+
+它不能被提升为 RNCS world transport：当前执行是本机 HTTP/loopback，Relay 状态是本地 JSON 单节点，语义 owner 是 DML action/Workbench projection；它没有 URRF world packet carrier、RSR/VSR replication、WebSocket/UDP/QUIC/WebRTC、TLS listener、跨节点 lease/failover 或真实第二网络/设备证据。Cloudflare Named Tunnel 只是配置自动化模板，不能替代公网部署证明。因此裁决为 `CONTROL_PLANE_DONOR_RETAINED_WORLD_TRANSPORT_NOT_PROMOTED`，不会把 DML action/queue/projection schema 复制成 RNCS 的第二套世界同步语义。
