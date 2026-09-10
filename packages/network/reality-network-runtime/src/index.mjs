@@ -5,6 +5,7 @@ export * from './transport.mjs';
 export * from './interpolation.mjs';
 export * from './server.mjs';
 export * from './client.mjs';
+export * from './http-client.mjs';
 export * from './runtime.mjs';
 export * from './relevance.mjs';
 import {NETWORK_PROTOCOL,NETWORK_RUNTIME_ID,NETWORK_VERSION} from './protocol.mjs';

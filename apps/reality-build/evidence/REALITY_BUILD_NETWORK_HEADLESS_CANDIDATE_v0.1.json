@@ -3,14 +3,14 @@
   "version": "0.1.0",
   "status": "CANDIDATE_LOCAL_HTTP_AUTHORITY_VERIFIED",
   "fixture": "examples/studio-authored-network-world-v03/project.mjs",
-  "pipeline": "Reality Studio network authoring -> compileNetworkWorld -> Reality Build headless-server -> RealityNetworkRuntime loopback and generated HTTP authority candidate",
-  "sourceCommit": "eb6bf29de699da87cb9460b933f0962709170053",
+  "pipeline": "Reality Studio network authoring -> compileNetworkWorld -> Reality Build headless-server -> RealityNetworkRuntime loopback + HttpAuthorityClient generated HTTP authority candidate",
+  "sourceCommit": "31d93a6bee7d467f81d625331827df1ba9cfbf0d",
   "commands": [
     "npm test --workspace @taowind/reality-build-fabric",
     "npm test --workspace @taowind/reality-network-runtime",
     "buildProject(target=headless-server)",
     "spawn generated server.mjs and exercise /network/* over 127.0.0.1",
-    "independent ClientPredictionRuntime -> /network/authority/* over 127.0.0.1",
+    "HttpAuthorityClient.join/submitInput/tick/health over 127.0.0.1",
     "tamper and remove network-world-compilation.json -> verifyBuild()"
   ],
   "tests": {
@@ -19,7 +19,7 @@
     "generatedHeadlessServer": "PASS",
     "compiledSlotJoin": "loopback 2 slots PASS; authority slot PASS",
     "inputAndTick": "PASS",
-    "authorityClientHttp": "PASS",
+    "authorityClientAdapter": "HttpAuthorityClient PASS",
     "ackSnapshotConvergence": "PASS",
     "sourceRootContinuity": "PASS",
     "clientSynchronization": {
@@ -33,9 +33,9 @@
     "buildId": "build:4fcab677d4f6050b92a2b441",
     "buildKey": "4fcab677d4f6050b92a2b44122b273fedf50ad5e3281794c844e0a9df8bc4316",
     "networkCompilationRoot": "af43344d519e3e09c46efe09318f66685489d8732f0b50ccd8db482dd2a21531",
-    "graphRoot": "c7e3c8319f7eb93f692ba25370f1629dc8d90312e812544cd8e6025aa9274a06",
-    "receiptRoot": "0832716d3169b65f71eac40b970af1208a6007619b0e78ef5aac8edaca0e3afc",
-    "integrityRoot": "97c01b59d9df88eee0941757b0980a0051d19206ed822abd6f87aae8ba81b43b",
+    "graphRoot": "fa45650de42453a91cce9d1b5a3a412f9a951a1641755f53629d8729d8681e47",
+    "receiptRoot": "d800ec5c153d2ba4ee6498f1f0081c3fc84e65b2fc8554844e4f425803b8c156",
+    "integrityRoot": "45e0011fd832afb11e178be5ecd0e317d0a4a66bca32707e68b7fa7b2402a30d",
     "targetRoot": "022602d8f4f3270b1b0235fb009bb91b4854017b44a4a2f8daf8a2924f6c6efb",
     "targetNetworkCompilationRoot": "af43344d519e3e09c46efe09318f66685489d8732f0b50ccd8db482dd2a21531",
     "targetManifestRoot": "d9ea98aa269c2a0057b23ecb9d8e0ab75e707ea511aeb79e53d04de24278a228",
@@ -54,17 +54,18 @@
     "authorityTick": 1,
     "authorityAckPlayer": "blue",
     "authorityConverged": true,
+    "authorityClientStateRoot": "fnv1a64:c415a401561dbd0e",
     "sourceCompilationRoot": "af43344d519e3e09c46efe09318f66685489d8732f0b50ccd8db482dd2a21531",
     "sourceProjectRoot": "72d8ec8f99bdf739d2e4b9eb7bc4493ab5b18a896a623c8cc1f8f5e763c9ecae",
     "authorityExternalConnected": true
   },
   "boundaries": [
-    "Reuses existing Reality Studio compilation, network.input.v0.2, ServerAuthoritativeWorld, and ClientPredictionRuntime; no duplicate network world schema or session protocol.",
+    "Reuses existing Reality Studio compilation, network.input.v0.2, ServerAuthoritativeWorld, ClientPredictionRuntime, and AAF delegation; no duplicate network world schema or session protocol.",
     "Local deterministic loopback and generated HTTP authority endpoints only; no WAN or cross-node transport proof.",
     "No TLS/key custody/attack-surface proof, multi-device client proof, load/SLA proof, or production deployment proof.",
     "Web and Android embedded targets are not silently promoted to network clients.",
     "No K400 gate is promoted to PASS."
   ],
   "authority": "candidate-runtime-evidence-only-no-commit",
-  "evidenceRoot": "a4be6bd41f50817a7caf403ca2cb3f03a20319d4a00b4e5f6a06c45e42688741"
+  "evidenceRoot": "e006a92ed7b11a7e3ee45c193a7cb46d3e202a0d42f7071eafb160bd37521d9d"
 }

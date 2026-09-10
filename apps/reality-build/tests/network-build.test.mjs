@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
 import test from 'node:test';
 import { createStudioNetworkWorld } from '../../../examples/studio-authored-network-world-v03/project.mjs';
-import { ClientPredictionRuntime } from '@taowind/reality-network-runtime';
+import { HttpAuthorityClient } from '@taowind/reality-network-runtime';
 import { buildProject, verifyBuild } from '../src/builder.mjs';
 import { readJson, rootHash, verifySeal } from '../src/canonical.mjs';
 
@@ -110,29 +110,15 @@ test('Reality Build carries the existing network compilation into a runnable loc
     assert.equal(networkHealth.clients.blue.syncStatus, 'synchronized');
     assert.equal(networkHealth.clients.red.syncStatus, 'synchronized');
 
-    const authorityJoin = await requestJson(`${baseUrl}/network/authority/join`, 'POST', { slot_id: 'slot:blue', subject_id: 'subject:blue' });
-    const authoritySlot = compilation.player_slots.find(slot => slot.slot_id === 'slot:blue');
-    const authorityClient = await ClientPredictionRuntime.create({
-      player: {
-        sessionId: `build-network-authority:${build.build_id}`,
-        subjectId: authoritySlot.subject_id,
-        playerId: authoritySlot.player_id,
-        characterId: authoritySlot.character_id,
-        bodyId: authoritySlot.body_id,
-      },
-      delegation: authorityJoin.delegation,
-      initialSnapshot: authorityJoin.snapshot,
-    });
-    const authorityInput = authorityClient.createInput({ type: 'move', x: -1_000_000, z: 0 });
-    const accepted = await requestJson(`${baseUrl}/network/authority/input`, 'POST', { input: authorityInput });
+    const authorityClient = new HttpAuthorityClient({ baseUrl });
+    const authorityJoin = await authorityClient.join({ slotId: 'slot:blue', subjectId: 'subject:blue' });
+    const accepted = await authorityClient.submitInput({ type: 'move', x: -1_000_000, z: 0 });
     assert.equal(accepted.accepted, true);
-    const authorityTick = await requestJson(`${baseUrl}/network/authority/tick`, 'POST', { ticks: 1 });
-    const authorityAck = authorityTick.acks.find(ack => ack.playerId === 'blue');
-    assert.ok(authorityAck);
-    assert.equal(authorityClient.receiveAck(authorityAck, authorityTick.snapshot).converged, true);
-    const authorityHealth = await requestJson(`${baseUrl}/network/authority/health`);
+    const authorityTick = await authorityClient.tick(1);
+    assert.equal(authorityTick.reconciliation.converged, true);
+    const authorityHealth = await authorityClient.health();
     assert.equal(authorityHealth.externalClients.blue.connected, true);
-    assert.equal(authorityClient.metrics(authorityTick.snapshot.stateRoot).syncStatus, 'synchronized');
+    assert.equal(authorityClient.metrics().syncStatus, 'synchronized');
 
     const networkFile = path.join(outputDir, 'network-world-compilation.json');
     const networkFileBytes = fs.readFileSync(networkFile);
