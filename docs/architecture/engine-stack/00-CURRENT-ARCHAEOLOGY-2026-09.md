@@ -510,6 +510,21 @@ Reality Build asset_cache.persist_accesses
 
 该轮关闭的是“既有 Studio UI/Input contract → Reality Build browser/embedded target lowering”的 implementation seam，并将缺口明确记录为 RCL_GAP_RNCS_BUILD_TARGET_UI_INPUT_LOWERING；它没有关闭 native GPU UI、物理 Android、无障碍/本地化、跨设备矩阵、release signing、human visual acceptance 或 external network transport。Chromium/Android 页面上的 UI overlay、CSS 响应式布局和 WebView synthetic origin 均属于 auxiliary/platform lowering；Behavior、RSR/VSR、world state、authority、candidate/promotion 和 evidence owner 不变。
 
+## 本轮动画 target lowering 考古（candidate）
+
+VSR/GLTF 的动画语义并不是缺失能力：`spatial-reality-3d` 已有确定性 clip sampling、animation root、layers/blends/masks、animation graph、约束、deformation、蒙皮和 morph 测试；`gltf-asset` 已从 glTF/GLB 导入 `animations`、`skins` 和 morph 数据。RAGF 的 showcase GLB 在当前源码真实产出为 9 个节点、1 个 skin、4 个 animation clips、1 个 morph target。Studio Sequencer 仍拥有 authored presentation timeline，不能因为 Build 需要一段可执行动画就复制一个新的时间轴 owner。
+
+本轮确认了两个 implementation seam：
+
+1. Reality Build 初始 frame、空间 Tick 更新和 WebGPU render 之前都没有传入 deterministic animation options，因此 scene 中即使已有 clip，目标也不会按空间 Tick 执行它。
+2. `composeImportedSpatialScene(..., {mode: 'replace-mesh'})` 过去只替换 mesh/material/node，丢弃 imported skin、animation channel target 和关节层；这会制造“动画元数据存在但骨架不可执行”的假通过。
+
+最小修复保持 owner 边界：Build candidate 只允许已存在 clip 的 `fixed-tick` policy，按 `phase_seconds + max(tick, 0) / tick_hz * speed` 计算 VSR time；RSR 继续拥有 authoritative state/clock；VSR 继续编译 animationRoot/frameRoot。对于含 skin/animation/morph 的 replace-mesh GLB，唯一 identity render node 映射到显式 world node，其他 imported hierarchy 作为 support nodes 保留；多 render node、缺失 render node 或非 identity deformed render transform 失败闭合。此路径没有把 policy 写入 World Body IR/RCL Core，也没有把 Build 变成动画 evaluator。
+
+本地证据：`Reality Build` 全套为 `160 tests / 152 pass / 0 fail / 8 skip`；VSR GLTF `23/23 PASS`、spatial 3D `99/99 PASS`、typecheck `PASS`。RAGF GLB → VSR import → replace-mesh → compile probe 验证了 8 个 support nodes、1 个 skin、4 个 clips、`skinnedDraws=1`，初始与 0.5 秒 frame 均 verified，`sourceRealityRoot` 稳定而 `animationRoot` 改变。由 `冰境试炼` candidate scene 生成的 Build output 自校验有效；web-release 与 Android embedded HTML 都携带同一 policy。真实 Chromium/WebGPU reset 后 Tick 0 为 0 秒，推进 15 Tick 后为 0.25 秒，`animationRoot`/`frameRoot` 改变、两帧 `verified=true`、应用错误为 0。完整收据为 `apps/reality-build/evidence/BUILD_ANIMATION_TARGET_LOWERING_CANDIDATE_v0.1.json`，状态为 `CANDIDATE_BUILD_ANIMATION_TARGET_LOWERING_VERIFIED`。
+
+边界仍然明确：Android 本轮只证明 embedded source project/HTML 中存在 lowering，没有 APK 或 Android runtime 执行；Studio animation graph/layer/Sequencer 尚未进入 Build；没有物理设备、原生 GPU、性能曲线、人工视觉验收、生产资产服务或 K400 PASS。缺口记录为 `RCL_GAP_RNCS_BUILD_ANIMATION_TARGET_LOWERING`。
+
 ## 本轮音频 target lowering 考古（负证据）
 
 本轮先对真实源项目做了 audio execution audit，没有立即建立第二套音频系统。Reality Studio/资产记录已有 `sfx-wav` role 与 content hash；Experience Fabric 已有 deterministic audio cue/voice plan 和 oscillator/sample/offline WAV renderer；Spatial Embodiment 已有带 cue、position、gain、pitch、distance、occlusion 的 `spatial-audio` event。它们的语义 owner 各自存在，但当前 Build target 没有把这些语义共同接到文件资产与宿主 audio consumer。
@@ -539,6 +554,8 @@ Reality Build asset_cache.persist_accesses
 5. 未执行的浏览器 GPU、外部物理、真实网络、生产资产 Provider 和目标硬件继续标记 `UNVERIFIED`。
 
 ## 下一最小高杠杆候选
+
+固定 clip 的 animation target lowering 已完成一轮 candidate 验证并单独封存；它不再是“Build 完全没有动画执行接缝”的未实现项，但 graph/layer/Sequencer 的完整 lowering 仍属于后续候选，不应从这一轮的 fixed-tick 证据外推。
 
 第一优先的 Build 3D classic-script packaging 已完成局部候选修复和真实浏览器回归；Studio→World Body→Aether 已完成候选 ingress、显式 asset-instance/observer binding runtime projection 和 shared mass/character/compound-fixture donor，Build 也能通过显式 request candidate 绑定同一 World Body source root；Large World VSR scene 现在也能通过 generic candidate 进入 Build evidence，复用 VSR asset streaming、GLB import、mesh binding、通用 residency transition、本机 WebGPU receipt、host APK build/signing 和 Emulator WebView candidate；动态 reset/cell transition 已在 web-release Chromium 与 embedded Android Emulator candidate 中执行；Browser CacheStorage provider 已在真实 Chromium 中完成首次写入、cold reload 命中和 payload revision invalidation，Android WebView synthetic-origin lowering 已完成 revision invalidation、进程重启 rehydrate、预算/load scheduling 以及 `persist_accesses=false` metadata batching/performance candidate；Studio network compilation 已进入 Build headless 的本地 loopback/HTTP authority candidate，Network Runtime 已具备 JSON checkpoint→独立 Node 恢复、共享 Node-only durable-store candidate、URRF semantic transport→Loopback carrier binding candidate，Reality Cell cache mechanism 也已抽为共享 Node asset-cache provider。音频 target lowering 已经被证明是独立的 `RCL_GAP_RNCS_AUDIO_TARGET_LOWERING`，但由于当前真实 project 没有 canonical cue-to-asset binding，暂不应凭空添加 mapping。下一阶段最高杠杆缺口应转向两条有明确边界的候选：其一，在既有 URRF semantic seam 之上，由人类先裁决 canonical external protocol、donor license、TLS/key custody、relay/leader/lease/failover authority，再执行 WAN/TLS/重连/跨节点 durable authority；其二，在同一 cache contract 下获得 physical/reproducible target 的 Android quota/eviction/performance receipt。不能复制 Reality Cell/streaming/render glue，只做：
 

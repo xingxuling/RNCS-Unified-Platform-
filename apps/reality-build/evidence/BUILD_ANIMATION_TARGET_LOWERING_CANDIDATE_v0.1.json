@@ -1,0 +1,175 @@
+{
+  "format": "reality-build.animation-target-lowering-evidence.v0.1",
+  "status": "CANDIDATE_BUILD_ANIMATION_TARGET_LOWERING_VERIFIED",
+  "sourceCommit": "b1cee9fe3106b6913cfb72e715e99d24d0eab33a",
+  "fixture": {
+    "project": "apps/reality-build/examples/冰境试炼.unified-project.json",
+    "candidateScene": "VSR spatial showcase scene with candidate:walk clip",
+    "output": "output/playwright/animation-target-candidate-v01"
+  },
+  "pipeline": "RAGF showcase GLB -> VSR glTF import/skin/animation composition -> candidate fixed-tick policy -> Reality Build runtime evidence -> web-release/Android embedded lowering -> Chromium WebGPU execution",
+  "commands": [
+    "npm.cmd run typecheck --workspace @taowind/visual-state-runtime",
+    "npm.cmd run test:gltf --workspace @taowind/visual-state-runtime",
+    "npm.cmd run test:spatial-3d --workspace @taowind/visual-state-runtime",
+    "npm.cmd test --workspace @taowind/reality-build-fabric",
+    "Node inline RAGF showcase probe: createLargeWorldSpatialGlbBundle -> importGlbToSpatialScene -> composeImportedSpatialScene -> compileSpatialFrame",
+    "Node inline Reality Build candidate build and verifyBuild(output/playwright/animation-target-candidate-v01)",
+    "Chromium via playwright-cli against http://127.0.0.1:4185/index.html"
+  ],
+  "archaeology": {
+    "semanticOwners": {
+      "studio": "Reality Studio remains the authoring owner for authored presentation sequencing; no Studio sequence owner was duplicated.",
+      "vsr": "Visual State Runtime owns deterministic clip sampling, animation roots, skinning, morph evaluation, graph/layer evaluation and frame compilation.",
+      "gltfImporter": "VSR glTF importer owns imported nodes, skins, morph weights, animation channels and import receipts.",
+      "rsr": "Reality Simulation Runtime remains the authoritative world clock/state owner; animation lowering reads the spatial tick and does not write presentation data into RSR.",
+      "realityBuild": "Reality Build owns candidate validation, target payload transport and runtime receipt projection; it does not become the animation evaluator."
+    },
+    "seams": [
+      "Build initial and per-tick compileSpatialFrame calls did not pass a deterministic animation clock or clip policy.",
+      "VSR replace-mesh composition preserved geometry but dropped imported skins, animations and support joint nodes, which could create metadata-only animation false positives.",
+      "The repaired seam maps one deformed imported render node to the bound world node and appends the imported support hierarchy; unsupported multi-render-node or non-identity deformed roots fail closed."
+    ],
+    "ragfShowcase": {
+      "bundleAssetCount": 61,
+      "importedNodes": 9,
+      "importedSkins": 1,
+      "importedAnimations": 4,
+      "importedMorphTargets": 1,
+      "composedNodes": 44,
+      "composedSkins": 1,
+      "composedAnimations": 4,
+      "supportNodes": 8,
+      "initialVerified": true,
+      "advancedVerified": true,
+      "initialSkinnedDraws": 1,
+      "advancedSkinnedDraws": 1,
+      "initialAnimationRoot": "98d7bcdc04683a7829a800ec0055728e71e553c426a59fc151d77866dbcbcb01",
+      "advancedAnimationRoot": "54186186612b0459dba1c773fa48d492d9d1e7c6de98368c19577ca86af3a92c",
+      "animationRootChanged": true,
+      "sourceRealityRootStable": true,
+      "drawCount": 19,
+      "candidateOnly": true,
+      "authoritative": false
+    }
+  },
+  "candidate": {
+    "policy": {
+      "mode": "fixed-tick",
+      "clip_id": "candidate:walk",
+      "tick_hz": 60,
+      "speed": 1,
+      "phase_seconds": 0,
+      "loop": true
+    },
+    "timeFormula": "phase_seconds + max(tick, 0) / tick_hz * speed",
+    "policyRoot": "f2aa4cd1092247a98fe11b89d382211852ea5670f3855e41e57365653b1",
+    "initialTimeSeconds": 0,
+    "initialAnimationRoot": "71e8de6e049810541e63d9e85b8139ff8541d4336af806567dcb097957c4be11",
+    "authorityBoundary": "Candidate-only presentation policy; RSR state remains authoritative and advances by its own spatial Tick; VSR animationRoot/frameRoot are derived presentation outputs."
+  },
+  "build": {
+    "output": "output/playwright/animation-target-candidate-v01",
+    "buildId": "build:7f172f43e17730640f4d3dd9",
+    "buildKey": "7f172f43e17730640f4d3dd9d9bb8fdbdc2858207b7fd07200f3aacafdb61564",
+    "projectRoot": "fff2312f5e9ded65c519b42148e74fcb683bb4f117dcfd6a9d47f95dffa4967e",
+    "presentationSceneSourceRoot": "e2e3a8fd1ae2457c89b920109c9f4a3d89b2397c668feb650cdb952354310875",
+    "runtimeEvidenceRoot": "0f6373843b8f9741918b8d2c60ef09ed664089f3bc5872071b35183488a10bed",
+    "buildReceiptRoot": "c62ca5ef4f5698f413d38fb001a72eb7ad2f217be85966ba4f4c0290fa08551a",
+    "runtimeDeterministic": true,
+    "buildVerificationValid": true,
+    "validationValid": true,
+    "webRelease": {
+      "targetRoot": "05fc936710cb3f6eb31e4c4e7ac3ae7c349281d259d9ecda8d684b3ec1ef43a3",
+      "files": 31,
+      "payloadAnimationPolicy": true,
+      "initialAnimationRoot": "71e8de6e049810541e63d9e85b8139ff8541d4336af806567dcb097957c4be11"
+    },
+    "androidProject": {
+      "targetRoot": "66a42dc2d89526da7e0faa6fa58161f03b2f81494efdddbb303d80bbbecac219",
+      "files": 28,
+      "embeddedAnimationPolicy": true,
+      "artifactStatus": "source-project",
+      "apkBuilt": false
+    }
+  },
+  "tests": {
+    "realityBuild": "160 tests / 152 pass / 0 fail / 8 skip",
+    "visualStateRuntimeTypecheck": "PASS",
+    "visualStateRuntimeGltf": "23/23 PASS",
+    "visualStateRuntimeSpatial3d": "99/99 PASS",
+    "animationPolicyPositiveAndNegative": "PASS; fixed-tick advances deterministically and unsupported mode/missing clip fail closed",
+    "replaceMeshDeformationRegression": "PASS; imported skin, animation channel target and eight support nodes are retained",
+    "gitDiffCheck": "PASS",
+    "buildVerification": "PASS; web-release and android-project receipts valid"
+  },
+  "chromium": {
+    "host": "Chromium via Playwright CLI",
+    "url": "http://127.0.0.1:4185/index.html",
+    "title": "RNCS Animation Target Candidate",
+    "readyState": "complete",
+    "consoleErrors": 0,
+    "consoleWarnings": 2,
+    "runtimeMode": "webgpu",
+    "initial": {
+      "tick": 0,
+      "timeSeconds": 0,
+      "stateRoot": "fnv1a64:b29ecc584250facb",
+      "frameRoot": "da0c5787619d9afccbcd9214fb12330f3201538a937fa0eefcd56d19e9bcbf72",
+      "animationRoot": "71e8de6e049810541e63d9e85b8139ff8541d4336af806567dcb097957c4be11",
+      "drawCount": 5,
+      "verified": true
+    },
+    "after15Ticks": {
+      "tick": 15,
+      "timeSeconds": 0.25,
+      "stateRoot": "fnv1a64:6ec171a06ab30e6e",
+      "frameRoot": "9594e4713a5fdeaf847b3baf6e7f5461b5b6dd68cb28998fd497f910479d7412",
+      "animationRoot": "a09eaf842ff12991cf6eea82d4c26773a9ad395d6fe027fe13e4d30d33ad1ec9",
+      "drawCount": 5,
+      "verified": true
+    },
+    "timeDeltaSeconds": 0.25,
+    "animationRootChanged": true,
+    "sourceStateRootChangedWithTick": true,
+    "applicationErrors": ""
+  },
+  "coverage": {
+    "candidatePolicyValidation": true,
+    "gltfReplaceMeshAnimationSkinSupportLowering": true,
+    "webReleasePayloadLowering": true,
+    "androidEmbeddedHtmlLowering": true,
+    "chromiumWebGpuExecution": true,
+    "physicalAndroidRuntime": false,
+    "androidApk": false,
+    "nativeGpuTarget": false,
+    "animationGraphLayerAndStudioSequenceLowering": false,
+    "audioTargetLowering": false,
+    "externalWanTransport": false,
+    "humanVisualAcceptance": false,
+    "k400Pass": false
+  },
+  "affectedK400Cells": [
+    "COMPILE",
+    "LOWER",
+    "EXECUTE",
+    "CORRECT",
+    "ROBUST",
+    "EVIDENCE"
+  ],
+  "rclGap": "RCL_GAP_RNCS_BUILD_ANIMATION_TARGET_LOWERING",
+  "missingCapability": "A shared RCL-level animation presentation contract and full target lowering for graph/layer/sequence semantics are not yet established; this candidate adds only a sealed fixed-tick clip policy at the Reality Build seam.",
+  "currentWorkaround": "Reality Build carries a candidate-only fixed-tick policy into the existing VSR compiler; VSR remains the evaluator and RSR remains the authority. Projects without a policy retain the legacy path.",
+  "donorAdvantage": "VSR already supplies deterministic clip sampling, animation roots, skinning, morph support, graph/layer evaluation and glTF import receipts; RAGF supplies a real candidate GLB with skin and animation data.",
+  "candidateAbsorption": "Do not silently add this policy to RCL Core. Preserve Studio/VSR/RSR ownership, record the missing general primitive as an RCL gap, and promote only after a cross-target contract, replay semantics and authority review exist.",
+  "regressionCase": "No-policy projects remain compatible; unsupported wall-clock mode and missing clip fail closed; deformed replace-mesh assets with ambiguous render roots or non-identity render transforms fail closed; sourceRealityRoot remains stable while animationRoot changes.",
+  "boundaries": [
+    "The RAGF GLB and all animation outputs are candidate-only and non-authoritative.",
+    "Chromium WebGPU proves local browser execution for this generated candidate, not physical-device GPU parity, frame-rate SLA or release delivery.",
+    "The Android result is an embedded source project with animation policy in its HTML; no APK build or Android runtime execution was used for this candidate.",
+    "Studio animation graphs/layers and authored Sequencer semantics remain unlowered; this is not a complete animation production system.",
+    "No audio, external WAN/TLS transport, production asset service, human visual acceptance or K400 PASS is claimed."
+  ],
+  "nextCandidate": "Re-audit the shared presentation spine after this seam: choose between a bounded VSR animation graph/layer or Studio Sequence lowering candidate and the independently gated audio cue-to-asset contract; external transport remains subject to canonical protocol, license, TLS/key custody and authority decisions.",
+  "evidenceRoot": "2b4eb20f37c69c693140800fb5aa001ba566e8a5582da834f80620f8fe2cd098"
+}

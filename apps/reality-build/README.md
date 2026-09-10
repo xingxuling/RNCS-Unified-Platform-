@@ -140,6 +140,25 @@ Reality Studio UI/Input contract
 
 这里的 owner 仍是 Reality Studio；DOM/WebView 只是平台 lowering，不拥有 World Body IR、canonical world state、authority、commit 或 release。截图和 accessibility tree 只能证明候选目标链路已经执行，默认 Studio fixture 的标题/生命面板相邻关系仍需要人工视觉验收；物理设备、原生 GPU UI、无障碍/本地化、网络 transport、release 签名和生产交付没有被本轮关闭。
 
+## Animation target lowering candidate
+
+VSR v0.8 已经拥有确定性 clip sampling、animation root、蒙皮、morph、animation graph/layer 和 glTF import；RAGF 的真实 showcase GLB 也带有 1 个 skin、4 个 animation clips、1 个 morph target。此前 Build 的缺口不是再造动画 runtime，而是两处真实接缝：初始/每 Tick 的 `compileSpatialFrame()` 没有收到确定性 animation clock，`replace-mesh` 组合路径也没有保留导入骨骼、动画通道和支撑关节节点。
+
+本轮只增加 candidate-only 的 fixed-tick lowering：
+
+```text
+sealed animation_policy {clip_id, tick_hz, speed, phase_seconds, loop}
+  → phase_seconds + max(spatial Tick, 0) / tick_hz * speed
+  → existing VSR compileSpatialFrame / WebGPU render options
+  → animationRoot / frameRoot receipt
+```
+
+变形 GLB 的唯一 render node 映射到显式绑定的 world node，其余骨骼层作为 support nodes 保留；多 render node、缺失 render node 或非 identity 的变形 render transform 失败闭合。RSR 仍只拥有 authoritative world state/clock，Studio Sequencer 仍是 authored presentation owner，Build 不把动画 policy 写回 World Body IR 或 RCL Core。
+
+由 `冰境试炼` candidate scene 生成的 web-release 与 Android embedded HTML 都携带同一 policy 和 initial animation root；本地 `verifyBuild()` 有效。真实 Chromium/WebGPU 中 reset 后 Tick 0 的时间为 `0`，手动推进 15 个 spatial ticks 后为 `0.25` 秒，`animationRoot` 变化、两帧均 `verified=true`、应用错误为 `0`。RAGF GLB → VSR import → replace-mesh → skin/animation frame probe 也验证了 `9` 个导入节点、`1` 个 skin、`4` 个 clips、`8` 个 support nodes 和 `skinnedDraws=1`。完整收据见 `evidence/BUILD_ANIMATION_TARGET_LOWERING_CANDIDATE_v0.1.json`。
+
+这是固定 clip 的 Build target candidate，不是完整动画生产链：Studio animation graph/layer、Sequencer lowering、物理设备/原生 GPU、Android APK/runtime、性能曲线、人工视觉验收和 K400 PASS 仍未关闭。
+
 ## Audio target lowering archaeology（negative candidate）
 
 本轮没有新增音频系统，而是沿着真实源资产做了一次可证伪审计。`asset:3a82d1753e140d24552b89d1` 的 `sfx-wav` 文件在 web-release 中确实被烘焙为 `assets/ba8ebd46...e.wav`（19888 bytes，SHA-256 保持一致），但 `assetRuntimeMap()` 当前只暴露 `primary_visual`；Behavior 的 `experience.audio.emit` cue（如 `footstep-ice`）没有 `asset_id`/file-role 绑定。RSR 的 `spatial-audio` 事件也能在同一 Build 页面生成 `impact.generic`，但 Build host 只收集事件，没有音频 consumer。
