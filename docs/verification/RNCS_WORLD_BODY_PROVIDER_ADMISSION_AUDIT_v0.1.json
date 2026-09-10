@@ -1,0 +1,112 @@
+{
+  "format": "rncs.world-body-provider-admission-audit.v0.1",
+  "version": "0.1.0-alpha.1",
+  "status": "AUDIT_PROVIDER_SEAM_VERIFIED_TARGET_BINDING_OWNER_OPEN",
+  "source": {
+    "checkout": "rncs-visual-factory-v01",
+    "branch": "codex/rncs-engine-stack-archaeology-v01",
+    "sourceCommit": "0ed86b83b24d99119f54ca2dfabf17dda6bb414e",
+    "authority": "working-tree archaeology; no RCL Core promotion, provider admission, release claim or main-branch mutation"
+  },
+  "facts": {
+    "worldBodyEventRuntime": {
+      "source": "packages/world/world-body-ir/src/event-runtime.mjs",
+      "format": "taowind.world-body-event-runtime.v0.1",
+      "capabilities": [
+        "verified World Body IR admission",
+        "deterministic delivery plan with sourceWorldBodyRoot and deliveryPlanRoot",
+        "provider-rejected/provider-error retry boundary",
+        "exactly-once deliveryKey and duplicate suppression"
+      ],
+      "sourceLastCommit": "026593e46a90fc6b65bef9b8c5851ac77c0e6cf4"
+    },
+    "buildBrowserBoundary": {
+      "source": "apps/reality-build/src/runtime-template.mjs",
+      "defaultProviderMap": "empty",
+      "explicitAdmission": "window.__RNCS_GAME__.setWorldBodyEventProvider",
+      "receiptStatuses": [
+        "blocked-provider",
+        "provider-rejected",
+        "provider-error",
+        "delivered",
+        "duplicate-suppressed"
+      ],
+      "sourceLastCommit": "15f61b95eaa0223f94606aeba0cbc078d96872e2"
+    },
+    "behaviorFabric": {
+      "source": "packages/control/reality-behavior-fabric/src/runtime.mjs",
+      "providerCapabilities": [
+        "experience.audio.emit",
+        "experience.effect.emit"
+      ],
+      "deterministicBoundary": [
+        "authority decision before provider call",
+        "command log and capability receipt",
+        "snapshot/replay state root"
+      ],
+      "sourceLastCommit": "a94bf4f85f7eed592b0b51cf7544c3fe420e8614"
+    },
+    "buildProviderWiring": {
+      "source": "apps/reality-build/src/runtime-template.mjs#createRuntime",
+      "audio": "experience.audio.emit calls audioCue()",
+      "effect": "experience.effect.emit calls burst()",
+      "audioTargetContract": "exact cue_id lookup in a sealed rncs.audio-target-plan.v0.1"
+    }
+  },
+  "positiveEvidence": [
+    "World Body event delivery plan and runtime are independently executable and retain authority roots, order, retry and duplicate boundaries.",
+    "Reality Build carries the same plan into the browser runtime and fails closed while no consumer provider is admitted.",
+    "Behavior Fabric has a tested capability/provider seam and Reality Build wires its existing audio and effect capabilities without changing Behavior authority semantics.",
+    "Local regression results: @taowind/world-body-ir 40/40 PASS; @taowind/reality-behavior-fabric 81/81 PASS."
+  ],
+  "negativeEvidence": [
+    "No contract currently maps a World Body route consumer/target such as audio:hero-contact to an audio-target-plan cue_id such as footstep-ice.",
+    "No contract currently maps an animation route target to a VSR animation layer, graph state, clip, or evaluated Sequence frame.",
+    "The browser provider map is intentionally empty by default; generic provider admission is not evidence that a concrete target provider is product-ready.",
+    "Experience Fabric and Studio Sequence remain separate authored-presentation owners; copying their policy or inferring route bindings here would create parallel semantics."
+  ],
+  "reuseDecision": {
+    "decision": "DO_NOT_ADD_WORLD_BODY_TARGET_ADAPTER_YET",
+    "reuse": [
+      "WorldBodyEventRuntime for routing and receipts",
+      "Behavior capability/provider boundary for behavior-authored commands",
+      "existing audio-target-plan and VSR asset residency for explicitly bound target audio",
+      "existing VSR animation policy/sequence frame projection for explicitly bound presentation"
+    ],
+    "deferred": [
+      "World Body event consumer-to-target binding contract",
+      "event-driven animation transition ownership",
+      "Experience Fabric/Sequence ingress and target capability matrix"
+    ]
+  },
+  "rclGap": "RCL_GAP_RNCS_SHARED_AUTHORED_PRESENTATION_SPINE",
+  "subgaps": [
+    "RCL_GAP_RNCS_AUDIO_TARGET_LOWERING",
+    "RCL_GAP_RNCS_EVENT_DRIVEN_PRESENTATION_LOWERING"
+  ],
+  "humanDecisionRequired": "Choose whether authored presentation is admitted as a sealed evaluated frame or through a shared target-side Sequence/Experience runtime, then define the explicit route-to-provider binding owner and target capability matrix.",
+  "affectedK400Cells": [
+    "EXPRESS",
+    "COMPILE",
+    "LOWER",
+    "EXECUTE",
+    "CORRECT",
+    "ROBUST",
+    "EVIDENCE"
+  ],
+  "verification": {
+    "commands": [
+      "npm.cmd test --workspace @taowind/world-body-ir",
+      "npm.cmd test --workspace @taowind/reality-behavior-fabric",
+      "node --check apps/reality-build/src/runtime-template.mjs",
+      "node --test apps/reality-build/tests/world-body-candidate.test.mjs"
+    ],
+    "results": {
+      "worldBodyIr": "40 passed, 0 failed, 0 skipped",
+      "behaviorFabric": "81 passed, 0 failed, 0 skipped",
+      "buildWorldBodyCandidate": "3 passed, 0 failed, 0 skipped; browser default provider remains blocked"
+    },
+    "claimBoundary": "This audit proves reusable provider seams and a missing canonical binding contract; it does not prove event-driven animation playback, target audio mapping, native audio, physical-device output, distributed delivery or production readiness."
+  },
+  "evidenceRoot": "ddc0acf4c42309f93b1511b1756b9bebaed17118222ef80a26bb4a2c428b1bf7"
+}

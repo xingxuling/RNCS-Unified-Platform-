@@ -561,6 +561,10 @@ World Body IR 也已经拥有一个可复用的事件投递层，而不是每个
 
 Reality Build 已把该计划写入 candidate presentation、runtime payload 和浏览器 `dispatchWorldBodyEventTick()`；当前完整 Build 回归为 `172 tests / 164 pass / 0 fail / 8 skipped`。但浏览器 provider map 默认为空，`animation` / `audio` 只有在显式 provider admission 后才会从 `blocked-provider` 变为 `delivered`。因此这关闭的是“World Body authority event → bounded provider delivery receipt”的共享 execution seam，不是 `animation route → VSR graph/layer`、`audio route → sealed target asset plan` 或 Sequence event playback。不能按 route target 字符串推断 clip、asset 或 provider；该 provider binding 仍属于 `RCL_GAP_RNCS_SHARED_AUTHORED_PRESENTATION_SPINE` 的 canonical-owner 决策。
 
+本轮继续沿既有 seam 做了 Behavior/World Body provider admission 反向考古。Behavior Fabric 的 `experience.audio.emit` / `experience.effect.emit` 已有 authority decision、command log、snapshot/replay root 和 provider 入口；Build `createRuntime()` 已将它们分别接到既有 `audioCue()` 与 `burst()`。World Body Event Runtime 则独立拥有 verified IR admission、delivery plan、retry 和 duplicate suppression。两者都是真实可复用 donor：`@taowind/world-body-ir` `40/40 PASS`，`@taowind/reality-behavior-fabric` `81/81 PASS`。
+
+但当前没有把 World Body route 的 `consumer + target` 映射到 target provider 的 sealed contract。最小 IR 中的 `audio:hero-contact` 不是现有音频计划示例的 `cue_id=footstep-ice`，而且没有声明一条可验证的映射；`animation:hero-land` 也没有对应的 VSR clip/layer/graph 或 Sequence frame provider。浏览器 provider map 继续默认为空，只通过显式 `setWorldBodyEventProvider()` admission；因此本轮不添加字符串推断或平行 adapter。收据见 `docs/verification/RNCS_WORLD_BODY_PROVIDER_ADMISSION_AUDIT_v0.1.json`，当前缺口仍是 `RCL_GAP_RNCS_SHARED_AUTHORED_PRESENTATION_SPINE`，下一步必须先裁决 authored presentation ingress 与 route-to-provider binding owner。
+
 ## 本轮音频 target lowering 考古（负证据）
 
 本轮先对真实源项目做了 audio execution audit，没有立即建立第二套音频系统。Reality Studio/资产记录已有 `sfx-wav` role 与 content hash；Experience Fabric 已有 deterministic audio cue/voice plan 和 oscillator/sample/offline WAV renderer；Spatial Embodiment 已有带 cue、position、gain、pitch、distance、occlusion 的 `spatial-audio` event。它们的语义 owner 各自存在，但当前 Build target 没有把这些语义共同接到文件资产与宿主 audio consumer。
