@@ -163,3 +163,18 @@ test('Reality Build rejects ambiguous Sequence ownership and missing explicit VS
   const projection=createSpatialSequenceFrameProjection({scene,sequence,frame,animationBindings:[{track_id:'track:animation',clip_id:'candidate:walk',node_ids:[node.id]}]});
   assert.throws(()=>createSpatialPresentationCandidate({projectRoot:'project-root:sequence-conflict',scene,source:{kind:'sequence-conflict'},animationPolicy:{clip_id:'candidate:walk'},sequenceFrameProjection:projection}),error=>error?.code==='REALITY_BUILD_PRESENTATION_ANIMATION_OWNER_CONFLICT');
 });
+
+test('Reality Build lowers a Studio camera cut through an explicit VSR camera binding',()=>{
+  const scene=structuredClone(createSpatialShowcaseScene());
+  scene.cameras.push({id:'camera:alternate',projection:'perspective',fovYDeg:42,near:.1,far:100,transform:{translation:[2,2,4],rotationEulerDeg:[-10,18,0]}});
+  const sequence=normalizeSequence({sequence_id:'sequence:camera-projection',fps:60,duration:2,tracks:[{track_id:'track:camera',type:'camera',clips:[{clip_id:'camera:alternate-shot',start:0,duration:2,payload:{kind:'camera-cut',camera_id:'camera:alternate'}}]}]});
+  const frame=evaluateSequence(sequence,.25,{previousTime:0});
+  const projection=createSpatialSequenceFrameProjection({scene,sequence,frame,cameraBindings:[{track_id:'track:camera',clip_id:'camera:alternate-shot',camera_id:'camera:alternate'}]});
+  const candidate=createSpatialPresentationCandidate({projectRoot:'project-root:camera-frame',scene,source:{kind:'studio-sequence-camera-projection',sequence_id:sequence.sequence_id},sequenceFrameProjection:projection});
+  const result=compileBoundPresentationScene({spatial3d:{editor:{viewport:{width:640,height:360,quality_tier:'quality'}}}},{tick:0,bodies:[]},null,null,candidate);
+  assert.equal(verifySpatialPresentationCandidate(candidate,{projectRoot:'project-root:camera-frame'}),true);
+  assert.equal(projection.camera_binding.camera_id,'camera:alternate');
+  assert.equal(result.scene.activeCameraId,'camera:alternate');
+  assert.equal(result.frame_plan.camera.id,'camera:alternate');
+  assert.equal(result.sequence_frame_projection.camera_binding.track_id,'track:camera');
+});

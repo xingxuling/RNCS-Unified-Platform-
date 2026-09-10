@@ -206,8 +206,8 @@ function normalizeAnimationPolicy(animationPolicy, scene) {
   return {mode, selection, tick_hz: tickHz, speed, phase_seconds: phaseSeconds, loop, graph: {initial_state: initialState, states: graphStates}, state_id: stateId, ...(transition ? {transition} : {})};
 }
 
-function normalizeSequenceAnimationLayers(layers, scene) {
-  if (!Array.isArray(layers) || layers.length === 0) fail('REALITY_BUILD_SEQUENCE_FRAME_ANIMATION_LAYERS_INVALID', 'Sequence frame projection needs at least one animation layer');
+function normalizeSequenceAnimationLayers(layers, scene, {allowEmpty = false} = {}) {
+  if (!Array.isArray(layers) || (!allowEmpty && layers.length === 0)) fail('REALITY_BUILD_SEQUENCE_FRAME_ANIMATION_LAYERS_INVALID', 'Sequence frame projection needs at least one animation layer');
   const animationIds = new Set((scene.animations ?? []).map(animation => String(animation?.id ?? '')));
   return layers.map((layer, index) => {
     if (!isRecord(layer)) fail('REALITY_BUILD_SEQUENCE_FRAME_ANIMATION_LAYER_INVALID', `Sequence frame animation layer ${index} must be an object`);
@@ -228,6 +228,17 @@ function normalizeSequenceAnimationLayers(layers, scene) {
   });
 }
 
+function normalizeSequenceCameraBinding(binding, scene) {
+  if (binding === null || binding === undefined) return null;
+  if (!isRecord(binding)) fail('REALITY_BUILD_SEQUENCE_CAMERA_BINDING_INVALID', 'Sequence camera binding must be an object');
+  const trackId = String(binding.track_id ?? binding.trackId ?? '').trim();
+  const clipId = String(binding.clip_id ?? binding.clipId ?? '').trim();
+  const cameraId = String(binding.camera_id ?? binding.cameraId ?? '').trim();
+  if (!trackId || !clipId || !cameraId) fail('REALITY_BUILD_SEQUENCE_CAMERA_BINDING_REQUIRED', 'Sequence camera binding needs track_id, clip_id and camera_id');
+  if (!(scene.cameras ?? []).some(camera => String(camera?.id ?? '') === cameraId)) fail('REALITY_BUILD_SEQUENCE_CAMERA_MISSING', `Sequence camera ${cameraId} is missing from the scene`);
+  return {track_id: trackId, clip_id: clipId, camera_id: cameraId};
+}
+
 function normalizeSequenceFrameProjection(value, scene) {
   if (!isRecord(value) || value.format !== REALITY_BUILD_SEQUENCE_FRAME_PROJECTION_FORMAT || value.version !== REALITY_BUILD_SEQUENCE_FRAME_PROJECTION_VERSION || value.authority !== CANDIDATE_AUTHORITY) {
     fail('REALITY_BUILD_SEQUENCE_FRAME_PROJECTION_INVALID', 'Sequence frame projection format, version or authority is invalid');
@@ -241,13 +252,24 @@ function normalizeSequenceFrameProjection(value, scene) {
   if (!Number.isFinite(Number(frame.time)) || Number(frame.time) < 0) fail('REALITY_BUILD_SEQUENCE_FRAME_TIME_INVALID', 'Sequence frame time must be finite and non-negative');
   if (!Array.isArray(frame.active) || !Array.isArray(frame.presentation_state) || !Array.isArray(frame.authority_events)) fail('REALITY_BUILD_SEQUENCE_FRAME_SHAPE_INVALID', 'Sequence frame active, presentation_state and authority_events must be arrays');
   const activeAnimation = frame.presentation_state.filter(entry => entry?.track_type === 'animation');
-  const animationLayers = normalizeSequenceAnimationLayers(base.animation_layers, scene);
+  const activeCamera = frame.presentation_state.filter(entry => entry?.track_type === 'camera');
+  if (activeCamera.length > 1) fail('REALITY_BUILD_SEQUENCE_FRAME_CAMERA_AMBIGUOUS', 'Sequence frame projection supports at most one active camera presentation clip');
+  const cameraBinding = normalizeSequenceCameraBinding(base.camera_binding, scene);
+  if (activeCamera.length === 0 && cameraBinding) fail('REALITY_BUILD_SEQUENCE_CAMERA_BINDING_UNUSED', 'Sequence camera binding has no active Studio camera clip');
+  if (activeCamera.length === 1) {
+    if (!cameraBinding) fail('REALITY_BUILD_SEQUENCE_CAMERA_BINDING_REQUIRED', 'Active Studio camera clip needs an explicit camera binding');
+    if (cameraBinding.track_id !== String(activeCamera[0].track_id ?? '') || cameraBinding.clip_id !== String(activeCamera[0].clip_id ?? '')) fail('REALITY_BUILD_SEQUENCE_CAMERA_BINDING_MISMATCH', 'Sequence camera binding does not match the active Studio camera presentation state');
+    const payloadCameraId = String(activeCamera[0].payload?.camera_id ?? activeCamera[0].payload?.cameraId ?? '').trim();
+    if (payloadCameraId && payloadCameraId !== cameraBinding.camera_id) fail('REALITY_BUILD_SEQUENCE_CAMERA_ID_MISMATCH', 'Sequence camera binding does not match the authored camera_id payload');
+  }
+  if (!activeAnimation.length && !activeCamera.length) fail('REALITY_BUILD_SEQUENCE_FRAME_SUPPORTED_PRESENTATION_REQUIRED', 'Sequence frame projection needs an active animation or camera presentation clip');
+  const animationLayers = normalizeSequenceAnimationLayers(base.animation_layers, scene, {allowEmpty: activeAnimation.length === 0});
   if (activeAnimation.length !== animationLayers.length) fail('REALITY_BUILD_SEQUENCE_FRAME_ANIMATION_COUNT_MISMATCH', 'Sequence frame animation layers must cover every active Studio animation clip exactly once');
   for (const [index, entry] of activeAnimation.entries()) {
     const layer = animationLayers[index];
     if (layer.track_id !== String(entry.track_id ?? '') || layer.clip_id !== String(entry.clip_id ?? '')) fail('REALITY_BUILD_SEQUENCE_FRAME_ANIMATION_ORDER_MISMATCH', `Sequence frame animation layer ${index} does not match the active Studio presentation state`);
   }
-  return {...base, animation_layers: animationLayers, projection_root: projectionRoot};
+  return {...base, animation_layers: animationLayers, ...(cameraBinding ? {camera_binding: cameraBinding} : {}), projection_root: projectionRoot};
 }
 
 /**
@@ -255,12 +277,13 @@ function normalizeSequenceFrameProjection(value, scene) {
  * candidate projection. Studio remains responsible for timeline evaluation;
  * this adapter only validates an explicit animation-track-to-VSR binding.
  */
-export function createSpatialSequenceFrameProjection({scene, sequence, frame, animationBindings = []} = {}) {
+export function createSpatialSequenceFrameProjection({scene, sequence, frame, animationBindings = [], cameraBindings = []} = {}) {
   const normalizedScene = normalizeScene(scene).scene;
   if (!isRecord(sequence) || sequence.format !== 'reality-studio.sequence.v1.7' || sequence.version !== '1.7.0-alpha.1') fail('REALITY_BUILD_SEQUENCE_INVALID', 'Sequence frame projection requires a Reality Studio sequence v1.7');
   if (!String(sequence.sequence_id ?? '').trim() || !String(sequence.sequence_root ?? '').trim()) fail('REALITY_BUILD_SEQUENCE_ROOTS_REQUIRED', 'Sequence frame projection requires sequence_id and sequence_root');
   if (!isRecord(frame) || frame.format !== 'reality-studio.sequence-frame.v1.6' || frame.sequence_id !== sequence.sequence_id) fail('REALITY_BUILD_SEQUENCE_FRAME_INVALID', 'Sequence frame must come from the supplied Studio sequence');
   if (!Array.isArray(animationBindings)) fail('REALITY_BUILD_SEQUENCE_ANIMATION_BINDINGS_INVALID', 'Sequence animation bindings must be an array');
+  if (!Array.isArray(cameraBindings)) fail('REALITY_BUILD_SEQUENCE_CAMERA_BINDINGS_INVALID', 'Sequence camera bindings must be an array');
   const bindings = animationBindings.map((binding, index) => {
     if (!isRecord(binding)) fail('REALITY_BUILD_SEQUENCE_ANIMATION_BINDING_INVALID', `Sequence animation binding ${index} must be an object`);
     const clipId = String(binding.clip_id ?? binding.clipId ?? '').trim();
@@ -276,7 +299,6 @@ export function createSpatialSequenceFrameProjection({scene, sequence, frame, an
     bindingByKey.set(key, binding);
   }
   const activeAnimation = frame.presentation_state.filter(entry => entry?.track_type === 'animation');
-  if (!activeAnimation.length) fail('REALITY_BUILD_SEQUENCE_FRAME_ANIMATION_REQUIRED', 'Sequence frame projection needs at least one active animation presentation clip');
   const animationLayers = activeAnimation.map((entry, index) => {
     const key = `${String(entry.track_id ?? '')}:${String(entry.clip_id ?? '')}`;
     const binding = bindingByKey.get(key);
@@ -284,6 +306,20 @@ export function createSpatialSequenceFrameProjection({scene, sequence, frame, an
     const timeSeconds = Number(entry.local_time ?? 0);
     return {track_id: binding.track_id, clip_id: binding.clip_id, time_seconds: timeSeconds, weight: binding.weight, loop: binding.loop, mode: binding.mode, ...(binding.node_ids ? {node_ids: binding.node_ids} : {})};
   });
+  const activeCamera = frame.presentation_state.filter(entry => entry?.track_type === 'camera');
+  if (activeCamera.length > 1) fail('REALITY_BUILD_SEQUENCE_FRAME_CAMERA_AMBIGUOUS', 'Sequence frame projection supports at most one active camera presentation clip');
+  const normalizedCameraBindings = cameraBindings.map(binding => normalizeSequenceCameraBinding(binding, normalizedScene));
+  let cameraBinding = null;
+  if (activeCamera.length === 1) {
+    const entry = activeCamera[0];
+    const key = `${String(entry.track_id ?? '')}:${String(entry.clip_id ?? '')}`;
+    const matches = normalizedCameraBindings.filter(binding => `${binding.track_id}:${binding.clip_id}` === key);
+    if (matches.length !== 1) fail('REALITY_BUILD_SEQUENCE_CAMERA_BINDING_MISSING', `Sequence camera binding ${key} is missing or duplicated`);
+    cameraBinding = matches[0];
+  } else if (normalizedCameraBindings.length) {
+    fail('REALITY_BUILD_SEQUENCE_CAMERA_BINDING_UNUSED', 'Sequence camera binding has no active Studio camera clip');
+  }
+  if (!activeAnimation.length && !cameraBinding) fail('REALITY_BUILD_SEQUENCE_FRAME_SUPPORTED_PRESENTATION_REQUIRED', 'Sequence frame projection needs an active animation or camera presentation clip');
   const base = {
     format: REALITY_BUILD_SEQUENCE_FRAME_PROJECTION_FORMAT,
     version: REALITY_BUILD_SEQUENCE_FRAME_PROJECTION_VERSION,
@@ -292,7 +328,8 @@ export function createSpatialSequenceFrameProjection({scene, sequence, frame, an
     sequence_root: String(sequence.sequence_root),
     frame: clone(frame),
     animation_layers: animationLayers,
-    source: 'reality-studio.evaluateSequence'
+    source: 'reality-studio.evaluateSequence',
+    ...(cameraBinding ? {camera_binding: cameraBinding} : {})
   };
   const projection = {...base, projection_root: rootHash(base)};
   return normalizeSequenceFrameProjection(projection, normalizedScene);
