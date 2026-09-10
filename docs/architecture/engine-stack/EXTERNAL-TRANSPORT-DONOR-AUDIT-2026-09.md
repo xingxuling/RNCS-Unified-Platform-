@@ -70,3 +70,11 @@ Reality Network Runtime 当前拥有：
 3. TLS 证书、密钥、origin、relay、leader/lease 和跨节点 failover 的 authority owner。
 
 没有这三个裁决，继续写一个 RNCS 自有 socket/relay 会制造重复语义和未授权发布风险。没有新增 K400 PASS。
+
+## 2026-09-10 re-audit
+
+本轮对外部状态重新核对，没有发现可以替代本地考古结论的更新资产：`origin/main` 当前仍为 `23c6dd286435b32c55683e1919979b295b301ddf`（2026-07-02），远端树只有 `README.md`；因此当前工作树的 Network/URRF/Relay 源码仍是本地真实依据，不把远端叙事当成实现证据。
+
+本机事实也保持边界：Android 设备列表只有 `emulator-5554`（Android ATD x86_64，API 35），没有物理设备或第二网络。历史 DuoWorld donor 的 `node --check public_relay/relay_server.js`、`node --check gateway/relay_bridge.js`、`node tests/public_relay_test.js`（`PUBLIC_RELAY_PROTOCOL_PASS`）和 `node tests/gateway_relay_bridge_test.js`（`GATEWAY_RELAY_BRIDGE_PASS`）本轮重新通过；这些仍是本机协议/bridge candidate，不是公网部署、TLS、NAT、跨节点 authority 或 SLA 证据。其 `LICENSE_AUDIT.md` 仍明确为 `METADATA_INVENTORY_COMPLETE_NOT_LEGAL_CLEARANCE`，项目 `private: true`、无根 `LICENSE`，不产生复制或发布授权。
+
+因此当前 blocker 不是缺少可读源码，而是 canonical external transport、donor/实现许可、TLS/key custody 及 relay/leader/lease/failover authority 的 owner 决策。完成这三个裁决前，安全的下一步仍然是保留 URRF semantic seam、Loopback/HTTP candidate 和负证据，不新增物理 Provider 或平行 socket/relay 语义。
