@@ -402,7 +402,7 @@ Network Runtime message
 
 `input` 映射为 `CONTROL`，`ack` 映射为 `ACK`，`rejection` 映射为 `NACK`，`delta/snapshot` 映射为 `STATE_DELTA`；传输包带有 `candidate_only=true`、`authoritative=false`、`commit_status=NOT_COMMITTED`，并明确 `worldMutation=false`。运行时 payload 的浮点值保留在实际 Loopback message 中；只有用于 URRF root 的候选编码把浮点数转成十进制字符串，避免放宽 Core Contract 的哈希规则。
 
-本地真实结果：`@taowind/reality-network-runtime` 为 `31 tests / 31 pass / 0 fail`，新增测试验证 Loopback message 的 `CONTROL` packet、source/target node、packet root、fabric root 与 candidate/authority flags；`@taowind/reality-representation-fabric` 的 transport suite 也验证 packet read accessor 和既有 authority-gated packet。Network health 现在同时暴露 Loopback delivery stats 与 URRF transport `profile_root/fabric_root/packet_count`。
+本地真实结果：`@taowind/reality-network-runtime` 为 `31 tests / 31 pass / 0 fail`，新增测试验证 Loopback message 的 `CONTROL` packet、source/target node、packet root、fabric root 与 candidate/authority flags；`@taowind/reality-representation-fabric` 的 transport suite 也验证 packet read accessor 和既有 authority-gated packet。Network health 现在同时暴露 Loopback delivery stats 与 URRF transport `profile_root/fabric_root/packet_count`。候选证据封存在 `packages/network/reality-network-runtime/reports/NETWORK_TRANSPORT_FABRIC_LOOPBACK_CANDIDATE_v0.1.json`。
 
 边界：这关闭的是既有 semantic transport contract 到 Network Runtime loopback candidate 的 execution seam；它不是物理 WebSocket、UDP、QUIC、WebRTC、TLS、WAN、NAT、第二网络、多设备重连、跨节点 lease/leader、生产 relay 或 SLA 证明。历史 DuoWorld donor 仍受 private-preview/许可证、密钥、部署和异网证据边界约束；详细审计见 `docs/architecture/engine-stack/EXTERNAL-TRANSPORT-DONOR-AUDIT-2026-09.md`。没有新增 K400 PASS。
 

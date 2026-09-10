@@ -1,0 +1,59 @@
+{
+  "format": "taowind.reality-network.transport-fabric-loopback-candidate-evidence.v0.1",
+  "version": "0.1.0",
+  "status": "CANDIDATE_SEMANTIC_BINDING_VERIFIED",
+  "sourceCommit": "dfaafa7cac33e14ddbe0c60931d1a16d16457b47",
+  "pipeline": "Network Runtime message -> RDN/local candidate profile -> URRF transport packet -> deterministic Loopback delivery -> authoritative ServerAuthoritativeWorld",
+  "semanticOwner": {
+    "profilePacketContract": "RNCS Core Contract / Reality Transport Fabric",
+    "sessionStateAndAuthority": "Reality Network Runtime / ServerAuthoritativeWorld",
+    "deliverySimulation": "LoopbackTransport / NetworkConditionSimulator",
+    "physicalProvider": "not implemented by this candidate"
+  },
+  "commands": [
+    "npm test --workspace @taowind/reality-representation-fabric",
+    "npm test --workspace @taowind/reality-network-runtime",
+    "npm test --workspace @taowind/reality-build-fabric",
+    "node --input-type=module JSON_PARSE_CHECK",
+    "git diff --check"
+  ],
+  "tests": {
+    "realityRepresentationFabricSuite": "21 tests / 21 pass / 0 fail",
+    "networkRuntimeSuite": "31 tests / 31 pass / 0 fail",
+    "realityBuildSuite": "142 tests / 134 pass / 0 fail / 8 skip",
+    "controlPacketBinding": "PASS",
+    "ackNackStateDeltaMapping": "PASS",
+    "profileAndPacketRoots": "PASS",
+    "healthFabricRootExposure": "PASS",
+    "candidateAuthorityFlags": "PASS",
+    "authoritativeWorldWriterCount": "PASS",
+    "deterministicNetworkReplay": "PASS"
+  },
+  "candidateProfile": {
+    "transportKind": "RDN",
+    "qosClass": "STATE_DELTA",
+    "coverage": "LOCAL",
+    "lossMode": "RECOVERABLE",
+    "requiresAuthority": false,
+    "worldMutation": false,
+    "candidateOnly": true,
+    "authoritative": false,
+    "commitStatus": "NOT_COMMITTED"
+  },
+  "packetMapping": {
+    "input": "CONTROL",
+    "ack": "ACK",
+    "rejection": "NACK",
+    "delta": "STATE_DELTA",
+    "snapshot": "STATE_DELTA"
+  },
+  "boundaries": [
+    "Loopback remains a deterministic delivery and fault-injection provider; this does not prove WebSocket, UDP, QUIC, WebRTC, TLS, WAN, NAT, or a second network.",
+    "The RDN profile is a local semantic carrier candidate and does not grant authority or mutate canonical world state.",
+    "Runtime payloads remain unchanged for delivery; only the URRF candidate payload encoding converts finite floating-point values to decimal strings for Core Contract hashing.",
+    "Historical DuoWorld Relay was not copied; its private-preview/license, deployment, key-custody, and cross-network evidence boundaries remain open.",
+    "No K400 gate is promoted to PASS."
+  ],
+  "authority": "candidate-runtime-evidence-only-no-commit",
+  "evidenceRoot": "aa601eebb6c2f8a577eec39c137fa1633e5114dfa10bb78eddcafde7c3991bd2"
+}
