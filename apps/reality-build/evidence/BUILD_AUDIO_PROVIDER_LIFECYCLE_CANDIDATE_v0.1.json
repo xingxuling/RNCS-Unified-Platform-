@@ -1,0 +1,250 @@
+{
+  "format": "reality-build.audio-provider-lifecycle-evidence.v0.1",
+  "version": "0.1.0-alpha.1",
+  "status": "CANDIDATE_WEB_CHROMIUM_AND_ANDROID_WEBVIEW_LIFECYCLE_VERIFIED",
+  "source": {
+    "checkout": "rncs-visual-factory-v01",
+    "branch": "codex/rncs-engine-stack-archaeology-v01",
+    "sourceCommit": "7a2f55d",
+    "authority": "local provider-lifecycle candidate; no RCL Core promotion, production audio admission, main-branch mutation or release claim"
+  },
+  "pipeline": "existing explicit RSR spatial audio plan -> Reality Build Web Audio Provider lifecycle -> Chromium and embedded Android WebView diagnostics",
+  "canonicalSeam": {
+    "worldSemantics": "Behavior and RSR continue to own cue, fixed tick, spatial parameters and listener meaning.",
+    "targetProvider": "Reality Build owns target-side AudioContext lifecycle, content-addressed decode bookkeeping, Web Audio source lifecycle and provider diagnostics.",
+    "offlineDonorBoundary": "Experience Fabric Audio remains the offline donor for deterministic max-voice, bus, low-pass, delay and render diagnostics; those policies are not silently copied into the browser target.",
+    "rclBoundary": "This is an auxiliary target-provider lifecycle seam, not an RCL Core promotion."
+  },
+  "providerContract": {
+    "format": "taowind.audio-target-provider-diagnostics.v0.1",
+    "diagnostics": [
+      "context_state",
+      "sample_rate",
+      "resume_attempts",
+      "resume_succeeded",
+      "resume_failed",
+      "decode_requests",
+      "decode_completed",
+      "decode_failed",
+      "decode_latency_ms_last",
+      "decode_latency_ms_total",
+      "pending_decode_count",
+      "cached_buffer_count",
+      "scheduled_voice_count",
+      "active_voice_count",
+      "peak_active_voice_count",
+      "ended_voice_count",
+      "stopped_voice_count",
+      "provider_error_count",
+      "last_error"
+    ],
+    "lifecycle": {
+      "decodeLoads": "content-addressed in-flight loads are removed after resolve or reject",
+      "sourceTracking": "buffer and procedural sources are tracked until ended",
+      "reset": "active sources are stopped and counted before receipt/cache reset",
+      "voicePolicy": "no new max-voice or mixing policy is inferred in this round"
+    }
+  },
+  "build": {
+    "fixture": "apps/reality-build/examples/冰境试炼.unified-project.json",
+    "output": "output-lifecycle",
+    "buildId": "build:ffad2b2434a0d0a3c37fc80b",
+    "buildKey": "ffad2b2434a0d0a3c37fc80bedc371feee5299c99371f5d1382d57820a7e63a9",
+    "graphRoot": "b04e266bebac1a72c29ab85a24349fc5c40d0bbf109a6328fa70d9e2591be4d2",
+    "assetManifestRoot": "ab1486dc3fce33cad83f48221cce64c0c5a0bf7acb1791d3f9c343a1780cdf9e",
+    "targetRoots": {
+      "web-release": "116002ba38c217122a3dd90d8e8fac12bfe7a390f02ce6002ea5e7dddae3e022",
+      "android-apk": "307d28560942bde633e06450cbed257c6da3dfff7e8ffd256cc02350a3c394ef"
+    },
+    "planRoots": {
+      "web-release": "c53a2f43ea96d4020eaca41abdb75acf9da33cba8446540e28ddafe7a7cc0a78",
+      "android-embedded": "d28fa6966e279cbc18fe58b3c3befbf182d2f0ad34cd5e8cbef07d9c64b8df06"
+    },
+    "binding": {
+      "bindingId": "audio-binding:impact-body",
+      "cueId": "impact.body",
+      "assetId": "asset:3a82d1753e140d24552b89d1",
+      "fileRole": "sfx-wav",
+      "bytes": 19888,
+      "sha256": "ba8ebd46b31544ce76973a7ac88039c82d0c1aaaaabdf1cbfb1339a495f2e53e",
+      "uri": "assets/ba8ebd46b31544ce76973a7ac88039c82d0c1aaaaabdf1cbfb1339a495f2e53e.wav"
+    },
+    "verificationValid": true
+  },
+  "webChromium": {
+    "host": "Playwright-driven local Chromium headless run",
+    "url": "http://127.0.0.1:45996/index.html",
+    "readyState": "complete",
+    "pageErrors": 0,
+    "consoleWarnings": 5,
+    "warningTypes": [
+      "WebGPU powerPreference ignored on Windows",
+      "No available WebGPU adapters",
+      "AudioContext requires a user gesture"
+    ],
+    "action": "window.__RNCS_GAME__.reset(); 80 fixed host steps with move_right=true; wait 2500 ms",
+    "afterResetBeforeStep": {
+      "contextState": "running",
+      "sampleRate": 48000,
+      "stoppedVoiceCount": 1,
+      "activeVoiceCount": 0,
+      "receiptCount": 0,
+      "interpretation": "reset stopped one source created by the page's pre-reset fixed-tick loop; this is lifecycle evidence, not playback evidence"
+    },
+    "after": {
+      "receiptCount": 13,
+      "spatialRequestedCount": 6,
+      "spatialForwardedCount": 1,
+      "statusCounts": {
+        "blocked-binding": 11,
+        "decode-pending": 1,
+        "scheduled": 1
+      },
+      "providerDiagnostics": {
+        "context_state": "running",
+        "sample_rate": 48000,
+        "context_create_count": 0,
+        "resume_attempts": 1,
+        "resume_succeeded": 1,
+        "resume_failed": 0,
+        "decode_requests": 1,
+        "decode_completed": 1,
+        "decode_failed": 0,
+        "decode_latency_ms_last": 957.7,
+        "pending_decode_count": 0,
+        "cached_buffer_count": 1,
+        "scheduled_voice_count": 1,
+        "active_voice_count": 0,
+        "peak_active_voice_count": 1,
+        "ended_voice_count": 1,
+        "stopped_voice_count": 1,
+        "provider_error_count": 0,
+        "last_error": null
+      },
+      "scheduledReceipt": {
+        "cueId": "impact.body",
+        "assetId": "asset:3a82d1753e140d24552b89d1",
+        "tick": 1,
+        "source": "rsr-spatial3d",
+        "spatialParametersForwarded": true,
+        "listenerId": "listener:player",
+        "providerId": "reality-build.web-audio-buffer"
+      },
+      "spatial3d": {
+        "available": true,
+        "verified": true,
+        "tick": 236
+      }
+    },
+    "claimBoundary": "Chromium observed lifecycle bookkeeping and the same spatial Provider receipt; the autoplay warning means this is not audible playback or human listening proof."
+  },
+  "androidWebView": {
+    "serial": "emulator-5554",
+    "api": 35,
+    "model": "Android ATD built for x86_64",
+    "product": "sdk_slim_x86_64",
+    "webviewPackage": "com.android.webview",
+    "webviewVersion": "124.0.6367.219",
+    "apk": {
+      "artifact": "Audio Spatial Lifecycle Candidate-0.1.0-debug.apk",
+      "bytes": 334224,
+      "sha256": "c45c715250b011a57b0cb2cb1bf4799d04b94314a14aa960b68e94e1dd150272",
+      "signature": "verified; Android APK Signature Scheme v2",
+      "signingIdentity": "android-debug-keystore"
+    },
+    "origin": "https://rncs.local/",
+    "readyState": "complete",
+    "cdpTarget": "C71D16B19D9603B4F984C65FEF372B07",
+    "action": "window.__RNCS_GAME__.reset(); window.__RNCS_GAME__.step({move_right:true}); wait 3000 ms",
+    "after": {
+      "receiptCount": 6,
+      "spatialRequestedCount": 5,
+      "spatialForwardedCount": 1,
+      "statusCounts": {
+        "decode-pending": 1,
+        "blocked-binding": 4,
+        "scheduled": 1
+      },
+      "providerDiagnostics": {
+        "context_state": "running",
+        "sample_rate": 48000,
+        "context_create_count": 0,
+        "resume_attempts": 1,
+        "resume_succeeded": 1,
+        "resume_failed": 0,
+        "decode_requests": 1,
+        "decode_completed": 1,
+        "decode_failed": 0,
+        "decode_latency_ms_last": 421.6,
+        "pending_decode_count": 0,
+        "cached_buffer_count": 1,
+        "scheduled_voice_count": 1,
+        "active_voice_count": 0,
+        "peak_active_voice_count": 1,
+        "ended_voice_count": 1,
+        "stopped_voice_count": 0,
+        "provider_error_count": 0,
+        "last_error": null
+      },
+      "scheduledReceipt": {
+        "cueId": "impact.body",
+        "assetId": "asset:3a82d1753e140d24552b89d1",
+        "tick": 1,
+        "source": "rsr-spatial3d",
+        "spatialParametersForwarded": true,
+        "listenerId": "listener:player",
+        "providerId": "reality-build.web-audio-buffer"
+      },
+      "spatial3d": {
+        "available": true,
+        "verified": true,
+        "tick": 191
+      },
+      "applicationExceptions": 0,
+      "warnings": [
+        "Failed to create WebGPU Context Provider",
+        "Failed to create WebGPU Context Provider"
+      ]
+    },
+    "claimBoundary": "The API 35 Emulator/WebView reported the lifecycle diagnostics and scheduled receipt; it does not prove speaker output, native audio, physical-device behavior or perceptual spatial equivalence."
+  },
+  "verification": {
+    "commands": [
+      "node --check apps/reality-build/src/runtime-template.mjs",
+      "node --test apps/reality-build/tests/runtime.test.mjs",
+      "npm.cmd test --workspace @taowind/reality-build-fabric",
+      "Gradle 9.5.1 android-apk target",
+      "apksigner verify --verbose",
+      "adb install -r and explicit MainActivity launch",
+      "Android WebView CDP Runtime.evaluate through adb local forward",
+      "local Chromium candidate execution through Playwright"
+    ],
+    "localTestSummary": {
+      "runtimeFocused": "23 passed",
+      "realityBuildFull": "163 passed, 0 failed, 8 skipped",
+      "apk": "compiled and v2 signature verified",
+      "webAndWebView": "both targets reported pending decode cleanup, source lifecycle counts and spatial_parameters_forwarded=true"
+    },
+    "expectedResult": "All listed local checks pass; no hosted CI, physical-device audio or human-listening result is inferred."
+  },
+  "rclGap": "RCL_GAP_RNCS_AUDIO_TARGET_LOWERING",
+  "stressCase": "A fixed-tick RSR audio event must cross an explicit target binding while the Provider exposes truthful context, decode, pending-load and source lifecycle state in both browser and embedded Android hosts.",
+  "donorAdvantage": "Experience Fabric already supplies deterministic offline voice caps and bus/render diagnostics; the target candidate reuses that evidence as a donor boundary while implementing only lifecycle observability and cleanup in the actual Web Audio Provider.",
+  "regressionCase": "In-flight decode entries are removed on resolve/reject, reset stops active sources, ended sources decrement active voice count, provider errors and resume failures become diagnostics, and the existing explicit binding/spatial receipts remain unchanged.",
+  "affectedK400Cells": [
+    "LOWER",
+    "EXECUTE",
+    "CORRECT",
+    "ROBUST",
+    "PERFORMANCE",
+    "EVIDENCE"
+  ],
+  "boundaries": [
+    "Diagnostics are target-runtime observations, not a new world authority or audio semantics owner.",
+    "No max-voice cap, bus policy, streaming policy, latency budget or mixing-quality claim was introduced or verified.",
+    "The reported decode latency is a local Chromium/Android Emulator observation, not a cross-device performance curve.",
+    "No native audio backend, speaker/headphone routing, physical-device acceptance, release signing, store delivery or human listening acceptance is claimed.",
+    "No K400 gate is promoted to PASS."
+  ],
+  "nextCandidate": "Use the new diagnostics to audit an explicit target voice/concurrency and streaming policy only if a canonical owner can be established; otherwise move to the next engine bottleneck. Physical-device listening remains a separate human gate."
+}

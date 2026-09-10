@@ -222,6 +222,12 @@ RSR spatial-audio event
 
 `spatial_policy.listener_id` 必须指向目标空间快照中已经存在的 RSR listener；Build 不猜测第一个 listener，也不把 2D/3D 空间混用。`position` 按 RSR `position_scale` 转换，`gainQ`、`pitchQ`、`minDistance`、`maxDistance` 和 `occlusionQ` 进入 Provider 的参数映射；没有显式策略或 listener 时保持未空间化或阻断，并在收据中说明原因。真实 Chromium 与 API 35 Android WebView 候选都观察到 3D RSR 的 `impact.body` 在 Tick 1 经精确 WAV `decode-pending → scheduled`，`spatial_parameters_forwarded=true`；Chromium 页面异常为 0，Android CDP 未收到应用异常。这个结果是目标 Provider 执行证据，不是可听输出、空间感知等价、延迟、混音质量、Android 原生音频、物理设备或人工听感证据。完整收据见 `evidence/BUILD_AUDIO_SPATIAL_PROVIDER_CANDIDATE_v0.1.json`；仍不晋升任何 K400 PASS。
 
+## Audio Provider lifecycle diagnostics candidate
+
+上一轮只证明了空间参数能进入 Provider；本轮沿现有 `audio-target` seam 补齐目标侧生命周期收据，没有把 Experience Fabric 的离线 `maxVoices`/bus 策略偷偷复制到 Web/Android。`audioSnapshot().provider_diagnostics` 现在记录 AudioContext state/sample rate、resume 成功/失败、content-addressed decode 请求与耗时、pending load 清理、缓存 buffer、active/peak/ended/stopped voices 和 provider error；`reset()` 会停止仍在运行的 source。
+
+同一显式 `impact.body` 候选在本地 Chromium 中观察到 `resume_succeeded=1`、decode `1/1`、`pending_decode_count=0`、`decode_latency_ms_last≈957.7ms`、active voice `1→0`；API 35 Android WebView 中为 `≈421.6ms`，应用异常为 `0`。这只是 Provider 生命周期与目标执行观测，不是跨设备 latency 曲线、并发/混音质量、扬声器输出、native audio、物理设备或人工听感证据。完整收据见 `evidence/BUILD_AUDIO_PROVIDER_LIFECYCLE_CANDIDATE_v0.1.json`；不晋升任何 K400 PASS。
+
 ## Network compilation → headless candidate
 
 Reality Build 现在消费既有 Reality Studio `project.network`，不再只把 network authoring 留在 Studio 导出侧：
