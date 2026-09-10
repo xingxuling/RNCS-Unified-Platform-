@@ -27,6 +27,8 @@ var VSRSpatial3D = (() => {
     VSR_RAGF_SPATIAL_COMPILATION_FORMAT: () => VSR_RAGF_SPATIAL_COMPILATION_FORMAT,
     VSR_SPATIAL_ASSET_STREAMING_FORMAT: () => VSR_SPATIAL_ASSET_STREAMING_FORMAT,
     VSR_SPATIAL_ASSET_STREAMING_VERSION: () => VSR_SPATIAL_ASSET_STREAMING_VERSION,
+    VSR_SPATIAL_ASSET_TRANSITION_FORMAT: () => VSR_SPATIAL_ASSET_TRANSITION_FORMAT,
+    VSR_SPATIAL_ASSET_TRANSITION_VERSION: () => VSR_SPATIAL_ASSET_TRANSITION_VERSION,
     VSR_SPATIAL_CULL_WGSL_V04: () => VSR_SPATIAL_CULL_WGSL_V04,
     VSR_SPATIAL_FRAGMENT_WGSL_V04: () => VSR_SPATIAL_FRAGMENT_WGSL_V04,
     VSR_SPATIAL_FRAME_FORMAT: () => VSR_SPATIAL_FRAME_FORMAT,
@@ -139,6 +141,7 @@ var VSRSpatial3D = (() => {
     updateSpatialIrradianceVolume: () => updateSpatialIrradianceVolume,
     updateSpatialIrradianceVolumeField: () => updateSpatialIrradianceVolumeField,
     verifySpatialAssetStreamingReceipt: () => verifySpatialAssetStreamingReceipt,
+    verifySpatialAssetTransitionReceipt: () => verifySpatialAssetTransitionReceipt,
     verifySpatialFrame: () => verifySpatialFrame,
     verifySpatialIrradianceProbeBake: () => verifySpatialIrradianceProbeBake,
     verifySpatialIrradianceVolume: () => verifySpatialIrradianceVolume,
@@ -764,6 +767,8 @@ var VSRSpatial3D = (() => {
   // packages/spatial-reality-3d/src/asset-streaming.ts
   var VSR_SPATIAL_ASSET_STREAMING_FORMAT = "vsr.spatial-asset-streaming.v0.1";
   var VSR_SPATIAL_ASSET_STREAMING_VERSION = "0.1.0";
+  var VSR_SPATIAL_ASSET_TRANSITION_FORMAT = "vsr.spatial-asset-transition.v0.1";
+  var VSR_SPATIAL_ASSET_TRANSITION_VERSION = "0.1.0";
   var orderedUnique = (values) => [...new Set((values ?? []).filter((value) => typeof value === "string" && value.length > 0))];
   var unique = (values) => orderedUnique(values).sort((a, b) => a.localeCompare(b));
   var finiteBudget = (value, fallback) => value === void 0 || !Number.isFinite(value) ? fallback : Math.max(0, Math.floor(value));
@@ -984,6 +989,10 @@ var VSRSpatial3D = (() => {
     async prefetch(request = {}) {
       return this.acquire({ ...request, lease: false });
     }
+    reconcile(previousReceipt, nextReceipt) {
+      const previousLeasedAssetIds = unique(previousReceipt?.leasedAssetIds), nextLeasedAssetIds = unique(nextReceipt.leasedAssetIds), releasedAssetIds = this.release(previousLeasedAssetIds), evictionCandidates = unique([...nextReceipt.resolution.evictedAssetIds, ...nextReceipt.resolution.prefetchEvictedAssetIds ?? []]), evictedAssetIds = this.evict(evictionCandidates), receiptBase = { ...nextReceipt, receiptRoot: void 0, operations: [...nextReceipt.operations, ...evictedAssetIds.map((assetId) => ({ assetId, status: "evicted" }))], readyAssetIds: nextReceipt.readyAssetIds.filter((assetId) => this.state(assetId) === "ready") }, receipt = { ...receiptBase, receiptRoot: cryptographicHash(receiptBase) }, base = { format: VSR_SPATIAL_ASSET_TRANSITION_FORMAT, version: VSR_SPATIAL_ASSET_TRANSITION_VERSION, previousLeasedAssetIds, nextLeasedAssetIds, releasedAssetIds, evictedAssetIds, receipt };
+      return { ...base, root: cryptographicHash(base) };
+    }
     release(assetIds) {
       const { required } = dependencyClosure(this.catalog, unique(assetIds), []), released = [];
       for (const id of required) {
@@ -1010,6 +1019,10 @@ var VSRSpatial3D = (() => {
   function verifySpatialAssetStreamingReceipt(receipt) {
     const { receiptRoot, ...base } = receipt;
     return cryptographicHash(base) === receiptRoot && receipt.resolution.root === cryptographicHash({ ...receipt.resolution, ...{ root: void 0 } });
+  }
+  function verifySpatialAssetTransitionReceipt(receipt) {
+    const { root, ...base } = receipt;
+    return verifySpatialAssetStreamingReceipt(receipt.receipt) && cryptographicHash(base) === root && receipt.releasedAssetIds.every((id) => receipt.previousLeasedAssetIds.includes(id)) && receipt.evictedAssetIds.every((id) => receipt.receipt.resolution.evictedAssetIds.includes(id) || receipt.receipt.resolution.prefetchEvictedAssetIds?.includes(id));
   }
 
   // packages/spatial-reality-3d/src/hlod-generation.ts

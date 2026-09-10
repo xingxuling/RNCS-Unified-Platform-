@@ -2,6 +2,8 @@ import { cryptographicHash, sha256Bytes } from '../../spec/src/index.js';
 
 export const VSR_SPATIAL_ASSET_STREAMING_FORMAT='vsr.spatial-asset-streaming.v0.1' as const;
 export const VSR_SPATIAL_ASSET_STREAMING_VERSION='0.1.0' as const;
+export const VSR_SPATIAL_ASSET_TRANSITION_FORMAT='vsr.spatial-asset-transition.v0.1' as const;
+export const VSR_SPATIAL_ASSET_TRANSITION_VERSION='0.1.0' as const;
 
 export type VSRSpatialAssetKind='mesh'|'texture'|'material'|'animation'|'audio'|'shader'|'other';
 export interface VSRSpatialAssetRecord {
@@ -88,6 +90,16 @@ export interface VSRSpatialAssetStreamingReceipt {
   bytesLoaded:number;
   receiptRoot:string;
 }
+export interface VSRSpatialAssetTransitionReceipt {
+  format:typeof VSR_SPATIAL_ASSET_TRANSITION_FORMAT;
+  version:typeof VSR_SPATIAL_ASSET_TRANSITION_VERSION;
+  previousLeasedAssetIds:string[];
+  nextLeasedAssetIds:string[];
+  releasedAssetIds:string[];
+  evictedAssetIds:string[];
+  receipt:VSRSpatialAssetStreamingReceipt;
+  root:string;
+}
 
 interface AssetState {status:VSRSpatialAssetState;bytes?:Uint8Array;errorCode?:string;errorMessage?:string;attempts:number;leases:number}
 
@@ -166,8 +178,12 @@ export class VSRSpatialAssetStreamer{
     const finalResolution=resolveSpatialAssetStreaming([...this.catalog.values()],{...request,residentAssetIds:[...this.states.entries()].filter(([,state])=>state.status==='ready').map(([id])=>id)}),leasedAssetIds=request.lease===false?[]:finalResolution.residentAssetIds.filter(id=>{const state=this.states.get(id)!;state.leases++;return true}),failedAssetIds=operations.filter(operation=>operation.status==='failed').map(operation=>operation.assetId).sort((a,b)=>a.localeCompare(b)),blockedAssetIds=operations.filter(operation=>operation.status==='blocked').map(operation=>operation.assetId).sort((a,b)=>a.localeCompare(b)),readyAssetIds=orderedUnique([...finalResolution.residentAssetIds,...(finalResolution.prefetchResidentAssetIds??[])]),base={format:VSR_SPATIAL_ASSET_STREAMING_FORMAT,version:VSR_SPATIAL_ASSET_STREAMING_VERSION,resolution:finalResolution,operations,readyAssetIds,failedAssetIds,blockedAssetIds,leasedAssetIds,bytesLoaded};return{...base,receiptRoot:cryptographicHash(base)};
   }
   async prefetch(request:VSRSpatialAssetStreamingRequest={}):Promise<VSRSpatialAssetStreamingReceipt>{return this.acquire({...request,lease:false})}
+  reconcile(previousReceipt:VSRSpatialAssetStreamingReceipt|undefined,nextReceipt:VSRSpatialAssetStreamingReceipt):VSRSpatialAssetTransitionReceipt{
+    const previousLeasedAssetIds=unique(previousReceipt?.leasedAssetIds),nextLeasedAssetIds=unique(nextReceipt.leasedAssetIds),releasedAssetIds=this.release(previousLeasedAssetIds),evictionCandidates=unique([...nextReceipt.resolution.evictedAssetIds,...(nextReceipt.resolution.prefetchEvictedAssetIds??[])]),evictedAssetIds=this.evict(evictionCandidates),receiptBase={...nextReceipt,receiptRoot:undefined,operations:[...nextReceipt.operations,...evictedAssetIds.map(assetId=>({assetId,status:'evicted' as const}))],readyAssetIds:nextReceipt.readyAssetIds.filter(assetId=>this.state(assetId)==='ready')},receipt={...receiptBase,receiptRoot:cryptographicHash(receiptBase)},base={format:VSR_SPATIAL_ASSET_TRANSITION_FORMAT,version:VSR_SPATIAL_ASSET_TRANSITION_VERSION,previousLeasedAssetIds,nextLeasedAssetIds,releasedAssetIds,evictedAssetIds,receipt};return{...base,root:cryptographicHash(base)};
+  }
   release(assetIds:string[]):string[]{const {required}=dependencyClosure(this.catalog,unique(assetIds),[]),released:string[]=[];for(const id of required){const state=this.states.get(id);if(state&&state.leases>0){state.leases--;released.push(id)}}return released.sort((a,b)=>a.localeCompare(b))}
   evict(assetIds?:string[]):string[]{const candidates=assetIds?unique(assetIds):[...this.states.keys()].sort((a,b)=>a.localeCompare(b)),evicted:string[]=[];for(const id of candidates){const state=this.states.get(id);if(!state||state.status!=='ready'||state.leases>0)continue;state.status='evicted';state.bytes=undefined;evicted.push(id)}return evicted}
 }
 
 export function verifySpatialAssetStreamingReceipt(receipt:VSRSpatialAssetStreamingReceipt):boolean{const {receiptRoot,...base}=receipt;return cryptographicHash(base)===receiptRoot&&receipt.resolution.root===cryptographicHash({...receipt.resolution,...{root:undefined}})}
+export function verifySpatialAssetTransitionReceipt(receipt:VSRSpatialAssetTransitionReceipt):boolean{const {root,...base}=receipt;return verifySpatialAssetStreamingReceipt(receipt.receipt)&&cryptographicHash(base)===root&&receipt.releasedAssetIds.every(id=>receipt.previousLeasedAssetIds.includes(id))&&receipt.evictedAssetIds.every(id=>receipt.receipt.resolution.evictedAssetIds.includes(id)||receipt.receipt.resolution.prefetchEvictedAssetIds?.includes(id));}

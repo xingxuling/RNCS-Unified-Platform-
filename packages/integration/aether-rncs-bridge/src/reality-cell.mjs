@@ -155,6 +155,7 @@ export function createRealityCellAssetRuntime(assetCatalog,loader,{maxConcurrent
     resolve:request=>resolveSpatialAssetStreaming(catalog,request),
     acquire:request=>streamer.acquire(request),
     prefetch:request=>streamer.prefetch(request),
+    reconcile:(previousReceipt,nextReceipt)=>streamer.reconcile(previousReceipt,nextReceipt),
     release:assetIds=>streamer.release(assetIds),
     evict:assetIds=>streamer.evict(assetIds),
     inspect:()=>({...streamer.inspect(),...(cache?{cache:cache.inspect()}: {})}),
@@ -204,12 +205,13 @@ export async function bindRealityCellAssetScene(runtime,state,scene,{assetIds,pl
 // Acquire the next scene before releasing the current scene so a Cell transition has no empty ownership window.
 export function createRealityCellAssetSceneRuntime(runtime){
   assertAssetRuntime(runtime);
+  fail(typeof runtime.reconcile==='function','REALITY_CELL_ASSET_RUNTIME_RECONCILE_UNAVAILABLE');
   let active;
   return {
     format:'rncs.reality-cell-asset-scene-runtime.v0.1',
     runtime,
     async bind(state,scene,options={}){
-      const next=await bindRealityCellAssetScene(runtime,state,scene,options),previous=active,released=previous?releaseRealityCellAssets(runtime,previous.receipt):[],evicted=evictRealityCellAssets(runtime,next.receipt.resolution.evictedAssetIds),lifecycleBase={format:'rncs.reality-cell-asset-transition.v0.1',previousBindingRoot:previous?.bindingRoot??null,bindingRoot:next.bindingRoot,previousCellStateRoot:previous?.cellStateRoot??null,cellStateRoot:state.root,assetIds:next.assetBindings.map(binding=>binding.assetId).sort(),releasedAssetIds:released,evictedAssetIds:evicted},lifecycle={...lifecycleBase,lifecycleRoot:rootHash(lifecycleBase)};
+      const next=await bindRealityCellAssetScene(runtime,state,scene,options),previous=active,transition=runtime.reconcile(previous?.receipt,next.receipt),released=transition.releasedAssetIds,evicted=transition.evictedAssetIds,lifecycleBase={format:'rncs.reality-cell-asset-transition.v0.1',previousBindingRoot:previous?.bindingRoot??null,bindingRoot:next.bindingRoot,previousCellStateRoot:previous?.cellStateRoot??null,cellStateRoot:state.root,assetIds:next.assetBindings.map(binding=>binding.assetId).sort(),releasedAssetIds:released,evictedAssetIds:evicted},lifecycle={...lifecycleBase,lifecycleRoot:rootHash(lifecycleBase)};
       active={...next,cellStateRoot:state.root,lifecycle};
       return active;
     },

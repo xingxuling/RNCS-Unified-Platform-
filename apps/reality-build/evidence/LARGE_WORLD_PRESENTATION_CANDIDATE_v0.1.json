@@ -4,17 +4,21 @@
   "fixture": "apps/reality-build/tests/large-world-presentation-candidate.test.mjs",
   "commands": [
     "node --test apps/reality-build/tests/runtime.test.mjs apps/reality-build/tests/large-world-presentation-candidate.test.mjs",
-    "npm test --workspace @taowind/reality-build-fabric"
+    "npm test --workspace @taowind/reality-build-fabric",
+    "npm run test:spatial-asset-streaming --workspace @taowind/visual-state-runtime",
+    "npm test --workspace @taowind/aether-rncs-bridge"
   ],
   "tests": {
     "focused": "2/2 PASS",
     "realityBuildSuite": "140 tests / 132 pass / 0 fail / 8 skip",
+    "spatialAssetStreaming": "7/7 PASS; transition receipt releases previous leases before over-budget eviction and verifies nested roots",
+    "aetherBridge": "29/29 PASS; Reality Cell scene transition reuses the generic VSR residency reconcile seam",
     "largeWorldScene": "verifyLargeWorldSpatialScene.valid=true",
     "presentationAssetStreaming": "resolved root; requested=4; missing=0",
     "androidProject": "android-project target embeds the same candidate HTML with VSRGltfAsset, explicit asset_bindings and base64 payloads; no external script src; apk_built=false",
     "androidApkBuild": "A freshly generated Large World android-project built locally with Gradle 9.5.1, producing a 324425-byte debug APK; Windows apksigner verified v2 with one signer; the APK build probe itself ran without an attached runtime device",
     "androidWebViewSmoke": "Rcl_Aether_API35_ATD Android Emulator cold-started the APK twice; CDP observed file:///android_asset/index.html readyState=complete, RSR browser bridge verified=true, spatial3d verified=true, mode=canvas2d-projective, drawCount=11, payloadReady=33/33, bindings=11, Canvas 960x540 with non-empty PNG data; WebGPU adapter unavailable and no physical device was attached",
-    "browserSmoke": "Chromium web-release smoke PASS; pageErrors=0; VSR/RSR loaded; frame verified; activeCells=4; streamedNodes=17; visibleDraws=11; triangles=402; payloadCatalog=36; activePayloadRequested=33; activePayloadReady=33; activePayloadMissing=0; activePayloadFailed=0; bytesLoaded=144632; payloadReceiptRoot=f63d5f84bb98aef244daa7104d0ab78dac8bf647e8184062420df6476fdbaa89; assetBindings=11; importFailed=0; bindingRoot=1494adb2c6a8783bcd450e1c0fbab8ba5a57cb7ad9d4cc588822d7bcca0ecf92; WebGPU receipt submitted=true; deviceLost=false; drawCalls=11; receiptRoot=4772acced5bce06246d0cbcf3009e4d4b65e9bf7b0064e79aaaec6f6ed8d946f4; screenshot=#spatial-game captured; human visual acceptance remains separate",
+    "browserSmoke": "Chromium web-release smoke PASS; runtime loaded without a page exception; console emitted two WebGPU powerPreference warnings and one expected favicon 404; VSR/RSR loaded; frame verified; activeCells=4; streamedNodes=17; visibleDraws=11; triangles=402; payloadCatalog=36; activePayloadRequested=33; activePayloadReady=33; activePayloadMissing=0; activePayloadFailed=0; bytesLoaded=144632; payloadReceiptRoot=f63d5f84bb98aef244daa7104d0ab78dac8bf647e8184062420df6476fdbaa89; assetBindings=11; importFailed=0; bindingRoot=1494adb2c6a8783bcd450e1c0fbab8ba5a57cb7ad9d4cc588822d7bcca0ecf92; transitionRoot=0317301809c9bda3292596bed9f0c17f767ef0737ec7c6d9dfa117b28c61cb83; transitionReleased=0; transitionEvicted=0; WebGPU receipt submitted=true; deviceLost=false; drawCalls=11; receiptRoot=b4dba259cbe613c26b288ef83f9821f6e4daa6da532274df4f34032b95e9d50b; screenshot=#spatial-game captured; human visual acceptance remains separate",
     "build": "buildProject verification.valid=true; verifyBuild.valid=true"
   },
   "source": {
@@ -53,6 +57,10 @@
     "assetStreamingMissing": 0,
     "assetPayloadCatalog": 36,
     "assetBindingCount": 11,
+    "assetResidencyTransition": true,
+    "assetResidencyTransitionRoot": "0317301809c9bda3292596bed9f0c17f767ef0737ec7c6d9dfa117b28c61cb83",
+    "browserTransitionReleased": 0,
+    "browserTransitionEvicted": 0,
     "androidEmbeddedCandidate": true,
     "androidApkBuiltOnHost": true,
     "androidApkSignatureVerified": true,
@@ -75,8 +83,9 @@
     "Large World scene remains URRF/VSR representation candidate and does not become RSR physical truth",
     "provider GLB payloads and explicit mesh bindings remain candidate-only; web-release writes 36 SHA-addressed payload files and a rooted target payload manifest, while the embedded HTML adapter carries base64 payloads",
     "Chromium smoke fetches and SHA-verifies 33 active payloads through the existing VSR streamer, imports the selected GLBs through the existing VSR glTF importer, replaces 11 explicit source meshes, and submits 11 WebGPU draw calls on this host (3 cell-unindexed provider assets remain deferred); the generated Android project also produced a locally verified debug APK, and the APK cold-started twice in Rcl_Aether_API35_ATD with verified RNCS/RSR/Canvas fallback execution, but physical/target-device GPU execution and matrix coverage, distributed transport/session, production asset service, and human visual acceptance remain unproven",
+    "VSR transition receipt is verified in the spatial streaming suite and reused by Aether/Build; the fixed Build browser smoke had no lease release or eviction because its initial working set stayed within budget, so dynamic cell/camera transition and cache performance remain unproven",
     "no new K400 PASS"
   ],
   "authority": "candidate-artifact-generation-only-no-commit",
-  "evidenceRoot": "1636d5750c2e78c5e4ef1fbabd7c1419e8a7cc7bf1c3c2efe8b8dacc320cc4a7"
+  "evidenceRoot": "80cd909f8b97178d59a0bcc4304a86cb6576623596774c32379a5f69260a60aa"
 }

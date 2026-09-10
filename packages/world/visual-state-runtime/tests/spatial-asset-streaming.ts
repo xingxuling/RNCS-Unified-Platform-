@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { resolveSpatialAssetStreaming, VSRSpatialAssetStreamer, verifySpatialAssetStreamingReceipt, type VSRSpatialAssetRecord } from '../packages/spatial-reality-3d/src/index.js';
+import { resolveSpatialAssetStreaming, VSRSpatialAssetStreamer, verifySpatialAssetStreamingReceipt, verifySpatialAssetTransitionReceipt, type VSRSpatialAssetRecord } from '../packages/spatial-reality-3d/src/index.js';
 import { sha256Bytes } from '../packages/spec/src/index.js';
 
 const bytes=(value:string):Uint8Array=>new TextEncoder().encode(value);
@@ -51,6 +51,17 @@ test('asset hash failure blocks dependents and seals failure evidence',async()=>
   assert.equal(streamer.state('asset:bad'),'failed');
   assert.equal(streamer.state('asset:root'),'blocked');
   assert.equal(verifySpatialAssetStreamingReceipt(receipt),true);
+});
+
+test('asset transition releases the previous lease set before evicting over-budget residents',async()=>{
+  const catalog=[record('asset:near','near',{cellIds:['cell:near']}),record('asset:far','far',{cellIds:['cell:far']})],streamer=new VSRSpatialAssetStreamer(catalog,async asset=>bytes(asset.id.replace('asset:','')));
+  const near=await streamer.acquire({activeCellIds:['cell:near','cell:far'],maxBytes:7}),far=await streamer.acquire({activeCellIds:['cell:near'],maxBytes:4}),transition=streamer.reconcile(near,far);
+  assert.deepEqual(transition.releasedAssetIds,['asset:far','asset:near']);
+  assert.deepEqual(transition.evictedAssetIds,['asset:far']);
+  assert.deepEqual(transition.receipt.readyAssetIds,['asset:near']);
+  assert.equal(streamer.state('asset:far'),'evicted');
+  assert.equal(streamer.inspect().bytesResident,4);
+  assert.equal(verifySpatialAssetTransitionReceipt(transition),true);
 });
 
 test('asset streaming schema and frame binding stay explicit',()=>{
