@@ -644,6 +644,29 @@ Unified Project + selected spatial world + scene/asset roots
 
 第一轮 ingress 已以 `examples/studio-authored-network-world-v03/project.mjs` 为 fixture 验证：确定性 World Declaration/codegen、Studio roots 与 World Body roots 的显式绑定、Network compilation root 保持、模型 kind lowering、2D transform 不越权、篡改/缺失资产/非法 authority 负例闭合；第二轮验证有损 candidate bundle 能进入 Aether Cell 并保持各级 runtime roots；第三轮验证 Build request candidate 能将同一 source root 写入 runtime evidence 并通过 Build 自校验；第四轮把动态质量经 shared `mass_q` donor 传入 RSR；第五轮把 3 个 Studio character facets 经 shared `spatial.character` donor 传入 RSR；第六轮把完整 fixture 集合经 `spatial.fixtures.items` 传入 RSR/VSR；第七轮把 Large World VSR scene 经 generic Build candidate 接缝执行；第八轮复用 VSR `resolveSpatialAssetStreaming()`，让 4 个 active-cell `rncs://` asset records 进入 frame/evidence roots（requested=4、missing=0）；第九轮复用 Large World GLB provider bundle、Build content-addressed target packaging 和 VSR streamer，完成 36 条 candidate payload catalog、33 条 active request 的 Chromium 字节加载/哈希校验；第十轮复用共享 VSR GLB importer/composer，完成 11 条显式 mesh bindings 和本机 WebGPU draw receipt；第十一轮完成 host APK build/signing；第十二轮在 Emulator WebView 中完成 cold-start、payload/binding/frame root 和 Canvas2D fallback candidate；第十三轮把 lease release/over-budget eviction 抽为 VSR transition receipt，并让 Aether/Build 复用；第十四轮把 Reality Build reset/cell transition/re-entry 接到同一 VSR working-set、residency、rebind 和 frame receipt；第十五轮将既有 Studio network compilation 接入 Reality Build headless candidate，并用实际生成 server 走一次双 slot local loopback session；第十六轮把 `HttpAuthorityClient` 接到同一 generated headless server，真实执行 compiled-slot join、独立 packet、ack convergence、health/metrics 和三类 HTTP authority 负例；第十七轮复用 RSR `fromSnapshot()`、AAF delegation、Network receipts 和 authority history，完成 `network.session-checkpoint.v0.1` 的 JSON 封存与独立 Node 恢复 candidate；第十八轮将 Large World 的原子文件 donor 抽为共享 `@taowind/rncs-durable-store`，并由 Network 与 Large World 各自执行语义验证和 candidate receipt；第十九轮把该 store 接入真实生成 headless server 的 checkpoint/recover endpoints，并跨两个独立 Node server 进程执行 authority resume。下一阶段改为审计 external transport/session 的 WAN/TLS/重连/跨节点持久会话边界，与 Android WebView/物理或可复现 GPU-capable target host 是否保留同一 world/target manifest、payload/binding/frame roots、cache eviction 和性能边界；音频 target 只保留为已验证的资产驻留 candidate，后续 voice/mixer/stream policy 必须先有 canonical owner；任何晋升为默认产品路径的动作仍需独立 authority/设备证据。
 
+## 本轮 RSR bounded heightfield candidate
+
+继续考古 Large World Runtime 后，确认其 `terrainHeight(seed, sampleX, sampleZ)` 与 `gridMesh(seed, x, z, sampleResolution)` 仍是地形采样和可视网格的唯一既有 owner；本轮没有复制生成器，也没有把 Large World 的 terrain scene 静默变成 RSR authority。现实缺口是在保留该 owner 的前提下，缺少一个可审计的“已选 chunk/固定点高度样本 → RSR 物理 terrain fixture”的 lowering seam。
+
+本轮在 RSR Spatial Embodiment 增加了 bounded `heightfield` candidate：
+
+```text
+Large World terrain owner (仍未接入)
+  → explicit fixed-point height samples / candidate sidecar
+  → RSR static or fixed-rotation kinematic heightfield
+  → bounded support contact + character snap/footstep height
+  → deterministic replay roots
+  → VSR triangle-mesh projection / frame receipt
+```
+
+实现保持在 RSR/Kernel/VSR 各自 owner 内：Kernel 只做受限 schema lowering，RSR 只接受整数毫米样本并拒绝 dynamic、旋转和超限网格，VSR 只投影三角网格；没有新增第二个 terrain generator。当前碰撞是单 support-point/AABB 下界候选，不是完整接触流形；ray/shape cast 仍未获得真实 terrain-surface 语义。
+
+本地真实证据：Spatial Embodiment `69/69 PASS`，Reality Simulation Runtime 全量 `203/203 PASS`，并执行 flat settle/replay、slope normal、Kernel lowering、admission negative cases、footstep support height、VSR mesh/frame projection。候选 evidence 位于 `docs/verification/RNCS_RSR_HEIGHTFIELD_CANDIDATE_v0.1.json`，其中保留 `stateRoot=fnv1a64:0f53fc4cacf8ebd2`、`bodyRoot=fnv1a64:9f91ebd15f4c7388`、`contactRoot=fnv1a64:d06c58a3b9c1a713`、`vsr.frameRoot=715413bc036206c7f4ca9277785e46342c037e2406e2feda2b26fcb38ce10403` 与 `vsr.pixelRoot=43c4eeaae4dc78ad288046663c3eb1135f2e02e81f50b3cd79d49bda0a315baa`。这些是本地 candidate execution roots，不是目标设备、外部物理或生产发布证明。
+
+负例和未闭合边界已经固定：没有 Large World chunk/world-root/authority 绑定 adapter；没有动态地形、完整 manifold、精确 terrain ray/shape cast、并行 Job、物理设备性能或生产资产发布证据。因此新缺口登记为 `RCL_GAP_RNCS_LARGE_WORLD_PHYSICAL_TERRAIN_LOWERING`，K400 只进入 `EXPRESS / COMPILE / LOWER / EXECUTE / CORRECT / ROBUST / EVIDENCE` 的 candidate evidence，不宣布任何新单元 PASS。
+
+本轮裁决：`RSR_HEIGHTFIELD_PROVIDER_CANDIDATE_VERIFIED_LARGE_WORLD_ADAPTER_OPEN`。下一最高杠杆工作是先审计 Large World chunk 输出、world/region/chunk roots、工作集/流送生命周期和 authority metadata，设计一个显式 sidecar/adapter，把已选 chunk 的既有高度样本降低到 RSR，并证明 chunk transition、replay 和 VSR projection 复用同一 roots；不得复制 terrain generator，也不得借 adapter 获得 canonical world mutation 或 release promotion 权限。
+
 ## K400 / 证据裁决
 
 本轮完成资产考古、既有 runtime donor 的真实执行、host APK build/signing 和边界定位，不宣布 K400 任一新单元 PASS。下一候选必须分别提供 `EXPRESS / COMPILE / LOWER / EXECUTE / CORRECT / ROBUST / PERFORMANCE / AI_GENERATE / EVIDENCE` 的可重放回执；源码生成、schema 通过、package test、host APK 或本机 Chrome smoke 不能替代 Android WebView/目标硬件、外部物理、真实分布式网络和生产差分门。

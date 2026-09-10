@@ -1,5 +1,10 @@
 # RSR v0.9.0-alpha.1 Release Notes
 
+## Working-tree candidate（不改变版本号，不代表 release promotion）
+
+- 在 `e0214c3` 增加 bounded `heightfield` fixture：固定点毫米采样、未旋转静态/运动学 provider、三角插值支撑法线、单支撑点碰撞、Kernel lowering、快照/重放与 VSR 网格投影。
+- Spatial Embodiment 回归为 `69/69 PASS`，RSR 全量回归为 `203/203 PASS`；该 candidate 不宣称 Large World 已完成物理 terrain adapter、完整工业接触流形、精确 terrain ray/shape cast、真实设备或生产性能。
+
 - Added authored convex-hull fixtures with finite, non-coplanar vertex validation and deterministic triangle-index validation.
 - Routed convex-hull fixtures through rotated world-space support points, GJK/EPA contacts, broad-phase AABBs, snapshots, replay roots and VSR triangle-mesh projection.
 - Added regression coverage for rotated hull-hull contact, separated hulls and authored geometry preservation: Spatial Embodiment `63/63 PASS`.

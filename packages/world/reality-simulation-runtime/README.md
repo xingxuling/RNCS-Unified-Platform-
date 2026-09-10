@@ -12,6 +12,7 @@ RSR是RNCS的三维权威状态、物理接触、角色具身和可验证重放�
 - 保留空间哈希、台阶、Ground Snap、移动平台、单向平台与v0.7权威网络协议。
 - Sphere、Box、Capsule 和作者提供的 Convex Hull fixture 对接确定性三维 GJK/EPA；球-球使用精确闭式接触，诊断记录 GJK/EPA 调用、凸体接触和退化兜底次数。
 - Convex Hull fixture 校验有限、非共面顶点和三角索引，并从 RSR 快照原样投影为 VSR 三角网格。
+- 新增 bounded `heightfield` fixture：接收固定点毫米采样，支持静态/运动学、未旋转地形的三角插值支撑法线、单支撑点接触、快照/重放与 VSR 网格投影；Large World 仍拥有地形采样生成，RSR 不复制生成器。
 
 ## RAGF Embodiment Binding
 
@@ -42,7 +43,7 @@ npm run verify:release
 
 - 角色控制器默认仍为Y轴直立胶囊；物理窄相位已支持带刚体旋转的Capsule。
 - Sphere/Box/Capsule/Convex Hull 常见组合均走广义凸支持路径；球-球使用稳定闭式特例，极少数 EPA 退化仍保留显式 legacy fallback 并计入诊断。
-- Convex Hull 当前是单个作者网格 fixture；自动凸分解、地形高度场、车辆轮胎接触和完整工业接触流形仍未实现。
+- Convex Hull 当前是单个作者网格 fixture；自动凸分解、车辆轮胎接触和完整工业接触流形仍未实现。`heightfield` 仍是 candidate provider：仅支持未旋转静态/运动学场和单个 AABB 支撑采样，不是完整三角形接触流形，也没有 terrain-surface 精确 ray/shape cast、动态地形或物理设备性能证据。
 - 接触缓存是确定性单点持久流形，不是完整四点/八点工业接触流形。
 - 约束求解器仍是单线程整数确定性参考实现，不声称达到Jolt/PhysX/Chaos吞吐量。
 - Kernel binding 当前是一实体一 body/fixture 的确定性桥；多 fixture archetype、完整 ECS chunk/processor、并行 Job 和网络 wire frame 绑定仍未完成。

@@ -1,0 +1,84 @@
+{
+  "format": "rncs.rsr-heightfield-candidate-evidence.v0.1",
+  "version": "0.1.0-alpha.1",
+  "status": "CANDIDATE_EXECUTION_VERIFIED",
+  "source": {
+    "checkout": "rncs-visual-factory-v01",
+    "branch": "codex/rncs-engine-stack-archaeology-v01",
+    "sourceCommit": "e0214c30118351e1d46bdf66966fab3a7ab802bf",
+    "authority": "candidate-only; no physical provider admission, RCL promotion, release promotion or main-branch mutation"
+  },
+  "change": {
+    "owners": [
+      "RSR Spatial Embodiment",
+      "RSR Kernel Binding",
+      "RSR VSR Projection"
+    ],
+    "upstreamTerrainOwner": "Large World Runtime terrain sampling and grid mesh",
+    "shape": "heightfield(columns, rows, sampleSpacing, heights)",
+    "sampleUnits": "fixed-point millimeters",
+    "providerBoundary": "RSR consumes explicit samples; it does not generate or replace Large World terrain"
+  },
+  "positiveEvidence": [
+    "The RSR world accepts bounded heightfield fixtures with at least two samples per axis and safe integer samples.",
+    "Static and fixed-rotation kinematic terrain providers are admitted; dynamic and rotated heightfields fail closed.",
+    "The collision path performs deterministic triangle interpolation, emits an upward support normal and preserves the existing contact, grounded, sensory, snapshot and replay roots.",
+    "Kernel RSR lowering accepts explicit camelCase or snake_case heightfield sample fields without substituting another shape.",
+    "VSR receives an authored heightfield triangle mesh with the same body/fixture binding and a verified CPU reference frame."
+  ],
+  "negativeEvidence": [
+    "No Large World Runtime adapter currently lowers a generated chunk mesh into an RSR heightfield fixture; the cross-runtime physical terrain seam remains open.",
+    "The collision candidate is a bounded single support-point/AABB lower-bound approximation, not a full triangle contact manifold or arbitrary footprint solver.",
+    "Heightfield bodies are not dynamically deformable or rotatable; terrain-surface exact ray/shape casts are not added by this change.",
+    "No physical device, target GPU frame-rate, Android, external network or production terrain deployment evidence exists.",
+    "No K400 gate is promoted to PASS by source, package tests or CPU reference rendering alone."
+  ],
+  "execution": {
+    "commands": [
+      "npm.cmd run typecheck --workspace @taowind/reality-simulation-runtime",
+      "npm.cmd run lint --workspace @taowind/reality-simulation-runtime",
+      "npm.cmd run test:spatial-embodiment --workspace @taowind/reality-simulation-runtime",
+      "npm.cmd test --workspace @taowind/reality-simulation-runtime",
+      "git diff --check -- <heightfield source and test paths>"
+    ],
+    "results": {
+      "typecheck": "PASS",
+      "lint": "PASS",
+      "spatialEmbodiment": "69 passed, 0 failed, 0 skipped",
+      "fullRsr": {
+        "vsr": "29/29 PASS",
+        "simulationV01": "11/11 PASS",
+        "constraintPhysicsV02": "19/19 PASS",
+        "embodiedDynamicsV03": "30/30 PASS",
+        "temporalExperienceV04": "35/35 PASS",
+        "spatialEmbodimentV06": "69/69 PASS",
+        "networkReconciliationV07": "7/7 PASS",
+        "representationObservation": "3/3 PASS",
+        "total": "203/203 PASS"
+      },
+      "diffCheck": "PASS"
+    }
+  },
+  "roots": {
+    "flatStateRoot": "fnv1a64:0f53fc4cacf8ebd2",
+    "flatBodyRoot": "fnv1a64:9f91ebd15f4c7388",
+    "flatContactRoot": "fnv1a64:d06c58a3b9c1a713",
+    "replayStateRoot": "fnv1a64:0f53fc4cacf8ebd2",
+    "vsrFrameRoot": "715413bc036206c7f4ca9277785e46342c037e2406e2feda2b26fcb38ce10403",
+    "vsrPixelRoot": "43c4eeaae4dc78ad288046663c3eb1135f2e02e81f50b3cd79d49bda0a315baa",
+    "heightfieldMeshId": "mesh:heightfield:terrain:terrain:heightfield",
+    "frameVerified": true
+  },
+  "rclGap": "RCL_GAP_RNCS_LARGE_WORLD_PHYSICAL_TERRAIN_LOWERING",
+  "affectedK400Cells": [
+    "EXPRESS",
+    "COMPILE",
+    "LOWER",
+    "EXECUTE",
+    "CORRECT",
+    "ROBUST",
+    "EVIDENCE"
+  ],
+  "decision": "RSR_HEIGHTFIELD_PROVIDER_CANDIDATE_VERIFIED_LARGE_WORLD_ADAPTER_OPEN",
+  "evidenceRoot": "a4af844a089e7ede336e05970420f610bacabfd9b798b64671b8af3013cdc601"
+}
