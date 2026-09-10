@@ -759,7 +759,7 @@
     },
     {
       "id": "large-world-rsr-bridge",
-      "name": "Large World RSR Terrain Lowering Bridge",
+      "name": "Large World RSR Terrain Lowering and Residency Bridge",
       "version": "0.1.0-alpha.1",
       "path": "packages/integration/large-world-rsr-bridge",
       "layer": "integration",
@@ -773,6 +773,7 @@
       "capabilities": [
         "large-world-chunk-to-rsr-heightfield-lowering",
         "stream-root-bound-terrain-candidate",
+        "managed-static-terrain-residency-transition",
         "candidate-only-no-canonical-mutation"
       ]
     },

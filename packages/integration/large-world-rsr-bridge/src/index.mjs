@@ -1,10 +1,14 @@
 import {EntityKernel, rootHash, verifyEntityStateBatch} from '@taowind/rncs-core-contract';
 import {verifyChunk, verifyRegion, verifyStreamResolutionReceipt} from '@taowind/large-world-runtime';
+import {materializeKernelStateBatch, verifySpatialBodyResidencyTransition} from '@taowind/reality-simulation-runtime/spatial-embodiment';
 
 export const LARGE_WORLD_RSR_TERRAIN_FORMAT = 'rncs.large-world-rsr-terrain-candidate.v0.1';
 export const LARGE_WORLD_RSR_TERRAIN_VERSION = '0.1.0';
+export const LARGE_WORLD_RSR_TERRAIN_RESIDENCY_TRANSITION_FORMAT = 'rncs.large-world-rsr-terrain-residency-transition.v0.1';
+export const LARGE_WORLD_RSR_TERRAIN_RESIDENCY_TRANSITION_VERSION = '0.1.0';
 export const LARGE_WORLD_RSR_TERRAIN_OWNER = '@taowind/large-world-runtime';
 export const LARGE_WORLD_RSR_PHYSICAL_OWNER = '@taowind/reality-simulation-runtime';
+export const LARGE_WORLD_RSR_TERRAIN_MANAGED_TAG = 'large-world-terrain';
 
 const HEX64 = /^[0-9a-f]{64}$/;
 const clone = value => structuredClone(value);
@@ -116,7 +120,8 @@ function lowerChunk(chunk) {
     source_mesh_root: chunk.mesh.mesh_root,
     height_samples_root: rootHash(heights),
     shape,
-    tags: ['candidate', 'large-world', 'terrain', 'heightfield']
+    managed_tag: LARGE_WORLD_RSR_TERRAIN_MANAGED_TAG,
+    tags: ['candidate', 'large-world', 'terrain', 'heightfield', LARGE_WORLD_RSR_TERRAIN_MANAGED_TAG]
   };
 }
 
@@ -205,6 +210,7 @@ export function createLargeWorldRsrTerrainCandidate(input = {}) {
       stream_root: stream.stream_root,
       lowering: 'chunk.mesh.positions→spatial.fixtures.items.heightfield'
     },
+    managed_tag: LARGE_WORLD_RSR_TERRAIN_MANAGED_TAG,
     active_chunk_ids: orderedIds(stream.active_chunk_ids),
     lowered_chunk_ids: bindings.map(binding => binding.chunk_id),
     chunk_bindings: bindings.map(binding => {
@@ -235,6 +241,7 @@ function verifyBindingAgainstRow(binding, row, errors) {
   const push = (condition, code) => { if (!condition) errors.push(`${code}:${binding.chunk_id}`); };
   push(row?.entity_id === binding.entity_id, 'LARGE_WORLD_RSR_ENTITY_ID_MISMATCH');
   push(body?.kind === 'static', 'LARGE_WORLD_RSR_TERRAIN_BODY_KIND_INVALID');
+  push(Array.isArray(body?.tags) && body.tags.includes(binding.managed_tag), 'LARGE_WORLD_RSR_TERRAIN_MANAGED_TAG_MISSING');
   push(JSON.stringify(body?.position) === JSON.stringify(binding.origin_mm), 'LARGE_WORLD_RSR_TERRAIN_ORIGIN_MISMATCH');
   push(Array.isArray(collection) && collection.length === 1, 'LARGE_WORLD_RSR_FIXTURE_COUNT_INVALID');
   push(collection?.[0]?.fixture_id === binding.fixture_id, 'LARGE_WORLD_RSR_FIXTURE_ID_MISMATCH');
@@ -258,6 +265,7 @@ export function verifyLargeWorldRsrTerrainCandidate(candidate, options = {}) {
     check(candidate?.authority?.rncs_authority_required === true, 'LARGE_WORLD_RSR_RNCS_AUTHORITY_MISSING');
     check(candidate?.source?.terrain_owner === LARGE_WORLD_RSR_TERRAIN_OWNER, 'LARGE_WORLD_RSR_TERRAIN_OWNER_INVALID');
     check(candidate?.source?.physical_owner === LARGE_WORLD_RSR_PHYSICAL_OWNER, 'LARGE_WORLD_RSR_PHYSICAL_OWNER_INVALID');
+    check(candidate?.managed_tag === LARGE_WORLD_RSR_TERRAIN_MANAGED_TAG, 'LARGE_WORLD_RSR_MANAGED_TAG_INVALID');
     for (const field of ['region_root', 'world_root', 'stream_root']) check(HEX64.test(candidate?.source?.[field] ?? ''), `LARGE_WORLD_RSR_SOURCE_${field.toUpperCase()}_INVALID`);
     check(Array.isArray(candidate?.active_chunk_ids), 'LARGE_WORLD_RSR_ACTIVE_IDS_INVALID');
     check(Array.isArray(candidate?.lowered_chunk_ids), 'LARGE_WORLD_RSR_LOWERED_IDS_INVALID');
@@ -271,7 +279,10 @@ export function verifyLargeWorldRsrTerrainCandidate(candidate, options = {}) {
     check(candidate?.batch?.world_id === candidate?.world_id && candidate?.batch?.generation === candidate?.generation, 'LARGE_WORLD_RSR_BATCH_SOURCE_MISMATCH');
     check(candidate?.batch?.generation_root === candidate?.source?.world_root, 'LARGE_WORLD_RSR_BATCH_GENERATION_ROOT_MISMATCH');
     const rows = new Map((candidate?.batch?.rows ?? []).map(row => [row.entity_id, row]));
-    for (const binding of candidate?.chunk_bindings ?? []) verifyBindingAgainstRow(binding, rows.get(binding.entity_id), errors);
+    for (const binding of candidate?.chunk_bindings ?? []) {
+      check(binding.managed_tag === LARGE_WORLD_RSR_TERRAIN_MANAGED_TAG, 'LARGE_WORLD_RSR_BINDING_MANAGED_TAG_INVALID');
+      verifyBindingAgainstRow(binding, rows.get(binding.entity_id), errors);
+    }
     check(rows.size === (candidate?.chunk_bindings?.length ?? -1), 'LARGE_WORLD_RSR_BATCH_ROW_COUNT_MISMATCH');
     if (options.region !== undefined) {
       const region = clone(options.region);
@@ -302,4 +313,85 @@ export function verifyLargeWorldRsrTerrainCandidate(candidate, options = {}) {
     errors.push(`LARGE_WORLD_RSR_VERIFY_EXCEPTION:${error.name}:${error.message}`);
   }
   return {valid: errors.length === 0, errors, candidate_root: candidate?.candidate_root ?? null};
+}
+
+export function applyLargeWorldRsrTerrainCandidate(world, candidate, options = {}) {
+  const verification = verifyLargeWorldRsrTerrainCandidate(candidate, options.region === undefined ? {} : {region: options.region});
+  if (!verification.valid) fail('LARGE_WORLD_RSR_CANDIDATE_INVALID', verification.errors.join(','));
+  if (!world || typeof world.replaceManagedStaticBodies !== 'function') fail('LARGE_WORLD_RSR_WORLD_UNSUPPORTED', 'RSR world does not expose managed static body residency');
+  if (world.config?.worldId !== candidate.world_id) fail('LARGE_WORLD_RSR_WORLD_MISMATCH', 'Candidate and RSR world ids differ');
+  if (world.tick !== candidate.batch.tick) fail('LARGE_WORLD_RSR_TICK_MISMATCH', 'Candidate batch tick must match the current RSR tick', {candidateTick: candidate.batch.tick, worldTick: world.tick});
+  const materialization = materializeKernelStateBatch(candidate.batch);
+  const managedTag = candidate.managed_tag ?? LARGE_WORLD_RSR_TERRAIN_MANAGED_TAG;
+  if (managedTag !== LARGE_WORLD_RSR_TERRAIN_MANAGED_TAG) fail('LARGE_WORLD_RSR_MANAGED_TAG_INVALID', 'Candidate managed tag is not owned by this adapter');
+  const transition = world.replaceManagedStaticBodies(materialization.config.bodies, {
+    managedTag,
+    reality: {generation: candidate.generation, realityRoot: candidate.source.world_root, evidenceRoot: candidate.source.stream_root}
+  });
+  if (!verifySpatialBodyResidencyTransition(transition)) fail('LARGE_WORLD_RSR_PHYSICAL_TRANSITION_INVALID', 'RSR rejected its own residency transition root');
+  const base = {
+    format: LARGE_WORLD_RSR_TERRAIN_RESIDENCY_TRANSITION_FORMAT,
+    version: LARGE_WORLD_RSR_TERRAIN_RESIDENCY_TRANSITION_VERSION,
+    world_id: candidate.world_id,
+    generation: candidate.generation,
+    tick: transition.tick,
+    source_candidate_root: candidate.candidate_root,
+    source_region_root: candidate.source.region_root,
+    source_world_root: candidate.source.world_root,
+    source_stream_root: candidate.source.stream_root,
+    managed_tag: managedTag,
+    entered_body_ids: [...transition.enteredBodyIds],
+    exited_body_ids: [...transition.exitedBodyIds],
+    retained_body_ids: [...transition.retainedBodyIds],
+    previous_state_root: transition.previousStateRoot,
+    next_state_root: transition.nextStateRoot,
+    previous_body_root: transition.previousBodyRoot,
+    next_body_root: transition.nextBodyRoot,
+    physical_transition: clone(transition),
+    authority: {
+      provider_can_write_authoritative_world_state: false,
+      rncs_authority_required: true,
+      adapter_authority: 'candidate-physical-residency-transition-only-no-commit'
+    },
+    candidate_only: true,
+    authoritative: false,
+    canonical_write_authorized: false,
+    commit_status: 'NOT_COMMITTED'
+  };
+  return {...base, transition_root: rootHash(base)};
+}
+
+export function verifyLargeWorldRsrTerrainResidencyTransition(transition, options = {}) {
+  const errors = [];
+  const check = (condition, code) => { if (!condition) errors.push(code); };
+  try {
+    check(transition?.format === LARGE_WORLD_RSR_TERRAIN_RESIDENCY_TRANSITION_FORMAT, 'LARGE_WORLD_RSR_RESIDENCY_FORMAT_INVALID');
+    check(transition?.version === LARGE_WORLD_RSR_TERRAIN_RESIDENCY_TRANSITION_VERSION, 'LARGE_WORLD_RSR_RESIDENCY_VERSION_INVALID');
+    check(typeof transition?.world_id === 'string' && transition.world_id.length > 0, 'LARGE_WORLD_RSR_RESIDENCY_WORLD_ID_INVALID');
+    check(Number.isSafeInteger(transition?.generation) && transition.generation >= 0, 'LARGE_WORLD_RSR_RESIDENCY_GENERATION_INVALID');
+    check(Number.isSafeInteger(transition?.tick) && transition.tick >= 0, 'LARGE_WORLD_RSR_RESIDENCY_TICK_INVALID');
+    check(transition?.managed_tag === LARGE_WORLD_RSR_TERRAIN_MANAGED_TAG, 'LARGE_WORLD_RSR_RESIDENCY_MANAGED_TAG_INVALID');
+    for (const field of ['source_candidate_root', 'source_region_root', 'source_world_root', 'source_stream_root']) check(HEX64.test(transition?.[field] ?? ''), `LARGE_WORLD_RSR_RESIDENCY_${field.toUpperCase()}_INVALID`);
+    check(transition?.authority?.provider_can_write_authoritative_world_state === false, 'LARGE_WORLD_RSR_RESIDENCY_PROVIDER_AUTHORITY_ESCALATION');
+    check(transition?.authority?.rncs_authority_required === true, 'LARGE_WORLD_RSR_RESIDENCY_RNCS_AUTHORITY_MISSING');
+    check(transition?.candidate_only === true && transition?.authoritative === false && transition?.canonical_write_authorized === false, 'LARGE_WORLD_RSR_RESIDENCY_AUTHORITY_ESCALATION');
+    check(transition?.commit_status === 'NOT_COMMITTED', 'LARGE_WORLD_RSR_RESIDENCY_COMMIT_STATUS_INVALID');
+    check(verifySpatialBodyResidencyTransition(transition?.physical_transition), 'LARGE_WORLD_RSR_RESIDENCY_PHYSICAL_TRANSITION_INVALID');
+    check(transition?.physical_transition?.worldId === transition?.world_id && transition?.physical_transition?.tick === transition?.tick, 'LARGE_WORLD_RSR_RESIDENCY_PHYSICAL_IDENTITY_MISMATCH');
+    check(transition?.physical_transition?.managedTag === transition?.managed_tag, 'LARGE_WORLD_RSR_RESIDENCY_PHYSICAL_MANAGED_TAG_MISMATCH');
+    for (const [outer, inner] of [['entered_body_ids', 'enteredBodyIds'], ['exited_body_ids', 'exitedBodyIds'], ['retained_body_ids', 'retainedBodyIds']]) check(JSON.stringify(transition?.[outer] ?? []) === JSON.stringify(transition?.physical_transition?.[inner] ?? []), `LARGE_WORLD_RSR_RESIDENCY_${outer.toUpperCase()}_MISMATCH`);
+    for (const [outer, inner] of [['previous_state_root', 'previousStateRoot'], ['next_state_root', 'nextStateRoot'], ['previous_body_root', 'previousBodyRoot'], ['next_body_root', 'nextBodyRoot']]) check(transition?.[outer] === transition?.physical_transition?.[inner], `LARGE_WORLD_RSR_RESIDENCY_${outer.toUpperCase()}_MISMATCH`);
+    if (options.candidate !== undefined) {
+      const candidateVerification = verifyLargeWorldRsrTerrainCandidate(options.candidate, options.region === undefined ? {} : {region: options.region});
+      check(candidateVerification.valid, 'LARGE_WORLD_RSR_RESIDENCY_SOURCE_CANDIDATE_INVALID');
+      check(options.candidate?.candidate_root === transition?.source_candidate_root, 'LARGE_WORLD_RSR_RESIDENCY_SOURCE_CANDIDATE_ROOT_MISMATCH');
+    }
+    const copy = clone(transition);
+    const root = copy.transition_root;
+    delete copy.transition_root;
+    check(HEX64.test(root ?? '') && rootHash(copy) === root, 'LARGE_WORLD_RSR_RESIDENCY_ROOT_MISMATCH');
+  } catch (error) {
+    errors.push(`LARGE_WORLD_RSR_RESIDENCY_VERIFY_EXCEPTION:${error.name}:${error.message}`);
+  }
+  return {valid: errors.length === 0, errors, transition_root: transition?.transition_root ?? null};
 }

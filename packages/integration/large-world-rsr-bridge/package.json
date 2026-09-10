@@ -3,7 +3,7 @@
   "version": "0.1.0-alpha.1",
   "type": "module",
   "private": false,
-  "description": "Candidate-only lowering from Large World streamed terrain chunks into the existing Kernel-to-RSR heightfield contract.",
+  "description": "Candidate-only lowering and deterministic residency transitions from Large World streamed terrain chunks into the existing Kernel-to-RSR heightfield contract.",
   "license": "Apache-2.0",
   "exports": { ".": "./src/index.mjs" },
   "files": ["src", "schemas", "tests", "README.md", "rncs.module.json"],

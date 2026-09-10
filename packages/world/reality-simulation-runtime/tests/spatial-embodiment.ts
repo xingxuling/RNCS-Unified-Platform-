@@ -8,6 +8,8 @@ import {
   materializeRagfEmbodimentProfile,
   replaySpatialEmbodiment,
   spatialEmbodimentSnapshotToCausalDelta,
+  verifySpatialBodyResidencyTransition,
+  verifySpatialEmbodimentSnapshot,
   verifyRagfEmbodimentMaterialization,
   type KernelStateBatch,
   type SpatialBodySpec,
@@ -181,5 +183,40 @@ test('Kernel RSR lowering admits an explicit heightfield sample payload', () => 
 
 // 67
 test('heightfield footstep projection uses the support contact height', () => { const terrain = heightfield(); const avatar = capsule('avatar', 500, 1000, 1000); const cfg = config([avatar, terrain], { floorY: -100_000, gravity: { x: 0, y: 0, z: 0 }, characters: [{ id: 'player', bodyId: 'avatar', walkSpeed: 3000, acceleration: 30_000, jumpSpeed: 5000, footstepDistance: 1 }] }); const world = new SpatialEmbodimentWorld(cfg); world.step([{ id: 'move', tick: 1, type: 'move-character', characterId: 'player', direction: { x: Q, y: 0, z: 0 } }]); const events = world.step([{ id: 'move-2', tick: 2, type: 'move-character', characterId: 'player', direction: { x: Q, y: 0, z: 0 } }]).events; const footstep = events.find(event => event.kind === 'footstep'); assert.ok(footstep); assert.equal(footstep?.kind === 'footstep' ? footstep.position.y : -1, 0); });
+
+test('managed static body residency transition preserves dynamic state and replay roots', () => {
+  const initialTerrain = heightfield('terrain:old');
+  initialTerrain.tags = ['large-world-terrain'];
+  const avatar = sphere('avatar', 0, 2500, 0);
+  avatar.tags = ['player'];
+  const cfg = config([avatar, initialTerrain], { floorY: -100_000 });
+  const replacement = heightfield('terrain:new');
+  replacement.position = { x: 10_000, y: 0, z: 0 };
+  replacement.tags = ['large-world-terrain'];
+  const world = new SpatialEmbodimentWorld(cfg);
+  world.run(30);
+  const before = world.snapshot();
+  const avatarBefore = before.bodies.find(body => body.id === 'avatar')!;
+  const transition = world.replaceManagedStaticBodies([replacement], { managedTag: 'large-world-terrain', reality: { generation: 8, realityRoot: 'rfe:terrain-next', evidenceRoot: 'stream:terrain-next' } });
+  const after = world.snapshot();
+  assert.equal(transition.enteredBodyIds.join(','), 'terrain:new');
+  assert.equal(transition.exitedBodyIds.join(','), 'terrain:old');
+  assert.equal(transition.retainedBodyIds.length, 0);
+  assert.equal(verifySpatialBodyResidencyTransition(transition), true);
+  assert.equal(verifySpatialEmbodimentSnapshot(after), true);
+  assert.equal(after.tick, before.tick);
+  assert.deepEqual(after.bodies.find(body => body.id === 'avatar')!.position, avatarBefore.position);
+  assert.equal(after.bodies.some(body => body.id === 'terrain:old'), false);
+  assert.equal(after.bodies.some(body => body.id === 'terrain:new'), true);
+  assert.equal(after.contacts.length, 0);
+  assert.equal(after.bodies.find(body => body.id === 'avatar')!.grounded, false);
+  assert.equal(after.reality.generation, 8);
+  const replay = new SpatialEmbodimentWorld(cfg);
+  replay.run(30);
+  const replayTransition = replay.replaceManagedStaticBodies([replacement], { managedTag: 'large-world-terrain', reality: { generation: 8, realityRoot: 'rfe:terrain-next', evidenceRoot: 'stream:terrain-next' } });
+  assert.deepEqual(replayTransition, transition);
+  assert.equal(replay.snapshot().stateRoot, after.stateRoot);
+  assert.throws(() => world.replaceManagedStaticBodies([sphere('invalid', 0, 0, 0)], { managedTag: 'large-world-terrain' }), /SPATIAL_RESIDENCY_BODY_KIND_INVALID/);
+});
 
 console.log(`Spatial Embodiment tests: ${passed}/${passed} PASS`);

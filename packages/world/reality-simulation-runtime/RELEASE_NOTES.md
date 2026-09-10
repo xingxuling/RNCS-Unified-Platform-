@@ -3,7 +3,8 @@
 ## Working-tree candidate（不改变版本号，不代表 release promotion）
 
 - 在 `e0214c3` 增加 bounded `heightfield` fixture：固定点毫米采样、未旋转静态/运动学 provider、三角插值支撑法线、单支撑点碰撞、Kernel lowering、快照/重放与 VSR 网格投影。
-- Spatial Embodiment 回归为 `69/69 PASS`，RSR 全量回归为 `203/203 PASS`；该 candidate 不宣称 Large World 已完成物理 terrain adapter、完整工业接触流形、精确 terrain ray/shape cast、真实设备或生产性能。
+- 新增 candidate-only `replaceManagedStaticBodies(...)`：按受管理标签对静态物理体做确定性 enter/exit/retain 切换，切换前原子校验，切换后清除失效接触/支撑缓存并保留非管理动态体；输出独立 `rsr.spatial-body-residency-transition.v0.1` 根。
+- Spatial Embodiment 回归为 `70/70 PASS`，RSR 全量回归为 `204/204 PASS`；Large World -> RSR terrain lowering 与同一 RSR 世界的 stream residency transition 已有本地 candidate execution evidence，但不宣称完成生产级 stream policy、完整工业接触流形、精确 terrain ray/shape cast、真实设备或生产性能。
 
 - Added authored convex-hull fixtures with finite, non-coplanar vertex validation and deterministic triangle-index validation.
 - Routed convex-hull fixtures through rotated world-space support points, GJK/EPA contacts, broad-phase AABBs, snapshots, replay roots and VSR triangle-mesh projection.

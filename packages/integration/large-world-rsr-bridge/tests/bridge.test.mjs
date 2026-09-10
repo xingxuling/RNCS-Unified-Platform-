@@ -5,7 +5,9 @@ import {materializeKernelStateBatch, replaySpatialEmbodiment, SpatialEmbodimentW
 import {spatialEmbodimentSnapshotToVSRScene} from '@taowind/reality-simulation-runtime/spatial-embodiment-vsr';
 import {
   createLargeWorldRsrTerrainCandidate,
+  applyLargeWorldRsrTerrainCandidate,
   verifyLargeWorldRsrTerrainCandidate,
+  verifyLargeWorldRsrTerrainResidencyTransition,
   LargeWorldRsrTerrainBridgeError,
 } from '../src/index.mjs';
 
@@ -130,4 +132,70 @@ test('keeps source and candidate roots fail-closed across inactive chunks and ta
   assert.ok(verification.errors.some(error => error.includes('BATCH_ROOT') || error.includes('CANDIDATE_ROOT')));
 });
 
-console.log('large-world RSR bridge tests: 4 PASS');
+function runStreamResidencyTransition() {
+  const runtime = createLargeWorldRuntime({
+    worldId: 'world:large-world-rsr-residency',
+    seed: 'seed:large-world-rsr-residency',
+    width: 3,
+    depth: 3,
+    chunkSize: 64,
+    sampleResolution: 4,
+    loadRadius: 0,
+    unloadRadius: 0,
+    maxActiveChunks: 1,
+  });
+  const region = runtime.getRegion();
+  const firstStream = runtime.observe({x: 0, z: 0});
+  const firstCandidate = createLargeWorldRsrTerrainCandidate({region, streamResolution: firstStream, tick: 0});
+  const firstMaterialization = materializeKernelStateBatch(firstCandidate.batch);
+  const avatar = {
+    id: 'avatar',
+    kind: 'dynamic',
+    position: {x: 8_000, y: 4_000, z: 8_000},
+    fixtures: [{id: 'avatar:sphere', shape: {type: 'sphere', radius: 500}, tags: ['subject']}],
+    tags: ['subject'],
+  };
+  const world = new SpatialEmbodimentWorld({
+    ...firstMaterialization.config,
+    worldId: firstCandidate.world_id,
+    floorY: -100_000,
+    bodies: [...firstMaterialization.config.bodies, avatar],
+    reality: {generation: firstCandidate.generation, realityRoot: firstCandidate.source.world_root, evidenceRoot: firstCandidate.source.stream_root},
+  });
+  world.run(30);
+  const before = world.snapshot();
+  const nextStream = runtime.observe({x: 64, z: 0});
+  const nextCandidate = createLargeWorldRsrTerrainCandidate({region, streamResolution: nextStream, tick: world.tick});
+  const transition = applyLargeWorldRsrTerrainCandidate(world, nextCandidate, {region});
+  const after = world.snapshot();
+  return {region, firstStream, nextStream, firstCandidate, nextCandidate, before, after, transition, world};
+}
+
+test('applies Large World stream enter/exit to the same RSR world with deterministic replay', () => {
+  const result = runStreamResidencyTransition();
+  const {region, nextCandidate, before, after, transition, world} = result;
+  const beforeTerrain = before.bodies.find(body => body.tags?.includes('large-world-terrain'));
+  const afterTerrain = after.bodies.find(body => body.tags?.includes('large-world-terrain'));
+  assert.ok(beforeTerrain);
+  assert.ok(afterTerrain);
+  assert.notEqual(afterTerrain?.id, beforeTerrain?.id);
+  assert.equal(after.tick, before.tick);
+  assert.deepEqual(after.bodies.find(body => body.id === 'avatar')?.position, before.bodies.find(body => body.id === 'avatar')?.position);
+  assert.equal(transition.entered_body_ids.length, 1);
+  assert.equal(transition.exited_body_ids.length, 1);
+  assert.equal(transition.retained_body_ids.length, 0);
+  assert.equal(transition.source_candidate_root, nextCandidate.candidate_root);
+  const verification = verifyLargeWorldRsrTerrainResidencyTransition(transition, {candidate: nextCandidate, region});
+  assert.equal(verification.valid, true, verification.errors.join(','));
+  const mismatchedTick = createLargeWorldRsrTerrainCandidate({region, streamResolution: result.nextStream, tick: result.before.tick + 1});
+  assert.throws(
+    () => applyLargeWorldRsrTerrainCandidate(world, mismatchedTick, {region}),
+    error => error instanceof LargeWorldRsrTerrainBridgeError && error.code === 'LARGE_WORLD_RSR_TICK_MISMATCH',
+  );
+  assert.equal(world.step().snapshot.tick, before.tick + 1);
+  const replay = runStreamResidencyTransition();
+  assert.deepEqual(replay.transition, transition);
+  assert.equal(replay.after.stateRoot, after.stateRoot);
+});
+
+console.log('large-world RSR bridge tests: 5 PASS');

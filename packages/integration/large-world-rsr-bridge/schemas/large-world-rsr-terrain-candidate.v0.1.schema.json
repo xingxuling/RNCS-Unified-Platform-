@@ -9,6 +9,7 @@
     "world_id",
     "generation",
     "source",
+    "managed_tag",
     "active_chunk_ids",
     "lowered_chunk_ids",
     "chunk_bindings",
@@ -26,6 +27,7 @@
     "version": {"const": "0.1.0"},
     "world_id": {"type": "string", "minLength": 1},
     "generation": {"type": "integer", "minimum": 0},
+    "managed_tag": {"const": "large-world-terrain"},
     "source": {
       "type": "object",
       "required": ["terrain_owner", "region_root", "world_root", "stream_root"],

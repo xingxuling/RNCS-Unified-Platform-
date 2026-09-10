@@ -4,6 +4,8 @@ import { collideConvex, type ConvexProxy } from './convex-narrow-phase.js';
 export const SPATIAL_EMBODIMENT_VERSION = '0.9.0-alpha.1';
 export const SPATIAL_EMBODIMENT_FORMAT = 'rsr.spatial-embodiment-world.v0.6' as const;
 export const LEGACY_SPATIAL_EMBODIMENT_FORMAT = 'rsr.spatial-embodiment-world.v0.5' as const;
+export const SPATIAL_BODY_RESIDENCY_TRANSITION_FORMAT = 'rsr.spatial-body-residency-transition.v0.1' as const;
+export const SPATIAL_BODY_RESIDENCY_TRANSITION_VERSION = '0.1.0' as const;
 export const POSITION_SCALE = 1_000;
 export const ROTATION_SCALE = 1_000;
 export const Q = 1_000_000;
@@ -317,6 +319,32 @@ export interface SpatialEmbodimentSnapshot {
   stateRoot: string;
 }
 
+export interface SpatialBodyResidencyTransition {
+  format: typeof SPATIAL_BODY_RESIDENCY_TRANSITION_FORMAT;
+  version: typeof SPATIAL_BODY_RESIDENCY_TRANSITION_VERSION;
+  worldId: string;
+  tick: number;
+  managedTag: string;
+  previousStateRoot: string;
+  nextStateRoot: string;
+  previousBodyRoot: string;
+  nextBodyRoot: string;
+  enteredBodyIds: string[];
+  exitedBodyIds: string[];
+  retainedBodyIds: string[];
+  reality: { generation?: number; realityRoot?: string; evidenceRoot?: string };
+  authority: {
+    provider_can_write_authoritative_world_state: false;
+    rncs_authority_required: true;
+    residency_transition_scope: 'candidate-physical-static-bodies-only';
+  };
+  candidate_only: true;
+  authoritative: false;
+  canonical_write_authorized: false;
+  commit_status: 'NOT_COMMITTED';
+  transitionRoot: string;
+}
+
 interface Aabb3 { min: IntVector3; max: IntVector3 }
 interface CollisionResult { point: IntVector3; normal: IntVector3; penetration: number; feature?: 'capsule-obb' | 'gjk-epa' | 'heightfield' }
 interface CollisionStats { gjkCalls: number; epaCalls: number; convexContacts: number; convexFallbacks: number }
@@ -619,6 +647,75 @@ export class SpatialEmbodimentWorld {
 
   get tick(): number { return this.tickValue; }
   getBody(id: string): RuntimeSpatialBody | undefined { const body = this.bodyMap.get(id); return body ? canonicalBody(body) : undefined; }
+
+  replaceManagedStaticBodies(nextBodies: SpatialBodySpec[], options: { managedTag: string; reality?: SpatialEmbodimentWorldConfig['reality'] }): SpatialBodyResidencyTransition {
+    if (!Array.isArray(nextBodies)) throw new Error('SPATIAL_RESIDENCY_NEXT_BODIES_INVALID');
+    const managedTag = options?.managedTag;
+    if (typeof managedTag !== 'string' || managedTag.trim().length === 0 || managedTag !== managedTag.trim()) throw new Error('SPATIAL_RESIDENCY_MANAGED_TAG_INVALID');
+    const currentManaged = [...this.bodyMap.values()].filter(body => (body.tags ?? []).includes(managedTag));
+    if (currentManaged.some(body => body.kind !== 'static')) throw new Error('SPATIAL_RESIDENCY_CURRENT_BODY_KIND_INVALID');
+    const currentIds = new Set(currentManaged.map(body => body.id));
+    for (const joint of this.jointMap.values()) if (currentIds.has(joint.bodyA) || currentIds.has(joint.bodyB)) throw new Error('SPATIAL_RESIDENCY_JOINT_REFERENCE_INVALID');
+    const seen = new Set<string>();
+    const prepared = nextBodies.map(spec => {
+      if (!spec || typeof spec.id !== 'string' || spec.id.length === 0) throw new Error('SPATIAL_RESIDENCY_BODY_ID_INVALID');
+      if (seen.has(spec.id)) throw new Error(`SPATIAL_RESIDENCY_BODY_DUPLICATE:${spec.id}`);
+      seen.add(spec.id);
+      if (spec.kind !== 'static') throw new Error(`SPATIAL_RESIDENCY_BODY_KIND_INVALID:${spec.id}`);
+      if (!(spec.tags ?? []).includes(managedTag)) throw new Error(`SPATIAL_RESIDENCY_MANAGED_TAG_MISSING:${spec.id}`);
+      const existing = this.bodyMap.get(spec.id);
+      if (existing && !currentIds.has(spec.id)) throw new Error(`SPATIAL_RESIDENCY_UNMANAGED_BODY_COLLISION:${spec.id}`);
+      return makeRuntimeBody(deepClone(spec));
+    });
+    const previous = this.snapshot();
+    const nextIds = new Set(prepared.map(body => body.id));
+    for (const body of currentManaged) if (!nextIds.has(body.id)) this.bodyMap.delete(body.id);
+    for (const body of prepared) this.bodyMap.set(body.id, body);
+    if (options.reality !== undefined) this.config.reality = deepClone(options.reality);
+    this.currentContacts = [];
+    this.currentEvents = [];
+    this.previousContactIds.clear();
+    this.contactImpulseCache.clear();
+    for (const body of this.bodyMap.values()) {
+      if (body.kind === 'static') continue;
+      body.grounded = false;
+      body.groundNormal = v3(0, Q, 0);
+      body.awake = true;
+      body.sleepCounter = 0;
+    }
+    for (const character of this.characterMap.values()) {
+      character.grounded = false;
+      character.supportBodyId = undefined;
+      character.supportVelocity = v3();
+      character.ticksSinceGrounded = Math.max(1, character.ticksSinceGrounded);
+    }
+    this.diagnosticsValue = { ...this.diagnosticsValue, broadPhasePairs: 0, narrowPhaseTests: 0, contacts: 0, sensorContacts: 0, groundedBodies: 0, audioEvents: 0, hapticEvents: 0, footstepEvents: 0, persistentManifolds: 0, warmStartedContacts: 0, warmStartedFrictionContacts: 0 };
+    this.config.bodies = [...this.bodyMap.values()].sort((a, b) => a.id.localeCompare(b.id)).map(body => deepClone(body));
+    const next = this.snapshot();
+    const previousIds = [...currentIds].sort((a, b) => a.localeCompare(b));
+    const nextIdList = [...nextIds].sort((a, b) => a.localeCompare(b));
+    const base: Omit<SpatialBodyResidencyTransition, 'transitionRoot'> = {
+      format: SPATIAL_BODY_RESIDENCY_TRANSITION_FORMAT,
+      version: SPATIAL_BODY_RESIDENCY_TRANSITION_VERSION,
+      worldId: this.config.worldId,
+      tick: next.tick,
+      managedTag,
+      previousStateRoot: previous.stateRoot,
+      nextStateRoot: next.stateRoot,
+      previousBodyRoot: previous.bodyRoot,
+      nextBodyRoot: next.bodyRoot,
+      enteredBodyIds: nextIdList.filter(id => !currentIds.has(id)),
+      exitedBodyIds: previousIds.filter(id => !nextIds.has(id)),
+      retainedBodyIds: nextIdList.filter(id => currentIds.has(id)),
+      reality: deepClone(next.reality),
+      authority: { provider_can_write_authoritative_world_state: false, rncs_authority_required: true, residency_transition_scope: 'candidate-physical-static-bodies-only' },
+      candidate_only: true,
+      authoritative: false,
+      canonical_write_authorized: false,
+      commit_status: 'NOT_COMMITTED'
+    };
+    return { ...base, transitionRoot: semanticHash(base) };
+  }
 
   private applyCommand(command: SpatialCommand): void {
     if (command.type === 'set-listener') { const listener = this.listenerMap.get(command.listenerId); if (!listener) throw new Error(`listener ${command.listenerId} missing`); listener.position = cloneVec(command.position); if (command.forward) listener.forward = cloneVec(command.forward); return; }
@@ -967,6 +1064,50 @@ export function computeSpatialEmbodimentStateRoot(snapshot: SpatialEmbodimentSna
 
 export function verifySpatialEmbodimentSnapshot(snapshot: SpatialEmbodimentSnapshot): boolean {
   return computeSpatialEmbodimentStateRoot(snapshot) === snapshot.stateRoot;
+}
+
+export function spatialBodyResidencyTransitionBase(transition: SpatialBodyResidencyTransition): Omit<SpatialBodyResidencyTransition, 'transitionRoot'> {
+  return {
+    format: transition.format,
+    version: transition.version,
+    worldId: transition.worldId,
+    tick: transition.tick,
+    managedTag: transition.managedTag,
+    previousStateRoot: transition.previousStateRoot,
+    nextStateRoot: transition.nextStateRoot,
+    previousBodyRoot: transition.previousBodyRoot,
+    nextBodyRoot: transition.nextBodyRoot,
+    enteredBodyIds: [...transition.enteredBodyIds],
+    exitedBodyIds: [...transition.exitedBodyIds],
+    retainedBodyIds: [...transition.retainedBodyIds],
+    reality: deepClone(transition.reality),
+    authority: deepClone(transition.authority),
+    candidate_only: transition.candidate_only,
+    authoritative: transition.authoritative,
+    canonical_write_authorized: transition.canonical_write_authorized,
+    commit_status: transition.commit_status,
+  };
+}
+
+export function verifySpatialBodyResidencyTransition(transition: SpatialBodyResidencyTransition): boolean {
+  try {
+    if (transition?.format !== SPATIAL_BODY_RESIDENCY_TRANSITION_FORMAT || transition.version !== SPATIAL_BODY_RESIDENCY_TRANSITION_VERSION) return false;
+    if (typeof transition.worldId !== 'string' || transition.worldId.length === 0 || !Number.isSafeInteger(transition.tick) || transition.tick < 0) return false;
+    if (typeof transition.managedTag !== 'string' || transition.managedTag.length === 0) return false;
+    const root = (value: unknown): value is string => typeof value === 'string' && value.length > 0;
+    if (![transition.previousStateRoot, transition.nextStateRoot, transition.previousBodyRoot, transition.nextBodyRoot].every(root)) return false;
+    const ids = [transition.enteredBodyIds, transition.exitedBodyIds, transition.retainedBodyIds];
+    if (ids.some(list => !Array.isArray(list) || list.some(id => typeof id !== 'string' || id.length === 0))) return false;
+    const canonicalIds = (list: string[]) => JSON.stringify([...new Set(list)].sort((a, b) => a.localeCompare(b)));
+    if (ids.some(list => canonicalIds(list) !== JSON.stringify(list))) return false;
+    const entered = new Set(transition.enteredBodyIds), exited = new Set(transition.exitedBodyIds), retained = new Set(transition.retainedBodyIds);
+    if ([...entered].some(id => exited.has(id) || retained.has(id)) || [...exited].some(id => retained.has(id))) return false;
+    if (transition.authority?.provider_can_write_authoritative_world_state !== false || transition.authority?.rncs_authority_required !== true || transition.authority?.residency_transition_scope !== 'candidate-physical-static-bodies-only') return false;
+    if (transition.candidate_only !== true || transition.authoritative !== false || transition.canonical_write_authorized !== false || transition.commit_status !== 'NOT_COMMITTED') return false;
+    return semanticHash(spatialBodyResidencyTransitionBase(transition)) === transition.transitionRoot;
+  } catch {
+    return false;
+  }
 }
 
 export function replaySpatialEmbodiment(config: SpatialEmbodimentWorldConfig, ticks: number, commands: SpatialCommand[] = []): SpatialEmbodimentSnapshot { return new SpatialEmbodimentWorld(config).run(ticks, commands); }
