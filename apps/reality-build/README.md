@@ -120,6 +120,8 @@ Android 目标现在把内嵌 `index.html` 读入 WebView，并通过 `loadDataW
 
 Build request/schema 现在显式提供 `asset_cache.enabled` 与 `asset_cache.max_bytes`，并将该策略纳入 build identity；VSR `VSRSpatialAssetStreamer` 只使用 provider 已缓存 asset ids 作为加载顺序提示，resolution root、catalog、lease 和 authority ownership 不变。在同一 API 35 Emulator 的 `50,000`-byte provider budget 下，v1 进程重启重新命中 `8` 条、最终 resident `49,524` bytes/`28` 次 eviction；v2 revision invalidation 后最终 resident `47,496` bytes，v2 再次进程重启命中 `8` 条、最终 resident `46,980` bytes/`25` 次 eviction；所有阶段 `ready=39/36`、`importFailed=0`，最终 resident bytes 均未超过预算。该结果是共享 provider 的预算与调度 candidate，不代表 VSR 内存 working set 或 APK 内嵌 payload 大小受此预算限制。完整收据见 `evidence/ANDROID_ASSET_CACHE_BUDGET_CANDIDATE_v0.1.json`。
 
+随后对同一 API 35 ATD profile 做了 provider 性能与 metadata 写入考古：`asset_cache.persist_accesses` 进入 request/schema/build identity，Reality Build 默认关闭跨进程 access telemetry 持久化；payload 写入仍等待 durable manifest flush，并将并发 manifest flush 合并。真实 WebView CDP 的 4×16 KB 并发 control 为 direct CacheStorage `772.3/799.2 ms`（write/read），provider 为 `2,182.4/1,856.8 ms`（含 SHA、rooted manifest 和 content-addressed bookkeeping）；8/32/128 KB 的半容量压力 probe 都保持两条 resident payload、两次 eviction。当前 source-generated v1/v2 的 cold/restart/revision phases 仍分别记录 `ready=39/36`、`importFailed=0`、resident `45,640/49,524/47,496/46,980` bytes。provider 的额外开销是当前 profile 的可见事实，不被描述成跨设备性能结论；quota guarantee、物理设备、remote coherence、release/production 与人工视觉验收仍未闭合。完整收据见 `evidence/ANDROID_ASSET_CACHE_PERFORMANCE_CANDIDATE_v0.1.json`。
+
 这是 Android WebView/app-private CacheStorage 的 candidate execution evidence，不等于 WebView quota/eviction/performance 曲线、跨进程/跨设备 coherence、物理设备 GPU、release 签名、商店交付或人工视觉验收。
 
 ## Network compilation → headless candidate

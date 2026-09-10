@@ -1,0 +1,297 @@
+{
+  "format": "reality-build.android-asset-cache-performance-evidence.v0.1",
+  "status": "CANDIDATE_ANDROID_WEBVIEW_CACHE_METADATA_BATCHING_AND_PERFORMANCE_VERIFIED",
+  "sourceCommit": "648f4dc17b73944dc36049820f7c873d39935e94",
+  "fixture": "output/playwright/build-asset-cache-candidates.mjs",
+  "pipeline": "Reality Build asset_cache policy -> VSR browser asset provider -> synthetic-origin Android WebView CacheStorage -> content-addressed payload verification and bounded LRU",
+  "commands": [
+    "node output/playwright/build-asset-cache-candidates.mjs",
+    "npm run typecheck --workspace @taowind/visual-state-runtime",
+    "npm run lint --workspace @taowind/visual-state-runtime",
+    "npm test --workspace @taowind/visual-state-runtime",
+    "npm test --workspace @taowind/reality-build-fabric",
+    "Gradle 9.5.1: app:assembleDebug for source-generated v1 and v2 Android projects",
+    "Android SDK 36.1.0 apksigner verify --verbose --print-certs",
+    "adb install -r -> process restart -> WebView CDP Runtime.evaluate",
+    "WebView CDP direct CacheStorage/provider comparison and bounded budget probe"
+  ],
+  "tests": {
+    "visualStateRuntime": "122/122 PASS; spatial reality 99/99 PASS; spatial asset streaming 11/11 PASS",
+    "realityBuild": "149 tests / 141 pass / 0 fail / 8 skip",
+    "androidTargetContracts": "31/31 PASS",
+    "gradleV1": "PASS",
+    "gradleV2": "PASS",
+    "apkSignature": "v1/v3/v4/SourceStamp false; v2 true; one debug signer for both APKs",
+    "runtimeLog": "No FATAL EXCEPTION or AndroidRuntime failure observed for the candidate package"
+  },
+  "policy": {
+    "assetCache": {
+      "enabled": true,
+      "maxBytes": 50000,
+      "persistAccesses": false
+    },
+    "buildKeyIncludesPolicy": true,
+    "providerInspectionExposes": [
+      "maxBytes",
+      "persistAccesses",
+      "manifestWrites",
+      "bytesResident",
+      "cacheHits",
+      "cacheMisses",
+      "cacheEvictions"
+    ],
+    "loadScheduling": "cached asset ids receive a provider-backed priority hint; VSR resolution and authority ownership are unchanged",
+    "manifestPersistence": "payload writes remain awaited and durable through a coalesced manifest flush; access telemetry is memory-only when persistAccesses=false"
+  },
+  "build": {
+    "sourceGeneratedHost": true,
+    "gradle": "9.5.1",
+    "compileSdk": 35,
+    "targetSdk": 35,
+    "v1": {
+      "buildKey": "f594bd53443660bdd2a28270fd42cd5f93ec694019db2f9d93d2dfb58c0f9312",
+      "payloadRoot": "04da0e683aff1f50768da213b3a4b63a6dcfd112ca5bbda7e3cb9e8ceb765b7b",
+      "sourceAssetBundleRoot": "c6ad10e0c3d10bab7ce3cab3455db2f78bdb60075904072bc2d434aede229d8e",
+      "payloadCatalog": 42,
+      "apkBytes": 338861,
+      "apkSha256": "38f79539be4eddb964604216a1baeaf8fb5d7993c130d0e13a4a3a7dd7d2931c"
+    },
+    "v2": {
+      "buildKey": "12e3cfbad9206689e3892cb9230eac2c1f237fdf1f481a7bf02cd73bc8cf38fb",
+      "payloadRoot": "f8d4968a41248af7d7df5ddc7603ced6ff0871dcc923f0d4dd9cc81c0897b1b1",
+      "sourceAssetBundleRoot": "60429e355fa532dfc4d60797bb11d5f08b10704d95b23a6fa99f4ecf1ad65d39",
+      "payloadCatalog": 39,
+      "apkBytes": 332437,
+      "apkSha256": "4e7bad1521e40a5bd355cb922687c8988108f0024fd541204207ede48cb3bfff"
+    }
+  },
+  "device": {
+    "avd": "Rcl_Aether_API35_ATD",
+    "model": "Android ATD built for x86_64",
+    "api": 35,
+    "androidRelease": "15",
+    "webview": "com.android.webview 124.0.6367.219",
+    "package": "com.taowind.browserassetcache",
+    "pageOrigin": "https://rncs.local/",
+    "gpuProperty": "emulation"
+  },
+  "applicationPhases": [
+    {
+      "name": "v1-clean-cold-fill",
+      "payloadRoot": "04da0e683aff1f50768da213b3a4b63a6dcfd112ca5bbda7e3cb9e8ceb765b7b",
+      "payloadCatalog": 42,
+      "ready": 39,
+      "importFailed": 0,
+      "cache": {
+        "maxBytes": 50000,
+        "persistAccesses": false,
+        "manifestWrites": 30,
+        "bytesResident": 45640,
+        "cachedAssetCount": 8,
+        "cacheHits": 0,
+        "cacheMisses": 39,
+        "cacheEvictions": 31
+      },
+      "verified": true
+    },
+    {
+      "name": "v1-process-restart-rehydrate",
+      "payloadRoot": "04da0e683aff1f50768da213b3a4b63a6dcfd112ca5bbda7e3cb9e8ceb765b7b",
+      "payloadCatalog": 42,
+      "ready": 39,
+      "importFailed": 0,
+      "cache": {
+        "maxBytes": 50000,
+        "persistAccesses": false,
+        "manifestWrites": 26,
+        "bytesResident": 49524,
+        "cachedAssetCount": 11,
+        "cacheHits": 8,
+        "cacheMisses": 31,
+        "cacheEvictions": 28
+      },
+      "verified": true
+    },
+    {
+      "name": "v2-revision-invalidation-fill",
+      "payloadRoot": "f8d4968a41248af7d7df5ddc7603ced6ff0871dcc923f0d4dd9cc81c0897b1b1",
+      "payloadCatalog": 39,
+      "ready": 36,
+      "importFailed": 0,
+      "cache": {
+        "maxBytes": 50000,
+        "persistAccesses": false,
+        "manifestWrites": 27,
+        "bytesResident": 47496,
+        "cachedAssetCount": 9,
+        "cacheHits": 0,
+        "cacheMisses": 36,
+        "cacheEvictions": 27
+      },
+      "diagnostics": [
+        "VSR_BROWSER_ASSET_CACHE_REVISION_CHANGED:04da0e683aff1f50768da213b3a4b63a6dcfd112ca5bbda7e3cb9e8ceb765b7b:f8d4968a41248af7d7df5ddc7603ced6ff0871dcc923f0d4dd9cc81c0897b1b1"
+      ],
+      "verified": true
+    },
+    {
+      "name": "v2-process-restart-rehydrate",
+      "payloadRoot": "f8d4968a41248af7d7df5ddc7603ced6ff0871dcc923f0d4dd9cc81c0897b1b1",
+      "payloadCatalog": 39,
+      "ready": 36,
+      "importFailed": 0,
+      "cache": {
+        "maxBytes": 50000,
+        "persistAccesses": false,
+        "manifestWrites": 22,
+        "bytesResident": 46980,
+        "cachedAssetCount": 11,
+        "cacheHits": 8,
+        "cacheMisses": 28,
+        "cacheEvictions": 26
+      },
+      "diagnostics": [
+        "VSR_BROWSER_ASSET_CACHE_REVISION_CHANGED:04da0e683aff1f50768da213b3a4b63a6dcfd112ca5bbda7e3cb9e8ceb765b7b:f8d4968a41248af7d7df5ddc7603ced6ff0871dcc923f0d4dd9cc81c0897b1b1"
+      ],
+      "verified": true
+    }
+  ],
+  "webviewStorage": {
+    "quotaObservedBytes": 3736869273,
+    "persistedObserved": false,
+    "usageDetailsObserved": {
+      "caches": true
+    },
+    "note": "navigator.storage.estimate() is an observation of this API 35 ATD profile, not a quota guarantee"
+  },
+  "directProviderComparison": {
+    "payloadBytes": 16384,
+    "payloadCount": 4,
+    "concurrent": true,
+    "directCacheStorage": {
+      "writeMs": 772.3,
+      "readMs": 799.2,
+      "validReads": 4,
+      "cacheEntries": 4
+    },
+    "provider": {
+      "persistAccesses": false,
+      "writeMs": 2182.4,
+      "readMs": 1856.8,
+      "validReads": 4,
+      "cacheEntries": 5,
+      "coldInspectionManifestWrites": 0,
+      "bytesResident": 65536,
+      "diagnostics": []
+    },
+    "interpretation": "One WebView observation after provider metadata batching; direct CacheStorage is a platform control, while provider time also includes SHA verification, manifest-root handling, and content-addressed bookkeeping. It is not a cross-device performance claim."
+  },
+  "budgetProbe": {
+    "payloadCount": 4,
+    "cases": [
+      {
+        "budgetBytes": 8192,
+        "payloadBytes": 4096,
+        "requestedBytes": 16384,
+        "writeMs": 6753.9,
+        "coldReadMs": 1672.4,
+        "warmReadMs": 1718.4,
+        "fill": {
+          "bytesResident": 8192,
+          "cachedAssetCount": 2,
+          "cacheEvictions": 2
+        },
+        "cold": {
+          "validReads": 2,
+          "cacheHits": 2,
+          "cacheMisses": 2
+        },
+        "warm": {
+          "validReads": 2,
+          "cacheHits": 4,
+          "cacheMisses": 2
+        }
+      },
+      {
+        "budgetBytes": 32768,
+        "payloadBytes": 16384,
+        "requestedBytes": 65536,
+        "writeMs": 6842.4,
+        "coldReadMs": 1702,
+        "warmReadMs": 1822,
+        "fill": {
+          "bytesResident": 32768,
+          "cachedAssetCount": 2,
+          "cacheEvictions": 2
+        },
+        "cold": {
+          "validReads": 2,
+          "cacheHits": 2,
+          "cacheMisses": 2
+        },
+        "warm": {
+          "validReads": 2,
+          "cacheHits": 4,
+          "cacheMisses": 2
+        }
+      },
+      {
+        "budgetBytes": 131072,
+        "payloadBytes": 65536,
+        "requestedBytes": 262144,
+        "writeMs": 6480.4,
+        "coldReadMs": 1590.5,
+        "warmReadMs": 1687.5,
+        "fill": {
+          "bytesResident": 131072,
+          "cachedAssetCount": 2,
+          "cacheEvictions": 2
+        },
+        "cold": {
+          "validReads": 2,
+          "cacheHits": 2,
+          "cacheMisses": 2
+        },
+        "warm": {
+          "validReads": 2,
+          "cacheHits": 4,
+          "cacheMisses": 2
+        }
+      }
+    ]
+  },
+  "stressCase": "The API 35 WebView profile persisted only the CacheStorage payload bytes while the provider manifest stayed content-addressed and rooted. A full 4-payload fill at half-capacity produced deterministic two-entry residency and two evictions at 8/32/128 KB. The prior per-read manifest persistence path was materially slower in the same provider comparison; the candidate now makes access telemetry persistence explicit and batches concurrent manifest flushes.",
+  "coverage": {
+    "requestSchemaAndValidation": true,
+    "semanticBuildKeyBinding": true,
+    "sharedVsrLoadPriority": true,
+    "contentAddressedPayloads": true,
+    "byteLengthVerification": true,
+    "sha256Verification": true,
+    "manifestRootVerification": true,
+    "revisionInvalidation": true,
+    "processRestartRehydrate": true,
+    "coalescedManifestPersistence": true,
+    "explicitAccessTelemetryPolicy": true,
+    "boundedResidentBytesObserved": true,
+    "navigatorStorageQuotaObserved": true,
+    "quotaGuarantee": false,
+    "performanceProfileOnApi35Atd": true,
+    "physicalDevice": false,
+    "remoteCacheCoherence": false,
+    "productionRelease": false,
+    "humanVisualAcceptance": false
+  },
+  "boundaries": [
+    "VSR remains the owner of asset catalog, leases, active working sets, imports, resolution roots and residency receipts; CacheStorage owns only discardable payload bytes and its provider manifest.",
+    "The 50 KB Build policy bounds provider cache resident bytes, not the in-memory VSR working set and not the embedded APK payload size; the APK still contains deterministic base64 payloads.",
+    "persist_accesses=false makes LRU access telemetry ephemeral across process termination; payload writes still await a manifest flush, and stale access order affects eviction preference only, not world correctness or authority.",
+    "https://rncs.local/ is a local synthetic document origin supplied to WebView loadDataWithBaseURL; it is not a remote endpoint, TLS deployment, WAN transport, or network authority.",
+    "The API 35 Android ATD result and storage/performance probe are emulator/WebView profile evidence only. They do not establish physical-device behavior, quota guarantees, cross-device coherence, release signing, store delivery, production SLA, or human visual acceptance.",
+    "No K400 gate is promoted to PASS; this is candidate runtime evidence only."
+  ],
+  "rclGap": "RCL_GAP_RNCS_RUNTIME_ASSET_CACHE_PROVIDER",
+  "donorAdvantage": "The existing Node content-addressed cache provider supplied the manifest-root, SHA payload, atomic persistence and deterministic LRU contract; browser and Android remain lowerings/providers rather than new semantic owners.",
+  "regressionCase": "The pre-lowering file origin exposed CacheStorage and WebCrypto but rejected Cache.put with an unsupported file scheme; synthetic-origin lowering enabled the provider. The subsequent WebView comparison exposed per-read manifest persistence as a shared provider performance bottleneck, which is now explicit and bounded by policy.",
+  "nextCandidate": "Repeat the quota/eviction/performance receipt on a reproducible physical target profile, then assess remote content-addressed cache coherence. External transport remains separately blocked on canonical protocol, donor licensing, TLS/key custody and cross-node authority decisions.",
+  "evidenceRoot": "741da8194219b03a89e5a8773ef62bb5d8051b4e244c98fd5280934eb893ad2c"
+}
