@@ -12,6 +12,7 @@ export const Q = 1_000_000;
 
 export interface IntVector3 { x: number; y: number; z: number }
 export interface FloatVector3 { x: number; y: number; z: number }
+export interface SpatialShapeCastHit { bodyId: string; fixtureId: string; distance: number; point: IntVector3; normal: IntVector3; shapeType: 'sphere' | 'capsule'; method: 'bounded-heightfield-support-probe' }
 export type SpatialBodyKind = 'static' | 'dynamic' | 'kinematic';
 export type SpatialShape =
   | { type: 'sphere'; radius: number }
@@ -510,6 +511,43 @@ function heightfieldRayCast(origin: IntVector3, direction: IntVector3, maxDistan
     if (stepX === 0 && stepZ === 0) break;
   }
   return best;
+}
+type HeightfieldCastShape = Extract<SpatialShape, { type: 'sphere' | 'capsule' }>;
+function heightfieldFootprintSupport(body: RuntimeSpatialBody, fixture: RuntimeSpatialFixture & { shape: HeightfieldShape }, center: IntVector3, radius: number): { point: IntVector3; normal: IntVector3 } | undefined {
+  const diagonal = Math.round(radius * 0.7071067811865476);
+  const offsets = [v3(), v3(radius, 0, 0), v3(-radius, 0, 0), v3(0, 0, radius), v3(0, 0, -radius), v3(diagonal, 0, diagonal), v3(-diagonal, 0, diagonal), v3(diagonal, 0, -diagonal), v3(-diagonal, 0, -diagonal)];
+  let best: { point: IntVector3; normal: IntVector3 } | undefined;
+  for (const offset of offsets) {
+    const surface = heightfieldSurface(body, fixture, center.x + offset.x, center.z + offset.z);
+    if (!surface || best && (surface.point.y < best.point.y || surface.point.y === best.point.y && surface.normal.y <= best.normal.y)) continue;
+    best = surface;
+  }
+  return best;
+}
+function heightfieldShapeCast(origin: IntVector3, direction: IntVector3, maxDistance: number, shape: HeightfieldCastShape, body: RuntimeSpatialBody, fixture: RuntimeSpatialFixture & { shape: HeightfieldShape }): { distance: number; point: IntVector3; normal: IntVector3 } | undefined {
+  const limit = Math.max(0, maxDistance), dir = normalizeQ(direction), radius = shape.radius, verticalExtent = shape.type === 'sphere' ? shape.radius : shape.halfHeight + shape.radius;
+  const stepLength = Math.max(1, Math.min(fixture.shape.sampleSpacing / 2, Math.max(1, radius / 2))), steps = Math.max(1, Math.min(4_096, Math.ceil(limit / stepLength)));
+  const probe = (distanceAlongRay: number): { distance: number; point: IntVector3; normal: IntVector3 } | undefined => {
+    const center = add(origin, mul(dir, distanceAlongRay / Q)), support = heightfieldFootprintSupport(body, fixture, center, radius);
+    if (!support || center.y - verticalExtent > support.point.y) return undefined;
+    return { distance: distanceAlongRay, point: support.point, normal: support.normal };
+  };
+  let previousDistance = 0, hit = probe(0);
+  if (hit) return {...hit, distance: Math.round(hit.distance)};
+  for (let step = 1; step <= steps; step++) {
+    const distanceAlongRay = Math.min(limit, step * stepLength);
+    hit = probe(distanceAlongRay);
+    if (!hit) { previousDistance = distanceAlongRay; continue; }
+    let low = previousDistance, high = distanceAlongRay;
+    for (let iteration = 0; iteration < 14; iteration++) {
+      const middle = (low + high) / 2;
+      if (probe(middle)) high = middle; else low = middle;
+    }
+    const first = probe(high);
+    if (first) return {...first, distance: Math.round(high)};
+    previousDistance = distanceAlongRay;
+  }
+  return undefined;
 }
 function heightfieldCollision(movingBody: RuntimeSpatialBody, movingFixture: RuntimeSpatialFixture, terrainBody: RuntimeSpatialBody, terrainFixture: RuntimeSpatialFixture & { shape: HeightfieldShape }, persistence: number): CollisionResult | undefined {
   const movingBounds = fixtureAabb(movingBody, movingFixture), terrainBounds = heightfieldAabb(terrainBody, terrainFixture);
@@ -1064,6 +1102,17 @@ export class SpatialEmbodimentWorld {
         continue;
       }
       const aabb = fixtureAabb(body, fixture); let tmin = 0, tmax = maxDistance; let valid = true; for (const axis of ['x', 'y', 'z'] as const) { const d = dir[axis] / Q; if (Math.abs(d) < 1e-9) { if (origin[axis] < aabb.min[axis] || origin[axis] > aabb.max[axis]) valid = false; continue; } const t1 = (aabb.min[axis] - origin[axis]) / d, t2 = (aabb.max[axis] - origin[axis]) / d; tmin = Math.max(tmin, Math.min(t1, t2)); tmax = Math.min(tmax, Math.max(t1, t2)); if (tmin > tmax) valid = false; } if (valid && tmin >= 0 && tmin <= maxDistance) hits.push({ bodyId: body.id, fixtureId: fixture.id, distance: Math.round(tmin), point: add(origin, mul(dir, tmin / Q)) });
+    }
+    return hits.sort((a, b) => a.distance - b.distance || a.bodyId.localeCompare(b.bodyId));
+  }
+  shapeCast(shape: SpatialShape, origin: IntVector3, direction: IntVector3, maxDistance = 100_000): SpatialShapeCastHit[] {
+    if (shape.type !== 'sphere' && shape.type !== 'capsule') throw new Error('SPATIAL_SHAPE_CAST_UNSUPPORTED');
+    validateShape('shapeCast.shape', shape);
+    const hits: SpatialShapeCastHit[] = [];
+    for (const body of this.bodyMap.values()) for (const fixture of body.fixtures) {
+      if (fixture.shape.type !== 'heightfield') continue;
+      const hit = heightfieldShapeCast(origin, direction, maxDistance, shape, body, fixture as RuntimeSpatialFixture & { shape: HeightfieldShape });
+      if (hit) hits.push({bodyId: body.id, fixtureId: fixture.id, distance: hit.distance, point: hit.point, normal: hit.normal, shapeType: shape.type, method: 'bounded-heightfield-support-probe'});
     }
     return hits.sort((a, b) => a.distance - b.distance || a.bodyId.localeCompare(b.bodyId));
   }
