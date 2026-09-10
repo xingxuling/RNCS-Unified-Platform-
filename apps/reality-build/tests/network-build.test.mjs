@@ -80,14 +80,19 @@ test('Reality Build carries the existing network compilation into a runnable loc
       '/network/disconnect', '/network/reconnect', '/network/authority/health',
       '/network/authority/join', '/network/authority/input', '/network/authority/tick',
       '/network/authority/snapshot', '/network/authority/delta',
+      '/network/authority/checkpoint', '/network/authority/recover',
     ]);
     assert.equal(targetManifest.network_runtime_mode, 'loopback-local-candidate');
+    assert.equal(targetManifest.network_checkpoint_mode, 'node-local-file-candidate');
+    assert.equal(targetManifest.network_checkpoint_path_env, 'RNCS_NETWORK_CHECKPOINT_PATH');
 
-    child = spawn(process.execPath, ['server.mjs'], {
+    const checkpointFile = path.join(directory, 'network-session-checkpoint.json');
+    const spawnServer = () => spawn(process.execPath, ['server.mjs'], {
       cwd: targetRoot,
-      env: { ...process.env, PORT: String(port) },
+      env: { ...process.env, PORT: String(port), RNCS_NETWORK_CHECKPOINT_PATH: checkpointFile },
       stdio: ['ignore', 'pipe', 'pipe'],
     });
+    child = spawnServer();
     const health = await waitForHealth(baseUrl, child);
     assert.equal(health.deterministic, true);
     assert.equal(health.format, 'reality-build.headless-server.v0.2');
@@ -153,6 +158,31 @@ test('Reality Build carries the existing network compilation into a runnable loc
     const authorityHealth = await authorityClient.health();
     assert.equal(authorityHealth.externalClients.blue.connected, true);
     assert.equal(authorityClient.metrics().syncStatus, 'synchronized');
+
+    const checkpointSaved = await requestJson(`${baseUrl}/network/authority/checkpoint`, 'POST', {});
+    assert.equal(checkpointSaved.status, 'COMMITTED_CANDIDATE');
+    assert.equal(checkpointSaved.receipt.candidateOnly, true);
+    assert.equal(checkpointSaved.receipt.authoritative, false);
+    assert.equal(checkpointSaved.receipt.commitStatus, 'NOT_COMMITTED');
+    assert.equal(fs.existsSync(checkpointFile), true);
+    const savedCheckpoint = JSON.parse(fs.readFileSync(checkpointFile, 'utf8'));
+    assert.equal(savedCheckpoint.checkpointRoot, checkpointSaved.checkpointRoot);
+    const savedAuthorityRoot = checkpointSaved.checkpointRoot;
+
+    child.kill('SIGTERM');
+    await new Promise(resolve => child.once('exit', resolve));
+    child = spawnServer();
+    await waitForHealth(baseUrl, child);
+    const checkpointRecovered = await requestJson(`${baseUrl}/network/authority/recover`, 'POST', {});
+    assert.equal(checkpointRecovered.status, 'RECOVERED_CANDIDATE');
+    assert.equal(checkpointRecovered.checkpointRoot, savedAuthorityRoot);
+    assert.equal(checkpointRecovered.receipt.candidateOnly, true);
+    const resumedClient = new HttpAuthorityClient({ baseUrl });
+    const resumedJoin = await resumedClient.join({ slotId: 'slot:blue', subjectId: 'subject:blue' });
+    assert.equal(resumedJoin.resumed, true);
+    assert.equal(resumedJoin.snapshot.stateRoot, savedCheckpoint.stateRoot);
+    const resumedHealth = await requestJson(`${baseUrl}/network/authority/health`);
+    assert.equal(resumedHealth.server.stateRoot, savedCheckpoint.stateRoot);
 
     const networkFile = path.join(outputDir, 'network-world-compilation.json');
     const networkFileBytes = fs.readFileSync(networkFile);

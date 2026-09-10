@@ -363,6 +363,29 @@ ServerAuthoritativeWorld
 
 边界：这是本地 Node 文件系统上的 candidate；已经执行 temp sync、atomic rename、directory sync、primary-first recovery 和两处 fault injection，但不是实际断电/文件系统损坏、跨节点 durable quorum、WAN/TLS、跨节点 lease/leader、密钥轮换、真实多设备重连、负载/SLA 或生产 failover 证明。共享 provider 也不拥有 domain schema、canonical state 或 commit authority；checkpoint 仍是 `candidateOnly=true`、`authoritative=false`、`commitStatus=NOT_COMMITTED`。没有新增 K400 PASS。
 
+## 本轮 Reality Build headless checkpoint → 新进程 HTTP 恢复候选
+
+durable-store 接入后继续沿真实 Build 产物考古：生成的 `headless-server/server.mjs` 原本只在启动时用 `createSessionFromCompilation()` 创建内存会话；它没有把 checkpoint store 接到 server 生命周期。新增路径只在 network-enabled headless target 中出现，并要求调用者显式设置绝对路径环境变量 `RNCS_NETWORK_CHECKPOINT_PATH`：
+
+```text
+POST /network/authority/checkpoint
+  → createCheckpoint(networkAuthoritySessionId)
+  → NetworkSessionCheckpointStore.save()
+  → rncs.network-checkpoint-store-receipt.v0.1
+
+新 Node server 进程
+  → POST /network/authority/recover
+  → primary-first / temporary promotion recovery
+  → createSessionFromCheckpoint({ checkpoint, compilation })
+  → /network/authority/join 显式 resumed=true
+```
+
+这次只复用既有 Network Runtime、checkpoint schema、source-root rebind、`HttpAuthorityClient` 和新共享 store；没有在 Build target 复制状态协议，也没有把 HTTP caller 变成 canonical state owner。server manifest 现在显式记录 `node-local-file-candidate`、`RNCS_NETWORK_CHECKPOINT_PATH` 和两个 endpoint，未配置路径时 endpoint fail closed。
+
+真实验证：`apps/reality-build/tests/network-build.test.mjs` 在同一测试中启动第一个独立 Node server，加入 authority slot、提交并推进输入、保存 checkpoint；结束进程后用相同构建和相同 checkpoint path 启动第二个独立 Node server，调用 recover，随后通过 HTTP authority join 得到 `resumed=true`，恢复后的 snapshot/health State Root 与保存的 checkpoint 一致。Reality Build 全套保持 `142 tests / 134 pass / 0 fail / 8 skip`。
+
+边界：这是生成 headless target 的本地双进程 candidate，不是 WebSocket/UDP/QUIC、TLS、WAN、跨节点 lease/leader、真实断电、共享 durable quorum、多设备重连或生产 failover。checkpoint endpoint 只在显式本地路径下开放，receipt 仍保持 `candidateOnly=true`、`authoritative=false`、`commitStatus=NOT_COMMITTED`；没有新增 K400 PASS。
+
 ## 结构判断
 
 ### 限制性瓶颈
@@ -392,7 +415,7 @@ Unified Project + selected spatial world + scene/asset roots
   → bounded cache/eviction/performance evidence
 ```
 
-第一轮 ingress 已以 `examples/studio-authored-network-world-v03/project.mjs` 为 fixture 验证：确定性 World Declaration/codegen、Studio roots 与 World Body roots 的显式绑定、Network compilation root 保持、模型 kind lowering、2D transform 不越权、篡改/缺失资产/非法 authority 负例闭合；第二轮验证有损 candidate bundle 能进入 Aether Cell 并保持各级 runtime roots；第三轮验证 Build request candidate 能将同一 source root 写入 runtime evidence 并通过 Build 自校验；第四轮把动态质量经 shared `mass_q` donor 传入 RSR；第五轮把 3 个 Studio character facets 经 shared `spatial.character` donor 传入 RSR；第六轮把完整 fixture 集合经 `spatial.fixtures.items` 传入 RSR/VSR；第七轮把 Large World VSR scene 经 generic Build candidate 接缝执行；第八轮复用 VSR `resolveSpatialAssetStreaming()`，让 4 个 active-cell `rncs://` asset records 进入 frame/evidence roots（requested=4、missing=0）；第九轮复用 Large World GLB provider bundle、Build content-addressed target packaging 和 VSR streamer，完成 36 条 candidate payload catalog、33 条 active request 的 Chromium 字节加载/哈希校验；第十轮复用共享 VSR GLB importer/composer，完成 11 条显式 mesh bindings 和本机 WebGPU draw receipt；第十一轮完成 host APK build/signing；第十二轮在 Emulator WebView 中完成 cold-start、payload/binding/frame root 和 Canvas2D fallback candidate；第十三轮把 lease release/over-budget eviction 抽为 VSR transition receipt，并让 Aether/Build 复用；第十四轮把 Reality Build reset/cell transition/re-entry 接到同一 VSR working-set、residency、rebind 和 frame receipt；第十五轮将既有 Studio network compilation 接入 Reality Build headless candidate，并用实际生成 server 走一次双 slot local loopback session；第十六轮把 `HttpAuthorityClient` 接到同一 generated headless server，真实执行 compiled-slot join、独立 packet、ack convergence、health/metrics 和三类 HTTP authority 负例；第十七轮复用 RSR `fromSnapshot()`、AAF delegation、Network receipts 和 authority history，完成 `network.session-checkpoint.v0.1` 的 JSON 封存与独立 Node 恢复 candidate；第十八轮将 Large World 的原子文件 donor 抽为共享 `@taowind/rncs-durable-store`，并由 Network 与 Large World 各自执行语义验证和 candidate receipt。下一阶段改为审计 external transport/session 的 WAN/TLS/重连/跨节点持久会话边界，与 Android WebView/物理或可复现 GPU-capable target host 是否保留同一 world/target manifest、payload/binding/frame roots、cache eviction 和性能边界；任何晋升为默认产品路径的动作仍需独立 authority/设备证据。
+第一轮 ingress 已以 `examples/studio-authored-network-world-v03/project.mjs` 为 fixture 验证：确定性 World Declaration/codegen、Studio roots 与 World Body roots 的显式绑定、Network compilation root 保持、模型 kind lowering、2D transform 不越权、篡改/缺失资产/非法 authority 负例闭合；第二轮验证有损 candidate bundle 能进入 Aether Cell 并保持各级 runtime roots；第三轮验证 Build request candidate 能将同一 source root 写入 runtime evidence 并通过 Build 自校验；第四轮把动态质量经 shared `mass_q` donor 传入 RSR；第五轮把 3 个 Studio character facets 经 shared `spatial.character` donor 传入 RSR；第六轮把完整 fixture 集合经 `spatial.fixtures.items` 传入 RSR/VSR；第七轮把 Large World VSR scene 经 generic Build candidate 接缝执行；第八轮复用 VSR `resolveSpatialAssetStreaming()`，让 4 个 active-cell `rncs://` asset records 进入 frame/evidence roots（requested=4、missing=0）；第九轮复用 Large World GLB provider bundle、Build content-addressed target packaging 和 VSR streamer，完成 36 条 candidate payload catalog、33 条 active request 的 Chromium 字节加载/哈希校验；第十轮复用共享 VSR GLB importer/composer，完成 11 条显式 mesh bindings 和本机 WebGPU draw receipt；第十一轮完成 host APK build/signing；第十二轮在 Emulator WebView 中完成 cold-start、payload/binding/frame root 和 Canvas2D fallback candidate；第十三轮把 lease release/over-budget eviction 抽为 VSR transition receipt，并让 Aether/Build 复用；第十四轮把 Reality Build reset/cell transition/re-entry 接到同一 VSR working-set、residency、rebind 和 frame receipt；第十五轮将既有 Studio network compilation 接入 Reality Build headless candidate，并用实际生成 server 走一次双 slot local loopback session；第十六轮把 `HttpAuthorityClient` 接到同一 generated headless server，真实执行 compiled-slot join、独立 packet、ack convergence、health/metrics 和三类 HTTP authority 负例；第十七轮复用 RSR `fromSnapshot()`、AAF delegation、Network receipts 和 authority history，完成 `network.session-checkpoint.v0.1` 的 JSON 封存与独立 Node 恢复 candidate；第十八轮将 Large World 的原子文件 donor 抽为共享 `@taowind/rncs-durable-store`，并由 Network 与 Large World 各自执行语义验证和 candidate receipt；第十九轮把该 store 接入真实生成 headless server 的 checkpoint/recover endpoints，并跨两个独立 Node server 进程执行 authority resume。下一阶段改为审计 external transport/session 的 WAN/TLS/重连/跨节点持久会话边界，与 Android WebView/物理或可复现 GPU-capable target host 是否保留同一 world/target manifest、payload/binding/frame roots、cache eviction 和性能边界；任何晋升为默认产品路径的动作仍需独立 authority/设备证据。
 
 ## K400 / 证据裁决
 
