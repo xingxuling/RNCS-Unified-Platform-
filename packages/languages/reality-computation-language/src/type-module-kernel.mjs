@@ -313,6 +313,7 @@ function createResolver(modules, moduleName, moduleDecls, diagnostics) {
   const module = modules.get(moduleName);
   const local = moduleDecls.get(moduleName) ?? new Map();
   const importedModules = module.imports.map(item => item.module).filter(name => modules.has(name));
+  const importedModuleNames = new Set(importedModules);
   const importedExports = [];
   for (const imported of importedModules) {
     const decls = moduleDecls.get(imported) ?? new Map();
@@ -333,6 +334,12 @@ function createResolver(modules, moduleName, moduleDecls, diagnostics) {
       }
       if (expr.name.includes('.') || expr.name.includes('::')) {
         const [rawModule, rawName] = expr.name.includes('::') ? expr.name.split('::') : expr.name.split('.');
+        if (rawModule !== moduleName && !importedModuleNames.has(rawModule)) {
+          if (modules.has(rawModule)) {
+            diagnostics.push(diagnostic('RCL_MODULE_NOT_IMPORTED', `Module '${rawModule}' must be explicitly imported by '${moduleName}' before using '${expr.name}'`, expr.location ?? ownerLocation, 'error', { importer: moduleName, imported: rawModule }));
+            return { ...expr, args, resolved: { kind: 'not-imported', module: rawModule, name: rawName }, canonical: typeExprToString({ ...expr, args }) };
+          }
+        }
         const decl = moduleDecls.get(rawModule)?.get(rawName);
         if (!decl || (!decl.exported && rawModule !== moduleName)) {
           diagnostics.push(diagnostic('RCL_TYPE_REFERENCE_MISSING', `Type '${expr.name}' is not exported by imported module '${rawModule}'`, expr.location ?? ownerLocation));

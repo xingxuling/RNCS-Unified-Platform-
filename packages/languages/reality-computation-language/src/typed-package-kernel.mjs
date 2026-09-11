@@ -266,7 +266,11 @@ export function verifyTypedPackageLock(packageDir, options = {}) {
 }
 
 export function runTypedPackageDemo(options = {}) {
-  const baseDir = options.baseDir ?? fs.mkdtempSync(path.join(process.cwd(), 'output', 'v0.32-typed-package-demo-'));
+  let baseDir = options.baseDir ?? path.join(process.cwd(), 'output', 'v0.32-typed-package-demo-');
+  if (!options.baseDir) {
+    fs.mkdirSync(path.dirname(baseDir), { recursive: true });
+    baseDir = fs.mkdtempSync(baseDir);
+  }
   fs.mkdirSync(path.join(baseDir, 'src'), { recursive: true });
   fs.mkdirSync(path.join(baseDir, 'types'), { recursive: true });
   fs.writeFileSync(path.join(baseDir, 'rcl.package.json'), `${JSON.stringify({

@@ -89,6 +89,17 @@ record Use { item: UnknownType }`,
   assert.ok(codes.includes('RCL_TYPE_REFERENCE_MISSING'));
 });
 
+test('P3 Type Module Kernel requires an explicit import for qualified cross-module references', () => {
+  const report = compileTypedModuleGraph({
+    'core.rcltype': `module core
+export record User { id: Text }`,
+    'app.rcltype': `module app
+record Session { user: core.User }`,
+  });
+  assert.equal(report.ok, false);
+  assert.ok(report.diagnostics.some(item => item.code === 'RCL_MODULE_NOT_IMPORTED'));
+});
+
 test('P3 Type Module Kernel reads multi-file typed modules and demo emits verified closure', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rcl-type-mod-'));
   fs.writeFileSync(path.join(dir, 'core.rcltype'), sampleSources['core.rcltype']);
