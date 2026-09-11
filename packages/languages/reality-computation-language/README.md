@@ -872,11 +872,11 @@ This closes the typed object/reference/heap line enough to move toward P4 debugg
 
 ## Current typed/native authority boundary
 
-The P3 typed module, package lock, typed RBC object layout, native heap/reference/GC slices, typed native link candidate and native self-host constructor lowering are implemented and locally executable. The typed compiler path accepts `typeModuleSources` or a typed module report, emits source/program/type roots, and the native VM verifies reference/native semantic-state parity. The self-host path now lowers sealed typed record and union constructors, while retaining typed package validation as the type-authority boundary.
+The P3 typed module, package lock, typed RBC object layout, native heap/reference/GC slices, typed native link candidate and native self-host typed lowering are implemented and locally executable. The typed compiler path accepts `typeModuleSources` or a typed module report, emits source/program/type roots, and the native VM verifies reference/native semantic-state parity. The self-host path now lowers sealed typed record/union constructors, record field projection and tagged-union matching, while retaining typed package validation as the type-authority boundary.
 
 The RNCS control-plane authority entry remains intentionally separate: `compileRclSource()` still invokes the native self-host compiler without the typed module graph, and native self-host type resolution plus authority-plan compilation remain open. Use `compileRclTypedCandidate()` or `compileRclTypedAuthorityCandidateFromPackage(..., { selfHosted: true })` for the rooted candidate envelope; it records `candidate_only=true`, `canonical_write_authorized=false` and `native_selfhost_authority_compilation=NOT_ENTERED`. This is a candidate execution seam, not a canonical authority or production release path.
 
-Evidence: `docs/verification/RNCS_RCL_TYPED_NATIVE_LINK_AUDIT_v0.1.json`, `docs/verification/RNCS_RCL_TYPED_NATIVE_LINK_CANDIDATE_v0.1.json` and `docs/verification/RNCS_RCL_TYPED_SELFHOST_CONSTRUCTOR_CANDIDATE_v0.1.json`.
+Evidence: `docs/verification/RNCS_RCL_TYPED_NATIVE_LINK_AUDIT_v0.1.json`, `docs/verification/RNCS_RCL_TYPED_NATIVE_LINK_CANDIDATE_v0.1.json`, `docs/verification/RNCS_RCL_TYPED_SELFHOST_CONSTRUCTOR_CANDIDATE_v0.1.json` and `docs/verification/RNCS_RCL_TYPED_SELFHOST_ACCESS_PATTERN_CANDIDATE_v0.1.json`.
 
 
 ## v0.38.0-alpha.1 — Observable Debug Replay Platform Seed

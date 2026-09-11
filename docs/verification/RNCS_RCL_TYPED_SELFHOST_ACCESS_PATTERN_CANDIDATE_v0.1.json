@@ -1,0 +1,144 @@
+{
+  "format": "rncs.rcl-typed-selfhost-access-pattern-candidate-evidence.v0.1",
+  "version": "0.1.0-alpha.1",
+  "status": "CANDIDATE_EXECUTION_VERIFIED",
+  "source": {
+    "checkout": "rncs-visual-factory-v01",
+    "branch": "codex/rncs-engine-stack-archaeology-v01",
+    "sourceCommit": "fb621fe5b6fd76929c3fd210f8f8c5a47d0b7dcb",
+    "packagePath": "packages/languages/reality-computation-language/examples/typed-access-pattern",
+    "rclPackage": "@taowind/reality-computation-language@0.94.0-alpha.1",
+    "controlPlanePackage": "@taowind/rncs-rcl-control-plane@0.4.0-alpha.1",
+    "authorityBoundary": "The native self-host compiler now lowers the sealed typed access-pattern slice into existing RBC field and tagged-union access instructions for candidate execution; independent native type-module resolution, authority-plan compilation, canonical write and promotion remain separate."
+  },
+  "compilerArtifact": {
+    "path": "packages/languages/reality-computation-language/selfhost/compiler.rbc",
+    "sha256": "2274ee767492a4aad350ec06c73e1c11965d2e601cc6997d3eda39e9175f47d4",
+    "sourceSha256": "3407e4bc51cbdf965cf5f3b336e78229c57864568745a376b3013124b2bff48c",
+    "bytes": 410838,
+    "fixedPoint": true,
+    "c0C1C2ByteIdentical": true,
+    "nativePeakStackDepth": 952,
+    "nativePeakCallFrames": 235
+  },
+  "seam": {
+    "typedLinkFormat": "rcl.typed-native-link.v0.1",
+    "typedReplayFormat": "rcl.typed-native-link-replay.v0.1",
+    "compilerKind": "rcl-general-selfhost-typed-lowering",
+    "semanticOwners": {
+      "sealedTypeValidation": "RCL typed package/type-module kernel",
+      "selfhostTypedLowering": "RCL self-host compiler",
+      "typedAccessExecution": "RCL RBC/native VM",
+      "replayAndCandidateAdmission": "RCL typed-link kernel; RNCS control-plane authority remains separate",
+      "canonicalAuthority": "Not entered by this candidate"
+    }
+  },
+  "archaeology": {
+    "existingRuntimeSurface": "The reference typed compiler and native VM already own MAKE_TYPED_RECORD, MAKE_TYPED_UNION, GET_TYPED_FIELD, IS_UNION_VARIANT and GET_UNION_PAYLOAD; the existing typed-access-pattern example already proved the reference semantic map and runtime behavior.",
+    "previousGap": "The self-host compiler could lower sealed typed record and union constructors but could not consume typed values through field projection or tagged-union match branches.",
+    "reuseDecision": "Reuse the existing typed AST shapes, semantic validation, RBC opcodes, native VM, typed-link receipt and replay path. Add only parser, canonical, validation, pool, emitter and typed-expression rewrite support in the self-host compiler.",
+    "loweringScope": "Top-level facet and reckon expressions are rewritten when the program contains an external typed facet. Subjects, warrants, rules and domain-specific extra sections are retained but are not independently typed-module-resolved by this change.",
+    "independentTypeResolution": "Not implemented in the native self-host compiler; field, variant, payload and exhaustiveness validation remains in the sealed typed package/link precheck."
+  },
+  "positiveEvidence": [
+    "The existing typed-access-pattern source produces one typed record field projection and one exhaustive tagged-union match with two variant branches.",
+    "The checked-in self-host compiler reaches a native fixed point: C0, C1 and C2 are byte-identical at the recorded compiler artifact root.",
+    "The self-host access-pattern bytecode contains two typed constructors and five access/match instructions; typed opcode signature parity with the JavaScript reference compiler is true.",
+    "The existing native VM reproduces reference semantic state, verifies the native state root and preserves reference/native semantic parity.",
+    "The sealed typed-link replay reproduces the self-host bytecode execution and binds the replay root to the typed-link root.",
+    "The candidate remains candidate-only with canonical_write_authorized=false and native_authority_plan=NOT_COMPILED_BY_TYPED_LINK."
+  ],
+  "negativeEvidence": [
+    "Self-host bytecode identity with the JavaScript reference compiler is not claimed; only typed opcode signature parity and runtime semantic/root parity are evidenced.",
+    "The native self-host compiler does not independently consume the .rcltype graph or package lock, and compileRclSource() still does not enter native self-host typed authority compilation.",
+    "Typed rewriting is scoped to top-level facets and reckons in this candidate; broader subject/rule/domain typed scope closure remains open.",
+    "No canonical world mutation, authority commit, promotion, physical-device result, production deployment, performance curve or K400 PASS is established."
+  ],
+  "execution": {
+    "commands": [
+      "npm run build:selfhost-compiler",
+      "node --test --test-concurrency=1 tests/selfhost-toolchain.test.mjs tests/general-selfhost-fixedpoint.test.mjs tests/type-constructor-lowering.test.mjs tests/typed-access-pattern.test.mjs tests/typed-bytecode-layout.test.mjs tests/typed-native-link.test.mjs",
+      "npm test -- --runInBand (packages/control/rncs-rcl-control-plane)",
+      "npm test (packages/languages/reality-computation-language)",
+      "Direct candidate run: compileTypedNativeLink(DEFAULT_TYPED_ACCESS_SOURCE, { typeModuleSources: DEFAULT_TYPED_ACCESS_TYPE_MODULES, selfHosted: true }) + replayTypedNativeLink()"
+    ],
+    "results": {
+      "selfhostCompilerBuild": "PASS: fixed-point artifact rebuilt; C0/C1/C2 byte-identical; native C0->C1 and C1->C2 status ok",
+      "selfhostRegressionSelection": "32/32 PASS",
+      "rclControlPlaneSuite": "23/23 PASS",
+      "fullRclSuite": "623 tests / 622 pass / 0 fail / 1 skip",
+      "nativeDistributionPreflight": "PASS: PREBUILT_NATIVE_ARTIFACTS_VERIFIED; Zig unavailable, checked Windows distribution source/artifact hashes",
+      "selfhostTypedAccessLink": "PASS: CANDIDATE_EXECUTION_VERIFIED",
+      "selfhostTypedAccessReplay": "PASS: CANDIDATE_REPLAY_VERIFIED",
+      "sealedTypeValidationBoundary": "PASS: existing typed compiler/link precheck remains required; no independent native type-module resolution claim"
+    }
+  },
+  "receipt": {
+    "sourceRoot": "5fb1dd323981224a6c4b780d667735875626b5a8e3453ed84d1f0cd64f11a6dc",
+    "sourceBytes": 319,
+    "typeModuleRoot": "f8ac55c3f80c8739021d6c4c415f83de638a881b78b1ac37e2d0c1f356f70e96",
+    "typeModuleReportRoot": "6a41ed1b97f810d5ba45b8583d0ab0af2c866ccf7b85a61e06539661a8fe3e6c",
+    "programRoot": "3dcef7325aa2eff26b85ae6a1c10374a17ab015691742dc537a3368eb457bdbd",
+    "semanticMapRoot": "1e5384d0c996967deeb602c1f5d564e39e95d972caae254f9e4ccf1cb1661599",
+    "typeBindingsRoot": "b63247dccecc8a4fb03a0098e5e6b4879a91c41dd7c8d6f707d34e8850e681f1",
+    "sourceMapRoot": "9cbc35fd1f69e397f2604ebe0f2c45959cc7edb1a79fac3861fcb2809d3a1eba",
+    "referenceBytecodeRoot": "856547de38a02e32686e595cb215701cdc8e3bb2e4edd9f8c4746fdd079e71a9",
+    "selfhostBytecodeRoot": "db18d757672d1dcc16d565053f34a1efd6fd9d3fc81068d3c96e323bf110af85",
+    "bytecodeBytes": 710,
+    "bytecodeInstructions": 25,
+    "constructorCount": 2,
+    "fieldAccessCount": 1,
+    "matchCount": 1,
+    "typedInstructionCount": 7,
+    "accessInstructionCount": 5,
+    "typedOpcodeParity": true,
+    "referenceSemanticStateRoot": "c3dc11b908608311056c4099be054923113d564eb4ece18409ca5f930bd192cb",
+    "nativeSemanticStateRoot": "c3dc11b908608311056c4099be054923113d564eb4ece18409ca5f930bd192cb",
+    "nativeStateRoot": "a5a47070f52ae1c2fbf9aebd5dafe1558d9f10d65c95c74565b93f529965775b",
+    "nativeStateRootVerified": true,
+    "nativeStateRootParity": true,
+    "semanticStateParity": true,
+    "typedAccessInstructions": [
+      { "opcode": "GET_TYPED_FIELD", "argument": "payload" },
+      { "opcode": "IS_UNION_VARIANT", "argument": "Ok" },
+      { "opcode": "GET_UNION_PAYLOAD", "argument": 0 },
+      { "opcode": "IS_UNION_VARIANT", "argument": "Err" },
+      { "opcode": "GET_UNION_PAYLOAD", "argument": 0 }
+    ],
+    "typedLinkRoot": "663f8d128511ebd98ee6f9a6e7df388b70e4e2c613f20c7968d6980a764265a0",
+    "typedReplayRoot": "afa4201796d1a905976ec8207a9e63a73d6a2bf998530f22e9c8d9aa37236749",
+    "authority": {
+      "candidateOnly": true,
+      "canonicalWriteAuthorized": false,
+      "commitRequiresExplicitRncsAuthority": true,
+      "nativeAuthorityPlan": "NOT_COMPILED_BY_TYPED_LINK",
+      "nativeSelfhostTypeResolution": "SEALED_TYPED_PACKAGE_PRECHECK_ONLY"
+    }
+  },
+  "rclGap": {
+    "id": "RCL_GAP_RNCS_RCL_TYPED_MODULE_NATIVE_AUTHORITY_LINK",
+    "subgap": "RCL_GAP_RCL_SELFHOST_TYPED_SCOPE_AND_TYPE_GRAPH_CLOSURE",
+    "task": "Carry the sealed .rcltype graph, package lock and typed-link contract into native self-host type resolution and authority-plan compilation, then extend typed rewriting across subject/rule/domain scopes without duplicating RCL semantics.",
+    "missingCapability": "Independent native type-module graph resolution, package-root binding, typed semantic validation and authority-plan root binding for the native self-host path; broader typed scope lowering beyond top-level facets and reckons.",
+    "workaround": "Use the sealed package/type-module precheck, the native self-host typed lowering candidate, existing RBC/native VM execution and sealed typed-link replay; keep RNCS authority planning and canonical mutation outside this compiler path.",
+    "donor": "Existing RCL type-module kernel, typed compiler semantic map, typed RBC/native VM, typed heap/reference ABI, package lock and RNCS control-plane candidate path; no external donor promoted.",
+    "gapType": "language-runtime-authority-link",
+    "generality": "Reusable for World Body IR, input/network commands, asset contracts, behavior contracts, UI state and generated interaction graphs.",
+    "candidateAbsorption": "Next bind a sealed type-module/link input to native self-host compilation, compare independent native and reference semantic maps, then prove authority-plan root continuity before any canonical mutation.",
+    "affectedK400Cells": ["EXPRESS", "COMPILE", "LOWER", "EXECUTE", "CORRECT", "ROBUST", "EVIDENCE"]
+  },
+  "gateAssessment": {
+    "EXPRESS": "CANDIDATE_EVIDENCE",
+    "COMPILE": "CANDIDATE_EVIDENCE",
+    "LOWER": "CANDIDATE_EVIDENCE",
+    "EXECUTE": "CANDIDATE_EVIDENCE",
+    "CORRECT": "CANDIDATE_EVIDENCE",
+    "ROBUST": "CANDIDATE_EVIDENCE",
+    "PERFORMANCE": "NOT_RUN",
+    "AI_GENERATE": "NOT_APPLICABLE",
+    "EVIDENCE": "CANDIDATE_EVIDENCE",
+    "promotion": "NO_K400_PASS"
+  },
+  "decision": "SEALED_TYPED_ACCESS_PATTERN_NATIVE_SELFHOST_LOWERING_REPLAY_AND_REFERENCE_NATIVE_PARITY_VERIFIED_FULL_NATIVE_TYPE_GRAPH_SCOPE_CLOSURE_AND_CANONICAL_AUTHORITY_OPEN",
+  "evidenceRoot": "2a7d44d72de98f5e3cf86edf1d7a9708cd0cf34a815cb417c0c221e4122ada37"
+}
