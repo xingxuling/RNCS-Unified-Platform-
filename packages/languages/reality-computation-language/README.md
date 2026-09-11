@@ -691,6 +691,14 @@ const candidate = await compileTypedNativeLinkFromPackage(packageDir);
 
 The link refuses a missing or drifted lockfile and binds the manifest entry hash, typed-module root, program root and `packageLockRoot` into the candidate receipt. This remains candidate execution only; native RCL authority-plan compilation, canonical mutation and promotion still require their separate explicit RNCS authority path.
 
+The package link can now select the RCL native self-host compiler for typed constructor lowering:
+
+```js
+const candidate = await compileTypedNativeLinkFromPackage(packageDir, { selfHosted: true });
+```
+
+This path reuses the sealed package/type-module precheck, lowers record and union constructors to the existing `MAKE_TYPED_RECORD` and `MAKE_TYPED_UNION` RBC instructions, and compares the typed opcode signature with the reference compiler before native execution. The fixed checked-in package run is `CANDIDATE_EXECUTION_VERIFIED`: 376-byte RBC, 8 instructions, 2 typed instructions, `typed_opcode_parity=true`, native/reference semantic-state parity and verified native state root. Byte identity is not claimed because the native self-host compiler does not yet consume the full `.rcltype` semantic IR. Evidence: `docs/verification/RNCS_RCL_TYPED_SELFHOST_CONSTRUCTOR_CANDIDATE_v0.1.json`.
+
 A downstream consumer can replay the sealed link without recompiling source:
 
 ```js
@@ -864,11 +872,11 @@ This closes the typed object/reference/heap line enough to move toward P4 debugg
 
 ## Current typed/native authority boundary
 
-The P3 typed module, package lock, typed RBC object layout, native heap/reference/GC slices and typed native link candidate are implemented and locally executable. The typed compiler path accepts `typeModuleSources` or a typed module report, emits source/program/type roots, and the native VM verifies reference/native semantic-state parity.
+The P3 typed module, package lock, typed RBC object layout, native heap/reference/GC slices, typed native link candidate and native self-host constructor lowering are implemented and locally executable. The typed compiler path accepts `typeModuleSources` or a typed module report, emits source/program/type roots, and the native VM verifies reference/native semantic-state parity. The self-host path now lowers sealed typed record and union constructors, while retaining typed package validation as the type-authority boundary.
 
-The RNCS control-plane authority entry remains intentionally separate: `compileRclSource()` still invokes the native self-host compiler and does not consume the typed module graph. Use `compileRclTypedCandidate()` for the rooted candidate envelope; it records `native_authority_plan=NOT_COMPILED_BY_TYPED_LINK`, `candidate_only=true` and `canonical_write_authorized=false`. This is a candidate execution seam, not a canonical authority or production release path.
+The RNCS control-plane authority entry remains intentionally separate: `compileRclSource()` still invokes the native self-host compiler without the typed module graph, and native self-host type resolution plus authority-plan compilation remain open. Use `compileRclTypedCandidate()` or `compileRclTypedAuthorityCandidateFromPackage(..., { selfHosted: true })` for the rooted candidate envelope; it records `candidate_only=true`, `canonical_write_authorized=false` and `native_selfhost_authority_compilation=NOT_ENTERED`. This is a candidate execution seam, not a canonical authority or production release path.
 
-Evidence: `docs/verification/RNCS_RCL_TYPED_NATIVE_LINK_AUDIT_v0.1.json` and `docs/verification/RNCS_RCL_TYPED_NATIVE_LINK_CANDIDATE_v0.1.json`.
+Evidence: `docs/verification/RNCS_RCL_TYPED_NATIVE_LINK_AUDIT_v0.1.json`, `docs/verification/RNCS_RCL_TYPED_NATIVE_LINK_CANDIDATE_v0.1.json` and `docs/verification/RNCS_RCL_TYPED_SELFHOST_CONSTRUCTOR_CANDIDATE_v0.1.json`.
 
 
 ## v0.38.0-alpha.1 — Observable Debug Replay Platform Seed

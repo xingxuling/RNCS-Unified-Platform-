@@ -1,0 +1,136 @@
+{
+  "format": "rncs.rcl-typed-selfhost-constructor-candidate-evidence.v0.1",
+  "version": "0.1.0-alpha.1",
+  "status": "CANDIDATE_EXECUTION_VERIFIED",
+  "source": {
+    "checkout": "rncs-visual-factory-v01",
+    "branch": "codex/rncs-engine-stack-archaeology-v01",
+    "sourceCommit": "6ed7423bdc0d6ccccf881786fbe3c00a0d87f5bb",
+    "packagePath": "packages/languages/reality-computation-language/examples/typed-package",
+    "rclPackage": "@taowind/reality-computation-language@0.94.0-alpha.1",
+    "controlPlanePackage": "@taowind/rncs-rcl-control-plane@0.4.0-alpha.1",
+    "authorityBoundary": "The native self-host compiler now lowers sealed typed record and union constructors into typed RBC for candidate execution; native type-module resolution, native authority-plan compilation, canonical write and promotion remain separate."
+  },
+  "compilerArtifact": {
+    "path": "packages/languages/reality-computation-language/selfhost/compiler.rbc",
+    "sha256": "04357a0a3a70a6143a406da893df7e19d2719be2c735bd0b2ddc14bce9093580",
+    "sourceSha256": "022c6c5428e6899fd4b2de1607248c1637a1c5acd39ff74996b1a3e1816586b7",
+    "bytes": 383944,
+    "fixedPoint": true,
+    "c0C1C2ByteIdentical": true,
+    "nativePeakStackDepth": 952,
+    "nativePeakCallFrames": 235
+  },
+  "seam": {
+    "typedLinkFormat": "rcl.typed-native-link.v0.1",
+    "typedReplayFormat": "rcl.typed-native-link-replay.v0.1",
+    "authorityCandidateFormat": "rncs.rcl-typed-authority-candidate.v0.1",
+    "compilerKind": "rcl-general-selfhost-typed-constructor-lowering",
+    "semanticOwners": {
+      "sealedTypeValidation": "RCL typed package/type-module kernel",
+      "selfhostConstructorLowering": "RCL self-host compiler",
+      "typedNativeExecution": "RCL RBC/native VM",
+      "replayAndCandidateAdmission": "RCL typed-link kernel and RNCS RCL control plane",
+      "canonicalAuthority": "Not entered by this candidate"
+    }
+  },
+  "archaeology": {
+    "nativeVmReuse": "The existing native VM already owns MAKE_TYPED_RECORD and MAKE_TYPED_UNION; this change adds self-host parser, canonical expression and emission support for the constructor surface.",
+    "previousGap": "compileSourceSelfHosted() could compile the native-core subset but rejected typed record literals and generic typed facet declarations before reaching the typed native link.",
+    "reuseDecision": "The sealed typed package graph remains the validation and root-binding boundary; the self-host compiler emits the existing typed RBC instructions and the existing native VM/replay/control-plane paths are reused.",
+    "independentTypeResolution": "Not implemented in the native self-host compiler; type-module field, variant and payload validation remains in the sealed package/link precheck."
+  },
+  "positiveEvidence": [
+    "The checked-in typed package lock remains the root authority for entry source, type-module and program roots.",
+    "The native self-host compiler lowers the typed package's record and union constructors into two typed RBC instructions.",
+    "Typed opcode signature parity with the existing JavaScript reference compiler is true; bytecode identity is not claimed because the self-host compiler does not yet consume the type-module semantic IR.",
+    "The existing native VM reproduces reference semantic state, verifies native state roots and preserves native/reference parity.",
+    "The sealed replay reproduces the self-host bytecode execution and the RNCS package-to-authority candidate path binds the self-host typed-link root.",
+    "The candidate remains candidate-only with canonical_write_authorized=false and native_selfhost_authority_compilation=NOT_ENTERED."
+  ],
+  "negativeEvidence": [
+    "A missing record field is rejected by the sealed typed validation path; self-host lowering does not bypass the typed package graph.",
+    "compileRclSource() still does not receive the .rcltype graph and does not enter native self-host typed authority compilation; the authority path remains blocked for this typed source.",
+    "No canonical world mutation, commit, promotion, physical device result, production deployment or K400 PASS is established."
+  ],
+  "execution": {
+    "commands": [
+      "npm run build:selfhost-compiler",
+      "node --test --test-concurrency=1 tests/selfhost-toolchain.test.mjs tests/general-selfhost-fixedpoint.test.mjs tests/type-constructor-lowering.test.mjs tests/typed-bytecode-layout.test.mjs tests/typed-native-link.test.mjs",
+      "node --test --test-concurrency=1 tests/typed-native-link.test.mjs",
+      "node --test --test-concurrency=1 packages/control/rncs-rcl-control-plane/tests/control-plane.test.mjs",
+      "npm test --workspace @taowind/reality-computation-language",
+      "Direct Node run: compileTypedNativeLinkFromPackage(..., { selfHosted: true }) + replayTypedNativeLink() + compileRclTypedAuthorityCandidateFromPackage(..., { selfHosted: true })"
+    ],
+    "results": {
+      "selfhostCompilerBuild": "PASS: fixed-point artifact rebuilt; C0/C1/C2 byte-identical",
+      "selfhostRegressionSelection": "25/25 PASS",
+      "typedNativeLinkSuite": "9/9 PASS",
+      "rclControlPlaneSuite": "23/23 PASS",
+      "fullRclSuite": "622 tests / 621 pass / 0 fail / 1 skip",
+      "nativeDistributionPreflight": "PASS: PREBUILT_NATIVE_ARTIFACTS_VERIFIED; Zig unavailable, checked Windows distribution source/artifact hashes",
+      "selfhostTypedLink": "PASS: CANDIDATE_EXECUTION_VERIFIED",
+      "selfhostTypedReplay": "PASS: CANDIDATE_REPLAY_VERIFIED",
+      "selfhostAuthorityCandidate": "PASS: CANDIDATE_AUTHORITY_PLAN_VERIFIED; verify errors=[]",
+      "sealedTypeValidationNegative": "PASS: missing record field rejected before self-host execution"
+    }
+  },
+  "receipt": {
+    "sourceRoot": "8e2b0f4dc47c1710c893bb9e1b102ab067c186f9325acc3d10d88edba2479293",
+    "sourceBytes": 167,
+    "packageLockRoot": "9a387d627d74425cfdcc4d923befb308a25342c6b6868f1c1d9441a4ffe64ec2",
+    "typeModuleRoot": "db946a8588cd523c468ec972e134c466fec0872e3b7753db1c84e90a6bf29a00",
+    "programRoot": "d042acfbb3484fa16c11551190bcab1e994a913f270aba17299c59654cb52bbf",
+    "referenceBytecodeRoot": "1f7d81325e3957ced042169db65f25e35727195e5a991342ec28443ccb25523c",
+    "selfhostBytecodeRoot": "0916cabdcfb34167dc828ca474934d780657286f5b88aeb3e82fd02eaedb9fa2",
+    "bytecodeBytes": 376,
+    "bytecodeInstructions": 8,
+    "typedInstructionCount": 2,
+    "typedOpcodeParity": true,
+    "referenceSemanticStateRoot": "bc81446c0eba8fcad5cc0c6b1afda7fea406c584b120519f71cbbdd057c5b09a",
+    "nativeSemanticStateRoot": "bc81446c0eba8fcad5cc0c6b1afda7fea406c584b120519f71cbbdd057c5b09a",
+    "nativeStateRoot": "efb7cc27959ab6858cbd0e90a67aff6f6535bb6ba6afdb4b28b1c1ed933606c4",
+    "nativeStateRootVerified": true,
+    "nativeStateRootParity": true,
+    "semanticStateParity": true,
+    "typedLinkRoot": "360ef7a26a5cf64708a3d0d266f787e3d33a272b4fc36946a7ed7bc0860f824c",
+    "typedReplayRoot": "7f634dd393bc9c4c754ee64d4c8df88d00a2f563aa406c83da67ccdfc9a54d41",
+    "typedCandidateRoot": "bdc8913d7eb8cf1e3a8b832c9d4339cf4149c2f08bb3128241f595031de48fb3",
+    "authorityReplayRoot": "3e2a753de5b1fa3296b4d726f76a301260b097e72b0327f428a160db8c8ec10b",
+    "authorityPlanRoot": "7049bc726b0eedd669198b8b9ab6e433639f984e502c3ba547d1a0279cfbe533",
+    "authorityCandidateRoot": "bf51c4f8d22a55801005033d68f9a2407bfba3b2d9f2bbeac25b17b6080ebc85",
+    "authority": {
+      "candidateOnly": true,
+      "canonicalWriteAuthorized": false,
+      "commitRequiresExplicitRncsAuthority": true,
+      "nativeAuthorityPlan": "CONSUMED_SEALED_TYPED_LINK_REPLAY",
+      "nativeSelfhostAuthorityCompilation": "NOT_ENTERED"
+    }
+  },
+  "rclGap": {
+    "id": "RCL_GAP_RNCS_FIRST_CLASS_PHYSICAL_COMMAND_PRIMITIVE",
+    "subgap": "RCL_GAP_RNCS_RCL_TYPED_MODULE_NATIVE_AUTHORITY_LINK",
+    "task": "Carry the sealed typed module/link contract into native self-host type resolution and authority-plan compilation without duplicating RCL semantics or weakening candidate/commit gates.",
+    "missingCapability": "Independent native .rcltype graph resolution, typed constructor validation, typed-link receipt consumption and authority-plan root binding in the native self-host authority path.",
+    "workaround": "Use the sealed package/type-module precheck, native self-host constructor lowering, existing native VM replay and existing RNCS authority planner as candidate-only stages.",
+    "donor": "Existing RCL type-module kernel, typed compiler semantic map, typed RBC/native VM, typed heap/reference ABI, package lock and native C runtime; no external donor promoted.",
+    "gapType": "language-runtime-authority-link",
+    "generality": "Reusable for physical command profiles, World Body IR, input/network commands, asset contracts and behavior contracts.",
+    "candidateAbsorption": "Next absorb the sealed type-module/link input into native self-host resolution, prove field/variant/reference/native parity, then bind the authority-plan root before any canonical mutation.",
+    "affectedK400Cells": ["EXPRESS", "COMPILE", "LOWER", "EXECUTE", "CORRECT", "ROBUST", "EVIDENCE"]
+  },
+  "gateAssessment": {
+    "EXPRESS": "CANDIDATE_EVIDENCE",
+    "COMPILE": "CANDIDATE_EVIDENCE",
+    "LOWER": "CANDIDATE_EVIDENCE",
+    "EXECUTE": "CANDIDATE_EVIDENCE",
+    "CORRECT": "CANDIDATE_EVIDENCE",
+    "ROBUST": "CANDIDATE_EVIDENCE",
+    "PERFORMANCE": "NOT_RUN",
+    "AI_GENERATE": "NOT_APPLICABLE",
+    "EVIDENCE": "CANDIDATE_EVIDENCE",
+    "promotion": "NO_K400_PASS"
+  },
+  "decision": "SEALED_TYPED_PACKAGE_PRECHECK_NATIVE_SELFHOST_CONSTRUCTOR_LOWERING_REPLAY_AND_AUTHORITY_CANDIDATE_VERIFIED_FULL_NATIVE_TYPE_RESOLUTION_AND_CANONICAL_COMMIT_OPEN",
+  "evidenceRoot": "b7740cc8da41f65030663bd23c466f774deae29deda89dd02905f5d403f15fca"
+}
