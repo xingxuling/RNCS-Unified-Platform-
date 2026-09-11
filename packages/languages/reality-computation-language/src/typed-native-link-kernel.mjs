@@ -174,7 +174,7 @@ export async function compileTypedNativeLink(source, options = {}) {
       },
       package: packageInfo,
       compiler: {
-        kind: useSelfHostedCompiler ? 'rcl-general-selfhost-typed-constructor-lowering' : 'rcl-js-typed-lowering',
+        kind: useSelfHostedCompiler ? 'rcl-general-selfhost-typed-lowering' : 'rcl-js-typed-lowering',
         reference_bytecode_sha256: sha256Buffer(referenceBytecode),
         typed_opcode_parity: typedOpcodeParity,
       },
@@ -225,7 +225,7 @@ export async function compileTypedNativeLink(source, options = {}) {
         native_selfhost_type_resolution: useSelfHostedCompiler ? 'SEALED_TYPED_PACKAGE_PRECHECK_ONLY' : 'NOT_APPLICABLE',
       },
       boundary: useSelfHostedCompiler
-        ? 'Candidate typed link with native self-hosted constructor lowering: the sealed typed package graph performs field/variant/type validation before the self-hosted compiler consumes source and emits typed RBC; full independent native type-module resolution, native RCL authority-plan compilation, canonical mutation and promotion remain separate.'
+        ? 'Candidate typed link with native self-hosted typed lowering: the sealed typed package graph performs field/variant/type validation before the self-hosted compiler consumes source and emits typed RBC; full independent native type-module resolution, native RCL authority-plan compilation, canonical mutation and promotion remain separate.'
         : 'Candidate typed link only: type-module graph, typed compiler, RBC/native VM and reference-state parity are rooted; native RCL authority-plan compilation, canonical mutation and promotion remain separate.',
     };
     const receipt = { ...base, link_root: realityRoot(base) };
@@ -374,7 +374,7 @@ export function verifyTypedNativeLink(receipt, options = {}) {
   if (receipt.execution?.native?.state_root_verified !== true) errors.push('RCL_TYPED_LINK_NATIVE_STATE_ROOT_UNVERIFIED');
   if (receipt.execution?.native?.state_root_parity !== true) errors.push('RCL_TYPED_LINK_NATIVE_STATE_ROOT_PARITY_REQUIRED');
   if (receipt.execution?.semantic_state_parity !== true) errors.push('RCL_TYPED_LINK_REFERENCE_NATIVE_PARITY_REQUIRED');
-  if (receipt.compiler?.kind === 'rcl-general-selfhost-typed-constructor-lowering' && receipt.compiler?.typed_opcode_parity !== true) errors.push('RCL_TYPED_LINK_SELFHOST_TYPED_OPCODE_PARITY_REQUIRED');
+  if (['rcl-general-selfhost-typed-lowering', 'rcl-general-selfhost-typed-constructor-lowering'].includes(receipt.compiler?.kind) && receipt.compiler?.typed_opcode_parity !== true) errors.push('RCL_TYPED_LINK_SELFHOST_TYPED_OPCODE_PARITY_REQUIRED');
   if (options.source !== undefined && receipt.source?.source_root !== sha256Text(options.source)) errors.push('RCL_TYPED_LINK_SOURCE_ROOT_MISMATCH');
   if (options.typeModuleReport && receipt.type_modules?.ir_root !== options.typeModuleReport.irRoot) errors.push('RCL_TYPED_LINK_TYPE_MODULE_ROOT_MISMATCH');
   const lockRoot = options.packageLockRoot ?? options.packageLock?.lockRoot;

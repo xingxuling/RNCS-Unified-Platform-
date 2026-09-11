@@ -10,6 +10,8 @@ import {
   verifyTypedNativeLink,
   RCL_TYPED_NATIVE_LINK_FORMAT,
   runTypedPackageDemo,
+  DEFAULT_TYPED_ACCESS_SOURCE,
+  DEFAULT_TYPED_ACCESS_TYPE_MODULES,
 } from '../src/index.mjs';
 
 const typeModuleSources = {
@@ -58,13 +60,38 @@ test('P3 typed native link can consume the sealed package through native self-ho
   const result = await compileTypedNativeLink(source, { typeModuleSources, selfHosted: true });
   assert.equal(result.ok, true);
   assert.equal(result.receipt.status, 'CANDIDATE_EXECUTION_VERIFIED');
-  assert.equal(result.receipt.compiler.kind, 'rcl-general-selfhost-typed-constructor-lowering');
+  assert.equal(result.receipt.compiler.kind, 'rcl-general-selfhost-typed-lowering');
   assert.equal(result.receipt.compiler.typed_opcode_parity, true);
   assert.equal(result.receipt.authority.native_selfhost_type_resolution, 'SEALED_TYPED_PACKAGE_PRECHECK_ONLY');
   assert.equal(result.receipt.execution.semantic_state_parity, true);
   assert.equal(result.receipt.execution.native.state_root_parity, true);
   assert.deepEqual(verifyTypedNativeLink(result.receipt, { source, typeModuleReport: result.program.typeModules }), { ok: true, errors: [] });
   const replay = replayTypedNativeLink(result.receipt, result.bytecode, { source, typeModuleReport: result.program.typeModules });
+  assert.equal(replay.ok, true);
+  assert.equal(replay.replay.status, 'CANDIDATE_REPLAY_VERIFIED');
+});
+
+test('P3 self-hosted typed lowering consumes field projection and union match access opcodes', async () => {
+  const result = await compileTypedNativeLink(DEFAULT_TYPED_ACCESS_SOURCE, {
+    typeModuleSources: DEFAULT_TYPED_ACCESS_TYPE_MODULES,
+    selfHosted: true,
+  });
+  assert.equal(result.ok, true);
+  assert.equal(result.receipt.status, 'CANDIDATE_EXECUTION_VERIFIED');
+  assert.equal(result.receipt.compiler.kind, 'rcl-general-selfhost-typed-lowering');
+  assert.equal(result.receipt.compiler.typed_opcode_parity, true);
+  assert.equal(result.receipt.bytecode.typed_instruction_count, 7);
+  assert.equal(result.receipt.execution.semantic_state_parity, true);
+  assert.equal(result.receipt.execution.native.state_root_parity, true);
+  assert.equal(result.receipt.authority.native_selfhost_type_resolution, 'SEALED_TYPED_PACKAGE_PRECHECK_ONLY');
+  assert.deepEqual(verifyTypedNativeLink(result.receipt, {
+    source: DEFAULT_TYPED_ACCESS_SOURCE,
+    typeModuleReport: result.program.typeModules,
+  }), { ok: true, errors: [] });
+  const replay = replayTypedNativeLink(result.receipt, result.bytecode, {
+    source: DEFAULT_TYPED_ACCESS_SOURCE,
+    typeModuleReport: result.program.typeModules,
+  });
   assert.equal(replay.ok, true);
   assert.equal(replay.replay.status, 'CANDIDATE_REPLAY_VERIFIED');
 });
@@ -120,7 +147,7 @@ test('P3 typed native package link can select the native self-hosted lowering pa
   const result = await compileTypedNativeLinkFromPackage(dir, { selfHosted: true });
   assert.equal(result.ok, true);
   assert.equal(result.receipt.package.lock_root, packageDemo.lockRoot);
-  assert.equal(result.receipt.compiler.kind, 'rcl-general-selfhost-typed-constructor-lowering');
+  assert.equal(result.receipt.compiler.kind, 'rcl-general-selfhost-typed-lowering');
   assert.equal(result.receipt.compiler.typed_opcode_parity, true);
   assert.equal(result.receipt.execution.semantic_state_parity, true);
 });

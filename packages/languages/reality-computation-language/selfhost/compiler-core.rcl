@@ -150,6 +150,40 @@ reality RCLGeneralSelfHostCompiler {
 
   reckon record_fields(node : Sequence) -> Sequence = sequence_get(node, 1)
 
+  reckon field_node(name : Text, object : Sequence) -> Sequence =
+    sequence_append(sequence_append(sequence_append(sequence_append(empty_sequence(), "FieldAccessExpr"), name), object), expression_count(object) + 1)
+
+  reckon field_name(node : Sequence) -> Text = sequence_get(node, 1)
+  reckon field_object(node : Sequence) -> Sequence = sequence_get(node, 2)
+
+  reckon match_case_node(variant : Text, bindings : Sequence, expression : Sequence) -> Sequence =
+    sequence_append(sequence_append(sequence_append(empty_sequence(), variant), bindings), expression)
+
+  reckon match_case_variant(node : Sequence) -> Text = sequence_get(node, 0)
+  reckon match_case_bindings(node : Sequence) -> Sequence = sequence_get(node, 1)
+  reckon match_case_expression(node : Sequence) -> Sequence = sequence_get(node, 2)
+
+  reckon match_case_instruction_count(node : Sequence, target_count : Number) -> Number =
+    expression_count(match_case_expression(node)) + 1 + choose(match_case_variant(node) == "_", 0, target_count + 2)
+
+  reckon match_cases_instruction_count(items : Sequence, index : Number, target_count : Number, output : Number) -> Number =
+    choose(index >= length(items), output + 1,
+      match_cases_instruction_count(items, index + 1, target_count,
+        output + match_case_instruction_count(sequence_get(items, index), target_count)))
+
+  reckon match_node(target : Sequence, cases : Sequence) -> Sequence =
+    sequence_append(sequence_append(sequence_append(sequence_append(empty_sequence(), "MatchExpr"), target), cases),
+      match_cases_instruction_count(cases, 0, expression_count(target), 0))
+
+  reckon match_target(node : Sequence) -> Sequence = sequence_get(node, 1)
+  reckon match_cases(node : Sequence) -> Sequence = sequence_get(node, 2)
+
+  reckon union_payload_node(target : Sequence, index : Number) -> Sequence =
+    sequence_append(sequence_append(sequence_append(sequence_append(empty_sequence(), "UnionPayloadExpr"), target), index), expression_count(target) + 1)
+
+  reckon union_payload_target(node : Sequence) -> Sequence = sequence_get(node, 1)
+  reckon union_payload_index(node : Sequence) -> Number = sequence_get(node, 2)
+
   reckon canonical_type_text_from(value : Text, index : Number, output : Text) -> Text =
     choose(index >= length(value), output,
       choose(char_at(value, index) == ".",
@@ -217,17 +251,25 @@ reality RCLGeneralSelfHostCompiler {
   reckon parse_prefix(tokens : Sequence, index : Number) -> Sequence =
     choose(either(token_text_at(tokens, index) == not_operator(), token_text_at(tokens, index) == minus_operator()),
       parse_unary_after(tokens, index, parse_expression(tokens, index + 1, 7)),
+      parse_prefix_atom(tokens, index))
+
+  reckon parse_prefix_atom(tokens : Sequence, index : Number) -> Sequence =
+    choose(token_text_at(tokens, index) == slice_text("matchx", 0, 5),
+      parse_match_expression_after_target(tokens, parse_expression(tokens, index + 1, 0)),
       choose(token_kind_at(tokens, index) == "SYMBOL" and token_text_at(tokens, index) == "{",
         parse_record_expression_after(tokens, parse_record_after_open(tokens, index)),
-        choose(token_kind_at(tokens, index) == "NUMBER",
-          make_node_state(index + 1, literal_node("Number", text(number_from_text(token_text_at(tokens, index))))),
-          choose(token_kind_at(tokens, index) == "STRING",
-            make_node_state(index + 1, literal_node("Text", token_text_at(tokens, index))),
-            choose(either(token_text_at(tokens, index) == "true", token_text_at(tokens, index) == "false"),
-              make_node_state(index + 1, literal_node("Truth", token_text_at(tokens, index))),
-              choose(token_text_at(tokens, index) == "(",
-                parse_parenthesized_after(parse_expression(tokens, index + 1, 0)),
-                parse_identifier_expression(tokens, parse_path(tokens, index))))))))
+        parse_prefix_literal(tokens, index)))
+
+  reckon parse_prefix_literal(tokens : Sequence, index : Number) -> Sequence =
+    choose(token_kind_at(tokens, index) == "NUMBER",
+      make_node_state(index + 1, literal_node("Number", text(number_from_text(token_text_at(tokens, index))))),
+      choose(token_kind_at(tokens, index) == "STRING",
+        make_node_state(index + 1, literal_node("Text", token_text_at(tokens, index))),
+        choose(either(token_text_at(tokens, index) == "true", token_text_at(tokens, index) == "false"),
+          make_node_state(index + 1, literal_node("Truth", token_text_at(tokens, index))),
+          choose(token_text_at(tokens, index) == "(",
+            parse_parenthesized_after(parse_expression(tokens, index + 1, 0)),
+            parse_identifier_expression(tokens, parse_path(tokens, index))))))
 
   reckon parse_unary_after(tokens : Sequence, index : Number, expression_state : Sequence) -> Sequence =
     make_node_state(state_index(expression_state), unary_node(token_text_at(tokens, index), state_node(expression_state)))
@@ -242,6 +284,58 @@ reality RCLGeneralSelfHostCompiler {
 
   reckon parse_identifier_call_after(name : Text, args_state : Sequence) -> Sequence =
     make_node_state(state_index(args_state), call_node(name, state_node(args_state)))
+
+  reckon parse_match_bindings_after(tokens : Sequence, index : Number, output : Sequence) -> Sequence =
+    choose(token_text_at(tokens, index) == ")",
+      make_node_state(index + 1, output),
+      choose(token_text_at(tokens, index) == ",",
+        parse_match_bindings(tokens, index + 1, output),
+        syntax_failure(tokens, index, "RCL_MATCH_BINDINGS")))
+
+  reckon parse_match_bindings(tokens : Sequence, index : Number, output : Sequence) -> Sequence =
+    choose(token_text_at(tokens, index) == ")",
+      make_node_state(index + 1, output),
+      choose(token_kind_at(tokens, index) == "IDENT",
+        parse_match_bindings_after(tokens, index + 1, sequence_append(output, token_text_at(tokens, index))),
+        syntax_failure(tokens, index, "RCL_MATCH_BINDING")))
+
+  reckon parse_match_case_after_bindings(tokens : Sequence, variant : Text, bindings_state : Sequence, output : Sequence) -> Sequence =
+    choose(token_text_at(tokens, state_index(bindings_state)) == "->",
+      parse_match_case_after_arrow(tokens, variant, state_node(bindings_state), state_index(bindings_state) + 1, output),
+      syntax_failure(tokens, state_index(bindings_state), "RCL_MATCH_ARROW"))
+
+  reckon parse_match_case_after_arrow(tokens : Sequence, variant : Text, bindings : Sequence, index : Number, output : Sequence) -> Sequence =
+    parse_match_case_after_expression(tokens, variant, bindings, parse_expression(tokens, index, 0), output)
+
+  reckon parse_match_case_after_expression(tokens : Sequence, variant : Text, bindings : Sequence, expression_state : Sequence, output : Sequence) -> Sequence =
+    parse_match_cases(tokens, state_index(expression_state),
+      sequence_append(output, match_case_node(variant, bindings, state_node(expression_state))))
+
+  reckon parse_match_case(tokens : Sequence, index : Number, output : Sequence) -> Sequence =
+    choose(token_kind_at(tokens, index) == "IDENT",
+      choose(token_text_at(tokens, index + 1) == "(",
+        parse_match_case_after_bindings(tokens, token_text_at(tokens, index),
+          parse_match_bindings(tokens, index + 2, empty_sequence()), output),
+        parse_match_case_after_bindings(tokens, token_text_at(tokens, index),
+          make_node_state(index + 1, empty_sequence()), output)),
+      syntax_failure(tokens, index, "RCL_MATCH_VARIANT"))
+
+  reckon parse_match_cases(tokens : Sequence, index : Number, output : Sequence) -> Sequence =
+    choose(token_text_at(tokens, index) == "}", make_node_state(index + 1, output),
+      choose(token_text_at(tokens, index) == ",",
+        parse_match_cases(tokens, index + 1, output),
+        parse_match_case(tokens, index, output)))
+
+  reckon parse_match_expression_after_target(tokens : Sequence, target_state : Sequence) -> Sequence =
+    choose(token_text_at(tokens, state_index(target_state)) == "{",
+      parse_match_expression_after_open(tokens, state_node(target_state), state_index(target_state) + 1),
+      syntax_failure(tokens, state_index(target_state), "RCL_MATCH_OPEN"))
+
+  reckon parse_match_expression_after_open(tokens : Sequence, target : Sequence, index : Number) -> Sequence =
+    parse_match_expression_after_cases(parse_match_cases(tokens, index, empty_sequence()), target)
+
+  reckon parse_match_expression_after_cases(cases_state : Sequence, target : Sequence) -> Sequence =
+    make_node_state(state_index(cases_state), match_node(target, state_node(cases_state)))
 
   reckon parse_binary_tail(tokens : Sequence, left : Sequence, index : Number, minimum : Number) -> Sequence =
     choose(either(binary_precedence(token_text_at(tokens, index)) < minimum, binary_precedence(token_text_at(tokens, index)) == 0),
@@ -259,6 +353,132 @@ reality RCLGeneralSelfHostCompiler {
 
   reckon parse_expression_after_prefix(tokens : Sequence, minimum : Number, prefix_state : Sequence) -> Sequence =
     parse_binary_tail(tokens, state_node(prefix_state), state_index(prefix_state), minimum)
+
+  reckon typed_external_facet_type(value : Text) -> Truth = contains(value, ".") or contains(value, "::")
+
+  reckon typed_projection_base(items : Sequence, index : Number, path : Text, best : Text) -> Text =
+    choose(index >= length(items), best,
+      typed_projection_base(items, index + 1, path,
+        choose(typed_external_facet_type(facet_type(sequence_get(items, index)))
+            and starts_with(path, facet_path(sequence_get(items, index)) + ".")
+            and length(facet_path(sequence_get(items, index))) > length(best),
+          facet_path(sequence_get(items, index)), best)))
+
+  reckon typed_projection_fields(value : Text, output : Sequence) -> Sequence =
+    choose(value == "", output,
+      choose(contains(value, "."),
+        typed_projection_fields(split_after(value, "."), sequence_append(output, split_before(value, "."))),
+        sequence_append(output, value)))
+
+  reckon rewrite_projection_fields(items : Sequence, index : Number, object : Sequence) -> Sequence =
+    choose(index >= length(items), object,
+      rewrite_projection_fields(items, index + 1,
+        field_node(sequence_get(items, index), object)))
+
+  reckon rewrite_typed_path_with_base(path : Text, base : Text, facets : Sequence) -> Sequence =
+    rewrite_projection_fields(typed_projection_fields(split_after(path, base + "."), empty_sequence()), 0, path_node(base))
+
+  reckon rewrite_typed_path(path : Text, facets : Sequence) -> Sequence =
+    choose(typed_projection_base(facets, 0, path, "") == "", path_node(path),
+      rewrite_typed_path_with_base(path, typed_projection_base(facets, 0, path, ""), facets))
+
+  reckon rewrite_typed_expression_array(items : Sequence, index : Number, facets : Sequence, locals : Sequence, output : Sequence) -> Sequence =
+    choose(index >= length(items), output,
+      rewrite_typed_expression_array(items, index + 1, facets, locals,
+        sequence_append(output, rewrite_typed_expression(sequence_get(items, index), facets, locals))))
+
+  reckon append_text_items(items : Sequence, index : Number, output : Sequence) -> Sequence =
+    choose(index >= length(items), output,
+      append_text_items(items, index + 1, sequence_append(output, sequence_get(items, index))))
+
+  reckon rewrite_pattern_expression(node : Sequence, target : Sequence, bindings : Sequence) -> Sequence =
+    choose(expr_kind(node) == "PathExpr" and find_text(bindings, 0, expr_text(node)) >= 0,
+      union_payload_node(target, find_text(bindings, 0, expr_text(node))),
+      choose(expr_kind(node) == "UnaryExpr",
+        unary_node(expr_text(node), rewrite_pattern_expression(expr_left(node), target, bindings)),
+        choose(expr_kind(node) == "BinaryExpr",
+          binary_node(expr_text(node), rewrite_pattern_expression(expr_left(node), target, bindings), rewrite_pattern_expression(expr_right(node), target, bindings)),
+          choose(expr_kind(node) == "CallExpr",
+            call_node(expr_text(node), rewrite_pattern_expression_array(expr_args(node), 0, target, bindings, empty_sequence())),
+            choose(expr_kind(node) == "RecordExpr",
+              record_node(rewrite_pattern_record_fields(record_fields(node), 0, target, bindings, empty_sequence())),
+              choose(expr_kind(node) == "FieldAccessExpr",
+                field_node(field_name(node), rewrite_pattern_expression(field_object(node), target, bindings)), node))))))
+
+  reckon rewrite_pattern_expression_array(items : Sequence, index : Number, target : Sequence, bindings : Sequence, output : Sequence) -> Sequence =
+    choose(index >= length(items), output,
+      rewrite_pattern_expression_array(items, index + 1, target, bindings,
+        sequence_append(output, rewrite_pattern_expression(sequence_get(items, index), target, bindings))))
+
+  reckon rewrite_pattern_record_fields(items : Sequence, index : Number, target : Sequence, bindings : Sequence, output : Sequence) -> Sequence =
+    choose(index >= length(items), output,
+      rewrite_pattern_record_fields(items, index + 1, target, bindings,
+        sequence_append(output, record_field_node(record_field_name(sequence_get(items, index)),
+          rewrite_pattern_expression(record_field_expression(sequence_get(items, index)), target, bindings)))))
+
+  reckon rewrite_match_cases(items : Sequence, index : Number, facets : Sequence, locals : Sequence, target : Sequence, output : Sequence) -> Sequence =
+    choose(index >= length(items), output,
+      rewrite_match_cases(items, index + 1, facets, locals, target,
+        sequence_append(output,
+          match_case_node(match_case_variant(sequence_get(items, index)), match_case_bindings(sequence_get(items, index)),
+            rewrite_pattern_expression(
+              rewrite_typed_expression(match_case_expression(sequence_get(items, index)), facets, locals),
+              target, match_case_bindings(sequence_get(items, index)))))))
+
+  reckon rewrite_typed_expression(node : Sequence, facets : Sequence, locals : Sequence) -> Sequence =
+    choose(expr_kind(node) == "LiteralExpr", node,
+      choose(expr_kind(node) == "PathExpr",
+        choose(find_text(locals, 0, expr_text(node)) >= 0, node, rewrite_typed_path(expr_text(node), facets)),
+        choose(expr_kind(node) == "UnaryExpr",
+          unary_node(expr_text(node), rewrite_typed_expression(expr_left(node), facets, locals)),
+          choose(expr_kind(node) == "BinaryExpr",
+            binary_node(expr_text(node), rewrite_typed_expression(expr_left(node), facets, locals), rewrite_typed_expression(expr_right(node), facets, locals)),
+            choose(expr_kind(node) == "RecordExpr",
+              record_node(rewrite_typed_record_fields(record_fields(node), 0, facets, locals, empty_sequence())),
+              choose(expr_kind(node) == "CallExpr",
+                call_node(expr_text(node), rewrite_typed_expression_array(expr_args(node), 0, facets, locals, empty_sequence())),
+                choose(expr_kind(node) == "MatchExpr",
+                  match_node(rewrite_typed_expression(match_target(node), facets, locals),
+                    rewrite_match_cases(match_cases(node), 0, facets, locals,
+                      rewrite_typed_expression(match_target(node), facets, locals), empty_sequence())),
+                  choose(expr_kind(node) == "FieldAccessExpr",
+                    field_node(field_name(node), rewrite_typed_expression(field_object(node), facets, locals)),
+                    choose(expr_kind(node) == "UnionPayloadExpr",
+                      union_payload_node(rewrite_typed_expression(union_payload_target(node), facets, locals), union_payload_index(node)), node)))))))))
+
+  reckon rewrite_typed_record_fields(items : Sequence, index : Number, facets : Sequence, locals : Sequence, output : Sequence) -> Sequence =
+    choose(index >= length(items), output,
+      rewrite_typed_record_fields(items, index + 1, facets, locals,
+        sequence_append(output, record_field_node(record_field_name(sequence_get(items, index)),
+          rewrite_typed_expression(record_field_expression(sequence_get(items, index)), facets, locals)))))
+
+  reckon rewrite_typed_facets(items : Sequence, index : Number, facets : Sequence, output : Sequence) -> Sequence =
+    choose(index >= length(items), output,
+      rewrite_typed_facets(items, index + 1, facets,
+        sequence_append(output,
+          replace_extra(sequence_get(items, index), 2,
+            rewrite_typed_expression(facet_expression(sequence_get(items, index)), facets, empty_sequence()), 0, empty_sequence()))))
+
+  reckon rewrite_typed_reckons(items : Sequence, index : Number, facets : Sequence, output : Sequence) -> Sequence =
+    choose(index >= length(items), output,
+      rewrite_typed_reckons(items, index + 1, facets,
+        sequence_append(output,
+          replace_extra(sequence_get(items, index), 3,
+            rewrite_typed_expression(reckon_expression(sequence_get(items, index)), facets,
+              param_names(reckon_params(sequence_get(items, index)), 0, empty_sequence())), 0, empty_sequence()))))
+
+  reckon typed_facet_count(items : Sequence, index : Number) -> Number =
+    choose(index >= length(items), 0,
+      choose(typed_external_facet_type(facet_type(sequence_get(items, index))), 1, 0)
+        + typed_facet_count(items, index + 1))
+
+  reckon rewrite_typed_program(program : Sequence) -> Sequence =
+    choose(typed_facet_count(program_facets(program), 0) > 0,
+      make_program(program_name(program),
+        rewrite_typed_facets(program_facets(program), 0, program_facets(program), empty_sequence()),
+        rewrite_typed_reckons(program_reckons(program), 0, program_facets(program), empty_sequence()),
+        program_subjects(program), program_warrants(program), program_rules(program), program_directives(program), program_extras(program)),
+      program)
 
   reckon parse_record_fields(tokens : Sequence, index : Number, output : Sequence) -> Sequence =
     choose(token_text_at(tokens, index) == "}", make_node_state(index + 1, output),
@@ -1418,6 +1638,15 @@ reality RCLGeneralSelfHostCompiler {
         output + choose(index == 0, "", ",") + "{\"name\":" + json_quote(record_field_name(sequence_get(items, index)))
           + ",\"value\":" + canonical_expression(record_field_expression(sequence_get(items, index))) + "}"))
 
+  reckon canonical_match_cases(items : Sequence, index : Number, output : Text) -> Text =
+    choose(index >= length(items), output + "]",
+      canonical_match_cases(items, index + 1,
+        output + choose(index == 0, "", ",") + "{\"bindings\":"
+          + canonical_text_array(match_case_bindings(sequence_get(items, index)), 0, "[")
+          + ",\"expression\":" + canonical_expression(match_case_expression(sequence_get(items, index)))
+          + ",\"variant\":" + json_quote(match_case_variant(sequence_get(items, index)))
+          + ",\"wildcard\":" + choose(match_case_variant(sequence_get(items, index)) == "_", "true", "false") + "}"))
+
   reckon canonical_expression(node : Sequence) -> Text =
     choose(expr_kind(node) == "LiteralExpr",
       "{\"kind\":\"LiteralExpr\",\"value\":"
@@ -1433,8 +1662,17 @@ reality RCLGeneralSelfHostCompiler {
               + ",\"operator\":" + json_quote(expr_text(node)) + ",\"right\":" + canonical_expression(expr_right(node)) + "}",
             choose(expr_kind(node) == "RecordExpr",
               "{\"fields\":" + canonical_record_fields(record_fields(node), 0, "[") + ",\"kind\":\"RecordLiteralExpr\"}",
-              "{\"args\":" + canonical_expression_array(expr_args(node), 0, "[")
-                + ",\"kind\":\"CallExpr\",\"name\":" + json_quote(expr_text(node)) + "}")))))
+              choose(expr_kind(node) == "FieldAccessExpr",
+                "{\"field\":" + json_quote(field_name(node)) + ",\"kind\":\"FieldAccessExpr\",\"object\":"
+                  + canonical_expression(field_object(node)) + "}",
+                choose(expr_kind(node) == "UnionPayloadExpr",
+                  "{\"index\":" + text(union_payload_index(node)) + ",\"kind\":\"UnionPayloadExpr\",\"target\":"
+                    + canonical_expression(union_payload_target(node)) + "}",
+                  choose(expr_kind(node) == "MatchExpr",
+                    "{\"cases\":" + canonical_match_cases(match_cases(node), 0, "[")
+                      + ",\"kind\":\"MatchUnionExpr\",\"target\":" + canonical_expression(match_target(node)) + "}",
+                    "{\"args\":" + canonical_expression_array(expr_args(node), 0, "[")
+                      + ",\"kind\":\"CallExpr\",\"name\":" + json_quote(expr_text(node)) + "}"))))))))
 
   reckon canonical_expression_array(items : Sequence, index : Number, output : Text) -> Text =
     choose(index >= length(items), output + "]",
@@ -1978,10 +2216,17 @@ reality RCLGeneralSelfHostCompiler {
       validate_expression_array(expr_args(node), 0, empty_sequence(), facets, reckons),
       validate_expression(node, empty_sequence(), facets, reckons))
 
+  reckon validate_match_cases(items : Sequence, index : Number, locals : Sequence, facets : Sequence, reckons : Sequence) -> Truth =
+    choose(index >= length(items), true,
+      choose(validate_expression(match_case_expression(sequence_get(items, index)),
+          append_text_items(match_case_bindings(sequence_get(items, index)), 0, locals), facets, reckons),
+        validate_match_cases(items, index + 1, locals, facets, reckons), false))
+
   reckon validate_expression(node : Sequence, locals : Sequence, facets : Sequence, reckons : Sequence) -> Truth =
     choose(expr_kind(node) == "LiteralExpr", true,
       choose(expr_kind(node) == "PathExpr",
-        semantic_check(find_text(locals, 0, expr_text(node)) >= 0 or find_facet_index(facets, 0, expr_text(node)) >= 0,
+        semantic_check(find_text(locals, 0, expr_text(node)) >= 0 or find_facet_index(facets, 0, expr_text(node)) >= 0
+            or typed_projection_base(facets, 0, expr_text(node), "") != "",
           "RCL_SEMANTIC_UNKNOWN_PATH", expr_text(node)),
         choose(expr_kind(node) == "UnaryExpr", validate_expression(expr_left(node), locals, facets, reckons),
           choose(expr_kind(node) == "BinaryExpr",
@@ -1989,9 +2234,14 @@ reality RCLGeneralSelfHostCompiler {
               validate_expression(expr_right(node), locals, facets, reckons), false),
             choose(expr_kind(node) == "RecordExpr",
               validate_record_fields(record_fields(node), 0, locals, facets, reckons),
-              choose(semantic_check(call_is_known(expr_text(node), reckons), "RCL_SEMANTIC_UNKNOWN_CALL", expr_text(node)),
-                choose(semantic_check(call_arity_valid(node, reckons), "RCL_SEMANTIC_CALL_ARITY", expr_text(node)),
-                  validate_expression_array(expr_args(node), 0, locals, facets, reckons), false), false))))))
+              choose(expr_kind(node) == "FieldAccessExpr", validate_expression(field_object(node), locals, facets, reckons),
+                choose(expr_kind(node) == "UnionPayloadExpr", validate_expression(union_payload_target(node), locals, facets, reckons),
+                  choose(expr_kind(node) == "MatchExpr",
+                    choose(validate_expression(match_target(node), locals, facets, reckons),
+                      validate_match_cases(match_cases(node), 0, locals, facets, reckons), false),
+                    choose(semantic_check(call_is_known(expr_text(node), reckons), "RCL_SEMANTIC_UNKNOWN_CALL", expr_text(node)),
+                      choose(semantic_check(call_arity_valid(node, reckons), "RCL_SEMANTIC_CALL_ARITY", expr_text(node)),
+                        validate_expression_array(expr_args(node), 0, locals, facets, reckons), false), false)))))))))
 
   reckon validate_facets(items : Sequence, index : Number, facets : Sequence, reckons : Sequence) -> Truth =
     choose(index >= length(items), true,
@@ -2127,12 +2377,29 @@ reality RCLGeneralSelfHostCompiler {
               collect_expression_strings(expr_left(node), locals, output)),
             choose(expr_kind(node) == "RecordExpr",
               collect_record_expression_strings(record_fields(node), 0, locals, output),
-              collect_call_strings(node, locals, output))))))
+              choose(expr_kind(node) == "FieldAccessExpr",
+                append_unique_text(collect_expression_strings(field_object(node), locals, output), field_name(node)),
+                choose(expr_kind(node) == "UnionPayloadExpr",
+                  collect_expression_strings(union_payload_target(node), locals, output),
+                  choose(expr_kind(node) == "MatchExpr",
+                    collect_match_case_strings(match_cases(node), 0, locals,
+                      collect_expression_strings(match_target(node), locals, append_unique_text(output, ""))),
+                    collect_call_strings(node, locals, output)))))))))
 
   reckon collect_record_expression_strings(items : Sequence, index : Number, locals : Sequence, output : Sequence) -> Sequence =
     choose(index >= length(items), output,
       collect_record_expression_strings(items, index + 1, locals,
         collect_expression_strings(record_field_expression(sequence_get(items, index)), locals, output)))
+
+  reckon collect_match_case_strings(items : Sequence, index : Number, locals : Sequence, output : Sequence) -> Sequence =
+    choose(index >= length(items), output,
+      collect_match_case_strings(items, index + 1, locals,
+        collect_expression_strings(match_case_expression(sequence_get(items, index)),
+          append_text_items(match_case_bindings(sequence_get(items, index)), 0, locals),
+          append_unique_text(
+            choose(match_case_variant(sequence_get(items, index)) == "_", output,
+              append_unique_text(output, match_case_variant(sequence_get(items, index)))),
+            ""))))
 
   reckon collect_call_strings(node : Sequence, locals : Sequence, output : Sequence) -> Sequence =
     choose(is_quantity_constructor(expr_text(node)),
@@ -2165,15 +2432,26 @@ reality RCLGeneralSelfHostCompiler {
               collect_expression_numbers(expr_left(node), locals, output)),
             choose(expr_kind(node) == "RecordExpr",
               collect_record_expression_numbers(record_fields(node), 0, locals, output),
-              choose(expr_text(node) == "intent_matches", collect_expression_numbers(intent_matches_expression(node), locals, output),
-                choose(expr_text(node) == "understood", collect_expression_numbers(understood_expression(node), locals, output),
-                  choose(expr_text(node) == "selected", collect_expression_numbers(selected_expression(node), locals, output),
-                    collect_expression_numbers_array(expr_args(node), 0, locals, output)))))))))
+              choose(expr_kind(node) == "FieldAccessExpr", collect_expression_numbers(field_object(node), locals, output),
+                choose(expr_kind(node) == "UnionPayloadExpr", collect_expression_numbers(union_payload_target(node), locals, output),
+                  choose(expr_kind(node) == "MatchExpr",
+                    collect_match_case_numbers(match_cases(node), 0, locals,
+                      collect_expression_numbers(match_target(node), locals, output)),
+                    choose(expr_text(node) == "intent_matches", collect_expression_numbers(intent_matches_expression(node), locals, output),
+                      choose(expr_text(node) == "understood", collect_expression_numbers(understood_expression(node), locals, output),
+                        choose(expr_text(node) == "selected", collect_expression_numbers(selected_expression(node), locals, output),
+                          collect_expression_numbers_array(expr_args(node), 0, locals, output))))))))))))
 
   reckon collect_record_expression_numbers(items : Sequence, index : Number, locals : Sequence, output : Sequence) -> Sequence =
     choose(index >= length(items), output,
       collect_record_expression_numbers(items, index + 1, locals,
         collect_expression_numbers(record_field_expression(sequence_get(items, index)), locals, output)))
+
+  reckon collect_match_case_numbers(items : Sequence, index : Number, locals : Sequence, output : Sequence) -> Sequence =
+    choose(index >= length(items), output,
+      collect_match_case_numbers(items, index + 1, locals,
+        collect_expression_numbers(match_case_expression(sequence_get(items, index)),
+          append_text_items(match_case_bindings(sequence_get(items, index)), 0, locals), output)))
 
   reckon collect_expression_numbers_array(items : Sequence, index : Number, locals : Sequence, output : Sequence) -> Sequence =
     choose(index >= length(items), output,
@@ -2626,7 +2904,9 @@ reality RCLGeneralSelfHostCompiler {
 
   reckon expression_count(node : Sequence) -> Number =
     sequence_get(node, choose(expr_kind(node) == "BinaryExpr", 4,
-      choose(expr_kind(node) == "PathExpr", 2, choose(expr_kind(node) == "RecordExpr", 2, 3))))
+      choose(expr_kind(node) == "PathExpr", 2,
+        choose(expr_kind(node) == "RecordExpr", 2,
+          choose(expr_kind(node) == "FieldAccessExpr" or expr_kind(node) == "MatchExpr" or expr_kind(node) == "UnionPayloadExpr", 3, 3)))))
 
   reckon expression_call_count(node : Sequence) -> Number = sequence_get(node, 3)
 
@@ -2922,6 +3202,28 @@ reality RCLGeneralSelfHostCompiler {
             append_all(one_instruction(38, find_text(strings, 0, "status"), 0, 0),
               emit_expression(sequence_get(expr_args(node), 0), locals, reckons, strings, numbers, main_count, start))))))
 
+  reckon match_case_offset(items : Sequence, index : Number, target_count : Number) -> Number =
+    choose(index == 0, 0,
+      match_case_offset(items, index - 1, target_count) + match_case_instruction_count(sequence_get(items, index - 1), target_count))
+
+  reckon emit_match_case(node : Sequence, target : Sequence, locals : Sequence, reckons : Sequence, strings : Sequence, numbers : Sequence, main_count : Number, case_start : Number, next_start : Number, end_start : Number, target_count : Number) -> Sequence =
+    choose(match_case_variant(node) == "_",
+      sequence_concat(emit_expression(match_case_expression(node), locals, reckons, strings, numbers, main_count, case_start),
+        one_instruction(20, end_start, 0, 0)),
+      sequence_concat(emit_expression(target, locals, reckons, strings, numbers, main_count, case_start),
+        sequence_concat(one_instruction(39, find_text(strings, 0, match_case_variant(node)), 0, 0),
+        sequence_concat(one_instruction(21, next_start, 0, 0),
+            sequence_concat(emit_expression(match_case_expression(node), locals, reckons, strings, numbers, main_count, case_start + target_count + 2),
+              one_instruction(20, end_start, 0, 0))))))
+
+  reckon emit_match_cases(items : Sequence, index : Number, target : Sequence, locals : Sequence, reckons : Sequence, strings : Sequence, numbers : Sequence, main_count : Number, start : Number, end_start : Number, target_count : Number) -> Sequence =
+    choose(index >= length(items), one_instruction(3, find_text(strings, 0, ""), 0, 0),
+      sequence_concat(
+        emit_match_case(sequence_get(items, index), target, locals, reckons, strings, numbers, main_count,
+          start + match_case_offset(items, index, target_count),
+          start + match_case_offset(items, index + 1, target_count), end_start, target_count),
+        emit_match_cases(items, index + 1, target, locals, reckons, strings, numbers, main_count, start, end_start, target_count)))
+
   reckon emit_expression(node : Sequence, locals : Sequence, reckons : Sequence, strings : Sequence, numbers : Sequence, main_count : Number, start : Number) -> Sequence =
     choose(expr_kind(node) == "LiteralExpr",
       choose(expr_text(node) == "Number", one_instruction(1, find_number(numbers, 0, number_from_text(expr_literal_text(node))), 0, 0),
@@ -2936,7 +3238,16 @@ reality RCLGeneralSelfHostCompiler {
             emit_expression(expr_left(node), locals, reckons, strings, numbers, main_count, start)),
           choose(expr_kind(node) == "BinaryExpr",
             emit_binary(node, locals, reckons, strings, numbers, main_count, start),
-            emit_call(node, locals, reckons, strings, numbers, main_count, start)))))
+            choose(expr_kind(node) == "FieldAccessExpr",
+              sequence_concat(emit_expression(field_object(node), locals, reckons, strings, numbers, main_count, start),
+                one_instruction(38, find_text(strings, 0, field_name(node)), 0, 0)),
+              choose(expr_kind(node) == "UnionPayloadExpr",
+                sequence_concat(emit_expression(union_payload_target(node), locals, reckons, strings, numbers, main_count, start),
+                  one_instruction(40, union_payload_index(node), 0, 0)),
+                choose(expr_kind(node) == "MatchExpr",
+                  emit_match_cases(match_cases(node), 0, match_target(node), locals, reckons, strings, numbers, main_count,
+                    start, start + expression_count(node), expression_count(match_target(node))),
+                  emit_call(node, locals, reckons, strings, numbers, main_count, start))))))))
 
   reckon emit_facets(items : Sequence, index : Number, reckons : Sequence, strings : Sequence, numbers : Sequence, main_count : Number, start : Number, output : Sequence) -> Sequence =
     choose(index >= length(items), output,

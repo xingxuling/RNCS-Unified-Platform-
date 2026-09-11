@@ -317,7 +317,7 @@ test('typed package authority candidate can select native self-hosted constructo
   assert.equal(packageDemo.ok, true);
   const typed = await compileTypedNativeLinkFromPackage(dir, { selfHosted: true });
   assert.equal(typed.ok, true);
-  assert.equal(typed.receipt.compiler.kind, 'rcl-general-selfhost-typed-constructor-lowering');
+  assert.equal(typed.receipt.compiler.kind, 'rcl-general-selfhost-typed-lowering');
   assert.equal(typed.receipt.compiler.typed_opcode_parity, true);
   const authority = await compileRclTypedAuthorityCandidateFromPackage(dir, { selfHosted: true });
   assert.equal(authority.ok, true);
