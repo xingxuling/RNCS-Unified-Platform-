@@ -1,0 +1,102 @@
+{
+  "format": "rncs.rcl-rsr-spatial-lowering-candidate-evidence.v0.1",
+  "version": "0.1.0-alpha.1",
+  "status": "CANDIDATE_EXECUTION_VERIFIED",
+  "source": {
+    "checkout": "rncs-visual-factory-v01",
+    "branch": "codex/rncs-engine-stack-archaeology-v01",
+    "sourceCommit": "1244b87",
+    "authority": "RCL native plan and RSR/VSR candidate simulation only; no canonical commit, promotion, release, device or production authority"
+  },
+  "seam": {
+    "rclDeclarationNamespace": "rncs.spatial.command.<alias>.*",
+    "sourcePlanFormat": "rncs.rcl-spatial-command-plan.v0.1",
+    "loweringFormat": "rncs.rcl-rsr-spatial-lowering.v0.1",
+    "targetCommandFormat": "rncs.spatial-command-plan.v0.1",
+    "semanticOwners": {
+      "declarationAndAuthorityEvidence": "RCL native control plane",
+      "spatialExecution": "RSR Spatial Embodiment",
+      "presentation": "VSR spatial frame projection"
+    },
+    "commandTypes": ["patch-heightfield"]
+  },
+  "positiveEvidence": [
+    "RCL native self-host execution produces a rooted spatial command plan from Sequence-valued sample vectors.",
+    "The explicit lowering verifies the RCL plan root, source native state root, target command root and candidate-only authority boundary.",
+    "The lowered command enters the existing RSR/VSR engine session, changes the candidate RSR state and produces a verified VSR frame plus causal heightfield patch fact.",
+    "The session remains candidate-only after simulation; the authoritative snapshot stays at the pre-simulation RSR state until a separate session authorization and commit path is invoked.",
+    "The same lowered command produces a verified deterministic spatial replay bundle with a final state root and frame root matching candidate simulation."
+  ],
+  "negativeEvidence": [
+    "The current RCL language still has no first-class typed spatial command or terrain mutation primitive; the declaration namespace is an explicit bounded control-plane convention.",
+    "Kernel EntityKernel has no spatial command-batch owner or lowering; this bridge is an integration seam and does not silently make Kernel canonical.",
+    "Only the existing bounded static/fixed-rotation kinematic heightfield patch command is reachable; dynamic terrain, continuous full manifold and Large World deform scheduling remain open.",
+    "No canonical world mutation, RFE merge, release promotion, Android/physical device, target GPU, external network or production performance proof."
+  ],
+  "execution": {
+    "commands": [
+      "npm.cmd test --workspace @taowind/rncs-rcl-control-plane",
+      "npm.cmd test --workspace @taowind/rcl-rsr-spatial-bridge",
+      "JSON parse checks for compilation-plan.v0.2.schema.json and rcl-rsr-spatial-lowering.v0.1.schema.json",
+      "git diff --check on RCL control, bridge, schema and registry paths"
+    ],
+    "results": {
+      "rclControlPlane": "17/17 PASS",
+      "rclRsrSpatialBridge": "2/2 PASS",
+      "schemaAndRegistryParse": "PASS",
+      "diffCheck": "PASS"
+    }
+  },
+  "receipt": {
+    "authorityPlanId": "plan:rcl:8b0df3f7d90babe8fd633ab0",
+    "rclSourceRoot": "8b0df3f7d90babe8fd633ab084434c39e32980a1cf4af1e8281b45ccf8d58b91",
+    "rclNativeStateRoot": "00eb8c1f9f6baf2fdb302b6ef96af4cf711adda1d1c4d3d8658f384693d4d284",
+    "rclSpatialCommandPlanRoot": "818d2a9f65885bc3089c2ae01c02619c1126bdcf16675f3ed026658daa7d6889",
+    "loweringRoot": "8c1aa1f6f24752e09db0572b0f31b45535fb7e81d93739a6f3b329a30dd17f07",
+    "targetCommandRoot": "6c1b2070654349fb377e4c3ce37a35499933db9193fbd6697cb58f300a003a19",
+    "proposalRoot": "not persisted in this receipt; verified in the direct candidate run",
+    "beforeRsrStateRoot": "fnv1a64:975a480af0beccf8",
+    "afterRsrStateRoot": "fnv1a64:3050479d39686902",
+    "afterEngineStateRoot": "1493b39ad680d22b0436c8013bc8394cf1af35d5bad39bf2a8c0eae79f496a04",
+    "frameRoot": "45729b2074bf27f75cb085a904c30cc85e214d3a76f49ab54abec6eac01aa6a2",
+    "causalDeltaRoot": "fnv1a64:f948cf0876190944",
+    "causalPatchFact": {
+      "subject": "body:terrain",
+      "predicate": "spatial.heightfield.patch",
+      "object": "fnv1a64:3c9a83e58c27a19c"
+    },
+    "replay": {
+      "bundleRoot": "93493c0f11ae9ccbe4314185a212f1134436a05552428a7de465260fc863038e",
+      "replayRoot": "5fe6d1eb6a25cb9e55882d63bfe0f7183780fec9a26c3124e150598524e1e6da",
+      "verified": true,
+      "deterministic": true,
+      "finalStateRoot": "fnv1a64:3050479d39686902",
+      "finalFrameRoot": "45729b2074bf27f75cb085a904c30cc85e214d3a76f49ab54abec6eac01aa6a2"
+    },
+    "candidateOnly": true,
+    "canonicalWriteAuthorized": false,
+    "commitInvoked": false,
+    "sessionStateRemainedBeforeCommit": true
+  },
+  "rclGap": {
+    "id": "RCL_GAP_RNCS_TERRAIN_MUTATION_COMMAND_SEMANTICS",
+    "task": "Promote the bounded spatial mutation declaration into reusable RCL and Kernel command semantics without duplicating RSR execution.",
+    "missingCapability": "First-class typed spatial command/terrain mutation primitive and Kernel command-batch lowering are not present.",
+    "workaround": "RCL native Sequence-valued declaration facets plus explicit RCL-to-RSR candidate lowering bridge.",
+    "donor": "Existing RCL native authority plan, RSR SpatialCommand, VSR session and replay roots; no external donor promoted.",
+    "gapType": "shared-world-command-primitive",
+    "generality": "potentially reusable for terrain editing, destructible surfaces, world authoring, correction streams and rollbackable simulation inputs",
+    "candidateAbsorption": "Define a typed RCL physical command profile and Kernel lowering only after preserving source/authority roots and cross-domain regression.",
+    "affectedK400Cells": [
+      "EXPRESS",
+      "COMPILE",
+      "LOWER",
+      "EXECUTE",
+      "CORRECT",
+      "ROBUST",
+      "EVIDENCE"
+    ]
+  },
+  "decision": "RCL_NATIVE_SPATIAL_COMMAND_PLAN_AND_RSR_VSR_CANDIDATE_LOWERING_VERIFIED_FIRST_CLASS_RCL_PRIMITIVE_KERNEL_COMMAND_BATCH_DYNAMIC_TERRAIN_CONTINUOUS_MANIFOLD_LARGE_WORLD_DEFORM_STREAM_AND_DEVICE_BOUNDARIES_OPEN",
+  "evidenceRoot": "939898c0bfea5efcd26259e78bb5d2b73c9fcec891e1edaedccd346e411064ac"
+}

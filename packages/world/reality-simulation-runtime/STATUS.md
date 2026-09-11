@@ -12,6 +12,6 @@
 - Coyote Time / Jump Buffer：PASS
 - RSR v0.7 Network Authority Protocol：兼容
 - Convex Hull fixture：非共面顶点校验、GJK/EPA 接触、VSR 三角网格投影：PASS
-- Heightfield fixture candidate：固定点采样、斜坡支撑法线、bounded terrain-surface ray query、bounded sphere-vs-authored-triangle sweep、bounded upright-capsule-vs-authored-triangle sweep、最多四点 bounded contact manifold、受根校验的静态/运动学样本 patch、Kernel lowering、VSR 网格与确定性重放：PASS；Large World -> RSR candidate lowering 与同世界 managed static terrain enter/exit transition：PASS；动态 body terrain、Large World deform stream、连续完整接触流形、RCL/Kernel command lowering 与目标设备证据：OPEN
+- Heightfield fixture candidate：固定点采样、斜坡支撑法线、bounded terrain-surface ray query、bounded sphere-vs-authored-triangle sweep、bounded upright-capsule-vs-authored-triangle sweep、最多四点 bounded contact manifold、受根校验的静态/运动学样本 patch、Kernel body/fixture lowering、VSR 网格与确定性重放：PASS；Large World -> RSR candidate lowering、同世界 managed static terrain enter/exit transition，以及 RCL native spatial command plan -> RSR/VSR candidate lowering：PASS；一等 RCL spatial primitive、Kernel command batch、动态 body terrain、Large World deform stream、连续完整接触流形与目标设备证据：OPEN
 - `rncs.entity-state-batch.v0.1` -> authority body/fixture -> VSR scene/frame/pixel roots：PASS
 - RAGF `ragf.rsr-embodiment-profile.v0.4` -> fixed-point dynamic body/character controller：PASS；profile root 与 materialization root 均参与验证

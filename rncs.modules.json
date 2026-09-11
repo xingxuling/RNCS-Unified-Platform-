@@ -584,7 +584,12 @@
         "gateway",
         "aether-earth"
       ],
-      "test": "npm test --workspace @taowind/rncs-rcl-control-plane"
+      "test": "npm test --workspace @taowind/rncs-rcl-control-plane",
+      "capabilities": [
+        "rcl-native-authority-plan",
+        "rcl-native-spatial-command-plan-candidate",
+        "no-canonical-commit-without-rncs-authority"
+      ]
     },
     {
       "id": "reality-engine-session",

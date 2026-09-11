@@ -668,7 +668,7 @@ Large World terrain owner
 
 ### 本轮 RSR bounded heightfield mutation candidate
 
-考古没有发现 RCL、Kernel 或 Large World 已有的可执行 heightfield deform command；已有 `replaceManagedStaticBodies(...)` 只能整块替换受管理静态体，并不适合把同一 terrain body 的局部变化作为可重放世界事件。因此新增的语义暂留在 RSR Spatial Embodiment owner，并显式登记为 `RCL_GAP_RNCS_TERRAIN_MUTATION_COMMAND_SEMANTICS`：
+考古没有发现 RCL、Kernel 或 Large World 已有的一等、可执行 heightfield deform command；已有 `replaceManagedStaticBodies(...)` 只能整块替换受管理静态体，并不适合把同一 terrain body 的局部变化作为可重放世界事件。因此局部 mutation 的执行语义仍由 RSR Spatial Embodiment owner 持有；RCL native control plan 与独立 lowering bridge 只提供显式候选入口，并继续登记为 `RCL_GAP_RNCS_TERRAIN_MUTATION_COMMAND_SEMANTICS`：
 
 ```text
 tick-local patch command
@@ -679,7 +679,29 @@ tick-local patch command
   → mutation root + snapshot/replay/causal evidence
 ```
 
-`patch-heightfield` 只接受静态或固定旋转运动学 heightfield，最多 4096 个样本；索引越界、重复、非安全整数、stale root 和 no-op 都在写入前拒绝。mutation event 保存前后 heightfield roots 与已变更样本，受影响 contact IDs 从 lifecycle/cache 中移除，下一次求解重新生成接触；RSR 自身的 runtime command/replay 路径已执行，`rsr-spatial-heightfield-mutation.v0.1` schema 也已登记。该路径仍不是 dynamic-body terrain、Large World deform stream、连续三角形 manifold、RCL/Kernel 原生 command lowering 或 canonical commit/promotion。
+`patch-heightfield` 只接受静态或固定旋转运动学 heightfield，最多 4096 个样本；索引越界、重复、非安全整数、stale root 和 no-op 都在写入前拒绝。mutation event 保存前后 heightfield roots 与已变更样本，受影响 contact IDs 从 lifecycle/cache 中移除，下一次求解重新生成接触；RSR 自身的 runtime command/replay 路径已执行，`rsr-spatial-heightfield-mutation.v0.1` schema 也已登记。该路径仍不是 dynamic-body terrain、Large World deform stream、连续三角形 manifold、一等 RCL/Kernel command primitive 或 canonical commit/promotion。
+
+
+## 本轮 RCL native spatial command plan → RSR/VSR candidate lowering
+
+本轮沿 RCL → Kernel → 控制面 → RSR 的真实执行链继续考古：RCL native self-host compiler 已能稳定执行 `Sequence`，但没有一等 typed spatial command；`rncs-core` 的 world mutation 只接受通用 `set/delete`，EntityKernel 也没有 spatial command batch；RSR 才拥有可执行的 `SpatialCommand` 与 `patch-heightfield`。因此没有把局部 terrain mutation 伪装成现有通用 world-state change，而是把缺口收窄为一个显式的 RCL declaration → RSR candidate lowering seam：
+
+```text
+RCL native self-host `rncs.spatial.command.<alias>.*` facets
+  → `rncs.rcl-spatial-command-plan.v0.1` + RCL native state root
+  → `rncs.rcl-rsr-spatial-lowering.v0.1`
+  → existing `rncs.spatial-command-plan.v0.1` / RSR SpatialCommand
+  → existing RSR candidate simulation + VSR frame projection
+  → existing spatial replay bundle
+```
+
+RCL control plane 负责声明值、样本向量、command type、tick、body/fixture identity 和 source plan root 的校验，并要求 `rncs.rsr.simulate` authority requirement；`rcl-rsr-spatial-bridge` 只验证 source command plan root、RCL native state root、target command root 和 candidate-only boundary，然后复用既有 `createSpatialRealityEngineSession()`，不复制 RSR 求解器。RSR 继续拥有 mutation event、接触缓存失效、snapshot/replay 与 causal delta；VSR 继续拥有 frame projection。
+
+本地证据位于 `docs/verification/RNCS_RCL_RSR_SPATIAL_LOWERING_CANDIDATE_v0.1.json`：RCL control plane `17/17 PASS`，bridge `2/2 PASS`；同一条 RCL source 经 native execution、lowering、RSR/VSR candidate simulation 和 replay 后，最终 RSR state root 与 frame root 一致，simulation 期间正式 snapshot 保持不变，篡改 lowering payload 在执行前失败。
+
+该 seam 关闭的是“RCL native plan 无法进入既有 RSR session”的候选执行缺口，不是 RCL 已经拥有一等 spatial primitive，也不是 Kernel 已拥有 command batch。当前 declaration 仍只能表达 bounded `patch-heightfield`，最多 4096 个样本；dynamic-body terrain、Large World deform scheduler、连续完整 terrain manifold、目标设备/生产性能、canonical commit/promotion 仍是 OPEN。该候选只进入 K400 的 `EXPRESS / COMPILE / LOWER / EXECUTE / CORRECT / ROBUST / EVIDENCE` 证据，不宣布新单元 PASS。
+
+下一步应先把该不可约命令语义审计成真正可复用的 RCL physical command profile 与 Kernel lowering contract，要求保留 authority/source/command roots，并覆盖 world editing、destructible surface、correction/replay 等跨域正负例；只有该 contract 稳定后，再继续 dynamic terrain policy → continuous manifold / solver integration，避免在 RSR 之外再造第二套 terrain command owner。
 
 ## 本轮 Large World → RSR terrain lowering adapter
 
@@ -689,11 +711,11 @@ tick-local patch command
 
 负例和未闭合边界已经固定：适配器不改变 Large World active working set 或 canonical world state，也不授予 provider commit authority；RSR transition 只管理带标签的静态候选体，要求 candidate tick 与物理 tick 相等，并在切换时清除旧接触/支撑缓存。source stream policy 仍由 Large World 持有；本轮 transition receipt 只封存既有 decision，不自动重排、回收 provider 资源或替代 upstream scheduler；physical admission 只做 body/fixture/sample budget fail-closed。bounded sphere-vs-authored-triangle sweep、bounded upright-capsule-vs-authored-triangle sweep 与最多四点 contact manifold 已执行，但动态地形、连续完整 manifold、并行 Job、物理设备性能或生产资产发布证据仍未闭合。因此 `RCL_GAP_RNCS_LARGE_WORLD_PHYSICAL_TERRAIN_LOWERING` 已从“无 lowering seam”收窄为“candidate lowering、source stream transition receipt、同世界物理 residency transition、bounded surface ray、bounded sphere/capsule sweep、bounded contact manifold 与物理 admission guard 已验证、生产 stream scheduler/dynamic terrain/continuous full manifold 与产品执行仍 OPEN”，K400 只进入 `EXPRESS / COMPILE / LOWER / EXECUTE / CORRECT / ROBUST / EVIDENCE` 的 candidate evidence，不宣布新单元 PASS。
 
-本轮裁决：`LARGE_WORLD_TO_RSR_HEIGHTFIELD_STREAM_TRANSITION_AND_RSR_HEIGHTFIELD_MUTATION_CANDIDATE_VERIFIED_DYNAMIC_BODY_TERRAIN_CONTINUOUS_MANIFOLD_RCL_COMMAND_LOWERING_STREAM_SCHEDULER_AND_PRODUCTION_BOUNDARIES_OPEN`。Large World runtime replay/snapshot 与 RSR `fromSnapshot()` 已能在同一 candidate transition 上恢复等价 roots；RSR-native terrain patch 也已能在 tick-local command 中产生可验证 mutation root。下一最高杠杆工作转为把该不可约 mutation 语义审计为可复用的 RCL/Kernel command primitive，并在此之上继续收敛 dynamic terrain policy → continuous terrain manifold / solver integration；仍禁止复制 terrain generator，也不得借 adapter 获得 canonical world mutation 或 release promotion 权限。
+本轮裁决：`RCL_NATIVE_SPATIAL_COMMAND_PLAN_AND_RSR_VSR_CANDIDATE_LOWERING_VERIFIED_FIRST_CLASS_RCL_PRIMITIVE_KERNEL_COMMAND_BATCH_DYNAMIC_BODY_TERRAIN_LARGE_WORLD_DEFORM_STREAM_CONTINUOUS_MANIFOLD_STREAM_SCHEDULER_AND_PRODUCTION_BOUNDARIES_OPEN`。Large World runtime replay/snapshot 与 RSR `fromSnapshot()` 已能在同一 candidate transition 上恢复等价 roots；RSR-native terrain patch 也已能在 tick-local command 中产生可验证 mutation root；RCL native plan 现在可以通过独立 bridge 进入既有 RSR/VSR candidate session 并 replay。下一最高杠杆工作转为把该不可约 mutation 语义审计为真正可复用的一等 RCL physical command profile 与 Kernel command-batch lowering，再继续收敛 dynamic terrain policy → continuous terrain manifold / solver integration；仍禁止复制 terrain generator，也不得借 adapter 获得 canonical world mutation 或 release promotion 权限。
 
 ## K400 / 证据裁决
 
-本轮完成资产考古、既有 runtime donor 的真实执行、host APK build/signing 和边界定位，不宣布 K400 任一新单元 PASS。下一候选必须分别提供 `EXPRESS / COMPILE / LOWER / EXECUTE / CORRECT / ROBUST / PERFORMANCE / AI_GENERATE / EVIDENCE` 的可重放回执；源码生成、schema 通过、package test、host APK 或本机 Chrome smoke 不能替代 Android WebView/目标硬件、外部物理、真实分布式网络和生产差分门。
+本轮完成资产考古、既有 runtime donor 的真实执行、RCL native spatial plan → RSR/VSR candidate lowering 与边界定位，不宣布 K400 任一新单元 PASS。下一候选必须分别提供 `EXPRESS / COMPILE / LOWER / EXECUTE / CORRECT / ROBUST / PERFORMANCE / AI_GENERATE / EVIDENCE` 的可重放回执；源码生成、schema 通过、package test、host APK 或本机 Chrome smoke 不能替代 Android WebView/目标硬件、外部物理、真实分布式网络和生产差分门。
 
 当前总体裁决：`PROCEED_AS_CANDIDATE`；World Body 仍是 `F4.5 Partial Production Parity` 方向上的候选基础，Studio/Build/Large World 统一消费链尚未实现。
 

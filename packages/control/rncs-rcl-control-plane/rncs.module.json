@@ -17,6 +17,11 @@
     "laf",
     "gateway"
   ],
-  "test": "npm test --workspace @taowind/rncs-rcl-control-plane",
-  "description": "RCL AOT authority mirror for twelve RNCS control/world modules including Aether Earth."
+ "test": "npm test --workspace @taowind/rncs-rcl-control-plane",
+  "capabilities": [
+    "rcl-native-authority-plan",
+    "rcl-native-spatial-command-plan-candidate",
+    "no-canonical-commit-without-rncs-authority"
+  ],
+  "description": "RCL AOT authority mirror for twelve RNCS control/world modules including Aether Earth; spatial command plans remain candidate-only until explicit lowering and RNCS authority."
 }
