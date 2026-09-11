@@ -1,0 +1,15 @@
+{
+  "id": "rcl-rsr-spatial-bridge",
+  "name": "RCL to RSR Spatial Command Bridge",
+  "version": "0.1.0-alpha.1",
+  "path": "packages/integration/rcl-rsr-spatial-bridge",
+  "layer": "integration",
+  "runtime": "rncs.rcl-rsr-spatial-bridge",
+  "dependsOn": [
+    "rncs-rcl-control",
+    "reality-engine-session",
+    "rncs-core"
+  ],
+  "test": "npm test --workspace @taowind/rcl-rsr-spatial-bridge",
+  "description": "Explicit candidate lowering from the RCL native spatial command declaration plan into the existing RSR/VSR engine session; no canonical commit or device proof."
+}

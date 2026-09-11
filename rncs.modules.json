@@ -599,6 +599,26 @@
       "test": "npm test --workspace @taowind/reality-engine-session"
     },
     {
+      "id": "rcl-rsr-spatial-bridge",
+      "name": "RCL to RSR Spatial Command Bridge",
+      "version": "0.1.0-alpha.1",
+      "path": "packages/integration/rcl-rsr-spatial-bridge",
+      "layer": "integration",
+      "runtime": "rncs.rcl-rsr-spatial-bridge",
+      "dependsOn": [
+        "rncs-rcl-control",
+        "reality-engine-session",
+        "rncs-core"
+      ],
+      "test": "npm test --workspace @taowind/rcl-rsr-spatial-bridge",
+      "capabilities": [
+        "rcl-native-spatial-command-plan-lowering",
+        "candidate-rsr-vsr-session-execution",
+        "root-bound-spatial-command-replay",
+        "candidate-only-no-canonical-commit"
+      ]
+    },
+    {
       "id": "aether-rncs-bridge",
       "name": "Aether RNCS Compilation Bridge",
       "version": "0.2.0-alpha.1",

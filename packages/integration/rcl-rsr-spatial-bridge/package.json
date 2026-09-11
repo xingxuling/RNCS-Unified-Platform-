@@ -1,0 +1,22 @@
+{
+  "name": "@taowind/rcl-rsr-spatial-bridge",
+  "version": "0.1.0-alpha.1",
+  "private": false,
+  "type": "module",
+  "description": "Candidate-only RCL spatial command lowering into the existing RNCS RSR engine session.",
+  "license": "Apache-2.0",
+  "exports": {
+    ".": "./src/index.mjs"
+  },
+  "scripts": {
+    "test": "node --test --test-concurrency=1 tests/*.test.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@taowind/reality-engine-session": "*",
+    "@taowind/rncs-core-contract": "*",
+    "@taowind/rncs-rcl-control-plane": "*"
+  }
+}

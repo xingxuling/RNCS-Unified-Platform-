@@ -13,6 +13,8 @@ import {
   compileRuntimeBundle,
   replayRuntimeBundle,
   createEmbeddedRuntimeBundle,
+  rclSpatialCommandPlanRoot,
+  verifyRclSpatialCommandPlan,
 } from '../src/index.mjs';
 
 const packageRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
@@ -330,6 +332,52 @@ test('RCL native change facets lower into ordered RNCS candidate operations', as
   assert.deepEqual(result.operations.map(operation => operation.path), ['world.count', 'world.old', 'world.tags', 'world.title']);
   assert.equal(result.operations[0].operation_id, 'rcl-change:count');
   assert.ok(result.plan.authority_requirements.some(item => item.action === 'merge_candidate_branch'));
+});
+
+test('RCL native spatial command facets lower into a rooted RSR command plan', async () => {
+  const result = await compileRclAuthorityPlan(`reality RncsSpatialCommandAuthority {
+    facet rncs.world.world_id : Text = "world:rcl-terrain"
+    facet rncs.spatial.command.raise.type : Text = "patch-heightfield"
+    facet rncs.spatial.command.raise.id : Text = "command:rcl-raise"
+    facet rncs.spatial.command.raise.tick : Number = 1
+    facet rncs.spatial.command.raise.body_id : Text = "terrain"
+    facet rncs.spatial.command.raise.fixture_id : Text = "terrain:heightfield"
+    facet rncs.spatial.command.raise.indices : Sequence = sequence_append(empty_sequence(), 4)
+    facet rncs.spatial.command.raise.heights : Sequence = sequence_append(empty_sequence(), 600)
+  }`);
+  assert.equal(result.execution.parity.ok, true);
+  assert.equal(result.spatialCommandPlan.format, 'rncs.rcl-spatial-command-plan.v0.1');
+  assert.equal(result.spatialCommandPlan.commands.length, 1);
+  assert.deepEqual(result.spatialCommandPlan.commands[0], {
+    id: 'command:rcl-raise',
+    tick: 1,
+    type: 'patch-heightfield',
+    bodyId: 'terrain',
+    fixtureId: 'terrain:heightfield',
+    samples: [{ index: 4, height: 600 }],
+  });
+  assert.equal(result.spatialCommandPlan.root, rclSpatialCommandPlanRoot(result.spatialCommandPlan.commands));
+  assert.equal(verifyRclSpatialCommandPlan(result.spatialCommandPlan), true);
+  assert.equal(result.plan.source.rcl_spatial_command_plan_root, result.spatialCommandPlan.root);
+  assert.equal(result.plan.simulation_requirements.find(item => item.runtime === 'rncs.rsr').spatial_command_plan_root, result.spatialCommandPlan.root);
+  assert.ok(result.plan.authority_requirements.some(item => item.action === 'simulate_spatial_candidate' && item.scope === 'rncs.rsr.simulate'));
+  assert.ok(result.plan.evidence_requirements.some(item => item.kind === 'rcl-spatial-command-plan' && item.root === result.spatialCommandPlan.root));
+});
+
+test('RCL spatial command lowering fails closed on mismatched sample vectors', async () => {
+  await assert.rejects(
+    () => compileRclAuthorityPlan(`reality InvalidRclSpatialCommand {
+      facet rncs.world.world_id : Text = "world:rcl-terrain-invalid"
+      facet rncs.spatial.command.bad.type : Text = "patch-heightfield"
+      facet rncs.spatial.command.bad.id : Text = "command:rcl-invalid"
+      facet rncs.spatial.command.bad.tick : Number = 1
+      facet rncs.spatial.command.bad.body_id : Text = "terrain"
+      facet rncs.spatial.command.bad.fixture_id : Text = "terrain:heightfield"
+      facet rncs.spatial.command.bad.indices : Sequence = sequence_append(empty_sequence(), 4)
+      facet rncs.spatial.command.bad.heights : Sequence = empty_sequence()
+    }`),
+    error => error.message === 'RCL_RNCS_SPATIAL_COMMAND_SAMPLES_INVALID:bad',
+  );
 });
 
 

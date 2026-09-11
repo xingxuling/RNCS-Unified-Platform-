@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taowind.dev/schemas/rncs.rcl-rsr-spatial-lowering.v0.1.schema.json",
+  "title": "RNCS RCL to RSR Spatial Lowering v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "version",
+    "source_plan_id",
+    "source_state_root",
+    "source_command_plan_root",
+    "target_format",
+    "target_command_root",
+    "commands",
+    "authority",
+    "boundaries",
+    "lowering_root"
+  ],
+  "properties": {
+    "format": { "const": "rncs.rcl-rsr-spatial-lowering.v0.1" },
+    "version": { "const": "0.1.0" },
+    "source_plan_id": { "type": "string", "minLength": 1 },
+    "source_state_root": { "type": "string", "minLength": 1 },
+    "source_command_plan_root": { "type": "string", "minLength": 1 },
+    "target_format": { "const": "rncs.spatial-command-plan.v0.1" },
+    "target_command_root": { "type": "string", "minLength": 1 },
+    "commands": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "tick", "type", "bodyId", "fixtureId", "samples"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "tick": { "type": "integer", "minimum": 1 },
+          "type": { "const": "patch-heightfield" },
+          "bodyId": { "type": "string", "minLength": 1 },
+          "fixtureId": { "type": "string", "minLength": 1 },
+          "samples": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 4096,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["index", "height"],
+              "properties": {
+                "index": { "type": "integer", "minimum": 0 },
+                "height": { "type": "integer" }
+              }
+            }
+          },
+          "expectedHeightfieldRoot": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidate_only", "authoritative", "canonical_write_authorized", "commit_requires_explicit_rncs_authority"],
+      "properties": {
+        "candidate_only": { "const": true },
+        "authoritative": { "const": false },
+        "canonical_write_authorized": { "const": false },
+        "commit_requires_explicit_rncs_authority": { "const": true }
+      }
+    },
+    "boundaries": { "type": "array", "items": { "type": "string" } },
+    "lowering_root": { "type": "string", "minLength": 1 }
+  }
+}
